@@ -17,7 +17,7 @@ import {
   getProficiencyBand,
   testTypeHashMap,
 } from '../../../../common/util'
-import gradesMap from '../static/json/gradesMap.json'
+import gradesMap from '../static/gradesMap.json'
 
 export const getStudentName = (selectedStudent, studInfo) => {
   if (selectedStudent.title) {
@@ -83,15 +83,7 @@ export const augementAssessmentChartData = (
 export const getMaxScale = (scaleInfo = []) =>
   orderBy(scaleInfo, 'thresold', ['desc'])[0] || {}
 
-export const getOverallMasteryPercentage = (records, maxScale) => {
-  const masteredStandards = filter(
-    records,
-    (record) => record.scale.masteryName === maxScale.masteryName
-  )
-  return percentage(masteredStandards.length, records.length)
-}
-
-const getScaleForMasteryCalculation = (scaleInfo = []) => {
+export const getScaleForMasteryCalculation = (scaleInfo = []) => {
   let scales = scaleInfo.filter((scale) => scale.domainMastery)
   if (isEmpty(scales)) {
     scales = orderBy(scaleInfo, 'thresold', ['desc']).splice(0, 2)

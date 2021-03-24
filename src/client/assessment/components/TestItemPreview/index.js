@@ -6,7 +6,6 @@ import { ThemeProvider, withTheme } from 'styled-components'
 import { get, isEqual } from 'lodash'
 import { white } from '@edulastic/colors'
 import { withNamespaces } from '@edulastic/localization'
-import { IconClockCircularOutline } from '@edulastic/icons'
 import { AssessmentPlayerContext, withWindowSizes } from '@edulastic/common'
 import { questionType } from '@edulastic/constants'
 
@@ -15,10 +14,10 @@ import { themes } from '../../../theme'
 import TestItemCol from './containers/TestItemCol'
 import { Container, RenderFeedBack } from './styled/Container'
 import FeedbackWrapper from '../FeedbackWrapper'
-import { TimeSpentWrapper } from '../QuestionWrapper'
-import ShowUserWork from '../Common/ShowUserWork'
+import QuestionBottomAction from '../Common/QuestionBottomAction'
 import { IPAD_LANDSCAPE_WIDTH } from '../../constants/others'
 import Divider from './Divider'
+import { changedPlayerContentAction } from '../../../author/sharedDucks/testPlayer'
 
 class TestItemPreview extends Component {
   constructor(props) {
@@ -57,10 +56,18 @@ class TestItemPreview extends Component {
   }
 
   setCollapseView = (dir) => {
-    this.setState((prevState) => ({
-      collapseDirection:
-        !prevState.toggleCollapseMode && prevState.collapseDirection ? '' : dir,
-    }))
+    this.setState(
+      (prevState) => ({
+        collapseDirection:
+          !prevState.toggleCollapseMode && prevState.collapseDirection
+            ? ''
+            : dir,
+      }),
+      () => {
+        const { changedPlayerContent } = this.props
+        changedPlayerContent()
+      }
+    )
   }
 
   renderCollapseButtons = () => {
@@ -71,6 +78,7 @@ class TestItemPreview extends Component {
         collapseDirection={collapseDirection}
         setCollapseView={this.setCollapseView}
         hideMiddle={isLCBView}
+        stackedView={this.showStackedView}
       />
     )
   }
@@ -139,6 +147,7 @@ class TestItemPreview extends Component {
       isStudentReport,
       isPresentationMode,
       questions,
+      isExpressGrader,
       isPrintPreview,
       showCollapseBtn,
       studentId,
@@ -159,12 +168,13 @@ class TestItemPreview extends Component {
     const prevQActivityForQuestion = previousQuestionActivity.find(
       (qa) => qa.qid === question.id
     )
-
+    const testActivityId = question?.activity?.testActivityId
     return displayFeedback ? (
       <FeedbackWrapper
         showFeedback={showFeedback}
         displayFeedback={displayFeedback}
         isPrintPreview={isPrintPreview}
+        isExpressGrader={isExpressGrader}
         showCollapseBtn={showCollapseBtn}
         prevQActivityForQuestion={prevQActivityForQuestion}
         data={{ ...question, smallSize: true }}
@@ -174,12 +184,13 @@ class TestItemPreview extends Component {
         studentId={studentId}
         studentName={studentName || t('common.anonymous')}
         itemId={itemId}
+        key={`${testActivityId}_${index}`}
         ref={this.feedbackRef}
       />
     ) : null
   }
 
-  renderFeedbacks = (showStackedView) => {
+  renderFeedbacks = () => {
     const { cols } = this.props
     const { value } = this.state
     let colIndex = 0
@@ -195,10 +206,10 @@ class TestItemPreview extends Component {
             {col.tabs &&
               !!col.tabs.length &&
               value === widget.tabIndex &&
-              this.renderFeedback(widget, i, colIndex++, showStackedView)}
+              this.renderFeedback(widget, i, colIndex++, this.showStackedView)}
             {col.tabs &&
               !col.tabs.length &&
-              this.renderFeedback(widget, i, colIndex++, showStackedView)}
+              this.renderFeedback(widget, i, colIndex++, this.showStackedView)}
           </React.Fragment>
         ))
     )
@@ -235,6 +246,7 @@ class TestItemPreview extends Component {
       isPassageWithQuestions,
       scratchPadMode,
       isLCBView,
+      changedPlayerContent,
     } = this.props
     if (
       !scratchPadMode &&
@@ -242,14 +254,51 @@ class TestItemPreview extends Component {
       window.innerWidth < IPAD_LANDSCAPE_WIDTH &&
       (!isEqual(cols, preCols) || scratchPadMode !== prevProps.scratchPadMode)
     ) {
-      this.setState({ toggleCollapseMode: true, collapseDirection: 'left' })
+      this.setState(
+        { toggleCollapseMode: true, collapseDirection: 'left' },
+        () => {
+          changedPlayerContent()
+        }
+      )
     } else if (
       scratchPadMode !== prevProps.scratchPadMode &&
       scratchPadMode &&
       !isLCBView
     ) {
-      this.setState({ collapseDirection: '' })
+      this.setState({ collapseDirection: '' }, () => {
+        changedPlayerContent()
+      })
     }
+  }
+
+  get showStackedView() {
+    const {
+      isLCBView,
+      isQuestionView,
+      multipartItem: v2Multipart,
+      isPassageWithQuestions,
+      itemLevelScoring,
+      cols,
+    } = this.props
+    const isV1Multipart = (cols || []).some((col) => col.isV1Multipart)
+    let showStackedView = false
+
+    if (isLCBView && !isQuestionView && !isPassageWithQuestions) {
+      if (
+        !itemLevelScoring &&
+        this.widgets.length > 1 &&
+        (v2Multipart || isV1Multipart)
+      ) {
+        showStackedView = true
+      }
+    }
+
+    return showStackedView
+  }
+
+  get widgets() {
+    const { cols } = this.props
+    return (cols || []).flatMap((col) => col?.widgets).filter((q) => q)
   }
 
   render() {
@@ -283,16 +332,15 @@ class TestItemPreview extends Component {
       showStudentWork,
       timeSpent,
       userWork,
-      multipartItem,
       itemLevelScoring,
-      isPassageWithQuestions,
       isPrintPreview,
     } = restProps
 
     const { isFeedbackVisible, collapseDirection } = this.state
     const { isStudentAttempt } = this.context
 
-    const widgets = (cols || []).flatMap((col) => col?.widgets).filter((q) => q)
+    const widgets = this.widgets
+
     if (widgets.length === 0) {
       return null
     }
@@ -309,15 +357,9 @@ class TestItemPreview extends Component {
     const hasDrawingResponse = widgets.some(
       (x) => x.type === questionType.HIGHLIGHT_IMAGE
     )
-    let showStackedView = false
-    if (isLCBView && !isQuestionView && !isPassageWithQuestions) {
-      if (multipartItem && !itemLevelScoring) {
-        showStackedView = true
-      }
-    }
 
     let dataSource = cols
-    if (!showStackedView && (isQuestionView || isExpressGrader)) {
+    if (!this.showStackedView && (isQuestionView || isExpressGrader)) {
       dataSource = dataSource.filter((col) => (col?.widgets || []).length > 0)
     }
 
@@ -360,7 +402,7 @@ class TestItemPreview extends Component {
                 height: '100%',
                 display: 'flex',
                 flexDirection:
-                  showStackedView || isPrintPreview ? 'column' : 'row',
+                  this.showStackedView || isPrintPreview ? 'column' : 'row',
               }}
             >
               {dataSource.map((col, i) => {
@@ -400,7 +442,7 @@ class TestItemPreview extends Component {
                       previewTab={previewTab}
                       isSingleQuestionView={isSingleQuestionView}
                       hideInternalOverflow={hideInternalOverflow}
-                      showStackedView={showStackedView}
+                      showStackedView={this.showStackedView}
                       teachCherFeedBack={this.renderFeedback}
                       hasDrawingResponse={hasDrawingResponse}
                       isStudentAttempt={isStudentAttempt}
@@ -415,13 +457,13 @@ class TestItemPreview extends Component {
             </div>
           </Container>
           {hasDrawingResponse && (isLCBView || isExpressGrader) && userWork && (
-            <TimeSpentWrapper margin="0px 12px 12px">
-              <ShowUserWork isGhost onClickHandler={showStudentWork} mr="8px">
-                Show student work
-              </ShowUserWork>
-              <IconClockCircularOutline />
-              {timeSpent}s
-            </TimeSpentWrapper>
+            <QuestionBottomAction
+              margin="0px 12px 12px"
+              isStudentReport={isStudentReport}
+              isShowStudentWork={!!showStudentWork}
+              onClickHandler={showStudentWork}
+              timeSpent={timeSpent}
+            />
           )}
         </div>
         {/* on the student side, show single feedback only when item level scoring is on */}
@@ -439,7 +481,7 @@ class TestItemPreview extends Component {
                   isStudentAttempt={isStudentAttempt}
                   className="__print-feedback-main-wrapper"
                 >
-                  {this.renderFeedbacks(showStackedView)}
+                  {this.renderFeedbacks()}
                 </RenderFeedBack>
               )}
             </>
@@ -475,14 +517,19 @@ const enhance = compose(
   withWindowSizes,
   withTheme,
   withNamespaces('student'),
-  connect((state) => ({
-    isCliUser: get(state, 'user.isCliUser', false),
-    showPreviousAttempt: get(
-      state,
-      'test.settings.showPreviousAttempt',
-      'NONE'
-    ),
-  }))
+  connect(
+    (state) => ({
+      isCliUser: get(state, 'user.isCliUser', false),
+      showPreviousAttempt: get(
+        state,
+        'test.settings.showPreviousAttempt',
+        'NONE'
+      ),
+    }),
+    {
+      changedPlayerContent: changedPlayerContentAction,
+    }
+  )
 )
 
 export default enhance(TestItemPreview)

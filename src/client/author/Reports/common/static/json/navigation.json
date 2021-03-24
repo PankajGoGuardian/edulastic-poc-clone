@@ -155,7 +155,7 @@
       "groupTitle": "Multiple Assessment Report"
     },
     "student-progress": {
-      "title": "Student progress",
+      "title": "Student Progress",
       "breadcrumb": [
         {
           "title": "INSIGHTS",
@@ -209,6 +209,64 @@
       ],
       "group": "studentProfileReport",
       "groupTitle": "Student Profile Report"
+    },
+    "student-progress-profile": {
+      "title": "Student Progress Profile",
+      "breadcrumb": [
+        {
+          "title": "INSIGHTS",
+          "to": "/author/reports/"
+        },
+        {
+          "title": "STUDENT PROGRESS PROFILE"
+        }
+      ],
+      "group": "studentProfileReport",
+      "groupTitle": "Student Profile Report"
+    },
+    "engagement-summary": {
+      "title": "Engagement Summary",
+      "breadcrumb": [
+        {
+          "title": "INSIGHTS",
+          "to": "/author/reports/"
+        },
+        {
+          "title": "ENGAGEMENT SUMMARY"
+        }
+      ],
+      "group": "engagementReport",
+      "groupTitle": "Engagement Report"
+    },
+
+    "activity-by-school": {
+      "title": "Activity by School",
+      "breadcrumb": [
+        {
+          "title": "INSIGHTS",
+          "to": "/author/reports/"
+        },
+        {
+          "title": "ACTIVITY BY SCHOOL"
+        }
+      ],
+      "group": "engagementReport",
+      "groupTitle": "Engagement Report"
+    },
+
+    "activity-by-teacher": {
+      "title": "Activity by Teacher",
+      "breadcrumb": [
+        {
+          "title": "INSIGHTS",
+          "to": "/author/reports/"
+        },
+        {
+          "title": "ACTIVITY BY TEACHER"
+        }
+      ],
+      "group": "engagementReport",
+      "groupTitle": "Engagement Report"
     },
     "standard-reports": {
       "title": "Standard Reports",
@@ -323,6 +381,28 @@
         "key": "student-assessment-profile",
         "title": "Student Assessment Profile",
         "location": "/author/reports/student-assessment-profile/student/"
+      },
+      {
+        "key": "student-progress-profile",
+        "title": "Student Progress Profile",
+        "location": "/author/reports/student-progress-profile/student/"
+      }
+    ],
+    "engagementReport": [
+      {
+        "key": "engagement-summary",
+        "title": "Summary",
+        "location": "/author/reports/engagement-summary"
+      },
+      {
+        "key": "activity-by-school",
+        "title": "Activity by School",
+        "location": "/author/reports/activity-by-school"
+      },
+      {
+        "key": "activity-by-teacher",
+        "title": "Activity by Teacher",
+        "location": "/author/reports/activity-by-teacher"
       }
     ],
     "mainReport": [

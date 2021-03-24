@@ -22,6 +22,7 @@ import {
   IconTrash,
   IconMoreVertical,
   IconDuplicate,
+  IconAirdrop,
 } from '@edulastic/icons'
 import { IconActionButton } from '../styled'
 import StudentPlayListHeader from '../../../../student/sharedComponents/Header/PlayListHeader'
@@ -121,6 +122,8 @@ const CurriculumHeader = ({
   canAllowDuplicate,
   duplicatePlayList,
   writableCollections,
+  openDropPlaylistModal,
+  playlistMode,
 }) => {
   const [loadingDelete, setLoadingDelete] = useState(false)
   const {
@@ -301,32 +304,40 @@ const CurriculumHeader = ({
               </HeaderButton>
             )}
 
-          {urlHasUseThis && isTeacher && !isPublisherUser && !customizeInDraft && (
-            <>
-              {/* need to hide this button for now until figuring out the complete flow  */}
-              {/* {<HeaderButton isBlue data-cy="drop-playlist" onClick={openDropPlaylistModal} IconBtn={!isDesktop}>
-                <IconAirdrop />
-                {isDesktop && "OPEN TO STUDENTS"}
-              </HeaderButton>} */}
-              <Dropdown
-                overlayStyle={{ zIndex: 999, cursor: 'pointer' }}
-                overlay={mainPlaylistVerticalMenu}
-                trigger={['click']}
-                getPopupContainer={(trigger) => trigger.parentNode}
-              >
-                <IconActionButton
-                  style={{ cursor: 'pointer', alignSelf: 'center' }}
-                  onClick={(e) => e.stopPropagation()}
+          {urlHasUseThis &&
+            isTeacher &&
+            !isPublisherUser &&
+            !customizeInDraft &&
+            playlistMode === 'student' && (
+              <>
+                <HeaderButton
+                  isBlue
+                  data-cy="drop-playlist"
+                  onClick={openDropPlaylistModal}
+                  IconBtn={!isDesktop}
                 >
-                  <IconMoreVertical
-                    width={5}
-                    height={14}
-                    color={themeColorBlue}
-                  />
-                </IconActionButton>
-              </Dropdown>
-            </>
-          )}
+                  <IconAirdrop />
+                  {isDesktop && 'OPEN TO STUDENTS'}
+                </HeaderButton>
+                <Dropdown
+                  overlayStyle={{ zIndex: 999, cursor: 'pointer' }}
+                  overlay={mainPlaylistVerticalMenu}
+                  trigger={['click']}
+                  getPopupContainer={(trigger) => trigger.parentNode}
+                >
+                  <IconActionButton
+                    style={{ cursor: 'pointer', alignSelf: 'center' }}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <IconMoreVertical
+                      width={5}
+                      height={14}
+                      color={themeColorBlue}
+                    />
+                  </IconActionButton>
+                </Dropdown>
+              </>
+            )}
 
           {(shouldShowEdit ||
             isAuthor ||
@@ -393,6 +404,8 @@ const enhance = compose(
   withRouter,
   connect((state) => ({
     writableCollections: getCollectionsSelector(state),
+    playlistMode:
+      state.curriculumSequence?.destinationCurriculumSequence?.playlistMode,
   }))
 )
 

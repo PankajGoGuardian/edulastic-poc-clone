@@ -665,6 +665,7 @@ class CurriculumSequence extends Component {
       features,
       urlHasUseThis,
       isEditPage,
+      isCreatePage,
       isPublisherUser,
       isStudent,
       isTeacher,
@@ -950,6 +951,7 @@ class CurriculumSequence extends Component {
                         handleTestsSort={handleTestsSort}
                         urlHasUseThis={urlHasUseThis}
                         isEditPage={isEditPage}
+                        isCreatePage={isCreatePage}
                         summaryData={summaryData}
                         playlistMetrics={playlistMetrics}
                         playlistClassList={playlistClassList}

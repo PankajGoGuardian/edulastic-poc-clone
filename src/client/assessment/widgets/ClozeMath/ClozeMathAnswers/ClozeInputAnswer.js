@@ -40,6 +40,7 @@ class ClozeInputAnswer extends Component {
     const {
       answers,
       item: { uiStyle, responseContainers = [] },
+      tabIndex,
     } = this.props
 
     return (
@@ -65,7 +66,7 @@ class ClozeInputAnswer extends Component {
             return (
               <Panel
                 header={`Text Input ${answer.index + 1}`}
-                key={answer.index}
+                key={`${answer.id}-${tabIndex}`}
               >
                 <TextInputStyled
                   style={{
@@ -92,6 +93,7 @@ ClozeInputAnswer.propTypes = {
   answers: PropTypes.array.isRequired,
   onChange: PropTypes.func.isRequired,
   item: PropTypes.object.isRequired,
+  tabIndex: PropTypes.number.isRequired,
 }
 
 export default withNamespaces('assessment')(ClozeInputAnswer)

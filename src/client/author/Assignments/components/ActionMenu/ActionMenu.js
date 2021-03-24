@@ -5,7 +5,7 @@ import qs from 'qs'
 
 import { assignmentApi } from '@edulastic/api'
 import { captureSentryException, notification } from '@edulastic/common'
-import { IconPrint, IconBarChart } from '@edulastic/icons'
+import { IconPrint, IconBarChart, IconEdit } from '@edulastic/icons'
 import { roleuser, test } from '@edulastic/constants'
 
 import classIcon from '../../assets/manage-class.svg'
@@ -43,6 +43,7 @@ const ActionMenu = ({
   canEdit = true,
   handleDownloadResponses,
   showEmbedLinkModal = () => {},
+  toggleTagsEditModal = () => {},
 }) => {
   const getAssignmentDetails = () =>
     !Object.keys(currentAssignment).length ? row : currentAssignment
@@ -53,6 +54,7 @@ const ActionMenu = ({
   const shouldSendAssignmentId =
     assignmentTest?.testType === test.type.COMMON ||
     !assignmentTest?.authors?.find((a) => a._id === userId)
+  const isAssignmentOwner = row?.assignedBy?.some(({ _id }) => _id === userId)
 
   const handleShowPreview = () => {
     if (
@@ -270,6 +272,20 @@ const ActionMenu = ({
             Embed Link
           </StyledLink>
         </Menu.Item>
+
+        {isAssignmentOwner && (
+          <Menu.Item
+            data-cy="edit-tags"
+            key="edit-tags"
+            onClick={() => toggleTagsEditModal(currentTestId)}
+          >
+            <StyledLink target="_blank" rel="noopener noreferrer">
+              <IconEdit height="13px" width="13px" />
+              <SpaceElement />
+              Edit Tags
+            </StyledLink>
+          </Menu.Item>
+        )}
       </StyledMenu>
     </Container>
   )

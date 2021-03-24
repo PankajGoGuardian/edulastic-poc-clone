@@ -274,3 +274,7 @@ export const StyledDescription = styled.div`
 export const StudentName = styled.div`
   margin: 4px 0;
 `
+
+export const CommonStudentResourcesContainer = styled.div`
+  padding: 0px 20px 15px 20px;
+`

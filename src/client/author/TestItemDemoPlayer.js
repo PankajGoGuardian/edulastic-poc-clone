@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { message, Button } from 'antd'
+import { Button } from 'antd'
 import { notification } from '@edulastic/common'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
@@ -40,7 +40,8 @@ const ItemPlayer = ({
         answersByQids,
         KeyBy(questions, 'id'),
         testItem.itemLevelScoring,
-        testItem.itemLevelScore
+        testItem.itemLevelScore,
+        testItem._id
       )
       addEvaluation(evals)
       notification({

@@ -35,6 +35,8 @@ export const StyledMenu = styled(Menu)`
 
     a {
       margin: 0;
+      display: flex;
+      align-items: center;
     }
 
     :hover {
@@ -46,6 +48,9 @@ export const StyledMenu = styled(Menu)`
 
       a {
         color: ${white};
+        svg {
+          fill: ${white};
+        }
       }
     }
   }

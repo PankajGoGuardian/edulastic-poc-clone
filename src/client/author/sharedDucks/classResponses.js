@@ -470,6 +470,7 @@ function* updateStudentScore(payload) {
       score,
       groupId,
       studentId,
+      fromExpressGrader = false,
       shouldReceiveStudentResponse = false,
     } = payload
 
@@ -518,6 +519,21 @@ function* updateStudentScore(payload) {
         type: RECEIVE_STUDENT_RESPONSE_REQUEST,
         payload: { testActivityId, groupId, studentId },
       })
+    }
+
+    if (fromExpressGrader) {
+      const qAct = questionActivities.find(
+        (act) =>
+          act.testActivityId === testActivityId &&
+          act.testItemId === itemId &&
+          act.qid === questionId
+      )
+      if (qAct) {
+        yield put({
+          type: RECEIVE_STUDENT_QUESTION_SUCCESS,
+          payload: qAct,
+        })
+      }
     }
 
     notification({ type: 'success', messageKey: 'scoreSucessfullyUpdated' })

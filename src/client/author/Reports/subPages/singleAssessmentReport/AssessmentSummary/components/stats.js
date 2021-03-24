@@ -2,12 +2,10 @@ import React, { useMemo } from 'react'
 import styled from 'styled-components'
 import { Row } from 'antd'
 import { greyishDarker1 } from '@edulastic/colors'
-import { StyledH3, Capitalized } from '../../../../common/styled'
+import { StyledH3 } from '../../../../common/styled'
 import StatItem from './StatItem'
 
-export const Stats = (props) => {
-  const { role, name } = props
-  const { data } = props
+export const Stats = ({ name, data }) => {
   const defaultState = {
     avgScore: 0,
     total: 0,
@@ -15,12 +13,6 @@ export const Stats = (props) => {
     studentsAssigned: 0,
     studentsGraded: 0,
     studentsAbsent: 0,
-  }
-
-  const rolesMap = {
-    teacher: 'class',
-    'school-admin': 'school',
-    'district-admin': 'district',
   }
 
   const parseData = (filteredData) => {
@@ -69,9 +61,7 @@ export const Stats = (props) => {
 
   return (
     <StyledRow>
-      <StyledH3>
-        <Capitalized>{rolesMap[role]}</Capitalized> Statistics of {name}
-      </StyledH3>
+      <StyledH3>Overall Statistics of {name}</StyledH3>
       <StyledInnerRow
         gutter={15}
         type="flex"

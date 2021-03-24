@@ -40,50 +40,90 @@ export const PrintablePrefix = styled.b`
   }
 `
 
-export const StyledGoButton = styled(EduButton)`
-  height: 24px;
-  line-height: 1;
-  width: 80px;
-  font-size: 11px;
-`
-
 export const FilterLabel = styled(FieldLabel)`
   font-size: 10px;
 `
 
-export const GoButtonWrapper = styled.div`
-  margin-bottom: 15px;
-  display: flex;
-  align-items: center;
+export const ReportFiltersContainer = styled.div`
+  display: ${({ visible }) => (visible ? 'block' : 'none')};
+  position: relative;
+  @media print {
+    display: none;
+  }
 `
 
-export const StyledFilterWrapper = styled.div`
-  ${({ isRowFilter }) =>
-    isRowFilter
-      ? `
-    width: 60%;
-    display: flex;
-    justify-content: flex-end;
-  `
-      : `
-    margin-right: 16px;
-    width: 230px;
-    flex-shrink: 0;
-    height: calc(100vh - 250px);
-    position: relative;
-  `}
+export const ReportFiltersWrapper = styled.div`
+  position: absolute;
+  z-index: 100;
+  top: 30px;
+  right: 0px;
+  width: 60vw;
+  padding: 10px 25px 25px;
+  border-radius: 4px;
+  background-color: white;
+  box-sizing: border-box;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  visibility: ${({ visible }) => (visible ? 'visible' : 'hidden')};
+  opacity: ${({ visible }) => (visible ? 1 : 0)};
+  -webkit-transition: all 0.5s ease-in-out;
+  -moz-transition: all 0.5s ease-in-out;
+  -ms-transition: all 0.5s ease-in-out;
+  -o-transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out;
 
-  .ant-select-selection {
-    &__rendered {
-      padding-left: 0px;
-    }
+  .ant-tabs {
+    overflow: visible;
   }
-
   .ant-select {
     width: 100%;
     font-size: 11px;
   }
-
+  .ant-select-dropdown {
+    font-size: 11px;
+    .ant-select-dropdown-menu-item {
+      padding: 4px 12px;
+    }
+    .ant-select-dropdown-menu-item-selected,
+    .ant-select-dropdown-menu-item-active {
+      background-color: ${themeColor};
+      color: #ffffff;
+    }
+    .ant-select-dropdown-menu-item,
+    .ant-select-dropdown-menu-submenu-title {
+      font-size: 11px;
+    }
+  }
+  .ant-select-selection {
+    &__rendered {
+      padding-left: 0px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+  }
+  .ant-select-selection.ant-select-selection--multiple {
+    background-color: ${lightGreySecondary};
+    border-color: ${fadedGrey};
+    min-height: 34px !important;
+    padding-bottom: 0px;
+    .ant-select-arrow-icon {
+      color: ${themeColor};
+      font-size: 11px;
+      transform: none;
+    }
+  }
+  .ant-select-selection.ant-select-selection--multiple
+    .ant-select-selection__rendered
+    .ant-select-selection__choice {
+    margin: 4px 0 0 5px !important;
+  }
+  .ant-select-auto-complete.ant-select .ant-input {
+    background-color: #f8f8f8;
+    border-color: #e5e5e5;
+    border-radius: 2px;
+    min-height: 34px;
+    font-size: 11px;
+    font-weight: 600;
+  }
   .ant-input-affix-wrapper .ant-input-suffix {
     right: 8px;
     i {
@@ -92,7 +132,6 @@ export const StyledFilterWrapper = styled.div`
       }
     }
   }
-
   .control-dropdown {
     button {
       background-color: ${lightGreySecondary};
@@ -104,16 +143,52 @@ export const StyledFilterWrapper = styled.div`
       font-weight: 600;
       max-width: 100%;
       width: 100%;
-
       i {
         color: ${themeColor};
       }
     }
   }
+  .ant-collapse h3 {
+    background: none;
+    padding-left: 5px;
+  }
+  .ant-dropdown {
+    box-shadow: 0 0 5px;
+  }
+  .ant-btn.ant-dropdown-trigger {
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 100%;
+    text-overflow: ellipsis;
+    width: 100%;
+  }
 `
 
-export const StyledReportsContentContainer = styled.div`
-  padding: 0px 30px;
+export const StyledEduButton = styled(EduButton)`
+  &,
+  &:focus {
+    &.ant-btn.ant-btn-primary {
+      background-color: ${white};
+      color: ${themeColor};
+      border-color: ${themeColor};
+    }
+    svg {
+      fill: ${themeColor} !important;
+    }
+  }
+  /* isGhost prop => filter inactive */
+  ${({ isGhost }) => (isGhost ? '' : '&,&:focus,')}
+  &:active,
+  &:hover {
+    &.ant-btn.ant-btn-primary {
+      background-color: ${themeColor};
+      border-color: ${themeColor};
+      color: ${white};
+    }
+    svg {
+      fill: ${white} !important;
+    }
+  }
 `
 
 export const DropDownContainer = styled.div`
@@ -128,7 +203,7 @@ export const DropDownContainer = styled.div`
 export const StyledCard = styled(Card)`
   box-shadow: none;
   .ant-card-body {
-    padding: 0px;
+    padding: ${(props) => props.padding || '0px'};
   }
 `
 
@@ -277,7 +352,7 @@ export const StyledTable = styled(Table)`
 export const StyledH3 = styled.h3`
   font-weight: 700;
   color: ${fadedBlack};
-  font-size: 14px;
+  font-size: ${({ fontSize }) => fontSize || '14px'};
   margin: 0px 0px 10px;
   margin-left: ${({ marginLeft }) => marginLeft || '0px'};
   text-align: ${({ textAlign }) => textAlign || 'left'};
@@ -300,11 +375,6 @@ export const StyledCustomChartTooltip = styled(CustomChartTooltip)`
     font-weight: 900;
   }
 `
-
-export const Capitalized = styled.span`
-  text-transform: capitalize;
-`
-
 export const StyledSlider = styled(Slider)`
   height: 22px;
   .ant-slider-rail {
@@ -398,7 +468,33 @@ export const StyledDropDownContainer = styled(Col)`
     overflow: hidden;
     max-width: 100%;
     text-overflow: ellipsis;
+    border-radius: 2px;
     width: ${(props) => (props.width ? props.width : '100%')};
+  }
+  .ant-select-selection--multiple {
+    font-size: 11px;
+    border-radius: 2px;
+  }
+  .standards-mastery-report-domain-autocomplete {
+    .ant-select {
+      width: 100%;
+      height: 32px;
+    }
+    .ant-select-dropdown-menu-item-group {
+      font-size: 11px;
+      .ant-select-dropdown-menu-item {
+        padding: 4px 12px;
+      }
+      .ant-select-dropdown-menu-item-selected,
+      .ant-select-dropdown-menu-item-active {
+        background-color: ${themeColor};
+        color: #ffffff;
+      }
+      .ant-select-dropdown-menu-item,
+      .ant-select-dropdown-menu-submenu-title {
+        font-size: 11px;
+      }
+    }
   }
   @media print {
     display: none;
@@ -460,7 +556,9 @@ export const CustomXAxisTickTooltipContainer = styled.div`
   top: 0px;
   transform: translate(${(props) => props.x}, ${(props) => props.y});
   padding: 5px;
-  width: ${(props) => props.width}px;
+  min-width: ${(props) => props.width}px;
+  max-width: 250px;
+  overflow-wrap: anywhere;
   text-align: center;
   background: white;
   z-index: 999;
@@ -526,9 +624,7 @@ export const HideLinkLabel = styled(StyledLabel)`
   font-size: 9px;
 `
 
-export const ReportContaner = styled.div`
-  width: ${({ showFilter }) =>
-    showFilter ? 'calc(100% - 250px)' : 'calc(100% - 35px)'};
+export const ReportContainer = styled.div`
   position: relative;
 `
 
@@ -587,9 +683,29 @@ export const FilterButtonClear = styled(Button)`
   }
 `
 
+export const ResetButtonClear = styled(Button)`
+  min-width: 35px;
+  min-height: 25px;
+  border: none;
+  margin-top: -4px;
+  padding: 5px 2px 2px;
+  box-shadow: none;
+  transition: none;
+  color: #1ab395;
+  &:focus,
+  &:hover {
+    outline: unset;
+    color: #1ab395;
+  }
+  @media print {
+    display: none;
+  }
+`
+
 export const SearchField = styled.div`
   margin-bottom: 10px;
   padding-right: 15px;
+  padding-left: 5px;
 `
 
 export const ApplyFitlerLabel = styled(FieldLabel)`

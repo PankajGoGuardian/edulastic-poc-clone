@@ -1,7 +1,7 @@
 import { themeColor } from '@edulastic/colors'
 import { EduSwitchStyled } from '@edulastic/common'
 import { playlists } from '@edulastic/constants'
-import { Anchor, Col, Row } from 'antd'
+import { Anchor, Col, Row, Radio } from 'antd'
 import React from 'react'
 import styled from 'styled-components'
 import {
@@ -15,7 +15,21 @@ import {
 
 const { settingCategories } = playlists
 
-const Settings = ({ history, windowWidth, customize, handleUserCustomize }) => {
+const radioStyle = {
+  display: 'block',
+  fontWeight: 600,
+  marginBottom: 20,
+  fontSize: '10px',
+}
+
+const Settings = ({
+  history,
+  windowWidth,
+  customize,
+  handleUserCustomize,
+  playlistMode,
+  setPlaylistMode,
+}) => {
   const isSmallSize = windowWidth < 993 ? 1 : 0
   return (
     <Container>
@@ -49,6 +63,28 @@ const Settings = ({ history, windowWidth, customize, handleUserCustomize }) => {
                 i.e., add/remove test or resources in the Playlist. Note that
                 this will not affect the original playlist in any way.
               </Description>
+            </Body>
+          </StyledBlock>
+        </Col>
+        <Col span={isSmallSize ? 24 : 18}>
+          <StyledBlock id="set-playlist-mode" smallSize={isSmallSize}>
+            <Title>
+              <span>Playlist Mode</span>
+            </Title>
+            <Body smallSize={isSmallSize}>
+              <Radio.Group
+                value={playlistMode}
+                onChange={(e) => {
+                  setPlaylistMode(e.target.value)
+                }}
+              >
+                <Radio style={radioStyle} value="teacher">
+                  TEACHER EDITION
+                </Radio>
+                <Radio style={radioStyle} value="student">
+                  STUDENT EDITION
+                </Radio>
+              </Radio.Group>
             </Body>
           </StyledBlock>
         </Col>

@@ -1508,8 +1508,8 @@ class Board {
             result,
             labelHTML: [labelPoint1, labelPoint2],
           })
-        } else if (result.includes('ellipse')) {
-          var coords = getPoints('ellipse', result)
+        } else if (result.includes(CONSTANT.TOOLS.ELLIPSE)) {
+          var coords = getPoints(CONSTANT.TOOLS.ELLIPSE, result)
 
           const labelPoint1 = getLabel(this.labelForEq)
 

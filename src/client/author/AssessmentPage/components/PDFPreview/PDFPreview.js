@@ -225,7 +225,7 @@ const PDFPreview = ({
         {!studentWork ? (
           <ZoomControlCotainer>
             {viewMode !== 'edit' && (
-              <PDFZoomControl onClick={toggleMinimized}>
+              <PDFZoomControl onClick={toggleMinimized} data-cy="pdfList">
                 {minimized ? <IconGraphRightArrow /> : <IconChevronLeft />}
               </PDFZoomControl>
             )}

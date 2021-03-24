@@ -51,11 +51,11 @@
           },
           {
             "title": "In-depth Reporting",
-            "description": "Showstudent growth over time. Analyze answer distractor. See coplete student mastery profile."
+            "description": "Show student growth over time. Analyze answer distractor. See complete student mastery profile."
           },
           {
-            "title": "Advanced Assessment Optons",
-            "description": "Shuffle qustion order for each student. Show student scoes but hide correct answers."
+            "title": "Advanced Assessment Options",
+            "description": "Shuffle question order for each student. Show student scores but hide correct answers."
           },
           {
             "title": "Read Aloud",
@@ -71,7 +71,7 @@
           },
           {
             "title": "Presentation Mode",
-            "description": "Review answers and common mistake with the class without showing names."
+            "description": "Review answers and common mistakes with the class without showing names."
           }
         ]
       },

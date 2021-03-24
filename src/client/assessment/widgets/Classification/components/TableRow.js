@@ -141,6 +141,9 @@ const TableRow = ({
     const hasAnswer =
       Array.isArray(answers?.[column.id]) && answers[column.id].length > 0
 
+    // -40 is column header height
+    const colHeight = get(column, 'height', parseInt(height, 10)) - 40
+
     cols.push(
       <ResponseRnd
         hasRowTitle={hasRowTitle}
@@ -157,7 +160,7 @@ const TableRow = ({
         </ColumnHeader>
         <DropContainer
           index={index}
-          height={height}
+          height={`${colHeight}px`}
           borderColor={lightGrey12}
           isTransparent={isBackgroundImageTransparent}
           drop={onDropHandler(

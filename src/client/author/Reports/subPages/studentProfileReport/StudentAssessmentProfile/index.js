@@ -144,9 +144,6 @@ const StudentAssessmentProfile = ({
         <StyledH3>
           Assessment Performance Details of {studentName || anonymousString}
         </StyledH3>
-        <p>
-          <b>Subject : {studentInformation.standardSet || 'N/A'}</b>
-        </p>
         <AssessmentChart
           data={chartData}
           selectedTests={selectedTests}

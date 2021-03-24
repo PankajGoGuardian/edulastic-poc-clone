@@ -3,7 +3,12 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Button } from 'antd'
 import { test, questionType } from '@edulastic/constants'
-import { IconCalculator, IconClose, IconScratchPad } from '@edulastic/icons'
+import {
+  IconCalculator,
+  IconClose,
+  IconScratchPad,
+  IconCloudUpload,
+} from '@edulastic/icons'
 import { extraDesktopWidthMax, white } from '@edulastic/colors'
 import { Tooltip } from '../../../../common/utils/helpers'
 import { Container } from './styled'
@@ -26,6 +31,7 @@ const ToolBar = ({
   timedAssignment,
   utaId,
   groupId,
+  toggleUserWorkUploadModal,
 }) => {
   const toolbarHandler = (value) => changeTool(value)
 
@@ -34,7 +40,7 @@ const ToolBar = ({
     changeCaculateMode(value)
   }
 
-  const { calcType, enableScratchpad } = settings
+  const { calcType, enableScratchpad, isTeacherPremium } = settings
   const isDisableCrossBtn = qType !== questionType.MULTIPLE_CHOICE
 
   return (
@@ -76,6 +82,13 @@ const ToolBar = ({
             onClick={() => toolbarHandler(5)}
           >
             <ScratchPadIcon />
+          </StyledButton>
+        </Tooltip>
+      )}
+      {!isDocbased && isTeacherPremium && (
+        <Tooltip placement="top" title="Upload work">
+          <StyledButton onClick={toggleUserWorkUploadModal}>
+            <IconCloudUpload />
           </StyledButton>
         </Tooltip>
       )}

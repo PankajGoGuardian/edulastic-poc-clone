@@ -133,12 +133,25 @@ const NotificationComponent = (props) => {
   return null
 }
 
+function capitalizeIt(str) {
+  if (str && typeof str === 'string') {
+    str = str.toLowerCase().split(' ')
+    for (let i = 0, x = str.length; i < x; i++) {
+      if (str[i]) {
+        str[i] = str[i][0].toUpperCase() + str[i].substr(1)
+      }
+    }
+    return str.join(' ')
+  }
+  return str
+}
+
 function getStudentFilterCategory(x) {
+  if (x.isEnrolled === false) {
+    return 'UNENROLLED'
+  }
   if (x.isAssigned === false) {
     return 'UNASSIGNED'
-  }
-  if (x.redirected) {
-    return 'REDIRECTED'
   }
   if (x.isPaused) {
     return 'PAUSED'
@@ -146,15 +159,19 @@ function getStudentFilterCategory(x) {
   if (x.graded === 'GRADED') {
     return 'GRADED'
   }
+  if (x.status?.toLowerCase() === 'submitted' && x.graded !== 'GRADED') {
+    return 'SUBMITTED'
+  }
+  if (x.redirected) {
+    return 'REDIRECTED'
+  }
   if (x.UTASTATUS === testActivityStatus.NOT_STARTED) {
     return 'NOT STARTED'
   }
   if (x.status?.toLowerCase() == 'inprogress') {
     return 'IN PROGRESS'
   }
-  if (x.status?.toLowerCase() === 'submitted' && x.graded !== 'GRADED') {
-    return 'SUBMITTED'
-  }
+
   if (x.UTASTATUS === testActivityStatus.ABSENT) {
     return 'ABSENT'
   }
@@ -166,6 +183,9 @@ function filterStudentsByStatus(selectedStatus) {
   return (x) => {
     if (selectedStatus === 'ALL') {
       return true
+    }
+    if (selectedStatus === 'ALL ACTIVE') {
+      return x.isAssigned && x.isEnrolled
     }
     return getStudentFilterCategory(x) === selectedStatus
   }
@@ -206,7 +226,7 @@ class ClassBoard extends Component {
       showScoreImporvement: false,
       hasStickyHeader: false,
       toggleBackTopIcon: false,
-      studentFilter: 'ALL',
+      studentFilter: 'ALL ACTIVE',
     }
   }
 
@@ -400,23 +420,21 @@ class ClassBoard extends Component {
   onSelectAllChange = (e) => {
     const { checked } = e.target
     const { testActivity } = this.props
-    const {
-      studentSelect,
-      studentUnselectAll,
-      allStudents,
-      removedStudents,
-    } = this.props
-    testActivity.map((student) => {
+    const { studentSelect, studentUnselectAll } = this.props
+    const { studentFilter } = this.state
+    const filteredStudentActivities = testActivity.filter(
+      filterStudentsByStatus(studentFilter)
+    )
+    filteredStudentActivities.forEach((student) => {
       student.check = checked
-      return null
     })
     this.setState({
-      nCountTrue: checked ? testActivity.length : 0,
+      nCountTrue: checked ? filteredStudentActivities.length : 0,
     })
     if (checked) {
-      const selectedAllstudents = allStudents
-        .map((x) => x._id)
-        .filter((item) => !removedStudents.includes(item))
+      const selectedAllstudents = filteredStudentActivities.map(
+        (x) => x.studentId
+      )
       studentSelect(selectedAllstudents)
     } else {
       studentUnselectAll()
@@ -983,6 +1001,7 @@ class ClassBoard extends Component {
       studentsList,
       recentAttemptsGrouped,
       studentsPrevSubmittedUtas,
+      studentUnselectAll,
     } = this.props
 
     const {
@@ -1018,6 +1037,9 @@ class ClassBoard extends Component {
     )
     const { status } = studentTestActivity
     let { score = 0, maxScore = 0 } = studentTestActivity
+    const filteredStudentActivities = testActivity.filter(
+      filterStudentsByStatus(studentFilter)
+    )
     if (
       studentResponse &&
       !isEmpty(studentResponse.questionActivities) &&
@@ -1051,7 +1073,7 @@ class ClassBoard extends Component {
       selectedStudentId || firstStudentId
     )
 
-    const unselectedStudents = testActivity.filter(
+    const unselectedStudents = filteredStudentActivities.filter(
       (x) => !selectedStudents[x.studentId]
     )
 
@@ -1113,6 +1135,7 @@ class ClassBoard extends Component {
         }
         return acc
       }, {})
+
     return (
       <div>
         {showCanvasShare && (
@@ -1360,7 +1383,8 @@ class ClassBoard extends Component {
                       checked={unselectedStudents.length === 0}
                       indeterminate={
                         unselectedStudents.length > 0 &&
-                        unselectedStudents.length < testActivity.length
+                        unselectedStudents.length <
+                          filteredStudentActivities.length
                       }
                       onChange={this.onSelectAllChange}
                     >
@@ -1368,18 +1392,22 @@ class ClassBoard extends Component {
                         ? 'SELECT ALL'
                         : 'UNSELECT ALL'}
                     </CheckboxLabel>
-                    <SwitchBox>
+                    <SwitchBox style={{ position: 'relative' }}>
                       <FilterSpan>FILTER BY STATUS</FilterSpan>
                       <FilterSelect
+                        className="student-status-filter"
                         value={studentFilter}
+                        dropdownMenuStyle={{ fontSize: 29 }}
+                        getPopupContainer={(trigger) => trigger.parentElement}
                         onChange={(v) => {
+                          studentUnselectAll()
                           this.setState({ studentFilter: v })
                         }}
-                        width="150px"
-                        height="30px"
+                        width="170px"
+                        height="24px"
                       >
                         {[
-                          'ALL',
+                          'ALL ACTIVE',
                           'NOT STARTED',
                           'IN PROGRESS',
                           'SUBMITTED',
@@ -1389,10 +1417,17 @@ class ClassBoard extends Component {
                           'REDIRECTED',
                           'UNASSIGNED',
                         ].map((x) => (
-                          <FilterSelect.Option key={x} value={x}>
-                            {x} (
-                            {x === 'ALL'
-                              ? testActivity.length
+                          <FilterSelect.Option
+                            className="student-status-filter-item"
+                            key={x}
+                            value={x}
+                            style={{ fontSize: 11 }}
+                          >
+                            {capitalizeIt(x)} (
+                            {x === 'ALL ACTIVE'
+                              ? testActivity.filter(
+                                  (_x) => _x.isAssigned && _x.isEnrolled
+                                ).length
                               : studentFilterCategoryCounts[x] || 0}
                             )
                           </FilterSelect.Option>
@@ -1526,7 +1561,7 @@ class ClassBoard extends Component {
                       placement="bottomRight"
                     >
                       <RedirectButton data-cy="moreAction" last>
-                        <ButtonIconWrap>
+                        <ButtonIconWrap className="more">
                           <IconMoreHorizontal />
                         </ButtonIconWrap>
                         MORE
@@ -1538,9 +1573,7 @@ class ClassBoard extends Component {
                   {flag ? (
                     <DisneyCardContainer
                       selectedStudents={selectedStudents}
-                      testActivity={testActivity.filter(
-                        filterStudentsByStatus(studentFilter)
-                      )}
+                      testActivity={filteredStudentActivities}
                       assignmentId={assignmentId}
                       classId={classId}
                       studentSelect={this.onSelectCardOne}
@@ -1996,11 +2029,15 @@ ClassBoard.propTypes = {
   qActivityByStudent: PropTypes.any,
 }
 const FilterSelect = styled(SelectInputStyled)`
-  display: inline-block;
   width: ${(props) => props.width};
   height: ${(props) => props.height};
-  margin-left: 10px;
+  margin-left: 25px;
+  .ant-select-selection-selected-value {
+    font-size: 11px;
+  }
 `
 const FilterSpan = styled.span`
-  padding-right: 5px;
+  padding-right: 15px;
+  font-size: 12px;
+  font-weight: 600;
 `

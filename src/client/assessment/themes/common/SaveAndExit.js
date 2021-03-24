@@ -63,7 +63,7 @@ const SaveAndExit = ({
           {currentVisibilityState} student work
         </ScratchpadVisibilityToggler>
       )}
-      {showZoomBtn && (
+      {showZoomBtn && !LCBPreviewModal && (
         <Tooltip placement="bottom" title="Test Options">
           <StyledButton onClick={() => setSettingsModalVisibility(true)}>
             <IconAccessibility />

@@ -13,6 +13,7 @@ import testUserWork from './testUserWork'
 import userInteractions from './userInteractions'
 import assessmentPlayer from './assessmentPlayer'
 import previewTest from '../sharedDucks/previewTest'
+import customKeypad from '../components/KeyPadOptions/ducks'
 
 const assessmentReducers = {
   userWork, // Item/Question level userWork
@@ -30,6 +31,7 @@ const assessmentReducers = {
   assessmentBookmarks: bookmarks,
   assessmentPlayer,
   previewTest,
+  customKeypad,
 }
 
 export default assessmentReducers

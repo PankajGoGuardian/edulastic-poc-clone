@@ -4,10 +4,15 @@ import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { Modal, Spin } from 'antd'
 import { WithResources } from '@edulastic/common/src/HOC/withResources'
+import { test as testConstants } from '@edulastic/constants'
 import AssessmentPlayer from '../../../../assessment'
 import TestActivityPreview from './TestActivityPreview'
 import { finishedPreviewTestAction } from '../../../../assessment/sharedDucks/previewTest'
 import AppConfig from '../../../../../app-config'
+import {
+  setShowTestInfoSuccesAction,
+  setTestLoadingAction,
+} from '../../../../assessment/actions/test'
 
 const TestPreviewModal = ({
   isModalVisible,
@@ -15,7 +20,7 @@ const TestPreviewModal = ({
   testId,
   test,
   error,
-  closeTestPreviewModal,
+  closeTestPreviewModal: _closeTestPreviewModal,
   isStudentReport = false,
   passages,
   studentReportModal,
@@ -23,17 +28,48 @@ const TestPreviewModal = ({
   currentAssignmentClass,
   showStudentPerformance,
   finishedPreviewTest,
+  testType,
+  setShowTestInfoSucces,
+  setTestLoading,
+  resetOnClose,
+  unmountOnClose = false,
   ...restProps
 }) => {
   const [
     showStudentPerformancePreview,
     setShowStudentPerformancePreview,
   ] = useState(false)
+
   useEffect(() => {
     if (error) {
-      closeTestPreviewModal()
+      _closeTestPreviewModal()
     }
   }, [error])
+
+  useEffect(() => {
+    if (!isModalVisible) {
+      setShowTestInfoSucces(false)
+      setTestLoading(true)
+    }
+  }, [isModalVisible])
+
+  useEffect(() => {
+    return () => {
+      if (unmountOnClose) {
+        setShowTestInfoSucces(false)
+        setTestLoading(true)
+        if (resetOnClose) {
+          resetOnClose()
+        }
+      }
+    }
+  }, [])
+
+  const closeTestPreviewModal = () => {
+    _closeTestPreviewModal()
+    setShowTestInfoSucces(false)
+    setTestLoading(true)
+  }
 
   const handleCloseModal = () => {
     closeTestPreviewModal()
@@ -61,6 +97,7 @@ const TestPreviewModal = ({
       header={null}
       wrapClassName="test-preview-modal"
       closable={false}
+      maskClosable={false}
       centered
     >
       {showStudentPerformancePreview && (
@@ -84,6 +121,8 @@ const TestPreviewModal = ({
             studentReportModal={studentReportModal}
             currentAssignmentId={currentAssignmentId}
             currentAssignmentClass={currentAssignmentClass}
+            defaultAP={testType !== testConstants.type.PRACTICE}
+            isModalVisible={isModalVisible}
             {...restProps}
           />
         </WithResources>
@@ -105,9 +144,16 @@ TestPreviewModal.defaultProps = {
   LCBPreviewModal: false,
 }
 
-const enhanced = connect(null, {
-  finishedPreviewTest: finishedPreviewTestAction,
-})
+const enhanced = connect(
+  (state) => ({
+    testType: state.test.testType,
+  }),
+  {
+    finishedPreviewTest: finishedPreviewTestAction,
+    setShowTestInfoSucces: setShowTestInfoSuccesAction,
+    setTestLoading: setTestLoadingAction,
+  }
+)
 
 export default enhanced(TestPreviewModal)
 

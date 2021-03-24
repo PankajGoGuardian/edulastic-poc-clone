@@ -27,13 +27,13 @@ const TrendColumn = ({ tests, type }) => {
             if (!payload[0]) {
               return null
             }
-
-            const { testName, score } = payload[0].payload
+            const score = payload[0]?.payload?.score
+            const testName = payload[0]?.payload?.records[0]?.testName
 
             return (
               <StyledTooltip>
                 <span>Assessment : {testName}</span>
-                <span>Performance {`${score}%`}</span>
+                <span>Performance : {`${score}%`}</span>
               </StyledTooltip>
             )
           }}

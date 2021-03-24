@@ -4,12 +4,13 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { get, isUndefined } from 'lodash'
+import { get, isUndefined, last } from 'lodash'
 import { ThemeProvider } from 'styled-components'
 import { withNamespaces } from '@edulastic/localization'
 import { withWindowSizes, notification } from '@edulastic/common'
 
 // actions
+import { playerSkinValues } from '@edulastic/constants/const/test'
 import { checkAnswerEvaluation } from '../../actions/checkanswer'
 import { currentItemAnswerChecksSelector } from '../../selectors/test'
 // components
@@ -39,10 +40,17 @@ import { updateTestPlayerAction } from '../../../author/sharedDucks/testPlayer'
 import { showHintsAction } from '../../actions/userInteractions'
 import { CLEAR } from '../../constants/constantsForQuestions'
 import { showScratchpadInfoNotification } from '../../utils/helpers'
+import UserWorkUploadModal from '../../components/UserWorkUploadModal'
 
 class AssessmentPlayerSimple extends React.Component {
   constructor(props) {
     super(props)
+    const { attachments = [] } = props
+    const lastUploadedFileNameExploded =
+      last(attachments)?.name?.split('_') || []
+    const cameraImageIndex = last(lastUploadedFileNameExploded)
+      ? parseInt(last(lastUploadedFileNameExploded), 10) + 1
+      : 1
     this.state = {
       showExitPopup: false,
       testItemState: '',
@@ -50,7 +58,18 @@ class AssessmentPlayerSimple extends React.Component {
       history: 0,
       currentItem: 0,
       enableCrossAction: false,
+      isUserWorkUploadModalVisible: false,
+      cameraImageIndex,
     }
+  }
+
+  static getCameraImageIndex(attachmentProps) {
+    const { attachments = [] } = attachmentProps
+    const lastUploadedFileNameExploded =
+      last(attachments)?.name?.split('_') || []
+    return last(lastUploadedFileNameExploded)
+      ? parseInt(last(lastUploadedFileNameExploded), 10) + 1
+      : 1
   }
 
   headerRef = React.createRef()
@@ -59,7 +78,15 @@ class AssessmentPlayerSimple extends React.Component {
 
   static getDerivedStateFromProps(nextProps, prevState) {
     if (nextProps.currentItem !== prevState.currentItem) {
+      const { attachments = [] } = nextProps
+      const lastUploadedFileNameExploded =
+        last(attachments)?.name?.split('_') || []
+      const cameraImageIndex = last(lastUploadedFileNameExploded)
+        ? parseInt(last(lastUploadedFileNameExploded), 10) + 1
+        : 1
+
       return {
+        cameraImageIndex,
         enableCrossAction: false,
         currentItem: nextProps.currentItem,
         testItemState: '', // coming from a different question, reset to clear view
@@ -70,7 +97,7 @@ class AssessmentPlayerSimple extends React.Component {
 
   toggleToolsOpenStatus = (tool) => {
     let { toolsOpenStatus, enableCrossAction } = this.state
-    const { hasDrawingResponse } = this.props
+    const { hasDrawingResponse, playerSkinType } = this.props
     if (tool === 3 || tool === 5) {
       const index = toolsOpenStatus.indexOf(tool)
       if (index !== -1) {
@@ -85,9 +112,14 @@ class AssessmentPlayerSimple extends React.Component {
             !hasDrawingResponse &&
             showScratchpadInfoNotification(items[currentItem])
           ) {
+            const config =
+              playerSkinType === playerSkinValues.quester
+                ? { bottom: '64px' }
+                : {}
             notification({
               type: 'info',
               messageKey: 'scratchpadInfoMultipart',
+              ...config,
             })
           }
         }
@@ -109,18 +141,29 @@ class AssessmentPlayerSimple extends React.Component {
       answerChecksUsedForItem,
       settings,
       groupId,
+      playerSkinType,
     } = this.props
+    const config =
+      playerSkinType === playerSkinValues.quester ? { bottom: '64px' } : {}
     if (answerChecksUsedForItem >= settings.maxAnswerChecks)
       return notification({
         type: 'warn',
         messageKey: 'checkAnswerLimitExceededForItem',
+        ...config,
       })
     checkAnswer(groupId)
     this.setState({ testItemState: value })
   }
 
   openExitPopup = () => {
-    const { updateTestPlayer } = this.props
+    const {
+      updateTestPlayer,
+      closeTestPreviewModal,
+      previewPlayer,
+    } = this.props
+    if (previewPlayer && closeTestPreviewModal) {
+      return closeTestPreviewModal()
+    }
     updateTestPlayer({ enableMagnifier: false })
     this.setState({ showExitPopup: true })
   }
@@ -174,6 +217,32 @@ class AssessmentPlayerSimple extends React.Component {
     })
   }
 
+  toggleUserWorkUploadModal = () =>
+    this.setState(({ isUserWorkUploadModalVisible }) => ({
+      isUserWorkUploadModalVisible: !isUserWorkUploadModalVisible,
+    }))
+
+  closeUserWorkUploadModal = () =>
+    this.setState({ isUserWorkUploadModalVisible: false })
+
+  saveUserWorkAttachments = (files) => {
+    const { attachments } = this.props
+    const newAttachments = files.map(({ name, type, size, source }) => ({
+      name,
+      type,
+      size,
+      source,
+    }))
+    this.saveUserWork('attachments')([
+      ...(attachments || []),
+      ...newAttachments,
+    ])
+    this.setState(({ cameraImageIndex }) => ({
+      cameraImageIndex: cameraImageIndex + 1,
+    }))
+    this.closeUserWorkUploadModal()
+  }
+
   handleChangePreview = () => {
     const { changePreview = () => {} } = this.props
     // change the player state to clear mode (attemptable mode)
@@ -185,6 +254,7 @@ class AssessmentPlayerSimple extends React.Component {
       theme,
       t,
       items,
+      LCBPreviewModal,
       currentItem,
       view: previewTab,
       settings,
@@ -204,12 +274,16 @@ class AssessmentPlayerSimple extends React.Component {
       groupId,
       highlights,
       utaId,
+      uploadToS3,
+      user: { firstName = '', lastName = '' },
     } = this.props
     const {
       showExitPopup,
       testItemState,
       enableCrossAction,
       toolsOpenStatus,
+      isUserWorkUploadModalVisible,
+      cameraImageIndex,
     } = this.state
 
     const dropdownOptions = Array.isArray(items)
@@ -227,7 +301,9 @@ class AssessmentPlayerSimple extends React.Component {
     // themeToPass = getZoomedTheme(themeToPass, zoomLevel);
     // themeToPass = playersZoomTheme(themeToPass);
     const scratchPadMode = toolsOpenStatus.indexOf(5) !== -1
-
+    const cameraImageName = `${firstName}_${lastName}_${
+      currentItem + 1
+    }_${cameraImageIndex}`
     return (
       <ThemeProvider theme={themeToPass}>
         <Container scratchPadMode={scratchPadMode} ref={this.containerRef}>
@@ -235,9 +311,11 @@ class AssessmentPlayerSimple extends React.Component {
             {...this.props}
             headerRef={this.headerRef}
             theme={themeToPass}
+            LCBPreviewModal={LCBPreviewModal}
             dropdownOptions={dropdownOptions}
             onOpenExitPopup={this.openExitPopup}
             onshowHideHints={showHints}
+            toggleUserWorkUploadModal={this.toggleUserWorkUploadModal}
             checkAnswer={() => this.changeTabItemState('check')}
             toggleToolsOpenStatus={this.toggleToolsOpenStatus}
             toolsOpenStatus={toolsOpenStatus}
@@ -300,6 +378,13 @@ class AssessmentPlayerSimple extends React.Component {
                 finishTest={this.finishTest}
               />
             )}
+            <UserWorkUploadModal
+              isModalVisible={isUserWorkUploadModalVisible}
+              onCancel={this.closeUserWorkUploadModal}
+              uploadFile={uploadToS3}
+              onUploadFinished={this.saveUserWorkAttachments}
+              cameraImageName={cameraImageName}
+            />
           </AssessmentPlayerSkinWrapper>
         </Container>
       </ThemeProvider>
@@ -335,6 +420,7 @@ const enhance = compose(
   withNamespaces('common'),
   connect(
     (state, ownProps) => ({
+      user: get(state, 'user.user', {}),
       evaluation: state.evaluation,
       preview: state.view.preview,
       settings: state.test.settings,

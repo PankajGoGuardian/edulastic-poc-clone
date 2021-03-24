@@ -80,6 +80,9 @@ const SignedStackedBarChartContainer = ({
     return ''
   }
 
+  const _onBarClickCB = () => {}
+  const _onBarResetClickCB = () => {}
+
   return (
     <SignedStackedBarChart
       data={chartData}
@@ -89,6 +92,8 @@ const SignedStackedBarChartContainer = ({
       yAxisLabel={chartSpecifics.yAxisLabel}
       yTickFormatter={yTickFormatter}
       barsLabelFormatter={barsLabelFormatter}
+      onBarClickCB={_onBarClickCB}
+      onResetClickCB={_onBarResetClickCB}
       backendPagination={backendPagination}
       setBackendPagination={setBackendPagination}
       margin={{ top: 0, right: 60, left: 10, bottom: 0 }}

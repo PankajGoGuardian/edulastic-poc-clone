@@ -25,6 +25,8 @@ import { redirectToStudentPage, redirectToDashbord } from '../utils'
 
 import { fetchUserAction } from '../../student/Login/ducks'
 import { setSelectedLanguageAction } from '../../student/sharedDucks/AssignmentModule/ducks'
+import { getIsPreviewModalVisibleSelector } from '../../assessment/selectors/test'
+import { setIsTestPreviewVisibleAction } from '../../assessment/actions/test'
 
 const ARCHIVED_TEST_MSG =
   'You can no longer use this as sharing access has been revoked by author'
@@ -46,9 +48,10 @@ const PublicTestPage = ({
   fetchUser,
   languagePreference,
   setSelectedLanguage,
+  setIsTestPreviewVisible,
+  isPreviewModalVisible,
 }) => {
   const { testId } = match.params
-  const [showPreviewModal, setShowPreviewModal] = useState(false)
   const [publicTest, setPublicTest] = useState()
 
   const redirectToTestPreview = (
@@ -178,7 +181,7 @@ const PublicTestPage = ({
     }
   }
 
-  const handleShowPreviewModal = () => setShowPreviewModal(true)
+  const handleShowPreviewModal = () => setIsTestPreviewVisible(true)
 
   // if test is not public, then redirect to login page
   if (error) {
@@ -201,11 +204,11 @@ const PublicTestPage = ({
         status={test.status}
         previewLink={handleShowPreviewModal}
       />
-      {showPreviewModal && (
+      {isPreviewModalVisible && (
         <TestPreviewModal
           isModalVisible
           testId={test?._id || testId}
-          closeTestPreviewModal={() => setShowPreviewModal(false)}
+          closeTestPreviewModal={() => setIsTestPreviewVisible(false)}
           demo
         />
       )}
@@ -250,6 +253,7 @@ export default connect(
     assignments: getAllAssignmentsSelector(state),
     loadingAssignments: get(state, 'publicTest.loadingAssignments'),
     languagePreference: getSelectedLanguageSelector(state),
+    isPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
   }),
   {
     fetchTest: fetchTestAction,
@@ -258,5 +262,6 @@ export default connect(
     resumeAssignment: resumeAssignmentAction,
     fetchUser: fetchUserAction,
     setSelectedLanguage: setSelectedLanguageAction,
+    setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
   }
 )(PublicTestPage)

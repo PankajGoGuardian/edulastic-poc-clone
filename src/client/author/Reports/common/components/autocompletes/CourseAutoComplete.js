@@ -21,6 +21,7 @@ const CourseAutoComplete = ({
   loading,
   loadCourseList,
   selectCB,
+  selectedCourseId,
 }) => {
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
   const [searchResult, setSearchResult] = useState([])
@@ -84,6 +85,11 @@ const CourseAutoComplete = ({
       loadCourseListDebounced(query)
     }
   }, [searchTerms])
+  useEffect(() => {
+    if (selectedCourseId === 'All') {
+      setSearchTerms(DEFAULT_SEARCH_TERMS)
+    }
+  }, [selectedCourseId])
 
   // build dropdown data
   const dropdownData = Object.values(
@@ -134,9 +140,6 @@ export default connect(
 )(CourseAutoComplete)
 
 const AutoCompleteContainer = styled.div`
-  .ant-select-auto-complete {
-    padding: 5px;
-  }
   .ant-select-dropdown-menu-item-group-title {
     font-weight: bold;
   }

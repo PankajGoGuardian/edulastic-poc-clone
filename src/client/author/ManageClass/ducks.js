@@ -26,6 +26,7 @@ import { fetchGroupsAction, addGroupAction } from '../sharedDucks/groups'
 import {
   setUserGoogleLoggedInAction,
   addClassToUserAction,
+  fetchUserAction,
 } from '../../student/Login/ducks'
 import { requestEnrolExistingUserToClassAction } from '../ClassEnrollment/ducks'
 import {
@@ -658,7 +659,7 @@ function* fetchStudentsByClassId({ payload }) {
 
 function* receiveCreateClassRequest({ payload }) {
   try {
-    const { studentIds, ...rest } = payload
+    const { studentIds, callUserMeApi, ...rest } = payload
     const result = yield call(groupApi.createGroup, rest)
     const { name, type, code: classCode, districtId } = result
     const typeText = type === 'custom' ? 'group' : 'class'
@@ -678,6 +679,9 @@ function* receiveCreateClassRequest({ payload }) {
         type: 'success',
         msg: `${name} is created. Please add students to your ${typeText} and begin using Edulastic.`,
       })
+    }
+    if (callUserMeApi) {
+      yield put(fetchUserAction({ background: true }))
     }
     yield put(createClassSuccessAction(result))
     yield put(addGroupAction(result))

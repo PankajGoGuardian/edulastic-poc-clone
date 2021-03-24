@@ -20,6 +20,7 @@ import { watcherSaga as resetPasswordSaga } from './SetParentPassword/ducks'
 import { publicTestSaga } from './publicTest'
 import dictionariesSaga from './author/src/sagas/dictionaries'
 import { assignmentEmbedLinkSaga } from './assignmentEmbedLink'
+import { ManageSubscriptionSaga } from './author/ManageSubscription'
 
 export default function* () {
   yield all([
@@ -40,6 +41,7 @@ export default function* () {
     resetPasswordSaga(),
     publicTestSaga(),
     assignmentEmbedLinkSaga(),
+    ManageSubscriptionSaga(),
   ])
 }
 

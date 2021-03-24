@@ -292,6 +292,7 @@ const Scratchpad = ({
         scrollbars: false,
         readOnly,
         setFocus: false, // Zwibbler will be unable to intercept any keyboard commands
+        allowZoom: !isStudentAttempt,
       })
       newZwibbler.on('node-clicked', (node) => {
         if (isDeleteMode.current) {

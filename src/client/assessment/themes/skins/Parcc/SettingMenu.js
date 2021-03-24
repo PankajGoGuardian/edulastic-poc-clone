@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck } from '@fortawesome/free-solid-svg-icons'
 import { StyledButton, StyledDropdown, StyledMenu } from './styled'
 import { useUtaPauseAllowed } from '../../common/SaveAndExit'
+import { getIsMultiLanguageEnabled } from '../../../../common/components/LanguageSelector/duck'
 
 const menuItems = {
   changeColor: 'Change the background and foreground color',
@@ -23,23 +24,26 @@ const SettingMenu = ({
   enableMagnifier,
   utaId,
   hidePause,
+  multiLanguageEnabled,
 }) => {
   const _pauseAllowed = useUtaPauseAllowed(utaId)
   const showPause = _pauseAllowed === undefined ? true : _pauseAllowed
 
   const menu = (
     <StyledMenu onClick={onSettingsChange}>
-      {Object.keys(menuItems).map((key) => (
-        <Menu.Item
-          key={key}
-          disabled={key === 'enableMagnifier' && !showMagnifier}
-        >
-          {menuItems[key]}
-          {key === 'enableMagnifier' && enableMagnifier && (
-            <FontAwesomeIcon icon={faCheck} />
-          )}
-        </Menu.Item>
-      ))}
+      {Object.keys(menuItems)
+        .filter((item) => item !== 'testOptions' || multiLanguageEnabled)
+        .map((key) => (
+          <Menu.Item
+            key={key}
+            disabled={key === 'enableMagnifier' && !showMagnifier}
+          >
+            {menuItems[key]}
+            {key === 'enableMagnifier' && enableMagnifier && (
+              <FontAwesomeIcon icon={faCheck} />
+            )}
+          </Menu.Item>
+        ))}
       {showPause && <Menu.Divider />}
       {showPause && (
         <Menu.Item
@@ -51,6 +55,7 @@ const SettingMenu = ({
               }
             : {})}
           key="save"
+          data-cy="finishTest"
         >
           Save & Exit
         </Menu.Item>
@@ -63,7 +68,7 @@ const SettingMenu = ({
       overlay={menu}
       getPopupContainer={(triggerNode) => triggerNode.parentNode}
     >
-      <StyledButton style={{ width: 'auto' }}>
+      <StyledButton style={{ width: 'auto' }} data-cy="exitMenu">
         <IconUser />
         {firstName} <Icon type="down" />
       </StyledButton>
@@ -75,6 +80,7 @@ const enhance = compose(
   connect(
     (state) => ({
       user: get(state, ['user', 'user'], {}),
+      multiLanguageEnabled: getIsMultiLanguageEnabled(state),
     }),
     {}
   )

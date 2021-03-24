@@ -17,7 +17,9 @@ import {
   IconProfileHighlight,
   IconSignoutHighlight,
   IconPlaylist,
+  IconBarChart,
 } from '@edulastic/icons'
+import { helpCenterUrl } from '@edulastic/constants/const/common'
 import { withWindowSizes, OnDarkBgLogo } from '@edulastic/common'
 import {
   white,
@@ -53,11 +55,11 @@ const menuItems = [
     path: 'home/grades',
   },
   // TODO: uncomment once the backend query for student mastery profile reports is fixed
-  // {
-  //   label: "Skill Mastery",
-  //   icon: IconBarChart,
-  //   path: "home/skill-mastery"
-  // },
+  {
+    label: 'Skill Mastery',
+    icon: IconBarChart,
+    path: 'home/skill-mastery',
+  },
   {
     label: 'My Classes',
     icon: IconManage,
@@ -290,7 +292,7 @@ class SideMenu extends Component {
               <MenuFooter>
                 <QuestionButton isSidebarCollapsed={isSidebarCollapsed}>
                   <a
-                    href="https://edulastic.zendesk.com/hc/en-us"
+                    href={helpCenterUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     style={{

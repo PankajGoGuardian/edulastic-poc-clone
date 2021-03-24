@@ -57,6 +57,7 @@ const PlayerHeader = ({
   finishTest,
   handleMagnifier,
   enableMagnifier,
+  toggleUserWorkUploadModal,
   timedAssignment,
   hasDrawingResponse,
   utaId,
@@ -162,6 +163,7 @@ const PlayerHeader = ({
                     blockNavigationToAnsweredQuestions={
                       blockNavigationToAnsweredQuestions
                     }
+                    LCBPreviewModal={LCBPreviewModal}
                   />
                 )}
                 {!LCBPreviewModal && (
@@ -193,6 +195,7 @@ const PlayerHeader = ({
                         qType={qType}
                         handleMagnifier={handleMagnifier}
                         enableMagnifier={enableMagnifier}
+                        toggleUserWorkUploadModal={toggleUserWorkUploadModal}
                         timedAssignment={timedAssignment}
                         utaId={utaId}
                         hasDrawingResponse={hasDrawingResponse}

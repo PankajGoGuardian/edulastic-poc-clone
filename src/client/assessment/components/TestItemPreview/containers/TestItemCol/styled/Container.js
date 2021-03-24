@@ -4,14 +4,15 @@ import { mobileWidth } from '@edulastic/colors'
 // need to calculate zoomed style
 // see: https://snapwiz.atlassian.net/browse/EV-21562
 const zoomedStyle = css`
-  ${({ theme, isStudentAttempt, viewComponent }) => {
+  ${(props) => {
+    const { theme, isStudentAttempt, viewComponent } = props
     if (!isStudentAttempt) {
       return
     }
 
-    const { shouldZoom, zoomLevel, headerHeight } = theme
+    const { shouldZoom, zoomLevel, headerHeight, playerSkinType } = theme
     const zoomed = zoomLevel > '1' && zoomLevel !== undefined
-
+    const questerFooterHeight = 66
     // need to think about padding of Main wrapper
     // see: themes/common/Main.js
 
@@ -33,10 +34,11 @@ const zoomedStyle = css`
       viewComponent === 'practicePlayer'
         ? 180
         : headerHeight + paddingTopBottom + 8
-
+    if (playerSkinType === 'quester') {
+      header += questerFooterHeight
+    }
     if (shouldZoom && zoomed) {
       header /= zoomLevel
-
       return `
         min-height: calc(${100 / zoomLevel}vh - ${header}px);
         max-height: calc(${100 / zoomLevel}vh - ${header}px);
@@ -57,7 +59,7 @@ export const Container = styled.div`
     props.theme.testItemPreview.itemColBorderColor};
   background-color: ${(props) => props.isStudentAttempt && '#fff'};
   border-radius: ${(props) => props.isStudentAttempt && '8px'};
-  margin-top: ${(props) => props.isStudentAttempt && '8px'};
+  margin-top: ${(props) => props.isStudentAttempt && '12px'};
   overflow: ${(props) =>
     props.isStudentAttempt || props.isExpressGrader || props.isStudentReport
       ? 'auto'
@@ -73,8 +75,11 @@ export const Container = styled.div`
 export const WidgetContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
-  align-items: flex-start;
+  align-items: stretch;
   position: relative;
   flex-grow: 1;
   min-height: max-content; // to fix height issue with safari
+`
+export const FilesViewContainer = styled.div`
+  padding: 10px 35px;
 `

@@ -81,7 +81,7 @@ function* evaluateTestItemSaga({ payload }) {
 
     const testItemId = get(testItem, '_id', '')
     const itemLevelScore = get(testItem, 'itemLevelScore', 0)
-    const itemLevelScoring = get(testItem, 'itemLevelScore', false)
+    const itemLevelScoring = get(testItem, 'itemLevelScoring', false)
     const questions = get(testItem, 'rows', [])
       .flatMap((x) => x?.widgets)
       .filter((x) => !isEmpty(x) && x.widgetType === 'question')
@@ -93,7 +93,8 @@ function* evaluateTestItemSaga({ payload }) {
       answersByQids,
       qById,
       itemLevelScoring,
-      itemLevelScore
+      itemLevelScore,
+      testItem._id
     )
     const previewUserWork = yield select(
       ({ userWork }) => userWork.present[testItemId]
@@ -107,15 +108,16 @@ function* evaluateTestItemSaga({ payload }) {
         testItemId,
         graded: true,
         notStarted: false,
-        score: answers[q.id] ? score : 0,
+        score: answers[`${testItemId}_${q.id}`] ? score : 0,
         skipped:
-          isEmpty(answers[q.id]) && !defaultManualGradedType.includes(q.type),
+          isEmpty(answers[`${testItemId}_${q.id}`]) &&
+          !defaultManualGradedType.includes(q.type),
         pendingEvaluation:
           isEmpty(evaluation) || defaultManualGradedType.includes(q.type),
         qLabel: isEmpty(q.qSubLabel)
           ? q.barLabel
           : `${q.barLabel}.${q.qSubLabel}`,
-        evaluation: evaluation[q.id],
+        evaluation: evaluation[`${testItemId}_${q.id}`],
       }
       if (previewUserWork) {
         activity.userWork = previewUserWork

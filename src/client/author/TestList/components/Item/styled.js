@@ -62,6 +62,49 @@ export const Container = styled(Card)`
   }
 `
 
+export const FullSizeThumbnailCard = styled(Card)`
+  height: 100%;
+  box-shadow: none;
+  cursor: pointer;
+  padding: ${({ isPlaylist }) => (isPlaylist ? '15px 0px 0px' : '0px')};
+  border: ${({ isPlaylist }) => (isPlaylist ? 'none' : '1px solid #dfdfdf')};
+
+  & .ant-card-cover {
+    height: 300px;
+  }
+
+  & .ant-card-actions {
+    border: 1px solid #dfdfdf;
+    border-top: 0px;
+    background: inherit;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    padding: 0px 12px;
+
+    > li {
+      margin: 10px 0;
+      border-right: none;
+    }
+    .playlist-status {
+      height: 20px;
+      float: right;
+      display: flex;
+      align-items: center;
+    }
+  }
+`
+
+export const CardCover = styled.div`
+  height: 100%;
+  background-size: cover;
+  background-position: left top;
+  background-repeat: no-repeat;
+  background-image: ${({ uri }) =>
+    uri
+      ? `url(${uri})`
+      : `url(https://cdn2.edulastic.com/default/default-test-1.jpg)`};
+`
+
 export const Inner = styled.div`
   display: flex;
   justify-content: space-between;
@@ -173,6 +216,7 @@ export const ShareIcon = styled.div`
   max-width: 60px;
   display: inline-flex;
   align-items: center;
+  float: right;
 `
 
 export const EllipsisWrapper = styled.div`

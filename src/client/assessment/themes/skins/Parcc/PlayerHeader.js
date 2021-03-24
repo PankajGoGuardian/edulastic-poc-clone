@@ -73,6 +73,7 @@ const PlayerHeader = ({
   toolsOpenStatus,
   handleMagnifier,
   enableMagnifier,
+  toggleUserWorkUploadModal,
   timedAssignment,
   utaId,
   groupId,
@@ -204,6 +205,7 @@ const PlayerHeader = ({
                   qType={qType}
                   utaId={utaId}
                   isDocbased={isDocbased}
+                  toggleUserWorkUploadModal={toggleUserWorkUploadModal}
                   timedAssignment={timedAssignment}
                   groupId={groupId}
                 />

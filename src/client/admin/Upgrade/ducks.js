@@ -1,10 +1,15 @@
-import { createSlice, createAction } from 'redux-starter-kit'
-import { createSelector } from 'reselect'
 import { combineReducers } from 'redux'
-import { put, takeEvery, call, all } from 'redux-saga/effects'
-import { adminApi } from '@edulastic/api'
+import { put, takeEvery, call, all, select } from 'redux-saga/effects'
 import { notification } from '@edulastic/common'
 import { keyBy } from 'lodash'
+import { createSlice, createAction } from 'redux-starter-kit'
+import { createSelector } from 'reselect'
+import {
+  manageSubscriptionsApi,
+  adminApi,
+  subscriptionApi,
+  paymentApi,
+} from '@edulastic/api'
 
 // ACTIONS
 const GET_DISTRICT_DATA = '[admin-upgrade] GET_DISTRICT_DATA'
@@ -168,6 +173,46 @@ export const manageSubscriptionsByUserSegments = createSlice({
   },
 })
 
+export const manageSubscriptionsByLicenses = createSlice({
+  slice: 'manageSubscriptionsByLicenses',
+  initialState: {
+    loading: false,
+    licenses: [],
+    count: 0,
+    searchType: null,
+  },
+  reducers: {
+    fetchLicenses: (state) => {
+      state.loading = true
+    },
+    fetchLicensesSuccess: (state, { payload }) => {
+      state.loading = false
+      state.licenses = payload.licenses
+      state.count = payload.count
+    },
+    fetchLicensesError: (state) => {
+      state.loading = false
+    },
+    setSearchType: (state, { payload }) => {
+      state.searchType = payload
+    },
+    viewLicense: () => {},
+    deleteLicense: () => {},
+    extendTrialLicense: () => {},
+    fetchProducts: (state) => {
+      state.loading = true
+    },
+    fetchProductsSuccess: (state, { payload }) => {
+      state.loading = false
+      state.products = payload.products
+    },
+    fetchProductsError: (state) => {
+      state.loading = false
+    },
+    addSubscription: () => {},
+  },
+})
+
 // SELECTORS
 const upGradeStateSelector = (state) => state.admin.upgradeData
 
@@ -191,12 +236,18 @@ export const getManageSubscriptionByUserSegmentsData = createSelector(
   ({ manageUserSegmentData }) => manageUserSegmentData
 )
 
+export const getManageSubscriptionByLicensesData = createSelector(
+  upGradeStateSelector,
+  ({ manageLicensesData }) => manageLicensesData
+)
+
 // REDUCERS
 const reducer = combineReducers({
   districtSearchData: manageSubscriptionsBydistrict.reducer,
   manageUsers: manageSubscriptionsByUsers.reducer,
   manageSchoolsData: manageSubscriptionsBySchool.reducer,
   manageUserSegmentData: manageSubscriptionsByUserSegments.reducer,
+  manageLicensesData: manageSubscriptionsByLicenses.reducer,
 })
 
 // API's
@@ -207,6 +258,7 @@ const {
   searchUsersByEmailsOrIds: searchUsersByEmailsOrIdsApi,
   searchSchoolsById: searchSchoolsByIdApi,
   saveOrgPermissionsApi,
+  updateSubscriptionApi,
 } = adminApi
 
 // SAGAS
@@ -223,14 +275,31 @@ function* getDistrictData({ payload }) {
 
 function* upgradeDistrict({ payload }) {
   try {
-    const { result } = yield call(manageSubscriptionApi, payload)
-    if (result.success) {
-      notification({ type: 'success', msg: result.message })
-      yield put(
-        manageSubscriptionsBydistrict.actions.subscribeSuccess(
-          result.subscriptionResult[0]
+    const { isUpdate, subscriptionId, ...rest } = payload
+    if (isUpdate) {
+      const { status } = payload
+      const result = yield call(updateSubscriptionApi, {
+        data: { status },
+        subscriptionId,
+      })
+      if (result.success) {
+        notification({ type: 'success', msg: result.message })
+        yield put(
+          manageSubscriptionsBydistrict.actions.subscribeSuccess(
+            result.subscription
+          )
         )
-      )
+      }
+    } else {
+      const { result } = yield call(manageSubscriptionApi, rest)
+      if (result.success) {
+        notification({ type: 'success', msg: result.message })
+        yield put(
+          manageSubscriptionsBydistrict.actions.subscribeSuccess(
+            result.subscriptionResult[0]
+          )
+        )
+      }
     }
   } catch (err) {
     console.error(err)
@@ -238,6 +307,7 @@ function* upgradeDistrict({ payload }) {
 }
 
 function* upgradeUserData({ payload }) {
+  console.log('payload', payload)
   try {
     const { result } = yield call(manageSubscriptionApi, payload)
     if (result.success) {
@@ -340,6 +410,107 @@ function* getSubscriptionSaga({ payload }) {
   }
 }
 
+function* fetchLicensesByTypeSaga({ payload }) {
+  try {
+    const result = yield call(
+      manageSubscriptionsApi.fetchManageLicenses,
+      payload
+    )
+    yield put(
+      manageSubscriptionsByLicenses.actions.fetchLicensesSuccess(result)
+    )
+  } catch (err) {
+    manageSubscriptionsByLicenses.actions.fetchLicensesError()
+    yield call(notification, {
+      type: 'error',
+      msg: 'Failed to load subscriptions.',
+    })
+  }
+}
+
+function* deleteLicensesByIdsSaga({ payload }) {
+  try {
+    const { licenseIds, search } = payload
+    const result = yield call(manageSubscriptionsApi.deleteLicenses, {
+      licenseIds,
+    })
+    if (!result.error) {
+      notification({ type: 'success', msg: result.message })
+      const licenses = yield call(
+        manageSubscriptionsApi.fetchManageLicenses,
+        search
+      )
+      yield put(
+        manageSubscriptionsByLicenses.actions.fetchLicensesSuccess(licenses)
+      )
+    } else {
+      notification({ type: 'error', msg: result.message })
+    }
+  } catch (err) {
+    notification({
+      type: 'error',
+      msg: 'Failed to delete subscriptions.',
+    })
+  }
+}
+
+function* extendTrialLicenseSaga({ payload }) {
+  try {
+    const { result } = yield call(
+      subscriptionApi.extendTrialLicense,
+      payload
+    ) || {}
+    if (result.success) {
+      notification({ type: 'success', msg: result.message })
+    } else {
+      notification({ type: 'error', msg: result.message })
+    }
+  } catch (err) {
+    notification({
+      type: 'error',
+      msg: 'Failed to extend trial subscription.',
+    })
+  }
+}
+
+function* fetchProductsSaga() {
+  try {
+    const result = yield call(subscriptionApi.fetchProducts)
+    yield put(
+      manageSubscriptionsByLicenses.actions.fetchProductsSuccess(result)
+    )
+  } catch (err) {
+    manageSubscriptionsByLicenses.actions.fetchProductsError()
+    yield call(notification, {
+      type: 'error',
+      msg: 'Failed to load product details.',
+    })
+  }
+}
+
+function* addSubscriptionSaga({ payload }) {
+  try {
+    const result = yield call(paymentApi.licensePurchase, payload) || {}
+    if (result.licenseKeys) {
+      const { searchType } = yield select(getManageSubscriptionByLicensesData)
+      const data = {
+        type: searchType,
+        page: 1,
+        limit: 10,
+      }
+      yield put(manageSubscriptionsByLicenses.actions.fetchLicenses(data))
+      notification({ type: 'success', msg: 'License(s) created successfully!' })
+    } else {
+      notification({ type: 'error', msg: 'License(s) creation failed!' })
+    }
+  } catch (err) {
+    notification({
+      type: 'error',
+      msg: 'Failed to add subscription.',
+    })
+  }
+}
+
 function* watcherSaga() {
   yield all([
     yield takeEvery(GET_DISTRICT_DATA, getDistrictData),
@@ -351,6 +522,26 @@ function* watcherSaga() {
     yield takeEvery(UPGRADE_PARTIAL_PREMIUM_USER, upgradePartialPremiumUser),
     yield takeEvery(SAVE_ORG_PERMISSIONS, saveOrgPermissionsSaga),
     yield takeEvery(GET_SUBSCRIPTION, getSubscriptionSaga),
+    yield takeEvery(
+      manageSubscriptionsByLicenses.actions.fetchLicenses,
+      fetchLicensesByTypeSaga
+    ),
+    yield takeEvery(
+      manageSubscriptionsByLicenses.actions.deleteLicense,
+      deleteLicensesByIdsSaga
+    ),
+    yield takeEvery(
+      manageSubscriptionsByLicenses.actions.extendTrialLicense,
+      extendTrialLicenseSaga
+    ),
+    yield takeEvery(
+      manageSubscriptionsByLicenses.actions.fetchProducts,
+      fetchProductsSaga
+    ),
+    yield takeEvery(
+      manageSubscriptionsByLicenses.actions.addSubscription,
+      addSubscriptionSaga
+    ),
   ])
 }
 

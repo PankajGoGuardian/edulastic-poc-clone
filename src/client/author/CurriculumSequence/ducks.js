@@ -27,6 +27,7 @@ import {
   recommendationsApi,
   TokenStorage as Storage,
   testsApi,
+  resourcesApi,
 } from '@edulastic/api'
 import produce from 'immer'
 import { setCurrentAssignmentAction } from '../TestPage/components/Assign/ducks'
@@ -168,7 +169,13 @@ export const SET_DIFFERENTIATION_WORK =
   '[differentiation] set differentiation work'
 export const SET_DIFFERENTIATION_SELECTED_DATA =
   '[differentiation] set differentiation selected data'
+export const ADD_TYPE_BASED_DIFFERENTIATION_RESOURCES =
+  '[differentiation] add differentiation resources'
+export const REMOVE_TYPE_BASED_DIFFERENTIATION_RESOURCES =
+  '[differentiation] remove differentiation resources'
 export const ADD_TEST_TO_DIFFERENTIATION = '[differentiation] add test'
+export const REMOVE_RESOURCE_FROM_DIFFERENTIATION =
+  '[differentiation] remove resource'
 export const ADD_RECOMMENDATIONS_ACTIONS =
   '[differentiation] add recommendations'
 export const UPDATE_FETCH_DIFFERENTIATION_WORK_LOADING_STATE =
@@ -299,6 +306,12 @@ export const setDifferentiationWorkAction = createAction(
 export const setDifferentiationSelectedDataAction = createAction(
   SET_DIFFERENTIATION_SELECTED_DATA
 )
+export const addDifferentiationResourcesAction = createAction(
+  ADD_TYPE_BASED_DIFFERENTIATION_RESOURCES
+)
+export const removeDifferentiationResourcesAction = createAction(
+  REMOVE_TYPE_BASED_DIFFERENTIATION_RESOURCES
+)
 export const addRecommendationsAction = createAction(
   ADD_RECOMMENDATIONS_ACTIONS
 )
@@ -311,6 +324,9 @@ export const updateDestinationCurriculumSequenceRequestAction = createAction(
 export const updateWorkStatusDataAction = createAction(UPDATE_WORK_STATUS_DATA)
 export const addTestToDifferentationAction = createAction(
   ADD_TEST_TO_DIFFERENTIATION
+)
+export const removeResourceFromDifferentiationAction = createAction(
+  REMOVE_RESOURCE_FROM_DIFFERENTIATION
 )
 export const addResourceToDifferentiationAction = createAction(
   ADD_RESOURCE_TO_DIFFERENTIATION
@@ -474,6 +490,11 @@ export const getRecommendationsToAssignSelector = createSelector(
 export const getDifferentiationSelectedDataSelector = createSelector(
   getCurriculumSequenceState,
   (curriculumSequence) => curriculumSequence.differentiationSelectedData
+)
+
+export const getDifferentiationResourcesSelector = createSelector(
+  getCurriculumSequenceState,
+  (curriculumSequence) => curriculumSequence.differentiationResources
 )
 
 const getPublisher = (state) => {
@@ -655,16 +676,27 @@ function* putCurriculumSequence({ payload }) {
       'collectionName',
       'testItems',
     ])
+    const resourceMap = {}
     dataToSend.modules = dataToSend.modules.map((mod) => {
-      mod.data = mod.data.map((test) =>
-        omit(test, [
+      mod.data = mod.data.map((test) => {
+        if (test.contentType === 'test' && test.resources) {
+          const testId = test.contentId
+          test.resources = test.resources.map((resource) => {
+            const { contentId: resourceId, updateStandards } = resource
+            if (updateStandards) {
+              resourceMap[testId] = [...(resourceMap[testId] || []), resourceId]
+            }
+            return omit(resource, ['updateStandards'])
+          })
+        }
+        return omit(test, [
           'standards',
           'alignment',
           'assignments',
           'testType',
           'status',
         ])
-      )
+      })
       return mod
     })
     const response = yield curriculumSequencesApi.updateCurriculumSequence(
@@ -672,6 +704,10 @@ function* putCurriculumSequence({ payload }) {
       dataToSend
     )
     if (Object.keys(response).length > 0) {
+      if (!isEmpty(resourceMap)) {
+        yield call(resourcesApi.updateStandards, resourceMap)
+      }
+
       const { authors, version, _id } = response
       const userId = yield select(getUserId)
       if (authors && authors.map((author) => author._id).includes(userId)) {
@@ -2055,6 +2091,7 @@ const initialState = {
   differentiationStudentList: [],
   differentiationWork: {},
   differentiationSelectedData: {},
+  differentiationResources: {},
   isFetchingDifferentiationWork: false,
   workStatusData: {},
 
@@ -2624,6 +2661,40 @@ export default createReducer(initialState, {
       ...payload,
     }
   },
+  [ADD_TYPE_BASED_DIFFERENTIATION_RESOURCES]: (state, { payload }) => {
+    const {
+      type,
+      contentId,
+      contentTitle,
+      contentType,
+      contentSubType,
+      contentUrl,
+    } = payload
+    const alreadyPresent = (state.differentiationResources?.[type] || []).find(
+      (x) => x.contentId === contentId
+    )
+    if (!alreadyPresent) {
+      state.differentiationResources[type] = [
+        ...(state.differentiationResources[type] || []),
+        {
+          type,
+          contentId,
+          description: contentTitle,
+          contentTitle,
+          contentType,
+          contentSubType,
+          contentUrl,
+        },
+      ]
+    }
+  },
+  [REMOVE_TYPE_BASED_DIFFERENTIATION_RESOURCES]: (state, { payload }) => {
+    const { type, contentId } = payload
+    state.differentiationResources[type] =
+      state.differentiationResources?.[type]?.filter(
+        (x) => x.contentId !== contentId
+      ) || []
+  },
   [ADD_TEST_TO_DIFFERENTIATION]: (state, { payload }) => {
     const { type, testId, masteryRange, title, testStandards } = payload
     const alreadyPresent = Object.keys(state.differentiationWork)
@@ -2638,6 +2709,12 @@ export default createReducer(initialState, {
         testStandards,
       })
     }
+  },
+  [REMOVE_RESOURCE_FROM_DIFFERENTIATION]: (state, { payload }) => {
+    const { type, testId } = payload
+    state.differentiationWork[type] = state.differentiationWork[type]?.filter(
+      (x) => x.testId !== testId
+    )
   },
   [ADD_RESOURCE_TO_DIFFERENTIATION]: (state, { payload }) => {
     const {
@@ -2690,6 +2767,9 @@ export default createReducer(initialState, {
       fromPlaylistTestsBox,
       standardIdentifiers,
       status,
+      contentSubType,
+      hasStandardsOnCreation,
+      standards = [],
       ...itemObj
     } = item
     if (
@@ -2703,8 +2783,19 @@ export default createReducer(initialState, {
     const resources =
       state.destinationCurriculumSequence.modules[moduleIndex].data[itemIndex]
         .resources
-    if (!resources.find((x) => x.contentId === contentId)) {
-      resources.push({ contentId, contentType, ...itemObj })
+    if (
+      !resources.find(
+        (x) => x.contentId === contentId && x.contentSubType === contentSubType
+      )
+    ) {
+      const updateStandards = !hasStandardsOnCreation && standards.length < 15
+      resources.push({
+        contentId,
+        contentType,
+        contentSubType,
+        updateStandards,
+        ...itemObj,
+      })
     }
   },
   [PLAYLIST_ADD_ITEM_INTO_MODULE]: (state, { payload }) => {
@@ -2775,8 +2866,10 @@ export default createReducer(initialState, {
     } else {
       state.destinationCurriculumSequence = {}
     }
-    if (payload.isAuthoring) {
+    if (payload.isAuthoring || payload.isCreatePage) {
       state.activeRightPanel = 'manageContent'
+    } else {
+      state.activeRightPanel = 'summary'
     }
 
     state.destinationDirty = false

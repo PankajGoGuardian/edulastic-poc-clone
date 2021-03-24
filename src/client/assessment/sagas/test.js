@@ -64,8 +64,12 @@ import {
   CLEAR_USER_WORK,
   SET_SAVE_USER_RESPONSE,
   SWITCH_LANGUAGE,
+  UPDATE_PLAYER_PREVIEW_STATE,
 } from '../constants/actions'
-import { saveUserResponse as saveUserResponseAction } from '../actions/items'
+import {
+  saveUserResponse as saveUserResponseAction,
+  setSavedBlurTimeAction,
+} from '../actions/items'
 import { saveUserResponse as saveUserResponseSaga } from './items'
 import { loadQuestionsAction } from '../actions/questions'
 import { loadBookmarkAction } from '../sharedDucks/bookmark'
@@ -73,6 +77,7 @@ import {
   setPasswordValidateStatusAction,
   setPasswordStatusAction,
   languageChangeSuccessAction,
+  setShowTestInfoSuccesAction,
 } from '../actions/test'
 import { setShuffledOptions } from '../actions/shuffledOptions'
 import {
@@ -186,6 +191,11 @@ const getSettings = (test, testActivity, preview) => {
     releaseScore,
     blockNavigationToAnsweredQuestions:
       assignmentSettings?.blockNavigationToAnsweredQuestions || false,
+    isTeacherPremium: assignmentSettings?.isTeacherPremium || false,
+    blockSaveAndContinue: assignmentSettings?.blockSaveAndContinue || false,
+    restrictNavigationOut: assignmentSettings?.restrictNavigationOut || false,
+    restrictNavigationOutAttemptsThreshold:
+      assignmentSettings?.restrictNavigationOutAttemptsThreshold,
   }
 }
 
@@ -299,10 +309,12 @@ function* loadTest({ payload }) {
        * src/client/assessment/sagas/items.js:saveUserResponse
        * requires current assignment id in store (studentAssignment.current)
        */
-      const { assignmentId } = testActivity?.testActivity || {}
+      const { assignmentId, timeInBlur = 0 } = testActivity?.testActivity || {}
       if (assignmentId) {
         yield put(setActiveAssignmentAction(assignmentId))
       }
+
+      yield put(setSavedBlurTimeAction(timeInBlur))
 
       let passwordValidated =
         testActivity?.assignmentSettings?.passwordPolicy ===
@@ -431,8 +443,8 @@ function* loadTest({ payload }) {
       assignmentById = yield select(
         (state) => state?.studentAssignment?.byId || {}
       )
-      const assignmentObj = assignmentById[activity.assignmentId]
-      if (assignmentObj?.restrictNavigationOut && isiOS()) {
+
+      if (settings.restrictNavigationOut && isiOS()) {
         Fscreen.safeExitfullScreen()
         yield put(push('/home/assignments'))
         yield put(toggleIosRestrictNavigationModalAction(true))
@@ -640,8 +652,31 @@ function* loadTest({ payload }) {
         answerCheckByItemId,
         showMagnifier: settings.showMagnifier || test.showMagnifier,
         languagePreference: testActivity.testActivity?.languagePreference,
+        grades: test.grades,
+        subjects: test.subjects,
       },
     })
+    if (preview) {
+      yield put({
+        type: UPDATE_PLAYER_PREVIEW_STATE,
+        payload: {
+          instruction: test.instruction,
+          hasInstruction: test.hasInstruction,
+          blockNavigationToAnsweredQuestions:
+            test.blockNavigationToAnsweredQuestions,
+          multiLanguageEnabled: test.multiLanguageEnabled,
+        },
+      })
+      if (
+        !(
+          test.multiLanguageEnabled ||
+          test.hasInstruction ||
+          test.timedAssignment
+        )
+      ) {
+        yield put(setShowTestInfoSuccesAction(true))
+      }
+    }
     yield put(setPasswordValidateStatusAction(true))
 
     yield put({
@@ -654,28 +689,33 @@ function* loadTest({ payload }) {
       testActivity.questionActivities.length &&
       !test.isDocBased
     ) {
-      let questionIndex = 0
-      const qActivitiesSorted = testActivity.questionActivities.sort((a, b) => {
-        if (a.qLabel > b.qLabel) return 1
-        return -1
-      })
-      for (let i = 0; i < qActivitiesSorted.length; i++) {
-        const qActivity = qActivitiesSorted[i]
-        if (qActivity.qLabel.includes(`Q${i + 1}`)) {
-          questionIndex++
+      const testItemIds = testItems.map((i) => i._id)
+      let lastVisitedQuestion = testActivity.questionActivities[0]
+      let lastVisitedItemIndex = 0
+      testActivity.questionActivities.forEach((item) => {
+        const itemIndex = testItemIds.indexOf(item.testItemId)
+        if (itemIndex > testItemIds.indexOf(lastVisitedQuestion.testItemId)) {
+          lastVisitedQuestion = item
+          lastVisitedItemIndex = itemIndex
         }
-      }
-      if (testItems.length === questionIndex) {
+      })
+
+      const playerTestType =
+        testType === testContants.type.COMMON
+          ? testContants.type.ASSESSMENT
+          : testType
+
+      if (testItems.length === lastVisitedItemIndex + 1) {
         yield put(
           push(
-            `/student/${testType}/${testId}/class/${groupId}/uta/${testActivityId}/test-summary`
+            `/student/${playerTestType}/${testId}/class/${groupId}/uta/${testActivityId}/test-summary`
           )
         )
       } else {
-        const itemId = testItems[questionIndex]._id
+        const itemId = testItems[lastVisitedItemIndex + 1]._id
         yield put(
           push(
-            `/student/${testType}/${testId}/class/${groupId}/uta/${testActivityId}/itemId/${itemId}`
+            `/student/${playerTestType}/${testId}/class/${groupId}/uta/${testActivityId}/itemId/${itemId}`
           )
         )
       }
@@ -688,9 +728,18 @@ function* loadTest({ payload }) {
     })
 
     if (preview) {
-      notification({ messageKey: 'youCanNoLongerUse' })
-      window.location.href = '/'
-      return Modal.destroyAll()
+      if (getAccessToken()) {
+        setTimeout(() => {
+          window.location.href = '/author/tests'
+        }, 3000)
+        yield put(push('/author/tests'))
+      } else {
+        notification({ messageKey: 'youCanNoLongerUse' })
+        setTimeout(() => {
+          window.location.href = '/'
+        }, 3000)
+        return Modal.destroyAll()
+      }
     }
 
     let messageKey = 'failedLoadingTest'
@@ -702,7 +751,7 @@ function* loadTest({ payload }) {
       } else if (err.status === 302) {
         messageKey = 'testPausedOrClosedByTeacher'
       } else if (err.status === 403) {
-        if (userRole === roleuser.STUDENT) {
+        if (userRole === roleuser.STUDENT || userRole === roleuser.PARENT) {
           const { data = {} } = err.response || {}
           const { message: errorMessage } = data
           notification({
@@ -711,6 +760,9 @@ function* loadTest({ payload }) {
           Fscreen.exitFullscreen()
           return yield put(push('/home/assignments'))
         }
+        notification({
+          msg: 'This test is marked private',
+        })
       }
     }
     if (userRole === roleuser.STUDENT) {
@@ -955,7 +1007,11 @@ function* switchLanguage({ payload }) {
 export default function* watcherSaga() {
   yield all([
     yield takeEvery(LOAD_TEST, loadTest),
-    yield Effects.throttleAction(10000, FINISH_TEST, submitTest),
+    yield Effects.throttleAction(
+      process.env.REACT_APP_QA_ENV ? 60000 : 10000,
+      FINISH_TEST,
+      submitTest
+    ),
     yield takeEvery(LOAD_PREVIOUS_RESPONSES_REQUEST, loadPreviousResponses),
     yield takeLatest(SWITCH_LANGUAGE, switchLanguage),
   ])

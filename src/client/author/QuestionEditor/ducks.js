@@ -20,7 +20,7 @@ import {
   uniq,
 } from 'lodash'
 import produce from 'immer'
-import { questionType } from '@edulastic/constants'
+import { questionType, questionTitle } from '@edulastic/constants'
 import { helpers, notification } from '@edulastic/common'
 import { push } from 'connected-react-router'
 import * as Sentry from '@sentry/browser'
@@ -590,7 +590,10 @@ function* saveQuestionSaga({
               delete q.scoringDisabled
             }
           }
-          if (q.template) {
+
+          const isMatrices =
+            q.type === questionType.MATH && q.title === questionTitle.MATRICES
+          if (q.template && !isMatrices) {
             q.template = helpers.removeIndexFromTemplate(q.template)
           }
           if (q.templateMarkUp) {

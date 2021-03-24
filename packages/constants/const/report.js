@@ -3,6 +3,7 @@ const reportGroupType = {
   MULTIPLE_ASSESSMENT_REPORT: 'multiple-assessment-report',
   STANDARDS_MASTERY_REPORT: 'standards-mastery-report',
   STUDENT_PROFILE_REPORT: 'student-profile-report',
+  ENGAGEMENT_REPORT: 'engagement-report',
 }
 
 const reportNavType = {
@@ -21,6 +22,9 @@ const reportNavType = {
   STUDENT_PROFILE_SUMMARY: 'student-profile-summary',
   STUDENT_MASTERY_PROFILE: 'student-mastery-profile',
   STUDENT_ASSESSMENT_PROFILE: 'student-assessment-profile',
+  ENGAGEMENT_SUMMARY: 'engagement-summary',
+  ACTIVITY_BY_SCHOOL: 'activity-by-school',
+  ACTIVITY_BY_TEACHER: 'activity-by-teacher',
 }
 
 const sharedWithType = {

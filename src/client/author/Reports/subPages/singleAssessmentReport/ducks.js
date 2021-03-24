@@ -39,6 +39,7 @@ const initialState = {
     subject: '',
     grade: '',
     assessmentTypes: '',
+    tagIds: '',
     schoolIds: '',
     teacherIds: '',
     studentSubject: '',
@@ -47,6 +48,7 @@ const initialState = {
     classIds: '',
     groupIds: '',
   },
+  tagsData: {},
   reportType: '',
 }
 

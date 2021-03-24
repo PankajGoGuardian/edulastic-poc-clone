@@ -63,7 +63,11 @@ export default class FormChoice extends React.Component {
     }
 
     return (
-      <QuestionChunk tabIndex="0" onMouseDown={(e) => e && e.preventDefault()}>
+      <QuestionChunk
+        data-cy="truOrFalse"
+        tabIndex="0"
+        onMouseDown={(e) => e && e.preventDefault()}
+      >
         <Radio.Group onChange={handleChange} value={chosenValue[0]}>
           <Radio style={radioStyle} value={options[0].value}>
             {options[0].label}
@@ -135,11 +139,12 @@ export default class FormChoice extends React.Component {
     }
 
     return (
-      <QuestionChunk>
+      <QuestionChunk data-cy="mcqChoice">
         {options.map(({ label, value }, key) => (
           <QuestionOption
             tabIndex="0"
             mode={mode}
+            data-cy="choiceOption"
             key={`form-${label}-${key}`}
             selected={answer.includes(value)}
             correct={evaluation && getCorrect(value)}

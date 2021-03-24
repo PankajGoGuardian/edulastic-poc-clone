@@ -24,7 +24,7 @@ const TrendStats = ({
 
   return (
     <UpperContainer>
-      <PaddedContainer>
+      <PaddedContainer paddingLeft="0">
         <Row>
           <Col xs={24} sm={24} md={10} lg={10} xl={10}>
             <StyledH3>{heading}</StyledH3>
@@ -113,6 +113,7 @@ const UpperContainer = styled(StyledCard)`
 `
 const PaddedContainer = styled.div`
   padding: 0px 18px;
+  padding-left: ${(props) => props.paddingLeft};
 `
 
 const TrendContainer = styled(Row)`

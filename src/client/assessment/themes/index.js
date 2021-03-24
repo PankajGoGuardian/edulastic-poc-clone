@@ -34,9 +34,15 @@ import { themeColor } from '@edulastic/colors'
 import { testActivityApi, classBoardApi } from '@edulastic/api'
 
 import Styled from 'styled-components'
-import { gotoItem as gotoItemAction, saveUserResponse } from '../actions/items'
+import {
+  gotoItem as gotoItemAction,
+  saveUserResponse,
+  saveBlurTimeAction,
+} from '../actions/items'
+import { saveUserWorkAction } from '../actions/userWork'
 import {
   finishTestAcitivityAction,
+  setIsTestPreviewVisibleAction,
   setPasswordValidateStatusAction,
 } from '../actions/test'
 import { evaluateAnswer } from '../actions/evaluation'
@@ -66,6 +72,7 @@ import { fetchAssignmentsAction } from '../../student/Reports/ducks'
 import { getSebUrl } from '../../student/Assignments/ducks'
 import { setCheckAnswerInProgressStatusAction } from '../actions/checkanswer'
 import useFocusHandler from '../utils/useFocusHandler'
+import useUploadToS3 from '../hooks/useUploadToS3'
 import { Fscreen } from '../utils/helpers'
 
 const { playerSkinValues } = testConstants
@@ -97,6 +104,7 @@ function pauseAssignment({
   classId,
   userId,
   pauseReason,
+  msg,
 }) {
   classBoardApi
     .togglePauseStudents({
@@ -108,10 +116,16 @@ function pauseAssignment({
     })
     .then(() => {
       Fscreen.safeExitfullScreen()
-      const errorMsg = 'Pausing Assignment due to Anti Cheating measures'
-      notification({ type: 'warning', msg: errorMsg, duration: 0 })
+      const errorMsg = msg || 'Pausing Assignment due to Anti Cheating measures'
+      notification({
+        type: 'warning',
+        msg: errorMsg,
+        duration: 0,
+        key: errorMsg,
+        zIndex: 10000,
+      })
       if (history.location.pathname === '/home/assignments') {
-        history.push('/home/assignmentss')
+        history.push('/home/assignmentss') // this hack needed to re-render route
         history.replace('/home/assignments')
       } else {
         history.push('/home/assignments')
@@ -130,15 +144,18 @@ function pauseAssignment({
 }
 
 function incrementNavigationCounter({ history, testActivityId }) {
+  const msg =
+    'Your test has been locked for security reasons. Please contact your teacher to reopen your test'
   return testActivityApi
     .incrementTabNavigationCounter(testActivityId)
     .then((response) => {
       if (response.paused) {
         notification({
-          type: 'error',
-          msg:
-            'Your test has been locked. Please contact your teacher to reset the test.',
+          type: 'warning',
+          msg,
           duration: 0,
+          key: msg,
+          zIndex: 10000,
         })
         Fscreen.exitFullscreen()
         history.push('/home/assignments')
@@ -148,6 +165,7 @@ function incrementNavigationCounter({ history, testActivityId }) {
           msg:
             'Test Security: Moving out of the assignment has been recorded and the teacher will be notified',
           duration: 0,
+          zIndex: 10000,
         })
       }
     })
@@ -219,13 +237,17 @@ export function useFullScreenListener({
     if (enabled && !Fscreen.fullscreenElement) {
       setInFullScreen(false)
     }
+
     return () => {
       Fscreen.removeEventListener('fullscreenchange', fullScreenCb)
       Modal.destroyAll()
       setTimeout(
-        (win) => {
+        (win, _disableSave) => {
           const { pathname: _path } = win.location
-          if (!_path.includes('/uta/') && disableSave) {
+          if (!_path.includes('/uta/')) {
+            window.sessionStorage.removeItem('totalTimeInBlur')
+          }
+          if (!_path.includes('/uta/') && _disableSave) {
             pauseAssignment({
               history,
               assignmentId,
@@ -238,7 +260,8 @@ export function useFullScreenListener({
           }
         },
         5000,
-        window
+        window,
+        disableSave
       )
     }
   }, [enabled])
@@ -317,24 +340,80 @@ export function useTabNavigationCounterEffect({
   testActivityId,
   enabled,
   history,
+  threshold,
+  assignmentId,
+  classId,
+  userId,
+  onTimeInBlurChange = () => {},
+  blurTimeAlreadySaved,
 }) {
   const inFocusRef = useRef(true)
   const idleTimeoutRef = useRef(null)
+  const totalBlurTimeCounterIntervalRef = useRef(null)
+  const totalTimeInBlur = useRef(blurTimeAlreadySaved || 0)
+
+  useEffect(() => {
+    if (window.sessionStorage.totalTimeInBlur) {
+      totalTimeInBlur.current =
+        parseInt(window.sessionStorage.totalTimeInBlur, 10) || 0
+      window.sessionStorage.removeItem('totalTimeInBlur')
+      onTimeInBlurChange(totalTimeInBlur.current)
+    } else if (blurTimeAlreadySaved) {
+      totalTimeInBlur.current = blurTimeAlreadySaved
+      onTimeInBlurChange(blurTimeAlreadySaved)
+    }
+    return () => {
+      if (totalBlurTimeCounterIntervalRef.current) {
+        clearInterval(totalBlurTimeCounterIntervalRef.current)
+      }
+    }
+  }, [])
+
   useFocusHandler({
     enabled,
     onFocus: () => {
+      onTimeInBlurChange(totalTimeInBlur.current)
       inFocusRef.current = true
+      window.sessionStorage.removeItem('totalTimeInBlur')
       console.log('on focus ', new Date())
       if (idleTimeoutRef.current) {
         clearTimeout(idleTimeoutRef.current)
+      }
+      if (totalBlurTimeCounterIntervalRef.current) {
+        clearInterval(totalBlurTimeCounterIntervalRef.current)
       }
     },
     onBlur: () => {
       console.log('on blur ', new Date())
       inFocusRef.current = false
+      if (totalBlurTimeCounterIntervalRef.current) {
+        clearInterval(totalBlurTimeCounterIntervalRef.current)
+      }
       if (idleTimeoutRef.current) {
         clearTimeout(idleTimeoutRef.current)
       }
+      totalBlurTimeCounterIntervalRef.current = setInterval(() => {
+        totalTimeInBlur.current += 1
+        window.sessionStorage.totalTimeInBlur = totalTimeInBlur.current
+        if (enabled && threshold > 1) {
+          const maximumTimeLimit = threshold * 5
+          if (totalTimeInBlur.current >= maximumTimeLimit) {
+            if (totalBlurTimeCounterIntervalRef.current) {
+              clearInterval(totalBlurTimeCounterIntervalRef.current)
+            }
+            window.sessionStorage.removeItem('totalTimeInBlur')
+            pauseAssignment({
+              history,
+              assignmentId,
+              classId,
+              userId,
+              pauseReason: 'out-of-navigation',
+              msg:
+                'Your test has been locked for security reasons. Please contact your teacher to reopen your test',
+            })
+          }
+        }
+      }, 1000)
       idleTimeoutRef.current = setTimeout(() => {
         if (!inFocusRef.current && enabled) {
           console.info('too much time away from screen!!!!!!!', new Date())
@@ -377,6 +456,7 @@ const AssessmentContainer = ({
   history,
   changePreview,
   saveUserResponse: saveUserAnswer,
+  saveUserWork,
   evaluateAnswer: evaluate,
   match,
   url,
@@ -415,6 +495,7 @@ const AssessmentContainer = ({
   regradedRealtimeAssignment,
   testId,
   userId,
+  userWork,
   regradedAssignment,
   clearRegradeAssignment,
   setPasswordValidateStatus,
@@ -423,6 +504,9 @@ const AssessmentContainer = ({
   currentAssignment,
   fetchAssignments,
   evaluateForPreview,
+  setIsTestPreviewVisible,
+  saveBlurTime,
+  savedBlurTime: blurTimeAlreadySaved,
   ...restProps
 }) => {
   const itemId = preview || testletType ? 'new' : match.params.itemId || 'new'
@@ -435,28 +519,44 @@ const AssessmentContainer = ({
     show: false,
   })
   const [showRegradedModal, setShowRegradedModal] = useState(false)
+
+  const [, uploadFile] = useUploadToS3(userId)
+
   const isLast = () => currentItem === items.length - 1
   const isFirst = () => currentItem === 0
 
   const lastTime = useRef(window.localStorage.assessmentLastTime || Date.now())
 
   const assignmentObj = currentAssignment && assignmentById[currentAssignment]
-  const hidePause = assignmentObj?.blockSaveAndContinue
+  const {
+    restrictNavigationOut = false,
+    restrictNavigationOutAttemptsThreshold,
+    blockSaveAndContinue = assignmentObj?.blockSaveAndContinue,
+  } = restProps
 
+  const hidePause = blockSaveAndContinue
   const currentlyFullScreen = useFullScreenListener({
-    enabled: assignmentObj?.restrictNavigationOut,
+    enabled: restrictNavigationOut,
     assignmentId: assignmentObj?._id,
     classId: groupId,
     testActivityId: restProps.utaId,
     history,
-    disableSave: assignmentObj?.blockSaveAndContinue,
+    disableSave: blockSaveAndContinue,
     userId,
   })
 
   useTabNavigationCounterEffect({
     testActivityId: restProps.utaId,
-    enabled: assignmentObj?.restrictNavigationOut,
+    enabled: restrictNavigationOut,
+    threshold: restrictNavigationOutAttemptsThreshold,
     history,
+    assignmentId: assignmentObj?._id,
+    classId: groupId,
+    userId,
+    onTimeInBlurChange: (v) => {
+      saveBlurTime(v)
+    },
+    blurTimeAlreadySaved,
   })
   useEffect(() => {
     if (assignmentObj) {
@@ -496,6 +596,7 @@ const AssessmentContainer = ({
       Modal.info({
         title: "It looks like there aren't any Items in this test.",
         okText: 'Close',
+        onOk: () => setIsTestPreviewVisible(false),
       })
     }
   }, [loading])
@@ -575,17 +676,18 @@ const AssessmentContainer = ({
      * consider item as attempted
      * @see https://snapwiz.atlassian.net/browse/EV-17309
      */
-    const itemId = items[currentItem]?._id
-    if (hasUserWork(itemId, restProps.userWork || {})) {
+    const _itemId = items[currentItem]?._id
+    if (hasUserWork(_itemId, userWork || {})) {
       return []
     }
     return questions.filter((q) => {
       const qAnswers =
-        answersById[`${itemId}_${q.id}`] || userPrevAnswer[`${itemId}_${q.id}`]
+        answersById[`${_itemId}_${q.id}`] ||
+        userPrevAnswer[`${_itemId}_${q.id}`]
       switch (q.type) {
         case questionType.TOKEN_HIGHLIGHT:
           return (
-            (answersById[`${itemId}_${q.id}`] || []).filter(
+            (answersById[`${_itemId}_${q.id}`] || []).filter(
               (token) => token?.selected
             ).length === 0
           )
@@ -675,11 +777,28 @@ const AssessmentContainer = ({
 
   const gotoQuestion = (index, needsToProceed = false, context = '') => {
     if (preview) {
-      hideHints()
-      setCurrentItem(index)
-      const timeSpent = Date.now() - lastTime.current
-      if (!demo) {
-        evaluateForPreview({ currentItem, timeSpent })
+      const unansweredQs = getUnAnsweredQuestions()
+      if (
+        (unansweredQs.length && needsToProceed) ||
+        !unansweredQs.length ||
+        index < currentItem
+      ) {
+        hideHints()
+        setCurrentItem(index)
+        const timeSpent = Date.now() - lastTime.current
+        if (!demo) {
+          evaluateForPreview({ currentItem, timeSpent })
+        }
+      } else {
+        setUnansweredPopupSetting({
+          show: true,
+          qLabels: unansweredQs.map(
+            ({ barLabel, qSubLabel }) =>
+              `${(barLabel || '-').substr(1)}${qSubLabel || '-'}`
+          ),
+          index,
+          context,
+        })
       }
     } else {
       const unansweredQs = getUnAnsweredQuestions()
@@ -715,12 +834,29 @@ const AssessmentContainer = ({
 
     const timeSpent = Date.now() - lastTime.current
 
-    if (isLast() && preview && !demo) {
-      evaluateForPreview({
-        currentItem,
-        timeSpent,
-        callback: submitPreviewTest,
-      })
+    if (isLast() && preview) {
+      const unansweredQs = getUnAnsweredQuestions()
+      if (unansweredQs.length && !needsToProceed) {
+        return setUnansweredPopupSetting({
+          show: true,
+          qLabels: unansweredQs.map(
+            ({ barLabel, qSubLabel }) =>
+              `${(barLabel || '-').substr(1)}${qSubLabel || '-'}`
+          ),
+          index: Number(currentItem),
+          context: value,
+        })
+      }
+      if (!demo) {
+        evaluateForPreview({
+          currentItem,
+          timeSpent,
+          callback: submitPreviewTest,
+        })
+      }
+      if (demo) {
+        submitPreviewTest()
+      }
     }
 
     if ((isLast() || value === 'SUBMIT') && !preview) {
@@ -774,12 +910,31 @@ const AssessmentContainer = ({
     }
   }
 
+  const skipOnPreview = (index) => {
+    hideHints()
+    setCurrentItem(index)
+    const timeSpent = Date.now() - lastTime.current
+    if (demo && isLast()) {
+      return submitPreviewTest()
+    }
+    if (!demo) {
+      const evalArgs = { currentItem, timeSpent }
+      if (isLast()) {
+        evalArgs.callback = submitPreviewTest
+      }
+      evaluateForPreview(evalArgs)
+    }
+  }
+
   const onSkipUnansweredPopup = async () => {
     setUnansweredPopupSetting({
       ...unansweredPopupSetting,
       show: false,
     })
     const { index, context } = unansweredPopupSetting
+    if (preview) {
+      return skipOnPreview(index)
+    }
     if (context === 'next') {
       await moveToNext(null, true)
     } else if (context === 'prev') {
@@ -793,6 +948,7 @@ const AssessmentContainer = ({
   if (items && items.length > 0 && Object.keys(testItem).length === 0) {
     notification({
       messageKey: 'invalidAction',
+      zIndex: 10000,
     })
     if (userRole === roleuser.STUDENT) {
       history.push('/home/assignments')
@@ -829,7 +985,7 @@ const AssessmentContainer = ({
     if (!demo) window.addEventListener('beforeunload', cb)
 
     const unloadCb = () => {
-      if (assignmentObj?.blockSaveAndContinue) {
+      if (blockSaveAndContinue) {
         pauseAssignment({
           history,
           testActivityId: restProps.utaId,
@@ -884,14 +1040,19 @@ const AssessmentContainer = ({
     studentReportModal,
     hasDrawingResponse,
     questions: questionsById,
+    uploadToS3: uploadFile,
+    userWork,
+    gotoSummary,
     ...restProps,
   }
 
   useEffect(() => {
-    if (savingResponse) {
-      message.loading('Submitting the response', 0)
-    } else {
-      message.destroy()
+    if (!preview) {
+      if (savingResponse) {
+        message.loading('Submitting the response', 0)
+      } else {
+        message.destroy()
+      }
     }
     return () => {
       /**
@@ -917,7 +1078,6 @@ const AssessmentContainer = ({
         answers={answers}
         answersById={answersById}
         saveProgress={saveProgress}
-        gotoSummary={gotoSummary}
         {...props}
       />
     )
@@ -929,7 +1089,6 @@ const AssessmentContainer = ({
         testletConfig={testletConfig}
         testletState={testletState}
         saveUserAnswer={saveUserAnswer}
-        gotoSummary={gotoSummary}
         {...test}
       />
     )
@@ -947,9 +1106,9 @@ const AssessmentContainer = ({
 
   return (
     <AssessmentPlayerContext.Provider
-      value={{ isStudentAttempt: true, currentItem }}
+      value={{ isStudentAttempt: true, currentItem, setCurrentItem }}
     >
-      {assignmentObj?.restrictNavigationOut && (
+      {restrictNavigationOut && (
         <>
           <ForceFullScreenModal
             testActivityId={restProps.utaId}
@@ -959,7 +1118,7 @@ const AssessmentContainer = ({
               history.location.pathname.includes('/uta/')
             }
             takeItLaterCb={
-              assignmentObj?.blockSaveAndContinue
+              blockSaveAndContinue
                 ? null
                 : () =>
                     saveCurrentAnswer({
@@ -971,12 +1130,11 @@ const AssessmentContainer = ({
         </>
       )}
 
-      {(assignmentObj.blockSaveAndContinue ||
-        assignmentObj?.restrictNavigationOut) && (
+      {(blockSaveAndContinue || restrictNavigationOut) && (
         <FirestorePings
           testActivityId={restProps.utaId}
           history={history}
-          blockSaveAndContinue={assignmentObj?.blockSaveAndContinue}
+          blockSaveAndContinue={blockSaveAndContinue}
           userId={userId}
           classId={groupId}
           assignmentId={assignmentObj?._id}
@@ -1093,10 +1251,17 @@ const enhance = compose(
       currentAssignment: get(state, 'studentAssignment.current'),
       blockNavigationToAnsweredQuestions:
         state.test?.settings?.blockNavigationToAnsweredQuestions,
+      blockSaveAndContinue: state.test?.settings?.blockSaveAndContinue,
+      restrictNavigationOut: state.test?.settings?.restrictNavigationOut,
+      restrictNavigationOutAttemptsThreshold:
+        state.test?.settings?.restrictNavigationOutAttemptsThreshold,
+      savedBlurTime: state.test?.savedBlurTime,
     }),
     {
       saveUserResponse,
+      saveBlurTime: saveBlurTimeAction,
       evaluateAnswer,
+      saveUserWork: saveUserWorkAction,
       changePreview: changePreviewAction,
       finishTest: finishTestAcitivityAction,
       gotoItem: gotoItemAction,
@@ -1108,6 +1273,7 @@ const enhance = compose(
       fetchAssignments: fetchAssignmentsAction,
       evaluateForPreview: evaluateCurrentAnswersForPreviewAction,
       setCheckAnswerInProgress: setCheckAnswerInProgressStatusAction,
+      setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
     }
   )
 )

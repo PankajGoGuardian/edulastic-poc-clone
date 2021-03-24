@@ -55,11 +55,13 @@ const PlayerHeader = ({
   previewPlayer,
   handleMagnifier,
   enableMagnifier,
+  toggleUserWorkUploadModal,
   timedAssignment,
   utaId,
   groupId,
   hidePause,
   blockNavigationToAnsweredQuestions,
+  LCBPreviewModal = false,
 }) => {
   const [isToolbarModalVisible, setToolbarModalVisible] = useState(false)
 
@@ -87,7 +89,7 @@ const PlayerHeader = ({
       finishTest={onOpenExitPopup}
       timedAssignment={timedAssignment}
     />
-  );
+  )
 
   return (
     <>
@@ -159,6 +161,7 @@ const PlayerHeader = ({
                     blockNavigationToAnsweredQuestions={
                       blockNavigationToAnsweredQuestions
                     }
+                    LCBPreviewModal={LCBPreviewModal}
                   />
                 )}
                 {!showSettingIcon && (
@@ -175,6 +178,7 @@ const PlayerHeader = ({
                     )}
                     handleMagnifier={handleMagnifier}
                     enableMagnifier={enableMagnifier}
+                    toggleUserWorkUploadModal={toggleUserWorkUploadModal}
                     timedAssignment={timedAssignment}
                     utaId={utaId}
                     groupId={groupId}

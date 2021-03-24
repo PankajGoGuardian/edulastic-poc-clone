@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import produce from 'immer'
 import { curry } from 'lodash'
 import * as moment from 'moment'
+import { Col } from 'antd'
 import {
   test as testConst,
   assignmentPolicyOptions,
@@ -11,7 +12,13 @@ import {
 } from '@edulastic/constants'
 import ClassList from './ClassList'
 import DatePolicySelector from './DatePolicySelector'
-import { OptionConationer, InitOptions, ClassSelectorLabel } from './styled'
+import {
+  OptionConationer,
+  InitOptions,
+  ClassSelectorLabel,
+  StyledRow,
+  Label,
+} from './styled'
 import { isFeatureAccessible } from '../../../../features/components/FeaturesSwitch'
 import { getUserFeatures } from '../../../../student/Login/ducks'
 import {
@@ -25,6 +32,7 @@ import {
 } from '../../../TestPage/ducks'
 import { getDefaultSettings } from '../../../../common/utils/helpers'
 import { getAssignedClassesByIdSelector } from '../../duck'
+import TagFilter from '../../../src/components/common/TagFilter'
 
 const { releaseGradeLabels } = testConst
 class AdvancedOptons extends React.Component {
@@ -157,6 +165,7 @@ class AdvancedOptons extends React.Component {
     } = this.props
     const classIds = assignment?.class?.map((item) => item._id) || []
     const changeField = curry(this.onChange)
+    const { tags = testSettings.tags } = assignment
 
     return (
       <OptionConationer>
@@ -176,6 +185,17 @@ class AdvancedOptons extends React.Component {
               assignment.showMagnifier || testSettings.showMagnifier
             }
           />
+
+          <StyledRow gutter={24}>
+            <Col xs={24} md={12} lg={6}>
+              <Label>Tags</Label>
+              <TagFilter
+                selectedTags={tags}
+                canCreate
+                onChangeField={(type, value) => this.onChange(type, value)}
+              />
+            </Col>
+          </StyledRow>
 
           {!isAssignRecommendations && (
             <>

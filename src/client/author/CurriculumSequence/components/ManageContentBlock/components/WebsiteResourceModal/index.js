@@ -1,26 +1,32 @@
-import React, { useState, useEffect } from 'react'
-import { message } from 'antd'
-import { notification } from '@edulastic/common'
+import { FieldLabel, notification, TextInputStyled } from '@edulastic/common'
 import PropTypes from 'prop-types'
-import { Title, StyledInput } from '../common/commonStyles'
+import React, { useState, useEffect } from 'react'
 import EdulasticResourceModal from '../common/EdulasticResourceModal'
+import ResourcesAlignment from '../../../ResourcesAlignment'
+import { FlexRow } from '../../styled'
 
 // WebsiteResource modal to add external links
 
 const WebsiteResourceModal = (props) => {
-  const { closeCallback, addResource } = props
+  const {
+    closeCallback,
+    addResource,
+    alignment,
+    setAlignment,
+    selectedStandards,
+    setSelectedStandards,
+  } = props
 
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [url, setUrl] = useState('')
-
-  useEffect(() => clearFields, [])
 
   const clearFields = () => {
     setTitle('')
     setDescription('')
     setUrl('')
   }
+  useEffect(() => clearFields, [])
 
   const validateFields = () => {
     if (!title) return 'Title is required'
@@ -31,12 +37,14 @@ const WebsiteResourceModal = (props) => {
 
   const submitCallback = () => {
     const validationStatus = validateFields()
+    const selectedStandardIds = selectedStandards?.map((x) => x._id) || []
     if (!validationStatus) {
       addResource({
         contentTitle: title,
         contentDescription: description,
         contentUrl: url,
         contentType: 'website_resource',
+        standards: selectedStandardIds,
       })
       closeCallback()
     } else notification({ type: 'warn', msg: validationStatus })
@@ -49,26 +57,40 @@ const WebsiteResourceModal = (props) => {
       submitCallback={submitCallback}
       {...props}
     >
-      <Title>Title</Title>
-      <StyledInput
-        placeholder="Enter a title"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-      />
-      <br />
-      <Title>Description</Title>
-      <StyledInput
-        placeholder="Enter a description"
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-      />
-      <br />
-      <Title>URL</Title>
-      <StyledInput
-        placeholder="Enter a URL"
-        value={url}
-        onChange={(e) => setUrl(e.target.value)}
-      />
+      <FlexRow>
+        <FieldLabel>Title</FieldLabel>
+        <TextInputStyled
+          placeholder="Enter a title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          height="36px"
+        />
+      </FlexRow>
+      <FlexRow>
+        <FieldLabel>Description</FieldLabel>
+        <TextInputStyled
+          placeholder="Enter a description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          height="36px"
+        />
+      </FlexRow>
+      <FlexRow>
+        <FieldLabel>URL</FieldLabel>
+        <TextInputStyled
+          placeholder="Enter a URL"
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+          height="36px"
+        />
+      </FlexRow>
+      <FlexRow>
+        <ResourcesAlignment
+          alignment={alignment}
+          setAlignment={setAlignment}
+          setSelectedStandards={setSelectedStandards}
+        />
+      </FlexRow>
     </EdulasticResourceModal>
   )
 }

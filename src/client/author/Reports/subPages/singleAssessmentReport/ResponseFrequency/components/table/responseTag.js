@@ -54,7 +54,7 @@ export class ResponseTag extends Component {
           <Col className="custom-table-tooltip-value">{data.count}</Col>
         </Row>
         <Row type="flex" justify="start">
-          <Col className="custom-table-tooltip-key">Performance: </Col>
+          <Col className="custom-table-tooltip-key">Overall Correct: </Col>
           <Col className="custom-table-tooltip-value">
             {Math.round((corr_cnt / sum) * 100)}%
           </Col>

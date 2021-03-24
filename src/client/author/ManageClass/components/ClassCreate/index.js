@@ -19,7 +19,11 @@ import {
   getCurriculumsListSelector,
   getFormattedCurriculumsSelector,
 } from '../../../src/selectors/dictionaries'
-import { getUserOrgData, getUserRole } from '../../../src/selectors/user'
+import {
+  getUserOrgData,
+  getUserRole,
+  getUserFeatures,
+} from '../../../src/selectors/user'
 import {
   receiveSearchCourseAction,
   getCoursesForDistrictSelector,
@@ -85,10 +89,20 @@ class ClassCreate extends React.Component {
 
   handleSubmit = (e) => {
     e.preventDefault()
-    const { form, userId, userOrgData, allTagsData, location } = this.props
+    const {
+      form,
+      userId,
+      userOrgData,
+      allTagsData,
+      location,
+      userFeatures,
+    } = this.props
     const {
       districtIds: [districtId],
     } = userOrgData
+
+    const { premium, premiumGradeSubject } = userFeatures
+
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         const { createClass, curriculums } = this.props
@@ -141,7 +155,12 @@ class ClassCreate extends React.Component {
 
         // eslint-disable-next-line react/no-unused-state
         this.setState({ submitted: true })
-        createClass(pickBy(values, identity))
+        let callUserMeApi = false
+        // if user has premium grade subject then call /users/me api to refresh premium flag value
+        if (premium === false && !isEmpty(premiumGradeSubject)) {
+          callUserMeApi = true
+        }
+        createClass({ ...pickBy(values, identity), callUserMeApi })
       }
     })
   }
@@ -342,6 +361,7 @@ const enhance = compose(
         }),
         selectedSubject,
         userRole: getUserRole(state),
+        userFeatures: getUserFeatures(state),
       }
     },
     {

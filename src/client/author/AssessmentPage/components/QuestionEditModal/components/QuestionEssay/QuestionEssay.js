@@ -97,6 +97,7 @@ export default class QuestionEssay extends React.Component {
             min={1}
             value={numberOfRows}
             onChange={this.changeNumberOfRows}
+            data-cy="minHeightOption"
           />
           <Points>Minimum Line height</Points>
         </FormGroup>
@@ -105,6 +106,7 @@ export default class QuestionEssay extends React.Component {
             min={0}
             value={score}
             onChange={this.handleScoreChange}
+            data-cy="points"
           />
           <Points>Points</Points>
         </FormGroup>

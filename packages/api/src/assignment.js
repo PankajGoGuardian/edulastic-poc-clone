@@ -48,15 +48,23 @@ const fetchRegradeAssignments = (testId) =>
     })
     .then((result) => result.data.result)
 
-const fetchAssigned = (groupId = '', testId = '', groupStatus = 'all') =>
+const fetchAssigned = (
+  groupId = '',
+  testId = '',
+  groupStatus = 'all',
+  studentId = '',
+  districtId = ''
+) =>
   api
     .callApi({
-      url: prefix,
-      method: 'get',
+      url: `${prefix}/all`,
+      method: 'post',
       params: {
         groupId,
         testId,
         groupStatus,
+        studentId,
+        districtId,
       },
     })
     .then((result) => result.data.result)
@@ -70,14 +78,17 @@ const fetchTeacherAssignments = ({
     testType = '',
     classId = '',
     status = '',
+    tags = [],
+    testId = '',
   },
   folderId = '',
 }) =>
   api
     .callApi({
       useSlowApi: true,
-      url: `${prefix}?groupId=${groupId}&grade=${grades}&subject=${subject}&termId=${termId}&testType=${testType}&classId=${classId}&status=${status}&folderId=${folderId}`,
-      method: 'get',
+      url: `${prefix}/all?groupId=${groupId}&grade=${grades}&subject=${subject}&termId=${termId}&testType=${testType}&classId=${classId}&status=${status}&folderId=${folderId}&testId=${testId}`,
+      method: 'post',
+      data: { tags },
     })
     .then((result) => result.data.result)
 
@@ -138,15 +149,20 @@ const redirect = (assignmentId, data) =>
     })
     .then((result) => result.data.result)
 
-const fetchAssignmentsSummary = ({ districtId = '', filters, sort }) =>
+const fetchAssignmentsSummary = ({
+  districtId = '',
+  filters: { tags, ...filters },
+  sort,
+}) =>
   api
     .callApi({
       useSlowApi: true,
       url: `${prefix}/district/${districtId}`,
-      method: 'get',
+      method: 'post',
       params: { ...filters, ...sort },
       paramsSerializer: (params) =>
         qs.stringify(params, { arrayFormat: 'comma' }),
+      data: { tags },
     })
     .then((result) => result.data.result)
 
@@ -159,15 +175,17 @@ const fetchAssignmentsClassList = ({
   status = '',
   grades = [],
   assignedBy = '',
+  tags,
 }) =>
   api
     .callApi({
       useSlowApi: true,
       url: `${prefix}/district/${districtId}/test/${testId}`,
-      method: 'get',
+      method: 'post',
       params: { testType, termId, pageNo, status, grades, assignedBy },
       paramsSerializer: (params) =>
         qs.stringify(params, { arrayFormat: 'comma' }),
+      data: { tags },
     })
     .then((result) => result.data.result)
 
@@ -240,6 +258,13 @@ const fetchRegradeSettings = ({ oldTestId, newTestId }) =>
     })
     .then((result) => result.data.result)
 
+const editTagsRequest = (payload) =>
+  api.callApi({
+    url: `${prefix}/edit-tags`,
+    method: 'post',
+    data: payload,
+  })
+
 export default {
   create,
   update,
@@ -263,4 +288,5 @@ export default {
   searchAssignments,
   syncWithSchoologyClassroom,
   fetchRegradeSettings,
+  editTagsRequest,
 }

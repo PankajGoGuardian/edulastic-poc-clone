@@ -31,7 +31,7 @@ const AssignmentButton = ({
       placement="left"
       title={
         isPaused
-          ? 'Will be enabled once the teacher marks it Open for you'
+          ? 'Will be available once teacher resumes the test for you'
           : null
       }
     >

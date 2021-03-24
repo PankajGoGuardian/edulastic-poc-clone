@@ -41,6 +41,14 @@ export { slice }
 function* sendParentCodeSaga({ payload }) {
   try {
     const result = yield call(userApi.sendParentCode, payload)
+    if (result === 'expired') {
+      notification({ messageKey: 'errorParentCodeExpired' })
+      yield put(push('/login'))
+    }
+    if (!result) {
+      notification({ messageKey: 'errorParentCodeNotFound' })
+      yield put(push('/login'))
+    }
     yield put(slice.actions.sendParentCodeSucess(result))
   } catch (e) {
     notification({ messageKey: 'errorParentCode' })
@@ -51,10 +59,11 @@ function* sendParentCodeSaga({ payload }) {
 
 function* resetPasswordSaga({ payload }) {
   try {
-    const { username, password: newPassword } = payload
+    const { username, password: newPassword, role } = payload
     const result = yield call(userApi.resetMyPassword, {
       username,
       newPassword,
+      role,
     })
     yield put(fetchUserAction())
     window.location.href = '/home/assignments'

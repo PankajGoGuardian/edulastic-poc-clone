@@ -14,8 +14,8 @@ import {
 import { themeColorLighter, title as pieTitle } from '@edulastic/colors'
 import {
   getStudentPerformancePieData,
-  getOverallMasteryPercentage,
-  getMaxScale,
+  getOverallDomainMasteryPercentage,
+  getScaleForMasteryCalculation,
 } from '../../utils/transformers'
 import { StyledCustomChartTooltip as CustomChartTooltip } from '../../../../../common/styled'
 import ScaleInfoLabels from './ScaleInfoLabels'
@@ -83,8 +83,11 @@ const StudentPerformancePie = ({
 }) => {
   // process data to fill and label the pie chart
   const pieData = getStudentPerformancePieData(data, scaleInfo)
-  const maxScale = getMaxScale(scaleInfo)
-  const overallMasteryPercentage = getOverallMasteryPercentage(data, maxScale)
+  const scales = getScaleForMasteryCalculation(scaleInfo)
+  const overallMasteryPercentage = getOverallDomainMasteryPercentage(
+    data,
+    scales
+  )
   const dataWithColors = fillColors(pieData, selectedMastery)
 
   // process pieData to get percentage scale info for ScaleInfoLabels

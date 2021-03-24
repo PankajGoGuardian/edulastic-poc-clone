@@ -79,6 +79,7 @@ const getContent = ({ setvisible, needsRenewal }) => (
 )
 
 const ONE_MONTH = 30 * 24 * 60 * 60 * 1000
+const TEN_DAYS = 10 * 24 * 60 * 60 * 1000
 
 const HeaderSection = ({
   user,
@@ -120,7 +121,6 @@ const HeaderSection = ({
 
   const { user: userInfo } = user
   const { currentSignUpState } = userInfo
-  const premium = userInfo?.features?.premium
 
   useEffect(() => {
     fetchUserSubscriptionStatus()
@@ -138,14 +138,33 @@ const HeaderSection = ({
     openLaunchHangout()
   }
 
+  const isPremiumUser = user.user?.features?.premium
+
+  /**
+   *  a user is paid premium user if
+   *  - subType exists and
+   *  - premium is not through trial ie, only - (enterprise, premium, partial_premium) and
+   *  - is partial premium user & premium is true
+   *
+   * TODO: refactor and define this at the top level
+   */
+  const isPaidPremium = !(
+    !subType ||
+    subType === 'TRIAL_PREMIUM' ||
+    (subType === 'partial_premium' && !isPremiumUser)
+  )
+
   const isAboutToExpire = subEndDate
-    ? Date.now() + ONE_MONTH > subEndDate
+    ? Date.now() + ONE_MONTH > subEndDate && Date.now() < subEndDate + TEN_DAYS
     : false
 
   const needsRenewal =
-    (premium && isAboutToExpire) || (!premium && isSubscriptionExpired)
+    ((isPaidPremium && isAboutToExpire) ||
+      (!isPaidPremium && isSubscriptionExpired)) &&
+    !['enterprise', 'partial_premium'].includes(subType)
+
   const showPopup =
-    (needsRenewal || !premium) &&
+    (needsRenewal || !isPaidPremium) &&
     !['enterprise', 'partial_premium'].includes(subType)
 
   const createNewClass = () => history.push('/author/manageClass/createClass')
@@ -161,8 +180,6 @@ const HeaderSection = ({
   const allActiveClasses = allClasses.filter(
     (c) => c.active === 1 && c.type === 'class'
   )
-
-  const isPremiumUser = user.user?.features?.premium
 
   const isClassLink =
     teacherData && teacherData.filter((id) => id?.atlasId).length > 0

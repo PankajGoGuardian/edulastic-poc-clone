@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { connect } from 'react-redux'
 import {
   EduButton,
@@ -57,6 +57,7 @@ import {
 } from './styled'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import CalendlyScheduleModal from './CalendlyScheduleModal'
+import FeatureNotAvailableModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/FeatureNotAvailableModal'
 
 const getUpgradeToMultipleUsersPlanAction = ({ openPurchaseLicenseModal }) => (
   <ActionsWrapper>
@@ -204,20 +205,48 @@ const SubscriptionMain = ({
   startTrialAction,
   isPaidPremium,
   setShowSubscriptionAddonModalWithId,
-  usedTrialItemBankId,
+  usedTrialItemBankIds,
   products,
   hasAllPremiumProductAccess,
   itemBankSubscriptions,
   settingProductData,
-  sparkMathProductId,
   sparkMathItemBankId,
   setShowItemBankTrialUsedModal,
   openHasLicenseKeyModal,
   isPremiumUser,
   isPremium,
+  showFeatureNotAvailableModal,
+  handleCloseFeatureNotAvailableModal,
+  isFreeAdmin,
+  setProductData,
 }) => {
   const [showSelectStates, setShowSelectStates] = useState(false)
   const [isTrialModalVisible, setIsTrialModalVisible] = useState(false)
+
+  // Whenever trial modal is closed, clear the states it was using
+  useEffect(() => {
+    if (!isTrialModalVisible) {
+      setProductData({})
+    }
+  }, [isTrialModalVisible])
+
+  const { itemBankProductIds = [], itemBankIds = [] } = useMemo(() => {
+    if (products) {
+      const itemBankProducts = products.filter(({ type }) => type !== 'PREMIUM')
+      return {
+        itemBankProductIds: itemBankProducts
+          .filter(
+            ({ linkedProductId }) =>
+              !usedTrialItemBankIds.includes(linkedProductId)
+          )
+          .map(({ id }) => id),
+        itemBankIds: itemBankProducts.map(
+          ({ linkedProductId }) => linkedProductId
+        ),
+      }
+    }
+    return {}
+  }, [products, usedTrialItemBankIds])
 
   const isPaidSparkMath =
     itemBankSubscriptions &&
@@ -232,6 +261,12 @@ const SubscriptionMain = ({
 
   const handlePurchaseFlow = () => setShowSubscriptionAddonModalWithId()
 
+  const hasUsedAllItemBankTrials = () => {
+    return itemBankIds.every((itemBankId) =>
+      usedTrialItemBankIds.includes(itemBankId)
+    )
+  }
+
   const handleStartTrial = () => {
     settingProductData()
     // NOTE: Don't set a boolean default value for 'isPremiumTrialUsed'!
@@ -242,7 +277,7 @@ const SubscriptionMain = ({
       })
     }
 
-    if (usedTrialItemBankId) {
+    if (hasUsedAllItemBankTrials()) {
       setShowItemBankTrialUsedModal(true)
       return
     }
@@ -252,7 +287,7 @@ const SubscriptionMain = ({
   // Show item bank trial button when item bank trial is not used yet and user is either premium
   // or hasn't used premium trial yet.
   const hasTrialButton =
-    usedTrialItemBankId !== sparkMathItemBankId &&
+    !hasUsedAllItemBankTrials() &&
     !isPaidSparkMath &&
     (!isPremiumTrialUsed || isPremiumUser)
 
@@ -291,29 +326,31 @@ const SubscriptionMain = ({
             justifyContent="center"
             style={{ marginTop: '25px', width: '100%' }}
           >
-            {!hasAllPremiumProductAccess && (
-              <AuthorCompleteSignupButton
-                renderButton={(handleClick) => (
-                  <CustomButton
-                    height="38px"
-                    width="215px"
-                    data-cy="subscriptionUpgradebtn"
-                    isBlue
-                    onClick={handleClick}
-                    noBg
-                  >
-                    Upgrade now
-                  </CustomButton>
-                )}
-                onClick={handlePurchaseFlow}
-              />
-            )}
-            {isPaidPremium && showRenewalOptions && (
+            {!hasAllPremiumProductAccess &&
+              !isFreeAdmin &&
+              !showRenewalOptions && (
+                <AuthorCompleteSignupButton
+                  renderButton={(handleClick) => (
+                    <CustomButton
+                      height="38px"
+                      width="215px"
+                      data-cy="subscriptionUpgradebtn"
+                      isBlue
+                      onClick={handleClick}
+                      noBg
+                    >
+                      Upgrade now
+                    </CustomButton>
+                  )}
+                  onClick={handlePurchaseFlow}
+                />
+              )}
+            {showRenewalOptions && (
               <EduButton onClick={handlePurchaseFlow} isBlue height="38px">
                 Renew Subscription
               </EduButton>
             )}
-            {hasTrialButton && (
+            {hasTrialButton && !isFreeAdmin && (
               <AuthorCompleteSignupButton
                 renderButton={(handleClick) => (
                   <CustomButton
@@ -336,20 +373,27 @@ const SubscriptionMain = ({
               data-cy="subscriptionHaveLicenseKey"
               onClick={openHasLicenseKeyModal}
             >
-              HAVE LICENSE KEY
+              {/* HAVE LICENSE KEY */}
             </HaveLicenseKey>
           )}
         </ContentCards>
       </ContentSection>
       {isTrialModalVisible && (
         <TrialModal
-          addOnProductIds={[sparkMathProductId]}
+          addOnProductIds={[...itemBankProductIds]}
           isVisible={isTrialModalVisible}
           toggleModal={toggleTrialModal}
           isPremiumUser={isPremiumUser}
           isPremiumTrialUsed={isPremiumTrialUsed}
           startPremiumTrial={startTrialAction}
           products={products}
+        />
+      )}
+      {showFeatureNotAvailableModal && (
+        <FeatureNotAvailableModal
+          isVisible={showFeatureNotAvailableModal}
+          handleCloseModal={handleCloseFeatureNotAvailableModal}
+          handleSelectStateModal={handleSelectStateModal}
         />
       )}
       <AddonSection>
@@ -360,8 +404,8 @@ const SubscriptionMain = ({
               : 'Premium add-ons to make it even better'}
           </SectionTitle>
           <SectionDescription>
-            You can bundle one or more of the following add-ons to the teacher
-            premium subscription that will <br /> make it easier to deliver
+            You can bundle one or more of the following add-ons to the premium
+            subscription that will <br /> make it easier to deliver
             differentiated instruction and keep your students engaged.
           </SectionDescription>
           <CardContainer>
@@ -384,7 +428,7 @@ const SubscriptionMain = ({
                   </LearnMoreLink>
                   {addonsData[index].title === 'SparkMath' && (
                     <>
-                      {!(isPaidPremium && isPaidSparkMath) && (
+                      {!(isPaidPremium && isPaidSparkMath) && !isFreeAdmin && (
                         <AuthorCompleteSignupButton
                           renderButton={(handleClick) => (
                             <PurchaseLink
@@ -397,7 +441,7 @@ const SubscriptionMain = ({
                           onClick={handleSparkMathClick}
                         />
                       )}
-                      {hasTrialButton && (
+                      {hasTrialButton && !isFreeAdmin && (
                         <AuthorCompleteSignupButton
                           renderButton={(handleClick) => (
                             <span data-cy="trialPurchase" onClick={handleClick}>
@@ -422,8 +466,7 @@ const SubscriptionMain = ({
           Get in-depth insights into schoolwide and districtwide progress with
           Edulastic Enterprise. Deliver common assessments, analyze the instant
           student data, and manage everything in one place. Enterprise includes
-          Teacher Premium and its collaboration, accommodation, and security
-          tools.
+          Premium and its collaboration, accommodation, and security tools.
         </SectionDescription>
         <FlexContainer justifyContent="center" style={{ marginTop: '25px' }}>
           <EduButton

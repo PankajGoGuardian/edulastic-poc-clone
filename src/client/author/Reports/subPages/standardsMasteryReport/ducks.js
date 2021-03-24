@@ -43,12 +43,14 @@ const initialState = {
     testSubject: '',
     testGrade: '',
     assessmentTypes: '',
+    tagIds: '',
     testIds: '',
     curriculumId: '',
     standardGrade: '',
     profileId: '',
     domainIds: '',
   },
+  tagsData: {},
 }
 
 export const reportSMRSettingsReducer = createReducer(initialState, {

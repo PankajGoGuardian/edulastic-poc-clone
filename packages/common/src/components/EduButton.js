@@ -177,6 +177,7 @@ const StyledButton = styled(Button)`
   @media (min-width: ${extraDesktopWidthMax}) {
     &.ant-btn {
       margin-left: ${(props) => props.ml || '5px'};
+      margin-right: ${(props) => props.mr || '0px'};
       height: ${(props) => props.height || '36px'};
     }
   }

@@ -16,7 +16,7 @@ const getUser = (needFirebaseLoginToken = undefined) =>
         needFirebaseLoginToken,
       },
     })
-    .then((result) => result.data.result)
+    .then((result) => result?.data?.result)
 
 const getProxyUser = (params) =>
   api

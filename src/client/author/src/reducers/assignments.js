@@ -25,6 +25,7 @@ import {
   SYNC_ASSIGNMENT_WITH_SCHOOLOGY_CLASSROOM_ERROR,
   MQTT_CLIENT_REMOVE_REQUEST,
   MQTT_CLIENT_SAVE_REQUEST,
+  SET_TAGS_UPDATING_STATE,
 } from '../constants/actions'
 
 import {
@@ -56,6 +57,7 @@ const initialState = {
   assignmentStatusCounts: { notOpen: 0, inProgress: 0, inGrading: 0, done: 0 },
   syncWithSchoologyClassroomInProgress: false,
   mqttClient: null,
+  tagsUpdatingState: false,
 }
 
 const reducer = (state = initialState, { type, payload }) => {
@@ -227,6 +229,11 @@ const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         mqttClient: null,
+      }
+    case SET_TAGS_UPDATING_STATE:
+      return {
+        ...state,
+        tagsUpdatingState: payload,
       }
     default:
       return state

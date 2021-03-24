@@ -53,6 +53,7 @@ export const compareByMap = {
   ellStatus: 'ellStatus',
   iepStatus: 'iepStatus',
   frlStatus: 'frlStatus',
+  standard: 'standard',
 }
 
 const groupByCompareKey = (metricInfo, compareBy) => {
@@ -75,6 +76,8 @@ const groupByCompareKey = (metricInfo, compareBy) => {
       return groupBy(metricInfo, 'iepStatus')
     case 'frlStatus':
       return groupBy(metricInfo, 'frlStatus')
+    case 'standard':
+      return groupBy(metricInfo, 'standardId')
     default:
       return {}
   }
@@ -133,12 +136,28 @@ export const augmentWithData = (
       return metricInfo
     case 'frlStatus':
       return metricInfo
+    case 'standard':
+      return map(metricInfo, (metric) => {
+        const { standard = '', domain = '', curriculumId = '' } =
+          find(
+            metaInfo,
+            (standardInfo) =>
+              standardInfo.standardId.toString() ===
+              metric.standardId.toString()
+          ) || {}
+        return {
+          ...metric,
+          standard,
+          domain,
+          curriculumId,
+        }
+      })
     default:
       return []
   }
 }
 
-export const calculateTrend = (groupedData) => {
+export const calculateTrend = (groupedData, sortBy) => {
   const counts = {
     up: 0,
     flat: 0,
@@ -154,7 +173,7 @@ export const calculateTrend = (groupedData) => {
     let trend = 'flat'
     const allAssessments = values(d.tests)
       .filter((a) => !a.allAbsent)
-      .sort((a, b) => a.records[0].startDate - b.records[0].startDate)
+      .sort((a, b) => a.records[0][sortBy] - b.records[0][sortBy])
 
     const n = allAssessments.length
 
@@ -215,7 +234,8 @@ export const parseTrendData = (
   metricInfo = [],
   compareBy = '',
   metaInfo = [],
-  selectedTrend = ''
+  selectedTrend = '',
+  sortBy = 'assessmentDate'
 ) => {
   const groupedMetric = groupByCompareKey(metricInfo, compareBy)
   const parsedGroupedMetric = map(groupedMetric, (metric, metricId) => {
@@ -229,6 +249,9 @@ export const parseTrendData = (
       assessmentDate,
       startDate,
       testName,
+      standardId,
+      domainId,
+      fm,
     } = metric[0]
 
     forEach(groupByTests, (value, key) => {
@@ -248,6 +271,7 @@ export const parseTrendData = (
           2
         )} / ${sumBy(sanitizedRecords, 'maxScore')}`,
         studentCount: parseInt(maxStudents[studentCountKey], 10) || 0,
+        fm,
       }
     })
     const dInfo = {}
@@ -269,11 +293,16 @@ export const parseTrendData = (
       assignmentId,
       testActivityId,
       testName,
+      standardId,
+      domainId,
       ...dInfo,
     }
   })
 
-  const [dataWithTrend, trendCount] = calculateTrend(parsedGroupedMetric)
+  const [dataWithTrend, trendCount] = calculateTrend(
+    parsedGroupedMetric,
+    sortBy
+  )
   const augmentedData = augmentWithData(dataWithTrend, compareBy, metaInfo)
   const filteredTrendData = filter(augmentedData, (record) =>
     selectedTrend ? record.trend === selectedTrend : true

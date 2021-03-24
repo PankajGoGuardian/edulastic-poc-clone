@@ -2658,8 +2658,36 @@ export const themes = {
           background: '#00AD50',
           color: 'white',
         },
-        audioPauseColor: '#ff9900',
+        audioPauseColor: '#00AD50',
         questionMarkColor: '#00AD50',
+      },
+    },
+    quester: {
+      header1: {
+        background: '#2f4151',
+        border: '#2f4151',
+      },
+      header2: {
+        background: '#374a5b',
+      },
+      button: {
+        background: '#ffffff',
+        textColor: '#374a5b',
+      },
+      footer: {
+        background: '#2f4151',
+        border: '#2f4151',
+        textColor: '#fff',
+        textHoverColor: '#ffffff',
+        hover: {
+          color: '#ffffff',
+          background: '#445666',
+        },
+      },
+      review: {
+        filterHoverBg: '#1A73E8',
+        textHoverColor: '#ffffff',
+        textColor: '#1AB394',
       },
     },
   },

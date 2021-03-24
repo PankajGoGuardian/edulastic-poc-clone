@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { EduButton, notification } from '@edulastic/common'
 import {
@@ -25,7 +25,6 @@ import {
 } from '../../../CurriculumSequence/ducks'
 import SimpleOptionsModal from '../SimpleOptions/SimpleOptionsModal'
 import SimpleOptions from '../SimpleOptions/SimpleOptions'
-import AdvancedOptions from '../AdvancedOptons/AdvancedOptons'
 import {
   Anchor,
   AnchorLink,
@@ -49,13 +48,13 @@ const AssignRecommendations = ({
   recommendationsToAssign,
   setRecommendationsToAssign,
   playlistId,
-  defaultTestProfiles,
   isModalView,
   isModalVisible,
   toggleModal,
   onClickFullSettings,
 }) => {
   const isAdvancedView = userRole !== roleuser.TEACHER
+  const [activeTab, setActiveTab] = useState('1')
 
   useEffect(() => {
     const isAdmin =
@@ -94,6 +93,8 @@ const AssignRecommendations = ({
 
     return () => clearAssignmentSettings()
   }, [])
+
+  const handleTabChange = (key) => setActiveTab(key)
 
   const handleAssign = () => {
     if (recommendationsToAssign.isAssigning) {
@@ -201,35 +202,32 @@ const AssignRecommendations = ({
         <FullFlexContainer justifyContent="space-between">
           <PaginationInfo>
             &lt;{' '}
-            <AnchorLink
-              onClick={handleAnchorClick}
-              to={`/author/playlists/playlist/${playlistId}/use-this`}
-            >
-              My Playlist
-            </AnchorLink>
-            &nbsp;/&nbsp;
+            {playlistId && (
+              <>
+                <AnchorLink
+                  onClick={handleAnchorClick}
+                  to={`/author/playlists/playlist/${playlistId}/use-this`}
+                >
+                  My Playlist
+                </AnchorLink>
+                &nbsp;/&nbsp;
+              </>
+            )}
             <TextAnchor onClick={handleAnchorClick}>Differentation</TextAnchor>
             &nbsp;/&nbsp;
             <Anchor>Assign</Anchor>
           </PaginationInfo>
         </FullFlexContainer>
-        {isAdvancedView ? (
-          <AdvancedOptions
-            assignment={assignmentSettings}
-            updateOptions={updateAssignmentSettings}
-            testSettings={testSettings}
-            defaultTestProfiles={defaultTestProfiles}
-            isAssignRecommendations
-          />
-        ) : (
-          <SimpleOptions
-            assignment={assignmentSettings}
-            testSettings={testSettings}
-            updateOptions={updateAssignmentSettings}
-            isAssignRecommendations
-            isRecommendingStandards={isRecommendingStandards}
-          />
-        )}
+        <SimpleOptions
+          handleTabChange={handleTabChange}
+          activeTab={activeTab}
+          assignment={assignmentSettings}
+          isAdvancedView={isAdvancedView}
+          testSettings={testSettings}
+          updateOptions={updateAssignmentSettings}
+          isAssignRecommendations
+          isRecommendingStandards={isRecommendingStandards}
+        />
       </Container>
     </>
   )
@@ -261,8 +259,7 @@ AssignRecommendations.propTypes = {
   clearAssignmentSettings: PropTypes.func.isRequired,
   recommendationsToAssign: PropTypes.object.isRequired,
   testSettings: PropTypes.object.isRequired,
-  playlistId: PropTypes.string.isRequired,
-  defaultTestProfiles: PropTypes.object,
+  playlistId: PropTypes.string,
   isModalView: PropTypes.bool,
   isModalVisible: PropTypes.bool,
   toggleModal: PropTypes.func,
@@ -271,9 +268,9 @@ AssignRecommendations.propTypes = {
 }
 
 AssignRecommendations.defaultProps = {
-  defaultTestProfiles: {},
   isModalView: false,
   isModalVisible: false,
   toggleModal: () => false,
   onClickFullSettings: () => false,
+  playlistId: '',
 }

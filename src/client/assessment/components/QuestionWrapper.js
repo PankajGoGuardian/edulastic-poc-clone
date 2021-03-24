@@ -4,17 +4,19 @@ import styled, { ThemeProvider, withTheme } from 'styled-components'
 import { questionType, test, roleuser } from '@edulastic/constants'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { get, round, isEqual } from 'lodash'
-import { IconClockCircularOutline } from '@edulastic/icons'
-
+import { get, isEqual } from 'lodash'
 import { withNamespaces } from '@edulastic/localization'
 import {
   mobileWidthMax,
   smallDesktopWidth,
   borderGrey2,
-  greyThemeDark2,
 } from '@edulastic/colors'
-import { withWindowSizes, ItemDetailContext, COMPACT } from '@edulastic/common'
+import {
+  withWindowSizes,
+  ItemDetailContext,
+  COMPACT,
+  FieldLabel,
+} from '@edulastic/common'
 import { PaperWrapper } from './Graph/common/styled_components'
 import { themes } from '../../theme'
 import QuestionMenu, { AdvancedOptionsLink } from './QuestionMenu'
@@ -64,8 +66,11 @@ import PreviewRubricTable from '../../author/GradingRubric/Components/common/Pre
 import Hints from './Hints'
 import Explanation from './Common/Explanation'
 import { EDIT } from '../constants/constantsForQuestions'
-import ShowUserWork from './Common/ShowUserWork'
-import { playerSkinTypeSelector } from '../selectors/test'
+import BottomAction from './Common/QuestionBottomAction'
+import {
+  getIsPreviewModalVisibleSelector,
+  playerSkinTypeSelector,
+} from '../selectors/test'
 import {
   isItemVisibiltySelector,
   ttsUserIdSelector,
@@ -186,35 +191,6 @@ const QuestionContainer = styled.div`
         }
       }
     }
-  }
-`
-
-export const TimeSpentWrapper = styled.p`
-  font-size: 19px;
-  color: ${greyThemeDark2};
-  display: flex;
-  justify-content: flex-end;
-  margin-top: auto;
-  align-items: center;
-  padding-top: 10px;
-  margin: ${({ margin }) => margin};
-  &.student-report {
-    position: absolute;
-    top: 25px;
-    right: 0px;
-    background: #f3f3f3;
-    padding: 10px 15px;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: 600;
-    svg {
-      margin-right: 10px;
-      fill: #6a737f;
-    }
-  }
-  svg {
-    margin-right: 8px;
-    fill: ${greyThemeDark2};
   }
 `
 
@@ -378,9 +354,18 @@ class QuestionWrapper extends Component {
    * @returns {boolean} whether current student is a tts user
    */
   get ttsVisibilityAuthorSide() {
-    const { studentId, ttsUserIds = [], userRole, data } = this.props
+    const {
+      studentId,
+      ttsUserIds = [],
+      userRole,
+      data,
+      isTestPreviewModalVisible,
+    } = this.props
     const key = data?.activity?.userId || studentId
-    return userRole === 'teacher' && ttsUserIds.includes(key)
+    return (
+      userRole !== roleuser.STUDENT &&
+      (ttsUserIds.includes(key) || isTestPreviewModalVisible)
+    )
   }
 
   shouldComponentUpdate(prevProps) {
@@ -406,7 +391,7 @@ class QuestionWrapper extends Component {
       !isExpressGrader &&
       data?.activity &&
       isEqual(prevUserWork, userWork) &&
-      isEqual(prevData?.activity, data?.activity) &&
+      isEqual(prevData, data) &&
       prevWindowHeight === windowHeight &&
       prevWindowWidth === windowWidth &&
       hideCorrectAnswer === prevHideCorrectAnswer
@@ -414,6 +399,17 @@ class QuestionWrapper extends Component {
       return false
     }
     return true
+  }
+
+  openStudentWork() {
+    const { data, loadScratchPad, showStudentWork } = this.props
+    // load the data from server and then show
+    loadScratchPad({
+      testActivityId: data?.activity?.testActivityId,
+      testItemId: data?.activity?.testItemId,
+      qActId: data?.activity?.qActId || data?.activity?._id,
+      callback: () => showStudentWork(),
+    })
   }
 
   get advancedAreOpen() {
@@ -534,10 +530,11 @@ class QuestionWrapper extends Component {
     }
 
     const canShowPlayer =
-      ((showUserTTS === 'yes' && userRole === 'student') ||
+      ((showUserTTS === 'yes' && userRole === roleuser.STUDENT) ||
         this.ttsVisibilityAuthorSide) &&
       data.tts &&
-      data.tts.taskStatus === 'COMPLETED'
+      data.tts.taskStatus === 'COMPLETED' &&
+      playerSkinType !== test.playerSkinValues.quester
 
     /**
      * we need to render the tts buttons at author, if it was rendered at student side
@@ -583,7 +580,7 @@ class QuestionWrapper extends Component {
         }}
       >
         <>
-          {canShowPlayer && (
+          {canShowPlayer && !hideVisibility && (
             <AudioControls
               btnWithText={
                 playerSkinType.toLowerCase() ===
@@ -634,6 +631,7 @@ class QuestionWrapper extends Component {
                 disabled={disabled}
                 isV1Multipart={isV1Multipart}
                 isStudentReport={isStudentReport}
+                isLCBView={isLCBView}
                 borderRadius={isLCBView ? '10px' : borderRadius}
                 style={{
                   width:
@@ -681,39 +679,27 @@ class QuestionWrapper extends Component {
                     setPage={this.setPage}
                   />
                   {!hasDrawingResponse && showFeedback && !isPrintPreview && (
-                    <>
-                      <TimeSpentWrapper
-                        className={isStudentReport ? 'student-report' : ''}
-                      >
-                        {!!showStudentWork && (
-                          <ShowUserWork
-                            style={{ marginRight: '1rem' }}
-                            onClickHandler={() => {
-                              // load the data from server and then show
-                              loadScratchPad({
-                                testActivityId: data?.activity?.testActivityId,
-                                testItemId: data?.activity?.testItemId,
-                                qActId:
-                                  data?.activity?.qActId || data?.activity?._id,
-                                callback: () => showStudentWork(),
-                              })
-                            }}
-                          >
-                            Show student work
-                          </ShowUserWork>
-                        )}
-                        {timeSpent && (
-                          <>
-                            <IconClockCircularOutline />
-                            {round(timeSpent / 1000, 1)}s
-                          </>
-                        )}
-                      </TimeSpentWrapper>
-                    </>
+                    <BottomAction
+                      isStudentReport={isStudentReport}
+                      isShowStudentWork={!!showStudentWork}
+                      onClickHandler={this.openStudentWork}
+                      timeSpent={timeSpent}
+                      item={data}
+                      QuestionComp={Question}
+                      advancedLink={advancedLink}
+                      advancedAreOpen={this.advancedAreOpen}
+                      saveAnswer={restProps.saveAnswer}
+                      t={restProps.t}
+                    />
                   )}
                   {rubricDetails && studentReportFeedbackVisible && (
                     <RubricTableWrapper>
-                      <span>Graded Rubric</span>
+                      <FieldLabel className="rubric-title">
+                        Graded Rubric
+                      </FieldLabel>
+                      <FieldLabel className="rubric-name">
+                        {rubricDetails.name}
+                      </FieldLabel>
                       <PreviewRubricTable
                         data={rubricDetails}
                         rubricFeedback={rubricFeedback}
@@ -828,6 +814,7 @@ const enhance = compose(
       ttsUserIds: ttsUserIdSelector(state),
       studentLanguagePreference: languagePreferenceSelector(state, ownProps),
       authLanguage: getCurrentLanguage(state),
+      isTestPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
     }),
     {
       setQuestionData: setQuestionDataAction,
@@ -857,11 +844,14 @@ const RubricTableWrapper = styled.div`
   border-radius: 10px;
   margin-top: 10px;
   padding: 10px 10px 0px;
-  > span {
+
+  .rubric-title {
     font-size: ${(props) => props.theme.titleSectionFontSize};
     font-weight: ${(props) => props.theme.semiBold};
-    display: inline-block;
     margin: 0px 16px 10px;
-    text-transform: uppercase;
+  }
+  .rubric-name {
+    font-size: ${(props) => props.theme.standardFont};
+    margin: 0px 42px 10px;
   }
 `

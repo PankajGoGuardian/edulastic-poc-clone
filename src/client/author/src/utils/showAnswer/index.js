@@ -1,14 +1,15 @@
 import evaluators from '../evaluators'
 import { replaceVariables } from '../../../../assessment/utils/variables'
 
-const createShowAnswerResult = async (questions, answers) => {
+const createShowAnswerResult = async (questions, answers, itemId = '') => {
   const questionIds = Object.keys(questions)
   const results = {}
   // for each question create evaluation obj
   for (const id of questionIds) {
+    const evaluationId = `${itemId}_${id}`
     const question = questions[id]
     const evaluator = evaluators[question.type]
-    let answer = answers[id]
+    let answer = answers[evaluationId]
     if (evaluator && question && answer) {
       const { isUnits, isMath, showDropdown } = question
       if (isUnits && isMath && showDropdown) {
@@ -26,7 +27,7 @@ const createShowAnswerResult = async (questions, answers) => {
         { userResponse: answer, validation, questionId: id, template },
         question.type
       )
-      results[id] = evaluation
+      results[evaluationId] = evaluation
     }
   }
 

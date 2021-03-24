@@ -146,6 +146,7 @@ const Curriculum = (props) => {
     isManageContentActive,
     hasEditAccess,
     isEditPage,
+    isCreatePage,
   } = props
 
   const { _id: playlistId, modules = [] } = curriculum
@@ -170,6 +171,7 @@ const Curriculum = (props) => {
       resetDestination({
         isAuthoring:
           Object.keys(curriculum).length && hasEditAccess && isEditPage,
+        isCreatePage,
       })
   }, [modulesContainerRef])
 

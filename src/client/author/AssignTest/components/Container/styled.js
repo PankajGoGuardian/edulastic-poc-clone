@@ -4,9 +4,12 @@ import {
   linkColor,
   mobileWidth,
   tabletWidth,
+  themeColor,
+  backgroundGrey2,
+  white,
 } from '@edulastic/colors'
 import { Card, FlexContainer } from '@edulastic/common'
-import { Radio, Switch } from 'antd'
+import { Radio, Switch, Modal } from 'antd'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
@@ -127,4 +130,82 @@ export const TabContentContainer = styled.div`
 `
 export const SettingContainer = styled.div`
   position: relative;
+`
+export const SavedSettingsContainer = styled.div`
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  > div:first-child {
+    margin-right: 15px;
+  }
+  .ant-select-selection {
+    border-color: ${themeColor};
+  }
+  .ant-select-selection-selected-value {
+    font-size: 12px;
+    color: ${themeColor};
+    > span {
+      display: none;
+    }
+  }
+  .ant-select-dropdown-menu {
+    li {
+      font-size: 12px;
+      > span {
+        display: flex;
+        align-items: center;
+      }
+      &:hover {
+        svg {
+          fill: ${white};
+          path {
+            fill: ${white};
+          }
+        }
+      }
+    }
+  }
+`
+
+export const StyledModal = styled(Modal)`
+  .ant-modal-header {
+    border-bottom: none;
+    h2 {
+      margin-bottom: 0px;
+      font-weight: 600;
+    }
+  }
+  .ant-modal-body {
+    div {
+      text-align: center;
+      font-size: 15px;
+      > span {
+        color: ${themeColor};
+        font-weight: 600;
+      }
+    }
+    label {
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      display: inline-block;
+    }
+    input {
+      height: 40px;
+      background: ${backgroundGrey2};
+    }
+  }
+  .ant-modal-footer {
+    border-top: none;
+    > div {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 10px;
+      button {
+        font-size: 12px;
+        height: 35px;
+        padding: 0px 30px;
+      }
+    }
+  }
 `

@@ -15,6 +15,7 @@ import {
 const DEFAULT_SEARCH_TERMS = { text: '', selectedText: '', selectedKey: '' }
 
 const SchoolAutoComplete = ({
+  dataCy,
   userOrgData,
   schoolList,
   loading,
@@ -48,7 +49,6 @@ const SchoolAutoComplete = ({
   const onBlur = () => {
     if (searchTerms.text === '' && searchTerms.selectedText !== '') {
       setSearchTerms(DEFAULT_SEARCH_TERMS)
-      selectCB({ key: '', title: '' })
     } else {
       setSearchTerms({ ...searchTerms, text: searchTerms.selectedText })
     }
@@ -64,6 +64,12 @@ const SchoolAutoComplete = ({
   }
 
   // effects
+  useEffect(() => {
+    if (selectedSchoolIds.length) {
+      // TODO: add backend support for selected ids in query
+      loadSchoolListDebounced(query)
+    }
+  }, [])
   useEffect(() => {
     if (isEmpty(searchResult)) {
       setSearchResult(schoolList)
@@ -87,10 +93,11 @@ const SchoolAutoComplete = ({
 
   return (
     <MultiSelectSearch
+      dataCy={dataCy}
       label="School"
       placeholder="All Schools"
       el={schoolFilterRef}
-      onChange={(e) => selectCB(e)}
+      onChange={(e) => selectCB(dropdownData.filter((d) => e.includes(d.key)))}
       onSearch={onSearch}
       onBlur={onBlur}
       onFocus={getDefaultSchoolList}

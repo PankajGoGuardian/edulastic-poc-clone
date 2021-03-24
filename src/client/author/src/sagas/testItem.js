@@ -165,7 +165,12 @@ function* evaluateAnswers({ payload }) {
         answersByQids,
         {
           [question?.id]: question,
-        }
+        },
+        undefined,
+        undefined,
+        item._id,
+        item.itemGradingType,
+        item.assignPartialCredit
       )
 
       yield put({
@@ -188,15 +193,18 @@ function* evaluateAnswers({ payload }) {
       }
     } else {
       const answers = yield select((state) => _get(state, 'answers', {}))
-      const items = yield select((state) => state.itemDetail.item)
-      const { itemLevelScore = 0, itemLevelScoring = false } = items || {}
+      const _item = yield select((state) => state.itemDetail.item)
+      const { itemLevelScore = 0, itemLevelScoring = false } = _item || {}
       const questions = yield select(getQuestionsSelector)
-      const answersByQids = answersByQId(answers, items._id)
+      const answersByQids = answersByQId(answers, _item._id)
       const { evaluation, score, maxScore } = yield evaluateItem(
         answersByQids,
         questions,
         itemLevelScoring,
-        itemLevelScore
+        itemLevelScore,
+        _item._id,
+        _item.itemGradingType,
+        _item.assignPartialCredit
       )
       yield put({
         type: ADD_ITEM_EVALUATION,
@@ -273,7 +281,7 @@ export default function* watcherSaga() {
   yield all([
     yield takeEvery(CREATE_TEST_ITEM_REQUEST, createTestItemSaga),
     yield Effects.throttleAction(
-      10000,
+      process.env.REACT_APP_QA_ENV ? 60000 : 10000,
       UPDATE_TEST_ITEM_REQUEST,
       updateTestItemSaga
     ),

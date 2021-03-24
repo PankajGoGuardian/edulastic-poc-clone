@@ -82,8 +82,6 @@ class AddNewUserForm extends React.Component {
     } = this.props
 
     const classCode = form.getFieldValue('code') || ''
-    // reset pre-populated state data
-    this.resetPrePopulatedDataFromState()
     try {
       const res = await userApi.checkUser({
         username: value,
@@ -173,30 +171,6 @@ class AddNewUserForm extends React.Component {
       userInfo: {},
     }))
     callback()
-  }
-
-  resetPrePopulatedDataFromState = () => {
-    const { form } = this.props
-    this.setState((prevState) => ({
-      ...prevState,
-      schoolsState: {
-        list: [],
-      },
-      selectedSchoolId: '',
-      disabledSchool: false,
-      role: 'student',
-    }))
-    form.setFields({
-      fullName: {
-        value: '',
-      },
-      password: {
-        value: '',
-      },
-      confirmPassword: {
-        value: '',
-      },
-    })
   }
 
   prePopulateDataToState = () => {
@@ -657,10 +631,10 @@ class AddNewUserForm extends React.Component {
                 </Form.Item>
               </Field>
               <Field name="contactEmails">
-                <FieldLabel>Contact</FieldLabel>
+                <FieldLabel>Parents/Guardians</FieldLabel>
                 <Form.Item>
                   {getFieldDecorator('contactEmails')(
-                    <TextInputStyled placeholder="Enter Contact" />
+                    <TextInputStyled placeholder="Enter email comma separated..." />
                   )}
                 </Form.Item>
               </Field>

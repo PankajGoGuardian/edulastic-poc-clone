@@ -172,7 +172,6 @@ class QuestionViewContainer extends Component {
       filter,
     } = this.props
     const { loading, hideCorrectAnswer } = this.state
-
     let filteredItems = testItems?.filter((item) =>
       item.data.questions.some((q) => q.id === question.id)
     )
@@ -210,33 +209,6 @@ class QuestionViewContainer extends Component {
     //     return "";
     //   });
     // }
-    const activeQuestions = classQuestion
-    /**
-     * copied from
-     *  https://github.com/snapwiz/edulastic-poc/blob/eacf271e7792e2e452b2fcc427340fc57c67434d/src/client/author/StudentView/index.js#L197
-     * TODO: refactor to compute these counts in single loop/reduce
-     */
-    const totalNumber = activeQuestions.length
-
-    const correctNumber = activeQuestions.filter(
-      (x) => x.score === x.maxScore && x.score > 0
-    ).length
-
-    const wrongNumber = activeQuestions.filter(
-      (x) => x.score === 0 && x.maxScore > 0 && x.graded && !x.skipped
-    ).length
-
-    const partiallyCorrectNumber = activeQuestions.filter(
-      (x) => x.score > 0 && x.score < x.maxScore
-    ).length
-
-    const skippedNumber = activeQuestions.filter(
-      (x) => x.skipped && x.score === 0
-    ).length
-
-    const notGradedNumber = activeQuestions.filter(
-      (x) => !x.skipped && x.graded === false
-    ).length
 
     if (!isEmpty(testActivity)) {
       data = testActivity
@@ -287,6 +259,31 @@ class QuestionViewContainer extends Component {
           return stData
         })
     }
+
+    const {
+      c: correctNumber,
+      w: wrongNumber,
+      p: partiallyCorrectNumber,
+      s: skippedNumber,
+      n: notGradedNumber,
+      t: totalNumber,
+    } = data.reduce(
+      (acc, item) => ({
+        w: item.wrong + acc.w,
+        c: item.correct + acc.c,
+        p: item.pCorrect + acc.p,
+        s: item.skipped + acc.s,
+        n: item.manuallyGraded + acc.n,
+        t:
+          item.wrong +
+          item.correct +
+          item.pCorrect +
+          item.skipped +
+          item.manuallyGraded +
+          acc.t,
+      }),
+      { c: 0, w: 0, p: 0, s: 0, n: 0, t: 0 }
+    )
 
     if (isMobile) {
       data = data.slice(0, 2)
@@ -457,7 +454,9 @@ class QuestionViewContainer extends Component {
             >
               {hideCorrectAnswer ? <IconEye /> : <IconEyeClose />}
               <span data-cy="showCorrectAnswer" data-test={!hideCorrectAnswer}>
-                correct answers
+                {hideCorrectAnswer
+                  ? 'Expand correct answers'
+                  : 'Collapse correct answers'}
               </span>
             </EduButton>
           </StudentButtonWrapper>
@@ -510,6 +509,7 @@ const enhance = compose(
       additionalData: getAdditionalDataSelector(state),
       studentsList: getAllStudentsList(state),
       filter: state?.author_classboard_testActivity?.studentViewFilter,
+      isDocBased: state?.author_classboard_testActivity?.data?.test?.isDocBased,
     }),
     {
       loadClassQuestionResponses: receiveAnswersAction,

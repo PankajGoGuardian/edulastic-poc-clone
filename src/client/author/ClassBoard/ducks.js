@@ -6,6 +6,7 @@ import {
   classResponseApi,
   canvasApi,
   utilityApi,
+  testItemsApi,
 } from '@edulastic/api'
 import { createSelector } from 'reselect'
 import { push } from 'connected-react-router'
@@ -74,6 +75,8 @@ import {
   CANVAS_SYNC_ASSIGNMENT,
   FETCH_SERVER_TIME,
   PAUSE_STUDENTS,
+  CORRECT_ITEM_UPDATE_REQUEST,
+  CORRECT_ITEM_UPDATE_SUCCESS,
 } from '../src/constants/actions'
 
 import { downloadCSV } from '../Reports/common/util'
@@ -638,6 +641,49 @@ function* togglePauseStudentsSaga({ payload }) {
   }
 }
 
+function* correctItemUpdateSaga({ payload }) {
+  try {
+    const { testItemId, testId, question } = payload
+    const classResponse = yield select((state) => state.classResponse)
+    const testItems = get(classResponse, 'data.testItems', [])
+    const testItem = testItems.find((t) => t._id === testItemId) || {}
+
+    testItem.data.questions = testItem.data.questions.map((q) =>
+      q.id === question.id ? question : q
+    )
+    const result = yield call(
+      testItemsApi.updateCorrectItemById,
+      testItemId,
+      testItem,
+      testId
+    )
+
+    yield put({
+      type: RECEIVE_TESTACTIVITY_REQUEST,
+      payload: {
+        assignmentId: payload.assignmentId,
+        classId: payload.groupId,
+        isQuestionsView: false,
+      },
+    })
+
+    const itemsToReplace = testItems.map((t) =>
+      t.id === testItemId ? result : t
+    )
+
+    markQuestionLabel(itemsToReplace)
+
+    yield put({
+      type: CORRECT_ITEM_UPDATE_SUCCESS,
+      payload: {
+        testItems: itemsToReplace,
+      },
+    })
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_GRADEBOOK_REQUEST, receiveGradeBookSaga),
@@ -664,6 +710,7 @@ export function* watcherSaga() {
     yield takeEvery(CANVAS_SYNC_GRADES, canvasSyncGradesSaga),
     yield takeEvery(CANVAS_SYNC_ASSIGNMENT, canvasSyncAssignmentSaga),
     yield takeEvery(FETCH_SERVER_TIME, fetchServerTimeSaga),
+    yield takeEvery(CORRECT_ITEM_UPDATE_REQUEST, correctItemUpdateSaga),
   ])
 }
 
@@ -687,12 +734,19 @@ export const getAnswerByQidSelector = createSelector(
   (answers) => {
     const answerByQid = {}
     Object.keys(answers).forEach((answer) => {
-      const [_, qid] = answer.split('_')
+      const [, qid] = answer.split('_')
       answerByQid[qid] = answers[answer]
     })
     return answerByQid
   }
 )
+
+export const getTestItemById = createSelector(
+  stateClassResponseSelector,
+  (state, testItemId) =>
+    get(state, 'data.testItems', []).find((t) => t._id === testItemId) || {}
+)
+
 const getTestItemsData = createSelector(
   stateTestActivitySelector,
   (state) => state?.data?.testItemsData || []
@@ -720,6 +774,11 @@ export const getHasRandomQuestionselector = createSelector(
 export const getTotalPoints = createSelector(
   getClassResponseSelector,
   (_test) => _test?.summary?.totalPoints
+)
+
+export const getIsDocBasedTestSelector = createSelector(
+  getClassResponseSelector,
+  (_test) => _test?.isDocBased
 )
 
 export const getCurrentTestActivityIdSelector = createSelector(

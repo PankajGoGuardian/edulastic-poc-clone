@@ -7,7 +7,7 @@ import {
   notification,
   uploadToS3,
 } from '@edulastic/common'
-import { aws, roleuser } from '@edulastic/constants'
+import { aws, roleuser, test as testConstants } from '@edulastic/constants'
 
 import { getQuestionIds } from './items'
 // actions
@@ -18,11 +18,17 @@ import {
   COUNT_CHECK_ANSWER,
   SET_CHECK_ANSWER_PROGRESS_STATUS,
 } from '../constants/actions'
-import { itemQuestionsSelector, answersForCheck } from '../selectors/test'
+import {
+  itemQuestionsSelector,
+  answersForCheck,
+  playerSkinTypeSelector,
+} from '../selectors/test'
 import { CHANGE_PREVIEW, CHANGE_VIEW } from '../../author/src/constants/actions'
 import { getTypeAndMsgBasedOnScore } from '../../common/utils/helpers'
 import { scratchpadDomRectSelector } from '../../common/components/Scratchpad/duck'
 import { getUserRole } from '../../author/src/selectors/user'
+
+const { playerSkinValues } = testConstants
 
 function* evaluateAnswers({ payload: groupId }) {
   try {
@@ -44,12 +50,16 @@ function* evaluateAnswers({ payload: groupId }) {
     })
 
     const validResponses = values(userResponse).filter((item) => !!item)
+    const playerSkinType = yield select(playerSkinTypeSelector)
     // if user response is empty show toaster msg.
+    const config =
+      playerSkinType === playerSkinValues.quester ? { bottom: '64px' } : {}
     if (isEmpty(validResponses)) {
       yield put({ type: SET_CHECK_ANSWER_PROGRESS_STATUS, payload: false })
       return notification({
         type: 'warn',
         messageKey: 'attemptTheQuestonToCheckAnswer',
+        ...config,
       })
     }
     const { items, currentItem } = yield select((state) => state.test)
@@ -123,7 +133,7 @@ function* evaluateAnswers({ payload: groupId }) {
             shuffledOptions: studentActivity.shuffledOptions,
             userWork: studentActivity.userWork,
           }
-    const { evaluations, maxScore, score } = yield call(
+    const { evaluations: _evaluations, maxScore, score } = yield call(
       testItemsApi.evaluation,
       testItemId,
       activity
@@ -141,7 +151,10 @@ function* evaluateAnswers({ payload: groupId }) {
         view: 'preview',
       },
     })
-
+    const evaluations = {}
+    Object.keys(_evaluations).forEach((item) => {
+      evaluations[`${testItemId}_${item}`] = _evaluations[item]
+    })
     yield put({
       type: ADD_ITEM_EVALUATION,
       payload: {
@@ -156,14 +169,18 @@ function* evaluateAnswers({ payload: groupId }) {
       },
     })
     yield put({ type: SET_CHECK_ANSWER_PROGRESS_STATUS, payload: false })
-    notification({ type, msg: message })
+    notification({ type, msg: message, ...config })
   } catch (err) {
+    const playerSkinType = yield select(playerSkinTypeSelector)
+    const config =
+      playerSkinType === playerSkinValues.quester ? { bottom: '64px' } : {}
     if (err.status === 403)
       notification({
         type: 'warn',
         messageKey: 'checkAnswerLimitExceededForItem',
+        ...config,
       })
-    else notification({ messageKey: 'checkAnswerFail' })
+    else notification({ messageKey: 'checkAnswerFail', ...config })
     console.log(err)
     captureSentryException(err)
   }

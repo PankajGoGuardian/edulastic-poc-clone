@@ -3,8 +3,8 @@ import styled from 'styled-components'
 import IMG17 from '../../static/bg-hero.svg'
 
 export const TopBanner = styled.div`
-  background: url(${IMG17});
-  padding-bottom: 80px;
+  background: ${(props) => (props.isBannerVisible ? `url(${IMG17})` : white)};
+  padding-bottom: ${(props) => (props.isBannerVisible ? '80px' : '0px')};
   background-size: contain;
   background-repeat: no-repeat;
   background-position: 0px 65px;
@@ -68,13 +68,6 @@ export const Boxes = styled.div`
     height: 85px;
     margin-bottom: 30px;
   }
-`
-export const MultiSubscriptionLink = styled.div`
-  font-size: 12px;
-  color: ${themeColor};
-  text-transform: uppercase;
-  cursor: pointer;
-  font-weight: 600;
 `
 
 export const LearnMore = styled.div`

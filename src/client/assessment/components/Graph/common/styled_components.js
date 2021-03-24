@@ -395,7 +395,9 @@ export const PaperWrapper = styled(StyledPaperWrapper)`
       ? '0px 35px'
       : props.isStudentReport
       ? '20px 100px 20px 20px'
-      : '35px'};
+      : props.isLCBView
+      ? '16px 28px 8px'
+      : '8px 28px'};
   min-width: ${({ style }) => style.minWidth};
   ${({ style }) => style};
 

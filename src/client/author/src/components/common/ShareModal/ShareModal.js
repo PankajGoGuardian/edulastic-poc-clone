@@ -93,6 +93,35 @@ const shareTypeKeys = ['PUBLIC', 'DISTRICT', 'SCHOOL', 'INDIVIDUAL', 'LINK']
 const shareTypeKeyForDa = ['PUBLIC', 'DISTRICT', 'INDIVIDUAL', 'LINK']
 
 const { Option } = AutoComplete
+
+const SharedRow = ({ data, index, getEmail, getUserName, removeHandler }) => {
+  return (
+    <Row
+      key={index}
+      style={{
+        paddingBottom: 5,
+        display: 'flex',
+        alignItems: 'center',
+      }}
+    >
+      <Col span={12}>
+        {getUserName()}
+        <span>{getEmail()}</span>
+      </Col>
+      <Col span={11}>
+        <span>
+          {data.permission === 'EDIT' && 'Can Edit, Add/Remove Items'}
+        </span>
+        <span>{data.permission === 'VIEW' && 'Can View & Duplicate'}</span>
+      </Col>
+      <Col span={1}>
+        <a data-cy="share-button-close" onClick={() => removeHandler()}>
+          <CloseIcon />
+        </a>
+      </Col>
+    </Row>
+  )
+}
 class ShareModal extends React.Component {
   constructor(props) {
     super(props)
@@ -148,7 +177,14 @@ class ShareModal extends React.Component {
   }
 
   componentDidMount() {
-    const { getSharedUsers, match, isPlaylist, userRole } = this.props
+    const {
+      getSharedUsers,
+      match,
+      isPlaylist,
+      userRole,
+      updateEmailNotificationData,
+      isPublished,
+    } = this.props
     const testId = match.params.id
     const isDA = userRole === roleuser.DISTRICT_ADMIN
     if (isDA) {
@@ -159,6 +195,11 @@ class ShareModal extends React.Component {
         contentId: testId,
         contentType: isPlaylist ? 'PLAYLIST' : 'TEST',
       })
+    if (!isPublished) {
+      updateEmailNotificationData({
+        sendEmailNotification: true,
+      })
+    }
   }
 
   radioHandler = (e) => {
@@ -442,7 +483,16 @@ class ShareModal extends React.Component {
     const shareTypeKeysToDisplay = (isDA
       ? shareTypeKeyForDa
       : shareTypeKeys
-    ).filter((k) => (isPlaylist && k !== sharedKeysObj.LINK) || !isPlaylist)
+    ).filter(
+      (shareType) =>
+        (isPlaylist &&
+          ![sharedKeysObj.LINK, sharedKeysObj.PUBLIC].includes(shareType)) ||
+        !isPlaylist
+    )
+
+    const individuals = sharedUsersList.filter(
+      (item) => item.sharedType === sharedKeysObj.INDIVIDUAL
+    )
 
     return (
       <SharingModal
@@ -454,84 +504,92 @@ class ShareModal extends React.Component {
       >
         <ModalContainer>
           <h2 style={{ fontWeight: 'bold', fontSize: 20 }}>
-            Share with others
+            {isPublished
+              ? 'Share with others'
+              : 'Collaborate with other Co-Authors'}
           </h2>
-          <ShareBlock>
-            <ShareLabel>{shareLabel || 'TEST URL'}</ShareLabel>
-            <FlexContainer>
-              {sharedUsersList.length === 0 && (
-                <CopyBlockLayer onClick={this.handleCopyBlock} />
+          {!!(isPublished || (!isPublished && individuals.length)) && (
+            <ShareBlock>
+              {isPublished && (
+                <>
+                  <ShareLabel>{shareLabel || 'TEST URL'}</ShareLabel>
+                  <FlexContainer>
+                    {sharedUsersList.length === 0 && (
+                      <CopyBlockLayer onClick={this.handleCopyBlock} />
+                    )}
+                    <TitleCopy copyable={{ text: sharableURL }}>
+                      <ShareUrlDiv title={sharableURL}>
+                        {sharableURL}
+                      </ShareUrlDiv>
+                    </TitleCopy>
+                  </FlexContainer>
+                </>
               )}
-              <TitleCopy copyable={{ text: sharableURL }}>
-                <ShareUrlDiv title={sharableURL}>{sharableURL}</ShareUrlDiv>
-              </TitleCopy>
-            </FlexContainer>
-            {sharedUsersList.length !== 0 && (
-              <>
-                <ShareListTitle>Who has access</ShareListTitle>
-                <ShareList>
-                  {sharedUsersList.map((data, index) => (
-                    <Row
-                      key={index}
-                      style={{
-                        paddingBottom: 5,
-                        display: 'flex',
-                        alignItems: 'center',
-                      }}
-                    >
-                      <Col span={12}>
-                        {this.getUserName(data)}
-                        <span>{this.getEmail(data)}</span>
-                      </Col>
-                      <Col span={11}>
-                        <span>
-                          {data.permission === 'EDIT' &&
-                            'Can Edit, Add/Remove Items'}
-                        </span>
-                        <span>
-                          {data.permission === 'VIEW' && 'Can View & Duplicate'}
-                        </span>
-                      </Col>
-                      <Col span={1}>
-                        <a
-                          data-cy="share-button-close"
-                          onClick={() => this.removeHandler(data)}
-                        >
-                          <CloseIcon />
-                        </a>
-                      </Col>
-                    </Row>
-                  ))}
-                </ShareList>
-              </>
-            )}
-          </ShareBlock>
+              {isPublished && sharedUsersList.length !== 0 && (
+                <>
+                  <ShareListTitle>WHO HAS ACCESS</ShareListTitle>
+                  <ShareList>
+                    {sharedUsersList.map((data, index) => (
+                      <SharedRow
+                        data={data}
+                        index={index}
+                        getEmail={() => this.getEmail(data)}
+                        getUserName={() => this.getUserName(data)}
+                        removeHandler={() => this.removeHandler(data)}
+                      />
+                    ))}
+                  </ShareList>
+                </>
+              )}
+              {!isPublished && !!individuals.length && (
+                <>
+                  <ShareListTitle>CO-AUTHORS FOR THIS TEST</ShareListTitle>
+                  <ShareList>
+                    {individuals.map((data, index) => (
+                      <SharedRow
+                        data={data}
+                        index={index}
+                        getEmail={() => this.getEmail(data)}
+                        getUserName={() => this.getUserName(data)}
+                        removeHandler={() => this.removeHandler(data)}
+                      />
+                    ))}
+                  </ShareList>
+                </>
+              )}
+            </ShareBlock>
+          )}
           <PeopleBlock>
-            <PeopleLabel>GIVE ACCESS TO</PeopleLabel>
-            <RadioBtnWrapper>
-              <RadioGrp
-                value={sharedType}
-                onChange={(e) => this.radioHandler(e)}
-              >
-                {shareTypeKeysToDisplay.map((item) => (
-                  <RadioBtn
-                    value={item}
-                    key={item}
-                    disabled={
-                      (!isPublished && item !== sharedKeysObj.INDIVIDUAL) ||
-                      hasPremiumQuestion ||
-                      features.isCurator ||
-                      features.isPublisherAuthor ||
-                      !hasPlaylistEditAccess ||
-                      (userSignupStatus === signUpState.ACCESS_WITHOUT_SCHOOL &&
-                        item !== sharedKeysObj.INDIVIDUAL)
-                    }
-                  >
-                    {shareTypes[item]}
-                  </RadioBtn>
-                ))}
-              </RadioGrp>
-            </RadioBtnWrapper>
+            <PeopleLabel>
+              {isPublished ? 'GIVE ACCESS TO' : 'Invite Co-Authors'}
+            </PeopleLabel>
+            {isPublished && (
+              <RadioBtnWrapper>
+                <RadioGrp
+                  value={sharedType}
+                  onChange={(e) => this.radioHandler(e)}
+                >
+                  {shareTypeKeysToDisplay.map((item) => (
+                    <RadioBtn
+                      value={item}
+                      key={item}
+                      disabled={
+                        (!isPublished && item !== sharedKeysObj.INDIVIDUAL) ||
+                        (hasPremiumQuestion && item === sharedKeysObj.PUBLIC) ||
+                        features.isCurator ||
+                        features.isPublisherAuthor ||
+                        !hasPlaylistEditAccess ||
+                        (userSignupStatus ===
+                          signUpState.ACCESS_WITHOUT_SCHOOL &&
+                          item !== sharedKeysObj.INDIVIDUAL)
+                      }
+                    >
+                      {shareTypes[item]}
+                    </RadioBtn>
+                  ))}
+                </RadioGrp>
+              </RadioBtnWrapper>
+            )}
             <FlexContainer
               style={{ marginTop: 5, position: 'relative' }}
               justifyContent="flex-start"
@@ -601,6 +659,7 @@ class ShareModal extends React.Component {
               </IndividualSelectInputStyled>
             </FlexContainer>
           </PeopleBlock>
+
           {sharedType === sharedKeysObj.INDIVIDUAL && (
             <NotificationBlock color={showMessageBody ? red : themeColor}>
               <div>
@@ -630,6 +689,7 @@ class ShareModal extends React.Component {
           <DoneButtonContainer>
             <EduButton
               height="32px"
+              width={!isPublished ? '175px' : null}
               onClick={onClose}
               style={{ display: 'inline-flex' }}
             >
@@ -637,12 +697,13 @@ class ShareModal extends React.Component {
             </EduButton>
             <EduButton
               height="32px"
+              width={!isPublished ? '175px' : null}
               data-cy="share-button-pop"
               onClick={this.handleShare}
               style={{ display: 'inline-flex' }}
             >
               <IconShare />
-              SHARE
+              {isPublished ? 'SHARE' : 'Invite Co-Authors'}
             </EduButton>
           </DoneButtonContainer>
         </ModalContainer>

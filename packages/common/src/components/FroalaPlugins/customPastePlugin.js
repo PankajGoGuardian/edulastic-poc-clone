@@ -15,7 +15,7 @@ function customPastePlugin(FroalaEditor) {
       if (editor.opts.sanitizeClipboardHtml) {
         sanitizedString = sanitizedString
           ?.replace(/<meta[\s\S]*?>/g, '')
-          ?.replace(/(<p(.*?)>)/g, '')
+          ?.replace(/(<p(.*?)>)/g, '<p>')
       }
 
       return sanitizedString

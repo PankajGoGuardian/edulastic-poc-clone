@@ -4,10 +4,11 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { ThemeProvider } from 'styled-components'
-import { get, keyBy, isUndefined } from 'lodash'
+import { get, keyBy, isUndefined, last } from 'lodash'
 import { withWindowSizes, ScrollContext, notification } from '@edulastic/common'
 import { nonAutoGradableTypes, test } from '@edulastic/constants'
 
+import { playerSkinValues } from '@edulastic/constants/const/test'
 import { themes } from '../../../theme'
 import MainWrapper from './MainWrapper'
 import ToolbarModal from '../common/ToolbarModal'
@@ -51,11 +52,18 @@ import {
 } from '../../actions/userInteractions'
 import { CLEAR } from '../../constants/constantsForQuestions'
 import { showScratchpadInfoNotification } from '../../utils/helpers'
+import UserWorkUploadModal from '../../components/UserWorkUploadModal'
 
 class AssessmentPlayerDefault extends React.Component {
   constructor(props) {
     super(props)
-    const { settings } = props
+    const { settings, attachments = [] } = props
+    const lastUploadedFileNameExploded =
+      last(attachments)?.name?.split('_') || []
+    const cameraImageIndex = last(lastUploadedFileNameExploded)
+      ? parseInt(last(lastUploadedFileNameExploded), 10) + 1
+      : 1
+
     const calcType = this.calculatorType
     this.state = {
       cloneCurrentItem: props.currentItem,
@@ -72,6 +80,8 @@ class AssessmentPlayerDefault extends React.Component {
       minWidth: 480,
       defaultContentWidth: 900,
       defaultHeaderHeight: 62,
+      isUserWorkUploadModalVisible: false,
+      cameraImageIndex,
     }
     this.scrollContainer = React.createRef()
   }
@@ -92,7 +102,7 @@ class AssessmentPlayerDefault extends React.Component {
   }
 
   changeTool = (val) => {
-    const { hasDrawingResponse } = this.props
+    const { hasDrawingResponse, playerSkinType } = this.props
     let { currentToolMode, enableCrossAction } = this.state
     if (val === 3 || val === 5) {
       const index = currentToolMode.indexOf(val)
@@ -109,9 +119,14 @@ class AssessmentPlayerDefault extends React.Component {
             !hasDrawingResponse &&
             showScratchpadInfoNotification(items[currentItem])
           ) {
+            const config =
+              playerSkinType === playerSkinValues.quester
+                ? { bottom: '64px' }
+                : {}
             notification({
               type: 'info',
               messageKey: 'scratchpadInfoMultipart',
+              ...config,
             })
           }
         }
@@ -133,11 +148,15 @@ class AssessmentPlayerDefault extends React.Component {
       answerChecksUsedForItem,
       settings,
       groupId,
+      playerSkinType,
     } = this.props
+    const config =
+      playerSkinType === playerSkinValues.quester ? { bottom: '64px' } : {}
     if (answerChecksUsedForItem >= settings.maxAnswerChecks)
       return notification({
         type: 'warn',
         messageKey: 'checkAnswerLimitExceededForItem',
+        ...config,
       })
     checkAnswer(groupId)
     this.setState({ testItemState: value })
@@ -219,6 +238,33 @@ class AssessmentPlayerDefault extends React.Component {
     })
   }
 
+  toggleUserWorkUploadModal = () =>
+    this.setState(({ isUserWorkUploadModalVisible }) => ({
+      isUserWorkUploadModalVisible: !isUserWorkUploadModalVisible,
+    }))
+
+  closeUserWorkUploadModal = () =>
+    this.setState({ isUserWorkUploadModalVisible: false })
+
+  saveUserWorkAttachments = (files) => {
+    const { attachments } = this.props
+    const newAttachments = files.map(({ name, type, size, source }) => ({
+      name,
+      type,
+      size,
+      source,
+    }))
+    this.saveUserWork('attachments')([
+      ...(attachments || []),
+      ...newAttachments,
+    ])
+    this.setState(({ cameraImageIndex }) => ({
+      cameraImageIndex: cameraImageIndex + 1,
+    }))
+
+    this.closeUserWorkUploadModal()
+  }
+
   static getDerivedStateFromProps(next, prevState) {
     if (next.currentItem !== prevState.cloneCurrentItem) {
       // coming from a different question
@@ -232,9 +278,17 @@ class AssessmentPlayerDefault extends React.Component {
         currentToolMode.push(0)
       }
 
+      const { attachments = [] } = next
+      const lastUploadedFileNameExploded =
+        last(attachments)?.name?.split('_') || []
+      const cameraImageIndex = last(lastUploadedFileNameExploded)
+        ? parseInt(last(lastUploadedFileNameExploded), 10) + 1
+        : 1
+
       const nextState = {
         currentToolMode,
         cloneCurrentItem: next.currentItem,
+        cameraImageIndex,
         history: 0,
         enableCrossAction: currentToolMode.indexOf(3) !== -1,
         testItemState: '', // start in clear preview mode (attemptable mode)
@@ -310,7 +364,11 @@ class AssessmentPlayerDefault extends React.Component {
       studentReportModal,
       hidePause,
       blockNavigationToAnsweredQuestions,
+      uploadToS3,
+      user = {},
+      gotoSummary,
     } = this.props
+    const { firstName = '', lastName = '' } = user
     const { settings } = this.props
     const {
       testItemState,
@@ -323,6 +381,8 @@ class AssessmentPlayerDefault extends React.Component {
       defaultContentWidth,
       defaultHeaderHeight,
       currentToolMode,
+      isUserWorkUploadModalVisible,
+      cameraImageIndex,
     } = this.state
     const calcBrands = ['DESMOS', 'GEOGEBRASCIENTIFIC', 'EDULASTIC']
     const dropdownOptions = Array.isArray(items)
@@ -426,14 +486,22 @@ class AssessmentPlayerDefault extends React.Component {
     }
 
     const qType = get(items, `[${currentItem}].data.questions[0].type`, null)
-
+    const cameraImageName = `${firstName}_${lastName}_${
+      currentItem + 1
+    }_${cameraImageIndex}`
     return (
       /**
        * zoom only in student side, otherwise not
        * we need to pass zoomLevel as a theme variable because we should use it in questions
        */
       <ThemeProvider
-        theme={{ ...themeToPass, shouldZoom: true, zoomLevel, headerHeight }}
+        theme={{
+          ...themeToPass,
+          shouldZoom: true,
+          zoomLevel,
+          headerHeight,
+          playerSkinType,
+        }}
       >
         <Container
           scratchPadMode={scratchPadMode}
@@ -488,12 +556,14 @@ class AssessmentPlayerDefault extends React.Component {
             showMagnifier={showMagnifier}
             handleMagnifier={handleMagnifier}
             enableMagnifier={enableMagnifier}
+            toggleUserWorkUploadModal={this.toggleUserWorkUploadModal}
             timedAssignment={timedAssignment}
             utaId={utaId}
             groupId={groupId}
             blockNavigationToAnsweredQuestions={
               blockNavigationToAnsweredQuestions
             }
+            gotoSummary={gotoSummary}
           >
             <FeaturesSwitch
               inputFeatures="studentSettings"
@@ -647,6 +717,13 @@ class AssessmentPlayerDefault extends React.Component {
                 calcBrands={calcBrands}
               />
             )}
+            <UserWorkUploadModal
+              isModalVisible={isUserWorkUploadModalVisible}
+              onCancel={this.closeUserWorkUploadModal}
+              uploadFile={uploadToS3}
+              onUploadFinished={this.saveUserWorkAttachments}
+              cameraImageName={cameraImageName}
+            />
           </AssessmentPlayerSkinWrapper>
         </Container>
       </ThemeProvider>
@@ -807,6 +884,7 @@ const enhance = compose(
   withWindowSizes,
   connect(
     (state, ownProps) => ({
+      user: get(state, 'user.user'),
       evaluation: state.evaluation,
       preview: state.view.preview,
       scratchPad: get(

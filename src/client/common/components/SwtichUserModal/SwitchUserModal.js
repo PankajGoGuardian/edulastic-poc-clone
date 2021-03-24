@@ -19,6 +19,7 @@ const roles = {
   'school-admin': 'School Admin',
   teacher: 'Teacher',
   student: 'Student',
+  parent: 'Parent',
 }
 
 const color = {
@@ -26,6 +27,7 @@ const color = {
   teacher: '#1AB395',
   'school-admin': '#C33EC3',
   'district-admin': '#B82ECE',
+  parent: '#D0A20D',
 }
 
 const StyledDiv = styled.div`

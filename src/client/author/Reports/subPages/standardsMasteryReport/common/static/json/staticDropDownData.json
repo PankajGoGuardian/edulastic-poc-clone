@@ -1,23 +1,70 @@
 {
-  "defaults": {
-    "teacher": {
-      "termId": "",
-      "subject": "All",
-      "grade": "All",
-      "courseId": "All",
-      "groupId": "All",
-      "assessmentType": "All"
+  "filterSections": {
+    "CLASS_FILTERS": {
+      "key": "0",
+      "title": "Select Students"
     },
-    "other": {
-      "termId": "",
-      "subject": "All",
-      "grade": "All",
-      "courseId": "All",
-      "groupId": "All",
-      "schoolId": "All",
-      "teacherId": "All",
-      "assessmentType": "All"
+    "TEST_FILTERS": {
+      "key": "1",
+      "title": "Select Assessment(s)"
+    },
+    "DEMOGRAPHIC_FILTERS": {
+      "key": "2",
+      "title": "Demographics"
     }
+  },
+  "tagTypes": [
+    { "key": "termId" },
+    { "key": "schoolIds" },
+    { "key": "teacherIds" },
+    { "key": "grade", "subType": "class" },
+    { "key": "subject", "subType": "class" },
+    { "key": "courseId" },
+    { "key": "classIds" },
+    { "key": "groupIds" },
+    { "key": "testGrade", "subType": "test" },
+    { "key": "testSubject", "subType": "test" },
+    { "key": "tagIds" },
+    { "key": "assessmentTypes" },
+    { "key": "testIds" },
+    { "key": "curriculumId" },
+    { "key": "standardGrade", "subType": "standard" },
+    { "key": "profileId" },
+    { "key": "domainIds" },
+    { "key": "standardId" },
+    { "key": "race" },
+    { "key": "gender" },
+    { "key": "iepStatus" },
+    { "key": "frlStatus" },
+    { "key": "ellStatus" }
+  ],
+  "initialFilters": {
+    "reportId": "",
+    "termId": "",
+    "schoolIds": "",
+    "teacherIds": "",
+    "grade": "TK",
+    "subject": "All",
+    "courseId": "All",
+    "classIds": "",
+    "groupIds": "",
+    "testGrade": "All",
+    "testSubject": "All",
+    "tagIds": "",
+    "assessmentTypes": "",
+    "curriculumId": "",
+    "standardGrade": "All",
+    "profileId": "",
+    "domainIds": [],
+    "standardId": "",
+    "showApply": false
+  },
+  "initialDdFilters": {
+    "race": "all",
+    "gender": "all",
+    "iepStatus": "all",
+    "frlStatus": "all",
+    "ellStatus": "all"
   },
   "subjects": [
     { "key": "All", "title": "All Subjects" },

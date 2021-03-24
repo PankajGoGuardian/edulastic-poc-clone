@@ -101,6 +101,22 @@ const createTestSetting = (data) =>
     })
     .then((result) => result.data.result)
 
+const removeTestSetting = (testSettingsId) =>
+  api
+    .callApi({
+      url: `${prefix}/archive-test-setting/${testSettingsId}`,
+      method: 'put',
+    })
+    .then((result) => result.data.result)
+
+const getTestSettingsList = ({ orgId, orgType }) =>
+  api
+    .callApi({
+      url: `${prefix}/testSettings/${orgId}?orgType=${orgType}`,
+      method: 'get',
+    })
+    .then((result) => result.data.result)
+
 // District Policy
 const getDistrictPolicy = ({ orgId, orgType = 'district' }) =>
   api
@@ -306,4 +322,6 @@ export default {
   updateExternalTools,
   deleteExternalTools,
   saveCanvasIntegrationKeys,
+  getTestSettingsList,
+  removeTestSetting,
 }

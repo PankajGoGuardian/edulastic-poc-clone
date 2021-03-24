@@ -6,11 +6,13 @@ const DividerContainer = ({
   collapseDirection,
   setCollapseView,
   hideMiddle,
+  stackedView,
 }) => (
   <Divider
     isCollapsed={!!collapseDirection}
     collapseDirection={collapseDirection}
     hideMiddle={hideMiddle}
+    stackedView={stackedView}
   >
     <div className="button-wrapper">
       <CollapseBtn

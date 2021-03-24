@@ -280,6 +280,7 @@ class Container extends PureComponent {
       history,
       userId,
       isEditPage,
+      isCreatePage,
     } = this.props
     const modules = playlist.modules.map((m) => {
       const data = m.data.map((d) => omit(d, ['hidden']))
@@ -344,6 +345,7 @@ class Container extends PureComponent {
             onBeginDrag={this.onBeginDrag}
             history={history}
             isEditPage={isEditPage}
+            isCreatePage={isCreatePage}
             onDrop={this.onDrop}
             current={current}
             onSortEnd={this.onSortEnd}

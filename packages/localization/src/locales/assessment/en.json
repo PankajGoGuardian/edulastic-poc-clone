@@ -24,6 +24,24 @@
     "annotation": {
       "annotations": "Annotations",
       "addAnnotation": "Add new Annotation"
+    },
+    "multipartSettings": {
+      "itemLevelScoring": "Single score for entire item",
+      "partLevelScoring": "Part level Scores",
+      "allCorrectMust": "All parts needs to be correct",
+      "firstCorrectMust": "EBSR Grading",
+      "anyCorrect": "Any of the parts can be correct",
+      "layoutStyle": "Layout Style",
+      "useTabs": "Use Tabs",
+      "helperText": {
+        "itemLevelScoring": "Automatically divide score equally between parts, there will be one score reported. For example, the item is worth 10 points and has 5 parts, so 2 points will be allocated to each part.",
+        "partLevelScoring": "Manually specify the different scores for each part and report it separately.",
+        "allCorrectMust": "Credit will only be awarded for this item if each part is correct.",
+        "firstCorrectMust": "The first part needs to be completely correct in order for credit to be given on other parts. For example if the student gets parts 2 and 3 correct, but not the first part, they will get zero.",
+        "anyCorrect": "Credit will be awarded if any part is correct based on how the part is scored",
+        "layoutStyle": "Select the layout style that fits your item. The two column style with different sizes allow you to add a passage or resource on the left and one or more question parts on the right.",
+        "useTabs": "Enable tabs on the left or right panel of the layout. This can be used in cases where you want to show multiple passages to the student."
+      }
     }
   },
   "component": {
@@ -75,6 +93,8 @@
       "vertical": "Vertical",
       "small": "Small",
       "normal": "Normal",
+      "lineMinValue": "Line minimum value",
+      "zero": "Line minimum value",
       "large": "Large",
       "extraLarge": "Extra Large",
       "huge": "Huge",
@@ -160,6 +180,8 @@
       "keypad": "Keypad",
       "maximumLines": "Maximum lines",
       "defaultMode": "Default mode",
+      "saveCustomKeypad": "Save Custom Keypad",
+      "updateCustomKeypad": "Update Custom Keypad",
       "numberPad": "Number Pad",
       "symbols": "Symbols",
       "distractor": "Distractor",
@@ -233,7 +255,8 @@
         "fraction": "Fraction",
         "mixedFraction": "Mixed Fraction"
       },
-      "graphControls": "Graph Controls"
+      "graphControls": "Graph Controls",
+      "customKeypadLabel": "My Custom Keypads"
     },
     "dropZone": {
       "dragDrop": "Drag & Drop",
@@ -984,7 +1007,7 @@
         "integerType": "A number that can be written without a fractional component.#{\\newline[1em]\\text{Correct:\\enspace}2,\\quad\\text{Incorrect:\\enspace}1.5#}",
         "isDecimal": "A whole number and a fractional part separated by a decimal point.#{\\newline[1em]\\text{Correct:\\enspace}1.5,\\quad\\text{Incorrect:\\enspace}1#}",
         "scientificType": "Way to write a very large or small number using powers of ten.#{\\newline[1em]\\text{Correct:\\enspace}7.11E+2,\\quad\\text{Incorrect:\\enspace}711\\newline[1em]\\text{Correct:\\enspace}7.01\\times 10^2,\\quad\\text{Incorrect:\\enspace}701#}",
-        "significantDecimalPlaces": "A number expressed with sufficient digits that express the required precision. Please note that your Expected Answer must normally meet the same required decimal places and rounding as the students, except in the case of Dynamic Parameter formulas #{\\newline[1em]\\text{Expected:\\enspace}0.33,\\quad\\text{Significant decimal places:\\enspace}2\\newline[0.5em]\\text{Correct:\\enspace}0.33,\\quad\\text{Incorect:\\enspace}0.3#}",
+        "significantDecimalPlaces": "A number expressed with sufficient digits that express the required precision. Please note that your Expected Answer must normally meet the same required decimal places and rounding as the students, except in the case of Dynamic Parameter formulas - here the system will do the implementation of the rounding and required decimal places in the expected answer. #{\\newline[1em]\\text{Expected:\\enspace}0.33,\\quad\\text{Significant decimal places:\\enspace}2\\newline[0.5em]\\text{Correct:\\enspace}0.33,\\quad\\text{Incorect:\\enspace}0.3#}",
         "isIn": "Student's answer needs to lie within a specified interval or set. Enter the number of unique items the student needs to return.#{\\newline[1em]\\text{Expected:\\enspace}[0.3,0.6]\\newline[0.5em]#} and with \"#{1#}\" in the box.#{\\newline[0.5em]\\text{Correct:\\enspace}0.4,\\quad\\text{Incorrect:\\enspace}0.2\\newline[0.5em]#} If the student needs to return #{2#} numbers, then a possible valid answer would be #{0.35,\\enspace 0.45#}",
         "satisfies": "Student's answer needs to meet the given in/equality or equation. Enter the number of items that the students needs to return. Put the condition in the EXPECTED ANSWER field. Note that you can only use one variable, e.g. x.#{\\newline[0.5em]\\text{Expected:\\enspace}x>2\\newline[0.5em] \\text{Correct:\\enspace}3,\\quad\\text{Incorrect:\\enspace}1\\newline[0.5em]#} If the student needs to return 2 numbers, then a possible valid answer would be #{3,4#}",
         "isLineStandardForm": "#{ax+by=c\\newline[0.4em]\\text{Correct:\\enspace}x+y=2,\\quad\\text{Incorrect:\\enspace}x+y-2=0#}",

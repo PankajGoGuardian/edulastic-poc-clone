@@ -28,6 +28,7 @@ const GroupsAutoComplete = ({
   courseId,
   selectCB,
   selectedGroupIds,
+  dataCy,
 }) => {
   const groupFilterRef = useRef()
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
@@ -118,7 +119,15 @@ const GroupsAutoComplete = ({
   }, [searchTerms])
   useEffect(() => {
     setSearchResult([])
+    // if (selectedGroupIds.length) {
+    //   selectCB({ key: '', title: '' })
+    // }
   }, [termId, schoolIds, teacherIds, grade, subject, courseId])
+  useEffect(() => {
+    if (!selectedGroupIds.length) {
+      setSearchTerms(DEFAULT_SEARCH_TERMS)
+    }
+  }, [selectedGroupIds])
 
   // build dropdown data
   const dropdownData = Object.values(
@@ -133,9 +142,10 @@ const GroupsAutoComplete = ({
   return (
     <MultiSelectSearch
       label="Group"
+      dataCy={dataCy}
       placeholder="All Groups"
       el={groupFilterRef}
-      onChange={(e) => selectCB(e)}
+      onChange={(e) => selectCB(dropdownData.filter((d) => e.includes(d.key)))}
       onSearch={onSearch}
       onBlur={onBlur}
       onFocus={getDefaultGroupList}

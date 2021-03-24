@@ -44,9 +44,44 @@ const getLastPlayList = () =>
     })
     .then((response) => response.data.result)
 
+const storeCustomKeypad = (keypad) =>
+  api.callApi({
+    method: 'post',
+    url: `${prefix}`,
+    data: {
+      name: 'USER_CUSTOM_KEYPADS',
+      value: [keypad],
+    },
+  })
+
+const updateCustomKeypad = (keypad, documentId) =>
+  api
+    .callApi({
+      method: 'put',
+      url: `${prefix}/${documentId}`,
+      data: {
+        filter: {
+          _id: keypad._id,
+        },
+        data: keypad,
+      },
+    })
+    .then((response) => response.data.result)
+
+const getCustomKeypad = () =>
+  api
+    .callApi({
+      method: 'get',
+      url: `${prefix}?name=USER_CUSTOM_KEYPADS`,
+    })
+    .then((response) => response.data.result)
+
 export default {
   setLastUsedPlayList,
   setRecentUsedPlayLists,
   getRecentPlayLists,
   getLastPlayList,
+  storeCustomKeypad,
+  getCustomKeypad,
+  updateCustomKeypad,
 }

@@ -20,6 +20,7 @@ const CustomizedHeaderWrapper = ({
   isCliUser,
   showCustomReport,
   showSharedReport,
+  title,
   isSharedReport,
   t,
 }) => {
@@ -76,6 +77,12 @@ const CustomizedHeaderWrapper = ({
         ))
     : null
 
+  const hideShareIcon =
+    title === 'Engagement Summary' ||
+    title === 'Activity by School' ||
+    title === 'Activity by Teacher'
+  const hideDownloadIcon = title === 'Engagement Summary'
+
   const actionRightButtons = (
     <ActionButtonWrapper>
       {navMenu}
@@ -83,7 +90,7 @@ const CustomizedHeaderWrapper = ({
         inputFeatures="shareReports"
         actionOnInaccessible="hidden"
       >
-        {onShareClickCB && !isSharedReport ? (
+        {onShareClickCB && !isSharedReport && !hideShareIcon ? (
           <ActionButton
             isBlue
             isGhost
@@ -112,7 +119,7 @@ const CustomizedHeaderWrapper = ({
         inputFeatures="downloadReports"
         actionOnInaccessible="hidden"
       >
-        {onDownloadCSVClickCB ? (
+        {onDownloadCSVClickCB && !hideDownloadIcon ? (
           <ActionButton
             isBlue
             isGhost

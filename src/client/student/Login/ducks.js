@@ -1201,9 +1201,9 @@ export function* fetchUser({ payload }) {
       return
     }
     const firebaseUser = yield call(getCurrentFirebaseUser)
-    const user = yield call(userApi.getUser, firebaseUser ? undefined : true)
+    const user = (yield call(userApi.getUser, firebaseUser ? undefined : true))||{}
     if (
-      (!firebaseUser && user.firebaseAuthToken) ||
+      (!firebaseUser && user?.firebaseAuthToken) ||
       (firebaseUser && firebaseUser !== user._id)
     ) {
       yield firebase.auth().signInWithCustomToken(user.firebaseAuthToken)
@@ -1216,7 +1216,7 @@ export function* fetchUser({ payload }) {
       TokenStorage.storeAccessToken(user.token, user._id, user.role, true)
       TokenStorage.selectAccessToken(user._id, user.role)
     }
-    TokenStorage.updateKID(user)
+    TokenStorage.updateKID(user||{})
     const searchParam = yield select((state) => state.router.location.search)
     if (searchParam.includes('showCliBanner=1'))
       localStorage.setItem('showCLIBanner', true)
@@ -1244,6 +1244,10 @@ export function* fetchUser({ payload }) {
     }
   } catch (error) {
     console.log('err', error, error)
+    if(error?.response && error?.response?.status === 409 && error?.response?.data?.message === "oldToken"){
+      window.dispatchEvent(new Event('student-session-expired'));
+      return;
+    } 
     notification({ messageKey: 'failedLoadingUserData' })
     if (!(error?.response && error?.response?.status === 501)) {
       if (

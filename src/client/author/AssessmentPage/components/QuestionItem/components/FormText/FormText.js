@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { Input } from 'antd'
 
 import { QuestionText } from '../../common/Form'
+import { isSubmitButton } from '../../../../common/helpers'
 
 export default class FormText extends React.Component {
   static propTypes = {
@@ -38,10 +39,13 @@ export default class FormText extends React.Component {
     return <QuestionText>{value}</QuestionText>
   }
 
-  handleBlur = () => {
-    const { clearHighlighted, saveQuestionResponse } = this.props
-    clearHighlighted()
-    saveQuestionResponse()
+  handleBlur = (ev) => {
+    // preventing blur event when relatedTarget is submit button
+    if (!isSubmitButton(ev)) {
+      const { clearHighlighted, saveQuestionResponse } = this.props
+      clearHighlighted()
+      saveQuestionResponse()
+    }
   }
 
   renderForm = () => {
@@ -50,6 +54,7 @@ export default class FormText extends React.Component {
       <Input
         size="large"
         value={answer}
+        data-cy="textInput"
         style={{ width: ['check', 'show'].includes(view) && '210px' }}
         onChange={this.handleChange}
         onBlur={this.handleBlur}

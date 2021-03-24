@@ -350,12 +350,15 @@ class StudentViewContainer extends Component {
               isGhost
               height="24px"
               fontSize="9px"
-              mr="28px"
+              mr="0px"
+              ml="0px"
               onClick={this.toggleShowCorrectAnswers}
             >
               {hideCorrectAnswer ? <IconEye /> : <IconEyeClose />}
               <span data-cy="showCorrectAnswer" data-test={!hideCorrectAnswer}>
-                correct answers
+                {hideCorrectAnswer
+                  ? 'Expand correct answers'
+                  : 'Collapse correct answers'}
               </span>
             </EduButton>
             {!isCliUser && (

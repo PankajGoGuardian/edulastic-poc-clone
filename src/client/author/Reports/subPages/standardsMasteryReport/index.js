@@ -5,26 +5,28 @@ import qs from 'qs'
 import { connect } from 'react-redux'
 import { isEmpty } from 'lodash'
 
-import { Spin } from 'antd'
-import { FlexContainer } from '@edulastic/common'
-import { IconFilter, IconCloseFilter } from '@edulastic/icons'
+import { Spin, Col } from 'antd'
+
+import { SubHeader } from '../../common/components/Header'
+
 import StandardsPerfromance from './standardsPerformance'
 import StandardsGradebook from './standardsGradebook'
 import StandardsProgress from './standardsProgress'
-import StandardsFilters from './common/components/Filters'
+import StandardsMasteryReportFilters from './common/components/Filters'
 import ShareReportModal from '../../common/components/Popups/ShareReportModal'
 import { ControlDropDown } from '../../common/components/widgets/controlDropDown'
 import NoDataNotification from '../../../../common/components/NoDataNotification'
-import {
-  ReportContaner,
-  SearchField,
-  FilterLabel,
-  FilterButtonClear,
-} from '../../common/styled'
+import { ReportContainer, FilterLabel } from '../../common/styled'
 
 import { setSMRSettingsAction, getReportsSMRSettings } from './ducks'
 import { resetAllReportsAction } from '../../common/reportsRedux'
-import { getSMRFilterDemographics } from './common/filterDataDucks'
+import {
+  getSMRFilterDemographics,
+  getTempDdFilterSelector,
+  setTempDdFilterAction,
+  getTempTagsDataSelector,
+  setTempTagsDataAction,
+} from './common/filterDataDucks'
 import { getSharingState, setSharingStateAction } from '../../ducks'
 import { getSharedReportList } from '../../components/sharedReports/ducks'
 import {
@@ -36,15 +38,7 @@ import { getNavigationTabLinks } from '../../common/util'
 import { transformFiltersForSMR } from './common/utils'
 
 import navigation from '../../common/static/json/navigation.json'
-// import dropDownFormat from './standardsGradebook/static/json/dropDownFormat.json'
-
-const INITIAL_DD_FILTERS = {
-  gender: 'all',
-  frlStatus: 'all',
-  ellStatus: 'all',
-  iepStatus: 'all',
-  race: 'all',
-}
+import staticDropDownData from './common/static/json/staticDropDownData.json'
 
 const StandardsMasteryReportContainer = (props) => {
   const {
@@ -64,16 +58,22 @@ const StandardsMasteryReportContainer = (props) => {
     showFilter,
     interestedCurriculums,
     showApply,
+    tempDdFilter,
+    setTempDdFilter,
+    tempTagsData,
+    setTempTagsData,
     sharingState,
     setSharingState,
     sharedReportList,
     demographics,
+    breadcrumbData,
+    isCliUser,
+    isPrinting,
   } = props
 
   const [firstLoad, setFirstLoad] = useState(true)
-  const [ddfilter, setDdFilter] = useState({ ...INITIAL_DD_FILTERS })
-  const [tempDdFilter, setTempDdFilter] = useState({
-    ...INITIAL_DD_FILTERS,
+  const [ddfilter, setDdFilter] = useState({
+    ...staticDropDownData.initialDdFilters,
   })
   const [reportId] = useState(
     qs.parse(location.search, { ignoreQueryPrefix: true }).reportId
@@ -148,7 +148,7 @@ const StandardsMasteryReportContainer = (props) => {
   }
 
   useEffect(() => {
-    if (settings.requestFilters) {
+    if (settings.requestFilters.termId) {
       const obj = {}
       const arr = Object.keys(settings.requestFilters)
       arr.forEach((item) => {
@@ -197,6 +197,7 @@ const StandardsMasteryReportContainer = (props) => {
           testIds: selectedTests.join(),
           domainIds: domainIds.join(),
         },
+        tagsData: { ..._settings.tagsData },
       })
     }
     setShowApply(false)
@@ -208,28 +209,35 @@ const StandardsMasteryReportContainer = (props) => {
       ...tempDdFilter,
       [comData]: selected.key,
     })
+    setTempTagsData({
+      ...tempTagsData,
+      [comData]: selected,
+    })
   }
 
-  const locList = ['standards-gradebook', 'standards-progress']
+  const demographicsRequired = [
+    'standards-gradebook',
+    'standards-progress',
+  ].includes(loc)
   useEffect(() => {
-    if (!locList.includes(loc)) {
-      setDdFilter({ ...INITIAL_DD_FILTERS })
-      setTempDdFilter({ ...INITIAL_DD_FILTERS })
+    if (!demographicsRequired) {
+      setDdFilter({ ...staticDropDownData.initialDdFilters })
+      setTempDdFilter({ ...staticDropDownData.initialDdFilters })
     }
   }, [loc])
 
   const extraFilters =
-    locList.includes(loc) && demographics
+    demographicsRequired && demographics
       ? demographics.map((item) => (
-          <SearchField key={item.key}>
+          <Col span={6} key={item.key}>
             <FilterLabel>{item.title}</FilterLabel>
             <ControlDropDown
               selectCB={updateCB}
               data={item.data}
               comData={item.key}
-              by={ddfilter[item.key] || item.data[0]}
+              by={tempDdFilter[item.key] || item.data[0]}
             />
-          </SearchField>
+          </Col>
         ))
       : []
 
@@ -254,7 +262,6 @@ const StandardsMasteryReportContainer = (props) => {
 
   return (
     <>
-      {firstLoad && <Spin size="large" />}
       {sharingState && (
         <ShareReportModal
           reportType={loc}
@@ -266,88 +273,90 @@ const StandardsMasteryReportContainer = (props) => {
           setShowModal={setSharingState}
         />
       )}
-      <FlexContainer
-        alignItems="flex-start"
-        justifyContent="space-between"
-        display={firstLoad ? 'none' : 'flex'}
+      <SubHeader
+        breadcrumbData={breadcrumbData}
+        isCliUser={isCliUser}
+        alignment="baseline"
       >
-        <StandardsFilters
+        <StandardsMasteryReportFilters
+          isPrinting={isPrinting}
           reportId={reportId}
           onGoClick={onGoClick}
           loc={loc}
           history={history}
           location={location}
           match={match}
-          style={
-            reportId || !showFilter ? { display: 'none' } : { display: 'block' }
-          }
           extraFilters={extraFilters}
+          tempDdFilter={tempDdFilter}
+          setTempDdFilter={setTempDdFilter}
+          tempTagsData={tempTagsData}
+          setTempTagsData={setTempTagsData}
+          demographicsRequired={demographicsRequired}
           showApply={showApply}
           setShowApply={setShowApply}
+          showFilter={showFilter}
+          toggleFilter={toggleFilter}
           firstLoad={firstLoad}
           setFirstLoad={setFirstLoad}
+          tagsData={settings.tagsData}
         />
-        {!reportId ? (
-          <FilterButtonClear showFilter={showFilter} onClick={toggleFilter}>
-            {showFilter ? <IconCloseFilter /> : <IconFilter />}
-          </FilterButtonClear>
-        ) : null}
-        <ReportContaner showFilter={showFilter}>
-          <Route
-            exact
-            path="/author/reports/standards-performance-summary"
-            render={(_props) => {
-              setShowHeader(true)
-              return (
-                <StandardsPerfromance
-                  {..._props}
-                  toggleFilter={toggleFilter}
-                  settings={transformedSettings}
-                  userRole={userRole}
-                  sharedReport={sharedReport}
-                />
-              )
-            }}
-          />
-          <Route
-            exact
-            path="/author/reports/standards-gradebook"
-            render={(_props) => {
-              setShowHeader(true)
-              return (
-                <StandardsGradebook
-                  {..._props}
-                  navigationItems={navigationItems}
-                  pageTitle={loc}
-                  toggleFilter={toggleFilter}
-                  settings={transformedSettings}
-                  ddfilter={ddfilter}
-                  userRole={userRole}
-                  sharedReport={sharedReport}
-                />
-              )
-            }}
-          />
-          <Route
-            exact
-            path="/author/reports/standards-progress"
-            render={(_props) => {
-              setShowHeader(true)
-              return (
-                <StandardsProgress
-                  {..._props}
-                  pageTitle={loc}
-                  toggleFilter={toggleFilter}
-                  settings={transformedSettings}
-                  ddfilter={ddfilter}
-                  userRole={userRole}
-                  sharedReport={sharedReport}
-                />
-              )
-            }}
-          />
-        </ReportContaner>
-      </FlexContainer>
+      </SubHeader>
+      <ReportContainer>
+        {firstLoad && <Spin size="large" />}
+        <Route
+          exact
+          path="/author/reports/standards-performance-summary"
+          render={(_props) => {
+            setShowHeader(true)
+            return (
+              <StandardsPerfromance
+                {..._props}
+                toggleFilter={toggleFilter}
+                settings={transformedSettings}
+                userRole={userRole}
+                sharedReport={sharedReport}
+              />
+            )
+          }}
+        />
+        <Route
+          exact
+          path="/author/reports/standards-gradebook"
+          render={(_props) => {
+            setShowHeader(true)
+            return (
+              <StandardsGradebook
+                {..._props}
+                navigationItems={navigationItems}
+                pageTitle={loc}
+                toggleFilter={toggleFilter}
+                settings={transformedSettings}
+                ddfilter={ddfilter}
+                userRole={userRole}
+                sharedReport={sharedReport}
+              />
+            )
+          }}
+        />
+        <Route
+          exact
+          path="/author/reports/standards-progress"
+          render={(_props) => {
+            setShowHeader(true)
+            return (
+              <StandardsProgress
+                {..._props}
+                pageTitle={loc}
+                toggleFilter={toggleFilter}
+                settings={transformedSettings}
+                ddfilter={ddfilter}
+                userRole={userRole}
+                sharedReport={sharedReport}
+              />
+            )
+          }}
+        />
+      </ReportContainer>
     </>
   )
 }
@@ -357,6 +366,8 @@ const ConnectedStandardsMasteryReportContainer = connect(
     role: getUserRole(state),
     demographics: getSMRFilterDemographics(state),
     settings: getReportsSMRSettings(state),
+    tempDdFilter: getTempDdFilterSelector(state),
+    tempTagsData: getTempTagsDataSelector(state),
     sharingState: getSharingState(state),
     sharedReportList: getSharedReportList(state),
     interestedCurriculums: getInterestedCurriculumsSelector(state),
@@ -364,6 +375,8 @@ const ConnectedStandardsMasteryReportContainer = connect(
   {
     setSMRSettings: setSMRSettingsAction,
     resetAllReports: resetAllReportsAction,
+    setTempDdFilter: setTempDdFilterAction,
+    setTempTagsData: setTempTagsDataAction,
     setSharingState: setSharingStateAction,
   }
 )(StandardsMasteryReportContainer)

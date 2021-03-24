@@ -2,11 +2,12 @@ import { createSelector } from 'reselect'
 import { createAction } from 'redux-starter-kit'
 import { call, put, all, takeEvery, select } from 'redux-saga/effects'
 import { push, replace } from 'connected-react-router'
-import { omit, get, set, isNumber } from 'lodash'
+import { omit, get, set, isNumber, isEmpty } from 'lodash'
 import {
   curriculumSequencesApi,
   contentSharingApi,
   testsApi,
+  resourcesApi,
 } from '@edulastic/api'
 import produce from 'immer'
 import { notification } from '@edulastic/common'
@@ -74,6 +75,7 @@ export const ADD_TEST_IN_PLAYLIST_BULK =
 export const DELETE_TEST_FROM_PLAYLIST_BULK =
   '[playlists] remove test from module in Bulk'
 export const SET_USER_CUSTOMIZE = '[playlists] set user customize'
+export const SET_PLAYLIST_MODE = '[playlists] set mode'
 export const REMOVE_TEST_FROM_MODULE = '[playlists] remove test from module'
 export const REMOVE_TEST_FROM_PLAYLIST = '[playlists] remove test from playlist'
 export const MOVE_CONTENT = '[playlists] move content in playlist'
@@ -189,6 +191,7 @@ export const removeTestFromPlaylistAction = createAction(
   REMOVE_TEST_FROM_PLAYLIST
 )
 export const moveContentInPlaylistAction = createAction(MOVE_CONTENT)
+export const setPlaylistModeAction = createAction(SET_PLAYLIST_MODE)
 // reducer
 
 const initialPlaylistState = {
@@ -214,6 +217,7 @@ const initialPlaylistState = {
   tags: [],
   active: 1,
   customize: false,
+  playlistMode: 'teacher',
   bgColor: themeColor,
   textColor: white,
   analytics: [
@@ -490,6 +494,9 @@ function addSubresource(entity, payload) {
     fromPlaylistTestsBox,
     standardIdentifiers,
     status,
+    contentSubType,
+    hasStandardsOnCreation,
+    standards = [],
     ...itemObj
   } = item
   const newEntity = produce(entity, (draft) => {
@@ -498,8 +505,19 @@ function addSubresource(entity, payload) {
     }
     const resources = draft.modules[moduleIndex].data[itemIndex].resources
 
-    if (!resources.find((x) => x.contentId === contentId)) {
-      resources.push({ contentId, contentType, ...itemObj })
+    if (
+      !resources.find(
+        (x) => x.contentId === contentId && x.contentSubType === contentSubType
+      )
+    ) {
+      const updateStandards = !hasStandardsOnCreation && standards.length < 15
+      resources.push({
+        contentId,
+        contentType,
+        contentSubType,
+        updateStandards,
+        ...itemObj,
+      })
       draft.modules[moduleIndex].data[itemIndex].resources = resources
     }
   })
@@ -683,6 +701,14 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         sharedUsersList: payload,
       }
+    case SET_PLAYLIST_MODE:
+      return {
+        ...state,
+        entity: {
+          ...state.entity,
+          playlistMode: payload,
+        },
+      }
     case SET_USER_CUSTOMIZE:
       return {
         ...state,
@@ -753,6 +779,10 @@ export const getTestsLoadingSelector = createSelector(
 
 export const getUserCustomizeSelector = createSelector(stateSelector, (state) =>
   get(state.entity, 'customize', true)
+)
+
+export const getPlaylistModeSelector = createSelector(stateSelector, (state) =>
+  get(state.entity, 'playlistMode', 'teacher')
 )
 
 export const getUserListSelector = createSelector(stateSelector, (state) => {
@@ -853,10 +883,21 @@ function* updatePlaylistSaga({ payload }) {
       'testItems',
     ])
 
+    const resourceMap = {}
     dataToSend.modules = dataToSend.modules.map((mod) => {
-      mod.data = mod.data.map((test) =>
-        omit(test, ['standards', 'alignment', 'assignments'])
-      )
+      mod.data = mod.data.map((test) => {
+        if (test.contentType === 'test' && test.resources) {
+          const testId = test.contentId
+          test.resources = test.resources.map((resource) => {
+            const { contentId: resourceId, updateStandards } = resource
+            if (updateStandards) {
+              resourceMap[testId] = [...(resourceMap[testId] || []), resourceId]
+            }
+            return omit(resource, ['updateStandards'])
+          })
+        }
+        return omit(test, ['standards', 'alignment', 'assignments'])
+      })
       return mod
     })
 
@@ -865,6 +906,9 @@ function* updatePlaylistSaga({ payload }) {
       data: dataToSend,
     })
 
+    if (!isEmpty(resourceMap)) {
+      yield call(resourcesApi.updateStandards, resourceMap)
+    }
     yield put(updatePlaylistSuccessAction(entity))
     if (!payload.hideNotification) {
       yield call(notification, {

@@ -7,37 +7,44 @@ import { isEmpty, sortBy } from 'lodash'
 import { MAX_MOBILE_WIDTH } from '../../../../constants/others'
 
 import QuestionWrapper from '../../../QuestionWrapper'
+
 import {
   Scratchpad,
   ScratchpadTool,
 } from '../../../../../common/components/Scratchpad'
-import { Container, WidgetContainer } from './styled/Container'
+
+import {
+  Container,
+  WidgetContainer,
+  FilesViewContainer,
+} from './styled/Container'
 import { MobileRightSide } from './styled/MobileRightSide'
 import { MobileLeftSide } from './styled/MobileLeftSide'
 import { IconArrow } from './styled/IconArrow'
+import { StyleH2Heading } from './styled/Headings'
 import TabContainer from './TabContainer'
+import FilesView from '../../../../widgets/UploadFile/components/FilesView'
+import StudentWorkCollapse from '../../components/StudentWorkCollapse'
 
 class TestItemCol extends Component {
   constructor() {
     super()
     this.state = {
-      value: 0,
+      currentTab: 0,
     }
   }
 
-  handleTabChange = (value) => {
-    this.setState({
-      value,
-    })
+  handleTabChange = (tabIndex) => {
+    const { changedPlayerContent } = this.props
+    this.setState(
+      {
+        currentTab: tabIndex,
+      },
+      () => changedPlayerContent()
+    )
   }
 
-  renderTabContent = (
-    widget,
-    flowLayout,
-    widgetIndex,
-    showStackedView,
-    lengthOfwidgets
-  ) => {
+  renderTabContent = (widget, flowLayout, widgetIndex, showStackedView) => {
     const {
       preview,
       showFeedback,
@@ -54,6 +61,10 @@ class TestItemCol extends Component {
       itemLevelScoring,
       isPassageWithQuestions,
       hasDrawingResponse,
+      attachments,
+      saveAttachments,
+      isStudentWorkCollapseOpen,
+      toggleStudentWorkCollapse,
       ...restProps
     } = this.props
     const {
@@ -62,6 +73,7 @@ class TestItemCol extends Component {
       isStudentReport,
       isLCBView,
       isFeedbackVisible,
+      hideCorrectAnswer,
     } = restProps
     const timespent = widget.timespent !== undefined ? widget.timespent : null
     const question = questions[widget.reference]
@@ -78,17 +90,21 @@ class TestItemCol extends Component {
     }
 
     const displayFeedback = true
-    let minHeight = null
-    if (
-      widget.widgetType === 'question' &&
-      (isLCBView || showStackedView || isDocBased || isStudentAttempt)
-    ) {
-      // we shows multiple feedback in multiple question type
-      // when scoring type is question level.
-      // feedback wrapper is required minHeight 320 at least
-      minHeight = '320px'
-    }
     const showTabBorder = !hasDrawingResponse && isLCBView
+
+    const saveUpdatedAttachments = (index) => {
+      const newAttachments = attachments.filter((attachment, i) => i !== index)
+      saveAttachments(newAttachments)
+    }
+
+    const imageAttachments =
+      (attachments &&
+        attachments.filter((attachment) => {
+          return attachment.type.includes('image/')
+        })) ||
+      []
+
+    // question false undefined false undefined undefined true true
     return (
       <TabContainer
         updatePositionToStore={
@@ -100,10 +116,9 @@ class TestItemCol extends Component {
         questionId={widget.reference}
         fullHeight={fullHeight}
         testReviewStyle={testReviewStyle}
-        minHeight={minHeight}
         itemIndex={widgetIndex}
-        marginTop={widgetIndex > 0 && lengthOfwidgets > 1 ? 20 : ''}
         showBorder={showTabBorder}
+        hideCorrectAnswer={hideCorrectAnswer}
       >
         <QuestionWrapper
           showFeedback={showFeedback && widget?.widgetType !== 'resource'}
@@ -126,6 +141,10 @@ class TestItemCol extends Component {
           displayFeedback={displayFeedback}
           calculatedHeight={showStackedView || fullHeight ? '100%' : 'auto'}
           fullMode
+          saveAttachments={saveAttachments}
+          attachments={attachments}
+          isStudentWorkCollapseOpen={isStudentWorkCollapseOpen}
+          toggleStudentWorkCollapse={toggleStudentWorkCollapse}
           {...restProps}
           hasDrawingResponse={hasDrawingResponse}
           style={{ ...testReviewStyle, width: 'calc(100% - 256px)' }}
@@ -134,8 +153,30 @@ class TestItemCol extends Component {
           isStudentAttempt={isStudentAttempt}
           isFeedbackVisible={isFeedbackVisible}
         />
-        {/* on the student side, show feedback for each question
-        only when item level scoring is off */}
+        {!isStudentAttempt &&
+          !isStudentReport &&
+          imageAttachments.length > 0 &&
+          !LCBPreviewModal && (
+            <StudentWorkCollapse
+              isStudentWorkCollapseOpen={isStudentWorkCollapseOpen}
+              toggleStudentWorkCollapse={toggleStudentWorkCollapse}
+              imageAttachments={imageAttachments}
+            />
+          )}
+        {attachments && attachments.length > 0 && !LCBPreviewModal && (
+          <>
+            <StyleH2Heading>Attachments</StyleH2Heading>
+            <FilesViewContainer>
+              <FilesView
+                files={attachments}
+                hideDelete={!isStudentAttempt}
+                onDelete={saveUpdatedAttachments}
+              />
+            </FilesViewContainer>
+          </>
+        )}
+
+        {/*  on the student side, show feedback for each question only when item level scoring is off */}
         {isStudentReport &&
           !itemLevelScoring &&
           teachCherFeedBack(widget, null, null, showStackedView)}
@@ -225,7 +266,7 @@ class TestItemCol extends Component {
       saveUserWork,
       ...restProps
     } = this.props
-    const { value } = this.state
+    const { currentTab } = this.state
     const {
       showStackedView,
       viewComponent,
@@ -244,7 +285,7 @@ class TestItemCol extends Component {
     return (
       <Container
         style={style}
-        value={value}
+        value={currentTab}
         colWidth={colWidth}
         viewComponent={viewComponent}
         showScratchpad={this.showScratchpad}
@@ -259,7 +300,7 @@ class TestItemCol extends Component {
         {!isPrintPreview && (
           <>
             {col.tabs && !!col.tabs.length && windowWidth >= MAX_MOBILE_WIDTH && (
-              <Tabs value={value} onChange={this.handleTabChange}>
+              <Tabs value={currentTab} onChange={this.handleTabChange}>
                 {col.tabs.map((tab, tabIndex) => (
                   <Tabs.Tab
                     key={tabIndex}
@@ -277,7 +318,7 @@ class TestItemCol extends Component {
             {col.tabs &&
               windowWidth < MAX_MOBILE_WIDTH &&
               !!col.tabs.length &&
-              value === 0 && (
+              currentTab === 0 && (
                 <MobileRightSide onClick={() => this.handleTabChange(1)}>
                   <IconArrow type="left" />
                 </MobileRightSide>
@@ -285,21 +326,24 @@ class TestItemCol extends Component {
             {col.tabs &&
               windowWidth < MAX_MOBILE_WIDTH &&
               !!col.tabs.length &&
-              value === 1 && (
+              currentTab === 1 && (
                 <MobileLeftSide onClick={() => this.handleTabChange(0)}>
                   <IconArrow type="right" />
                 </MobileLeftSide>
               )}
           </>
         )}
-        <WidgetContainer data-cy="widgetContainer">
+        <WidgetContainer
+          isStudentAttempt={isStudentAttempt}
+          data-cy="widgetContainer"
+        >
           {widgets
             .filter((widget) => widget.type !== questionType.SECTION_LABEL)
             .map((widget, i, arr) => (
               <React.Fragment key={i}>
                 {col.tabs &&
                   !!col.tabs.length &&
-                  value === widget.tabIndex &&
+                  currentTab === widget.tabIndex &&
                   !isPrintPreview &&
                   this.renderTabContent(
                     widget,

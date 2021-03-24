@@ -129,7 +129,11 @@ const ThumbnailsItem = ({
         disabled={viewMode !== 'edit'}
         trigger={['contextMenu']}
       >
-        <ThumbnailsItemWrapper onClick={onClick} active={current === index}>
+        <ThumbnailsItemWrapper
+          onClick={onClick}
+          active={current === index}
+          data-cy={`page-${index}`}
+        >
           <PagePreview rotate={rotate}>
             {url && (
               <Document file={url} renderMode="canvas">

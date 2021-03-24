@@ -36,6 +36,7 @@ const initialState = {
     subject: '',
     grade: '',
     assessmentTypes: '',
+    tagIds: '',
     testIds: '',
     schoolIds: '',
     teacherIds: '',
@@ -45,6 +46,7 @@ const initialState = {
     classIds: '',
     groupIds: '',
   },
+  tagsData: {},
 }
 
 export const reportMARSettingsReducer = createReducer(initialState, {

@@ -156,7 +156,7 @@ const PeerProgressAnalysis = ({
   return (
     <>
       <TrendStats
-        heading="Distribution of student subgroup as per progress trend ?"
+        heading="Performance trend across assessments"
         trendCount={trendCount}
         selectedTrend={selectedTrend}
         onTrendSelect={onTrendSelect}
@@ -172,7 +172,7 @@ const PeerProgressAnalysis = ({
       <TrendTable
         onCsvConvert={onCsvConvert}
         isCsvDownloading={isCsvDownloading}
-        heading="How well are student sub-groups progressing ?"
+        heading="How well are the students progressing ?"
         data={parsedData}
         compareBy={compareBy}
         analyseBy={analyseBy}

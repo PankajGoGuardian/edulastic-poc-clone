@@ -31,6 +31,7 @@ const AssessmentAutoComplete = ({
   testTypes,
   selectedTestId,
   selectCB,
+  tagIds,
 }) => {
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
   const selectedTest = testList.find((t) => t._id === selectedTestId) || {}
@@ -71,8 +72,19 @@ const AssessmentAutoComplete = ({
         ? testTypes
         : testTypes.split(',')
     }
+    if (tagIds) {
+      q.search.tagIds = tagIds.split(',')
+    }
     return q
-  }, [searchTerms.text, selectedTestId, termId, grade, subject, testTypes])
+  }, [
+    searchTerms.text,
+    selectedTestId,
+    termId,
+    grade,
+    subject,
+    testTypes,
+    tagIds,
+  ])
 
   // handle autocomplete actions
   const onSearch = (value) => {
@@ -115,7 +127,9 @@ const AssessmentAutoComplete = ({
   useEffect(() => {
     if (!searchTerms.selectedText && testList.length) {
       onSelect(testList[0]._id)
-    } 
+    } else if (firstLoad && !loading && !testList.length) {
+      onSelect()
+    }
   }, [testList])
   useEffect(() => {
     if (searchTerms.selectedText) {
@@ -195,9 +209,6 @@ export default connect(
 )(AssessmentAutoComplete)
 
 const AutoCompleteContainer = styled.div`
-  .ant-select-auto-complete {
-    padding: 5px;
-  }
   .ant-select-dropdown-menu-item-group-title {
     font-weight: bold;
     white-space: nowrap;

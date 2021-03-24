@@ -75,7 +75,7 @@ DragItemContainer.defaultProps = {
   disableDrag: false,
   isTransparent: false,
   dragHandle: false,
-  valid: false,
+  valid: undefined,
   width: null,
   item: {},
   label: '',

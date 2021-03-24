@@ -113,3 +113,22 @@ export const playerSkinTypeSelector = createSelector(stateSelector, (state) => {
   }
   return playerSkinType || playerSkinValues.edulastic
 })
+
+export const getPreviewPlayerStateSelector = createSelector(
+  stateSelector,
+  (state) => ({
+    pauseAllowed: state.settings.pauseAllowed,
+    allowedTime: state.settings.allowedTime,
+    timedAssignment: state.settings.timedAssignment,
+    multiLanguageEnabled: state.previewState.multiLanguageEnabled,
+    hasInstruction: state.previewState.hasInstruction,
+    instruction: state.previewState.instruction,
+    languagePreference: state.languagePreference,
+    viewTestInfoSuccess: state.viewTestInfoSuccess,
+  })
+)
+
+export const getIsPreviewModalVisibleSelector = createSelector(
+  stateSelector,
+  (state) => state.isTestPreviewModalVisible
+)

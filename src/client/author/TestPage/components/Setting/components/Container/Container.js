@@ -62,6 +62,7 @@ import Instruction from './InstructionBlock/InstructionBlock'
 import DollarPremiumSymbol from '../../../../../AssignTest/components/Container/DollarPremiumSymbol'
 import { SettingContainer } from '../../../../../AssignTest/components/Container/styled'
 import { StyledRow } from '../../../../../AssignTest/components/SimpleOptions/styled'
+import KeypadDropdown from './KeypadDropdown'
 
 const {
   settingCategories,
@@ -332,6 +333,15 @@ class Setting extends Component {
     this.setState({ [panelType]: value })
   }
 
+  get keypadDropdownValue() {
+    const { entity: { keypad: testKeypad = {} } = {} } = this.props
+    if (!testKeypad.type) return 'item-level-keypad'
+    if (testKeypad.type === 'custom') {
+      return testKeypad.value?._id
+    }
+    return testKeypad.value
+  }
+
   render() {
     const {
       showPassword,
@@ -358,7 +368,6 @@ class Setting extends Component {
       calculatorProvider,
       allowedToSelectMultiLanguage,
     } = this.props
-
     const {
       isDocBased,
       releaseScore,
@@ -383,10 +392,10 @@ class Setting extends Component {
       standardGradingScale,
       testContentVisibility = testContentVisibilityOptions.ALWAYS,
       playerSkinType = playerSkinTypes.edulastic.toLowerCase(),
-      showMagnifier = true,
+      showMagnifier = false,
       timedAssignment,
       allowedTime,
-      enableScratchpad = true,
+      enableScratchpad = false,
       freezeSettings = false,
       hasInstruction = false,
       instruction = '',
@@ -509,10 +518,10 @@ class Setting extends Component {
       selectPlayerSkinType = false,
     } = availableFeatures
 
-    const showMultiLangSelection =
-      allowedToSelectMultiLanguage &&
-      (isAuthorPublisher || userRole === roleuser.EDULASTIC_CURATOR) &&
-      !isDocBased
+    const navigationThresholdMoreThan1 =
+      restrictNavigationOut === 'warn-and-report-after-n-alerts' &&
+      restrictNavigationOutAttemptsThreshold > 1
+
     return (
       <MainContentWrapper ref={this.containerRef}>
         <Breadcrumb data={breadcrumbData} />
@@ -831,7 +840,8 @@ class Setting extends Component {
                           </Col>
                           <Col span={16}>
                             <Description>
-                              If students can use an on-screen calculator, select the type to make available on the test.
+                              If students can use an on-screen calculator,
+                              select the type to make available on the test.
                             </Description>
                           </Col>
                         </Row>
@@ -1298,7 +1308,7 @@ class Setting extends Component {
                               key="warn-and-report-after-n-alerts"
                               data-cy="restrict-nav-out-warn-report-alerts"
                             >
-                              WARN AND BLOCK TEST AFTER{' '}
+                              WARN AND BLOCK TEST AFTER
                               <InputNumberStyled
                                 size="small"
                                 value={
@@ -1320,6 +1330,19 @@ class Setting extends Component {
                                 }
                               />{' '}
                               ALERTS
+                              {navigationThresholdMoreThan1 ? (
+                                <>
+                                  {' '}
+                                  <br />{' '}
+                                  <span style={{ textTransform: 'lowercase' }}>
+                                    {`or maximum of ${
+                                      restrictNavigationOutAttemptsThreshold * 5
+                                    } sec.`}
+                                  </span>{' '}
+                                </>
+                              ) : (
+                                ''
+                              )}
                             </RadioBtn>
                           </StyledRadioGroup>
                         </Col>
@@ -1328,10 +1351,24 @@ class Setting extends Component {
                             If <b>ON</b>, then students must take the test in
                             full screen mode to prevent opening another browser
                             window. Alert will appear if student has navigated
-                            away for more than 5 seconds.If the designated
+                            away for more than 5 seconds. If the designated
                             number of alerts are exceeded, the student’s
                             assignment will be paused and the instructor will
                             need to manually reset.
+                            {navigationThresholdMoreThan1 ? (
+                              <>
+                                <br />
+                                <br />
+                                Alert will appear if student has navigated away
+                                for more than 5 seconds and student will be
+                                blocked after{' '}
+                                {restrictNavigationOutAttemptsThreshold *
+                                  5}{' '}
+                                seconds{' '}
+                              </>
+                            ) : (
+                              ''
+                            )}
                           </Description>
                         </Col>
                       </Row>
@@ -1675,6 +1712,41 @@ class Setting extends Component {
                           </Col>
                         </StyledRow>
                       ))}
+                    </RadioWrapper>
+                    <RadioWrapper
+                      disabled={!owner || !isEditable}
+                      style={{
+                        marginTop: '5px',
+                        marginBottom: 0,
+                        flexDirection: 'row',
+                      }}
+                    >
+                      <StyledRow align="middle">
+                        <Col span={6}>
+                          <span
+                            style={{
+                              fontSize: 13,
+                              fontWeight: 600,
+                              textTransform: 'uppercase',
+                            }}
+                          >
+                            Keypad <DollarPremiumSymbol premium={premium} />
+                          </span>
+                        </Col>
+                        <Col span={12}>
+                          <KeypadDropdown
+                            value={this.keypadDropdownValue}
+                            onChangeHandler={this.updateTestData('keypad')}
+                            disabled={!owner || !isEditable || !premium}
+                          />
+                        </Col>
+                        <Col span={24}>
+                          <Description>
+                            Select keypad to apply current selection to all
+                            questions in the test
+                          </Description>
+                        </Col>
+                      </StyledRow>
                     </RadioWrapper>
                   </Block>
 

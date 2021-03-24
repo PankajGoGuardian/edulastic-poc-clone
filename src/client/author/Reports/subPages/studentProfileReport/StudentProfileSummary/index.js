@@ -262,8 +262,6 @@ const StudentProfileSummary = ({
             <p>{getGrades(studInfo)}</p>
             <span>SCHOOL</span>
             <p>{studentClassInfo.schoolName || 'N/A'}</p>
-            <span>SUBJECT</span>
-            <p>{studentClassInfo.standardSet || 'N/A'}</p>
           </StudentDetailsContainer>
         </StudentDetailsCard>
         <Card width="calc(100% - 300px)">

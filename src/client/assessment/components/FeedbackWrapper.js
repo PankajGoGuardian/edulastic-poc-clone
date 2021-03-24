@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useEffect, useLayoutEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import styled, { withTheme } from 'styled-components'
+import styled, { css, withTheme } from 'styled-components'
 import { questionType } from '@edulastic/constants'
 import { withNamespaces } from '@edulastic/localization'
+import { greyThemeDark2 } from '@edulastic/colors'
 import { get, isEmpty, round } from 'lodash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faClock } from '@fortawesome/free-solid-svg-icons'
@@ -12,7 +13,7 @@ import { PrintPreviewScore } from './printPreviewScore'
 import FeedBackContainer from './FeedBackContainer'
 import FeedbackRight from './FeedbackRight'
 import StudentReportFeedback from '../../student/TestAcitivityReport/components/StudentReportFeedback'
-import { TimeSpentWrapper } from './QuestionWrapper'
+import { updateHeight as updateHeightAction } from '../../author/src/reducers/feedback'
 
 const FeedbackWrapper = ({
   showFeedback,
@@ -28,8 +29,28 @@ const FeedbackWrapper = ({
   studentId,
   itemId,
   studentName,
+  updatePosition,
+  isExpressGrader,
   t,
 }) => {
+  const feedbackRef = useRef()
+  const heightOfContainer = feedbackRef.current?.clientHeight
+  useLayoutEffect(() => {
+    if (!isStudentReport && shouldTakeDimensionsFromStore) {
+      updatePosition({
+        id: data.id,
+        height: heightOfContainer,
+      })
+    }
+  }, [feedbackRef.current, heightOfContainer])
+
+  useEffect(() => {
+    updatePosition({
+      id: data.id,
+      height: null,
+    })
+  }, [])
+
   const { rubrics: rubricDetails } = data
   const isPassageOrVideoType = [
     questionType.PASSAGE,
@@ -65,6 +86,7 @@ const FeedbackWrapper = ({
 
   return (
     <StyledFeedbackWrapper
+      ref={feedbackRef}
       minWidth={
         studentReportFeedbackVisible && displayFeedback && !isPrintPreview
           ? '320px'
@@ -90,6 +112,8 @@ const FeedbackWrapper = ({
             rubricDetails={rubricDetails}
             isPracticeQuestion={isPracticeQuestion}
             itemId={itemId}
+            isExpressGrader={isExpressGrader}
+            isAbsolutePos={!isStudentReport && shouldTakeDimensionsFromStore}
             {...presentationModeProps}
           />
         )}
@@ -142,21 +166,52 @@ const FeedbackWrapper = ({
  * the container dimensions for the question block is stored in store
  * need to take the dimensions from store and set it to the feedback block
  */
+
+const wrapperPosition = css`
+  position: absolute;
+  top: ${({ dimensions }) => dimensions.top}px;
+  right: 0;
+  width: 100%;
+  height: ${({ dimensions }) =>
+    dimensions.height ? `${dimensions.height}px` : '100%'};
+`
+
 const StyledFeedbackWrapper = styled.div`
   align-self: normal;
-  padding-bottom: 10px;
   min-width: ${({ minWidth }) => minWidth};
   ${({ shouldTakeDimensionsFromStore, dimensions, isStudentReport }) =>
     !isStudentReport &&
     shouldTakeDimensionsFromStore &&
     dimensions &&
-    `
-      position: absolute;
-      top: ${dimensions.top}px;
-      right: 0;
-      width: 100%;
-      height: ${dimensions.height ? `${dimensions.height}px` : '100%'};
-    `};
+    dimensions.top &&
+    wrapperPosition};
+`
+const TimeSpentWrapper = styled.div`
+  font-size: 19px;
+  color: ${greyThemeDark2};
+  display: flex;
+  justify-content: flex-end;
+  margin-top: auto;
+  align-items: center;
+  margin: ${({ margin }) => margin};
+  &.student-report {
+    position: absolute;
+    top: 25px;
+    right: 0px;
+    background: #f3f3f3;
+    padding: 10px 15px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    svg {
+      margin-right: 10px;
+      fill: #6a737f;
+    }
+  }
+  svg {
+    margin-right: 8px;
+    fill: ${greyThemeDark2};
+  }
 `
 
 FeedbackWrapper.propTypes = {
@@ -189,7 +244,7 @@ const enhance = compose(
       ),
       dimensions: get(state, ['feedback', ownProps.data?.id], null),
     }),
-    null
+    { updatePosition: updateHeightAction }
   )
 )
 

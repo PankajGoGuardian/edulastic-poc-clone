@@ -92,6 +92,12 @@ export const CLEAR_ITEM_EVALUATION = '[evaluation] clear evaluation'
 
 export const TOGGLE_CREATE_ITEM_MODAL = '[testItem] toggle create item modal'
 
+export const CORRECT_ITEM_UPDATE_REQUEST =
+  '[testItem] update correct testItem in LCB request'
+
+export const CORRECT_ITEM_UPDATE_SUCCESS =
+  '[testItem] update correct testItem in LCB success'
+
 // Tests
 export const RECEIVE_TESTS_REQUEST = '[tests] receive list request'
 export const RECEIVE_TESTS_SUCCESS = '[tests] receive list success'
@@ -248,6 +254,7 @@ export const TOGGLE_PRESENTATION_MODE =
   '[testActivity] toggle presentation mode'
 export const RESPONSE_ENTRY_SCORE_SUCCESS =
   '[testActivity] response entry score success'
+
 // assignments
 export const RECEIVE_ASSIGNMENTS_REQUEST = '[assignments] receive list request'
 export const RECEIVE_ASSIGNMENTS_SUCCESS = '[assignments] receive list success'
@@ -289,6 +296,9 @@ export const DELETE_ASSIGNMENT_REQUEST_FAILED =
   '[assignments] delete assignment request failed'
 
 export const ADVANCED_ASSIGNMENT_VIEW = '[assignments] change view'
+
+export const EDIT_TAGS_REQUEST = '[assignments] edit tags request'
+export const SET_TAGS_UPDATING_STATE = '[assignments] set tags updating state'
 
 export const RECEIVE_CLASS_QUESTION_REQUEST = '[answers] receive list request'
 export const RECEIVE_CLASS_QUESTION_SUCCESS = '[answers] receive list success'

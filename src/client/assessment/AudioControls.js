@@ -246,23 +246,23 @@ const AudioControls = ({
                 new Error(`[AudioControls] Option audio missing for ${item}`)
               )
           }
+          setCurrentPlayingDetails()
         }
         asyncPlay()
-        setCurrentPlayingDetails(qId)
       })
     } else if (questionData.type === questionType.PASSAGE) {
       if (page > 1) {
         audioPlayResolve(pageHowls[page - 1]).then(() =>
-          setCurrentPlayingDetails(qId)
+          setCurrentPlayingDetails()
         )
       } else {
         audioPlayResolve(stimulusHowl).then(async () => {
           await audioPlayResolve(pageHowls[page - 1])
-          setCurrentPlayingDetails(qId)
+          setCurrentPlayingDetails()
         })
       }
     } else {
-      audioPlayResolve(stimulusHowl).then(() => setCurrentPlayingDetails(qId))
+      audioPlayResolve(stimulusHowl).then(() => setCurrentPlayingDetails())
     }
   }
 
@@ -360,7 +360,7 @@ export default connect(
 
 const AudioButtonsWrapper = styled.div`
   top: 0px;
-  padding: 20px 20px 0;
+  padding: 8px 20px;
   ${({ btnWithText, hideVisibility }) => {
     const visibility = hideVisibility ? 'hidden' : 'visible'
     const display = btnWithText ? 'flex' : 'block'

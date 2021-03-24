@@ -11,6 +11,15 @@ const pay = (data) =>
     })
     .then((result) => result.data)
 
+const licensePurchase = (data) =>
+  api
+    .callApi({
+      method: 'post',
+      url: `${BASE_URL}/license-purchase`,
+      data,
+    })
+    .then((result) => result.data)
 export default {
   pay,
+  licensePurchase,
 }

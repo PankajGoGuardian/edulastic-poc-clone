@@ -1,11 +1,11 @@
 import React from 'react'
-import { get } from 'lodash'
 import PropTypes from 'prop-types'
 import { ThemeProvider } from 'styled-components'
 
 import { MathSpan, MathInput } from '@edulastic/common'
 import { themes } from '../../../../../../theme'
 import { QuestionText } from '../../common/Form'
+import { isSubmitButton } from '../../../../common/helpers'
 
 export default class FormMath extends React.Component {
   static propTypes = {
@@ -49,19 +49,9 @@ export default class FormMath extends React.Component {
     )
   }
 
-  isSubmitButton = (ev) => {
-    if (ev) {
-      return [
-        get(ev, 'relatedTarget.id', ''),
-        get(ev, 'relatedTarget.parentElement.id', ''),
-      ].includes('submitTestButton')
-    }
-    return false
-  }
-
   handleBlur = (ev) => {
     // preventing blur event when relatedTarget is submit button
-    if (!this.isSubmitButton(ev)) {
+    if (!isSubmitButton(ev)) {
       const { clearHighlighted, saveQuestionResponse } = this.props
       clearHighlighted()
       saveQuestionResponse()

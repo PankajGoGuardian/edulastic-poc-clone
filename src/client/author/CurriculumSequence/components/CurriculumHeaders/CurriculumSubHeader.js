@@ -38,7 +38,10 @@ const CurriculumSubHeader = ({
   } = destinationCurriculumSequence
 
   const subHeaderIcon1 = !!grades.length && (
-    <SubHeaderInfoCard data-cy="playlist-grade">
+    <SubHeaderInfoCard
+      data-test={isManageContentActive}
+      data-cy="playlist-grade"
+    >
       <GraduationCapIcon color="grey" />
       <SubHeaderInfoCardText>Grade {grades.join(', ')}</SubHeaderInfoCardText>
     </SubHeaderInfoCard>

@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react'
 import { withWindowSizes } from '@edulastic/common'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
 import { themes } from '../../theme'
 
 const {
@@ -34,6 +36,7 @@ const Magnifier = ({
   config: { width, height, scale },
   zoomedContent: ZoomedContent,
   offset,
+  contentChanged,
 }) => {
   const [setting, setSetting] = useState({
     pos: { x: windowWidth / 2 - width / 2, y: windowHeight / 2 - height / 2 },
@@ -410,9 +413,12 @@ const Magnifier = ({
       const zoomWrapper = document.querySelector('.zoomed-container-wrapper')
 
       if (unzoomRef.current && zoomWrapper && !ZoomedContent) {
-        unzoomRef.current.childNodes.forEach((node) => {
-          zoomWrapper.appendChild(node.cloneNode(true))
-        })
+        setTimeout(() => {
+          zoomWrapper.textContent = ''
+          unzoomRef.current.childNodes.forEach((node) => {
+            zoomWrapper.appendChild(node.cloneNode(true))
+          })
+        }, 10)
       }
 
       if (unZoomed) {
@@ -421,7 +427,7 @@ const Magnifier = ({
         })
       }
     }
-  }, [enable])
+  }, [enable, contentChanged])
 
   return (
     <>
@@ -485,7 +491,14 @@ Magnifier.propTypes = {
   }),
 }
 
-export default withWindowSizes(Magnifier)
+const enhance = compose(
+  withWindowSizes,
+  connect((state) => ({
+    contentChanged: state.testPlayer.contentChanged,
+  }))
+)
+
+export default enhance(Magnifier)
 
 const ZoomedWrapper = styled.div.attrs(({ pos }) => ({
   style: {

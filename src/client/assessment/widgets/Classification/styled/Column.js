@@ -20,7 +20,7 @@ export const ColumnHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 39px;
+  min-height: 40px;
 `
 
 export const DropContainer = styled(DragDrop.DropContainer)`
@@ -31,9 +31,8 @@ export const DropContainer = styled(DragDrop.DropContainer)`
   flex-wrap: wrap;
   min-height: ${({ height }) => height};
   width: 100%;
-  height: 100%;
   overflow: hidden;
-  border-radius: 4;
+  border-radius: 4px;
   background-color: ${({ isTransparent, theme }) =>
     isTransparent
       ? 'transparent'

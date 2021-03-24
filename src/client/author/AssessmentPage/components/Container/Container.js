@@ -13,7 +13,8 @@ import {
   IconSettings,
 } from '@edulastic/icons'
 import { test as testConstants } from '@edulastic/constants'
-import { withWindowSizes, notification } from '@edulastic/common'
+import { withWindowSizes, notification, CustomPrompt } from '@edulastic/common'
+import { withNamespaces } from '@edulastic/localization'
 import {
   receiveTestByIdAction,
   getTestEntitySelector,
@@ -27,6 +28,7 @@ import {
 import {
   getQuestionsArraySelector,
   getQuestionsSelector,
+  getAuthorQuestionStatus,
 } from '../../../sharedDucks/questions'
 import { getItemDetailByIdAction } from '../../../src/actions/itemDetail'
 import {
@@ -157,8 +159,12 @@ class Container extends React.Component {
     const {
       changeView,
       currentTab,
-      assessment: { title },
+      assessment: { title, authors, status },
       changePreview,
+      authorQuestionStatus: newQuestionsAdded,
+      updated,
+      match: { params },
+      userId,
     } = this.props
 
     if (currentTab === tabs.DESCRIPTION && title && title.trim()) {
@@ -168,7 +174,19 @@ class Container extends React.Component {
       changeView(tab)
       changePreview('clear')
     } else {
-      notification({ messageKey: 'pleaseEnterName' })
+      return notification({ messageKey: 'pleaseEnterName' })
+    }
+
+    /**
+     * save test data on tab switch if test data or items are updated
+     * @see https://snapwiz.atlassian.net/browse/EV-25049
+     */
+    const { editEnable = true } = this.state
+    const owner =
+      (authors && authors.some((x) => x._id === userId)) || !params.id
+    const isEditable = owner && (editEnable || status === statusConstants.DRAFT)
+    if (isEditable && (updated || newQuestionsAdded)) {
+      this.handleSave()
     }
   }
 
@@ -356,11 +374,13 @@ class Container extends React.Component {
       userId,
       windowWidth,
       updated,
+      authorQuestionStatus: newQuestionsAdded,
       creating,
       showWarningModal,
       proceedPublish,
       currentTab,
       collections,
+      t,
     } = this.props
     const { editEnable, showShareModal } = this.state
     const owner = (authors && authors.some((x) => x._id === userId)) || !testId
@@ -387,6 +407,20 @@ class Container extends React.Component {
 
     return (
       <>
+        <CustomPrompt
+          when={!!updated || !!newQuestionsAdded}
+          onUnload
+          message={(loc = {}) => {
+            const { pathname = '' } = loc
+            const allow = pathname.startsWith('/author/assessments/')
+
+            if (allow) {
+              return true
+            }
+
+            return t('component.common.modal.exitPageWarning')
+          }}
+        />
         <ShareModal
           shareLabel="TEST URL"
           isVisible={showShareModal}
@@ -432,6 +466,7 @@ class Container extends React.Component {
 const enhance = compose(
   withRouter,
   withWindowSizes,
+  withNamespaces('author'),
   connect(
     (state) => ({
       assessment: getTestEntitySelector(state),
@@ -445,6 +480,7 @@ const enhance = compose(
       questionsById: getQuestionsSelector(state),
       currentTab: getViewSelector(state),
       collections: getCollectionsSelector(state),
+      authorQuestionStatus: getAuthorQuestionStatus(state),
     }),
     {
       receiveTestById: receiveTestByIdAction,

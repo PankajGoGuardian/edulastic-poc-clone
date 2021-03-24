@@ -1,5 +1,11 @@
 import { questionType, math } from '@edulastic/constants'
-import { isEmpty, keys, values as _values, isPlainObject } from 'lodash'
+import {
+  isEmpty,
+  keys,
+  values as _values,
+  isPlainObject,
+  isNumber,
+} from 'lodash'
 
 const { methods } = math
 
@@ -8,7 +14,11 @@ const answerValidator = {
     const hasEmpty = answers.some(
       (answer) =>
         isEmpty(answer.value) ||
-        isEmpty(answer.value.filter((x) => !isEmpty(x)))
+        isEmpty(answer.value.filter((x) => (isNumber(x) ? x : !isEmpty(x))))
+      /**
+       * @see https://snapwiz.atlassian.net/browse/EV-25781
+       * x can be a number, thus not checking with isEmpty method for a number.
+       */
     )
     return hasEmpty
   },

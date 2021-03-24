@@ -849,6 +849,7 @@ function* createPlaylistSaga({ payload }) {
       'createdDate',
       'updatedDate',
       'testItems',
+      'playlistMode',
     ])
 
     const entity = yield call(curriculumSequencesApi.create, {
@@ -881,6 +882,7 @@ function* updatePlaylistSaga({ payload }) {
       '_id',
       '__v',
       'testItems',
+      'playlistMode',
     ])
 
     const resourceMap = {}
@@ -896,7 +898,12 @@ function* updatePlaylistSaga({ payload }) {
             return omit(resource, ['updateStandards'])
           })
         }
-        return omit(test, ['standards', 'alignment', 'assignments'])
+        return omit(test, [
+          'standards',
+          'alignment',
+          'assignments',
+          'hasStandardsOnCreation',
+        ])
       })
       return mod
     })

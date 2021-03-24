@@ -36,6 +36,7 @@ import {
 import TestPreviewModal from '../../../Assignments/components/Container/TestPreviewModal'
 import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/test'
 import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
+import { getInterestedCurriculumsByOrgType } from '../../../src/selectors/user'
 
 const resourceTabs = ['tests', 'resources']
 
@@ -103,6 +104,7 @@ const ManageContentBlock = (props) => {
     setEmbeddedVideoPreviewModal,
     isDifferentiationTab = false,
     setIsTestPreviewVisible,
+    interestedCurriculums,
     history,
   } = props
 
@@ -286,7 +288,9 @@ const ManageContentBlock = (props) => {
               contentTitle={test.title}
               key={test._id}
               summary={test?.summary}
+              alignment={test?.alignment}
               isAdded={testsInPlaylist.includes(test?._id)}
+              interestedCurriculums={interestedCurriculums}
               previewTest={() => {
                 showPreviewModal(test._id)
                 setIsTestPreviewVisible(true)
@@ -502,6 +506,7 @@ const enhance = compose(
       userFeatures: state?.user?.user?.features,
       searchResourceBy: state.playlistTestBox?.searchResourceBy,
       resources: state.playlistTestBox?.resources,
+      interestedCurriculums: getInterestedCurriculumsByOrgType(state),
     }),
     {
       setFilterAction: slice.actions?.setFilterAction,

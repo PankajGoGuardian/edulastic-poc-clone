@@ -13,6 +13,7 @@ import WebsiteIcon from './static/WebsiteIcon'
 import VideoIcon from './static/VideoIcon'
 import LTIResourceIcon from './static/LTIResourceIcon'
 import { Tooltip } from '../../../../common/utils/helpers'
+import { getInterestedStandards } from '../../../dataUtils'
 
 export const ICONS_BY_TYPE = {
   test: <IconWriting />,
@@ -27,6 +28,17 @@ export const ResouceIcon = ({ type, isAdded, ...rest }) => (
   </IconWrapper>
 )
 
+const getStandardIdentifiers = (summary, alignment, interestedCurriculums) => {
+  // Get intrested standards by orgType
+  let intrestedStandards =
+    getInterestedStandards(summary, alignment, interestedCurriculums) || []
+  if (!intrestedStandards.length) {
+    // fallback to test standards if no equivalent standards found
+    intrestedStandards = summary?.standards || []
+  }
+  return intrestedStandards.map((x) => x.identifier)
+}
+
 const ResourceItem = ({
   contentTitle,
   contentDescription = '',
@@ -36,15 +48,20 @@ const ResourceItem = ({
   type,
   id,
   summary,
+  alignment,
   data = undefined,
   isAdded,
   previewTest,
   status,
   testType,
+  interestedCurriculums,
 }) => {
-  const standardIdentifiers = (summary?.standards || []).map(
-    (x) => x.identifier
+  const standardIdentifiers = getStandardIdentifiers(
+    summary,
+    alignment,
+    interestedCurriculums
   )
+
   const [, drag] = useDrag({
     item: {
       type: 'item',

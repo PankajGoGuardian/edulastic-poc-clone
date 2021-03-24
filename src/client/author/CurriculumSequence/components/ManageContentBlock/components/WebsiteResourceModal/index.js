@@ -47,7 +47,6 @@ const WebsiteResourceModal = (props) => {
         standards: selectedStandardIds,
       })
       closeCallback()
-      setAlignment({})
     } else notification({ type: 'warn', msg: validationStatus })
   }
 

@@ -177,7 +177,6 @@ const ManageContentBlock = (props) => {
       fetchResource({ standardIds: selectedStandardIds })
     }
     closeContentFilterModal()
-    setAlignment({})
   }
 
   const onSearchChange = (list) => setTestSearchAction(list)

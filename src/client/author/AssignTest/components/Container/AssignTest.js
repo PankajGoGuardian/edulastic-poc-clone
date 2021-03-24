@@ -711,7 +711,6 @@ class AssignTest extends React.Component {
               <SavedSettingsContainer>
                 <div>SAVED SETTINGS</div>
                 <Select
-                  style={{ width: '180px' }}
                   value={currentSettingsId}
                   getPopupContainer={(node) => node.parentNode}
                   onChange={this.handleSettingsSelection}

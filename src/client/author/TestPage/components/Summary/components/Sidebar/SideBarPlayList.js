@@ -22,7 +22,10 @@ import { ColorBox, SummaryButton, SummaryDiv } from '../../common/SummaryForm'
 import SummaryHeader from '../SummaryHeader/SummaryHeader'
 import { AnalyticsItem, Block, ErrorWrapper, MetaTitle } from './styled'
 import { sortGrades } from '../../../../utils'
-import { isPublisherUserSelector } from '../../../../../src/selectors/user'
+import {
+  isPublisherUserSelector,
+  isCuratorRoleSelector,
+} from '../../../../../src/selectors/user'
 
 export const renderAnalytics = (title, Icon) => (
   <AnalyticsItem>
@@ -73,6 +76,7 @@ const Sidebar = ({
   collections = [],
   skin,
   isPublisher,
+  isCurator,
 }) => {
   const newAllTagsData = uniqBy([...allPlaylistTagsData, ...tags], 'tagName')
   const subjectsList = selectsData.allSubjects
@@ -385,7 +389,7 @@ const Sidebar = ({
                   description={description}
                 />
               </Col>
-              {isPublisher && (
+              {(isPublisher || isCurator) && (
                 <Col xs={24}>
                   <CheckboxLabel
                     mt="16px"
@@ -429,6 +433,7 @@ Sidebar.propTypes = {
 
 export default connect(
   (state) => ({
+    isCurator: isCuratorRoleSelector(state),
     isPublisher: isPublisherUserSelector(state),
   }),
   {

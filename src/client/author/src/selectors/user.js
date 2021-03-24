@@ -218,6 +218,11 @@ export const isPublisherUserSelector = createSelector(
   (isPublisherAuthor, isCurator) => isPublisherAuthor || isCurator
 )
 
+export const isCuratorRoleSelector = createSelector(
+  getUserRole,
+  (role) => role === roleuser.EDULASTIC_CURATOR
+)
+
 export const getCollectionsToAddContent = createSelector(
   getItemBucketsSelector,
   getUserRole,

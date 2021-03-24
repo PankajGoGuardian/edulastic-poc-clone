@@ -203,7 +203,7 @@ const ManageContentBlock = (props) => {
 
   const testMenu = (
     <Menu onClick={onTestMenuChange}>
-      <Menu.Item data-cy="createNewtest" key="1">
+      <Menu.Item data-cy="createNew" key="1">
         {enhanceTextWeight('Create New test')}
       </Menu.Item>
     </Menu>

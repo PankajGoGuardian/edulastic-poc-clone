@@ -467,7 +467,7 @@ class Contaier extends Component {
 
   renderFilterIcon = (isShowFilter) => (
     <FilterToggleBtn
-      isShowFilter={isShowFilter}
+      isShowFilter={!isShowFilter}
       toggleFilter={this.toggleFilter}
     />
   )

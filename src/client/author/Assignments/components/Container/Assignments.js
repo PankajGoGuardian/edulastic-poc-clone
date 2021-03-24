@@ -8,7 +8,7 @@ import PerfectScrollbar from 'react-perfect-scrollbar'
 import { withWindowSizes, FlexContainer } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { roleuser, test as testConstants } from '@edulastic/constants'
-import { IconFilter, IconAssignment } from '@edulastic/icons'
+import { IconFilter, IconAssignment, IconCloseFilter } from '@edulastic/icons'
 import { white, themeColor } from '@edulastic/colors'
 
 import {
@@ -419,13 +419,20 @@ class Assignments extends Component {
                       variant="filter"
                       onClick={this.toggleFilter}
                     >
-                      <IconFilter
-                        data-cy="smart-filter"
-                        data-test={showFilter ? 'expanded' : 'collapsed'}
-                        color={showFilter ? white : themeColor}
-                        width={20}
-                        height={20}
-                      />
+                      {showFilter ? (
+                        <IconCloseFilter
+                          data-cy="smart-filter"
+                          data-test={showFilter ? 'expanded' : 'collapsed'}
+                        />
+                      ) : (
+                        <IconFilter
+                          data-cy="smart-filter"
+                          data-test={showFilter ? 'expanded' : 'collapsed'}
+                          color={showFilter ? themeColor : white}
+                          width={20}
+                          height={20}
+                        />
+                      )}
                     </FilterButton>
                     <StyledCard>
                       {isAdvancedView ? (

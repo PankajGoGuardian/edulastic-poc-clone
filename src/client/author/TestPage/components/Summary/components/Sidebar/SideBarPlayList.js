@@ -133,7 +133,7 @@ const Sidebar = ({
 
   const handleChangeSkin = (e) => {
     if (e.target.checked) {
-      onChangeField('skin', 'SPARK')
+      onChangeField('skin', 'FULL_SIZE')
     } else {
       onChangeField('skin', '')
     }
@@ -392,7 +392,7 @@ const Sidebar = ({
                     data-cy="useFullSizeTile"
                     name="useFullSizeTile"
                     onChange={handleChangeSkin}
-                    checked={skin === 'SPARK'}
+                    checked={skin === 'FULL_SIZE'}
                   >
                     use full size tile image
                   </CheckboxLabel>

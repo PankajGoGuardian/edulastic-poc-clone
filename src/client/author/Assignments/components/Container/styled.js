@@ -185,10 +185,8 @@ export const FilterButton = styled(Button)`
   margin-left: -23px;
   margin-top: 8px;
   z-index: 2;
-  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3);
-  background: ${(props) =>
-    props.showFilter ? themeColorBlue : white} !important;
-  border: 1px solid ${themeColorBlue} !important;
+  box-shadow: none;
+  background: ${white} !important;
   &:focus,
   &:hover {
     outline: unset;
@@ -196,7 +194,8 @@ export const FilterButton = styled(Button)`
   }
 
   svg {
-    fill: ${(props) => (props.showFilter ? white : themeColorBlue)} !important;
+    fill: ${(props) =>
+      props.showFilter ? themeColor : themeColorBlue} !important;
   }
 
   @media (max-width: ${smallDesktopWidth}) {

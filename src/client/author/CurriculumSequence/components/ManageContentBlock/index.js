@@ -166,7 +166,10 @@ const ManageContentBlock = (props) => {
   }
 
   const openContentFilterModal = () => setShowContentFilterModal(true)
-  const closeContentFilterModal = () => setShowContentFilterModal(false)
+  const closeContentFilterModal = () => {
+    setShowContentFilterModal(false)
+    setAlignment({})
+  }
 
   const handleApplyFilters = () => {
     if (searchResourceBy === 'tests') {
@@ -236,6 +239,13 @@ const ManageContentBlock = (props) => {
     if (type === 'website_resource') window.open(data.url, '_blank')
     if (type === 'video_resource')
       setEmbeddedVideoPreviewModal({ title: data.contentTitle, url: data.url })
+  }
+
+  const handleCloseResourcesModals = () => {
+    setWebsiteUrlResourceModal(false)
+    setExternalVideoResourceModal(false)
+    setLTIResourceModal(false)
+    setAlignment({})
   }
 
   const renderList = () => {
@@ -446,7 +456,7 @@ const ManageContentBlock = (props) => {
 
         {isWebsiteUrlResourceModal && (
           <WebsiteResourceModal
-            closeCallback={() => setWebsiteUrlResourceModal(false)}
+            closeCallback={handleCloseResourcesModals}
             isVisible={isWebsiteUrlResourceModal}
             addResource={addResource}
             alignment={alignment}
@@ -458,7 +468,7 @@ const ManageContentBlock = (props) => {
 
         {isExternalVideoResourceModal && (
           <ExternalVideoLink
-            closeCallback={() => setExternalVideoResourceModal(false)}
+            closeCallback={handleCloseResourcesModals}
             isVisible={isExternalVideoResourceModal}
             addResource={addResource}
             alignment={alignment}
@@ -470,7 +480,7 @@ const ManageContentBlock = (props) => {
 
         {isLTIResourceModal && (
           <LTIResourceModal
-            closeCallback={() => setLTIResourceModal(false)}
+            closeCallback={handleCloseResourcesModals}
             isVisible={isLTIResourceModal}
             addResource={addResource}
             externalToolsProviders={externalToolsProviders}

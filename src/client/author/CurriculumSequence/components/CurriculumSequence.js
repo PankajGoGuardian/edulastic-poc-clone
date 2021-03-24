@@ -479,7 +479,7 @@ class CurriculumSequence extends Component {
     //   return;
     // }
     const isAuthoringFlowReview = current === 'review'
-    const isReviewPage = location.hash === '#review'
+    const isPlaylistDetailsPage = location?.hash === '#review'
     if (
       !isManageContentActive &&
       !canEdit &&
@@ -502,7 +502,7 @@ class CurriculumSequence extends Component {
           style: { background: themeColor, outline: 'none' },
         },
       })
-    } else if (isReviewPage && contentName === 'manageContent') {
+    } else if (isPlaylistDetailsPage && contentName === 'manageContent') {
       const {
         history,
         destinationCurriculumSequence: { _id },

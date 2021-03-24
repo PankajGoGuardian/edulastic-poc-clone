@@ -45,6 +45,7 @@ import {
   getQuestionLabels,
   transformTestItems,
   transformGradeBookResponse,
+  getStandardsForStandardBasedReport,
 } from './Transformer'
 
 import {
@@ -142,10 +143,14 @@ export function* receiveTestActivitySaga({ payload }) {
         }))
         return item
       })
+    const reportStandards = getStandardsForStandardBasedReport(
+      testItems,
+      classResponse?.summary?.standardsDescriptions || {}
+    )
     markQuestionLabel(testItems)
     yield put({
       type: RECEIVE_CLASS_RESPONSE_SUCCESS,
-      payload: { ...classResponse, testItems },
+      payload: { ...classResponse, testItems, reportStandards },
     })
 
     const students = get(gradebookData, 'students', [])

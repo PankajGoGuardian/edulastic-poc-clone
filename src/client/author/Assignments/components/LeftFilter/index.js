@@ -146,7 +146,7 @@ class LeftFilter extends React.Component {
 
     return (
       <FilterContainer>
-        <FieldLabel>Grade</FieldLabel>
+        <FieldLabel>Class Grade</FieldLabel>
         <SelectInputStyled
           showArrow
           data-cy="grades"
@@ -167,7 +167,7 @@ class LeftFilter extends React.Component {
           )}
         </SelectInputStyled>
 
-        <FieldLabel>Subject</FieldLabel>
+        <FieldLabel>Class Subject</FieldLabel>
         <SelectInputStyled
           data-cy="subjects"
           mode="default"

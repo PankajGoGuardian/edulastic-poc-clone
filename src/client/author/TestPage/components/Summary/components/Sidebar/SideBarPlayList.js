@@ -22,6 +22,7 @@ import { ColorBox, SummaryButton, SummaryDiv } from '../../common/SummaryForm'
 import SummaryHeader from '../SummaryHeader/SummaryHeader'
 import { AnalyticsItem, Block, ErrorWrapper, MetaTitle } from './styled'
 import { sortGrades } from '../../../../utils'
+import { isPublisherUserSelector } from '../../../../../src/selectors/user'
 
 export const renderAnalytics = (title, Icon) => (
   <AnalyticsItem>
@@ -71,6 +72,7 @@ const Sidebar = ({
   onChangeCollection,
   collections = [],
   skin,
+  isPublisher,
 }) => {
   const newAllTagsData = uniqBy([...allPlaylistTagsData, ...tags], 'tagName')
   const subjectsList = selectsData.allSubjects
@@ -383,17 +385,19 @@ const Sidebar = ({
                   description={description}
                 />
               </Col>
-              <Col xs={24}>
-                <CheckboxLabel
-                  mt="16px"
-                  data-cy="useFullSizeTile"
-                  name="useFullSizeTile"
-                  onChange={handleChangeSkin}
-                  checked={skin === 'SPARK'}
-                >
-                  use full size tile image
-                </CheckboxLabel>
-              </Col>
+              {isPublisher && (
+                <Col xs={24}>
+                  <CheckboxLabel
+                    mt="16px"
+                    data-cy="useFullSizeTile"
+                    name="useFullSizeTile"
+                    onChange={handleChangeSkin}
+                    checked={skin === 'SPARK'}
+                  >
+                    use full size tile image
+                  </CheckboxLabel>
+                </Col>
+              )}
             </Row>
           )}
         </Col>
@@ -423,6 +427,11 @@ Sidebar.propTypes = {
   onChangeSubjects: PropTypes.func.isRequired,
 }
 
-export default connect(null, {
-  changePlayListTheme: changePlaylistThemeAction,
-})(Sidebar)
+export default connect(
+  (state) => ({
+    isPublisher: isPublisherUserSelector(state),
+  }),
+  {
+    changePlayListTheme: changePlaylistThemeAction,
+  }
+)(Sidebar)

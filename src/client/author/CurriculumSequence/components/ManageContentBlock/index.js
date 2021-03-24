@@ -186,9 +186,13 @@ const ManageContentBlock = (props) => {
 
   const menu = (
     <Menu onClick={onChange}>
-      <Menu.Item key="1">{enhanceTextWeight('Website URL')}</Menu.Item>
-      <Menu.Item key="2">{enhanceTextWeight('Youtube')}</Menu.Item>
-      <Menu.Item key="3">
+      <Menu.Item data-cy="websiteUrlResource" key="1">
+        {enhanceTextWeight('Website URL')}
+      </Menu.Item>
+      <Menu.Item data-cy="youtubeResource" key="2">
+        {enhanceTextWeight('Youtube')}
+      </Menu.Item>
+      <Menu.Item data-cy="externalLtiResource" key="3">
         {enhanceTextWeight('External LTI Resource')}
       </Menu.Item>
     </Menu>
@@ -196,7 +200,9 @@ const ManageContentBlock = (props) => {
 
   const testMenu = (
     <Menu onClick={onTestMenuChange}>
-      <Menu.Item key="1">{enhanceTextWeight('Create New test')}</Menu.Item>
+      <Menu.Item data-cy="createNewtest" key="1">
+        {enhanceTextWeight('Create New test')}
+      </Menu.Item>
     </Menu>
   )
   let fetchCall
@@ -350,7 +356,11 @@ const ManageContentBlock = (props) => {
                 <SearchIcon color={themeColor} />
               </SearchBoxContainer>
               <ActionButton
-                data-cy="test-filter"
+                data-cy={
+                  searchResourceBy === 'tests'
+                    ? 'test-filter'
+                    : 'resource-filter'
+                }
                 onClick={openContentFilterModal}
                 isActive={showContentFilterModal}
               >
@@ -365,7 +375,11 @@ const ManageContentBlock = (props) => {
                 placement="bottomRight"
                 getPopupContainer={(triggerNode) => triggerNode.parentNode}
               >
-                <ActionButton>
+                <ActionButton
+                  data-cy={
+                    searchResourceBy === 'tests' ? 'addTest' : 'addResources'
+                  }
+                >
                   <IconPlus color={themeColor} width={15} height={15} />
                 </ActionButton>
               </Dropdown>

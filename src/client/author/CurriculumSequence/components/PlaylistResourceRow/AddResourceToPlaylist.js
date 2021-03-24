@@ -68,7 +68,7 @@ const AddResourceToPlaylist = ({
       <Row gutter={16}>
         <Col md={8}>
           <SubResourceDropContainer
-            data-cy="supporting-resource"
+            data-cy="studentResourceDropContainer"
             moduleIndex={moduleIndex}
             addSubresource={addSubresource}
             itemIndex={index}
@@ -80,7 +80,7 @@ const AddResourceToPlaylist = ({
 
         <Col md={8}>
           <SubResourceDropContainer
-            data-cy="supporting-resource"
+            data-cy="teacherResourceDropContainer"
             moduleIndex={moduleIndex}
             addSubresource={addSubresource}
             itemIndex={index}
@@ -95,6 +95,7 @@ const AddResourceToPlaylist = ({
       <Row gutter={16}>
         <Col md={16}>
           <NewActivityTargetContainer
+            data-cy="newActivityDropContainer"
             moduleIndex={moduleIndex}
             afterIndex={index}
             onDrop={onDrop}

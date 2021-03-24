@@ -108,6 +108,7 @@ const ResourceItem = ({
           width={18}
           height={16}
           onClick={previewTest}
+          data-cy={type === 'test' ? 'testPreview' : 'resourcePreview'}
         />
       </ResourceItemWrapper>
     </Tooltip>

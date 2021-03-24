@@ -59,8 +59,7 @@ export const Title = styled.div`
 
 export const SupportResourceDropTarget = styled.div`
   margin-right: 0px;
-  width: 235px;
-  height: 28px;
+  height: 50px;
   box-sizing: border-box;
   color: #8b8b8b;
   margin-left: 35px;
@@ -100,7 +99,6 @@ export const SupportResourceDropTarget = styled.div`
 `
 
 export const NewActivityTarget = styled(SupportResourceDropTarget)`
-  width: 450px;
   height: 50px;
   margin-bottom: 16px;
 `

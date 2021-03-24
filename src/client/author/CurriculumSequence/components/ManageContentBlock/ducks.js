@@ -248,13 +248,15 @@ function* addResourceSaga({ payload }) {
   try {
     yield call(resourcesApi.addResource, payload)
     yield put(slice.actions.resetAndFetchResources())
+    notification({ type: 'success', msg: 'Resource Created Successfuly!' })
   } catch (e) {
     console.error('Error Occured: addResourceSaga ', e)
   }
 }
 
-function* fetchResourceSaga() {
+function* fetchResourceSaga({ payload }) {
   try {
+    console.log('payload', payload)
     const result = yield call(resourcesApi.fetchResources)
     if (!result) {
       notification({ msg: result.error })

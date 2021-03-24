@@ -1,9 +1,9 @@
 import React, { Fragment } from 'react'
 import { useDrop } from 'react-dnd'
 import { connect } from 'react-redux'
+import { Row, Col } from 'antd'
 import { SupportResourceDropTarget, NewActivityTarget } from './styled'
 import { addSubresourceToPlaylistAction } from '../../ducks'
-
 import { addSubresourceToPlaylistAction as addSubresourceInPlaylistAction } from '../../../PlaylistPage/ducks'
 
 function NewActivityTargetContainer({ children, ...props }) {
@@ -36,9 +36,13 @@ function SubResourceDropContainer({ children, ...props }) {
       contentType: monitor.getItem()?.contentType,
     }),
     drop: (item) => {
-      const { moduleIndex, itemIndex, addSubresource } = props
+      const { moduleIndex, itemIndex, addSubresource, contentSubType } = props
       if (addSubresource) {
-        addSubresource({ moduleIndex, itemIndex, item })
+        addSubresource({
+          moduleIndex,
+          itemIndex,
+          item: { ...item, contentSubType },
+        })
       }
     },
   })
@@ -61,23 +65,44 @@ const AddResourceToPlaylist = ({
 }) => (
   <>
     {isTestType && showSupportingResource && (
-      <SubResourceDropContainer
-        data-cy="supporting-resource"
-        moduleIndex={moduleIndex}
-        addSubresource={addSubresource}
-        itemIndex={index}
-      >
-        <span>Supporting Resource</span>
-      </SubResourceDropContainer>
+      <Row gutter={16}>
+        <Col md={8}>
+          <SubResourceDropContainer
+            data-cy="supporting-resource"
+            moduleIndex={moduleIndex}
+            addSubresource={addSubresource}
+            itemIndex={index}
+            contentSubType="STUDENT"
+          >
+            <span>Student Resource</span>
+          </SubResourceDropContainer>
+        </Col>
+
+        <Col md={8}>
+          <SubResourceDropContainer
+            data-cy="supporting-resource"
+            moduleIndex={moduleIndex}
+            addSubresource={addSubresource}
+            itemIndex={index}
+            contentSubType="TEACHER"
+          >
+            <span>Teacher Resource</span>
+          </SubResourceDropContainer>
+        </Col>
+      </Row>
     )}
     {showNewActivity && (
-      <NewActivityTargetContainer
-        moduleIndex={moduleIndex}
-        afterIndex={index}
-        onDrop={onDrop}
-      >
-        <span> New activity</span>
-      </NewActivityTargetContainer>
+      <Row gutter={16}>
+        <Col md={16}>
+          <NewActivityTargetContainer
+            moduleIndex={moduleIndex}
+            afterIndex={index}
+            onDrop={onDrop}
+          >
+            <span> New activity</span>
+          </NewActivityTargetContainer>
+        </Col>
+      </Row>
     )}
   </>
 )

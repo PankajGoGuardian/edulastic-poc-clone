@@ -191,6 +191,7 @@ class AssignTest extends React.Component {
       userId,
       userFeatures: { premium },
       fetchUserCustomKeypads,
+      setCurrentTestSettingsId,
     } = this.props
 
     if (isFreeAdmin) {
@@ -219,6 +220,7 @@ class AssignTest extends React.Component {
         orgId: userId,
         orgType: roleuser.ORG_TYPE.USER,
       })
+      setCurrentTestSettingsId('')
     }
 
     const isAdmin =

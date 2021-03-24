@@ -83,7 +83,7 @@ const PlaylistTestBoxFilter = (props) => {
             <FieldLabel>type</FieldLabel>
             <SelectInputStyled
               dropdownClassName="playlist-content-box"
-              data-cy="content-type"
+              data-cy="test-type"
               placeholder="Select Filter Type"
               value={filter}
               onChange={onFilterChange}
@@ -101,7 +101,7 @@ const PlaylistTestBoxFilter = (props) => {
             <FieldLabel>status</FieldLabel>
             <SelectInputStyled
               dropdownClassName="playlist-content-box"
-              data-cy="content-status"
+              data-cy="test-status"
               placeholder="Select Status"
               value={status}
               onChange={onStatusChange}
@@ -119,7 +119,7 @@ const PlaylistTestBoxFilter = (props) => {
             <FieldLabel>grade</FieldLabel>
             <SelectInputStyled
               dropdownClassName="playlist-content-box"
-              data-cy="content-grade"
+              data-cy="test-grade"
               mode="multiple"
               placeholder="Select Grades"
               value={grades}
@@ -138,7 +138,7 @@ const PlaylistTestBoxFilter = (props) => {
             <FieldLabel>subject</FieldLabel>
             <SelectInputStyled
               dropdownClassName="playlist-content-box"
-              data-cy="content-subject"
+              data-cy="test-subject"
               placeholder="Select Subject"
               value={subject}
               onChange={onSubjectChange}
@@ -156,7 +156,7 @@ const PlaylistTestBoxFilter = (props) => {
             <FieldLabel>collection</FieldLabel>
             <SelectInputStyled
               dropdownClassName="playlist-content-box"
-              data-cy="content-collection"
+              data-cy="test-collection"
               placeholder="Select Collection"
               value={collection || undefined}
               onChange={onCollectionChange}

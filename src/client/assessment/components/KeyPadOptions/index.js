@@ -208,8 +208,6 @@ const KeyPadOptions = ({
     hideModal()
   }
 
-  console.log('symbol', symbol, keypadIsUserCustomKeypad)
-
   return (
     <Question
       section="advanced"

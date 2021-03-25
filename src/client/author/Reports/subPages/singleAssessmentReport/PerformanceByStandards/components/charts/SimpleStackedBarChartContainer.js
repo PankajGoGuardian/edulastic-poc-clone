@@ -12,8 +12,6 @@ import {
 import { addColors } from '../../../../../common/util'
 import BarTooltipRow from '../../../../../common/components/tooltip/BarTooltipRow'
 
-const defaultSkillInfo = { standard: '', domain: '' }
-
 const SimpleStackedBarChartContainer = ({
   report,
   filter,
@@ -37,21 +35,7 @@ const SimpleStackedBarChartContainer = ({
     return addColors(formattedData, selectedData, xDataKey)
   }, [formattedData, selectedData, xDataKey])
 
-  const { skillInfo } = report
-
-  const tickFormatter = (id) => {
-    const dataField =
-      viewBy === viewByMode.STANDARDS ? 'standardId' : 'domainId'
-    const labelKey = viewBy === viewByMode.STANDARDS ? 'standard' : 'domain'
-
-    const skill = skillInfo.find((info) => info[dataField] === id)
-
-    return (skill || defaultSkillInfo)[labelKey]
-  }
-
-  formattedData = data.sort((a, b) =>
-    tickFormatter(a[xDataKey]).localeCompare(tickFormatter(b[xDataKey]))
-  )
+  formattedData = data.sort((a, b) => a[xDataKey] - b[xDataKey])
 
   const yTickformatLabel = (score) => {
     switch (analyzeBy) {
@@ -59,6 +43,7 @@ const SimpleStackedBarChartContainer = ({
         return `${Math.round(Number(score))}%`
       case analyzeByMode.RAW_SCORE:
         return ''
+      default:
     }
   }
 
@@ -80,6 +65,7 @@ const SimpleStackedBarChartContainer = ({
             </tspan>
           </>
         )
+      default:
     }
   }
 
@@ -115,6 +101,7 @@ const SimpleStackedBarChartContainer = ({
             }`,
           }
           break
+        default:
       }
 
       return (

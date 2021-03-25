@@ -22,6 +22,10 @@ import { ColorBox, SummaryButton, SummaryDiv } from '../../common/SummaryForm'
 import SummaryHeader from '../SummaryHeader/SummaryHeader'
 import { AnalyticsItem, Block, ErrorWrapper, MetaTitle } from './styled'
 import { sortGrades } from '../../../../utils'
+import {
+  isPublisherUserSelector,
+  isCuratorRoleSelector,
+} from '../../../../../src/selectors/user'
 
 export const renderAnalytics = (title, Icon) => (
   <AnalyticsItem>
@@ -71,6 +75,8 @@ const Sidebar = ({
   onChangeCollection,
   collections = [],
   skin,
+  isPublisher,
+  isCurator,
 }) => {
   const newAllTagsData = uniqBy([...allPlaylistTagsData, ...tags], 'tagName')
   const subjectsList = selectsData.allSubjects
@@ -131,7 +137,7 @@ const Sidebar = ({
 
   const handleChangeSkin = (e) => {
     if (e.target.checked) {
-      onChangeField('skin', 'SPARK')
+      onChangeField('skin', 'FULL_SIZE')
     } else {
       onChangeField('skin', '')
     }
@@ -383,17 +389,19 @@ const Sidebar = ({
                   description={description}
                 />
               </Col>
-              <Col xs={24}>
-                <CheckboxLabel
-                  mt="16px"
-                  data-cy="useFullSizeTile"
-                  name="useFullSizeTile"
-                  onChange={handleChangeSkin}
-                  checked={skin === 'SPARK'}
-                >
-                  use full size tile image
-                </CheckboxLabel>
-              </Col>
+              {(isPublisher || isCurator) && (
+                <Col xs={24}>
+                  <CheckboxLabel
+                    mt="16px"
+                    data-cy="useFullSizeTile"
+                    name="useFullSizeTile"
+                    onChange={handleChangeSkin}
+                    checked={skin === 'FULL_SIZE'}
+                  >
+                    use full size tile image
+                  </CheckboxLabel>
+                </Col>
+              )}
             </Row>
           )}
         </Col>
@@ -423,6 +431,12 @@ Sidebar.propTypes = {
   onChangeSubjects: PropTypes.func.isRequired,
 }
 
-export default connect(null, {
-  changePlayListTheme: changePlaylistThemeAction,
-})(Sidebar)
+export default connect(
+  (state) => ({
+    isCurator: isCuratorRoleSelector(state),
+    isPublisher: isPublisherUserSelector(state),
+  }),
+  {
+    changePlayListTheme: changePlaylistThemeAction,
+  }
+)(Sidebar)

@@ -121,16 +121,22 @@ const PlayerHeader = ({
         <IconEduLogoStyled circleFill={header1.background} />
         <StyledHeaderTitle>
           <div style={{ display: 'flex' }}>
-            {!!grades.length && <Grades>GRADE {grades.join(',')}</Grades>}
-            {!!subjects.length && <Subjects>{subjects.join(',')}</Subjects>}
-            <Title title={title}>{title}</Title>
+            {!!grades.length && (
+              <Grades data-cy="grades">GRADE {grades.join(',')}</Grades>
+            )}
+            {!!subjects.length && (
+              <Subjects data-cy="subjects">{subjects.join(',')}</Subjects>
+            )}
+            <Title data-cy="title" title={title}>
+              {title}
+            </Title>
           </div>
           <RightContent>
             {timedAssignment && (
               <TimedTestTimer
                 utaId={utaId}
                 groupId={groupId}
-                style={{ marginRight: '50px', padding: '0' }}
+                style={{ marginRight: '50px', padding: '0', minHeight: 'auto' }}
               />
             )}
 
@@ -172,6 +178,7 @@ const PlayerHeader = ({
               )}
               <Container
                 style={{ fontSize: '20px', fontWeight: 600, color: '#fff' }}
+                data-cy="questionLeft"
               >
                 Question {currentItem + 1} of {totalQuestions}
               </Container>

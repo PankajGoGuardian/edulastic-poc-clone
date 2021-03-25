@@ -119,14 +119,14 @@ const PlayerFooter = ({
 
   return (
     <MainFooter isSidebarVisible className="quester-player-footer">
-      <ActionContainer>
+      <ActionContainer data-cy="zoomIn">
         <IconWrap className="hover-effect" onClick={handleZoomOut}>
           <IconMinusRounded color={footer.textColor} />
         </IconWrap>
         <span>ZOOM IN</span>
       </ActionContainer>
 
-      <ActionContainer>
+      <ActionContainer data-cy="zoomOut">
         <IconWrap className="hover-effect" onClick={handleZoomIn}>
           <IconPlus color={footer.textColor} />
         </IconWrap>
@@ -142,6 +142,7 @@ const PlayerFooter = ({
               : () => toggleBookmark(items[currentItem]?._id)
           }
           title={t('common.test.bookmark')}
+          data-cy="bookmark"
         >
           <IconWrapper>
             <IconBookMark
@@ -164,6 +165,7 @@ const PlayerFooter = ({
             ? 'This option is available only for multiple choice'
             : 'Crossout'
         }
+        data-cy="crossButton"
       >
         <IconWrapper>
           <IconAnswerEliminator
@@ -180,6 +182,7 @@ const PlayerFooter = ({
           active={tool?.includes(CALC)}
           onClick={() => changeTool(CALC)}
           title={t('common.test.calculator')}
+          data-cy="calculator"
         >
           <IconWrapper>
             <IconCalculator
@@ -197,6 +200,7 @@ const PlayerFooter = ({
           active={tool?.includes(SCRATCHPAD)}
           onClick={() => changeTool(SCRATCHPAD)}
           title={t('common.test.scratchPad')}
+          data-cy="scratchPad"
         >
           <IconWrapper>
             <IconScratchPad
@@ -213,6 +217,7 @@ const PlayerFooter = ({
           hoverEffect
           onClick={toggleUserWorkUploadModal}
           title={t('common.test.uploadWork')}
+          data-cy="uploadWork"
         >
           <IconWrapper>
             <IconCloudUpload
@@ -231,6 +236,7 @@ const PlayerFooter = ({
           active={enableMagnifier}
           onClick={handleMagnifier}
           title={t('common.test.magnify')}
+          data-cy="magnify"
         >
           <IconWrapper>
             <IconMagnify

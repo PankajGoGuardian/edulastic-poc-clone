@@ -28,7 +28,11 @@ export const ResouceIcon = ({ type, isAdded, ...rest }) => (
   </IconWrapper>
 )
 
-const getStandardIdentifiers = (summary, alignment, interestedCurriculums) => {
+const getStandardIdentifiersForTest = (
+  summary,
+  alignment,
+  interestedCurriculums
+) => {
   // Get intrested standards by orgType
   let intrestedStandards =
     getInterestedStandards(summary, alignment, interestedCurriculums) || []
@@ -39,6 +43,11 @@ const getStandardIdentifiers = (summary, alignment, interestedCurriculums) => {
   return intrestedStandards.map((x) => x.identifier)
 }
 
+const getStandardIdentifiersForResource = (alignment) =>
+  alignment?.flatMap((x) =>
+    x?.domains?.flatMap((y) => y?.standards?.map((z) => z?.name))
+  ) || []
+
 const ResourceItem = ({
   contentTitle,
   contentDescription = '',
@@ -47,7 +56,7 @@ const ResourceItem = ({
   standards = [],
   type,
   id,
-  summary,
+  summary = {},
   alignment,
   data = undefined,
   isAdded,
@@ -56,11 +65,16 @@ const ResourceItem = ({
   testType,
   interestedCurriculums,
 }) => {
-  const standardIdentifiers = getStandardIdentifiers(
-    summary,
-    alignment,
-    interestedCurriculums
-  )
+  let standardIdentifiers = []
+  if (type === 'test') {
+    standardIdentifiers = getStandardIdentifiersForTest(
+      summary,
+      alignment,
+      interestedCurriculums
+    )
+  } else {
+    standardIdentifiers = getStandardIdentifiersForResource(alignment)
+  }
 
   const [, drag] = useDrag({
     item: {

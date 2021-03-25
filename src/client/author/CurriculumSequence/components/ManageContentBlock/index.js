@@ -20,7 +20,7 @@ import ResourceItem from '../ResourceItem'
 import WebsiteResourceModal from './components/WebsiteResourceModal'
 import ExternalVideoLink from './components/ExternalVideoLink'
 import LTIResourceModal from './components/LTIResourceModal'
-import slice from './ducks'
+import slice, { getPlaylistContentFilters } from './ducks'
 import {
   ActionButton,
   LoaderWrapper,
@@ -62,27 +62,18 @@ const observeElement = (fetchTests, tests) => {
 
 const ManageContentBlock = (props) => {
   const {
-    isLoading,
-    loadedPage,
-    filter,
-    status,
-    grades,
-    subject,
-    collection,
+    contentFilters,
     setDefaults,
     fetchTests,
-    tests = [],
     setFilterAction,
     setStatusAction,
     setGradesAction,
     setSubjectAction,
     setCollectionAction,
     resetAndFetchTests,
-    fetchResource,
-    searchStrings,
+    resetAndSearchResources,
     setTestSearchAction,
     testsInPlaylist = [],
-    selectedTestForPreview = '',
     testPreviewModalVisible = false,
     showPreviewModal,
     closePreviewModal,
@@ -95,18 +86,36 @@ const ManageContentBlock = (props) => {
     getCurrentDistrictUsers,
     userFeatures,
     fetchExternalToolProvidersAction,
-    externalToolsProviders,
     urlHasUseThis,
-    searchResourceBy,
     setSearchByTab,
     addResource,
-    resources = [],
     setEmbeddedVideoPreviewModal,
     isDifferentiationTab = false,
     setIsTestPreviewVisible,
     interestedCurriculums,
     history,
+    setAlignment,
+    setSelectedStandards,
+    setResourceSearch,
   } = props
+
+  const {
+    isLoading,
+    loadedPage,
+    filter,
+    status,
+    subject,
+    grades,
+    tests = [],
+    collection,
+    alignment = {},
+    selectedStandards = [],
+    searchString: searchStrings,
+    selectedTestForPreview = '',
+    externalToolsProviders,
+    searchResourceBy,
+    resources = [],
+  } = contentFilters || {}
 
   const lastResourceItemRef = observeElement(fetchTests, tests)
 
@@ -116,8 +125,6 @@ const ManageContentBlock = (props) => {
   const [isWebsiteUrlResourceModal, setWebsiteUrlResourceModal] = useState(
     false
   )
-  const [alignment, setAlignment] = useState({})
-  const [selectedStandards, setSelectedStandards] = useState([])
 
   const [
     isExternalVideoResourceModal,
@@ -175,13 +182,18 @@ const ManageContentBlock = (props) => {
     if (searchResourceBy === 'tests') {
       resetAndFetchTests()
     } else {
-      const selectedStandardIds = selectedStandards?.map((x) => x._id) || []
-      fetchResource({ standardIds: selectedStandardIds })
+      resetAndSearchResources()
     }
     closeContentFilterModal()
   }
 
-  const onSearchChange = (list) => setTestSearchAction(list)
+  const onSearchChange = (list) => {
+    if (searchResourceBy === 'tests') {
+      setTestSearchAction(list)
+    } else {
+      setResourceSearch(list)
+    }
+  }
 
   const enhanceTextWeight = (text) => (
     <span style={{ fontWeight: 600 }}>{text}</span>
@@ -251,43 +263,34 @@ const ManageContentBlock = (props) => {
   const renderList = () => {
     const listToRender = []
     if (searchResourceBy === 'resources') {
-      resources.forEach(
-        (
-          {
-            _id,
-            contentType,
-            contentTitle,
-            contentDescription,
-            data,
-            contentUrl,
-            hasStandardsOnCreation,
-            standards,
-          },
-          idx
-        ) => {
+      if (resources.length) {
+        resources.forEach((resource, idx) => {
+          if (idx === fetchCall) {
+            listToRender.push(
+              <div style={{ height: '1px' }} ref={lastResourceItemRef} />
+            )
+          }
           listToRender.push(
             <ResourceItem
-              type={contentType}
-              id={_id}
-              contentTitle={contentTitle}
-              contentDescription={contentDescription}
-              contentUrl={contentUrl}
-              hasStandardsOnCreation={hasStandardsOnCreation}
-              standards={standards}
-              key={`resource-${idx}`}
-              data={data}
-              isAdded={testsInPlaylist.includes(_id)}
+              key={resource?._id}
+              type={resource?.contentType}
+              id={resource?._id}
+              contentTitle={resource?.contentTitle}
+              contentDescription={resource?.contentDescription}
+              contentUrl={resource?.contentUrl}
+              hasStandardsOnCreation={resource?.hasStandardsOnCreation}
+              alignment={resource?.alignment}
+              isAdded={testsInPlaylist.includes(resource?._id)}
               previewTest={() =>
-                previewResource(contentType, {
-                  url: contentUrl,
-                  contentTitle,
-                  ...data,
+                previewResource(resource?.contentType, {
+                  url: resource?.contentUrl,
+                  contentTitle: resource?.contentTitle,
                 })
               }
             />
           )
-        }
-      )
+        })
+      }
     }
     if (searchResourceBy === 'tests') {
       if (tests.length) {
@@ -512,25 +515,13 @@ const enhance = compose(
   withRouter,
   connect(
     (state) => ({
-      isLoading: state.playlistTestBox?.isLoading,
-      loadedPage: state.playlistTestBox?.loadedPage,
-      filter: state.playlistTestBox?.filter,
-      status: state.playlistTestBox?.status,
-      subject: state.playlistTestBox?.subject,
-      grades: state.playlistTestBox?.grades,
-      tests: state.playlistTestBox?.tests,
-      collection: state.playlistTestBox?.collection,
-      searchStrings: state.playlistTestBox?.searchString,
       testPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
-      selectedTestForPreview: state.playlistTestBox?.selectedTestForPreview,
-      externalToolsProviders: state.playlistTestBox?.externalToolsProviders,
       collections: state.user?.user?.orgData?.itemBanks,
       currentDistrictUsers: getCurrentDistrictUsersSelector(state),
       districtId: state?.user?.user?.orgData?.districtIds?.[0],
       userFeatures: state?.user?.user?.features,
-      searchResourceBy: state.playlistTestBox?.searchResourceBy,
-      resources: state.playlistTestBox?.resources,
       interestedCurriculums: getInterestedCurriculumsByOrgType(state),
+      contentFilters: getPlaylistContentFilters(state),
     }),
     {
       setFilterAction: slice.actions?.setFilterAction,
@@ -541,7 +532,8 @@ const enhance = compose(
       setGradesAction: slice.actions?.setGradesAction,
       setCollectionAction: slice.actions?.setCollectionAction,
       resetAndFetchTests: slice.actions?.resetAndFetchTests,
-      fetchResource: slice.actions?.fetchResource,
+      searchResource: slice.actions?.searchResource,
+      resetAndSearchResources: slice.actions?.resetAndSearchResources,
       setTestSearchAction: slice.actions?.setTestSearchAction,
       showPreviewModal: slice.actions?.showTestPreviewModal,
       closePreviewModal: slice.actions?.closeTestPreviewModal,
@@ -552,6 +544,9 @@ const enhance = compose(
       addResource: slice.actions?.addResource,
       setEmbeddedVideoPreviewModal: setEmbeddedVideoPreviewModalAction,
       setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
+      setAlignment: slice.actions.setAlignmentAction,
+      setSelectedStandards: slice.actions.setSelectedStandardsAction,
+      setResourceSearch: slice.actions.setResourceSearchAction,
     }
   )
 )

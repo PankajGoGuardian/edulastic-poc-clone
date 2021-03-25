@@ -29,8 +29,18 @@ const updateStandards = (data) =>
     })
     .then((result) => result.data.result)
 
+const searchResource = (data) =>
+  api
+    .callApi({
+      url: `${prefix}/search`,
+      method: 'post',
+      data,
+    })
+    .then((result) => result.data.result?.hits?.hits)
+
 export default {
   addResource,
   fetchResources,
   updateStandards,
+  searchResource,
 }

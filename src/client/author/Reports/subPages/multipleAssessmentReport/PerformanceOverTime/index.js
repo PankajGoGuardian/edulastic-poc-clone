@@ -87,10 +87,18 @@ const PerformanceOverTime = ({
     <>
       <StyledCard>
         <Row>
-          <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-            <StyledH3>How is assessment performance over time?</StyledH3>
+          <Col xs={24} sm={24} md={16} lg={16} xl={16}>
+            <StyledH3 fontSize="16px" margin="0">
+              Performance in Assessments over time
+            </StyledH3>
+            {rawData.hasIncompleteTests && (
+              <StyledH3 fontSize="13px" fontWeight="normal">
+                (Some assessments are still in progress and hence the results
+                may not be complete)
+              </StyledH3>
+            )}
           </Col>
-          <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+          <Col xs={24} sm={24} md={8} lg={8} xl={8}>
             <AnalyseByFilter
               onFilterChange={setAnalyseBy}
               analyseBy={analyseBy}

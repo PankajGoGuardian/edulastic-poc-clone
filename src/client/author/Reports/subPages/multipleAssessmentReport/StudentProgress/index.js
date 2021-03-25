@@ -131,8 +131,11 @@ const StudentProgress = ({
 
   const filteredInfo = filterMetricInfoByDDFilters(metricInfo, ddfilter)
 
-  const metaInfo = get(studentProgress, 'data.result.metaInfo', [])
-  const testsCount = get(studentProgress, 'data.result.testsCount', 0)
+  const { metaInfo = [], testsCount = 0, hasIncompleteTests } = get(
+    studentProgress,
+    'data.result',
+    {}
+  )
   const [data, trendCount] = useGetBandData(
     filteredInfo,
     compareBy.key,
@@ -212,7 +215,12 @@ const StudentProgress = ({
         />
       </FeaturesSwitch>
       <TrendStats
-        heading="How well are students progressing ?"
+        heading="Student progress over time"
+        subHeading={
+          hasIncompleteTests
+            ? '(Some assessments are still in progress and hence the results may not be complete)'
+            : ''
+        }
         trendCount={trendCount}
         selectedTrend={selectedTrend}
         onTrendSelect={onTrendSelect}

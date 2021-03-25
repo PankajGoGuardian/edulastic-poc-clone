@@ -139,7 +139,7 @@ const StandardsProgress = ({
     <div>
       <StyledCard>
         <Row type="flex" justify="start">
-          <StyledH3 marginLeft="50px">
+          <StyledH3 margin="0 0 10px 50px">
             Mastery Level Distribution by Test
           </StyledH3>
         </Row>

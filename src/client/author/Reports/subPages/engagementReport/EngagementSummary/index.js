@@ -55,7 +55,7 @@ const Engagement = ({
         <EngagementStats data={statsData} />
       </StyledCard>
       <StyledCard padding="20px 0 0 0">
-        <StyledH3 fontSize="16px" marginLeft="10px">
+        <StyledH3 fontSize="16px" margin="0 0 10px 10px">
           Activity Timeline
         </StyledH3>
         <SimpleAreaWithLineChartContainer data={timelineData} />

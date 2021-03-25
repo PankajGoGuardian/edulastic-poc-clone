@@ -17,6 +17,7 @@ const TrendStats = ({
   selectedTrend,
   renderFilters,
   heading,
+  subHeading,
   handleAddToGroupClick,
   isSharedReport,
 }) => {
@@ -26,15 +27,20 @@ const TrendStats = ({
     <UpperContainer>
       <PaddedContainer paddingLeft="0">
         <Row>
-          <Col xs={24} sm={24} md={10} lg={10} xl={10}>
-            <StyledH3>{heading}</StyledH3>
+          <Col xs={24} sm={24} md={16} lg={16} xl={16}>
+            <StyledH3 fontSize="16px" margin="0">
+              {heading}
+            </StyledH3>
+            <StyledH3 fontSize="13px" fontWeight="normal">
+              {subHeading}
+            </StyledH3>
           </Col>
           <Col
             xs={24}
             sm={24}
-            md={14}
-            lg={14}
-            xl={14}
+            md={8}
+            lg={8}
+            xl={8}
             style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -85,6 +91,7 @@ TrendStats.propTypes = {
   selectedTrend: PropTypes.string,
   renderFilters: PropTypes.func,
   heading: PropTypes.string,
+  subHeading: PropTypes.string,
   trendCount: PropTypes.shape({
     up: PropTypes.number,
     flat: PropTypes.number,
@@ -102,6 +109,7 @@ TrendStats.defaultProps = {
   onTrendSelect: () => {},
   renderFilters: () => null,
   heading: '',
+  subHeading: '',
 }
 
 export default TrendStats

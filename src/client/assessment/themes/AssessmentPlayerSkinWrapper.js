@@ -359,9 +359,9 @@ const StyledMainContainer = styled.div`
           : 'none!important'
       };
       z-index: 1;
-      position: fixed;
+      position: absolute;
       top: 50%;
-      right: 0;
+      right: 0px;
       > div {
         display: flex!important;
         flex-direction: column;

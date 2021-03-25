@@ -60,14 +60,14 @@ export const allKeypadSelector = createSelector(
   (customKeypads) => customKeypads.concat(predefinedKeypads)
 )
 
-export const testKeyboardSelector = createSelector(
+export const testKeypadSelector = createSelector(
   getTestEntitySelector,
   (test) => get(test, ['keypad', 'value'], {})
 )
 
 export const allKeypadForTestSelector = createSelector(
   customKeypadSelector,
-  testKeyboardSelector,
+  testKeypadSelector,
   (customKeypads, testKeyboard) => {
     let keypads = [
       ...predefinedKeypads,

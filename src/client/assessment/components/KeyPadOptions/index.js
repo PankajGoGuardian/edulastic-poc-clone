@@ -132,7 +132,7 @@ const KeyPadOptions = ({
     }
     const sameId = (obj) => obj._id === symbol._id
     return storedKeypads.some(sameId)
-  }, [storedKeypads])
+  }, [storedKeypads, symbol])
 
   useEffect(() => {
     let selectedIndex = null
@@ -207,6 +207,8 @@ const KeyPadOptions = ({
     onChange('symbols', data)
     hideModal()
   }
+
+  console.log('symbol', symbol, keypadIsUserCustomKeypad)
 
   return (
     <Question

@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react'
+import { connect } from 'react-redux'
 import { CustomModalStyled, EduButton } from '@edulastic/common'
+import { removeAllTokens } from '@edulastic/api/src/utils/Storage'
+import { logoutAction } from '../../author/src/actions/auth'
 
-function closeTab() {
-  sessionStorage.clear()
-  localStorage.clear()
-  window.location.href = '/'
+function closeTab(logout) {
+  removeAllTokens()
+  logout()
 }
 
-export default function StudentSessionExpiredModal() {
+function StudentSessionExpiredModal({ logout }) {
   const [showPopup, setShowPopup] = useState(false)
 
   const closePopupFn = () => {
     setShowPopup(false)
-    closeTab()
+    closeTab(logout)
   }
 
   useEffect(() => {
@@ -42,3 +44,7 @@ export default function StudentSessionExpiredModal() {
     </CustomModalStyled>
   )
 }
+
+export default connect(null, {
+  logout: logoutAction,
+})(StudentSessionExpiredModal)

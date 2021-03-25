@@ -320,7 +320,11 @@ const InnerWorkTable = ({
               {record.description}
             </StyledDescription>
             {showNewActivity && activeHoverIndex === index && (
-              <ContentDropContainer dropType="activity" {...containerProps}>
+              <ContentDropContainer
+                data-cy={`${type}-newActivityDropContainer`}
+                dropType="activity"
+                {...containerProps}
+              >
                 New Activity
               </ContentDropContainer>
             )}
@@ -547,6 +551,7 @@ const InnerWorkTable = ({
             dropType="TOP_LEVEL_STUDENT_RESOURCE"
             type={type}
             addDifferentiationResources={addDifferentiationResources}
+            data-cy={`${type}-studentResourceDropContainer`}
           >
             Student Resource
           </ContentDropContainer>
@@ -566,7 +571,12 @@ const InnerWorkTable = ({
         />
       ) : null}
       {showNewActivity && !data.length && (
-        <ActivityDropConainer height="195px" active={isOver} ref={drop}>
+        <ActivityDropConainer
+          data-cy={`${type}-activityDropContainer`}
+          height="195px"
+          active={isOver}
+          ref={drop}
+        >
           New Activity
         </ActivityDropConainer>
       )}

@@ -31,7 +31,7 @@ import {
 } from '@edulastic/common'
 
 import { themeColor } from '@edulastic/colors'
-import { testActivityApi, classBoardApi } from '@edulastic/api'
+import { testActivityApi, classBoardApi, TokenStorage } from '@edulastic/api'
 
 import Styled from 'styled-components'
 import {
@@ -247,7 +247,11 @@ export function useFullScreenListener({
           if (!_path.includes('/uta/')) {
             window.sessionStorage.removeItem('totalTimeInBlur')
           }
-          if (!_path.includes('/uta/') && _disableSave) {
+          if (
+            !_path.includes('/uta/') &&
+            _disableSave &&
+            !window.sessionStorage.getItem('paused')
+          ) {
             pauseAssignment({
               history,
               assignmentId,
@@ -283,12 +287,40 @@ function useFirestorePingsForNavigationCheck({
     if (testActivityId) {
       doc.get().then((d) => {
         if (!d.data()) {
-          doc.set({ lastUpdatedTime: Date.now() })
+          doc.set({
+            lastUpdatedTime: Date.now(),
+            tokenCreatedTime: TokenStorage.getCurrentTokenCreatedTime(),
+          })
           return
         }
-        const lastTime = d.data().lastUpdatedTime
 
-        if (Date.now() - lastTime >= 45 * 1000) {
+        const {
+          lastUpdatedTime: lastTime,
+          tokenCreatedTime: firebaseTokenCreatedTime,
+        } = d.data()
+        const currentTokenCreatedTime = TokenStorage.getCurrentTokenCreatedTime()
+
+        if (
+          blockSaveAndContinue &&
+          firebaseTokenCreatedTime &&
+          currentTokenCreatedTime &&
+          currentTokenCreatedTime > firebaseTokenCreatedTime
+        ) {
+          pauseAssignment({
+            history,
+            testActivityId,
+            userId,
+            assignmentId,
+            classId,
+            pauseReason:
+              'Test is paused due to multiple login sessions. To reset, place check mark in student card, go to More, select Resume',
+          })
+
+          window.sessionStorage.setItem('paused', 1)
+          setTimeout(() => {
+            window.sessionStorage.removeItem('paused')
+          }, 10000)
+        } else if (Date.now() - lastTime >= 45 * 1000) {
           if (blockSaveAndContinue) {
             pauseAssignment({
               history,
@@ -302,13 +334,13 @@ function useFirestorePingsForNavigationCheck({
             incrementNavigationCounter({ history, testActivityId })
           }
         } else {
-          doc.set({ lastUpdatedTime: Date.now() })
+          doc.update({ lastUpdatedTime: Date.now() })
         }
       })
     }
 
     const interval = window.setInterval(() => {
-      doc.set({ lastUpdatedTime: Date.now() })
+      doc.update({ lastUpdatedTime: Date.now() })
     }, 30 * 1000)
 
     return () => {

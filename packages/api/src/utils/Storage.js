@@ -1,4 +1,3 @@
- 
 import uuid from 'uuid/v4'
 import { configureScope, captureException } from '@sentry/browser'
 import { uniq } from 'lodash'
@@ -170,14 +169,20 @@ export function getAccessToken() {
   return window.localStorage.getItem(_tokenKey)
 }
 
+export function getCurrentTokenCreatedTime() {
+  const token = getAccessToken()
+  const { tokenCreatedTime } = parseJwt(token)
+  return tokenCreatedTime
+}
+
 /**
  * Removes all user tokens in current browser
  */
-export function removeAllTokens(){
-  window.sessionStorage.removeItem('tokenKey');
-  window.sessionStorage.removeItem('defaultTokenKey');
-  window.localStorage.removeItem('defaultTokenKey');
-  window.localStorage.removeItem('tokens');
+export function removeAllTokens() {
+  window.sessionStorage.removeItem('tokenKey')
+  window.sessionStorage.removeItem('defaultTokenKey')
+  window.localStorage.removeItem('defaultTokenKey')
+  window.localStorage.removeItem('tokens')
   window.localStorage.removeItem('authState')
 }
 

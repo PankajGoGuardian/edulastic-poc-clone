@@ -2218,6 +2218,8 @@ function* publishTestSaga({ payload }) {
 
     if (!result) return
 
+    yield put(resetUpdatedStateAction())
+
     const features = yield select(getUserFeatures)
     if (features.isPublisherAuthor && !assignFlow) {
       yield call(testsApi.updateTestStatus, {

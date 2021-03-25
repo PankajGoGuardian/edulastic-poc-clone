@@ -24,6 +24,9 @@ export const updateCustomKeypadAction = createAction(UPDATE_USER_CUSTOM_KEYPAD)
 
 const SET_CUSTOM_KEYPADS = '[customkeypad] set customkeypad to redux'
 
+const DELETE_CUSTOM_KEYPAD = '[customkeypad] delete a custom keypad'
+export const deleteCustomKeypadAction = createAction(DELETE_CUSTOM_KEYPAD)
+
 const initialState = { keypads: [], docId: '' }
 
 export function customKeypadReducer(state = initialState, { type, payload }) {
@@ -45,6 +48,11 @@ const stateSelector = (state) => state.customKeypad
 export const customKeypadSelector = createSelector(
   stateSelector,
   (state) => state.keypads
+)
+
+const currentKeypadDocIdSelector = createSelector(
+  stateSelector,
+  (customKeypad) => customKeypad.docId
 )
 
 export const allKeypadSelector = createSelector(
@@ -100,8 +108,13 @@ function* storeCustomKeypadSaga({ payload }) {
       type: RETRIEVE_USER_CUSTOM_KEYPAD,
     })
   } catch (error) {
-    console.log(error)
+    console.error(error)
   }
+}
+
+function getActiveKeypadsFromList(keypads) {
+  const isActive = ({ active = true }) => active
+  return keypads.filter(isActive)
 }
 
 function* fetchCustomKeypadSaga() {
@@ -110,10 +123,13 @@ function* fetchCustomKeypadSaga() {
 
     yield put({
       type: SET_CUSTOM_KEYPADS,
-      payload: { keypads: results?.value || [], docId: results?._id },
+      payload: {
+        keypads: getActiveKeypadsFromList(results?.value || []),
+        docId: results?._id,
+      },
     })
   } catch (error) {
-    console.log(error)
+    console.error(error)
   }
 }
 
@@ -129,11 +145,43 @@ function* updateCustomKeypadSaga({ payload }) {
       )
       yield put({
         type: SET_CUSTOM_KEYPADS,
-        payload: { keypads: results?.value || [], docId: results?._id },
+        payload: {
+          keypads: getActiveKeypadsFromList(results?.value || []),
+          docId: results?._id,
+        },
       })
     }
   } catch (error) {
-    console.log(error)
+    console.error(error)
+  }
+}
+
+function* deleteCustomKeypadSaga({ payload }) {
+  try {
+    const customKeypads = [...(yield select(customKeypadSelector))]
+    const hasSameId = (keypad) => keypad._id === payload._id
+    const keypadIndex = customKeypads.findIndex(hasSameId)
+    if (keypadIndex !== -1) {
+      customKeypads.splice(keypadIndex, 1)
+      const docId = yield select(currentKeypadDocIdSelector)
+      yield userContextApi.deleteCustomKeypad(docId, {
+        filter: { _id: payload._id },
+      })
+      yield put({
+        type: SET_CUSTOM_KEYPADS,
+        payload: { keypads: customKeypads, docId },
+      })
+      notification({
+        type: 'success',
+        msg: 'Keypad removed successfully',
+      })
+    }
+  } catch (error) {
+    console.error('error')
+    notification({
+      type: 'erorr',
+      msg: 'Failed to remove keypad',
+    })
   }
 }
 
@@ -141,7 +189,8 @@ export function* customKeypadSaga() {
   yield all(
     yield takeLatest(STORE_USER_CUSTOM_KEYPAD, storeCustomKeypadSaga),
     yield takeLatest(RETRIEVE_USER_CUSTOM_KEYPAD, fetchCustomKeypadSaga),
-    yield takeLatest(UPDATE_USER_CUSTOM_KEYPAD, updateCustomKeypadSaga)
+    yield takeLatest(UPDATE_USER_CUSTOM_KEYPAD, updateCustomKeypadSaga),
+    yield takeLatest(DELETE_CUSTOM_KEYPAD, deleteCustomKeypadSaga)
   )
 }
 

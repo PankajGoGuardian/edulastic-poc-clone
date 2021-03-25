@@ -1,13 +1,18 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState, useRef } from 'react'
 import uuidv4 from 'uuid/v4'
 import PropTypes from 'prop-types'
 import { Select } from 'antd'
-import { isObject, isArray } from 'lodash'
+import { isObject, isArray, isPlainObject } from 'lodash'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 
 import { math } from '@edulastic/constants'
-import { Keyboard, FlexContainer, EduButton } from '@edulastic/common'
+import {
+  Keyboard,
+  FlexContainer,
+  EduButton,
+  SimpleConfirmModal,
+} from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { numBtnColors } from '@edulastic/colors'
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
@@ -26,6 +31,7 @@ import {
   fetchCustomKeypadAction,
   updateCustomKeypadAction,
   getCustomKeypads,
+  deleteCustomKeypadAction,
 } from './ducks'
 import { StyledSelectContainer } from './styled/StyledSelectContainer'
 
@@ -66,10 +72,13 @@ const KeyPadOptions = ({
   storeCustomKeypad,
   updateCustomKeypad,
   fetchCustomKeypad,
+  deleteCustomKeypad,
 }) => {
   const symbol = item.symbols[0]
   const isCustom = isObject(symbol)
   const [selected, setSelected] = useState()
+  const [modalVisibility, setModalVisibility] = useState(false)
+  const initialSelectedKeypad = useRef()
 
   const btnStyle = useMemo(
     () =>
@@ -83,26 +92,74 @@ const KeyPadOptions = ({
     [isCustom]
   )
 
-  const symbolsData = useMemo(
-    () => {
-      return [
-        { value: 'custom', label: t('component.options.addCustom') },
-        // ...storedKeypads,
-        ...math.symbols,
-      ]
-    },
-    [
-      // storedKeypads
-    ]
-  )
-
-  const allKeypads = useMemo(() => {
-    return [
+  const symbolsData = useMemo(() => {
+    const keypadList = [
       { value: 'custom', label: t('component.options.addCustom') },
       ...math.symbols,
-      ...storedKeypads,
     ]
+
+    if (initialSelectedKeypad.current) {
+      const sameId = (obj) => obj._id === initialSelectedKeypad.current._id
+      const includedInCustom = storedKeypads.find(sameId)
+      if (!includedInCustom) {
+        keypadList.push(initialSelectedKeypad.current)
+      }
+    }
+
+    return keypadList
+  }, [item.symbols, storedKeypads])
+
+  const allKeypads = useMemo(() => {
+    const keypadList = [
+      { value: 'custom', label: t('component.options.addCustom') },
+      ...math.symbols,
+    ]
+
+    if (initialSelectedKeypad.current) {
+      const sameId = (obj) => obj._id === initialSelectedKeypad.current._id
+      const includedInCustom = storedKeypads.find(sameId)
+      if (!includedInCustom) {
+        keypadList.push(initialSelectedKeypad.current)
+      }
+    }
+
+    return keypadList.concat(storedKeypads)
   }, [storedKeypads])
+
+  const keypadIsUserCustomKeypad = useMemo(() => {
+    if (!isCustom) {
+      return false
+    }
+    const sameId = (obj) => obj._id === symbol._id
+    return storedKeypads.some(sameId)
+  }, [storedKeypads])
+
+  useEffect(() => {
+    let selectedIndex = null
+    if (isCustom) {
+      if (symbol._id) {
+        selectedIndex = allKeypads.findIndex((s) => s._id === symbol._id)
+      } else {
+        selectedIndex = 0
+      }
+    } else {
+      selectedIndex = allKeypads.findIndex((s) => s.value === symbol)
+    }
+    setSelected(selectedIndex)
+  }, [symbolsData, symbol, storedKeypads])
+
+  useEffect(() => {
+    fetchCustomKeypad()
+    /**
+     * the keypad selected in item, might not necessarily be part of user custom keypads
+     * when user changes the dropdown, symbols[0] gets updated with latest user selection
+     * but we need to preserve the earlier keypad data and make it available in dropdown
+     * this ref will be preseving the initial keypad value in the item
+     */
+    if (isPlainObject(item?.symbols?.[0])) {
+      initialSelectedKeypad.current = item.symbols[0]
+    }
+  }, [])
 
   const handleSymbolsChange = (valueIndx) => {
     const newSymbol = allKeypads[valueIndx]
@@ -135,24 +192,21 @@ const KeyPadOptions = ({
       }
     }
   }
+  const showModal = () => {
+    setModalVisibility(true)
+  }
 
-  useEffect(() => {
-    let selectedIndex = null
-    if (isCustom) {
-      if (symbol._id) {
-        selectedIndex = allKeypads.findIndex((s) => s._id === symbol._id)
-      } else {
-        selectedIndex = 0
-      }
-    } else {
-      selectedIndex = allKeypads.findIndex((s) => s.value === symbol)
-    }
-    setSelected(selectedIndex)
-  }, [symbolsData, symbol, storedKeypads])
+  const hideModal = () => {
+    setModalVisibility(false)
+  }
 
-  useEffect(() => {
-    fetchCustomKeypad()
-  }, [])
+  const handleDeleteCustomKeypad = () => {
+    deleteCustomKeypad(symbol)
+    const data = [...item.symbols]
+    data[0] = 'basic'
+    onChange('symbols', data)
+    hideModal()
+  }
 
   return (
     <Question
@@ -183,17 +237,9 @@ const KeyPadOptions = ({
                   {t('component.options.defaultMode')}
                 </Label>
               </FlexContainer>
-              {isCustom && (
-                <EduButton
-                  isGhost
-                  height="28px"
-                  onClick={handleStoreCustomKeypad}
-                >
-                  {symbol._id
-                    ? t('component.options.updateCustomKeypad')
-                    : t('component.options.saveCustomKeypad')}
-                </EduButton>
-              )}
+              {/* {isCustom && (
+                
+              )} */}
             </FlexContainer>
           </Row>
           <StyledSelectContainer>
@@ -228,7 +274,29 @@ const KeyPadOptions = ({
       {isCustom && (
         <Row gutter={24}>
           <Col span={12}>
-            <Label>{t('component.options.label')}</Label>
+            <FlexContainer
+              justifyContent="space-between"
+              marginBottom="10px"
+              alignItems="baseline"
+            >
+              <Label>{t('component.options.label')}</Label>
+              <FlexContainer justifyContent="space-between">
+                <EduButton
+                  isGhost
+                  height="28px"
+                  onClick={handleStoreCustomKeypad}
+                >
+                  {symbol._id && keypadIsUserCustomKeypad
+                    ? t('component.options.updateCustomKeypad')
+                    : t('component.options.saveCustomKeypad')}
+                </EduButton>
+                {symbol._id && keypadIsUserCustomKeypad && (
+                  <EduButton isGhost height="28px" onClick={showModal}>
+                    {t('component.options.deleteCustomKeypad')}
+                  </EduButton>
+                )}
+              </FlexContainer>
+            </FlexContainer>
             <TextInputStyled
               onChange={handleCustomSymbolLabel}
               value={symbol.label}
@@ -255,6 +323,14 @@ const KeyPadOptions = ({
       </Row>
 
       {isCustom && renderExtra}
+      <SimpleConfirmModal
+        title="Delete Keypad"
+        description={`Keypad ${symbol?.label} will be deleted permanently. Are you sure you want to continue?`}
+        visible={modalVisibility}
+        onCancel={hideModal}
+        onProceed={handleDeleteCustomKeypad}
+        buttonText="Delete"
+      />
     </Question>
   )
 }
@@ -290,6 +366,7 @@ const enhance = compose(
       fetchCustomKeypad: fetchCustomKeypadAction,
       storeCustomKeypad: storeCustomKeypadAction,
       updateCustomKeypad: updateCustomKeypadAction,
+      deleteCustomKeypad: deleteCustomKeypadAction,
     }
   )
 )

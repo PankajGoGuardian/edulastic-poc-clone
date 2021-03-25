@@ -302,10 +302,11 @@ const SubscriptionMain = ({
   const { FEATURED } = groupBy(dashboardTiles, 'type')
   const featuredBundles = FEATURED || []
   const getBundleByProductId = (productId) =>
-    featuredBundles &&
-    featuredBundles.find(
-      (bundle) => bundle?.config?.subscriptionData?.productId === productId
-    )
+    (featuredBundles &&
+      featuredBundles.find(
+        (bundle) => bundle?.config?.subscriptionData?.productId === productId
+      )) ||
+    {}
 
   const settingProductData = (productId) => {
     // Flow when main start trial button is clicked

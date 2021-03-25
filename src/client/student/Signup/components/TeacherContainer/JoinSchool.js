@@ -230,9 +230,16 @@ const JoinSchool = ({
             isApproved: [true],
           },
           searchKeysSearchType: 'or',
+          limit: 50,
         })
       } else {
-        searchSchool({ ipZipCode, email, searchText, isApproved: true })
+        searchSchool({
+          ipZipCode,
+          email,
+          searchText,
+          isApproved: true,
+          limit: 50,
+        })
       }
     } else {
       // set the auto suggest schools

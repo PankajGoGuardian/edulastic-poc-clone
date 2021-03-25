@@ -13,7 +13,7 @@ import {
   getTestListLoadingSelector,
 } from '../../../ducks'
 
-const { DONE } = assignmentStatusOptions
+const { IN_PROGRESS, IN_GRADING, DONE } = assignmentStatusOptions
 const DEFAULT_SEARCH_TERMS = {
   text: '',
   selectedText: '',
@@ -57,7 +57,7 @@ const AssessmentAutoComplete = ({
       search: {
         searchString:
           searchTerms.selectedText === searchTerms.text ? '' : searchTerms.text,
-        statuses: [DONE],
+        statuses: [IN_PROGRESS, IN_GRADING, DONE],
         districtId,
       },
       aggregate: true,

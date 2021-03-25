@@ -77,7 +77,7 @@ const ActivityByTeacher = ({
   return (
     <>
       <StyledCard>
-        <StyledH3 fontSize="16px" marginLeft="10px">
+        <StyledH3 fontSize="16px" margin="0 0 10px 10px">
           Activity by Teacher
         </StyledH3>
         <SimpleStackedBarWithLineChartContainer

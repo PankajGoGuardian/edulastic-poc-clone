@@ -184,7 +184,7 @@ const StandardsGradebook = ({
         <StyledCard>
           <Row type="flex" justify="start">
             <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-              <StyledH3 marginLeft="50px">
+              <StyledH3 margin="0 0 10px 50px">
                 Mastery Level Distribution by Standard
               </StyledH3>
             </Col>

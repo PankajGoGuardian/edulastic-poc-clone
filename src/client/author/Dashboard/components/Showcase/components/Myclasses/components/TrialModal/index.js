@@ -22,6 +22,8 @@ const TrialModal = ({
   startPremiumTrial,
   products = [],
   setShowHeaderTrialModal,
+  setTrialAddOnProductIds = () => {},
+  hasAllTrialProducts = false,
 }) => {
   const hasPremiumTrialIncluded = useMemo(
     () => !isPremiumUser && !isPremiumTrialUsed,
@@ -33,7 +35,18 @@ const TrialModal = ({
       (product.type === 'PREMIUM' && hasPremiumTrialIncluded) ||
       addOnProductIds.includes(product.id)
   )
-  const [productIds, setProductIds] = useState(map(productsToShow, 'id'))
+
+  const [productIds, setProductIds] = useState(
+    map(
+      productsToShow.filter((product) => {
+        return (
+          (product.type === 'PREMIUM' && hasPremiumTrialIncluded) ||
+          !hasAllTrialProducts
+        )
+      }),
+      'id'
+    )
+  )
 
   const { PREMIUM: teacherPremium = [], ...ITEM_BANKS } = useMemo(() => {
     return groupBy(productsToShow, 'type')
@@ -56,6 +69,7 @@ const TrialModal = ({
   }
 
   const onProceed = () => {
+    setTrialAddOnProductIds([...productIds])
     startPremiumTrial({ productIds })
     closeModal()
   }
@@ -90,7 +104,7 @@ const TrialModal = ({
           <FlexRow>
             <StyledCheckbox
               data-cy={`${camelCase(item.name)}TrialCheckbox`}
-              defaultChecked
+              defaultChecked={!hasAllTrialProducts}
               onChange={handleOnChange(item.id)}
             >
               {item.name} TRIAL

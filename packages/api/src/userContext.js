@@ -76,6 +76,13 @@ const getCustomKeypad = () =>
     })
     .then((response) => response.data.result)
 
+const deleteCustomKeypad = (documentId, filter) =>
+  api.callApi({
+    method: 'delete',
+    url: `${prefix}/${documentId}`,
+    data: filter,
+  })
+
 export default {
   setLastUsedPlayList,
   setRecentUsedPlayLists,
@@ -84,4 +91,5 @@ export default {
   storeCustomKeypad,
   getCustomKeypad,
   updateCustomKeypad,
+  deleteCustomKeypad,
 }

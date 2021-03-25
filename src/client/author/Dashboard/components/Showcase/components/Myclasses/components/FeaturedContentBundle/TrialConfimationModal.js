@@ -1,6 +1,6 @@
 import { CustomModalStyled, EduButton } from '@edulastic/common'
 import { Spin } from 'antd'
-import React from 'react'
+import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
@@ -8,20 +8,58 @@ const TrialConfirmationModal = ({
   visible,
   showTrialSubsConfirmationAction,
   showTrialConfirmationMessage,
-  isTrialItemBank,
+  trialAddOnProductIds,
+  collections,
+  products,
   handleGoToCollectionClick,
-  title,
-  isBlocked,
   history,
 }) => {
+  const itemBankProducts = products.filter(
+    (product) =>
+      trialAddOnProductIds.includes(product.id) && product.type !== 'PREMIUM'
+  )
+
+  const productItemBankIds = itemBankProducts.map(
+    (product) => product.linkedProductId
+  )
+
+  // Check if trial successfully started for all item banks.
+  const isTrialPurchaseSuccess = useMemo(() => {
+    const availableCollections = collections.filter((collection) => {
+      return productItemBankIds.includes(collection._id)
+    })
+
+    return availableCollections.length === productItemBankIds.length
+  }, [collections, products, trialAddOnProductIds])
+
+  const sparkMathProduct = products.find(
+    (product) => product.type === 'ITEM_BANK_SPARK_MATH'
+  )
+
+  // If more than one item bank present, show Spark math button else show actual item bank button
+  const itemBankButtonParams = {
+    title:
+      itemBankProducts.length > 1
+        ? sparkMathProduct.name
+        : itemBankProducts?.[0]?.name,
+    productId:
+      itemBankProducts.length > 1
+        ? sparkMathProduct.id
+        : itemBankProducts?.[0]?.id,
+  }
+
   const handleCloseModal = () => {
     showTrialSubsConfirmationAction(false)
   }
+
   const handleGoToDashboard = () => {
     handleCloseModal()
     history.push('/author/dashboard')
   }
   const { hasTrial, subEndDate } = showTrialConfirmationMessage
+
+  const handleItemBankClick = () =>
+    handleGoToCollectionClick(itemBankButtonParams.productId)
 
   return (
     <>
@@ -40,21 +78,21 @@ const TrialConfirmationModal = ({
             >
               Go To Dashboard
             </EduButton>
-            {isTrialItemBank && (
+            {!!itemBankProducts.length && (
               <EduButton
                 data-cy="goToItemBank"
-                onClick={handleGoToCollectionClick}
+                onClick={handleItemBankClick}
                 width="180px"
                 height="45px"
               >
-                Go To {title}
+                Go To {itemBankButtonParams.title}
               </EduButton>
             )}
           </>,
         ]}
         centered
       >
-        {isBlocked && isTrialItemBank && (
+        {!isTrialPurchaseSuccess && !!itemBankProducts.length && (
           <SpinContainer>
             <StyledSpin size="large" />
           </SpinContainer>

@@ -192,7 +192,7 @@ const PerformanceOverTimeTable = ({
 
   return (
     <StyledCard>
-      <StyledH3>Assessment Statistics Over Time</StyledH3>
+      <StyledH3>Assessment Statistics</StyledH3>
       <CsvTable
         dataSource={dataSource}
         columns={getColumns()}

@@ -1,5 +1,5 @@
 import React, { Component, Suspense, lazy, useEffect } from 'react'
-import {  isEmpty } from 'lodash'
+import { isEmpty } from 'lodash'
 import qs from 'qs'
 import queryString from 'query-string'
 import PropTypes from 'prop-types'
@@ -22,15 +22,15 @@ import { TestAttemptReview } from './student/TestAttemptReview'
 import SebQuitConfirm from './student/SebQuitConfirm'
 import {
   getUserNameSelector,
-  shouldWatchCollectionUpdates
+  shouldWatchCollectionUpdates,
 } from './author/src/selectors/user'
 import {
   fetchUserAction,
-  isProxyUser as isProxyUserSelector
+  isProxyUser as isProxyUserSelector,
 } from './student/Login/ducks'
 import NotificationListener from './HangoutVideoCallNotification'
 import AppUpdate from './common/components/AppUpdate'
-import StudentSessionExpiredModal from './common/components/StudentSessionExpiredModal';
+import StudentSessionExpiredModal from './common/components/StudentSessionExpiredModal'
 import { logoutAction } from './author/src/actions/auth'
 import RealTimeCollectionWatch from './RealTimeCollectionWatch'
 
@@ -72,7 +72,7 @@ if (query?.itemBank?.toUpperCase() === 'CANVAS') {
 const { search, pathname } = window.location
 if (search) {
   const { errorDescription, ...rest } = qs.parse(search, {
-    ignoreQueryPrefix: true
+    ignoreQueryPrefix: true,
   })
   if (errorDescription) {
     let errorMessage =
@@ -103,16 +103,15 @@ const getCurrentPath = () => {
 
 const dndBackend = isMobileDevice() ? TouchBackend : HTML5Backend
 
-function CheckRoutePatternsEffectContainer ({ role, location, history }) {
+function CheckRoutePatternsEffectContainer({ role, location, history }) {
   useEffect(() => {
-	console.log('route path effects',{role,pathname: location.pathname });
     if (
       (role === 'student' || role == 'parent') &&
       location.pathname.startsWith('/author')
     ) {
-    //   history.push(
-    //     location.pathname.replace('author', 'home') || '/home/assignments'
-    //   )
+      //   history.push(
+      //     location.pathname.replace('author', 'home') || '/home/assignments'
+      //   )
     } else if (
       role !== 'student' &&
       role !== 'parent' &&
@@ -132,28 +131,28 @@ class App extends Component {
     user: PropTypes.object.isRequired,
     tutorial: PropTypes.object,
     location: PropTypes.object.isRequired,
-    fetchUser: PropTypes.func.isRequired
+    fetchUser: PropTypes.func.isRequired,
   }
 
   static defaultProps = {
-    tutorial: null
+    tutorial: null,
   }
 
   state = {
-    showAppUpdate: false
+    showAppUpdate: false,
   }
 
-  componentDidMount () {
+  componentDidMount() {
     const { fetchUser, location } = this.props
     fetchUser({ addAccount: query.addAccount, userId: query.userId })
     window.addEventListener('request-client-update', () => {
       this.setState({
-        showAppUpdate: true
+        showAppUpdate: true,
       })
     })
   }
 
-  render () {
+  render() {
     /**
      * NOTE:  this logic would be called multiple times, even after redirect
      */
@@ -165,10 +164,10 @@ class App extends Component {
       fullName,
       logout,
       isProxyUser,
-      shouldWatch
+      shouldWatch,
     } = this.props
 
-    const publicPath = false;
+    const publicPath = false
 
     if (
       !publicPath &&
@@ -204,7 +203,7 @@ class App extends Component {
             backend={dndBackend}
             options={{
               enableTouchEvents: true,
-              enableMouseEvents: true
+              enableMouseEvents: true,
             }}
           >
             <Switch>
@@ -214,13 +213,13 @@ class App extends Component {
               ) : null} */}
 
               <PrivateRoute
-                path='/home'
+                path="/home"
                 component={Dashboard}
                 notifications={[NotificationListener]}
                 redirectPath={redirectRoute}
               />
 
-<PrivateRoute
+              <PrivateRoute
                 path="/student/:assessmentType/:id/class/:groupId/uta/:utaId/test-summary"
                 component={TestAttemptReview}
               />
@@ -252,7 +251,6 @@ class App extends Component {
                 path={`/student/${PRACTICE}/:id`}
                 render={() => <AssessmentPlayer defaultAP={false} />}
               />
-
             </Switch>
           </DndProvider>
         </Suspense>
@@ -262,20 +260,20 @@ class App extends Component {
 }
 
 const enhance = compose(
-	withRouter,
-	connect(
-	  ({ user, tutorial }) => ({
-		user,
-		tutorial: tutorial.currentTutorial,
-		fullName: getUserNameSelector({ user }),
-		isProxyUser: isProxyUserSelector({ user }),
-		shouldWatch: shouldWatchCollectionUpdates({ user }),
-	  }),
-	  {
-		fetchUser: fetchUserAction,
-		logout: logoutAction,
-	  }
-	)
+  withRouter,
+  connect(
+    ({ user, tutorial }) => ({
+      user,
+      tutorial: tutorial.currentTutorial,
+      fullName: getUserNameSelector({ user }),
+      isProxyUser: isProxyUserSelector({ user }),
+      shouldWatch: shouldWatchCollectionUpdates({ user }),
+    }),
+    {
+      fetchUser: fetchUserAction,
+      logout: logoutAction,
+    }
   )
-  
+)
+
 export default enhance(App)

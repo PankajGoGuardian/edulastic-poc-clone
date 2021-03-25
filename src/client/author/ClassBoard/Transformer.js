@@ -232,7 +232,10 @@ const getSkippedStatusOfQuestion = (
  */
 const getMaxScoreFromItem = (testItem) => {
   let total = 0
-  if (!testItem) {
+  if (
+    !testItem ||
+    get(testItem, 'data.questions.0.validation.unscored', false)
+  ) {
     return total
   }
   if (testItem?.itemLevelScoring) {
@@ -579,7 +582,7 @@ export const transformGradeBookResponse = (
         const score =
           (questionActivitiesRaw &&
             questionActivitiesRaw.reduce(
-              (e1, e2) => (e2.score || 0) + e1,
+              (e1, e2) => (e2.isPractice ? 0 : e2.score || 0) + e1,
               0
             )) ||
           0

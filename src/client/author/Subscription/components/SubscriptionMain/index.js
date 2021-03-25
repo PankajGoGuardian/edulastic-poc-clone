@@ -6,8 +6,10 @@ import {
   MainContentWrapper,
   notification,
 } from '@edulastic/common'
+import qs from 'qs'
+import loadable from '@loadable/component'
 import { Link } from 'react-router-dom'
-import { isBoolean } from 'lodash'
+import { isBoolean, groupBy, keyBy, difference, map } from 'lodash'
 import TrialModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/TrialModal/index'
 
 // TODO: Update SVG imports here
@@ -58,6 +60,12 @@ import {
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import CalendlyScheduleModal from './CalendlyScheduleModal'
 import FeatureNotAvailableModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/FeatureNotAvailableModal'
+
+const TrialConfirmationModal = loadable(() =>
+  import(
+    '../../../Dashboard/components/Showcase/components/Myclasses/components/FeaturedContentBundle/TrialConfimationModal'
+  )
+)
 
 const getUpgradeToMultipleUsersPlanAction = ({ openPurchaseLicenseModal }) => (
   <ActionsWrapper>
@@ -203,14 +211,11 @@ const SubscriptionMain = ({
   isPremiumTrialUsed,
   showRenewalOptions,
   startTrialAction,
-  isPaidPremium,
   setShowSubscriptionAddonModalWithId,
   usedTrialItemBankIds,
   products,
   hasAllPremiumProductAccess,
   itemBankSubscriptions,
-  settingProductData,
-  sparkMathItemBankId,
   setShowItemBankTrialUsedModal,
   openHasLicenseKeyModal,
   isPremiumUser,
@@ -219,28 +224,45 @@ const SubscriptionMain = ({
   handleCloseFeatureNotAvailableModal,
   isFreeAdmin,
   setProductData,
+  showTrialSubsConfirmationAction,
+  showTrialConfirmationMessage,
+  dashboardTiles,
+  resetTestFilters,
+  resetPlaylistFilters,
+  isConfirmationModalVisible,
+  collections,
+  history,
+  productData = {},
 }) => {
   const [showSelectStates, setShowSelectStates] = useState(false)
   const [isTrialModalVisible, setIsTrialModalVisible] = useState(false)
+  const [trialAddOnProductIds, setTrialAddOnProductIds] = useState([])
+  const [hasAllTrialProducts, setHasAllTrialProducts] = useState(false)
+
+  const productsKeyedByType = keyBy(products, 'type')
 
   // Whenever trial modal is closed, clear the states it was using
   useEffect(() => {
     if (!isTrialModalVisible) {
       setProductData({})
+      setHasAllTrialProducts(false)
     }
   }, [isTrialModalVisible])
 
-  const { itemBankProductIds = [], itemBankIds = [] } = useMemo(() => {
+  const {
+    trialUnuseditemBankProductIds = [],
+    productItemBankIds = [],
+  } = useMemo(() => {
     if (products) {
       const itemBankProducts = products.filter(({ type }) => type !== 'PREMIUM')
       return {
-        itemBankProductIds: itemBankProducts
+        trialUnuseditemBankProductIds: itemBankProducts
           .filter(
             ({ linkedProductId }) =>
               !usedTrialItemBankIds.includes(linkedProductId)
           )
           .map(({ id }) => id),
-        itemBankIds: itemBankProducts.map(
+        productItemBankIds: itemBankProducts.map(
           ({ linkedProductId }) => linkedProductId
         ),
       }
@@ -248,12 +270,28 @@ const SubscriptionMain = ({
     return {}
   }, [products, usedTrialItemBankIds])
 
-  const isPaidSparkMath =
-    itemBankSubscriptions &&
-    itemBankSubscriptions?.length > 0 &&
-    itemBankSubscriptions?.filter((x) => {
-      return x.itemBankId === sparkMathItemBankId && !x.isTrial
-    })?.length
+  const paidItemBankIds = useMemo(() => {
+    if (!itemBankSubscriptions) {
+      return []
+    }
+
+    return itemBankSubscriptions
+      .filter(
+        (subscription) =>
+          // only include the itembanks which are sold as products
+          !subscription.isTrial &&
+          productItemBankIds.includes(subscription.itemBankId)
+      )
+      .map((subscription) => subscription.itemBankId)
+  }, [itemBankSubscriptions])
+
+  const hasUsedAllItemBankTrials = trialUnuseditemBankProductIds.length === 0
+
+  const getIsPaidSparkProduct = (itemBankId) =>
+    paidItemBankIds.includes(itemBankId)
+
+  const gethasUsedItemBankTrial = (itemBankId) =>
+    usedTrialItemBankIds.includes(itemBankId)
 
   const toggleTrialModal = (value) => setIsTrialModalVisible(value)
 
@@ -261,14 +299,37 @@ const SubscriptionMain = ({
 
   const handlePurchaseFlow = () => setShowSubscriptionAddonModalWithId()
 
-  const hasUsedAllItemBankTrials = () => {
-    return itemBankIds.every((itemBankId) =>
-      usedTrialItemBankIds.includes(itemBankId)
-    )
+  const { FEATURED } = groupBy(dashboardTiles, 'type')
+  const featuredBundles = FEATURED || []
+  const getBundleByProductId = (productId) =>
+    (featuredBundles &&
+      featuredBundles.find(
+        (bundle) => bundle?.config?.subscriptionData?.productId === productId
+      )) ||
+    {}
+
+  const settingProductData = (productId) => {
+    // Flow when main start trial button is clicked
+    if (!productId) {
+      setProductData({})
+      setHasAllTrialProducts(true)
+      return
+    }
+    const currentItemBank = getBundleByProductId(productId)
+    const { config = {} } = currentItemBank
+    const { subscriptionData } = config
+
+    setProductData({
+      productId: subscriptionData.productId,
+      productName: subscriptionData.productName,
+      description: subscriptionData.description,
+      hasTrial: subscriptionData.hasTrial,
+      itemBankId: subscriptionData.itemBankId,
+    })
   }
 
-  const handleStartTrial = () => {
-    settingProductData()
+  const handleStartTrialButtonClick = (productId) => {
+    settingProductData(productId)
     // NOTE: Don't set a boolean default value for 'isPremiumTrialUsed'!
     if (!isBoolean(isPremiumTrialUsed)) {
       return notification({
@@ -277,7 +338,7 @@ const SubscriptionMain = ({
       })
     }
 
-    if (hasUsedAllItemBankTrials()) {
+    if (hasUsedAllItemBankTrials) {
       setShowItemBankTrialUsedModal(true)
       return
     }
@@ -286,15 +347,112 @@ const SubscriptionMain = ({
 
   // Show item bank trial button when item bank trial is not used yet and user is either premium
   // or hasn't used premium trial yet.
-  const hasTrialButton =
-    !hasUsedAllItemBankTrials() &&
-    !isPaidSparkMath &&
-    (!isPremiumTrialUsed || isPremiumUser)
+  const hasStartTrialButton = useMemo(() => {
+    if (!isPremiumTrialUsed && !isPremiumUser) {
+      return true
+    }
 
-  const handleSparkMathClick = () => {
-    settingProductData()
+    for (const productItemBankId of productItemBankIds) {
+      if (
+        !gethasUsedItemBankTrial(productItemBankId) &&
+        !getIsPaidSparkProduct(productItemBankId)
+      ) {
+        return true
+      }
+    }
+
+    return false
+  }, [itemBankSubscriptions, isPremiumTrialUsed, isPremiumUser])
+
+  const handleSparkPurchaseClick = (productId) => {
+    settingProductData(productId)
     handlePurchaseFlow()
   }
+
+  const handleGoToCollectionClick = (productId) => {
+    const currentItemBank = getBundleByProductId(productId)
+    const { config = {} } = currentItemBank
+    const { filters, contentType } = config
+
+    const content = contentType?.toLowerCase() || 'tests'
+
+    const entries = filters.reduce((a, c) => ({ ...a, ...c }), {
+      removeInterestedFilters: true,
+    })
+    const filter = qs.stringify(entries)
+
+    if (content === 'tests') {
+      resetTestFilters()
+    } else {
+      resetPlaylistFilters()
+    }
+    history.push(`/author/${content}?${filter}`)
+    showTrialSubsConfirmationAction(false)
+  }
+
+  const getSparkProductLinks = (title) => {
+    const dataMap = {
+      SparkMath: 'ITEM_BANK_SPARK_MATH',
+      SparkScience: 'ITEM_BANK_SPARK_SCIENCE',
+    }
+
+    if (!dataMap[title]) {
+      return null
+    }
+
+    const { id: productId, linkedProductId: itemBankId, name } =
+      productsKeyedByType[dataMap[title]] || {}
+    const isPaidSparkProduct = getIsPaidSparkProduct(itemBankId)
+    const hasPurchaseLink = !isPaidSparkProduct
+    const hasTrialLink =
+      !isPaidSparkProduct &&
+      !gethasUsedItemBankTrial(itemBankId) &&
+      !isFreeAdmin
+    const handleSparkStartTrial = () => handleStartTrialButtonClick(productId)
+
+    return (
+      <>
+        {hasPurchaseLink && (
+          <AuthorCompleteSignupButton
+            renderButton={(handleClick) => (
+              <PurchaseLink data-cy={`Purchase_${name}`} onClick={handleClick}>
+                Purchase
+              </PurchaseLink>
+            )}
+            onClick={() => handleSparkPurchaseClick(productId)}
+          />
+        )}
+        {hasTrialLink && (
+          <AuthorCompleteSignupButton
+            renderButton={(handleClick) => (
+              <span data-cy={`trialPurchase_${name}`} onClick={handleClick}>
+                try
+              </span>
+            )}
+            onClick={handleSparkStartTrial}
+          />
+        )}
+      </>
+    )
+  }
+
+  // if the product has paid subscription or the trial is used then its not available for trial.
+  const allAvailableTrialItemBankIds = difference(productItemBankIds, [
+    ...paidItemBankIds,
+    ...usedTrialItemBankIds,
+  ])
+
+  const allAvailableItemProductIds = map(
+    products.filter((product) =>
+      allAvailableTrialItemBankIds.includes(product.linkedProductId)
+    ),
+    'id'
+  )
+  const productsToShowInTrialModal = hasAllTrialProducts
+    ? allAvailableItemProductIds
+    : productData.productId
+    ? [productData?.productId]
+    : []
 
   return (
     <>
@@ -350,7 +508,7 @@ const SubscriptionMain = ({
                 Renew Subscription
               </EduButton>
             )}
-            {hasTrialButton && !isFreeAdmin && (
+            {hasStartTrialButton && !isFreeAdmin && (
               <AuthorCompleteSignupButton
                 renderButton={(handleClick) => (
                   <CustomButton
@@ -364,7 +522,7 @@ const SubscriptionMain = ({
                     Start a trial
                   </CustomButton>
                 )}
-                onClick={handleStartTrial}
+                onClick={handleStartTrialButtonClick}
               />
             )}
           </FlexContainer>
@@ -380,13 +538,27 @@ const SubscriptionMain = ({
       </ContentSection>
       {isTrialModalVisible && (
         <TrialModal
-          addOnProductIds={[...itemBankProductIds]}
+          addOnProductIds={productsToShowInTrialModal}
           isVisible={isTrialModalVisible}
           toggleModal={toggleTrialModal}
           isPremiumUser={isPremiumUser}
           isPremiumTrialUsed={isPremiumTrialUsed}
           startPremiumTrial={startTrialAction}
           products={products}
+          setTrialAddOnProductIds={setTrialAddOnProductIds}
+          hasAllTrialProducts={hasAllTrialProducts}
+        />
+      )}
+      {isConfirmationModalVisible && (
+        <TrialConfirmationModal
+          visible={isConfirmationModalVisible}
+          showTrialSubsConfirmationAction={showTrialSubsConfirmationAction}
+          showTrialConfirmationMessage={showTrialConfirmationMessage}
+          trialAddOnProductIds={trialAddOnProductIds}
+          collections={collections}
+          products={products}
+          handleGoToCollectionClick={handleGoToCollectionClick}
+          history={history}
         />
       )}
       {showFeatureNotAvailableModal && (
@@ -426,33 +598,7 @@ const SubscriptionMain = ({
                   >
                     Learn more
                   </LearnMoreLink>
-                  {addonsData[index].title === 'SparkMath' && (
-                    <>
-                      {!(isPaidPremium && isPaidSparkMath) && !isFreeAdmin && (
-                        <AuthorCompleteSignupButton
-                          renderButton={(handleClick) => (
-                            <PurchaseLink
-                              data-cy="Purchase"
-                              onClick={handleClick}
-                            >
-                              Purchase
-                            </PurchaseLink>
-                          )}
-                          onClick={handleSparkMathClick}
-                        />
-                      )}
-                      {hasTrialButton && !isFreeAdmin && (
-                        <AuthorCompleteSignupButton
-                          renderButton={(handleClick) => (
-                            <span data-cy="trialPurchase" onClick={handleClick}>
-                              try
-                            </span>
-                          )}
-                          onClick={handleStartTrial}
-                        />
-                      )}
-                    </>
-                  )}
+                  {getSparkProductLinks(addonsData[index].title)}
                 </AddonFooter>
               </AddonCard>
             ))}

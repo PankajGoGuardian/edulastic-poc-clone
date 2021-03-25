@@ -27,7 +27,8 @@ const { getQuestionLevelScore, getPoints } = helpers
 const getStandardWiseSummary = (question, point) => {
   let standardSummary
   if (question && question.type !== sectionLabelType) {
-    const points = point
+    const unscored = get(question, 'validation.unscored', false)
+    const points = unscored ? 0 : point
     const alignment = get(question, 'alignment', [])
     standardSummary = flatMap(
       alignment,
@@ -61,9 +62,18 @@ const createItemsSummaryData = (items = [], scoring, isLimitedDeliveryType) => {
     const questions = get(item, 'data.questions', []).filter(
       ({ type }) => type !== sectionLabelType
     )
-    let itemPoints =
-      scoring[_id] || (itemLevelScoring === true && itemLevelScore) || maxScore
-    if (isLimitedDeliveryType) {
+    const unscored = some(
+      get(item, 'data.questions', []),
+      ({ validation }) => validation && validation.unscored
+    )
+    let itemPoints = 0
+    if (!unscored) {
+      itemPoints =
+        scoring[_id] ||
+        (itemLevelScoring === true && itemLevelScore) ||
+        maxScore
+    }
+    if (!unscored && isLimitedDeliveryType) {
       itemPoints = 1
     }
     const itemTotalQuestions = questions.length
@@ -76,7 +86,7 @@ const createItemsSummaryData = (items = [], scoring, isLimitedDeliveryType) => {
     for (const question of questions) {
       const standardSummary = getStandardWiseSummary(
         question,
-        questionWisePoints[question.id]
+        unscored ? 0 : questionWisePoints[question.id]
       )
       if (standardSummary) {
         summary.standards.push(
@@ -107,7 +117,7 @@ const createItemsSummaryData = (items = [], scoring, isLimitedDeliveryType) => {
       summary.noStandards.totalQuestions += questions.length
       summary.noStandards.totalPoints = roundOff(
         summary.noStandards.totalPoints +
-          sumBy(questions, ({ id }) => questionWisePoints[id])
+          (unscored ? 0 : sumBy(questions, ({ id }) => questionWisePoints[id]))
       )
     }
     summary.totalPoints = roundOff(

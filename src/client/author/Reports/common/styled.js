@@ -350,11 +350,10 @@ export const StyledTable = styled(Table)`
 `
 
 export const StyledH3 = styled.h3`
-  font-weight: 700;
+  font-weight: ${({ fontWeight }) => fontWeight || 700};
   color: ${fadedBlack};
   font-size: ${({ fontSize }) => fontSize || '14px'};
-  margin: 0px 0px 10px;
-  margin-left: ${({ marginLeft }) => marginLeft || '0px'};
+  margin: ${({ margin }) => margin || '0 0 10px 0'};
   text-align: ${({ textAlign }) => textAlign || 'left'};
 `
 

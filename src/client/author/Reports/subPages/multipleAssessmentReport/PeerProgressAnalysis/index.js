@@ -93,10 +93,14 @@ const PeerProgressAnalysis = ({
     }
   }, [pageFilters])
 
-  const { metricInfo = [], metaInfo = [], testsCount = 0 } = useMemo(
-    () => get(peerProgressAnalysis, 'data.result', {}),
-    [peerProgressAnalysis]
-  )
+  const {
+    metricInfo = [],
+    metaInfo = [],
+    testsCount = 0,
+    hasIncompleteTests,
+  } = useMemo(() => get(peerProgressAnalysis, 'data.result', {}), [
+    peerProgressAnalysis,
+  ])
 
   useEffect(() => {
     const metrics = get(peerProgressAnalysis, 'data.result.metricInfo', [])
@@ -157,6 +161,11 @@ const PeerProgressAnalysis = ({
     <>
       <TrendStats
         heading="Performance trend across assessments"
+        subHeading={
+          hasIncompleteTests
+            ? '(Some assessments are still in progress and hence the results may not be complete)'
+            : ''
+        }
         trendCount={trendCount}
         selectedTrend={selectedTrend}
         onTrendSelect={onTrendSelect}
@@ -172,7 +181,6 @@ const PeerProgressAnalysis = ({
       <TrendTable
         onCsvConvert={onCsvConvert}
         isCsvDownloading={isCsvDownloading}
-        heading="How well are the students progressing ?"
         data={parsedData}
         compareBy={compareBy}
         analyseBy={analyseBy}

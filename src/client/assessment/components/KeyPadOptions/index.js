@@ -73,13 +73,13 @@ const KeyPadOptions = ({
       ...math.symbols,
     ]
 
-    if (initialSelectedKeypad.current) {
-      const sameId = (obj) => obj._id === initialSelectedKeypad.current._id
-      const includedInCustom = storedKeypads.find(sameId)
-      if (!includedInCustom) {
-        keypadList.push(initialSelectedKeypad.current)
-      }
-    }
+    // if (initialSelectedKeypad.current) {
+    //   const sameId = (obj) => obj._id === initialSelectedKeypad.current._id
+    //   const includedInCustom = storedKeypads.find(sameId)
+    //   if (!includedInCustom) {
+    //     keypadList.push(initialSelectedKeypad.current)
+    //   }
+    // }
 
     return keypadList
   }, [item.symbols, storedKeypads])

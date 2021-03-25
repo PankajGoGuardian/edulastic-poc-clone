@@ -583,6 +583,7 @@ class GraphDisplay extends Component {
         rightArrow: numberlineAxis && numberlineAxis.rightArrow,
         showTicks: numberlineAxis && numberlineAxis.showTicks,
         snapToTicks: numberlineAxis && numberlineAxis.snapToTicks,
+        snapToGrid: numberlineAxis && numberlineAxis.snapToGrid,
         showMin: numberlineAxis && numberlineAxis.showMin,
         showMax: numberlineAxis && numberlineAxis.showMax,
         ticksDistance:

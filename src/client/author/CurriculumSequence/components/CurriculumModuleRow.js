@@ -615,6 +615,7 @@ class ModuleRow extends Component {
             <TestPreviewModal
               isModalVisible={isPreviewModalVisible}
               testId={selectedTest}
+              playlistId={playlistId}
               showStudentPerformance
               closeTestPreviewModal={this.closePreviewTest}
               resetOnClose={() => {

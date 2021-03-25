@@ -10,7 +10,7 @@ const Stimulus = withTheme(
     word-break: break-word;
     font-weight: ${fonts.previewFontWeight};
     user-select: ${(props) => (props.userSelect ? 'text !important' : 'none')};
-
+    overflow: visible !important;
     img {
       max-height: unset !important;
     }
@@ -23,11 +23,12 @@ const Stimulus = withTheme(
 
     & *:not(a) {
       color: #ffff00;
+      font-weight: bold;
     }
 
     & .input__math[contenteditable='false'] {
       background-color: #464646;
-      opacity: 0.6;
+      opacity: 1;
       background-image: linear-gradient(135deg, #000000 25%, transparent 25%),
         linear-gradient(225deg, #000000 25%, transparent 25%),
         linear-gradient(45deg, #000000 25%, transparent 25%),
@@ -35,7 +36,9 @@ const Stimulus = withTheme(
       background-position: 20px 0, 20px 0, 0 0, 0 0;
       background-size: 20px 20px;
       background-repeat: repeat;
-      padding: 5px;
+      padding: 10px;
+      padding-top: 20px;
+      padding-bottom: 20px;
     }
 
     & .input__math,

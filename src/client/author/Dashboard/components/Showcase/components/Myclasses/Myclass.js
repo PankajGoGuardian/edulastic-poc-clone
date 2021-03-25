@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { get, groupBy, isEmpty } from 'lodash'
+import { get, groupBy, isEmpty, difference, map } from 'lodash'
 import qs from 'qs'
 import loadable from '@loadable/component'
 
@@ -80,6 +80,7 @@ const MyClasses = ({
   const [showSubscriptionAddonModal, setShowSubscriptionAddonModal] = useState(
     false
   )
+  const [trialAddOnProductIds, setTrialAddOnProductIds] = useState([])
 
   useEffect(() => {
     // fetch clever classes on modal display
@@ -297,19 +298,70 @@ const MyClasses = ({
     }
   }
 
+  const { productItemBankIds = [] } = useMemo(() => {
+    if (products) {
+      const itemBankProducts = products.filter(({ type }) => type !== 'PREMIUM')
+      return {
+        productItemBankIds: itemBankProducts.map(
+          ({ linkedProductId }) => linkedProductId
+        ),
+      }
+    }
+    return {}
+  }, [products])
+
+  const paidItemBankIds = useMemo(() => {
+    if (!itemBankSubscriptions) {
+      return []
+    }
+
+    return itemBankSubscriptions
+      .filter(
+        (subscription) =>
+          // only include the itembanks which are sold as products
+          !subscription.isTrial &&
+          productItemBankIds.includes(subscription.itemBankId)
+      )
+      .map((subscription) => subscription.itemBankId)
+  }, [itemBankSubscriptions])
+
+  const productsToShowInTrialModal = useMemo(() => {
+    if (!showHeaderTrialModal || isTrialModalVisible) {
+      return [productData.productId]
+    }
+
+    // if the product has paid subscription or the trial is used then its not available for trial.
+    const allAvailableTrialItemBankIds = difference(productItemBankIds, [
+      ...paidItemBankIds,
+      ...usedTrialItemBankIds,
+    ])
+
+    const allAvailableItemProductIds = map(
+      products.filter((product) =>
+        allAvailableTrialItemBankIds.includes(product.linkedProductId)
+      ),
+      'id'
+    )
+
+    return allAvailableItemProductIds
+  }, [
+    itemBankSubscriptions,
+    products,
+    showHeaderTrialModal,
+    isTrialModalVisible,
+  ])
+
   if (loading) {
     return <Spin style={{ marginTop: '80px' }} />
   }
 
-  const getClickedBundle =
-    featuredBundles &&
-    featuredBundles.find(
-      (bundle) =>
-        bundle?.config?.subscriptionData?.productId === productData?.productId
-    )
-
-  const handleGoToCollectionClick = () => {
-    handleFeatureClick(getClickedBundle)
+  const handleGoToCollectionClick = (productId) => {
+    const featuredBundle =
+      featuredBundles &&
+      featuredBundles.find(
+        (bundle) => bundle?.config?.subscriptionData?.productId === productId
+      )
+    handleFeatureClick(featuredBundle)
     showTrialSubsConfirmationAction(false)
   }
 
@@ -397,7 +449,7 @@ const MyClasses = ({
       )}
       {(isTrialModalVisible || showHeaderTrialModal) && (
         <TrialModal
-          addOnProductIds={[isTrialModalVisible && productData.productId]}
+          addOnProductIds={productsToShowInTrialModal}
           isVisible={isTrialModalVisible || showHeaderTrialModal}
           toggleModal={toggleTrialModal}
           isPremiumUser={isPremiumUser}
@@ -405,6 +457,7 @@ const MyClasses = ({
           startPremiumTrial={startTrialAction}
           products={products}
           setShowHeaderTrialModal={setShowHeaderTrialModal}
+          setTrialAddOnProductIds={setTrialAddOnProductIds}
         />
       )}
       {isConfirmationModalVisible && (
@@ -412,9 +465,9 @@ const MyClasses = ({
           visible={isConfirmationModalVisible}
           showTrialSubsConfirmationAction={showTrialSubsConfirmationAction}
           showTrialConfirmationMessage={showTrialConfirmationMessage}
-          isTrialItemBank={isTrialItemBank}
-          title={productData?.productName}
-          isBlocked={getClickedBundle?.isBlocked}
+          trialAddOnProductIds={trialAddOnProductIds}
+          collections={collections}
+          products={products}
           handleGoToCollectionClick={handleGoToCollectionClick}
           history={history}
         />

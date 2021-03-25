@@ -401,7 +401,7 @@ class QuestionWrapper extends Component {
     return true
   }
 
-  openStudentWork() {
+  openStudentWork = () => {
     const { data, loadScratchPad, showStudentWork } = this.props
     // load the data from server and then show
     loadScratchPad({

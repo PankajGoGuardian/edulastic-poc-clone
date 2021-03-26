@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react'
 import next from 'immer'
+import qs from 'qs'
 import { Link } from 'react-router-dom'
 import { Row, Col } from 'antd'
 import { isEmpty } from 'lodash'
@@ -136,16 +137,25 @@ const StandardsProgressTable = ({
       fixed: 'left',
       sorter: (a, b) =>
         a.name.toLowerCase().localeCompare(b.name.toLowerCase()),
-      render: (data, record) =>
-        tableFilters.compareBy.key === 'student' && !isSharedReport ? (
+      render: (data, record) => {
+        const { termId, grade, subject, classIds, courseId } = filters
+        const queryStr = qs.stringify({
+          termId,
+          grade,
+          subject,
+          classIds,
+          courseIds: courseId,
+        })
+        return tableFilters.compareBy.key === 'student' && !isSharedReport ? (
           <Link
-            to={`/author/reports/student-progress-profile/student/${record.id}?termId=${filters?.termId}`}
+            to={`/author/reports/student-progress-profile/student/${record.id}?${queryStr}`}
           >
             {data || '-'}
           </Link>
         ) : (
           data || '-'
-        ),
+        )
+      },
     },
     ...(tableFilters.compareBy.key === 'student'
       ? compareByStudentsColumns

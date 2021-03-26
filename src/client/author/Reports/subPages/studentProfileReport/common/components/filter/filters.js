@@ -121,6 +121,8 @@ const StudentProfileReportFilters = ({
     termId: urlTermId,
     grade: urlGrade,
     subject: urlSubject,
+    // classIds,
+    // courseIds
   } = parsedQuery
 
   const { studentClassData = [] } = get(SPRFilterData, 'data.result', {})
@@ -131,6 +133,14 @@ const StudentProfileReportFilters = ({
     () => find(termOptions, (term) => term.key === defaultTerm),
     [termOptions, defaultTerm]
   )
+
+  /**
+   * @todo uncomment below change once BE support is added for searching via ids
+   * also add similar change for courseIds as well
+   */
+  // useEffect(() => {
+  //   setSelectedClassIds(classIds)
+  // }, [classIds])
 
   const selectedTerm = useMemo(
     () =>
@@ -215,9 +225,9 @@ const StudentProfileReportFilters = ({
 
     const _filters = {
       ...filters,
-      termId: filters.termId || selectedTerm.key,
-      grade: filters.grade || selectedGrade.key,
-      subject: filters.subject || selectedSubject.key,
+      termId: selectedTerm.key || filters.termId,
+      grade: selectedGrade.key || filters.grade,
+      subject: selectedSubject.key || filters.subject,
       reportId,
       // uncomment after making changes to chart files
       // performanceBandProfileId: selectedProfile,

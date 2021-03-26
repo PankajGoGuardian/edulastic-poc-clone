@@ -61,7 +61,7 @@ const StudentProgressProfile = ({
   const [selectedTrend, setSelectedTrend] = useState('')
   const [pageFilters, setPageFilters] = useState({
     page: 0,
-    pageSize: 25,
+    pageSize: 10,
   })
 
   const [sharedReportFilters, isSharedReport] = useMemo(

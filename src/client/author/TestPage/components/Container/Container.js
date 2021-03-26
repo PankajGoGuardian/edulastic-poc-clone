@@ -5,14 +5,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Spin } from 'antd'
 import { withRouter } from 'react-router-dom'
-import {
-  cloneDeep,
-  uniq as _uniq,
-  isEmpty,
-  get,
-  without,
-  isEqual,
-} from 'lodash'
+import { cloneDeep, uniq as _uniq, isEmpty, get, without } from 'lodash'
 import uuidv4 from 'uuid/v4'
 import {
   withWindowSizes,
@@ -198,7 +191,7 @@ class Container extends PureComponent {
       isVersionFlow,
       getTestIdFromVersionId,
       fetchUserKeypads,
-      test: { grades = [], keypad = {} } = {},
+      test: { grades = [] } = {},
     } = this.props
 
     const { versionId, id } = match.params
@@ -266,28 +259,7 @@ class Container extends PureComponent {
       }
 
       if (this.isTestEditable) {
-        if (isEmpty(keypad) || keypad.updated === false) {
-          const highestGrade = grades.reduce((acc, curr) => {
-            const currentGrade = parseInt(curr, 10)
-            if (currentGrade > acc) {
-              acc = currentGrade
-            }
-            return acc
-          }, 0)
-          if (highestGrade <= 5) {
-            setData({
-              keypad: { updated: false, type: 'predefined', value: 'basic' },
-            })
-          } else if (highestGrade > 5 && highestGrade <= 12) {
-            setData({
-              keypad: {
-                updated: false,
-                type: 'predefined',
-                value: 'intermediate',
-              },
-            })
-          }
-        }
+        this.handleChangeKeypad(grades)
       }
       if (userRole !== roleuser.EDULASTIC_CURATOR) getDefaultTestSettings()
     } else {
@@ -326,7 +298,6 @@ class Container extends PureComponent {
       editEnable,
       languagePreference,
       setSelectedLanguage,
-      setData,
     } = this.props
 
     const { testLoaded, studentRedirected } = this.state
@@ -377,33 +348,6 @@ class Container extends PureComponent {
         prevProps?.test?._id !== test?._id
       ) {
         getDefaultTestSettings(test)
-      }
-      if (!isEqual(prevProps.test.grades, test.grades)) {
-        if (
-          this.isTestEditable &&
-          (isEmpty(test.keypad) || test?.keypad?.updated === false)
-        ) {
-          const highestGrade = (test.grades || []).reduce((acc, curr) => {
-            const currentGrade = parseInt(curr, 10)
-            if (currentGrade > acc) {
-              acc = currentGrade
-            }
-            return acc
-          }, 0)
-          if (highestGrade <= 5) {
-            setData({
-              keypad: { updated: false, type: 'predefined', value: 'basic' },
-            })
-          } else if (highestGrade > 5 && highestGrade <= 12) {
-            setData({
-              keypad: {
-                updated: false,
-                type: 'predefined',
-                value: 'intermediate',
-              },
-            })
-          }
-        }
       }
     } else if (userRole === roleuser.STUDENT) {
       if (
@@ -518,6 +462,41 @@ class Container extends PureComponent {
     }
   }
 
+  handleChangeKeypad = (grades) => {
+    const { setData, test: { keypad = {} } = {} } = this.props
+
+    if (isEmpty(keypad) || keypad.updated === false) {
+      const highestGrade = grades.reduce((acc, curr) => {
+        const currentGrade = parseInt(curr, 10)
+        if (currentGrade > acc) {
+          acc = currentGrade
+        }
+        return acc
+      }, 0)
+      if (highestGrade === 0) {
+        setData({
+          keypad: {
+            type: 'item-level',
+            value: 'item-level-keypad',
+            updated: false,
+          },
+        })
+      } else if (highestGrade <= 5) {
+        setData({
+          keypad: { updated: false, type: 'predefined', value: 'basic' },
+        })
+      } else if (highestGrade > 5 && highestGrade <= 12) {
+        setData({
+          keypad: {
+            updated: false,
+            type: 'predefined',
+            value: 'intermediate',
+          },
+        })
+      }
+    }
+  }
+
   handleChangeGrade = (grades) => {
     const {
       setData,
@@ -531,6 +510,7 @@ class Container extends PureComponent {
       subjects: itemsSubjectAndGrade.subjects,
       grades: [],
     })
+    this.handleChangeKeypad(grades)
   }
 
   handleChangeCollection = (_, options) => {

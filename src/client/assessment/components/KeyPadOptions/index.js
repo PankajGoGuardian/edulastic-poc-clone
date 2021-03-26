@@ -242,7 +242,7 @@ const KeyPadOptions = ({
               )} */}
             </FlexContainer>
           </Row>
-          <StyledSelectContainer>
+          <StyledSelectContainer hasCustomKeypads={storedKeypads.length > 0}>
             <SelectInputStyled
               size="large"
               value={selected}
@@ -255,16 +255,20 @@ const KeyPadOptions = ({
                   {ite.label}
                 </Select.Option>
               ))}
-              <Select.OptGroup label={t('component.options.customKeypadLabel')}>
-                {storedKeypads.map((ite, index) => (
-                  <Select.Option
-                    key={item._id}
-                    value={symbolsData.length + index}
-                  >
-                    {ite.label}
-                  </Select.Option>
-                ))}
-              </Select.OptGroup>
+              {storedKeypads.length > 0 && (
+                <Select.OptGroup
+                  label={t('component.options.customKeypadLabel')}
+                >
+                  {storedKeypads.map((ite, index) => (
+                    <Select.Option
+                      key={item._id}
+                      value={symbolsData.length + index}
+                    >
+                      {ite.label}
+                    </Select.Option>
+                  ))}
+                </Select.OptGroup>
+              )}
             </SelectInputStyled>
           </StyledSelectContainer>
         </Col>

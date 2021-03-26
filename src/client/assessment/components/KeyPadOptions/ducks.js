@@ -60,14 +60,14 @@ export const allKeypadSelector = createSelector(
   (customKeypads) => customKeypads.concat(predefinedKeypads)
 )
 
-export const testKeyboardSelector = createSelector(
+export const testKeypadSelector = createSelector(
   getTestEntitySelector,
   (test) => get(test, ['keypad', 'value'], {})
 )
 
 export const allKeypadForTestSelector = createSelector(
   customKeypadSelector,
-  testKeyboardSelector,
+  testKeypadSelector,
   (customKeypads, testKeyboard) => {
     let keypads = [
       ...predefinedKeypads,
@@ -94,8 +94,16 @@ export const allKeypadForTestSelector = createSelector(
 function* storeCustomKeypadSaga({ payload }) {
   try {
     const previousKeypads = yield select(customKeypadSelector)
-    const { label } = payload || {}
-    const hasSameLabel = (keypad) => keypad.label?.trim() === label?.trim()
+    const { label = '' } = payload || {}
+    const labelLowerCase = label?.trim?.()?.toLowerCase()
+    if (!labelLowerCase.length) {
+      notification({
+        type: 'warn',
+        msg: 'Keyboard name cannot be empty',
+      })
+    }
+    const hasSameLabel = (keypad) =>
+      keypad.label?.trim().toLowerCase() === labelLowerCase
     if (previousKeypads.find(hasSameLabel)) {
       notification({
         type: 'warn',

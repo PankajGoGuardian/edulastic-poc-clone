@@ -1,9 +1,6 @@
-import React, { useMemo } from 'react'
-import { Col, Radio, Select } from 'antd'
+import React from 'react'
+import { Col, Radio } from 'antd'
 import { test } from '@edulastic/constants'
-import { SelectInputStyled } from '@edulastic/common'
-import { connect } from 'react-redux'
-import isEmpty from 'lodash/isEmpty'
 
 import {
   AlignSwitchRight,
@@ -20,12 +17,8 @@ import PeformanceBand from '../../../TestPage/components/Setting/components/Cont
 import PlayerSkinSelector from '../SimpleOptions/PlayerSkinSelector'
 import DetailsTooltip from './DetailsTooltip'
 import SettingContainer from './SettingsContainer'
-import {
-  allKeypadForTestSelector,
-  customKeypadSelector,
-} from '../../../../assessment/components/KeyPadOptions/ducks'
+import KeypadDropdown from './KeypadDropdown'
 
-const { Option } = Select
 const { accessibilities } = test
 
 const MiscellaneousGroupContainer = ({
@@ -40,7 +33,6 @@ const MiscellaneousGroupContainer = ({
   featuresAvailable,
   tootltipWidth,
   premium,
-  allKeypads,
 }) => {
   const {
     answerOnPaper = testSettings.answerOnPaper,
@@ -79,37 +71,6 @@ const MiscellaneousGroupContainer = ({
   } = featuresAvailable
 
   const showMultiLangSelection = !!testSettings.multiLanguageEnabled
-
-  const getKeypadData = (keypadIdentifier) => {
-    const hasSameId = (keypad) => keypad._id === keypadIdentifier
-    const customKeypadData = allKeypads.find(hasSameId)
-    const keypadType = customKeypadData
-      ? 'custom'
-      : keypadIdentifier === 'item-level-keypad'
-      ? 'item-level'
-      : 'predefined'
-    const value = customKeypadData || keypadIdentifier
-    return { type: keypadType, value }
-  }
-
-  const handleKeypadChange = (identifier) => {
-    const keypadData = getKeypadData(identifier)
-    overRideSettings('keypad', keypadData)
-  }
-
-  const keypadDropdownValue = useMemo(() => {
-    // TODO: convert to switch case
-    if (isEmpty(keyPadData)) {
-      return 'item-level-keypad'
-    }
-    if (keyPadData.type === 'custom') {
-      return keyPadData.value?._id
-    }
-    if (keyPadData.type === 'item-level') {
-      return 'item-level-keypad'
-    }
-    return keyPadData.value
-  }, [testSettings, assignmentSettings])
 
   return (
     <>
@@ -275,33 +236,20 @@ const MiscellaneousGroupContainer = ({
           <SettingContainer id="keypad-setting">
             <DetailsTooltip
               width={tootltipWidth}
-              title="Keypad Setting"
+              title="Keypad"
               content="Select keypad to apply current selection to all questions in the test"
               premium={premium}
-              placement="rightTop"
+              placement="right"
             />
             <StyledRow gutter={16} mb="15p">
               <Col span={10}>
                 <span style={{ fontSize: 12, fontWeight: 600 }}>Keypad</span>{' '}
               </Col>
               <Col span={12}>
-                <SelectInputStyled
-                  defaultValue={keypadDropdownValue}
-                  onChange={handleKeypadChange}
-                  getPopupContainer={(triggerNode) => triggerNode.parentNode}
-                >
-                  {allKeypads.map((keypad) => {
-                    return (
-                      <Option
-                        key={keypad._id || keypad.value}
-                        value={keypad._id || keypad.value}
-                      >
-                        {keypad.label}
-                      </Option>
-                    )
-                  })}
-                  {/* <Option value="Basic">Basic</Option> */}
-                </SelectInputStyled>
+                <KeypadDropdown
+                  keypadData={keyPadData}
+                  overrideSettings={overRideSettings}
+                />
               </Col>
             </StyledRow>
           </SettingContainer>
@@ -337,7 +285,4 @@ const MiscellaneousGroupContainer = ({
   )
 }
 
-export default connect((state) => ({
-  allKeypads: allKeypadForTestSelector(state),
-  userCustomKeypads: customKeypadSelector(state),
-}))(MiscellaneousGroupContainer)
+export default MiscellaneousGroupContainer

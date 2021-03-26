@@ -114,8 +114,15 @@ const StudentProgressProfile = ({
   useEffect(() => () => resetStudentProgressProfile(), [])
 
   useEffect(() => {
+    setSelectedStandard({
+      key: 'All',
+      title: 'All Standards',
+    })
+  }, [selectedDomain])
+
+  useEffect(() => {
     setPageFilters({ ...pageFilters, page: 1 })
-  }, [settings, selectedDomain, selectedStandard])
+  }, [settings, selectedStandard])
 
   useEffect(() => {
     const q = {
@@ -165,12 +172,7 @@ const StudentProgressProfile = ({
     return <DataSizeExceeded />
   }
 
-  if (
-    isEmpty(studentProgressProfile) ||
-    !studentProgressProfile ||
-    isEmpty(metricInfo) ||
-    !settings.selectedStudent?.key
-  ) {
+  if (!settings.selectedStudent?.key) {
     return <NoDataContainer>No data available currently.</NoDataContainer>
   }
 
@@ -182,6 +184,7 @@ const StudentProgressProfile = ({
         selectedTrend={selectedTrend}
         onTrendSelect={onTrendSelect}
         isSharedReport={isSharedReport}
+        showTrendStats={!isEmpty(metricInfo)}
         renderFilters={() => (
           <>
             <ControlDropDown
@@ -207,25 +210,29 @@ const StudentProgressProfile = ({
           </>
         )}
       />
-      <TrendTable
-        filters={sharedReportFilters || settings.requestFilters}
-        onCsvConvert={onCsvConvert}
-        isCsvDownloading={isCsvDownloading}
-        data={data}
-        masteryScale={selectedScale}
-        compareBy={compareBy}
-        analyseBy={analyseBy}
-        rawMetric={filteredMetricInfo}
-        isCellClickable
-        location={location}
-        pageTitle={pageTitle}
-        isSharedReport={isSharedReport}
-        backendPagination={{
-          ...pageFilters,
-          itemsCount: standardsCount,
-        }}
-        setBackendPagination={setPageFilters}
-      />
+      {!isEmpty(metricInfo) ? (
+        <TrendTable
+          filters={sharedReportFilters || settings.requestFilters}
+          onCsvConvert={onCsvConvert}
+          isCsvDownloading={isCsvDownloading}
+          data={data}
+          masteryScale={selectedScale}
+          compareBy={compareBy}
+          analyseBy={analyseBy}
+          rawMetric={filteredMetricInfo}
+          isCellClickable
+          location={location}
+          pageTitle={pageTitle}
+          isSharedReport={isSharedReport}
+          backendPagination={{
+            ...pageFilters,
+            itemsCount: standardsCount,
+          }}
+          setBackendPagination={setPageFilters}
+        />
+      ) : (
+        <NoDataContainer>No data available currently.</NoDataContainer>
+      )}
     </>
   )
 }

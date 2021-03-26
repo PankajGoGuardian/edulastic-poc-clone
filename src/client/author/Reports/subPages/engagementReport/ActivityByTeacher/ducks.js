@@ -12,11 +12,16 @@ const GET_REPORTS_ACTIVITY_BY_TEACHER_REQUEST_SUCCESS =
   '[reports] get reports activity by teacher success'
 const GET_REPORTS_ACTIVITY_BY_TEACHER_REQUEST_ERROR =
   '[reports] get reports activity by teacher error'
+const RESET_REPORTS_ACTIVITY_BY_TEACHER =
+  '[reports] reset reports activity by teacher'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
 export const getActivityByTeacherRequestAction = createAction(
   GET_REPORTS_ACTIVITY_BY_TEACHER_REQUEST
+)
+export const resetActivityByTeacherAction = createAction(
+  RESET_REPORTS_ACTIVITY_BY_TEACHER
 )
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
@@ -56,6 +61,7 @@ const initialState = {
 
 export const reportActivityByTeacherReducer = createReducer(initialState, {
   [RESET_ALL_REPORTS]: (state) => (state = initialState),
+  [RESET_REPORTS_ACTIVITY_BY_TEACHER]: (state) => (state = initialState),
   [GET_REPORTS_ACTIVITY_BY_TEACHER_REQUEST]: (state) => {
     state.loading = true
   },

@@ -1,12 +1,13 @@
+import React, { useEffect, useMemo, useState } from 'react'
 import { backgrounds, labelGrey, secondaryTextColor } from '@edulastic/colors'
 import { SpinLoader, FlexContainer } from '@edulastic/common'
 import { Icon } from 'antd'
 import { get, isEmpty } from 'lodash'
 import { compose } from 'redux'
-import { withNamespaces } from '@edulastic/localization'
-import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
+
+import { withNamespaces } from '@edulastic/localization'
 import BarTooltipRow from '../../../common/components/tooltip/BarTooltipRow'
 import { NoDataContainer, StyledCard, StyledH3 } from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
@@ -36,6 +37,7 @@ import {
   getReportsStudentProfileSummaryLoader,
   getStudentProfileSummaryRequestAction,
   getReportsStudentProfileSummaryError,
+  resetStudentProfileSummaryAction,
 } from './ducks'
 import staticDropDownData from '../../singleAssessmentReport/common/static/staticDropDownData.json'
 
@@ -67,6 +69,7 @@ const StudentProfileSummary = ({
   SPRFilterData,
   studentProfileSummary,
   getStudentProfileSummaryRequest,
+  resetStudentProfileSummary,
   location,
   pageTitle,
   history,
@@ -168,6 +171,8 @@ const StudentProfileSummary = ({
   const onSubjectSelect = (_, selected) => setSelectedSubject(selected)
   const onGradeSelect = (_, selected) => setSelectedGrade(selected)
 
+  useEffect(() => () => resetStudentProfileSummary(), [])
+
   useEffect(() => {
     if (settings.selectedStudent.key && settings.requestFilters.termId) {
       getStudentProfileSummaryRequest({
@@ -186,6 +191,7 @@ const StudentProfileSummary = ({
     if (
       (settings.requestFilters.termId || settings.requestFilters.reportId) &&
       !loading &&
+      !isEmpty(studentProfileSummary) &&
       !metrics.length
     ) {
       toggleFilter(null, true)
@@ -335,6 +341,7 @@ const withConnect = connect(
   }),
   {
     getStudentProfileSummaryRequest: getStudentProfileSummaryRequestAction,
+    resetStudentProfileSummary: resetStudentProfileSummaryAction,
   }
 )
 

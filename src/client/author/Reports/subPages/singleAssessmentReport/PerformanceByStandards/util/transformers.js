@@ -357,7 +357,13 @@ const analysisDomainsData = (compareBy, skillInfo, metricInfo, scaleInfo) => {
 }
 
 export const analysisParseData = (report, viewBy, compareBy, filters) => {
-  const { studInfo, teacherInfo, skillInfo, scaleInfo, metricInfo } = report
+  const {
+    studInfo = [],
+    teacherInfo = [],
+    skillInfo = [],
+    scaleInfo = [],
+    metricInfo = [],
+  } = report
 
   let filteredMetrics
   if (compareBy === 'group') {

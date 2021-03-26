@@ -18,7 +18,11 @@ import { ControlDropDown } from '../../common/components/widgets/controlDropDown
 import NoDataNotification from '../../../../common/components/NoDataNotification'
 import { ReportContainer, FilterLabel } from '../../common/styled'
 
-import { setSMRSettingsAction, getReportsSMRSettings } from './ducks'
+import {
+  setSMRSettingsAction,
+  getReportsSMRSettings,
+  setSMRTagsDataAction,
+} from './ducks'
 import { resetAllReportsAction } from '../../common/reportsRedux'
 import {
   getSMRFilterDemographics,
@@ -35,7 +39,6 @@ import {
 } from '../../../src/selectors/user'
 
 import { getNavigationTabLinks } from '../../common/util'
-import { transformFiltersForSMR } from './common/utils'
 
 import navigation from '../../common/static/json/navigation.json'
 import staticDropDownData from './common/static/json/staticDropDownData.json'
@@ -44,6 +47,7 @@ const StandardsMasteryReportContainer = (props) => {
   const {
     settings,
     setSMRSettings,
+    setSMRTagsData,
     resetAllReports,
     premium,
     setShowHeader,
@@ -92,14 +96,6 @@ const StandardsMasteryReportContainer = (props) => {
     const _userRole = _sharedReport?.sharedBy?.role || role
     return [_sharedReport, _userRole]
   }, [reportId, sharedReportList])
-
-  const transformedSettings = useMemo(
-    () => ({
-      ...settings,
-      requestFilters: transformFiltersForSMR(settings.requestFilters),
-    }),
-    [settings]
-  )
 
   useEffect(
     () => () => {
@@ -168,9 +164,9 @@ const StandardsMasteryReportContainer = (props) => {
     updateNavigation(!premium ? [_navigationItems[1]] : _navigationItems)
   }, [settings])
 
-  const toggleFilter = (e, status = false) => {
+  const toggleFilter = (e, status) => {
     if (onRefineResultsCB) {
-      onRefineResultsCB(e, status || !showFilter)
+      onRefineResultsCB(e, status === false ? status : status || !showFilter)
     }
   }
 
@@ -180,12 +176,12 @@ const StandardsMasteryReportContainer = (props) => {
 
   const onGoClick = (_settings) => {
     if (_settings.selectedTests) {
-      const obj = {}
-      const arr = Object.keys(_settings.filters)
-      arr.forEach((item) => {
-        const val =
-          _settings.filters[item] === 'All' ? '' : _settings.filters[item]
-        obj[item] = val
+      const _requestFilters = {}
+      Object.keys(_settings.filters).forEach((filterType) => {
+        _requestFilters[filterType] =
+          _settings.filters[filterType] === 'All'
+            ? ''
+            : _settings.filters[filterType]
       })
       const {
         selectedTests = [],
@@ -193,12 +189,14 @@ const StandardsMasteryReportContainer = (props) => {
       } = _settings
       setSMRSettings({
         requestFilters: {
-          ...obj,
+          ..._requestFilters,
+          classIds: _requestFilters.classIds || '',
+          groupIds: _requestFilters.groupIds || '',
           testIds: selectedTests.join(),
           domainIds: domainIds.join(),
         },
-        tagsData: { ..._settings.tagsData },
       })
+      setSMRTagsData({ ..._settings.tagsData })
     }
     setShowApply(false)
   }
@@ -266,7 +264,7 @@ const StandardsMasteryReportContainer = (props) => {
         <ShareReportModal
           reportType={loc}
           reportFilters={{
-            ...transformedSettings.requestFilters,
+            ...settings.requestFilters,
             ddfilter,
           }}
           showModal={sharingState}
@@ -291,6 +289,8 @@ const StandardsMasteryReportContainer = (props) => {
           setTempDdFilter={setTempDdFilter}
           tempTagsData={tempTagsData}
           setTempTagsData={setTempTagsData}
+          tagsData={settings.tagsData}
+          setTagsData={setSMRTagsData}
           demographicsRequired={demographicsRequired}
           showApply={showApply}
           setShowApply={setShowApply}
@@ -298,7 +298,6 @@ const StandardsMasteryReportContainer = (props) => {
           toggleFilter={toggleFilter}
           firstLoad={firstLoad}
           setFirstLoad={setFirstLoad}
-          tagsData={settings.tagsData}
         />
       </SubHeader>
       <ReportContainer>
@@ -312,7 +311,7 @@ const StandardsMasteryReportContainer = (props) => {
               <StandardsPerfromance
                 {..._props}
                 toggleFilter={toggleFilter}
-                settings={transformedSettings}
+                settings={settings}
                 userRole={userRole}
                 sharedReport={sharedReport}
               />
@@ -330,7 +329,7 @@ const StandardsMasteryReportContainer = (props) => {
                 navigationItems={navigationItems}
                 pageTitle={loc}
                 toggleFilter={toggleFilter}
-                settings={transformedSettings}
+                settings={settings}
                 ddfilter={ddfilter}
                 userRole={userRole}
                 sharedReport={sharedReport}
@@ -348,7 +347,7 @@ const StandardsMasteryReportContainer = (props) => {
                 {..._props}
                 pageTitle={loc}
                 toggleFilter={toggleFilter}
-                settings={transformedSettings}
+                settings={settings}
                 ddfilter={ddfilter}
                 userRole={userRole}
                 sharedReport={sharedReport}
@@ -374,6 +373,7 @@ const ConnectedStandardsMasteryReportContainer = connect(
   }),
   {
     setSMRSettings: setSMRSettingsAction,
+    setSMRTagsData: setSMRTagsDataAction,
     resetAllReports: resetAllReportsAction,
     setTempDdFilter: setTempDdFilterAction,
     setTempTagsData: setTempTagsDataAction,

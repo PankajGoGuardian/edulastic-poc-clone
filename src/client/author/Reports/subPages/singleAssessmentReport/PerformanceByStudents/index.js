@@ -6,6 +6,7 @@ import { withNamespaces } from '@edulastic/localization'
 import { Row, Col } from 'antd'
 import { Redirect } from 'react-router-dom'
 import qs from 'qs'
+import { isEmpty } from 'lodash'
 
 // components
 import { EduButton, SpinLoader, notification } from '@edulastic/common'
@@ -39,6 +40,7 @@ import {
   getReportsPerformanceByStudents,
   getReportsPerformanceByStudentsLoader,
   getReportsPerformanceByStudentsError,
+  resetPerformanceByStudentsAction,
 } from './ducks'
 import { getUserRole } from '../../../../../student/Login/ducks'
 import { getCsvDownloadingState, getTestListSelector } from '../../../ducks'
@@ -57,6 +59,7 @@ const PerformanceByStudents = ({
   performanceBandProfiles,
   performanceByStudents,
   getPerformanceByStudents,
+  resetPerformanceByStudents,
   settings,
   testList,
   location = { pathname: '' },
@@ -98,11 +101,14 @@ const PerformanceByStudents = ({
     [settings, performanceByStudents]
   )
 
+  useEffect(() => () => resetPerformanceByStudents(), [])
+
   useEffect(() => {
     setPerformanceBandProfile(performanceByStudents?.bandInfo || {})
     if (
       (settings.requestFilters.termId || settings.requestFilters.reportId) &&
       !loading &&
+      !isEmpty(performanceByStudents) &&
       !performanceByStudents.studentMetricInfo.length
     ) {
       toggleFilter(null, true)
@@ -129,7 +135,7 @@ const PerformanceByStudents = ({
       }
       getPerformanceByStudents(q)
     }
-  }, [settings])
+  }, [settings.selectedTest, settings.requestFilters])
 
   useEffect(() => {
     setPagination({ ...pagination, current: 0 })
@@ -420,6 +426,7 @@ const withConnect = connect(
   {
     getPerformanceByStudents: getPerformanceByStudentsRequestAction,
     setPerformanceBandProfile: setPerformanceBandProfileAction,
+    resetPerformanceByStudents: resetPerformanceByStudentsAction,
   }
 )
 

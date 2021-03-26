@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { get, isEmpty, pickBy, groupBy, upperFirst } from 'lodash'
+import { get, isEmpty, omit, pickBy, groupBy, upperFirst } from 'lodash'
 import qs from 'qs'
 
 import { Spin, Tabs, Row, Col } from 'antd'
@@ -58,7 +58,6 @@ const ddFilterTypes = Object.keys(staticDropDownData.initialDdFilters)
 
 const StandardsMasteryReportFilters = ({
   isPrinting,
-  tagsData,
   user,
   history,
   location,
@@ -73,6 +72,8 @@ const StandardsMasteryReportFilters = ({
   setTempDdFilter,
   tempTagsData,
   setTempTagsData,
+  tagsData,
+  setTagsData,
   demographicsRequired,
   onGoClick: _onGoClick,
   getStandardsFiltersRequest,
@@ -160,8 +161,11 @@ const StandardsMasteryReportFilters = ({
     }))
 
   const standardIdFromPageData = useMemo(
-    () => get(standardsProgress, 'data.result.standardId'),
-    [standardsProgress]
+    () =>
+      loc === 'standards-progress'
+        ? get(standardsProgress, 'data.result.standardId', '')
+        : '',
+    [loc, standardsProgress]
   )
 
   useEffect(() => {
@@ -191,9 +195,24 @@ const StandardsMasteryReportFilters = ({
     }
   }
 
+  const resetForActiveTab = (tabKey) => {
+    switch (tabKey) {
+      case staticDropDownData.filterSections.STANDARD_FILTERS.key:
+        setFilters({ ...filters, standardId: '' })
+        setTempTagsData(omit(tempTagsData, 'standardId'))
+        setTagsData(omit(tagsData, 'standardId'))
+        break
+      default: // do nothing
+    }
+  }
+
   useEffect(() => {
     if (showFilter && !isTabRequired(activeTabKey)) {
+      resetForActiveTab(activeTabKey)
       setActiveTabKey(staticDropDownData.filterSections.CLASS_FILTERS.key)
+    }
+    if (loc !== 'standards-progress') {
+      resetForActiveTab(staticDropDownData.filterSections.STANDARD_FILTERS.key)
     }
   }, [loc, showFilter])
 
@@ -208,6 +227,10 @@ const StandardsMasteryReportFilters = ({
       })
       setTempTagsData({
         ...tempTagsData,
+        standardId: standardFromPageData,
+      })
+      setTagsData({
+        ...tagsData,
         standardId: standardFromPageData,
       })
     }

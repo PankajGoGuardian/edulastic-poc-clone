@@ -18,6 +18,7 @@ import {
   getReportsStandardsProgressLoader,
   getStandardsProgressRequestAction,
   getReportsStandardsProgressError,
+  resetStandardsProgressAction,
 } from './ducks'
 
 import { getDenormalizedData } from './utils/transformers'
@@ -35,6 +36,7 @@ const StandardsProgress = ({
   standardsFilters,
   standardsProgress,
   getStandardsProgressRequest,
+  resetStandardsProgress,
   ddfilter,
   userRole,
   sharedReport,
@@ -76,10 +78,12 @@ const StandardsProgress = ({
     tablePageSize: 50,
   })
 
+  useEffect(() => () => resetStandardsProgress(), [])
+
   // set initial page filters
   useEffect(() => {
     setPageFilters({ ...pageFilters, barsPageNumber: 1, tablePageNumber: 1 })
-  }, [settings, ddfilter])
+  }, [settings.requestFilters, ddfilter])
   useEffect(() => {
     if (pageFilters.barsPageNumber) {
       setPageFilters({ ...pageFilters, tablePageNumber: 1 })
@@ -117,6 +121,7 @@ const StandardsProgress = ({
     if (
       (settings.requestFilters.termId || settings.requestFilters.reportId) &&
       !loading &&
+      !isEmpty(standardsProgress) &&
       !denormalizedData?.length
     ) {
       toggleFilter(null, true)
@@ -206,6 +211,7 @@ const enhance = compose(
     }),
     {
       getStandardsProgressRequest: getStandardsProgressRequestAction,
+      resetStandardsProgress: resetStandardsProgressAction,
     }
   )
 )

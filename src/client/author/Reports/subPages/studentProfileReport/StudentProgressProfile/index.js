@@ -16,6 +16,7 @@ import {
   getReportsStudentProgressProfileLoader,
   getReportsStudentProgressProfileError,
   getStudentProgressProfileRequestACtion,
+  resetStudentProgressProfileAction,
 } from './ducks'
 import {
   getReportsSPRFilterData,
@@ -47,6 +48,7 @@ const StudentProgressProfile = ({
   SPRFilterData,
   studentProgressProfile,
   getStudentProgressProfileRequest,
+  resetStudentProgressProfile,
   error,
   isCsvDownloading,
   t,
@@ -108,6 +110,8 @@ const StudentProgressProfile = ({
   const domainOptions = getDomainOptions(skillInfo)
 
   const standardsOptions = getStandardsOptions(skillInfo, selectedDomain)
+
+  useEffect(() => () => resetStudentProgressProfile(), [])
 
   useEffect(() => {
     setPageFilters({ ...pageFilters, page: 1 })
@@ -237,6 +241,7 @@ const withConnect = connect(
   }),
   {
     getStudentProgressProfileRequest: getStudentProgressProfileRequestACtion,
+    resetStudentProgressProfile: resetStudentProgressProfileAction,
   }
 )
 

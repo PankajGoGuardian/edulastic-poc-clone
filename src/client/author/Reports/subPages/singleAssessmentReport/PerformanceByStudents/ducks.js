@@ -13,11 +13,16 @@ const GET_REPORTS_PERFORMANCE_BY_STUDENTS_REQUEST_SUCCESS =
   '[reports] get reports performance by students success'
 const GET_REPORTS_PERFORMANCE_BY_STUDENTS_REQUEST_ERROR =
   '[reports] get reports performance by students error'
+const RESET_REPORTS_PERFORMANCE_BY_STUDENTS =
+  '[reports] reset reports performance by students'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
 export const getPerformanceByStudentsRequestAction = createAction(
   GET_REPORTS_PERFORMANCE_BY_STUDENTS_REQUEST
+)
+export const resetPerformanceByStudentsAction = createAction(
+  RESET_REPORTS_PERFORMANCE_BY_STUDENTS
 )
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
@@ -60,12 +65,13 @@ export const defaultReport = {
 }
 
 const initialState = {
-  performanceByStudents: defaultReport,
+  performanceByStudents: {},
   loading: false,
 }
 
 export const reportPerformanceByStudentsReducer = createReducer(initialState, {
   [RESET_ALL_REPORTS]: (state) => (state = initialState),
+  [RESET_REPORTS_PERFORMANCE_BY_STUDENTS]: (state) => (state = initialState),
   [GET_REPORTS_PERFORMANCE_BY_STUDENTS_REQUEST]: (state) => {
     state.loading = true
   },

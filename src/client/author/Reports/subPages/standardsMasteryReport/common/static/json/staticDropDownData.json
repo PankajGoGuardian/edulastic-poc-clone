@@ -11,6 +11,10 @@
     "DEMOGRAPHIC_FILTERS": {
       "key": "2",
       "title": "Demographics"
+    },
+    "STANDARD_FILTERS": {
+      "key": "3",
+      "title": "Standard Filters"
     }
   },
   "tagTypes": [

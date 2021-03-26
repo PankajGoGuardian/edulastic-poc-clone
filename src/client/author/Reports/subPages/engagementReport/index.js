@@ -19,9 +19,9 @@ import navigation from '../../common/static/json/navigation.json'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 
 import {
+  setERTagsDataAction,
   setERSettingsAction,
   getReportsERSettings,
-  resetERSettingsAction,
 } from './ducks'
 import { getSharingState, setSharingStateAction } from '../../ducks'
 import { getSharedReportList } from '../../components/sharedReports/ducks'
@@ -31,6 +31,7 @@ import { ReportContainer } from '../../common/styled'
 const EngagementReportContainer = ({
   settings,
   setERSettings,
+  setERTagsData,
   onRefineResultsCB,
   updateNavigation,
   resetAllReports,
@@ -57,9 +58,9 @@ const EngagementReportContainer = ({
     [reportId, sharedReportList]
   )
 
-  const toggleFilter = (e, status = false) => {
+  const toggleFilter = (e, status) => {
     if (onRefineResultsCB) {
-      onRefineResultsCB(e, status || !showFilter)
+      onRefineResultsCB(e, status === false ? status : status || !showFilter)
     }
   }
 
@@ -114,14 +115,15 @@ const EngagementReportContainer = ({
   }, [settings])
 
   const onGoClick = (_settings) => {
-    const obj = {}
-    const arr = Object.keys(_settings.filters)
-    arr.forEach((item) => {
-      const val =
-        _settings.filters[item] === 'All' ? '' : _settings.filters[item]
-      obj[item] = val
+    const _requestFilters = {}
+    Object.keys(_settings.filters).forEach((filterType) => {
+      _requestFilters[filterType] =
+        _settings.filters[filterType] === 'All'
+          ? ''
+          : _settings.filters[filterType]
     })
-    setERSettings({ requestFilters: obj, tagsData: _settings.tagsData })
+    setERSettings({ requestFilters: { ..._requestFilters } })
+    setERTagsData({ ..._settings.tagsData })
   }
 
   return (
@@ -207,9 +209,9 @@ const ConnectedEngagementReportContainer = connect(
     sharedReportList: getSharedReportList(state),
   }),
   {
+    setERTagsData: setERTagsDataAction,
     setERSettings: setERSettingsAction,
     resetAllReports: resetAllReportsAction,
-    resetERSettings: resetERSettingsAction,
     setSharingState: setSharingStateAction,
   }
 )(EngagementReportContainer)

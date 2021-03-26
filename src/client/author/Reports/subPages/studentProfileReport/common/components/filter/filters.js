@@ -26,7 +26,7 @@ import {
   getFiltersSelector,
   getSelectedClassSelector,
   getStudentSelector,
-  getTagsDataSelector,
+  getTempTagsDataSelector,
   getReportsPrevSPRFilterData,
   setPrevSPRFilterDataAction,
   getReportsSPRFilterLoadingState,
@@ -35,7 +35,7 @@ import {
   getReportsSPRFilterData,
   setSelectedClassAction,
   setStudentAction,
-  setTagsDataAction,
+  setTempTagsDataAction,
 } from '../../filterDataDucks'
 import { getTermOptions } from '../../utils/transformers'
 import { getFullNameFromAsString } from '../../../../../../../common/utils/helpers'
@@ -97,8 +97,9 @@ const StudentProfileReportFilters = ({
   setStudent,
   selectedClassIds,
   setSelectedClassIds,
+  tempTagsData,
+  setTempTagsData,
   tagsData,
-  setTagsData,
   showFilter,
   toggleFilter,
   defaultTerm,
@@ -234,8 +235,8 @@ const StudentProfileReportFilters = ({
       // standardsProficiencyProfileId: selectedScale
     }
     const _student = { ...student }
-    const _tagsData = {
-      ...tagsData,
+    const _tempTagsData = {
+      ...tempTagsData,
       termId: selectedTerm,
       grade: selectedGrade,
       subject: selectedSubject,
@@ -244,16 +245,17 @@ const StudentProfileReportFilters = ({
       student: _student,
     }
     setFilters(_filters)
-    setTagsData(_tagsData)
+    setTempTagsData(_tempTagsData)
     // load page data
     _onGoClick({
       filters: pickBy(_filters, (f) => f !== 'All' && !isEmpty(f)),
       selectedStudent: _student,
+      tagsData: _tempTagsData,
     })
   }
 
   const onStudentSelect = (item) => {
-    const _tagsData = { ...tagsData, student: item }
+    const _tempTagsData = { ...tempTagsData, student: item }
     if (item && item.key) {
       setStudent(item)
       const _reportPath = splittedPath
@@ -269,13 +271,14 @@ const StudentProfileReportFilters = ({
         studentId: item.key,
       })
     } else {
-      delete _tagsData.student
+      delete _tempTagsData.student
       _onGoClick({
         filters,
         selectedStudent: item,
+        tagsData: _tempTagsData,
       })
     }
-    setTagsData(_tagsData)
+    setTempTagsData(_tempTagsData)
   }
 
   const resetSPRFilters = useCallback(
@@ -301,16 +304,16 @@ const StudentProfileReportFilters = ({
 
   const updateFilterDropdownCB = (selected, keyName, multiple = false) => {
     // update tags data
-    const _tagsData = { ...tagsData, [keyName]: selected }
+    const _tempTagsData = { ...tempTagsData, [keyName]: selected }
     if (!multiple && (!selected.key || selected.key === 'All')) {
-      delete _tagsData[keyName]
+      delete _tempTagsData[keyName]
     }
     const _filters = { ...filters }
     const _selected = multiple
       ? selected.map((o) => o.key).join(',')
       : selected.key
-    resetSPRFilters(_tagsData, _filters, keyName, _selected)
-    setTagsData(_tagsData)
+    resetSPRFilters(_tempTagsData, _filters, keyName, _selected)
+    setTempTagsData(_tempTagsData)
     // update filters
     _filters[keyName] = _selected
     setFilters(_filters)
@@ -318,19 +321,20 @@ const StudentProfileReportFilters = ({
       _onGoClick({
         filters: pickBy(_filters, (v) => v && v.toLowerCase() !== 'all'),
         selectedStudent: student,
+        tagsData: _tempTagsData,
       })
     }
   }
 
   const updateSelectedClassIds = (selected) => {
     // update tags data
-    const _tagsData = { ...tagsData, classIds: selected }
-    setTagsData(_tagsData)
+    const _tempTagsData = { ...tempTagsData, classIds: selected }
+    setTempTagsData(_tempTagsData)
     setSelectedClassIds(selected.map((o) => o.key).join(','))
   }
 
   const handleCloseTag = (type, { key }) => {
-    const _tagsData = { ...tagsData }
+    const _tempTagsData = { ...tempTagsData }
     // handles selectedClassIds
     if (type === 'classIds') {
       if (selectedClassIds.includes(key)) {
@@ -338,7 +342,7 @@ const StudentProfileReportFilters = ({
           .split(',')
           .filter((d) => d !== key)
           .join(',')
-        _tagsData[type] = tagsData[type].filter((d) => d.key !== key)
+        _tempTagsData[type] = tempTagsData[type].filter((d) => d.key !== key)
         setSelectedClassIds(_selectedClassIds)
       }
     } else {
@@ -346,7 +350,7 @@ const StudentProfileReportFilters = ({
       // handles single selection filters
       if (filters[type] === key) {
         _filters[type] = staticDropDownData.initialFilters[type]
-        delete _tagsData[type]
+        delete _tempTagsData[type]
       }
       // handles multiple selection filters
       else if (filters[type].includes(key)) {
@@ -354,11 +358,11 @@ const StudentProfileReportFilters = ({
           .split(',')
           .filter((d) => d !== key)
           .join(',')
-        _tagsData[type] = tagsData[type].filter((d) => d.key !== key)
+        _tempTagsData[type] = tempTagsData[type].filter((d) => d.key !== key)
       }
       setFilters(_filters)
     }
-    setTagsData(_tagsData)
+    setTempTagsData(_tempTagsData)
   }
 
   return (
@@ -530,7 +534,7 @@ const enhance = connect(
     filters: getFiltersSelector(state),
     student: getStudentSelector(state),
     selectedClassIds: getSelectedClassSelector(state),
-    tagsData: getTagsDataSelector(state),
+    tempTagsData: getTempTagsDataSelector(state),
     role: getUserRole(state),
     prevSPRFilterData: getReportsPrevSPRFilterData(state),
     loading: getReportsSPRFilterLoadingState(state),
@@ -545,7 +549,7 @@ const enhance = connect(
     setFilters: setFiltersAction,
     setStudent: setStudentAction,
     setSelectedClassIds: setSelectedClassAction,
-    setTagsData: setTagsDataAction,
+    setTempTagsData: setTempTagsDataAction,
   }
 )
 

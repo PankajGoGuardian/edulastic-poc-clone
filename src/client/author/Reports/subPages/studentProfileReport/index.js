@@ -15,7 +15,11 @@ import StudentProfileReportFilters from './common/components/filter/filters'
 import StudentProgressProfile from './StudentProgressProfile'
 import ShareReportModal from '../../common/components/Popups/ShareReportModal'
 
-import { setSPRSettingsAction, getReportsSPRSettings } from './ducks'
+import {
+  setSPRSettingsAction,
+  getReportsSPRSettings,
+  setSPRTagsDataAction,
+} from './ducks'
 import { resetAllReportsAction } from '../../common/reportsRedux'
 import { ReportContainer } from '../../common/styled'
 import { getSharingState, setSharingStateAction } from '../../ducks'
@@ -24,7 +28,6 @@ import { getSharedReportList } from '../../components/sharedReports/ducks'
 import navigation from '../../common/static/json/navigation.json'
 
 import { getNavigationTabLinks } from '../../common/util'
-import { transformFiltersForSPR } from './common/utils/transformers'
 
 const StudentProfileReportContainer = (props) => {
   const {
@@ -37,6 +40,7 @@ const StudentProfileReportContainer = (props) => {
     showFilter,
     onRefineResultsCB,
     setSPRSettings,
+    setSPRTagsData,
     resetAllReports,
     sharingState,
     setSharingState,
@@ -61,14 +65,6 @@ const StudentProfileReportContainer = (props) => {
       resetAllReports()
     },
     []
-  )
-
-  const transformedSettings = useMemo(
-    () => ({
-      ...settings,
-      requestFilters: transformFiltersForSPR(settings.requestFilters),
-    }),
-    [settings]
   )
 
   const computeChartNavigationLinks = (sel, filt) => {
@@ -109,18 +105,21 @@ const StudentProfileReportContainer = (props) => {
   }, [settings])
 
   const onGoClick = (_settings) => {
-    const modifiedFilter = {}
+    const _requestFilters = {}
     Object.keys(_settings.filters).forEach((filterType) => {
-      if (_settings.filters[filterType] === 'All') {
-        modifiedFilter[filterType] = ''
-      } else {
-        modifiedFilter[filterType] = _settings.filters[filterType]
-      }
+      _requestFilters[filterType] =
+        _settings.filters[filterType] === 'All'
+          ? ''
+          : _settings.filters[filterType]
     })
     setSPRSettings({
-      requestFilters: _settings.filters,
+      requestFilters: {
+        ..._requestFilters,
+        profileId: _requestFilters.standardsProficiencyProfileId,
+      },
       selectedStudent: _settings.selectedStudent,
     })
+    setSPRTagsData({ ..._settings.tagsData })
   }
   const toggleFilter = (e, status = false) => {
     if (onRefineResultsCB) {
@@ -149,8 +148,8 @@ const StudentProfileReportContainer = (props) => {
           <ShareReportModal
             reportType={loc}
             reportFilters={{
-              ...transformedSettings.requestFilters,
-              studentId: transformedSettings?.selectedStudent?.key,
+              ...settings.requestFilters,
+              studentId: settings?.selectedStudent?.key,
             }}
             showModal={sharingState}
             setShowModal={setSharingState}
@@ -165,6 +164,7 @@ const StudentProfileReportContainer = (props) => {
             history={history}
             location={location}
             match={match}
+            tagsData={settings.tagsData}
             performanceBandRequired={performanceBandRequired}
             standardProficiencyRequired={standardProficiencyRequired}
             showFilter={showFilter}
@@ -178,7 +178,7 @@ const StudentProfileReportContainer = (props) => {
             render={(_props) => (
               <StudentMasteryProfile
                 {..._props}
-                settings={transformedSettings}
+                settings={settings}
                 sharedReport={sharedReport}
                 toggleFilter={toggleFilter}
               />
@@ -190,7 +190,7 @@ const StudentProfileReportContainer = (props) => {
             render={(_props) => (
               <StudentAssessmentProfile
                 {..._props}
-                settings={transformedSettings}
+                settings={settings}
                 pageTitle={loc}
                 sharedReport={sharedReport}
                 toggleFilter={toggleFilter}
@@ -203,7 +203,7 @@ const StudentProfileReportContainer = (props) => {
             render={(_props) => (
               <StudentProfileSummary
                 {..._props}
-                settings={transformedSettings}
+                settings={settings}
                 pageTitle={loc}
                 sharedReport={sharedReport}
                 toggleFilter={toggleFilter}
@@ -216,7 +216,7 @@ const StudentProfileReportContainer = (props) => {
             render={(_props) => (
               <StudentProgressProfile
                 {..._props}
-                settings={transformedSettings}
+                settings={settings}
                 pageTitle={loc}
                 sharedReport={sharedReport}
                 toggleFilter={toggleFilter}
@@ -236,6 +236,7 @@ const enhance = connect(
     sharedReportList: getSharedReportList(state),
   }),
   {
+    setSPRTagsData: setSPRTagsDataAction,
     setSPRSettings: setSPRSettingsAction,
     resetAllReports: resetAllReportsAction,
     setSharingState: setSharingStateAction,

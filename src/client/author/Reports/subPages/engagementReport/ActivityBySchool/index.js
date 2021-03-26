@@ -14,6 +14,7 @@ import {
   getReportsActivityBySchoolLoader,
   getReportsActivityBySchoolError,
   getReportsActivityBySchool,
+  resetActivityBySchoolAction,
 } from './ducks'
 
 import columns from './static/json/tableColumns.json'
@@ -22,11 +23,14 @@ const ActivityBySchool = ({
   loading,
   error,
   getActivityBySchoolRequest,
+  resetActivityBySchool,
   activityBySchool,
   settings,
   isCsvDownloading,
 }) => {
   const [metricFilter, setMetricFilter] = useState({})
+
+  useEffect(() => () => resetActivityBySchool(), [])
 
   useEffect(() => {
     const q = { ...settings.requestFilters }
@@ -103,6 +107,7 @@ const enhance = connect(
   }),
   {
     getActivityBySchoolRequest: getActivityBySchoolRequestAction,
+    resetActivityBySchool: resetActivityBySchoolAction,
   }
 )
 

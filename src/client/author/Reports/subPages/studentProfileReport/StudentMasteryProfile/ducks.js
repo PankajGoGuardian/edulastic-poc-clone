@@ -1,7 +1,6 @@
 import { call, put, all, takeLatest } from 'redux-saga/effects'
 import { createSelector } from 'reselect'
 import { reportsApi } from '@edulastic/api'
-import { message } from 'antd'
 import { notification } from '@edulastic/common'
 import { createAction, createReducer } from 'redux-starter-kit'
 
@@ -19,6 +18,8 @@ const GET_STUDENT_STANDARDS_SUCCESS =
   '[reports] student mastery profile get student standards success'
 const GET_STUDENT_STANDARDS_FAILED =
   '[reports] student mastery profile get student standards failed'
+const RESET_REPORTS_STUDENT_MASTERY_PROFILE =
+  '[reports] reset reports student mastery profile'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
@@ -27,6 +28,9 @@ export const getStudentMasteryProfileRequestAction = createAction(
 )
 export const getStudentStandardsAction = createAction(
   GET_STUDENT_STANDARDS_REQUEST
+)
+export const resetStudentMasteryProfileAction = createAction(
+  RESET_REPORTS_STUDENT_MASTERY_PROFILE
 )
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
@@ -78,6 +82,7 @@ const initialState = {
 
 export const reportStudentMasteryProfileReducer = createReducer(initialState, {
   [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState),
+  [RESET_REPORTS_STUDENT_MASTERY_PROFILE]: (state, { payload }) => (state = initialState),
   [GET_REPORTS_STUDENT_MASTERY_PROFILE_REQUEST]: (state, { payload }) => {
     state.loading = true
   },

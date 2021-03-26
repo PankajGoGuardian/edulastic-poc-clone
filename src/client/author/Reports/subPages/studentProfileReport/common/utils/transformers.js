@@ -218,11 +218,6 @@ export const getGrades = (studInfo = []) =>
     .map((grade) => gradesMap[grade])
     .join()
 
-export const transformFiltersForSPR = (requestFilters = {}) => ({
-  ...requestFilters,
-  profileId: requestFilters.standardsProficiencyProfileId,
-})
-
 export const getDomainOptions = (domains, grade, subject) => {
   return [
     { key: 'All', title: 'All' },

@@ -33,7 +33,7 @@ const links = [
   },
   {
     key: 'studentProgressProfile',
-    title: 'Student Progress Profile',
+    title: 'Student Standards Progress',
     thumbnail: StudentProgressProfileImg,
     location: '/author/reports/student-progress-profile/student/',
     description:

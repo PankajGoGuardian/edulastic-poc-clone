@@ -32,6 +32,9 @@ const HeaderTitle = styled.div`
       margin-right: 10px;
     }
   }
+  .ant-breadcrumb {
+    white-space: nowrap;
+  }
 `
 
 const SecondaryHeader = styled.div`

@@ -106,33 +106,74 @@ class Container extends React.Component {
       receiveTestById,
       getDefaultTestSettings,
       changeView,
+      assessment: { grades },
     } = this.props
     receiveTestById(match.params.assessmentId)
     getDefaultTestSettings()
     window.onbeforeunload = () => this.beforeUnload()
     changeView(tabs.DESCRIPTION)
+    this.handleChangeKeypad(grades)
+  }
+
+  get isEditableTest() {
+    const { assessment, match, userId } = this.props
+    const { params = {} } = match
+    const { editEnable = true } = this.state
+    const { authors, status } = assessment
+    const owner =
+      (authors && authors.some((x) => x._id === userId)) || !params.id
+    return owner && (editEnable || status === statusConstants.DRAFT)
   }
 
   componentWillUnmount() {
     window.onbeforeunload = () => {}
   }
 
-  beforeUnload = () => {
+  handleChangeKeypad = (grades) => {
     const {
-      assessment: test,
-      match: { params },
-      userId,
-      questionsUpdated,
-      updated,
+      setTestData,
+      assessment: { keypad },
     } = this.props
-    const { authors, itemGroups, status } = test
-    const { editEnable = true } = this.state
-    const owner =
-      (authors && authors.some((x) => x._id === userId)) || !params.id
-    const isEditable = owner && (editEnable || status === statusConstants.DRAFT)
+    if (this.isEditableTest) {
+      if (isEmpty(keypad) || keypad.updated === false) {
+        const highestGrade = grades.reduce((acc, curr) => {
+          const currentGrade = parseInt(curr, 10)
+          if (currentGrade > acc) {
+            acc = currentGrade
+          }
+          return acc
+        }, 0)
+        if (highestGrade === 0) {
+          setTestData({
+            keypad: {
+              type: 'item-level',
+              value: 'item-level-keypad',
+              updated: false,
+            },
+          })
+        } else if (highestGrade <= 5) {
+          setTestData({
+            keypad: { updated: false, type: 'predefined', value: 'basic' },
+          })
+        } else if (highestGrade > 5 && highestGrade <= 12) {
+          setTestData({
+            keypad: {
+              updated: false,
+              type: 'predefined',
+              value: 'intermediate',
+            },
+          })
+        }
+      }
+    }
+  }
+
+  beforeUnload = () => {
+    const { assessment: test, questionsUpdated, updated } = this.props
+    const { itemGroups } = test
 
     if (
-      isEditable &&
+      this.isEditableTest &&
       itemGroups[0].items.length > 0 &&
       (updated || questionsUpdated)
     ) {
@@ -159,12 +200,10 @@ class Container extends React.Component {
     const {
       changeView,
       currentTab,
-      assessment: { title, authors, status },
+      assessment: { title },
       changePreview,
       authorQuestionStatus: newQuestionsAdded,
       updated,
-      match: { params },
-      userId,
     } = this.props
 
     if (currentTab === tabs.DESCRIPTION && title && title.trim()) {
@@ -181,11 +220,7 @@ class Container extends React.Component {
      * save test data on tab switch if test data or items are updated
      * @see https://snapwiz.atlassian.net/browse/EV-25049
      */
-    const { editEnable = true } = this.state
-    const owner =
-      (authors && authors.some((x) => x._id === userId)) || !params.id
-    const isEditable = owner && (editEnable || status === statusConstants.DRAFT)
-    if (isEditable && (updated || newQuestionsAdded)) {
+    if (this.isEditableTest && (updated || newQuestionsAdded)) {
       this.handleSave()
     }
   }
@@ -313,11 +348,9 @@ class Container extends React.Component {
 
     const { params = {} } = match
     const { docUrl, annotations, pageStructure, freeFormNotes } = assessment
-    const { editEnable } = this.state
-    const { authors, status } = assessment
+    const { authors } = assessment
     const owner =
       (authors && authors.some((x) => x._id === userId)) || !params.id
-    const isEditable = owner && (editEnable || status === statusConstants.DRAFT)
 
     const props = {
       docUrl,
@@ -327,7 +360,7 @@ class Container extends React.Component {
       questionsById,
       pageStructure,
       freeFormNotes,
-      isEditable,
+      isEditable: this.isEditableTest,
     }
 
     switch (currentTab) {
@@ -335,6 +368,7 @@ class Container extends React.Component {
         return (
           <Description
             setData={setTestData}
+            onChangeKeypad={this.handleChangeKeypad}
             assessment={assessment}
             owner={owner}
           />
@@ -347,7 +381,7 @@ class Container extends React.Component {
         return (
           <Setting
             current={currentTab}
-            isEditable={isEditable}
+            isEditable={this.isEditableTest}
             // onShowSource={this.handleNavChange("source")}
             sebPasswordRef={this.sebPasswordRef}
             owner={owner}

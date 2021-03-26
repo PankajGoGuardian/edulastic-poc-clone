@@ -1010,7 +1010,13 @@ function* publishPlaylistSaga({ payload }) {
         messageKey: 'publishedPlaylist',
       })
     }
-    yield put(push(`/author/playlists/${id}`))
+
+    yield put(
+      push({
+        pathname: `/author/playlists/${id}`,
+        state: { publishedPlaylist: true },
+      })
+    )
   } catch (error) {
     yield call(notification, {
       msg: error?.data?.message,

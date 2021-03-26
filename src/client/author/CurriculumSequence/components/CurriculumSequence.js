@@ -480,6 +480,7 @@ class CurriculumSequence extends Component {
     // }
     const isAuthoringFlowReview = current === 'review'
     const isPlaylistDetailsPage = location?.hash === '#review'
+    const isPublishedPage = location?.state?.publishedPlaylist
     if (
       !isManageContentActive &&
       !canEdit &&
@@ -502,7 +503,10 @@ class CurriculumSequence extends Component {
           style: { background: themeColor, outline: 'none' },
         },
       })
-    } else if (isPlaylistDetailsPage && contentName === 'manageContent') {
+    } else if (
+      (isPlaylistDetailsPage || isPublishedPage) &&
+      contentName === 'manageContent'
+    ) {
       const {
         history,
         destinationCurriculumSequence: { _id },

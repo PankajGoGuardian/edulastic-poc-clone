@@ -293,14 +293,14 @@ const StudentProfileSummary = ({
                   by={selectedGrade}
                   selectCB={onGradeSelect}
                   data={staticDropDownData.grades}
-                  prefix="Grade"
+                  prefix="Standard Grade"
                   showPrefixOnSelected={false}
                 />
                 <ControlDropDown
                   by={selectedSubject}
                   selectCB={onSubjectSelect}
                   data={staticDropDownData.subjects}
-                  prefix="Subject"
+                  prefix="Standard Subject"
                   showPrefixOnSelected={false}
                 />
                 <ControlDropDown

@@ -51,6 +51,9 @@ const getColumns = (handleOnClickStandard, filters) => {
           studentId: record.studentId,
           standardId: record.standardId,
           profileId: filters.profileId,
+          // for student only one group will be available
+          groupId: filters.groupIds,
+          finalMastery: record.fm,
         }
         return (
           <ReStyledTag

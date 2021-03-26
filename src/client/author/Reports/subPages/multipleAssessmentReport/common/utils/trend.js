@@ -251,7 +251,6 @@ export const parseTrendData = (
       testName,
       standardId,
       domainId,
-      fm,
     } = metric[0]
 
     forEach(groupByTests, (value, key) => {
@@ -271,7 +270,7 @@ export const parseTrendData = (
           2
         )} / ${sumBy(sanitizedRecords, 'maxScore')}`,
         studentCount: parseInt(maxStudents[studentCountKey], 10) || 0,
-        fm,
+        fm: value[0]?.fm,
       }
     })
     const dInfo = {}

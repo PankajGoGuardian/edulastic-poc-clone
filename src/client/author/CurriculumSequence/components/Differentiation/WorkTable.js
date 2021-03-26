@@ -319,15 +319,17 @@ const InnerWorkTable = ({
             >
               {record.description}
             </StyledDescription>
-            {showNewActivity && activeHoverIndex === index && (
-              <ContentDropContainer
-                data-cy={`${type}-newActivityDropContainer`}
-                dropType="activity"
-                {...containerProps}
-              >
-                New Activity
-              </ContentDropContainer>
-            )}
+            <div data-cy={`${type}-testDropContainer`} style={{ width: '100%' }}>
+              {showNewActivity && activeHoverIndex === index && (
+                <ContentDropContainer
+                  data-cy={`${type}-newActivityDropContainer`}
+                  dropType="activity"
+                  {...containerProps}
+                >
+                  New Activity
+                </ContentDropContainer>
+              )}
+            </div>
           </FlexContainer>
         )
       },

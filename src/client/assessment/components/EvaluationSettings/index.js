@@ -101,7 +101,12 @@ const EvaluationSettings = ({
           }
           label="Evaluation Settings"
         />
-        <EduButton height="28px" ml="20px" onClick={showSettingDrawer}>
+        <EduButton
+          height="28px"
+          ml="20px"
+          onClick={showSettingDrawer}
+          data-cy="changeEvaluation"
+        >
           Change
         </EduButton>
       </FlexContainer>

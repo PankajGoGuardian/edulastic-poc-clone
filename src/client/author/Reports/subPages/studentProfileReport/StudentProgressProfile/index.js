@@ -30,6 +30,7 @@ import {
   getStandardsOptions,
 } from './common/utils/transformers'
 import { downloadCSV } from '../../../common/util'
+import { getStudentName } from '../common/utils/transformers'
 
 const compareBy = {
   key: 'standard',
@@ -48,7 +49,9 @@ const StudentProgressProfile = ({
   getStudentProgressProfileRequest,
   error,
   isCsvDownloading,
+  t,
 }) => {
+  const anonymousString = t('common.anonymous')
   const [analyseBy, setAnalyseBy] = useState(head(dropDownData.analyseByData))
   const [selectedDomain, setSelectedDomain] = useState({
     key: 'All',
@@ -129,8 +132,13 @@ const StudentProgressProfile = ({
   const onDomainSelect = (_, selected) => setSelectedDomain(selected)
   const onStandardSelect = (_, selected) => setSelectedStandard(selected)
   const onAnalyseBySelect = (_, selected) => setAnalyseBy(selected)
+
+  const studentName = getStudentName(settings.selectedStudent, {})
   const onCsvConvert = (_data) =>
-    downloadCSV(`Student Progress Profile.csv`, _data)
+    downloadCSV(
+      `Student Progress Profile-${studentName || anonymousString}.csv`,
+      _data
+    )
 
   const filteredMetricInfo = useMemo(
     () => filterMetricInfo(metricInfo, selectedDomain, selectedStandard),

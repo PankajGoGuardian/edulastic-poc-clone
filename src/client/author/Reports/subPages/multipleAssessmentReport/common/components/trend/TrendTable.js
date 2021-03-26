@@ -323,24 +323,24 @@ const getColumns = (
                 .localeCompare(b[keyword].toLowerCase())
             },
           },
+          {
+            title: 'SIS ID',
+            dataIndex: 'sisId',
+            key: 'sisId',
+            width: 100,
+            visibleOn: ['csv'],
+          },
+          {
+            title: 'STUDENT NUMBER',
+            dataIndex: 'studentNumber',
+            key: 'studentNumber',
+            width: 100,
+            visibleOn: ['csv'],
+          },
         ]
 
   const columns = [
     ...leftColumns,
-    {
-      title: 'SIS ID',
-      dataIndex: 'sisId',
-      key: 'sisId',
-      width: 100,
-      visibleOn: ['csv'],
-    },
-    {
-      title: 'STUDENT NUMBER',
-      dataIndex: 'studentNumber',
-      key: 'studentNumber',
-      width: 100,
-      visibleOn: ['csv'],
-    },
     ...customColumns,
     {
       key: 'trend',

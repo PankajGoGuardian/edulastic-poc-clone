@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import * as Fbs  from '@edulastic/common/src/Firebase'
+import * as Fbs from '@edulastic/common/src/Firebase'
 import { roleuser } from '@edulastic/constants'
 import { uniqBy, pull } from 'lodash'
 import notification from '@edulastic/common/src/components/Notification'
@@ -21,9 +21,11 @@ import {
 import { fetchGroupsAction } from '../../../sharedDucks/groups'
 import { setAssignmentBulkActionStatus } from '../../../AssignmentAdvanced/ducks'
 
-const antdNotification = notification;
+const antdNotification = notification
 const firestoreGoogleClassSyncStatusCollection = 'GoogleClassSyncStatus'
 const firestoreGoogleGradesSyncStatusCollection = 'GoogleGradeSyncStatus'
+const firestoreCleverGradesSyncStatusCollection = 'CleverGradeSyncStatus'
+
 const firestoreBulkActionCollection = 'AssignmentBulkActionEvents'
 const DOWNLOAD_GRADES_AND_RESPONSE = 'DOWNLOAD_GRADES_AND_RESPONSE'
 const ClassSyncNotificationListener = ({
@@ -48,6 +50,14 @@ const ClassSyncNotificationListener = ({
     (db) =>
       db
         .collection(firestoreGoogleGradesSyncStatusCollection)
+        .where('userId', '==', `${user?._id}`),
+    [user?._id]
+  )
+
+  const cleverGradesSyncNotifications = Fbs.useFirestoreRealtimeDocuments(
+    (db) =>
+      db
+        .collection(firestoreCleverGradesSyncStatusCollection)
         .where('userId', '==', `${user?._id}`),
     [user?._id]
   )
@@ -133,15 +143,25 @@ const ClassSyncNotificationListener = ({
   }, [userNotifications])
 
   useEffect(() => {
-    uniqBy(gradesSyncNotifications, '__id').forEach((doc) => {
+    uniqBy(cleverGradesSyncNotifications, '__id').forEach((doc) => {
       const { status, message, success = false } = doc
       if (status === 'completed' && !notificationIds.includes(doc.__id)) {
         notification({ type: success ? 'success' : 'error', msg: message })
         setNotificationIds([...notificationIds, doc.__id])
         deleteNotificationDocument(
           doc.__id,
-          firestoreGoogleGradesSyncStatusCollection
+          firestoreCleverGradesSyncStatusCollection
         )
+      }
+    })
+  }, [cleverGradesSyncNotifications])
+
+  useEffect(() => {
+    uniqBy(gradesSyncNotifications, '__id').forEach((doc) => {
+      const { status, message, success = false } = doc
+      if (status === 'completed') {
+        notification({ type: success ? 'success' : 'error', msg: message })
+        deleteNotificationDocument(doc.__id)
       }
     })
   }, [gradesSyncNotifications])

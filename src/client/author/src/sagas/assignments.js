@@ -8,7 +8,7 @@ import {
   takeLatest,
 } from 'redux-saga/effects'
 import { push } from 'connected-react-router'
-import { assignmentApi, atlasApi, googleApi } from '@edulastic/api'
+import { assignmentApi, atlasApi, googleApi, cleverApi } from '@edulastic/api'
 import { get, identity, omit, pickBy, set, unset } from 'lodash'
 import { captureSentryException, notification } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
@@ -30,6 +30,7 @@ import {
   RECEIVE_ASSIGNMENTS_SUMMARY_REQUEST,
   RECEIVE_ASSIGNMENTS_SUMMARY_SUCCESS,
   SYNC_ASSIGNMENT_GRADES_WITH_GOOGLE_CLASSROOM_REQUEST,
+  SYNC_ASSIGNMENT_GRADES_WITH_CLEVER_REQUEST,
   SYNC_ASSIGNMENT_GRADES_WITH_SCHOOLOGY_CLASSROOM_REQUEST,
   SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_ERROR,
   SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_REQUEST,
@@ -295,6 +296,26 @@ function* syncAssignmentGradesWithGoogleClassroomSaga({ payload }) {
   }
 }
 
+function* syncAssignmentGradesWithCleverSaga({ payload }) {
+  try {
+    const res = yield call(cleverApi.syncGradesWithClever, payload)
+    if (res?.message) {
+      notification({ type: 'success', msg: res.message })
+    } else {
+      notification({
+        type: 'success',
+        msg: 'Grades are being shared to Clever',
+      })
+    }
+  } catch (err) {
+    captureSentryException(err)
+    notification({
+      msg: err?.response?.data?.message || 'Failed to share grades to Clever',
+    })
+    console.error(err)
+  }
+}
+
 function* getAtlasGradeSyncUpdate({ assignmentId, groupId, signedUrl }) {
   const subscriptionTopic = `atlas-grade-sync-${assignmentId}_${groupId}`
   const client = mqtt.connect(signedUrl)
@@ -479,6 +500,10 @@ export default function* watcherSaga() {
     yield takeEvery(
       SYNC_ASSIGNMENT_GRADES_WITH_GOOGLE_CLASSROOM_REQUEST,
       syncAssignmentGradesWithGoogleClassroomSaga
+    ),
+    yield takeEvery(
+      SYNC_ASSIGNMENT_GRADES_WITH_CLEVER_REQUEST,
+      syncAssignmentGradesWithCleverSaga
     ),
     yield takeEvery(
       SYNC_ASSIGNMENT_GRADES_WITH_SCHOOLOGY_CLASSROOM_REQUEST,

@@ -19,6 +19,7 @@ import TeacherSignup from './student/Signup/components/TeacherContainer/Containe
 import {
   isLoggedInForPrivateRoute,
   isHashAssessmentUrl,
+  getSchoologyTestId,
 } from './common/utils/helpers'
 import { persistAuthStateAndRedirectToAction } from './student/Login/ducks'
 
@@ -72,11 +73,17 @@ const Auth = ({
   useEffect(() => {
     if (loggedInForPrivateRoute && !showLoginForAddAccount) {
       const currentUrl = getCurrentPath()
+      const schoologyTestId = getSchoologyTestId()
       if (
         isHashAssessmentUrl() ||
+        schoologyTestId ||
         window.location.pathname.includes('/assignments/embed/')
       ) {
-        persistAuthStateAndRedirectTo({ toUrl: currentUrl })
+        persistAuthStateAndRedirectTo({
+          toUrl: schoologyTestId
+            ? `/assignments/embed/${schoologyTestId}`
+            : currentUrl,
+        })
       } else {
         persistAuthStateAndRedirectTo()
       }

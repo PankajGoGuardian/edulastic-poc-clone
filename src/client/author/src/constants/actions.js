@@ -319,6 +319,10 @@ export const TOGGLE_STUDENT_REPORT_CARD_SETTINGS =
 
 export const SYNC_ASSIGNMENT_GRADES_WITH_GOOGLE_CLASSROOM_REQUEST =
   '[LCB] sync assignment grades with google classroom request'
+
+export const SYNC_ASSIGNMENT_GRADES_WITH_CLEVER_REQUEST =
+  '[LCB] sync assignment grades with clever request'
+
 export const SYNC_ASSIGNMENT_WITH_SCHOOLOGY_CLASSROOM_REQUEST =
   '[LCB] sync assignment with schoology classroom request'
 export const SYNC_ASSIGNMENT_WITH_SCHOOLOGY_CLASSROOM_SUCCESS =

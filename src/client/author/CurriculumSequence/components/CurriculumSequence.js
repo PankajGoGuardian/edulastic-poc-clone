@@ -465,6 +465,7 @@ class CurriculumSequence extends Component {
       setShowRightPanel,
       toggleManageContent,
       checkPreviouslyCustomized,
+      location,
     } = this.props
     const { authors } = destinationCurriculumSequence
     const canEdit =
@@ -478,6 +479,8 @@ class CurriculumSequence extends Component {
     //   return;
     // }
     const isAuthoringFlowReview = current === 'review'
+    const isPlaylistDetailsPage = location?.hash === '#review'
+    const isPublishedPage = location?.state?.publishedPlaylist
     if (
       !isManageContentActive &&
       !canEdit &&
@@ -499,6 +502,18 @@ class CurriculumSequence extends Component {
         okButtonProps: {
           style: { background: themeColor, outline: 'none' },
         },
+      })
+    } else if (
+      (isPlaylistDetailsPage || isPublishedPage) &&
+      contentName === 'manageContent'
+    ) {
+      const {
+        history,
+        destinationCurriculumSequence: { _id },
+      } = this.props
+      return history.push({
+        pathname: `/author/playlists/${_id}/edit`,
+        state: { editFlow: true },
       })
     } else {
       setShowRightPanel(true)

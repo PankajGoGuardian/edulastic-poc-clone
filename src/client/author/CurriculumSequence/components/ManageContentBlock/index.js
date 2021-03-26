@@ -272,9 +272,9 @@ const ManageContentBlock = (props) => {
           }
           listToRender.push(
             <ResourceItem
-              key={resource?._id}
+              key={resource?.contentId}
               type={resource?.contentType}
-              id={resource?._id}
+              id={resource?.contentId}
               contentTitle={resource?.contentTitle}
               contentDescription={resource?.contentDescription}
               contentUrl={resource?.contentUrl}

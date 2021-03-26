@@ -322,7 +322,7 @@ function* searchResourceSaga() {
       notification({ msg: result.error })
       yield put(slice.actions.fetchResourceResult([]))
     } else {
-      const _data = result.map((x) => x._source)
+      const _data = result.map((x) => ({ ...x._source, contentId: x._id }))
       yield put(slice.actions.fetchResourceResult(_data))
     }
   } catch (e) {

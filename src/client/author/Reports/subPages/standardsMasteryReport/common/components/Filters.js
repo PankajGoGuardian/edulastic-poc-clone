@@ -218,6 +218,7 @@ const StandardsMasteryReportFilters = ({
       qs.parse(location.search, { ignoreQueryPrefix: true }),
       (f) => f !== 'All' && !isEmpty(f)
     )
+
     if (reportId) {
       _onGoClick({
         filters: { ...filters, ...search },
@@ -823,7 +824,13 @@ const StandardsMasteryReportFilters = ({
           {loc === 'standards-progress' && (
             <StyledDropDownContainer span={4} data-cy="standard">
               <ControlDropDown
-                by={filters.standardId || standardsList[0]}
+                by={
+                  // filters.standardId is searched in standardsList
+                  // to make sure standardId passed via url also sets the correct standard
+                  standardsList.find(
+                    (o) => `${o.key}` === `${filters.standardId}`
+                  ) || standardsList[0]
+                }
                 selectCB={(e, selected) =>
                   updateFilterDropdownCB(selected, 'standardId', false, true)
                 }

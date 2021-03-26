@@ -89,7 +89,6 @@ export const SubResourceView = ({
   const hasTeacherResources = itemData?.resources?.find(
     ({ contentSubType }) => contentSubType === 'TEACHER'
   )
-
   return (
     <div width="100%" marginTop="5px" data-cy="subResourceView">
       {hasStudentResources && (
@@ -111,7 +110,7 @@ export const SubResourceView = ({
         </FlexContainer>
       )}
 
-      {hasTeacherResources && (
+      {hasTeacherResources && !isStudent && (
         <FlexContainer justifyContent="flex-start">
           <ModuleDataName isReview isResource>
             <ResourceLabel>Teacher Resources</ResourceLabel>
@@ -133,11 +132,16 @@ export const SubResourceView = ({
   )
 }
 
-export const SubResource = connect(null, (dispatch, { fromPlaylist }) => ({
-  removeSubResource: (payload) =>
-    dispatch(
-      fromPlaylist
-        ? removeSubresourceInPlaylistAction(payload)
-        : removeSubResourceAction(payload)
-    ),
-}))(SubResourceView)
+export const SubResource = connect(
+  (state) => ({
+    isStudent: state.user?.user?.role === 'student',
+  }),
+  (dispatch, { fromPlaylist }) => ({
+    removeSubResource: (payload) =>
+      dispatch(
+        fromPlaylist
+          ? removeSubresourceInPlaylistAction(payload)
+          : removeSubResourceAction(payload)
+      ),
+  })
+)(SubResourceView)

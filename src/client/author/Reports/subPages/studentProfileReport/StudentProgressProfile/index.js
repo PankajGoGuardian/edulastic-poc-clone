@@ -115,7 +115,7 @@ const StudentProgressProfile = ({
 
   useEffect(() => {
     setPageFilters({ ...pageFilters, page: 1 })
-  }, [settings])
+  }, [settings, selectedDomain, selectedStandard])
 
   useEffect(() => {
     const q = {
@@ -128,7 +128,7 @@ const StudentProgressProfile = ({
     if ((q.termId || q.reportId) && q.studentId && pageFilters.page) {
       getStudentProgressProfileRequest(q)
     }
-  }, [pageFilters, selectedDomain, selectedStandard])
+  }, [pageFilters])
 
   const onTrendSelect = (trend) =>
     setSelectedTrend(trend === selectedTrend ? '' : trend)

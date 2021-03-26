@@ -177,7 +177,7 @@ const StudentProgressProfile = ({
   return (
     <>
       <TrendStats
-        heading="How well is the student progressing ?"
+        heading={`Standards progress of ${studentName}`}
         trendCount={trendCount}
         selectedTrend={selectedTrend}
         onTrendSelect={onTrendSelect}

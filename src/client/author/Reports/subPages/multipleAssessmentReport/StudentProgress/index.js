@@ -23,6 +23,7 @@ import {
   getReportsStudentProgressLoader,
   getStudentProgressRequestAction,
   getReportsStudentProgressError,
+  resetStudentProgressAction,
 } from './ducks'
 import { useGetBandData } from './hooks'
 import { filterMetricInfoByDDFilters } from './utils/transformers'
@@ -55,6 +56,7 @@ const compareBy = {
 
 const StudentProgress = ({
   getStudentProgressRequest,
+  resetStudentProgress,
   studentProgress,
   MARFilterData,
   isCsvDownloading,
@@ -95,6 +97,8 @@ const StudentProgress = ({
     pageSize: 25,
   })
 
+  useEffect(() => () => resetStudentProgress(), [])
+
   // set initial page filters
   useEffect(() => {
     setPageFilters({ ...pageFilters, page: 1 })
@@ -123,6 +127,7 @@ const StudentProgress = ({
     if (
       (settings.requestFilters.termId || settings.requestFilters.reportId) &&
       !loading &&
+      !isEmpty(studentProgress) &&
       !metrics.length
     ) {
       toggleFilter(null, true)
@@ -293,6 +298,7 @@ const enhance = connect(
   }),
   {
     getStudentProgressRequest: getStudentProgressRequestAction,
+    resetStudentProgress: resetStudentProgressAction,
   }
 )
 

@@ -15,11 +15,13 @@ import {
   getReportsPerformanceOverTime,
   getReportsPerformanceOverTimeLoader,
   getReportsPerformanceOverError,
+  resetPerformanceOverTimeAction,
 } from './ducks'
 import { parseData } from './utils/transformers'
 
 const PerformanceOverTime = ({
   getPerformanceOverTimeRequest,
+  resetPerformanceOverTime,
   performanceOverTime,
   isCsvDownloading,
   settings,
@@ -34,6 +36,8 @@ const PerformanceOverTime = ({
   })
   const [analyseBy, setAnalyseBy] = useState(analyseByData[0])
   const [selectedTests, setSelectedTests] = useState([])
+
+  useEffect(() => () => resetPerformanceOverTime(), [])
 
   // set initial page filters
   useEffect(() => {
@@ -53,6 +57,7 @@ const PerformanceOverTime = ({
     if (
       (settings.requestFilters.termId || settings.requestFilters.reportId) &&
       !loading &&
+      !isEmpty(performanceOverTime) &&
       !metricInfo.length
     ) {
       toggleFilter(null, true)
@@ -140,6 +145,7 @@ const enhance = connect(
   }),
   {
     getPerformanceOverTimeRequest: getPerformanceOverTimeRequestAction,
+    resetPerformanceOverTime: resetPerformanceOverTimeAction,
   }
 )
 

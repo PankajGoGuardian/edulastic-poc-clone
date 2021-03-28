@@ -19,7 +19,6 @@ import QuestionAnalysis from './QuestionAnalysis'
 import ShareReportModal from '../../common/components/Popups/ShareReportModal'
 import { ControlDropDown } from '../../common/components/widgets/controlDropDown'
 import { getNavigationTabLinks } from '../../common/util'
-import { transformFiltersForSAR } from './common/utils/transformers'
 
 import navigation from '../../common/static/json/navigation.json'
 import staticDropDownData from './common/static/staticDropDownData.json'
@@ -28,7 +27,7 @@ import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import {
   setSARSettingsAction,
   getReportsSARSettings,
-  resetSARSettingsAction,
+  setSARTagsDataAction,
 } from './ducks'
 import {
   getSAFilterDemographics,
@@ -47,6 +46,7 @@ const SingleAssessmentReportContainer = (props) => {
   const {
     settings,
     setSARSettings,
+    setSARTagsData,
     onRefineResultsCB,
     updateNavigation,
     resetAllReports,
@@ -89,14 +89,6 @@ const SingleAssessmentReportContainer = (props) => {
   const sharedReport = useMemo(
     () => sharedReportList.find((s) => s._id === reportId),
     [reportId, sharedReportList]
-  )
-
-  const transformedSettings = useMemo(
-    () => ({
-      ...settings,
-      requestFilters: transformFiltersForSAR(settings.requestFilters),
-    }),
-    [settings]
   )
 
   useEffect(() => {
@@ -167,24 +159,34 @@ const SingleAssessmentReportContainer = (props) => {
   }, [settings])
 
   const onGoClick = (_settings) => {
-    const obj = {}
-    const arr = Object.keys(_settings.filters)
-    arr.forEach((item) => {
-      const val =
-        _settings.filters[item] === 'All' ? '' : _settings.filters[item]
-      obj[item] = val
+    const _requestFilters = {}
+    Object.keys(_settings.filters).forEach((filterType) => {
+      _requestFilters[filterType] =
+        _settings.filters[filterType] === 'All'
+          ? ''
+          : _settings.filters[filterType]
     })
     setSARSettings({
       selectedTest: _settings.selectedTest,
-      requestFilters: obj,
+      requestFilters: {
+        ..._requestFilters,
+        testGrade: _requestFilters.grade,
+        testSubject: _requestFilters.subject,
+        grade: _requestFilters.studentGrade,
+        subject: _requestFilters.studentSubject,
+        courseId: _requestFilters.studentCourseId,
+        classIds: _requestFilters.classIds || '',
+        groupIds: _requestFilters.groupIds || '',
+        profileId: _requestFilters.performanceBandProfile,
+      },
       cliUser: isCliUser,
-      tagsData: { ..._settings.tagsData },
     })
+    setSARTagsData({ ..._settings.tagsData })
   }
 
-  const toggleFilter = (e, status = false) => {
+  const toggleFilter = (e, status) => {
     if (onRefineResultsCB) {
-      onRefineResultsCB(e, status || !showFilter)
+      onRefineResultsCB(e, status === false ? status : status || !showFilter)
     }
   }
 
@@ -252,8 +254,8 @@ const SingleAssessmentReportContainer = (props) => {
           <ShareReportModal
             reportType={loc}
             reportFilters={{
-              ...transformedSettings.requestFilters,
-              testId: transformedSettings.selectedTest.key,
+              ...settings.requestFilters,
+              testId: settings.selectedTest.key,
             }}
             showModal={sharingState}
             setShowModal={setSharingState}
@@ -276,13 +278,14 @@ const SingleAssessmentReportContainer = (props) => {
             setTempDdFilter={setTempDdFilter}
             tempTagsData={tempTagsData}
             setTempTagsData={setTempTagsData}
+            tagsData={settings.tagsData}
+            setTagsData={setSARTagsData}
             showApply={showApply}
             setShowApply={setShowApply}
             showFilter={showFilter}
             toggleFilter={toggleFilter}
             firstLoad={firstLoad}
             setFirstLoad={setFirstLoad}
-            tagsData={settings.tagsData}
           />
         </SubHeader>
         <ReportContainer>
@@ -293,7 +296,7 @@ const SingleAssessmentReportContainer = (props) => {
             render={(_props) => (
               <AssessmentSummary
                 {..._props}
-                settings={transformedSettings}
+                settings={settings}
                 setShowHeader={setShowHeader}
                 preventHeaderRender={preventHeaderRender}
                 sharedReport={sharedReport}
@@ -307,7 +310,7 @@ const SingleAssessmentReportContainer = (props) => {
             render={(_props) => (
               <PeerPerformance
                 {..._props}
-                settings={transformedSettings}
+                settings={settings}
                 filters={ddfilter}
                 sharedReport={sharedReport}
                 toggleFilter={toggleFilter}
@@ -320,7 +323,7 @@ const SingleAssessmentReportContainer = (props) => {
             render={(_props) => (
               <QuestionAnalysis
                 {..._props}
-                settings={transformedSettings}
+                settings={settings}
                 sharedReport={sharedReport}
                 toggleFilter={toggleFilter}
               />
@@ -332,7 +335,7 @@ const SingleAssessmentReportContainer = (props) => {
             render={(_props) => (
               <ResponseFrequency
                 {..._props}
-                settings={transformedSettings}
+                settings={settings}
                 sharedReport={sharedReport}
                 toggleFilter={toggleFilter}
               />
@@ -344,7 +347,7 @@ const SingleAssessmentReportContainer = (props) => {
             render={(_props) => (
               <PerformanceByStandards
                 {..._props}
-                settings={transformedSettings}
+                settings={settings}
                 pageTitle={loc}
                 filters={ddfilter}
                 sharedReport={sharedReport}
@@ -359,7 +362,7 @@ const SingleAssessmentReportContainer = (props) => {
               <PerformanceByStudents
                 {..._props}
                 showFilter={showFilter}
-                settings={transformedSettings}
+                settings={settings}
                 pageTitle={loc}
                 filters={ddfilter}
                 customStudentUserId={customStudentUserId}
@@ -385,12 +388,12 @@ const ConnectedSingleAssessmentReportContainer = connect(
     sharedReportList: getSharedReportList(state),
   }),
   {
+    setSARTagsData: setSARTagsDataAction,
     setSARSettings: setSARSettingsAction,
     resetAllReports: resetAllReportsAction,
     setTempDdFilter: setTempDdFilterAction,
     setTempTagsData: setTempTagsDataAction,
     updateCliUser: updateCliUserAction,
-    resetSARSettings: resetSARSettingsAction,
     setSharingState: setSharingStateAction,
   }
 )(SingleAssessmentReportContainer)

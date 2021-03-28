@@ -2,6 +2,7 @@ import { Col, Row } from 'antd'
 import { capitalize, groupBy, map, values, isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
+import qs from 'qs'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { extraDesktopWidthMax } from '@edulastic/colors'
@@ -277,16 +278,24 @@ const getColumns = (
             width: 180,
             className: 'class-name-column',
             dataIndex: 'standard',
-            render: (data, record) =>
-              !isSharedReport ? (
-                <Link
-                  to={`/author/reports/standards-progress?termId=${filters?.termId}&standardId=${record?.standardId}&curriculumId=${record?.curriculumId}`}
-                >
+            render: (data, record) => {
+              const { termId, grade, subject } = filters
+              const { standardId, curriculumId } = record
+              const queryStr = qs.stringify({
+                termId,
+                grade,
+                subject,
+                standardId,
+                curriculumId,
+              })
+              return !isSharedReport ? (
+                <Link to={`/author/reports/standards-progress?${queryStr}`}>
                   {data}
                 </Link>
               ) : (
                 data
-              ),
+              )
+            },
             sorter: (a, b) => {
               const keyword = 'standard'
               return a[keyword]
@@ -323,24 +332,24 @@ const getColumns = (
                 .localeCompare(b[keyword].toLowerCase())
             },
           },
+          {
+            title: 'SIS ID',
+            dataIndex: 'sisId',
+            key: 'sisId',
+            width: 100,
+            visibleOn: ['csv'],
+          },
+          {
+            title: 'STUDENT NUMBER',
+            dataIndex: 'studentNumber',
+            key: 'studentNumber',
+            width: 100,
+            visibleOn: ['csv'],
+          },
         ]
 
   const columns = [
     ...leftColumns,
-    {
-      title: 'SIS ID',
-      dataIndex: 'sisId',
-      key: 'sisId',
-      width: 100,
-      visibleOn: ['csv'],
-    },
-    {
-      title: 'STUDENT NUMBER',
-      dataIndex: 'studentNumber',
-      key: 'studentNumber',
-      width: 100,
-      visibleOn: ['csv'],
-    },
     ...customColumns,
     {
       key: 'trend',

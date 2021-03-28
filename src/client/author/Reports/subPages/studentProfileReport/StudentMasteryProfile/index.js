@@ -40,6 +40,7 @@ import {
   getStudentStandardLoader,
   getStudentStandardsAction,
   getReportsStudentMasteryProfileError,
+  resetStudentMasteryProfileAction,
 } from './ducks'
 
 import staticDropDownData from '../../singleAssessmentReport/common/static/staticDropDownData.json'
@@ -77,6 +78,7 @@ const StudentMasteryProfile = ({
   isCsvDownloading,
   studentMasteryProfile,
   getStudentMasteryProfileRequest,
+  resetStudentMasteryProfile,
   getStudentStandards,
   studentStandardData,
   loadingStudentStandard,
@@ -92,11 +94,7 @@ const StudentMasteryProfile = ({
     [sharedReport]
   )
 
-  const { studentClassData = [], scaleInfo: scales = [] } = get(
-    SPRFilterData,
-    'data.result',
-    {}
-  )
+  const { scaleInfo: scales = [] } = get(SPRFilterData, 'data.result', {})
 
   const scaleInfo = (
     scales.find(
@@ -104,8 +102,6 @@ const StudentMasteryProfile = ({
         x._id === (sharedReportFilters || settings.requestFilters).profileId
     ) || scales[0]
   )?.scale
-
-  const studentClassInformation = studentClassData[0] || {}
 
   const { metricInfo = [], studInfo = [], skillInfo = [] } = get(
     studentMasteryProfile,
@@ -162,6 +158,8 @@ const StudentMasteryProfile = ({
   )
   const [clickedStandard, setClickedStandard] = useState(undefined)
 
+  useEffect(() => () => resetStudentMasteryProfile(), [])
+
   useEffect(() => {
     if (settings.selectedStudent.key && settings.requestFilters.termId) {
       getStudentMasteryProfileRequest({
@@ -184,6 +182,7 @@ const StudentMasteryProfile = ({
     if (
       (settings.requestFilters.termId || settings.requestFilters.reportId) &&
       !loading &&
+      !isEmpty(studentMasteryProfile) &&
       !metrics.length
     ) {
       toggleFilter(null, true)
@@ -348,6 +347,7 @@ const withConnect = connect(
   {
     getStudentMasteryProfileRequest: getStudentMasteryProfileRequestAction,
     getStudentStandards: getStudentStandardsAction,
+    resetStudentMasteryProfile: resetStudentMasteryProfileAction,
   }
 )
 

@@ -15,6 +15,8 @@ const GET_REPORTS_ASSESSMENT_SUMMARY_REQUEST_ERROR =
   '[reports] get reports assessment summary error'
 const SET_REPORTS_ASSESSMENT_SUMMARY_LOADING =
   '[reports] set reports assessment summary loading'
+const RESET_REPORTS_ASSESSMENT_SUMMARY =
+  '[reports] reset reports assessment summary'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
@@ -24,6 +26,10 @@ export const getAssessmentSummaryRequestAction = createAction(
 
 export const setReportsAssesmentSummaryLoadingAction = createAction(
   SET_REPORTS_ASSESSMENT_SUMMARY_LOADING
+)
+
+export const resetReportsAssessmentSummaryAction = createAction(
+  RESET_REPORTS_ASSESSMENT_SUMMARY
 )
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
@@ -62,12 +68,13 @@ export const defaultReport = {
 }
 
 const initialState = {
-  assessmentSummary: defaultReport,
+  assessmentSummary: {},
   loading: true,
 }
 
 export const reportAssessmentSummaryReducer = createReducer(initialState, {
   [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState),
+  [RESET_REPORTS_ASSESSMENT_SUMMARY]: (state, { payload }) => (state = initialState),
   [GET_REPORTS_ASSESSMENT_SUMMARY_REQUEST]: (state, { payload }) => {
     state.loading = true
   },

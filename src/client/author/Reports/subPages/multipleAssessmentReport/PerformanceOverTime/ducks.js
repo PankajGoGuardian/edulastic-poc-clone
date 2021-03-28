@@ -14,11 +14,16 @@ const GET_REPORTS_PERFORMANCE_OVER_TIME_REQUEST_SUCCESS =
   '[reports] get reports performance over time success'
 const GET_REPORTS_PERFORMANCE_OVER_TIME_REQUEST_ERROR =
   '[reports] get reports performance over time error'
+const RESET_REPORTS_PERFORMANCE_OVER_TIME =
+  '[reports] reset reports performance over time'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
 export const getPerformanceOverTimeRequestAction = createAction(
   GET_REPORTS_PERFORMANCE_OVER_TIME_REQUEST
+)
+export const resetPerformanceOverTimeAction = createAction(
+  RESET_REPORTS_PERFORMANCE_OVER_TIME
 )
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
@@ -58,6 +63,7 @@ const initialState = {
 
 export const reportPerformanceOverTimeReducer = createReducer(initialState, {
   [RESET_ALL_REPORTS]: () => initialState,
+  [RESET_REPORTS_PERFORMANCE_OVER_TIME]: () => initialState,
   [GET_REPORTS_PERFORMANCE_OVER_TIME_REQUEST]: (state) => {
     state.loading = true
   },

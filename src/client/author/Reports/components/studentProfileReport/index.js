@@ -33,11 +33,11 @@ const links = [
   },
   {
     key: 'studentProgressProfile',
-    title: 'Student Progress Profile',
+    title: 'Student Standards Progress',
     thumbnail: StudentProgressProfileImg,
     location: '/author/reports/student-progress-profile/student/',
     description:
-      'Explore trends in performance of a student of various standards over time.',
+      'Explore trends in performance of a student on various standards over time.',
   },
 ]
 

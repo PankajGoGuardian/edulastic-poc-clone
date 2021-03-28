@@ -5,6 +5,8 @@ import PropTypes from 'prop-types'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
+import { isEmpty } from 'lodash'
+
 import { getUserRole } from '../../../../src/selectors/user'
 import { ControlDropDown } from '../../../common/components/widgets/controlDropDown'
 import dropDownFormat from '../../../common/static/json/dropDownFormat.json'
@@ -29,6 +31,7 @@ import {
   getReportsPeerPerformance,
   getReportsPeerPerformanceLoader,
   getReportsPeerPerformanceError,
+  resetPeerPerformanceAction,
 } from './ducks'
 import columns from './static/json/tableColumns.json'
 import { idToName, parseData } from './util/transformers'
@@ -43,6 +46,7 @@ const PeerPerformance = ({
   performanceBandProfiles,
   peerPerformance,
   getPeerPerformance,
+  resetPeerPerformance,
   settings,
   testList,
   filters,
@@ -75,7 +79,7 @@ const PeerPerformance = ({
       )?.performanceBand ||
       peerPerformance?.bandInfo?.performanceBand ||
       [],
-    [settings, peerPerformance]
+    [settings.requestFilters, peerPerformance]
   )
 
   const [ddfilter, setDdFilter] = useState({
@@ -84,6 +88,8 @@ const PeerPerformance = ({
     compareBy: userRole === 'teacher' ? 'groupId' : 'schoolId',
   })
   const [chartFilter, setChartFilter] = useState({})
+
+  useEffect(() => () => resetPeerPerformance(), [])
 
   useEffect(() => {
     setDdFilter({
@@ -100,13 +106,14 @@ const PeerPerformance = ({
       }
       getPeerPerformance(q)
     }
-  }, [settings])
+  }, [settings.selectedTest, settings.requestFilters])
 
   useEffect(() => {
     setPerformanceBandProfile(peerPerformance?.bandInfo || {})
     if (
       (settings.requestFilters.termId || settings.requestFilters.reportId) &&
       !loading &&
+      !isEmpty(peerPerformance) &&
       !peerPerformance.metricInfo.length
     ) {
       toggleFilter(null, true)
@@ -296,6 +303,7 @@ const enhance = compose(
     }),
     {
       getPeerPerformance: getPeerPerformanceRequestAction,
+      resetPeerPerformance: resetPeerPerformanceAction,
       setPerformanceBandProfile: setPerformanceBandProfileAction,
     }
   )

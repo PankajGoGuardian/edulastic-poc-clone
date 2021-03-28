@@ -101,6 +101,7 @@ function* storeCustomKeypadSaga({ payload }) {
         type: 'warn',
         msg: 'Keyboard name cannot be empty',
       })
+      return
     }
     const hasSameLabel = (keypad) =>
       keypad.label?.trim().toLowerCase() === labelLowerCase
@@ -143,6 +144,25 @@ function* fetchCustomKeypadSaga() {
 
 function* updateCustomKeypadSaga({ payload }) {
   try {
+    const previousKeypads = yield select(customKeypadSelector)
+    const { label = '' } = payload || {}
+    const labelLowerCase = label?.trim?.()?.toLowerCase()
+    if (!labelLowerCase.length) {
+      notification({
+        type: 'warn',
+        msg: 'Keyboard name cannot be empty',
+      })
+      return
+    }
+    const hasSameLabel = (keypad) =>
+      keypad.label?.trim().toLowerCase() === labelLowerCase
+    if (previousKeypads.find(hasSameLabel)) {
+      notification({
+        type: 'warn',
+        msg: `Keyboard name already exists`,
+      })
+      return
+    }
     const docId = yield select((state) => state.customKeypad.docId)
 
     if (docId) {

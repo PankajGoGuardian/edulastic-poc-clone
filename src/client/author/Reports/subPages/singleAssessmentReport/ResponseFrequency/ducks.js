@@ -13,11 +13,16 @@ const GET_REPORTS_RESPONSE_FREQUENCY_REQUEST_SUCCESS =
   '[reports] get reports response frequency request success'
 const GET_REPORTS_RESPONSE_FREQUENCY_REQUEST_ERROR =
   '[reports] get reports response frequency request error'
+const RESET_REPORTS_RESPONSE_FREQUENCY =
+  '[reports] reset reports response frequency'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
 export const getResponseFrequencyRequestAction = createAction(
   GET_REPORTS_RESPONSE_FREQUENCY_REQUEST
+)
+export const resetResponseFrequencyAction = createAction(
+  RESET_REPORTS_RESPONSE_FREQUENCY
 )
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
@@ -55,12 +60,13 @@ export const defaultReport = {
 }
 
 const initialState = {
-  responseFrequency: defaultReport,
+  responseFrequency: {},
   loading: false,
 }
 
 export const reportResponseFrequencyReducer = createReducer(initialState, {
   [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState),
+  [RESET_REPORTS_RESPONSE_FREQUENCY]: (state, { payload }) => (state = initialState),
   [GET_REPORTS_RESPONSE_FREQUENCY_REQUEST]: (state, { payload }) => {
     state.loading = true
   },

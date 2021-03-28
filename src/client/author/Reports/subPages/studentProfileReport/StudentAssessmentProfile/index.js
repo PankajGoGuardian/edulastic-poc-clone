@@ -21,6 +21,7 @@ import {
   getReportsStudentAssessmentProfileLoader,
   getStudentAssessmentProfileRequestAction,
   getReportsStudentAssessmentProfileError,
+  resetStudentAssessmentProfileAction,
 } from './ducks'
 
 const StudentAssessmentProfile = ({
@@ -30,6 +31,7 @@ const StudentAssessmentProfile = ({
   SPRFilterData,
   studentAssessmentProfile,
   getStudentAssessmentProfile,
+  resetStudentAssessmentProfile,
   isCsvDownloading,
   location,
   pageTitle,
@@ -78,6 +80,8 @@ const StudentAssessmentProfile = ({
     return [_chartData, _tableData]
   }, [rawData, bandInfo])
 
+  useEffect(() => () => resetStudentAssessmentProfile(), [])
+
   useEffect(() => {
     if (settings.selectedStudent.key && settings.requestFilters.termId) {
       getStudentAssessmentProfile({
@@ -92,6 +96,7 @@ const StudentAssessmentProfile = ({
     if (
       (settings.requestFilters.termId || settings.requestFilters.reportId) &&
       !loading &&
+      !isEmpty(studentAssessmentProfile) &&
       !metrics.length
     ) {
       toggleFilter(null, true)
@@ -178,6 +183,7 @@ const withConnect = connect(
   }),
   {
     getStudentAssessmentProfile: getStudentAssessmentProfileRequestAction,
+    resetStudentAssessmentProfile: resetStudentAssessmentProfileAction,
   }
 )
 

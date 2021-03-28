@@ -63,7 +63,6 @@ const getTestIdFromURL = (url) => {
 const SingleAssessmentReportFilters = ({
   loc,
   isPrinting,
-  tagsData,
   loading,
   SARFilterData,
   user,
@@ -75,6 +74,8 @@ const SingleAssessmentReportFilters = ({
   setTempDdFilter,
   tempTagsData,
   setTempTagsData,
+  tagsData,
+  setTagsData,
   onGoClick: _onGoClick,
   location,
   history,
@@ -215,6 +216,13 @@ const SingleAssessmentReportFilters = ({
       standardsProficiencyProfile: selectedStandardProficiency,
     }
     setTempTagsData(_tempTagsData)
+    setTagsData({
+      ...tagsData,
+      performanceBandProfile:
+        tagsData.performanceBandProfile || selectedPerformanceBand,
+      standardsProficiencyProfile:
+        tagsData.standardsProficiencyProfile || selectedStandardProficiency,
+    })
   }, [assessmentPerformanceBandProfile, assessmentStandardMasteryScale])
 
   if (SARFilterData !== prevSARFilterData && !isEmpty(SARFilterData)) {

@@ -20,6 +20,7 @@ const TrendStats = ({
   subHeading,
   handleAddToGroupClick,
   isSharedReport,
+  showTrendStats = true,
 }) => {
   const trends = Object.keys(trendTypes)
 
@@ -28,12 +29,16 @@ const TrendStats = ({
       <PaddedContainer paddingLeft="0">
         <Row>
           <Col xs={24} sm={24} md={16} lg={16} xl={16}>
-            <StyledH3 fontSize="16px" margin="0">
-              {heading}
-            </StyledH3>
-            <StyledH3 fontSize="13px" fontWeight="normal">
-              {subHeading}
-            </StyledH3>
+            {showTrendStats && (
+              <>
+                <StyledH3 fontSize="16px" margin="0">
+                  {heading}
+                </StyledH3>
+                <StyledH3 fontSize="13px" fontWeight="normal">
+                  {subHeading}
+                </StyledH3>
+              </>
+            )}
           </Col>
           <Col
             xs={24}
@@ -68,20 +73,22 @@ const TrendStats = ({
           </Col>
         </Row>
       </PaddedContainer>
-      <TrendContainer>
-        {trends.map((trend) => (
-          <Col span={8}>
-            <PaddedContainer>
-              <TrendCard
-                type={trend}
-                count={trendCount[trend]}
-                onClick={() => onTrendSelect(trend)}
-                isSelected={selectedTrend ? selectedTrend === trend : true}
-              />
-            </PaddedContainer>
-          </Col>
-        ))}
-      </TrendContainer>
+      {showTrendStats && (
+        <TrendContainer>
+          {trends.map((trend) => (
+            <Col span={8}>
+              <PaddedContainer>
+                <TrendCard
+                  type={trend}
+                  count={trendCount[trend]}
+                  onClick={() => onTrendSelect(trend)}
+                  isSelected={selectedTrend ? selectedTrend === trend : true}
+                />
+              </PaddedContainer>
+            </Col>
+          ))}
+        </TrendContainer>
+      )}
     </UpperContainer>
   )
 }

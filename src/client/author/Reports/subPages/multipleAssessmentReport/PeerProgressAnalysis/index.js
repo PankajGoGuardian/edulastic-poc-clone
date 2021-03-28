@@ -2,6 +2,7 @@ import { SpinLoader } from '@edulastic/common'
 import { capitalize, get, head, isEmpty } from 'lodash'
 import React, { useEffect, useState, useMemo } from 'react'
 import { connect } from 'react-redux'
+
 import { getUserRole } from '../../../../../student/Login/ducks'
 import TableTooltipRow from '../../../common/components/tooltip/TableTooltipRow'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
@@ -21,6 +22,7 @@ import {
   getReportsPeerProgressAnalysis,
   getReportsPeerProgressAnalysisLoader,
   getReportsPeerProgressAnalysisError,
+  resetPeerProgressAnalysisAction,
 } from './ducks'
 
 import dropDownData from './static/json/dropDownData.json'
@@ -52,6 +54,7 @@ const options = [
 
 const PeerProgressAnalysis = ({
   getPeerProgressAnalysisRequest,
+  resetPeerProgressAnalysis,
   peerProgressAnalysis,
   isCsvDownloading,
   ddfilter,
@@ -74,6 +77,8 @@ const PeerProgressAnalysis = ({
     page: 0, // set to 0 initially to prevent multiple api request on tab change
     pageSize: 25,
   })
+
+  useEffect(() => () => resetPeerProgressAnalysis(), [])
 
   // set initial page filters
   useEffect(() => {
@@ -107,6 +112,7 @@ const PeerProgressAnalysis = ({
     if (
       (settings.requestFilters.termId || settings.requestFilters.reportId) &&
       !loading &&
+      !isEmpty(peerProgressAnalysis) &&
       !metrics.length
     ) {
       toggleFilter(null, true)
@@ -219,6 +225,7 @@ const enhance = connect(
   }),
   {
     getPeerProgressAnalysisRequest: getPeerProgressAnalysisRequestAction,
+    resetPeerProgressAnalysis: resetPeerProgressAnalysisAction,
   }
 )
 

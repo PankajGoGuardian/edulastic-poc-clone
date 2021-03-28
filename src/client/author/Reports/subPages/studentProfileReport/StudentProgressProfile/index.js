@@ -16,6 +16,7 @@ import {
   getReportsStudentProgressProfileLoader,
   getReportsStudentProgressProfileError,
   getStudentProgressProfileRequestACtion,
+  resetStudentProgressProfileAction,
 } from './ducks'
 import {
   getReportsSPRFilterData,
@@ -30,6 +31,7 @@ import {
   getStandardsOptions,
 } from './common/utils/transformers'
 import { downloadCSV } from '../../../common/util'
+import { getStudentName } from '../common/utils/transformers'
 
 const compareBy = {
   key: 'standard',
@@ -46,9 +48,12 @@ const StudentProgressProfile = ({
   SPRFilterData,
   studentProgressProfile,
   getStudentProgressProfileRequest,
+  resetStudentProgressProfile,
   error,
   isCsvDownloading,
+  t,
 }) => {
+  const anonymousString = t('common.anonymous')
   const [analyseBy, setAnalyseBy] = useState(head(dropDownData.analyseByData))
   const [selectedDomain, setSelectedDomain] = useState({
     key: 'All',
@@ -61,7 +66,7 @@ const StudentProgressProfile = ({
   const [selectedTrend, setSelectedTrend] = useState('')
   const [pageFilters, setPageFilters] = useState({
     page: 0,
-    pageSize: 25,
+    pageSize: 10,
   })
 
   const [sharedReportFilters, isSharedReport] = useMemo(
@@ -106,9 +111,18 @@ const StudentProgressProfile = ({
 
   const standardsOptions = getStandardsOptions(skillInfo, selectedDomain)
 
+  useEffect(() => () => resetStudentProgressProfile(), [])
+
+  useEffect(() => {
+    setSelectedStandard({
+      key: 'All',
+      title: 'All Standards',
+    })
+  }, [selectedDomain])
+
   useEffect(() => {
     setPageFilters({ ...pageFilters, page: 1 })
-  }, [settings])
+  }, [settings, selectedStandard])
 
   useEffect(() => {
     const q = {
@@ -121,7 +135,7 @@ const StudentProgressProfile = ({
     if ((q.termId || q.reportId) && q.studentId && pageFilters.page) {
       getStudentProgressProfileRequest(q)
     }
-  }, [pageFilters, selectedDomain, selectedStandard])
+  }, [pageFilters])
 
   const onTrendSelect = (trend) =>
     setSelectedTrend(trend === selectedTrend ? '' : trend)
@@ -129,8 +143,13 @@ const StudentProgressProfile = ({
   const onDomainSelect = (_, selected) => setSelectedDomain(selected)
   const onStandardSelect = (_, selected) => setSelectedStandard(selected)
   const onAnalyseBySelect = (_, selected) => setAnalyseBy(selected)
+
+  const studentName = getStudentName(settings.selectedStudent, {})
   const onCsvConvert = (_data) =>
-    downloadCSV(`Student Progress Profile.csv`, _data)
+    downloadCSV(
+      `Student Progress Profile-${studentName || anonymousString}.csv`,
+      _data
+    )
 
   const filteredMetricInfo = useMemo(
     () => filterMetricInfo(metricInfo, selectedDomain, selectedStandard),
@@ -153,23 +172,19 @@ const StudentProgressProfile = ({
     return <DataSizeExceeded />
   }
 
-  if (
-    isEmpty(studentProgressProfile) ||
-    !studentProgressProfile ||
-    isEmpty(metricInfo) ||
-    !settings.selectedStudent?.key
-  ) {
+  if (!settings.selectedStudent?.key) {
     return <NoDataContainer>No data available currently.</NoDataContainer>
   }
 
   return (
     <>
       <TrendStats
-        heading="How well is the student progressing ?"
+        heading={`Standards progress of ${studentName}`}
         trendCount={trendCount}
         selectedTrend={selectedTrend}
         onTrendSelect={onTrendSelect}
         isSharedReport={isSharedReport}
+        showTrendStats={!isEmpty(metricInfo)}
         renderFilters={() => (
           <>
             <ControlDropDown
@@ -195,25 +210,29 @@ const StudentProgressProfile = ({
           </>
         )}
       />
-      <TrendTable
-        filters={sharedReportFilters || settings.requestFilters}
-        onCsvConvert={onCsvConvert}
-        isCsvDownloading={isCsvDownloading}
-        data={data}
-        masteryScale={selectedScale}
-        compareBy={compareBy}
-        analyseBy={analyseBy}
-        rawMetric={filteredMetricInfo}
-        isCellClickable
-        location={location}
-        pageTitle={pageTitle}
-        isSharedReport={isSharedReport}
-        backendPagination={{
-          ...pageFilters,
-          itemsCount: standardsCount,
-        }}
-        setBackendPagination={setPageFilters}
-      />
+      {!isEmpty(metricInfo) ? (
+        <TrendTable
+          filters={sharedReportFilters || settings.requestFilters}
+          onCsvConvert={onCsvConvert}
+          isCsvDownloading={isCsvDownloading}
+          data={data}
+          masteryScale={selectedScale}
+          compareBy={compareBy}
+          analyseBy={analyseBy}
+          rawMetric={filteredMetricInfo}
+          isCellClickable
+          location={location}
+          pageTitle={pageTitle}
+          isSharedReport={isSharedReport}
+          backendPagination={{
+            ...pageFilters,
+            itemsCount: standardsCount,
+          }}
+          setBackendPagination={setPageFilters}
+        />
+      ) : (
+        <NoDataContainer>No data available currently.</NoDataContainer>
+      )}
     </>
   )
 }
@@ -229,6 +248,7 @@ const withConnect = connect(
   }),
   {
     getStudentProgressProfileRequest: getStudentProgressProfileRequestACtion,
+    resetStudentProgressProfile: resetStudentProgressProfileAction,
   }
 )
 

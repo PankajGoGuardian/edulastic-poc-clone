@@ -211,14 +211,14 @@
       "groupTitle": "Student Profile Report"
     },
     "student-progress-profile": {
-      "title": "Student Progress Profile",
+      "title": "Student Standards Progress",
       "breadcrumb": [
         {
           "title": "INSIGHTS",
           "to": "/author/reports/"
         },
         {
-          "title": "STUDENT PROGRESS PROFILE"
+          "title": "STUDENT STANDARDS PROGRESS"
         }
       ],
       "group": "studentProfileReport",
@@ -384,7 +384,7 @@
       },
       {
         "key": "student-progress-profile",
-        "title": "Student Progress Profile",
+        "title": "Student Standards Progress",
         "location": "/author/reports/student-progress-profile/student/"
       }
     ],

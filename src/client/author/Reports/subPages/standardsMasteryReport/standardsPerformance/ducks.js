@@ -12,11 +12,17 @@ const GET_REPORTS_STANDARDS_PERFORMANCE_SUMMARY_REQUEST_SUCCESS =
   '[reports] get reports standards performance summary success'
 const GET_REPORTS_STANDARDS_PERFORMANCE_SUMMARY_REQUEST_ERROR =
   '[reports] get reports standards performance summary error'
+const RESET_REPORTS_STANDARDS_PERFORMANCE_SUMMARY =
+  '[reports] reset reports standards performance summary'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
 export const getStandardsPerformanceSummaryRequestAction = createAction(
   GET_REPORTS_STANDARDS_PERFORMANCE_SUMMARY_REQUEST
+)
+
+export const resetStandardsPerformanceSummaryAction = createAction(
+  RESET_REPORTS_STANDARDS_PERFORMANCE_SUMMARY
 )
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
@@ -58,6 +64,7 @@ export const reportStandardsPerformanceSummaryReducer = createReducer(
   initialState,
   {
     [RESET_ALL_REPORTS]: (state) => (state = initialState),
+    [RESET_REPORTS_STANDARDS_PERFORMANCE_SUMMARY]: (state) => (state = initialState),
     [GET_REPORTS_STANDARDS_PERFORMANCE_SUMMARY_REQUEST]: (state) => {
       state.loading = true
     },

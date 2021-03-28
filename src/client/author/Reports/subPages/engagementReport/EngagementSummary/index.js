@@ -13,15 +13,19 @@ import {
   getReportsEngagementSummaryLoader,
   getReportsEngagementSummaryError,
   getReportsEngagementSummary,
+  resetEngagementSummaryAction,
 } from './ducks'
 
 const Engagement = ({
   loading,
   error,
   getEngagementSummaryRequest,
+  resetEngagementSummary,
   engagementSummary,
   settings,
 }) => {
+  useEffect(() => () => resetEngagementSummary(), [])
+
   useEffect(() => {
     const q = { ...settings.requestFilters }
     if (q.termId || q.reportId) {
@@ -72,6 +76,7 @@ const enhance = connect(
   }),
   {
     getEngagementSummaryRequest: getEngagementSummaryRequestAction,
+    resetEngagementSummary: resetEngagementSummaryAction,
   }
 )
 

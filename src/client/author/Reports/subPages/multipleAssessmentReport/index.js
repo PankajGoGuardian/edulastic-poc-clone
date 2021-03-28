@@ -11,7 +11,6 @@ import { Spin, Col } from 'antd'
 import { SubHeader } from '../../common/components/Header'
 
 import { getNavigationTabLinks } from '../../common/util'
-import { transformFiltersForMAR } from './common/utils/transformers'
 
 import navigation from '../../common/static/json/navigation.json'
 
@@ -22,7 +21,11 @@ import PeerProgressAnalysis from './PeerProgressAnalysis'
 import StudentProgress from './StudentProgress'
 import PerformanceOverTime from './PerformanceOverTime'
 
-import { setMARSettingsAction, getReportsMARSettings } from './ducks'
+import {
+  setMARSettingsAction,
+  getReportsMARSettings,
+  setMARTagsDataAction,
+} from './ducks'
 import {
   getReportsMARFilterData,
   getMAFilterDemographics,
@@ -41,6 +44,7 @@ const MultipleAssessmentReportContainer = (props) => {
   const {
     settings,
     setMARSettings,
+    setMARTagsData,
     loc: pageTitle,
     setShowHeader,
     resetAllReports,
@@ -75,14 +79,6 @@ const MultipleAssessmentReportContainer = (props) => {
   const sharedReport = useMemo(
     () => sharedReportList.find((s) => s._id === reportId),
     [reportId, sharedReportList]
-  )
-
-  const transformedSettings = useMemo(
-    () => ({
-      ...settings,
-      requestFilters: transformFiltersForMAR(settings.requestFilters),
-    }),
-    [settings]
   )
 
   useEffect(
@@ -148,9 +144,9 @@ const MultipleAssessmentReportContainer = (props) => {
     updateNavigation(navigationItems)
   }, [settings])
 
-  const toggleFilter = (e, status = false) => {
+  const toggleFilter = (e, status) => {
     if (onRefineResultsCB) {
-      onRefineResultsCB(e, status || !showFilter)
+      onRefineResultsCB(e, status === false ? status : status || !showFilter)
     }
   }
 
@@ -159,21 +155,28 @@ const MultipleAssessmentReportContainer = (props) => {
   }
 
   const onGoClick = (_settings) => {
-    const obj = {}
-    const arr = Object.keys(_settings.filters)
-    arr.forEach((item) => {
-      const val =
-        _settings.filters[item] === 'All' ? '' : _settings.filters[item]
-      obj[item] = val
+    const _requestFilters = {}
+    Object.keys(_settings.filters).forEach((filterType) => {
+      _requestFilters[filterType] =
+        _settings.filters[filterType] === 'All'
+          ? ''
+          : _settings.filters[filterType]
     })
     const { selectedTests = [] } = _settings
     setMARSettings({
       requestFilters: {
-        ...obj,
+        ..._requestFilters,
+        testGrade: _requestFilters.grade,
+        testSubject: _requestFilters.subject,
+        grade: _requestFilters.studentGrade,
+        subject: _requestFilters.studentSubject,
+        courseId: _requestFilters.studentCourseId,
+        classIds: _requestFilters.classIds || '',
+        groupIds: _requestFilters.groupIds || '',
         testIds: selectedTests.join(),
       },
-      tagsData: { ..._settings.tagsData },
     })
+    setMARTagsData({ ..._settings.tagsData })
     setShowApply(false)
   }
 
@@ -228,7 +231,7 @@ const MultipleAssessmentReportContainer = (props) => {
         <ShareReportModal
           reportType={pageTitle}
           reportFilters={{
-            ...transformedSettings.requestFilters,
+            ...settings.requestFilters,
             ddfilter,
           }}
           showModal={sharingState}
@@ -270,7 +273,7 @@ const MultipleAssessmentReportContainer = (props) => {
             return (
               <PeerProgressAnalysis
                 {..._props}
-                settings={transformedSettings}
+                settings={settings}
                 ddfilter={ddfilter}
                 sharedReport={sharedReport}
                 toggleFilter={toggleFilter}
@@ -286,7 +289,7 @@ const MultipleAssessmentReportContainer = (props) => {
             return (
               <StudentProgress
                 {..._props}
-                settings={transformedSettings}
+                settings={settings}
                 pageTitle={pageTitle}
                 ddfilter={ddfilter}
                 MARFilterData={MARFilterData}
@@ -304,7 +307,7 @@ const MultipleAssessmentReportContainer = (props) => {
             return (
               <PerformanceOverTime
                 {..._props}
-                settings={transformedSettings}
+                settings={settings}
                 ddfilter={ddfilter}
                 sharedReport={sharedReport}
                 toggleFilter={toggleFilter}
@@ -328,6 +331,7 @@ const ConnectedMultipleAssessmentReportContainer = connect(
     sharedReportList: getSharedReportList(state),
   }),
   {
+    setMARTagsData: setMARTagsDataAction,
     setMARSettings: setMARSettingsAction,
     resetAllReports: resetAllReportsAction,
     setTempDdFilter: setTempDdFilterAction,

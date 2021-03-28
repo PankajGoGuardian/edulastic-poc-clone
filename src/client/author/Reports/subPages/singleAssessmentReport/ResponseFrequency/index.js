@@ -21,6 +21,7 @@ import {
   getReportsResponseFrequencyLoader,
   getResponseFrequencyRequestAction,
   getReportsResponseFrequencyError,
+  resetResponseFrequencyAction,
 } from './ducks'
 
 import jsonData from './static/json/data.json'
@@ -37,6 +38,7 @@ const ResponseFrequency = ({
   isCsvDownloading,
   responseFrequency: res,
   getResponseFrequency,
+  resetResponseFrequency,
   settings,
   testList,
   sharedReport,
@@ -54,6 +56,8 @@ const ResponseFrequency = ({
     selectedTest.title
   } (ID:${selectedTest._id.substring(selectedTest._id.length - 5)})`
 
+  useEffect(() => () => resetResponseFrequency(), [])
+
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
       const q = {
@@ -62,12 +66,13 @@ const ResponseFrequency = ({
       }
       getResponseFrequency(q)
     }
-  }, [settings])
+  }, [settings.selectedTest, settings.requestFilters])
 
   useEffect(() => {
     if (
       (settings.requestFilters.termId || settings.requestFilters.reportId) &&
       !loading &&
+      !isEmpty(res) &&
       isEmpty(res?.metrics)
     ) {
       toggleFilter(null, true)
@@ -234,6 +239,7 @@ const enhance = connect(
   }),
   {
     getResponseFrequency: getResponseFrequencyRequestAction,
+    resetResponseFrequency: resetResponseFrequencyAction,
   }
 )
 

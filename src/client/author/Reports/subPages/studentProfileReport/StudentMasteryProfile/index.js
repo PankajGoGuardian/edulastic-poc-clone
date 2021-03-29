@@ -297,7 +297,10 @@ const StudentMasteryProfile = ({
               prefix="Domain(s)"
             />
           </DropdownContainer>
-          <StyledButton onClick={() => setExpandRows(!expandRows)}>
+          <StyledButton
+            onClick={() => setExpandRows(!expandRows)}
+            data-cy="expand-row"
+          >
             <IconCollapse2 color={themeColor} width={12} height={12} />
             <span className="button-label">
               {expandRows ? 'COLLAPSE' : 'EXPAND'} ROWS

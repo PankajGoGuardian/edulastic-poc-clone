@@ -145,7 +145,7 @@ function* fetchCustomKeypadSaga() {
 function* updateCustomKeypadSaga({ payload }) {
   try {
     const previousKeypads = yield select(customKeypadSelector)
-    const { label = '' } = payload || {}
+    const { label = '', _id: keypadId } = payload || {}
     const labelLowerCase = label?.trim?.()?.toLowerCase()
     if (!labelLowerCase.length) {
       notification({
@@ -154,8 +154,13 @@ function* updateCustomKeypadSaga({ payload }) {
       })
       return
     }
-    const hasSameLabel = (keypad) =>
-      keypad.label?.trim().toLowerCase() === labelLowerCase
+    const hasSameLabel = (keypad) => {
+      if (keypad._id === keypadId) {
+        return false
+      }
+      return keypad.label?.trim().toLowerCase() === labelLowerCase
+    }
+
     if (previousKeypads.find(hasSameLabel)) {
       notification({
         type: 'warn',

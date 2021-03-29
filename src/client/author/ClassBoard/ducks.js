@@ -874,6 +874,7 @@ export const getItemSummary = (
         barLabel,
         timeSpent,
         pendingEvaluation,
+        isPractice,
       } = _activity
 
       let { notStarted, skipped } = _activity
@@ -895,12 +896,14 @@ export const getItemSummary = (
           notStartedNum: 0,
           timeSpent: 0,
           manualGradedNum: 0,
+          unscoredItems: 0,
         }
       }
       if (testItemId) {
         questionMap[_id].itemLevelScoring = true
         questionMap[_id].itemId = testItemId
       }
+
       if (!notStarted) {
         questionMap[_id].attemptsNum += 1
       } else if (score > 0) {
@@ -909,15 +912,16 @@ export const getItemSummary = (
         questionMap[_id].notStartedNum += 1
       }
 
-      if (skipped && score === 0) {
+      if (skipped && score === 0 && !isPractice) {
         questionMap[_id].skippedNum += 1
         skippedx = true
       }
       if (score > 0) {
         skipped = false
       }
-
-      if (
+      if (isPractice) {
+        questionMap[_id].unscoredItems += 1
+      } else if (
         (graded === false && !notStarted && !skipped && !score) ||
         pendingEvaluation
       ) {

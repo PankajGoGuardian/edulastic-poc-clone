@@ -27,7 +27,7 @@ const Legends = () => (
       </LegendItem>
       <LegendItem>
         <LegendIcon color={lightGrey9} />
-        <LegendLabel>SKIPPED</LegendLabel>
+        <LegendLabel>SKIPPED / UNSCORED</LegendLabel>
       </LegendItem>
       <LegendItem>
         <LegendIcon color="rgb(56, 150, 190)" />

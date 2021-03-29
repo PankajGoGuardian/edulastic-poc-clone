@@ -156,10 +156,10 @@ class ScoreTable extends Component {
             student.questionActivities[index] &&
             !student.questionActivities[index]?.notStarted
           ) {
-            const { score = 0, maxScore = 0 } =
+            const { score = 0, maxScore = 0, isPractice } =
               student.questionActivities[index] || {}
             const uqaAvg = score / maxScore
-            successScore += Number.isNaN(uqaAvg) ? 0 : uqaAvg
+            successScore += Number.isNaN(uqaAvg) || isPractice ? 0 : uqaAvg
           }
         })
       const averageScore = successScore
@@ -170,7 +170,7 @@ class ScoreTable extends Component {
               submittedLength > 0
                 ? round((averageScore / submittedLength) * 100, 1) || 0
                 : 0
-            }%`}
+            }`}
           </StyledText>
           <div style={{ fontSize: '12px', lineHeight: '14px' }}>
             ({round(averageScore, 2) || 0}/{submittedLength})

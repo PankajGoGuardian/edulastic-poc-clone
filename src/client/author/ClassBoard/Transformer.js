@@ -1,5 +1,14 @@
 /* eslint-disable no-unused-vars */
-import { keyBy, groupBy, get, values, flatten, isEmpty, uniq } from 'lodash'
+import {
+  keyBy,
+  groupBy,
+  get,
+  values,
+  flatten,
+  isEmpty,
+  uniq,
+  some,
+} from 'lodash'
 import { testActivityStatus, questionType } from '@edulastic/constants'
 import produce from 'immer'
 import { getMathHtml } from '@edulastic/common'
@@ -61,6 +70,10 @@ export const getAllQidsAndWeight = (testItemIds, testItemsDataKeyed) => {
       (testItemsDataKeyed[testItemId].data &&
         testItemsDataKeyed[testItemId].data.questions) ||
       []
+    const isPractice = some(
+      questions,
+      ({ validation }) => validation && validation.unscored
+    )
     if (!questions.length) {
       qids = [
         ...qids,
@@ -72,6 +85,7 @@ export const getAllQidsAndWeight = (testItemIds, testItemsDataKeyed) => {
           qids: [],
           qLabel: '',
           barLabel: '',
+          isPractice,
         },
       ]
     } else if (testItemsDataKeyed[testItemId].itemLevelScoring) {
@@ -91,6 +105,7 @@ export const getAllQidsAndWeight = (testItemIds, testItemsDataKeyed) => {
             qids: questions.map((_x) => _x.id),
             qLabel: x.qLabel,
             barLabel: x.barLabel,
+            isPractice,
           })),
       ]
     } else {
@@ -104,6 +119,7 @@ export const getAllQidsAndWeight = (testItemIds, testItemsDataKeyed) => {
           qids: [x.id],
           qLabel: x.qLabel,
           barLabel: x.barLabel,
+          isPractice,
         })),
       ]
     }
@@ -234,7 +250,10 @@ const getMaxScoreFromItem = (testItem) => {
   let total = 0
   if (
     !testItem ||
-    get(testItem, 'data.questions.0.validation.unscored', false)
+    some(
+      get(testItem, 'data.questions', false),
+      ({ validation }) => validation && validation.unscored
+    )
   ) {
     return total
   }
@@ -430,7 +449,14 @@ export function getStandardsForStandardBasedReport(
     (x) => `${x._id}`
   )
   const standardsQuestionsMap = {}
-  const questions = testItems.flatMap((x) => x.data.questions || [])
+  const questions = testItems.flatMap((x) =>
+    some(
+      x.data.questions,
+      ({ validation }) => validation && validation.unscored
+    )
+      ? []
+      : x.data.questions
+  )
   for (const q of questions) {
     const standards = q.alignment
       .flatMap((x) => x?.domains || [])
@@ -541,6 +567,7 @@ export const transformGradeBookResponse = (
     qLabel: x.qLabel,
     barLabel: x.barLabel,
     scoringDisabled: true,
+    isPractice: x.isPractice,
   }))
   return studentNames
     .map(
@@ -604,6 +631,7 @@ export const transformGradeBookResponse = (
               barLabel,
               qLabel,
               _id: qActId,
+              isPractice,
             },
             index
           ) => {
@@ -636,6 +664,7 @@ export const transformGradeBookResponse = (
                 ...(submitted
                   ? { skipped: true, score: 0, maxScore: questionMaxScore }
                   : { notStarted: true, score: 0, maxScore: questionMaxScore }),
+                isPractice,
               }
             }
             let {
@@ -705,6 +734,7 @@ export const transformGradeBookResponse = (
                 currentQuestionActivity
               ),
               userResponse,
+              isPractice,
             }
           }
         )

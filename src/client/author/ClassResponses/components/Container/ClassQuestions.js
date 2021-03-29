@@ -221,6 +221,14 @@ class ClassQuestions extends Component {
             (x) => x._id === firstQid && x.testItemId === item._id
           )
           if (firstQAct) {
+            if (filter === 'unscoredItems' && !firstQAct.isPractice) {
+              return false
+            }
+
+            if (filter && filter !== 'unscoredItems' && firstQAct.isPractice) {
+              return false
+            }
+
             if (
               filter === 'correct' &&
               firstQAct.maxScore !== firstQAct.score
@@ -283,6 +291,18 @@ class ClassQuestions extends Component {
             }))
             const label = labels[id] || {}
             if (!item.itemLevelScoring && qActivities[0]) {
+              if (filter === 'unscoredItems' && !qActivities[0].isPractice) {
+                return false
+              }
+
+              if (
+                filter &&
+                filter !== 'unscoredItems' &&
+                qActivities[0].isPractice
+              ) {
+                return false
+              }
+
               if (
                 filter === 'correct' &&
                 qActivities[0].score < qActivities[0].maxScore

@@ -1,5 +1,6 @@
 /* eslint-disable react/no-did-update-set-state */
 import React, { Component } from 'react'
+import { some } from 'lodash'
 import { compose } from 'redux'
 import PropTypes from 'prop-types'
 import { ThemeProvider, withTheme } from 'styled-components'
@@ -165,6 +166,10 @@ class TestItemPreview extends Component {
       stackedView,
     })
     const question = questions[widget.reference]
+    const isPracticeQuestion = some(
+      questions,
+      ({ validation }) => validation && validation.unscored
+    )
     const prevQActivityForQuestion = previousQuestionActivity.find(
       (qa) => qa.qid === question.id
     )
@@ -177,7 +182,7 @@ class TestItemPreview extends Component {
         isExpressGrader={isExpressGrader}
         showCollapseBtn={showCollapseBtn}
         prevQActivityForQuestion={prevQActivityForQuestion}
-        data={{ ...question, smallSize: true }}
+        data={{ ...question, isPracticeQuestion, smallSize: true }}
         isStudentReport={isStudentReport}
         isPresentationMode={isPresentationMode}
         shouldTakeDimensionsFromStore={shouldTakeDimensionsFromStore}

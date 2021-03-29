@@ -59,7 +59,7 @@ const FeedbackWrapper = ({
 
   const { userResponse: previousUserResponse } = prevQActivityForQuestion || {}
 
-  const { validation: { unscored: isPracticeQuestion = false } = {} } = data
+  const { isPracticeQuestion = false } = data
 
   const studentReportFeedbackVisible =
     isStudentReport && !isPassageOrVideoType && !data.scoringDisabled

@@ -8,6 +8,7 @@ import {
   getAdditionalDataSelector,
   receiveTestActivitySaga,
 } from '../ClassBoard/ducks'
+import { SET_CLASS_STUDENT_RESPONSES_LOADING } from '../src/constants/actions'
 
 export const FETCH_PRINT_PREVIEW_ESSENTIALS =
   '[printPreview] fetch print preview essentials'
@@ -32,6 +33,10 @@ function* fetchPrintPreviewEssentials({ payload }) {
       classId: groupId,
       printStudents: selectedStudents,
     }
+    yield put({
+      type: SET_CLASS_STUDENT_RESPONSES_LOADING,
+      payload: true,
+    })
     yield call(receiveTestActivitySaga, { payload: _payload })
 
     const testActivity = yield select(getTestActivitySelector)

@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import qs from 'qs'
 import { compose } from 'redux'
+import { Spin } from 'antd'
 import { mobileWidthMax } from '@edulastic/colors'
 import { PrintActionWrapper } from '@edulastic/common'
 import StudentQuestionContainer from '../StudentQuestionContiner/StudentQuestionContainer'
@@ -24,6 +25,7 @@ import {
   getTestActivitySelector,
   getAdditionalDataSelector,
   getAssignmentClassIdSelector,
+  getPrintViewLoadingSelector,
 } from '../../../ClassBoard/ducks'
 
 class PrintPreview extends Component {
@@ -58,6 +60,7 @@ class PrintPreview extends Component {
       classResponse,
       classStudentResponse,
       additionalData,
+      printPreviewLoading,
     } = this.props
     const { assignmentIdClassId } = this.props
 
@@ -73,6 +76,7 @@ class PrintPreview extends Component {
               lastic
             </StyledTitle>
             <QuestionContentArea>
+              {printPreviewLoading && <Spin />}
               {classStudentResponse &&
               Object.keys(classStudentResponse).length > 0
                 ? classStudentResponse.map((studentResponse) => (
@@ -101,6 +105,7 @@ const enhance = compose(
       classResponse: getClassResponseSelector(state),
       classStudentResponse: getClassStudentResponseSelector(state),
       additionalData: getAdditionalDataSelector(state),
+      printPreviewLoading: getPrintViewLoadingSelector(state),
     }),
     {
       fetchPrintPreviewEssentialsAction,

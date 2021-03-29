@@ -1404,6 +1404,11 @@ export const getClassStudentResponseSelector = createSelector(
   (state) => state.data
 )
 
+export const getPrintViewLoadingSelector = createSelector(
+  stateClassStudentResponseSelector,
+  (state) => state.printPreviewLoading
+)
+
 export const getFeedbackResponseSelector = createSelector(
   stateFeedbackResponseSelector,
   (state) => state.data

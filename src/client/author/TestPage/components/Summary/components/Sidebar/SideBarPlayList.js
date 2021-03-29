@@ -139,7 +139,7 @@ const Sidebar = ({
     if (e.target.checked) {
       onChangeField('skin', 'FULL_SIZE')
     } else {
-      onChangeField('skin', '')
+      onChangeField('skin', null)
     }
   }
 

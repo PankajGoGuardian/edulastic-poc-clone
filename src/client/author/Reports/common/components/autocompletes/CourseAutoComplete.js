@@ -154,4 +154,7 @@ const AutoCompleteContainer = styled.div`
   .ant-select-dropdown-menu-item-group-title {
     font-weight: bold;
   }
+  .ant-select-selection__clear {
+    background: transparent;
+  }
 `

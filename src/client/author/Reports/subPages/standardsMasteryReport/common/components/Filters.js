@@ -469,7 +469,7 @@ const StandardsMasteryReportFilters = ({
   // -----|-----|-----|-----| EVENT HANDLERS ENDED |-----|-----|-----|----- //
 
   const standardProficiencyFilter = (
-    <StyledDropDownContainer span={4} data-cy="standardProficiency">
+    <StyledDropDownContainer xs={24} sm={12} lg={6} data-cy="standardProficiency">
       <ControlDropDown
         by={filters.profileId || defaultStandardProficiency?.key || ''}
         selectCB={(e, selected) =>
@@ -802,9 +802,9 @@ const StandardsMasteryReportFilters = ({
           gutter={[5, 10]}
           justify="end"
           align="middle"
-          style={{ paddingLeft: '10px' }}
+          style={{ paddingLeft: '10px', width: '75%', float: 'right', paddingTop: '5px' }}
         >
-          <StyledDropDownContainer span={4} data-cy="standardSet">
+          <StyledDropDownContainer xs={24} sm={12} lg={6} data-cy="standardSet">
             <ControlDropDown
               by={filters.curriculumId}
               selectCB={(e, selected) =>
@@ -815,7 +815,7 @@ const StandardsMasteryReportFilters = ({
               showPrefixOnSelected={false}
             />
           </StyledDropDownContainer>
-          <StyledDropDownContainer span={4} data-cy="standardGrade">
+          <StyledDropDownContainer xs={24} sm={12} lg={6} data-cy="standardGrade">
             <ControlDropDown
               by={filters.standardGrade}
               selectCB={(e, selected) =>
@@ -827,7 +827,7 @@ const StandardsMasteryReportFilters = ({
             />
           </StyledDropDownContainer>
           {loc !== 'standards-progress' && standardProficiencyFilter}
-          <StyledDropDownContainer span={4} data-cy="domain">
+          <StyledDropDownContainer xs={24} sm={12} lg={6} data-cy="domain">
             <MultipleSelect
               containerClassName="standards-mastery-report-domain-autocomplete"
               data={domainsList || []}
@@ -841,11 +841,11 @@ const StandardsMasteryReportFilters = ({
               onSelect={onSelectDomain}
               onChange={onChangeDomains}
               placeholder="All Domains"
-              style={{ width: '100%', height: 'auto' }}
+              style={{ minWidth: '80px', width: '100%', height: 'auto' }}
             />
           </StyledDropDownContainer>
           {loc === 'standards-progress' && (
-            <StyledDropDownContainer span={4} data-cy="standard">
+            <StyledDropDownContainer xs={24} sm={12} lg={6} data-cy="standard">
               <ControlDropDown
                 by={
                   // filters.standardId is searched in standardsList

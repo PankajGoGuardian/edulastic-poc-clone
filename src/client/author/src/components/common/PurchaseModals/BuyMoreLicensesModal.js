@@ -22,11 +22,13 @@ const BuyMoreLicensesModal = ({
   isEdulasticAdminView,
   subsLicenses,
   teacherPremium,
+  setSelectedLicenseId,
 }) => {
   useEffect(() => {
     return () => {
       setSelectedProductIds([])
       setQuantities({})
+      setSelectedLicenseId(null)
     }
   }, [])
   useEffect(() => setSelectedProductIds([currentItemId]), [])

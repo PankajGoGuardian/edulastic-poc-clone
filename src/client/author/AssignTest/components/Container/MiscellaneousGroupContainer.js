@@ -249,6 +249,7 @@ const MiscellaneousGroupContainer = ({
                 <KeypadDropdown
                   keypadData={keyPadData}
                   overrideSettings={overRideSettings}
+                  testKeypadData={testSettings.keypad}
                 />
               </Col>
             </StyledRow>

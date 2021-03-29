@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useMemo } from 'react'
+import React, { useMemo } from 'react'
 import { Select } from 'antd'
 import { connect } from 'react-redux'
 import isPlainObject from 'lodash/isPlainObject'
@@ -16,15 +16,12 @@ const predefinedKeypads = [
   { value: 'item-level', label: 'Keypad set at item level' },
 ]
 
-function KeypadDropdown({ keypadData, customKeypads, overrideSettings }) {
-  const initialTestKeypad = useRef()
-
-  useEffect(() => {
-    if (isPlainObject(keypadData?.value)) {
-      initialTestKeypad.current = keypadData
-    }
-  }, [])
-
+function KeypadDropdown({
+  keypadData,
+  customKeypads,
+  overrideSettings,
+  testKeypadData,
+}) {
   const keypadDropdownValue = useMemo(() => {
     if (isEmpty(keypadData) || keypadData?.type === 'item-level') {
       // for assignments with old test or new assignments with item level keypad
@@ -36,6 +33,27 @@ function KeypadDropdown({ keypadData, customKeypads, overrideSettings }) {
 
     return keypadData.value
   }, [keypadData])
+
+  /**
+   * if test is shared to a free user, he cannot edit the keypad from dropdown
+   * but it should display the test keypad label correctly in the dropdown
+   * so if keypad is not already available in custom keypads
+   * we need this to show label correctly, else it would end up showing id
+   */
+  const testKeypad = useMemo(() => {
+    if (
+      testKeypadData?.type === 'custom' &&
+      isPlainObject(testKeypadData?.value)
+    ) {
+      // to avoid duplication in user custom keypads
+      const alreadyIncluded = customKeypads.some(
+        (keypad) => keypad?._id === testKeypadData.value._id
+      )
+      if (!alreadyIncluded) {
+        return testKeypadData.value
+      }
+    }
+  }, [testKeypadData])
 
   const handleChange = (value) => {
     const customKeypadIndex = customKeypads.findIndex(
@@ -61,10 +79,10 @@ function KeypadDropdown({ keypadData, customKeypads, overrideSettings }) {
       })
       return
     }
-    if (initialTestKeypad.current?.value?._id === value) {
+    if (testKeypadData?.value?._id === value) {
       overrideSettings('keypad', {
         type: 'custom',
-        value: initialTestKeypad.current.value,
+        value: testKeypadData.value,
         updated: true,
       })
     }
@@ -82,6 +100,11 @@ function KeypadDropdown({ keypadData, customKeypads, overrideSettings }) {
             {keypad.label}
           </Select.Option>
         ))}
+        {testKeypad && (
+          <Select.Option value={testKeypad._id}>
+            {testKeypad.label}
+          </Select.Option>
+        )}
         {customKeypads.length > 0 && (
           <Select.OptGroup label="My custom keypads">
             {customKeypads.map((keypad) => (

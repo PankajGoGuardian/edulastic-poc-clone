@@ -91,6 +91,7 @@ function KeypadDropdown({
   return (
     <StyledSelectContainer>
       <SelectInputStyled
+        data-cy="key-pad-option"
         defaultValue={keypadDropdownValue}
         onChange={handleChange}
         getPopupContainer={(triggerNode) => triggerNode.parentNode}

@@ -147,7 +147,7 @@ const StudentProgressProfile = ({
   const studentName = getStudentName(settings.selectedStudent, {})
   const onCsvConvert = (_data) =>
     downloadCSV(
-      `Student Progress Profile-${studentName || anonymousString}.csv`,
+      `Student Standards Progress-${studentName || anonymousString}.csv`,
       _data
     )
 
@@ -179,7 +179,7 @@ const StudentProgressProfile = ({
   return (
     <>
       <TrendStats
-        heading={`Standards progress of ${studentName}`}
+        heading={`Standards progress of ${studentName || anonymousString}`}
         trendCount={trendCount}
         selectedTrend={selectedTrend}
         onTrendSelect={onTrendSelect}

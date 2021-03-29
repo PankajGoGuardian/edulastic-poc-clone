@@ -127,7 +127,7 @@ const GroupsAutoComplete = ({
     if (!selectedGroupIds.length) {
       setSearchTerms(DEFAULT_SEARCH_TERMS)
     }
-  }, [selectedGroupIds])
+  }, [selectedGroupIds.join(',')])
 
   // build dropdown data
   const dropdownData = Object.values(

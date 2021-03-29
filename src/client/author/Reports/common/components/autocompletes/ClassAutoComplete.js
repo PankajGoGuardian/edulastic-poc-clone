@@ -126,7 +126,7 @@ const ClassAutoComplete = ({
     if (!selectedClassIds.length) {
       setSearchTerms(DEFAULT_SEARCH_TERMS)
     }
-  }, [selectedClassIds])
+  }, [selectedClassIds.join(',')])
 
   // build dropdown data
   const dropdownData = Object.values(

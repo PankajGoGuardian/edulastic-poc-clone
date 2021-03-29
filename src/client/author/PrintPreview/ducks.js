@@ -27,7 +27,11 @@ export const fetchPrintPreviewEssentialsAction = createAction(
 function* fetchPrintPreviewEssentials({ payload }) {
   const { assignmentId, classId: groupId, selectedStudents = [] } = payload
   try {
-    const _payload = { assignmentId, classId: groupId }
+    const _payload = {
+      assignmentId,
+      classId: groupId,
+      printStudents: selectedStudents,
+    }
     yield call(receiveTestActivitySaga, { payload: _payload })
 
     const testActivity = yield select(getTestActivitySelector)

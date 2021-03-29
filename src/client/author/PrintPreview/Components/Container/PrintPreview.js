@@ -38,7 +38,6 @@ class PrintPreview extends Component {
       ignoreQueryPrefix: true,
       comma: true,
     })
-
     let _selectedStudents
     if (typeof selectedStudents.selectedStudents === 'string') {
       _selectedStudents = [selectedStudents.selectedStudents]
@@ -62,22 +61,6 @@ class PrintPreview extends Component {
     } = this.props
     const { assignmentIdClassId } = this.props
 
-    const renderClassStudentsResponse = []
-    if (classStudentResponse && Object.keys(classStudentResponse).length > 0) {
-      classStudentResponse.forEach((studentResponse) => {
-        const renderStudentResponse = (
-          <StudentQuestionContainer
-            testActivity={testActivity}
-            assignmentIdClassId={assignmentIdClassId}
-            classResponse={classResponse}
-            studentResponse={studentResponse}
-            additionalData={additionalData}
-          />
-        )
-        renderClassStudentsResponse.push(renderStudentResponse)
-      })
-    }
-
     return (
       <>
         <PrintActionWrapper />
@@ -90,7 +73,18 @@ class PrintPreview extends Component {
               lastic
             </StyledTitle>
             <QuestionContentArea>
-              {renderClassStudentsResponse}
+              {classStudentResponse &&
+              Object.keys(classStudentResponse).length > 0
+                ? classStudentResponse.map((studentResponse) => (
+                    <StudentQuestionContainer
+                      testActivity={testActivity}
+                      assignmentIdClassId={assignmentIdClassId}
+                      classResponse={classResponse}
+                      studentResponse={studentResponse}
+                      additionalData={additionalData}
+                    />
+                  ))
+                : ''}
             </QuestionContentArea>
           </PrintPreviewContainer>
         </PrintPreviewBack>

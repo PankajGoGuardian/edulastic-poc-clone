@@ -5,7 +5,8 @@ import {
   test as testConst,
   assignmentSettingSections as sectionContants,
 } from '@edulastic/constants'
-import { IconAssignment, IconRemove } from '@edulastic/icons'
+import { themeColor } from '@edulastic/colors'
+import { IconAssignment, IconTrash } from '@edulastic/icons'
 import { Spin, Select } from 'antd'
 import { get, isEmpty, keyBy, omit, pick } from 'lodash'
 import * as moment from 'moment'
@@ -69,6 +70,7 @@ import {
   FullFlexContainer,
   PaginationInfo,
   SavedSettingsContainer,
+  DeleteIconContainer,
 } from './styled'
 import { toggleFreeAdminSubscriptionModalAction } from '../../../../student/Login/ducks'
 import SaveSettingsModal from './SaveSettingsModal'
@@ -99,7 +101,6 @@ const testSettingsOptions = [
   'calcType',
   'timedAssignment',
   'pauseAllowed',
-  'allowedTime',
   'maxAttempts',
   'maxAnswerChecks',
   'safeBrowser',
@@ -136,7 +137,6 @@ const docBasedSettingsOptions = [
   'calcType',
   'timedAssignment',
   'pauseAllowed',
-  'allowedTime',
   'maxAttempts',
   'safeBrowser',
   'sebPassword',
@@ -410,6 +410,7 @@ class AssignTest extends React.Component {
       testSettings,
       currentSettingsId,
       isFreezeSettingsOn,
+      totalItems,
     } = this.props
     if (value === 'save-settings-option') {
       if (currentSettingsId === '')
@@ -451,6 +452,9 @@ class AssignTest extends React.Component {
           ),
           autoRedirect: !!selectedSetting.autoRedirect,
         }
+      }
+      if (newSettings.timedAssignment && !newSettings.allowedTime) {
+        newSettings.allowedTime = totalItems * 60 * 1000
       }
       setCurrentTestSettingsId(value)
       updateAssignmentSettings(newSettings)
@@ -606,6 +610,16 @@ class AssignTest extends React.Component {
     }
   }
 
+  handleMouseOver = (e) => {
+    e.currentTarget.querySelector('.delete-setting-button').style.display =
+      'flex'
+  }
+
+  handleMouseOut = (e) => {
+    e.currentTarget.querySelector('.delete-setting-button').style.display =
+      'none'
+  }
+
   render() {
     const {
       isAdvancedView,
@@ -685,7 +699,7 @@ class AssignTest extends React.Component {
         />
 
         <Container>
-          <FullFlexContainer justifyContent="space-between">
+          <FullFlexContainer justifyContent="space-between" alignItems="center">
             <PaginationInfo>
               &lt;{' '}
               <AnchorLink to={`/author/${exactMenu?.to}`}>
@@ -714,14 +728,42 @@ class AssignTest extends React.Component {
                   value={currentSettingsId}
                   getPopupContainer={(node) => node.parentNode}
                   onChange={this.handleSettingsSelection}
+                  optionLabelProp="label"
                   data-cy="select-save-test-settings"
                 >
-                  <Select.Option key="1" value="">
-                    DEFAULT
+                  <Select.Option key="1" value="" label="DEFAULT TEST SETTINGS">
+                    DEFAULT TEST SETTINGS
                   </Select.Option>
+                  {testSettingsList.map((t) => (
+                    <Select.Option key={t._id} value={t._id} label={t.title}>
+                      <span
+                        onMouseOver={this.handleMouseOver}
+                        onMouseOut={this.handleMouseOut}
+                        onFocus={() => {}}
+                        onBlur={() => {}}
+                      >
+                        {t.title}{' '}
+                        <DeleteIconContainer
+                          className="delete-setting-button"
+                          onClick={(e) => {
+                            e.preventDefault()
+                            e.stopPropagation()
+                            this.setState({
+                              showDeleteSettingModal: true,
+                              settingDetails: { _id: t._id, title: t.title },
+                            })
+                          }}
+                          title="Remove Setting"
+                        >
+                          <IconTrash color={themeColor} />
+                        </DeleteIconContainer>
+                      </span>
+                    </Select.Option>
+                  ))}
                   <Select.Option
                     key="2"
                     value="save-settings-option"
+                    label="SAVE CURRENT SETTINGS"
                     disabled={
                       isTestSettingSaveLimitReached && !currentSettingsId
                     }
@@ -733,24 +775,6 @@ class AssignTest extends React.Component {
                   >
                     SAVE CURRENT SETTINGS
                   </Select.Option>
-                  {testSettingsList.map((t) => (
-                    <Select.Option key={t._id} value={t._id}>
-                      {t.title}{' '}
-                      <span
-                        onClick={(e) => {
-                          e.preventDefault()
-                          e.stopPropagation()
-                          this.setState({
-                            showDeleteSettingModal: true,
-                            settingDetails: { _id: t._id, title: t.title },
-                          })
-                        }}
-                        title="Remove Setting"
-                      >
-                        <IconRemove height="18px" width="18px" />
-                      </span>
-                    </Select.Option>
-                  ))}
                 </Select>
               </SavedSettingsContainer>
             )}
@@ -806,6 +830,9 @@ const enhance = compose(
       testDefaultSettings: getTestDefaultSettingsSelector(state),
       userFeatures: getUserFeatures(state),
       isFreezeSettingsOn: getIsOverrideFreezeSelector(state),
+      totalItems: state?.tests?.entity?.isDocBased
+        ? state?.tests?.entity?.summary?.totalQuestions
+        : state?.tests?.entity?.summary?.totalItems,
     }),
     {
       loadClassList: receiveClassListAction,

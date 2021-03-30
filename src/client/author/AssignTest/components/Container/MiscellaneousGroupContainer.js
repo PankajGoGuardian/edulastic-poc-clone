@@ -250,6 +250,7 @@ const MiscellaneousGroupContainer = ({
                   keypadData={keyPadData}
                   overrideSettings={overRideSettings}
                   testKeypadData={testSettings.keypad}
+                  disabled={freezeSettings || !premium}
                 />
               </Col>
             </StyledRow>

@@ -21,6 +21,7 @@ function KeypadDropdown({
   customKeypads,
   overrideSettings,
   testKeypadData,
+  disabled,
 }) {
   const keypadDropdownValue = useMemo(() => {
     if (isEmpty(keypadData) || keypadData?.type === 'item-level') {
@@ -95,6 +96,7 @@ function KeypadDropdown({
         defaultValue={keypadDropdownValue}
         onChange={handleChange}
         getPopupContainer={(triggerNode) => triggerNode.parentNode}
+        disabled={disabled}
       >
         {predefinedKeypads.map((keypad) => (
           <Select.Option key={keypad.label} value={keypad.value}>

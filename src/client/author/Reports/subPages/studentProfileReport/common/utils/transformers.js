@@ -19,11 +19,13 @@ import {
 } from '../../../../common/util'
 import gradesMap from '../static/gradesMap.json'
 
+export const getFullName = (s) => `${s.firstName || ''} ${s.lastName || ''}`.trim()
+
 export const getStudentName = (selectedStudent, studInfo) => {
   if (selectedStudent.title) {
     return selectedStudent.title
   }
-  return `${studInfo.firstName || ''} ${studInfo.lastName || ''}`
+  return getFullName(studInfo)
 }
 
 export const getTermOptions = (terms = []) =>

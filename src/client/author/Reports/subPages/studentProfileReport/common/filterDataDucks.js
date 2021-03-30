@@ -7,6 +7,8 @@ import { get } from 'lodash'
 
 import { RESET_ALL_REPORTS } from '../../../common/reportsRedux'
 
+import { getFullName } from './utils/transformers'
+
 import staticDropDownData from './static/staticDropDownData.json'
 
 const GET_REPORTS_SPR_FILTER_DATA_REQUEST =
@@ -28,7 +30,6 @@ const GET_REPORTS_SPR_STUDENT_DATA_REQUEST_ERROR =
 
 const SET_FILTERS = '[reports] set spr filters'
 const SET_STUDENT_ID = '[reports] set spr student'
-const SET_SELECTED_CLASS = '[reports] set selected class'
 const SET_TEMP_TAGS_DATA = '[reports] set spr temp tags data'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
@@ -42,7 +43,6 @@ export const setPrevSPRFilterDataAction = createAction(
 
 export const setFiltersAction = createAction(SET_FILTERS)
 export const setStudentAction = createAction(SET_STUDENT_ID)
-export const setSelectedClassAction = createAction(SET_SELECTED_CLASS)
 export const setTempTagsDataAction = createAction(SET_TEMP_TAGS_DATA)
 
 export const getSPRStudentDataRequestAction = createAction(
@@ -96,11 +96,6 @@ export const getFiltersSelector = createSelector(
   (state) => state.filters
 )
 
-export const getSelectedClassSelector = createSelector(
-  stateSelector,
-  (state) => state.selectedClassIds
-)
-
 export const getStudentSelector = createSelector(
   stateSelector,
   (state) => state.student
@@ -148,7 +143,6 @@ const initialState = {
     key: '',
     title: '',
   },
-  selectedClassIds: '',
   tempTagsData: {},
   loading: false,
 }
@@ -170,9 +164,6 @@ export const reportSPRFilterDataReducer = createReducer(initialState, {
   },
   [SET_STUDENT_ID]: (state, { payload }) => {
     state.student = payload
-  },
-  [SET_SELECTED_CLASS]: (state, { payload }) => {
-    state.selectedClassIds = payload
   },
   [SET_TEMP_TAGS_DATA]: (state, { payload }) => {
     state.tempTagsData = payload
@@ -224,9 +215,13 @@ function* getReportsSPRFilterDataRequest({ payload }) {
 function* receiveStudentsListSaga({ payload }) {
   try {
     const result = yield call(reportsApi.fetchStudentList, payload)
+    const studentList = get(result, 'data.result', []).map((item) => ({
+      _id: item._id,
+      title: getFullName(item),
+    }))
     yield put({
       type: GET_REPORTS_SPR_STUDENT_DATA_REQUEST_SUCCESS,
-      payload: { studentList: get(result, 'data.result', []) },
+      payload: { studentList },
     })
   } catch (err) {
     const msg = 'Unable to fetch students list.'

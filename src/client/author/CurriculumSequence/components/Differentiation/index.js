@@ -26,6 +26,7 @@ import {
   setDifferentiationSelectedDataAction,
   addDifferentiationResourcesAction,
   removeDifferentiationResourcesAction,
+  clearAllDiffenrentiationResourcesAction,
 } from '../../ducks'
 import ManageContentBlock from '../ManageContentBlock'
 import { HideRightPanel, RightContentWrapper } from '../CurriculumRightPanel'
@@ -55,6 +56,7 @@ const Differentiation = ({
   history,
   addDifferentiationResources,
   removeDifferentiationResources,
+  clearAllDiffenrentiationResources,
 }) => {
   const [classList, setClassList] = useState([])
   const [assignmentsByTestId, setAssignmentsByTestId] = useState({})
@@ -189,6 +191,8 @@ const Differentiation = ({
 
     setClassList(selectedTestClasses)
     setDifferentiationSelectedData({ testId: value, class: null })
+    // clear any existing resources in differentation tab.
+    clearAllDiffenrentiationResources()
   }
 
   const handleClassChange = (value, option) => {
@@ -381,6 +385,7 @@ const enhance = compose(
       setRecommendationsToAssign: setRecommendationsToAssignAction,
       addDifferentiationResources: addDifferentiationResourcesAction,
       removeDifferentiationResources: removeDifferentiationResourcesAction,
+      clearAllDiffenrentiationResources: clearAllDiffenrentiationResourcesAction,
       addTestToDifferentiation: addTestToDifferentationAction,
       setDifferentiationSelectedData: setDifferentiationSelectedDataAction,
     }

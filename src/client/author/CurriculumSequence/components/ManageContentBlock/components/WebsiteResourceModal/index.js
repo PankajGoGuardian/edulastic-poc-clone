@@ -18,6 +18,7 @@ const WebsiteResourceModal = (props) => {
     setAlignment,
     selectedStandards,
     setSelectedStandards,
+    curriculum = '',
   } = props
 
   const [title, setTitle] = useState('')
@@ -101,6 +102,7 @@ const WebsiteResourceModal = (props) => {
           alignment={alignment}
           setAlignment={setAlignment}
           setSelectedStandards={setSelectedStandards}
+          curriculum={curriculum}
         />
       </FlexRow>
     </EdulasticResourceModal>

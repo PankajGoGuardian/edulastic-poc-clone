@@ -2,31 +2,9 @@ import React, { Fragment } from 'react'
 import { useDrop } from 'react-dnd'
 import { connect } from 'react-redux'
 import { Row, Col } from 'antd'
-import { SupportResourceDropTarget, NewActivityTarget } from './styled'
+import { SupportResourceDropTarget } from './styled'
 import { addSubresourceToPlaylistAction } from '../../ducks'
 import { addSubresourceToPlaylistAction as addSubresourceInPlaylistAction } from '../../../PlaylistPage/ducks'
-
-function NewActivityTargetContainer({ children, ...props }) {
-  const [{ isOver }, dropRef] = useDrop({
-    accept: 'item',
-    collect: (monitor) => ({
-      isOver: !!monitor.isOver(),
-      contentType: monitor.getItem()?.contentType,
-    }),
-    drop: (item) => {
-      const { moduleIndex, afterIndex, onDrop } = props
-      if (onDrop) {
-        onDrop(moduleIndex, item, afterIndex)
-      }
-    },
-  })
-
-  return (
-    <NewActivityTarget {...props} ref={dropRef} active={isOver}>
-      {children}
-    </NewActivityTarget>
-  )
-}
 
 function SubResourceDropContainer({ children, ...props }) {
   const [{ isOver }, dropRef] = useDrop({
@@ -59,8 +37,6 @@ const AddResourceToPlaylist = ({
   isTestType,
   moduleIndex,
   addSubresource,
-  onDrop,
-  showNewActivity,
   showSupportingResource,
 }) => (
   <>
@@ -88,20 +64,6 @@ const AddResourceToPlaylist = ({
           >
             <span>Teacher Resource</span>
           </SubResourceDropContainer>
-        </Col>
-      </Row>
-    )}
-    {showNewActivity && (
-      <Row gutter={16}>
-        <Col md={16}>
-          <NewActivityTargetContainer
-            data-cy="newActivityDropContainer"
-            moduleIndex={moduleIndex}
-            afterIndex={index}
-            onDrop={onDrop}
-          >
-            <span> New activity</span>
-          </NewActivityTargetContainer>
         </Col>
       </Row>
     )}

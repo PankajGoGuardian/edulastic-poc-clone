@@ -55,6 +55,7 @@ import {
   PlaylistResourceRow,
   SubResource,
   AddResourceToPlaylist,
+  AddNewActivityToPlaylist,
 } from './PlaylistResourceRow'
 import PlaylistTestDetailsModal from './PlaylistTestDetailsModal'
 import AssignmentsClasses from './AssignmentsClasses'
@@ -163,11 +164,15 @@ const SortableElement = sortableElement((props) => {
     <OuterDropContainer>
       <ResourceActivity {...props} />
       <AddResourceToPlaylist
-        onDrop={onDrop}
         index={id}
         moduleIndex={moduleIndex}
         isTestType={isTestType}
         fromPlaylist={fromPlaylist}
+      />
+      <AddNewActivityToPlaylist
+        index={id}
+        moduleIndex={moduleIndex}
+        onDrop={onDrop}
       />
     </OuterDropContainer>
   )

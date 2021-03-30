@@ -24,6 +24,7 @@ const LTIResourceModal = (props) => {
     externalToolsProviders = [],
     selectedStandards,
     setSelectedStandards,
+    curriculum = '',
   } = props
 
   const [isAddNew, setAddNew] = useState(false)
@@ -202,6 +203,7 @@ const LTIResourceModal = (props) => {
           alignment={alignment}
           setAlignment={setAlignment}
           setSelectedStandards={setSelectedStandards}
+          curriculum={curriculum}
         />
       </FlexRow>
     </EdulasticResourceModal>

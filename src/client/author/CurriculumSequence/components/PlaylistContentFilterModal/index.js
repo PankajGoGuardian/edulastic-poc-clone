@@ -8,7 +8,7 @@ import {
 } from '@edulastic/common'
 import { FILTERS } from '../ManageContentBlock/ducks'
 import SELECT_DATA from '../../../TestPage/components/common/selectsData'
-import { Title, FlexRow } from './styled'
+import { Title, FlexRow, CustomModal } from './styled'
 import ResourcesAlignment from '../ResourcesAlignment'
 
 const PlaylistTestBoxFilter = (props) => {
@@ -49,7 +49,7 @@ const PlaylistTestBoxFilter = (props) => {
       height="38px"
       onClick={onCancel}
     >
-      No, Cancel
+      Cancel
     </EduButton>,
     <EduButton
       data-cy="proceedPlaylistContentFilter"
@@ -57,13 +57,13 @@ const PlaylistTestBoxFilter = (props) => {
       height="38px"
       onClick={handleApplyFilters}
     >
-      Search
+      Apply
     </EduButton>,
   ]
 
   return (
-    <CustomModalStyled
-      title="Filter"
+    <CustomModal
+      title={`Filter ${searchResourceBy}`}
       visible={isVisible}
       onCancel={onCancel}
       footer={Footer}
@@ -80,7 +80,7 @@ const PlaylistTestBoxFilter = (props) => {
       ) : (
         <>
           <FlexRow>
-            <FieldLabel>type</FieldLabel>
+            <FieldLabel>Source</FieldLabel>
             <SelectInputStyled
               dropdownClassName="playlist-content-box"
               data-cy="test-type"
@@ -140,7 +140,7 @@ const PlaylistTestBoxFilter = (props) => {
               dropdownClassName="playlist-content-box"
               data-cy="test-subject"
               placeholder="Select Subject"
-              value={subject}
+              value={subject || undefined}
               onChange={onSubjectChange}
               height="36px"
             >
@@ -171,7 +171,7 @@ const PlaylistTestBoxFilter = (props) => {
           </FlexRow>
         </>
       )}
-    </CustomModalStyled>
+    </CustomModal>
   )
 }
 

@@ -20,7 +20,8 @@ export const StyledFlexContainer = styled(FlexContainer)`
 
 export const SubHeader = styled.div`
   padding-bottom: 15px;
-  width: 100%;
+  width: ${({ showRightPanel }) =>
+    showRightPanel ? 'calc(100% - 360px)' : '100%'};
   display: flex;
   justify-content: space-between;
   > div {

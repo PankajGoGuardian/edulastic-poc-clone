@@ -53,7 +53,7 @@ const ExternalVideoLink = (props) => {
   return (
     <EdulasticResourceModal
       headerText="Youtube Link"
-      okText="CREATE LINK"
+      okText="ADD RESOURCE"
       submitCallback={submitCallback}
       {...props}
     >

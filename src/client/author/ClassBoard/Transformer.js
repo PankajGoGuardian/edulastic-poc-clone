@@ -458,9 +458,10 @@ export function getStandardsForStandardBasedReport(
       : x.data.questions
   )
   for (const q of questions) {
-    const standards = q.alignment
-      .flatMap((x) => x?.domains || [])
-      .flatMap((x) => x?.standards || [])
+    const standards =
+      q.alignment
+        ?.flatMap((x) => x?.domains || [])
+        .flatMap((x) => x?.standards || []) || []
     for (const std of standards) {
       if (standardsQuestionsMap[`${std.id}`]) {
         standardsQuestionsMap[`${std.id}`].qIds = uniq([

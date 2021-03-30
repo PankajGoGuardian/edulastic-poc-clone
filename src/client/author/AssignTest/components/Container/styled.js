@@ -147,9 +147,6 @@ export const SavedSettingsContainer = styled.div`
   .ant-select-selection-selected-value {
     font-size: 12px;
     color: ${themeColor};
-    > span {
-      display: none;
-    }
   }
   .ant-select-dropdown-menu {
     li {
@@ -157,6 +154,8 @@ export const SavedSettingsContainer = styled.div`
       word-break: break-word;
       > span {
         display: flex;
+        width: 100%;
+        justify-content: space-between;
         align-items: center;
       }
       &:hover {
@@ -212,4 +211,7 @@ export const StyledModal = styled(Modal)`
       }
     }
   }
+`
+export const DeleteIconContainer = styled.span`
+  display: none;
 `

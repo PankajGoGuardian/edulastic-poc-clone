@@ -261,13 +261,14 @@ const StudentMasteryProfile = ({
             </FlexContainer>
           </FlexContainer>
         </ReStyledCard>
-        <ReStyledCard maxW="300px" ml="20px">
+        <ReStyledCard maxW="50%" ml="20px">
           <StudentPerformancePie
             selectedMastery={selectedMastery}
             data={filteredStandards}
             scaleInfo={scaleInfo}
             onSectionClick={onSectionClick}
             getTooltip={getTooltip}
+            showAsRow
           />
         </ReStyledCard>
       </FlexContainer>

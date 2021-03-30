@@ -128,15 +128,16 @@ export const TableHeader = styled.div`
   padding: 0px 20px 15px 20px;
   display: flex;
   align-items: center;
+  white-space: nowrap;
   > span {
     font-weight: 600;
     display: inline-block;
     &:first-child {
-      width: 15%;
+      width: 20%;
       font-weight: 700;
     }
     &:nth-child(2) {
-      width: 40%;
+      width: 60%;
       display: inline-flex;
       align-items: center;
       > span:first-child {
@@ -146,7 +147,7 @@ export const TableHeader = styled.div`
       }
     }
     &:nth-child(3) {
-      width: 20%;
+      width: 10%;
       display: flex;
       align-items: center;
       svg {
@@ -154,7 +155,7 @@ export const TableHeader = styled.div`
       }
     }
     &:nth-child(4) {
-      width: 25%;
+      width: 10%;
       display: flex;
       justify-content: flex-end;
     }

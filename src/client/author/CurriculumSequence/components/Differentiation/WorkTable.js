@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { useDrop } from 'react-dnd'
-import { Popover } from 'antd'
+import { Popover, Row, Col } from 'antd'
 import { groupBy, compact, isEmpty } from 'lodash'
 import { EduButton, FlexContainer, notification } from '@edulastic/common' //  ProgressBar,
 import { IconClose, IconUser } from '@edulastic/icons'
@@ -319,7 +319,10 @@ const InnerWorkTable = ({
             >
               {record.description}
             </StyledDescription>
-            <div data-cy={`${type}-testDropContainer`} style={{ width: '100%' }}>
+            <div
+              data-cy={`${type}-testDropContainer`}
+              style={{ width: '100%' }}
+            >
               {showNewActivity && activeHoverIndex === index && (
                 <ContentDropContainer
                   data-cy={`${type}-newActivityDropContainer`}
@@ -549,14 +552,18 @@ const InnerWorkTable = ({
           isCommonStudentResources
         />
         {showSupportingResource && (
-          <ContentDropContainer
-            dropType="TOP_LEVEL_STUDENT_RESOURCE"
-            type={type}
-            addDifferentiationResources={addDifferentiationResources}
-            data-cy={`${type}-studentResourceDropContainer`}
-          >
-            Student Resource
-          </ContentDropContainer>
+          <Row gutter={16} align="middle">
+            <Col md={8}>
+              <ContentDropContainer
+                dropType="TOP_LEVEL_STUDENT_RESOURCE"
+                type={type}
+                addDifferentiationResources={addDifferentiationResources}
+                data-cy={`${type}-studentResourceDropContainer`}
+              >
+                Student Resource
+              </ContentDropContainer>
+            </Col>
+          </Row>
         )}
       </CommonStudentResourcesContainer>
 

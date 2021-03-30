@@ -15,6 +15,7 @@ const TestTypeSelector = ({
   disabled = false,
   fullwidth = false,
   districtPermissions = [],
+  paddingTop,
 }) => {
   const isAdmin =
     userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN
@@ -60,7 +61,7 @@ const TestTypeSelector = ({
       <>
         {!isAdvanceView && (
           <Col span={10}>
-            <FieldLabel>TEST TYPE</FieldLabel>
+            <FieldLabel top={paddingTop}>TEST TYPE</FieldLabel>
           </Col>
         )}
         <Col span={14}>{SelectOption}</Col>

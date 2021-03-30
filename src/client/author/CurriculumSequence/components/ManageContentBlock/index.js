@@ -93,7 +93,6 @@ const ManageContentBlock = (props) => {
     isDifferentiationTab = false,
     setIsTestPreviewVisible,
     interestedCurriculums,
-    history,
     setAlignment,
     setSelectedStandards,
     setResourceSearch,
@@ -131,6 +130,7 @@ const ManageContentBlock = (props) => {
     setExternalVideoResourceModal,
   ] = useState(false)
   const [isLTIResourceModal, setLTIResourceModal] = useState(false)
+  const [searchExpand, setSearchExpand] = useState(false)
 
   useEffect(() => {
     setDefaults({
@@ -165,7 +165,7 @@ const ManageContentBlock = (props) => {
   const onTestMenuChange = ({ key }) => {
     switch (key) {
       case '1':
-        history.push('/author/tests/select')
+        window.open('/author/tests/select', '_blank')
         break
       default:
         break
@@ -258,6 +258,13 @@ const ManageContentBlock = (props) => {
     setExternalVideoResourceModal(false)
     setLTIResourceModal(false)
     setAlignment({})
+  }
+
+  const handleOnFocus = () => {
+    setSearchExpand(true)
+  }
+  const handleOnBlur = () => {
+    setSearchExpand(false)
   }
 
   const renderList = () => {
@@ -362,40 +369,48 @@ const ManageContentBlock = (props) => {
                   tokenSeparators={[',']}
                   placeholder={`Search by ${searchBy}`}
                   onChange={onSearchChange}
+                  onFocus={handleOnFocus}
+                  onBlur={handleOnBlur}
                   value={searchStrings}
                   dropdownStyle={{ display: 'none' }}
                   data-cy="container-search-bar"
                 />
                 <SearchIcon color={themeColor} />
               </SearchBoxContainer>
-              <ActionButton
-                data-cy={
-                  searchResourceBy === 'tests'
-                    ? 'test-filter'
-                    : 'resource-filter'
-                }
-                onClick={openContentFilterModal}
-                isActive={showContentFilterModal}
-              >
-                <IconFilter
-                  color={showContentFilterModal ? white : themeColor}
-                  width={20}
-                  height={20}
-                />
-              </ActionButton>
-              <Dropdown
-                overlay={searchResourceBy === 'tests' ? testMenu : menu}
-                placement="bottomRight"
-                getPopupContainer={(triggerNode) => triggerNode.parentNode}
-              >
-                <ActionButton
-                  data-cy={
-                    searchResourceBy === 'tests' ? 'addTest' : 'addResources'
-                  }
-                >
-                  <IconPlus color={themeColor} width={15} height={15} />
-                </ActionButton>
-              </Dropdown>
+              {!searchExpand && (
+                <>
+                  <ActionButton
+                    data-cy={
+                      searchResourceBy === 'tests'
+                        ? 'test-filter'
+                        : 'resource-filter'
+                    }
+                    onClick={openContentFilterModal}
+                    isActive={showContentFilterModal}
+                  >
+                    <IconFilter
+                      color={showContentFilterModal ? white : themeColor}
+                      width={20}
+                      height={20}
+                    />
+                  </ActionButton>
+                  <Dropdown
+                    overlay={searchResourceBy === 'tests' ? testMenu : menu}
+                    placement="bottomRight"
+                    getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                  >
+                    <ActionButton
+                      data-cy={
+                        searchResourceBy === 'tests'
+                          ? 'addTest'
+                          : 'addResources'
+                      }
+                    >
+                      <IconPlus color={themeColor} width={15} height={15} />
+                    </ActionButton>
+                  </Dropdown>
+                </>
+              )}
             </FlexContainer>
             <br />
 

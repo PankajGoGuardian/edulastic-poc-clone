@@ -145,7 +145,7 @@ const SummaryPieChart = ({ data = [], totalTimeSpent, colors, isStudent }) => {
         strokeWidth={13}
         strokeColor="#aaaaaa"
         trailColor="#aaaaaa"
-        margin="60px 0px 40px 0px"
+        margin="40px 0px 30px 0px"
         textColor={titleColor}
         textSize="30px"
         format={() => `0 hr`}

@@ -86,7 +86,7 @@ export const SubResourceView = ({
 
 export const SubResource = connect(
   (state) => ({
-    isStudent: state.user?.user?.role === 'student',
+    isStudent: ['student', 'parent'].includes(state.user?.user?.role),
   }),
   (dispatch, { fromPlaylist }) => ({
     removeSubResource: (payload) =>

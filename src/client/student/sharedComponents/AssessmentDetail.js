@@ -17,16 +17,16 @@ import {
   test,
   testActivity as testActivityConstants,
 } from '@edulastic/constants'
-import {
-  formatDateAndTimeForAssignmentCard,
-  formatStudentPastDueTag,
-} from '../utils'
-import { themes } from '../../theme'
-import { ResouceIcon } from '../../author/CurriculumSequence/components/ResourceItem'
 import { FlexContainer, notification } from '@edulastic/common'
 import { IconSchedule } from '@edulastic/icons'
 import { curriculumSequencesApi } from '@edulastic/api'
 import { pick } from 'lodash'
+import { ResouceIcon } from '../../author/CurriculumSequence/components/ResourceItem'
+import { themes } from '../../theme'
+import {
+  formatDateAndTimeForAssignmentCard,
+  formatStudentPastDueTag,
+} from '../utils'
 import { submitLTIForm } from '../../author/CurriculumSequence/components/CurriculumModuleRow'
 
 const { pastDueTagBackground, pastDueTagColor } = themes.default.default
@@ -499,9 +499,9 @@ const ResourcesContainer = styled.div`
 
   span {
     text-transform: uppercase;
-    font-size: 12px;
+    font-size: 10px;
     font-weight: 600;
-    padding: 10px 10px 0 0;
+    padding: 12px 10px 0 0;
   }
 
   @media (max-width: ${largeDesktopWidth}) {
@@ -515,12 +515,10 @@ const ResourceWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 4px;
   padding: 6px 8px;
   margin: 4px 0px;
   width: auto;
   cursor: pointer;
-  border: 1px solid ${themeColor};
   margin-right: 10px;
 
   &:last-child {

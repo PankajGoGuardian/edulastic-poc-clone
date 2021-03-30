@@ -18,7 +18,7 @@ const Alignments = ({
 }) => {
   return (
     <>
-      {!isVerticalView && (
+      {isVerticalView && (
         <ItemBody data-cy="gradeItem">
           <FieldLabel>{t('component.options.grade')}</FieldLabel>
           <SelectInputStyled

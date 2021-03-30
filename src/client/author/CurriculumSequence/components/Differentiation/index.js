@@ -29,7 +29,7 @@ import {
   clearAllDiffenrentiationResourcesAction,
 } from '../../ducks'
 import ManageContentBlock from '../ManageContentBlock'
-import { HideRightPanel } from '../CurriculumRightPanel'
+import { HideRightPanel, RightContentWrapper } from '../CurriculumRightPanel'
 import { ContentContainer } from '../CurriculumSequence'
 import AssignTest from '../../../AssignTest'
 
@@ -228,7 +228,7 @@ const Differentiation = ({
       justifyContent="flex-start"
       flexDirection="column"
     >
-      <SubHeader>
+      <SubHeader showRightPanel={showManageContent}>
         <div>
           <span>Based on Performance in</span>
           <StyledSelect
@@ -239,7 +239,7 @@ const Differentiation = ({
                 .includes(input.trim().toLowerCase())
             }
             data-cy="select-assignment"
-            style={{ minWidth: 200, maxWidth: 300 }}
+            style={{ minWidth: 200, maxWidth: 250 }}
             placeholder="SELECT ASSIGNMENT"
             onChange={(value, option) => handleAssignmentChange(value, option)}
             value={selectedTest}
@@ -327,7 +327,7 @@ const Differentiation = ({
           </div>
         </ContentContainer>
         {showManageContent && (
-          <div style={{ position: 'relative' }}>
+          <RightContentWrapper>
             {/* <SideButtonContainer style={{ paddingTop: 5 }}>
                 Hiding this button for now as implementation is not done. 
               
@@ -344,7 +344,7 @@ const Differentiation = ({
               <IconClose />
             </HideRightPanel>
             <ManageContentBlock isDifferentiationTab />
-          </div>
+          </RightContentWrapper>
         )}
       </StyledFlexContainer>
       {isAssignModalVisible && (

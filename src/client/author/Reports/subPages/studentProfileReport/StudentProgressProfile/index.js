@@ -18,10 +18,7 @@ import {
   getStudentProgressProfileRequestACtion,
   resetStudentProgressProfileAction,
 } from './ducks'
-import {
-  getReportsSPRFilterData,
-  getReportsSPRFilterLoadingState,
-} from '../common/filterDataDucks'
+import { getReportsSPRFilterData } from '../common/filterDataDucks'
 import { useGetBandData } from '../../multipleAssessmentReport/StudentProgress/hooks'
 
 import dropDownData from './static/json/dropDownData.json'
@@ -43,7 +40,6 @@ const StudentProgressProfile = ({
   pageTitle,
   sharedReport,
   loading,
-  reportsSPRFilterLoadingState,
   location,
   SPRFilterData,
   studentProgressProfile,
@@ -164,7 +160,7 @@ const StudentProgressProfile = ({
     bandInfo
   )
 
-  if (loading || reportsSPRFilterLoadingState) {
+  if (loading) {
     return <SpinLoader position="fixed" />
   }
 
@@ -240,7 +236,6 @@ const StudentProgressProfile = ({
 const withConnect = connect(
   (state) => ({
     studentProgressProfile: getReportsStudentProgressProfile(state),
-    reportsSPRFilterLoadingState: getReportsSPRFilterLoadingState(state),
     loading: getReportsStudentProgressProfileLoader(state),
     error: getReportsStudentProgressProfileError(state),
     SPRFilterData: getReportsSPRFilterData(state),

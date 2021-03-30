@@ -20,9 +20,9 @@ const ClassAutoComplete = ({
   classList,
   loading,
   loadClassList,
-  selectedCourseIds,
-  selectedGrade,
-  selectedSubject,
+  courseIds,
+  grade,
+  subject,
   selectedClassIds,
   selectCB,
   termId,
@@ -53,26 +53,20 @@ const ClassAutoComplete = ({
     if (userRole === roleuser.SCHOOL_ADMIN) {
       q.search.institutionIds = institutionIds
     }
-    if (selectedCourseIds) {
-      q.search.courseIds = selectedCourseIds.split(',')
-    }
-    if (selectedGrade) {
-      q.search.grades = [selectedGrade]
-    }
-    if (selectedSubject) {
-      q.search.subjects = [selectedSubject]
-    }
     if (termId) {
       q.search.termIds = [termId]
     }
+    if (courseIds) {
+      q.search.courseIds = courseIds.split(',')
+    }
+    if (grade) {
+      q.search.grades = [grade]
+    }
+    if (subject) {
+      q.search.subjects = [subject]
+    }
     return q
-  }, [
-    searchTerms.text,
-    selectedGrade,
-    selectedSubject,
-    selectedCourseIds,
-    termId,
-  ])
+  }, [searchTerms.text, termId, grade, subject, courseIds])
 
   // handle autocomplete actions
   const onSearch = (value) => {
@@ -111,7 +105,7 @@ const ClassAutoComplete = ({
   useEffect(() => {
     setSearchTerms(DEFAULT_SEARCH_TERMS)
     setDefaultClassList([])
-  }, [selectedCourseIds, selectedGrade, selectedSubject, termId])
+  }, [courseIds, grade, subject, termId])
 
   // build dropdown data
   const dropdownData = (searchTerms.text

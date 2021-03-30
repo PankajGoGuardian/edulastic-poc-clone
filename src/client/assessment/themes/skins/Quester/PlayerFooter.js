@@ -123,14 +123,14 @@ const PlayerFooter = ({
         <IconWrap className="hover-effect" onClick={handleZoomOut}>
           <IconMinusRounded color={footer.textColor} />
         </IconWrap>
-        <span>ZOOM IN</span>
+        <span>ZOOM OUT</span>
       </ActionContainer>
 
       <ActionContainer data-cy="zoomOut">
         <IconWrap className="hover-effect" onClick={handleZoomIn}>
           <IconPlus color={footer.textColor} />
         </IconWrap>
-        <span>ZOOM OUT</span>
+        <span>ZOOM IN</span>
       </ActionContainer>
       {!blockNavigationToAnsweredQuestions && (
         <ActionContainer
@@ -155,6 +155,23 @@ const PlayerFooter = ({
         </ActionContainer>
       )}
       <Devider />
+      {maxAnswerChecks > 0 && !hideCheckAnswer && (
+        <ActionContainer
+          hoverEffect
+          onClick={handleCheckAnswer}
+          title={
+            checkAnswerInProgress
+              ? 'In progess'
+              : answerChecksUsedForItem >= maxAnswerChecks
+              ? 'Usage limit exceeded'
+              : 'Check Answer'
+          }
+          data-cy="checkAnswer"
+        >
+          <IconCheck color={footer.textColor} hoverColor={button.background} />
+          <span> {t('common.test.checkanswer')}</span>
+        </ActionContainer>
+      )}
       <ActionContainer
         hoverEffect
         active={tool?.includes(CROSS_BUTTON)}
@@ -212,23 +229,6 @@ const PlayerFooter = ({
           <span>{t('common.test.scratchPad')}</span>
         </ActionContainer>
       )}
-      {isTeacherPremium && (
-        <ActionContainer
-          hoverEffect
-          onClick={toggleUserWorkUploadModal}
-          title={t('common.test.uploadWork')}
-          data-cy="uploadWork"
-        >
-          <IconWrapper>
-            <IconCloudUpload
-              color={footer.textColor}
-              hoverColor={button.background}
-            />
-          </IconWrapper>
-
-          <span>{t('common.test.uploadWork')}</span>
-        </ActionContainer>
-      )}
 
       {showMagnifier && (
         <ActionContainer
@@ -249,21 +249,21 @@ const PlayerFooter = ({
         </ActionContainer>
       )}
 
-      {maxAnswerChecks > 0 && !hideCheckAnswer && (
+      {isTeacherPremium && (
         <ActionContainer
           hoverEffect
-          onClick={handleCheckAnswer}
-          title={
-            checkAnswerInProgress
-              ? 'In progess'
-              : answerChecksUsedForItem >= maxAnswerChecks
-              ? 'Usage limit exceeded'
-              : 'Check Answer'
-          }
-          data-cy="checkAnswer"
+          onClick={toggleUserWorkUploadModal}
+          title={t('common.test.uploadWork')}
+          data-cy="uploadWork"
         >
-          <IconCheck color={footer.textColor} hoverColor={button.background} />
-          <span> {t('common.test.checkanswer')}</span>
+          <IconWrapper>
+            <IconCloudUpload
+              color={footer.textColor}
+              hoverColor={button.background}
+            />
+          </IconWrapper>
+
+          <span>{t('common.test.uploadWork')}</span>
         </ActionContainer>
       )}
 

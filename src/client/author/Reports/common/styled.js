@@ -73,6 +73,13 @@ export const ReportFiltersWrapper = styled.div`
 
   .ant-tabs {
     overflow: visible;
+    & .ant-tabs-tab {
+      font-size: 10px;
+      font-weight: 600;
+      font-style: normal;
+      font-stretch: normal;
+      text-transform: uppercase;
+    }
   }
   .ant-select {
     width: 100%;

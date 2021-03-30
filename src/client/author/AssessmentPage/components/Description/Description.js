@@ -27,7 +27,7 @@ const Description = ({
       subjects: itemsSubjectAndGrade.subjects,
       grades: [],
     })
-    onChangeKeypad(grades)
+    onChangeKeypad(grades, true)
   }
 
   const handleChangeSubject = (subjects) => {

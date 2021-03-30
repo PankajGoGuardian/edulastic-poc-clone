@@ -81,5 +81,5 @@ const ResourceRow = ({
 }
 
 export const PlaylistResourceRow = connect(({ user }) => ({
-  isStudent: getUserRole({ user }) === 'student',
+  isStudent: ['student', 'parent'].includes(getUserRole({ user })),
 }))(ResourceRow)

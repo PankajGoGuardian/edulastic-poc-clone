@@ -262,7 +262,7 @@ const ResourcesAlignment = ({
               data-cy="searchStandardSelect"
               mode="multiple"
               style={{ margin: 'auto', display: 'block' }}
-              placeholder={t('component.options.searchStandards')}
+              placeholder={t('component.options.selectResourceStandards')}
               filterOption={false}
               value={standardsArr}
               optionLabelProp="title"
@@ -301,17 +301,15 @@ const ResourcesAlignment = ({
           </IconWrapper>
         </StyledCol>
 
-        {recentStandardsList &&
-          recentStandardsList.length > 0 &&
-          !isVerticalView && (
-            <Col xs={24}>
-              <RecentStandardsList
-                recentStandardsList={recentStandardsList}
-                standardsArr={standardsArr}
-                handleAddStandard={handleAddStandard}
-              />
-            </Col>
-          )}
+        {recentStandardsList && recentStandardsList.length > 0 && (
+          <Col xs={24}>
+            <RecentStandardsList
+              recentStandardsList={recentStandardsList}
+              standardsArr={standardsArr}
+              handleAddStandard={handleAddStandard}
+            />
+          </Col>
+        )}
       </Row>
       {showModal && (
         <StandardsModal

@@ -7,6 +7,7 @@ import {
   TextInputStyled,
 } from '@edulastic/common'
 import PropTypes from 'prop-types'
+import { storeInLocalStorage } from '@edulastic/api/src/utils/Storage'
 import EdulasticResourceModal from '../common/EdulasticResourceModal'
 import { privacyOptions, configOptions, matchOptions } from './selectData'
 import ResourcesAlignment from '../../../ResourcesAlignment'
@@ -64,6 +65,10 @@ const LTIResourceModal = (props) => {
     const validationStatus = validateFields()
     const selectedStandardIds = selectedStandards?.map((x) => x._id) || []
     if (!validationStatus) {
+      storeInLocalStorage(
+        'recentStandards',
+        JSON.stringify({ recentStandards: selectedStandards || [] })
+      )
       addResource({
         contentTitle: title,
         contentUrl: url,

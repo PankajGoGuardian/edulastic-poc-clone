@@ -9,6 +9,7 @@ import React, { useCallback, useEffect, useState, useRef } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
+import { getFromLocalStorage } from '@edulastic/api/src/utils/Storage'
 import {
   getCurrentDistrictUsersAction,
   getCurrentDistrictUsersSelector,
@@ -37,10 +38,11 @@ import TestPreviewModal from '../../../Assignments/components/Container/TestPrev
 import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/test'
 import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
 import { getInterestedCurriculumsByOrgType } from '../../../src/selectors/user'
+import { updateRecentStandardsAction } from '../../../src/actions/dictionaries'
 
 const resourceTabs = ['tests', 'resources']
 
-const observeElement = (fetchTests, tests) => {
+const observeElement = (fetchContent, content) => {
   const observerRef = useRef()
   return useCallback(
     (node) => {
@@ -49,14 +51,14 @@ const observeElement = (fetchTests, tests) => {
       }
       observerRef.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting) {
-          fetchTests()
+          fetchContent()
         }
       })
       if (node) {
         observerRef.current.observe(node)
       }
     },
-    [tests]
+    [content]
   )
 }
 
@@ -65,6 +67,7 @@ const ManageContentBlock = (props) => {
     contentFilters,
     setDefaults,
     fetchTests,
+    fetchResources,
     setFilterAction,
     setStatusAction,
     setGradesAction,
@@ -93,10 +96,10 @@ const ManageContentBlock = (props) => {
     isDifferentiationTab = false,
     setIsTestPreviewVisible,
     interestedCurriculums,
-    history,
     setAlignment,
     setSelectedStandards,
     setResourceSearch,
+    updateRecentStandardAction,
   } = props
 
   const {
@@ -117,7 +120,10 @@ const ManageContentBlock = (props) => {
     resources = [],
   } = contentFilters || {}
 
-  const lastResourceItemRef = observeElement(fetchTests, tests)
+  const lastResourceItemRef =
+    searchResourceBy === 'tests'
+      ? observeElement(fetchTests, tests)
+      : observeElement(fetchResources, resources)
 
   const [searchBy] = useState('keywords')
   // const [searchResourceBy] = useState("all");
@@ -131,6 +137,7 @@ const ManageContentBlock = (props) => {
     setExternalVideoResourceModal,
   ] = useState(false)
   const [isLTIResourceModal, setLTIResourceModal] = useState(false)
+  const [searchExpand, setSearchExpand] = useState(false)
 
   useEffect(() => {
     setDefaults({
@@ -146,7 +153,15 @@ const ManageContentBlock = (props) => {
     return () => setSearchByTab('tests')
   }, [])
 
+  const updateRecentStandards = () => {
+    const recentStandards = JSON.parse(
+      getFromLocalStorage('recentStandards') || '[]'
+    )
+    updateRecentStandardAction(recentStandards)
+  }
+
   const onChange = ({ key }) => {
+    updateRecentStandards()
     switch (key) {
       case '1':
         setWebsiteUrlResourceModal(true)
@@ -165,7 +180,7 @@ const ManageContentBlock = (props) => {
   const onTestMenuChange = ({ key }) => {
     switch (key) {
       case '1':
-        history.push('/author/tests/select')
+        window.open('/author/tests/select', '_blank')
         break
       default:
         break
@@ -258,6 +273,13 @@ const ManageContentBlock = (props) => {
     setExternalVideoResourceModal(false)
     setLTIResourceModal(false)
     setAlignment({})
+  }
+
+  const handleOnFocus = () => {
+    setSearchExpand(true)
+  }
+  const handleOnBlur = () => {
+    setSearchExpand(false)
   }
 
   const renderList = () => {
@@ -362,40 +384,48 @@ const ManageContentBlock = (props) => {
                   tokenSeparators={[',']}
                   placeholder={`Search by ${searchBy}`}
                   onChange={onSearchChange}
+                  onFocus={handleOnFocus}
+                  onBlur={handleOnBlur}
                   value={searchStrings}
                   dropdownStyle={{ display: 'none' }}
                   data-cy="container-search-bar"
                 />
                 <SearchIcon color={themeColor} />
               </SearchBoxContainer>
-              <ActionButton
-                data-cy={
-                  searchResourceBy === 'tests'
-                    ? 'test-filter'
-                    : 'resource-filter'
-                }
-                onClick={openContentFilterModal}
-                isActive={showContentFilterModal}
-              >
-                <IconFilter
-                  color={showContentFilterModal ? white : themeColor}
-                  width={20}
-                  height={20}
-                />
-              </ActionButton>
-              <Dropdown
-                overlay={searchResourceBy === 'tests' ? testMenu : menu}
-                placement="bottomRight"
-                getPopupContainer={(triggerNode) => triggerNode.parentNode}
-              >
-                <ActionButton
-                  data-cy={
-                    searchResourceBy === 'tests' ? 'addTest' : 'addResources'
-                  }
-                >
-                  <IconPlus color={themeColor} width={15} height={15} />
-                </ActionButton>
-              </Dropdown>
+              {!searchExpand && (
+                <>
+                  <ActionButton
+                    data-cy={
+                      searchResourceBy === 'tests'
+                        ? 'test-filter'
+                        : 'resource-filter'
+                    }
+                    onClick={openContentFilterModal}
+                    isActive={showContentFilterModal}
+                  >
+                    <IconFilter
+                      color={showContentFilterModal ? white : themeColor}
+                      width={20}
+                      height={20}
+                    />
+                  </ActionButton>
+                  <Dropdown
+                    overlay={searchResourceBy === 'tests' ? testMenu : menu}
+                    placement="bottomRight"
+                    getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                  >
+                    <ActionButton
+                      data-cy={
+                        searchResourceBy === 'tests'
+                          ? 'addTest'
+                          : 'addResources'
+                      }
+                    >
+                      <IconPlus color={themeColor} width={15} height={15} />
+                    </ActionButton>
+                  </Dropdown>
+                </>
+              )}
             </FlexContainer>
             <br />
 
@@ -530,6 +560,7 @@ const enhance = compose(
       setFilterAction: slice.actions?.setFilterAction,
       setDefaults: slice.actions?.setDefaults,
       fetchTests: slice.actions?.fetchTests,
+      fetchResources: slice.actions?.fetchResources,
       setStatusAction: slice.actions?.setStatusAction,
       setSubjectAction: slice.actions?.setSubjectAction,
       setGradesAction: slice.actions?.setGradesAction,
@@ -550,6 +581,7 @@ const enhance = compose(
       setAlignment: slice.actions.setAlignmentAction,
       setSelectedStandards: slice.actions.setSelectedStandardsAction,
       setResourceSearch: slice.actions.setResourceSearchAction,
+      updateRecentStandardAction: updateRecentStandardsAction,
     }
   )
 )

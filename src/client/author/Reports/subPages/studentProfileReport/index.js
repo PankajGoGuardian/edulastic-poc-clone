@@ -5,6 +5,8 @@ import { Route } from 'react-router-dom'
 import next from 'immer'
 import qs from 'qs'
 
+import { Spin } from 'antd'
+
 import { SubHeader } from '../../common/components/Header'
 
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
@@ -37,6 +39,7 @@ const StudentProfileReportContainer = (props) => {
     updateNavigation,
     location,
     match,
+    showApply,
     showFilter,
     onRefineResultsCB,
     setSPRSettings,
@@ -50,6 +53,7 @@ const StudentProfileReportContainer = (props) => {
     isPrinting,
   } = props
 
+  const [firstLoad, setFirstLoad] = useState(true)
   const [reportId] = useState(
     qs.parse(location.search, { ignoreQueryPrefix: true }).reportId
   )
@@ -104,6 +108,16 @@ const StudentProfileReportContainer = (props) => {
     updateNavigation(computedChartNavigatorLinks)
   }, [settings])
 
+  const setShowApply = (status) => {
+    onRefineResultsCB(null, status, 'applyButton')
+  }
+
+  const toggleFilter = (e, status = false) => {
+    if (onRefineResultsCB) {
+      onRefineResultsCB(e, status || !showFilter)
+    }
+  }
+
   const onGoClick = (_settings) => {
     const _requestFilters = {}
     Object.keys(_settings.filters).forEach((filterType) => {
@@ -120,11 +134,7 @@ const StudentProfileReportContainer = (props) => {
       selectedStudent: _settings.selectedStudent,
     })
     setSPRTagsData({ ..._settings.tagsData })
-  }
-  const toggleFilter = (e, status = false) => {
-    if (onRefineResultsCB) {
-      onRefineResultsCB(e, status || !showFilter)
-    }
+    setShowApply(false)
   }
 
   const performanceBandRequired = [
@@ -167,11 +177,16 @@ const StudentProfileReportContainer = (props) => {
             tagsData={settings.tagsData}
             performanceBandRequired={performanceBandRequired}
             standardProficiencyRequired={standardProficiencyRequired}
+            showApply={showApply}
+            setShowApply={setShowApply}
             showFilter={showFilter}
             toggleFilter={toggleFilter}
+            firstLoad={firstLoad}
+            setFirstLoad={setFirstLoad}
           />
         </SubHeader>
         <ReportContainer>
+          {firstLoad && <Spin size="large" />}
           <Route
             exact
             path="/author/reports/student-mastery-profile/student/:studentId?"

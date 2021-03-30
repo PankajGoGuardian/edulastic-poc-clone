@@ -44,7 +44,10 @@ import ShareModal from '../../../src/components/common/ShareModal'
 import { validateQuestionsForDocBased } from '../../../../common/utils/helpers'
 import { proceedPublishingItemAction } from '../../../ItemDetail/ducks'
 import WarningModal from '../../../ItemDetail/components/WarningModal'
-import { getCollectionsSelector } from '../../../src/selectors/user'
+import {
+  getCollectionsSelector,
+  isPremiumUserSelector,
+} from '../../../src/selectors/user'
 import { hasUserGotAccessToPremiumItem } from '../../../dataUtils'
 
 const { statusConstants, passwordPolicy: passwordPolicyValues } = testConstants
@@ -129,12 +132,13 @@ class Container extends React.Component {
     window.onbeforeunload = () => {}
   }
 
-  handleChangeKeypad = (grades) => {
+  handleChangeKeypad = (grades, updated = false) => {
     const {
       setTestData,
       assessment: { keypad },
+      isPremiumUser,
     } = this.props
-    if (this.isEditableTest) {
+    if (isPremiumUser && this.isEditableTest) {
       if (isEmpty(keypad) || keypad.updated === false) {
         const highestGrade = grades.reduce((acc, curr) => {
           const currentGrade = parseInt(curr, 10)
@@ -143,24 +147,24 @@ class Container extends React.Component {
           }
           return acc
         }, 0)
-        if (highestGrade === 0) {
+        if (highestGrade > 0 && highestGrade <= 5) {
           setTestData({
-            keypad: {
-              type: 'item-level',
-              value: 'item-level-keypad',
-              updated: false,
-            },
-          })
-        } else if (highestGrade <= 5) {
-          setTestData({
-            keypad: { updated: false, type: 'predefined', value: 'basic' },
+            keypad: { updated, type: 'predefined', value: 'basic' },
           })
         } else if (highestGrade > 5 && highestGrade <= 12) {
           setTestData({
             keypad: {
-              updated: false,
+              updated,
               type: 'predefined',
               value: 'intermediate',
+            },
+          })
+        } else {
+          setTestData({
+            keypad: {
+              type: 'item-level',
+              value: 'item-level-keypad',
+              updated,
             },
           })
         }
@@ -515,6 +519,7 @@ const enhance = compose(
       currentTab: getViewSelector(state),
       collections: getCollectionsSelector(state),
       authorQuestionStatus: getAuthorQuestionStatus(state),
+      isPremiumUser: isPremiumUserSelector(state),
     }),
     {
       receiveTestById: receiveTestByIdAction,

@@ -333,6 +333,7 @@ const Container = (props) => {
                 isCliUser={isCliUser}
                 isPrinting={isPrinting}
                 breadcrumbData={headerSettings.breadcrumbData}
+                showApply={showApply}
                 showFilter={showFilter}
                 onRefineResultsCB={onRefineResultsCB}
                 loc={reportType}

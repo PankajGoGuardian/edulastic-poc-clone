@@ -15,10 +15,7 @@ import { downloadCSV } from '../../../common/util'
 import { getCsvDownloadingState } from '../../../ducks'
 import AssessmentChart from '../common/components/charts/AssessmentChart'
 import StudentPerformancePie from '../common/components/charts/StudentPerformancePie'
-import {
-  getReportsSPRFilterData,
-  getReportsSPRFilterLoadingState,
-} from '../common/filterDataDucks'
+import { getReportsSPRFilterData } from '../common/filterDataDucks'
 import { useGetStudentMasteryData } from '../common/hooks'
 import {
   augementAssessmentChartData,
@@ -73,7 +70,6 @@ const StudentProfileSummary = ({
   location,
   pageTitle,
   history,
-  reportsSPRFilterLoadingState,
   sharedReport,
   t,
   toggleFilter,
@@ -217,7 +213,7 @@ const StudentProfileSummary = ({
         },
       })
   }
-  if (loading || reportsSPRFilterLoadingState) {
+  if (loading) {
     return <SpinLoader position="fixed" />
   }
 
@@ -337,7 +333,6 @@ const withConnect = connect(
     error: getReportsStudentProfileSummaryError(state),
     SPRFilterData: getReportsSPRFilterData(state),
     isCsvDownloading: getCsvDownloadingState(state),
-    reportsSPRFilterLoadingState: getReportsSPRFilterLoadingState(state),
   }),
   {
     getStudentProfileSummaryRequest: getStudentProfileSummaryRequestAction,

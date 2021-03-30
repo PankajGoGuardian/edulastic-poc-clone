@@ -63,7 +63,7 @@ function KeypadDropdown({
       overrideSettings('keypad', {
         type: 'custom',
         value: customKeypads[customKeypadIndex],
-        update: true,
+        updated: true,
       })
       return
     }
@@ -75,7 +75,7 @@ function KeypadDropdown({
       overrideSettings('keypad', {
         type: 'predefined',
         value: predefinedKeypads[predefinedIndex].value,
-        update: true,
+        updated: true,
       })
       return
     }

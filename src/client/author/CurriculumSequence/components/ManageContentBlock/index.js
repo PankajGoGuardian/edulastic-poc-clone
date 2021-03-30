@@ -9,6 +9,7 @@ import React, { useCallback, useEffect, useState, useRef } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
+import { getFromLocalStorage } from '@edulastic/api/src/utils/Storage'
 import {
   getCurrentDistrictUsersAction,
   getCurrentDistrictUsersSelector,
@@ -37,6 +38,7 @@ import TestPreviewModal from '../../../Assignments/components/Container/TestPrev
 import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/test'
 import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
 import { getInterestedCurriculumsByOrgType } from '../../../src/selectors/user'
+import { updateRecentStandardsAction } from '../../../src/actions/dictionaries'
 
 const resourceTabs = ['tests', 'resources']
 
@@ -97,6 +99,7 @@ const ManageContentBlock = (props) => {
     setAlignment,
     setSelectedStandards,
     setResourceSearch,
+    updateRecentStandardAction,
   } = props
 
   const {
@@ -150,7 +153,15 @@ const ManageContentBlock = (props) => {
     return () => setSearchByTab('tests')
   }, [])
 
+  const updateRecentStandards = () => {
+    const recentStandards = JSON.parse(
+      getFromLocalStorage('recentStandards') || '[]'
+    )
+    updateRecentStandardAction(recentStandards)
+  }
+
   const onChange = ({ key }) => {
+    updateRecentStandards()
     switch (key) {
       case '1':
         setWebsiteUrlResourceModal(true)
@@ -567,6 +578,7 @@ const enhance = compose(
       setAlignment: slice.actions.setAlignmentAction,
       setSelectedStandards: slice.actions.setSelectedStandardsAction,
       setResourceSearch: slice.actions.setResourceSearchAction,
+      updateRecentStandardAction: updateRecentStandardsAction,
     }
   )
 )

@@ -20,7 +20,8 @@
 		"termId": "",
     "courseIds": "",
     "grade": "All",
-		"subject": "All",
+    "subject": "All",
+    "classIds": "",
     "performanceBandProfileId": "",
     "standardsProficiencyProfileId": ""
 	},

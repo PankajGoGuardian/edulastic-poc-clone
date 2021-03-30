@@ -173,6 +173,8 @@ export const ADD_TYPE_BASED_DIFFERENTIATION_RESOURCES =
   '[differentiation] add differentiation resources'
 export const REMOVE_TYPE_BASED_DIFFERENTIATION_RESOURCES =
   '[differentiation] remove differentiation resources'
+export const CLEAR_ALL_DIFFERENTIATION_RESOURCES =
+  '[differentiation] clear all differentiation resources'
 export const ADD_TEST_TO_DIFFERENTIATION = '[differentiation] add test'
 export const REMOVE_RESOURCE_FROM_DIFFERENTIATION =
   '[differentiation] remove resource'
@@ -311,6 +313,9 @@ export const addDifferentiationResourcesAction = createAction(
 )
 export const removeDifferentiationResourcesAction = createAction(
   REMOVE_TYPE_BASED_DIFFERENTIATION_RESOURCES
+)
+export const clearAllDiffenrentiationResourcesAction = createAction(
+  CLEAR_ALL_DIFFERENTIATION_RESOURCES
 )
 export const addRecommendationsAction = createAction(
   ADD_RECOMMENDATIONS_ACTIONS
@@ -2695,6 +2700,9 @@ export default createReducer(initialState, {
       state.differentiationResources?.[type]?.filter(
         (x) => x.contentId !== contentId
       ) || []
+  },
+  [CLEAR_ALL_DIFFERENTIATION_RESOURCES]: (state) => {
+    state.differentiationResources = {}
   },
   [ADD_TEST_TO_DIFFERENTIATION]: (state, { payload }) => {
     const { type, testId, masteryRange, title, testStandards } = payload

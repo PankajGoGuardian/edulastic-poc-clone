@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { useDrop } from 'react-dnd'
-import { Popover } from 'antd'
-import { groupBy, compact, isEmpty } from 'lodash'
+import { Popover, Row, Col } from 'antd'
+import { groupBy, compact, isEmpty, isUndefined } from 'lodash'
 import { EduButton, FlexContainer, notification } from '@edulastic/common' //  ProgressBar,
 import { IconClose, IconUser } from '@edulastic/icons'
 // import { themeColorLighter, borderGrey } from "@edulastic/colors";
@@ -289,8 +289,14 @@ const InnerWorkTable = ({
       ),
       dataIndex: 'standardIdentifier',
       key: 'standardIdentifier',
-      render: (s, record) =>
-        record.testId || record.contentId ? (
+      render: (s, record) => {
+        const isTest = !!record.testId
+
+        if (isTest) {
+          return <Tags tags={['Custom Test']} />
+        }
+
+        return record.testId || record.contentId ? (
           record?.testStandards?.length ? (
             <Tags tags={record.testStandards} show={1} />
           ) : (
@@ -298,7 +304,8 @@ const InnerWorkTable = ({
           )
         ) : (
           <Tag marginRight="10px">{s}</Tag>
-        ),
+        )
+      },
     },
     {
       title: '',
@@ -319,7 +326,10 @@ const InnerWorkTable = ({
             >
               {record.description}
             </StyledDescription>
-            <div data-cy={`${type}-testDropContainer`} style={{ width: '100%' }}>
+            <div
+              data-cy={`${type}-testDropContainer`}
+              style={{ width: '100%' }}
+            >
               {showNewActivity && activeHoverIndex === index && (
                 <ContentDropContainer
                   data-cy={`${type}-newActivityDropContainer`}
@@ -342,11 +352,19 @@ const InnerWorkTable = ({
     //   render: p => getProgressBar(p)
     // },
     {
-      title: 'NOT STARTED',
+      title: 'STARTED',
       dataIndex: 'notStartedCount',
       key: 'notStartedCount',
       width: '130px',
-      render: (s) => (s !== undefined ? `${s} Students` : null),
+      render: (s) => {
+        if (isUndefined(s) || !filteredStudentList?.length) {
+          return null
+        }
+
+        return `${Math.ceil(
+          ((filteredStudentList.length - s) / filteredStudentList.length) * 100
+        )}%`
+      },
     },
     {
       title: '',
@@ -354,7 +372,14 @@ const InnerWorkTable = ({
       dataIndex: 'status',
       width: '145px',
       align: 'center',
-      render: (s) => <Tag>{s === 'ADDED' ? 'ASSIGNED' : s}</Tag>,
+      render: (s, record) => {
+        // For tests, if not already assigned, don't show the status.
+        if (!!record.testId && s !== 'ADDED') {
+          return null
+        }
+
+        return <Tag>{s === 'ADDED' ? 'ASSIGNED' : s}</Tag>
+      },
     },
     {
       title: '',
@@ -549,14 +574,18 @@ const InnerWorkTable = ({
           isCommonStudentResources
         />
         {showSupportingResource && (
-          <ContentDropContainer
-            dropType="TOP_LEVEL_STUDENT_RESOURCE"
-            type={type}
-            addDifferentiationResources={addDifferentiationResources}
-            data-cy={`${type}-studentResourceDropContainer`}
-          >
-            Student Resource
-          </ContentDropContainer>
+          <Row gutter={16} align="middle">
+            <Col md={8}>
+              <ContentDropContainer
+                dropType="TOP_LEVEL_STUDENT_RESOURCE"
+                type={type}
+                addDifferentiationResources={addDifferentiationResources}
+                data-cy={`${type}-studentResourceDropContainer`}
+              >
+                Student Resource
+              </ContentDropContainer>
+            </Col>
+          </Row>
         )}
       </CommonStudentResourcesContainer>
 

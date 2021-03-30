@@ -509,7 +509,9 @@ const enhance = compose(
       isContentExpanded: state.curriculumSequence?.isContentExpanded,
       destinationCurriculumSequence:
         state.curriculumSequence?.destinationCurriculumSequence,
-      isStudent: state.user?.user?.role === userRoles.STUDENT,
+      isStudent: [userRoles.STUDENT, userRoles.PARENT].includes(
+        state.user?.user?.role
+      ),
       currentUserId: getUserId(state),
     }),
     mapDispatchToProps

@@ -1043,7 +1043,7 @@ const enhance = compose(
       collections: getCollectionsSelector(state),
       features: getUserFeatures(state),
       isPublisherUser: isPublisherUserSelector(state),
-      isStudent: getUserRole(state) === 'student',
+      isStudent: ['student', 'parent'].includes(getUserRole(state)),
       isTeacher: getUserRole(state) === 'teacher',
       role: getUserRole(state),
       playlistMetricsList: state?.curriculumSequence?.playlistMetrics,
@@ -1140,7 +1140,7 @@ const StyledFlexContainer = styled(FlexContainer)`
 
 export const ContentContainer = styled.div`
   width: ${({ showRightPanel }) =>
-    showRightPanel ? 'calc(100% - 400px)' : '100%'};
+    showRightPanel ? 'calc(100% - 360px)' : '100%'};
   padding-right: 5px;
   margin: 0px;
   margin-right: 10px;

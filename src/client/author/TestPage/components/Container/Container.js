@@ -76,6 +76,7 @@ import {
   isOrganizationDistrictUserSelector,
   getWritableCollectionsSelector,
   isOrganizationDistrictSelector,
+  isPremiumUserSelector,
 } from '../../../src/selectors/user'
 import SourceModal from '../../../QuestionEditor/components/SourceModal/SourceModal'
 import ShareModal from '../../../src/components/common/ShareModal'
@@ -462,10 +463,10 @@ class Container extends PureComponent {
     }
   }
 
-  handleChangeKeypad = (grades) => {
-    const { setData, test: { keypad = {} } = {} } = this.props
+  handleChangeKeypad = (grades, updated = false) => {
+    const { setData, test: { keypad = {} } = {}, isPremiumUser } = this.props
 
-    if (isEmpty(keypad) || keypad.updated === false) {
+    if (isPremiumUser && (isEmpty(keypad) || keypad.updated === false)) {
       const highestGrade = grades.reduce((acc, curr) => {
         const currentGrade = parseInt(curr, 10)
         if (currentGrade > acc) {
@@ -473,24 +474,24 @@ class Container extends PureComponent {
         }
         return acc
       }, 0)
-      if (highestGrade === 0) {
+      if (highestGrade > 0 && highestGrade <= 5) {
         setData({
-          keypad: {
-            type: 'item-level',
-            value: 'item-level-keypad',
-            updated: false,
-          },
-        })
-      } else if (highestGrade <= 5) {
-        setData({
-          keypad: { updated: false, type: 'predefined', value: 'basic' },
+          keypad: { updated, type: 'predefined', value: 'basic' },
         })
       } else if (highestGrade > 5 && highestGrade <= 12) {
         setData({
           keypad: {
-            updated: false,
+            updated,
             type: 'predefined',
             value: 'intermediate',
+          },
+        })
+      } else {
+        setData({
+          keypad: {
+            type: 'item-level',
+            value: 'item-level-keypad',
+            updated,
           },
         })
       }
@@ -510,7 +511,7 @@ class Container extends PureComponent {
       subjects: itemsSubjectAndGrade.subjects,
       grades: [],
     })
-    this.handleChangeKeypad(grades)
+    this.handleChangeKeypad(grades, true)
   }
 
   handleChangeCollection = (_, options) => {
@@ -1338,6 +1339,7 @@ const enhance = compose(
       isOrganizationDistrictUser: isOrganizationDistrictUserSelector(state),
       isOrganizationDA: isOrganizationDistrictSelector(state),
       languagePreference: getSelectedLanguageSelector(state),
+      isPremiumUser: isPremiumUserSelector(state),
     }),
     {
       createTest: createTestAction,

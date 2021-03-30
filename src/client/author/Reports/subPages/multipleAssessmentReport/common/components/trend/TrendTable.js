@@ -1,7 +1,7 @@
 import { Col, Row } from 'antd'
 import { capitalize, groupBy, map, values, isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { useMemo } from 'react'
 import qs from 'qs'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
@@ -199,9 +199,7 @@ const getColumns = (
       title: testName,
       assessmentDate,
       align: 'center',
-      className: 'normal-text',
       dataIndex: 'tests',
-      width: 120,
       render: (tests = {}, record) => {
         const currentTest = tests[testId]
 
@@ -262,8 +260,7 @@ const getColumns = (
             title: 'Domain',
             align: 'left',
             fixed: 'left',
-            width: 180,
-            className: 'class-name-column',
+            width: 120,
             dataIndex: 'domain',
             sorter: (a, b) => {
               const keyword = 'domain'
@@ -275,8 +272,8 @@ const getColumns = (
           {
             key: 'standardId',
             title: 'Standard',
-            width: 180,
-            className: 'class-name-column',
+            fixed: 'left',
+            width: 120,
             dataIndex: 'standard',
             render: (data, record) => {
               const { termId, grade, subject } = filters
@@ -420,6 +417,8 @@ const TrendTable = ({
   )
   const groupedAvailableTests = groupBy(rawMetric, 'testId')
 
+  const scrollX = useMemo(() => columns.length * 120 || '100%', [columns])
+
   return (
     <StyledCard>
       <Row>
@@ -435,7 +434,7 @@ const TrendTable = ({
           colouredCellsNo={values(groupedAvailableTests).length}
           onCsvConvert={onCsvConvert}
           isCsvDownloading={isCsvDownloading}
-          scroll={{ x: '100%' }}
+          scroll={{ x: scrollX }}
           tableToRender={StyledTable}
           pagination={isCsvDownloading ? undefined : false}
         />

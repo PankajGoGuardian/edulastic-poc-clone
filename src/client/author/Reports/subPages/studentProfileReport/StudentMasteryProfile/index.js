@@ -261,13 +261,14 @@ const StudentMasteryProfile = ({
             </FlexContainer>
           </FlexContainer>
         </ReStyledCard>
-        <ReStyledCard maxW="300px" ml="20px">
+        <ReStyledCard maxW="50%" ml="20px">
           <StudentPerformancePie
             selectedMastery={selectedMastery}
             data={filteredStandards}
             scaleInfo={scaleInfo}
             onSectionClick={onSectionClick}
             getTooltip={getTooltip}
+            showAsRow
           />
         </ReStyledCard>
       </FlexContainer>
@@ -297,7 +298,10 @@ const StudentMasteryProfile = ({
               prefix="Domain(s)"
             />
           </DropdownContainer>
-          <StyledButton onClick={() => setExpandRows(!expandRows)}>
+          <StyledButton
+            onClick={() => setExpandRows(!expandRows)}
+            data-cy="expand-row"
+          >
             <IconCollapse2 color={themeColor} width={12} height={12} />
             <span className="button-label">
               {expandRows ? 'COLLAPSE' : 'EXPAND'} ROWS

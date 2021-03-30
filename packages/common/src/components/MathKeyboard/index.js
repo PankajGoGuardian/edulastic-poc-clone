@@ -137,17 +137,20 @@ class MathKeyboard extends React.PureComponent {
       showResponse,
       showDropdown,
       docBasedKeypadStyles,
+      showDragHandle,
     } = this.props
     const { type, keyboardButtons, numberButtons, selectOptions } = this.state
     return (
       <MathKeyboardContainer docBasedKeypadStyles={docBasedKeypadStyles}>
-        <FlexContainer
-          justifyContent="center"
-          alignItems="center"
-          cursor="move"
-        >
-          <IconMoveArrows color={lightGrey9} width={19} height={19} />
-        </FlexContainer>
+        {showDragHandle && (
+          <FlexContainer
+            justifyContent="center"
+            alignItems="center"
+            cursor="move"
+          >
+            <IconMoveArrows color={lightGrey9} width={19} height={19} />
+          </FlexContainer>
+        )}
         <KeyboardHeader
           options={selectOptions}
           showResponse={showResponse}
@@ -183,6 +186,7 @@ MathKeyboard.propTypes = {
   onInput: PropTypes.func,
   onChangeKeypad: PropTypes.func,
   dynamicVariableInput: PropTypes.bool,
+  showDragHandle: PropTypes.bool,
 }
 
 MathKeyboard.defaultProps = {
@@ -194,6 +198,7 @@ MathKeyboard.defaultProps = {
   onInput: () => null,
   onChangeKeypad: () => null,
   dynamicVariableInput: false,
+  showDragHandle: true,
 }
 
 export default MathKeyboard

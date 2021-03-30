@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 import { Checkbox } from 'antd'
 import { title, themeColor } from '@edulastic/colors'
+import { CustomModalStyled } from '@edulastic/common'
 
 export const FilterContainer = styled.div`
   margin-bottom: 20px;
@@ -19,6 +20,11 @@ export const Title = styled.div`
   font-weight: 700;
   margin: 15px 0px 5px;
   user-select: none;
+`
+export const CustomModal = styled(CustomModalStyled)`
+  .ant-modal-title {
+    text-transform: capitalize;
+  }
 `
 
 export const FlexRow = styled.div`

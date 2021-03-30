@@ -87,6 +87,9 @@ const slice = createSlice({
     fetchTests: (state) => {
       state.isLoading = true
     },
+    fetchResources: (state) => {
+      state.isLoading = true
+    },
     fetchTestsSuccess: (state, { payload }) => {
       state.isLoading = false
       if (state.loadedPage === 0) {
@@ -290,6 +293,8 @@ function* addResourceSaga({ payload }) {
   try {
     yield call(resourcesApi.addResource, payload)
     yield put(slice.actions.resetSelectedStandards())
+    // delay reources fetch so that the added resource gets indexed in ES
+    yield delay(500)
     yield put(slice.actions.resetAndSearchResources())
     notification({ type: 'success', msg: 'Resource Created Successfuly!' })
   } catch (e) {
@@ -308,7 +313,7 @@ function* searchResourceSaga() {
 
     const selectedStandardIds = selectedStandards?.map((x) => x._id) || []
     const data = {
-      page: loadedPage,
+      page: loadedPage + 1,
       limit: LIMIT,
       search: {
         searchString,
@@ -347,5 +352,6 @@ export function* watcherSaga() {
     yield takeEvery(slice.actions.searchResource, searchResourceSaga),
     yield takeEvery(slice.actions.resetAndSearchResources, searchResourceSaga),
     yield takeEvery(slice.actions.setResourceSearchAction, searchResourceSaga),
+    yield takeEvery(slice.actions.fetchResources, searchResourceSaga),
   ])
 }

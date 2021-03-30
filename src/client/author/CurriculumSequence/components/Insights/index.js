@@ -1,6 +1,6 @@
 import { themeColor, white } from '@edulastic/colors'
 import { withWindowSizes } from '@edulastic/common'
-import { IconFilter } from '@edulastic/icons'
+import { IconCloseFilter, IconFilter } from '@edulastic/icons'
 import { Col, Row, Spin } from 'antd'
 import { get } from 'lodash'
 import React, { useEffect, useState } from 'react'
@@ -58,11 +58,10 @@ const Insights = ({
   currentPlaylist,
   playlistInsights,
   studentProgress,
-  fetchPlaylistInsightsAction,
-  getStudentProgressRequestAction,
+  fetchPlaylistInsightsAction: _fetchPlaylistInsightsAction,
+  getStudentProgressRequestAction: _getStudentProgressRequestAction,
   loading,
   loadingProgress,
-  windowWidth,
 }) => {
   const { _id: playlistId, modules } = currentPlaylist
 
@@ -73,7 +72,7 @@ const Insights = ({
   // fetch playlist insights
   useEffect(() => {
     if (playlistId) {
-      fetchPlaylistInsightsAction({ playlistId })
+      _fetchPlaylistInsightsAction({ playlistId })
     }
   }, [playlistId])
 
@@ -83,24 +82,24 @@ const Insights = ({
       get(user, 'orgData.defaultTermId', '') ||
       get(user, 'orgData.terms', [])?.[0]?._id
     if (overallProgressCheck && termId) {
-      getStudentProgressRequestAction({ termId, insights: true })
+      _getStudentProgressRequestAction({ termId, insights: true })
     } else if (playlistId && termId) {
       if (filters.modules.length) {
         const playlistModuleIds = filters.modules.map((i) => i.key).join(',')
-        getStudentProgressRequestAction({
+        _getStudentProgressRequestAction({
           termId,
           playlistId,
           playlistModuleIds,
           insights: true,
         })
       } else {
-        getStudentProgressRequestAction({ termId, playlistId, insights: true })
+        _getStudentProgressRequestAction({ termId, playlistId, insights: true })
       }
     }
   }, [overallProgressCheck, playlistId, filters.modules])
 
   const { metricInfo: progressInfo } = get(studentProgress, 'data.result', {})
-  const [trendData, trendCount] = useGetBandData(
+  const [trendData] = useGetBandData(
     progressInfo || [],
     'student',
     [],
@@ -154,13 +153,13 @@ const Insights = ({
           showFilter={showFilter}
           variant="filter"
           onClick={toggleFilter}
+          data-cy="smart-filter"
         >
-          <IconFilter
-            data-cy="smart-filter"
-            color={showFilter ? white : themeColor}
-            width={20}
-            height={20}
-          />
+          {showFilter ? (
+            <IconCloseFilter />
+          ) : (
+            <IconFilter width={20} height={20} />
+          )}
         </FilterIcon>
         <StyledCol>
           {loadingProgress ? (

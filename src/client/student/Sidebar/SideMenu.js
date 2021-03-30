@@ -54,7 +54,6 @@ const menuItems = [
     icon: IconReport,
     path: 'home/grades',
   },
-  // TODO: uncomment once the backend query for student mastery profile reports is fixed
   {
     label: 'Skill Mastery',
     icon: IconBarChart,

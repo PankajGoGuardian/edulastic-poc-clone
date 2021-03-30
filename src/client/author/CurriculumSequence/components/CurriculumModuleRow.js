@@ -55,6 +55,7 @@ import {
   PlaylistResourceRow,
   SubResource,
   AddResourceToPlaylist,
+  AddNewActivityToPlaylist,
 } from './PlaylistResourceRow'
 import PlaylistTestDetailsModal from './PlaylistTestDetailsModal'
 import AssignmentsClasses from './AssignmentsClasses'
@@ -163,11 +164,15 @@ const SortableElement = sortableElement((props) => {
     <OuterDropContainer>
       <ResourceActivity {...props} />
       <AddResourceToPlaylist
-        onDrop={onDrop}
         index={id}
         moduleIndex={moduleIndex}
         isTestType={isTestType}
         fromPlaylist={fromPlaylist}
+      />
+      <AddNewActivityToPlaylist
+        index={id}
+        moduleIndex={moduleIndex}
+        onDrop={onDrop}
       />
     </OuterDropContainer>
   )
@@ -298,7 +303,10 @@ class ModuleRow extends Component {
       resumeAssignment,
       playlistId,
       history,
+      userRole,
     } = this.props
+
+    const isParent = userRole === roleuser.PARENT
     const testId = uta.testId || moduleData.contentId
     if (isAssigned) {
       // TODO: filter out the assignments in assignmentRows by classIds in case of multiple assignments
@@ -324,6 +332,7 @@ class ModuleRow extends Component {
         },
         redirect: uta.redirect,
         attempts: uta.totalAttempts,
+        hideButton: isParent,
       }
       const isRedirected = assignmentRows.find((el) => el.redirect)
       if (isRedirected && uta.redirect) {
@@ -393,6 +402,7 @@ class ModuleRow extends Component {
           moduleId,
           playlistId,
         },
+        hideButton: isParent,
       }
 
       if (uta.testActivityId && uta.taStatus !== testActivityStatus.SUBMITTED) {
@@ -589,7 +599,7 @@ class ModuleRow extends Component {
     const { selectedTest } = this.state
     const { assignTest } = this
     const { _id, data = [] } = module
-    const isParentRoleProxy = proxyUserRole === 'parent'
+    const isParentRoleProxy = proxyUserRole === roleuser.PARENT
 
     const contentData =
       urlHasUseThis || isStudent
@@ -1268,7 +1278,7 @@ const enhance = compose(
       isContentExpanded: curriculumSequence.isContentExpanded,
       assigned: curriculumSequence.assigned,
       userRole: getUserRole({ user }),
-      isStudent: getUserRole({ user }) === 'student',
+      isStudent: ['student', 'parent'].includes(getUserRole({ user })),
       classId: getCurrentGroup({ user }),
       playlistTestDetailsModalData:
         curriculumSequence?.playlistTestDetailsModal,

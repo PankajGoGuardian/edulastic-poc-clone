@@ -13,7 +13,12 @@ import {
   withWindowSizes,
   notification,
 } from '@edulastic/common'
-import { IconInterface, IconFilter, IconPlusCircle } from '@edulastic/icons'
+import {
+  IconInterface,
+  IconFilter,
+  IconPlusCircle,
+  IconCloseFilter,
+} from '@edulastic/icons'
 import { themeColorBlue } from '@edulastic/colors'
 import GradebookFilters from './Gradebook/GradebookFilters'
 import GradebookTable from './Gradebook/GradebookTable'
@@ -293,13 +298,17 @@ const Gradebook = ({
               />
             </ScrollbarContainer>
           )}
-          <FilterButton showFilter={showFilter} onClick={toggleShowFilter}>
-            <IconFilter
-              data-test={showFilter ? 'expanded' : 'collapsed'}
-              data-cy="smart-filter"
-              width={20}
-              height={20}
-            />
+          <FilterButton
+            showFilter={showFilter}
+            onClick={toggleShowFilter}
+            data-test={showFilter ? 'expanded' : 'collapsed'}
+            data-cy="smart-filter"
+          >
+            {showFilter ? (
+              <IconCloseFilter />
+            ) : (
+              <IconFilter width={20} height={20} />
+            )}
           </FilterButton>
           {loading ? (
             <TableContainer showFilter={showFilter}>

@@ -35,7 +35,7 @@ import {
 import { selectsData } from '../../TestPage/components/common'
 import Alignments from './PlaylistContentFilterModal/Alignments'
 
-const defaultAlignment = {
+const defaultAlignmentValues = {
   standards: [],
   grades: [],
   domains: [],
@@ -62,8 +62,14 @@ const ResourcesAlignment = ({
   setAlignment,
   setSelectedStandards = () => {},
   isVerticalView,
+  curriculum: defaultCurriculum = '',
 }) => {
   const [showModal, setShowModal] = useState(false)
+
+  const defaultAlignment = {
+    ...defaultAlignmentValues,
+    curriculum: defaultCurriculum,
+  }
 
   const { elo: curriculumStandardsELO = [], tlo: curriculumStandardsTLO = [] } =
     curriculumStandards || {}
@@ -84,10 +90,10 @@ const ResourcesAlignment = ({
   }
 
   const {
-    subject = 'Mathematics',
-    curriculumId = 212,
-    curriculum = 'Math - Common Core',
-    grades = ['7'],
+    subject = '',
+    curriculumId,
+    curriculum = defaultCurriculum,
+    grades = [],
     standards = [],
   } = alignment || defaultAlignment
 
@@ -253,7 +259,7 @@ const ResourcesAlignment = ({
               data-cy="searchStandardSelect"
               mode="multiple"
               style={{ margin: 'auto', display: 'block' }}
-              placeholder={t('component.options.searchStandards')}
+              placeholder={t('component.options.selectResourceStandards')}
               filterOption={false}
               value={standardsArr}
               optionLabelProp="title"
@@ -292,17 +298,15 @@ const ResourcesAlignment = ({
           </IconWrapper>
         </StyledCol>
 
-        {recentStandardsList &&
-          recentStandardsList.length > 0 &&
-          !isVerticalView && (
-            <Col xs={24}>
-              <RecentStandardsList
-                recentStandardsList={recentStandardsList}
-                standardsArr={standardsArr}
-                handleAddStandard={handleAddStandard}
-              />
-            </Col>
-          )}
+        {recentStandardsList && recentStandardsList.length > 0 && (
+          <Col xs={24}>
+            <RecentStandardsList
+              recentStandardsList={recentStandardsList}
+              standardsArr={standardsArr}
+              handleAddStandard={handleAddStandard}
+            />
+          </Col>
+        )}
       </Row>
       {showModal && (
         <StandardsModal
@@ -340,7 +344,7 @@ const enhance = compose(
       defaultCurriculumName: get(state, 'dictionaries.defaultCurriculumName'),
       formattedCuriculums: getFormattedCurriculumsSelector(
         state,
-        props.alignment || defaultAlignment
+        props.alignment || defaultAlignmentValues
       ),
       recentStandardsList: getRecentStandardsListSelector(state),
     }),

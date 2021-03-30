@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { FieldLabel, notification, TextInputStyled } from '@edulastic/common'
 import PropTypes from 'prop-types'
+import { storeInLocalStorage } from '@edulastic/api/src/utils/Storage'
 import EdulasticResourceModal from '../common/EdulasticResourceModal'
 import ResourcesAlignment from '../../../ResourcesAlignment'
 import { FlexRow } from '../../styled'
@@ -39,6 +40,10 @@ const ExternalVideoLink = (props) => {
     const validationStatus = validateFields()
     const selectedStandardIds = selectedStandards?.map((x) => x._id) || []
     if (!validationStatus) {
+      storeInLocalStorage(
+        'recentStandards',
+        JSON.stringify({ recentStandards: selectedStandards || [] })
+      )
       addResource({
         contentTitle: title,
         contentDescription: description,

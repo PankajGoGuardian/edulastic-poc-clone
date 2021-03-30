@@ -148,7 +148,7 @@ function capitalizeIt(str) {
 
 function getStudentFilterCategory(x) {
   if (x.isEnrolled === false) {
-    return 'UNENROLLED'
+    return 'UNASSIGNED'
   }
   if (x.isAssigned === false) {
     return 'UNASSIGNED'
@@ -1046,7 +1046,7 @@ class ClassBoard extends Component {
       status === 0
     ) {
       studentResponse.questionActivities.forEach((uqa) => {
-        if(!uqa.isPractice){
+        if (!uqa.isPractice) {
           score += uqa.score
           maxScore += uqa.maxScore
         }

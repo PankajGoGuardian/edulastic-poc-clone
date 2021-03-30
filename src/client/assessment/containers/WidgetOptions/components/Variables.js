@@ -250,7 +250,7 @@ class Variables extends Component {
       const factor = 10 ** decimal
       // generate unique available random values based on range
       const available = []
-      Array.from(Array(max-min+1)).forEach(() => {
+      Array.from(Array(max - min + 1)).forEach(() => {
         available.push(getRangeValue(min, max, factor, available))
       })
       // choose a value from available values by index

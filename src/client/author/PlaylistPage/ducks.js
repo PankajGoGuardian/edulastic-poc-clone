@@ -450,7 +450,6 @@ function resequenceModulesInPlaylist(playlist, payload) {
 
 function resequenceTestsInModule(playlist, payload) {
   const { oldIndex, newIndex, mIndex } = payload
-  console.log('playlist', playlist)
   const newPlaylist = produce(playlist, (draft) => {
     const obj = draft.modules[mIndex].data.splice(oldIndex, 1)
     draft.modules[mIndex].data.splice(newIndex, 0, obj[0])
@@ -907,6 +906,10 @@ function* updatePlaylistSaga({ payload }) {
       })
       return mod
     })
+
+    if (!dataToSend.skin) {
+      delete dataToSend.skin
+    }
 
     const entity = yield call(curriculumSequencesApi.update, {
       id: oldId,

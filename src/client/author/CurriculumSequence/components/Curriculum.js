@@ -1,15 +1,15 @@
-import { themeColor, white } from '@edulastic/colors'
+import { themeColor, white, lightGrey9 } from '@edulastic/colors'
 import PropTypes from 'prop-types'
 import React, { useState, useEffect, useCallback } from 'react'
 import { Prompt } from 'react-router-dom'
-import { FaBars } from 'react-icons/fa'
+import { IconMoveArrows, IconPlusCircle } from '@edulastic/icons'
 import {
   sortableContainer,
   sortableElement,
   sortableHandle,
 } from 'react-sortable-hoc'
 import styled from 'styled-components'
-import { IconPlusCircle } from '@edulastic/icons'
+
 import DropContainer from '../../../assessment/components/DropContainer'
 import { themes } from '../../../theme'
 import CurriculumModuleRow from './CurriculumModuleRow'
@@ -24,7 +24,7 @@ import CurriculumModuleRow from './CurriculumModuleRow'
 export const SortableTestsHandle = sortableHandle(({ clickHandle }) => (
   <DragHandle onClick={(e) => clickHandle(e)}>
     <IconHandle>
-      <FaBars />
+      <IconMoveArrows color={lightGrey9} width={17} height={17} />
     </IconHandle>
   </DragHandle>
 ))
@@ -305,6 +305,7 @@ const DragHandle = styled.div`
 const IconHandle = styled.span`
   font-size: 16px;
   margin-top: 10px;
+  cursor: move;
 `
 
 const AddNewOrManageModules = styled.div`

@@ -50,7 +50,7 @@ const PlaylistCard = ({
 }) => {
   const grade = first(_source.grades)
   const { thumbnail, skin } = _source
-  const isSparkMathSkin = skin === 'SPARK'
+  const isFullSizeImage = skin === 'FULL_SIZE'
   const isDraft = status === 'draft'
 
   const playListId = testItemId ? (
@@ -86,7 +86,7 @@ const PlaylistCard = ({
     </ShareIcon>
   )
 
-  if (isSparkMathSkin) {
+  if (isFullSizeImage) {
     return (
       <FullSizeThumbnailCard
         isPlaylist

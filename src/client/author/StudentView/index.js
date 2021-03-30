@@ -206,24 +206,36 @@ class StudentViewContainer extends Component {
     const totalNumber = activeQuestions.length
 
     const correctNumber = activeQuestions.filter(
-      (x) => x.score === x.maxScore && x.score > 0
+      (x) => !x.isPractice && x.score === x.maxScore && x.score > 0
     ).length
 
     const wrongNumber = activeQuestions.filter(
-      (x) => x.score === 0 && x.maxScore > 0 && x.graded && !x.skipped
+      (x) =>
+        !x.isPractice &&
+        x.score === 0 &&
+        x.maxScore > 0 &&
+        x.graded &&
+        !x.skipped
     ).length
 
     const partiallyCorrectNumber = activeQuestions.filter(
-      (x) => x.score > 0 && x.score < x.maxScore
+      (x) => !x.isPractice && x.score > 0 && x.score < x.maxScore
     ).length
 
     const skippedNumber = activeQuestions.filter(
-      (x) => x.skipped && x.score === 0
+      (x) => !x.isPractice && x.skipped && x.score === 0
     ).length
 
     const notGradedNumber = activeQuestions.filter(
-      (x) => !x.skipped && x.graded === false
+      (x) => !x.isPractice && !x.skipped && x.graded === false
     ).length
+    const unscoredItems =
+      totalNumber -
+      correctNumber -
+      wrongNumber -
+      partiallyCorrectNumber -
+      skippedNumber -
+      notGradedNumber
 
     const studentTestActivity = studentResponse && studentResponse.testActivity
     const initFeedbackValue =
@@ -329,6 +341,12 @@ class StudentViewContainer extends Component {
                 onClick={() => this.onClickTab('skipped')}
               >
                 SKIPPED ({skippedNumber})
+              </WrongButton>
+              <WrongButton
+                active={filter === 'unscoredItems'}
+                onClick={() => this.onClickTab('unscoredItems')}
+              >
+                UNSCORED ({unscoredItems})
               </WrongButton>
               <PartiallyCorrectButton
                 active={filter === 'notGraded'}

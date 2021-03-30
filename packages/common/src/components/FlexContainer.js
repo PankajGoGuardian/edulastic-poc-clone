@@ -20,6 +20,7 @@ const FlexContainer = styled.div`
   height: ${({ height }) => height || null};
   flex: ${({ flex }) => flex || null};
   ${({ flexProps }) => flexProps};
+  cursor: ${({ cursor }) => cursor || null};
   div:not(.fr-element.fr-view) p {
     padding: 6px 0px;
   }

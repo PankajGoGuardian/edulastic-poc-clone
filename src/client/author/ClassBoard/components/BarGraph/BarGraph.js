@@ -83,6 +83,13 @@ const bars = {
     dataKey: 'manualGradedNum',
     fill: darkBlue2,
   },
+  unscoredItems: {
+    className: 'unscoredItems',
+    yAxisId: 'left',
+    stackId: 'a',
+    dataKey: 'unscoredItems',
+    fill: linkColor1,
+  },
 }
 
 /**
@@ -220,6 +227,9 @@ class BarGraph extends Component {
             if (studentViewFilter === 'notGraded' && x.manualGradedNum > 0) {
               return true
             }
+            if (studentViewFilter === 'unscoredItems' && x.unscoredItems > 0) {
+              return true
+            }
             return false
           })
         }
@@ -245,6 +255,7 @@ class BarGraph extends Component {
           partialAttempts: item.partialNum || 0,
           incorrectAttemps: item.wrongNum,
           manualGradedNum: item.manualGradedNum,
+          unscoredItems: item.unscoredItems,
           avgTimeSpent: item.avgTimeSpent || 0,
           itemLevelScoring: item.itemLevelScoring,
           skippedNum: item.skippedNum,

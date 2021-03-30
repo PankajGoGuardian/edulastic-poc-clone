@@ -236,12 +236,15 @@ class QuestionViewContainer extends Component {
             pCorrect: 0,
             skipped: 0,
             manuallyGraded: 0,
+            unscoredItems: 0,
             score: 0,
           }
           st.questionActivities
             .filter(({ notStarted, _id }) => !notStarted && _id === question.id)
-            .forEach(({ skipped, graded, score, maxScore }) => {
-              if (skipped) {
+            .forEach(({ skipped, graded, score, maxScore, isPractice }) => {
+              if (isPractice) {
+                stData.unscoredItems += 1
+              } else if (skipped) {
                 stData.skipped += 1
               } else if (graded === false) {
                 stData.manuallyGraded += 1
@@ -267,6 +270,7 @@ class QuestionViewContainer extends Component {
       s: skippedNumber,
       n: notGradedNumber,
       t: totalNumber,
+      u: unscoredItems,
     } = data.reduce(
       (acc, item) => ({
         w: item.wrong + acc.w,
@@ -274,15 +278,17 @@ class QuestionViewContainer extends Component {
         p: item.pCorrect + acc.p,
         s: item.skipped + acc.s,
         n: item.manuallyGraded + acc.n,
+        u: item.unscoredItems + acc.u,
         t:
           item.wrong +
           item.correct +
           item.pCorrect +
           item.skipped +
           item.manuallyGraded +
+          item.unscoredItems +
           acc.t,
       }),
-      { c: 0, w: 0, p: 0, s: 0, n: 0, t: 0 }
+      { c: 0, w: 0, p: 0, s: 0, n: 0, u: 0, t: 0 }
     )
 
     if (isMobile) {
@@ -385,6 +391,14 @@ class QuestionViewContainer extends Component {
                   onClick={this.onClickChart}
                 />
                 <Bar
+                  className="unscoredItems"
+                  style={{ cursor: 'pointer' }}
+                  stackId="a"
+                  dataKey="unscoredItems"
+                  fill={skippedBarColor}
+                  onClick={this.onClickChart}
+                />
+                <Bar
                   className="manuallyGraded"
                   style={{ cursor: 'pointer' }}
                   stackId="a"
@@ -437,6 +451,12 @@ class QuestionViewContainer extends Component {
                 onClick={() => this.onClickTab('skipped')}
               >
                 SKIPPED ({skippedNumber})
+              </WrongButton>
+              <WrongButton
+                active={filter === 'unscoredItems'}
+                onClick={() => this.onClickTab('unscoredItems')}
+              >
+                UNSCORED ({unscoredItems})
               </WrongButton>
               <PartiallyCorrectButton
                 active={filter === 'notGraded'}

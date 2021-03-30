@@ -44,7 +44,7 @@ const KeypadDropdown = ({
     }
 
     return keypadList
-  }, [customKeypads])
+  }, [customKeypads, initialTestKeypad.current])
 
   const allKeypadsInTest = useMemo(() => {
     return predefinedKeypads.concat(customKeypads)

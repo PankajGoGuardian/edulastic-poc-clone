@@ -338,6 +338,7 @@ class ClassList extends React.Component {
           <StyledRowLabel>
             School
             <SelectInputStyled
+              data-cy="schoolSelect"
               mode="multiple"
               placeholder="All School"
               showSearch
@@ -409,6 +410,7 @@ class ClassList extends React.Component {
           <StyledRowLabel>
             Course
             <SelectInputStyled
+              data-cy="selectCourses"
               mode="multiple"
               placeholder="All Course"
               onChange={changeField('courseIds')}
@@ -430,6 +432,7 @@ class ClassList extends React.Component {
           <StyledRowLabel>
             Show Class/Groups
             <SelectInputStyled
+              data-cy="showClassGroup"
               placeholder="All"
               onChange={this.handleClassTypeFilter}
               showSearch

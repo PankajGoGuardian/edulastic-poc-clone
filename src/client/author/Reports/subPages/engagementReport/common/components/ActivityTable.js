@@ -4,6 +4,7 @@ import next from 'immer'
 import qs from 'qs'
 
 import { Tooltip } from 'antd'
+import { roleuser } from '@edulastic/constants'
 import CsvTable from '../../../../common/components/tables/CsvTable'
 import { StyledTable, TooltipDiv } from './styled'
 
@@ -68,6 +69,9 @@ const ActivityTable = ({
     } else {
       rawColumns[0].sorter = sortText('teacherName')
       rawColumns[0].render = (text, record) => {
+        if (roleuser.DA_SA_ROLE_ARRAY.includes(record.role)) {
+          return text
+        }
         const queryStr = qs.stringify({
           ...query,
           studentGrade,

@@ -35,31 +35,6 @@ import {
 } from './ducks'
 import { StyledSelectContainer } from './styled/StyledSelectContainer'
 
-const defaultCustomKeypad = {
-  label: 'label',
-  title: '',
-  value: [
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-  ],
-}
-
 const KeyPadOptions = ({
   t,
   item,
@@ -161,11 +136,34 @@ const KeyPadOptions = ({
     }
   }, [])
 
+  useEffect(() => {
+    if (isCustom) {
+      const sameLabelKeypadIndex = allKeypads.findIndex(
+        (keypad) => keypad.label === symbol.label
+      )
+      /**
+       * when we save keypad, it gets added to the list of allKeypads,
+       * but it is not updated in the item data (symbols[0])
+       * symbols[0] would still contain previous changes without the keypad id
+       * so we need to update the item data (symbols[0]) with latest keypad data
+       */
+      if (sameLabelKeypadIndex !== -1) {
+        const data = [...(item.symbols || [])]
+        data[0] = allKeypads[sameLabelKeypadIndex]
+        onChange('symbols', data)
+      }
+    }
+  }, [allKeypads])
+
   const handleSymbolsChange = (valueIndx) => {
     const newSymbol = allKeypads[valueIndx]
     const data = [...item.symbols]
     if (newSymbol.value === 'custom') {
-      data[0] = defaultCustomKeypad
+      data[0] = {
+        title: '',
+        label: 'label',
+        value: new Array(18).fill(''),
+      }
     } else if (isArray(newSymbol.value)) {
       data[0] = newSymbol
     } else {
@@ -192,6 +190,7 @@ const KeyPadOptions = ({
       }
     }
   }
+
   const showModal = () => {
     setModalVisibility(true)
   }

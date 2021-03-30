@@ -372,7 +372,11 @@ const TestBehaviorGroupContainer = ({
               value={testContentVisibility}
             >
               {testContentVisibilityTypes.map((item) => (
-                <RadioBtn value={item.key} key={item.key}>
+                <RadioBtn
+                  data-cy={`item-visibility-${item.key}`}
+                  value={item.key}
+                  key={item.key}
+                >
                   {item.value}
                 </RadioBtn>
               ))}

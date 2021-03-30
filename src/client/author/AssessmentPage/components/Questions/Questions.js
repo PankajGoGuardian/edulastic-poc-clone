@@ -24,7 +24,8 @@ import {
 import { math } from '@edulastic/constants'
 
 import { storeInLocalStorage } from '@edulastic/api/src/utils/Storage'
-import { FaBars } from 'react-icons/fa'
+import { lightGrey9 } from '@edulastic/colors'
+import { IconMoveArrows } from '@edulastic/icons'
 import { getPreviewSelector } from '../../../src/selectors/view'
 import { checkAnswerAction } from '../../../src/actions/testItem'
 import { changePreviewAction } from '../../../src/actions/view'
@@ -54,7 +55,7 @@ const { methods, defaultNumberPad } = math
 
 const DragHandle = sortableHandle(() => (
   <StyledHandleSpan>
-    <FaBars />
+    <IconMoveArrows color={lightGrey9} width={19} height={19} />
   </StyledHandleSpan>
 ))
 

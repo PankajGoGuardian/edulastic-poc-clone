@@ -225,4 +225,7 @@ const AutoCompleteContainer = styled.div`
     font-weight: bold;
     white-space: nowrap;
   }
+  .ant-select-selection__clear {
+    background: transparent;
+  }
 `

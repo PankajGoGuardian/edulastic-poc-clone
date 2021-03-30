@@ -87,7 +87,7 @@ const ResourcesAlignment = ({
     subject = 'Mathematics',
     curriculumId = 212,
     curriculum = 'Math - Common Core',
-    grades = ['7'],
+    grades = [],
     standards = [],
   } = alignment || defaultAlignment
 

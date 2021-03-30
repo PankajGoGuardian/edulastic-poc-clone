@@ -361,7 +361,6 @@ const InnerWorkTable = ({
           return null
         }
 
-        console.log('counts', s, filteredStudentList.length)
         return `${Math.ceil(
           ((filteredStudentList.length - s) / filteredStudentList.length) * 100
         )}%`

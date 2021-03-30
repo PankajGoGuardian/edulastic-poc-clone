@@ -97,9 +97,6 @@ const ResourcesAlignment = ({
     standards = [],
   } = alignment || defaultAlignment
 
-  console.log('subject', subject)
-  console.log('grades', grades)
-
   const setSubject = (val) => {
     updateDefaultSubject(val)
     storeInLocalStorage('defaultSubject', val)

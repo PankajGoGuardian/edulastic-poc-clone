@@ -35,7 +35,7 @@ import {
 import { selectsData } from '../../TestPage/components/common'
 import Alignments from './PlaylistContentFilterModal/Alignments'
 
-const defaultAlignment = {
+const defaultAlignmentValues = {
   standards: [],
   grades: [],
   domains: [],
@@ -62,8 +62,14 @@ const ResourcesAlignment = ({
   setAlignment,
   setSelectedStandards = () => {},
   isVerticalView,
+  curriculum: defaultCurriculum = '',
 }) => {
   const [showModal, setShowModal] = useState(false)
+
+  const defaultAlignment = {
+    ...defaultAlignmentValues,
+    curriculum: defaultCurriculum,
+  }
 
   const { elo: curriculumStandardsELO = [], tlo: curriculumStandardsTLO = [] } =
     curriculumStandards || {}
@@ -84,12 +90,15 @@ const ResourcesAlignment = ({
   }
 
   const {
-    subject = 'Mathematics',
-    curriculumId = 212,
-    curriculum = 'Math - Common Core',
-    grades = ['7'],
+    subject = '',
+    curriculumId,
+    curriculum = defaultCurriculum,
+    grades = [],
     standards = [],
   } = alignment || defaultAlignment
+
+  console.log('subject', subject)
+  console.log('grades', grades)
 
   const setSubject = (val) => {
     updateDefaultSubject(val)
@@ -340,7 +349,7 @@ const enhance = compose(
       defaultCurriculumName: get(state, 'dictionaries.defaultCurriculumName'),
       formattedCuriculums: getFormattedCurriculumsSelector(
         state,
-        props.alignment || defaultAlignment
+        props.alignment || defaultAlignmentValues
       ),
       recentStandardsList: getRecentStandardsListSelector(state),
     }),

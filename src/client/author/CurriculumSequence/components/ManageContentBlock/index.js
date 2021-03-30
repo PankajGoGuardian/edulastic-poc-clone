@@ -466,6 +466,7 @@ const ManageContentBlock = (props) => {
             setAlignment={setAlignment}
             selectedStandards={selectedStandards}
             setSelectedStandards={setSelectedStandards}
+            curriculum={collectionFromCurriculumSequence}
           />
         )}
 
@@ -478,6 +479,7 @@ const ManageContentBlock = (props) => {
             setAlignment={setAlignment}
             selectedStandards={selectedStandards}
             setSelectedStandards={setSelectedStandards}
+            curriculum={collectionFromCurriculumSequence}
           />
         )}
 
@@ -491,6 +493,7 @@ const ManageContentBlock = (props) => {
             setAlignment={setAlignment}
             selectedStandards={selectedStandards}
             setSelectedStandards={setSelectedStandards}
+            curriculum={collectionFromCurriculumSequence}
           />
         )}
       </ManageContentOuterWrapper>

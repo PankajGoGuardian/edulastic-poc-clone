@@ -40,7 +40,7 @@ import { getInterestedCurriculumsByOrgType } from '../../../src/selectors/user'
 
 const resourceTabs = ['tests', 'resources']
 
-const observeElement = (fetchTests, tests) => {
+const observeElement = (fetchContent, content) => {
   const observerRef = useRef()
   return useCallback(
     (node) => {
@@ -49,14 +49,14 @@ const observeElement = (fetchTests, tests) => {
       }
       observerRef.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting) {
-          fetchTests()
+          fetchContent()
         }
       })
       if (node) {
         observerRef.current.observe(node)
       }
     },
-    [tests]
+    [content]
   )
 }
 
@@ -65,6 +65,7 @@ const ManageContentBlock = (props) => {
     contentFilters,
     setDefaults,
     fetchTests,
+    fetchResources,
     setFilterAction,
     setStatusAction,
     setGradesAction,
@@ -117,7 +118,10 @@ const ManageContentBlock = (props) => {
     resources = [],
   } = contentFilters || {}
 
-  const lastResourceItemRef = observeElement(fetchTests, tests)
+  const lastResourceItemRef =
+    searchResourceBy === 'tests'
+      ? observeElement(fetchTests, tests)
+      : observeElement(fetchResources, resources)
 
   const [searchBy] = useState('keywords')
   // const [searchResourceBy] = useState("all");
@@ -527,6 +531,7 @@ const enhance = compose(
       setFilterAction: slice.actions?.setFilterAction,
       setDefaults: slice.actions?.setDefaults,
       fetchTests: slice.actions?.fetchTests,
+      fetchResources: slice.actions?.fetchResources,
       setStatusAction: slice.actions?.setStatusAction,
       setSubjectAction: slice.actions?.setSubjectAction,
       setGradesAction: slice.actions?.setGradesAction,

@@ -983,7 +983,12 @@ function* publishPlaylistSaga({ payload }) {
     ])
     dataToSend.modules = dataToSend.modules.map((mod) => {
       mod.data = mod.data.map((test) =>
-        omit(test, ['standards', 'alignment', 'assignments'])
+        omit(test, [
+          'standards',
+          'alignment',
+          'assignments',
+          'hasStandardsOnCreation',
+        ])
       )
       return mod
     })

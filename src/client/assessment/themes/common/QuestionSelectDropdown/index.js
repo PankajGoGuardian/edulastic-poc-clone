@@ -41,6 +41,7 @@ const QuestionSelectDropdown = ({
           clearInterval(interval)
         }
       }, 2000)
+      return () => clearInterval(interval)
     }
   }, [dropdownWrapper, zoomLevel])
 

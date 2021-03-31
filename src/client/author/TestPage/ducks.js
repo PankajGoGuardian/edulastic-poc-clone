@@ -59,6 +59,7 @@ import {
   ADD_ITEM_EVALUATION,
   CHANGE_PREVIEW,
   APPROVE_OR_REJECT_MULTIPLE_ITEM_SUCCESS,
+  TOGGLE_REGRADE_MODAL,
 } from '../src/constants/actions'
 import {
   loadQuestionsAction,
@@ -540,6 +541,7 @@ export const deleteTestSettingRequestAction = createAction(
 export const updateTestSettingRequestAction = createAction(
   UPDATE_TEST_SETTING_REQUEST
 )
+export const toggleRegradeModalAction = createAction(TOGGLE_REGRADE_MODAL)
 
 export const defaultImage =
   'https://cdn2.edulastic.com/default/default-test-1.jpg'
@@ -712,6 +714,11 @@ export const shouldDisableSelector = createSelector(
 export const getRegradingSelector = createSelector(
   stateSelector,
   (state) => state.regrading
+)
+
+export const getRegradeModalStateSelector = createSelector(
+  stateSelector,
+  (state) => state.regradeModalState
 )
 
 export const getIsLoadRegradeSettingsSelector = createSelector(
@@ -907,6 +914,7 @@ const initialState = {
   defaultTestSettings: {},
   savedTestSettingsList: [],
   currentTestSettingsId: '',
+  regradeModalState: null,
 }
 
 export const testTypeAsProfileNameType = {
@@ -1487,6 +1495,11 @@ export const reducer = (state = initialState, { type, payload }) => {
           if (payload._id === t._id) return payload
           return t
         }),
+      }
+    case TOGGLE_REGRADE_MODAL:
+      return {
+        ...state,
+        regradeModalState: payload,
       }
     default:
       return state

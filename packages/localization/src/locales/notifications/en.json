@@ -387,6 +387,14 @@
     "message": "Unable to retrieve the test info.",
     "description": ""
   },
+  "publishCorrectItemFailing": {
+    "message": "Corrections/updates made to the item(s) failed",
+    "description": ""
+  },
+  "publishCorrectItemSuccess": {
+    "message": "Corrections/updates made to the item(s) are saved successfully and students will start receiving the updated items starting now",
+    "description": ""
+  },
   "itemAddedTest": {
     "message": "Item added to test",
     "description": ""

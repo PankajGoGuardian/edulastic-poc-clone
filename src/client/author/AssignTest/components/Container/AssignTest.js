@@ -775,7 +775,8 @@ class AssignTest extends React.Component {
                     className="save-settings-option"
                   >
                     <span>
-                      <Icon type="save" theme="filled" /> SAVE CURRENT SETTING
+                      <Icon type="save" theme="filled" />
+                      SAVE CURRENT SETTING
                     </span>
                   </Select.Option>
                 </Select>

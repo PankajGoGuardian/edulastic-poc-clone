@@ -7,7 +7,7 @@ import {
 } from '@edulastic/constants'
 import { themeColor } from '@edulastic/colors'
 import { IconAssignment, IconTrash } from '@edulastic/icons'
-import { Spin, Select } from 'antd'
+import { Spin, Select, Icon } from 'antd'
 import { get, isEmpty, keyBy, omit, pick } from 'lodash'
 import * as moment from 'moment'
 import PropTypes from 'prop-types'
@@ -763,7 +763,7 @@ class AssignTest extends React.Component {
                   <Select.Option
                     key="2"
                     value="save-settings-option"
-                    label="SAVE CURRENT SETTINGS"
+                    label="SAVE CURRENT SETTING"
                     disabled={
                       isTestSettingSaveLimitReached && !currentSettingsId
                     }
@@ -772,8 +772,12 @@ class AssignTest extends React.Component {
                         ? 'Maximum limit reached. Please delete existing one to add new.'
                         : ''
                     }
+                    className="save-settings-option"
                   >
-                    SAVE CURRENT SETTINGS
+                    <span>
+                      <Icon type="save" theme="filled" />
+                      SAVE CURRENT SETTING
+                    </span>
                   </Select.Option>
                 </Select>
               </SavedSettingsContainer>

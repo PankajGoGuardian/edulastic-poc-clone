@@ -176,6 +176,8 @@ export const RECEIVE_CLASSSTUDENT_RESPONSE_SUCCESS =
 export const ADD_CLASS_STUDENT_RESPONSE = '[classStudentResponse] add response'
 export const RECEIVE_CLASSSTUDENT_RESPONSE_ERROR =
   '[classStudentResponse] receive list error'
+export const SET_CLASS_STUDENT_RESPONSES_LOADING =
+  '[classStudentResponse] set print preview loading'
 export const RECEIVE_FEEDBACK_RESPONSE_REQUEST =
   '[feedbackResponse] receive list request'
 export const RECEIVE_FEEDBACK_RESPONSE_SUCCESS =

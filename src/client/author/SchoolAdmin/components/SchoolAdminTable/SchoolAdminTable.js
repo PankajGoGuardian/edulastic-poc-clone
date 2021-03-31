@@ -735,6 +735,7 @@ class SchoolAdminTable extends Component {
               onSearch={this.handleSearchName}
               onChange={this.onChangeSearch}
               height="36px"
+              data-cy="searchByName"
             />
             <EduButton
               height="36px"

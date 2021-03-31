@@ -882,7 +882,10 @@ class ProfileBody extends React.Component {
                     </SwitchWrapper>
                   )}
                   {showPowerTools && (
-                    <SwitchWrapper style={{ justifyContent: 'space-between' }}>
+                    <SwitchWrapper
+                      style={{ justifyContent: 'space-between' }}
+                      data-cy="powerUser"
+                    >
                       <FieldLabel>{t('common.title.powerUser')}</FieldLabel>
                       <EduSwitchStyled
                         defaultChecked={userInfo.isPowerTeacher}

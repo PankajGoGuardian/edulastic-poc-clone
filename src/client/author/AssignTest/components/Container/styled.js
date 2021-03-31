@@ -165,6 +165,26 @@ export const SavedSettingsContainer = styled.div`
             fill: ${white};
           }
         }
+        span {
+          color: ${white};
+        }
+      }
+    }
+    .save-settings-option {
+      border-top: 1px solid #00000029;
+      padding: 8px 12px;
+      font-size: 11px;
+      i {
+        font-size: 18px;
+      }
+      > span {
+        justify-content: space-around;
+        color: #3f85e5;
+        font-weight: 600;
+        line-height: normal;
+        > svg {
+          fill: #3f85e5;
+        }
       }
     }
   }

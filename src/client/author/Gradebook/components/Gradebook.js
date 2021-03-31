@@ -298,16 +298,19 @@ const Gradebook = ({
               />
             </ScrollbarContainer>
           )}
-          <FilterButton
-            showFilter={showFilter}
-            onClick={toggleShowFilter}
-            data-test={showFilter ? 'expanded' : 'collapsed'}
-            data-cy="smart-filter"
-          >
+          <FilterButton showFilter={showFilter} onClick={toggleShowFilter}>
             {showFilter ? (
-              <IconCloseFilter />
+              <IconCloseFilter
+                data-test={showFilter ? 'expanded' : 'collapsed'}
+                data-cy="smart-filter"
+              />
             ) : (
-              <IconFilter width={20} height={20} />
+              <IconFilter
+                width={20}
+                height={20}
+                data-test={showFilter ? 'expanded' : 'collapsed'}
+                data-cy="smart-filter"
+              />
             )}
           </FilterButton>
           {loading ? (

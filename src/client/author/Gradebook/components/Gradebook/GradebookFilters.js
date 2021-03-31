@@ -102,7 +102,7 @@ const GradebookFilters = ({
           dataCy="filter-class"
         />
         <FilterDropdown
-          label="Grade"
+          label="Class Grade"
           mode="multiple"
           el={gradeRef}
           onChange={(selected) =>
@@ -113,7 +113,7 @@ const GradebookFilters = ({
           dataCy="grades"
         />
         <FilterDropdown
-          label="Subject"
+          label="Class Subject"
           mode="multiple"
           el={subjectRef}
           onChange={(selected) =>

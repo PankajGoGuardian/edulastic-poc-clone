@@ -1,7 +1,11 @@
 import React, { useEffect, useMemo } from 'react'
 import { EduButton } from '@edulastic/common'
+import { withNamespaces } from '@edulastic/localization'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
 import SubscriptionAddonModal from './SubscriptionAddonModal'
 import ProductsList from './ProductsList'
+import { getSubsLicensesSelector } from '../../../../ManageSubscription/ducks'
 
 const BuyMoreLicensesModal = ({
   isVisible,
@@ -16,6 +20,8 @@ const BuyMoreLicensesModal = ({
   currentItemId,
   totalAmount,
   isEdulasticAdminView,
+  subsLicenses,
+  teacherPremium,
 }) => {
   useEffect(() => {
     return () => {
@@ -72,9 +78,21 @@ const BuyMoreLicensesModal = ({
         setSelectedProductIds={setSelectedProductIds}
         selectedProductIds={selectedProductIds}
         currentItemId={currentItemId}
+        subsLicenses={subsLicenses}
+        teacherPremium={teacherPremium}
       />
     </SubscriptionAddonModal>
   )
 }
 
-export default BuyMoreLicensesModal
+const enhance = compose(
+  withNamespaces('manageDistrict'),
+  connect(
+    (state) => ({
+      subsLicenses: getSubsLicensesSelector(state),
+    }),
+    {}
+  )
+)
+
+export default enhance(BuyMoreLicensesModal)

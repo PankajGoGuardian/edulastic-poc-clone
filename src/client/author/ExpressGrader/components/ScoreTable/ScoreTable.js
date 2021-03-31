@@ -170,7 +170,7 @@ class ScoreTable extends Component {
               submittedLength > 0
                 ? round((averageScore / submittedLength) * 100, 1) || 0
                 : 0
-            }`}
+            }%`}
           </StyledText>
           <div style={{ fontSize: '12px', lineHeight: '14px' }}>
             ({round(averageScore, 2) || 0}/{submittedLength})

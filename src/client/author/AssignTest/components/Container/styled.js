@@ -171,7 +171,7 @@ export const SavedSettingsContainer = styled.div`
       }
     }
     .save-settings-option {
-      border-top: 1px solid #00000029;
+      border-top: 1px solid rgba(238, 236, 236, 1);
       padding: 8px 12px;
       font-size: 11px;
       i {

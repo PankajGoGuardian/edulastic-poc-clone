@@ -31,7 +31,7 @@ function* fetchPrintPreviewEssentials({ payload }) {
     const _payload = {
       assignmentId,
       classId: groupId,
-      printStudents: selectedStudents,
+      includeStudents: selectedStudents,
     }
     yield put({
       type: SET_CLASS_STUDENT_RESPONSES_LOADING,

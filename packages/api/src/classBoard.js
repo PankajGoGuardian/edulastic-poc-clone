@@ -15,7 +15,7 @@ const testActivity = ({
   assignmentId,
   classId,
   isQuestionsView = false,
-  printStudents = [],
+  includeStudents = [],
 }) =>
   api
     .callApi({
@@ -23,7 +23,7 @@ const testActivity = ({
       method: 'get',
       params: {
         isQuestionsView,
-        printStudents,
+        includeStudents,
       },
     })
     .then((result) => result.data)

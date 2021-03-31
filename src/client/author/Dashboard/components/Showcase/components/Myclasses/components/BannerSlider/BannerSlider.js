@@ -23,6 +23,7 @@ const BannerSlider = ({
   bannerActionHandler,
   handleBannerModalClose,
   isBannerModalVisible,
+  handleSparkClick,
 }) => {
   const scrollBarRef = useRef(null)
 
@@ -39,6 +40,15 @@ const BannerSlider = ({
   }, 300)
 
   const bannerLength = bannerSlides.length
+
+  const handleBannerClick = (config, description, isSparkBannerTile) => {
+    if (isSparkBannerTile) {
+      handleSparkClick(config.subscriptionData.productId)
+      return
+    }
+
+    bannerActionHandler(config.filters[0], description)
+  }
 
   return (
     <>
@@ -59,7 +69,7 @@ const BannerSlider = ({
           >
             <SlideContainer data-cy="sliderContainer">
               {bannerSlides.map((slide, index) => {
-                const isSparkMathTile = slide.description
+                const isSparkTile = slide.description
                   ?.toLowerCase?.()
                   ?.includes('spark')
 
@@ -70,14 +80,14 @@ const BannerSlider = ({
                     bgImage={slide.imageUrl}
                     key={slide._id}
                     onClick={() =>
-                      bannerActionHandler(
-                        slide.config.filters[0],
+                      handleBannerClick(
+                        slide.config,
                         slide.description,
-                        isSparkMathTile
+                        isSparkTile
                       )
                     }
                   >
-                    {isSparkMathTile ? (
+                    {isSparkTile ? (
                       <LearnMore data-cy="tryItFree">TRY IT FREE</LearnMore>
                     ) : (
                       <LearnMore data-cy="LearnMore">LEARN MORE</LearnMore>

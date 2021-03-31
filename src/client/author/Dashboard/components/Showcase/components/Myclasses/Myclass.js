@@ -248,10 +248,7 @@ const MyClasses = ({
     window.open(data.externalUrl, '_blank')
   }
 
-  const getTileByProductName = (name) => {
-    const { id: productId } =
-      products.find((product) => product.name === name) || {}
-
+  const getTileByProductId = (productId) => {
     if (productId) {
       return (
         featuredBundles &&
@@ -264,24 +261,19 @@ const MyClasses = ({
     return {}
   }
 
-  const handleSparkMathBannerClick = () => {
-    const tile = getTileByProductName('Spark Math')
+  const handleSparkClick = (id) => {
+    const tile = getTileByProductId(id)
     if (!isEmpty(tile.config)) {
       handleFeatureClick(tile)
     }
   }
 
-  const bannerActionHandler = (filter = {}, description, isSparkMathTile) => {
+  const bannerActionHandler = (filter = {}, description) => {
     const { action, data } = filter
     segmentApi.trackUserClick({
       user,
       data: { event: `dashboard:banner-${description}:click` },
     })
-
-    if (isSparkMathTile) {
-      handleSparkMathBannerClick()
-      return
-    }
 
     switch (+action) {
       case bannerActions.BANNER_DISPLAY_IN_MODAL:
@@ -407,6 +399,7 @@ const MyClasses = ({
           handleBannerModalClose={() => setShowBannerModal(null)}
           bannerActionHandler={bannerActionHandler}
           isBannerModalVisible={showBannerModal}
+          handleSparkClick={handleSparkClick}
         />
       )}
       <Classes

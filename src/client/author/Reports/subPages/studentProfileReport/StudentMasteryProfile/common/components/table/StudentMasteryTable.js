@@ -111,7 +111,7 @@ const getColumns = (handleOnClickStandard, filters) => {
         if (a.masteryName !== b.masteryName) {
           return a.masteryName.localeCompare(b.masteryName)
         }
-        return a.scoreFormatted.localeCompare(b.scoreFormatted)
+        return a.score - b.score
       },
     },
     {
@@ -152,7 +152,7 @@ const getColumns = (handleOnClickStandard, filters) => {
       dataIndex: 'scoreFormatted',
       align: 'center',
       render: renderToolTipColumn('Avg. Score'),
-      sorter: (a, b) => a.scoreFormatted.localeCompare(b.scoreFormatted),
+      sorter: (a, b) => a.score - b.score,
     },
   ]
   return columns

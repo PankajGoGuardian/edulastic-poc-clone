@@ -348,14 +348,20 @@ class SimpleOptions extends React.Component {
       isAssignRecommendations,
       isRecommendingStandards,
       match,
-      totalItems,
+      totalItems: _totalItems,
       disableAnswerOnPaper,
       isAdvancedView,
       defaultTestProfiles,
       onClassFieldChange,
       activeTab,
       handleTabChange,
+      selectedStandardsCount,
     } = this.props
+
+    const totalItems = isAssignRecommendations
+      ? (assignment.questionPerStandard || 1) * selectedStandardsCount
+      : _totalItems
+
     const changeField = curry(this.onChange)
     let { openPolicy } = selectsData
     let { closePolicy } = selectsData

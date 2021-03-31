@@ -153,6 +153,11 @@ const AssignRecommendations = ({
     }
   }
 
+  const selectedStandardsCount = recommendationsToAssign.recommendations.reduce(
+    (a, c) => a + (c.standardIdentifiers?.length || 0),
+    0
+  )
+
   const renderHeaderButton = () => (
     <EduButton
       isBlue
@@ -227,6 +232,7 @@ const AssignRecommendations = ({
           updateOptions={updateAssignmentSettings}
           isAssignRecommendations
           isRecommendingStandards={isRecommendingStandards}
+          selectedStandardsCount={selectedStandardsCount}
         />
       </Container>
     </>

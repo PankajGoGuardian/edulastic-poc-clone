@@ -3,6 +3,7 @@ import { map } from 'lodash'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { extraDesktopWidthMax } from '@edulastic/colors'
+import { Col, Row } from 'antd'
 import {
   StyledCard,
   StyledTable as Table,
@@ -76,6 +77,7 @@ const staticFields = [
     width: 250,
     align: 'left',
     sorter: (a, b) => stringCompare(a.testName, b.testName),
+    render: (text, record) => (record.isIncomplete ? `${text} *` : text),
   },
   {
     title: 'Type',
@@ -187,6 +189,7 @@ const PerformanceOverTimeTable = ({
   isCsvDownloading,
   backendPagination,
   setBackendPagination,
+  showTestIncompleteText = false,
 }) => {
   const onCsvConvert = (data) => downloadCSV(`Performance Over Time.csv`, data)
 
@@ -203,10 +206,22 @@ const PerformanceOverTimeTable = ({
         scroll={{ x: '100%' }}
         pagination={isCsvDownloading ? undefined : false}
       />
-      <BackendPagination
-        backendPagination={backendPagination}
-        setBackendPagination={setBackendPagination}
-      />
+      <Row type="flex" align="middle">
+        <Col span={14}>
+          {showTestIncompleteText && (
+            <StyledH3 fontSize="13px" fontWeight="normal" margin="0">
+              * Some assignment(s) for this test are still in progress and hence
+              the results may not be complete
+            </StyledH3>
+          )}
+        </Col>
+        <Col span={10}>
+          <BackendPagination
+            backendPagination={backendPagination}
+            setBackendPagination={setBackendPagination}
+          />
+        </Col>
+      </Row>
     </StyledCard>
   )
 }

@@ -102,10 +102,21 @@ const PeerProgressAnalysis = ({
     metricInfo = [],
     metaInfo = [],
     testsCount = 0,
-    hasIncompleteTests,
-  } = useMemo(() => get(peerProgressAnalysis, 'data.result', {}), [
-    peerProgressAnalysis,
-  ])
+    incompleteTests = [],
+  } = useMemo(() => {
+    const data = get(peerProgressAnalysis, 'data.result', {})
+    const {
+      metricInfo: metrics = [],
+      incompleteTests: incompleteTestIds = [],
+    } = data
+    return {
+      ...data,
+      metricInfo: metrics.map((metric) => {
+        metric.isIncomplete = incompleteTestIds.includes(metric.testId)
+        return metric
+      }),
+    }
+  }, [peerProgressAnalysis])
 
   useEffect(() => {
     const metrics = get(peerProgressAnalysis, 'data.result.metricInfo', [])
@@ -167,11 +178,6 @@ const PeerProgressAnalysis = ({
     <>
       <TrendStats
         heading="Performance trend across assessments"
-        subHeading={
-          hasIncompleteTests
-            ? '(Some assessments are still in progress and hence the results may not be complete)'
-            : ''
-        }
         trendCount={trendCount}
         selectedTrend={selectedTrend}
         onTrendSelect={onTrendSelect}
@@ -185,6 +191,7 @@ const PeerProgressAnalysis = ({
         )}
       />
       <TrendTable
+        showTestIncompleteText={!!incompleteTests?.length}
         onCsvConvert={onCsvConvert}
         isCsvDownloading={isCsvDownloading}
         data={parsedData}

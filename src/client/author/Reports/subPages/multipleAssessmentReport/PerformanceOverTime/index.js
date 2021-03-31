@@ -96,12 +96,6 @@ const PerformanceOverTime = ({
             <StyledH3 fontSize="16px" margin="0">
               Performance in Assessments over time
             </StyledH3>
-            {rawData.hasIncompleteTests && (
-              <StyledH3 fontSize="13px" fontWeight="normal">
-                (Some assessments are still in progress and hence the results
-                may not be complete)
-              </StyledH3>
-            )}
           </Col>
           <Col xs={24} sm={24} md={8} lg={8} xl={8}>
             <AnalyseByFilter
@@ -130,6 +124,7 @@ const PerformanceOverTime = ({
           ...pageFilters,
           itemsCount: testsCount,
         }}
+        showTestIncompleteText={!!rawData.incompleteTests?.length}
         setBackendPagination={setPageFilters}
       />
     </>

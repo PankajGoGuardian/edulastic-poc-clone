@@ -108,11 +108,14 @@ const BandChart = ({
 
   const getTooltipJSX = (payload, barIndex) => {
     if (payload && payload.length && barIndex !== null) {
-      const { testName = '' } = payload[0].payload
+      const { testName = '', isIncomplete } = payload[0].payload
       const currentPayload = payload[barIndex] || {}
       return (
         <div>
-          <BarTooltipRow title="Assessment : " value={testName || 'N/A'} />
+          <BarTooltipRow
+            title="Assessment : "
+            value={isIncomplete ? `${testName} *` : testName || 'N/A'}
+          />
           <BarTooltipRow title="Band : " value={currentPayload.name || 'N/A'} />
           <BarTooltipRow
             title="Student (%): "
@@ -133,7 +136,9 @@ const BandChart = ({
   const getXTickText = (payload, _data) => {
     const currentBarData =
       find(_data, (item) => item[xAxisDataKey] === payload.value) || {}
-    return currentBarData.testName || ''
+    return currentBarData.isIncomplete
+      ? `${currentBarData.testName} *`
+      : currentBarData.testName || ''
   }
 
   const chartSpecifics = getChartSpecifics(analyseBy, orderedBandInfo)

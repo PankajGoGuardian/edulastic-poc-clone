@@ -134,15 +134,20 @@ const StudentProgress = ({
     }
   }, [studentProgress])
 
-  const filteredInfo = filterMetricInfoByDDFilters(metricInfo, ddfilter)
-
-  const { metaInfo = [], testsCount = 0, hasIncompleteTests } = get(
+  const { metaInfo = [], testsCount = 0, incompleteTests = [] } = get(
     studentProgress,
     'data.result',
     {}
   )
+
+  const filteredInfo = filterMetricInfoByDDFilters(metricInfo, ddfilter)
+  const filteredInfoWithIncompleteTestData = filteredInfo.map((metric) => {
+    metric.isIncomplete = incompleteTests.includes(metric.testId)
+    return metric
+  })
+
   const [data, trendCount] = useGetBandData(
-    filteredInfo,
+    filteredInfoWithIncompleteTestData,
     compareBy.key,
     metaInfo,
     selectedTrend,
@@ -221,11 +226,6 @@ const StudentProgress = ({
       </FeaturesSwitch>
       <TrendStats
         heading="Student progress over time"
-        subHeading={
-          hasIncompleteTests
-            ? '(Some assessments are still in progress and hence the results may not be complete)'
-            : ''
-        }
         trendCount={trendCount}
         selectedTrend={selectedTrend}
         onTrendSelect={onTrendSelect}
@@ -239,6 +239,7 @@ const StudentProgress = ({
         )}
       />
       <TrendTable
+        showTestIncompleteText={!!incompleteTests?.length}
         filters={sharedReportFilters || settings.requestFilters}
         onCsvConvert={onCsvConvert}
         isCsvDownloading={isCsvDownloading}
@@ -247,7 +248,7 @@ const StudentProgress = ({
         compareBy={compareBy}
         analyseBy={analyseBy}
         ddfilter={ddfilter}
-        rawMetric={filteredInfo}
+        rawMetric={filteredInfoWithIncompleteTestData}
         customColumns={customTableColumns}
         isCellClickable
         location={location}

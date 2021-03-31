@@ -17,7 +17,6 @@ const TrendStats = ({
   selectedTrend,
   renderFilters,
   heading,
-  subHeading,
   handleAddToGroupClick,
   isSharedReport,
   showTrendStats = true,
@@ -33,9 +32,6 @@ const TrendStats = ({
               <>
                 <StyledH3 fontSize="16px" margin="0">
                   {heading}
-                </StyledH3>
-                <StyledH3 fontSize="13px" fontWeight="normal">
-                  {subHeading}
                 </StyledH3>
               </>
             )}

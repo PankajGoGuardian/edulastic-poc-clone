@@ -950,7 +950,7 @@ export const getAggregateByQuestion = (entities, studentId) => {
   if (!entities) {
     return {}
   }
-  const total = entities.length
+  const total = entities.filter((x) => x.isAssigned && x.isEnrolled).length
   const submittedEntities = entities.filter(
     (x) => x.UTASTATUS === testActivityStatus.SUBMITTED
   )
@@ -1165,12 +1165,22 @@ export const getGradeBookSelector = createSelector(
 
 export const notStartedStudentsSelector = createSelector(
   getTestActivitySelector,
-  (state) => state.filter((x) => x.UTASTATUS === testActivityStatus.NOT_STARTED)
+  (state) =>
+    state.filter(
+      (x) =>
+        x.UTASTATUS === testActivityStatus.NOT_STARTED &&
+        x.isAssigned &&
+        x.isEnrolled
+    )
 )
 
 export const inProgressStudentsSelector = createSelector(
   getTestActivitySelector,
-  (state) => state.filter((x) => x.UTASTATUS === testActivityStatus.START)
+  (state) =>
+    state.filter(
+      (x) =>
+        x.UTASTATUS === testActivityStatus.START && x.isAssigned && x.isEnrolled
+    )
 )
 
 export const testNameSelector = createSelector(

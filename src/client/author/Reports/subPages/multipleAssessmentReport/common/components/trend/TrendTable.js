@@ -189,14 +189,14 @@ const getColumns = (
 ) => {
   const groupedAvailableTests = groupBy(rawMetric, 'testId')
   const dynamicColumns = map(groupedAvailableTests, (_, testId) => {
-    const { assessmentDate, testName = 'N/A' } =
+    const { assessmentDate, testName = 'N/A', isIncomplete = false } =
       groupedAvailableTests[testId].reduce((ele, res) =>
         ele.assessmentDate > res.assessmentDate ? ele : res
       ) || {}
 
     return {
       key: testId,
-      title: testName,
+      title: isIncomplete ? `${testName} *` : testName,
       assessmentDate,
       align: 'center',
       dataIndex: 'tests',
@@ -219,7 +219,10 @@ const getColumns = (
 
         const toolTipText = () => (
           <div>
-            <TableTooltipRow title="Assessment Name: " value={testName} />
+            <TableTooltipRow
+              title="Assessment Name: "
+              value={isIncomplete ? `${testName} *` : testName}
+            />
             {toolTipContent(record, value)}
             <TableTooltipRow
               title={`${capitalize(analyseBy.title)} : `}
@@ -401,6 +404,7 @@ const TrendTable = ({
   backendPagination,
   setBackendPagination,
   masteryScale = {},
+  showTestIncompleteText = false,
 }) => {
   const columns = getColumns(
     rawMetric,
@@ -439,10 +443,22 @@ const TrendTable = ({
           pagination={isCsvDownloading ? undefined : false}
         />
       </TableContainer>
-      <BackendPagination
-        backendPagination={backendPagination}
-        setBackendPagination={setBackendPagination}
-      />
+      <Row type="flex" align="middle">
+        <Col span={14}>
+          {showTestIncompleteText && (
+            <StyledH3 fontSize="13px" fontWeight="normal" margin="0">
+              * Some assignment(s) for this test are still in progress and hence
+              the results may not be complete
+            </StyledH3>
+          )}
+        </Col>
+        <Col span={10}>
+          <BackendPagination
+            backendPagination={backendPagination}
+            setBackendPagination={setBackendPagination}
+          />
+        </Col>
+      </Row>
     </StyledCard>
   )
 }

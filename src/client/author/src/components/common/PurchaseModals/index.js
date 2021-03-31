@@ -46,7 +46,6 @@ const PurchaseFlowModals = (props) => {
     handleStripeMultiplePayment,
     subscription: { subEndDate, subType } = {},
     user,
-    fetchUserSubscriptionStatus,
     itemBankSubscriptions = [],
     premiumProductId,
     products,
@@ -105,11 +104,6 @@ const PurchaseFlowModals = (props) => {
   )
 
   const defaultSelectedProductIdsRef = useRef()
-
-  useEffect(() => {
-    // getSubscription on mount
-    fetchUserSubscriptionStatus()
-  }, [])
 
   const shouldProrate = useMemo(() => {
     const oneDay = 1000 * 60 * 60 * 24
@@ -377,7 +371,6 @@ export default compose(
       handleStripeMultiplePayment: slice.actions.stripeMultiplePaymentAction,
       handleEdulasticAdminProductLicense:
         slice.actions.edulasticAdminProductLicenseAction,
-      fetchUserSubscriptionStatus: slice.actions.fetchUserSubscriptionStatus,
       setPaymentServiceModal: slice.actions.setPaymentServiceModal,
       setAddOnProductIds: slice.actions.setAddOnProductIds,
       bulkInviteBookKeepers: slice.actions.bulkInviteBookKeepersAction,

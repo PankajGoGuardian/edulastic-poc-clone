@@ -388,7 +388,7 @@ const InnerWorkTable = ({
       width: '40px',
       align: 'center',
       render: (_, _record) => (
-        <InlineDelete
+        (_record.testId && _record.status === 'RECOMMENDED') && (<InlineDelete
           data-cy="delete-test"
           title="Delete Test"
           onClick={() =>
@@ -399,7 +399,7 @@ const InnerWorkTable = ({
           }
         >
           <IconClose />
-        </InlineDelete>
+        </InlineDelete>)
       ),
     },
   ]

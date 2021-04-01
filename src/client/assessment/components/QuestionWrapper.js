@@ -719,7 +719,7 @@ class QuestionWrapper extends Component {
                           Show student work
                         </ShowUserWork>
                       )}
-                      {timeSpent && (
+                      {(timeSpent || timeSpent === 0) && (
                         <>
                           <IconClockCircularOutline />
                           {round(timeSpent / 1000, 1)}s

@@ -84,11 +84,16 @@ export const SubResourceView = ({
   )
 }
 
-export const SubResource = connect(null, (dispatch, { fromPlaylist }) => ({
-  removeSubResource: (payload) =>
-    dispatch(
-      fromPlaylist
-        ? removeSubresourceInPlaylistAction(payload)
-        : removeSubResourceAction(payload)
-    ),
-}))(SubResourceView)
+export const SubResource = connect(
+  (state) => ({
+    isStudent: state.user?.user?.role === 'student',
+  }),
+  (dispatch, { fromPlaylist }) => ({
+    removeSubResource: (payload) =>
+      dispatch(
+        fromPlaylist
+          ? removeSubresourceInPlaylistAction(payload)
+          : removeSubResourceAction(payload)
+      ),
+  })
+)(SubResourceView)

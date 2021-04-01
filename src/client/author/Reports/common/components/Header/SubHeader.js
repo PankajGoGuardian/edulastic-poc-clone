@@ -3,15 +3,16 @@ import styled from 'styled-components'
 
 import Breadcrumb from '../../../../src/components/Breadcrumb'
 
-const SubHeader = ({ breadcrumbData, isCliUser, alignment, children }) =>
-  !isCliUser ? (
-    <SecondaryHeader alignItems={alignment}>
+const SubHeader = ({ breadcrumbData, isCliUser, alignment, children }) => (
+  <SecondaryHeader alignItems={alignment}>
+    {!isCliUser ? (
       <HeaderTitle className="report-breadcrumb">
         <Breadcrumb data={breadcrumbData} style={{ position: 'unset' }} />
       </HeaderTitle>
-      {children}
-    </SecondaryHeader>
-  ) : null
+    ) : null}
+    {children}
+  </SecondaryHeader>
+)
 
 export default SubHeader
 

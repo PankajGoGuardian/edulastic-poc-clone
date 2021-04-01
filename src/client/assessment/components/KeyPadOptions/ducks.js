@@ -4,12 +4,17 @@ import { all, takeLatest, put, call, select } from 'redux-saga/effects'
 import get from 'lodash/get'
 import isPlainObject from 'lodash/isPlainObject'
 import isEmpty from 'lodash/isEmpty'
+import produce from 'immer'
 
 import { userContextApi } from '@edulastic/api'
 import { math } from '@edulastic/constants'
 import notification from '@edulastic/common/src/components/Notification'
 
 import { getTestEntitySelector } from '../../../author/TestPage/ducks'
+import {
+  getCurrentQuestionSelector,
+  UPDATE_QUESTION,
+} from '../../../author/sharedDucks/questions'
 
 const { symbols: predefinedKeypads } = math
 
@@ -115,6 +120,22 @@ function* storeCustomKeypadSaga({ payload }) {
     yield call(userContextApi.storeCustomKeypad, payload)
     yield put({
       type: RETRIEVE_USER_CUSTOM_KEYPAD,
+    })
+    /**
+     * when we save keypad, it gets added to the list of allKeypads,
+     * but it is not updated in the item data (symbols[0])
+     * symbols[0] would still contain previous keypad
+     * so we need to update the item data (symbols[0]) with latest keypad data
+     * update the latest keypad in the question data after save
+     */
+    const currentQuestion = yield select(getCurrentQuestionSelector)
+    const updatedQuestion = produce(currentQuestion, (draft) => {
+      draft.symbols = draft.symbols || []
+      draft.symbols[0] = payload
+    })
+    yield put({
+      type: UPDATE_QUESTION,
+      payload: updatedQuestion,
     })
   } catch (error) {
     console.error(error)

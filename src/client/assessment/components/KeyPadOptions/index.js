@@ -136,25 +136,6 @@ const KeyPadOptions = ({
     }
   }, [])
 
-  useEffect(() => {
-    if (isCustom) {
-      const sameLabelKeypadIndex = allKeypads.findIndex(
-        (keypad) => keypad.label === symbol.label
-      )
-      /**
-       * when we save keypad, it gets added to the list of allKeypads,
-       * but it is not updated in the item data (symbols[0])
-       * symbols[0] would still contain previous changes without the keypad id
-       * so we need to update the item data (symbols[0]) with latest keypad data
-       */
-      if (sameLabelKeypadIndex !== -1) {
-        const data = [...(item.symbols || [])]
-        data[0] = allKeypads[sameLabelKeypadIndex]
-        onChange('symbols', data)
-      }
-    }
-  }, [allKeypads])
-
   const handleSymbolsChange = (valueIndx) => {
     const newSymbol = allKeypads[valueIndx]
     const data = [...item.symbols]
@@ -182,7 +163,7 @@ const KeyPadOptions = ({
   const handleStoreCustomKeypad = () => {
     if (isCustom) {
       let payload = symbol
-      if (!payload._id) {
+      if (!payload._id || (payload._id && !keypadIsUserCustomKeypad)) {
         payload = { ...symbol, _id: uuidv4() }
         storeCustomKeypad(payload)
       } else {

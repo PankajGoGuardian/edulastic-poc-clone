@@ -23,7 +23,10 @@ const testActivity = ({
       method: 'get',
       params: {
         isQuestionsView,
-        includeStudents,
+        includeStudents:
+          includeStudents && includeStudents.length
+            ? `${includeStudents}`
+            : null,
       },
     })
     .then((result) => result.data)

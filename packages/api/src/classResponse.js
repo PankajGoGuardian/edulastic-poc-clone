@@ -30,7 +30,10 @@ const studentResponses = ({ testActivityIds, groupId }) =>
       url: `/test-activity/student-reports`,
       method: 'get',
       params: {
-        testActivityIds,
+        testActivityIds:
+          testActivityIds && testActivityIds.length
+            ? `${testActivityIds}`
+            : null,
         groupId,
       },
     })

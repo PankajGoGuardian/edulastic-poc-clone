@@ -24,20 +24,13 @@ const StudentReportCardMenuModal = (props) => {
 
   const onCheckBoxClick = (event) => {
     const { name, checked } = event.currentTarget
-    setState((prevState) => ({
-      ...prevState,
+    setState((state) => ({
+      ...state,
       [name]: checked,
     }))
   }
 
   const selectedOptions = Object.keys(state).filter((k) => state[k])
-
-  const onGenerate = () => {
-    window.open(
-      `/author/students-report-card/${assignmentId}/${groupId}?options=${selectedOptions}`
-    )
-    onCancel()
-  }
 
   const footer = (
     <>
@@ -50,16 +43,21 @@ const StudentReportCardMenuModal = (props) => {
       >
         CANCEL
       </EduButton>
-      <EduButton
+      <a
         disabled={!selectedOptions.length}
+        href={`/author/students-report-card/${assignmentId}/${groupId}?options=${selectedOptions}`}
+        target="blank"
         style={{ marginLeft: '15px' }}
-        width="150px"
-        height="40px"
-        data-cy="PRINT"
-        onClick={onGenerate}
       >
-        GENERATE
-      </EduButton>
+        <EduButton
+          width="150px"
+          height="40px"
+          data-cy="PRINT"
+          onClick={onCancel}
+        >
+          GENERATE
+        </EduButton>
+      </a>
     </>
   )
   return (
@@ -76,9 +74,9 @@ const StudentReportCardMenuModal = (props) => {
     >
       <div>
         <p>
-          {`Print report card for all students that can be shared with their
+          Print report card for all students that can be shared with their
           parentes. Only those students who are in "Graded" status would be
-          included.`}
+          included.
         </p>
         <p>Select information you would like to print in the report card.</p>
         <div className="form-groups">

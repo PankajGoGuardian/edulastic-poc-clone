@@ -12,6 +12,7 @@ import {
   FlexContainer,
   EduButton,
   SimpleConfirmModal,
+  HelperIcon,
 } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { numBtnColors } from '@edulastic/colors'
@@ -265,19 +266,37 @@ const KeyPadOptions = ({
             >
               <Label>{t('component.options.label')}</Label>
               <FlexContainer justifyContent="space-between">
-                <EduButton
-                  isGhost
-                  height="28px"
-                  onClick={handleStoreCustomKeypad}
-                >
-                  {symbol._id && keypadIsUserCustomKeypad
-                    ? t('component.options.updateCustomKeypad')
-                    : t('component.options.saveCustomKeypad')}
-                </EduButton>
-                {symbol._id && keypadIsUserCustomKeypad && (
-                  <EduButton isGhost height="28px" onClick={showModal}>
-                    {t('component.options.deleteCustomKeypad')}
-                  </EduButton>
+                {symbol._id && keypadIsUserCustomKeypad ? (
+                  <>
+                    <EduButton
+                      isGhost
+                      height="28px"
+                      onClick={handleStoreCustomKeypad}
+                    >
+                      {t('component.options.updateCustomKeypad')}
+                    </EduButton>
+                    <EduButton isGhost height="28px" onClick={showModal}>
+                      {t('component.options.deleteCustomKeypad')}
+                    </EduButton>
+                    <HelperIcon
+                      labelKey="component.options.updateOrDeleteCustomKeypad"
+                      contentKey="component.math.helperText.updateOrDeleteCustomKeypad"
+                    />
+                  </>
+                ) : (
+                  <>
+                    <EduButton
+                      isGhost
+                      height="28px"
+                      onClick={handleStoreCustomKeypad}
+                    >
+                      {t('component.options.saveCustomKeypad')}
+                    </EduButton>
+                    <HelperIcon
+                      labelKey="component.options.saveCustomKeypad"
+                      contentKey="component.math.helperText.saveCustomKeypad"
+                    />
+                  </>
                 )}
               </FlexContainer>
             </FlexContainer>
@@ -309,7 +328,9 @@ const KeyPadOptions = ({
       {isCustom && renderExtra}
       <SimpleConfirmModal
         title="Delete Keypad"
-        description={`Keypad ${symbol?.label} will be deleted permanently. Are you sure you want to continue?`}
+        description={`${
+          symbol?.label?.trim?.() || `Custom keypad`
+        } will be deleted permanently. Previous content will have the same old keypad. Are you sure you want to continue?`}
         visible={modalVisibility}
         onCancel={hideModal}
         onProceed={handleDeleteCustomKeypad}

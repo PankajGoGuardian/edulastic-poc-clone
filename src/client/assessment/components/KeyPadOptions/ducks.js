@@ -117,6 +117,7 @@ function* storeCustomKeypadSaga({ payload }) {
       })
       return
     }
+
     yield call(userContextApi.storeCustomKeypad, payload)
     yield put({
       type: RETRIEVE_USER_CUSTOM_KEYPAD,
@@ -137,8 +138,16 @@ function* storeCustomKeypadSaga({ payload }) {
       type: UPDATE_QUESTION,
       payload: updatedQuestion,
     })
+    notification({
+      type: 'success',
+      msg: 'Custom keypad saved successfully',
+    })
   } catch (error) {
     console.error(error)
+    notification({
+      type: 'error',
+      msg: 'Failed to save custom keypad',
+    })
   }
 }
 
@@ -204,9 +213,17 @@ function* updateCustomKeypadSaga({ payload }) {
           docId: results?._id,
         },
       })
+      notification({
+        type: 'success',
+        msg: 'Custom keypad updated successfully',
+      })
     }
   } catch (error) {
     console.error(error)
+    notification({
+      type: 'error',
+      msg: 'Failed to update custom keypad',
+    })
   }
 }
 
@@ -227,14 +244,14 @@ function* deleteCustomKeypadSaga({ payload }) {
       })
       notification({
         type: 'success',
-        msg: 'Keypad removed successfully',
+        msg: 'Custom keypad removed successfully',
       })
     }
   } catch (error) {
     console.error('error')
     notification({
-      type: 'erorr',
-      msg: 'Failed to remove keypad',
+      type: 'error',
+      msg: 'Failed to remove custom keypad',
     })
   }
 }

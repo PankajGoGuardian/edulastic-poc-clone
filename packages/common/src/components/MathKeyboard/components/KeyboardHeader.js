@@ -5,7 +5,7 @@ import { isObject } from 'lodash'
 import { math } from '@edulastic/constants'
 import { SelectInputStyled } from '@edulastic/common'
 
-const { Option } = SelectInputStyled
+const { Option, OptGroup } = SelectInputStyled
 const { EMBED_RESPONSE } = math
 
 const KeyboardHeader = ({
@@ -15,9 +15,22 @@ const KeyboardHeader = ({
   showDropdown,
   onInput,
   onChangeKeypad,
+  customKeypads,
 }) => {
   const handleClickResponseButton = () => {
     onInput(EMBED_RESPONSE)
+  }
+
+  const hasCustomKeypads = customKeypads?.length > 0
+
+  const handleSelect = (value) => {
+    let keypadValue = value
+    const sameId = (keypad) => keypad._id === value
+    const customKeypad = (customKeypads || []).find(sameId)
+    if (customKeypad) {
+      keypadValue = customKeypad
+    }
+    onChangeKeypad(keypadValue)
   }
 
   return (
@@ -26,8 +39,8 @@ const KeyboardHeader = ({
         {showDropdown && (
           <SelectInputStyled
             data-cy="math-keyboard-dropdown"
-            onSelect={onChangeKeypad}
-            value={isObject(method) ? method.label : method}
+            onSelect={handleSelect}
+            value={isObject(method) ? method._id || method.label : method}
             getPopupContainer={(triggerNode) => triggerNode.parentNode}
             minWidth="204px" // width when full keypad mode is selected
           >
@@ -40,6 +53,15 @@ const KeyboardHeader = ({
                 {label}
               </Option>
             ))}
+            {hasCustomKeypads && (
+              <OptGroup label="My Custom Keypads">
+                {customKeypads.map((keypad) => (
+                  <Option key={keypad._id} value={keypad._id}>
+                    {keypad.label}
+                  </Option>
+                ))}
+              </OptGroup>
+            )}
           </SelectInputStyled>
         )}
         {showResponse && (
@@ -79,6 +101,13 @@ const Container = styled.div`
   justify-content: space-between;
   align-items: stretch;
   padding: 1rem 1.5rem 0px 1.5rem;
+
+  .ant-select-dropdown-menu-item-group-title {
+    font-weight: bold;
+    margin: 5px 0px;
+    text-transform: uppercase;
+    color: rgba(0, 0, 0, 0.65);
+  }
 `
 
 const ResponseBtn = styled.div`

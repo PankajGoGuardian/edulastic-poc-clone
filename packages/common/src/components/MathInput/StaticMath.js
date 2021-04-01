@@ -1,8 +1,11 @@
 import React, { useRef, useState, useEffect, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { isEmpty } from 'lodash'
+import { connect } from 'react-redux'
+
 import { math } from '@edulastic/constants'
 import { MathKeyboard, reformatMathInputLatex } from '@edulastic/common'
+
 import { MathInputStyles, EmptyDiv } from './MathInputStyles'
 import Draggable from './Draggable'
 
@@ -297,4 +300,6 @@ const StaticMathWithResources = (props) => (
   </WithResources>
 )
 
-export default StaticMathWithResources
+export default connect((state) => ({
+  customKeypads: state.customKeypad.keypads,
+}))(StaticMathWithResources)

@@ -72,7 +72,7 @@ class MathKeyboard extends React.PureComponent {
   }
 
   setKeyboardButtons(keypadType) {
-    const { restrictKeys, customKeys, symbols } = this.props
+    const { restrictKeys, customKeys, symbols, customKeypads } = this.props
     const type = symbols[0] || keypadType || math.keyboardMethods.BASIC
 
     const isCustomMode = isObject(type)
@@ -114,13 +114,22 @@ class MathKeyboard extends React.PureComponent {
 
     let selectOptions = math.symbols
     if (isObject(type)) {
-      selectOptions = [
-        {
-          value: symbols[0].label,
-          label: symbols[0].label,
-        },
-        ...math.symbols,
-      ]
+      /**
+       * avoid duplication of active keypad (item.symbols[0]) and user's custom keypads
+       * if previously saved custom keypad is chosen, it should not add to options
+       * it should only add if custom is chosen, but keypad is not saved
+       */
+      const hasSameId = (keypad) => keypad._id === type?._id
+      const alreadyIncluded = customKeypads.some(hasSameId)
+      if (!alreadyIncluded) {
+        selectOptions = [
+          {
+            value: symbols[0].label,
+            label: symbols[0].label,
+          },
+          ...math.symbols,
+        ]
+      }
     }
 
     this.setState({
@@ -138,6 +147,7 @@ class MathKeyboard extends React.PureComponent {
       showDropdown,
       docBasedKeypadStyles,
       showDragHandle,
+      customKeypads,
     } = this.props
     const { type, keyboardButtons, numberButtons, selectOptions } = this.state
     return (
@@ -158,6 +168,7 @@ class MathKeyboard extends React.PureComponent {
           onInput={onInput}
           method={type}
           onChangeKeypad={this.handleGroupSelect}
+          customKeypads={customKeypads}
         />
         {/* {type !== "qwerty" && window.isMobileDevice && <HeaderKeyboard onInput={onInput} />} */}
         {type === 'qwerty' && <Keyboard onInput={onInput} />}

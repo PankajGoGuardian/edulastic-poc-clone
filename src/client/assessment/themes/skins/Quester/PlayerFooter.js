@@ -161,7 +161,7 @@ const PlayerFooter = ({
           onClick={handleCheckAnswer}
           title={
             checkAnswerInProgress
-              ? 'In progess'
+              ? 'In progress'
               : answerChecksUsedForItem >= maxAnswerChecks
               ? 'Usage limit exceeded'
               : 'Check Answer'

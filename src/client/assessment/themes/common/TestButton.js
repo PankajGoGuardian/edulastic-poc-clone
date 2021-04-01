@@ -44,7 +44,7 @@ const TestButton = ({
           placement="top"
           title={
             checkAnswerInProgress
-              ? 'In progess'
+              ? 'In progress'
               : answerChecksUsedForItem >= settings.maxAnswerChecks
               ? 'Usage limit exceeded'
               : 'Check Answer'

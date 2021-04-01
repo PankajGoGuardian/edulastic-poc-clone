@@ -132,7 +132,7 @@ function pauseAssignment({
       }
     })
     .catch((e) => {
-      Fscreen.safeExitfullScreen()
+      Fscreen.exitFullscreen()
       const errorMsg =
         e?.response?.data?.result?.message ||
         'Pausing Assignment due to Anti Cheating measures'
@@ -157,7 +157,7 @@ function incrementNavigationCounter({ history, testActivityId }) {
           key: msg,
           zIndex: 10000,
         })
-        Fscreen.safeExitfullScreen()
+        Fscreen.exitFullscreen()
         history.push('/home/assignments')
       } else {
         notification({
@@ -539,7 +539,6 @@ const AssessmentContainer = ({
   setIsTestPreviewVisible,
   saveBlurTime,
   savedBlurTime: blurTimeAlreadySaved,
-  playlistPractice,
   ...restProps
 }) => {
   const itemId = preview || testletType ? 'new' : match.params.itemId || 'new'
@@ -1096,7 +1095,7 @@ const AssessmentContainer = ({
     }
   }, [savingResponse])
 
-  if (loading || (!assignmentObj && !preview && !playlistPractice)) {
+  if (loading || (!assignmentObj && !preview)) {
     return <Spin />
   }
 
@@ -1289,7 +1288,6 @@ const enhance = compose(
       restrictNavigationOutAttemptsThreshold:
         state.test?.settings?.restrictNavigationOutAttemptsThreshold,
       savedBlurTime: state.test?.savedBlurTime,
-      playlistPractice: state.test?.settings?.playlistPractice,
     }),
     {
       saveUserResponse,

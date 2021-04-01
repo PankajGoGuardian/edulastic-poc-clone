@@ -317,7 +317,7 @@ const CurriculumHeader = ({
                   IconBtn={!isDesktop}
                 >
                   <IconAirdrop />
-                  {isDesktop && 'AIRDROP PLAYLIST'}
+                  {isDesktop && 'OPEN TO STUDENTS'}
                 </HeaderButton>
                 <Dropdown
                   overlayStyle={{ zIndex: 999, cursor: 'pointer' }}

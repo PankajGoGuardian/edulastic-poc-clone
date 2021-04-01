@@ -263,6 +263,7 @@ const SingleAssessmentReportContainer = (props) => {
         )}
         <SubHeader breadcrumbData={breadcrumbData} isCliUser={isCliUser}>
           <SingleAssessmentReportFilters
+            isCliUser={isCliUser}
             isPrinting={isPrinting}
             reportId={reportId}
             onGoClick={onGoClick}

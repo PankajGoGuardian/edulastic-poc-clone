@@ -62,6 +62,7 @@ const getTestIdFromURL = (url) => {
 
 const SingleAssessmentReportFilters = ({
   loc,
+  isCliUser,
   isPrinting,
   loading,
   SARFilterData,
@@ -419,12 +420,12 @@ const SingleAssessmentReportFilters = ({
     <>
       <FilterTags
         isPrinting={isPrinting}
-        visible={!reportId}
+        visible={!reportId && !isCliUser}
         tagsData={tagsData}
         tagTypes={tagTypes}
         handleCloseTag={handleCloseTag}
       />
-      <ReportFiltersContainer visible={!reportId}>
+      <ReportFiltersContainer visible={!reportId && !isCliUser}>
         <StyledEduButton
           data-cy="filters"
           isGhost={!showFilter}

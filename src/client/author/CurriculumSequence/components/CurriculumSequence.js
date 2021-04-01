@@ -1043,7 +1043,7 @@ const enhance = compose(
       collections: getCollectionsSelector(state),
       features: getUserFeatures(state),
       isPublisherUser: isPublisherUserSelector(state),
-      isStudent: ['student', 'parent'].includes(getUserRole(state)),
+      isStudent: getUserRole(state) === 'student',
       isTeacher: getUserRole(state) === 'teacher',
       role: getUserRole(state),
       playlistMetricsList: state?.curriculumSequence?.playlistMetrics,

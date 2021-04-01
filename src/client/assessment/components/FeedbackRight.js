@@ -459,7 +459,7 @@ class FeedbackRight extends Component {
             </ScoreInputWrapper>
           </StyledDivSec>
         ) : (
-          <UnScored text="UNSCORED" height="50px" />
+          <UnScored data-cy="unscoredInput" text="UNSCORED" height="50px" />
         )}
         {showGradingRubricButton && (
           <RubricGrading

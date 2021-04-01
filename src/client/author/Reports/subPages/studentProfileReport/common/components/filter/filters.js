@@ -172,6 +172,7 @@ const StudentProfileReportFilters = ({
 
     if (reportId) {
       getSPRFilterDataRequest({ reportId })
+      setStudent({ key: urlStudentId })
     } else if (urlStudentId) {
       getSPRFilterDataRequest({
         termId: _filters.termId,
@@ -197,46 +198,44 @@ const StudentProfileReportFilters = ({
   }, [loc, showFilter])
 
   if (SPRFilterData !== prevSPRFilterData && !isEmpty(SPRFilterData)) {
-    if (reportId && firstLoad) {
+    const _student = { ...student }
+    if (studentClassData.length) {
+      // missing selected student name, extract it from the class data
+      const classRecord = studentClassData[0]
+      _student.title = getFullNameFromAsString(classRecord)
+      if (!student.title) {
+        setStudent({ ..._student })
+        setTempTagsData({ ...tempTagsData, student: _student })
+      }
+    }
+    if (firstLoad && reportId) {
       _onGoClick({
         filters: { ...filters },
-        selectedStudent: student,
+        selectedStudent: _student,
         tagsData: { ...tempTagsData },
       })
       setShowApply(false)
       setFirstLoad(false)
-    } else if (!reportId) {
-      const _student = { ...student }
-      if (studentClassData.length) {
-        // missing selected student name, extract it from the class data
-        const classRecord = studentClassData[0]
-        _student.title = getFullNameFromAsString(classRecord)
-        if (!student.title) {
-          setStudent({ ..._student })
-          setTempTagsData({ ...tempTagsData, student: _student })
-        }
+    } else if (firstLoad && !reportId && filters.termId) {
+      const _filters = {
+        ...filters,
+        performanceBandProfileId: selectedPerformanceBand?.key || '',
+        standardsProficiencyProfileId: selectedStandardProficiency?.key || '',
       }
-      if (firstLoad && filters.termId) {
-        const _filters = {
-          ...filters,
-          performanceBandProfileId: selectedPerformanceBand?.key || '',
-          standardsProficiencyProfileId: selectedStandardProficiency?.key || '',
-        }
-        const _tempTagsData = {
-          ...tempTagsData,
-          performanceBandProfileId: selectedPerformanceBand,
-          standardsProficiencyProfileId: selectedStandardProficiency,
-          student: _student,
-        }
-        setFilters({ ..._filters })
-        setTempTagsData({ ..._tempTagsData })
-        _onGoClick({
-          filters: _filters,
-          selectedStudent: _student,
-          tagsData: _tempTagsData,
-        })
-        setFirstLoad(false)
+      const _tempTagsData = {
+        ...tempTagsData,
+        performanceBandProfileId: selectedPerformanceBand,
+        standardsProficiencyProfileId: selectedStandardProficiency,
+        student: _student,
       }
+      setFilters({ ..._filters })
+      setTempTagsData({ ..._tempTagsData })
+      _onGoClick({
+        filters: _filters,
+        selectedStudent: _student,
+        tagsData: _tempTagsData,
+      })
+      setFirstLoad(false)
     }
     setPrevSPRFilterData(SPRFilterData)
   }

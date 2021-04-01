@@ -647,7 +647,6 @@ export const transformGradeBookResponse = (
                 testItemsData,
                 currentQuestionActivity?.maxScore
               )(testItemId)
-
             if (!currentQuestionActivity) {
               return {
                 _id,
@@ -663,8 +662,18 @@ export const transformGradeBookResponse = (
                 score: 0,
                 qLabel,
                 ...(submitted
-                  ? { skipped: true, score: 0, maxScore: questionMaxScore }
-                  : { notStarted: true, score: 0, maxScore: questionMaxScore }),
+                  ? {
+                      skipped: true,
+                      score: 0,
+                      maxScore: questionMaxScore,
+                      isDummy: true,
+                    }
+                  : {
+                      notStarted: true,
+                      score: 0,
+                      maxScore: questionMaxScore,
+                      isDummy: true,
+                    }),
                 isPractice,
               }
             }

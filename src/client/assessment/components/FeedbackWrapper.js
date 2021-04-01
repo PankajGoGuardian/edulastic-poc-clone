@@ -31,6 +31,7 @@ const FeedbackWrapper = ({
   studentName,
   updatePosition,
   isExpressGrader,
+  isQuestionView,
   t,
 }) => {
   const feedbackRef = useRef()
@@ -113,6 +114,7 @@ const FeedbackWrapper = ({
             isPracticeQuestion={isPracticeQuestion}
             itemId={itemId}
             isExpressGrader={isExpressGrader}
+            isQuestionView={isQuestionView}
             isAbsolutePos={!isStudentReport && shouldTakeDimensionsFromStore}
             {...presentationModeProps}
           />
@@ -224,12 +226,14 @@ FeedbackWrapper.propTypes = {
   isStudentReport: PropTypes.bool.isRequired,
   isPresentationMode: PropTypes.bool,
   t: PropTypes.func.isRequired,
+  isQuestionView: PropTypes.bool,
 }
 FeedbackWrapper.defaultProps = {
   data: {},
   showFeedback: false,
   isPresentationMode: false,
   displayFeedback: true,
+  isQuestionView: false,
 }
 
 const enhance = compose(

@@ -14,7 +14,16 @@ import {
 } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { Avatar, Card, Input } from 'antd'
-import { get, isUndefined, maxBy, round, sumBy, toNumber, isNaN } from 'lodash'
+import {
+  get,
+  isUndefined,
+  maxBy,
+  round,
+  sumBy,
+  toNumber,
+  isNaN,
+  isEmpty,
+} from 'lodash'
 import PropTypes from 'prop-types'
 import React, { Component, useEffect } from 'react'
 import { connect } from 'react-redux'
@@ -255,14 +264,25 @@ class FeedbackRight extends Component {
     this.setState({ showFeedbackSaveBtn: false })
   }
 
-  submitScore = (e) => {
-    const { changed } = this.state
-    const { widget: { activity: { qActId, _id } = {} } = {} } = this.props
+  allowToSubmitScore = (eventType) => {
     /**
      * in case of student did not visit the question, allow teacher trying to grade first time
      * @see EV-25489
      */
-    if (changed || (e?.type === 'blur' && !(qActId || _id))) {
+    if (eventType !== 'blur') {
+      return false
+    }
+    const { isQuestionView, widget: { activity = {} } = {} } = this.props
+    if (isQuestionView) {
+      return isEmpty(activity)
+    }
+    return activity.isDummy
+  }
+
+  submitScore = (e) => {
+    const { changed } = this.state
+    const allowSubmitScore = this.allowToSubmitScore(e?.type)
+    if (changed || allowSubmitScore) {
       this.onScoreSubmit()
     }
   }

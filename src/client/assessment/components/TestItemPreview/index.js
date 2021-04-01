@@ -156,6 +156,7 @@ class TestItemPreview extends Component {
       itemId,
       itemLevelScoring,
       t,
+      isQuestionView,
     } = this.props
 
     const [
@@ -180,6 +181,7 @@ class TestItemPreview extends Component {
         displayFeedback={displayFeedback}
         isPrintPreview={isPrintPreview}
         isExpressGrader={isExpressGrader}
+        isQuestionView={isQuestionView}
         showCollapseBtn={showCollapseBtn}
         prevQActivityForQuestion={prevQActivityForQuestion}
         data={{ ...question, isPracticeQuestion, smallSize: true }}

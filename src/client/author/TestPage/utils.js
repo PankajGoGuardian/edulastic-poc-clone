@@ -109,10 +109,10 @@ const createItemsSummaryData = (items = [], scoring, isLimitedDeliveryType) => {
     } else {
       summary.noStandards.totalQuestions += questions.length
       summary.noStandards.totalPoints = roundOff(
-        (summary.noStandards.totalPoints + sumBy(
+        summary.noStandards.totalPoints + sumBy(
           questions,
           ({ id }) => questionWisePoints[id]
-        ))
+        )
       )
     }
     summary.totalPoints = roundOff(

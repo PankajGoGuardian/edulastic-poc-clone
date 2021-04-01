@@ -637,6 +637,7 @@ function* loadTest({ payload }) {
 
     // test items are put into store after shuffling questions sometimes..
     // hence dont frigging move this, and this better stay at the end!
+
     yield put({
       type: LOAD_TEST_ITEMS,
       payload: {
@@ -651,10 +652,7 @@ function* loadTest({ payload }) {
         isDocBased: test.isDocBased,
         pageStructure: test.pageStructure,
         freeFormNotes: test.freeFormNotes,
-        settings: {
-          ...settings,
-          playlistPractice: testActivity.testActivity?.playlistPractice,
-        },
+        settings,
         answerCheckByItemId,
         showMagnifier: settings.showMagnifier || test.showMagnifier,
         languagePreference: testActivity.testActivity?.languagePreference,
@@ -763,7 +761,7 @@ function* loadTest({ payload }) {
           notification({
             msg: errorMessage || 'Something went wrong!',
           })
-          Fscreen.safeExitfullScreen()
+          Fscreen.exitFullscreen()
           return yield put(push('/home/assignments'))
         }
         notification({
@@ -773,7 +771,7 @@ function* loadTest({ payload }) {
     }
     if (userRole === roleuser.STUDENT) {
       notification({ messageKey })
-      Fscreen.safeExitfullScreen()
+      Fscreen.exitFullscreen()
       return yield put(push('/home/assignments'))
     }
   }

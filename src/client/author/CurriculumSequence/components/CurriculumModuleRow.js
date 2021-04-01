@@ -398,7 +398,6 @@ class ModuleRow extends Component {
           moduleId,
           playlistId,
         },
-        hideButton: isParent,
       }
 
       if (uta.testActivityId && uta.taStatus !== testActivityStatus.SUBMITTED) {

@@ -206,14 +206,12 @@ const StudentProfileReportFilters = ({
       setShowApply(false)
       setFirstLoad(false)
     } else if (!reportId) {
+      const _student = { ...student }
       if (studentClassData.length) {
         // missing selected student name, extract it from the class data
+        const classRecord = studentClassData[0]
+        _student.title = getFullNameFromAsString(classRecord)
         if (!student.title) {
-          const classRecord = studentClassData[0]
-          const _student = {
-            ...student,
-            title: getFullNameFromAsString(classRecord),
-          }
           setStudent({ ..._student })
           setTempTagsData({ ...tempTagsData, student: _student })
         }
@@ -228,12 +226,13 @@ const StudentProfileReportFilters = ({
           ...tempTagsData,
           performanceBandProfileId: selectedPerformanceBand,
           standardsProficiencyProfileId: selectedStandardProficiency,
+          student: _student,
         }
         setFilters({ ..._filters })
         setTempTagsData({ ..._tempTagsData })
         _onGoClick({
           filters: _filters,
-          selectedStudent: student,
+          selectedStudent: _student,
           tagsData: _tempTagsData,
         })
         setFirstLoad(false)

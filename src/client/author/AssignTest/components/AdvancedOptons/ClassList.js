@@ -295,7 +295,7 @@ class ClassList extends React.Component {
                 color={lightGrey10}
               />
             )}
-            <span>{className}</span>
+            <span data-cy="className">{className}</span>
             <Tags
               data-cy="tags"
               tags={row.tags}
@@ -487,6 +487,7 @@ class ClassList extends React.Component {
             Tags
             <SelectInputStyled
               mode="multiple"
+              data-cy="tagSelect"
               value={searchTerms.tags}
               placeholder="All Tags"
               onChange={changeField('tags')}

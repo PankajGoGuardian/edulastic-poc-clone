@@ -7,12 +7,14 @@ import { BundleContainer, Bottom } from './styled'
 const Bundle = ({ handleClick, bundle }) => {
   const onClick = () => handleClick(bundle || {})
   return (
-    <BundleContainer onClick={onClick} bgImage={bundle.imageUrl}>
-      <Bottom>
-        {bundle.description && (
-          <div data-cy={bundle.description}> {bundle.description} </div>
-        )}
-      </Bottom>
+    <BundleContainer
+      onClick={onClick}
+      bgImage={bundle.imageUrl}
+      data-cy={
+        bundle.description || bundle?.config?.subscriptionData?.productName
+      }
+    >
+      <Bottom>{bundle.description && <div>{bundle.description}</div>}</Bottom>
     </BundleContainer>
   )
 }

@@ -13,7 +13,6 @@ import {
   StudentPlaylistSaga,
 } from './student/sagas'
 import assessmentSagas from './assessment/sagas'
-import { watcherSaga as curriculumSequenceSaga } from './author/CurriculumSequence/ducks'
 import { reportSaga } from './author/Reports/ducks'
 
 export function* studentsSagas() {
@@ -28,7 +27,6 @@ export function* studentsSagas() {
     StudentPlaylistSaga(),
     dictionariesSaga(),
     expressGraderWatcherSaga(),
-    curriculumSequenceSaga(),
     ...assessmentSagas,
     reportSaga(),
   ])

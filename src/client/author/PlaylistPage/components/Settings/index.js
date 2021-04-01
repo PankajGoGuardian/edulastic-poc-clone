@@ -5,12 +5,7 @@ import { withRouter } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { withWindowSizes, MainContentWrapper } from '@edulastic/common'
 
-import {
-  setUserCustomizeAction,
-  getUserCustomizeSelector,
-  setPlaylistModeAction,
-  getPlaylistModeSelector,
-} from '../../ducks'
+import { setUserCustomizeAction, getUserCustomizeSelector } from '../../ducks'
 import { SecondHeader } from '../../../TestPage/components/Setting/components/Container/styled'
 
 import Breadcrumb from '../../../src/components/Breadcrumb'
@@ -22,8 +17,6 @@ const Setting = ({
   windowWidth,
   customize,
   setUserCustomize,
-  playlistMode,
-  setPlaylistMode,
 }) => {
   const breadcrumbData = [
     {
@@ -46,8 +39,6 @@ const Setting = ({
         windowWidth={windowWidth}
         customize={customize}
         handleUserCustomize={setUserCustomize}
-        playlistMode={playlistMode}
-        setPlaylistMode={setPlaylistMode}
       />
     </MainContentWrapper>
   )
@@ -63,16 +54,9 @@ const enhance = compose(
   memo,
   withRouter,
   withWindowSizes,
-  connect(
-    (state) => ({
-      customize: getUserCustomizeSelector(state),
-      playlistMode: getPlaylistModeSelector(state),
-    }),
-    {
-      setUserCustomize: setUserCustomizeAction,
-      setPlaylistMode: setPlaylistModeAction,
-    }
-  )
+  connect((state) => ({ customize: getUserCustomizeSelector(state) }), {
+    setUserCustomize: setUserCustomizeAction,
+  })
 )
 
 export default enhance(Setting)

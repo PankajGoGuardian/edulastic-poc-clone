@@ -115,6 +115,12 @@ class Scoring extends Component {
           newData.validation.scoringType = evaluationType.EXACT_MATCH
           delete newData.validation.unscored // unset unscored when auto scoring is disabled
         }
+        if(param==="unscored" && value){
+            newData.validation.validResponse.score = 0
+            newData.validation.altResponses?.forEach((altResp)=>{
+              altResp.score = 0
+            })
+        }
         newData.validation[param] = value
       }
 

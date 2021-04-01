@@ -266,7 +266,10 @@ export default createReducer(initialState, {
           'validation.validResponse.score',
           0
         )
-        if (parseFloat(oldScore) === 0) {
+        if (
+          parseFloat(oldScore) === 0 &&
+          !get(state.byId[key], 'validation.unscored', false)
+        ) {
           set(state.byId[key], 'validation.validResponse.score', 1)
         }
       }

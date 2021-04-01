@@ -94,9 +94,9 @@ export const TOGGLE_CREATE_ITEM_MODAL = '[testItem] toggle create item modal'
 
 export const CORRECT_ITEM_UPDATE_REQUEST =
   '[testItem] update correct testItem in LCB request'
-
 export const CORRECT_ITEM_UPDATE_SUCCESS =
   '[testItem] update correct testItem in LCB success'
+export const TOGGLE_REGRADE_MODAL = '[tests] toggle regrade modal in LCB'
 
 // Tests
 export const RECEIVE_TESTS_REQUEST = '[tests] receive list request'
@@ -176,6 +176,8 @@ export const RECEIVE_CLASSSTUDENT_RESPONSE_SUCCESS =
 export const ADD_CLASS_STUDENT_RESPONSE = '[classStudentResponse] add response'
 export const RECEIVE_CLASSSTUDENT_RESPONSE_ERROR =
   '[classStudentResponse] receive list error'
+export const SET_CLASS_STUDENT_RESPONSES_LOADING =
+  '[classStudentResponse] set print preview loading'
 export const RECEIVE_FEEDBACK_RESPONSE_REQUEST =
   '[feedbackResponse] receive list request'
 export const RECEIVE_FEEDBACK_RESPONSE_SUCCESS =

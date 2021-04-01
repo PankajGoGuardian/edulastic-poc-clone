@@ -4,7 +4,7 @@ import { Container, InputsWrapper, OptionTitle } from './styled'
 import AssignmentsTable from './Table'
 
 const Group = Radio.Group
-const ACTIONS = {
+export const ACTIONS = {
   SKIP: 'SKIP',
   SCORE: 'SCORE',
   MANUAL: 'MANUAL',

@@ -127,6 +127,8 @@ import {
 } from '../../../../student/Login/ducks'
 import { getSubmittedDate } from '../../utils'
 import { isFreeAdminSelector } from '../../../src/selectors/user'
+import { getRegradeModalStateSelector } from '../../../TestPage/ducks'
+import RegradeModal from '../../../Regrade/RegradeModal'
 
 const NotificationComponent = (props) => {
   notification(props)
@@ -1002,6 +1004,7 @@ class ClassBoard extends Component {
       recentAttemptsGrouped,
       studentsPrevSubmittedUtas,
       studentUnselectAll,
+      regradeModalState,
     } = this.props
 
     const {
@@ -1247,6 +1250,7 @@ class ClassBoard extends Component {
             selectedTab={selectedTab}
           />
         )}
+        {!isEmpty(regradeModalState) && <RegradeModal />}
         <ClassHeader
           classId={classId}
           active="classboard"
@@ -1978,6 +1982,7 @@ const enhance = compose(
           ?.recentTestActivitiesGrouped || {},
       studentsPrevSubmittedUtas: getStudentsPrevSubmittedUtasSelector(state),
       isFreeAdmin: isFreeAdminSelector(state),
+      regradeModalState: getRegradeModalStateSelector(state),
     }),
     {
       loadTestActivity: receiveTestActivitydAction,

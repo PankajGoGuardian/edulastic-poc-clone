@@ -77,6 +77,7 @@ import {
   PAUSE_STUDENTS,
   CORRECT_ITEM_UPDATE_REQUEST,
   CORRECT_ITEM_UPDATE_SUCCESS,
+  TOGGLE_REGRADE_MODAL,
 } from '../src/constants/actions'
 
 import { downloadCSV } from '../Reports/common/util'
@@ -679,8 +680,18 @@ function* correctItemUpdateSaga({ payload }) {
         testItems: itemsToReplace,
       },
     })
+
+    notification({ type: 'success', messageKey: 'publishCorrectItemSuccess' })
+
+    const { testId: newTestId, isRegradeNeeded } = result
+    if (isRegradeNeeded) {
+      yield put({
+        type: TOGGLE_REGRADE_MODAL,
+        payload: { newTestId, oldTestId: testId },
+      })
+    }
   } catch (error) {
-    console.log(error)
+    notification({ type: 'success', messageKey: 'publishCorrectItemFailing' })
   }
 }
 
@@ -1412,6 +1423,11 @@ export const getStudentResponseLoadingSelector = createSelector(
 export const getClassStudentResponseSelector = createSelector(
   stateClassStudentResponseSelector,
   (state) => state.data
+)
+
+export const getPrintViewLoadingSelector = createSelector(
+  stateClassStudentResponseSelector,
+  (state) => state.printPreviewLoading
 )
 
 export const getFeedbackResponseSelector = createSelector(

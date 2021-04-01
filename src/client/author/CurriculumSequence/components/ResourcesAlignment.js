@@ -227,7 +227,6 @@ const ResourcesAlignment = ({
               setGrades={setGrades}
               setSubject={setSubject}
               handleChangeStandard={handleChangeStandard}
-              isVerticalView={isVerticalView}
             />
           </Col>
         ) : (

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React, { useRef } from 'react'
+import React, { useRef, useEffect } from 'react'
 import { Select, Tooltip } from 'antd'
 import { withNamespaces } from '@edulastic/localization'
 import { IconBookmark, IconSend } from '@edulastic/icons'
@@ -19,24 +19,37 @@ const QuestionSelectDropdown = ({
   moveToNext,
   utaId,
   blockNavigationToAnsweredQuestions,
+  zoomLevel,
 }) => {
   const dropdownWrapper = useRef(null)
-  const menuStyle = {
-    top: `${dropdownWrapper.current?.clientHeight}px !important`,
-    left: `0px !important`,
-  }
+
+  useEffect(() => {
+    if (dropdownWrapper?.current?.clientWidth) {
+      const zoomValue = parseFloat(zoomLevel)
+      const effectiveClientWidth =
+        zoomValue * dropdownWrapper.current?.clientWidth
+
+      const interval = setInterval(() => {
+        const ele1 = document.getElementsByClassName(
+          'question-select-list-dropdown'
+        )
+        const ele = ele1[0]
+        if (ele) {
+          const childEle = ele.childNodes[0]
+          ele.style.minWidth = `${effectiveClientWidth}px`
+          childEle.style.zoom = zoomLevel
+          clearInterval(interval)
+        }
+      }, 2000)
+      return () => clearInterval(interval)
+    }
+  }, [dropdownWrapper, zoomLevel])
+
   const showSubmit =
     sessionStorage.getItem('testAttemptReviewVistedId') === utaId
-  const getPopupContainer = (triggerNode) => {
-    const scrollableContainer = document.getElementById(
-      'assessment-player-default-scroll'
-    )
-    return scrollableContainer || triggerNode.parentNode
-  }
   return (
     <SelectContainer
       ref={dropdownWrapper}
-      menuStyle={menuStyle}
       style={dropdownStyle}
       skinb={skinb}
       className="question-select-dropdown"
@@ -50,8 +63,10 @@ const QuestionSelectDropdown = ({
         }
       >
         <Select
-          getPopupContainer={getPopupContainer}
-          dropdownStyle={{ zIndex: 1100 }}
+          dropdownStyle={{
+            zIndex: 1100,
+          }}
+          dropdownClassName="question-select-list-dropdown"
           value={currentItem}
           data-cy="options"
           onChange={(value) => {

@@ -4,7 +4,7 @@ import { some } from 'lodash'
 import { compose } from 'redux'
 import PropTypes from 'prop-types'
 import { ThemeProvider, withTheme } from 'styled-components'
-import { get, isEqual } from 'lodash'
+import { get, isEqual, every } from 'lodash'
 import { white } from '@edulastic/colors'
 import { withNamespaces } from '@edulastic/localization'
 import { AssessmentPlayerContext, withWindowSizes } from '@edulastic/common'
@@ -154,6 +154,7 @@ class TestItemPreview extends Component {
       studentId,
       studentName,
       itemId,
+      itemLevelScoring,
       t,
     } = this.props
 
@@ -166,10 +167,9 @@ class TestItemPreview extends Component {
       stackedView,
     })
     const question = questions[widget.reference]
-    const isPracticeQuestion = some(
-      questions,
-      ({ validation }) => validation && validation.unscored
-    )
+    const isPracticeQuestion = itemLevelScoring
+      ? every(questions, ({ validation }) => validation && validation.unscored)
+      : get(question, 'validation.unscored', false)
     const prevQActivityForQuestion = previousQuestionActivity.find(
       (qa) => qa.qid === question.id
     )

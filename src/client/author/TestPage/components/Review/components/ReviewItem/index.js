@@ -51,11 +51,6 @@ const ReviewItem = ({
    * consider item is unscored
    * */
   const getUnScoredItem = (__questions, __itemLevelScoring) => {
-    if (__itemLevelScoring === true) {
-      return __questions.some(({ validation }) =>
-        get(validation, 'unscored', false)
-      )
-    }
     return __questions.every(({ validation }) =>
       get(validation, 'unscored', false)
     )

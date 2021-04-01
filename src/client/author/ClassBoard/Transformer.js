@@ -8,6 +8,7 @@ import {
   isEmpty,
   uniq,
   some,
+  every,
 } from 'lodash'
 import { testActivityStatus, questionType } from '@edulastic/constants'
 import produce from 'immer'
@@ -70,10 +71,9 @@ export const getAllQidsAndWeight = (testItemIds, testItemsDataKeyed) => {
       (testItemsDataKeyed[testItemId].data &&
         testItemsDataKeyed[testItemId].data.questions) ||
       []
-    const isPractice = some(
-      questions,
-      ({ validation }) => validation && validation.unscored
-    )
+    const isPracticeItem =
+      testItemsDataKeyed[testItemId]?.itemLevelScoring &&
+      every(questions, ({ validation }) => validation && validation.unscored)
     if (!questions.length) {
       qids = [
         ...qids,
@@ -85,7 +85,7 @@ export const getAllQidsAndWeight = (testItemIds, testItemsDataKeyed) => {
           qids: [],
           qLabel: '',
           barLabel: '',
-          isPractice,
+          isPractice: false,
         },
       ]
     } else if (testItemsDataKeyed[testItemId].itemLevelScoring) {
@@ -105,7 +105,9 @@ export const getAllQidsAndWeight = (testItemIds, testItemsDataKeyed) => {
             qids: questions.map((_x) => _x.id),
             qLabel: x.qLabel,
             barLabel: x.barLabel,
-            isPractice,
+            isPractice: testItemsDataKeyed[testItemId]?.itemLevelScoring
+              ? isPracticeItem
+              : x?.validation?.unscored || false,
           })),
       ]
     } else {
@@ -119,7 +121,9 @@ export const getAllQidsAndWeight = (testItemIds, testItemsDataKeyed) => {
           qids: [x.id],
           qLabel: x.qLabel,
           barLabel: x.barLabel,
-          isPractice,
+          isPractice: testItemsDataKeyed[testItemId]?.itemLevelScoring
+            ? isPracticeItem
+            : x?.validation?.unscored || false,
         })),
       ]
     }
@@ -248,13 +252,7 @@ const getSkippedStatusOfQuestion = (
  */
 const getMaxScoreFromItem = (testItem) => {
   let total = 0
-  if (
-    !testItem ||
-    some(
-      get(testItem, 'data.questions', false),
-      ({ validation }) => validation && validation.unscored
-    )
-  ) {
+  if (!testItem) {
     return total
   }
   if (testItem?.itemLevelScoring) {
@@ -264,7 +262,9 @@ const getMaxScoreFromItem = (testItem) => {
     return total
   }
   for (const question of testItem?.data?.questions || []) {
-    total += getMaxScoreFromQuestion(question)
+    if (!question?.validation?.unscored) {
+      total += getMaxScoreFromQuestion(question)
+    }
   }
   return total
 }
@@ -610,7 +610,7 @@ export const transformGradeBookResponse = (
         const score =
           (questionActivitiesRaw &&
             questionActivitiesRaw.reduce(
-              (e1, e2) => (e2.isPractice ? 0 : e2.score || 0) + e1,
+              (e1, e2) => (e2.score || 0) + e1,
               0
             )) ||
           0

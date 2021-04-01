@@ -62,18 +62,11 @@ const createItemsSummaryData = (items = [], scoring, isLimitedDeliveryType) => {
     const questions = get(item, 'data.questions', []).filter(
       ({ type }) => type !== sectionLabelType
     )
-    const unscored = some(
-      get(item, 'data.questions', []),
-      ({ validation }) => validation && validation.unscored
-    )
     let itemPoints = 0
-    if (!unscored) {
-      itemPoints =
-        scoring[_id] ||
-        (itemLevelScoring === true && itemLevelScore) ||
-        maxScore
-    }
-    if (!unscored && isLimitedDeliveryType) {
+    itemPoints =
+      scoring[_id] || (itemLevelScoring === true && itemLevelScore) || maxScore
+
+    if (isLimitedDeliveryType) {
       itemPoints = 1
     }
     const itemTotalQuestions = questions.length
@@ -86,7 +79,7 @@ const createItemsSummaryData = (items = [], scoring, isLimitedDeliveryType) => {
     for (const question of questions) {
       const standardSummary = getStandardWiseSummary(
         question,
-        unscored ? 0 : questionWisePoints[question.id]
+        questionWisePoints[question.id]
       )
       if (standardSummary) {
         summary.standards.push(
@@ -116,8 +109,10 @@ const createItemsSummaryData = (items = [], scoring, isLimitedDeliveryType) => {
     } else {
       summary.noStandards.totalQuestions += questions.length
       summary.noStandards.totalPoints = roundOff(
-        summary.noStandards.totalPoints +
-          (unscored ? 0 : sumBy(questions, ({ id }) => questionWisePoints[id]))
+        summary.noStandards.totalPoints + sumBy(
+          questions,
+          ({ id }) => questionWisePoints[id]
+        )
       )
     }
     summary.totalPoints = roundOff(

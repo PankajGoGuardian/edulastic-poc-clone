@@ -1049,10 +1049,8 @@ class ClassBoard extends Component {
       status === 0
     ) {
       studentResponse.questionActivities.forEach((uqa) => {
-        if (!uqa.isPractice) {
-          score += uqa.score
-          maxScore += uqa.maxScore
-        }
+        score += uqa.score
+        maxScore += uqa.maxScore
       })
     }
     const selectedStudentsKeys = Object.keys(selectedStudents)

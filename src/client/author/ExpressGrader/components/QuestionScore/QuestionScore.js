@@ -41,7 +41,11 @@ class QuestionScore extends Component {
       // maxScore = 1;
       studentScore = '-'
     }
-    const unscoredDisplay = scoreMode && isPractice && 'U'
+    const unscoredDisplay = scoreMode &&
+      isPractice && {
+        displayText: `U`,
+        tooltipdisplay: `Unscored`,
+      }
     if (skipped) studentScore = 0
 
     const onClickHandler = () => {
@@ -66,14 +70,18 @@ class QuestionScore extends Component {
                 title={
                   <span
                     dangerouslySetInnerHTML={{
-                      __html: unscoredDisplay || responseToDisplay || '-',
+                      __html:
+                        unscoredDisplay?.tooltipdisplay ||
+                        responseToDisplay ||
+                        '-',
                     }}
                   />
                 }
               >
                 <StyledText
                   dangerouslySetInnerHTML={{
-                    __html: unscoredDisplay || responseToDisplay || '-',
+                    __html:
+                      unscoredDisplay?.displayText || responseToDisplay || '-',
                   }}
                   responseView
                 />

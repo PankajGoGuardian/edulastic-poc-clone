@@ -10,8 +10,16 @@ export const AnswerBox = styled.div`
   border-radius: 2px;
   width: 100%;
   max-height: ${({ maxHeight }) => maxHeight || ''};
-  background: ${({ fillColor, isPrintPreview }) => {
+  background: ${({ theme, checked, correct, isPrintPreview }) => {
     if (isPrintPreview) return white
-    return fillColor
+    if (!checked && !correct) {
+      return theme.widgets.clozeText.boxNoAnswerBgColor
+    }
+    if (checked && !correct) {
+      return theme.widgets.clozeText.boxWrongBgColor
+    }
+    if (checked && correct) {
+      return theme.widgets.clozeText.boxBgCorrectColor
+    }
   }};
 `

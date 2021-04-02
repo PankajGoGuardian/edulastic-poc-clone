@@ -37,7 +37,6 @@ const ClozeMathPreview = ({
   allOptions = [],
   enableMagnifier = false,
   hideCorrectAnswer,
-  answerScore,
 }) => {
   const [newHtml, setNewHtml] = useState('')
   const { isAnswerModifiable } = useContext(AnswerContext)
@@ -149,16 +148,6 @@ const ClozeMathPreview = ({
     }
   }, [stimulus])
 
-  const allCorrects = useMemo(() => {
-    if (type === CHECK || type === SHOW) {
-      return Object.keys(item.responseIds)
-        .map((key) => item.responseIds[key].map((response) => response.id))
-        .flatMap((responseId) => responseId)
-        .every((responseId) => evaluation[responseId])
-    }
-    return false
-  }, [evaluation, item.responseIds, type])
-
   const testUserAnswer = {}
   if (testItem) {
     const keynameMap = {
@@ -212,8 +201,6 @@ const ClozeMathPreview = ({
             disableResponse: disableResponse || !isAnswerModifiable,
             isPrintPreview,
             allOptions,
-            answerScore,
-            allCorrects,
           },
         }}
         showWarnings

@@ -14,6 +14,7 @@ import {
   RadioBtn,
 } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
+import { white } from '@edulastic/colors'
 import { toggleAdvancedSections } from '../../../../../actions/questions'
 import { Row } from '../../../../../styled/WidgetOptions/Row'
 import { Col } from '../../../../../styled/WidgetOptions/Col'
@@ -30,6 +31,7 @@ const UnitsDropdownPure = ({
   options,
   onChangeShowDropdown,
   disabled,
+  statusColor,
   keypadMode = 'units_us',
   view,
 }) => {
@@ -135,6 +137,7 @@ const UnitsDropdownPure = ({
                   visibility: item.showDropdown ? 'visible' : 'hidden',
                   height: item.showDropdown ? '100%' : 0,
                 }}
+                bg={statusColor}
               >
                 {allBtns.map((btn, i) => (
                   <Option value={btn.handler} key={i}>
@@ -160,6 +163,7 @@ UnitsDropdownPure.propTypes = {
   t: PropTypes.func.isRequired,
   onChangeShowDropdown: PropTypes.func,
   disabled: PropTypes.bool,
+  statusColor: PropTypes.string,
 }
 
 UnitsDropdownPure.defaultProps = {
@@ -167,6 +171,7 @@ UnitsDropdownPure.defaultProps = {
   preview: false,
   disabled: false,
   selected: '',
+  statusColor: '',
   onChangeShowDropdown: () => null,
 }
 
@@ -190,6 +195,10 @@ const DropdownWrapper = styled.div`
     svg {
       display: inline-block;
     }
+  }
+  .ant-select-selection {
+    padding: 5px 2px;
+    background: ${({ statusColor }) => statusColor || white};
   }
 `
 

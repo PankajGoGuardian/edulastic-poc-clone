@@ -4,21 +4,22 @@ import { convertToMathTemplate } from '@edulastic/common/src/utils/mathUtils'
 import { MathFormulaDisplay } from '@edulastic/common'
 import { white } from '@edulastic/colors'
 import { IconWrapper } from './styled/IconWrapper'
+import { RightIcon } from './styled/RightIcon'
+import { WrongIcon } from './styled/WrongIcon'
 
 const AnswerBox = ({
+  checked,
+  correct,
   userAnswer,
   indexStr,
   inPopover,
   showIndex,
   lessMinWidth,
-  fillColor,
-  indexBgColor,
-  mark,
   ...rest
 }) => (
-  <Container data-cy="answer-box" {...rest} fillColor={fillColor}>
+  <Container data-cy="answer-box" {...rest} checked={checked} correct={correct}>
     {showIndex && (
-      <IndexBox data-cy="index" bgColor={indexBgColor}>
+      <IndexBox data-cy="index" checked={checked} correct={correct}>
         {indexStr}
       </IndexBox>
     )}
@@ -28,11 +29,13 @@ const AnswerBox = ({
         __html: convertToMathTemplate(userAnswer) || '',
       }}
     />
-    {mark && (
-      <IconWrapper data-cy="icon-wrapper" rightPosition={lessMinWidth ? 1 : 8}>
-        {mark}
-      </IconWrapper>
-    )}
+    <IconWrapper
+      data-cy={`icon-${checked && correct}`}
+      rightPosition={lessMinWidth ? 1 : 8}
+    >
+      {checked && correct && <RightIcon />}
+      {checked && !correct && <WrongIcon />}
+    </IconWrapper>
   </Container>
 )
 export default AnswerBox
@@ -44,9 +47,18 @@ const Container = styled.div`
   cursor: pointer;
   border-radius: 4px;
   color: ${({ theme }) => theme.checkbox.textColor};
-  background: ${({ fillColor, isPrintPreview }) => {
+  background: ${({ theme, checked, correct, isPrintPreview }) => {
     if (isPrintPreview) return white
-    return fillColor
+    if (!checked) {
+      return theme.checkbox.noAnswerBgColor
+    }
+    if (!correct) {
+      return theme.checkbox.wrongBgColor
+    }
+    if (correct) {
+      return theme.checkbox.rightBgColor
+    }
+    return theme.checkbox.noAnswerBgColor
   }};
 `
 
@@ -75,8 +87,14 @@ const IndexBox = styled.div`
   justify-content: center;
   align-items: center;
   flex-shrink: 0;
-  ${({ theme, bgColor }) => `
-    background: ${bgColor};
+  ${({ theme, checked, correct }) => `
+    background: ${
+      !checked
+        ? theme.checkbox.noAnswerIconColor
+        : correct
+        ? theme.checkbox.rightIconColor
+        : theme.checkbox.wrongIconColor
+    };
     color: ${theme.widgets.clozeDropDown.indexBoxColor};
     font-size: ${theme.widgets.clozeDropDown.indexBoxFontSize};
     font-weight: ${theme.widgets.clozeDropDown.indexBoxFontWeight};

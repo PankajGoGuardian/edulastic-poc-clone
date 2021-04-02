@@ -2,16 +2,38 @@ import styled, { css } from 'styled-components'
 import { white } from '@edulastic/colors'
 
 const boxBgColor = css`
-  background: ${({ fillColor, isPrintPreview }) => {
+  background: ${({ theme, checked, correct, isPrintPreview }) => {
     if (isPrintPreview) return white
-    return fillColor
+    if (checked === undefined && correct === undefined) {
+      return theme.checkbox.boxBgColor
+    }
+    if (checked === false || checked === undefined) {
+      return theme.checkbox.noAnswerBgColor
+    }
+    if (checked && !correct) {
+      return theme.checkbox.wrongBgColor
+    }
+    if (checked && correct) {
+      return theme.checkbox.rightBgColor
+    }
   }};
 `
 
 const indexBoxBgColor = css`
-  background: ${({ indexBgColor, isPrintPreview }) => {
+  background: ${({ theme, checked, correct, isPrintPreview }) => {
     if (isPrintPreview) return white
-    return indexBgColor
+    if (checked === undefined && correct === undefined) {
+      return theme.checkbox.boxBgColor
+    }
+    if (checked === false || checked === undefined) {
+      return theme.checkbox.noAnswerIconColor
+    }
+    if (checked && !correct) {
+      return theme.checkbox.wrongIconColor
+    }
+    if (checked && correct) {
+      return theme.checkbox.rightIconColor
+    }
   }};
 `
 

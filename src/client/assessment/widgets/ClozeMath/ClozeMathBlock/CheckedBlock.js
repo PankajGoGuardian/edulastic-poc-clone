@@ -3,9 +3,10 @@ import PropTypes from 'prop-types'
 import { find, isUndefined } from 'lodash'
 import { Popover } from 'antd'
 import { response as responseConstant } from '@edulastic/constants'
-import { getEvalautionColor } from '../../../utils/evaluation'
 
 import { IconWrapper } from './styled/IconWrapper'
+import { RightIcon } from './styled/RightIcon'
+import { WrongIcon } from './styled/WrongIcon'
 import { CheckBox } from './styled/CheckBox'
 
 /**
@@ -62,8 +63,6 @@ const CheckedBlock = ({
   onInnerClick,
   showIndex,
   isPrintPreview = false,
-  answerScore,
-  allCorrects,
 }) => {
   const { responseIds } = item
   const { index } = find(responseIds[type], (res) => res.id === id)
@@ -80,15 +79,13 @@ const CheckedBlock = ({
   ) {
     unit = `\\text{${unit}}`
   }
+  let checkBoxClass = ''
+
+  if (userAnswer && evaluation[id] !== undefined) {
+    checkBoxClass = evaluation[id] ? 'right' : 'wrong'
+  }
 
   const answer = combineUnitAndValue(userAnswer, isMath, unit)
-
-  const { fillColor, mark, indexBgColor } = getEvalautionColor(
-    answerScore,
-    userAnswer && evaluation[id],
-    !!answer,
-    allCorrects
-  )
 
   /**
    * if its math or math with units, need to convert the latex string to actual math template
@@ -99,9 +96,7 @@ const CheckedBlock = ({
 
   const popoverContent = (isPopover) => (
     <CheckBox
-      fillColor={fillColor}
-      isPrintPreview={isPrintPreview}
-      indexBgColor={indexBgColor}
+      className={!isPrintPreview && checkBoxClass}
       key={`input_${index}`}
       onClick={onInnerClick}
       width={isPopover ? null : width}
@@ -140,7 +135,9 @@ const CheckedBlock = ({
         )}
       </span>
       {userAnswer && !isUndefined(evaluation[id]) && (
-        <IconWrapper>{mark}</IconWrapper>
+        <IconWrapper>
+          {checkBoxClass === 'right' ? <RightIcon /> : <WrongIcon />}
+        </IconWrapper>
       )}
     </CheckBox>
   )

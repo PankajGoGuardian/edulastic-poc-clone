@@ -20,8 +20,6 @@ const ClozeMathInput = ({ resprops = {}, id, responseindex }) => {
     disableResponse = false,
     uiStyles,
     isPrintPreview,
-    answerScore,
-    allCorrects,
   } = resprops
   const { maths: userAnswers = [] } = answers
   const response = find(responseContainers, (cont) => cont.id === id)
@@ -103,8 +101,6 @@ const ClozeMathInput = ({ resprops = {}, id, responseindex }) => {
       type="maths"
       isPrintPreview={isPrintPreview}
       isMath
-      answerScore={answerScore}
-      allCorrects={allCorrects}
     />
   ) : (
     <MathInputWrapper

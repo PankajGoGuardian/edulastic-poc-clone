@@ -483,7 +483,6 @@ class Display extends Component {
       isPrintPreview = false,
       view,
       hideCorrectAnswer,
-      answerScore,
     } = this.props
     const isPrintMode = isPrint || isPrintPreview
     const isWrapText = get(item, 'responseLayout.isWrapText', false)
@@ -741,7 +740,6 @@ class Display extends Component {
             isPrintPreview={isPrintPreview || isPrint}
             options={options}
             idValueMap={idValueMap}
-            answerScore={answerScore}
           />
         </StyledPreviewContainer>
       </StyledPreviewTemplateBox>

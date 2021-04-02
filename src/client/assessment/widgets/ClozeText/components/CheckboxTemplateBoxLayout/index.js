@@ -4,13 +4,12 @@ import { Popover } from 'antd'
 import PropTypes from 'prop-types'
 import { measureText } from '@edulastic/common'
 
+import CheckMark from './CheckMark'
 import { AnswerBox } from '../../styled/AnswerBox'
 import { IndexBox } from '../../styled/IndexBox'
 import { AnswerContent } from '../../styled/AnswerContent'
 
 import { CLEAR } from '../../../../constants/constantsForQuestions'
-import { getEvalautionColor } from '../../../../utils/evaluation'
-import { IconWrapper } from './styled/IconWrapper'
 
 const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   if (!id) {
@@ -26,7 +25,6 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     getUiStyles,
     changePreviewTab,
     isPrintPreview,
-    answerScore,
   } = resprops
 
   const { id: choiceId, index } = find(responseIds, (res) => res.id === id)
@@ -51,19 +49,10 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     }
   }, [userAnswer])
 
-  const correct = evaluation[choiceId]
-  const allCorrect = responseIds.every((res) => evaluation[res.id])
-  const attempt = !!userAnswer && correct !== undefined
-  const { fillColor, mark, indexBgColor } = getEvalautionColor(
-    answerScore,
-    correct,
-    attempt,
-    allCorrect
-  )
-
+  const attempt = !!userAnswer && evaluation[choiceId] !== undefined
   const popoverContent = (
     <AnswerBox
-      fillColor={fillColor}
+      checked={attempt}
       style={{
         ...btnStyle,
         whiteSpace: 'normal',
@@ -71,16 +60,19 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
         width: 'unset',
         height: 'auto',
       }}
+      correct={evaluation[choiceId]}
       onClick={handleClick}
       isPrintPreview={isPrintPreview}
     >
       {!checkAnswer && (
-        <IndexBox bgColor={indexBgColor}>{stemNumeration}</IndexBox>
+        <IndexBox checked={!!userAnswer} correct={evaluation[choiceId]}>
+          {stemNumeration}
+        </IndexBox>
       )}
       <AnswerContent showIndex={!checkAnswer} inPopover>
         {userAnswer || ''}
       </AnswerContent>
-      {attempt && <IconWrapper inPopover>{mark}</IconWrapper>}
+      {attempt && <CheckMark inPopover correct={evaluation[choiceId]} />}
     </AnswerBox>
   )
 
@@ -97,17 +89,20 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
         onMouseEnter={() => togglePopover(true)}
         onMouseLeave={() => togglePopover(false)}
         style={{ ...btnStyle, width: boxWidth }}
-        fillColor={fillColor}
+        checked={attempt}
+        correct={evaluation[choiceId]}
         onClick={handleClick}
         isPrintPreview={isPrintPreview}
       >
         {!checkAnswer && (
-          <IndexBox bgColor={indexBgColor}>{stemNumeration}</IndexBox>
+          <IndexBox checked={!!userAnswer} correct={evaluation[choiceId]}>
+            {stemNumeration}
+          </IndexBox>
         )}
         <AnswerContent showIndex={!checkAnswer}>
           {userAnswer || ''}
         </AnswerContent>
-        {attempt && <IconWrapper inPopover>{mark}</IconWrapper>}
+        {attempt && <CheckMark correct={evaluation[choiceId]} />}
       </AnswerBox>
     </Popover>
   )

@@ -193,7 +193,6 @@ class Display extends Component {
       setAnswers,
       view,
       hideCorrectAnswer,
-      answerScore,
     } = this.props
 
     const { shuffleOptions } = configureOptions
@@ -444,7 +443,6 @@ class Display extends Component {
         largestResponseWidth={largestResponseWidth}
         isExpressGrader={isExpressGrader}
         item={item}
-        answerScore={answerScore}
         isPrintPreview={isPrintPreview || isPrint}
       />
     )

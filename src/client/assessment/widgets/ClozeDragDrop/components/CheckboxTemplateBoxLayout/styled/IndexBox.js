@@ -9,8 +9,14 @@ export const IndexBox = styled.div`
   align-items: center;
   align-self: stretch;
   flex-shrink: 0;
-  ${({ theme, bgColor }) => `
-    background: ${bgColor};
+  ${({ theme, checked, correct }) => `
+    background: ${
+      !checked && !correct
+        ? theme.widgets.clozeText.indexBoxNoAnswerBgColor
+        : checked && !correct
+        ? theme.widgets.clozeText.indexBoxIncorrectBgColor
+        : theme.widgets.clozeText.indexBoxCorrectBgColor
+    };
     color: ${theme.widgets.clozeText.indexBoxColor};
     font-size: ${theme.widgets.clozeText.indexBoxFontSize};
     font-weight: ${theme.widgets.clozeText.indexBoxFontWeight};

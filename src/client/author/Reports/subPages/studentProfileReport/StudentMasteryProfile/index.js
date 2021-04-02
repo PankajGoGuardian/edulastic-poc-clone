@@ -44,6 +44,7 @@ import {
 } from './ducks'
 
 import staticDropDownData from '../../singleAssessmentReport/common/static/staticDropDownData.json'
+import { getUserRole } from '../../../../src/selectors/user'
 
 const usefilterRecords = (records, domain, grade, subject) =>
   // Note: record.domainId could be integer or string
@@ -85,6 +86,7 @@ const StudentMasteryProfile = ({
   sharedReport,
   t,
   toggleFilter,
+  userRole,
 }) => {
   const sharedReportFilters = useMemo(
     () =>
@@ -290,13 +292,15 @@ const StudentMasteryProfile = ({
               prefix="Standard Subject"
               showPrefixOnSelected={false}
             />
-            <ControlDropDown
-              showPrefixOnSelected={false}
-              by={selectedDomain}
-              selectCB={onDomainSelect}
-              data={domainOptions}
-              prefix="Domain(s)"
-            />
+            {userRole !== 'student' && (
+              <ControlDropDown
+                showPrefixOnSelected={false}
+                by={selectedDomain}
+                selectCB={onDomainSelect}
+                data={domainOptions}
+                prefix="Domain(s)"
+              />
+            )}
           </DropdownContainer>
           <StyledButton
             onClick={() => setExpandRows(!expandRows)}
@@ -347,6 +351,7 @@ const withConnect = connect(
     isCsvDownloading: getCsvDownloadingState(state),
     studentStandardData: getStudentStandardData(state),
     loadingStudentStandard: getStudentStandardLoader(state),
+    userRole: getUserRole(state),
   }),
   {
     getStudentMasteryProfileRequest: getStudentMasteryProfileRequestAction,

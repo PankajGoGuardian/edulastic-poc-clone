@@ -308,7 +308,7 @@
       },
       {
         "key": "peer-performance",
-        "title": "PERFORMANCE",
+        "title": "SUB-GROUP",
         "location": "/author/reports/peer-performance/test/"
       },
       {
@@ -369,12 +369,12 @@
     "studentProfileReport": [
       {
         "key": "student-profile-summary",
-        "title": "Student Profile Summary",
+        "title": "Student Summary",
         "location": "/author/reports/student-profile-summary/student/"
       },
       {
         "key": "student-mastery-profile",
-        "title": "Student Mastery Profile",
+        "title": "Student Mastery",
         "location": "/author/reports/student-mastery-profile/student/"
       },
       {

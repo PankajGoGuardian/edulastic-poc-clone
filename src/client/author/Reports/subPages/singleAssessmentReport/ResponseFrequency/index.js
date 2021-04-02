@@ -167,7 +167,7 @@ const ResponseFrequency = ({
           <Row type="flex" justify="center" className="question-area">
             <Col className="question-container">
               <p>What are the most difficult items?</p>
-              <p>Highlight in red if % performance falls below:</p>
+              <p>Highlight performance% in red if it falls below:</p>
               <Row type="flex" justify="start" align="middle">
                 <Col className="answer-slider-percentage">
                   <span>{difficultItems}%</span>
@@ -183,9 +183,7 @@ const ResponseFrequency = ({
             </Col>
             <Col className="question-container">
               <p>What items are misunderstood?</p>
-              <p>
-                Highlight in yellow if % frequency of an incorrect choice is above:
-              </p>
+              <p>Highlight response in yellow if incorrect choice% is above:</p>
               <Row type="flex" justify="start" align="middle">
                 <Col className="answer-slider-percentage">
                   <span>{misunderstoodItems}%</span>

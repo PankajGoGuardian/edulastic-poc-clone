@@ -54,7 +54,7 @@ const GradebookStudentTable = ({ t, dataSource = [], windowHeight }) => {
         a.name.toLowerCase().localeCompare(b.name.toLowerCase()),
     },
     {
-      title: 'Due Date',
+      title: 'Close Date',
       dataIndex: 'endDate',
       width: '18%',
       render: (data) =>

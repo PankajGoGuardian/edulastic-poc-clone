@@ -278,13 +278,15 @@ const StudentMasteryProfile = ({
       <ReStyledCard>
         <FilterRow justifyContent="space-between">
           <DropdownContainer>
-            <ControlDropDown
-              by={selectedGrade}
-              selectCB={onGradeSelect}
-              data={staticDropDownData.grades}
-              prefix="Standard Grade"
-              showPrefixOnSelected={false}
-            />
+            {userRole !== 'student' && (
+              <ControlDropDown
+                by={selectedGrade}
+                selectCB={onGradeSelect}
+                data={staticDropDownData.grades}
+                prefix="Standard Grade"
+                showPrefixOnSelected={false}
+              />
+            )}
             <ControlDropDown
               by={selectedSubject}
               selectCB={onSubjectSelect}
@@ -292,15 +294,13 @@ const StudentMasteryProfile = ({
               prefix="Standard Subject"
               showPrefixOnSelected={false}
             />
-            {userRole !== 'student' && (
-              <ControlDropDown
-                showPrefixOnSelected={false}
-                by={selectedDomain}
-                selectCB={onDomainSelect}
-                data={domainOptions}
-                prefix="Domain(s)"
-              />
-            )}
+            <ControlDropDown
+              showPrefixOnSelected={false}
+              by={selectedDomain}
+              selectCB={onDomainSelect}
+              data={domainOptions}
+              prefix="Domain(s)"
+            />
           </DropdownContainer>
           <StyledButton
             onClick={() => setExpandRows(!expandRows)}

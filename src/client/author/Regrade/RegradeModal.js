@@ -47,6 +47,7 @@ const RegradeModal = ({
   }
 
   const [regradeSettings, regradeSettingsChange] = useState(settings)
+  const [isInRegrade, setIsInRegrade] = useState(false)
 
   const onUpdateSettings = (key, value) => {
     const newState = {
@@ -64,10 +65,10 @@ const RegradeModal = ({
       return
     }
     setRegradeSettings(regradeSettings)
-    toggleRegradeModal(null)
+    setIsInRegrade(true)
   }
 
-  const onCancelRegrade = () => {
+  const onCloseRegardModal = () => {
     toggleRegradeModal(null)
   }
 
@@ -82,7 +83,6 @@ const RegradeModal = ({
     <Modal
       visible
       centered
-      onCancel={onCancelRegrade}
       title={
         <FlexContainer
           height="36px"
@@ -97,7 +97,8 @@ const RegradeModal = ({
           <EduButton
             isBlue
             isGhost
-            onClick={onCancelRegrade}
+            onClick={onCloseRegardModal}
+            disabled={isLoadRegradeSettings || isInRegrade}
             width="115px"
             height="36px"
           >
@@ -108,7 +109,7 @@ const RegradeModal = ({
             width="115px"
             height="36px"
             data-cy="regrade"
-            disabled={isLoadRegradeSettings}
+            disabled={isLoadRegradeSettings || isInRegrade}
             onClick={onApplySettings}
           >
             Regrade
@@ -117,7 +118,7 @@ const RegradeModal = ({
       }
       width="620px"
     >
-      {isLoadRegradeSettings && <Spin />}
+      {(isLoadRegradeSettings || isInRegrade) && <Spin />}
       {showEdit && !isLoadRegradeSettings && (
         <InputsWrapper data-cy="edited-items" mt="0px">
           <Row>
@@ -146,7 +147,12 @@ const RegradeModal = ({
           </Group>
         </InputsWrapper>
       )}
-      {regradeFirebaseDocId && <RegradeNotificationListener />}
+      {regradeFirebaseDocId && (
+        <RegradeNotificationListener
+          noRedirect
+          onCloseModal={onCloseRegardModal}
+        />
+      )}
     </Modal>
   )
 }

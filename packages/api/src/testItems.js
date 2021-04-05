@@ -158,6 +158,8 @@ const updateCorrectItemById = (id, item, testId) => {
   const {
     public: publicValue,
     autoGrade,
+    passageContent,
+    alreadyLiked,
     algoVariablesEnabled,
     previousTestItemId,
     sharedWith,

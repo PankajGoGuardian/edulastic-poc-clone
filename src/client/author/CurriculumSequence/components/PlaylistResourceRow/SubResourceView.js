@@ -79,7 +79,12 @@ export const SubResourceView = ({
         contentId: data.contentId,
       })
     } else {
-      removeSubResource({ moduleIndex, itemIndex, contentId: data.contentId })
+      removeSubResource({
+        moduleIndex,
+        itemIndex,
+        contentId: data.contentId,
+        contentSubType: data.contentSubType,
+      })
     }
   }
 

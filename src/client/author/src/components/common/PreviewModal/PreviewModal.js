@@ -1109,7 +1109,7 @@ const QuestionWrapper = styled.div`
 const ModalContentArea = styled.div`
   border-radius: 0px;
   padding: 0px 30px;
-  height: ${({ isMobile }) => (isMobile ? 'calc(100vh - 100px)' : '70vh')};
+  height: ${({ isMobile }) => (isMobile ? 'calc(100vh - 100px)' : '100%')};
 `
 
 const DisabledButton = styled.div`

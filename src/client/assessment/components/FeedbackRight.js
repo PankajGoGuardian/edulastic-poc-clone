@@ -71,9 +71,13 @@ class FeedbackRight extends Component {
     super(props)
 
     let { maxScore } = props?.widget?.activity || {}
-    const { score } = props?.widget?.activity || {}
+    let { score } = props?.widget?.activity || {}
     if (!maxScore) {
       maxScore = props?.widget?.validation?.validResponse?.score || 0
+    }
+
+    if (props?.isQuestionView && isEmpty(props?.widget?.activity)) {
+      score = 0
     }
 
     this.state = {
@@ -104,7 +108,7 @@ class FeedbackRight extends Component {
   }
 
   static getDerivedStateFromProps(
-    { widget: { activity, validation } },
+    { widget: { activity, validation }, isQuestionView },
     preState
   ) {
     let newState = {}
@@ -117,9 +121,14 @@ class FeedbackRight extends Component {
     }
 
     if (activity && isUndefined(changed)) {
-      const { score: _score } = activity
+      let { score: _score } = activity
       let { maxScore: _maxScore } = activity
       const _feedback = get(activity, 'feedback.text', '')
+
+      if (isQuestionView && isEmpty(activity)) {
+        _score = 0
+      }
+
       newState = { ...newState, score: _score }
 
       if (!_maxScore) {
@@ -133,6 +142,7 @@ class FeedbackRight extends Component {
       if (_feedback !== feedback) {
         newState = { ...newState, feedback: _feedback }
       }
+
       return newState
     }
 

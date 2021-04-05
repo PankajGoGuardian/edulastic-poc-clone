@@ -690,6 +690,8 @@ class QuestionWrapper extends Component {
                       advancedLink={advancedLink}
                       advancedAreOpen={this.advancedAreOpen}
                       saveAnswer={restProps.saveAnswer}
+                      fillSections={() => {}}
+                      cleanSections={() => {}}
                       t={restProps.t}
                     />
                   )}

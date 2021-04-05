@@ -2755,7 +2755,7 @@ export default createReducer(initialState, {
     state.isFetchingDifferentiationWork = payload
   },
   [PLAYLIST_REMOVE_SUBRESOURCE]: (state, { payload }) => {
-    const { moduleIndex, contentId, itemIndex } = payload
+    const { moduleIndex, contentId, itemIndex, contentSubType } = payload
     if (
       state.destinationCurriculumSequence.modules[moduleIndex].data[itemIndex]
         .resources
@@ -2764,7 +2764,10 @@ export default createReducer(initialState, {
         itemIndex
       ].resources = state.destinationCurriculumSequence.modules[
         moduleIndex
-      ].data[itemIndex].resources.filter((x) => x.contentId !== contentId)
+      ].data[itemIndex].resources.filter(
+        (x) =>
+          !(x.contentId === contentId && x.contentSubType === contentSubType)
+      )
     }
   },
   [PLAYLIST_ADD_SUBRESOURCE]: (state, { payload }) => {

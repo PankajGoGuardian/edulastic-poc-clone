@@ -521,12 +521,15 @@ function addSubresource(entity, payload) {
 }
 
 function removeSubResource(entity, payload) {
-  const { moduleIndex, contentId, itemIndex } = payload
+  const { moduleIndex, contentId, itemIndex, contentSubType } = payload
   const newEntity = produce(entity, (draft) => {
     if (draft.modules[moduleIndex].data[itemIndex].resources) {
       draft.modules[moduleIndex].data[itemIndex].resources = draft.modules[
         moduleIndex
-      ].data[itemIndex].resources.filter((x) => x.contentId !== contentId)
+      ].data[itemIndex].resources.filter(
+        (x) =>
+          !(x.contentId === contentId && x.contentSubType === contentSubType)
+      )
     }
   })
   return newEntity

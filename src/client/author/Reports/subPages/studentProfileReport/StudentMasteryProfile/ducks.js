@@ -76,7 +76,7 @@ export const getStudentStandardLoader = createSelector(
 const initialState = {
   studentMasteryProfile: {},
   studentStandard: [],
-  loading: true,
+  loading: false,
   loadingStudentStandard: false,
 }
 

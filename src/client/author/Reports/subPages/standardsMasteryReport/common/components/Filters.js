@@ -337,11 +337,8 @@ const StandardsMasteryReportFilters = ({
       // const urlTestIds = search.testIds ? search.testIds.split(',') : []
       // setTestIds(urlTestIds)
       setTestIds([])
-      _onGoClick({
-        filters: { ..._filters },
-        selectedTests: [],
-        tagsData: { ..._tempTagsData },
-      })
+      setShowApply(true)
+      toggleFilter(null, true)
     }
     setFirstLoad(false)
     // update prevSMRFilterData
@@ -469,7 +466,12 @@ const StandardsMasteryReportFilters = ({
   // -----|-----|-----|-----| EVENT HANDLERS ENDED |-----|-----|-----|----- //
 
   const standardProficiencyFilter = (
-    <StyledDropDownContainer xs={24} sm={12} lg={6} data-cy="standardProficiency">
+    <StyledDropDownContainer
+      xs={24}
+      sm={12}
+      lg={6}
+      data-cy="standardProficiency"
+    >
       <ControlDropDown
         by={filters.profileId || defaultStandardProficiency?.key || ''}
         selectCB={(e, selected) =>
@@ -802,7 +804,12 @@ const StandardsMasteryReportFilters = ({
           gutter={[5, 10]}
           justify="end"
           align="middle"
-          style={{ paddingLeft: '10px', width: '75%', float: 'right', paddingTop: '5px' }}
+          style={{
+            paddingLeft: '10px',
+            width: '75%',
+            float: 'right',
+            paddingTop: '5px',
+          }}
         >
           <StyledDropDownContainer xs={24} sm={12} lg={6} data-cy="standardSet">
             <ControlDropDown
@@ -815,7 +822,12 @@ const StandardsMasteryReportFilters = ({
               showPrefixOnSelected={false}
             />
           </StyledDropDownContainer>
-          <StyledDropDownContainer xs={24} sm={12} lg={6} data-cy="standardGrade">
+          <StyledDropDownContainer
+            xs={24}
+            sm={12}
+            lg={6}
+            data-cy="standardGrade"
+          >
             <ControlDropDown
               by={filters.standardGrade}
               selectCB={(e, selected) =>

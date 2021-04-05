@@ -56,7 +56,7 @@ export const getReportsActivityByTeacherError = createSelector(
 
 const initialState = {
   activityByTeacher: {},
-  loading: true,
+  loading: false,
 }
 
 export const reportActivityByTeacherReducer = createReducer(initialState, {

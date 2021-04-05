@@ -91,7 +91,8 @@ const EngagementReportFilters = ({
     }
     setTempTagsData(_tempTagsData)
     setFilters(_filters)
-    _onGoClick({ filters: { ..._filters }, tagsData: { ..._tempTagsData } })
+    setShowApply(true)
+    toggleFilter(null, true)
     setFirstLoad(false)
   }, [])
 

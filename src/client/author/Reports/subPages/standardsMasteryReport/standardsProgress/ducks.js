@@ -56,7 +56,7 @@ export const getReportsStandardsProgressError = createSelector(
 
 const initialState = {
   standardsProgress: {},
-  loading: true,
+  loading: false,
 }
 
 export const reportStandardsProgressReducer = createReducer(initialState, {

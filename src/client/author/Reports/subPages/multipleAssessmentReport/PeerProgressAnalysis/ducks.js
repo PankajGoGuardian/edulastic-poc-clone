@@ -56,7 +56,7 @@ export const getReportsPeerProgressAnalysisError = createSelector(
 
 const initialState = {
   peerProgressAnalysis: {},
-  loading: true,
+  loading: false,
 }
 
 export const reportPeerProgressAnalysisReducer = createReducer(initialState, {

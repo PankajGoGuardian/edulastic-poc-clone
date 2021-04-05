@@ -74,7 +74,7 @@ export const getStudentStandardLoader = createSelector(
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //
 
 const initialState = {
-  loader: true,
+  loader: false,
   standardsGradebook: {},
   filters: {
     termId: '',

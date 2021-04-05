@@ -79,6 +79,7 @@ const StudentProfileReportContainer = (props) => {
         const val = filt[item] === '' ? 'All' : filt[item]
         obj[item] = val
       })
+      obj.reportId = reportId || ''
       return next(
         navigation.navigation[navigation.locToData[loc].group],
         (draft) => {

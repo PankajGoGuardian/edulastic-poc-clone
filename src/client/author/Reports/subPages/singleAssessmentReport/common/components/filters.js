@@ -333,34 +333,23 @@ const SingleAssessmentReportFilters = ({
 
   const updateTestId = (selected) => {
     const _tempTagsData = { ...tempTagsData, testId: selected }
-    if (firstLoad && !selected.key) {
-      delete _tempTagsData.testId
-      toggleFilter(null, true)
-      setFirstLoad(false)
-      _onGoClick({
-        filters: { ...filters },
-        selectedTest: { key: '' },
-        tagsData: { ..._tempTagsData },
-      })
-      return
-    }
-    setTempTagsData(_tempTagsData)
     const _testId = selected.key || ''
-    setFiltersOrTestId({ testId: _testId })
-    if (reportId) {
-      setFirstLoad(false)
-    } else if (firstLoad && selected.key) {
-      setFirstLoad(false)
+    if (!_testId) {
+      delete _tempTagsData.testId
+    }
+    if (firstLoad && isCliUser) {
       _onGoClick({
         filters: { ...filters },
         selectedTest: { key: _testId },
         tagsData: { ..._tempTagsData },
       })
-    } else if (selected.key) {
+    } else if (!reportId && !isCliUser) {
+      toggleFilter(null, true)
       setShowApply(true)
-    } else if (firstLoad) {
-      setFirstLoad(false)
     }
+    setFirstLoad(false)
+    setTempTagsData(_tempTagsData)
+    setFiltersOrTestId({ testId: _testId })
   }
 
   const updateFilterDropdownCB = (selected, keyName, multiple = false) => {

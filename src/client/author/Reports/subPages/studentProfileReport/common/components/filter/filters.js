@@ -230,11 +230,8 @@ const StudentProfileReportFilters = ({
       }
       setFilters({ ..._filters })
       setTempTagsData({ ..._tempTagsData })
-      _onGoClick({
-        filters: _filters,
-        selectedStudent: _student,
-        tagsData: _tempTagsData,
-      })
+      setShowApply(true)
+      toggleFilter(null, true)
       setFirstLoad(false)
     }
     setPrevSPRFilterData(SPRFilterData)

@@ -55,7 +55,7 @@ export const getReportsEngagementSummaryError = createSelector(
 
 const initialState = {
   engagementSummary: {},
-  loading: true,
+  loading: false,
 }
 
 export const reportEngagementSummaryReducer = createReducer(initialState, {

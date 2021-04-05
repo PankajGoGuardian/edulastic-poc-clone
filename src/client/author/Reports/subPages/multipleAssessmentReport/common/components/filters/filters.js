@@ -229,11 +229,8 @@ const MultipleAssessmentReportFilters = ({
       // const urlTestIds = search.testIds ? search.testIds.split(',') : []
       // setTestIds(urlTestIds)
       setTestIds([])
-      _onGoClick({
-        filters: { ..._filters },
-        selectedTests: [],
-        tagsData: { ..._tempTagsData },
-      })
+      setShowApply(true)
+      toggleFilter(null, true)
     }
     setFirstLoad(false)
     // update prevMARFilterData

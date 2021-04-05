@@ -50,6 +50,7 @@
     "addANewHint": "Add a new hint",
     "addNewDistractor": "Add a new distractor",
     "enterHintForTheProblem": "Enter a hint for the problem",
+    "correctItemNotAllowDynamic": "Regrade for question with dynamic variable is not supported",
     "options": {
       "preFilled": "Pre-Filled",
       "highlight": "Highlight",

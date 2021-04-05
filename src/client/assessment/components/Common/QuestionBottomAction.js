@@ -6,7 +6,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { greyThemeDark2, greyThemeDark4 } from '@edulastic/colors'
 import { round, get, omit } from 'lodash'
-import { Modal } from 'antd'
+import { Modal, Popover } from 'antd'
 import { IconTestBank, IconClockCircularOutline } from '@edulastic/icons'
 import { EDIT } from '../../constants/constantsForQuestions'
 import { setQuestionDataAction } from '../../../author/src/actions/question'
@@ -32,6 +32,7 @@ const QuestionBottomAction = ({
   questionData,
   removeQuestion,
   updateCorrectItem,
+  t,
   ...questionProps
 }) => {
   const [openQuestionMoal, setOpenQuestionModal] = useState(false)
@@ -101,6 +102,23 @@ const QuestionBottomAction = ({
     )
   }, [questionData, item])
 
+  const hasDynamicVariables = item.variable?.enabled
+
+  const correctItemBtn = (
+    <EduButton
+      isGhost
+      height="24px"
+      type="primary"
+      fontSize="10px"
+      mr="8px"
+      onClick={showQuestionModal}
+      loading={loading}
+      disabled={hasDynamicVariables}
+    >
+      Correct Item
+    </EduButton>
+  )
+
   return (
     <>
       <BottomActionWrapper
@@ -123,19 +141,21 @@ const QuestionBottomAction = ({
           )}
         </div>
         <RightWrapper>
-          {item && !isStudentReport && (
-            <EduButton
-              isGhost
-              height="24px"
-              type="primary"
-              fontSize="10px"
-              mr="8px"
-              onClick={showQuestionModal}
-              loading={loading}
-            >
-              Correct Item
-            </EduButton>
-          )}
+          {item &&
+            !isStudentReport &&
+            (hasDynamicVariables ? (
+              <Popover
+                content={
+                  <DisabledHelperText>
+                    {t('component.correctItemNotAllowDynamic')}
+                  </DisabledHelperText>
+                }
+              >
+                <div>{correctItemBtn}</div>
+              </Popover>
+            ) : (
+              correctItemBtn
+            ))}
           {timeSpent && (
             <div>
               <IconClockCircularOutline />
@@ -154,6 +174,7 @@ const QuestionBottomAction = ({
         >
           <QuestionComp
             {...questionProps}
+            t={t}
             item={questionData}
             view={EDIT}
             disableResponse={false}
@@ -247,4 +268,8 @@ const QuestionPreviewModal = styled(Modal)`
 const QuestionReference = styled.div`
   font-size: 13px;
   color: ${greyThemeDark4};
+`
+
+const DisabledHelperText = styled.div`
+  max-width: 290px;
 `

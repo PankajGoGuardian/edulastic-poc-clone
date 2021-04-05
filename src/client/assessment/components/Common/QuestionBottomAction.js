@@ -203,7 +203,7 @@ const BottomActionWrapper = styled.div`
   justify-content: space-between;
   margin-top: auto;
   align-items: center;
-  margin: ${({ margin }) => margin};
+  margin: ${({ margin }) => margin || '24px 0px 16px'};
 
   &.student-report {
     position: absolute;

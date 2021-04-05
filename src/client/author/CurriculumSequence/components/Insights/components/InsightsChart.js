@@ -50,7 +50,6 @@ const ScatterLabel = (props) => {
     color,
     count,
     hasTrend,
-    isActive,
     isGrouped,
   } = item
   const { nameX, arrowY } = calcLabelPosition({ cx, cy, angle: trendAngle })
@@ -69,19 +68,17 @@ const ScatterLabel = (props) => {
       </text>
     </g>
   ) : (
-    <g onClick={(e) => handleArrowClick(e, studentId)}>
-      {isActive && (
-        <text
-          x={nameX}
-          y={cy}
-          fontSize="12"
-          fontWeight="bold"
-          textAnchor="end"
-          fill={color}
-        >
-          {name}
-        </text>
-      )}
+    <g onClick={(e) => handleArrowClick(e, studentId, color)}>
+      <text
+        x={nameX}
+        y={cy}
+        fontSize="12"
+        fontWeight="bold"
+        textAnchor="end"
+        fill={color}
+      >
+        {name}
+      </text>
       {hasTrend ? (
         <TrendArrow cx={cx} cy={arrowY} color={color} trendAngle={trendAngle} />
       ) : (
@@ -160,13 +157,13 @@ const InsightsChart = ({ data, highlighted, setHighlighted }) => {
                 data={activeData}
                 shape={
                   <ScatterLabel
-                    handleArrowClick={(e, studentId) => {
+                    handleArrowClick={(e, studentId, color) => {
                       e.stopPropagation()
-                      toggleActiveData({
-                        studentId,
-                        activeData,
-                        setActiveData,
-                      })
+                      setHighlighted(
+                        highlighted.ids?.includes(studentId)
+                          ? {}
+                          : { ids: [studentId], color }
+                      )
                     }}
                     handleCircleClick={(e, studentIds, color) => {
                       e.stopPropagation()

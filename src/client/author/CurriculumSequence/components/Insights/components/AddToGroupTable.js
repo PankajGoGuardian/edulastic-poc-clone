@@ -42,12 +42,26 @@ const GroupsDropdown = ({ groups, onChange, checkedGroups }) => (
 
 /* TODO: Revert the temporary changes by referring to EV-12639 */
 
-const getColumns = (groupsData, handleAddGroupChange, checkedGroups) => [
+const getColumns = (
+  groupsData,
+  handleAddGroupChange,
+  checkedGroups,
+  termId
+) => [
   {
     // title: "SELECT ALL",
     title: 'Student(s)',
     key: 'fullName',
     dataIndex: 'fullName',
+    render: (data, record) => {
+      return (
+        <Link
+          to={`/author/reports/student-profile-summary/student/${record.studentId}?termId=${termId}`}
+        >
+          {data}
+        </Link>
+      )
+    },
   },
   {
     // title: <GroupsDropdown groups={groupsData} onChange={handleAddGroupChange} checkedGroups={checkedGroups} />,
@@ -98,7 +112,7 @@ const getColumns = (groupsData, handleAddGroupChange, checkedGroups) => [
   // }
 ]
 
-const AddToGroupTable = ({ studData, groupsData, highlighted }) => {
+const AddToGroupTable = ({ studData, groupsData, highlighted, termId }) => {
   const [selectedRowKeys, onSelectChange] = useState([])
   const checkedStudents = studData.filter((item, index) =>
     selectedRowKeys.includes(index + 1)
@@ -126,7 +140,8 @@ const AddToGroupTable = ({ studData, groupsData, highlighted }) => {
         columns={getColumns(
           groupsData,
           (groupId) => handleAddGroupChange(groupId, checkedStudents),
-          checkedGroups
+          checkedGroups,
+          termId
         )}
         dataSource={studData}
         pagination={false}

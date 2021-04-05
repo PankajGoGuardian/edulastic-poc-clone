@@ -229,13 +229,7 @@ class StudentViewContainer extends Component {
     const notGradedNumber = activeQuestions.filter(
       (x) => !x.isPractice && !x.skipped && x.graded === false
     ).length
-    const unscoredItems =
-      totalNumber -
-      correctNumber -
-      wrongNumber -
-      partiallyCorrectNumber -
-      skippedNumber -
-      notGradedNumber
+    const unscoredItems = activeQuestions.filter((x) => x.isPractice).length
 
     const studentTestActivity = studentResponse && studentResponse.testActivity
     const initFeedbackValue =

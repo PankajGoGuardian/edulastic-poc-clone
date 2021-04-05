@@ -121,8 +121,10 @@ const KeyPadOptions = ({
     } else {
       selectedIndex = allKeypads.findIndex((s) => s.value === symbol)
     }
-    setSelected(selectedIndex)
-  }, [symbolsData, symbol, storedKeypads])
+    if (selectedIndex >= 0) {
+      setSelected(selectedIndex)
+    }
+  }, [allKeypads, symbol])
 
   useEffect(() => {
     fetchCustomKeypad()

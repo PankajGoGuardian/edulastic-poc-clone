@@ -215,12 +215,9 @@ const KeyPadOptions = ({
             >
               <FlexContainer height="28px" alignItems="center">
                 <Label marginBottom="0px">
-                  {t('component.options.defaultMode')}
+                  {t('component.options.chooseKeypad')}
                 </Label>
               </FlexContainer>
-              {/* {isCustom && (
-                
-              )} */}
             </FlexContainer>
           </Row>
           <StyledSelectContainer hasCustomKeypads={storedKeypads.length > 0}>
@@ -264,7 +261,7 @@ const KeyPadOptions = ({
               marginBottom="10px"
               alignItems="baseline"
             >
-              <Label>{t('component.options.label')}</Label>
+              <Label>{t('component.options.labelCustomKeypad')}</Label>
               <FlexContainer justifyContent="space-between">
                 {symbol._id && keypadIsUserCustomKeypad ? (
                   <>
@@ -290,10 +287,10 @@ const KeyPadOptions = ({
                       height="28px"
                       onClick={handleStoreCustomKeypad}
                     >
-                      {t('component.options.saveCustomKeypad')}
+                      {t('component.options.saveAndUseLater')}
                     </EduButton>
                     <HelperIcon
-                      labelKey="component.options.saveCustomKeypad"
+                      labelKey="component.options.customKeypads"
                       contentKey="component.math.helperText.saveCustomKeypad"
                     />
                   </>

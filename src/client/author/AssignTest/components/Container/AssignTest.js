@@ -804,6 +804,9 @@ class AssignTest extends React.Component {
               defaultTestProfiles={defaultTestProfiles}
               activeTab={activeTab}
               handleTabChange={this.handleTabChange}
+              showAssignModuleContent={
+                match?.params?.playlistId && !match?.params?.testId
+              }
             />
           )}
         </Container>

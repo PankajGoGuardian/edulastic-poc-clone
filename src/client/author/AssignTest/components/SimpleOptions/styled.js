@@ -521,3 +521,7 @@ export const StyledInfoIcon = styled(IconInfo)`
 export const StyledSpan = styled.span`
   display: flex;
 `
+export const AssignModuleContentSpan = styled.span`
+  display: block;
+  margin-top: 8px;
+`

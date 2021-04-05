@@ -356,6 +356,7 @@ class SimpleOptions extends React.Component {
       activeTab,
       handleTabChange,
       selectedStandardsCount,
+      showAssignModuleContent,
     } = this.props
 
     const totalItems = isAssignRecommendations
@@ -474,6 +475,7 @@ class SimpleOptions extends React.Component {
                 actionOnFeatureInaccessible={actionOnFeatureInaccessible}
                 featuresAvailable={featuresAvailable}
                 tootltipWidth={tootltipWidth}
+                showAssignModuleContent={showAssignModuleContent}
               />
             </TabContentContainer>
           </TabPane>

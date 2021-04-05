@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { backgrounds, labelGrey, secondaryTextColor } from '@edulastic/colors'
 import { SpinLoader, FlexContainer } from '@edulastic/common'
-import { Icon } from 'antd'
+import { Icon, Avatar } from 'antd'
 import { get, isEmpty } from 'lodash'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
@@ -254,7 +254,11 @@ const StudentProfileSummary = ({
         <StudentDetailsCard width="280px" mr="20px">
           <IconContainer>
             <UserIconWrapper>
-              <StyledIcon type="user" />
+              {studentInformation.thumbnail ? (
+                <StyledAatar size={150} src={studentInformation.thumbnail} />
+              ) : (
+                <StyledIcon type="user" />
+              )}
             </UserIconWrapper>
           </IconContainer>
           <StudentDetailsContainer>
@@ -344,6 +348,13 @@ export default compose(
   withConnect,
   withNamespaces('student')
 )(StudentProfileSummary)
+
+const StyledAatar = styled(Avatar)`
+  @media print {
+    -webkit-print-color-adjust: exact;
+    color-adjust: exact;
+  }
+`
 
 const Card = styled(StyledCard)`
   width: ${({ width }) => width};

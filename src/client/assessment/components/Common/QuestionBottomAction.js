@@ -1,5 +1,7 @@
 import React, { useMemo, useState } from 'react'
 import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
+import { compose } from 'redux'
 import { FlexContainer, EduButton } from '@edulastic/common'
 import { TitleWrapper } from '@edulastic/common/src/components/MainHeader'
 import PropTypes from 'prop-types'
@@ -16,6 +18,7 @@ import {
   deleteQuestionAction,
 } from '../../../author/sharedDucks/questions'
 import { updateCorrectTestItemAction } from '../../../author/src/actions/classBoard'
+import { getAdditionalDataSelector } from '../../../author/ClassBoard/ducks'
 
 const QuestionBottomAction = ({
   item,
@@ -32,15 +35,17 @@ const QuestionBottomAction = ({
   questionData,
   removeQuestion,
   updateCorrectItem,
+  additionalData,
+  match,
   t,
   ...questionProps
 }) => {
   const [openQuestionMoal, setOpenQuestionModal] = useState(false)
   const onSaveAndPublish = () => {
     updateCorrectItem({
-      assignmentId: item?.activity?.assignmentId,
+      assignmentId: match?.params?.assignmentId,
+      testId: additionalData?.testId,
       testItemId: item?.activity?.testItemId,
-      testId: item?.activity?.testId,
       groupId: item?.activity?.groupId,
       testActivityId: item?.activity?.testActivityId,
       studentId: item?.activity?.userId,
@@ -204,18 +209,24 @@ QuestionBottomAction.defaultProps = {
   item: null,
 }
 
-const mapStateToProps = (state) => ({
-  loading: state.scratchpad.loading,
-  loadingComponents: get(state, ['authorUi', 'currentlyLoading'], []),
-  questionData: getCurrentQuestionSelector(state),
-})
-
-export default connect(mapStateToProps, {
-  setQuestionData: setQuestionDataAction,
-  setCurrentQuestion: changeCurrentQuestionAction,
-  updateCorrectItem: updateCorrectTestItemAction,
-  removeQuestion: deleteQuestionAction,
-})(QuestionBottomAction)
+const enhance = compose(
+  withRouter,
+  connect(
+    (state) => ({
+      loading: state.scratchpad.loading,
+      loadingComponents: get(state, ['authorUi', 'currentlyLoading'], []),
+      questionData: getCurrentQuestionSelector(state),
+      additionalData: getAdditionalDataSelector(state),
+    }),
+    {
+      setQuestionData: setQuestionDataAction,
+      setCurrentQuestion: changeCurrentQuestionAction,
+      updateCorrectItem: updateCorrectTestItemAction,
+      removeQuestion: deleteQuestionAction,
+    }
+  )
+)
+export default enhance(QuestionBottomAction)
 
 const BottomActionWrapper = styled.div`
   font-size: 19px;

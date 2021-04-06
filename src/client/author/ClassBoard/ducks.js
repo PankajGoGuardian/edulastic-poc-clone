@@ -691,7 +691,10 @@ function* correctItemUpdateSaga({ payload }) {
       })
     }
   } catch (error) {
-    notification({ type: 'success', messageKey: 'publishCorrectItemFailing' })
+    notification({
+      msg: error?.response?.data?.message,
+      messageKey: 'publishCorrectItemFailing',
+    })
   }
 }
 

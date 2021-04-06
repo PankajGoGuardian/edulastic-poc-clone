@@ -162,6 +162,7 @@ const updateCorrectItemById = (id, item, testId) => {
     alreadyLiked,
     algoVariablesEnabled,
     previousTestItemId,
+    sharedType,
     sharedWith,
     createdAt,
     updatedAt,

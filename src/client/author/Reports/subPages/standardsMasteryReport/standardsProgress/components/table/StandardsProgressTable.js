@@ -138,11 +138,11 @@ const StandardsProgressTable = ({
       sorter: (a, b) =>
         a.name.toLowerCase().localeCompare(b.name.toLowerCase()),
       render: (data, record) => {
-        const { termId, grade, subject, classIds, courseId } = filters
+        const { termId, grades, subjects, classIds, courseId } = filters
         const queryStr = qs.stringify({
           termId,
-          grade,
-          subject,
+          grades,
+          subjects,
           classIds,
           courseIds: courseId,
         })

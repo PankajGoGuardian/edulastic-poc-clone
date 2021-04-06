@@ -280,12 +280,12 @@ const getColumns = (
             width: 120,
             dataIndex: 'standard',
             render: (data, record) => {
-              const { termId, grade, subject } = filters
+              const { termId, grades, subjects } = filters
               const { standardId, curriculumId } = record
               const queryStr = qs.stringify({
                 termId,
-                grade,
-                subject,
+                grades,
+                subjects,
                 standardId,
                 curriculumId,
               })

@@ -167,35 +167,39 @@ const MultipleAssessmentReportFilters = ({
         schoolYears.find((item) => item.key === search.termId) ||
         schoolYears.find((item) => item.key === defaultTermId) ||
         (schoolYears[0] ? schoolYears[0] : { key: '', title: '' })
-      const urlSubject =
-        staticDropDownData.subjects.find(
-          (item) => item.key === search.subject
-        ) || staticDropDownData.subjects[0]
-      const urlGrade =
-        staticDropDownData.grades.find((item) => item.key === search.grade) ||
-        staticDropDownData.grades[0]
-      const urlStudentSubject =
-        staticDropDownData.subjects.find(
-          (item) => item.key === search.studentSubject
-        ) || staticDropDownData.subjects[0]
-      const urlStudentGrade =
-        staticDropDownData.grades.find(
-          (item) => item.key === search.studentGrade
-        ) || staticDropDownData.grades[0]
+      const urlSubjects =
+        staticDropDownData.subjects.filter(
+          (item) => search.subjects && search.subjects.includes(item.key)
+        ) || []
+      const urlGrades =
+        staticDropDownData.grades.filter(
+          (item) => search.grades && search.grades.includes(item.key)
+        ) || []
+      const urlStudentSubjects =
+        staticDropDownData.subjects.filter(
+          (item) =>
+            search.studentSubjects && search.studentSubjects.includes(item.key)
+        ) || []
+      const urlStudentGrades =
+        staticDropDownData.grades.filter(
+          (item) =>
+            search.studentGrades && search.studentGrades.includes(item.key)
+        ) || []
       const urlPerformanceBand =
         performanceBandList.find((item) => item.key === search.profileId) ||
         performanceBandList[0]
 
       const _filters = {
         termId: urlSchoolYear.key,
-        subject: urlSubject.key,
-        grade: urlGrade.key,
+        subjects: urlSubjects.map((item) => item.key).join(',') || '',
+        grades: urlGrades.map((item) => item.key).join(',') || '',
         tagIds: search.tagIds || '',
         assessmentTypes: search.assessmentTypes || '',
         schoolIds: search.schoolIds || '',
         teacherIds: search.teacherIds || '',
-        studentSubject: urlStudentSubject.key,
-        studentGrade: urlStudentGrade.key,
+        studentSubjects:
+          urlStudentSubjects.map((item) => item.key).join(',') || '',
+        studentGrades: urlStudentGrades.map((item) => item.key).join(',') || '',
         studentCourseId: search.studentCourseId || 'All',
         classIds: search.classId || '',
         groupIds: search.groupId || '',
@@ -212,13 +216,13 @@ const MultipleAssessmentReportFilters = ({
       const assessmentTypesArr = (search.assessmentTypes || '').split(',')
       const _tempTagsData = {
         termId: urlSchoolYear,
-        subject: urlSubject,
-        grade: urlGrade,
+        subjects: urlSubjects,
+        grades: urlGrades,
         assessmentTypes: staticDropDownData.assessmentType.filter((a) =>
           assessmentTypesArr.includes(a.key)
         ),
-        studentSubject: urlStudentSubject,
-        studentGrade: urlStudentGrade,
+        studentSubjects: urlStudentSubjects,
+        studentGrades: urlStudentGrades,
         profileId: urlPerformanceBand,
       }
 
@@ -364,32 +368,39 @@ const MultipleAssessmentReportFilters = ({
                         />
                       </Col>
                       <Col span={6}>
-                        <FilterLabel data-cy="testGrade">
-                          Test Grade
-                        </FilterLabel>
-                        <ControlDropDown
-                          prefix="Grade"
-                          className="custom-1-scrollbar"
-                          by={filters.grade}
-                          selectCB={(e, selected) =>
-                            updateFilterDropdownCB(selected, 'grade')
+                        <MultiSelectDropdown
+                          dataCy="testGrade"
+                          label="Test Grade"
+                          onChange={(e) => {
+                            const selected = staticDropDownData.grades.filter(
+                              (a) => e.includes(a.key)
+                            )
+                            updateFilterDropdownCB(selected, 'grades', true)
+                          }}
+                          value={
+                            filters.grades && filters.grades !== 'All'
+                              ? filters.grades.split(',')
+                              : []
                           }
-                          data={staticDropDownData.grades}
-                          showPrefixOnSelected={false}
+                          options={staticDropDownData.grades}
                         />
                       </Col>
                       <Col span={6}>
-                        <FilterLabel data-cy="testSubject">
-                          Test Subject
-                        </FilterLabel>
-                        <ControlDropDown
-                          by={filters.subject}
-                          selectCB={(e, selected) =>
-                            updateFilterDropdownCB(selected, 'subject')
+                        <MultiSelectDropdown
+                          dataCy="testSubject"
+                          label="Test Subject"
+                          onChange={(e) => {
+                            const selected = staticDropDownData.subjects.filter(
+                              (a) => e.includes(a.key)
+                            )
+                            updateFilterDropdownCB(selected, 'subjects', true)
+                          }}
+                          value={
+                            filters.subjects && filters.subjects !== 'All'
+                              ? filters.subjects.split(',')
+                              : []
                           }
-                          data={staticDropDownData.subjects}
-                          prefix="Subject"
-                          showPrefixOnSelected={false}
+                          options={staticDropDownData.subjects}
                         />
                       </Col>
                       <Col span={6}>
@@ -412,9 +423,7 @@ const MultipleAssessmentReportFilters = ({
                               ? filters.assessmentTypes.split(',')
                               : []
                           }
-                          options={staticDropDownData.assessmentType.filter(
-                            (a) => a.key !== 'All'
-                          )}
+                          options={staticDropDownData.assessmentType}
                         />
                       </Col>
                       <Col span={6}>
@@ -437,10 +446,8 @@ const MultipleAssessmentReportFilters = ({
                             dataCy="tests"
                             firstLoad={firstLoad}
                             termId={filters.termId}
-                            grade={filters.grade !== 'All' && filters.grade}
-                            subject={
-                              filters.subject !== 'All' && filters.subject
-                            }
+                            grades={filters.grades}
+                            subjects={filters.subjects}
                             testTypes={filters.assessmentTypes}
                             tagIds={filters.tagIds}
                             selectedTestIds={testIds}
@@ -489,32 +496,49 @@ const MultipleAssessmentReportFilters = ({
                         </>
                       )}
                       <Col span={6}>
-                        <FilterLabel data-cy="classGrade">
-                          Class Grade
-                        </FilterLabel>
-                        <ControlDropDown
-                          prefix="Grade"
-                          className="custom-1-scrollbar"
-                          by={filters.studentGrade}
-                          selectCB={(e, selected) =>
-                            updateFilterDropdownCB(selected, 'studentGrade')
+                        <MultiSelectDropdown
+                          dataCy="classGrade"
+                          label="Class Grade"
+                          onChange={(e) => {
+                            const selected = staticDropDownData.grades.filter(
+                              (a) => e.includes(a.key)
+                            )
+                            updateFilterDropdownCB(
+                              selected,
+                              'studentGrades',
+                              true
+                            )
+                          }}
+                          value={
+                            filters.studentGrades &&
+                            filters.studentGrades !== 'All'
+                              ? filters.studentGrades.split(',')
+                              : []
                           }
-                          data={staticDropDownData.grades}
-                          showPrefixOnSelected={false}
+                          options={staticDropDownData.grades}
                         />
                       </Col>
                       <Col span={6}>
-                        <FilterLabel data-cy="classSubject">
-                          Class Subject
-                        </FilterLabel>
-                        <ControlDropDown
-                          by={filters.studentSubject}
-                          selectCB={(e, selected) =>
-                            updateFilterDropdownCB(selected, 'studentSubject')
+                        <MultiSelectDropdown
+                          dataCy="classSubject"
+                          label="Class Subject"
+                          onChange={(e) => {
+                            const selected = staticDropDownData.subjects.filter(
+                              (a) => e.includes(a.key)
+                            )
+                            updateFilterDropdownCB(
+                              selected,
+                              'studentSubjects',
+                              true
+                            )
+                          }}
+                          value={
+                            filters.studentSubjects &&
+                            filters.studentSubjects !== 'All'
+                              ? filters.studentSubjects.split(',')
+                              : []
                           }
-                          data={staticDropDownData.subjects}
-                          prefix="Subject"
-                          showPrefixOnSelected={false}
+                          options={staticDropDownData.subjects}
                         />
                       </Col>
                       <Col span={6}>
@@ -532,14 +556,8 @@ const MultipleAssessmentReportFilters = ({
                           termId={filters.termId}
                           schoolIds={filters.schoolIds}
                           teacherIds={filters.teacherIds}
-                          grade={
-                            filters.studentGrade !== 'All' &&
-                            filters.studentGrade
-                          }
-                          subject={
-                            filters.studentSubject !== 'All' &&
-                            filters.studentSubject
-                          }
+                          grades={filters.studentGrades}
+                          subjects={filters.studentSubjects}
                           courseId={
                             filters.studentCourseId !== 'All' &&
                             filters.studentCourseId
@@ -558,14 +576,8 @@ const MultipleAssessmentReportFilters = ({
                           termId={filters.termId}
                           schoolIds={filters.schoolIds}
                           teacherIds={filters.teacherIds}
-                          grade={
-                            filters.studentGrade !== 'All' &&
-                            filters.studentGrade
-                          }
-                          subject={
-                            filters.studentSubject !== 'All' &&
-                            filters.studentSubject
-                          }
+                          grades={filters.studentGrades}
+                          subjects={filters.studentSubjects}
                           courseId={
                             filters.studentCourseId !== 'All' &&
                             filters.studentCourseId

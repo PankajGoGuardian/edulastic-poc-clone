@@ -418,7 +418,7 @@ export const resetStudentFilters = (
     const filtersToReset = defaultValues.slice(index + 1)
     resetFilter(filtersToReset, prevFilters, tagsData)
   } else if (
-    ['studentGrade', 'studentSubject', 'studentCourseId'].includes(key)
+    ['studentGrades', 'studentSubjects', 'studentCourseId'].includes(key)
   ) {
     const filtersToReset = defaultValues.slice(2)
     resetFilter(filtersToReset, prevFilters, tagsData)

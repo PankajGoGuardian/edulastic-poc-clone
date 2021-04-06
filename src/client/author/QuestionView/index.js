@@ -78,9 +78,11 @@ const CustomTooltip = ({ payload }) => {
   const timeSpent = get(firstItem, 'payload.avgTimeSpent')
   const fullName = get(firstItem, 'payload.name')
   const score = get(firstItem, 'payload.score')
+  const unscoredItems = get(firstItem, 'payload.unscoredItems', 0)
   return (
     <TooltipContainer title={fullName}>
-      {`Time(seconds): ${timeSpent || 0}`} <br /> {`Score: ${score}`}
+      {`Time(seconds): ${timeSpent || 0}`} <br />{' '}
+      {`Score: ${unscoredItems ? 'unscored' : score}`}
     </TooltipContainer>
   )
 }

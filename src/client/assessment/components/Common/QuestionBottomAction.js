@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
-import { FlexContainer, EduButton } from '@edulastic/common'
+import { FlexContainer, EduButton, AnswerContext } from '@edulastic/common'
 import { TitleWrapper } from '@edulastic/common/src/components/MainHeader'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
@@ -177,13 +177,15 @@ const QuestionBottomAction = ({
           footer={null}
           width="1080px"
         >
-          <QuestionComp
-            {...questionProps}
-            t={t}
-            item={questionData}
-            view={EDIT}
-            disableResponse={false}
-          />
+          <AnswerContext.Provider value={{ isAnswerModifiable: true }}>
+            <QuestionComp
+              {...questionProps}
+              t={t}
+              item={questionData}
+              view={EDIT}
+              disableResponse={false}
+            />
+          </AnswerContext.Provider>
         </QuestionPreviewModal>
       )}
     </>

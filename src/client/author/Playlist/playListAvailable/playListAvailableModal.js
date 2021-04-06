@@ -7,6 +7,7 @@ const PlayListAvailableModal = ({
   closeModal,
   filteredSpark,
   description,
+  products,
 }) => {
   const footer = (
     <EduButton
@@ -19,10 +20,14 @@ const PlayListAvailableModal = ({
     </EduButton>
   )
 
-  const { name } = filteredSpark
+  const selectedProduct = products.find(
+    (x) => x.linkedProductId === filteredSpark._id
+  )
+
+  const { type } = selectedProduct
 
   const title =
-    name === 'SparkScience'
+    type === 'ITEM_BANK_SPARK_SCIENCE'
       ? 'SparkScience + Teacher Premium'
       : 'Spark Math Aligned To Your Curriculum'
 

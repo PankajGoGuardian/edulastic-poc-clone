@@ -43,7 +43,7 @@ const PointInput = ({
     <ItemLevelScoringDesc>
       {isRubricQuestion
         ? 'This Question has Grading Rubric attached to it, so points cannot be changed for this question, and it will be equal to the max score of the rubric.'
-        : 'This item is graded as a whole, to grade parts change the option using the Layout &amp; Grading options button in the header'}
+        : 'This item is graded as a whole, to grade parts change the option using the Layout and Grading options button in the header'}
     </ItemLevelScoringDesc>
   )
 

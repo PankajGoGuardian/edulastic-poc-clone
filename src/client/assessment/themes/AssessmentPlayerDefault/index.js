@@ -490,7 +490,7 @@ class AssessmentPlayerDefault extends React.Component {
     const qType = get(items, `[${currentItem}].data.questions[0].type`, null)
     const cameraImageName = `${firstName}_${lastName}_${
       currentItem + 1
-    }_${cameraImageIndex}`
+    }_${cameraImageIndex}.png`
     return (
       /**
        * zoom only in student side, otherwise not

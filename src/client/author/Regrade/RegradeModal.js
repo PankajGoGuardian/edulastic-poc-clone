@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { Modal as AntdModal, Radio, Row, Spin } from 'antd'
 import styled from 'styled-components'
 import { get } from 'lodash'
-import { FlexContainer, EduButton } from '@edulastic/common'
+import { FlexContainer, EduButton, notification } from '@edulastic/common'
 import { TitleWrapper } from '@edulastic/common/src/components/MainHeader'
 import { fetchAssignmentsAction } from '../TestPage/components/Assign/ducks'
 import {
@@ -66,6 +66,7 @@ const RegradeModal = ({
     }
     setRegradeSettings(regradeSettings)
     setIsInRegrade(true)
+    notification({ type: 'success', messageKey: 'publishCorrectItemSuccess' })
   }
 
   const onCloseRegardModal = () => {

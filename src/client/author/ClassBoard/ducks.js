@@ -681,14 +681,14 @@ function* correctItemUpdateSaga({ payload }) {
       },
     })
 
-    notification({ type: 'success', messageKey: 'publishCorrectItemSuccess' })
-
     const { testId: newTestId, isRegradeNeeded } = result
     if (isRegradeNeeded) {
       yield put({
         type: TOGGLE_REGRADE_MODAL,
         payload: { newTestId, oldTestId: testId },
       })
+    } else {
+      notification({ type: 'success', messageKey: 'publishCorrectItemSuccess' })
     }
   } catch (error) {
     notification({

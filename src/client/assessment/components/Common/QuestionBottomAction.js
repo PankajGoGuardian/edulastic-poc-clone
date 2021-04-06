@@ -41,6 +41,13 @@ const QuestionBottomAction = ({
   ...questionProps
 }) => {
   const [openQuestionMoal, setOpenQuestionModal] = useState(false)
+
+  const onCloseQuestionModal = () => {
+    setCurrentQuestion('')
+    removeQuestion(item.id)
+    setOpenQuestionModal(false)
+  }
+
   const onSaveAndPublish = () => {
     updateCorrectItem({
       assignmentId: match?.params?.assignmentId,
@@ -50,14 +57,8 @@ const QuestionBottomAction = ({
       testActivityId: item?.activity?.testActivityId,
       studentId: item?.activity?.userId,
       question: questionData,
+      callBack: onCloseQuestionModal,
     })
-    setOpenQuestionModal(false)
-  }
-
-  const onCloseQuestionModal = () => {
-    setCurrentQuestion('')
-    removeQuestion(item.id)
-    setOpenQuestionModal(false)
   }
 
   const showQuestionModal = () => {
@@ -176,6 +177,7 @@ const QuestionBottomAction = ({
           title={modalTitle}
           footer={null}
           width="1080px"
+          style={{ top: 10 }}
         >
           <AnswerContext.Provider value={{ isAnswerModifiable: true }}>
             <QuestionComp

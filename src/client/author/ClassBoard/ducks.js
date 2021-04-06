@@ -93,6 +93,11 @@ import {
 import { getServerTs } from '../../student/utils'
 import { setShowCanvasShareAction } from '../src/reducers/gradeBook'
 
+import {
+  isIncompleteQuestion,
+  hasImproperDynamicParamsConfig,
+} from '../questionUtils'
+
 const {
   authorAssignmentConstants: {
     assignmentStatus: { IN_GRADING, DONE },
@@ -644,10 +649,27 @@ function* togglePauseStudentsSaga({ payload }) {
 
 function* correctItemUpdateSaga({ payload }) {
   try {
-    const { testItemId, testId, question } = payload
+    const { testItemId, testId, question, callBack } = payload
     const classResponse = yield select((state) => state.classResponse)
     const testItems = get(classResponse, 'data.testItems', [])
     const testItem = testItems.find((t) => t._id === testItemId) || {}
+    const [isIncomplete, errMsg] = isIncompleteQuestion(
+      question,
+      testItem.itemLevelScoring
+    )
+
+    if (isIncomplete) {
+      notification({ msg: errMsg })
+      return
+    }
+
+    const [hasImproperConfig, warningMsg] = hasImproperDynamicParamsConfig(
+      question
+    )
+
+    if (hasImproperConfig) {
+      notification({ type: 'warn', msg: warningMsg })
+    }
 
     testItem.data.questions = testItem.data.questions.map((q) =>
       q.id === question.id ? question : q
@@ -680,6 +702,11 @@ function* correctItemUpdateSaga({ payload }) {
         testItems: itemsToReplace,
       },
     })
+
+    if (typeof callBack === 'function') {
+      // close correct item edit modal here
+      callBack()
+    }
 
     const { testId: newTestId, isRegradeNeeded } = result
     if (isRegradeNeeded) {

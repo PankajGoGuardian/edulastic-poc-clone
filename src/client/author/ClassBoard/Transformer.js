@@ -641,12 +641,12 @@ export const transformGradeBookResponse = (
               questionActivitiesIndexed[`${testItemId}_${el}`]
             const questionMaxScore =
               maxScore ||
-              maxScore == 0 ||
-              getMaxScoreOfQid(
-                _id,
-                testItemsData,
-                currentQuestionActivity?.maxScore
-              )(testItemId)
+              (maxScore == 0 &&
+                getMaxScoreOfQid(
+                  _id,
+                  testItemsData,
+                  currentQuestionActivity?.maxScore
+                )(testItemId))
             if (!currentQuestionActivity) {
               return {
                 _id,

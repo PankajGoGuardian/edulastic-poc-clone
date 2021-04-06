@@ -52,7 +52,7 @@ const AssessmentAutoComplete = ({
     const { districtIds, institutionIds } = orgData
     const districtId = districtIds?.[0]
     const q = {
-      limit: 25,
+      limit: 35,
       page: 1,
       search: {
         searchString:

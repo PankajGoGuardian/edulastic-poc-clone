@@ -74,8 +74,9 @@ const StyledTable = styled(Table)`
 const formatText = (test, type) => {
   if (test[type] === null || typeof test[type] === 'undefined') return '-'
 
-  if (test.records[0].maxScore === null || test.records[0].totalScore === null)
-    return 'Absent'
+  if (test.records[0].progressStatus === 2) return 'Absent'
+
+  if (test.records[0].progressStatus === 3) return 'Not Started'
 
   if (type == 'score') {
     return `${test[type]}%`

@@ -1544,8 +1544,8 @@ class Setting extends Component {
                       </Title>
                       <Body smallSize={isSmallSize}>
                         <Description>
-                          Use this opinion if you are administering this
-                          assessment on paper. If you use this opinion, you will
+                          Use this option if you are administering this
+                          assessment on paper. If you use this option, you will
                           have to manually grade student responses after the
                           assessment is closed.
                         </Description>

@@ -271,7 +271,6 @@ class QuestionViewContainer extends Component {
       p: partiallyCorrectNumber,
       s: skippedNumber,
       n: notGradedNumber,
-      t: totalNumber,
       u: unscoredItems,
     } = data.reduce(
       (acc, item) => ({
@@ -281,17 +280,11 @@ class QuestionViewContainer extends Component {
         s: item.skipped + acc.s,
         n: item.manuallyGraded + acc.n,
         u: item.unscoredItems + acc.u,
-        t:
-          item.wrong +
-          item.correct +
-          item.pCorrect +
-          item.skipped +
-          item.manuallyGraded +
-          item.unscoredItems +
-          acc.t,
       }),
-      { c: 0, w: 0, p: 0, s: 0, n: 0, u: 0, t: 0 }
+      { c: 0, w: 0, p: 0, s: 0, n: 0, u: 0 }
     )
+
+    const totalNumber = data.length
 
     if (isMobile) {
       data = data.slice(0, 2)
@@ -497,6 +490,21 @@ class QuestionViewContainer extends Component {
             const qActivities = classQuestion.filter(
               ({ userId }) => userId === student.studentId
             )
+
+            /**
+             * Here if question activity length is 0, which means that there is no attempt for the question
+             * by the student so, for INPROGRESS student we will show unattempted questions only in ALL filter
+             * and for submitted student we will unattempted questions in ALL filter as well as SKIPPED filter
+             * hence returning null in case of other filters.
+             */
+            if (
+              !qActivities.length &&
+              ((filter && student.UTASTATUS === testActivityStatus.START) ||
+                (student.UTASTATUS === testActivityStatus.SUBMITTED &&
+                  filter &&
+                  filter !== 'skipped'))
+            )
+              return null
             return (
               <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
                 <ClassQuestions

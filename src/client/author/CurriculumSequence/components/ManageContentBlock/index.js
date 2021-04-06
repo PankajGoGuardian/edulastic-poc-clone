@@ -37,7 +37,7 @@ import {
 import TestPreviewModal from '../../../Assignments/components/Container/TestPreviewModal'
 import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/test'
 import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
-import { getInterestedCurriculumsByOrgType } from '../../../src/selectors/user'
+import { getInterestedCurriculumsSelector } from '../../../src/selectors/user'
 import { updateRecentStandardsAction } from '../../../src/actions/dictionaries'
 
 const resourceTabs = ['tests', 'resources']
@@ -553,7 +553,7 @@ const enhance = compose(
       currentDistrictUsers: getCurrentDistrictUsersSelector(state),
       districtId: state?.user?.user?.orgData?.districtIds?.[0],
       userFeatures: state?.user?.user?.features,
-      interestedCurriculums: getInterestedCurriculumsByOrgType(state),
+      interestedCurriculums: getInterestedCurriculumsSelector(state),
       contentFilters: getPlaylistContentFilters(state),
     }),
     {

@@ -237,7 +237,11 @@ const ManageContentBlock = (props) => {
   )
   let fetchCall
 
-  if (tests.length > 10) {
+  if (searchResourceBy === 'resources') {
+    if (resources.length > 10) {
+      fetchCall = resources.length - 7
+    }
+  } else if (tests.length > 10) {
     fetchCall = tests.length - 7
   }
 

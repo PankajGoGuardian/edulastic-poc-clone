@@ -7,7 +7,7 @@ import { Select, Table } from 'antd'
 import styled from 'styled-components'
 import { withNamespaces } from '@edulastic/localization'
 import { variableTypes, math } from '@edulastic/constants'
-import { MathInput, MathFormulaDisplay } from '@edulastic/common'
+import { MathInput, MathFormulaDisplay, notification } from '@edulastic/common'
 import { extraDesktopWidthMax } from '@edulastic/colors'
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 import {
@@ -366,6 +366,22 @@ class Variables extends Component {
       }
     }
 
+    const handleKeypressMathInput = (e) => {
+      if (e.key === '@') {
+        notification({
+          msg: (
+            <div>
+              Dynamic Parameter formulas do not handle &#34;@&#34; symbols.
+              <br /> For example, if you want to add one, can not handle
+              &#34;@a+1&#34;, but instead write it as &#34;a+1&#34;
+            </div>
+          ),
+        })
+        e.preventDefault()
+        e.stopPropagation()
+      }
+    }
+
     if (
       examples.length &&
       Object.keys(examples[0]).some(
@@ -479,6 +495,7 @@ class Variables extends Component {
                         numberPad={defaultNumberPad}
                         value={variable.formula}
                         showResponse={false}
+                        onKeyPress={handleKeypressMathInput}
                         onInput={(latex) =>
                           handleChangeVariableList(
                             variableName,

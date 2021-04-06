@@ -199,7 +199,12 @@ class MathInput extends React.PureComponent {
   sanitizeLatex = (v) => (v?.toString() || '').replace(/&amp;/g, '&')
 
   handleKeypress = (e) => {
-    const { restrictKeys, allowNumericOnly, value = '' } = this.props
+    const {
+      restrictKeys,
+      allowNumericOnly,
+      value = '',
+      onKeyPress,
+    } = this.props
     const isNonNumericKey = e.key && !e.key.match(/[0-9+-.%^@/]/g)
 
     if (!isEmpty(restrictKeys)) {
@@ -232,6 +237,9 @@ class MathInput extends React.PureComponent {
         e.preventDefault()
         e.stopPropagation()
       }
+    }
+    if (onKeyPress) {
+      onKeyPress(e)
     }
   }
 
@@ -485,6 +493,7 @@ MathInput.propTypes = {
   onBlur: PropTypes.func,
   onChangeKeypad: PropTypes.func,
   onKeyDown: PropTypes.func,
+  onKeyPress: PropTypes.func,
   fullWidth: PropTypes.bool,
   className: PropTypes.string,
   restrictKeys: PropTypes.array,
@@ -510,6 +519,7 @@ MathInput.defaultProps = {
   onFocus: () => {},
   onBlur: () => {},
   onKeyDown: () => {},
+  onKeyPress: () => {},
   onChangeKeypad: () => {},
   fullWidth: false,
   disabled: false,

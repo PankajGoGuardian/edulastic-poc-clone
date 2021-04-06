@@ -188,6 +188,7 @@ const KeyPadOptions = ({
     const data = [...item.symbols]
     data[0] = 'basic'
     onChange('symbols', data)
+    initialSelectedKeypad.current = null
     hideModal()
   }
 

@@ -241,6 +241,7 @@ const StandardsMasteryReportFilters = ({
       qs.parse(location.search, { ignoreQueryPrefix: true }),
       (f) => f !== 'All' && !isEmpty(f)
     )
+    const source = location?.state?.source
 
     if (reportId) {
       _onGoClick({
@@ -254,12 +255,14 @@ const StandardsMasteryReportFilters = ({
         get(standardsFilters, 'data.result.reportFilters', {})
       )
       // update search filters from saved filters
-      search = {
-        ...search,
-        termId: search.termId || savedFilters.termId,
-        grades: search.grades || savedFilters.grades,
-        subjects: search.subjects || savedFilters.subjects,
-        profileId: search.profileId || savedFilters.profileId,
+      if (!source) {
+        search = {
+          ...search,
+          termId: search.termId || savedFilters.termId,
+          grades: search.grades || savedFilters.grades,
+          subjects: search.subjects || savedFilters.subjects,
+          profileId: search.profileId || savedFilters.profileId,
+        }
       }
 
       const urlSchoolYear =
@@ -288,14 +291,13 @@ const StandardsMasteryReportFilters = ({
       const urlStandardProficiency =
         standardProficiencyList.find((item) => item.key === search.profileId) ||
         defaultStandardProficiency
-
+      const defaultGrade = source ? '' : staticDropDownData.grades[0].key
+      const defaultGradeTag = source ? [] : staticDropDownData.grades[0]
       const _filters = {
         termId: urlSchoolYear.key,
         schoolIds: search.schoolIds || '',
         teacherIds: search.teacherIds || '',
-        grades:
-          urlGrades.map((item) => item.key).join(',') ||
-          staticDropDownData.grades[0].key,
+        grades: urlGrades.map((item) => item.key).join(',') || defaultGrade,
         subjects: urlSubjects.map((item) => item.key).join(',') || '',
         courseId: search.courseId || 'All',
         classIds: search.classIds || '',
@@ -317,7 +319,7 @@ const StandardsMasteryReportFilters = ({
       const assessmentTypesArr = (search.assessmentTypes || '').split(',')
       const _tempTagsData = {
         termId: urlSchoolYear,
-        grades: urlGrades || staticDropDownData.grades[0],
+        grades: urlGrades || defaultGradeTag,
         subjects: urlSubjects,
         testGrades: urlTestGrades,
         testSubjects: urlTestSubjects,

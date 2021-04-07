@@ -108,7 +108,7 @@ const QuestionBottomAction = ({
     )
   }, [questionData, item])
 
-  const hasDynamicVariables = item.variable?.enabled
+  const hasDynamicVariables = item?.variable?.enabled
 
   const correctItemBtn = (
     <EduButton

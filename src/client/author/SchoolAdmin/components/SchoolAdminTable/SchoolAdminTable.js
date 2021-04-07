@@ -741,6 +741,7 @@ class SchoolAdminTable extends Component {
               height="36px"
               type="primary"
               onClick={this.showCreateSchoolAdminModal}
+              data-cy="addSchoolAdmin"
             >
               {t('users.schooladmin.createschooladmin')}
             </EduButton>

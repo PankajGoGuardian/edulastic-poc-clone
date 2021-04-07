@@ -267,7 +267,7 @@
         "username": "Username",
         "status": "Status",
         "usercreated": "New User Created",
-        "userexists": "User Already Exist",
+        "userexists": "User Already Exists",
         "emailnotallowed": "This email Id is not allowed in your district."
       }
     },

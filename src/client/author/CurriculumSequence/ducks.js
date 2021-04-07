@@ -2755,6 +2755,7 @@ export default createReducer(initialState, {
         {
           type,
           contentId,
+          contentVersionId: contentId,
           description: contentTitle,
           contentTitle,
           contentType,

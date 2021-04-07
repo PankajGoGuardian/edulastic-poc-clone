@@ -260,7 +260,7 @@ class Container extends PureComponent {
       }
 
       if (this.isTestEditable) {
-        this.handleChangeKeypad(grades)
+        this.handleChangeKeypad(grades, false, false)
       }
       if (userRole !== roleuser.EDULASTIC_CURATOR) getDefaultTestSettings()
     } else {
@@ -463,7 +463,7 @@ class Container extends PureComponent {
     }
   }
 
-  handleChangeKeypad = (grades, updated = false) => {
+  handleChangeKeypad = (grades, updated = false, setUpdated = true) => {
     const { setData, test: { keypad = {} } = {}, isPremiumUser } = this.props
 
     if (isPremiumUser && (isEmpty(keypad) || keypad.updated === false)) {
@@ -480,6 +480,7 @@ class Container extends PureComponent {
         })
       } else if (highestGrade > 5 && highestGrade <= 12) {
         setData({
+          updated: setUpdated,
           keypad: {
             updated,
             type: 'predefined',
@@ -488,6 +489,7 @@ class Container extends PureComponent {
         })
       } else {
         setData({
+          updated: setUpdated,
           keypad: {
             type: 'item-level',
             value: 'item-level-keypad',

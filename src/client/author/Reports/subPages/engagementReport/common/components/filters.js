@@ -64,14 +64,12 @@ const EngagementReportFilters = ({
       schoolYears.find((item) => item.key === search.termId) ||
       schoolYears.find((item) => item.key === defaultTermId) ||
       (schoolYears[0] ? schoolYears[0] : { key: '', title: '' })
-    const urlSubjects =
-      staticDropDownData.subjects.filter(
-        (item) => search.subjects && search.subjects.includes(item.key)
-      ) || []
-    const urlGrades =
-      staticDropDownData.grades.filter(
-        (item) => search.grades && search.grades.includes(item.key)
-      ) || []
+    const urlSubjects = staticDropDownData.subjects.filter(
+      (item) => search.subjects && search.subjects.includes(item.key)
+    )
+    const urlGrades = staticDropDownData.grades.filter(
+      (item) => search.grades && search.grades.includes(item.key)
+    )
 
     const _filters = {
       reportId: search.reportId,

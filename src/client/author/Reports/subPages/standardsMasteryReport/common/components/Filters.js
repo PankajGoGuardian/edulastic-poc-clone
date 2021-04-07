@@ -266,22 +266,18 @@ const StandardsMasteryReportFilters = ({
         schoolYears.find((item) => item.key === search.termId) ||
         schoolYears.find((item) => item.key === defaultTermId) ||
         (schoolYears[0] ? schoolYears[0] : { key: '', title: '' })
-      const urlSubjects =
-        staticDropDownData.subjects.filter(
-          (item) => search.subjects && search.subjects.includes(item.key)
-        ) || []
+      const urlSubjects = staticDropDownData.subjects.filter(
+        (item) => search.subjects && search.subjects.includes(item.key)
+      )
       const urlGrades = staticDropDownData.grades.filter(
         (item) => search.grades && search.grades.includes(item.key)
-      ) || [staticDropDownData.grades[0]]
-      const urlTestSubjects =
-        staticDropDownData.subjects.filter(
-          (item) =>
-            search.testSubjects && search.testSubjects.includes(item.key)
-        ) || []
-      const urlTestGrades =
-        staticDropDownData.grades.filter(
-          (item) => search.testGrades && search.testGrades.includes(item.key)
-        ) || []
+      )
+      const urlTestSubjects = staticDropDownData.subjects.filter(
+        (item) => search.testSubjects && search.testSubjects.includes(item.key)
+      )
+      const urlTestGrades = staticDropDownData.grades.filter(
+        (item) => search.testGrades && search.testGrades.includes(item.key)
+      )
       const urlCurriculum =
         curriculumsList.find((item) => item.key === search.curriculumId) ||
         curriculumsList[0]
@@ -297,7 +293,9 @@ const StandardsMasteryReportFilters = ({
         termId: urlSchoolYear.key,
         schoolIds: search.schoolIds || '',
         teacherIds: search.teacherIds || '',
-        grades: urlGrades.map((item) => item.key).join(',') || '',
+        grades:
+          urlGrades.map((item) => item.key).join(',') ||
+          staticDropDownData.grades[0].key,
         subjects: urlSubjects.map((item) => item.key).join(',') || '',
         courseId: search.courseId || 'All',
         classIds: search.classIds || '',
@@ -319,7 +317,7 @@ const StandardsMasteryReportFilters = ({
       const assessmentTypesArr = (search.assessmentTypes || '').split(',')
       const _tempTagsData = {
         termId: urlSchoolYear,
-        grades: urlGrades,
+        grades: urlGrades || staticDropDownData.grades[0],
         subjects: urlSubjects,
         testGrades: urlTestGrades,
         testSubjects: urlTestSubjects,
@@ -752,13 +750,8 @@ const StandardsMasteryReportFilters = ({
                           <AssessmentsAutoComplete
                             dataCy="tests"
                             termId={filters.termId}
-                            grade={
-                              filters.testGrade !== 'All' && filters.testGrade
-                            }
-                            subject={
-                              filters.testSubject !== 'All' &&
-                              filters.testSubject
-                            }
+                            grades={filters.testGrades}
+                            subjects={filters.testSubjects}
                             tagIds={filters.tagIds}
                             testTypes={filters.assessmentTypes}
                             selectedTestIds={testIds}

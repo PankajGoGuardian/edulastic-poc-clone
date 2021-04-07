@@ -167,24 +167,20 @@ const MultipleAssessmentReportFilters = ({
         schoolYears.find((item) => item.key === search.termId) ||
         schoolYears.find((item) => item.key === defaultTermId) ||
         (schoolYears[0] ? schoolYears[0] : { key: '', title: '' })
-      const urlSubjects =
-        staticDropDownData.subjects.filter(
-          (item) => search.subjects && search.subjects.includes(item.key)
-        ) || []
-      const urlGrades =
-        staticDropDownData.grades.filter(
-          (item) => search.grades && search.grades.includes(item.key)
-        ) || []
-      const urlStudentSubjects =
-        staticDropDownData.subjects.filter(
-          (item) =>
-            search.studentSubjects && search.studentSubjects.includes(item.key)
-        ) || []
-      const urlStudentGrades =
-        staticDropDownData.grades.filter(
-          (item) =>
-            search.studentGrades && search.studentGrades.includes(item.key)
-        ) || []
+      const urlSubjects = staticDropDownData.subjects.filter(
+        (item) => search.subjects && search.subjects.includes(item.key)
+      )
+      const urlGrades = staticDropDownData.grades.filter(
+        (item) => search.grades && search.grades.includes(item.key)
+      )
+      const urlStudentSubjects = staticDropDownData.subjects.filter(
+        (item) =>
+          search.studentSubjects && search.studentSubjects.includes(item.key)
+      )
+      const urlStudentGrades = staticDropDownData.grades.filter(
+        (item) =>
+          search.studentGrades && search.studentGrades.includes(item.key)
+      )
       const urlPerformanceBand =
         performanceBandList.find((item) => item.key === search.profileId) ||
         performanceBandList[0]

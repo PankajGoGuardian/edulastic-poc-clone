@@ -147,14 +147,12 @@ const StudentProfileReportFilters = ({
       termOptions.find((item) => item.key === search.termId) ||
       termOptions.find((item) => item.key === defaultTermId) ||
       (termOptions[0] ? termOptions[0] : { key: '', title: '' })
-    const urlSubjects =
-      staticDropDownData.subjects.filter(
-        (item) => search.subjects && search.subjects.includes(item.key)
-      ) || []
-    const urlGrades =
-      staticDropDownData.grades.filter(
-        (item) => search.grades && search.grades.includes(item.key)
-      ) || []
+    const urlSubjects = staticDropDownData.subjects.filter(
+      (item) => search.subjects && search.subjects.includes(item.key)
+    )
+    const urlGrades = staticDropDownData.grades.filter(
+      (item) => search.grades && search.grades.includes(item.key)
+    )
     const _filters = {
       reportId: reportId || '',
       termId: urlSchoolYear.key,

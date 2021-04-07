@@ -882,7 +882,7 @@ function* updatePlaylistSaga({ payload }) {
             if (updateStandards) {
               resourceMap[testId] = [...(resourceMap[testId] || []), resourceId]
             }
-            return omit(resource, ['updateStandards', 'contentVersionId'])
+            return omit(resource, ['updateStandards'])
           })
         }
         return omit(test, [

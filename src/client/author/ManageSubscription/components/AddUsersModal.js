@@ -53,18 +53,12 @@ const AddUsersModal = ({
     }
   }
 
-  const {
-    premiumLicenseId,
-    sparkMathLicenseId,
-    isSparkCheckboxDisbled,
-  } = useMemo(() => {
+  const { premiumLicenseId, isSparkCheckboxDisbled } = useMemo(() => {
     let _premiumLicenseId = ''
-    let _sparkMathLicenseId = ''
     let _isPremiumCheckboxChecked = ''
     let _sparkAvailableCount = ''
     for (const {
       productId,
-      linkedProductId,
       licenseId,
       totalCount,
       usedCount,
@@ -73,16 +67,12 @@ const AddUsersModal = ({
         _premiumLicenseId = licenseId
         _isPremiumCheckboxChecked = checkboxValues.includes(licenseId)
       }
-      if ([linkedProductId, productId].includes(sparkMathProductId)) {
-        _sparkMathLicenseId = licenseId
-      }
       _sparkAvailableCount = totalCount - usedCount
     }
     const _isSparkCheckboxDisbled =
       _isPremiumCheckboxChecked && _sparkAvailableCount
     return {
       premiumLicenseId: _premiumLicenseId,
-      sparkMathLicenseId: _sparkMathLicenseId,
       isSparkCheckboxDisbled: _isSparkCheckboxDisbled,
     }
   }, [
@@ -187,20 +177,19 @@ const AddUsersModal = ({
         </SelectInputStyled>
         <CheckboxWrpper>
           <CheckBoxGrp value={checkboxValues} onChange={handleOnCheck}>
-            <CheckboxLabel
-              data-cy="teacherPremiumCheckbox"
-              value={premiumLicenseId}
-              disabled={!premiumLicenseId.length}
-            >
-              Upgrade to Premium
-            </CheckboxLabel>
-            <CheckboxLabel
-              data-cy="sparkMathPremiumCheckbox"
-              value={sparkMathLicenseId}
-              disabled={!isSparkCheckboxDisbled}
-            >
-              Access Spark Math
-            </CheckboxLabel>
+            {subsLicenses.map((x) => (
+              <CheckboxLabel
+                data-cy={`${x.type}_checkbox`}
+                value={x.licenseId}
+                disabled={
+                  x.productType === 'PREMIUM'
+                    ? !x.licenseId.length
+                    : !isSparkCheckboxDisbled
+                }
+              >
+                {x.productName}
+              </CheckboxLabel>
+            ))}
           </CheckBoxGrp>
         </CheckboxWrpper>
       </div>

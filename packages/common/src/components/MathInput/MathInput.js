@@ -7,7 +7,6 @@ import { math } from '@edulastic/constants'
 import { isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
-import { connect } from 'react-redux'
 
 import { MathInputStyles, EmptyDiv, KeyboardIcon } from './MathInputStyles'
 import Draggable from './Draggable'
@@ -394,7 +393,6 @@ class MathInput extends React.PureComponent {
       disabled,
       maxWidth,
       paddingRight,
-      customKeypads,
     } = this.props
 
     const {
@@ -468,7 +466,6 @@ class MathInput extends React.PureComponent {
                 this.onInput(key, command, numToMove)
               }
               dynamicVariableInput={dynamicVariableInput}
-              customKeypads={customKeypads}
             />
           </MathKeyboardWrapper>
         )}
@@ -529,6 +526,4 @@ MathInput.defaultProps = {
   resetMath: false,
 }
 
-export default connect((state) => ({
-  customKeypads: state.customKeypad.keypads,
-}))(MathInput)
+export default MathInput

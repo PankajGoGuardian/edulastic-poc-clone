@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import { connect } from 'react-redux'
 import { isObject, compact } from 'lodash'
 import { math } from '@edulastic/constants'
 import { FlexContainer } from '@edulastic/common'
@@ -150,6 +151,7 @@ class MathKeyboard extends React.PureComponent {
       customKeypads,
     } = this.props
     const { type, keyboardButtons, numberButtons, selectOptions } = this.state
+
     return (
       <MathKeyboardContainer docBasedKeypadStyles={docBasedKeypadStyles}>
         {showDragHandle && (
@@ -212,7 +214,9 @@ MathKeyboard.defaultProps = {
   showDragHandle: true,
 }
 
-export default MathKeyboard
+export default connect((state) => ({
+  customKeypads: state.customKeypad.keypads,
+}))(MathKeyboard)
 
 const MathKeyboardContainer = styled.div`
   /* border: 1px solid ${(props) =>

@@ -65,14 +65,16 @@ const ResourceRow = ({
         style={rowStyle}
       >
         <AssignmentButton>
-          <Button onClick={viewResource}>VIEW</Button>
+          <Button data-cy="viewResource" onClick={viewResource}>
+            VIEW
+          </Button>
         </AssignmentButton>
 
         {(((!urlHasUseThis || mode === 'embedded') && isManageContentActive) ||
           !urlHasUseThis) &&
           !isStudent && (
             <IconActionButton onClick={deleteResource}>
-              <IconTrash color={themeColor} />
+              <IconTrash data-cy="deleteResource" color={themeColor} />
             </IconActionButton>
           )}
       </LastColumn>

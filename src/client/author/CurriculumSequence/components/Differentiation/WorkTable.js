@@ -140,11 +140,11 @@ const InnerWorkTable = ({
   }, [])
 
   /** Drop handle to accept dropped items from manage content (yet to be implemented) */
-  const [{ isOver, itemContentType }, drop] = useDrop({
+  const [{ isOver }, drop] = useDrop({
     accept: 'item',
     collect: (monitor) => ({
       isOver: !!monitor.isOver(),
-      itemContentType: monitor.getItem()?.contentType,
+      // itemContentType: monitor.getItem()?.contentType,
     }),
     drop: (item = {}) => {
       if (
@@ -387,20 +387,22 @@ const InnerWorkTable = ({
       dataIndex: 'delete',
       width: '40px',
       align: 'center',
-      render: (_, _record) => (
-        (_record.testId && _record.status === 'RECOMMENDED') && (<InlineDelete
-          data-cy="delete-test"
-          title="Delete Test"
-          onClick={() =>
-            removeResourceFromDifferentiation({
-              ..._record,
-              type: type?.toLowerCase(),
-            })
-          }
-        >
-          <IconClose />
-        </InlineDelete>)
-      ),
+      render: (_, _record) =>
+        _record.testId &&
+        _record.status === 'RECOMMENDED' && (
+          <InlineDelete
+            data-cy="delete-test"
+            title="Delete Test"
+            onClick={() =>
+              removeResourceFromDifferentiation({
+                ..._record,
+                type: type?.toLowerCase(),
+              })
+            }
+          >
+            <IconClose />
+          </InlineDelete>
+        ),
     },
   ]
 
@@ -409,9 +411,6 @@ const InnerWorkTable = ({
     onChange: (selectedRowKeys) => {
       setSelectedRows(selectedRowKeys)
     },
-    getCheckboxProps: (record) => ({
-      disabled: record.status === 'ADDED',
-    }),
   }
 
   const getResourceTitle = () => {

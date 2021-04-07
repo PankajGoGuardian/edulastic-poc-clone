@@ -94,7 +94,6 @@ TrendStats.propTypes = {
   selectedTrend: PropTypes.string,
   renderFilters: PropTypes.func,
   heading: PropTypes.string,
-  subHeading: PropTypes.string,
   trendCount: PropTypes.shape({
     up: PropTypes.number,
     flat: PropTypes.number,
@@ -112,7 +111,6 @@ TrendStats.defaultProps = {
   onTrendSelect: () => {},
   renderFilters: () => null,
   heading: '',
-  subHeading: '',
 }
 
 export default TrendStats

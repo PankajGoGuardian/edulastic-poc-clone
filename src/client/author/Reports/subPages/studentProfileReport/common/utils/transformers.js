@@ -10,6 +10,7 @@ import {
   filter,
   keys,
   uniq,
+  uniqBy,
   isEmpty,
 } from 'lodash'
 import {
@@ -19,7 +20,8 @@ import {
 } from '../../../../common/util'
 import gradesMap from '../static/gradesMap.json'
 
-export const getFullName = (s) => `${s.firstName || ''} ${s.lastName || ''}`.trim()
+export const getFullName = (s) =>
+  `${s.firstName || ''} ${s.lastName || ''}`.trim()
 
 export const getStudentName = (selectedStudent, studInfo) => {
   if (selectedStudent.title) {
@@ -220,7 +222,28 @@ export const getGrades = (studInfo = []) =>
     .map((grade) => gradesMap[grade])
     .join()
 
-export const getDomainOptions = (domains, grade, subject) => {
+export const getDomainOptions = (skillInfo = []) => [
+  { key: 'All', title: 'All Domains' },
+  ...uniqBy(skillInfo, 'domainId').map((x) => ({
+    key: `${x.domainId}`,
+    title: x.domain,
+  })),
+]
+
+export const getStandardOptions = (skillInfo = [], domainId) => [
+  { key: 'All', title: 'All Standards' },
+  ...uniqBy(
+    skillInfo.filter(
+      (x) => `${x.domainId}` === `${domainId}` || domainId === 'All'
+    ),
+    'standardId'
+  ).map((x) => ({
+    key: `${x.standardId}`,
+    title: x.standard,
+  })),
+]
+
+export const getDomainOptionsByGradeSubject = (domains, grade, subject) => {
   return [
     { key: 'All', title: 'All' },
     ...domains

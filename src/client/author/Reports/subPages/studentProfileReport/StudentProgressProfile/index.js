@@ -22,11 +22,6 @@ import { getReportsSPRFilterData } from '../common/filterDataDucks'
 import { useGetBandData } from '../../multipleAssessmentReport/StudentProgress/hooks'
 
 import dropDownData from './static/json/dropDownData.json'
-import {
-  filterMetricInfo,
-  getDomainOptions,
-  getStandardsOptions,
-} from './common/utils/transformers'
 import { downloadCSV } from '../../../common/util'
 import { getStudentName } from '../common/utils/transformers'
 
@@ -51,14 +46,6 @@ const StudentProgressProfile = ({
 }) => {
   const anonymousString = t('common.anonymous')
   const [analyseBy, setAnalyseBy] = useState(head(dropDownData.analyseByData))
-  const [selectedDomain, setSelectedDomain] = useState({
-    key: 'All',
-    title: 'All Domains',
-  })
-  const [selectedStandard, setSelectedStandard] = useState({
-    key: 'All',
-    title: 'All Standards',
-  })
   const [selectedTrend, setSelectedTrend] = useState('')
   const [pageFilters, setPageFilters] = useState({
     page: 0,
@@ -75,11 +62,11 @@ const StudentProgressProfile = ({
     [sharedReport]
   )
 
-  const { bandInfo: bands = [], scaleInfo = [] } = get(
-    SPRFilterData,
-    'data.result',
-    {}
+  const { bandInfo: bands = [], scaleInfo = [] } = useMemo(
+    () => get(SPRFilterData, 'data.result', {}),
+    [SPRFilterData]
   )
+
   const selectedScale =
     (
       scaleInfo.find(
@@ -97,36 +84,22 @@ const StudentProgressProfile = ({
     ) || bands[0]
   )?.performanceBand
 
-  const { metricInfo = [], skillInfo = [], standardsCount = 0 } = get(
-    studentProgressProfile,
-    'data.result',
-    {}
+  const { metricInfo = [], skillInfo = [], standardsCount = 0 } = useMemo(
+    () => get(studentProgressProfile, 'data.result', {}),
+    [studentProgressProfile]
   )
-
-  const domainOptions = getDomainOptions(skillInfo)
-
-  const standardsOptions = getStandardsOptions(skillInfo, selectedDomain)
 
   useEffect(() => () => resetStudentProgressProfile(), [])
 
   useEffect(() => {
-    setSelectedStandard({
-      key: 'All',
-      title: 'All Standards',
-    })
-  }, [selectedDomain])
-
-  useEffect(() => {
     setPageFilters({ ...pageFilters, page: 1 })
-  }, [settings, selectedStandard])
+  }, [settings])
 
   useEffect(() => {
     const q = {
       ...settings.requestFilters,
       ...pageFilters,
       studentId: settings.selectedStudent.key,
-      domainIds: selectedDomain.key === 'All' ? '' : selectedDomain.key,
-      standardIds: selectedStandard.key === 'All' ? '' : selectedStandard.key,
     }
     if ((q.termId || q.reportId) && q.studentId && pageFilters.page) {
       getStudentProgressProfileRequest(q)
@@ -136,8 +109,6 @@ const StudentProgressProfile = ({
   const onTrendSelect = (trend) =>
     setSelectedTrend(trend === selectedTrend ? '' : trend)
 
-  const onDomainSelect = (_, selected) => setSelectedDomain(selected)
-  const onStandardSelect = (_, selected) => setSelectedStandard(selected)
   const onAnalyseBySelect = (_, selected) => setAnalyseBy(selected)
 
   const studentName = getStudentName(settings.selectedStudent, {})
@@ -147,13 +118,8 @@ const StudentProgressProfile = ({
       _data
     )
 
-  const filteredMetricInfo = useMemo(
-    () => filterMetricInfo(metricInfo, selectedDomain, selectedStandard),
-    [metricInfo, selectedDomain, selectedStandard]
-  )
-
   const [data, trendCount] = useGetBandData(
-    filteredMetricInfo,
+    metricInfo,
     compareBy.key,
     skillInfo,
     selectedTrend,
@@ -182,28 +148,12 @@ const StudentProgressProfile = ({
         isSharedReport={isSharedReport}
         showTrendStats={!isEmpty(metricInfo)}
         renderFilters={() => (
-          <>
-            <ControlDropDown
-              showPrefixOnSelected={false}
-              by={selectedDomain}
-              selectCB={onDomainSelect}
-              data={domainOptions}
-              prefix="Domain(s)"
-            />
-            <ControlDropDown
-              showPrefixOnSelected={false}
-              by={selectedStandard}
-              selectCB={onStandardSelect}
-              data={standardsOptions}
-              prefix="Standard(s)"
-            />
-            <ControlDropDown
-              prefix="Analyze By"
-              by={analyseBy}
-              selectCB={onAnalyseBySelect}
-              data={dropDownData.analyseByData}
-            />
-          </>
+          <ControlDropDown
+            prefix="Analyze By"
+            by={analyseBy}
+            selectCB={onAnalyseBySelect}
+            data={dropDownData.analyseByData}
+          />
         )}
       />
       {!isEmpty(metricInfo) ? (
@@ -215,7 +165,7 @@ const StudentProgressProfile = ({
           masteryScale={selectedScale}
           compareBy={compareBy}
           analyseBy={analyseBy}
-          rawMetric={filteredMetricInfo}
+          rawMetric={metricInfo}
           isCellClickable
           location={location}
           pageTitle={pageTitle}

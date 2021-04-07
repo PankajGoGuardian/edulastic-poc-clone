@@ -13,6 +13,13 @@ import MultiSelectDropdown from '../../../../../common/components/widgets/MultiS
 import CoursesAutoComplete from '../../../../../common/components/autocompletes/CoursesAutoComplete'
 import ClassAutoComplete from './ClassAutoComplete'
 import StudentAutoComplete from './StudentAutoComplete'
+import {
+  ReportFiltersContainer,
+  ReportFiltersWrapper,
+  FilterLabel,
+  StyledEduButton,
+  StyledDropDownContainer,
+} from '../../../../../common/styled'
 
 import {
   getUserRole,
@@ -36,17 +43,17 @@ import {
   setStudentAction,
   setTempTagsDataAction,
 } from '../../filterDataDucks'
-import { getTermOptions } from '../../utils/transformers'
-import { getFullNameFromAsString } from '../../../../../../../common/utils/helpers'
+import { getReportsStudentProgressProfile } from '../../../StudentProgressProfile/ducks'
+
 import {
-  ReportFiltersContainer,
-  ReportFiltersWrapper,
-  FilterLabel,
-  StyledEduButton,
-} from '../../../../../common/styled'
+  getTermOptions,
+  getDomainOptions,
+  getStandardOptions,
+} from '../../utils/transformers'
+import { getFullNameFromAsString } from '../../../../../../../common/utils/helpers'
+import { resetStudentFilters as resetFilters } from '../../../../../common/util'
 
 import staticDropDownData from '../../static/staticDropDownData.json'
-import { resetStudentFilters as resetFilters } from '../../../../../common/util'
 
 const filtersDefaultValues = [
   {
@@ -61,11 +68,11 @@ const filtersDefaultValues = [
     key: '',
     nestedFilters: [
       {
-        key: 'grade',
+        key: 'grades',
         value: 'All',
       },
       {
-        key: 'subject',
+        key: 'subjects',
         value: 'All',
       },
     ],
@@ -101,6 +108,7 @@ const StudentProfileReportFilters = ({
   history,
   reportId,
   loading,
+  studentProgressProfile,
 }) => {
   const [activeTabKey, setActiveTabKey] = useState(
     staticDropDownData.filterSections.STUDENT_FILTERS.key
@@ -137,6 +145,13 @@ const StudentProfileReportFilters = ({
     standardProficiencyList.find(
       (p) => p.key === filters.standardsProficiencyProfileId
     ) || standardProficiencyList[0]
+
+  const skillInfo = useMemo(
+    () => get(studentProgressProfile, 'data.result.skillInfo', []),
+    [studentProgressProfile]
+  )
+  const domainOptions = getDomainOptions(skillInfo)
+  const standardOptions = getStandardOptions(skillInfo, filters.domainId)
 
   useEffect(() => {
     const search = pickBy(
@@ -245,6 +260,7 @@ const StudentProfileReportFilters = ({
       tagsData: { ...tempTagsData },
       ..._settings,
     }
+    setFilters({ ...filters, showApply: false })
     setShowApply(false)
     _onGoClick(settings)
     toggleFilter(null, false)
@@ -260,6 +276,7 @@ const StudentProfileReportFilters = ({
     const _tempTagsData = { ...tempTagsData, student: selected }
     if (selected && selected.key) {
       setStudent(selected)
+      setFilters({ ...filters, showApply: true })
       getSPRFilterDataRequest({
         termId: filters.termId,
         studentId: selected.key,
@@ -268,7 +285,6 @@ const StudentProfileReportFilters = ({
       delete _tempTagsData.student
     }
     setTempTagsData(_tempTagsData)
-    setShowApply(true)
   }
 
   const resetSPRFilters = (nextTagsData, prevFilters, key, selected) => {
@@ -282,9 +298,18 @@ const StudentProfileReportFilters = ({
       prevFilters.classIds = ''
       delete nextTagsData.classIds
     }
+    if (key === 'domainId' && prevFilters[key] !== selected) {
+      prevFilters.standardId = standardOptions[0].key
+      nextTagsData.standardId = standardOptions[0]
+    }
   }
 
-  const updateFilterDropdownCB = (selected, keyName, multiple = false) => {
+  const updateFilterDropdownCB = (
+    selected,
+    keyName,
+    multiple = false,
+    isRowFilter = false
+  ) => {
     // update tags data
     const _tempTagsData = { ...tempTagsData, [keyName]: selected }
     if (!multiple && (!selected.key || selected.key === 'All')) {
@@ -299,8 +324,12 @@ const StudentProfileReportFilters = ({
     // update filters
     _filters[keyName] = _selected
     history.push(`${getNewPathname()}?${qs.stringify(_filters)}`)
-    setFilters(_filters)
-    setShowApply(true)
+    if (isRowFilter) {
+      setFilters({ ..._filters, showApply: true })
+    } else {
+      setFilters(_filters)
+      setShowApply(true)
+    }
   }
 
   const handleCloseTag = (type, { key }) => {
@@ -324,196 +353,271 @@ const StudentProfileReportFilters = ({
   }
 
   return (
-    <>
-      <FilterTags
-        isPrinting={isPrinting}
-        visible={!reportId}
-        tagsData={tagsData}
-        tagTypes={tagTypes}
-        handleCloseTag={handleCloseTag}
-      />
-      <ReportFiltersContainer visible={!reportId}>
-        <StyledEduButton
-          data-cy="filters"
-          isGhost={!showFilter}
-          onClick={toggleFilter}
-          style={{ height: '24px' }}
-        >
-          <IconFilter width={15} height={15} />
-          FILTERS
-        </StyledEduButton>
-        <ReportFiltersWrapper visible={showFilter}>
-          <Row>
-            <Col span={24} style={{ padding: '0 5px' }}>
-              <Tabs
-                animated={false}
-                activeKey={activeTabKey}
-                onChange={setActiveTabKey}
-              >
-                <Tabs.TabPane
-                  key={staticDropDownData.filterSections.STUDENT_FILTERS.key}
-                  tab={staticDropDownData.filterSections.STUDENT_FILTERS.title}
+    <Row type="flex" gutter={[0, 5]} style={{ width: '100%' }}>
+      <Col span={24} style={{ display: 'flex', alignItems: 'center' }}>
+        <FilterTags
+          isPrinting={isPrinting}
+          visible={!reportId}
+          tagsData={tagsData}
+          tagTypes={tagTypes}
+          handleCloseTag={handleCloseTag}
+        />
+        <ReportFiltersContainer visible={!reportId}>
+          <StyledEduButton
+            data-cy="filters"
+            isGhost={!showFilter}
+            onClick={toggleFilter}
+            style={{ height: '24px' }}
+          >
+            <IconFilter width={15} height={15} />
+            FILTERS
+          </StyledEduButton>
+          <ReportFiltersWrapper visible={showFilter}>
+            <Row>
+              <Col span={24} style={{ padding: '0 5px' }}>
+                <Tabs
+                  animated={false}
+                  activeKey={activeTabKey}
+                  onChange={setActiveTabKey}
                 >
-                  <Row type="flex" gutter={[5, 10]}>
-                    <Col span={6}>
-                      <FilterLabel data-cy="schoolYear">
-                        School Year
-                      </FilterLabel>
-                      <ControlDropDown
-                        by={filters.termId}
-                        selectCB={(e, selected) =>
-                          updateFilterDropdownCB(selected, 'termId')
-                        }
-                        data={termOptions}
-                        prefix="School Year"
-                        showPrefixOnSelected={false}
-                      />
-                    </Col>
-                    <Col span={6}>
-                      <CoursesAutoComplete
-                        dataCy="courses"
-                        selectedCourseIds={
-                          filters.courseIds ? filters.courseIds.split(',') : []
-                        }
-                        selectCB={(e) =>
-                          updateFilterDropdownCB(e, 'courseIds', true)
-                        }
-                      />
-                    </Col>
-                    <Col span={6}>
-                      <MultiSelectDropdown
-                        dataCy="classGrade"
-                        label="Class Grade"
-                        onChange={(e) => {
-                          const selected = staticDropDownData.grades.filter(
-                            (a) => e.includes(a.key)
-                          )
-                          updateFilterDropdownCB(selected, 'grades', true)
-                        }}
-                        value={
-                          filters.grades && filters.grades !== 'All'
-                            ? filters.grades.split(',')
-                            : []
-                        }
-                        options={staticDropDownData.grades}
-                      />
-                    </Col>
-                    <Col span={6}>
-                      <MultiSelectDropdown
-                        dataCy="classSubject"
-                        label="Class Subject"
-                        onChange={(e) => {
-                          const selected = staticDropDownData.subjects.filter(
-                            (a) => e.includes(a.key)
-                          )
-                          updateFilterDropdownCB(selected, 'subjects', true)
-                        }}
-                        value={
-                          filters.subjects && filters.subjects !== 'All'
-                            ? filters.subjects.split(',')
-                            : []
-                        }
-                        options={staticDropDownData.subjects}
-                      />
-                    </Col>
-                    <Col span={6}>
-                      <ClassAutoComplete
-                        dataCy="classes"
-                        termId={filters.termId}
-                        courseIds={filters.courseIds}
-                        grades={filters.grades}
-                        subjects={filters.subjects}
-                        selectedClassIds={
-                          filters.classIds ? filters.classIds.split(',') : []
-                        }
-                        selectCB={(e) =>
-                          updateFilterDropdownCB(e, 'classIds', true)
-                        }
-                      />
-                    </Col>
-                    <Col span={6}>
-                      <FilterLabel data-cy="student">Student</FilterLabel>
-                      <StudentAutoComplete
-                        firstLoad={firstLoad}
-                        termId={filters.termId}
-                        grades={filters.grades}
-                        subjects={filters.subjects}
-                        courseIds={filters.courseIds}
-                        classIds={filters.classIds}
-                        selectedStudentId={student.key || urlStudentId}
-                        selectCB={onStudentSelect}
-                      />
-                    </Col>
-                    {performanceBandRequired && (
+                  <Tabs.TabPane
+                    key={staticDropDownData.filterSections.STUDENT_FILTERS.key}
+                    tab={
+                      staticDropDownData.filterSections.STUDENT_FILTERS.title
+                    }
+                  >
+                    <Row type="flex" gutter={[5, 10]}>
                       <Col span={6}>
-                        <FilterLabel data-cy="performanceBand">
-                          Performance Band
+                        <FilterLabel data-cy="schoolYear">
+                          School Year
                         </FilterLabel>
                         <ControlDropDown
-                          by={selectedPerformanceBand}
+                          by={filters.termId}
                           selectCB={(e, selected) =>
-                            updateFilterDropdownCB(
-                              selected,
-                              'performanceBandProfileId'
-                            )
+                            updateFilterDropdownCB(selected, 'termId')
                           }
-                          data={performanceBandsList}
-                          prefix="Performance Band"
+                          data={termOptions}
+                          prefix="School Year"
                           showPrefixOnSelected={false}
                         />
                       </Col>
-                    )}
-                    {standardProficiencyRequired && (
                       <Col span={6}>
-                        <FilterLabel data-cy="standardProficiency">
-                          Standard Proficiency
-                        </FilterLabel>
-                        <ControlDropDown
-                          by={selectedStandardProficiency}
-                          selectCB={(e, selected) =>
-                            updateFilterDropdownCB(
-                              selected,
-                              'standardsProficiencyProfileId'
-                            )
+                        <CoursesAutoComplete
+                          dataCy="courses"
+                          selectedCourseIds={
+                            filters.courseIds
+                              ? filters.courseIds.split(',')
+                              : []
                           }
-                          data={standardProficiencyList}
-                          prefix="Standard Proficiency"
-                          showPrefixOnSelected={false}
+                          selectCB={(e) =>
+                            updateFilterDropdownCB(e, 'courseIds', true)
+                          }
                         />
                       </Col>
-                    )}
-                  </Row>
-                </Tabs.TabPane>
-              </Tabs>
-            </Col>
-            <Col span={24} style={{ display: 'flex', paddingTop: '50px' }}>
-              <StyledEduButton
-                width="25%"
-                height="40px"
-                style={{ maxWidth: '200px' }}
-                isGhost
-                key="cancelButton"
-                data-cy="cancelFilter"
-                onClick={(e) => toggleFilter(e, false)}
+                      <Col span={6}>
+                        <MultiSelectDropdown
+                          dataCy="classGrade"
+                          label="Class Grade"
+                          onChange={(e) => {
+                            const selected = staticDropDownData.grades.filter(
+                              (a) => e.includes(a.key)
+                            )
+                            updateFilterDropdownCB(selected, 'grades', true)
+                          }}
+                          value={
+                            filters.grades && filters.grades !== 'All'
+                              ? filters.grades.split(',')
+                              : []
+                          }
+                          options={staticDropDownData.grades}
+                        />
+                      </Col>
+                      <Col span={6}>
+                        <MultiSelectDropdown
+                          dataCy="classSubject"
+                          label="Class Subject"
+                          onChange={(e) => {
+                            const selected = staticDropDownData.subjects.filter(
+                              (a) => e.includes(a.key)
+                            )
+                            updateFilterDropdownCB(selected, 'subjects', true)
+                          }}
+                          value={
+                            filters.subjects && filters.subjects !== 'All'
+                              ? filters.subjects.split(',')
+                              : []
+                          }
+                          options={staticDropDownData.subjects}
+                        />
+                      </Col>
+                      <Col span={6}>
+                        <ClassAutoComplete
+                          dataCy="classes"
+                          termId={filters.termId}
+                          courseIds={filters.courseIds}
+                          grades={filters.grades}
+                          subjects={filters.subjects}
+                          selectedClassIds={
+                            filters.classIds ? filters.classIds.split(',') : []
+                          }
+                          selectCB={(e) =>
+                            updateFilterDropdownCB(e, 'classIds', true)
+                          }
+                        />
+                      </Col>
+                    </Row>
+                  </Tabs.TabPane>
+                </Tabs>
+              </Col>
+              <Col span={24} style={{ display: 'flex', paddingTop: '50px' }}>
+                <StyledEduButton
+                  width="25%"
+                  height="40px"
+                  style={{ maxWidth: '200px' }}
+                  isGhost
+                  key="cancelButton"
+                  data-cy="cancelFilter"
+                  onClick={(e) => toggleFilter(e, false)}
+                >
+                  Cancel
+                </StyledEduButton>
+                <StyledEduButton
+                  width="25%"
+                  height="40px"
+                  style={{ maxWidth: '200px' }}
+                  key="applyButton"
+                  data-cy="applyFilter"
+                  disabled={!showApply || loading}
+                  onClick={() => onGoClick()}
+                >
+                  Apply
+                </StyledEduButton>
+              </Col>
+            </Row>
+          </ReportFiltersWrapper>
+        </ReportFiltersContainer>
+      </Col>
+      <Col span={24}>
+        <Row
+          type="flex"
+          gutter={[5, 10]}
+          justify="end"
+          align="middle"
+          style={{
+            paddingLeft: '10px',
+            width: '75%',
+            float: 'right',
+            paddingTop: '5px',
+          }}
+        >
+          <StyledDropDownContainer xs={24} sm={12} lg={6} data-cy="student">
+            <StudentAutoComplete
+              firstLoad={firstLoad}
+              termId={filters.termId}
+              grades={filters.grades}
+              subjects={filters.subjects}
+              courseIds={filters.courseIds}
+              classIds={filters.classIds}
+              selectedStudentId={student.key || urlStudentId}
+              selectCB={onStudentSelect}
+            />
+          </StyledDropDownContainer>
+          {performanceBandRequired && (
+            <StyledDropDownContainer
+              xs={24}
+              sm={12}
+              lg={6}
+              data-cy="performanceBand"
+            >
+              <ControlDropDown
+                by={selectedPerformanceBand}
+                selectCB={(e, selected) =>
+                  updateFilterDropdownCB(
+                    selected,
+                    'performanceBandProfileId',
+                    false,
+                    true
+                  )
+                }
+                data={performanceBandsList}
+                prefix="Performance Band"
+                showPrefixOnSelected={false}
+              />
+            </StyledDropDownContainer>
+          )}
+          {standardProficiencyRequired && (
+            <StyledDropDownContainer
+              xs={24}
+              sm={12}
+              lg={6}
+              data-cy="standardProficiency"
+            >
+              <ControlDropDown
+                by={selectedStandardProficiency}
+                selectCB={(e, selected) =>
+                  updateFilterDropdownCB(
+                    selected,
+                    'standardsProficiencyProfileId',
+                    false,
+                    true
+                  )
+                }
+                data={standardProficiencyList}
+                prefix="Standard Proficiency"
+                showPrefixOnSelected={false}
+              />
+            </StyledDropDownContainer>
+          )}
+          {loc === 'student-progress-profile' && (
+            <>
+              <StyledDropDownContainer
+                xs={24}
+                sm={12}
+                lg={6}
+                data-cy="standardProficiency"
               >
-                Cancel
-              </StyledEduButton>
-              <StyledEduButton
-                width="25%"
-                height="40px"
-                style={{ maxWidth: '200px' }}
-                key="applyButton"
-                data-cy="applyFilter"
-                disabled={!showApply || loading}
-                onClick={() => onGoClick()}
+                <ControlDropDown
+                  by={filters.domainId}
+                  selectCB={(e, selected) =>
+                    updateFilterDropdownCB(selected, 'domainId', false, true)
+                  }
+                  data={domainOptions}
+                  prefix="Domain(s)"
+                  showPrefixOnSelected={false}
+                />
+              </StyledDropDownContainer>
+              <StyledDropDownContainer
+                xs={24}
+                sm={12}
+                lg={6}
+                data-cy="standardProficiency"
               >
-                Apply
-              </StyledEduButton>
-            </Col>
-          </Row>
-        </ReportFiltersWrapper>
-      </ReportFiltersContainer>
-    </>
+                <ControlDropDown
+                  by={filters.standardId}
+                  selectCB={(e, selected) =>
+                    updateFilterDropdownCB(selected, 'standardId', false, true)
+                  }
+                  data={standardOptions}
+                  prefix="Standard(s)"
+                  showPrefixOnSelected={false}
+                />
+              </StyledDropDownContainer>
+            </>
+          )}
+          {filters.showApply && (
+            <StyledEduButton
+              btnType="primary"
+              data-cy="applyRowFilter"
+              disabled={loading}
+              onClick={() => onGoClick()}
+              style={{ height: '32px' }}
+            >
+              APPLY
+            </StyledEduButton>
+          )}
+        </Row>
+      </Col>
+    </Row>
   )
 }
 
@@ -529,6 +633,7 @@ const enhance = connect(
     orgData: getOrgDataSelector(state),
     studentList: getStudentsListSelector(state),
     defaultTermId: getCurrentTerm(state),
+    studentProgressProfile: getReportsStudentProgressProfile(state),
   }),
   {
     getSPRFilterDataRequest: getSPRFilterDataRequestAction,

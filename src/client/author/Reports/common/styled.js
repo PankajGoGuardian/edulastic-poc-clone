@@ -13,7 +13,7 @@ import {
 import { EduButton, Card, FieldLabel } from '@edulastic/common'
 import { Text } from '@vx/text'
 import { Col, Slider, Table, Button } from 'antd'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { CustomChartTooltip } from './components/charts/chartUtils/tooltip'
 
 export const StyledCell = styled.div`
@@ -52,6 +52,51 @@ export const ReportFiltersContainer = styled.div`
   }
 `
 
+const antSelectStyles = css`
+  .ant-select {
+    width: 100%;
+    font-size: 11px;
+  }
+  .ant-select-dropdown {
+    font-size: 11px;
+    .ant-select-dropdown-menu-item {
+      padding: 4px 12px;
+    }
+    .ant-select-dropdown-menu-item-selected,
+    .ant-select-dropdown-menu-item-active {
+      background-color: ${themeColor};
+      color: #ffffff;
+    }
+    .ant-select-dropdown-menu-item,
+    .ant-select-dropdown-menu-submenu-title {
+      font-size: 11px;
+    }
+  }
+  .ant-select-selection {
+    &__rendered {
+      padding-left: 0px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+  }
+  .ant-select-auto-complete.ant-select .ant-input {
+    background-color: #f8f8f8;
+    border-color: #e5e5e5;
+    border-radius: 2px;
+    min-height: 34px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .ant-input-affix-wrapper .ant-input-suffix {
+    right: 8px;
+    i {
+      svg {
+        color: ${themeColor};
+      }
+    }
+  }
+`
+
 export const ReportFiltersWrapper = styled.div`
   position: absolute;
   z-index: 100;
@@ -81,32 +126,7 @@ export const ReportFiltersWrapper = styled.div`
       text-transform: uppercase;
     }
   }
-  .ant-select {
-    width: 100%;
-    font-size: 11px;
-  }
-  .ant-select-dropdown {
-    font-size: 11px;
-    .ant-select-dropdown-menu-item {
-      padding: 4px 12px;
-    }
-    .ant-select-dropdown-menu-item-selected,
-    .ant-select-dropdown-menu-item-active {
-      background-color: ${themeColor};
-      color: #ffffff;
-    }
-    .ant-select-dropdown-menu-item,
-    .ant-select-dropdown-menu-submenu-title {
-      font-size: 11px;
-    }
-  }
-  .ant-select-selection {
-    &__rendered {
-      padding-left: 0px;
-      font-size: 11px;
-      font-weight: 600;
-    }
-  }
+  ${antSelectStyles}
   .ant-select-selection.ant-select-selection--multiple {
     background-color: ${lightGreySecondary};
     border-color: ${fadedGrey};
@@ -122,22 +142,6 @@ export const ReportFiltersWrapper = styled.div`
     .ant-select-selection__rendered
     .ant-select-selection__choice {
     margin: 4px 0 0 5px !important;
-  }
-  .ant-select-auto-complete.ant-select .ant-input {
-    background-color: #f8f8f8;
-    border-color: #e5e5e5;
-    border-radius: 2px;
-    min-height: 34px;
-    font-size: 11px;
-    font-weight: 600;
-  }
-  .ant-input-affix-wrapper .ant-input-suffix {
-    right: 8px;
-    i {
-      svg {
-        color: ${themeColor};
-      }
-    }
   }
   .control-dropdown {
     button {
@@ -481,6 +485,7 @@ export const StyledDropDownContainer = styled(Col)`
     font-size: 11px;
     border-radius: 2px;
   }
+  ${antSelectStyles}
   .standards-mastery-report-domain-autocomplete {
     .ant-select {
       width: 100%;

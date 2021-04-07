@@ -366,7 +366,7 @@ const StandardsMasteryReportFilters = ({
     selected,
     keyName,
     multiple = false,
-    isStandardFilter = false
+    isRowFilter = false
   ) => {
     // update tags data
     const _tempTagsData = { ...tempTagsData, [keyName]: selected }
@@ -385,7 +385,7 @@ const StandardsMasteryReportFilters = ({
     // update filters
     _filters[keyName] = _selected
     history.push(`${location.pathname}?${qs.stringify(_filters)}`)
-    if (isStandardFilter) {
+    if (isRowFilter) {
       setFilters({ ..._filters, showApply: true })
     } else {
       setFilters(_filters)
@@ -891,6 +891,7 @@ const StandardsMasteryReportFilters = ({
           {filters.showApply && (
             <StyledEduButton
               btnType="primary"
+              data-cy="applyRowFilter"
               onClick={onGoClick}
               style={{ height: '32px' }}
             >

@@ -130,11 +130,9 @@ const PeerProgressAnalysis = ({
     }
   }, [peerProgressAnalysis])
 
-  const [parsedData, trendCount] = parseTrendData(
-    metricInfo,
-    compareBy.key,
-    metaInfo,
-    selectedTrend
+  const [parsedData, trendCount] = useMemo(
+    () => parseTrendData(metricInfo, compareBy.key, metaInfo, selectedTrend),
+    [metricInfo, compareBy.key, metaInfo, selectedTrend]
   )
 
   const onTrendSelect = (trend) =>

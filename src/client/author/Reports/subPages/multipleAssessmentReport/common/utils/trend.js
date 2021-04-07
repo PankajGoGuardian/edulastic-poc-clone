@@ -187,10 +187,12 @@ export const calculateTrend = (groupedData, sortBy) => {
     }
 
     forEach(allAssessments, (ob, index) => {
-      sum_x += index + 1
-      sum_y += ob.score
-      sum_xx += (index + 1) * (index + 1)
-      sum_xy += (index + 1) * ob.score
+      const x = index / (n - 1)
+      const y = ob.score / 100
+      sum_x += x
+      sum_y += y
+      sum_xx += x * x
+      sum_xy += x * y
     })
 
     if (n * sum_xy - sum_x * sum_y === 0) {

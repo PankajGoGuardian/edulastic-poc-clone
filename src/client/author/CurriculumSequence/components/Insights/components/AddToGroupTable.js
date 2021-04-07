@@ -80,21 +80,19 @@ const getColumns = (
     render: (data, record) => {
       const [cx, cy] = calcArrowPosition(data)
       return (
-        record.isHighlighted && (
-          <svg height="26px" width="26px">
-            {record.hasTrend ? (
-              <TrendArrow
-                cx={cx}
-                cy={cy}
-                trendAngle={data}
-                color={record.color}
-                transformOrigin="center"
-              />
-            ) : (
-              <circle cx="50%" cy="calc(50% + 1px)" r={3} fill={record.color} />
-            )}
-          </svg>
-        )
+        <svg height="26px" width="26px">
+          {record.hasTrend ? (
+            <TrendArrow
+              cx={cx}
+              cy={cy}
+              trendAngle={data}
+              color={record.color}
+              transformOrigin="center"
+            />
+          ) : (
+            <circle cx="50%" cy="calc(50% + 1px)" r={3} fill={record.color} />
+          )}
+        </svg>
       )
     },
   }, // ,

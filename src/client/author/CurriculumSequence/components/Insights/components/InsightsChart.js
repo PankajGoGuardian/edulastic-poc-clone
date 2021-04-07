@@ -79,11 +79,11 @@ const ScatterLabel = (props) => {
       >
         {name}
       </text>
-      {hasTrend ? (
+      {/* {hasTrend ? (
         <TrendArrow cx={cx} cy={arrowY} color={color} trendAngle={trendAngle} />
-      ) : (
-        <circle cx={cx + 5} cy={cy - 6} r={3} fill={color} />
-      )}
+      ) : ( */}
+      <circle cx={cx + 5} cy={cy - 6} r={3} fill={color} />
+      {/* )} */}
     </g>
   )
 }

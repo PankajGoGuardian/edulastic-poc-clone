@@ -21,6 +21,7 @@ import {
 } from '@edulastic/constants'
 import { isNullOrUndefined } from 'util'
 import * as Sentry from '@sentry/browser'
+import { createAction } from 'redux-starter-kit'
 import {
   updateAssignmentStatusAction,
   updateCloseAssignmentsAction,
@@ -97,6 +98,7 @@ import {
   isIncompleteQuestion,
   hasImproperDynamicParamsConfig,
 } from '../questionUtils'
+import { setRegradeFirestoreDocId } from '../TestPage/ducks'
 
 const {
   authorAssignmentConstants: {
@@ -105,6 +107,8 @@ const {
 } = testActivity
 
 const { testContentVisibility } = test
+
+export const correctItemUpdateAction = createAction(CORRECT_ITEM_UPDATE_SUCCESS)
 
 function* receiveGradeBookSaga({ payload }) {
   try {
@@ -649,7 +653,15 @@ function* togglePauseStudentsSaga({ payload }) {
 
 function* correctItemUpdateSaga({ payload }) {
   try {
-    const { testItemId, testId, question, callBack } = payload
+    const {
+      testItemId,
+      testId,
+      question,
+      callBack,
+      assignmentId,
+      proceedRegrade,
+      editRegradeChoice,
+    } = payload
     const classResponse = yield select((state) => state.classResponse)
     const testItems = get(classResponse, 'data.testItems', [])
     const testItem = testItems.find((t) => t._id === testItemId) || {}
@@ -674,33 +686,13 @@ function* correctItemUpdateSaga({ payload }) {
     testItem.data.questions = testItem.data.questions.map((q) =>
       q.id === question.id ? question : q
     )
-    const result = yield call(
-      testItemsApi.updateCorrectItemById,
+    const result = yield call(testItemsApi.updateCorrectItemById, {
       testItemId,
       testItem,
-      testId
-    )
-
-    yield put({
-      type: RECEIVE_TESTACTIVITY_REQUEST,
-      payload: {
-        assignmentId: payload.assignmentId,
-        classId: payload.groupId,
-        isQuestionsView: false,
-      },
-    })
-
-    const itemsToReplace = testItems.map((t) =>
-      t.id === testItemId ? result : t
-    )
-
-    markQuestionLabel(itemsToReplace)
-
-    yield put({
-      type: CORRECT_ITEM_UPDATE_SUCCESS,
-      payload: {
-        testItems: itemsToReplace,
-      },
+      testId,
+      assignmentId,
+      proceedRegrade,
+      editRegradeChoice,
     })
 
     if (typeof callBack === 'function') {
@@ -709,15 +701,26 @@ function* correctItemUpdateSaga({ payload }) {
     }
 
     const { testId: newTestId, isRegradeNeeded } = result
-    if (isRegradeNeeded) {
+    if (proceedRegrade) {
       yield put({
         type: TOGGLE_REGRADE_MODAL,
-        payload: { newTestId, oldTestId: testId },
+        payload: {
+          newTestId,
+          oldTestId: testId,
+          itemData: payload,
+          item: result.item,
+        },
       })
-    } else {
-      notification({ type: 'success', messageKey: 'publishCorrectItemSuccess' })
+      yield put(setRegradeFirestoreDocId(result.firestoreDocId))
+    }
+    if (isRegradeNeeded && !proceedRegrade) {
+      yield put({
+        type: TOGGLE_REGRADE_MODAL,
+        payload: { newTestId, oldTestId: testId, itemData: payload },
+      })
     }
   } catch (error) {
+    yield put(setRegradeFirestoreDocId(''))
     notification({
       msg: error?.response?.data?.message,
       messageKey: 'publishCorrectItemFailing',

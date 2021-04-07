@@ -10,6 +10,7 @@ import { greyThemeDark2, greyThemeDark4 } from '@edulastic/colors'
 import { round, get, omit } from 'lodash'
 import { Modal, Popover } from 'antd'
 import { IconTestBank, IconClockCircularOutline } from '@edulastic/icons'
+import { testItemsApi } from '@edulastic/api'
 import { EDIT } from '../../constants/constantsForQuestions'
 import { setQuestionDataAction } from '../../../author/src/actions/question'
 import {
@@ -41,6 +42,7 @@ const QuestionBottomAction = ({
   ...questionProps
 }) => {
   const [openQuestionMoal, setOpenQuestionModal] = useState(false)
+  const [itemloading, setItemLoading] = useState(false)
 
   const onCloseQuestionModal = () => {
     setCurrentQuestion('')
@@ -57,14 +59,24 @@ const QuestionBottomAction = ({
       testActivityId: item?.activity?.testActivityId,
       studentId: item?.activity?.userId,
       question: questionData,
+      proceedRegrade: false,
       callBack: onCloseQuestionModal,
     })
   }
-
-  const showQuestionModal = () => {
-    setQuestionData(omit(item, 'activity'))
-    setCurrentQuestion(item.id)
-    setOpenQuestionModal(true)
+  const showQuestionModal = async () => {
+    setItemLoading(true)
+    try {
+      const testItem = await testItemsApi.getById(item?.activity?.testItemId)
+      const question = testItem.data.questions.find((q) => q.id === item.id)
+      setQuestionData(question)
+      setCurrentQuestion(question.id)
+    } catch (e) {
+      setQuestionData(omit(item, 'activity'))
+      setCurrentQuestion(item.id)
+    } finally {
+      setOpenQuestionModal(true)
+      setItemLoading(false)
+    }
   }
 
   const modalTitle = useMemo(() => {
@@ -101,7 +113,7 @@ const QuestionBottomAction = ({
             loading={loadingComponents.includes('saveAndPublishItem')}
             onClick={onSaveAndPublish}
           >
-            PUBLISH
+            SAVE
           </EduButton>
         </FlexContainer>
       </FlexContainer>
@@ -111,18 +123,18 @@ const QuestionBottomAction = ({
   const hasDynamicVariables = item?.variable?.enabled
 
   const correctItemBtn = (
-    <EduButton
+    <CorrectButton
       isGhost
       height="24px"
       type="primary"
       fontSize="10px"
       mr="8px"
       onClick={showQuestionModal}
-      loading={loading}
+      loading={loading || itemloading}
       disabled={hasDynamicVariables}
     >
       Correct Item
-    </EduButton>
+    </CorrectButton>
   )
 
   return (
@@ -287,4 +299,12 @@ const QuestionReference = styled.div`
 
 const DisabledHelperText = styled.div`
   max-width: 290px;
+`
+const CorrectButton = styled(EduButton)`
+  padding: 5px 29px;
+  .anticon-loading {
+    position: absolute;
+    left: 22px;
+    top: 4px;
+  }
 `

@@ -154,7 +154,14 @@ const getAutoSelectedItems = (data) =>
     .callApi({ url: `${prefix}/auto-select/search`, method: 'post', data })
     .then((result) => result.data.result)
 
-const updateCorrectItemById = (id, item, testId) => {
+const updateCorrectItemById = ({
+  testItemId: id,
+  testItem: item,
+  testId,
+  assignmentId,
+  editRegradeChoice,
+  proceedRegrade: regrade,
+}) => {
   const {
     public: publicValue,
     autoGrade,
@@ -172,8 +179,14 @@ const updateCorrectItemById = (id, item, testId) => {
 
   return api
     .callApi({
-      url: `${prefix}/${id}/correct-item-and-publish?testId=${testId}`,
+      url: `${prefix}/${id}/correct-item-and-publish`,
       method: 'put',
+      params: {
+        testId,
+        assignmentId,
+        editRegradeChoice,
+        regrade,
+      },
       data,
     })
     .then((result) => result.data.result)

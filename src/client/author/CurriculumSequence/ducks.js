@@ -19,6 +19,7 @@ import { normalize, schema } from 'normalizr'
 import { push } from 'connected-react-router'
 import * as Sentry from '@sentry/browser'
 import { captureSentryException, notification } from '@edulastic/common'
+import { roleuser } from '@edulastic/constants'
 import {
   curriculumSequencesApi,
   assignmentApi,
@@ -31,7 +32,7 @@ import {
 } from '@edulastic/api'
 import produce from 'immer'
 import { setCurrentAssignmentAction } from '../TestPage/components/Assign/ducks'
-import { getUserSelector, getUserId } from '../src/selectors/user'
+import { getUserSelector, getUserId, getUserRole } from '../src/selectors/user'
 import {
   publishTestAction,
   receiveTestByIdAction,
@@ -226,6 +227,10 @@ export const TOGGLE_ASSIGNMENTS = '[playlist] toggle assignments'
 export const SET_CURRENT_ASSIGNMENT_IDS =
   '[playlist] set current assignment ids'
 export const DUPLICATE_PLAYLIST_REQUEST = '[playlist] duplicate request'
+export const SET_IS_USED_MODAL_VISIBLE =
+  '[playlist] show/hide is used modal popup'
+export const SET_PREVIOUSLY_USED_PLAYLIST_CLONE =
+  '[playlist] previously used playlist clone data'
 
 // Actions
 export const updateCurriculumSequenceList = createAction(
@@ -378,6 +383,14 @@ export const setCurrentAssignmentIdsAction = createAction(
 )
 export const duplicatePlaylistRequestAction = createAction(
   DUPLICATE_PLAYLIST_REQUEST
+)
+
+export const setIsUsedModalVisibleAction = createAction(
+  SET_IS_USED_MODAL_VISIBLE
+)
+
+export const setPreviouslyUsedPlaylistClone = createAction(
+  SET_PREVIOUSLY_USED_PLAYLIST_CLONE
 )
 
 export const getAllCurriculumSequencesAction = (ids, showNotification) => {
@@ -1380,28 +1393,83 @@ function* useThisPlayListSaga({ payload }) {
       groupId,
       onChange,
       isStudent,
-      fromUseThis,
+      fromUseThis = false,
       fromRemovePlaylist = false,
+      customize = false,
+      authors = [],
+      forceClone = false,
     } = payload
-    yield call(userContextApi.setLastUsedPlayList, {
-      _id,
-      title,
-      grades,
-      subjects,
-    })
-    yield call(userContextApi.setRecentUsedPlayLists, {
-      _id,
-      title,
-      grades,
-      subjects,
-    })
-    yield put(receiveLastPlayListAction())
-    if (!isStudent) {
-      if (!fromRemovePlaylist)
-        yield call(curriculumSequencesApi.usePlaylist, _id)
+
+    const currentUserId = yield select(getUserId)
+    const currentUserRole = yield select(getUserRole)
+    const hasPlaylistEditAccess =
+      authors?.find((x) => x._id === currentUserId) ||
+      currentUserRole === roleuser.EDULASTIC_CURATOR
+
+    /**
+     * If customize is enabled and user using the playlist is not
+     * an author nor a co-author then the playlist must be cloned with
+     * modules referencing the original playlist
+     */
+    if (
+      (customize && fromUseThis && !isStudent && !hasPlaylistEditAccess) ||
+      forceClone
+    ) {
+      // get the newly/previously cloned playlist
+      const duplicatedPlaylist = yield call(
+        curriculumSequencesApi.duplicatePlayList,
+        {
+          _id,
+          title: `${title} - Customized`,
+          forUseThis: true,
+          forceClone,
+        }
+      )
+
+      // if playlist was cloned previously
+      if (duplicatedPlaylist.previouslyCloned) {
+        // let the user decide to clone again (or) use the cloned
+        yield put(setIsUsedModalVisibleAction(true))
+        yield put(
+          setPreviouslyUsedPlaylistClone({
+            _id: duplicatedPlaylist._id,
+            title: duplicatedPlaylist.title,
+            grades: duplicatedPlaylist.grades,
+            subjects: duplicatedPlaylist.subjects,
+            customize: duplicatedPlaylist.customize,
+            authors: duplicatedPlaylist.authors,
+          })
+        )
+        return
+      }
+
+      yield put(receiveLastPlayListAction())
       yield put(receiveRecentPlayListsAction())
+      yield put(updateCurriculumSequenceAction(duplicatedPlaylist))
+    } else {
+      yield call(userContextApi.setLastUsedPlayList, {
+        _id,
+        title,
+        grades,
+        subjects,
+      })
+      yield call(userContextApi.setRecentUsedPlayLists, {
+        _id,
+        title,
+        grades,
+        subjects,
+      })
+
+      // fetch last used playlist
+      yield put(receiveLastPlayListAction())
+      if (!isStudent) {
+        if (!fromRemovePlaylist)
+          yield call(curriculumSequencesApi.usePlaylist, _id)
+        yield put(receiveRecentPlayListsAction())
+      }
+      yield put(getAllCurriculumSequencesAction([_id]))
     }
-    yield put(getAllCurriculumSequencesAction([_id]))
+    yield put(setIsUsedModalVisibleAction(false))
     const location = yield select((state) => state.router.location.pathname)
     const urlHasUseThis = location.match(/use-this/g)
     if (isStudent && onChange) {
@@ -2118,6 +2186,8 @@ const initialState = {
     isAssigning: false,
     recommendations: [],
   },
+  isUsedModalVisible: false,
+  previouslyUsedPlaylistClone: null,
 }
 
 /**
@@ -2985,5 +3055,14 @@ export default createReducer(initialState, {
   },
   [SET_CURRENT_ASSIGNMENT_IDS]: (state, { payload }) => {
     state.currentAssignmentIds = payload
+  },
+  [SET_IS_USED_MODAL_VISIBLE]: (state, { payload }) => {
+    if (!payload) {
+      state.previouslyUsedPlaylistClone = null
+    }
+    state.isUsedModalVisible = payload
+  },
+  [SET_PREVIOUSLY_USED_PLAYLIST_CLONE]: (state, { payload }) => {
+    state.previouslyUsedPlaylistClone = payload
   },
 })

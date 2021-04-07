@@ -1,8 +1,24 @@
-import React, { Component } from 'react'
+import React, { useRef } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { cloneDeep, get, has, isEmpty, shuffle } from 'lodash'
+import {
+  cloneDeep,
+  get,
+  has,
+  isEmpty,
+  shuffle,
+  range,
+  isArray,
+  keys,
+  flatMapDeep,
+  first,
+  values,
+  isUndefined,
+  zipObject,
+  maxBy,
+} from 'lodash'
+
 import { Select, Table } from 'antd'
 import styled from 'styled-components'
 import { withNamespaces } from '@edulastic/localization'
@@ -32,657 +48,647 @@ import { SelectInputStyled, TextInputStyled } from '../../../styled/InputStyles'
 
 const { defaultNumberPad } = math
 
-const InlineLabel = styled(Label)`
-  display: inline-block;
-`
+const SEQUENCE_TYPES = ['NUMBER_SEQUENCE', 'TEXT_SEQUENCE']
+const SET_TYPES = ['NUMBER_SET', 'TEXT_SET']
 
-const DynamicText = styled.div`
-  font-size: ${(props) => props.theme.smallFontSize};
+const cartesian = (args) => {
+  const r = []
+  const max = args.length - 1
 
-  @media (min-width: ${extraDesktopWidthMax}) {
-    font-size: ${(props) => props.theme.widgetOptions.labelFontSize};
+  const helper = (arr, i) => {
+    for (let j = 0, l = args[i].length; j < l; j++) {
+      const a = arr.slice(0) // clone arr
+      a.push(args[i][j])
+      if (i === max) {
+        r.push(a)
+      } else {
+        helper(a, i + 1)
+      }
+    }
   }
-`
 
-class Variables extends Component {
-  render() {
-    const {
-      setQuestionData,
-      calculateFormula,
-      t,
-      questionData,
-      fillSections,
-      cleanSections,
-      advancedAreOpen,
-      item = {},
-      isCalculating,
-    } = this.props
-    const mathFieldRef = React.createRef()
-    const getMathFormulaTemplate = (latex) =>
-      `<span class="input__math" data-latex="${latex}"></span>`
-    const variableEnabled = get(questionData, 'variable.enabled', false)
-    const variables = get(questionData, 'variable.variables', {})
-    const variableCombinationCount = get(
-      questionData,
-      'variable.combinationsCount',
-      25
-    )
-    const examples = get(questionData, 'variable.examples', [])
+  helper([], 0)
+  return r
+}
 
-    const types = Object.keys(variableTypes)
-    const columns = Object.keys(variables).map((variableName) => {
-      const isFormula = variables[variableName].type.includes('FORMULA')
-      return {
-        title: variableName,
-        dataIndex: variableName,
-        key: variables[variableName].id,
-        render: (text) => {
-          if (isFormula) {
-            return text !== 'Recursion_Error' ? (
-              <MathFormulaDisplay
-                dangerouslySetInnerHTML={{
-                  __html: getMathFormulaTemplate(text),
-                }}
-              />
-            ) : (
-              <ErrorText />
-            )
-          }
-          return <span>{text}</span>
-        },
+const generateExample = (variable) => {
+  const { type, set = '', sequence = '' } = variable
+  let { min, max, step = 1 } = variable
+  if (type === 'NUMBER_RANGE') {
+    if (Number.isInteger(parseFloat(step))) {
+      min = parseInt(min, 10)
+      // need to include endpoint
+      max = parseInt(max, 10) + 1
+      step = parseInt(step, 10)
+    } else {
+      min = parseFloat(min)
+      max = parseFloat(max)
+      step = parseFloat(step)
+      //  need to include endpoint
+      max = parseFloat(max) + step
+    }
+
+    return range(min, max, step)
+  }
+  if (SEQUENCE_TYPES.includes(type)) {
+    if (isArray(sequence)) {
+      return sequence
+    }
+    return sequence
+      .split(',')
+      .filter((x) => x.trim())
+      .filter((x) => x)
+  }
+  if (SET_TYPES.includes(type)) {
+    if (isArray(set)) {
+      return set
+    }
+    return set
+      .split(',')
+      .filter((x) => x.trim())
+      .filter((x) => x)
+  }
+  console.log('ERROR, unknown type:', type)
+}
+
+const processNonSequence = (nonSsequences) => {
+  const results = {}
+  const input_list = []
+  const variableNames = keys(nonSsequences)
+
+  variableNames.forEach((variableName) => {
+    input_list.push(generateExample(nonSsequences[variableName]))
+  })
+
+  const allCombinations = cartesian(input_list)
+  variableNames.forEach((variableName, index) => {
+    results[variableName] = flatMapDeep(allCombinations, (c) => c[index])
+  })
+  return results
+}
+
+const processSequence = (sequences) => {
+  const results = {}
+  keys(sequences).forEach((variableName) => {
+    results[variableName] = generateExample(sequences[variableName])
+  })
+  return results
+}
+
+const mergeResults = (sequences, nonSequences) => {
+  const results = {}
+  const nonSequenceResults = processNonSequence(nonSequences)
+  const sequenceResults = processSequence(sequences)
+
+  const nonSequenceLength = first(values(nonSequenceResults)).length
+
+  first(values(sequenceResults)).forEach((a, replicationNumber) => {
+    const replication = cloneDeep(nonSequenceResults)
+
+    keys(sequenceResults).forEach((variableName) => {
+      replication[variableName] = new Array(nonSequenceLength).fill(
+        sequenceResults[variableName][replicationNumber]
+      )
+    })
+    keys(replication).forEach((variableName) => {
+      results[variableName] = [
+        ...(results[variableName] || []),
+        ...replication[variableName],
+      ]
+    })
+  })
+  return results
+}
+
+const shuffleCombinations = (combinations, combinationsCount) => {
+  let results = []
+  const variableNames = keys(combinations)
+  const combinationLength = maxBy(values(combinations), (c) => c.length).length
+  for (let i = 0; i < combinationLength + 1; i++) {
+    const combination = values(combinations)
+      .map((value) => value[i])
+      .filter((x) => !isUndefined(x))
+
+    if (!isEmpty(combination)) {
+      results.push(zipObject(variableNames, combination))
+    }
+  }
+  results = shuffle(results)
+  results = results
+    .map((comb, index) => ({
+      key: index,
+      ...comb,
+    }))
+    .slice(0, combinationsCount)
+
+  return results
+}
+
+const Variables = ({
+  t,
+  setQuestionData,
+  calculateFormula,
+  questionData,
+  fillSections,
+  cleanSections,
+  advancedAreOpen,
+  item = {},
+  isCalculating,
+}) => {
+  const mathFieldRef = useRef()
+  const getMathFormulaTemplate = (latex) =>
+    `<span class="input__math" data-latex="${latex}"></span>`
+  const variableEnabled = get(questionData, 'variable.enabled', false)
+  const variables = get(questionData, 'variable.variables', {})
+  const variableCombinationCount = get(
+    questionData,
+    'variable.combinationsCount',
+    25
+  )
+  const examples = get(questionData, 'variable.examples', [])
+
+  const types = Object.keys(variableTypes)
+  const columns = Object.keys(variables).map((variableName) => {
+    const isFormula = variables[variableName].type.includes('FORMULA')
+    return {
+      title: variableName,
+      dataIndex: variableName,
+      key: variables[variableName].id,
+      render: (text) => {
+        if (isFormula) {
+          return text !== 'Recursion_Error' ? (
+            <MathFormulaDisplay
+              dangerouslySetInnerHTML={{
+                __html: getMathFormulaTemplate(text),
+              }}
+            />
+          ) : (
+            <ErrorText />
+          )
+        }
+        return <span>{text}</span>
+      },
+    }
+  })
+
+  const generate = () => {
+    const nonSequences = {}
+    const sequences = {}
+    let results = {}
+
+    keys(variables).forEach((variableName) => {
+      const variable = variables[variableName]
+      if (SEQUENCE_TYPES.includes(variable.type)) {
+        sequences[variableName] = variable
+      } else if (variable.type !== 'FORMULA') {
+        nonSequences[variableName] = variable
       }
     })
 
-    const generateExample = (variable) => {
-      const factor = 10 ** variable.decimal
-      switch (variable.type) {
-        case 'NUMBER_RANGE': {
-          return (
-            Math.round(
-              (Math.random() * (variable.max - variable.min) + variable.min) *
-                factor
-            ) / factor
-          )
-        }
-        case 'NUMBER_SET':
-        case 'TEXT_SET':
-        default: {
-          if (!variable.set) {
-            return ''
-          }
-          const values = variable.set.split(',').filter((val) => !!val.trim())
-          if (values.length > 0) {
-            return values[Math.floor(Math.random() * values.length)]
-          }
-          return ''
-        }
-      }
+    if (!isEmpty(sequences) && !isEmpty(nonSequences)) {
+      results = mergeResults(sequences, nonSequences)
+    } else if (!isEmpty(sequences)) {
+      results = processSequence(sequences)
+    } else if (!isEmpty(nonSequences)) {
+      results = processNonSequence(nonSequences)
     }
+    const examplesValues = shuffleCombinations(
+      results,
+      variableCombinationCount
+    )
+    calculateFormula({ examples: examplesValues, variables })
+    return examplesValues
+  }
 
-    const generateSequenceExamples = (variableName, newVariables) => {
-      const changedVariable = newVariables[variableName]
+  const handleChangeVariableList = (
+    variableName,
+    param,
+    value,
+    newQuestionData = null
+  ) => {
+    const newData = newQuestionData || cloneDeep(questionData)
 
-      if (!changedVariable.sequence) {
-        newVariables[variableName].exampleValue = ''
-        return newVariables
-      }
-
-      const values = changedVariable.sequence
-        .split(',')
-        .filter((val) => !!val.trim())
-      const index = Math.floor(Math.random() * values.length)
-
-      Object.keys(newVariables).map((key) => {
-        if (
-          (newVariables[key].type === 'NUMBER_SEQUENCE' ||
-            newVariables[key].type === 'TEXT_SEQUENCE') &&
-          newVariables[key].sequence
-        ) {
-          const vars = newVariables[key].sequence
-            .split(',')
-            .filter((val) => !!val.trim())
-          newVariables[key].exampleValue = vars[index]
-            ? vars[index]
-            : vars[vars.length - 1]
-        }
-        return null
-      })
-
-      return newVariables
+    if (!has(newData, `variable.variables.${variableName}`)) {
+      return
     }
+    newData.variable.variables[variableName][param] = value
 
-    const handleChangeVariableList = (
-      variableName,
-      param,
-      value,
-      newQuestionData = null
-    ) => {
-      const newData = newQuestionData || cloneDeep(questionData)
-
-      if (!has(newData, `variable.variables.${variableName}`)) {
-        return
-      }
-      newData.variable.variables[variableName][param] = value
-
-      if (
-        newData.variable.variables[variableName].type !== 'FORMULA' &&
-        newData.variable.variables[variableName].type !== 'NUMBER_SEQUENCE' &&
-        newData.variable.variables[variableName].type !== 'TEXT_SEQUENCE'
-      ) {
-        newData.variable.variables[variableName].exampleValue = generateExample(
-          newData.variable.variables[variableName]
-        )
-      }
-
-      if (
-        newData.variable.variables[variableName].type === 'NUMBER_SEQUENCE' ||
-        newData.variable.variables[variableName].type === 'TEXT_SEQUENCE'
-      ) {
-        newData.variable.variables = generateSequenceExamples(
-          variableName,
-          newData.variable.variables
-        )
-      }
-      setQuestionData(newData)
-    }
-
-    const handleChangeVariableType = (variableName, param, value) => {
-      const newData = cloneDeep(questionData)
-
-      if (!has(newData, `variable.variables.${variableName}`)) {
-        return
-      }
-      let newVariable = {
-        id: newData.variable.variables[variableName].id,
-        name: newData.variable.variables[variableName].name,
-        type: value,
-        exampleValue: '',
-      }
-
-      switch (newVariable.type) {
-        case 'NUMBER_RANGE':
-          newVariable = {
-            ...newVariable,
-            min: 0,
-            max: 100,
-            decimal: 0,
-          }
-          break
-        case 'TEXT_SET':
-        case 'NUMBER_SET':
-          newVariable = {
-            ...newVariable,
-            set: '',
-          }
-          break
-        case 'NUMBER_SEQUENCE':
-        case 'TEXT_SEQUENCE':
-          newVariable = {
-            ...newVariable,
-            sequence: '',
-          }
-          break
-        case 'FORMULA':
-          newVariable = {
-            ...newVariable,
-            formula: '',
-          }
-          break
-        default:
-          break
-      }
-
-      newData.variable.variables[variableName] = newVariable
-      handleChangeVariableList(variableName, param, value, newData)
-    }
-
-    const getRangeValue = (min, max, factor, values) => {
-      const val =
-        Math.round((Math.random() * (max - min) + min) * factor) / factor
-      if (!values.includes(val)) {
-        return val
-      }
-      return getRangeValue(min, max, factor, values)
-    }
-
-    const generateRangeValues = (variable, values) => {
-      const { decimal, max, min, name } = variable
-      const factor = 10 ** decimal
-      // generate unique available random values based on range
-      const available = []
-      Array.from(Array(max - min)).forEach(() => {
-        available.push(getRangeValue(min, max, factor, available))
-      })
-      // choose a value from available values by index
-      return values.map((value, indx) => ({
-        ...value,
-        [name]: available[indx % available.length],
-      }))
-    }
-
-    const generateSetValue = (variable, values) => {
-      const { set = '', name } = variable
-      if (!set) {
-        return values
-      }
-      // this will be an unique available values
-      const available = shuffle(set.split(',').filter((val) => !!val.trim()))
-      // choose a value from available values by index
-      return values.map((value, indx) => ({
-        ...value,
-        [name]: available[indx % available.length],
-      }))
-    }
-
-    const generateSeqValues = (variable, values) => {
-      const { name, sequence = '' } = variable
-      if (!sequence) {
-        return values
-      }
-      const varSeq = sequence.split(',').filter((em) => !!em.trim())
-      const vars = Array(values.length)
-        .fill('')
-        .map((_, ind) => varSeq[ind % varSeq.length])
-
-      return values.map((value, indx) => ({
-        ...value,
-        [name]: vars[indx % varSeq.length],
-      }))
-    }
-
-    const generate = () => {
-      let values = Array.from(Array(variableCombinationCount)).map(() => ({}))
-
-      Object.keys(variables).forEach((variableName) => {
-        const variable = variables[variableName]
-        switch (variable.type) {
-          case 'NUMBER_RANGE':
-            values = generateRangeValues(variable, values)
-            break
-          case 'TEXT_SET':
-          case 'NUMBER_SET':
-            values = generateSetValue(variable, values)
-            break
-          case 'NUMBER_SEQUENCE':
-          case 'TEXT_SEQUENCE':
-            values = generateSeqValues(variable, values)
-            break
-          default:
-            break
-        }
-      })
-      let key = 1
-      const exampleValues = []
-      values = values
-        .map((val) => {
-          let isValid = true
-          let tempVals = exampleValues
-          Object.keys(val).forEach((variable) => {
-            tempVals = tempVals.filter(
-              (value) => value[variable] === val[variable]
-            )
-            if (!val[variable] && val[variable] !== 0) {
-              isValid = false
-            }
-          })
-          isValid = isValid && tempVals.length === 0
-          exampleValues.push(val)
-          return isValid && { key: key++, ...val }
-        })
-        .filter((el) => !!el)
-        .slice(0, variableCombinationCount)
-      calculateFormula({ examples: values, variables })
-      return values
-    }
-
-    const handleChangeVariable = (param, value) => {
-      const newData = cloneDeep(questionData)
-
-      if (!newData.variable) {
-        newData.variable = {}
-      }
-
-      newData.variable[param] = value
-      if (
-        param === 'enabled' &&
-        value === true &&
-        newData.variable.variables &&
-        !newData.variable.examples
-      ) {
-        const updatedExamples = generate()
-        newData.variable = { ...newData.variable, examples: updatedExamples }
-      }
-      setQuestionData(newData)
-    }
-
-    const handleCalculateFormula = () => {
-      const hasFormula = Object.keys(variables).some(
-        (variableName) =>
-          variables[variableName].type === 'FORMULA' &&
-          !isEmpty(variables[variableName].formula)
+    if (newData.variable.variables[variableName].type !== 'FORMULA') {
+      const newExampleValue = generateExample(
+        newData.variable.variables[variableName]
       )
-      if (hasFormula) {
-        generate()
+      if (newExampleValue) {
+        const index = Math.floor(Math.random() * newExampleValue.length)
+        if (newExampleValue[index]) {
+          newData.variable.variables[variableName].exampleValue =
+            newExampleValue[index]
+        }
       }
     }
+    setQuestionData(newData)
+  }
 
-    const handleKeypressMathInput = (e) => {
-      if (e.key === '@') {
-        notification({
-          msg: (
-            <div>
-              Dynamic Parameter formulas do not handle &#34;@&#34; symbols.
-              <br /> For example, if you want to add one, can not handle
-              &#34;@a+1&#34;, but instead write it as &#34;a+1&#34;
-            </div>
-          ),
-        })
-        e.preventDefault()
-        e.stopPropagation()
-      }
+  const handleChangeVariableType = (variableName, param, value) => {
+    const newData = cloneDeep(questionData)
+
+    if (!has(newData, `variable.variables.${variableName}`)) {
+      return
+    }
+    let newVariable = {
+      id: newData.variable.variables[variableName].id,
+      name: newData.variable.variables[variableName].name,
+      type: value,
+      exampleValue: '',
     }
 
+    switch (newVariable.type) {
+      case 'NUMBER_RANGE':
+        newVariable = {
+          ...newVariable,
+          min: 0,
+          max: 10,
+          step: 1,
+          decimal: 0,
+        }
+        break
+      case 'TEXT_SET':
+      case 'NUMBER_SET':
+        newVariable = {
+          ...newVariable,
+          set: '',
+        }
+        break
+      case 'NUMBER_SEQUENCE':
+      case 'TEXT_SEQUENCE':
+        newVariable = {
+          ...newVariable,
+          sequence: '',
+        }
+        break
+      case 'FORMULA':
+        newVariable = {
+          ...newVariable,
+          formula: '',
+        }
+        break
+      default:
+        break
+    }
+
+    newData.variable.variables[variableName] = newVariable
+    handleChangeVariableList(variableName, param, value, newData)
+  }
+
+  const handleChangeVariable = (param, value) => {
+    const newData = cloneDeep(questionData)
+
+    if (!newData.variable) {
+      newData.variable = {}
+    }
+
+    newData.variable[param] = value
     if (
-      examples.length &&
-      Object.keys(examples[0]).some(
-        (key) => !examples[0][key] && examples[0][key] !== 0
-      )
+      param === 'enabled' &&
+      value === true &&
+      newData.variable.variables &&
+      !newData.variable.examples
     ) {
+      const updatedExamples = generate()
+      newData.variable = { ...newData.variable, examples: updatedExamples }
+    }
+    setQuestionData(newData)
+  }
+
+  const handleKeypressMathInput = (e) => {
+    if (e.key === '@') {
+      notification({
+        msg: (
+          <div>
+            Dynamic Parameter formulas do not handle &#34;@&#34; symbols.
+            <br /> For example, if you want to add one, can not handle
+            &#34;@a+1&#34;, but instead write it as &#34;a+1&#34;
+          </div>
+        ),
+      })
+      e.preventDefault()
+      e.stopPropagation()
+    }
+  }
+
+  const handleCalculateFormula = () => {
+    const hasFormula = Object.keys(variables).some(
+      (variableName) =>
+        variables[variableName].type === 'FORMULA' &&
+        !isEmpty(variables[variableName].formula)
+    )
+    if (hasFormula) {
       generate()
     }
-    return (
-      <Question
-        section="advanced"
-        label={t('component.options.dynamicParameters')}
-        fillSections={fillSections}
-        cleanSections={cleanSections}
-        advancedAreOpen={advancedAreOpen}
-      >
-        <Subtitle
-          id={getFormattedAttrId(
-            `${item?.title}-${t('component.options.dynamicParameters')}`
-          )}
-        >
-          {t('component.options.dynamicParameters')}
-        </Subtitle>
-        <Row gutter={24}>
-          <Col md={24}>
-            <DynamicText>
-              {t('component.options.dynamicParametersDescription')}
-            </DynamicText>
-          </Col>
-        </Row>
-        <Row gutter={24}>
-          <Col md={24}>
-            <CheckboxLabel
-              data-cy="variableEnabled"
-              checked={variableEnabled}
-              onChange={(e) => {
-                handleChangeVariable('enabled', e.target.checked)
-                if (e.target.checked) {
-                  generate()
-                }
-              }}
-              size="large"
-            >
-              {t('component.options.checkVariables')}
-            </CheckboxLabel>
-          </Col>
-        </Row>
-        {variableEnabled && Object.keys(variables).length > 0 && (
-          <Block>
-            <Row gutter={24}>
-              <Col md={3}>
-                <Label>{t('component.options.variable')}</Label>
-              </Col>
-              <Col md={5}>
-                <Label>{t('component.options.variableType')}</Label>
-              </Col>
-              <Col md={3}>
-                <Label>{t('component.options.variableMin')}</Label>
-              </Col>
-              <Col md={3}>
-                <Label>{t('component.options.variableMax')}</Label>
-              </Col>
-              <Col md={4}>
-                <Label>{t('component.options.variableDecimalPlaces')}</Label>
-              </Col>
-              <Col md={6}>
-                <Label>{t('component.options.variableExample')}</Label>
-              </Col>
-            </Row>
-            {Object.keys(variables).map((variableName, index) => {
-              const variable = variables[variableName]
-              const isRange = variable.type.includes('RANGE')
-              const isFormula = variable.type.includes('FORMULA')
-              const isSet = variable.type.includes('SET')
-              const isNumberSquence = variable.type === 'NUMBER_SEQUENCE'
-              const isTextSquence = variable.type === 'TEXT_SEQUENCE'
-              return (
-                <Row key={`variable${index}`} gutter={24}>
-                  <Col md={3}>
-                    <Label style={{ textTransform: 'none' }}>
-                      {variableName}
-                    </Label>
-                  </Col>
-                  <Col md={5}>
-                    <SelectInputStyled
-                      size="large"
-                      data-cy="variableType"
-                      value={variable.type}
-                      getPopupContainer={(triggerNode) =>
-                        triggerNode.parentNode
-                      }
-                      onChange={(value) =>
-                        handleChangeVariableType(variableName, 'type', value)
-                      }
-                      style={{ width: '100%' }}
-                    >
-                      {types.map((key) => (
-                        <Select.Option data-cy={key} key={key} value={key}>
-                          {variableTypes[key]}
-                        </Select.Option>
-                      ))}
-                    </SelectInputStyled>
-                  </Col>
-                  {isFormula && (
-                    <Col md={10}>
-                      <MathInput
-                        ref={mathFieldRef}
-                        dynamicVariableInput
-                        fullWidth
-                        showDropdown
-                        numberPad={defaultNumberPad}
-                        value={variable.formula}
-                        showResponse={false}
-                        onKeyPress={handleKeypressMathInput}
-                        onInput={(latex) =>
-                          handleChangeVariableList(
-                            variableName,
-                            'formula',
-                            latex
-                          )
-                        }
-                        onBlur={handleCalculateFormula}
-                      />
-                    </Col>
-                  )}
-                  {isSet && (
-                    <Col md={10}>
-                      <TextInputStyled
-                        data-cy="variableSet"
-                        value={variable.set}
-                        onChange={(e) =>
-                          handleChangeVariableList(
-                            variableName,
-                            'set',
-                            e.target.value
-                          )
-                        }
-                        onBlur={handleCalculateFormula}
-                        size="large"
-                      />
-                    </Col>
-                  )}
-                  {isNumberSquence && (
-                    <Col md={10}>
-                      <TextInputStyled
-                        data-cy="variableNumberSequence"
-                        value={variable.sequence}
-                        onChange={(e) =>
-                          handleChangeVariableList(
-                            variableName,
-                            'sequence',
-                            e.target.value
-                          )
-                        }
-                        onBlur={handleCalculateFormula}
-                        size="large"
-                      />
-                    </Col>
-                  )}
-                  {isTextSquence && (
-                    <Col md={10}>
-                      <TextInputStyled
-                        data-cy="variableTextSequence"
-                        value={variable.sequence}
-                        onChange={(e) =>
-                          handleChangeVariableList(
-                            variableName,
-                            'sequence',
-                            e.target.value
-                          )
-                        }
-                        onBlur={handleCalculateFormula}
-                        size="large"
-                      />
-                    </Col>
-                  )}
-                  {isRange && (
-                    <Col md={3}>
-                      <TextInputStyled
-                        type="number"
-                        data-cy="variableMin"
-                        value={variable.min}
-                        onChange={(e) =>
-                          handleChangeVariableList(
-                            variableName,
-                            'min',
-                            e.target.value ? parseInt(e.target.value, 10) : ''
-                          )
-                        }
-                        onBlur={handleCalculateFormula}
-                        size="large"
-                      />
-                    </Col>
-                  )}
-                  {isRange && (
-                    <Col md={3}>
-                      <TextInputStyled
-                        type="number"
-                        data-cy="variableMax"
-                        value={variable.max}
-                        onChange={(e) =>
-                          handleChangeVariableList(
-                            variableName,
-                            'max',
-                            e.target.value ? parseInt(e.target.value, 10) : ''
-                          )
-                        }
-                        onBlur={handleCalculateFormula}
-                        size="large"
-                      />
-                    </Col>
-                  )}
-                  {isRange && (
-                    <Col md={4}>
-                      <TextInputStyled
-                        type="number"
-                        data-cy="variableDecimal"
-                        value={variable.decimal}
-                        onChange={(e) =>
-                          handleChangeVariableList(
-                            variableName,
-                            'decimal',
-                            e.target.value ? parseInt(e.target.value, 10) : ''
-                          )
-                        }
-                        onBlur={handleCalculateFormula}
-                        size="large"
-                      />
-                    </Col>
-                  )}
-                  <Col md={6} style={{ paddingTop: 10 }}>
-                    {isFormula && variable.exampleValue !== 'Recursion_Error' && (
-                      <MathFormulaDisplay
-                        dangerouslySetInnerHTML={{
-                          __html: getMathFormulaTemplate(variable.exampleValue),
-                        }}
-                      />
-                    )}
-                    {isFormula &&
-                      variable.exampleValue === 'Recursion_Error' && (
-                        <ErrorText />
-                      )}
-                    {!isFormula && <span>{variable.exampleValue}</span>}
-                  </Col>
-                </Row>
-              )
-            })}
-          </Block>
-        )}
-        {variableEnabled && Object.keys(variables).length > 0 && (
-          <Block>
-            <Row gutter={24}>
-              <Col md={20}>
-                <InlineLabel>
-                  {t('component.options.beforeCombinationCount')}
-                </InlineLabel>
-                <TextInputStyled
-                  type="number"
-                  data-cy="combinationCount"
-                  value={variableCombinationCount}
-                  onChange={(e) =>
-                    handleChangeVariable('combinationsCount', +e.target.value)
-                  }
-                  size="large"
-                  width="70px"
-                  style={{ margin: '0px 15px' }}
-                />
-                <InlineLabel>
-                  {t('component.options.afterCombinationCount')}
-                </InlineLabel>
-              </Col>
-              <Col md={4}>
-                <CustomStyleBtn
-                  width="auto"
-                  margin="0px"
-                  onClick={generate}
-                  type="button"
-                  style={{ float: 'right' }}
-                >
-                  Generate
-                </CustomStyleBtn>
-              </Col>
-            </Row>
-            <Row gutter={24}>
-              <Col md={24}>
-                <Table
-                  columns={columns}
-                  key={`table-${Math.random(10)}`}
-                  dataSource={examples}
-                  pagination={{
-                    pageSize: 10,
-                  }}
-                />
-              </Col>
-            </Row>
-          </Block>
-        )}
-        {isCalculating && <Spinner />}
-      </Question>
-    )
   }
+
+  return (
+    <Question
+      section="advanced"
+      label={t('component.options.dynamicParameters')}
+      fillSections={fillSections}
+      cleanSections={cleanSections}
+      advancedAreOpen={advancedAreOpen}
+    >
+      <Subtitle
+        id={getFormattedAttrId(
+          `${item?.title}-${t('component.options.dynamicParameters')}`
+        )}
+      >
+        {t('component.options.dynamicParameters')}
+      </Subtitle>
+      <Row gutter={24}>
+        <Col md={24}>
+          <DynamicText>
+            {t('component.options.dynamicParametersDescription')}
+          </DynamicText>
+        </Col>
+      </Row>
+      <Row gutter={24}>
+        <Col md={24}>
+          <CheckboxLabel
+            data-cy="variableEnabled"
+            checked={variableEnabled}
+            onChange={(e) => {
+              handleChangeVariable('enabled', e.target.checked)
+            }}
+            size="large"
+          >
+            {t('component.options.checkVariables')}
+          </CheckboxLabel>
+        </Col>
+      </Row>
+      {variableEnabled && Object.keys(variables).length > 0 && (
+        <Block>
+          <Row gutter={4}>
+            <Col md={2}>
+              <Label>{t('component.options.variable')}</Label>
+            </Col>
+            <Col md={5}>
+              <Label>{t('component.options.variableType')}</Label>
+            </Col>
+            <Col md={3}>
+              <Label>{t('component.options.variableMin')}</Label>
+            </Col>
+            <Col md={3}>
+              <Label>{t('component.options.variableMax')}</Label>
+            </Col>
+            <Col md={3}>
+              <Label>{t('component.options.variableStep')}</Label>
+            </Col>
+            <Col md={3}>
+              <Label>{t('component.options.variableDecimalPlaces')}</Label>
+            </Col>
+            <Col md={5}>
+              <Label>{t('component.options.variableExample')}</Label>
+            </Col>
+          </Row>
+          {Object.keys(variables).map((variableName, index) => {
+            const variable = variables[variableName]
+            const isRange = variable.type.includes('RANGE')
+            const isFormula = variable.type.includes('FORMULA')
+            const isSet = variable.type.includes('SET')
+            const isNumberSquence = variable.type === 'NUMBER_SEQUENCE'
+            const isTextSquence = variable.type === 'TEXT_SEQUENCE'
+            return (
+              <Row key={`variable${index}`} gutter={4}>
+                <Col md={2}>
+                  <Label style={{ textTransform: 'none' }}>
+                    {variableName}
+                  </Label>
+                </Col>
+                <Col md={5}>
+                  <SelectInputStyled
+                    size="large"
+                    data-cy="variableType"
+                    value={variable.type}
+                    getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                    onChange={(value) =>
+                      handleChangeVariableType(variableName, 'type', value)
+                    }
+                    style={{ width: '100%' }}
+                  >
+                    {types.map((key) => (
+                      <Select.Option data-cy={key} key={key} value={key}>
+                        {variableTypes[key]}
+                      </Select.Option>
+                    ))}
+                  </SelectInputStyled>
+                </Col>
+                {isFormula && (
+                  <Col md={12}>
+                    <MathInput
+                      ref={mathFieldRef}
+                      dynamicVariableInput
+                      fullWidth
+                      showDropdown
+                      numberPad={defaultNumberPad}
+                      value={variable.formula}
+                      showResponse={false}
+                      onInput={(latex) =>
+                        handleChangeVariableList(variableName, 'formula', latex)
+                      }
+                      onKeyPress={handleKeypressMathInput}
+                      onBlur={handleCalculateFormula}
+                    />
+                  </Col>
+                )}
+                {isSet && (
+                  <Col md={12}>
+                    <TextInputStyled
+                      data-cy="variableSet"
+                      value={variable.set}
+                      onChange={(e) =>
+                        handleChangeVariableList(
+                          variableName,
+                          'set',
+                          e.target.value
+                        )
+                      }
+                      onBlur={handleCalculateFormula}
+                      size="large"
+                    />
+                  </Col>
+                )}
+                {isNumberSquence && (
+                  <Col md={12}>
+                    <TextInputStyled
+                      data-cy="variableNumberSequence"
+                      value={variable.sequence}
+                      onChange={(e) =>
+                        handleChangeVariableList(
+                          variableName,
+                          'sequence',
+                          e.target.value
+                        )
+                      }
+                      onBlur={handleCalculateFormula}
+                      size="large"
+                    />
+                  </Col>
+                )}
+                {isTextSquence && (
+                  <Col md={12}>
+                    <TextInputStyled
+                      data-cy="variableTextSequence"
+                      value={variable.sequence}
+                      onChange={(e) =>
+                        handleChangeVariableList(
+                          variableName,
+                          'sequence',
+                          e.target.value
+                        )
+                      }
+                      onBlur={handleCalculateFormula}
+                      size="large"
+                    />
+                  </Col>
+                )}
+                {isRange && (
+                  <Col md={3}>
+                    <TextInputStyled
+                      type="number"
+                      data-cy="variableMin"
+                      value={variable.min}
+                      onChange={(e) =>
+                        handleChangeVariableList(
+                          variableName,
+                          'min',
+                          e.target.value ? parseInt(e.target.value, 10) : ''
+                        )
+                      }
+                      onBlur={handleCalculateFormula}
+                      size="large"
+                    />
+                  </Col>
+                )}
+                {isRange && (
+                  <Col md={3}>
+                    <TextInputStyled
+                      type="number"
+                      data-cy="variableMax"
+                      value={variable.max}
+                      onChange={(e) =>
+                        handleChangeVariableList(
+                          variableName,
+                          'max',
+                          e.target.value ? parseInt(e.target.value, 10) : ''
+                        )
+                      }
+                      onBlur={handleCalculateFormula}
+                      size="large"
+                    />
+                  </Col>
+                )}
+                {isRange && (
+                  <Col md={3}>
+                    <TextInputStyled
+                      type="number"
+                      data-cy="variableStep"
+                      value={variable.step}
+                      onChange={(e) =>
+                        handleChangeVariableList(
+                          variableName,
+                          'step',
+                          e.target.value ? +e.target.value : ''
+                        )
+                      }
+                      onBlur={handleCalculateFormula}
+                      size="large"
+                    />
+                  </Col>
+                )}
+                {isRange && (
+                  <Col md={3}>
+                    <TextInputStyled
+                      type="number"
+                      data-cy="variableDecimal"
+                      value={variable.decimal}
+                      onChange={(e) =>
+                        handleChangeVariableList(
+                          variableName,
+                          'decimal',
+                          e.target.value ? parseInt(e.target.value, 10) : ''
+                        )
+                      }
+                      onBlur={handleCalculateFormula}
+                      size="large"
+                    />
+                  </Col>
+                )}
+                <Col md={5} style={{ paddingTop: 10, paddingLeft: 12 }}>
+                  {isFormula && variable.exampleValue !== 'Recursion_Error' && (
+                    <MathFormulaDisplay
+                      dangerouslySetInnerHTML={{
+                        __html: getMathFormulaTemplate(variable.exampleValue),
+                      }}
+                    />
+                  )}
+                  {isFormula && variable.exampleValue === 'Recursion_Error' && (
+                    <ErrorText />
+                  )}
+                  {!isFormula && <span>{variable.exampleValue}</span>}
+                </Col>
+              </Row>
+            )
+          })}
+        </Block>
+      )}
+      {variableEnabled && Object.keys(variables).length > 0 && (
+        <Block>
+          <Row gutter={24}>
+            <Col md={20}>
+              <InlineLabel>
+                {t('component.options.beforeCombinationCount')}
+              </InlineLabel>
+              <TextInputStyled
+                type="number"
+                data-cy="combinationCount"
+                value={variableCombinationCount}
+                onChange={(e) =>
+                  handleChangeVariable('combinationsCount', +e.target.value)
+                }
+                size="large"
+                width="70px"
+                style={{ margin: '0px 15px' }}
+              />
+              <InlineLabel>
+                {t('component.options.afterCombinationCount')}
+              </InlineLabel>
+            </Col>
+            <Col md={4}>
+              <CustomStyleBtn
+                width="auto"
+                margin="0px"
+                onClick={generate}
+                type="button"
+                style={{ float: 'right' }}
+              >
+                Generate
+              </CustomStyleBtn>
+            </Col>
+          </Row>
+          <Row gutter={24}>
+            <Col md={24}>
+              <Table
+                columns={columns}
+                key={`table-${Math.random(10)}`}
+                dataSource={examples}
+                pagination={{
+                  pageSize: 10,
+                }}
+              />
+            </Col>
+          </Row>
+        </Block>
+      )}
+      {isCalculating && <Spinner />}
+    </Question>
+  )
 }
 
 Variables.propTypes = {
@@ -717,3 +723,15 @@ const enhance = compose(
 )
 
 export default enhance(Variables)
+
+const InlineLabel = styled(Label)`
+  display: inline-block;
+`
+
+const DynamicText = styled.div`
+  font-size: ${(props) => props.theme.smallFontSize};
+
+  @media (min-width: ${extraDesktopWidthMax}) {
+    font-size: ${(props) => props.theme.widgetOptions.labelFontSize};
+  }
+`

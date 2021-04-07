@@ -80,6 +80,7 @@
       "variableGenerate": "Generate",
       "variableMin": "Min",
       "variableMax": "Max",
+      "variableStep": "Step",
       "variableDecimalPlaces": "Decimal Places",
       "variableExample": "Example Value",
       "variableType": "Variable Type",

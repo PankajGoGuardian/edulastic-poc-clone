@@ -21,6 +21,29 @@ import {
 import { updateCorrectTestItemAction } from '../../../author/src/actions/classBoard'
 import { getAdditionalDataSelector } from '../../../author/ClassBoard/ducks'
 
+export const ShowUserWork = ({ onClick, loading }) => (
+  <EduButton
+    data-cy="showStudentWork"
+    isGhost
+    height="24px"
+    type="primary"
+    fontSize="10px"
+    onClick={onClick}
+    loading={loading}
+  >
+    Show student work
+  </EduButton>
+)
+
+export const TimeSpent = ({ time }) => {
+  return (
+    <div>
+      <IconClockCircularOutline />
+      {round(time / 1000, 1)}s
+    </div>
+  )
+}
+
 const QuestionBottomAction = ({
   item,
   loading,
@@ -28,7 +51,7 @@ const QuestionBottomAction = ({
   isShowStudentWork,
   onClickHandler,
   timeSpent,
-  margin,
+  hasDrawingResponse,
   loadingComponents,
   QuestionComp,
   setQuestionData,
@@ -139,23 +162,10 @@ const QuestionBottomAction = ({
 
   return (
     <>
-      <BottomActionWrapper
-        className={isStudentReport ? 'student-report' : ''}
-        margin={margin}
-      >
+      <BottomActionWrapper className={isStudentReport ? 'student-report' : ''}>
         <div>
-          {isShowStudentWork && (
-            <EduButton
-              data-cy="showStudentWork"
-              isGhost
-              height="24px"
-              type="primary"
-              fontSize="10px"
-              onClick={onClickHandler}
-              loading={loading}
-            >
-              Show student work
-            </EduButton>
+          {!hasDrawingResponse && isShowStudentWork && (
+            <ShowUserWork onClick={onClickHandler} loading={loading} />
           )}
         </div>
         <RightWrapper>
@@ -174,12 +184,7 @@ const QuestionBottomAction = ({
             ) : (
               correctItemBtn
             ))}
-          {timeSpent && (
-            <div>
-              <IconClockCircularOutline />
-              {round(timeSpent / 1000, 1)}s
-            </div>
-          )}
+          {timeSpent && <TimeSpent time={timeSpent} />}
         </RightWrapper>
       </BottomActionWrapper>
       {!isStudentReport && openQuestionMoal && QuestionComp && questionData && (
@@ -244,7 +249,7 @@ const enhance = compose(
 )
 export default enhance(QuestionBottomAction)
 
-const BottomActionWrapper = styled.div`
+export const BottomActionWrapper = styled.div`
   font-size: 19px;
   color: ${greyThemeDark2};
   display: flex;

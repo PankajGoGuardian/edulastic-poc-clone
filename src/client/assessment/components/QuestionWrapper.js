@@ -679,7 +679,7 @@ class QuestionWrapper extends Component {
                     page={page}
                     setPage={this.setPage}
                   />
-                  {!hasDrawingResponse && showFeedback && !isPrintPreview && (
+                  {showFeedback && !isPrintPreview && (
                     <BottomAction
                       isStudentReport={isStudentReport}
                       isShowStudentWork={!!showStudentWork}
@@ -689,6 +689,7 @@ class QuestionWrapper extends Component {
                       QuestionComp={Question}
                       advancedLink={advancedLink}
                       advancedAreOpen={this.advancedAreOpen}
+                      hasDrawingResponse={hasDrawingResponse}
                       saveAnswer={restProps.saveAnswer}
                       fillSections={() => {}}
                       cleanSections={() => {}}

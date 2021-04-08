@@ -157,7 +157,11 @@ const StandardsPerformance = ({
   }
 
   if (!res.metricInfo?.length) {
-    return <NoDataContainer>No data available currently.</NoDataContainer>
+    return (
+      <NoDataContainer>
+        {settings.requestFilters?.termId ? 'No data available currently.' : ''}
+      </NoDataContainer>
+    )
   }
 
   return (

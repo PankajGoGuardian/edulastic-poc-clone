@@ -180,7 +180,11 @@ const StandardsGradebook = ({
   }
 
   if (!filteredDenormalizedData?.length) {
-    return <NoDataContainer>No data available currently.</NoDataContainer>
+    return (
+      <NoDataContainer>
+        {settings.requestFilters?.termId ? 'No data available currently.' : ''}
+      </NoDataContainer>
+    )
   }
 
   return (

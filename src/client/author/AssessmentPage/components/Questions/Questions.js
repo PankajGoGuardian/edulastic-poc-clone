@@ -53,8 +53,8 @@ import { updateRecentStandardsAction } from '../../../src/actions/dictionaries'
 
 const { methods, defaultNumberPad } = math
 
-const DragHandle = sortableHandle(() => (
-  <StyledHandleSpan>
+const DragHandle = sortableHandle(({ questionIndex }) => (
+  <StyledHandleSpan data-cy={`handel${questionIndex}`}>
     <IconMoveArrows color={lightGrey9} width={19} height={19} />
   </StyledHandleSpan>
 ))
@@ -102,7 +102,9 @@ const SortableQuestionItem = SortableElement(
         paddingTop: questionIndex === 1 && 6,
       }}
     >
-      {!testMode && !review && <DragHandle review={review} />}
+      {!testMode && !review && (
+        <DragHandle review={review} questionIndex={questionIndex} />
+      )}
       <QuestionItem
         key={key}
         index={index}

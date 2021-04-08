@@ -9,6 +9,7 @@ import styled from 'styled-components'
 import { greyThemeDark2, greyThemeDark4 } from '@edulastic/colors'
 import { round, get, omit } from 'lodash'
 import { Modal, Popover } from 'antd'
+import { roleuser } from '@edulastic/constants'
 import { IconTestBank, IconClockCircularOutline } from '@edulastic/icons'
 import { testItemsApi } from '@edulastic/api'
 import { EDIT } from '../../constants/constantsForQuestions'
@@ -20,8 +21,21 @@ import {
 } from '../../../author/sharedDucks/questions'
 import { updateCorrectTestItemAction } from '../../../author/src/actions/classBoard'
 import { getAdditionalDataSelector } from '../../../author/ClassBoard/ducks'
+import {
+  getUserId,
+  getUserRole,
+  getUserFeatures,
+  getCollectionsSelector,
+  getWritableCollectionsSelector,
+} from '../../../author/src/selectors/user'
+
+import {
+  allowDuplicateCheck,
+  allowContentEditCheck,
+} from '../../../author/src/utils/permissionCheck'
 
 const QuestionBottomAction = ({
+  t,
   item,
   loading,
   isStudentReport,
@@ -38,7 +52,7 @@ const QuestionBottomAction = ({
   updateCorrectItem,
   additionalData,
   match,
-  t,
+  permissionToEdit,
   ...questionProps
 }) => {
   const [openQuestionMoal, setOpenQuestionModal] = useState(false)
@@ -121,7 +135,25 @@ const QuestionBottomAction = ({
     )
   }, [questionData, item])
 
-  const hasDynamicVariables = item?.variable?.enabled
+  const [isDisableCorrectItem, disableCorrectItemText] = useMemo(() => {
+    const hasDynamicVariables = item.variable?.enabled
+    const {
+      allowDuplicate,
+      isDisableEdit,
+      isDisableDuplicate,
+    } = permissionToEdit
+    const isDisable = isDisableEdit || hasDynamicVariables || isDisableDuplicate
+
+    let disableText = ''
+    if (isDisableEdit && !allowDuplicate) {
+      disableText = 'Edit of Item is restricted by Publisher'
+    } else if ((isDisableEdit && allowDuplicate) || isDisableDuplicate) {
+      disableText = 'Edit permission is restricted by the author'
+    } else if (hasDynamicVariables) {
+      disableText = t('component.correctItemNotAllowDynamic')
+    }
+    return [isDisable, disableText]
+  }, [item.variable?.enabled, permissionToEdit])
 
   const correctItemBtn = (
     <CorrectButton
@@ -132,7 +164,7 @@ const QuestionBottomAction = ({
       mr="8px"
       onClick={showQuestionModal}
       loading={loading || itemloading}
-      disabled={hasDynamicVariables}
+      disabled={isDisableCorrectItem}
     >
       Correct Item
     </CorrectButton>
@@ -162,11 +194,11 @@ const QuestionBottomAction = ({
         <RightWrapper>
           {item &&
             !isStudentReport &&
-            (hasDynamicVariables ? (
+            (isDisableCorrectItem ? (
               <Popover
                 content={
                   <DisabledHelperText>
-                    {t('component.correctItemNotAllowDynamic')}
+                    {disableCorrectItemText}
                   </DisabledHelperText>
                 }
               >
@@ -226,14 +258,50 @@ QuestionBottomAction.defaultProps = {
   item: null,
 }
 
+const getPermissionToEdit = (state, props) => {
+  const userId = getUserId(state)
+  const userRole = getUserRole(state)
+  const writableCollections = getWritableCollectionsSelector(state)
+  const userFeatures = getUserFeatures(state)
+  const collections = getCollectionsSelector(state)
+  const testItems = get(state, 'classResponse.data.testItems', [])
+  const testItem =
+    testItems.find((t) => t._id === props.item?.activity?.testItemId) || {}
+  const { authors = [] } = testItem || {}
+  const isOwner = authors.some((author) => author._id === userId)
+  const hasCollectionAccess = allowContentEditCheck(
+    testItem?.collections,
+    writableCollections
+  )
+  const allowDuplicate = allowDuplicateCheck(
+    testItem?.collections,
+    collections,
+    'item'
+  )
+
+  const isDisableEdit = !(
+    isOwner ||
+    userRole === roleuser.EDULASTIC_CURATOR ||
+    (hasCollectionAccess && userFeatures.isCurator) ||
+    (isOwner && allowDuplicate)
+  )
+
+  const isDisableDuplicate = !(
+    allowDuplicate && userRole !== roleuser.EDULASTIC_CURATOR
+  )
+
+  return { isDisableEdit, allowDuplicate, isDisableDuplicate }
+}
+
 const enhance = compose(
   withRouter,
   connect(
-    (state) => ({
+    (state, ownProps) => ({
       loading: state.scratchpad.loading,
       loadingComponents: get(state, ['authorUi', 'currentlyLoading'], []),
       questionData: getCurrentQuestionSelector(state),
       additionalData: getAdditionalDataSelector(state),
+      permissionToEdit: getPermissionToEdit(state, ownProps),
     }),
     {
       setQuestionData: setQuestionDataAction,

@@ -152,7 +152,12 @@ const PeerProgressAnalysis = ({
   const onCsvConvert = (data) => downloadCSV(`Peer Progress.csv`, data)
 
   if (loading) {
-    return <SpinLoader position="fixed" />
+    return (
+      <SpinLoader
+        tip="Please wait while we gather the required information..."
+        position="fixed"
+      />
+    )
   }
 
   if (isEmpty(metricInfo)) {

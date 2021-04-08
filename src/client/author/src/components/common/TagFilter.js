@@ -1,7 +1,7 @@
-import React, { useMemo, useState, useEffect } from 'react'
+import React, { useMemo, useState, useEffect, useCallback } from 'react'
 import { connect } from 'react-redux'
 import { uniqBy } from 'lodash'
-import { Select } from 'antd'
+import { Empty, Select } from 'antd'
 import { SelectInputStyled, notification } from '@edulastic/common'
 import { tagsApi } from '@edulastic/api'
 import {
@@ -9,6 +9,7 @@ import {
   getAllTagsSelector,
   addNewTagAction,
 } from '../../../TestPage/ducks'
+import useDropdownData from '../../../Reports/common/hooks/useDropdownData'
 
 const TagFilter = ({
   selectedTags = [],
@@ -29,6 +30,7 @@ const TagFilter = ({
   }
   const newAllTagsData = uniqBy([...testTagList, ...selectedTagObjects], '_id')
   const [searchValue, setSearchValue] = useState('')
+  const [searchText, setSearchText] = useState('')
 
   useEffect(() => {
     getAllTags({ type: ['test', 'assignment'] })
@@ -55,6 +57,7 @@ const TagFilter = ({
     const newTags = [...selectedTagObjects, newTag]
     onChangeField('tags', newTags)
     setSearchValue('')
+    setSearchText('')
   }
 
   const deselectTags = (id) => {
@@ -63,6 +66,7 @@ const TagFilter = ({
   }
 
   const searchTags = async (value) => {
+    setSearchText(value)
     if (!canCreate) return
 
     if (
@@ -77,11 +81,19 @@ const TagFilter = ({
       setSearchValue(value)
     }
   }
-
+  const onBlur = useCallback(() => {
+    setSearchText('')
+  }, [])
   const _selectedTagIds = useMemo(() => selectedTagObjects.map((t) => t._id), [
     selectedTagObjects,
   ])
-
+  const options = useDropdownData(newAllTagsData, {
+    title_key: 'tagName',
+    id_key: '_id',
+    value_key: '_id',
+    searchText,
+    OptionComponent: Select.Option,
+  })
   return (
     <SelectInputStyled
       showArrow
@@ -94,11 +106,20 @@ const TagFilter = ({
       onSearch={searchTags}
       onSelect={selectTags}
       onDeselect={deselectTags}
+      onBlur={onBlur}
       getPopupContainer={(trigger) => trigger.parentNode}
       filterOption={(input, option) =>
         option.props.title.toLowerCase().includes(input.trim().toLowerCase())
       }
       margin={margin}
+      notFoundContent={
+        <Empty
+          className="ant-empty-small"
+          image={Empty.PRESENTED_IMAGE_SIMPLE}
+          style={{ textAlign: 'left', margin: '10px 0' }}
+          description="No matching results"
+        />
+      }
     >
       {searchValue?.trim() ? (
         <Select.Option key={0} value={searchValue} title={searchValue}>
@@ -107,11 +128,7 @@ const TagFilter = ({
       ) : (
         ''
       )}
-      {newAllTagsData.map(({ tagName, _id }) => (
-        <Select.Option key={_id} value={_id} title={tagName}>
-          {tagName}
-        </Select.Option>
-      ))}
+      {options}
     </SelectInputStyled>
   )
 }

@@ -3145,9 +3145,7 @@ function* getTestIdFromVersionIdSaga({ payload }) {
     console.error(err)
     yield put(resetUpdatedStateAction())
     const errorMessage =
-      err?.response?.data?.statusCode === 404
-        ? 'You can no longer use this, as sharing access has been revoked by author'
-        : 'Unable to retrieve test info.'
+      'You can no longer use this, as sharing access has been revoked by author'
     yield put(push('/author/tests'))
     if (err.status === 403) {
       notification({

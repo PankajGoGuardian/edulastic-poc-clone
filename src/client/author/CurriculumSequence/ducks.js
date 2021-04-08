@@ -98,8 +98,6 @@ export const SET_RECOMMENDATIONS_TO_ASSIGN =
   '[curriculum-sequence] recommendations to assign'
 export const SET_DATA_FOR_ASSIGN_INIT =
   '[curriculum-sequence] set data for assign init'
-export const SET_DATA_FOR_SELECTED_INIT =
-  '[curriculum-sequence] set data for selected init'
 export const SET_DATA_FOR_ASSIGN = '[curriculum-sequence] set data for assign'
 export const ADD_CONTENT_TO_CURRICULUM_RESULT =
   '[curriculum-sequence] add content to curriculum result'

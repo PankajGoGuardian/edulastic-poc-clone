@@ -176,12 +176,6 @@ const InnerWorkTable = ({
     if (data[0]?.masteryRange) setMasteryRange(data[0].masteryRange)
   }, [data])
 
-  // useEffect(() => {
-  //   if (!isFetchingWork) {
-  //     setSelectedRows(dataForSelected[type])
-  //   }
-  // }, [isFetchingWork])
-
   // const getProgressBar = percentage => {
   //   if (!percentage && percentage !== 0) return null;
   //   const dataObj = {

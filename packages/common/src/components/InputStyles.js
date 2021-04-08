@@ -297,4 +297,10 @@ export const SelectInputStyled = styled(Select)`
       }
     }
   }
+  .ant-select-selection__clear {
+    background: transparent;
+  }
+  .ant-input-suffix .anticon-loading {
+    font-size: 1.4em;
+  }
 `

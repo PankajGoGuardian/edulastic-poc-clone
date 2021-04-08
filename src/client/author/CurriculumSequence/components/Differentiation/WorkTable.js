@@ -1,10 +1,14 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { useDrop } from 'react-dnd'
+import { withRouter } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
 import { Popover, Row, Col } from 'antd'
 import { groupBy, compact, isEmpty, isUndefined } from 'lodash'
 import { EduButton, FlexContainer, notification } from '@edulastic/common' //  ProgressBar,
 import { IconClose, IconUser } from '@edulastic/icons'
 // import { themeColorLighter, borderGrey } from "@edulastic/colors";
+import { setDataForSelectedAction } from '../../ducks'
 import {
   TableContainer,
   StyledTable,
@@ -97,6 +101,7 @@ const InnerWorkTable = ({
   data = [],
   isFetchingWork,
   workStatusData,
+  dataForSelected,
   addTestToDifferentiation,
   addResourceToDifferentiation,
   showNewActivity,
@@ -106,10 +111,15 @@ const InnerWorkTable = ({
   removeResourceFromDifferentiation,
   addDifferentiationResources,
   removeDifferentiationResources,
+  setDataForSelected,
 }) => {
-  const [selectedRows, setSelectedRows] = useState([])
+  const [selectedRows, setSelectedRows] = useState(dataForSelected[type])
   const [masteryRange, setMasteryRange] = useState([0, 10])
   const [activeHoverIndex, setActiveHoverIndex] = useState(null)
+
+  useEffect(() => {
+    setSelectedRows(dataForSelected[type])
+  }, [dataForSelected[type]])
 
   const isDisabledMasterySlider = useMemo(
     () => !!data.find((s) => s.status === 'ADDED'),
@@ -140,11 +150,10 @@ const InnerWorkTable = ({
   }, [])
 
   /** Drop handle to accept dropped items from manage content (yet to be implemented) */
-  const [{ isOver, itemContentType }, drop] = useDrop({
+  const [{ isOver }, drop] = useDrop({
     accept: 'item',
     collect: (monitor) => ({
       isOver: !!monitor.isOver(),
-      itemContentType: monitor.getItem()?.contentType,
     }),
     drop: (item = {}) => {
       if (
@@ -178,7 +187,7 @@ const InnerWorkTable = ({
 
   useEffect(() => {
     if (!isFetchingWork) {
-      setSelectedRows([])
+      setSelectedRows(dataForSelected[type])
     }
   }, [isFetchingWork])
 
@@ -250,6 +259,7 @@ const InnerWorkTable = ({
   const handleRowSelect = (selectionType) => {
     if (selectionType === 'UNSELECT') {
       setSelectedRows([])
+      setDataForSelected({ [type]: [] })
     } else {
       const keyArray = []
       data.forEach((row, i) => {
@@ -387,20 +397,22 @@ const InnerWorkTable = ({
       dataIndex: 'delete',
       width: '40px',
       align: 'center',
-      render: (_, _record) => (
-        (_record.testId && _record.status === 'RECOMMENDED') && (<InlineDelete
-          data-cy="delete-test"
-          title="Delete Test"
-          onClick={() =>
-            removeResourceFromDifferentiation({
-              ..._record,
-              type: type?.toLowerCase(),
-            })
-          }
-        >
-          <IconClose />
-        </InlineDelete>)
-      ),
+      render: (_, _record) =>
+        _record.testId &&
+        _record.status === 'RECOMMENDED' && (
+          <InlineDelete
+            data-cy="delete-test"
+            title="Delete Test"
+            onClick={() =>
+              removeResourceFromDifferentiation({
+                ..._record,
+                type: type?.toLowerCase(),
+              })
+            }
+          >
+            <IconClose />
+          </InlineDelete>
+        ),
     },
   ]
 
@@ -408,10 +420,8 @@ const InnerWorkTable = ({
     selectedRowKeys: selectedRows,
     onChange: (selectedRowKeys) => {
       setSelectedRows(selectedRowKeys)
+      setDataForSelected({ [type]: selectedRowKeys })
     },
-    getCheckboxProps: (record) => ({
-      disabled: record.status === 'ADDED',
-    }),
   }
 
   const getResourceTitle = () => {
@@ -621,4 +631,16 @@ const WorkTable = (props) => (
   </OuterDropContainer>
 )
 
-export default WorkTable
+const enhance = compose(
+  withRouter,
+  connect(
+    (state) => ({
+      dataForSelected: state.curriculumSequence.dataForSelected,
+    }),
+    {
+      setDataForSelected: setDataForSelectedAction,
+    }
+  )
+)
+
+export default enhance(WorkTable)

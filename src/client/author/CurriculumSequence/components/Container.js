@@ -23,6 +23,7 @@ import {
   playlistDestinationReorderTestsAction,
   addItemIntoPlaylistModuleAction,
   resequenceModulesCSAction,
+  setDataForSelectedAction,
 } from '../ducks'
 import ShareModal from '../../src/components/common/ShareModal'
 import AssignRecommendations from '../../AssignTest'
@@ -146,6 +147,10 @@ class CurriculumContainer extends Component {
     ) {
       this.expandAll()
     }
+  }
+
+  componentWillUnmount() {
+    this.props.setDataForSelected()
   }
 
   /** @param {String} publisher */
@@ -491,6 +496,9 @@ const mapDispatchToProps = (dispatch) => ({
   },
   getCurrentPlaylistMetrics(payload) {
     dispatch(receiveCurrentPlaylistMetrics(payload))
+  },
+  setDataForSelected(payload) {
+    dispatch(setDataForSelectedAction(payload))
   },
   resequenceTests: (payload) =>
     dispatch(playlistDestinationReorderTestsAction(payload)),

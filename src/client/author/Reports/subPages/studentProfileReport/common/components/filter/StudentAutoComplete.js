@@ -42,7 +42,7 @@ const StudentAutoComplete = ({
     const { districtIds, institutionIds } = userOrgData
     const districtId = districtIds?.[0]
     const q = {
-      limit: 20,
+      limit: 35,
       page: 0,
       districtId,
       search: {

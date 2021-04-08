@@ -119,7 +119,7 @@ export const ReportFiltersWrapper = styled.div`
   .ant-tabs {
     overflow: visible;
     & .ant-tabs-tab {
-      font-size: 10px;
+      font-size: 11px;
       font-weight: 600;
       font-style: normal;
       font-stretch: normal;
@@ -472,7 +472,7 @@ export const StyledSignedBarContainer = styled.div`
 
 export const StyledDropDownContainer = styled(Col)`
   padding: ${({ padding }) => padding || 'unset'};
-  flex: 1 1 0;
+  flex: ${({ autoFlex }) => (autoFlex ? '1 1 0' : '0 0 auto')};
   .ant-btn.ant-dropdown-trigger {
     white-space: nowrap;
     overflow: hidden;

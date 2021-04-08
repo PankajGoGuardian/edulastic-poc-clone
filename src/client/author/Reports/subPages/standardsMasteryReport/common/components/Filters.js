@@ -33,7 +33,6 @@ import { processSchoolYear } from '../../../multipleAssessmentReport/common/util
 
 import {
   getUser,
-  getInterestedGradesSelector,
   getInterestedCurriculumsSelector,
 } from '../../../../../src/selectors/user'
 
@@ -61,7 +60,6 @@ const StandardsMasteryReportFilters = ({
   user,
   history,
   location,
-  interestedGrades,
   interestedCurriculums,
   loading,
   filters,
@@ -470,6 +468,7 @@ const StandardsMasteryReportFilters = ({
       xs={24}
       sm={12}
       lg={6}
+      autoFlex
       data-cy="standardProficiency"
     >
       <ControlDropDown
@@ -823,9 +822,16 @@ const StandardsMasteryReportFilters = ({
             width: '75%',
             float: 'right',
             paddingTop: '5px',
+            display: reportId ? 'none' : 'flex',
           }}
         >
-          <StyledDropDownContainer xs={24} sm={12} lg={6} data-cy="standardSet">
+          <StyledDropDownContainer
+            xs={24}
+            sm={12}
+            lg={6}
+            autoFlex
+            data-cy="standardSet"
+          >
             <ControlDropDown
               by={filters.curriculumId}
               selectCB={(e, selected) =>
@@ -840,6 +846,7 @@ const StandardsMasteryReportFilters = ({
             xs={24}
             sm={12}
             lg={6}
+            autoFlex
             data-cy="standardGrade"
           >
             <ControlDropDown
@@ -853,7 +860,13 @@ const StandardsMasteryReportFilters = ({
             />
           </StyledDropDownContainer>
           {loc !== 'standards-progress' && standardProficiencyFilter}
-          <StyledDropDownContainer xs={24} sm={12} lg={6} data-cy="domain">
+          <StyledDropDownContainer
+            xs={24}
+            sm={12}
+            lg={6}
+            autoFlex
+            data-cy="domain"
+          >
             <MultipleSelect
               containerClassName="standards-mastery-report-domain-autocomplete"
               data={domainsList || []}
@@ -871,7 +884,13 @@ const StandardsMasteryReportFilters = ({
             />
           </StyledDropDownContainer>
           {loc === 'standards-progress' && (
-            <StyledDropDownContainer xs={24} sm={12} lg={6} data-cy="standard">
+            <StyledDropDownContainer
+              xs={24}
+              sm={12}
+              lg={6}
+              autoFlex
+              data-cy="standard"
+            >
               <ControlDropDown
                 by={
                   // filters.standardId is searched in standardsList
@@ -914,7 +933,6 @@ const enhance = compose(
       filters: getFiltersSelector(state),
       testIds: getTestIdSelector(state) || [],
       user: getUser(state),
-      interestedGrades: getInterestedGradesSelector(state),
       interestedCurriculums: getInterestedCurriculumsSelector(state),
       prevStandardsFilters: getPrevStandardsFiltersSelector(state),
       standardsPerformanceSummary: getReportsStandardsPerformanceSummary(state),

@@ -38,8 +38,8 @@ function StudentSessionExpiredModal({ logout }) {
       }
     >
       <p>
-        We noticed you are already logged in. This session will close, but you
-        can continue working in the session you logged in last.
+        We noticed you are already logged in. Please return to the session you
+        last logged into.
       </p>
     </CustomModalStyled>
   )

@@ -649,7 +649,7 @@ const AssessmentContainer = ({
   }, [currentItem])
 
   useEffect(() => {
-    if (regradedAssignment && regradedAssignment?.newTestId !== testId) {
+    if (regradedAssignment && regradedAssignment?.newTestId) {
       setShowRegradedModal(true)
     }
   }, [regradedAssignment?.newTestId])

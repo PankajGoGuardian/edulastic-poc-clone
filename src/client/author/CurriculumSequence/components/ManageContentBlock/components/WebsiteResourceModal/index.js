@@ -34,7 +34,6 @@ const WebsiteResourceModal = (props) => {
 
   const validateFields = () => {
     if (!title) return 'Title is required!'
-    if (!description) return 'Description is required!'
     if (!url) return 'URL is required!'
 
     const regex = new RegExp(validURLExpression)

@@ -113,9 +113,9 @@ const StudentProfileReportContainer = (props) => {
     onRefineResultsCB(null, status, 'applyButton')
   }
 
-  const toggleFilter = (e, status = false) => {
+  const toggleFilter = (e, status) => {
     if (onRefineResultsCB) {
-      onRefineResultsCB(e, status || !showFilter)
+      onRefineResultsCB(e, status === false ? status : status || !showFilter)
     }
   }
 
@@ -131,6 +131,8 @@ const StudentProfileReportContainer = (props) => {
       requestFilters: {
         ..._requestFilters,
         profileId: _requestFilters.standardsProficiencyProfileId,
+        domainIds: _requestFilters.domainId,
+        standardIds: _requestFilters.standardId,
       },
       selectedStudent: _settings.selectedStudent,
     })
@@ -166,7 +168,11 @@ const StudentProfileReportContainer = (props) => {
             setShowModal={setSharingState}
           />
         )}
-        <SubHeader breadcrumbData={breadcrumbData} isCliUser={isCliUser}>
+        <SubHeader
+          breadcrumbData={breadcrumbData}
+          isCliUser={isCliUser}
+          alignment="baseline"
+        >
           <StudentProfileReportFilters
             isPrinting={isPrinting}
             reportId={reportId}

@@ -1033,7 +1033,8 @@ export const reducer = (state = initialState, { type, payload }) => {
     case UPDATE_TEST_ERROR:
       return { ...state, creating: false, error: payload.error }
     case SET_TEST_DATA: {
-      let entity = { ...state.entity, ...payload.data }
+      const { updated = true, ...payloadData } = payload.data
+      let entity = { ...state.entity, ...payloadData }
       if (
         payload.data?.restrictNavigationOut ===
           'warn-and-report-after-n-alerts' &&
@@ -1052,7 +1053,7 @@ export const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         entity,
-        updated: true,
+        updated,
       }
     }
     case UPDATE_TEST_IMAGE:

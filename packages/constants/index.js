@@ -43,6 +43,7 @@ const fileTypes = require('./const/fileTypes')
 const subscriptions = require('./const/subscriptions')
 const assignmentSettingSections = require('./const/assignmentSettingSections')
 const graph = require('./const/graph')
+const questionActivity = require('./const/questionActivity')
 
 module.exports = {
   question,
@@ -90,4 +91,5 @@ module.exports = {
   subscriptions,
   assignmentSettingSections,
   graph,
+  questionActivity,
 }

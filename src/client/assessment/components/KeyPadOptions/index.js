@@ -167,7 +167,9 @@ const KeyPadOptions = ({
     if (isCustom) {
       let payload = symbol
       if (!payload._id || (payload._id && !keypadIsUserCustomKeypad)) {
-        payload = { ...symbol, _id: uuidv4() }
+        if (!payload._id) {
+          payload = { ...symbol, _id: uuidv4() }
+        }
         storeCustomKeypad(payload)
       } else {
         updateCustomKeypad(payload)

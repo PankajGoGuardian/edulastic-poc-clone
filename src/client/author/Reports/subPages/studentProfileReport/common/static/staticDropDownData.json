@@ -1,8 +1,8 @@
 {
   "filterSections": {
-    "STUDENT_FILTERS": {
+    "CLASS_FILTERS": {
       "key": "0",
-      "title": "Select Student"
+      "title": "Select Classes"
     }
   },
   "tagTypes": [
@@ -13,7 +13,9 @@
     { "key": "classIds" },
     { "key": "student" },
     { "key": "performanceBandProfileId" },
-    { "key": "standardsProficiencyProfileId" }
+    { "key": "standardsProficiencyProfileId" },
+    { "key": "domainId" },
+    { "key": "standardId" }
   ],
   "initialFilters": {
     "reportId": "",
@@ -23,7 +25,10 @@
     "subjects": "",
     "classIds": "",
     "performanceBandProfileId": "",
-    "standardsProficiencyProfileId": ""
+    "standardsProficiencyProfileId": "",
+    "domainId": "All",
+    "standardId": "All",
+    "showApply": false
 	},
   "subjects": [
     { "key": "Mathematics", "title": "Mathematics" },

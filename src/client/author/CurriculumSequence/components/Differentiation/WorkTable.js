@@ -249,10 +249,10 @@ const InnerWorkTable = ({
 
   const handleRowSelect = (selectionType) => {
     if (selectionType === 'UNSELECT') {
-      setSelectedRows({ [type]: [] })
+      setSelectedRows({ ...selectedRows, [type]: [] })
     } else {
       const keyArray = [...Array(data.length).keys()]
-      setSelectedRows({ [type]: keyArray })
+      setSelectedRows({ ...selectedRows, [type]: keyArray })
     }
   }
 
@@ -404,7 +404,7 @@ const InnerWorkTable = ({
   const rowSelection = {
     selectedRowKeys: selectedRows[type],
     onChange: (selectedRowKeys) => {
-      setSelectedRows({ [type]: selectedRowKeys })
+      setSelectedRows({ ...selectedRows, [type]: selectedRowKeys })
     },
   }
 

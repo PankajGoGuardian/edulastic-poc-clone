@@ -23,7 +23,6 @@ import {
   playlistDestinationReorderTestsAction,
   addItemIntoPlaylistModuleAction,
   resequenceModulesCSAction,
-  setDataForSelectedAction,
 } from '../ducks'
 import ShareModal from '../../src/components/common/ShareModal'
 import AssignRecommendations from '../../AssignTest'
@@ -94,6 +93,17 @@ class CurriculumContainer extends Component {
     /**
      * state for handling drag and drop
      */
+    selectedData: {
+      REVIEW: [],
+      PRACTICE: [],
+      CHALLENGE: [],
+    },
+  }
+
+  setSelectedData = (data) => {
+    this.setState({
+      selectedData: data,
+    })
   }
 
   expandAll = () => {
@@ -147,10 +157,6 @@ class CurriculumContainer extends Component {
     ) {
       this.expandAll()
     }
-  }
-
-  componentWillUnmount() {
-    this.props.setDataForSelected()
   }
 
   /** @param {String} publisher */
@@ -347,6 +353,7 @@ class CurriculumContainer extends Component {
       expandedModules,
       showShareModal,
       showSelectCollectionsModal,
+      selectedData,
     } = this.state
     const {
       handleSelectContent,
@@ -431,8 +438,8 @@ class CurriculumContainer extends Component {
           onBeginDrag={onBeginDrag}
           onCuratorApproveOrReject={this.onCuratorApproveOrReject}
           urlHasUseThis={urlHasUseThis}
-          selectedRows={this.props.dataForSelected}
-          setSelectedRows={this.props.setDataForSelected}
+          selectedRows={selectedData}
+          setSelectedRows={this.setSelectedData}
         />
       </>
     )
@@ -499,9 +506,6 @@ const mapDispatchToProps = (dispatch) => ({
   getCurrentPlaylistMetrics(payload) {
     dispatch(receiveCurrentPlaylistMetrics(payload))
   },
-  setDataForSelected(payload) {
-    dispatch(setDataForSelectedAction(payload))
-  },
   resequenceTests: (payload) =>
     dispatch(playlistDestinationReorderTestsAction(payload)),
   addIntoModule: (payload) =>
@@ -520,7 +524,6 @@ const enhance = compose(
       destinationCurriculumSequence:
         state.curriculumSequence?.destinationCurriculumSequence,
       isStudent: state.user?.user?.role === userRoles.STUDENT,
-      dataForSelected: state.curriculumSequence.dataForSelected,
       currentUserId: getUserId(state),
     }),
     mapDispatchToProps

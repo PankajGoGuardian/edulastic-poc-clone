@@ -101,8 +101,6 @@ export const SET_DATA_FOR_ASSIGN_INIT =
 export const SET_DATA_FOR_SELECTED_INIT =
   '[curriculum-sequence] set data for selected init'
 export const SET_DATA_FOR_ASSIGN = '[curriculum-sequence] set data for assign'
-export const SET_DATA_FOR_SELECTED =
-  '[curriculum-sequence] set data for selected'
 export const ADD_CONTENT_TO_CURRICULUM_RESULT =
   '[curriculum-sequence] add content to curriculum result'
 export const REMOVE_ITEM_FROM_UNIT =
@@ -264,7 +262,6 @@ export const setRecommendationsToAssignAction = createAction(
   SET_RECOMMENDATIONS_TO_ASSIGN
 )
 export const setDataForAssignAction = createAction(SET_DATA_FOR_ASSIGN_INIT)
-export const setDataForSelectedAction = createAction(SET_DATA_FOR_SELECTED_INIT)
 export const addContentToCurriculumSequenceAction = createAction(
   ADD_CONTENT_TO_CURRICULUM_RESULT
 )
@@ -1117,13 +1114,6 @@ function* setDataForAssign(payload) {
   })
 }
 
-function* setDataForSelected(payload) {
-  yield put({
-    type: SET_DATA_FOR_SELECTED,
-    payload,
-  })
-}
-
 function* setSelectedItemsForAssign({ payload }) {
   yield put(setCurrentAssignmentAction(payload))
   yield put({
@@ -1911,7 +1901,6 @@ export function* watcherSaga() {
     yield takeLatest(CREATE_ASSIGNMENT_NOW, createAssignmentNow),
     yield takeLatest(SAVE_CURRICULUM_SEQUENCE, saveCurriculumSequence),
     yield takeLatest(SET_DATA_FOR_ASSIGN_INIT, setDataForAssign),
-    yield takeLatest(SET_DATA_FOR_SELECTED_INIT, setDataForSelected),
     yield takeLatest(
       SET_SELECTED_ITEMS_FOR_ASSIGN_INIT,
       setSelectedItemsForAssign
@@ -2047,19 +2036,12 @@ const getDefaultAssignData = () => ({
   testId: '',
 })
 
-const getDefaultSelectedData = () => ({
-  REVIEW: [],
-  PRACTICE: [],
-  CHALLENGE: [],
-})
-
 // Reducers
 const initialState = {
   activeRightPanel: 'summary',
   allCurriculumSequences: [],
   destinationDirty: false,
   showUseThisNotification: false,
-  dataForSelected: getDefaultSelectedData(),
   originalData: null,
   /**
    * @type {Object.<string, import('./components/CurriculumSequence').CurriculumSequenceType>}}
@@ -2391,14 +2373,6 @@ const setDataForAssignReducer = (state, { payload }) => {
   state.dataForAssign = payload
 }
 
-const setDataForSelectedReducer = (state, { payload }) => {
-  if (!payload.payload) {
-    state.dataForSelected = getDefaultSelectedData()
-    return
-  }
-  state.dataForSelected = payload.payload
-}
-
 /**
  * @param {State} state
  * @param {Object<String, Object>} param2
@@ -2615,7 +2589,6 @@ export default createReducer(initialState, {
   [SET_SELECTED_ITEMS_FOR_ASSIGN]: setSelectedItemsForAssignReducer,
   [SET_RECOMMENDATIONS_TO_ASSIGN]: setRecommendationsToAssignReducer,
   [SET_DATA_FOR_ASSIGN]: setDataForAssignReducer,
-  [SET_DATA_FOR_SELECTED]: setDataForSelectedReducer,
   [REMOVE_ITEM_FROM_UNIT]: removeItemFromUnitReducer,
   [ADD_NEW_UNIT]: addNewUnitReducer,
   [REMOVE_UNIT]: removeUnitReducer,

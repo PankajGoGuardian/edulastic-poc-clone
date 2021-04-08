@@ -2393,7 +2393,6 @@ const setDataForAssignReducer = (state, { payload }) => {
 
 const setDataForSelectedReducer = (state, { payload }) => {
   if (!payload.payload) {
-    console.log('inside')
     state.dataForSelected = getDefaultSelectedData()
     return
   }

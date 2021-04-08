@@ -69,11 +69,11 @@ const filtersDefaultValues = [
     nestedFilters: [
       {
         key: 'grades',
-        value: 'All',
+        value: '',
       },
       {
         key: 'subjects',
-        value: 'All',
+        value: '',
       },
     ],
   },
@@ -385,9 +385,7 @@ const StudentProfileReportFilters = ({
                 >
                   <Tabs.TabPane
                     key={staticDropDownData.filterSections.CLASS_FILTERS.key}
-                    tab={
-                      staticDropDownData.filterSections.CLASS_FILTERS.title
-                    }
+                    tab={staticDropDownData.filterSections.CLASS_FILTERS.title}
                   >
                     <Row type="flex" gutter={[5, 10]}>
                       <Col span={6}>
@@ -514,7 +512,12 @@ const StudentProfileReportFilters = ({
             display: reportId ? 'none' : 'flex',
           }}
         >
-          <StyledDropDownContainer xs={24} sm={12} lg={topFilterColSpan} data-cy="student">
+          <StyledDropDownContainer
+            xs={24}
+            sm={12}
+            lg={topFilterColSpan}
+            data-cy="student"
+          >
             <StudentAutoComplete
               firstLoad={firstLoad}
               termId={filters.termId}

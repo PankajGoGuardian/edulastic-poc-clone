@@ -5,9 +5,8 @@ import styled from 'styled-components'
 const PlayListAvailableModal = ({
   isVisible,
   closeModal,
-  filteredSpark,
   description,
-  products,
+  title,
 }) => {
   const footer = (
     <EduButton
@@ -19,17 +18,6 @@ const PlayListAvailableModal = ({
       Get Started
     </EduButton>
   )
-
-  const selectedProduct = products.find(
-    (x) => x.linkedProductId === filteredSpark._id
-  )
-
-  const { type } = selectedProduct
-
-  const title =
-    type === 'ITEM_BANK_SPARK_SCIENCE'
-      ? 'SparkScience + Teacher Premium'
-      : 'Spark Math Aligned To Your Curriculum'
 
   return (
     <CustomModalStyled

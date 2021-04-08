@@ -517,7 +517,6 @@ class TestList extends Component {
       isProxyUser,
       sort = {},
       dashboardTiles,
-      products,
     } = this.props
 
     const {
@@ -539,7 +538,7 @@ class TestList extends Component {
       (x) => x.config?.subscriptionData?.itemBankId === filteredSparkInfo._id
     )
 
-    const { description = '' } =
+    const { description = '', title = '' } =
       sparkDescription?.config?.subscriptionData || {}
 
     return (
@@ -684,10 +683,8 @@ class TestList extends Component {
             <PlaylistAvailableModal
               isVisible={isPlaylistAvailableModalVisible}
               closeModal={this.closePlaylistAvailableModal}
-              filteredSpark={filteredSparkInfo}
-              dashboardTiles={dashboardTiles}
               description={description}
-              products={products}
+              title={title}
             />
           )}
         </Container>
@@ -720,7 +717,6 @@ const enhance = compose(
       recentPlaylist: getRecentPlaylistSelector(state),
       collectionSelector: getCollectionsSelector(state),
       dashboardTiles: state.dashboardTeacher.configurableTiles,
-      products: state.subscription?.products,
     }),
     {
       receivePlaylists: receivePlaylistsAction,

@@ -1,8 +1,8 @@
 {
   "filterSections": {
-    "STUDENT_FILTERS": {
+    "CLASS_FILTERS": {
       "key": "0",
-      "title": "Select Student"
+      "title": "Select Classes"
     }
   },
   "tagTypes": [

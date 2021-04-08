@@ -111,7 +111,7 @@ const StudentProfileReportFilters = ({
   studentProgressProfile,
 }) => {
   const [activeTabKey, setActiveTabKey] = useState(
-    staticDropDownData.filterSections.STUDENT_FILTERS.key
+    staticDropDownData.filterSections.CLASS_FILTERS.key
   )
   const tagTypes = staticDropDownData.tagTypes.filter(
     (t) =>
@@ -200,7 +200,7 @@ const StudentProfileReportFilters = ({
 
   const isTabRequired = (tabKey) => {
     switch (tabKey) {
-      case staticDropDownData.filterSections.STUDENT_FILTERS.key:
+      case staticDropDownData.filterSections.CLASS_FILTERS.key:
         return true
       default:
         return false
@@ -209,7 +209,7 @@ const StudentProfileReportFilters = ({
 
   useEffect(() => {
     if (showFilter && !isTabRequired(activeTabKey)) {
-      setActiveTabKey(staticDropDownData.filterSections.STUDENT_FILTERS.key)
+      setActiveTabKey(staticDropDownData.filterSections.CLASS_FILTERS.key)
     }
   }, [loc, showFilter])
 
@@ -352,6 +352,9 @@ const StudentProfileReportFilters = ({
     setTempTagsData(_tempTagsData)
   }
 
+  const topFilterColSpan =
+    loc === 'student-progress-profile' && filters.showApply ? 5 : 6
+
   return (
     <Row type="flex" gutter={[0, 5]} style={{ width: '100%' }}>
       <Col span={24} style={{ display: 'flex', alignItems: 'center' }}>
@@ -381,9 +384,9 @@ const StudentProfileReportFilters = ({
                   onChange={setActiveTabKey}
                 >
                   <Tabs.TabPane
-                    key={staticDropDownData.filterSections.STUDENT_FILTERS.key}
+                    key={staticDropDownData.filterSections.CLASS_FILTERS.key}
                     tab={
-                      staticDropDownData.filterSections.STUDENT_FILTERS.title
+                      staticDropDownData.filterSections.CLASS_FILTERS.title
                     }
                   >
                     <Row type="flex" gutter={[5, 10]}>
@@ -508,9 +511,10 @@ const StudentProfileReportFilters = ({
             width: '75%',
             float: 'right',
             paddingTop: '5px',
+            display: reportId ? 'none' : 'flex',
           }}
         >
-          <StyledDropDownContainer xs={24} sm={12} lg={6} data-cy="student">
+          <StyledDropDownContainer xs={24} sm={12} lg={topFilterColSpan} data-cy="student">
             <StudentAutoComplete
               firstLoad={firstLoad}
               termId={filters.termId}
@@ -526,7 +530,7 @@ const StudentProfileReportFilters = ({
             <StyledDropDownContainer
               xs={24}
               sm={12}
-              lg={6}
+              lg={topFilterColSpan}
               data-cy="performanceBand"
             >
               <ControlDropDown
@@ -549,7 +553,7 @@ const StudentProfileReportFilters = ({
             <StyledDropDownContainer
               xs={24}
               sm={12}
-              lg={6}
+              lg={topFilterColSpan}
               data-cy="standardProficiency"
             >
               <ControlDropDown
@@ -573,7 +577,7 @@ const StudentProfileReportFilters = ({
               <StyledDropDownContainer
                 xs={24}
                 sm={12}
-                lg={6}
+                lg={topFilterColSpan}
                 data-cy="standardProficiency"
               >
                 <ControlDropDown
@@ -589,7 +593,7 @@ const StudentProfileReportFilters = ({
               <StyledDropDownContainer
                 xs={24}
                 sm={12}
-                lg={6}
+                lg={topFilterColSpan}
                 data-cy="standardProficiency"
               >
                 <ControlDropDown

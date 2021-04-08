@@ -911,6 +911,7 @@ class Container extends PureComponent {
     }
     // for itemGroup with limted delivery type should not contain items with question level scoring
     let itemGroupWithQuestionsCount = 0
+    let testHasInvalidItem = false
     for (const itemGroup of test.itemGroups) {
       if (
         itemGroup.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
@@ -924,9 +925,19 @@ class Container extends PureComponent {
       if (itemGroup.items.some((item) => item.data.questions.length > 0)) {
         itemGroupWithQuestionsCount++
       }
+
+      if (itemGroup.items.some((item) => item.data.questions.length <= 0)) {
+        testHasInvalidItem = true
+      }
     }
+
     if (!itemGroupWithQuestionsCount) {
       notification({ messageKey: `noQuestions` })
+      return false
+    }
+
+    if (testHasInvalidItem) {
+      notification({ messageKey: `testHasInvalidItem` })
       return false
     }
     return true

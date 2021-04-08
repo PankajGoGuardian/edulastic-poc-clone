@@ -439,6 +439,10 @@
     "message": "Test has only instructions. Test must have question to be published",
     "description": ""
   },
+  "testHasInvalidItem": {
+    "message": "Test has at least one item without any question. To publish a test each item must have at least one valid question.",
+    "description": ""
+  },
   "teacherRemovedSuccessfully": {
     "message": " Teacher removed successfully",
     "description": ""

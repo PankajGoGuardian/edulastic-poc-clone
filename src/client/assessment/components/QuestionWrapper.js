@@ -54,7 +54,6 @@ import { Text } from '../widgets/Text'
 import { MathFormula } from '../widgets/MathFormula'
 import { FormulaEssay } from '../widgets/FormulaEssay'
 import ClozeMath from '../widgets/ClozeMath'
-import { setQuestionDataAction } from '../../author/src/actions/question'
 import { requestScratchPadAction } from '../../author/ExpressGrader/ducks'
 import { Chart } from '../widgets/Charts'
 import { getUserRole, getUserFeatures } from '../../author/src/selectors/user'
@@ -449,7 +448,6 @@ class QuestionWrapper extends Component {
       showFeedback,
       multiple,
       view,
-      setQuestionData,
       changePreviewTab,
       qIndex,
       itemIndex,
@@ -660,7 +658,6 @@ class QuestionWrapper extends Component {
                   )}
                   <Question
                     {...restProps}
-                    setQuestionData={setQuestionData}
                     item={data}
                     view={view}
                     evaluation={evaluation}
@@ -743,7 +740,6 @@ class QuestionWrapper extends Component {
 QuestionWrapper.contextType = ItemDetailContext
 
 QuestionWrapper.propTypes = {
-  setQuestionData: PropTypes.func.isRequired,
   isPresentationMode: PropTypes.bool,
   view: PropTypes.string.isRequired,
   multiple: PropTypes.bool,
@@ -820,7 +816,6 @@ const enhance = compose(
       isTestPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
     }),
     {
-      setQuestionData: setQuestionDataAction,
       loadScratchPad: requestScratchPadAction,
     }
   )

@@ -306,7 +306,9 @@ const ManageContentBlock = (props) => {
               contentUrl={resource?.contentUrl}
               hasStandardsOnCreation={resource?.hasStandardsOnCreation}
               alignment={resource?.alignment}
+              standards={resource?.standards}
               isAdded={testsInPlaylist.includes(resource?._id)}
+              interestedCurriculums={interestedCurriculums}
               previewTest={() =>
                 previewResource(resource?.contentType, {
                   url: resource?.contentUrl,

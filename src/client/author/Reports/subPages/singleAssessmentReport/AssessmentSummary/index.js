@@ -113,7 +113,12 @@ const AssessmentSummary = ({
   const { bandInfo, metricInfo } = assessmentSummary
 
   if (loading) {
-    return <SpinLoader position="fixed" />
+    return (
+      <SpinLoader
+        tip="Please wait while we gather the required information..."
+        position="fixed"
+      />
+    )
   }
   if (settings.cliUser && !metricInfo?.length) {
     return <CustomCliEmptyComponent />

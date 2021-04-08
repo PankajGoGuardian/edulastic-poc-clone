@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { debounce, isEmpty } from 'lodash'
 
 // components & constants
-import { AutoComplete, Input, Icon, Tooltip } from 'antd'
+import { AutoComplete, Input, Icon, Tooltip, Empty } from 'antd'
 import { assignmentStatusOptions, roleuser } from '@edulastic/constants'
 
 // ducks
@@ -14,6 +14,7 @@ import {
   getTestListSelector,
   getTestListLoadingSelector,
 } from '../../../ducks'
+import useDropdownData from '../../hooks/useDropdownData'
 
 const { IN_PROGRESS, IN_GRADING, DONE } = assignmentStatusOptions
 
@@ -158,21 +159,10 @@ const AssessmentAutoComplete = ({
     }
   }, [query])
   // build dropdown data
-  const dropdownData = isEmpty(testList)
-    ? [
-        <AutoComplete.Option disabled key={0} title="no data found">
-          No Data Found
-        </AutoComplete.Option>,
-      ]
-    : testList.map((item) => (
-        <AutoComplete.Option key={item._id} title={item.title}>
-          {`${
-            item.title.length > 25
-              ? `${item.title.slice(0, 22)}...`
-              : item.title
-          } (ID:${item._id.substring(item._id.length - 5) || ''})`}
-        </AutoComplete.Option>
-      ))
+  const dropdownData = useDropdownData(testList, {
+    showId: true,
+    searchText: searchTerms.text || '',
+  })
 
   const selectedTestLabel =
     searchTerms.text === searchTerms.selectedText && selectedTest._id
@@ -203,6 +193,14 @@ const AssessmentAutoComplete = ({
           onChange={onChange}
           allowClear={!loading && searchTerms.selectedText && isFocused}
           clearIcon={<Icon type="close" style={{ color: '#1AB394' }} />}
+          notFoundContent={
+            <Empty
+              className="ant-empty-small"
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+              style={{ textAlign: 'left', margin: '10px 0' }}
+              description="No matching results"
+            />
+          }
         >
           <Input suffix={InputSuffixIcon} />
         </AutoComplete>
@@ -229,5 +227,8 @@ const AutoCompleteContainer = styled.div`
   }
   .ant-select-selection__clear {
     background: transparent;
+  }
+  .ant-input-suffix .anticon-loading {
+    font-size: 1.4em;
   }
 `

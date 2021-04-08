@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { get, isEmpty, debounce } from 'lodash'
 
 // components & constants
-import { AutoComplete, Input, Icon } from 'antd'
+import { AutoComplete, Input, Icon, Empty } from 'antd'
 
 // ducks
 import { getUser } from '../../../../src/selectors/user'
@@ -12,6 +12,7 @@ import {
   receiveCourseListAction,
   getCourseListSelector,
 } from '../../../../Courses/ducks'
+import useDropdownData from '../../hooks/useDropdownData'
 
 const DEFAULT_SEARCH_TERMS = { text: '', selectedText: '', selectedKey: 'All' }
 
@@ -102,13 +103,14 @@ const CourseAutoComplete = ({
   }, [selectedCourseId])
 
   // build dropdown data
-  const dropdownData = Object.values(
-    searchTerms.text ? courseList : searchResult
-  ).map((item) => (
-    <AutoComplete.Option key={item._id} title={item.name}>
-      {item.name.length > 45 ? `${item.name.slice(0, 42)}...` : item.name}
-    </AutoComplete.Option>
-  ))
+  const dropdownData = useDropdownData(
+    Object.values(searchTerms.text ? courseList : searchResult),
+    {
+      title_key: 'name',
+      cropTitle: true,
+      searchText: searchTerms.text || '',
+    }
+  )
 
   const InputSuffixIcon = loading ? (
     <Icon type="loading" />
@@ -132,6 +134,14 @@ const CourseAutoComplete = ({
         onFocus={() => getDefaultCourseList()}
         allowClear={!loading && searchTerms.selectedText && isFocused}
         clearIcon={<Icon type="close" style={{ color: '#1AB394' }} />}
+        notFoundContent={
+          <Empty
+            className="ant-empty-small"
+            image={Empty.PRESENTED_IMAGE_SIMPLE}
+            style={{ textAlign: 'left', margin: '10px 0' }}
+            description="No matching results"
+          />
+        }
       >
         <Input suffix={InputSuffixIcon} />
       </AutoComplete>
@@ -156,5 +166,8 @@ const AutoCompleteContainer = styled.div`
   }
   .ant-select-selection__clear {
     background: transparent;
+  }
+  .ant-input-suffix .anticon-loading {
+    font-size: 1.4em;
   }
 `

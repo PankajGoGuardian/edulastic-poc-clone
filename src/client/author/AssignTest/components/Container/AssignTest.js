@@ -192,6 +192,7 @@ class AssignTest extends React.Component {
       userFeatures: { premium },
       fetchUserCustomKeypads,
       setCurrentTestSettingsId,
+      location,
     } = this.props
 
     if (isFreeAdmin) {
@@ -235,6 +236,7 @@ class AssignTest extends React.Component {
         dueDate: moment().add('days', 7),
         playlistId: match.params.playlistId,
         playlistModuleId: match.params.moduleId,
+        testVersionId: location?.state?.testVersionId,
         testId: match.params.testId,
         openPolicy: isAdmin
           ? assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER

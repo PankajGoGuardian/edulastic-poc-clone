@@ -231,7 +231,7 @@ class ModuleRow extends Component {
     })
   }
 
-  assignTest = (moduleId, testId) => {
+  assignTest = (moduleId, testId, testVersionId) => {
     const { history, playlistId } = this.props
     history.push({
       pathname: `/author/playlists/assignments/${playlistId}/${moduleId}/${testId}`,
@@ -239,6 +239,7 @@ class ModuleRow extends Component {
         from: 'myPlaylist',
         fromText: 'My Playlist',
         toUrl: `/author/playlists/playlist/${playlistId}/use-this`,
+        testVersionId,
       },
     })
   }
@@ -760,7 +761,13 @@ class ModuleRow extends Component {
                       <CaretUp className="fa fa-caret-up" />
                       {!isStudent && (
                         <Menu.Item
-                          onClick={() => assignTest(_id, moduleData.contentId)}
+                          onClick={() =>
+                            assignTest(
+                              _id,
+                              moduleData.contentId,
+                              moduleData.contentVersionId
+                            )
+                          }
                         >
                           Assign Test
                         </Menu.Item>
@@ -895,7 +902,11 @@ class ModuleRow extends Component {
                                   <Button
                                     data-cy="assignButton"
                                     onClick={() =>
-                                      assignTest(_id, moduleData.contentId)
+                                      assignTest(
+                                        _id,
+                                        moduleData.contentId,
+                                        moduleData.contentVersionId
+                                      )
                                     }
                                   >
                                     {isAssigned ? (

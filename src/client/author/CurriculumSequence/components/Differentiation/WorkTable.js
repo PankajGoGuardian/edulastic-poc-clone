@@ -1,14 +1,10 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { useDrop } from 'react-dnd'
-import { withRouter } from 'react-router-dom'
-import { connect } from 'react-redux'
-import { compose } from 'redux'
 import { Popover, Row, Col } from 'antd'
 import { groupBy, compact, isEmpty, isUndefined } from 'lodash'
 import { EduButton, FlexContainer, notification } from '@edulastic/common' //  ProgressBar,
 import { IconClose, IconUser } from '@edulastic/icons'
 // import { themeColorLighter, borderGrey } from "@edulastic/colors";
-import { setDataForSelectedAction } from '../../ducks'
 import {
   TableContainer,
   StyledTable,
@@ -101,7 +97,6 @@ const InnerWorkTable = ({
   data = [],
   isFetchingWork,
   workStatusData,
-  dataForSelected,
   addTestToDifferentiation,
   addResourceToDifferentiation,
   showNewActivity,
@@ -111,15 +106,11 @@ const InnerWorkTable = ({
   removeResourceFromDifferentiation,
   addDifferentiationResources,
   removeDifferentiationResources,
-  setDataForSelected,
+  selectedRows,
+  setSelectedRows,
 }) => {
-  const [selectedRows, setSelectedRows] = useState(dataForSelected[type])
   const [masteryRange, setMasteryRange] = useState([0, 10])
   const [activeHoverIndex, setActiveHoverIndex] = useState(null)
-
-  useEffect(() => {
-    setSelectedRows(dataForSelected[type])
-  }, [dataForSelected[type]])
 
   const isDisabledMasterySlider = useMemo(
     () => !!data.find((s) => s.status === 'ADDED'),
@@ -185,11 +176,11 @@ const InnerWorkTable = ({
     if (data[0]?.masteryRange) setMasteryRange(data[0].masteryRange)
   }, [data])
 
-  useEffect(() => {
-    if (!isFetchingWork) {
-      setSelectedRows(dataForSelected[type])
-    }
-  }, [isFetchingWork])
+  // useEffect(() => {
+  //   if (!isFetchingWork) {
+  //     setSelectedRows(dataForSelected[type])
+  //   }
+  // }, [isFetchingWork])
 
   // const getProgressBar = percentage => {
   //   if (!percentage && percentage !== 0) return null;
@@ -258,16 +249,10 @@ const InnerWorkTable = ({
 
   const handleRowSelect = (selectionType) => {
     if (selectionType === 'UNSELECT') {
-      setSelectedRows([])
-      setDataForSelected({ [type]: [] })
+      setSelectedRows({ [type]: [] })
     } else {
-      const keyArray = []
-      data.forEach((row, i) => {
-        if (row.status === 'RECOMMENDED') {
-          keyArray.push(i)
-        }
-      })
-      setSelectedRows(keyArray)
+      const keyArray = [...Array(data.length).keys()]
+      setSelectedRows({ [type]: keyArray })
     }
   }
 
@@ -417,10 +402,9 @@ const InnerWorkTable = ({
   ]
 
   const rowSelection = {
-    selectedRowKeys: selectedRows,
+    selectedRowKeys: selectedRows[type],
     onChange: (selectedRowKeys) => {
-      setSelectedRows(selectedRowKeys)
-      setDataForSelected({ [type]: selectedRowKeys })
+      setSelectedRows({ [type]: selectedRowKeys })
     },
   }
 
@@ -441,7 +425,7 @@ const InnerWorkTable = ({
   }
 
   const handleAdd = () => {
-    if (!selectedRows.length)
+    if (!selectedRows[type].length)
       return notification({
         messageKey: 'pleaseSelectAtleastOneStandardToAdd',
       })
@@ -449,7 +433,7 @@ const InnerWorkTable = ({
       return notification({ messageKey: 'pleaseSelectMastery' })
 
     const recommendations = []
-    const selectedRowsData = selectedRows.map((x) => data[x])
+    const selectedRowsData = selectedRows[type].map((x) => data[x])
     const groupByResources = groupBy(selectedRowsData, ({ resources }) =>
       (resources || [])
         ?.map((x) => x.contentId)
@@ -631,16 +615,4 @@ const WorkTable = (props) => (
   </OuterDropContainer>
 )
 
-const enhance = compose(
-  withRouter,
-  connect(
-    (state) => ({
-      dataForSelected: state.curriculumSequence.dataForSelected,
-    }),
-    {
-      setDataForSelected: setDataForSelectedAction,
-    }
-  )
-)
-
-export default enhance(WorkTable)
+export default WorkTable

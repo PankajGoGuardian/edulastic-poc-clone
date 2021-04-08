@@ -431,6 +431,8 @@ class CurriculumContainer extends Component {
           onBeginDrag={onBeginDrag}
           onCuratorApproveOrReject={this.onCuratorApproveOrReject}
           urlHasUseThis={urlHasUseThis}
+          selectedRows={this.props.dataForSelected}
+          setSelectedRows={this.props.setDataForSelected}
         />
       </>
     )
@@ -518,6 +520,7 @@ const enhance = compose(
       destinationCurriculumSequence:
         state.curriculumSequence?.destinationCurriculumSequence,
       isStudent: state.user?.user?.role === userRoles.STUDENT,
+      dataForSelected: state.curriculumSequence.dataForSelected,
       currentUserId: getUserId(state),
     }),
     mapDispatchToProps

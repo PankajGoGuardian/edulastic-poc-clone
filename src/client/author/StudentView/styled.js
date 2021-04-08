@@ -47,6 +47,7 @@ export const StyledStudentTabButton = styled.div``
 
 export const StudentButtonDiv = styled.div`
   display: flex;
+  align-items: center;
   .ant-btn-primary {
     background-color: #0e93dc;
   }
@@ -95,12 +96,11 @@ export const PartiallyCorrectButton = styled(StyledTabButton)`
 `
 
 export const GiveOverallFeedBackButton = styled(StyledTabButton)`
-  height: 40px;
+  height: 24px;
   background-color: ${white};
   border: 1px solid ${themeColor};
   color: ${themeColor};
   border-radius: 4px;
-  padding: 15px 10px;
   min-width: 250px;
   position: relative;
   margin-left: 28px;
@@ -121,7 +121,6 @@ export const GiveOverallFeedBackButton = styled(StyledTabButton)`
 
   @media (min-width: ${extraDesktopWidth}) {
     min-width: 300px;
-    padding: 20px 10px;
   }
   @media (max-width: ${desktopWidth}) {
     min-width: auto;

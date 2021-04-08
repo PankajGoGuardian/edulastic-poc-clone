@@ -19,6 +19,7 @@ const IndividualSubscriptionModal = ({
   showMultiplePurchaseModal,
   totalAmount,
   shouldProrate,
+  subEndDate,
 }) => {
   const productsToshow = useMemo(() => {
     if (isPaidPremium && !showRenewalOptions && shouldProrate) {
@@ -61,6 +62,8 @@ const IndividualSubscriptionModal = ({
       title={showRenewalOptions ? 'Renew Subscription' : 'Select Add-ons'}
       handleCloseModal={handleCloseModal}
       footer={Footer}
+      shouldProrate={shouldProrate}
+      subEndDate={subEndDate}
     >
       <ProductsList
         showMultiplePurchaseModal={showMultiplePurchaseModal}

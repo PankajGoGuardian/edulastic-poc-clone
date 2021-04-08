@@ -290,7 +290,15 @@ const getColumns = (
                 curriculumId,
               })
               return !isSharedReport ? (
-                <Link to={`/author/reports/standards-progress?${queryStr}`}>
+                <Link
+                  to={{
+                    pathname: `/author/reports/standards-progress`,
+                    search: `?${queryStr}`,
+                    state: {
+                      source: pageTitle,
+                    },
+                  }}
+                >
                   {data}
                 </Link>
               ) : (

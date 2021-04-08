@@ -13,7 +13,7 @@ import {
 import { EduButton, Card, FieldLabel } from '@edulastic/common'
 import { Text } from '@vx/text'
 import { Col, Slider, Table, Button } from 'antd'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { CustomChartTooltip } from './components/charts/chartUtils/tooltip'
 
 export const StyledCell = styled.div`
@@ -52,35 +52,7 @@ export const ReportFiltersContainer = styled.div`
   }
 `
 
-export const ReportFiltersWrapper = styled.div`
-  position: absolute;
-  z-index: 100;
-  top: 30px;
-  right: 0px;
-  width: 60vw;
-  padding: 10px 25px 25px;
-  border-radius: 4px;
-  background-color: white;
-  box-sizing: border-box;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  visibility: ${({ visible }) => (visible ? 'visible' : 'hidden')};
-  opacity: ${({ visible }) => (visible ? 1 : 0)};
-  -webkit-transition: all 0.5s ease-in-out;
-  -moz-transition: all 0.5s ease-in-out;
-  -ms-transition: all 0.5s ease-in-out;
-  -o-transition: all 0.5s ease-in-out;
-  transition: all 0.5s ease-in-out;
-
-  .ant-tabs {
-    overflow: visible;
-    & .ant-tabs-tab {
-      font-size: 10px;
-      font-weight: 600;
-      font-style: normal;
-      font-stretch: normal;
-      text-transform: uppercase;
-    }
-  }
+const antSelectStyles = css`
   .ant-select {
     width: 100%;
     font-size: 11px;
@@ -107,22 +79,6 @@ export const ReportFiltersWrapper = styled.div`
       font-weight: 600;
     }
   }
-  .ant-select-selection.ant-select-selection--multiple {
-    background-color: ${lightGreySecondary};
-    border-color: ${fadedGrey};
-    min-height: 34px !important;
-    padding-bottom: 0px;
-    .ant-select-arrow-icon {
-      color: ${themeColor};
-      font-size: 11px;
-      transform: none;
-    }
-  }
-  .ant-select-selection.ant-select-selection--multiple
-    .ant-select-selection__rendered
-    .ant-select-selection__choice {
-    margin: 4px 0 0 5px !important;
-  }
   .ant-select-auto-complete.ant-select .ant-input {
     background-color: #f8f8f8;
     border-color: #e5e5e5;
@@ -138,6 +94,54 @@ export const ReportFiltersWrapper = styled.div`
         color: ${themeColor};
       }
     }
+  }
+`
+
+export const ReportFiltersWrapper = styled.div`
+  position: absolute;
+  z-index: 100;
+  top: 30px;
+  right: 0px;
+  width: 60vw;
+  padding: 10px 25px 25px;
+  border-radius: 4px;
+  background-color: white;
+  box-sizing: border-box;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  visibility: ${({ visible }) => (visible ? 'visible' : 'hidden')};
+  opacity: ${({ visible }) => (visible ? 1 : 0)};
+  -webkit-transition: all 0.5s ease-in-out;
+  -moz-transition: all 0.5s ease-in-out;
+  -ms-transition: all 0.5s ease-in-out;
+  -o-transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out;
+
+  .ant-tabs {
+    overflow: visible;
+    & .ant-tabs-tab {
+      font-size: 11px;
+      font-weight: 600;
+      font-style: normal;
+      font-stretch: normal;
+      text-transform: uppercase;
+    }
+  }
+  ${antSelectStyles}
+  .ant-select-selection.ant-select-selection--multiple {
+    background-color: ${lightGreySecondary};
+    border-color: ${fadedGrey};
+    min-height: 34px !important;
+    padding-bottom: 0px;
+    .ant-select-arrow-icon {
+      color: ${themeColor};
+      font-size: 11px;
+      transform: none;
+    }
+  }
+  .ant-select-selection.ant-select-selection--multiple
+    .ant-select-selection__rendered
+    .ant-select-selection__choice {
+    margin: 4px 0 0 5px !important;
   }
   .control-dropdown {
     button {
@@ -468,7 +472,7 @@ export const StyledSignedBarContainer = styled.div`
 
 export const StyledDropDownContainer = styled(Col)`
   padding: ${({ padding }) => padding || 'unset'};
-  flex: 1 1 0;
+  flex: ${({ autoFlex }) => (autoFlex ? '1 1 0' : '0 0 auto')};
   .ant-btn.ant-dropdown-trigger {
     white-space: nowrap;
     overflow: hidden;
@@ -481,6 +485,7 @@ export const StyledDropDownContainer = styled(Col)`
     font-size: 11px;
     border-radius: 2px;
   }
+  ${antSelectStyles}
   .standards-mastery-report-domain-autocomplete {
     .ant-select {
       width: 100%;

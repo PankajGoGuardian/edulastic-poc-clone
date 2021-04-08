@@ -1,35 +1,27 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { Modal as AntdModal, Radio, Row, Spin } from 'antd'
 import styled from 'styled-components'
 import { get } from 'lodash'
-import { FlexContainer, EduButton, notification } from '@edulastic/common'
+import { FlexContainer, EduButton } from '@edulastic/common'
 import { TitleWrapper } from '@edulastic/common/src/components/MainHeader'
-import { fetchAssignmentsAction } from '../TestPage/components/Assign/ducks'
 import {
-  setRegradeSettingsDataAction,
   getRegradeFirebaseDocIdSelector,
-  getRegradeSettingsAction,
   toggleRegradeModalAction,
-  getIsLoadRegradeSettingsSelector,
-  getAvaialbleRegradeSettingsSelector,
   getRegradeModalStateSelector,
 } from '../TestPage/ducks'
 import { ACTIONS } from './MainContent'
-import RegradeNotificationListener from './RegradeNotificationListener'
 import { InputsWrapper } from './styled'
+import { updateCorrectTestItemAction } from '../src/actions/classBoard'
+import RegradeListenerLcb from './RegradeListenerLcb'
 
 const Group = Radio.Group
 const RegradeModal = ({
-  getAssignmentsByTestId,
-  setRegradeSettings,
   districtId,
-  getRegradeActions,
-  isLoadRegradeSettings,
-  availableRegradeSettings,
   toggleRegradeModal,
-  regradeFirebaseDocId,
   modalState,
+  updateCorrectItem,
+  regradeFirebaseDocId,
 }) => {
   const { oldTestId, newTestId } = modalState || {}
   const settings = {
@@ -48,6 +40,7 @@ const RegradeModal = ({
 
   const [regradeSettings, regradeSettingsChange] = useState(settings)
   const [isInRegrade, setIsInRegrade] = useState(false)
+  const [confirmRegrade, setConfirmRegrade] = useState(false)
 
   const onUpdateSettings = (key, value) => {
     const newState = {
@@ -60,25 +53,22 @@ const RegradeModal = ({
     regradeSettingsChange(newState)
   }
 
-  const onApplySettings = () => {
-    if (isLoadRegradeSettings) {
-      return
-    }
-    setRegradeSettings(regradeSettings)
-    setIsInRegrade(true)
-    notification({ type: 'success', messageKey: 'publishCorrectItemSuccess' })
-  }
-
   const onCloseRegardModal = () => {
     toggleRegradeModal(null)
   }
 
-  useEffect(() => {
-    getAssignmentsByTestId({ testId: oldTestId, regradeAssignments: true })
-    getRegradeActions({ oldTestId, newTestId })
-  }, [])
-
-  const showEdit = availableRegradeSettings.includes('EDIT')
+  const onApplySettings = () => {
+    if (!confirmRegrade) {
+      return setConfirmRegrade(true)
+    }
+    updateCorrectItem({
+      ...modalState.itemData,
+      proceedRegrade: true,
+      editRegradeChoice: regradeSettings.options.editedQuestion,
+      callback: toggleRegradeModal,
+    })
+    setIsInRegrade(true)
+  }
 
   return (
     <Modal
@@ -90,7 +80,7 @@ const RegradeModal = ({
           alignItems="center"
           justifyContent="flex-start"
         >
-          <TitleWrapper>Regrade</TitleWrapper>
+          <TitleWrapper>{confirmRegrade ? 'CONFIRM' : 'REGRADE'}</TitleWrapper>
         </FlexContainer>
       }
       footer={
@@ -99,28 +89,30 @@ const RegradeModal = ({
             isBlue
             isGhost
             onClick={onCloseRegardModal}
-            disabled={isLoadRegradeSettings || isInRegrade}
-            width="115px"
+            disabled={isInRegrade}
+            width="145px"
             height="36px"
           >
-            CANCEL
+            {confirmRegrade ? 'NO, CANCEL' : 'DISCARD CHANGES'}
           </EduButton>
           <EduButton
             isBlue
-            width="115px"
+            width="145px"
             height="36px"
             data-cy="regrade"
-            disabled={isLoadRegradeSettings || isInRegrade}
+            disabled={isInRegrade}
             onClick={onApplySettings}
           >
-            Regrade
+            {confirmRegrade ? 'YES, REGRADE' : 'PUBLISH & REGRADE'}
           </EduButton>
         </FlexContainer>
       }
       width="620px"
     >
-      {(isLoadRegradeSettings || isInRegrade) && <Spin />}
-      {showEdit && !isLoadRegradeSettings && (
+      {isInRegrade && <Spin />}
+      {confirmRegrade ? (
+        'Are you sure you want to regrade ?'
+      ) : (
         <InputsWrapper data-cy="edited-items" mt="0px">
           <Row>
             <p>
@@ -149,10 +141,7 @@ const RegradeModal = ({
         </InputsWrapper>
       )}
       {regradeFirebaseDocId && (
-        <RegradeNotificationListener
-          noRedirect
-          onCloseModal={onCloseRegardModal}
-        />
+        <RegradeListenerLcb onCloseModal={onCloseRegardModal} />
       )}
     </Modal>
   )
@@ -163,14 +152,10 @@ export default connect(
     modalState: getRegradeModalStateSelector(state),
     districtId: get(state, ['user', 'user', 'orgData', 'districtIds', 0]),
     regradeFirebaseDocId: getRegradeFirebaseDocIdSelector(state),
-    isLoadRegradeSettings: getIsLoadRegradeSettingsSelector(state),
-    availableRegradeSettings: getAvaialbleRegradeSettingsSelector(state),
   }),
   {
-    getAssignmentsByTestId: fetchAssignmentsAction,
-    setRegradeSettings: setRegradeSettingsDataAction,
-    getRegradeActions: getRegradeSettingsAction,
     toggleRegradeModal: toggleRegradeModalAction,
+    updateCorrectItem: updateCorrectTestItemAction,
   }
 )(RegradeModal)
 

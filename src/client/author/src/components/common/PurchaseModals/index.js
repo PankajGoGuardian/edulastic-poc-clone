@@ -278,6 +278,7 @@ const PurchaseFlowModals = (props) => {
           selectedProductIds={selectedProductIds}
           totalAmount={totalAmount}
           shouldProrate={shouldProrate}
+          subEndDate={subEndDate}
         />
       )}
       {showMultiplePurchaseModal && (

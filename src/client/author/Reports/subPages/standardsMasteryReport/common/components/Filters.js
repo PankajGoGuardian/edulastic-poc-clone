@@ -33,7 +33,6 @@ import { processSchoolYear } from '../../../multipleAssessmentReport/common/util
 
 import {
   getUser,
-  getInterestedGradesSelector,
   getInterestedCurriculumsSelector,
 } from '../../../../../src/selectors/user'
 
@@ -61,7 +60,6 @@ const StandardsMasteryReportFilters = ({
   user,
   history,
   location,
-  interestedGrades,
   interestedCurriculums,
   loading,
   filters,
@@ -241,6 +239,7 @@ const StandardsMasteryReportFilters = ({
       qs.parse(location.search, { ignoreQueryPrefix: true }),
       (f) => f !== 'All' && !isEmpty(f)
     )
+    const source = location?.state?.source
 
     if (reportId) {
       _onGoClick({
@@ -254,12 +253,14 @@ const StandardsMasteryReportFilters = ({
         get(standardsFilters, 'data.result.reportFilters', {})
       )
       // update search filters from saved filters
-      search = {
-        ...search,
-        termId: search.termId || savedFilters.termId,
-        grades: search.grades || savedFilters.grades,
-        subjects: search.subjects || savedFilters.subjects,
-        profileId: search.profileId || savedFilters.profileId,
+      if (!source) {
+        search = {
+          ...search,
+          termId: search.termId || savedFilters.termId,
+          grades: search.grades || savedFilters.grades,
+          subjects: search.subjects || savedFilters.subjects,
+          profileId: search.profileId || savedFilters.profileId,
+        }
       }
 
       const urlSchoolYear =
@@ -288,14 +289,13 @@ const StandardsMasteryReportFilters = ({
       const urlStandardProficiency =
         standardProficiencyList.find((item) => item.key === search.profileId) ||
         defaultStandardProficiency
-
+      const defaultGrade = source ? '' : staticDropDownData.grades[0].key
+      const defaultGradeTag = source ? [] : staticDropDownData.grades[0]
       const _filters = {
         termId: urlSchoolYear.key,
         schoolIds: search.schoolIds || '',
         teacherIds: search.teacherIds || '',
-        grades:
-          urlGrades.map((item) => item.key).join(',') ||
-          staticDropDownData.grades[0].key,
+        grades: urlGrades.map((item) => item.key).join(',') || defaultGrade,
         subjects: urlSubjects.map((item) => item.key).join(',') || '',
         courseId: search.courseId || 'All',
         classIds: search.classIds || '',
@@ -317,7 +317,7 @@ const StandardsMasteryReportFilters = ({
       const assessmentTypesArr = (search.assessmentTypes || '').split(',')
       const _tempTagsData = {
         termId: urlSchoolYear,
-        grades: urlGrades || staticDropDownData.grades[0],
+        grades: urlGrades || defaultGradeTag,
         subjects: urlSubjects,
         testGrades: urlTestGrades,
         testSubjects: urlTestSubjects,
@@ -366,7 +366,7 @@ const StandardsMasteryReportFilters = ({
     selected,
     keyName,
     multiple = false,
-    isStandardFilter = false
+    isRowFilter = false
   ) => {
     // update tags data
     const _tempTagsData = { ...tempTagsData, [keyName]: selected }
@@ -385,7 +385,7 @@ const StandardsMasteryReportFilters = ({
     // update filters
     _filters[keyName] = _selected
     history.push(`${location.pathname}?${qs.stringify(_filters)}`)
-    if (isStandardFilter) {
+    if (isRowFilter) {
       setFilters({ ..._filters, showApply: true })
     } else {
       setFilters(_filters)
@@ -468,6 +468,7 @@ const StandardsMasteryReportFilters = ({
       xs={24}
       sm={12}
       lg={6}
+      autoFlex
       data-cy="standardProficiency"
     >
       <ControlDropDown
@@ -821,9 +822,16 @@ const StandardsMasteryReportFilters = ({
             width: '75%',
             float: 'right',
             paddingTop: '5px',
+            display: reportId ? 'none' : 'flex',
           }}
         >
-          <StyledDropDownContainer xs={24} sm={12} lg={6} data-cy="standardSet">
+          <StyledDropDownContainer
+            xs={24}
+            sm={12}
+            lg={6}
+            autoFlex
+            data-cy="standardSet"
+          >
             <ControlDropDown
               by={filters.curriculumId}
               selectCB={(e, selected) =>
@@ -838,6 +846,7 @@ const StandardsMasteryReportFilters = ({
             xs={24}
             sm={12}
             lg={6}
+            autoFlex
             data-cy="standardGrade"
           >
             <ControlDropDown
@@ -851,7 +860,13 @@ const StandardsMasteryReportFilters = ({
             />
           </StyledDropDownContainer>
           {loc !== 'standards-progress' && standardProficiencyFilter}
-          <StyledDropDownContainer xs={24} sm={12} lg={6} data-cy="domain">
+          <StyledDropDownContainer
+            xs={24}
+            sm={12}
+            lg={6}
+            autoFlex
+            data-cy="domain"
+          >
             <MultipleSelect
               containerClassName="standards-mastery-report-domain-autocomplete"
               data={domainsList || []}
@@ -869,7 +884,13 @@ const StandardsMasteryReportFilters = ({
             />
           </StyledDropDownContainer>
           {loc === 'standards-progress' && (
-            <StyledDropDownContainer xs={24} sm={12} lg={6} data-cy="standard">
+            <StyledDropDownContainer
+              xs={24}
+              sm={12}
+              lg={6}
+              autoFlex
+              data-cy="standard"
+            >
               <ControlDropDown
                 by={
                   // filters.standardId is searched in standardsList
@@ -891,6 +912,7 @@ const StandardsMasteryReportFilters = ({
           {filters.showApply && (
             <StyledEduButton
               btnType="primary"
+              data-cy="applyRowFilter"
               onClick={onGoClick}
               style={{ height: '32px' }}
             >
@@ -911,7 +933,6 @@ const enhance = compose(
       filters: getFiltersSelector(state),
       testIds: getTestIdSelector(state) || [],
       user: getUser(state),
-      interestedGrades: getInterestedGradesSelector(state),
       interestedCurriculums: getInterestedCurriculumsSelector(state),
       prevStandardsFilters: getPrevStandardsFiltersSelector(state),
       standardsPerformanceSummary: getReportsStandardsPerformanceSummary(state),

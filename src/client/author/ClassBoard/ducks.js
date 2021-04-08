@@ -778,7 +778,7 @@ export const getAnswerByQidSelector = createSelector(
   (answers) => {
     const answerByQid = {}
     Object.keys(answers).forEach((answer) => {
-      const [, qid] = answer.split('_')
+      const [, qid] = answer.split(/_(.+)/)
       answerByQid[qid] = answers[answer]
     })
     return answerByQid

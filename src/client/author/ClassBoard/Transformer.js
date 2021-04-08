@@ -13,7 +13,7 @@ import {
 import { testActivityStatus, questionType } from '@edulastic/constants'
 import produce from 'immer'
 import { getMathHtml } from '@edulastic/common'
-import { red, yellow, themeColorLighter } from '@edulastic/colors'
+import { red, yellow, themeColorLighter, darkBlue2 } from '@edulastic/colors'
 import { getServerTs } from '../../student/utils'
 import { getFormattedName } from '../Gradebook/transformers'
 
@@ -868,7 +868,8 @@ export const getStudentCardStatus = (
       break
     case SUBMITTED:
       status.status = student?.graded === 'GRADED' ? 'Graded' : student.status
-      status.color = themeColorLighter
+      status.color =
+        student?.graded === 'GRADED' ? themeColorLighter : darkBlue2
       break
     case ABSENT:
       status.status = 'Absent'

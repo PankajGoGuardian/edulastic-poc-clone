@@ -1622,12 +1622,18 @@ function structureWorkData(workData, statusData, firstLoad = false) {
       } else {
         draft[type].forEach((i) => {
           const currentStatus = currentStatusArray.find((s) => {
-            const isStandardRecommended =
-              s.derivedFrom === 'STANDARDS' &&
-              s.standardIdentifiers.includes(i.standardIdentifier) &&
-              (!s.skillIdentifiers ||
-                s.skillIdentifiers.includes(i.skillIdentifier))
-
+            let isStandardRecommended
+            if (type.toUpperCase() === 'PRACTICE') {
+              isStandardRecommended =
+                s.derivedFrom === 'STANDARDS' &&
+                s.standardIdentifiers.includes(i.standardIdentifier)
+            } else {
+              isStandardRecommended =
+                s.derivedFrom === 'STANDARDS' &&
+                s.standardIdentifiers.includes(i.standardIdentifier) &&
+                (!s.skillIdentifiers ||
+                  s.skillIdentifiers.includes(i.skillIdentifier))
+            }
             const isTestRecommended =
               s.derivedFrom === 'TESTS' && s.resourceId === i.testId
 

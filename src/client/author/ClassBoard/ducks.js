@@ -82,7 +82,7 @@ import {
 } from '../src/constants/actions'
 
 import { downloadCSV } from '../Reports/common/util'
-import { getUserNameSelector } from '../src/selectors/user'
+import { getUserIdSelector, getUserNameSelector } from '../src/selectors/user'
 import { getAllQids } from '../SummaryBoard/Transformer'
 import { getUserId, getUserRole } from '../../student/Login/ducks'
 import {
@@ -702,7 +702,7 @@ function* correctItemUpdateSaga({ payload }) {
     }
 
     const { testId: newTestId, isRegradeNeeded } = result
-    if (isUnscored || !isRegradeNeeded) {
+    if (isUnscored) {
       notification({
         type: 'success',
         messageKey: 'publishCorrectItemSuccess',
@@ -728,7 +728,7 @@ function* correctItemUpdateSaga({ payload }) {
         payload: { newTestId, oldTestId: testId, itemData: payload },
       })
     }
-    if (!isRegradeNeeded && !proceedRegrade) {
+    if (!isRegradeNeeded && !proceedRegrade && result.item) {
       yield put({
         type: RECEIVE_TESTACTIVITY_REQUEST,
         payload: {
@@ -739,7 +739,7 @@ function* correctItemUpdateSaga({ payload }) {
       })
 
       const itemsToReplace = testItems.map((t) =>
-        t.id === testItemId ? result : t
+        t.id === testItemId ? result.item : t
       )
 
       markQuestionLabel(itemsToReplace)
@@ -1585,6 +1585,33 @@ export const getShowRefreshMessage = createSelector(
     }
     if (assignedBy.role !== roleuser.TEACHER) {
       return bulkAssignedCountProcessed > bulkAssignedCount
+    }
+    return false
+  }
+)
+
+export const getShowCorrectItemButton = createSelector(
+  getAssignedBySelector,
+  getUserRole,
+  getIsDocBasedTestSelector,
+  getClassResponseSelector,
+  getUserIdSelector,
+  (assignedBy, userRole, isDocBased, _test, userId) => {
+    const assignedRole = assignedBy.role
+    if (_test.freezeSettings || isDocBased) {
+      return _test?.authors.some((author) => author._id === userId)
+    }
+    if (assignedRole === roleuser.TEACHER) {
+      return true
+    }
+    if (
+      assignedRole === roleuser.DISTRICT_ADMIN ||
+      assignedRole === roleuser.SCHOOL_ADMIN
+    ) {
+      return (
+        userRole === roleuser.DISTRICT_ADMIN ||
+        userRole === roleuser.SCHOOL_ADMIN
+      )
     }
     return false
   }

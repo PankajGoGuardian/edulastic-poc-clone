@@ -295,6 +295,7 @@ const StudentProfileReportFilters = ({
       (index !== -1 || ['grades', 'subjects'].includes(key))
     ) {
       setStudent({ key: '', title: '' })
+      delete nextTagsData.student
       prevFilters.classIds = ''
       delete nextTagsData.classIds
     }

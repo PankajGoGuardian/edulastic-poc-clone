@@ -728,6 +728,33 @@ function* correctItemUpdateSaga({ payload }) {
         payload: { newTestId, oldTestId: testId, itemData: payload },
       })
     }
+    if (!isRegradeNeeded && !proceedRegrade) {
+      yield put({
+        type: RECEIVE_TESTACTIVITY_REQUEST,
+        payload: {
+          assignmentId: payload.assignmentId,
+          classId: payload.groupId,
+          isQuestionsView: false,
+        },
+      })
+
+      const itemsToReplace = testItems.map((t) =>
+        t.id === testItemId ? result : t
+      )
+
+      markQuestionLabel(itemsToReplace)
+
+      yield put({
+        type: CORRECT_ITEM_UPDATE_SUCCESS,
+        payload: {
+          testItems: itemsToReplace,
+        },
+      })
+      return notification({
+        type: 'success',
+        messageKey: 'publishCorrectItemSuccess',
+      })
+    }
   } catch (error) {
     yield put(setRegradeFirestoreDocId(''))
     notification({

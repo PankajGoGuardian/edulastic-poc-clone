@@ -195,7 +195,7 @@ const QuestionBottomAction = ({
       loading={loading || itemloading}
       disabled={isDisableCorrectItem}
     >
-      Correct Item
+      Edit / Regrade
     </CorrectButton>
   )
 

@@ -239,7 +239,11 @@ const Container = (props) => {
             component={() => {
               setShowHeader(true)
               return (
-                <StandardReport premium={props.premium} isAdmin={isAdmin} />
+                <StandardReport
+                  premium={props.premium}
+                  isAdmin={isAdmin}
+                  loc={reportType}
+                />
               )
             }}
           />

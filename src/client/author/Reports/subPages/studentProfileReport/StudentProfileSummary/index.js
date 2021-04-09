@@ -214,7 +214,12 @@ const StudentProfileSummary = ({
       })
   }
   if (loading) {
-    return <SpinLoader position="fixed" />
+    return (
+      <SpinLoader
+        tip="Please wait while we gather the required information..."
+        position="fixed"
+      />
+    )
   }
 
   if (error && error.dataSizeExceeded) {
@@ -230,7 +235,11 @@ const StudentProfileSummary = ({
     isEmpty(studInfo) ||
     !settings.selectedStudent?.key
   ) {
-    return <NoDataContainer>No data available currently.</NoDataContainer>
+    return (
+      <NoDataContainer>
+        {settings.requestFilters?.termId ? 'No data available currently.' : ''}
+      </NoDataContainer>
+    )
   }
 
   const studentInformation = studInfo[0] || {}

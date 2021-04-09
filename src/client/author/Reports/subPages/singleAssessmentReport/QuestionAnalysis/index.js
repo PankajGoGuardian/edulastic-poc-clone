@@ -114,7 +114,12 @@ const QuestionAnalysis = ({
   }
 
   if (loading) {
-    return <SpinLoader position="fixed" />
+    return (
+      <SpinLoader
+        tip="Please wait while we gather the required information..."
+        position="fixed"
+      />
+    )
   }
 
   if (questionAnalysis.isRecommended) {
@@ -131,7 +136,11 @@ const QuestionAnalysis = ({
   }
 
   if (!questionAnalysis.metricInfo?.length || !settings.selectedTest.key) {
-    return <NoDataContainer>No data available currently.</NoDataContainer>
+    return (
+      <NoDataContainer>
+        {settings.requestFilters?.termId ? 'No data available currently.' : ''}
+      </NoDataContainer>
+    )
   }
   return (
     <div>

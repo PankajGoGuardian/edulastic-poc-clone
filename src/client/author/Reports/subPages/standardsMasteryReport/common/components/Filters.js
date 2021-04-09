@@ -239,7 +239,7 @@ const StandardsMasteryReportFilters = ({
       qs.parse(location.search, { ignoreQueryPrefix: true }),
       (f) => f !== 'All' && !isEmpty(f)
     )
-    const source = location?.state?.source
+    const source = location.state?.source
 
     if (reportId) {
       _onGoClick({
@@ -253,7 +253,7 @@ const StandardsMasteryReportFilters = ({
         get(standardsFilters, 'data.result.reportFilters', {})
       )
       // update search filters from saved filters
-      if (!source) {
+      if (source !== 'standard-reports') {
         search = {
           ...search,
           termId: search.termId || savedFilters.termId,
@@ -289,8 +289,10 @@ const StandardsMasteryReportFilters = ({
       const urlStandardProficiency =
         standardProficiencyList.find((item) => item.key === search.profileId) ||
         defaultStandardProficiency
-      const defaultGrade = source ? '' : staticDropDownData.grades[0].key
-      const defaultGradeTag = source ? [] : staticDropDownData.grades[0]
+      const defaultGrade =
+        source !== 'standard-reports' ? '' : staticDropDownData.grades[0].key
+      const defaultGradeTag =
+        source !== 'standard-reports' ? [] : staticDropDownData.grades[0]
       const _filters = {
         termId: urlSchoolYear.key,
         schoolIds: search.schoolIds || '',
@@ -335,8 +337,16 @@ const StandardsMasteryReportFilters = ({
       // const urlTestIds = search.testIds ? search.testIds.split(',') : []
       // setTestIds(urlTestIds)
       setTestIds([])
-      setShowApply(true)
-      toggleFilter(null, true)
+      if (source === 'standard-reports') {
+        setShowApply(true)
+        toggleFilter(null, true)
+      } else {
+        _onGoClick({
+          filters: { ..._filters },
+          selectedTests: [],
+          tagsData: { ..._tempTagsData },
+        })
+      }
     }
     setFirstLoad(false)
     // update prevSMRFilterData

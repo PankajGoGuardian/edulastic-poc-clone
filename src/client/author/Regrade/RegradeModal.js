@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { Modal as AntdModal, Radio, Row, Spin } from 'antd'
 import styled from 'styled-components'
 import { get } from 'lodash'
-import { FlexContainer, EduButton } from '@edulastic/common'
+import { FlexContainer, EduButton, notification } from '@edulastic/common'
 import { TitleWrapper } from '@edulastic/common/src/components/MainHeader'
 import {
   getRegradeFirebaseDocIdSelector,
@@ -52,8 +52,14 @@ const RegradeModal = ({
     regradeSettingsChange(newState)
   }
 
-  const onCloseRegardModal = () => {
+  const onCloseRegardModal = (isChangesDiscarded = false) => {
     toggleRegradeModal(null)
+    if (isChangesDiscarded) {
+      return notification({
+        type: 'warn',
+        messageKey: 'publishCorrectItemDiscarded',
+      })
+    }
   }
 
   const onApplySettings = () => {
@@ -84,7 +90,7 @@ const RegradeModal = ({
           <EduButton
             isBlue
             isGhost
-            onClick={onCloseRegardModal}
+            onClick={() => onCloseRegardModal(true)}
             disabled={isInRegrade}
             width="145px"
             height="36px"

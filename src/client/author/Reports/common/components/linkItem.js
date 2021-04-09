@@ -7,7 +7,15 @@ import AuthorCompleteSignupButton from '../../../../common/components/AuthorComp
 import { ReportItemCards } from './ReportItemCard'
 
 const nonPremiumReports = ['standardsGradebook']
-export const LinkItem = ({ data, inverse, tiles, premium, history }) => {
+
+export const LinkItem = ({
+  data,
+  inverse,
+  tiles,
+  premium,
+  history,
+  loc = '',
+}) => {
   const showPremiumLabel = !premium && !nonPremiumReports.includes(data.key)
   const showGreenBorder = !premium && nonPremiumReports.includes(data.key)
   const ResolvedLink = showPremiumLabel ? Fragment : Link
@@ -23,7 +31,10 @@ export const LinkItem = ({ data, inverse, tiles, premium, history }) => {
             onClick={() => history.push(data.location)}
           />
         ) : (
-          <ResolvedLink data-cy={data.key} to={data.location}>
+          <ResolvedLink
+            data-cy={data.key}
+            to={{ pathname: data.location, state: { source: loc } }}
+          >
             <ReportItemCards
               data={data}
               showPremiumLabel={showPremiumLabel}
@@ -36,7 +47,10 @@ export const LinkItem = ({ data, inverse, tiles, premium, history }) => {
   }
   return (
     <Item>
-      <ResolvedLink data-cy={data.key} to={!inverse && data.location}>
+      <ResolvedLink
+        data-cy={data.key}
+        to={!inverse && { pathname: data.location, state: { source: loc } }}
+      >
         {data.title}
         {!inverse && <StyledIcon type="right" />}
       </ResolvedLink>

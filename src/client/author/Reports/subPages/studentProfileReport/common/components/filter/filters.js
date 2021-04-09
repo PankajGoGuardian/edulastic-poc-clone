@@ -69,11 +69,11 @@ const filtersDefaultValues = [
     nestedFilters: [
       {
         key: 'grades',
-        value: 'All',
+        value: '',
       },
       {
         key: 'subjects',
-        value: 'All',
+        value: '',
       },
     ],
   },
@@ -246,8 +246,16 @@ const StudentProfileReportFilters = ({
       }
       setFilters({ ..._filters })
       setTempTagsData({ ..._tempTagsData })
-      setShowApply(true)
-      toggleFilter(null, true)
+      if (location.state?.source === 'standard-reports') {
+        setShowApply(true)
+        toggleFilter(null, true)
+      } else {
+        _onGoClick({
+          filters: { ..._filters },
+          selectedStudent: _student,
+          tagsData: { ..._tempTagsData },
+        })
+      }
       setFirstLoad(false)
     }
     setPrevSPRFilterData(SPRFilterData)
@@ -295,6 +303,7 @@ const StudentProfileReportFilters = ({
       (index !== -1 || ['grades', 'subjects'].includes(key))
     ) {
       setStudent({ key: '', title: '' })
+      delete nextTagsData.student
       prevFilters.classIds = ''
       delete nextTagsData.classIds
     }
@@ -385,9 +394,7 @@ const StudentProfileReportFilters = ({
                 >
                   <Tabs.TabPane
                     key={staticDropDownData.filterSections.CLASS_FILTERS.key}
-                    tab={
-                      staticDropDownData.filterSections.CLASS_FILTERS.title
-                    }
+                    tab={staticDropDownData.filterSections.CLASS_FILTERS.title}
                   >
                     <Row type="flex" gutter={[5, 10]}>
                       <Col span={6}>
@@ -514,7 +521,12 @@ const StudentProfileReportFilters = ({
             display: reportId ? 'none' : 'flex',
           }}
         >
-          <StyledDropDownContainer xs={24} sm={12} lg={topFilterColSpan} data-cy="student">
+          <StyledDropDownContainer
+            xs={24}
+            sm={12}
+            lg={topFilterColSpan}
+            data-cy="student"
+          >
             <StudentAutoComplete
               firstLoad={firstLoad}
               termId={filters.termId}

@@ -2,7 +2,7 @@
   "filterSections": {
     "TEST_FILTERS": {
       "key": "0",
-      "title": "Select Assessment(s)"
+      "title": "Select Assessments"
     },
     "CLASS_FILTERS": {
       "key": "1",

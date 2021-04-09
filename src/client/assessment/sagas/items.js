@@ -398,7 +398,6 @@ export function* saveUserResponse({ payload }) {
       notification({ msg: err.response.data })
     } else if (err?.status === 410) {
       window.location.reload()
-      notification({ messageKey: 'failedSavingAnswer' })
     } else {
       notification({ messageKey: 'failedSavingAnswer' })
     }

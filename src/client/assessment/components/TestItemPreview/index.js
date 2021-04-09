@@ -1,10 +1,10 @@
 /* eslint-disable react/no-did-update-set-state */
 import React, { Component } from 'react'
-import { some } from 'lodash'
+import { get, isEqual, every } from 'lodash'
 import { compose } from 'redux'
 import PropTypes from 'prop-types'
-import { ThemeProvider, withTheme } from 'styled-components'
-import { get, isEqual, every } from 'lodash'
+import styled, { ThemeProvider, withTheme } from 'styled-components'
+
 import { white } from '@edulastic/colors'
 import { withNamespaces } from '@edulastic/localization'
 import { AssessmentPlayerContext, withWindowSizes } from '@edulastic/common'
@@ -15,7 +15,7 @@ import { themes } from '../../../theme'
 import TestItemCol from './containers/TestItemCol'
 import { Container, RenderFeedBack } from './styled/Container'
 import FeedbackWrapper from '../FeedbackWrapper'
-import QuestionBottomAction from '../Common/QuestionBottomAction'
+import { ShowUserWork } from '../Common/QuestionBottomAction'
 import { IPAD_LANDSCAPE_WIDTH } from '../../constants/others'
 import Divider from './Divider'
 import { changedPlayerContentAction } from '../../../author/sharedDucks/testPlayer'
@@ -341,7 +341,6 @@ class TestItemPreview extends Component {
       isExpressGrader,
       isQuestionView,
       showStudentWork,
-      timeSpent,
       userWork,
       itemLevelScoring,
       isPrintPreview,
@@ -468,13 +467,9 @@ class TestItemPreview extends Component {
             </div>
           </Container>
           {hasDrawingResponse && (isLCBView || isExpressGrader) && userWork && (
-            <QuestionBottomAction
-              margin="0px 12px 12px"
-              isStudentReport={isStudentReport}
-              isShowStudentWork={!!showStudentWork}
-              onClickHandler={showStudentWork}
-              timeSpent={timeSpent}
-            />
+            <ShowUserWorkWrapper>
+              <ShowUserWork onClick={showStudentWork} />
+            </ShowUserWorkWrapper>
           )}
         </div>
         {/* on the student side, show single feedback only when item level scoring is on */}
@@ -544,3 +539,13 @@ const enhance = compose(
 )
 
 export default enhance(TestItemPreview)
+
+const ShowUserWorkWrapper = styled.div`
+  position: relative;
+
+  button {
+    position: absolute;
+    top: -50px;
+    left: 28px;
+  }
+`

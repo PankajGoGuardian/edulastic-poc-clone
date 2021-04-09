@@ -134,9 +134,16 @@ export const NumberInputStyled = styled(InputNumber)`
       background-color: ${(props) => props.bg || greyThemeLighter};
       box-shadow: none;
     }
+    .ant-input-number-handler-wrap:hover
+      ~ .ant-input-number-input-wrap
+      > .ant-input-number-input {
+      padding-right: 45%;
+    }
+
     .ant-input-number-input {
       height: ${(props) => props.height || '32px'};
       padding: 0px;
+      text-align: center;
     }
   }
 `

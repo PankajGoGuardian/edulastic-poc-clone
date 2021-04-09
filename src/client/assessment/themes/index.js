@@ -42,6 +42,7 @@ import {
 import { saveUserWorkAction } from '../actions/userWork'
 import {
   finishTestAcitivityAction,
+  loadTestAction,
   setIsTestPreviewVisibleAction,
   setPasswordValidateStatusAction,
 } from '../actions/test'
@@ -466,6 +467,7 @@ const RealTimeV2HookWrapper = ({
   let topics = [
     `student_assessment:user:${userId}`,
     `student_assessment:test:${testId}:group:${groupId}`,
+    `student_assessment:test:${testId}`,
   ]
   if (regradedAssignment?.newTestId) {
     topics = [
@@ -473,8 +475,14 @@ const RealTimeV2HookWrapper = ({
       `student_assessment:test:${regradedAssignment?.newTestId}:group:${groupId}`,
     ]
   }
+
   useRealtimeV2(topics, {
-    regradedAssignment: (payload) => regradedRealtimeAssignment(payload),
+    regradedAssignment: (payload) => {
+      regradedRealtimeAssignment(payload)
+    },
+    correctItem: (payload) => {
+      regradedRealtimeAssignment(payload)
+    },
   })
   return null
 }
@@ -539,6 +547,7 @@ const AssessmentContainer = ({
   setIsTestPreviewVisible,
   saveBlurTime,
   savedBlurTime: blurTimeAlreadySaved,
+  loadTest,
   ...restProps
 }) => {
   const itemId = preview || testletType ? 'new' : match.params.itemId || 'new'
@@ -655,6 +664,17 @@ const AssessmentContainer = ({
   }, [regradedAssignment?.newTestId])
 
   const onRegradedModalOk = () => {
+    if (regradedAssignment.newTestId === testId) {
+      loadTest({
+        testId,
+        testActivityId: restProps.utaId,
+        preview,
+        demo,
+        test,
+        groupId,
+        isStudentReport,
+      })
+    }
     history.push(
       `/student/assessment/${regradedAssignment.newTestId}/class/${groupId}/uta/${restProps.utaId}/itemId/${items[currentItem]._id}`
     )
@@ -1306,6 +1326,7 @@ const enhance = compose(
       evaluateForPreview: evaluateCurrentAnswersForPreviewAction,
       setCheckAnswerInProgress: setCheckAnswerInProgressStatusAction,
       setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
+      loadTest: loadTestAction,
     }
   )
 )

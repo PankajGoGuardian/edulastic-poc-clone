@@ -215,7 +215,7 @@ const AssessmentPlayerSkinWrapper = ({
       return {
         paddingLeft: 0,
         paddingRight: 0,
-        marginTop: '60px',
+        marginTop: '48px',
       }
     }
     return { width: '100%' }

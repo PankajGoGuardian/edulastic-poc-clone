@@ -20,10 +20,10 @@ export const StyledButton = styled.div`
   border: 1px solid ${button.background};
   color: ${button.background};
   cursor: pointer;
-  padding: 8px 25px;
+  padding: 7px 25px;
   text-transform: uppercase;
   border-radius: 5px;
-  font-size: 12px;
+  font-size: 10px;
   &:hover {
     background: ${button.background};
     color: ${header2.background};
@@ -39,11 +39,11 @@ export const ControlBtn = styled.button`
   color: ${button.textColor};
   background-color: ${button.background};
   cursor: pointer;
-  padding: 10px 20px;
+  padding: 7px 20px;
   border-radius: 5px;
   display: inline-flex;
   align-items: center;
-  font-size: 12px;
+  font-size: 10px;
   svg {
     fill: ${button.textColor};
   }
@@ -121,7 +121,7 @@ export const StyledHeaderTitle = styled.div`
   font-size: 14px;
   color: ${footer.textColor} !important;
   border-bottom: 1px solid ${header1.border};
-  padding: 8px 50px;
+  padding: 7px 50px;
   justify-content: space-between;
   .ant-breadcrumb-link,
   .ant-breadcrumb-separator,

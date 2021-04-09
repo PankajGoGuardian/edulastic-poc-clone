@@ -89,7 +89,7 @@ const QuestionBottomAction = ({
   openQuestionMoal,
   ...questionProps
 }) => {
-  // const [openQuestionMoal, setOpenQuestionModal] = useState(false)
+  // const [openQuestionModal, setOpenQuestionModal] = useState(false)
   const [itemloading, setItemLoading] = useState(false)
 
   const onCloseQuestionModal = () => {
@@ -232,9 +232,9 @@ const QuestionBottomAction = ({
           {timeSpent && <TimeSpent time={timeSpent} />}
         </RightWrapper>
       </BottomActionWrapper>
-      {!isStudentReport && openQuestionMoal && QuestionComp && questionData && (
+      {!isStudentReport && openQuestionModal && QuestionComp && questionData && (
         <QuestionPreviewModal
-          visible={openQuestionMoal}
+          visible={openQuestionModal}
           onCancel={onCloseQuestionModal}
           title={modalTitle}
           footer={null}
@@ -316,7 +316,7 @@ const enhance = compose(
     (state, ownProps) => ({
       loading: state.scratchpad.loading,
       loadingComponents: get(state, ['authorUi', 'currentlyLoading'], []),
-      openQuestionMoal: get(state, ['authorUi', 'questionEditModalOpen']),
+      openQuestionModal: get(state, ['authorUi', 'questionEditModalOpen']),
       questionData: getCurrentQuestionSelector(state),
       additionalData: getAdditionalDataSelector(state),
       permissionToEdit: getPermissionToEdit(state, ownProps),

@@ -538,7 +538,7 @@ class TestList extends Component {
       (x) => x.config?.subscriptionData?.itemBankId === filteredSparkInfo._id
     )
 
-    const { description = '', title = '' } =
+    const { description = '' } =
       sparkDescription?.config?.subscriptionData || {}
 
     return (
@@ -683,8 +683,9 @@ class TestList extends Component {
             <PlaylistAvailableModal
               isVisible={isPlaylistAvailableModalVisible}
               closeModal={this.closePlaylistAvailableModal}
+              filteredSpark={filteredSparkInfo}
+              dashboardTiles={dashboardTiles}
               description={description}
-              title={title}
             />
           )}
         </Container>

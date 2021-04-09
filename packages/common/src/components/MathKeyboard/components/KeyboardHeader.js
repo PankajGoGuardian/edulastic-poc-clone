@@ -44,24 +44,23 @@ const KeyboardHeader = ({
             getPopupContainer={(triggerNode) => triggerNode.parentNode}
             minWidth="204px" // width when full keypad mode is selected
           >
-            {options.map(({ value, label }, index) => (
-              <Option
-                value={value}
-                key={index}
-                data-cy={`math-keyboard-dropdown-list-${index}`}
-              >
-                {label}
-              </Option>
-            ))}
-            {hasCustomKeypads && (
-              <OptGroup label="My Custom Keypads">
-                {customKeypads.map((keypad) => (
-                  <Option key={keypad._id} value={keypad._id}>
-                    {keypad.label}
-                  </Option>
-                ))}
-              </OptGroup>
-            )}
+            {hasCustomKeypads &&
+              customKeypads.map((keypad) => (
+                <Option key={keypad._id} value={keypad._id}>
+                  {keypad.label}
+                </Option>
+              ))}
+            <OptGroup label="Standard Keypads">
+              {options.map(({ value, label }, index) => (
+                <Option
+                  value={value}
+                  key={index}
+                  data-cy={`math-keyboard-dropdown-list-${index}`}
+                >
+                  {label}
+                </Option>
+              ))}
+            </OptGroup>
           </SelectInputStyled>
         )}
         {showResponse && (

@@ -40,7 +40,6 @@ const RegradeModal = ({
 
   const [regradeSettings, regradeSettingsChange] = useState(settings)
   const [isInRegrade, setIsInRegrade] = useState(false)
-  const [confirmRegrade, setConfirmRegrade] = useState(false)
 
   const onUpdateSettings = (key, value) => {
     const newState = {
@@ -58,9 +57,6 @@ const RegradeModal = ({
   }
 
   const onApplySettings = () => {
-    if (!confirmRegrade) {
-      return setConfirmRegrade(true)
-    }
     updateCorrectItem({
       ...modalState.itemData,
       proceedRegrade: true,
@@ -80,7 +76,7 @@ const RegradeModal = ({
           alignItems="center"
           justifyContent="flex-start"
         >
-          <TitleWrapper>{confirmRegrade ? 'CONFIRM' : 'REGRADE'}</TitleWrapper>
+          <TitleWrapper>REGRADE</TitleWrapper>
         </FlexContainer>
       }
       footer={
@@ -93,7 +89,7 @@ const RegradeModal = ({
             width="145px"
             height="36px"
           >
-            {confirmRegrade ? 'NO, CANCEL' : 'DISCARD CHANGES'}
+            DISCARD CHANGES
           </EduButton>
           <EduButton
             isBlue
@@ -103,43 +99,39 @@ const RegradeModal = ({
             disabled={isInRegrade}
             onClick={onApplySettings}
           >
-            {confirmRegrade ? 'YES, REGRADE' : 'PUBLISH & REGRADE'}
+            PUBLISH & REGRADE
           </EduButton>
         </FlexContainer>
       }
       width="620px"
     >
       {isInRegrade && <Spin />}
-      {confirmRegrade ? (
-        'Are you sure you want to regrade ?'
-      ) : (
-        <InputsWrapper data-cy="edited-items" mt="0px">
-          <Row>
-            <p>
-              The change that has been made to the item requires student
-              responses that have been already submitted to be regraded. How
-              would you like to proceed?
-            </p>
-            <br />
+      <InputsWrapper data-cy="edited-items" mt="0px">
+        <Row>
+          <p>
+            The change that has been made to the item requires student responses
+            that have been already submitted to be regraded. How would you like
+            to proceed?
+          </p>
+          <br />
+        </Row>
+        <Group
+          defaultValue={regradeSettings.options.editedQuestion}
+          onChange={(e) => onUpdateSettings('editedQuestion', e.target.value)}
+        >
+          <Row key="editedQuestion">
+            <Radio data-cy="skip-grading" value={ACTIONS.SKIP}>
+              Skip rescoring
+            </Radio>
+            <Radio data-cy="restore-grading" value={ACTIONS.SCORE}>
+              Rescore automatically
+            </Radio>
+            <Radio data-cy="manual-grading" value={ACTIONS.MANUAL}>
+              Mark for manual grading
+            </Radio>
           </Row>
-          <Group
-            defaultValue={regradeSettings.options.editedQuestion}
-            onChange={(e) => onUpdateSettings('editedQuestion', e.target.value)}
-          >
-            <Row key="editedQuestion">
-              <Radio data-cy="skip-grading" value={ACTIONS.SKIP}>
-                Skip rescoring
-              </Radio>
-              <Radio data-cy="restore-grading" value={ACTIONS.SCORE}>
-                Rescore automatically
-              </Radio>
-              <Radio data-cy="manual-grading" value={ACTIONS.MANUAL}>
-                Mark for manual grading
-              </Radio>
-            </Row>
-          </Group>
-        </InputsWrapper>
-      )}
+        </Group>
+      </InputsWrapper>
       {regradeFirebaseDocId && (
         <RegradeListenerLcb onCloseModal={onCloseRegardModal} />
       )}

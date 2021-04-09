@@ -265,7 +265,7 @@
         "mixedFraction": "Mixed Fraction"
       },
       "graphControls": "Graph Controls",
-      "customKeypadLabel": "My Custom Keypads"
+      "standardKeypadLabel": "Standard Keypads"
     },
     "dropZone": {
       "dragDrop": "Drag & Drop",

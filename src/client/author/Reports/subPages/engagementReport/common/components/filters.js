@@ -91,8 +91,12 @@ const EngagementReportFilters = ({
     }
     setTempTagsData(_tempTagsData)
     setFilters(_filters)
-    setShowApply(true)
-    toggleFilter(null, true)
+    if (location.state?.source === 'standard-reports') {
+      setShowApply(true)
+      toggleFilter(null, true)
+    } else {
+      _onGoClick({ filters: { ..._filters }, tagsData: { ..._tempTagsData } })
+    }
     setFirstLoad(false)
   }, [])
 

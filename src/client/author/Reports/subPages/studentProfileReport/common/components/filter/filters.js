@@ -246,8 +246,16 @@ const StudentProfileReportFilters = ({
       }
       setFilters({ ..._filters })
       setTempTagsData({ ..._tempTagsData })
-      setShowApply(true)
-      toggleFilter(null, true)
+      if (location.state?.source === 'standard-reports') {
+        setShowApply(true)
+        toggleFilter(null, true)
+      } else {
+        _onGoClick({
+          filters: { ..._filters },
+          selectedStudent: _student,
+          tagsData: { ..._tempTagsData },
+        })
+      }
       setFirstLoad(false)
     }
     setPrevSPRFilterData(SPRFilterData)

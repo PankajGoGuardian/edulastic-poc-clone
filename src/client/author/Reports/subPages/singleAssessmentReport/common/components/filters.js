@@ -338,7 +338,11 @@ const SingleAssessmentReportFilters = ({
     if (!_testId) {
       delete _tempTagsData.testId
     }
-    if (firstLoad && isCliUser) {
+    const source = location.state?.source
+    if (
+      (firstLoad && isCliUser) ||
+      (!reportId && !isCliUser && source !== 'standard-reports')
+    ) {
       _onGoClick({
         filters: { ...filters },
         selectedTest: { key: _testId },

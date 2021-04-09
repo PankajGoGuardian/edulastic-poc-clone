@@ -133,7 +133,7 @@ const QuestionBottomAction = ({
       loading={loading || itemloading}
       disabled={hasDynamicVariables}
     >
-      Correct Item
+      Edit / Regrade
     </CorrectButton>
   )
 

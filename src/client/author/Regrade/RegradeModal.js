@@ -116,7 +116,7 @@ const RegradeModal = ({
         <InputsWrapper data-cy="edited-items" mt="0px">
           <Row>
             <p>
-              the change that has been made to the item requires student
+              The change that has been made to the item requires student
               responses that have been already submitted to be regraded. How
               would you like to proceed?
             </p>

@@ -661,6 +661,7 @@ function* correctItemUpdateSaga({ payload }) {
       assignmentId,
       proceedRegrade,
       editRegradeChoice,
+      isUnscored,
     } = payload
     const classResponse = yield select((state) => state.classResponse)
     const testItems = get(classResponse, 'data.testItems', [])
@@ -701,6 +702,14 @@ function* correctItemUpdateSaga({ payload }) {
     }
 
     const { testId: newTestId, isRegradeNeeded } = result
+    if (isUnscored || !isRegradeNeeded) {
+      notification({
+        type: 'success',
+        messageKey: 'publishCorrectItemSuccess',
+      })
+      return
+    }
+
     if (proceedRegrade) {
       yield put({
         type: TOGGLE_REGRADE_MODAL,

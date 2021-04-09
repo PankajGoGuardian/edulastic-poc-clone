@@ -60,6 +60,7 @@ const QuestionBottomAction = ({
       studentId: item?.activity?.userId,
       question: questionData,
       proceedRegrade: false,
+      isUnscored: item?.validation?.unscored,
       callBack: onCloseQuestionModal,
     })
   }

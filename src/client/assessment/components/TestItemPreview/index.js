@@ -286,11 +286,15 @@ class TestItemPreview extends Component {
       isPassageWithQuestions,
       itemLevelScoring,
       cols,
+      isPrintPreview,
     } = this.props
     const isV1Multipart = (cols || []).some((col) => col.isV1Multipart)
     let showStackedView = false
 
-    if (isLCBView && !isQuestionView && !isPassageWithQuestions) {
+    if (
+      (isLCBView && !isQuestionView && !isPassageWithQuestions) ||
+      isPrintPreview
+    ) {
       if (
         !itemLevelScoring &&
         this.widgets.length > 1 &&

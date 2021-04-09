@@ -3,12 +3,15 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import styled, { css, withTheme } from 'styled-components'
-import { questionType } from '@edulastic/constants'
-import { withNamespaces } from '@edulastic/localization'
-import { greyThemeDark2 } from '@edulastic/colors'
 import { get, isEmpty, round } from 'lodash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faClock } from '@fortawesome/free-solid-svg-icons'
+
+import { questionType } from '@edulastic/constants'
+import { withNamespaces } from '@edulastic/localization'
+import { greyThemeDark2 } from '@edulastic/colors'
+import UnscoredBlock from '@edulastic/common/src/components/Unscored'
+
 import { PrintPreviewScore } from './printPreviewScore'
 import FeedBackContainer from './FeedBackContainer'
 import FeedbackRight from './FeedbackRight'
@@ -141,9 +144,16 @@ const FeedbackWrapper = ({
           isStudentReport={isStudentReport}
         />
       )}
-      {showFeedback && isPrintPreview && !disabled && (
-        <PrintPreviewScore disabled={disabled} data={data} />
-      )}
+
+      {showFeedback &&
+        isPrintPreview &&
+        !disabled &&
+        (isPracticeQuestion ? (
+          <UnscoredBlock height="30px" />
+        ) : (
+          <PrintPreviewScore disabled={disabled} data={data} />
+        ))}
+
       {isPrintPreview && timeSpent && showFeedback && !disabled && (
         <div className="__prevent-page-break __print-time-spent">
           <TimeSpentWrapper style={{ justifyContent: 'center' }}>

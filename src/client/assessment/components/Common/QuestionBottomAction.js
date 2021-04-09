@@ -23,7 +23,10 @@ import {
   deleteQuestionAction,
 } from '../../../author/sharedDucks/questions'
 import { updateCorrectTestItemAction } from '../../../author/src/actions/classBoard'
-import { getAdditionalDataSelector } from '../../../author/ClassBoard/ducks'
+import {
+  getAdditionalDataSelector,
+  getShowCorrectItemButton,
+} from '../../../author/ClassBoard/ducks'
 import {
   getUserId,
   getUserRole,
@@ -81,6 +84,7 @@ const QuestionBottomAction = ({
   permissionToEdit,
   toggleQuestionModal,
   openQuestionModal,
+  showCorrectItem,
   ...questionProps
 }) => {
   // const [openQuestionModal, setOpenQuestionModal] = useState(false)
@@ -208,7 +212,8 @@ const QuestionBottomAction = ({
           )}
         </div>
         <RightWrapper>
-          {item &&
+          {showCorrectItem &&
+            item &&
             !isStudentReport &&
             (isDisableCorrectItem ? (
               <Popover
@@ -314,6 +319,7 @@ const enhance = compose(
       questionData: getCurrentQuestionSelector(state),
       additionalData: getAdditionalDataSelector(state),
       permissionToEdit: getPermissionToEdit(state, ownProps),
+      showCorrectItem: getShowCorrectItemButton(state),
     }),
     {
       setQuestionData: setQuestionDataAction,

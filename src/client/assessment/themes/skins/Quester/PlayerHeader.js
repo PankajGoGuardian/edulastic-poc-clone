@@ -136,7 +136,12 @@ const PlayerHeader = ({
               <TimedTestTimer
                 utaId={utaId}
                 groupId={groupId}
-                style={{ marginRight: '50px', padding: '0', minHeight: 'auto' }}
+                style={{
+                  marginRight: '50px',
+                  padding: '0',
+                  minHeight: 'auto',
+                  fontSize: '12px',
+                }}
               />
             )}
 
@@ -177,7 +182,13 @@ const PlayerHeader = ({
                 </Container>
               )}
               <Container
-                style={{ fontSize: '20px', fontWeight: 600, color: '#fff' }}
+                style={{
+                  fontSize: '14px',
+                  fontWeight: 600,
+                  color: '#fff',
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
                 data-cy="questionLeft"
               >
                 Question {currentItem + 1} of {totalQuestions}
@@ -256,7 +267,7 @@ const enhance = compose(
 export default enhance(PlayerHeader)
 
 const NavigationHeader = styled(FlexContainer)`
-  padding: 8px 50px;
+  padding: 7px 50px;
   justify-content: space-between;
 `
 
@@ -266,7 +277,7 @@ const SignOut = styled.div`
   justify-content: center;
   cursor: pointer;
   text-transform: uppercase;
-  font-size: 12px;
+  font-size: 10px;
   svg {
     color: #fff;
   }
@@ -305,6 +316,6 @@ const Subjects = styled.div`
 const IconEduLogoStyled = styled(IconEduLogo)`
   position: absolute;
   width: 30px;
-  top: -4px;
+  top: -5px;
   left: 8px;
 `

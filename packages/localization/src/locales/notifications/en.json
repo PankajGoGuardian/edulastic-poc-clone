@@ -391,6 +391,10 @@
     "message": "Corrections/updates made to the item(s) failed",
     "description": ""
   },
+  "publishCorrectItemDiscarded": {
+    "message": "All corrections/edits made to item(s) have been discarded",
+    "description": ""
+  },
   "publishCorrectItemSuccess": {
     "message": "Corrections/updates made to the item(s) are saved successfully and students will start receiving the updated items starting now",
     "description": ""

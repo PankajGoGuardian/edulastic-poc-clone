@@ -607,7 +607,7 @@ const SubscriptionMain = ({
         </SectionContainer>
       </AddonSection>
 
-      {subType && (
+      {subType !== 'enterprise' && (
         <EnterpriseSection>
           <SectionTitle>Enterprise</SectionTitle>
           <SectionDescription>

@@ -166,10 +166,10 @@ const MultipleAssessmentReportContainer = (props) => {
     setMARSettings({
       requestFilters: {
         ..._requestFilters,
-        testGrade: _requestFilters.grade,
-        testSubject: _requestFilters.subject,
-        grade: _requestFilters.studentGrade,
-        subject: _requestFilters.studentSubject,
+        testGrades: _requestFilters.grades,
+        testSubjects: _requestFilters.subjects,
+        grades: _requestFilters.studentGrades,
+        subjects: _requestFilters.studentSubjects,
         courseId: _requestFilters.studentCourseId,
         classIds: _requestFilters.classIds || '',
         groupIds: _requestFilters.groupIds || '',

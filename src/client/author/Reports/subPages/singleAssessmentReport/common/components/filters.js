@@ -340,8 +340,8 @@ const SingleAssessmentReportFilters = ({
     }
     const source = location.state?.source
     if (
-      (firstLoad && isCliUser) ||
-      (!reportId && !isCliUser && source !== 'standard-reports')
+      firstLoad &&
+      (isCliUser || (!reportId && !isCliUser && source !== 'standard-reports'))
     ) {
       _onGoClick({
         filters: { ...filters },

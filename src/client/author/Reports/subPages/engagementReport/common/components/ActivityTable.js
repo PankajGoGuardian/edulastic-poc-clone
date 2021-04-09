@@ -13,7 +13,6 @@ import staticDropDownData from '../static/staticDropDownData.json'
 
 const defaultAssessmentTypes = staticDropDownData.assessmentType
   .map((o) => o.key)
-  .slice(1)
   .join()
 
 const sortNumbers = (key) => (a, b) =>

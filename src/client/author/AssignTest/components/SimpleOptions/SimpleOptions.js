@@ -146,7 +146,6 @@ class SimpleOptions extends React.Component {
       assignment = {
         ...assignment,
         restrictNavigationOut: undefined,
-        blockSaveAndContinue: false,
       }
     }
 

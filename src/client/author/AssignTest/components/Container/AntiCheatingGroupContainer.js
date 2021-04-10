@@ -282,11 +282,8 @@ const AntiCheatingGroupContainer = ({
             </Col>
             <Col span={14}>
               <AlignSwitchRight
-                disabled={freezeSettings || !premium || safeBrowser}
+                disabled={freezeSettings || !premium}
                 size="small"
-                title={
-                  safeBrowser && 'Disabled since Safe Exam Browser Enabled'
-                }
                 checked={blockSaveAndContinue}
                 data-cy="bockSaveAndContinueSwitch"
                 onChange={(value) =>
@@ -400,7 +397,9 @@ const AntiCheatingGroupContainer = ({
                       !(
                         restrictNavigationOut ===
                         'warn-and-report-after-n-alerts'
-                      ) || freezeSettings
+                      ) ||
+                      freezeSettings ||
+                      safeBrowser
                     }
                   />{' '}
                   ALERTS

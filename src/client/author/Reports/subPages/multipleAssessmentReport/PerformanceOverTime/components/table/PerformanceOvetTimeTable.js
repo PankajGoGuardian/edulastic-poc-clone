@@ -95,6 +95,8 @@ const staticFields = [
     title: 'Max Possible Score',
     width: 120,
     dataIndex: 'maxPossibleScore',
+    render: (text, record) =>
+      record.maxPossibleScore === null ? `-` : `${record.maxPossibleScore}`,
   },
   {
     title: 'Questions',

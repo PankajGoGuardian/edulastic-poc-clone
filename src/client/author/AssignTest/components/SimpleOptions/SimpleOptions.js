@@ -84,8 +84,15 @@ class SimpleOptions extends React.Component {
     if (free && !premium) {
       this.onChange('releaseScore', releaseGradeLabels.WITH_ANSWERS)
     }
-    const { scoringType: _scoringType, penalty: _penalty } = testSettings
+    const {
+      scoringType: _scoringType,
+      penalty: _penalty,
+      safeBrowser,
+    } = testSettings
     const { scoringType = _scoringType, penalty = _penalty } = assignment
+    if (safeBrowser === true) {
+      this.overRideSettings('safeBrowser', true)
+    }
     if (scoringType === evalTypeLabels.PARTIAL_CREDIT && !penalty)
       this.overRideSettings(
         'scoringType',
@@ -133,6 +140,14 @@ class SimpleOptions extends React.Component {
       value === 'warn-and-report-after-n-alerts'
     ) {
       assignment = { ...assignment, restrictNavigationOutAttemptsThreshold: 5 }
+    }
+
+    if (field === 'safeBrowser' && value === true) {
+      assignment = {
+        ...assignment,
+        restrictNavigationOut: undefined,
+        blockSaveAndContinue: false,
+      }
     }
 
     const nextAssignment = produce(assignment, (state) => {

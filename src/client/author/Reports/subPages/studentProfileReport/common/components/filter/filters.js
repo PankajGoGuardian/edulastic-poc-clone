@@ -185,15 +185,10 @@ const StudentProfileReportFilters = ({
     }
     setFilters(_filters)
     setTempTagsData(_tempTagsData)
-
     if (reportId) {
       getSPRFilterDataRequest({ reportId })
-      setStudent({ key: urlStudentId })
-    } else if (urlStudentId) {
-      getSPRFilterDataRequest({
-        termId: _filters.termId,
-        studentId: urlStudentId,
-      })
+    }
+    if (urlStudentId) {
       setStudent({ key: urlStudentId })
     }
   }, [])
@@ -284,7 +279,9 @@ const StudentProfileReportFilters = ({
     const _tempTagsData = { ...tempTagsData, student: selected }
     if (selected && selected.key) {
       setStudent(selected)
-      setFilters({ ...filters, showApply: true })
+      if (!firstLoad || location.state?.source === 'standard-reports') {
+        setFilters({ ...filters, showApply: true })
+      }
       getSPRFilterDataRequest({
         termId: filters.termId,
         studentId: selected.key,

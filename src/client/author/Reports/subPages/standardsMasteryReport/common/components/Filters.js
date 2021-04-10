@@ -253,7 +253,7 @@ const StandardsMasteryReportFilters = ({
         get(standardsFilters, 'data.result.reportFilters', {})
       )
       // update search filters from saved filters
-      if (source !== 'standard-reports') {
+      if (source === 'standard-reports') {
         search = {
           ...search,
           termId: search.termId || savedFilters.termId,
@@ -630,7 +630,7 @@ const StandardsMasteryReportFilters = ({
                             schoolIds={filters.schoolIds}
                             teacherIds={filters.teacherIds}
                             grades={filters.grades}
-                            subject={filters.subjects}
+                            subjects={filters.subjects}
                             courseId={
                               filters.courseId !== 'All' && filters.courseId
                             }
@@ -651,7 +651,7 @@ const StandardsMasteryReportFilters = ({
                             schoolIds={filters.schoolIds}
                             teacherIds={filters.teacherIds}
                             grades={filters.grades}
-                            subject={filters.subjects}
+                            subjects={filters.subjects}
                             courseId={
                               filters.courseId !== 'All' && filters.courseId
                             }

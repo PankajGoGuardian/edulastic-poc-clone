@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { message } from 'antd'
 import { get, groupBy, isEmpty, last } from 'lodash'
 import { ticks } from 'd3-array'
 import { connect } from 'react-redux'
@@ -424,9 +423,7 @@ class BarGraph extends Component {
           }}
         />
         {isBoth && (
-          <LegendContainer
-            style={{ marginBottom: '-18px', paddingLeft: '80px' }}
-          >
+          <LegendContainer style={{ paddingLeft: '80px' }}>
             <Legends />
           </LegendContainer>
         )}

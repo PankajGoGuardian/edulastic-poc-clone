@@ -10,7 +10,15 @@ import {
 } from '@edulastic/api'
 import { createSelector } from 'reselect'
 import { push } from 'connected-react-router'
-import { values as _values, get, keyBy, sortBy, isEmpty, groupBy } from 'lodash'
+import {
+  values as _values,
+  get,
+  keyBy,
+  sortBy,
+  isEmpty,
+  groupBy,
+  cloneDeep,
+} from 'lodash'
 import { captureSentryException, notification } from '@edulastic/common'
 import {
   test,
@@ -698,12 +706,13 @@ function* correctItemUpdateSaga({ payload }) {
       notification({ type: 'warn', msg: warningMsg })
     }
 
-    testItem.data.questions = testItem.data.questions.map((q) =>
+    const cloneItem = cloneDeep(testItem)
+    cloneItem.data.questions = testItem.data.questions.map((q) =>
       q.id === question.id ? question : q
     )
     const result = yield call(testItemsApi.updateCorrectItemById, {
       testItemId,
-      testItem,
+      testItem: cloneItem,
       testId,
       assignmentId,
       proceedRegrade,

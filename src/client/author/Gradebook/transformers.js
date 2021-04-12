@@ -113,7 +113,6 @@ export const splitFullName = (fullName = '') => {
   let middleName = ''
   let lastName = ''
   if (trimmedFullName) {
-    debugger
     const splitNames = trimmedFullName.split(' ').map((o) => (o || '').trim())
     if (splitNames.length === 1) {
       firstName = splitNames[0]

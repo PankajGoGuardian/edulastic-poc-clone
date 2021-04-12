@@ -24,6 +24,7 @@ const BannerSlider = ({
   handleBannerModalClose,
   isBannerModalVisible,
   handleSparkClick,
+  accessibleItembankProductIds = [],
 }) => {
   const scrollBarRef = useRef(null)
 
@@ -88,7 +89,11 @@ const BannerSlider = ({
                     }
                   >
                     {isSparkTile ? (
-                      <LearnMore data-cy="tryItFree">TRY IT FREE</LearnMore>
+                      !accessibleItembankProductIds?.includes(
+                        slide.config?.subscriptionData?.productId
+                      ) && (
+                        <LearnMore data-cy="tryItFree">TRY IT FREE</LearnMore>
+                      )
                     ) : (
                       <LearnMore data-cy="LearnMore">LEARN MORE</LearnMore>
                     )}

@@ -680,6 +680,7 @@ function* putCurriculumSequence({ payload }) {
       'isAuthor',
       'collectionName',
       'testItems',
+      'playlistMode',
     ])
     const resourceMap = {}
     dataToSend.modules = dataToSend.modules.map((mod) => {

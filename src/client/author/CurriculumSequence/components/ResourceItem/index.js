@@ -118,7 +118,7 @@ const getStandardIdentifiersForResource = (
   }
 
   if (interestedStandards.length) {
-    return uniqBy(interestedStandards.map((x) => x.identifier))
+    return uniqBy(interestedStandards.map((x) => x?.name)).filter((z) => z)
   }
 
   // fallback to original if none of equi standards match

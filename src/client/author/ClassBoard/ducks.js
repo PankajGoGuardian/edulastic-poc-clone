@@ -840,7 +840,7 @@ const getTestItemsData = createSelector(
 
 export const getClassResponseSelector = createSelector(
   stateClassResponseSelector,
-  (state) => state.data
+  (state) => state?.data || {}
 )
 
 export const ttsUserIdSelector = createSelector(
@@ -1604,6 +1604,9 @@ export const getShowCorrectItemButton = createSelector(
   getUserIdSelector,
   (assignedBy, userRole, isDocBased, _test, userId) => {
     const assignedRole = assignedBy.role
+    if (!assignedRole || assignedRole === roleuser.STUDENT) {
+      return false
+    }
     if (_test.freezeSettings || isDocBased) {
       return _test?.authors?.some((author) => author._id === userId)
     }

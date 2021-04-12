@@ -50,6 +50,7 @@ const MultipleAssessmentReportFilters = ({
   loc,
   isPrinting,
   tagsData,
+  setTagsData,
   loading,
   MARFilterData,
   filters,
@@ -98,11 +99,12 @@ const MultipleAssessmentReportFilters = ({
   const schoolYears = useMemo(() => processSchoolYear(user), [user])
   const defaultTermId = get(user, 'orgData.defaultTermId', '')
 
+  const search = pickBy(
+    qs.parse(location.search, { ignoreQueryPrefix: true, indices: true }),
+    (f) => f !== 'All' && !isEmpty(f)
+  )
+
   useEffect(() => {
-    const search = pickBy(
-      qs.parse(location.search, { ignoreQueryPrefix: true, indices: true }),
-      (f) => f !== 'All' && !isEmpty(f)
-    )
     if (reportId) {
       getMARFilterDataRequest({ reportId })
       setFilters({ ...filters, ...search })
@@ -145,10 +147,6 @@ const MultipleAssessmentReportFilters = ({
   }, [loc, showFilter])
 
   if (MARFilterData !== prevMARFilterData && !isEmpty(MARFilterData)) {
-    const search = pickBy(
-      qs.parse(location.search, { ignoreQueryPrefix: true, indices: true }),
-      (f) => f !== 'All' && !isEmpty(f)
-    )
     if (reportId) {
       _onGoClick({
         selectedTests: [],
@@ -465,6 +463,7 @@ const MultipleAssessmentReportFilters = ({
                   <Tabs.TabPane
                     key={staticDropDownData.filterSections.CLASS_FILTERS.key}
                     tab={staticDropDownData.filterSections.CLASS_FILTERS.title}
+                    forceRender
                   >
                     <Row type="flex" gutter={[5, 10]}>
                       {role !== roleuser.TEACHER && (
@@ -475,11 +474,17 @@ const MultipleAssessmentReportFilters = ({
                               selectedSchoolIds={
                                 filters.schoolIds
                                   ? filters.schoolIds.split(',')
+                                  : firstLoad && search.schoolIds
+                                  ? search.schoolIds.split(',')
                                   : []
                               }
                               selectCB={(e) =>
                                 updateFilterDropdownCB(e, 'schoolIds', true)
                               }
+                              firstLoad={firstLoad}
+                              tempTagsData={tempTagsData}
+                              setTagsData={setTagsData}
+                              setTempTagsData={setTempTagsData}
                             />
                           </Col>
                           <Col span={6}>
@@ -490,11 +495,17 @@ const MultipleAssessmentReportFilters = ({
                               selectedTeacherIds={
                                 filters.teacherIds
                                   ? filters.teacherIds.split(',')
+                                  : firstLoad && search.teacherIds
+                                  ? search.teacherIds.split(',')
                                   : []
                               }
                               selectCB={(e) =>
                                 updateFilterDropdownCB(e, 'teacherIds', true)
                               }
+                              firstLoad={firstLoad}
+                              tempTagsData={tempTagsData}
+                              setTagsData={setTagsData}
+                              setTempTagsData={setTempTagsData}
                             />
                           </Col>
                         </>

@@ -22,10 +22,25 @@ const SchoolAutoComplete = ({
   loadSchoolList,
   selectCB,
   selectedSchoolIds,
+  firstLoad,
+  tempTagsData,
+  setTagsData,
+  setTempTagsData,
 }) => {
   const schoolFilterRef = useRef()
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
   const [searchResult, setSearchResult] = useState([])
+  const [firstUpdate, setFirstUpdate] = useState(false)
+
+  // build dropdown data
+  const dropdownData = (searchTerms.text ? schoolList : searchResult).map(
+    (item) => {
+      return {
+        key: item._id,
+        title: item.name,
+      }
+    }
+  )
 
   // build search query
   const query = useMemo(() => {
@@ -68,6 +83,7 @@ const SchoolAutoComplete = ({
     if (selectedSchoolIds.length) {
       // TODO: add backend support for selected ids in query
       loadSchoolListDebounced(query)
+      setFirstUpdate(true)
     }
   }, [])
   useEffect(() => {
@@ -76,20 +92,30 @@ const SchoolAutoComplete = ({
     }
   }, [schoolList])
   useEffect(() => {
+    const _schools = dropdownData.filter((d) =>
+      selectedSchoolIds.includes(d.key)
+    )
+    if (
+      firstUpdate &&
+      _schools.length &&
+      !firstLoad &&
+      setTempTagsData &&
+      setTagsData
+    ) {
+      // TODO: find a better way to do this
+      // add delay for other tag updates to complete
+      setTimeout(() => {
+        setTempTagsData({ ...tempTagsData, schoolIds: _schools })
+        setTagsData({ ...tempTagsData, schoolIds: _schools })
+      }, 500)
+      setFirstUpdate(false)
+    }
+  }, [schoolList, firstLoad, firstUpdate])
+  useEffect(() => {
     if (searchTerms.text && searchTerms.text !== searchTerms.selectedText) {
       loadSchoolListDebounced(query)
     }
   }, [searchTerms])
-
-  // build dropdown data
-  const dropdownData = (searchTerms.text ? schoolList : searchResult).map(
-    (item) => {
-      return {
-        key: item._id,
-        title: item.name,
-      }
-    }
-  )
 
   return (
     <MultiSelectSearch

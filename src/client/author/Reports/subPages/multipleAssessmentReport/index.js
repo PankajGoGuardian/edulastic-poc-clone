@@ -254,13 +254,14 @@ const MultipleAssessmentReportContainer = (props) => {
           setTempDdFilter={setTempDdFilter}
           tempTagsData={tempTagsData}
           setTempTagsData={setTempTagsData}
+          tagsData={settings.tagsData}
+          setTagsData={setMARTagsData}
           showApply={showApply}
           setShowApply={setShowApply}
           firstLoad={firstLoad}
           setFirstLoad={setFirstLoad}
           showFilter={showFilter}
           toggleFilter={toggleFilter}
-          tagsData={settings.tagsData}
         />
       </SubHeader>
       <ReportContainer>

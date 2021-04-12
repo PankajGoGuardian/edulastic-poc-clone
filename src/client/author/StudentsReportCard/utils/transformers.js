@@ -277,8 +277,9 @@ export const getChartAndStandardTableData = (
           .map((ali) => ali.domains || [])
           .flat()
         const qActivity =
-          questionActivities.filter((qa) => qa.qid === q.id)[0] || {}
-
+          (item.itemLevelScoring
+            ? questionActivities[0]
+            : questionActivities.filter((qa) => qa.qid === q.id)[0]) || {}
         // calculating performace percentage
         const { score = 0 } = qActivity
         let { maxScore } = qActivity

@@ -276,7 +276,9 @@ export const getChartAndStandardTableData = (
           )
           .map((ali) => ali.domains || [])
           .flat()
-        const questionId = item.itemLevelScoring ? questions[0]?.id : q.id
+        const questionId = item.itemLevelScoring
+          ? item.data.questions[0]?.id
+          : q.id
         const qActivity =
           questionActivities.filter((qa) => qa.qid === questionId)[0] || {}
 

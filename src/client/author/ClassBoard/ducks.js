@@ -1605,7 +1605,7 @@ export const getShowCorrectItemButton = createSelector(
   (assignedBy, userRole, isDocBased, _test, userId) => {
     const assignedRole = assignedBy.role
     if (_test.freezeSettings || isDocBased) {
-      return _test?.authors.some((author) => author._id === userId)
+      return _test?.authors?.some((author) => author._id === userId)
     }
     if (assignedRole === roleuser.TEACHER) {
       return true

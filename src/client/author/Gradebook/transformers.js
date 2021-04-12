@@ -107,6 +107,28 @@ export const getFormattedName = (
   return fullName
 }
 
+export const splitFullName = (fullName = '') => {
+  const trimmedFullName = fullName.trim()
+  let firstName = ''
+  let middleName = ''
+  let lastName = ''
+  if (trimmedFullName) {
+    debugger
+    const splitNames = trimmedFullName.split(' ').map((o) => (o || '').trim())
+    if (splitNames.length === 1) {
+      firstName = splitNames[0]
+    } else if (splitNames.length === 2) {
+      firstName = splitNames[0]
+      lastName = splitNames[1]
+    } else if (splitNames.length > 2) {
+      firstName = splitNames[0]
+      middleName = splitNames.slice(1, splitNames.length - 1).join(' ')
+      lastName = splitNames[splitNames.length - 1]
+    }
+  }
+  return [firstName, middleName, lastName]
+}
+
 export const getUniqAssessments = (assessments = []) => {
   // group assignments by report key and title
   const assessmentGroups = groupBy(

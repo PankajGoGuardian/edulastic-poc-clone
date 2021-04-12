@@ -648,7 +648,7 @@ const MultipleAssessmentReportFilters = ({
                   )}
                 </Tabs>
               </Col>
-              <Col span={24} style={{ display: 'flex', paddingTop: '50px' }}>
+              <Col span={24} style={{ display: 'flex', paddingTop: '20px' }}>
                 <StyledEduButton
                   width="25%"
                   height="40px"

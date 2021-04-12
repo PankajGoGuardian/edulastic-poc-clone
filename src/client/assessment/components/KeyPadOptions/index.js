@@ -10,7 +10,6 @@ import { math } from '@edulastic/constants'
 import {
   Keyboard,
   FlexContainer,
-  EduButton,
   SimpleConfirmModal,
   HelperIcon,
 } from '@edulastic/common'
@@ -26,6 +25,7 @@ import { Label } from '../../styled/WidgetOptions/Label'
 import { Row } from '../../styled/WidgetOptions/Row'
 import { Col } from '../../styled/WidgetOptions/Col'
 import { SelectInputStyled, TextInputStyled } from '../../styled/InputStyles'
+import StyledLink from './styled/StyledLink'
 
 import {
   storeCustomKeypadAction,
@@ -269,16 +269,13 @@ const KeyPadOptions = ({
               <FlexContainer justifyContent="space-between">
                 {symbol._id && keypadIsUserCustomKeypad ? (
                   <>
-                    <EduButton
-                      isGhost
-                      height="28px"
-                      onClick={handleStoreCustomKeypad}
-                    >
+                    <StyledLink onClick={handleStoreCustomKeypad}>
                       {t('component.options.updateCustomKeypad')}
-                    </EduButton>
-                    <EduButton isGhost height="28px" onClick={showModal}>
+                    </StyledLink>
+                    <StyledLink> | </StyledLink>
+                    <StyledLink onClick={showModal}>
                       {t('component.options.deleteCustomKeypad')}
-                    </EduButton>
+                    </StyledLink>
                     <HelperIcon
                       labelKey="component.options.updateOrDeleteCustomKeypad"
                       contentKey="component.math.helperText.updateOrDeleteCustomKeypad"
@@ -286,13 +283,9 @@ const KeyPadOptions = ({
                   </>
                 ) : (
                   <>
-                    <EduButton
-                      isGhost
-                      height="28px"
-                      onClick={handleStoreCustomKeypad}
-                    >
+                    <StyledLink onClick={handleStoreCustomKeypad}>
                       {t('component.options.saveAndUseLater')}
-                    </EduButton>
+                    </StyledLink>
                     <HelperIcon
                       labelKey="component.options.customKeypads"
                       contentKey="component.math.helperText.saveCustomKeypad"
@@ -331,7 +324,7 @@ const KeyPadOptions = ({
         title="Delete Keypad"
         description={`${
           symbol?.label?.trim?.() || `Custom keypad`
-        } will be deleted permanently. Previous content will have the same old keypad. Are you sure you want to continue?`}
+        } will be deleted permanently. Are you sure?`}
         visible={modalVisibility}
         onCancel={hideModal}
         onProceed={handleDeleteCustomKeypad}

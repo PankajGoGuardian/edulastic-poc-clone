@@ -147,7 +147,7 @@ const PerformanceByStandards = ({
       title: standardsMap[item],
     }))
     return standardsMapArr || []
-  }, [report])
+  }, [reportWithFilteredSkills])
 
   const filteredDropDownData = dropDownFormat.compareByDropDownData.filter(
     (o) => {
@@ -311,7 +311,7 @@ const PerformanceByStandards = ({
             </StyledH3>
           </Col>
           <Col xs={24} sm={24} md={12} lg={16} xl={12}>
-            <Row>
+            <Row type="flex" justify="end" gutter={[5, 10]}>
               <StyledDropDownContainer xs={24} sm={24} md={8} lg={8} xl={8}>
                 <ControlDropDown
                   prefix="View By"
@@ -322,26 +322,19 @@ const PerformanceByStandards = ({
               </StyledDropDownContainer>
               <StyledDropDownContainer xs={24} sm={24} md={7} lg={7} xl={7}>
                 <ControlDropDown
-                  style={{ marginLeft: 8 }}
                   prefix="Analyze By"
                   by={analyzeBy}
                   selectCB={handleAnalyzeByChange}
                   data={dropDownFormat.analyzeByDropDownData}
                 />
               </StyledDropDownContainer>
-              <StyledDropDownContainer
-                padding="0px 5px"
-                xs={24}
-                sm={24}
-                md={7}
-                lg={7}
-                xl={7}
-              >
-                <AutocompleteDropDown
-                  prefix="Standard set"
+              <StyledDropDownContainer xs={24} sm={24} md={7} lg={7} xl={7}>
+                <ControlDropDown
+                  prefix="Standard Set"
                   by={selectedStandardId || { key: '', title: '' }}
                   selectCB={handleStandardIdChange}
                   data={standardsDropdownData}
+                  showPrefixOnSelected={false}
                 />
               </StyledDropDownContainer>
             </Row>

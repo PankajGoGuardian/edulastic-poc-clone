@@ -28,7 +28,7 @@ import {
 } from 'react-sortable-hoc'
 import { compose } from 'redux'
 import { pick, uniq } from 'lodash'
-import { curriculumSequencesApi } from '@edulastic/api'
+import { curriculumSequencesApi, testsApi } from '@edulastic/api'
 import { Tooltip } from '../../../common/utils/helpers'
 import {
   resumeAssignmentAction,
@@ -244,8 +244,24 @@ class ModuleRow extends Component {
     })
   }
 
-  viewTest = (testId) => {
+  viewTest = async (id, isVersionId) => {
     const { setIsTestPreviewVisible } = this.props
+    let testId = id
+    if (isVersionId) {
+      try {
+        const { testId: latestTestId } =
+          (await testsApi.getTestIdFromVersionId(testId)) || {}
+        if (latestTestId) {
+          testId = latestTestId
+        } else {
+          throw new Error('Failed to fetch latest test id!')
+        }
+      } catch (e) {
+        notification({ msg: 'Failed to load test!' })
+        console.warn(e)
+      }
+    }
+
     this.setState({
       selectedTest: testId,
     })
@@ -776,7 +792,7 @@ class ModuleRow extends Component {
                         <Menu.Item
                           onClick={() =>
                             togglePlaylistTestDetails({
-                              id: moduleData?.contentId,
+                              id: moduleData?.assignments?.[0]?.testId,
                             })
                           }
                         >
@@ -786,7 +802,13 @@ class ModuleRow extends Component {
                       {!isStudent && (
                         <Menu.Item
                           data-cy="view-test"
-                          onClick={() => this.viewTest(moduleData.contentId)}
+                          onClick={() =>
+                            this.viewTest(
+                              moduleData.contentVersionId,
+                              moduleData?.contentVersionId !==
+                                moduleData?.contentId
+                            )
+                          }
                         >
                           Preview Test
                         </Menu.Item>
@@ -997,7 +1019,13 @@ class ModuleRow extends Component {
                     >
                       <AssignmentButton>
                         <Button
-                          onClick={() => this.viewTest(moduleData?.contentId)}
+                          onClick={() =>
+                            this.viewTest(
+                              moduleData?.contentVersionId,
+                              moduleData?.contentVersionId !==
+                                moduleData?.contentId
+                            )
+                          }
                         >
                           <IconVisualization width="14px" height="14px" />
                           Preview
@@ -1217,9 +1245,19 @@ class ModuleRow extends Component {
                                     >
                                       <Tooltip
                                         placement="bottomLeft"
-                                        title={moduleData.contentTitle}
+                                        title={
+                                          moduleData?.assignments?.length
+                                            ? moduleData?.assignments?.[0]
+                                                ?.title
+                                            : moduleData?.contentTitle
+                                        }
                                       >
-                                        <span>{moduleData.contentTitle}</span>
+                                        <span>
+                                          {moduleData?.assignments?.length
+                                            ? moduleData?.assignments?.[0]
+                                                ?.title
+                                            : moduleData?.contentTitle}
+                                        </span>
                                         {testType}
                                       </Tooltip>
                                       {!isDesktop && testTags}

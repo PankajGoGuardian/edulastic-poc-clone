@@ -1386,7 +1386,7 @@ function* publishDraftCustomizedPlaylist({ payload }) {
 function* useThisPlayListSaga({ payload }) {
   try {
     const {
-      _id,
+      _id: playlistId,
       title,
       grades,
       subjects,
@@ -1399,6 +1399,8 @@ function* useThisPlayListSaga({ payload }) {
       authors = [],
       forceClone = false,
     } = payload
+
+    let _id = playlistId
 
     const currentUserId = yield select(getUserId)
     const currentUserRole = yield select(getUserRole)
@@ -1442,6 +1444,8 @@ function* useThisPlayListSaga({ payload }) {
         )
         return
       }
+
+      _id = duplicatedPlaylist._id
 
       yield put(receiveLastPlayListAction())
       yield put(receiveRecentPlayListsAction())

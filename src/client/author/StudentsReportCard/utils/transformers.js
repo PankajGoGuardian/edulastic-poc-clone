@@ -276,10 +276,10 @@ export const getChartAndStandardTableData = (
           )
           .map((ali) => ali.domains || [])
           .flat()
+        const questionId = item.itemLevelScoring ? questions[0]?.id : q.id
         const qActivity =
-          (item.itemLevelScoring
-            ? questionActivities[0]
-            : questionActivities.filter((qa) => qa.qid === q.id)[0]) || {}
+          questionActivities.filter((qa) => qa.qid === questionId)[0] || {}
+
         // calculating performace percentage
         const { score = 0 } = qActivity
         let { maxScore } = qActivity

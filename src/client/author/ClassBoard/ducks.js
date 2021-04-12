@@ -56,6 +56,7 @@ import {
   RECEIVE_TESTACTIVITY_REQUEST,
   RECEIVE_TESTACTIVITY_SUCCESS,
   RECEIVE_TESTACTIVITY_ERROR,
+  RECEIVE_STUDENT_RESPONSE_REQUEST,
   UPDATE_RELEASE_SCORE,
   SET_MARK_AS_DONE,
   OPEN_ASSIGNMENT,
@@ -129,11 +130,12 @@ function* receiveGradeBookSaga({ payload }) {
 }
 
 export function* receiveTestActivitySaga({ payload }) {
+  const { studentResponseParams, ...classResponseParams } = payload || {}
   try {
     // test, testItemsData, testActivities, studentNames, testQuestionActivities
     const { additionalData, ...gradebookData } = yield call(
       classBoardApi.testActivity,
-      payload
+      classResponseParams
     )
     if (!additionalData.recentTestActivitiesGrouped) {
       /**
@@ -142,7 +144,7 @@ export function* receiveTestActivitySaga({ payload }) {
       additionalData.recentTestActivitiesGrouped = {}
     }
     const classResponse = yield call(classResponseApi.classResponse, {
-      ...payload,
+      ...classResponseParams,
       testId: additionalData.testId,
     })
     const testItems = classResponse.itemGroups
@@ -253,6 +255,19 @@ export function* receiveTestActivitySaga({ payload }) {
       type: RECEIVE_TESTACTIVITY_SUCCESS,
       payload: { gradebookData, additionalData, entities },
     })
+
+    if (studentResponseParams) {
+      // studentResponseParams has studentId and testActivityId
+      // we need to retrieve student response again,
+      // when regrade is successful in LCB
+      yield put({
+        type: RECEIVE_STUDENT_RESPONSE_REQUEST,
+        payload: {
+          groupId: payload.classId,
+          ...studentResponseParams,
+        },
+      })
+    }
   } catch (err) {
     console.log('err is', err)
     const msg = 'Unable to retrieve test activity.'

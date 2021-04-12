@@ -82,6 +82,7 @@ const QuestionBottomAction = ({
   toggleQuestionModal,
   openQuestionModal,
   showCorrectItem,
+  studentId,
   ...questionProps
 }) => {
   const [openQuestionMoal, setOpenQuestionModal] = useState(false)
@@ -95,12 +96,12 @@ const QuestionBottomAction = ({
 
   const onSaveAndPublish = () => {
     updateCorrectItem({
+      studentId,
       assignmentId: match?.params?.assignmentId,
       testId: additionalData?.testId,
       testItemId: item?.activity?.testItemId,
       groupId: item?.activity?.groupId,
       testActivityId: item?.activity?.testActivityId,
-      studentId: item?.activity?.userId,
       question: questionData,
       proceedRegrade: false,
       callBack: onCloseQuestionModal,

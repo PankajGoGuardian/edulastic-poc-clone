@@ -49,8 +49,16 @@ const NotificationListener = ({
         )
         markQuestionLabel(itemsToReplace)
         correctItemUpdate(itemsToReplace)
-        const { assignmentId, groupId } = modalState.itemData
-        loadTestActivity(assignmentId, groupId)
+        const {
+          assignmentId,
+          groupId,
+          studentId,
+          testActivityId,
+        } = modalState.itemData
+        loadTestActivity(assignmentId, groupId, false, {
+          studentId,
+          testActivityId,
+        })
         antdNotification({
           type: 'success',
           msg: 'Assignment regrade is successful',

@@ -217,7 +217,7 @@ class Scoring extends Component {
                 <FlexContainer flexDirection="column" mt="8px">
                   <Label>{t('component.options.maxScore')}</Label>
                   {isPractice ? (
-                    <UnscoredBlock text="UNSCORED" height="50px" width="20%" />
+                    <UnscoredBlock height="50px" width="20%" />
                   ) : (
                     <PointsInput
                       data-cy="maxscore"

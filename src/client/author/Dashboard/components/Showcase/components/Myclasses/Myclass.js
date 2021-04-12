@@ -302,6 +302,17 @@ const MyClasses = ({
     return {}
   }, [products])
 
+  const accessibleItembankProductIds = useMemo(() => {
+    const collectionIds = collections.map((collection) => collection._id)
+
+    return products.reduce((a, c) => {
+      if (collectionIds.includes(c?.linkedProductId)) {
+        return a.concat(c.id)
+      }
+      return a
+    }, [])
+  }, [products, collections])
+
   const paidItemBankIds = useMemo(() => {
     if (!itemBankSubscriptions) {
       return []
@@ -400,6 +411,7 @@ const MyClasses = ({
           bannerActionHandler={bannerActionHandler}
           isBannerModalVisible={showBannerModal}
           handleSparkClick={handleSparkClick}
+          accessibleItembankProductIds={accessibleItembankProductIds}
         />
       )}
       <Classes

@@ -451,7 +451,7 @@ class QuestionViewContainer extends Component {
                 active={filter === 'unscoredItems'}
                 onClick={() => this.onClickTab('unscoredItems')}
               >
-                UNSCORED ({unscoredItems})
+                ZERO POINT ({unscoredItems})
               </WrongButton>
               <PartiallyCorrectButton
                 active={filter === 'notGraded'}

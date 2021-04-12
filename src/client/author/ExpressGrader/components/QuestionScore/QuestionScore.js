@@ -43,8 +43,8 @@ class QuestionScore extends Component {
     }
     const unscoredDisplay = scoreMode &&
       isPractice && {
-        displayText: `U`,
-        tooltipdisplay: `Unscored`,
+        displayText: `Z`,
+        tooltipdisplay: `Zero Point`,
       }
     if (skipped) studentScore = 0
 

@@ -8,7 +8,6 @@ class QuestionScore extends Component {
   render() {
     const {
       question,
-      tableData,
       showQuestionModal,
       isTest,
       scoreMode = true,
@@ -50,7 +49,7 @@ class QuestionScore extends Component {
 
     const onClickHandler = () => {
       if (!isGridEditOn) {
-        showQuestionModal(question, tableData)
+        showQuestionModal(question)
       }
     }
     return (
@@ -100,7 +99,6 @@ class QuestionScore extends Component {
 
 QuestionScore.propTypes = {
   question: PropTypes.object.isRequired,
-  tableData: PropTypes.array.isRequired,
   showQuestionModal: PropTypes.func.isRequired,
   isTest: PropTypes.string,
 }

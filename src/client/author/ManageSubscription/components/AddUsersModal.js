@@ -53,31 +53,31 @@ const AddUsersModal = ({
     }
   }
 
-  const { premiumLicenseId, premiumAvailableCount } = useMemo(() => {
+  const { premiumLicenseId, isTeacherPremiumExists } = useMemo(() => {
     let _premiumLicenseId = ''
-    let _premiumAvailableCount = 0
+    let _isTeacherPremiumExists = false
     for (const {
       productId,
       licenseId,
-      totalCount,
-      usedCount,
+
+      productType,
     } of subsLicenses) {
       if (productId === teacherPremiumProductId) {
         _premiumLicenseId = licenseId
-        _premiumAvailableCount = totalCount - usedCount
+        _isTeacherPremiumExists = productType === 'PREMIUM'
       }
     }
-    if (_premiumAvailableCount === 0) {
+    if (!_isTeacherPremiumExists) {
       setIsSparkCheckboxDisabled(false)
     }
     return {
       premiumLicenseId: _premiumLicenseId,
-      premiumAvailableCount: _premiumAvailableCount,
+      isTeacherPremiumExists: _isTeacherPremiumExists,
     }
   }, [subsLicenses, teacherPremiumProductId, checkboxValues])
 
   const handleOnCheck = (value) => {
-    if (value.includes(premiumLicenseId) || premiumAvailableCount === 0) {
+    if (!isTeacherPremiumExists || value.includes(premiumLicenseId)) {
       setCheckboxValues(value)
       setIsSparkCheckboxDisabled(false)
     } else {

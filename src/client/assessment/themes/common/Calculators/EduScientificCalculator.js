@@ -16,7 +16,7 @@ const EduScientificCalculator = () => {
     <Container className="calc-main" ref={calcRef}>
       <div className="calc-display">
         <span>0</span>
-        <div className="calc-rad">Rad</div>
+        <div className="calc-rad">Deg</div>
         <div className="calc-hold" />
         <div className="calc-buttons">
           <div className="calc-info">?</div>
@@ -98,7 +98,7 @@ const EduScientificCalculator = () => {
           </div>
         </div>
         <div>
-          <div>Deg</div>
+          <div>Rad</div>
         </div>
         <div>
           <div>&pi;</div>

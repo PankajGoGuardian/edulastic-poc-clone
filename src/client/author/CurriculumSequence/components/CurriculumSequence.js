@@ -794,14 +794,16 @@ class CurriculumSequence extends Component {
     const isAuthoringFlowReview = current === 'review'
 
     const enableCustomize =
-      ((((customize || hasEditAccess) &&
-        urlHasUseThis &&
+      (((((customize && urlHasUseThis) || (hasEditAccess && !urlHasUseThis)) &&
         isNotStudentOrParent) ||
-        ((customize || hasEditAccess) && isNotStudentOrParent)) &&
+        (((customize && urlHasUseThis) || (hasEditAccess && !urlHasUseThis)) &&
+          isNotStudentOrParent)) &&
         destinationCurriculumSequence &&
         !isAuthoringFlowReview) ||
       role === roleuser.EDULASTIC_CURATOR ||
       mode === 'embedded'
+
+    console.log('destinationCurriculumSequence', hasEditAccess)
 
     const GridCountInARow = windowWidth >= 1600 ? 5 : 4
     const countModular = new Array(

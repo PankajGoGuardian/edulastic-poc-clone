@@ -280,6 +280,7 @@ class UserForm extends React.Component {
                       padding="0px 15px 0px 30px"
                       prefix={<img style={iconSize} src={keyIcon} alt="" />}
                       type="password"
+                      autoComplete="off"
                       placeholder="Enter Password"
                     />
                   )}
@@ -300,6 +301,7 @@ class UserForm extends React.Component {
                       padding="0px 15px 0px 30px"
                       prefix={<img style={iconSize} src={keyIcon} alt="" />}
                       type="password"
+                      autoComplete="off"
                       placeholder="Confirm Password"
                     />
                   )}

@@ -317,6 +317,7 @@ class AdminSignup extends React.Component {
                               <Input
                                 prefix={<IconLock color={themeColor} />}
                                 type="password"
+                                autoComplete="off"
                               />
                             )}
                           </FormItem>

@@ -125,7 +125,7 @@ class MathKeyboard extends React.PureComponent {
       if (!alreadyIncluded) {
         selectOptions = [
           {
-            value: symbols[0].label,
+            value: symbols[0]._id || symbols[0].label, // custom keypad has UUID
             label: symbols[0].label,
           },
           ...math.symbols,

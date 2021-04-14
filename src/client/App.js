@@ -1,6 +1,7 @@
 import React, { Component, lazy, Suspense, useEffect } from 'react'
 import { capitalize, get, isEmpty, isUndefined } from 'lodash'
 import qs from 'qs'
+import { ThemeProvider } from 'styled-components'
 import queryString from 'query-string'
 import loadable from '@loadable/component'
 import PropTypes from 'prop-types'

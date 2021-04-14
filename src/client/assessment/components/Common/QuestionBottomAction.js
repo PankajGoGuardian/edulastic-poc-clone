@@ -236,26 +236,30 @@ const QuestionBottomAction = ({
           {timeSpent && <TimeSpent time={timeSpent} />}
         </RightWrapper>
       </BottomActionWrapper>
-      {!isStudentReport && openQuestionModal && QuestionComp && questionData && (
-        <QuestionPreviewModal
-          visible={openQuestionModal}
-          onCancel={onCloseQuestionModal}
-          title={modalTitle}
-          footer={null}
-          width="1080px"
-          style={{ top: 10 }}
-        >
-          <AnswerContext.Provider value={{ isAnswerModifiable: true }}>
-            <QuestionComp
-              {...questionProps}
-              t={t}
-              item={questionData}
-              view={EDIT}
-              disableResponse={false}
-            />
-          </AnswerContext.Provider>
-        </QuestionPreviewModal>
-      )}
+      {!isStudentReport &&
+        openQuestionModal &&
+        QuestionComp &&
+        questionData &&
+        questionData?.id === item?.id && (
+          <QuestionPreviewModal
+            visible={openQuestionModal}
+            onCancel={onCloseQuestionModal}
+            title={modalTitle}
+            footer={null}
+            width="1080px"
+            style={{ top: 10 }}
+          >
+            <AnswerContext.Provider value={{ isAnswerModifiable: true }}>
+              <QuestionComp
+                {...questionProps}
+                t={t}
+                item={questionData}
+                view={EDIT}
+                disableResponse={false}
+              />
+            </AnswerContext.Provider>
+          </QuestionPreviewModal>
+        )}
     </>
   )
 }

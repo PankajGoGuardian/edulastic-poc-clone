@@ -349,7 +349,7 @@ class Layout extends Component {
               </Label>
             </Col>
           </Row>
-          {uiStyle.responsecontainerindividuals.map(
+          {(uiStyle.responsecontainerindividuals || []).map(
             (responsecontainerindividual, index) =>
               responsecontainerindividual.placeholder ? (
                 <Container key={index}>

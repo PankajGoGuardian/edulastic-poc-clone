@@ -163,6 +163,7 @@ export function* receiveTestActivitySaga({ payload }) {
         }))
         return item
       })
+    const originalItems = cloneDeep(testItems)
     const reportStandards = getStandardsForStandardBasedReport(
       testItems,
       classResponse?.summary?.standardsDescriptions || {}
@@ -170,7 +171,7 @@ export function* receiveTestActivitySaga({ payload }) {
     markQuestionLabel(testItems)
     yield put({
       type: RECEIVE_CLASS_RESPONSE_SUCCESS,
-      payload: { ...classResponse, testItems, reportStandards },
+      payload: { ...classResponse, testItems, reportStandards, originalItems },
     })
 
     const students = get(gradebookData, 'students', [])
@@ -686,7 +687,7 @@ function* correctItemUpdateSaga({ payload }) {
       editRegradeChoice,
     } = payload
     const classResponse = yield select((state) => state.classResponse)
-    const testItems = get(classResponse, 'data.testItems', [])
+    const testItems = get(classResponse, 'data.originalItems', [])
     const testItem = testItems.find((t) => t._id === testItemId) || {}
     const [isIncomplete, errMsg] = isIncompleteQuestion(
       question,

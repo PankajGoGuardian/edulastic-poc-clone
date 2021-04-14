@@ -511,6 +511,11 @@ class ClassQuestions extends Component {
         (act) => act.testItemId === item._id
       )
 
+      const questionsWithItemId = item.data.questions.map((q) => ({
+        ...q,
+        testItemId: item._id,
+      }))
+
       return (
         <Preview
           studentId={(currentStudent || {}).studentId}
@@ -521,7 +526,10 @@ class ClassQuestions extends Component {
             ]
           }
           key={index}
-          item={item}
+          item={{
+            ...item,
+            data: { ...item.data, questions: questionsWithItemId },
+          }}
           passages={passages}
           qIndex={qIndex || index}
           evaluation={evaluationStatus}

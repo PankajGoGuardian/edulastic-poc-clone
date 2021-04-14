@@ -14,6 +14,7 @@ import { IconTestBank, IconClockCircularOutline } from '@edulastic/icons'
 import { testItemsApi } from '@edulastic/api'
 import { EDIT } from '../../constants/constantsForQuestions'
 import {
+  setEditingItemIdAction,
   setQuestionDataAction,
   toggleQuestionEditModalAction,
 } from '../../../author/src/actions/question'
@@ -87,6 +88,8 @@ const QuestionBottomAction = ({
   showCorrectItem,
   studentId,
   openQuestionMoal,
+  setEditingItemId,
+  editItemId,
   ...questionProps
 }) => {
   // const [openQuestionModal, setOpenQuestionModal] = useState(false)
@@ -103,7 +106,7 @@ const QuestionBottomAction = ({
       studentId,
       assignmentId: match?.params?.assignmentId,
       testId: additionalData?.testId,
-      testItemId: item?.activity?.testItemId,
+      testItemId: editItemId,
       groupId: item?.activity?.groupId,
       testActivityId: item?.activity?.testActivityId,
       question: questionData,
@@ -115,7 +118,7 @@ const QuestionBottomAction = ({
   const showQuestionModal = async () => {
     setItemLoading(true)
     try {
-      const testItem = await testItemsApi.getById(item?.activity?.testItemId)
+      const testItem = await testItemsApi.getById(item.testItemId)
       const question = testItem.data.questions.find((q) => q.id === item.id)
       setQuestionData(question)
       setCurrentQuestion(question.id)
@@ -123,6 +126,7 @@ const QuestionBottomAction = ({
       setQuestionData(omit(item, 'activity'))
       setCurrentQuestion(item.id)
     } finally {
+      setEditingItemId(item.testItemId)
       toggleQuestionModal(true)
       setItemLoading(false)
     }
@@ -282,8 +286,7 @@ const getPermissionToEdit = (state, props) => {
   const userFeatures = getUserFeatures(state)
   const collections = getCollectionsSelector(state)
   const testItems = get(state, 'classResponse.data.testItems', [])
-  const testItem =
-    testItems.find((t) => t._id === props.item?.activity?.testItemId) || {}
+  const testItem = testItems.find((t) => t._id === props.item?.testItemId) || {}
   const { authors = [] } = testItem || {}
   const isOwner = authors.some((author) => author._id === userId)
   const hasCollectionAccess = allowContentEditCheck(
@@ -321,6 +324,7 @@ const enhance = compose(
       additionalData: getAdditionalDataSelector(state),
       permissionToEdit: getPermissionToEdit(state, ownProps),
       showCorrectItem: getShowCorrectItemButton(state),
+      editItemId: get(state, ['authorUi', 'editItemId']),
     }),
     {
       setQuestionData: setQuestionDataAction,
@@ -328,6 +332,7 @@ const enhance = compose(
       updateCorrectItem: updateCorrectTestItemAction,
       removeQuestion: deleteQuestionAction,
       toggleQuestionModal: toggleQuestionEditModalAction,
+      setEditingItemId: setEditingItemIdAction,
     }
   )
 )

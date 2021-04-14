@@ -14,7 +14,7 @@ import {
 } from '../TestPage/ducks'
 import { correctItemUpdateAction } from '../ClassBoard/ducks'
 import { markQuestionLabel } from '../ClassBoard/Transformer'
-import { receiveTestActivitydAction } from '../src/actions/classBoard'
+import { reloadLcbDataInStudentViewAction } from '../src/actions/classBoard'
 
 const collectionName = 'RegradeAssignments'
 
@@ -25,7 +25,8 @@ const NotificationListener = ({
   correctItemUpdate,
   testItems,
   modalState,
-  loadTestActivity,
+  studentResponseData,
+  reloadLcbDataInStudentView,
 }) => {
   const userNotification = Fbs.useFirestoreRealtimeDocument(
     (db) => db.collection(collectionName).doc(docId),
@@ -45,19 +46,17 @@ const NotificationListener = ({
       const { error, processStatus } = userNotification
       if (processStatus === 'DONE' && !error) {
         const itemsToReplace = testItems.map((t) =>
-          t.id === modalState.itemData.testItemId ? modalState.item : t
+          t._id === modalState.itemData.testItemId ? modalState.item : t
         )
         markQuestionLabel(itemsToReplace)
         correctItemUpdate(itemsToReplace)
-        const {
+        const { assignmentId, groupId } = modalState.itemData
+        reloadLcbDataInStudentView({
           assignmentId,
           groupId,
-          studentId,
-          testActivityId,
-        } = modalState.itemData
-        loadTestActivity(assignmentId, groupId, false, {
-          studentId,
-          testActivityId,
+          classId: groupId,
+          testActivityId: studentResponseData?._id,
+          studentId: studentResponseData?.userId,
         })
         antdNotification({
           type: 'success',
@@ -92,12 +91,13 @@ export default compose(
       docId: getRegradeFirebaseDocIdSelector(state),
       testItems: get(state, 'classResponse.data.testItems', []),
       modalState: getRegradeModalStateSelector(state),
+      studentResponseData: get(state, 'studentResponse.data.testActivity', {}),
     }),
     {
       setEditEnable: setEditEnableAction,
       setFirestoreDocId: setRegradeFirestoreDocId,
       correctItemUpdate: correctItemUpdateAction,
-      loadTestActivity: receiveTestActivitydAction,
+      reloadLcbDataInStudentView: reloadLcbDataInStudentViewAction,
     }
   )
 )(NotificationListener)

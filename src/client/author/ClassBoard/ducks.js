@@ -45,6 +45,7 @@ import {
   updatePasswordDetailsAction,
   toggleViewPasswordAction,
   updatePauseStatusAction,
+  receiveStudentResponseAction,
 } from '../src/actions/classBoard'
 
 import { createFakeData, hasRandomQuestions } from './utils'
@@ -88,6 +89,7 @@ import {
   CORRECT_ITEM_UPDATE_REQUEST,
   CORRECT_ITEM_UPDATE_SUCCESS,
   TOGGLE_REGRADE_MODAL,
+  RELOAD_LCB_DATA_IN_STUDENT_VIEW,
 } from '../src/constants/actions'
 
 import { downloadCSV } from '../Reports/common/util'
@@ -688,6 +690,7 @@ function* correctItemUpdateSaga({ payload }) {
     } = payload
     const classResponse = yield select((state) => state.classResponse)
     const testItems = get(classResponse, 'data.originalItems', [])
+    const studentResponse = yield select((state) => state.studentResponse)
     const testItem = testItems.find((t) => t._id === testItemId) || {}
     const [isIncomplete, errMsg] = isIncompleteQuestion(
       question,
@@ -754,8 +757,16 @@ function* correctItemUpdateSaga({ payload }) {
         },
       })
 
+      yield put(
+        receiveStudentResponseAction({
+          testActivityId: studentResponse?.data?._id,
+          groupId: studentResponse?.data?.groupId,
+          studentId: studentResponse?.data?.userId,
+        })
+      )
+
       const itemsToReplace = testItems.map((t) =>
-        t.id === testItemId ? result.item : t
+        t._id === testItemId ? result.item : t
       )
 
       markQuestionLabel(itemsToReplace)
@@ -777,6 +788,17 @@ function* correctItemUpdateSaga({ payload }) {
       msg: error?.response?.data?.message,
       messageKey: 'publishCorrectItemFailing',
     })
+  }
+}
+
+function* reloadLcbDataInStudentView({ payload }) {
+  try {
+    yield call(receiveTestActivitySaga, { payload })
+    yield put(receiveStudentResponseAction(payload))
+  } catch (err) {
+    console.error(err)
+    captureSentryException(err)
+    notification({ type: 'error', msg: 'Unable to refresh data' })
   }
 }
 
@@ -807,6 +829,10 @@ export function* watcherSaga() {
     yield takeEvery(CANVAS_SYNC_ASSIGNMENT, canvasSyncAssignmentSaga),
     yield takeEvery(FETCH_SERVER_TIME, fetchServerTimeSaga),
     yield takeEvery(CORRECT_ITEM_UPDATE_REQUEST, correctItemUpdateSaga),
+    yield takeEvery(
+      RELOAD_LCB_DATA_IN_STUDENT_VIEW,
+      reloadLcbDataInStudentView
+    ),
   ])
 }
 

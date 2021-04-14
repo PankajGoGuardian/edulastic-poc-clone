@@ -1,9 +1,4 @@
-import {
-  linkColor1,
-  themeColor,
-  themeColorBlue,
-  white,
-} from '@edulastic/colors'
+import { linkColor1, themeColor, white } from '@edulastic/colors'
 import { IconLock as LockIcon, IconPlusCircle } from '@edulastic/icons'
 import { Button, Typography } from 'antd'
 import styled from 'styled-components'
@@ -96,14 +91,4 @@ export const StyledLink = styled.span`
   cursor: pointer;
   text-transform: uppercase;
   margin-right: 20px;
-`
-export const DropDownContainer = styled.div`
-.ant-dropdown-menu {
-  background: ${themeColorBlue};
-  li {
-    color: ${white};
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-  }
 `

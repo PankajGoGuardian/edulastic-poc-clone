@@ -65,6 +65,7 @@ const Standards = ({
     }
     standards = [...searchMatches, ...(Object.values(standardsById) || [])]
   }
+
   return standards.length ? (
     <Tags
       tags={uniqBy(standards, (x) => x.name).map((_item) => ({

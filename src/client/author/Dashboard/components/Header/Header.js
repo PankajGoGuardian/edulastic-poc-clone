@@ -20,7 +20,7 @@ import { get } from 'lodash'
 import { segmentApi } from '@edulastic/api'
 
 import { signUpState } from '@edulastic/constants'
-import { slice } from '../../../Subscription/ducks'
+import { getItemBankSubscriptions, slice } from '../../../Subscription/ducks'
 import { StyledLink, DropDownContainer } from './styled'
 import { launchHangoutOpen } from '../../ducks'
 import {
@@ -443,8 +443,7 @@ const enhance = compose(
       isPremiumTrialUsed:
         state.subscription?.subscriptionData?.isPremiumTrialUsed,
       products: state?.subscription?.products,
-      itemBankSubscriptions:
-        state?.subscription?.subscriptionData?.itemBankSubscriptions,
+      itemBankSubscriptions: getItemBankSubscriptions(state),
     }),
     {
       openLaunchHangout: launchHangoutOpen,

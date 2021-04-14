@@ -5,7 +5,7 @@ import { Link, withRouter } from 'react-router-dom'
 import { withNamespaces } from 'react-i18next'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
-import { Dropdown, Menu, Tooltip } from 'antd'
+import { Popover, Tooltip } from 'antd'
 import { white, themeColor, darkOrange1 } from '@edulastic/colors'
 import { EduButton, FlexContainer, MainHeader } from '@edulastic/common'
 import {
@@ -20,12 +20,17 @@ import { get } from 'lodash'
 import { segmentApi } from '@edulastic/api'
 
 import { signUpState } from '@edulastic/constants'
+import { slice } from '../../../Subscription/ducks'
+// TODO: Change to SVG
+import IMG from '../../../Subscription/static/6.png'
 import {
-  getItemBankSubscriptions,
-  getProducts,
-  slice,
-} from '../../../Subscription/ducks'
-import { StyledLink, DropDownContainer } from './styled'
+  PopoverCancel,
+  PopoverDetail,
+  PopoverTitle,
+  PopoverWrapper,
+  UpgradeBtn,
+  StyledLink,
+} from './styled'
 import { launchHangoutOpen } from '../../ducks'
 import {
   getUserSelector,
@@ -50,7 +55,28 @@ import {
 import CanvasClassSelectModal from '../../../ManageClass/components/ClassListContainer/CanvasClassSelectModal'
 import ClassSelectModal from '../../../ManageClass/components/ClassListContainer/ClassSelectModal'
 import { getFormattedCurriculumsSelector } from '../../../src/selectors/dictionaries'
-import PurchaseFlowModals from '../../../src/components/common/PurchaseModals'
+
+const getContent = ({ setvisible, needsRenewal }) => (
+  <FlexContainer width="475px" alignItems="flex-start">
+    <img src={IMG} width="165" height="135" alt="" />
+    <FlexContainer flexDirection="column" width="280px" padding="15px 0 0 6px">
+      <PopoverTitle>Get Started!</PopoverTitle>
+      <PopoverDetail>
+        Get additional reports, options to assist students, collaborate with
+        colleagues, anti-cheating tools and more.
+      </PopoverDetail>
+      <FlexContainer padding="15px 0 15px 0" width="100%">
+        <PopoverCancel onClick={() => setvisible(false)}>
+          {' '}
+          NO, THANKS
+        </PopoverCancel>
+        <Link to="/author/subscription">
+          <UpgradeBtn>{needsRenewal ? 'Renew Now' : 'UPGRADE NOW'}</UpgradeBtn>
+        </Link>
+      </FlexContainer>
+    </FlexContainer>
+  </FlexContainer>
+)
 
 const ONE_MONTH = 30 * 24 * 60 * 60 * 1000
 const TEN_DAYS = 10 * 24 * 60 * 60 * 1000
@@ -87,10 +113,7 @@ const HeaderSection = ({
   districtPolicy,
   schoolPolicy,
   setShowHeaderTrialModal,
-  products,
-  itemBankSubscriptions,
   isPremiumTrialUsed,
-  settingProductData,
 }) => {
   const { subEndDate, subType } = subscription || {}
   const [showCanvasSyncModal, setShowCanvasSyncModal] = useState(false)
@@ -98,12 +121,7 @@ const HeaderSection = ({
   const { user: userInfo } = user
   const { currentSignUpState } = userInfo
 
-  const [showSubscriptionAddonModal, setShowSubscriptionAddonModal] = useState(
-    false
-  )
-  const [showMultiplePurchaseModal, setShowMultiplePurchaseModal] = useState(
-    false
-  )
+  const [visible, setvisible] = useState(false)
 
   const trackClick = (event) => () =>
     segmentApi.trackUserClick({
@@ -114,8 +132,6 @@ const HeaderSection = ({
   const launchHangout = () => {
     openLaunchHangout()
   }
-
-  const isCliUser = user.openIdProvider === 'CLI'
 
   const isPremiumUser = user.user?.features?.premium
 
@@ -133,23 +149,6 @@ const HeaderSection = ({
     (subType === 'partial_premium' && !isPremiumUser)
   )
 
-  const itemBankProductIds = products
-    .filter((prod) => prod.type && prod.type.startsWith('ITEM_BANK_'))
-    .map((prod) => prod.linkedProductId)
-
-  const totalPaidProducts = itemBankSubscriptions?.reduce(
-    (a, c) => {
-      if (itemBankProductIds.includes(c.itemBankId)) {
-        if (c.isTrial) return a
-        return a + 1
-      }
-      return a
-    },
-    isPaidPremium ? 1 : 0
-  )
-  const hasAllPremiumProductAccess =
-    isPaidPremium && totalPaidProducts === products.length
-
   const isAboutToExpire = subEndDate
     ? Date.now() + ONE_MONTH > subEndDate && Date.now() < subEndDate + TEN_DAYS
     : false
@@ -157,6 +156,10 @@ const HeaderSection = ({
   const needsRenewal =
     ((isPaidPremium && isAboutToExpire) ||
       (!isPaidPremium && isSubscriptionExpired)) &&
+    !['enterprise', 'partial_premium'].includes(subType)
+
+  const showPopup =
+    (needsRenewal || !isPaidPremium) &&
     !['enterprise', 'partial_premium'].includes(subType)
 
   const createNewClass = () => history.push('/author/manageClass/createClass')
@@ -195,63 +198,6 @@ const HeaderSection = ({
     districtPolicy?.enableGoogleMeet === true
       ? true
       : schoolPolicy?.[0]?.enableGoogleMeet === true
-
-  const openMultiplePurchaseModal = () => setShowMultiplePurchaseModal(true)
-
-  const handlePurchaseFlow = () => {
-    settingProductData()
-    setShowSubscriptionAddonModal(true)
-  }
-  const handleEnterpriseClick = () => {
-    window.open(
-      'https://docs.google.com/forms/d/e/1FAIpQLSeJN61M1sxuBfqt0_e-YPYYx2E0sLuSxVLGb6wZvxOIuOy1Eg/viewform',
-      '_blank'
-    )
-  }
-
-  const isPartialPremiumUgradedUser =
-    ['partial_premium'].includes(subType) && isPremiumUser
-
-  const menu = (
-    <Menu>
-      <Menu.Item>
-        {!hasAllPremiumProductAccess && (
-          <AuthorCompleteSignupButton
-            renderButton={(handleClick) => (
-              <span data-cy="individualSubscription" onClick={handleClick}>
-                INDIVIDUAL SUBSCRIPTION
-              </span>
-            )}
-            onClick={handlePurchaseFlow}
-          />
-        )}
-      </Menu.Item>
-      {!isPartialPremiumUgradedUser && !isCliUser && (
-        <Menu.Item>
-          <AuthorCompleteSignupButton
-            renderButton={(handleClick) => (
-              <span data-cy="multipleSubscription" onClick={handleClick}>
-                MULTIPLE SUBSCRIPTIONS
-              </span>
-            )}
-            onClick={openMultiplePurchaseModal}
-          />
-        </Menu.Item>
-      )}
-      {!isPartialPremiumUgradedUser && (
-        <Menu.Item>
-          <AuthorCompleteSignupButton
-            renderButton={(handleClick) => (
-              <span data-cy="enterpriseSubscription" onClick={handleClick}>
-                ENTERPRISE SUBSCRIPTION
-              </span>
-            )}
-            onClick={handleEnterpriseClick}
-          />
-        </Menu.Item>
-      )}
-    </Menu>
-  )
 
   return (
     <MainHeader Icon={IconClockDashboard} headingText={t('common.dashboard')}>
@@ -357,45 +303,47 @@ const HeaderSection = ({
           onClick={createNewClass}
           trackClick={trackClick('dashboard:create-new-class:click')}
         />
-        {needsRenewal ? (
-          <EduButton
-            type="primary"
-            isBlue
-            style={{
-              marginLeft: '5px',
-              backgroundColor: darkOrange1,
-              border: 'none',
-            }}
-            onClick={handlePurchaseFlow}
-          >
-            <FontAwesomeIcon icon={faExclamationTriangle} aria-hidden="true" />
-            <span>RENEW SUBSCRIPTION</span>
-          </EduButton>
-        ) : (
-          <DropDownContainer>
-            <Dropdown
-              getPopupContainer={(node) => node.parentNode}
-              overlay={menu}
+        {showPopup && (
+          <PopoverWrapper>
+            <Popover
+              getPopupContainer={(triggerNode) => triggerNode.parentNode}
+              trigger="click"
               placement="bottomRight"
-              arrow
+              content={getContent({ setvisible, needsRenewal })}
+              onClick={() => setvisible(true)}
+              visible={visible}
             >
-              <EduButton isBlue style={{ marginLeft: '5px' }}>
-                <i className="fa fa-unlock-alt" aria-hidden="true" />
-                Upgrade
-              </EduButton>
-            </Dropdown>
-          </DropDownContainer>
+              {needsRenewal ? (
+                <EduButton
+                  type="primary"
+                  isBlue
+                  style={{
+                    marginLeft: '5px',
+                    backgroundColor: darkOrange1,
+                    border: 'none',
+                  }}
+                >
+                  <FontAwesomeIcon
+                    icon={faExclamationTriangle}
+                    aria-hidden="true"
+                  />
+                  <span>RENEW SUBSCRIPTION</span>
+                </EduButton>
+              ) : (
+                <EduButton
+                  isBlue
+                  style={{ marginLeft: '5px' }}
+                  data-cy="upgradeButton"
+                  onClick={trackClick('dashboard:upgrade:click')}
+                >
+                  <i className="fa fa-unlock-alt" aria-hidden="true" />
+                  Upgrade
+                </EduButton>
+              )}
+            </Popover>
+          </PopoverWrapper>
         )}
       </FlexContainer>
-      <PurchaseFlowModals
-        showSubscriptionAddonModal={showSubscriptionAddonModal}
-        setShowSubscriptionAddonModal={setShowSubscriptionAddonModal}
-        defaultSelectedProductIds={[]}
-        showMultiplePurchaseModal={showMultiplePurchaseModal}
-        setShowMultiplePurchaseModal={setShowMultiplePurchaseModal}
-        setProductData={settingProductData}
-        showRenewalOptions={needsRenewal}
-      />
     </MainHeader>
   )
 }
@@ -405,11 +353,6 @@ HeaderSection.propTypes = {
   isSubscriptionExpired: PropTypes.bool.isRequired,
   openLaunchHangout: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
-  settingProductData: PropTypes.func,
-}
-
-HeaderSection.defaultProps = {
-  settingProductData: () => {},
 }
 
 const enhance = compose(
@@ -446,8 +389,6 @@ const enhance = compose(
       loading: state.dashboardTeacher.loading,
       isPremiumTrialUsed:
         state.subscription?.subscriptionData?.isPremiumTrialUsed,
-      products: getProducts(state),
-      itemBankSubscriptions: getItemBankSubscriptions(state),
     }),
     {
       openLaunchHangout: launchHangoutOpen,

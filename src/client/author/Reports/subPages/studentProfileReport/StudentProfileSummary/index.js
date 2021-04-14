@@ -57,6 +57,14 @@ const getTooltip = (payload) => {
   }
   return false
 }
+const allGrades = [
+  { key: 'All', title: 'All Grades' },
+  ...staticDropDownData.grades,
+]
+const allSubjects = [
+  { key: 'All', title: 'All Subjects' },
+  ...staticDropDownData.subjects,
+]
 
 const StudentProfileSummary = ({
   loading,
@@ -307,14 +315,14 @@ const StudentProfileSummary = ({
                 <ControlDropDown
                   by={selectedGrade}
                   selectCB={onGradeSelect}
-                  data={staticDropDownData.grades}
+                  data={allGrades}
                   prefix="Standard Grade"
                   showPrefixOnSelected={false}
                 />
                 <ControlDropDown
                   by={selectedSubject}
                   selectCB={onSubjectSelect}
-                  data={staticDropDownData.subjects}
+                  data={allSubjects}
                   prefix="Standard Subject"
                   showPrefixOnSelected={false}
                 />

@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { isEmpty } from 'lodash'
 
 import { Col, Row } from 'antd'
 import { SpinLoader } from '@edulastic/common'
@@ -77,8 +76,7 @@ const QuestionAnalysis = ({
     if (
       (settings.requestFilters.termId || settings.requestFilters.reportId) &&
       !loading &&
-      !isEmpty(questionAnalysis) &&
-      !questionAnalysis.metricInfo.length
+      !questionAnalysis.metricInfo?.length
     ) {
       toggleFilter(null, true)
     }

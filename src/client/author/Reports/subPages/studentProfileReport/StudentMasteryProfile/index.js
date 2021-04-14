@@ -71,6 +71,15 @@ const getTooltip = (payload) => {
   return false
 }
 
+const allGrades = [
+  { key: 'All', title: 'All Grades' },
+  ...staticDropDownData.grades,
+]
+const allSubjects = [
+  { key: 'All', title: 'All Subjects' },
+  ...staticDropDownData.subjects,
+]
+
 const StudentMasteryProfile = ({
   settings,
   loading,
@@ -237,7 +246,7 @@ const StudentMasteryProfile = ({
     setClickedStandard(undefined)
   }
 
-  if (isEmpty(studInfo) || !settings.selectedStudent?.key) {
+  if (isEmpty(metricInfo) || !settings.selectedStudent?.key) {
     return (
       <NoDataContainer>
         {settings.requestFilters?.termId ? 'No data available currently.' : ''}
@@ -291,7 +300,7 @@ const StudentMasteryProfile = ({
               <ControlDropDown
                 by={selectedGrade}
                 selectCB={onGradeSelect}
-                data={staticDropDownData.grades}
+                data={allGrades}
                 prefix="Standard Grade"
                 showPrefixOnSelected={false}
               />
@@ -299,7 +308,7 @@ const StudentMasteryProfile = ({
             <ControlDropDown
               by={selectedSubject}
               selectCB={onSubjectSelect}
-              data={staticDropDownData.subjects}
+              data={allSubjects}
               prefix="Standard Subject"
               showPrefixOnSelected={false}
             />

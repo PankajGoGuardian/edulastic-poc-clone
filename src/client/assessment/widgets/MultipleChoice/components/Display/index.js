@@ -136,10 +136,6 @@ const StyledStimulus = styled(Stimulus)`
   img {
     padding: 0px;
   }
-
-  p {
-    padding-top: 2px;
-  }
 `
 
 export default Display

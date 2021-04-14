@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react'
 import { AutoComplete } from 'antd'
+import { escapeRegExp } from 'lodash'
 
 const useDropdownData = (
   items,
@@ -18,7 +19,9 @@ const useDropdownData = (
   useMemo(
     () =>
       items.map(item => {
-        const idx = item[title_key].search(new RegExp(searchText, 'i'))
+        const idx = item[title_key].search(
+          new RegExp(escapeRegExp(searchText), 'i')
+        )
         let _title = item[title_key]
         if (idx !== -1) {
           const _titles = [

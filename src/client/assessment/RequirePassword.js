@@ -70,7 +70,6 @@ const RequirePassword = ({
           <PasswordInput
             placeholder="Enter assignment password"
             value={assignmentPassword}
-            type="password"
             onChange={(e) => handleSetPassword(e.target.value)}
             message={passwordStatusMessage}
           />
@@ -105,6 +104,7 @@ const MessageSpan = styled.span`
 `
 
 const PasswordInput = styled(Input)`
+  -webkit-text-security: disc;
   border-color: ${(props) =>
     props.message && props.message !== 'successful' && red};
 `

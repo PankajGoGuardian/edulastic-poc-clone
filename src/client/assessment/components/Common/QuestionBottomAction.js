@@ -13,7 +13,10 @@ import { roleuser } from '@edulastic/constants'
 import { IconTestBank, IconClockCircularOutline } from '@edulastic/icons'
 import { testItemsApi } from '@edulastic/api'
 import { EDIT } from '../../constants/constantsForQuestions'
-import { setQuestionDataAction } from '../../../author/src/actions/question'
+import {
+  setQuestionDataAction,
+  toggleQuestionEditModalAction,
+} from '../../../author/src/actions/question'
 import {
   changeCurrentQuestionAction,
   getCurrentQuestionSelector,
@@ -83,15 +86,16 @@ const QuestionBottomAction = ({
   openQuestionModal,
   showCorrectItem,
   studentId,
+  openQuestionMoal,
   ...questionProps
 }) => {
-  const [openQuestionMoal, setOpenQuestionModal] = useState(false)
+  // const [openQuestionModal, setOpenQuestionModal] = useState(false)
   const [itemloading, setItemLoading] = useState(false)
 
   const onCloseQuestionModal = () => {
     setCurrentQuestion('')
     removeQuestion(item.id)
-    setOpenQuestionModal(false)
+    toggleQuestionModal(false)
   }
 
   const onSaveAndPublish = () => {
@@ -107,6 +111,7 @@ const QuestionBottomAction = ({
       callBack: onCloseQuestionModal,
     })
   }
+
   const showQuestionModal = async () => {
     setItemLoading(true)
     try {
@@ -118,7 +123,7 @@ const QuestionBottomAction = ({
       setQuestionData(omit(item, 'activity'))
       setCurrentQuestion(item.id)
     } finally {
-      setOpenQuestionModal(true)
+      toggleQuestionModal(true)
       setItemLoading(false)
     }
   }
@@ -227,9 +232,9 @@ const QuestionBottomAction = ({
           {timeSpent && <TimeSpent time={timeSpent} />}
         </RightWrapper>
       </BottomActionWrapper>
-      {!isStudentReport && openQuestionMoal && QuestionComp && questionData && (
+      {!isStudentReport && openQuestionModal && QuestionComp && questionData && (
         <QuestionPreviewModal
-          visible={openQuestionMoal}
+          visible={openQuestionModal}
           onCancel={onCloseQuestionModal}
           title={modalTitle}
           footer={null}
@@ -311,6 +316,7 @@ const enhance = compose(
     (state, ownProps) => ({
       loading: state.scratchpad.loading,
       loadingComponents: get(state, ['authorUi', 'currentlyLoading'], []),
+      openQuestionModal: get(state, ['authorUi', 'questionEditModalOpen']),
       questionData: getCurrentQuestionSelector(state),
       additionalData: getAdditionalDataSelector(state),
       permissionToEdit: getPermissionToEdit(state, ownProps),
@@ -321,6 +327,7 @@ const enhance = compose(
       setCurrentQuestion: changeCurrentQuestionAction,
       updateCorrectItem: updateCorrectTestItemAction,
       removeQuestion: deleteQuestionAction,
+      toggleQuestionModal: toggleQuestionEditModalAction,
     }
   )
 )

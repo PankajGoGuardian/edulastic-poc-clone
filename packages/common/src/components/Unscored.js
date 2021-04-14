@@ -39,7 +39,7 @@ UnScored.defaultProps = {
   height: '',
   margin: '',
   fontSize: '',
-  text: 'Zero Point',
+  text: 'ZERO POINT',
   fontWeight: '700',
 }
 

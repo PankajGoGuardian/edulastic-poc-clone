@@ -10,7 +10,15 @@ import {
 } from '@edulastic/api'
 import { createSelector } from 'reselect'
 import { push } from 'connected-react-router'
-import { values as _values, get, keyBy, sortBy, isEmpty, groupBy } from 'lodash'
+import {
+  values as _values,
+  get,
+  keyBy,
+  sortBy,
+  isEmpty,
+  groupBy,
+  cloneDeep,
+} from 'lodash'
 import { captureSentryException, notification } from '@edulastic/common'
 import {
   test,
@@ -698,12 +706,13 @@ function* correctItemUpdateSaga({ payload }) {
       notification({ type: 'warn', msg: warningMsg })
     }
 
-    testItem.data.questions = testItem.data.questions.map((q) =>
+    const cloneItem = cloneDeep(testItem)
+    cloneItem.data.questions = testItem.data.questions.map((q) =>
       q.id === question.id ? question : q
     )
     const result = yield call(testItemsApi.updateCorrectItemById, {
       testItemId,
-      testItem,
+      testItem: cloneItem,
       testId,
       assignmentId,
       proceedRegrade,
@@ -840,7 +849,7 @@ const getTestItemsData = createSelector(
 
 export const getClassResponseSelector = createSelector(
   stateClassResponseSelector,
-  (state) => state.data
+  (state) => state?.data || {}
 )
 
 export const ttsUserIdSelector = createSelector(
@@ -1604,6 +1613,9 @@ export const getShowCorrectItemButton = createSelector(
   getUserIdSelector,
   (assignedBy, userRole, isDocBased, _test, userId) => {
     const assignedRole = assignedBy.role
+    if (!assignedRole || assignedRole === roleuser.STUDENT) {
+      return false
+    }
     if (_test.freezeSettings || isDocBased) {
       return _test?.authors?.some((author) => author._id === userId)
     }

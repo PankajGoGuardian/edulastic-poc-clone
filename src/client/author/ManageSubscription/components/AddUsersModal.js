@@ -34,13 +34,13 @@ const AddUsersModal = ({
   districtId,
   subsLicenses,
   teacherPremiumProductId,
-  sparkMathProductId,
   users,
 }) => {
   const [fieldValue, setFieldValue] = useState([])
   const [checkboxValues, setCheckboxValues] = useState([])
   const [usersList, setUsersList] = useState([])
   const [isFetchingUsers, setIsFetchingUsers] = useState(false)
+  const [isSparkCheckboxDisabled, setIsSparkCheckboxDisabled] = useState(true)
 
   const handleOnChange = (value) => setFieldValue(value)
   const handleAddUsers = () => {
@@ -53,48 +53,37 @@ const AddUsersModal = ({
     }
   }
 
-  const {
-    premiumLicenseId,
-    sparkMathLicenseId,
-    isSparkCheckboxDisbled,
-  } = useMemo(() => {
+  const { premiumLicenseId, isTeacherPremiumExists } = useMemo(() => {
     let _premiumLicenseId = ''
-    let _sparkMathLicenseId = ''
-    let _isPremiumCheckboxChecked = ''
-    let _sparkAvailableCount = ''
+    let _isTeacherPremiumExists = false
     for (const {
       productId,
-      linkedProductId,
       licenseId,
-      totalCount,
-      usedCount,
+
+      productType,
     } of subsLicenses) {
       if (productId === teacherPremiumProductId) {
         _premiumLicenseId = licenseId
-        _isPremiumCheckboxChecked = checkboxValues.includes(licenseId)
+        _isTeacherPremiumExists = productType === 'PREMIUM'
       }
-      if ([linkedProductId, productId].includes(sparkMathProductId)) {
-        _sparkMathLicenseId = licenseId
-      }
-      _sparkAvailableCount = totalCount - usedCount
     }
-    const _isSparkCheckboxDisbled =
-      _isPremiumCheckboxChecked && _sparkAvailableCount
+    if (!_isTeacherPremiumExists) {
+      setIsSparkCheckboxDisabled(false)
+    }
     return {
       premiumLicenseId: _premiumLicenseId,
-      sparkMathLicenseId: _sparkMathLicenseId,
-      isSparkCheckboxDisbled: _isSparkCheckboxDisbled,
+      isTeacherPremiumExists: _isTeacherPremiumExists,
     }
-  }, [
-    subsLicenses,
-    teacherPremiumProductId,
-    sparkMathProductId,
-    checkboxValues,
-  ])
+  }, [subsLicenses, teacherPremiumProductId, checkboxValues])
 
   const handleOnCheck = (value) => {
-    const list = value.includes(premiumLicenseId) ? value : []
-    setCheckboxValues(list)
+    if (!isTeacherPremiumExists || value.includes(premiumLicenseId)) {
+      setCheckboxValues(value)
+      setIsSparkCheckboxDisabled(false)
+    } else {
+      setCheckboxValues([])
+      setIsSparkCheckboxDisabled(true)
+    }
   }
 
   const fetchUsers = async (searchString) => {
@@ -187,20 +176,18 @@ const AddUsersModal = ({
         </SelectInputStyled>
         <CheckboxWrpper>
           <CheckBoxGrp value={checkboxValues} onChange={handleOnCheck}>
-            <CheckboxLabel
-              data-cy="teacherPremiumCheckbox"
-              value={premiumLicenseId}
-              disabled={!premiumLicenseId.length}
-            >
-              Upgrade to Premium
-            </CheckboxLabel>
-            <CheckboxLabel
-              data-cy="sparkMathPremiumCheckbox"
-              value={sparkMathLicenseId}
-              disabled={!isSparkCheckboxDisbled}
-            >
-              Access Spark Math
-            </CheckboxLabel>
+            {subsLicenses.map((x) => (
+              <CheckboxLabel
+                data-cy={`${x.productType}_checkbox`}
+                value={x.licenseId}
+                disabled={
+                  !(x.totalCount - x.usedCount > 0) ||
+                  (x.productType !== 'PREMIUM' && isSparkCheckboxDisabled)
+                }
+              >
+                {x.productName}
+              </CheckboxLabel>
+            ))}
           </CheckBoxGrp>
         </CheckboxWrpper>
       </div>

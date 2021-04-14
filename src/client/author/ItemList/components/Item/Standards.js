@@ -65,14 +65,14 @@ const Standards = ({
     }
     standards = [...searchMatches, ...(Object.values(standardsById) || [])]
   }
-
+  console.log('standards', standards)
   return standards.length ? (
     <Tags
-      tags={uniqBy(standards, (x) => x._id).map((_item) => ({
+      tags={uniqBy(standards, (x) => x.name).map((_item) => ({
         ..._item,
         tagName: _item.name,
       }))}
-      show={show||2}
+      show={show || 2}
       labelStyle={labelStyle}
       margin={margin}
     />

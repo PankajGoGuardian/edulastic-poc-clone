@@ -29,7 +29,6 @@ import {
 } from '@edulastic/constants'
 import { isNullOrUndefined } from 'util'
 import * as Sentry from '@sentry/browser'
-import { createAction } from 'redux-starter-kit'
 import {
   updateAssignmentStatusAction,
   updateCloseAssignmentsAction,
@@ -46,6 +45,7 @@ import {
   toggleViewPasswordAction,
   updatePauseStatusAction,
   receiveStudentResponseAction,
+  reloadLcbDataInStudentViewAction,
 } from '../src/actions/classBoard'
 
 import { createFakeData, hasRandomQuestions } from './utils'
@@ -118,8 +118,6 @@ const {
 } = testActivity
 
 const { testContentVisibility } = test
-
-export const correctItemUpdateAction = createAction(CORRECT_ITEM_UPDATE_SUCCESS)
 
 function* receiveGradeBookSaga({ payload }) {
   try {
@@ -677,6 +675,17 @@ function* togglePauseStudentsSaga({ payload }) {
   }
 }
 
+function* reloadLcbDataInStudentView({ payload }) {
+  try {
+    yield call(receiveTestActivitySaga, { payload })
+    yield put(receiveStudentResponseAction(payload))
+  } catch (err) {
+    console.error(err)
+    captureSentryException(err)
+    notification({ type: 'error', msg: 'Unable to refresh data' })
+  }
+}
+
 function* correctItemUpdateSaga({ payload }) {
   try {
     const {
@@ -748,34 +757,19 @@ function* correctItemUpdateSaga({ payload }) {
       })
     }
     if (!isRegradeNeeded && !proceedRegrade && result.item) {
-      yield put({
-        type: RECEIVE_TESTACTIVITY_REQUEST,
-        payload: {
+      yield put(
+        reloadLcbDataInStudentViewAction({
           assignmentId: payload.assignmentId,
           classId: payload.groupId,
           isQuestionsView: false,
-        },
-      })
-
-      yield put(
-        receiveStudentResponseAction({
-          testActivityId: studentResponse?.data?._id,
-          groupId: studentResponse?.data?.groupId,
-          studentId: studentResponse?.data?.userId,
+          testActivityId: studentResponse?.data?.testActivity?._id,
+          groupId: studentResponse?.data?.testActivity?.groupId,
+          studentId: studentResponse?.data?.testActivity?.userId,
         })
       )
 
-      const itemsToReplace = testItems.map((t) =>
-        t._id === testItemId ? result.item : t
-      )
-
-      markQuestionLabel(itemsToReplace)
-
       yield put({
         type: CORRECT_ITEM_UPDATE_SUCCESS,
-        payload: {
-          testItems: itemsToReplace,
-        },
       })
       return notification({
         type: 'success',
@@ -788,17 +782,6 @@ function* correctItemUpdateSaga({ payload }) {
       msg: error?.response?.data?.message,
       messageKey: 'publishCorrectItemFailing',
     })
-  }
-}
-
-function* reloadLcbDataInStudentView({ payload }) {
-  try {
-    yield call(receiveTestActivitySaga, { payload })
-    yield put(receiveStudentResponseAction(payload))
-  } catch (err) {
-    console.error(err)
-    captureSentryException(err)
-    notification({ type: 'error', msg: 'Unable to refresh data' })
   }
 }
 

@@ -513,7 +513,7 @@ class Container extends PureComponent {
       subjects: itemsSubjectAndGrade.subjects,
       grades: [],
     })
-    this.handleChangeKeypad(grades, true)
+    this.handleChangeKeypad(grades, false)
   }
 
   handleChangeCollection = (_, options) => {

@@ -33,6 +33,7 @@ import {
   SearchIcon,
   SearchByNavigationBar,
   SearchByTab,
+  CreateNewTestLink,
 } from './styled'
 import TestPreviewModal from '../../../Assignments/components/Container/TestPreviewModal'
 import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/test'
@@ -177,16 +178,6 @@ const ManageContentBlock = (props) => {
     }
   }
 
-  const onTestMenuChange = ({ key }) => {
-    switch (key) {
-      case '1':
-        window.open('/author/tests/select', '_blank')
-        break
-      default:
-        break
-    }
-  }
-
   const openContentFilterModal = () => setShowContentFilterModal(true)
   const closeContentFilterModal = () => {
     setShowContentFilterModal(false)
@@ -229,9 +220,11 @@ const ManageContentBlock = (props) => {
   )
 
   const testMenu = (
-    <Menu onClick={onTestMenuChange}>
+    <Menu>
       <Menu.Item data-cy="createNew" key="1">
-        {enhanceTextWeight('Create New test')}
+        <CreateNewTestLink href="/author/tests/select" target="_blank">
+          {enhanceTextWeight('Create New test')}
+        </CreateNewTestLink>
       </Menu.Item>
     </Menu>
   )

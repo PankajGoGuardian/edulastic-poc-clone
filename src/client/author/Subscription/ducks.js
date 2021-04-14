@@ -412,6 +412,7 @@ function* handleMultiplePurchasePayment({ payload }) {
       emailIds: userEmailIds,
       licenseIds,
       licenseOwnerId,
+      setPaymentServiceModal,
     } = payload
     const { token, error } = yield stripe.createToken(data)
     if (token) {
@@ -434,7 +435,7 @@ function* handleMultiplePurchasePayment({ payload }) {
             apiPaymentResponse.licenseKeys
           )
         )
-        yield put(slice.actions.setPaymentServiceModal(false))
+        setPaymentServiceModal(false)
         yield put(fetchMultipleSubscriptionsAction({ licenseOwnerId }))
         yield put(fetchUserAction({ background: true }))
         notification({

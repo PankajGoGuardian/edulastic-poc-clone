@@ -216,6 +216,7 @@ const PurchaseFlowModals = (props) => {
         emailIds,
         licenseIds: selectedLicenseId ? [selectedLicenseId] : licenseIds,
         licenseOwnerId,
+        setPaymentServiceModal,
       })
       if (selectedLicenseId) {
         setSelectedLicenseId(null)

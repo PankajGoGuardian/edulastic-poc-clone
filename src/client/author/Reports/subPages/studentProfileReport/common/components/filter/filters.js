@@ -294,7 +294,15 @@ const StudentProfileReportFilters = ({
 
   const resetSPRFilters = (nextTagsData, prevFilters, key, selected) => {
     const index = filtersDefaultValues.findIndex((s) => s.key === key)
-    resetFilters(nextTagsData, prevFilters, key, selected, filtersDefaultValues)
+    if (!['grades', 'subjects'].includes(key)) {
+      resetFilters(
+        nextTagsData,
+        prevFilters,
+        key,
+        selected,
+        filtersDefaultValues
+      )
+    }
     if (
       prevFilters[key] !== selected &&
       (index !== -1 || ['grades', 'subjects'].includes(key))

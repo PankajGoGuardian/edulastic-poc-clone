@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { get, isEmpty, omit, pickBy, groupBy, upperFirst } from 'lodash'
+import { get, isEmpty, omit, pickBy, groupBy } from 'lodash'
 import qs from 'qs'
 
 import { Spin, Tabs, Row, Col } from 'antd'
@@ -387,10 +387,7 @@ const StandardsMasteryReportFilters = ({
     const _selected = multiple
       ? selected.map((o) => o.key).join(',')
       : selected.key
-    const filterKey = ['grades', 'subjects', 'courseId'].includes(keyName)
-      ? `student${upperFirst(keyName)}`
-      : keyName
-    resetStudentFilters(_tempTagsData, _filters, filterKey, _selected)
+    resetStudentFilters(_tempTagsData, _filters, keyName, _selected)
     setTempTagsData(_tempTagsData)
     // update filters
     _filters[keyName] = _selected
@@ -445,10 +442,7 @@ const StandardsMasteryReportFilters = ({
       setTempDdFilter(_tempDdFilter)
     } else {
       const _filters = { ...filters }
-      const filterKey = ['grade', 'subject', 'courseId'].includes(type)
-        ? `student${upperFirst(type)}`
-        : type
-      resetStudentFilters(_tempTagsData, _filters, filterKey, '')
+      resetStudentFilters(_tempTagsData, _filters, type, '')
       // handles single selection filters
       if (filters[type] === key) {
         _filters[type] = staticDropDownData.initialFilters[type]

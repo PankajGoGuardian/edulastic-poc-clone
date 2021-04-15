@@ -803,8 +803,6 @@ class CurriculumSequence extends Component {
       role === roleuser.EDULASTIC_CURATOR ||
       mode === 'embedded'
 
-    console.log('destinationCurriculumSequence', hasEditAccess)
-
     const GridCountInARow = windowWidth >= 1600 ? 5 : 4
     const countModular = new Array(
       GridCountInARow - (slicedRecentPlaylists.length % GridCountInARow)

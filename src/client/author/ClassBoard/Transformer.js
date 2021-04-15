@@ -741,7 +741,6 @@ export const transformGradeBookResponse = (
               ),
               userResponse,
               isPractice,
-              autoGrade,
             }
           }
         )

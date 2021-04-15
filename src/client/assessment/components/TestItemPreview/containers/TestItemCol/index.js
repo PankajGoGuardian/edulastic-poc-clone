@@ -72,7 +72,6 @@ class TestItemCol extends Component {
       isStudentAttempt,
       isStudentReport,
       isLCBView,
-      isExpressGrader,
       isFeedbackVisible,
       hideCorrectAnswer,
     } = restProps
@@ -105,19 +104,6 @@ class TestItemCol extends Component {
         })) ||
       []
 
-    /**
-     * @see https://snapwiz.atlassian.net/browse/EV-25831
-     * Not to show evaluation highlights if question isn't automarkable
-     */
-    let hideEvaluation = false
-    const { activity: { autoGrade } = {} } = question || {}
-    if (
-      autoGrade === false &&
-      (isLCBView || isStudentReport || isExpressGrader)
-    ) {
-      hideEvaluation = true
-    }
-
     // question false undefined false undefined undefined true true
     return (
       <TabContainer
@@ -142,7 +128,7 @@ class TestItemCol extends Component {
           view="preview"
           qIndex={qIndex}
           itemIndex={widgetIndex}
-          previewTab={hideEvaluation ? 'check' : previewTab || preview}
+          previewTab={previewTab || preview}
           timespent={timespent}
           questionId={widget.reference}
           data={{ ...question, smallSize: true }}

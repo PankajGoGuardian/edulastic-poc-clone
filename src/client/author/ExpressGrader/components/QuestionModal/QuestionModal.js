@@ -2,7 +2,8 @@ import React, { createRef } from 'react'
 import PropTypes from 'prop-types'
 
 import { ScrollContext, notification } from '@edulastic/common'
-import { get, isEmpty } from 'lodash'
+import { message } from 'antd'
+import { get, isEmpty, values } from 'lodash'
 import { connect } from 'react-redux'
 import * as Sentry from '@sentry/browser'
 import Question from '../Question/Question'
@@ -105,6 +106,11 @@ class QuestionModal extends React.Component {
     }
   }
 
+  showModal = () => {
+    const { showQuestionModal } = this.props
+    showQuestionModal()
+  }
+
   hideModal = () => {
     this.submitResponse()
     const { hideQuestionModal } = this.props
@@ -140,7 +146,7 @@ class QuestionModal extends React.Component {
   }
 
   getQuestion = () => {
-    const { rowIndex, colIndex } = this.state
+    const { rowIndex, colIndex, loaded } = this.state
     const { tableData } = this.props
     return get(tableData, [rowIndex, `Q${colIndex}`])
   }
@@ -234,12 +240,14 @@ class QuestionModal extends React.Component {
     const {
       isVisibleModal,
       tableData,
+      record,
       isPresentationMode,
       windowWidth,
       studentResponseLoading,
       isScoringInProgress,
+      studentQuestionResponseTestActivityId,
     } = this.props
-    const { rowIndex, colIndex, loaded, editResponse } = this.state
+    const { rowIndex, colIndex, loaded, row, editResponse } = this.state
 
     if (colIndex !== null && rowIndex !== null) {
       question = tableData[rowIndex][`Q${colIndex}`]
@@ -263,7 +271,7 @@ class QuestionModal extends React.Component {
         bodyStyle={{ background: '#f0f2f5', height: '100%', overflowY: 'auto' }}
       >
         {isVisibleModal && question && loaded && (
-          <>
+          <React.Fragment>
             <ScrollContext.Provider
               value={{ getScrollElement: () => this.containerRef?.current }}
             >
@@ -294,13 +302,13 @@ class QuestionModal extends React.Component {
                 style={{ padding: '20px 3%' }}
                 editResponse={editResponse}
                 toggleEditResponse={() =>
-                  this.setState(({ _editResponse }) => ({
-                    editResponse: !_editResponse,
+                  this.setState(({ editResponse }) => ({
+                    editResponse: !editResponse,
                   }))
                 }
               />
             </BottomNavigationWrapper>
-          </>
+          </React.Fragment>
         )}
       </ModalWrapper>
     )
@@ -311,6 +319,7 @@ QuestionModal.propTypes = {
   record: PropTypes.object.isRequired,
   tableData: PropTypes.array.isRequired,
   isVisibleModal: PropTypes.bool.isRequired,
+  showQuestionModal: PropTypes.func.isRequired,
   hideQuestionModal: PropTypes.func.isRequired,
   isPresentationMode: PropTypes.bool,
 }

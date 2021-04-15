@@ -4,9 +4,6 @@ import styled from 'styled-components'
 import { connect } from 'react-redux'
 import { isObject, compact } from 'lodash'
 import { math } from '@edulastic/constants'
-import { FlexContainer } from '@edulastic/common'
-import { lightGrey9 } from '@edulastic/colors'
-import { IconMoveArrows } from '@edulastic/icons'
 import { KEYBOARD_BUTTONS, TAB_BUTTONS } from './constants/keyboardButtons'
 import { NUMBER_PAD_ITEMS } from './constants/numberPadItems'
 
@@ -147,22 +144,12 @@ class MathKeyboard extends React.PureComponent {
       showResponse,
       showDropdown,
       docBasedKeypadStyles,
-      showDragHandle,
       customKeypads,
     } = this.props
     const { type, keyboardButtons, numberButtons, selectOptions } = this.state
 
     return (
       <MathKeyboardContainer docBasedKeypadStyles={docBasedKeypadStyles}>
-        {showDragHandle && (
-          <FlexContainer
-            justifyContent="center"
-            alignItems="center"
-            cursor="move"
-          >
-            <IconMoveArrows color={lightGrey9} width={19} height={19} />
-          </FlexContainer>
-        )}
         <KeyboardHeader
           options={selectOptions}
           showResponse={showResponse}
@@ -199,7 +186,6 @@ MathKeyboard.propTypes = {
   onInput: PropTypes.func,
   onChangeKeypad: PropTypes.func,
   dynamicVariableInput: PropTypes.bool,
-  showDragHandle: PropTypes.bool,
 }
 
 MathKeyboard.defaultProps = {
@@ -211,7 +197,6 @@ MathKeyboard.defaultProps = {
   onInput: () => null,
   onChangeKeypad: () => null,
   dynamicVariableInput: false,
-  showDragHandle: true,
 }
 
 export default connect((state) => ({

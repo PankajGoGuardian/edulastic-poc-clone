@@ -91,11 +91,6 @@ const PlayerHeader = ({
     setShowReviewPopup(false)
   }
 
-  console.log(
-    blockNavigationToAnsweredQuestions,
-    '===blockNavigationToAnsweredQuestions'
-  )
-
   return (
     <FlexContainer>
       {testType === testConstants.type.PRACTICE && <SettingsModal />}

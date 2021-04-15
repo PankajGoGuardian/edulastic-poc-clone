@@ -28,7 +28,6 @@ import ExpressGraderScoreColors from '../ExpressGraderScoreColors'
 import ViewModeSwitch from './ViewModeSwitch'
 import DownloadCSV from './DownloadCSV'
 import GridEditSwitch from './GridEditSwitch'
-import RegradeModal from '../../../Regrade/RegradeModal'
 // actions
 import {
   receiveTestActivitydAction,
@@ -45,7 +44,6 @@ import { toggleScoreModeAction, disableScoreModeAction } from '../../ducks'
 import { getFeedbackResponseSelector } from '../../../src/selectors/feedback'
 import { isFreeAdminSelector } from '../../../src/selectors/user'
 import { toggleFreeAdminSubscriptionModalAction } from '../../../../student/Login/ducks'
-import { getRegradeModalStateSelector } from '../../../TestPage/ducks'
 
 /**
  *
@@ -68,55 +66,12 @@ const transform = (testActivities) =>
 
 const transformMemoized = memoizeOne(transform)
 
-export function getDataForTable(data) {
-  let dataSource
-  if (data && data.length !== 0) {
-    dataSource = data
-      .filter((std) => std.status === 'submitted')
-      .map((student, index) => {
-        const students = []
-        const rowIndex = index
-        const studentInfo = {
-          studentId: student.studentId,
-          studentName: student.studentName,
-          fakeName: student.fakeName,
-          icon: student.icon,
-          color: student.color,
-        }
-        const testActivityId = student.testActivityId
-          ? student.testActivityId
-          : null
-        student.questionActivities.forEach((question, index1) => {
-          const key = `Q${index1}`
-          question.key = key
-          students[key] = question
-          question.colIndex = index1
-          question.id = question._id
-          question.rowIndex = rowIndex
-          question.studentId = student.studentId
-          question.testActivityId = testActivityId
-          question.score = Number.isNaN(question.score) ? 0 : question.score
-        })
-        students.questions = student.questionActivities.length
-        students.students = studentInfo
-        students.score = {
-          score: Number.isNaN(student.score) ? 0 : student.score,
-          maxScore: student.maxScore,
-        }
-        return students
-      })
-  } else {
-    dataSource = []
-  }
-
-  return dataSource
-}
-
 class ExpressGrader extends Component {
   constructor(props) {
     super(props)
     this.state = {
       record: null,
+      tableData: null,
       isVisibleModal: false,
       isGridEditOn: false,
     }
@@ -158,9 +113,8 @@ class ExpressGrader extends Component {
   }
 
   static getDerivedStateFromProps(props) {
-    const { changedFeedback, testActivity } = props
-    const columnData = getDataForTable(testActivity)
-    const newState = { changedFeedback: !isEmpty(changedFeedback), columnData }
+    const { changedFeedback } = props
+    const newState = { changedFeedback: !isEmpty(changedFeedback) }
     return newState
   }
 
@@ -169,10 +123,11 @@ class ExpressGrader extends Component {
     history.push(`${match.url}/create`)
   }
 
-  showQuestionModal = (record) => {
+  showQuestionModal = (record, tableData) => {
     toggleIntercomDisplay()
     this.setState({
       record,
+      tableData,
       isVisibleModal: true,
     })
   }
@@ -216,9 +171,8 @@ class ExpressGrader extends Component {
       toggleScoreMode,
       scoreMode,
       authorClassBoard,
-      regradeModalState,
     } = this.props
-    const { isVisibleModal, record, isGridEditOn, columnData } = this.state
+    const { isVisibleModal, record, tableData, isGridEditOn } = this.state
     const { assignmentId, classId, testActivityId } = match.params
     const isMobile = this.isMobile()
     const testActivity = transformMemoized(_testActivity)
@@ -274,7 +228,6 @@ class ExpressGrader extends Component {
                   <>
                     <ScoreTable
                       scoreMode={scoreMode}
-                      tableData={columnData}
                       isGridEditOn={isGridEditOn}
                       testActivity={testActivity}
                       showQuestionModal={this.showQuestionModal}
@@ -296,8 +249,9 @@ class ExpressGrader extends Component {
                 {isVisibleModal && (
                   <QuestionModal
                     record={record}
-                    tableData={columnData}
+                    tableData={tableData}
                     isVisibleModal={isVisibleModal}
+                    showQuestionModal={this.showQuestionModal}
                     hideQuestionModal={this.hideQuestionModal}
                     isPresentationMode={isPresentationMode}
                     groupId={classId}
@@ -305,7 +259,6 @@ class ExpressGrader extends Component {
                     scoreMode={scoreMode}
                   />
                 )}
-                {!isEmpty(regradeModalState) && <RegradeModal />}
               </WithResources>
             </MainContentWrapper>
           )}
@@ -330,7 +283,6 @@ const enhance = compose(
       authorClassBoard: get(state, ['author_classboard_testActivity'], {}),
       scoreMode: state?.expressGraderReducer?.scoreMode,
       isFreeAdmin: isFreeAdminSelector(state),
-      regradeModalState: getRegradeModalStateSelector(state),
     }),
     {
       loadTestActivity: receiveTestActivitydAction,

@@ -182,6 +182,9 @@ const QuestionBottomAction = ({
     } = permissionToEdit
     const isDisable = isDisableEdit || hasDynamicVariables || isDisableDuplicate
 
+    if (!showCorrectItem) {
+      return [true, 'Edit permission is restricted by the author']
+    }
     let disableText = ''
     if (isDisableEdit && !allowDuplicate) {
       disableText = 'Edit of Item is restricted by Publisher'
@@ -217,8 +220,7 @@ const QuestionBottomAction = ({
           )}
         </div>
         <RightWrapper>
-          {showCorrectItem &&
-            item &&
+          {item &&
             !isStudentReport &&
             (isDisableCorrectItem ? (
               <Popover

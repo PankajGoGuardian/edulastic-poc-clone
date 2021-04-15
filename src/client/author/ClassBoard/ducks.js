@@ -1378,6 +1378,11 @@ export const getAssignedBySelector = createSelector(
   (state) => get(state, 'assignedBy', {})
 )
 
+export const getTestAuthorsSelector = createSelector(
+  getAdditionalDataSelector,
+  (state) => get(state, 'testAuthors', [])
+)
+
 export const isItemVisibiltySelector = createSelector(
   stateTestActivitySelector,
   getAdditionalDataSelector,
@@ -1621,13 +1626,14 @@ export const getShowCorrectItemButton = createSelector(
   getIsDocBasedTestSelector,
   getClassResponseSelector,
   getUserIdSelector,
-  (assignedBy, userRole, isDocBased, _test, userId) => {
+  getTestAuthorsSelector,
+  (assignedBy, userRole, isDocBased, _test, userId, testAuthors) => {
     const assignedRole = assignedBy.role
     if (!assignedRole || assignedRole === roleuser.STUDENT) {
       return false
     }
     if (_test.freezeSettings || isDocBased) {
-      return _test?.authors?.some((author) => author._id === userId)
+      return testAuthors.some((author) => author._id === userId)
     }
     if (assignedRole === roleuser.TEACHER) {
       return true

@@ -21,6 +21,7 @@ import {
   white,
   themeColor,
   skippedBarColor,
+  greyLight1,
 } from '@edulastic/colors'
 import { IconEye, IconEyeClose } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
@@ -390,7 +391,7 @@ class QuestionViewContainer extends Component {
                   style={{ cursor: 'pointer' }}
                   stackId="a"
                   dataKey="unscoredItems"
-                  fill={skippedBarColor}
+                  fill={greyLight1}
                   onClick={this.onClickChart}
                 />
                 <Bar

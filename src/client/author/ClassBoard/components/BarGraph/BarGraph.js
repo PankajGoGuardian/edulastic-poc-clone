@@ -13,6 +13,7 @@ import {
   linkColor1,
   themeColorLighter,
   darkBlue2,
+  greyLight1,
 } from '@edulastic/colors'
 import {
   ComposedChart,
@@ -87,7 +88,7 @@ const bars = {
     yAxisId: 'left',
     stackId: 'a',
     dataKey: 'unscoredItems',
-    fill: linkColor1,
+    fill: greyLight1,
   },
 }
 

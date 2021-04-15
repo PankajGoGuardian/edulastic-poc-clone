@@ -91,6 +91,11 @@ const PlayerHeader = ({
     setShowReviewPopup(false)
   }
 
+  console.log(
+    blockNavigationToAnsweredQuestions,
+    '===blockNavigationToAnsweredQuestions'
+  )
+
   return (
     <FlexContainer>
       {testType === testConstants.type.PRACTICE && <SettingsModal />}
@@ -206,6 +211,7 @@ const PlayerHeader = ({
                   <ControlBtn
                     data-cy="prev"
                     icon="left"
+                    type="primary"
                     disabled={isFirst() || blockNavigationToAnsweredQuestions}
                     onClick={(e) => {
                       moveToPrev()
@@ -222,6 +228,7 @@ const PlayerHeader = ({
                 >
                   <ControlBtn
                     data-cy="next"
+                    type="primary"
                     icon="right"
                     onClick={(e) => {
                       moveToNext()

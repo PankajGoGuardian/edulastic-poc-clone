@@ -2,7 +2,12 @@ import React, { useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
-import { FlexContainer, EduButton, AnswerContext } from '@edulastic/common'
+import {
+  FlexContainer,
+  EduButton,
+  AnswerContext,
+  ItemLevelContext as HideScoringBlockContext,
+} from '@edulastic/common'
 import { TitleWrapper } from '@edulastic/common/src/components/MainHeader'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
@@ -211,6 +216,8 @@ const QuestionBottomAction = ({
     </CorrectButton>
   )
 
+  const shouldHideScoringBlock = item?.scoringDisabled
+
   return (
     <>
       <BottomActionWrapper className={isStudentReport ? 'student-report' : ''}>
@@ -252,13 +259,15 @@ const QuestionBottomAction = ({
             style={{ top: 10 }}
           >
             <AnswerContext.Provider value={{ isAnswerModifiable: true }}>
-              <QuestionComp
-                {...questionProps}
-                t={t}
-                item={questionData}
-                view={EDIT}
-                disableResponse={false}
-              />
+              <HideScoringBlockContext.Provider value={shouldHideScoringBlock}>
+                <QuestionComp
+                  {...questionProps}
+                  t={t}
+                  item={questionData}
+                  view={EDIT}
+                  disableResponse={false}
+                />
+              </HideScoringBlockContext.Provider>
             </AnswerContext.Provider>
           </QuestionPreviewModal>
         )}

@@ -5,6 +5,7 @@ import PropTypes from 'prop-types'
 import { Col, Row } from 'antd'
 import { SpinLoader } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
+import { isEmpty } from 'lodash'
 import { ControlDropDown } from '../../../common/components/widgets/controlDropDown'
 import { StyledH3, NoDataContainer } from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
@@ -76,6 +77,7 @@ const QuestionAnalysis = ({
     if (
       (settings.requestFilters.termId || settings.requestFilters.reportId) &&
       !loading &&
+      !isEmpty(questionAnalysis) &&
       !questionAnalysis.metricInfo?.length
     ) {
       toggleFilter(null, true)

@@ -320,9 +320,9 @@ class Container extends React.Component {
       if (status !== statusConstants.PUBLISHED || updated) {
         this.handlePublishTest(true)
       } else {
-        const { id } = match.params
-        if (id) {
-          history.push(`/author/assignments/${id}`)
+        const { assessmentId } = match.params
+        if (assessmentId) {
+          history.push(`/author/assignments/${assessmentId}`)
         }
       }
     }

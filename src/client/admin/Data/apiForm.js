@@ -405,6 +405,30 @@ export const apiForms = [
     ],
   },
   {
+    id: 'merge-student',
+    name: 'Merge Student',
+    endPoint: 'admin-tool/merge-student',
+    method: 'post',
+    slowApi: true,
+    fields: [
+      {
+        name: 'studentIdsSource',
+        displayName: 'Student Id(s)',
+        placeholder: 'Enter comma separated student Ids',
+        type: 'textarea',
+        formatter: (value) => value.split(',')?.map((v) => v.trim()),
+        required: true,
+      },
+      {
+        name: 'studentIdsDestination',
+        displayName: 'Student Id Destination',
+        placeholder: 'Enter Student Id Destination',
+        type: 'string',
+        required: true,
+      },
+    ],
+  },
+  {
     id: 'move-teacher',
     name: 'Move Teacher',
     endPoint: 'admin-tool/move-teacher',

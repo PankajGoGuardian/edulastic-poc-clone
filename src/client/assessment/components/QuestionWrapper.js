@@ -494,6 +494,7 @@ class QuestionWrapper extends Component {
       hasDrawingResponse,
       previewTab,
       studentId,
+      isQuestionView,
     } = restProps
 
     const userAnswer = get(data, 'activity.userResponse', null)
@@ -696,6 +697,7 @@ class QuestionWrapper extends Component {
                       cleanSections={() => {}}
                       studentId={studentId}
                       t={restProps.t}
+                      isQuestionView={isQuestionView}
                     />
                   )}
                   {rubricDetails && studentReportFeedbackVisible && (

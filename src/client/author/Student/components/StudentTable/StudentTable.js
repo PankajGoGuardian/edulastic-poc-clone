@@ -48,6 +48,7 @@ import {
   receiveDistrictPolicyAction,
   receiveSchoolPolicyAction,
 } from '../../../DistrictPolicy/ducks'
+import { getFormattedName } from '../../../Gradebook/transformers'
 import AddStudentModal from '../../../ManageClass/components/ClassDetails/AddStudent/AddStudentModal'
 import { MergeStudentsModal } from '../../../MergeUsers'
 import {
@@ -137,14 +138,9 @@ class StudentTable extends Component {
         render: (_, { _source }) => {
           const firstName = get(_source, 'firstName', '') || ''
           const lastName = get(_source, 'lastName', '') || ''
-          return (
-            <span>
-              {firstName === 'Anonymous' || isEmpty(firstName)
-                ? 'Anonymous'
-                : firstName}{' '}
-              {lastName}
-            </span>
-          )
+          const middleName = get(_source, 'middleName', '') || ''
+          const fullName = getFormattedName(firstName, middleName, lastName)
+          return <span>{fullName}</span>
         },
         sortDirections: ['descend', 'ascend'],
         sorter: (a, b) => {
@@ -204,12 +200,9 @@ class StudentTable extends Component {
         render: (id, { _source }) => {
           const firstName = get(_source, 'firstName', '')
           const lastName = get(_source, 'lastName', '')
+          const middleName = get(_source, 'middleName', '') || ''
+          const fullName = getFormattedName(firstName, middleName, lastName)
           const status = get(_source, 'status', '')
-          const fullName =
-            firstName === 'Anonymous' ||
-            (isEmpty(firstName) && isEmpty(lastName))
-              ? 'Student'
-              : `${firstName} ${lastName}`
           return (
             <div style={{ whiteSpace: 'nowrap' }}>
               {status === 1 && !isProxyUser ? (

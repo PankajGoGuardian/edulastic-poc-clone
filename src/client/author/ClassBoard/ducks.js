@@ -756,15 +756,29 @@ function* correctItemUpdateSaga({ payload }) {
         payload: { newTestId, oldTestId: testId, itemData: payload },
       })
     }
+    const {
+      assignmentId: payloadAssignmentId,
+      testActivityId,
+      groupId: payloadGroupId,
+      studentId,
+    } = payload
+    const questionViewRegex = /\/author\/classboard\/\w+\/\w+\/question-activity/
+    const { pathname = '' } = yield select((state) => state.router.location) ||
+      {}
+    const isQuestionsViewAsPerLocation = questionViewRegex.test(pathname)
+
     if (!isRegradeNeeded && !proceedRegrade && result.item) {
       yield put(
         reloadLcbDataInStudentViewAction({
-          assignmentId: payload.assignmentId,
-          classId: payload.groupId,
-          isQuestionsView: false,
-          testActivityId: studentResponse?.data?.testActivity?._id,
-          groupId: studentResponse?.data?.testActivity?.groupId,
-          studentId: studentResponse?.data?.testActivity?.userId,
+          assignmentId: payloadAssignmentId,
+          classId: payloadGroupId,
+          isQuestionsView:
+            payload.isQuestionsView || isQuestionsViewAsPerLocation,
+          testActivityId:
+            testActivityId || studentResponse?.data?.testActivity?._id,
+          groupId:
+            payloadGroupId || studentResponse?.data?.testActivity?.groupId,
+          studentId: studentId || studentResponse?.data?.testActivity?.userId,
         })
       )
 

@@ -95,6 +95,7 @@ const QuestionBottomAction = ({
   openQuestionMoal,
   setEditingItemId,
   editItemId,
+  isQuestionView,
   ...questionProps
 }) => {
   // const [openQuestionModal, setOpenQuestionModal] = useState(false)
@@ -107,7 +108,7 @@ const QuestionBottomAction = ({
   }
 
   const onSaveAndPublish = () => {
-    updateCorrectItem({
+    const payload = {
       studentId,
       assignmentId: match?.params?.assignmentId,
       testId: additionalData?.testId,
@@ -116,8 +117,10 @@ const QuestionBottomAction = ({
       testActivityId: item?.activity?.testActivityId,
       question: questionData,
       proceedRegrade: false,
+      isQuestionView,
       callBack: onCloseQuestionModal,
-    })
+    }
+    updateCorrectItem(payload)
   }
 
   const showQuestionModal = async () => {
@@ -286,12 +289,14 @@ QuestionBottomAction.propTypes = {
   loading: PropTypes.bool,
   item: PropTypes.object,
   isStudentReport: PropTypes.bool,
+  isQuestionView: PropTypes.bool,
 }
 
 QuestionBottomAction.defaultProps = {
   loading: false,
   isStudentReport: false,
   item: null,
+  isQuestionView: false,
 }
 
 const getPermissionToEdit = (state, props) => {

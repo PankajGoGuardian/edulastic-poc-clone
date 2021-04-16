@@ -55,7 +55,6 @@ import { logoutAction } from '../actions/auth'
 import { toggleSideBarAction } from '../actions/toggleMenu'
 import {
   getUserFeatures,
-  toggleMultipleAccountNotificationAction,
   isProxyUser as isProxyUserSelector,
   toggleFreeAdminSubscriptionModalAction,
 } from '../../../student/Login/ducks'
@@ -375,8 +374,6 @@ class SideMenu extends Component {
       locationState,
       features,
       showUseThisNotification,
-      isMultipleAccountNotification,
-      toggleMultipleAccountNotification,
       isProxyUser,
     } = this.props
     if (userRole === roleuser.STUDENT) {
@@ -406,9 +403,6 @@ class SideMenu extends Component {
     })
 
     const isPublisher = features.isCurator || features.isPublisherAuthor
-    const showMultipleAccountNotification =
-      isMultipleAccountNotification &&
-      !!get(switchDetails, 'otherAccounts', []).length
 
     let _userRole = null
     if (userRole === roleuser.TEACHER) {
@@ -693,25 +687,10 @@ class SideMenu extends Component {
                           }
                           onCancel={this.handleCancel}
                           title={
-                            <>
-                              {/* <CloseIconWrapper
-                                onClick={(e) => {
-                                  e.preventDefault()
-                                  e.stopPropagation()
-                                  toggleMultipleAccountNotification(false)
-                                  localStorage.setItem(
-                                    'isMultipleAccountNotification',
-                                    'true'
-                                  )
-                                }}
-                              >
-                                <IconClose />
-                              </CloseIconWrapper> */}
-                              <p>
-                                You can switch between your teacher and student
-                                accounts here.
-                              </p>
-                            </>
+                            <p>
+                              You can switch between your teacher and student
+                              accounts here.
+                            </p>
                           }
                           trigger="click"
                           getPopupContainer={(el) => el.parentNode}
@@ -801,7 +780,6 @@ const enhance = compose(
     {
       toggleSideBar: toggleSideBarAction,
       logout: logoutAction,
-      toggleMultipleAccountNotification: toggleMultipleAccountNotificationAction,
       toggleFreeAdminSubscriptionModal: toggleFreeAdminSubscriptionModalAction,
     }
   )

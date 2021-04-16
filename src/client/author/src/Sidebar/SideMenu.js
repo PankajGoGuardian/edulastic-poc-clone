@@ -161,10 +161,14 @@ class SideMenu extends Component {
   constructor(props) {
     super(props)
 
+    const { isMultipleAccountNotification, switchDetails } = this.props
+
     this.state = {
       showModal: false,
       isVisible: false,
-      showSwitchAccountPopup: true,
+      showSwitchAccountPopup:
+        isMultipleAccountNotification &&
+        !!get(switchDetails, 'otherAccounts', []).length,
     }
 
     this.sideMenuRef = React.createRef()
@@ -347,14 +351,6 @@ class SideMenu extends Component {
     e.stopPropagation()
     this.setState({ showSwitchAccountPopup: false })
     localStorage.setItem('isMultipleAccountNotification', 'true')
-  }
-
-  componentDidMount() {
-    const { isMultipleAccountNotification, switchDetails } = this.props
-    const showMultipleAccountNotification =
-      isMultipleAccountNotification &&
-      !!get(switchDetails, 'otherAccounts', []).length
-    this.setState({ showSwitchAccountPopup: showMultipleAccountNotification })
   }
 
   render() {

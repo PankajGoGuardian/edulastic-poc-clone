@@ -236,6 +236,20 @@ class UserForm extends React.Component {
                   )}
                 </Form.Item>
               </Field>
+              <Field name="middleName">
+                <FieldLabel>Middle Name</FieldLabel>
+                <Form.Item>
+                  {getFieldDecorator('middleName', {
+                    initialValue: get(_source, 'middleName', ''),
+                  })(
+                    <TextInputStyled
+                      padding="0px 15px 0px 30px"
+                      prefix={<img style={iconSize} src={userIcon} alt="" />}
+                      placeholder="Enter the middle name of the user"
+                    />
+                  )}
+                </Form.Item>
+              </Field>
               <Field name="lastName">
                 <FieldLabel>Last name</FieldLabel>
                 <Form.Item>

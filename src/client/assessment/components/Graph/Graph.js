@@ -425,6 +425,7 @@ class Graph extends Component {
 
       const evaluationOptions = [
         ...subEvaluationSettingsGrouped.graphSegmentChecks,
+        ...subEvaluationSettingsGrouped.graphPolygonChecks,
       ]
 
       draft.validation['comparePoints=False'] = Object.keys(draft.validation)
@@ -446,6 +447,7 @@ class Graph extends Component {
       'validResponse',
       'rounding',
       'graphType',
+      'comparePoints=False',
     ])
   }
 

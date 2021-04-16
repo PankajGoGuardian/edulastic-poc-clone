@@ -678,7 +678,9 @@ function* togglePauseStudentsSaga({ payload }) {
 function* reloadLcbDataInStudentView({ payload }) {
   try {
     yield call(receiveTestActivitySaga, { payload })
-    yield put(receiveStudentResponseAction(payload))
+    if (payload.lcbView === 'student-report') {
+      yield put(receiveStudentResponseAction(payload))
+    }
   } catch (err) {
     console.error(err)
     captureSentryException(err)
@@ -756,29 +758,17 @@ function* correctItemUpdateSaga({ payload }) {
         payload: { newTestId, oldTestId: testId, itemData: payload },
       })
     }
-    const {
-      assignmentId: payloadAssignmentId,
-      testActivityId,
-      groupId: payloadGroupId,
-      studentId,
-    } = payload
-    const questionViewRegex = /\/author\/classboard\/\w+\/\w+\/question-activity/
-    const { pathname = '' } = yield select((state) => state.router.location) ||
-      {}
-    const isQuestionsViewAsPerLocation = questionViewRegex.test(pathname)
-
+    const { groupId: payloadGroupId, lcbView } = payload
     if (!isRegradeNeeded && !proceedRegrade && result.item) {
       yield put(
         reloadLcbDataInStudentViewAction({
-          assignmentId: payloadAssignmentId,
+          assignmentId,
           classId: payloadGroupId,
-          isQuestionsView:
-            payload.isQuestionsView || isQuestionsViewAsPerLocation,
-          testActivityId:
-            testActivityId || studentResponse?.data?.testActivity?._id,
-          groupId:
-            payloadGroupId || studentResponse?.data?.testActivity?.groupId,
-          studentId: studentId || studentResponse?.data?.testActivity?.userId,
+          isQuestionsView: lcbView === 'question-view',
+          lcbView,
+          testActivityId: studentResponse?.data?.testActivity?._id,
+          groupId: studentResponse?.data?.testActivity?.groupId,
+          studentId: studentResponse?.data?.testActivity?.userId,
         })
       )
 

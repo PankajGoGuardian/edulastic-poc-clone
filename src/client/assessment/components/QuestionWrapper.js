@@ -698,6 +698,7 @@ class QuestionWrapper extends Component {
                       studentId={studentId}
                       t={restProps.t}
                       isQuestionView={isQuestionView}
+                      isExpressGrader={isExpressGrader}
                     />
                   )}
                   {rubricDetails && studentReportFeedbackVisible && (

@@ -96,6 +96,7 @@ const QuestionBottomAction = ({
   setEditingItemId,
   editItemId,
   isQuestionView,
+  isExpressGrader,
   ...questionProps
 }) => {
   // const [openQuestionModal, setOpenQuestionModal] = useState(false)
@@ -108,16 +109,25 @@ const QuestionBottomAction = ({
   }
 
   const onSaveAndPublish = () => {
+    // for now this component will be visible in 3 views for calling the respectve api we need a reference in which author viewing this component.
+    let lcbView = 'student-report'
+    if (isExpressGrader) {
+      lcbView = 'express-grader'
+    }
+    if (isQuestionView) {
+      lcbView = 'question-view'
+    }
     const payload = {
       studentId,
       assignmentId: match?.params?.assignmentId,
       testId: additionalData?.testId,
       testItemId: editItemId,
-      groupId: item?.activity?.groupId,
-      testActivityId: item?.activity?.testActivityId,
+      groupId: match?.params?.classId || item?.activity?.groupId,
+      testActivityId:
+        item?.activity?.testActivityId || match?.params?.testActivityId,
       question: questionData,
       proceedRegrade: false,
-      isQuestionView,
+      lcbView,
       callBack: onCloseQuestionModal,
     }
     updateCorrectItem(payload)

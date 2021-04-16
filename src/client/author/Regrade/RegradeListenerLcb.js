@@ -42,13 +42,14 @@ const NotificationListener = ({
     if (userNotification) {
       const { error, processStatus } = userNotification
       if (processStatus === 'DONE' && !error) {
-        const { assignmentId, groupId } = modalState.itemData
+        const { assignmentId, groupId, lcbView } = modalState.itemData
         reloadLcbDataInStudentView({
           assignmentId,
           groupId,
           classId: groupId,
           testActivityId: studentResponseData?._id,
           studentId: studentResponseData?.userId,
+          lcbView,
         })
         antdNotification({
           type: 'success',

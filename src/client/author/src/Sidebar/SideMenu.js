@@ -165,6 +165,7 @@ class SideMenu extends Component {
     this.state = {
       showModal: false,
       isVisible: false,
+      showSwitchAccountPopup: true,
     }
 
     this.sideMenuRef = React.createRef()
@@ -342,8 +343,23 @@ class SideMenu extends Component {
     if (lastName) return `${lastName.substr(0, 2)}`
   }
 
+  handleCancel = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    this.setState({ showSwitchAccountPopup: false })
+    localStorage.setItem('isMultipleAccountNotification', 'true')
+  }
+
+  componentDidMount() {
+    const { isMultipleAccountNotification, switchDetails } = this.props
+    const showMultipleAccountNotification =
+      isMultipleAccountNotification &&
+      !!get(switchDetails, 'otherAccounts', []).length
+    this.setState({ showSwitchAccountPopup: showMultipleAccountNotification })
+  }
+
   render() {
-    const { broken, isVisible, showModal } = this.state
+    const { broken, isVisible, showModal, showSwitchAccountPopup } = this.state
     const {
       userId,
       switchDetails,
@@ -670,9 +686,15 @@ class SideMenu extends Component {
                         <Popconfirm
                           icon={<IconExclamationMark />}
                           placement="bottomRight"
+                          cancelText={
+                            <CloseIconWrapper>
+                              <IconClose />
+                            </CloseIconWrapper>
+                          }
+                          onCancel={this.handleCancel}
                           title={
                             <>
-                              <CloseIconWrapper
+                              {/* <CloseIconWrapper
                                 onClick={(e) => {
                                   e.preventDefault()
                                   e.stopPropagation()
@@ -684,7 +706,7 @@ class SideMenu extends Component {
                                 }}
                               >
                                 <IconClose />
-                              </CloseIconWrapper>
+                              </CloseIconWrapper> */}
                               <p>
                                 You can switch between your teacher and student
                                 accounts here.
@@ -693,7 +715,7 @@ class SideMenu extends Component {
                           }
                           trigger="click"
                           getPopupContainer={(el) => el.parentNode}
-                          visible={showMultipleAccountNotification}
+                          visible={showSwitchAccountPopup}
                         >
                           <PseudoDiv isCollapsed={isCollapsed}>
                             {this.getInitials()}
@@ -1401,7 +1423,16 @@ const PopConfirmWrapper = styled.div`
   }
 
   .ant-popover-buttons {
-    display: none;
+    .ant-btn {
+      background: none !important;
+      border: none !important;
+      position: absolute;
+      right: 2px;
+      top: 2px;
+    }
+    .ant-btn-primary {
+      display: none;
+    }
   }
 
   .ant-popover-arrow {

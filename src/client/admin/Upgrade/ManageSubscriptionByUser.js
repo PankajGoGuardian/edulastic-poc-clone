@@ -152,8 +152,16 @@ const SubmitUserForm = Form.create({ name: 'submitUserForm' })(
       validateFields(
         (err, { subStartDate, subEndDate, notes, subscriptionAction }) => {
           if (!err) {
-            // here only the user'ids need to be passed for the API call, hence extracting only the user id's
-            const userIds = validEmailIdsList.map((item) => item._id)
+            const userIds = []
+            const subscriptionIds = []
+            const identifiers = validEmailIdsList.map(({ _id }) => _id)
+            validEmailIdsList.forEach(({ subscription, _id }) => {
+              if (subscription && subscription._id) {
+                subscriptionIds.push(subscription._id)
+              } else {
+                userIds.push(_id)
+              }
+            })
             const isRevokeAccess =
               subscriptionAction === radioButtonUserData.REVOKE
             upgradeUserSubscriptionAction({
@@ -163,6 +171,8 @@ const SubmitUserForm = Form.create({ name: 'submitUserForm' })(
               subEndDate: subEndDate.valueOf(),
               notes,
               userIds,
+              subscriptionIds,
+              identifiers,
             })
           }
         }

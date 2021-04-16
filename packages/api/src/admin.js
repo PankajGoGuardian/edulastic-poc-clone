@@ -324,6 +324,15 @@ const updateSubscriptionApi = ({ data, subscriptionId }) =>
     })
     .then(({ data: response }) => response.result)
 
+const bulkUpdateSubscriptionApi = (data) =>
+  api
+    .callApi({
+      url: `/subscription/bulk-update`,
+      method: 'put',
+      data,
+    })
+    .then(({ data: response }) => response.result)
+
 export default {
   getSubscription,
   searchUpdateDistrict,
@@ -359,4 +368,5 @@ export default {
   searchUsersByEmailsOrIds,
   searchClasslinkDistrict,
   updateSubscriptionApi,
+  bulkUpdateSubscriptionApi,
 }

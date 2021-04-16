@@ -118,7 +118,7 @@ class InviteMultipleStudentModal extends Component {
       } else if (curSel === 'fl' || curSel === 'lf') {
         for (let i = 0; i < lines.length; i++) {
           if (!nameValidator(lines[i])) {
-            callback('The input is not valid name')
+            callback('Please enter valid name for the user.')
             break
           }
         }

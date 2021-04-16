@@ -4,7 +4,7 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { ThemeProvider } from 'styled-components'
-import { get, keyBy, isUndefined, last } from 'lodash'
+import { get, isUndefined, last } from 'lodash'
 import { withWindowSizes, ScrollContext, notification } from '@edulastic/common'
 import { nonAutoGradableTypes, test } from '@edulastic/constants'
 
@@ -347,7 +347,6 @@ class AssessmentPlayerDefault extends React.Component {
       selectedTheme = 'default',
       closeTestPreviewModal,
       isStudentReport,
-      passage,
       defaultAP,
       playerSkinType,
       title,
@@ -633,11 +632,7 @@ class AssessmentPlayerDefault extends React.Component {
                       LCBPreviewModal={LCBPreviewModal}
                       cols={itemRows}
                       previousQuestionActivity={previousQuestionActivity}
-                      questions={
-                        passage
-                          ? { ...questions, ...keyBy(passage.data, 'id') }
-                          : questions
-                      }
+                      questions={questions}
                       showCollapseBtn
                       highlights={highlights}
                       crossAction={crossAction || {}}

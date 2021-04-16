@@ -1440,7 +1440,7 @@ const PopConfirmWrapper = styled.div`
 
   .ant-popover-message-title {
     color: white;
-    width: 325px;
+    width: 315px;
     padding-left: 30px;
     font-weight: 600;
     font-size: 16px;

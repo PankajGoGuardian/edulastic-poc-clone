@@ -109,7 +109,10 @@ import {
   isIncompleteQuestion,
   hasImproperDynamicParamsConfig,
 } from '../questionUtils'
-import { setRegradeFirestoreDocId } from '../TestPage/ducks'
+import {
+  getRegradeModalStateSelector,
+  setRegradeFirestoreDocId,
+} from '../TestPage/ducks'
 
 const {
   authorAssignmentConstants: {
@@ -681,6 +684,23 @@ function* reloadLcbDataInStudentView({ payload }) {
     if (payload.lcbView === 'student-report') {
       yield put(receiveStudentResponseAction(payload))
     }
+    const modalState = yield select(getRegradeModalStateSelector)
+    if (payload.lcbView === 'question-view' && modalState) {
+      let firstQuestionId = get(modalState, 'item.data.questions.[0].id')
+      if (
+        !modalState.item.itemLevelScoring &&
+        get(modalState, 'item.data.questions', []).length > 1
+      ) {
+        firstQuestionId = get(modalState, 'question.id')
+      }
+      if (firstQuestionId) {
+        yield put(
+          push(
+            `/author/classboard/${payload.assignmentId}/${payload.classId}/question-activity/${firstQuestionId}`
+          )
+        )
+      }
+    }
   } catch (err) {
     console.error(err)
     captureSentryException(err)
@@ -748,6 +768,7 @@ function* correctItemUpdateSaga({ payload }) {
           oldTestId: testId,
           itemData: payload,
           item: result.item,
+          question,
         },
       })
       yield put(setRegradeFirestoreDocId(result.firestoreDocId))

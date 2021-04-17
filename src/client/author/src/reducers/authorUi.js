@@ -6,6 +6,7 @@ import {
   REMOVE_LOADING_COMPONENT,
   TOGGLE_QUESTION_EDIT_MODAL_LCB,
   SET_EDIT_ITEM_ID,
+  SET_CURRENT_STUDENT_ID,
 } from '../constants/actions'
 
 const initialState = {
@@ -37,6 +38,11 @@ const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         editItemId: payload,
+      }
+    case SET_CURRENT_STUDENT_ID:
+      return {
+        ...state,
+        currentStudentId: payload,
       }
     case RESPONSIVE_TOGGLE_MENU:
       return {

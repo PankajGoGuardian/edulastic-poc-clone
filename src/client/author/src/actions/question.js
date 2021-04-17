@@ -8,6 +8,7 @@ import {
   LOAD_QUESTION,
   TOGGLE_QUESTION_EDIT_MODAL_LCB,
   SET_EDIT_ITEM_ID,
+  SET_CURRENT_STUDENT_ID,
 } from '../constants/actions'
 import {
   UPDATE_QUESTION_REQUEST,
@@ -31,6 +32,11 @@ export const toggleQuestionEditModalAction = (isOpen) => ({
 
 export const setEditingItemIdAction = (payload) => ({
   type: SET_EDIT_ITEM_ID,
+  payload,
+})
+
+export const setCurrentStudentIdAction = (payload) => ({
+  type: SET_CURRENT_STUDENT_ID,
   payload,
 })
 

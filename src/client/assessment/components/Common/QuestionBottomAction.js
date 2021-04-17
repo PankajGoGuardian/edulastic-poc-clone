@@ -20,6 +20,7 @@ import { testItemsApi } from '@edulastic/api'
 import { EDIT } from '../../constants/constantsForQuestions'
 import {
   setEditingItemIdAction,
+  setCurrentStudentIdAction,
   setQuestionDataAction,
   toggleQuestionEditModalAction,
 } from '../../../author/src/actions/question'
@@ -95,6 +96,8 @@ const QuestionBottomAction = ({
   openQuestionMoal,
   setEditingItemId,
   editItemId,
+  currentStudentId,
+  setCurrentStudentId,
   isQuestionView,
   isExpressGrader,
   ...questionProps
@@ -140,6 +143,7 @@ const QuestionBottomAction = ({
       const question = testItem.data.questions.find((q) => q.id === item.id)
       setQuestionData(question)
       setCurrentQuestion(question.id)
+      setCurrentStudentId(studentId)
     } catch (e) {
       setQuestionData(omit(item, 'activity'))
       setCurrentQuestion(item.id)
@@ -262,7 +266,8 @@ const QuestionBottomAction = ({
         openQuestionModal &&
         QuestionComp &&
         questionData &&
-        questionData?.id === item?.id && (
+        questionData?.id === item?.id &&
+        currentStudentId === studentId && (
           <QuestionPreviewModal
             visible={openQuestionModal}
             onCancel={onCloseQuestionModal}
@@ -355,6 +360,7 @@ const enhance = compose(
       permissionToEdit: getPermissionToEdit(state, ownProps),
       showCorrectItem: getShowCorrectItemButton(state),
       editItemId: get(state, ['authorUi', 'editItemId']),
+      currentStudentId: get(state, ['authorUi', 'currentStudentId']),
     }),
     {
       setQuestionData: setQuestionDataAction,
@@ -363,6 +369,7 @@ const enhance = compose(
       removeQuestion: deleteQuestionAction,
       toggleQuestionModal: toggleQuestionEditModalAction,
       setEditingItemId: setEditingItemIdAction,
+      setCurrentStudentId: setCurrentStudentIdAction,
     }
   )
 )

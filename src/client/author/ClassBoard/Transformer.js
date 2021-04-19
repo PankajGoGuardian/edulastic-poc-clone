@@ -451,7 +451,7 @@ export function getStandardsForStandardBasedReport(
   const standardsQuestionsMap = {}
   const questions = testItems.flatMap((x) => x.data.questions)
   for (const q of questions) {
-    if (q.validation.unscored) {
+    if (q?.validation?.unscored) {
       continue
     }
     const standards =

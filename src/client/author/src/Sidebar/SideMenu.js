@@ -666,40 +666,9 @@ class SideMenu extends Component {
                         isCollapsed={isCollapsed}
                       />
                     ) : (
-                      <PopConfirmWrapper isCollapsed={isCollapsed}>
-                        <Popconfirm
-                          icon={<IconExclamationMark />}
-                          placement="bottomRight"
-                          title={
-                            <>
-                              <CloseIconWrapper
-                                onClick={(e) => {
-                                  e.preventDefault()
-                                  e.stopPropagation()
-                                  toggleMultipleAccountNotification(false)
-                                  localStorage.setItem(
-                                    'isMultipleAccountNotification',
-                                    'true'
-                                  )
-                                }}
-                              >
-                                <IconClose />
-                              </CloseIconWrapper>
-                              <p>
-                                You can switch between your teacher and student
-                                accounts here.
-                              </p>
-                            </>
-                          }
-                          trigger="click"
-                          getPopupContainer={(el) => el.parentNode}
-                          visible={showMultipleAccountNotification}
-                        >
-                          <PseudoDiv isCollapsed={isCollapsed}>
-                            {this.getInitials()}
-                          </PseudoDiv>
-                        </Popconfirm>
-                      </PopConfirmWrapper>
+                      <PseudoDiv isCollapsed={isCollapsed}>
+                        {this.getInitials()}
+                      </PseudoDiv>
                     )}
                     <div
                       style={{
@@ -765,7 +734,6 @@ const enhance = compose(
       lastPlayList: getLastPlayListSelector(state),
       features: getUserFeatures(state),
       profileThumbnail: get(state.user, 'user.thumbnail'),
-      switchDetails: getAccountSwitchDetails(state),
       isProxyUser: isProxyUserSelector(state),
       locationState: get(state, 'router.location.state'),
       showUseThisNotification: get(
@@ -774,6 +742,7 @@ const enhance = compose(
         false
       ),
       isFreeAdmin: isFreeAdminSelector(state),
+      switchDetails: getAccountSwitchDetails(state),
       isMultipleAccountNotification: state.user.isMultipleAccountNotification,
     }),
     {

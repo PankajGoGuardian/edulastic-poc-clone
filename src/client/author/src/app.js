@@ -1,13 +1,18 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import loadable from '@loadable/component'
 import { Route, Switch } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import styled, { ThemeProvider } from 'styled-components'
-import { Layout, Spin } from 'antd'
+import { Layout, Popconfirm, Spin } from 'antd'
 import { connect } from 'react-redux'
 import { Progress, ErrorHandler } from '@edulastic/common'
-import { tabletWidth, mainBgColor } from '@edulastic/colors'
+import {
+  tabletWidth,
+  mainBgColor,
+  themeColorBlue,
+  white,
+} from '@edulastic/colors'
 import { roleuser } from '@edulastic/constants'
 import ScrollContext from '@edulastic/common/src/contexts/ScrollContext'
 import { get } from 'lodash'
@@ -15,14 +20,18 @@ import { themes } from '../../theme'
 import Sidebar, { isDisablePageInMobile } from './Sidebar/SideMenu'
 import SuccessPage from '../TestPage/components/SuccessPage/SuccessPage'
 import { MainContainer } from './MainStyle'
-import { getUserOrgId, getUserRole } from './selectors/user'
-import { isProxyUser as isProxyUserSelector } from '../../student/Login/ducks'
+import { getAccountSwitchDetails, getUserOrgId, getUserRole } from './selectors/user'
+import {
+  isProxyUser as isProxyUserSelector,
+  toggleMultipleAccountNotificationAction,
+} from '../../student/Login/ducks'
 import {
   receiveDistrictPolicyAction,
   receiveSchoolPolicyAction,
 } from '../DistrictPolicy/ducks'
 import ImportTest from '../ImportTest'
 import NotFound from '../../NotFound'
+import { IconClose, IconExclamationMark } from '@edulastic/icons'
 
 /* lazy load routes */
 const Dashboard = loadable(() => import('../Dashboard'), {
@@ -246,6 +255,10 @@ const Author = ({
   schoolId,
   isProxyUser,
   isCliUser,
+  toggleMultipleAccountNotification,
+  isSidebarCollapsed,
+  isMultipleAccountNotification,
+  switchDetails,
 }) => {
   useEffect(() => {
     if (role === roleuser.SCHOOL_ADMIN && schoolId) {
@@ -260,6 +273,12 @@ const Author = ({
     const intercomElm = document.querySelector('.intercom-lightweight-app')
     if (intercomElm) {
       intercomElm.style.display = isCliUser ? 'none' : 'block'
+    }
+  }, [isCliUser])
+
+  const sidebarStyles = useMemo(() => {
+    return {
+      display: isCliUser && 'none',
     }
   }, [isCliUser])
 
@@ -278,6 +297,17 @@ const Author = ({
     'groupItems',
   ]
 
+  const showMultipleAccountNotification =
+    isMultipleAccountNotification &&
+    !!get(switchDetails, 'otherAccounts', []).length
+
+  const handleCancel = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    toggleMultipleAccountNotification(false)
+    localStorage.setItem('isMultipleAccountNotification', 'true')
+  }
+
   return (
     <ThemeProvider theme={themeToPass}>
       <ScrollContext.Provider value={{ getScrollElement: () => window }}>
@@ -287,8 +317,29 @@ const Author = ({
             <SidebarCompnent
               isPrintPreview={isPrintPreview || isCliUser}
               isProxyUser={isProxyUser}
-              style={{ display: isCliUser && 'none' }}
+              style={sidebarStyles}
             />
+            <PopConfirmWrapper isCollapsed={isSidebarCollapsed}>
+              <Popconfirm
+                icon={<IconExclamationMark />}
+                placement="bottomRight"
+                onCancel={handleCancel}
+                cancelText={
+                  <CloseIconWrapper>
+                    <IconClose />
+                  </CloseIconWrapper>
+                }
+                title={
+                  <p>
+                    You can switch between your teacher and student accounts
+                    here.
+                  </p>
+                }
+                trigger="click"
+                getPopupContainer={(el) => el.parentNode}
+                visible={showMultipleAccountNotification}
+              />
+            </PopConfirmWrapper>
             <Wrapper>
               <ErrorHandler
                 disablePage={isDisablePageInMobile(history.location.pathname)}
@@ -911,7 +962,7 @@ const Author = ({
     </ThemeProvider>
   )
 }
-
+Author.whyDidYouRender = true
 export default connect(
   ({ authorUi, ...state }) => ({
     orgId: getUserOrgId(state),
@@ -925,10 +976,14 @@ export default connect(
     schoolId: get(state, 'user.saSettingsSchool'),
     isProxyUser: isProxyUserSelector(state),
     isCliUser: get(state, 'user.isCliUser', false),
+    isSidebarCollapsed: get(state, 'isSidebarCollapsed', true),
+    switchDetails: getAccountSwitchDetails(state),
+    isMultipleAccountNotification: state.user?.isMultipleAccountNotification,
   }),
   {
     loadDistrictPolicy: receiveDistrictPolicyAction,
     loadSchoolPolicy: receiveSchoolPolicyAction,
+    toggleMultipleAccountNotification: toggleMultipleAccountNotificationAction,
   }
 )(Author)
 
@@ -955,4 +1010,89 @@ const StyledLayout = styled(Layout)`
   }
   margin-top: ${(props) =>
     props.isProxyUser ? props.theme.BannerHeight : 0}px;
+`
+const PopConfirmWrapper = styled.div`
+  .ant-popover.ant-popover-placement-bottomRight {
+    position: fixed;
+    top: auto !important;
+    bottom: 30px;
+    left: ${({ isCollapsed }) => (isCollapsed ? '80px' : '230px')} !important;
+  }
+
+  .ant-popover-buttons {
+    .ant-btn {
+      background: none !important;
+      border: none !important;
+      position: absolute;
+      right: 2px;
+      top: 2px;
+    }
+    .ant-btn-primary {
+      display: none;
+    }
+  }
+
+  .ant-popover-arrow {
+    display: block !important;
+    position: fixed;
+    top: auto !important;
+    bottom: 40px;
+    left: ${({ isCollapsed }) => (isCollapsed ? '77px' : '227px')} !important;
+    width: 15px;
+    height: 15px;
+    transform: rotate(-45deg);
+  }
+
+  .ant-popover-message {
+    padding: 4px 0px;
+
+    svg {
+      float: left;
+      margin-top: 6px;
+      transform: scale(1.4);
+
+      path:first-child {
+        fill: ${themeColorBlue};
+      }
+    }
+  }
+
+  .ant-popover-message-title {
+    color: white;
+    width: 315px;
+    padding-left: 30px;
+    font-weight: 600;
+    font-size: 16px;
+  }
+
+  .ant-popover-inner {
+    background: #2f4151;
+  }
+
+  .ant-popover-placement-bottom > .ant-popover-content > .ant-popover-arrow,
+  .ant-popover-placement-bottomLeft > .ant-popover-content > .ant-popover-arrow,
+  .ant-popover-placement-bottomRight
+    > .ant-popover-content
+    > .ant-popover-arrow {
+    border-top-color: #2f4151;
+    border-left-color: #2f4151;
+  }
+`
+const CloseIconWrapper = styled.div`
+  margin-top: -6px;
+  float: right;
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  svg {
+    float: left;
+    margin-top: 6px;
+    transform: scale(0.6) !important;
+
+    path:first-child {
+      fill: ${white} !important;
+    }
+  }
 `

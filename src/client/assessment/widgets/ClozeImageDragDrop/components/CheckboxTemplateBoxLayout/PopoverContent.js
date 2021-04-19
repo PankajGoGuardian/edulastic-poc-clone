@@ -7,7 +7,6 @@ import { IconWrapper } from './styled/IconWrapper'
 import { RightIcon } from './styled/RightIcon'
 import { WrongIcon } from './styled/WrongIcon'
 
-// eslint-disable-next-line max-len
 export function PopoverContent({
   fontSize,
   answer,
@@ -20,7 +19,11 @@ export function PopoverContent({
     <div
       fontSize={fontSize}
       className={className}
-      style={{ position: 'relative', 'max-width': response.maxWidth }}
+      style={{
+        display: 'flex',
+        position: 'relative',
+        'max-width': response.maxWidth,
+      }}
     >
       <div
         className="index index-box"

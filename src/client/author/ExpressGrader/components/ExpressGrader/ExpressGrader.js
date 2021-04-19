@@ -177,6 +177,12 @@ class ExpressGrader extends Component {
     })
   }
 
+  updateRecord = (data) => {
+    if (!isEmpty(data)) {
+      this.setState({ record: data })
+    }
+  }
+
   hideQuestionModal = () => {
     toggleIntercomDisplay()
     const { changedFeedback } = this.state
@@ -303,6 +309,7 @@ class ExpressGrader extends Component {
                     groupId={classId}
                     windowWidth={windowWidth}
                     scoreMode={scoreMode}
+                    updateRecord={this.updateRecord}
                   />
                 )}
                 {!isEmpty(regradeModalState) && <RegradeModal />}

@@ -44,6 +44,7 @@ class QuestionModal extends React.Component {
   }
 
   componentDidMount() {
+    // TODO: attach only the event listener, move rest of code into getDerivedStateFromProps
     const { record, tableData, scoreMode } = this.props
     const loaded = true
     let maxQuestions = null
@@ -66,6 +67,7 @@ class QuestionModal extends React.Component {
     document.addEventListener('keyup', this.keyListener, false)
   }
 
+  // TODO: refactor to getDerivedStateFromProps
   UNSAFE_componentWillReceiveProps(nextProps) {
     const { record, tableData } = nextProps
     const loaded = true
@@ -113,12 +115,18 @@ class QuestionModal extends React.Component {
 
   nextStudent = (event) => {
     const { maxStudents } = this.state
-    const { rowIndex } = this.state
+    const { rowIndex, colIndex } = this.state
+    const { tableData, updateRecord } = this.props
+
     const nextIndex = rowIndex + 1
     if (nextIndex !== maxStudents) {
       this.submitResponse()
       this.setState({ loaded: false }, () => {
-        this.setState({ rowIndex: nextIndex, loaded: true })
+        this.setState({ rowIndex: nextIndex, loaded: true }, () => {
+          if (typeof updateRecord === 'function') {
+            updateRecord(get(tableData, [nextIndex, `Q${colIndex}`]))
+          }
+        })
       })
     } else {
       event.stopPropagation()
@@ -127,12 +135,18 @@ class QuestionModal extends React.Component {
   }
 
   prevStudent = (event) => {
-    const { rowIndex } = this.state
+    const { rowIndex, colIndex } = this.state
+    const { tableData, updateRecord } = this.props
+
     if (rowIndex !== 0) {
       this.submitResponse()
       const prevIndex = rowIndex - 1
       this.setState({ loaded: false }, () => {
-        this.setState({ rowIndex: prevIndex, loaded: true })
+        this.setState({ rowIndex: prevIndex, loaded: true }, () => {
+          if (typeof updateRecord === 'function') {
+            updateRecord(get(tableData, [prevIndex, `Q${colIndex}`]))
+          }
+        })
       })
     } else {
       event?.stopPropagation()
@@ -206,12 +220,18 @@ class QuestionModal extends React.Component {
 
   nextQuestion = () => {
     const { maxQuestions } = this.state
-    const { colIndex } = this.state
+    const { rowIndex, colIndex } = this.state
     const nextIndex = colIndex + 1
+    const { tableData, updateRecord } = this.props
+
     if (nextIndex !== maxQuestions) {
       this.submitResponse()
       this.setState({ loaded: false }, () => {
-        this.setState({ colIndex: nextIndex, loaded: true })
+        this.setState({ colIndex: nextIndex, loaded: true }, () => {
+          if (typeof updateRecord === 'function') {
+            updateRecord(get(tableData, [rowIndex, `Q${nextIndex}`]))
+          }
+        })
       })
     } else {
       notification({ type: 'success', messageKey: 'finishedGrading' })
@@ -220,11 +240,17 @@ class QuestionModal extends React.Component {
 
   prevQuestion = () => {
     this.submitResponse()
-    const { colIndex } = this.state
+    const { rowIndex, colIndex } = this.state
+    const { tableData, updateRecord } = this.props
+
     if (colIndex !== 0) {
       const prevIndex = colIndex - 1
       this.setState({ loaded: false }, () => {
-        this.setState({ colIndex: prevIndex, loaded: true })
+        this.setState({ colIndex: prevIndex, loaded: true }, () => {
+          if (typeof updateRecord === 'function') {
+            updateRecord(get(tableData, [rowIndex, `Q${prevIndex}`]))
+          }
+        })
       })
     }
   }
@@ -244,6 +270,7 @@ class QuestionModal extends React.Component {
     if (colIndex !== null && rowIndex !== null) {
       question = tableData[rowIndex][`Q${colIndex}`]
     }
+
     let student = {}
     if (rowIndex !== null) {
       student = tableData[rowIndex].students

@@ -10,7 +10,15 @@ import {
 } from '@edulastic/api'
 import { createSelector } from 'reselect'
 import { push } from 'connected-react-router'
-import { values as _values, get, keyBy, sortBy, isEmpty, groupBy } from 'lodash'
+import {
+  values as _values,
+  get,
+  keyBy,
+  sortBy,
+  isEmpty,
+  groupBy,
+  round,
+} from 'lodash'
 import { captureSentryException, notification } from '@edulastic/common'
 import {
   test,
@@ -1086,6 +1094,17 @@ export const getAggregateByQuestion = (entities, studentId) => {
   const scores = activeEntities
     .map(({ score, maxScore }) => score / maxScore)
     .reduce((prev, cur) => prev + cur, 0)
+
+  const scorePercentagePerStudent = activeEntities
+    .map(({ score, maxScore }) => (score / maxScore) * 100)
+    .sort((a, b) => a - b)
+  const numberOfActivities = scorePercentagePerStudent.length
+  const mid = Math.ceil(numberOfActivities / 2)
+  const median =
+    numberOfActivities % 2 === 0
+      ? (scorePercentagePerStudent[mid] + scorePercentagePerStudent[mid - 1]) /
+        2
+      : scorePercentagePerStudent[mid - 1]
   const submittedScoresAverage =
     activeEntities.length > 0 ? scores / activeEntities.length : 0
   // const startedEntities = entities.filter(x => x.status !== "notStarted");
@@ -1101,6 +1120,7 @@ export const getAggregateByQuestion = (entities, studentId) => {
     avgScore: submittedScoresAverage,
     questionsOrder,
     itemsSummary,
+    median: round(median, 2) || 0,
   }
   return result
 }

@@ -1,6 +1,7 @@
 import { MainContentWrapper } from '@edulastic/common'
 import { IconBarChart } from '@edulastic/icons'
 import { Spin } from 'antd'
+import { isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
@@ -24,10 +25,31 @@ import {
 import Header from '../sharedComponents/Header'
 import MainContainer from '../styled/mainContainer'
 import { LoaderConainer } from './styled'
-import { getUserRole } from '../../author/src/selectors/user'
+import { getUserRole, getChildrens } from '../../author/src/selectors/user'
 
 const getTermId = (_classes, _classId) =>
   _classes.find((c) => c._id === _classId)?.termId || ''
+
+const getChildrenUserName = (childrens, childId) => {
+  const childDetails = (childrens || []).find((o) => o._id === childId)
+  return childDetails?.userName || childDetails.email || ''
+}
+
+const getClassForSelectedUser = (childrens, currentChild, classId, termId) => {
+  const currentStdActiveClasses = (
+    (childrens || []).find((o) => o._id === currentChild)?.orgData?.classList ||
+    []
+  ).filter((o) => o.active === 1)
+  if (
+    !isEmpty((currentStdActiveClasses || []).find((o) => o._id === classId))
+  ) {
+    const firstActiveClass = (currentStdActiveClasses || []).find(
+      (o) => o._id === classId
+    )
+    return [firstActiveClass._id, firstActiveClass.termId]
+  }
+  return [classId, termId]
+}
 
 const SkillReportContainer = ({
   flag,
@@ -42,9 +64,14 @@ const SkillReportContainer = ({
   resetEnrolledClass,
   currentChild,
   getSPRFilterDataRequest,
+  childrens,
   t,
 }) => {
   const [initialLoading, setInitialLoading] = useState(true)
+  if (userRole === 'parent') {
+    userId = currentChild
+    userName = getChildrenUserName(childrens, currentChild)
+  }
   const [settings, setSettings] = useState({
     requestFilters: {
       termId: '',
@@ -69,13 +96,25 @@ const SkillReportContainer = ({
 
   useEffect(() => {
     if (classId) {
+      let termId = getTermId(userClasses, classId || fallbackClassId)
+      if (userRole === 'parent') {
+        ;[classId, termId] = getClassForSelectedUser(
+          childrens,
+          currentChild,
+          classId,
+          termId
+        )
+      }
       setSettings({
         ...settings,
         requestFilters: {
           ...settings.requestFilters,
-          termId: getTermId(userClasses, classId || fallbackClassId),
-          // if you need to pass multiple ids then pass it as comma separated
+          termId,
           groupIds: classId,
+        },
+        selectedStudent: {
+          key: currentChild,
+          title: getChildrenUserName(childrens, currentChild),
         },
       })
     }
@@ -87,7 +126,7 @@ const SkillReportContainer = ({
       studentId: userId,
     }
     // set groupId for student
-    if (classId && userRole === 'student') {
+    if (classId && (userRole === 'student' || userRole === 'parent')) {
       Object.assign(q, {
         // if you need to pass multiple ids then pass it as comma separated
         groupIds: classId,
@@ -157,6 +196,7 @@ export default withNamespaces('header')(
       currentChild: state?.user?.currentChild,
       loading: getLoaderSelector(state),
       userRole: getUserRole(state),
+      childrens: getChildrens(state),
     }),
     {
       loadAllClasses: getEnrollClassAction,

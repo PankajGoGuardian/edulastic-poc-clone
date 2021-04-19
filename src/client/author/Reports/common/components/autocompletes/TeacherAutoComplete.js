@@ -84,6 +84,13 @@ const TeacherAutoComplete = ({
   const onSearch = (value) => {
     setSearchTerms({ ...searchTerms, text: value })
   }
+  const onChange = (selected, selectedElements) => {
+    const _selectedTeachers = selectedElements.map(({ props }) => ({
+      key: props.value,
+      title: props.title,
+    }))
+    selectCB(_selectedTeachers)
+  }
   const onBlur = () => {
     if (searchTerms.text === '' && searchTerms.selectedText !== '') {
       setSearchTerms(DEFAULT_SEARCH_TERMS)
@@ -149,7 +156,7 @@ const TeacherAutoComplete = ({
       label="Teacher"
       placeholder="All Teachers"
       el={teacherFilterRef}
-      onChange={(e) => selectCB(dropdownData.filter((d) => e.includes(d.key)))}
+      onChange={onChange}
       onSearch={onSearch}
       onBlur={onBlur}
       onFocus={() => getDefaultTeacherList()}

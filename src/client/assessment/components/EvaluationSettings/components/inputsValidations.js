@@ -24,6 +24,6 @@ export const validations = {
     if (!value) {
       return true
     }
-    return /^\d*[1-9]\d*$/g.test(value)
+    return /^(0|[1-9]\d*)?$/g.test(value)
   },
 }

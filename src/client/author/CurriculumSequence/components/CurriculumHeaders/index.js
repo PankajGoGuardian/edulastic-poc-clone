@@ -201,6 +201,7 @@ const CurriculumHeader = ({
       <MainHeader
         Icon={isDesktop ? IconPlaylist : null}
         headingText={loading ? 'Untitled Playlist' : title}
+        titleText={destinationCurriculumSequence?.alignmentInfo}
         titleMaxWidth="22rem"
         justify="space-between"
         headingSubContent={urlHasUseThis && !isPublisherUser && switchPlaylist}

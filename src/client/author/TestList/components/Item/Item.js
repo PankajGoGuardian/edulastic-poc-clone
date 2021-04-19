@@ -24,7 +24,10 @@ import {
   approveOrRejectSingleTestRequestAction,
   toggleTestLikeAction,
 } from '../../ducks'
-import { duplicatePlaylistRequestAction } from '../../../CurriculumSequence/ducks'
+import {
+  duplicatePlaylistRequestAction,
+  useThisPlayListAction,
+} from '../../../CurriculumSequence/ducks'
 import { allowDuplicateCheck } from '../../../src/utils/permissionCheck'
 import PlaylistCard from './PlaylistCard'
 import TestItemCard from './TestItemCard'
@@ -217,6 +220,8 @@ class Item extends Component {
       isTestLiked,
       duplicatePlayList,
       isPreviewModalVisible,
+      useThisPlayList,
+      history,
     } = this.props
     const { status, analytics = [] } = isPlaylist ? _source : item
     const likes = analytics?.[0]?.likes || '0'
@@ -307,6 +312,8 @@ class Item extends Component {
       isTestLiked,
       allowDuplicate,
       duplicatePlayList,
+      history,
+      useThisPlayList,
     }
 
     const CardViewComponent = isPlaylist ? PlaylistCard : TestItemCard
@@ -379,6 +386,7 @@ const enhance = compose(
       duplicateTest: duplicateTestRequestAction,
       toggleFreeAdminSubscriptionModal: toggleFreeAdminSubscriptionModalAction,
       setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
+      useThisPlayList: useThisPlayListAction,
     }
   )
 )

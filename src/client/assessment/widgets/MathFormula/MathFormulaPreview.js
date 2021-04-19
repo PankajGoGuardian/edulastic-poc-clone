@@ -247,10 +247,10 @@ class MathFormulaPreview extends Component {
       latex = formatToMathAnswer(userAnswer, template)
     }
 
-    if (!this.isStatic) {
+    if (!this.isStatic && userAnswer) {
       latex = this.getValidLatex(this.props)
       latex = !Array.isArray(latex)
-        ? latex.replace('\\MathQuillMathField{}', '')
+        ? latex?.replace('\\MathQuillMathField{}', '')
         : ''
     }
 

@@ -868,7 +868,7 @@ const getTestItemsData = createSelector(
 
 export const getClassResponseSelector = createSelector(
   stateClassResponseSelector,
-  (state) => state.data
+  (state) => state?.data || {}
 )
 
 export const ttsUserIdSelector = createSelector(

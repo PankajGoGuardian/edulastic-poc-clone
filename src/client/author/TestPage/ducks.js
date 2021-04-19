@@ -1657,6 +1657,10 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     settings.penalty = false
     settings.passwordPolicy = passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF
     settings.timedAssignment = false
+    settings.blockNavigationToAnsweredQuestions = false
+    delete settings.blockSaveAndContinue
+    delete settings.restrictNavigationOut
+    delete settings.restrictNavigationOutAttemptsThreshold
   }
 
   return settings

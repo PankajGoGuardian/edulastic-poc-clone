@@ -109,10 +109,7 @@ import {
   isIncompleteQuestion,
   hasImproperDynamicParamsConfig,
 } from '../questionUtils'
-import {
-  getRegradeModalStateSelector,
-  setRegradeFirestoreDocId,
-} from '../TestPage/ducks'
+import { setRegradeFirestoreDocId } from '../TestPage/ducks'
 
 const {
   authorAssignmentConstants: {
@@ -684,16 +681,25 @@ function* reloadLcbDataInStudentView({ payload }) {
     if (payload.lcbView === 'student-report') {
       yield put(receiveStudentResponseAction(payload))
     }
-    const modalState = yield select(getRegradeModalStateSelector)
+    const { modalState } = payload
     if (payload.lcbView === 'question-view' && modalState) {
       let firstQuestionId = get(modalState, 'item.data.questions.[0].id')
       if (
         !modalState.item.itemLevelScoring &&
         get(modalState, 'item.data.questions', []).length > 1
       ) {
-        firstQuestionId = get(modalState, 'question.id')
+        const previousQid = get(modalState, 'question.id')
+        const prevQuestionInNewItem = get(
+          modalState,
+          'item.data.questions',
+          []
+        ).find((q) => q.previousQuestionId === previousQid)
+        if (prevQuestionInNewItem && prevQuestionInNewItem.id) {
+          firstQuestionId = prevQuestionInNewItem.id
+        }
       }
       if (firstQuestionId) {
+        yield put(push(`/`))
         yield put(
           push(
             `/author/classboard/${payload.assignmentId}/${payload.classId}/question-activity/${firstQuestionId}`

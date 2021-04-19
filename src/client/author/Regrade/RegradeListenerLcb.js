@@ -50,6 +50,7 @@ const NotificationListener = ({
           testActivityId: studentResponseData?._id,
           studentId: studentResponseData?.userId,
           lcbView,
+          modalState,
         })
         antdNotification({
           type: 'success',

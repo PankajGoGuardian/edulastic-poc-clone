@@ -47,6 +47,7 @@ import {
   togglePlaylistTestDetailsModalWithId,
   toggleAssignmentsAction,
   setCurrentAssignmentIdsAction,
+  editPlaylistTestAction,
 } from '../ducks'
 import { getProgressData } from '../util'
 import ModuleRowView, { InfoProgressBar } from './ModuleRowView'
@@ -569,6 +570,11 @@ class ModuleRow extends Component {
     })
   }
 
+  onEditTest = (testId) => {
+    const { editPlaylistTest, playlistId } = this.props
+    editPlaylistTest({ testId, playlistId })
+  }
+
   render() {
     const {
       onCollapseExpand,
@@ -811,6 +817,14 @@ class ModuleRow extends Component {
                           }
                         >
                           Preview Test
+                        </Menu.Item>
+                      )}
+                      {!isStudent && (
+                        <Menu.Item
+                          data-cy="edit-test"
+                          onClick={() => this.onEditTest(moduleData.contentId)}
+                        >
+                          Edit test
                         </Menu.Item>
                       )}
                       {!isStudent && isSparkMathPlaylist && (
@@ -1295,6 +1309,7 @@ class ModuleRow extends Component {
               modalInitData={playlistTestDetailsModalData}
               viewAsStudent={this.viewTest}
               playlistId={playlistId}
+              onEditTest={this.onEditTest}
             />
           )}
         </>
@@ -1312,6 +1327,7 @@ ModuleRow.propTypes = {
   moduleStatus: PropTypes.bool.isRequired,
   status: PropTypes.string.isRequired,
   removeUnit: PropTypes.func.isRequired,
+  editPlaylistTest: PropTypes.func.isRequired,
 }
 
 const enhance = compose(
@@ -1343,6 +1359,7 @@ const enhance = compose(
       toggleAssignments: toggleAssignmentsAction,
       setCurrentAssignmentIds: setCurrentAssignmentIdsAction,
       setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
+      editPlaylistTest: editPlaylistTestAction,
     }
   )
 )

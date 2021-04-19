@@ -29,6 +29,7 @@ const PlaylistTestDetailsModal = ({
   viewAsStudent,
   isTestLoading,
   playlistId,
+  onEditTest,
 }) => {
   useEffect(() => {
     receiveTestById(currentTestId, true, false, true, playlistId)
@@ -39,6 +40,8 @@ const PlaylistTestDetailsModal = ({
     onChangeSubjects: () => {},
     onChangeCollection: () => {},
   }
+
+  const handleEditTest = () => onEditTest(currentTestId)
 
   return (
     <ModalWrapper
@@ -58,6 +61,7 @@ const PlaylistTestDetailsModal = ({
           back to playlist
         </BreadCrumb>
         <ActionsWrapper>
+          <ActionBtn onClick={handleEditTest}>Edit test</ActionBtn>
           <ActionBtn onClick={() => viewAsStudent(currentTestId)}>
             <IconEye color={themeColor} width={16} height={16} /> view as
             student

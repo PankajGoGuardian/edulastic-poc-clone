@@ -503,7 +503,8 @@ class QuestionViewContainer extends Component {
               ((filter && student.UTASTATUS === testActivityStatus.START) ||
                 (student.UTASTATUS === testActivityStatus.SUBMITTED &&
                   filter &&
-                  filter !== 'skipped'))
+                  filter !== 'skipped' &&
+                  filter !== 'unscoredItems'))
             )
               return null
             return (

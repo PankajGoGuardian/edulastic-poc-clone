@@ -121,9 +121,13 @@ const PurchaseFlowModals = (props) => {
     const boughtPremiumBankIds = itemBankSubscriptions
       .filter((x) => !x.isTrial)
       .map((x) => x.itemBankId)
-    const purchasableProducts = products.filter(
-      (x) => !boughtPremiumBankIds.includes(x.linkedProductId)
-    )
+
+    // if renewal then show all products else filter bought products
+    const purchasableProducts = showRenewalOptions
+      ? products
+      : products.filter(
+          (x) => !boughtPremiumBankIds.includes(x.linkedProductId)
+        )
 
     const result = purchasableProducts.map((product) => {
       const { id: currentProductId } = product

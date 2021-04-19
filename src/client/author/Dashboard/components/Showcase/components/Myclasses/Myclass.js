@@ -23,7 +23,10 @@ import { slice } from '../../../../../Subscription/ducks'
 import { getDictCurriculumsAction } from '../../../../../src/actions/dictionaries'
 import { receiveSearchCourseAction } from '../../../../../Courses/ducks'
 import { fetchCleverClassListRequestAction } from '../../../../../ManageClass/ducks'
-import { receiveTeacherDashboardAction } from '../../../../ducks'
+import {
+  receiveTeacherDashboardAction,
+  fetchPlaylistsAction,
+} from '../../../../ducks'
 import { getUserDetails } from '../../../../../../student/Login/ducks'
 import { resetTestFiltersAction } from '../../../../../TestList/ducks'
 import { clearPlaylistFiltersAction } from '../../../../../Playlist/ducks'
@@ -69,6 +72,8 @@ const MyClasses = ({
   products,
   showHeaderTrialModal,
   setShowHeaderTrialModal,
+  fetchPlaylists,
+  playlists,
 }) => {
   const [showBannerModal, setShowBannerModal] = useState(null)
   const [isPurchaseModalVisible, setIsPurchaseModalVisible] = useState(false)
@@ -88,7 +93,6 @@ const MyClasses = ({
       fetchCleverClassList()
     }
   }, [showCleverSyncModal])
-
   useEffect(() => {
     getTeacherDashboard()
     getDictCurriculums()
@@ -475,6 +479,8 @@ const MyClasses = ({
           products={products}
           handleGoToCollectionClick={handleGoToCollectionClick}
           history={history}
+          fetchPlaylists={fetchPlaylists}
+          playlists={playlists}
         />
       )}
     </MainContentWrapper>
@@ -504,6 +510,7 @@ export default compose(
         state.subscription?.showTrialConfirmationMessage,
       products: state.subscription?.products,
       showHeaderTrialModal: state.subscription?.showHeaderTrialModal,
+      playlists: state.dashboardTeacher.playlists,
     }),
     {
       receiveSearchCourse: receiveSearchCourseAction,
@@ -516,6 +523,7 @@ export default compose(
       showTrialSubsConfirmationAction:
         slice.actions.trialSubsConfirmationAction,
       setShowHeaderTrialModal: slice.actions.setShowHeaderTrialModal,
+      fetchPlaylists: fetchPlaylistsAction,
     }
   )
 )(MyClasses)

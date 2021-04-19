@@ -25,6 +25,10 @@ import {
 import { resetTestFiltersAction } from '../../../TestList/ducks'
 import { clearPlaylistFiltersAction } from '../../../Playlist/ducks'
 import ItemBankTrialUsedModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/FeaturedContentBundle/ItemBankTrialUsedModal'
+import {
+  fetchMultipleSubscriptionsAction,
+  getSubsLicensesSelector,
+} from '../../../ManageSubscription/ducks'
 
 const comparePlansData = [
   {
@@ -198,6 +202,8 @@ const Subscription = (props) => {
     resetTestFilters,
     resetPlaylistFilters,
     collections,
+    fetchMultipleSubscriptions,
+    subsLicenses,
   } = props
 
   const [comparePlan, setComparePlan] = useState(false)
@@ -221,6 +227,7 @@ const Subscription = (props) => {
   useEffect(() => {
     // getSubscription on mount
     fetchUserSubscriptionStatus()
+    fetchMultipleSubscriptions({})
   }, [])
 
   const isPremiumUser = user?.features?.premium
@@ -392,6 +399,7 @@ const Subscription = (props) => {
         setShowMultiplePurchaseModal={setShowMultiplePurchaseModal}
         setProductData={setProductData}
         showRenewalOptions={showRenewalOptions}
+        subsLicenses={subsLicenses}
       />
 
       <HasLicenseKeyModal
@@ -446,6 +454,7 @@ export default compose(
         state?.subscription?.showTrialConfirmationMessage,
       dashboardTiles: state.dashboardTeacher.configurableTiles,
       collections: getCollectionsSelector(state),
+      subsLicenses: getSubsLicensesSelector(state),
     }),
     {
       verifyAndUpgradeLicense: slice.actions.upgradeLicenseKeyPending,
@@ -456,6 +465,7 @@ export default compose(
       setPaymentServiceModal: slice.actions.setPaymentServiceModal,
       resetTestFilters: resetTestFiltersAction,
       resetPlaylistFilters: clearPlaylistFiltersAction,
+      fetchMultipleSubscriptions: fetchMultipleSubscriptionsAction,
     }
   )
 )(Subscription)

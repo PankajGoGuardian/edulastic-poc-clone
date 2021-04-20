@@ -12,6 +12,11 @@ import {
   tabletWidth,
   themeColor,
   themeColorBlue,
+  white,
+  textColor,
+  lightGrey,
+  greyDarken,
+  publishedColor,
 } from '@edulastic/colors'
 import {
   IconPencilEdit,
@@ -29,7 +34,6 @@ import PlaylistPageNav from '../PlaylistPageNav'
 import SwitchPlaylist from './SwitchPlaylist'
 import { getCollectionsSelector } from '../../../src/selectors/user'
 import { allowContentEditCheck } from '../../../src/utils/permissionCheck'
-import { TestStatus } from '../../../TestPage/components/TestPageHeader/styled'
 
 const CurriculumHeaderButtons = styled(FlexContainer)`
   margin-left: ${({ marginLeft }) => marginLeft};
@@ -47,6 +51,30 @@ const HeaderButton = styled(EduButton)`
     span {
       display: none;
     }
+  }
+`
+
+const TestStatus = styled.span`
+  margin-top: 0;
+  color: ${(props) => (props.mode === 'embedded' ? white : textColor)};
+  background: ${(props) => (props.mode === 'embedded' ? textColor : white)};
+  width: 60px;
+  height: 20px;
+  font-weight: 600;
+  margin-left: 0px;
+  display: inline-block;
+  font-size: 9px;
+  text-transform: uppercase;
+  border-radius: 4px;
+  text-align: center;
+  padding-top: 3px;
+  &.draft {
+    background: ${lightGrey};
+    color: ${greyDarken};
+  }
+  &.published {
+    background: ${publishedColor};
+    color: white;
   }
 `
 /**
@@ -198,9 +226,15 @@ const CurriculumHeader = ({
   )
 
   const headingSubContent = (
-    <TestStatus className={status} data-cy="playlist-status">
-      {status}
-    </TestStatus>
+    <>
+      {!(urlHasUseThis && !isPublisherUser && switchPlaylist) ? (
+        <TestStatus className={status} data-cy="playlist-status">
+          {status}
+        </TestStatus>
+      ) : (
+        ''
+      )}
+    </>
   )
 
   if (mode !== 'embedded') {
@@ -211,10 +245,7 @@ const CurriculumHeader = ({
         titleText={destinationCurriculumSequence?.alignmentInfo}
         titleMaxWidth="22rem"
         justify="space-between"
-        headingSubContent={
-          (urlHasUseThis && !isPublisherUser && switchPlaylist) ||
-          headingSubContent
-        }
+        headingSubContent={headingSubContent}
       >
         {urlHasUseThis && !isMobile && (
           <PlaylistPageNav

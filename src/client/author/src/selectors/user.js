@@ -428,3 +428,8 @@ export const allowedToSelectMultiLanguageInTest = createSelector(
     return allowedUserIds.includes(state)
   }
 )
+
+export const getChildrens = createSelector(
+  stateSelector,
+  (state) => state?.user?.children
+)

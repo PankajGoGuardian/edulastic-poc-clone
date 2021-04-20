@@ -277,6 +277,7 @@ const Author = ({
     'worksheet',
     'groupItems',
   ]
+  
   return (
     <ThemeProvider theme={themeToPass}>
       <ScrollContext.Provider value={{ getScrollElement: () => window }}>

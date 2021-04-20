@@ -171,8 +171,6 @@ export const TOGGLE_IMAGES_BLOCKED_NOTIFICATION =
   '[user] toggle images blocked notification'
 export const TOGGLE_ROLE_CONFIRMATION =
   '[user] toggle student signing up as teacher'
-export const TOGGLE_MULTIPLE_ACCOUNT_NOTIFICATION =
-  '[user] toggle multiple account notification'
 
 export const PERSIST_AUTH_STATE_AND_REDIRECT =
   '[auth] persist auth entry state and request app bundle'
@@ -271,9 +269,6 @@ export const toggleImageBlockNotificationAction = createAction(
 export const toggleRoleConfirmationPopupAction = createAction(
   TOGGLE_ROLE_CONFIRMATION
 )
-export const toggleMultipleAccountNotificationAction = createAction(
-  TOGGLE_MULTIPLE_ACCOUNT_NOTIFICATION
-)
 
 export const persistAuthStateAndRedirectToAction = createAction(
   PERSIST_AUTH_STATE_AND_REDIRECT
@@ -298,9 +293,6 @@ const initialState = {
   isClassCodeModalOpen: false,
   isImageBlockNotification: false,
   isRoleConfirmation: false,
-  isMultipleAccountNotification: !localStorage.getItem(
-    'isMultipleAccountNotification'
-  ),
   iosRestrictNavigationModalVisible: false,
   showAdminSubscriptionModal: false,
 }
@@ -715,9 +707,6 @@ export default createReducer(initialState, {
       state.isRoleConfirmation = true
       state.email = payload
     }
-  },
-  [TOGGLE_MULTIPLE_ACCOUNT_NOTIFICATION]: (state, { payload }) => {
-    state.isMultipleAccountNotification = payload
   },
   [TOGGLE_FREE_ADMIN_SUBSCRIPTON_ALERT_MODAL]: (state) => {
     state.showAdminSubscriptionModal = !state.showAdminSubscriptionModal
@@ -1201,7 +1190,8 @@ export function* fetchUser({ payload }) {
       return
     }
     const firebaseUser = yield call(getCurrentFirebaseUser)
-    const user = (yield call(userApi.getUser, firebaseUser ? undefined : true))||{}
+    const user =
+      (yield call(userApi.getUser, firebaseUser ? undefined : true)) || {}
     if (
       (!firebaseUser && user?.firebaseAuthToken) ||
       (firebaseUser && firebaseUser !== user._id)
@@ -1216,7 +1206,7 @@ export function* fetchUser({ payload }) {
       TokenStorage.storeAccessToken(user.token, user._id, user.role, true)
       TokenStorage.selectAccessToken(user._id, user.role)
     }
-    TokenStorage.updateKID(user||{})
+    TokenStorage.updateKID(user || {})
     const searchParam = yield select((state) => state.router.location.search)
     if (searchParam.includes('showCliBanner=1'))
       localStorage.setItem('showCLIBanner', true)
@@ -1244,10 +1234,14 @@ export function* fetchUser({ payload }) {
     }
   } catch (error) {
     console.log('err', error, error)
-    if(error?.response && error?.response?.status === 409 && error?.response?.data?.message === "oldToken"){
-      window.dispatchEvent(new Event('student-session-expired'));
-      return;
-    } 
+    if (
+      error?.response &&
+      error?.response?.status === 409 &&
+      error?.response?.data?.message === 'oldToken'
+    ) {
+      window.dispatchEvent(new Event('student-session-expired'))
+      return
+    }
     notification({ messageKey: 'failedLoadingUserData' })
     if (!(error?.response && error?.response?.status === 501)) {
       if (
@@ -1324,7 +1318,6 @@ function* logout() {
       yield put({ type: 'RESET' })
       yield call(redirectToUrl, getSignOutUrl())
       removeSignOutUrl()
-      yield put(toggleMultipleAccountNotificationAction(true))
     }
   } catch (e) {
     console.log(e)

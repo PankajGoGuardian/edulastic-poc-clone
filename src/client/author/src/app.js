@@ -235,705 +235,681 @@ const MemberCollaboration = loadable(
 )
 
 // eslint-disable-next-line react/prop-types
-const Author = React.memo(
-  ({
-    match,
-    history,
-    role,
-    orgId,
-    districtProfileLoading,
-    loadDistrictPolicy,
-    loadSchoolPolicy,
-    schoolId,
-    isProxyUser,
-    isCliUser,
-  }) => {
-    useEffect(() => {
-      if (role === roleuser.SCHOOL_ADMIN && schoolId) {
-        loadSchoolPolicy(schoolId)
-      }
-      if (role === roleuser.DISTRICT_ADMIN && orgId) {
-        loadDistrictPolicy({ orgId, orgType: 'district' })
-      }
-    }, [orgId, schoolId])
+const Author = ({
+  match,
+  history,
+  role,
+  orgId,
+  districtProfileLoading,
+  loadDistrictPolicy,
+  loadSchoolPolicy,
+  schoolId,
+  isProxyUser,
+  isCliUser,
+}) => {
+  useEffect(() => {
+    if (role === roleuser.SCHOOL_ADMIN && schoolId) {
+      loadSchoolPolicy(schoolId)
+    }
+    if (role === roleuser.DISTRICT_ADMIN && orgId) {
+      loadDistrictPolicy({ orgId, orgType: 'district' })
+    }
+  }, [orgId, schoolId])
 
-    useEffect(() => {
-      const intercomElm = document.querySelector('.intercom-lightweight-app')
-      if (intercomElm) {
-        intercomElm.style.display = isCliUser ? 'none' : 'block'
-      }
-    }, [isCliUser])
+  useEffect(() => {
+    const intercomElm = document.querySelector('.intercom-lightweight-app')
+    if (intercomElm) {
+      intercomElm.style.display = isCliUser ? 'none' : 'block'
+    }
+  }, [isCliUser])
 
-    const themeToPass = themes.default
+  const themeToPass = themes.default
 
-    const isPrintPreview =
-      history.location.pathname.includes('printpreview') ||
-      history.location.pathname.includes('printAssessment') ||
-      history.location.pathname.includes('students-report-card')
-    const assessmentTabs = [
-      'description',
-      'addItems',
-      'review',
-      'settings',
-      'worksheet',
-      'groupItems',
-    ]
-    return (
-      <ThemeProvider theme={themeToPass}>
-        <ScrollContext.Provider value={{ getScrollElement: () => window }}>
-          <StyledLayout isProxyUser={isProxyUser}>
-            <MainContainer isPrintPreview={isPrintPreview || isCliUser}>
-              <Spin spinning={districtProfileLoading} />
-              <SidebarCompnent
-                isPrintPreview={isPrintPreview || isCliUser}
-                isProxyUser={isProxyUser}
-                style={{ display: isCliUser && 'none' }}
-              />
-              <Wrapper>
-                <ErrorHandler
-                  disablePage={isDisablePageInMobile(history.location.pathname)}
-                >
-                  <Switch>
-                    <Route
-                      exact
-                      path={`${match.url}/assignments`}
-                      component={Assignments}
-                    />
+  const isPrintPreview =
+    history.location.pathname.includes('printpreview') ||
+    history.location.pathname.includes('printAssessment') ||
+    history.location.pathname.includes('students-report-card')
+  const assessmentTabs = [
+    'description',
+    'addItems',
+    'review',
+    'settings',
+    'worksheet',
+    'groupItems',
+  ]
+  return (
+    <ThemeProvider theme={themeToPass}>
+      <ScrollContext.Provider value={{ getScrollElement: () => window }}>
+        <StyledLayout isProxyUser={isProxyUser}>
+          <MainContainer isPrintPreview={isPrintPreview || isCliUser}>
+            <Spin spinning={districtProfileLoading} />
+            <SidebarCompnent
+              isPrintPreview={isPrintPreview || isCliUser}
+              isProxyUser={isProxyUser}
+              style={{ display: isCliUser && 'none' }}
+            />
+            <Wrapper>
+              <ErrorHandler
+                disablePage={isDisablePageInMobile(history.location.pathname)}
+              >
+                <Switch>
+                  <Route
+                    exact
+                    path={`${match.url}/assignments`}
+                    component={Assignments}
+                  />
 
-                    <Route
-                      exact
-                      path={`${match.url}/tests/select`}
-                      component={AssessmentCreate}
-                    />
-                    <Route
-                      exact
-                      path={`${match.url}/tests/snapquiz`}
-                      component={AssessmentCreate}
-                    />
-                    <Route
-                      exact
-                      path={`${match.url}/tests/snapquiz/add`}
-                      render={(props) => (
-                        <AssessmentCreate {...props} isAddPdf />
-                      )}
-                    />
+                  <Route
+                    exact
+                    path={`${match.url}/tests/select`}
+                    component={AssessmentCreate}
+                  />
+                  <Route
+                    exact
+                    path={`${match.url}/tests/snapquiz`}
+                    component={AssessmentCreate}
+                  />
+                  <Route
+                    exact
+                    path={`${match.url}/tests/snapquiz/add`}
+                    render={(props) => <AssessmentCreate {...props} isAddPdf />}
+                  />
 
-                    <Route
-                      exact
-                      path={`${match.url}/assignments/select`}
-                      component={AssignmentCreate}
-                    />
+                  <Route
+                    exact
+                    path={`${match.url}/assignments/select`}
+                    component={AssignmentCreate}
+                  />
 
-                    <Route
-                      exact
-                      path="/author/dashboard"
-                      component={Dashboard}
-                    />
+                  <Route exact path="/author/dashboard" component={Dashboard} />
 
-                    <Route
-                      exact
-                      path={`${match.url}/assignments/:districtId/:testId`}
-                      component={(props) => <AssignmentAdvanced {...props} />}
-                    />
-                    <Route
-                      exact
-                      path={`${match.url}/assignments/regrade/new/:newTestId/old/:oldTestId`}
-                      component={Regrade}
-                    />
-                    <Route
-                      exact
-                      path="/author/regrade/:id/success"
-                      render={(props) => (
-                        <SuccessPage {...props} isRegradeSuccess />
-                      )}
-                    />
-                    <Route
-                      exact
-                      path={`${match.url}/assignments/:testId`}
-                      component={(props) => (
-                        <AssignTest {...props} from="assignments" />
-                      )}
-                    />
-                    <Route
-                      exact
-                      path={`${match.url}/assessments/:assessmentId`}
-                      component={AssessmentPage}
-                    />
-                    <Route
-                      path={`${match.url}/classboard/:assignmentId/:classId`}
-                      component={ClassBoard}
-                    />
+                  <Route
+                    exact
+                    path={`${match.url}/assignments/:districtId/:testId`}
+                    component={(props) => <AssignmentAdvanced {...props} />}
+                  />
+                  <Route
+                    exact
+                    path={`${match.url}/assignments/regrade/new/:newTestId/old/:oldTestId`}
+                    component={Regrade}
+                  />
+                  <Route
+                    exact
+                    path="/author/regrade/:id/success"
+                    render={(props) => (
+                      <SuccessPage {...props} isRegradeSuccess />
+                    )}
+                  />
+                  <Route
+                    exact
+                    path={`${match.url}/assignments/:testId`}
+                    component={(props) => (
+                      <AssignTest {...props} from="assignments" />
+                    )}
+                  />
+                  <Route
+                    exact
+                    path={`${match.url}/assessments/:assessmentId`}
+                    component={AssessmentPage}
+                  />
+                  <Route
+                    path={`${match.url}/classboard/:assignmentId/:classId`}
+                    component={ClassBoard}
+                  />
 
-                    <Route
-                      exact
-                      path={`${match.url}/summary/:assignmentId/:classId`}
-                      component={SummaryBoard}
-                    />
-                    <Route
-                      exact
-                      path={`${match.url}/classresponses/:testActivityId`}
-                      component={ClassResponses}
-                    />
-                    <Route
-                      exact
-                      path={`${match.url}/printpreview/:assignmentId/:classId`}
-                      component={PrintPreview}
-                    />
-                    <Route
-                      exact
-                      path={`${match.url}/printAssessment/:testId`}
-                      component={PrintAssessment}
-                    />
-                    <Route
-                      exact
-                      path={`${match.url}/manageClass/:classId/printpreview`}
-                      component={PrintPreviewClass}
-                    />
-                    <Route
-                      exact
-                      path={`${match.url}/manageClass/createClass`}
-                      component={ClassCreate}
-                    />
-                    <Route
-                      exact
-                      path={`${match.url}/manageClass`}
-                      component={ManageClass}
-                    />
-                    <Route
-                      exact
-                      path={`${match.url}/manageClass/:classId`}
-                      component={ClassDetails}
-                    />
-                    <Route
-                      exact
-                      path={`${match.url}/manageClass/:classId/Edit`}
-                      component={ClassEdit}
-                    />
+                  <Route
+                    exact
+                    path={`${match.url}/summary/:assignmentId/:classId`}
+                    component={SummaryBoard}
+                  />
+                  <Route
+                    exact
+                    path={`${match.url}/classresponses/:testActivityId`}
+                    component={ClassResponses}
+                  />
+                  <Route
+                    exact
+                    path={`${match.url}/printpreview/:assignmentId/:classId`}
+                    component={PrintPreview}
+                  />
+                  <Route
+                    exact
+                    path={`${match.url}/printAssessment/:testId`}
+                    component={PrintAssessment}
+                  />
+                  <Route
+                    exact
+                    path={`${match.url}/manageClass/:classId/printpreview`}
+                    component={PrintPreviewClass}
+                  />
+                  <Route
+                    exact
+                    path={`${match.url}/manageClass/createClass`}
+                    component={ClassCreate}
+                  />
+                  <Route
+                    exact
+                    path={`${match.url}/manageClass`}
+                    component={ManageClass}
+                  />
+                  <Route
+                    exact
+                    path={`${match.url}/manageClass/:classId`}
+                    component={ClassDetails}
+                  />
+                  <Route
+                    exact
+                    path={`${match.url}/manageClass/:classId/Edit`}
+                    component={ClassEdit}
+                  />
 
-                    <Route
-                      exact
-                      path={`${match.url}/expressgrader/:assignmentId/:classId`}
-                      component={ExpressGrader}
-                    />
-                    <Route
-                      exact
-                      path={`${match.url}/lcb/settings/:assignmentId/:classId`}
-                      component={LCBSettings}
-                    />
-                    {/* 
+                  <Route
+                    exact
+                    path={`${match.url}/expressgrader/:assignmentId/:classId`}
+                    component={ExpressGrader}
+                  />
+                  <Route
+                    exact
+                    path={`${match.url}/lcb/settings/:assignmentId/:classId`}
+                    component={LCBSettings}
+                  />
+                  {/* 
                       on navigation from 3rd party 
                       /author/group/{groupId}/assignment/{assignmentId} 
                       StartAssignment will navigate author to LCB
                     */}
-                    <Route
-                      exact
-                      path={`${match.url}/group/:groupId/assignment/:assignmentId`}
-                      component={StartAssignment}
-                    />
-                    <Route
-                      exact
-                      path={`${match.url}/standardsBasedReport/:assignmentId/:classId`}
-                      component={StandardsBasedReport}
-                    />
-                    <Route
-                      exact
-                      path={`${match.url}/items`}
-                      component={ItemList}
-                    />
-                    <Route
-                      exact
-                      path={`${match.url}/items/filter/:filterType`}
-                      component={ItemList}
-                    />
-                    <Route
-                      exact
-                      path={`${match.url}/items/:id/item-detail`}
-                      component={ItemDetail}
-                    />
-                    <Route
-                      exact
-                      path={`${match.url}/items/:id/item-detail/test/:testId`}
-                      render={(props) => <ItemDetail isTestFlow {...props} />}
-                    />
-                    <Route
-                      exact
-                      path={`${match.url}/playlists`}
-                      render={(props) => <PlayList {...props} />}
-                    />
-                    <Route
-                      exact
-                      path={`${match.url}/playlists/view`}
-                      component={CurriculumSequence}
-                    />
-                    <Route
-                      exact
-                      path={`${match.url}/playlists/filter/:filterType`}
-                      render={(props) => <PlayList {...props} />}
-                    />
-                    <Route
-                      exact
-                      path={`${match.url}/playlists/filter/:filterType/page/:page`}
-                      render={(props) => <PlayList {...props} />}
-                    />
-                    <Route
-                      exact
-                      path={`${match.url}/playlists/page/:page`}
-                      render={(props) => <PlayList {...props} />}
-                    />
-                    <Route
-                      exacts
-                      path="/author/playlists/create"
-                      render={(props) => (
-                        <PlaylistPage {...props} isCreatePage />
-                      )}
-                    />
-                    <Route
-                      exact
-                      path="/author/playlists/:id/edit"
-                      render={(props) => <PlaylistPage {...props} isEditPage />}
-                    />
-                    <Route
-                      exact
-                      path="/author/playlists/:id"
-                      render={(props) => (
-                        <CurriculumSequence {...props} fromPlaylist />
-                      )}
-                    />
-                    <Route
-                      exact
-                      path="/author/playlists/:currentTab/:id/use-this"
-                      render={(props) => (
-                        <CurriculumSequence {...props} urlHasUseThis />
-                      )}
-                    />
-                    <Route
-                      exact
-                      path="/author/playlists/customize/:id/:cloneId"
-                      render={(props) => (
-                        <CurriculumSequence {...props} urlHasUseThis />
-                      )}
-                    />
-                    <Route
-                      exact
-                      path={`${match.url}/playlists/assignments/:playlistId/:moduleId`}
-                      component={(props) => (
-                        <AssignTest {...props} isPlaylist from="myPlaylist" />
-                      )}
-                    />
+                  <Route
+                    exact
+                    path={`${match.url}/group/:groupId/assignment/:assignmentId`}
+                    component={StartAssignment}
+                  />
+                  <Route
+                    exact
+                    path={`${match.url}/standardsBasedReport/:assignmentId/:classId`}
+                    component={StandardsBasedReport}
+                  />
+                  <Route
+                    exact
+                    path={`${match.url}/items`}
+                    component={ItemList}
+                  />
+                  <Route
+                    exact
+                    path={`${match.url}/items/filter/:filterType`}
+                    component={ItemList}
+                  />
+                  <Route
+                    exact
+                    path={`${match.url}/items/:id/item-detail`}
+                    component={ItemDetail}
+                  />
+                  <Route
+                    exact
+                    path={`${match.url}/items/:id/item-detail/test/:testId`}
+                    render={(props) => <ItemDetail isTestFlow {...props} />}
+                  />
+                  <Route
+                    exact
+                    path={`${match.url}/playlists`}
+                    render={(props) => <PlayList {...props} />}
+                  />
+                  <Route
+                    exact
+                    path={`${match.url}/playlists/view`}
+                    component={CurriculumSequence}
+                  />
+                  <Route
+                    exact
+                    path={`${match.url}/playlists/filter/:filterType`}
+                    render={(props) => <PlayList {...props} />}
+                  />
+                  <Route
+                    exact
+                    path={`${match.url}/playlists/filter/:filterType/page/:page`}
+                    render={(props) => <PlayList {...props} />}
+                  />
+                  <Route
+                    exact
+                    path={`${match.url}/playlists/page/:page`}
+                    render={(props) => <PlayList {...props} />}
+                  />
+                  <Route
+                    exacts
+                    path="/author/playlists/create"
+                    render={(props) => <PlaylistPage {...props} isCreatePage />}
+                  />
+                  <Route
+                    exact
+                    path="/author/playlists/:id/edit"
+                    render={(props) => <PlaylistPage {...props} isEditPage />}
+                  />
+                  <Route
+                    exact
+                    path="/author/playlists/:id"
+                    render={(props) => (
+                      <CurriculumSequence {...props} fromPlaylist />
+                    )}
+                  />
+                  <Route
+                    exact
+                    path="/author/playlists/:currentTab/:id/use-this"
+                    render={(props) => (
+                      <CurriculumSequence {...props} urlHasUseThis />
+                    )}
+                  />
+                  <Route
+                    exact
+                    path="/author/playlists/customize/:id/:cloneId"
+                    render={(props) => (
+                      <CurriculumSequence {...props} urlHasUseThis />
+                    )}
+                  />
+                  <Route
+                    exact
+                    path={`${match.url}/playlists/assignments/:playlistId/:moduleId`}
+                    component={(props) => (
+                      <AssignTest {...props} isPlaylist from="myPlaylist" />
+                    )}
+                  />
 
-                    <Route
-                      exact
-                      path={`${match.url}/playlists/assignments/:playlistId/:moduleId/:testId`}
-                      component={(props) => (
-                        <AssignTest {...props} isPlaylist from="myPlaylist" />
-                      )}
-                    />
-                    <Route
-                      exact
-                      path="/author/playlists/:id/editAssigned"
-                      render={(props) => (
-                        /* coming from editAssessment in assignment dropdown should land   
+                  <Route
+                    exact
+                    path={`${match.url}/playlists/assignments/:playlistId/:moduleId/:testId`}
+                    component={(props) => (
+                      <AssignTest {...props} isPlaylist from="myPlaylist" />
+                    )}
+                  />
+                  <Route
+                    exact
+                    path="/author/playlists/:id/editAssigned"
+                    render={(props) => (
+                      /* coming from editAssessment in assignment dropdown should land   
                       `Review` tab */
-                        <PlayList {...props} currentTab="review" editAssigned />
-                      )}
-                    />
-                    <Route
-                      exact
-                      path="/author/playlists/:id/publish"
-                      render={(props) => (
-                        <SuccessPage {...props} isPlaylist published />
-                      )}
-                    />
-                    <Route
-                      exact
-                      path="/author/playlists/:playlistId/assign/:assignmentId"
-                      render={(props) => (
-                        <SuccessPage {...props} isPlaylist isAssignSuccess />
-                      )}
-                    />
-                    <Route
-                      exact
-                      path="/author/playlists/limit/:limit/page/:page/:filter?"
-                      render={(props) => <PlayList {...props} />}
-                    />
-                    <Route
-                      exact
-                      path="/author/gradebook"
-                      render={(props) => <Gradebook {...props} />}
-                    />
-                    <Route
-                      exact
-                      path="/author/gradebook/student/:studentId"
-                      render={(props) => <Gradebook {...props} urlHasStudent />}
-                    />
-                    <Route
-                      exact
-                      path="/author/gradebook/createClass"
-                      component={ClassCreate}
-                    />
-                    <Route exact path="/author/add-item" component={ItemAdd} />
-                    <Route
-                      exact
-                      path={`${match.url}/tests`}
-                      render={(props) => <TestList {...props} />}
-                    />
+                      <PlayList {...props} currentTab="review" editAssigned />
+                    )}
+                  />
+                  <Route
+                    exact
+                    path="/author/playlists/:id/publish"
+                    render={(props) => (
+                      <SuccessPage {...props} isPlaylist published />
+                    )}
+                  />
+                  <Route
+                    exact
+                    path="/author/playlists/:playlistId/assign/:assignmentId"
+                    render={(props) => (
+                      <SuccessPage {...props} isPlaylist isAssignSuccess />
+                    )}
+                  />
+                  <Route
+                    exact
+                    path="/author/playlists/limit/:limit/page/:page/:filter?"
+                    render={(props) => <PlayList {...props} />}
+                  />
+                  <Route
+                    exact
+                    path="/author/gradebook"
+                    render={(props) => <Gradebook {...props} />}
+                  />
+                  <Route
+                    exact
+                    path="/author/gradebook/student/:studentId"
+                    render={(props) => <Gradebook {...props} urlHasStudent />}
+                  />
+                  <Route
+                    exact
+                    path="/author/gradebook/createClass"
+                    component={ClassCreate}
+                  />
+                  <Route exact path="/author/add-item" component={ItemAdd} />
+                  <Route
+                    exact
+                    path={`${match.url}/tests`}
+                    render={(props) => <TestList {...props} />}
+                  />
 
-                    <Route
-                      exact
-                      path={`${match.url}/tests/filter/:filterType`}
-                      render={(props) => <TestList {...props} />}
-                    />
-                    <Route
-                      exact
-                      path="/author/tests/create"
-                      render={(props) => (
-                        <TestPage {...props} currentTab="description" />
-                      )}
-                    />
+                  <Route
+                    exact
+                    path={`${match.url}/tests/filter/:filterType`}
+                    render={(props) => <TestList {...props} />}
+                  />
+                  <Route
+                    exact
+                    path="/author/tests/create"
+                    render={(props) => (
+                      <TestPage {...props} currentTab="description" />
+                    )}
+                  />
 
-                    <Route
-                      exact
-                      path="/author/tests/:id"
-                      render={(props) => (
-                        <TestPage {...props} currentTab="description" />
-                      )}
-                    />
+                  <Route
+                    exact
+                    path="/author/tests/:id"
+                    render={(props) => (
+                      <TestPage {...props} currentTab="description" />
+                    )}
+                  />
 
-                    {/**
-                     * before saving the test
-                     *  */}
-                    {assessmentTabs.map((x) => (
-                      <Route
-                        exact
-                        path={`/author/tests/create/${x}`}
-                        render={(props) => (
-                          <TestPage {...props} currentTab={x} />
-                        )}
-                      />
-                    ))}
+                  {/**
+                   * before saving the test
+                   *  */}
+                  {assessmentTabs.map((x) => (
+                    <Route
+                      exact
+                      path={`/author/tests/create/${x}`}
+                      render={(props) => <TestPage {...props} currentTab={x} />}
+                    />
+                  ))}
 
-                    {/**
-                     * After saving the test with id
-                     *  */}
-                    {assessmentTabs.map((x) => (
-                      <Route
-                        exact
-                        path={`/author/tests/tab/${x}/id/:id`}
-                        render={(props) => (
-                          <TestPage {...props} currentTab={x} />
-                        )}
-                      />
-                    ))}
+                  {/**
+                   * After saving the test with id
+                   *  */}
+                  {assessmentTabs.map((x) => (
+                    <Route
+                      exact
+                      path={`/author/tests/tab/${x}/id/:id`}
+                      render={(props) => <TestPage {...props} currentTab={x} />}
+                    />
+                  ))}
 
-                    {/**
-                     * After versioned
-                     */}
-                    {assessmentTabs.map((x) => (
-                      <Route
-                        exact
-                        path={`/author/tests/tab/${x}/id/:id/old/:oldId`}
-                        render={(props) => (
-                          <TestPage {...props} currentTab={x} />
-                        )}
-                      />
-                    ))}
+                  {/**
+                   * After versioned
+                   */}
+                  {assessmentTabs.map((x) => (
+                    <Route
+                      exact
+                      path={`/author/tests/tab/${x}/id/:id/old/:oldId`}
+                      render={(props) => <TestPage {...props} currentTab={x} />}
+                    />
+                  ))}
 
-                    <Route
-                      exact
-                      path="/author/tests/verid/:versionId"
-                      render={(props) => <TestPage isVersionFlow {...props} />}
-                    />
+                  <Route
+                    exact
+                    path="/author/tests/verid/:versionId"
+                    render={(props) => <TestPage isVersionFlow {...props} />}
+                  />
 
-                    <Route
-                      exact
-                      path="/author/tests/:testId/createItem/:itemId"
-                      render={(props) => <ItemDetail isTestFlow {...props} />}
-                    />
-                    <Route
-                      exact
-                      path="/author/tests/:testId/editItem/:itemId"
-                      render={(props) => (
-                        <ItemDetail isTestFlow isEditFlow {...props} />
-                      )}
-                    />
-                    <Route
-                      exact
-                      path="/author/tests/:id/editAssigned"
-                      render={(props) => (
-                        <TestPage {...props} currentTab="review" editAssigned />
-                      )}
-                    />
+                  <Route
+                    exact
+                    path="/author/tests/:testId/createItem/:itemId"
+                    render={(props) => <ItemDetail isTestFlow {...props} />}
+                  />
+                  <Route
+                    exact
+                    path="/author/tests/:testId/editItem/:itemId"
+                    render={(props) => (
+                      <ItemDetail isTestFlow isEditFlow {...props} />
+                    )}
+                  />
+                  <Route
+                    exact
+                    path="/author/tests/:id/editAssigned"
+                    render={(props) => (
+                      <TestPage {...props} currentTab="review" editAssigned />
+                    )}
+                  />
 
-                    <Route
-                      exact
-                      path="/author/tests/:id/publish"
-                      render={(props) => <SuccessPage {...props} published />}
-                    />
-                    <Route
-                      exact
-                      path="/author/tests/:id/assign/:assignmentId"
-                      render={(props) => (
-                        <SuccessPage {...props} isAssignSuccess />
-                      )}
-                    />
+                  <Route
+                    exact
+                    path="/author/tests/:id/publish"
+                    render={(props) => <SuccessPage {...props} published />}
+                  />
+                  <Route
+                    exact
+                    path="/author/tests/:id/assign/:assignmentId"
+                    render={(props) => (
+                      <SuccessPage {...props} isAssignSuccess />
+                    )}
+                  />
 
-                    <Route
-                      exact
-                      path="/author/tests/:id/versioned/old/:oldId"
-                      render={(props) => (
-                        <TestPage {...props} currentTab="review" versioned />
-                      )}
-                    />
+                  <Route
+                    exact
+                    path="/author/tests/:id/versioned/old/:oldId"
+                    render={(props) => (
+                      <TestPage {...props} currentTab="review" versioned />
+                    )}
+                  />
 
-                    <Route
-                      exact
-                      path="/author/tests/limit/:limit/page/:page/:filter?"
-                      render={(props) => <TestList {...props} />}
-                    />
-                    <Route
-                      exact
-                      path="/author/tests/:testId/createItem/:itemId/pickup-questiontype"
-                      render={(props) => (
-                        <PickUpQuestionType isTestFlow {...props} />
-                      )}
-                    />
-                    <Route
-                      exact
-                      path="/author/tests/:testId/createItem/:itemId/questions/create/:questionType"
-                      render={(props) => (
-                        <QuestionEditor isTestFlow {...props} />
-                      )}
-                    />
-                    <Route
-                      exact
-                      path="/author/tests/:testId/createItem/:itemId/questions/edit/:questionType"
-                      render={(props) => (
-                        <QuestionEditor isTestFlow isEditFlow {...props} />
-                      )}
-                    />
-                    <Route
-                      exact
-                      path="/author/tests/:testId/editItem/:itemId/questions/edit/:questionType" // needed as per https://snapwiz.atlassian.net/browse/EV-13426
-                      render={(props) => (
-                        <QuestionEditor isTestFlow isEditFlow {...props} />
-                      )}
-                    />
-                    <Route
-                      exact
-                      path="/author/items/:id/pickup-questiontype"
-                      component={PickUpQuestionType}
-                    />
-                    <Route
-                      exact
-                      path="/author/questions/create/:questionType"
-                      component={QuestionEditor}
-                    />
-                    <Route
-                      exact
-                      path="/author/questions/edit/:questionType"
-                      component={QuestionEditor}
-                    />
-                    <Route
-                      path="/author/reports/:reportType?"
-                      component={Reports}
-                    />
-                    <Route exact path="/author/profile" component={Profile} />
-                    <Route
-                      exact
-                      path="/author/subscription"
-                      component={Subscription}
-                    />
-                    <Route
-                      exact
-                      path={`${match.url}/manage-subscriptions`}
-                      component={ManageSubscription}
-                    />
-                    <Route
-                      exact
-                      path="/author/districtprofile"
-                      component={DistrictProfile}
-                    />
-                    <Route
-                      exact
-                      path="/author/schoolprofile"
-                      component={DistrictProfile}
-                    />
-                    <Route
-                      exact
-                      path="/author/settings/testsettings"
-                      component={TestSetting}
-                    />
-                    <Route
-                      exact
-                      path="/author/settings/term"
-                      component={Term}
-                    />
-                    <Route
-                      exact
-                      path="/author/settings/districtpolicies"
-                      component={DistrictPolicy}
-                    />
-                    <Route
-                      exact
-                      path="/author/settings/schoolpolicies"
-                      component={DistrictPolicy}
-                    />
-                    <Route
-                      exact
-                      path="/author/settings/performance-bands"
-                      component={PerformanceBand}
-                    />
-                    <Route
-                      exact
-                      path="/author/settings/standards-proficiency"
-                      component={StandardsProficiency}
-                    />
-                    <Route exact path="/author/schools" component={Schools} />
-                    <Route
-                      exact
-                      path="/author/users/student"
-                      component={Student}
-                    />
-                    <Route
-                      exact
-                      path="/author/users/teacher"
-                      component={Teacher}
-                    />
-                    <Route
-                      exact
-                      path="/author/users/district-admin"
-                      component={DistrictAdmin}
-                    />
-                    <Route
-                      exact
-                      path="/author/users/school-admin"
-                      component={SchoolAdmin}
-                    />
-                    <Route
-                      exact
-                      path="/author/users/content-authors"
-                      component={ContentAuthor}
-                    />
-                    <Route
-                      exact
-                      path="/author/users/content-approvers"
-                      component={ContentApprover}
-                    />
-                    <Route exact path="/author/courses" component={Courses} />
-                    <Route exact path="/author/classes" component={Classes} />
-                    <Route
-                      exact
-                      path="/author/groups/createClass"
-                      component={ClassCreate}
-                    />
-                    <Route
-                      exact
-                      path="/author/groups/students/createClass"
-                      component={ClassCreate}
-                    />
-                    <Route
-                      exact
-                      path={[
-                        '/author/groups/details/:classId',
-                        '/author/groups/students/details/:classId',
-                      ]}
-                      component={ClassDetails}
-                    />
-                    <Route
-                      exact
-                      path={[
-                        '/author/groups/edit/:classId',
-                        '/author/groups/students/edit/:classId',
-                      ]}
-                      component={ClassEdit}
-                    />
-                    <Route
-                      exact
-                      path="/author/groups"
-                      render={(props) => (
-                        <Groups tab="collaborations" {...props} />
-                      )}
-                    />
-                    <Route
-                      exact
-                      path="/author/groups/collaborations"
-                      render={(props) => (
-                        <Groups tab="collaborations" {...props} />
-                      )}
-                    />
-                    <Route
-                      exact
-                      path="/author/collaborations"
-                      component={MemberCollaboration}
-                    />
-                    <Route
-                      exact
-                      path="/author/groups/students"
-                      render={(props) => <Groups tab="students" {...props} />}
-                    />
-                    <Route
-                      exact
-                      path="/author/collaborations/:id"
-                      component={Collaboration}
-                    />
-                    <Route
-                      exact
-                      path="/author/settings/interested-standards"
-                      component={InterestedStandards}
-                    />
-                    <Route
-                      exact
-                      path="/author/class-enrollment"
-                      component={ClassEnrollment}
-                    />
-                    <Route
-                      exact
-                      path="/author/class-enrollment/createClass"
-                      component={ClassCreate}
-                    />
-                    <Route
-                      exact
-                      path="/author/content/buckets"
-                      component={ContentBuckets}
-                    />
-                    <Route
-                      exact
-                      path="/author/content/collections"
-                      component={Collections}
-                    />
-                    <Route
-                      exact
-                      path="/author/content/tools"
-                      component={ExternalTools}
-                    />
-                    <Route
-                      exact
-                      path="/author/import-test"
-                      component={ImportTest}
-                    />
-                    <Route
-                      exact
-                      path="/author/import-content"
-                      component={ImportTest}
-                    />
-                    <Route
-                      exact
-                      path={`${match.url}/students-report-card/:assignmentId/:classId`}
-                      component={StudentsReportCard}
-                    />
-                    <Route component={NotFound} />
-                  </Switch>
-                </ErrorHandler>
-              </Wrapper>
-            </MainContainer>
-          </StyledLayout>
-        </ScrollContext.Provider>
-      </ThemeProvider>
-    )
-  },
-  (prevProps, nextProps) =>
-    prevProps.isMultipleNotification === nextProps.isMultipleNotification
-)
+                  <Route
+                    exact
+                    path="/author/tests/limit/:limit/page/:page/:filter?"
+                    render={(props) => <TestList {...props} />}
+                  />
+                  <Route
+                    exact
+                    path="/author/tests/:testId/createItem/:itemId/pickup-questiontype"
+                    render={(props) => (
+                      <PickUpQuestionType isTestFlow {...props} />
+                    )}
+                  />
+                  <Route
+                    exact
+                    path="/author/tests/:testId/createItem/:itemId/questions/create/:questionType"
+                    render={(props) => <QuestionEditor isTestFlow {...props} />}
+                  />
+                  <Route
+                    exact
+                    path="/author/tests/:testId/createItem/:itemId/questions/edit/:questionType"
+                    render={(props) => (
+                      <QuestionEditor isTestFlow isEditFlow {...props} />
+                    )}
+                  />
+                  <Route
+                    exact
+                    path="/author/tests/:testId/editItem/:itemId/questions/edit/:questionType" // needed as per https://snapwiz.atlassian.net/browse/EV-13426
+                    render={(props) => (
+                      <QuestionEditor isTestFlow isEditFlow {...props} />
+                    )}
+                  />
+                  <Route
+                    exact
+                    path="/author/items/:id/pickup-questiontype"
+                    component={PickUpQuestionType}
+                  />
+                  <Route
+                    exact
+                    path="/author/questions/create/:questionType"
+                    component={QuestionEditor}
+                  />
+                  <Route
+                    exact
+                    path="/author/questions/edit/:questionType"
+                    component={QuestionEditor}
+                  />
+                  <Route
+                    path="/author/reports/:reportType?"
+                    component={Reports}
+                  />
+                  <Route exact path="/author/profile" component={Profile} />
+                  <Route
+                    exact
+                    path="/author/subscription"
+                    component={Subscription}
+                  />
+                  <Route
+                    exact
+                    path={`${match.url}/manage-subscriptions`}
+                    component={ManageSubscription}
+                  />
+                  <Route
+                    exact
+                    path="/author/districtprofile"
+                    component={DistrictProfile}
+                  />
+                  <Route
+                    exact
+                    path="/author/schoolprofile"
+                    component={DistrictProfile}
+                  />
+                  <Route
+                    exact
+                    path="/author/settings/testsettings"
+                    component={TestSetting}
+                  />
+                  <Route exact path="/author/settings/term" component={Term} />
+                  <Route
+                    exact
+                    path="/author/settings/districtpolicies"
+                    component={DistrictPolicy}
+                  />
+                  <Route
+                    exact
+                    path="/author/settings/schoolpolicies"
+                    component={DistrictPolicy}
+                  />
+                  <Route
+                    exact
+                    path="/author/settings/performance-bands"
+                    component={PerformanceBand}
+                  />
+                  <Route
+                    exact
+                    path="/author/settings/standards-proficiency"
+                    component={StandardsProficiency}
+                  />
+                  <Route exact path="/author/schools" component={Schools} />
+                  <Route
+                    exact
+                    path="/author/users/student"
+                    component={Student}
+                  />
+                  <Route
+                    exact
+                    path="/author/users/teacher"
+                    component={Teacher}
+                  />
+                  <Route
+                    exact
+                    path="/author/users/district-admin"
+                    component={DistrictAdmin}
+                  />
+                  <Route
+                    exact
+                    path="/author/users/school-admin"
+                    component={SchoolAdmin}
+                  />
+                  <Route
+                    exact
+                    path="/author/users/content-authors"
+                    component={ContentAuthor}
+                  />
+                  <Route
+                    exact
+                    path="/author/users/content-approvers"
+                    component={ContentApprover}
+                  />
+                  <Route exact path="/author/courses" component={Courses} />
+                  <Route exact path="/author/classes" component={Classes} />
+                  <Route
+                    exact
+                    path="/author/groups/createClass"
+                    component={ClassCreate}
+                  />
+                  <Route
+                    exact
+                    path="/author/groups/students/createClass"
+                    component={ClassCreate}
+                  />
+                  <Route
+                    exact
+                    path={[
+                      '/author/groups/details/:classId',
+                      '/author/groups/students/details/:classId',
+                    ]}
+                    component={ClassDetails}
+                  />
+                  <Route
+                    exact
+                    path={[
+                      '/author/groups/edit/:classId',
+                      '/author/groups/students/edit/:classId',
+                    ]}
+                    component={ClassEdit}
+                  />
+                  <Route
+                    exact
+                    path="/author/groups"
+                    render={(props) => (
+                      <Groups tab="collaborations" {...props} />
+                    )}
+                  />
+                  <Route
+                    exact
+                    path="/author/groups/collaborations"
+                    render={(props) => (
+                      <Groups tab="collaborations" {...props} />
+                    )}
+                  />
+                  <Route
+                    exact
+                    path="/author/collaborations"
+                    component={MemberCollaboration}
+                  />
+                  <Route
+                    exact
+                    path="/author/groups/students"
+                    render={(props) => <Groups tab="students" {...props} />}
+                  />
+                  <Route
+                    exact
+                    path="/author/collaborations/:id"
+                    component={Collaboration}
+                  />
+                  <Route
+                    exact
+                    path="/author/settings/interested-standards"
+                    component={InterestedStandards}
+                  />
+                  <Route
+                    exact
+                    path="/author/class-enrollment"
+                    component={ClassEnrollment}
+                  />
+                  <Route
+                    exact
+                    path="/author/class-enrollment/createClass"
+                    component={ClassCreate}
+                  />
+                  <Route
+                    exact
+                    path="/author/content/buckets"
+                    component={ContentBuckets}
+                  />
+                  <Route
+                    exact
+                    path="/author/content/collections"
+                    component={Collections}
+                  />
+                  <Route
+                    exact
+                    path="/author/content/tools"
+                    component={ExternalTools}
+                  />
+                  <Route
+                    exact
+                    path="/author/import-test"
+                    component={ImportTest}
+                  />
+                  <Route
+                    exact
+                    path="/author/import-content"
+                    component={ImportTest}
+                  />
+                  <Route
+                    exact
+                    path={`${match.url}/students-report-card/:assignmentId/:classId`}
+                    component={StudentsReportCard}
+                  />
+                  <Route component={NotFound} />
+                </Switch>
+              </ErrorHandler>
+            </Wrapper>
+          </MainContainer>
+        </StyledLayout>
+      </ScrollContext.Provider>
+    </ThemeProvider>
+  )
+}
 
 export default connect(
   ({ authorUi, ...state }) => ({

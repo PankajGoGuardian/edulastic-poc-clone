@@ -57,7 +57,6 @@ import {
   getUserFeatures,
   isProxyUser as isProxyUserSelector,
   toggleFreeAdminSubscriptionModalAction,
-  toggleMultipleAccountNotificationAction,
 } from '../../../student/Login/ducks'
 import {
   isOrganizationDistrictSelector,
@@ -162,9 +161,14 @@ class SideMenu extends Component {
   constructor(props) {
     super(props)
 
+    const { switchDetails } = this.props
+
     this.state = {
       showModal: false,
       isVisible: false,
+      isSwitchAccountNotification:
+        !localStorage.getItem('isMultipleAccountNotification') &&
+        !!get(switchDetails, 'otherAccounts', []).length,
     }
 
     this.sideMenuRef = React.createRef()
@@ -343,15 +347,19 @@ class SideMenu extends Component {
   }
 
   handleCancel = (e) => {
-    const { toggleMultipleAccountNotification } = this.props
     e.preventDefault()
     e.stopPropagation()
-    toggleMultipleAccountNotification(false)
+    this.setState({ isSwitchAccountNotification: false })
     localStorage.setItem('isMultipleAccountNotification', 'true')
   }
 
   render() {
-    const { broken, isVisible, showModal } = this.state
+    const {
+      broken,
+      isVisible,
+      showModal,
+      isSwitchAccountNotification,
+    } = this.state
     const {
       userId,
       switchDetails,
@@ -367,7 +375,6 @@ class SideMenu extends Component {
       locationState,
       features,
       showUseThisNotification,
-      isMultipleAccountNotification,
       isProxyUser,
     } = this.props
     if (userRole === roleuser.STUDENT) {
@@ -397,9 +404,6 @@ class SideMenu extends Component {
     })
 
     const isPublisher = features.isCurator || features.isPublisherAuthor
-    const showMultipleAccountNotification =
-      isMultipleAccountNotification &&
-      !!get(switchDetails, 'otherAccounts', []).length
 
     let _userRole = null
     if (userRole === roleuser.TEACHER) {
@@ -691,7 +695,7 @@ class SideMenu extends Component {
                           }
                           trigger="click"
                           getPopupContainer={(el) => el.parentNode}
-                          visible={showMultipleAccountNotification}
+                          visible={isSwitchAccountNotification}
                         >
                           <PseudoDiv isCollapsed={isCollapsed}>
                             {this.getInitials()}
@@ -772,12 +776,10 @@ const enhance = compose(
         false
       ),
       isFreeAdmin: isFreeAdminSelector(state),
-      isMultipleAccountNotification: state.user.isMultipleAccountNotification,
     }),
     {
       toggleSideBar: toggleSideBarAction,
       logout: logoutAction,
-      toggleMultipleAccountNotification: toggleMultipleAccountNotificationAction,
       toggleFreeAdminSubscriptionModal: toggleFreeAdminSubscriptionModalAction,
     }
   )

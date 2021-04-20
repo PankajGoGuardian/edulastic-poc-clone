@@ -47,6 +47,8 @@ const PlaylistCard = ({
   history,
   useThisPlayList,
   _id,
+  isPublisherUser,
+  isOrganizationDistrictUser,
 }) => {
   const grade = first(_source.grades)
   const { thumbnail, skin } = _source
@@ -103,6 +105,11 @@ const PlaylistCard = ({
     </ShareIcon>
   )
 
+  const showUseThisButton =
+    _source.status === 'published' &&
+    !isOrganizationDistrictUser &&
+    !isPublisherUser
+
   if (isFullSizeImage) {
     return (
       <FullSizeThumbnailCard
@@ -123,7 +130,7 @@ const PlaylistCard = ({
                 Details
               </EduButton>
 
-              {_source.status === 'published' && (
+              {showUseThisButton && (
                 <EduButton
                   width="145px"
                   height="45px"
@@ -172,7 +179,7 @@ const PlaylistCard = ({
               Details
             </EduButton>
 
-            {_source.status === 'published' && (
+            {showUseThisButton && (
               <EduButton
                 height="32px"
                 onClick={(e) => {

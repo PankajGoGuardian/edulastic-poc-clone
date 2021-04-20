@@ -12,6 +12,7 @@ import {
   getUserRole,
   getUserId,
   isFreeAdminSelector,
+  isOrganizationDistrictUserSelector,
 } from '../../../src/selectors/user'
 import ViewModal from '../ViewModal'
 import TestPreviewModal from '../../../Assignments/components/Container/TestPreviewModal'
@@ -222,6 +223,7 @@ class Item extends Component {
       isPreviewModalVisible,
       useThisPlayList,
       history,
+      isOrganizationDistrictUser,
     } = this.props
     const { status, analytics = [] } = isPlaylist ? _source : item
     const likes = analytics?.[0]?.likes || '0'
@@ -314,6 +316,8 @@ class Item extends Component {
       duplicatePlayList,
       history,
       useThisPlayList,
+      isPublisherUser,
+      isOrganizationDistrictUser,
     }
 
     const CardViewComponent = isPlaylist ? PlaylistCard : TestItemCard
@@ -378,6 +382,7 @@ const enhance = compose(
       currentUserId: getUserId(state),
       isFreeAdmin: isFreeAdminSelector(state),
       isPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
+      isOrganizationDistrictUser: isOrganizationDistrictUserSelector(state),
     }),
     {
       approveOrRejectSingleTestRequest: approveOrRejectSingleTestRequestAction,

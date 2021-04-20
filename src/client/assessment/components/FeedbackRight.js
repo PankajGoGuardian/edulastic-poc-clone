@@ -56,6 +56,8 @@ function ScoreInputFocusEffectComponent({
   return null
 }
 
+const isInvalidScore = (score) => (!score || isNaN(score)) && score != 0
+
 class FeedbackRight extends Component {
   constructor(props) {
     super(props)
@@ -110,7 +112,11 @@ class FeedbackRight extends Component {
       const { score: _score } = activity
       let { maxScore: _maxScore } = activity
       const _feedback = get(activity, 'feedback.text', '')
-      newState = { ...newState, score: _score }
+      newState = { ...newState }
+
+      if (!isInvalidScore(_score)) {
+        newState = { ...newState, score: _score }
+      }
 
       if (!_maxScore) {
         _maxScore = validation?.validResponse?.score || 0
@@ -150,7 +156,7 @@ class FeedbackRight extends Component {
       isExpressGrader,
     } = this.props
 
-    if ((!score || isNaN(score)) && score != 0) {
+    if (isInvalidScore(score)) {
       notification({ type: 'warn', messageKey: 'scoreShouldNumber' })
       return
     }

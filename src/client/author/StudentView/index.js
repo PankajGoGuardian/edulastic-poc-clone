@@ -380,12 +380,7 @@ class StudentViewContainer extends Component {
                 title="View all attachments"
               >
                 <IconFolder height="11.3px" width="11.3px" />
-                <span
-                  data-cy="showCorrectAnswer"
-                  data-test={!hideCorrectAnswer}
-                >
-                  Attachments
-                </span>
+                <span>Attachments</span>
               </EduButton>
             )}
             <EduButton

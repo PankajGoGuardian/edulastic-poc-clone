@@ -27,6 +27,7 @@ import {
 } from '../../ducks'
 import {
   duplicatePlaylistRequestAction,
+  getIsUseThisLoading,
   useThisPlayListAction,
 } from '../../../CurriculumSequence/ducks'
 import { allowDuplicateCheck } from '../../../src/utils/permissionCheck'
@@ -224,6 +225,7 @@ class Item extends Component {
       useThisPlayList,
       history,
       isOrganizationDistrictUser,
+      isUseThisLoading,
     } = this.props
     const { status, analytics = [] } = isPlaylist ? _source : item
     const likes = analytics?.[0]?.likes || '0'
@@ -318,6 +320,7 @@ class Item extends Component {
       useThisPlayList,
       isPublisherUser,
       isOrganizationDistrictUser,
+      isUseThisLoading,
     }
 
     const CardViewComponent = isPlaylist ? PlaylistCard : TestItemCard
@@ -383,6 +386,7 @@ const enhance = compose(
       isFreeAdmin: isFreeAdminSelector(state),
       isPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
       isOrganizationDistrictUser: isOrganizationDistrictUserSelector(state),
+      isUseThisLoading: getIsUseThisLoading(state),
     }),
     {
       approveOrRejectSingleTestRequest: approveOrRejectSingleTestRequestAction,

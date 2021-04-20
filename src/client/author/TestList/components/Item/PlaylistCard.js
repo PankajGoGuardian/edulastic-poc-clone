@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { message } from 'antd'
-import { throttle, first } from 'lodash'
+import { first } from 'lodash'
 import { IconUser, IconUsers } from '@edulastic/icons'
 import { cardTitleColor, darkGrey } from '@edulastic/colors'
 import { PremiumLabel, EduButton } from '@edulastic/common'
@@ -50,15 +50,14 @@ const PlaylistCard = ({
   _id,
   isPublisherUser,
   isOrganizationDistrictUser,
+  isUseThisLoading,
 }) => {
-  const [useThisLoading, setUseThisLoading] = useState(false)
   const grade = first(_source.grades)
   const { thumbnail, skin } = _source
   const isFullSizeImage = skin === 'FULL_SIZE'
   const isDraft = status === 'draft'
 
-  const handleUseThisClick = throttle(() => {
-    setUseThisLoading(true)
+  const handleUseThisClick = () => {
     const { title, grades, subjects, customize = null } = _source
     const msg = message.loading('Using this playlist. Please Wait....', 0)
 
@@ -71,8 +70,7 @@ const PlaylistCard = ({
       fromUseThis: true,
       notificationCallback: msg,
     })
-    setTimeout(() => setUseThisLoading(false), 10000)
-  }, 10000)
+  }
 
   const handleDetailsClick = () => {
     history.push(`/author/playlists/${_id}#review`)
@@ -138,8 +136,8 @@ const PlaylistCard = ({
 
               {showUseThisButton && (
                 <EduButton
-                  loading={useThisLoading}
-                  disabled={useThisLoading}
+                  loading={isUseThisLoading}
+                  disabled={isUseThisLoading}
                   width="145px"
                   height="45px"
                   onClick={(e) => {
@@ -189,8 +187,8 @@ const PlaylistCard = ({
 
             {showUseThisButton && (
               <EduButton
-                loading={useThisLoading}
-                disabled={useThisLoading}
+                loading={isUseThisLoading}
+                disabled={isUseThisLoading}
                 height="32px"
                 onClick={(e) => {
                   e.preventDefault()

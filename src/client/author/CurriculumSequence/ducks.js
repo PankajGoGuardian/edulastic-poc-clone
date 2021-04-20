@@ -1434,6 +1434,11 @@ function* useThisPlayListSaga({ payload }) {
   } catch (error) {
     console.error(error)
     notification({ messageKey: 'commonErr' })
+  } finally {
+    const { notificationCallback = null } = payload
+    if (notificationCallback) {
+      notificationCallback()
+    }
   }
 }
 

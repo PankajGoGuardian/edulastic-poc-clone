@@ -29,6 +29,7 @@ import PlaylistPageNav from '../PlaylistPageNav'
 import SwitchPlaylist from './SwitchPlaylist'
 import { getCollectionsSelector } from '../../../src/selectors/user'
 import { allowContentEditCheck } from '../../../src/utils/permissionCheck'
+import { TestStatus } from '../../../TestPage/components/TestPageHeader/styled'
 
 const CurriculumHeaderButtons = styled(FlexContainer)`
   margin-left: ${({ marginLeft }) => marginLeft};
@@ -196,6 +197,12 @@ const CurriculumHeader = ({
     </Menu>
   )
 
+  const headingSubContent = (
+    <TestStatus className={status} data-cy="playlist-status">
+      {status}
+    </TestStatus>
+  )
+
   if (mode !== 'embedded') {
     return (
       <MainHeader
@@ -204,7 +211,10 @@ const CurriculumHeader = ({
         titleText={destinationCurriculumSequence?.alignmentInfo}
         titleMaxWidth="22rem"
         justify="space-between"
-        headingSubContent={urlHasUseThis && !isPublisherUser && switchPlaylist}
+        headingSubContent={
+          (urlHasUseThis && !isPublisherUser && switchPlaylist) ||
+          headingSubContent
+        }
       >
         {urlHasUseThis && !isMobile && (
           <PlaylistPageNav
@@ -227,14 +237,13 @@ const CurriculumHeader = ({
                   isGhost
                   isBlue
                   data-cy="delete-playlist"
-                  IconBtn={!shouldHideUseThis}
+                  IconBtn
                   onClick={() => {
                     setLoadingDelete()
                     handleConfirmForDeletePlaylist(_id, title, deletePlaylist)
                   }}
                 >
                   <IconTrash />
-                  {shouldHideUseThis && 'DELETE'}
                 </HeaderButton>
               </Tooltip>
             )}
@@ -245,15 +254,17 @@ const CurriculumHeader = ({
             features.isCurator) &&
             !customizeInDraft &&
             role !== roleuser.EDULASTIC_CURATOR && (
-              <HeaderButton
-                isBlue
-                isGhost
-                data-cy="share"
-                onClick={onShareClick}
-                IconBtn
-              >
-                <IconShare />
-              </HeaderButton>
+              <Tooltip placement="bottom" title="SHARE">
+                <HeaderButton
+                  isBlue
+                  isGhost
+                  data-cy="share"
+                  onClick={onShareClick}
+                  IconBtn
+                >
+                  <IconShare />
+                </HeaderButton>
+              </Tooltip>
             )}
 
           {(canAllowDuplicate ||
@@ -336,7 +347,7 @@ const CurriculumHeader = ({
               <Tooltip placement="bottom" title="EDIT">
                 <HeaderButton
                   isBlue
-                  isGhost
+                  isGhost={!shouldHideUseThis}
                   data-cy="edit-playlist"
                   onClick={handleEditClick}
                   IconBtn={!shouldHideUseThis}

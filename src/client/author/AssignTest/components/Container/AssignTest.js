@@ -322,16 +322,15 @@ class AssignTest extends React.Component {
     this.setState({ isAdvancedView: checked })
   }
 
-  renderHeaderButton = () => {
-    const { isAssigning } = this.props
+  renderHeaderButton = (isAssigning) => {
     return (
       <EduButton
         isBlue
         data-cy="assignButton"
         onClick={this.handleAssign}
-        disabled={isAssigning}
+        loading={isAssigning}
       >
-        ASSIGN
+        {isAssigning ? 'ASSIGNING...' : 'ASSIGN'}
       </EduButton>
     )
   }
@@ -630,7 +629,12 @@ class AssignTest extends React.Component {
       settingDetails,
       showUpdateSettingModal,
     } = this.state
-    const { assignmentSettings: assignment, isTestLoading, match } = this.props
+    const {
+      assignmentSettings: assignment,
+      isTestLoading,
+      match,
+      isAssigning,
+    } = this.props
     const {
       classList,
       fetchStudents,
@@ -696,6 +700,7 @@ class AssignTest extends React.Component {
           titleIcon={IconAssignment}
           btnTitle="ASSIGN"
           renderButton={this.renderHeaderButton}
+          isLoadingButtonState={isAssigning}
         />
 
         <Container>

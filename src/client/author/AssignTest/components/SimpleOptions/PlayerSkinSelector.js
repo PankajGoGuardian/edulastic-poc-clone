@@ -27,6 +27,10 @@ const PlayerSkinSelector = ({
     <SelectInputStyled
       data-cy="playerSkinType"
       onChange={onAssignmentTypeChange}
+      showSearch
+      filterOption={(input, option) =>
+        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+      }
       value={
         playerSkinType.toLowerCase() === playerSkinTypes.edulastic.toLowerCase()
           ? edulastic

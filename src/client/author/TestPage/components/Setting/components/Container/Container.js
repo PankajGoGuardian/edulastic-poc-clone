@@ -1564,6 +1564,12 @@ class Setting extends Component {
                           <Col span={12}>
                             <SelectInputStyled
                               data-cy="playerSkinType"
+                              showSearch
+                              filterOption={(input, option) =>
+                                option.props.children
+                                  .toLowerCase()
+                                  .indexOf(input.toLowerCase()) >= 0
+                              }
                               value={
                                 playerSkinType ===
                                 playerSkinTypes.edulastic.toLowerCase()

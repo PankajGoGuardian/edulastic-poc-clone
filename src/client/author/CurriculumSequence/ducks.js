@@ -226,6 +226,8 @@ export const TOGGLE_ASSIGNMENTS = '[playlist] toggle assignments'
 export const SET_CURRENT_ASSIGNMENT_IDS =
   '[playlist] set current assignment ids'
 export const DUPLICATE_PLAYLIST_REQUEST = '[playlist] duplicate request'
+export const SET_USE_THIS_LOADER =
+  '[playlist] set/unset loader while using playlist'
 
 // Actions
 export const updateCurriculumSequenceList = createAction(
@@ -379,6 +381,7 @@ export const setCurrentAssignmentIdsAction = createAction(
 export const duplicatePlaylistRequestAction = createAction(
   DUPLICATE_PLAYLIST_REQUEST
 )
+export const setUseThisLoading = createAction(SET_USE_THIS_LOADER)
 
 export const getAllCurriculumSequencesAction = (ids, showNotification) => {
   if (!ids) {
@@ -510,6 +513,11 @@ const getPublisher = (state) => {
 
 const getDestinationCurriculumSequence = (state) =>
   state.curriculumSequence.destinationCurriculumSequence
+
+export const getIsUseThisLoading = createSelector(
+  getCurriculumSequenceState,
+  (curriculumSequence) => curriculumSequence.isUseThisLoading
+)
 
 function* makeApiRequest(
   idsForFetch = [],
@@ -1372,6 +1380,7 @@ function* publishDraftCustomizedPlaylist({ payload }) {
 
 function* useThisPlayListSaga({ payload }) {
   try {
+    yield put(setUseThisLoading(true))
     const {
       _id,
       title,
@@ -1434,6 +1443,12 @@ function* useThisPlayListSaga({ payload }) {
   } catch (error) {
     console.error(error)
     notification({ messageKey: 'commonErr' })
+  } finally {
+    const { notificationCallback = null } = payload
+    yield put(setUseThisLoading(false))
+    if (notificationCallback) {
+      notificationCallback()
+    }
   }
 }
 
@@ -2124,6 +2139,7 @@ const initialState = {
     isAssigning: false,
     recommendations: [],
   },
+  isUseThisLoading: false,
 }
 
 /**
@@ -2991,5 +3007,8 @@ export default createReducer(initialState, {
   },
   [SET_CURRENT_ASSIGNMENT_IDS]: (state, { payload }) => {
     state.currentAssignmentIds = payload
+  },
+  [SET_USE_THIS_LOADER]: (state, { payload }) => {
+    state.isUseThisLoading = payload
   },
 })

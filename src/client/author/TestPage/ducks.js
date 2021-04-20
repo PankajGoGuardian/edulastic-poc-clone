@@ -1614,16 +1614,17 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     passwordExpireIn: entity.passwordExpireIn,
     assignmentPassword: entity.assignmentPassword,
     timedAssignment: entity.timedAssignment,
-    restrictNavigationOut: entity.restrictNavigationOut,
+    restrictNavigationOut: entity.restrictNavigationOut || null,
     restrictNavigationOutAttemptsThreshold:
-      entity.restrictNavigationOutAttemptsThreshold,
-    blockSaveAndContinue: entity.blockSaveAndContinue,
+      entity.restrictNavigationOutAttemptsThreshold || 0,
+    blockSaveAndContinue: entity.blockSaveAndContinue || false,
     scoringType: entity.scoringType,
     penalty: entity.penalty,
     blockNavigationToAnsweredQuestions:
       entity.blockNavigationToAnsweredQuestions || false,
     showMagnifier: !!entity.showMagnifier,
     enableScratchpad: !!entity.enableScratchpad,
+    keypad: entity.keypad,
   }
 
   if (isAdmin) {
@@ -1657,6 +1658,11 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     settings.penalty = false
     settings.passwordPolicy = passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF
     settings.timedAssignment = false
+    settings.blockNavigationToAnsweredQuestions = false
+    delete settings.blockSaveAndContinue
+    delete settings.restrictNavigationOut
+    delete settings.restrictNavigationOutAttemptsThreshold
+    delete settings.keypad
   }
 
   return settings

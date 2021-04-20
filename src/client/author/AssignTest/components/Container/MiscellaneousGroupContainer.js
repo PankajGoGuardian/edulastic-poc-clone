@@ -41,7 +41,7 @@ const MiscellaneousGroupContainer = ({
     showMagnifier = testSettings.showMagnifier,
     enableScratchpad = testSettings.enableScratchpad,
     multiLanguageEnabled = !!testSettings.multiLanguageEnabled,
-    keyPadData = testSettings.keypad || {},
+    keypad: keyPadData = testSettings.keypad || {},
   } = assignmentSettings
 
   const playerSkinType =

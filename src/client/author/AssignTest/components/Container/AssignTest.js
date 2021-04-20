@@ -122,6 +122,7 @@ const testSettingsOptions = [
   'enableScratchpad',
   'autoRedirect',
   'autoRedirectSettings',
+  'keypad',
 ]
 
 const docBasedSettingsOptions = [
@@ -455,6 +456,8 @@ class AssignTest extends React.Component {
       }
       if (newSettings.timedAssignment && !newSettings.allowedTime) {
         newSettings.allowedTime = totalItems * 60 * 1000
+      } else if (!newSettings.timedAssignment) {
+        newSettings.allowedTime = 0
       }
       setCurrentTestSettingsId(value)
       updateAssignmentSettings(newSettings)

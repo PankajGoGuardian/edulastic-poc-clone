@@ -405,6 +405,43 @@ export const apiForms = [
     ],
   },
   {
+    id: 'merge-school',
+    name: 'Merge School',
+    endPoint: 'admin-tool/merge-school',
+    method: 'post',
+    slowApi: true,
+    fields: [
+      {
+        name: 'srcSchoolId',
+        displayName: 'School Id',
+        placeholder: 'Enter Source School Id',
+        type: 'string',
+        required: true,
+      },
+      {
+        name: 'srcDistrictId',
+        displayName: 'Source District Id',
+        placeholder: 'Enter Source District Id',
+        type: 'string',
+        required: true,
+      },
+      {
+        name: 'desSchoolId',
+        displayName: 'School Id Destination',
+        placeholder: 'Enter Destination School Id',
+        type: 'string',
+        required: true,
+      },
+      {
+        name: 'desDistrictId',
+        displayName: 'Destination District Id',
+        placeholder: 'Enter Destination District Id',
+        type: 'string',
+        required: true,
+      },
+    ],
+  },
+  {
     id: 'move-teacher',
     name: 'Move Teacher',
     endPoint: 'admin-tool/move-teacher',

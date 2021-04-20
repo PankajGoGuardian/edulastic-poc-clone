@@ -1228,76 +1228,80 @@ function* duplicatePlayListSaga({ payload }) {
 }
 
 function* editPlaylistTestSaga({ payload }) {
-  const { testId, playlistId } = payload
+  try {
+    const { testId, playlistId } = payload
 
-  if (!testId || !playlistId) {
-    notification({ msg: 'Insufficient parameters passed!' })
-    return
-  }
+    if (!testId || !playlistId) {
+      notification({ msg: 'Insufficient parameters passed!' })
+      return
+    }
 
-  // In case of 'View test details' modal, test is already loaded in store.
-  let test = yield select(getTestSelector)
+    // In case of 'View test details' modal, test is already loaded in store.
+    let test = yield select(getTestSelector)
 
-  if (!test || test._id !== testId) {
-    // Fetch test
-    yield put(receiveTestByIdAction(testId, true, false, true, playlistId))
-    yield take(RECEIVE_TEST_BY_ID_SUCCESS)
-    test = yield select(getTestSelector)
-  }
+    if (!test || test._id !== testId) {
+      // Fetch test
+      yield put(receiveTestByIdAction(testId, true, false, true, playlistId))
+      yield take(RECEIVE_TEST_BY_ID_SUCCESS)
+      test = yield select(getTestSelector)
+    }
 
-  const userCollections = yield select(getCollectionsSelector)
-  const userWritableCollections = yield select(getWritableCollectionsSelector)
-  const user = yield select(getUserSelector)
-  const userId = get(user, 'user._id')
-  const userRole = get(user, 'user.role')
-  const userFeatures = get(user, 'user.features')
+    const userCollections = yield select(getCollectionsSelector)
+    const userWritableCollections = yield select(getWritableCollectionsSelector)
+    const user = yield select(getUserSelector)
+    const userId = get(user, 'user._id')
+    const userRole = get(user, 'user.role')
+    const userFeatures = get(user, 'user.features')
 
-  const isDuplicateAllowed = allowDuplicateCheck(
-    test?.collections,
-    userCollections,
-    'test'
-  )
-  const hasCollectionAccess = allowContentEditCheck(
-    test?.collections,
-    userWritableCollections
-  )
-  const isOwner = test?.authors?.some((x) => x._id === userId)
-  const isEditDisabled = !(
-    isOwner ||
-    userRole === roleuser.EDULASTIC_CURATOR ||
-    (hasCollectionAccess && userFeatures.isCurator)
-  )
-
-  if (isEditDisabled && !isDuplicateAllowed) {
-    notification({ msg: 'Edit Test is restricted by the author' })
-    return
-  }
-
-  // Redirect user to edit page of the test.
-  if (!isEditDisabled) {
-    const tab = test?.title ? 'review' : 'description'
-    yield put(
-      push({
-        pathname: `/author/tests/tab/${tab}/id/${test._id}`,
-        state: {
-          editTestFlow: true,
-        },
-      })
+    const isDuplicateAllowed = allowDuplicateCheck(
+      test?.collections,
+      userCollections,
+      'test'
     )
-    return
-  }
-
-  // Clone the test and redirect user to edit page of cloned test.
-  if (isDuplicateAllowed) {
-    yield put(
-      duplicateTestRequestAction({
-        _id: testId,
-        title: test?.title || '',
-        redirectToNewTest: true,
-        // By default we keep reference to all the items in test in cloned test.
-        cloneItems: false,
-      })
+    const hasCollectionAccess = allowContentEditCheck(
+      test?.collections,
+      userWritableCollections
     )
+    const isOwner = test?.authors?.some((x) => x._id === userId)
+    const isEditDisabled = !(
+      isOwner ||
+      userRole === roleuser.EDULASTIC_CURATOR ||
+      (hasCollectionAccess && userFeatures.isCurator)
+    )
+
+    if (isEditDisabled && !isDuplicateAllowed) {
+      notification({ msg: 'Edit Test is restricted by the author' })
+      return
+    }
+
+    // Redirect user to edit page of the test.
+    if (!isEditDisabled) {
+      const tab = test?.title ? 'review' : 'description'
+      yield put(
+        push({
+          pathname: `/author/tests/tab/${tab}/id/${test._id}`,
+          state: {
+            editTestFlow: true,
+          },
+        })
+      )
+      return
+    }
+
+    // Clone the test and redirect user to edit page of cloned test.
+    if (isDuplicateAllowed) {
+      yield put(
+        duplicateTestRequestAction({
+          _id: testId,
+          title: test?.title || '',
+          redirectToNewTest: true,
+          // By default we keep reference to all the items in test in cloned test.
+          cloneItems: false,
+        })
+      )
+    }
+  } catch (e) {
+    notification({ messageKey: 'commonErr' })
   }
 }
 

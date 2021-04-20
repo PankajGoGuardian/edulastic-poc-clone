@@ -14,7 +14,12 @@ import {
   FieldLabel,
   FlexContainer,
 } from '@edulastic/common'
-import { IconFeedback, IconExpand, IconCollapse } from '@edulastic/icons'
+import {
+  IconFeedback,
+  IconExpand,
+  IconCollapse,
+  IconFolder,
+} from '@edulastic/icons'
 import {
   test,
   questionActivity as questionActivityConst,
@@ -55,6 +60,7 @@ import {
   FilterSelect,
   FilterSpan,
 } from '../ClassBoard/components/Container/styled'
+import AllAttachmentsModal from './Modals/AllAttachmentsModal'
 
 const _getquestionLabels = memoizeOne(getQuestionLabels)
 
@@ -69,6 +75,8 @@ class StudentViewContainer extends Component {
       showTestletPlayer: false,
       hasStickyHeader: false,
       hideCorrectAnswer: true,
+      showAttachmentsModal: false,
+      attachmentsDic: {},
     }
   }
 
@@ -161,6 +169,25 @@ class StudentViewContainer extends Component {
     this.setState((prevState) => ({
       hideCorrectAnswer: !prevState.hideCorrectAnswer,
     }))
+  }
+
+  toggleAttachmentsModal = () => {
+    this.setState((prevState) => ({
+      showAttachmentsModal: !prevState.showAttachmentsModal,
+    }))
+  }
+
+  setAttachments = (list) => {
+    if (list) {
+      this.setState((prevState) => {
+        return {
+          attachmentsDic: {
+            ...prevState.attachmentsDic,
+            [list[0].source]: list[0],
+          },
+        }
+      })
+    }
   }
 
   render() {
@@ -352,6 +379,25 @@ class StudentViewContainer extends Component {
             )}
           </StudentButtonWrapper>
           <FlexContainer alignItems="center">
+            {Object.values(this.state.attachmentsDic).length > 0 && (
+              <EduButton
+                isGhost
+                height="24px"
+                fontSize="9px"
+                mr="10px"
+                ml="0px"
+                onClick={this.toggleAttachmentsModal}
+                title="View all attachments"
+              >
+                <IconFolder height="11.3px" width="11.3px" />
+                <span
+                  data-cy="showCorrectAnswer"
+                  data-test={!hideCorrectAnswer}
+                >
+                  Attachments
+                </span>
+              </EduButton>
+            )}
             <EduButton
               isGhost
               height="24px"
@@ -418,6 +464,7 @@ class StudentViewContainer extends Component {
                 closeTestletPlayer={() =>
                   this.setState({ showTestletPlayer: false })
                 }
+                setAttachments={this.setAttachments}
                 testActivityId={studentResponse?.testActivity?._id}
                 hideCorrectAnswer={hideCorrectAnswer}
                 isLCBView
@@ -433,6 +480,15 @@ class StudentViewContainer extends Component {
           hasStickyHeader={hasStickyHeader}
           onClick={() => scrollTo(document.querySelector('body'))}
         />
+        {Object.values(this.state.attachmentsDic).length > 0 && (
+          <AllAttachmentsModal
+            toggleAttachmentsModal={this.toggleAttachmentsModal}
+            showAttachmentsModal={this.state.showAttachmentsModal}
+            attachmentsList={Object.values(this.state.attachmentsDic)}
+            title="All Attachments"
+            description="Import content from QTI, WebCT and several other formats."
+          />
+        )}
       </>
     )
   }

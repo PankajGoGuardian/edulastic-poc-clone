@@ -1,4 +1,4 @@
-import React, { Component, useContext } from 'react'
+import React, { Component, useContext, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
@@ -46,6 +46,7 @@ function Preview({
   toggleStudentWorkCollapse,
   hideCorrectAnswer,
   testActivityId: utaId,
+  setAttachments,
 }) {
   const rows = getRows(item, false)
   const questions = get(item, ['data', 'questions'], [])
@@ -82,6 +83,10 @@ function Preview({
     `[${passageId}][${testActivityId}].resourceId`,
     {}
   )
+
+  useEffect(() => {
+    setAttachments(attachments)
+  }, [attachments])
 
   return (
     <StyledFlexContainer
@@ -134,9 +139,11 @@ Preview.propTypes = {
   qIndex: PropTypes.number.isRequired,
   studentId: PropTypes.any.isRequired,
   evaluation: PropTypes.object,
+  setAttachments: PropTypes.object,
 }
 Preview.defaultProps = {
   evaluation: {},
+  setAttachments: () => {},
 }
 
 class ClassQuestions extends Component {
@@ -527,6 +534,7 @@ class ClassQuestions extends Component {
           evaluation={evaluationStatus}
           showStudentWork={showStudentWork}
           isQuestionView={isQuestionView}
+          setAttachments={this.props.setAttachments}
           isExpressGrader={isExpressGrader}
           isLCBView={isLCBView}
           questionActivity={questionActivity}

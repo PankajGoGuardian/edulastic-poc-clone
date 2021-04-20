@@ -100,7 +100,8 @@ class FeedbackRight extends Component {
     preState
   ) {
     let newState = {}
-    const { submitted, feedback, maxScore, changed } = preState || {}
+    const { submitted, feedback, maxScore, changed, qActId: _qActId } =
+      preState || {}
     if (submitted) {
       newState = {
         submitted: false,
@@ -109,12 +110,12 @@ class FeedbackRight extends Component {
     }
 
     if (activity && isUndefined(changed)) {
-      const { score: _score } = activity
+      const { score: _score, qActId, _id } = activity
       let { maxScore: _maxScore } = activity
       const _feedback = get(activity, 'feedback.text', '')
-      newState = { ...newState }
+      newState = { ...newState, qActId: qActId || _id }
 
-      if (!isInvalidScore(_score)) {
+      if (!isInvalidScore(_score) || _qActId !== (qActId || _id)) {
         newState = { ...newState, score: _score }
       }
 

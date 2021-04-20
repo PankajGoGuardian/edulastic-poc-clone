@@ -60,7 +60,7 @@ import {
   FilterSelect,
   FilterSpan,
 } from '../ClassBoard/components/Container/styled'
-import AllAttachmentsModal from './Modals/AllAttachmentsModal'
+import TestAttachementsModal from './Modals/TestAttachementsModal'
 
 const _getquestionLabels = memoizeOne(getQuestionLabels)
 
@@ -76,7 +76,6 @@ class StudentViewContainer extends Component {
       hasStickyHeader: false,
       hideCorrectAnswer: true,
       showAttachmentsModal: false,
-      attachmentsDic: {},
     }
   }
 
@@ -177,19 +176,6 @@ class StudentViewContainer extends Component {
     }))
   }
 
-  setAttachments = (list) => {
-    if (list) {
-      this.setState((prevState) => {
-        return {
-          attachmentsDic: {
-            ...prevState.attachmentsDic,
-            [list[0].source]: list[0],
-          },
-        }
-      })
-    }
-  }
-
   render() {
     const {
       classResponse,
@@ -286,6 +272,10 @@ class StudentViewContainer extends Component {
       </div>
     )
 
+    const attachments = questionActivities.filter(
+      (q) => q?.scratchPad?.attachments
+    )
+
     return (
       <>
         {studentsList.length && studentTestActivity?._id && (
@@ -379,7 +369,7 @@ class StudentViewContainer extends Component {
             )}
           </StudentButtonWrapper>
           <FlexContainer alignItems="center">
-            {Object.values(this.state.attachmentsDic).length > 0 && (
+            {attachments.length > 0 && (
               <EduButton
                 isGhost
                 height="24px"
@@ -464,7 +454,6 @@ class StudentViewContainer extends Component {
                 closeTestletPlayer={() =>
                   this.setState({ showTestletPlayer: false })
                 }
-                setAttachments={this.setAttachments}
                 testActivityId={studentResponse?.testActivity?._id}
                 hideCorrectAnswer={hideCorrectAnswer}
                 isLCBView
@@ -480,11 +469,11 @@ class StudentViewContainer extends Component {
           hasStickyHeader={hasStickyHeader}
           onClick={() => scrollTo(document.querySelector('body'))}
         />
-        {Object.values(this.state.attachmentsDic).length > 0 && (
-          <AllAttachmentsModal
+        {this.state.showAttachmentsModal && (
+          <TestAttachementsModal
             toggleAttachmentsModal={this.toggleAttachmentsModal}
             showAttachmentsModal={this.state.showAttachmentsModal}
-            attachmentsList={Object.values(this.state.attachmentsDic)}
+            attachmentsList={attachments}
             title="All Attachments"
             description="Import content from QTI, WebCT and several other formats."
           />

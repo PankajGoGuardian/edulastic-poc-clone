@@ -3,7 +3,7 @@ import { Modal } from 'antd'
 import { IconClose } from '@edulastic/icons'
 import styled from 'styled-components'
 
-const AllAttachmentsModal = ({
+const TestAttachementsModal = ({
   showAttachmentsModal,
   toggleAttachmentsModal,
   attachmentsList,
@@ -17,19 +17,16 @@ const AllAttachmentsModal = ({
   })
 
   return (
-    <>
-      <Modal
-        visible={showAttachmentsModal}
-        title={<Title>{title}</Title>}
-        onOk={toggleAttachmentsModal}
-        onCancel={toggleAttachmentsModal}
-        footer={null}
-        closeIcon={<IconClose />}
-      >
-        <Description>{description}</Description>
-        <></>
-      </Modal>
-    </>
+    <Modal
+      visible={showAttachmentsModal}
+      title={<Title>{title}</Title>}
+      onOk={toggleAttachmentsModal}
+      onCancel={toggleAttachmentsModal}
+      footer={null}
+      closeIcon={<IconClose />}
+    >
+      <Description>{description}</Description>
+    </Modal>
   )
 }
 
@@ -42,4 +39,4 @@ const Description = styled.p`
   font-size: 15px;
 `
 
-export default AllAttachmentsModal
+export default TestAttachementsModal

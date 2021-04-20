@@ -14,7 +14,6 @@ const TrialConfirmationModal = ({
   trialAddOnProductIds,
   collections,
   products,
-  handleGoToCollectionClick,
   history,
   subType,
 }) => {
@@ -40,22 +39,6 @@ const TrialConfirmationModal = ({
     return availableCollections.length === productItemBankIds.length
   }, [collections, products, trialAddOnProductIds])
 
-  const sparkMathProduct = products.find(
-    (product) => product.type === 'ITEM_BANK_SPARK_MATH'
-  )
-
-  // If more than one item bank present, show Spark math button else show actual item bank button
-  const itemBankButtonParams = {
-    title:
-      itemBankProducts.length > 1
-        ? sparkMathProduct.name
-        : itemBankProducts?.[0]?.name,
-    productId:
-      itemBankProducts.length > 1
-        ? sparkMathProduct.id
-        : itemBankProducts?.[0]?.id,
-  }
-
   const handleCloseModal = () => {
     showTrialSubsConfirmationAction(false)
   }
@@ -65,10 +48,7 @@ const TrialConfirmationModal = ({
     history.push('/author/dashboard')
   }
 
-  const { hasTrial, subEndDate } = showTrialConfirmationMessage
-
-  const handleItemBankClick = () =>
-    handleGoToCollectionClick(itemBankButtonParams.productId)
+  const { subEndDate } = showTrialConfirmationMessage
 
   const productsToShow = products.filter(({ linkedProductId }) =>
     collections.find(({ _id }) => _id === linkedProductId)

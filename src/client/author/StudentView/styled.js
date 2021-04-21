@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components'
-import { Button, Modal } from 'antd'
+import { Button, Input, Modal } from 'antd'
 import { IconEdit } from '@edulastic/icons'
 import { FlexContainer, EduButton } from '@edulastic/common'
 import {
@@ -8,6 +8,8 @@ import {
   themeColor,
   desktopWidth,
   extraDesktopWidth,
+  greyishBorder,
+  sectionBorder,
 } from '@edulastic/colors'
 
 // left 70 as the side menu space need to be considered.
@@ -190,4 +192,102 @@ export const StyledFooter = styled.div`
     min-width: 150px;
     margin-top: 5px;
   }
+`
+
+export const SlideContainer = styled.span`
+  height: 300px;
+`
+
+export const SliderContainer = styled.div`
+  position: relative;
+  overflow: hidden;
+  .prev,
+  .next {
+    display: block;
+  }
+`
+
+export const ScrollbarContainer = styled.div`
+  white-space: nowrap;
+  margin-bottom: 20px;
+  margin-left: 25px;
+  transition: 0.2s;
+  border: 2px solid ${greyishBorder};
+  width: 450px;
+  padding-top: 20px;
+  .scrollbar-container {
+    width: 453px;
+    transition: 0.2s;
+    padding-bottom: 14px;
+  }
+  .ps__rail-x {
+    display: none;
+  }
+`
+export const PrevButton = styled.div`
+  position: absolute;
+  top: 60%;
+  left: 10px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  z-index: 5;
+`
+export const NextButton = styled(PrevButton)`
+  top: 58.5%;
+  left: auto;
+  right: 10px;
+  transform: translateY(-50%) rotate(180deg);
+`
+
+export const Slides = styled.div`
+  height: 200px;
+  width: 400px;
+  color: ${white};
+  cursor: pointer;
+  display: inline-block;
+  background-image: ${(props) => `url(${props.bgImage})`};
+  background-size: 100% 100%;
+  background-position: top left;
+  background-repeat: no-repeat;
+  border-radius: 4px;
+  margin-right: 30px;
+  margin-left: 23px;
+
+  &.last,
+  &:last-child {
+    margin-right: 30px !important;
+  }
+`
+export const AttachmentFooter = styled.div`
+  margin-top: 20px;
+  display: flex;
+`
+export const SingleDownloadButton = styled(EduButton)`
+  margin-top: 5px;
+  left: 20px;
+  width: 44%;
+`
+
+export const Title = styled.h2`
+  font-weight: 600;
+`
+
+export const Description = styled.p`
+  font-weight: 600;
+  font-size: 15px;
+  margin-left: 23px;
+`
+
+export const ModalInput = styled(Input)`
+  border-color: ${sectionBorder};
+  border-radius: 2px;
+  height: 40px;
+  margin-top: 15px;
+  margin-bottom: 20px;
+  max-width: 450px;
+  left: 23px;
+`
+
+export const AttachmentSliderContainer = styled.div`
+  margin-top: 5px;
 `

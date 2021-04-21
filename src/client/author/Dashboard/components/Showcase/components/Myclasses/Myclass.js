@@ -481,7 +481,6 @@ const MyClasses = ({
           history={history}
           fetchPlaylists={fetchPlaylists}
           playlists={playlists}
-          itemBankSubscriptions={itemBankSubscriptions}
           subType={subType}
         />
       )}

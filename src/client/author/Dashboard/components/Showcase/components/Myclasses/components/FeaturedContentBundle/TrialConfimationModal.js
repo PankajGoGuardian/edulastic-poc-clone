@@ -1,5 +1,6 @@
 import { titleColor } from '@edulastic/colors'
 import { CustomModalStyled, EduButton, FieldLabel } from '@edulastic/common'
+import { curriculumGrades } from '@edulastic/constants'
 import { Spin } from 'antd'
 import PropTypes from 'prop-types'
 import React, { useMemo, useState } from 'react'
@@ -15,7 +16,6 @@ const TrialConfirmationModal = ({
   products,
   handleGoToCollectionClick,
   history,
-  itemBankSubscriptions,
   subType,
 }) => {
   const [selectedProducts, setSelectedProducts] = useState([])
@@ -25,13 +25,11 @@ const TrialConfirmationModal = ({
       trialAddOnProductIds.includes(product.id) && product.type !== 'PREMIUM'
   )
 
+  const { GRADES } = curriculumGrades
+
   const productItemBankIds = itemBankProducts.map(
     (product) => product.linkedProductId
   )
-
-  const hasOnlyTeacherPremium =
-    itemBankSubscriptions.length === 0 &&
-    (subType === 'PREMIUM' || subType === 'TRIAL_PREMIUM')
 
   // Check if trial successfully started for all item banks.
   const isTrialPurchaseSuccess = useMemo(() => {
@@ -72,52 +70,13 @@ const TrialConfirmationModal = ({
   const handleItemBankClick = () =>
     handleGoToCollectionClick(itemBankButtonParams.productId)
 
-  const grades = [
-    {
-      text: '1',
-      value: '1',
-    },
-    {
-      text: '2',
-      value: '2',
-    },
-    {
-      text: '3',
-      value: '3',
-    },
-    {
-      text: '4',
-      value: '4',
-    },
-    {
-      text: '5',
-      value: '5',
-    },
-    {
-      text: '6',
-      value: '6',
-    },
-    {
-      text: '7',
-      value: '7',
-    },
-    {
-      text: '8',
-      value: '8',
-    },
-    {
-      text: '9',
-      value: '9',
-    },
-    {
-      text: 'HIGH SCHOOL',
-      value: '10, 11, 12',
-    },
-  ]
-
   const productsToShow = products.filter(({ linkedProductId }) =>
     collections.find(({ _id }) => _id === linkedProductId)
   )
+
+  const hasOnlyTeacherPremium =
+    productsToShow.length === 0 &&
+    (subType === 'PREMIUM' || subType === 'TRIAL_PREMIUM')
 
   const showFooter = hasOnlyTeacherPremium ? (
     <EduButton
@@ -134,18 +93,18 @@ const TrialConfirmationModal = ({
 
   const onSelecteProduct = (id) => {
     if (!selectedProducts.includes(id)) {
-      setSelectedProducts([...selectedProducts, id])
+      setSelectedProducts((product) => [...product, id])
     } else {
-      setSelectedProducts(selectedProducts.filter((el) => el !== id))
+      setSelectedProducts((product) => product.filter((el) => el !== id))
     }
   }
 
   const onSelecteGrade = (value) => {
-    const val = value.split(',').map((el) => el.trim())
+    const val = value.split(',').map((el) => el.trim()) // here the value is string and in case of high_school grades are '10, 11, 12' so using split.
     if (!selectedGrades.includes(val[0])) {
-      setSelectedGrades(selectedGrades.concat(val))
+      setSelectedGrades((grades) => grades.concat(val))
     } else {
-      setSelectedGrades(selectedGrades.filter((el) => !val.includes(el)))
+      setSelectedGrades((grades) => grades.filter((el) => !val.includes(el)))
     }
   }
 
@@ -172,13 +131,19 @@ const TrialConfirmationModal = ({
           </SpinContainer>
         )}
         <ModalBody>
-          <p>
-            Thanks for trying the Teacher Premium and additional Spark content.
-            Select the grade and curriculum alignment to get started.
-          </p>
-          <br />
-          {!hasOnlyTeacherPremium && (
+          {hasOnlyTeacherPremium ? (
+            <p>
+              Thanks for trying teacher premium. Your trial will expire on{' '}
+              <b>{subEndDate}</b>.
+            </p>
+          ) : (
             <>
+              <p>
+                Thanks for trying the Teacher Premium and additional Spark
+                content. Select the grade and curriculum alignment to get
+                started.
+              </p>
+              <br />
               <div>
                 <FieldLabel color={titleColor}>PRODUCTS</FieldLabel>
                 <ContentWrapper>
@@ -197,7 +162,7 @@ const TrialConfirmationModal = ({
               <div>
                 <FieldLabel color={titleColor}>SELECT YOUR GRADES</FieldLabel>
                 <ContentWrapper>
-                  {grades.map(({ text, value }) => (
+                  {GRADES.map(({ text, value }) => (
                     <StyledTag
                       onClick={() => onSelecteGrade(value)}
                       className={

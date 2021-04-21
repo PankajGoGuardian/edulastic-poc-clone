@@ -301,6 +301,7 @@ const ManageContentBlock = (props) => {
               key={resource?.contentId}
               type={resource?.contentType}
               id={resource?.contentId}
+              contentVersionId={resource?.contentId}
               contentTitle={resource?.contentTitle}
               contentDescription={resource?.contentDescription}
               contentUrl={resource?.contentUrl}
@@ -330,6 +331,7 @@ const ManageContentBlock = (props) => {
             <ResourceItem
               type="test"
               id={test._id}
+              contentVersionId={test.versionId}
               contentTitle={test.title}
               key={test._id}
               summary={test?.summary}

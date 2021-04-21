@@ -14,7 +14,6 @@ import {
   getStudentsLoading,
 } from '../../filterDataDucks'
 
-
 const DEFAULT_SEARCH_TERMS = { text: '', selectedText: '', selectedKey: '' }
 
 const StudentAutoComplete = ({
@@ -24,8 +23,8 @@ const StudentAutoComplete = ({
   loadStudentList,
   firstLoad,
   termId,
-  grade,
-  subject,
+  grades,
+  subjects,
   courseIds,
   classIds,
   selectedStudentId,
@@ -43,7 +42,7 @@ const StudentAutoComplete = ({
     const { districtIds, institutionIds } = userOrgData
     const districtId = districtIds?.[0]
     const q = {
-      limit: 20,
+      limit: 35,
       page: 0,
       districtId,
       search: {
@@ -63,11 +62,11 @@ const StudentAutoComplete = ({
     if (!isEmpty(institutionIds)) {
       q.institutionIds = institutionIds
     }
-    if (grade) {
-      q.grade = grade
+    if (grades) {
+      q.grades = Array.isArray(grades) ? grades : grades.split(',')
     }
-    if (subject) {
-      q.subject = subject
+    if (subjects) {
+      q.subjects = Array.isArray(subjects) ? subjects : subjects.split(',')
     }
     if (courseIds) {
       q.courseIds = courseIds.split(',')
@@ -76,7 +75,7 @@ const StudentAutoComplete = ({
       q.search.groupIds = classIds.split(',')
     }
     return q
-  }, [searchTerms.text, termId, grade, subject, courseIds, classIds])
+  }, [searchTerms.text, termId, grades, subjects, courseIds, classIds])
 
   // handle autocomplete actions
   const onSearch = (value) => {
@@ -141,7 +140,7 @@ const StudentAutoComplete = ({
       setSearchTerms({ ...DEFAULT_SEARCH_TERMS })
       setFieldValue('')
     }
-  }, [termId, grade, subject, courseIds, classIds])
+  }, [termId, grades, subjects, courseIds, classIds])
   useEffect(() => {
     if (
       (!searchTerms.text && !searchTerms.selectedText) ||

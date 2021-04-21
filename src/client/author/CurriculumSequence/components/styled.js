@@ -268,7 +268,7 @@ export const ModuleID = styled.div`
   max-width: 60px;
   color: ${white};
   background: ${greenDark6};
-  font-size: 16px;
+  font-size: 12px;
   border-radius: 2px;
   font-weight: 600;
   user-select: none;

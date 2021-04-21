@@ -55,7 +55,7 @@ export const getReportsStudentProgressError = createSelector(
 
 const initialState = {
   studentProgress: {},
-  loading: true,
+  loading: false,
 }
 
 export const reportStudentProgressReducer = createReducer(initialState, {

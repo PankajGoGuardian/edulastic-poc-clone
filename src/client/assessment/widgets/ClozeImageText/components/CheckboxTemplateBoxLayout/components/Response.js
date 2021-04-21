@@ -3,14 +3,13 @@ import PropTypes from 'prop-types'
 import { Popover } from 'antd'
 import { measureText } from '@edulastic/common'
 import { response } from '@edulastic/constants'
-import { white } from '@edulastic/colors'
 import { Pointer } from '../../../../../styled/Pointer'
 import { Point } from '../../../../../styled/Point'
 import { Triangle } from '../../../../../styled/Triangle'
 import { IconWrapper } from '../styled/IconWrapper'
-import { RightIcon } from '../styled/RightIcon'
-import { WrongIcon } from '../styled/WrongIcon'
 import PopoverContent from '../../PopoverContent'
+import { getEvalautionColor } from '../../../../../utils/evaluation'
+import { CheckBox } from '../styled/CheckBox'
 
 const Response = ({
   showAnswer,
@@ -25,8 +24,16 @@ const Response = ({
   lessMinWidth,
   isExpressGrader,
   isPrintPreview,
+  answerScore,
+  allCorrect,
 }) => {
   const { width: contentWidth } = measureText(userAnswer, btnStyle) // returns number
+  const { fillColor, mark, indexBgColor } = getEvalautionColor(
+    answerScore,
+    status === 'right',
+    hasAnswered,
+    allCorrect
+  )
 
   const padding = lessMinWidth ? 4 : 30
   const indexWidth = showAnswer ? 40 : 0
@@ -40,63 +47,53 @@ const Response = ({
    */
   const isOverConent = boxWidth < contentWidth + padding + indexWidth
 
-  const className = `imagelabeldragdrop-droppable active ${
-    hasAnswered ? 'check-answer' : 'noAnswer'
-  } ${status} show-answer`
-
   const popoverContent = (
     <PopoverContent
       indexStr={indexStr}
       userAnswer={userAnswer}
-      hasAnswered={hasAnswered}
-      status={status}
       btnStyle={{ ...btnStyle, position: 'unset' }}
       checkAnswer={checkAnswer}
-      className={className}
+      fillColor={fillColor}
+      indexBgColor={indexBgColor}
+      mark={mark}
       isExpressGrader={isExpressGrader}
     />
   )
 
   const content = (
-    <div
+    <CheckBox
       key={indexStr}
+      fillColor={fillColor}
+      indexBgColor={indexBgColor}
+      isPrintPreview={isPrintPreview}
       style={{ ...btnStyle, minHeight: `${response.minHeight}px` }}
-      className={className}
       onClick={onClickHandler}
     >
       <span
-        className="index index-box"
+        className="index"
         style={{ display: checkAnswer || lessMinWidth ? 'none' : 'flex' }}
       >
         {indexStr}
       </span>
-      <div
-        className="text container"
-        style={{
-          padding: lessMinWidth ? '0 0 0 4px' : null,
-          background: isPrintPreview && white,
-        }}
-      >
+      <div className="text">
         <div className="clipText">{userAnswer}</div>
-        {(checkAnswer || showAnswer) && (
-          <div>
-            {hasAnswered && (
-              <IconWrapper>
-                {status === 'right' && <RightIcon />}
-                {status === 'wrong' && <WrongIcon />}
-              </IconWrapper>
-            )}
-            <Pointer
-              className={responseContainer.pointerPosition}
-              width={responseContainer.width}
-            >
-              <Point />
-              <Triangle />
-            </Pointer>
-          </div>
-        )}
       </div>
-    </div>
+
+      <div className="icons">
+        {hasAnswered && (
+          <IconWrapper rightPosition={lessMinWidth ? '5' : '10'}>
+            {mark}
+          </IconWrapper>
+        )}
+        <Pointer
+          className={responseContainer.pointerPosition}
+          width={responseContainer.width}
+        >
+          <Point />
+          <Triangle />
+        </Pointer>
+      </div>
+    </CheckBox>
   )
 
   // eslint-disable-next-line max-len

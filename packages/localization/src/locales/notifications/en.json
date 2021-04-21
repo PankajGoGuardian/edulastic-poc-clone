@@ -391,6 +391,10 @@
     "message": "Corrections/updates made to the item(s) failed",
     "description": ""
   },
+  "publishCorrectItemDiscarded": {
+    "message": "All corrections/edits made to item(s) have been discarded",
+    "description": ""
+  },
   "publishCorrectItemSuccess": {
     "message": "Corrections/updates made to the item(s) are saved successfully and students will start receiving the updated items starting now",
     "description": ""
@@ -437,6 +441,10 @@
   },
   "noQuestions": {
     "message": "Test has only instructions. Test must have question to be published",
+    "description": ""
+  },
+  "testHasInvalidItem": {
+    "message": "Test has at least one item without any question. To publish a test each item must have at least one valid question.",
     "description": ""
   },
   "teacherRemovedSuccessfully": {

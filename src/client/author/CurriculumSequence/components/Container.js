@@ -93,6 +93,17 @@ class CurriculumContainer extends Component {
     /**
      * state for handling drag and drop
      */
+    selectedData: {
+      REVIEW: [],
+      PRACTICE: [],
+      CHALLENGE: [],
+    },
+  }
+
+  setSelectedData = (data) => {
+    this.setState({
+      selectedData: data,
+    })
   }
 
   expandAll = () => {
@@ -342,6 +353,7 @@ class CurriculumContainer extends Component {
       expandedModules,
       showShareModal,
       showSelectCollectionsModal,
+      selectedData,
     } = this.state
     const {
       handleSelectContent,
@@ -426,6 +438,8 @@ class CurriculumContainer extends Component {
           onBeginDrag={onBeginDrag}
           onCuratorApproveOrReject={this.onCuratorApproveOrReject}
           urlHasUseThis={urlHasUseThis}
+          selectedRows={selectedData}
+          setSelectedRows={this.setSelectedData}
         />
       </>
     )

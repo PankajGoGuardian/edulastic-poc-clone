@@ -244,6 +244,8 @@ export const SET_PREVIOUSLY_USED_PLAYLIST_CLONE =
   '[playlist] previously used playlist clone data'
 
 export const EDIT_PLAYLIST_TEST = '[playlist] edit playlist test'
+export const SET_USE_THIS_LOADER =
+  '[playlist] set/unset loader while using playlist'
 
 // Actions
 export const updateCurriculumSequenceList = createAction(
@@ -397,6 +399,7 @@ export const setCurrentAssignmentIdsAction = createAction(
 export const duplicatePlaylistRequestAction = createAction(
   DUPLICATE_PLAYLIST_REQUEST
 )
+export const setUseThisLoading = createAction(SET_USE_THIS_LOADER)
 
 export const setIsUsedModalVisibleAction = createAction(
   SET_IS_USED_MODAL_VISIBLE
@@ -538,6 +541,11 @@ const getPublisher = (state) => {
 
 const getDestinationCurriculumSequence = (state) =>
   state.curriculumSequence.destinationCurriculumSequence
+
+export const getIsUseThisLoading = createSelector(
+  getCurriculumSequenceState,
+  (curriculumSequence) => curriculumSequence.isUseThisLoading
+)
 
 function* makeApiRequest(
   idsForFetch = [],
@@ -1478,6 +1486,7 @@ function* publishDraftCustomizedPlaylist({ payload }) {
 
 function* useThisPlayListSaga({ payload }) {
   try {
+    yield put(setUseThisLoading(true))
     const {
       _id: playlistId,
       title,
@@ -1599,6 +1608,12 @@ function* useThisPlayListSaga({ payload }) {
   } catch (error) {
     console.error(error)
     notification({ messageKey: 'commonErr' })
+  } finally {
+    const { notificationCallback = null } = payload
+    yield put(setUseThisLoading(false))
+    if (notificationCallback) {
+      notificationCallback()
+    }
   }
 }
 
@@ -1787,12 +1802,18 @@ function structureWorkData(workData, statusData, firstLoad = false) {
       } else {
         draft[type].forEach((i) => {
           const currentStatus = currentStatusArray.find((s) => {
-            const isStandardRecommended =
-              s.derivedFrom === 'STANDARDS' &&
-              s.standardIdentifiers.includes(i.standardIdentifier) &&
-              (!s.skillIdentifiers ||
-                s.skillIdentifiers.includes(i.skillIdentifier))
-
+            let isStandardRecommended
+            if (type.toUpperCase() === 'PRACTICE') {
+              isStandardRecommended =
+                s.derivedFrom === 'STANDARDS' &&
+                s.standardIdentifiers.includes(i.standardIdentifier)
+            } else {
+              isStandardRecommended =
+                s.derivedFrom === 'STANDARDS' &&
+                s.standardIdentifiers.includes(i.standardIdentifier) &&
+                (!s.skillIdentifiers ||
+                  s.skillIdentifiers.includes(i.skillIdentifier))
+            }
             const isTestRecommended =
               s.derivedFrom === 'TESTS' && s.resourceId === i.testId
 
@@ -2286,6 +2307,7 @@ const initialState = {
   },
   isUsedModalVisible: false,
   previouslyUsedPlaylistClone: null,
+  isUseThisLoading: false,
 }
 
 /**
@@ -3163,5 +3185,8 @@ export default createReducer(initialState, {
   },
   [SET_PREVIOUSLY_USED_PLAYLIST_CLONE]: (state, { payload }) => {
     state.previouslyUsedPlaylistClone = payload
+  },
+  [SET_USE_THIS_LOADER]: (state, { payload }) => {
+    state.isUseThisLoading = payload
   },
 })

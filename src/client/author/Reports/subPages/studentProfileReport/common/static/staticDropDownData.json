@@ -1,32 +1,36 @@
 {
   "filterSections": {
-    "STUDENT_FILTERS": {
+    "CLASS_FILTERS": {
       "key": "0",
-      "title": "Select Student"
+      "title": "Select Classes"
     }
   },
   "tagTypes": [
     { "key": "termId" },
     { "key": "courseIds" },
-    { "key": "grade", "subType": "class" },
-    { "key": "subject", "subType": "class" },
+    { "key": "grades", "subType": "class" },
+    { "key": "subjects", "subType": "class" },
     { "key": "classIds" },
     { "key": "student" },
     { "key": "performanceBandProfileId" },
-    { "key": "standardsProficiencyProfileId" }
+    { "key": "standardsProficiencyProfileId" },
+    { "key": "domainId" },
+    { "key": "standardId" }
   ],
   "initialFilters": {
     "reportId": "",
 		"termId": "",
     "courseIds": "",
-    "grade": "All",
-    "subject": "All",
+    "grades": "",
+    "subjects": "",
     "classIds": "",
     "performanceBandProfileId": "",
-    "standardsProficiencyProfileId": ""
+    "standardsProficiencyProfileId": "",
+    "domainId": "All",
+    "standardId": "All",
+    "showApply": false
 	},
   "subjects": [
-    { "key": "All", "title": "All Subjects" },
     { "key": "Mathematics", "title": "Mathematics" },
     { "key": "ELA", "title": "ELA" },
     { "key": "Science", "title": "Science" },
@@ -35,7 +39,6 @@
     { "key": "Other Subjects", "title": "Other Subjects" }
   ],
   "grades": [
-    { "key": "All", "title": "All Grades" },
     { "key": "TK", "title": "PreKindergarten" },
     { "key": "K", "title": "Kindergarten" },
     { "key": "1", "title": "Grade 1" },

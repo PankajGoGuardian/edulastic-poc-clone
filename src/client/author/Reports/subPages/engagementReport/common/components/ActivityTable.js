@@ -36,7 +36,7 @@ const ActivityTable = ({
   filters,
   activityBy = 'school',
 }) => {
-  const { grade: studentGrade, subject: studentSubject, ...query } = filters
+  const { grades: studentGrades, subjects: studentSubjects, ...query } = filters
 
   const tableData = Object.keys(filter).length
     ? data.filter((item) => filter[item[`${activityBy}Name`] || '-'])
@@ -51,8 +51,8 @@ const ActivityTable = ({
       rawColumns[0].render = (text, record) => {
         const queryStr = qs.stringify({
           ...query,
-          studentGrade,
-          studentSubject,
+          studentGrades,
+          studentSubjects,
           assessmentTypes: filters.assessmentTypes || defaultAssessmentTypes,
           schoolIds: record.schoolId,
         })
@@ -74,8 +74,8 @@ const ActivityTable = ({
         }
         const queryStr = qs.stringify({
           ...query,
-          studentGrade,
-          studentSubject,
+          studentGrades,
+          studentSubjects,
           assessmentTypes: filters.assessmentTypes || defaultAssessmentTypes,
           teacherIds: record.teacherId,
         })

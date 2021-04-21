@@ -23,6 +23,7 @@ import {
   RESPONSE_ENTRY_SCORE_SUCCESS,
   UPDATE_PAUSE_STATUS_ACTION,
   SET_UPDATED_ACTIVITY_IN_ENTITY,
+  CORRECT_ITEM_UPDATE_SUCCESS,
 } from '../constants/actions'
 import {
   transformGradeBookResponse,
@@ -691,6 +692,16 @@ const reducer = (state = initialState, { type, payload }) => {
           return item
         }),
       }
+    case CORRECT_ITEM_UPDATE_SUCCESS: {
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          testItemsData: payload,
+          testItemsDataKeyed: keyBy(payload, '_id'),
+        },
+      }
+    }
     default:
       return state
   }

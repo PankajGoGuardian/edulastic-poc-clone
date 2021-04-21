@@ -358,8 +358,8 @@ function* receiveStudentQuestionSaga({ payload }) {
         classResponseApi.receiveStudentQuestionResponse,
         payload
       )
-      const { qid, score, autoGrade } = feedbackResponse || {}
-      if (!autoGrade) {
+      const { qid, score, autoGrade, graded = true } = feedbackResponse || {}
+      if (!autoGrade && graded) {
         yield put(setTeacherEditedScore({ [qid]: score }))
       }
     }

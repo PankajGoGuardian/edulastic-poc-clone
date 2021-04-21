@@ -41,7 +41,7 @@ class RequestSchoolForm extends React.Component {
       this.setState({
         stateList: [],
       })
-      form.setFieldsValue({ state: '' })
+      form.setFieldsValue({ other_state: '' })
     } else {
       this.setState({
         stateList: statesWithCodes,
@@ -242,7 +242,7 @@ class RequestSchoolForm extends React.Component {
         <Row gutter={24}>
           <Col xs={24} sm={12}>
             <Form.Item label="State" style={{ width: '100%' }}>
-              {getFieldDecorator('state', {
+              {getFieldDecorator(country === 'US' ? 'us_state' : 'other_state', {
                 rules: [
                   { required: false, message: 'Please provide a valid state.' },
                 ],

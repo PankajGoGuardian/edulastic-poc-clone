@@ -27,8 +27,8 @@ const AssessmentAutoComplete = ({
   loading,
   loadTestList,
   termId,
-  grade,
-  subject,
+  grades,
+  subjects,
   testTypes,
   selectedTestIds,
   selectCB,
@@ -52,7 +52,7 @@ const AssessmentAutoComplete = ({
     const { districtIds, institutionIds } = orgData
     const districtId = districtIds?.[0]
     const q = {
-      limit: 25,
+      limit: 35,
       page: 1,
       search: {
         searchString:
@@ -68,11 +68,13 @@ const AssessmentAutoComplete = ({
     if (termId) {
       q.search.termId = termId
     }
-    if (grade) {
-      q.search.grades = [grade]
+    if (grades) {
+      q.search.grades = Array.isArray(grades) ? grades : grades.split(',')
     }
-    if (subject) {
-      q.search.subjects = [subject]
+    if (subjects) {
+      q.search.subjects = Array.isArray(subjects)
+        ? subjects
+        : subjects.split(',')
     }
     if (testTypes) {
       q.search.testTypes = testTypes.split(',')
@@ -81,7 +83,7 @@ const AssessmentAutoComplete = ({
       q.search.tagIds = tagIds.split(',')
     }
     return q
-  }, [searchTerms.text, termId, grade, subject, testTypes, tagIds])
+  }, [searchTerms.text, termId, grades, subjects, testTypes, tagIds])
 
   // handle autocomplete actions
   const onSearch = (value) => {

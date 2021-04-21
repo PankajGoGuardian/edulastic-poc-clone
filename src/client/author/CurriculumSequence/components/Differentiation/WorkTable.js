@@ -106,8 +106,9 @@ const InnerWorkTable = ({
   removeResourceFromDifferentiation,
   addDifferentiationResources,
   removeDifferentiationResources,
+  selectedRows,
+  setSelectedRows,
 }) => {
-  const [selectedRows, setSelectedRows] = useState([])
   const [masteryRange, setMasteryRange] = useState([0, 10])
   const [activeHoverIndex, setActiveHoverIndex] = useState(null)
 
@@ -140,11 +141,10 @@ const InnerWorkTable = ({
   }, [])
 
   /** Drop handle to accept dropped items from manage content (yet to be implemented) */
-  const [{ isOver, itemContentType }, drop] = useDrop({
+  const [{ isOver }, drop] = useDrop({
     accept: 'item',
     collect: (monitor) => ({
       isOver: !!monitor.isOver(),
-      itemContentType: monitor.getItem()?.contentType,
     }),
     drop: (item = {}) => {
       if (
@@ -175,12 +175,6 @@ const InnerWorkTable = ({
   useEffect(() => {
     if (data[0]?.masteryRange) setMasteryRange(data[0].masteryRange)
   }, [data])
-
-  useEffect(() => {
-    if (!isFetchingWork) {
-      setSelectedRows([])
-    }
-  }, [isFetchingWork])
 
   // const getProgressBar = percentage => {
   //   if (!percentage && percentage !== 0) return null;
@@ -249,15 +243,10 @@ const InnerWorkTable = ({
 
   const handleRowSelect = (selectionType) => {
     if (selectionType === 'UNSELECT') {
-      setSelectedRows([])
+      setSelectedRows({ ...selectedRows, [type]: [] })
     } else {
-      const keyArray = []
-      data.forEach((row, i) => {
-        if (row.status === 'RECOMMENDED') {
-          keyArray.push(i)
-        }
-      })
-      setSelectedRows(keyArray)
+      const keyArray = [...Array(data.length).keys()]
+      setSelectedRows({ ...selectedRows, [type]: keyArray })
     }
   }
 
@@ -387,31 +376,30 @@ const InnerWorkTable = ({
       dataIndex: 'delete',
       width: '40px',
       align: 'center',
-      render: (_, _record) => (
-        (_record.testId && _record.status === 'RECOMMENDED') && (<InlineDelete
-          data-cy="delete-test"
-          title="Delete Test"
-          onClick={() =>
-            removeResourceFromDifferentiation({
-              ..._record,
-              type: type?.toLowerCase(),
-            })
-          }
-        >
-          <IconClose />
-        </InlineDelete>)
-      ),
+      render: (_, _record) =>
+        _record.testId &&
+        _record.status === 'RECOMMENDED' && (
+          <InlineDelete
+            data-cy="delete-test"
+            title="Delete Test"
+            onClick={() =>
+              removeResourceFromDifferentiation({
+                ..._record,
+                type: type?.toLowerCase(),
+              })
+            }
+          >
+            <IconClose />
+          </InlineDelete>
+        ),
     },
   ]
 
   const rowSelection = {
-    selectedRowKeys: selectedRows,
+    selectedRowKeys: selectedRows[type],
     onChange: (selectedRowKeys) => {
-      setSelectedRows(selectedRowKeys)
+      setSelectedRows({ ...selectedRows, [type]: selectedRowKeys })
     },
-    getCheckboxProps: (record) => ({
-      disabled: record.status === 'ADDED',
-    }),
   }
 
   const getResourceTitle = () => {
@@ -431,7 +419,7 @@ const InnerWorkTable = ({
   }
 
   const handleAdd = () => {
-    if (!selectedRows.length)
+    if (!selectedRows[type].length)
       return notification({
         messageKey: 'pleaseSelectAtleastOneStandardToAdd',
       })
@@ -439,7 +427,7 @@ const InnerWorkTable = ({
       return notification({ messageKey: 'pleaseSelectMastery' })
 
     const recommendations = []
-    const selectedRowsData = selectedRows.map((x) => data[x])
+    const selectedRowsData = selectedRows[type].map((x) => data[x])
     const groupByResources = groupBy(selectedRowsData, ({ resources }) =>
       (resources || [])
         ?.map((x) => x.contentId)

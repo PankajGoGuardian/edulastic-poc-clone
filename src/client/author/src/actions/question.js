@@ -6,6 +6,7 @@ import {
   SET_QUESTION_ALIGNMENT_REMOVE_ROW,
   SET_QUESTION,
   LOAD_QUESTION,
+  TOGGLE_QUESTION_EDIT_MODAL_LCB,
 } from '../constants/actions'
 import {
   UPDATE_QUESTION_REQUEST,
@@ -20,6 +21,11 @@ export const receiveQuestionByIdAction = (id) => ({
   payload: {
     id,
   },
+})
+
+export const toggleQuestionEditModalAction = (isOpen) => ({
+  type: TOGGLE_QUESTION_EDIT_MODAL_LCB,
+  payload: isOpen,
 })
 
 export const saveQuestionAction = () => ({

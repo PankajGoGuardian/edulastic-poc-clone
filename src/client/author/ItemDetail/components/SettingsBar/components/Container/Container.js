@@ -148,7 +148,10 @@ class Container extends Component {
   }
 
   getRadioCheckedOption = (setting, opt) => {
-    const { itemGradingType, itemLevelScoring } = this.props
+    const {
+      itemGradingType = multipartEvaluationTypes.ANY_CORRECT,
+      itemLevelScoring,
+    } = this.props
     const { ITEM_SCORING_TYPE } = multipartEvaluationTypes
     if (setting === ITEM_SCORING_TYPE) {
       return opt === 'itemLevelScoring' ? itemLevelScoring : !itemLevelScoring
@@ -228,6 +231,7 @@ class Container extends Component {
                     labelFontSize="11px"
                     labelFontWeight={600}
                     labelColor={greyThemeDark1}
+                    data-cy="assignPartialCredit"
                   >
                     {t(
                       `author:component.settingsBar.multipartSettingsOptions.${setting}`
@@ -244,6 +248,7 @@ class Container extends Component {
                       vertical
                       checked={this.getRadioCheckedOption(setting, opt)}
                       onClick={(e) => this.handleSettingsChange(e)}
+                      data-cy={opt}
                     >
                       <FieldLabel marginBottom="0px" display="inline-block">
                         {t(

@@ -567,6 +567,10 @@ class SideMenu extends Component {
                   !menu.role || (menu.role && menu.role.includes(userRole))
 
                 const disableMenu = isDisablePageInMobile(menu?.path)
+                // hide My Playlist if user is not premium
+                if (menu.label === 'My Playlist' && !features.premium) {
+                  return null
+                }
                 if (
                   menu.label === 'My Playlist' &&
                   isCollapsed &&

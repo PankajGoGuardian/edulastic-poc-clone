@@ -7,7 +7,6 @@ import { math } from '@edulastic/constants'
 import { isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
-import { connect } from 'react-redux'
 
 import { MathInputStyles, EmptyDiv, KeyboardIcon } from './MathInputStyles'
 import Draggable from './Draggable'
@@ -199,7 +198,12 @@ class MathInput extends React.PureComponent {
   sanitizeLatex = (v) => (v?.toString() || '').replace(/&amp;/g, '&')
 
   handleKeypress = (e) => {
-    const { restrictKeys, allowNumericOnly, value = '' } = this.props
+    const {
+      restrictKeys,
+      allowNumericOnly,
+      value = '',
+      onKeyPress,
+    } = this.props
     const isNonNumericKey = e.key && !e.key.match(/[0-9+-.%^@/]/g)
 
     if (!isEmpty(restrictKeys)) {
@@ -232,6 +236,9 @@ class MathInput extends React.PureComponent {
         e.preventDefault()
         e.stopPropagation()
       }
+    }
+    if (onKeyPress) {
+      onKeyPress(e)
     }
   }
 
@@ -386,7 +393,6 @@ class MathInput extends React.PureComponent {
       disabled,
       maxWidth,
       paddingRight,
-      customKeypads,
     } = this.props
 
     const {
@@ -460,7 +466,6 @@ class MathInput extends React.PureComponent {
                 this.onInput(key, command, numToMove)
               }
               dynamicVariableInput={dynamicVariableInput}
-              customKeypads={customKeypads}
             />
           </MathKeyboardWrapper>
         )}
@@ -485,6 +490,7 @@ MathInput.propTypes = {
   onBlur: PropTypes.func,
   onChangeKeypad: PropTypes.func,
   onKeyDown: PropTypes.func,
+  onKeyPress: PropTypes.func,
   fullWidth: PropTypes.bool,
   className: PropTypes.string,
   restrictKeys: PropTypes.array,
@@ -510,6 +516,7 @@ MathInput.defaultProps = {
   onFocus: () => {},
   onBlur: () => {},
   onKeyDown: () => {},
+  onKeyPress: () => {},
   onChangeKeypad: () => {},
   fullWidth: false,
   disabled: false,
@@ -519,6 +526,4 @@ MathInput.defaultProps = {
   resetMath: false,
 }
 
-export default connect((state) => ({
-  customKeypads: state.customKeypad.keypads,
-}))(MathInput)
+export default MathInput

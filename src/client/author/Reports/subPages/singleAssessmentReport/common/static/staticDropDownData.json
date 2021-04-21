@@ -19,15 +19,15 @@
   },
   "tagTypes": [
     { "key": "termId" },
-    { "key": "grade", "subType": "test" },
-    { "key": "subject", "subType": "test" },
+    { "key": "grades", "subType": "test" },
+    { "key": "subjects", "subType": "test" },
     { "key": "tagIds" },
     { "key": "assessmentTypes" },
     { "key": "testId" },
     { "key": "schoolIds" },
     { "key": "teacherIds" },
-    { "key": "studentGrade", "subType": "class" },
-    { "key": "studentSubject", "subType": "class" },
+    { "key": "studentGrades", "subType": "class" },
+    { "key": "studentSubjects", "subType": "class" },
     { "key": "studentCourseId" },
     { "key": "classIds" },
     { "key": "groupIds" },
@@ -42,14 +42,14 @@
   "initialFilters": {
     "reportId": "",
     "termId": "",
-    "grade": "All",
-    "subject": "All",
+    "grades": "",
+    "subjects": "",
     "tagIds": "",
     "assessmentTypes": "",
     "schoolIds": "",
     "teacherIds": "",
-    "studentGrade": "All",
-    "studentSubject": "All",
+    "studentGrades": "",
+    "studentSubjects": "",
     "studentCourseId": "All",
     "classIds": "",
     "groupIds": "",
@@ -64,7 +64,6 @@
     "ellStatus": "all"
   },
   "subjects": [
-    { "key": "All", "title": "All Subjects" },
     { "key": "Mathematics", "title": "Mathematics" },
     { "key": "ELA", "title": "ELA" },
     { "key": "Science", "title": "Science" },
@@ -73,7 +72,6 @@
     { "key": "Other Subjects", "title": "Other Subjects" }
   ],
   "grades": [
-    { "key": "All", "title": "All Grades" },
     { "key": "TK", "title": "PreKindergarten" },
     { "key": "K", "title": "Kindergarten" },
     { "key": "1", "title": "Grade 1" },
@@ -91,7 +89,6 @@
     { "key": "O", "title": "Other" }
   ],
   "assessmentType": [
-    { "key": "All", "title": "All Assessment Types" },
     { "key": "common assessment", "title": "Common" },
     { "key": "assessment", "title": "Class" },
     { "key": "practice", "title": "Practice" }

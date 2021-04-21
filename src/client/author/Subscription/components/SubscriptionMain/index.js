@@ -220,6 +220,7 @@ const SubscriptionMain = ({
   openHasLicenseKeyModal,
   isPremiumUser,
   isPremium,
+  subType,
   showFeatureNotAvailableModal,
   handleCloseFeatureNotAvailableModal,
   isFreeAdmin,
@@ -606,35 +607,38 @@ const SubscriptionMain = ({
         </SectionContainer>
       </AddonSection>
 
-      <EnterpriseSection>
-        <SectionTitle>Enterprise</SectionTitle>
-        <SectionDescription>
-          Get in-depth insights into schoolwide and districtwide progress with
-          Edulastic Enterprise. Deliver common assessments, analyze the instant
-          student data, and manage everything in one place. Enterprise includes
-          Premium and its collaboration, accommodation, and security tools.
-        </SectionDescription>
-        <FlexContainer justifyContent="center" style={{ marginTop: '25px' }}>
-          <EduButton
-            onClick={handleSelectStateModal}
-            height="38px"
-            width="215px"
-            isGhost
-            isBlue
-          >
-            schedule a demo
-          </EduButton>
-          <a
-            target="_blank"
-            href="//docs.google.com/forms/d/e/1FAIpQLSeJN61M1sxuBfqt0_e-YPYYx2E0sLuSxVLGb6wZvxOIuOy1Eg/viewform?c=0&amp;w=1"
-            rel="noopener noreferrer"
-          >
-            <EduButton height="38px" width="215px" isBlue>
-              request a quote
+      {subType !== 'enterprise' && (
+        <EnterpriseSection>
+          <SectionTitle>Enterprise</SectionTitle>
+          <SectionDescription>
+            Get in-depth insights into schoolwide and districtwide progress with
+            Edulastic Enterprise. Deliver common assessments, analyze the
+            instant student data, and manage everything in one place. Enterprise
+            includes Premium and its collaboration, accommodation, and security
+            tools.
+          </SectionDescription>
+          <FlexContainer justifyContent="center" style={{ marginTop: '25px' }}>
+            <EduButton
+              onClick={handleSelectStateModal}
+              height="38px"
+              width="215px"
+              isGhost
+              isBlue
+            >
+              schedule a demo
             </EduButton>
-          </a>
-        </FlexContainer>
-      </EnterpriseSection>
+            <a
+              target="_blank"
+              href="//docs.google.com/forms/d/e/1FAIpQLSeJN61M1sxuBfqt0_e-YPYYx2E0sLuSxVLGb6wZvxOIuOy1Eg/viewform?c=0&amp;w=1"
+              rel="noopener noreferrer"
+            >
+              <EduButton height="38px" width="215px" isBlue>
+                request a quote
+              </EduButton>
+            </a>
+          </FlexContainer>
+        </EnterpriseSection>
+      )}
       <CalendlyScheduleModal
         visible={showSelectStates}
         setShowSelectStates={setShowSelectStates}

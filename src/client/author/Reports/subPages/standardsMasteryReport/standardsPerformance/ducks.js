@@ -57,7 +57,7 @@ export const getReportsStandardsPerformanceSummaryError = createSelector(
 
 const initialState = {
   standardsPerformanceSummary: {},
-  loading: true,
+  loading: false,
 }
 
 export const reportStandardsPerformanceSummaryReducer = createReducer(

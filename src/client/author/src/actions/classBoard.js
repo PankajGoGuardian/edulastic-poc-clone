@@ -45,6 +45,7 @@ import {
   UPDATE_PAUSE_STATUS_ACTION,
   SET_UPDATED_ACTIVITY_IN_ENTITY,
   CORRECT_ITEM_UPDATE_REQUEST,
+  RELOAD_LCB_DATA_IN_STUDENT_VIEW,
 } from '../constants/actions'
 
 export const receiveClassResponseAction = (data) => ({
@@ -272,4 +273,8 @@ export const setUpdateActivityIdInEntityAction = createAction(
 
 export const updateCorrectTestItemAction = createAction(
   CORRECT_ITEM_UPDATE_REQUEST
+)
+
+export const reloadLcbDataInStudentViewAction = createAction(
+  RELOAD_LCB_DATA_IN_STUDENT_VIEW
 )

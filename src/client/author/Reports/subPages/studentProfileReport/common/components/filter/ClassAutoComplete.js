@@ -21,8 +21,8 @@ const ClassAutoComplete = ({
   loading,
   loadClassList,
   courseIds,
-  grade,
-  subject,
+  grades,
+  subjects,
   selectedClassIds,
   selectCB,
   termId,
@@ -59,14 +59,16 @@ const ClassAutoComplete = ({
     if (courseIds) {
       q.search.courseIds = courseIds.split(',')
     }
-    if (grade) {
-      q.search.grades = [grade]
+    if (grades) {
+      q.search.grades = Array.isArray(grades) ? grades : grades.split(',')
     }
-    if (subject) {
-      q.search.subjects = [subject]
+    if (subjects) {
+      q.search.subjects = Array.isArray(subjects)
+        ? subjects
+        : subjects.split(',')
     }
     return q
-  }, [searchTerms.text, termId, grade, subject, courseIds])
+  }, [searchTerms.text, termId, grades, subjects, courseIds])
 
   // handle autocomplete actions
   const onSearch = (value) => {
@@ -105,7 +107,7 @@ const ClassAutoComplete = ({
   useEffect(() => {
     setSearchTerms(DEFAULT_SEARCH_TERMS)
     setDefaultClassList([])
-  }, [courseIds, grade, subject, termId])
+  }, [courseIds, grades, subjects, termId])
 
   // build dropdown data
   const dropdownData = (searchTerms.text

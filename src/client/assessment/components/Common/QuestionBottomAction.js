@@ -1,30 +1,77 @@
 import React, { useMemo, useState } from 'react'
 import { connect } from 'react-redux'
-import { FlexContainer, EduButton } from '@edulastic/common'
+import { withRouter } from 'react-router-dom'
+import { compose } from 'redux'
+import { FlexContainer, EduButton, AnswerContext } from '@edulastic/common'
 import { TitleWrapper } from '@edulastic/common/src/components/MainHeader'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { greyThemeDark2, greyThemeDark4 } from '@edulastic/colors'
 import { round, get, omit } from 'lodash'
-import { Modal } from 'antd'
+import { Modal, Popover } from 'antd'
+import { roleuser } from '@edulastic/constants'
 import { IconTestBank, IconClockCircularOutline } from '@edulastic/icons'
+import { testItemsApi } from '@edulastic/api'
 import { EDIT } from '../../constants/constantsForQuestions'
-import { setQuestionDataAction } from '../../../author/src/actions/question'
+import {
+  setQuestionDataAction,
+  toggleQuestionEditModalAction,
+} from '../../../author/src/actions/question'
 import {
   changeCurrentQuestionAction,
   getCurrentQuestionSelector,
   deleteQuestionAction,
 } from '../../../author/sharedDucks/questions'
 import { updateCorrectTestItemAction } from '../../../author/src/actions/classBoard'
+import {
+  getAdditionalDataSelector,
+  getShowCorrectItemButton,
+} from '../../../author/ClassBoard/ducks'
+import {
+  getUserId,
+  getUserRole,
+  getUserFeatures,
+  getCollectionsSelector,
+  getWritableCollectionsSelector,
+} from '../../../author/src/selectors/user'
+
+import {
+  allowDuplicateCheck,
+  allowContentEditCheck,
+} from '../../../author/src/utils/permissionCheck'
+
+export const ShowUserWork = ({ onClick, loading }) => (
+  <EduButton
+    data-cy="showStudentWork"
+    isGhost
+    height="24px"
+    type="primary"
+    fontSize="10px"
+    onClick={onClick}
+    loading={loading}
+  >
+    Show student work
+  </EduButton>
+)
+
+export const TimeSpent = ({ time }) => {
+  return (
+    <div>
+      <IconClockCircularOutline />
+      {round(time / 1000, 1)}s
+    </div>
+  )
+}
 
 const QuestionBottomAction = ({
+  t,
   item,
   loading,
   isStudentReport,
   isShowStudentWork,
   onClickHandler,
   timeSpent,
-  margin,
+  hasDrawingResponse,
   loadingComponents,
   QuestionComp,
   setQuestionData,
@@ -32,32 +79,52 @@ const QuestionBottomAction = ({
   questionData,
   removeQuestion,
   updateCorrectItem,
+  additionalData,
+  match,
+  permissionToEdit,
+  toggleQuestionModal,
+  openQuestionModal,
+  showCorrectItem,
   ...questionProps
 }) => {
-  const [openQuestionMoal, setOpenQuestionModal] = useState(false)
-  const onSaveAndPublish = () => {
-    updateCorrectItem({
-      assignmentId: item?.activity?.assignmentId,
-      testItemId: item?.activity?.testItemId,
-      testId: item?.activity?.testId,
-      groupId: item?.activity?.groupId,
-      testActivityId: item?.activity?.testActivityId,
-      studentId: item?.activity?.userId,
-      question: questionData,
-    })
-    setOpenQuestionModal(false)
-  }
+  // const [openQuestionModal, setOpenQuestionModal] = useState(false)
+  const [itemloading, setItemLoading] = useState(false)
 
   const onCloseQuestionModal = () => {
     setCurrentQuestion('')
     removeQuestion(item.id)
-    setOpenQuestionModal(false)
+    toggleQuestionModal(false)
   }
 
-  const showQuestionModal = () => {
-    setQuestionData(omit(item, 'activity'))
-    setCurrentQuestion(item.id)
-    setOpenQuestionModal(true)
+  const onSaveAndPublish = () => {
+    updateCorrectItem({
+      assignmentId: match?.params?.assignmentId,
+      testId: additionalData?.testId,
+      testItemId: item?.activity?.testItemId,
+      groupId: item?.activity?.groupId,
+      testActivityId: item?.activity?.testActivityId,
+      studentId: item?.activity?.userId,
+      question: questionData,
+      proceedRegrade: false,
+      isUnscored: item?.validation?.unscored,
+      callBack: onCloseQuestionModal,
+    })
+  }
+
+  const showQuestionModal = async () => {
+    setItemLoading(true)
+    try {
+      const testItem = await testItemsApi.getById(item?.activity?.testItemId)
+      const question = testItem.data.questions.find((q) => q.id === item.id)
+      setQuestionData(question)
+      setCurrentQuestion(question.id)
+    } catch (e) {
+      setQuestionData(omit(item, 'activity'))
+      setCurrentQuestion(item.id)
+    } finally {
+      toggleQuestionModal(true)
+      setItemLoading(false)
+    }
   }
 
   const modalTitle = useMemo(() => {
@@ -94,70 +161,94 @@ const QuestionBottomAction = ({
             loading={loadingComponents.includes('saveAndPublishItem')}
             onClick={onSaveAndPublish}
           >
-            PUBLISH
+            SAVE
           </EduButton>
         </FlexContainer>
       </FlexContainer>
     )
   }, [questionData, item])
 
+  const [isDisableCorrectItem, disableCorrectItemText] = useMemo(() => {
+    const hasDynamicVariables = item.variable?.enabled
+    const {
+      allowDuplicate,
+      isDisableEdit,
+      isDisableDuplicate,
+    } = permissionToEdit
+    const isDisable = isDisableEdit || hasDynamicVariables || isDisableDuplicate
+
+    let disableText = ''
+    if (isDisableEdit && !allowDuplicate) {
+      disableText = 'Edit of Item is restricted by Publisher'
+    } else if ((isDisableEdit && allowDuplicate) || isDisableDuplicate) {
+      disableText = 'Edit permission is restricted by the author'
+    } else if (hasDynamicVariables) {
+      disableText = t('component.correctItemNotAllowDynamic')
+    }
+    return [isDisable, disableText]
+  }, [item.variable?.enabled, permissionToEdit])
+
+  const correctItemBtn = (
+    <CorrectButton
+      isGhost
+      height="24px"
+      type="primary"
+      fontSize="10px"
+      mr="8px"
+      onClick={showQuestionModal}
+      loading={loading || itemloading}
+      disabled={isDisableCorrectItem}
+    >
+      Edit / Regrade
+    </CorrectButton>
+  )
+
   return (
     <>
-      <BottomActionWrapper
-        className={isStudentReport ? 'student-report' : ''}
-        margin={margin}
-      >
+      <BottomActionWrapper className={isStudentReport ? 'student-report' : ''}>
         <div>
-          {isShowStudentWork && (
-            <EduButton
-              data-cy="showStudentWork"
-              isGhost
-              height="24px"
-              type="primary"
-              fontSize="10px"
-              onClick={onClickHandler}
-              loading={loading}
-            >
-              Show student work
-            </EduButton>
+          {!hasDrawingResponse && isShowStudentWork && (
+            <ShowUserWork onClick={onClickHandler} loading={loading} />
           )}
         </div>
         <RightWrapper>
-          {item && !isStudentReport && (
-            <EduButton
-              isGhost
-              height="24px"
-              type="primary"
-              fontSize="10px"
-              mr="8px"
-              onClick={showQuestionModal}
-              loading={loading}
-            >
-              Correct Item
-            </EduButton>
-          )}
-          {timeSpent && (
-            <div>
-              <IconClockCircularOutline />
-              {round(timeSpent / 1000, 1)}s
-            </div>
-          )}
+          {showCorrectItem &&
+            item &&
+            !isStudentReport &&
+            (isDisableCorrectItem ? (
+              <Popover
+                content={
+                  <DisabledHelperText>
+                    {disableCorrectItemText}
+                  </DisabledHelperText>
+                }
+              >
+                <div>{correctItemBtn}</div>
+              </Popover>
+            ) : (
+              correctItemBtn
+            ))}
+          {timeSpent && <TimeSpent time={timeSpent} />}
         </RightWrapper>
       </BottomActionWrapper>
-      {!isStudentReport && openQuestionMoal && QuestionComp && questionData && (
+      {!isStudentReport && openQuestionModal && QuestionComp && questionData && (
         <QuestionPreviewModal
-          visible={openQuestionMoal}
+          visible={openQuestionModal}
           onCancel={onCloseQuestionModal}
           title={modalTitle}
           footer={null}
           width="1080px"
+          style={{ top: 10 }}
         >
-          <QuestionComp
-            {...questionProps}
-            item={questionData}
-            view={EDIT}
-            disableResponse={false}
-          />
+          <AnswerContext.Provider value={{ isAnswerModifiable: true }}>
+            <QuestionComp
+              {...questionProps}
+              t={t}
+              item={questionData}
+              view={EDIT}
+              disableResponse={false}
+            />
+          </AnswerContext.Provider>
         </QuestionPreviewModal>
       )}
     </>
@@ -183,20 +274,65 @@ QuestionBottomAction.defaultProps = {
   item: null,
 }
 
-const mapStateToProps = (state) => ({
-  loading: state.scratchpad.loading,
-  loadingComponents: get(state, ['authorUi', 'currentlyLoading'], []),
-  questionData: getCurrentQuestionSelector(state),
-})
+const getPermissionToEdit = (state, props) => {
+  const userId = getUserId(state)
+  const userRole = getUserRole(state)
+  const writableCollections = getWritableCollectionsSelector(state)
+  const userFeatures = getUserFeatures(state)
+  const collections = getCollectionsSelector(state)
+  const testItems = get(state, 'classResponse.data.testItems', [])
+  const testItem =
+    testItems.find((t) => t._id === props.item?.activity?.testItemId) || {}
+  const { authors = [] } = testItem || {}
+  const isOwner = authors.some((author) => author._id === userId)
+  const hasCollectionAccess = allowContentEditCheck(
+    testItem?.collections,
+    writableCollections
+  )
+  const allowDuplicate = allowDuplicateCheck(
+    testItem?.collections,
+    collections,
+    'item'
+  )
 
-export default connect(mapStateToProps, {
-  setQuestionData: setQuestionDataAction,
-  setCurrentQuestion: changeCurrentQuestionAction,
-  updateCorrectItem: updateCorrectTestItemAction,
-  removeQuestion: deleteQuestionAction,
-})(QuestionBottomAction)
+  const isDisableEdit = !(
+    isOwner ||
+    userRole === roleuser.EDULASTIC_CURATOR ||
+    (hasCollectionAccess && userFeatures.isCurator) ||
+    (isOwner && allowDuplicate)
+  )
 
-const BottomActionWrapper = styled.div`
+  const isDisableDuplicate = !(
+    allowDuplicate && userRole !== roleuser.EDULASTIC_CURATOR
+  )
+
+  return { isDisableEdit, allowDuplicate, isDisableDuplicate }
+}
+
+const enhance = compose(
+  withRouter,
+  connect(
+    (state, ownProps) => ({
+      loading: state.scratchpad.loading,
+      loadingComponents: get(state, ['authorUi', 'currentlyLoading'], []),
+      openQuestionModal: get(state, ['authorUi', 'questionEditModalOpen']),
+      questionData: getCurrentQuestionSelector(state),
+      additionalData: getAdditionalDataSelector(state),
+      permissionToEdit: getPermissionToEdit(state, ownProps),
+      showCorrectItem: getShowCorrectItemButton(state),
+    }),
+    {
+      setQuestionData: setQuestionDataAction,
+      setCurrentQuestion: changeCurrentQuestionAction,
+      updateCorrectItem: updateCorrectTestItemAction,
+      removeQuestion: deleteQuestionAction,
+      toggleQuestionModal: toggleQuestionEditModalAction,
+    }
+  )
+)
+export default enhance(QuestionBottomAction)
+
+export const BottomActionWrapper = styled.div`
   font-size: 19px;
   color: ${greyThemeDark2};
   display: flex;
@@ -247,4 +383,16 @@ const QuestionPreviewModal = styled(Modal)`
 const QuestionReference = styled.div`
   font-size: 13px;
   color: ${greyThemeDark4};
+`
+
+const DisabledHelperText = styled.div`
+  max-width: 290px;
+`
+const CorrectButton = styled(EduButton)`
+  padding: 5px 29px;
+  .anticon-loading {
+    position: absolute;
+    left: 22px;
+    top: 4px;
+  }
 `

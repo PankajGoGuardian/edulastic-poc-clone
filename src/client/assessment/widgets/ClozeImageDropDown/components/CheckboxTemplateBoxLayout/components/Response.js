@@ -7,10 +7,9 @@ import { Pointer } from '../../../../../styled/Pointer'
 import { Point } from '../../../../../styled/Point'
 import { Triangle } from '../../../../../styled/Triangle'
 import { IconWrapper } from '../styled/IconWrapper'
-import { WrongIcon } from '../styled/WrongIcon'
-import { RightIcon } from '../styled/RightIcon'
 import PopoverContent from '../../PopoverContent'
 import { CheckBox } from '../styled/CheckBox'
+import { getEvalautionColor } from '../../../../../utils/evaluation'
 
 const Response = ({
   lessMinWidth,
@@ -26,6 +25,8 @@ const Response = ({
   isPrintPreview,
   imageHeight,
   imageWidth,
+  allCorrect,
+  answerScore,
 }) => {
   const userAnswer = convertToMathTemplate(answered)
   const { width: contentWidth } = measureText(answered, btnStyle)
@@ -40,13 +41,22 @@ const Response = ({
     modifiedDimesion.height = `${(btnStyle.height / imageHeight) * 100}%`
   }
 
+  const { fillColor, mark, indexBgColor } = getEvalautionColor(
+    answerScore,
+    status === 'right',
+    userAnswer,
+    allCorrect
+  )
+
   const popoverContent = (
     <PopoverContent
       indexStr={indexStr}
       answered={userAnswer}
-      status={status}
       isExpressGrader={isExpressGrader}
       checkAnswer={checkAnswer}
+      fillColor={fillColor}
+      indexBgColor={indexBgColor}
+      mark={mark}
     />
   )
 
@@ -55,8 +65,8 @@ const Response = ({
       style={{ ...btnStyle, ...modifiedDimesion }}
       data-cy="checkAnswer"
       onClick={onClickHandler}
-      checked={userAnswer}
-      correct={status === 'right'}
+      fillColor={fillColor}
+      indexBgColor={indexBgColor}
       isPrintPreview={isPrintPreview}
     >
       <span className="index">{indexStr}</span>
@@ -66,10 +76,11 @@ const Response = ({
         </div>
       </div>
       <div className="icons">
-        <IconWrapper rightPosition={lessMinWidth ? '5' : '10'}>
-          {userAnswer && status === 'right' && <RightIcon />}
-          {userAnswer && status === 'wrong' && <WrongIcon />}
-        </IconWrapper>
+        {userAnswer && (
+          <IconWrapper rightPosition={lessMinWidth ? '5' : '10'}>
+            {mark}
+          </IconWrapper>
+        )}
         <Pointer
           className={responseContainer.pointerPosition}
           width={responseContainer.width}

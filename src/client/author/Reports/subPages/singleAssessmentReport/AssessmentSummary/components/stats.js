@@ -61,7 +61,7 @@ export const Stats = ({ name, data }) => {
 
   return (
     <StyledRow>
-      <StyledH3>Overall Statistics of {name}</StyledH3>
+      <StyledH3 data-cy="assessmentName">Overall Statistics of {name}</StyledH3>
       <StyledInnerRow
         gutter={15}
         type="flex"

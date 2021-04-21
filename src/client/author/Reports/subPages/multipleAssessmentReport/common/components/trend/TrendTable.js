@@ -25,6 +25,9 @@ import BackendPagination from '../../../../../common/components/BackendPaginatio
 const StyledTable = styled(Table)`
   .ant-table-layout-fixed {
     .ant-table-scroll {
+      .ant-table-body {
+        padding-bottom: 60px;
+      }
       table tbody tr td {
         border-bottom: 1px solid #e9e9e9;
       }
@@ -74,8 +77,9 @@ const StyledTable = styled(Table)`
 const formatText = (test, type) => {
   if (test[type] === null || typeof test[type] === 'undefined') return '-'
 
-  if (test.records[0].maxScore === null || test.records[0].totalScore === null)
-    return 'Absent'
+  if (test.records[0].progressStatus === 2) return 'Absent'
+
+  if (test.records[0].progressStatus === 3) return 'Not Started'
 
   if (type == 'score') {
     return `${test[type]}%`
@@ -279,17 +283,25 @@ const getColumns = (
             width: 120,
             dataIndex: 'standard',
             render: (data, record) => {
-              const { termId, grade, subject } = filters
+              const { termId, grades, subjects } = filters
               const { standardId, curriculumId } = record
               const queryStr = qs.stringify({
                 termId,
-                grade,
-                subject,
+                grades,
+                subjects,
                 standardId,
                 curriculumId,
               })
               return !isSharedReport ? (
-                <Link to={`/author/reports/standards-progress?${queryStr}`}>
+                <Link
+                  to={{
+                    pathname: `/author/reports/standards-progress`,
+                    search: `?${queryStr}`,
+                    state: {
+                      source: pageTitle,
+                    },
+                  }}
+                >
                   {data}
                 </Link>
               ) : (

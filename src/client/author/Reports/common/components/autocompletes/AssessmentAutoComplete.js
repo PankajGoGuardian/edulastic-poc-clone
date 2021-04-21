@@ -26,8 +26,8 @@ const AssessmentAutoComplete = ({
   loadTestList,
   firstLoad,
   termId,
-  grade,
-  subject,
+  grades,
+  subjects,
   testTypes,
   selectedTestId,
   selectCB,
@@ -44,7 +44,7 @@ const AssessmentAutoComplete = ({
     const { districtIds, institutionIds } = orgData
     const districtId = districtIds?.[0]
     const q = {
-      limit: 25,
+      limit: 35,
       page: 1,
       search: {
         searchString: searchTerms.text,
@@ -62,11 +62,13 @@ const AssessmentAutoComplete = ({
     if (termId) {
       q.search.termId = termId
     }
-    if (grade) {
-      q.search.grades = [grade]
+    if (grades) {
+      q.search.grades = Array.isArray(grades) ? grades : grades.split(',')
     }
-    if (subject) {
-      q.search.subjects = [subject]
+    if (subjects) {
+      q.search.subjects = Array.isArray(subjects)
+        ? subjects
+        : subjects.split(',')
     }
     if (testTypes) {
       q.search.testTypes = Array.isArray(testTypes)
@@ -81,8 +83,8 @@ const AssessmentAutoComplete = ({
     searchTerms.text,
     selectedTestId,
     termId,
-    grade,
-    subject,
+    grades,
+    subjects,
     testTypes,
     tagIds,
   ])
@@ -146,7 +148,7 @@ const AssessmentAutoComplete = ({
       setSearchTerms({ ...DEFAULT_SEARCH_TERMS })
       setFieldValue('')
     }
-  }, [termId, grade, subject, testTypes])
+  }, [termId, grades, subjects, testTypes])
   useEffect(() => {
     if (
       (!searchTerms.text && !searchTerms.selectedText) ||

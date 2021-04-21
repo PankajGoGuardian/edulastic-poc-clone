@@ -34,10 +34,12 @@ const SwitchPlaylist = ({
   }
 
   useEffect(() => {
-    if (showUseThisNotification && isShowSwitcher) {
+    if (showUseThisNotification) {
       if (isShowSwitcher) {
         setIsOpen(showUseThisNotification)
-        setTimeout(showNotificationInSideMenu, 4000)
+        setTimeout(() => {
+          setIsOpen(false)
+        }, 4000)
       } else {
         showNotificationInSideMenu()
       }

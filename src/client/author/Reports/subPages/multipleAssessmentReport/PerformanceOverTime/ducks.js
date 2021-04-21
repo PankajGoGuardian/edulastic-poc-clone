@@ -58,7 +58,7 @@ export const getReportsPerformanceOverError = createSelector(
 
 const initialState = {
   performanceOverTime: {},
-  loading: true,
+  loading: false,
 }
 
 export const reportPerformanceOverTimeReducer = createReducer(initialState, {

@@ -104,7 +104,7 @@ const StudentPerformancePie = ({
 
   return (
     <>
-      <StyledTitle>{title}</StyledTitle>
+      <StyledTitle align="left">{title}</StyledTitle>
       <FlexContainer flexDirection={showAsRow ? 'row' : 'column'}>
         <ResponsiveContainer width={showAsRow ? '50%' : '100%'} height={200}>
           <PieChart width={100} height={100}>
@@ -163,7 +163,7 @@ const StyledCustomChartTooltip = styled(CustomChartTooltip)`
 
 const StyledTitle = styled.span`
   display: block;
-  text-align: center;
+  text-align: ${(props) => props.align || 'center'};
   font: Bold 14px/19px Open Sans;
   letter-spacing: 0;
   color: ${pieTitle};

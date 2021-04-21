@@ -247,25 +247,25 @@ const SingleAssessmentReportFilters = ({
       ) {
         search.assessmentTypes = search.assessmentTypes || 'common assessment'
       }
+
       const urlSchoolYear =
         schoolYear.find((item) => item.key === search.termId) ||
         schoolYear.find((item) => item.key === defaultTermId) ||
         (schoolYear[0] ? schoolYear[0] : { key: '', title: '' })
-      const urlSubject =
-        staticDropDownData.subjects.find(
-          (item) => item.key === search.subject
-        ) || staticDropDownData.subjects[0]
-      const urlGrade =
-        staticDropDownData.grades.find((item) => item.key === search.grade) ||
-        staticDropDownData.grades[0]
-      const urlStudentSubject =
-        staticDropDownData.subjects.find(
-          (item) => item.key === search.studentSubject
-        ) || staticDropDownData.subjects[0]
-      const urlStudentGrade =
-        staticDropDownData.grades.find(
-          (item) => item.key === search.studentGrade
-        ) || staticDropDownData.grades[0]
+      const urlSubjects = staticDropDownData.subjects.filter(
+        (item) => search.subjects && search.subjects.includes(item.key)
+      )
+      const urlGrades = staticDropDownData.grades.filter(
+        (item) => search.grades && search.grades.includes(item.key)
+      )
+      const urlStudentSubjects = staticDropDownData.subjects.filter(
+        (item) =>
+          search.studentSubjects && search.studentSubjects.includes(item.key)
+      )
+      const urlStudentGrades = staticDropDownData.grades.filter(
+        (item) =>
+          search.studentGrades && search.studentGrades.includes(item.key)
+      )
       const urlStandardProficiency = standardProficiencyList.find(
         (item) => item.key === search.standardsProficiencyProfile
       )
@@ -275,14 +275,15 @@ const SingleAssessmentReportFilters = ({
 
       const _filters = {
         termId: urlSchoolYear.key,
-        grade: urlGrade.key,
-        subject: urlSubject.key,
+        grades: urlGrades.map((item) => item.key).join(',') || '',
+        subjects: urlSubjects.map((item) => item.key).join(',') || '',
         tagIds: search.tagIds || '',
         assessmentTypes: search.assessmentTypes || '',
         schoolIds: search.schoolIds || '',
         teacherIds: search.teacherIds || '',
-        studentGrade: urlStudentGrade.key,
-        studentSubject: urlStudentSubject.key,
+        studentGrades: urlStudentGrades.map((item) => item.key).join(',') || '',
+        studentSubjects:
+          urlStudentSubjects.map((item) => item.key).join(',') || '',
         studentCourseId: search.studentCourseId || 'All',
         classIds: search.classIds || '',
         groupIds: search.groupIds || '',
@@ -296,13 +297,13 @@ const SingleAssessmentReportFilters = ({
       const assessmentTypesArr = (search.assessmentTypes || '').split(',')
       const _tempTagsData = {
         termId: urlSchoolYear,
-        grade: urlGrade,
-        subject: urlSubject,
+        grades: urlGrades,
+        subjects: urlSubjects,
         assessmentTypes: staticDropDownData.assessmentType.filter((a) =>
           assessmentTypesArr.includes(a.key)
         ),
-        studentGrade: urlStudentGrade,
-        studentSubject: urlStudentSubject,
+        studentGrades: urlStudentGrades,
+        studentSubjects: urlStudentSubjects,
         standardsProficiencyProfile: urlStandardProficiency,
         performanceBandProfile: urlPerformanceBand,
       }
@@ -333,34 +334,23 @@ const SingleAssessmentReportFilters = ({
 
   const updateTestId = (selected) => {
     const _tempTagsData = { ...tempTagsData, testId: selected }
-    if (firstLoad && !selected.key) {
-      delete _tempTagsData.testId
-      toggleFilter(null, true)
-      setFirstLoad(false)
-      _onGoClick({
-        filters: { ...filters },
-        selectedTest: { key: '' },
-        tagsData: { ..._tempTagsData },
-      })
-      return
-    }
-    setTempTagsData(_tempTagsData)
     const _testId = selected.key || ''
-    setFiltersOrTestId({ testId: _testId })
-    if (reportId) {
-      setFirstLoad(false)
-    } else if (firstLoad && selected.key) {
-      setFirstLoad(false)
+    if (!_testId) {
+      delete _tempTagsData.testId
+    }
+    if (firstLoad && isCliUser) {
       _onGoClick({
         filters: { ...filters },
         selectedTest: { key: _testId },
         tagsData: { ..._tempTagsData },
       })
-    } else if (selected.key) {
+    } else if (!reportId && !isCliUser) {
+      toggleFilter(null, true)
       setShowApply(true)
-    } else if (firstLoad) {
-      setFirstLoad(false)
     }
+    setFirstLoad(false)
+    setTempTagsData(_tempTagsData)
+    setFiltersOrTestId({ testId: _testId })
   }
 
   const updateFilterDropdownCB = (selected, keyName, multiple = false) => {
@@ -466,31 +456,39 @@ const SingleAssessmentReportFilters = ({
                         />
                       </Col>
                       <Col span={6}>
-                        <FilterLabel data-cy="testGrade">
-                          Test Grade
-                        </FilterLabel>
-                        <ControlDropDown
-                          by={filters.grade}
-                          selectCB={(e, selected) =>
-                            updateFilterDropdownCB(selected, 'grade')
+                        <MultiSelectDropdown
+                          dataCy="testGrade"
+                          label="Test Grade"
+                          onChange={(e) => {
+                            const selected = staticDropDownData.grades.filter(
+                              (a) => e.includes(a.key)
+                            )
+                            updateFilterDropdownCB(selected, 'grades', true)
+                          }}
+                          value={
+                            filters.grades && filters.grades !== 'All'
+                              ? filters.grades.split(',')
+                              : []
                           }
-                          data={staticDropDownData.grades}
-                          prefix="Test Grade"
-                          showPrefixOnSelected={false}
+                          options={staticDropDownData.grades}
                         />
                       </Col>
                       <Col span={6}>
-                        <FilterLabel data-cy="testSubject">
-                          Test Subject
-                        </FilterLabel>
-                        <ControlDropDown
-                          by={filters.subject}
-                          selectCB={(e, selected) =>
-                            updateFilterDropdownCB(selected, 'subject')
+                        <MultiSelectDropdown
+                          dataCy="testSubject"
+                          label="Test Subject"
+                          onChange={(e) => {
+                            const selected = staticDropDownData.subjects.filter(
+                              (a) => e.includes(a.key)
+                            )
+                            updateFilterDropdownCB(selected, 'subjects', true)
+                          }}
+                          value={
+                            filters.subjects && filters.subjects !== 'All'
+                              ? filters.subjects.split(',')
+                              : []
                           }
-                          data={staticDropDownData.subjects}
-                          prefix="Test Subject"
-                          showPrefixOnSelected={false}
+                          options={staticDropDownData.subjects}
                         />
                       </Col>
                       <Col span={6}>
@@ -514,9 +512,7 @@ const SingleAssessmentReportFilters = ({
                               ? filters.assessmentTypes.split(',')
                               : []
                           }
-                          options={staticDropDownData.assessmentType.filter(
-                            (a) => a.key !== 'All'
-                          )}
+                          options={staticDropDownData.assessmentType}
                         />
                       </Col>
                       <Col span={6}>
@@ -540,11 +536,9 @@ const SingleAssessmentReportFilters = ({
                           <AssessmentAutoComplete
                             firstLoad={firstLoad}
                             termId={filters.termId}
-                            grade={filters.grade !== 'All' && filters.grade}
+                            grades={filters.grades}
                             tagIds={filters.tagIds}
-                            subject={
-                              filters.subject !== 'All' && filters.subject
-                            }
+                            subjects={filters.subjects}
                             testTypes={filters.assessmentTypes}
                             selectedTestId={
                               testId || getTestIdFromURL(location.pathname)
@@ -594,31 +588,49 @@ const SingleAssessmentReportFilters = ({
                         </>
                       )}
                       <Col span={6}>
-                        <FilterLabel data-cy="classGrade">
-                          Class Grade
-                        </FilterLabel>
-                        <ControlDropDown
-                          by={filters.studentGrade}
-                          selectCB={(e, selected) =>
-                            updateFilterDropdownCB(selected, 'studentGrade')
+                        <MultiSelectDropdown
+                          dataCy="classGrade"
+                          label="Class Grade"
+                          onChange={(e) => {
+                            const selected = staticDropDownData.grades.filter(
+                              (a) => e.includes(a.key)
+                            )
+                            updateFilterDropdownCB(
+                              selected,
+                              'studentGrades',
+                              true
+                            )
+                          }}
+                          value={
+                            filters.studentGrades &&
+                            filters.studentGrades !== 'All'
+                              ? filters.studentGrades.split(',')
+                              : []
                           }
-                          data={staticDropDownData.grades}
-                          prefix="Grade"
-                          showPrefixOnSelected={false}
+                          options={staticDropDownData.grades}
                         />
                       </Col>
                       <Col span={6}>
-                        <FilterLabel data-cy="classSubject">
-                          Class Subject
-                        </FilterLabel>
-                        <ControlDropDown
-                          by={filters.studentSubject}
-                          selectCB={(e, selected) =>
-                            updateFilterDropdownCB(selected, 'studentSubject')
+                        <MultiSelectDropdown
+                          dataCy="classSubject"
+                          label="Class Subject"
+                          onChange={(e) => {
+                            const selected = staticDropDownData.subjects.filter(
+                              (a) => e.includes(a.key)
+                            )
+                            updateFilterDropdownCB(
+                              selected,
+                              'studentSubjects',
+                              true
+                            )
+                          }}
+                          value={
+                            filters.studentSubjects &&
+                            filters.studentSubjects !== 'All'
+                              ? filters.studentSubjects.split(',')
+                              : []
                           }
-                          data={staticDropDownData.subjects}
-                          prefix="Subject"
-                          showPrefixOnSelected={false}
+                          options={staticDropDownData.subjects}
                         />
                       </Col>
                       <Col span={6}>
@@ -636,14 +648,8 @@ const SingleAssessmentReportFilters = ({
                           termId={filters.termId}
                           schoolIds={filters.schoolIds}
                           teacherIds={filters.teacherIds}
-                          grade={
-                            filters.studentGrade !== 'All' &&
-                            filters.studentGrade
-                          }
-                          subject={
-                            filters.studentSubject !== 'All' &&
-                            filters.studentSubject
-                          }
+                          grades={filters.studentGrades}
+                          subjects={filters.studentSubjects}
                           courseId={
                             filters.studentCourseId !== 'All' &&
                             filters.studentCourseId
@@ -662,14 +668,8 @@ const SingleAssessmentReportFilters = ({
                           termId={filters.termId}
                           schoolIds={filters.schoolIds}
                           teacherIds={filters.teacherIds}
-                          grade={
-                            filters.studentGrade !== 'All' &&
-                            filters.studentGrade
-                          }
-                          subject={
-                            filters.studentSubject !== 'All' &&
-                            filters.studentSubject
-                          }
+                          grades={filters.studentGrades}
+                          subjects={filters.studentSubjects}
                           courseId={
                             filters.studentCourseId !== 'All' &&
                             filters.studentCourseId

@@ -1033,7 +1033,8 @@ export const reducer = (state = initialState, { type, payload }) => {
     case UPDATE_TEST_ERROR:
       return { ...state, creating: false, error: payload.error }
     case SET_TEST_DATA: {
-      let entity = { ...state.entity, ...payload.data }
+      const { updated = true, ...payloadData } = payload.data
+      let entity = { ...state.entity, ...payloadData }
       if (
         payload.data?.restrictNavigationOut ===
           'warn-and-report-after-n-alerts' &&
@@ -1052,7 +1053,7 @@ export const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         entity,
-        updated: true,
+        updated,
       }
     }
     case UPDATE_TEST_IMAGE:
@@ -1613,16 +1614,17 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     passwordExpireIn: entity.passwordExpireIn,
     assignmentPassword: entity.assignmentPassword,
     timedAssignment: entity.timedAssignment,
-    restrictNavigationOut: entity.restrictNavigationOut,
+    restrictNavigationOut: entity.restrictNavigationOut || null,
     restrictNavigationOutAttemptsThreshold:
-      entity.restrictNavigationOutAttemptsThreshold,
-    blockSaveAndContinue: entity.blockSaveAndContinue,
+      entity.restrictNavigationOutAttemptsThreshold || 0,
+    blockSaveAndContinue: entity.blockSaveAndContinue || false,
     scoringType: entity.scoringType,
     penalty: entity.penalty,
     blockNavigationToAnsweredQuestions:
       entity.blockNavigationToAnsweredQuestions || false,
     showMagnifier: !!entity.showMagnifier,
     enableScratchpad: !!entity.enableScratchpad,
+    keypad: entity.keypad,
   }
 
   if (isAdmin) {
@@ -1656,6 +1658,11 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     settings.penalty = false
     settings.passwordPolicy = passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF
     settings.timedAssignment = false
+    settings.blockNavigationToAnsweredQuestions = false
+    delete settings.blockSaveAndContinue
+    delete settings.restrictNavigationOut
+    delete settings.restrictNavigationOutAttemptsThreshold
+    delete settings.keypad
   }
 
   return settings
@@ -3144,9 +3151,7 @@ function* getTestIdFromVersionIdSaga({ payload }) {
     console.error(err)
     yield put(resetUpdatedStateAction())
     const errorMessage =
-      err?.response?.data?.statusCode === 404
-        ? 'You can no longer use this, as sharing access has been revoked by author'
-        : 'Unable to retrieve test info.'
+      'You can no longer use this, as sharing access has been revoked by author'
     yield put(push('/author/tests'))
     if (err.status === 403) {
       notification({

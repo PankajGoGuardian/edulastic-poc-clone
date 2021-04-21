@@ -16,29 +16,16 @@ export const CheckBox = styled.div`
   border-radius: 2px;
   padding-right: 24px;
   vertical-align: middle;
-  background: ${({ theme }) => theme.checkbox.noAnswerBgColor};
+  background: ${({ theme, fillColor, isPrintPreview }) =>
+    isPrintPreview ? white : fillColor || theme.checkbox.noAnswerBgColor};
   color: ${({ theme }) => theme.checkbox.textColor};
 
   .index {
-    background: ${({ theme }) => theme.checkbox.noAnswerIconColor};
+    background: ${({ indexBgColor }) => indexBgColor};
   }
 
   .mq-math-mode {
     border: 0px;
-  }
-
-  &.wrong {
-    background: ${({ theme }) => theme.checkbox.wrongBgColor};
-    .index {
-      background: ${({ theme }) => theme.checkbox.wrongIconColor};
-    }
-  }
-
-  &.right {
-    background: ${({ theme }) => theme.checkbox.rightBgColor};
-    .index {
-      background: ${({ theme }) => theme.checkbox.rightIconColor};
-    }
   }
 
   .index {

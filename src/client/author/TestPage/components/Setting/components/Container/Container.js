@@ -1544,8 +1544,8 @@ class Setting extends Component {
                       </Title>
                       <Body smallSize={isSmallSize}>
                         <Description>
-                          Use this opinion if you are administering this
-                          assessment on paper. If you use this opinion, you will
+                          Use this option if you are administering this
+                          assessment on paper. If you use this option, you will
                           have to manually grade student responses after the
                           assessment is closed.
                         </Description>
@@ -1564,6 +1564,12 @@ class Setting extends Component {
                           <Col span={12}>
                             <SelectInputStyled
                               data-cy="playerSkinType"
+                              showSearch
+                              filterOption={(input, option) =>
+                                option.props.children
+                                  .toLowerCase()
+                                  .indexOf(input.toLowerCase()) >= 0
+                              }
                               value={
                                 playerSkinType ===
                                 playerSkinTypes.edulastic.toLowerCase()

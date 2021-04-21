@@ -23,8 +23,8 @@ const GroupsAutoComplete = ({
   termId,
   schoolIds,
   teacherIds,
-  grade,
-  subject,
+  grades,
+  subjects,
   courseId,
   selectCB,
   selectedGroupIds,
@@ -64,11 +64,13 @@ const GroupsAutoComplete = ({
     ) {
       q.search.institutionIds = schoolIds.split(',')
     }
-    if (grade) {
-      q.search.grades = [grade]
+    if (grades) {
+      q.search.grades = Array.isArray(grades) ? grades : grades.split(',')
     }
-    if (subject) {
-      q.search.subjects = [subject]
+    if (subjects) {
+      q.search.subjects = Array.isArray(subjects)
+        ? subjects
+        : subjects.split(',')
     }
     if (courseId) {
       q.search.courseIds = [courseId]
@@ -79,8 +81,8 @@ const GroupsAutoComplete = ({
     termId,
     schoolIds,
     teacherIds,
-    grade,
-    subject,
+    grades,
+    subjects,
     courseId,
   ])
 
@@ -122,7 +124,7 @@ const GroupsAutoComplete = ({
     // if (selectedGroupIds.length) {
     //   selectCB({ key: '', title: '' })
     // }
-  }, [termId, schoolIds, teacherIds, grade, subject, courseId])
+  }, [termId, schoolIds, teacherIds, grades, subjects, courseId])
   useEffect(() => {
     if (!selectedGroupIds.length) {
       setSearchTerms(DEFAULT_SEARCH_TERMS)

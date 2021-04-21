@@ -797,7 +797,7 @@ const containsEmptyField = (variables) => {
     } = variables[key]
     switch (true) {
       // variables must be set
-      case type !== 'FORMULA' && !exampleValue:
+      case type !== 'FORMULA' && !exampleValue && exampleValue !== 0:
         return {
           hasEmptyField: true,
           errMessage: 'dynamic parameters has empty fields',

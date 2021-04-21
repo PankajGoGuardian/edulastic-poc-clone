@@ -276,7 +276,7 @@ class ClassList extends React.Component {
         width: '25%',
         dataIndex: 'className',
         key: 'className',
-        sorter: (a, b) => a.className > b.className,
+        sorter: (a, b) => a.className.localeCompare(b.className),
         sortDirections: ['descend', 'ascend'],
         render: (className, row) => (
           <div>
@@ -311,7 +311,7 @@ class ClassList extends React.Component {
         width: '25%',
         dataIndex: 'teacher',
         key: 'teacher',
-        sorter: (a, b) => a.teacher > b.teacher,
+        sorter: (a, b) => a.teacher.localeCompare(b.teacher),
         sortDirections: ['descend', 'ascend'],
       },
       {
@@ -319,7 +319,7 @@ class ClassList extends React.Component {
         width: '25%',
         key: 'subject',
         dataIndex: 'subject',
-        sorter: (a, b) => a.subject > b.subject,
+        sorter: (a, b) => a.subject.localeCompare(b.subject),
         sortDirections: ['descend', 'ascend'],
       },
       {
@@ -327,7 +327,7 @@ class ClassList extends React.Component {
         width: '15%',
         key: 'grades',
         dataIndex: 'grades',
-        sorter: (a, b) => a.grades > b.grades,
+        sorter: (a, b) => `${a.grades}`.localeCompare(`${b.grades}`),
         sortDirections: ['descend', 'ascend'],
       },
     ]

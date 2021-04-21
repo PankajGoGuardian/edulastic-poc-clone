@@ -329,7 +329,7 @@ const MainFooter = styled.div`
   border-top: 1px solid ${footer.border};
   color: ${footer.textColor};
   font-size: 13px;
-  height: 80px;
+  height: 70px;
   .quester-question-audio-controller {
     position: relative;
     height: auto;
@@ -385,7 +385,7 @@ const ActionContainer = styled.div`
   transition: all 0.5s ease;
   cursor: pointer;
   text-transform: uppercase;
-  font-size: 11px;
+  font-size: 10px;
   ${(props) =>
     props.disabled &&
     `

@@ -21,7 +21,7 @@ import {
   augementAssessmentChartData,
   getGrades,
   getStudentName,
-  getDomainOptions,
+  getDomainOptionsByGradeSubject,
 } from '../common/utils/transformers'
 import { ControlDropDown } from '../../../common/components/widgets/controlDropDown'
 import StandardMasteryDetailsTable from './common/components/table/StandardMasteryDetailsTable'
@@ -144,7 +144,7 @@ const StudentProfileSummary = ({
     studentClassInfo,
     asessmentMetricInfo
   )
-  const domainOptions = getDomainOptions(
+  const domainOptions = getDomainOptionsByGradeSubject(
     domains,
     selectedGrade.key,
     selectedSubject.key

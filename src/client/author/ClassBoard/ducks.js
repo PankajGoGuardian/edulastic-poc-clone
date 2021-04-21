@@ -10,7 +10,15 @@ import {
 } from '@edulastic/api'
 import { createSelector } from 'reselect'
 import { push } from 'connected-react-router'
-import { values as _values, get, keyBy, sortBy, isEmpty, groupBy } from 'lodash'
+import {
+  values as _values,
+  get,
+  keyBy,
+  sortBy,
+  isEmpty,
+  groupBy,
+  round,
+} from 'lodash'
 import { captureSentryException, notification } from '@edulastic/common'
 import {
   test,
@@ -21,6 +29,7 @@ import {
 } from '@edulastic/constants'
 import { isNullOrUndefined } from 'util'
 import * as Sentry from '@sentry/browser'
+import { createAction } from 'redux-starter-kit'
 import {
   updateAssignmentStatusAction,
   updateCloseAssignmentsAction,
@@ -36,6 +45,7 @@ import {
   updatePasswordDetailsAction,
   toggleViewPasswordAction,
   updatePauseStatusAction,
+  receiveStudentResponseAction,
 } from '../src/actions/classBoard'
 
 import { createFakeData, hasRandomQuestions } from './utils'
@@ -78,10 +88,11 @@ import {
   CORRECT_ITEM_UPDATE_REQUEST,
   CORRECT_ITEM_UPDATE_SUCCESS,
   TOGGLE_REGRADE_MODAL,
+  RELOAD_LCB_DATA_IN_STUDENT_VIEW,
 } from '../src/constants/actions'
 
 import { downloadCSV } from '../Reports/common/util'
-import { getUserNameSelector } from '../src/selectors/user'
+import { getUserIdSelector, getUserNameSelector } from '../src/selectors/user'
 import { getAllQids } from '../SummaryBoard/Transformer'
 import { getUserId, getUserRole } from '../../student/Login/ducks'
 import {
@@ -93,6 +104,12 @@ import {
 import { getServerTs } from '../../student/utils'
 import { setShowCanvasShareAction } from '../src/reducers/gradeBook'
 
+import {
+  isIncompleteQuestion,
+  hasImproperDynamicParamsConfig,
+} from '../questionUtils'
+import { setRegradeFirestoreDocId } from '../TestPage/ducks'
+
 const {
   authorAssignmentConstants: {
     assignmentStatus: { IN_GRADING, DONE },
@@ -100,6 +117,8 @@ const {
 } = testActivity
 
 const { testContentVisibility } = test
+
+export const correctItemUpdateAction = createAction(CORRECT_ITEM_UPDATE_SUCCESS)
 
 function* receiveGradeBookSaga({ payload }) {
   try {
@@ -644,54 +663,134 @@ function* togglePauseStudentsSaga({ payload }) {
 
 function* correctItemUpdateSaga({ payload }) {
   try {
-    const { testItemId, testId, question } = payload
+    const {
+      testItemId,
+      testId,
+      question,
+      callBack,
+      assignmentId,
+      proceedRegrade,
+      editRegradeChoice,
+      isUnscored,
+    } = payload
     const classResponse = yield select((state) => state.classResponse)
+    const studentResponse = yield select((state) => state.studentResponse)
     const testItems = get(classResponse, 'data.testItems', [])
     const testItem = testItems.find((t) => t._id === testItemId) || {}
+    const [isIncomplete, errMsg] = isIncompleteQuestion(
+      question,
+      testItem.itemLevelScoring
+    )
+
+    if (isIncomplete) {
+      notification({ msg: errMsg })
+      return
+    }
+
+    const [hasImproperConfig, warningMsg] = hasImproperDynamicParamsConfig(
+      question
+    )
+
+    if (hasImproperConfig) {
+      notification({ type: 'warn', msg: warningMsg })
+    }
 
     testItem.data.questions = testItem.data.questions.map((q) =>
       q.id === question.id ? question : q
     )
-    const result = yield call(
-      testItemsApi.updateCorrectItemById,
+    const result = yield call(testItemsApi.updateCorrectItemById, {
       testItemId,
       testItem,
-      testId
-    )
-
-    yield put({
-      type: RECEIVE_TESTACTIVITY_REQUEST,
-      payload: {
-        assignmentId: payload.assignmentId,
-        classId: payload.groupId,
-        isQuestionsView: false,
-      },
+      testId,
+      assignmentId,
+      proceedRegrade,
+      editRegradeChoice,
     })
 
-    const itemsToReplace = testItems.map((t) =>
-      t.id === testItemId ? result : t
-    )
-
-    markQuestionLabel(itemsToReplace)
-
-    yield put({
-      type: CORRECT_ITEM_UPDATE_SUCCESS,
-      payload: {
-        testItems: itemsToReplace,
-      },
-    })
-
-    notification({ type: 'success', messageKey: 'publishCorrectItemSuccess' })
+    if (typeof callBack === 'function') {
+      // close correct item edit modal here
+      callBack()
+    }
 
     const { testId: newTestId, isRegradeNeeded } = result
-    if (isRegradeNeeded) {
+    if (isUnscored) {
+      notification({
+        type: 'success',
+        messageKey: 'publishCorrectItemSuccess',
+      })
+      return
+    }
+
+    if (proceedRegrade) {
       yield put({
         type: TOGGLE_REGRADE_MODAL,
-        payload: { newTestId, oldTestId: testId },
+        payload: {
+          newTestId,
+          oldTestId: testId,
+          itemData: payload,
+          item: result.item,
+        },
+      })
+      yield put(setRegradeFirestoreDocId(result.firestoreDocId))
+    }
+    if (isRegradeNeeded && !proceedRegrade) {
+      yield put({
+        type: TOGGLE_REGRADE_MODAL,
+        payload: { newTestId, oldTestId: testId, itemData: payload },
+      })
+    }
+    if (!isRegradeNeeded && !proceedRegrade && result.item) {
+      yield put({
+        type: RECEIVE_TESTACTIVITY_REQUEST,
+        payload: {
+          assignmentId: payload.assignmentId,
+          classId: payload.groupId,
+          isQuestionsView: false,
+        },
+      })
+
+      yield put(
+        receiveStudentResponseAction({
+          testActivityId: studentResponse?.data?._id,
+          groupId: studentResponse?.data?.groupId,
+          studentId: studentResponse?.data?.userId,
+        })
+      )
+
+      const itemsToReplace = testItems.map((t) =>
+        t._id === testItemId ? result.item : t
+      )
+
+      markQuestionLabel(itemsToReplace)
+
+      yield put({
+        type: CORRECT_ITEM_UPDATE_SUCCESS,
+        payload: {
+          testItems: itemsToReplace,
+        },
+      })
+      return notification({
+        type: 'success',
+        messageKey: 'publishCorrectItemSuccess',
       })
     }
   } catch (error) {
-    notification({ type: 'success', messageKey: 'publishCorrectItemFailing' })
+    yield put(setRegradeFirestoreDocId(''))
+    notification({
+      msg: error?.response?.data?.message,
+      messageKey: 'publishCorrectItemFailing',
+    })
+  }
+}
+
+function* reloadLcbDataInStudentView({ payload }) {
+  try {
+    yield call(receiveTestActivitySaga, { payload })
+    yield put(receiveStudentResponseAction(payload))
+  } catch (err) {
+    console.error(err)
+    captureSentryException(err)
+    notification({ type: 'error', msg: 'Unable to refresh data' })
   }
 }
 
@@ -722,6 +821,10 @@ export function* watcherSaga() {
     yield takeEvery(CANVAS_SYNC_ASSIGNMENT, canvasSyncAssignmentSaga),
     yield takeEvery(FETCH_SERVER_TIME, fetchServerTimeSaga),
     yield takeEvery(CORRECT_ITEM_UPDATE_REQUEST, correctItemUpdateSaga),
+    yield takeEvery(
+      RELOAD_LCB_DATA_IN_STUDENT_VIEW,
+      reloadLcbDataInStudentView
+    ),
   ])
 }
 
@@ -745,7 +848,7 @@ export const getAnswerByQidSelector = createSelector(
   (answers) => {
     const answerByQid = {}
     Object.keys(answers).forEach((answer) => {
-      const [, qid] = answer.split('_')
+      const [, qid] = answer.split(/_(.+)/)
       answerByQid[qid] = answers[answer]
     })
     return answerByQid
@@ -765,7 +868,7 @@ const getTestItemsData = createSelector(
 
 export const getClassResponseSelector = createSelector(
   stateClassResponseSelector,
-  (state) => state.data
+  (state) => state?.data || {}
 )
 
 export const ttsUserIdSelector = createSelector(
@@ -991,6 +1094,17 @@ export const getAggregateByQuestion = (entities, studentId) => {
   const scores = activeEntities
     .map(({ score, maxScore }) => score / maxScore)
     .reduce((prev, cur) => prev + cur, 0)
+
+  const scorePercentagePerStudent = activeEntities
+    .map(({ score, maxScore }) => (score / maxScore) * 100)
+    .sort((a, b) => a - b)
+  const numberOfActivities = scorePercentagePerStudent.length
+  const mid = Math.ceil(numberOfActivities / 2)
+  const median =
+    numberOfActivities % 2 === 0
+      ? (scorePercentagePerStudent[mid] + scorePercentagePerStudent[mid - 1]) /
+        2
+      : scorePercentagePerStudent[mid - 1]
   const submittedScoresAverage =
     activeEntities.length > 0 ? scores / activeEntities.length : 0
   // const startedEntities = entities.filter(x => x.status !== "notStarted");
@@ -1006,6 +1120,7 @@ export const getAggregateByQuestion = (entities, studentId) => {
     avgScore: submittedScoresAverage,
     questionsOrder,
     itemsSummary,
+    median: round(median, 2) || 0,
   }
   return result
 }
@@ -1516,6 +1631,33 @@ export const getShowRefreshMessage = createSelector(
     }
     if (assignedBy.role !== roleuser.TEACHER) {
       return bulkAssignedCountProcessed > bulkAssignedCount
+    }
+    return false
+  }
+)
+
+export const getShowCorrectItemButton = createSelector(
+  getAssignedBySelector,
+  getUserRole,
+  getIsDocBasedTestSelector,
+  getClassResponseSelector,
+  getUserIdSelector,
+  (assignedBy, userRole, isDocBased, _test, userId) => {
+    const assignedRole = assignedBy.role
+    if (_test.freezeSettings || isDocBased) {
+      return _test?.authors.some((author) => author._id === userId)
+    }
+    if (assignedRole === roleuser.TEACHER) {
+      return true
+    }
+    if (
+      assignedRole === roleuser.DISTRICT_ADMIN ||
+      assignedRole === roleuser.SCHOOL_ADMIN
+    ) {
+      return (
+        userRole === roleuser.DISTRICT_ADMIN ||
+        userRole === roleuser.SCHOOL_ADMIN
+      )
     }
     return false
   }

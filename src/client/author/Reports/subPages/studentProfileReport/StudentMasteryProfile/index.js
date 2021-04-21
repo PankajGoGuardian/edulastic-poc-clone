@@ -29,7 +29,7 @@ import { useGetStudentMasteryData } from '../common/hooks'
 import {
   getGrades,
   getStudentName,
-  getDomainOptions,
+  getDomainOptionsByGradeSubject,
 } from '../common/utils/transformers'
 import StudentPerformanceSummary from './common/components/table/StudentPerformanceSummary'
 import {
@@ -149,7 +149,7 @@ const StudentMasteryProfile = ({
     selectedGrade.key,
     selectedSubject.key
   )
-  const domainOptions = getDomainOptions(
+  const domainOptions = getDomainOptionsByGradeSubject(
     studentDomains,
     selectedGrade.key,
     selectedSubject.key

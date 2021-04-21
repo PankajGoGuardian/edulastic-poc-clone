@@ -264,6 +264,7 @@ const ManageSubscriptionContainer = ({
         currentItemId={currentItemId}
         selectedLicenseId={selectedLicenseId}
         setSelectedLicenseId={setSelectedLicenseId}
+        subsLicenses={subsLicenses}
       />
       {showAddUsersModal && (
         <AddUsersModal

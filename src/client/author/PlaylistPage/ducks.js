@@ -13,7 +13,7 @@ import produce from 'immer'
 import { notification } from '@edulastic/common'
 import { white, themeColor } from '@edulastic/colors'
 import {
-  SET_MAX_ATTEMPT,
+  // SET_MAX_ATTEMPT,
   UPDATE_TEST_IMAGE,
   SET_SAFE_BROWSE_PASSWORD,
 } from '../src/constants/actions'
@@ -655,14 +655,18 @@ export const reducer = (state = initialState, { type, payload }) => {
           thumbnail: payload.fileUrl,
         },
       }
-    case SET_MAX_ATTEMPT:
-      return {
-        ...state,
-        entity: {
-          ...state.entity,
-          maxAttempts: payload.data,
-        },
-      }
+    /* This is never used by playlist but since
+     *  this piece of code existed since begining
+     *  It's being commented out as a fix for EV-26191
+     */
+    // case SET_MAX_ATTEMPT:
+    //   return {
+    //     ...state,
+    //     entity: {
+    //       ...state.entity,
+    //       maxAttempts: payload.data,
+    //     },
+    //   }
     case SET_SAFE_BROWSE_PASSWORD:
       return {
         ...state,

@@ -29,7 +29,10 @@ import {
 } from '../../../../ducks'
 import { getUserDetails } from '../../../../../../student/Login/ducks'
 import { resetTestFiltersAction } from '../../../../../TestList/ducks'
-import { clearPlaylistFiltersAction } from '../../../../../Playlist/ducks'
+import {
+  clearPlaylistFiltersAction,
+  getLastPlayListSelector,
+} from '../../../../../Playlist/ducks'
 import { getCollectionsSelector } from '../../../../../src/selectors/user'
 
 const ItemPurchaseModal = loadable(() =>
@@ -74,6 +77,7 @@ const MyClasses = ({
   setShowHeaderTrialModal,
   fetchPlaylists,
   playlists,
+  lastPlayList,
 }) => {
   const [showBannerModal, setShowBannerModal] = useState(null)
   const [isPurchaseModalVisible, setIsPurchaseModalVisible] = useState(false)
@@ -183,6 +187,11 @@ const MyClasses = ({
     }
 
     const content = contentType?.toLowerCase() || 'tests'
+
+    if (content === 'playlists' && (!lastPlayList || !lastPlayList.value)) {
+      showTrialSubsConfirmationAction(true)
+      return
+    }
     if (tags.includes(PREMIUM_TAG)) {
       if (isPremiumUser) {
         handleContentRedirect(filters, content)
@@ -512,6 +521,7 @@ export default compose(
       products: state.subscription?.products,
       showHeaderTrialModal: state.subscription?.showHeaderTrialModal,
       playlists: state.dashboardTeacher.playlists,
+      lastPlayList: getLastPlayListSelector(state),
     }),
     {
       receiveSearchCourse: receiveSearchCourseAction,

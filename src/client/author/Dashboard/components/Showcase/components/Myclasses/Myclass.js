@@ -371,16 +371,6 @@ const MyClasses = ({
     return <Spin style={{ marginTop: '80px' }} />
   }
 
-  const handleGoToCollectionClick = (productId) => {
-    const featuredBundle =
-      featuredBundles &&
-      featuredBundles.find(
-        (bundle) => bundle?.config?.subscriptionData?.productId === productId
-      )
-    handleFeatureClick(featuredBundle)
-    showTrialSubsConfirmationAction(false)
-  }
-
   const widthOfTilesWithMargin = 240 + 2 // 240 is width of tile and 2 is margin-right for each tile
 
   const GridCountInARow = Math.floor(
@@ -486,8 +476,6 @@ const MyClasses = ({
           trialAddOnProductIds={trialAddOnProductIds}
           collections={collections}
           products={products}
-          handleGoToCollectionClick={handleGoToCollectionClick}
-          history={history}
           fetchPlaylists={fetchPlaylists}
           playlists={playlists}
           subType={subType}

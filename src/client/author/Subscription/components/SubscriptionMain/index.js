@@ -6,7 +6,6 @@ import {
   MainContentWrapper,
   notification,
 } from '@edulastic/common'
-import qs from 'qs'
 import loadable from '@loadable/component'
 import { Link } from 'react-router-dom'
 import { isBoolean, groupBy, keyBy, difference, map } from 'lodash'
@@ -60,6 +59,11 @@ import {
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import CalendlyScheduleModal from './CalendlyScheduleModal'
 import FeatureNotAvailableModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/FeatureNotAvailableModal'
+import {
+  fetchPlaylistsAction,
+  getDashboardPlaylists,
+} from '../../../Dashboard/ducks'
+import { getProducts } from '../../ducks'
 
 const TrialConfirmationModal = loadable(() =>
   import(
@@ -228,12 +232,11 @@ const SubscriptionMain = ({
   showTrialSubsConfirmationAction,
   showTrialConfirmationMessage,
   dashboardTiles,
-  resetTestFilters,
-  resetPlaylistFilters,
   isConfirmationModalVisible,
   collections,
-  history,
   productData = {},
+  fetchPlaylists,
+  playlists,
 }) => {
   const [showSelectStates, setShowSelectStates] = useState(false)
   const [isTrialModalVisible, setIsTrialModalVisible] = useState(false)
@@ -368,27 +371,6 @@ const SubscriptionMain = ({
   const handleSparkPurchaseClick = (productId) => {
     settingProductData(productId)
     handlePurchaseFlow()
-  }
-
-  const handleGoToCollectionClick = (productId) => {
-    const currentItemBank = getBundleByProductId(productId)
-    const { config = {} } = currentItemBank
-    const { filters, contentType } = config
-
-    const content = contentType?.toLowerCase() || 'tests'
-
-    const entries = filters.reduce((a, c) => ({ ...a, ...c }), {
-      removeInterestedFilters: true,
-    })
-    const filter = qs.stringify(entries)
-
-    if (content === 'tests') {
-      resetTestFilters()
-    } else {
-      resetPlaylistFilters()
-    }
-    history.push(`/author/${content}?${filter}`)
-    showTrialSubsConfirmationAction(false)
   }
 
   const getSparkProductLinks = (title) => {
@@ -558,8 +540,8 @@ const SubscriptionMain = ({
           trialAddOnProductIds={trialAddOnProductIds}
           collections={collections}
           products={products}
-          handleGoToCollectionClick={handleGoToCollectionClick}
-          history={history}
+          fetchPlaylists={fetchPlaylists}
+          playlists={playlists}
         />
       )}
       {showFeatureNotAvailableModal && (
@@ -647,6 +629,12 @@ const SubscriptionMain = ({
   )
 }
 
-export default connect((state) => ({
-  products: state?.subscription?.products,
-}))(SubscriptionMain)
+export default connect(
+  (state) => ({
+    products: getProducts(state),
+    playlists: getDashboardPlaylists(state),
+  }),
+  {
+    fetchPlaylists: fetchPlaylistsAction,
+  }
+)(SubscriptionMain)

@@ -50,6 +50,11 @@ export const getDashboardTilesSelector = createSelector(
   (state) => state.configurableTiles
 )
 
+export const getDashboardPlaylists = createSelector(
+  stateSelector,
+  (state) => state.playlists
+)
+
 const initialState = {
   data: [],
   error: null,

@@ -235,6 +235,7 @@ class Layout extends Component {
                     { value: 'xxlarge', label: t('component.options.huge') },
                   ]}
                   value={uiStyle.fontsize}
+                  getPopupContainer={(triggerNode) => triggerNode.parentNode}
                 />
               </SelectWrapper>
             </Col>
@@ -243,6 +244,7 @@ class Layout extends Component {
               <SelectWrapper>
                 <Select
                   onChange={(val) => changeUiStyle('stemNumeration', val)}
+                  getPopupContainer={(triggerNode) => triggerNode.parentNode}
                   options={[
                     {
                       value: 'numerical',
@@ -323,6 +325,7 @@ class Layout extends Component {
               <Label>{t('component.options.inputtype')}</Label>
               <SelectWrapper>
                 <Select
+                  getPopupContainer={(triggerNode) => triggerNode.parentNode}
                   onChange={handleGlobalTypeChange}
                   options={[
                     { value: 'text', label: t('component.options.text') },
@@ -339,6 +342,7 @@ class Layout extends Component {
                 containerStyle={{ width: 350 }}
                 onChange={(e) => changeUiStyle('placeholder', e.target.value)}
                 value={uiStyle.placeholder}
+                getPopupContainer={(triggerNode) => triggerNode.parentNode}
               />
             </Col>
           </Row>

@@ -177,6 +177,7 @@ class Layout extends Component {
             <Label>{t('component.options.fontSize')}</Label>
             <FieldWrapper>
               <Select
+                getPopupContainer={(triggerNode) => triggerNode.parentNode}
                 onChange={(fontsize) => changeUiStyle('fontsize', fontsize)}
                 options={[
                   { value: 'small', label: t('component.options.small') },
@@ -193,6 +194,7 @@ class Layout extends Component {
             <Label>{t('component.options.stemNumerationReviewOnly')}</Label>
             <FieldWrapper>
               <Select
+                getPopupContainer={(triggerNode) => triggerNode.parentNode}
                 onChange={(val) => changeUiStyle('stemNumeration', val)}
                 options={[
                   {

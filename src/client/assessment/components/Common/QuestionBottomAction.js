@@ -421,6 +421,10 @@ const QuestionPreviewModal = styled(Modal)`
   .ant-modal-close-x {
     display: none;
   }
+  .ant-select-dropdown,
+  .ant-dropdown {
+    z-index: 1003; /* modal has higher z index*/
+  }
 `
 
 const QuestionReference = styled.div`

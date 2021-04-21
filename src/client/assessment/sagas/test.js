@@ -824,6 +824,20 @@ function* submitTest({ payload }) {
     if (testActivityId === 'test' || !testActivityId) {
       throw new Error('Unable to submit the test.')
     }
+
+    const testLevelAttachments = yield select(
+      (state) => state.userWork.present.attachments
+    ) || []
+
+    if (testLevelAttachments.length) {
+      const reqPayload = {
+        testActivityId,
+        groupId,
+        userWork: { attachments: testLevelAttachments },
+      }
+      yield call(testActivityApi.saveUserWork, reqPayload)
+    }
+
     yield testActivityApi.submit(testActivityId, groupId)
     // log the details on auto submit
     // if (payload.autoSubmit) {

@@ -5,6 +5,7 @@ import {
   PARTIAL_MATCH,
 } from '@edulastic/constants/const/evaluationType'
 import { manuallyGradableQn } from '@edulastic/constants/const/questionType'
+import { notification } from '@edulastic/common'
 
 import evaluators from './evaluators'
 import { replaceVariables } from '../../../assessment/utils/variables'
@@ -22,6 +23,7 @@ export const evaluateItem = async (
 ) => {
   const questionIds = Object.keys(validations)
   const results = {}
+  const errors = new Set()
   let totalScore = 0
   let totalMaxScore = itemLevelScoring ? itemLevelScore : 0
   const numberOfQuestions = Object.keys(validations).filter(
@@ -54,7 +56,12 @@ export const evaluateItem = async (
         if (assignPartialCredit) {
           validationData.scoringType = PARTIAL_MATCH
         }
-        const { evaluation, score = 0, maxScore } = await evaluator(
+        const {
+          evaluation,
+          score = 0,
+          maxScore,
+          errors: _errors,
+        } = await evaluator(
           {
             userResponse: answer,
             hasGroupResponses: validation.hasGroupResponses,
@@ -64,7 +71,10 @@ export const evaluateItem = async (
           },
           type
         )
-
+        if (Array.isArray(_errors)) {
+          const addError = (e) => errors.add(e)
+          _errors.forEach(addError)
+        }
         const isCorrect = score === maxScore
         // manually gradeable should not account for all correct
         if (allCorrect && !manuallyGradableQn.includes(type)) {
@@ -124,6 +134,17 @@ export const evaluateItem = async (
     if (Object.keys(answers).length === 0 || !allCorrect) {
       totalScore = 0
     }
+  }
+
+  if (errors.size) {
+    const showNotificationForError = (err) =>
+      notification({
+        type: 'error',
+        duration: 0,
+        msg: err,
+        exact: true,
+      })
+    Array.from(errors).forEach(showNotificationForError)
   }
 
   return { evaluation: results, maxScore: totalMaxScore, score: totalScore }

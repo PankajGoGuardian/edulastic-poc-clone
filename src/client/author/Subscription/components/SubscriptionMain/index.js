@@ -59,7 +59,11 @@ import {
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import CalendlyScheduleModal from './CalendlyScheduleModal'
 import FeatureNotAvailableModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/FeatureNotAvailableModal'
-import { fetchPlaylistsAction } from '../../../Dashboard/ducks'
+import {
+  fetchPlaylistsAction,
+  getDashboardPlaylists,
+} from '../../../Dashboard/ducks'
+import { getProducts } from '../../ducks'
 
 const TrialConfirmationModal = loadable(() =>
   import(
@@ -627,8 +631,8 @@ const SubscriptionMain = ({
 
 export default connect(
   (state) => ({
-    products: state?.subscription?.products,
-    playlists: state.dashboardTeacher.playlists,
+    products: getProducts(state),
+    playlists: getDashboardPlaylists(state),
   }),
   {
     fetchPlaylists: fetchPlaylistsAction,

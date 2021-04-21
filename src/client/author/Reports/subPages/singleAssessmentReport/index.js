@@ -76,9 +76,6 @@ const SingleAssessmentReportContainer = (props) => {
   const [isCliUser] = useState(
     _isCliUser || qs.parse(location.search, { ignoreQueryPrefix: true }).cliUser
   )
-  const [ddfilter, setDdFilter] = useState({
-    ...staticDropDownData.initialDdFilters,
-  })
   const [customStudentUserId] = useState(
     qs.parse(location.search, { ignoreQueryPrefix: true }).customStudentUserId
   )
@@ -100,12 +97,6 @@ const SingleAssessmentReportContainer = (props) => {
       resetAllReports()
     }
   }, [])
-
-  useEffect(() => {
-    if (!showApply) {
-      setDdFilter({ ...tempDdFilter })
-    }
-  }, [showApply, tempDdFilter])
 
   const computeChartNavigationLinks = (sel, filt, _cliUser) => {
     if (navigation.locToData[loc]) {
@@ -179,6 +170,7 @@ const SingleAssessmentReportContainer = (props) => {
         groupIds: _requestFilters.groupIds || '',
         profileId: _requestFilters.performanceBandProfile,
       },
+      ddFilters: { ...tempDdFilter },
       cliUser: isCliUser,
     })
     setSARTagsData({ ..._settings.tagsData })
@@ -224,7 +216,6 @@ const SingleAssessmentReportContainer = (props) => {
 
   useEffect(() => {
     if (!demographicsRequired) {
-      setDdFilter({ ...staticDropDownData.initialDdFilters })
       setTempDdFilter({ ...staticDropDownData.initialDdFilters })
     }
   }, [loc])
@@ -312,7 +303,7 @@ const SingleAssessmentReportContainer = (props) => {
               <PeerPerformance
                 {..._props}
                 settings={settings}
-                filters={ddfilter}
+                filters={settings.ddFilters}
                 sharedReport={sharedReport}
                 toggleFilter={toggleFilter}
               />
@@ -350,7 +341,7 @@ const SingleAssessmentReportContainer = (props) => {
                 {..._props}
                 settings={settings}
                 pageTitle={loc}
-                filters={ddfilter}
+                filters={settings.ddFilters}
                 sharedReport={sharedReport}
                 toggleFilter={toggleFilter}
               />
@@ -365,7 +356,7 @@ const SingleAssessmentReportContainer = (props) => {
                 showFilter={showFilter}
                 settings={settings}
                 pageTitle={loc}
-                filters={ddfilter}
+                filters={settings.ddFilters}
                 customStudentUserId={customStudentUserId}
                 isCliUser={isCliUser}
                 sharedReport={sharedReport}

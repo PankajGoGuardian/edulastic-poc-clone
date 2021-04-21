@@ -176,7 +176,12 @@ const PerformanceByStandards = ({
       }
       getPerformanceByStandards(q)
     }
-  }, [settings.selectedTest, settings.requestFilters, compareBy, filters])
+  }, [
+    settings.selectedTest,
+    settings.requestFilters,
+    settings.ddFilters,
+    compareBy,
+  ])
 
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {

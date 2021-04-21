@@ -3,6 +3,8 @@ import { createAction, createReducer } from 'redux-starter-kit'
 
 import { RESET_ALL_REPORTS } from '../../common/reportsRedux'
 
+import staticDropDownData from './common/static/staticDropDownData.json'
+
 const SET_SAR_SETTINGS = '[SAR settings] set sar settings'
 const SET_SAR_TAGS_DATA = '[SAR settings] set sar tags data'
 
@@ -48,6 +50,9 @@ const initialState = {
     classIds: '',
     groupIds: '',
   },
+  ddFilters: {
+    ...staticDropDownData.initialDdFilters,
+  },
   tagsData: {},
   reportType: '',
 }
@@ -59,6 +64,7 @@ export const reportSARSettingsReducer = createReducer(initialState, {
   [SET_SAR_SETTINGS]: (state, { payload }) => {
     state.selectedTest = payload.selectedTest
     state.requestFilters = payload.requestFilters
+    state.ddFilters = payload.ddFilters
     state.cliUser = payload.cliUser
   },
   [RESET_ALL_REPORTS]: (state) => (state = initialState),

@@ -481,6 +481,7 @@ const MyClasses = ({
           history={history}
           fetchPlaylists={fetchPlaylists}
           playlists={playlists}
+          subType={subType}
         />
       )}
     </MainContentWrapper>

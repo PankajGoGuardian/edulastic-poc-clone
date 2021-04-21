@@ -190,7 +190,9 @@ const MyClasses = ({
 
     if (content === 'playlists' && (!lastPlayList || !lastPlayList.value)) {
       showTrialSubsConfirmationAction(true)
-    } else if (tags.includes(PREMIUM_TAG)) {
+      return
+    }
+    if (tags.includes(PREMIUM_TAG)) {
       if (isPremiumUser) {
         handleContentRedirect(filters, content)
       } else {

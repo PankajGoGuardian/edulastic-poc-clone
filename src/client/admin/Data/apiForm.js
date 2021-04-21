@@ -677,6 +677,11 @@ export const apiForms = [
         placeholder: 'Enter Test Ids',
         type: 'textarea',
         required: false,
+        formatter: (value) =>
+          value
+            .split(',')
+            ?.map((v) => v.trim())
+            .toString(),
       },
     ],
   },
@@ -700,6 +705,61 @@ export const apiForms = [
         placeholder: 'Enter comma separated group Ids',
         type: 'textarea',
         required: false,
+        formatter: (value) =>
+          value
+            .split(',')
+            ?.map((v) => v.trim())
+            .toString(),
+      },
+    ],
+  },
+  {
+    id: 'evict-keys',
+    name: 'Evict Keys',
+    endPoint: 'admin-tool/evict-keys',
+    method: 'post',
+    slowApi: true,
+    fields: [
+      {
+        name: 'cacheKeyName',
+        displayName: 'cacheKeyName',
+        type: 'dropdown',
+        placeholder: 'select cache key',
+        values: [
+          'TEST',
+          'TEST_ITEM',
+          'STANDARDS',
+          'ITEMBANK',
+          'PLAYLIST_USAGES',
+          'TEST_USAGES',
+          'TESTITEM_USAGES',
+          'TEST_LIKES',
+          'TESTITEM_LIKES',
+          'PLAYLIST_USAGES_SORTED_SET',
+          'TESTITEM_USAGES_SORTED_SET',
+          'TEST_USAGES_SORTED_SET',
+          'TEST_LIKES_SORTED_SET',
+          'TESTITEM_LIKES_SORTED_SET',
+          'MONITOR_CHANGE_STREAM',
+          'INTERESTED_STANDARDS',
+          'MULTI_STANDARD_MAPPING',
+          'USER_DETAILS_',
+          'AUTHOR_TILE_VERSION',
+          'SUBSCRIPTION_MAP',
+        ],
+        required: true,
+      },
+      {
+        name: 'ids',
+        displayName: 'Id(s)',
+        placeholder: 'Enter comma separated Ids to be evicted',
+        type: 'textarea',
+        required: true,
+        formatter: (value) =>
+          value
+            .split(',')
+            ?.map((v) => v.trim())
+            .toString(),
       },
     ],
   },

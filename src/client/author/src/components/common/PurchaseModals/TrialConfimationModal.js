@@ -67,7 +67,7 @@ const TrialConfirmationModal = ({
         search: {
           grades: selectedGrades,
           filter: 'ENTIRE_LIBRARY',
-          status: 'PUBLISHED',
+          status: 'published',
           collections: selectedProducts,
         },
         sort: {},

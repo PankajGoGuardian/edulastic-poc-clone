@@ -157,7 +157,9 @@ const changeUIStyle = (state, { payload }) => {
 }
 
 const setFirstMount = (state, { id }) => {
-  state.byId[id].firstMount = false
+  if (state.byId[id]) {
+    state.byId[id].firstMount = false
+  }
 }
 
 // add a new question
@@ -266,13 +268,11 @@ export default createReducer(initialState, {
           'validation.validResponse.score',
           0
         )
-        if(get(state.byId[key], 'validation.unscored', false)){
+        if (get(state.byId[key], 'validation.unscored', false)) {
           set(state.byId[key], 'validation.validResponse.score', 0)
           continue
         }
-        if (
-          parseFloat(oldScore) === 0
-        ) {
+        if (parseFloat(oldScore) === 0) {
           set(state.byId[key], 'validation.validResponse.score', 1)
         }
       }

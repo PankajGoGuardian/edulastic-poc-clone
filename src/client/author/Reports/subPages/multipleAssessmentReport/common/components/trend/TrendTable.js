@@ -81,6 +81,8 @@ const formatText = (test, type) => {
 
   if (test.records[0].progressStatus === 3) return 'Not Started'
 
+  if (test.records[0].progressStatus === 0) return 'In Progress'
+
   if (type == 'score') {
     return `${test[type]}%`
   }

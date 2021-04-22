@@ -1,4 +1,4 @@
-import { Table, Button } from 'antd'
+import { Table, Button, Modal } from 'antd'
 import { white, themeColor, mediumDesktopExactWidth } from '@edulastic/colors'
 import styled from 'styled-components'
 
@@ -56,5 +56,24 @@ export const SecondHeader = styled.div`
     background: transparent;
     height: 24px;
     margin-left: 17px;
+  }
+`
+export const StyledModal = styled(Modal)`
+  .ant-modal-header {
+    padding: 8px 30px 8px 24px;
+    border-bottom: none;
+    .question-bank-icon {
+      width: 16px;
+      height: 19px;
+    }
+  }
+  .ant-modal-close-x {
+    display: none;
+  }
+  .ant-modal-footer {
+    border-top: none;
+  }
+  .ant-modal-body {
+    padding-top: 0px;
   }
 `

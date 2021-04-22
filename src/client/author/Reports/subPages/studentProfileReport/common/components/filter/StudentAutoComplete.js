@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { isEmpty, debounce } from 'lodash'
 
 // components
-import { AutoComplete, Input, Icon, Tooltip } from 'antd'
+import { AutoComplete, Input, Icon, Tooltip, Empty } from 'antd'
 
 // ducks
 import { getOrgDataSelector } from '../../../../../../src/selectors/user'
@@ -13,6 +13,7 @@ import {
   getStudentsListSelector,
   getStudentsLoading,
 } from '../../filterDataDucks'
+import useDropdownData from '../../../../../common/hooks/useDropdownData'
 
 const DEFAULT_SEARCH_TERMS = { text: '', selectedText: '', selectedKey: '' }
 
@@ -151,19 +152,10 @@ const StudentAutoComplete = ({
   }, [query])
 
   // build dropdown data
-  const dropdownData = searchTerms.text
-    ? isEmpty(studentList)
-      ? [
-          <AutoComplete.Option disabled key={0} title="no data found">
-            No Data Found
-          </AutoComplete.Option>,
-        ]
-      : studentList.map((s) => (
-          <AutoComplete.Option key={s._id} title={s.title}>
-            {s.title}
-          </AutoComplete.Option>
-        ))
-    : []
+  const dropdownData = useDropdownData(studentList, {
+    cropTitle: false,
+    searchText: searchTerms.text || '',
+  })
 
   const selectedStudentLabel =
     searchTerms.text === searchTerms.selectedText && selectedStudent._id
@@ -192,6 +184,14 @@ const StudentAutoComplete = ({
           onChange={onChange}
           allowClear={!loading && searchTerms.selectedText && isFocused}
           clearIcon={<Icon type="close" style={{ color: '#1AB394' }} />}
+          notFoundContent={
+            <Empty
+              className="ant-empty-small"
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+              style={{ textAlign: 'left', margin: '10px 0' }}
+              description="No matching results"
+            />
+          }
         >
           <Input suffix={InputSuffixIcon} />
         </AutoComplete>
@@ -215,5 +215,11 @@ const AutoCompleteContainer = styled.div`
   .ant-select-dropdown-menu-item-group-title {
     font-weight: bold;
     white-space: nowrap;
+  }
+  .ant-select-selection__clear {
+    background: transparent;
+  }
+  .ant-input-suffix .anticon-loading {
+    font-size: 1.4em;
   }
 `

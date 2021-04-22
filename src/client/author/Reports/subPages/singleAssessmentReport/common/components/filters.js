@@ -242,8 +242,9 @@ const SingleAssessmentReportFilters = ({
     } else {
       // select common assessment as default if assessment type is not set for admins
       if (
-        user.role === roleuser.DISTRICT_ADMIN ||
-        user.role === roleuser.SCHOOL_ADMIN
+        location.state?.source === 'standard-reports' &&
+        (user.role === roleuser.DISTRICT_ADMIN ||
+          user.role === roleuser.SCHOOL_ADMIN)
       ) {
         search.assessmentTypes = search.assessmentTypes || 'common assessment'
       }
@@ -252,19 +253,17 @@ const SingleAssessmentReportFilters = ({
         schoolYear.find((item) => item.key === search.termId) ||
         schoolYear.find((item) => item.key === defaultTermId) ||
         (schoolYear[0] ? schoolYear[0] : { key: '', title: '' })
+      const urlTestSubjects = staticDropDownData.subjects.filter(
+        (item) => search.testSubjects && search.testSubjects.includes(item.key)
+      )
+      const urlTestGrades = staticDropDownData.grades.filter(
+        (item) => search.testGrades && search.testGrades.includes(item.key)
+      )
       const urlSubjects = staticDropDownData.subjects.filter(
         (item) => search.subjects && search.subjects.includes(item.key)
       )
       const urlGrades = staticDropDownData.grades.filter(
         (item) => search.grades && search.grades.includes(item.key)
-      )
-      const urlStudentSubjects = staticDropDownData.subjects.filter(
-        (item) =>
-          search.studentSubjects && search.studentSubjects.includes(item.key)
-      )
-      const urlStudentGrades = staticDropDownData.grades.filter(
-        (item) =>
-          search.studentGrades && search.studentGrades.includes(item.key)
       )
       const urlStandardProficiency = standardProficiencyList.find(
         (item) => item.key === search.standardsProficiencyProfile
@@ -275,16 +274,15 @@ const SingleAssessmentReportFilters = ({
 
       const _filters = {
         termId: urlSchoolYear.key,
-        grades: urlGrades.map((item) => item.key).join(',') || '',
-        subjects: urlSubjects.map((item) => item.key).join(',') || '',
+        testGrades: urlTestGrades.map((item) => item.key).join(',') || '',
+        testSubjects: urlTestSubjects.map((item) => item.key).join(',') || '',
         tagIds: search.tagIds || '',
         assessmentTypes: search.assessmentTypes || '',
         schoolIds: search.schoolIds || '',
         teacherIds: search.teacherIds || '',
-        studentGrades: urlStudentGrades.map((item) => item.key).join(',') || '',
-        studentSubjects:
-          urlStudentSubjects.map((item) => item.key).join(',') || '',
-        studentCourseId: search.studentCourseId || 'All',
+        grades: urlGrades.map((item) => item.key).join(',') || '',
+        subjects: urlSubjects.map((item) => item.key).join(',') || '',
+        courseId: search.courseId || 'All',
         classIds: search.classIds || '',
         groupIds: search.groupIds || '',
         standardsProficiencyProfile: urlStandardProficiency?.key || '',
@@ -297,13 +295,13 @@ const SingleAssessmentReportFilters = ({
       const assessmentTypesArr = (search.assessmentTypes || '').split(',')
       const _tempTagsData = {
         termId: urlSchoolYear,
-        grades: urlGrades,
-        subjects: urlSubjects,
+        testGrades: urlTestGrades,
+        testSubjects: urlTestSubjects,
         assessmentTypes: staticDropDownData.assessmentType.filter((a) =>
           assessmentTypesArr.includes(a.key)
         ),
-        studentGrades: urlStudentGrades,
-        studentSubjects: urlStudentSubjects,
+        grades: urlGrades,
+        subjects: urlSubjects,
         standardsProficiencyProfile: urlStandardProficiency,
         performanceBandProfile: urlPerformanceBand,
       }
@@ -338,7 +336,11 @@ const SingleAssessmentReportFilters = ({
     if (!_testId) {
       delete _tempTagsData.testId
     }
-    if (firstLoad && isCliUser) {
+    const source = location.state?.source
+    if (
+      firstLoad &&
+      (isCliUser || (!reportId && !isCliUser && source !== 'standard-reports'))
+    ) {
       _onGoClick({
         filters: { ...filters },
         selectedTest: { key: _testId },
@@ -463,11 +465,11 @@ const SingleAssessmentReportFilters = ({
                             const selected = staticDropDownData.grades.filter(
                               (a) => e.includes(a.key)
                             )
-                            updateFilterDropdownCB(selected, 'grades', true)
+                            updateFilterDropdownCB(selected, 'testGrades', true)
                           }}
                           value={
-                            filters.grades && filters.grades !== 'All'
-                              ? filters.grades.split(',')
+                            filters.testGrades && filters.testGrades !== 'All'
+                              ? filters.testGrades.split(',')
                               : []
                           }
                           options={staticDropDownData.grades}
@@ -481,11 +483,16 @@ const SingleAssessmentReportFilters = ({
                             const selected = staticDropDownData.subjects.filter(
                               (a) => e.includes(a.key)
                             )
-                            updateFilterDropdownCB(selected, 'subjects', true)
+                            updateFilterDropdownCB(
+                              selected,
+                              'testSubjects',
+                              true
+                            )
                           }}
                           value={
-                            filters.subjects && filters.subjects !== 'All'
-                              ? filters.subjects.split(',')
+                            filters.testSubjects &&
+                            filters.testSubjects !== 'All'
+                              ? filters.testSubjects.split(',')
                               : []
                           }
                           options={staticDropDownData.subjects}
@@ -536,9 +543,9 @@ const SingleAssessmentReportFilters = ({
                           <AssessmentAutoComplete
                             firstLoad={firstLoad}
                             termId={filters.termId}
-                            grades={filters.grades}
+                            grades={filters.testGrades}
                             tagIds={filters.tagIds}
-                            subjects={filters.subjects}
+                            subjects={filters.testSubjects}
                             testTypes={filters.assessmentTypes}
                             selectedTestId={
                               testId || getTestIdFromURL(location.pathname)
@@ -595,16 +602,11 @@ const SingleAssessmentReportFilters = ({
                             const selected = staticDropDownData.grades.filter(
                               (a) => e.includes(a.key)
                             )
-                            updateFilterDropdownCB(
-                              selected,
-                              'studentGrades',
-                              true
-                            )
+                            updateFilterDropdownCB(selected, 'grades', true)
                           }}
                           value={
-                            filters.studentGrades &&
-                            filters.studentGrades !== 'All'
-                              ? filters.studentGrades.split(',')
+                            filters.grades && filters.grades !== 'All'
+                              ? filters.grades.split(',')
                               : []
                           }
                           options={staticDropDownData.grades}
@@ -618,16 +620,11 @@ const SingleAssessmentReportFilters = ({
                             const selected = staticDropDownData.subjects.filter(
                               (a) => e.includes(a.key)
                             )
-                            updateFilterDropdownCB(
-                              selected,
-                              'studentSubjects',
-                              true
-                            )
+                            updateFilterDropdownCB(selected, 'subjects', true)
                           }}
                           value={
-                            filters.studentSubjects &&
-                            filters.studentSubjects !== 'All'
-                              ? filters.studentSubjects.split(',')
+                            filters.subjects && filters.subjects !== 'All'
+                              ? filters.subjects.split(',')
                               : []
                           }
                           options={staticDropDownData.subjects}
@@ -636,9 +633,9 @@ const SingleAssessmentReportFilters = ({
                       <Col span={6}>
                         <FilterLabel data-cy="course">Course</FilterLabel>
                         <CourseAutoComplete
-                          selectedCourseId={filters.studentCourseId}
+                          selectedCourseId={filters.courseId}
                           selectCB={(e) =>
-                            updateFilterDropdownCB(e, 'studentCourseId')
+                            updateFilterDropdownCB(e, 'courseId')
                           }
                         />
                       </Col>
@@ -648,11 +645,10 @@ const SingleAssessmentReportFilters = ({
                           termId={filters.termId}
                           schoolIds={filters.schoolIds}
                           teacherIds={filters.teacherIds}
-                          grades={filters.studentGrades}
-                          subjects={filters.studentSubjects}
+                          grades={filters.grades}
+                          subjects={filters.subjects}
                           courseId={
-                            filters.studentCourseId !== 'All' &&
-                            filters.studentCourseId
+                            filters.courseId !== 'All' && filters.courseId
                           }
                           selectedClassIds={
                             filters.classIds ? filters.classIds.split(',') : []
@@ -668,11 +664,10 @@ const SingleAssessmentReportFilters = ({
                           termId={filters.termId}
                           schoolIds={filters.schoolIds}
                           teacherIds={filters.teacherIds}
-                          grades={filters.studentGrades}
-                          subjects={filters.studentSubjects}
+                          grades={filters.grades}
+                          subjects={filters.subjects}
                           courseId={
-                            filters.studentCourseId !== 'All' &&
-                            filters.studentCourseId
+                            filters.courseId !== 'All' && filters.courseId
                           }
                           selectedGroupIds={
                             filters.groupIds ? filters.groupIds.split(',') : []
@@ -761,7 +756,7 @@ const SingleAssessmentReportFilters = ({
                   )}
                 </Tabs>
               </Col>
-              <Col span={24} style={{ display: 'flex', paddingTop: '50px' }}>
+              <Col span={24} style={{ display: 'flex', paddingTop: '20px' }}>
                 <StyledEduButton
                   width="25%"
                   height="40px"

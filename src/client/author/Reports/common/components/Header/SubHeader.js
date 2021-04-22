@@ -17,8 +17,6 @@ const SubHeader = ({ breadcrumbData, isCliUser, alignment, children }) => (
 export default SubHeader
 
 const HeaderTitle = styled.div`
-  min-width: 230px;
-  max-width: 280px;
   h1 {
     font-size: 25px;
     font-weight: bold;
@@ -35,6 +33,8 @@ const HeaderTitle = styled.div`
   }
   .ant-breadcrumb {
     white-space: nowrap;
+    min-width: 230px;
+    max-width: 320px;
   }
 `
 

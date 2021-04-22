@@ -146,6 +146,7 @@ class EditTeacherModal extends Component {
                 <TextInputStyled
                   type="password"
                   placeholder={t('users.teacher.editteacher.enterpassword')}
+                  autoComplete="off"
                 />
               )}
             </ModalFormItem>
@@ -168,6 +169,7 @@ class EditTeacherModal extends Component {
               })(
                 <TextInputStyled
                   type="password"
+                  autoComplete="off"
                   placeholder={t(
                     'users.teacher.editteacher.enterconfirmpassword'
                   )}

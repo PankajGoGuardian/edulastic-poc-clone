@@ -28,17 +28,15 @@ const FilterTags = ({
     popOverArray,
     containerWidthObj
   ) => {
-    const widthOfTag = getWidthOfTag(data.title)
+    const _title = subType ? `${data.title} (${subType})` : data.title
+    const widthOfTag = getWidthOfTag(_title)
     const tag = (
       <StyledPopupTag
         closable={closableTypes.includes(type)}
         onClose={(e) => handleOnClose(e, type, data)}
       >
-        <Tooltip
-          title={subType ? `${data.title} (${subType})` : data.title}
-          placement="topLeft"
-        >
-          {subType ? `${data.title} (${subType})` : data.title}
+        <Tooltip title={_title} placement="topLeft">
+          {_title}
         </Tooltip>
       </StyledPopupTag>
     )

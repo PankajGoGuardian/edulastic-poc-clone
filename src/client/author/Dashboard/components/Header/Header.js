@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { Link, withRouter } from 'react-router-dom'
@@ -84,7 +84,6 @@ const TEN_DAYS = 10 * 24 * 60 * 60 * 1000
 const HeaderSection = ({
   user,
   isSubscriptionExpired = false,
-  fetchUserSubscriptionStatus,
   t,
   openLaunchHangout,
   subscription,
@@ -121,10 +120,6 @@ const HeaderSection = ({
 
   const { user: userInfo } = user
   const { currentSignUpState } = userInfo
-
-  useEffect(() => {
-    fetchUserSubscriptionStatus()
-  }, [])
 
   const [visible, setvisible] = useState(false)
 
@@ -359,7 +354,6 @@ const HeaderSection = ({
 HeaderSection.propTypes = {
   user: PropTypes.object.isRequired,
   isSubscriptionExpired: PropTypes.bool.isRequired,
-  fetchUserSubscriptionStatus: PropTypes.func.isRequired,
   openLaunchHangout: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
 }
@@ -400,7 +394,6 @@ const enhance = compose(
         state.subscription?.subscriptionData?.isPremiumTrialUsed,
     }),
     {
-      fetchUserSubscriptionStatus: slice?.actions?.fetchUserSubscriptionStatus,
       openLaunchHangout: launchHangoutOpen,
       fetchClassList: fetchClassListAction,
       setShowCleverSyncModal: setShowCleverSyncModalAction,

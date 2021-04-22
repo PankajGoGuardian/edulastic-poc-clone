@@ -66,6 +66,9 @@ import {
 } from '../selectors/user'
 import SwitchUserModal from '../../../common/components/SwtichUserModal/SwitchUserModal'
 import { switchUser } from '../../authUtils'
+import ItemBankTrialUsedModal from '../../Dashboard/components/Showcase/components/Myclasses/components/FeaturedContentBundle/ItemBankTrialUsedModal'
+import PurchaseFlowModals from '../components/common/PurchaseModals'
+import { slice } from '../../Subscription/ducks'
 
 const menuItems = [
   {
@@ -165,9 +168,15 @@ class SideMenu extends Component {
     this.state = {
       showModal: false,
       isVisible: false,
+      showTrialUsedModal: false,
+      showPurchaseModal: false,
     }
 
     this.sideMenuRef = React.createRef()
+  }
+
+  componentDidMount() {
+    this.props.fetchUserSubscriptionStatus()
   }
 
   get MenuItems() {
@@ -272,6 +281,12 @@ class SideMenu extends Component {
     }
   `
 
+  handleBlockedClick = () => {
+    this.setState({
+      showTrialUsedModal: true,
+    })
+  }
+
   handleMenu = (item) => {
     if (item.key) {
       const {
@@ -282,6 +297,9 @@ class SideMenu extends Component {
       const { path, label } = this.MenuItems[item.key]
       if (label === 'Assignments' && isFreeAdmin) {
         return toggleFreeAdminSubscriptionModal()
+      }
+      if (label === 'My Playlist' && !this.props.features.premium) {
+        return this.handleBlockedClick()
       }
       if (path !== undefined) {
         if (path.match(/playlists\/.{24}\/use-this/)) {
@@ -333,6 +351,25 @@ class SideMenu extends Component {
       this.toggleMenu()
       this.setState({ isVisible: false })
     }
+  }
+
+  setShowSubscriptionAddonModal = (value) => {
+    this.setState({
+      showPurchaseModal: value,
+    })
+  }
+
+  handleCloseModal = () => {
+    this.setState({
+      showTrialUsedModal: false,
+    })
+  }
+
+  handlePurchaseFlow = () => {
+    this.setState({
+      showTrialUsedModal: false,
+      showPurchaseModal: true,
+    })
   }
 
   getInitials = () => {
@@ -470,118 +507,156 @@ class SideMenu extends Component {
     )
 
     return (
-      <FixedSidebar
-        className={`${!isCollapsed ? 'full' : ''} ${className}`}
-        onClick={isCollapsed && !isMobile ? this.toggleMenu : null}
-        isCollapsed={isCollapsed}
-        ref={this.sideMenuRef}
-      >
-        <SwitchUserModal
-          userId={userId}
-          switchUser={switchUser}
-          showModal={showModal}
-          closeModal={() => this.setState({ showModal: false })}
-          otherAccounts={get(switchDetails, 'otherAccounts', [])}
-          personId={get(switchDetails, 'personId')}
-          userRole={userRole}
+      <>
+        <PurchaseFlowModals
+          showSubscriptionAddonModal={this.state.showPurchaseModal}
+          setShowSubscriptionAddonModal={this.setShowSubscriptionAddonModal}
+          defaultSelectedProductIds={[]}
+          setProductData={() => {}}
         />
-        <SideBar
-          collapsed={isCollapsed}
-          collapsible
-          breakpoint="md"
-          onBreakpoint={(brokenStatus) =>
-            this.setState({ broken: brokenStatus })
-          }
-          width="220"
-          collapsedWidth={broken ? '0' : '70'}
-          className="sideBarwrapper"
+        {this.state.showTrialUsedModal && (
+          <ItemBankTrialUsedModal
+            title="Teacher Premium"
+            isVisible={this.state.showTrialUsedModal}
+            handleCloseModal={this.handleCloseModal}
+            handlePurchaseFlow={this.handlePurchaseFlow}
+            isCurrentItemBankUsed
+          />
+        )}
+        <FixedSidebar
+          className={`${!isCollapsed ? 'full' : ''} ${className}`}
+          onClick={isCollapsed && !isMobile ? this.toggleMenu : null}
+          isCollapsed={isCollapsed}
+          ref={this.sideMenuRef}
         >
-          <ToggleSidemenu
-            onClick={(e) => {
-              e.stopPropagation()
-              this.toggleMenu()
-            }}
+          <SwitchUserModal
+            userId={userId}
+            switchUser={switchUser}
+            showModal={showModal}
+            closeModal={() => this.setState({ showModal: false })}
+            otherAccounts={get(switchDetails, 'otherAccounts', [])}
+            personId={get(switchDetails, 'personId')}
+            userRole={userRole}
+          />
+          <SideBar
+            collapsed={isCollapsed}
+            collapsible
+            breakpoint="md"
+            onBreakpoint={(brokenStatus) =>
+              this.setState({ broken: brokenStatus })
+            }
+            width="220"
+            collapsedWidth={broken ? '0' : '70'}
+            className="sideBarwrapper"
           >
-            <AntIcon type={isCollapsed ? 'right' : 'left'} />
-          </ToggleSidemenu>
-          <LogoWrapper className="logoWrapper">
-            {broken && (
-              <AntIcon
-                className="mobileCloseIcon"
-                type="close"
-                theme="outlined"
-                onClick={this.toggleMenu}
-              />
-            )}
-            {isCollapsed ? (
-              !isMobile && <LogoCompact />
-            ) : (
-              <OnDarkBgLogo height={isMobile ? '16px' : '26px'} />
-            )}
-          </LogoWrapper>
-          <MenuWrapper>
-            {locationState?.fadeSidebar && <Overlay />}
-            <Menu
-              selectedKeys={[defaultSelectedMenu.toString()]}
-              mode="inline"
-              onClick={(item) => this.handleMenu(item)}
-              isProxyUser={isProxyUser}
+            <ToggleSidemenu
+              onClick={(e) => {
+                e.stopPropagation()
+                this.toggleMenu()
+              }}
             >
-              {this.MenuItems.map((menu, index) => {
-                if (menu.divider) {
-                  return (
-                    <MenuItem
-                      divider
-                      visible
-                      data-cy={menu.label}
-                      key={index.toString()}
-                    >
-                      {!isCollapsed ? <span>{menu.label}</span> : <Hr />}
-                    </MenuItem>
+              <AntIcon type={isCollapsed ? 'right' : 'left'} />
+            </ToggleSidemenu>
+            <LogoWrapper className="logoWrapper">
+              {broken && (
+                <AntIcon
+                  className="mobileCloseIcon"
+                  type="close"
+                  theme="outlined"
+                  onClick={this.toggleMenu}
+                />
+              )}
+              {isCollapsed ? (
+                !isMobile && <LogoCompact />
+              ) : (
+                <OnDarkBgLogo height={isMobile ? '16px' : '26px'} />
+              )}
+            </LogoWrapper>
+            <MenuWrapper>
+              {locationState?.fadeSidebar && <Overlay />}
+              <Menu
+                selectedKeys={[defaultSelectedMenu.toString()]}
+                mode="inline"
+                onClick={(item) => this.handleMenu(item)}
+                isProxyUser={isProxyUser}
+              >
+                {this.MenuItems.map((menu, index) => {
+                  if (menu.divider) {
+                    return (
+                      <MenuItem
+                        divider
+                        visible
+                        data-cy={menu.label}
+                        key={index.toString()}
+                      >
+                        {!isCollapsed ? <span>{menu.label}</span> : <Hr />}
+                      </MenuItem>
+                    )
+                  }
+                  /**
+                   * show playlist based on `features` list
+                   */
+                  if (menu.label === 'Playlist' && !features.playlist) {
+                    return null
+                  }
+                  // to hide Dashboard from side menu if a user is DA or SA.
+                  if (
+                    menu.label === 'Dashboard' &&
+                    ['district-admin', 'school-admin'].includes(userRole) &&
+                    !features.isCurator
+                  ) {
+                    return null
+                  }
+                  // hide Gradebook from side menu based on features list
+                  if (menu.label === 'Gradebook' && !features.gradebook) {
+                    return null
+                  }
+                  const MenuIcon = this.renderIcon(
+                    menu.icon,
+                    isCollapsed,
+                    menu.stroke
                   )
-                }
-                /**
-                 * show playlist based on `features` list
-                 */
-                if (menu.label === 'Playlist' && !features.playlist) {
-                  return null
-                }
-                // to hide Dashboard from side menu if a user is DA or SA.
-                if (
-                  menu.label === 'Dashboard' &&
-                  ['district-admin', 'school-admin'].includes(userRole) &&
-                  !features.isCurator
-                ) {
-                  return null
-                }
-                // hide Gradebook from side menu based on features list
-                if (menu.label === 'Gradebook' && !features.gradebook) {
-                  return null
-                }
-                const MenuIcon = this.renderIcon(
-                  menu.icon,
-                  isCollapsed,
-                  menu.stroke
-                )
-                const isItemVisible =
-                  !menu.role || (menu.role && menu.role.includes(userRole))
+                  const isItemVisible =
+                    !menu.role || (menu.role && menu.role.includes(userRole))
 
-                const disableMenu = isDisablePageInMobile(menu?.path)
-                // hide My Playlist if user is not premium
-                if (menu.label === 'My Playlist' && !features.premium) {
-                  return null
-                }
-                if (
-                  menu.label === 'My Playlist' &&
-                  isCollapsed &&
-                  showUseThisNotification
-                ) {
-                  const content = (
-                    <span>
-                      &quot;In Use&ldquo; Play lists are available in the
-                      &quot;My Playlists&ldquo; area.
-                    </span>
-                  )
+                  const disableMenu = isDisablePageInMobile(menu?.path)
+                  // hide My Playlist if user is not premium
+                  // if (menu.label === 'My Playlist' && !features.premium) {
+                  //   toggle = this.handleBlockedClick;
+                  // }
+                  if (
+                    menu.label === 'My Playlist' &&
+                    isCollapsed &&
+                    showUseThisNotification
+                  ) {
+                    const content = (
+                      <span>
+                        &quot;In Use&ldquo; Play lists are available in the
+                        &quot;My Playlists&ldquo; area.
+                      </span>
+                    )
+                    return (
+                      <MenuItem
+                        data-cy={menu.label}
+                        key={index.toString()}
+                        onClick={this.toggleMenu}
+                        visible={isItemVisible}
+                        title={isCollapsed ? menu.label : ''}
+                      >
+                        <Popover
+                          visible
+                          placement="right"
+                          content={content}
+                          overlayClassName="antd-notify-custom-popover"
+                        >
+                          <MenuIcon />
+                        </Popover>
+                        <LabelMenuItem isCollapsed={isCollapsed}>
+                          {menu.label}
+                        </LabelMenuItem>
+                      </MenuItem>
+                    )
+                  }
                   return (
                     <MenuItem
                       data-cy={menu.label}
@@ -589,142 +664,121 @@ class SideMenu extends Component {
                       onClick={this.toggleMenu}
                       visible={isItemVisible}
                       title={isCollapsed ? menu.label : ''}
+                      disabled={disableMenu}
                     >
-                      <Popover
-                        visible
-                        placement="right"
-                        content={content}
-                        overlayClassName="antd-notify-custom-popover"
-                      >
-                        <MenuIcon />
-                      </Popover>
+                      <MenuIcon />
                       <LabelMenuItem isCollapsed={isCollapsed}>
                         {menu.label}
                       </LabelMenuItem>
                     </MenuItem>
                   )
-                }
-                return (
-                  <MenuItem
-                    data-cy={menu.label}
-                    key={index.toString()}
-                    onClick={this.toggleMenu}
-                    visible={isItemVisible}
-                    title={isCollapsed ? menu.label : ''}
-                    disabled={disableMenu}
+                })}
+              </Menu>
+              <MenuFooter>
+                <QuestionButton isCollapsed={isCollapsed}>
+                  <a
+                    href={helpCenterUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      display: 'flex',
+                      width: '100%',
+                      justifyContent: isCollapsed && 'center',
+                    }}
                   >
-                    <MenuIcon />
-                    <LabelMenuItem isCollapsed={isCollapsed}>
-                      {menu.label}
-                    </LabelMenuItem>
-                  </MenuItem>
-                )
-              })}
-            </Menu>
-            <MenuFooter>
-              <QuestionButton isCollapsed={isCollapsed}>
-                <a
-                  href={helpCenterUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    display: 'flex',
-                    width: '100%',
-                    justifyContent: isCollapsed && 'center',
-                  }}
-                >
-                  <IconContainer className={isCollapsed ? 'active' : ''}>
-                    <HelpIcon />
-                  </IconContainer>
-                  <HelpText isCollapsed={isCollapsed}>Help Center</HelpText>
-                </a>
-              </QuestionButton>
-              <UserInfoButton
-                isVisible={isVisible}
-                isCollapsed={isCollapsed}
-                className={`userinfoBtn ${isCollapsed ? 'active' : ''}`}
-              >
-                <Dropdown
-                  onClick={this.toggleDropdown}
-                  overlayStyle={{
-                    position: 'fixed',
-                    minWidth: isCollapsed ? '50px' : '220px',
-                    maxWidth: isCollapsed ? '50px' : '0px',
-                  }}
-                  className="footerDropdown"
-                  overlay={footerDropdownMenu}
-                  trigger={['click']}
-                  placement="topCenter"
+                    <IconContainer className={isCollapsed ? 'active' : ''}>
+                      <HelpIcon />
+                    </IconContainer>
+                    <HelpText isCollapsed={isCollapsed}>Help Center</HelpText>
+                  </a>
+                </QuestionButton>
+                <UserInfoButton
                   isVisible={isVisible}
-                  onVisibleChange={this.handleVisibleChange}
-                  getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                  isCollapsed={isCollapsed}
+                  className={`userinfoBtn ${isCollapsed ? 'active' : ''}`}
                 >
-                  <div>
-                    {profileThumbnail ? (
-                      <UserImg
-                        src={profileThumbnail}
-                        isCollapsed={isCollapsed}
-                      />
-                    ) : (
-                      <PopConfirmWrapper isCollapsed={isCollapsed}>
-                        <Popconfirm
-                          icon={<IconExclamationMark />}
-                          placement="bottomRight"
-                          title={
-                            <>
-                              <CloseIconWrapper
-                                onClick={(e) => {
-                                  e.preventDefault()
-                                  e.stopPropagation()
-                                  toggleMultipleAccountNotification(false)
-                                  localStorage.setItem(
-                                    'isMultipleAccountNotification',
-                                    'true'
-                                  )
-                                }}
-                              >
-                                <IconClose />
-                              </CloseIconWrapper>
-                              <p>
-                                You can switch between your teacher and student
-                                accounts here.
-                              </p>
-                            </>
-                          }
-                          trigger="click"
-                          getPopupContainer={(el) => el.parentNode}
-                          visible={showMultipleAccountNotification}
-                        >
-                          <PseudoDiv isCollapsed={isCollapsed}>
-                            {this.getInitials()}
-                          </PseudoDiv>
-                        </Popconfirm>
-                      </PopConfirmWrapper>
-                    )}
-                    <div
-                      style={{
-                        width: '100px',
-                        display: !isCollapsed ? 'block' : 'none',
-                      }}
-                    >
-                      <UserName>{userName || 'Anonymous'}</UserName>
-                      <UserType isVisible={isVisible}>{_userRole}</UserType>
-                    </div>
+                  <Dropdown
+                    onClick={this.toggleDropdown}
+                    overlayStyle={{
+                      position: 'fixed',
+                      minWidth: isCollapsed ? '50px' : '220px',
+                      maxWidth: isCollapsed ? '50px' : '0px',
+                    }}
+                    className="footerDropdown"
+                    overlay={footerDropdownMenu}
+                    trigger={['click']}
+                    placement="topCenter"
+                    isVisible={isVisible}
+                    onVisibleChange={this.handleVisibleChange}
+                    getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                  >
+                    <div>
+                      {profileThumbnail ? (
+                        <UserImg
+                          src={profileThumbnail}
+                          isCollapsed={isCollapsed}
+                        />
+                      ) : (
+                        <PopConfirmWrapper isCollapsed={isCollapsed}>
+                          <Popconfirm
+                            icon={<IconExclamationMark />}
+                            placement="bottomRight"
+                            title={
+                              <>
+                                <CloseIconWrapper
+                                  onClick={(e) => {
+                                    e.preventDefault()
+                                    e.stopPropagation()
+                                    toggleMultipleAccountNotification(false)
+                                    localStorage.setItem(
+                                      'isMultipleAccountNotification',
+                                      'true'
+                                    )
+                                  }}
+                                >
+                                  <IconClose />
+                                </CloseIconWrapper>
+                                <p>
+                                  You can switch between your teacher and
+                                  student accounts here.
+                                </p>
+                              </>
+                            }
+                            trigger="click"
+                            getPopupContainer={(el) => el.parentNode}
+                            visible={showMultipleAccountNotification}
+                          >
+                            <PseudoDiv isCollapsed={isCollapsed}>
+                              {this.getInitials()}
+                            </PseudoDiv>
+                          </Popconfirm>
+                        </PopConfirmWrapper>
+                      )}
+                      <div
+                        style={{
+                          width: '100px',
+                          display: !isCollapsed ? 'block' : 'none',
+                        }}
+                      >
+                        <UserName>{userName || 'Anonymous'}</UserName>
+                        <UserType isVisible={isVisible}>{_userRole}</UserType>
+                      </div>
 
-                    {!isCollapsed && (
-                      <IconDropdown
-                        style={{ fontSize: 15, pointerEvents: 'none' }}
-                        className="drop-caret"
-                        type={isVisible ? 'caret-up' : 'caret-down'}
-                      />
-                    )}
-                  </div>
-                </Dropdown>
-              </UserInfoButton>
-            </MenuFooter>
-          </MenuWrapper>
-        </SideBar>
-      </FixedSidebar>
+                      {!isCollapsed && (
+                        <IconDropdown
+                          style={{ fontSize: 15, pointerEvents: 'none' }}
+                          className="drop-caret"
+                          type={isVisible ? 'caret-up' : 'caret-down'}
+                        />
+                      )}
+                    </div>
+                  </Dropdown>
+                </UserInfoButton>
+              </MenuFooter>
+            </MenuWrapper>
+          </SideBar>
+        </FixedSidebar>
+      </>
     )
   }
 }
@@ -781,6 +835,7 @@ const enhance = compose(
       logout: logoutAction,
       toggleMultipleAccountNotification: toggleMultipleAccountNotificationAction,
       toggleFreeAdminSubscriptionModal: toggleFreeAdminSubscriptionModalAction,
+      fetchUserSubscriptionStatus: slice?.actions?.fetchUserSubscriptionStatus,
     }
   )
 )

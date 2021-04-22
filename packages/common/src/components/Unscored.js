@@ -10,7 +10,7 @@ import propTypes from 'prop-types'
 import { FlexContainer } from '../..'
 
 const UnScored = ({ width, height, margin, fontSize, text, fontWeight }) => (
-  <Tooltip title="UNSCORED">
+  <Tooltip title="Zero Point">
     <UnScoredBlock
       width={width}
       margin={margin}
@@ -39,7 +39,7 @@ UnScored.defaultProps = {
   height: '',
   margin: '',
   fontSize: '',
-  text: 'UNSCORED',
+  text: 'Z',
   fontWeight: '700',
 }
 

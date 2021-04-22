@@ -16,7 +16,10 @@ class InviteMultipleTeacherModal extends Component {
     this.props.form.validateFields((err, row) => {
       if (!err) {
         const { teachersList } = row
-        const userDetails = teachersList.split(/;|\n/)
+        const userDetails = teachersList
+          .split(/;|\n/)
+          .map((x) => x.trim())
+          .filter((_o) => _o.length)
         addTeachers({ districtId, userDetails })
         closeModal()
       }

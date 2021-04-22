@@ -34,7 +34,7 @@ const links = [
   },
 ]
 
-const StandardsMasteryReport = ({ premium, history }) => (
+const StandardsMasteryReport = ({ premium, history, loc }) => (
   <div>
     <BoxHeading heading="Standards Mastery Report" iconType="pie-chart" />
     <CardsWrapper>
@@ -45,6 +45,7 @@ const StandardsMasteryReport = ({ premium, history }) => (
           data={data}
           tiles
           premium={premium}
+          loc={loc}
         />
       ))}
     </CardsWrapper>

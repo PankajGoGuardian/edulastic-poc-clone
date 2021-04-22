@@ -41,7 +41,7 @@ const TextInput = ({
     const make = (arr) =>
       arr.map((character) => ({ value: character, label: character }))
 
-    if (isEmpty(characterMap)) {
+    if (!isEmpty(characterMap)) {
       return make(characterMap)
     }
 

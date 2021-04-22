@@ -718,7 +718,7 @@ class ProfileBody extends React.Component {
                             validator: this.validateToNextPassword,
                           },
                         ],
-                      })(<Input type="password" />)}
+                      })(<Input type="password" autoComplete="off" />)}
                     </FormItemWrapper>{' '}
                     <FormItemWrapper>
                       <Label>{t('common.title.confirmPaswswordLabel')}</Label>
@@ -735,6 +735,7 @@ class ProfileBody extends React.Component {
                       })(
                         <Input
                           type="password"
+                          autoComplete="off"
                           onBlur={this.handleConfirmBlur}
                         />
                       )}

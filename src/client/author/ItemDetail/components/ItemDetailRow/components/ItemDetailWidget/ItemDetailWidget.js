@@ -115,7 +115,7 @@ const ItemDetailWidget = ({
                   }
                 />
               ) : (
-                <UnScored text="UNSCORED" height={"50px"} />
+                <UnScored text="Zero Point" height="50px" />
               )}
 
               {connectDragSource(

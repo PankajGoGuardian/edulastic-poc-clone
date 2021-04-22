@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { message } from 'antd'
 import { get, groupBy, isEmpty, last } from 'lodash'
 import { ticks } from 'd3-array'
 import { connect } from 'react-redux'
@@ -14,6 +13,7 @@ import {
   linkColor1,
   themeColorLighter,
   darkBlue2,
+  greyLight1,
 } from '@edulastic/colors'
 import {
   ComposedChart,
@@ -88,7 +88,7 @@ const bars = {
     yAxisId: 'left',
     stackId: 'a',
     dataKey: 'unscoredItems',
-    fill: linkColor1,
+    fill: greyLight1,
   },
 }
 
@@ -424,9 +424,7 @@ class BarGraph extends Component {
           }}
         />
         {isBoth && (
-          <LegendContainer
-            style={{ marginBottom: '-18px', paddingLeft: '80px' }}
-          >
+          <LegendContainer style={{ paddingLeft: '80px' }}>
             <Legends />
           </LegendContainer>
         )}

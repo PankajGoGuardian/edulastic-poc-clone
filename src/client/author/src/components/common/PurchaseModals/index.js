@@ -9,7 +9,6 @@ import {
   getItemBankSubscriptions,
   getProducts,
   getSubscriptionSelector,
-  getIsPaymentServiceModalVisible,
   getPremiumProductId,
   getIsVerificationPending,
   getAddOnProductIds,
@@ -49,8 +48,6 @@ const PurchaseFlowModals = (props) => {
     itemBankSubscriptions = [],
     premiumProductId,
     products,
-    isPaymentServiceModalVisible,
-    setPaymentServiceModal,
     showSubscriptionAddonModal,
     setShowSubscriptionAddonModal,
     setProductData,
@@ -82,6 +79,7 @@ const PurchaseFlowModals = (props) => {
   const [emailIds, setEmailIds] = useState([])
   const [totalAmount, setTotalAmount] = useState(100)
   const [quantities, setQuantities] = useState({})
+  const [isPaymentServiceModalVisible, setPaymentServiceModal] = useState(false)
 
   /**
    *  a user is paid premium user if
@@ -236,7 +234,11 @@ const PurchaseFlowModals = (props) => {
 
   const stripePaymentActionHandler = (data) => {
     if (addOnProductIds?.length) {
-      handleStripePayment({ ...data, productIds: [...addOnProductIds] })
+      handleStripePayment({
+        ...data,
+        productIds: [...addOnProductIds],
+        setPaymentServiceModal,
+      })
     } else {
       handleStripeMultiplePayment({
         ...data,
@@ -244,6 +246,7 @@ const PurchaseFlowModals = (props) => {
         emailIds,
         licenseIds: selectedLicenseId ? [selectedLicenseId] : licenseIds,
         licenseOwnerId,
+        setPaymentServiceModal,
       })
       if (selectedLicenseId) {
         setSelectedLicenseId(null)
@@ -392,7 +395,6 @@ export default compose(
       products: getProducts(state),
       verificationPending: getIsVerificationPending(state),
       premiumProductId: getPremiumProductId(state),
-      isPaymentServiceModalVisible: getIsPaymentServiceModalVisible(state),
       user: state.user.user,
       addOnProductIds: getAddOnProductIds(state),
       userOrgId: getUserOrgId(state),
@@ -403,7 +405,6 @@ export default compose(
       handleStripeMultiplePayment: slice.actions.stripeMultiplePaymentAction,
       handleEdulasticAdminProductLicense:
         slice.actions.edulasticAdminProductLicenseAction,
-      setPaymentServiceModal: slice.actions.setPaymentServiceModal,
       setAddOnProductIds: slice.actions.setAddOnProductIds,
       bulkInviteBookKeepers: slice.actions.bulkInviteBookKeepersAction,
       setBookKeepersInviteSuccess: slice.actions.setBookKeepersInviteSuccess,

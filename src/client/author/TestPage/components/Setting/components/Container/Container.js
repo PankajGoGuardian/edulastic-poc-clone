@@ -1557,7 +1557,7 @@ class Setting extends Component {
                     <Block id="player-skin-type" smallSize={isSmallSize}>
                       <Row>
                         <Title>
-                          Student Player Skin{' '}
+                          Choose Test Interface{' '}
                           <DollarPremiumSymbol premium={selectPlayerSkinType} />
                         </Title>
                         <Body smallSize={isSmallSize}>

@@ -50,7 +50,7 @@ const PlayerSkinSelector = ({
   return fullwidth ? (
     <StyledRow gutter={16}>
       <Col span={10}>
-        <Label>STUDENT PLAYER SKIN</Label>
+        <Label>CHOOSE TEST INTERFACE</Label>
       </Col>
       <Col span={12}>{SelectOption}</Col>
     </StyledRow>
@@ -59,7 +59,7 @@ const PlayerSkinSelector = ({
       <StyledRow gutter={48}>
         {!isAdvanceView && (
           <ColLabel span={24}>
-            <Label>STUDENT PLAYER SKIN</Label>
+            <Label>CHOOSE TEST INTERFACE</Label>
           </ColLabel>
         )}
         <Col span={24}>{SelectOption}</Col>

@@ -263,7 +263,7 @@ const MiscellaneousGroupContainer = ({
               <SettingContainer id="player-skin-setting">
                 <DetailsTooltip
                   width={tootltipWidth}
-                  title="Student Player Skin"
+                  title="Test Interface"
                   content="Teachers can change the look and feel of the assessments to more closely align with formats similar to state and nationally administered assessments. If you don’t see your state, select the generic option, Edulastic Test."
                   premium={selectPlayerSkinType}
                   placement="rightTop"

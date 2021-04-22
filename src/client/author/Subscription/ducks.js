@@ -177,21 +177,6 @@ function* showSuccessNotifications(apiPaymentResponse, isTrial = false) {
   const subscriptionPeriod = isTrial ? '14 days' : 'an year'
   const premiumType = isTrial ? 'Trial Premium' : 'Premium'
   const { user } = yield select(getUserSelector)
-  if (isTrial) {
-    if (hasSubscriptions) {
-      segmentApi.trackUserClick({
-        user,
-        data: { event: `isTrialPremium` },
-      })
-    }
-    if (hasItemBankPermissions) {
-      segmentApi.trackUserClick({
-        user,
-        data: { event: `isTrialSparkMath` },
-      })
-    }
-  }
-
   const eventType = isTrial ? 'trial' : 'purchase'
   if (hasSubscriptions) {
     const { subEndDate } = subscriptions

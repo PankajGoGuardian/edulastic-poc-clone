@@ -2655,7 +2655,7 @@ function* checkAnswerSaga({ payload }) {
   }
 }
 
-function* showAnswerSaga({ payload }) {
+function* showAnswerSaga({ payload = {} }) {
   try {
     const testItems = yield select(getTestItemsSelector)
     const testItem = testItems.find((x) => x._id === payload.id) || {}
@@ -2677,7 +2677,7 @@ function* showAnswerSaga({ payload }) {
     const evaluation = yield createShowAnswerData(
       questions,
       answers,
-      testItem._id
+      testItem._id || payload._id
     )
     yield put({
       type: CHANGE_PREVIEW,

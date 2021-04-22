@@ -226,7 +226,7 @@ module.exports = {
     sbac: 'SBAC',
     cmas: 'Colorado - CMAS',
     casspp: 'California - CASSPP',
-    testlet: 'ETS Testlet Player',
+    testlet: 'ETS Testlet',
     quester: 'Questar',
     peaks: 'PEAKS',
     acap: 'ACAP',

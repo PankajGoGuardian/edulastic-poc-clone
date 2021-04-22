@@ -305,6 +305,7 @@ const MultipleAssessmentReportContainer = (props) => {
                 {..._props}
                 settings={settings}
                 ddfilter={ddfilter}
+                MARFilterData={MARFilterData}
                 sharedReport={sharedReport}
                 toggleFilter={toggleFilter}
               />

@@ -349,11 +349,13 @@ const StandardsGradebookTableComponent = ({
           'standardId'
         )
       ).map((item, index) => {
-        const standardProgressNav = getStandardProgressNav(
-          navigationItems,
-          item.standardId,
-          tableDdFilters.compareBy
-        )
+        const standardProgressNav = !isSharedReport
+          ? getStandardProgressNav(
+              navigationItems,
+              item.standardId,
+              tableDdFilters.compareBy
+            )
+          : null
         const titleComponent = (
           <>
             <span>{item.standardName}</span>

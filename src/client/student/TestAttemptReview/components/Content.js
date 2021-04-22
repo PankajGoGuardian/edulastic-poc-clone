@@ -28,6 +28,7 @@ import { loadTestAction } from '../../../assessment/actions/test'
 import { testLoadingSelector } from '../../../assessment/selectors/test'
 import FilesView from '../../../assessment/widgets/UploadFile/components/FilesView'
 import { saveUserWorkAction } from '../../../assessment/actions/userWork'
+import { getTestLevelUserWorkSelector } from '../../sharedDucks/TestItem'
 
 const { ASSESSMENT, PRACTICE, TESTLET } = testTypes.type
 class SummaryTest extends Component {
@@ -311,7 +312,7 @@ const enhance = compose(
         'author_classboard_testActivity.assignmentId',
         ''
       ),
-      userWork: get(state, 'userWork.present.attachments', []),
+      userWork: getTestLevelUserWorkSelector(state),
       classId: get(state, 'author_classboard_testActivity.classId', ''),
       savingResponse: state?.test?.savingResponse,
       testLoading: testLoadingSelector(state),

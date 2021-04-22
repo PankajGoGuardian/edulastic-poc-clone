@@ -100,6 +100,7 @@ import {
 import { getClassIds } from '../../student/Reports/ducks'
 import { startAssessmentAction } from '../actions/assessment'
 import { TIME_UPDATE_TYPE } from '../themes/common/TimedTestTimer'
+import { getTestLevelUserWorkSelector } from '../../student/sharedDucks/TestItem'
 
 // import { checkClientTime } from "../../common/utils/helpers";
 
@@ -825,9 +826,8 @@ function* submitTest({ payload }) {
       throw new Error('Unable to submit the test.')
     }
 
-    const testLevelAttachments = yield select(
-      (state) => state.userWork.present.attachments
-    ) || []
+    const testLevelAttachments = yield select(getTestLevelUserWorkSelector) ||
+      []
 
     if (testLevelAttachments.length) {
       const reqPayload = {

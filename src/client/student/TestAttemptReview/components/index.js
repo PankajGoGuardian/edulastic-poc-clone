@@ -27,6 +27,7 @@ import { fetchAssignmentsAction } from '../../Reports/ducks'
 import useUploadToS3 from '../../../assessment/hooks/useUploadToS3'
 import UserWorkUploadModal from '../../../assessment/components/UserWorkUploadModal'
 import { get } from 'lodash'
+import { getTestLevelUserWorkSelector } from '../../sharedDucks/TestItem'
 
 const SummaryContainer = (props) => {
   const {
@@ -153,7 +154,7 @@ const enhance = compose(
       blockSaveAndContinue: state.test?.settings?.blockSaveAndContinue,
       restrictNavigationOut: state.test?.settings?.restrictNavigationOut,
       user: get(state, 'user.user', {}),
-      attachments: get(state, `userWork.present.attachments`, null),
+      attachments: getTestLevelUserWorkSelector(state),
     }),
     {
       finishTest: finishTestAcitivityAction,

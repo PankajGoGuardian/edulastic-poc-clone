@@ -47,7 +47,7 @@ const columns = [
     align: 'left',
     render: (text, { teacherName, institutionName }) => (
       <ClassNameCell>
-        <span>{text}</span>
+        <span data-cy={text}>{text}</span>
         <span className="schoolName">
           {teacherName}
           {institutionName ? ` / ${institutionName}` : ''}

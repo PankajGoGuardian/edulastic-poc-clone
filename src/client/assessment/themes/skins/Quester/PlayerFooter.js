@@ -119,17 +119,18 @@ const PlayerFooter = ({
 
   return (
     <MainFooter isSidebarVisible className="quester-player-footer">
-      <ActionContainer>
-        <PlusOrMinus>
-          <IconWrap className="hover-effect" onClick={handleZoomOut}>
-            <IconMinusRounded color={footer.textColor} />
-          </IconWrap>
-          <Devider />
-          <IconWrap className="hover-effect" onClick={handleZoomIn}>
-            <IconPlus color={footer.textColor} />
-          </IconWrap>
-        </PlusOrMinus>
-        <div>Zoom</div>
+      <ActionContainer data-cy="zoomIn">
+        <IconWrap className="hover-effect" onClick={handleZoomOut}>
+          <IconMinusRounded color={footer.textColor} />
+        </IconWrap>
+        <span>ZOOM OUT</span>
+      </ActionContainer>
+
+      <ActionContainer data-cy="zoomOut">
+        <IconWrap className="hover-effect" onClick={handleZoomIn}>
+          <IconPlus color={footer.textColor} />
+        </IconWrap>
+        <span>ZOOM IN</span>
       </ActionContainer>
       {!blockNavigationToAnsweredQuestions && (
         <ActionContainer
@@ -141,6 +142,7 @@ const PlayerFooter = ({
               : () => toggleBookmark(items[currentItem]?._id)
           }
           title={t('common.test.bookmark')}
+          data-cy="bookmark"
         >
           <IconWrapper>
             <IconBookMark
@@ -153,6 +155,23 @@ const PlayerFooter = ({
         </ActionContainer>
       )}
       <Devider />
+      {maxAnswerChecks > 0 && !hideCheckAnswer && (
+        <ActionContainer
+          hoverEffect
+          onClick={handleCheckAnswer}
+          title={
+            checkAnswerInProgress
+              ? 'In progess'
+              : answerChecksUsedForItem >= maxAnswerChecks
+              ? 'Usage limit exceeded'
+              : 'Check Answer'
+          }
+          data-cy="checkAnswer"
+        >
+          <IconCheck color={footer.textColor} hoverColor={button.background} />
+          <span> {t('common.test.checkanswer')}</span>
+        </ActionContainer>
+      )}
       <ActionContainer
         hoverEffect
         active={tool?.includes(CROSS_BUTTON)}
@@ -163,6 +182,7 @@ const PlayerFooter = ({
             ? 'This option is available only for multiple choice'
             : 'Crossout'
         }
+        data-cy="crossButton"
       >
         <IconWrapper>
           <IconAnswerEliminator
@@ -179,6 +199,7 @@ const PlayerFooter = ({
           active={tool?.includes(CALC)}
           onClick={() => changeTool(CALC)}
           title={t('common.test.calculator')}
+          data-cy="calculator"
         >
           <IconWrapper>
             <IconCalculator
@@ -196,6 +217,7 @@ const PlayerFooter = ({
           active={tool?.includes(SCRATCHPAD)}
           onClick={() => changeTool(SCRATCHPAD)}
           title={t('common.test.scratchPad')}
+          data-cy="scratchPad"
         >
           <IconWrapper>
             <IconScratchPad
@@ -207,22 +229,6 @@ const PlayerFooter = ({
           <span>{t('common.test.scratchPad')}</span>
         </ActionContainer>
       )}
-      {isTeacherPremium && (
-        <ActionContainer
-          hoverEffect
-          onClick={toggleUserWorkUploadModal}
-          title={t('common.test.uploadWork')}
-        >
-          <IconWrapper>
-            <IconCloudUpload
-              color={footer.textColor}
-              hoverColor={button.background}
-            />
-          </IconWrapper>
-
-          <span>{t('common.test.uploadWork')}</span>
-        </ActionContainer>
-      )}
 
       {showMagnifier && (
         <ActionContainer
@@ -230,6 +236,7 @@ const PlayerFooter = ({
           active={enableMagnifier}
           onClick={handleMagnifier}
           title={t('common.test.magnify')}
+          data-cy="magnify"
         >
           <IconWrapper>
             <IconMagnify
@@ -242,21 +249,21 @@ const PlayerFooter = ({
         </ActionContainer>
       )}
 
-      {maxAnswerChecks > 0 && !hideCheckAnswer && (
+      {isTeacherPremium && (
         <ActionContainer
           hoverEffect
-          onClick={handleCheckAnswer}
-          title={
-            checkAnswerInProgress
-              ? 'In progess'
-              : answerChecksUsedForItem >= maxAnswerChecks
-              ? 'Usage limit exceeded'
-              : 'Check Answer'
-          }
-          data-cy="checkAnswer"
+          onClick={toggleUserWorkUploadModal}
+          title={t('common.test.uploadWork')}
+          data-cy="uploadWork"
         >
-          <IconCheck color={footer.textColor} hoverColor={button.background} />
-          <span> {t('common.test.checkanswer')}</span>
+          <IconWrapper>
+            <IconCloudUpload
+              color={footer.textColor}
+              hoverColor={button.background}
+            />
+          </IconWrapper>
+
+          <span>{t('common.test.uploadWork')}</span>
         </ActionContainer>
       )}
 
@@ -322,6 +329,7 @@ const MainFooter = styled.div`
   border-top: 1px solid ${footer.border};
   color: ${footer.textColor};
   font-size: 13px;
+  height: 70px;
   .quester-question-audio-controller {
     position: relative;
     height: auto;
@@ -376,6 +384,8 @@ const ActionContainer = styled.div`
   padding: 8px 15px;
   transition: all 0.5s ease;
   cursor: pointer;
+  text-transform: uppercase;
+  font-size: 10px;
   ${(props) =>
     props.disabled &&
     `
@@ -399,19 +409,12 @@ const ActionContainer = styled.div`
     `}
 `
 
-const PlusOrMinus = styled.div`
-  border: 1px solid ${footer.textColor};
-  display: flex;
-  justify-content: space-between;
-  border-radius: 5px;
-  overflow: hidden;
-`
-
 const IconWrap = styled.span`
-  padding: 5px 20px;
+  padding: 4px 15px 0px 15px;
   text-align: center;
   display: inline-block;
   cursor: pointer;
+  border: 1px solid ${footer.textColor};
   &:hover {
     background-color: ${footer.hover.background};
     color: ${footer.hover.color};
@@ -419,7 +422,7 @@ const IconWrap = styled.span`
 `
 const Devider = styled.div`
   width: 1px;
-  background: ${footer.textColor};
+  background: ${footer.hover.background};
 `
 
 const IconWrapper = styled.div`

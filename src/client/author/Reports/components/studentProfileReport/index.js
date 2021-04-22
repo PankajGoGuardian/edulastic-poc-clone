@@ -5,6 +5,7 @@ import { BoxHeading } from '../../common/components/boxHeading'
 import StudentSummaryImg from '../../../src/assets/reports/student-profile-summary/student-profile-summary.png'
 import StudentMasteryImg from '../../../src/assets/reports/student-mastery-profile/student-mastery-profile.png'
 import StudentAssessmentImg from '../../../src/assets/reports/student-assessment-profile/student-assessment-profile.png'
+import StudentProgressProfileImg from '../../../src/assets/reports/student-progress-profile/student-progress-profile.png'
 
 const links = [
   {
@@ -29,6 +30,14 @@ const links = [
     location: '/author/reports/student-assessment-profile/student/',
     description:
       'See performance by score on each assessment taken, filtered by course.',
+  },
+  {
+    key: 'studentProgressProfile',
+    title: 'Student Standards Progress',
+    thumbnail: StudentProgressProfileImg,
+    location: '/author/reports/student-progress-profile/student/',
+    description:
+      'Explore trends in performance of a student on various standards over time.',
   },
 ]
 

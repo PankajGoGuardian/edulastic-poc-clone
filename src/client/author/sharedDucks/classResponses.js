@@ -41,6 +41,7 @@ import {
   RESPONSE_ENTRY_SCORE_SUCCESS,
   UPDATE_STUDENT_TEST_ITEMS,
   ADD_CLASS_STUDENT_RESPONSE,
+  SET_CLASS_STUDENT_RESPONSES_LOADING,
 } from '../src/constants/actions'
 import { gradebookTestItemAddAction } from '../src/reducers/testActivity'
 
@@ -263,13 +264,25 @@ function* receiveStudentResponseSaga({ payload }) {
 function* receiveClassStudentResponseSaga({ payload }) {
   try {
     const { groupId, selectedActivities } = payload
-    const classStudentResponse = yield all(
-      selectedActivities.map((x) =>
-        call(classResponseApi.studentResponse, { testActivityId: x, groupId })
-      )
-    )
+    const classStudentResponse = yield call(classResponseApi.studentResponses, {
+      testActivityIds: selectedActivities,
+      groupId,
+    })
+    yield put({
+      type: SET_CLASS_STUDENT_RESPONSES_LOADING,
+      payload: false,
+    })
     for (let index = 0; index < classStudentResponse.length; index++) {
       const value = classStudentResponse[index]
+      /**
+       *  a trick to right away render 1st student response.
+       *  otherwise, all students items would be batched and
+       *  rendered at the same time and it will take long time to see anything on screen.
+       *  Now this delay would give enough time for the react to render the first response
+       */
+      if (index !== 0) {
+        yield delay(500)
+      }
       // doing adding response one by one instead of all at once to avoid freezing browser when too many students selected for printing
       yield put(
         addClassStudentRespnseAction({
@@ -278,15 +291,6 @@ function* receiveClassStudentResponseSaga({ payload }) {
           last: index === classStudentResponse.length - 1,
         })
       )
-      /**
-       *  a trick to right away render 1st student response.
-       *  otherwise, all students items would be batched and
-       *  rendered at the same time and it will take long time to see anything on screen.
-       *  Now this delay would give enough time for the react to render the first response
-       */
-      if (index === 0) {
-        yield delay(500)
-      }
     }
   } catch (err) {
     const errorMessage = 'Unable to retrieve class student response.'
@@ -354,8 +358,8 @@ function* receiveStudentQuestionSaga({ payload }) {
         classResponseApi.receiveStudentQuestionResponse,
         payload
       )
-      const { qid, score, autoGrade } = feedbackResponse || {}
-      if (!autoGrade) {
+      const { qid, score, autoGrade, graded = true } = feedbackResponse || {}
+      if (!autoGrade && graded) {
         yield put(setTeacherEditedScore({ [qid]: score }))
       }
     }

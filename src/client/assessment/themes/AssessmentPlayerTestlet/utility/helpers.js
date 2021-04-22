@@ -11,6 +11,7 @@ import {
   flattenDeep,
   round,
   get,
+  values,
 } from 'lodash'
 import { questionType } from '@edulastic/constants'
 import AppConfig from '../../../../../app-config'
@@ -482,4 +483,17 @@ export const getExtDataForQuestion = (item, responses) => {
   })
 
   return questionExtData
+}
+
+export const getResponseValue = (responseId, response) => {
+  const responseById = {}
+  values(response).forEach((res) => {
+    if (typeof res !== 'string') {
+      keys(res).forEach((resId) => {
+        responseById[resId] = res[resId]
+      })
+    }
+  })
+
+  return responseById[responseId] || ''
 }

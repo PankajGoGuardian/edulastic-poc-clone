@@ -15,7 +15,7 @@ import { Container, AddNewButton, TextWrapper } from './styled'
 const AddNew = ({ onClick, t, isAddFirstPart }) => (
   <Container>
     <AddNewButton onClick={onClick}>
-      <TextWrapper>
+      <TextWrapper data-cy="addQuestion">
         +{' '}
         {isAddFirstPart
           ? t('component.itemDetail.addFirstPartMultipart')

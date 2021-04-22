@@ -22,7 +22,7 @@ import {
   themeColor,
   skippedBarColor,
 } from '@edulastic/colors'
-import { IconEye, IconEyeClose } from '@edulastic/icons'
+import { IconExpand, IconCollapse } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
 import {
   scrollTo,
@@ -32,19 +32,15 @@ import {
   LCBScrollContext,
   EduButton,
 } from '@edulastic/common'
-import { testActivityStatus } from '@edulastic/constants'
+import {
+  testActivityStatus,
+  questionActivity as questionActivityConst,
+} from '@edulastic/constants'
 import { getAvatarName } from '../ClassBoard/Transformer'
 
 import { StyledFlexContainer, StyledCard, TooltipContainer } from './styled'
 import StudentResponse from './component/studentResponses/studentResponse'
-import {
-  StudentButtonWrapper,
-  StudentButtonDiv,
-  AllButton,
-  CorrectButton,
-  WrongButton,
-  PartiallyCorrectButton,
-} from '../StudentView/styled'
+import { StudentButtonWrapper, StudentButtonDiv } from '../StudentView/styled'
 import ClassQuestions from '../ClassResponses/components/Container/ClassQuestions'
 
 // actions
@@ -59,6 +55,10 @@ import {
 } from '../ClassBoard/ducks'
 import HooksContainer from '../ClassBoard/components/HooksContainer/HooksContainer'
 import { setStudentViewFilterAction as setFilterAction } from '../src/reducers/testActivity'
+import {
+  FilterSelect,
+  FilterSpan,
+} from '../ClassBoard/components/Container/styled'
 
 /**
  * @param {string} studentId
@@ -78,9 +78,11 @@ const CustomTooltip = ({ payload }) => {
   const timeSpent = get(firstItem, 'payload.avgTimeSpent')
   const fullName = get(firstItem, 'payload.name')
   const score = get(firstItem, 'payload.score')
+  const unscoredItems = get(firstItem, 'payload.unscoredItems', 0)
   return (
     <TooltipContainer title={fullName}>
-      {`Time(seconds): ${timeSpent || 0}`} <br /> {`Score: ${score}`}
+      {`Time(seconds): ${timeSpent || 0}`} <br />{' '}
+      {`Score: ${unscoredItems ? 'unscored' : score}`}
     </TooltipContainer>
   )
 }
@@ -236,12 +238,15 @@ class QuestionViewContainer extends Component {
             pCorrect: 0,
             skipped: 0,
             manuallyGraded: 0,
+            unscoredItems: 0,
             score: 0,
           }
           st.questionActivities
             .filter(({ notStarted, _id }) => !notStarted && _id === question.id)
-            .forEach(({ skipped, graded, score, maxScore }) => {
-              if (skipped) {
+            .forEach(({ skipped, graded, score, maxScore, isPractice }) => {
+              if (isPractice) {
+                stData.unscoredItems += 1
+              } else if (skipped) {
                 stData.skipped += 1
               } else if (graded === false) {
                 stData.manuallyGraded += 1
@@ -260,30 +265,27 @@ class QuestionViewContainer extends Component {
         })
     }
 
-    const {
-      c: correctNumber,
-      w: wrongNumber,
-      p: partiallyCorrectNumber,
-      s: skippedNumber,
-      n: notGradedNumber,
-      t: totalNumber,
-    } = data.reduce(
+    const questionStatusCounts = data.reduce(
       (acc, item) => ({
-        w: item.wrong + acc.w,
-        c: item.correct + acc.c,
-        p: item.pCorrect + acc.p,
-        s: item.skipped + acc.s,
-        n: item.manuallyGraded + acc.n,
-        t:
-          item.wrong +
-          item.correct +
-          item.pCorrect +
-          item.skipped +
-          item.manuallyGraded +
-          acc.t,
+        wrongNumber: item.wrong + acc.wrongNumber,
+        correctNumber: item.correct + acc.correctNumber,
+        partiallyCorrectNumber: item.pCorrect + acc.partiallyCorrectNumber,
+        skippedNumber: item.skipped + acc.skippedNumber,
+        notGradedNumber: item.manuallyGraded + acc.notGradedNumber,
+        unscoredItems: item.unscoredItems + acc.unscoredItems,
       }),
-      { c: 0, w: 0, p: 0, s: 0, n: 0, t: 0 }
+      {
+        totalNumber: 0,
+        correctNumber: 0,
+        wrongNumber: 0,
+        partiallyCorrectNumber: 0,
+        skippedNumber: 0,
+        notGradedNumber: 0,
+        unscoredItems: 0,
+      }
     )
+
+    questionStatusCounts.totalNumber = data.length
 
     if (isMobile) {
       data = data.slice(0, 2)
@@ -385,6 +387,14 @@ class QuestionViewContainer extends Component {
                   onClick={this.onClickChart}
                 />
                 <Bar
+                  className="unscoredItems"
+                  style={{ cursor: 'pointer' }}
+                  stackId="a"
+                  dataKey="unscoredItems"
+                  fill={skippedBarColor}
+                  onClick={this.onClickChart}
+                />
+                <Bar
                   className="manuallyGraded"
                   style={{ cursor: 'pointer' }}
                   stackId="a"
@@ -408,53 +418,45 @@ class QuestionViewContainer extends Component {
         <StudentResponse isPresentationMode={isPresentationMode}>
           <StudentButtonWrapper>
             <StudentButtonDiv>
-              <AllButton
-                active={filter === null}
-                onClick={() => this.onClickTab(null)}
+              <FilterSpan>FILTER BY STATUS</FilterSpan>
+              <FilterSelect
+                className="student-status-filter"
+                value={filter}
+                dropdownMenuStyle={{ fontSize: 29 }}
+                getPopupContainer={(trigger) => trigger.parentElement}
+                onChange={this.onClickTab}
+                width="170px"
+                height="24px"
               >
-                ALL ({totalNumber})
-              </AllButton>
-              <CorrectButton
-                active={filter === 'correct'}
-                onClick={() => this.onClickTab('correct')}
-              >
-                CORRECT ({correctNumber})
-              </CorrectButton>
-              <WrongButton
-                active={filter === 'wrong'}
-                onClick={() => this.onClickTab('wrong')}
-              >
-                INCORRECT ({wrongNumber})
-              </WrongButton>
-              <WrongButton
-                active={filter === 'partial'}
-                onClick={() => this.onClickTab('partial')}
-              >
-                PARTIALLY CORRECT ({partiallyCorrectNumber})
-              </WrongButton>
-              <WrongButton
-                active={filter === 'skipped'}
-                onClick={() => this.onClickTab('skipped')}
-              >
-                SKIPPED ({skippedNumber})
-              </WrongButton>
-              <PartiallyCorrectButton
-                active={filter === 'notGraded'}
-                onClick={() => this.onClickTab('notGraded')}
-              >
-                NOT GRADED ({notGradedNumber})
-              </PartiallyCorrectButton>
+                {questionActivityConst.questionStatusOptions.map(
+                  ({ title, value, countValue }, i) => (
+                    <FilterSelect.Option
+                      className="student-status-filter-item"
+                      key={i}
+                      value={value}
+                      style={{ fontSize: 11 }}
+                    >
+                      {title} ({questionStatusCounts[countValue]})
+                    </FilterSelect.Option>
+                  )
+                )}
+              </FilterSelect>
             </StudentButtonDiv>
             <EduButton
               isGhost
               height="24px"
               fontSize="9px"
-              mr="28px"
+              ml="10px"
               onClick={this.toggleShowCorrectAnswers}
+              title="Minimizing view hides correct answers, maximize to view them"
             >
-              {hideCorrectAnswer ? <IconEye /> : <IconEyeClose />}
+              {hideCorrectAnswer ? (
+                <IconExpand height="11.3px" width="11.3px" />
+              ) : (
+                <IconCollapse height="11.3px" width="11.3px" />
+              )}
               <span data-cy="showCorrectAnswer" data-test={!hideCorrectAnswer}>
-                correct answers
+                {hideCorrectAnswer ? 'Maximize view' : 'Minimize view'}
               </span>
             </EduButton>
           </StudentButtonWrapper>
@@ -473,6 +475,21 @@ class QuestionViewContainer extends Component {
             const qActivities = classQuestion.filter(
               ({ userId }) => userId === student.studentId
             )
+
+            /**
+             * Here if question activity length is 0, which means that there is no attempt for the question
+             * by the student so, for INPROGRESS student we will show unattempted questions only in ALL filter
+             * and for submitted student we will unattempted questions in ALL filter as well as SKIPPED filter
+             * hence returning null in case of other filters.
+             */
+            if (
+              !qActivities.length &&
+              ((filter && student.UTASTATUS === testActivityStatus.START) ||
+                (student.UTASTATUS === testActivityStatus.SUBMITTED &&
+                  filter &&
+                  filter !== 'skipped'))
+            )
+              return null
             return (
               <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
                 <ClassQuestions

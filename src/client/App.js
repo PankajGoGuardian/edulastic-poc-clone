@@ -38,6 +38,8 @@ import { logoutAction } from './author/src/actions/auth'
 import RealTimeCollectionWatch from './RealTimeCollectionWatch'
 import SsoAuth from '../ssoAuth'
 import FreeAdminAlertModal from './common/components/FreeAdminAlertModal'
+import StudentSessionExpiredModal from './common/components/StudentSessionExpiredModal'
+import CalendlyScheduleModal from './author/Subscription/components/SubscriptionMain/CalendlyScheduleModal'
 
 const { ASSESSMENT, PRACTICE, TESTLET } = test.type
 // route wise splitting
@@ -165,10 +167,6 @@ const testRedirectRoutes = [
   '#renderResource/close/',
   '/#assessmentQuestions/close/',
 ]
-const getCurrentPath = () => {
-  const location = window.location
-  return `${location.pathname}${location.search}${location.hash}`
-}
 
 function isLocationInTestRedirectRoutes(loc) {
   return testRedirectRoutes.find(
@@ -216,6 +214,7 @@ class App extends Component {
   state = {
     showAppUpdate: false,
     canShowCliBanner: true,
+    showSelectStates: false,
   }
 
   componentDidMount() {
@@ -242,6 +241,10 @@ class App extends Component {
         showAppUpdate: true,
       })
     })
+  }
+
+  setShowSelectStates = (value) => {
+    this.setState({ showSelectStates: value })
   }
 
   render() {
@@ -464,12 +467,19 @@ class App extends Component {
       _userRole = 'Content Author'
     }
     // signup routes hidden till org reference is not done
-    const { showAppUpdate, canShowCliBanner } = this.state
+    const { showAppUpdate, canShowCliBanner, showSelectStates } = this.state
     return (
       <div>
         {!isPremium && roleuser.DA_SA_ROLE_ARRAY.includes(userRole) && (
-          <FreeAdminAlertModal history={history} />
+          <FreeAdminAlertModal
+            history={history}
+            setShowSelectStates={this.setShowSelectStates}
+          />
         )}
+        <CalendlyScheduleModal
+          visible={showSelectStates}
+          setShowSelectStates={this.setShowSelectStates}
+        />
         {shouldWatch && <RealTimeCollectionWatch />}
         {userRole && (
           <CheckRoutePatternsEffectContainer
@@ -478,6 +488,7 @@ class App extends Component {
             history={history}
           />
         )}
+        <StudentSessionExpiredModal />
         <AppUpdate visible={showAppUpdate} />
         <OfflineNotifier />
         {tutorial && (

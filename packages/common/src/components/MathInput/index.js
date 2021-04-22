@@ -8,8 +8,8 @@ class MathInputWithResources extends React.PureComponent {
   mathInputRef = React.createRef()
 
   setFocus = () => {
-    if (this.mathInputRef.current) {
-      this.mathInputRef.current.focus()
+    if (this.mathInputRef?.current) {
+      this.mathInputRef.current.focus?.()
     }
   }
 

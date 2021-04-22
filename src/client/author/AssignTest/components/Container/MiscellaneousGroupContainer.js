@@ -1,7 +1,7 @@
 import React from 'react'
 import { Col, Radio } from 'antd'
 import { test } from '@edulastic/constants'
-import { isUndefined } from 'lodash'
+
 import {
   AlignSwitchRight,
   StyledRow,
@@ -17,6 +17,7 @@ import PeformanceBand from '../../../TestPage/components/Setting/components/Cont
 import PlayerSkinSelector from '../SimpleOptions/PlayerSkinSelector'
 import DetailsTooltip from './DetailsTooltip'
 import SettingContainer from './SettingsContainer'
+import KeypadDropdown from './KeypadDropdown'
 
 const { accessibilities } = test
 
@@ -40,6 +41,7 @@ const MiscellaneousGroupContainer = ({
     showMagnifier = testSettings.showMagnifier,
     enableScratchpad = testSettings.enableScratchpad,
     multiLanguageEnabled = !!testSettings.multiLanguageEnabled,
+    keypad: keyPadData = testSettings.keypad || {},
   } = assignmentSettings
 
   const playerSkinType =
@@ -69,6 +71,7 @@ const MiscellaneousGroupContainer = ({
   } = featuresAvailable
 
   const showMultiLangSelection = !!testSettings.multiLanguageEnabled
+
   return (
     <>
       {/* Answer on Paper */}
@@ -212,7 +215,7 @@ const MiscellaneousGroupContainer = ({
                             onChange={(e) =>
                               overRideSettings(key, e.target.value)
                             }
-                            defaultValue={isUndefined(value) ? true : value}
+                            value={value}
                           >
                             <Radio value data-cy={`${key}-enable`}>
                               ENABLE
@@ -229,6 +232,30 @@ const MiscellaneousGroupContainer = ({
               )}
             </>
           )}
+          {/* Keypad settings starts */}
+          <SettingContainer id="keypad-setting">
+            <DetailsTooltip
+              width={tootltipWidth}
+              title="Keypad"
+              content="Select keypad to apply current selection to all questions in the test"
+              premium={premium}
+              placement="right"
+            />
+            <StyledRow gutter={16} mb="15p">
+              <Col span={10}>
+                <span style={{ fontSize: 12, fontWeight: 600 }}>Keypad</span>{' '}
+              </Col>
+              <Col span={12}>
+                <KeypadDropdown
+                  keypadData={keyPadData}
+                  overrideSettings={overRideSettings}
+                  testKeypadData={testSettings.keypad}
+                  disabled={freezeSettings || !premium}
+                />
+              </Col>
+            </StyledRow>
+          </SettingContainer>
+          {/* Keypad settings ends */}
 
           {(assignmentSettings?.testType || testSettings.testType) !==
             'testlet' &&
@@ -236,7 +263,7 @@ const MiscellaneousGroupContainer = ({
               <SettingContainer id="player-skin-setting">
                 <DetailsTooltip
                   width={tootltipWidth}
-                  title="Student Player Skin"
+                  title="Test Interface"
                   content="Teachers can change the look and feel of the assessments to more closely align with formats similar to state and nationally administered assessments. If you don’t see your state, select the generic option, Edulastic Test."
                   premium={selectPlayerSkinType}
                   placement="rightTop"

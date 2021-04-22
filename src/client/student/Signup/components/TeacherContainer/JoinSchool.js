@@ -657,7 +657,7 @@ const Actions = styled.div`
 const AnchorBtn = styled.div`
   text-transform: uppercase;
   font-weight: 600;
-  font-size: 11px;
+  font-size: 10px;
   color: ${themeColor};
   margin-right: 25px;
   user-select: none;

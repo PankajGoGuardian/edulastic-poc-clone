@@ -31,7 +31,7 @@ import {
 } from '@edulastic/common'
 
 import { themeColor } from '@edulastic/colors'
-import { testActivityApi, classBoardApi } from '@edulastic/api'
+import { testActivityApi, classBoardApi, TokenStorage } from '@edulastic/api'
 
 import Styled from 'styled-components'
 import {
@@ -42,6 +42,7 @@ import {
 import { saveUserWorkAction } from '../actions/userWork'
 import {
   finishTestAcitivityAction,
+  loadTestAction,
   setIsTestPreviewVisibleAction,
   setPasswordValidateStatusAction,
 } from '../actions/test'
@@ -242,12 +243,16 @@ export function useFullScreenListener({
       Fscreen.removeEventListener('fullscreenchange', fullScreenCb)
       Modal.destroyAll()
       setTimeout(
-        (win) => {
+        (win, _disableSave) => {
           const { pathname: _path } = win.location
           if (!_path.includes('/uta/')) {
             window.sessionStorage.removeItem('totalTimeInBlur')
           }
-          if (!_path.includes('/uta/') && disableSave) {
+          if (
+            !_path.includes('/uta/') &&
+            _disableSave &&
+            !window.sessionStorage.getItem('paused')
+          ) {
             pauseAssignment({
               history,
               assignmentId,
@@ -260,7 +265,8 @@ export function useFullScreenListener({
           }
         },
         5000,
-        window
+        window,
+        disableSave
       )
     }
   }, [enabled])
@@ -282,12 +288,40 @@ function useFirestorePingsForNavigationCheck({
     if (testActivityId) {
       doc.get().then((d) => {
         if (!d.data()) {
-          doc.set({ lastUpdatedTime: Date.now() })
+          doc.set({
+            lastUpdatedTime: Date.now(),
+            tokenCreatedTime: TokenStorage.getCurrentTokenCreatedTime(),
+          })
           return
         }
-        const lastTime = d.data().lastUpdatedTime
 
-        if (Date.now() - lastTime >= 45 * 1000) {
+        const {
+          lastUpdatedTime: lastTime,
+          tokenCreatedTime: firebaseTokenCreatedTime,
+        } = d.data()
+        const currentTokenCreatedTime = TokenStorage.getCurrentTokenCreatedTime()
+
+        if (
+          blockSaveAndContinue &&
+          firebaseTokenCreatedTime &&
+          currentTokenCreatedTime &&
+          currentTokenCreatedTime > firebaseTokenCreatedTime
+        ) {
+          pauseAssignment({
+            history,
+            testActivityId,
+            userId,
+            assignmentId,
+            classId,
+            pauseReason:
+              'Test is paused due to multiple login sessions. To reset, place check mark in student card, go to More, select Resume',
+          })
+
+          window.sessionStorage.setItem('paused', 1)
+          setTimeout(() => {
+            window.sessionStorage.removeItem('paused')
+          }, 10000)
+        } else if (Date.now() - lastTime >= 45 * 1000) {
           if (blockSaveAndContinue) {
             pauseAssignment({
               history,
@@ -301,13 +335,13 @@ function useFirestorePingsForNavigationCheck({
             incrementNavigationCounter({ history, testActivityId })
           }
         } else {
-          doc.set({ lastUpdatedTime: Date.now() })
+          doc.update({ lastUpdatedTime: Date.now() })
         }
       })
     }
 
     const interval = window.setInterval(() => {
-      doc.set({ lastUpdatedTime: Date.now() })
+      doc.update({ lastUpdatedTime: Date.now() })
     }, 30 * 1000)
 
     return () => {
@@ -433,6 +467,7 @@ const RealTimeV2HookWrapper = ({
   let topics = [
     `student_assessment:user:${userId}`,
     `student_assessment:test:${testId}:group:${groupId}`,
+    `student_assessment:test:${testId}`,
   ]
   if (regradedAssignment?.newTestId) {
     topics = [
@@ -440,8 +475,14 @@ const RealTimeV2HookWrapper = ({
       `student_assessment:test:${regradedAssignment?.newTestId}:group:${groupId}`,
     ]
   }
+
   useRealtimeV2(topics, {
-    regradedAssignment: (payload) => regradedRealtimeAssignment(payload),
+    regradedAssignment: (payload) => {
+      regradedRealtimeAssignment(payload)
+    },
+    correctItem: (payload) => {
+      regradedRealtimeAssignment(payload)
+    },
   })
   return null
 }
@@ -506,6 +547,7 @@ const AssessmentContainer = ({
   setIsTestPreviewVisible,
   saveBlurTime,
   savedBlurTime: blurTimeAlreadySaved,
+  loadTest,
   ...restProps
 }) => {
   const itemId = preview || testletType ? 'new' : match.params.itemId || 'new'
@@ -527,21 +569,27 @@ const AssessmentContainer = ({
   const lastTime = useRef(window.localStorage.assessmentLastTime || Date.now())
 
   const assignmentObj = currentAssignment && assignmentById[currentAssignment]
-  const hidePause = assignmentObj?.blockSaveAndContinue
+  const {
+    restrictNavigationOut = false,
+    restrictNavigationOutAttemptsThreshold,
+    blockSaveAndContinue = assignmentObj?.blockSaveAndContinue,
+  } = restProps
+
+  const hidePause = blockSaveAndContinue
   const currentlyFullScreen = useFullScreenListener({
-    enabled: assignmentObj?.restrictNavigationOut,
+    enabled: restrictNavigationOut,
     assignmentId: assignmentObj?._id,
     classId: groupId,
     testActivityId: restProps.utaId,
     history,
-    disableSave: assignmentObj?.blockSaveAndContinue,
+    disableSave: blockSaveAndContinue,
     userId,
   })
 
   useTabNavigationCounterEffect({
     testActivityId: restProps.utaId,
-    enabled: assignmentObj?.restrictNavigationOut,
-    threshold: assignmentObj?.restrictNavigationOutAttemptsThreshold,
+    enabled: restrictNavigationOut,
+    threshold: restrictNavigationOutAttemptsThreshold,
     history,
     assignmentId: assignmentObj?._id,
     classId: groupId,
@@ -610,12 +658,23 @@ const AssessmentContainer = ({
   }, [currentItem])
 
   useEffect(() => {
-    if (regradedAssignment && regradedAssignment?.newTestId !== testId) {
+    if (regradedAssignment && regradedAssignment?.newTestId) {
       setShowRegradedModal(true)
     }
   }, [regradedAssignment?.newTestId])
 
   const onRegradedModalOk = () => {
+    if (regradedAssignment.newTestId === testId) {
+      loadTest({
+        testId,
+        testActivityId: restProps.utaId,
+        preview,
+        demo,
+        test,
+        groupId,
+        isStudentReport,
+      })
+    }
     history.push(
       `/student/assessment/${regradedAssignment.newTestId}/class/${groupId}/uta/${restProps.utaId}/itemId/${items[currentItem]._id}`
     )
@@ -978,7 +1037,7 @@ const AssessmentContainer = ({
     if (!demo) window.addEventListener('beforeunload', cb)
 
     const unloadCb = () => {
-      if (assignmentObj?.blockSaveAndContinue) {
+      if (blockSaveAndContinue) {
         pauseAssignment({
           history,
           testActivityId: restProps.utaId,
@@ -1101,7 +1160,7 @@ const AssessmentContainer = ({
     <AssessmentPlayerContext.Provider
       value={{ isStudentAttempt: true, currentItem, setCurrentItem }}
     >
-      {assignmentObj?.restrictNavigationOut && (
+      {restrictNavigationOut && (
         <>
           <ForceFullScreenModal
             testActivityId={restProps.utaId}
@@ -1111,7 +1170,7 @@ const AssessmentContainer = ({
               history.location.pathname.includes('/uta/')
             }
             takeItLaterCb={
-              assignmentObj?.blockSaveAndContinue
+              blockSaveAndContinue
                 ? null
                 : () =>
                     saveCurrentAnswer({
@@ -1123,12 +1182,11 @@ const AssessmentContainer = ({
         </>
       )}
 
-      {(assignmentObj.blockSaveAndContinue ||
-        assignmentObj?.restrictNavigationOut) && (
+      {(blockSaveAndContinue || restrictNavigationOut) && (
         <FirestorePings
           testActivityId={restProps.utaId}
           history={history}
-          blockSaveAndContinue={assignmentObj?.blockSaveAndContinue}
+          blockSaveAndContinue={blockSaveAndContinue}
           userId={userId}
           classId={groupId}
           assignmentId={assignmentObj?._id}
@@ -1245,6 +1303,10 @@ const enhance = compose(
       currentAssignment: get(state, 'studentAssignment.current'),
       blockNavigationToAnsweredQuestions:
         state.test?.settings?.blockNavigationToAnsweredQuestions,
+      blockSaveAndContinue: state.test?.settings?.blockSaveAndContinue,
+      restrictNavigationOut: state.test?.settings?.restrictNavigationOut,
+      restrictNavigationOutAttemptsThreshold:
+        state.test?.settings?.restrictNavigationOutAttemptsThreshold,
       savedBlurTime: state.test?.savedBlurTime,
     }),
     {
@@ -1264,6 +1326,7 @@ const enhance = compose(
       evaluateForPreview: evaluateCurrentAnswersForPreviewAction,
       setCheckAnswerInProgress: setCheckAnswerInProgressStatusAction,
       setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
+      loadTest: loadTestAction,
     }
   )
 )

@@ -15,6 +15,9 @@ import {
   question as questionConstants,
 } from '@edulastic/constants'
 
+const roundOff = (number) =>
+  number ? Number(Number(number).toFixed(2)) : number
+
 const { sectionLabelType } = questionConstants
 
 const { nonPremiumCollections = {} } = collections
@@ -24,7 +27,8 @@ const { getQuestionLevelScore, getPoints } = helpers
 const getStandardWiseSummary = (question, point) => {
   let standardSummary
   if (question && question.type !== sectionLabelType) {
-    const points = point
+    const unscored = get(question, 'validation.unscored', false)
+    const points = unscored ? 0 : point
     const alignment = get(question, 'alignment', [])
     standardSummary = flatMap(
       alignment,
@@ -53,12 +57,15 @@ const createItemsSummaryData = (items = [], scoring, isLimitedDeliveryType) => {
   }
   if (!items || !items.length) return summary
   for (const item of items) {
+    const itemStandards = []
     const { itemLevelScoring, maxScore, itemLevelScore, _id } = item
     const questions = get(item, 'data.questions', []).filter(
       ({ type }) => type !== sectionLabelType
     )
-    let itemPoints =
+    let itemPoints = 0
+    itemPoints =
       scoring[_id] || (itemLevelScoring === true && itemLevelScore) || maxScore
+
     if (isLimitedDeliveryType) {
       itemPoints = 1
     }
@@ -75,10 +82,14 @@ const createItemsSummaryData = (items = [], scoring, isLimitedDeliveryType) => {
         questionWisePoints[question.id]
       )
       if (standardSummary) {
-        summary.standards.push(...standardSummary)
+        summary.standards.push(
+          ...uniqBy(standardSummary, (x) => `${x.curriculumId}${x.identifier}`)
+        )
+        itemStandards.push(...standardSummary)
       }
     }
-    if (summary.standards.length > 0) {
+
+    if (itemStandards.length > 0) {
       const standardSummary = groupBy(summary.standards, 'curriculumId')
       const standardSumm = map(standardSummary, (objects, curriculumId) => {
         const obj = groupBy(objects, 'identifier')
@@ -98,8 +109,10 @@ const createItemsSummaryData = (items = [], scoring, isLimitedDeliveryType) => {
     } else {
       summary.noStandards.totalQuestions += questions.length
       summary.noStandards.totalPoints = roundOff(
-        summary.noStandards.totalPoints +
-          sumBy(questions, ({ id }) => questionWisePoints[id])
+        summary.noStandards.totalPoints + sumBy(
+          questions,
+          ({ id }) => questionWisePoints[id]
+        )
       )
     }
     summary.totalPoints = roundOff(
@@ -109,9 +122,6 @@ const createItemsSummaryData = (items = [], scoring, isLimitedDeliveryType) => {
   }
   return summary
 }
-
-const roundOff = (number) =>
-  number ? Number(Number(number).toFixed(2)) : number
 
 export const createGroupSummary = (test) => {
   const summary = {

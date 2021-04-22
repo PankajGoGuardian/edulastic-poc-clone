@@ -24,7 +24,8 @@ import {
 import { math } from '@edulastic/constants'
 
 import { storeInLocalStorage } from '@edulastic/api/src/utils/Storage'
-import { FaBars } from 'react-icons/fa'
+import { lightGrey9 } from '@edulastic/colors'
+import { IconMoveArrows } from '@edulastic/icons'
 import { getPreviewSelector } from '../../../src/selectors/view'
 import { checkAnswerAction } from '../../../src/actions/testItem'
 import { changePreviewAction } from '../../../src/actions/view'
@@ -52,9 +53,9 @@ import { updateRecentStandardsAction } from '../../../src/actions/dictionaries'
 
 const { methods, defaultNumberPad } = math
 
-const DragHandle = sortableHandle(() => (
-  <StyledHandleSpan>
-    <FaBars />
+const DragHandle = sortableHandle(({ questionIndex }) => (
+  <StyledHandleSpan data-cy={`handel${questionIndex}`}>
+    <IconMoveArrows color={lightGrey9} width={19} height={19} />
   </StyledHandleSpan>
 ))
 
@@ -101,7 +102,9 @@ const SortableQuestionItem = SortableElement(
         paddingTop: questionIndex === 1 && 6,
       }}
     >
-      {!testMode && !review && <DragHandle review={review} />}
+      {!testMode && !review && (
+        <DragHandle review={review} questionIndex={questionIndex} />
+      )}
       <QuestionItem
         key={key}
         index={index}
@@ -601,16 +604,20 @@ class Questions extends React.Component {
               <AnswerAction
                 active={previewMode === 'check'}
                 onClick={this.handleCheckAnswer}
+                data-cy="checkAnswer"
               >
                 Check Answer
               </AnswerAction>
               <AnswerAction
                 active={previewMode === 'show'}
                 onClick={this.handleShowAnswer}
+                data-cy="showAnswer"
               >
                 Show Answer
               </AnswerAction>
-              <AnswerAction onClick={this.handleClear}>Clear</AnswerAction>
+              <AnswerAction onClick={this.handleClear} data-cy="clearAnswer">
+                Clear
+              </AnswerAction>
             </AnswerActionsWrapper>
           )}
         </QuestionsWrapper>

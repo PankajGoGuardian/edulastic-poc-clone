@@ -21,6 +21,7 @@ import {
   getReportsResponseFrequencyLoader,
   getResponseFrequencyRequestAction,
   getReportsResponseFrequencyError,
+  resetResponseFrequencyAction,
 } from './ducks'
 
 import jsonData from './static/json/data.json'
@@ -37,6 +38,7 @@ const ResponseFrequency = ({
   isCsvDownloading,
   responseFrequency: res,
   getResponseFrequency,
+  resetResponseFrequency,
   settings,
   testList,
   sharedReport,
@@ -54,6 +56,8 @@ const ResponseFrequency = ({
     selectedTest.title
   } (ID:${selectedTest._id.substring(selectedTest._id.length - 5)})`
 
+  useEffect(() => () => resetResponseFrequency(), [])
+
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
       const q = {
@@ -62,12 +66,13 @@ const ResponseFrequency = ({
       }
       getResponseFrequency(q)
     }
-  }, [settings])
+  }, [settings.selectedTest, settings.requestFilters])
 
   useEffect(() => {
     if (
       (settings.requestFilters.termId || settings.requestFilters.reportId) &&
       !loading &&
+      !isEmpty(res) &&
       isEmpty(res?.metrics)
     ) {
       toggleFilter(null, true)
@@ -162,7 +167,7 @@ const ResponseFrequency = ({
           <Row type="flex" justify="center" className="question-area">
             <Col className="question-container">
               <p>What are the most difficult items?</p>
-              <p>Highlight in red if % performance falls below:</p>
+              <p>Highlight performance% in red if it falls below:</p>
               <Row type="flex" justify="start" align="middle">
                 <Col className="answer-slider-percentage">
                   <span>{difficultItems}%</span>
@@ -178,9 +183,7 @@ const ResponseFrequency = ({
             </Col>
             <Col className="question-container">
               <p>What items are misunderstood?</p>
-              <p>
-                Highlight in yellow if % frequency of an incorrect choice is above:
-              </p>
+              <p>Highlight response in yellow if incorrect choice% is above:</p>
               <Row type="flex" justify="start" align="middle">
                 <Col className="answer-slider-percentage">
                   <span>{misunderstoodItems}%</span>
@@ -234,6 +237,7 @@ const enhance = connect(
   }),
   {
     getResponseFrequency: getResponseFrequencyRequestAction,
+    resetResponseFrequency: resetResponseFrequencyAction,
   }
 )
 

@@ -36,7 +36,6 @@ const CLIAccessBanner = ({
   const toggleDropdown = () => {
     setVisible(!isVisible)
   }
-
   return (
     <Modal
       open={visible}

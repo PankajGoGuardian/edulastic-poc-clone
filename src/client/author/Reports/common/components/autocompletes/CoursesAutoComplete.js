@@ -3,26 +3,27 @@ import { connect } from 'react-redux'
 import { get, isEmpty, debounce } from 'lodash'
 
 // components & constants
-import MultiSelectSearch from '../../../../../common/components/widgets/MultiSelectSearch'
+import MultiSelectSearch from '../widgets/MultiSelectSearch'
 
 // ducks
-import { getUser } from '../../../../../../src/selectors/user'
+import { getUser } from '../../../../src/selectors/user'
 import {
   receiveCourseListAction,
   getCourseListSelector,
-} from '../../../../../../Courses/ducks'
+} from '../../../../Courses/ducks'
 
 const DEFAULT_SEARCH_TERMS = { text: '', selectedText: '', selectedKey: '' }
 
-const CourseAutoComplete = ({
+const CoursesAutoComplete = ({
   userDetails,
   courseList,
   loading,
   loadCourseList,
   selectedCourseIds,
   selectCB,
+  dataCy,
 }) => {
-  const courseAutocompleteRef = useRef()
+  const CoursesAutoCompleteRef = useRef()
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
   const [defaultCourseList, setDefaultCourseList] = useState([])
 
@@ -85,9 +86,10 @@ const CourseAutoComplete = ({
 
   return (
     <MultiSelectSearch
+      dataCy={dataCy}
       label="Course"
-      el={courseAutocompleteRef}
-      onChange={(e) => selectCB(e)}
+      el={CoursesAutoCompleteRef}
+      onChange={(e) => selectCB(dropdownData.filter((d) => e.includes(d.key)))}
       onSearch={onSearch}
       onBlur={onBlur}
       onFocus={getDefaultCourseList}
@@ -107,4 +109,4 @@ export default connect(
   {
     loadCourseList: receiveCourseListAction,
   }
-)(CourseAutoComplete)
+)(CoursesAutoComplete)

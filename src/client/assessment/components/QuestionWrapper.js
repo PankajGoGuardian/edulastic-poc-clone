@@ -4,21 +4,19 @@ import styled, { ThemeProvider, withTheme } from 'styled-components'
 import { questionType, test, roleuser } from '@edulastic/constants'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { get, round, isEqual } from 'lodash'
-import { IconClockCircularOutline } from '@edulastic/icons'
-
+import { get, isEqual } from 'lodash'
 import { withNamespaces } from '@edulastic/localization'
 import {
   mobileWidthMax,
   smallDesktopWidth,
   borderGrey2,
-  greyThemeDark2,
 } from '@edulastic/colors'
 import {
   withWindowSizes,
   ItemDetailContext,
   COMPACT,
   FieldLabel,
+  FlexContainer,
 } from '@edulastic/common'
 import { PaperWrapper } from './Graph/common/styled_components'
 import { themes } from '../../theme'
@@ -57,7 +55,6 @@ import { Text } from '../widgets/Text'
 import { MathFormula } from '../widgets/MathFormula'
 import { FormulaEssay } from '../widgets/FormulaEssay'
 import ClozeMath from '../widgets/ClozeMath'
-import { setQuestionDataAction } from '../../author/src/actions/question'
 import { requestScratchPadAction } from '../../author/ExpressGrader/ducks'
 import { Chart } from '../widgets/Charts'
 import { getUserRole, getUserFeatures } from '../../author/src/selectors/user'
@@ -69,7 +66,7 @@ import PreviewRubricTable from '../../author/GradingRubric/Components/common/Pre
 import Hints from './Hints'
 import Explanation from './Common/Explanation'
 import { EDIT } from '../constants/constantsForQuestions'
-import ShowUserWork from './Common/ShowUserWork'
+import BottomAction from './Common/QuestionBottomAction'
 import {
   getIsPreviewModalVisibleSelector,
   playerSkinTypeSelector,
@@ -86,157 +83,6 @@ import {
   languagePreferenceSelector,
   getCurrentLanguage,
 } from '../../common/components/LanguageSelector/duck'
-
-const QuestionContainer = styled.div`
-  padding: ${({ noPadding }) => (noPadding ? '0px' : null)};
-  display: ${({ isFlex }) => (isFlex ? 'flex' : 'block')};
-  justify-content: space-between;
-  ${({ style }) => style};
-  @media (max-width: ${mobileWidthMax}) {
-    flex-direction: column;
-  }
-  .ql-indent-1:not(.ql-direction-rtl) {
-    padding-left: 3em;
-  }
-  .ql-indent-1.ql-direction-rtl.ql-align-right {
-    padding-right: 3em;
-  }
-  .ql-indent-2:not(.ql-direction-rtl) {
-    padding-left: 6em;
-  }
-  .ql-indent-2.ql-direction-rtl.ql-align-right {
-    padding-right: 6em;
-  }
-  .ql-indent-3:not(.ql-direction-rtl) {
-    padding-left: 9em;
-  }
-  .ql-indent-3.ql-direction-rtl.ql-align-right {
-    padding-right: 9em;
-  }
-  .ql-indent-4:not(.ql-direction-rtl) {
-    padding-left: 12em;
-  }
-  .ql-indent-4.ql-direction-rtl.ql-align-right {
-    padding-right: 12em;
-  }
-  .ql-indent-5:not(.ql-direction-rtl) {
-    padding-left: 15em;
-  }
-  .ql-indent-5.ql-direction-rtl.ql-align-right {
-    padding-right: 15em;
-  }
-  .ql-indent-6:not(.ql-direction-rtl) {
-    padding-left: 18em;
-  }
-  .ql-indent-6.ql-direction-rtl.ql-align-right {
-    padding-right: 18em;
-  }
-  .ql-indent-7:not(.ql-direction-rtl) {
-    padding-left: 21em;
-  }
-  .ql-indent-7.ql-direction-rtl.ql-align-right {
-    padding-right: 21em;
-  }
-  .ql-indent-8:not(.ql-direction-rtl) {
-    padding-left: 24em;
-  }
-  .ql-indent-8.ql-direction-rtl.ql-align-right {
-    padding-right: 24em;
-  }
-  .ql-indent-9:not(.ql-direction-rtl) {
-    padding-left: 27em;
-  }
-  .ql-indent-9.ql-direction-rtl.ql-align-right {
-    padding-right: 27em;
-  }
-
-  .print-preview-feedback {
-    width: 100%;
-    padding: 0 35px;
-  }
-
-  @media print {
-    .__print_question-content-wrapper {
-      max-width: calc(100% - 55px);
-      display: block !important;
-      position: relative !important;
-    }
-    .question-wrapper {
-      padding: 5px;
-    }
-    .__print-question-option {
-      margin-top: 20px !important;
-    }
-    .__print-question-main-wrapper {
-      display: inline-table;
-      width: 100%;
-    }
-    .__print-space-reduce {
-      &-qlabel {
-        margin-right: 0.5rem !important;
-        margin-bottom: 0.5rem !important;
-      }
-      &-option {
-        align-items: flex-start !important;
-      }
-      &-options {
-        margin-bottom: 0px !important;
-        label {
-          padding: 0 !important;
-        }
-      }
-      &-stimulus {
-        margin-bottom: 5px !important;
-        & p {
-          br {
-            display: none !important;
-          }
-        }
-      }
-    }
-  }
-`
-
-export const TimeSpentWrapper = styled.div`
-  font-size: 19px;
-  color: ${greyThemeDark2};
-  display: flex;
-  justify-content: flex-end;
-  margin-top: auto;
-  align-items: center;
-  margin: ${({ margin }) => margin};
-  &.student-report {
-    position: absolute;
-    top: 25px;
-    right: 0px;
-    background: #f3f3f3;
-    padding: 10px 15px;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: 600;
-    svg {
-      margin-right: 10px;
-      fill: #6a737f;
-    }
-  }
-  svg {
-    margin-right: 8px;
-    fill: ${greyThemeDark2};
-  }
-`
-
-export const FlexContainer = styled.div`
-  flex: auto;
-  display: flex;
-  flex-direction: column;
-  max-width: 100%;
-`
-
-export const EvaluationMessage = styled.div`
-  color: rgb(250, 135, 52);
-  width: 100%;
-  text-align: center;
-`
 
 const DummyQuestion = () => <></>
 
@@ -422,7 +268,7 @@ class QuestionWrapper extends Component {
       !isExpressGrader &&
       data?.activity &&
       isEqual(prevUserWork, userWork) &&
-      isEqual(prevData?.activity, data?.activity) &&
+      isEqual(prevData, data) &&
       prevWindowHeight === windowHeight &&
       prevWindowWidth === windowWidth &&
       hideCorrectAnswer === prevHideCorrectAnswer
@@ -430,6 +276,17 @@ class QuestionWrapper extends Component {
       return false
     }
     return true
+  }
+
+  openStudentWork = () => {
+    const { data, loadScratchPad, showStudentWork } = this.props
+    // load the data from server and then show
+    loadScratchPad({
+      testActivityId: data?.activity?.testActivityId,
+      testItemId: data?.activity?.testItemId,
+      qActId: data?.activity?.qActId || data?.activity?._id,
+      callback: () => showStudentWork(),
+    })
   }
 
   get advancedAreOpen() {
@@ -459,6 +316,20 @@ class QuestionWrapper extends Component {
     return changeDataToPreferredLanguage(data, studentLanguagePreference)
   }
 
+  get answerScore() {
+    const { previewScore, previewMaxScore, data } = this.props
+    let score = previewScore
+    let maxScore = previewMaxScore
+    let isGradedExternally = false
+    if (data?.activity) {
+      score = data?.activity?.score
+      maxScore = data?.activity.maxScore
+      isGradedExternally = data?.activity?.isGradedExternally
+    }
+
+    return { score: (score || 0) / (maxScore || 1), isGradedExternally }
+  }
+
   render() {
     const {
       noPadding,
@@ -469,7 +340,6 @@ class QuestionWrapper extends Component {
       showFeedback,
       multiple,
       view,
-      setQuestionData,
       changePreviewTab,
       qIndex,
       itemIndex,
@@ -600,7 +470,7 @@ class QuestionWrapper extends Component {
         }}
       >
         <>
-          {canShowPlayer && (
+          {canShowPlayer && !hideVisibility && (
             <AudioControls
               btnWithText={
                 playerSkinType.toLowerCase() ===
@@ -618,6 +488,7 @@ class QuestionWrapper extends Component {
           )}
           <div
             className="__print-question-main-wrapper"
+            id="question-main-wrapper"
             style={{ height: !isStudentReport && '100%' }}
           >
             <QuestionContainer
@@ -673,16 +544,20 @@ class QuestionWrapper extends Component {
                     : flowLayout
                 }
               >
-                <StyledFlexContainer showScroll={isLCBView || isExpressGrader}>
+                <StyledFlexContainer
+                  showScroll={isLCBView || isExpressGrader}
+                  flexDirection="column"
+                  maxWidth="100%"
+                >
                   {evaluation === 'pending' && (
                     <EvaluationMessage>Evaluation is pending</EvaluationMessage>
                   )}
                   <Question
                     {...restProps}
-                    setQuestionData={setQuestionData}
                     item={data}
                     view={view}
                     evaluation={evaluation}
+                    answerScore={this.answerScore}
                     changePreviewTab={changePreviewTab}
                     qIndex={qIndex}
                     advancedLink={advancedLink}
@@ -698,34 +573,22 @@ class QuestionWrapper extends Component {
                     page={page}
                     setPage={this.setPage}
                   />
-                  {!hasDrawingResponse && showFeedback && !isPrintPreview && (
-                    <TimeSpentWrapper
-                      className={isStudentReport ? 'student-report' : ''}
-                    >
-                      {!!showStudentWork && (
-                        <ShowUserWork
-                          style={{ marginRight: '1rem' }}
-                          onClickHandler={() => {
-                            // load the data from server and then show
-                            loadScratchPad({
-                              testActivityId: data?.activity?.testActivityId,
-                              testItemId: data?.activity?.testItemId,
-                              qActId:
-                                data?.activity?.qActId || data?.activity?._id,
-                              callback: () => showStudentWork(),
-                            })
-                          }}
-                        >
-                          Show student work
-                        </ShowUserWork>
-                      )}
-                      {(timeSpent || timeSpent === 0) && (
-                        <>
-                          <IconClockCircularOutline />
-                          {round(timeSpent / 1000, 1)}s
-                        </>
-                      )}
-                    </TimeSpentWrapper>
+                  {showFeedback && !isPrintPreview && (
+                    <BottomAction
+                      isStudentReport={isStudentReport}
+                      isShowStudentWork={!!showStudentWork}
+                      onClickHandler={this.openStudentWork}
+                      timeSpent={timeSpent}
+                      item={data}
+                      QuestionComp={Question}
+                      advancedLink={advancedLink}
+                      advancedAreOpen={this.advancedAreOpen}
+                      hasDrawingResponse={hasDrawingResponse}
+                      saveAnswer={restProps.saveAnswer}
+                      fillSections={() => {}}
+                      cleanSections={() => {}}
+                      t={restProps.t}
+                    />
                   )}
                   {rubricDetails && studentReportFeedbackVisible && (
                     <RubricTableWrapper>
@@ -775,7 +638,6 @@ class QuestionWrapper extends Component {
 QuestionWrapper.contextType = ItemDetailContext
 
 QuestionWrapper.propTypes = {
-  setQuestionData: PropTypes.func.isRequired,
   isPresentationMode: PropTypes.bool,
   view: PropTypes.string.isRequired,
   multiple: PropTypes.bool,
@@ -850,9 +712,10 @@ const enhance = compose(
       studentLanguagePreference: languagePreferenceSelector(state, ownProps),
       authLanguage: getCurrentLanguage(state),
       isTestPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
+      previewScore: state?.itemScore?.score, // this used only in the author preview
+      previewMaxScore: state?.itemScore?.maxScore, // this used only in the author preview
     }),
     {
-      setQuestionData: setQuestionDataAction,
       loadScratchPad: requestScratchPadAction,
     }
   )
@@ -889,4 +752,120 @@ const RubricTableWrapper = styled.div`
     font-size: ${(props) => props.theme.standardFont};
     margin: 0px 42px 10px;
   }
+`
+
+const QuestionContainer = styled.div`
+  padding: ${({ noPadding }) => (noPadding ? '0px' : null)};
+  display: ${({ isFlex }) => (isFlex ? 'flex' : 'block')};
+  justify-content: space-between;
+  ${({ style }) => style};
+  @media (max-width: ${mobileWidthMax}) {
+    flex-direction: column;
+  }
+  .ql-indent-1:not(.ql-direction-rtl) {
+    padding-left: 3em;
+  }
+  .ql-indent-1.ql-direction-rtl.ql-align-right {
+    padding-right: 3em;
+  }
+  .ql-indent-2:not(.ql-direction-rtl) {
+    padding-left: 6em;
+  }
+  .ql-indent-2.ql-direction-rtl.ql-align-right {
+    padding-right: 6em;
+  }
+  .ql-indent-3:not(.ql-direction-rtl) {
+    padding-left: 9em;
+  }
+  .ql-indent-3.ql-direction-rtl.ql-align-right {
+    padding-right: 9em;
+  }
+  .ql-indent-4:not(.ql-direction-rtl) {
+    padding-left: 12em;
+  }
+  .ql-indent-4.ql-direction-rtl.ql-align-right {
+    padding-right: 12em;
+  }
+  .ql-indent-5:not(.ql-direction-rtl) {
+    padding-left: 15em;
+  }
+  .ql-indent-5.ql-direction-rtl.ql-align-right {
+    padding-right: 15em;
+  }
+  .ql-indent-6:not(.ql-direction-rtl) {
+    padding-left: 18em;
+  }
+  .ql-indent-6.ql-direction-rtl.ql-align-right {
+    padding-right: 18em;
+  }
+  .ql-indent-7:not(.ql-direction-rtl) {
+    padding-left: 21em;
+  }
+  .ql-indent-7.ql-direction-rtl.ql-align-right {
+    padding-right: 21em;
+  }
+  .ql-indent-8:not(.ql-direction-rtl) {
+    padding-left: 24em;
+  }
+  .ql-indent-8.ql-direction-rtl.ql-align-right {
+    padding-right: 24em;
+  }
+  .ql-indent-9:not(.ql-direction-rtl) {
+    padding-left: 27em;
+  }
+  .ql-indent-9.ql-direction-rtl.ql-align-right {
+    padding-right: 27em;
+  }
+
+  .print-preview-feedback {
+    width: 100%;
+    padding: 0 35px;
+  }
+
+  @media print {
+    .__print_question-content-wrapper {
+      max-width: calc(100% - 55px);
+      display: block !important;
+      position: relative !important;
+    }
+    .question-wrapper {
+      padding: 5px;
+    }
+    .__print-question-option {
+      margin-top: 20px !important;
+    }
+    .__print-question-main-wrapper {
+      display: inline-table;
+      width: 100%;
+    }
+    .__print-space-reduce {
+      &-qlabel {
+        margin-right: 0.5rem !important;
+        margin-bottom: 0.5rem !important;
+      }
+      &-option {
+        align-items: flex-start !important;
+      }
+      &-options {
+        margin-bottom: 0px !important;
+        label {
+          padding: 0 !important;
+        }
+      }
+      &-stimulus {
+        margin-bottom: 5px !important;
+        & p {
+          br {
+            display: none !important;
+          }
+        }
+      }
+    }
+  }
+`
+
+export const EvaluationMessage = styled.div`
+  color: rgb(250, 135, 52);
+  width: 100%;
+  text-align: center;
 `

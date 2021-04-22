@@ -23,6 +23,7 @@ import {
   getReportsStudentProgressLoader,
   getStudentProgressRequestAction,
   getReportsStudentProgressError,
+  resetStudentProgressAction,
 } from './ducks'
 import { useGetBandData } from './hooks'
 import { filterMetricInfoByDDFilters } from './utils/transformers'
@@ -55,6 +56,7 @@ const compareBy = {
 
 const StudentProgress = ({
   getStudentProgressRequest,
+  resetStudentProgress,
   studentProgress,
   MARFilterData,
   isCsvDownloading,
@@ -95,6 +97,8 @@ const StudentProgress = ({
     pageSize: 25,
   })
 
+  useEffect(() => () => resetStudentProgress(), [])
+
   // set initial page filters
   useEffect(() => {
     setPageFilters({ ...pageFilters, page: 1 })
@@ -123,18 +127,27 @@ const StudentProgress = ({
     if (
       (settings.requestFilters.termId || settings.requestFilters.reportId) &&
       !loading &&
+      !isEmpty(studentProgress) &&
       !metrics.length
     ) {
       toggleFilter(null, true)
     }
   }, [studentProgress])
 
-  const filteredInfo = filterMetricInfoByDDFilters(metricInfo, ddfilter)
+  const { metaInfo = [], testsCount = 0, incompleteTests = [] } = get(
+    studentProgress,
+    'data.result',
+    {}
+  )
 
-  const metaInfo = get(studentProgress, 'data.result.metaInfo', [])
-  const testsCount = get(studentProgress, 'data.result.testsCount', 0)
+  const filteredInfo = filterMetricInfoByDDFilters(metricInfo, ddfilter)
+  const filteredInfoWithIncompleteTestData = filteredInfo.map((metric) => {
+    metric.isIncomplete = incompleteTests.includes(metric.testId)
+    return metric
+  })
+
   const [data, trendCount] = useGetBandData(
-    filteredInfo,
+    filteredInfoWithIncompleteTestData,
     compareBy.key,
     metaInfo,
     selectedTrend,
@@ -212,7 +225,7 @@ const StudentProgress = ({
         />
       </FeaturesSwitch>
       <TrendStats
-        heading="How well are students progressing ?"
+        heading="Student progress over time"
         trendCount={trendCount}
         selectedTrend={selectedTrend}
         onTrendSelect={onTrendSelect}
@@ -226,6 +239,7 @@ const StudentProgress = ({
         )}
       />
       <TrendTable
+        showTestIncompleteText={!!incompleteTests?.length}
         filters={sharedReportFilters || settings.requestFilters}
         onCsvConvert={onCsvConvert}
         isCsvDownloading={isCsvDownloading}
@@ -234,7 +248,7 @@ const StudentProgress = ({
         compareBy={compareBy}
         analyseBy={analyseBy}
         ddfilter={ddfilter}
-        rawMetric={filteredInfo}
+        rawMetric={filteredInfoWithIncompleteTestData}
         customColumns={customTableColumns}
         isCellClickable
         location={location}
@@ -285,6 +299,7 @@ const enhance = connect(
   }),
   {
     getStudentProgressRequest: getStudentProgressRequestAction,
+    resetStudentProgress: resetStudentProgressAction,
   }
 )
 

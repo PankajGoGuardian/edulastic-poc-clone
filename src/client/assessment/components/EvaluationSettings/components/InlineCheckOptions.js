@@ -43,7 +43,12 @@ const InlineCheckOptions = ({ t, optionKey, options, onChange }) => {
           }
 
           return (
-            <FlexContainer key={key} width={width} justifyContent="flex-start">
+            <FlexContainer
+              data-cy={`${key}`}
+              key={key}
+              width={width}
+              justifyContent="flex-start"
+            >
               {textStyle.includes(key) || numberStyle.includes(key) ? (
                 <InputOption
                   optionKey={key}

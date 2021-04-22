@@ -20,6 +20,7 @@ import {
 } from '@edulastic/constants'
 import { testsApi } from '@edulastic/api'
 import { themeColor } from '@edulastic/colors'
+import { withNamespaces } from '@edulastic/localization'
 import {
   getAllAssignmentsSelector,
   fetchAssignmentsByTestAction,
@@ -75,6 +76,7 @@ import {
   isOrganizationDistrictUserSelector,
   getWritableCollectionsSelector,
   isOrganizationDistrictSelector,
+  isPremiumUserSelector,
 } from '../../../src/selectors/user'
 import SourceModal from '../../../QuestionEditor/components/SourceModal/SourceModal'
 import ShareModal from '../../../src/components/common/ShareModal'
@@ -109,6 +111,7 @@ import {
   getSelectedLanguageSelector,
 } from '../../../../student/Assignments/ducks'
 import { setSelectedLanguageAction } from '../../../../student/sharedDucks/AssignmentModule/ducks'
+import { fetchCustomKeypadAction } from '../../../../assessment/components/KeyPadOptions/ducks'
 
 const ItemCloneModal = loadable(() => import('../ItemCloneConfirmationModal'))
 
@@ -188,11 +191,14 @@ class Container extends PureComponent {
       isOrganizationDA,
       isVersionFlow,
       getTestIdFromVersionId,
+      fetchUserKeypads,
+      test: { grades = [] } = {},
     } = this.props
 
     const { versionId, id } = match.params
 
     if (userRole !== roleuser.STUDENT) {
+      fetchUserKeypads()
       const self = this
       const { showCancelButton = false, editAssigned = false } =
         history.location.state || this.state
@@ -251,6 +257,10 @@ class Container extends PureComponent {
         setRegradeOldId(id)
       } else {
         setRegradeOldId('')
+      }
+
+      if (this.isTestEditable) {
+        this.handleChangeKeypad(grades, false, false)
       }
       if (userRole !== roleuser.EDULASTIC_CURATOR) getDefaultTestSettings()
     } else {
@@ -453,6 +463,43 @@ class Container extends PureComponent {
     }
   }
 
+  handleChangeKeypad = (grades, updated = false, setUpdated = true) => {
+    const { setData, test: { keypad = {} } = {}, isPremiumUser } = this.props
+
+    if (isPremiumUser && (isEmpty(keypad) || keypad.updated === false)) {
+      const highestGrade = grades.reduce((acc, curr) => {
+        const currentGrade = parseInt(curr, 10)
+        if (currentGrade > acc) {
+          acc = currentGrade
+        }
+        return acc
+      }, 0)
+      if (highestGrade > 0 && highestGrade <= 5) {
+        setData({
+          keypad: { updated, type: 'predefined', value: 'basic' },
+        })
+      } else if (highestGrade > 5 && highestGrade <= 12) {
+        setData({
+          updated: setUpdated,
+          keypad: {
+            updated,
+            type: 'predefined',
+            value: 'intermediate',
+          },
+        })
+      } else {
+        setData({
+          updated: setUpdated,
+          keypad: {
+            type: 'item-level',
+            value: 'item-level-keypad',
+            updated,
+          },
+        })
+      }
+    }
+  }
+
   handleChangeGrade = (grades) => {
     const {
       setData,
@@ -466,6 +513,7 @@ class Container extends PureComponent {
       subjects: itemsSubjectAndGrade.subjects,
       grades: [],
     })
+    this.handleChangeKeypad(grades, true)
   }
 
   handleChangeCollection = (_, options) => {
@@ -530,6 +578,29 @@ class Container extends PureComponent {
   handleSaveTestId = () => {
     const { test, saveCurrentEditingTestId } = this.props
     saveCurrentEditingTestId(test._id)
+  }
+
+  get isTestEditable() {
+    const {
+      test,
+      match,
+      userId,
+      userFeatures,
+      userRole,
+      collections,
+      editEnable,
+      testStatus,
+    } = this.props
+    const { params = {} } = match
+
+    const isOwner =
+      (test.authors && test.authors.some((x) => x._id === userId)) ||
+      !params.id ||
+      userRole === roleuser.EDULASTIC_CURATOR ||
+      (userFeatures.isCurator &&
+        allowContentEditCheck(test.collections, collections))
+
+    return isOwner && (editEnable || testStatus === statusConstants.DRAFT)
   }
 
   renderContent = () => {
@@ -840,6 +911,7 @@ class Container extends PureComponent {
     }
     // for itemGroup with limted delivery type should not contain items with question level scoring
     let itemGroupWithQuestionsCount = 0
+    let testHasInvalidItem = false
     for (const itemGroup of test.itemGroups) {
       if (
         itemGroup.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
@@ -853,9 +925,19 @@ class Container extends PureComponent {
       if (itemGroup.items.some((item) => item.data.questions.length > 0)) {
         itemGroupWithQuestionsCount++
       }
+
+      if (itemGroup.items.some((item) => item.data.questions.length <= 0)) {
+        testHasInvalidItem = true
+      }
     }
+
     if (!itemGroupWithQuestionsCount) {
       notification({ messageKey: `noQuestions` })
+      return false
+    }
+
+    if (testHasInvalidItem) {
+      notification({ messageKey: `testHasInvalidItem` })
       return false
     }
     return true
@@ -1021,6 +1103,7 @@ class Container extends PureComponent {
       userRole,
       editEnable,
       writableCollections,
+      t,
     } = this.props
     if (userRole === roleuser.STUDENT) {
       return null
@@ -1099,7 +1182,7 @@ class Container extends PureComponent {
               return true
             }
 
-            return 'There are unsaved changes. Are you sure you want to leave?'
+            return t('component.common.modal.exitPageWarning')
           }}
         />
         {this.renderModal()}
@@ -1230,6 +1313,7 @@ Container.defaultProps = {
 const enhance = compose(
   withRouter,
   withWindowSizes,
+  withNamespaces('author'),
   connect(
     (state) => ({
       test: getTestSelector(state),
@@ -1268,6 +1352,7 @@ const enhance = compose(
       isOrganizationDistrictUser: isOrganizationDistrictUserSelector(state),
       isOrganizationDA: isOrganizationDistrictSelector(state),
       languagePreference: getSelectedLanguageSelector(state),
+      isPremiumUser: isPremiumUserSelector(state),
     }),
     {
       createTest: createTestAction,
@@ -1298,6 +1383,7 @@ const enhance = compose(
       resetPageState: resetPageStateAction,
       getTestIdFromVersionId: getTestIdFromVersionIdAction,
       setSelectedLanguage: setSelectedLanguageAction,
+      fetchUserKeypads: fetchCustomKeypadAction,
     }
   )
 )

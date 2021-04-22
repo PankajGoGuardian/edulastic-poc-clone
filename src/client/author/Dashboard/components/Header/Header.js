@@ -196,8 +196,9 @@ const HeaderSection = ({
       isCleverUser ||
       canvasAllowedInstitutions.length > 0)
 
-  const hasGoogleMeetAndManageClass =
-    currentSignUpState === signUpState.DONE && allActiveClasses.length > 0
+  const isSignupComplete = currentSignUpState === signUpState.DONE
+
+  const showManageClass = allActiveClasses.length > 0
 
   const isHangoutEnabled =
     districtPolicy?.enableGoogleMeet === true
@@ -227,21 +228,8 @@ const HeaderSection = ({
             onClick={handleShowTrialModal}
           />
         )}
-        {hasGoogleMeetAndManageClass && (
+        {showManageClass && (
           <>
-            {isHangoutEnabled && (
-              <Tooltip title="Launch Google Meet">
-                <StyledEduButton
-                  IconBtn
-                  isBlue
-                  data-cy="launch-google-meet"
-                  onClick={launchHangout}
-                  isGhost
-                >
-                  <IconHangouts color={themeColor} height={21} width={19} />
-                </StyledEduButton>
-              </Tooltip>
-            )}
             <Tooltip title="Manage Class">
               <Link to="/author/manageClass">
                 <EduButton
@@ -254,8 +242,23 @@ const HeaderSection = ({
                 </EduButton>
               </Link>
             </Tooltip>
+
+            {isSignupComplete && isHangoutEnabled && (
+              <Tooltip title="Launch Google Meet">
+                <StyledEduButton
+                  IconBtn
+                  isBlue
+                  data-cy="launch-google-meet"
+                  onClick={launchHangout}
+                  isGhost
+                >
+                  <IconHangouts color={themeColor} height={21} width={19} />
+                </StyledEduButton>
+              </Tooltip>
+            )}
           </>
         )}
+
         {hasNoActiveClassFallback && (
           <HeaderSyncAction
             fetchClassList={fetchClassList}

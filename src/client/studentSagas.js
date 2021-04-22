@@ -13,6 +13,7 @@ import {
   StudentPlaylistSaga,
 } from './student/sagas'
 import assessmentSagas from './assessment/sagas'
+import { reportSaga } from './author/Reports/ducks'
 
 export function* studentsSagas() {
   yield all([
@@ -27,5 +28,6 @@ export function* studentsSagas() {
     dictionariesSaga(),
     expressGraderWatcherSaga(),
     ...assessmentSagas,
+    reportSaga(),
   ])
 }

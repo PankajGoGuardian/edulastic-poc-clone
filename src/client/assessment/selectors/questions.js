@@ -17,6 +17,15 @@ export const getQuestionsByIdSelector = createSelector(
     const convertedInPreferredLang = questions.map((question) =>
       changeDataToPreferredLanguage(question, userPreferredLanguage)
     )
+
+    const allCustomKeys = convertedInPreferredLang.reduce((acc, curr) => {
+      return [...acc, ...(curr.customKeys || [])]
+    }, [])
+
+    convertedInPreferredLang.forEach((question) => {
+      question.customKeys = allCustomKeys
+    })
+
     return keyBy(convertedInPreferredLang, 'id')
   }
 )

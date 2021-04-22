@@ -20,12 +20,13 @@ const ClassAutoComplete = ({
   classList,
   loading,
   loadClassList,
-  selectedCourseIds,
-  selectedGrade,
-  selectedSubject,
+  courseIds,
+  grades,
+  subjects,
   selectedClassIds,
   selectCB,
   termId,
+  dataCy,
 }) => {
   const classAutoCompleteRef = useRef()
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
@@ -52,26 +53,22 @@ const ClassAutoComplete = ({
     if (userRole === roleuser.SCHOOL_ADMIN) {
       q.search.institutionIds = institutionIds
     }
-    if (selectedCourseIds) {
-      q.search.courseIds = selectedCourseIds.split(',')
-    }
-    if (selectedGrade) {
-      q.search.grades = [selectedGrade]
-    }
-    if (selectedSubject) {
-      q.search.subjects = [selectedSubject]
-    }
     if (termId) {
       q.search.termIds = [termId]
     }
+    if (courseIds) {
+      q.search.courseIds = courseIds.split(',')
+    }
+    if (grades) {
+      q.search.grades = Array.isArray(grades) ? grades : grades.split(',')
+    }
+    if (subjects) {
+      q.search.subjects = Array.isArray(subjects)
+        ? subjects
+        : subjects.split(',')
+    }
     return q
-  }, [
-    searchTerms.text,
-    selectedGrade,
-    selectedSubject,
-    selectedCourseIds,
-    termId,
-  ])
+  }, [searchTerms.text, termId, grades, subjects, courseIds])
 
   // handle autocomplete actions
   const onSearch = (value) => {
@@ -110,7 +107,7 @@ const ClassAutoComplete = ({
   useEffect(() => {
     setSearchTerms(DEFAULT_SEARCH_TERMS)
     setDefaultClassList([])
-  }, [selectedCourseIds, selectedGrade, selectedSubject, termId])
+  }, [courseIds, grades, subjects, termId])
 
   // build dropdown data
   const dropdownData = (searchTerms.text
@@ -123,9 +120,10 @@ const ClassAutoComplete = ({
 
   return (
     <MultiSelectSearch
+      dataCy={dataCy}
       label="Class"
       el={classAutoCompleteRef}
-      onChange={(e) => selectCB(e)}
+      onChange={(e) => selectCB(dropdownData.filter((d) => e.includes(d.key)))}
       onSearch={onSearch}
       onBlur={onBlur}
       onFocus={getDefaultClassList}

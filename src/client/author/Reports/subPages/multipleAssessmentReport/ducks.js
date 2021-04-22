@@ -3,11 +3,13 @@ import { createAction, createReducer } from 'redux-starter-kit'
 
 import { RESET_ALL_REPORTS } from '../../common/reportsRedux'
 
-const SET_MAR_SETTINGS = '[MAR settings] get mar settings'
+const SET_MAR_SETTINGS = '[MAR settings] set mar settings'
+const SET_MAR_TAGS_DATA = '[MAR settings] set mar tags data'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
 export const setMARSettingsAction = createAction(SET_MAR_SETTINGS)
+export const setMARTagsDataAction = createAction(SET_MAR_TAGS_DATA)
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
 
@@ -46,10 +48,16 @@ const initialState = {
     classIds: '',
     groupIds: '',
   },
+  tagsData: {},
 }
 
 export const reportMARSettingsReducer = createReducer(initialState, {
-  [SET_MAR_SETTINGS]: (state, { payload }) => (state = { ...payload }),
+  [SET_MAR_TAGS_DATA]: (state, { payload }) => {
+    state.tagsData = { ...payload }
+  },
+  [SET_MAR_SETTINGS]: (state, { payload }) => {
+    state.requestFilters = payload.requestFilters
+  },
   [RESET_ALL_REPORTS]: (state) => (state = initialState),
 })
 

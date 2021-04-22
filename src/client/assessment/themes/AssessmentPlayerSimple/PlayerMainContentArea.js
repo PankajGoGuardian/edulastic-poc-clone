@@ -59,6 +59,7 @@ const PlayerContentArea = ({
       >
         <MainContent
           skin
+          zoomLevel={zoomLevel}
           responsiveWidth={responsiveWidth}
           className="scrollable-main-wrapper"
         >

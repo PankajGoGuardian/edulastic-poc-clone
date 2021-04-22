@@ -11,11 +11,23 @@ const gradebook = ({ assignmentId, classId }) =>
     })
     .then((result) => result.data.result)
 
-const testActivity = ({ assignmentId, classId, isQuestionsView = false }) =>
+const testActivity = ({
+  assignmentId,
+  classId,
+  isQuestionsView = false,
+  includeStudents = [],
+}) =>
   api
     .callApi({
-      url: `${prefix}/${assignmentId}/classes/${classId}/test-activity?isQuestionsView=${isQuestionsView}`,
+      url: `${prefix}/${assignmentId}/classes/${classId}/test-activity`,
       method: 'get',
+      params: {
+        isQuestionsView,
+        includeStudents:
+          includeStudents && includeStudents.length
+            ? `${includeStudents}`
+            : null,
+      },
     })
     .then((result) => result.data)
 

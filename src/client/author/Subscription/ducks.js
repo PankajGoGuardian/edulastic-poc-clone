@@ -1,6 +1,6 @@
 import { captureSentryException, notification } from '@edulastic/common'
 import { message } from 'antd'
-import { isEmpty } from 'lodash'
+import { isEmpty, uniq, compact } from 'lodash'
 import moment from 'moment'
 import { takeEvery, call, put, all, select } from 'redux-saga/effects'
 import {
@@ -470,7 +470,7 @@ function* handleStripePayment({ payload }) {
     const { token, error } = yield stripe.createToken(data)
     if (token) {
       const apiPaymentResponse = yield call(paymentApi.pay, {
-        productIds,
+        productIds: uniq(compact(productIds)),
         token,
       })
       if (apiPaymentResponse.success) {

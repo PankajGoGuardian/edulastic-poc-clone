@@ -46,7 +46,6 @@ const PurchaseFlowModals = (props) => {
     handleStripeMultiplePayment,
     subscription: { subEndDate, subType } = {},
     user,
-    fetchUserSubscriptionStatus,
     itemBankSubscriptions = [],
     premiumProductId,
     products,
@@ -74,6 +73,7 @@ const PurchaseFlowModals = (props) => {
     bulkInviteBookKeepers,
     isBookKeepersInviteSuccess,
     setBookKeepersInviteSuccess,
+    subsLicenses = [],
   } = props
 
   const [payWithPoModal, setPayWithPoModal] = useState(false)
@@ -106,55 +106,99 @@ const PurchaseFlowModals = (props) => {
 
   const defaultSelectedProductIdsRef = useRef()
 
-  useEffect(() => {
-    // getSubscription on mount
-    fetchUserSubscriptionStatus()
-  }, [])
+  const getShouldProrate = (endDate) => {
+    const oneDay = 1000 * 60 * 60 * 24
+    const remainingDaysForPremiumExpiry = Math.round(
+      (new Date(endDate).getTime() - new Date().getTime()) / oneDay
+    )
+    return remainingDaysForPremiumExpiry > 90
+  }
+  const shouldProrateMultiplePurchase = useMemo(() => {
+    if (
+      (showMultiplePurchaseModal || showBuyMoreModal) &&
+      subsLicenses.length
+    ) {
+      // taking the first licesne end data because all the licesnes will have the same end date
+      const endDate = subsLicenses[0]?.expiresOn
+      return getShouldProrate(endDate)
+    }
+    return false
+  }, [subsLicenses, showMultiplePurchaseModal, showBuyMoreModal])
+
+  const shouldProrate = useMemo(() => {
+    if (showMultiplePurchaseModal || showBuyMoreModal) {
+      return false
+    }
+    if (subEndDate) {
+      return getShouldProrate(subEndDate)
+    }
+    return false
+  }, [subEndDate, showMultiplePurchaseModal, showBuyMoreModal])
 
   const { teacherPremium = {}, itemBankPremium = [] } = useMemo(() => {
     const boughtPremiumBankIds = itemBankSubscriptions
       .filter((x) => !x.isTrial)
       .map((x) => x.itemBankId)
-    const purchasableProducts = products.filter(
-      (x) => !boughtPremiumBankIds.includes(x.linkedProductId)
-    )
-
+    // for individual purchase have to filttered products
+    // for multiples or renew show all products
+    const purchasableProducts = shouldProrate
+      ? products.filter(
+          (x) => !boughtPremiumBankIds.includes(x.linkedProductId)
+        )
+      : products
     const result = purchasableProducts.map((product) => {
       const { id: currentProductId } = product
-      if (
-        !subEndDate ||
-        currentProductId === premiumProductId ||
-        (subEndDate && !isPaidPremium) ||
-        ['enterprise', 'partial_premium'].includes(subType)
-      ) {
-        return {
-          ...product,
-          period: product.period,
-          price: product.price,
+
+      if (!shouldProrateMultiplePurchase) {
+        if (
+          !subEndDate ||
+          currentProductId === premiumProductId ||
+          (subEndDate && !isPaidPremium) ||
+          ['enterprise', 'partial_premium'].includes(subType)
+        ) {
+          return {
+            ...product,
+            period: product.period,
+            price: product.price,
+          }
         }
       }
-      let currentDate = new Date()
-      const itemBankSubEndDate = new Date(
-        currentDate.setDate(currentDate.getDate() + product.period)
-      ).valueOf()
-      const computedEndDate = Math.min(itemBankSubEndDate, subEndDate)
-      currentDate = Date.now()
-      const amountFactor =
-        (computedEndDate - currentDate) / (itemBankSubEndDate - currentDate)
-      const dynamicPrice = Math.round(amountFactor * product.price)
-      const dynamicPeriodInDays = Math.round(amountFactor * product.period)
+
+      let dynamicPrice = product.price
+      let dynamicPeriodInDays = product.period
+      let endDate = subEndDate
+      if (shouldProrateMultiplePurchase) {
+        // taking the first licesne end data because all the licesnes will have the same end date
+        endDate = subsLicenses[0]?.expiresOn
+      }
+      if (shouldProrate || shouldProrateMultiplePurchase) {
+        let currentDate = new Date()
+        const itemBankSubEndDate = new Date(
+          currentDate.setDate(currentDate.getDate() + product.period)
+        ).valueOf()
+        const computedEndDate = endDate
+          ? Math.min(itemBankSubEndDate, new Date(endDate).getTime())
+          : itemBankSubEndDate
+        currentDate = Date.now()
+        const amountFactor = Math.min(
+          (computedEndDate - currentDate) / (itemBankSubEndDate - currentDate),
+          1
+        )
+        dynamicPrice = Math.ceil(amountFactor * product.price)
+        dynamicPeriodInDays = Math.ceil(amountFactor * product.period)
+      }
 
       return {
         ...product,
-        price: dynamicPrice,
         period: dynamicPeriodInDays,
+        price: dynamicPrice,
       }
     })
     return {
       teacherPremium: result[0],
       itemBankPremium: result.slice(1),
     }
-  }, [subEndDate, products])
+  }, [subEndDate, products, subsLicenses, shouldProrateMultiplePurchase])
 
   useEffect(() => {
     if (
@@ -263,13 +307,15 @@ const PurchaseFlowModals = (props) => {
           setSelectedProductIds={setSelectedProductIds}
           selectedProductIds={selectedProductIds}
           totalAmount={totalAmount}
+          shouldProrate={shouldProrate}
+          subEndDate={subEndDate}
         />
       )}
       {showMultiplePurchaseModal && (
         <MultipleLicensePurchase
           isVisible={showMultiplePurchaseModal}
           handleCloseModal={handleSubscriptionAddonModalClose}
-          products={products}
+          products={[teacherPremium, ...itemBankPremium]}
           handleClick={handleClick}
           setTotalAmount={setTotalAmount}
           teacherPremium={teacherPremium}
@@ -313,7 +359,7 @@ const PurchaseFlowModals = (props) => {
           isVisible={showBuyMoreModal}
           handleCloseModal={handleSubscriptionAddonModalClose}
           handleClick={handleClick}
-          products={products}
+          products={[teacherPremium, ...itemBankPremium]}
           currentItemId={currentItemId}
           setTotalAmount={setTotalAmount}
           setQuantities={setQuantities}
@@ -323,6 +369,7 @@ const PurchaseFlowModals = (props) => {
           totalAmount={totalAmount}
           isEdulasticAdminView={isEdulasticAdminView}
           teacherPremium={teacherPremium}
+          setSelectedLicenseId={setSelectedLicenseId}
         />
       )}
     </>
@@ -356,7 +403,6 @@ export default compose(
       handleStripeMultiplePayment: slice.actions.stripeMultiplePaymentAction,
       handleEdulasticAdminProductLicense:
         slice.actions.edulasticAdminProductLicenseAction,
-      fetchUserSubscriptionStatus: slice.actions.fetchUserSubscriptionStatus,
       setPaymentServiceModal: slice.actions.setPaymentServiceModal,
       setAddOnProductIds: slice.actions.setAddOnProductIds,
       bulkInviteBookKeepers: slice.actions.bulkInviteBookKeepersAction,

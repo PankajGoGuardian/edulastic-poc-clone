@@ -6,7 +6,7 @@ const {
   playerSkin: { quester },
 } = themes
 
-const { footer, header1, button } = quester
+const { footer, header1, header2, button } = quester
 
 export const StyledPopover = styled(Popover)`
   padding: 0;
@@ -16,23 +16,52 @@ export const StyledPopover = styled(Popover)`
 `
 
 export const StyledButton = styled.div`
-  background-color: ${button.background};
-  border: none;
-  color: ${button.textColor};
+  background-color: ${header2.background};
+  border: 1px solid ${button.background};
+  color: ${button.background};
   cursor: pointer;
-  font-weight: bold;
-  padding: 7px 15px;
-  text-transform: capitalize;
+  padding: 7px 25px;
+  text-transform: uppercase;
+  border-radius: 5px;
+  font-size: 10px;
+  &:hover {
+    background: ${button.background};
+    color: ${header2.background};
+    border-color: ${header2.background};
+  }
+  &:focus {
+    outline: none;
+  }
 `
 
 export const ControlBtn = styled.button`
-  border: none;
+  border: 1px solid ${button.background};
   color: ${button.textColor};
-  cursor: pointer;
-  font-weight: bold;
-  padding: 7px 15px;
   background-color: ${button.background};
+  cursor: pointer;
+  padding: 7px 20px;
+  border-radius: 5px;
+  display: inline-flex;
+  align-items: center;
+  font-size: 10px;
+  svg {
+    fill: ${button.textColor};
+  }
+  &:hover {
+    background-color: ${button.textColor};
+    color: ${button.background};
+    border: 1px solid ${button.background};
+    svg {
+      fill: ${button.background};
+    }
+  }
+  &:focus {
+    outline: none;
+  }
   &[disabled] {
+    background-color: ${button.background};
+    border: 1px solid ${button.background};
+    color: ${button.textColor};
     cursor: default;
     opacity: 0.3;
     svg {
@@ -48,10 +77,6 @@ export const StyledMenu = styled(Menu)`
   .ant-dropdown-menu-item,
   .ant-menu-item {
     font-weight: 600;
-    &:hover {
-      background: #fcaf17;
-      color: white;
-    }
   }
   .ant-dropdown-menu-item-disabled {
     &:hover {
@@ -64,17 +89,27 @@ export const StyledMenu = styled(Menu)`
     justify-content: space-between;
   }
   .ant-menu-item {
-    height: 76px;
+    height: 50px;
     width: 66px;
-    border: 2px solid black;
     display: flex;
     align-items: center;
     justify-content: center;
     margin-right: 10px;
     float: left;
-    svg {
-      margin-right: 6px;
-    }
+    border-radius: 4px;
+  }
+`
+
+export const MenuItem = styled(Menu.Item)`
+  &.ant-menu-item {
+    background-color: ${(props) => props.bg};
+    color: #fff;
+    transition: all ease-in 0.3s;
+    ${({ disabled }) =>
+      !disabled &&
+      `&:hover {
+    box-shadow: 1px 2px 4px 1px #333;
+  }`}
   }
 `
 
@@ -86,7 +121,7 @@ export const StyledHeaderTitle = styled.div`
   font-size: 14px;
   color: ${footer.textColor} !important;
   border-bottom: 1px solid ${header1.border};
-  padding: 8px 15px;
+  padding: 7px 50px;
   justify-content: space-between;
   .ant-breadcrumb-link,
   .ant-breadcrumb-separator,

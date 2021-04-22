@@ -424,8 +424,9 @@ class DisneyCardContainer extends Component {
                     </StyledFlexDiv>
                   </PerfomanceSection>
                 </PaginationInfoS>
-                <PaginationInfoT data-cy="questions">
+                <PaginationInfoT className="questions-grid" data-cy="questions">
                   {!student.redirected &&
+                    recentAttemptsGrouped?.[student.studentId]?.length === 0 &&
                     student.questionActivities
                       .filter((x) => !x.disabled)
                       .map((questionAct, questionIndex) => {

@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { get } from 'lodash'
+import { get, isEmpty } from 'lodash'
 
 import { Col, Row } from 'antd'
 import { SpinLoader } from '@edulastic/common'
@@ -22,6 +22,7 @@ import {
   getStudentStandardLoader,
   getStudentStandardsAction,
   getReportsStandardsGradebookError,
+  resetStandardsGradebookAction,
 } from './ducks'
 
 import { getStudentAssignments } from '../../../common/util'
@@ -37,6 +38,7 @@ import {
 const StandardsGradebook = ({
   standardsGradebook,
   getStandardsGradebookRequest,
+  resetStandardsGradebook,
   isCsvDownloading,
   navigationItems,
   toggleFilter,
@@ -92,10 +94,12 @@ const StandardsGradebook = ({
   const [clickedStandard, setClickedStandard] = useState(undefined)
   const [clickedStudentName, setClickedStudentName] = useState(undefined)
 
+  useEffect(() => () => resetStandardsGradebook(), [])
+
   // set initial page filters
   useEffect(() => {
     setPageFilters({ ...pageFilters, page: 1 })
-  }, [settings])
+  }, [settings.requestFilters])
   // get paginated data
   useEffect(() => {
     const q = {
@@ -117,6 +121,7 @@ const StandardsGradebook = ({
     if (
       (settings.requestFilters.termId || settings.requestFilters.reportId) &&
       !loading &&
+      !isEmpty(standardsGradebook) &&
       !filteredDenormalizedData?.length
     ) {
       toggleFilter(null, true)
@@ -184,7 +189,7 @@ const StandardsGradebook = ({
         <StyledCard>
           <Row type="flex" justify="start">
             <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-              <StyledH3 marginLeft="50px">
+              <StyledH3 margin="0 0 10px 50px">
                 Mastery Level Distribution by Standard
               </StyledH3>
             </Col>
@@ -251,6 +256,7 @@ const enhance = compose(
     }),
     {
       getStandardsGradebookRequest: getStandardsGradebookRequestAction,
+      resetStandardsGradebook: resetStandardsGradebookAction,
       getStudentStandards: getStudentStandardsAction,
     }
   )

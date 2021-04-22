@@ -26,6 +26,9 @@ const TextDropdown = ({
         placeholder={placeholder}
         disabled={disableResponse}
         onChange={onChange}
+        getPopupContainer={() =>
+          document?.getElementById('question-main-wrapper')
+        }
       >
         {options.map((response, respID) => (
           <Option title={response} value={response} key={respID}>

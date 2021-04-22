@@ -1,3 +1,7 @@
+import { combineReducers } from 'redux'
+import { put, takeEvery, call, all, select } from 'redux-saga/effects'
+import { notification } from '@edulastic/common'
+import { keyBy } from 'lodash'
 import { createSlice, createAction } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
 import {
@@ -6,10 +10,6 @@ import {
   subscriptionApi,
   paymentApi,
 } from '@edulastic/api'
-import { combineReducers } from 'redux'
-import { put, takeEvery, call, all } from 'redux-saga/effects'
-import { notification } from '@edulastic/common'
-import { keyBy } from 'lodash'
 
 // ACTIONS
 const GET_DISTRICT_DATA = '[admin-upgrade] GET_DISTRICT_DATA'
@@ -259,6 +259,7 @@ const {
   searchSchoolsById: searchSchoolsByIdApi,
   saveOrgPermissionsApi,
   updateSubscriptionApi,
+  bulkUpdateSubscriptionApi,
 } = adminApi
 
 // SAGAS
@@ -306,23 +307,6 @@ function* upgradeDistrict({ payload }) {
   }
 }
 
-function* upgradeUserData({ payload }) {
-  console.log('payload', payload)
-  try {
-    const { result } = yield call(manageSubscriptionApi, payload)
-    if (result.success) {
-      notification({ type: 'success', msg: result.message })
-      yield put(
-        manageSubscriptionsByUsers.actions.success(result.subscriptionResult)
-      )
-    } else {
-      notification({ msg: result.message })
-    }
-  } catch (err) {
-    console.error(err)
-  }
-}
-
 function* searchUsersByEmailIds({ payload }) {
   try {
     const item = yield call(searchUsersByEmailsOrIdsApi, payload)
@@ -333,6 +317,34 @@ function* searchUsersByEmailIds({ payload }) {
       yield put(
         manageSubscriptionsByUsers.actions.searchEmailIdsSuccess(item.result)
       )
+    }
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+function* upgradeUserData({ payload }) {
+  try {
+    let result = {}
+    const { subscriptionIds = [], userIds = [], identifiers, ...data } = payload
+    if (subscriptionIds.length) {
+      result = yield call(bulkUpdateSubscriptionApi, {
+        ...data,
+        subscriptionIds,
+      })
+    }
+    if (userIds.length) {
+      const res = yield call(manageSubscriptionApi, {
+        ...data,
+        userIds,
+      })
+      result = res.result.success ? res.result : result
+    }
+    if (result.success) {
+      yield put(searchUsersByEmailIdAction({ identifiers }))
+      notification({ type: 'success', msg: result.message })
+    } else {
+      notification({ msg: result.message })
     }
   } catch (err) {
     console.error(err)
@@ -492,6 +504,13 @@ function* addSubscriptionSaga({ payload }) {
   try {
     const result = yield call(paymentApi.licensePurchase, payload) || {}
     if (result.licenseKeys) {
+      const { searchType } = yield select(getManageSubscriptionByLicensesData)
+      const data = {
+        type: searchType,
+        page: 1,
+        limit: 10,
+      }
+      yield put(manageSubscriptionsByLicenses.actions.fetchLicenses(data))
       notification({ type: 'success', msg: 'License(s) created successfully!' })
     } else {
       notification({ type: 'error', msg: 'License(s) creation failed!' })

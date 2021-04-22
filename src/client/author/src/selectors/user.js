@@ -363,6 +363,10 @@ export const getIsPowerPremiumAccount = createSelector(
   (state) => state.isPowerTeacher && state.features.premium
 )
 
+export const isPremiumUserSelector = createSelector(getUser, (userData) =>
+  _get(userData, ['features', 'premium'], false)
+)
+
 export const getInterestedCurriculumsByOrgType = createSelector(
   getInterestedCurriculumsSelector,
   getUserRole,

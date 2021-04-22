@@ -88,6 +88,14 @@ const columnsBase = next(tableColumnsData.questionTable, (arr) => {
 export function QuestionTableContainer(props) {
   const { dataSource, columnsFlags } = props
 
+  dataSource.forEach((data) => {
+    const { validation, maxScore } = data
+    if (validation && validation.unscored && maxScore === 0) {
+      data.score = 'Unscored'
+      data.maxScore = 'Unscored'
+    }
+  })
+
   // this is checking which columns to display/hide
   const columns = useMemo(() => {
     return columnsBase.filter((item, index) => {

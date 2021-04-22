@@ -12,11 +12,15 @@ const GET_REPORTS_STUDENT_PROGRESS_REQUEST_SUCCESS =
   '[reports] get reports student progress success'
 const GET_REPORTS_STUDENT_PROGRESS_REQUEST_ERROR =
   '[reports] get reports student progress error'
+const RESET_REPORTS_STUDENT_PROGRESS = '[reports] reset reports student progress'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
 export const getStudentProgressRequestAction = createAction(
   GET_REPORTS_STUDENT_PROGRESS_REQUEST
+)
+export const resetStudentProgressAction = createAction(
+  RESET_REPORTS_STUDENT_PROGRESS
 )
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
@@ -51,11 +55,12 @@ export const getReportsStudentProgressError = createSelector(
 
 const initialState = {
   studentProgress: {},
-  loading: true,
+  loading: false,
 }
 
 export const reportStudentProgressReducer = createReducer(initialState, {
   [RESET_ALL_REPORTS]: (state) => (state = initialState),
+  [RESET_REPORTS_STUDENT_PROGRESS]: (state) => (state = initialState),
   [GET_REPORTS_STUDENT_PROGRESS_REQUEST]: (state) => {
     state.loading = true
   },

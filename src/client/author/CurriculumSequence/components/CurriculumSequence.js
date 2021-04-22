@@ -59,6 +59,7 @@ import {
   checkPreviouslyCustomizedAction,
   unassignAssignmentsfromPlaylistAction,
   duplicatePlaylistRequestAction,
+  setIsUsedModalVisibleAction,
 } from '../ducks'
 import { getSummaryData } from '../util'
 /* eslint-enable */
@@ -75,6 +76,7 @@ import CurriculumRightPanel from './CurriculumRightPanel'
 import { allowDuplicateCheck } from '../../src/utils/permissionCheck'
 import { DeleteAssignmentModal } from '../../Assignments/components/DeleteAssignmentModal/deleteAssignmentModal'
 import { toggleDeleteAssignmentModalAction } from '../../sharedDucks/assignments'
+import CloneOnUsePlaylistConfirmationModal from './CloneOnUsePlaylistConfirmationModal'
 
 /** @typedef {object} ModuleData
  * @property {String} contentId
@@ -293,7 +295,7 @@ class CurriculumSequence extends Component {
     history.push(`/author/playlists/${duplicatePlayList._id}/edit`)
   }
 
-  handleUseThisClick = () => {
+  handleUseThisClick = ({ forceClone = false }) => {
     const {
       destinationCurriculumSequence,
       useThisPlayList,
@@ -306,6 +308,7 @@ class CurriculumSequence extends Component {
       grades,
       subjects,
       customize = null,
+      authors,
     } = destinationCurriculumSequence
     useThisPlayList({
       _id,
@@ -314,7 +317,34 @@ class CurriculumSequence extends Component {
       subjects,
       customize,
       fromUseThis: true,
+      authors,
+      forceClone,
     })
+  }
+
+  handleCreateNewCopy = () => this.handleUseThisClick({ forceClone: true })
+
+  handleGotoMyPlaylist = () => {
+    const { previouslyUsedPlaylistClone, useThisPlayList } = this.props
+    if (previouslyUsedPlaylistClone) {
+      const {
+        _id,
+        title,
+        grades,
+        subjects,
+        customize = null,
+        authors,
+      } = previouslyUsedPlaylistClone
+      useThisPlayList({
+        _id,
+        title,
+        grades,
+        subjects,
+        customize,
+        fromUseThis: true,
+        authors,
+      })
+    }
   }
 
   handleAddUnitOpen = () => {
@@ -640,6 +670,8 @@ class CurriculumSequence extends Component {
     this.setState({ unassignData: {} })
   }
 
+  handleCloseIsUsedModal = () => this.props.setIsUsedModalVisible(false)
+
   render() {
     const {
       handleRemoveTest,
@@ -704,7 +736,9 @@ class CurriculumSequence extends Component {
       removePlaylistFromUse,
       customizeInDraft,
       duplicatePlayList,
+      isUsedModalVisible = false,
     } = this.props
+
     const isManageContentActive = activeRightPanel === 'manageContent'
     // check Current user's edit permission
     const hasEditAccess = this.checkWritePermission()
@@ -1020,6 +1054,14 @@ class CurriculumSequence extends Component {
                 />
               )}
           </MainContentWrapper>
+          {isUsedModalVisible && (
+            <CloneOnUsePlaylistConfirmationModal
+              isVisible={isUsedModalVisible}
+              onCancel={this.handleCloseIsUsedModal}
+              handleGotoMyPlaylist={this.handleGotoMyPlaylist}
+              handleCreateNewCopy={this.handleCreateNewCopy}
+            />
+          )}
         </CurriculumSequenceWrapper>
       </>
     )
@@ -1056,6 +1098,9 @@ const enhance = compose(
         state.curriculumSequence?.isVideoResourcePreviewModal,
       showRightPanel: state.curriculumSequence?.showRightPanel,
       customizeInDraft: state.curriculumSequence?.customizeInDraft,
+      isUsedModalVisible: state.curriculumSequence?.isUsedModalVisible,
+      previouslyUsedPlaylistClone:
+        state.curriculumSequence?.previouslyUsedPlaylistClone,
     }),
     {
       onGuideChange: changeGuideAction,
@@ -1086,6 +1131,7 @@ const enhance = compose(
       toggleDeleteAssignmentModal: toggleDeleteAssignmentModalAction,
       unassignAssignmentsRequest: unassignAssignmentsfromPlaylistAction,
       duplicatePlayList: duplicatePlaylistRequestAction,
+      setIsUsedModalVisible: setIsUsedModalVisibleAction,
     }
   )
 )
@@ -1140,7 +1186,7 @@ const StyledFlexContainer = styled(FlexContainer)`
 
 export const ContentContainer = styled.div`
   width: ${({ showRightPanel }) =>
-    showRightPanel ? 'calc(100% - 400px)' : '100%'};
+    showRightPanel ? 'calc(100% - 360px)' : '100%'};
   padding-right: 5px;
   margin: 0px;
   margin-right: 10px;

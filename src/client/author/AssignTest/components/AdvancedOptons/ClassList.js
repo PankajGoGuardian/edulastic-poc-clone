@@ -276,7 +276,7 @@ class ClassList extends React.Component {
         width: '25%',
         dataIndex: 'className',
         key: 'className',
-        sorter: (a, b) => a.className > b.className,
+        sorter: (a, b) => a.className.localeCompare(b.className),
         sortDirections: ['descend', 'ascend'],
         render: (className, row) => (
           <div>
@@ -295,7 +295,7 @@ class ClassList extends React.Component {
                 color={lightGrey10}
               />
             )}
-            <span>{className}</span>
+            <span data-cy="className">{className}</span>
             <Tags
               data-cy="tags"
               tags={row.tags}
@@ -311,7 +311,7 @@ class ClassList extends React.Component {
         width: '25%',
         dataIndex: 'teacher',
         key: 'teacher',
-        sorter: (a, b) => a.teacher > b.teacher,
+        sorter: (a, b) => a.teacher.localeCompare(b.teacher),
         sortDirections: ['descend', 'ascend'],
       },
       {
@@ -319,7 +319,7 @@ class ClassList extends React.Component {
         width: '25%',
         key: 'subject',
         dataIndex: 'subject',
-        sorter: (a, b) => a.subject > b.subject,
+        sorter: (a, b) => a.subject.localeCompare(b.subject),
         sortDirections: ['descend', 'ascend'],
       },
       {
@@ -327,7 +327,7 @@ class ClassList extends React.Component {
         width: '15%',
         key: 'grades',
         dataIndex: 'grades',
-        sorter: (a, b) => a.grades > b.grades,
+        sorter: (a, b) => `${a.grades}`.localeCompare(`${b.grades}`),
         sortDirections: ['descend', 'ascend'],
       },
     ]
@@ -338,6 +338,7 @@ class ClassList extends React.Component {
           <StyledRowLabel>
             School
             <SelectInputStyled
+              data-cy="schoolSelect"
               mode="multiple"
               placeholder="All School"
               showSearch
@@ -409,6 +410,7 @@ class ClassList extends React.Component {
           <StyledRowLabel>
             Course
             <SelectInputStyled
+              data-cy="selectCourses"
               mode="multiple"
               placeholder="All Course"
               onChange={changeField('courseIds')}
@@ -430,6 +432,7 @@ class ClassList extends React.Component {
           <StyledRowLabel>
             Show Class/Groups
             <SelectInputStyled
+              data-cy="showClassGroup"
               placeholder="All"
               onChange={this.handleClassTypeFilter}
               showSearch
@@ -484,6 +487,7 @@ class ClassList extends React.Component {
             Tags
             <SelectInputStyled
               mode="multiple"
+              data-cy="tagSelect"
               value={searchTerms.tags}
               placeholder="All Tags"
               onChange={changeField('tags')}

@@ -81,6 +81,7 @@ const PlayerHeader = ({
       finishTest={finishTest}
       isCliUserPreview={cliUser}
       LCBPreviewModal={LCBPreviewModal}
+      zoomLevel={zoomLevel}
     />
   )
 

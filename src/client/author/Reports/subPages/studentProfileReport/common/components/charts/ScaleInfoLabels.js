@@ -44,6 +44,8 @@ const StyledColorSpan = styled.span`
 
 const StyledDiv = styled.div`
   text-align: center;
+  width: 50%;
+  padding-top: 50px;
 `
 
 const StyledDiv2 = styled.div`

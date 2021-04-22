@@ -12,11 +12,16 @@ const GET_REPORTS_PEER_PROGRESS_ANALYSIS_REQUEST_SUCCESS =
   '[reports] get reports peer progress analysis success'
 const GET_REPORTS_PEER_PROGRESS_ANALYSIS_REQUEST_ERROR =
   '[reports] get reports peer progress analysis error'
+const RESET_REPORTS_PEER_PROGRESS_ANALYSIS =
+  '[reports] reset reports peer progress analysis'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
 export const getPeerProgressAnalysisRequestAction = createAction(
   GET_REPORTS_PEER_PROGRESS_ANALYSIS_REQUEST
+)
+export const resetPeerProgressAnalysisAction = createAction(
+  RESET_REPORTS_PEER_PROGRESS_ANALYSIS
 )
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
@@ -51,11 +56,12 @@ export const getReportsPeerProgressAnalysisError = createSelector(
 
 const initialState = {
   peerProgressAnalysis: {},
-  loading: true,
+  loading: false,
 }
 
 export const reportPeerProgressAnalysisReducer = createReducer(initialState, {
   [RESET_ALL_REPORTS]: (state) => (state = initialState),
+  [RESET_REPORTS_PEER_PROGRESS_ANALYSIS]: (state) => (state = initialState),
   [GET_REPORTS_PEER_PROGRESS_ANALYSIS_REQUEST]: (state) => {
     state.loading = true
   },

@@ -7,6 +7,8 @@ import { groupBy, get } from 'lodash'
 
 import { RESET_ALL_REPORTS } from '../../../common/reportsRedux'
 
+import staticDropDownData from './static/staticDropDownData.json'
+
 const GET_REPORTS_MAR_FILTER_DATA_REQUEST =
   '[reports] get reports mar filter data request'
 const GET_REPORTS_MAR_FILTER_DATA_REQUEST_SUCCESS =
@@ -18,6 +20,8 @@ const SET_REPORTS_PREV_MAR_FILTER_DATA =
 
 const SET_FILTERS = '[reports] set mar filters'
 const SET_TEST_ID = '[reports] set mar testId'
+const SET_TEMP_DD_FILTER = '[reports] set mar tempDdFilter'
+const SET_TEMP_TAGS_DATA = '[reports] set mar temp tempTagsData'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
@@ -30,6 +34,8 @@ export const setPrevMARFilterDataAction = createAction(
 
 export const setFiltersAction = createAction(SET_FILTERS)
 export const setTestIdAction = createAction(SET_TEST_ID)
+export const setTempDdFilterAction = createAction(SET_TEMP_DD_FILTER)
+export const setTempTagsDataAction = createAction(SET_TEMP_TAGS_DATA)
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
 
@@ -67,6 +73,16 @@ export const getTestIdSelector = createSelector(
   (state) => state.testId
 )
 
+export const getTempDdFilterSelector = createSelector(
+  stateSelector,
+  (state) => state.tempDdFilter
+)
+
+export const getTempTagsDataSelector = createSelector(
+  stateSelector,
+  (state) => state.tempTagsData
+)
+
 export const getReportsPrevMARFilterData = createSelector(
   stateSelector,
   (state) => state.prevMARFilterData
@@ -91,26 +107,11 @@ const initialState = {
   MARFilterData: {},
   prevMARFilterData: null,
   filters: {
-    reportId: '',
-    termId: '',
-    subject: 'All',
-    studentSubject: 'All',
-    grade: 'All',
-    studentGrade: 'All',
-    courseId: 'All',
-    studentCourseId: 'All',
-    classIds: '',
-    groupIds: '',
-    schoolIds: '',
-    teacherIds: '',
-    assessmentTypes: '',
-    /**
-     * performanceBandProfile
-     */
-    profileId: '',
-    tags: [],
+    ...staticDropDownData.initialFilters,
   },
   testId: [],
+  tempDdFilter: {},
+  tempTagsData: {},
   loading: false,
 }
 
@@ -153,10 +154,6 @@ const setFiltersReducer = (state, { payload }) => {
   }
 }
 
-const setTestIdReducer = (state, { payload }) => {
-  state.testId = payload
-}
-
 export const reportMARFilterDataReducer = createReducer(initialState, {
   [GET_REPORTS_MAR_FILTER_DATA_REQUEST]: (state) => {
     state.loading = true
@@ -170,7 +167,15 @@ export const reportMARFilterDataReducer = createReducer(initialState, {
     state.error = payload.error
   },
   [SET_FILTERS]: setFiltersReducer,
-  [SET_TEST_ID]: setTestIdReducer,
+  [SET_TEST_ID]: (state, { payload }) => {
+    state.testId = payload
+  },
+  [SET_TEMP_DD_FILTER]: (state, { payload }) => {
+    state.tempDdFilter = payload
+  },
+  [SET_TEMP_TAGS_DATA]: (state, { payload }) => {
+    state.tempTagsData = payload
+  },
   [RESET_ALL_REPORTS]: (state) => (state = initialState),
   [SET_REPORTS_PREV_MAR_FILTER_DATA]: (state, { payload }) => {
     state.prevMARFilterData = payload

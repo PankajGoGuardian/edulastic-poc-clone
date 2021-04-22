@@ -19,6 +19,7 @@ import { normalize, schema } from 'normalizr'
 import { push } from 'connected-react-router'
 import * as Sentry from '@sentry/browser'
 import { captureSentryException, notification } from '@edulastic/common'
+import { roleuser } from '@edulastic/constants'
 import {
   curriculumSequencesApi,
   assignmentApi,
@@ -27,13 +28,25 @@ import {
   recommendationsApi,
   TokenStorage as Storage,
   testsApi,
+  resourcesApi,
 } from '@edulastic/api'
 import produce from 'immer'
 import { setCurrentAssignmentAction } from '../TestPage/components/Assign/ducks'
-import { getUserSelector, getUserId } from '../src/selectors/user'
+import {
+  getUserSelector,
+  getUserId,
+  getUserRole,
+  getCollectionsSelector,
+  getWritableCollectionsSelector,
+} from '../src/selectors/user'
+import {
+  allowDuplicateCheck,
+  allowContentEditCheck,
+} from '../src/utils/permissionCheck'
 import {
   publishTestAction,
   receiveTestByIdAction,
+  duplicateTestRequestAction,
   getTestSelector,
   UPDATE_TEST_STATUS,
   RECEIVE_TEST_BY_ID_SUCCESS,
@@ -168,7 +181,15 @@ export const SET_DIFFERENTIATION_WORK =
   '[differentiation] set differentiation work'
 export const SET_DIFFERENTIATION_SELECTED_DATA =
   '[differentiation] set differentiation selected data'
+export const ADD_TYPE_BASED_DIFFERENTIATION_RESOURCES =
+  '[differentiation] add differentiation resources'
+export const REMOVE_TYPE_BASED_DIFFERENTIATION_RESOURCES =
+  '[differentiation] remove differentiation resources'
+export const CLEAR_ALL_DIFFERENTIATION_RESOURCES =
+  '[differentiation] clear all differentiation resources'
 export const ADD_TEST_TO_DIFFERENTIATION = '[differentiation] add test'
+export const REMOVE_RESOURCE_FROM_DIFFERENTIATION =
+  '[differentiation] remove resource'
 export const ADD_RECOMMENDATIONS_ACTIONS =
   '[differentiation] add recommendations'
 export const UPDATE_FETCH_DIFFERENTIATION_WORK_LOADING_STATE =
@@ -217,6 +238,14 @@ export const TOGGLE_ASSIGNMENTS = '[playlist] toggle assignments'
 export const SET_CURRENT_ASSIGNMENT_IDS =
   '[playlist] set current assignment ids'
 export const DUPLICATE_PLAYLIST_REQUEST = '[playlist] duplicate request'
+export const SET_IS_USED_MODAL_VISIBLE =
+  '[playlist] show/hide is used modal popup'
+export const SET_PREVIOUSLY_USED_PLAYLIST_CLONE =
+  '[playlist] previously used playlist clone data'
+
+export const EDIT_PLAYLIST_TEST = '[playlist] edit playlist test'
+export const SET_USE_THIS_LOADER =
+  '[playlist] set/unset loader while using playlist'
 
 // Actions
 export const updateCurriculumSequenceList = createAction(
@@ -299,6 +328,15 @@ export const setDifferentiationWorkAction = createAction(
 export const setDifferentiationSelectedDataAction = createAction(
   SET_DIFFERENTIATION_SELECTED_DATA
 )
+export const addDifferentiationResourcesAction = createAction(
+  ADD_TYPE_BASED_DIFFERENTIATION_RESOURCES
+)
+export const removeDifferentiationResourcesAction = createAction(
+  REMOVE_TYPE_BASED_DIFFERENTIATION_RESOURCES
+)
+export const clearAllDiffenrentiationResourcesAction = createAction(
+  CLEAR_ALL_DIFFERENTIATION_RESOURCES
+)
 export const addRecommendationsAction = createAction(
   ADD_RECOMMENDATIONS_ACTIONS
 )
@@ -311,6 +349,9 @@ export const updateDestinationCurriculumSequenceRequestAction = createAction(
 export const updateWorkStatusDataAction = createAction(UPDATE_WORK_STATUS_DATA)
 export const addTestToDifferentationAction = createAction(
   ADD_TEST_TO_DIFFERENTIATION
+)
+export const removeResourceFromDifferentiationAction = createAction(
+  REMOVE_RESOURCE_FROM_DIFFERENTIATION
 )
 export const addResourceToDifferentiationAction = createAction(
   ADD_RESOURCE_TO_DIFFERENTIATION
@@ -357,6 +398,15 @@ export const setCurrentAssignmentIdsAction = createAction(
 )
 export const duplicatePlaylistRequestAction = createAction(
   DUPLICATE_PLAYLIST_REQUEST
+)
+export const setUseThisLoading = createAction(SET_USE_THIS_LOADER)
+
+export const setIsUsedModalVisibleAction = createAction(
+  SET_IS_USED_MODAL_VISIBLE
+)
+
+export const setPreviouslyUsedPlaylistClone = createAction(
+  SET_PREVIOUSLY_USED_PLAYLIST_CLONE
 )
 
 export const getAllCurriculumSequencesAction = (ids, showNotification) => {
@@ -451,6 +501,8 @@ export const checkPreviouslyCustomizedAction = createAction(
   CHECK_PREVIOUSLY_CUSTOMIZED
 )
 
+export const editPlaylistTestAction = createAction(EDIT_PLAYLIST_TEST)
+
 // State getters
 const getCurriculumSequenceState = (state) => state.curriculumSequence
 
@@ -476,6 +528,11 @@ export const getDifferentiationSelectedDataSelector = createSelector(
   (curriculumSequence) => curriculumSequence.differentiationSelectedData
 )
 
+export const getDifferentiationResourcesSelector = createSelector(
+  getCurriculumSequenceState,
+  (curriculumSequence) => curriculumSequence.differentiationResources
+)
+
 const getPublisher = (state) => {
   if (!state.curriculumSequence) return ''
 
@@ -484,6 +541,11 @@ const getPublisher = (state) => {
 
 const getDestinationCurriculumSequence = (state) =>
   state.curriculumSequence.destinationCurriculumSequence
+
+export const getIsUseThisLoading = createSelector(
+  getCurriculumSequenceState,
+  (curriculumSequence) => curriculumSequence.isUseThisLoading
+)
 
 function* makeApiRequest(
   idsForFetch = [],
@@ -655,16 +717,28 @@ function* putCurriculumSequence({ payload }) {
       'collectionName',
       'testItems',
     ])
+    const resourceMap = {}
     dataToSend.modules = dataToSend.modules.map((mod) => {
-      mod.data = mod.data.map((test) =>
-        omit(test, [
+      mod.data = mod.data.map((test) => {
+        if (test.contentType === 'test' && test.resources) {
+          const testId = test.contentId
+          test.resources = test.resources.map((resource) => {
+            const { contentId: resourceId, updateStandards } = resource
+            if (updateStandards) {
+              resourceMap[testId] = [...(resourceMap[testId] || []), resourceId]
+            }
+            return omit(resource, ['updateStandards'])
+          })
+        }
+        return omit(test, [
           'standards',
           'alignment',
           'assignments',
           'testType',
           'status',
+          'hasStandardsOnCreation',
         ])
-      )
+      })
       return mod
     })
     const response = yield curriculumSequencesApi.updateCurriculumSequence(
@@ -672,6 +746,10 @@ function* putCurriculumSequence({ payload }) {
       dataToSend
     )
     if (Object.keys(response).length > 0) {
+      if (!isEmpty(resourceMap)) {
+        yield call(resourcesApi.updateStandards, resourceMap)
+      }
+
       const { authors, version, _id } = response
       const userId = yield select(getUserId)
       if (authors && authors.map((author) => author._id).includes(userId)) {
@@ -1157,6 +1235,84 @@ function* duplicatePlayListSaga({ payload }) {
   }
 }
 
+function* editPlaylistTestSaga({ payload }) {
+  try {
+    const { testId, playlistId } = payload
+
+    if (!testId || !playlistId) {
+      notification({ msg: 'Insufficient parameters passed!' })
+      return
+    }
+
+    // In case of 'View test details' modal, test is already loaded in store.
+    let test = yield select(getTestSelector)
+
+    if (!test || test._id !== testId) {
+      // Fetch test
+      yield put(receiveTestByIdAction(testId, true, false, true, playlistId))
+      yield take(RECEIVE_TEST_BY_ID_SUCCESS)
+      test = yield select(getTestSelector)
+    }
+
+    const userCollections = yield select(getCollectionsSelector)
+    const userWritableCollections = yield select(getWritableCollectionsSelector)
+    const user = yield select(getUserSelector)
+    const userId = get(user, 'user._id')
+    const userRole = get(user, 'user.role')
+    const userFeatures = get(user, 'user.features')
+
+    const isDuplicateAllowed = allowDuplicateCheck(
+      test?.collections,
+      userCollections,
+      'test'
+    )
+    const hasCollectionAccess = allowContentEditCheck(
+      test?.collections,
+      userWritableCollections
+    )
+    const isOwner = test?.authors?.some((x) => x._id === userId)
+    const isEditDisabled = !(
+      isOwner ||
+      userRole === roleuser.EDULASTIC_CURATOR ||
+      (hasCollectionAccess && userFeatures.isCurator)
+    )
+
+    if (isEditDisabled && !isDuplicateAllowed) {
+      notification({ msg: 'Edit Test is restricted by the author' })
+      return
+    }
+
+    // Redirect user to edit page of the test.
+    if (!isEditDisabled) {
+      const tab = test?.title ? 'review' : 'description'
+      yield put(
+        push({
+          pathname: `/author/tests/tab/${tab}/id/${test._id}`,
+          state: {
+            editTestFlow: true,
+          },
+        })
+      )
+      return
+    }
+
+    // Clone the test and redirect user to edit page of cloned test.
+    if (isDuplicateAllowed) {
+      yield put(
+        duplicateTestRequestAction({
+          _id: testId,
+          title: test?.title || '',
+          redirectToNewTest: true,
+          // By default we keep reference to all the items in test in cloned test.
+          cloneItems: false,
+        })
+      )
+    }
+  } catch (e) {
+    notification({ messageKey: 'commonErr' })
+  }
+}
+
 function* duplicateManageContentSaga({ payload }) {
   try {
     const { _id: originalId, title: originalTitle, grades, subjects } = payload
@@ -1330,36 +1486,96 @@ function* publishDraftCustomizedPlaylist({ payload }) {
 
 function* useThisPlayListSaga({ payload }) {
   try {
+    yield put(setUseThisLoading(true))
     const {
-      _id,
+      _id: playlistId,
       title,
       grades,
       subjects,
       groupId,
       onChange,
       isStudent,
-      fromUseThis,
+      fromUseThis = false,
       fromRemovePlaylist = false,
+      customize = false,
+      authors = [],
+      forceClone = false,
     } = payload
-    yield call(userContextApi.setLastUsedPlayList, {
-      _id,
-      title,
-      grades,
-      subjects,
-    })
-    yield call(userContextApi.setRecentUsedPlayLists, {
-      _id,
-      title,
-      grades,
-      subjects,
-    })
-    yield put(receiveLastPlayListAction())
-    if (!isStudent) {
-      if (!fromRemovePlaylist)
-        yield call(curriculumSequencesApi.usePlaylist, _id)
+
+    let _id = playlistId
+
+    const currentUserId = yield select(getUserId)
+    const currentUserRole = yield select(getUserRole)
+    const hasPlaylistEditAccess =
+      authors?.find((x) => x._id === currentUserId) ||
+      currentUserRole === roleuser.EDULASTIC_CURATOR
+
+    /**
+     * If customize is enabled and user using the playlist is not
+     * an author nor a co-author then the playlist must be cloned with
+     * modules referencing the original playlist
+     */
+    if (
+      (customize && fromUseThis && !isStudent && !hasPlaylistEditAccess) ||
+      forceClone
+    ) {
+      // get the newly/previously cloned playlist
+      const duplicatedPlaylist = yield call(
+        curriculumSequencesApi.duplicatePlayList,
+        {
+          _id,
+          title: `${title} - Customized`,
+          forUseThis: true,
+          forceClone,
+        }
+      )
+
+      // if playlist was cloned previously
+      if (duplicatedPlaylist.previouslyCloned) {
+        // let the user decide to clone again (or) use the cloned
+        yield put(setIsUsedModalVisibleAction(true))
+        yield put(
+          setPreviouslyUsedPlaylistClone({
+            _id: duplicatedPlaylist._id,
+            title: duplicatedPlaylist.title,
+            grades: duplicatedPlaylist.grades,
+            subjects: duplicatedPlaylist.subjects,
+            customize: duplicatedPlaylist.customize,
+            authors: duplicatedPlaylist.authors,
+          })
+        )
+        return
+      }
+
+      _id = duplicatedPlaylist._id
+
+      yield put(receiveLastPlayListAction())
       yield put(receiveRecentPlayListsAction())
+      yield put(updateCurriculumSequenceAction(duplicatedPlaylist))
+    } else {
+      yield call(userContextApi.setLastUsedPlayList, {
+        _id,
+        title,
+        grades,
+        subjects,
+      })
+      yield call(userContextApi.setRecentUsedPlayLists, {
+        _id,
+        title,
+        grades,
+        subjects,
+      })
+
+      // fetch last used playlist
+      yield put(receiveLastPlayListAction())
+      if (!isStudent) {
+        if (!fromRemovePlaylist)
+          yield call(curriculumSequencesApi.usePlaylist, _id)
+        yield put(receiveRecentPlayListsAction())
+      }
+      yield put(getAllCurriculumSequencesAction([_id]))
     }
-    yield put(getAllCurriculumSequencesAction([_id]))
+    yield put(setIsUsedModalVisibleAction(false))
     const location = yield select((state) => state.router.location.pathname)
     const urlHasUseThis = location.match(/use-this/g)
     if (isStudent && onChange) {
@@ -1392,6 +1608,12 @@ function* useThisPlayListSaga({ payload }) {
   } catch (error) {
     console.error(error)
     notification({ messageKey: 'commonErr' })
+  } finally {
+    const { notificationCallback = null } = payload
+    yield put(setUseThisLoading(false))
+    if (notificationCallback) {
+      notificationCallback()
+    }
   }
 }
 
@@ -1580,12 +1802,18 @@ function structureWorkData(workData, statusData, firstLoad = false) {
       } else {
         draft[type].forEach((i) => {
           const currentStatus = currentStatusArray.find((s) => {
-            const isStandardRecommended =
-              s.derivedFrom === 'STANDARDS' &&
-              s.standardIdentifiers.includes(i.standardIdentifier) &&
-              (!s.skillIdentifiers ||
-                s.skillIdentifiers.includes(i.skillIdentifier))
-
+            let isStandardRecommended
+            if (type.toUpperCase() === 'PRACTICE') {
+              isStandardRecommended =
+                s.derivedFrom === 'STANDARDS' &&
+                s.standardIdentifiers.includes(i.standardIdentifier)
+            } else {
+              isStandardRecommended =
+                s.derivedFrom === 'STANDARDS' &&
+                s.standardIdentifiers.includes(i.standardIdentifier) &&
+                (!s.skillIdentifiers ||
+                  s.skillIdentifiers.includes(i.skillIdentifier))
+            }
             const isTestRecommended =
               s.derivedFrom === 'TESTS' && s.resourceId === i.testId
 
@@ -1913,6 +2141,7 @@ export function* watcherSaga() {
       unassignAssignmentsfromPlaylistSaga
     ),
     yield takeLatest(DUPLICATE_PLAYLIST_REQUEST, duplicatePlayListSaga),
+    yield takeLatest(EDIT_PLAYLIST_TEST, editPlaylistTestSaga),
   ])
 
   const currSequenceUpdateQueue = yield actionChannel(
@@ -2055,6 +2284,7 @@ const initialState = {
   differentiationStudentList: [],
   differentiationWork: {},
   differentiationSelectedData: {},
+  differentiationResources: {},
   isFetchingDifferentiationWork: false,
   workStatusData: {},
 
@@ -2075,6 +2305,9 @@ const initialState = {
     isAssigning: false,
     recommendations: [],
   },
+  isUsedModalVisible: false,
+  previouslyUsedPlaylistClone: null,
+  isUseThisLoading: false,
 }
 
 /**
@@ -2624,6 +2857,44 @@ export default createReducer(initialState, {
       ...payload,
     }
   },
+  [ADD_TYPE_BASED_DIFFERENTIATION_RESOURCES]: (state, { payload }) => {
+    const {
+      type,
+      contentId,
+      contentTitle,
+      contentType,
+      contentSubType,
+      contentUrl,
+    } = payload
+    const alreadyPresent = (state.differentiationResources?.[type] || []).find(
+      (x) => x.contentId === contentId
+    )
+    if (!alreadyPresent) {
+      state.differentiationResources[type] = [
+        ...(state.differentiationResources[type] || []),
+        {
+          type,
+          contentId,
+          contentVersionId: contentId,
+          description: contentTitle,
+          contentTitle,
+          contentType,
+          contentSubType,
+          contentUrl,
+        },
+      ]
+    }
+  },
+  [REMOVE_TYPE_BASED_DIFFERENTIATION_RESOURCES]: (state, { payload }) => {
+    const { type, contentId } = payload
+    state.differentiationResources[type] =
+      state.differentiationResources?.[type]?.filter(
+        (x) => x.contentId !== contentId
+      ) || []
+  },
+  [CLEAR_ALL_DIFFERENTIATION_RESOURCES]: (state) => {
+    state.differentiationResources = {}
+  },
   [ADD_TEST_TO_DIFFERENTIATION]: (state, { payload }) => {
     const { type, testId, masteryRange, title, testStandards } = payload
     const alreadyPresent = Object.keys(state.differentiationWork)
@@ -2638,6 +2909,12 @@ export default createReducer(initialState, {
         testStandards,
       })
     }
+  },
+  [REMOVE_RESOURCE_FROM_DIFFERENTIATION]: (state, { payload }) => {
+    const { type, testId } = payload
+    state.differentiationWork[type] = state.differentiationWork[type]?.filter(
+      (x) => x.testId !== testId
+    )
   },
   [ADD_RESOURCE_TO_DIFFERENTIATION]: (state, { payload }) => {
     const {
@@ -2669,7 +2946,7 @@ export default createReducer(initialState, {
     state.isFetchingDifferentiationWork = payload
   },
   [PLAYLIST_REMOVE_SUBRESOURCE]: (state, { payload }) => {
-    const { moduleIndex, contentId, itemIndex } = payload
+    const { moduleIndex, contentId, itemIndex, contentSubType } = payload
     if (
       state.destinationCurriculumSequence.modules[moduleIndex].data[itemIndex]
         .resources
@@ -2678,7 +2955,10 @@ export default createReducer(initialState, {
         itemIndex
       ].resources = state.destinationCurriculumSequence.modules[
         moduleIndex
-      ].data[itemIndex].resources.filter((x) => x.contentId !== contentId)
+      ].data[itemIndex].resources.filter(
+        (x) =>
+          !(x.contentId === contentId && x.contentSubType === contentSubType)
+      )
     }
   },
   [PLAYLIST_ADD_SUBRESOURCE]: (state, { payload }) => {
@@ -2690,6 +2970,9 @@ export default createReducer(initialState, {
       fromPlaylistTestsBox,
       standardIdentifiers,
       status,
+      contentSubType,
+      hasStandardsOnCreation,
+      standards = [],
       ...itemObj
     } = item
     if (
@@ -2703,8 +2986,19 @@ export default createReducer(initialState, {
     const resources =
       state.destinationCurriculumSequence.modules[moduleIndex].data[itemIndex]
         .resources
-    if (!resources.find((x) => x.contentId === contentId)) {
-      resources.push({ contentId, contentType, ...itemObj })
+    if (
+      !resources.find(
+        (x) => x.contentId === contentId && x.contentSubType === contentSubType
+      )
+    ) {
+      const updateStandards = !hasStandardsOnCreation && standards.length < 15
+      resources.push({
+        contentId,
+        contentType,
+        contentSubType,
+        updateStandards,
+        ...itemObj,
+      })
     }
   },
   [PLAYLIST_ADD_ITEM_INTO_MODULE]: (state, { payload }) => {
@@ -2882,5 +3176,17 @@ export default createReducer(initialState, {
   },
   [SET_CURRENT_ASSIGNMENT_IDS]: (state, { payload }) => {
     state.currentAssignmentIds = payload
+  },
+  [SET_IS_USED_MODAL_VISIBLE]: (state, { payload }) => {
+    if (!payload) {
+      state.previouslyUsedPlaylistClone = null
+    }
+    state.isUsedModalVisible = payload
+  },
+  [SET_PREVIOUSLY_USED_PLAYLIST_CLONE]: (state, { payload }) => {
+    state.previouslyUsedPlaylistClone = payload
+  },
+  [SET_USE_THIS_LOADER]: (state, { payload }) => {
+    state.isUseThisLoading = payload
   },
 })

@@ -275,6 +275,7 @@ const enhance = compose(
       loading: testLoadingSelector(state),
       title: state.test.title,
       testType: state.test.testType,
+      zoomLevel: state.ui.zoomLevel,
     }),
     {
       loadTest: loadTestAction,

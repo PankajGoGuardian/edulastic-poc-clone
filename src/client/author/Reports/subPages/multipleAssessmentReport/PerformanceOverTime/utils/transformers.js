@@ -77,6 +77,7 @@ export const convertToBandData = (metricInfo = [], bandInfo = []) => {
     return {
       ...scaleData,
       testName: metric.testName,
+      isIncomplete: metric.isIncomplete,
       testId: metric.testId,
       uniqId: metric.uniqId,
     }
@@ -85,7 +86,7 @@ export const convertToBandData = (metricInfo = [], bandInfo = []) => {
 }
 
 export const parseData = (rawData = {}) => {
-  const { metricInfo = [] } = rawData
+  const { metricInfo = [], incompleteTests = [] } = rawData
 
   if (!metricInfo.length) {
     return []
@@ -151,6 +152,7 @@ export const parseData = (rawData = {}) => {
       score,
       rawScore,
       records,
+      isIncomplete: incompleteTests.includes(testId),
     }
   })
 

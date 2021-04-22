@@ -1,9 +1,19 @@
 /* eslint-disable no-unused-vars */
-import { keyBy, groupBy, get, values, flatten, isEmpty } from 'lodash'
+import {
+  keyBy,
+  groupBy,
+  get,
+  values,
+  flatten,
+  isEmpty,
+  uniq,
+  some,
+  every,
+} from 'lodash'
 import { testActivityStatus, questionType } from '@edulastic/constants'
 import produce from 'immer'
 import { getMathHtml } from '@edulastic/common'
-import { red, yellow, themeColorLighter } from '@edulastic/colors'
+import { red, yellow, themeColorLighter, darkBlue2 } from '@edulastic/colors'
 import { getServerTs } from '../../student/utils'
 import { getFormattedName } from '../Gradebook/transformers'
 
@@ -61,6 +71,9 @@ export const getAllQidsAndWeight = (testItemIds, testItemsDataKeyed) => {
       (testItemsDataKeyed[testItemId].data &&
         testItemsDataKeyed[testItemId].data.questions) ||
       []
+    const isPracticeItem =
+      testItemsDataKeyed[testItemId]?.itemLevelScoring &&
+      every(questions, ({ validation }) => validation && validation.unscored)
     if (!questions.length) {
       qids = [
         ...qids,
@@ -72,6 +85,7 @@ export const getAllQidsAndWeight = (testItemIds, testItemsDataKeyed) => {
           qids: [],
           qLabel: '',
           barLabel: '',
+          isPractice: false,
         },
       ]
     } else if (testItemsDataKeyed[testItemId].itemLevelScoring) {
@@ -91,6 +105,9 @@ export const getAllQidsAndWeight = (testItemIds, testItemsDataKeyed) => {
             qids: questions.map((_x) => _x.id),
             qLabel: x.qLabel,
             barLabel: x.barLabel,
+            isPractice: testItemsDataKeyed[testItemId]?.itemLevelScoring
+              ? isPracticeItem
+              : x?.validation?.unscored || false,
           })),
       ]
     } else {
@@ -104,6 +121,9 @@ export const getAllQidsAndWeight = (testItemIds, testItemsDataKeyed) => {
           qids: [x.id],
           qLabel: x.qLabel,
           barLabel: x.barLabel,
+          isPractice: testItemsDataKeyed[testItemId]?.itemLevelScoring
+            ? isPracticeItem
+            : x?.validation?.unscored || false,
         })),
       ]
     }
@@ -242,7 +262,9 @@ const getMaxScoreFromItem = (testItem) => {
     return total
   }
   for (const question of testItem?.data?.questions || []) {
-    total += getMaxScoreFromQuestion(question)
+    if (!question?.validation?.unscored) {
+      total += getMaxScoreFromQuestion(question)
+    }
   }
   return total
 }
@@ -418,6 +440,47 @@ export function getResponseTobeDisplayed(
   return userResponse ? 'TEI' : ''
 }
 
+export function getStandardsForStandardBasedReport(
+  testItems,
+  standardsDescriptions
+) {
+  const standardsDescriptionsKeyed = keyBy(
+    standardsDescriptions,
+    (x) => `${x._id}`
+  )
+  const standardsQuestionsMap = {}
+  const questions = testItems.flatMap((x) =>
+    some(
+      x.data.questions,
+      ({ validation }) => validation && validation.unscored
+    )
+      ? []
+      : x.data.questions
+  )
+  for (const q of questions) {
+    const standards =
+      q.alignment
+        ?.flatMap((x) => x?.domains || [])
+        .flatMap((x) => x?.standards || []) || []
+    for (const std of standards) {
+      if (standardsQuestionsMap[`${std.id}`]) {
+        standardsQuestionsMap[`${std.id}`].qIds = uniq([
+          ...standardsQuestionsMap[`${std.id}`].qIds,
+          q.id,
+        ])
+      } else {
+        standardsQuestionsMap[`${std.id}`] = {
+          ...std,
+          desc: standardsDescriptionsKeyed[`${std._id}`]?.desc,
+          qIds: [q.id],
+          ...(std.name ? { identifier: std.name } : {}),
+        }
+      }
+    }
+  }
+  return values(standardsQuestionsMap)
+}
+
 export const transformGradeBookResponse = (
   {
     test,
@@ -505,6 +568,7 @@ export const transformGradeBookResponse = (
     qLabel: x.qLabel,
     barLabel: x.barLabel,
     scoringDisabled: true,
+    isPractice: x.isPractice,
   }))
   return studentNames
     .map(
@@ -568,6 +632,7 @@ export const transformGradeBookResponse = (
               barLabel,
               qLabel,
               _id: qActId,
+              isPractice,
             },
             index
           ) => {
@@ -576,13 +641,12 @@ export const transformGradeBookResponse = (
               questionActivitiesIndexed[`${testItemId}_${el}`]
             const questionMaxScore =
               maxScore ||
-              maxScore == 0 ||
-              getMaxScoreOfQid(
-                _id,
-                testItemsData,
-                currentQuestionActivity?.maxScore
-              )(testItemId)
-
+              (maxScore == 0 &&
+                getMaxScoreOfQid(
+                  _id,
+                  testItemsData,
+                  currentQuestionActivity?.maxScore
+                )(testItemId))
             if (!currentQuestionActivity) {
               return {
                 _id,
@@ -598,8 +662,19 @@ export const transformGradeBookResponse = (
                 score: 0,
                 qLabel,
                 ...(submitted
-                  ? { skipped: true, score: 0, maxScore: questionMaxScore }
-                  : { notStarted: true, score: 0, maxScore: questionMaxScore }),
+                  ? {
+                      skipped: true,
+                      score: 0,
+                      maxScore: questionMaxScore,
+                      isDummy: true,
+                    }
+                  : {
+                      notStarted: true,
+                      score: 0,
+                      maxScore: questionMaxScore,
+                      isDummy: true,
+                    }),
+                isPractice,
               }
             }
             let {
@@ -669,6 +744,7 @@ export const transformGradeBookResponse = (
                 currentQuestionActivity
               ),
               userResponse,
+              isPractice,
             }
           }
         )
@@ -792,7 +868,8 @@ export const getStudentCardStatus = (
       break
     case SUBMITTED:
       status.status = student?.graded === 'GRADED' ? 'Graded' : student.status
-      status.color = themeColorLighter
+      status.color =
+        student?.graded === 'GRADED' ? themeColorLighter : darkBlue2
       break
     case ABSENT:
       status.status = 'Absent'

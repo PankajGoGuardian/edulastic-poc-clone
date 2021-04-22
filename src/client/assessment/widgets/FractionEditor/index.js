@@ -1,6 +1,7 @@
 import React from 'react'
 import produce from 'immer'
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 
 import { CLEAR, EDIT } from '../../constants/constantsForQuestions'
 import { ContentArea } from '../../styled/ContentArea'
@@ -9,6 +10,7 @@ import CorrectAnswers from './components/CorrectAnswers'
 import Options from './components/Options'
 import Display from './components/Display'
 import ExtraSection from './components/Extras'
+import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'
 
 const FractionEditor = (props) => {
   const {
@@ -123,4 +125,6 @@ FractionEditor.defaultProps = {
   showQuestionNumber: false,
 }
 
-export default FractionEditor
+export default connect(null, {
+  setQuestionData: setQuestionDataAction,
+})(FractionEditor)

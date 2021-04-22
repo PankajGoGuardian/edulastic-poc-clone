@@ -13,7 +13,8 @@ import {
   IconSettings,
 } from '@edulastic/icons'
 import { test as testConstants } from '@edulastic/constants'
-import { withWindowSizes, notification } from '@edulastic/common'
+import { withWindowSizes, notification, CustomPrompt } from '@edulastic/common'
+import { withNamespaces } from '@edulastic/localization'
 import {
   receiveTestByIdAction,
   getTestEntitySelector,
@@ -27,6 +28,7 @@ import {
 import {
   getQuestionsArraySelector,
   getQuestionsSelector,
+  getAuthorQuestionStatus,
 } from '../../../sharedDucks/questions'
 import { getItemDetailByIdAction } from '../../../src/actions/itemDetail'
 import {
@@ -42,7 +44,10 @@ import ShareModal from '../../../src/components/common/ShareModal'
 import { validateQuestionsForDocBased } from '../../../../common/utils/helpers'
 import { proceedPublishingItemAction } from '../../../ItemDetail/ducks'
 import WarningModal from '../../../ItemDetail/components/WarningModal'
-import { getCollectionsSelector } from '../../../src/selectors/user'
+import {
+  getCollectionsSelector,
+  isPremiumUserSelector,
+} from '../../../src/selectors/user'
 import { hasUserGotAccessToPremiumItem } from '../../../dataUtils'
 
 const { statusConstants, passwordPolicy: passwordPolicyValues } = testConstants
@@ -104,33 +109,75 @@ class Container extends React.Component {
       receiveTestById,
       getDefaultTestSettings,
       changeView,
+      assessment: { grades },
     } = this.props
     receiveTestById(match.params.assessmentId)
     getDefaultTestSettings()
     window.onbeforeunload = () => this.beforeUnload()
     changeView(tabs.DESCRIPTION)
+    this.handleChangeKeypad(grades)
+  }
+
+  get isEditableTest() {
+    const { assessment, match, userId } = this.props
+    const { params = {} } = match
+    const { editEnable = true } = this.state
+    const { authors, status } = assessment
+    const owner =
+      (authors && authors.some((x) => x._id === userId)) || !params.id
+    return owner && (editEnable || status === statusConstants.DRAFT)
   }
 
   componentWillUnmount() {
     window.onbeforeunload = () => {}
   }
 
-  beforeUnload = () => {
+  handleChangeKeypad = (grades, updated = false) => {
     const {
-      assessment: test,
-      match: { params },
-      userId,
-      questionsUpdated,
-      updated,
+      setTestData,
+      assessment: { keypad },
+      isPremiumUser,
     } = this.props
-    const { authors, itemGroups, status } = test
-    const { editEnable = true } = this.state
-    const owner =
-      (authors && authors.some((x) => x._id === userId)) || !params.id
-    const isEditable = owner && (editEnable || status === statusConstants.DRAFT)
+    if (isPremiumUser && this.isEditableTest) {
+      if (isEmpty(keypad) || keypad.updated === false) {
+        const highestGrade = grades.reduce((acc, curr) => {
+          const currentGrade = parseInt(curr, 10)
+          if (currentGrade > acc) {
+            acc = currentGrade
+          }
+          return acc
+        }, 0)
+        if (highestGrade > 0 && highestGrade <= 5) {
+          setTestData({
+            keypad: { updated, type: 'predefined', value: 'basic' },
+          })
+        } else if (highestGrade > 5 && highestGrade <= 12) {
+          setTestData({
+            keypad: {
+              updated,
+              type: 'predefined',
+              value: 'intermediate',
+            },
+          })
+        } else {
+          setTestData({
+            keypad: {
+              type: 'item-level',
+              value: 'item-level-keypad',
+              updated,
+            },
+          })
+        }
+      }
+    }
+  }
+
+  beforeUnload = () => {
+    const { assessment: test, questionsUpdated, updated } = this.props
+    const { itemGroups } = test
 
     if (
-      isEditable &&
+      this.isEditableTest &&
       itemGroups[0].items.length > 0 &&
       (updated || questionsUpdated)
     ) {
@@ -159,6 +206,8 @@ class Container extends React.Component {
       currentTab,
       assessment: { title },
       changePreview,
+      authorQuestionStatus: newQuestionsAdded,
+      updated,
     } = this.props
 
     if (currentTab === tabs.DESCRIPTION && title && title.trim()) {
@@ -168,7 +217,15 @@ class Container extends React.Component {
       changeView(tab)
       changePreview('clear')
     } else {
-      notification({ messageKey: 'pleaseEnterName' })
+      return notification({ messageKey: 'pleaseEnterName' })
+    }
+
+    /**
+     * save test data on tab switch if test data or items are updated
+     * @see https://snapwiz.atlassian.net/browse/EV-25049
+     */
+    if (this.isEditableTest && (updated || newQuestionsAdded)) {
+      this.handleSave()
     }
   }
 
@@ -295,11 +352,9 @@ class Container extends React.Component {
 
     const { params = {} } = match
     const { docUrl, annotations, pageStructure, freeFormNotes } = assessment
-    const { editEnable } = this.state
-    const { authors, status } = assessment
+    const { authors } = assessment
     const owner =
       (authors && authors.some((x) => x._id === userId)) || !params.id
-    const isEditable = owner && (editEnable || status === statusConstants.DRAFT)
 
     const props = {
       docUrl,
@@ -309,7 +364,7 @@ class Container extends React.Component {
       questionsById,
       pageStructure,
       freeFormNotes,
-      isEditable,
+      isEditable: this.isEditableTest,
     }
 
     switch (currentTab) {
@@ -317,6 +372,7 @@ class Container extends React.Component {
         return (
           <Description
             setData={setTestData}
+            onChangeKeypad={this.handleChangeKeypad}
             assessment={assessment}
             owner={owner}
           />
@@ -329,7 +385,7 @@ class Container extends React.Component {
         return (
           <Setting
             current={currentTab}
-            isEditable={isEditable}
+            isEditable={this.isEditableTest}
             // onShowSource={this.handleNavChange("source")}
             sebPasswordRef={this.sebPasswordRef}
             owner={owner}
@@ -356,11 +412,13 @@ class Container extends React.Component {
       userId,
       windowWidth,
       updated,
+      authorQuestionStatus: newQuestionsAdded,
       creating,
       showWarningModal,
       proceedPublish,
       currentTab,
       collections,
+      t,
     } = this.props
     const { editEnable, showShareModal } = this.state
     const owner = (authors && authors.some((x) => x._id === userId)) || !testId
@@ -387,6 +445,20 @@ class Container extends React.Component {
 
     return (
       <>
+        <CustomPrompt
+          when={!!updated || !!newQuestionsAdded}
+          onUnload
+          message={(loc = {}) => {
+            const { pathname = '' } = loc
+            const allow = pathname.startsWith('/author/assessments/')
+
+            if (allow) {
+              return true
+            }
+
+            return t('component.common.modal.exitPageWarning')
+          }}
+        />
         <ShareModal
           shareLabel="TEST URL"
           isVisible={showShareModal}
@@ -432,6 +504,7 @@ class Container extends React.Component {
 const enhance = compose(
   withRouter,
   withWindowSizes,
+  withNamespaces('author'),
   connect(
     (state) => ({
       assessment: getTestEntitySelector(state),
@@ -445,6 +518,8 @@ const enhance = compose(
       questionsById: getQuestionsSelector(state),
       currentTab: getViewSelector(state),
       collections: getCollectionsSelector(state),
+      authorQuestionStatus: getAuthorQuestionStatus(state),
+      isPremiumUser: isPremiumUserSelector(state),
     }),
     {
       receiveTestById: receiveTestByIdAction,

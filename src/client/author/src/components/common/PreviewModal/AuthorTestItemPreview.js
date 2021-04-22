@@ -509,6 +509,7 @@ class AuthorTestItemPreview extends Component {
               bloomsTaxonomy={bloomsTaxonomy}
               tags={tags}
               standards={standardIdentfiers}
+              item={item}
             />
           )}
           {isPassage && colIndex === 1 && (
@@ -520,6 +521,7 @@ class AuthorTestItemPreview extends Component {
               authorDifficulty={authorDifficulty}
               bloomsTaxonomy={bloomsTaxonomy}
               tags={tags}
+              item={item}
             />
           )}
         </WidgetContainer>

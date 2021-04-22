@@ -53,6 +53,7 @@ export const compareByMap = {
   ellStatus: 'ellStatus',
   iepStatus: 'iepStatus',
   frlStatus: 'frlStatus',
+  standard: 'standard',
 }
 
 const groupByCompareKey = (metricInfo, compareBy) => {
@@ -75,6 +76,8 @@ const groupByCompareKey = (metricInfo, compareBy) => {
       return groupBy(metricInfo, 'iepStatus')
     case 'frlStatus':
       return groupBy(metricInfo, 'frlStatus')
+    case 'standard':
+      return groupBy(metricInfo, 'standardId')
     default:
       return {}
   }
@@ -133,6 +136,22 @@ export const augmentWithData = (
       return metricInfo
     case 'frlStatus':
       return metricInfo
+    case 'standard':
+      return map(metricInfo, (metric) => {
+        const { standard = '', domain = '', curriculumId = '' } =
+          find(
+            metaInfo,
+            (standardInfo) =>
+              standardInfo.standardId.toString() ===
+              metric.standardId.toString()
+          ) || {}
+        return {
+          ...metric,
+          standard,
+          domain,
+          curriculumId,
+        }
+      })
     default:
       return []
   }
@@ -168,10 +187,12 @@ export const calculateTrend = (groupedData, sortBy) => {
     }
 
     forEach(allAssessments, (ob, index) => {
-      sum_x += index + 1
-      sum_y += ob.score
-      sum_xx += (index + 1) * (index + 1)
-      sum_xy += (index + 1) * ob.score
+      const x = index / (n - 1)
+      const y = ob.score / 100
+      sum_x += x
+      sum_y += y
+      sum_xx += x * x
+      sum_xy += x * y
     })
 
     if (n * sum_xy - sum_x * sum_y === 0) {
@@ -230,6 +251,8 @@ export const parseTrendData = (
       assessmentDate,
       startDate,
       testName,
+      standardId,
+      domainId,
     } = metric[0]
 
     forEach(groupByTests, (value, key) => {
@@ -249,6 +272,7 @@ export const parseTrendData = (
           2
         )} / ${sumBy(sanitizedRecords, 'maxScore')}`,
         studentCount: parseInt(maxStudents[studentCountKey], 10) || 0,
+        fm: value[0]?.fm,
       }
     })
     const dInfo = {}
@@ -270,6 +294,8 @@ export const parseTrendData = (
       assignmentId,
       testActivityId,
       testName,
+      standardId,
+      domainId,
       ...dInfo,
     }
   })

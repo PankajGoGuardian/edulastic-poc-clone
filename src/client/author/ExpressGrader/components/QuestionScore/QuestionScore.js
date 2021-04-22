@@ -19,7 +19,8 @@ class QuestionScore extends Component {
       question &&
       question.score !== undefined &&
       question.maxScore !== undefined
-    const { graded, skipped, maxScore, responseToDisplay } = question || {}
+    const { graded, skipped, maxScore, responseToDisplay, isPractice } =
+      question || {}
     let { score: studentScore } = question || {} // score, maxScore,
 
     let answerStatus = null
@@ -40,6 +41,11 @@ class QuestionScore extends Component {
       // maxScore = 1;
       studentScore = '-'
     }
+    const unscoredDisplay = scoreMode &&
+      isPractice && {
+        displayText: `U`,
+        tooltipdisplay: `Unscored`,
+      }
     if (skipped) studentScore = 0
 
     const onClickHandler = () => {
@@ -52,7 +58,7 @@ class QuestionScore extends Component {
         {isTest ? (
           <StyledWrapper answerStatus={answerStatus} onClick={onClickHandler}>
             {/* color={getScoreColor(score, maxScore)} */}
-            {scoreMode ? (
+            {scoreMode && !isPractice ? (
               <QuestionScoreCell
                 groupId={groupId}
                 question={question}
@@ -64,13 +70,19 @@ class QuestionScore extends Component {
                 title={
                   <span
                     dangerouslySetInnerHTML={{
-                      __html: responseToDisplay || '-',
+                      __html:
+                        unscoredDisplay?.tooltipdisplay ||
+                        responseToDisplay ||
+                        '-',
                     }}
                   />
                 }
               >
                 <StyledText
-                  dangerouslySetInnerHTML={{ __html: responseToDisplay || '-' }}
+                  dangerouslySetInnerHTML={{
+                    __html:
+                      unscoredDisplay?.displayText || responseToDisplay || '-',
+                  }}
                   responseView
                 />
               </Tooltip>

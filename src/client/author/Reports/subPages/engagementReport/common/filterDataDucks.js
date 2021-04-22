@@ -3,11 +3,15 @@ import { createSelector } from 'reselect'
 
 import { RESET_ALL_REPORTS } from '../../../common/reportsRedux'
 
+import staticDropDownData from './static/staticDropDownData.json'
+
 const SET_FILTERS = '[reports] set er filters'
+const SET_TEMP_TAGS_DATA = '[reports] set spr temp tags data'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
 export const setFiltersAction = createAction(SET_FILTERS)
+export const setTempTagsDataAction = createAction(SET_TEMP_TAGS_DATA)
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
 
@@ -23,6 +27,11 @@ export const getFiltersSelector = createSelector(
   (state) => state.filters
 )
 
+export const getTempTagsDataSelector = createSelector(
+  stateSelector,
+  (state) => state.tempTagsData
+)
+
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -30,23 +39,18 @@ export const getFiltersSelector = createSelector(
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //
 
 const initialState = {
-  prevERFilterData: null,
-  ERFilterData: {},
   filters: {
-    reportId: '',
-    termId: '',
-    schoolIds: '',
-    teacherIds: '',
-    grade: 'All',
-    subject: 'All',
-    assessmentTypes: '',
+    ...staticDropDownData.initialFilters,
   },
-  loading: false,
+  tempTagsData: {},
 }
 
 export const reportERFilterDataReducer = createReducer(initialState, {
   [SET_FILTERS]: (state, { payload }) => {
     state.filters = payload
+  },
+  [SET_TEMP_TAGS_DATA]: (state, { payload }) => {
+    state.tempTagsData = payload
   },
   [RESET_ALL_REPORTS]: (state) => (state = initialState),
 })

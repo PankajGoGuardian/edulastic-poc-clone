@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
+import UnScored from '@edulastic/common/src/components/Unscored'
 import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { get } from 'lodash'
+import { get, every } from 'lodash'
 import { DragSource } from 'react-dnd'
 import QuestionWrapper from '../../../../../../assessment/components/QuestionWrapper'
 import { Types } from '../../../../constants'
@@ -60,7 +61,12 @@ const ItemDetailWidget = ({
   const score = itemData.itemLevelScoring
     ? itemData.itemLevelScore
     : get(question, 'validation.validResponse.score', 0)
-
+  const unscored = itemData.itemLevelScoring
+    ? every(
+        get(itemData, 'data.questions', []),
+        ({ validation }) => validation && validation.unscored
+      )
+    : get(question, 'validation.unscored', false)
   const scoreChangeHandler = itemData.itemLevelScoring
     ? onChangeItemLevelPoint
     : onChangeQuestionLevelPoint
@@ -98,15 +104,19 @@ const ItemDetailWidget = ({
 
           {(!flowLayout || showButtons) && (
             <ButtonsContainer>
-              <Ctrls.Point
-                value={score}
-                onChange={scoreChangeHandler}
-                visible={isPointsBlockVisible}
-                disabled={disablePointsInput}
-                isRubricQuestion={
-                  !!question.rubrics && !itemData.itemLevelScoring
-                }
-              />
+              {!(unscored && showPoints) ? (
+                <Ctrls.Point
+                  value={score}
+                  onChange={scoreChangeHandler}
+                  visible={isPointsBlockVisible}
+                  disabled={disablePointsInput}
+                  isRubricQuestion={
+                    !!question.rubrics && !itemData.itemLevelScoring
+                  }
+                />
+              ) : (
+                <UnScored text="UNSCORED" height={"50px"} />
+              )}
 
               {connectDragSource(
                 <div>

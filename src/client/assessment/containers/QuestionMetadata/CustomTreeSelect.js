@@ -71,7 +71,7 @@ const Wrapper = styled.div`
 
 const Title = styled.div`
   background: ${(props) => props.bg || greyThemeLighter};
-  min-height: 40px;
+  min-height: 36px;
   border-radius: 2px;
   cursor: pointer;
   display: flex;

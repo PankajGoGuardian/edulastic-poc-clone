@@ -7,6 +7,7 @@ import { math } from '@edulastic/constants'
 import { isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
+
 import { MathInputStyles, EmptyDiv, KeyboardIcon } from './MathInputStyles'
 import Draggable from './Draggable'
 
@@ -68,7 +69,7 @@ class MathInput extends React.PureComponent {
   UNSAFE_componentWillReceiveProps(nextProps) {
     const { mathField } = this.state
     const { resetMath } = this.props
-    if (resetMath && mathField  && mathField.latex() !== nextProps.value) {
+    if (resetMath && mathField && mathField.latex() !== nextProps.value) {
       mathField.latex(this.sanitizeLatex(nextProps.value))
     }
   }
@@ -197,7 +198,12 @@ class MathInput extends React.PureComponent {
   sanitizeLatex = (v) => (v?.toString() || '').replace(/&amp;/g, '&')
 
   handleKeypress = (e) => {
-    const { restrictKeys, allowNumericOnly, value = '' } = this.props
+    const {
+      restrictKeys,
+      allowNumericOnly,
+      value = '',
+      onKeyPress,
+    } = this.props
     const isNonNumericKey = e.key && !e.key.match(/[0-9+-.%^@/]/g)
 
     if (!isEmpty(restrictKeys)) {
@@ -230,6 +236,9 @@ class MathInput extends React.PureComponent {
         e.preventDefault()
         e.stopPropagation()
       }
+    }
+    if (onKeyPress) {
+      onKeyPress(e)
     }
   }
 
@@ -481,6 +490,7 @@ MathInput.propTypes = {
   onBlur: PropTypes.func,
   onChangeKeypad: PropTypes.func,
   onKeyDown: PropTypes.func,
+  onKeyPress: PropTypes.func,
   fullWidth: PropTypes.bool,
   className: PropTypes.string,
   restrictKeys: PropTypes.array,
@@ -506,6 +516,7 @@ MathInput.defaultProps = {
   onFocus: () => {},
   onBlur: () => {},
   onKeyDown: () => {},
+  onKeyPress: () => {},
   onChangeKeypad: () => {},
   fullWidth: false,
   disabled: false,

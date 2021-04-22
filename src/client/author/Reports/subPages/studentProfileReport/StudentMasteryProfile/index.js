@@ -29,7 +29,7 @@ import { useGetStudentMasteryData } from '../common/hooks'
 import {
   getGrades,
   getStudentName,
-  getDomainOptions,
+  getDomainOptionsByGradeSubject,
 } from '../common/utils/transformers'
 import StudentPerformanceSummary from './common/components/table/StudentPerformanceSummary'
 import {
@@ -40,9 +40,11 @@ import {
   getStudentStandardLoader,
   getStudentStandardsAction,
   getReportsStudentMasteryProfileError,
+  resetStudentMasteryProfileAction,
 } from './ducks'
 
 import staticDropDownData from '../../singleAssessmentReport/common/static/staticDropDownData.json'
+import { getUserRole } from '../../../../src/selectors/user'
 
 const usefilterRecords = (records, domain, grade, subject) =>
   // Note: record.domainId could be integer or string
@@ -77,12 +79,14 @@ const StudentMasteryProfile = ({
   isCsvDownloading,
   studentMasteryProfile,
   getStudentMasteryProfileRequest,
+  resetStudentMasteryProfile,
   getStudentStandards,
   studentStandardData,
   loadingStudentStandard,
   sharedReport,
   t,
   toggleFilter,
+  userRole,
 }) => {
   const sharedReportFilters = useMemo(
     () =>
@@ -92,11 +96,7 @@ const StudentMasteryProfile = ({
     [sharedReport]
   )
 
-  const { studentClassData = [], scaleInfo: scales = [] } = get(
-    SPRFilterData,
-    'data.result',
-    {}
-  )
+  const { scaleInfo: scales = [] } = get(SPRFilterData, 'data.result', {})
 
   const scaleInfo = (
     scales.find(
@@ -104,8 +104,6 @@ const StudentMasteryProfile = ({
         x._id === (sharedReportFilters || settings.requestFilters).profileId
     ) || scales[0]
   )?.scale
-
-  const studentClassInformation = studentClassData[0] || {}
 
   const { metricInfo = [], studInfo = [], skillInfo = [] } = get(
     studentMasteryProfile,
@@ -151,7 +149,7 @@ const StudentMasteryProfile = ({
     selectedGrade.key,
     selectedSubject.key
   )
-  const domainOptions = getDomainOptions(
+  const domainOptions = getDomainOptionsByGradeSubject(
     studentDomains,
     selectedGrade.key,
     selectedSubject.key
@@ -161,6 +159,8 @@ const StudentMasteryProfile = ({
     false
   )
   const [clickedStandard, setClickedStandard] = useState(undefined)
+
+  useEffect(() => () => resetStudentMasteryProfile(), [])
 
   useEffect(() => {
     if (settings.selectedStudent.key && settings.requestFilters.termId) {
@@ -184,6 +184,7 @@ const StudentMasteryProfile = ({
     if (
       (settings.requestFilters.termId || settings.requestFilters.reportId) &&
       !loading &&
+      !isEmpty(studentMasteryProfile) &&
       !metrics.length
     ) {
       toggleFilter(null, true)
@@ -262,13 +263,14 @@ const StudentMasteryProfile = ({
             </FlexContainer>
           </FlexContainer>
         </ReStyledCard>
-        <ReStyledCard maxW="300px" ml="20px">
+        <ReStyledCard maxW="50%" ml="20px">
           <StudentPerformancePie
             selectedMastery={selectedMastery}
             data={filteredStandards}
             scaleInfo={scaleInfo}
             onSectionClick={onSectionClick}
             getTooltip={getTooltip}
+            showAsRow
           />
         </ReStyledCard>
       </FlexContainer>
@@ -276,13 +278,15 @@ const StudentMasteryProfile = ({
       <ReStyledCard>
         <FilterRow justifyContent="space-between">
           <DropdownContainer>
-            <ControlDropDown
-              by={selectedGrade}
-              selectCB={onGradeSelect}
-              data={staticDropDownData.grades}
-              prefix="Standard Grade"
-              showPrefixOnSelected={false}
-            />
+            {userRole !== 'student' && (
+              <ControlDropDown
+                by={selectedGrade}
+                selectCB={onGradeSelect}
+                data={staticDropDownData.grades}
+                prefix="Standard Grade"
+                showPrefixOnSelected={false}
+              />
+            )}
             <ControlDropDown
               by={selectedSubject}
               selectCB={onSubjectSelect}
@@ -298,7 +302,10 @@ const StudentMasteryProfile = ({
               prefix="Domain(s)"
             />
           </DropdownContainer>
-          <StyledButton onClick={() => setExpandRows(!expandRows)}>
+          <StyledButton
+            onClick={() => setExpandRows(!expandRows)}
+            data-cy="expand-row"
+          >
             <IconCollapse2 color={themeColor} width={12} height={12} />
             <span className="button-label">
               {expandRows ? 'COLLAPSE' : 'EXPAND'} ROWS
@@ -344,10 +351,12 @@ const withConnect = connect(
     isCsvDownloading: getCsvDownloadingState(state),
     studentStandardData: getStudentStandardData(state),
     loadingStudentStandard: getStudentStandardLoader(state),
+    userRole: getUserRole(state),
   }),
   {
     getStudentMasteryProfileRequest: getStudentMasteryProfileRequestAction,
     getStudentStandards: getStudentStandardsAction,
+    resetStudentMasteryProfile: resetStudentMasteryProfileAction,
   }
 )
 

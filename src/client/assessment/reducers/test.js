@@ -56,6 +56,8 @@ const initialState = {
   isTestPreviewModalVisible: false,
   blurTime: 0,
   savedBlurTime: 0,
+  grades: [],
+  subjects: [],
 }
 
 const test = (state = initialState, { payload, type }) => {
@@ -77,6 +79,8 @@ const test = (state = initialState, { payload, type }) => {
         freeFormNotes: payload.freeFormNotes,
         showMagnifier: payload.showMagnifier,
         languagePreference: payload.languagePreference,
+        grades: payload.grades,
+        subjects: payload.subjects,
         settings: {
           ...state.settings,
           ...payload.settings,

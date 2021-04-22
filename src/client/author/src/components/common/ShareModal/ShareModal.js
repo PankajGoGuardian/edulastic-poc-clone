@@ -184,8 +184,9 @@ class ShareModal extends React.Component {
       userRole,
       updateEmailNotificationData,
       isPublished,
+      testId: _testId,
     } = this.props
-    const testId = match.params.id
+    const testId = match.params.id || _testId
     const isDA = userRole === roleuser.DISTRICT_ADMIN
     if (isDA) {
       this.setState({ permission: 'VIEW' })

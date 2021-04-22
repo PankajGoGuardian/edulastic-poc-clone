@@ -13,11 +13,16 @@ const GET_REPORTS_PEER_PERFORMANCE_REQUEST_SUCCESS =
   '[reports] get reports sub-groups performance success'
 const GET_REPORTS_PEER_PERFORMANCE_REQUEST_ERROR =
   '[reports] get reports sub-groups performance error'
+const RESET_REPORTS_PEER_PERFORMANCE =
+  '[reports] reset reports sub-groups performance'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
 export const getPeerPerformanceRequestAction = createAction(
   GET_REPORTS_PEER_PERFORMANCE_REQUEST
+)
+export const resetPeerPerformanceAction = createAction(
+  RESET_REPORTS_PEER_PERFORMANCE
 )
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
@@ -58,12 +63,13 @@ export const defaultReport = {
 }
 
 const initialState = {
-  peerPerformance: defaultReport,
+  peerPerformance: {},
   loading: false,
 }
 
 export const reportPeerPerformanceReducer = createReducer(initialState, {
   [RESET_ALL_REPORTS]: (state) => (state = initialState),
+  [RESET_REPORTS_PEER_PERFORMANCE]: (state) => (state = initialState),
   [GET_REPORTS_PEER_PERFORMANCE_REQUEST]: (state) => {
     state.loading = true
   },

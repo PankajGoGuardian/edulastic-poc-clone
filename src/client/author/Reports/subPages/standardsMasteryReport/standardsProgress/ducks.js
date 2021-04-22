@@ -12,11 +12,16 @@ const GET_REPORTS_STANDARDS_PROGRESS_REQUEST_SUCCESS =
   '[reports] get reports standards progress success'
 const GET_REPORTS_STANDARDS_PROGRESS_REQUEST_ERROR =
   '[reports] get reports standards progress error'
+const RESET_REPORTS_STANDARDS_PROGRESS =
+  '[reports] reset reports standards progress'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
 export const getStandardsProgressRequestAction = createAction(
   GET_REPORTS_STANDARDS_PROGRESS_REQUEST
+)
+export const resetStandardsProgressAction = createAction(
+  RESET_REPORTS_STANDARDS_PROGRESS
 )
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
@@ -51,11 +56,12 @@ export const getReportsStandardsProgressError = createSelector(
 
 const initialState = {
   standardsProgress: {},
-  loading: true,
+  loading: false,
 }
 
 export const reportStandardsProgressReducer = createReducer(initialState, {
   [RESET_ALL_REPORTS]: (state) => (state = initialState),
+  [RESET_REPORTS_STANDARDS_PROGRESS]: (state) => (state = initialState),
   [GET_REPORTS_STANDARDS_PROGRESS_REQUEST]: (state) => {
     state.loading = true
   },

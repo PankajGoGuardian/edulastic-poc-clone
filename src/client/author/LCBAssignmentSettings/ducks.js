@@ -7,6 +7,7 @@ import {
   assignmentPolicyOptions,
   assignmentStatusOptions,
 } from '@edulastic/constants'
+import { receiveTestActivitySaga } from '../ClassBoard/ducks'
 
 const slice = createSlice({
   initialState: {
@@ -184,6 +185,7 @@ function* loadAssignmentSaga({ payload }) {
         data.assignmentPassword = assignmentPassword
       }
     }
+    yield call(receiveTestActivitySaga, { payload })
     yield put(slice.actions.loadAssignmentSucess(data))
   } catch (err) {
     const {

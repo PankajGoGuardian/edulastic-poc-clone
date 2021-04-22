@@ -42,6 +42,7 @@ const onHandler = (board) => {
       minorTicks,
       labelsFrequency,
       strokeColor,
+      highlightStrokeColor,
       tickColors = {},
     },
     canvas: { xMin, xMax, yMax },
@@ -73,7 +74,8 @@ const onHandler = (board) => {
       ...Colors.numberline,
       straightFirst: false,
       straightLast: false,
-      strokeColor: strokeColor || Colors.numberline.strokeColor,
+      strokeColor,
+      highlightStrokeColor,
       firstArrow: leftArrow === true ? { size: 8 } : false,
       lastArrow: rightArrow === true ? { size: 8 } : false,
     }

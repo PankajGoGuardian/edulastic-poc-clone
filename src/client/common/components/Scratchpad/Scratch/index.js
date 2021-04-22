@@ -24,8 +24,8 @@ import {
   setScratchpadRectAction,
 } from '../duck'
 import MathTool from './MathTool'
-import protractorImg from './assets/protractor.png'
-import centimeterImg from './assets/ruler.png'
+import protractorImg from './assets/protractor.svg'
+import centimeterImg from './assets/centimeter.svg'
 
 import AppConfig from '../../../../../app-config'
 
@@ -98,10 +98,8 @@ const Scratchpad = ({
   const toggleProtractor = () => {
     zwibbler.begin()
     const protractor = zwibbler.findNode('protractor')
-    const centimeter = zwibbler.findNode('centimeter')
-    if (protractor || centimeter) {
+    if (protractor) {
       zwibbler.deleteNode(protractor)
-      zwibbler.deleteNode(centimeter)
     } else {
       zwibbler.createNode('ImageNode', {
         url: protractorImg,
@@ -109,17 +107,27 @@ const Scratchpad = ({
         rotateAround: [191, 191],
         rotateHandle: [191, -10],
         lockSize: true,
-        matrix: [1, 0, 0, 1, 12, 75],
+        matrix: [1.7, 0, 0, 1.7, 15, 40],
         zIndex: 1,
       })
+    }
+    zwibbler.commit(true)
+    updateScratchpad({ activeMode: '' })
+  }
 
+  const toggleRuler = () => {
+    zwibbler.begin()
+    const centimeter = zwibbler.findNode('centimeter')
+    if (centimeter) {
+      zwibbler.deleteNode(centimeter)
+    } else {
       zwibbler.createNode('ImageNode', {
         url: centimeterImg,
         tag: 'centimeter',
         rotateAround: [191, 191],
         rotateHandle: [191, -10],
         lockSize: true,
-        matrix: [1, 0, 0, 1, 4, 4],
+        matrix: [0.7, 0, 0, 0.7, 15, 40],
         zIndex: 1,
       })
     }
@@ -173,8 +181,11 @@ const Scratchpad = ({
         case drawTools.DRAW_TRIANGLE:
           zwibbler.usePolygonTool(3, 0, 1.0, options)
           break
-        case drawTools.DRAW_MEASURE_TOOL:
+        case drawTools.DRAW_PROTRACTOR:
           toggleProtractor()
+          break
+        case drawTools.DRAW_RULER_TOOL:
+          toggleRuler()
           break
         case drawTools.DRAW_MATH: {
           mathNodeRef.current = new MathTool({ ctx: zwibbler })

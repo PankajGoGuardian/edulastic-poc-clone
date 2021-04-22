@@ -1,12 +1,12 @@
 /* eslint-disable react/no-did-update-set-state */
 import React, { Component } from 'react'
+import { get, isEqual, every } from 'lodash'
 import { compose } from 'redux'
 import PropTypes from 'prop-types'
-import { ThemeProvider, withTheme } from 'styled-components'
-import { get, isEqual } from 'lodash'
+import styled, { ThemeProvider, withTheme } from 'styled-components'
+
 import { white } from '@edulastic/colors'
 import { withNamespaces } from '@edulastic/localization'
-import { IconClockCircularOutline } from '@edulastic/icons'
 import { AssessmentPlayerContext, withWindowSizes } from '@edulastic/common'
 import { questionType } from '@edulastic/constants'
 
@@ -15,8 +15,7 @@ import { themes } from '../../../theme'
 import TestItemCol from './containers/TestItemCol'
 import { Container, RenderFeedBack } from './styled/Container'
 import FeedbackWrapper from '../FeedbackWrapper'
-import { TimeSpentWrapper } from '../QuestionWrapper'
-import ShowUserWork from '../Common/ShowUserWork'
+import { ShowUserWork } from '../Common/QuestionBottomAction'
 import { IPAD_LANDSCAPE_WIDTH } from '../../constants/others'
 import Divider from './Divider'
 import { changedPlayerContentAction } from '../../../author/sharedDucks/testPlayer'
@@ -155,7 +154,9 @@ class TestItemPreview extends Component {
       studentId,
       studentName,
       itemId,
+      itemLevelScoring,
       t,
+      isQuestionView,
     } = this.props
 
     const [
@@ -167,25 +168,30 @@ class TestItemPreview extends Component {
       stackedView,
     })
     const question = questions[widget.reference]
+    const isPracticeQuestion = itemLevelScoring
+      ? every(questions, ({ validation }) => validation && validation.unscored)
+      : get(question, 'validation.unscored', false)
     const prevQActivityForQuestion = previousQuestionActivity.find(
       (qa) => qa.qid === question.id
     )
-
+    const testActivityId = question?.activity?.testActivityId
     return displayFeedback ? (
       <FeedbackWrapper
         showFeedback={showFeedback}
         displayFeedback={displayFeedback}
         isPrintPreview={isPrintPreview}
         isExpressGrader={isExpressGrader}
+        isQuestionView={isQuestionView}
         showCollapseBtn={showCollapseBtn}
         prevQActivityForQuestion={prevQActivityForQuestion}
-        data={{ ...question, smallSize: true }}
+        data={{ ...question, isPracticeQuestion, smallSize: true }}
         isStudentReport={isStudentReport}
         isPresentationMode={isPresentationMode}
         shouldTakeDimensionsFromStore={shouldTakeDimensionsFromStore}
         studentId={studentId}
         studentName={studentName || t('common.anonymous')}
         itemId={itemId}
+        key={`${testActivityId}_${index}`}
         ref={this.feedbackRef}
       />
     ) : null
@@ -280,11 +286,15 @@ class TestItemPreview extends Component {
       isPassageWithQuestions,
       itemLevelScoring,
       cols,
+      isPrintPreview,
     } = this.props
     const isV1Multipart = (cols || []).some((col) => col.isV1Multipart)
     let showStackedView = false
 
-    if (isLCBView && !isQuestionView && !isPassageWithQuestions) {
+    if (
+      (isLCBView && !isQuestionView && !isPassageWithQuestions) ||
+      isPrintPreview
+    ) {
       if (
         !itemLevelScoring &&
         this.widgets.length > 1 &&
@@ -331,7 +341,6 @@ class TestItemPreview extends Component {
       isExpressGrader,
       isQuestionView,
       showStudentWork,
-      timeSpent,
       userWork,
       itemLevelScoring,
       isPrintPreview,
@@ -458,13 +467,9 @@ class TestItemPreview extends Component {
             </div>
           </Container>
           {hasDrawingResponse && (isLCBView || isExpressGrader) && userWork && (
-            <TimeSpentWrapper margin="0px 12px 12px">
-              <ShowUserWork isGhost onClickHandler={showStudentWork} mr="8px">
-                Show student work
-              </ShowUserWork>
-              <IconClockCircularOutline />
-              {timeSpent}s
-            </TimeSpentWrapper>
+            <ShowUserWorkWrapper>
+              <ShowUserWork onClick={showStudentWork} />
+            </ShowUserWorkWrapper>
           )}
         </div>
         {/* on the student side, show single feedback only when item level scoring is on */}
@@ -534,3 +539,13 @@ const enhance = compose(
 )
 
 export default enhance(TestItemPreview)
+
+const ShowUserWorkWrapper = styled.div`
+  position: relative;
+
+  button {
+    position: absolute;
+    top: -50px;
+    left: 28px;
+  }
+`

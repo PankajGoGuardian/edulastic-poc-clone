@@ -217,6 +217,7 @@ class CreateSchoolAdminModal extends React.Component {
                 placeholder={t('users.schooladmin.createsa.enteremail')}
                 autocomplete="new-password"
                 onChange={this.changeEmail}
+                data-cy="emailTextBox"
               />
             </ModalFormItem>
           </Col>
@@ -264,6 +265,7 @@ class CreateSchoolAdminModal extends React.Component {
                   onChange={this.handleChange}
                   onFocus={this.fetchSchool}
                   getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                  data-cy="selectSchools"
                 >
                   {schoolList.map((school) => (
                     <Option key={school._id} value={school._id}>
@@ -280,6 +282,7 @@ class CreateSchoolAdminModal extends React.Component {
             <CheckboxLabel
               checked={isPowerTeacher}
               onChange={this.changePowerTool}
+              data-cy="powerUserCheckBox"
             >
               {t('users.schooladmin.powertools')}
             </CheckboxLabel>

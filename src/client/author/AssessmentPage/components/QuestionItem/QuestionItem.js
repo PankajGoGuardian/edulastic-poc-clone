@@ -184,7 +184,9 @@ class QuestionItem extends React.Component {
     return (
       <DetailsContainer>
         <DetailTitle>Correct Answer:</DetailTitle>
-        <DetailContents>{answerRenderer(value, options)}</DetailContents>
+        <DetailContents data-cy="correctAns">
+          {answerRenderer(value, options)}
+        </DetailContents>
         {alternateResponsesDisplay}
       </DetailsContainer>
     )
@@ -298,10 +300,10 @@ class QuestionItem extends React.Component {
   }
 
   renderAnswerIndicator = (type) => {
-    let { evaluation } = this.props
-    if (!evaluation) {
-      evaluation = this.props?.data?.activity?.evaluation
-    }
+    const {
+      evaluation = get(this.props, 'data.activity.evaluation'),
+    } = this.props
+
     if (isUndefined(evaluation) || type === ESSAY_PLAIN_TEXT) {
       return null
     }
@@ -331,7 +333,9 @@ class QuestionItem extends React.Component {
       !!teacherComments?.text && (
         <DetailsContainer>
           <DetailTitle>{teacherComments.teacherName}:</DetailTitle>
-          <DetailContents>{teacherComments.text}</DetailContents>
+          <DetailContents data-cy="feedBack">
+            {teacherComments.text}
+          </DetailContents>
         </DetailsContainer>
       )
     )
@@ -420,6 +424,7 @@ class QuestionItem extends React.Component {
         review={testMode || review}
         annotations={annotations}
         pdfPreview={pdfPreview}
+        data-cy="questionItem"
       >
         <AnswerForm
           style={{ justifyContent: review ? 'flex-start' : 'space-between' }}

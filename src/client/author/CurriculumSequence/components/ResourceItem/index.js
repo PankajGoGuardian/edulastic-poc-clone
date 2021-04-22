@@ -13,6 +13,7 @@ import WebsiteIcon from './static/WebsiteIcon'
 import VideoIcon from './static/VideoIcon'
 import LTIResourceIcon from './static/LTIResourceIcon'
 import { Tooltip } from '../../../../common/utils/helpers'
+import { getInterestedStandards } from '../../../dataUtils'
 
 export const ICONS_BY_TYPE = {
   test: <IconWriting />,
@@ -27,32 +28,68 @@ export const ResouceIcon = ({ type, isAdded, ...rest }) => (
   </IconWrapper>
 )
 
+const getStandardIdentifiersForTest = (
+  summary,
+  alignment,
+  interestedCurriculums
+) => {
+  // Get intrested standards by orgType
+  let intrestedStandards =
+    getInterestedStandards(summary, alignment, interestedCurriculums) || []
+  if (!intrestedStandards.length) {
+    // fallback to test standards if no equivalent standards found
+    intrestedStandards = summary?.standards || []
+  }
+  return intrestedStandards.map((x) => x.identifier)
+}
+
+const getStandardIdentifiersForResource = (alignment) =>
+  alignment?.flatMap((x) =>
+    x?.domains?.flatMap((y) => y?.standards?.map((z) => z?.name))
+  ) || []
+
 const ResourceItem = ({
   contentTitle,
   contentDescription = '',
   contentUrl = '',
+  hasStandardsOnCreation,
+  standards = [],
   type,
   id,
-  summary,
+  contentVersionId,
+  summary = {},
+  alignment,
   data = undefined,
   isAdded,
   previewTest,
   status,
   testType,
+  interestedCurriculums,
 }) => {
-  const standardIdentifiers = (summary?.standards || []).map(
-    (x) => x.identifier
-  )
+  let standardIdentifiers = []
+  if (type === 'test') {
+    standardIdentifiers = getStandardIdentifiersForTest(
+      summary,
+      alignment,
+      interestedCurriculums
+    )
+  } else {
+    standardIdentifiers = getStandardIdentifiersForResource(alignment)
+  }
+
   const [, drag] = useDrag({
     item: {
       type: 'item',
       contentType: type,
       id,
+      contentVersionId,
       fromPlaylistTestsBox: true,
       contentTitle,
       contentDescription,
       contentUrl,
       standardIdentifiers,
+      hasStandardsOnCreation,
+      standards,
       data,
       status,
       testType,
@@ -87,6 +124,7 @@ const ResourceItem = ({
           width={18}
           height={16}
           onClick={previewTest}
+          data-cy={type === 'test' ? 'testPreview' : 'resourcePreview'}
         />
       </ResourceItemWrapper>
     </Tooltip>

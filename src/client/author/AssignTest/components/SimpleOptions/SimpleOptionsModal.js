@@ -115,32 +115,31 @@ const SimpleOptionsModal = ({
           passwordPolicy={assignment.passwordPolicy}
           hasStartDate={false}
           showOpenDueAndCloseDate={false}
+          paddingTop="8"
         />
-        <StyledRow mb="15px">
-          <Col span={24}>
-            <TestTypeSelector
-              userRole={userRole}
-              testType={assignment.testType || testSettings.testType}
-              onAssignmentTypeChange={onChange('testType')}
-            />
-          </Col>
+        <StyledRow mb="15px" gutter={16}>
+          <TestTypeSelector
+            userRole={userRole}
+            testType={assignment.testType || testSettings.testType}
+            onAssignmentTypeChange={onChange('testType')}
+            paddingTop="8"
+          />
         </StyledRow>
         {isRecommendingStandards && (
-          <StyledRow mb="15px">
-            <Col span={24}>
-              <QuestionPerStandardSelector
-                onChange={onChange('questionPerStandard')}
-                questionPerStandard={
-                  assignment.questionPerStandard ||
-                  testSettings.questionPerStandard
-                }
-                options={questionPerStandardOptions}
-              />
-            </Col>
+          <StyledRow mb="15px" gutter={16}>
+            <QuestionPerStandardSelector
+              onChange={onChange('questionPerStandard')}
+              questionPerStandard={
+                assignment.questionPerStandard ||
+                testSettings.questionPerStandard
+              }
+              options={questionPerStandardOptions}
+              paddingTop="8"
+            />
           </StyledRow>
         )}
 
-        <StyledRow mb="15px">
+        <StyledRow mb="15px" gutter={16}>
           <Col span={24}>
             <StyledLink onClick={onClickFullSettings}>
               SHOW ALL ASSIGN OPTIONS <IconExpandBox />

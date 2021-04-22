@@ -3,13 +3,13 @@ import { createAction, createReducer } from 'redux-starter-kit'
 
 import { RESET_ALL_REPORTS } from '../../common/reportsRedux'
 
-const SET_ER_SETTINGS = '[SAR settings] get er settings'
-const RESET_ER_SETTINGS = '[SAR settings] reset er settings'
+const SET_ER_SETTINGS = '[ER settings] set er settings'
+const SET_ER_TAGS_DATA = '[ER settings] set er tags data'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
 export const setERSettingsAction = createAction(SET_ER_SETTINGS)
-export const resetERSettingsAction = createAction(RESET_ER_SETTINGS)
+export const setERTagsDataAction = createAction(SET_ER_TAGS_DATA)
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
 
@@ -41,10 +41,16 @@ const initialState = {
     subject: '',
     assessmentTypes: '',
   },
+  tagsData: {},
 }
 
 export const reportERSettingsReducer = createReducer(initialState, {
-  [SET_ER_SETTINGS]: (state, { payload }) => (state = { ...payload }),
+  [SET_ER_TAGS_DATA]: (state, { payload }) => {
+    state.tagsData = { ...payload }
+  },
+  [SET_ER_SETTINGS]: (state, { payload }) => {
+    state.requestFilters = payload.requestFilters
+  },
   [RESET_ALL_REPORTS]: (state) => (state = initialState),
 })
 

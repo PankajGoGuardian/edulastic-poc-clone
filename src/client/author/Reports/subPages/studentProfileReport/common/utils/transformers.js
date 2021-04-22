@@ -10,6 +10,7 @@ import {
   filter,
   keys,
   uniq,
+  uniqBy,
   isEmpty,
 } from 'lodash'
 import {
@@ -17,13 +18,16 @@ import {
   getProficiencyBand,
   testTypeHashMap,
 } from '../../../../common/util'
-import gradesMap from '../static/json/gradesMap.json'
+import gradesMap from '../static/gradesMap.json'
+
+export const getFullName = (s) =>
+  `${s.firstName || ''} ${s.lastName || ''}`.trim()
 
 export const getStudentName = (selectedStudent, studInfo) => {
   if (selectedStudent.title) {
     return selectedStudent.title
   }
-  return `${studInfo.firstName || ''} ${studInfo.lastName || ''}`
+  return getFullName(studInfo)
 }
 
 export const getTermOptions = (terms = []) =>
@@ -83,15 +87,7 @@ export const augementAssessmentChartData = (
 export const getMaxScale = (scaleInfo = []) =>
   orderBy(scaleInfo, 'thresold', ['desc'])[0] || {}
 
-export const getOverallMasteryPercentage = (records, maxScale) => {
-  const masteredStandards = filter(
-    records,
-    (record) => record.scale.masteryName === maxScale.masteryName
-  )
-  return percentage(masteredStandards.length, records.length)
-}
-
-const getScaleForMasteryCalculation = (scaleInfo = []) => {
+export const getScaleForMasteryCalculation = (scaleInfo = []) => {
   let scales = scaleInfo.filter((scale) => scale.domainMastery)
   if (isEmpty(scales)) {
     scales = orderBy(scaleInfo, 'thresold', ['desc']).splice(0, 2)
@@ -226,12 +222,28 @@ export const getGrades = (studInfo = []) =>
     .map((grade) => gradesMap[grade])
     .join()
 
-export const transformFiltersForSPR = (requestFilters = {}) => ({
-  ...requestFilters,
-  profileId: requestFilters.standardsProficiencyProfileId,
-})
+export const getDomainOptions = (skillInfo = []) => [
+  { key: 'All', title: 'All Domains' },
+  ...uniqBy(skillInfo, 'domainId').map((x) => ({
+    key: `${x.domainId}`,
+    title: x.domain,
+  })),
+]
 
-export const getDomainOptions = (domains, grade, subject) => {
+export const getStandardOptions = (skillInfo = [], domainId) => [
+  { key: 'All', title: 'All Standards' },
+  ...uniqBy(
+    skillInfo.filter(
+      (x) => `${x.domainId}` === `${domainId}` || domainId === 'All'
+    ),
+    'standardId'
+  ).map((x) => ({
+    key: `${x.standardId}`,
+    title: x.standard,
+  })),
+]
+
+export const getDomainOptionsByGradeSubject = (domains, grade, subject) => {
   return [
     { key: 'All', title: 'All' },
     ...domains

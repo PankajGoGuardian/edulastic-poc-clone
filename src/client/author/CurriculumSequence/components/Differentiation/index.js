@@ -14,6 +14,7 @@ import WorkTable from './WorkTable'
 import {
   fetchDifferentiationStudentListAction,
   getDifferentiationStudentListSelector,
+  getDifferentiationResourcesSelector,
   getDifferentiationSelectedDataSelector,
   fetchDifferentiationWorkAction,
   setRecommendationsToAssignAction,
@@ -22,13 +23,14 @@ import {
   getWorkStatusDataSelector,
   getRecommendationsToAssignSelector,
   addTestToDifferentationAction,
-  addResourceToDifferentiationAction,
-  addSubResourceToTestInDiffAction,
-  removeSubResourceInDiffAction,
   setDifferentiationSelectedDataAction,
+  addDifferentiationResourcesAction,
+  removeDifferentiationResourcesAction,
+  clearAllDiffenrentiationResourcesAction,
+  removeResourceFromDifferentiationAction,
 } from '../../ducks'
 import ManageContentBlock from '../ManageContentBlock'
-import { HideRightPanel } from '../CurriculumRightPanel'
+import { HideRightPanel, RightContentWrapper } from '../CurriculumRightPanel'
 import { ContentContainer } from '../CurriculumSequence'
 import AssignTest from '../../../AssignTest'
 
@@ -36,6 +38,7 @@ const Differentiation = ({
   termId,
   assignments,
   differentiationStudentList,
+  differentiationResources,
   differentiationWork,
   differentiationSelectedData,
   isFetchingWork,
@@ -46,15 +49,18 @@ const Differentiation = ({
   setRecommendationsToAssign,
   recommendationsToAssign,
   addTestToDifferentiation,
-  addResourceToDifferentiation,
-  addSubResourceToTestInDiff,
   setEmbeddedVideoPreviewModal,
   setDifferentiationSelectedData,
   showResource,
-  removeSubResource,
   toggleManageContent,
   activeRightPanel,
   history,
+  addDifferentiationResources,
+  removeDifferentiationResources,
+  clearAllDiffenrentiationResources,
+  removeResourceFromDifferentiation,
+  selectedRows,
+  setSelectedRows,
 }) => {
   const [classList, setClassList] = useState([])
   const [assignmentsByTestId, setAssignmentsByTestId] = useState({})
@@ -189,6 +195,8 @@ const Differentiation = ({
 
     setClassList(selectedTestClasses)
     setDifferentiationSelectedData({ testId: value, class: null })
+    // clear any existing resources in differentation tab.
+    clearAllDiffenrentiationResources()
   }
 
   const handleClassChange = (value, option) => {
@@ -204,17 +212,18 @@ const Differentiation = ({
 
   const workTableCommonProps = {
     differentiationStudentList,
+    differentiationResources,
     setRecommendationsToAssign,
     recommendationsToAssign,
     selectedData: selectedClass,
     isFetchingWork,
     addTestToDifferentiation,
-    addResourceToDifferentiation,
-    addSubResourceToTestInDiff,
     setEmbeddedVideoPreviewModal,
     showResource,
-    removeSubResource,
     toggleAssignModal,
+    addDifferentiationResources,
+    removeDifferentiationResources,
+    removeResourceFromDifferentiation,
   }
 
   return (
@@ -224,7 +233,7 @@ const Differentiation = ({
       justifyContent="flex-start"
       flexDirection="column"
     >
-      <SubHeader>
+      <SubHeader showRightPanel={showManageContent}>
         <div>
           <span>Based on Performance in</span>
           <StyledSelect
@@ -235,7 +244,7 @@ const Differentiation = ({
                 .includes(input.trim().toLowerCase())
             }
             data-cy="select-assignment"
-            style={{ minWidth: 200, maxWidth: 300 }}
+            style={{ minWidth: 200, maxWidth: 250 }}
             placeholder="SELECT ASSIGNMENT"
             onChange={(value, option) => handleAssignmentChange(value, option)}
             value={selectedTest}
@@ -304,6 +313,8 @@ const Differentiation = ({
               data-cy="review"
               data={differentiationWork.review}
               workStatusData={workStatusData.REVIEW || []}
+              selectedRows={selectedRows}
+              setSelectedRows={setSelectedRows}
               {...workTableCommonProps}
             />
             <WorkTable
@@ -311,6 +322,8 @@ const Differentiation = ({
               data-cy="practice"
               data={differentiationWork.practice}
               workStatusData={workStatusData.PRACTICE || []}
+              selectedRows={selectedRows}
+              setSelectedRows={setSelectedRows}
               {...workTableCommonProps}
             />
             <WorkTable
@@ -318,12 +331,14 @@ const Differentiation = ({
               data-cy="challenge"
               data={differentiationWork.challenge}
               workStatusData={workStatusData.CHALLENGE || []}
+              selectedRows={selectedRows}
+              setSelectedRows={setSelectedRows}
               {...workTableCommonProps}
             />
           </div>
         </ContentContainer>
         {showManageContent && (
-          <div style={{ position: 'relative' }}>
+          <RightContentWrapper>
             {/* <SideButtonContainer style={{ paddingTop: 5 }}>
                 Hiding this button for now as implementation is not done. 
               
@@ -340,7 +355,7 @@ const Differentiation = ({
               <IconClose />
             </HideRightPanel>
             <ManageContentBlock isDifferentiationTab />
-          </div>
+          </RightContentWrapper>
         )}
       </StyledFlexContainer>
       {isAssignModalVisible && (
@@ -365,6 +380,7 @@ const enhance = compose(
       termId: getCurrentTerm(state),
       assignments: getAssignmentsSelector(state),
       differentiationStudentList: getDifferentiationStudentListSelector(state),
+      differentiationResources: getDifferentiationResourcesSelector(state),
       differentiationWork: getDifferentiationWorkSelector(state),
       recommendationsToAssign: getRecommendationsToAssignSelector(state),
       isFetchingWork: getDifferentiationWorkLoadingStateSelector(state),
@@ -378,11 +394,12 @@ const enhance = compose(
       fetchDifferentiationStudentList: fetchDifferentiationStudentListAction,
       fetchDifferentiationWork: fetchDifferentiationWorkAction,
       setRecommendationsToAssign: setRecommendationsToAssignAction,
+      addDifferentiationResources: addDifferentiationResourcesAction,
+      removeDifferentiationResources: removeDifferentiationResourcesAction,
+      clearAllDiffenrentiationResources: clearAllDiffenrentiationResourcesAction,
       addTestToDifferentiation: addTestToDifferentationAction,
-      addResourceToDifferentiation: addResourceToDifferentiationAction,
-      addSubResourceToTestInDiff: addSubResourceToTestInDiffAction,
-      removeSubResource: removeSubResourceInDiffAction,
       setDifferentiationSelectedData: setDifferentiationSelectedDataAction,
+      removeResourceFromDifferentiation: removeResourceFromDifferentiationAction,
     }
   )
 )

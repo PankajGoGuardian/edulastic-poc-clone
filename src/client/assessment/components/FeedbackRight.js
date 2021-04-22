@@ -14,7 +14,16 @@ import {
 } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { Avatar, Card, Input } from 'antd'
-import { get, isUndefined, maxBy, round, sumBy, toNumber, isNaN } from 'lodash'
+import {
+  get,
+  isUndefined,
+  maxBy,
+  round,
+  sumBy,
+  toNumber,
+  isNaN,
+  isEmpty,
+} from 'lodash'
 import PropTypes from 'prop-types'
 import React, { Component, useEffect } from 'react'
 import { connect } from 'react-redux'
@@ -22,6 +31,7 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import styled from 'styled-components'
 import * as Sentry from '@sentry/browser'
+import UnScored from '@edulastic/common/src/components/Unscored'
 import { setTeacherEditedScore as setTeacherEditedScoreAction } from '../../author/ExpressGrader/ducks'
 import { updateStudentQuestionActivityScoreAction } from '../../author/sharedDucks/classResponses'
 import { hasValidAnswers } from '../utils/answer'
@@ -63,9 +73,13 @@ class FeedbackRight extends Component {
     super(props)
 
     let { maxScore } = props?.widget?.activity || {}
-    const { score } = props?.widget?.activity || {}
+    let { score } = props?.widget?.activity || {}
     if (!maxScore) {
       maxScore = props?.widget?.validation?.validResponse?.score || 0
+    }
+
+    if (props?.isQuestionView && isEmpty(props?.widget?.activity)) {
+      score = 0
     }
 
     this.state = {
@@ -96,7 +110,7 @@ class FeedbackRight extends Component {
   }
 
   static getDerivedStateFromProps(
-    { widget: { activity, validation } },
+    { widget: { activity, validation }, isQuestionView },
     preState
   ) {
     let newState = {}
@@ -115,6 +129,10 @@ class FeedbackRight extends Component {
       const _feedback = get(activity, 'feedback.text', '')
       newState = { ...newState, qActId: qActId || _id }
 
+      if (isQuestionView && isEmpty(activity)) {
+        _score = 0
+      }
+      
       if (!isInvalidScore(_score) || _qActId !== (qActId || _id)) {
         newState = { ...newState, score: _score }
       }
@@ -130,6 +148,7 @@ class FeedbackRight extends Component {
       if (_feedback !== feedback) {
         newState = { ...newState, feedback: _feedback }
       }
+
       return newState
     }
 
@@ -225,13 +244,15 @@ class FeedbackRight extends Component {
       widget: { id, activity = {} },
       match,
       userThumbnail,
+      itemId,
     } = this.props
     const {
       testActivityId,
       groupId = match?.params?.classId,
       testItemId,
     } = activity
-    if (!id || !user || !user.user || !testActivityId) {
+
+    if (!id || !user || !user.user) {
       return
     }
     loadFeedbackResponses({
@@ -245,9 +266,9 @@ class FeedbackRight extends Component {
         groupId,
       },
       studentId,
-      testActivityId,
+      testActivityId: testActivityId || this.getTestActivityId(),
       questionId: id,
-      itemId: testItemId,
+      itemId: testItemId || itemId,
     })
   }
 
@@ -259,14 +280,25 @@ class FeedbackRight extends Component {
     this.setState({ showFeedbackSaveBtn: false })
   }
 
-  submitScore = (e) => {
-    const { changed } = this.state
-    const { widget: { activity: { qActId, _id } = {} } = {} } = this.props
+  allowToSubmitScore = (eventType) => {
     /**
      * in case of student did not visit the question, allow teacher trying to grade first time
      * @see EV-25489
      */
-    if (changed || (e?.type === 'blur' && !(qActId || _id))) {
+    if (eventType !== 'blur') {
+      return false
+    }
+    const { isQuestionView, widget: { activity = {} } = {} } = this.props
+    if (isQuestionView) {
+      return isEmpty(activity)
+    }
+    return activity.isDummy
+  }
+
+  submitScore = (e) => {
+    const { changed } = this.state
+    const allowSubmitScore = this.allowToSubmitScore(e?.type)
+    if (changed || allowSubmitScore) {
       this.onScoreSubmit()
     }
   }
@@ -422,25 +454,29 @@ class FeedbackRight extends Component {
             responseLoading={studentResponseLoading}
           />
         )}
-        <StyledDivSec>
-          <ScoreInputWrapper>
-            <ScoreInput
-              data-cy="scoreInput"
-              onChange={this.onChangeScore}
-              onBlur={this.submitScore}
-              value={_score}
-              disabled={
-                isPresentationMode ||
-                isPracticeQuestion ||
-                studentResponseLoading
-              }
-              ref={this.scoreInput}
-              onKeyDown={this.onKeyDownFeedback}
-              tabIndex={0}
-            />
-            <TextPara>{_maxScore}</TextPara>
-          </ScoreInputWrapper>
-        </StyledDivSec>
+        {!isPracticeQuestion ? (
+          <StyledDivSec>
+            <ScoreInputWrapper>
+              <ScoreInput
+                data-cy="scoreInput"
+                onChange={this.onChangeScore}
+                onBlur={this.submitScore}
+                value={_score}
+                disabled={
+                  isPresentationMode ||
+                  isPracticeQuestion ||
+                  studentResponseLoading
+                }
+                ref={this.scoreInput}
+                onKeyDown={this.onKeyDownFeedback}
+                tabIndex={0}
+              />
+              <TextPara>{_maxScore}</TextPara>
+            </ScoreInputWrapper>
+          </StyledDivSec>
+        ) : (
+          <UnScored data-cy="unscoredInput" text="UNSCORED" height="50px" />
+        )}
         {showGradingRubricButton && (
           <RubricGrading
             rubricData={rubricDetails}

@@ -615,4 +615,152 @@ export const apiForms = [
       },
     ],
   },
+  {
+    id: 'move-assessment',
+    name: 'Move Assessment',
+    endPoint: 'admin-tool/move-assessment',
+    method: 'post',
+    slowApi: true,
+    fields: [
+      {
+        name: 'teacherIdsSource',
+        displayName: 'Source User Id(s)',
+        placeholder: 'Enter comma separated Teacher Ids',
+        type: 'textarea',
+        formatter: (value) => value.split(',')?.map((v) => v.trim()),
+        required: true,
+      },
+      {
+        name: 'teacherIdsDestination',
+        displayName: 'Destination User Id(s)',
+        placeholder: 'Enter comma separated Teacher Ids',
+        type: 'textarea',
+        formatter: (value) => value.split(',')?.map((v) => v.trim()),
+        required: true,
+      },
+      {
+        name: 'srcSchoolId',
+        displayName: 'Source School Id(s)',
+        placeholder: 'Enter Source School Ids',
+        type: 'textarea',
+        formatter: (value) => value.split(',').map((v) => v.trim()),
+        required: false,
+      },
+      {
+        name: 'desSchoolId',
+        displayName: 'Destination School Id(s)',
+        placeholder: 'Enter Destination School Ids',
+        type: 'textarea',
+        formatter: (value) => value.split(',').map((v) => v.trim()),
+        required: false,
+      },
+      {
+        name: 'srcDistrictId',
+        displayName: 'Source District Id(s)',
+        placeholder: 'Enter Source District Ids',
+        type: 'textarea',
+        formatter: (value) => value.split(',')?.map((v) => v.trim()),
+        required: true,
+      },
+      {
+        name: 'desDistrictId',
+        displayName: 'Destination District Id(s)',
+        placeholder: 'Enter Destination District Ids',
+        type: 'textarea',
+        formatter: (value) => value.split(',')?.map((v) => v.trim()),
+        required: true,
+      },
+      {
+        name: 'testId',
+        displayName:
+          'Test Id(s) (If test id is not passed it will move all the source user tests to destination user)',
+        placeholder: 'Enter Test Ids',
+        type: 'textarea',
+        required: false,
+        formatter: (value) =>
+          value
+            .split(',')
+            ?.map((v) => v.trim())
+            .toString(),
+      },
+    ],
+  },
+  {
+    id: 'restore-student-count-in-groups',
+    name: 'Student Count Update',
+    endPoint: 'admin-tool/restore-student-count-in-groups',
+    method: 'post',
+    slowApi: true,
+    fields: [
+      {
+        name: 'districtId',
+        displayName: 'DistrictId',
+        placeholder: 'Enter the districtId',
+        type: 'string',
+        required: true,
+      },
+      {
+        name: 'groupIds',
+        displayName: 'Group Id(s)',
+        placeholder: 'Enter comma separated group Ids',
+        type: 'textarea',
+        required: false,
+        formatter: (value) =>
+          value
+            .split(',')
+            ?.map((v) => v.trim())
+            .toString(),
+      },
+    ],
+  },
+  {
+    id: 'evict-keys',
+    name: 'Evict Keys',
+    endPoint: 'admin-tool/evict-keys',
+    method: 'post',
+    slowApi: true,
+    fields: [
+      {
+        name: 'cacheKeyName',
+        displayName: 'cacheKeyName',
+        type: 'dropdown',
+        placeholder: 'select cache key',
+        values: [
+          'TEST',
+          'TEST_ITEM',
+          'STANDARDS',
+          'ITEMBANK',
+          'PLAYLIST_USAGES',
+          'TEST_USAGES',
+          'TESTITEM_USAGES',
+          'TEST_LIKES',
+          'TESTITEM_LIKES',
+          'PLAYLIST_USAGES_SORTED_SET',
+          'TESTITEM_USAGES_SORTED_SET',
+          'TEST_USAGES_SORTED_SET',
+          'TEST_LIKES_SORTED_SET',
+          'TESTITEM_LIKES_SORTED_SET',
+          'MONITOR_CHANGE_STREAM',
+          'INTERESTED_STANDARDS',
+          'MULTI_STANDARD_MAPPING',
+          'USER_DETAILS_',
+          'AUTHOR_TILE_VERSION',
+          'SUBSCRIPTION_MAP',
+        ],
+        required: true,
+      },
+      {
+        name: 'ids',
+        displayName: 'Id(s)',
+        placeholder: 'Enter comma separated Ids to be evicted',
+        type: 'textarea',
+        required: true,
+        formatter: (value) =>
+          value
+            .split(',')
+            ?.map((v) => v.trim())
+            .toString(),
+      },
+    ],
+  },
 ]

@@ -15,11 +15,13 @@ import {
   getReportsPerformanceOverTime,
   getReportsPerformanceOverTimeLoader,
   getReportsPerformanceOverError,
+  resetPerformanceOverTimeAction,
 } from './ducks'
 import { parseData } from './utils/transformers'
 
 const PerformanceOverTime = ({
   getPerformanceOverTimeRequest,
+  resetPerformanceOverTime,
   performanceOverTime,
   isCsvDownloading,
   settings,
@@ -34,6 +36,8 @@ const PerformanceOverTime = ({
   })
   const [analyseBy, setAnalyseBy] = useState(analyseByData[0])
   const [selectedTests, setSelectedTests] = useState([])
+
+  useEffect(() => () => resetPerformanceOverTime(), [])
 
   // set initial page filters
   useEffect(() => {
@@ -53,6 +57,7 @@ const PerformanceOverTime = ({
     if (
       (settings.requestFilters.termId || settings.requestFilters.reportId) &&
       !loading &&
+      !isEmpty(performanceOverTime) &&
       !metricInfo.length
     ) {
       toggleFilter(null, true)
@@ -87,10 +92,12 @@ const PerformanceOverTime = ({
     <>
       <StyledCard>
         <Row>
-          <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-            <StyledH3>How is assessment performance over time?</StyledH3>
+          <Col xs={24} sm={24} md={16} lg={16} xl={16}>
+            <StyledH3 fontSize="16px" margin="0">
+              Performance in Assessments over time
+            </StyledH3>
           </Col>
-          <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+          <Col xs={24} sm={24} md={8} lg={8} xl={8}>
             <AnalyseByFilter
               onFilterChange={setAnalyseBy}
               analyseBy={analyseBy}
@@ -117,6 +124,7 @@ const PerformanceOverTime = ({
           ...pageFilters,
           itemsCount: testsCount,
         }}
+        showTestIncompleteText={!!rawData.incompleteTests?.length}
         setBackendPagination={setPageFilters}
       />
     </>
@@ -132,6 +140,7 @@ const enhance = connect(
   }),
   {
     getPerformanceOverTimeRequest: getPerformanceOverTimeRequestAction,
+    resetPerformanceOverTime: resetPerformanceOverTimeAction,
   }
 )
 

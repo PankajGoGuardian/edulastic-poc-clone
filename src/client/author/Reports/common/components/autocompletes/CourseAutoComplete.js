@@ -21,8 +21,10 @@ const CourseAutoComplete = ({
   loading,
   loadCourseList,
   selectCB,
+  selectedCourseId,
 }) => {
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
+  const [fieldValue, setFieldValue] = useState('')
   const [searchResult, setSearchResult] = useState([])
   const [isFocused, setIsFocused] = useState(false)
 
@@ -46,20 +48,28 @@ const CourseAutoComplete = ({
   const onSearch = (value) => {
     setSearchTerms({ ...searchTerms, text: value })
   }
+  const onChange = useCallback((_text, element) => {
+    const _title = element?.props?.title
+    setSearchTerms((s) => ({ ...s, text: _title || _text }))
+    setFieldValue(_title || _text)
+  }, [])
   const onSelect = (key) => {
     const value = (searchTerms.text ? courseList : searchResult).find(
       (c) => c._id === key
     )?.name
     setSearchTerms({ text: value, selectedText: value, selectedKey: key })
+    setFieldValue(value)
     selectCB({ key, title: value })
   }
   const onBlur = () => {
     setIsFocused(false)
     if (searchTerms.text === '' && searchTerms.selectedText !== '') {
       setSearchTerms(DEFAULT_SEARCH_TERMS)
+      setFieldValue('')
       selectCB({ key: 'All', title: '' })
     } else {
       setSearchTerms({ ...searchTerms, text: searchTerms.selectedText })
+      setFieldValue(searchTerms.selectedText)
     }
   }
   const loadCourseListDebounced = useCallback(
@@ -84,6 +94,12 @@ const CourseAutoComplete = ({
       loadCourseListDebounced(query)
     }
   }, [searchTerms])
+  useEffect(() => {
+    if (selectedCourseId === 'All') {
+      setSearchTerms(DEFAULT_SEARCH_TERMS)
+      setFieldValue('')
+    }
+  }, [selectedCourseId])
 
   // build dropdown data
   const dropdownData = Object.values(
@@ -107,8 +123,9 @@ const CourseAutoComplete = ({
       <AutoComplete
         getPopupContainer={(trigger) => trigger.parentNode}
         placeholder="All Courses"
-        value={searchTerms.text}
+        value={fieldValue}
         onSearch={onSearch}
+        onChange={onChange}
         dataSource={dropdownData}
         onSelect={onSelect}
         onBlur={onBlur}
@@ -136,5 +153,8 @@ export default connect(
 const AutoCompleteContainer = styled.div`
   .ant-select-dropdown-menu-item-group-title {
     font-weight: bold;
+  }
+  .ant-select-selection__clear {
+    background: transparent;
   }
 `

@@ -46,6 +46,8 @@ const manuallyClosePolicies = [
   POLICY_CLOSE_MANUALLY_BY_ADMIN,
 ]
 
+const TIMESPENT_CLAMPING_THRESHOLD = 60 * 60 * 1000
+
 const defaultUploadFolder = aws.s3Folders.DEFAULT
 
 function* receiveItemSaga({ payload }) {
@@ -122,7 +124,7 @@ export function* saveUserResponse({ payload }) {
       type: SET_SAVE_USER_RESPONSE,
       payload: true,
     })
-    const ts = payload.timeSpent || 0
+    const ts = Math.min(payload.timeSpent || 0, TIMESPENT_CLAMPING_THRESHOLD)
     const {
       autoSave,
       shouldClearUserWork = false,
@@ -424,7 +426,12 @@ function* loadUserResponse({ payload }) {
   }
 }
 
-const timeOut = process.env.NODE_ENV === 'development' ? 12000 : 8000
+const timeOut =
+  process.env.NODE_ENV === 'development'
+    ? 12000
+    : process.env.REACT_APP_QA_ENV
+    ? 60000
+    : 8000
 
 /*
   The race condition in Effects.throttleAction times out on slow connections/dev envs

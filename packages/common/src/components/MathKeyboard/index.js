@@ -1,8 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import { connect } from 'react-redux'
 import { isObject, compact } from 'lodash'
 import { math } from '@edulastic/constants'
+import { FlexContainer } from '@edulastic/common'
+import { lightGrey9 } from '@edulastic/colors'
+import { IconMoveArrows } from '@edulastic/icons'
 import { KEYBOARD_BUTTONS, TAB_BUTTONS } from './constants/keyboardButtons'
 import { NUMBER_PAD_ITEMS } from './constants/numberPadItems'
 
@@ -69,7 +73,7 @@ class MathKeyboard extends React.PureComponent {
   }
 
   setKeyboardButtons(keypadType) {
-    const { restrictKeys, customKeys, symbols } = this.props
+    const { restrictKeys, customKeys, symbols, customKeypads } = this.props
     const type = symbols[0] || keypadType || math.keyboardMethods.BASIC
 
     const isCustomMode = isObject(type)
@@ -111,13 +115,22 @@ class MathKeyboard extends React.PureComponent {
 
     let selectOptions = math.symbols
     if (isObject(type)) {
-      selectOptions = [
-        {
-          value: symbols[0].label,
-          label: symbols[0].label,
-        },
-        ...math.symbols,
-      ]
+      /**
+       * avoid duplication of active keypad (item.symbols[0]) and user's custom keypads
+       * if previously saved custom keypad is chosen, it should not add to options
+       * it should only add if custom is chosen, but keypad is not saved
+       */
+      const hasSameId = (keypad) => keypad._id === type?._id
+      const alreadyIncluded = customKeypads.some(hasSameId)
+      if (!alreadyIncluded) {
+        selectOptions = [
+          {
+            value: symbols[0].label,
+            label: symbols[0].label,
+          },
+          ...math.symbols,
+        ]
+      }
     }
 
     this.setState({
@@ -134,10 +147,22 @@ class MathKeyboard extends React.PureComponent {
       showResponse,
       showDropdown,
       docBasedKeypadStyles,
+      showDragHandle,
+      customKeypads,
     } = this.props
     const { type, keyboardButtons, numberButtons, selectOptions } = this.state
+
     return (
       <MathKeyboardContainer docBasedKeypadStyles={docBasedKeypadStyles}>
+        {showDragHandle && (
+          <FlexContainer
+            justifyContent="center"
+            alignItems="center"
+            cursor="move"
+          >
+            <IconMoveArrows color={lightGrey9} width={19} height={19} />
+          </FlexContainer>
+        )}
         <KeyboardHeader
           options={selectOptions}
           showResponse={showResponse}
@@ -145,6 +170,7 @@ class MathKeyboard extends React.PureComponent {
           onInput={onInput}
           method={type}
           onChangeKeypad={this.handleGroupSelect}
+          customKeypads={customKeypads}
         />
         {/* {type !== "qwerty" && window.isMobileDevice && <HeaderKeyboard onInput={onInput} />} */}
         {type === 'qwerty' && <Keyboard onInput={onInput} />}
@@ -173,6 +199,7 @@ MathKeyboard.propTypes = {
   onInput: PropTypes.func,
   onChangeKeypad: PropTypes.func,
   dynamicVariableInput: PropTypes.bool,
+  showDragHandle: PropTypes.bool,
 }
 
 MathKeyboard.defaultProps = {
@@ -184,9 +211,12 @@ MathKeyboard.defaultProps = {
   onInput: () => null,
   onChangeKeypad: () => null,
   dynamicVariableInput: false,
+  showDragHandle: true,
 }
 
-export default MathKeyboard
+export default connect((state) => ({
+  customKeypads: state.customKeypad.keypads,
+}))(MathKeyboard)
 
 const MathKeyboardContainer = styled.div`
   /* border: 1px solid ${(props) =>

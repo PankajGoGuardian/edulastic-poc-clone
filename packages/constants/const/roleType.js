@@ -15,6 +15,7 @@ const ORG_TYPE = {
   TEACHER: 'teacher',
   SCHOOL_ADMIN: 'school-admin',
   DISTRICT_ADMIN: 'district-admin',
+  USER: 'user',
 }
 
 module.exports = {

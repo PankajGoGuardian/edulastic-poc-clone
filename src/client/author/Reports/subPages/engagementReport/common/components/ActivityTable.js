@@ -4,6 +4,7 @@ import next from 'immer'
 import qs from 'qs'
 
 import { Tooltip } from 'antd'
+import { roleuser } from '@edulastic/constants'
 import CsvTable from '../../../../common/components/tables/CsvTable'
 import { StyledTable, TooltipDiv } from './styled'
 
@@ -35,7 +36,7 @@ const ActivityTable = ({
   filters,
   activityBy = 'school',
 }) => {
-  const { grade: studentGrade, subject: studentSubject, ...query } = filters
+  const { grades: studentGrades, subjects: studentSubjects, ...query } = filters
 
   const tableData = Object.keys(filter).length
     ? data.filter((item) => filter[item[`${activityBy}Name`] || '-'])
@@ -50,8 +51,8 @@ const ActivityTable = ({
       rawColumns[0].render = (text, record) => {
         const queryStr = qs.stringify({
           ...query,
-          studentGrade,
-          studentSubject,
+          studentGrades,
+          studentSubjects,
           assessmentTypes: filters.assessmentTypes || defaultAssessmentTypes,
           schoolIds: record.schoolId,
         })
@@ -68,10 +69,13 @@ const ActivityTable = ({
     } else {
       rawColumns[0].sorter = sortText('teacherName')
       rawColumns[0].render = (text, record) => {
+        if (roleuser.DA_SA_ROLE_ARRAY.includes(record.role)) {
+          return text
+        }
         const queryStr = qs.stringify({
           ...query,
-          studentGrade,
-          studentSubject,
+          studentGrades,
+          studentSubjects,
           assessmentTypes: filters.assessmentTypes || defaultAssessmentTypes,
           teacherIds: record.teacherId,
         })

@@ -303,7 +303,7 @@ class AssessmentPlayerSimple extends React.Component {
     const scratchPadMode = toolsOpenStatus.indexOf(5) !== -1
     const cameraImageName = `${firstName}_${lastName}_${
       currentItem + 1
-    }_${cameraImageIndex}`
+    }_${cameraImageIndex}.png`
     return (
       <ThemeProvider theme={themeToPass}>
         <Container scratchPadMode={scratchPadMode} ref={this.containerRef}>

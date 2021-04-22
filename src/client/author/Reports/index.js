@@ -8,7 +8,7 @@ import { Spin } from 'antd'
 import { MainContentWrapper } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
 
-import { Header, SubHeader } from './common/components/Header'
+import { Header } from './common/components/Header'
 import StandardReport from './components/StandardReport'
 import navigation from './common/static/json/navigation.json'
 import { PrintableScreen } from './common/styled'
@@ -186,8 +186,6 @@ const Container = (props) => {
     }
   })
 
-  const expandFilter = showFilter
-
   if (loadingSharedReports) {
     return <Spin size="small" />
   }
@@ -218,15 +216,6 @@ const Container = (props) => {
         />
       )}
       <MainContentWrapper>
-        {!isCliUser && (
-          <SubHeader
-            breadcrumbsData={headerSettings.breadcrumbData}
-            onRefineResultsCB={headerSettings.onRefineResultsCB}
-            showFilter={expandFilter}
-            title={headerSettings.title}
-            isSharedReport={headerSettings.isSharedReport}
-          />
-        )}
         {reportType === 'custom-reports' ? (
           <Route
             exact
@@ -236,6 +225,8 @@ const Container = (props) => {
               return (
                 <CustomReports
                   {..._props}
+                  isCliUser={isCliUser}
+                  breadcrumbData={headerSettings.breadcrumbData}
                   setDynamicBreadcrumb={setDynamicBreadcrumb}
                 />
               )
@@ -269,7 +260,10 @@ const Container = (props) => {
             return (
               <SingleAssessmentReportContainer
                 {..._props}
-                showFilter={expandFilter}
+                isCliUser={isCliUser}
+                isPrinting={isPrinting}
+                breadcrumbData={headerSettings.breadcrumbData}
+                showFilter={showFilter}
                 showApply={showApply}
                 onRefineResultsCB={onRefineResultsCB}
                 loc={reportType}
@@ -289,6 +283,9 @@ const Container = (props) => {
           render={(_props) => (
             <MultipleAssessmentReportContainer
               {..._props}
+              isCliUser={isCliUser}
+              isPrinting={isPrinting}
+              breadcrumbData={headerSettings.breadcrumbData}
               showFilter={showFilter}
               showApply={showApply}
               onRefineResultsCB={onRefineResultsCB}
@@ -307,8 +304,11 @@ const Container = (props) => {
           render={(_props) => (
             <StandardsMasteryReportContainer
               {..._props}
+              isCliUser={isCliUser}
+              isPrinting={isPrinting}
+              breadcrumbData={headerSettings.breadcrumbData}
               premium={props.premium}
-              showFilter={expandFilter}
+              showFilter={showFilter}
               showApply={showApply}
               onRefineResultsCB={onRefineResultsCB}
               loc={reportType}
@@ -323,12 +323,17 @@ const Container = (props) => {
             `/author/reports/student-mastery-profile/student/`,
             `/author/reports/student-assessment-profile/student/`,
             `/author/reports/student-profile-summary/student/`,
+            `/author/reports/student-progress-profile/student/`,
           ]}
           render={(_props) => {
             setShowHeader(true)
             return (
               <StudentProfileReportContainer
                 {..._props}
+                isCliUser={isCliUser}
+                isPrinting={isPrinting}
+                breadcrumbData={headerSettings.breadcrumbData}
+                showApply={showApply}
                 showFilter={showFilter}
                 onRefineResultsCB={onRefineResultsCB}
                 loc={reportType}
@@ -348,6 +353,9 @@ const Container = (props) => {
             return (
               <EngagementReportContainer
                 {..._props}
+                isCliUser={isCliUser}
+                isPrinting={isPrinting}
+                breadcrumbData={headerSettings.breadcrumbData}
                 showFilter={showFilter}
                 showApply={showApply}
                 onRefineResultsCB={onRefineResultsCB}
@@ -364,6 +372,8 @@ const Container = (props) => {
             return (
               <CustomReportIframe
                 {..._props}
+                isCliUser={isCliUser}
+                breadcrumbData={headerSettings.breadcrumbData}
                 setDynamicBreadcrumb={setDynamicBreadcrumb}
               />
             )
@@ -373,7 +383,13 @@ const Container = (props) => {
           path="/author/reports/shared-reports/"
           render={(_props) => {
             setShowHeader(true)
-            return <SharedReports {..._props} />
+            return (
+              <SharedReports
+                {..._props}
+                isCliUser={isCliUser}
+                breadcrumbData={headerSettings.breadcrumbData}
+              />
+            )
           }}
         />
       </MainContentWrapper>

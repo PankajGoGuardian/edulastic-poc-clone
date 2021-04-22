@@ -14,7 +14,7 @@ const GraphEvaluationSettings = ({
     evaluationSettings[GRAPH_EVALUATION_SETTING] || []
 
   return (
-    <Container>
+    <Container data-cy="graphEvaluationSettings">
       {groupedOptionsLabels.map((label) => (
         <OptionPanel key={label}>
           <EvaluationOption

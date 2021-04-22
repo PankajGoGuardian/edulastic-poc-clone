@@ -18,6 +18,7 @@ import {
   getProducts,
   getItemBankSubscriptions,
   getIsSubscriptionExpired,
+  slice,
 } from '../../Subscription/ducks'
 import {
   addAndUpgradeUsersAction,
@@ -76,6 +77,7 @@ const ManageSubscriptionContainer = ({
   orgData,
   saveButtonState,
   setSaveButtonState,
+  fetchUserSubscriptionStatus,
 }) => {
   const [showBuyMoreModal, setShowBuyMoreModal] = useState(false)
   const [selectedLicenseId, setSelectedLicenseId] = useState(false)
@@ -120,6 +122,7 @@ const ManageSubscriptionContainer = ({
 
   useEffect(() => {
     fetchMultipleSubscriptions({ licenseOwnerId })
+    fetchUserSubscriptionStatus()
   }, [])
 
   const isSubscribed =
@@ -261,6 +264,7 @@ const ManageSubscriptionContainer = ({
         currentItemId={currentItemId}
         selectedLicenseId={selectedLicenseId}
         setSelectedLicenseId={setSelectedLicenseId}
+        subsLicenses={subsLicenses}
       />
       {showAddUsersModal && (
         <AddUsersModal
@@ -317,6 +321,7 @@ const enhance = compose(
       fetchMultipleSubscriptions: fetchMultipleSubscriptionsAction,
       bulkEditUsersPermission: bulkEditUsersPermissionAction,
       setSaveButtonState: updateSaveButtonState,
+      fetchUserSubscriptionStatus: slice.actions.fetchUserSubscriptionStatus,
     }
   )
 )

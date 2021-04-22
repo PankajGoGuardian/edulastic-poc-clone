@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
+import { isEmpty } from 'lodash'
 
 import { Col, Row } from 'antd'
 import { SpinLoader } from '@edulastic/common'
@@ -24,6 +25,7 @@ import {
   getReportsQuestionAnalysis,
   getReportsQuestionAnalysisLoader,
   getReportsQuestionAnalysisError,
+  resetQuestionAnalysisAction,
 } from './ducks'
 
 import { getChartData, getTableData } from './utils/transformers'
@@ -37,6 +39,7 @@ const QuestionAnalysis = ({
   role,
   questionAnalysis,
   getQuestionAnalysis,
+  resetQuestionAnalysis,
   settings,
   testList,
   sharedReport,
@@ -58,6 +61,8 @@ const QuestionAnalysis = ({
     selectedTest.title
   } (ID:${selectedTest._id.substring(selectedTest._id.length - 5)})`
 
+  useEffect(() => () => resetQuestionAnalysis(), [])
+
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
       const q = {
@@ -66,12 +71,13 @@ const QuestionAnalysis = ({
       }
       getQuestionAnalysis(q)
     }
-  }, [settings])
+  }, [settings.selectedTest, settings.requestFilters])
 
   useEffect(() => {
     if (
       (settings.requestFilters.termId || settings.requestFilters.reportId) &&
       !loading &&
+      !isEmpty(questionAnalysis) &&
       !questionAnalysis.metricInfo.length
     ) {
       toggleFilter(null, true)
@@ -210,5 +216,8 @@ export default connect(
     questionAnalysis: getReportsQuestionAnalysis(state),
     testList: getTestListSelector(state),
   }),
-  { getQuestionAnalysis: getQuestionAnalysisRequestAction }
+  {
+    getQuestionAnalysis: getQuestionAnalysisRequestAction,
+    resetQuestionAnalysis: resetQuestionAnalysisAction,
+  }
 )(QuestionAnalysis)

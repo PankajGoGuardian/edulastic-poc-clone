@@ -125,16 +125,21 @@ export const getDropDownTestIds = (arr) => {
 export const filterData = (data, filter) => {
   const filteredData = data.filter(
     (item) =>
-      (item.gender.toLowerCase() === filter.gender.toLowerCase() ||
-        filter.gender === 'all') &&
-      (item.frlStatus.toLowerCase() === filter.frlStatus.toLowerCase() ||
-        filter.frlStatus === 'all') &&
-      (item.ellStatus.toLowerCase() === filter.ellStatus.toLowerCase() ||
-        filter.ellStatus === 'all') &&
-      (item.iepStatus.toLowerCase() === filter.iepStatus.toLowerCase() ||
-        filter.iepStatus === 'all') &&
-      (item.race.toLowerCase() === filter.race.toLowerCase() ||
-        filter.race === 'all')
+      (!filter.gender ||
+        filter.gender === 'all' ||
+        item.gender.toLowerCase() === filter.gender.toLowerCase()) &&
+      (!filter.frlStatus ||
+        filter.frlStatus === 'all' ||
+        item.frlStatus.toLowerCase() === filter.frlStatus.toLowerCase()) &&
+      (!filter.ellStatus ||
+        filter.ellStatus === 'all' ||
+        item.ellStatus.toLowerCase() === filter.ellStatus.toLowerCase()) &&
+      (!filter.iepStatus ||
+        filter.iepStatus === 'all' ||
+        item.iepStatus.toLowerCase() === filter.iepStatus.toLowerCase()) &&
+      (!filter.race ||
+        filter.race === 'all' ||
+        item.race.toLowerCase() === filter.race.toLowerCase())
   )
   return filteredData
 }
@@ -390,34 +395,32 @@ export const formatDate = (milliseconds, showTime) => {
     : 'NA'
 }
 
-const resetFilter = (filtersToReset, prevFilters) => {
+const resetFilter = (filtersToReset, prevFilters, tagsData) => {
   for (const filter of filtersToReset) {
     if (filter.nestedFilters) {
-      resetFilter(filter.nestedFilters, prevFilters)
+      resetFilter(filter.nestedFilters, prevFilters, tagsData)
     } else {
       prevFilters[filter.key] = filter.value
+      delete tagsData[filter.key]
     }
   }
 }
 
 export const resetStudentFilters = (
+  tagsData,
   prevFilters,
   key,
   selected,
-  multiple,
   defaultValues = studentFiltersDefaultValues
 ) => {
   const index = defaultValues.findIndex((s) => s.key === key)
-  if (
-    index !== -1 &&
-    prevFilters[key] !== (multiple ? selected : selected.key)
-  ) {
+  if (index !== -1 && prevFilters[key] !== selected) {
     const filtersToReset = defaultValues.slice(index + 1)
-    resetFilter(filtersToReset, prevFilters)
+    resetFilter(filtersToReset, prevFilters, tagsData)
   } else if (
-    ['studentGrade', 'studentSubject', 'studentCourseId'].includes(key)
+    ['studentGrades', 'studentSubjects', 'studentCourseId'].includes(key)
   ) {
     const filtersToReset = defaultValues.slice(2)
-    resetFilter(filtersToReset, prevFilters)
+    resetFilter(filtersToReset, prevFilters, tagsData)
   }
 }

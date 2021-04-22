@@ -46,8 +46,7 @@ const StudentReportCardMenuModal = (props) => {
       <a
         disabled={!selectedOptions.length}
         href={`/author/students-report-card/${assignmentId}/${groupId}?options=${selectedOptions}`}
-        target="_blank"
-        rel="noopener noreferrer"
+        target="blank"
         style={{ marginLeft: '15px' }}
       >
         <EduButton

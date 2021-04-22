@@ -164,9 +164,11 @@ export const JSXBox = styled.div`
     fill: ${(props) => props.theme.widgets.chart.labelStrokeColor};
   }
 
-  div {
-    color: ${(props) => props.theme.widgets.chart.labelStrokeColor};
-    background-color: ${(props) => props.theme.widgets.chart.bgColor};
+  .drag-drop {
+    div {
+      color: ${(props) => props.theme.widgets.chart.labelStrokeColor};
+      background-color: ${(props) => props.theme.widgets.chart.bgColor};
+    }
   }
 
   .drag-drop-content {

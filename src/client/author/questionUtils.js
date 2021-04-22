@@ -418,6 +418,7 @@ export const isIncompleteQuestion = (item, itemLevelScoring = false) => {
 
   if (!questionType.manuallyGradableQn.includes(item.type)) {
     const { score } = item?.validation?.validResponse || {}
+    const { unscored = false } = item?.validation
 
     // when item level scoring is on score is removed from the validation object
     // so we should not validate question level score
@@ -426,7 +427,7 @@ export const isIncompleteQuestion = (item, itemLevelScoring = false) => {
       if (score === undefined) {
         return [true, 'Score needs to be set']
       }
-      if (parseFloat(score, 10) === 0) {
+      if (!unscored && parseFloat(score, 10) === 0) {
         return [true, 'Score cannot be zero']
       }
     }

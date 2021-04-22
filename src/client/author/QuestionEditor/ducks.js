@@ -20,7 +20,7 @@ import {
   uniq,
 } from 'lodash'
 import produce from 'immer'
-import { questionType, appLanguages } from '@edulastic/constants'
+import { questionType, questionTitle } from '@edulastic/constants'
 import { helpers, notification } from '@edulastic/common'
 import { push } from 'connected-react-router'
 import * as Sentry from '@sentry/browser'
@@ -94,8 +94,6 @@ import {
   changeDataInPreferredLanguage,
 } from '../../assessment/utils/question'
 import { getOptionsForMath } from '../../assessment/utils/variables'
-
-const { LANGUAGE_EN } = appLanguages
 
 // constants
 export const resourceTypeQuestions = {
@@ -592,7 +590,10 @@ function* saveQuestionSaga({
               delete q.scoringDisabled
             }
           }
-          if (q.template) {
+
+          const isMatrices =
+            q.type === questionType.MATH && q.title === questionTitle.MATRICES
+          if (q.template && !isMatrices) {
             q.template = helpers.removeIndexFromTemplate(q.template)
           }
           if (q.templateMarkUp) {
@@ -796,7 +797,7 @@ const containsEmptyField = (variables) => {
     } = variables[key]
     switch (true) {
       // variables must be set
-      case type !== 'FORMULA' && !exampleValue:
+      case type !== 'FORMULA' && !exampleValue && exampleValue !== 0:
         return {
           hasEmptyField: true,
           errMessage: 'dynamic parameters has empty fields',
@@ -1026,22 +1027,14 @@ function* updateQuestionSaga({ payload }) {
   const prevQuestion = yield select(getCurrentQuestionSelector)
   const currentLanguage = yield select(getCurrentLanguage)
 
-  if (currentLanguage && currentLanguage !== LANGUAGE_EN) {
-    const newQuestion = changeDataInPreferredLanguage(
+  yield put({
+    type: UPDATE_QUESTION,
+    payload: changeDataInPreferredLanguage(
       currentLanguage,
       prevQuestion,
       payload
-    )
-    yield put({
-      type: UPDATE_QUESTION,
-      payload: newQuestion,
-    })
-  } else {
-    yield put({
-      payload,
-      type: UPDATE_QUESTION,
-    })
-  }
+    ),
+  })
 }
 
 export function* watcherSaga() {

@@ -57,7 +57,14 @@ export const getAddOnProductIds = createSelector(
   subscriptionSelector,
   (state) => state.addOnProductIds
 )
-
+export const getShowTrialSubsConfirmationSelector = createSelector(
+  subscriptionSelector,
+  (state) => state.showTrialSubsConfirmation
+)
+export const getShowTrialConfirmationMessageSelector = createSelector(
+  subscriptionSelector,
+  (state) => state.showTrialConfirmationMessage
+)
 export const getBookKeepersInviteSuccessStatus = createSelector(
   subscriptionSelector,
   (state) => state.isBookKeepersInviteSuccess

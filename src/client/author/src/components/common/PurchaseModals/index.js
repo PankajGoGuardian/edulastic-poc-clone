@@ -15,6 +15,8 @@ import {
   getAddOnProductIds,
   getBookKeepersInviteSuccessStatus,
   slice,
+  getShowTrialSubsConfirmationSelector,
+  getShowTrialConfirmationMessageSelector,
 } from '../../../../Subscription/ducks'
 import { getCollectionsSelector, getUserOrgId } from '../../../selectors/user'
 import {
@@ -428,10 +430,10 @@ export default compose(
       isBookKeepersInviteSuccess: getBookKeepersInviteSuccessStatus(state),
       collections: getCollectionsSelector(state),
       playlists: getDashboardPlaylists(state),
-      isConfirmationModalVisible:
-        state?.subscription?.showTrialSubsConfirmation,
-      showTrialConfirmationMessage:
-        state?.subscription?.showTrialConfirmationMessage,
+      isConfirmationModalVisible: getShowTrialSubsConfirmationSelector(state),
+      showTrialConfirmationMessage: getShowTrialConfirmationMessageSelector(
+        state
+      ),
     }),
     {
       handleStripePayment: slice.actions.stripePaymentAction,

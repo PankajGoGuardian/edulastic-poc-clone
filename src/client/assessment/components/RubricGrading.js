@@ -27,8 +27,8 @@ const RubricGrading = ({
     setShowRubricModal(false)
     if (
       res &&
-      (isEqual(res.rubricFeedback, rubricFeedback) ||
-        currentScore !== res.maxScore)
+      (!isEqual(res.rubricFeedback, rubricFeedback) ||
+        currentScore !== res.score)
     ) {
       onRubricResponse(res, true)
     }

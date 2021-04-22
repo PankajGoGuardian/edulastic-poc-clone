@@ -66,6 +66,8 @@ function ScoreInputFocusEffectComponent({
   return null
 }
 
+const isInvalidScore = (score) => (!score || isNaN(score)) && score != 0
+
 class FeedbackRight extends Component {
   constructor(props) {
     super(props)
@@ -112,7 +114,8 @@ class FeedbackRight extends Component {
     preState
   ) {
     let newState = {}
-    const { submitted, feedback, maxScore, changed } = preState || {}
+    const { submitted, feedback, maxScore, changed, qActId: _qActId } =
+      preState || {}
     if (submitted) {
       newState = {
         submitted: false,
@@ -121,15 +124,18 @@ class FeedbackRight extends Component {
     }
 
     if (activity && isUndefined(changed)) {
-      let { score: _score } = activity
+      const { score: _score, qActId, _id } = activity
       let { maxScore: _maxScore } = activity
       const _feedback = get(activity, 'feedback.text', '')
+      newState = { ...newState, qActId: qActId || _id }
 
       if (isQuestionView && isEmpty(activity)) {
         _score = 0
       }
-
-      newState = { ...newState, score: _score }
+      
+      if (!isInvalidScore(_score) || _qActId !== (qActId || _id)) {
+        newState = { ...newState, score: _score }
+      }
 
       if (!_maxScore) {
         _maxScore = validation?.validResponse?.score || 0
@@ -170,7 +176,7 @@ class FeedbackRight extends Component {
       isExpressGrader,
     } = this.props
 
-    if ((!score || isNaN(score)) && score != 0) {
+    if (isInvalidScore(score)) {
       notification({ type: 'warn', messageKey: 'scoreShouldNumber' })
       return
     }

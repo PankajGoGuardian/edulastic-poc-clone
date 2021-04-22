@@ -272,10 +272,7 @@ class StudentViewContainer extends Component {
       </div>
     )
 
-    const attachments = questionActivities
-      .filter((q) => q?.scratchPad?.attachments)
-      .map((q) => q?.scratchPad?.attachments)
-      .flat()
+    const { attachments = [] } = studentTestActivity.userWork || {}
 
     return (
       <>

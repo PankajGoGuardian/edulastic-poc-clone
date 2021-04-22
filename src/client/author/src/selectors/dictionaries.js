@@ -114,9 +114,7 @@ export const standardsSelector = createSelector(
 export const getStandardsListSelector = createSelector(
   standardsSelector,
   (state) => {
-    const elo = [...state.elo].sort((a, b) =>
-      a.identifier.toUpperCase() <= b.identifier.toUpperCase() ? -1 : 1
-    )
+    const elo = [...state.elo].sort((a, b) => (a.id <= b.id ? -1 : 1))
     const mapElosByStandard = { other: [], kindergarten: [] }
     for (const item of elo) {
       // TODO - not sure whats the purpose of this logic, but similar thing needs to be done for

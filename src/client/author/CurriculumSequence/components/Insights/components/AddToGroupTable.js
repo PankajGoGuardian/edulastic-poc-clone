@@ -42,12 +42,26 @@ const GroupsDropdown = ({ groups, onChange, checkedGroups }) => (
 
 /* TODO: Revert the temporary changes by referring to EV-12639 */
 
-const getColumns = (groupsData, handleAddGroupChange, checkedGroups) => [
+const getColumns = (
+  groupsData,
+  handleAddGroupChange,
+  checkedGroups,
+  termId
+) => [
   {
     // title: "SELECT ALL",
     title: 'Student(s)',
     key: 'fullName',
     dataIndex: 'fullName',
+    render: (data, record) => {
+      return (
+        <Link
+          to={`/author/reports/student-profile-summary/student/${record.studentId}?termId=${termId}`}
+        >
+          {data}
+        </Link>
+      )
+    },
   },
   {
     // title: <GroupsDropdown groups={groupsData} onChange={handleAddGroupChange} checkedGroups={checkedGroups} />,
@@ -66,21 +80,19 @@ const getColumns = (groupsData, handleAddGroupChange, checkedGroups) => [
     render: (data, record) => {
       const [cx, cy] = calcArrowPosition(data)
       return (
-        record.isHighlighted && (
-          <svg height="26px" width="26px">
-            {record.hasTrend ? (
-              <TrendArrow
-                cx={cx}
-                cy={cy}
-                trendAngle={data}
-                color={record.color}
-                transformOrigin="center"
-              />
-            ) : (
-              <circle cx="50%" cy="calc(50% + 1px)" r={3} fill={record.color} />
-            )}
-          </svg>
-        )
+        <svg height="26px" width="26px">
+          {record.hasTrend ? (
+            <TrendArrow
+              cx={cx}
+              cy={cy}
+              trendAngle={data}
+              color={record.color}
+              transformOrigin="center"
+            />
+          ) : (
+            <circle cx="50%" cy="calc(50% + 1px)" r={3} fill={record.color} />
+          )}
+        </svg>
       )
     },
   }, // ,
@@ -98,7 +110,7 @@ const getColumns = (groupsData, handleAddGroupChange, checkedGroups) => [
   // }
 ]
 
-const AddToGroupTable = ({ studData, groupsData, highlighted }) => {
+const AddToGroupTable = ({ studData, groupsData, highlighted, termId }) => {
   const [selectedRowKeys, onSelectChange] = useState([])
   const checkedStudents = studData.filter((item, index) =>
     selectedRowKeys.includes(index + 1)
@@ -126,7 +138,8 @@ const AddToGroupTable = ({ studData, groupsData, highlighted }) => {
         columns={getColumns(
           groupsData,
           (groupId) => handleAddGroupChange(groupId, checkedStudents),
-          checkedGroups
+          checkedGroups,
+          termId
         )}
         dataSource={studData}
         pagination={false}

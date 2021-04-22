@@ -1,13 +1,16 @@
 import React from 'react'
-import { intersection, filter } from 'lodash'
+import { filter, intersection } from 'lodash'
 import PropTypes from 'prop-types'
-import { Row, Col } from 'antd'
+import { Col, Row } from 'antd'
 import { greyThemeDark1, themeColorLight } from '@edulastic/colors'
 import TableTooltipRow from '../../../../../../common/components/tooltip/TableTooltipRow'
-import { CustomTableTooltip } from '../../../../../../common/components/customTableTooltip'
+import {
+  CustomTableTooltip,
+  CustomWhiteBackgroundTooltip,
+} from '../../../../../../common/components/customTableTooltip'
 import { StyledCell } from '../../../../../../common/styled'
 import CsvTable from '../../../../../../common/components/tables/CsvTable'
-import { StyledTable, ReStyledTag, StyledSpan } from '../../styled'
+import { ReStyledTag, StyledSpan, StyledTable } from '../../styled'
 
 const getCol = (text, backgroundColor) => (
   <StyledCell style={{ backgroundColor }} justify="center">
@@ -51,6 +54,9 @@ const getColumns = (handleOnClickStandard, filters) => {
           studentId: record.studentId,
           standardId: record.standardId,
           profileId: filters.profileId,
+          // for student only one group will be available
+          groupId: filters.groupIds,
+          finalMastery: record.fm,
         }
         return (
           <ReStyledTag
@@ -77,7 +83,7 @@ const getColumns = (handleOnClickStandard, filters) => {
         if (str.length > 60) {
           str = `${str.substring(0, 60)}...`
         }
-        return <StyledSpan>{str}</StyledSpan>
+        return <CustomWhiteBackgroundTooltip data={data} str={str} />
       },
       sorter: (a, b) => a.standardName.localeCompare(b.standardName),
     },
@@ -108,7 +114,7 @@ const getColumns = (handleOnClickStandard, filters) => {
         if (a.masteryName !== b.masteryName) {
           return a.masteryName.localeCompare(b.masteryName)
         }
-        return a.scoreFormatted.localeCompare(b.scoreFormatted)
+        return a.score - b.score
       },
     },
     {
@@ -149,7 +155,7 @@ const getColumns = (handleOnClickStandard, filters) => {
       dataIndex: 'scoreFormatted',
       align: 'center',
       render: renderToolTipColumn('Avg. Score'),
-      sorter: (a, b) => a.scoreFormatted.localeCompare(b.scoreFormatted),
+      sorter: (a, b) => a.score - b.score,
     },
   ]
   return columns

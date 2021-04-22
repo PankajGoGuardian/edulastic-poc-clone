@@ -196,16 +196,16 @@ const AssessmentPlayerSkinWrapper = ({
       return {
         paddingLeft: 0,
         paddingRight: 0,
-        marginTop: defaultAP ? '82px' : '47px',
+        marginTop: defaultAP ? '82px' : '68px',
       }
     }
     if (
       playerSkinType.toLowerCase() === test.playerSkinValues.sbac.toLowerCase()
     ) {
       return {
-        paddingLeft: 0,
-        paddingRight: 0,
-        marginTop: defaultAP ? '78px' : '38px',
+        paddingLeft: defaultAP ? 0 : '10px',
+        paddingRight: defaultAP ? 0 : '10px',
+        marginTop: defaultAP ? '78px' : '68px',
       }
     }
     if (
@@ -215,7 +215,7 @@ const AssessmentPlayerSkinWrapper = ({
       return {
         paddingLeft: 0,
         paddingRight: 0,
-        marginTop: '68px',
+        marginTop: '48px',
       }
     }
     return { width: '100%' }
@@ -330,7 +330,8 @@ const StyledMainContainer = styled.div`
   main {
     .jsx-parser {
       p {
-        margin-bottom: 8px;
+        margin-bottom: 0.25rem;
+        line-height: 1.2;
       }
     }
     ${({ mainContainerStyle }) => mainContainerStyle};
@@ -359,9 +360,9 @@ const StyledMainContainer = styled.div`
           : 'none!important'
       };
       z-index: 1;
-      position: fixed;
+      position: absolute;
       top: 50%;
-      right: 0;
+      right: 0px;
       > div {
         display: flex!important;
         flex-direction: column;

@@ -215,7 +215,7 @@ class SetCorrectAnswers extends Component {
     if (currentTab === 0) {
       return validation.validResponse
     }
-    return validation.altResponses[currentTab - 1]
+    return validation.altResponses[currentTab - 1] || {}
   }
 
   render() {

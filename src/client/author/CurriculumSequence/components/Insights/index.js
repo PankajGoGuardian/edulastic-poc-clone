@@ -3,7 +3,7 @@ import { withWindowSizes } from '@edulastic/common'
 import { IconCloseFilter, IconFilter } from '@edulastic/icons'
 import { Col, Row, Spin } from 'antd'
 import { get } from 'lodash'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import styled from 'styled-components'
@@ -77,10 +77,14 @@ const Insights = ({
   }, [playlistId])
 
   // fetch student progress data
-  useEffect(() => {
-    const termId =
+  const termId = useMemo(() => {
+    return (
       get(user, 'orgData.defaultTermId', '') ||
       get(user, 'orgData.terms', [])?.[0]?._id
+    )
+  }, [user])
+
+  useEffect(() => {
     if (overallProgressCheck && termId) {
       _getStudentProgressRequestAction({ termId, insights: true })
     } else if (playlistId && termId) {
@@ -96,7 +100,7 @@ const Insights = ({
         _getStudentProgressRequestAction({ termId, playlistId, insights: true })
       }
     }
-  }, [overallProgressCheck, playlistId, filters.modules])
+  }, [overallProgressCheck, playlistId, filters.modules, termId])
 
   const { metricInfo: progressInfo } = get(studentProgress, 'data.result', {})
   const [trendData] = useGetBandData(
@@ -180,6 +184,7 @@ const Insights = ({
             studData={curatedMetrics}
             groupsData={filterData?.groupsData}
             highlighted={highlighted}
+            termId={termId}
           />
         </Row>
       </RightContainer>

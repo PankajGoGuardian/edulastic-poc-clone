@@ -5,8 +5,8 @@ import { compose } from 'redux'
 import { cloneDeep, get } from 'lodash'
 import { Select, Icon } from 'antd'
 import styled, { withTheme } from 'styled-components'
-import { themeColor, themeColorTagsBg } from '@edulastic/colors'
 
+import { themeColor, themeColorTagsBg } from '@edulastic/colors'
 import { withNamespaces } from '@edulastic/localization'
 import {
   rounding,
@@ -16,6 +16,8 @@ import {
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 import { rubricsApi } from '@edulastic/api'
 import { FlexContainer } from '@edulastic/common'
+import UnscoredBlock from '@edulastic/common/src/components/Unscored'
+
 import {
   getQuestionDataSelector,
   setQuestionDataAction,
@@ -115,6 +117,16 @@ class Scoring extends Component {
           newData.validation.scoringType = evaluationType.EXACT_MATCH
           delete newData.validation.unscored // unset unscored when auto scoring is disabled
         }
+        if (param === 'unscored') {
+          const updatedScore = value ? 0 : 1
+          newData.validation.validResponse.score = updatedScore
+          newData.validation.altResponses?.forEach((altResp) => {
+            altResp.score = updatedScore
+          })
+          if (newData.validation?.maxScore) {
+            newData.validation.maxScore = updatedScore
+          }
+        }
         newData.validation[param] = value
       }
 
@@ -131,6 +143,7 @@ class Scoring extends Component {
     const maxScore = get(questionData, 'validation.validResponse.score', 1)
     const questionType = get(questionData, 'type', '')
     const isAutoMarkBtnVisible = !nonAutoGradableTypes.includes(questionType)
+    const isPractice = get(questionData, 'validation.unscored', false)
 
     const questionTitle = item?.title || questionData?.title
 
@@ -143,6 +156,18 @@ class Scoring extends Component {
         score: points,
       })
     }
+
+    const unscoredCheckBox = (
+      <CheckboxLabel
+        data-cy="unscoredChk"
+        checked={questionData.validation.unscored}
+        onChange={(e) => handleChangeValidation('unscored', e.target.checked)}
+        size="large"
+        disabled={!isCorrectAnsTab}
+      >
+        {t('component.options.unscored')}
+      </CheckboxLabel>
+    )
 
     return (
       <div
@@ -166,6 +191,7 @@ class Scoring extends Component {
           </Subtitle>
         )}
         {extraInScoring}
+
         {isAutoMarkBtnVisible && (
           <Row gutter={24}>
             <Col md={12}>
@@ -181,21 +207,7 @@ class Scoring extends Component {
                 {t('component.options.automarkable')}
               </CheckboxLabel>
             </Col>
-            {isAutomarkChecked && (
-              <Col md={12}>
-                <CheckboxLabel
-                  data-cy="unscoredChk"
-                  checked={questionData.validation.unscored}
-                  onChange={(e) =>
-                    handleChangeValidation('unscored', e.target.checked)
-                  }
-                  size="large"
-                  disabled={!isCorrectAnsTab}
-                >
-                  {t('component.options.unscored')}
-                </CheckboxLabel>
-              </Col>
-            )}
+            {isAutomarkChecked && <Col md={12}>{unscoredCheckBox}</Col>}
           </Row>
         )}
 
@@ -205,21 +217,26 @@ class Scoring extends Component {
               <Col md={12}>
                 <FlexContainer flexDirection="column" mt="8px">
                   <Label>{t('component.options.maxScore')}</Label>
-                  <PointsInput
-                    data-cy="maxscore"
-                    id={getFormattedAttrId(
-                      `${questionTitle}-${t('component.options.maxScore')}`
-                    )}
-                    value={maxScore}
-                    width="20%"
-                    onChange={onChange}
-                    min={0.5}
-                    step={0.5}
-                    disabled={
-                      (!!questionData.rubrics && userFeatures.gradingrubrics) ||
-                      isGradingCheckboxState
-                    }
-                  />
+                  {isPractice ? (
+                    <UnscoredBlock height="50px" width="20%" />
+                  ) : (
+                    <PointsInput
+                      data-cy="maxscore"
+                      id={getFormattedAttrId(
+                        `${questionTitle}-${t('component.options.maxScore')}`
+                      )}
+                      value={maxScore}
+                      width="20%"
+                      onChange={onChange}
+                      min={0.5}
+                      step={0.5}
+                      disabled={
+                        (!!questionData.rubrics &&
+                          userFeatures.gradingrubrics) ||
+                        isGradingCheckboxState
+                      }
+                    />
+                  )}
                 </FlexContainer>
               </Col>
             )}
@@ -390,6 +407,13 @@ class Scoring extends Component {
                 />
               </WidgetFRInput>
             </Col>
+          </Row>
+        )}
+
+        {/* practice usage for manually gradable types */}
+        {!isAutoMarkBtnVisible && (
+          <Row gutter={24}>
+            <Col md={12}>{unscoredCheckBox}</Col>
           </Row>
         )}
 

@@ -34,6 +34,7 @@ class CorrectAnswers extends Component {
       ...rest
     } = this.props
     const hidePoint = mixAndMatch && correctTab > 0
+    const { unscored = false } = validation || {}
 
     return (
       <div
@@ -58,6 +59,7 @@ class CorrectAnswers extends Component {
               <PointBlock
                 {...rest}
                 correctAnsScore={validation?.validResponse?.score}
+                unscored={unscored}
               />
             )}
           </FlexContainer>

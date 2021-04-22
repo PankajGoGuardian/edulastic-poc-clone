@@ -20,7 +20,7 @@ import {
   uniq,
 } from 'lodash'
 import produce from 'immer'
-import { questionType, appLanguages } from '@edulastic/constants'
+import { questionType, questionTitle } from '@edulastic/constants'
 import { helpers, notification } from '@edulastic/common'
 import { push } from 'connected-react-router'
 import * as Sentry from '@sentry/browser'
@@ -94,8 +94,6 @@ import {
   changeDataInPreferredLanguage,
 } from '../../assessment/utils/question'
 import { getOptionsForMath } from '../../assessment/utils/variables'
-
-const { LANGUAGE_EN } = appLanguages
 
 // constants
 export const resourceTypeQuestions = {
@@ -550,6 +548,7 @@ function* saveQuestionSaga({
       },
     }
 
+    let allQuestionsArePractice = data.data.questions.length > 0
     data = produce(data, (draftData) => {
       if (draftData.data.questions.length > 0) {
         if (data.itemLevelScoring) {
@@ -559,7 +558,10 @@ function* saveQuestionSaga({
             ['data', 'questions', 0, 'validation', 'validResponse', 'score'],
             data.itemLevelScore
           )
-          for (const [index] of draftData.data.questions.entries()) {
+          for (const [index, _question] of draftData.data.questions.entries()) {
+            if (allQuestionsArePractice && !_question?.validation?.unscored) {
+              allQuestionsArePractice = false
+            }
             if (index > 0) {
               set(
                 draftData,
@@ -581,7 +583,22 @@ function* saveQuestionSaga({
           //   draftData.data.questions[index].validation.validResponse.score =
           //     itemScore / draftData.data.questions.length;
           // }
+          for (const _question of draftData.data.questions) {
+            if (allQuestionsArePractice && !_question?.validation?.unscored) {
+              allQuestionsArePractice = false
+            }
+          }
           delete draftData.data.questions[0].itemScore
+        } else if (!data.itemLevelScoring) {
+          for (const _question of draftData.data.questions) {
+            if (allQuestionsArePractice && !_question?.validation?.unscored) {
+              allQuestionsArePractice = false
+            }
+          }
+        }
+
+        if (allQuestionsArePractice) {
+          draftData.itemLevelScore = 0
         }
 
         draftData.data.questions.forEach((q, index) => {
@@ -592,7 +609,18 @@ function* saveQuestionSaga({
               delete q.scoringDisabled
             }
           }
-          if (q.template) {
+
+          if (allQuestionsArePractice) {
+            q.itemScore = 0
+            q.validation.validResponse.score = 0
+            ;(q.validation.altResponses || []).forEach((altResponse) => {
+              altResponse.score = 0
+            })
+          }
+
+          const isMatrices =
+            q.type === questionType.MATH && q.title === questionTitle.MATRICES
+          if (q.template && !isMatrices) {
             q.template = helpers.removeIndexFromTemplate(q.template)
           }
           if (q.templateMarkUp) {
@@ -600,6 +628,7 @@ function* saveQuestionSaga({
           }
         })
       }
+
       const itemGrades = draftData.grades.filter(
         (item) => !!item && typeof item === 'string'
       )
@@ -796,7 +825,7 @@ const containsEmptyField = (variables) => {
     } = variables[key]
     switch (true) {
       // variables must be set
-      case type !== 'FORMULA' && !exampleValue:
+      case type !== 'FORMULA' && !exampleValue && exampleValue !== 0:
         return {
           hasEmptyField: true,
           errMessage: 'dynamic parameters has empty fields',
@@ -1026,22 +1055,14 @@ function* updateQuestionSaga({ payload }) {
   const prevQuestion = yield select(getCurrentQuestionSelector)
   const currentLanguage = yield select(getCurrentLanguage)
 
-  if (currentLanguage && currentLanguage !== LANGUAGE_EN) {
-    const newQuestion = changeDataInPreferredLanguage(
+  yield put({
+    type: UPDATE_QUESTION,
+    payload: changeDataInPreferredLanguage(
       currentLanguage,
       prevQuestion,
       payload
-    )
-    yield put({
-      type: UPDATE_QUESTION,
-      payload: newQuestion,
-    })
-  } else {
-    yield put({
-      payload,
-      type: UPDATE_QUESTION,
-    })
-  }
+    ),
+  })
 }
 
 export function* watcherSaga() {

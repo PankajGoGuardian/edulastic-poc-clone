@@ -436,7 +436,6 @@ export const Title = styled.div`
 `
 
 export const StyledLink = styled.span`
-  margin-top: 15px;
   font-size: 13px;
   color: #888888;
   cursor: pointer;
@@ -510,11 +509,19 @@ export const UnselectAll = styled(SelectAll)``
 export const StyledCol = styled(Col)`
   display: ${({ display }) => display || 'block'};
   flex-direction: ${(flexDirection) => flexDirection || 'unset'};
-  padding-left: ${({ paddingLeft }) => paddingLeft || '0px'}
-  padding-right: ${({ paddingRight }) => paddingRight || '0px'}
+  padding-left: ${({ paddingLeft }) => paddingLeft || '0px'};
+  padding-right: ${({ paddingRight }) => paddingRight || '0px'};
 `
 
 export const StyledInfoIcon = styled(IconInfo)`
   cursor: pointer;
   margin-left: ${({ mL }) => mL || '0px'};
+`
+
+export const StyledSpan = styled.span`
+  display: flex;
+`
+export const AssignModuleContentSpan = styled.span`
+  display: block;
+  margin-top: 8px;
 `

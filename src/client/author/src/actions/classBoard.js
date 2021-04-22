@@ -44,6 +44,8 @@ import {
   PAUSE_STUDENTS,
   UPDATE_PAUSE_STATUS_ACTION,
   SET_UPDATED_ACTIVITY_IN_ENTITY,
+  CORRECT_ITEM_UPDATE_REQUEST,
+  RELOAD_LCB_DATA_IN_STUDENT_VIEW,
 } from '../constants/actions'
 
 export const receiveClassResponseAction = (data) => ({
@@ -78,10 +80,11 @@ export const receiveGradeBookdAction = (assignmentId, classId) => ({
 export const receiveTestActivitydAction = (
   assignmentId,
   classId,
-  isQuestionsView = false
+  isQuestionsView = false,
+  studentResponseParams
 ) => ({
   type: RECEIVE_TESTACTIVITY_REQUEST,
-  payload: { assignmentId, classId, isQuestionsView },
+  payload: { assignmentId, classId, isQuestionsView, studentResponseParams },
 })
 
 export const releaseScoreAction = (
@@ -267,4 +270,12 @@ export const fetchServerTimeAction = createAction(FETCH_SERVER_TIME)
 export const updatePauseStatusAction = createAction(UPDATE_PAUSE_STATUS_ACTION)
 export const setUpdateActivityIdInEntityAction = createAction(
   SET_UPDATED_ACTIVITY_IN_ENTITY
+)
+
+export const updateCorrectTestItemAction = createAction(
+  CORRECT_ITEM_UPDATE_REQUEST
+)
+
+export const reloadLcbDataInStudentViewAction = createAction(
+  RELOAD_LCB_DATA_IN_STUDENT_VIEW
 )

@@ -21,6 +21,7 @@ import {
   getReportsStudentAssessmentProfileLoader,
   getStudentAssessmentProfileRequestAction,
   getReportsStudentAssessmentProfileError,
+  resetStudentAssessmentProfileAction,
 } from './ducks'
 
 const StudentAssessmentProfile = ({
@@ -30,6 +31,7 @@ const StudentAssessmentProfile = ({
   SPRFilterData,
   studentAssessmentProfile,
   getStudentAssessmentProfile,
+  resetStudentAssessmentProfile,
   isCsvDownloading,
   location,
   pageTitle,
@@ -78,6 +80,8 @@ const StudentAssessmentProfile = ({
     return [_chartData, _tableData]
   }, [rawData, bandInfo])
 
+  useEffect(() => () => resetStudentAssessmentProfile(), [])
+
   useEffect(() => {
     if (settings.selectedStudent.key && settings.requestFilters.termId) {
       getStudentAssessmentProfile({
@@ -92,6 +96,7 @@ const StudentAssessmentProfile = ({
     if (
       (settings.requestFilters.termId || settings.requestFilters.reportId) &&
       !loading &&
+      !isEmpty(studentAssessmentProfile) &&
       !metrics.length
     ) {
       toggleFilter(null, true)
@@ -119,7 +124,12 @@ const StudentAssessmentProfile = ({
     )
 
   if (loading) {
-    return <SpinLoader position="fixed" />
+    return (
+      <SpinLoader
+        tip="Please wait while we gather the required information..."
+        position="fixed"
+      />
+    )
   }
 
   if (error && error.dataSizeExceeded) {
@@ -135,7 +145,11 @@ const StudentAssessmentProfile = ({
     isEmpty(schoolAvg) ||
     !settings.selectedStudent?.key
   ) {
-    return <NoDataContainer>No data available currently.</NoDataContainer>
+    return (
+      <NoDataContainer>
+        {settings.requestFilters?.termId ? 'No data available currently.' : ''}
+      </NoDataContainer>
+    )
   }
 
   return (
@@ -178,6 +192,7 @@ const withConnect = connect(
   }),
   {
     getStudentAssessmentProfile: getStudentAssessmentProfileRequestAction,
+    resetStudentAssessmentProfile: resetStudentAssessmentProfileAction,
   }
 )
 

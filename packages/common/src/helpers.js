@@ -1038,6 +1038,31 @@ export const replaceLatexTemplate = (str) => {
   )
 }
 
+export const removeTokenFromHtml = (str) => {
+  const tokenArr = []
+  const regex = new RegExp(
+    '<span(.*?)class="token active-word"(.*?)>(.*?)</span>',
+    'g'
+  )
+  let match = regex.exec(str)
+
+  while (match !== null) {
+    tokenArr.push(match.splice(3))
+    match = regex.exec(str)
+  }
+
+  tokenArr.forEach((elem) => {
+    const replaceStr = elem.splice(0)
+    str = str.replace(
+      new RegExp(
+        `<span(.*?)class="token active-word"(.*?)>${replaceStr}</span>`
+      ),
+      replaceStr
+    )
+  })
+  return str
+}
+
 export default {
   removeImageTags,
   sanitizeSelfClosingTags,
@@ -1067,4 +1092,5 @@ export default {
   captureSentryException,
   replaceLatexTemplate,
   hasMediaDevice,
+  removeTokenFromHtml,
 }

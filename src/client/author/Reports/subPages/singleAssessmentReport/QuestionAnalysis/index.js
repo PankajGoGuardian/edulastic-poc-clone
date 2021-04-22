@@ -5,6 +5,7 @@ import PropTypes from 'prop-types'
 import { Col, Row } from 'antd'
 import { SpinLoader } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
+import { isEmpty } from 'lodash'
 import { ControlDropDown } from '../../../common/components/widgets/controlDropDown'
 import { StyledH3, NoDataContainer } from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
@@ -24,6 +25,7 @@ import {
   getReportsQuestionAnalysis,
   getReportsQuestionAnalysisLoader,
   getReportsQuestionAnalysisError,
+  resetQuestionAnalysisAction,
 } from './ducks'
 
 import { getChartData, getTableData } from './utils/transformers'
@@ -37,6 +39,7 @@ const QuestionAnalysis = ({
   role,
   questionAnalysis,
   getQuestionAnalysis,
+  resetQuestionAnalysis,
   settings,
   testList,
   sharedReport,
@@ -58,6 +61,8 @@ const QuestionAnalysis = ({
     selectedTest.title
   } (ID:${selectedTest._id.substring(selectedTest._id.length - 5)})`
 
+  useEffect(() => () => resetQuestionAnalysis(), [])
+
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
       const q = {
@@ -66,13 +71,14 @@ const QuestionAnalysis = ({
       }
       getQuestionAnalysis(q)
     }
-  }, [settings])
+  }, [settings.selectedTest, settings.requestFilters])
 
   useEffect(() => {
     if (
       (settings.requestFilters.termId || settings.requestFilters.reportId) &&
       !loading &&
-      !questionAnalysis.metricInfo.length
+      !isEmpty(questionAnalysis) &&
+      !questionAnalysis.metricInfo?.length
     ) {
       toggleFilter(null, true)
     }
@@ -108,7 +114,12 @@ const QuestionAnalysis = ({
   }
 
   if (loading) {
-    return <SpinLoader position="fixed" />
+    return (
+      <SpinLoader
+        tip="Please wait while we gather the required information..."
+        position="fixed"
+      />
+    )
   }
 
   if (questionAnalysis.isRecommended) {
@@ -125,7 +136,11 @@ const QuestionAnalysis = ({
   }
 
   if (!questionAnalysis.metricInfo?.length || !settings.selectedTest.key) {
-    return <NoDataContainer>No data available currently.</NoDataContainer>
+    return (
+      <NoDataContainer>
+        {settings.requestFilters?.termId ? 'No data available currently.' : ''}
+      </NoDataContainer>
+    )
   }
   return (
     <div>
@@ -210,5 +225,8 @@ export default connect(
     questionAnalysis: getReportsQuestionAnalysis(state),
     testList: getTestListSelector(state),
   }),
-  { getQuestionAnalysis: getQuestionAnalysisRequestAction }
+  {
+    getQuestionAnalysis: getQuestionAnalysisRequestAction,
+    resetQuestionAnalysis: resetQuestionAnalysisAction,
+  }
 )(QuestionAnalysis)

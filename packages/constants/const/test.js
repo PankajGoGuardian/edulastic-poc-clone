@@ -191,6 +191,7 @@ module.exports = {
       ALL: 'ALL',
       SKIPPED_AND_WRONG: 'SKIPPED AND WRONG',
       SKIPPED: 'SKIPPED',
+      SKIPPED_PARTIAL_AND_WRONG: 'SKIPPED PARTIAL AND WRONG',
     },
     ShowPreviousAttempt: {
       FEEDBACK_ONLY: 'Teacher feedback only',

@@ -4,9 +4,10 @@ import next from 'immer'
 import qs from 'qs'
 import { connect } from 'react-redux'
 
-import { Spin } from 'antd'
-import { FlexContainer } from '@edulastic/common'
-import { IconFilter, IconCloseFilter } from '@edulastic/icons'
+import { Spin, Col } from 'antd'
+import { SubHeader } from '../../common/components/Header'
+
+import SingleAssessmentReportFilters from './common/components/filters'
 
 import ResponseFrequency from './ResponseFrequency'
 import AssessmentSummary from './AssessmentSummary'
@@ -15,44 +16,37 @@ import PerformanceByStandards from './PerformanceByStandards'
 import PerformanceByStudents from './PerformanceByStudents'
 import QuestionAnalysis from './QuestionAnalysis'
 
-import SingleAssessmentReportFilters from './common/components/filters'
 import ShareReportModal from '../../common/components/Popups/ShareReportModal'
 import { ControlDropDown } from '../../common/components/widgets/controlDropDown'
 import { getNavigationTabLinks } from '../../common/util'
-import { transformFiltersForSAR } from './common/utils/transformers'
 
 import navigation from '../../common/static/json/navigation.json'
+import staticDropDownData from './common/static/staticDropDownData.json'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 
 import {
   setSARSettingsAction,
   getReportsSARSettings,
-  resetSARSettingsAction,
+  setSARTagsDataAction,
 } from './ducks'
-import { getSAFilterDemographics } from './common/filterDataDucks'
+import {
+  getSAFilterDemographics,
+  getTempDdFilterSelector,
+  setTempDdFilterAction,
+  getTempTagsDataSelector,
+  setTempTagsDataAction,
+} from './common/filterDataDucks'
 import { getSharingState, setSharingStateAction } from '../../ducks'
 import { getSharedReportList } from '../../components/sharedReports/ducks'
 import { updateCliUserAction } from '../../../../student/Login/ducks'
 import { resetAllReportsAction } from '../../common/reportsRedux'
-import {
-  ReportContaner,
-  SearchField,
-  FilterLabel,
-  FilterButtonClear,
-} from '../../common/styled'
-
-const INITIAL_DD_FILTERS = {
-  gender: 'all',
-  frlStatus: 'all',
-  ellStatus: 'all',
-  iepStatus: 'all',
-  race: 'all',
-}
+import { ReportContainer, FilterLabel } from '../../common/styled'
 
 const SingleAssessmentReportContainer = (props) => {
   const {
     settings,
     setSARSettings,
+    setSARTagsData,
     onRefineResultsCB,
     updateNavigation,
     resetAllReports,
@@ -63,22 +57,27 @@ const SingleAssessmentReportContainer = (props) => {
     location,
     match,
     updateCliUser,
-    cliUser,
+    isCliUser: _isCliUser,
     setShowHeader,
     preventHeaderRender,
     demographics,
+    tempDdFilter,
+    setTempDdFilter,
+    tempTagsData,
+    setTempTagsData,
     sharingState,
     setSharingState,
     sharedReportList,
+    breadcrumbData,
+    isPrinting,
   } = props
 
   const [firstLoad, setFirstLoad] = useState(true)
   const [isCliUser] = useState(
-    cliUser || qs.parse(location.search, { ignoreQueryPrefix: true }).cliUser
+    _isCliUser || qs.parse(location.search, { ignoreQueryPrefix: true }).cliUser
   )
-  const [ddfilter, setDdFilter] = useState({ ...INITIAL_DD_FILTERS })
-  const [selectedExtras, setSelectedExtras] = useState({
-    ...INITIAL_DD_FILTERS,
+  const [ddfilter, setDdFilter] = useState({
+    ...staticDropDownData.initialDdFilters,
   })
   const [customStudentUserId] = useState(
     qs.parse(location.search, { ignoreQueryPrefix: true }).customStudentUserId
@@ -90,14 +89,6 @@ const SingleAssessmentReportContainer = (props) => {
   const sharedReport = useMemo(
     () => sharedReportList.find((s) => s._id === reportId),
     [reportId, sharedReportList]
-  )
-
-  const transformedSettings = useMemo(
-    () => ({
-      ...settings,
-      requestFilters: transformFiltersForSAR(settings.requestFilters),
-    }),
-    [settings]
   )
 
   useEffect(() => {
@@ -112,11 +103,11 @@ const SingleAssessmentReportContainer = (props) => {
 
   useEffect(() => {
     if (!showApply) {
-      setDdFilter({ ...selectedExtras })
+      setDdFilter({ ...tempDdFilter })
     }
-  }, [showApply, selectedExtras])
+  }, [showApply, tempDdFilter])
 
-  const computeChartNavigationLinks = (sel, filt, _isCliUser) => {
+  const computeChartNavigationLinks = (sel, filt, _cliUser) => {
     if (navigation.locToData[loc]) {
       const arr = Object.keys(filt)
       const obj = {}
@@ -125,7 +116,7 @@ const SingleAssessmentReportContainer = (props) => {
         const val = filt[item] === '' ? 'All' : filt[item]
         obj[item] = val
       })
-      obj.cliUser = _isCliUser
+      obj.cliUser = _cliUser
       return next(
         navigation.navigation[navigation.locToData[loc].group],
         (draft) => {
@@ -168,24 +159,29 @@ const SingleAssessmentReportContainer = (props) => {
   }, [settings])
 
   const onGoClick = (_settings) => {
-    const obj = {}
-    const arr = Object.keys(_settings.filters)
-    // eslint-disable-next-line array-callback-return
-    arr.map((item) => {
-      const val =
-        _settings.filters[item] === 'All' ? '' : _settings.filters[item]
-      obj[item] = val
+    const _requestFilters = {}
+    Object.keys(_settings.filters).forEach((filterType) => {
+      _requestFilters[filterType] =
+        _settings.filters[filterType] === 'All'
+          ? ''
+          : _settings.filters[filterType]
     })
     setSARSettings({
       selectedTest: _settings.selectedTest,
-      requestFilters: { ...obj, tagIds: _settings.filters.tags.join() },
+      requestFilters: {
+        ..._requestFilters,
+        classIds: _requestFilters.classIds || '',
+        groupIds: _requestFilters.groupIds || '',
+        profileId: _requestFilters.performanceBandProfile,
+      },
       cliUser: isCliUser,
     })
+    setSARTagsData({ ..._settings.tagsData })
   }
 
-  const toggleFilter = (e, status = false) => {
+  const toggleFilter = (e, status) => {
     if (onRefineResultsCB) {
-      onRefineResultsCB(e, status || !showFilter)
+      onRefineResultsCB(e, status === false ? status : status || !showFilter)
     }
   }
 
@@ -194,37 +190,52 @@ const SingleAssessmentReportContainer = (props) => {
   }
 
   const updateCB = (event, selected, comData) => {
-    setShowApply(true)
-    setSelectedExtras({
-      ...selectedExtras,
+    setTempDdFilter({
+      ...tempDdFilter,
       [comData]: selected.key,
     })
+    setTempTagsData({
+      ...tempTagsData,
+      [comData]: selected,
+    })
+    setShowApply(true)
   }
-  const locList = [
+
+  const performanceBandRequired = [
+    'assessment-summary',
+    'peer-performance',
+    'performance-by-students',
+  ].includes(loc)
+
+  const standardsProficiencyRequired = ['performance-by-standards'].includes(
+    loc
+  )
+
+  const demographicsRequired = [
     'peer-performance',
     'performance-by-standards',
     'performance-by-students',
-  ]
+  ].includes(loc)
 
   useEffect(() => {
-    if (!locList.includes(loc)) {
-      setDdFilter({ ...INITIAL_DD_FILTERS })
-      setSelectedExtras({ ...INITIAL_DD_FILTERS })
+    if (!demographicsRequired) {
+      setDdFilter({ ...staticDropDownData.initialDdFilters })
+      setTempDdFilter({ ...staticDropDownData.initialDdFilters })
     }
   }, [loc])
 
-  const extraFilters = locList.includes(loc)
+  const extraFilters = demographicsRequired
     ? demographics &&
       demographics.map((item) => (
-        <SearchField key={item.key}>
-          <FilterLabel>{item.title}</FilterLabel>
+        <Col span={6} key={item.key}>
+          <FilterLabel data-cy={item.key}>{item.title}</FilterLabel>
           <ControlDropDown
             selectCB={updateCB}
             data={item.data}
             comData={item.key}
-            by={ddfilter[item.key] || item.data[0]}
+            by={tempDdFilter[item.key] || item.data[0]}
           />
-        </SearchField>
+        </Col>
       ))
     : []
 
@@ -234,140 +245,130 @@ const SingleAssessmentReportContainer = (props) => {
       actionOnInaccessible="hidden"
     >
       <>
-        {firstLoad && <Spin size="large" />}
         {sharingState && (
           <ShareReportModal
             reportType={loc}
             reportFilters={{
-              ...transformedSettings.requestFilters,
-              testId: transformedSettings.selectedTest.key,
+              ...settings.requestFilters,
+              testId: settings.selectedTest.key,
             }}
             showModal={sharingState}
             setShowModal={setSharingState}
           />
         )}
-        <FlexContainer
-          alignItems="flex-start"
-          justifyContent="space-between"
-          display={firstLoad ? 'none' : 'flex'}
-        >
+        <SubHeader breadcrumbData={breadcrumbData} isCliUser={isCliUser}>
           <SingleAssessmentReportFilters
+            isCliUser={isCliUser}
+            isPrinting={isPrinting}
             reportId={reportId}
             onGoClick={onGoClick}
             loc={loc}
             history={history}
             location={location}
             match={match}
-            performanceBandRequired={[
-              '/author/reports/assessment-summary',
-              '/author/reports/peer-performance',
-              '/author/reports/performance-by-students',
-            ].find((x) => window.location.pathname.startsWith(x))}
-            isStandardProficiencyRequired={[
-              '/author/reports/performance-by-standards',
-            ].find((x) => window.location.pathname.startsWith(x))}
-            style={
-              isCliUser || reportId || !showFilter
-                ? { display: 'none' }
-                : { display: 'block' }
-            }
+            performanceBandRequired={performanceBandRequired}
+            standardProficiencyRequired={standardsProficiencyRequired}
+            demographicsRequired={demographicsRequired}
             extraFilters={extraFilters}
+            tempDdFilter={tempDdFilter}
+            setTempDdFilter={setTempDdFilter}
+            tempTagsData={tempTagsData}
+            setTempTagsData={setTempTagsData}
+            tagsData={settings.tagsData}
+            setTagsData={setSARTagsData}
             showApply={showApply}
             setShowApply={setShowApply}
+            showFilter={showFilter}
+            toggleFilter={toggleFilter}
             firstLoad={firstLoad}
             setFirstLoad={setFirstLoad}
-            toggleFilter={toggleFilter}
           />
-          {!isCliUser && !reportId ? (
-            <FilterButtonClear showFilter={showFilter} onClick={toggleFilter}>
-              {showFilter ? <IconCloseFilter /> : <IconFilter />}
-            </FilterButtonClear>
-          ) : null}
-          <ReportContaner showFilter={showFilter}>
-            <Route
-              exact
-              path="/author/reports/assessment-summary/test/:testId?"
-              render={(_props) => (
-                <AssessmentSummary
-                  {..._props}
-                  settings={transformedSettings}
-                  setShowHeader={setShowHeader}
-                  preventHeaderRender={preventHeaderRender}
-                  sharedReport={sharedReport}
-                  toggleFilter={toggleFilter}
-                />
-              )}
-            />
-            <Route
-              exact
-              path="/author/reports/peer-performance/test/:testId?"
-              render={(_props) => (
-                <PeerPerformance
-                  {..._props}
-                  settings={transformedSettings}
-                  filters={ddfilter}
-                  sharedReport={sharedReport}
-                  toggleFilter={toggleFilter}
-                />
-              )}
-            />
-            <Route
-              exact
-              path="/author/reports/question-analysis/test/:testId?"
-              render={(_props) => (
-                <QuestionAnalysis
-                  {..._props}
-                  settings={transformedSettings}
-                  sharedReport={sharedReport}
-                  toggleFilter={toggleFilter}
-                />
-              )}
-            />
-            <Route
-              exact
-              path="/author/reports/response-frequency/test/:testId?"
-              render={(_props) => (
-                <ResponseFrequency
-                  {..._props}
-                  settings={transformedSettings}
-                  sharedReport={sharedReport}
-                  toggleFilter={toggleFilter}
-                />
-              )}
-            />
-            <Route
-              exact
-              path="/author/reports/performance-by-standards/test/:testId?"
-              render={(_props) => (
-                <PerformanceByStandards
-                  {..._props}
-                  settings={transformedSettings}
-                  pageTitle={loc}
-                  filters={ddfilter}
-                  sharedReport={sharedReport}
-                  toggleFilter={toggleFilter}
-                />
-              )}
-            />
-            <Route
-              exact
-              path="/author/reports/performance-by-students/test/:testId?"
-              render={(_props) => (
-                <PerformanceByStudents
-                  {..._props}
-                  showFilter={showFilter}
-                  settings={transformedSettings}
-                  pageTitle={loc}
-                  filters={ddfilter}
-                  customStudentUserId={customStudentUserId}
-                  isCliUser={isCliUser}
-                  sharedReport={sharedReport}
-                  toggleFilter={toggleFilter}
-                />
-              )}
-            />
-          </ReportContaner>
-        </FlexContainer>
+        </SubHeader>
+        <ReportContainer>
+          {firstLoad && <Spin size="large" />}
+          <Route
+            exact
+            path="/author/reports/assessment-summary/test/:testId?"
+            render={(_props) => (
+              <AssessmentSummary
+                {..._props}
+                settings={settings}
+                setShowHeader={setShowHeader}
+                preventHeaderRender={preventHeaderRender}
+                sharedReport={sharedReport}
+                toggleFilter={toggleFilter}
+              />
+            )}
+          />
+          <Route
+            exact
+            path="/author/reports/peer-performance/test/:testId?"
+            render={(_props) => (
+              <PeerPerformance
+                {..._props}
+                settings={settings}
+                filters={ddfilter}
+                sharedReport={sharedReport}
+                toggleFilter={toggleFilter}
+              />
+            )}
+          />
+          <Route
+            exact
+            path="/author/reports/question-analysis/test/:testId?"
+            render={(_props) => (
+              <QuestionAnalysis
+                {..._props}
+                settings={settings}
+                sharedReport={sharedReport}
+                toggleFilter={toggleFilter}
+              />
+            )}
+          />
+          <Route
+            exact
+            path="/author/reports/response-frequency/test/:testId?"
+            render={(_props) => (
+              <ResponseFrequency
+                {..._props}
+                settings={settings}
+                sharedReport={sharedReport}
+                toggleFilter={toggleFilter}
+              />
+            )}
+          />
+          <Route
+            exact
+            path="/author/reports/performance-by-standards/test/:testId?"
+            render={(_props) => (
+              <PerformanceByStandards
+                {..._props}
+                settings={settings}
+                pageTitle={loc}
+                filters={ddfilter}
+                sharedReport={sharedReport}
+                toggleFilter={toggleFilter}
+              />
+            )}
+          />
+          <Route
+            exact
+            path="/author/reports/performance-by-students/test/:testId?"
+            render={(_props) => (
+              <PerformanceByStudents
+                {..._props}
+                showFilter={showFilter}
+                settings={settings}
+                pageTitle={loc}
+                filters={ddfilter}
+                customStudentUserId={customStudentUserId}
+                isCliUser={isCliUser}
+                sharedReport={sharedReport}
+                toggleFilter={toggleFilter}
+              />
+            )}
+          />
+        </ReportContainer>
       </>
     </FeaturesSwitch>
   )
@@ -377,15 +378,18 @@ const ConnectedSingleAssessmentReportContainer = connect(
   (state) => ({
     settings: getReportsSARSettings(state),
     demographics: getSAFilterDemographics(state),
-    cliUser: state.user?.isCliUser,
+    tempDdFilter: getTempDdFilterSelector(state),
+    tempTagsData: getTempTagsDataSelector(state),
     sharingState: getSharingState(state),
     sharedReportList: getSharedReportList(state),
   }),
   {
+    setSARTagsData: setSARTagsDataAction,
     setSARSettings: setSARSettingsAction,
     resetAllReports: resetAllReportsAction,
+    setTempDdFilter: setTempDdFilterAction,
+    setTempTagsData: setTempTagsDataAction,
     updateCliUser: updateCliUserAction,
-    resetSARSettings: resetSARSettingsAction,
     setSharingState: setSharingStateAction,
   }
 )(SingleAssessmentReportContainer)

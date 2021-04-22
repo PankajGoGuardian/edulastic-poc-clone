@@ -27,7 +27,7 @@ const TestActivityPreview = ({
 }) => {
   const passages = test?.passages || []
   const evaluations = questionActivities.reduce((acc, curr) => {
-    acc[curr.qid] = curr.evaluation
+    acc[`${curr.testItemId}_${curr.qid}`] = curr.evaluation
     return acc
   }, {})
 

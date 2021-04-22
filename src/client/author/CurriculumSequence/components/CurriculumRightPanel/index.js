@@ -45,10 +45,7 @@ const CurriculumRightPanel = ({
   const showSummaryBlock = !isManageContentActive || isStudent
 
   return (
-    <div
-      data-cy="curriculum-sequence-right-panel"
-      style={{ position: 'relative', height: 'calc(100vh - 160px)' }}
-    >
+    <RightContentWrapper data-cy="curriculum-sequence-right-panel">
       {(showManageContent || showSummaryBlock) && (
         <HideRightPanel onClick={hideRightpanel}>
           <IconClose />
@@ -71,16 +68,23 @@ const CurriculumRightPanel = ({
           hasSummaryDataNoData={hasSummaryDataNoData}
         />
       )}
-    </div>
+    </RightContentWrapper>
   )
 }
 
 export default CurriculumRightPanel
 
+export const RightContentWrapper = styled.div`
+  position: fixed;
+  top: 62px;
+  height: calc(100vh - 62px);
+  right: 20px;
+`
+
 export const HideRightPanel = styled.div`
   position: absolute;
-  right: 18px;
-  top: 1.21rem;
+  right: 10px;
+  top: 2rem;
   z-index: 50;
   cursor: pointer;
 

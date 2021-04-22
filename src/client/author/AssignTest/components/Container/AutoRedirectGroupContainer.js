@@ -25,6 +25,8 @@ const QuestionDelivery = {
   [redirectPolicy.QuestionDelivery.ALL]: 'All',
   [redirectPolicy.QuestionDelivery.SKIPPED]: 'Skipped',
   [redirectPolicy.QuestionDelivery.SKIPPED_AND_WRONG]: 'Skipped and Wrong',
+  [redirectPolicy.QuestionDelivery.SKIPPED_PARTIAL_AND_WRONG]:
+    'Skipped, Partial and Wrong',
 }
 
 const AutoRedirectGroupContainer = ({

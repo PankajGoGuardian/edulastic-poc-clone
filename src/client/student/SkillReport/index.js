@@ -133,7 +133,10 @@ const SkillReportContainer = ({
           </LoaderConainer>
         ) : (
           <>
-            <StudentMasteryProfile settings={settings} />
+            <StudentMasteryProfile
+              settings={settings}
+              toggleFilter={() => {}}
+            />
           </>
         )}
       </MainContentWrapper>

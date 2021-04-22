@@ -18,6 +18,7 @@ import {
   getReportsStandardsProgressLoader,
   getStandardsProgressRequestAction,
   getReportsStandardsProgressError,
+  resetStandardsProgressAction,
 } from './ducks'
 
 import { getDenormalizedData } from './utils/transformers'
@@ -35,6 +36,7 @@ const StandardsProgress = ({
   standardsFilters,
   standardsProgress,
   getStandardsProgressRequest,
+  resetStandardsProgress,
   ddfilter,
   userRole,
   sharedReport,
@@ -76,10 +78,12 @@ const StandardsProgress = ({
     tablePageSize: 50,
   })
 
+  useEffect(() => () => resetStandardsProgress(), [])
+
   // set initial page filters
   useEffect(() => {
     setPageFilters({ ...pageFilters, barsPageNumber: 1, tablePageNumber: 1 })
-  }, [settings, ddfilter])
+  }, [settings.requestFilters, ddfilter])
   useEffect(() => {
     if (pageFilters.barsPageNumber) {
       setPageFilters({ ...pageFilters, tablePageNumber: 1 })
@@ -117,6 +121,7 @@ const StandardsProgress = ({
     if (
       (settings.requestFilters.termId || settings.requestFilters.reportId) &&
       !loading &&
+      !isEmpty(standardsProgress) &&
       !denormalizedData?.length
     ) {
       toggleFilter(null, true)
@@ -124,7 +129,12 @@ const StandardsProgress = ({
   }, [denormalizedData])
 
   if (loading) {
-    return <SpinLoader position="fixed" />
+    return (
+      <SpinLoader
+        tip="Please wait while we gather the required information..."
+        position="fixed"
+      />
+    )
   }
 
   if (error && error.dataSizeExceeded) {
@@ -132,14 +142,18 @@ const StandardsProgress = ({
   }
 
   if (!denormalizedData?.length) {
-    return <NoDataContainer>No data available currently.</NoDataContainer>
+    return (
+      <NoDataContainer>
+        {settings.requestFilters?.termId ? 'No data available currently.' : ''}
+      </NoDataContainer>
+    )
   }
 
   return (
     <div>
       <StyledCard>
         <Row type="flex" justify="start">
-          <StyledH3 marginLeft="50px">
+          <StyledH3 margin="0 0 10px 50px">
             Mastery Level Distribution by Test
           </StyledH3>
         </Row>
@@ -206,6 +220,7 @@ const enhance = compose(
     }),
     {
       getStandardsProgressRequest: getStandardsProgressRequestAction,
+      resetStandardsProgress: resetStandardsProgressAction,
     }
   )
 )

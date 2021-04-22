@@ -193,6 +193,13 @@ const fetchStudentProfileSummaryReport = (params) =>
     params,
   })
 
+const fetchStudentProgressProfileReport = (params) =>
+  api.callApi({
+    useSlowApi: true,
+    url: `/report/student-progress-profile`,
+    params,
+  })
+
 const fetchStudentList = (params) =>
   api.callApi({
     useSlowApi: true,
@@ -266,6 +273,7 @@ export default {
   fetchStudentMasteryProfileReport,
   fetchStudentAssessmentProfileReport,
   fetchStudentProfileSummaryReport,
+  fetchStudentProgressProfileReport,
   fetchStudentList,
   fetchStudentStandards,
   fetchStudentPerformance,

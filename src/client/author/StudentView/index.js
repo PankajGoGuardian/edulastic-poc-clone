@@ -206,24 +206,30 @@ class StudentViewContainer extends Component {
     const totalNumber = activeQuestions.length
 
     const correctNumber = activeQuestions.filter(
-      (x) => x.score === x.maxScore && x.score > 0
+      (x) => !x.isPractice && x.score === x.maxScore && x.score > 0
     ).length
 
     const wrongNumber = activeQuestions.filter(
-      (x) => x.score === 0 && x.maxScore > 0 && x.graded && !x.skipped
+      (x) =>
+        !x.isPractice &&
+        x.score === 0 &&
+        x.maxScore > 0 &&
+        x.graded &&
+        !x.skipped
     ).length
 
     const partiallyCorrectNumber = activeQuestions.filter(
-      (x) => x.score > 0 && x.score < x.maxScore
+      (x) => !x.isPractice && x.score > 0 && x.score < x.maxScore
     ).length
 
     const skippedNumber = activeQuestions.filter(
-      (x) => x.skipped && x.score === 0
+      (x) => !x.isPractice && x.skipped && x.score === 0
     ).length
 
     const notGradedNumber = activeQuestions.filter(
-      (x) => !x.skipped && x.graded === false
+      (x) => !x.isPractice && !x.skipped && x.graded === false
     ).length
+    const unscoredItems = activeQuestions.filter((x) => x.isPractice).length
 
     const studentTestActivity = studentResponse && studentResponse.testActivity
     const initFeedbackValue =
@@ -330,6 +336,12 @@ class StudentViewContainer extends Component {
               >
                 SKIPPED ({skippedNumber})
               </WrongButton>
+              <WrongButton
+                active={filter === 'unscoredItems'}
+                onClick={() => this.onClickTab('unscoredItems')}
+              >
+                ZERO POINT ({unscoredItems})
+              </WrongButton>
               <PartiallyCorrectButton
                 active={filter === 'notGraded'}
                 onClick={() => this.onClickTab('notGraded')}
@@ -356,7 +368,9 @@ class StudentViewContainer extends Component {
             >
               {hideCorrectAnswer ? <IconEye /> : <IconEyeClose />}
               <span data-cy="showCorrectAnswer" data-test={!hideCorrectAnswer}>
-                correct answers
+                {hideCorrectAnswer
+                  ? 'Expand correct answers'
+                  : 'Collapse correct answers'}
               </span>
             </EduButton>
             {!isCliUser && (

@@ -1,14 +1,24 @@
 import { set, round, min } from 'lodash'
 import produce from 'immer'
+import {
+  multipartEvaluationTypes,
+  PARTIAL_MATCH,
+} from '@edulastic/constants/const/evaluationType'
+import { manuallyGradableQn } from '@edulastic/constants/const/questionType'
+
 import evaluators from './evaluators'
 import { replaceVariables } from '../../../assessment/utils/variables'
+
+const { FIRST_CORRECT_MUST, ALL_CORRECT_MUST } = multipartEvaluationTypes
 
 export const evaluateItem = async (
   answers,
   validations,
   itemLevelScoring = false,
   itemLevelScore = 0,
-  itemId = ''
+  itemId = '',
+  itemGradingType,
+  assignPartialCredit
 ) => {
   const questionIds = Object.keys(validations)
   const results = {}
@@ -18,7 +28,8 @@ export const evaluateItem = async (
     (x) => validations?.[x]?.validation
   ).length
   let allCorrect = true
-  for (const id of questionIds) {
+  let firstCorrect = false
+  for (const [index, id] of questionIds.entries()) {
     const evaluationId = `${itemId}_${id}`
     const answer = answers[id]
     if (validations && validations[id]) {
@@ -27,6 +38,7 @@ export const evaluateItem = async (
       const evaluator = evaluators[validation.type]
       if (!evaluator) {
         results[evaluationId] = []
+        allCorrect = false
       } else {
         const validationData = itemLevelScoring
           ? produce(validation.validation, (v) => {
@@ -39,6 +51,9 @@ export const evaluateItem = async (
               }
             })
           : validation.validation
+        if (assignPartialCredit) {
+          validationData.scoringType = PARTIAL_MATCH
+        }
         const { evaluation, score = 0, maxScore } = await evaluator(
           {
             userResponse: answer,
@@ -49,8 +64,14 @@ export const evaluateItem = async (
           },
           type
         )
-        if (allCorrect) {
-          allCorrect = score === maxScore
+
+        const isCorrect = score === maxScore
+        // manually gradeable should not account for all correct
+        if (allCorrect && !manuallyGradableQn.includes(type)) {
+          allCorrect = isCorrect
+        }
+        if (index === 0) {
+          firstCorrect = isCorrect
         }
 
         results[evaluationId] = evaluation
@@ -66,14 +87,44 @@ export const evaluateItem = async (
       }
     } else {
       results[evaluationId] = []
+      allCorrect = false
     }
   }
+  console.info({
+    answers,
+    results,
+    firstCorrect,
+    allCorrect,
+    itemGradingType,
+    assignPartialCredit,
+  })
   if (itemLevelScoring) {
+    let achievedScore = min([
+      itemLevelScore,
+      allCorrect ? itemLevelScore : totalScore,
+    ])
+    if (itemGradingType === FIRST_CORRECT_MUST && !firstCorrect) {
+      achievedScore = 0
+    } else if (itemGradingType === ALL_CORRECT_MUST) {
+      if (Object.keys(answers).length === 0 || !allCorrect) {
+        achievedScore = 0
+      }
+    }
+
     return {
       evaluation: results,
       maxScore: itemLevelScore,
-      score: min([itemLevelScore, allCorrect ? itemLevelScore : totalScore]),
+      score: achievedScore,
     }
   }
+
+  if (itemGradingType === FIRST_CORRECT_MUST && !firstCorrect) {
+    totalScore = 0
+  } else if (itemGradingType === ALL_CORRECT_MUST) {
+    if (Object.keys(answers).length === 0 || !allCorrect) {
+      totalScore = 0
+    }
+  }
+
   return { evaluation: results, maxScore: totalMaxScore, score: totalScore }
 }

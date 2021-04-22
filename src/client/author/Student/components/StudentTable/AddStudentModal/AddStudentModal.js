@@ -115,7 +115,7 @@ class AddStudentModal extends React.Component {
                     message: 'Please input password',
                   },
                 ],
-              })(<Input placeholder="Password" type="password" />)}
+              })(<Input placeholder="Password" type="password" autoComplete="off" />)}
             </ModalFormItem>
           </Col>
         </Row>

@@ -20,7 +20,17 @@ const syncCleverClasses = (data) =>
     })
     .then((result) => result.data.result)
 
+const syncGradesWithClever = (data) =>
+  api
+    .callApi({
+      url: `${prefix}/sync-grades`,
+      method: 'POST',
+      data,
+    })
+    .then((result) => result.data.result)
+
 export default {
   fetchCleverClasses,
   syncCleverClasses,
+  syncGradesWithClever,
 }

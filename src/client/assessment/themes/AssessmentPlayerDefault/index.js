@@ -4,7 +4,7 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { ThemeProvider } from 'styled-components'
-import { get, keyBy, isUndefined, last } from 'lodash'
+import { get, isUndefined, last } from 'lodash'
 import { withWindowSizes, ScrollContext, notification } from '@edulastic/common'
 import { nonAutoGradableTypes, test } from '@edulastic/constants'
 
@@ -347,7 +347,6 @@ class AssessmentPlayerDefault extends React.Component {
       selectedTheme = 'default',
       closeTestPreviewModal,
       isStudentReport,
-      passage,
       defaultAP,
       playerSkinType,
       title,
@@ -407,7 +406,9 @@ class AssessmentPlayerDefault extends React.Component {
     const scratchPadMode = currentToolMode.indexOf(5) !== -1 || isStudentReport
 
     // calculate width of question area
-    const availableWidth = windowWidth - 70
+    const isQuester = playerSkinType === playerSkinValues.quester
+    const reduceOriginalMarginWidth = isQuester ? 0 : 70
+    const availableWidth = windowWidth - reduceOriginalMarginWidth
     let responsiveWidth = availableWidth
     let zoomLevel = _zoomLevel
 
@@ -425,13 +426,13 @@ class AssessmentPlayerDefault extends React.Component {
       responsiveWidth = availableWidth / zoomLevel
     }
     // 20, 18 and 12 are right margin for right nave on zooming
-    if (zoomLevel >= 1.5 && zoomLevel < 1.75) {
+    if (zoomLevel >= 1.5 && zoomLevel < 1.75 && !isQuester) {
       responsiveWidth -= 20
     }
-    if (zoomLevel >= 1.75 && zoomLevel < 2.5) {
+    if (zoomLevel >= 1.75 && zoomLevel < 2.5 && !isQuester) {
       responsiveWidth -= 18
     }
-    if (zoomLevel >= 2.5) {
+    if (zoomLevel >= 2.5 && !isQuester) {
       responsiveWidth -= 12
     }
 
@@ -488,7 +489,7 @@ class AssessmentPlayerDefault extends React.Component {
     const qType = get(items, `[${currentItem}].data.questions[0].type`, null)
     const cameraImageName = `${firstName}_${lastName}_${
       currentItem + 1
-    }_${cameraImageIndex}`
+    }_${cameraImageIndex}.png`
     return (
       /**
        * zoom only in student side, otherwise not
@@ -631,11 +632,7 @@ class AssessmentPlayerDefault extends React.Component {
                       LCBPreviewModal={LCBPreviewModal}
                       cols={itemRows}
                       previousQuestionActivity={previousQuestionActivity}
-                      questions={
-                        passage
-                          ? { ...questions, ...keyBy(passage.data, 'id') }
-                          : questions
-                      }
+                      questions={questions}
                       showCollapseBtn
                       highlights={highlights}
                       crossAction={crossAction || {}}

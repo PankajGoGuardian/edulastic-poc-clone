@@ -13,15 +13,19 @@ import {
   getReportsEngagementSummaryLoader,
   getReportsEngagementSummaryError,
   getReportsEngagementSummary,
+  resetEngagementSummaryAction,
 } from './ducks'
 
 const Engagement = ({
   loading,
   error,
   getEngagementSummaryRequest,
+  resetEngagementSummary,
   engagementSummary,
   settings,
 }) => {
+  useEffect(() => () => resetEngagementSummary(), [])
+
   useEffect(() => {
     const q = { ...settings.requestFilters }
     if (q.termId || q.reportId) {
@@ -38,7 +42,12 @@ const Engagement = ({
   )
 
   if (loading) {
-    return <SpinLoader position="fixed" />
+    return (
+      <SpinLoader
+        tip="Please wait while we gather the required information..."
+        position="fixed"
+      />
+    )
   }
 
   if (error && error.dataSizeExceeded) {
@@ -46,7 +55,11 @@ const Engagement = ({
   }
 
   if (!timelineData.length) {
-    return <NoDataContainer>No data available currently.</NoDataContainer>
+    return (
+      <NoDataContainer>
+        {settings.requestFilters?.termId ? 'No data available currently.' : ''}
+      </NoDataContainer>
+    )
   }
 
   return (
@@ -55,7 +68,7 @@ const Engagement = ({
         <EngagementStats data={statsData} />
       </StyledCard>
       <StyledCard padding="20px 0 0 0">
-        <StyledH3 fontSize="16px" marginLeft="10px">
+        <StyledH3 fontSize="16px" margin="0 0 10px 10px">
           Activity Timeline
         </StyledH3>
         <SimpleAreaWithLineChartContainer data={timelineData} />
@@ -72,6 +85,7 @@ const enhance = connect(
   }),
   {
     getEngagementSummaryRequest: getEngagementSummaryRequestAction,
+    resetEngagementSummary: resetEngagementSummaryAction,
   }
 )
 

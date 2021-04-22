@@ -10,6 +10,7 @@ import {
   Label,
   TimeSpentInput,
   StyledRow,
+  AssignModuleContentSpan,
 } from '../SimpleOptions/styled'
 import TestTypeSelector from '../SimpleOptions/TestTypeSelector'
 import DollarPremiumSymbol from './DollarPremiumSymbol'
@@ -28,6 +29,12 @@ const {
   testContentVisibility: testContentVisibilityOptions,
 } = test
 
+const TEST_TYPE_TOOLTIP_CONTENT =
+  'Designate what type of assignment you are delivering. You’ll be able to use these categories later to filter reports so make sure practice is set as practice. '
+
+const ASSIGN_MODULE_TOOLTIP_CONTENT =
+  'If freeze settings is enabled in any of the test(s) in this module, then the assignment settings will default to the test settings for the respective tests.'
+
 const TestBehaviorGroupContainer = ({
   assignmentSettings,
   changeField,
@@ -43,6 +50,7 @@ const TestBehaviorGroupContainer = ({
   userRole,
   featuresAvailable,
   tootltipWidth,
+  showAssignModuleContent,
 }) => {
   const [timedTestConfirmed, setTimedtestConfirmed] = useState(false)
   const {
@@ -113,6 +121,17 @@ const TestBehaviorGroupContainer = ({
     overRideSettings(attr, value)
   }
 
+  const testTypeContent = (
+    <>
+      <span>{TEST_TYPE_TOOLTIP_CONTENT} </span>
+      {showAssignModuleContent && (
+        <AssignModuleContentSpan>
+          {ASSIGN_MODULE_TOOLTIP_CONTENT}
+        </AssignModuleContentSpan>
+      )}
+    </>
+  )
+
   return (
     <>
       {/* Test type */}
@@ -120,7 +139,7 @@ const TestBehaviorGroupContainer = ({
         <DetailsTooltip
           width={tootltipWidth}
           title="Test Type"
-          content="Designate what type of assignment you are delivering. You’ll be able to use these categories later to filter reports so make sure practice is set as practice. "
+          content={testTypeContent}
           premium
           placement="rightBottom"
         />
@@ -372,7 +391,11 @@ const TestBehaviorGroupContainer = ({
               value={testContentVisibility}
             >
               {testContentVisibilityTypes.map((item) => (
-                <RadioBtn value={item.key} key={item.key}>
+                <RadioBtn
+                  data-cy={`item-visibility-${item.key}`}
+                  value={item.key}
+                  key={item.key}
+                >
                   {item.value}
                 </RadioBtn>
               ))}

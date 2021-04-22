@@ -81,7 +81,7 @@ function* evaluateTestItemSaga({ payload }) {
 
     const testItemId = get(testItem, '_id', '')
     const itemLevelScore = get(testItem, 'itemLevelScore', 0)
-    const itemLevelScoring = get(testItem, 'itemLevelScore', false)
+    const itemLevelScoring = get(testItem, 'itemLevelScoring', false)
     const questions = get(testItem, 'rows', [])
       .flatMap((x) => x?.widgets)
       .filter((x) => !isEmpty(x) && x.widgetType === 'question')

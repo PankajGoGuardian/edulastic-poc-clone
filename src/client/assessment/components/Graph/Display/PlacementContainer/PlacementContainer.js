@@ -331,6 +331,7 @@ class PlacementContainer extends PureComponent {
           prevProps.xAxesParameters.commaInLabel ||
         xAxesParameters.showAxis !== prevProps.xAxesParameters.showAxis ||
         xAxesParameters.drawZero !== prevProps.xAxesParameters.drawZero ||
+        xAxesParameters.useRadians !== prevProps.xAxesParameters.useRadians ||
         yAxesParameters.ticksDistance !==
           prevProps.yAxesParameters.ticksDistance ||
         yAxesParameters.name !== prevProps.yAxesParameters.name ||
@@ -341,7 +342,8 @@ class PlacementContainer extends PureComponent {
         yAxesParameters.commaInLabel !==
           prevProps.yAxesParameters.commaInLabel ||
         yAxesParameters.showAxis !== prevProps.yAxesParameters.showAxis ||
-        yAxesParameters.drawZero !== prevProps.yAxesParameters.drawZero
+        yAxesParameters.drawZero !== prevProps.yAxesParameters.drawZero ||
+        yAxesParameters.useRadians !== prevProps.yAxesParameters.useRadians
       ) {
         this._graph.setAxesParameters({
           x: {

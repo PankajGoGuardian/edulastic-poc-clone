@@ -1,3 +1,4 @@
+import UnScored from '@edulastic/common/src/components/Unscored'
 import React from 'react'
 import PropTypes from 'prop-types'
 import { get, keyBy } from 'lodash'
@@ -49,6 +50,7 @@ const Expanded = ({
   points: pointsProp,
   groupPoints,
   groupMinimized,
+  isUnScoredItem,
 }) => {
   /**
    * @type {{item:Object,question:Object}[]}
@@ -124,16 +126,27 @@ const Expanded = ({
           />
           <FlexContainer flexDirection="column">
             <PointsLabel>Points</PointsLabel>
-            <NumberInputStyled
-              data-cy="pointsd"
-              width="108px"
-              padding="0px 12px"
-              disabled={
-                !owner || !isEditable || isScoringDisabled || groupMinimized
-              }
-              value={groupMinimized ? groupPoints : pointsProp}
-              onChange={(value) => onChangePoints(metaInfoData.id, value)}
-            />
+            {!isUnScoredItem ? (
+              <NumberInputStyled
+                data-cy="pointsd"
+                width="108px"
+                padding="0px 12px"
+                disabled={
+                  !owner || !isEditable || isScoringDisabled || groupMinimized
+                }
+                value={groupMinimized ? groupPoints : pointsProp}
+                onChange={(value) => onChangePoints(metaInfoData.id, value)}
+              />
+            ) : (
+              <UnScored
+                width="60px"
+                height="32px"
+                margin="0px 0px 0px 5px"
+                fontSize="10px"
+                text="Z"
+                fontWeight="700"
+              />
+            )}
           </FlexContainer>
         </FlexContainer>
       </FlexContainer>
@@ -219,16 +232,33 @@ const Expanded = ({
             >
               <FlexContainer flexDirection="column" style={{ margin: 0 }}>
                 <PointsLabel>Points</PointsLabel>
-                <NumberInputStyled
-                  min={0}
-                  width="108px"
-                  padding="0px 12px"
-                  disabled={
-                    !owner || !isEditable || isScoringDisabled || groupMinimized
-                  }
-                  value={groupMinimized ? groupPoints : points?.[qId] || points}
-                  onChange={handleChangePoint(qId)}
-                />
+                {!isUnScoredItem &&
+                !get(questions, `${qId}.validation.unscored`, false) ? (
+                  <NumberInputStyled
+                    min={0}
+                    width="108px"
+                    padding="0px 12px"
+                    disabled={
+                      !owner ||
+                      !isEditable ||
+                      isScoringDisabled ||
+                      groupMinimized
+                    }
+                    value={
+                      groupMinimized ? groupPoints : points?.[qId] || points
+                    }
+                    onChange={handleChangePoint(qId)}
+                  />
+                ) : (
+                  <UnScored
+                    width="108px"
+                    height="32px"
+                    margin="0px 0px 0px 5px"
+                    fontSize="10px"
+                    text="Z"
+                    fontWeight="700"
+                  />
+                )}
               </FlexContainer>
               {index === 0 && (
                 <Actions

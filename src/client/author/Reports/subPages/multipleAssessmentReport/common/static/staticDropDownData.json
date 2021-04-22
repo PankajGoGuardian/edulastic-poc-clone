@@ -1,26 +1,67 @@
-{
-  "defaults": {
-    "teacher": {
-      "termId": "",
-      "subject": "All",
-      "grade": "All",
-      "courseId": "All",
-      "groupId": "All",
-      "assessmentType": "All"
+{ 
+  "filterSections": {
+    "TEST_FILTERS": {
+      "key": "0",
+      "title": "Select Assessments"
     },
-    "other": {
-      "termId": "",
-      "subject": "All",
-      "grade": "All",
-      "courseId": "All",
-      "groupId": "All",
-      "schoolId": "All",
-      "teacherId": "All",
-      "assessmentType": "All"
+    "CLASS_FILTERS": {
+      "key": "1",
+      "title": "Select Classes"
+    },
+    "PERFORMANCE_FILTERS": {
+      "key": "2",
+      "title": "Performance"
+    },
+    "DEMOGRAPHIC_FILTERS": {
+      "key": "3",
+      "title": "Demographics"
     }
   },
+  "tagTypes": [
+    { "key": "termId" },
+    { "key": "testGrades", "subType": "test" },
+    { "key": "testSubjects", "subType": "test" },
+    { "key": "tagIds" },
+    { "key": "assessmentTypes" },
+    { "key": "testIds" },
+    { "key": "schoolIds" },
+    { "key": "teacherIds" },
+    { "key": "grades", "subType": "class" },
+    { "key": "subjects", "subType": "class" },
+    { "key": "courseId" },
+    { "key": "classIds" },
+    { "key": "groupIds" },
+    { "key": "profileId" },
+    { "key": "race" },
+    { "key": "gender" },
+    { "key": "iepStatus" },
+    { "key": "frlStatus" },
+    { "key": "ellStatus" }
+  ],
+  "initialFilters": {
+    "reportId": "",
+    "termId": "",
+    "testGrades": "",
+    "testSubjects": "",
+    "tagIds": "",
+    "assessmentTypes": "",
+    "schoolIds": "",
+    "teacherIds": "",
+    "grades": "",
+    "subjects": "",
+    "courseId": "All",
+    "classIds": "",
+    "groupIds": "",
+    "profileId": ""
+  },
+  "initialDdFilters": {
+    "race": "all",
+    "gender": "all",
+    "iepStatus": "all",
+    "frlStatus": "all",
+    "ellStatus": "all"
+  },
   "subjects": [
-    { "key": "All", "title": "All Subjects" },
     { "key": "Mathematics", "title": "Mathematics" },
     { "key": "ELA", "title": "ELA" },
     { "key": "Science", "title": "Science" },
@@ -29,7 +70,6 @@
     { "key": "Other Subjects", "title": "Other Subjects" }
   ],
   "grades": [
-    { "key": "All", "title": "All Grades" },
     { "key": "TK", "title": "PreKindergarten" },
     { "key": "K", "title": "Kindergarten" },
     { "key": "1", "title": "Grade 1" },
@@ -47,7 +87,6 @@
     { "key": "O", "title": "Other" }
   ],
   "assessmentType": [
-    { "key": "All", "title": "All Assessment Types" },
     { "key": "common assessment", "title": "Common" },
     { "key": "assessment", "title": "Class" },
     { "key": "practice", "title": "Practice" }

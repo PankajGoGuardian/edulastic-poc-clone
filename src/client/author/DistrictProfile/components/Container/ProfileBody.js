@@ -718,7 +718,7 @@ class ProfileBody extends React.Component {
                             validator: this.validateToNextPassword,
                           },
                         ],
-                      })(<Input type="password" />)}
+                      })(<Input type="password" autoComplete="off" />)}
                     </FormItemWrapper>{' '}
                     <FormItemWrapper>
                       <Label>{t('common.title.confirmPaswswordLabel')}</Label>
@@ -735,6 +735,7 @@ class ProfileBody extends React.Component {
                       })(
                         <Input
                           type="password"
+                          autoComplete="off"
                           onBlur={this.handleConfirmBlur}
                         />
                       )}
@@ -882,7 +883,10 @@ class ProfileBody extends React.Component {
                     </SwitchWrapper>
                   )}
                   {showPowerTools && (
-                    <SwitchWrapper style={{ justifyContent: 'space-between' }}>
+                    <SwitchWrapper
+                      style={{ justifyContent: 'space-between' }}
+                      data-cy="powerUser"
+                    >
                       <FieldLabel>{t('common.title.powerUser')}</FieldLabel>
                       <EduSwitchStyled
                         defaultChecked={userInfo.isPowerTeacher}

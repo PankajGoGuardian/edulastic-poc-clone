@@ -1,6 +1,7 @@
 import { has, omitBy } from 'lodash'
 import uuid from 'uuid'
 import produce from 'immer'
+import { questionType } from '@edulastic/constants'
 
 const mathRegex = /<span class="input__math" data-latex="([^"]+)"><\/span>/g
 
@@ -99,17 +100,18 @@ const replaceValue = (str, variables, isLatex = false, useMathTemplate) => {
   let result = str.replace(mathRegex, '{math-latex}')
   let mathContent = str.match(mathRegex)
   Object.keys(variables).forEach((variableName) => {
+    const isFormula = variables[variableName].type.includes('FORMULA')
     if (isLatex) {
       result = result.replace(
         new RegExp(`@${variableName}`, 'g'),
-        useMathTemplate
+        useMathTemplate && isFormula
           ? getMathTemplate(variables[variableName].exampleValue)
           : ` ${variables[variableName].exampleValue}`
       )
     } else {
       result = result.replace(
         new RegExp(`@${variableName}`, 'g'),
-        useMathTemplate
+        useMathTemplate && isFormula
           ? getMathTemplate(variables[variableName].exampleValue)
           : variables[variableName].exampleValue
       )
@@ -190,12 +192,20 @@ export const replaceVariables = (
     !item.variable.enabled
   )
     return item
+  const keysToIgnore = ['id', 'validation', 'variable', 'template']
   return produce(item, (draft) => {
     Object.keys(item).forEach((key) => {
       if (key === 'id' || key === 'variable') return
-      if (key === 'validation') {
-        useMathTemplate = false
+      if (
+        [
+          questionType.CLOZE_DROP_DOWN,
+          questionType.CLOZE_IMAGE_DROP_DOWN,
+          questionType.EXPRESSION_MULTIPART,
+        ].includes(item.type)
+      ) {
+        keysToIgnore.push('options')
       }
+      useMathTemplate = !keysToIgnore.includes(key)
       draft[key] = replaceValues(
         draft[key],
         item.variable,

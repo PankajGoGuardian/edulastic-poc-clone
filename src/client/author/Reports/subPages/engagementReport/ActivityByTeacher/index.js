@@ -13,6 +13,7 @@ import {
   getReportsActivityByTeacherLoader,
   getReportsActivityByTeacherError,
   getReportsActivityByTeacher,
+  resetActivityByTeacherAction,
 } from './ducks'
 
 import columns from './static/json/tableColumns.json'
@@ -21,11 +22,14 @@ const ActivityByTeacher = ({
   loading,
   error,
   getActivityByTeacherRequest,
+  resetActivityByTeacher,
   activityByTeacher,
   settings,
   isCsvDownloading,
 }) => {
   const [metricFilter, setMetricFilter] = useState({})
+
+  useEffect(() => () => resetActivityByTeacher(), [])
 
   useEffect(() => {
     const q = { ...settings.requestFilters }
@@ -63,7 +67,12 @@ const ActivityByTeacher = ({
   }
 
   if (loading) {
-    return <SpinLoader position="fixed" />
+    return (
+      <SpinLoader
+        tip="Please wait while we gather the required information..."
+        position="fixed"
+      />
+    )
   }
 
   if (error && error.dataSizeExceeded) {
@@ -71,13 +80,17 @@ const ActivityByTeacher = ({
   }
 
   if (!normalizedMetricInfo.length) {
-    return <NoDataContainer>No data available currently.</NoDataContainer>
+    return (
+      <NoDataContainer>
+        {settings.requestFilters?.termId ? 'No data available currently.' : ''}
+      </NoDataContainer>
+    )
   }
 
   return (
     <>
       <StyledCard>
-        <StyledH3 fontSize="16px" marginLeft="10px">
+        <StyledH3 fontSize="16px" margin="0 0 10px 10px">
           Activity by Teacher
         </StyledH3>
         <SimpleStackedBarWithLineChartContainer
@@ -111,6 +124,7 @@ const enhance = connect(
   }),
   {
     getActivityByTeacherRequest: getActivityByTeacherRequestAction,
+    resetActivityByTeacher: resetActivityByTeacherAction,
   }
 )
 

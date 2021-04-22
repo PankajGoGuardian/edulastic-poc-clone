@@ -3,13 +3,13 @@ import { createAction, createReducer } from 'redux-starter-kit'
 
 import { RESET_ALL_REPORTS } from '../../common/reportsRedux'
 
-const SET_SAR_SETTINGS = '[SAR settings] get sar settings'
-const RESET_SAR_SETTINGS = '[SAR settings] reset sar settings'
+const SET_SAR_SETTINGS = '[SAR settings] set sar settings'
+const SET_SAR_TAGS_DATA = '[SAR settings] set sar tags data'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
 export const setSARSettingsAction = createAction(SET_SAR_SETTINGS)
-export const resetSARSettingsAction = createAction(RESET_SAR_SETTINGS)
+export const setSARTagsDataAction = createAction(SET_SAR_TAGS_DATA)
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
 
@@ -36,23 +36,31 @@ const initialState = {
   requestFilters: {
     reportId: '',
     termId: '',
-    subject: '',
-    grade: '',
+    testSubjects: '',
+    testGrades: '',
     assessmentTypes: '',
     tagIds: '',
     schoolIds: '',
     teacherIds: '',
-    studentSubject: '',
-    studentGrade: '',
-    studentCourseId: '',
+    subjects: '',
+    grades: '',
+    courseId: '',
     classIds: '',
     groupIds: '',
   },
+  tagsData: {},
   reportType: '',
 }
 
 export const reportSARSettingsReducer = createReducer(initialState, {
-  [SET_SAR_SETTINGS]: (state, { payload }) => (state = { ...payload }),
+  [SET_SAR_TAGS_DATA]: (state, { payload }) => {
+    state.tagsData = { ...payload }
+  },
+  [SET_SAR_SETTINGS]: (state, { payload }) => {
+    state.selectedTest = payload.selectedTest
+    state.requestFilters = payload.requestFilters
+    state.cliUser = payload.cliUser
+  },
   [RESET_ALL_REPORTS]: (state) => (state = initialState),
 })
 

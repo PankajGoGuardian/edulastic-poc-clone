@@ -5,9 +5,10 @@ import {
   test as testConst,
   assignmentSettingSections as sectionContants,
 } from '@edulastic/constants'
-import { IconAssignment } from '@edulastic/icons'
-import { Spin } from 'antd'
-import { get, isEmpty, keyBy, omit } from 'lodash'
+import { themeColor } from '@edulastic/colors'
+import { IconAssignment, IconTrash } from '@edulastic/icons'
+import { Spin, Select, Icon } from 'antd'
+import { get, isEmpty, keyBy, omit, pick } from 'lodash'
 import * as moment from 'moment'
 import PropTypes from 'prop-types'
 import React from 'react'
@@ -29,6 +30,8 @@ import {
   getUserOrgId,
   getUserRole,
   isFreeAdminSelector,
+  getUserId,
+  getUserFeatures,
 } from '../../../src/selectors/user'
 import {
   loadAssignmentsAction,
@@ -39,6 +42,15 @@ import {
   getTestSelector,
   getTestsLoadingSelector,
   receiveTestByIdAction,
+  getCurrentSettingsIdSelector,
+  fetchTestSettingsListAction,
+  saveTestSettingsAction,
+  getTestSettingsListSelector,
+  setCurrentTestSettingsIdAction,
+  getTestDefaultSettingsSelector,
+  deleteTestSettingRequestAction,
+  updateTestSettingRequestAction,
+  getIsOverrideFreezeSelector,
 } from '../../../TestPage/ducks'
 import {
   clearAssignmentSettingsAction,
@@ -57,10 +69,17 @@ import {
   Container,
   FullFlexContainer,
   PaginationInfo,
+  SavedSettingsContainer,
+  DeleteIconContainer,
 } from './styled'
 import { toggleFreeAdminSubscriptionModalAction } from '../../../../student/Login/ducks'
+import SaveSettingsModal from './SaveSettingsModal'
+import DeleteTestSettingsModal from './DeleteSettingsConfirmationModal'
+import UpdateTestSettingsModal from './UpdateTestSettingModal'
+import { fetchCustomKeypadAction } from '../../../../assessment/components/KeyPadOptions/ducks'
 
 const { ASSESSMENT, COMMON } = testConst.type
+const { evalTypeLabels } = testConst
 
 const parentMenu = {
   assignments: { title: 'Assignments', to: 'assignments' },
@@ -69,6 +88,74 @@ const parentMenu = {
   testLibrary: { title: 'Test Library', to: 'tests' },
 }
 
+const testSettingsOptions = [
+  'partialScore',
+  'timer',
+  'testType',
+  'hasInstruction',
+  'instruction',
+  'releaseScore',
+  'scoringType',
+  'penalty',
+  'markAsDone',
+  'calcType',
+  'timedAssignment',
+  'pauseAllowed',
+  'maxAttempts',
+  'maxAnswerChecks',
+  'safeBrowser',
+  'shuffleQuestions',
+  'shuffleAnswers',
+  'sebPassword',
+  'blockNavigationToAnsweredQuestions',
+  'restrictNavigationOut',
+  'restrictNavigationOutAttemptsThreshold',
+  'blockSaveAndContinue',
+  'passwordPolicy',
+  'assignmentPassword',
+  'passwordExpireIn',
+  'answerOnPaper',
+  'playerSkinType',
+  'standardGradingScale',
+  'performanceBand',
+  'showMagnifier',
+  'enableScratchpad',
+  'autoRedirect',
+  'autoRedirectSettings',
+  'keypad',
+]
+
+const docBasedSettingsOptions = [
+  'partialScore',
+  'timer',
+  'testType',
+  'hasInstruction',
+  'instruction',
+  'releaseScore',
+  'scoringType',
+  'penalty',
+  'markAsDone',
+  'calcType',
+  'timedAssignment',
+  'pauseAllowed',
+  'maxAttempts',
+  'safeBrowser',
+  'sebPassword',
+  'restrictNavigationOut',
+  'restrictNavigationOutAttemptsThreshold',
+  'blockSaveAndContinue',
+  'passwordPolicy',
+  'assignmentPassword',
+  'passwordExpireIn',
+  'answerOnPaper',
+  'standardGradingScale',
+  'performanceBand',
+  'autoRedirect',
+  'autoRedirectSettings',
+]
+
+const TEST_SETTINGS_SAVE_LIMIT = 20
+
 class AssignTest extends React.Component {
   constructor(props) {
     super(props)
@@ -76,6 +163,10 @@ class AssignTest extends React.Component {
       isAdvancedView: props.userRole !== 'teacher',
       selectedDateOption: false,
       activeTab: '1',
+      showSaveSettingsModal: false,
+      showDeleteSettingModal: false,
+      showUpdateSettingModal: false,
+      settingDetails: null,
     }
   }
 
@@ -97,6 +188,11 @@ class AssignTest extends React.Component {
       isFreeAdmin,
       toggleFreeAdminSubscriptionModal,
       history,
+      fetchTestSettingsList,
+      userId,
+      userFeatures: { premium },
+      fetchUserCustomKeypads,
+      setCurrentTestSettingsId,
     } = this.props
 
     if (isFreeAdmin) {
@@ -118,6 +214,16 @@ class AssignTest extends React.Component {
       page: 1,
       limit: 4000,
     })
+
+    if (premium) {
+      fetchUserCustomKeypads()
+      fetchTestSettingsList({
+        orgId: userId,
+        orgType: roleuser.ORG_TYPE.USER,
+      })
+      setCurrentTestSettingsId('')
+    }
+
     const isAdmin =
       userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN
 
@@ -195,28 +301,6 @@ class AssignTest extends React.Component {
     let updatedAssignment = { ...assignment }
     const { changeDateSelection, selectedDateOption } = this.state
     if (isAssigning) return
-    if (
-      updatedAssignment.passwordPolicy !==
-      testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC
-    ) {
-      delete updatedAssignment.passwordExpireIn
-    }
-    if (
-      updatedAssignment.passwordPolicy &&
-      updatedAssignment.passwordPolicy !==
-        testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC
-    ) {
-      delete updatedAssignment.assignmentPassword
-    } else if (
-      updatedAssignment.passwordPolicy ===
-        testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC &&
-      updatedAssignment.assignmentPassword &&
-      (updatedAssignment?.assignmentPassword?.length < 6 ||
-        updatedAssignment?.assignmentPassword?.length > 25)
-    ) {
-      notification({ messageKey: 'enterValidPassword' })
-      this.handleTabChange(sectionContants.ANTI_CHEATING_SECTION)
-    }
     if (isEmpty(assignment.class)) {
       notification({ messageKey: 'selectClass' })
       this.handleTabChange(sectionContants.CLASS_GROUP_SECTION)
@@ -230,46 +314,8 @@ class AssignTest extends React.Component {
       if (!selectedDateOption) {
         updatedAssignment = omit(updatedAssignment, ['dueDate'])
       }
-      if (
-        assignment.passwordPolicy ===
-          testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC &&
-        !((assignment?.assignmentPassword?.trim()?.length || 0) > 5)
-      ) {
-        notification({ messageKey: 'enterValidPassword' })
-        this.handleTabChange(sectionContants.ANTI_CHEATING_SECTION)
-        return
-      }
-      if (updatedAssignment.autoRedirect === true) {
-        if (!updatedAssignment.autoRedirectSettings.showPreviousAttempt) {
-          this.handleTabChange(sectionContants.AUTO_REDIRECT_SECTION)
-          return notification({
-            type: 'warn',
-            msg: 'Please set the value for Show Previous Attempt',
-          })
-        }
-        if (!updatedAssignment.autoRedirectSettings.questionsDelivery) {
-          this.handleTabChange(sectionContants.AUTO_REDIRECT_SECTION)
-          return notification({
-            type: 'warn',
-            msg: 'Please set the value for Question Delivery',
-          })
-        }
-        if (!updatedAssignment.autoRedirectSettings.scoreThreshold) {
-          this.handleTabChange(sectionContants.AUTO_REDIRECT_SECTION)
-          return notification({
-            type: 'warn',
-            msg: 'Please set Score Threshold value',
-          })
-        }
-        if (!updatedAssignment.autoRedirectSettings.maxRedirects) {
-          this.handleTabChange(sectionContants.AUTO_REDIRECT_SECTION)
-          return notification({
-            type: 'warn',
-            msg: 'Please set value of Max Attempts Allowed for auto redirect',
-          })
-        }
-      }
-      saveAssignment(updatedAssignment)
+      const isValid = this.validateSettings(updatedAssignment)
+      if (isValid) saveAssignment(updatedAssignment)
     }
   }
 
@@ -355,8 +401,238 @@ class AssignTest extends React.Component {
     this.setState({ activeTab: key })
   }
 
+  handleSettingsSelection = (value) => {
+    const {
+      setCurrentTestSettingsId,
+      updateAssignmentSettings,
+      testSettingsList,
+      assignmentSettings,
+      testDefaultSettings,
+      testSettings,
+      currentSettingsId,
+      isFreezeSettingsOn,
+      totalItems,
+    } = this.props
+    if (value === 'save-settings-option') {
+      if (currentSettingsId === '')
+        this.setState({ showSaveSettingsModal: true })
+      else {
+        const { _id, title } =
+          testSettingsList.find((t) => t._id === currentSettingsId) || {}
+        this.setState({
+          showUpdateSettingModal: true,
+          settingDetails: {
+            _id,
+            title,
+          },
+        })
+      }
+    } else {
+      let newSettings = {}
+      if (value === '') {
+        newSettings = {
+          ...pick(testSettings, testSettingsOptions),
+          ...testDefaultSettings,
+          autoRedirect: !!testDefaultSettings.autoRedirect,
+        }
+      } else {
+        if (isFreezeSettingsOn) {
+          return notification({
+            msg:
+              'Test has freeze settings on, you cannot apply other saved settings.',
+          })
+        }
+        const selectedSetting = testSettingsList.find((t) => t._id === value)
+        newSettings = {
+          ...assignmentSettings,
+          ...pick(
+            selectedSetting,
+            testSettings.isDocBased
+              ? docBasedSettingsOptions
+              : testSettingsOptions
+          ),
+          autoRedirect: !!selectedSetting.autoRedirect,
+        }
+      }
+      if (newSettings.timedAssignment && !newSettings.allowedTime) {
+        newSettings.allowedTime = totalItems * 60 * 1000
+      } else if (!newSettings.timedAssignment) {
+        newSettings.allowedTime = 0
+      }
+      setCurrentTestSettingsId(value)
+      updateAssignmentSettings(newSettings)
+    }
+  }
+
+  toggleSaveSettingsModal = (value) => {
+    this.setState({ showSaveSettingsModal: value })
+  }
+
+  validateSettings = (entity) => {
+    let isValid = true
+    if (entity.scoringType === evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT) {
+      entity.scoringType = evalTypeLabels.PARTIAL_CREDIT
+      entity.penalty = false
+    }
+    if (
+      entity.passwordPolicy !==
+      testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC
+    ) {
+      delete entity.passwordExpireIn
+    }
+    if (
+      entity.passwordPolicy &&
+      entity.passwordPolicy !==
+        testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC
+    ) {
+      delete entity.assignmentPassword
+    }
+    if (!entity.autoRedirect) {
+      delete entity.autoRedirectSettings
+    }
+    if (
+      entity.passwordPolicy ===
+        testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC &&
+      (!entity.assignmentPassword ||
+        (entity.assignmentPassword &&
+          (entity?.assignmentPassword?.length < 6 ||
+            entity?.assignmentPassword?.length > 25)))
+    ) {
+      notification({ messageKey: 'enterValidPassword' })
+      this.handleTabChange(sectionContants.ANTI_CHEATING_SECTION)
+      isValid = false
+    } else if (entity.autoRedirect === true) {
+      if (!entity.autoRedirectSettings.showPreviousAttempt) {
+        this.handleTabChange(sectionContants.AUTO_REDIRECT_SECTION)
+        notification({
+          type: 'warn',
+          msg: 'Please set the value for Show Previous Attempt',
+        })
+        isValid = false
+      } else if (!entity.autoRedirectSettings.questionsDelivery) {
+        this.handleTabChange(sectionContants.AUTO_REDIRECT_SECTION)
+        notification({
+          type: 'warn',
+          msg: 'Please set the value for Question Delivery',
+        })
+        isValid = false
+      } else if (!entity.autoRedirectSettings.scoreThreshold) {
+        this.handleTabChange(sectionContants.AUTO_REDIRECT_SECTION)
+        notification({
+          type: 'warn',
+          msg: 'Please set Score Threshold value',
+        })
+        isValid = false
+      } else if (!entity.autoRedirectSettings.maxRedirects) {
+        this.handleTabChange(sectionContants.AUTO_REDIRECT_SECTION)
+        notification({
+          type: 'warn',
+          msg: 'Please set value of Max Attempts Allowed for auto redirect',
+        })
+        isValid = false
+      }
+    }
+    return isValid
+  }
+
+  getCurrentSettings = (title) => {
+    const { testSettings, assignmentSettings, userId } = this.props
+    const obj = pick(
+      {
+        ...testSettings,
+        ...assignmentSettings,
+      },
+      testSettingsOptions
+    )
+    const settings = {
+      ...obj,
+      orgId: userId,
+      orgType: roleuser.ORG_TYPE.USER,
+      title,
+    }
+    const isValid = this.validateSettings(settings)
+    if (isValid) return settings
+    return false
+  }
+
+  handleSaveTestSetting = (settingName) => {
+    const { saveTestSettings, isFreezeSettingsOn } = this.props
+    const data = this.getCurrentSettings(settingName)
+    if (data) saveTestSettings({ data, switchSetting: !isFreezeSettingsOn })
+    this.toggleSaveSettingsModal(false)
+  }
+
+  handleDeleteSettings = (value) => {
+    if (value) {
+      const { deleteTestSettingRequest, currentSettingsId } = this.props
+      const { settingDetails } = this.state
+      deleteTestSettingRequest(settingDetails._id)
+      if (settingDetails._id === currentSettingsId)
+        this.handleSettingsSelection('')
+    }
+    this.setState({ showDeleteSettingModal: false })
+  }
+
+  handleUpdateSettings = (value) => {
+    if (!value) {
+      const { testSettingsList } = this.props
+      this.setState({
+        showUpdateSettingModal: false,
+        showSaveSettingsModal:
+          testSettingsList.length < TEST_SETTINGS_SAVE_LIMIT,
+      })
+    } else {
+      const {
+        updateTestSettingRequest,
+        testSettingsList,
+        currentSettingsId,
+        assignmentSettings,
+        userId,
+      } = this.props
+      const currentSetting =
+        testSettingsList.find((t) => t._id === currentSettingsId) || {}
+      const obj = pick(
+        {
+          ...currentSetting,
+          ...assignmentSettings,
+        },
+        testSettingsOptions
+      )
+      const settings = {
+        ...obj,
+        orgId: userId,
+        orgType: roleuser.ORG_TYPE.USER,
+        title: currentSetting.title,
+        testSettingId: currentSettingsId,
+      }
+      const isValid = this.validateSettings(settings)
+      if (isValid) updateTestSettingRequest(settings)
+      this.setState({
+        showUpdateSettingModal: false,
+      })
+    }
+  }
+
+  handleMouseOver = (e) => {
+    e.currentTarget.querySelector('.delete-setting-button').style.display =
+      'flex'
+  }
+
+  handleMouseOut = (e) => {
+    e.currentTarget.querySelector('.delete-setting-button').style.display =
+      'none'
+  }
+
   render() {
-    const { isAdvancedView, selectedDateOption, activeTab } = this.state
+    const {
+      isAdvancedView,
+      selectedDateOption,
+      activeTab,
+      showSaveSettingsModal,
+      showDeleteSettingModal,
+      settingDetails,
+      showUpdateSettingModal,
+    } = this.state
     const { assignmentSettings: assignment, isTestLoading, match } = this.props
     const {
       classList,
@@ -369,6 +645,9 @@ class AssignTest extends React.Component {
       from,
       location,
       defaultTestProfiles = {},
+      currentSettingsId,
+      testSettingsList,
+      userFeatures: { premium },
     } = this.props
     const { title, _id } = isPlaylist ? playlist : testItem
     const exactMenu = parentMenu[location?.state?.from || from]
@@ -379,6 +658,8 @@ class AssignTest extends React.Component {
     const moduleId = match.params.moduleId
     const _module = playlist.modules?.find((m) => m?._id === moduleId)
     const moduleTitle = _module?.title || ''
+    const isTestSettingSaveLimitReached =
+      testSettingsList.length >= TEST_SETTINGS_SAVE_LIMIT
 
     return (
       <div>
@@ -388,6 +669,30 @@ class AssignTest extends React.Component {
           isPlaylist={isPlaylist}
           moduleTitle={moduleTitle}
         />
+        {showSaveSettingsModal && (
+          <SaveSettingsModal
+            visible={showSaveSettingsModal}
+            toggleModal={this.toggleSaveSettingsModal}
+            handleSave={this.handleSaveTestSetting}
+          />
+        )}
+
+        <DeleteTestSettingsModal
+          visible={showDeleteSettingModal}
+          settingDetails={settingDetails}
+          handleResponse={this.handleDeleteSettings}
+        />
+
+        <UpdateTestSettingsModal
+          visible={showUpdateSettingModal}
+          settingDetails={settingDetails}
+          handleResponse={this.handleUpdateSettings}
+          disableSaveNew={isTestSettingSaveLimitReached}
+          closeModal={() => {
+            this.setState({ showUpdateSettingModal: false })
+          }}
+        />
+
         <ListHeader
           title={`Assign ${moduleTitle || title || ''}`}
           midTitle="Assignment Settings"
@@ -397,7 +702,7 @@ class AssignTest extends React.Component {
         />
 
         <Container>
-          <FullFlexContainer justifyContent="space-between">
+          <FullFlexContainer justifyContent="space-between" alignItems="center">
             <PaginationInfo>
               &lt;{' '}
               <AnchorLink to={`/author/${exactMenu?.to}`}>
@@ -419,6 +724,67 @@ class AssignTest extends React.Component {
               <Anchor>Assign</Anchor>
             </PaginationInfo>
             {/* TODO there are some scenarios we have both simple and advance view which is yet be decided */}
+            {premium && (
+              <SavedSettingsContainer>
+                <div>SAVED SETTINGS</div>
+                <Select
+                  value={currentSettingsId}
+                  getPopupContainer={(node) => node.parentNode}
+                  onChange={this.handleSettingsSelection}
+                  optionLabelProp="label"
+                  data-cy="select-save-test-settings"
+                >
+                  <Select.Option key="1" value="" label="DEFAULT TEST SETTINGS">
+                    DEFAULT TEST SETTINGS
+                  </Select.Option>
+                  {testSettingsList.map((t) => (
+                    <Select.Option key={t._id} value={t._id} label={t.title}>
+                      <span
+                        onMouseOver={this.handleMouseOver}
+                        onMouseOut={this.handleMouseOut}
+                        onFocus={() => {}}
+                        onBlur={() => {}}
+                      >
+                        {t.title}{' '}
+                        <DeleteIconContainer
+                          className="delete-setting-button"
+                          onClick={(e) => {
+                            e.preventDefault()
+                            e.stopPropagation()
+                            this.setState({
+                              showDeleteSettingModal: true,
+                              settingDetails: { _id: t._id, title: t.title },
+                            })
+                          }}
+                          title="Remove Setting"
+                        >
+                          <IconTrash color={themeColor} />
+                        </DeleteIconContainer>
+                      </span>
+                    </Select.Option>
+                  ))}
+                  <Select.Option
+                    key="2"
+                    value="save-settings-option"
+                    label="SAVE CURRENT SETTING"
+                    disabled={
+                      isTestSettingSaveLimitReached && !currentSettingsId
+                    }
+                    title={
+                      isTestSettingSaveLimitReached && !currentSettingsId
+                        ? 'Maximum limit reached. Please delete existing one to add new.'
+                        : ''
+                    }
+                    className="save-settings-option"
+                  >
+                    <span>
+                      <Icon type="save" theme="filled" />
+                      SAVE CURRENT SETTING
+                    </span>
+                  </Select.Option>
+                </Select>
+              </SavedSettingsContainer>
+            )}
           </FullFlexContainer>
           {isTestLoading ? (
             <div style={{ height: '70vh' }}>
@@ -441,6 +807,9 @@ class AssignTest extends React.Component {
               defaultTestProfiles={defaultTestProfiles}
               activeTab={activeTab}
               handleTabChange={this.handleTabChange}
+              showAssignModuleContent={
+                match?.params?.playlistId && !match?.params?.testId
+              }
             />
           )}
         </Container>
@@ -465,6 +834,15 @@ const enhance = compose(
       assignmentSettings: state.assignmentSettings,
       isTestLoading: getTestsLoadingSelector(state),
       isFreeAdmin: isFreeAdminSelector(state),
+      currentSettingsId: getCurrentSettingsIdSelector(state),
+      userId: getUserId(state),
+      testSettingsList: getTestSettingsListSelector(state),
+      testDefaultSettings: getTestDefaultSettingsSelector(state),
+      userFeatures: getUserFeatures(state),
+      isFreezeSettingsOn: getIsOverrideFreezeSelector(state),
+      totalItems: state?.tests?.entity?.isDocBased
+        ? state?.tests?.entity?.summary?.totalQuestions
+        : state?.tests?.entity?.summary?.totalItems,
     }),
     {
       loadClassList: receiveClassListAction,
@@ -479,6 +857,12 @@ const enhance = compose(
       updateAssignmentSettings: updateAssingnmentSettingsAction,
       clearAssignmentSettings: clearAssignmentSettingsAction,
       toggleFreeAdminSubscriptionModal: toggleFreeAdminSubscriptionModalAction,
+      fetchTestSettingsList: fetchTestSettingsListAction,
+      saveTestSettings: saveTestSettingsAction,
+      setCurrentTestSettingsId: setCurrentTestSettingsIdAction,
+      deleteTestSettingRequest: deleteTestSettingRequestAction,
+      updateTestSettingRequest: updateTestSettingRequestAction,
+      fetchUserCustomKeypads: fetchCustomKeypadAction,
     }
   )
 )

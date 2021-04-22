@@ -18,6 +18,8 @@ const GET_STUDENT_STANDARDS_SUCCESS =
   '[reports] standard gradebook get student standards success'
 const GET_STUDENT_STANDARDS_FAILED =
   '[reports] standard gradebook get student standards failed'
+const RESET_REPORTS_STANDARDS_GRADEBOOK =
+  '[reports] reset reports standards gradebook'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
@@ -27,6 +29,9 @@ export const getStandardsGradebookRequestAction = createAction(
 )
 export const getStudentStandardsAction = createAction(
   GET_STUDENT_STANDARDS_REQUEST
+)
+export const resetStandardsGradebookAction = createAction(
+  RESET_REPORTS_STANDARDS_GRADEBOOK
 )
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
 
@@ -69,7 +74,7 @@ export const getStudentStandardLoader = createSelector(
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //
 
 const initialState = {
-  loader: true,
+  loader: false,
   standardsGradebook: {},
   filters: {
     termId: '',
@@ -86,6 +91,7 @@ const initialState = {
 
 export const reportStandardsGradebookReducer = createReducer(initialState, {
   [RESET_ALL_REPORTS]: (state) => (state = initialState),
+  [RESET_REPORTS_STANDARDS_GRADEBOOK]: (state) => (state = initialState),
   [GET_REPORTS_STANDARDS_GRADEBOOK_REQUEST]: (state) => {
     state.loading = true
   },

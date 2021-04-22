@@ -57,10 +57,10 @@ const getContainerLeftRight = (element) => {
 
 /**
  * @param {boolean} showPoint
- * needed only for graph placement type at this moment.
+ * needed only for graph placement type and Number line types
  * dragging value is on dropcontainer, showPoint is true, otherwise it is false
  */
-const CustomDragLayer = ({ showPoint }) => {
+const CustomDragLayer = ({ showPoint, centerPoint }) => {
   const verticalInterval = useRef(null)
   const horizontalInterval = useRef(null)
   const { isDragging, item, initialOffset, currentOffset } = useDragLayer(
@@ -154,7 +154,7 @@ const CustomDragLayer = ({ showPoint }) => {
       <div style={style}>
         {preview}
         {showPoint && (
-          <DraggingPointer>
+          <DraggingPointer centerPoint={centerPoint}>
             <DraggingPoint />
           </DraggingPointer>
         )}
@@ -169,7 +169,8 @@ export default CustomDragLayer
 const DraggingPointer = styled.div`
   position: absolute;
   margin-top: -1px;
-  left: calc(25% - 6px);
+  left: ${({ centerPoint }) => (centerPoint ? '50%' : 'calc(25% - 6px)')};
+  ${({ centerPoint }) => (centerPoint ? 'transform: translateX(-50%)' : '')};
   z-index: 1000;
 
   &::before {

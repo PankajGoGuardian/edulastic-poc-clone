@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
-import { Col, Row, Select } from 'antd'
+import { Col, Row, Select, Spin } from 'antd'
 import moment from 'moment'
 import {
   test as testConst,
@@ -15,9 +15,9 @@ import {
 } from '@edulastic/common'
 import {
   getAdditionalDataSelector,
+  getIsDocBasedTestSelector,
   getTestActivitySelector,
 } from '../ClassBoard/ducks'
-import { receiveTestActivitydAction } from '../src/actions/classBoard'
 import { slice } from './ducks'
 import ClassHeader from '../Shared/Components/ClassHeader/ClassHeader'
 /**
@@ -50,7 +50,6 @@ export const nonPremiumReleaseGradeKeys = ['DONT_RELEASE', 'WITH_ANSWERS']
 
 function LCBAssignmentSettings({
   additionalData = {},
-  loadTestActivity,
   match,
   history,
   loadAssignment,
@@ -61,11 +60,12 @@ function LCBAssignmentSettings({
   updateAssignmentSettings,
   testActivity,
   userId,
+  isDocBased,
+  loading,
 }) {
   const { openPolicy, closePolicy } = selectsData
   const { assignmentId, classId } = match.params || {}
   useEffect(() => {
-    loadTestActivity(assignmentId, classId)
     loadAssignment({ assignmentId, classId })
     loadTestSettings()
   }, [])
@@ -110,7 +110,6 @@ function LCBAssignmentSettings({
   }
 
   const resetToDefault = () => {
-    loadTestActivity(assignmentId, classId)
     loadAssignment({ assignmentId, classId })
     loadTestSettings()
   }
@@ -129,116 +128,114 @@ function LCBAssignmentSettings({
       />
       <MainContentWrapper>
         <OptionConationer width="60%">
-          <InitOptions>
-            <ClassHeading>
-              {className ? (
-                <>
-                  Settings for <span>{className}</span>
-                </>
-              ) : (
-                'loading...'
-              )}
-            </ClassHeading>
-            <DateSelector
-              startDate={moment(startDate)}
-              endDate={moment(endDate)}
-              dueDate={dueDate ? moment(dueDate) : undefined}
-              changeField={changeField}
-              forClassLevel
-              status={status}
-              passwordPolicy={assignment?.passwordPolicy}
-            />
-            <StyledRow gutter={16}>
-              <Col span={12}>
-                <InputLabelContainer>
-                  <InputLabel>open policy</InputLabel>
-                </InputLabelContainer>
-              </Col>
-              <Col span={12}>
-                <SelectInputStyled
-                  data-cy="selectOpenPolicy"
-                  placeholder="Please select"
-                  cache="false"
-                  value={assignment?.openPolicy}
-                  onChange={changeField('openPolicy')}
-                  disabled={
-                    assignment?.passwordPolicy ===
-                      testConst.passwordPolicy
-                        .REQUIRED_PASSWORD_POLICY_DYNAMIC ||
-                    status !== assignmentStatusOptions.NOT_OPEN
-                  }
-                  height="30px"
-                >
-                  {openPolicy.map(({ value, text }, index) => (
-                    <Select.Option key={index} value={value} data-cy="open">
-                      {text}
-                    </Select.Option>
-                  ))}
-                </SelectInputStyled>
-              </Col>
-            </StyledRow>
-            <StyledRow gutter={16}>
-              <Col span={12}>
-                <InputLabelContainer>
-                  <InputLabel>close policy</InputLabel>
-                </InputLabelContainer>
-              </Col>
-              <Col span={12}>
-                <SelectInputStyled
-                  data-cy="selectClosePolicy"
-                  placeholder="Please select"
-                  cache="false"
-                  value={assignment?.closePolicy}
-                  onChange={changeField('closePolicy')}
-                  disabled={status === assignmentStatusOptions.DONE}
-                  height="30px"
-                >
-                  {closePolicy.map(({ value, text }, index) => (
-                    <Select.Option data-cy="class" key={index} value={value}>
-                      {text}
-                    </Select.Option>
-                  ))}
-                </SelectInputStyled>
-              </Col>
-            </StyledRow>
-
-            <Settings
-              assignmentSettings={assignment || {}}
-              updateAssignmentSettings={() => {}}
-              changeField={changeField}
-              testSettings={testSettings}
-              gradeSubject={gradeSubject}
-              _releaseGradeKeys={releaseGradeKeys}
-              isDocBased={assignment?.isDocBased}
-            />
-
-            <Row gutter={0} style={{ marginTop: '15px' }}>
-              <Col offset={12}>
-                <Col span={12} style={{ paddingLeft: '16px' }}>
-                  <EduButton
-                    data-cy="lcb-setting-cancel"
-                    height="40px"
-                    width="100%"
-                    isGhost
-                    onClick={() => resetToDefault()}
-                  >
-                    CANCEL
-                  </EduButton>
+          {loading ? (
+            <Spin />
+          ) : (
+            <InitOptions>
+              <ClassHeading>
+                Settings for <span>{className}</span>
+              </ClassHeading>
+              <DateSelector
+                startDate={moment(startDate)}
+                endDate={moment(endDate)}
+                dueDate={dueDate ? moment(dueDate) : undefined}
+                changeField={changeField}
+                forClassLevel
+                status={status}
+                passwordPolicy={assignment?.passwordPolicy}
+              />
+              <StyledRow gutter={16}>
+                <Col span={12}>
+                  <InputLabelContainer>
+                    <InputLabel>open policy</InputLabel>
+                  </InputLabelContainer>
                 </Col>
-                <Col span={12} style={{ paddingLeft: '16px' }}>
-                  <EduButton
-                    data-cy="lcb-setting-update"
-                    height="40px"
-                    onClick={() =>
-                      updateAssignmentSettings({ classId, assignmentId })
+                <Col span={12}>
+                  <SelectInputStyled
+                    data-cy="selectOpenPolicy"
+                    placeholder="Please select"
+                    cache="false"
+                    value={assignment?.openPolicy}
+                    onChange={changeField('openPolicy')}
+                    disabled={
+                      assignment?.passwordPolicy ===
+                        testConst.passwordPolicy
+                          .REQUIRED_PASSWORD_POLICY_DYNAMIC ||
+                      status !== assignmentStatusOptions.NOT_OPEN
                     }
+                    height="30px"
                   >
-                    UPDATE
-                  </EduButton>
+                    {openPolicy.map(({ value, text }, index) => (
+                      <Select.Option key={index} value={value} data-cy="open">
+                        {text}
+                      </Select.Option>
+                    ))}
+                  </SelectInputStyled>
                 </Col>
-              </Col>
-            </Row>
-          </InitOptions>
+              </StyledRow>
+              <StyledRow gutter={16}>
+                <Col span={12}>
+                  <InputLabelContainer>
+                    <InputLabel>close policy</InputLabel>
+                  </InputLabelContainer>
+                </Col>
+                <Col span={12}>
+                  <SelectInputStyled
+                    data-cy="selectClosePolicy"
+                    placeholder="Please select"
+                    cache="false"
+                    value={assignment?.closePolicy}
+                    onChange={changeField('closePolicy')}
+                    disabled={status === assignmentStatusOptions.DONE}
+                    height="30px"
+                  >
+                    {closePolicy.map(({ value, text }, index) => (
+                      <Select.Option data-cy="class" key={index} value={value}>
+                        {text}
+                      </Select.Option>
+                    ))}
+                  </SelectInputStyled>
+                </Col>
+              </StyledRow>
+
+              <Settings
+                assignmentSettings={assignment || {}}
+                updateAssignmentSettings={() => {}}
+                changeField={changeField}
+                testSettings={testSettings}
+                gradeSubject={gradeSubject}
+                _releaseGradeKeys={releaseGradeKeys}
+                isDocBased={isDocBased}
+              />
+
+              <Row gutter={0} style={{ marginTop: '15px' }}>
+                <Col offset={12}>
+                  <Col span={12} style={{ paddingLeft: '16px' }}>
+                    <EduButton
+                      data-cy="lcb-setting-cancel"
+                      height="40px"
+                      width="100%"
+                      isGhost
+                      onClick={() => resetToDefault()}
+                    >
+                      CANCEL
+                    </EduButton>
+                  </Col>
+                  <Col span={12} style={{ paddingLeft: '16px' }}>
+                    <EduButton
+                      data-cy="lcb-setting-update"
+                      height="40px"
+                      onClick={() =>
+                        updateAssignmentSettings({ classId, assignmentId })
+                      }
+                    >
+                      UPDATE
+                    </EduButton>
+                  </Col>
+                </Col>
+              </Row>
+            </InitOptions>
+          )}
         </OptionConationer>
       </MainContentWrapper>
     </div>
@@ -253,9 +250,9 @@ export default connect(
     testSettings: getTestEntitySelector(state),
     testActivity: getTestActivitySelector(state),
     userId: state?.user?.user?._id,
+    isDocBased: getIsDocBasedTestSelector(state),
   }),
   {
-    loadTestActivity: receiveTestActivitydAction,
     loadAssignment: slice.actions.loadAssignment,
     updateAssignmentSettings: slice.actions.updateAssignmentClassSettings,
     changeAttrs: slice.actions.changeAttribute,

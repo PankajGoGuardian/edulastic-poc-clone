@@ -101,7 +101,12 @@ const EvaluationSettings = ({
           }
           label="Evaluation Settings"
         />
-        <EduButton height="28px" ml="20px" onClick={showSettingDrawer}>
+        <EduButton
+          height="28px"
+          ml="20px"
+          onClick={showSettingDrawer}
+          data-cy="changeEvaluation"
+        >
           Change
         </EduButton>
       </FlexContainer>
@@ -144,5 +149,7 @@ EvaluationSettings.defaultProps = {
   onChangeMethod: () => null,
   changeOptions: () => null,
 }
+
+EvaluationSettings.EnabledSettings = EnabledSettings
 
 export default EvaluationSettings

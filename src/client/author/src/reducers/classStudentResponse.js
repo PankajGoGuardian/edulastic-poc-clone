@@ -3,12 +3,14 @@ import {
   RECEIVE_CLASSSTUDENT_RESPONSE_SUCCESS,
   RECEIVE_CLASSSTUDENT_RESPONSE_ERROR,
   ADD_CLASS_STUDENT_RESPONSE,
+  SET_CLASS_STUDENT_RESPONSES_LOADING,
 } from '../constants/actions'
 
 const initialState = {
   data: [],
   error: null,
   loading: false,
+  printPreviewLoading: false,
 }
 
 const reducer = (state = initialState, { type, payload }) => {
@@ -37,6 +39,8 @@ const reducer = (state = initialState, { type, payload }) => {
     }
     case RECEIVE_CLASSSTUDENT_RESPONSE_ERROR:
       return { ...state, loading: false, error: payload.error }
+    case SET_CLASS_STUDENT_RESPONSES_LOADING:
+      return { ...state, printPreviewLoading: payload }
     default:
       return state
   }

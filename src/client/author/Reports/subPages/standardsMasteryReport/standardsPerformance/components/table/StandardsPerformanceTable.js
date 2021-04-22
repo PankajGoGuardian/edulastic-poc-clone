@@ -240,7 +240,7 @@ const StandardsPerformanceTable = ({
         </Col>
         <Col xs={24} sm={24} md={13} lg={13} xl={12}>
           <Row className="control-dropdown-row">
-            <StyledDropDownContainer xs={24} sm={24} md={11} lg={11} xl={8}>
+            <StyledDropDownContainer xs={24} sm={24} md={11} lg={11} xl={8} style={{ padding: '2.5px' }}>
               <ControlDropDown
                 prefix="Compare by "
                 data={compareByData}
@@ -248,7 +248,7 @@ const StandardsPerformanceTable = ({
                 selectCB={bindOnChange('compareBy', compareByData)}
               />
             </StyledDropDownContainer>
-            <StyledDropDownContainer xs={24} sm={24} md={13} lg={13} xl={8}>
+            <StyledDropDownContainer xs={24} sm={24} md={13} lg={13} xl={8} style={{ padding: '2.5px' }}>
               <ControlDropDown
                 prefix="Analyze by "
                 data={analyseByData}

@@ -127,6 +127,7 @@ const CurriculumSubHeader = ({
                     isGhost
                     isBlue
                     onClick={toggleManageContentClick('manageContent')}
+                    data-cy="customizeContent"
                   >
                     Customize Content
                   </CustomizeButton>
@@ -141,6 +142,7 @@ const CurriculumSubHeader = ({
                   <StyledButton
                     isGhost
                     onClick={toggleManageContentClick('summary')}
+                    data-cy="viewSummary"
                   >
                     View Summary
                   </StyledButton>

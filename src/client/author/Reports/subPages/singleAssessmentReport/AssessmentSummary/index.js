@@ -5,6 +5,8 @@ import React, { useEffect, useMemo } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
+import { isEmpty } from 'lodash'
+
 import { getUserRole, getUser } from '../../../../src/selectors/user'
 import { NoDataContainer, StyledCard, StyledH3 } from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
@@ -26,6 +28,7 @@ import {
   getReportsAssessmentSummaryLoader,
   setReportsAssesmentSummaryLoadingAction,
   getReportsAssessmentSummaryError,
+  resetReportsAssessmentSummaryAction,
 } from './ducks'
 import { setPerformanceBandProfileAction } from '../common/filterDataDucks'
 
@@ -44,6 +47,7 @@ const AssessmentSummary = ({
   role,
   assessmentSummary,
   getAssessmentSummary,
+  resetAssessmentSummary,
   settings,
   testList,
   user,
@@ -64,6 +68,8 @@ const AssessmentSummary = ({
   const assessmentName = `${
     selectedTest.title
   } (ID:${selectedTest._id.substring(selectedTest._id.length - 5)})`
+
+  useEffect(() => () => resetAssessmentSummary(), [])
 
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
@@ -90,13 +96,14 @@ const AssessmentSummary = ({
     } else if (settings.selectedTest && !settings.selectedTest.key) {
       setAssesmentSummaryLoading(false)
     }
-  }, [settings])
+  }, [settings.selectedTest, settings.requestFilters, settings.cliUser])
 
   useEffect(() => {
     setPerformanceBandProfile(assessmentSummary?.bandInfo || {})
     if (
       (settings.requestFilters.termId || settings.requestFilters.reportId) &&
       !loading &&
+      !isEmpty(assessmentSummary) &&
       !assessmentSummary.metricInfo.length
     ) {
       toggleFilter(null, true)
@@ -106,7 +113,12 @@ const AssessmentSummary = ({
   const { bandInfo, metricInfo } = assessmentSummary
 
   if (loading) {
-    return <SpinLoader position="fixed" />
+    return (
+      <SpinLoader
+        tip="Please wait while we gather the required information..."
+        position="fixed"
+      />
+    )
   }
   if (settings.cliUser && !metricInfo?.length) {
     return <CustomCliEmptyComponent />
@@ -117,7 +129,11 @@ const AssessmentSummary = ({
   }
 
   if (!metricInfo?.length || !settings.selectedTest.key) {
-    return <NoDataContainer>No data available currently.</NoDataContainer>
+    return (
+      <NoDataContainer>
+        {settings.requestFilters?.termId ? 'No data available currently.' : ''}
+      </NoDataContainer>
+    )
   }
   return (
     <>
@@ -189,6 +205,7 @@ const enhance = compose(
     {
       getAssessmentSummary: getAssessmentSummaryRequestAction,
       setAssesmentSummaryLoading: setReportsAssesmentSummaryLoadingAction,
+      resetAssessmentSummary: resetReportsAssessmentSummaryAction,
       setPerformanceBandProfile: setPerformanceBandProfileAction,
     }
   )

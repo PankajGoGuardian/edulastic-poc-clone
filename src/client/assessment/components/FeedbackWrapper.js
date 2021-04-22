@@ -3,16 +3,19 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import styled, { css, withTheme } from 'styled-components'
-import { questionType } from '@edulastic/constants'
-import { withNamespaces } from '@edulastic/localization'
 import { get, isEmpty, round } from 'lodash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faClock } from '@fortawesome/free-solid-svg-icons'
+
+import { questionType } from '@edulastic/constants'
+import { withNamespaces } from '@edulastic/localization'
+import { greyThemeDark2 } from '@edulastic/colors'
+import UnscoredBlock from '@edulastic/common/src/components/Unscored'
+
 import { PrintPreviewScore } from './printPreviewScore'
 import FeedBackContainer from './FeedBackContainer'
 import FeedbackRight from './FeedbackRight'
 import StudentReportFeedback from '../../student/TestAcitivityReport/components/StudentReportFeedback'
-import { TimeSpentWrapper } from './QuestionWrapper'
 import { updateHeight as updateHeightAction } from '../../author/src/reducers/feedback'
 
 const FeedbackWrapper = ({
@@ -31,6 +34,7 @@ const FeedbackWrapper = ({
   studentName,
   updatePosition,
   isExpressGrader,
+  isQuestionView,
   t,
 }) => {
   const feedbackRef = useRef()
@@ -59,7 +63,7 @@ const FeedbackWrapper = ({
 
   const { userResponse: previousUserResponse } = prevQActivityForQuestion || {}
 
-  const { validation: { unscored: isPracticeQuestion = false } = {} } = data
+  const { isPracticeQuestion = false } = data
 
   const studentReportFeedbackVisible =
     isStudentReport && !isPassageOrVideoType && !data.scoringDisabled
@@ -113,6 +117,7 @@ const FeedbackWrapper = ({
             isPracticeQuestion={isPracticeQuestion}
             itemId={itemId}
             isExpressGrader={isExpressGrader}
+            isQuestionView={isQuestionView}
             isAbsolutePos={!isStudentReport && shouldTakeDimensionsFromStore}
             {...presentationModeProps}
           />
@@ -139,9 +144,16 @@ const FeedbackWrapper = ({
           isStudentReport={isStudentReport}
         />
       )}
-      {showFeedback && isPrintPreview && !disabled && (
-        <PrintPreviewScore disabled={disabled} data={data} />
-      )}
+
+      {showFeedback &&
+        isPrintPreview &&
+        !disabled &&
+        (isPracticeQuestion ? (
+          <UnscoredBlock height="30px" />
+        ) : (
+          <PrintPreviewScore disabled={disabled} data={data} />
+        ))}
+
       {isPrintPreview && timeSpent && showFeedback && !disabled && (
         <div className="__prevent-page-break __print-time-spent">
           <TimeSpentWrapper style={{ justifyContent: 'center' }}>
@@ -186,6 +198,33 @@ const StyledFeedbackWrapper = styled.div`
     dimensions.top &&
     wrapperPosition};
 `
+const TimeSpentWrapper = styled.div`
+  font-size: 19px;
+  color: ${greyThemeDark2};
+  display: flex;
+  justify-content: flex-end;
+  margin-top: auto;
+  align-items: center;
+  margin: ${({ margin }) => margin};
+  &.student-report {
+    position: absolute;
+    top: 25px;
+    right: 0px;
+    background: #f3f3f3;
+    padding: 10px 15px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    svg {
+      margin-right: 10px;
+      fill: #6a737f;
+    }
+  }
+  svg {
+    margin-right: 8px;
+    fill: ${greyThemeDark2};
+  }
+`
 
 FeedbackWrapper.propTypes = {
   data: PropTypes.object,
@@ -197,12 +236,14 @@ FeedbackWrapper.propTypes = {
   isStudentReport: PropTypes.bool.isRequired,
   isPresentationMode: PropTypes.bool,
   t: PropTypes.func.isRequired,
+  isQuestionView: PropTypes.bool,
 }
 FeedbackWrapper.defaultProps = {
   data: {},
   showFeedback: false,
   isPresentationMode: false,
   displayFeedback: true,
+  isQuestionView: false,
 }
 
 const enhance = compose(

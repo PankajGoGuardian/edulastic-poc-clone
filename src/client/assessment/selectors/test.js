@@ -33,7 +33,7 @@ export const currentQuestions = createSelector(currentItemSelector, (item) => {
 export const answersByQId = (answers, testItemId) => {
   const newAnswers = {}
   Object.keys(answers).forEach((key) => {
-    const [itemId, qId] = key.split('_')
+    const [itemId, qId] = key.split(/_(.+)/)
     if (testItemId === itemId) {
       // updating answer key as qId itself as it is for a single item evaluation.
       newAnswers[qId] = answers[key]

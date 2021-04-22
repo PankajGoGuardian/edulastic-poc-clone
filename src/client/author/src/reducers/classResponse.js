@@ -2,12 +2,15 @@ import {
   RECEIVE_CLASS_RESPONSE_SUCCESS,
   RECEIVE_CLASS_RESPONSE_ERROR,
   UPDATE_STUDENT_TEST_ITEMS,
+  CORRECT_ITEM_UPDATE_REQUEST,
+  CORRECT_ITEM_UPDATE_SUCCESS,
 } from '../constants/actions'
 
 const initialState = {
   data: {},
   error: null,
   loading: true,
+  updating: false,
 }
 
 const reducer = (state = initialState, { type, payload }) => {
@@ -29,6 +32,13 @@ const reducer = (state = initialState, { type, payload }) => {
       }
     case RECEIVE_CLASS_RESPONSE_ERROR:
       return { ...state, loading: false, error: payload.error }
+    case CORRECT_ITEM_UPDATE_REQUEST:
+      return { ...state, updating: true }
+    case CORRECT_ITEM_UPDATE_SUCCESS:
+      return {
+        ...state,
+        updating: false,
+      }
     default:
       return state
   }

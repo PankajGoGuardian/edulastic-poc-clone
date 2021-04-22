@@ -629,6 +629,7 @@ class DistrictAdminTable extends Component {
               onSearch={this.handleSearchName}
               onChange={this.onChangeSearch}
               height="36px"
+              data-cy="searchByName"
             />
             <EduButton
               type="primary"

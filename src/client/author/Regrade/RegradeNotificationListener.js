@@ -18,6 +18,8 @@ const collectionName = 'RegradeAssignments'
 const NotificationListener = ({
   docId,
   history,
+  noRedirect,
+  onCloseModal,
   setEditEnable,
   setFirestoreDocId,
   setRegradingState,
@@ -46,12 +48,20 @@ const NotificationListener = ({
         setEditEnable(false)
         setRegradingState(false)
         deleteNotificationDocument()
-        history.push(`/author/regrade/${newTestId}/success`)
+        if (!noRedirect) {
+          history.push(`/author/regrade/${newTestId}/success`)
+        }
+        if (typeof onCloseModal === 'function') {
+          onCloseModal()
+        }
       } else if (error) {
         antdNotification({ type: 'error', msg: error })
         deleteNotificationDocument()
         setEditEnable(false)
         setRegradingState(false)
+        if (typeof onCloseModal === 'function') {
+          onCloseModal()
+        }
       }
     }
   }, [userNotification])

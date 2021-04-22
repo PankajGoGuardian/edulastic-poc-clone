@@ -38,6 +38,7 @@ import { logoutAction } from './author/src/actions/auth'
 import RealTimeCollectionWatch from './RealTimeCollectionWatch'
 import SsoAuth from '../ssoAuth'
 import FreeAdminAlertModal from './common/components/FreeAdminAlertModal'
+import StudentSessionExpiredModal from './common/components/StudentSessionExpiredModal'
 
 const { ASSESSMENT, PRACTICE, TESTLET } = test.type
 // route wise splitting
@@ -165,10 +166,6 @@ const testRedirectRoutes = [
   '#renderResource/close/',
   '/#assessmentQuestions/close/',
 ]
-const getCurrentPath = () => {
-  const location = window.location
-  return `${location.pathname}${location.search}${location.hash}`
-}
 
 function isLocationInTestRedirectRoutes(loc) {
   return testRedirectRoutes.find(
@@ -478,6 +475,7 @@ class App extends Component {
             history={history}
           />
         )}
+        <StudentSessionExpiredModal />
         <AppUpdate visible={showAppUpdate} />
         <OfflineNotifier />
         {tutorial && (

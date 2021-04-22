@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { isEqual, clamp, differenceBy } from 'lodash'
 import styled from 'styled-components'
 
-import { Select, TextField } from '@edulastic/common'
+import { Select } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { response as Dimensions } from '@edulastic/constants'
 
@@ -14,7 +14,6 @@ import { Col } from '../../../../styled/WidgetOptions/Col'
 import { Label } from '../../../../styled/WidgetOptions/Label'
 
 import { Container } from './styled/Container'
-import { Delete } from './styled/Delete'
 import { Subtitle } from '../../../../styled/Subtitle'
 import Question from '../../../../components/Question'
 import { TextInputStyled } from '../../../../styled/InputStyles'
@@ -80,9 +79,9 @@ class Layout extends Component {
 
     const changeIndividualUiStyle = (prop, value, index) => {
       const { responsecontainerindividuals } = uiStyle
-      const item = responsecontainerindividuals[index]
-      item[prop] = value
-      responsecontainerindividuals[index] = item
+      const _item = responsecontainerindividuals[index]
+      _item[prop] = value
+      responsecontainerindividuals[index] = _item
       onChange('uiStyle', {
         ...uiStyle,
         responsecontainerindividuals,
@@ -180,6 +179,7 @@ class Layout extends Component {
             <Label>{t('component.options.fontSize')}</Label>
             <FieldWrapper>
               <Select
+                getPopupContainer={(triggerNode) => triggerNode.parentNode}
                 onChange={(fontsize) => changeUiStyle('fontsize', fontsize)}
                 options={[
                   { value: 'small', label: t('component.options.small') },
@@ -196,6 +196,7 @@ class Layout extends Component {
             <Label>{t('component.options.stemNumerationReviewOnly')}</Label>
             <FieldWrapper>
               <Select
+                getPopupContainer={(triggerNode) => triggerNode.parentNode}
                 onChange={(val) => changeUiStyle('stemNumeration', val)}
                 options={[
                   {

@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { message } from 'antd'
 import { get, groupBy, isEmpty, last } from 'lodash'
 import { ticks } from 'd3-array'
 import { connect } from 'react-redux'
@@ -14,6 +13,7 @@ import {
   linkColor1,
   themeColorLighter,
   darkBlue2,
+  greyLight1,
 } from '@edulastic/colors'
 import {
   ComposedChart,
@@ -82,6 +82,13 @@ const bars = {
     stackId: 'a',
     dataKey: 'manualGradedNum',
     fill: darkBlue2,
+  },
+  unscoredItems: {
+    className: 'unscoredItems',
+    yAxisId: 'left',
+    stackId: 'a',
+    dataKey: 'unscoredItems',
+    fill: greyLight1,
   },
 }
 
@@ -220,6 +227,9 @@ class BarGraph extends Component {
             if (studentViewFilter === 'notGraded' && x.manualGradedNum > 0) {
               return true
             }
+            if (studentViewFilter === 'unscoredItems' && x.unscoredItems > 0) {
+              return true
+            }
             return false
           })
         }
@@ -245,6 +255,7 @@ class BarGraph extends Component {
           partialAttempts: item.partialNum || 0,
           incorrectAttemps: item.wrongNum,
           manualGradedNum: item.manualGradedNum,
+          unscoredItems: item.unscoredItems,
           avgTimeSpent: item.avgTimeSpent || 0,
           itemLevelScoring: item.itemLevelScoring,
           skippedNum: item.skippedNum,
@@ -413,9 +424,7 @@ class BarGraph extends Component {
           }}
         />
         {isBoth && (
-          <LegendContainer
-            style={{ marginBottom: '-18px', paddingLeft: '80px' }}
-          >
+          <LegendContainer style={{ paddingLeft: '80px' }}>
             <Legends />
           </LegendContainer>
         )}

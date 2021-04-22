@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
-import { filter, get } from 'lodash'
+import { filter, get, isEmpty } from 'lodash'
 
 import { Col, Row } from 'antd'
 import { SpinLoader } from '@edulastic/common'
@@ -21,6 +21,7 @@ import {
   getReportsStandardsPerformanceSummaryLoader,
   getStandardsPerformanceSummaryRequestAction,
   getReportsStandardsPerformanceSummaryError,
+  resetStandardsPerformanceSummaryAction,
 } from './ducks'
 
 import {
@@ -38,6 +39,7 @@ const StandardsPerformance = ({
   standardsPerformanceSummary,
   standardsFilters,
   getStandardsPerformanceSummaryRequest,
+  resetStandardsPerformanceSummary,
   isCsvDownloading,
   toggleFilter,
   settings,
@@ -81,10 +83,12 @@ const StandardsPerformance = ({
   })
   const [selectedDomains, setSelectedDomains] = useState([])
 
+  useEffect(() => () => resetStandardsPerformanceSummary(), [])
+
   // set initial page filters
   useEffect(() => {
     setPageFilters({ ...pageFilters, page: 1 })
-  }, [settings, tableFilters.compareBy.key])
+  }, [settings.requestFilters, tableFilters.compareBy.key])
 
   // get paginated data
   useEffect(() => {
@@ -108,6 +112,7 @@ const StandardsPerformance = ({
     if (
       (settings.requestFilters.termId || settings.requestFilters.reportId) &&
       !loading &&
+      !isEmpty(standardsPerformanceSummary) &&
       !metricInfo.length
     ) {
       toggleFilter(null, true)
@@ -144,7 +149,12 @@ const StandardsPerformance = ({
   }
 
   if (loading) {
-    return <SpinLoader position="fixed" />
+    return (
+      <SpinLoader
+        tip="Please wait while we gather the required information..."
+        position="fixed"
+      />
+    )
   }
 
   if (error && error.dataSizeExceeded) {
@@ -152,7 +162,11 @@ const StandardsPerformance = ({
   }
 
   if (!res.metricInfo?.length) {
-    return <NoDataContainer>No data available currently.</NoDataContainer>
+    return (
+      <NoDataContainer>
+        {settings.requestFilters?.termId ? 'No data available currently.' : ''}
+      </NoDataContainer>
+    )
   }
 
   return (
@@ -225,6 +239,7 @@ const enhance = connect(
   }),
   {
     getStandardsPerformanceSummaryRequest: getStandardsPerformanceSummaryRequestAction,
+    resetStandardsPerformanceSummary: resetStandardsPerformanceSummaryAction,
   }
 )
 

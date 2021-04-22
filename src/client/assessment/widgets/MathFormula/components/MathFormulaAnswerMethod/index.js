@@ -1,24 +1,22 @@
 import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { get } from 'lodash'
+
 import {
   MathInput,
   withWindowSizes,
   StaticMath,
   getInnerValuesForStatic,
 } from '@edulastic/common'
-
 import { math, questionTitle } from '@edulastic/constants'
 import { withNamespaces } from '@edulastic/localization'
 import { mobileWidth } from '@edulastic/colors'
 
 import { Label } from '../../../../styled/WidgetOptions/Label'
-
 import { IconTrash } from '../../styled/IconTrash'
 import { Container } from './styled/Container'
 import { StyledRow } from './styled/StyledRow'
 import { MathInputWrapper } from './styled/MathInputWrapper'
-
 import { Field, UnitsDropdown, DefaultKeyPadMode, CustomUnit } from './options'
 import { Row } from '../../../../styled/WidgetOptions/Row'
 import { Col } from '../../../../styled/WidgetOptions/Col'

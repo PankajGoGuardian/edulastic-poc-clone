@@ -92,6 +92,12 @@ export const CLEAR_ITEM_EVALUATION = '[evaluation] clear evaluation'
 
 export const TOGGLE_CREATE_ITEM_MODAL = '[testItem] toggle create item modal'
 
+export const CORRECT_ITEM_UPDATE_REQUEST =
+  '[testItem] update correct testItem in LCB request'
+export const CORRECT_ITEM_UPDATE_SUCCESS =
+  '[testItem] update correct testItem in LCB success'
+export const TOGGLE_REGRADE_MODAL = '[tests] toggle regrade modal in LCB'
+
 // Tests
 export const RECEIVE_TESTS_REQUEST = '[tests] receive list request'
 export const RECEIVE_TESTS_SUCCESS = '[tests] receive list success'
@@ -170,6 +176,8 @@ export const RECEIVE_CLASSSTUDENT_RESPONSE_SUCCESS =
 export const ADD_CLASS_STUDENT_RESPONSE = '[classStudentResponse] add response'
 export const RECEIVE_CLASSSTUDENT_RESPONSE_ERROR =
   '[classStudentResponse] receive list error'
+export const SET_CLASS_STUDENT_RESPONSES_LOADING =
+  '[classStudentResponse] set print preview loading'
 export const RECEIVE_FEEDBACK_RESPONSE_REQUEST =
   '[feedbackResponse] receive list request'
 export const RECEIVE_FEEDBACK_RESPONSE_SUCCESS =
@@ -313,6 +321,10 @@ export const TOGGLE_STUDENT_REPORT_CARD_SETTINGS =
 
 export const SYNC_ASSIGNMENT_GRADES_WITH_GOOGLE_CLASSROOM_REQUEST =
   '[LCB] sync assignment grades with google classroom request'
+
+export const SYNC_ASSIGNMENT_GRADES_WITH_CLEVER_REQUEST =
+  '[LCB] sync assignment grades with clever request'
+
 export const SYNC_ASSIGNMENT_WITH_SCHOOLOGY_CLASSROOM_REQUEST =
   '[LCB] sync assignment with schoology classroom request'
 export const SYNC_ASSIGNMENT_WITH_SCHOOLOGY_CLASSROOM_SUCCESS =
@@ -397,3 +409,11 @@ export const SET_SCROLL_TOP = '[pickUpQuestion] set scroll top value'
 
 export const MQTT_CLIENT_SAVE_REQUEST = '[mqtt] Client saved'
 export const MQTT_CLIENT_REMOVE_REQUEST = '[mqtt] Client removed'
+
+export const TOGGLE_QUESTION_EDIT_MODAL_LCB =
+  '[edit question] toggle question edit modal in lcb correct item'
+export const SET_EDIT_ITEM_ID = '[edit question] set edit itemId'
+export const SET_CURRENT_STUDENT_ID = '[edit question] set current student id'
+
+export const RELOAD_LCB_DATA_IN_STUDENT_VIEW =
+  '[lcb] reload lcb data in student view'

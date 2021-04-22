@@ -33,13 +33,19 @@ const links = [
   },
 ]
 
-export const EngagementReport = ({ premium }) => (
+export const EngagementReport = ({ premium, loc }) => (
   <div>
     <BoxHeading heading="Engagement Report" iconType="bar-chart" />
 
     <CardsWrapper>
       {links.map((data) => (
-        <LinkItem key={data.title} data={data} tiles premium={premium} />
+        <LinkItem
+          key={data.title}
+          data={data}
+          tiles
+          premium={premium}
+          loc={loc}
+        />
       ))}
     </CardsWrapper>
   </div>

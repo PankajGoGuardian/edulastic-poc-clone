@@ -96,7 +96,7 @@ class SetCorrectAnswers extends Component {
     if (currentTab === 0) {
       return item.validation.validResponse
     }
-    return item.validation.altResponses[currentTab - 1]
+    return item.validation.altResponses[currentTab - 1] || {}
   }
 
   render() {

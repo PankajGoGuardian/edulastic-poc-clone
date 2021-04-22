@@ -44,13 +44,7 @@ class TestItemCol extends Component {
     )
   }
 
-  renderTabContent = (
-    widget,
-    flowLayout,
-    widgetIndex,
-    showStackedView,
-    lengthOfwidgets
-  ) => {
+  renderTabContent = (widget, flowLayout, widgetIndex, showStackedView) => {
     const {
       preview,
       showFeedback,
@@ -123,7 +117,6 @@ class TestItemCol extends Component {
         fullHeight={fullHeight}
         testReviewStyle={testReviewStyle}
         itemIndex={widgetIndex}
-        marginTop={widgetIndex > 0 && lengthOfwidgets > 1 ? 20 : ''}
         showBorder={showTabBorder}
         hideCorrectAnswer={hideCorrectAnswer}
       >
@@ -340,7 +333,10 @@ class TestItemCol extends Component {
               )}
           </>
         )}
-        <WidgetContainer data-cy="widgetContainer">
+        <WidgetContainer
+          isStudentAttempt={isStudentAttempt}
+          data-cy="widgetContainer"
+        >
           {widgets
             .filter((widget) => widget.type !== questionType.SECTION_LABEL)
             .map((widget, i, arr) => (

@@ -4,16 +4,11 @@ import next from 'immer'
 import qs from 'qs'
 
 import { Tooltip } from 'antd'
+import { roleuser } from '@edulastic/constants'
 import CsvTable from '../../../../common/components/tables/CsvTable'
 import { StyledTable, TooltipDiv } from './styled'
 
 import { downloadCSV } from '../../../../common/util'
-import staticDropDownData from '../static/staticDropDownData.json'
-
-const defaultAssessmentTypes = staticDropDownData.assessmentType
-  .map((o) => o.key)
-  .slice(1)
-  .join()
 
 const sortNumbers = (key) => (a, b) =>
   (Number(a[key]) || 0) - (Number(b[key]) || 0)
@@ -35,8 +30,6 @@ const ActivityTable = ({
   filters,
   activityBy = 'school',
 }) => {
-  const { grade: studentGrade, subject: studentSubject, ...query } = filters
-
   const tableData = Object.keys(filter).length
     ? data.filter((item) => filter[item[`${activityBy}Name`] || '-'])
     : data
@@ -49,10 +42,7 @@ const ActivityTable = ({
       rawColumns[0].sorter = sortText('schoolName')
       rawColumns[0].render = (text, record) => {
         const queryStr = qs.stringify({
-          ...query,
-          studentGrade,
-          studentSubject,
-          assessmentTypes: filters.assessmentTypes || defaultAssessmentTypes,
+          ...filters,
           schoolIds: record.schoolId,
         })
         return text ? (
@@ -68,11 +58,11 @@ const ActivityTable = ({
     } else {
       rawColumns[0].sorter = sortText('teacherName')
       rawColumns[0].render = (text, record) => {
+        if (roleuser.DA_SA_ROLE_ARRAY.includes(record.role)) {
+          return text
+        }
         const queryStr = qs.stringify({
-          ...query,
-          studentGrade,
-          studentSubject,
-          assessmentTypes: filters.assessmentTypes || defaultAssessmentTypes,
+          ...filters,
           teacherIds: record.teacherId,
         })
         return (

@@ -1,27 +1,3 @@
-export const transformFiltersForSAR = ({
-  grade,
-  subject,
-  studentGrade,
-  studentSubject,
-  studentCourseId,
-  classIds,
-  groupIds,
-  performanceBandProfile,
-  ...requestFilters
-}) => {
-  return {
-    ...requestFilters,
-    testGrade: grade,
-    testSubject: subject,
-    grade: studentGrade,
-    subject: studentSubject,
-    courseId: studentCourseId,
-    classIds: classIds || '',
-    groupIds: groupIds || '',
-    profileId: performanceBandProfile,
-  }
-}
-
 export const transformMetricForStudentGroups = (
   studentGroupInfo = [],
   metricInfo = []

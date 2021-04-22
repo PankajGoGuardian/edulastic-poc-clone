@@ -6,16 +6,13 @@ import {
   filter as filterArr,
   find,
   indexOf,
-  intersectionBy,
+  isEmpty,
   get,
 } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
-import {
-  getInterestedCurriculumsSelector,
-  getUserRole,
-} from '../../../../src/selectors/user'
+import { getUserRole } from '../../../../src/selectors/user'
 import { AutocompleteDropDown } from '../../../common/components/widgets/autocompleteDropDown'
 import { ControlDropDown } from '../../../common/components/widgets/controlDropDown'
 import BackendPagination from '../../../common/components/BackendPagination'
@@ -44,6 +41,7 @@ import {
   getPerformanceByStandardsLoadingSelector,
   getPerformanceByStandardsReportSelector,
   getPerformanceByStandardsErrorSelector,
+  resetPerformanceByStandardsAction,
 } from './ducks'
 import dropDownFormat from './static/json/dropDownFormat.json'
 import {
@@ -67,10 +65,10 @@ const PerformanceByStandards = ({
   error,
   report = {},
   getPerformanceByStandards,
+  resetPerformanceByStandards,
   settings,
   testList,
   role,
-  interestedCurriculums,
   isCsvDownloading,
   standardProficiencyProfiles,
   location,
@@ -143,13 +141,13 @@ const PerformanceByStandards = ({
   )
 
   const standardsDropdownData = useMemo(() => {
-    const { standardsMap } = reportWithFilteredSkills
+    const { standardsMap = {} } = reportWithFilteredSkills
     const standardsMapArr = Object.keys(standardsMap).map((item) => ({
       key: +item,
       title: standardsMap[item],
     }))
     return standardsMapArr || []
-  }, [report])
+  }, [reportWithFilteredSkills])
 
   const filteredDropDownData = dropDownFormat.compareByDropDownData.filter(
     (o) => {
@@ -159,6 +157,8 @@ const PerformanceByStandards = ({
       return true
     }
   )
+
+  useEffect(() => () => resetPerformanceByStandards(), [])
 
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
@@ -176,7 +176,7 @@ const PerformanceByStandards = ({
       }
       getPerformanceByStandards(q)
     }
-  }, [settings, compareBy, filters])
+  }, [settings.selectedTest, settings.requestFilters, compareBy, filters])
 
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
@@ -212,6 +212,7 @@ const PerformanceByStandards = ({
     if (
       (settings.requestFilters.termId || settings.requestFilters.reportId) &&
       !loading &&
+      !isEmpty(report) &&
       (!report.metricInfo.length || !report.studInfo.length)
     ) {
       toggleFilter(null, true)
@@ -277,7 +278,12 @@ const PerformanceByStandards = ({
       : SignedStackedBarChartContainer
 
   if (loading) {
-    return <SpinLoader position="fixed" />
+    return (
+      <SpinLoader
+        tip="Please wait while we gather the required information..."
+        position="fixed"
+      />
+    )
   }
 
   if (error && error.dataSizeExceeded) {
@@ -289,7 +295,11 @@ const PerformanceByStandards = ({
     !report.studInfo?.length ||
     !settings.selectedTest.key
   ) {
-    return <NoDataContainer>No data available currently.</NoDataContainer>
+    return (
+      <NoDataContainer>
+        {settings.requestFilters?.termId ? 'No data available currently.' : ''}
+      </NoDataContainer>
+    )
   }
   return (
     <>
@@ -301,7 +311,7 @@ const PerformanceByStandards = ({
             </StyledH3>
           </Col>
           <Col xs={24} sm={24} md={12} lg={16} xl={12}>
-            <Row>
+            <Row type="flex" justify="end" gutter={[5, 10]}>
               <StyledDropDownContainer xs={24} sm={24} md={8} lg={8} xl={8}>
                 <ControlDropDown
                   prefix="View By"
@@ -312,26 +322,19 @@ const PerformanceByStandards = ({
               </StyledDropDownContainer>
               <StyledDropDownContainer xs={24} sm={24} md={7} lg={7} xl={7}>
                 <ControlDropDown
-                  style={{ marginLeft: 8 }}
                   prefix="Analyze By"
                   by={analyzeBy}
                   selectCB={handleAnalyzeByChange}
                   data={dropDownFormat.analyzeByDropDownData}
                 />
               </StyledDropDownContainer>
-              <StyledDropDownContainer
-                padding="0px 5px"
-                xs={24}
-                sm={24}
-                md={7}
-                lg={7}
-                xl={7}
-              >
-                <AutocompleteDropDown
-                  prefix="Standard set"
+              <StyledDropDownContainer xs={24} sm={24} md={7} lg={7} xl={7}>
+                <ControlDropDown
+                  prefix="Standard Set"
                   by={selectedStandardId || { key: '', title: '' }}
                   selectCB={handleStandardIdChange}
                   data={standardsDropdownData}
+                  showPrefixOnSelected={false}
                 />
               </StyledDropDownContainer>
             </Row>
@@ -402,7 +405,6 @@ PerformanceByStandards.propTypes = {
   report: reportPropType.isRequired,
   isCsvDownloading: PropTypes.bool.isRequired,
   standardProficiencyProfiles: PropTypes.array.isRequired,
-  interestedCurriculums: PropTypes.array.isRequired,
   getPerformanceByStandards: PropTypes.func.isRequired,
   role: PropTypes.string.isRequired,
 }
@@ -412,7 +414,6 @@ const enhance = connect(
     loading: getPerformanceByStandardsLoadingSelector(state),
     error: getPerformanceByStandardsErrorSelector(state),
     role: getUserRole(state),
-    interestedCurriculums: getInterestedCurriculumsSelector(state),
     report: getPerformanceByStandardsReportSelector(state),
     isCsvDownloading: getCsvDownloadingState(state),
     standardProficiencyProfiles: getSAFFilterStandardsProficiencyProfiles(
@@ -423,6 +424,7 @@ const enhance = connect(
   {
     getPerformanceByStandards: getPerformanceByStandardsAction,
     setStandardMasteryProfile: setStandardMasteryProfileAction,
+    resetPerformanceByStandards: resetPerformanceByStandardsAction,
   }
 )
 

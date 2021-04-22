@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { measureText, DragDrop } from '@edulastic/common'
 import { Popover } from 'antd'
 import { response as dimensions } from '@edulastic/constants'
+import { isEmpty } from 'lodash'
 import { getStemNumeration } from '../../../../utils/helpers'
 import getImageDimensionsHook from '../../../../hooks/imageDimensions'
 
@@ -36,7 +37,9 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   const { index: dropTargetIndex } =
     (responseIDs && responseIDs.find((response) => response.id === id)) || {}
   const choiceAttempted =
-    userSelections.length > 0 && !!userSelections[dropTargetIndex]
+    userSelections.length > 0 &&
+    !!userSelections[dropTargetIndex] &&
+    !isEmpty(evaluation)
   const status = choiceAttempted
     ? evaluation[dropTargetIndex]
       ? 'right'

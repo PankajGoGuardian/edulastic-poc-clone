@@ -2,17 +2,16 @@ import React, { useState } from 'react'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 import { withWindowSizes } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { test as testConstants } from '@edulastic/constants'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
-  faAngleLeft,
-  faAngleRight,
-  faPause,
-} from '@fortawesome/free-solid-svg-icons'
+  IconEduLogo,
+  IconSignoutHighlight,
+  IconQuester,
+} from '@edulastic/icons'
 import { Tooltip } from '../../../../common/utils/helpers'
 import {
   Header,
@@ -37,7 +36,7 @@ import { useUtaPauseAllowed } from '../../common/SaveAndExit'
 const {
   playerSkin: { quester },
 } = themes
-const { button, header1 } = quester
+const { header1, header2 } = quester
 
 const PlayerHeader = ({
   t,
@@ -62,6 +61,8 @@ const PlayerHeader = ({
   groupId,
   hidePause,
   items,
+  grades,
+  subjects,
 }) => {
   const totalQuestions = options.length
   const totalBookmarks = bookmarks.filter((b) => b).length
@@ -117,14 +118,30 @@ const PlayerHeader = ({
           zIndex: 505,
         }}
       >
+        <IconEduLogoStyled circleFill={header1.background} />
         <StyledHeaderTitle>
-          <div>{title}</div>
+          <div style={{ display: 'flex' }}>
+            {!!grades.length && (
+              <Grades data-cy="grades">GRADE {grades.join(',')}</Grades>
+            )}
+            {!!subjects.length && (
+              <Subjects data-cy="subjects">{subjects.join(',')}</Subjects>
+            )}
+            <Title data-cy="title" title={title}>
+              {title}
+            </Title>
+          </div>
           <RightContent>
             {timedAssignment && (
               <TimedTestTimer
                 utaId={utaId}
                 groupId={groupId}
-                style={{ marginRight: '50px', padding: '0' }}
+                style={{
+                  marginRight: '50px',
+                  padding: '0',
+                  minHeight: 'auto',
+                  fontSize: '12px',
+                }}
               />
             )}
 
@@ -139,19 +156,15 @@ const PlayerHeader = ({
                   disabled={hidePause}
                 >
                   {!hidePause && (
-                    <FontAwesomeIcon
-                      style={{ width: '10px', marginRight: '4px' }}
-                      icon={faPause}
-                      aria-hidden="true"
-                    />
+                    <IconSignoutHighlight style={{ marginRight: '10px' }} />
                   )}
-                  {!hidePause && '/'}Sign out
+                  SIGN OUT
                 </SignOut>
               </Tooltip>
             )}
           </RightContent>
         </StyledHeaderTitle>
-        <HeaderMainMenu style={{ background: '#334049' }}>
+        <HeaderMainMenu style={{ background: header2.background }}>
           <NavigationHeader>
             <HeaderWrapper justifyContent="space-between">
               {!isDocbased && (
@@ -169,7 +182,14 @@ const PlayerHeader = ({
                 </Container>
               )}
               <Container
-                style={{ fontSize: '24px', fontWeight: 600, color: '#fff' }}
+                style={{
+                  fontSize: '14px',
+                  fontWeight: 600,
+                  color: '#fff',
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+                data-cy="questionLeft"
               >
                 Question {currentItem + 1} of {totalQuestions}
               </Container>
@@ -186,13 +206,14 @@ const PlayerHeader = ({
                   <ControlBtn
                     data-cy="prev"
                     icon="left"
+                    type="primary"
                     disabled={isFirst() || blockNavigationToAnsweredQuestions}
                     onClick={(e) => {
                       moveToPrev()
                       e.target.blur()
                     }}
                   >
-                    <FontAwesomeIcon icon={faAngleLeft} aria-hidden="true" />
+                    <IconQuester.IconPrevious />
                   </ControlBtn>
                 </Tooltip>
                 <Tooltip
@@ -202,6 +223,7 @@ const PlayerHeader = ({
                 >
                   <ControlBtn
                     data-cy="next"
+                    type="primary"
                     icon="right"
                     onClick={(e) => {
                       moveToNext()
@@ -209,7 +231,8 @@ const PlayerHeader = ({
                     }}
                     style={{ marginLeft: '15px' }}
                   >
-                    <FontAwesomeIcon icon={faAngleRight} aria-hidden="true" />
+                    <IconQuester.IconNext style={{ marginRight: '10px' }} />
+                    <span>{isLast() ? 'SUBMIT' : 'NEXT'}</span>
                   </ControlBtn>
                 </Tooltip>
               </Container>
@@ -234,6 +257,8 @@ const enhance = compose(
       settings: state.test.settings,
       timedAssignment: state.test?.settings?.timedAssignment,
       testType: state.test?.settings?.testType,
+      grades: state.test?.grades,
+      subjects: state.test?.subjects,
     }),
     {
       setSettingsModalVisibility: setSettingsModalVisibilityAction,
@@ -244,13 +269,17 @@ const enhance = compose(
 export default enhance(PlayerHeader)
 
 const NavigationHeader = styled(FlexContainer)`
-  padding: 15px 15px 10px 15px;
+  padding: 7px 50px;
   justify-content: space-between;
 `
 
 const SignOut = styled.div`
-  border-bottom: 3px solid ${button.background};
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
+  text-transform: uppercase;
+  font-size: 10px;
   svg {
     color: #fff;
   }
@@ -259,4 +288,36 @@ const SignOut = styled.div`
 const RightContent = styled.div`
   display: flex;
   align-items: center;
+`
+const CommonTagStyle = css`
+  background: white;
+  padding: 5px 15px;
+  text-transform: uppercase;
+  font-size: 10px;
+  border-radius: 2px;
+  color: #6a737f;
+  margin-right: 5px;
+  font-weight: bold;
+`
+
+const Title = styled.div`
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  ${CommonTagStyle}
+`
+
+const Grades = styled.div`
+  ${CommonTagStyle}
+`
+const Subjects = styled.div`
+  ${CommonTagStyle}
+`
+
+const IconEduLogoStyled = styled(IconEduLogo)`
+  position: absolute;
+  width: 30px;
+  top: -5px;
+  left: 8px;
 `

@@ -24,6 +24,21 @@ const studentResponse = ({ testActivityId, groupId }) =>
     })
     .then((result) => result.data.result)
 
+const studentResponses = ({ testActivityIds, groupId }) =>
+  api
+    .callApi({
+      url: `/test-activity/student-reports`,
+      method: 'get',
+      params: {
+        testActivityIds:
+          testActivityIds && testActivityIds.length
+            ? `${testActivityIds}`
+            : null,
+        groupId,
+      },
+    })
+    .then((result) => result.data.result)
+
 const feedbackResponse = ({ body, testActivityId, questionId }) =>
   api
     .callApi({
@@ -80,6 +95,7 @@ const questionClassItemQuestionResponse = ({ assignmentId, classId, itemId }) =>
 export default {
   classResponse,
   studentResponse,
+  studentResponses,
   feedbackResponse,
   receiveStudentQuestionResponse,
   questionClassQuestionResponse,

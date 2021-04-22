@@ -9,7 +9,6 @@ import {
   getItemBankSubscriptions,
   getProducts,
   getSubscriptionSelector,
-  getIsPaymentServiceModalVisible,
   getPremiumProductId,
   getIsVerificationPending,
   getAddOnProductIds,
@@ -46,12 +45,9 @@ const PurchaseFlowModals = (props) => {
     handleStripeMultiplePayment,
     subscription: { subEndDate, subType } = {},
     user,
-    fetchUserSubscriptionStatus,
     itemBankSubscriptions = [],
     premiumProductId,
     products,
-    isPaymentServiceModalVisible,
-    setPaymentServiceModal,
     showSubscriptionAddonModal,
     setShowSubscriptionAddonModal,
     setProductData,
@@ -82,6 +78,7 @@ const PurchaseFlowModals = (props) => {
   const [emailIds, setEmailIds] = useState([])
   const [totalAmount, setTotalAmount] = useState(100)
   const [quantities, setQuantities] = useState({})
+  const [isPaymentServiceModalVisible, setPaymentServiceModal] = useState(false)
 
   /**
    *  a user is paid premium user if
@@ -106,10 +103,17 @@ const PurchaseFlowModals = (props) => {
 
   const defaultSelectedProductIdsRef = useRef()
 
-  useEffect(() => {
-    // getSubscription on mount
-    fetchUserSubscriptionStatus()
-  }, [])
+  const shouldProrate = useMemo(() => {
+    const oneDay = 1000 * 60 * 60 * 24
+    if (subEndDate) {
+      const remainingDaysForPremiumExpiry = Math.round(
+        (new Date(subEndDate).getTime() - new Date().getTime()) / oneDay
+      )
+
+      return remainingDaysForPremiumExpiry > 90
+    }
+    return true
+  }, [subEndDate])
 
   const { teacherPremium = {}, itemBankPremium = [] } = useMemo(() => {
     const boughtPremiumBankIds = itemBankSubscriptions
@@ -133,21 +137,29 @@ const PurchaseFlowModals = (props) => {
           price: product.price,
         }
       }
-      let currentDate = new Date()
-      const itemBankSubEndDate = new Date(
-        currentDate.setDate(currentDate.getDate() + product.period)
-      ).valueOf()
-      const computedEndDate = Math.min(itemBankSubEndDate, subEndDate)
-      currentDate = Date.now()
-      const amountFactor =
-        (computedEndDate - currentDate) / (itemBankSubEndDate - currentDate)
-      const dynamicPrice = Math.round(amountFactor * product.price)
-      const dynamicPeriodInDays = Math.round(amountFactor * product.period)
+
+      let dynamicPrice = product.price
+      let dynamicPeriodInDays = product.period
+
+      if (shouldProrate) {
+        let currentDate = new Date()
+        const itemBankSubEndDate = new Date(
+          currentDate.setDate(currentDate.getDate() + product.period)
+        ).valueOf()
+        const computedEndDate = Math.min(itemBankSubEndDate, subEndDate)
+        currentDate = Date.now()
+        const amountFactor = Math.min(
+          (computedEndDate - currentDate) / (itemBankSubEndDate - currentDate),
+          1
+        )
+        dynamicPrice = Math.ceil(amountFactor * product.price)
+        dynamicPeriodInDays = Math.ceil(amountFactor * product.period)
+      }
 
       return {
         ...product,
-        price: dynamicPrice,
         period: dynamicPeriodInDays,
+        price: dynamicPrice,
       }
     })
     return {
@@ -192,7 +204,11 @@ const PurchaseFlowModals = (props) => {
 
   const stripePaymentActionHandler = (data) => {
     if (addOnProductIds?.length) {
-      handleStripePayment({ ...data, productIds: [...addOnProductIds] })
+      handleStripePayment({
+        ...data,
+        productIds: [...addOnProductIds],
+        setPaymentServiceModal,
+      })
     } else {
       handleStripeMultiplePayment({
         ...data,
@@ -200,6 +216,7 @@ const PurchaseFlowModals = (props) => {
         emailIds,
         licenseIds: selectedLicenseId ? [selectedLicenseId] : licenseIds,
         licenseOwnerId,
+        setPaymentServiceModal,
       })
       if (selectedLicenseId) {
         setSelectedLicenseId(null)
@@ -263,6 +280,8 @@ const PurchaseFlowModals = (props) => {
           setSelectedProductIds={setSelectedProductIds}
           selectedProductIds={selectedProductIds}
           totalAmount={totalAmount}
+          shouldProrate={shouldProrate}
+          subEndDate={subEndDate}
         />
       )}
       {showMultiplePurchaseModal && (
@@ -345,7 +364,6 @@ export default compose(
       products: getProducts(state),
       verificationPending: getIsVerificationPending(state),
       premiumProductId: getPremiumProductId(state),
-      isPaymentServiceModalVisible: getIsPaymentServiceModalVisible(state),
       user: state.user.user,
       addOnProductIds: getAddOnProductIds(state),
       userOrgId: getUserOrgId(state),
@@ -356,8 +374,6 @@ export default compose(
       handleStripeMultiplePayment: slice.actions.stripeMultiplePaymentAction,
       handleEdulasticAdminProductLicense:
         slice.actions.edulasticAdminProductLicenseAction,
-      fetchUserSubscriptionStatus: slice.actions.fetchUserSubscriptionStatus,
-      setPaymentServiceModal: slice.actions.setPaymentServiceModal,
       setAddOnProductIds: slice.actions.setAddOnProductIds,
       bulkInviteBookKeepers: slice.actions.bulkInviteBookKeepersAction,
       setBookKeepersInviteSuccess: slice.actions.setBookKeepersInviteSuccess,

@@ -4,12 +4,17 @@ import {
   RESPONSIVE_TOGGLE_MENU,
   ADD_LOADING_COMPONENT,
   REMOVE_LOADING_COMPONENT,
+  TOGGLE_QUESTION_EDIT_MODAL_LCB,
+  SET_EDIT_ITEM_ID,
+  SET_CURRENT_STUDENT_ID,
 } from '../constants/actions'
 
 const initialState = {
   isSidebarCollapsed: true,
   isResponsive: false,
   currentlyLoading: [],
+  questionEditModalOpen: false,
+  editItemId: '',
 }
 const reducer = (state = initialState, { type, payload }) => {
   /**
@@ -23,6 +28,21 @@ const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         isSidebarCollapsed: !state.isSidebarCollapsed,
+      }
+    case TOGGLE_QUESTION_EDIT_MODAL_LCB:
+      return {
+        ...state,
+        questionEditModalOpen: payload,
+      }
+    case SET_EDIT_ITEM_ID:
+      return {
+        ...state,
+        editItemId: payload,
+      }
+    case SET_CURRENT_STUDENT_ID:
+      return {
+        ...state,
+        currentStudentId: payload,
       }
     case RESPONSIVE_TOGGLE_MENU:
       return {

@@ -12,10 +12,11 @@ import {
   ResponsiveContainer,
 } from 'recharts'
 import { themeColorLighter, title as pieTitle } from '@edulastic/colors'
+import { FlexContainer } from '@edulastic/common'
 import {
   getStudentPerformancePieData,
-  getOverallMasteryPercentage,
-  getMaxScale,
+  getOverallDomainMasteryPercentage,
+  getScaleForMasteryCalculation,
 } from '../../utils/transformers'
 import { StyledCustomChartTooltip as CustomChartTooltip } from '../../../../../common/styled'
 import ScaleInfoLabels from './ScaleInfoLabels'
@@ -61,7 +62,7 @@ const renderCustomizedInnerLabel = (props) => {
         weight={600}
         spacing="0.2px"
       >
-        IN MASTERY
+        MASTERY
       </StyledText>
     </>
   )
@@ -80,11 +81,15 @@ const StudentPerformancePie = ({
   selectedMastery,
   getTooltip,
   title,
+  showAsRow,
 }) => {
   // process data to fill and label the pie chart
   const pieData = getStudentPerformancePieData(data, scaleInfo)
-  const maxScale = getMaxScale(scaleInfo)
-  const overallMasteryPercentage = getOverallMasteryPercentage(data, maxScale)
+  const scales = getScaleForMasteryCalculation(scaleInfo)
+  const overallMasteryPercentage = getOverallDomainMasteryPercentage(
+    data,
+    scales
+  )
   const dataWithColors = fillColors(pieData, selectedMastery)
 
   // process pieData to get percentage scale info for ScaleInfoLabels
@@ -100,33 +105,35 @@ const StudentPerformancePie = ({
   return (
     <>
       <StyledTitle>{title}</StyledTitle>
-      <ResponsiveContainer width="100%" height={200}>
-        <PieChart width={100} height={100}>
-          <Tooltip
-            cursor={false}
-            content={<StyledCustomChartTooltip getJSX={getTooltip} />}
-          />
-          <Pie
-            data={pieData}
-            labelLine={false}
-            outerRadius={75}
-            innerRadius={53}
-            fill="#8884d8"
-            dataKey="count"
-            onClick={onSectionClick}
-          >
-            <Label
-              position="center"
-              content={renderCustomizedInnerLabel}
-              masteryPercentage={round(overallMasteryPercentage)}
+      <FlexContainer flexDirection={showAsRow ? 'row' : 'column'}>
+        <ResponsiveContainer width={showAsRow ? '50%' : '100%'} height={200}>
+          <PieChart width={100} height={100}>
+            <Tooltip
+              cursor={false}
+              content={<StyledCustomChartTooltip getJSX={getTooltip} />}
             />
-            {dataWithColors.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={entry.color} />
-            ))}
-          </Pie>
-        </PieChart>
-      </ResponsiveContainer>
-      <ScaleInfoLabels scaleInfo={percentageScaleInfo} />
+            <Pie
+              data={pieData}
+              labelLine={false}
+              outerRadius={75}
+              innerRadius={53}
+              fill="#8884d8"
+              dataKey="count"
+              onClick={onSectionClick}
+            >
+              <Label
+                position="center"
+                content={renderCustomizedInnerLabel}
+                masteryPercentage={round(overallMasteryPercentage)}
+              />
+              {dataWithColors.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={entry.color} />
+              ))}
+            </Pie>
+          </PieChart>
+        </ResponsiveContainer>
+        <ScaleInfoLabels scaleInfo={percentageScaleInfo} />
+      </FlexContainer>
     </>
   )
 }
@@ -144,7 +151,7 @@ StudentPerformancePie.defaultProps = {
   onSectionClick: () => {},
   getTooltip: () => null,
   selectedMastery: [],
-  title: 'MASTERY OF ASSESSED',
+  title: 'MASTERY REPORT',
 }
 
 export default StudentPerformancePie

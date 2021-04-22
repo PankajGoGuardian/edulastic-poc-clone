@@ -32,6 +32,7 @@ const DateSelector = ({
   t,
   hasStartDate,
   tootltipWidth,
+  paddingTop,
 }) => {
   const disabledStartDate = (_startDate) => {
     if (!_startDate || !endDate) {
@@ -177,7 +178,9 @@ const DateSelector = ({
         />
         <StyledRow mb="15px" gutter={16}>
           <StyledCol span={forClassLevel ? 12 : 10}>
-            <FieldLabel>{t('common.assignTest.closeDateTitle')}</FieldLabel>
+            <FieldLabel top={paddingTop}>
+              {t('common.assignTest.closeDateTitle')}
+            </FieldLabel>
           </StyledCol>
           <StyledCol span={forClassLevel ? 12 : 14}>
             <DatePickerStyled

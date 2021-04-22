@@ -1,12 +1,13 @@
+import React, { useEffect, useMemo, useState } from 'react'
 import { backgrounds, labelGrey, secondaryTextColor } from '@edulastic/colors'
 import { SpinLoader, FlexContainer } from '@edulastic/common'
-import { Icon } from 'antd'
+import { Icon, Avatar } from 'antd'
 import { get, isEmpty } from 'lodash'
 import { compose } from 'redux'
-import { withNamespaces } from '@edulastic/localization'
-import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
+
+import { withNamespaces } from '@edulastic/localization'
 import BarTooltipRow from '../../../common/components/tooltip/BarTooltipRow'
 import { NoDataContainer, StyledCard, StyledH3 } from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
@@ -14,16 +15,13 @@ import { downloadCSV } from '../../../common/util'
 import { getCsvDownloadingState } from '../../../ducks'
 import AssessmentChart from '../common/components/charts/AssessmentChart'
 import StudentPerformancePie from '../common/components/charts/StudentPerformancePie'
-import {
-  getReportsSPRFilterData,
-  getReportsSPRFilterLoadingState,
-} from '../common/filterDataDucks'
+import { getReportsSPRFilterData } from '../common/filterDataDucks'
 import { useGetStudentMasteryData } from '../common/hooks'
 import {
   augementAssessmentChartData,
   getGrades,
   getStudentName,
-  getDomainOptions,
+  getDomainOptionsByGradeSubject,
 } from '../common/utils/transformers'
 import { ControlDropDown } from '../../../common/components/widgets/controlDropDown'
 import StandardMasteryDetailsTable from './common/components/table/StandardMasteryDetailsTable'
@@ -36,6 +34,7 @@ import {
   getReportsStudentProfileSummaryLoader,
   getStudentProfileSummaryRequestAction,
   getReportsStudentProfileSummaryError,
+  resetStudentProfileSummaryAction,
 } from './ducks'
 import staticDropDownData from '../../singleAssessmentReport/common/static/staticDropDownData.json'
 
@@ -58,6 +57,14 @@ const getTooltip = (payload) => {
   }
   return false
 }
+const allGrades = [
+  { key: 'All', title: 'All Grades' },
+  ...staticDropDownData.grades,
+]
+const allSubjects = [
+  { key: 'All', title: 'All Subjects' },
+  ...staticDropDownData.subjects,
+]
 
 const StudentProfileSummary = ({
   loading,
@@ -67,10 +74,10 @@ const StudentProfileSummary = ({
   SPRFilterData,
   studentProfileSummary,
   getStudentProfileSummaryRequest,
+  resetStudentProfileSummary,
   location,
   pageTitle,
   history,
-  reportsSPRFilterLoadingState,
   sharedReport,
   t,
   toggleFilter,
@@ -145,7 +152,7 @@ const StudentProfileSummary = ({
     studentClassInfo,
     asessmentMetricInfo
   )
-  const domainOptions = getDomainOptions(
+  const domainOptions = getDomainOptionsByGradeSubject(
     domains,
     selectedGrade.key,
     selectedSubject.key
@@ -168,6 +175,8 @@ const StudentProfileSummary = ({
   const onSubjectSelect = (_, selected) => setSelectedSubject(selected)
   const onGradeSelect = (_, selected) => setSelectedGrade(selected)
 
+  useEffect(() => () => resetStudentProfileSummary(), [])
+
   useEffect(() => {
     if (settings.selectedStudent.key && settings.requestFilters.termId) {
       getStudentProfileSummaryRequest({
@@ -186,6 +195,7 @@ const StudentProfileSummary = ({
     if (
       (settings.requestFilters.termId || settings.requestFilters.reportId) &&
       !loading &&
+      !isEmpty(studentProfileSummary) &&
       !metrics.length
     ) {
       toggleFilter(null, true)
@@ -211,8 +221,13 @@ const StudentProfileSummary = ({
         },
       })
   }
-  if (loading || reportsSPRFilterLoadingState) {
-    return <SpinLoader position="fixed" />
+  if (loading) {
+    return (
+      <SpinLoader
+        tip="Please wait while we gather the required information..."
+        position="fixed"
+      />
+    )
   }
 
   if (error && error.dataSizeExceeded) {
@@ -228,7 +243,11 @@ const StudentProfileSummary = ({
     isEmpty(studInfo) ||
     !settings.selectedStudent?.key
   ) {
-    return <NoDataContainer>No data available currently.</NoDataContainer>
+    return (
+      <NoDataContainer>
+        {settings.requestFilters?.termId ? 'No data available currently.' : ''}
+      </NoDataContainer>
+    )
   }
 
   const studentInformation = studInfo[0] || {}
@@ -252,7 +271,11 @@ const StudentProfileSummary = ({
         <StudentDetailsCard width="280px" mr="20px">
           <IconContainer>
             <UserIconWrapper>
-              <StyledIcon type="user" />
+              {studentInformation.thumbnail ? (
+                <StyledAatar size={150} src={studentInformation.thumbnail} />
+              ) : (
+                <StyledIcon type="user" />
+              )}
             </UserIconWrapper>
           </IconContainer>
           <StudentDetailsContainer>
@@ -292,15 +315,15 @@ const StudentProfileSummary = ({
                 <ControlDropDown
                   by={selectedGrade}
                   selectCB={onGradeSelect}
-                  data={staticDropDownData.grades}
-                  prefix="Grade"
+                  data={allGrades}
+                  prefix="Standard Grade"
                   showPrefixOnSelected={false}
                 />
                 <ControlDropDown
                   by={selectedSubject}
                   selectCB={onSubjectSelect}
-                  data={staticDropDownData.subjects}
-                  prefix="Subject"
+                  data={allSubjects}
+                  prefix="Standard Subject"
                   showPrefixOnSelected={false}
                 />
                 <ControlDropDown
@@ -331,10 +354,10 @@ const withConnect = connect(
     error: getReportsStudentProfileSummaryError(state),
     SPRFilterData: getReportsSPRFilterData(state),
     isCsvDownloading: getCsvDownloadingState(state),
-    reportsSPRFilterLoadingState: getReportsSPRFilterLoadingState(state),
   }),
   {
     getStudentProfileSummaryRequest: getStudentProfileSummaryRequestAction,
+    resetStudentProfileSummary: resetStudentProfileSummaryAction,
   }
 )
 
@@ -342,6 +365,13 @@ export default compose(
   withConnect,
   withNamespaces('student')
 )(StudentProfileSummary)
+
+const StyledAatar = styled(Avatar)`
+  @media print {
+    -webkit-print-color-adjust: exact;
+    color-adjust: exact;
+  }
+`
 
 const Card = styled(StyledCard)`
   width: ${({ width }) => width};

@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { useDrop } from 'react-dnd'
-import { Popover } from 'antd'
-import { groupBy, compact, isEmpty } from 'lodash'
+import { Popover, Row, Col } from 'antd'
+import { groupBy, compact, isEmpty, isUndefined } from 'lodash'
 import { EduButton, FlexContainer, notification } from '@edulastic/common' //  ProgressBar,
-import { IconUser } from '@edulastic/icons'
+import { IconClose, IconUser } from '@edulastic/icons'
 // import { themeColorLighter, borderGrey } from "@edulastic/colors";
 import {
   TableContainer,
@@ -15,10 +15,12 @@ import {
   ActivityDropConainer,
   StyledDescription,
   StudentName,
+  CommonStudentResourcesContainer,
 } from './style'
 import { ResouceIcon } from '../ResourceItem/index'
 import Tags from '../../../src/components/common/Tags'
 import { SubResourceView } from '../PlaylistResourceRow'
+import { InlineDelete } from '../PlaylistResourceRow/styled'
 
 function ContentDropContainer({ children, ...props }) {
   const [{ isOver }, dropRef] = useDrop({
@@ -29,42 +31,28 @@ function ContentDropContainer({ children, ...props }) {
     }),
     drop: (item) => {
       const {
-        parentTestId,
         type,
         masteryRange,
         addTestToDifferentiation,
-        addResourceToDifferentiation,
-        addSubResourceToTestInDiff,
+        addDifferentiationResources,
       } = props
-      if (props.dropType === 'activity') {
-        if (item.contentType === 'test') {
-          addTestToDifferentiation({
-            type: type.toLowerCase(),
-            testId: item.id,
-            testStandards: item.standardIdentifiers || [],
-            masteryRange,
-            title: item.contentTitle,
-            contentType: item.contentType,
-          })
-        } else {
-          addResourceToDifferentiation({
-            type: type.toLowerCase(),
-            contentId: item.id,
-            masteryRange,
-            contentTitle: item.contentTitle,
-            contentType: item.contentType,
-            contentUrl: item.contentUrl,
-          })
-        }
-      } else {
-        addSubResourceToTestInDiff({
+      if (props.dropType === 'activity' && item.contentType === 'test') {
+        addTestToDifferentiation({
+          type: type.toLowerCase(),
+          testId: item.id,
+          testStandards: item.standardIdentifiers || [],
+          masteryRange,
+          title: item.contentTitle,
+          contentType: item.contentType,
+        })
+      } else if (props.dropType === 'TOP_LEVEL_STUDENT_RESOURCE') {
+        addDifferentiationResources({
           type: type.toLowerCase(),
           contentId: item.id,
-          masteryRange,
           contentTitle: item.contentTitle,
           contentType: item.contentType,
           contentUrl: item.contentUrl,
-          parentTestId,
+          contentSubType: 'STUDENT',
         })
       }
     },
@@ -104,6 +92,7 @@ const InnerWorkTable = ({
   setRecommendationsToAssign,
   toggleAssignModal,
   selectedData,
+  differentiationResources,
   differentiationStudentList,
   data = [],
   isFetchingWork,
@@ -112,10 +101,11 @@ const InnerWorkTable = ({
   addResourceToDifferentiation,
   showNewActivity,
   showSupportingResource,
-  addSubResourceToTestInDiff,
   setEmbeddedVideoPreviewModal,
   showResource,
-  removeSubResource,
+  removeResourceFromDifferentiation,
+  addDifferentiationResources,
+  removeDifferentiationResources,
 }) => {
   const [selectedRows, setSelectedRows] = useState([])
   const [masteryRange, setMasteryRange] = useState([0, 10])
@@ -150,11 +140,11 @@ const InnerWorkTable = ({
   }, [])
 
   /** Drop handle to accept dropped items from manage content (yet to be implemented) */
-  const [{ isOver, itemContentType }, drop] = useDrop({
+  const [{ isOver }, drop] = useDrop({
     accept: 'item',
     collect: (monitor) => ({
       isOver: !!monitor.isOver(),
-      itemContentType: monitor.getItem()?.contentType,
+      // itemContentType: monitor.getItem()?.contentType,
     }),
     drop: (item = {}) => {
       if (
@@ -299,8 +289,14 @@ const InnerWorkTable = ({
       ),
       dataIndex: 'standardIdentifier',
       key: 'standardIdentifier',
-      render: (s, record) =>
-        record.testId || record.contentId ? (
+      render: (s, record) => {
+        const isTest = !!record.testId
+
+        if (isTest) {
+          return <Tags tags={['Custom Test']} />
+        }
+
+        return record.testId || record.contentId ? (
           record?.testStandards?.length ? (
             <Tags tags={record.testStandards} show={1} />
           ) : (
@@ -308,7 +304,8 @@ const InnerWorkTable = ({
           )
         ) : (
           <Tag marginRight="10px">{s}</Tag>
-        ),
+        )
+      },
     },
     {
       title: '',
@@ -319,7 +316,6 @@ const InnerWorkTable = ({
         const containerProps = {
           type,
           masteryRange,
-          addResourceToDifferentiation,
           addTestToDifferentiation,
         }
         return (
@@ -330,35 +326,20 @@ const InnerWorkTable = ({
             >
               {record.description}
             </StyledDescription>
-            <SubResourceView
-              data={record}
-              mode="embedded"
-              disabled={record.status === 'ADDED'}
-              showResource={showResource}
-              setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
-              removeSubResource={removeSubResource}
-              type={type.toLowerCase()}
-              inDiffrentiation
-            />
-            {showSupportingResource &&
-              activeHoverIndex === index &&
-              itemContentType !== 'test' &&
-              record.testId && (
+            <div
+              data-cy={`${type}-testDropContainer`}
+              style={{ width: '100%' }}
+            >
+              {showNewActivity && activeHoverIndex === index && (
                 <ContentDropContainer
-                  dropType="subResource"
+                  data-cy={`${type}-newActivityDropContainer`}
+                  dropType="activity"
                   {...containerProps}
-                  parentTestId={record.testId}
-                  addSubResourceToTestInDiff={addSubResourceToTestInDiff}
                 >
-                  Supporting Resource
+                  New Activity
                 </ContentDropContainer>
               )}
-
-            {showNewActivity && activeHoverIndex === index && (
-              <ContentDropContainer dropType="activity" {...containerProps}>
-                New Activity
-              </ContentDropContainer>
-            )}
+            </div>
           </FlexContainer>
         )
       },
@@ -371,11 +352,19 @@ const InnerWorkTable = ({
     //   render: p => getProgressBar(p)
     // },
     {
-      title: 'NOT STARTED',
+      title: 'STARTED',
       dataIndex: 'notStartedCount',
       key: 'notStartedCount',
       width: '130px',
-      render: (s) => (s !== undefined ? `${s} Students` : null),
+      render: (s) => {
+        if (isUndefined(s) || !filteredStudentList?.length) {
+          return null
+        }
+
+        return `${Math.ceil(
+          ((filteredStudentList.length - s) / filteredStudentList.length) * 100
+        )}%`
+      },
     },
     {
       title: '',
@@ -383,7 +372,37 @@ const InnerWorkTable = ({
       dataIndex: 'status',
       width: '145px',
       align: 'center',
-      render: (s) => <Tag>{s === 'ADDED' ? 'ASSIGNED' : s}</Tag>,
+      render: (s, record) => {
+        // For tests, if not already assigned, don't show the status.
+        if (!!record.testId && s !== 'ADDED') {
+          return null
+        }
+
+        return <Tag>{s === 'ADDED' ? 'ASSIGNED' : s}</Tag>
+      },
+    },
+    {
+      title: '',
+      key: 'action-delete',
+      dataIndex: 'delete',
+      width: '40px',
+      align: 'center',
+      render: (_, _record) =>
+        _record.testId &&
+        _record.status === 'RECOMMENDED' && (
+          <InlineDelete
+            data-cy="delete-test"
+            title="Delete Test"
+            onClick={() =>
+              removeResourceFromDifferentiation({
+                ..._record,
+                type: type?.toLowerCase(),
+              })
+            }
+          >
+            <IconClose />
+          </InlineDelete>
+        ),
     },
   ]
 
@@ -392,9 +411,6 @@ const InnerWorkTable = ({
     onChange: (selectedRowKeys) => {
       setSelectedRows(selectedRowKeys)
     },
-    getCheckboxProps: (record) => ({
-      disabled: record.status === 'ADDED',
-    }),
   }
 
   const getResourceTitle = () => {
@@ -454,6 +470,7 @@ const InnerWorkTable = ({
           ...(rowsData[0]?.resources?.length
             ? { resources: rowsData[0]?.resources }
             : {}),
+          resources: differentiationResources?.[type.toLowerCase()] || [],
         }
         if (!isEmpty(skillIdentifiers)) {
           obj.skillIdentifiers = skillIdentifiers
@@ -476,6 +493,7 @@ const InnerWorkTable = ({
           ...(rowsData[0]?.resources?.length
             ? { resources: rowsData[0]?.resources }
             : {}),
+          resources: differentiationResources?.[type.toLowerCase()] || [],
         }
         recommendations.push(obj)
       }
@@ -541,6 +559,35 @@ const InnerWorkTable = ({
           </EduButton>
         </span>
       </TableHeader>
+      <CommonStudentResourcesContainer>
+        <SubResourceView
+          data={{
+            resources: differentiationResources?.[type.toLowerCase()] || [],
+          }}
+          mode="embedded"
+          showResource={showResource}
+          setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
+          removeSubResource={removeDifferentiationResources}
+          type={type.toLowerCase()}
+          inDiffrentiation
+          isCommonStudentResources
+        />
+        {showSupportingResource && (
+          <Row gutter={16} align="middle">
+            <Col md={8}>
+              <ContentDropContainer
+                dropType="TOP_LEVEL_STUDENT_RESOURCE"
+                type={type}
+                addDifferentiationResources={addDifferentiationResources}
+                data-cy={`${type}-studentResourceDropContainer`}
+              >
+                Student Resource
+              </ContentDropContainer>
+            </Col>
+          </Row>
+        )}
+      </CommonStudentResourcesContainer>
+
       {!showNewActivity || data.length ? (
         <StyledTable
           columns={columns}
@@ -554,7 +601,12 @@ const InnerWorkTable = ({
         />
       ) : null}
       {showNewActivity && !data.length && (
-        <ActivityDropConainer height="195px" active={isOver} ref={drop}>
+        <ActivityDropConainer
+          data-cy={`${type}-activityDropContainer`}
+          height="195px"
+          active={isOver}
+          ref={drop}
+        >
           New Activity
         </ActivityDropConainer>
       )}

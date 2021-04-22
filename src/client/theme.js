@@ -2664,25 +2664,30 @@ export const themes = {
     },
     quester: {
       header1: {
-        background: '#40505b',
-        border: '#2b2b2b',
+        background: '#2f4151',
+        border: '#2f4151',
       },
       header2: {
-        background: '#334049',
+        background: '#374a5b',
       },
       button: {
-        background: '#a2d8fd',
-        textColor: '#334049',
+        background: '#ffffff',
+        textColor: '#374a5b',
       },
       footer: {
-        background: '#334049',
-        border: '#2b2b2b',
+        background: '#2f4151',
+        border: '#2f4151',
         textColor: '#fff',
-        textHoverColor: '#334049',
+        textHoverColor: '#ffffff',
         hover: {
-          color: '#a2d8fd',
-          background: '#40505b',
+          color: '#ffffff',
+          background: '#445666',
         },
+      },
+      review: {
+        filterHoverBg: '#1A73E8',
+        textHoverColor: '#ffffff',
+        textColor: '#1AB394',
       },
     },
   },

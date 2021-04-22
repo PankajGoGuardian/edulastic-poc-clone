@@ -1,6 +1,6 @@
 import React from 'react'
 import { QuestionDetails, DetailRow, FlexWrap } from './styled'
-import Tags from '../Tags'
+import Standards from '../../../../ItemList/components/Item/Standards'
 
 const QuestionPreviewDetails = ({
   id,
@@ -10,7 +10,7 @@ const QuestionPreviewDetails = ({
   authorDifficulty,
   bloomsTaxonomy,
   tags,
-  standards,
+  item,
 }) => (
   <QuestionDetails>
     <FlexWrap>
@@ -49,7 +49,7 @@ const QuestionPreviewDetails = ({
       <DetailRow className="standards">
         <label>Standard: </label>
         <div data-cy="standards-on-preview">
-          <Tags tags={standards} show={7} />
+          <Standards item={item} show={7} />
         </div>
       </DetailRow>
       <DetailRow className="tags">

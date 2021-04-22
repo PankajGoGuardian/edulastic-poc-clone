@@ -1,4 +1,5 @@
 import React, { useContext } from 'react'
+import UnScored from '@edulastic/common/src/components/Unscored'
 import {
   FlexContainer,
   ItemLevelContext,
@@ -16,25 +17,30 @@ const PointBlock = ({
   points,
   correctAnsScore,
   questionType,
+  unscored,
 }) => {
   const itemLevelScoring = useContext(ItemLevelContext)
   return (
     itemLevelScoring || (
       <FlexContainer flexDirection="column" mt="8px">
         <Label>{t('component.correctanswers.points')}</Label>
-        <PointsInput
-          type="number"
-          data-cy="points"
-          value={points}
-          width={width}
-          onChange={onChangePoints}
-          id={getFormattedAttrId(
-            `${questionType}-${t('component.correctanswers.points')}`
-          )}
-          max={!isCorrectAnsTab ? correctAnsScore : Number.MAX_SAFE_INTEGER}
-          min={0.5}
-          step={0.5}
-        />
+        {!unscored ? (
+          <PointsInput
+            type="number"
+            data-cy="points"
+            value={points}
+            width={width}
+            onChange={onChangePoints}
+            id={getFormattedAttrId(
+              `${questionType}-${t('component.correctanswers.points')}`
+            )}
+            max={!isCorrectAnsTab ? correctAnsScore : Number.MAX_SAFE_INTEGER}
+            min={0}
+            step={0.5}
+          />
+        ) : (
+          <UnScored text="Zero Point" height="50px" width={width} />
+        )}
       </FlexContainer>
     )
   )

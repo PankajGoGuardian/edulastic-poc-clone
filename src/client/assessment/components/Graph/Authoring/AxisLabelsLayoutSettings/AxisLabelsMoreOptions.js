@@ -367,7 +367,7 @@ class AxisLabelsMoreOptions extends Component {
               >
                 {fontSizeList.map((option) => (
                   <Select.Option data-cy={option.id} key={option.value}>
-                    {t(option.label)}
+                    {t(`component.options.${option.label}`)}
                   </Select.Option>
                 ))}
               </SelectInputStyled>
@@ -485,7 +485,7 @@ class AxisLabelsMoreOptions extends Component {
               >
                 {renderingBaseList.map((option) => (
                   <Select.Option data-cy={option.value} key={option.value}>
-                    {t(option.label)}
+                    {t(`component.options.${option.label}`)}
                   </Select.Option>
                 ))}
               </SelectInputStyled>

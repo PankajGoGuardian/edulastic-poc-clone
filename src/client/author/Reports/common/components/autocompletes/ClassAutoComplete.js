@@ -23,11 +23,12 @@ const ClassAutoComplete = ({
   termId,
   schoolIds,
   teacherIds,
-  grade,
-  subject,
+  grades,
+  subjects,
   courseId,
   selectCB,
   selectedClassIds,
+  dataCy,
 }) => {
   const classFilterRef = useRef()
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
@@ -63,11 +64,13 @@ const ClassAutoComplete = ({
     ) {
       q.search.institutionIds = schoolIds.split(',')
     }
-    if (grade) {
-      q.search.grades = [grade]
+    if (grades) {
+      q.search.grades = Array.isArray(grades) ? grades : grades.split(',')
     }
-    if (subject) {
-      q.search.subjects = [subject]
+    if (subjects) {
+      q.search.subjects = Array.isArray(subjects)
+        ? subjects
+        : subjects.split(',')
     }
     if (courseId) {
       q.search.courseIds = [courseId]
@@ -78,14 +81,21 @@ const ClassAutoComplete = ({
     termId,
     schoolIds,
     teacherIds,
-    grade,
-    subject,
+    grades,
+    subjects,
     courseId,
   ])
 
   // handle autocomplete actions
   const onSearch = (value) => {
     setSearchTerms({ ...searchTerms, text: value })
+  }
+  const onChange = (selected, selectedElements) => {
+    const _selectedClasses = selectedElements.map(({ props }) => ({
+      key: props.value,
+      title: props.title,
+    }))
+    selectCB(_selectedClasses)
   }
   const onBlur = () => {
     if (searchTerms.text === '' && searchTerms.selectedText !== '') {
@@ -117,7 +127,15 @@ const ClassAutoComplete = ({
   }, [searchTerms])
   useEffect(() => {
     setSearchResult([])
-  }, [termId, schoolIds, teacherIds, grade, subject, courseId])
+    // if (selectedClassIds.length) {
+    //   selectCB({ key: '', title: '' })
+    // }
+  }, [termId, schoolIds, teacherIds, grades, subjects, courseId])
+  useEffect(() => {
+    if (!selectedClassIds.length) {
+      setSearchTerms(DEFAULT_SEARCH_TERMS)
+    }
+  }, [selectedClassIds.join(',')])
 
   // build dropdown data
   const dropdownData = Object.values(
@@ -132,9 +150,10 @@ const ClassAutoComplete = ({
   return (
     <MultiSelectSearch
       label="Class"
+      dataCy={dataCy}
       placeholder="All Classes"
       el={classFilterRef}
-      onChange={(e) => selectCB(e)}
+      onChange={onChange}
       onSearch={onSearch}
       onBlur={onBlur}
       onFocus={getDefaultClassList}

@@ -1,8 +1,19 @@
-import { themeColor, title } from '@edulastic/colors'
-import { Button, CheckboxLabel, EduSwitchStyled } from '@edulastic/common'
+import { themeColor, title, greyThemeDark1 } from '@edulastic/colors'
+import {
+  Button,
+  CheckboxLabel,
+  RadioBtn,
+  FieldLabel,
+  FlexContainer,
+} from '@edulastic/common'
+import {
+  multipartEvaluationSettings,
+  multipartEvaluationTypes,
+} from '@edulastic/constants/const/evaluationType'
 import { IconClose } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
-import { Col, Row } from 'antd'
+import { keys as _keys } from 'lodash'
+import { Row } from 'antd'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import ReactOutsideEvent from 'react-outside-event'
@@ -12,10 +23,12 @@ import SettingsFlowLayout from '../SettingsFlowLayout/SettingFlowLayout'
 import {
   Checkboxes,
   Content,
+  FlexRadioGroup,
   Heading,
   Items,
   SettingsButtonWrapper,
 } from './styled'
+import HelperToolTip from '../../../../../../assessment/components/EvaluationSettings/components/HelperToolTip'
 
 const layouts = [
   {
@@ -119,6 +132,33 @@ class Container extends Component {
     onCancel()
   }
 
+  handleSettingsChange = (e) => {
+    const { setItemLevelScoring, setMultipartEvaluationSetting } = this.props
+    const { ITEM_SCORING_TYPE, PART_SCORING_TYPE } = multipartEvaluationTypes
+    const type = e.target.name
+    const value = type === PART_SCORING_TYPE ? e.target.checked : e.target.value
+    switch (type) {
+      case ITEM_SCORING_TYPE:
+        setItemLevelScoring(value === 'itemLevelScoring')
+        break
+      default:
+        setMultipartEvaluationSetting({ type, value })
+        break
+    }
+  }
+
+  getRadioCheckedOption = (setting, opt) => {
+    const {
+      itemGradingType = multipartEvaluationTypes.ANY_CORRECT,
+      itemLevelScoring,
+    } = this.props
+    const { ITEM_SCORING_TYPE } = multipartEvaluationTypes
+    if (setting === ITEM_SCORING_TYPE) {
+      return opt === 'itemLevelScoring' ? itemLevelScoring : !itemLevelScoring
+    }
+    return opt === itemGradingType
+  }
+
   render() {
     const {
       onCancel,
@@ -132,17 +172,16 @@ class Container extends Component {
       scrolling,
       onVerticalDividerChange,
       onScrollingChange,
-      itemLevelScoring,
-      setItemLevelScoring,
       questionsCount,
       isSingleQuestion = false,
       isMultipart,
       isMultiDimensionLayout,
       isPassageQuestion,
-      disableScoringLevel = false,
+      assignPartialCredit,
+      isPremiumUser,
     } = this.props
     const singleLayout = type === layouts[0].value
-
+    const { PART_SCORING_TYPE } = multipartEvaluationTypes
     const multipleItemsSettings = () => (
       <>
         <SettingsButtonWrapper justifyContent="flex-end">
@@ -159,7 +198,91 @@ class Container extends Component {
             <IconClose color={title} />
           </Button>
         </SettingsButtonWrapper>
-        <Heading>{t('author:component.settingsBar.layout')}</Heading>
+        <Heading>{t('author:component.settingsBar.multipartSettings')}</Heading>
+
+        {questionsCount > 1 &&
+          _keys(multipartEvaluationSettings).map((setting) => {
+            if (
+              !isPremiumUser &&
+              setting !== multipartEvaluationTypes.ITEM_SCORING_TYPE
+            ) {
+              return null
+            }
+            return (
+              <Row
+                type="flex"
+                style={{
+                  flexDirection: 'column',
+                  borderRadius: '5px',
+                  boxShadow: '0 2px 5px 0 rgba(0,0,0,0.07)',
+                  padding: '15px',
+                  marginBottom: '20px',
+                  backgroundColor: '#fff',
+                }}
+              >
+                <Row
+                  style={{
+                    color: themeColor,
+                    fontSize: '13px',
+                    fontWeight: '600',
+                    marginBottom: '8px',
+                  }}
+                >
+                  {t(`author:component.settingsBar.${setting}`)}
+                </Row>
+                {setting === PART_SCORING_TYPE ? (
+                  <Checkboxes>
+                    <CheckboxLabel
+                      name={setting}
+                      onChange={(e) => this.handleSettingsChange(e)}
+                      checked={assignPartialCredit}
+                      labelFontSize="11px"
+                      labelFontWeight={600}
+                      labelColor={greyThemeDark1}
+                    >
+                      {t(
+                        `author:component.settingsBar.multipartSettingsOptions.${setting}`
+                      )}
+                    </CheckboxLabel>
+                  </Checkboxes>
+                ) : (
+                  <FlexRadioGroup name={setting}>
+                    {multipartEvaluationSettings[setting].map((opt) => (
+                      <RadioBtn
+                        key={opt}
+                        value={opt}
+                        mb="20px"
+                        vertical
+                        checked={this.getRadioCheckedOption(setting, opt)}
+                        onClick={(e) => this.handleSettingsChange(e)}
+                      >
+                        <FieldLabel marginBottom="0px" display="inline-block">
+                          {t(
+                            `author:component.settingsBar.multipartSettingsOptions.${setting}.${opt}`
+                          )}
+                          <HelperToolTip
+                            optionKey={opt}
+                            placement="topLeft"
+                            isMultipartSetting
+                          />
+                        </FieldLabel>
+                      </RadioBtn>
+                    ))}
+                  </FlexRadioGroup>
+                )}
+              </Row>
+            )
+          })}
+
+        <FlexContainer justifyContent="flex-start">
+          <Heading>{t('author:component.settingsBar.layout')}</Heading>
+          <HelperToolTip
+            optionKey="layoutStyle"
+            placement="topLeft"
+            isMultipartSetting
+          />
+        </FlexContainer>
+
         <Items>
           {layouts.map((item) => (
             <SettingsBarItem
@@ -190,42 +313,6 @@ class Container extends Component {
           />
         )}
 
-        {questionsCount > 1 && (
-          <Row
-            type="flex"
-            style={{
-              flexDirection: 'column',
-              borderRadius: '5px',
-              boxShadow: '0 2px 5px 0 rgba(0,0,0,0.07)',
-              padding: '15px',
-              marginBottom: '50px',
-              backgroundColor: '#fff',
-            }}
-          >
-            <Row
-              style={{
-                color: themeColor,
-                fontSize: '13px',
-                fontWeight: '600',
-                marginBottom: '15px',
-              }}
-            >
-              Scoring Level
-            </Row>
-            <Row type="flex">
-              <Col style={{ paddingRight: 5 }}>Item Level Scoring</Col>
-              <Col>
-                <EduSwitchStyled
-                  checked={itemLevelScoring}
-                  onChange={(v) => {
-                    setItemLevelScoring(v)
-                  }}
-                  disabled={disableScoringLevel}
-                />
-              </Col>
-            </Row>
-          </Row>
-        )}
         {!isMultipart && (
           <Checkboxes>
             <CheckboxLabel

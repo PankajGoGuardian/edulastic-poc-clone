@@ -5,6 +5,7 @@ import {
   incorrect,
   yellow1,
   lightGrey9,
+  greyLight1,
 } from '@edulastic/colors'
 import styled from 'styled-components'
 
@@ -28,6 +29,10 @@ const Legends = () => (
       <LegendItem>
         <LegendIcon color={lightGrey9} />
         <LegendLabel>SKIPPED</LegendLabel>
+      </LegendItem>
+      <LegendItem>
+        <LegendIcon color={greyLight1} />
+        <LegendLabel>ZERO POINT</LegendLabel>
       </LegendItem>
       <LegendItem>
         <LegendIcon color="rgb(56, 150, 190)" />

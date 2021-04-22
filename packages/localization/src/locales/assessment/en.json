@@ -24,6 +24,24 @@
     "annotation": {
       "annotations": "Annotations",
       "addAnnotation": "Add new Annotation"
+    },
+    "multipartSettings": {
+      "itemLevelScoring": "Single score for entire item",
+      "partLevelScoring": "Part level Scores",
+      "allCorrectMust": "All parts needs to be correct",
+      "firstCorrectMust": "EBSR Grading",
+      "anyCorrect": "Any of the parts can be correct",
+      "layoutStyle": "Layout Style",
+      "useTabs": "Use Tabs",
+      "helperText": {
+        "itemLevelScoring": "Automatically divide score equally between parts, there will be one score reported.",
+        "partLevelScoring": "Manually specify the different scores for each part and report it separately.",
+        "allCorrectMust": "Credit will be awarded only if all parts are completely correct.",
+        "firstCorrectMust": "The first part needs to be completely correct in order for credit to be given on other parts. For example if the student gets parts 2 and 3 correct, but not the first part, they will get zero.",
+        "anyCorrect": "Credit will be awarded if any part is correct based on how the part is scored",
+        "layoutStyle": "Select the layout style that fits your item. The two column style with different sizes allow you to add a passage or resource on the left and one or more question parts on the right.",
+        "useTabs": "Enable tabs on the left or right panel of the layout. This can be used in cases where you want to show multiple passages to the student."
+      }
     }
   },
   "component": {
@@ -32,6 +50,7 @@
     "addANewHint": "Add a new hint",
     "addNewDistractor": "Add a new distractor",
     "enterHintForTheProblem": "Enter a hint for the problem",
+    "correctItemNotAllowDynamic": "Dynamic Parameter questions have their random values generated when the test is assigned, and they cannot be changed. You will have to grade these questions manually",
     "options": {
       "preFilled": "Pre-Filled",
       "highlight": "Highlight",
@@ -61,6 +80,7 @@
       "variableGenerate": "Generate",
       "variableMin": "Min",
       "variableMax": "Max",
+      "variableStep": "Step",
       "variableDecimalPlaces": "Decimal Places",
       "variableExample": "Example Value",
       "variableType": "Variable Type",
@@ -75,6 +95,8 @@
       "vertical": "Vertical",
       "small": "Small",
       "normal": "Normal",
+      "lineMinValue": "Line minimum value",
+      "zero": "Line minimum value",
       "large": "Large",
       "extraLarge": "Extra Large",
       "huge": "Huge",
@@ -145,7 +167,7 @@
       "none": "None",
       "scoring": "Scoring",
       "automarkable": "Enable auto scoring",
-      "unscored": "Unscored / Practice usage",
+      "unscored": "Zero Point / Practice usage",
       "gradingRubric": "Grading Rubric",
       "penalty": "Penalty Point(s)",
       "stimulusreviewonly": "Stimulus (review only)",
@@ -160,6 +182,13 @@
       "keypad": "Keypad",
       "maximumLines": "Maximum lines",
       "defaultMode": "Default mode",
+      "chooseKeypad": "Choose Keypad",
+      "saveCustomKeypad": "Save Custom Keypad",
+      "saveAndUseLater": "Save & Use Later",
+      "customKeypads": "Custom Keypads",
+      "updateCustomKeypad": "Update",
+      "deleteCustomKeypad": "Delete",
+      "updateOrDeleteCustomKeypad": "Update or Delete a Custom Keypad",
       "numberPad": "Number Pad",
       "symbols": "Symbols",
       "distractor": "Distractor",
@@ -172,6 +201,7 @@
       "addNewChoice": "Add new choice",
       "title": "Title",
       "label": "Label",
+      "labelCustomKeypad": "Label Custom Keypad",
       "depthOfKnowledge": "Depth Of Knowledge",
       "externalQuestionId": "External Question ID",
       "blooomTaxonomy": "Bloom's Taxonomy",
@@ -180,6 +210,7 @@
       "selectDOK": "Select DOK",
       "selectStandards": "Select Standards",
       "searchStandards": "Search standard(s)",
+      "selectResourceStandards": "Select Standard(s)",
       "browse": "Browse",
       "selectCurriculum": "Select Curriculum",
       "selectSubject": "Select Subject",
@@ -233,7 +264,8 @@
         "fraction": "Fraction",
         "mixedFraction": "Mixed Fraction"
       },
-      "graphControls": "Graph Controls"
+      "graphControls": "Graph Controls",
+      "standardKeypadLabel": "Standard Keypads"
     },
     "dropZone": {
       "dragDrop": "Drag & Drop",
@@ -965,6 +997,8 @@
       "ignoreLabels": "Ignore labels",
       "points": "Points on an Equation",
       "latex": "Equation for points",
+      "showEvaluationSettings": "Show Evaluation Settings",
+      "hideEvaluationSettings": "Hide Evaluation Settings",
       "helperText": {
         "evaluationSettings": "Additional evaluation considerations, for example, if you require that the student&apos;s response is simplified, or meets a specific tolerance, or should be literally matched...",
         "graphEvaluationSettings": "Specify the additional checks that should be performed on the student's entry, such as to check the labeling of points, measure perimeter, area or parallel lines. Note that you can also incorporate background shapes or images with the advanced options menu on the left.",
@@ -982,7 +1016,7 @@
         "integerType": "A number that can be written without a fractional component.#{\\newline[1em]\\text{Correct:\\enspace}2,\\quad\\text{Incorrect:\\enspace}1.5#}",
         "isDecimal": "A whole number and a fractional part separated by a decimal point.#{\\newline[1em]\\text{Correct:\\enspace}1.5,\\quad\\text{Incorrect:\\enspace}1#}",
         "scientificType": "Way to write a very large or small number using powers of ten.#{\\newline[1em]\\text{Correct:\\enspace}7.11E+2,\\quad\\text{Incorrect:\\enspace}711\\newline[1em]\\text{Correct:\\enspace}7.01\\times 10^2,\\quad\\text{Incorrect:\\enspace}701#}",
-        "significantDecimalPlaces": "A number expressed with sufficient digits that express the required precision. Please note that your Expected Answer must normally meet the same required decimal places and rounding as the students, except in the case of Dynamic Parameter formulas #{\\newline[1em]\\text{Expected:\\enspace}0.33,\\quad\\text{Significant decimal places:\\enspace}2\\newline[0.5em]\\text{Correct:\\enspace}0.33,\\quad\\text{Incorect:\\enspace}0.3#}",
+        "significantDecimalPlaces": "A number expressed with sufficient digits that express the required precision. Please note that your Expected Answer must normally meet the same required decimal places and rounding as the students, except in the case of Dynamic Parameter formulas - here the system will do the implementation of the rounding and required decimal places in the expected answer. #{\\newline[1em]\\text{Expected:\\enspace}0.33,\\quad\\text{Significant decimal places:\\enspace}2\\newline[0.5em]\\text{Correct:\\enspace}0.33,\\quad\\text{Incorect:\\enspace}0.3#}",
         "isIn": "Student's answer needs to lie within a specified interval or set. Enter the number of unique items the student needs to return.#{\\newline[1em]\\text{Expected:\\enspace}[0.3,0.6]\\newline[0.5em]#} and with \"#{1#}\" in the box.#{\\newline[0.5em]\\text{Correct:\\enspace}0.4,\\quad\\text{Incorrect:\\enspace}0.2\\newline[0.5em]#} If the student needs to return #{2#} numbers, then a possible valid answer would be #{0.35,\\enspace 0.45#}",
         "satisfies": "Student's answer needs to meet the given in/equality or equation. Enter the number of items that the students needs to return. Put the condition in the EXPECTED ANSWER field. Note that you can only use one variable, e.g. x.#{\\newline[0.5em]\\text{Expected:\\enspace}x>2\\newline[0.5em] \\text{Correct:\\enspace}3,\\quad\\text{Incorrect:\\enspace}1\\newline[0.5em]#} If the student needs to return 2 numbers, then a possible valid answer would be #{3,4#}",
         "isLineStandardForm": "#{ax+by=c\\newline[0.4em]\\text{Correct:\\enspace}x+y=2,\\quad\\text{Incorrect:\\enspace}x+y-2=0#}",
@@ -1032,7 +1066,9 @@
         "graphTolerance": "Tolerance for simpler objects like polygons is checked by considering the distance to the closest points that make up the object for the student's entry vs the expected answer.#{\\newline#}For lines and conic sections, the objects are converted to a standard form equation and then the parameters of the form are checked that they each meet the tolerance.#{\\newline#}These are the forms that are used:#{\\newline[1em]\\text{Line:\\enspace}ax+by=c\\newline\\text{Circle:\\enspace}(x-h)^2+(y-k)^2=r^2\\newline\\text{Ellipse:\\enspace}(x-h)^2/a^2+(y-k)^2/b^2=1\\newline\\text{Hyperbola:\\enspace}(x-h)^2/a^2-(y-k)^2/b^2=1\\newline\\text{Parabola:\\enspace}4p(y-k)=(x-h)^2\\newline[1em]\\text{For example:}\\newline[1em]\\text{Correct Answer:\\enspace}x^2+y^2=4#} and tolerance of #{0.1.\\newline#}The student enters a circle which is equivalent to the equation: #{x^2+y^2=4.5\\newline#}This will be graded as wrong since the expected #{r=2#} for which #{2.1#} would be an ok value and #{2.1*2.1=4.4#}",
         "ignoreLabels": "If the objects have labels, then they will be considered in the evaluation, unless you select this option.",
         "graphPointsOnAnEquation": "There are two scenarios:#{\\newline[0.5em]#}1) You give an object such as a line or circle and require the student to enter any   two points that lie on the object.#{\\newline#}2) You provide an equation, #{\\text{e.g.\\enspace}y=x+1\\enspace#}and the student needs to enter points that lie on this equation.#{\\newline[0.5em]#}You can also use inequalities in both scenarios.",
-        "equationForms": "Forms of lines and conic sections:#{\\newline[1em]\\text{Line Standard Form:\\enspace}ax+by=c\\newline\\text{Line Slope Intercept Form:\\enspace}y=ax+b\\newline\\text{Line Point Slope Form:\\enspace}(y-b)=c(x-a)\\newline\\text{Quadratic Standard Form:\\enspace}ax^2+bx+c=0\\newline\\text{Polynomial Standard Form:\\enspace}\\Sigma(a_ix^i)=0#} where the #{a_i#} are the coeficients and #{i#} is the degree of the polynomial#{\\newline\\text{Polynomial Factored Form\\enspace}\\Pi(x-a_i)=0\\newline[1em]\\text{Conic Standard Forms:}\\newline[0.5em]\\text{Circle:\\enspace}(x-h)^2+(y-k)^2=r^2\\newline[0.3em]\\text{Ellipse:\\enspace}\\frac{(x-h)^2}{a^2}+\\frac{(y-k)^2}{b^2}=1\\newline[0.3em]\\text{Hyperbola:\\enspace}\\frac{(x-h)^2}{a^2}-\\frac{(y-k)^2}{b^2}=1\\newline[.3em]\\text{Parabola:\\enspace}4p(y-k)=(x-h)^2\\newline[1em]\\text{Parabola Vertex Form:\\enspace}y=a(x-h)^2+k\\newline\\text{\\enspace( x or y can be on LHS)}#}"
+        "equationForms": "Forms of lines and conic sections:#{\\newline[1em]\\text{Line Standard Form:\\enspace}ax+by=c\\newline\\text{Line Slope Intercept Form:\\enspace}y=ax+b\\newline\\text{Line Point Slope Form:\\enspace}(y-b)=c(x-a)\\newline\\text{Quadratic Standard Form:\\enspace}ax^2+bx+c=0\\newline\\text{Polynomial Standard Form:\\enspace}\\Sigma(a_ix^i)=0#} where the #{a_i#} are the coeficients and #{i#} is the degree of the polynomial#{\\newline\\text{Polynomial Factored Form\\enspace}\\Pi(x-a_i)=0\\newline[1em]\\text{Conic Standard Forms:}\\newline[0.5em]\\text{Circle:\\enspace}(x-h)^2+(y-k)^2=r^2\\newline[0.3em]\\text{Ellipse:\\enspace}\\frac{(x-h)^2}{a^2}+\\frac{(y-k)^2}{b^2}=1\\newline[0.3em]\\text{Hyperbola:\\enspace}\\frac{(x-h)^2}{a^2}-\\frac{(y-k)^2}{b^2}=1\\newline[.3em]\\text{Parabola:\\enspace}4p(y-k)=(x-h)^2\\newline[1em]\\text{Parabola Vertex Form:\\enspace}y=a(x-h)^2+k\\newline\\text{\\enspace( x or y can be on LHS)}#}",
+        "updateOrDeleteCustomKeypad": "Removed keypad (and older version of the keypad in the case of you edit a keypad) will not be available for future questions and test setting. Old content will continue to have the same keypad until question is saved with new keypad again.",
+        "saveCustomKeypad": "Save your custom keypad to use on future questions. It will appear as an option in the Choose Keypad dropdown"
       }
     },
     "matrix": {

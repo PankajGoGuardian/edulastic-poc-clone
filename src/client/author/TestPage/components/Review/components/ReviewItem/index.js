@@ -40,6 +40,22 @@ const ReviewItem = ({
     return audio
   }
 
+  const _questions = get(item, 'data.questions', [])
+  const itemLevelScoring = get(item, 'itemLevelScoring', false)
+
+  /**
+   * in test review, to disable input field for item
+   * if item level scoring is on and one question has been selected as unscored
+   * consider item is unscored
+   * if item level scoring is off and all question has been selected as unscored
+   * consider item is unscored
+   * */
+  const getUnScoredItem = (__questions, __itemLevelScoring) => {
+    return __questions.every(({ validation }) =>
+      get(validation, 'unscored', false)
+    )
+  }
+
   const data = useMemo(() => {
     const isScoringDisabled =
       (!!item?.data?.questions?.find((q) => q.rubrics) &&
@@ -114,6 +130,7 @@ const ReviewItem = ({
           scoring={scoring}
           groupMinimized={groupMinimized}
           groupPoints={groupPoints}
+          isUnScoredItem={getUnScoredItem(_questions, itemLevelScoring)}
         />
       )}
       {!expand && (
@@ -131,6 +148,7 @@ const ReviewItem = ({
           expandRow={toggleExpandRow}
           groupMinimized={groupMinimized}
           groupPoints={groupPoints}
+          isUnScoredItem={getUnScoredItem(_questions, itemLevelScoring)}
         />
       )}
       <MetaInfo data={data.meta} />

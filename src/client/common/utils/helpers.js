@@ -8,6 +8,7 @@ import { themeColor } from '@edulastic/colors'
 import { signUpState, test as testConst } from '@edulastic/constants'
 import * as Sentry from '@sentry/browser'
 import { API } from '@edulastic/api'
+import qs from 'qs'
 import { Partners } from './static/partnerData'
 import { smallestZoomLevel } from './static/zoom'
 import { breakpoints } from '../../student/zoomTheme'
@@ -503,4 +504,21 @@ export const isHashAssessmentUrl = () => {
     window.location.hash.includes('#renderResource/close/') ||
     window.location.hash.includes('#assessmentQuestions/close/')
   )
+}
+
+export const getSchoologyTestId = () => {
+  const location = window.location
+  if (
+    window.location.pathname === '/auth/clever' &&
+    location.search.includes('assignment')
+  ) {
+    const { state = '' } = qs.parse(location.search, {
+      ignoreQueryPrefix: true,
+    })
+    const testId = state.split(':')[1] || ''
+    if (testId && testId.length === 24) {
+      return testId
+    }
+  }
+  return ''
 }

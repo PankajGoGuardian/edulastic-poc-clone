@@ -21,6 +21,7 @@ import {
   white,
   themeColor,
   skippedBarColor,
+  greyLight1,
 } from '@edulastic/colors'
 import { IconEye, IconEyeClose } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
@@ -78,9 +79,11 @@ const CustomTooltip = ({ payload }) => {
   const timeSpent = get(firstItem, 'payload.avgTimeSpent')
   const fullName = get(firstItem, 'payload.name')
   const score = get(firstItem, 'payload.score')
+  const unscoredItems = get(firstItem, 'payload.unscoredItems', 0)
   return (
     <TooltipContainer title={fullName}>
-      {`Time(seconds): ${timeSpent || 0}`} <br /> {`Score: ${score}`}
+      {`Time(seconds): ${timeSpent || 0}`} <br />{' '}
+      {`Score: ${unscoredItems ? 'unscored' : score}`}
     </TooltipContainer>
   )
 }
@@ -236,12 +239,15 @@ class QuestionViewContainer extends Component {
             pCorrect: 0,
             skipped: 0,
             manuallyGraded: 0,
+            unscoredItems: 0,
             score: 0,
           }
           st.questionActivities
             .filter(({ notStarted, _id }) => !notStarted && _id === question.id)
-            .forEach(({ skipped, graded, score, maxScore }) => {
-              if (skipped) {
+            .forEach(({ skipped, graded, score, maxScore, isPractice }) => {
+              if (isPractice) {
+                stData.unscoredItems += 1
+              } else if (skipped) {
                 stData.skipped += 1
               } else if (graded === false) {
                 stData.manuallyGraded += 1
@@ -266,7 +272,7 @@ class QuestionViewContainer extends Component {
       p: partiallyCorrectNumber,
       s: skippedNumber,
       n: notGradedNumber,
-      t: totalNumber,
+      u: unscoredItems,
     } = data.reduce(
       (acc, item) => ({
         w: item.wrong + acc.w,
@@ -274,16 +280,12 @@ class QuestionViewContainer extends Component {
         p: item.pCorrect + acc.p,
         s: item.skipped + acc.s,
         n: item.manuallyGraded + acc.n,
-        t:
-          item.wrong +
-          item.correct +
-          item.pCorrect +
-          item.skipped +
-          item.manuallyGraded +
-          acc.t,
+        u: item.unscoredItems + acc.u,
       }),
-      { c: 0, w: 0, p: 0, s: 0, n: 0, t: 0 }
+      { c: 0, w: 0, p: 0, s: 0, n: 0, u: 0 }
     )
+
+    const totalNumber = data.length
 
     if (isMobile) {
       data = data.slice(0, 2)
@@ -385,6 +387,14 @@ class QuestionViewContainer extends Component {
                   onClick={this.onClickChart}
                 />
                 <Bar
+                  className="unscoredItems"
+                  style={{ cursor: 'pointer' }}
+                  stackId="a"
+                  dataKey="unscoredItems"
+                  fill={greyLight1}
+                  onClick={this.onClickChart}
+                />
+                <Bar
                   className="manuallyGraded"
                   style={{ cursor: 'pointer' }}
                   stackId="a"
@@ -438,6 +448,12 @@ class QuestionViewContainer extends Component {
               >
                 SKIPPED ({skippedNumber})
               </WrongButton>
+              <WrongButton
+                active={filter === 'unscoredItems'}
+                onClick={() => this.onClickTab('unscoredItems')}
+              >
+                ZERO POINT ({unscoredItems})
+              </WrongButton>
               <PartiallyCorrectButton
                 active={filter === 'notGraded'}
                 onClick={() => this.onClickTab('notGraded')}
@@ -454,7 +470,9 @@ class QuestionViewContainer extends Component {
             >
               {hideCorrectAnswer ? <IconEye /> : <IconEyeClose />}
               <span data-cy="showCorrectAnswer" data-test={!hideCorrectAnswer}>
-                correct answers
+                {hideCorrectAnswer
+                  ? 'Expand correct answers'
+                  : 'Collapse correct answers'}
               </span>
             </EduButton>
           </StudentButtonWrapper>
@@ -473,6 +491,22 @@ class QuestionViewContainer extends Component {
             const qActivities = classQuestion.filter(
               ({ userId }) => userId === student.studentId
             )
+
+            /**
+             * Here if question activity length is 0, which means that there is no attempt for the question
+             * by the student so, for INPROGRESS student we will show unattempted questions only in ALL filter
+             * and for submitted student we will unattempted questions in ALL filter as well as SKIPPED filter
+             * hence returning null in case of other filters.
+             */
+            if (
+              !qActivities.length &&
+              ((filter && student.UTASTATUS === testActivityStatus.START) ||
+                (student.UTASTATUS === testActivityStatus.SUBMITTED &&
+                  filter &&
+                  filter !== 'skipped' &&
+                  filter !== 'unscoredItems'))
+            )
+              return null
             return (
               <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
                 <ClassQuestions

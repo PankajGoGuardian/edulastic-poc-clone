@@ -66,7 +66,9 @@ const ScoreChart = ({
   const getXTickText = (payload, _data) => {
     const currentBarData =
       find(_data, (item) => item[xDataKey] === payload.value) || {}
-    return currentBarData.testName || ''
+    return currentBarData.isIncomplete
+      ? `${currentBarData.testName} *`
+      : currentBarData.testName || ''
   }
 
   const _onBarClickCB = (key) => {
@@ -86,7 +88,11 @@ const ScoreChart = ({
           />
           <BarTooltipRow
             title="Assessment : "
-            value={record.testName || 'N/A'}
+            value={
+              record.isIncomplete
+                ? `${record.testName} *`
+                : record.testName || 'N/A'
+            }
           />
           <BarTooltipRow title="Student Count : " value={record.totalGraded} />
           <BarTooltipRow

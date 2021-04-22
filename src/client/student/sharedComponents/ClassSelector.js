@@ -94,6 +94,7 @@ const ClassSelector = ({
       <AssignmentSelectClass id="class-dropdown-wrapper" isShown={isShown}>
         <ClassLabel>{t('common.classLabel')}</ClassLabel>
         <Select
+          data-cy="select-class"
           value={currentGroup}
           getPopupContainer={() =>
             document.getElementById('class-dropdown-wrapper')

@@ -3,39 +3,16 @@ import styled from 'styled-components'
 
 import Breadcrumb from '../../../../src/components/Breadcrumb'
 
-import StandardsMasteryRowFilters from '../../../subPages/standardsMasteryReport/common/components/RowFilters'
-
-const SubHeader = ({
-  breadcrumbsData,
-  onRefineResultsCB,
-  title,
-  showFilter,
-  isSharedReport,
-}) => {
-  const isShowBreadcrumb = title !== 'Standard Reports'
-  const showStandardFilters =
-    title === 'Standards Performance Summary' ||
-    title === 'Standards Gradebook' ||
-    title === 'Standards Progress'
-
-  return (
-    <SecondaryHeader
-      style={{
-        marginBottom: isShowBreadcrumb ? 20 : 0,
-        paddingLeft: '5px',
-      }}
-    >
-      <HeaderTitle>
-        {isShowBreadcrumb ? (
-          <Breadcrumb data={breadcrumbsData} style={{ position: 'unset' }} />
-        ) : null}
+const SubHeader = ({ breadcrumbData, isCliUser, alignment, children }) => (
+  <SecondaryHeader alignItems={alignment}>
+    {!isCliUser ? (
+      <HeaderTitle className="report-breadcrumb">
+        <Breadcrumb data={breadcrumbData} style={{ position: 'unset' }} />
       </HeaderTitle>
-      {!isSharedReport && onRefineResultsCB && showStandardFilters ? (
-        <StandardsMasteryRowFilters pageTitle={title} showFilter={showFilter} />
-      ) : null}
-    </SecondaryHeader>
-  )
-}
+    ) : null}
+    {children}
+  </SecondaryHeader>
+)
 
 export default SubHeader
 
@@ -54,13 +31,24 @@ const HeaderTitle = styled.div`
       margin-right: 10px;
     }
   }
+  .ant-breadcrumb {
+    white-space: nowrap;
+    min-width: 230px;
+    max-width: 320px;
+  }
 `
 
 const SecondaryHeader = styled.div`
   display: flex;
+  width: 100%;
+  margin-bottom: 20px;
+  padding-left: 5px;
   justify-content: space-between;
-  align-items: center;
+  align-items: ${({ alignItems }) => alignItems || 'center'};
   @media print {
-    display: none;
+    padding-left: 0px;
+    .report-breadcrumb {
+      display: none;
+    }
   }
 `

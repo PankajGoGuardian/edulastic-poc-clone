@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { debounce, isEmpty } from 'lodash'
 
 // components & constants
-import { AutoComplete, Input, Icon, Tooltip } from 'antd'
+import { AutoComplete, Input, Icon, Tooltip, Empty } from 'antd'
 import { assignmentStatusOptions, roleuser } from '@edulastic/constants'
 
 // ducks
@@ -14,6 +14,7 @@ import {
   getTestListSelector,
   getTestListLoadingSelector,
 } from '../../../ducks'
+import useDropdownData from '../../hooks/useDropdownData'
 
 const { IN_PROGRESS, IN_GRADING, DONE } = assignmentStatusOptions
 
@@ -26,14 +27,15 @@ const AssessmentAutoComplete = ({
   loadTestList,
   firstLoad,
   termId,
-  grade,
-  subject,
+  grades,
+  subjects,
   testTypes,
   selectedTestId,
   selectCB,
-  tags,
+  tagIds,
 }) => {
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
+  const [fieldValue, setFieldValue] = useState('')
   const selectedTest = testList.find((t) => t._id === selectedTestId) || {}
   const [isFocused, setIsFocused] = useState(false)
 
@@ -43,7 +45,7 @@ const AssessmentAutoComplete = ({
     const { districtIds, institutionIds } = orgData
     const districtId = districtIds?.[0]
     const q = {
-      limit: 25,
+      limit: 35,
       page: 1,
       search: {
         searchString: searchTerms.text,
@@ -61,39 +63,47 @@ const AssessmentAutoComplete = ({
     if (termId) {
       q.search.termId = termId
     }
-    if (grade) {
-      q.search.grades = [grade]
+    if (grades) {
+      q.search.grades = Array.isArray(grades) ? grades : grades.split(',')
     }
-    if (subject) {
-      q.search.subjects = [subject]
+    if (subjects) {
+      q.search.subjects = Array.isArray(subjects)
+        ? subjects
+        : subjects.split(',')
     }
     if (testTypes) {
       q.search.testTypes = Array.isArray(testTypes)
         ? testTypes
         : testTypes.split(',')
     }
-    if (tags?.length) {
-      q.search.tagIds = tags
+    if (tagIds) {
+      q.search.tagIds = tagIds.split(',')
     }
     return q
   }, [
     searchTerms.text,
     selectedTestId,
     termId,
-    grade,
-    subject,
+    grades,
+    subjects,
     testTypes,
-    tags,
+    tagIds,
   ])
 
   // handle autocomplete actions
   const onSearch = (value) => {
     setSearchTerms({ ...searchTerms, text: value })
   }
+  const onChange = useCallback((_text, element) => {
+    const _title = element?.props?.title
+    setSearchTerms((s) => ({ ...s, text: _title || _text }))
+    setFieldValue(_title || _text)
+  }, [])
   const onSelect = (key) => {
     if (key) {
       const value = testList.find((s) => s._id === key)?.title
       setSearchTerms({ text: value, selectedText: value, selectedKey: key })
+      setFieldValue(value)
       selectCB({ key, title: value })
     } else {
       selectCB({ key: '', title: '' })
@@ -107,6 +117,7 @@ const AssessmentAutoComplete = ({
         selectedText: '',
         text: searchTerms.selectedText,
       })
+      setFieldValue(searchTerms.selectedText)
     }
     setIsFocused(false)
   }
@@ -120,8 +131,10 @@ const AssessmentAutoComplete = ({
     const { _id, title } = selectedTest
     if (_id) {
       setSearchTerms({ text: title, selectedText: title, selectedKey: _id })
+      setFieldValue(title)
     } else {
       setSearchTerms({ ...DEFAULT_SEARCH_TERMS, selectedKey: selectedTestId })
+      setFieldValue('')
     }
   }, [selectedTestId])
   useEffect(() => {
@@ -134,8 +147,9 @@ const AssessmentAutoComplete = ({
   useEffect(() => {
     if (searchTerms.selectedText) {
       setSearchTerms({ ...DEFAULT_SEARCH_TERMS })
+      setFieldValue('')
     }
-  }, [termId, grade, subject, testTypes])
+  }, [termId, grades, subjects, testTypes])
   useEffect(() => {
     if (
       (!searchTerms.text && !searchTerms.selectedText) ||
@@ -145,21 +159,10 @@ const AssessmentAutoComplete = ({
     }
   }, [query])
   // build dropdown data
-  const dropdownData = isEmpty(testList)
-    ? [
-        <AutoComplete.Option disabled key={0} title="no data found">
-          No Data Found
-        </AutoComplete.Option>,
-      ]
-    : testList.map((item) => (
-        <AutoComplete.Option key={item._id} title={item.title}>
-          {`${
-            item.title.length > 25
-              ? `${item.title.slice(0, 22)}...`
-              : item.title
-          } (ID:${item._id.substring(item._id.length - 5) || ''})`}
-        </AutoComplete.Option>
-      ))
+  const dropdownData = useDropdownData(testList, {
+    showId: true,
+    searchText: searchTerms.text || '',
+  })
 
   const selectedTestLabel =
     searchTerms.text === searchTerms.selectedText && selectedTest._id
@@ -181,14 +184,23 @@ const AssessmentAutoComplete = ({
       <AutoCompleteContainer>
         <AutoComplete
           getPopupContainer={(trigger) => trigger.parentNode}
-          value={searchTerms.text}
+          value={fieldValue}
           onSearch={onSearch}
           dataSource={dropdownData}
           onSelect={onSelect}
           onBlur={onBlur}
           onFocus={() => setIsFocused(true)}
+          onChange={onChange}
           allowClear={!loading && searchTerms.selectedText && isFocused}
           clearIcon={<Icon type="close" style={{ color: '#1AB394' }} />}
+          notFoundContent={
+            <Empty
+              className="ant-empty-small"
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+              style={{ textAlign: 'left', margin: '10px 0' }}
+              description="No matching results"
+            />
+          }
         >
           <Input suffix={InputSuffixIcon} />
         </AutoComplete>
@@ -212,5 +224,11 @@ const AutoCompleteContainer = styled.div`
   .ant-select-dropdown-menu-item-group-title {
     font-weight: bold;
     white-space: nowrap;
+  }
+  .ant-select-selection__clear {
+    background: transparent;
+  }
+  .ant-input-suffix .anticon-loading {
+    font-size: 1.4em;
   }
 `

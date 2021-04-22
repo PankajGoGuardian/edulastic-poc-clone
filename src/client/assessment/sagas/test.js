@@ -192,6 +192,10 @@ const getSettings = (test, testActivity, preview) => {
     blockNavigationToAnsweredQuestions:
       assignmentSettings?.blockNavigationToAnsweredQuestions || false,
     isTeacherPremium: assignmentSettings?.isTeacherPremium || false,
+    blockSaveAndContinue: assignmentSettings?.blockSaveAndContinue || false,
+    restrictNavigationOut: assignmentSettings?.restrictNavigationOut || false,
+    restrictNavigationOutAttemptsThreshold:
+      assignmentSettings?.restrictNavigationOutAttemptsThreshold,
   }
 }
 
@@ -395,11 +399,15 @@ function* loadTest({ payload }) {
     test.testItems = test.itemGroups.flatMap(
       (itemGroup) => itemGroup.items || []
     )
+    const {
+      SKIPPED,
+      SKIPPED_AND_WRONG,
+      SKIPPED_PARTIAL_AND_WRONG,
+    } = testContants.redirectPolicy.QuestionDelivery
     if (
-      (testActivity?.assignmentSettings?.questionsDelivery ===
-        testContants.redirectPolicy.QuestionDelivery.SKIPPED_AND_WRONG ||
-        testActivity?.assignmentSettings?.questionsDelivery ===
-          testContants.redirectPolicy.QuestionDelivery.SKIPPED) &&
+      [SKIPPED, SKIPPED_AND_WRONG, SKIPPED_PARTIAL_AND_WRONG].includes(
+        testActivity?.assignmentSettings?.questionsDelivery
+      ) &&
       testActivity.itemsToBeExcluded?.length
     ) {
       // mutating to filter the excluded items as the settings is to show SKIPPED AND WRONG / SKIPPED
@@ -439,8 +447,8 @@ function* loadTest({ payload }) {
       assignmentById = yield select(
         (state) => state?.studentAssignment?.byId || {}
       )
-      const assignmentObj = assignmentById[activity.assignmentId]
-      if (assignmentObj?.restrictNavigationOut && isiOS()) {
+
+      if (settings.restrictNavigationOut && isiOS()) {
         Fscreen.safeExitfullScreen()
         yield put(push('/home/assignments'))
         yield put(toggleIosRestrictNavigationModalAction(true))
@@ -648,6 +656,8 @@ function* loadTest({ payload }) {
         answerCheckByItemId,
         showMagnifier: settings.showMagnifier || test.showMagnifier,
         languagePreference: testActivity.testActivity?.languagePreference,
+        grades: test.grades,
+        subjects: test.subjects,
       },
     })
     if (preview) {
@@ -1001,7 +1011,11 @@ function* switchLanguage({ payload }) {
 export default function* watcherSaga() {
   yield all([
     yield takeEvery(LOAD_TEST, loadTest),
-    yield Effects.throttleAction(10000, FINISH_TEST, submitTest),
+    yield Effects.throttleAction(
+      process.env.REACT_APP_QA_ENV ? 60000 : 10000,
+      FINISH_TEST,
+      submitTest
+    ),
     yield takeEvery(LOAD_PREVIOUS_RESPONSES_REQUEST, loadPreviousResponses),
     yield takeLatest(SWITCH_LANGUAGE, switchLanguage),
   ])

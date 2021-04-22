@@ -816,6 +816,7 @@ class TeacherTable extends Component {
               onSearch={this.handleSearchName}
               onChange={this.onChangeSearch}
               height="36px"
+              data-cy="searchByName"
             />
             <EduButton type="primary" onClick={this.showInviteTeacherModal}>
               {t('users.teacher.inviteteachers')}

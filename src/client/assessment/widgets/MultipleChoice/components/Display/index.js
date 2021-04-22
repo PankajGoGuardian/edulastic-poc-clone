@@ -131,17 +131,10 @@ Display.defaultProps = {
 }
 
 const StyledStimulus = styled(Stimulus)`
-  margin-bottom: 25px;
   word-break: break-word;
   overflow: hidden;
-  font-size: ${(props) => props.fontSize};
-
   img {
     padding: 0px;
-  }
-
-  p {
-    padding-top: 2px;
   }
 `
 

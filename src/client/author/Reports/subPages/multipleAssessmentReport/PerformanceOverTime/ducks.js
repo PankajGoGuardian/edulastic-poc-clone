@@ -1,11 +1,8 @@
-import { takeEvery, call, put, all, select } from 'redux-saga/effects'
+import { takeEvery, call, put, all } from 'redux-saga/effects'
 import { createSelector } from 'reselect'
 import { reportsApi } from '@edulastic/api'
 import { notification } from '@edulastic/common'
 import { createAction, createReducer } from 'redux-starter-kit'
-import { keyBy } from 'lodash'
-import { getReportsMARSelectedPerformanceBandProfile } from '../common/filterDataDucks'
-
 import { RESET_ALL_REPORTS } from '../../../common/reportsRedux'
 
 const GET_REPORTS_PERFORMANCE_OVER_TIME_REQUEST =
@@ -14,11 +11,16 @@ const GET_REPORTS_PERFORMANCE_OVER_TIME_REQUEST_SUCCESS =
   '[reports] get reports performance over time success'
 const GET_REPORTS_PERFORMANCE_OVER_TIME_REQUEST_ERROR =
   '[reports] get reports performance over time error'
+const RESET_REPORTS_PERFORMANCE_OVER_TIME =
+  '[reports] reset reports performance over time'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
 export const getPerformanceOverTimeRequestAction = createAction(
   GET_REPORTS_PERFORMANCE_OVER_TIME_REQUEST
+)
+export const resetPerformanceOverTimeAction = createAction(
+  RESET_REPORTS_PERFORMANCE_OVER_TIME
 )
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
@@ -53,11 +55,12 @@ export const getReportsPerformanceOverError = createSelector(
 
 const initialState = {
   performanceOverTime: {},
-  loading: true,
+  loading: false,
 }
 
 export const reportPerformanceOverTimeReducer = createReducer(initialState, {
   [RESET_ALL_REPORTS]: () => initialState,
+  [RESET_REPORTS_PERFORMANCE_OVER_TIME]: () => initialState,
   [GET_REPORTS_PERFORMANCE_OVER_TIME_REQUEST]: (state) => {
     state.loading = true
   },
@@ -93,24 +96,6 @@ function* getReportsPerformanceOverTimeRequest({ payload }) {
       })
       return
     }
-    const selectedProfile = yield select(
-      getReportsMARSelectedPerformanceBandProfile
-    )
-    const thresholdNameIndexed = keyBy(
-      selectedProfile?.performanceBand || [],
-      'threshold'
-    )
-    const metricInfo = (
-      performanceOverTime?.data?.result?.metricInfo || []
-    )?.map((x) => ({
-      ...x,
-      bandName: thresholdNameIndexed[x.bandScore].name,
-    }))
-
-    performanceOverTime.data.result.bandInfo =
-      selectedProfile?.performanceBand || []
-    performanceOverTime.data.result.metricInfo = metricInfo
-
     yield put({
       type: GET_REPORTS_PERFORMANCE_OVER_TIME_REQUEST_SUCCESS,
       payload: { performanceOverTime },

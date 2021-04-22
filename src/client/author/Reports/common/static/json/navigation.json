@@ -155,7 +155,7 @@
       "groupTitle": "Multiple Assessment Report"
     },
     "student-progress": {
-      "title": "Student progress",
+      "title": "Student Progress",
       "breadcrumb": [
         {
           "title": "INSIGHTS",
@@ -205,6 +205,20 @@
         },
         {
           "title": "STUDENT ASSESSMENT PROFILE"
+        }
+      ],
+      "group": "studentProfileReport",
+      "groupTitle": "Student Profile Report"
+    },
+    "student-progress-profile": {
+      "title": "Student Standards Progress",
+      "breadcrumb": [
+        {
+          "title": "INSIGHTS",
+          "to": "/author/reports/"
+        },
+        {
+          "title": "STUDENT STANDARDS PROGRESS"
         }
       ],
       "group": "studentProfileReport",
@@ -294,7 +308,7 @@
       },
       {
         "key": "peer-performance",
-        "title": "PERFORMANCE",
+        "title": "SUB-GROUP",
         "location": "/author/reports/peer-performance/test/"
       },
       {
@@ -355,18 +369,23 @@
     "studentProfileReport": [
       {
         "key": "student-profile-summary",
-        "title": "Student Profile Summary",
+        "title": "Student Summary",
         "location": "/author/reports/student-profile-summary/student/"
       },
       {
         "key": "student-mastery-profile",
-        "title": "Student Mastery Profile",
+        "title": "Student Mastery",
         "location": "/author/reports/student-mastery-profile/student/"
       },
       {
         "key": "student-assessment-profile",
         "title": "Student Assessment Profile",
         "location": "/author/reports/student-assessment-profile/student/"
+      },
+      {
+        "key": "student-progress-profile",
+        "title": "Student Standards Progress",
+        "location": "/author/reports/student-progress-profile/student/"
       }
     ],
     "engagementReport": [

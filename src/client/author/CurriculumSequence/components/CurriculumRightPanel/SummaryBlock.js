@@ -81,12 +81,10 @@ export default SummaryBlock
 
 const SummaryBlockContainer = styled.div`
   width: 400px;
-  height: ${({ urlHasUseThis }) =>
-    urlHasUseThis ? 'calc(100vh - 125px)' : 'calc(100vh - 160px)'};
+  height: 100%;
   background: ${white};
-  padding-top: 30px;
-  border-radius: 4px;
-  border: 1px solid #dadae4;
+  padding: 30px 20px 20px;
+  border-left: 1px solid #dadae4;
 
   .recharts-layer {
     tspan {
@@ -182,10 +180,10 @@ const StyledProgressBar = styled(ProgressBar)`
 `
 
 const SummaryDataRows = styled.div`
-  width: 80%;
-  margin: 20px auto;
+  width: 100%;
+  margin: 10px auto;
   overflow: auto;
-  height: calc(100vh - 545px);
+  height: calc(100vh - 450px);
 
   &::-webkit-scrollbar {
     width: 5px;

@@ -33,7 +33,7 @@ const TrendColumn = ({ tests, type }) => {
             return (
               <StyledTooltip>
                 <span>Assessment : {testName}</span>
-                <span>Performance {`${score}%`}</span>
+                <span>Performance : {`${score}%`}</span>
               </StyledTooltip>
             )
           }}

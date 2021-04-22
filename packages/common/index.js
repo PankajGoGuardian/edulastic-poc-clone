@@ -85,6 +85,7 @@ export { default as CustomPrompt } from './src/components/CustomPrompt'
 export { default as notification } from './src/components/Notification'
 export { default as DragDropInnerContainer } from './src/components/DragDrop/DragDropInnerContainer'
 export { default as PremiumLabel } from './src/components/PremiumLabel'
+export { default as HelperIcon } from './src/components/HelperIconWithPopover'
 
 // HOC
 export { default as withWindowSizes } from './src/HOC/withWindowSizes'
@@ -122,6 +123,7 @@ export {
   replaceLatexTemplate,
   hasMediaDevice,
   isValidUpdate,
+  removeTokenFromHtml,
 } from './src/helpers'
 
 // contexts

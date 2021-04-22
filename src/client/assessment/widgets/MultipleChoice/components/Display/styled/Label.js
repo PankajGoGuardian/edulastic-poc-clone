@@ -40,7 +40,6 @@ export const Label = styled.label`
   flex: 1;
   position: relative;
   display: inline-block;
-  margin-bottom: 4px;
   border: ${(props) =>
     props.showBorder &&
     (props.styleType === 'primary'

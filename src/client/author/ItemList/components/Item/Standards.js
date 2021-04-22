@@ -1,7 +1,7 @@
 /* eslint-disable array-callback-return */
 import React from 'react'
 import { connect } from 'react-redux'
-import { keyBy } from 'lodash'
+import { keyBy, uniqBy } from 'lodash'
 import { getInterestedCurriculumsSelector } from '../../../src/selectors/user'
 import Tags from '../../../src/components/common/Tags'
 
@@ -11,8 +11,9 @@ const Standards = ({
   search,
   margin,
   labelStyle,
+  show,
 }) => {
-  const { curriculumId, standardIds } = search
+  const { curriculumId = '', standardIds = [] } = search
   const domains = []
   let standards = []
   if (item.data && item.data.questions) {
@@ -67,12 +68,24 @@ const Standards = ({
 
   return standards.length ? (
     <Tags
-      tags={standards.map((_item) => ({ ..._item, tagName: _item.name }))}
-      show={2}
+      tags={uniqBy(standards, (x) => x.name).map((_item) => ({
+        ..._item,
+        tagName: _item.name,
+      }))}
+      show={show || 2}
       labelStyle={labelStyle}
       margin={margin}
     />
   ) : null
+}
+
+Standards.defaultProps = {
+  item: {},
+  interestedCurriculums: [],
+  search: {},
+  margin: '',
+  labelStyle: {},
+  show: 2,
 }
 
 export default connect(

@@ -61,6 +61,7 @@ import {
   clearRedirectTestAction,
   setRedirectTestAction,
   setItemLevelScoringAction,
+  setMultipartEvaluationSettingAction,
   setItemLevelScoreAction,
   getPassageSelector,
   addWidgetToPassageAction,
@@ -102,7 +103,10 @@ import {
 import { setCreatedItemToTestAction } from '../../../TestPage/ducks'
 import QuestionAuditTrailLogs from '../../../../assessment/containers/QuestionAuditTrailLogs'
 import LanguageSelector from '../../../../common/components/LanguageSelector'
-import { allowedToSelectMultiLanguageInTest } from '../../../src/selectors/user'
+import {
+  allowedToSelectMultiLanguageInTest,
+  isPremiumUserSelector,
+} from '../../../src/selectors/user'
 
 const testItemStatusConstants = {
   DRAFT: 'draft',
@@ -914,6 +918,7 @@ class Container extends Component {
       toggleSideBar,
       history,
       setItemLevelScoring,
+      setMultipartEvaluationSetting,
       isTestFlow,
       passage,
       preview,
@@ -923,6 +928,7 @@ class Container extends Component {
       hasAuthorPermission,
       t,
       allowedToSelectMultiLanguage,
+      isPremiumUser,
     } = this.props
 
     let breadCrumbQType = ''
@@ -1005,12 +1011,16 @@ class Container extends Component {
               verticalDivider={item.verticalDivider}
               scrolling={item.scrolling}
               itemLevelScoring={item.itemLevelScoring}
+              itemGradingType={item.itemGradingType}
+              assignPartialCredit={item.assignPartialCredit}
               setItemLevelScoring={setItemLevelScoring}
+              setMultipartEvaluationSetting={setMultipartEvaluationSetting}
               isPassageQuestion={isPassageQuestion}
               questionsCount={qLength}
               isMultiDimensionLayout={rows.length > 1}
               isMultipart={item.multipartItem}
               disableScoringLevel={disableScoringLevel}
+              isPremiumUser={isPremiumUser}
             />
           )}
           <ItemHeader
@@ -1134,6 +1144,7 @@ Container.propTypes = {
   view: PropTypes.string.isRequired,
   addWidgetToPassage: PropTypes.func.isRequired,
   itemDeleting: PropTypes.any.isRequired,
+  setMultipartEvaluationSetting: PropTypes.func,
 }
 
 Container.defaultProps = {
@@ -1145,6 +1156,7 @@ Container.defaultProps = {
   navigateToPickupQuestionType: () => {},
   testItemStatus: '',
   setItemLevelScoring: () => {},
+  setMultipartEvaluationSetting: () => {},
   isTestFlow: false,
 }
 
@@ -1166,6 +1178,7 @@ const enhance = compose(
       itemDeleting: get(state, 'itemDetail.deleting', false),
       view: getViewSelector(state),
       allowedToSelectMultiLanguage: allowedToSelectMultiLanguageInTest(state),
+      isPremiumUser: isPremiumUserSelector(state),
     }),
     {
       changeView: changeViewAction,
@@ -1186,6 +1199,7 @@ const enhance = compose(
       toggleCreateItemModal: toggleCreateItemModalAction,
       toggleSideBar: toggleSideBarAction,
       setItemLevelScoring: setItemLevelScoringAction,
+      setMultipartEvaluationSetting: setMultipartEvaluationSettingAction,
       setItemLevelScore: setItemLevelScoreAction,
       clearAnswers: clearAnswersAction,
       changePreviewTab: changePreviewTabAction,

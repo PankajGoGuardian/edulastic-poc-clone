@@ -1,7 +1,7 @@
 import { SpinLoader } from '@edulastic/common'
 import { Col, Row } from 'antd'
-import { filter, get, includes, isEmpty } from 'lodash'
-import React, { useState, useEffect } from 'react'
+import { filter, get, includes, isEmpty, keyBy } from 'lodash'
+import React, { useState, useEffect, useMemo } from 'react'
 import { connect } from 'react-redux'
 import { StyledCard, StyledH3, NoDataContainer } from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
@@ -15,18 +15,30 @@ import {
   getReportsPerformanceOverTime,
   getReportsPerformanceOverTimeLoader,
   getReportsPerformanceOverError,
+  resetPerformanceOverTimeAction,
 } from './ducks'
 import { parseData } from './utils/transformers'
 
 const PerformanceOverTime = ({
   getPerformanceOverTimeRequest,
+  resetPerformanceOverTime,
   performanceOverTime,
   isCsvDownloading,
   settings,
   loading,
   error,
+  MARFilterData,
+  sharedReport,
   toggleFilter,
 }) => {
+  const sharedReportFilters = useMemo(
+    () =>
+      sharedReport?._id
+        ? { ...sharedReport.filters, reportId: sharedReport._id }
+        : null,
+    [sharedReport]
+  )
+
   // support for tests pagination from backend
   const [pageFilters, setPageFilters] = useState({
     page: 0, // set to 0 initially to prevent multiple api request on tab change
@@ -34,6 +46,8 @@ const PerformanceOverTime = ({
   })
   const [analyseBy, setAnalyseBy] = useState(analyseByData[0])
   const [selectedTests, setSelectedTests] = useState([])
+
+  useEffect(() => () => resetPerformanceOverTime(), [])
 
   // set initial page filters
   useEffect(() => {
@@ -53,13 +67,32 @@ const PerformanceOverTime = ({
     if (
       (settings.requestFilters.termId || settings.requestFilters.reportId) &&
       !loading &&
+      !isEmpty(performanceOverTime) &&
       !metricInfo.length
     ) {
       toggleFilter(null, true)
     }
   }, [performanceOverTime])
 
-  const rawData = get(performanceOverTime, 'data.result', {})
+  const rawData = useMemo(() => {
+    const profiles = get(MARFilterData, 'data.result.bandInfo', [])
+    const bandInfo =
+      profiles.find(
+        (profile) =>
+          profile._id ===
+          (sharedReportFilters || settings.requestFilters).profileId
+      )?.performanceBand ||
+      profiles[0]?.performanceBand ||
+      []
+    const thresholdNameIndexed = keyBy(bandInfo, 'threshold')
+    const _rawData = get(performanceOverTime, 'data.result', {})
+    const _metricInfo = (_rawData.metricInfo || []).map((item) => ({
+      ...item,
+      bandName: thresholdNameIndexed[item.bandScore]?.name,
+    }))
+    return { ..._rawData, metricInfo: _metricInfo, bandInfo }
+  }, [performanceOverTime])
+
   const testsCount = rawData.testsCount || 0
   const dataWithTestInfo = filter(
     parseData(rawData),
@@ -72,11 +105,20 @@ const PerformanceOverTime = ({
   )
 
   if (loading) {
-    return <SpinLoader position="fixed" />
+    return (
+      <SpinLoader
+        tip="Please wait while we gather the required information..."
+        position="fixed"
+      />
+    )
   }
 
   if (isEmpty(dataWithTestInfo)) {
-    return <NoDataContainer>No data available currently.</NoDataContainer>
+    return (
+      <NoDataContainer>
+        {settings.requestFilters?.termId ? 'No data available currently.' : ''}
+      </NoDataContainer>
+    )
   }
 
   if (error && error.dataSizeExceeded) {
@@ -87,10 +129,12 @@ const PerformanceOverTime = ({
     <>
       <StyledCard>
         <Row>
-          <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-            <StyledH3>How is assessment performance over time?</StyledH3>
+          <Col xs={24} sm={24} md={16} lg={16} xl={16}>
+            <StyledH3 fontSize="16px" margin="0">
+              Performance in Assessments over time
+            </StyledH3>
           </Col>
-          <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+          <Col xs={24} sm={24} md={8} lg={8} xl={8}>
             <AnalyseByFilter
               onFilterChange={setAnalyseBy}
               analyseBy={analyseBy}
@@ -117,6 +161,7 @@ const PerformanceOverTime = ({
           ...pageFilters,
           itemsCount: testsCount,
         }}
+        showTestIncompleteText={!!rawData.incompleteTests?.length}
         setBackendPagination={setPageFilters}
       />
     </>
@@ -132,6 +177,7 @@ const enhance = connect(
   }),
   {
     getPerformanceOverTimeRequest: getPerformanceOverTimeRequestAction,
+    resetPerformanceOverTime: resetPerformanceOverTimeAction,
   }
 )
 

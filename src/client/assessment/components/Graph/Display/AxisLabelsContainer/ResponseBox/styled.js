@@ -1,6 +1,5 @@
+import { white, dashBorderColor } from '@edulastic/colors'
 import styled from 'styled-components'
-import { Rnd } from 'react-rnd'
-import { themeColorHoverBlue } from '@edulastic/colors'
 
 export const Container = styled.div`
   width: ${({ width }) => width};
@@ -27,6 +26,13 @@ export const MarkContainer = styled.div`
   align-items: stretch;
   width: 100%;
   height: 100%;
+  cursor: pointer;
+  padding-right: 8px;
+  border-radius: 4px;
+  min-height: 32px;
+
+  border: 1px solid ${dashBorderColor} !important;
+  background-color: ${white};
 
   .index-box {
     width: 32px;
@@ -54,18 +60,19 @@ export const DraggableOptionsContainer = styled.div`
   min-height: 50px;
   width: 100%;
   position: relative;
-`
 
-export const StyledRnd = styled(Rnd).attrs({
-  disableDragging: false,
-  enableResizing: false,
-})`
-  z-index: 10;
-  &:hover {
-    border-color: ${themeColorHoverBlue} !important;
-    background: ${themeColorHoverBlue};
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: ${({ isHorizontal }) => (isHorizontal ? 'row' : 'column')};
+
+  .dragging-item {
+    ${({ isHorizontal, distanceX, distanceY }) =>
+      isHorizontal
+        ? `margin-right: ${distanceX || 20}px`
+        : `margin-bottom: ${distanceY || 10}px`};
+
     .drag-item-cotent {
-      color: white !important;
+      padding: 2px 0px;
     }
   }
 `

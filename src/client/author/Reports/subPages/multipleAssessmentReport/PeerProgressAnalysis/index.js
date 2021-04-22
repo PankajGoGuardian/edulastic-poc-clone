@@ -2,6 +2,7 @@ import { SpinLoader } from '@edulastic/common'
 import { capitalize, get, head, isEmpty } from 'lodash'
 import React, { useEffect, useState, useMemo } from 'react'
 import { connect } from 'react-redux'
+
 import { getUserRole } from '../../../../../student/Login/ducks'
 import TableTooltipRow from '../../../common/components/tooltip/TableTooltipRow'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
@@ -21,6 +22,7 @@ import {
   getReportsPeerProgressAnalysis,
   getReportsPeerProgressAnalysisLoader,
   getReportsPeerProgressAnalysisError,
+  resetPeerProgressAnalysisAction,
 } from './ducks'
 
 import dropDownData from './static/json/dropDownData.json'
@@ -52,6 +54,7 @@ const options = [
 
 const PeerProgressAnalysis = ({
   getPeerProgressAnalysisRequest,
+  resetPeerProgressAnalysis,
   peerProgressAnalysis,
   isCsvDownloading,
   ddfilter,
@@ -75,6 +78,8 @@ const PeerProgressAnalysis = ({
     pageSize: 25,
   })
 
+  useEffect(() => () => resetPeerProgressAnalysis(), [])
+
   // set initial page filters
   useEffect(() => {
     setPageFilters({ ...pageFilters, page: 1 })
@@ -93,27 +98,41 @@ const PeerProgressAnalysis = ({
     }
   }, [pageFilters])
 
-  const { metricInfo = [], metaInfo = [], testsCount = 0 } = useMemo(
-    () => get(peerProgressAnalysis, 'data.result', {}),
-    [peerProgressAnalysis]
-  )
+  const {
+    metricInfo = [],
+    metaInfo = [],
+    testsCount = 0,
+    incompleteTests = [],
+  } = useMemo(() => {
+    const data = get(peerProgressAnalysis, 'data.result', {})
+    const {
+      metricInfo: metrics = [],
+      incompleteTests: incompleteTestIds = [],
+    } = data
+    return {
+      ...data,
+      metricInfo: metrics.map((metric) => {
+        metric.isIncomplete = incompleteTestIds.includes(metric.testId)
+        return metric
+      }),
+    }
+  }, [peerProgressAnalysis])
 
   useEffect(() => {
     const metrics = get(peerProgressAnalysis, 'data.result.metricInfo', [])
     if (
       (settings.requestFilters.termId || settings.requestFilters.reportId) &&
       !loading &&
+      !isEmpty(peerProgressAnalysis) &&
       !metrics.length
     ) {
       toggleFilter(null, true)
     }
   }, [peerProgressAnalysis])
 
-  const [parsedData, trendCount] = parseTrendData(
-    metricInfo,
-    compareBy.key,
-    metaInfo,
-    selectedTrend
+  const [parsedData, trendCount] = useMemo(
+    () => parseTrendData(metricInfo, compareBy.key, metaInfo, selectedTrend),
+    [metricInfo, compareBy.key, metaInfo, selectedTrend]
   )
 
   const onTrendSelect = (trend) =>
@@ -133,11 +152,20 @@ const PeerProgressAnalysis = ({
   const onCsvConvert = (data) => downloadCSV(`Peer Progress.csv`, data)
 
   if (loading) {
-    return <SpinLoader position="fixed" />
+    return (
+      <SpinLoader
+        tip="Please wait while we gather the required information..."
+        position="fixed"
+      />
+    )
   }
 
   if (isEmpty(metricInfo)) {
-    return <NoDataContainer>No data available currently.</NoDataContainer>
+    return (
+      <NoDataContainer>
+        {settings.requestFilters?.termId ? 'No data available currently.' : ''}
+      </NoDataContainer>
+    )
   }
 
   if (error && error.dataSizeExceeded) {
@@ -170,9 +198,9 @@ const PeerProgressAnalysis = ({
         )}
       />
       <TrendTable
+        showTestIncompleteText={!!incompleteTests?.length}
         onCsvConvert={onCsvConvert}
         isCsvDownloading={isCsvDownloading}
-        heading="How well are the students progressing ?"
         data={parsedData}
         compareBy={compareBy}
         analyseBy={analyseBy}
@@ -211,6 +239,7 @@ const enhance = connect(
   }),
   {
     getPeerProgressAnalysisRequest: getPeerProgressAnalysisRequestAction,
+    resetPeerProgressAnalysis: resetPeerProgressAnalysisAction,
   }
 )
 

@@ -5,6 +5,7 @@ import { BoxHeading } from '../../common/components/boxHeading'
 import StudentSummaryImg from '../../../src/assets/reports/student-profile-summary/student-profile-summary.png'
 import StudentMasteryImg from '../../../src/assets/reports/student-mastery-profile/student-mastery-profile.png'
 import StudentAssessmentImg from '../../../src/assets/reports/student-assessment-profile/student-assessment-profile.png'
+import StudentProgressProfileImg from '../../../src/assets/reports/student-progress-profile/student-progress-profile.png'
 
 const links = [
   {
@@ -30,14 +31,28 @@ const links = [
     description:
       'See performance by score on each assessment taken, filtered by course.',
   },
+  {
+    key: 'studentProgressProfile',
+    title: 'Student Standards Progress',
+    thumbnail: StudentProgressProfileImg,
+    location: '/author/reports/student-progress-profile/student/',
+    description:
+      'Explore trends in performance of a student on various standards over time.',
+  },
 ]
 
-export const StudentProfileReport = ({ premium }) => (
+export const StudentProfileReport = ({ premium, loc }) => (
   <div>
     <BoxHeading heading="Student Profile Report" iconType="line-chart" />
     <CardsWrapper>
       {links.map((data) => (
-        <LinkItem key={data.title} data={data} tiles premium={premium} />
+        <LinkItem
+          key={data.title}
+          data={data}
+          tiles
+          premium={premium}
+          loc={loc}
+        />
       ))}
     </CardsWrapper>
   </div>

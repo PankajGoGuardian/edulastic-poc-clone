@@ -1,6 +1,6 @@
 import { captureSentryException, notification } from '@edulastic/common'
 import { message } from 'antd'
-import { isEmpty } from 'lodash'
+import { isEmpty, uniq, compact } from 'lodash'
 import moment from 'moment'
 import { takeEvery, call, put, all, select } from 'redux-saga/effects'
 import {
@@ -45,10 +45,6 @@ export const getPremiumProductId = createSelector(
   getSubscriptionDataSelector,
   (state) => state.premiumProductId
 )
-export const getIsPaymentServiceModalVisible = createSelector(
-  subscriptionSelector,
-  (state) => state.isPaymentServiceModalVisible
-)
 export const getIsSubscriptionExpired = createSelector(
   subscriptionSelector,
   (state) => state.isSubscriptionExpired
@@ -73,7 +69,6 @@ const slice = createSlice({
     showTrialSubsConfirmation: false,
     showTrialConfirmationMessage: '',
     products: [],
-    isPaymentServiceModalVisible: false,
     showHeaderTrialModal: false,
     addOnProductIds: [],
     isBookKeepersInviteSuccess: false,
@@ -159,9 +154,6 @@ const slice = createSlice({
     },
     setAddOnProducts: (state, { payload }) => {
       state.products = payload
-    },
-    setPaymentServiceModal: (state, { payload }) => {
-      state.isPaymentServiceModalVisible = payload
     },
     setShowHeaderTrialModal: (state, { payload }) => {
       state.showHeaderTrialModal = payload
@@ -405,6 +397,7 @@ function* handleMultiplePurchasePayment({ payload }) {
       emailIds: userEmailIds,
       licenseIds,
       licenseOwnerId,
+      setPaymentServiceModal,
     } = payload
     const { token, error } = yield stripe.createToken(data)
     if (token) {
@@ -427,7 +420,7 @@ function* handleMultiplePurchasePayment({ payload }) {
             apiPaymentResponse.licenseKeys
           )
         )
-        yield put(slice.actions.setPaymentServiceModal(false))
+        setPaymentServiceModal(false)
         yield put(fetchMultipleSubscriptionsAction({ licenseOwnerId }))
         yield put(fetchUserAction({ background: true }))
         notification({
@@ -462,7 +455,7 @@ function* handleMultiplePurchasePayment({ payload }) {
 
 function* handleStripePayment({ payload }) {
   try {
-    const { stripe, data, productIds } = payload
+    const { stripe, data, productIds, setPaymentServiceModal } = payload
     yield call(message.loading, {
       content: 'Processing Payment, please wait',
       key: 'verify-license',
@@ -470,12 +463,12 @@ function* handleStripePayment({ payload }) {
     const { token, error } = yield stripe.createToken(data)
     if (token) {
       const apiPaymentResponse = yield call(paymentApi.pay, {
-        productIds,
+        productIds: uniq(compact(productIds)),
         token,
       })
       if (apiPaymentResponse.success) {
         yield put(slice.actions.stripePaymentSuccess(apiPaymentResponse))
-        yield put(slice.actions.setPaymentServiceModal(false))
+        setPaymentServiceModal(false)
         yield call(showSuccessNotifications, apiPaymentResponse)
         yield call(fetchUserSubscription)
         yield put(fetchUserAction({ background: true }))

@@ -77,7 +77,7 @@ export const getFilterData = (modules = [], selectedModules = []) => {
 
 // (function) to get the trendAngle from the trendSlope
 const calcTrendAngle = (trendSlope) =>
-  round((Math.atan(trendSlope || 0) * 360) / Math.PI)
+  round((Math.atan(trendSlope || 0) * 180) / Math.PI)
 
 // (function) to get a unique student map complete with trendAngle
 export const getMergedTrendMap = (studInfo = [], trendData = []) =>
@@ -274,7 +274,28 @@ export const getCuratedMetrics = ({
         percentMean,
         percentRange
       )
-      return { name, fullName, ...item, effort, performance, isActive: true }
+      let color = lightBlue8
+      let quad = 4
+      if (effort < 0 && performance > 0) {
+        color = lightBlue8
+        quad = 1
+      } else if (effort >= 0 && performance >= 0) {
+        color = lightGreen7
+        quad = 2
+      } else if (effort <= 0 && performance <= 0) {
+        color = lightRed2
+        quad = 3
+      }
+      return {
+        name,
+        fullName,
+        ...item,
+        effort,
+        performance,
+        isActive: true,
+        color,
+        quad,
+      }
     }),
     ['lastName', 'firstName']
   )
@@ -336,19 +357,8 @@ export const getBoxedSummaryData = ({ up, flat, down }) => {
 // (function) to calculate the color and groupings for quadrant based student data
 export const getQuadsData = (data) => {
   const quads = [[], [], [], []]
-
-  data.map((item) => {
-    // add the color and quad info
-    if (item.effort < 0 && item.performance > 0) {
-      quads[0].push({ ...item, color: lightBlue8, quad: 1 })
-    } else if (item.effort >= 0 && item.performance >= 0) {
-      quads[1].push({ ...item, color: lightGreen7, quad: 2 })
-    } else if (item.effort <= 0 && item.performance <= 0) {
-      quads[2].push({ ...item, color: lightRed2, quad: 3 })
-    } else {
-      quads[3].push({ ...item, color: lightBlue8, quad: 4 })
-    }
-    return null
+  data.forEach((item) => {
+    quads[item.quad - 1].push(item)
   })
 
   // logic to create groupings for nearby data using greedy approach

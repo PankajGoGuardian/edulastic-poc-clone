@@ -32,7 +32,7 @@ function create(board, object, ellipsePoints, settings = {}) {
 
   const { id = null, label, baseColor, priorityColor, dashed = false } = object
 
-  const newLine = board.$board.create('ellipse', ellipsePoints, {
+  const newLine = board.$board.create(CONSTANT.TOOLS.ELLIPSE, ellipsePoints, {
     ...defaultConfig,
     ...getColorParams(priorityColor || board.priorityColor || baseColor),
     label: {

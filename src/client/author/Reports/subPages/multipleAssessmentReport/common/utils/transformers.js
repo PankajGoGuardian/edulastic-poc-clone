@@ -5,28 +5,6 @@ import {
   processFilteredClassAndGroupIds,
 } from '../../../../common/util'
 
-export const transformFiltersForMAR = ({
-  grade,
-  subject,
-  studentGrade,
-  studentSubject,
-  studentCourseId,
-  classIds,
-  groupIds,
-  ...requestFilters
-}) => {
-  return {
-    ...requestFilters,
-    testGrade: grade,
-    testSubject: subject,
-    grade: studentGrade,
-    subject: studentSubject,
-    courseId: studentCourseId,
-    classIds: classIds || '',
-    groupIds: groupIds || '',
-  }
-}
-
 export const processSchoolYear = (user) => {
   let schoolYear = []
   const arr = get(user, 'orgData.terms', [])

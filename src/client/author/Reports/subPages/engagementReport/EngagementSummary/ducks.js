@@ -12,11 +12,15 @@ const GET_REPORTS_ENGAGEMENT_SUMMARY_REQUEST_SUCCESS =
   '[reports] get reports engagement summary success'
 const GET_REPORTS_ENGAGEMENT_SUMMARY_REQUEST_ERROR =
   '[reports] get reports engagement summary error'
+const RESET_REPORTS_ENGAGEMENT_SUMMARY = '[reports] reset reports engagement summary'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
 export const getEngagementSummaryRequestAction = createAction(
   GET_REPORTS_ENGAGEMENT_SUMMARY_REQUEST
+)
+export const resetEngagementSummaryAction = createAction(
+  RESET_REPORTS_ENGAGEMENT_SUMMARY
 )
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
@@ -51,11 +55,12 @@ export const getReportsEngagementSummaryError = createSelector(
 
 const initialState = {
   engagementSummary: {},
-  loading: true,
+  loading: false,
 }
 
 export const reportEngagementSummaryReducer = createReducer(initialState, {
   [RESET_ALL_REPORTS]: (state) => (state = initialState),
+  [RESET_REPORTS_ENGAGEMENT_SUMMARY]: (state) => (state = initialState),
   [GET_REPORTS_ENGAGEMENT_SUMMARY_REQUEST]: (state) => {
     state.loading = true
   },

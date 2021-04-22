@@ -13,11 +13,15 @@ const GET_REPORTS_QUESTION_ANALYSIS_REQUEST_SUCCESS =
   '[reports] get reports question analysis success'
 const GET_REPORTS_QUESTION_ANALYSIS_REQUEST_ERROR =
   '[reports] get reports question analysis error'
+const RESET_REPORTS_QUESTION_ANALYSIS = '[reports] reset reports question analysis'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
 export const getQuestionAnalysisRequestAction = createAction(
   GET_REPORTS_QUESTION_ANALYSIS_REQUEST
+)
+export const resetQuestionAnalysisAction = createAction(
+  RESET_REPORTS_QUESTION_ANALYSIS
 )
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
@@ -56,12 +60,13 @@ export const defaultReport = {
 }
 
 const initialState = {
-  questionAnalysis: defaultReport,
+  questionAnalysis: {},
   loading: false,
 }
 
 export const reportQuestionAnalysisReducer = createReducer(initialState, {
   [RESET_ALL_REPORTS]: (state) => (state = initialState),
+  [RESET_REPORTS_QUESTION_ANALYSIS]: (state) => (state = initialState),
   [GET_REPORTS_QUESTION_ANALYSIS_REQUEST]: (state) => {
     state.loading = true
   },

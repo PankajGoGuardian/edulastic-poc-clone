@@ -58,6 +58,7 @@ const PonitsOnAnEquation = ({ optionKey, options, onChange }) => {
       >
         <FlexContainer alignItems="center">
           <CheckboxLabel
+            data-cy="pointsOnEquation"
             onChange={onChangeCheckbox}
             checked={isAllowed}
             labelPadding="0px 6px 0px 12px"
@@ -65,6 +66,7 @@ const PonitsOnAnEquation = ({ optionKey, options, onChange }) => {
             <span>student needs to identify</span>
           </CheckboxLabel>
           <TextInputStyled
+            data-cy="numberOfPoints"
             size="large"
             width="50px"
             margin="0px 6px 0px 0px"

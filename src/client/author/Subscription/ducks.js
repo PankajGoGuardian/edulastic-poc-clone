@@ -480,6 +480,7 @@ function* handleStripePayment({ payload }) {
         yield call(fetchUserSubscription)
         yield put(fetchUserAction({ background: true }))
         yield put(fetchMultipleSubscriptionsAction({ background: true }))
+        yield put(slice.actions.trialSubsConfirmationAction(true))
       } else {
         notification({
           msg: `API Response failed: ${error}`,

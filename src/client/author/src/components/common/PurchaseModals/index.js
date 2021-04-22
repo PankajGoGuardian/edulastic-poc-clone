@@ -16,12 +16,19 @@ import {
   getBookKeepersInviteSuccessStatus,
   slice,
 } from '../../../../Subscription/ducks'
-import IndividualSubscriptionModal from './IndividualSubscriptionModal'
-import { getUserOrgId } from '../../../selectors/user'
+import { getCollectionsSelector, getUserOrgId } from '../../../selectors/user'
+import {
+  fetchPlaylistsAction,
+  getDashboardPlaylists,
+} from '../../../../Dashboard/ducks'
 
 const MultipleLicensePurchase = loadable(() =>
   import('./MultipleLicensePurchase')
 )
+const IndividualSubscriptionModal = loadable(() =>
+  import('./IndividualSubscriptionModal')
+)
+const TrialConfirmationModal = loadable(() => import('./TrialConfimationModal'))
 const UpgradeModal = loadable(() => import('./UpgradeModal'))
 const PaymentServiceModal = loadable(() => import('./PaymentServiceModal'))
 const PayWithPoModal = loadable(() => import('./PayWithPoModal'))
@@ -74,6 +81,14 @@ const PurchaseFlowModals = (props) => {
     isBookKeepersInviteSuccess,
     setBookKeepersInviteSuccess,
     subsLicenses = [],
+    isConfirmationModalVisible,
+    showTrialSubsConfirmationAction,
+    showTrialConfirmationMessage,
+    trialAddOnProductIds,
+    collections,
+    fetchPlaylists,
+    playlists,
+    history,
   } = props
 
   const [payWithPoModal, setPayWithPoModal] = useState(false)
@@ -372,6 +387,20 @@ const PurchaseFlowModals = (props) => {
           setSelectedLicenseId={setSelectedLicenseId}
         />
       )}
+      {isConfirmationModalVisible && (
+        <TrialConfirmationModal
+          visible={isConfirmationModalVisible}
+          showTrialSubsConfirmationAction={showTrialSubsConfirmationAction}
+          showTrialConfirmationMessage={showTrialConfirmationMessage}
+          trialAddOnProductIds={trialAddOnProductIds}
+          collections={collections}
+          history={history}
+          products={products}
+          fetchPlaylists={fetchPlaylists}
+          playlists={playlists}
+          subType={subType}
+        />
+      )}
     </>
   )
 }
@@ -397,6 +426,12 @@ export default compose(
       addOnProductIds: getAddOnProductIds(state),
       userOrgId: getUserOrgId(state),
       isBookKeepersInviteSuccess: getBookKeepersInviteSuccessStatus(state),
+      collections: getCollectionsSelector(state),
+      playlists: getDashboardPlaylists(state),
+      isConfirmationModalVisible:
+        state?.subscription?.showTrialSubsConfirmation,
+      showTrialConfirmationMessage:
+        state?.subscription?.showTrialConfirmationMessage,
     }),
     {
       handleStripePayment: slice.actions.stripePaymentAction,
@@ -407,6 +442,9 @@ export default compose(
       setAddOnProductIds: slice.actions.setAddOnProductIds,
       bulkInviteBookKeepers: slice.actions.bulkInviteBookKeepersAction,
       setBookKeepersInviteSuccess: slice.actions.setBookKeepersInviteSuccess,
+      fetchPlaylists: fetchPlaylistsAction,
+      showTrialSubsConfirmationAction:
+        slice.actions.trialSubsConfirmationAction,
     }
   )
 )(PurchaseFlowModals)

@@ -1,17 +1,17 @@
-/* import { titleColor } from '@edulastic/colors'
+import { titleColor } from '@edulastic/colors'
 import { CustomModalStyled, EduButton, FieldLabel } from '@edulastic/common'
 import { curriculumGrades } from '@edulastic/constants'
 import { Spin } from 'antd'
 import PropTypes from 'prop-types'
 import React, { useMemo, useState } from 'react'
 import styled from 'styled-components'
-import { ContentWrapper, CurriculumCard, StyledTag, Title } from './styled'
+import { ContentWrapper, CurriculumCard, StyledTag, ModalTitle } from './styled'
 
 const TrialConfirmationModal = ({
   visible,
   showTrialSubsConfirmationAction,
   showTrialConfirmationMessage,
-  trialAddOnProductIds,
+  trialAddOnProductIds = [],
   collections,
   products,
   history,
@@ -19,16 +19,16 @@ const TrialConfirmationModal = ({
 }) => {
   const [selectedProducts, setSelectedProducts] = useState([])
   const [selectedGrades, setSelectedGrades] = useState([])
-  const itemBankProducts = products.filter(
-    (product) =>
-      trialAddOnProductIds.includes(product.id) && product.type !== 'PREMIUM'
-  )
+  const itemBankProducts =
+    products.filter(
+      (product) =>
+        trialAddOnProductIds.includes(product.id) && product.type !== 'PREMIUM'
+    ) || []
 
   const { GRADES } = curriculumGrades
 
-  const productItemBankIds = itemBankProducts.map(
-    (product) => product.linkedProductId
-  )
+  const productItemBankIds =
+    itemBankProducts.map((product) => product.linkedProductId) || []
 
   // Check if trial successfully started for all item banks.
   const isTrialPurchaseSuccess = useMemo(() => {
@@ -90,28 +90,28 @@ const TrialConfirmationModal = ({
 
   const modalTitle =
     subType === 'premium' ? (
-      <Title>
+      <ModalTitle>
         <div>Premium Subscription</div>
         {!hasOnlyTeacherPremium && (
           <div className="expire-on">
             Your subscription will expire on <b>{subEndDate}</b>.
           </div>
         )}
-      </Title>
+      </ModalTitle>
     ) : (
-      <Title>
+      <ModalTitle>
         <div>Free Trial Started</div>
         {!hasOnlyTeacherPremium && (
           <div className="expire-on">
             Your trial will expire on <b>{subEndDate}</b>.
           </div>
         )}
-      </Title>
+      </ModalTitle>
     )
 
   return (
     <>
-      {!isTrialPurchaseSuccess && !!itemBankProducts.length ? (
+      {!isTrialPurchaseSuccess && !!itemBankProducts?.length ? (
         <SpinContainer>
           <StyledSpin size="large" />
         </SpinContainer>
@@ -226,4 +226,3 @@ const StyledSpin = styled(Spin)`
   top: 35%;
   transform: translate(-50%, -50%);
 `
- */

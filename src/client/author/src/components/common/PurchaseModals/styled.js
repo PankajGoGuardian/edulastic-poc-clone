@@ -1,4 +1,4 @@
-import { title } from '@edulastic/colors'
+import { title, white } from '@edulastic/colors'
 import { Col } from 'antd'
 import styled from 'styled-components'
 
@@ -48,4 +48,49 @@ export const StyledCol = styled(Col)`
 export const EmailWrapper = styled.div`
   margin-top: 25px;
   margin-bottom: 15px;
+`
+
+export const ModalTitle = styled.div`
+  display: flex;
+  justify-content: space-between;
+  .expire-on {
+    font-size: 14px;
+    font-weight: 500;
+    padding-right: 10px;
+  }
+`
+export const StyledTag = styled.span`
+  color: ${title};
+  font-size: 11px;
+  background: #e3e3e3;
+  padding: 7px 22px;
+  font-weight: 600;
+  border-radius: 20px;
+  margin-bottom: 5px;
+  margin-right: 5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  &:hover,
+  &.active {
+    background: #3f85e5;
+    color: ${white};
+  }
+`
+export const ContentWrapper = styled.div`
+  padding: 5px 0px 20px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  max-height: 250px;
+  overflow: auto;
+  flex-wrap: wrap;
+`
+export const CurriculumCard = styled.div`
+  width: 160px;
+  height: 200px;
+  margin-right: 7px;
+  margin-bottom: 7px;
+  padding: 10px;
+  border: 1px solid #dddddd;
+  border-radius: 4px 4px 0px 0px;
 `

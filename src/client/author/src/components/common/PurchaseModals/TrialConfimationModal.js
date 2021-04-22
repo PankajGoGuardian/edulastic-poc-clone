@@ -3,7 +3,7 @@ import { CustomModalStyled, EduButton, FieldLabel } from '@edulastic/common'
 import { curriculumGrades } from '@edulastic/constants'
 import { Spin } from 'antd'
 import PropTypes from 'prop-types'
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { ContentWrapper, CurriculumCard, StyledTag, ModalTitle } from './styled'
 
@@ -16,6 +16,7 @@ const TrialConfirmationModal = ({
   products,
   history,
   subType,
+  fetchPlaylists,
 }) => {
   const [selectedProducts, setSelectedProducts] = useState([])
   const [selectedGrades, setSelectedGrades] = useState([])
@@ -57,6 +58,23 @@ const TrialConfirmationModal = ({
   const hasOnlyTeacherPremium =
     productsToShow.length === 0 &&
     (subType === 'premium' || subType === 'TRIAL_PREMIUM')
+
+  useEffect(() => {
+    if (!hasOnlyTeacherPremium) {
+      const data = {
+        page: 1,
+        limit: 20,
+        search: {
+          grades: selectedGrades,
+          filter: 'ENTIRE_LIBRARY',
+          status: 'published',
+          collections: selectedProducts,
+        },
+        sort: {},
+      }
+      fetchPlaylists(data)
+    }
+  }, [hasOnlyTeacherPremium, selectedGrades, selectedProducts])
 
   const showFooter = hasOnlyTeacherPremium ? (
     <EduButton

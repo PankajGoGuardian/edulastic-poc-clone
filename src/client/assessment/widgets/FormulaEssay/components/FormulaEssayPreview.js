@@ -38,7 +38,7 @@ const FormulaEssayPreview = ({
         )}
       </QuestionLabelWrapper>
 
-      <QuestionContentWrapper>
+      <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
         <QuestionTitleWrapper>
           <MathFormulaDisplay
             style={{ marginBottom: 15 }}

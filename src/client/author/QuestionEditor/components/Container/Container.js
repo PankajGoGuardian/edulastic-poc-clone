@@ -94,16 +94,10 @@ class Container extends Component {
       saveClicked: false,
       clearClicked: false,
       showHints: false,
-      showStickyHeader: false,
     }
 
     this.innerDiv = React.createRef()
     this.scrollContainer = React.createRef()
-  }
-
-  componentDidMount() {
-    window.removeEventListener('scroll', this.handleStickyHeader)
-    window.addEventListener('scroll', this.handleStickyHeader)
   }
 
   componentWillUnmount() {
@@ -113,7 +107,6 @@ class Container extends Component {
       changePreview('clear')
       clearAnswers()
     }
-    window.removeEventListener('scroll', this.handleStickyHeader)
   }
 
   componentDidUpdate = () => {
@@ -128,17 +121,6 @@ class Container extends Component {
     ) {
       window.scrollTo(0, savedWindowScrollTop)
       onSaveScrollTop(0)
-    }
-  }
-
-  handleStickyHeader = () => {
-    const { showStickyHeader } = this.state
-    // 100 is the height of header plus how to author button area
-    if (window.scrollY >= 100 && showStickyHeader === false) {
-      this.setState({ showStickyHeader: true })
-    }
-    if (window.scrollY < 100 && showStickyHeader === true) {
-      this.setState({ showStickyHeader: false })
     }
   }
 
@@ -560,7 +542,7 @@ class Container extends Component {
       return <div />
     }
 
-    const { showModal, showStickyHeader } = this.state
+    const { showModal } = this.state
     const itemId = question === null ? '' : question._id
     const questionType = question && question.type
 
@@ -583,34 +565,36 @@ class Container extends Component {
             {JSON.stringify(question, null, 4)}
           </SourceModal>
         )}
-        <ItemHeader title={question.title} reference={itemId}>
-          {this.header()}
-        </ItemHeader>
+        <HeaderContainer>
+          <ItemHeader title={question.title} reference={itemId}>
+            {this.header()}
+          </ItemHeader>
 
-        <BreadCrumbBar className={showStickyHeader ? 'sticky-header' : ''}>
-          {windowWidth > desktopWidth.replace('px', '') ? (
-            <SecondHeadBar breadcrumb={this.breadcrumb} />
-          ) : (
-            <BackLink onClick={history.goBack}>Back to Item List</BackLink>
-          )}
-          <RightActionButtons xs={{ span: 16 }} lg={{ span: 12 }}>
-            {allowedToSelectMultiLanguage &&
-              useLanguageFeatureQn.includes(questionType) && (
-                <LanguageSelector />
-              )}
-            {view !== 'preview' && view !== 'auditTrail' && (
-              <EduButton
-                isGhost
-                height="30px"
-                id={getFormattedAttrId(`${question?.title}-how-to-author`)}
-                style={{ float: 'right' }}
-              >
-                How to author
-              </EduButton>
+          <BreadCrumbBar className="sticky-header">
+            {windowWidth > desktopWidth.replace('px', '') ? (
+              <SecondHeadBar breadcrumb={this.breadcrumb} />
+            ) : (
+              <BackLink onClick={history.goBack}>Back to Item List</BackLink>
             )}
-            <div>{view === 'preview' && this.renderButtons()}</div>
-          </RightActionButtons>
-        </BreadCrumbBar>
+            <RightActionButtons xs={{ span: 16 }} lg={{ span: 12 }}>
+              {allowedToSelectMultiLanguage &&
+                useLanguageFeatureQn.includes(questionType) && (
+                  <LanguageSelector />
+                )}
+              {view !== 'preview' && view !== 'auditTrail' && (
+                <EduButton
+                  isGhost
+                  height="30px"
+                  id={getFormattedAttrId(`${question?.title}-how-to-author`)}
+                  style={{ float: 'right' }}
+                >
+                  How to author
+                </EduButton>
+              )}
+              <div>{view === 'preview' && this.renderButtons()}</div>
+            </RightActionButtons>
+          </BreadCrumbBar>
+        </HeaderContainer>
         <QuestionContentWrapper
           data-cy="question-editor-container"
           ref={this.scrollContainer}
@@ -731,4 +715,8 @@ const RightActionButtons = styled.div`
 const EditorContainer = styled.div`
   min-height: 100vh;
   overflow: hidden;
+`
+
+const HeaderContainer = styled.div`
+  padding-bottom: 50px;
 `

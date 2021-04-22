@@ -119,7 +119,7 @@ const ShortTextPreview = ({
             <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>
           )}
         </QuestionLabelWrapper>
-        <QuestionContentWrapper>
+        <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
           <QuestionTitleWrapper>
             {view === PREVIEW && !smallSize && (
               <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />

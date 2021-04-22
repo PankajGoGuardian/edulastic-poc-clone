@@ -1,12 +1,10 @@
 import React, { useState, useEffect, useMemo } from 'react'
-import { connect } from 'react-redux'
 import {
   EduButton,
   FlexContainer,
   MainContentWrapper,
   notification,
 } from '@edulastic/common'
-import loadable from '@loadable/component'
 import { Link } from 'react-router-dom'
 import { isBoolean, groupBy, keyBy, difference, map } from 'lodash'
 import TrialModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/TrialModal/index'
@@ -59,17 +57,6 @@ import {
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import CalendlyScheduleModal from './CalendlyScheduleModal'
 import FeatureNotAvailableModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/FeatureNotAvailableModal'
-import {
-  fetchPlaylistsAction,
-  getDashboardPlaylists,
-} from '../../../Dashboard/ducks'
-import { getProducts } from '../../ducks'
-
-const TrialConfirmationModal = loadable(() =>
-  import(
-    '../../../Dashboard/components/Showcase/components/Myclasses/components/FeaturedContentBundle/TrialConfimationModal'
-  )
-)
 
 const getUpgradeToMultipleUsersPlanAction = ({ openPurchaseLicenseModal }) => (
   <ActionsWrapper>
@@ -229,18 +216,12 @@ const SubscriptionMain = ({
   handleCloseFeatureNotAvailableModal,
   isFreeAdmin,
   setProductData,
-  showTrialSubsConfirmationAction,
-  showTrialConfirmationMessage,
   dashboardTiles,
-  isConfirmationModalVisible,
-  collections,
   productData = {},
-  fetchPlaylists,
-  playlists,
+  setTrialAddOnProductIds,
 }) => {
   const [showSelectStates, setShowSelectStates] = useState(false)
   const [isTrialModalVisible, setIsTrialModalVisible] = useState(false)
-  const [trialAddOnProductIds, setTrialAddOnProductIds] = useState([])
   const [hasAllTrialProducts, setHasAllTrialProducts] = useState(false)
 
   const productsKeyedByType = keyBy(products, 'type')
@@ -532,18 +513,6 @@ const SubscriptionMain = ({
           hasAllTrialProducts={hasAllTrialProducts}
         />
       )}
-      {isConfirmationModalVisible && (
-        <TrialConfirmationModal
-          visible={isConfirmationModalVisible}
-          showTrialSubsConfirmationAction={showTrialSubsConfirmationAction}
-          showTrialConfirmationMessage={showTrialConfirmationMessage}
-          trialAddOnProductIds={trialAddOnProductIds}
-          collections={collections}
-          products={products}
-          fetchPlaylists={fetchPlaylists}
-          playlists={playlists}
-        />
-      )}
       {showFeatureNotAvailableModal && (
         <FeatureNotAvailableModal
           isVisible={showFeatureNotAvailableModal}
@@ -629,12 +598,4 @@ const SubscriptionMain = ({
   )
 }
 
-export default connect(
-  (state) => ({
-    products: getProducts(state),
-    playlists: getDashboardPlaylists(state),
-  }),
-  {
-    fetchPlaylists: fetchPlaylistsAction,
-  }
-)(SubscriptionMain)
+export default SubscriptionMain

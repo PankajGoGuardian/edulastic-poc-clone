@@ -23,10 +23,7 @@ import { slice } from '../../../../../Subscription/ducks'
 import { getDictCurriculumsAction } from '../../../../../src/actions/dictionaries'
 import { receiveSearchCourseAction } from '../../../../../Courses/ducks'
 import { fetchCleverClassListRequestAction } from '../../../../../ManageClass/ducks'
-import {
-  receiveTeacherDashboardAction,
-  fetchPlaylistsAction,
-} from '../../../../ducks'
+import { receiveTeacherDashboardAction } from '../../../../ducks'
 import { getUserDetails } from '../../../../../../student/Login/ducks'
 import { resetTestFiltersAction } from '../../../../../TestList/ducks'
 import {
@@ -39,9 +36,6 @@ const ItemPurchaseModal = loadable(() =>
   import('./components/ItemPurchaseModal')
 )
 const TrialModal = loadable(() => import('./components/TrialModal'))
-const TrialConfirmationModal = loadable(() =>
-  import('./components/FeaturedContentBundle/TrialConfimationModal')
-)
 
 const PREMIUM_TAG = 'PREMIUM'
 
@@ -69,14 +63,10 @@ const MyClasses = ({
   startTrialAction,
   usedTrialItemBankIds = [],
   showTrialSubsConfirmationAction,
-  showTrialConfirmationMessage,
-  isConfirmationModalVisible,
   subscription: { subType } = {},
   products,
   showHeaderTrialModal,
   setShowHeaderTrialModal,
-  fetchPlaylists,
-  playlists,
   lastPlayList,
 }) => {
   const [showBannerModal, setShowBannerModal] = useState(null)
@@ -432,6 +422,7 @@ const MyClasses = ({
         setShowSubscriptionAddonModal={setShowSubscriptionAddonModal}
         defaultSelectedProductIds={defaultSelectedProductIds}
         setProductData={setProductData}
+        trialAddOnProductIds={trialAddOnProductIds}
       />
       {showItemBankTrialUsedModal && (
         <ItemBankTrialUsedModal
@@ -468,19 +459,6 @@ const MyClasses = ({
           setTrialAddOnProductIds={setTrialAddOnProductIds}
         />
       )}
-      {isConfirmationModalVisible && (
-        <TrialConfirmationModal
-          visible={isConfirmationModalVisible}
-          showTrialSubsConfirmationAction={showTrialSubsConfirmationAction}
-          showTrialConfirmationMessage={showTrialConfirmationMessage}
-          trialAddOnProductIds={trialAddOnProductIds}
-          collections={collections}
-          products={products}
-          fetchPlaylists={fetchPlaylists}
-          playlists={playlists}
-          subType={subType}
-        />
-      )}
     </MainContentWrapper>
   )
 }
@@ -503,12 +481,8 @@ export default compose(
       usedTrialItemBankIds:
         state.subscription?.subscriptionData?.usedTrialItemBankIds,
       subscription: state.subscription?.subscriptionData?.subscription,
-      isConfirmationModalVisible: state.subscription?.showTrialSubsConfirmation,
-      showTrialConfirmationMessage:
-        state.subscription?.showTrialConfirmationMessage,
       products: state.subscription?.products,
       showHeaderTrialModal: state.subscription?.showHeaderTrialModal,
-      playlists: state.dashboardTeacher.playlists,
       lastPlayList: getLastPlayListSelector(state),
     }),
     {
@@ -522,7 +496,6 @@ export default compose(
       showTrialSubsConfirmationAction:
         slice.actions.trialSubsConfirmationAction,
       setShowHeaderTrialModal: slice.actions.setShowHeaderTrialModal,
-      fetchPlaylists: fetchPlaylistsAction,
     }
   )
 )(MyClasses)

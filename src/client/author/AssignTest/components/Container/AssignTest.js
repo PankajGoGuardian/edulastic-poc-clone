@@ -251,16 +251,21 @@ class AssignTest extends React.Component {
         playerSkinType: testSettings.playerSkinType,
       })
     } else {
+      const premiumSettings = premium
+        ? {
+            restrictNavigationOut: testSettings.restrictNavigationOut,
+            restrictNavigationOutAttemptsThreshold:
+              testSettings.restrictNavigationOutAttemptsThreshold,
+            blockSaveAndContinue: testSettings.blockSaveAndContinue,
+          }
+        : {}
       this.updateAssignmentNew({
         testType: isAdmin ? COMMON : ASSESSMENT,
         openPolicy: isAdmin
           ? assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER
           : assignmentSettings.openPolicy,
         playerSkinType: testSettings.playerSkinType,
-        restrictNavigationOut: testSettings.restrictNavigationOut,
-        restrictNavigationOutAttemptsThreshold:
-          testSettings.restrictNavigationOutAttemptsThreshold,
-        blockSaveAndContinue: testSettings.blockSaveAndContinue,
+        ...premiumSettings,
       })
       if (isEmpty(assignments) && testId) {
         fetchAssignments(testId)

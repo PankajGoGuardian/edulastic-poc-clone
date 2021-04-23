@@ -24,6 +24,8 @@ import {
   getDashboardPlaylists,
 } from '../../../../Dashboard/ducks'
 
+import { useThisPlayListAction } from '../../../../CurriculumSequence/ducks'
+
 const MultipleLicensePurchase = loadable(() =>
   import('./MultipleLicensePurchase')
 )
@@ -91,6 +93,7 @@ const PurchaseFlowModals = (props) => {
     fetchPlaylists,
     playlists,
     history,
+    useThisPlayList,
   } = props
 
   const [payWithPoModal, setPayWithPoModal] = useState(false)
@@ -401,6 +404,7 @@ const PurchaseFlowModals = (props) => {
           fetchPlaylists={fetchPlaylists}
           playlists={playlists}
           subType={subType}
+          useThisPlayList={useThisPlayList}
         />
       )}
     </>
@@ -447,6 +451,7 @@ export default compose(
       fetchPlaylists: fetchPlaylistsAction,
       showTrialSubsConfirmationAction:
         slice.actions.trialSubsConfirmationAction,
+      useThisPlayList: useThisPlayListAction,
     }
   )
 )(PurchaseFlowModals)

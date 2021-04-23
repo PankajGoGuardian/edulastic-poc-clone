@@ -6,6 +6,7 @@ import { Spin } from 'antd'
 import PropTypes from 'prop-types'
 import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
+import { pick } from 'lodash'
 import {
   ContentWrapper,
   CurriculumCard,
@@ -30,6 +31,7 @@ const TrialConfirmationModal = ({
   subType,
   fetchPlaylists,
   playlists = [],
+  useThisPlayList,
 }) => {
   const [selectedProducts, setSelectedProducts] = useState([])
   const [selectedGrades, setSelectedGrades] = useState([])
@@ -89,6 +91,11 @@ const TrialConfirmationModal = ({
     }
   }, [hasOnlyTeacherPremium, selectedGrades, selectedProducts])
 
+  const handleUseThisPlaylist = (playlist) => {
+    useThisPlayList(
+      pick(playlist, ['_id', 'title', 'grades', 'subjects', 'customize'])
+    )
+  }
   const showFooter = hasOnlyTeacherPremium ? (
     <EduButton
       data-cy="goToDashboard"
@@ -209,7 +216,11 @@ const TrialConfirmationModal = ({
                   </FieldLabel>
                   <ContentWrapper>
                     {playlists.map(({ _source, _id }) => (
-                      <CurriculumCard>
+                      <CurriculumCard
+                        onClick={() =>
+                          handleUseThisPlaylist({ _id, ..._source })
+                        }
+                      >
                         <Thumbnail img={_source.thumbnail} />
                         <CardFooter>
                           <PlaylistId>

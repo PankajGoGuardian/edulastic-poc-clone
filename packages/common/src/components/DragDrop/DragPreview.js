@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useMemo } from 'react'
+import React, { useContext, useRef } from 'react'
 import { useDragLayer } from 'react-dnd'
 import styled from 'styled-components'
 import { get, isUndefined } from 'lodash'
@@ -34,27 +34,19 @@ const getItemStyles = (initialOffset, currentOffset, itemDimensions) => {
 }
 
 const getContainerTopBottom = (element) => {
-  const [top, bottom] = useMemo(() => {
-    if (isUndefined(element?.offsetTop)) {
-      return [70, window.innerHeight]
-    }
-    const rect = element.getBoundingClientRect()
-    return [rect.top, rect.bottom]
-  }, [element])
-
-  return [top, bottom]
+  if (isUndefined(element?.offsetTop)) {
+    return [70, window.innerHeight]
+  }
+  const rect = element.getBoundingClientRect()
+  return [rect.top, rect.bottom]
 }
 
 const getContainerLeftRight = (element) => {
-  const [left, right] = useMemo(() => {
-    if (isUndefined(element?.offsetLeft)) {
-      return [70, window.innerWidth]
-    }
-    const rect = element.getBoundingClientRect()
-    return [rect.left, rect.right]
-  }, [element])
-
-  return [left, right]
+  if (isUndefined(element?.offsetLeft)) {
+    return [70, window.innerWidth]
+  }
+  const rect = element.getBoundingClientRect()
+  return [rect.left, rect.right]
 }
 
 /**
@@ -100,7 +92,6 @@ const CustomDragLayer = ({ showPoint, centerPoint }) => {
       verticalInterval.current = setInterval(() => {
         scrollEl.scrollBy({
           top: scrollByVertical,
-          behavior: 'smooth',
         })
       }, 50)
     } else if (

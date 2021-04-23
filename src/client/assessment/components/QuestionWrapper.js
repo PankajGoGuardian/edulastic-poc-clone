@@ -731,6 +731,7 @@ export default enhance(QuestionWrapper)
 const StyledFlexContainer = styled(FlexContainer)`
   font-size: ${(props) => props.theme.fontSize};
   overflow: ${({ showScroll }) => showScroll && 'auto'};
+  width: 100%;
 `
 
 const QuestionMenuWrapper = styled.div`

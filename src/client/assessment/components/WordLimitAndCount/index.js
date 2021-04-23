@@ -40,6 +40,7 @@ const WordLimitAndCount = ({ onChange, selectValue, inputValue, t }) => {
             data-cy="wordLimitOptions"
             value={selectValue}
             onChange={onChangeShowWordLimit}
+            getPopupContainer={(targetNode) => targetNode.parentElement}
           >
             {options.map(({ label, value }, i) => (
               <Option key={i} value={value}>

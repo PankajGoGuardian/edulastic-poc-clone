@@ -36,12 +36,26 @@ const TeacherAutoComplete = ({
   selectCB,
   testId,
   termId,
+  firstLoad,
+  tempTagsData,
+  setTempTagsData,
+  setTagsData,
 }) => {
   const teacherFilterRef = useRef()
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
   const [searchResult, setSearchResult] = useState([])
+  const [firstUpdate, setFirstUpdate] = useState(false)
 
   const teacherList = transformTeacherList(teacherListRaw)
+
+  const dropdownData = (searchTerms.text ? teacherList : searchResult).map(
+    (item) => {
+      return {
+        key: item._id,
+        title: item.name,
+      }
+    }
+  )
 
   // build search query
   const query = useMemo(() => {
@@ -70,6 +84,13 @@ const TeacherAutoComplete = ({
   const onSearch = (value) => {
     setSearchTerms({ ...searchTerms, text: value })
   }
+  const onChange = (selected, selectedElements) => {
+    const _selectedTeachers = selectedElements.map(({ props }) => ({
+      key: props.value,
+      title: props.title,
+    }))
+    selectCB(_selectedTeachers)
+  }
   const onBlur = () => {
     if (searchTerms.text === '' && searchTerms.selectedText !== '') {
       setSearchTerms(DEFAULT_SEARCH_TERMS)
@@ -92,6 +113,7 @@ const TeacherAutoComplete = ({
     if (selectedTeacherIds.length) {
       // TODO: add backend support for selected ids in query
       loadTeacherListDebounced(query)
+      setFirstUpdate(true)
     }
   }, [])
   useEffect(() => {
@@ -99,6 +121,26 @@ const TeacherAutoComplete = ({
       setSearchResult(transformTeacherList(teacherListRaw))
     }
   }, [teacherListRaw])
+  useEffect(() => {
+    const _teachers = dropdownData.filter((d) =>
+      selectedTeacherIds.includes(d.key)
+    )
+    if (
+      firstUpdate &&
+      _teachers.length &&
+      !firstLoad &&
+      setTempTagsData &&
+      setTagsData
+    ) {
+      // TODO: find a better way to do this
+      // add delay for other tag updates to complete
+      setTimeout(() => {
+        setTempTagsData({ ...tempTagsData, teacherIds: _teachers })
+        setTagsData({ ...tempTagsData, teacherIds: _teachers })
+      }, 500)
+      setFirstUpdate(false)
+    }
+  }, [teacherListRaw, firstLoad, firstUpdate])
   useEffect(() => {
     if (searchTerms.text && searchTerms.text !== searchTerms.selectedText) {
       loadTeacherListDebounced(query)
@@ -108,22 +150,13 @@ const TeacherAutoComplete = ({
     setSearchResult([])
   }, [institutionId, testId, termId])
 
-  const dropdownData = (searchTerms.text ? teacherList : searchResult).map(
-    (item) => {
-      return {
-        key: item._id,
-        title: item.name,
-      }
-    }
-  )
-
   return (
     <MultiSelectSearch
       dataCy={dataCy}
       label="Teacher"
       placeholder="All Teachers"
       el={teacherFilterRef}
-      onChange={(e) => selectCB(dropdownData.filter((d) => e.includes(d.key)))}
+      onChange={onChange}
       onSearch={onSearch}
       onBlur={onBlur}
       onFocus={() => getDefaultTeacherList()}

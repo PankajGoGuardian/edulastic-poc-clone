@@ -170,11 +170,6 @@ const SingleAssessmentReportContainer = (props) => {
       selectedTest: _settings.selectedTest,
       requestFilters: {
         ..._requestFilters,
-        testGrade: _requestFilters.grade,
-        testSubject: _requestFilters.subject,
-        grade: _requestFilters.studentGrade,
-        subject: _requestFilters.studentSubject,
-        courseId: _requestFilters.studentCourseId,
         classIds: _requestFilters.classIds || '',
         groupIds: _requestFilters.groupIds || '',
         profileId: _requestFilters.performanceBandProfile,

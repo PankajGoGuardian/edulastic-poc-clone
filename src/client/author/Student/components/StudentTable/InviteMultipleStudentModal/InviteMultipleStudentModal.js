@@ -88,7 +88,7 @@ class InviteMultipleStudentModal extends Component {
           ? row.students
               .split(/,|;|\n/)
               .filter((_o) => _o.trim().length)
-              .map((x) => x.replace('\t', ' '))
+              .map((x) => x.trim().replace('\t', ' '))
           : []
         if (studentsList.length) {
           inviteStudents({

@@ -152,11 +152,20 @@ const PeerProgressAnalysis = ({
   const onCsvConvert = (data) => downloadCSV(`Peer Progress.csv`, data)
 
   if (loading) {
-    return <SpinLoader position="fixed" />
+    return (
+      <SpinLoader
+        tip="Please wait while we gather the required information..."
+        position="fixed"
+      />
+    )
   }
 
   if (isEmpty(metricInfo)) {
-    return <NoDataContainer>No data available currently.</NoDataContainer>
+    return (
+      <NoDataContainer>
+        {settings.requestFilters?.termId ? 'No data available currently.' : ''}
+      </NoDataContainer>
+    )
   }
 
   if (error && error.dataSizeExceeded) {

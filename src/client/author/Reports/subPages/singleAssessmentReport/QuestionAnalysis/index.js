@@ -1,11 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { isEmpty } from 'lodash'
 
 import { Col, Row } from 'antd'
 import { SpinLoader } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
+import { isEmpty } from 'lodash'
 import { ControlDropDown } from '../../../common/components/widgets/controlDropDown'
 import { StyledH3, NoDataContainer } from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
@@ -78,7 +78,7 @@ const QuestionAnalysis = ({
       (settings.requestFilters.termId || settings.requestFilters.reportId) &&
       !loading &&
       !isEmpty(questionAnalysis) &&
-      !questionAnalysis.metricInfo.length
+      !questionAnalysis.metricInfo?.length
     ) {
       toggleFilter(null, true)
     }
@@ -114,7 +114,12 @@ const QuestionAnalysis = ({
   }
 
   if (loading) {
-    return <SpinLoader position="fixed" />
+    return (
+      <SpinLoader
+        tip="Please wait while we gather the required information..."
+        position="fixed"
+      />
+    )
   }
 
   if (questionAnalysis.isRecommended) {
@@ -131,7 +136,11 @@ const QuestionAnalysis = ({
   }
 
   if (!questionAnalysis.metricInfo?.length || !settings.selectedTest.key) {
-    return <NoDataContainer>No data available currently.</NoDataContainer>
+    return (
+      <NoDataContainer>
+        {settings.requestFilters?.termId ? 'No data available currently.' : ''}
+      </NoDataContainer>
+    )
   }
   return (
     <div>

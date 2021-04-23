@@ -8,7 +8,6 @@ class QuestionScore extends Component {
   render() {
     const {
       question,
-      tableData,
       showQuestionModal,
       isTest,
       scoreMode = true,
@@ -43,14 +42,14 @@ class QuestionScore extends Component {
     }
     const unscoredDisplay = scoreMode &&
       isPractice && {
-        displayText: `U`,
-        tooltipdisplay: `Unscored`,
+        displayText: `Z`,
+        tooltipdisplay: `Zero Point`,
       }
     if (skipped) studentScore = 0
 
     const onClickHandler = () => {
       if (!isGridEditOn) {
-        showQuestionModal(question, tableData)
+        showQuestionModal(question)
       }
     }
     return (
@@ -100,7 +99,6 @@ class QuestionScore extends Component {
 
 QuestionScore.propTypes = {
   question: PropTypes.object.isRequired,
-  tableData: PropTypes.array.isRequired,
   showQuestionModal: PropTypes.func.isRequired,
   isTest: PropTypes.string,
 }

@@ -339,3 +339,9 @@ export const FlexRow = styled.div`
   width: 100%;
   margin-bottom: 15px;
 `
+
+export const CreateNewTestLink = styled.a`
+  &:hover {
+    color: white;
+  }
+`

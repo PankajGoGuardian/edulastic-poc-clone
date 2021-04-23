@@ -69,6 +69,8 @@ class Layout extends Component {
       questionType,
     } = this.props
 
+    const { input } = this.state
+
     const changeUiStyle = (prop, value) => {
       if (prop === 'responseContainerWidth' && value < 1) {
         notification({ messageKey: 'widthShouldBeGreaterThanZero' })
@@ -130,7 +132,6 @@ class Layout extends Component {
     }
 
     const onWidthInputBlur = (index) => () => {
-      const { input } = this.state
       if (index !== undefined) {
         changeIndividualUiStyle('widthpx', calculateRightWidth(input), index)
       } else {
@@ -144,13 +145,13 @@ class Layout extends Component {
       // eslint-disable-next-line react/destructuring-assignment
       isEqual(this[`individualWidth${index}`], this.state.focused)
         ? // eslint-disable-next-line react/destructuring-assignment
-          this.state.input || 0
+          input || 0
         : responsecontainerindividual.widthpx
 
     const getMainWidthInputValue = () =>
       // eslint-disable-next-line react/destructuring-assignment
       isEqual(this.widthInput, this.state.focused)
-        ? this.state.input || 0
+        ? input || 0
         : uiStyle.widthpx
 
     const onFocusHandler = (responsecontainerindividual, index) => () => {
@@ -187,6 +188,7 @@ class Layout extends Component {
                 onChange={(val) =>
                   changeUiStyle('responsecontainerposition', val)
                 }
+                getPopupContainer={(triggerNode) => triggerNode.parentNode}
                 options={[
                   { value: 'top', label: t('component.options.top') },
                   { value: 'bottom', label: t('component.options.bottom') },
@@ -201,6 +203,7 @@ class Layout extends Component {
             <Label>{t('component.options.stemNumerationReviewOnly')}</Label>
             <FieldWrapper>
               <Select
+                getPopupContainer={(triggerNode) => triggerNode.parentNode}
                 onChange={(val) => changeUiStyle('stemNumeration', val)}
                 options={[
                   {
@@ -224,6 +227,7 @@ class Layout extends Component {
             <Label>{t('component.options.fontSize')}</Label>
             <FieldWrapper>
               <Select
+                getPopupContainer={(triggerNode) => triggerNode.parentNode}
                 onChange={(fontsize) => changeUiStyle('fontsize', fontsize)}
                 options={[
                   { value: 'small', label: t('component.options.small') },

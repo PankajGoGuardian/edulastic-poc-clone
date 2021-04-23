@@ -1,7 +1,7 @@
 import { SpinLoader } from '@edulastic/common'
 import { Col, Row } from 'antd'
-import { filter, get, includes, isEmpty } from 'lodash'
-import React, { useState, useEffect } from 'react'
+import { filter, get, includes, isEmpty, keyBy } from 'lodash'
+import React, { useState, useEffect, useMemo } from 'react'
 import { connect } from 'react-redux'
 import { StyledCard, StyledH3, NoDataContainer } from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
@@ -27,8 +27,18 @@ const PerformanceOverTime = ({
   settings,
   loading,
   error,
+  MARFilterData,
+  sharedReport,
   toggleFilter,
 }) => {
+  const sharedReportFilters = useMemo(
+    () =>
+      sharedReport?._id
+        ? { ...sharedReport.filters, reportId: sharedReport._id }
+        : null,
+    [sharedReport]
+  )
+
   // support for tests pagination from backend
   const [pageFilters, setPageFilters] = useState({
     page: 0, // set to 0 initially to prevent multiple api request on tab change
@@ -64,7 +74,25 @@ const PerformanceOverTime = ({
     }
   }, [performanceOverTime])
 
-  const rawData = get(performanceOverTime, 'data.result', {})
+  const rawData = useMemo(() => {
+    const profiles = get(MARFilterData, 'data.result.bandInfo', [])
+    const bandInfo =
+      profiles.find(
+        (profile) =>
+          profile._id ===
+          (sharedReportFilters || settings.requestFilters).profileId
+      )?.performanceBand ||
+      profiles[0]?.performanceBand ||
+      []
+    const thresholdNameIndexed = keyBy(bandInfo, 'threshold')
+    const _rawData = get(performanceOverTime, 'data.result', {})
+    const _metricInfo = (_rawData.metricInfo || []).map((item) => ({
+      ...item,
+      bandName: thresholdNameIndexed[item.bandScore]?.name,
+    }))
+    return { ..._rawData, metricInfo: _metricInfo, bandInfo }
+  }, [performanceOverTime])
+
   const testsCount = rawData.testsCount || 0
   const dataWithTestInfo = filter(
     parseData(rawData),
@@ -77,11 +105,20 @@ const PerformanceOverTime = ({
   )
 
   if (loading) {
-    return <SpinLoader position="fixed" />
+    return (
+      <SpinLoader
+        tip="Please wait while we gather the required information..."
+        position="fixed"
+      />
+    )
   }
 
   if (isEmpty(dataWithTestInfo)) {
-    return <NoDataContainer>No data available currently.</NoDataContainer>
+    return (
+      <NoDataContainer>
+        {settings.requestFilters?.termId ? 'No data available currently.' : ''}
+      </NoDataContainer>
+    )
   }
 
   if (error && error.dataSizeExceeded) {

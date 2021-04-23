@@ -2,7 +2,12 @@ import React, { useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
-import { FlexContainer, EduButton, AnswerContext } from '@edulastic/common'
+import {
+  FlexContainer,
+  EduButton,
+  AnswerContext,
+  ItemLevelContext as HideScoringBlockContext,
+} from '@edulastic/common'
 import { TitleWrapper } from '@edulastic/common/src/components/MainHeader'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
@@ -14,6 +19,8 @@ import { IconTestBank, IconClockCircularOutline } from '@edulastic/icons'
 import { testItemsApi } from '@edulastic/api'
 import { EDIT } from '../../constants/constantsForQuestions'
 import {
+  setEditingItemIdAction,
+  setCurrentStudentIdAction,
   setQuestionDataAction,
   toggleQuestionEditModalAction,
 } from '../../../author/src/actions/question'
@@ -85,6 +92,14 @@ const QuestionBottomAction = ({
   toggleQuestionModal,
   openQuestionModal,
   showCorrectItem,
+  studentId,
+  openQuestionMoal,
+  setEditingItemId,
+  editItemId,
+  currentStudentId,
+  setCurrentStudentId,
+  isQuestionView,
+  isExpressGrader,
   ...questionProps
 }) => {
   // const [openQuestionModal, setOpenQuestionModal] = useState(false)
@@ -97,31 +112,44 @@ const QuestionBottomAction = ({
   }
 
   const onSaveAndPublish = () => {
-    updateCorrectItem({
+    // for now this component will be visible in 3 views for calling the respectve api we need a reference in which author viewing this component.
+    let lcbView = 'student-report'
+    if (isExpressGrader) {
+      lcbView = 'express-grader'
+    }
+    if (isQuestionView) {
+      lcbView = 'question-view'
+    }
+    const payload = {
+      studentId,
       assignmentId: match?.params?.assignmentId,
       testId: additionalData?.testId,
-      testItemId: item?.activity?.testItemId,
-      groupId: item?.activity?.groupId,
-      testActivityId: item?.activity?.testActivityId,
-      studentId: item?.activity?.userId,
+      testItemId: editItemId,
+      groupId: match?.params?.classId || item?.activity?.groupId,
+      testActivityId:
+        item?.activity?.testActivityId || match?.params?.testActivityId,
       question: questionData,
       proceedRegrade: false,
+      lcbView,
       isUnscored: item?.validation?.unscored,
       callBack: onCloseQuestionModal,
-    })
+    }
+    updateCorrectItem(payload)
   }
 
   const showQuestionModal = async () => {
     setItemLoading(true)
     try {
-      const testItem = await testItemsApi.getById(item?.activity?.testItemId)
+      const testItem = await testItemsApi.getById(item.testItemId)
       const question = testItem.data.questions.find((q) => q.id === item.id)
       setQuestionData(question)
       setCurrentQuestion(question.id)
+      setCurrentStudentId(studentId)
     } catch (e) {
       setQuestionData(omit(item, 'activity'))
       setCurrentQuestion(item.id)
     } finally {
+      setEditingItemId(item.testItemId)
       toggleQuestionModal(true)
       setItemLoading(false)
     }
@@ -177,6 +205,9 @@ const QuestionBottomAction = ({
     } = permissionToEdit
     const isDisable = isDisableEdit || hasDynamicVariables || isDisableDuplicate
 
+    if (!showCorrectItem) {
+      return [true, 'Edit permission is restricted by the author']
+    }
     let disableText = ''
     if (isDisableEdit && !allowDuplicate) {
       disableText = 'Edit of Item is restricted by Publisher'
@@ -202,6 +233,8 @@ const QuestionBottomAction = ({
       Edit / Regrade
     </CorrectButton>
   )
+
+  const shouldHideScoringBlock = item?.scoringDisabled
 
   return (
     <>
@@ -231,26 +264,33 @@ const QuestionBottomAction = ({
           {timeSpent && <TimeSpent time={timeSpent} />}
         </RightWrapper>
       </BottomActionWrapper>
-      {!isStudentReport && openQuestionModal && QuestionComp && questionData && (
-        <QuestionPreviewModal
-          visible={openQuestionModal}
-          onCancel={onCloseQuestionModal}
-          title={modalTitle}
-          footer={null}
-          width="1080px"
-          style={{ top: 10 }}
-        >
-          <AnswerContext.Provider value={{ isAnswerModifiable: true }}>
-            <QuestionComp
-              {...questionProps}
-              t={t}
-              item={questionData}
-              view={EDIT}
-              disableResponse={false}
-            />
-          </AnswerContext.Provider>
-        </QuestionPreviewModal>
-      )}
+      {!isStudentReport &&
+        openQuestionModal &&
+        QuestionComp &&
+        questionData &&
+        questionData?.id === item?.id &&
+        currentStudentId === studentId && (
+          <QuestionPreviewModal
+            visible={openQuestionModal}
+            onCancel={onCloseQuestionModal}
+            title={modalTitle}
+            footer={null}
+            width="1080px"
+            style={{ top: 10 }}
+          >
+            <AnswerContext.Provider value={{ isAnswerModifiable: true }}>
+              <HideScoringBlockContext.Provider value={shouldHideScoringBlock}>
+                <QuestionComp
+                  {...questionProps}
+                  t={t}
+                  item={questionData}
+                  view={EDIT}
+                  disableResponse={false}
+                />
+              </HideScoringBlockContext.Provider>
+            </AnswerContext.Provider>
+          </QuestionPreviewModal>
+        )}
     </>
   )
 }
@@ -266,12 +306,48 @@ QuestionBottomAction.propTypes = {
   loading: PropTypes.bool,
   item: PropTypes.object,
   isStudentReport: PropTypes.bool,
+  isQuestionView: PropTypes.bool,
 }
 
 QuestionBottomAction.defaultProps = {
   loading: false,
   isStudentReport: false,
   item: null,
+  isQuestionView: false,
+}
+
+const getPermissionToEdit = (state, props) => {
+  const userId = getUserId(state)
+  const userRole = getUserRole(state)
+  const writableCollections = getWritableCollectionsSelector(state)
+  const userFeatures = getUserFeatures(state)
+  const collections = getCollectionsSelector(state)
+  const testItems = get(state, 'classResponse.data.testItems', [])
+  const testItem = testItems.find((t) => t._id === props.item?.testItemId) || {}
+  const { authors = [] } = testItem || {}
+  const isOwner = authors.some((author) => author._id === userId)
+  const hasCollectionAccess = allowContentEditCheck(
+    testItem?.collections,
+    writableCollections
+  )
+  const allowDuplicate = allowDuplicateCheck(
+    testItem?.collections,
+    collections,
+    'item'
+  )
+
+  const isDisableEdit = !(
+    isOwner ||
+    userRole === roleuser.EDULASTIC_CURATOR ||
+    (hasCollectionAccess && userFeatures.isCurator) ||
+    (isOwner && allowDuplicate)
+  )
+
+  const isDisableDuplicate = !(
+    allowDuplicate && userRole !== roleuser.EDULASTIC_CURATOR
+  )
+
+  return { isDisableEdit, allowDuplicate, isDisableDuplicate }
 }
 
 const getPermissionToEdit = (state, props) => {
@@ -320,6 +396,8 @@ const enhance = compose(
       additionalData: getAdditionalDataSelector(state),
       permissionToEdit: getPermissionToEdit(state, ownProps),
       showCorrectItem: getShowCorrectItemButton(state),
+      editItemId: get(state, ['authorUi', 'editItemId']),
+      currentStudentId: get(state, ['authorUi', 'currentStudentId']),
     }),
     {
       setQuestionData: setQuestionDataAction,
@@ -327,6 +405,8 @@ const enhance = compose(
       updateCorrectItem: updateCorrectTestItemAction,
       removeQuestion: deleteQuestionAction,
       toggleQuestionModal: toggleQuestionEditModalAction,
+      setEditingItemId: setEditingItemIdAction,
+      setCurrentStudentId: setCurrentStudentIdAction,
     }
   )
 )
@@ -377,6 +457,10 @@ const QuestionPreviewModal = styled(Modal)`
   }
   .ant-modal-close-x {
     display: none;
+  }
+  .ant-select-dropdown,
+  .ant-dropdown {
+    z-index: 1003; /* modal has higher z index*/
   }
 `
 

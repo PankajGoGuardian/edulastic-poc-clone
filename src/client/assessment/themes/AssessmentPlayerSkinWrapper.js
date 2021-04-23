@@ -330,7 +330,8 @@ const StyledMainContainer = styled.div`
   main {
     .jsx-parser {
       p {
-        margin-bottom: 8px;
+        margin-bottom: 0.25rem;
+        line-height: 1.2;
       }
     }
     ${({ mainContainerStyle }) => mainContainerStyle};

@@ -103,7 +103,10 @@ import {
 import { setCreatedItemToTestAction } from '../../../TestPage/ducks'
 import QuestionAuditTrailLogs from '../../../../assessment/containers/QuestionAuditTrailLogs'
 import LanguageSelector from '../../../../common/components/LanguageSelector'
-import { allowedToSelectMultiLanguageInTest } from '../../../src/selectors/user'
+import {
+  allowedToSelectMultiLanguageInTest,
+  isPremiumUserSelector,
+} from '../../../src/selectors/user'
 
 const testItemStatusConstants = {
   DRAFT: 'draft',
@@ -925,6 +928,7 @@ class Container extends Component {
       hasAuthorPermission,
       t,
       allowedToSelectMultiLanguage,
+      isPremiumUser,
     } = this.props
 
     let breadCrumbQType = ''
@@ -1016,6 +1020,7 @@ class Container extends Component {
               isMultiDimensionLayout={rows.length > 1}
               isMultipart={item.multipartItem}
               disableScoringLevel={disableScoringLevel}
+              isPremiumUser={isPremiumUser}
             />
           )}
           <ItemHeader
@@ -1173,6 +1178,7 @@ const enhance = compose(
       itemDeleting: get(state, 'itemDetail.deleting', false),
       view: getViewSelector(state),
       allowedToSelectMultiLanguage: allowedToSelectMultiLanguageInTest(state),
+      isPremiumUser: isPremiumUserSelector(state),
     }),
     {
       changeView: changeViewAction,

@@ -60,13 +60,6 @@ export function WithPopover({
 const Wrapper = styled.div`
   .text-wrapper {
     margin-right: auto;
-    width: calc(100% - 30px) !important;
     overflow: hidden;
-
-    ::after {
-      content: '...';
-      position: absolute;
-      right: 1rem;
-    }
   }
 `

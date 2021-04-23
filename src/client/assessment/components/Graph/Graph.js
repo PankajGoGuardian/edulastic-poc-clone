@@ -447,6 +447,7 @@ class Graph extends Component {
       'validResponse',
       'rounding',
       'graphType',
+      'comparePoints=False',
     ])
   }
 

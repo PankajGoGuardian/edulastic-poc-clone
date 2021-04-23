@@ -413,5 +413,8 @@ export const MQTT_CLIENT_REMOVE_REQUEST = '[mqtt] Client removed'
 export const TOGGLE_QUESTION_EDIT_MODAL_LCB =
   '[edit question] toggle question edit modal in lcb correct item'
 
+export const SET_EDIT_ITEM_ID = '[edit question] set edit itemId'
+export const SET_CURRENT_STUDENT_ID = '[edit question] set current student id'
+
 export const RELOAD_LCB_DATA_IN_STUDENT_VIEW =
   '[lcb] reload lcb data in student view'

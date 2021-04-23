@@ -101,7 +101,7 @@ const StudentFeedback = ({
               height="32px"
               margin="0px 0px 0px 20px"
               fontSize="14px"
-              text="UNSCORED"
+              text="Zero Point"
               fontWeight="700"
             />
           ) : (

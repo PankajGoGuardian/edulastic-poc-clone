@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { get, isEmpty, omit, pickBy, groupBy, upperFirst } from 'lodash'
+import { get, isEmpty, omit, pickBy, groupBy } from 'lodash'
 import qs from 'qs'
 
 import { Spin, Tabs, Row, Col } from 'antd'
@@ -239,7 +239,7 @@ const StandardsMasteryReportFilters = ({
       qs.parse(location.search, { ignoreQueryPrefix: true }),
       (f) => f !== 'All' && !isEmpty(f)
     )
-    const source = location?.state?.source
+    const source = location.state?.source
 
     if (reportId) {
       _onGoClick({
@@ -253,7 +253,7 @@ const StandardsMasteryReportFilters = ({
         get(standardsFilters, 'data.result.reportFilters', {})
       )
       // update search filters from saved filters
-      if (!source) {
+      if (source === 'standard-reports') {
         search = {
           ...search,
           termId: search.termId || savedFilters.termId,
@@ -289,8 +289,10 @@ const StandardsMasteryReportFilters = ({
       const urlStandardProficiency =
         standardProficiencyList.find((item) => item.key === search.profileId) ||
         defaultStandardProficiency
-      const defaultGrade = source ? '' : staticDropDownData.grades[0].key
-      const defaultGradeTag = source ? [] : staticDropDownData.grades[0]
+      const defaultGrade =
+        source !== 'standard-reports' ? '' : staticDropDownData.grades[0].key
+      const defaultGradeTag =
+        source !== 'standard-reports' ? [] : staticDropDownData.grades[0]
       const _filters = {
         termId: urlSchoolYear.key,
         schoolIds: search.schoolIds || '',
@@ -335,8 +337,16 @@ const StandardsMasteryReportFilters = ({
       // const urlTestIds = search.testIds ? search.testIds.split(',') : []
       // setTestIds(urlTestIds)
       setTestIds([])
-      setShowApply(true)
-      toggleFilter(null, true)
+      if (source === 'standard-reports') {
+        setShowApply(true)
+        toggleFilter(null, true)
+      } else {
+        _onGoClick({
+          filters: { ..._filters },
+          selectedTests: [],
+          tagsData: { ..._tempTagsData },
+        })
+      }
     }
     setFirstLoad(false)
     // update prevSMRFilterData
@@ -377,10 +387,7 @@ const StandardsMasteryReportFilters = ({
     const _selected = multiple
       ? selected.map((o) => o.key).join(',')
       : selected.key
-    const filterKey = ['grades', 'subjects', 'courseId'].includes(keyName)
-      ? `student${upperFirst(keyName)}`
-      : keyName
-    resetStudentFilters(_tempTagsData, _filters, filterKey, _selected)
+    resetStudentFilters(_tempTagsData, _filters, keyName, _selected)
     setTempTagsData(_tempTagsData)
     // update filters
     _filters[keyName] = _selected
@@ -435,10 +442,7 @@ const StandardsMasteryReportFilters = ({
       setTempDdFilter(_tempDdFilter)
     } else {
       const _filters = { ...filters }
-      const filterKey = ['grade', 'subject', 'courseId'].includes(type)
-        ? `student${upperFirst(type)}`
-        : type
-      resetStudentFilters(_tempTagsData, _filters, filterKey, '')
+      resetStudentFilters(_tempTagsData, _filters, type, '')
       // handles single selection filters
       if (filters[type] === key) {
         _filters[type] = staticDropDownData.initialFilters[type]
@@ -620,7 +624,7 @@ const StandardsMasteryReportFilters = ({
                             schoolIds={filters.schoolIds}
                             teacherIds={filters.teacherIds}
                             grades={filters.grades}
-                            subject={filters.subjects}
+                            subjects={filters.subjects}
                             courseId={
                               filters.courseId !== 'All' && filters.courseId
                             }
@@ -641,7 +645,7 @@ const StandardsMasteryReportFilters = ({
                             schoolIds={filters.schoolIds}
                             teacherIds={filters.teacherIds}
                             grades={filters.grades}
-                            subject={filters.subjects}
+                            subjects={filters.subjects}
                             courseId={
                               filters.courseId !== 'All' && filters.courseId
                             }
@@ -782,7 +786,7 @@ const StandardsMasteryReportFilters = ({
                     )}
                   </Tabs>
                 </Col>
-                <Col span={24} style={{ display: 'flex', paddingTop: '50px' }}>
+                <Col span={24} style={{ display: 'flex', paddingTop: '20px' }}>
                   <StyledEduButton
                     width="25%"
                     height="40px"

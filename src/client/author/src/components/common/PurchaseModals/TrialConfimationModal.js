@@ -71,7 +71,7 @@ const TrialConfirmationModal = ({
 
   const hasOnlyTeacherPremium =
     hasTrial === 'onlyPremiumTrial' &&
-    (subType === 'premium' || subType === 'TRIAL_PREMIUM')
+    (subType === 'premium' || subType === 'TRIAL_PREMIUM') // using hasTrial, its get loaded before the confirmation modal opens
 
   useEffect(() => {
     if (!hasOnlyTeacherPremium) {

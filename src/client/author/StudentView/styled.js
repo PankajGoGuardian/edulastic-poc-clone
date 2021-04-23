@@ -8,8 +8,10 @@ import {
   themeColor,
   desktopWidth,
   extraDesktopWidth,
-  greyishBorder,
   sectionBorder,
+  inputBorder1,
+  greyThemeDark1,
+  lightGrey9,
 } from '@edulastic/colors'
 
 // left 70 as the side menu space need to be considered.
@@ -201,6 +203,7 @@ export const SlideContainer = styled.span`
 export const SliderContainer = styled.div`
   position: relative;
   overflow: hidden;
+  width: 430px;
   .prev,
   .next {
     display: block;
@@ -209,16 +212,12 @@ export const SliderContainer = styled.div`
 
 export const ScrollbarContainer = styled.div`
   white-space: nowrap;
-  margin-bottom: 20px;
-  margin-left: 25px;
   transition: 0.2s;
-  border: 2px solid ${greyishBorder};
-  width: 450px;
-  padding-top: 20px;
+  border: 1px solid ${inputBorder1};
   .scrollbar-container {
-    width: 453px;
+    width: 430px;
+    height: 305px;
     transition: 0.2s;
-    padding-bottom: 14px;
   }
   .ps__rail-x {
     display: none;
@@ -240,8 +239,8 @@ export const NextButton = styled(PrevButton)`
 `
 
 export const Slides = styled.div`
-  height: 200px;
-  width: 400px;
+  width: 412px;
+  height: 290px;
   color: ${white};
   cursor: pointer;
   display: inline-block;
@@ -250,22 +249,21 @@ export const Slides = styled.div`
   background-position: top left;
   background-repeat: no-repeat;
   border-radius: 4px;
-  margin-right: 30px;
-  margin-left: 23px;
-
-  &.last,
-  &:last-child {
-    margin-right: 30px !important;
-  }
+  margin: 8px 0 8px 8px;
 `
 export const AttachmentFooter = styled.div`
-  margin-top: 20px;
+  width: 456px;
+  margin: auto;
+  padding-top: 45px;
   display: flex;
+  align-items: center;
+  justify-content: space-around;
 `
 export const SingleDownloadButton = styled(EduButton)`
-  margin-top: 5px;
-  left: 20px;
-  width: 44%;
+  width: 200px;
+  span {
+    height: 24px;
+  }
 `
 
 export const Title = styled.h2`
@@ -275,7 +273,6 @@ export const Title = styled.h2`
 export const Description = styled.p`
   font-weight: 600;
   font-size: 15px;
-  margin-left: 23px;
 `
 
 export const ModalInput = styled(Input)`
@@ -285,9 +282,51 @@ export const ModalInput = styled(Input)`
   margin-top: 15px;
   margin-bottom: 20px;
   max-width: 450px;
-  left: 23px;
+
+  .ant-input[disabled] {
+    color: ${lightGrey9};
+  }
 `
 
-export const AttachmentSliderContainer = styled.div`
-  margin-top: 5px;
+export const SlideWrapper = styled.div`
+  width: 430px;
+  height: 298px;
+`
+
+export const InputTitle = styled.h3`
+  color: ${greyThemeDark1};
+  text-align: left;
+  font: normal normal 600 11px/15px Open Sans;
+  letter-spacing: 0px;
+  text-transform: uppercase;
+  margin: 20px 0 -10px 0px;
+`
+
+export const StyledAttachmentModal = styled(Modal)`
+  .ant-modal-body {
+    padding: 0 50px 0 50px;
+  }
+  .ant-modal-header {
+    padding: 24px 46px;
+    border: 0;
+    .ant-modal-title {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -1.1px;
+      margin-top: 8px;
+    }
+  }
+  .ant-modal-footer {
+    border: 0;
+    padding-bottom: 30px;
+  }
+  .ant-modal-close {
+    top: 18px;
+    right: 32px;
+    color: black;
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
 `

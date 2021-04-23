@@ -10,6 +10,7 @@ import {
   NextButton,
   SliderContainer,
   SlideContainer,
+  SlideWrapper,
 } from '../styled'
 
 const AttachmentSlider = ({
@@ -66,12 +67,14 @@ const AttachmentSlider = ({
             <SlideContainer data-cy="sliderContainer">
               {attachmentsList.map((slide, index) => {
                 return (
-                  <Slides
-                    data-cy="banners"
-                    className={slidesLength === index + 1 ? 'last' : ''}
-                    bgImage={slide.source}
-                    key={slide._id}
-                  />
+                  <SlideWrapper>
+                    <Slides
+                      data-cy="banners"
+                      className={slidesLength === index + 1 ? 'last' : ''}
+                      bgImage={slide.source}
+                      key={slide._id}
+                    />
+                  </SlideWrapper>
                 )
               })}
             </SlideContainer>

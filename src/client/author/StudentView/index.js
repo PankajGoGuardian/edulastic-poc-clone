@@ -272,7 +272,7 @@ class StudentViewContainer extends Component {
       </div>
     )
 
-    const { attachments = [] } = studentTestActivity.userWork || {}
+    const { attachments = [] } = studentTestActivity?.userWork || {}
 
     return (
       <>
@@ -469,6 +469,8 @@ class StudentViewContainer extends Component {
             attachmentsList={attachments}
             title="All Attachments"
             description="Import content from QTI, WebCT and several other formats."
+            utaId={studentTestActivity?._id}
+            studentData={currentStudent}
           />
         )}
       </>

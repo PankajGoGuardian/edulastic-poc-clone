@@ -46,6 +46,7 @@ import {
   allowDuplicateCheck,
   allowContentEditCheck,
 } from '../../../author/src/utils/permissionCheck'
+import Explanation from './Explanation'
 
 export const ShowUserWork = ({ onClick, loading }) => (
   <EduButton
@@ -100,10 +101,21 @@ const QuestionBottomAction = ({
   setCurrentStudentId,
   isQuestionView,
   isExpressGrader,
+  isGrade,
+  isPrintPreview,
+  previewTab,
+  isLCBView,
   ...questionProps
 }) => {
   // const [openQuestionModal, setOpenQuestionModal] = useState(false)
   const [itemloading, setItemLoading] = useState(false)
+
+  const [show, updateShow] = useState(isGrade)
+
+  const onClickShowSolutionHandler = (e) => {
+    e.stopPropagation()
+    updateShow(true)
+  }
 
   const onCloseQuestionModal = () => {
     setCurrentQuestion('')
@@ -236,9 +248,22 @@ const QuestionBottomAction = ({
 
   const shouldHideScoringBlock = item?.scoringDisabled
 
+  const showSolution =
+    (isLCBView || isExpressGrader || previewTab === 'show') && !isPrintPreview
+
   return (
     <>
       <BottomActionWrapper className={isStudentReport ? 'student-report' : ''}>
+        {showSolution && !show && (
+          <ShowExplanation
+            width="110px"
+            height="30px"
+            isGhost
+            onClick={onClickShowSolutionHandler}
+          >
+            Show solution
+          </ShowExplanation>
+        )}
         <div>
           {!hasDrawingResponse && isShowStudentWork && (
             <ShowUserWork onClick={onClickHandler} loading={loading} />
@@ -264,6 +289,13 @@ const QuestionBottomAction = ({
           {timeSpent && <TimeSpent time={timeSpent} />}
         </RightWrapper>
       </BottomActionWrapper>
+      {showSolution && (
+        <Explanation
+          isStudentReport={isStudentReport}
+          question={item}
+          show={show}
+        />
+      )}
       {!isStudentReport &&
         openQuestionModal &&
         QuestionComp &&
@@ -445,4 +477,8 @@ const CorrectButton = styled(EduButton)`
     left: 22px;
     top: 4px;
   }
+`
+
+const ShowExplanation = styled(EduButton)`
+  margin-left: ${({ isStudent }) => `${isStudent ? 50 : 0}px`};
 `

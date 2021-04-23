@@ -693,16 +693,6 @@ const reducer = (state = initialState, { type, payload }) => {
           return item
         }),
       }
-    case CORRECT_ITEM_UPDATE_SUCCESS: {
-      return {
-        ...state,
-        data: {
-          ...state.data,
-          testItemsData: payload,
-          testItemsDataKeyed: keyBy(payload, '_id'),
-        },
-      }
-    }
     default:
       return state
   }

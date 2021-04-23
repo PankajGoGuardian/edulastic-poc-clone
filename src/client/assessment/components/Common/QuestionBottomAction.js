@@ -323,40 +323,6 @@ const getPermissionToEdit = (state, props) => {
   const userFeatures = getUserFeatures(state)
   const collections = getCollectionsSelector(state)
   const testItems = get(state, 'classResponse.data.testItems', [])
-  const testItem = testItems.find((t) => t._id === props.item?.testItemId) || {}
-  const { authors = [] } = testItem || {}
-  const isOwner = authors.some((author) => author._id === userId)
-  const hasCollectionAccess = allowContentEditCheck(
-    testItem?.collections,
-    writableCollections
-  )
-  const allowDuplicate = allowDuplicateCheck(
-    testItem?.collections,
-    collections,
-    'item'
-  )
-
-  const isDisableEdit = !(
-    isOwner ||
-    userRole === roleuser.EDULASTIC_CURATOR ||
-    (hasCollectionAccess && userFeatures.isCurator) ||
-    (isOwner && allowDuplicate)
-  )
-
-  const isDisableDuplicate = !(
-    allowDuplicate && userRole !== roleuser.EDULASTIC_CURATOR
-  )
-
-  return { isDisableEdit, allowDuplicate, isDisableDuplicate }
-}
-
-const getPermissionToEdit = (state, props) => {
-  const userId = getUserId(state)
-  const userRole = getUserRole(state)
-  const writableCollections = getWritableCollectionsSelector(state)
-  const userFeatures = getUserFeatures(state)
-  const collections = getCollectionsSelector(state)
-  const testItems = get(state, 'classResponse.data.testItems', [])
   const testItem =
     testItems.find((t) => t._id === props.item?.activity?.testItemId) || {}
   const { authors = [] } = testItem || {}

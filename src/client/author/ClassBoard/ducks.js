@@ -826,17 +826,6 @@ function* correctItemUpdateSaga({ payload }) {
   }
 }
 
-function* reloadLcbDataInStudentView({ payload }) {
-  try {
-    yield call(receiveTestActivitySaga, { payload })
-    yield put(receiveStudentResponseAction(payload))
-  } catch (err) {
-    console.error(err)
-    captureSentryException(err)
-    notification({ type: 'error', msg: 'Unable to refresh data' })
-  }
-}
-
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_GRADEBOOK_REQUEST, receiveGradeBookSaga),

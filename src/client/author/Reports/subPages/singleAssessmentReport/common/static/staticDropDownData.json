@@ -37,7 +37,8 @@
     { "key": "gender" },
     { "key": "iepStatus" },
     { "key": "frlStatus" },
-    { "key": "ellStatus" }
+    { "key": "ellStatus" },
+    { "key": "hispanicEthnicity" }
   ],
   "initialFilters": {
     "reportId": "",

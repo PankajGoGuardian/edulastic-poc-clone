@@ -66,6 +66,7 @@ const PointInput = ({
           disabled={disabled}
           value={disabled && !isRubricQuestion ? '' : value}
           onChange={onChange}
+          data-cy="pointUpdate"
         />
       </PopoverComponent>
     </PointsInputWrapper>

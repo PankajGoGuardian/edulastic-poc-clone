@@ -57,6 +57,14 @@ const getTooltip = (payload) => {
   }
   return false
 }
+const allGrades = [
+  { key: 'All', title: 'All Grades' },
+  ...staticDropDownData.grades,
+]
+const allSubjects = [
+  { key: 'All', title: 'All Subjects' },
+  ...staticDropDownData.subjects,
+]
 
 const StudentProfileSummary = ({
   loading,
@@ -214,7 +222,12 @@ const StudentProfileSummary = ({
       })
   }
   if (loading) {
-    return <SpinLoader position="fixed" />
+    return (
+      <SpinLoader
+        tip="Please wait while we gather the required information..."
+        position="fixed"
+      />
+    )
   }
 
   if (error && error.dataSizeExceeded) {
@@ -230,7 +243,11 @@ const StudentProfileSummary = ({
     isEmpty(studInfo) ||
     !settings.selectedStudent?.key
   ) {
-    return <NoDataContainer>No data available currently.</NoDataContainer>
+    return (
+      <NoDataContainer>
+        {settings.requestFilters?.termId ? 'No data available currently.' : ''}
+      </NoDataContainer>
+    )
   }
 
   const studentInformation = studInfo[0] || {}
@@ -298,14 +315,14 @@ const StudentProfileSummary = ({
                 <ControlDropDown
                   by={selectedGrade}
                   selectCB={onGradeSelect}
-                  data={staticDropDownData.grades}
+                  data={allGrades}
                   prefix="Standard Grade"
                   showPrefixOnSelected={false}
                 />
                 <ControlDropDown
                   by={selectedSubject}
                   selectCB={onSubjectSelect}
-                  data={staticDropDownData.subjects}
+                  data={allSubjects}
                   prefix="Standard Subject"
                   showPrefixOnSelected={false}
                 />

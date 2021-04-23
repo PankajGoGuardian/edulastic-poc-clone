@@ -40,28 +40,27 @@ const KeyboardHeader = ({
           <SelectInputStyled
             data-cy="math-keyboard-dropdown"
             onSelect={handleSelect}
-            value={isObject(method) ? method._id || method.label : method}
+            value={isObject(method) ? method._id || method.label : method} // custom keypad has UUID
             getPopupContainer={(triggerNode) => triggerNode.parentNode}
             minWidth="204px" // width when full keypad mode is selected
           >
-            {options.map(({ value, label }, index) => (
-              <Option
-                value={value}
-                key={index}
-                data-cy={`math-keyboard-dropdown-list-${index}`}
-              >
-                {label}
-              </Option>
-            ))}
-            {hasCustomKeypads && (
-              <OptGroup label="My Custom Keypads">
-                {customKeypads.map((keypad) => (
-                  <Option key={keypad._id} value={keypad._id}>
-                    {keypad.label}
-                  </Option>
-                ))}
-              </OptGroup>
-            )}
+            {hasCustomKeypads &&
+              customKeypads.map((keypad) => (
+                <Option key={keypad._id} value={keypad._id}>
+                  {keypad.label}
+                </Option>
+              ))}
+            <OptGroup label="Standard Keypads">
+              {options.map(({ value, label }, index) => (
+                <Option
+                  value={value}
+                  key={index}
+                  data-cy={`math-keyboard-dropdown-list-${index}`}
+                >
+                  {label}
+                </Option>
+              ))}
+            </OptGroup>
           </SelectInputStyled>
         )}
         {showResponse && (

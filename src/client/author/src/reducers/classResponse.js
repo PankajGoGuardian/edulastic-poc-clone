@@ -37,10 +37,6 @@ const reducer = (state = initialState, { type, payload }) => {
     case CORRECT_ITEM_UPDATE_SUCCESS:
       return {
         ...state,
-        data: {
-          ...state.data,
-          testItems: payload.testItems,
-        },
         updating: false,
       }
     default:

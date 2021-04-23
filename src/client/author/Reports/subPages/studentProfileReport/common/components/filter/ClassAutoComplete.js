@@ -74,6 +74,13 @@ const ClassAutoComplete = ({
   const onSearch = (value) => {
     setSearchTerms({ ...searchTerms, text: value })
   }
+  const onChange = (selected, selectedElements) => {
+    const _selectedClasses = selectedElements.map(({ props }) => ({
+      key: props.value,
+      title: props.title,
+    }))
+    selectCB(_selectedClasses)
+  }
   const onBlur = () => {
     if (searchTerms.text === '' && searchTerms.selectedText !== '') {
       setSearchTerms(DEFAULT_SEARCH_TERMS)
@@ -123,7 +130,7 @@ const ClassAutoComplete = ({
       dataCy={dataCy}
       label="Class"
       el={classAutoCompleteRef}
-      onChange={(e) => selectCB(dropdownData.filter((d) => e.includes(d.key)))}
+      onChange={onChange}
       onSearch={onSearch}
       onBlur={onBlur}
       onFocus={getDefaultClassList}

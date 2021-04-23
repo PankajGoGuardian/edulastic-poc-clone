@@ -91,8 +91,12 @@ const EngagementReportFilters = ({
     }
     setTempTagsData(_tempTagsData)
     setFilters(_filters)
-    setShowApply(true)
-    toggleFilter(null, true)
+    if (location.state?.source === 'standard-reports') {
+      setShowApply(true)
+      toggleFilter(null, true)
+    } else {
+      _onGoClick({ filters: { ..._filters }, tagsData: { ..._tempTagsData } })
+    }
     setFirstLoad(false)
   }, [])
 
@@ -268,7 +272,7 @@ const EngagementReportFilters = ({
                 </Col>
               </Row>
             </Col>
-            <Col span={24} style={{ display: 'flex', paddingTop: '50px' }}>
+            <Col span={24} style={{ display: 'flex', paddingTop: '20px' }}>
               <StyledEduButton
                 width="25%"
                 height="40px"

@@ -12,6 +12,7 @@ import {
   getUserRole,
   getUserId,
   isFreeAdminSelector,
+  isOrganizationDistrictUserSelector,
 } from '../../../src/selectors/user'
 import ViewModal from '../ViewModal'
 import TestPreviewModal from '../../../Assignments/components/Container/TestPreviewModal'
@@ -24,7 +25,11 @@ import {
   approveOrRejectSingleTestRequestAction,
   toggleTestLikeAction,
 } from '../../ducks'
-import { duplicatePlaylistRequestAction } from '../../../CurriculumSequence/ducks'
+import {
+  duplicatePlaylistRequestAction,
+  getIsUseThisLoading,
+  useThisPlayListAction,
+} from '../../../CurriculumSequence/ducks'
 import { allowDuplicateCheck } from '../../../src/utils/permissionCheck'
 import PlaylistCard from './PlaylistCard'
 import TestItemCard from './TestItemCard'
@@ -217,6 +222,10 @@ class Item extends Component {
       isTestLiked,
       duplicatePlayList,
       isPreviewModalVisible,
+      useThisPlayList,
+      history,
+      isOrganizationDistrictUser,
+      isUseThisLoading,
     } = this.props
     const { status, analytics = [] } = isPlaylist ? _source : item
     const likes = analytics?.[0]?.likes || '0'
@@ -307,6 +316,11 @@ class Item extends Component {
       isTestLiked,
       allowDuplicate,
       duplicatePlayList,
+      history,
+      useThisPlayList,
+      isPublisherUser,
+      isOrganizationDistrictUser,
+      isUseThisLoading,
     }
 
     const CardViewComponent = isPlaylist ? PlaylistCard : TestItemCard
@@ -371,6 +385,8 @@ const enhance = compose(
       currentUserId: getUserId(state),
       isFreeAdmin: isFreeAdminSelector(state),
       isPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
+      isOrganizationDistrictUser: isOrganizationDistrictUserSelector(state),
+      isUseThisLoading: getIsUseThisLoading(state),
     }),
     {
       approveOrRejectSingleTestRequest: approveOrRejectSingleTestRequestAction,
@@ -379,6 +395,7 @@ const enhance = compose(
       duplicateTest: duplicateTestRequestAction,
       toggleFreeAdminSubscriptionModal: toggleFreeAdminSubscriptionModalAction,
       setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
+      useThisPlayList: useThisPlayListAction,
     }
   )
 )

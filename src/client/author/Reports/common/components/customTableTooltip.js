@@ -1,7 +1,7 @@
 import React from 'react'
 import { Tooltip } from 'antd'
 import styled from 'styled-components'
-import { black } from '@edulastic/colors'
+import { greyThemeDark1, black, white } from '@edulastic/colors'
 
 const CustomTableTooltip = (props) => {
   const {
@@ -22,6 +22,17 @@ const CustomTableTooltip = (props) => {
   )
 }
 
+const CustomWhiteBackgroundTooltip = ({ data, str }) => (
+  <StyledContainer className="test-container">
+    <Tooltip
+      title={data || ''}
+      getPopupContainer={(triggerNode) => triggerNode}
+    >
+      <StyledSpan>{str}</StyledSpan>
+    </Tooltip>
+  </StyledContainer>
+)
+
 const StyledCustomTableTooltip = styled(CustomTableTooltip)`
   max-width: 500px;
 
@@ -40,4 +51,26 @@ const StyledCustomTableTooltip = styled(CustomTableTooltip)`
   }
 `
 
-export { StyledCustomTableTooltip as CustomTableTooltip }
+export const StyledSpan = styled.span`
+  cursor: default;
+  font: 12px/17px Open Sans;
+  font-weight: 600;
+  letter-spacing: 0px;
+  color: ${greyThemeDark1};
+  text-align: left;
+  &:hover {
+    color: ${greyThemeDark1};
+  }
+`
+
+const StyledContainer = styled.div`
+  .ant-tooltip-inner {
+    background-color: ${white};
+    color: ${black};
+    text-align: left;
+  }
+`
+export {
+  StyledCustomTableTooltip as CustomTableTooltip,
+  CustomWhiteBackgroundTooltip,
+}

@@ -548,6 +548,7 @@ function* saveQuestionSaga({
       },
     }
 
+    let allQuestionsArePractice = data.data.questions.length > 0
     data = produce(data, (draftData) => {
       if (draftData.data.questions.length > 0) {
         if (data.itemLevelScoring) {
@@ -557,7 +558,10 @@ function* saveQuestionSaga({
             ['data', 'questions', 0, 'validation', 'validResponse', 'score'],
             data.itemLevelScore
           )
-          for (const [index] of draftData.data.questions.entries()) {
+          for (const [index, _question] of draftData.data.questions.entries()) {
+            if (allQuestionsArePractice && !_question?.validation?.unscored) {
+              allQuestionsArePractice = false
+            }
             if (index > 0) {
               set(
                 draftData,
@@ -579,7 +583,22 @@ function* saveQuestionSaga({
           //   draftData.data.questions[index].validation.validResponse.score =
           //     itemScore / draftData.data.questions.length;
           // }
+          for (const _question of draftData.data.questions) {
+            if (allQuestionsArePractice && !_question?.validation?.unscored) {
+              allQuestionsArePractice = false
+            }
+          }
           delete draftData.data.questions[0].itemScore
+        } else if (!data.itemLevelScoring) {
+          for (const _question of draftData.data.questions) {
+            if (allQuestionsArePractice && !_question?.validation?.unscored) {
+              allQuestionsArePractice = false
+            }
+          }
+        }
+
+        if (allQuestionsArePractice) {
+          draftData.itemLevelScore = 0
         }
 
         draftData.data.questions.forEach((q, index) => {
@@ -589,6 +608,14 @@ function* saveQuestionSaga({
             } else {
               delete q.scoringDisabled
             }
+          }
+
+          if (allQuestionsArePractice) {
+            q.itemScore = 0
+            q.validation.validResponse.score = 0
+            ;(q.validation.altResponses || []).forEach((altResponse) => {
+              altResponse.score = 0
+            })
           }
 
           const isMatrices =
@@ -601,6 +628,7 @@ function* saveQuestionSaga({
           }
         })
       }
+
       const itemGrades = draftData.grades.filter(
         (item) => !!item && typeof item === 'string'
       )

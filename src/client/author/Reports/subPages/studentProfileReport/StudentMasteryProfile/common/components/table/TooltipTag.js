@@ -1,5 +1,5 @@
 import React from 'react'
-import { themeColorLight, greyThemeDark1 } from '@edulastic/colors'
+import { greyThemeDark1, themeColorLight } from '@edulastic/colors'
 import TableTooltipRow from '../../../../../../common/components/tooltip/TableTooltipRow'
 import { CustomTableTooltip } from '../../../../../../common/components/customTableTooltip'
 import { StyledTag } from '../../../../../../common/styled'
@@ -16,6 +16,7 @@ export const TooltipTag = ({ standard }) => {
       <TableTooltipRow
         title="Standard Description : "
         value={standard.standardName}
+        contentAlign="left"
       />
       <TableTooltipRow title="Mastery Status : " value={standard.masteryName} />
     </div>

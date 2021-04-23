@@ -69,11 +69,11 @@ const filtersDefaultValues = [
     nestedFilters: [
       {
         key: 'grades',
-        value: 'All',
+        value: '',
       },
       {
         key: 'subjects',
-        value: 'All',
+        value: '',
       },
     ],
   },
@@ -185,15 +185,10 @@ const StudentProfileReportFilters = ({
     }
     setFilters(_filters)
     setTempTagsData(_tempTagsData)
-
     if (reportId) {
       getSPRFilterDataRequest({ reportId })
-      setStudent({ key: urlStudentId })
-    } else if (urlStudentId) {
-      getSPRFilterDataRequest({
-        termId: _filters.termId,
-        studentId: urlStudentId,
-      })
+    }
+    if (urlStudentId) {
       setStudent({ key: urlStudentId })
     }
   }, [])
@@ -246,8 +241,16 @@ const StudentProfileReportFilters = ({
       }
       setFilters({ ..._filters })
       setTempTagsData({ ..._tempTagsData })
-      setShowApply(true)
-      toggleFilter(null, true)
+      if (location.state?.source === 'standard-reports') {
+        setShowApply(true)
+        toggleFilter(null, true)
+      } else {
+        _onGoClick({
+          filters: { ..._filters },
+          selectedStudent: _student,
+          tagsData: { ..._tempTagsData },
+        })
+      }
       setFirstLoad(false)
     }
     setPrevSPRFilterData(SPRFilterData)
@@ -276,7 +279,9 @@ const StudentProfileReportFilters = ({
     const _tempTagsData = { ...tempTagsData, student: selected }
     if (selected && selected.key) {
       setStudent(selected)
-      setFilters({ ...filters, showApply: true })
+      if (!firstLoad || location.state?.source === 'standard-reports') {
+        setFilters({ ...filters, showApply: true })
+      }
       getSPRFilterDataRequest({
         termId: filters.termId,
         studentId: selected.key,
@@ -289,12 +294,21 @@ const StudentProfileReportFilters = ({
 
   const resetSPRFilters = (nextTagsData, prevFilters, key, selected) => {
     const index = filtersDefaultValues.findIndex((s) => s.key === key)
-    resetFilters(nextTagsData, prevFilters, key, selected, filtersDefaultValues)
+    if (!['grades', 'subjects'].includes(key)) {
+      resetFilters(
+        nextTagsData,
+        prevFilters,
+        key,
+        selected,
+        filtersDefaultValues
+      )
+    }
     if (
       prevFilters[key] !== selected &&
       (index !== -1 || ['grades', 'subjects'].includes(key))
     ) {
       setStudent({ key: '', title: '' })
+      delete nextTagsData.student
       prevFilters.classIds = ''
       delete nextTagsData.classIds
     }
@@ -385,9 +399,7 @@ const StudentProfileReportFilters = ({
                 >
                   <Tabs.TabPane
                     key={staticDropDownData.filterSections.CLASS_FILTERS.key}
-                    tab={
-                      staticDropDownData.filterSections.CLASS_FILTERS.title
-                    }
+                    tab={staticDropDownData.filterSections.CLASS_FILTERS.title}
                   >
                     <Row type="flex" gutter={[5, 10]}>
                       <Col span={6}>
@@ -472,7 +484,7 @@ const StudentProfileReportFilters = ({
                   </Tabs.TabPane>
                 </Tabs>
               </Col>
-              <Col span={24} style={{ display: 'flex', paddingTop: '50px' }}>
+              <Col span={24} style={{ display: 'flex', paddingTop: '20px' }}>
                 <StyledEduButton
                   width="25%"
                   height="40px"
@@ -514,7 +526,12 @@ const StudentProfileReportFilters = ({
             display: reportId ? 'none' : 'flex',
           }}
         >
-          <StyledDropDownContainer xs={24} sm={12} lg={topFilterColSpan} data-cy="student">
+          <StyledDropDownContainer
+            xs={24}
+            sm={12}
+            lg={topFilterColSpan}
+            data-cy="student"
+          >
             <StudentAutoComplete
               firstLoad={firstLoad}
               termId={filters.termId}

@@ -5,16 +5,16 @@ import { get } from 'lodash'
 import { response } from '@edulastic/constants'
 import { DragDrop } from '@edulastic/common'
 import TextContainer from './TextContainer'
+import { getEvalautionColor } from '../../../../utils/evaluation'
 
 import { Pointer } from '../../../../styled/Pointer'
 import { Point } from '../../../../styled/Point'
 import { Triangle } from '../../../../styled/Triangle'
 
 import { IconWrapper } from './styled/IconWrapper'
-import { RightIcon } from './styled/RightIcon'
-import { WrongIcon } from './styled/WrongIcon'
 import { WithPopover } from './WithPopover'
 import { AnswerBox } from './styled/AnswerBox'
+import { IndexBox } from './styled/IndexBox'
 
 const ALPHABET = 'abcdefghijklmnopqrstuvwxyz'
 const { DropContainer } = DragDrop
@@ -23,6 +23,7 @@ const CheckboxTemplateBox = ({
   index,
   showAnswer,
   checkAnswer,
+  responseContainers,
   responseContainer,
   responsecontainerindividuals,
   responseBtnStyle,
@@ -37,6 +38,7 @@ const CheckboxTemplateBox = ({
   fontSize,
   isPrintPreview = false,
   options = [],
+  answerScore,
   idValueMap = {},
 }) => {
   const {
@@ -45,8 +47,6 @@ const CheckboxTemplateBox = ({
     left: respLeft,
     top: respTop,
   } = responseContainer
-
-  const status = evaluation[index] ? 'right' : 'wrong'
 
   const userAnswer = useMemo(() => {
     const answersIds = userSelections[index]?.optionIds || []
@@ -58,6 +58,14 @@ const CheckboxTemplateBox = ({
     get(userSelections, `[${index}].responseBoxID`, false) &&
     !!get(userSelections, `[${index}].optionIds`, []).length &&
     evaluation[index] !== undefined
+
+  const { fillColor, mark, indexBgColor } = getEvalautionColor(
+    answerScore,
+    evaluation[index],
+    isChecked,
+    responseContainers?.length === evaluation?.length &&
+      evaluation?.every((e) => e)
+  )
 
   const btnStyle = {
     widthpx: respWidth,
@@ -107,21 +115,10 @@ const CheckboxTemplateBox = ({
         : null,
   }
 
-  let containerClassName = `imagelabeldragdrop-droppable active ${
-    isChecked ? 'check-answer' : 'noAnswer'
-  } ${status}`
-  containerClassName =
-    showAnswer || checkAnswer
-      ? `${containerClassName} show-answer`
-      : containerClassName
-
   const icons = isSnapFitValues &&
     (checkAnswer || (showAnswer && !lessMinWidth)) && (
       <>
-        <IconWrapper>
-          {isChecked && status === 'right' && <RightIcon />}
-          {isChecked && status === 'wrong' && <WrongIcon />}
-        </IconWrapper>
+        {mark && <IconWrapper>{mark}</IconWrapper>}
         <Pointer
           className={responseContainer.pointerPosition}
           width={respWidth}
@@ -132,7 +129,9 @@ const CheckboxTemplateBox = ({
       </>
     )
 
-  const responseBoxIndex = showAnswer && <div className="index">{indexStr}</div>
+  const responseBoxIndex = showAnswer && (
+    <IndexBox bgColor={indexBgColor}>{indexStr}</IndexBox>
+  )
 
   return (
     <WithPopover
@@ -140,24 +139,17 @@ const CheckboxTemplateBox = ({
       containerDimensions={{ width: respWidth, height: respHeight }}
       index={index}
       userAnswer={userAnswer}
-      status={status}
       checkAnswer={checkAnswer}
-      className={containerClassName}
       indexStr={indexStr}
     >
       <DropContainer
         index={index}
         style={dropContainerStyle}
-        className={containerClassName}
         drop={onDropHandler}
         disableResponse={disableResponse}
         noBorder
       >
-        <AnswerBox
-          checked={isChecked}
-          correct={status === 'right'}
-          isPrintPreview={isPrintPreview}
-        >
+        <AnswerBox isPrintPreview={isPrintPreview} fillColor={fillColor}>
           {responseBoxIndex}
           <TextContainer
             options={options}
@@ -167,9 +159,6 @@ const CheckboxTemplateBox = ({
             showAnswer={showAnswer}
             checkAnswer={checkAnswer}
             lessMinWidth={lessMinWidth}
-            className={containerClassName}
-            status={status}
-            isChecked={isChecked}
             style={
               checkAnswer
                 ? {

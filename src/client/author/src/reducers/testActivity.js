@@ -23,7 +23,7 @@ import {
   RESPONSE_ENTRY_SCORE_SUCCESS,
   UPDATE_PAUSE_STATUS_ACTION,
   SET_UPDATED_ACTIVITY_IN_ENTITY,
-  CORRECT_ITEM_UPDATE_SUCCESS,
+  RELOAD_LCB_DATA_IN_STUDENT_VIEW,
 } from '../constants/actions'
 import {
   transformGradeBookResponse,
@@ -118,6 +118,7 @@ const initialState = {
 const reducer = (state = initialState, { type, payload }) => {
   let nextState
   switch (type) {
+    case RELOAD_LCB_DATA_IN_STUDENT_VIEW:
     case RECEIVE_TESTACTIVITY_REQUEST:
       return {
         ...state,

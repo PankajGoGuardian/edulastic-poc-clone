@@ -1,5 +1,5 @@
 import { takeEvery, put, all, select, call } from 'redux-saga/effects'
-import { isEmpty, values } from 'lodash'
+import { isEmpty, values, keyBy } from 'lodash'
 
 import { testItemsApi, attchmentApi as attachmentApi } from '@edulastic/api'
 import {
@@ -27,6 +27,7 @@ import { CHANGE_PREVIEW, CHANGE_VIEW } from '../../author/src/constants/actions'
 import { getTypeAndMsgBasedOnScore } from '../../common/utils/helpers'
 import { scratchpadDomRectSelector } from '../../common/components/Scratchpad/duck'
 import { getUserRole } from '../../author/src/selectors/user'
+import { evaluateItem } from '../../author/src/utils/evalution'
 
 const { playerSkinValues } = testConstants
 
@@ -133,11 +134,35 @@ function* evaluateAnswers({ payload: groupId }) {
             shuffledOptions: studentActivity.shuffledOptions,
             userWork: studentActivity.userWork,
           }
-    const { evaluations: _evaluations, maxScore, score } = yield call(
-      testItemsApi.evaluation,
-      testItemId,
-      activity
-    )
+
+    let evaluationObj = {}
+    let evaluations = {}
+    if (role === roleuser.TEACHER) {
+      const {
+        itemLevelScore,
+        itemLevelScoring = false,
+        itemGradingType,
+        assignPartialCredit,
+      } = items[currentItem]
+      const itemQuestions = keyBy(items[currentItem]?.data?.questions, 'id')
+      evaluationObj = yield evaluateItem(
+        allAnswers,
+        itemQuestions,
+        itemLevelScoring,
+        itemLevelScore,
+        testItemId,
+        itemGradingType,
+        assignPartialCredit
+      )
+      evaluations = evaluationObj?.evaluation
+    } else {
+      evaluationObj = yield call(testItemsApi.evaluation, testItemId, activity)
+      const { evaluations: _evaluations } = evaluationObj
+      Object.keys(_evaluations).forEach((item) => {
+        evaluations[`${testItemId}_${item}`] = _evaluations[item]
+      })
+    }
+    const { maxScore, score = 0 } = evaluationObj
     const [type, message] = getTypeAndMsgBasedOnScore(score, maxScore)
     yield put({
       type: CHANGE_PREVIEW,
@@ -150,10 +175,6 @@ function* evaluateAnswers({ payload: groupId }) {
       payload: {
         view: 'preview',
       },
-    })
-    const evaluations = {}
-    Object.keys(_evaluations).forEach((item) => {
-      evaluations[`${testItemId}_${item}`] = _evaluations[item]
     })
     yield put({
       type: ADD_ITEM_EVALUATION,

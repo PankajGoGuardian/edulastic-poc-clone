@@ -11,7 +11,6 @@ export function WithPopover({
   containerDimensions,
   fontSize,
   className,
-  status,
   checkAnswer,
   indexStr,
 }) {
@@ -38,7 +37,6 @@ export function WithPopover({
       <PopoverContent
         fontSize={fontSize}
         answer={userAnswer}
-        status={status}
         className={className}
         checkAnswer={checkAnswer}
         indexStr={indexStr}
@@ -62,13 +60,6 @@ export function WithPopover({
 const Wrapper = styled.div`
   .text-wrapper {
     margin-right: auto;
-    width: calc(100% - 30px) !important;
     overflow: hidden;
-
-    ::after {
-      content: '...';
-      position: absolute;
-      right: 1rem;
-    }
   }
 `

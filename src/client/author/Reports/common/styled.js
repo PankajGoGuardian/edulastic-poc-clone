@@ -551,7 +551,7 @@ export const StyledP = styled.p`
 export const NoDataContainer = styled.div`
   background: white;
   color: ${fadedBlack};
-  height: 500px;
+  margin-top: 290px;
   display: flex;
   justify-content: center;
   align-items: center;

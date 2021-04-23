@@ -35,6 +35,7 @@ const BasicFields = ({
     email,
     firstName,
     lastName,
+    middleName,
     username,
     googleId,
     canvasId,
@@ -136,13 +137,16 @@ const BasicFields = ({
         setFoundContactEmails(foundUser.contactEmails)
         const userFirstName = foundUser.firstName ? foundUser.firstName : ''
         const userLastName = foundUser.lastName ? foundUser.lastName : ''
+        const userMiddleName = foundUser.middleName ? foundUser.middleName : ''
         if (foundUser.contactEmails?.length > 0) {
           setFields({ contactEmails: foundUser.contactEmails.join(',') })
         }
         if (userFirstName)
           setFields({
             fullName: {
-              value: `${userFirstName} ${userLastName}`,
+              value: `${userFirstName} ${userMiddleName || ''} ${
+                userLastName || ''
+              }`,
             },
           })
       }
@@ -290,6 +294,21 @@ const BasicFields = ({
                   data-cy="fname"
                   prefix={<IconUser color={themeColor} />}
                   placeholder="Enter the first name of the user"
+                />
+              )}
+            </Form.Item>
+          </Field>
+          <Field name="middleName">
+            <FieldLabel>Middle name</FieldLabel>
+            <Form.Item>
+              {getFieldDecorator('middleName', {
+                initialValue: middleName || '',
+              })(
+                <TextInputStyled
+                  padding="0px 15px 0px 30px"
+                  data-cy="mname"
+                  prefix={<IconUser color={themeColor} />}
+                  placeholder="Enter the middle name of the user"
                 />
               )}
             </Form.Item>

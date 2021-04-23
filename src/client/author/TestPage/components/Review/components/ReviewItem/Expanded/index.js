@@ -143,7 +143,7 @@ const Expanded = ({
                 height="32px"
                 margin="0px 0px 0px 5px"
                 fontSize="10px"
-                text="U"
+                text="Z"
                 fontWeight="700"
               />
             )}
@@ -255,7 +255,7 @@ const Expanded = ({
                     height="32px"
                     margin="0px 0px 0px 5px"
                     fontSize="10px"
-                    text="U"
+                    text="Z"
                     fontWeight="700"
                   />
                 )}

@@ -1894,9 +1894,14 @@ function* resetPasswordRequestSaga({ payload }) {
 
 function* resetMyPasswordRequestSaga({ payload }) {
   try {
-    yield call(userApi.resetMyPassword, payload)
-    notification({ type: 'success', messageKey: 'passwordChangedSucessfully' })
-    yield put({ type: RESET_MY_PASSWORD_SUCCESS })
+    const res = yield call(userApi.resetMyPassword, payload)
+    if (res?.status === 200) {
+      notification({
+        type: 'success',
+        messageKey: 'passwordChangedSucessfully',
+      })
+      yield put({ type: RESET_MY_PASSWORD_SUCCESS })
+    }
   } catch (e) {
     console.error(e)
     notification({ messageKey: 'failedToResetPassword' })

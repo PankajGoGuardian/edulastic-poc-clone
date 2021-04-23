@@ -93,30 +93,29 @@ function KeypadDropdown({
     <StyledSelectContainer>
       <SelectInputStyled
         data-cy="key-pad-option"
-        defaultValue={keypadDropdownValue}
+        value={keypadDropdownValue}
         onChange={handleChange}
         getPopupContainer={(triggerNode) => triggerNode.parentNode}
         disabled={disabled}
       >
-        {predefinedKeypads.map((keypad) => (
-          <Select.Option key={keypad.label} value={keypad.value}>
-            {keypad.label}
-          </Select.Option>
-        ))}
+        {customKeypads.length > 0 &&
+          customKeypads.map((keypad) => (
+            <Select.Option key={keypad._id} value={keypad._id}>
+              {keypad.label}
+            </Select.Option>
+          ))}
         {testKeypad && (
           <Select.Option value={testKeypad._id}>
             {testKeypad.label}
           </Select.Option>
         )}
-        {customKeypads.length > 0 && (
-          <Select.OptGroup label="My custom keypads">
-            {customKeypads.map((keypad) => (
-              <Select.Option key={keypad._id} value={keypad._id}>
-                {keypad.label}
-              </Select.Option>
-            ))}
-          </Select.OptGroup>
-        )}
+        <Select.OptGroup label="Standard keypads">
+          {predefinedKeypads.map((keypad) => (
+            <Select.Option key={keypad.label} value={keypad.value}>
+              {keypad.label}
+            </Select.Option>
+          ))}
+        </Select.OptGroup>
       </SelectInputStyled>
     </StyledSelectContainer>
   )

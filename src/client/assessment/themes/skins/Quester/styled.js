@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Popover, Dropdown, Menu, Icon } from 'antd'
+import { Popover, Dropdown, Menu, Icon, Button } from 'antd'
 import { themes } from '../../../../theme'
 
 const {
@@ -34,7 +34,7 @@ export const StyledButton = styled.div`
   }
 `
 
-export const ControlBtn = styled.button`
+export const ControlBtn = styled(Button)`
   border: 1px solid ${button.background};
   color: ${button.textColor};
   background-color: ${button.background};
@@ -57,6 +57,9 @@ export const ControlBtn = styled.button`
   }
   &:focus {
     outline: none;
+  }
+  i {
+    display: none;
   }
   &[disabled] {
     background-color: ${button.background};

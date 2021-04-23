@@ -347,6 +347,7 @@ class StudentSignup extends React.Component {
               data-cy="password"
               prefix={<IconLock color={themeColor} />}
               type="password"
+              autoComplete="off"
               placeholder="Password"
             />
           )}

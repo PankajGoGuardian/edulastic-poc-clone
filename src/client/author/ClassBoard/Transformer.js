@@ -449,15 +449,11 @@ export function getStandardsForStandardBasedReport(
     (x) => `${x._id}`
   )
   const standardsQuestionsMap = {}
-  const questions = testItems.flatMap((x) =>
-    some(
-      x.data.questions,
-      ({ validation }) => validation && validation.unscored
-    )
-      ? []
-      : x.data.questions
-  )
+  const questions = testItems.flatMap((x) => x.data.questions)
   for (const q of questions) {
+    if (q?.validation?.unscored) {
+      continue
+    }
     const standards =
       q.alignment
         ?.flatMap((x) => x?.domains || [])

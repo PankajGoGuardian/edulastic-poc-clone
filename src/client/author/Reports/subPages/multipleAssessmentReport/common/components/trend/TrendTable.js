@@ -25,6 +25,9 @@ import BackendPagination from '../../../../../common/components/BackendPaginatio
 const StyledTable = styled(Table)`
   .ant-table-layout-fixed {
     .ant-table-scroll {
+      .ant-table-body {
+        padding-bottom: 60px;
+      }
       table tbody tr td {
         border-bottom: 1px solid #e9e9e9;
       }
@@ -77,6 +80,8 @@ const formatText = (test, type) => {
   if (test.records[0].progressStatus === 2) return 'Absent'
 
   if (test.records[0].progressStatus === 3) return 'Not Started'
+
+  if (test.records[0].progressStatus === 0) return 'In Progress'
 
   if (type == 'score') {
     return `${test[type]}%`

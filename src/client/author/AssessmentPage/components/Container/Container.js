@@ -320,9 +320,9 @@ class Container extends React.Component {
       if (status !== statusConstants.PUBLISHED || updated) {
         this.handlePublishTest(true)
       } else {
-        const { id } = match.params
-        if (id) {
-          history.push(`/author/assignments/${id}`)
+        const { assessmentId } = match.params
+        if (assessmentId) {
+          history.push(`/author/assignments/${assessmentId}`)
         }
       }
     }
@@ -450,7 +450,10 @@ class Container extends React.Component {
           onUnload
           message={(loc = {}) => {
             const { pathname = '' } = loc
-            const allow = pathname.startsWith('/author/assessments/')
+            const allow =
+              pathname.startsWith('/author/tests/') ||
+              pathname.startsWith('/author/assignments/') ||
+              pathname.startsWith('/author/assessments/')
 
             if (allow) {
               return true

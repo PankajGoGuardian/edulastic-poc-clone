@@ -7,7 +7,8 @@ export const StyledProgress = styled(Progress)`
   .ant-progress-text {
     color: ${(props) => props.textColor || '#434b5d'};
     font-size: ${(props) => props.textSize || '#35px'};
-    margin-top: -7px !important;
+    margin-top: ${(props) =>
+      props.marginTop ? props.marginTop : '-7px !important'};
     font-weight: bold;
   }
 `
@@ -39,7 +40,7 @@ export const GraphDescription = styled.span`
   text-transform: uppercase;
   position: absolute;
   width: 100%;
-  top: 57%;
+  top: ${(props) => (props.top ? props.top : '57%')};
 `
 
 export const GraphInfo = styled.div`

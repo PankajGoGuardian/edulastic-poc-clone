@@ -2,9 +2,9 @@ import React from 'react'
 import styled from 'styled-components'
 import { Spin } from 'antd'
 
-const SpinLoader = ({ position, height }) => (
+const SpinLoader = ({ position, height, ...props }) => (
   <SpinWrapper position={position} height={height}>
-    <Spin />
+    <Spin {...props} />
   </SpinWrapper>
 )
 

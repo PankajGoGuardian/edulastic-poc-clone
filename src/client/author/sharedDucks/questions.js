@@ -123,6 +123,9 @@ const updateQuestion = (state, { payload }) => {
         : (draft.possibleResponseGroups[0].responses = draft.possibleResponses)
     })
   } else if (
+    // edit/regrade in lcb, there is no previous question
+    // @see https://snapwiz.atlassian.net/browse/EV-27314
+    prevGroupPossibleResponsesState &&
     groupPossibleResponses === false &&
     groupPossibleResponses !== prevGroupPossibleResponsesState
   ) {

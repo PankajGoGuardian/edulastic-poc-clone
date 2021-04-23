@@ -54,7 +54,7 @@ const HeaderButton = styled(EduButton)`
   }
 `
 
-const TestStatus = styled.span`
+const PlaylistStatus = styled.span`
   margin-top: 0;
   color: ${(props) => (props.mode === 'embedded' ? white : textColor)};
   background: ${(props) => (props.mode === 'embedded' ? textColor : white)};
@@ -228,9 +228,9 @@ const CurriculumHeader = ({
   const headingSubContent = (
     <>
       {!(urlHasUseThis && !isPublisherUser && switchPlaylist) ? (
-        <TestStatus className={status} data-cy="playlist-status">
+        <PlaylistStatus className={status} data-cy="playlist-status">
           {status}
-        </TestStatus>
+        </PlaylistStatus>
       ) : (
         ''
       )}

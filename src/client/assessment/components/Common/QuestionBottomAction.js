@@ -248,8 +248,19 @@ const QuestionBottomAction = ({
 
   const shouldHideScoringBlock = item?.scoringDisabled
 
+  const { sampleAnswer } = item
+
   const showSolution =
-    (isLCBView || isExpressGrader || previewTab === 'show') && !isPrintPreview
+    (isLCBView || isExpressGrader || previewTab === 'show') &&
+    !isPrintPreview &&
+    !(
+      !sampleAnswer ||
+      item.type === 'passage' ||
+      item.type === 'passageWithQuestions' ||
+      item.type === 'video' ||
+      item.type === 'resource' ||
+      item.type === 'text'
+    )
 
   return (
     <>

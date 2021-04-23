@@ -11,17 +11,6 @@ const Explanation = (props) => {
 
   const { sampleAnswer } = question
 
-  if (
-    !sampleAnswer ||
-    question.type === 'passage' ||
-    question.type === 'passageWithQuestions' ||
-    question.type === 'video' ||
-    question.type === 'resource' ||
-    question.type === 'text'
-  ) {
-    return null
-  }
-
   return (
     <div
       data-cy="explanation-container"

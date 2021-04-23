@@ -1,11 +1,23 @@
-import { titleColor } from '@edulastic/colors'
+import { darkGrey, titleColor } from '@edulastic/colors'
 import { CustomModalStyled, EduButton, FieldLabel } from '@edulastic/common'
 import { curriculumGrades } from '@edulastic/constants'
+import { IconUsers } from '@edulastic/icons'
 import { Spin } from 'antd'
 import PropTypes from 'prop-types'
 import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
-import { ContentWrapper, CurriculumCard, StyledTag, ModalTitle } from './styled'
+import {
+  ContentWrapper,
+  CurriculumCard,
+  StyledTag,
+  ModalTitle,
+  Thumbnail,
+  CardFooter,
+  ShareIcon,
+  PlaylistId,
+  IconText,
+  TestStatus,
+} from './styled'
 
 const TrialConfirmationModal = ({
   visible,
@@ -17,6 +29,7 @@ const TrialConfirmationModal = ({
   history,
   subType,
   fetchPlaylists,
+  playlists = [],
 }) => {
   const [selectedProducts, setSelectedProducts] = useState([])
   const [selectedGrades, setSelectedGrades] = useState([])
@@ -138,7 +151,7 @@ const TrialConfirmationModal = ({
           visible={visible}
           title={modalTitle}
           onCancel={handleCloseModal}
-          width={hasOnlyTeacherPremium ? '700px' : '935px'}
+          width={hasOnlyTeacherPremium ? '700px' : '950px'}
           footer={showFooter}
           centered
         >
@@ -195,13 +208,32 @@ const TrialConfirmationModal = ({
                     SELECT YOUR CURRICULUM
                   </FieldLabel>
                   <ContentWrapper>
-                    <CurriculumCard>1</CurriculumCard>
-                    <CurriculumCard>2</CurriculumCard>
-                    <CurriculumCard>3</CurriculumCard>
-                    <CurriculumCard>4</CurriculumCard>
-                    <CurriculumCard>5</CurriculumCard>
-                    <CurriculumCard>6</CurriculumCard>
-                    <CurriculumCard>7</CurriculumCard>
+                    {playlists.map(({ _source, _id }) => (
+                      <CurriculumCard>
+                        <Thumbnail img={_source.thumbnail} />
+                        <CardFooter>
+                          <PlaylistId>
+                            <span>#</span>
+                            <span>{_id?.substr(_id.length - 6)}</span>
+                          </PlaylistId>
+
+                          <ShareIcon>
+                            <IconUsers
+                              color={darkGrey}
+                              width={10}
+                              height={10}
+                            />
+                            <IconText>{_source.analytics[0].usage}</IconText>
+                          </ShareIcon>
+                          <TestStatus
+                            data-cy="test-status"
+                            status={_source.status}
+                          >
+                            {_source.status}
+                          </TestStatus>
+                        </CardFooter>
+                      </CurriculumCard>
+                    ))}
                   </ContentWrapper>
                 </div>
               </>

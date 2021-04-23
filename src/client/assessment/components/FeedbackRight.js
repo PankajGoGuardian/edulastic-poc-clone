@@ -124,7 +124,7 @@ class FeedbackRight extends Component {
     }
 
     if (activity && isUndefined(changed)) {
-      const { score: _score, qActId, _id } = activity
+      let { score: _score, qActId, _id } = activity
       let { maxScore: _maxScore } = activity
       const _feedback = get(activity, 'feedback.text', '')
       newState = { ...newState, qActId: qActId || _id }

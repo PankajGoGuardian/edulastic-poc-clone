@@ -54,6 +54,7 @@ export const compareByMap = {
   iepStatus: 'iepStatus',
   frlStatus: 'frlStatus',
   standard: 'standard',
+  hispanicEthnicity: 'hispanicEthnicity',
 }
 
 const groupByCompareKey = (metricInfo, compareBy) => {
@@ -74,6 +75,8 @@ const groupByCompareKey = (metricInfo, compareBy) => {
       return groupBy(metricInfo, 'ellStatus')
     case 'iepStatus':
       return groupBy(metricInfo, 'iepStatus')
+    case 'hispanicEthnicity':
+      return groupBy(metricInfo, 'hispanicEthnicity')
     case 'frlStatus':
       return groupBy(metricInfo, 'frlStatus')
     case 'standard':
@@ -135,6 +138,8 @@ export const augmentWithData = (
     case 'iepStatus':
       return metricInfo
     case 'frlStatus':
+      return metricInfo
+    case 'hispanicEthnicity':
       return metricInfo
     case 'standard':
       return map(metricInfo, (metric) => {
@@ -277,9 +282,14 @@ export const parseTrendData = (
     })
     const dInfo = {}
     if (
-      ['race', 'gender', 'ellStatus', 'iepStatus', 'frlStatus'].includes(
-        compareBy
-      )
+      [
+        'race',
+        'gender',
+        'ellStatus',
+        'iepStatus',
+        'frlStatus',
+        'hispanicEthnicity',
+      ].includes(compareBy)
     ) {
       dInfo[compareBy] = isEmpty(metricId) ? '-' : metricId
     }

@@ -202,6 +202,38 @@
           "width": 250
         }
       ],
+      "hispanicEthnicity": [
+        {
+          "title": "Hispanic Ethnicity",
+          "dataIndex": "compareBylabel",
+          "key": "compareBylabel",
+          "width": 250
+        },
+        {
+          "title": "#Submitted",
+          "dataIndex": "graded",
+          "key": "graded",
+          "width": 70
+        },
+        {
+          "title": "#Absent",
+          "dataIndex": "absent",
+          "key": "absent",
+          "width": 70
+        },
+        {
+          "title": "District(Score%)",
+          "dataIndex": "districtAvg",
+          "key": "districtAvg",
+          "width": 250
+        },
+        {
+          "title": "Avg.Student(Score%)",
+          "dataIndex": "avgStudentScorePercentUnrounded",
+          "key": "avgStudentScorePercentUnrounded",
+          "width": 250
+        }
+      ],
       "gender": [
         {
           "title": "Gender",
@@ -449,6 +481,38 @@
       "race": [
         {
           "title": "Race",
+          "dataIndex": "compareBylabel",
+          "key": "compareBylabel",
+          "width": 250
+        },
+        {
+          "title": "#Submitted",
+          "dataIndex": "graded",
+          "key": "graded",
+          "width": 70
+        },
+        {
+          "title": "#Absent",
+          "dataIndex": "absent",
+          "key": "absent",
+          "width": 70
+        },
+        {
+          "title": "District Avg.Score",
+          "dataIndex": "districtAvg",
+          "key": "districtAvg",
+          "width": 250
+        },
+        {
+          "title": "Avg.Score",
+          "dataIndex": "avgStudentScoreUnrounded",
+          "key": "avgStudentScoreUnrounded",
+          "width": 250
+        }
+      ],
+      "hispanicEthnicity": [
+        {
+          "title": "Hispanic Ethnicity",
           "dataIndex": "compareBylabel",
           "key": "compareBylabel",
           "width": 250
@@ -754,6 +818,38 @@
           "width": 250
         }
       ],
+      "hispanicEthnicity": [
+        {
+          "title": "Hispanic Ethnicity",
+          "dataIndex": "compareBylabel",
+          "key": "compareBylabel",
+          "width": 250
+        },
+        {
+          "title": "#Submitted",
+          "dataIndex": "graded",
+          "key": "graded",
+          "width": 70
+        },
+        {
+          "title": "#Absent",
+          "dataIndex": "absent",
+          "key": "absent",
+          "width": 70
+        },
+        {
+          "title": "Below Standard",
+          "dataIndex": "belowStandard",
+          "key": "belowStandard",
+          "width": 250
+        },
+        {
+          "title": "Above Standard",
+          "dataIndex": "aboveStandard",
+          "key": "aboveStandard",
+          "width": 250
+        }
+      ],
       "gender": [
         {
           "title": "Gender",
@@ -965,6 +1061,26 @@
       "race": [
         {
           "title": "Race",
+          "dataIndex": "compareBylabel",
+          "key": "compareBylabel",
+          "width": 250
+        },
+        {
+          "title": "#Submitted",
+          "dataIndex": "graded",
+          "key": "graded",
+          "width": 70
+        },
+        {
+          "title": "#Absent",
+          "dataIndex": "absent",
+          "key": "absent",
+          "width": 70
+        }
+      ],
+      "hispanicEthnicity": [
+        {
+          "title": "Hispanic Ethnicity",
           "dataIndex": "compareBylabel",
           "key": "compareBylabel",
           "width": 250

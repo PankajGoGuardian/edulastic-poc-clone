@@ -408,6 +408,23 @@ class UserForm extends React.Component {
                     )}
                   </Form.Item>
                 </Field>
+                <Field name="hispanicEthnicity">
+                  <FieldLabel>Hispanic Ethnicity</FieldLabel>
+                  <Form.Item>
+                    {getFieldDecorator('hispanicEthnicity', {
+                      initialValue: get(_source, 'hispanicEthnicity', ''),
+                    })(
+                      <SelectInputStyled
+                        getPopupContainer={(triggerNode) =>
+                          triggerNode.parentNode
+                        }
+                      >
+                        <Option value="Yes">Yes</Option>
+                        <Option value="No">No</Option>
+                      </SelectInputStyled>
+                    )}
+                  </Form.Item>
+                </Field>
                 <Field name="race">
                   <FieldLabel>Race</FieldLabel>
                   <Form.Item>
@@ -416,7 +433,6 @@ class UserForm extends React.Component {
                     })(<TextInputStyled placeholder="Race" />)}
                   </Form.Item>
                 </Field>
-
                 <Field name="dob" optional>
                   <FieldLabel>DOB</FieldLabel>
                   <Form.Item>

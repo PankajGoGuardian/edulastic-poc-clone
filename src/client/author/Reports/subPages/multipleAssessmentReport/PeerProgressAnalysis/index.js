@@ -50,6 +50,10 @@ const options = [
     key: 'frlStatus',
     title: 'FRL Status',
   },
+  {
+    key: 'hispanicEthnicity',
+    title: 'Hispanic Ethnicity',
+  },
 ]
 
 const PeerProgressAnalysis = ({

@@ -23,6 +23,7 @@ export const idToLabel = {
   frlStatus: 'frlStatus',
   ellStatus: 'ellStatus',
   iepStatus: 'iepStatus',
+  hispanicEthnicity: 'hispanicEthnicity',
 }
 
 export const idToName = {
@@ -35,6 +36,7 @@ export const idToName = {
   frlStatus: 'FRL Status',
   ellStatus: 'ELL Status',
   iepStatus: 'IEP Status',
+  hispanicEthnicity: 'Hispanic Ethnicity',
 }
 
 export const analyseByToName = {

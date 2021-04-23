@@ -43,6 +43,7 @@ export const compareByMode = {
   FRL_STATUS: 'frlStatus',
   ELL_STATUS: 'ellStatus',
   IEP_STATUS: 'iepStatus',
+  HISPANIC_ETHINCITY: 'hispanicEthnicity',
 }
 
 const lexicSort = (field) => (a, b) =>
@@ -152,6 +153,12 @@ export const compareByColumns = {
     width: 160,
     render: (status) => (status ? capitalize(status) : '-'),
   },
+  [compareByMode.HISPANIC_ETHINCITY]: {
+    title: 'Hispanic Ethnicity',
+    dataIndex: 'hispanicEthnicity',
+    key: 'hispanicEthnicity',
+    render: (he) => (he ? capitalize(he) : '-'),
+  }
 }
 
 export const getFormattedName = (name) => {

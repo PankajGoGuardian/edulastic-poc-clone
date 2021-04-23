@@ -46,6 +46,8 @@ const getCompareByDataKey = (compareByKey) => {
       return 'ellStatus'
     case 'iepStatus':
       return 'iepStatus'
+    case 'hispanicEthnicity':
+      return 'hispanicEthnicity'
     default:
       return ''
   }
@@ -70,6 +72,8 @@ const getRowName = (compareByKey, rowInfo = {}) => {
       return rowInfo.ellStatus
     case 'iepStatus':
       return rowInfo.iepStatus
+    case 'hispanicEthnicity':
+      return rowInfo.hispanicEthnicity
     case 'studentId':
     default:
       return getFormattedName(

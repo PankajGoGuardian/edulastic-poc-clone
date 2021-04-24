@@ -32,6 +32,7 @@ import {
 import { updateCorrectTestItemAction } from '../../../author/src/actions/classBoard'
 import {
   getAdditionalDataSelector,
+  getIsDocBasedTestSelector,
   getShowCorrectItemButton,
 } from '../../../author/ClassBoard/ducks'
 import {
@@ -100,6 +101,7 @@ const QuestionBottomAction = ({
   setCurrentStudentId,
   isQuestionView,
   isExpressGrader,
+  isDocBasedTest,
   ...questionProps
 }) => {
   // const [openQuestionModal, setOpenQuestionModal] = useState(false)
@@ -249,6 +251,7 @@ const QuestionBottomAction = ({
         <RightWrapper>
           {item &&
             !isStudentReport &&
+            !isDocBasedTest &&
             (isDisableCorrectItem ? (
               <Popover
                 content={
@@ -364,6 +367,7 @@ const enhance = compose(
       showCorrectItem: getShowCorrectItemButton(state),
       editItemId: get(state, ['authorUi', 'editItemId']),
       currentStudentId: get(state, ['authorUi', 'currentStudentId']),
+      isDocBasedTest: getIsDocBasedTestSelector(state),
     }),
     {
       setQuestionData: setQuestionDataAction,

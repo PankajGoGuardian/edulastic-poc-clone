@@ -64,7 +64,6 @@ import {
   googleSyncAssignmentGradesAction,
   schoologySyncAssignmentGradesAction,
   schoologySyncAssignmentAction,
-  cleverSyncAssignmentGradesAction,
 } from '../../../src/actions/assignments'
 import {
   canvasSyncAssignmentAction,
@@ -331,18 +330,6 @@ class ClassHeader extends Component {
     schoologySyncAssignmentGrades(data)
   }
 
-  handleCleverAssignmentGradesSync = (data) => {
-    const { cleverSyncAssignmentGrades, additionalData } = this.props
-    if (
-      additionalData.releaseScore ===
-      testContants.releaseGradeTypes.DONT_RELEASE
-    ) {
-      return notification({
-        msg: 'Please update release score policy to sync grades to clever',
-      })
-    }
-    cleverSyncAssignmentGrades(data)
-  }
   componentDidMount() {
     // if redirect is happening for LCB and user did action schoology sync
     const atlasShareOriginUrl =
@@ -397,7 +384,6 @@ class ClassHeader extends Component {
       isViewPassword,
       hasRandomQuestions,
       orgClasses,
-      districtPolicy,
       canvasSyncGrades,
       googleSyncAssignment,
       syncWithGoogleClassroomInProgress,
@@ -454,7 +440,6 @@ class ClassHeader extends Component {
       googleId: groupGoogleId,
       atlasId: groupAtlasId,
       atlasProviderName = '',
-      cleverId: groupCleverId,
     } = orgClasses.find(({ _id }) => _id === classId) || {}
     const showSyncGradesWithCanvasOption =
       canvasCode && canvasCourseSectionCode && canvasAllowedInstitutions.length
@@ -477,15 +462,6 @@ class ClassHeader extends Component {
     const showSchoologyGradeSyncOption =
       groupAtlasId &&
       atlasProviderName.toLocaleUpperCase() === 'SCHOOLOGY' &&
-      assignmentStatusForDisplay !== assignmentStatusConstants.NOT_OPEN &&
-      studentsUTAData.some(
-        (uta) =>
-          uta.graded === gradingStatus.GRADED ||
-          uta.UTASTATUS === testActivityStatus.SUBMITTED
-      )
-
-    const showCleverGradeSyncOption =
-      districtPolicy?.cleverGradeSyncEnabled &&
       assignmentStatusForDisplay !== assignmentStatusConstants.NOT_OPEN &&
       studentsUTAData.some(
         (uta) =>
@@ -662,19 +638,6 @@ class ClassHeader extends Component {
             disabled={syncWithSchoologyClassroomInProgress}
           >
             Sync with Schoology Classroom
-          </MenuItems>
-        )}
-        {showCleverGradeSyncOption && (
-          <MenuItems
-            key="key12"
-            onClick={() =>
-              this.handleCleverAssignmentGradesSync({
-                assignmentId,
-                groupId: classId,
-              })
-            }
-          >
-            Sync Grades to Schoology
           </MenuItems>
         )}
         <FeaturesSwitch
@@ -967,7 +930,6 @@ const enhance = compose(
       isViewPassword: getViewPasswordSelector(state),
       hasRandomQuestions: getHasRandomQuestionselector(state),
       orgClasses: getGroupList(state),
-      districtPolicy: get(state, 'user.user.orgData.policies.district'),
       canvasAllowedInstitutions: getCanvasAllowedInstitutionPoliciesSelector(
         state
       ),
@@ -996,7 +958,6 @@ const enhance = compose(
       canvasSyncGrades: canvasSyncGradesAction,
       googleSyncAssignment: googleSyncAssignmentAction,
       googleSyncAssignmentGrades: googleSyncAssignmentGradesAction,
-      cleverSyncAssignmentGrades: cleverSyncAssignmentGradesAction,
       toggleStudentReportCardPopUp: toggleStudentReportCardSettingsAction,
       canvasSyncAssignment: canvasSyncAssignmentAction,
       schoologySyncAssignment: schoologySyncAssignmentAction,

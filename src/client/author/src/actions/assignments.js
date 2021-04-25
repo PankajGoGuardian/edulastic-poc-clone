@@ -15,7 +15,6 @@ import {
   SYNC_ASSIGNMENT_GRADES_WITH_SCHOOLOGY_CLASSROOM_REQUEST,
   EDIT_TAGS_REQUEST,
   SET_TAGS_UPDATING_STATE,
-  SYNC_ASSIGNMENT_GRADES_WITH_CLEVER_REQUEST,
 } from '../constants/actions'
 
 export const googleSyncAssignmentAction = (payload) => ({
@@ -25,11 +24,6 @@ export const googleSyncAssignmentAction = (payload) => ({
 
 export const googleSyncAssignmentGradesAction = (payload) => ({
   type: SYNC_ASSIGNMENT_GRADES_WITH_GOOGLE_CLASSROOM_REQUEST,
-  payload,
-})
-
-export const cleverSyncAssignmentGradesAction = (payload) => ({
-  type: SYNC_ASSIGNMENT_GRADES_WITH_CLEVER_REQUEST,
   payload,
 })
 

@@ -32,6 +32,7 @@ import {
 import { updateCorrectTestItemAction } from '../../../author/src/actions/classBoard'
 import {
   getAdditionalDataSelector,
+  getIsDocBasedTestSelector,
   getShowCorrectItemButton,
 } from '../../../author/ClassBoard/ducks'
 import {
@@ -100,10 +101,12 @@ const QuestionBottomAction = ({
   setCurrentStudentId,
   isQuestionView,
   isExpressGrader,
+  isDocBasedTest,
   ...questionProps
 }) => {
   // const [openQuestionModal, setOpenQuestionModal] = useState(false)
   const [itemloading, setItemLoading] = useState(false)
+  const [hideScoring, setHideScoring] = useState(false)
 
   const onCloseQuestionModal = () => {
     setCurrentQuestion('')
@@ -142,6 +145,10 @@ const QuestionBottomAction = ({
     try {
       const testItem = await testItemsApi.getById(item.testItemId)
       const question = testItem.data.questions.find((q) => q.id === item.id)
+      setHideScoring(
+        question?.scoringDisabled ||
+          (testItem.itemLevelScoring && testItem.data.questions.length > 1)
+      )
       setQuestionData(question)
       setCurrentQuestion(question.id)
       setCurrentStudentId(studentId)
@@ -234,8 +241,6 @@ const QuestionBottomAction = ({
     </CorrectButton>
   )
 
-  const shouldHideScoringBlock = item?.scoringDisabled
-
   return (
     <>
       <BottomActionWrapper className={isStudentReport ? 'student-report' : ''}>
@@ -248,6 +253,7 @@ const QuestionBottomAction = ({
           {showCorrectItem &&
             item &&
             !isStudentReport &&
+            !isDocBasedTest &&
             (isDisableCorrectItem ? (
               <Popover
                 content={
@@ -279,7 +285,7 @@ const QuestionBottomAction = ({
             style={{ top: 10 }}
           >
             <AnswerContext.Provider value={{ isAnswerModifiable: true }}>
-              <HideScoringBlockContext.Provider value={shouldHideScoringBlock}>
+              <HideScoringBlockContext.Provider value={hideScoring}>
                 <QuestionComp
                   {...questionProps}
                   t={t}
@@ -364,6 +370,7 @@ const enhance = compose(
       showCorrectItem: getShowCorrectItemButton(state),
       editItemId: get(state, ['authorUi', 'editItemId']),
       currentStudentId: get(state, ['authorUi', 'currentStudentId']),
+      isDocBasedTest: getIsDocBasedTestSelector(state),
     }),
     {
       setQuestionData: setQuestionDataAction,

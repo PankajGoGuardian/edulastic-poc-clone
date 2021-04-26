@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { InputNumber } from 'antd'
-import { cloneDeep, isEmpty } from 'lodash'
+import { cloneDeep } from 'lodash'
 import { ThemeProvider } from 'styled-components'
 
 import { math } from '@edulastic/constants'
@@ -24,12 +24,17 @@ const QuestionMath = ({ onUpdate, question }) => {
 
   const handleAnswerChange = (prop, value) => {
     const { validation, extraOpts = {} } = question
+
+    let updatedExtraOpts = {}
     const nextValidation = cloneDeep(validation)
     if (prop === 'options') {
       Object.keys(value).forEach((optKey) => {
         if (simplifiedOptions.includes(optKey)) {
           value.isSimplified = true
-          extraOpts[optKey] = value[optKey]
+          updatedExtraOpts = {
+            ...extraOpts,
+            [optKey]: value[optKey],
+          }
           delete value[optKey]
         }
       })
@@ -68,9 +73,7 @@ const QuestionMath = ({ onUpdate, question }) => {
     }
     const data = {
       validation: nextValidation,
-    }
-    if (!isEmpty(extraOpts)) {
-      data.extraOpts = extraOpts
+      extraOpts: updatedExtraOpts,
     }
     onUpdate(data)
   }

@@ -22,6 +22,7 @@ import {
   SelectInputStyled,
 } from '../../../../styled/InputStyles'
 import { CheckboxLabel } from '../../../../styled/CheckboxWithLabel'
+import { validations } from '../../../../utils/inputsValidations'
 
 class AxisLabelsMoreOptions extends Component {
   constructor(props) {
@@ -115,8 +116,19 @@ class AxisLabelsMoreOptions extends Component {
     const { graphData, setNumberline } = this.props
     const { numberlineAxis } = graphData
 
+    let valid = true
+    if (validations[name]) {
+      valid = validations[name](value)
+    }
+
+    if (!valid) {
+      return
+    }
+
     if (name !== 'specificPoints' && !value) {
       setNumberline({ ...numberlineAxis, [name]: 0 })
+    } else if (name === 'minorTicks') {
+      setNumberline({ ...numberlineAxis, [name]: +value })
     } else {
       setNumberline({ ...numberlineAxis, [name]: value })
     }

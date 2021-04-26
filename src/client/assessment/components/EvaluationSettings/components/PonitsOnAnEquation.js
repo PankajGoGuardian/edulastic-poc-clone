@@ -8,7 +8,7 @@ import {
 } from '@edulastic/common'
 import { HeadingLabel } from './InlineCheckOptions'
 import LabelWithHelper from './LabelWithHelper'
-import { validations } from './inputsValidations'
+import { validations } from '../../../utils/inputsValidations'
 
 const PonitsOnAnEquation = ({ optionKey, options, onChange }) => {
   const [isAllowed, setIsAllowed] = useState(false)

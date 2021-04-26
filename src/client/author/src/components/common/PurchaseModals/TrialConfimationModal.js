@@ -93,6 +93,7 @@ const TrialConfirmationModal = ({
   }, [hasOnlyTeacherPremium, selectedGrades, selectedProducts])
 
   const handleUseThisPlaylist = (playlist) => {
+    handleCloseModal()
     useThisPlayList(
       pick(playlist, ['_id', 'title', 'grades', 'subjects', 'customize'])
     )

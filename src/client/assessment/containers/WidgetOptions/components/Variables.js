@@ -209,24 +209,20 @@ const Variables = ({
 
   const types = Object.keys(variableTypes)
   const columns = Object.keys(variables).map((variableName) => {
-    const isFormula = variables[variableName].type.includes('FORMULA')
     return {
       title: variableName,
       dataIndex: variableName,
       key: variables[variableName].id,
       render: (text) => {
-        if (isFormula) {
-          return text !== 'Recursion_Error' ? (
-            <MathFormulaDisplay
-              dangerouslySetInnerHTML={{
-                __html: getMathFormulaTemplate(text),
-              }}
-            />
-          ) : (
-            <ErrorText />
-          )
-        }
-        return <span>{text}</span>
+        return text !== 'Recursion_Error' ? (
+          <MathFormulaDisplay
+            dangerouslySetInnerHTML={{
+              __html: getMathFormulaTemplate(text),
+            }}
+          />
+        ) : (
+          <ErrorText />
+        )
       },
     }
   })
@@ -621,17 +617,14 @@ const Variables = ({
                   </Col>
                 )}
                 <Col md={5} style={{ paddingTop: 10, paddingLeft: 12 }}>
-                  {isFormula && variable.exampleValue !== 'Recursion_Error' && (
+                  {variable.exampleValue !== 'Recursion_Error' && (
                     <MathFormulaDisplay
                       dangerouslySetInnerHTML={{
                         __html: getMathFormulaTemplate(variable.exampleValue),
                       }}
                     />
                   )}
-                  {isFormula && variable.exampleValue === 'Recursion_Error' && (
-                    <ErrorText />
-                  )}
-                  {!isFormula && <span>{variable.exampleValue}</span>}
+                  {variable.exampleValue === 'Recursion_Error' && <ErrorText />}
                 </Col>
               </Row>
             )

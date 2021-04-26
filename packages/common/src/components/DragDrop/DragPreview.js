@@ -27,8 +27,6 @@ const getItemStyles = (initialOffset, currentOffset, itemDimensions) => {
   return {
     transform,
     WebkitTransform: transform,
-    background: 'white',
-    border: '1px solid #000',
     ...itemDimensions,
   }
 }
@@ -144,8 +142,8 @@ const CustomDragLayer = ({ showPoint, centerPoint }) => {
 
   return (
     <DragPreviewContainer style={layerStyles} itemDimensions={itemDimensions}>
-      <div className="edu-drag-preview" style={style}>
-        {preview}
+      <div style={style}>
+        <div className="edu-drag-preview">{preview}</div>
         {showPoint && (
           <DraggingPointer centerPoint={centerPoint}>
             <DraggingPoint />
@@ -174,6 +172,8 @@ const DragPreviewContainer = styled.div`
     align-items: flex-start;
     justify-content: flex-start;
     border-radius: 2px;
+    background: white;
+    border: 1px solid #000;
   }
 `
 

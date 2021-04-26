@@ -64,15 +64,16 @@ const TrialConfirmationModal = ({
     history.push('/author/dashboard')
   }
 
-  const { subEndDate } = showTrialConfirmationMessage
+  // using hasTrial for trial and purchase both
+  const { subEndDate, hasTrial } = showTrialConfirmationMessage
 
   const productsToShow = products.filter(({ linkedProductId }) =>
     collections.find(({ _id }) => _id === linkedProductId)
   )
 
   const hasOnlyTeacherPremium =
-    productsToShow.length === 0 &&
-    (subType === 'premium' || subType === 'TRIAL_PREMIUM')
+    hasTrial === 'onlyPremiumTrial' &&
+    (subType === 'premium' || subType === 'TRIAL_PREMIUM') // using hasTrial, its get loaded before the confirmation modal opens
 
   useEffect(() => {
     if (!hasOnlyTeacherPremium) {

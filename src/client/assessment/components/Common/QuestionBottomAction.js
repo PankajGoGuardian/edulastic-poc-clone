@@ -110,11 +110,11 @@ const QuestionBottomAction = ({
   // const [openQuestionModal, setOpenQuestionModal] = useState(false)
   const [itemloading, setItemLoading] = useState(false)
 
-  const [show, updateShow] = useState(isGrade)
+  const [showExplanation, updateShowExplanation] = useState(isGrade)
 
   const onClickShowSolutionHandler = (e) => {
     e.stopPropagation()
-    updateShow(true)
+    updateShowExplanation(true)
   }
 
   const onCloseQuestionModal = () => {
@@ -250,22 +250,20 @@ const QuestionBottomAction = ({
 
   const { sampleAnswer } = item
 
-  const showSolution =
+  const isSolutuionVisible =
     (isLCBView || isExpressGrader || previewTab === 'show') &&
     !isPrintPreview &&
     !(
       !sampleAnswer ||
-      item.type === 'passage' ||
-      item.type === 'passageWithQuestions' ||
-      item.type === 'video' ||
-      item.type === 'resource' ||
-      item.type === 'text'
+      ['passage', 'passageWithQuestions', 'video', 'resource', 'text'].includes(
+        item.type
+      )
     )
 
   return (
     <>
       <BottomActionWrapper className={isStudentReport ? 'student-report' : ''}>
-        {showSolution && !show && (
+        {isSolutuionVisible && !showExplanation && (
           <ShowExplanation
             width="110px"
             height="30px"
@@ -300,11 +298,11 @@ const QuestionBottomAction = ({
           {timeSpent && <TimeSpent time={timeSpent} />}
         </RightWrapper>
       </BottomActionWrapper>
-      {showSolution && (
+      {isSolutuionVisible && (
         <Explanation
           isStudentReport={isStudentReport}
           question={item}
-          show={show}
+          show={showExplanation}
         />
       )}
       {!isStudentReport &&

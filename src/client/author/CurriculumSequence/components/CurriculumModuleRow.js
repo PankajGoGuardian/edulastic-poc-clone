@@ -967,7 +967,7 @@ class ModuleRow extends Component {
                               style={rowInlineStyle}
                               arrow
                             >
-                              <IconActionButton>
+                              <IconActionButton data-cy="moreMenu">
                                 <IconMoreVertical
                                   width={5}
                                   height={14}
@@ -1266,7 +1266,7 @@ class ModuleRow extends Component {
                                             : moduleData?.contentTitle
                                         }
                                       >
-                                        <span>
+                                        <span data-cy="testName">
                                           {moduleData?.assignments?.length
                                             ? moduleData?.assignments?.[0]
                                                 ?.title

@@ -53,7 +53,14 @@ export const getAddOnProductIds = createSelector(
   subscriptionSelector,
   (state) => state.addOnProductIds
 )
-
+export const getShowTrialSubsConfirmationSelector = createSelector(
+  subscriptionSelector,
+  (state) => state.showTrialSubsConfirmation
+)
+export const getShowTrialConfirmationMessageSelector = createSelector(
+  subscriptionSelector,
+  (state) => state.showTrialConfirmationMessage
+)
 export const getBookKeepersInviteSuccessStatus = createSelector(
   subscriptionSelector,
   (state) => state.isBookKeepersInviteSuccess
@@ -473,6 +480,7 @@ function* handleStripePayment({ payload }) {
         yield call(fetchUserSubscription)
         yield put(fetchUserAction({ background: true }))
         yield put(fetchMultipleSubscriptionsAction({ background: true }))
+        yield put(slice.actions.trialSubsConfirmationAction(true))
       } else {
         notification({
           msg: `API Response failed: ${error}`,

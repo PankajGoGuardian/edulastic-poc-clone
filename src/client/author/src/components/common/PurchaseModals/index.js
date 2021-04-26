@@ -5,6 +5,7 @@ import { withRouter } from 'react-router-dom'
 import loadable from '@loadable/component'
 import { compose } from 'redux'
 import { uniq, compact } from 'lodash'
+import moment from 'moment'
 import {
   getItemBankSubscriptions,
   getProducts,
@@ -14,13 +15,23 @@ import {
   getAddOnProductIds,
   getBookKeepersInviteSuccessStatus,
   slice,
+  getShowTrialSubsConfirmationSelector,
+  getShowTrialConfirmationMessageSelector,
 } from '../../../../Subscription/ducks'
-import IndividualSubscriptionModal from './IndividualSubscriptionModal'
-import { getUserOrgId } from '../../../selectors/user'
+import { getCollectionsSelector, getUserOrgId } from '../../../selectors/user'
+import {
+  fetchPlaylistsAction,
+  getDashboardPlaylists,
+} from '../../../../Dashboard/ducks'
+import { useThisPlayListAction } from '../../../../CurriculumSequence/ducks'
 
 const MultipleLicensePurchase = loadable(() =>
   import('./MultipleLicensePurchase')
 )
+const IndividualSubscriptionModal = loadable(() =>
+  import('./IndividualSubscriptionModal')
+)
+const TrialConfirmationModal = loadable(() => import('./TrialConfimationModal'))
 const UpgradeModal = loadable(() => import('./UpgradeModal'))
 const PaymentServiceModal = loadable(() => import('./PaymentServiceModal'))
 const PayWithPoModal = loadable(() => import('./PayWithPoModal'))
@@ -71,6 +82,15 @@ const PurchaseFlowModals = (props) => {
     isBookKeepersInviteSuccess,
     setBookKeepersInviteSuccess,
     subsLicenses = [],
+    isConfirmationModalVisible,
+    showTrialSubsConfirmationAction,
+    showTrialConfirmationMessage,
+    trialAddOnProductIds,
+    collections,
+    fetchPlaylists,
+    playlists,
+    history,
+    useThisPlayList,
   } = props
 
   const [payWithPoModal, setPayWithPoModal] = useState(false)
@@ -81,6 +101,9 @@ const PurchaseFlowModals = (props) => {
   const [quantities, setQuantities] = useState({})
   const [isPaymentServiceModalVisible, setPaymentServiceModal] = useState(false)
 
+  const trialConfirmationMessage = showTrialConfirmationMessage.subEndDate
+    ? showTrialConfirmationMessage
+    : { subEndDate: moment(subEndDate).format('DD MMM, YYYY') }
   /**
    *  a user is paid premium user if
    *  - subType exists and
@@ -375,6 +398,21 @@ const PurchaseFlowModals = (props) => {
           setSelectedLicenseId={setSelectedLicenseId}
         />
       )}
+      {isConfirmationModalVisible && (
+        <TrialConfirmationModal
+          visible={isConfirmationModalVisible}
+          showTrialSubsConfirmationAction={showTrialSubsConfirmationAction}
+          showTrialConfirmationMessage={trialConfirmationMessage}
+          trialAddOnProductIds={trialAddOnProductIds}
+          collections={collections}
+          history={history}
+          products={products}
+          fetchPlaylists={fetchPlaylists}
+          playlists={playlists}
+          subType={subType}
+          useThisPlayList={useThisPlayList}
+        />
+      )}
     </>
   )
 }
@@ -399,6 +437,12 @@ export default compose(
       addOnProductIds: getAddOnProductIds(state),
       userOrgId: getUserOrgId(state),
       isBookKeepersInviteSuccess: getBookKeepersInviteSuccessStatus(state),
+      collections: getCollectionsSelector(state),
+      playlists: getDashboardPlaylists(state),
+      isConfirmationModalVisible: getShowTrialSubsConfirmationSelector(state),
+      showTrialConfirmationMessage: getShowTrialConfirmationMessageSelector(
+        state
+      ),
     }),
     {
       handleStripePayment: slice.actions.stripePaymentAction,
@@ -408,6 +452,10 @@ export default compose(
       setAddOnProductIds: slice.actions.setAddOnProductIds,
       bulkInviteBookKeepers: slice.actions.bulkInviteBookKeepersAction,
       setBookKeepersInviteSuccess: slice.actions.setBookKeepersInviteSuccess,
+      fetchPlaylists: fetchPlaylistsAction,
+      showTrialSubsConfirmationAction:
+        slice.actions.trialSubsConfirmationAction,
+      useThisPlayList: useThisPlayListAction,
     }
   )
 )(PurchaseFlowModals)

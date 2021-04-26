@@ -5,6 +5,7 @@ import { withRouter } from 'react-router-dom'
 import loadable from '@loadable/component'
 import { compose } from 'redux'
 import { uniq, compact } from 'lodash'
+import moment from 'moment'
 import {
   getItemBankSubscriptions,
   getProducts,
@@ -23,7 +24,6 @@ import {
   fetchPlaylistsAction,
   getDashboardPlaylists,
 } from '../../../../Dashboard/ducks'
-
 import { useThisPlayListAction } from '../../../../CurriculumSequence/ducks'
 
 const MultipleLicensePurchase = loadable(() =>
@@ -103,6 +103,9 @@ const PurchaseFlowModals = (props) => {
   const [totalAmount, setTotalAmount] = useState(100)
   const [quantities, setQuantities] = useState({})
 
+  const trialConfirmationMessage = showTrialConfirmationMessage.subEndDate
+    ? showTrialConfirmationMessage
+    : { subEndDate: moment(subEndDate).format('DD MMM, YYYY') }
   /**
    *  a user is paid premium user if
    *  - subType exists and
@@ -396,7 +399,7 @@ const PurchaseFlowModals = (props) => {
         <TrialConfirmationModal
           visible={isConfirmationModalVisible}
           showTrialSubsConfirmationAction={showTrialSubsConfirmationAction}
-          showTrialConfirmationMessage={showTrialConfirmationMessage}
+          showTrialConfirmationMessage={trialConfirmationMessage}
           trialAddOnProductIds={trialAddOnProductIds}
           collections={collections}
           history={history}

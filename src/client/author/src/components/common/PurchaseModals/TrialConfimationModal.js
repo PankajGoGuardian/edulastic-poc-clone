@@ -184,6 +184,7 @@ const TrialConfirmationModal = ({
                   <ContentWrapper>
                     {productsToShow.map(({ linkedProductId, name }) => (
                       <StyledTag
+                        key={linkedProductId}
                         onClick={() => onSelecteProduct(linkedProductId)}
                         className={
                           selectedProducts.includes(linkedProductId) && 'active'
@@ -199,6 +200,7 @@ const TrialConfirmationModal = ({
                   <ContentWrapper>
                     {GRADES.map(({ text, value }) => (
                       <StyledTag
+                        key={text}
                         onClick={() => onSelecteGrade(value)}
                         className={
                           (selectedGrades.includes(value) ||
@@ -219,6 +221,7 @@ const TrialConfirmationModal = ({
                   <ContentWrapper>
                     {playlists.map(({ _source, _id }) => (
                       <CurriculumCard
+                        key={_id}
                         onClick={() =>
                           handleUseThisPlaylist({ _id, ..._source })
                         }

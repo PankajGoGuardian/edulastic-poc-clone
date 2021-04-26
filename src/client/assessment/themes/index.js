@@ -290,7 +290,7 @@ function useFirestorePingsForNavigationCheck({
         if (!d.data()) {
           doc.set({
             lastUpdatedTime: Date.now(),
-            tokenCreatedTime: TokenStorage.getCurrentTokenCreatedTime(),
+            tokenCreatedTime: TokenStorage.getCurrentTokenCreatedTime() || null,
           })
           return
         }

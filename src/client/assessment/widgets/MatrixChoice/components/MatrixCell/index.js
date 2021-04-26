@@ -20,9 +20,9 @@ const MatrixCell = ({
   let input
 
   if (isMultiple) {
-    input = <StyledCheckbox checked={checked} />
+    input = <StyledCheckbox tabIndex="-1" checked={checked} />
   } else {
-    input = <StyledRadio checked={checked} />
+    input = <StyledRadio tabIndex="-1" checked={checked} />
   }
 
   return (
@@ -31,6 +31,13 @@ const MatrixCell = ({
       correct={checked && correct}
       isPrintPreview={isPrintPreview}
       onClick={onChange}
+      tabIndex="0"
+      onKeyDown={(e) => {
+        const code = e.which
+        if (code === 13 || code === 32) {
+          onChange()
+        }
+      }}
     >
       {input}
       {type === 'inline' && (

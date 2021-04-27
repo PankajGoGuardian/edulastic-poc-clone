@@ -69,7 +69,7 @@ export const Container = styled.div`
     props.theme.testItemPreview.itemColBorderColor};
   background-color: ${(props) => props.isStudentAttempt && '#fff'};
   border-radius: ${(props) => props.isStudentAttempt && '8px'};
-  margin-top: ${(props) => props.isStudentAttempt && '12px'};
+  padding-top: ${(props) => props.isStudentAttempt && '12px'};
   overflow: ${(props) =>
     props.isStudentAttempt || props.isExpressGrader || props.isStudentReport
       ? 'auto'

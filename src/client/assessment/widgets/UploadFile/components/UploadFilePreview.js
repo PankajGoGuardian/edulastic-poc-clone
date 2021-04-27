@@ -68,7 +68,7 @@ const UploadFilePreview = ({
             <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>
           )}
         </QuestionLabelWrapper>
-        <QuestionContentWrapper>
+        <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
           <QuestionTitleWrapper>
             <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
           </QuestionTitleWrapper>
@@ -106,7 +106,7 @@ const UploadFilePreview = ({
           )}
 
           {!isEmpty(localAttachments) && (
-            <React.Fragment>
+            <>
               <SubTitle>Attachments</SubTitle>
               <FilesView
                 cols={3}
@@ -115,7 +115,7 @@ const UploadFilePreview = ({
                 onDelete={deleteAttachment}
                 files={localAttachments}
               />
-            </React.Fragment>
+            </>
           )}
 
           <Instructions item={item} />

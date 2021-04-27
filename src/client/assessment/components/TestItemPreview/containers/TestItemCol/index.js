@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Tabs, AnswerContext } from '@edulastic/common'
+import { Tabs, AnswerContext, ScrollContext } from '@edulastic/common'
 import { questionType } from '@edulastic/constants'
 import { isEmpty, sortBy } from 'lodash'
 
@@ -32,6 +32,7 @@ class TestItemCol extends Component {
     this.state = {
       currentTab: 0,
     }
+    this.scrollContainer = React.createRef()
   }
 
   handleTabChange = (tabIndex) => {
@@ -283,108 +284,115 @@ class TestItemCol extends Component {
         : col?.widgets) || []
 
     return (
-      <Container
-        style={style}
-        value={currentTab}
-        colWidth={colWidth}
-        viewComponent={viewComponent}
-        showScratchpad={this.showScratchpad}
-        isStudentAttempt={isStudentAttempt}
-        isExpressGrader={isExpressGrader}
-        isStudentReport={isStudentReport}
-        className={`test-item-col ${
-          col?.tabs?.length ? 'test-item-tab-container' : ''
-        }`}
+      <ScrollContext.Provider
+        value={{ getScrollElement: () => this.scrollContainer.current }}
       >
-        {this.showScratchToolBar && <ScratchpadTool />}
-        {!isPrintPreview && (
-          <>
-            {col.tabs && !!col.tabs.length && windowWidth >= MAX_MOBILE_WIDTH && (
-              <Tabs value={currentTab} onChange={this.handleTabChange}>
-                {col.tabs.map((tab, tabIndex) => (
-                  <Tabs.Tab
-                    key={tabIndex}
-                    label={tab}
-                    style={{
-                      width: `calc(${100 / col.tabs.length}% - 10px)`,
-                      textAlign: 'center',
-                      padding: '5px 15px',
-                    }}
-                    {...restProps}
-                  />
-                ))}
-              </Tabs>
-            )}
-            {col.tabs &&
-              windowWidth < MAX_MOBILE_WIDTH &&
-              !!col.tabs.length &&
-              currentTab === 0 && (
-                <MobileRightSide onClick={() => this.handleTabChange(1)}>
-                  <IconArrow type="left" />
-                </MobileRightSide>
-              )}
-            {col.tabs &&
-              windowWidth < MAX_MOBILE_WIDTH &&
-              !!col.tabs.length &&
-              currentTab === 1 && (
-                <MobileLeftSide onClick={() => this.handleTabChange(0)}>
-                  <IconArrow type="right" />
-                </MobileLeftSide>
-              )}
-          </>
-        )}
-        <WidgetContainer
+        <Container
+          style={style}
+          value={currentTab}
+          colWidth={colWidth}
+          viewComponent={viewComponent}
+          showScratchpad={this.showScratchpad}
           isStudentAttempt={isStudentAttempt}
-          data-cy="widgetContainer"
+          isExpressGrader={isExpressGrader}
+          isStudentReport={isStudentReport}
+          ref={this.scrollContainer}
+          className={`test-item-col ${
+            col?.tabs?.length ? 'test-item-tab-container' : ''
+          }`}
         >
-          {widgets
-            .filter((widget) => widget.type !== questionType.SECTION_LABEL)
-            .map((widget, i, arr) => (
-              <React.Fragment key={i}>
-                {col.tabs &&
-                  !!col.tabs.length &&
-                  currentTab === widget.tabIndex &&
-                  !isPrintPreview &&
-                  this.renderTabContent(
-                    widget,
-                    col.flowLayout,
-                    i,
-                    showStackedView,
-                    arr.length
-                  )}
-                {col.tabs &&
-                  !!col.tabs.length &&
-                  isPrintPreview &&
-                  this.renderTabContent(
-                    widget,
-                    col.flowLayout,
-                    i,
-                    showStackedView,
-                    arr.length
-                  )}
-                {col.tabs &&
-                  !col.tabs.length &&
-                  this.renderTabContent(
-                    widget,
-                    col.flowLayout,
-                    i,
-                    showStackedView,
-                    arr.length
-                  )}
-              </React.Fragment>
-            ))}
-          {this.showScratchpad && (
-            <Scratchpad
-              hideTools
-              data={userWork}
-              saveData={saveUserWork}
-              readOnly={this.readyOnlyScratchpad}
-              conatinerWidth={colWidth}
-              dimensions={scratchpadDimensions}
-            />
+          {this.showScratchToolBar && <ScratchpadTool />}
+          {!isPrintPreview && (
+            <>
+              {col.tabs &&
+                !!col.tabs.length &&
+                windowWidth >= MAX_MOBILE_WIDTH && (
+                  <Tabs value={currentTab} onChange={this.handleTabChange}>
+                    {col.tabs.map((tab, tabIndex) => (
+                      <Tabs.Tab
+                        key={tabIndex}
+                        label={tab}
+                        style={{
+                          width: `calc(${100 / col.tabs.length}% - 10px)`,
+                          textAlign: 'center',
+                          padding: '5px 15px',
+                        }}
+                        {...restProps}
+                      />
+                    ))}
+                  </Tabs>
+                )}
+              {col.tabs &&
+                windowWidth < MAX_MOBILE_WIDTH &&
+                !!col.tabs.length &&
+                currentTab === 0 && (
+                  <MobileRightSide onClick={() => this.handleTabChange(1)}>
+                    <IconArrow type="left" />
+                  </MobileRightSide>
+                )}
+              {col.tabs &&
+                windowWidth < MAX_MOBILE_WIDTH &&
+                !!col.tabs.length &&
+                currentTab === 1 && (
+                  <MobileLeftSide onClick={() => this.handleTabChange(0)}>
+                    <IconArrow type="right" />
+                  </MobileLeftSide>
+                )}
+            </>
           )}
-        </WidgetContainer>
-      </Container>
+          <WidgetContainer
+            isStudentAttempt={isStudentAttempt}
+            data-cy="widgetContainer"
+          >
+            {widgets
+              .filter((widget) => widget.type !== questionType.SECTION_LABEL)
+              .map((widget, i, arr) => (
+                <React.Fragment key={i}>
+                  {col.tabs &&
+                    !!col.tabs.length &&
+                    currentTab === widget.tabIndex &&
+                    !isPrintPreview &&
+                    this.renderTabContent(
+                      widget,
+                      col.flowLayout,
+                      i,
+                      showStackedView,
+                      arr.length
+                    )}
+                  {col.tabs &&
+                    !!col.tabs.length &&
+                    isPrintPreview &&
+                    this.renderTabContent(
+                      widget,
+                      col.flowLayout,
+                      i,
+                      showStackedView,
+                      arr.length
+                    )}
+                  {col.tabs &&
+                    !col.tabs.length &&
+                    this.renderTabContent(
+                      widget,
+                      col.flowLayout,
+                      i,
+                      showStackedView,
+                      arr.length
+                    )}
+                </React.Fragment>
+              ))}
+            {this.showScratchpad && (
+              <Scratchpad
+                hideTools
+                data={userWork}
+                saveData={saveUserWork}
+                readOnly={this.readyOnlyScratchpad}
+                conatinerWidth={colWidth}
+                dimensions={scratchpadDimensions}
+              />
+            )}
+          </WidgetContainer>
+        </Container>
+      </ScrollContext.Provider>
     )
   }
 }

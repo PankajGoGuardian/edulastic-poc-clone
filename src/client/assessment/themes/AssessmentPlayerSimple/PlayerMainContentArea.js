@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
 
-import { ScrollContext } from '@edulastic/common'
 import { test } from '@edulastic/constants'
 import TestItemPreview from '../../components/TestItemPreview'
 import PlayerFooter from './PlayerFooter'
@@ -54,59 +53,56 @@ const PlayerContentArea = ({
 
   return (
     <Main ref={scrollContainerRef} zoomed={isZoomApplied} zoomLevel={zoomLevel}>
-      <ScrollContext.Provider
-        value={{ getScrollElement: () => scrollContainerRef.current }}
+      <MainContent
+        skin
+        zoomLevel={zoomLevel}
+        responsiveWidth={responsiveWidth}
+        className="scrollable-main-wrapper"
       >
-        <MainContent
-          skin
-          responsiveWidth={responsiveWidth}
-          className="scrollable-main-wrapper"
-        >
-          {testItemState === '' && (
-            <TestItemPreview
-              crossAction={crossAction}
-              setCrossAction={setCrossAction}
-              setHighlights={setHighlights}
-              cols={itemRows}
-              previewTab={previewTab}
-              questions={questions}
-              previousQuestionActivity={previousQuestionActivity}
-              showCollapseBtn
-              highlights={highlights}
-              scratchPadMode={scratchPadMode}
-              saveUserWork={saveUserWork}
-              userWork={history}
-              saveAttachments={saveAttachments}
-              attachments={attachments}
-              viewComponent="practicePlayer"
-              enableMagnifier={enableMagnifier}
-              updateScratchpadtoStore
-              testItemId={item._id}
-            />
-          )}
-          {testItemState === 'check' && (
-            <TestItemPreview
-              cols={itemRows}
-              previewTab="check"
-              preview="check"
-              questions={questions}
-              highlights={highlights}
-              previousQuestionActivity={previousQuestionActivity}
-              showCollapseBtn
-              scratchPadMode={scratchPadMode}
-              saveUserWork={saveUserWork}
-              userWork={history}
-              saveAttachments={saveAttachments}
-              attachments={attachments}
-              viewComponent="practicePlayer"
-              evaluation={evaluation}
-              enableMagnifier={enableMagnifier}
-              changePreviewTab={changePreview}
-              testItemId={item._id}
-            />
-          )}
-        </MainContent>
-      </ScrollContext.Provider>
+        {testItemState === '' && (
+          <TestItemPreview
+            crossAction={crossAction}
+            setCrossAction={setCrossAction}
+            setHighlights={setHighlights}
+            cols={itemRows}
+            previewTab={previewTab}
+            questions={questions}
+            previousQuestionActivity={previousQuestionActivity}
+            showCollapseBtn
+            highlights={highlights}
+            scratchPadMode={scratchPadMode}
+            saveUserWork={saveUserWork}
+            userWork={history}
+            saveAttachments={saveAttachments}
+            attachments={attachments}
+            viewComponent="practicePlayer"
+            enableMagnifier={enableMagnifier}
+            updateScratchpadtoStore
+            testItemId={item._id}
+          />
+        )}
+        {testItemState === 'check' && (
+          <TestItemPreview
+            cols={itemRows}
+            previewTab="check"
+            preview="check"
+            questions={questions}
+            highlights={highlights}
+            previousQuestionActivity={previousQuestionActivity}
+            showCollapseBtn
+            scratchPadMode={scratchPadMode}
+            saveUserWork={saveUserWork}
+            userWork={history}
+            saveAttachments={saveAttachments}
+            attachments={attachments}
+            viewComponent="practicePlayer"
+            evaluation={evaluation}
+            enableMagnifier={enableMagnifier}
+            changePreviewTab={changePreview}
+            testItemId={item._id}
+          />
+        )}
+      </MainContent>
       {playerSkinType.toLowerCase() ===
         test.playerSkinValues.edulastic.toLowerCase() && (
         <PlayerFooter

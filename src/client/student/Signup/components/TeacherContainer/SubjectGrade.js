@@ -42,6 +42,7 @@ class SubjectGrade extends React.Component {
     this.gradeRef = createRef()
     this.subjectRef = createRef()
     this.standardRef = createRef()
+    this.topicRef = createRef()
     const { defaultGrades, defaultSubjects } = get(props.user, 'user.orgData')
 
     this.state = {
@@ -64,11 +65,13 @@ class SubjectGrade extends React.Component {
       })
     ).isRequired,
     isModal: PropTypes.bool,
+    isTestRecommendationCustomizer: PropTypes.bool,
     user: PropTypes.object.isRequired,
   }
 
   static defaultProps = {
     isModal: false,
+    isTestRecommendationCustomizer: false,
   }
 
   componentDidMount() {
@@ -133,6 +136,7 @@ class SubjectGrade extends React.Component {
       saveSubjectGradeloading,
       t,
       isModal,
+      isTestRecommendationCustomizer,
     } = this.props
     const { showAllStandards } = get(this, 'props.userInfo.orgData', {})
     const formattedCurriculums = isEmpty(subjects)
@@ -275,6 +279,46 @@ class SubjectGrade extends React.Component {
                       </GradeSelect>
                     )}
                   </Form.Item>
+                  {isTestRecommendationCustomizer && (
+                    <Form.Item label="What are you teaching right now (optional)">
+                      {getFieldDecorator('topic', {
+                        rules: [
+                          {
+                            required: false,
+                            message: 'Topic/Standard is not selected',
+                          },
+                        ],
+                      })(
+                        <GradeSelect
+                          data-cy="topicSet"
+                          optionFilterProp="children"
+                          filterOption
+                          size="large"
+                          placeholder="Select topic/standard"
+                          mode="single"
+                          ref={this.topicRef}
+                          onSelect={() => this.topicRef?.current?.blur()}
+                          onDeselect={() => this.topicRef?.current?.blur()}
+                          getPopupContainer={(triggerNode) =>
+                            triggerNode.parentNode
+                          }
+                          showArrow
+                        >
+                          {formattedCurriculums.map(
+                            ({ value, text, disabled }) => (
+                              <Option
+                                key={value}
+                                value={value}
+                                disabled={disabled}
+                              >
+                                {text}
+                              </Option>
+                            )
+                          )}
+                        </GradeSelect>
+                      )}
+                    </Form.Item>
+                  )}
 
                   <ProceedBtn
                     data-cy="getStarted"

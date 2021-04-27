@@ -314,7 +314,7 @@ class Display extends Component {
             )}
           </QuestionLabelWrapper>
 
-          <QuestionContentWrapper>
+          <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
             <Stimulus dangerouslySetInnerHTML={{ __html: question }} />
             <TemplateBoxContainer
               hideInternalOverflow={hideInternalOverflow}

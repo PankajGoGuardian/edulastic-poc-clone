@@ -72,7 +72,7 @@ const Display = ({
         )}
       </QuestionLabelWrapper>
 
-      <QuestionContentWrapper>
+      <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
         <FlexContainer justifyContent="space-between">
           <FlexContainer
             justifyContent="flex-start"

@@ -161,7 +161,7 @@ const HighlightImagePreview = ({
               <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>
             )}
           </QuestionLabelWrapper>
-          <QuestionContentWrapper>
+          <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
             {view === PREVIEW && !smallSize && (
               <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
             )}

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { Popover } from 'antd'
 import styled from 'styled-components'
@@ -94,26 +94,10 @@ const TemplateBox = ({ resprops, id }) => {
     scrollHeight: contentHeight,
   } = measureText(label, style)
 
-  const getContent = (inPopover = false, maxHeight = '') => {
-    const overflowProps = {}
-    /**
-     * if in popover and,
-     * if content width is greater than the max width of the popover (400px)
-     * show the scrollbar inside the popover
-     *
-     * related to https://snapwiz.atlassian.net/browse/EV-13512
-     */
-    const maxWidthInPopover = Dimensions.popoverMaxWidth
-    if (inPopover && contentWidth > maxWidthInPopover) {
-      overflowProps.maxWidth = maxWidthInPopover
-      overflowProps.overflowX = 'auto'
-    }
-    return (
-      <div style={{ ...overflowProps, maxHeight }}>
-        <MathSpan dangerouslySetInnerHTML={{ __html: label }} />
-      </div>
-    )
-  }
+  const content = useMemo(() => {
+    return <MathSpan dangerouslySetInnerHTML={{ __html: label }} />
+  }, [label])
+
   const widthOverflow = contentWidth > style.maxWidth
   const heightOverflow =
     imageDimensions.height > boxHeight || contentHeight > boxHeight
@@ -144,11 +128,11 @@ const TemplateBox = ({ resprops, id }) => {
         <StyledDragItem data={itemData}>
           <ResponseContainer>
             {showPopover && (
-              <Popover placement="bottomLeft" content={getContent(true)}>
-                {getContent(true, style.maxHeight)}
+              <Popover placement="bottomLeft" content={content}>
+                {content}
               </Popover>
             )}
-            {!showPopover && getContent()}
+            {!showPopover && content}
           </ResponseContainer>
         </StyledDragItem>
       )}
@@ -165,7 +149,6 @@ export default TemplateBox
 
 const StyledDropContainer = styled(DropContainer)`
   display: inline-flex;
-  padding: 5px;
   vertical-align: middle;
   white-space: nowrap;
   min-height: ${({ minHeight }) => minHeight}px;
@@ -175,5 +158,5 @@ const StyledDropContainer = styled(DropContainer)`
 `
 
 const StyledDragItem = styled(DragItem)`
-  overflow: hidden;
+  overflow-y: hidden;
 `

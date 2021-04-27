@@ -506,7 +506,7 @@ class Display extends Component {
             )}
           </QuestionLabelWrapper>
 
-          <QuestionContentWrapper>
+          <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
             <QuestionTitleWrapper>
               <Stimulus
                 smallSize={smallSize}

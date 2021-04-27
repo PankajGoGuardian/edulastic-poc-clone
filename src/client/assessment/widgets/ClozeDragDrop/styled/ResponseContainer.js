@@ -1,7 +1,6 @@
 import styled from 'styled-components'
 
 export const ResponseContainer = styled.div`
-  padding: 0px 10px;
   display: inline-flex;
   align-items: center;
   border-radius: 10px;

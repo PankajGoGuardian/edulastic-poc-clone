@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useMemo } from 'react'
+import React, { useContext, useRef } from 'react'
 import { useDragLayer } from 'react-dnd'
 import styled from 'styled-components'
 import { get, isUndefined } from 'lodash'
@@ -13,6 +13,7 @@ const layerStyles = {
   width: '100%',
   transform: 'scale(1) !important',
   height: '100%',
+  opacity: 0.5,
 }
 
 const getItemStyles = (initialOffset, currentOffset, itemDimensions) => {
@@ -22,37 +23,28 @@ const getItemStyles = (initialOffset, currentOffset, itemDimensions) => {
     }
   }
   const { x, y } = currentOffset
-  const transform = `translate(${x}px, ${y}px)`
+  const transform = `translate(${x - 10}px, ${y - 10}px)`
   return {
     transform,
     WebkitTransform: transform,
-    background: 'white',
     ...itemDimensions,
   }
 }
 
 const getContainerTopBottom = (element) => {
-  const [top, bottom] = useMemo(() => {
-    if (isUndefined(element?.offsetTop)) {
-      return [70, window.innerHeight]
-    }
-    const rect = element.getBoundingClientRect()
-    return [rect.top, rect.bottom]
-  }, [element])
-
-  return [top, bottom]
+  if (isUndefined(element?.offsetTop)) {
+    return [70, window.innerHeight]
+  }
+  const rect = element.getBoundingClientRect()
+  return [rect.top, rect.bottom]
 }
 
 const getContainerLeftRight = (element) => {
-  const [left, right] = useMemo(() => {
-    if (isUndefined(element?.offsetLeft)) {
-      return [70, window.innerWidth]
-    }
-    const rect = element.getBoundingClientRect()
-    return [rect.left, rect.right]
-  }, [element])
-
-  return [left, right]
+  if (isUndefined(element?.offsetLeft)) {
+    return [70, window.innerWidth]
+  }
+  const rect = element.getBoundingClientRect()
+  return [rect.left, rect.right]
 }
 
 /**
@@ -68,7 +60,7 @@ const CustomDragLayer = ({ showPoint, centerPoint }) => {
       item: monitor.getItem(),
       itemType: monitor.getItemType(),
       initialOffset: monitor.getInitialSourceClientOffset(),
-      currentOffset: monitor.getSourceClientOffset(),
+      currentOffset: monitor.getClientOffset(),
       isDragging: monitor.isDragging(),
     })
   )
@@ -98,7 +90,6 @@ const CustomDragLayer = ({ showPoint, centerPoint }) => {
       verticalInterval.current = setInterval(() => {
         scrollEl.scrollBy({
           top: scrollByVertical,
-          behavior: 'smooth',
         })
       }, 50)
     } else if (
@@ -150,20 +141,41 @@ const CustomDragLayer = ({ showPoint, centerPoint }) => {
   const style = getItemStyles(initialOffset, currentOffset, itemDimensions)
 
   return (
-    <div style={layerStyles}>
+    <DragPreviewContainer style={layerStyles} itemDimensions={itemDimensions}>
       <div style={style}>
-        {preview}
+        <div className="edu-drag-preview">{preview}</div>
         {showPoint && (
           <DraggingPointer centerPoint={centerPoint}>
             <DraggingPoint />
           </DraggingPointer>
         )}
       </div>
-    </div>
+    </DragPreviewContainer>
   )
 }
 
 export default CustomDragLayer
+
+const DragPreviewContainer = styled.div`
+  img.fr-dii {
+    margin-left: 0px !important;
+    margin-right: 0px !important;
+    width: 100% !important;
+    height: 100% !important;
+  }
+  p {
+    padding-inline-end: 0px;
+  }
+  .edu-drag-preview {
+    overflow: hidden;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    border-radius: 2px;
+    background: white;
+    border: 1px solid #000;
+  }
+`
 
 // these components needed only for graph type
 const DraggingPointer = styled.div`

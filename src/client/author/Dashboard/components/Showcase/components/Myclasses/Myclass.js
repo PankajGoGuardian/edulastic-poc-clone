@@ -176,8 +176,12 @@ const MyClasses = ({
       return
     }
 
-    const content = contentType?.toLowerCase() || 'tests'
-
+    let content = contentType?.toLowerCase() || 'tests_library'
+    if (content === 'tests_library') {
+      content = 'tests'
+    } else if (content === 'playlists_library') {
+      content = 'playlists'
+    }
     if (content === 'playlists' && (!lastPlayList || !lastPlayList.value)) {
       showTrialSubsConfirmationAction(true)
       return
@@ -278,6 +282,12 @@ const MyClasses = ({
       data: { event: `dashboard:banner-${description}:click` },
     })
 
+    const content = data?.contentType?.toLowerCase() || 'tests_library'
+    if (content === 'tests_library') {
+      data.contentType = 'tests'
+    } else if (content === 'playlists_library') {
+      data.contentType = 'playlists'
+    }
     switch (+action) {
       case bannerActions.BANNER_DISPLAY_IN_MODAL:
         setShowBannerModal(data)

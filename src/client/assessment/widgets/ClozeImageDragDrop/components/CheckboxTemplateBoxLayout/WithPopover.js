@@ -12,9 +12,7 @@ export function WithPopover({
   fontSize,
   className,
   checkAnswer,
-  indexStr,
 }) {
-  // eslint-disable-next-line max-len
   const {
     scrollWidth: contentWidth,
     scrollHeight: contentHeight,
@@ -38,8 +36,6 @@ export function WithPopover({
         fontSize={fontSize}
         answer={userAnswer}
         className={className}
-        checkAnswer={checkAnswer}
-        indexStr={indexStr}
       />
     )
     return (

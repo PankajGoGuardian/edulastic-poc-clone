@@ -15,7 +15,7 @@ import {
   Points,
 } from '../../common/QuestionForm'
 
-const { methods } = math
+const { methods, simplifiedOptions } = math
 
 const QuestionMath = ({ onUpdate, question }) => {
   const toggleAdditional = (val) => {
@@ -23,8 +23,26 @@ const QuestionMath = ({ onUpdate, question }) => {
   }
 
   const handleAnswerChange = (prop, value) => {
-    const { validation } = question
+    const { validation, extraOpts = {} } = question
+
+    const newExtraOpts = { ...extraOpts }
     const nextValidation = cloneDeep(validation)
+    if (prop === 'options') {
+      value.isSimplified = false
+      simplifiedOptions.forEach((key) => {
+        if (value[key]) {
+          value.isSimplified = true
+          newExtraOpts[key] = value[key]
+          delete value[key]
+        } else if (newExtraOpts[key]) {
+          delete newExtraOpts[key]
+        }
+      })
+      if (!value.isSimplified) {
+        delete value.isSimplified
+      }
+    }
+
     if (
       prop === 'method' &&
       nextValidation.validResponse.value[0][prop] !== value
@@ -56,11 +74,10 @@ const QuestionMath = ({ onUpdate, question }) => {
     ) {
       delete nextValidation.validResponse.value[0].value
     }
-
     const data = {
       validation: nextValidation,
+      extraOpts: newExtraOpts,
     }
-
     onUpdate(data)
   }
 
@@ -116,6 +133,7 @@ const QuestionMath = ({ onUpdate, question }) => {
             style={{ width: '250px' }}
             isDocbasedSection
             {...value}
+            extraOptions={question.extraOpts}
           />
         </FormGroup>
         <FormGroup>

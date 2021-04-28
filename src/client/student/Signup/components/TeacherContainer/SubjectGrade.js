@@ -64,11 +64,13 @@ class SubjectGrade extends React.Component {
       })
     ).isRequired,
     isModal: PropTypes.bool,
+    isTestRecommendationCustomizer: PropTypes.bool,
     user: PropTypes.object.isRequired,
   }
 
   static defaultProps = {
     isModal: false,
+    isTestRecommendationCustomizer: false,
   }
 
   componentDidMount() {
@@ -133,6 +135,7 @@ class SubjectGrade extends React.Component {
       saveSubjectGradeloading,
       t,
       isModal,
+      isTestRecommendationCustomizer,
     } = this.props
     const { showAllStandards } = get(this, 'props.userInfo.orgData', {})
     const formattedCurriculums = isEmpty(subjects)
@@ -282,7 +285,7 @@ class SubjectGrade extends React.Component {
                     htmlType="submit"
                     disabled={saveSubjectGradeloading}
                   >
-                    Get Started
+                    {isTestRecommendationCustomizer ? 'Update' : 'Get Started'}
                   </ProceedBtn>
                 </SelectForm>
               </Col>

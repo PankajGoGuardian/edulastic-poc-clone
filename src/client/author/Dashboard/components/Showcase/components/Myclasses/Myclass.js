@@ -8,7 +8,11 @@ import loadable from '@loadable/component'
 
 // components
 import { Spin } from 'antd'
-import { MainContentWrapper, withWindowSizes } from '@edulastic/common'
+import {
+  MainContentWrapper,
+  withWindowSizes,
+  CustomModalStyled,
+} from '@edulastic/common'
 import { bannerActions } from '@edulastic/constants/const/bannerActions'
 import { segmentApi } from '@edulastic/api'
 import BannerSlider from './components/BannerSlider/BannerSlider'
@@ -17,6 +21,7 @@ import ItemBankTrialUsedModal from './components/FeaturedContentBundle/ItemBankT
 import Classes from './components/Classes/Classes'
 import Launch from '../../../LaunchHangout/Launch'
 import PurchaseFlowModals from '../../../../../src/components/common/PurchaseModals'
+import SubjectGradeForm from '../../../../../../student/Signup/components/TeacherContainer/SubjectGrade'
 
 // ducks
 import { slice } from '../../../../../Subscription/ducks'
@@ -79,6 +84,7 @@ const MyClasses = ({
   const [showSubscriptionAddonModal, setShowSubscriptionAddonModal] = useState(
     false
   )
+  const [showTestCustomizerModal, setShowTestCustomizerModal] = useState(false)
   const [trialAddOnProductIds, setTrialAddOnProductIds] = useState([])
   const [recommendedTests, setRecommendedTests] = useState([])
 
@@ -480,6 +486,23 @@ const MyClasses = ({
           setShowHeaderTrialModal={setShowHeaderTrialModal}
           setTrialAddOnProductIds={setTrialAddOnProductIds}
         />
+      )}
+      {showTestCustomizerModal && (
+        <CustomModalStyled
+          title="What do you teach?"
+          visible={showTestCustomizerModal}
+          footer={null}
+          width="900px"
+          onCancel={() => setShowTestCustomizerModal(false)}
+          centered
+        >
+          <SubjectGradeForm
+            userInfo={user}
+            districtId={false}
+            isTestRecommendationCustomizer
+            isModal
+          />
+        </CustomModalStyled>
       )}
     </MainContentWrapper>
   )

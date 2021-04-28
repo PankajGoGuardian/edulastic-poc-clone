@@ -91,6 +91,9 @@ const ManageSubscriptionContainer = ({
   const [showMultiplePurchaseModal, setShowMultiplePurchaseModal] = useState(
     false
   )
+  const [showTrialSubsConfirmation, setShowTrialSubsConfirmation] = useState(
+    false
+  )
 
   useEffect(() => setDataSource(users), [users])
 
@@ -253,6 +256,8 @@ const ManageSubscriptionContainer = ({
         licenseOwnerId={licenseOwnerId}
         showSubscriptionAddonModal={showSubscriptionAddonModal}
         setShowSubscriptionAddonModal={setShowSubscriptionAddonModal}
+        isConfirmationModalVisible={showTrialSubsConfirmation}
+        setShowTrialSubsConfirmation={setShowTrialSubsConfirmation}
         defaultSelectedProductIds={defaultSelectedProductIds}
         showMultiplePurchaseModal={showMultiplePurchaseModal}
         setShowMultiplePurchaseModal={setShowMultiplePurchaseModal}

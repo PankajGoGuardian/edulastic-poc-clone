@@ -69,7 +69,6 @@ const MyClasses = ({
   itemBankSubscriptions = [],
   startTrialAction,
   usedTrialItemBankIds = [],
-  showTrialSubsConfirmationAction,
   subscription: { subType } = {},
   products,
   showHeaderTrialModal,
@@ -88,7 +87,13 @@ const MyClasses = ({
   )
   const [showTestCustomizerModal, setShowTestCustomizerModal] = useState(false)
   const [trialAddOnProductIds, setTrialAddOnProductIds] = useState([])
+<<<<<<< HEAD
   const [recommendedTests, setRecommendedTests] = useState([])
+=======
+  const [showTrialSubsConfirmation, setShowTrialSubsConfirmation] = useState(
+    false
+  )
+>>>>>>> fix(ui): Popup is coming 2 times when we click on itembank trial [EV-27430]
 
   useEffect(() => {
     // fetch clever classes on modal display
@@ -226,7 +231,7 @@ const MyClasses = ({
     const content = contentType?.toLowerCase() || 'tests'
 
     if (content === 'playlists' && (!lastPlayList || !lastPlayList.value)) {
-      showTrialSubsConfirmationAction(true)
+      setShowTrialSubsConfirmation(true)
       return
     }
     if (tags.includes(PREMIUM_TAG)) {
@@ -476,6 +481,8 @@ const MyClasses = ({
       <PurchaseFlowModals
         showSubscriptionAddonModal={showSubscriptionAddonModal}
         setShowSubscriptionAddonModal={setShowSubscriptionAddonModal}
+        isConfirmationModalVisible={showTrialSubsConfirmation}
+        setShowTrialSubsConfirmation={setShowTrialSubsConfirmation}
         defaultSelectedProductIds={defaultSelectedProductIds}
         setProductData={setProductData}
         trialAddOnProductIds={trialAddOnProductIds}
@@ -509,6 +516,7 @@ const MyClasses = ({
           toggleModal={toggleTrialModal}
           isPremiumUser={isPremiumUser}
           isPremiumTrialUsed={isPremiumTrialUsed}
+          setShowTrialSubsConfirmation={setShowTrialSubsConfirmation}
           startPremiumTrial={startTrialAction}
           products={products}
           setShowHeaderTrialModal={setShowHeaderTrialModal}
@@ -566,8 +574,6 @@ export default compose(
       resetTestFilters: resetTestFiltersAction,
       resetPlaylistFilters: clearPlaylistFiltersAction,
       startTrialAction: slice.actions.startTrialAction,
-      showTrialSubsConfirmationAction:
-        slice.actions.trialSubsConfirmationAction,
       setShowHeaderTrialModal: slice.actions.setShowHeaderTrialModal,
     }
   )

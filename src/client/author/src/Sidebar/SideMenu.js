@@ -174,6 +174,7 @@ class SideMenu extends Component {
         !!get(switchDetails, 'otherAccounts', []).length,
       showTrialUsedModal: false,
       showPurchaseModal: false,
+      showTrialSubsConfirmation: false,
     }
 
     this.sideMenuRef = React.createRef()
@@ -363,6 +364,12 @@ class SideMenu extends Component {
     })
   }
 
+  setShowTrialSubsConfirmation = (value) => {
+    this.setState({
+      showTrialSubsConfirmation: value,
+    })
+  }
+
   handleCloseModal = () => {
     this.setState({
       showTrialUsedModal: false,
@@ -522,6 +529,8 @@ class SideMenu extends Component {
         <PurchaseFlowModals
           showSubscriptionAddonModal={this.state.showPurchaseModal}
           setShowSubscriptionAddonModal={this.setShowSubscriptionAddonModal}
+          isConfirmationModalVisible={this.state.showTrialSubsConfirmation}
+          setShowTrialSubsConfirmation={this.setShowTrialSubsConfirmation}
           defaultSelectedProductIds={[]}
           setProductData={() => {}}
         />

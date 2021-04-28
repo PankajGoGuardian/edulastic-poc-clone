@@ -553,7 +553,7 @@ class ClozeDragDropDisplay extends Component {
               )}
             </QuestionLabelWrapper>
 
-            <QuestionContentWrapper>
+            <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
               <QuestionTitleWrapper>
                 {!question && questionContent}
               </QuestionTitleWrapper>

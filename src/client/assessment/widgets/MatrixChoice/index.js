@@ -159,7 +159,7 @@ const MatrixChoice = ({
               )}
             </QuestionLabelWrapper>
 
-            <QuestionContentWrapper>
+            <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
               <MathFormulaDisplay
                 style={{ marginBottom: 20 }}
                 dangerouslySetInnerHTML={{ __html: item.stimulus }}

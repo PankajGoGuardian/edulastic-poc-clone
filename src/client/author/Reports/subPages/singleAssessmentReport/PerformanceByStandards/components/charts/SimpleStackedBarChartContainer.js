@@ -25,7 +25,7 @@ const SimpleStackedBarChartContainer = ({
   const barDataKey = 'avgScore'
   const ticks = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
 
-  let formattedData = useMemo(() => getChartScoreData(report, filter, viewBy), [
+  let formattedData = useMemo(() => getChartScoreData(report, viewBy), [
     report,
     filter,
     viewBy,

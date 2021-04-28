@@ -78,48 +78,59 @@ const MatchList = ({
       flexDirection="column"
       alignItems="flex-start"
     >
-      {list.map(({ value = '', label = '' }, i) => (
-        <div className="__prevent-page-break" style={{ width: '100%' }}>
-          <AnswerItem
+      {list.map(({ value = '', label = '' }, i) => {
+        const item = ans[list[i].value] && allItemsById[ans[list[i].value]]
+        return (
+          <div
             key={i}
-            style={listItemContainerStyle}
-            alignItems="center"
-            childMarginRight={smallSize ? 13 : 45}
+            className="__prevent-page-break"
+            style={{ width: '100%' }}
           >
-            <ListItemContainer
-              key={value}
-              smallSize={smallSize}
-              stemColStyle={stemColStyle}
-              label={label}
-            />
-            <Separator smallSize={smallSize} />
-            <DropContainer
-              index={i}
-              noBorder={showEvaluate && !!ans[list[i].value]}
-              drop={onDropHandler}
-              style={choiceColStyle}
+            <AnswerItem
+              key={i}
+              style={listItemContainerStyle}
+              alignItems="center"
+              childMarginRight={smallSize ? 13 : 45}
             >
-              <DragItem
-                flag="ans"
-                centerContent
-                renderIndex={i}
-                item={
-                  (ans[list[i].value] && allItemsById[ans[list[i].value]]) ||
-                  null
-                }
-                displayIndex={getStemNumeration(stemNumeration, i)}
-                getStyles={getStyles}
-                preview={showEvaluate}
-                correct={evaluation[list[i].value]}
-                disableResponse={disableResponse || !isAnswerModifiable}
-                showAnswer={previewTab === SHOW}
-                changePreviewTab={changePreviewTab}
-                width="100%"
+              <ListItemContainer
+                key={value}
+                smallSize={smallSize}
+                stemColStyle={stemColStyle}
+                label={label}
               />
-            </DropContainer>
-          </AnswerItem>
-        </div>
-      ))}
+              <Separator smallSize={smallSize} />
+              <DropContainer
+                index={i}
+                noBorder={showEvaluate && !!ans[list[i].value]}
+                drop={onDropHandler}
+                style={choiceColStyle}
+              >
+                {item && (
+                  <DragItem
+                    flag="ans"
+                    centerContent
+                    renderIndex={i}
+                    item={
+                      (ans[list[i].value] &&
+                        allItemsById[ans[list[i].value]]) ||
+                      null
+                    }
+                    displayIndex={getStemNumeration(stemNumeration, i)}
+                    getStyles={getStyles}
+                    preview={showEvaluate}
+                    correct={evaluation[list[i].value]}
+                    disableResponse={disableResponse || !isAnswerModifiable}
+                    showAnswer={previewTab === SHOW}
+                    changePreviewTab={changePreviewTab}
+                    width="100%"
+                    flex={1}
+                  />
+                )}
+              </DropContainer>
+            </AnswerItem>
+          </div>
+        )
+      })}
     </FlexContainer>
   )
 }

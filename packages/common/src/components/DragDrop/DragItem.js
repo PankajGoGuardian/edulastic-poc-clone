@@ -17,10 +17,7 @@ const DragItem = ({
   ...rest
 }) => {
   const { isAnswerModifiable } = useContext(AnswerContext)
-  const {
-    state: { actived }={},
-    setItem,
-  } = useContext(DndStateContext)||{}
+  const { state: { actived } = {}, setItem } = useContext(DndStateContext) || {}
 
   const [itemData, setItemData] = useState({
     data,
@@ -65,7 +62,7 @@ const DragItem = ({
 
   const onClickHandler = (e) => {
     if (window.isMobileDevice) {
-      if(setItem){
+      if (setItem) {
         setItem({ type: 'SET_ACTIVE_DRAG_ITEM', data: itemData })
       }
     }
@@ -130,4 +127,13 @@ const DragItemContainer = styled.div.attrs((props) => ({
 }))`
   opacity: ${({ isDragging }) => (isDragging ? 0.2 : 1)};
   ${({ isActivated }) => isActivated && activeStyle}
+
+  img.fr-dii {
+    margin-left: 0px;
+    margin-right: 0px;
+    max-width: 100%;
+  }
+  p {
+    padding-inline-end: 0px;
+  }
 `

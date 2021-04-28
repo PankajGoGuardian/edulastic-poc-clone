@@ -105,11 +105,11 @@ const PerformanceByStandards = ({
   }, [report])
 
   const itemsCount = get(report, 'totalCount', 0)
-  const defaultPageFilter = {
-    page: 1,
+  const [pageFilters, setPageFilters] = useState({
+    page: 0, // set to 0 initially to prevent multiple api request on tab change
     pageSize: 50,
-  }
-  const [pageFilters, setPageFilters] = useState(defaultPageFilter)
+  })
+  const [summaryStats, setSummaryStats] = useState(true)
   const [viewBy, setViewBy] = useState(viewByMode.STANDARDS)
   const [analyzeBy, setAnalyzeBy] = useState(analyzeByMode.SCORE)
   const [compareBy, setCompareBy] = useState(
@@ -161,29 +161,25 @@ const PerformanceByStandards = ({
   useEffect(() => () => resetPerformanceByStandards(), [])
 
   useEffect(() => {
-    if (settings.selectedTest && settings.selectedTest.key) {
-      const q = {
-        requestFilters: {
-          ...settings.requestFilters,
-          compareBy,
-          ...defaultPageFilter,
-          ...Object.keys(filters).reduce((reqFilter, key) => {
-            reqFilter[key] = filters[key] === 'all' ? '' : filters[key]
-            return reqFilter
-          }, {}),
-        },
-        testId: settings.selectedTest.key,
-      }
-      getPerformanceByStandards(q)
-    }
-  }, [settings.selectedTest, settings.requestFilters, compareBy, filters])
+    setSummaryStats(true)
+    setPageFilters({ ...pageFilters, page: 1 })
+  }, [settings.selectedTest, settings.requestFilters])
 
   useEffect(() => {
-    if (settings.selectedTest && settings.selectedTest.key) {
+    setPageFilters({ ...pageFilters, page: 1 })
+  }, [compareBy])
+
+  useEffect(() => {
+    if (
+      settings.selectedTest &&
+      settings.selectedTest.key &&
+      pageFilters.page
+    ) {
       const q = {
         requestFilters: {
           ...settings.requestFilters,
           compareBy,
+          summaryStats,
           ...pageFilters,
           ...Object.keys(filters).reduce((reqFilter, key) => {
             reqFilter[key] = filters[key] === 'all' ? '' : filters[key]
@@ -193,6 +189,7 @@ const PerformanceByStandards = ({
         testId: settings.selectedTest.key,
       }
       getPerformanceByStandards(q)
+      setSummaryStats(false)
     }
   }, [pageFilters])
 
@@ -213,6 +210,7 @@ const PerformanceByStandards = ({
       (settings.requestFilters.termId || settings.requestFilters.reportId) &&
       !loading &&
       !isEmpty(report) &&
+      !report.performanceSummaryStats.length &&
       (!report.metricInfo.length || !report.studInfo.length)
     ) {
       toggleFilter(null, true)
@@ -290,11 +288,7 @@ const PerformanceByStandards = ({
     return <DataSizeExceeded />
   }
 
-  if (
-    !report.metricInfo?.length ||
-    !report.studInfo?.length ||
-    !settings.selectedTest.key
-  ) {
+  if (!report.performanceSummaryStats?.length) {
     return (
       <NoDataContainer>
         {settings.requestFilters?.termId ? 'No data available currently.' : ''}

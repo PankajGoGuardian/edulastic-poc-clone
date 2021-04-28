@@ -52,7 +52,7 @@ const CheckboxTemplateBox = ({
     const answersIds = userSelections[index]?.optionIds || []
     const answerValues = answersIds.map((id) => idValueMap[id])
     return answerValues.join(' ')
-  }, [index, options])
+  }, [index, options, userSelections])
 
   const isChecked =
     get(userSelections, `[${index}].responseBoxID`, false) &&

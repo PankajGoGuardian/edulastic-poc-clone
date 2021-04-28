@@ -72,6 +72,7 @@ const PossibleResponses = ({
                             flag="dragItems"
                             key={ind}
                             item={ite}
+                            margin="4px"
                             getStyles={getStyles}
                             disableResponse={
                               disableResponse || !isAnswerModifiable

@@ -313,7 +313,6 @@ const MatchListPreview = ({
     width: width || 'auto',
     alignItems: 'center',
     justifyContent: _preview ? 'space-between' : 'center',
-    margin: flag === 'dragItems' ? '4px' : '0px',
     background: isPrintPreview
       ? white
       : _preview
@@ -333,7 +332,6 @@ const MatchListPreview = ({
     color: theme.widgets.matchList.dragItemColor,
     minWidth: dragItemMinWidth,
     maxWidth: 335,
-    padding: '2px 12px',
     overflow: 'hidden',
     transform: 'translate3d(0px, 0px, 0px)',
     minHeight: flag !== 'ans' ? choiceMinHeight : '100%',
@@ -385,7 +383,7 @@ const MatchListPreview = ({
             )}
           </QuestionLabelWrapper>
 
-          <QuestionContentWrapper>
+          <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
             <QuestionTitleWrapper>
               {!smallSize && view === PREVIEW && (
                 <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />

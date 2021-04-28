@@ -1659,7 +1659,7 @@ class ClassBoard extends Component {
                   <StudentGrapContainer>
                     <StyledCard bordered={false} paddingTop={15}>
                       <StudentSelect
-                        data-cy="studentSelect"
+                        dataCy="dropDownSelect"
                         style={{ width: '200px' }}
                         students={testActivity}
                         selectedStudent={selectedStudentId}
@@ -1874,6 +1874,7 @@ class ClassBoard extends Component {
                     isPresentationMode={isPresentationMode}
                   >
                     <GenSelect
+                      dataCy="dropDownSelect"
                       classid="DI"
                       classname={firstQuestionEntities
                         .map((x, index) => ({

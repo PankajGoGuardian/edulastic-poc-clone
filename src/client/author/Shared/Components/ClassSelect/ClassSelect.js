@@ -36,6 +36,7 @@ export const GenSelect = ({
   selected,
   handleChange,
   justifyContent,
+  dataCy,
 }) => {
   if (nameValues.length === 0) {
     return null
@@ -44,7 +45,11 @@ export const GenSelect = ({
   return (
     <FlexContainer justifyContent={justifyContent}>
       <Container>
-        <StyledSelect value={`${selectedValue}`} onChange={handleChange}>
+        <StyledSelect
+          data-cy={dataCy}
+          value={`${selectedValue}`}
+          onChange={handleChange}
+        >
           {nameValues.map(({ name, value }) => (
             <Select.Option value={`${value}`} key={value}>
               {/* {classid.length > 0 && <StyledClassID>{classid}</StyledClassID>} */}

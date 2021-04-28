@@ -81,7 +81,7 @@ const SignedStackedBarChartContainer = ({
 
   const leastScale = orderedScaleInfo[0]
   const parsedGroupedMetricData = useMemo(
-    () => getChartMasteryData(report, filter, viewBy, leastScale),
+    () => getChartMasteryData(report, viewBy, leastScale),
     [report, filter, viewBy, leastScale]
   )
 

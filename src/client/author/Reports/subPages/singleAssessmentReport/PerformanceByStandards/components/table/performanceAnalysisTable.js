@@ -170,7 +170,7 @@ const PerformanceAnalysisTable = ({
         selectedData: selectedStandards,
         dataField: 'standardId',
         standardColumnsData: skillInfo.sort((a, b) =>
-          a.standard.localeCompare(b.standard)
+        a['standardId'] - b['standardId']
         ),
       },
       [viewByMode.DOMAINS]: {
@@ -178,7 +178,7 @@ const PerformanceAnalysisTable = ({
         dataField: 'domainId',
         standardColumnsData: uniqBy(skillInfo, 'domainId')
           .filter((o) => o.domain !== null)
-          .sort((a, b) => a.domain.localeCompare(b.domain)),
+          .sort((a, b) => a['domainId'] - b['domainId']),
       },
     }
   }

@@ -279,46 +279,6 @@ class SubjectGrade extends React.Component {
                       </GradeSelect>
                     )}
                   </Form.Item>
-                  {isTestRecommendationCustomizer && (
-                    <Form.Item label="What are you teaching right now (optional)">
-                      {getFieldDecorator('topic', {
-                        rules: [
-                          {
-                            required: false,
-                            message: 'Topic/Standard is not selected',
-                          },
-                        ],
-                      })(
-                        <GradeSelect
-                          data-cy="topicSet"
-                          optionFilterProp="children"
-                          filterOption
-                          size="large"
-                          placeholder="Select topic/standard"
-                          mode="single"
-                          ref={this.topicRef}
-                          onSelect={() => this.topicRef?.current?.blur()}
-                          onDeselect={() => this.topicRef?.current?.blur()}
-                          getPopupContainer={(triggerNode) =>
-                            triggerNode.parentNode
-                          }
-                          showArrow
-                        >
-                          {formattedCurriculums.map(
-                            ({ value, text, disabled }) => (
-                              <Option
-                                key={value}
-                                value={value}
-                                disabled={disabled}
-                              >
-                                {text}
-                              </Option>
-                            )
-                          )}
-                        </GradeSelect>
-                      )}
-                    </Form.Item>
-                  )}
 
                   <ProceedBtn
                     data-cy="getStarted"
@@ -326,7 +286,7 @@ class SubjectGrade extends React.Component {
                     htmlType="submit"
                     disabled={saveSubjectGradeloading}
                   >
-                    Get Started
+                    {isTestRecommendationCustomizer ? 'Update' : 'Get Started'}
                   </ProceedBtn>
                 </SelectForm>
               </Col>

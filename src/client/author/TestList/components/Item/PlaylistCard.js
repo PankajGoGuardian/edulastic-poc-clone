@@ -1,4 +1,5 @@
 import React from 'react'
+import { message } from 'antd'
 import { first } from 'lodash'
 import { IconUser, IconUsers } from '@edulastic/icons'
 import { cardTitleColor, darkGrey } from '@edulastic/colors'
@@ -44,14 +45,36 @@ const PlaylistCard = ({
   standardsIdentifiers,
   authorName,
   testItemId,
-  allowDuplicate,
-  duplicatePlayList,
+  history,
+  useThisPlayList,
   _id,
+  isPublisherUser,
+  isOrganizationDistrictUser,
+  isUseThisLoading,
 }) => {
   const grade = first(_source.grades)
   const { thumbnail, skin } = _source
   const isFullSizeImage = skin === 'FULL_SIZE'
   const isDraft = status === 'draft'
+
+  const handleUseThisClick = () => {
+    const { title, grades, subjects, customize = null } = _source
+    const msg = message.loading('Using this playlist. Please Wait....', 0)
+
+    useThisPlayList({
+      _id,
+      title,
+      grades,
+      subjects,
+      customize,
+      fromUseThis: true,
+      notificationCallback: msg,
+    })
+  }
+
+  const handleDetailsClick = () => {
+    history.push(`/author/playlists/${_id}#review`)
+  }
 
   const playListId = testItemId ? (
     <PlaylistId data-cy="test-id" key="playlistId">
@@ -86,12 +109,49 @@ const PlaylistCard = ({
     </ShareIcon>
   )
 
+  const showUseThisButton =
+    _source.status === 'published' &&
+    !isOrganizationDistrictUser &&
+    !isPublisherUser
+
   if (isFullSizeImage) {
     return (
       <FullSizeThumbnailCard
         isPlaylist
         onClick={moveToItem}
-        cover={<CardCover uri={thumbnail} />}
+        cover={
+          <CardCover uri={thumbnail}>
+            <ButtonWrapper position="relative" className="showHover">
+              <EduButton
+                width="145px"
+                height="45px"
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  handleDetailsClick()
+                }}
+              >
+                Details
+              </EduButton>
+
+              {showUseThisButton && (
+                <EduButton
+                  loading={isUseThisLoading}
+                  disabled={isUseThisLoading}
+                  width="145px"
+                  height="45px"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    handleUseThisClick()
+                  }}
+                >
+                  Use This
+                </EduButton>
+              )}
+            </ButtonWrapper>
+          </CardCover>
+        }
         actions={[
           playListId,
           playListUsage,
@@ -113,19 +173,33 @@ const PlaylistCard = ({
             <Grade>Grade {grade}</Grade>
           </PlaylistCardHeaderRow>
 
-          {allowDuplicate && (
-            <ButtonWrapper className="showHover">
+          <ButtonWrapper className="showHover">
+            <EduButton
+              height="32px"
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                handleDetailsClick()
+              }}
+            >
+              Details
+            </EduButton>
+
+            {showUseThisButton && (
               <EduButton
+                loading={isUseThisLoading}
+                disabled={isUseThisLoading}
                 height="32px"
                 onClick={(e) => {
+                  e.preventDefault()
                   e.stopPropagation()
-                  duplicatePlayList({ _id, title: _source.title })
+                  handleUseThisClick()
                 }}
               >
-                clone
+                Use This
               </EduButton>
-            </ButtonWrapper>
-          )}
+            )}
+          </ButtonWrapper>
 
           <Stars isPlaylist />
           {collections.find((o) => o.name === 'Edulastic Certified') &&

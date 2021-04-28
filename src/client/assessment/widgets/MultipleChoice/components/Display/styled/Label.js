@@ -1,4 +1,4 @@
-import { lightBlue6 } from '@edulastic/colors'
+import { lightBlue6, themeColorBlue } from '@edulastic/colors'
 import styled from 'styled-components'
 import {
   MultiChoiceContent,
@@ -117,6 +117,11 @@ export const Label = styled.label`
   }
   & .fa-times {
     color: ${(props) => props.theme.widgets.multipleChoice.labelIconTimesColor};
+  }
+
+  &:focus {
+    outline: 0;
+    box-shadow: 0 0 0 2px ${themeColorBlue};
   }
 `
 

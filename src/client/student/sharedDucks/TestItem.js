@@ -88,6 +88,11 @@ export const itemHasUserWorkSelector = createSelector(
   }
 )
 
+export const getTestLevelUserWorkSelector = createSelector(
+  userWorkSelector,
+  (state) => state.attachments
+)
+
 export const questionActivityFromFeedbackSelector = createSelector(
   getItemSelector,
   getTestFeedbackSelector,

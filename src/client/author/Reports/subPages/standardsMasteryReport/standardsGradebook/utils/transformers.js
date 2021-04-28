@@ -27,6 +27,7 @@ export const idToLabel = {
   frlStatus: 'frlStatus',
   ellStatus: 'ellStatus',
   iepStatus: 'iepStatus',
+  hispanicEthnicity: 'hispanicEthnicity',
 }
 
 export const idToName = {
@@ -40,6 +41,7 @@ export const idToName = {
   frlStatus: 'FRL Status',
   ellStatus: 'ELL Status',
   iepStatus: 'IEP Status',
+  hispanicEthnicity: 'Hispanic Ethnicity',
 }
 
 export const analyseByToName = {
@@ -173,8 +175,9 @@ export const getFilteredDenormalizedData = (denormalizedData, filters) => {
       item.iepStatus === filters.iepStatus || filters.iepStatus === 'all'
     )
     const raceFlag = !!(item.race === filters.race || filters.race === 'all')
+    const hispanicEthnicityFlag = !!(item.hispanicEthnicity === filters.hispanicEthnicity || filters.hispanicEthnicity === 'all')
     return (
-      genderFlag && frlStatusFlag && ellStatusFlag && iepStatusFlag && raceFlag
+      genderFlag && frlStatusFlag && ellStatusFlag && iepStatusFlag && raceFlag && hispanicEthnicityFlag
     )
   })
 

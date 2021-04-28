@@ -18,6 +18,7 @@ import {
   isEmpty,
   groupBy,
   cloneDeep,
+  round,
 } from 'lodash'
 import { captureSentryException, notification } from '@edulastic/common'
 import {
@@ -724,6 +725,7 @@ function* correctItemUpdateSaga({ payload }) {
       assignmentId,
       proceedRegrade,
       editRegradeChoice,
+      isUnscored,
     } = payload
     const classResponse = yield select((state) => state.classResponse)
     const testItems = get(classResponse, 'data.originalItems', [])
@@ -766,6 +768,14 @@ function* correctItemUpdateSaga({ payload }) {
     }
 
     const { testId: newTestId, isRegradeNeeded } = result
+    if (isUnscored) {
+      notification({
+        type: 'success',
+        messageKey: 'publishCorrectItemSuccess',
+      })
+      return
+    }
+
     if (proceedRegrade) {
       yield put({
         type: TOGGLE_REGRADE_MODAL,
@@ -1116,6 +1126,17 @@ export const getAggregateByQuestion = (entities, studentId) => {
   const scores = activeEntities
     .map(({ score, maxScore }) => score / maxScore)
     .reduce((prev, cur) => prev + cur, 0)
+
+  const scorePercentagePerStudent = activeEntities
+    .map(({ score, maxScore }) => (score / maxScore) * 100)
+    .sort((a, b) => a - b)
+  const numberOfActivities = scorePercentagePerStudent.length
+  const mid = Math.ceil(numberOfActivities / 2)
+  const median =
+    numberOfActivities % 2 === 0
+      ? (scorePercentagePerStudent[mid] + scorePercentagePerStudent[mid - 1]) /
+        2
+      : scorePercentagePerStudent[mid - 1]
   const submittedScoresAverage =
     activeEntities.length > 0 ? scores / activeEntities.length : 0
   // const startedEntities = entities.filter(x => x.status !== "notStarted");
@@ -1131,6 +1152,7 @@ export const getAggregateByQuestion = (entities, studentId) => {
     avgScore: submittedScoresAverage,
     questionsOrder,
     itemsSummary,
+    median: round(median, 2) || 0,
   }
   return result
 }

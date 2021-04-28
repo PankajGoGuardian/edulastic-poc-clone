@@ -1,12 +1,10 @@
 import { black } from '@edulastic/colors'
-import styled from 'styled-components'
 import {
   MainContentWrapper,
   CheckboxLabel,
   notification,
   LCBScrollContext,
   BackTop,
-  SelectInputStyled,
 } from '@edulastic/common'
 import {
   IconAddStudents,
@@ -119,6 +117,8 @@ import {
   StyledFlexContainer,
   StickyFlex,
   SwitchBox,
+  FilterSelect,
+  FilterSpan,
 } from './styled'
 import { setShowAllStudentsAction } from '../../../src/reducers/testActivity'
 import {
@@ -1659,7 +1659,7 @@ class ClassBoard extends Component {
                   <StudentGrapContainer>
                     <StyledCard bordered={false} paddingTop={15}>
                       <StudentSelect
-                        data-cy="studentSelect"
+                        dataCy="dropDownSelect"
                         style={{ width: '200px' }}
                         students={testActivity}
                         selectedStudent={selectedStudentId}
@@ -1874,6 +1874,7 @@ class ClassBoard extends Component {
                     isPresentationMode={isPresentationMode}
                   >
                     <GenSelect
+                      dataCy="dropDownSelect"
                       classid="DI"
                       classname={firstQuestionEntities
                         .map((x, index) => ({
@@ -2033,16 +2034,3 @@ ClassBoard.propTypes = {
   testQuestionActivities: PropTypes.array,
   qActivityByStudent: PropTypes.any,
 }
-const FilterSelect = styled(SelectInputStyled)`
-  width: ${(props) => props.width};
-  height: ${(props) => props.height};
-  margin-left: 25px;
-  .ant-select-selection-selected-value {
-    font-size: 11px;
-  }
-`
-const FilterSpan = styled.span`
-  padding-right: 15px;
-  font-size: 12px;
-  font-weight: 600;
-`

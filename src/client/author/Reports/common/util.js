@@ -139,7 +139,11 @@ export const filterData = (data, filter) => {
         item.iepStatus.toLowerCase() === filter.iepStatus.toLowerCase()) &&
       (!filter.race ||
         filter.race === 'all' ||
-        item.race.toLowerCase() === filter.race.toLowerCase())
+        item.race.toLowerCase() === filter.race.toLowerCase()) &&
+      (!filter.hispanicEthnicity ||
+        filter.hispanicEthnicity === 'all' ||
+        item.hispanicEthnicity.toLowerCase() ===
+          filter.hispanicEthnicity.toLowerCase())
   )
   return filteredData
 }

@@ -2,7 +2,11 @@
 import React from 'react'
 import styled from 'styled-components'
 import { IconCorrect } from '@edulastic/icons'
-import { themeColor, largeDesktopWidth } from '@edulastic/colors'
+import {
+  themeColor,
+  largeDesktopWidth,
+  themeColorBlue,
+} from '@edulastic/colors'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleRight, faAngleLeft } from '@fortawesome/free-solid-svg-icons'
 import { FlexContainer } from '../common'
@@ -57,7 +61,7 @@ const PlayerFooter = ({
       </Tooltip>
     </FlexContainer>
     <StyledFlexContainer>
-      <QuestionsLeftToAttempt data-cy="questionLeftToAttempt">
+      <QuestionsLeftToAttempt data-cy="questionLeftToAttempt" tabIndex="-1">
         <IconCorrect color={themeColor} />
         {unansweredQuestionCount} Left
       </QuestionsLeftToAttempt>
@@ -102,6 +106,11 @@ const ControlBtn = styled.button`
   position: relative;
   display: block;
   text-transform: uppercase;
+  &:focus {
+    border: none;
+    outline: 0;
+    box-shadow: 0 0 0 2px ${themeColorBlue};
+  }
   &[disabled] {
     background-color: ${(props) => props.theme.btnDisabled};
     cursor: not-allowed;

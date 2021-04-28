@@ -134,6 +134,7 @@ const QuestionBottomAction = ({
       question: questionData,
       proceedRegrade: false,
       lcbView,
+      isUnscored: item?.validation?.unscored,
       callBack: onCloseQuestionModal,
     }
     updateCorrectItem(payload)
@@ -249,7 +250,8 @@ const QuestionBottomAction = ({
           )}
         </div>
         <RightWrapper>
-          {item &&
+          {showCorrectItem &&
+            item &&
             !isStudentReport &&
             !isDocBasedTest &&
             (isDisableCorrectItem ? (
@@ -327,7 +329,8 @@ const getPermissionToEdit = (state, props) => {
   const userFeatures = getUserFeatures(state)
   const collections = getCollectionsSelector(state)
   const testItems = get(state, 'classResponse.data.testItems', [])
-  const testItem = testItems.find((t) => t._id === props.item?.testItemId) || {}
+  const testItem =
+    testItems.find((t) => t._id === props.item?.activity?.testItemId) || {}
   const { authors = [] } = testItem || {}
   const isOwner = authors.some((author) => author._id === userId)
   const hasCollectionAccess = allowContentEditCheck(

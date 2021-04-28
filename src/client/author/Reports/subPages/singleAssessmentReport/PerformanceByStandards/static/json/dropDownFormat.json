@@ -27,7 +27,8 @@
     { "key": "gender", "title": "Gender" },
     { "key": "frlStatus", "title": "FRL Status" },
     { "key": "ellStatus", "title": "ELL Status" },
-    { "key": "iepStatus", "title": "IEP Status" }
+    { "key": "iepStatus", "title": "IEP Status" },
+    { "key": "hispanicEthnicity", "title": "Hispanic Ethnicity" }
   ],
   "filterDropDownData": [
     {

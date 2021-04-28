@@ -235,7 +235,7 @@
         "tab1": "Search exisitng student and add",
         "tab2": "Add multiple students",
         "tab1title": " Search and select existing students from your district and add",
-        "tab2title": "Add Students by typing or paste one or more student(s) names. Use separate lines or semi-colon to add multiple students.",
+        "tab2title": "Add Students by typing or paste one or more student(s) names. Use separate lines, semi-colon or comma to add multiple students.",
         "byname": "Add students by their",
         "googleuser": "Google Usernames",
         "officeuser": "Office 365 Usernames",
@@ -267,7 +267,7 @@
         "username": "Username",
         "status": "Status",
         "usercreated": "New User Created",
-        "userexists": "User Already Exist",
+        "userexists": "User Already Exists",
         "emailnotallowed": "This email Id is not allowed in your district."
       }
     },

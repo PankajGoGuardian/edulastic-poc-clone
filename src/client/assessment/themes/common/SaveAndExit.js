@@ -2,6 +2,7 @@ import {
   extraDesktopWidthMax,
   mediumDesktopExactWidth,
   smallDesktopWidth,
+  themeColorBlue,
 } from '@edulastic/colors'
 import {
   EduButton,
@@ -187,6 +188,8 @@ const StyledButton = styled(Button)`
     svg {
       fill: ${({ theme }) => theme.default.headerRightButtonBgColor};
     }
+    outline: 0;
+    box-shadow: 0 0 0 2px ${themeColorBlue};
   }
 
   &:hover,
@@ -242,6 +245,12 @@ export const SaveAndExitButton = styled(StyledButton)`
     svg {
       fill: ${({ theme }) => theme.default.headerRightButtonBgColor};
     }
+  }
+
+  &:focus {
+    border: none;
+    outline: 0;
+    box-shadow: 0 0 0 2px ${themeColorBlue};
   }
 
   span {

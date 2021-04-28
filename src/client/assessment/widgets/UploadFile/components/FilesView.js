@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { FlexContainer } from '@edulastic/common'
 import ProgressBar from './ProgressBar'
 
-const FilesView = ({ files, hideDelete, onDelete, cols, mt }) => {
+const FilesView = ({ files, hideDelete, onDelete, cols, mt, disableLink }) => {
   if (isEmpty(files)) {
     return null
   }
@@ -25,6 +25,7 @@ const FilesView = ({ files, hideDelete, onDelete, cols, mt }) => {
           hidebar
           hideDelete={hideDelete}
           cols={cols}
+          disableLink={disableLink}
         />
       ))}
     </FlexContainer>

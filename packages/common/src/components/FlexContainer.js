@@ -20,9 +20,7 @@ const FlexContainer = styled.div`
   height: ${({ height }) => height || null};
   flex: ${({ flex }) => flex || null};
   ${({ flexProps }) => flexProps};
-  div:not(.fr-element.fr-view) p {
-    padding: 6px 0px;
-  }
+  cursor: ${({ cursor }) => cursor || null};
 
   @media (max-width: ${mobileWidthMax}) {
     flex-wrap: ${({ flexWrap }) => flexWrap || 'wrap'};

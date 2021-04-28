@@ -27,7 +27,7 @@ import {
   addDifferentiationResourcesAction,
   removeDifferentiationResourcesAction,
   clearAllDiffenrentiationResourcesAction,
-  removeResourceFromDifferentiationAction
+  removeResourceFromDifferentiationAction,
 } from '../../ducks'
 import ManageContentBlock from '../ManageContentBlock'
 import { HideRightPanel, RightContentWrapper } from '../CurriculumRightPanel'
@@ -58,7 +58,9 @@ const Differentiation = ({
   addDifferentiationResources,
   removeDifferentiationResources,
   clearAllDiffenrentiationResources,
-  removeResourceFromDifferentiation
+  removeResourceFromDifferentiation,
+  selectedRows,
+  setSelectedRows,
 }) => {
   const [classList, setClassList] = useState([])
   const [assignmentsByTestId, setAssignmentsByTestId] = useState({})
@@ -221,7 +223,7 @@ const Differentiation = ({
     toggleAssignModal,
     addDifferentiationResources,
     removeDifferentiationResources,
-    removeResourceFromDifferentiation
+    removeResourceFromDifferentiation,
   }
 
   return (
@@ -311,6 +313,8 @@ const Differentiation = ({
               data-cy="review"
               data={differentiationWork.review}
               workStatusData={workStatusData.REVIEW || []}
+              selectedRows={selectedRows}
+              setSelectedRows={setSelectedRows}
               {...workTableCommonProps}
             />
             <WorkTable
@@ -318,6 +322,8 @@ const Differentiation = ({
               data-cy="practice"
               data={differentiationWork.practice}
               workStatusData={workStatusData.PRACTICE || []}
+              selectedRows={selectedRows}
+              setSelectedRows={setSelectedRows}
               {...workTableCommonProps}
             />
             <WorkTable
@@ -325,6 +331,8 @@ const Differentiation = ({
               data-cy="challenge"
               data={differentiationWork.challenge}
               workStatusData={workStatusData.CHALLENGE || []}
+              selectedRows={selectedRows}
+              setSelectedRows={setSelectedRows}
               {...workTableCommonProps}
             />
           </div>

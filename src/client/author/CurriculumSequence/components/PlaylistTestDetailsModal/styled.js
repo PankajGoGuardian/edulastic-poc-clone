@@ -45,7 +45,6 @@ export const BreadCrumb = styled.div`
   color: ${title};
   text-transform: uppercase;
   text-align: left;
-  width: 100%;
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
@@ -56,7 +55,7 @@ export const ActionsWrapper = styled.div`
   align-items: center;
   justify-content: space-evenly;
   margin-left: auto;
-  min-width: 300px;
+  width: 400px;
 `
 export const ActionBtn = styled.button`
   display: flex;

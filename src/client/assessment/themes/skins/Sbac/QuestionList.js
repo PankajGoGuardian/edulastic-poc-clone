@@ -10,6 +10,7 @@ const QuestionList = ({
   blockNavigationToAnsweredQuestions = false,
 }) => {
   const handleQuestionCLick = (e) => gotoQuestion(options[parseInt(e.key, 10)])
+
   const menu = (
     <Menu onClick={handleQuestionCLick}>
       <Menu.Item disabled>
@@ -20,6 +21,13 @@ const QuestionList = ({
           key={option}
           data-cy="questionSelectOptions"
           disabled={blockNavigationToAnsweredQuestions}
+          tabIndex="0"
+          onKeyDown={(e) => {
+            const code = e.which
+            if (code === 13 || code === 32) {
+              handleQuestionCLick({ key: option })
+            }
+          }}
         >
           Question&nbsp;&nbsp;&nbsp;{`0${option + 1}`.slice(-2)}
         </Menu.Item>
@@ -31,14 +39,16 @@ const QuestionList = ({
     <StyledDropdown
       overlay={menu}
       getPopupContainer={(triggerNode) => triggerNode.parentNode}
+      trigger={['hover', 'click']}
     >
-      <a
+      <button
+        type="button"
         className="ant-dropdown-link"
         onClick={(e) => e.preventDefault()}
         data-cy="options"
       >
         Question {`0${currentItem + 1}`.slice(-2)} <StyledIcon type="down" />
-      </a>
+      </button>
     </StyledDropdown>
   )
 }

@@ -14,17 +14,20 @@ import {
   FieldLabel,
   FlexContainer,
 } from '@edulastic/common'
-import { IconFeedback, IconEye, IconEyeClose } from '@edulastic/icons'
-import { test } from '@edulastic/constants'
+import {
+  IconFeedback,
+  IconExpand,
+  IconCollapse,
+  IconFolder,
+} from '@edulastic/icons'
+import {
+  test,
+  questionActivity as questionActivityConst,
+} from '@edulastic/constants'
 import { white } from '@edulastic/colors'
 import {
   StyledFlexContainer,
-  AllButton,
-  CorrectButton,
-  WrongButton,
   StyledStudentTabButton,
-  PartiallyCorrectButton,
-  GiveOverallFeedBackButton,
   StudentButtonWrapper,
   StudentButtonDiv,
   ScrollToTopButton,
@@ -53,6 +56,11 @@ import {
 
 import { getQuestionLabels } from '../ClassBoard/Transformer'
 import HooksContainer from '../ClassBoard/components/HooksContainer/HooksContainer'
+import {
+  FilterSelect,
+  FilterSpan,
+} from '../ClassBoard/components/Container/styled'
+import TestAttachementsModal from './Modals/TestAttachementsModal'
 
 const _getquestionLabels = memoizeOne(getQuestionLabels)
 
@@ -67,6 +75,7 @@ class StudentViewContainer extends Component {
       showTestletPlayer: false,
       hasStickyHeader: false,
       hideCorrectAnswer: true,
+      showAttachmentsModal: false,
     }
   }
 
@@ -161,6 +170,12 @@ class StudentViewContainer extends Component {
     }))
   }
 
+  toggleAttachmentsModal = () => {
+    this.setState((prevState) => ({
+      showAttachmentsModal: !prevState.showAttachmentsModal,
+    }))
+  }
+
   render() {
     const {
       classResponse,
@@ -202,34 +217,45 @@ class StudentViewContainer extends Component {
     const activeQuestions = questionActivities.filter(
       (x) => !(x.disabled || x.scoringDisabled)
     )
-    // TODO: refactor computing these counts in a single loop/reduce
-    const totalNumber = activeQuestions.length
 
-    const correctNumber = activeQuestions.filter(
-      (x) => !x.isPractice && x.score === x.maxScore && x.score > 0
-    ).length
-
-    const wrongNumber = activeQuestions.filter(
-      (x) =>
-        !x.isPractice &&
-        x.score === 0 &&
-        x.maxScore > 0 &&
-        x.graded &&
-        !x.skipped
-    ).length
-
-    const partiallyCorrectNumber = activeQuestions.filter(
-      (x) => !x.isPractice && x.score > 0 && x.score < x.maxScore
-    ).length
-
-    const skippedNumber = activeQuestions.filter(
-      (x) => !x.isPractice && x.skipped && x.score === 0
-    ).length
-
-    const notGradedNumber = activeQuestions.filter(
-      (x) => !x.isPractice && !x.skipped && x.graded === false
-    ).length
-    const unscoredItems = activeQuestions.filter((x) => x.isPractice).length
+    const questionStatusCounts = activeQuestions.reduce(
+      (acc, cur) => {
+        if (!cur.isPractice && cur.score === cur.maxScore && cur.score > 0) {
+          acc.correctNumber += 1
+        }
+        if (
+          !cur.isPractice &&
+          cur.score === 0 &&
+          cur.maxScore > 0 &&
+          cur.graded &&
+          !cur.skipped
+        ) {
+          acc.wrongNumber += 1
+        }
+        if (!cur.isPractice && cur.score > 0 && cur.score < cur.maxScore) {
+          acc.partiallyCorrectNumber += 1
+        }
+        if (!cur.isPractice && cur.skipped && cur.score === 0) {
+          acc.skippedNumber += 1
+        }
+        if (!cur.isPractice && !cur.skipped && cur.graded === false) {
+          acc.notGradedNumber += 1
+        }
+        if (cur.isPractice) {
+          acc.unscoredItems += 1
+        }
+        return acc
+      },
+      {
+        totalNumber: activeQuestions.length,
+        correctNumber: 0,
+        wrongNumber: 0,
+        partiallyCorrectNumber: 0,
+        skippedNumber: 0,
+        notGradedNumber: 0,
+        unscoredItems: 0,
+      }
+    )
 
     const studentTestActivity = studentResponse && studentResponse.testActivity
     const initFeedbackValue =
@@ -245,6 +271,8 @@ class StudentViewContainer extends Component {
         <p>{initFeedbackValue}</p>
       </div>
     )
+
+    const { attachments = [] } = studentTestActivity?.userWork || {}
 
     return (
       <>
@@ -306,48 +334,29 @@ class StudentViewContainer extends Component {
         >
           <StudentButtonWrapper>
             <StudentButtonDiv>
-              <AllButton
-                active={filter === null}
-                onClick={() => this.onClickTab(null)}
+              <FilterSpan>FILTER BY STATUS</FilterSpan>
+              <FilterSelect
+                className="student-status-filter"
+                value={filter}
+                dropdownMenuStyle={{ fontSize: 29 }}
+                getPopupContainer={(trigger) => trigger.parentElement}
+                onChange={this.onClickTab}
+                width="170px"
+                height="24px"
               >
-                ALL ({totalNumber})
-              </AllButton>
-              <CorrectButton
-                active={filter === 'correct'}
-                onClick={() => this.onClickTab('correct')}
-              >
-                CORRECT ({correctNumber})
-              </CorrectButton>
-              <WrongButton
-                active={filter === 'wrong'}
-                onClick={() => this.onClickTab('wrong')}
-              >
-                INCORRECT ({wrongNumber})
-              </WrongButton>
-              <WrongButton
-                active={filter === 'partial'}
-                onClick={() => this.onClickTab('partial')}
-              >
-                PARTIALLY CORRECT ({partiallyCorrectNumber})
-              </WrongButton>
-              <WrongButton
-                active={filter === 'skipped'}
-                onClick={() => this.onClickTab('skipped')}
-              >
-                SKIPPED ({skippedNumber})
-              </WrongButton>
-              <WrongButton
-                active={filter === 'unscoredItems'}
-                onClick={() => this.onClickTab('unscoredItems')}
-              >
-                ZERO POINT ({unscoredItems})
-              </WrongButton>
-              <PartiallyCorrectButton
-                active={filter === 'notGraded'}
-                onClick={() => this.onClickTab('notGraded')}
-              >
-                NOT GRADED ({notGradedNumber})
-              </PartiallyCorrectButton>
+                {questionActivityConst.questionStatusOptions.map(
+                  ({ title, value, countValue }, i) => (
+                    <FilterSelect.Option
+                      className="student-status-filter-item"
+                      key={i}
+                      value={value}
+                      style={{ fontSize: 11 }}
+                    >
+                      {title} ({questionStatusCounts[countValue]})
+                    </FilterSelect.Option>
+                  )
+                )}
+              </FilterSelect>
             </StudentButtonDiv>
             {showStudentWorkButton && (
               <StyledStudentTabButton
@@ -358,42 +367,61 @@ class StudentViewContainer extends Component {
             )}
           </StudentButtonWrapper>
           <FlexContainer alignItems="center">
+            {attachments.length > 0 && (
+              <EduButton
+                isGhost
+                height="24px"
+                fontSize="9px"
+                mr="10px"
+                ml="0px"
+                onClick={this.toggleAttachmentsModal}
+                title="View all attachments"
+              >
+                <IconFolder height="11.3px" width="11.3px" />
+                <span>Attachments</span>
+              </EduButton>
+            )}
             <EduButton
               isGhost
               height="24px"
               fontSize="9px"
-              mr="0px"
+              mr="10px"
               ml="0px"
               onClick={this.toggleShowCorrectAnswers}
+              title="Minimizing view hides correct answers, maximize to view them"
             >
-              {hideCorrectAnswer ? <IconEye /> : <IconEyeClose />}
+              {hideCorrectAnswer ? (
+                <IconExpand height="11.3px" width="11.3px" />
+              ) : (
+                <IconCollapse height="11.3px" width="11.3px" />
+              )}
               <span data-cy="showCorrectAnswer" data-test={!hideCorrectAnswer}>
-                {hideCorrectAnswer
-                  ? 'Expand correct answers'
-                  : 'Collapse correct answers'}
+                {hideCorrectAnswer ? 'Maximize view' : 'Minimize view'}
               </span>
             </EduButton>
             {!isCliUser && (
-              <GiveOverallFeedBackButton
-                data-cy="overallFeedback"
-                onClick={() => this.handleShowFeedbackPopup(true)}
-                active
+              <Tooltip
+                title={initFeedbackValue.length ? feedbackButtonToolTip : null}
+                placement={hasStickyHeader ? 'bottom' : 'top'}
               >
-                <IconFeedback color={white} />
-                {initFeedbackValue.length ? (
-                  <Tooltip
-                    title={feedbackButtonToolTip}
-                    placement={hasStickyHeader ? 'bottom' : 'top'}
-                  >
+                <EduButton
+                  data-cy="overallFeedback"
+                  onClick={() => this.handleShowFeedbackPopup(true)}
+                  height="24px"
+                  fontSize="9px"
+                  isGhost
+                >
+                  <IconFeedback color={white} height="13px" width="14px" />
+                  {initFeedbackValue.length ? (
                     <span>
                       {`${initFeedbackValue.slice(0, 30)}
                       ${initFeedbackValue.length > 30 ? '.....' : ''}`}
                     </span>
-                  </Tooltip>
-                ) : (
-                  'GIVE OVERALL FEEDBACK'
-                )}
-              </GiveOverallFeedBackButton>
+                  ) : (
+                    'GIVE OVERALL FEEDBACK'
+                  )}
+                </EduButton>
+              </Tooltip>
             )}
           </FlexContainer>
         </StyledFlexContainer>
@@ -434,6 +462,17 @@ class StudentViewContainer extends Component {
           hasStickyHeader={hasStickyHeader}
           onClick={() => scrollTo(document.querySelector('body'))}
         />
+        {this.state.showAttachmentsModal && (
+          <TestAttachementsModal
+            toggleAttachmentsModal={this.toggleAttachmentsModal}
+            showAttachmentsModal={this.state.showAttachmentsModal}
+            attachmentsList={attachments}
+            title="All Attachments"
+            description="Import content from QTI, WebCT and several other formats."
+            utaId={studentTestActivity?._id}
+            studentData={currentStudent}
+          />
+        )}
       </>
     )
   }

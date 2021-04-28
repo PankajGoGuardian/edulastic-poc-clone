@@ -1557,13 +1557,19 @@ class Setting extends Component {
                     <Block id="player-skin-type" smallSize={isSmallSize}>
                       <Row>
                         <Title>
-                          Student Player Skin{' '}
+                          Choose Test Interface{' '}
                           <DollarPremiumSymbol premium={selectPlayerSkinType} />
                         </Title>
                         <Body smallSize={isSmallSize}>
                           <Col span={12}>
                             <SelectInputStyled
                               data-cy="playerSkinType"
+                              showSearch
+                              filterOption={(input, option) =>
+                                option.props.children
+                                  .toLowerCase()
+                                  .indexOf(input.toLowerCase()) >= 0
+                              }
                               value={
                                 playerSkinType ===
                                 playerSkinTypes.edulastic.toLowerCase()

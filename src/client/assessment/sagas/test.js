@@ -100,6 +100,7 @@ import {
 import { getClassIds } from '../../student/Reports/ducks'
 import { startAssessmentAction } from '../actions/assessment'
 import { TIME_UPDATE_TYPE } from '../themes/common/TimedTestTimer'
+import { getTestLevelUserWorkSelector } from '../../student/sharedDucks/TestItem'
 
 // import { checkClientTime } from "../../common/utils/helpers";
 
@@ -824,6 +825,18 @@ function* submitTest({ payload }) {
     if (testActivityId === 'test' || !testActivityId) {
       throw new Error('Unable to submit the test.')
     }
+
+    const testLevelAttachments = yield select(getTestLevelUserWorkSelector)
+
+    if ((testLevelAttachments || []).length) {
+      const reqPayload = {
+        testActivityId,
+        groupId,
+        userWork: { attachments: testLevelAttachments },
+      }
+      yield call(testActivityApi.saveUserWork, reqPayload)
+    }
+
     yield testActivityApi.submit(testActivityId, groupId)
     // log the details on auto submit
     // if (payload.autoSubmit) {

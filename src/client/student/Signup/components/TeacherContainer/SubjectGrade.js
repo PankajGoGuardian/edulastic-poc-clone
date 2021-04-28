@@ -42,7 +42,6 @@ class SubjectGrade extends React.Component {
     this.gradeRef = createRef()
     this.subjectRef = createRef()
     this.standardRef = createRef()
-    this.topicRef = createRef()
     const { defaultGrades, defaultSubjects } = get(props.user, 'user.orgData')
 
     this.state = {

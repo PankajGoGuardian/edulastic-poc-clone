@@ -61,7 +61,7 @@ const PlaylistStatus = styled.span`
   width: 60px;
   height: 20px;
   font-weight: 600;
-  margin-left: 0px;
+  margin-left: 10px;
   display: inline-block;
   font-size: 9px;
   text-transform: uppercase;
@@ -225,17 +225,14 @@ const CurriculumHeader = ({
     </Menu>
   )
 
-  const headingSubContent = (
-    <>
-      {!(urlHasUseThis && !isPublisherUser && switchPlaylist) ? (
-        <PlaylistStatus className={status} data-cy="playlist-status">
-          {status}
-        </PlaylistStatus>
-      ) : (
-        ''
-      )}
-    </>
-  )
+  const headingSubContent =
+    urlHasUseThis && !isPublisherUser ? (
+      switchPlaylist
+    ) : (
+      <PlaylistStatus className={status} data-cy="playlist-status">
+        {status}
+      </PlaylistStatus>
+    )
 
   if (mode !== 'embedded') {
     return (

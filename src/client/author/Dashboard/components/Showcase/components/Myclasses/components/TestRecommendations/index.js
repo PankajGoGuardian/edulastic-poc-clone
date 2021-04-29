@@ -1,0 +1,75 @@
+import React, { useState } from 'react'
+import { title } from '@edulastic/colors'
+import { EduButton, FlexContainer } from '@edulastic/common'
+import { Row } from 'antd'
+import { TextWrapper } from '../../../../../styledComponents'
+import {
+  TestRecommendationsWrapper,
+  ViewMoreButton,
+  CardContainer,
+} from './styled'
+import CardWrapper from '../../../../../../../TestList/components/CardWrapper/CardWrapper'
+
+const TestRecommendationsContainer = ({
+  recommendations,
+  setShowTestCustomizerModal,
+  userId,
+  windowWidth,
+  history,
+}) => {
+  const [isExpanded, setIsExpanded] = useState(false)
+
+  const gridCountInARow = windowWidth > 1600 ? 6 : windowWidth >= 1366 ? 4 : 3
+  const numberOfRows = isExpanded ? 3 : 1
+  const totalNumberOfItemsToShow = gridCountInARow * numberOfRows
+
+  return (
+    <TestRecommendationsWrapper>
+      <FlexContainer
+        style={{ marginBottom: '1rem' }}
+        justifyContent="center"
+        flexWrap="wrap"
+      >
+        <TextWrapper
+          fw="bold"
+          size="16px"
+          color={title}
+          style={{ marginBottom: '1rem' }}
+        >
+          Recommended Content For You
+        </TextWrapper>
+        <EduButton
+          style={{ marginLeft: '10px' }}
+          isGhost
+          onClick={() => setShowTestCustomizerModal(true)}
+        >
+          Customize
+        </EduButton>
+        <ViewMoreButton onClick={() => setIsExpanded(!isExpanded)}>
+          {isExpanded ? 'View Less' : 'View More'}
+        </ViewMoreButton>
+      </FlexContainer>
+      <CardContainer type="tile">
+        <Row type="flex" justify="space-between">
+          {recommendations.map((item, index) => {
+            if (index >= totalNumberOfItemsToShow) return
+            return (
+              <CardWrapper
+                key={item._id}
+                owner={
+                  item.authors && item.authors.some((x) => x._id === userId)
+                }
+                item={item}
+                blockStyle="tile"
+                windowWidth={windowWidth}
+                history={history}
+              />
+            )
+          })}
+        </Row>
+      </CardContainer>
+    </TestRecommendationsWrapper>
+  )
+}
+
+export default TestRecommendationsContainer

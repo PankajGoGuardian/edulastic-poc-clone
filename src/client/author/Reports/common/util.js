@@ -244,10 +244,14 @@ export const processTeacherIds = (orgDataArr) => {
 }
 
 export const getOverallScore = (metrics = []) =>
-  roundedPercentage(
-    sumBy(metrics, (item) => parseFloat(item.totalScore)),
-    sumBy(metrics, (item) => parseFloat(item.maxScore || 1))
-  )
+  metrics.length
+    ? sumBy(metrics, (item) =>
+        percentage(
+          parseFloat(item.totalScore) || 0,
+          parseFloat(item.maxScore) || 1
+        )
+      ) / metrics.length
+    : 0
 
 export const filterAccordingToRole = (columns, role) =>
   columns.filter((column) => !includes(column.hiddenFromRole, role))

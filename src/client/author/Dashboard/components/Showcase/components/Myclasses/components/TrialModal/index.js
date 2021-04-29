@@ -22,6 +22,7 @@ const TrialModal = ({
   startPremiumTrial,
   products = [],
   setShowHeaderTrialModal,
+  setShowTrialSubsConfirmation,
   setTrialAddOnProductIds = () => {},
   hasAllTrialProducts = false,
 }) => {
@@ -70,7 +71,7 @@ const TrialModal = ({
 
   const onProceed = () => {
     setTrialAddOnProductIds([...productIds])
-    startPremiumTrial({ productIds })
+    startPremiumTrial({ productIds, setShowTrialSubsConfirmation })
     closeModal()
   }
 

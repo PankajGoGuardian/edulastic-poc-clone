@@ -262,11 +262,7 @@ const TrialConfirmationModal = ({
 }
 
 TrialConfirmationModal.propTypes = {
-  showTrialSubsConfirmationAction: PropTypes.func,
-}
-
-TrialConfirmationModal.defaultProps = {
-  showTrialSubsConfirmationAction: () => {},
+  showTrialSubsConfirmationAction: PropTypes.func.isRequired,
 }
 
 export default TrialConfirmationModal

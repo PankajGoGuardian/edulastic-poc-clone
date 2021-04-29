@@ -15,7 +15,6 @@ import {
   getAddOnProductIds,
   getBookKeepersInviteSuccessStatus,
   slice,
-  getShowTrialSubsConfirmationSelector,
   getShowTrialConfirmationMessageSelector,
 } from '../../../../Subscription/ducks'
 import { getCollectionsSelector, getUserOrgId } from '../../../selectors/user'
@@ -83,7 +82,7 @@ const PurchaseFlowModals = (props) => {
     setBookKeepersInviteSuccess,
     subsLicenses = [],
     isConfirmationModalVisible,
-    showTrialSubsConfirmationAction,
+    setShowTrialSubsConfirmation,
     showTrialConfirmationMessage,
     trialAddOnProductIds,
     collections,
@@ -261,6 +260,7 @@ const PurchaseFlowModals = (props) => {
         ...data,
         productIds: [...addOnProductIds],
         setPaymentServiceModal,
+        setShowTrialSubsConfirmation,
       })
     } else {
       handleStripeMultiplePayment({
@@ -401,7 +401,7 @@ const PurchaseFlowModals = (props) => {
       {isConfirmationModalVisible && (
         <TrialConfirmationModal
           visible={isConfirmationModalVisible}
-          showTrialSubsConfirmationAction={showTrialSubsConfirmationAction}
+          showTrialSubsConfirmationAction={setShowTrialSubsConfirmation}
           showTrialConfirmationMessage={trialConfirmationMessage}
           trialAddOnProductIds={trialAddOnProductIds}
           collections={collections}
@@ -439,7 +439,6 @@ export default compose(
       isBookKeepersInviteSuccess: getBookKeepersInviteSuccessStatus(state),
       collections: getCollectionsSelector(state),
       playlists: getDashboardPlaylists(state),
-      isConfirmationModalVisible: getShowTrialSubsConfirmationSelector(state),
       showTrialConfirmationMessage: getShowTrialConfirmationMessageSelector(
         state
       ),
@@ -453,8 +452,6 @@ export default compose(
       bulkInviteBookKeepers: slice.actions.bulkInviteBookKeepersAction,
       setBookKeepersInviteSuccess: slice.actions.setBookKeepersInviteSuccess,
       fetchPlaylists: fetchPlaylistsAction,
-      showTrialSubsConfirmationAction:
-        slice.actions.trialSubsConfirmationAction,
       useThisPlayList: useThisPlayListAction,
     }
   )

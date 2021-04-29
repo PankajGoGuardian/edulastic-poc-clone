@@ -86,6 +86,7 @@ const MyClasses = ({
   )
   const [showTestCustomizerModal, setShowTestCustomizerModal] = useState(false)
   const [trialAddOnProductIds, setTrialAddOnProductIds] = useState([])
+  const [recommendedTests, setRecommendedTests] = useState([])
 
   useEffect(() => {
     // fetch clever classes on modal display
@@ -98,6 +99,27 @@ const MyClasses = ({
     getDictCurriculums()
     receiveSearchCourse({ districtId, active: 1 })
   }, [])
+
+  const checkLocalRecommendedTests = () => {
+    if(user?.recommendedContentUpdated){
+      if(user?.orgData?.defaultGrades?.length && user?.orgData?.defaultSubjects?.length && user?.orgData?.interestedCurriculums?.length){
+        console.log('rTest: Call Get API');
+      }else{
+        console.log('rTest: Set customize modal to True no data')
+      }
+      return;
+    }
+    const recommendedTestsLocal = localStorage.getItem(`recommendedTest:${user?._id}:stored`);
+    if(recommendedTestsLocal){
+      setRecommendedTests(JSON.parse(recommendedTestsLocal));
+    }else{
+      console.log('rTest: Set customize modal to True')
+    }
+  }
+
+  useEffect(() => {
+    checkLocalRecommendedTests();
+  }, [user?.recommendedContentUpdated])
 
   const isPremiumUser = user?.features?.premium
 

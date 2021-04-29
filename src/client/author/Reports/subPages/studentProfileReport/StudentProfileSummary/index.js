@@ -184,7 +184,7 @@ const StudentProfileSummary = ({
         studentId: settings.selectedStudent.key,
       })
     }
-  }, [settings])
+  }, [settings.selectedStudent, settings.requestFilters])
 
   useEffect(() => {
     setSelectedDomain({ key: 'All', title: 'All' })

@@ -84,6 +84,12 @@ export const SimplePieChartComponent = ({ data, isPrinting }) => {
           align="center"
           verticalAlign="bottom"
           isAnimationActive={!isPrinting}
+          wrapperStyle={{
+            maxHeight: '110px',
+            overflow: 'auto',
+            fontSize: '12px',
+            bottom: 0,
+          }}
         />
         <Tooltip
           cursor={false}
@@ -93,8 +99,8 @@ export const SimplePieChartComponent = ({ data, isPrinting }) => {
           name="name"
           data={chartData}
           labelLine={false}
-          innerRadius={35}
-          outerRadius={65}
+          innerRadius={30}
+          outerRadius={57}
           dataKey="bandPerf"
           isAnimationActive={!isPrinting}
           label={renderCustomizedLabel}

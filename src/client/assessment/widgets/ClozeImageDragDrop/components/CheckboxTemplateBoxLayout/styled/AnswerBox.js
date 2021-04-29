@@ -60,6 +60,6 @@ export const AnswerBox = styled.div`
   }
 
   .text {
-    padding-left: 8px;
+    padding: 0px 8px;
   }
 `

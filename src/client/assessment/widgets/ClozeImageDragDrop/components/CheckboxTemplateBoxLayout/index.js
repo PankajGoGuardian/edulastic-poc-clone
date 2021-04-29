@@ -33,7 +33,6 @@ const CheckboxTemplateBox = ({
   disableResponse,
   isSnapFitValues,
   isExpressGrader,
-  lessMinWidth,
   fontSize,
   isPrintPreview = false,
   options = [],
@@ -45,6 +44,8 @@ const CheckboxTemplateBox = ({
     left: respLeft,
     top: respTop,
   } = responseContainer
+
+  const lessMinWidth = parseInt(respWidth, 10) < response.minWidthShowAnswer
 
   const status = evaluation[index] ? 'right' : 'wrong'
 
@@ -115,24 +116,57 @@ const CheckboxTemplateBox = ({
       ? `${containerClassName} show-answer`
       : containerClassName
 
-  const icons = isSnapFitValues &&
-    (checkAnswer || (showAnswer && !lessMinWidth)) && (
-      <>
-        <IconWrapper>
-          {isChecked && status === 'right' && <RightIcon />}
-          {isChecked && status === 'wrong' && <WrongIcon />}
-        </IconWrapper>
-        <Pointer
-          className={responseContainer.pointerPosition}
-          width={respWidth}
-        >
-          <Point />
-          <Triangle />
-        </Pointer>
-      </>
-    )
+  const icons = isSnapFitValues && (checkAnswer || showAnswer) && !lessMinWidth && (
+    <>
+      <IconWrapper>
+        {isChecked && status === 'right' && <RightIcon />}
+        {isChecked && status === 'wrong' && <WrongIcon />}
+      </IconWrapper>
+      <Pointer className={responseContainer.pointerPosition} width={respWidth}>
+        <Point />
+        <Triangle />
+      </Pointer>
+    </>
+  )
 
   const responseBoxIndex = showAnswer && <div className="index">{indexStr}</div>
+  const getContent = (isPopover) => (
+    <AnswerBox
+      checked={isChecked}
+      correct={status === 'right'}
+      isPrintPreview={isPrintPreview}
+    >
+      {(isPopover || !lessMinWidth) && responseBoxIndex}
+      <TextContainer
+        options={options}
+        dropTargetIndex={index}
+        userSelections={userSelections}
+        isSnapFitValues={isSnapFitValues}
+        showAnswer={showAnswer}
+        checkAnswer={checkAnswer}
+        lessMinWidth={lessMinWidth}
+        className={containerClassName}
+        status={status}
+        isChecked={isChecked}
+        style={
+          checkAnswer
+            ? {
+                borderRadius: 5,
+                justifyContent: lessMinWidth ? 'flex-start' : 'center',
+                width: respWidth,
+                height: respHeight,
+              }
+            : {
+                width: respWidth,
+                height: respHeight,
+              }
+        }
+        isExpressGrader={isExpressGrader}
+        isPrintPreview={isPrintPreview}
+      />
+      {icons}
+    </AnswerBox>
+  )
 
   return (
     <WithPopover
@@ -143,7 +177,7 @@ const CheckboxTemplateBox = ({
       status={status}
       checkAnswer={checkAnswer}
       className={containerClassName}
-      indexStr={indexStr}
+      getContent={getContent}
     >
       <DropContainer
         index={index}
@@ -153,41 +187,7 @@ const CheckboxTemplateBox = ({
         disableResponse={disableResponse}
         noBorder
       >
-        <AnswerBox
-          checked={isChecked}
-          correct={status === 'right'}
-          isPrintPreview={isPrintPreview}
-        >
-          {responseBoxIndex}
-          <TextContainer
-            options={options}
-            dropTargetIndex={index}
-            userSelections={userSelections}
-            isSnapFitValues={isSnapFitValues}
-            showAnswer={showAnswer}
-            checkAnswer={checkAnswer}
-            lessMinWidth={lessMinWidth}
-            className={containerClassName}
-            status={status}
-            isChecked={isChecked}
-            style={
-              checkAnswer
-                ? {
-                    borderRadius: 5,
-                    justifyContent: lessMinWidth ? 'flex-start' : 'center',
-                    width: respWidth,
-                    height: respHeight,
-                  }
-                : {
-                    width: respWidth,
-                    height: respHeight,
-                  }
-            }
-            isExpressGrader={isExpressGrader}
-            isPrintPreview={isPrintPreview}
-          />
-          {icons}
-        </AnswerBox>
+        {getContent()}
       </DropContainer>
     </WithPopover>
   )
@@ -203,10 +203,6 @@ const CheckboxTemplateBoxLayout = (props) => {
     isSnapFitValues,
     showDropItemBorder,
   } = props
-  const lessMinWidth = responseContainers.some(
-    (responseContainer) =>
-      parseInt(responseContainer.width, 10) < response.minWidthShowAnswer
-  )
   return (
     <>
       {annotations}
@@ -222,7 +218,6 @@ const CheckboxTemplateBoxLayout = (props) => {
             index={index}
             responseContainer={responseContainer}
             {...props}
-            lessMinWidth={lessMinWidth}
           />
         )
       })}
@@ -242,7 +237,6 @@ CheckboxTemplateBox.propTypes = {
   checkAnswer: PropTypes.bool.isRequired,
   onDropHandler: PropTypes.func.isRequired,
   disableResponse: PropTypes.bool.isRequired,
-  lessMinWidth: PropTypes.bool.isRequired,
   isExpressGrader: PropTypes.bool.isRequired,
   isSnapFitValues: PropTypes.bool.isRequired,
 }

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { response } from '@edulastic/constants'
 import { MathSpan } from '@edulastic/common'
 
-export function PopoverContent({ fontSize, answer, className }) {
+export function PopoverContent({ fontSize, answer, className, indexStr }) {
   return (
     <div
       fontSize={fontSize}
@@ -13,6 +13,7 @@ export function PopoverContent({ fontSize, answer, className }) {
         'max-width': response.maxWidth,
       }}
     >
+      {indexStr}
       <div
         className="text container"
         style={{ overflow: 'unset', width: '100%' }}

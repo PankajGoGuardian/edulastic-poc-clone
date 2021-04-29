@@ -1,17 +1,14 @@
 import React from 'react'
 import { measureTextWithImage } from '@edulastic/common'
 import { Popover } from 'antd'
-import styled from 'styled-components'
-
-import { PopoverContent } from './PopoverContent'
 
 export function WithPopover({
   children,
   userAnswer,
   containerDimensions,
   fontSize,
-  className,
   checkAnswer,
+  getContent,
 }) {
   const {
     scrollWidth: contentWidth,
@@ -31,31 +28,16 @@ export function WithPopover({
   const showPopover = heightOverflow || widthOverflow
 
   if (showPopover) {
-    const popoverContent = (
-      <PopoverContent
-        fontSize={fontSize}
-        answer={userAnswer}
-        className={className}
-      />
-    )
+    const popoverContent = getContent(true)
     return (
-      <Wrapper>
-        <Popover
-          placement="bottomLeft"
-          content={popoverContent}
-          getPopupContainer={(triggerNode) => triggerNode.parentNode}
-        >
-          {children}
-        </Popover>
-      </Wrapper>
+      <Popover
+        placement="bottomLeft"
+        content={popoverContent}
+        getPopupContainer={(triggerNode) => triggerNode.parentNode}
+      >
+        {children}
+      </Popover>
     )
   }
   return children
 }
-
-const Wrapper = styled.div`
-  .text-wrapper {
-    margin-right: auto;
-    overflow: hidden;
-  }
-`

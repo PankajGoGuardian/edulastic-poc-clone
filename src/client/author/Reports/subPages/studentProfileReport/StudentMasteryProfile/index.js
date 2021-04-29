@@ -178,7 +178,7 @@ const StudentMasteryProfile = ({
         studentId: settings.selectedStudent.key,
       })
     }
-  }, [settings])
+  }, [settings.selectedStudent, settings.requestFilters])
 
   useEffect(() => {
     setSelectedMastery([])

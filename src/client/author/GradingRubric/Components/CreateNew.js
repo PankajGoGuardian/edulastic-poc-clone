@@ -70,6 +70,7 @@ const CreateNew = ({
           })(
             <Input
               placeholder={isEditable ? 'Enter rubric name' : ''}
+              data-cy="rubricName"
               onChange={(e) => handleFieldChange('rubricName', e)}
               disabled={!isEditable}
             />
@@ -79,6 +80,7 @@ const CreateNew = ({
           <Input
             value={currentRubricData?.description || ''}
             placeholder={isEditable ? 'Enter Description' : ''}
+            data-cy="description"
             onChange={(e) => handleFieldChange('rubricDesc', e)}
             disabled={!isEditable}
           />
@@ -115,6 +117,7 @@ const CreateNew = ({
         {isEditable && (
           <CustomStyleBtn
             margin="0px"
+            data-cy="addCriteria"
             onClick={handleAddCriteria}
             width="175px"
           >

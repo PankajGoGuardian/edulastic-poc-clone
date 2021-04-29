@@ -15,7 +15,8 @@
     { "key": "performanceBandProfileId" },
     { "key": "standardsProficiencyProfileId" },
     { "key": "domainId" },
-    { "key": "standardId" }
+    { "key": "standardId" },
+    { "key": "assignedBy" }
   ],
   "initialFilters": {
     "reportId": "",
@@ -28,7 +29,8 @@
     "standardsProficiencyProfileId": "",
     "domainId": "All",
     "standardId": "All",
-    "showApply": false
+    "showApply": false,
+    "assignedBy": "anyone"
 	},
   "subjects": [
     { "key": "Mathematics", "title": "Mathematics" },
@@ -54,5 +56,9 @@
     { "key": "11", "title": "Grade 11" },
     { "key": "12", "title": "Grade 12" },
     { "key": "other", "title": "Other" }
+  ],
+  "assignedBy": [
+    { "key": "anyone", "title": "Anyone"},
+    { "key": "me", "title": "Me"}
   ]
 }

@@ -5,7 +5,8 @@
     { "key": "teacherIds" },
     { "key": "grades", "subType": "class" },
     { "key": "subjects", "subType": "class" },
-    { "key": "assessmentTypes" }
+    { "key": "assessmentTypes" },
+    { "key": "assignedBy" }
   ],
   "initialFilters": {
     "reportId": "",
@@ -14,7 +15,8 @@
     "teacherIds": "",
     "grades": "",
     "subjects": "",
-    "assessmentTypes": ""
+    "assessmentTypes": "",
+    "assignedBy": "anyone"
   },
   "subjects": [
     { "key": "Mathematics", "title": "Mathematics" },
@@ -45,5 +47,9 @@
     { "key": "common assessment", "title": "Common" },
     { "key": "assessment", "title": "Class" },
     { "key": "practice", "title": "Practice" }
+  ],
+  "assignedBy": [
+    { "key": "anyone", "title": "Anyone"},
+    { "key": "me", "title": "Me"}
   ]
 }

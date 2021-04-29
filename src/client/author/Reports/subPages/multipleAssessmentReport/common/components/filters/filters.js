@@ -196,6 +196,7 @@ const MultipleAssessmentReportFilters = ({
         classIds: search.classId || '',
         groupIds: search.groupId || '',
         profileId: urlPerformanceBand?.key || '',
+        assignedBy: search.assignedBy || staticDropDownData.assignedBy[0].key,
       }
       if (role === roleuser.TEACHER) {
         delete _filters.schoolIds
@@ -216,6 +217,7 @@ const MultipleAssessmentReportFilters = ({
         subjects: urlSubjects,
         grades: urlGrades,
         profileId: urlPerformanceBand,
+        assignedBy: search.assignedBy || staticDropDownData.assignedBy[0],
       }
 
       // set tempTagsData, filters and testId
@@ -594,6 +596,20 @@ const MultipleAssessmentReportFilters = ({
                           selectCB={(e) =>
                             updateFilterDropdownCB(e, 'groupIds', true)
                           }
+                        />
+                      </Col>
+                      <Col span={6}>
+                        <FilterLabel data-cy="assignedBy">
+                          Assigned By
+                        </FilterLabel>
+                        <ControlDropDown
+                          by={filters.assignedBy}
+                          selectCB={(e, selected) =>
+                            updateFilterDropdownCB(selected, 'assignedBy')
+                          }
+                          data={staticDropDownData.assignedBy}
+                          prefix="Assigned By"
+                          showPrefixOnSelected={false}
                         />
                       </Col>
                     </Row>

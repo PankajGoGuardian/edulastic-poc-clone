@@ -179,12 +179,14 @@ const StudentProfileReportFilters = ({
       classIds: '',
       performanceBandProfileId: '',
       standardsProficiencyProfileId: '',
+      assignedBy: search.assignedBy || staticDropDownData.assignedBy[0].key,
     }
     const _tempTagsData = {
       ...tempTagsData,
       termId: urlSchoolYear,
       grades: urlGrades,
       subjects: urlSubjects,
+      assignedBy: search.assignedBy || staticDropDownData.assignedBy[0],
     }
     setFilters(_filters)
     setTempTagsData(_tempTagsData)
@@ -491,6 +493,20 @@ const StudentProfileReportFilters = ({
                           selectCB={(e) =>
                             updateFilterDropdownCB(e, 'classIds', true)
                           }
+                        />
+                      </Col>
+                      <Col span={6}>
+                        <FilterLabel data-cy="assignedBy">
+                          Assigned By
+                        </FilterLabel>
+                        <ControlDropDown
+                          by={filters.assignedBy}
+                          selectCB={(e, selected) =>
+                            updateFilterDropdownCB(selected, 'assignedBy')
+                          }
+                          data={staticDropDownData.assignedBy}
+                          prefix="Assigned By"
+                          showPrefixOnSelected={false}
                         />
                       </Col>
                     </Row>

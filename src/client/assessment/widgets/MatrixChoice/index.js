@@ -162,7 +162,7 @@ const MatrixChoice = ({
             <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
               <MathFormulaDisplay
                 style={{ marginBottom: 20 }}
-                dangerouslySetInnerHTML={{ __html: item.stimulus }}
+                dangerouslySetInnerHTML={{ __html: itemForPreview.stimulus }}
               />
               <div style={{ width: '100%' }}>
                 {previewTab === CLEAR ? (

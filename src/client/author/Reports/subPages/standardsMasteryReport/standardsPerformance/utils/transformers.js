@@ -10,7 +10,7 @@ import {
   includes,
   filter,
 } from 'lodash'
-import { roundedPercentage } from '../../../../common/util'
+import { roundedPercentage, getOverallScore } from '../../../../common/util'
 
 const analyseKeys = {
   masteryScore: 'Mastery Score',
@@ -53,10 +53,14 @@ export const getLeastMasteryLevel = (scaleInfo = []) =>
 
 export const getOverallMasteryScore = (records) =>
   records.length
-    ? (
-        sumBy(records, 'fmSum') /
-        sumBy(records, (domain) => parseInt(domain.fmCount, 10))
-      ).toFixed(2)
+    ? round(
+        sumBy(
+          records,
+          (domain) =>
+            parseInt(domain.fmSum, 10) / (parseInt(domain.fmCount, 10) || 1)
+        ) / records.length,
+        2
+      )
     : 0
 
 export const getMasteryLevel = (score, scaleInfo = []) => {
@@ -241,8 +245,7 @@ export const getTableData = (
 // Table column related utils
 export const getScore = (record) =>
   roundedPercentage(record.totalScore, record.maxScore)
-export const getOverallScore = (records) =>
-  roundedPercentage(sumBy(records, 'totalScore'), sumBy(records, 'maxScore'))
+
 export const getOverallRawScore = (records) => {
   const maxScoreSum = sumBy(records, 'maxScore')
   const totalScoreSum = sumBy(records, 'totalScore') || 0
@@ -255,15 +258,16 @@ export const getMasteryScoreColor = (domain, scaleInfo) =>
 export const getAnalyseByTitle = (key) => analyseKeys[key] || ''
 
 export const getOverallValue = (record = {}, analyseByKey, scaleInfo) => {
+  const records = Object.values(record.domainData || {})
   switch (analyseByKey) {
     case 'masteryScore':
-      return getOverallMasteryScore(record.records)
+      return getOverallMasteryScore(records)
     case 'score':
-      return `${getOverallScore(record.records)}%`
+      return `${round(getOverallScore(records))}%`
     case 'rawScore':
-      return getOverallRawScore(record.records)
+      return getOverallRawScore(records)
     case 'masteryLevel':
-      return getRecordMasteryLevel(record.records, scaleInfo).masteryLabel
+      return getRecordMasteryLevel(records, scaleInfo).masteryLabel
     default:
       return analyseByKey
   }

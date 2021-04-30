@@ -36,6 +36,7 @@ import {
   getLastPlayListSelector,
 } from '../../../../../Playlist/ducks'
 import { getCollectionsSelector } from '../../../../../src/selectors/user'
+import TestRecommendations from './components/TestRecommendations'
 
 const ItemPurchaseModal = loadable(() =>
   import('./components/ItemPurchaseModal')
@@ -423,6 +424,8 @@ const MyClasses = ({
     ? [productData.productId]
     : []
 
+  const recommendations = []
+
   return (
     <MainContentWrapper padding="30px 25px">
       {!loading && allActiveClasses?.length === 0 && (
@@ -439,6 +442,15 @@ const MyClasses = ({
         activeClasses={allActiveClasses}
         emptyBoxCount={classEmptyBoxCount}
       />
+      {recommendations?.length > 0 && (
+        <TestRecommendations
+          recommendations={recommendations}
+          setShowTestCustomizerModal={setShowTestCustomizerModal}
+          userId={user?._id}
+          windowWidth={windowWidth}
+          history={history}
+        />
+      )}
       <FeaturedContentBundle
         featuredBundles={filteredBundles}
         handleFeatureClick={handleFeatureClick}

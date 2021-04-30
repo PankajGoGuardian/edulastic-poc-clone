@@ -18,7 +18,6 @@ const FilesView = ({ files, hideDelete, onDelete, cols, mt, disableLink }) => {
     >
       {files.map((f, i) => (
         <ProgressBar
-          data-cy={`attachments-${i}`}
           data={f}
           key={i}
           onCancel={onDelete}

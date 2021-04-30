@@ -115,6 +115,7 @@ const ProgressBar = ({
 
   return (
     <FlexContainer
+      data-cy={`attachments-${index}`}
       marginBottom="20px"
       width={`calc(${100 / cols}% - 18px)`}
       marginLeft={index % cols !== 0 ? '18px' : null}

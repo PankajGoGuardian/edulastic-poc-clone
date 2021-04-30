@@ -16,13 +16,15 @@ const CheckAnswerBox = ({
   answerScore,
 }) => {
   const attempt = !isEmpty(answer)
-  const correct = !isEmpty(evaluation) && evaluation?.some((ie) => ie)
+  const isEvaluationEmpty = isEmpty(evaluation)
+  const correct = !isEvaluationEmpty && evaluation?.some((ie) => ie)
 
   const { fillColor, mark } = getEvalautionColor(
     answerScore,
     correct,
     attempt,
-    correct
+    correct,
+    isEvaluationEmpty
   )
 
   if (isStatic) {

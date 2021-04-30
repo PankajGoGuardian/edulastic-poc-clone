@@ -23,24 +23,21 @@ const QuestionMath = ({ onUpdate, question }) => {
   }
 
   const handleAnswerChange = (prop, value) => {
-    const { validation, extraOpts = {} } = question
+    const { validation } = question
 
-    const newExtraOpts = { ...extraOpts }
+    const extraOpts = {}
     const nextValidation = cloneDeep(validation)
     if (prop === 'options') {
-      value.isSimplified = false
+      if (value.isSimplified) {
+        delete value.isSimplified
+      }
       simplifiedOptions.forEach((key) => {
         if (value[key]) {
           value.isSimplified = true
-          newExtraOpts[key] = value[key]
+          extraOpts[key] = value[key]
           delete value[key]
-        } else if (newExtraOpts[key]) {
-          delete newExtraOpts[key]
         }
       })
-      if (!value.isSimplified) {
-        delete value.isSimplified
-      }
     }
 
     if (
@@ -76,7 +73,7 @@ const QuestionMath = ({ onUpdate, question }) => {
     }
     const data = {
       validation: nextValidation,
-      extraOpts: newExtraOpts,
+      extraOpts,
     }
     onUpdate(data)
   }

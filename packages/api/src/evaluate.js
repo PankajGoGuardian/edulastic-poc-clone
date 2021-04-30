@@ -7,6 +7,7 @@ const evaluate = (data, type) =>
     .callApi({
       method: 'post',
       url: 'math/evaluate',
+      withCredentials: true,
       data: {
         ...data,
         type,

@@ -101,6 +101,7 @@ const getPublicTest = (testId) =>
     .callApi({
       url: `public/test/${testId}`,
       method: 'get',
+      withCredentials: true,
     })
     .then((result) => result.data.result)
 

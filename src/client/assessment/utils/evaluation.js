@@ -34,17 +34,17 @@ export const getEvalautionColor = (
     }
     // its wrong answer
     return {
-      fillColor: '#fce0e8',
+      fillColor: '#fde0e9',
       mark: <WrongIcon />,
-      indexBgColor: '#dd2e44',
+      indexBgColor: '#f25783',
     }
   }
   if (attempt && correct) {
     // got max score and its all correct
     return {
-      fillColor: '#d3fea6',
+      fillColor: '#e2fcf3',
       mark: <RightIcon />,
-      indexBgColor: '#5eb500',
+      indexBgColor: '#36d29c',
     }
   }
 

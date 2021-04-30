@@ -115,6 +115,7 @@ const ProgressBar = ({
 
   return (
     <FlexContainer
+      data-cy="studentAttachment"
       marginBottom="20px"
       width={`calc(${100 / cols}% - 18px)`}
       marginLeft={index % cols !== 0 ? '18px' : null}
@@ -133,7 +134,12 @@ const ProgressBar = ({
 
           <FlexContainer alignItems="center">
             <FileSize>{getFileSize(size)}</FileSize>
-            {!hideDelete && <CloseIcon onClick={handleCancel} />}
+            {!hideDelete && (
+              <CloseIcon
+                data-cy="removeStudentAttachment"
+                onClick={handleCancel}
+              />
+            )}
           </FlexContainer>
         </FlexContainer>
         {!hidebar && (

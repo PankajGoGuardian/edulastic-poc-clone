@@ -219,6 +219,7 @@ const SubscriptionMain = ({
   dashboardTiles,
   productData = {},
   setTrialAddOnProductIds,
+  setShowTrialSubsConfirmation,
 }) => {
   const [showSelectStates, setShowSelectStates] = useState(false)
   const [isTrialModalVisible, setIsTrialModalVisible] = useState(false)
@@ -511,6 +512,7 @@ const SubscriptionMain = ({
           products={products}
           setTrialAddOnProductIds={setTrialAddOnProductIds}
           hasAllTrialProducts={hasAllTrialProducts}
+          setShowTrialSubsConfirmation={setShowTrialSubsConfirmation}
         />
       )}
       {showFeatureNotAvailableModal && (

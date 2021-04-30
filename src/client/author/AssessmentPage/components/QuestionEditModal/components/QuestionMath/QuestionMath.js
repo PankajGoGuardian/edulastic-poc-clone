@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { InputNumber } from 'antd'
-import { cloneDeep, isEmpty } from 'lodash'
+import { cloneDeep } from 'lodash'
 import { ThemeProvider } from 'styled-components'
 
 import { math } from '@edulastic/constants'
@@ -15,7 +15,7 @@ import {
   Points,
 } from '../../common/QuestionForm'
 
-const { methods, simplifiedOptions } = math
+const { methods } = math
 
 const QuestionMath = ({ onUpdate, question }) => {
   const toggleAdditional = (val) => {
@@ -23,18 +23,8 @@ const QuestionMath = ({ onUpdate, question }) => {
   }
 
   const handleAnswerChange = (prop, value) => {
-    const { validation, extraOpts = {} } = question
+    const { validation } = question
     const nextValidation = cloneDeep(validation)
-    if (prop === 'options') {
-      Object.keys(value).forEach((optKey) => {
-        if (simplifiedOptions.includes(optKey)) {
-          value.isSimplified = true
-          extraOpts[optKey] = value[optKey]
-          delete value[optKey]
-        }
-      })
-    }
-
     if (
       prop === 'method' &&
       nextValidation.validResponse.value[0][prop] !== value
@@ -66,12 +56,11 @@ const QuestionMath = ({ onUpdate, question }) => {
     ) {
       delete nextValidation.validResponse.value[0].value
     }
+
     const data = {
       validation: nextValidation,
     }
-    if (!isEmpty(extraOpts)) {
-      data.extraOpts = extraOpts
-    }
+
     onUpdate(data)
   }
 
@@ -127,7 +116,6 @@ const QuestionMath = ({ onUpdate, question }) => {
             style={{ width: '250px' }}
             isDocbasedSection
             {...value}
-            extraOptions={question.extraOpts}
           />
         </FormGroup>
         <FormGroup>

@@ -265,7 +265,11 @@ class SummaryTest extends Component {
             </MainContent>
             <Footer>
               <ShortDescription>{t('common.nextStep')}</ShortDescription>
-              <UploadPaperWorkBtn isGhost onClick={openUserWorkUploadModal}>
+              <UploadPaperWorkBtn
+                data-cy="uploadTestAttachments"
+                isGhost
+                onClick={openUserWorkUploadModal}
+              >
                 <IconPhotoCamera />{' '}
                 <span>{t('default:UPLOAD PAPER WORK')}</span>
               </UploadPaperWorkBtn>

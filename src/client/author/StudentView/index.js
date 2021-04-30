@@ -370,6 +370,7 @@ class StudentViewContainer extends Component {
             {attachments.length > 0 && (
               <EduButton
                 isGhost
+                data-cy="viewAllAttachmentsButton"
                 height="24px"
                 fontSize="9px"
                 mr="10px"

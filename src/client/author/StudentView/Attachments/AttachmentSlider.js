@@ -46,12 +46,20 @@ const AttachmentSlider = ({
   return (
     <>
       {currentAttachmentIndex > 0 && (
-        <PrevButton className="prev" onClick={() => handleArrowClick(false)}>
+        <PrevButton
+          data-cy="prevAttachmentButton"
+          className="prev"
+          onClick={() => handleArrowClick(false)}
+        >
           <IconChevronLeft color={greyishBorder} width="32px" height="32px" />
         </PrevButton>
       )}
       {currentAttachmentIndex < slidesLength - 1 && (
-        <NextButton className="next" onClick={() => handleArrowClick(true)}>
+        <NextButton
+          data-cy="nextAttachmentButton"
+          className="next"
+          onClick={() => handleArrowClick(true)}
+        >
           <IconChevronLeft color={greyishBorder} width="32px" height="32px" />
         </NextButton>
       )}

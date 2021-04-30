@@ -13,7 +13,6 @@ import PropTypes from 'prop-types'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import { getUserRole } from '../../../../src/selectors/user'
-import { AutocompleteDropDown } from '../../../common/components/widgets/autocompleteDropDown'
 import { ControlDropDown } from '../../../common/components/widgets/controlDropDown'
 import BackendPagination from '../../../common/components/BackendPagination'
 import {
@@ -163,6 +162,9 @@ const PerformanceByStandards = ({
   useEffect(() => {
     setSummaryStats(true)
     setPageFilters({ ...pageFilters, page: 1 })
+    if (settings.requestFilters.termId || settings.requestFilters.reportId) {
+      return () => toggleFilter(null, false)
+    }
   }, [settings.selectedTest, settings.requestFilters])
 
   useEffect(() => {

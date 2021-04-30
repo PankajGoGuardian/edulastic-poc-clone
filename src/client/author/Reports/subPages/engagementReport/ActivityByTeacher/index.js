@@ -25,6 +25,7 @@ const ActivityByTeacher = ({
   resetActivityByTeacher,
   activityByTeacher,
   settings,
+  toggleFilter,
   isCsvDownloading,
 }) => {
   const [metricFilter, setMetricFilter] = useState({})
@@ -35,6 +36,7 @@ const ActivityByTeacher = ({
     const q = { ...settings.requestFilters }
     if (q.termId || q.reportId) {
       getActivityByTeacherRequest(q)
+      return () => toggleFilter(null, false)
     }
   }, [settings])
 

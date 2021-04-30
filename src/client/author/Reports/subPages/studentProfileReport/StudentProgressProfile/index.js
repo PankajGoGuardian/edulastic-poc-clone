@@ -43,6 +43,7 @@ const StudentProgressProfile = ({
   error,
   isCsvDownloading,
   t,
+  toggleFilter,
 }) => {
   const anonymousString = t('common.anonymous')
   const [analyseBy, setAnalyseBy] = useState(head(dropDownData.analyseByData))
@@ -93,6 +94,9 @@ const StudentProgressProfile = ({
 
   useEffect(() => {
     setPageFilters({ ...pageFilters, page: 1 })
+    if (settings.requestFilters.termId || settings.requestFilters.reportId) {
+      return () => toggleFilter(null, false)
+    }
   }, [settings])
 
   useEffect(() => {

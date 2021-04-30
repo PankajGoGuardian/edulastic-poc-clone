@@ -101,20 +101,6 @@ const PerformanceByStudents = ({
     [settings, performanceByStudents]
   )
 
-  useEffect(() => () => resetPerformanceByStudents(), [])
-
-  useEffect(() => {
-    setPerformanceBandProfile(performanceByStudents?.bandInfo || {})
-    if (
-      (settings.requestFilters.termId || settings.requestFilters.reportId) &&
-      !loading &&
-      !isEmpty(performanceByStudents) &&
-      !performanceByStudents.studentMetricInfo.length
-    ) {
-      toggleFilter(null, true)
-    }
-  }, [performanceByStudents])
-
   const [showAddToGroupModal, setShowAddToGroupModal] = useState(false)
   const [selectedRowKeys, onSelectChange] = useState([])
   const [checkedStudents, setCheckedStudents] = useState({})
@@ -127,6 +113,8 @@ const PerformanceByStudents = ({
     current: 0,
   })
 
+  useEffect(() => () => resetPerformanceByStudents(), [])
+
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
       const q = {
@@ -135,11 +123,26 @@ const PerformanceByStudents = ({
       }
       getPerformanceByStudents(q)
     }
+    if (settings.requestFilters.termId || settings.requestFilters.reportId) {
+      return () => toggleFilter(null, false)
+    }
   }, [settings.selectedTest, settings.requestFilters])
 
   useEffect(() => {
     setPagination({ ...pagination, current: 0 })
   }, [range.left, range.right])
+
+  useEffect(() => {
+    setPerformanceBandProfile(performanceByStudents?.bandInfo || {})
+    if (
+      (settings.requestFilters.termId || settings.requestFilters.reportId) &&
+      !loading &&
+      !isEmpty(performanceByStudents) &&
+      !performanceByStudents.studentMetricInfo.length
+    ) {
+      toggleFilter(null, true)
+    }
+  }, [performanceByStudents])
 
   const res = { ...performanceByStudents, bandInfo }
 

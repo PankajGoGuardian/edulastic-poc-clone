@@ -134,7 +134,12 @@ const ProgressBar = ({
 
           <FlexContainer alignItems="center">
             <FileSize>{getFileSize(size)}</FileSize>
-            {!hideDelete && <CloseIcon onClick={handleCancel} />}
+            {!hideDelete && (
+              <CloseIcon
+                data-cy="removeStudentAttachment"
+                onClick={handleCancel}
+              />
+            )}
           </FlexContainer>
         </FlexContainer>
         {!hidebar && (

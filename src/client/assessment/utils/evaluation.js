@@ -5,10 +5,11 @@ export const getEvalautionColor = (
   answerScore,
   correct,
   attempt,
-  allCorrect
+  allCorrect,
+  isEvaluationEmpty = false
 ) => {
   const { score, isGradedExternally } = answerScore || {}
-  if (!attempt) {
+  if (!attempt || isEvaluationEmpty) {
     // skipped answer
     return { fillColor: '#F5F5F5', mark: '', indexBgColor: '#A7A7A7' }
   }

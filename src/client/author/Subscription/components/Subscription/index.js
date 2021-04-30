@@ -375,6 +375,7 @@ const Subscription = (props) => {
         productData={productData}
         products={products}
         setTrialAddOnProductIds={setTrialAddOnProductIds}
+        setShowTrialSubsConfirmation={setShowTrialSubsConfirmation}
       />
       <CompareModal
         title=""

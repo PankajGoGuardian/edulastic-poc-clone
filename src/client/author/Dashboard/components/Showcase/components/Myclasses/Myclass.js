@@ -15,6 +15,7 @@ import {
 } from '@edulastic/common'
 import { bannerActions } from '@edulastic/constants/const/bannerActions'
 import { segmentApi } from '@edulastic/api'
+import configurableTilesApi from '@edulastic/api/src/configurableTiles'
 import BannerSlider from './components/BannerSlider/BannerSlider'
 import FeaturedContentBundle from './components/FeaturedContentBundle/FeaturedContentBundle'
 import ItemBankTrialUsedModal from './components/FeaturedContentBundle/ItemBankTrialUsedModal'
@@ -101,25 +102,35 @@ const MyClasses = ({
     receiveSearchCourse({ districtId, active: 1 })
   }, [])
 
+  const saveRecommendedTests = (data) => {
+    localStorage.setItem(
+      `recommendedTest:${user?._id}:stored`,
+      JSON.stringify(data?.data)
+    )
+    setRecommendedTests(data?.data)
+  }
+
   const checkLocalRecommendedTests = () => {
-    if(user?.recommendedContentUpdated){
-      if(user?.orgData?.defaultGrades?.length && user?.orgData?.defaultSubjects?.length && user?.orgData?.interestedCurriculums?.length){
-        console.log('rTest: Call Get API');
-      }else{
-        console.log('rTest: Set customize modal to True no data')
-      }
-      return;
+    if (user?.recommendedContentUpdated) {
+      configurableTilesApi
+        .fetchRecommendedTest()
+        .then((res) => saveRecommendedTests(res))
+      return
     }
-    const recommendedTestsLocal = localStorage.getItem(`recommendedTest:${user?._id}:stored`);
-    if(recommendedTestsLocal){
-      setRecommendedTests(JSON.parse(recommendedTestsLocal));
-    }else{
-      console.log('rTest: Set customize modal to True')
+    const recommendedTestsLocal = localStorage.getItem(
+      `recommendedTest:${user?._id}:stored`
+    )
+    if (recommendedTestsLocal) {
+      setRecommendedTests(JSON.parse(recommendedTestsLocal))
+    } else {
+      configurableTilesApi
+        .fetchRecommendedTest()
+        .then((res) => saveRecommendedTests(res))
     }
   }
 
   useEffect(() => {
-    checkLocalRecommendedTests();
+    checkLocalRecommendedTests()
   }, [user?.recommendedContentUpdated])
 
   const isPremiumUser = user?.features?.premium
@@ -424,8 +435,6 @@ const MyClasses = ({
     ? [productData.productId]
     : []
 
-  const recommendations = []
-
   return (
     <MainContentWrapper padding="30px 25px">
       {!loading && allActiveClasses?.length === 0 && (
@@ -442,9 +451,9 @@ const MyClasses = ({
         activeClasses={allActiveClasses}
         emptyBoxCount={classEmptyBoxCount}
       />
-      {recommendations?.length > 0 && (
+      {recommendedTests?.length > 0 && (
         <TestRecommendations
-          recommendations={recommendations}
+          recommendations={recommendedTests}
           setShowTestCustomizerModal={setShowTestCustomizerModal}
           userId={user?._id}
           windowWidth={windowWidth}

@@ -19,6 +19,14 @@ const fetchTileById = (id) =>
     })
     .then((result) => result.data)
 
+const fetchRecommendedTest = () =>
+  api
+    .callApi({
+      url: `${prefix}/tests-recommendations`,
+      method: 'get',
+    })
+    .then((result) => result.data)
+
 const createTile = (data) =>
   api
     .callApi({
@@ -51,4 +59,5 @@ export default {
   createTile,
   updateTile,
   removeTile,
+  fetchRecommendedTest,
 }

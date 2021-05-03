@@ -277,6 +277,7 @@ class MathFormulaPreview extends Component {
       viewComponent,
       hideCorrectAnswer,
       answerScore,
+      answerContextConfig: { expressGrader },
     } = this.props
     const { innerValues } = this.state
     const isCheckAnswer = previewType === SHOW || previewType === CHECK
@@ -362,7 +363,7 @@ class MathFormulaPreview extends Component {
                 width="100%"
                 onClick={this.onInnerFieldClick}
               >
-                {(disableResponse || isCheckAnswer) && (
+                {(expressGrader ? disableResponse : isCheckAnswer) && (
                   <CheckAnswerBox
                     isStatic={this.isStatic}
                     answer={this.formattedUserAnswer}
@@ -373,7 +374,7 @@ class MathFormulaPreview extends Component {
                   />
                 )}
 
-                {!isCheckAnswer && !disableResponse && (
+                {(expressGrader ? !disableResponse : !isCheckAnswer) && (
                   <MathInputWrapper bg={white} minWidth={cssStyles.width}>
                     {this.isStatic && (
                       <StaticMath
@@ -411,8 +412,7 @@ class MathFormulaPreview extends Component {
                     )}
                   </MathInputWrapper>
                 )}
-                {!isCheckAnswer &&
-                  !disableResponse &&
+                {(expressGrader ? !disableResponse : !isCheckAnswer) &&
                   item.isUnits &&
                   item.showDropdown && (
                     <UnitsDropdown

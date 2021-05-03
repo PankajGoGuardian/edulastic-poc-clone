@@ -45,7 +45,7 @@ export const SimpleStackedBarChartContainer = ({
             <Col className="tooltip-value">{assessmentName}</Col>
           </Row>
           <Row type="flex" justify="start">
-            <Col className="tooltip-key">{`${idToName[compareBy]}: `}</Col>
+            <Col className="tooltip-key">{`${idToName(compareBy)}: `}</Col>
             <Col className="tooltip-value">{compareBylabel}</Col>
           </Row>
           <Row type="flex" justify="start">

@@ -57,7 +57,7 @@ export const SignedStackedBarChartContainer = ({
       return (
         <div>
           <Row type="flex" justify="start">
-            <Col className="tooltip-key">{`${idToName[_compareBy]}: `}</Col>
+            <Col className="tooltip-key">{`${idToName(_compareBy)}: `}</Col>
             <Col className="tooltip-value">{compareBylabel}</Col>
           </Row>
           <Row type="flex" justify="start">

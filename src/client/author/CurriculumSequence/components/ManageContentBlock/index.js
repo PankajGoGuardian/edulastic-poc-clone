@@ -211,7 +211,7 @@ const ManageContentBlock = (props) => {
         {enhanceTextWeight('Website URL')}
       </Menu.Item>
       <Menu.Item data-cy="youtubeResource" key="2">
-        {enhanceTextWeight('Youtube')}
+        {enhanceTextWeight('Video')}
       </Menu.Item>
       <Menu.Item data-cy="externalLtiResource" key="3">
         {enhanceTextWeight('External LTI Resource')}

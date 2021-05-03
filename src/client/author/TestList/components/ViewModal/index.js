@@ -690,16 +690,18 @@ class ViewModal extends React.Component {
               </PerfectScrollbar>
             )}
           </ModalColumn>
-          <ShareModal
-            shareLabel="TEST URL"
-            isVisible={showShareModal}
-            testId={item._id}
-            testVersionId={item.versionId}
-            hasPremiumQuestion={hasPremiumQuestion}
-            isPublished={status === statusConstants.PUBLISHED}
-            onClose={this.onShareModalChange}
-            gradeSubject={gradeSubject}
-          />
+          {showShareModal && (
+            <ShareModal
+              shareLabel="TEST URL"
+              isVisible={showShareModal}
+              testId={item._id}
+              testVersionId={item.versionId}
+              hasPremiumQuestion={hasPremiumQuestion}
+              isPublished={status === statusConstants.PUBLISHED}
+              onClose={this.onShareModalChange}
+              gradeSubject={gradeSubject}
+            />
+          )}
         </ModalContainer>
       </>
     )

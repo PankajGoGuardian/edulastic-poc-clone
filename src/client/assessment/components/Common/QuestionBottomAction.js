@@ -47,6 +47,7 @@ import {
   allowDuplicateCheck,
   allowContentEditCheck,
 } from '../../../author/src/utils/permissionCheck'
+import Explanation from './Explanation'
 
 export const ShowUserWork = ({ onClick, loading }) => (
   <EduButton
@@ -101,12 +102,23 @@ const QuestionBottomAction = ({
   setCurrentStudentId,
   isQuestionView,
   isExpressGrader,
+  isGrade,
+  isPrintPreview,
+  previewTab,
+  isLCBView,
   isDocBasedTest,
   ...questionProps
 }) => {
   // const [openQuestionModal, setOpenQuestionModal] = useState(false)
   const [itemloading, setItemLoading] = useState(false)
   const [hideScoring, setHideScoring] = useState(false)
+
+  const [showExplanation, updateShowExplanation] = useState(isGrade)
+
+  const onClickShowSolutionHandler = (e) => {
+    e.stopPropagation()
+    updateShowExplanation(true)
+  }
 
   const onCloseQuestionModal = () => {
     setCurrentQuestion('')
@@ -241,9 +253,32 @@ const QuestionBottomAction = ({
     </CorrectButton>
   )
 
+  const shouldHideScoringBlock = item?.scoringDisabled
+
+  const { sampleAnswer } = item
+
+  const isSolutionVisible =
+    (isLCBView || isExpressGrader || previewTab === 'show') &&
+    !isPrintPreview &&
+    !(
+      !sampleAnswer ||
+      ['passage', 'passageWithQuestions', 'video', 'resource', 'text'].includes(
+        item.type
+      )
+    )
   return (
     <>
       <BottomActionWrapper className={isStudentReport ? 'student-report' : ''}>
+        {isSolutionVisible && !showExplanation && (
+          <EduButton
+            width="110px"
+            height="30px"
+            isGhost
+            onClick={onClickShowSolutionHandler}
+          >
+            Show solution
+          </EduButton>
+        )}
         <div>
           {!hasDrawingResponse && isShowStudentWork && (
             <ShowUserWork onClick={onClickHandler} loading={loading} />
@@ -270,6 +305,13 @@ const QuestionBottomAction = ({
           {timeSpent && <TimeSpent time={timeSpent} />}
         </RightWrapper>
       </BottomActionWrapper>
+      {isSolutionVisible && (
+        <Explanation
+          isStudentReport={isStudentReport}
+          question={item}
+          show={showExplanation}
+        />
+      )}
       {!isStudentReport &&
         openQuestionModal &&
         QuestionComp &&

@@ -102,12 +102,13 @@ const MyClasses = ({
     receiveSearchCourse({ districtId, active: 1 })
   }, [])
 
-  const saveRecommendedTests = (data) => {
+  const saveRecommendedTests = (_data) => {
+    const data = _data.map((x) => x._source)
     localStorage.setItem(
       `recommendedTest:${user?._id}:stored`,
-      JSON.stringify(data?.data)
+      JSON.stringify(data)
     )
-    setRecommendedTests(data?.data)
+    setRecommendedTests(data)
   }
 
   const checkLocalRecommendedTests = () => {

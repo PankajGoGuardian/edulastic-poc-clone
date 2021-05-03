@@ -404,6 +404,7 @@ class ClassHeader extends Component {
       isShowStudentReportCardSettingPopup,
       toggleStudentReportCardPopUp,
       userId,
+      isDemoPlaygroundUser,
       windowWidth,
       canvasAllowedInstitutions,
       isCliUser,
@@ -457,7 +458,10 @@ class ClassHeader extends Component {
       cleverId: groupCleverId,
     } = orgClasses.find(({ _id }) => _id === classId) || {}
     const showSyncGradesWithCanvasOption =
-      canvasCode && canvasCourseSectionCode && canvasAllowedInstitutions.length
+      !isDemoPlaygroundUser &&
+      canvasCode &&
+      canvasCourseSectionCode &&
+      canvasAllowedInstitutions.length
 
     // hiding seeting tab if assignment assigned by either DA/SA
     const showSettingTab = allowedSettingPageToDisplay(assignedBy, userId)
@@ -466,6 +470,7 @@ class ClassHeader extends Component {
     const loading = _classId !== classId
 
     const showGoogleGradeSyncOption =
+      !isDemoPlaygroundUser &&
       groupGoogleId &&
       assignmentStatusForDisplay !== assignmentStatusConstants.NOT_OPEN &&
       studentsUTAData.some(
@@ -475,6 +480,7 @@ class ClassHeader extends Component {
       )
 
     const showSchoologyGradeSyncOption =
+      !isDemoPlaygroundUser &&
       groupAtlasId &&
       atlasProviderName.toLocaleUpperCase() === 'SCHOOLOGY' &&
       assignmentStatusForDisplay !== assignmentStatusConstants.NOT_OPEN &&
@@ -485,6 +491,7 @@ class ClassHeader extends Component {
       )
 
     const showCleverGradeSyncOption =
+      !isDemoPlaygroundUser &&
       districtPolicy?.cleverGradeSyncEnabled &&
       assignmentStatusForDisplay !== assignmentStatusConstants.NOT_OPEN &&
       studentsUTAData.some(
@@ -623,7 +630,7 @@ class ClassHeader extends Component {
             Sync Grades to Google Classroom
           </MenuItems>
         )}
-        {groupGoogleId && (
+        {!isDemoPlaygroundUser && groupGoogleId && (
           <MenuItems
             key="key9"
             onClick={() =>
@@ -650,20 +657,22 @@ class ClassHeader extends Component {
             Sync Grades to Schoology Classroom
           </MenuItems>
         )}
-        {groupAtlasId && atlasProviderName.toLocaleUpperCase() === 'SCHOOLOGY' && (
-          <MenuItems
-            key="key11"
-            onClick={() =>
-              schoologySyncAssignment({
-                assignmentIds: [assignmentId],
-                groupId: classId,
-              })
-            }
-            disabled={syncWithSchoologyClassroomInProgress}
-          >
-            Sync with Schoology Classroom
-          </MenuItems>
-        )}
+        {!isDemoPlaygroundUser &&
+          groupAtlasId &&
+          atlasProviderName.toLocaleUpperCase() === 'SCHOOLOGY' && (
+            <MenuItems
+              key="key11"
+              onClick={() =>
+                schoologySyncAssignment({
+                  assignmentIds: [assignmentId],
+                  groupId: classId,
+                })
+              }
+              disabled={syncWithSchoologyClassroomInProgress}
+            >
+              Sync with Schoology Classroom
+            </MenuItems>
+          )}
         {showCleverGradeSyncOption && (
           <MenuItems
             key="key12"
@@ -976,6 +985,7 @@ const enhance = compose(
         state
       ),
       userId: state?.user?.user?._id,
+      isDemoPlaygroundUser: state?.user?.user?.isPlayground,
       isShowUnAssign: getIsShowUnAssignSelector(state),
       isActivityLoading: testActivtyLoadingSelector(state),
       syncWithSchoologyClassroomInProgress: getSchoologyAssignmentSyncInProgress(

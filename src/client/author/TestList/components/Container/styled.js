@@ -168,18 +168,18 @@ export const AffixWrapper = styled(Affix)`
   width: 250px;
   top: ${(props) =>
     props.theme.HeaderHeight.xs +
-    (props.isProxyUser ? props.theme.BannerHeight : 0)}px;
+    (props.isBannerShown ? props.theme.BannerHeight : 0)}px;
   padding: 0px 0px 20px;
 
   @media (min-width: ${mediumDesktopExactWidth}) {
     top: ${(props) =>
       props.theme.HeaderHeight.md +
-      (props.isProxyUser ? props.theme.BannerHeight : 0)}px;
+      (props.isBannerShown ? props.theme.BannerHeight : 0)}px;
   }
   @media (min-width: ${extraDesktopWidthMax}) {
     top: ${(props) =>
       props.theme.HeaderHeight.xl +
-      (props.isProxyUser ? props.theme.BannerHeight : 0)}px;
+      (props.isBannerShown ? props.theme.BannerHeight : 0)}px;
   }
 `
 

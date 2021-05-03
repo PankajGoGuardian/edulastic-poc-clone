@@ -796,6 +796,11 @@ export const isProxyUser = createSelector(
   (isProxy) => isProxy
 )
 
+export const isDemoPlaygroundUser = createSelector(
+  ['user.user.isPlayground'],
+  (isPlayground) => isPlayground
+)
+
 export const proxyRole = createSelector(
   ['user.user.proxyRole'],
   (proxyrole) => proxyrole
@@ -1298,7 +1303,7 @@ function redirectToUrl(url) {
 function* logout() {
   try {
     const user = yield select(getUser)
-    if (user.isProxy) {
+    if (user.isProxy || user.isPlayground) {
       TokenStorage.removeAccessToken(user._id, user.role)
       window.close()
     } else {

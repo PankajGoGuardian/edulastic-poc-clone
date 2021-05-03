@@ -7,6 +7,7 @@ import {
   TestRecommendationsWrapper,
   ViewMoreButton,
   CardContainer,
+  TestCardContainer,
 } from './styled'
 import CardWrapper from '../../../../../../../TestList/components/CardWrapper/CardWrapper'
 
@@ -27,7 +28,7 @@ const TestRecommendationsContainer = ({
     <TestRecommendationsWrapper>
       <FlexContainer
         style={{ marginBottom: '1rem' }}
-        justifyContent="center"
+        justifyContent="left"
         flexWrap="wrap"
       >
         <TextWrapper
@@ -45,25 +46,28 @@ const TestRecommendationsContainer = ({
         >
           Customize
         </EduButton>
-        <ViewMoreButton onClick={() => setIsExpanded(!isExpanded)}>
-          {isExpanded ? 'View Less' : 'View More'}
-        </ViewMoreButton>
+        {recommendations?.length > gridCountInARow && (
+          <ViewMoreButton onClick={() => setIsExpanded(!isExpanded)}>
+            {isExpanded ? 'View Less' : 'View More'}
+          </ViewMoreButton>
+        )}
       </FlexContainer>
       <CardContainer type="tile">
-        <Row type="flex" justify="space-between">
+        <Row type="flex" justify="flex-start">
           {recommendations.map((item, index) => {
             if (index >= totalNumberOfItemsToShow) return
             return (
-              <CardWrapper
-                key={item._id}
-                owner={
-                  item.authors && item.authors.some((x) => x._id === userId)
-                }
-                item={item}
-                blockStyle="tile"
-                windowWidth={windowWidth}
-                history={history}
-              />
+              <TestCardContainer key={index}>
+                <CardWrapper
+                  owner={
+                    item.authors && item.authors.some((x) => x._id === userId)
+                  }
+                  item={item}
+                  blockStyle="tile"
+                  windowWidth={windowWidth}
+                  history={history}
+                />
+              </TestCardContainer>
             )
           })}
         </Row>

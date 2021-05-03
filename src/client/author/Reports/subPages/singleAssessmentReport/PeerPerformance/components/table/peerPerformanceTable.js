@@ -61,7 +61,7 @@ export const PeerPerformanceTable = ({
           <Col className="custom-table-tooltip-value">{assessmentName}</Col>
         </Row>
         <Row type="flex" justify="start">
-          <Col className="custom-table-tooltip-key">{`${idToName[compareBy]}: `}</Col>
+          <Col className="custom-table-tooltip-key">{`${idToName(compareBy)}: `}</Col>
           <Col className="custom-table-tooltip-value">{rec.compareBylabel}</Col>
         </Row>
         {analyseBy === 'score(%)' || analyseBy === 'rawScore' ? (
@@ -233,7 +233,7 @@ export const PeerPerformanceTable = ({
     <div>
       <StyledDiv>
         <StyledH3>
-          Assessment Statistics By {idToName[compareBy]} | {assessmentName}
+          Assessment Statistics By {idToName(compareBy)} | {assessmentName}
         </StyledH3>
       </StyledDiv>
       <CsvTable

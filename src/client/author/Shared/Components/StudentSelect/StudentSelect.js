@@ -13,6 +13,7 @@ const SortBar = ({
   isPresentationMode,
   isCliUser,
   studentsPrevSubmittedUtas,
+  dataCy
 }) => {
   const onSortChange = (testActivityId) => {
     if (testActivityId !== undefined) {
@@ -50,7 +51,11 @@ const SortBar = ({
           <Legends />
           <Container>
             {!isCliUser && (
-              <StyledSelect value={user} onChange={onSortChange}>
+              <StyledSelect
+                data-cy={dataCy}
+                value={user}
+                onChange={onSortChange}
+              >
                 {students.map((student, index) => {
                   const isCurrentActivityNotStartedOrAbsent =
                     student.UTASTATUS === testActivityStatus.NOT_STARTED ||

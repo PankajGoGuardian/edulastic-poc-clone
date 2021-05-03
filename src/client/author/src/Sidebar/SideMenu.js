@@ -55,7 +55,6 @@ import { logoutAction } from '../actions/auth'
 import { toggleSideBarAction } from '../actions/toggleMenu'
 import {
   getUserFeatures,
-  toggleMultipleAccountNotificationAction,
   isProxyUser as isProxyUserSelector,
   toggleFreeAdminSubscriptionModalAction,
 } from '../../../student/Login/ducks'
@@ -165,11 +164,17 @@ class SideMenu extends Component {
   constructor(props) {
     super(props)
 
+    const { switchDetails } = this.props
+
     this.state = {
       showModal: false,
       isVisible: false,
+      isSwitchAccountNotification:
+        !localStorage.getItem('isMultipleAccountNotificationShown') &&
+        !!get(switchDetails, 'otherAccounts', []).length,
       showTrialUsedModal: false,
       showPurchaseModal: false,
+      showTrialSubsConfirmation: false,
     }
 
     this.sideMenuRef = React.createRef()
@@ -359,6 +364,12 @@ class SideMenu extends Component {
     })
   }
 
+  setShowTrialSubsConfirmation = (value) => {
+    this.setState({
+      showTrialSubsConfirmation: value,
+    })
+  }
+
   handleCloseModal = () => {
     this.setState({
       showTrialUsedModal: false,
@@ -379,8 +390,20 @@ class SideMenu extends Component {
     if (lastName) return `${lastName.substr(0, 2)}`
   }
 
+  handleCancel = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    this.setState({ isSwitchAccountNotification: false })
+    localStorage.setItem('isMultipleAccountNotificationShown', 'true')
+  }
+
   render() {
-    const { broken, isVisible, showModal } = this.state
+    const {
+      broken,
+      isVisible,
+      showModal,
+      isSwitchAccountNotification,
+    } = this.state
     const {
       userId,
       switchDetails,
@@ -396,8 +419,6 @@ class SideMenu extends Component {
       locationState,
       features,
       showUseThisNotification,
-      isMultipleAccountNotification,
-      toggleMultipleAccountNotification,
       isProxyUser,
     } = this.props
     if (userRole === roleuser.STUDENT) {
@@ -427,9 +448,6 @@ class SideMenu extends Component {
     })
 
     const isPublisher = features.isCurator || features.isPublisherAuthor
-    const showMultipleAccountNotification =
-      isMultipleAccountNotification &&
-      !!get(switchDetails, 'otherAccounts', []).length
 
     let _userRole = null
     if (userRole === roleuser.TEACHER) {
@@ -511,6 +529,8 @@ class SideMenu extends Component {
         <PurchaseFlowModals
           showSubscriptionAddonModal={this.state.showPurchaseModal}
           setShowSubscriptionAddonModal={this.setShowSubscriptionAddonModal}
+          isConfirmationModalVisible={this.state.showTrialSubsConfirmation}
+          setShowTrialSubsConfirmation={this.setShowTrialSubsConfirmation}
           defaultSelectedProductIds={[]}
           setProductData={() => {}}
         />
@@ -723,30 +743,21 @@ class SideMenu extends Component {
                           <Popconfirm
                             icon={<IconExclamationMark />}
                             placement="bottomRight"
+                            cancelText={
+                              <CloseIconWrapper>
+                                <IconClose />
+                              </CloseIconWrapper>
+                            }
+                            onCancel={this.handleCancel}
                             title={
-                              <>
-                                <CloseIconWrapper
-                                  onClick={(e) => {
-                                    e.preventDefault()
-                                    e.stopPropagation()
-                                    toggleMultipleAccountNotification(false)
-                                    localStorage.setItem(
-                                      'isMultipleAccountNotification',
-                                      'true'
-                                    )
-                                  }}
-                                >
-                                  <IconClose />
-                                </CloseIconWrapper>
-                                <p>
-                                  You can switch between your teacher and
-                                  student accounts here.
-                                </p>
-                              </>
+                              <p>
+                                You can switch between your teacher and student
+                                accounts here.
+                              </p>
                             }
                             trigger="click"
                             getPopupContainer={(el) => el.parentNode}
-                            visible={showMultipleAccountNotification}
+                            visible={isSwitchAccountNotification}
                           >
                             <PseudoDiv isCollapsed={isCollapsed}>
                               {this.getInitials()}
@@ -828,12 +839,10 @@ const enhance = compose(
         false
       ),
       isFreeAdmin: isFreeAdminSelector(state),
-      isMultipleAccountNotification: state.user.isMultipleAccountNotification,
     }),
     {
       toggleSideBar: toggleSideBarAction,
       logout: logoutAction,
-      toggleMultipleAccountNotification: toggleMultipleAccountNotificationAction,
       toggleFreeAdminSubscriptionModal: toggleFreeAdminSubscriptionModalAction,
       fetchUserSubscriptionStatus: slice?.actions?.fetchUserSubscriptionStatus,
     }
@@ -1456,7 +1465,16 @@ const PopConfirmWrapper = styled.div`
   }
 
   .ant-popover-buttons {
-    display: none;
+    .ant-btn {
+      background: none !important;
+      border: none !important;
+      position: absolute;
+      right: 2px;
+      top: 2px;
+    }
+    .ant-btn-primary {
+      display: none;
+    }
   }
 
   .ant-popover-arrow {
@@ -1486,7 +1504,7 @@ const PopConfirmWrapper = styled.div`
 
   .ant-popover-message-title {
     color: white;
-    width: 325px;
+    width: 315px;
     padding-left: 30px;
     font-weight: 600;
     font-size: 16px;

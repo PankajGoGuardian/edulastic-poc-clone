@@ -1,6 +1,6 @@
 /* eslint-disable guard-for-in */
 /* eslint-disable prefer-promise-reject-errors */
-import { white } from '@edulastic/colors'
+import { white, themeColorBlue } from '@edulastic/colors'
 import { EduButton, notification } from '@edulastic/common'
 import { questionType } from '@edulastic/constants'
 import {
@@ -29,6 +29,11 @@ const AudioButton = styled(EduButton)`
   &.ant-btn.ant-btn-primary.not-supported {
     background: white;
     border: 1px solid #de0b83;
+  }
+  &:focus {
+    border: none;
+    outline: 0;
+    box-shadow: 0 0 0 2px ${themeColorBlue};
   }
 `
 

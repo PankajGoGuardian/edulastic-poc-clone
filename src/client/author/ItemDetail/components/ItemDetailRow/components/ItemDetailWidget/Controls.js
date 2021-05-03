@@ -6,7 +6,7 @@ import { PointsInputWrapper, ItemLevelScoringDesc } from './styled'
 
 const EditButton = ({ onEdit }) => {
   return (
-    <Button onClick={onEdit}>
+    <Button onClick={onEdit} data-cy="editQuestion">
       <IconPencilEdit width={16} height={16} />
     </Button>
   )
@@ -14,7 +14,7 @@ const EditButton = ({ onEdit }) => {
 
 const DeleteButton = ({ onDelete }) => {
   return (
-    <Button onClick={onDelete}>
+    <Button onClick={onDelete} data-cy="deleteQuestion">
       <IconTrash width={16} height={16} />
     </Button>
   )
@@ -22,7 +22,7 @@ const DeleteButton = ({ onDelete }) => {
 
 const MoveButton = () => {
   return (
-    <Button>
+    <Button data-cy="dragHandel">
       <IconMoveArrows width={16} height={16} />
     </Button>
   )
@@ -66,6 +66,7 @@ const PointInput = ({
           disabled={disabled}
           value={disabled && !isRubricQuestion ? '' : value}
           onChange={onChange}
+          data-cy="point-update"
         />
       </PopoverComponent>
     </PointsInputWrapper>

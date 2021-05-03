@@ -3,12 +3,23 @@ import styled, { withTheme } from 'styled-components'
 import moment from 'moment'
 import Modal from 'react-responsive-modal'
 import PropTypes from 'prop-types'
-import { Button, Row } from 'antd'
+import { Row } from 'antd'
 import { withNamespaces } from '@edulastic/localization'
 import { assignmentPolicyOptions } from '@edulastic/constants'
+import { themeColorBlue } from '@edulastic/colors'
 import ColWithZoom from '../../../common/components/ColWithZoom'
 
 class SubmitConfirmation extends Component {
+  constructor(props) {
+    super(props)
+    this.cancelButtonRef
+  }
+
+  componentDidUpdate(prevProps) {
+    const { isVisible } = this.props
+    if (isVisible && !prevProps.isVisible) this?.cancelButtonRef?.focus()
+  }
+
   render() {
     const {
       isVisible,
@@ -49,7 +60,14 @@ class SubmitConfirmation extends Component {
           <ButtonContainer>
             <Row gutter={20} style={{ width: '100%' }}>
               <ColWithZoom md={12} sm={24} layout={{ xl: 24, lg: 24 }}>
-                <StyledButton data-cy="cancel" btnType={1} onClick={onClose}>
+                <StyledButton
+                  data-cy="cancel"
+                  btnType={1}
+                  onClick={onClose}
+                  ref={(ref) => {
+                    this.cancelButtonRef = ref
+                  }}
+                >
                   {t('exitConfirmation.buttonCancel')}
                 </StyledButton>
               </ColWithZoom>
@@ -85,13 +103,6 @@ const ModalContainer = styled.div`
   flex-direction: column;
   align-items: center;
 `
-
-const Title = styled.div`
-  font-size: ${(props) => props.theme.confirmationPopupTitleTextSize};
-  font-weight: bold;
-  color: ${(props) => props.theme.confirmationPopupTextColor};
-`
-
 const TitleDescription = styled.div`
   font-size: ${(props) => props.theme.confirmationPopupBodyTextSize};
   font-weight: 600;
@@ -105,10 +116,22 @@ const ButtonContainer = styled.div`
   margin-top: 60px;
 `
 
-const StyledButton = styled(Button)`
+const StyledButton = styled.button`
   width: 100%;
   min-height: 40px;
   height: auto;
+  outline: none;
+  text-transform: uppercase;
+  font-size: ${(props) => props.theme.confirmationPopupButtonTextSize};
+  font-weight: 600;
+  border-radius: 4px;
+  color: ${(props) =>
+    props.btnType === 1
+      ? props.theme.confirmationPopupButtonTextColor
+      : props.theme.confirmationPopupButtonTextHoverColor};
+  border: ${(props) =>
+    `1px solid ${props.theme.confirmationPopupButtonBgColor}`};
+  cursor: pointer;
   background: ${(props) =>
     props.btnType === 1
       ? props.theme.confirmationPopupButtonTextHoverColor
@@ -130,6 +153,10 @@ const StyledButton = styled(Button)`
       props.btnType === 1
         ? props.theme.confirmationPopupButtonTextColor
         : props.theme.confirmationPopupButtonTextHoverColor};
+  }
+  &:focus {
+    outline: 0;
+    box-shadow: 0 0 0 2px ${themeColorBlue};
   }
   @media screen and (max-width: 767px) {
     margin-top: 10px;

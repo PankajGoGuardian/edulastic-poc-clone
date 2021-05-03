@@ -11,11 +11,11 @@ import {
   filter,
   sumBy,
   mapValues,
-  reduce,
 } from 'lodash'
 import next from 'immer'
 import {
   percentage,
+  getOverallScore,
   DemographicCompareByOptions,
 } from '../../../../common/util'
 import { transformMetricForStudentGroups } from '../../common/utils/transformers'
@@ -43,6 +43,7 @@ export const compareByMode = {
   FRL_STATUS: 'frlStatus',
   ELL_STATUS: 'ellStatus',
   IEP_STATUS: 'iepStatus',
+  HISPANIC_ETHINCITY: 'hispanicEthnicity',
 }
 
 const lexicSort = (field) => (a, b) =>
@@ -152,6 +153,12 @@ export const compareByColumns = {
     width: 160,
     render: (status) => (status ? capitalize(status) : '-'),
   },
+  [compareByMode.HISPANIC_ETHINCITY]: {
+    title: 'Hispanic Ethnicity',
+    dataIndex: 'hispanicEthnicity',
+    key: 'hispanicEthnicity',
+    render: (he) => (he ? capitalize(he) : '-'),
+  },
 }
 
 export const getFormattedName = (name) => {
@@ -160,20 +167,8 @@ export const getFormattedName = (name) => {
   return nameArr.length ? `${lName}, ${nameArr.join(' ')}` : lName
 }
 
-export const getAvgPercentage = (metrics = []) => {
-  if (metrics.length) {
-    const sumOfPercentage = sumBy(
-      metrics,
-      (ts) => 100 * (ts.totalScore / ts.maxScore || 1)
-    )
-    const avgPercentage = sumOfPercentage / metrics.length
-    return avgPercentage
-  }
-  return 0
-}
-
 export const getOverallRawScore = (metrics = []) =>
-  sumBy(metrics, 'totalScore') / metrics.length
+  metrics.length ? sumBy(metrics, 'totalScore') / metrics.length : 0
 
 const augmentMetricInfoWithStudentInfo = (
   studInfo,
@@ -226,7 +221,7 @@ const chartFilterMetricInfo = (
 const getStandardMetrics = (data = {}, scaleInfo = []) =>
   next(data, (draft) => {
     Object.keys(draft).forEach((dataId) => {
-      const score = getAvgPercentage(draft[dataId].metric)
+      const score = getOverallScore(draft[dataId].metric)
       const masteryLevel = getMasteryLevel(score, scaleInfo)
       draft[dataId] = {
         masteryScore: masteryLevel.score,
@@ -533,10 +528,9 @@ export const getChartScoreData = (report = {}, viewBy) => {
 
   return Object.keys(metricByViewBy).map((id) => {
     const records = metricByViewBy[id]
-    let maxScore = records[0].maxScore / records[0].totalStudents
+    const maxScore = records[0].maxScore / records[0].totalStudents
     const rawScore = getChartOverallRawScore(records)
-
-    const avgScore = getAvgPercentage(records)
+    const avgScore = getOverallScore(records)
     return {
       ...findGroupInfo(id, viewBy, skillInfo),
       rawScore,

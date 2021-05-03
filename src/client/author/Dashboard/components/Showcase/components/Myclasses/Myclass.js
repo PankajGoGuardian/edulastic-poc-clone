@@ -26,16 +26,16 @@ import { fetchCleverClassListRequestAction } from '../../../../../ManageClass/du
 import { receiveTeacherDashboardAction } from '../../../../ducks'
 import { getUserDetails } from '../../../../../../student/Login/ducks'
 import { resetTestFiltersAction } from '../../../../../TestList/ducks'
-import { clearPlaylistFiltersAction } from '../../../../../Playlist/ducks'
+import {
+  clearPlaylistFiltersAction,
+  getLastPlayListSelector,
+} from '../../../../../Playlist/ducks'
 import { getCollectionsSelector } from '../../../../../src/selectors/user'
 
 const ItemPurchaseModal = loadable(() =>
   import('./components/ItemPurchaseModal')
 )
 const TrialModal = loadable(() => import('./components/TrialModal'))
-const TrialConfirmationModal = loadable(() =>
-  import('./components/FeaturedContentBundle/TrialConfimationModal')
-)
 
 const PREMIUM_TAG = 'PREMIUM'
 
@@ -62,13 +62,11 @@ const MyClasses = ({
   itemBankSubscriptions = [],
   startTrialAction,
   usedTrialItemBankIds = [],
-  showTrialSubsConfirmationAction,
-  showTrialConfirmationMessage,
-  isConfirmationModalVisible,
   subscription: { subType } = {},
   products,
   showHeaderTrialModal,
   setShowHeaderTrialModal,
+  lastPlayList,
 }) => {
   const [showBannerModal, setShowBannerModal] = useState(null)
   const [isPurchaseModalVisible, setIsPurchaseModalVisible] = useState(false)
@@ -81,6 +79,9 @@ const MyClasses = ({
     false
   )
   const [trialAddOnProductIds, setTrialAddOnProductIds] = useState([])
+  const [showTrialSubsConfirmation, setShowTrialSubsConfirmation] = useState(
+    false
+  )
 
   useEffect(() => {
     // fetch clever classes on modal display
@@ -88,7 +89,6 @@ const MyClasses = ({
       fetchCleverClassList()
     }
   }, [showCleverSyncModal])
-
   useEffect(() => {
     getTeacherDashboard()
     getDictCurriculums()
@@ -179,6 +179,11 @@ const MyClasses = ({
     }
 
     const content = contentType?.toLowerCase() || 'tests'
+
+    if (content === 'playlists' && (!lastPlayList || !lastPlayList.value)) {
+      setShowTrialSubsConfirmation(true)
+      return
+    }
     if (tags.includes(PREMIUM_TAG)) {
       if (isPremiumUser) {
         handleContentRedirect(filters, content)
@@ -358,16 +363,6 @@ const MyClasses = ({
     return <Spin style={{ marginTop: '80px' }} />
   }
 
-  const handleGoToCollectionClick = (productId) => {
-    const featuredBundle =
-      featuredBundles &&
-      featuredBundles.find(
-        (bundle) => bundle?.config?.subscriptionData?.productId === productId
-      )
-    handleFeatureClick(featuredBundle)
-    showTrialSubsConfirmationAction(false)
-  }
-
   const widthOfTilesWithMargin = 240 + 2 // 240 is width of tile and 2 is margin-right for each tile
 
   const GridCountInARow = Math.floor(
@@ -427,8 +422,11 @@ const MyClasses = ({
       <PurchaseFlowModals
         showSubscriptionAddonModal={showSubscriptionAddonModal}
         setShowSubscriptionAddonModal={setShowSubscriptionAddonModal}
+        isConfirmationModalVisible={showTrialSubsConfirmation}
+        setShowTrialSubsConfirmation={setShowTrialSubsConfirmation}
         defaultSelectedProductIds={defaultSelectedProductIds}
         setProductData={setProductData}
+        trialAddOnProductIds={trialAddOnProductIds}
       />
       {showItemBankTrialUsedModal && (
         <ItemBankTrialUsedModal
@@ -459,22 +457,11 @@ const MyClasses = ({
           toggleModal={toggleTrialModal}
           isPremiumUser={isPremiumUser}
           isPremiumTrialUsed={isPremiumTrialUsed}
+          setShowTrialSubsConfirmation={setShowTrialSubsConfirmation}
           startPremiumTrial={startTrialAction}
           products={products}
           setShowHeaderTrialModal={setShowHeaderTrialModal}
           setTrialAddOnProductIds={setTrialAddOnProductIds}
-        />
-      )}
-      {isConfirmationModalVisible && (
-        <TrialConfirmationModal
-          visible={isConfirmationModalVisible}
-          showTrialSubsConfirmationAction={showTrialSubsConfirmationAction}
-          showTrialConfirmationMessage={showTrialConfirmationMessage}
-          trialAddOnProductIds={trialAddOnProductIds}
-          collections={collections}
-          products={products}
-          handleGoToCollectionClick={handleGoToCollectionClick}
-          history={history}
         />
       )}
     </MainContentWrapper>
@@ -499,11 +486,9 @@ export default compose(
       usedTrialItemBankIds:
         state.subscription?.subscriptionData?.usedTrialItemBankIds,
       subscription: state.subscription?.subscriptionData?.subscription,
-      isConfirmationModalVisible: state.subscription?.showTrialSubsConfirmation,
-      showTrialConfirmationMessage:
-        state.subscription?.showTrialConfirmationMessage,
       products: state.subscription?.products,
       showHeaderTrialModal: state.subscription?.showHeaderTrialModal,
+      lastPlayList: getLastPlayListSelector(state),
     }),
     {
       receiveSearchCourse: receiveSearchCourseAction,
@@ -513,8 +498,6 @@ export default compose(
       resetTestFilters: resetTestFiltersAction,
       resetPlaylistFilters: clearPlaylistFiltersAction,
       startTrialAction: slice.actions.startTrialAction,
-      showTrialSubsConfirmationAction:
-        slice.actions.trialSubsConfirmationAction,
       setShowHeaderTrialModal: slice.actions.setShowHeaderTrialModal,
     }
   )

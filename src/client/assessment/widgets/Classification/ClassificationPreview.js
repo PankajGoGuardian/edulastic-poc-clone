@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useContext, useRef } from 'react'
 import PropTypes from 'prop-types'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
 import { cloneDeep, isEqual, get, shuffle, uniq } from 'lodash'
 import 'core-js/features/array/flat'
 import {
@@ -23,7 +25,7 @@ import {
   CHECK,
   EDIT,
 } from '../../constants/constantsForQuestions'
-
+import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'
 import TableLayout from './components/TableLayout'
 import TableRow from './components/TableRow'
 
@@ -565,4 +567,11 @@ ClassificationPreview.defaultProps = {
   isReviewTab: false,
 }
 
-export default withNamespaces('assessment')(ClassificationPreview)
+const enhance = compose(
+  withNamespaces('assessment'),
+  connect(null, {
+    setQuestionData: setQuestionDataAction,
+  })
+)
+
+export default enhance(ClassificationPreview)

@@ -597,6 +597,21 @@ class AddNewUserForm extends React.Component {
                   )}
                 </Form.Item>
               </Field>
+              <Field name="hispanicEthnicity">
+                <FieldLabel>Hispanic Ethnicity</FieldLabel>
+                <Form.Item>
+                  {getFieldDecorator('hispanicEthnicity')(
+                    <SelectInputStyled
+                      getPopupContainer={(triggerNode) =>
+                        triggerNode.parentNode
+                      }
+                    >
+                      <Option value="Yes">Yes</Option>
+                      <Option value="No">No</Option>
+                    </SelectInputStyled>
+                  )}
+                </Form.Item>
+              </Field>
               <Field name="race">
                 <FieldLabel>Race</FieldLabel>
                 <Form.Item>

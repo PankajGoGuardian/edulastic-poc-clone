@@ -25,6 +25,9 @@ import BackendPagination from '../../../../../common/components/BackendPaginatio
 const StyledTable = styled(Table)`
   .ant-table-layout-fixed {
     .ant-table-scroll {
+      .ant-table-body {
+        padding-bottom: 60px;
+      }
       table tbody tr td {
         border-bottom: 1px solid #e9e9e9;
       }

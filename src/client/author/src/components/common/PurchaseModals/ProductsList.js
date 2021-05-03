@@ -132,6 +132,7 @@ const ProductsList = ({
                   premiumProductId === product.id
                 }
                 disabled={premiumProductId === product.id}
+                textTransform="none"
               >
                 {product.name}
               </StyledCheckbox>

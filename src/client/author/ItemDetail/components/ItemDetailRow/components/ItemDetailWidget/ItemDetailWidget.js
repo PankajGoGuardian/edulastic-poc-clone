@@ -108,6 +108,7 @@ const ItemDetailWidget = ({
                 <Ctrls.Point
                   value={score}
                   onChange={scoreChangeHandler}
+                  data-cy="pointUpdate"
                   visible={isPointsBlockVisible}
                   disabled={disablePointsInput}
                   isRubricQuestion={

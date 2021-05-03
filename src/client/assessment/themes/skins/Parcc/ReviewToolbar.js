@@ -57,6 +57,13 @@ const ReviewToolbar = ({
             style={!skipped[option] && { paddingLeft: '33px' }}
             disabled={blockNavigationToAnsweredQuestions}
             data-cy="questionSelectOptions"
+            tabIndex="0"
+            onKeyDown={(e) => {
+              const code = e.which
+              if (code === 13 || code === 32) {
+                handleQuestionCLick({ key: option })
+              }
+            }}
           >
             {skipped[option] && (
               <FontAwesomeIcon
@@ -71,22 +78,43 @@ const ReviewToolbar = ({
       </StyledMenu>
       <FlexContainer style={{ marginTop: '20px' }}>
         <Card
+          tabIndex="0"
           style={selectedCard === 'all' ? cardStyle : {}}
           onClick={() => handleCardClick('all')}
+          onKeyDown={(e) => {
+            const code = e.which
+            if (code === 13 || code === 32) {
+              handleCardClick('all')
+            }
+          }}
         >
           <StyledCounter>{totalQuestions}</StyledCounter>
           <div>All questions</div>
         </Card>
         <Card
+          tabIndex="0"
           style={selectedCard === 'notAnswered' ? cardStyle : {}}
           onClick={() => handleCardClick('notAnswered')}
+          onKeyDown={(e) => {
+            const code = e.which
+            if (code === 13 || code === 32) {
+              handleCardClick('notAnswered')
+            }
+          }}
         >
           <StyledCounter>{totalUnanswered}</StyledCounter>
           <div>Not answered</div>
         </Card>
         <Card
+          tabIndex="0"
           style={selectedCard === 'bookmarks' ? cardStyle : {}}
           onClick={() => handleCardClick('bookmarks')}
+          onKeyDown={(e) => {
+            const code = e.which
+            if (code === 13 || code === 32) {
+              handleCardClick('bookmarks')
+            }
+          }}
         >
           <StyledCounter>{totalBookmarks}</StyledCounter>
           <div>Bookmarks</div>
@@ -101,6 +129,7 @@ const ReviewToolbar = ({
         placement="bottom"
         content={content}
         getPopupContainer={(triggerNode) => triggerNode.parentNode}
+        trigger={['hover', 'click']}
       >
         <StyledButton data-cy="options">
           <StyledIconList />

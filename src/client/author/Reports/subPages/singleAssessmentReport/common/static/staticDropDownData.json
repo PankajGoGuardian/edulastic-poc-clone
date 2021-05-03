@@ -37,7 +37,8 @@
     { "key": "gender" },
     { "key": "iepStatus" },
     { "key": "frlStatus" },
-    { "key": "ellStatus" }
+    { "key": "ellStatus" },
+    { "key": "hispanicEthnicity" }
   ],
   "initialFilters": {
     "reportId": "",
@@ -61,7 +62,8 @@
     "gender": "all",
     "iepStatus": "all",
     "frlStatus": "all",
-    "ellStatus": "all"
+    "ellStatus": "all",
+    "hispanicEthnicity": "all"
   },
   "subjects": [
     { "key": "Mathematics", "title": "Mathematics" },

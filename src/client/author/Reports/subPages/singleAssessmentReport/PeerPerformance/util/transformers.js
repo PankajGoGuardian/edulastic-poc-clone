@@ -6,6 +6,8 @@ import {
   uniq,
   isEmpty,
   orderBy,
+  startCase,
+  isNil,
 } from 'lodash'
 import { testActivityStatus } from '@edulastic/constants'
 import {
@@ -14,18 +16,14 @@ import {
 } from '../../../../common/util'
 import { transformMetricForStudentGroups } from '../../common/utils/transformers'
 
-export const idToLabel = {
+const _idToLabel = {
   schoolId: 'schoolName',
   groupId: 'groupName',
   teacherId: 'teacherName',
-  race: 'race',
-  gender: 'gender',
-  frlStatus: 'frlStatus',
-  ellStatus: 'ellStatus',
-  iepStatus: 'iepStatus',
 }
+export const idToLabel = (id) => _idToLabel[id] || id
 
-export const idToName = {
+const _idToName = {
   schoolId: 'School',
   groupId: 'Class',
   group: 'Student Group',
@@ -35,7 +33,9 @@ export const idToName = {
   frlStatus: 'FRL Status',
   ellStatus: 'ELL Status',
   iepStatus: 'IEP Status',
+  hispanicEthnicity: 'Hispanic Ethnicity',
 }
+export const idToName = (id) => _idToName[id] || startCase(id)
 
 export const analyseByToName = {
   'score(%)': 'Score (%)',
@@ -56,7 +56,9 @@ const filterData = (data, filter) => {
       (item.iepStatus.toLowerCase() === filter.iepStatus.toLowerCase() ||
         filter.iepStatus === 'all') &&
       (item.race.toLowerCase() === filter.race.toLowerCase() ||
-        filter.race === 'all')
+        filter.race === 'all') &&
+      (item.hispanicEthnicity.toLowerCase() === filter.hispanicEthnicity.toLowerCase() ||
+        filter.hispanicEthnicity === 'all')
     ) {
       return true
     }
@@ -114,9 +116,11 @@ const analyseByScorePercent = (rawData, groupedData, compareBy) => {
       className,
       [compareBy]: data,
       compareBy,
-      compareBylabel: groupedData[data][0][idToLabel[compareBy]]
-        ? groupedData[data][0][idToLabel[compareBy]]
-        : '-',
+      compareBylabel:
+        !isNil(groupedData[data][0][idToLabel(compareBy)]) &&
+        groupedData[data][0][idToLabel(compareBy)] !== ''
+          ? groupedData[data][0][idToLabel(compareBy)]
+          : '-',
       fill: getHSLFromRange1(avgStudentScorePercent),
       dFill: getHSLFromRange1(rawData.districtAvgPerf),
     }
@@ -172,9 +176,11 @@ const analyseByRawScore = (rawData, groupedData, compareBy) => {
       className,
       [compareBy]: data,
       compareBy,
-      compareBylabel: groupedData[data][0][idToLabel[compareBy]]
-        ? groupedData[data][0][idToLabel[compareBy]]
-        : '-',
+      compareBylabel:
+        !isNil(groupedData[data][0][idToLabel(compareBy)]) &&
+        groupedData[data][0][idToLabel(compareBy)] !== ''
+          ? groupedData[data][0][idToLabel(compareBy)]
+          : '-',
       fill: getHSLFromRange1((avgStudentScore / maxScore) * 100),
       dFill: getHSLFromRange1(rawData.districtAvgPerf),
     }
@@ -240,9 +246,11 @@ const analyseByAboveBelowStandard = (rawData, groupedData, compareBy) => {
       className,
       [compareBy]: data,
       compareBy,
-      compareBylabel: groupedData[data][0][idToLabel[compareBy]]
-        ? groupedData[data][0][idToLabel[compareBy]]
-        : '-',
+      compareBylabel:
+        !isNil(groupedData[data][0][idToLabel(compareBy)]) &&
+        groupedData[data][0][idToLabel(compareBy)] !== ''
+          ? groupedData[data][0][idToLabel(compareBy)]
+          : '-',
       fill_0: getHSLFromRange1(100),
       fill_1: getHSLFromRange1(0),
     }
@@ -320,9 +328,11 @@ const analyseByProficiencyBand = (rawData, groupedData, compareBy) => {
       className,
       [compareBy]: data,
       compareBy,
-      compareBylabel: groupedData[data][0][idToLabel[compareBy]]
-        ? groupedData[data][0][idToLabel[compareBy]]
-        : '-',
+      compareBylabel:
+        !isNil(groupedData[data][0][idToLabel(compareBy)]) &&
+        groupedData[data][0][idToLabel(compareBy)] !== ''
+          ? groupedData[data][0][idToLabel(compareBy)]
+          : '-',
     }
 
     return item

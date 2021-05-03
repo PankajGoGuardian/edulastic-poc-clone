@@ -239,6 +239,7 @@ class Container extends Component {
                       labelFontSize="11px"
                       labelFontWeight={600}
                       labelColor={greyThemeDark1}
+                      data-cy="assignPartialCredit"
                     >
                       {t(
                         `author:component.settingsBar.multipartSettingsOptions.${setting}`
@@ -255,6 +256,7 @@ class Container extends Component {
                         vertical
                         checked={this.getRadioCheckedOption(setting, opt)}
                         onClick={(e) => this.handleSettingsChange(e)}
+                        data-cy={opt}
                       >
                         <FieldLabel marginBottom="0px" display="inline-block">
                           {t(

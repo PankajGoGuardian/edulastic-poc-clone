@@ -15,7 +15,9 @@ import { submitReviewFeedbackAction } from '../../../../ItemList/ducks'
 import { getUserRole } from '../../../../../student/Login/ducks'
 
 const FroalaEditor = loadable(() =>
-  import(/* webpackChunkName: "froalaCommonChunk" */'@edulastic/common/src/components/FroalaEditor')
+  import(
+    /* webpackChunkName: "froalaCommonChunk" */ '@edulastic/common/src/components/FroalaEditor'
+  )
 )
 
 const ReportIssue = ({

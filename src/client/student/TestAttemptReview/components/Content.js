@@ -7,9 +7,11 @@ import { compose } from 'redux'
 import { withNamespaces } from '@edulastic/localization'
 import { Row, Col, Button, Spin } from 'antd'
 import { withRouter } from 'react-router-dom'
-import { get } from 'lodash'
-import { IconSend } from '@edulastic/icons'
+import { get, isEmpty } from 'lodash'
+import { EduButton, FlexContainer } from '@edulastic/common'
+import { IconPhotoCamera, IconSend } from '@edulastic/icons'
 import { test as testTypes } from '@edulastic/constants'
+import PerfectScrollbar from 'react-perfect-scrollbar'
 import {
   largeDesktopWidth,
   desktopWidth,
@@ -24,6 +26,9 @@ import { attemptSummarySelector } from '../ducks'
 import { getAssignmentsSelector } from '../../Assignments/ducks'
 import { loadTestAction } from '../../../assessment/actions/test'
 import { testLoadingSelector } from '../../../assessment/selectors/test'
+import FilesView from '../../../assessment/widgets/UploadFile/components/FilesView'
+import { saveUserWorkAction } from '../../../assessment/actions/userWork'
+import { getTestLevelUserWorkSelector } from '../../sharedDucks/TestItem'
 
 const { ASSESSMENT, PRACTICE, TESTLET } = testTypes.type
 class SummaryTest extends Component {
@@ -93,6 +98,13 @@ class SummaryTest extends Component {
     }
   }
 
+  deleteAttachment = (attachmentIndex) => {
+    const { userWork, saveUserWork } = this.props
+    const attachments = [...(userWork || [])]
+    attachments.splice(attachmentIndex, 1)
+    saveUserWork({ attachments })
+  }
+
   render() {
     const {
       questionList: questionsAndOrder,
@@ -102,6 +114,8 @@ class SummaryTest extends Component {
       savingResponse,
       testLoading,
       blockNavigationToAnsweredQuestions,
+      openUserWorkUploadModal,
+      userWork,
     } = this.props
     const { isDocBased, items } = test
     const isDocBasedFlag = (!isDocBased && items.length === 0) || isDocBased
@@ -233,9 +247,32 @@ class SummaryTest extends Component {
                   })}
                 </QuestionBlock>
               </Questions>
+              {!isEmpty(userWork) && (
+                <FlexContainer flexDirection="column" mt="40px">
+                  <QuestionText lg={8} md={24}>
+                    {t('default:Attachments')}
+                  </QuestionText>
+                  <PerfectScrollbar>
+                    <FilesView
+                      cols={3}
+                      mt="12px"
+                      onDelete={this.deleteAttachment}
+                      files={userWork}
+                    />
+                  </PerfectScrollbar>
+                </FlexContainer>
+              )}
             </MainContent>
             <Footer>
               <ShortDescription>{t('common.nextStep')}</ShortDescription>
+              <UploadPaperWorkBtn
+                data-cy="uploadTestAttachments"
+                isGhost
+                onClick={openUserWorkUploadModal}
+              >
+                <IconPhotoCamera />{' '}
+                <span>{t('default:UPLOAD PAPER WORK')}</span>
+              </UploadPaperWorkBtn>
               <SubmitButton
                 type="primary"
                 onClick={finishTest}
@@ -279,6 +316,7 @@ const enhance = compose(
         'author_classboard_testActivity.assignmentId',
         ''
       ),
+      userWork: getTestLevelUserWorkSelector(state),
       classId: get(state, 'author_classboard_testActivity.classId', ''),
       savingResponse: state?.test?.savingResponse,
       testLoading: testLoadingSelector(state),
@@ -287,6 +325,7 @@ const enhance = compose(
     }),
     {
       loadTest: loadTestAction,
+      saveUserWork: saveUserWorkAction,
     }
   )
 )
@@ -579,4 +618,17 @@ const SubmitButton = styled(Button)`
     fill: ${mainBgColor};
     margin-right: 10px;
   }
+`
+
+const UploadPaperWorkBtn = styled(EduButton)`
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  position: fixed !important;
+  right: 125px;
+  top: 10px;
+  height: 32px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
 `

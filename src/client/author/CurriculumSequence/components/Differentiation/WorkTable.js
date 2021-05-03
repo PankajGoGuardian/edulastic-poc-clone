@@ -106,8 +106,9 @@ const InnerWorkTable = ({
   removeResourceFromDifferentiation,
   addDifferentiationResources,
   removeDifferentiationResources,
+  selectedRows,
+  setSelectedRows,
 }) => {
-  const [selectedRows, setSelectedRows] = useState([])
   const [masteryRange, setMasteryRange] = useState([0, 10])
   const [activeHoverIndex, setActiveHoverIndex] = useState(null)
 
@@ -144,7 +145,6 @@ const InnerWorkTable = ({
     accept: 'item',
     collect: (monitor) => ({
       isOver: !!monitor.isOver(),
-      // itemContentType: monitor.getItem()?.contentType,
     }),
     drop: (item = {}) => {
       if (
@@ -175,12 +175,6 @@ const InnerWorkTable = ({
   useEffect(() => {
     if (data[0]?.masteryRange) setMasteryRange(data[0].masteryRange)
   }, [data])
-
-  useEffect(() => {
-    if (!isFetchingWork) {
-      setSelectedRows([])
-    }
-  }, [isFetchingWork])
 
   // const getProgressBar = percentage => {
   //   if (!percentage && percentage !== 0) return null;
@@ -249,15 +243,10 @@ const InnerWorkTable = ({
 
   const handleRowSelect = (selectionType) => {
     if (selectionType === 'UNSELECT') {
-      setSelectedRows([])
+      setSelectedRows({ ...selectedRows, [type]: [] })
     } else {
-      const keyArray = []
-      data.forEach((row, i) => {
-        if (row.status === 'RECOMMENDED') {
-          keyArray.push(i)
-        }
-      })
-      setSelectedRows(keyArray)
+      const keyArray = [...Array(data.length).keys()]
+      setSelectedRows({ ...selectedRows, [type]: keyArray })
     }
   }
 
@@ -407,9 +396,9 @@ const InnerWorkTable = ({
   ]
 
   const rowSelection = {
-    selectedRowKeys: selectedRows,
+    selectedRowKeys: selectedRows[type],
     onChange: (selectedRowKeys) => {
-      setSelectedRows(selectedRowKeys)
+      setSelectedRows({ ...selectedRows, [type]: selectedRowKeys })
     },
   }
 
@@ -430,7 +419,7 @@ const InnerWorkTable = ({
   }
 
   const handleAdd = () => {
-    if (!selectedRows.length)
+    if (!selectedRows[type].length)
       return notification({
         messageKey: 'pleaseSelectAtleastOneStandardToAdd',
       })
@@ -438,7 +427,7 @@ const InnerWorkTable = ({
       return notification({ messageKey: 'pleaseSelectMastery' })
 
     const recommendations = []
-    const selectedRowsData = selectedRows.map((x) => data[x])
+    const selectedRowsData = selectedRows[type].map((x) => data[x])
     const groupByResources = groupBy(selectedRowsData, ({ resources }) =>
       (resources || [])
         ?.map((x) => x.contentId)

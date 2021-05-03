@@ -69,14 +69,15 @@ const RatingCards = ({
       >
         {criteria.ratings.map((rating) => (
           <RatingSection
+            data-cy="ratingCards"
             onClick={handleClickRating(rating.id)}
             selected={selectedRatings[criteria.id] == rating.id}
             isDisabled={isDisabled}
             key={rating.id}
           >
             <div>
-              <div>{rating.name}</div>
-              <div className="points">{`${rating.points} pts`}</div>
+              <div data-cy="ratingName">{rating.name}</div>
+              <div className="points" data-cy="ratingPoint">{`${rating.points} pts`}</div>
             </div>
             <div dangerouslySetInnerHTML={{ __html: rating.desc }} />
           </RatingSection>
@@ -119,6 +120,7 @@ const PreviewRubricTable = ({
   const getContent = () =>
     data?.criteria?.map((c, i) => (
       <CriteriaWrapper
+        data-cy="previewCriteria"
         key={c?.id || i}
         showError={
           !Object.keys(selectedRatings).includes(c?.id) &&

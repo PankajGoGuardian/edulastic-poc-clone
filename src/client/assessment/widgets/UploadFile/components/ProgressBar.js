@@ -62,6 +62,7 @@ const ProgressBar = ({
   hideDelete,
   data,
   onCancel,
+  disableLink,
 }) => {
   if (!data) {
     return null
@@ -109,10 +110,12 @@ const ProgressBar = ({
   }
 
   const NameWrapper = hideDelete ? Link : Fragment
-  const linkProps = hideDelete ? { href: source, target: '_blank' } : {}
+  const linkProps =
+    hideDelete && !disableLink ? { href: source, target: '_blank' } : {}
 
   return (
     <FlexContainer
+      data-cy="studentAttachment"
       marginBottom="20px"
       width={`calc(${100 / cols}% - 18px)`}
       marginLeft={index % cols !== 0 ? '18px' : null}
@@ -131,7 +134,12 @@ const ProgressBar = ({
 
           <FlexContainer alignItems="center">
             <FileSize>{getFileSize(size)}</FileSize>
-            {!hideDelete && <CloseIcon onClick={handleCancel} />}
+            {!hideDelete && (
+              <CloseIcon
+                data-cy="removeStudentAttachment"
+                onClick={handleCancel}
+              />
+            )}
           </FlexContainer>
         </FlexContainer>
         {!hidebar && (

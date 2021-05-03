@@ -19,6 +19,7 @@ import { normalize, schema } from 'normalizr'
 import { push } from 'connected-react-router'
 import * as Sentry from '@sentry/browser'
 import { captureSentryException, notification } from '@edulastic/common'
+import { roleuser } from '@edulastic/constants'
 import {
   curriculumSequencesApi,
   assignmentApi,
@@ -31,10 +32,21 @@ import {
 } from '@edulastic/api'
 import produce from 'immer'
 import { setCurrentAssignmentAction } from '../TestPage/components/Assign/ducks'
-import { getUserSelector, getUserId } from '../src/selectors/user'
+import {
+  getUserSelector,
+  getUserId,
+  getUserRole,
+  getCollectionsSelector,
+  getWritableCollectionsSelector,
+} from '../src/selectors/user'
+import {
+  allowDuplicateCheck,
+  allowContentEditCheck,
+} from '../src/utils/permissionCheck'
 import {
   publishTestAction,
   receiveTestByIdAction,
+  duplicateTestRequestAction,
   getTestSelector,
   UPDATE_TEST_STATUS,
   RECEIVE_TEST_BY_ID_SUCCESS,
@@ -226,6 +238,14 @@ export const TOGGLE_ASSIGNMENTS = '[playlist] toggle assignments'
 export const SET_CURRENT_ASSIGNMENT_IDS =
   '[playlist] set current assignment ids'
 export const DUPLICATE_PLAYLIST_REQUEST = '[playlist] duplicate request'
+export const SET_IS_USED_MODAL_VISIBLE =
+  '[playlist] show/hide is used modal popup'
+export const SET_PREVIOUSLY_USED_PLAYLIST_CLONE =
+  '[playlist] previously used playlist clone data'
+
+export const EDIT_PLAYLIST_TEST = '[playlist] edit playlist test'
+export const SET_USE_THIS_LOADER =
+  '[playlist] set/unset loader while using playlist'
 
 // Actions
 export const updateCurriculumSequenceList = createAction(
@@ -379,6 +399,15 @@ export const setCurrentAssignmentIdsAction = createAction(
 export const duplicatePlaylistRequestAction = createAction(
   DUPLICATE_PLAYLIST_REQUEST
 )
+export const setUseThisLoading = createAction(SET_USE_THIS_LOADER)
+
+export const setIsUsedModalVisibleAction = createAction(
+  SET_IS_USED_MODAL_VISIBLE
+)
+
+export const setPreviouslyUsedPlaylistClone = createAction(
+  SET_PREVIOUSLY_USED_PLAYLIST_CLONE
+)
 
 export const getAllCurriculumSequencesAction = (ids, showNotification) => {
   if (!ids) {
@@ -472,6 +501,8 @@ export const checkPreviouslyCustomizedAction = createAction(
   CHECK_PREVIOUSLY_CUSTOMIZED
 )
 
+export const editPlaylistTestAction = createAction(EDIT_PLAYLIST_TEST)
+
 // State getters
 const getCurriculumSequenceState = (state) => state.curriculumSequence
 
@@ -510,6 +541,11 @@ const getPublisher = (state) => {
 
 const getDestinationCurriculumSequence = (state) =>
   state.curriculumSequence.destinationCurriculumSequence
+
+export const getIsUseThisLoading = createSelector(
+  getCurriculumSequenceState,
+  (curriculumSequence) => curriculumSequence.isUseThisLoading
+)
 
 function* makeApiRequest(
   idsForFetch = [],
@@ -1200,6 +1236,86 @@ function* duplicatePlayListSaga({ payload }) {
   }
 }
 
+function* editPlaylistTestSaga({ payload }) {
+  try {
+    const { testId, playlistId } = payload
+
+    if (!testId || !playlistId) {
+      notification({ msg: 'Insufficient parameters passed!' })
+      return
+    }
+
+    // In case of 'View test details' modal, test is already loaded in store.
+    let test = yield select(getTestSelector)
+
+    if (!test || test._id !== testId) {
+      // Fetch test
+      yield put(receiveTestByIdAction(testId, true, false, true, playlistId))
+      yield take(RECEIVE_TEST_BY_ID_SUCCESS)
+      test = yield select(getTestSelector)
+    }
+
+    const userCollections = yield select(getCollectionsSelector)
+    const userWritableCollections = yield select(getWritableCollectionsSelector)
+    const user = yield select(getUserSelector)
+    const userId = get(user, 'user._id')
+    const userRole = get(user, 'user.role')
+    const userFeatures = get(user, 'user.features')
+
+    const isDuplicateAllowed = allowDuplicateCheck(
+      test?.collections,
+      userCollections,
+      'test'
+    )
+    const hasCollectionAccess = allowContentEditCheck(
+      test?.collections,
+      userWritableCollections
+    )
+    const isOwner = test?.authors?.some((x) => x._id === userId)
+    const isEditDisabled = !(
+      isOwner ||
+      userRole === roleuser.EDULASTIC_CURATOR ||
+      (hasCollectionAccess && userFeatures.isCurator)
+    )
+
+    if (isEditDisabled && !isDuplicateAllowed) {
+      notification({ msg: 'Edit Test is restricted by the author' })
+      return
+    }
+
+    const tab = test?.title ? 'review' : 'description'
+    // Redirect user to edit page of the test.
+    if (!isEditDisabled) {
+      yield put(
+        push({
+          pathname: `/author/tests/tab/${tab}/id/${test._id}`,
+          state: {
+            editTestFlow: true,
+          },
+        })
+      )
+      return
+    }
+
+    // Clone the test and redirect user to edit page of cloned test.
+    if (isDuplicateAllowed) {
+      yield put(
+        duplicateTestRequestAction({
+          _id: testId,
+          title: test?.title || '',
+          redirectToNewTest: false,
+          // By default we keep reference to all the items in test in cloned test.
+          cloneItems: false,
+          isInEditAndRegrade: true,
+          currentTab: tab,
+        })
+      )
+    }
+  } catch (e) {
+    notification({ messageKey: 'commonErr' })
+  }
+}
+
 function* duplicateManageContentSaga({ payload }) {
   try {
     const { _id: originalId, title: originalTitle, grades, subjects } = payload
@@ -1373,36 +1489,97 @@ function* publishDraftCustomizedPlaylist({ payload }) {
 
 function* useThisPlayListSaga({ payload }) {
   try {
+    yield put(setUseThisLoading(true))
     const {
-      _id,
+      _id: playlistId,
       title,
       grades,
       subjects,
       groupId,
       onChange,
       isStudent,
-      fromUseThis,
+      fromUseThis = false,
       fromRemovePlaylist = false,
+      customize = false,
+      authors = [],
+      forceClone = false,
     } = payload
-    yield call(userContextApi.setLastUsedPlayList, {
-      _id,
-      title,
-      grades,
-      subjects,
-    })
-    yield call(userContextApi.setRecentUsedPlayLists, {
-      _id,
-      title,
-      grades,
-      subjects,
-    })
-    yield put(receiveLastPlayListAction())
-    if (!isStudent) {
-      if (!fromRemovePlaylist)
-        yield call(curriculumSequencesApi.usePlaylist, _id)
+
+    let _id = playlistId
+
+    const currentUserId = yield select(getUserId)
+    const currentUserRole = yield select(getUserRole)
+    const hasPlaylistEditAccess =
+      authors?.find((x) => x._id === currentUserId) ||
+      currentUserRole === roleuser.EDULASTIC_CURATOR
+
+    /**
+     * If customize is enabled and user using the playlist is not
+     * an author nor a co-author then the playlist must be cloned with
+     * modules referencing the original playlist
+     */
+    if (
+      (customize && fromUseThis && !isStudent && !hasPlaylistEditAccess) ||
+      forceClone
+    ) {
+      // get the newly/previously cloned playlist
+      const duplicatedPlaylist = yield call(
+        curriculumSequencesApi.duplicatePlayList,
+        {
+          _id,
+          title: `${title} - Customized`,
+          forUseThis: true,
+          forceClone,
+        }
+      )
+
+      // if playlist was cloned previously
+      if (duplicatedPlaylist.previouslyCloned) {
+        // let the user decide to clone again (or) use the cloned
+        yield put(setIsUsedModalVisibleAction(true))
+        yield put(
+          setPreviouslyUsedPlaylistClone({
+            _id: duplicatedPlaylist._id,
+            title: duplicatedPlaylist.title,
+            grades: duplicatedPlaylist.grades,
+            subjects: duplicatedPlaylist.subjects,
+            customize: duplicatedPlaylist.customize,
+            authors: duplicatedPlaylist.authors,
+            derivedFrom: duplicatedPlaylist.derivedFrom,
+          })
+        )
+        return
+      }
+
+      _id = duplicatedPlaylist._id
+
+      yield put(receiveLastPlayListAction())
       yield put(receiveRecentPlayListsAction())
+      yield put(updateCurriculumSequenceAction(duplicatedPlaylist))
+    } else {
+      yield call(userContextApi.setLastUsedPlayList, {
+        _id,
+        title,
+        grades,
+        subjects,
+      })
+      yield call(userContextApi.setRecentUsedPlayLists, {
+        _id,
+        title,
+        grades,
+        subjects,
+      })
+
+      // fetch last used playlist
+      yield put(receiveLastPlayListAction())
+      if (!isStudent) {
+        if (!fromRemovePlaylist)
+          yield call(curriculumSequencesApi.usePlaylist, _id)
+        yield put(receiveRecentPlayListsAction())
+      }
+      yield put(getAllCurriculumSequencesAction([_id]))
     }
-    yield put(getAllCurriculumSequencesAction([_id]))
+    yield put(setIsUsedModalVisibleAction(false))
     const location = yield select((state) => state.router.location.pathname)
     const urlHasUseThis = location.match(/use-this/g)
     if (isStudent && onChange) {
@@ -1435,6 +1612,12 @@ function* useThisPlayListSaga({ payload }) {
   } catch (error) {
     console.error(error)
     notification({ messageKey: 'commonErr' })
+  } finally {
+    const { notificationCallback = null } = payload
+    yield put(setUseThisLoading(false))
+    if (notificationCallback) {
+      notificationCallback()
+    }
   }
 }
 
@@ -1623,12 +1806,18 @@ function structureWorkData(workData, statusData, firstLoad = false) {
       } else {
         draft[type].forEach((i) => {
           const currentStatus = currentStatusArray.find((s) => {
-            const isStandardRecommended =
-              s.derivedFrom === 'STANDARDS' &&
-              s.standardIdentifiers.includes(i.standardIdentifier) &&
-              (!s.skillIdentifiers ||
-                s.skillIdentifiers.includes(i.skillIdentifier))
-
+            let isStandardRecommended
+            if (type.toUpperCase() === 'PRACTICE') {
+              isStandardRecommended =
+                s.derivedFrom === 'STANDARDS' &&
+                s.standardIdentifiers.includes(i.standardIdentifier)
+            } else {
+              isStandardRecommended =
+                s.derivedFrom === 'STANDARDS' &&
+                s.standardIdentifiers.includes(i.standardIdentifier) &&
+                (!s.skillIdentifiers ||
+                  s.skillIdentifiers.includes(i.skillIdentifier))
+            }
             const isTestRecommended =
               s.derivedFrom === 'TESTS' && s.resourceId === i.testId
 
@@ -1956,6 +2145,7 @@ export function* watcherSaga() {
       unassignAssignmentsfromPlaylistSaga
     ),
     yield takeLatest(DUPLICATE_PLAYLIST_REQUEST, duplicatePlayListSaga),
+    yield takeLatest(EDIT_PLAYLIST_TEST, editPlaylistTestSaga),
   ])
 
   const currSequenceUpdateQueue = yield actionChannel(
@@ -2119,6 +2309,9 @@ const initialState = {
     isAssigning: false,
     recommendations: [],
   },
+  isUsedModalVisible: false,
+  previouslyUsedPlaylistClone: null,
+  isUseThisLoading: false,
 }
 
 /**
@@ -2686,6 +2879,7 @@ export default createReducer(initialState, {
         {
           type,
           contentId,
+          contentVersionId: contentId,
           description: contentTitle,
           contentTitle,
           contentType,
@@ -2986,5 +3180,17 @@ export default createReducer(initialState, {
   },
   [SET_CURRENT_ASSIGNMENT_IDS]: (state, { payload }) => {
     state.currentAssignmentIds = payload
+  },
+  [SET_IS_USED_MODAL_VISIBLE]: (state, { payload }) => {
+    if (!payload) {
+      state.previouslyUsedPlaylistClone = null
+    }
+    state.isUsedModalVisible = payload
+  },
+  [SET_PREVIOUSLY_USED_PLAYLIST_CLONE]: (state, { payload }) => {
+    state.previouslyUsedPlaylistClone = payload
+  },
+  [SET_USE_THIS_LOADER]: (state, { payload }) => {
+    state.isUseThisLoading = payload
   },
 })

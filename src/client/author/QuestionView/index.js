@@ -23,7 +23,7 @@ import {
   skippedBarColor,
   greyLight1,
 } from '@edulastic/colors'
-import { IconEye, IconEyeClose } from '@edulastic/icons'
+import { IconExpand, IconCollapse } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
 import {
   scrollTo,
@@ -33,19 +33,15 @@ import {
   LCBScrollContext,
   EduButton,
 } from '@edulastic/common'
-import { testActivityStatus } from '@edulastic/constants'
+import {
+  testActivityStatus,
+  questionActivity as questionActivityConst,
+} from '@edulastic/constants'
 import { getAvatarName } from '../ClassBoard/Transformer'
 
 import { StyledFlexContainer, StyledCard, TooltipContainer } from './styled'
 import StudentResponse from './component/studentResponses/studentResponse'
-import {
-  StudentButtonWrapper,
-  StudentButtonDiv,
-  AllButton,
-  CorrectButton,
-  WrongButton,
-  PartiallyCorrectButton,
-} from '../StudentView/styled'
+import { StudentButtonWrapper, StudentButtonDiv } from '../StudentView/styled'
 import ClassQuestions from '../ClassResponses/components/Container/ClassQuestions'
 
 // actions
@@ -60,6 +56,10 @@ import {
 } from '../ClassBoard/ducks'
 import HooksContainer from '../ClassBoard/components/HooksContainer/HooksContainer'
 import { setStudentViewFilterAction as setFilterAction } from '../src/reducers/testActivity'
+import {
+  FilterSelect,
+  FilterSpan,
+} from '../ClassBoard/components/Container/styled'
 
 /**
  * @param {string} studentId
@@ -266,26 +266,28 @@ class QuestionViewContainer extends Component {
         })
     }
 
-    const {
-      c: correctNumber,
-      w: wrongNumber,
-      p: partiallyCorrectNumber,
-      s: skippedNumber,
-      n: notGradedNumber,
-      u: unscoredItems,
-    } = data.reduce(
+
+    const questionStatusCounts = data.reduce(
       (acc, item) => ({
-        w: item.wrong + acc.w,
-        c: item.correct + acc.c,
-        p: item.pCorrect + acc.p,
-        s: item.skipped + acc.s,
-        n: item.manuallyGraded + acc.n,
-        u: item.unscoredItems + acc.u,
+        wrongNumber: item.wrong + acc.wrongNumber,
+        correctNumber: item.correct + acc.correctNumber,
+        partiallyCorrectNumber: item.pCorrect + acc.partiallyCorrectNumber,
+        skippedNumber: item.skipped + acc.skippedNumber,
+        notGradedNumber: item.manuallyGraded + acc.notGradedNumber,
+        unscoredItems: item.unscoredItems + acc.unscoredItems,
       }),
-      { c: 0, w: 0, p: 0, s: 0, n: 0, u: 0 }
+      {
+        totalNumber: 0,
+        correctNumber: 0,
+        wrongNumber: 0,
+        partiallyCorrectNumber: 0,
+        skippedNumber: 0,
+        notGradedNumber: 0,
+        unscoredItems: 0,
+      }
     )
 
-    const totalNumber = data.length
+    questionStatusCounts.totalNumber = data.length
 
     if (isMobile) {
       data = data.slice(0, 2)
@@ -418,61 +420,45 @@ class QuestionViewContainer extends Component {
         <StudentResponse isPresentationMode={isPresentationMode}>
           <StudentButtonWrapper>
             <StudentButtonDiv>
-              <AllButton
-                active={filter === null}
-                onClick={() => this.onClickTab(null)}
+              <FilterSpan>FILTER BY STATUS</FilterSpan>
+              <FilterSelect
+                className="student-status-filter"
+                value={filter}
+                dropdownMenuStyle={{ fontSize: 29 }}
+                getPopupContainer={(trigger) => trigger.parentElement}
+                onChange={this.onClickTab}
+                width="170px"
+                height="24px"
               >
-                ALL ({totalNumber})
-              </AllButton>
-              <CorrectButton
-                active={filter === 'correct'}
-                onClick={() => this.onClickTab('correct')}
-              >
-                CORRECT ({correctNumber})
-              </CorrectButton>
-              <WrongButton
-                active={filter === 'wrong'}
-                onClick={() => this.onClickTab('wrong')}
-              >
-                INCORRECT ({wrongNumber})
-              </WrongButton>
-              <WrongButton
-                active={filter === 'partial'}
-                onClick={() => this.onClickTab('partial')}
-              >
-                PARTIALLY CORRECT ({partiallyCorrectNumber})
-              </WrongButton>
-              <WrongButton
-                active={filter === 'skipped'}
-                onClick={() => this.onClickTab('skipped')}
-              >
-                SKIPPED ({skippedNumber})
-              </WrongButton>
-              <WrongButton
-                active={filter === 'unscoredItems'}
-                onClick={() => this.onClickTab('unscoredItems')}
-              >
-                ZERO POINT ({unscoredItems})
-              </WrongButton>
-              <PartiallyCorrectButton
-                active={filter === 'notGraded'}
-                onClick={() => this.onClickTab('notGraded')}
-              >
-                NOT GRADED ({notGradedNumber})
-              </PartiallyCorrectButton>
+                {questionActivityConst.questionStatusOptions.map(
+                  ({ title, value, countValue }, i) => (
+                    <FilterSelect.Option
+                      className="student-status-filter-item"
+                      key={i}
+                      value={value}
+                      style={{ fontSize: 11 }}
+                    >
+                      {title} ({questionStatusCounts[countValue]})
+                    </FilterSelect.Option>
+                  )
+                )}
+              </FilterSelect>
             </StudentButtonDiv>
             <EduButton
               isGhost
               height="24px"
               fontSize="9px"
-              mr="28px"
+              ml="10px"
               onClick={this.toggleShowCorrectAnswers}
+              title="Minimizing view hides correct answers, maximize to view them"
             >
-              {hideCorrectAnswer ? <IconEye /> : <IconEyeClose />}
+              {hideCorrectAnswer ? (
+                <IconExpand height="11.3px" width="11.3px" />
+              ) : (
+                <IconCollapse height="11.3px" width="11.3px" />
+              )}
               <span data-cy="showCorrectAnswer" data-test={!hideCorrectAnswer}>
-                {hideCorrectAnswer
-                  ? 'Expand correct answers'
-                  : 'Collapse correct answers'}
+                {hideCorrectAnswer ? 'Maximize view' : 'Minimize view'}
               </span>
             </EduButton>
           </StudentButtonWrapper>

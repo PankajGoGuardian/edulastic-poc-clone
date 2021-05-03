@@ -54,6 +54,7 @@ export const DemographicCompareByOptions = [
   'frlStatus',
   'ellStatus',
   'iepStatus',
+  'hispanicEthnicity',
 ]
 
 export const percentage = (
@@ -139,7 +140,11 @@ export const filterData = (data, filter) => {
         item.iepStatus.toLowerCase() === filter.iepStatus.toLowerCase()) &&
       (!filter.race ||
         filter.race === 'all' ||
-        item.race.toLowerCase() === filter.race.toLowerCase())
+        item.race.toLowerCase() === filter.race.toLowerCase()) &&
+      (!filter.hispanicEthnicity ||
+        filter.hispanicEthnicity === 'all' ||
+        item.hispanicEthnicity.toLowerCase() ===
+          filter.hispanicEthnicity.toLowerCase())
   )
   return filteredData
 }
@@ -240,10 +245,14 @@ export const processTeacherIds = (orgDataArr) => {
 }
 
 export const getOverallScore = (metrics = []) =>
-  roundedPercentage(
-    sumBy(metrics, (item) => parseFloat(item.totalScore)),
-    sumBy(metrics, (item) => parseFloat(item.maxScore || 1))
-  )
+  metrics.length
+    ? sumBy(metrics, (item) =>
+        percentage(
+          parseFloat(item.totalScore) || 0,
+          parseFloat(item.maxScore) || 1
+        )
+      ) / metrics.length
+    : 0
 
 export const filterAccordingToRole = (columns, role) =>
   columns.filter((column) => !includes(column.hiddenFromRole, role))

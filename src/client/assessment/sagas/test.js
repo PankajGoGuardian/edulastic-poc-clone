@@ -826,10 +826,9 @@ function* submitTest({ payload }) {
       throw new Error('Unable to submit the test.')
     }
 
-    const testLevelAttachments = yield select(getTestLevelUserWorkSelector) ||
-      []
+    const testLevelAttachments = yield select(getTestLevelUserWorkSelector)
 
-    if (testLevelAttachments.length) {
+    if ((testLevelAttachments || []).length) {
       const reqPayload = {
         testActivityId,
         groupId,

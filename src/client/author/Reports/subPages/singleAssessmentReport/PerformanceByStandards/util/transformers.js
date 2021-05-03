@@ -11,11 +11,11 @@ import {
   filter,
   sumBy,
   mapValues,
-  reduce,
 } from 'lodash'
 import next from 'immer'
 import {
   percentage,
+  getOverallScore,
   DemographicCompareByOptions,
 } from '../../../../common/util'
 import { transformMetricForStudentGroups } from '../../common/utils/transformers'
@@ -158,7 +158,7 @@ export const compareByColumns = {
     dataIndex: 'hispanicEthnicity',
     key: 'hispanicEthnicity',
     render: (he) => (he ? capitalize(he) : '-'),
-  }
+  },
 }
 
 export const getFormattedName = (name) => {
@@ -167,35 +167,8 @@ export const getFormattedName = (name) => {
   return nameArr.length ? `${lName}, ${nameArr.join(' ')}` : lName
 }
 
-export const getOverallScore = (metrics = []) =>
-  percentage(sumBy(metrics, 'totalScore'), sumBy(metrics, 'maxScore') || 1)
-
 export const getOverallRawScore = (metrics = []) =>
-  sumBy(metrics, 'totalScore') / metrics.length
-
-const chartGetAverageScoreByStandards = (studentMetrics) => (standardId) => {
-  // get list of metrics by students for a standard
-  const metricsList = studentMetrics[standardId]
-
-  // calculate average score for a standard by all it's students
-  const totalScore = metricsList.reduce(
-    (score, current) => score + current.totalScore / (current.maxScore || 1),
-    0
-  )
-  const masteryScore = metricsList.reduce(
-    (score, current) => score + current.masteryScore,
-    0
-  )
-
-  const averageStandardScore = totalScore / metricsList.length
-  const averageMasteryScore = masteryScore / metricsList.length
-
-  return {
-    standardId,
-    totalScore: averageStandardScore,
-    masteryScore: averageMasteryScore,
-  }
-}
+  metrics.length ? sumBy(metrics, 'totalScore') / metrics.length : 0
 
 const augmentMetricInfoWithStudentInfo = (
   studInfo,
@@ -481,97 +454,25 @@ const augmentMetricInfoWithMasteryScore = (metricInfo = [], scaleInfo = []) =>
     }
   })
 
-const augmentMetricInfoWithDomain = (metricInfo = [], skillInfo = []) =>
-  map(metricInfo, (metric) => {
-    const skill = findSkillUsingStandard(metric.standardId, skillInfo)
-
-    return {
-      ...metric,
-      domainId: skill.domainId,
-      domain: skill.domain,
-      standard: skill.standard,
-    }
-  })
-
-const getStandardMaxScore = (metricInfo = [], standardId) => {
-  const groupedByStandard = groupBy(metricInfo, 'standardId')
-  return (
-    groupedByStandard[standardId] && groupedByStandard[standardId][0].maxScore
-  )
-}
-
-const getDomainMaxScore = (metricInfo = [], domainId, skillInfo) => {
-  const metricWithDomain = augmentMetricInfoWithDomain(metricInfo, skillInfo)
-
-  const groupedByDomain = groupBy(metricWithDomain, 'domainId')
-  const domainRecords = groupedByDomain[domainId] || []
-  const relatedStandardsGroup = groupBy(domainRecords, 'standardId')
-
-  const maxScore = reduce(
-    relatedStandardsGroup,
-    (result, value) => result + value[0].maxScore,
-    0
-  )
-
-  return maxScore
-}
-
-const groupByView = (report, chartFilters, viewBy) => {
+export const getChartMasteryData = (report = {}, viewBy, leastScale) => {
   const {
-    metricInfo = {},
-    scaleInfo = {},
+    scaleInfo = [],
     skillInfo = [],
-    studInfo = [],
-    teacherInfo = [],
+    performanceSummaryStats = [],
   } = report
   const groupByKey = viewBy === viewByMode.STANDARDS ? 'standardId' : 'domainId'
-  const filteredMetrics = filterAndAugmentMetricInfo(
-    studInfo,
-    metricInfo,
-    teacherInfo,
-    chartFilters,
-    skillInfo,
-    scaleInfo
+  const groupByScore = groupBy(scaleInfo, 'score')
+  const filteredMetrics = filter(performanceSummaryStats, (metric) =>
+    find(skillInfo, (skill) => skill.standardId === metric.standardId)
   )
+  filteredMetrics.forEach((standardMetric) =>
+    Object.assign(standardMetric, {
+      masteryLabel: groupByScore[standardMetric.masteryLevel][0].masteryLabel,
+    })
+  )
+
   // group data according to the chosen viewBy
   const metricByViewBy = groupBy(filteredMetrics, groupByKey)
-
-  return metricByViewBy || {}
-}
-
-const filterAndAugmentMetricInfo = (
-  studInfo,
-  metricInfo,
-  teacherInfo,
-  chartFilters,
-  skillInfo,
-  scaleInfo
-) => {
-  const filteredMetrics = chartFilterMetricInfo(
-    studInfo,
-    metricInfo,
-    teacherInfo,
-    chartFilters,
-    skillInfo
-  )
-
-  const parsedMetricInfo = augmentMetricInfoWithDomain(
-    augmentMetricInfoWithMasteryScore(filteredMetrics, scaleInfo),
-    skillInfo
-  )
-
-  return parsedMetricInfo || []
-}
-
-export const getChartMasteryData = (
-  report = {},
-  chartFilters,
-  viewBy,
-  leastScale
-) => {
-  const { scaleInfo = {}, skillInfo = [] } = report
-  // group data according to the chosen viewBy
-  const metricByViewBy = groupByView(report, chartFilters, viewBy)
   const metricByViewByWithMasteryCount = {}
 
   for (const viewByKey in metricByViewBy) {
@@ -589,11 +490,8 @@ export const getChartMasteryData = (
 
     Object.keys(metricByMastery).forEach((key) => {
       // find percentage of current scale records against total records
-      const masteryScorePercentage = round(
-        percentage(
-          metricByMastery[key].length,
-          metricByViewBy[viewByKey].length
-        )
+      const masteryScorePercentage = +(
+        metricByMastery[key][0].masteryPercentage || 0
       )
       metricByViewByWithMasteryCount[viewByKey][key] =
         metricByMastery[key].length
@@ -612,31 +510,30 @@ export const getChartMasteryData = (
     ...metricByViewByWithMasteryCount[id],
   }))
 
-  return parsedGroupedMetricData.sort((a, b) => a.name.localeCompare(b.name))
+  return parsedGroupedMetricData.sort((a, b) => a[groupByKey] - b[groupByKey])
 }
 
-export const getChartScoreData = (report = {}, chartFilters, viewBy) => {
-  const { metricInfo = {}, skillInfo = [] } = report
+const getChartOverallRawScore = (metrics) =>
+  sumBy(metrics, 'totalScore') / sumBy(metrics, 'totalStudents')
+
+export const getChartScoreData = (report = {}, viewBy) => {
+  const { performanceSummaryStats = {}, skillInfo = [] } = report
+  const groupByKey = viewBy === viewByMode.STANDARDS ? 'standardId' : 'domainId'
+
+  const filteredMetrics = filter(performanceSummaryStats, (metric) =>
+    find(skillInfo, (skill) => skill.standardId === metric.standardId)
+  )
   // group data according to the chosen viewBy
-  const metricByViewBy = groupByView(report, chartFilters, viewBy)
+  const metricByViewBy = groupBy(filteredMetrics, groupByKey)
 
   return Object.keys(metricByViewBy).map((id) => {
     const records = metricByViewBy[id]
+    const maxScore = records[0].maxScore / records[0].totalStudents
+    const rawScore = getChartOverallRawScore(records)
     const avgScore = getOverallScore(records)
-    let maxScore = 0
-
-    switch (viewBy) {
-      case viewByMode.STANDARDS:
-        maxScore = getStandardMaxScore(metricInfo, id)
-        break
-      case viewByMode.DOMAINS:
-        maxScore = getDomainMaxScore(metricInfo, id, skillInfo)
-        break
-    }
-
     return {
       ...findGroupInfo(id, viewBy, skillInfo),
-      rawScore: getOverallRawScore(records),
+      rawScore,
       avgScore,
       maxScore,
       records,

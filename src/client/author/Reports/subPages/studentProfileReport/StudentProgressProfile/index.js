@@ -93,11 +93,16 @@ const StudentProgressProfile = ({
 
   useEffect(() => {
     setPageFilters({ ...pageFilters, page: 1 })
-  }, [settings])
+  }, [
+    settings.selectedStudent,
+    settings.requestFilters,
+    settings.standardFilters,
+  ])
 
   useEffect(() => {
     const q = {
       ...settings.requestFilters,
+      ...settings.standardFilters,
       ...pageFilters,
       studentId: settings.selectedStudent.key,
     }

@@ -89,7 +89,7 @@ const StudentAssessmentProfile = ({
         studentId: settings.selectedStudent.key,
       })
     }
-  }, [settings])
+  }, [settings.selectedStudent, settings.requestFilters])
 
   useEffect(() => {
     const metrics = get(studentAssessmentProfile, 'data.result.metricInfo', [])

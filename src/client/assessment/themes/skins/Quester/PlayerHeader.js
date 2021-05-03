@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import styled, { css } from 'styled-components'
-
+import { themeColor } from '@edulastic/colors'
 import { withWindowSizes } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { test as testConstants } from '@edulastic/constants'
@@ -154,6 +154,14 @@ const PlayerHeader = ({
                   data-cy="finishTest"
                   onClick={finishTest}
                   disabled={hidePause}
+                  tabIndex="0"
+                  onKeyDown={(e) => {
+                    if (hidePause) return
+                    const code = e.which
+                    if (code === 13 || code === 32) {
+                      finishTest()
+                    }
+                  }}
                 >
                   {!hidePause && (
                     <IconSignoutHighlight style={{ marginRight: '10px' }} />
@@ -172,7 +180,17 @@ const PlayerHeader = ({
                   className="quester-question-list"
                   onClick={handleOpen}
                 >
-                  <StyledButton data-cy="options">
+                  <StyledButton
+                    data-cy="options"
+                    tabIndex="0"
+                    onKeyDown={(e) => {
+                      if (hidePause) return
+                      const code = e.which
+                      if (code === 13 || code === 32) {
+                        handleOpen()
+                      }
+                    }}
+                  >
                     <span>
                       {isLast()
                         ? t('common.test.reviewAndSubmit')
@@ -282,6 +300,10 @@ const SignOut = styled.div`
   font-size: 10px;
   svg {
     color: #fff;
+  }
+  &:focus {
+    outline: 0;
+    box-shadow: 0 0 0 2px ${themeColor};
   }
 `
 

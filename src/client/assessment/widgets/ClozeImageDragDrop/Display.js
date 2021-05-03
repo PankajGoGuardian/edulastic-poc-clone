@@ -810,7 +810,7 @@ class Display extends Component {
                   <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>
                 )}
               </QuestionLabelWrapper>
-              <QuestionContentWrapper>
+              <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
                 <QuestionTitleWrapper>
                   <Stimulus
                     smallSize={smallSize}

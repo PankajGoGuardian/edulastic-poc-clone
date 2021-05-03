@@ -229,6 +229,13 @@ const Option = (props) => {
           toggleHover(false)
         }
       }}
+      tabIndex="0"
+      onKeyDown={(e) => {
+        const code = e.which
+        if (code === 13 || code === 32) {
+          onChangeHandler()
+        }
+      }}
     >
       {renderCheckbox()}
       {showIcon && (

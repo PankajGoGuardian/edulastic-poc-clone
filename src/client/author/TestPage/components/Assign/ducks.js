@@ -381,7 +381,7 @@ function* saveAssignment({ payload }) {
         pathname: `/author/${
           payload.playlistModuleId ? 'playlists' : 'tests'
         }/${
-          payload.playlistModuleId ? payload.playlistId : testIds[0]
+          payload.playlistModuleId ? payload.playlistId : testIds[0].testId
         }/assign/${assignmentId}`,
         state: {
           ...locationState,

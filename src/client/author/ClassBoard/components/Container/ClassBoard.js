@@ -22,7 +22,7 @@ import {
 import { withNamespaces } from '@edulastic/localization'
 import { testActivityStatus } from '@edulastic/constants'
 import { Dropdown, Select, notification as antNotification } from 'antd'
-import { get, isEmpty, keyBy, round } from 'lodash'
+import { get, isEmpty, keyBy, last, round, sortBy } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
@@ -1293,9 +1293,33 @@ class ClassBoard extends Component {
                       disabled={nobodyStarted || !isItemsVisible || isLoading}
                       active={selectedTab === 'Student'}
                       onClick={(e) => {
-                        const _testActivityId = testActivity?.find(
-                          (x) => x.studentId === firstStudentId
-                        )?.testActivityId
+                        const {
+                          UTASTATUS,
+                          redirected,
+                          studentId,
+                          testActivityId: _activityId,
+                        } =
+                          testActivity?.find(
+                            (x) => x.studentId === firstStudentId
+                          ) || {}
+                        let _testActivityId = _activityId
+                        if (
+                          redirected &&
+                          (UTASTATUS == testActivityStatus.NOT_STARTED ||
+                            UTASTATUS == testActivityStatus.ABSENT)
+                        ) {
+                          const recentUserActivities = recentAttemptsGrouped[
+                            studentId
+                          ]?.filter(
+                            (item) =>
+                              item.status == testActivityStatus.SUBMITTED
+                          )
+                          const mostRecent = last(
+                            sortBy(recentUserActivities, 'endDate')
+                          )
+                          _testActivityId = mostRecent?._id || _testActivityId
+                        }
+
                         setCurrentTestActivityId(_testActivityId)
                         if (!isItemsVisible) {
                           return
@@ -1659,7 +1683,7 @@ class ClassBoard extends Component {
                   <StudentGrapContainer>
                     <StyledCard bordered={false} paddingTop={15}>
                       <StudentSelect
-                        data-cy="studentSelect"
+                        dataCy="dropDownSelect"
                         style={{ width: '200px' }}
                         students={testActivity}
                         selectedStudent={selectedStudentId}
@@ -1874,6 +1898,7 @@ class ClassBoard extends Component {
                     isPresentationMode={isPresentationMode}
                   >
                     <GenSelect
+                      dataCy="dropDownSelect"
                       classid="DI"
                       classname={firstQuestionEntities
                         .map((x, index) => ({

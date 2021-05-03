@@ -137,7 +137,7 @@ function* evaluateAnswers({ payload: groupId }) {
 
     let evaluationObj = {}
     let evaluations = {}
-    if (role === roleuser.TEACHER) {
+    if (role !== roleuser.STUDENT) {
       const {
         itemLevelScore,
         itemLevelScoring = false,

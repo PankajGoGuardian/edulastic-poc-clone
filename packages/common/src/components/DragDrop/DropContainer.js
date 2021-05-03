@@ -3,6 +3,7 @@ import {
   greyThemeLighter,
   themeColorBlue,
   lightGrey12,
+  fadeBlue,
 } from '@edulastic/colors'
 import { isObject } from 'lodash'
 import styled, { css, withTheme } from 'styled-components'
@@ -45,11 +46,8 @@ const DropContainer = ({
     }),
   })
 
-  const ctx = useContext(DndStateContext);
-  const {
-    state: { actived }={},
-    setItem,
-  } = ctx||{};
+  const ctx = useContext(DndStateContext)
+  const { state: { actived } = {}, setItem } = ctx || {}
 
   const attach = useCallback((element) => drop(element), [drop])
 
@@ -61,10 +59,9 @@ const DropContainer = ({
 
   useEffect(() => {
     return () => {
-      if(setItem){
+      if (setItem) {
         setItem({ type: 'REMOVE_ACTIVE_DRAG_ITEM' })
       }
-      
     }
   }, [])
 
@@ -74,7 +71,7 @@ const DropContainer = ({
 
   const mergedStyle = {
     ...style,
-    background: style.background || greyThemeLighter,
+    background: isOver ? fadeBlue : style.background || greyThemeLighter,
   }
 
   const onClickHandler = (e) => {
@@ -142,13 +139,14 @@ export default withTheme(DropContainer)
 
 const hoverStyle = css`
   &:hover {
-    border-color: ${themeColorBlue};
+    border-color: red;
   }
 `
 
 const Container = styled.div`
+  position: relative;
   font-size: ${({ theme }) => theme.fontSize};
-  border: ${({ noBorder }) => !noBorder && '2px dashed'};
+  border: ${({ noBorder }) => !noBorder && '3px dashed'};
   border-radius: 2px;
   border-color: ${({ borderColor }) => borderColor};
   ${({ showHoverBorder }) => showHoverBorder && hoverStyle}

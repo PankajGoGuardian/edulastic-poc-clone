@@ -5,10 +5,11 @@ export const getEvalautionColor = (
   answerScore,
   correct,
   attempt,
-  allCorrect
+  allCorrect,
+  isEvaluationEmpty = false
 ) => {
   const { score, isGradedExternally } = answerScore || {}
-  if (!attempt) {
+  if (!attempt || isEvaluationEmpty) {
     // skipped answer
     return { fillColor: '#F5F5F5', mark: '', indexBgColor: '#A7A7A7' }
   }
@@ -33,17 +34,17 @@ export const getEvalautionColor = (
     }
     // its wrong answer
     return {
-      fillColor: '#fce0e8',
+      fillColor: '#fde0e9',
       mark: <WrongIcon />,
-      indexBgColor: '#dd2e44',
+      indexBgColor: '#f25783',
     }
   }
   if (attempt && correct) {
     // got max score and its all correct
     return {
-      fillColor: '#d3fea6',
+      fillColor: '#e2fcf3',
       mark: <RightIcon />,
-      indexBgColor: '#5eb500',
+      indexBgColor: '#36d29c',
     }
   }
 

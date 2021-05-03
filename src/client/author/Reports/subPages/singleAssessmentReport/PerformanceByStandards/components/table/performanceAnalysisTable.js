@@ -2,6 +2,9 @@ import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { uniqBy, map, round, reduce } from 'lodash'
+
+import { Tooltip } from 'antd'
+import { IconInfo } from '@edulastic/icons'
 import { extraDesktopWidthMax } from '@edulastic/colors'
 import {
   compareByColumns,
@@ -49,10 +52,9 @@ const AnalysisTable = styled(StyledTable)`
           color: #aaafb5;
           font-weight: 900;
           text-transform: uppercase;
-          font-size: 10px;
           border: 0px;
-          .ant-table-column-sorter {
-            vertical-align: top;
+          .ant-table-column-title {
+            font-size: 10px;
           }
         }
       }
@@ -169,8 +171,8 @@ const PerformanceAnalysisTable = ({
       [viewByMode.STANDARDS]: {
         selectedData: selectedStandards,
         dataField: 'standardId',
-        standardColumnsData: skillInfo.sort((a, b) =>
-          a.standard.localeCompare(b.standard)
+        standardColumnsData: skillInfo.sort(
+          (a, b) => a.standardId - b.standardId
         ),
       },
       [viewByMode.DOMAINS]: {
@@ -178,7 +180,7 @@ const PerformanceAnalysisTable = ({
         dataField: 'domainId',
         standardColumnsData: uniqBy(skillInfo, 'domainId')
           .filter((o) => o.domain !== null)
-          .sort((a, b) => a.domain.localeCompare(b.domain)),
+          .sort((a, b) => a.domainId - b.domainId),
       },
     }
   }
@@ -186,18 +188,18 @@ const PerformanceAnalysisTable = ({
   const { scaleInfo } = report
 
   const getOverallValue = (records = {}, _analyzeBy) => {
-    const allRecords = reduce(
-      records,
-      (result, value = {}) => result.concat(value.records || []),
-      []
-    )
-    const masteryLevel = getMasteryLevel(getOverallScore(allRecords), scaleInfo)
-
+    const allScores = Object.keys(records).map((itemId) => ({
+      totalScore: records[itemId].rawScore || records[itemId].totalScore || 0,
+      maxScore: records[itemId].maxScore || 1,
+    }))
+    const overallRawScore = getOverallRawScore(allScores)
+    const overallScore = getOverallScore(allScores)
+    const masteryLevel = getMasteryLevel(overallScore, scaleInfo)
     switch (_analyzeBy) {
       case analyzeByMode.SCORE:
-        return formatScore(getOverallScore(allRecords), _analyzeBy)
+        return formatScore(overallScore, _analyzeBy)
       case analyzeByMode.RAW_SCORE:
-        return formatScore(getOverallRawScore(allRecords), _analyzeBy)
+        return formatScore(overallRawScore, _analyzeBy)
       case analyzeByMode.MASTERY_LEVEL:
         return masteryLevel.masteryLabel
       case analyzeByMode.MASTERY_SCORE:
@@ -225,7 +227,18 @@ const PerformanceAnalysisTable = ({
     }
 
     return {
-      title: 'Overall',
+      title: (
+        <div
+          style={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}
+        >
+          <span>Avg. {viewBy} Performance</span>
+          <Tooltip
+            title={`This is the average performance across all the ${viewBy}s assessed`}
+          >
+            <IconInfo height={10} style={{ marginRight: '10px' }} />
+          </Tooltip>
+        </div>
+      ),
       dataIndex: 'overall',
       key: 'overall',
       fixed: 'left',
@@ -237,12 +250,9 @@ const PerformanceAnalysisTable = ({
   }
 
   const getFieldTotalValue = (_tableData, _analyzeBy, config) => {
-    const allRecords = reduce(
-      _tableData,
-      (result, value) => result.concat(value.standardMetrics[config.key]),
-      []
+    const allRecords = _tableData.map(
+      (item) => item.standardMetrics[config.key]
     )
-
     return getOverallValue(allRecords, _analyzeBy)
   }
 

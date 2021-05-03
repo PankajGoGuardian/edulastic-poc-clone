@@ -37,6 +37,13 @@ const SettingMenu = ({
           <Menu.Item
             key={key}
             disabled={key === 'enableMagnifier' && !showMagnifier}
+            tabIndex="0"
+            onKeyDown={(e) => {
+              const code = e.which
+              if (code === 13 || code === 32) {
+                onSettingsChange({ key })
+              }
+            }}
           >
             {menuItems[key]}
             {key === 'enableMagnifier' && enableMagnifier && (
@@ -56,6 +63,14 @@ const SettingMenu = ({
             : {})}
           key="save"
           data-cy="finishTest"
+          tabIndex="0"
+          onKeyDown={(e) => {
+            if (hidePause) return
+            const code = e.which
+            if (code === 13 || code === 32) {
+              onSettingsChange({ key: 'save' })
+            }
+          }}
         >
           Save & Exit
         </Menu.Item>
@@ -67,6 +82,7 @@ const SettingMenu = ({
     <StyledDropdown
       overlay={menu}
       getPopupContainer={(triggerNode) => triggerNode.parentNode}
+      trigger={['hover', 'click']}
     >
       <StyledButton style={{ width: 'auto' }} data-cy="exitMenu">
         <IconUser />

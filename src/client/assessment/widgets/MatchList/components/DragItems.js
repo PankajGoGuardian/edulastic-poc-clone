@@ -16,6 +16,7 @@ function DragItems({
           key={item?.value || ind}
           renderIndex={ind}
           item={item}
+          margin="4px"
           getStyles={getStyles}
           disableResponse={disableResponse}
           changePreviewTab={changePreviewTab}

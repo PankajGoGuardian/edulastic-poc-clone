@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import { Popover, Dropdown, Menu, Icon, Button } from 'antd'
+import { themeColor, themeColorBlue } from '@edulastic/colors'
 import { themes } from '../../../../theme'
 
 const {
@@ -31,6 +32,8 @@ export const StyledButton = styled.div`
   }
   &:focus {
     outline: none;
+    border: none;
+    box-shadow: 0 0 0 2px ${themeColor};
   }
 `
 
@@ -57,6 +60,8 @@ export const ControlBtn = styled(Button)`
   }
   &:focus {
     outline: none;
+    border: none;
+    box-shadow: 0 0 0 3px ${themeColor};
   }
   i {
     display: none;
@@ -104,6 +109,10 @@ export const StyledMenu = styled(Menu)`
 `
 
 export const MenuItem = styled(Menu.Item)`
+  &:focus {
+    outline: 0;
+    box-shadow: 0 0 0 2px ${themeColorBlue};
+  }
   &.ant-menu-item {
     background-color: ${(props) => props.bg};
     color: #fff;

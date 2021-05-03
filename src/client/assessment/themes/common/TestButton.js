@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { smallDesktopWidth } from '@edulastic/colors'
+import { smallDesktopWidth, themeColorBlue } from '@edulastic/colors'
 import { IconBookmark, IconCheck } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
 import PropTypes from 'prop-types'
@@ -33,7 +33,17 @@ const TestButton = ({
     <Container>
       {!blockNavigationToAnsweredQuestions && !LCBPreviewModal && (
         <Tooltip placement="top" title="Bookmark">
-          <StyledButton onClick={toggleBookmark} active={isBookmarked}>
+          <StyledButton
+            tabIndex="0"
+            onKeyDown={(e) => {
+              const code = e.which
+              if (code === 13 || code === 32) {
+                toggleBookmark()
+              }
+            }}
+            onClick={toggleBookmark}
+            active={isBookmarked}
+          >
             <StyledIconBookmark />
             <span>{t('common.test.bookmark')}</span>
           </StyledButton>
@@ -44,13 +54,23 @@ const TestButton = ({
           placement="top"
           title={
             checkAnswerInProgress
-              ? 'In progess'
+              ? 'In progress'
               : answerChecksUsedForItem >= settings.maxAnswerChecks
               ? 'Usage limit exceeded'
               : 'Check Answer'
           }
         >
-          <StyledButton onClick={handleCheckAnswer} data-cy="checkAnswer">
+          <StyledButton
+            onClick={handleCheckAnswer}
+            data-cy="checkAnswer"
+            tabIndex="0"
+            onKeyDown={(e) => {
+              const code = e.which
+              if (code === 13 || code === 32) {
+                handleCheckAnswer()
+              }
+            }}
+          >
             <StyledIconCheck />
             <span> {t('common.test.checkanswer')}</span>
           </StyledButton>
@@ -145,6 +165,11 @@ const StyledButton = styled.div`
     svg {
       margin-right: 0px;
     }
+  }
+
+  &:focus {
+    outline: 0;
+    box-shadow: 0 0 0 2px ${themeColorBlue};
   }
 `
 

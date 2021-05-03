@@ -32,6 +32,7 @@ import {
 import { updateCorrectTestItemAction } from '../../../author/src/actions/classBoard'
 import {
   getAdditionalDataSelector,
+  getIsDocBasedTestSelector,
   getShowCorrectItemButton,
 } from '../../../author/ClassBoard/ducks'
 import {
@@ -105,10 +106,12 @@ const QuestionBottomAction = ({
   isPrintPreview,
   previewTab,
   isLCBView,
+  isDocBasedTest,
   ...questionProps
 }) => {
   // const [openQuestionModal, setOpenQuestionModal] = useState(false)
   const [itemloading, setItemLoading] = useState(false)
+  const [hideScoring, setHideScoring] = useState(false)
 
   const [showExplanation, updateShowExplanation] = useState(isGrade)
 
@@ -154,6 +157,10 @@ const QuestionBottomAction = ({
     try {
       const testItem = await testItemsApi.getById(item.testItemId)
       const question = testItem.data.questions.find((q) => q.id === item.id)
+      setHideScoring(
+        question?.scoringDisabled ||
+          (testItem.itemLevelScoring && testItem.data.questions.length > 1)
+      )
       setQuestionData(question)
       setCurrentQuestion(question.id)
       setCurrentStudentId(studentId)
@@ -250,7 +257,7 @@ const QuestionBottomAction = ({
 
   const { sampleAnswer } = item
 
-  const isSolutuionVisible =
+  const isSolutionVisible =
     (isLCBView || isExpressGrader || previewTab === 'show') &&
     !isPrintPreview &&
     !(
@@ -259,11 +266,10 @@ const QuestionBottomAction = ({
         item.type
       )
     )
-
   return (
     <>
       <BottomActionWrapper className={isStudentReport ? 'student-report' : ''}>
-        {isSolutuionVisible && !showExplanation && (
+        {isSolutionVisible && !showExplanation && (
           <ShowExplanation
             width="110px"
             height="30px"
@@ -282,6 +288,7 @@ const QuestionBottomAction = ({
           {showCorrectItem &&
             item &&
             !isStudentReport &&
+            !isDocBasedTest &&
             (isDisableCorrectItem ? (
               <Popover
                 content={
@@ -298,7 +305,7 @@ const QuestionBottomAction = ({
           {timeSpent && <TimeSpent time={timeSpent} />}
         </RightWrapper>
       </BottomActionWrapper>
-      {isSolutuionVisible && (
+      {isSolutionVisible && (
         <Explanation
           isStudentReport={isStudentReport}
           question={item}
@@ -320,7 +327,7 @@ const QuestionBottomAction = ({
             style={{ top: 10 }}
           >
             <AnswerContext.Provider value={{ isAnswerModifiable: true }}>
-              <HideScoringBlockContext.Provider value={shouldHideScoringBlock}>
+              <HideScoringBlockContext.Provider value={hideScoring}>
                 <QuestionComp
                   {...questionProps}
                   t={t}
@@ -405,6 +412,7 @@ const enhance = compose(
       showCorrectItem: getShowCorrectItemButton(state),
       editItemId: get(state, ['authorUi', 'editItemId']),
       currentStudentId: get(state, ['authorUi', 'currentStudentId']),
+      isDocBasedTest: getIsDocBasedTestSelector(state),
     }),
     {
       setQuestionData: setQuestionDataAction,

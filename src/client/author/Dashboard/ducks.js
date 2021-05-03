@@ -1,5 +1,5 @@
 import { takeEvery, call, put, all, select } from 'redux-saga/effects'
-import { dashboardApi } from '@edulastic/api'
+import { dashboardApi, curriculumSequencesApi } from '@edulastic/api'
 import { notification } from '@edulastic/common'
 import { createAction, createReducer } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
@@ -16,6 +16,8 @@ const LAUNCH_HANGOUT_CLOSE = '[dashboard teacher] launch hangouts close'
 const FETCH_DASHBOARD_TILES = '[dashboard teacher] fetch tiles data'
 const SET_DASHBOARD_TILES = '[dashboard teacher] set tiles data'
 const SET_TRIAL = '[dashboard teacher] set trial'
+const FETCH_PLAYLIST = '[dashboard teacher] fetch playlists'
+const FETCH_PLAYLIST_SUCCESS = '[dashboard teacher] fetch playlists success'
 
 export const receiveTeacherDashboardAction = createAction(
   RECEIVE_TEACHER_DASHBOARD_REQUEST
@@ -33,6 +35,10 @@ export const fetchDashboardTiles = createAction(FETCH_DASHBOARD_TILES)
 export const setDashboardTiles = createAction(SET_DASHBOARD_TILES)
 
 export const setTrial = createAction(SET_TRIAL)
+
+export const fetchPlaylistsAction = createAction(FETCH_PLAYLIST)
+export const fetchPlaylistsSuccessAction = createAction(FETCH_PLAYLIST_SUCCESS)
+
 export const stateSelector = (state) => state.dashboardTeacher
 
 export const getLaunchHangoutStatus = createSelector(
@@ -42,6 +48,11 @@ export const getLaunchHangoutStatus = createSelector(
 export const getDashboardTilesSelector = createSelector(
   stateSelector,
   (state) => state.configurableTiles
+)
+
+export const getDashboardPlaylists = createSelector(
+  stateSelector,
+  (state) => state.playlists
 )
 
 const initialState = {
@@ -78,6 +89,9 @@ export const reducer = createReducer(initialState, {
   },
   [SET_TRIAL]: (state, { payload }) => {
     state.isAddingTrial = payload
+  },
+  [FETCH_PLAYLIST_SUCCESS]: (state, { payload }) => {
+    state.playlists = payload
   },
 })
 
@@ -119,6 +133,18 @@ function* fetchDashboardTilesSaga() {
   }
 }
 
+function* fetchPlaylistsSaga({ payload }) {
+  try {
+    const result = yield call(
+      curriculumSequencesApi.searchCurriculumSequences,
+      payload
+    )
+    yield put(fetchPlaylistsSuccessAction(result.hits.hits))
+  } catch (err) {
+    notification({ type: 'error', msg: 'Unable to fetch playlists details.' })
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(
@@ -126,5 +152,6 @@ export function* watcherSaga() {
       receiveTeacherDashboardSaga
     ),
     yield takeEvery(FETCH_DASHBOARD_TILES, fetchDashboardTilesSaga),
+    yield takeEvery(FETCH_PLAYLIST, fetchPlaylistsSaga),
   ])
 }

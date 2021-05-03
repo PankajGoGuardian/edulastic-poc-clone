@@ -5,7 +5,7 @@ import { withNamespaces } from '@edulastic/localization'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 
 import { IconGraphRightArrow } from '@edulastic/icons'
-import { smallDesktopWidth } from '@edulastic/colors'
+import { smallDesktopWidth, themeColorBlue } from '@edulastic/colors'
 import FlexContainer from '../common/FlexContainer'
 import Circle from '../common/Circle'
 
@@ -27,7 +27,7 @@ const SidebarQuestionList = ({
     )}
     {isSidebarVisible && (
       <Questions>
-        <PerfectScrollbar>
+        <PerfectScrollbar style={{ paddingTop: '2px' }}>
           {questions.map((item, index) => {
             const active = selectedQuestion === index
             return (
@@ -37,6 +37,14 @@ const SidebarQuestionList = ({
                 onClick={() => {
                   if (blockNavigationToAnsweredQuestions) return
                   gotoQuestion(index)
+                }}
+                tabIndex="0"
+                onKeyDown={(e) => {
+                  if (blockNavigationToAnsweredQuestions) return
+                  const code = e.which
+                  if (code === 13 || code === 32) {
+                    gotoQuestion(index)
+                  }
                 }}
               >
                 <FlexContainer alignItems="center" justifyContent="center">
@@ -82,6 +90,9 @@ const ItemContainer = styled.div`
     props.active
       ? props.theme.widgets.assessmentPlayers.sidebarContentBackgroundColor
       : 'transparent'};
+  &:focus {
+    outline: ${themeColorBlue} solid 2px;
+  }
 `
 
 const Content = styled.div`

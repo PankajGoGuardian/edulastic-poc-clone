@@ -10,7 +10,7 @@ import {
 } from 'lodash'
 
 import {
-  percentage,
+  getOverallScore,
   DemographicCompareByOptions,
 } from '../../../../common/util'
 import {
@@ -217,9 +217,6 @@ export const getChartData = (rawChartData, masteryScale) => {
   return chartData
 }
 
-export const getOverallScore = (metrics = []) =>
-  percentage(sumBy(metrics, 'totalScore'), sumBy(metrics, 'maxScore'), true)
-
 const getMasteryScore = (record = {}) =>
   round(record.fmSum / record.fmCount, 2) || 0
 
@@ -257,7 +254,7 @@ export const getOverallValue = (record = {}, analyseByKey, masteryScale) => {
     case 'masteryScore':
       return getOverallMasteryScore(record.records)
     case 'score':
-      return `${getOverallScore(record.records)}%`
+      return `${round(getOverallScore(record.records))}%`
     case 'rawScore':
       return getOverallRawScore(record.records)
     case 'masteryLevel':

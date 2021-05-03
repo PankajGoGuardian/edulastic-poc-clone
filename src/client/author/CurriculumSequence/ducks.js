@@ -1283,9 +1283,9 @@ function* editPlaylistTestSaga({ payload }) {
       return
     }
 
+    const tab = test?.title ? 'review' : 'description'
     // Redirect user to edit page of the test.
     if (!isEditDisabled) {
-      const tab = test?.title ? 'review' : 'description'
       yield put(
         push({
           pathname: `/author/tests/tab/${tab}/id/${test._id}`,
@@ -1303,9 +1303,11 @@ function* editPlaylistTestSaga({ payload }) {
         duplicateTestRequestAction({
           _id: testId,
           title: test?.title || '',
-          redirectToNewTest: true,
+          redirectToNewTest: false,
           // By default we keep reference to all the items in test in cloned test.
           cloneItems: false,
+          isInEditAndRegrade: true,
+          currentTab: tab,
         })
       )
     }
@@ -1543,6 +1545,7 @@ function* useThisPlayListSaga({ payload }) {
             subjects: duplicatedPlaylist.subjects,
             customize: duplicatedPlaylist.customize,
             authors: duplicatedPlaylist.authors,
+            derivedFrom: duplicatedPlaylist.derivedFrom,
           })
         )
         return

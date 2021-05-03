@@ -15,6 +15,7 @@ const zoomedStyle = css`
     const { shouldZoom, zoomLevel, headerHeight = 90, playerSkinType } = theme
     const zoomed = zoomLevel > '1' && zoomLevel !== undefined
     const questerFooterHeight = 66
+    const practicePlayerFooterHeight = 20
     // need to think about padding of Main wrapper
     // see: themes/common/Main.js
 
@@ -37,7 +38,14 @@ const zoomedStyle = css`
         playerSkinType === playerSkinValues.edulastic)
     let header = hasFooter ? 180 : headerHeight + paddingTopBottom + 8
     if (playerSkinType === 'quester') {
-      header += questerFooterHeight
+      // This adjustment was required to fix the practice player with questar skin.
+      header += viewComponent === 'practicePlayer' ? -20 : questerFooterHeight
+    }
+    if (
+      viewComponent === 'practicePlayer' &&
+      playerSkinType === playerSkinValues.edulastic
+    ) {
+      header += practicePlayerFooterHeight
     }
     if (shouldZoom && zoomed) {
       header /= zoomLevel
@@ -61,7 +69,7 @@ export const Container = styled.div`
     props.theme.testItemPreview.itemColBorderColor};
   background-color: ${(props) => props.isStudentAttempt && '#fff'};
   border-radius: ${(props) => props.isStudentAttempt && '8px'};
-  margin-top: ${(props) => props.isStudentAttempt && '12px'};
+  padding-top: ${(props) => props.isStudentAttempt && '12px'};
   overflow: ${(props) =>
     props.isStudentAttempt || props.isExpressGrader || props.isStudentReport
       ? 'auto'

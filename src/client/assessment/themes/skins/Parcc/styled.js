@@ -1,6 +1,10 @@
 import styled from 'styled-components'
 import { Popover, Button, Dropdown, Menu, Icon } from 'antd'
-import { smallDesktopWidth } from '@edulastic/colors'
+import {
+  smallDesktopWidth,
+  themeColor,
+  themeColorBlue,
+} from '@edulastic/colors'
 import { themes } from '../../../../theme'
 
 const {
@@ -15,7 +19,7 @@ export const StyledPopover = styled(Popover)`
   }
 `
 
-export const StyledButton = styled.div`
+export const StyledButton = styled.button`
   margin-right: 10px;
   text-transform: uppercase;
   display: flex;
@@ -45,6 +49,11 @@ export const StyledButton = styled.div`
       svg {
         fill: ${defaultButton.active.color};
       }
+    }
+    &:focus {
+      border: none;
+      outline: 0;
+      box-shadow: 0 0 0 2px ${themeColorBlue};
     }
     svg {
       margin-right: 25px;
@@ -83,6 +92,12 @@ export const ControlBtn = styled(Button)`
   &:hover {
     background: ${navigationButtons.background};
     color: ${navigationButtons.color};
+  }
+  &:focus {
+    background: ${navigationButtons.background};
+    border: none;
+    outline: 0;
+    box-shadow: 0 0 0 3px ${themeColor};
   }
   svg {
     fill: ${navigationButtons.color};

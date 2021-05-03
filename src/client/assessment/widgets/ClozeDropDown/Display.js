@@ -261,7 +261,7 @@ class ClozeDropDownDisplay extends Component {
           )}
         </QuestionLabelWrapper>
 
-        <QuestionContentWrapper>
+        <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
           <QuestionTitleWrapper>
             {!!question && (
               <Stimulus

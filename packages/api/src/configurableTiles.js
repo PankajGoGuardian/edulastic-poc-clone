@@ -22,7 +22,7 @@ const fetchTileById = (id) =>
 const fetchRecommendedTest = () =>
   api
     .callApi({
-      url: `${prefix}/tests-recommendations`,
+      url: `${prefix}/recommend/tests`,
       method: 'get',
     })
     .then((result) => result.data)

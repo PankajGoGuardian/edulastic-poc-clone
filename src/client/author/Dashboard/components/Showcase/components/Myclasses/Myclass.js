@@ -87,13 +87,10 @@ const MyClasses = ({
   )
   const [showTestCustomizerModal, setShowTestCustomizerModal] = useState(false)
   const [trialAddOnProductIds, setTrialAddOnProductIds] = useState([])
-<<<<<<< HEAD
   const [recommendedTests, setRecommendedTests] = useState([])
-=======
   const [showTrialSubsConfirmation, setShowTrialSubsConfirmation] = useState(
     false
   )
->>>>>>> fix(ui): Popup is coming 2 times when we click on itembank trial [EV-27430]
 
   useEffect(() => {
     // fetch clever classes on modal display
@@ -108,6 +105,7 @@ const MyClasses = ({
   }, [])
 
   const saveRecommendedTests = (_data) => {
+    if (!_data || !_data.length) return
     const data = _data.map((x) => {
       return { ...x._source, _id: x._id }
     })

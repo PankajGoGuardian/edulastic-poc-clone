@@ -270,14 +270,14 @@ const QuestionBottomAction = ({
     <>
       <BottomActionWrapper className={isStudentReport ? 'student-report' : ''}>
         {isSolutionVisible && !showExplanation && (
-          <ShowExplanation
+          <EduButton
             width="110px"
             height="30px"
             isGhost
             onClick={onClickShowSolutionHandler}
           >
             Show solution
-          </ShowExplanation>
+          </EduButton>
         )}
         <div>
           {!hasDrawingResponse && isShowStudentWork && (
@@ -494,8 +494,4 @@ const CorrectButton = styled(EduButton)`
     left: 22px;
     top: 4px;
   }
-`
-
-const ShowExplanation = styled(EduButton)`
-  margin-left: '0px';
 `

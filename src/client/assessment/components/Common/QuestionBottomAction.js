@@ -497,5 +497,5 @@ const CorrectButton = styled(EduButton)`
 `
 
 const ShowExplanation = styled(EduButton)`
-  margin-left: ${({ isStudent }) => `${isStudent ? 50 : 0}px`};
+  margin-left: '0px';
 `

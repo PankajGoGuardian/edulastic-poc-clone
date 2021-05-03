@@ -961,6 +961,30 @@ class ClassBoard extends Component {
     }
   }
 
+  getActivityId = (_activityId, _studentId) => {
+    const { recentAttemptsGrouped, testActivity } = this.props
+    const activity =
+      testActivity?.find((x) =>
+        _activityId
+          ? x.testActivityId === _activityId
+          : x.studentId === _studentId
+      ) || {}
+    const { UTASTATUS, redirected, studentId } = activity
+    let _testActivityId = activity.testActivityId
+    if (
+      redirected &&
+      (UTASTATUS == testActivityStatus.NOT_STARTED ||
+        UTASTATUS == testActivityStatus.ABSENT)
+    ) {
+      const recentUserActivities = recentAttemptsGrouped[studentId]?.filter(
+        (item) => item.status == testActivityStatus.SUBMITTED
+      )
+      const mostRecent = last(sortBy(recentUserActivities, 'endDate'))
+      _testActivityId = mostRecent?._id || _testActivityId
+    }
+    return _testActivityId
+  }
+
   render() {
     const {
       gradebook,
@@ -1293,33 +1317,10 @@ class ClassBoard extends Component {
                       disabled={nobodyStarted || !isItemsVisible || isLoading}
                       active={selectedTab === 'Student'}
                       onClick={(e) => {
-                        const {
-                          UTASTATUS,
-                          redirected,
-                          studentId,
-                          testActivityId: _activityId,
-                        } =
-                          testActivity?.find(
-                            (x) => x.studentId === firstStudentId
-                          ) || {}
-                        let _testActivityId = _activityId
-                        if (
-                          redirected &&
-                          (UTASTATUS == testActivityStatus.NOT_STARTED ||
-                            UTASTATUS == testActivityStatus.ABSENT)
-                        ) {
-                          const recentUserActivities = recentAttemptsGrouped[
-                            studentId
-                          ]?.filter(
-                            (item) =>
-                              item.status == testActivityStatus.SUBMITTED
-                          )
-                          const mostRecent = last(
-                            sortBy(recentUserActivities, 'endDate')
-                          )
-                          _testActivityId = mostRecent?._id || _testActivityId
-                        }
-
+                        const _testActivityId = this.getActivityId(
+                          null,
+                          firstStudentId
+                        )
                         setCurrentTestActivityId(_testActivityId)
                         if (!isItemsVisible) {
                           return
@@ -1688,7 +1689,10 @@ class ClassBoard extends Component {
                         students={testActivity}
                         selectedStudent={selectedStudentId}
                         studentResponse={qActivityByStudent}
-                        handleChange={(value, _testActivityId) => {
+                        handleChange={(value, _activityId) => {
+                          const _testActivityId = this.getActivityId(
+                            _activityId
+                          )
                           setCurrentTestActivityId(_testActivityId)
                           getAllTestActivitiesForStudent({
                             studentId: value,

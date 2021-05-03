@@ -316,7 +316,11 @@ class ViewModal extends React.Component {
                   <IconShare />
                 </EduButton>
                 <CloseButton onClick={this.handleModalClose}>
-                  <IconClose height="18px" width="18px" />
+                  <IconClose
+                    data-cy="closeTestPopUp"
+                    height="18px"
+                    width="18px"
+                  />
                 </CloseButton>
               </RightButtonContainer>
             </>

@@ -17,3 +17,6 @@ export const CardContainer = styled(Card)`
     padding: 0px;
   }
 `
+export const TestCardContainer = styled.div`
+  margin-right: 20px;
+`

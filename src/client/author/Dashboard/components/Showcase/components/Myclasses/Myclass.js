@@ -103,7 +103,9 @@ const MyClasses = ({
   }, [])
 
   const saveRecommendedTests = (_data) => {
-    const data = _data.map((x) => x._source)
+    const data = _data.map((x) => {
+      return { ...x._source, _id: x._id }
+    })
     localStorage.setItem(
       `recommendedTest:${user?._id}:stored`,
       JSON.stringify(data)

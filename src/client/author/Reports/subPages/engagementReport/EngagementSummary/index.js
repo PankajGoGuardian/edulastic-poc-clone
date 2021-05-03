@@ -23,6 +23,7 @@ const Engagement = ({
   resetEngagementSummary,
   engagementSummary,
   settings,
+  toggleFilter,
 }) => {
   useEffect(() => () => resetEngagementSummary(), [])
 
@@ -30,6 +31,7 @@ const Engagement = ({
     const q = { ...settings.requestFilters }
     if (q.termId || q.reportId) {
       getEngagementSummaryRequest(q)
+      return () => toggleFilter(null, false)
     }
   }, [settings])
 

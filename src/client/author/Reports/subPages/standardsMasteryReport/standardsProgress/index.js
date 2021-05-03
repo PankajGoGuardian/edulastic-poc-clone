@@ -83,12 +83,17 @@ const StandardsProgress = ({
   // set initial page filters
   useEffect(() => {
     setPageFilters({ ...pageFilters, barsPageNumber: 1, tablePageNumber: 1 })
+    if (settings.requestFilters.termId || settings.requestFilters.reportId) {
+      return () => toggleFilter(null, false)
+    }
   }, [settings.requestFilters, ddfilter])
+
   useEffect(() => {
     if (pageFilters.barsPageNumber) {
       setPageFilters({ ...pageFilters, tablePageNumber: 1 })
     }
   }, [tableFilters.compareBy.key])
+
   // get paginated data
   useEffect(() => {
     const _ddfilter = pickBy(ddfilter, (f) => f !== 'all' && !isEmpty(f))

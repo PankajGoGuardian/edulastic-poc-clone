@@ -89,6 +89,9 @@ const StudentAssessmentProfile = ({
         studentId: settings.selectedStudent.key,
       })
     }
+    if (settings.requestFilters.termId || settings.requestFilters.reportId) {
+      return () => toggleFilter(null, false)
+    }
   }, [settings.selectedStudent, settings.requestFilters])
 
   useEffect(() => {

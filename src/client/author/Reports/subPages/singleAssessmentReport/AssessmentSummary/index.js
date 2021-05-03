@@ -96,6 +96,9 @@ const AssessmentSummary = ({
     } else if (settings.selectedTest && !settings.selectedTest.key) {
       setAssesmentSummaryLoading(false)
     }
+    if (settings.requestFilters.termId || settings.requestFilters.reportId) {
+      return () => toggleFilter(null, false)
+    }
   }, [settings.selectedTest, settings.requestFilters, settings.cliUser])
 
   useEffect(() => {

@@ -34,7 +34,6 @@ const CheckboxTemplateBox = ({
   disableResponse,
   isSnapFitValues,
   isExpressGrader,
-  lessMinWidth,
   fontSize,
   isPrintPreview = false,
   options = [],
@@ -47,6 +46,8 @@ const CheckboxTemplateBox = ({
     left: respLeft,
     top: respTop,
   } = responseContainer
+
+  const lessMinWidth = parseInt(respWidth, 10) < response.minWidthShowAnswer
 
   const userAnswer = useMemo(() => {
     const answersIds = userSelections[index]?.optionIds || []
@@ -115,19 +116,15 @@ const CheckboxTemplateBox = ({
         : null,
   }
 
-  const icons = isSnapFitValues &&
-    (checkAnswer || (showAnswer && !lessMinWidth)) && (
-      <>
-        {mark && <IconWrapper>{mark}</IconWrapper>}
-        <Pointer
-          className={responseContainer.pointerPosition}
-          width={respWidth}
-        >
-          <Point />
-          <Triangle />
-        </Pointer>
-      </>
-    )
+  const icons = isSnapFitValues && (checkAnswer || showAnswer) && !lessMinWidth && (
+    <>
+      {mark && <IconWrapper>{mark}</IconWrapper>}
+      <Pointer className={responseContainer.pointerPosition} width={respWidth}>
+        <Point />
+        <Triangle />
+      </Pointer>
+    </>
+  )
 
   const responseBoxIndex = showAnswer && (
     <IndexBox bgColor={indexBgColor}>{indexStr}</IndexBox>
@@ -192,10 +189,6 @@ const CheckboxTemplateBoxLayout = (props) => {
     isSnapFitValues,
     showDropItemBorder,
   } = props
-  const lessMinWidth = responseContainers.some(
-    (responseContainer) =>
-      parseInt(responseContainer.width, 10) < response.minWidthShowAnswer
-  )
   return (
     <>
       {annotations}
@@ -211,7 +204,6 @@ const CheckboxTemplateBoxLayout = (props) => {
             index={index}
             responseContainer={responseContainer}
             {...props}
-            lessMinWidth={lessMinWidth}
           />
         )
       })}
@@ -231,7 +223,6 @@ CheckboxTemplateBox.propTypes = {
   checkAnswer: PropTypes.bool.isRequired,
   onDropHandler: PropTypes.func.isRequired,
   disableResponse: PropTypes.bool.isRequired,
-  lessMinWidth: PropTypes.bool.isRequired,
   isExpressGrader: PropTypes.bool.isRequired,
   isSnapFitValues: PropTypes.bool.isRequired,
 }

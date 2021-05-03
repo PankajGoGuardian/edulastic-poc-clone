@@ -16,6 +16,6 @@ export const AnswerBox = styled.div`
   ${boxBgColor};
 
   .text {
-    padding-left: 8px;
+    padding: 0px 8px;
   }
 `

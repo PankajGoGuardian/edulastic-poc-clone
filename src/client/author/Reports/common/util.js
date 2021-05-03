@@ -54,6 +54,7 @@ export const DemographicCompareByOptions = [
   'frlStatus',
   'ellStatus',
   'iepStatus',
+  'hispanicEthnicity',
 ]
 
 export const percentage = (

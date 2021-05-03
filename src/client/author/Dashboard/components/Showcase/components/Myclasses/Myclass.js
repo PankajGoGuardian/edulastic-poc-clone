@@ -177,7 +177,11 @@ const MyClasses = ({
     } else {
       resetPlaylistFilters()
     }
-    history.push(`/author/${contentType}?${filter}`)
+    if (contentType === 'playlist') {
+      history.push(`/author/playlists/${filters[0]?._id}#review`)
+    } else {
+      history.push(`/author/${contentType}?${filter}`)
+    }
   }
 
   const hasAccessToItemBank = (itemBankId) =>

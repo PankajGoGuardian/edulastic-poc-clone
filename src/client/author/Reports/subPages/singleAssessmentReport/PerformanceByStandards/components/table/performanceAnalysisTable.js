@@ -243,6 +243,7 @@ const PerformanceAnalysisTable = ({
       key: 'overall',
       fixed: 'left',
       width: 160,
+      align: 'center',
       sorter: (a, b) => getAverage(a) - getAverage(b),
       render: (recordId, record) =>
         getOverallValue(record.standardMetrics, analyzeBy),

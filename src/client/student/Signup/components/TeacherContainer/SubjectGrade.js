@@ -282,7 +282,7 @@ class SubjectGrade extends React.Component {
                     htmlType="submit"
                     disabled={saveSubjectGradeloading}
                   >
-                    Submit
+                    Get Started
                   </ProceedBtn>
                 </SelectForm>
               </Col>

@@ -19,19 +19,19 @@ const CloneOnUsePlaylistConfirmationModal = ({
       footer={[
         <ButtonsContainer>
           <EduButton
-            key="0"
-            data-cy="gotoMyPlaylist"
-            isGhost
-            onClick={handleGotoMyPlaylist}
-          >
-            Go to MyPlaylist
-          </EduButton>
-          <EduButton
             key="1"
             data-cy="createNewPlaylistCopy"
             onClick={handleCreateNewCopy}
           >
             Create New Copy
+          </EduButton>
+          <EduButton
+            key="0"
+            data-cy="gotoMyPlaylist"
+            isGhost
+            onClick={handleGotoMyPlaylist}
+          >
+            Go to My Playlist
           </EduButton>
         </ButtonsContainer>,
       ]}

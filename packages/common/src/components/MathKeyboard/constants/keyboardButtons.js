@@ -373,7 +373,7 @@ const ADVANCED_MATRICES = [
   fraction,
   exponent,
   sqrt,
-  logSymbol,
+  vmatrix,
   bmatrix,
   bmatrix_three,
   shift_matrix,

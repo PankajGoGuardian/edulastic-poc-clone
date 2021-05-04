@@ -46,6 +46,7 @@ import {
   SET_UPDATED_ACTIVITY_IN_ENTITY,
   CORRECT_ITEM_UPDATE_REQUEST,
   RELOAD_LCB_DATA_IN_STUDENT_VIEW,
+  REPLACE_ORIGINAL_ITEM,
 } from '../constants/actions'
 
 export const receiveClassResponseAction = (data) => ({
@@ -279,3 +280,5 @@ export const updateCorrectTestItemAction = createAction(
 export const reloadLcbDataInStudentViewAction = createAction(
   RELOAD_LCB_DATA_IN_STUDENT_VIEW
 )
+
+export const replaceOriginalItemAction = createAction(REPLACE_ORIGINAL_ITEM)

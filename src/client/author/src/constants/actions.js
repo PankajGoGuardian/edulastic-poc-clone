@@ -163,6 +163,7 @@ export const RECEIVE_CLASS_RESPONSE_ERROR =
   '[classresponses] receive list error'
 export const UPDATE_STUDENT_TEST_ITEMS =
   '[classresponses] update student test items'
+export const REPLACE_ORIGINAL_ITEM = '[classresponses] replace original item'
 export const RECEIVE_STUDENT_RESPONSE_REQUEST =
   '[studentResponse] receive list request'
 export const RECEIVE_STUDENT_RESPONSE_SUCCESS =

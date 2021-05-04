@@ -43,7 +43,7 @@ const RubricTable = ({
 
   const getTableActions = (text, record) => {
     return (
-      <TableActionsContainer>
+      <TableActionsContainer data-cy="actionContainer">
         <span
           title="Preview"
           onClick={() => handleTableAction('PREVIEW', record._id)}
@@ -80,6 +80,7 @@ const RubricTable = ({
     <Col md={24}>
       <StyledScrollbarContainer style={{ maxHeight: '350px' }}>
         <StyledTable
+          data-cy="rubricTable"
           columns={columns}
           dataSource={searchedRubricList}
           pagination={false}

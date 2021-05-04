@@ -393,6 +393,7 @@ const UseExisting = ({
             <>
               <SearchBar
                 placeholder="Search by rubric name or author name"
+                data-cy="rubricSearchBox"
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value)
@@ -404,7 +405,7 @@ const UseExisting = ({
               {recentlyUsedRubrics.length > 0 && (
                 <RecentlyUsedContainer>
                   <span>Recently Used: </span>
-                  <TagContainer>
+                  <TagContainer data-cy="recentlyUsedRubrics">
                     {recentlyUsedRubrics.map((rubric) => (
                       <RubricsTag
                         onClick={() => {

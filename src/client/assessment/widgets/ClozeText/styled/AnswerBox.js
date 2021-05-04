@@ -7,8 +7,8 @@ export const AnswerBox = styled.div`
   cursor: pointer;
   margin: 0px 4px;
   border-radius: 4px;
-  background: ${({ fillColor, isPrintPreview }) => {
+  background: ${({ theme, fillColor, isPrintPreview }) => {
     if (isPrintPreview) return white
-    return fillColor
+    return fillColor || theme.widgets.clozeText.boxBgColor
   }};
 `

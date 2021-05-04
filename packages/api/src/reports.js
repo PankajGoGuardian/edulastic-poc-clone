@@ -247,6 +247,15 @@ const fetchActivityByTeacher = (params) =>
     params,
   })
 
+const generateCSV = (params) =>
+  api
+    .callApi({
+      url: '/report/generate-csv',
+      method: 'POST',
+      data: params,
+    })
+    .then(({ data }) => data.result)
+
 export default {
   fetchReports,
   fetchTestActivityDetail,
@@ -280,4 +289,5 @@ export default {
   fetchEngagementSummary,
   fetchActivityBySchool,
   fetchActivityByTeacher,
+  generateCSV,
 }

@@ -1,3 +1,4 @@
+import React from 'react'
 import {
   darkGrey,
   extraDesktopWidthMax,
@@ -10,11 +11,26 @@ import {
   white,
   themeColorBlue,
 } from '@edulastic/colors'
-import { EduButton, Card, FieldLabel } from '@edulastic/common'
+import { EduButton, Card, FieldLabel, notification } from '@edulastic/common'
 import { Text } from '@vx/text'
 import { Col, Slider, Table, Button } from 'antd'
 import styled, { css } from 'styled-components'
 import { CustomChartTooltip } from './components/charts/chartUtils/tooltip'
+
+export const styledNotification = ({ ...props }) =>
+  notification({
+    ...props,
+    msg: (
+      <div
+        style={{
+          whiteSpace: 'nowrap',
+          paddingTop: '1.5px',
+        }}
+      >
+        {props.msg}
+      </div>
+    ),
+  })
 
 export const StyledCell = styled.div`
   height: 100%;

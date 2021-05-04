@@ -34,6 +34,7 @@ import Kid from './kid/app'
 import NotificationListener from './HangoutVideoCallNotification'
 import BulkActionNotificationListener from './author/AssignmentAdvanced/components/BulkAssignmentActionNotification'
 import ClassSyncNotification from './author/Classes/components/ClassSyncNotification'
+import ReportsNotificationListener from './author/Reports/components/ReportsNotificationListener'
 import AppUpdate from './common/components/AppUpdate'
 import { logoutAction } from './author/src/actions/auth'
 import RealTimeCollectionWatch from './RealTimeCollectionWatch'
@@ -526,9 +527,12 @@ class App extends Component {
                 redirectPath={redirectRoute}
                 notifications={
                   roleuser.DA_SA_ROLE_ARRAY.includes(userRole)
-                    ? [BulkActionNotificationListener]
+                    ? [
+                        BulkActionNotificationListener,
+                        ReportsNotificationListener,
+                      ]
                     : roleuser.TEACHER === userRole
-                    ? [ClassSyncNotification]
+                    ? [ClassSyncNotification, ReportsNotificationListener]
                     : null
                 }
               />

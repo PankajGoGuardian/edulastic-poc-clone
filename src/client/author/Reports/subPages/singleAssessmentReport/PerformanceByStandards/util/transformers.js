@@ -157,6 +157,8 @@ export const compareByColumns = {
     title: 'Hispanic Ethnicity',
     dataIndex: 'hispanicEthnicity',
     key: 'hispanicEthnicity',
+    fixed: 'left',
+    width: 160,
     render: (he) => (he ? capitalize(he) : '-'),
   },
 }

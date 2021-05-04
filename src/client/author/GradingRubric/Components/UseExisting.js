@@ -296,7 +296,7 @@ const UseExisting = ({
                 style={btnStyle}
                 onClick={() => setCurrentMode('RUBRIC_TABLE')}
               >
-                <Icon type="left" /> <span>Back</span>
+                <Icon type="left" /> <span data-cy="backButton">Back</span>
               </CustomStyleBtn>
             )}
             {currentMode === 'PREVIEW' && !isEditable && (
@@ -306,7 +306,7 @@ const UseExisting = ({
                   onClick={() => handleClone(currentRubricData)}
                 >
                   <FontAwesomeIcon icon={faClone} aria-hidden="true" />{' '}
-                  <span>Clone</span>
+                  <span data-cy="cloneButton">Clone</span>
                 </CustomStyleBtn>
                 {currentRubricData?.createdBy?._id === user?._id && (
                   <>
@@ -315,7 +315,7 @@ const UseExisting = ({
                       onClick={() => handleEditRubric()}
                     >
                       <FontAwesomeIcon icon={faPencilAlt} aria-hidden="true" />{' '}
-                      <span>Edit</span>
+                      <span data-cy="editButton">Edit</span>
                     </CustomStyleBtn>
 
                     <CustomStyleBtn
@@ -323,7 +323,7 @@ const UseExisting = ({
                       onClick={() => setShowDeleteModal(true)}
                     >
                       <FontAwesomeIcon icon={faTrashAlt} aria-hidden="true" />{' '}
-                      <span>Delete</span>
+                      <span data-cy="deleteButton">Delete</span>
                     </CustomStyleBtn>
                   </>
                 )}
@@ -335,13 +335,13 @@ const UseExisting = ({
               style={btnStyle}
               onClick={() => setShowPreviewRubricModal(true)}
             >
-              <Icon type="eye" /> Preview
+              <Icon data-cy="previewButton" type="eye" /> Preview
             </CustomStyleBtn>
             {currentMode === 'PREVIEW' && !isEditable && (
               <>
                 {currentQuestion.rubrics?._id !== currentRubricData?._id && (
                   <CustomStyleBtn style={btnStyle} onClick={handleUseRubric}>
-                    <Icon type="check" /> <span>Use</span>
+                    <Icon type="check" /> <span data-cy="useButton">Use</span>
                   </CustomStyleBtn>
                 )}
                 {currentQuestion.rubrics?._id === currentRubricData?._id && (
@@ -358,7 +358,7 @@ const UseExisting = ({
                       style={btnStyle}
                       onClick={() => setShowShareModal(true)}
                     >
-                      <Icon type="share-alt" /> <span>Share</span>
+                      <Icon type="share-alt" /> <span data-cy="shareButton">Share</span>
                     </CustomStyleBtn>
                   </>
                 )}
@@ -371,7 +371,7 @@ const UseExisting = ({
                   onClick={() => setShowConfirmModal(true)}
                 >
                   <Icon type="close" />
-                  <span>Cancel</span>
+                  <span data-cy="cancel">Cancel</span>
                 </CustomStyleBtn>
                 <CustomStyleBtn
                   style={btnStyle}
@@ -379,7 +379,7 @@ const UseExisting = ({
                 >
                   {/* <FontAwesomeIcon icon={faPaperPlane} aria-hidden="true" /> */}
                   <Icon type="save" theme="filled" />
-                  <span>Save & Use</span>
+                  <span data-cy="saveAndUseButton">Save & Use</span>
                 </CustomStyleBtn>
               </>
             )}

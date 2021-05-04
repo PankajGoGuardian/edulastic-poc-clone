@@ -619,10 +619,9 @@ class ModuleRow extends Component {
     const { _id, data = [] } = module
     const isParentRoleProxy = proxyUserRole === 'parent'
 
-    const contentData =
-      urlHasUseThis || isStudent
-        ? data.filter((test) => test?.status !== 'draft')
-        : data
+    const contentData = isStudent
+      ? data.filter((test) => test?.status !== 'draft')
+      : data
 
     const menu = (
       <Menu data-cy="addContentMenu">
@@ -701,6 +700,7 @@ class ModuleRow extends Component {
                     contentId,
                     contentType,
                     hidden,
+                    status: testStatus,
                   } = moduleData
                   const isTestType = contentType === 'test'
                   const statusList = assignments
@@ -781,19 +781,20 @@ class ModuleRow extends Component {
                   const moreMenu = (
                     <Menu data-cy="assessmentItemMoreMenu">
                       <CaretUp className="fa fa-caret-up" />
-                      {!isStudent && (
-                        <Menu.Item
-                          onClick={() =>
-                            assignTest(
-                              _id,
-                              moduleData.contentId,
-                              moduleData.contentVersionId
-                            )
-                          }
-                        >
-                          Assign Test
-                        </Menu.Item>
-                      )}
+                      {!isStudent &&
+                        (testStatus === 'published' || isAssigned) && (
+                          <Menu.Item
+                            onClick={() =>
+                              assignTest(
+                                _id,
+                                moduleData.contentId,
+                                moduleData.contentVersionId
+                              )
+                            }
+                          >
+                            Assign Test
+                          </Menu.Item>
+                        )}
                       {!isStudent && isAssigned && (
                         <Menu.Item
                           onClick={() =>
@@ -930,7 +931,7 @@ class ModuleRow extends Component {
                                 </Button>
                               </AssignmentButton>
                             ) : (
-                              (urlHasUseThis ||
+                              ((urlHasUseThis && testStatus !== 'draft') ||
                                 (status === 'published' &&
                                   mode === 'embedded')) &&
                               userRole !== roleuser.EDULASTIC_CURATOR && (
@@ -967,7 +968,11 @@ class ModuleRow extends Component {
                               style={rowInlineStyle}
                               arrow
                             >
-                              <IconActionButton data-cy="moreMenu">
+                              <IconActionButton
+                                right={testStatus === 'draft' && 'unset'}
+                                ml={testStatus === 'draft' && 'auto'}
+                                data-cy="moreMenu"
+                              >
                                 <IconMoreVertical
                                   width={5}
                                   height={14}

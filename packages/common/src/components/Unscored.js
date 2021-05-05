@@ -62,7 +62,8 @@ const UnScoredBlock = styled(FlexContainer)`
   height: ${({ height }) => height || 'auto'};
   margin: ${({ margin }) => margin || ''};
   cursor: default;
-  padding: 5px span {
+  padding: 5px;
+  span {
     white-space: nowrap;
     color: ${tagTextColor};
     overflow: hidden;

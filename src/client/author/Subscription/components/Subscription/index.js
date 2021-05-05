@@ -219,6 +219,9 @@ const Subscription = (props) => {
   const [showItemBankTrialUsedModal, setShowItemBankTrialUsedModal] = useState(
     false
   )
+  const [showTrialSubsConfirmation, setShowTrialSubsConfirmation] = useState(
+    false
+  )
 
   useEffect(() => {
     // getSubscription on mount
@@ -372,6 +375,7 @@ const Subscription = (props) => {
         productData={productData}
         products={products}
         setTrialAddOnProductIds={setTrialAddOnProductIds}
+        setShowTrialSubsConfirmation={setShowTrialSubsConfirmation}
       />
       <CompareModal
         title=""
@@ -391,6 +395,8 @@ const Subscription = (props) => {
         defaultSelectedProductIds={defaultSelectedProductIds}
         showMultiplePurchaseModal={showMultiplePurchaseModal}
         setShowMultiplePurchaseModal={setShowMultiplePurchaseModal}
+        isConfirmationModalVisible={showTrialSubsConfirmation}
+        setShowTrialSubsConfirmation={setShowTrialSubsConfirmation}
         showRenewalOptions={showRenewalOptions}
         subsLicenses={subsLicenses}
         setProductData={setProductData}

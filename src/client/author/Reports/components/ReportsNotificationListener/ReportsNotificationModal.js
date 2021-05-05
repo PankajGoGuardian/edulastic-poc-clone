@@ -1,0 +1,182 @@
+import React from 'react'
+import styled from 'styled-components'
+import moment from 'moment'
+
+// components
+import { Modal, Table, Icon } from 'antd'
+import { IconClose } from '@edulastic/icons'
+import { EduButton } from '@edulastic/common'
+
+// constants
+import { greyThemeDark1, darkGrey2, lightGrey11 } from '@edulastic/colors'
+import navigation from '../../common/static/json/navigation.json'
+
+const ReportsNotificationModal = ({ reportDocs = [], visible, onClose }) => {
+  const columns = [
+    {
+      title: 'Report',
+      key: 'reportType',
+      dataIndex: 'reportType',
+      render: (data) => navigation.locToData[data].title,
+      sorter: (a, b) => a.reportType.localeCompare(b.reportType),
+    },
+    {
+      title: 'Requested Date',
+      key: 'modifiedAt',
+      dataIndex: 'modifiedAt',
+      align: 'center',
+      render: (data) => moment(data.seconds).format('MM-DD-YYYY'),
+      sorter: (a, b) => a.modifiedAt.seconds - b.modifiedAt.seconds,
+      defaultSortOrder: 'descend',
+    },
+    {
+      title: 'Download',
+      key: 'downloadLink',
+      dataIndex: 'downloadLink',
+      align: 'center',
+      render: (data) => (
+        <EduButton
+          isGhost
+          isBlue
+          noBorder
+          title="Download CSV"
+          href={data}
+          target="_blank"
+        >
+          <Icon type="download" />
+        </EduButton>
+      ),
+    },
+  ]
+
+  return (
+    <StyledModal
+      title={
+        <div>
+          <span>Requested Report Data</span>
+          <IconClose
+            height={20}
+            width={20}
+            onClick={onClose}
+            style={{ cursor: 'pointer' }}
+          />
+        </div>
+      }
+      visible={visible}
+      onCancel={onClose}
+      footer={false}
+      centered
+    >
+      <StyledTable
+        columns={columns}
+        dataSource={reportDocs}
+        pagination={false}
+      />
+    </StyledModal>
+  )
+}
+
+export default ReportsNotificationModal
+
+const StyledModal = styled(Modal)`
+  min-width: fit-content;
+  .ant-modal-content {
+    width: fit-content;
+    border-radius: 10px;
+    padding: 25px 50px 30px 50px;
+    .ant-modal-close {
+      display: none;
+    }
+    .ant-modal-header {
+      padding: 0px;
+      margin-bottom: 20px;
+      border: none;
+      .ant-modal-title {
+        > div {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 25px;
+          span {
+            color: ${greyThemeDark1};
+            font-size: 22px;
+            font-weight: 700;
+            line-height: 30px;
+          }
+        }
+        p {
+          color: ${darkGrey2};
+          font-size: 14px;
+          font-weight: 600;
+          line-height: 19px;
+          margin-bottom: 30px;
+        }
+      }
+    }
+    .ant-modal-body {
+      border-radius: 10px;
+      padding: 0px 20px 0px 5px;
+      margin-bottom: 30px;
+      .ant-spin {
+        padding-top: 65px;
+      }
+    }
+    .ant-modal-footer {
+      display: none;
+    }
+  }
+`
+
+const StyledTable = styled(Table)`
+  width: 100%;
+  .ant-table {
+    .ant-table-content {
+      height: 250px;
+      overflow: auto;
+      .ant-table-body {
+        min-height: auto;
+        table {
+          border: none;
+          .ant-table-thead {
+            tr {
+              background: white;
+              th {
+                border: none;
+                background: white;
+                padding: 5px 10px 20px 10px;
+                .ant-table-column-title {
+                  white-space: nowrap;
+                  font-size: 12px;
+                  line-height: 17px;
+                  font-weight: 700;
+                  color: ${lightGrey11};
+                  text-transform: uppercase;
+                }
+              }
+            }
+          }
+          .ant-table-tbody {
+            border-collapse: collapse;
+            tr {
+              cursor: pointer;
+              td {
+                height: 40px;
+                padding: 5px 10px;
+                font-size: 14px;
+                line-height: 19px;
+                font-weight: 600;
+                color: ${greyThemeDark1};
+                .ant-radio {
+                  margin-right: 10px;
+                }
+              }
+            }
+          }
+        }
+      }
+      .ant-table-placeholder {
+        border: none;
+      }
+    }
+  }
+`

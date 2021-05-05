@@ -197,7 +197,7 @@ const PlayerFooter = ({
           }}
           title={
             checkAnswerInProgress
-              ? 'In progess'
+              ? 'In progress'
               : answerChecksUsedForItem >= maxAnswerChecks
               ? 'Usage limit exceeded'
               : 'Check Answer'

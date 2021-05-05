@@ -102,6 +102,9 @@ const StudentProgress = ({
   // set initial page filters
   useEffect(() => {
     setPageFilters({ ...pageFilters, page: 1 })
+    if (settings.requestFilters.termId || settings.requestFilters.reportId) {
+      return () => toggleFilter(null, false)
+    }
   }, [settings])
 
   // get paginated data

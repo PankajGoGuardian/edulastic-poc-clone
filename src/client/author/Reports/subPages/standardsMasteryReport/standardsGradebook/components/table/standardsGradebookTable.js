@@ -1,12 +1,13 @@
 /* eslint-disable array-callback-return */
 import React, { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { Row, Col } from 'antd'
+import { Row, Col, Tooltip } from 'antd'
 import { isEmpty, flatMap, keyBy } from 'lodash'
 import styled from 'styled-components'
 import next from 'immer'
 import { withNamespaces } from '@edulastic/localization'
 
+import { IconInfo } from '@edulastic/icons'
 import { extraDesktopWidthMax } from '@edulastic/colors'
 import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
 
@@ -290,13 +291,28 @@ const StandardsGradebookTableComponent = ({
           ),
       },
       {
-        title: 'Overall',
+        title: (
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              textAlign: 'center',
+            }}
+          >
+            <span>Avg. Standard Performance</span>
+            <Tooltip title="This is the average performance across all the standards assessed">
+              <IconInfo height={10} />
+            </Tooltip>
+          </div>
+        ),
         dataIndex: analyseByToKeyToRender[tableDdFilters.analyseBy],
         key: analyseByToKeyToRender[tableDdFilters.analyseBy],
         width: 150,
         sorter: (a, b) => {
           const key = analyseByToKeyToRender[tableDdFilters.analyseBy]
-          return a[key] - b[key]
+          return tableDdFilters.analyseBy === 'masteryLevel'
+            ? a.fm - b.fm
+            : a[key] - b[key]
         },
         render: (data, record) => {
           const dataToRender =

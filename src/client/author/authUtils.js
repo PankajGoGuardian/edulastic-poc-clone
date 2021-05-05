@@ -54,6 +54,23 @@ export async function switchUser(switchToId, personId) {
   }
 }
 
+export async function proxyDemoPlaygroundUser() {
+  const result = await userApi.getDemoPlaygroundUser()
+  if (result.result?._id && result.result?.role) {
+    TokenStorage.storeAccessToken(
+      result.result.token,
+      result.result._id,
+      result.result.role
+    )
+    window.open(
+      `${window.location.protocol}//${window.location.host}/?userId=${result.result._id}&role=${result.result.role}`,
+      '_blank'
+    )
+  } else {
+    notification({ messageKey: 'someErrorOccuredDuringProxying' })
+  }
+}
+
 window.proxyUser = proxyUser
 window.switchRole = switchRole
 window.switchUser = switchUser

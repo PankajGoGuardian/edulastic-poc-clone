@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { ThemeProvider } from 'styled-components'
 import { get, isUndefined, last } from 'lodash'
-import { withWindowSizes, ScrollContext, notification } from '@edulastic/common'
+import { withWindowSizes, notification } from '@edulastic/common'
 import { nonAutoGradableTypes, test } from '@edulastic/constants'
 
 import { playerSkinValues } from '@edulastic/constants/const/test'
@@ -616,93 +616,89 @@ class AssessmentPlayerDefault extends React.Component {
               padding="20px 30px"
             >
               <SettingsModal />
-              <ScrollContext.Provider
-                value={{ getScrollElement: () => this.scrollContainer.current }}
+              <MainWrapper
+                responsiveWidth={responsiveWidth}
+                zoomLevel={zoomLevel}
+                ref={this.scrollContainer}
+                hasCollapseButtons={hasCollapseButtons}
+                className="scrollable-main-wrapper"
+                id="assessment-player-default-scroll"
               >
-                <MainWrapper
-                  responsiveWidth={responsiveWidth}
-                  zoomLevel={zoomLevel}
-                  ref={this.scrollContainer}
-                  hasCollapseButtons={hasCollapseButtons}
-                  className="scrollable-main-wrapper"
-                  id="assessment-player-default-scroll"
-                >
-                  {testItemState === '' && (
-                    <TestItemPreview
-                      LCBPreviewModal={LCBPreviewModal}
-                      cols={itemRows}
-                      previousQuestionActivity={previousQuestionActivity}
-                      questions={questions}
-                      showCollapseBtn
-                      highlights={highlights}
-                      crossAction={crossAction || {}}
-                      viewComponent="studentPlayer"
-                      setHighlights={this.saveUserWork('resourceId')}
-                      setCrossAction={
-                        enableCrossAction
-                          ? this.saveUserWork('crossAction')
-                          : false
-                      } // this needs only for MCQ and MSQ
-                      scratchPadMode={scratchPadMode}
-                      saveUserWork={this.saveUserWork('scratchpad')}
-                      saveAttachments={this.saveUserWork('attachments')}
-                      attachments={attachments}
-                      userWork={
-                        LCBPreviewModal ? scratchpadActivity.data : scratchPad
-                      }
-                      scratchpadDimensions={
-                        LCBPreviewModal ? scratchpadActivity.dimensions : null
-                      }
-                      preview={preview}
-                      evaluation={evaluation}
-                      changePreviewTab={changePreview}
-                      saveHintUsage={this.saveHintUsage}
-                      enableMagnifier={enableMagnifier}
-                      updateScratchpadtoStore
-                      isPassageWithQuestions={item?.isPassageWithQuestions}
-                      isStudentReport={isStudentReport}
-                      itemId={item._id}
-                      itemLevelScoring={item.itemLevelScoring}
-                      studentReportModal={studentReportModal}
-                    />
-                  )}
-                  {testItemState === 'check' && (
-                    <TestItemPreview
-                      cols={itemRows}
-                      previewTab="check"
-                      preview={preview}
-                      previousQuestionActivity={previousQuestionActivity}
-                      evaluation={evaluation}
-                      verticalDivider={item.verticalDivider}
-                      scrolling={item.scrolling}
-                      questions={questions}
-                      LCBPreviewModal={LCBPreviewModal}
-                      highlights={highlights}
-                      crossAction={crossAction || {}}
-                      showCollapseBtn
-                      viewComponent="studentPlayer"
-                      setHighlights={this.saveUserWork('resourceId')} // this needs only for passage type
-                      setCrossAction={
-                        enableCrossAction
-                          ? this.saveUserWork('crossAction')
-                          : false
-                      } // this needs only for MCQ and MSQ
-                      scratchPadMode={scratchPadMode}
-                      saveUserWork={this.saveUserWork('scratchpad')}
-                      saveAttachments={this.saveUserWork('attachments')}
-                      attachments={attachments}
-                      userWork={scratchPad}
-                      saveHintUsage={this.saveHintUsage}
-                      changePreviewTab={this.handleChangePreview}
-                      isStudentReport={isStudentReport}
-                      enableMagnifier={enableMagnifier}
-                      itemId={item._id}
-                      itemLevelScoring={item.itemLevelScoring}
-                      studentReportModal={studentReportModal}
-                    />
-                  )}
-                </MainWrapper>
-              </ScrollContext.Provider>
+                {testItemState === '' && (
+                  <TestItemPreview
+                    LCBPreviewModal={LCBPreviewModal}
+                    cols={itemRows}
+                    previousQuestionActivity={previousQuestionActivity}
+                    questions={questions}
+                    showCollapseBtn
+                    highlights={highlights}
+                    crossAction={crossAction || {}}
+                    viewComponent="studentPlayer"
+                    setHighlights={this.saveUserWork('resourceId')}
+                    setCrossAction={
+                      enableCrossAction
+                        ? this.saveUserWork('crossAction')
+                        : false
+                    } // this needs only for MCQ and MSQ
+                    scratchPadMode={scratchPadMode}
+                    saveUserWork={this.saveUserWork('scratchpad')}
+                    saveAttachments={this.saveUserWork('attachments')}
+                    attachments={attachments}
+                    userWork={
+                      LCBPreviewModal ? scratchpadActivity.data : scratchPad
+                    }
+                    scratchpadDimensions={
+                      LCBPreviewModal ? scratchpadActivity.dimensions : null
+                    }
+                    preview={preview}
+                    evaluation={evaluation}
+                    changePreviewTab={changePreview}
+                    saveHintUsage={this.saveHintUsage}
+                    enableMagnifier={enableMagnifier}
+                    updateScratchpadtoStore
+                    isPassageWithQuestions={item?.isPassageWithQuestions}
+                    isStudentReport={isStudentReport}
+                    itemId={item._id}
+                    itemLevelScoring={item.itemLevelScoring}
+                    studentReportModal={studentReportModal}
+                  />
+                )}
+                {testItemState === 'check' && (
+                  <TestItemPreview
+                    cols={itemRows}
+                    previewTab="check"
+                    preview={preview}
+                    previousQuestionActivity={previousQuestionActivity}
+                    evaluation={evaluation}
+                    verticalDivider={item.verticalDivider}
+                    scrolling={item.scrolling}
+                    questions={questions}
+                    LCBPreviewModal={LCBPreviewModal}
+                    highlights={highlights}
+                    crossAction={crossAction || {}}
+                    showCollapseBtn
+                    viewComponent="studentPlayer"
+                    setHighlights={this.saveUserWork('resourceId')} // this needs only for passage type
+                    setCrossAction={
+                      enableCrossAction
+                        ? this.saveUserWork('crossAction')
+                        : false
+                    } // this needs only for MCQ and MSQ
+                    scratchPadMode={scratchPadMode}
+                    saveUserWork={this.saveUserWork('scratchpad')}
+                    saveAttachments={this.saveUserWork('attachments')}
+                    attachments={attachments}
+                    userWork={scratchPad}
+                    saveHintUsage={this.saveHintUsage}
+                    changePreviewTab={this.handleChangePreview}
+                    isStudentReport={isStudentReport}
+                    enableMagnifier={enableMagnifier}
+                    itemId={item._id}
+                    itemLevelScoring={item.itemLevelScoring}
+                    studentReportModal={studentReportModal}
+                  />
+                )}
+              </MainWrapper>
             </Main>
 
             <ReportIssuePopover item={item} />

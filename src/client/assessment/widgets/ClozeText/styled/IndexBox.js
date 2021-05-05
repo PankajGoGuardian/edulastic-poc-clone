@@ -9,7 +9,7 @@ export const IndexBox = styled.div`
   align-items: center;
   flex-shrink: 0;
   ${({ theme, bgColor }) => `
-    background: ${bgColor};
+    background: ${bgColor || theme.widgets.clozeText.indexBoxNoAnswerBgColor};
     color: ${theme.widgets.clozeText.indexBoxColor};
     font-size: ${theme.widgets.clozeText.indexBoxFontSize};
     font-weight: ${theme.widgets.clozeText.indexBoxFontWeight};

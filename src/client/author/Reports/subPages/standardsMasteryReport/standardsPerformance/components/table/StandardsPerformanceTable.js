@@ -2,20 +2,12 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { sumBy, includes, filter, isEmpty } from 'lodash'
 import next from 'immer'
-import { Row, Col } from 'antd'
+import { Row, Col, Tooltip } from 'antd'
 import styled from 'styled-components'
+
 import { withNamespaces } from '@edulastic/localization'
-import {
-  getOptionFromKey,
-  getMasteryScore,
-  getScore,
-  getMasteryLevel,
-  getMasteryScoreColor,
-  getAnalyseByTitle,
-  getOverallValue,
-  getOverallMasteryScore,
-  getRecordMasteryLevel,
-} from '../../utils/transformers'
+
+import { IconInfo } from '@edulastic/icons'
 import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
 import {
   StyledH3,
@@ -26,10 +18,18 @@ import {
 import { CustomTableTooltip } from '../../../../../common/components/customTableTooltip'
 import TableTooltipRow from '../../../../../common/components/tooltip/TableTooltipRow'
 import CsvTable from '../../../../../common/components/tables/CsvTable'
-import { percentage, downloadCSV } from '../../../../../common/util'
 
-export const getOverallScore = (metrics = []) =>
-  percentage(sumBy(metrics, 'totalScore'), sumBy(metrics, 'maxScore'))
+import {
+  getOptionFromKey,
+  getMasteryScore,
+  getScore,
+  getMasteryLevel,
+  getMasteryScoreColor,
+  getAnalyseByTitle,
+  getOverallValue,
+  getRecordMasteryLevel,
+} from '../../utils/transformers'
+import { downloadCSV } from '../../../../../common/util'
 
 const getColValue = (record = {}, domainId, analyseByKey, scaleInfo) => {
   const domain = record.domainData[domainId]
@@ -98,22 +98,25 @@ const getColorCell = (
   )
 }
 
-const getOverallColSorter = (analyseKey, scaleInfo) => {
-  switch (analyseKey) {
+const getOverallColSorter = (_analyseByKey, _scaleInfo) => (a, b) => {
+  const aRecords = Object.values(a.domainData || {})
+  const bRecords = Object.values(b.domainData || {})
+  switch (_analyseByKey) {
     case 'score':
-      return (a, b) => getOverallScore(a.records) - getOverallScore(b.records)
-    case 'rawScore':
-      return (a, b) =>
-        sumBy(a.records, 'totalScore') - sumBy(b.records, 'totalScore')
     case 'masteryScore':
-      return (a, b) =>
-        getOverallMasteryScore(a.records) - getOverallMasteryScore(b.records)
+      return (
+        parseFloat(getOverallValue(a, _analyseByKey, _scaleInfo)) -
+        parseFloat(getOverallValue(b, _analyseByKey, _scaleInfo))
+      )
+    case 'rawScore':
+      return sumBy(aRecords, 'totalScore') - sumBy(bRecords, 'totalScore')
     case 'masteryLevel':
-      return (a, b) =>
-        getRecordMasteryLevel(a.records, scaleInfo).score -
-        getRecordMasteryLevel(b.records, scaleInfo).score
+      return (
+        getRecordMasteryLevel(aRecords, _scaleInfo).score -
+        getRecordMasteryLevel(bRecords, _scaleInfo).score
+      )
     default:
-      break
+      return 0
   }
 }
 
@@ -174,9 +177,19 @@ export const getColumns = (
         ),
     },
     {
-      title: 'Overall',
+      title: (
+        <div
+          style={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}
+        >
+          <span>Avg. Domain Performance</span>
+          <Tooltip title="This is the average performance across all the domains assessed">
+            <IconInfo height={10} />
+          </Tooltip>
+        </div>
+      ),
       dataIndex: 'overall',
       key: 'overall',
+      width: 140,
       sorter: getOverallColSorter(analyseByKey, scaleInfo),
       render: (_, record) => getOverallValue(record, analyseByKey, scaleInfo),
     },
@@ -240,7 +253,14 @@ const StandardsPerformanceTable = ({
         </Col>
         <Col xs={24} sm={24} md={13} lg={13} xl={12}>
           <Row className="control-dropdown-row">
-            <StyledDropDownContainer xs={24} sm={24} md={11} lg={11} xl={8} style={{ padding: '2.5px' }}>
+            <StyledDropDownContainer
+              xs={24}
+              sm={24}
+              md={11}
+              lg={11}
+              xl={8}
+              style={{ padding: '2.5px' }}
+            >
               <ControlDropDown
                 prefix="Compare by "
                 data={compareByData}
@@ -248,7 +268,14 @@ const StandardsPerformanceTable = ({
                 selectCB={bindOnChange('compareBy', compareByData)}
               />
             </StyledDropDownContainer>
-            <StyledDropDownContainer xs={24} sm={24} md={13} lg={13} xl={8} style={{ padding: '2.5px' }}>
+            <StyledDropDownContainer
+              xs={24}
+              sm={24}
+              md={13}
+              lg={13}
+              xl={8}
+              style={{ padding: '2.5px' }}
+            >
               <ControlDropDown
                 prefix="Analyze by "
                 data={analyseByData}

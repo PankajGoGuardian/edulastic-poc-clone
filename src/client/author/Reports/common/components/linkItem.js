@@ -28,7 +28,9 @@ export const LinkItem = ({
             renderButton={(handleClick) => (
               <ReportItemCards handleClick={handleClick} data={data} />
             )}
-            onClick={() => history.push(data.location)}
+            onClick={() =>
+              history.push({ pathname: data.location, state: { source: loc } })
+            }
           />
         ) : (
           <ResolvedLink

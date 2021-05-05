@@ -1545,6 +1545,7 @@ function* useThisPlayListSaga({ payload }) {
             subjects: duplicatedPlaylist.subjects,
             customize: duplicatedPlaylist.customize,
             authors: duplicatedPlaylist.authors,
+            derivedFrom: duplicatedPlaylist.derivedFrom,
           })
         )
         return

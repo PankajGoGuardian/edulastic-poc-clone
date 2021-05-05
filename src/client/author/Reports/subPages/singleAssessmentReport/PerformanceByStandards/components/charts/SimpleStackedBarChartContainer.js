@@ -2,19 +2,22 @@ import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { find, round, get } from 'lodash'
 
+import { reportUtils } from '@edulastic/constants'
+
 import { SimpleStackedBarChart } from '../../../../../common/components/charts/simpleStackedBarChart'
-import {
+import BarTooltipRow from '../../../../../common/components/tooltip/BarTooltipRow'
+
+const { addColors } = reportUtils.common
+
+const {
   viewByMode,
   analyzeByMode,
   getYLabelString,
   getChartScoreData,
-} from '../../util/transformers'
-import { addColors } from '../../../../../common/util'
-import BarTooltipRow from '../../../../../common/components/tooltip/BarTooltipRow'
+} = reportUtils.performanceByStandards
 
 const SimpleStackedBarChartContainer = ({
   report,
-  filter,
   viewBy,
   analyzeBy,
   onBarClick,
@@ -25,9 +28,8 @@ const SimpleStackedBarChartContainer = ({
   const barDataKey = 'avgScore'
   const ticks = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
 
-  let formattedData = useMemo(() => getChartScoreData(report, filter, viewBy), [
+  let formattedData = useMemo(() => getChartScoreData(report, viewBy), [
     report,
-    filter,
     viewBy,
   ])
 
@@ -146,7 +148,6 @@ SimpleStackedBarChartContainer.propTypes = {
   viewBy: PropTypes.string.isRequired,
   analyzeBy: PropTypes.string.isRequired,
   onBarClick: PropTypes.func.isRequired,
-  filter: PropTypes.object.isRequired,
   onResetClick: PropTypes.func.isRequired,
   report: PropTypes.object,
   selectedData: PropTypes.array,

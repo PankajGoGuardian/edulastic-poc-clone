@@ -64,7 +64,6 @@ import PreviewRubricTable from '../../author/GradingRubric/Components/common/Pre
 // import { Coding } from '../widgets/Coding'
 
 import Hints from './Hints'
-import Explanation from './Common/Explanation'
 import { EDIT } from '../constants/constantsForQuestions'
 import BottomAction from './Common/QuestionBottomAction'
 import {
@@ -591,8 +590,12 @@ class QuestionWrapper extends Component {
                       cleanSections={() => {}}
                       studentId={studentId}
                       t={restProps.t}
-                      isQuestionView={isQuestionView}
+                      isLCBView={isLCBView}
                       isExpressGrader={isExpressGrader}
+                      isQuestionView={isQuestionView}
+                      previewTab={previewTab}
+                      isPrintPreview={isPrintPreview}
+                      isGrade={isGrade}
                     />
                   )}
                   {rubricDetails && studentReportFeedbackVisible && (
@@ -622,14 +625,6 @@ class QuestionWrapper extends Component {
                       isStudentReport={isStudentReport}
                     />
                   )}
-                  {(isLCBView || isExpressGrader || previewTab === 'show') &&
-                    !isPrintPreview && (
-                      <Explanation
-                        isStudentReport={isStudentReport}
-                        question={data}
-                        isGrade={isGrade}
-                      />
-                    )}
                 </StyledFlexContainer>
               </PaperWrapper>
             </QuestionContainer>
@@ -731,6 +726,7 @@ export default enhance(QuestionWrapper)
 const StyledFlexContainer = styled(FlexContainer)`
   font-size: ${(props) => props.theme.fontSize};
   overflow: ${({ showScroll }) => showScroll && 'auto'};
+  width: 100%;
 `
 
 const QuestionMenuWrapper = styled.div`

@@ -18,6 +18,7 @@ import {
   updateDefaultGradesAction,
   updateDefaultSubjectAction,
   isProxyUser as isProxyUserSelector,
+  isDemoPlaygroundUser,
 } from '../../../../student/Login/ducks'
 import ListHeader from '../../../src/components/common/ListHeader'
 import {
@@ -517,6 +518,7 @@ class TestList extends Component {
       isProxyUser,
       sort = {},
       dashboardTiles,
+      isDemoAccount = false,
     } = this.props
 
     const {
@@ -615,7 +617,7 @@ class TestList extends Component {
           <FlexContainer>
             <Filter isShowFilter={isShowFilter}>
               {!isShowFilter && (
-                <AffixWrapper isProxyUser={isProxyUser}>
+                <AffixWrapper isBannerShown={isProxyUser || isDemoAccount}>
                   <ScrollbarWrapper>
                     <PerfectScrollbar>
                       <ScrollBox>
@@ -717,6 +719,7 @@ const enhance = compose(
       recentPlaylist: getRecentPlaylistSelector(state),
       collectionSelector: getCollectionsSelector(state),
       dashboardTiles: state.dashboardTeacher.configurableTiles,
+      isDemoAccount: isDemoPlaygroundUser(state),
     }),
     {
       receivePlaylists: receivePlaylistsAction,

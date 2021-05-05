@@ -35,18 +35,18 @@ export const SideContentContainer = styled.div`
   z-index: 300;
   top: ${(props) =>
     props.theme.HeaderHeight.xs +
-    (props.isProxyUser ? props.theme.BannerHeight : 0)}px;
+    (props.isBannerShown ? props.theme.BannerHeight : 0)}px;
   right: ${(props) => (props.show ? '0px' : '-8px')};
 
   @media (min-width: ${mediumDesktopExactWidth}) {
     top: ${(props) =>
       props.theme.HeaderHeight.md +
-      (props.isProxyUser ? props.theme.BannerHeight : 0)}px;
+      (props.isBannerShown ? props.theme.BannerHeight : 0)}px;
   }
   @media (min-width: ${extraDesktopWidthMax}) {
     top: ${(props) =>
       props.theme.HeaderHeight.xl +
-      (props.isProxyUser ? props.theme.BannerHeight : 0)}px;
+      (props.isBannerShown ? props.theme.BannerHeight : 0)}px;
   }
 `
 

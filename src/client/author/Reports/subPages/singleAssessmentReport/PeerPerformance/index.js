@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { isEmpty } from 'lodash'
+import { isEmpty, uniq } from 'lodash'
 
 import { getUserRole } from '../../../../src/selectors/user'
 import { ControlDropDown } from '../../../common/components/widgets/controlDropDown'
@@ -33,8 +33,8 @@ import {
   getReportsPeerPerformanceError,
   resetPeerPerformanceAction,
 } from './ducks'
-import columns from './static/json/tableColumns.json'
 import { idToName, parseData } from './util/transformers'
+import { getColumns } from './util/tableColumns'
 
 // -----|-----|-----|-----|-----| COMPONENT BEGIN |-----|-----|-----|-----|----- //
 
@@ -44,7 +44,7 @@ const PeerPerformance = ({
   isCsvDownloading,
   role,
   performanceBandProfiles,
-  peerPerformance,
+  peerPerformance: _peerPerformance,
   getPeerPerformance,
   resetPeerPerformance,
   settings,
@@ -63,6 +63,18 @@ const PeerPerformance = ({
     ],
     [sharedReport]
   )
+  const peerPerformance = useMemo(() => {
+    const peerPerf = { ..._peerPerformance }
+    if (peerPerf.metricInfo) {
+      peerPerf.metricInfo = _peerPerformance.metricInfo?.map(mi => ({
+        ...mi,
+        extAttributes: JSON.parse(mi.extAttributes || '{}'),
+        ...JSON.parse(mi.extAttributes || '{}')
+      }))
+    }
+    return peerPerf
+  }, [_peerPerformance])
+
   const selectedTest = testList.find(
     (t) => t._id === settings.selectedTest.key
   ) || { _id: '', title: '' }
@@ -106,6 +118,9 @@ const PeerPerformance = ({
       }
       getPeerPerformance(q)
     }
+    if (settings.requestFilters.termId || settings.requestFilters.reportId) {
+      return () => toggleFilter(null, false)
+    }
   }, [settings.selectedTest, settings.requestFilters])
 
   useEffect(() => {
@@ -128,19 +143,34 @@ const PeerPerformance = ({
       if (userRole === 'teacher') {
         tempCompareBy.splice(0, 2)
       }
+      const _extAttributes = uniq(
+        peerPerformance.metricInfo
+          ?.map(mi => Object.keys(mi.extAttributes || {}))
+          .flat()
+          .sort()
+      ).map((eA) => ({
+        key: eA,
+        title: idToName(eA)
+      }))
+      tempCompareBy.push(..._extAttributes)
     }
   )
-
-  const getColumns = () =>
-    columns.columns[ddfilter.analyseBy][
-      ddfilter.compareBy === 'group' ? 'groupId' : ddfilter.compareBy
-    ]
+  useEffect(() => {
+    if (
+      !compareByDropDownData.map((dd) => dd.key).includes(ddfilter.compareBy)
+    ) {
+      setDdFilter((prevDdFilter) => ({
+        ...prevDdFilter,
+        compareBy: compareByDropDownData[0].key,
+      }))
+    }
+  }, [peerPerformance])
 
   const res = { ...peerPerformance, bandInfo }
   const parsedData = useMemo(() => {
     return {
       data: parseData(res, ddfilter),
-      columns: getColumns(),
+      columns: getColumns(ddfilter),
     }
   }, [res, ddfilter])
 
@@ -202,7 +232,7 @@ const PeerPerformance = ({
             <Row type="flex" justify="start">
               <Col xs={24} sm={24} md={12} lg={8} xl={12}>
                 <StyledH3>
-                  Assessment Performance by {idToName[ddfilter.compareBy]} |{' '}
+                  Assessment Performance by {idToName(ddfilter.compareBy)} |{' '}
                   {assessmentName}
                 </StyledH3>
               </Col>

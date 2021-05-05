@@ -632,7 +632,7 @@ class Graph extends Component {
                 )}
               </QuestionLabelWrapper>
 
-              <QuestionContentWrapper>
+              <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
                 <QuestionTitleWrapper>
                   <StyledStimulus
                     data-cy="questionHeader"

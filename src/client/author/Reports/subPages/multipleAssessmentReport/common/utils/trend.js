@@ -13,7 +13,7 @@ import {
   maxBy,
   isEmpty,
 } from 'lodash'
-import { filterAccordingToRole, percentage } from '../../../../common/util'
+import { filterAccordingToRole, getOverallScore } from '../../../../common/util'
 
 import dropDownData from '../static/json/dropDownData.json'
 
@@ -34,14 +34,6 @@ const sanitizeNullNumberFields = (records, fields = []) => {
   )
   return { sanitizedRecords, allAbsent }
 }
-
-const getOverallScore = (metrics = []) =>
-  round(
-    percentage(
-      sumBy(metrics, (item) => parseFloat(item.totalScore)),
-      sumBy(metrics, (item) => parseFloat(item.maxScore))
-    )
-  )
 
 export const compareByMap = {
   school: 'schoolName',
@@ -272,7 +264,7 @@ export const parseTrendData = (
       tests[key] = {
         records: value,
         allAbsent,
-        score: getOverallScore(sanitizedRecords),
+        score: round(getOverallScore(sanitizedRecords)),
         rawScore: `${(sumBy(sanitizedRecords, 'totalScore') || 0).toFixed(
           2
         )} / ${sumBy(sanitizedRecords, 'maxScore')}`,

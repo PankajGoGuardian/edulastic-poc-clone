@@ -46,6 +46,7 @@ import {
   IconUsers,
   IconExclamationMark,
   IconClose,
+  IconDemoAccNav,
 } from '@edulastic/icons'
 import { withWindowSizes, OnDarkBgLogo } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
@@ -57,6 +58,7 @@ import {
   getUserFeatures,
   isProxyUser as isProxyUserSelector,
   toggleFreeAdminSubscriptionModalAction,
+  isDemoPlaygroundUser,
 } from '../../../student/Login/ducks'
 import {
   isOrganizationDistrictSelector,
@@ -64,7 +66,7 @@ import {
   isFreeAdminSelector,
 } from '../selectors/user'
 import SwitchUserModal from '../../../common/components/SwtichUserModal/SwitchUserModal'
-import { switchUser } from '../../authUtils'
+import { switchUser, proxyDemoPlaygroundUser } from '../../authUtils'
 import ItemBankTrialUsedModal from '../../Dashboard/components/Showcase/components/Myclasses/components/FeaturedContentBundle/ItemBankTrialUsedModal'
 import PurchaseFlowModals from '../components/common/PurchaseModals'
 import { slice } from '../../Subscription/ducks'
@@ -174,6 +176,7 @@ class SideMenu extends Component {
         !!get(switchDetails, 'otherAccounts', []).length,
       showTrialUsedModal: false,
       showPurchaseModal: false,
+      showTrialSubsConfirmation: false,
     }
 
     this.sideMenuRef = React.createRef()
@@ -315,6 +318,11 @@ class SideMenu extends Component {
     }
   }
 
+  handlePlayGround = (evt) => {
+    evt.stopPropagation()
+    proxyDemoPlaygroundUser()
+  }
+
   toggleMenu = () => {
     const { toggleSideBar } = this.props
     toggleSideBar()
@@ -360,6 +368,12 @@ class SideMenu extends Component {
   setShowSubscriptionAddonModal = (value) => {
     this.setState({
       showPurchaseModal: value,
+    })
+  }
+
+  setShowTrialSubsConfirmation = (value) => {
+    this.setState({
+      showTrialSubsConfirmation: value,
     })
   }
 
@@ -413,6 +427,7 @@ class SideMenu extends Component {
       features,
       showUseThisNotification,
       isProxyUser,
+      isDemoPlaygroundUserProxy,
     } = this.props
     if (userRole === roleuser.STUDENT) {
       return null
@@ -466,7 +481,7 @@ class SideMenu extends Component {
     const otherAccounts = get(switchDetails, 'otherAccounts', [])
     const users = otherAccounts.filter((acc) => acc._id !== userId)
 
-    const footerDropdownMenu = (
+    const footerDropdownMenu = (isDemoAccount = false) => (
       <FooterDropDown
         data-cy="footer-dropdown"
         isVisible={isVisible}
@@ -476,7 +491,16 @@ class SideMenu extends Component {
           onClick={this.onClickFooterDropDownMenu}
           style={{ height: 'auto' }}
         >
-          <Menu.Item key="1" className="removeSelectedBorder">
+          <Menu.Item
+            key="1"
+            className="removeSelectedBorder"
+            disabled={isDemoAccount}
+            title={
+              isDemoAccount
+                ? 'This feature is not available in demo account.'
+                : ''
+            }
+          >
             <Link to="/author/profile">
               <IconProfileHighlight />{' '}
               <span>{isCollapsed ? '' : 'My Profile'}</span>
@@ -522,6 +546,8 @@ class SideMenu extends Component {
         <PurchaseFlowModals
           showSubscriptionAddonModal={this.state.showPurchaseModal}
           setShowSubscriptionAddonModal={this.setShowSubscriptionAddonModal}
+          isConfirmationModalVisible={this.state.showTrialSubsConfirmation}
+          setShowTrialSubsConfirmation={this.setShowTrialSubsConfirmation}
           defaultSelectedProductIds={[]}
           setProductData={() => {}}
         />
@@ -589,7 +615,7 @@ class SideMenu extends Component {
                 selectedKeys={[defaultSelectedMenu.toString()]}
                 mode="inline"
                 onClick={(item) => this.handleMenu(item)}
-                isProxyUser={isProxyUser}
+                isBannerShown={isProxyUser || isDemoPlaygroundUserProxy}
               >
                 {this.MenuItems.map((menu, index) => {
                   if (menu.divider) {
@@ -630,7 +656,14 @@ class SideMenu extends Component {
                   const isItemVisible =
                     !menu.role || (menu.role && menu.role.includes(userRole))
 
-                  const disableMenu = isDisablePageInMobile(menu?.path)
+                  let disableMenu = isDisablePageInMobile(menu?.path)
+                  if (
+                    (menu.label === 'Manage School' ||
+                      menu.label === 'Manage District') &&
+                    isDemoPlaygroundUserProxy
+                  ) {
+                    disableMenu = true
+                  }
                   // hide My Playlist if user is not premium
                   // if (menu.label === 'My Playlist' && !features.premium) {
                   //   toggle = this.handleBlockedClick;
@@ -668,13 +701,17 @@ class SideMenu extends Component {
                       </MenuItem>
                     )
                   }
+                  let title = isCollapsed ? menu.label : ''
+                  if (disableMenu && isDemoPlaygroundUserProxy) {
+                    title = 'This feature is not available in demo account.'
+                  }
                   return (
                     <MenuItem
                       data-cy={menu.label}
                       key={index.toString()}
                       onClick={this.toggleMenu}
                       visible={isItemVisible}
-                      title={isCollapsed ? menu.label : ''}
+                      title={title}
                       disabled={disableMenu}
                     >
                       <MenuIcon />
@@ -686,6 +723,25 @@ class SideMenu extends Component {
                 })}
               </Menu>
               <MenuFooter>
+                {!isDemoPlaygroundUserProxy &&
+                ['district-admin', 'school-admin', 'teacher'].indexOf(
+                  userRole
+                ) > -1 && (
+                  <DemoPlaygroundButtonContainer isCollapsed={isCollapsed}>
+                    <DemoPlaygroundButton
+                      data-cy="demo-palyground-item"
+                      onClick={this.handlePlayGround}
+                      title={isCollapsed ? 'Demo Playground' : ''}
+                    >
+                      <IconContainer className={isCollapsed ? 'active' : ''}>
+                        <IconDemoAccNav />
+                      </IconContainer>
+                      <LabelMenuItem isCollapsed={isCollapsed}>
+                        Demo Playground
+                      </LabelMenuItem>
+                    </DemoPlaygroundButton>
+                  </DemoPlaygroundButtonContainer>
+                )}
                 <QuestionButton isCollapsed={isCollapsed}>
                   <a
                     href={helpCenterUrl}
@@ -716,7 +772,7 @@ class SideMenu extends Component {
                       maxWidth: isCollapsed ? '50px' : '0px',
                     }}
                     className="footerDropdown"
-                    overlay={footerDropdownMenu}
+                    overlay={footerDropdownMenu(isDemoPlaygroundUserProxy)}
                     trigger={['click']}
                     placement="topCenter"
                     isVisible={isVisible}
@@ -830,6 +886,7 @@ const enhance = compose(
         false
       ),
       isFreeAdmin: isFreeAdminSelector(state),
+      isDemoPlaygroundUserProxy: isDemoPlaygroundUser(state),
     }),
     {
       toggleSideBar: toggleSideBarAction,
@@ -1125,8 +1182,8 @@ const Menu = styled(AntMenu)`
 
   @media (max-height: 780px) {
     overflow: auto;
-    height: ${({ isProxyUser }) =>
-      isProxyUser ? 'calc(100vh - 220px)' : 'calc(100vh - 190px)'};
+    height: ${({ isBannerShown }) =>
+      isBannerShown ? 'calc(100vh - 220px)' : 'calc(100vh - 190px)'};
 
     &::-webkit-scrollbar {
       width: 4px;
@@ -1529,6 +1586,35 @@ const CloseIconWrapper = styled.div`
 
     path:first-child {
       fill: ${white} !important;
+    }
+  }
+`
+
+const DemoPlaygroundButtonContainer = styled.div`
+  margin: 8px 0px;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+  align-items: center;
+  padding: ${({ isCollapsed }) => (isCollapsed ? '5px 0px' : '5px 25px')};
+  justify-content: ${({ isCollapsed }) =>
+    isCollapsed ? 'center' : 'flex-start'};
+  font-size: ${(props) => props.theme.sideMenu.helpButtonFontSize};
+  cursor: pointer;
+  span {
+    font-weight: 600;
+  }
+`
+
+const DemoPlaygroundButton = styled.div`
+  display: inline-flex;
+  color: #7c93a7;
+  &:hover {
+    svg path {
+      fill: ${themeColor};
+    }
+    span {
+      color: ${themeColor};
     }
   }
 `

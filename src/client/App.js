@@ -22,6 +22,7 @@ import {
 import {
   fetchUserAction,
   isProxyUser as isProxyUserSelector,
+  isDemoPlaygroundUser,
 } from './student/Login/ducks'
 import TestDemoPlayer from './author/TestDemoPlayer'
 import TestItemDemoPlayer from './author/TestItemDemoPlayer'
@@ -33,6 +34,7 @@ import Kid from './kid/app'
 import NotificationListener from './HangoutVideoCallNotification'
 import BulkActionNotificationListener from './author/AssignmentAdvanced/components/BulkAssignmentActionNotification'
 import ClassSyncNotification from './author/Classes/components/ClassSyncNotification'
+import ReportsNotificationListener from './author/Reports/components/ReportsNotificationListener'
 import AppUpdate from './common/components/AppUpdate'
 import { logoutAction } from './author/src/actions/auth'
 import RealTimeCollectionWatch from './RealTimeCollectionWatch'
@@ -261,6 +263,7 @@ class App extends Component {
       logout,
       isProxyUser,
       shouldWatch,
+      isDemoAccountProxy = false,
     } = this.props
     if (
       location.hash.includes('#renderResource/close/') ||
@@ -346,7 +349,9 @@ class App extends Component {
         localStorage.removeItem('wpCId')
         localStorage.removeItem('wpAction')
         if (role === 'teacher') {
-          if (
+          if (user?.user?.isPlayground) {
+            defaultRoute = '/author/assignments'
+          } else if (
             user.signupStatus === signUpState.ACCESS_WITHOUT_SCHOOL ||
             user.signupStatus === signUpState.DONE ||
             isUndefined(user.signupStatus)
@@ -468,6 +473,13 @@ class App extends Component {
     }
     // signup routes hidden till org reference is not done
     const { showAppUpdate, canShowCliBanner, showSelectStates } = this.state
+    // changing banner if demo playgoud account
+    const bannerText = isDemoAccountProxy
+      ? 'This is a demo account. Feel free to explore all the features. Any data modification will be reset at the end of day.'
+      : `You are currently acting as ${fullName} (${_userRole})`
+    const bannerButtonText = isDemoAccountProxy
+      ? 'Close demo account'
+      : 'Stop Acting as User'
     return (
       <div>
         {!isPremium && roleuser.DA_SA_ROLE_ARRAY.includes(userRole) && (
@@ -496,11 +508,11 @@ class App extends Component {
         )}
         <Suspense fallback={<Loading />}>
           <DragDrop.Provider>
-            {isProxyUser && (
+            {(isProxyUser || isDemoAccountProxy) && (
               <Banner
-                text={`You are currently acting as ${fullName} (${_userRole})`}
+                text={bannerText}
                 showButton
-                buttonText="Stop Acting as User"
+                buttonText={bannerButtonText}
                 onButtonClick={logout}
               />
             )}
@@ -515,9 +527,12 @@ class App extends Component {
                 redirectPath={redirectRoute}
                 notifications={
                   roleuser.DA_SA_ROLE_ARRAY.includes(userRole)
-                    ? [BulkActionNotificationListener]
+                    ? [
+                        BulkActionNotificationListener,
+                        ReportsNotificationListener,
+                      ]
                     : roleuser.TEACHER === userRole
-                    ? [ClassSyncNotification]
+                    ? [ClassSyncNotification, ReportsNotificationListener]
                     : null
                 }
               />
@@ -713,6 +728,7 @@ const enhance = compose(
       fullName: getUserNameSelector({ user }),
       isProxyUser: isProxyUserSelector({ user }),
       shouldWatch: shouldWatchCollectionUpdates({ user }),
+      isDemoAccountProxy: isDemoPlaygroundUser({ user }),
     }),
     {
       fetchUser: fetchUserAction,

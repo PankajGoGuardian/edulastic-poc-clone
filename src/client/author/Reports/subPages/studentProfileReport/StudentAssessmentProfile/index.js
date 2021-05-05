@@ -89,7 +89,10 @@ const StudentAssessmentProfile = ({
         studentId: settings.selectedStudent.key,
       })
     }
-  }, [settings])
+    if (settings.requestFilters.termId || settings.requestFilters.reportId) {
+      return () => toggleFilter(null, false)
+    }
+  }, [settings.selectedStudent, settings.requestFilters])
 
   useEffect(() => {
     const metrics = get(studentAssessmentProfile, 'data.result.metricInfo', [])

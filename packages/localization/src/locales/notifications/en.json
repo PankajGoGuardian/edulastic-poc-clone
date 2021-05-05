@@ -2014,5 +2014,9 @@
   "studentAssignmentPaused": {
     "message": "Assignment is Paused , Please check with your instructor.",
     "description": ""
+  },
+  "classAlreadyExist": {
+    "message": "Class already exists in Manage Class",
+    "description": ""
   }
 }

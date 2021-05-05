@@ -239,6 +239,14 @@ const SingleAssessmentReportContainer = (props) => {
       ))
     : []
 
+  const demographicFilters = useMemo(() => {
+    const _ddFilter = {}
+    Object.keys(ddfilter).forEach((k) => {
+      _ddFilter[k] = ddfilter[k] === 'all' ? '' : ddfilter[k]
+    })
+    return _ddFilter
+  }, [ddfilter])
+
   return (
     <FeaturesSwitch
       inputFeatures="singleAssessmentReport"
@@ -345,7 +353,7 @@ const SingleAssessmentReportContainer = (props) => {
                 {..._props}
                 settings={settings}
                 pageTitle={loc}
-                filters={ddfilter}
+                demographicFilters={demographicFilters}
                 sharedReport={sharedReport}
                 toggleFilter={toggleFilter}
               />

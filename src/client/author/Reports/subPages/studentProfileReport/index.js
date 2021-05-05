@@ -131,6 +131,8 @@ const StudentProfileReportContainer = (props) => {
       requestFilters: {
         ..._requestFilters,
         profileId: _requestFilters.standardsProficiencyProfileId,
+      },
+      standardFilters: {
         domainIds: _requestFilters.domainId,
         standardIds: _requestFilters.standardId,
       },
@@ -139,6 +141,19 @@ const StudentProfileReportContainer = (props) => {
     setSPRTagsData({ ..._settings.tagsData })
     setShowApply(false)
   }
+
+  useEffect(() => {
+    if (loc !== 'student-progress-profile') {
+      setSPRSettings({
+        ...settings,
+        standardFilters: {
+          domainIds: '',
+          standardIds: '',
+        },
+      })
+      setSPRTagsData({ ...settings.tagsData, domainId: '', standardId: '' })
+    }
+  }, [loc])
 
   const performanceBandRequired = [
     'student-profile-summary',
@@ -151,6 +166,8 @@ const StudentProfileReportContainer = (props) => {
     'student-progress-profile',
   ].includes(loc)
 
+  const standardFiltersRequired = ['student-progress-profile'].includes(loc)
+
   return (
     <FeaturesSwitch
       inputFeatures="singleAssessmentReport"
@@ -162,6 +179,7 @@ const StudentProfileReportContainer = (props) => {
             reportType={loc}
             reportFilters={{
               ...settings.requestFilters,
+              ...settings.standardFilters,
               studentId: settings?.selectedStudent?.key,
             }}
             showModal={sharingState}
@@ -184,6 +202,7 @@ const StudentProfileReportContainer = (props) => {
             tagsData={settings.tagsData}
             performanceBandRequired={performanceBandRequired}
             standardProficiencyRequired={standardProficiencyRequired}
+            standardFiltersRequired={standardFiltersRequired}
             showApply={showApply}
             setShowApply={setShowApply}
             showFilter={showFilter}

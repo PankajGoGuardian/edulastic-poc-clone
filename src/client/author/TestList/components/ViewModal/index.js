@@ -316,7 +316,11 @@ class ViewModal extends React.Component {
                   <IconShare />
                 </EduButton>
                 <CloseButton onClick={this.handleModalClose}>
-                  <IconClose height="18px" width="18px" />
+                  <IconClose
+                    data-cy="closeTestPopUp"
+                    height="18px"
+                    width="18px"
+                  />
                 </CloseButton>
               </RightButtonContainer>
             </>
@@ -690,16 +694,18 @@ class ViewModal extends React.Component {
               </PerfectScrollbar>
             )}
           </ModalColumn>
-          <ShareModal
-            shareLabel="TEST URL"
-            isVisible={showShareModal}
-            testId={item._id}
-            testVersionId={item.versionId}
-            hasPremiumQuestion={hasPremiumQuestion}
-            isPublished={status === statusConstants.PUBLISHED}
-            onClose={this.onShareModalChange}
-            gradeSubject={gradeSubject}
-          />
+          {showShareModal && (
+            <ShareModal
+              shareLabel="TEST URL"
+              isVisible={showShareModal}
+              testId={item._id}
+              testVersionId={item.versionId}
+              hasPremiumQuestion={hasPremiumQuestion}
+              isPublished={status === statusConstants.PUBLISHED}
+              onClose={this.onShareModalChange}
+              gradeSubject={gradeSubject}
+            />
+          )}
         </ModalContainer>
       </>
     )

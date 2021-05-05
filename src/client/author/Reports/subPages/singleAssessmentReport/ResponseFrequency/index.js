@@ -66,6 +66,9 @@ const ResponseFrequency = ({
       }
       getResponseFrequency(q)
     }
+    if (settings.requestFilters.termId || settings.requestFilters.reportId) {
+      return () => toggleFilter(null, false)
+    }
   }, [settings.selectedTest, settings.requestFilters])
 
   useEffect(() => {

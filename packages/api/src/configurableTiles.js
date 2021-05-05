@@ -25,7 +25,7 @@ const fetchRecommendedTest = () =>
       url: `${prefix}/recommend/tests`,
       method: 'get',
     })
-    .then((result) => result.data?.flatMap((x) => x?.results))
+    .then((result) => result?.data?.flatMap((x) => x?.results) || [])
 
 const createTile = (data) =>
   api

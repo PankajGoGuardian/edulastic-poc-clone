@@ -18,5 +18,5 @@ export const CardContainer = styled(Card)`
   }
 `
 export const TestCardContainer = styled.div`
-  margin-right: 20px;
+  margin-right: 5px;
 `

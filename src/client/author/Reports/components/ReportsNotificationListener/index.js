@@ -75,7 +75,7 @@ const ReportsNotificationListener = ({
           notificationProps = {
             type: 'success',
             msg: _message,
-            duration: 100,
+            duration: 10,
           }
         } else {
           styledNotification({ msg: message })

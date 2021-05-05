@@ -5,10 +5,10 @@ import moment from 'moment'
 // components
 import { Modal, Table, Icon } from 'antd'
 import { IconClose } from '@edulastic/icons'
-import { EduButton } from '@edulastic/common'
+import { greyThemeDark1, darkGrey2, lightGrey11 } from '@edulastic/colors'
+import { StyledEduButton } from '../../common/styled'
 
 // constants
-import { greyThemeDark1, darkGrey2, lightGrey11 } from '@edulastic/colors'
 import navigation from '../../common/static/json/navigation.json'
 
 const ReportsNotificationModal = ({ reportDocs = [], visible, onClose }) => {
@@ -17,6 +17,7 @@ const ReportsNotificationModal = ({ reportDocs = [], visible, onClose }) => {
       title: 'Report',
       key: 'reportType',
       dataIndex: 'reportType',
+      width: 270,
       render: (data) => navigation.locToData[data].title,
       sorter: (a, b) => a.reportType.localeCompare(b.reportType),
     },
@@ -24,27 +25,28 @@ const ReportsNotificationModal = ({ reportDocs = [], visible, onClose }) => {
       title: 'Requested Date',
       key: 'modifiedAt',
       dataIndex: 'modifiedAt',
+      width: 150,
       align: 'center',
-      render: (data) => moment(data.seconds).format('MM-DD-YYYY'),
-      sorter: (a, b) => a.modifiedAt.seconds - b.modifiedAt.seconds,
+      render: (data) => moment(data).format('MM-DD-YYYY'),
+      sorter: (a, b) => a.modifiedAt - b.modifiedAt,
       defaultSortOrder: 'descend',
     },
     {
       title: 'Download',
       key: 'downloadLink',
       dataIndex: 'downloadLink',
+      width: 150,
       align: 'center',
       render: (data) => (
-        <EduButton
+        <StyledEduButton
           isGhost
           isBlue
           noBorder
           title="Download CSV"
           href={data}
-          target="_blank"
         >
           <Icon type="download" />
-        </EduButton>
+        </StyledEduButton>
       ),
     },
   ]
@@ -83,7 +85,7 @@ const StyledModal = styled(Modal)`
   .ant-modal-content {
     width: fit-content;
     border-radius: 10px;
-    padding: 25px 50px 30px 50px;
+    padding: 25px 50px 50px;
     .ant-modal-close {
       display: none;
     }
@@ -115,8 +117,7 @@ const StyledModal = styled(Modal)`
     }
     .ant-modal-body {
       border-radius: 10px;
-      padding: 0px 20px 0px 5px;
-      margin-bottom: 30px;
+      padding: 0px;
       .ant-spin {
         padding-top: 65px;
       }

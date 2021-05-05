@@ -196,11 +196,12 @@ export const StyledEduButton = styled(EduButton)`
   &:focus {
     &.ant-btn.ant-btn-primary {
       background-color: ${white};
-      color: ${themeColor};
-      border-color: ${themeColor};
+      color: ${({ isBlue }) => (isBlue ? themeColorBlue : themeColor)};
+      border-color: ${({ isBlue }) => (isBlue ? themeColorBlue : themeColor)};
     }
     svg {
-      fill: ${themeColor} !important;
+      fill: ${({ isBlue }) =>
+        isBlue ? themeColorBlue : themeColor} !important;
     }
   }
   /* isGhost prop => filter inactive */
@@ -208,8 +209,9 @@ export const StyledEduButton = styled(EduButton)`
   &:active,
   &:hover {
     &.ant-btn.ant-btn-primary {
-      background-color: ${themeColor};
-      border-color: ${themeColor};
+      background-color: ${({ isBlue }) =>
+        isBlue ? themeColorBlue : themeColor};
+      border-color: ${({ isBlue }) => (isBlue ? themeColorBlue : themeColor)};
       color: ${white};
     }
     svg {

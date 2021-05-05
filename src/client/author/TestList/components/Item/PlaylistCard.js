@@ -58,7 +58,7 @@ const PlaylistCard = ({
   const isDraft = status === 'draft'
 
   const handleUseThisClick = () => {
-    const { title, grades, subjects, customize = null } = _source
+    const { title, grades, subjects, customize = null, authors } = _source
     const msg = message.loading('Using this playlist. Please Wait....', 0)
 
     useThisPlayList({
@@ -69,6 +69,7 @@ const PlaylistCard = ({
       customize,
       fromUseThis: true,
       notificationCallback: msg,
+      authors,
     })
   }
 

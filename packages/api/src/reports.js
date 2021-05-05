@@ -123,12 +123,24 @@ const fetchStandardMasteryFilter = (params) =>
     params,
   })
 
-const fetchStandardMasteryBrowseStandards = (params) =>
-  api.callApi({
+const fetchStandardMasteryBrowseStandards = ({
+  curriculumId,
+  ...restParams
+}) => {
+  const curriculumIds =
+    curriculumId && Array.isArray(curriculumId) ? curriculumId : [curriculumId]
+
+  const data = {
+    ...restParams,
+    curriculumIds,
+  }
+
+  return api.callApi({
     url: `/search/browse-standards`,
-    data: params,
+    data,
     method: 'POST',
   })
+}
 
 const fetchQuestionAnalysisReport = (params) =>
   api.callApi({

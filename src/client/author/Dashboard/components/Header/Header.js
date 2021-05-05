@@ -207,7 +207,7 @@ const HeaderSection = ({
           <AuthorCompleteSignupButton
             renderButton={(handleClick) => (
               <StyledLink data-cy="completeSignup" onClick={handleClick}>
-                Complete signup process
+                Complete signup
               </StyledLink>
             )}
             trackClick={trackClick('dashboard:complete-sign-up:click')}

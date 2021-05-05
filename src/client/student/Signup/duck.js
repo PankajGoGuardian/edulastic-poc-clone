@@ -546,6 +546,7 @@ function* saveSubjectGradeSaga({ payload }) {
 
   if (isSaveSubjectGradeSuccessful) {
     yield* updateUserSignupStateSaga()
+    notification({ msg: 'Sign up completed.', type: 'success' })
   }
 
   // If user has signUpState ACCESS_WITHOUT_SCHOOL, it means he is already accessing in-session app

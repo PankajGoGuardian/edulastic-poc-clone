@@ -39,9 +39,6 @@ const AssignTest = loadable(() => import('../AssignTest'), {
 const AssignmentAdvanced = loadable(() => import('../AssignmentAdvanced'), {
   fallback: <Progress />,
 })
-const Regrade = loadable(() => import('../Regrade'), {
-  fallback: <Progress />,
-})
 const AssessmentCreate = loadable(() => import('../AssessmentCreate'), {
   fallback: <Progress />,
 })
@@ -329,11 +326,6 @@ const Author = ({
                   exact
                   path={`${match.url}/assignments/:districtId/:testId`}
                   component={(props) => <AssignmentAdvanced {...props} />}
-                />
-                <Route
-                  exact
-                  path={`${match.url}/assignments/regrade/new/:newTestId/old/:oldTestId`}
-                  component={Regrade}
                 />
                 <Route
                   exact

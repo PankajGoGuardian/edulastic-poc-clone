@@ -205,6 +205,16 @@ class SubjectGrade extends React.Component {
     )
     const _allSubjects = allSubjects.filter((item) => item.value)
 
+    const standardSets = form.getFieldValue('standard') || []
+
+    const selectedCurriculam = {
+      text:
+        formattedCurriculums
+          ?.filter((x) => standardSets.includes(x.value))
+          ?.map((x) => x.text)
+          ?.join(', ') || '',
+    }
+
     return (
       <>
         <SubjectGradeBody hasMinHeight={!isModal}>
@@ -393,7 +403,7 @@ class SubjectGrade extends React.Component {
                     data-cy="getStarted"
                     type="primary"
                     htmlType="submit"
-                    disabled={saveSubjectGradeloading}
+                    loading={saveSubjectGradeloading}
                   >
                     {isTestRecommendationCustomizer ? 'Update' : 'Get Started'}
                   </ProceedBtn>
@@ -408,7 +418,7 @@ class SubjectGrade extends React.Component {
             showModal={showStandardsModal}
             standardIds={form.getFieldValue('curriculumStandards') || []}
             handleApply={this.handleStandardsChange}
-            selectedCurriculam={form.getFieldValue('standard')}
+            selectedCurriculam={selectedCurriculam}
           />
         )}
       </>

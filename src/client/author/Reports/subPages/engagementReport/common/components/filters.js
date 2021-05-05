@@ -79,6 +79,7 @@ const EngagementReportFilters = ({
       grades: urlGrades.map((item) => item.key).join(',') || '',
       subjects: urlSubjects.map((item) => item.key).join(',') || '',
       assessmentTypes: search.assessmentTypes || '',
+      assignedBy: search.assignedBy || staticDropDownData.assignedBy[0].key,
     }
     const assessmentTypesArr = (search.assessmentTypes || '').split(',')
     const _tempTagsData = {
@@ -88,6 +89,7 @@ const EngagementReportFilters = ({
       assessmentTypes: staticDropDownData.assessmentType.filter((a) =>
         assessmentTypesArr.includes(a.key)
       ),
+      assignedBy: search.assignedBy || staticDropDownData.assignedBy[0],
     }
     setTempTagsData(_tempTagsData)
     setFilters(_filters)
@@ -268,6 +270,18 @@ const EngagementReportFilters = ({
                         : []
                     }
                     options={staticDropDownData.assessmentType}
+                  />
+                </Col>
+                <Col span={6}>
+                  <FilterLabel data-cy="assignedBy">Assigned By</FilterLabel>
+                  <ControlDropDown
+                    by={filters.assignedBy}
+                    selectCB={(e, selected) =>
+                      updateFilterDropdownCB(selected, 'assignedBy')
+                    }
+                    data={staticDropDownData.assignedBy}
+                    prefix="Assigned By"
+                    showPrefixOnSelected={false}
                   />
                 </Col>
               </Row>

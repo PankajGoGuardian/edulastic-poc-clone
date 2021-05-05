@@ -1,4 +1,4 @@
-{ 
+{
   "filterSections": {
     "TEST_FILTERS": {
       "key": "0",
@@ -36,7 +36,9 @@
     { "key": "gender" },
     { "key": "iepStatus" },
     { "key": "frlStatus" },
-    { "key": "ellStatus" }
+    { "key": "ellStatus" },
+    { "key": "hispanicEthnicity" },
+    { "key": "assignedBy" }
   ],
   "initialFilters": {
     "reportId": "",
@@ -52,7 +54,8 @@
     "courseId": "All",
     "classIds": "",
     "groupIds": "",
-    "profileId": ""
+    "profileId": "",
+    "assignedBy": "anyone"
   },
   "initialDdFilters": {
     "race": "all",
@@ -90,5 +93,9 @@
     { "key": "common assessment", "title": "Common" },
     { "key": "assessment", "title": "Class" },
     { "key": "practice", "title": "Practice" }
+  ],
+  "assignedBy": [
+    { "key": "anyone", "title": "Anyone" },
+    { "key": "me", "title": "Me" }
   ]
 }

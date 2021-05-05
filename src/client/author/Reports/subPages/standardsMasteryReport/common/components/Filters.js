@@ -311,6 +311,7 @@ const StandardsMasteryReportFilters = ({
         profileId: urlStandardProficiency?.key || '',
         domainIds: [],
         standardId: search.standardId || '',
+        assignedBy: search.assignedBy || staticDropDownData.assignedBy[0].key,
       }
       if (role === roleuser.TEACHER) {
         delete _filters.schoolIds
@@ -329,6 +330,7 @@ const StandardsMasteryReportFilters = ({
         curriculumId: urlCurriculum,
         standardGrade: urlStandardGrade,
         profileId: urlStandardProficiency,
+        assignedBy: search.assignedBy || staticDropDownData.assignedBy[0],
       }
       // set tempTagsData, filters and testId
       setTempTagsData(_tempTagsData)
@@ -657,6 +659,20 @@ const StandardsMasteryReportFilters = ({
                             selectCB={(e) =>
                               updateFilterDropdownCB(e, 'groupIds', true)
                             }
+                          />
+                        </Col>
+                        <Col span={6}>
+                          <FilterLabel data-cy="assignedBy">
+                            Assigned By
+                          </FilterLabel>
+                          <ControlDropDown
+                            by={filters.assignedBy}
+                            selectCB={(e, selected) =>
+                              updateFilterDropdownCB(selected, 'assignedBy')
+                            }
+                            data={staticDropDownData.assignedBy}
+                            prefix="Assigned By"
+                            showPrefixOnSelected={false}
                           />
                         </Col>
                       </Row>

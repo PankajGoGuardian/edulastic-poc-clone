@@ -120,7 +120,7 @@ const ItemDetailWidget = ({
                   <UnScored
                     width="50px"
                     height="50px"
-                    top={itemData.itemLevelScoring ? '-80px' : '-50px'}
+                    top={`${itemData.itemLevelScoring ? -80 : -50}px`}
                   />
                 )
               ) : null}

@@ -22,6 +22,7 @@ const fetchTileById = (id) =>
 const fetchRecommendedTest = () =>
   api
     .callApi({
+      useSlowApi: true,
       url: `${prefix}/recommend/tests`,
       method: 'get',
     })

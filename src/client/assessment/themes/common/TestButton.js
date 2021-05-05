@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
-import { smallDesktopWidth, themeColorBlue } from '@edulastic/colors'
+import { smallDesktopWidth } from '@edulastic/colors'
 import { IconBookmark, IconCheck } from '@edulastic/icons'
+import { withKeyboard } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import PropTypes from 'prop-types'
 import React from 'react'
@@ -33,17 +34,7 @@ const TestButton = ({
     <Container>
       {!blockNavigationToAnsweredQuestions && !LCBPreviewModal && (
         <Tooltip placement="top" title="Bookmark">
-          <StyledButton
-            tabIndex="0"
-            onKeyDown={(e) => {
-              const code = e.which
-              if (code === 13 || code === 32) {
-                toggleBookmark()
-              }
-            }}
-            onClick={toggleBookmark}
-            active={isBookmarked}
-          >
+          <StyledButton onClick={toggleBookmark} active={isBookmarked}>
             <StyledIconBookmark />
             <span>{t('common.test.bookmark')}</span>
           </StyledButton>
@@ -60,17 +51,7 @@ const TestButton = ({
               : 'Check Answer'
           }
         >
-          <StyledButton
-            onClick={handleCheckAnswer}
-            data-cy="checkAnswer"
-            tabIndex="0"
-            onKeyDown={(e) => {
-              const code = e.which
-              if (code === 13 || code === 32) {
-                handleCheckAnswer()
-              }
-            }}
-          >
+          <StyledButton onClick={handleCheckAnswer} data-cy="checkAnswer">
             <StyledIconCheck />
             <span> {t('common.test.checkanswer')}</span>
           </StyledButton>
@@ -111,7 +92,7 @@ const Container = styled.div`
   display: flex;
 `
 
-const StyledButton = styled.div`
+const StyledButton = withKeyboard(styled.div`
   margin-right: 5px;
   text-transform: uppercase;
   display: flex;
@@ -166,12 +147,7 @@ const StyledButton = styled.div`
       margin-right: 0px;
     }
   }
-
-  &:focus {
-    outline: 0;
-    box-shadow: 0 0 0 2px ${themeColorBlue};
-  }
-`
+`)
 
 const StyledIconCheck = styled(IconCheck)`
   ${({ theme }) => `

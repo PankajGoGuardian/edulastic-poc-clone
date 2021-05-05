@@ -3,7 +3,12 @@ import { compose } from 'redux'
 import styled from 'styled-components'
 import { themeColor } from '@edulastic/colors'
 import { withNamespaces } from '@edulastic/localization'
-import { CustomModalStyled, EduButton, FlexContainer } from '@edulastic/common'
+import {
+  CustomModalStyled,
+  EduButton,
+  FlexContainer,
+  withKeyboard,
+} from '@edulastic/common'
 import { StyledMenu, MenuItem } from './styled'
 
 const getItemStatusColor = (selectedCard) => {
@@ -51,7 +56,7 @@ const ReviewQuestionsModal = ({
 
   const handleQuestionCLick = (e) => {
     handleClose()
-    gotoQuestion(options[parseInt(e.key, 10)])
+    e && gotoQuestion(options[parseInt(e.key, 10)])
   }
 
   return (
@@ -102,39 +107,18 @@ const ReviewQuestionsModal = ({
             <Card
               selected={selectedCard === 'notAnswered'}
               onClick={() => handleCardClick('notAnswered')}
-              tabIndex="0"
-              onKeyDown={(e) => {
-                const code = e.which
-                if (code === 13 || code === 32) {
-                  handleCardClick('notAnswered')
-                }
-              }}
             >
               <div>UNANSWERED ({totalUnanswered})</div>
             </Card>
             <Card
               selected={selectedCard === 'answered'}
               onClick={() => handleCardClick('answered')}
-              tabIndex="0"
-              onKeyDown={(e) => {
-                const code = e.which
-                if (code === 13 || code === 32) {
-                  handleCardClick('answered')
-                }
-              }}
             >
               <div>ANSWERED ({totalQuestions - totalUnanswered})</div>
             </Card>
             <Card
               selected={selectedCard === 'bookmarks'}
               onClick={() => handleCardClick('bookmarks')}
-              tabIndex="0"
-              onKeyDown={(e) => {
-                const code = e.which
-                if (code === 13 || code === 32) {
-                  handleCardClick('bookmarks')
-                }
-              }}
             >
               <div>BOOKMARKED ({totalBookmarks})</div>
             </Card>
@@ -150,12 +134,8 @@ const ReviewQuestionsModal = ({
               disabled={blockNavigationToAnsweredQuestions}
               data-cy="questionSelectOptions"
               bg={getItemStatusColor(selectedCard)}
-              tabIndex="0"
-              onKeyDown={(e) => {
-                const code = e.which
-                if (code === 13 || code === 32) {
-                  handleQuestionCLick({ key: option })
-                }
+              onClick={() => {
+                handleQuestionCLick({ key: option })
               }}
             >
               {option + 1}
@@ -185,7 +165,7 @@ const enhance = compose(withNamespaces('student'))
 
 export default enhance(ReviewQuestionsModal)
 
-const Card = styled.div`
+const Card = withKeyboard(styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -211,7 +191,7 @@ const Card = styled.div`
   :last-child {
     border: none;
   }
-`
+`)
 
 const LegendsContainer = styled.div`
   display: flex;

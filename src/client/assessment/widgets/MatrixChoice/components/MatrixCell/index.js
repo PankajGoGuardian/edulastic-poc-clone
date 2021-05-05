@@ -16,6 +16,7 @@ const MatrixCell = ({
   smallSize,
   isPrintPreview,
   children,
+  tool,
 }) => {
   let input
 
@@ -31,13 +32,8 @@ const MatrixCell = ({
       correct={checked && correct}
       isPrintPreview={isPrintPreview}
       onClick={onChange}
-      tabIndex="0"
-      onKeyDown={(e) => {
-        const code = e.which
-        if (code === 13 || code === 32) {
-          onChange()
-        }
-      }}
+      onlySpaceKey
+      tool={tool}
     >
       {input}
       {type === 'inline' && (

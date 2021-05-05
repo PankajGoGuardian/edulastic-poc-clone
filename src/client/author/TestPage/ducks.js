@@ -2163,7 +2163,7 @@ function* updateRegradeDataSaga({ payload: _payload }) {
     } else {
       notification({
         type: 'info',
-        msg: 'Changes made to the test have been published',
+        msg: 'Changes made to the test are being published',
       })
     }
   } catch (err) {

@@ -155,6 +155,15 @@ const EngagementReportFilters = ({
     toggleFilter(null, true)
   }
 
+  const handleTagClick = (filterKey) => {
+    const tabKey =
+      staticDropDownData.tagTypes.find((filter) => filter.key === filterKey)
+        ?.tabKey || -1
+    if (tabKey !== -1) {
+      toggleFilter(null, true)
+    }
+  }
+
   return (
     <>
       <FilterTags
@@ -163,6 +172,7 @@ const EngagementReportFilters = ({
         tagsData={tagsData}
         tagTypes={staticDropDownData.tagTypes}
         handleCloseTag={handleCloseTag}
+        handleTagClick={handleTagClick}
       />
       <ReportFiltersContainer visible={!reportId}>
         <StyledEduButton

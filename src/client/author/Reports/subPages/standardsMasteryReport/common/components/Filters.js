@@ -19,6 +19,7 @@ import TeacherAutoComplete from '../../../../common/components/autocompletes/Tea
 import CourseAutoComplete from '../../../../common/components/autocompletes/CourseAutoComplete'
 import ClassAutoComplete from '../../../../common/components/autocompletes/ClassAutoComplete'
 import GroupsAutoComplete from '../../../../common/components/autocompletes/GroupsAutoComplete'
+import { AutocompleteDropDown } from '../../../../common/components/widgets/autocompleteDropDown'
 import TagFilter from '../../../../../src/components/common/TagFilter'
 import {
   ReportFiltersContainer,
@@ -289,15 +290,11 @@ const StandardsMasteryReportFilters = ({
       const urlStandardProficiency =
         standardProficiencyList.find((item) => item.key === search.profileId) ||
         defaultStandardProficiency
-      const defaultGrade =
-        source !== 'standard-reports' ? '' : staticDropDownData.grades[0].key
-      const defaultGradeTag =
-        source !== 'standard-reports' ? [] : staticDropDownData.grades[0]
       const _filters = {
         termId: urlSchoolYear.key,
         schoolIds: search.schoolIds || '',
         teacherIds: search.teacherIds || '',
-        grades: urlGrades.map((item) => item.key).join(',') || defaultGrade,
+        grades: urlGrades.map((item) => item.key).join(',') || '',
         subjects: urlSubjects.map((item) => item.key).join(',') || '',
         courseId: search.courseId || 'All',
         classIds: search.classIds || '',
@@ -320,7 +317,7 @@ const StandardsMasteryReportFilters = ({
       const assessmentTypesArr = (search.assessmentTypes || '').split(',')
       const _tempTagsData = {
         termId: urlSchoolYear,
-        grades: urlGrades || defaultGradeTag,
+        grades: urlGrades,
         subjects: urlSubjects,
         testGrades: urlTestGrades,
         testSubjects: urlTestSubjects,
@@ -467,6 +464,16 @@ const StandardsMasteryReportFilters = ({
     toggleFilter(null, true)
   }
 
+  const handleTagClick = (filterKey) => {
+    const tabKey =
+      staticDropDownData.tagTypes.find((filter) => filter.key === filterKey)
+        ?.tabKey || -1
+    if (tabKey !== -1) {
+      toggleFilter(null, true)
+      setActiveTabKey(tabKey)
+    }
+  }
+
   // -----|-----|-----|-----| EVENT HANDLERS ENDED |-----|-----|-----|----- //
 
   const standardProficiencyFilter = (
@@ -498,6 +505,7 @@ const StandardsMasteryReportFilters = ({
           tagsData={tagsData}
           tagTypes={tagTypes}
           handleCloseTag={handleCloseTag}
+          handleTagClick={handleTagClick}
         />
         <ReportFiltersContainer visible={!reportId}>
           <StyledEduButton
@@ -521,6 +529,110 @@ const StandardsMasteryReportFilters = ({
                     activeKey={activeTabKey}
                     onChange={setActiveTabKey}
                   >
+                    <Tabs.TabPane
+                      key={staticDropDownData.filterSections.TEST_FILTERS.key}
+                      tab={staticDropDownData.filterSections.TEST_FILTERS.title}
+                    >
+                      <Row type="flex" gutter={[5, 10]}>
+                        <Col span={6}>
+                          <MultiSelectDropdown
+                            dataCy="testGrade"
+                            label="Test Grade"
+                            onChange={(e) => {
+                              const selected = staticDropDownData.grades.filter(
+                                (a) => e.includes(a.key)
+                              )
+                              updateFilterDropdownCB(
+                                selected,
+                                'testGrades',
+                                true
+                              )
+                            }}
+                            value={
+                              filters.testGrades && filters.testGrades !== 'All'
+                                ? filters.testGrades.split(',')
+                                : []
+                            }
+                            options={staticDropDownData.grades}
+                          />
+                        </Col>
+                        <Col span={6}>
+                          <MultiSelectDropdown
+                            dataCy="testSubject"
+                            label="Test Subject"
+                            onChange={(e) => {
+                              const selected = staticDropDownData.subjects.filter(
+                                (a) => e.includes(a.key)
+                              )
+                              updateFilterDropdownCB(
+                                selected,
+                                'testSubjects',
+                                true
+                              )
+                            }}
+                            value={
+                              filters.testSubjects &&
+                              filters.testSubjects !== 'All'
+                                ? filters.testSubjects.split(',')
+                                : []
+                            }
+                            options={staticDropDownData.subjects}
+                          />
+                        </Col>
+                        <Col span={6}>
+                          <MultiSelectDropdown
+                            dataCy="testTypes"
+                            label="Test Type"
+                            el={assessmentTypesRef}
+                            onChange={(e) => {
+                              const selected = staticDropDownData.assessmentType.filter(
+                                (a) => e.includes(a.key)
+                              )
+                              updateFilterDropdownCB(
+                                selected,
+                                'assessmentTypes',
+                                true
+                              )
+                            }}
+                            value={
+                              filters.assessmentTypes
+                                ? filters.assessmentTypes.split(',')
+                                : []
+                            }
+                            options={staticDropDownData.assessmentType}
+                          />
+                        </Col>
+                        <Col span={6}>
+                          <FilterLabel data-cy="tags-select">Tags</FilterLabel>
+                          <TagFilter
+                            onChangeField={(type, selected) => {
+                              const _selected = selected.map(
+                                ({ _id: key, tagName: title }) => ({
+                                  key,
+                                  title,
+                                })
+                              )
+                              updateFilterDropdownCB(_selected, 'tagIds', true)
+                            }}
+                            selectedTagIds={
+                              filters.tagIds ? filters.tagIds.split(',') : []
+                            }
+                          />
+                        </Col>
+                        <Col span={18}>
+                          <AssessmentsAutoComplete
+                            dataCy="tests"
+                            termId={filters.termId}
+                            grades={filters.testGrades}
+                            subjects={filters.testSubjects}
+                            tagIds={filters.tagIds}
+                            testTypes={filters.assessmentTypes}
+                            selectedTestIds={testIds}
+                            selectCB={onSelectTest}
+                          />
+                        </Col>
+                      </Row>
+                    </Tabs.TabPane>
                     <Tabs.TabPane
                       key={staticDropDownData.filterSections.CLASS_FILTERS.key}
                       tab={
@@ -677,110 +789,6 @@ const StandardsMasteryReportFilters = ({
                         </Col>
                       </Row>
                     </Tabs.TabPane>
-                    <Tabs.TabPane
-                      key={staticDropDownData.filterSections.TEST_FILTERS.key}
-                      tab={staticDropDownData.filterSections.TEST_FILTERS.title}
-                    >
-                      <Row type="flex" gutter={[5, 10]}>
-                        <Col span={6}>
-                          <MultiSelectDropdown
-                            dataCy="testGrade"
-                            label="Test Grade"
-                            onChange={(e) => {
-                              const selected = staticDropDownData.grades.filter(
-                                (a) => e.includes(a.key)
-                              )
-                              updateFilterDropdownCB(
-                                selected,
-                                'testGrades',
-                                true
-                              )
-                            }}
-                            value={
-                              filters.testGrades && filters.testGrades !== 'All'
-                                ? filters.testGrades.split(',')
-                                : []
-                            }
-                            options={staticDropDownData.grades}
-                          />
-                        </Col>
-                        <Col span={6}>
-                          <MultiSelectDropdown
-                            dataCy="testSubject"
-                            label="Test Subject"
-                            onChange={(e) => {
-                              const selected = staticDropDownData.subjects.filter(
-                                (a) => e.includes(a.key)
-                              )
-                              updateFilterDropdownCB(
-                                selected,
-                                'testSubjects',
-                                true
-                              )
-                            }}
-                            value={
-                              filters.testSubjects &&
-                              filters.testSubjects !== 'All'
-                                ? filters.testSubjects.split(',')
-                                : []
-                            }
-                            options={staticDropDownData.subjects}
-                          />
-                        </Col>
-                        <Col span={6}>
-                          <MultiSelectDropdown
-                            dataCy="testTypes"
-                            label="Test Type"
-                            el={assessmentTypesRef}
-                            onChange={(e) => {
-                              const selected = staticDropDownData.assessmentType.filter(
-                                (a) => e.includes(a.key)
-                              )
-                              updateFilterDropdownCB(
-                                selected,
-                                'assessmentTypes',
-                                true
-                              )
-                            }}
-                            value={
-                              filters.assessmentTypes
-                                ? filters.assessmentTypes.split(',')
-                                : []
-                            }
-                            options={staticDropDownData.assessmentType}
-                          />
-                        </Col>
-                        <Col span={6}>
-                          <FilterLabel data-cy="tags-select">Tags</FilterLabel>
-                          <TagFilter
-                            onChangeField={(type, selected) => {
-                              const _selected = selected.map(
-                                ({ _id: key, tagName: title }) => ({
-                                  key,
-                                  title,
-                                })
-                              )
-                              updateFilterDropdownCB(_selected, 'tagIds', true)
-                            }}
-                            selectedTagIds={
-                              filters.tagIds ? filters.tagIds.split(',') : []
-                            }
-                          />
-                        </Col>
-                        <Col span={18}>
-                          <AssessmentsAutoComplete
-                            dataCy="tests"
-                            termId={filters.termId}
-                            grades={filters.testGrades}
-                            subjects={filters.testSubjects}
-                            tagIds={filters.tagIds}
-                            testTypes={filters.assessmentTypes}
-                            selectedTestIds={testIds}
-                            selectCB={onSelectTest}
-                          />
-                        </Col>
-                      </Row>
-                    </Tabs.TabPane>
 
                     {isTabRequired(
                       staticDropDownData.filterSections.DEMOGRAPHIC_FILTERS.key
@@ -911,20 +919,20 @@ const StandardsMasteryReportFilters = ({
               autoFlex
               data-cy="standard"
             >
-              <ControlDropDown
+              <AutocompleteDropDown
+                prefix="Standard"
                 by={
                   // filters.standardId is searched in standardsList
                   // to make sure standardId passed via url also sets the correct standard
                   standardsList.find(
                     (o) => `${o.key}` === `${filters.standardId}`
-                  ) || standardsList[0]
+                  ) ||
+                  standardsList[0] || { key: '', title: '' }
                 }
-                selectCB={(e, selected) =>
+                selectCB={(selected) => {
                   updateFilterDropdownCB(selected, 'standardId', false, true)
-                }
+                }}
                 data={standardsList}
-                prefix="Standard"
-                showPrefixOnSelected={false}
               />
             </StyledDropDownContainer>
           )}

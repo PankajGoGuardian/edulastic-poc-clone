@@ -371,6 +371,16 @@ const StudentProfileReportFilters = ({
   const topFilterColSpan =
     loc === 'student-progress-profile' && filters.showApply ? 5 : 6
 
+  const handleTagClick = (filterKey) => {
+    const tabKey =
+      staticDropDownData.tagTypes.find((filter) => filter.key === filterKey)
+        ?.tabKey || -1
+    if (tabKey !== -1) {
+      toggleFilter(null, true)
+      setActiveTabKey(tabKey)
+    }
+  }
+
   return (
     <Row type="flex" gutter={[0, 5]} style={{ width: '100%' }}>
       <Col span={24} style={{ display: 'flex', alignItems: 'center' }}>
@@ -380,6 +390,7 @@ const StudentProfileReportFilters = ({
           tagsData={tagsData}
           tagTypes={tagTypes}
           handleCloseTag={handleCloseTag}
+          handleTagClick={handleTagClick}
         />
         <ReportFiltersContainer visible={!reportId}>
           <StyledEduButton

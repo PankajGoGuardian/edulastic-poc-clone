@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { get, isEmpty, pickBy } from 'lodash'
@@ -100,7 +100,6 @@ const SingleAssessmentReportFilters = ({
   const [activeTabKey, setActiveTabKey] = useState(
     staticDropDownData.filterSections.TEST_FILTERS.key
   )
-  const assessmentTypeRef = useRef()
 
   const tagTypes = staticDropDownData.tagTypes.filter(
     (t) =>
@@ -410,6 +409,16 @@ const SingleAssessmentReportFilters = ({
     toggleFilter(null, true)
   }
 
+  const handleTagClick = (filterKey) => {
+    const tabKey =
+      staticDropDownData.tagTypes.find((filter) => filter.key === filterKey)
+        ?.tabKey || -1
+    if (tabKey !== -1) {
+      toggleFilter(null, true)
+      setActiveTabKey(tabKey)
+    }
+  }
+
   return (
     <>
       <FilterTags
@@ -418,6 +427,7 @@ const SingleAssessmentReportFilters = ({
         tagsData={tagsData}
         tagTypes={tagTypes}
         handleCloseTag={handleCloseTag}
+        handleTagClick={handleTagClick}
       />
       <ReportFiltersContainer visible={!reportId && !isCliUser}>
         <StyledEduButton
@@ -504,7 +514,6 @@ const SingleAssessmentReportFilters = ({
                         <MultiSelectDropdown
                           dataCy="testTypes"
                           label="Test Type"
-                          el={assessmentTypeRef}
                           onChange={(e) => {
                             const selected = staticDropDownData.assessmentType.filter(
                               (a) => e.includes(a.key)

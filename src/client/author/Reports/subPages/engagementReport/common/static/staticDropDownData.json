@@ -1,12 +1,12 @@
 {
   "tagTypes": [
-    { "key": "termId" },
-    { "key": "schoolIds" },
-    { "key": "teacherIds" },
-    { "key": "grades", "subType": "class" },
-    { "key": "subjects", "subType": "class" },
-    { "key": "assessmentTypes" },
-    { "key": "assignedBy" }
+    { "key": "termId", "tabKey": "0" },
+    { "key": "schoolIds", "tabKey": "0" },
+    { "key": "teacherIds", "tabKey": "0" },
+    { "key": "grades", "subType": "class", "tabKey": "0" },
+    { "key": "subjects", "subType": "class", "tabKey": "0" },
+    { "key": "assessmentTypes", "tabKey": "0" },
+    { "key": "assignedBy", "tabKey": "0" }
   ],
   "initialFilters": {
     "reportId": "",

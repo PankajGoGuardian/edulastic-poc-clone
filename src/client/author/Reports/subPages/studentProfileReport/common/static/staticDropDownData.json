@@ -6,17 +6,17 @@
     }
   },
   "tagTypes": [
-    { "key": "termId" },
-    { "key": "courseIds" },
-    { "key": "grades", "subType": "class" },
-    { "key": "subjects", "subType": "class" },
-    { "key": "classIds" },
+    { "key": "termId", "tabKey": "0" },
+    { "key": "courseIds", "tabKey": "0" },
+    { "key": "grades", "subType": "class", "tabKey": "0" },
+    { "key": "subjects", "subType": "class", "tabKey": "0" },
+    { "key": "classIds", "tabKey": "0" },
     { "key": "student" },
     { "key": "performanceBandProfileId" },
     { "key": "standardsProficiencyProfileId" },
     { "key": "domainId" },
     { "key": "standardId" },
-    { "key": "assignedBy" }
+    { "key": "assignedBy", "tabKey": "0" }
   ],
   "initialFilters": {
     "reportId": "",

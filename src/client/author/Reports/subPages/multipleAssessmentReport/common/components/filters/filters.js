@@ -202,10 +202,6 @@ const MultipleAssessmentReportFilters = ({
         delete _filters.schoolIds
         delete _filters.teacherIds
       }
-      if (role === roleuser.SCHOOL_ADMIN) {
-        _filters.schoolIds =
-          _filters.schoolIds || get(user, 'institutionIds', []).join(',')
-      }
       const assessmentTypesArr = (search.assessmentTypes || '').split(',')
       const _tempTagsData = {
         termId: urlSchoolYear,
@@ -320,6 +316,16 @@ const MultipleAssessmentReportFilters = ({
     toggleFilter(null, true)
   }
 
+  const handleTagClick = (filterKey) => {
+    const tabKey =
+      staticDropDownData.tagTypes.find((filter) => filter.key === filterKey)
+        ?.tabKey || -1
+    if (tabKey !== -1) {
+      toggleFilter(null, true)
+      setActiveTabKey(tabKey)
+    }
+  }
+
   return (
     <>
       <FilterTags
@@ -328,6 +334,7 @@ const MultipleAssessmentReportFilters = ({
         tagsData={tagsData}
         tagTypes={tagTypes}
         handleCloseTag={handleCloseTag}
+        handleTagClick={handleTagClick}
       />
       <ReportFiltersContainer visible={!reportId}>
         <StyledEduButton

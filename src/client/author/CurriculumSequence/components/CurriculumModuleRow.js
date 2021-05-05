@@ -808,13 +808,13 @@ class ModuleRow extends Component {
                       {!isStudent && (
                         <Menu.Item
                           data-cy="view-test"
-                          onClick={() =>
+                          onClick={() => {
                             this.viewTest(
-                              moduleData.contentVersionId,
+                              moduleData.contentId,
                               moduleData?.contentVersionId !==
                                 moduleData?.contentId
                             )
-                          }
+                          }}
                         >
                           Preview Test
                         </Menu.Item>

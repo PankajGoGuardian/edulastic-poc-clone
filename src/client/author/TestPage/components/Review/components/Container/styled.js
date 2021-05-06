@@ -108,5 +108,5 @@ export const SecondHeaderWrapper = styled(Row)`
   height: 55px;
   position: sticky;
   top: -30px;
-  z-index: 1500;
+  z-index: 1000;
 `

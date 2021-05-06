@@ -1988,11 +1988,13 @@ function* updateInterestedCurriculumsSaga({ payload }) {
       const data = _data.map((x) => {
         return { ...x._source, _id: x._id }
       })
-      const userId = yield select(getUserId)
-      localStorage.setItem(
-        `recommendedTest:${userId}:stored`,
-        JSON.stringify(data)
-      )
+      if (data?.length) {
+        const userId = yield select(getUserId)
+        localStorage.setItem(
+          `recommendedTest:${userId}:stored`,
+          JSON.stringify(data)
+        )
+      }
     }
   } catch (e) {
     yield put({ type: UPDATE_INTERESTED_CURRICULUMS_FAILED })

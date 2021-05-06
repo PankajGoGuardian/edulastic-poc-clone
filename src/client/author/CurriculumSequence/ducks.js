@@ -1527,7 +1527,7 @@ function* useThisPlayListSaga({ payload }) {
         curriculumSequencesApi.duplicatePlayList,
         {
           _id,
-          title: `${title} - Customized`,
+          title: `${title} - ${new Date().toLocaleString()}`,
           forUseThis: true,
           forceClone,
         }

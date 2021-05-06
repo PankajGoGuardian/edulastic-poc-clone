@@ -92,7 +92,7 @@ const MyClasses = ({
   const [showTrialSubsConfirmation, setShowTrialSubsConfirmation] = useState(
     false
   )
-    
+
   useEffect(() => {
     // fetch clever classes on modal display
     if (showCleverSyncModal) {
@@ -106,7 +106,9 @@ const MyClasses = ({
   }, [])
 
   const saveRecommendedTests = (_data) => {
-    if (!_data || !_data.length) return
+    if (!_data || !_data.length) {
+      return
+    }
     const data = _data.map((x) => {
       return { ...x._source, _id: x._id }
     })

@@ -129,6 +129,7 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
         disabled={disableResponse}
         onChange={(text) => save({ value: text, index }, 'dropDowns', id)}
         getPopupContainer={() =>
+          document?.getElementById('preview-modal-content-area') ||
           document?.getElementById('question-main-wrapper')
         }
         value={val}

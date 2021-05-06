@@ -341,28 +341,21 @@ function* getAtlasGradeSyncUpdate({ assignmentId, groupId, signedUrl, type }) {
 
 function* syncAssignmentGradesWithCleverSaga({ payload }) {
   try {
-    yield call(cleverApi.syncGradesWithClever, payload)
-    const { url: signedUrl } = yield call(realtimeApi.getSignedUrl)
-    yield fork(getAtlasGradeSyncUpdate, {
-      ...payload,
-      signedUrl,
-      type: 'CLEVER',
-    })
-    notification({
-      type: 'success',
-      msg: 'Grade sync with Schoology is in progress',
-    })
+    const res = yield call(cleverApi.syncGradesWithClever, payload)
+    if (res?.message) {
+      notification({ type: 'success', msg: res.message })
+    } else {
+      notification({
+        type: 'success',
+        msg: 'Grades are being shared to Schoology Classroom',
+      })
+    }
   } catch (err) {
-    const mqttClient = yield select(
-      (state) => state.author_assignments.mqttClient
-    )
-    yield put({
-      type: MQTT_CLIENT_REMOVE_REQUEST,
-    })
-    mqttClient && mqttClient.end()
     captureSentryException(err)
     notification({
-      msg: 'Failed to share grades to Schoology Classroom',
+      msg:
+        err?.response?.data?.message ||
+        'Failed to share grades to Schoology Classroom',
     })
   }
 }

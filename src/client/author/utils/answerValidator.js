@@ -181,28 +181,49 @@ const answerValidator = {
       // combine text and dropdown as they can be validated together
       const textInputsAndDropdowns = [...textInputs, ...dropdowns]
 
-      // check for empty answers
-      // if validation method is equivSyntax answer will be empty
-      const hasEmptyMathAnswers = isEmpty(
-        mathInputs.filter((mathInput = {}) =>
-          mathInput.method !== methods.EQUIV_SYNTAX
-            ? !isEmpty(mathInput?.value)
-            : true
-        )
-      )
+      /**
+       * @see https://snapwiz.atlassian.net/browse/EV-27080
+       * return even if a single correct answer is left empty
+       */
 
-      const hasEmptyMathUnitInputs = isEmpty(
-        mathUnitInputs.filter((input = {}) =>
-          input.method !== methods.EQUIV_SYNTAX ? !isEmpty(input?.value) : true
+      if (answer.value) {
+        // check for empty answers
+        // if validation method is equivSyntax answer will be empty
+        const hasEmptyMathAnswers = isEmpty(
+          mathInputs.filter((mathInput = {}) =>
+            mathInput.method !== methods.EQUIV_SYNTAX
+              ? !isEmpty(mathInput?.value)
+              : true
+          )
         )
-      )
+        if (hasEmptyMathAnswers) {
+          return true
+        }
+      }
 
-      const hasEmptyTextOrDropDown = isEmpty(
-        textInputsAndDropdowns.filter((ans) => !isEmpty(ans.value))
-      )
-      return (
-        hasEmptyTextOrDropDown && hasEmptyMathAnswers && hasEmptyMathUnitInputs
-      )
+      if (answer.mathUnits) {
+        const hasEmptyMathUnitInputs = isEmpty(
+          mathUnitInputs.filter((input = {}) =>
+            input.method !== methods.EQUIV_SYNTAX
+              ? !isEmpty(input?.value)
+              : true
+          )
+        )
+        if (hasEmptyMathUnitInputs) {
+          return true
+        }
+      }
+
+      if (answer.textinput || answer.dropdown) {
+        const hasEmptyTextOrDropDown = isEmpty(
+          textInputsAndDropdowns.filter((ans) => !isEmpty(ans.value))
+        )
+        if (hasEmptyTextOrDropDown) {
+          return true
+        }
+      }
+
+      return false
     })
     return hasEmpty
   },

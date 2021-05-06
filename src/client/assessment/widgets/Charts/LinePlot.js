@@ -81,7 +81,7 @@ const LinePlot = ({
   }
 
   const onMouseMove = (e) => {
-    if (window.isIOS) normalizeTouchEvent(e)
+    if (window.isIOS || window.isMobileDevice) normalizeTouchEvent(e)
     if (isMouseDown && cursorY && !deleteMode) {
       const newPxY = convertUnitToPx(initY, gridParams) + e.pageY - cursorY
       setLocalData(
@@ -94,7 +94,7 @@ const LinePlot = ({
   }
 
   const onMouseDown = (index) => (e) => {
-    if (window.isIOS) normalizeTouchEvent(e)
+    if (window.isIOS || window.isMobileDevice) normalizeTouchEvent(e)
     setCursorY(e.pageY)
     setActiveIndex(index)
     setInitY(localData[index].y)

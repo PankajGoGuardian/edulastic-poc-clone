@@ -78,6 +78,7 @@ import {
   HideLinkLabel,
   CaretUp,
   Bullet,
+  MenuStyled,
 } from './styled'
 import TestPreviewModal from '../../Assignments/components/Container/TestPreviewModal'
 import { getIsPreviewModalVisibleSelector } from '../../../assessment/selectors/test'
@@ -779,7 +780,7 @@ class ModuleRow extends Component {
                     : {}
 
                   const moreMenu = (
-                    <Menu data-cy="assessmentItemMoreMenu">
+                    <MenuStyled data-cy="assessmentItemMoreMenu">
                       <CaretUp className="fa fa-caret-up" />
                       {!isStudent && (
                         <Menu.Item
@@ -808,13 +809,13 @@ class ModuleRow extends Component {
                       {!isStudent && (
                         <Menu.Item
                           data-cy="view-test"
-                          onClick={() =>
+                          onClick={() => {
                             this.viewTest(
-                              moduleData.contentVersionId,
+                              moduleData.contentId,
                               moduleData?.contentVersionId !==
                                 moduleData?.contentId
                             )
-                          }
+                          }}
                         >
                           Preview Test
                         </Menu.Item>
@@ -857,7 +858,7 @@ class ModuleRow extends Component {
                         >
                           Remove
                         </Menu.Item> */}
-                    </Menu>
+                    </MenuStyled>
                   )
 
                   const showHideAssessmentButton = hasEditAccess &&

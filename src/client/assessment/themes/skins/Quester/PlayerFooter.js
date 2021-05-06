@@ -8,7 +8,6 @@ import {
   IconQuester,
   IconCheck,
 } from '@edulastic/icons'
-import { themeColor } from '@edulastic/colors'
 import React, { useState } from 'react'
 import { withNamespaces } from '@edulastic/localization'
 import { test as testConstants, roleuser } from '@edulastic/constants'
@@ -18,7 +17,7 @@ import { get } from 'lodash'
 import styled from 'styled-components'
 import questionType from '@edulastic/constants/const/questionType'
 import { Rnd } from 'react-rnd'
-import { withWindowSizes } from '@edulastic/common'
+import { withWindowSizes, withKeyboard } from '@edulastic/common'
 import { TokenStorage } from '@edulastic/api'
 import { setZoomLevelAction } from '../../../../student/Sidebar/ducks'
 import AudioControls from '../../../AudioControls'
@@ -120,35 +119,15 @@ const PlayerFooter = ({
 
   return (
     <MainFooter isSidebarVisible className="quester-player-footer">
-      <ActionContainer data-cy="zoomIn">
-        <IconWrap
-          className="hover-effect"
-          onClick={handleZoomOut}
-          tabIndex="0"
-          onKeyDown={(e) => {
-            const code = e.which
-            if (code === 13 || code === 32) {
-              handleZoomOut()
-            }
-          }}
-        >
+      <ActionContainer data-cy="zoomIn" onClick={handleZoomOut}>
+        <IconWrap className="hover-effect">
           <IconMinusRounded color={footer.textColor} />
         </IconWrap>
         <span>ZOOM OUT</span>
       </ActionContainer>
 
-      <ActionContainer data-cy="zoomOut">
-        <IconWrap
-          className="hover-effect"
-          onClick={handleZoomIn}
-          tabIndex="0"
-          onKeyDown={(e) => {
-            const code = e.which
-            if (code === 13 || code === 32) {
-              handleZoomIn()
-            }
-          }}
-        >
+      <ActionContainer data-cy="zoomOut" onClick={handleZoomIn}>
+        <IconWrap className="hover-effect">
           <IconPlus color={footer.textColor} />
         </IconWrap>
         <span>ZOOM IN</span>
@@ -162,17 +141,8 @@ const PlayerFooter = ({
               ? toggleBookmark
               : () => toggleBookmark(items[currentItem]?._id)
           }
-          onKeyDown={(e) => {
-            const code = e.which
-            if (code === 13 || code === 32) {
-              defaultAP
-                ? toggleBookmark()
-                : toggleBookmark(items[currentItem]?._id)
-            }
-          }}
           title={t('common.test.bookmark')}
           data-cy="bookmark"
-          tabIndex="0"
         >
           <IconWrapper>
             <IconBookMark
@@ -189,12 +159,6 @@ const PlayerFooter = ({
         <ActionContainer
           hoverEffect
           onClick={handleCheckAnswer}
-          onKeyDown={(e) => {
-            const code = e.which
-            if (code === 13 || code === 32) {
-              handleCheckAnswer()
-            }
-          }}
           title={
             checkAnswerInProgress
               ? 'In progress'
@@ -203,7 +167,6 @@ const PlayerFooter = ({
               : 'Check Answer'
           }
           data-cy="checkAnswer"
-          tabIndex="0"
         >
           <IconCheck color={footer.textColor} hoverColor={button.background} />
           <span> {t('common.test.checkanswer')}</span>
@@ -213,12 +176,6 @@ const PlayerFooter = ({
         hoverEffect
         active={tool?.includes(CROSS_BUTTON)}
         onClick={() => (isDisableCrossBtn ? null : changeTool(CROSS_BUTTON))}
-        onKeyDown={(e) => {
-          const code = e.which
-          if (code === 13 || code === 32) {
-            !isDisableCrossBtn && changeTool(CROSS_BUTTON)
-          }
-        }}
         disabled={isDisableCrossBtn}
         title={
           isDisableCrossBtn
@@ -226,7 +183,6 @@ const PlayerFooter = ({
             : 'Crossout'
         }
         data-cy="crossButton"
-        tabIndex="0"
       >
         <IconWrapper>
           <IconAnswerEliminator
@@ -242,15 +198,8 @@ const PlayerFooter = ({
           hoverEffect
           active={tool?.includes(CALC)}
           onClick={() => changeTool(CALC)}
-          onKeyDown={(e) => {
-            const code = e.which
-            if (code === 13 || code === 32) {
-              changeTool(CALC)
-            }
-          }}
           title={t('common.test.calculator')}
           data-cy="calculator"
-          tabIndex="0"
         >
           <IconWrapper>
             <IconCalculator
@@ -267,15 +216,8 @@ const PlayerFooter = ({
           hoverEffect
           active={tool?.includes(SCRATCHPAD)}
           onClick={() => changeTool(SCRATCHPAD)}
-          onKeyDown={(e) => {
-            const code = e.which
-            if (code === 13 || code === 32) {
-              changeTool(SCRATCHPAD)
-            }
-          }}
           title={t('common.test.scratchPad')}
           data-cy="scratchPad"
-          tabIndex="0"
         >
           <IconWrapper>
             <IconScratchPad
@@ -293,15 +235,8 @@ const PlayerFooter = ({
           hoverEffect
           active={enableMagnifier}
           onClick={handleMagnifier}
-          onKeyDown={(e) => {
-            const code = e.which
-            if (code === 13 || code === 32) {
-              handleMagnifier()
-            }
-          }}
           title={t('common.test.magnify')}
           data-cy="magnify"
-          tabIndex="0"
         >
           <IconWrapper>
             <IconMagnify
@@ -318,15 +253,8 @@ const PlayerFooter = ({
         <ActionContainer
           hoverEffect
           onClick={toggleUserWorkUploadModal}
-          onKeyDown={(e) => {
-            const code = e.which
-            if (code === 13 || code === 32) {
-              toggleUserWorkUploadModal()
-            }
-          }}
           title={t('common.test.uploadWork')}
           data-cy="uploadWork"
-          tabIndex="0"
         >
           <IconWrapper>
             <IconCloudUpload
@@ -447,7 +375,7 @@ const IconMoreVertical = styled(IconMore)`
   right: 10px;
 `
 
-const ActionContainer = styled.div`
+const ActionContainer = withKeyboard(styled.div`
   text-align: center;
   display: flex;
   align-items: center;
@@ -479,12 +407,7 @@ const ActionContainer = styled.div`
         color: ${footer.hover.color};
       }
     `}
-    &:focus {
-    outline: none;
-    border: none;
-    box-shadow: 0 0 0 2px ${themeColor};
-  }
-`
+`)
 
 const IconWrap = styled.span`
   padding: 4px 15px 0px 15px;
@@ -495,11 +418,6 @@ const IconWrap = styled.span`
   &:hover {
     background-color: ${footer.hover.background};
     color: ${footer.hover.color};
-  }
-  &:focus {
-    outline: none;
-    border: none;
-    box-shadow: 0 0 0 2px ${themeColor};
   }
 `
 const Devider = styled.div`

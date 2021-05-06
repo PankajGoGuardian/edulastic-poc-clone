@@ -1,22 +1,22 @@
 import styled from 'styled-components'
 import { IconCheck, IconClose } from '@edulastic/icons'
-import { themeColor, darkRed } from '@edulastic/colors'
+import { correctIconColor, wrongIconColor } from '@edulastic/colors'
 
 export const RightIcon = styled(IconCheck)`
   width: 10px;
   height: 10px;
-  fill: ${themeColor};
+  fill: ${correctIconColor};
   &:hover {
-    fill: ${themeColor};
+    fill: ${correctIconColor};
   }
 `
 
 export const WrongIcon = styled(IconClose)`
   width: 8px;
   height: 8px;
-  fill: ${darkRed};
+  fill: ${wrongIconColor};
   &:hover {
-    fill: ${darkRed};
+    fill: ${wrongIconColor};
   }
 `
 

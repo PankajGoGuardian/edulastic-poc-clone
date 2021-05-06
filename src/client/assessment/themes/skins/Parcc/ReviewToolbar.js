@@ -8,13 +8,15 @@ import { IconDescription } from '@edulastic/icons'
 import { Menu } from 'antd'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircle } from '@fortawesome/free-solid-svg-icons'
-import { FlexContainer } from '@edulastic/common'
+import { FlexContainer, withKeyboard } from '@edulastic/common'
 import { StyledPopover, StyledButton, StyledMenu } from './styled'
 import { themes } from '../../../../theme'
 
 const {
   playerSkin: { parcc },
 } = themes
+
+const MenuItem = withKeyboard(Menu.Item)
 
 const ReviewToolbar = ({
   t,
@@ -43,7 +45,8 @@ const ReviewToolbar = ({
     }
   }
 
-  const handleQuestionCLick = (e) => gotoQuestion(options[parseInt(e.key, 10)])
+  const handleQuestionCLick = (e) =>
+    e && gotoQuestion(options[parseInt(e.key, 10)])
 
   const content = (
     <StyledWrapper>
@@ -52,17 +55,13 @@ const ReviewToolbar = ({
         onClick={handleQuestionCLick}
       >
         {getOptions().map((option) => (
-          <Menu.Item
+          <MenuItem
             key={option}
             style={!skipped[option] && { paddingLeft: '33px' }}
             disabled={blockNavigationToAnsweredQuestions}
             data-cy="questionSelectOptions"
-            tabIndex="0"
-            onKeyDown={(e) => {
-              const code = e.which
-              if (code === 13 || code === 32) {
-                handleQuestionCLick({ key: option })
-              }
+            onClick={() => {
+              handleQuestionCLick({ key: option })
             }}
           >
             {skipped[option] && (
@@ -73,48 +72,27 @@ const ReviewToolbar = ({
               />
             )}
             Question {option + 1}
-          </Menu.Item>
+          </MenuItem>
         ))}
       </StyledMenu>
       <FlexContainer style={{ marginTop: '20px' }}>
         <Card
-          tabIndex="0"
           style={selectedCard === 'all' ? cardStyle : {}}
           onClick={() => handleCardClick('all')}
-          onKeyDown={(e) => {
-            const code = e.which
-            if (code === 13 || code === 32) {
-              handleCardClick('all')
-            }
-          }}
         >
           <StyledCounter>{totalQuestions}</StyledCounter>
           <div>All questions</div>
         </Card>
         <Card
-          tabIndex="0"
           style={selectedCard === 'notAnswered' ? cardStyle : {}}
           onClick={() => handleCardClick('notAnswered')}
-          onKeyDown={(e) => {
-            const code = e.which
-            if (code === 13 || code === 32) {
-              handleCardClick('notAnswered')
-            }
-          }}
         >
           <StyledCounter>{totalUnanswered}</StyledCounter>
           <div>Not answered</div>
         </Card>
         <Card
-          tabIndex="0"
           style={selectedCard === 'bookmarks' ? cardStyle : {}}
           onClick={() => handleCardClick('bookmarks')}
-          onKeyDown={(e) => {
-            const code = e.which
-            if (code === 13 || code === 32) {
-              handleCardClick('bookmarks')
-            }
-          }}
         >
           <StyledCounter>{totalBookmarks}</StyledCounter>
           <div>Bookmarks</div>
@@ -154,7 +132,7 @@ const StyledCounter = styled.div`
   font-weight: bold;
 `
 
-const Card = styled.div`
+const Card = withKeyboard(styled.div`
   height: 80px;
   width: 33%;
   display: flex;
@@ -165,7 +143,7 @@ const Card = styled.div`
   font-size: 10px;
   font-weight: 700;
   cursor: pointer;
-`
+`)
 
 const Container = styled.div`
   margin-left: 10px;

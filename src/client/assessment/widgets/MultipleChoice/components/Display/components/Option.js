@@ -1,5 +1,5 @@
 import { themeColorBlue, white, themeColorHoverBlue } from '@edulastic/colors'
-import { MathFormulaDisplay } from '@edulastic/common'
+import { MathFormulaDisplay, withKeyboard } from '@edulastic/common'
 import produce from 'immer'
 import { flatten, isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
@@ -39,6 +39,7 @@ const Option = (props) => {
     fontSize,
     isPrintPreview,
     fromSetAnswers,
+    tool = [],
   } = props
   let className = ''
   let correctAnswers = []
@@ -180,6 +181,9 @@ const Option = (props) => {
       isSelected={isSelected}
       multipleResponses={multipleResponses}
       className="__print-space-reduce-option"
+      onClickEvent={onChangeHandler}
+      tool={tool}
+      onlySpaceKey
     >
       {uiStyle.type !== 'radioBelow' && container}
       <MultiChoiceContent
@@ -229,13 +233,6 @@ const Option = (props) => {
           toggleHover(false)
         }
       }}
-      tabIndex="0"
-      onKeyDown={(e) => {
-        const code = e.which
-        if (code === 13 || code === 32) {
-          onChangeHandler()
-        }
-      }}
     >
       {renderCheckbox()}
       {showIcon && (
@@ -248,7 +245,7 @@ const Option = (props) => {
   )
 }
 
-const StyledOptionsContainer = styled.div`
+const StyledOptionsContainer = withKeyboard(styled.div`
   flex: 1;
   display: flex;
   justify-content: flex-start;
@@ -307,7 +304,7 @@ const StyledOptionsContainer = styled.div`
       border-color: ${themeColorHoverBlue};
     }
   }
-`
+`)
 
 Option.propTypes = {
   index: PropTypes.number.isRequired,

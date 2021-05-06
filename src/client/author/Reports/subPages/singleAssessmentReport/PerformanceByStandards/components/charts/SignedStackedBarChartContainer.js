@@ -1,14 +1,18 @@
 import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { find, forEach } from 'lodash'
+
+import { reportUtils } from '@edulastic/constants'
+
 import { SignedStackedBarChart } from '../../../../../common/components/charts/signedStackedBarChart'
-import {
-  getChartMasteryData,
+import BarTooltipRow from '../../../../../common/components/tooltip/BarTooltipRow'
+
+const {
+  viewByMode,
   analyzeByMode,
   getYLabelString,
-  viewByMode,
-} from '../../util/transformers'
-import BarTooltipRow from '../../../../../common/components/tooltip/BarTooltipRow'
+  getChartMasteryData,
+} = reportUtils.performanceByStandards
 
 const getSelectedItems = (items) => {
   const selectedItems = {}
@@ -29,7 +33,7 @@ const dataParser = (data, scaleInfo) => {
   })
 }
 
-const yTickFormatter = (val) => {
+const yTickFormatter = () => {
   return ''
 }
 
@@ -64,7 +68,6 @@ const getChartSpecifics = (analyzeBy, scaleInfo) => {
 
 const SignedStackedBarChartContainer = ({
   report,
-  filter,
   selectedData,
   onBarClick,
   onResetClick,
@@ -80,9 +83,15 @@ const SignedStackedBarChartContainer = ({
   })
 
   const leastScale = orderedScaleInfo[0]
+
   const parsedGroupedMetricData = useMemo(
     () => getChartMasteryData(report, viewBy, leastScale),
-    [report, filter, viewBy, leastScale]
+    [report, viewBy, leastScale]
+  )
+
+  const chartData = useMemo(
+    () => dataParser(parsedGroupedMetricData, orderedScaleInfo),
+    [report, viewBy, analyzeBy]
   )
 
   const getTooltipJSX = (payload, barIndex) => {
@@ -111,11 +120,6 @@ const SignedStackedBarChartContainer = ({
     }
     return false
   }
-
-  const chartData = useMemo(
-    () => dataParser(parsedGroupedMetricData, orderedScaleInfo),
-    [report, filter, viewBy, analyzeBy]
-  )
 
   const _onBarClickCB = (key) => {
     const clickedBarData =
@@ -159,7 +163,6 @@ SignedStackedBarChartContainer.propTypes = {
   analyzeBy: PropTypes.string.isRequired,
   onBarClick: PropTypes.func.isRequired,
   onResetClick: PropTypes.func.isRequired,
-  filter: PropTypes.object.isRequired,
   report: PropTypes.object,
   selectedData: PropTypes.array,
 }

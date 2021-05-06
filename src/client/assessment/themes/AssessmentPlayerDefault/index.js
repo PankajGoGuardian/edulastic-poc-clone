@@ -661,6 +661,7 @@ class AssessmentPlayerDefault extends React.Component {
                     itemId={item._id}
                     itemLevelScoring={item.itemLevelScoring}
                     studentReportModal={studentReportModal}
+                    tool={currentToolMode}
                   />
                 )}
                 {testItemState === 'check' && (
@@ -696,6 +697,7 @@ class AssessmentPlayerDefault extends React.Component {
                     itemId={item._id}
                     itemLevelScoring={item.itemLevelScoring}
                     studentReportModal={studentReportModal}
+                    tool={currentToolMode}
                   />
                 )}
               </MainWrapper>

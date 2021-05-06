@@ -19,6 +19,15 @@ const fetchTileById = (id) =>
     })
     .then((result) => result.data)
 
+const fetchRecommendedTest = () =>
+  api
+    .callApi({
+      useSlowApi: true,
+      url: `${prefix}/recommend/tests`,
+      method: 'get',
+    })
+    .then((result) => result?.data?.flatMap((x) => x?.results) || [])
+
 const createTile = (data) =>
   api
     .callApi({
@@ -51,4 +60,5 @@ export default {
   createTile,
   updateTile,
   removeTile,
+  fetchRecommendedTest,
 }

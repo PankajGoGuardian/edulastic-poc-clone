@@ -8,15 +8,21 @@ import loadable from '@loadable/component'
 
 // components
 import { Spin } from 'antd'
-import { MainContentWrapper, withWindowSizes } from '@edulastic/common'
+import {
+  MainContentWrapper,
+  withWindowSizes,
+  CustomModalStyled,
+} from '@edulastic/common'
 import { bannerActions } from '@edulastic/constants/const/bannerActions'
 import { segmentApi } from '@edulastic/api'
+import configurableTilesApi from '@edulastic/api/src/configurableTiles'
 import BannerSlider from './components/BannerSlider/BannerSlider'
 import FeaturedContentBundle from './components/FeaturedContentBundle/FeaturedContentBundle'
 import ItemBankTrialUsedModal from './components/FeaturedContentBundle/ItemBankTrialUsedModal'
 import Classes from './components/Classes/Classes'
 import Launch from '../../../LaunchHangout/Launch'
 import PurchaseFlowModals from '../../../../../src/components/common/PurchaseModals'
+import SubjectGradeForm from '../../../../../../student/Signup/components/TeacherContainer/SubjectGrade'
 
 // ducks
 import { slice } from '../../../../../Subscription/ducks'
@@ -31,6 +37,7 @@ import {
   getLastPlayListSelector,
 } from '../../../../../Playlist/ducks'
 import { getCollectionsSelector } from '../../../../../src/selectors/user'
+import TestRecommendations from './components/TestRecommendations'
 
 const ItemPurchaseModal = loadable(() =>
   import('./components/ItemPurchaseModal')
@@ -78,11 +85,14 @@ const MyClasses = ({
   const [showSubscriptionAddonModal, setShowSubscriptionAddonModal] = useState(
     false
   )
+  const [showTestCustomizerModal, setShowTestCustomizerModal] = useState(false)
   const [trialAddOnProductIds, setTrialAddOnProductIds] = useState([])
+  const [recommendedTests, setRecommendedTests] = useState([])
+
   const [showTrialSubsConfirmation, setShowTrialSubsConfirmation] = useState(
     false
   )
-
+    
   useEffect(() => {
     // fetch clever classes on modal display
     if (showCleverSyncModal) {
@@ -94,6 +104,41 @@ const MyClasses = ({
     getDictCurriculums()
     receiveSearchCourse({ districtId, active: 1 })
   }, [])
+
+  const saveRecommendedTests = (_data) => {
+    if (!_data || !_data.length) return
+    const data = _data.map((x) => {
+      return { ...x._source, _id: x._id }
+    })
+    localStorage.setItem(
+      `recommendedTest:${user?._id}:stored`,
+      JSON.stringify(data)
+    )
+    setRecommendedTests(data)
+  }
+
+  const checkLocalRecommendedTests = () => {
+    if (user?.recommendedContentUpdated) {
+      configurableTilesApi
+        .fetchRecommendedTest()
+        .then((res) => saveRecommendedTests(res))
+      return
+    }
+    const recommendedTestsLocal = localStorage.getItem(
+      `recommendedTest:${user?._id}:stored`
+    )
+    if (recommendedTestsLocal) {
+      setRecommendedTests(JSON.parse(recommendedTestsLocal))
+    } else {
+      configurableTilesApi
+        .fetchRecommendedTest()
+        .then((res) => saveRecommendedTests(res))
+    }
+  }
+
+  useEffect(() => {
+    checkLocalRecommendedTests()
+  }, [user?.recommendedContentUpdated])
 
   const isPremiumUser = user?.features?.premium
 
@@ -136,7 +181,11 @@ const MyClasses = ({
     } else {
       resetPlaylistFilters()
     }
-    history.push(`/author/${contentType}?${filter}`)
+    if (contentType === 'playlist') {
+      history.push(`/author/playlists/${filters[0]?._id}#review`)
+    } else {
+      history.push(`/author/${contentType}?${filter}`)
+    }
   }
 
   const hasAccessToItemBank = (itemBankId) =>
@@ -178,8 +227,12 @@ const MyClasses = ({
       return
     }
 
-    const content = contentType?.toLowerCase() || 'tests'
-
+    let content = contentType?.toLowerCase() || 'tests_library'
+    if (content === 'tests_library') {
+      content = 'tests'
+    } else if (content === 'playlists_library') {
+      content = 'playlists'
+    }
     if (content === 'playlists' && (!lastPlayList || !lastPlayList.value)) {
       setShowTrialSubsConfirmation(true)
       return
@@ -280,6 +333,12 @@ const MyClasses = ({
       data: { event: `dashboard:banner-${description}:click` },
     })
 
+    const content = data?.contentType?.toLowerCase() || 'tests_library'
+    if (content === 'tests_library') {
+      data.contentType = 'tests'
+    } else if (content === 'playlists_library') {
+      data.contentType = 'playlists'
+    }
     switch (+action) {
       case bannerActions.BANNER_DISPLAY_IN_MODAL:
         setShowBannerModal(data)
@@ -413,6 +472,15 @@ const MyClasses = ({
         activeClasses={allActiveClasses}
         emptyBoxCount={classEmptyBoxCount}
       />
+      {recommendedTests?.length > 0 && (
+        <TestRecommendations
+          recommendations={recommendedTests}
+          setShowTestCustomizerModal={setShowTestCustomizerModal}
+          userId={user?._id}
+          windowWidth={windowWidth}
+          history={history}
+        />
+      )}
       <FeaturedContentBundle
         featuredBundles={filteredBundles}
         handleFeatureClick={handleFeatureClick}
@@ -463,6 +531,23 @@ const MyClasses = ({
           setShowHeaderTrialModal={setShowHeaderTrialModal}
           setTrialAddOnProductIds={setTrialAddOnProductIds}
         />
+      )}
+      {showTestCustomizerModal && (
+        <CustomModalStyled
+          title="What do you teach?"
+          visible={showTestCustomizerModal}
+          footer={null}
+          width="900px"
+          onCancel={() => setShowTestCustomizerModal(false)}
+          centered
+        >
+          <SubjectGradeForm
+            userInfo={user}
+            districtId={false}
+            isTestRecommendationCustomizer
+            isModal
+          />
+        </CustomModalStyled>
       )}
     </MainContentWrapper>
   )

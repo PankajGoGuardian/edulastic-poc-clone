@@ -4,6 +4,7 @@ import {
   UPDATE_STUDENT_TEST_ITEMS,
   CORRECT_ITEM_UPDATE_REQUEST,
   CORRECT_ITEM_UPDATE_SUCCESS,
+  REPLACE_ORIGINAL_ITEM,
 } from '../constants/actions'
 
 const initialState = {
@@ -38,6 +39,19 @@ const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         updating: false,
+      }
+    case REPLACE_ORIGINAL_ITEM:
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          originalItems: state.data.originalItems.map((item) => {
+            if (item._id === payload._id) {
+              return payload
+            }
+            return item
+          }),
+        },
       }
     default:
       return state

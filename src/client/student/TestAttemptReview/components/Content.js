@@ -8,7 +8,7 @@ import { withNamespaces } from '@edulastic/localization'
 import { Row, Col, Button, Spin } from 'antd'
 import { withRouter } from 'react-router-dom'
 import { get, isEmpty } from 'lodash'
-import { EduButton, FlexContainer } from '@edulastic/common'
+import { EduButton, FlexContainer, withKeyboard } from '@edulastic/common'
 import { IconPhotoCamera, IconSend } from '@edulastic/icons'
 import { test as testTypes } from '@edulastic/constants'
 import PerfectScrollbar from 'react-perfect-scrollbar'
@@ -547,7 +547,7 @@ const QuestionBlock = styled.div`
   }
 `
 
-const QuestionColorBlock = styled.div`
+const QuestionColorBlock = withKeyboard(styled.div`
   width: 60px;
   height: 40px;
   border-radius: 4px;
@@ -579,7 +579,7 @@ const QuestionColorBlock = styled.div`
   @media (max-width: ${tabletWidth}) {
     margin-right: 20px;
   }
-`
+`)
 
 const Footer = styled(Container)`
   margin-top: 121px;

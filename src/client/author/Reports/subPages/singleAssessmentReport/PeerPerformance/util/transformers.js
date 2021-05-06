@@ -9,12 +9,12 @@ import {
   startCase,
   isNil,
 } from 'lodash'
-import { testActivityStatus } from '@edulastic/constants'
-import {
-  getHSLFromRange1,
-  DemographicCompareByOptions,
-} from '../../../../common/util'
-import { transformMetricForStudentGroups } from '../../common/utils/transformers'
+
+import { testActivityStatus, reportUtils } from '@edulastic/constants'
+
+const { getHSLFromRange1, DemographicCompareByOptions } = reportUtils.common
+
+const { transformMetricForStudentGroups } = reportUtils.singleAssessmentReport
 
 const _idToLabel = {
   schoolId: 'schoolName',

@@ -31,14 +31,13 @@ const DropContainer = ({
       }
       if (typeof drop === 'function') {
         const itemPos = monitor.getClientOffset()
-        const itemOffset = monitor.getSourceClientOffset()
         const { data, dimensions } = item
 
-        let itemRect = {}
-        if (isObject(dimensions) && isObject(itemPos)) {
-          itemRect = { ...dimensions, ...itemPos }
+        let itemRect = { ...(itemPos || {}) }
+        if (isObject(dimensions)) {
+          itemRect = { ...itemRect, ...dimensions }
         }
-        onDrop({ data, itemRect, itemOffset }, index)
+        onDrop({ data, itemRect }, index)
       }
     },
     collect: (monitor) => ({
@@ -87,7 +86,6 @@ const DropContainer = ({
           {
             data,
             itemRect: dimensions,
-            itemOffset: { x: e.clientX, y: e.clientY },
           },
           index
         )

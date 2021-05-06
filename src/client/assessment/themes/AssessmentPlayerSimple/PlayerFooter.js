@@ -80,6 +80,8 @@ const MainFooter = styled.div`
   right: 0;
   padding: 22px 35px;
   z-index: 2;
+  border-top: 15px solid
+    ${(props) => props.theme.widgets.assessmentPlayers.mainBgColor};
   background-color: ${(props) =>
     props.theme.widgets.assessmentPlayers.mainBgColor};
   @media (max-width: ${largeDesktopWidth}) {

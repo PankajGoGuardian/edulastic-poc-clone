@@ -29,7 +29,10 @@ import {
   getCurrentQuestionSelector,
   deleteQuestionAction,
 } from '../../../author/sharedDucks/questions'
-import { updateCorrectTestItemAction } from '../../../author/src/actions/classBoard'
+import {
+  replaceOriginalItemAction,
+  updateCorrectTestItemAction,
+} from '../../../author/src/actions/classBoard'
 import {
   getAdditionalDataSelector,
   getIsDocBasedTestSelector,
@@ -107,6 +110,8 @@ const QuestionBottomAction = ({
   previewTab,
   isLCBView,
   isDocBasedTest,
+  replaceOriginalItem,
+  updating,
   ...questionProps
 }) => {
   // const [openQuestionModal, setOpenQuestionModal] = useState(false)
@@ -129,6 +134,9 @@ const QuestionBottomAction = ({
   const onSaveAndPublish = () => {
     // for now this component will be visible in 3 views for calling the respectve api we need a reference in which author viewing this component.
     let lcbView = 'student-report'
+    if (updating) {
+      return
+    }
     if (isExpressGrader) {
       lcbView = 'express-grader'
     }
@@ -161,19 +169,20 @@ const QuestionBottomAction = ({
         question?.scoringDisabled ||
           (testItem.itemLevelScoring && testItem.data.questions.length > 1)
       )
+      replaceOriginalItem(testItem)
       setQuestionData(question)
       setCurrentQuestion(question.id)
       setCurrentStudentId(studentId)
+      setEditingItemId(testItem._id)
     } catch (e) {
       setQuestionData(omit(item, 'activity'))
       setCurrentQuestion(item.id)
-    } finally {
       setEditingItemId(item.testItemId)
+    } finally {
       toggleQuestionModal(true)
       setItemLoading(false)
     }
   }
-
   const modalTitle = useMemo(() => {
     if (!QuestionComp || !questionData) {
       return null
@@ -205,7 +214,10 @@ const QuestionBottomAction = ({
             isBlue
             width="115px"
             data-cy="saveAndPublishItem"
-            loading={loadingComponents.includes('saveAndPublishItem')}
+            loading={
+              loadingComponents.includes('saveAndPublishItem') || updating
+            }
+            disabled={updating}
             onClick={onSaveAndPublish}
           >
             SAVE
@@ -213,7 +225,7 @@ const QuestionBottomAction = ({
         </FlexContainer>
       </FlexContainer>
     )
-  }, [questionData, item])
+  }, [questionData, item, updating])
 
   const [isDisableCorrectItem, disableCorrectItemText] = useMemo(() => {
     const hasDynamicVariables = item.variable?.enabled
@@ -252,8 +264,6 @@ const QuestionBottomAction = ({
       Edit / Regrade
     </CorrectButton>
   )
-
-  const shouldHideScoringBlock = item?.scoringDisabled
 
   const { sampleAnswer } = item
 
@@ -413,6 +423,7 @@ const enhance = compose(
       editItemId: get(state, ['authorUi', 'editItemId']),
       currentStudentId: get(state, ['authorUi', 'currentStudentId']),
       isDocBasedTest: getIsDocBasedTestSelector(state),
+      updating: get(state, ['classResponse', 'updating'], false),
     }),
     {
       setQuestionData: setQuestionDataAction,
@@ -422,6 +433,7 @@ const enhance = compose(
       toggleQuestionModal: toggleQuestionEditModalAction,
       setEditingItemId: setEditingItemIdAction,
       setCurrentStudentId: setCurrentStudentIdAction,
+      replaceOriginalItem: replaceOriginalItemAction,
     }
   )
 )

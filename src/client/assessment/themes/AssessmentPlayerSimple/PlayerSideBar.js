@@ -3,9 +3,9 @@ import React from 'react'
 import styled from 'styled-components'
 import { withNamespaces } from '@edulastic/localization'
 import PerfectScrollbar from 'react-perfect-scrollbar'
-
+import { withKeyboard } from '@edulastic/common'
 import { IconGraphRightArrow } from '@edulastic/icons'
-import { smallDesktopWidth, themeColorBlue } from '@edulastic/colors'
+import { smallDesktopWidth } from '@edulastic/colors'
 import FlexContainer from '../common/FlexContainer'
 import Circle from '../common/Circle'
 
@@ -38,14 +38,6 @@ const SidebarQuestionList = ({
                   if (blockNavigationToAnsweredQuestions) return
                   gotoQuestion(index)
                 }}
-                tabIndex="0"
-                onKeyDown={(e) => {
-                  if (blockNavigationToAnsweredQuestions) return
-                  const code = e.which
-                  if (code === 13 || code === 32) {
-                    gotoQuestion(index)
-                  }
-                }}
               >
                 <FlexContainer alignItems="center" justifyContent="center">
                   <Circle
@@ -77,7 +69,7 @@ SidebarQuestionList.propTypes = {
 
 export default withNamespaces('student')(SidebarQuestionList)
 
-const ItemContainer = styled.div`
+const ItemContainer = withKeyboard(styled.div`
   border-left: solid 5px
     ${(props) =>
       props.active
@@ -90,10 +82,7 @@ const ItemContainer = styled.div`
     props.active
       ? props.theme.widgets.assessmentPlayers.sidebarContentBackgroundColor
       : 'transparent'};
-  &:focus {
-    outline: ${themeColorBlue} solid 2px;
-  }
-`
+`)
 
 const Content = styled.div`
   color: ${(props) =>
@@ -156,7 +145,7 @@ export const MinimizeButton = styled.div`
 `
 
 const Questions = styled.div`
-  height: 80vh;
+  height: 87vh;
   overflow: auto;
   margin-top: 20px;
 `

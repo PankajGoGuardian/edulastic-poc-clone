@@ -4,7 +4,7 @@ import { compose } from 'redux'
 import PropTypes from 'prop-types'
 import { withRouter } from 'react-router-dom'
 import { get, debounce, find } from 'lodash'
-import { Row, Col, Breadcrumb, Icon } from 'antd'
+import { Row, Col, Breadcrumb, Icon, Button as Buttons } from 'antd'
 import styled, { css } from 'styled-components'
 import { withNamespaces } from '@edulastic/localization'
 import { IconClose } from '@edulastic/icons'
@@ -19,6 +19,7 @@ import {
 } from '@edulastic/colors'
 
 import { Button } from 'antd/lib/radio'
+
 import TeacherCarousel from './TeacherCarousel'
 import RequestSchoolModal from './RequestSchoolModal'
 import RequestSchoolSection from './RequestSchoolSection'
@@ -422,7 +423,13 @@ const JoinSchool = ({
                       </AnchorBtn>
                     ) : null}
                     {!allowCanvas && !fromUserProfile ? (
-                      <AnchorBtn onClick={onClickHomeSchool}>
+                      <AnchorBtn
+                        loading={
+                          createSchoolRequestPending ||
+                          updateUserWithSchoolLoading
+                        }
+                        onClick={onClickHomeSchool}
+                      >
                         {' '}
                         I WANT TO HOMESCHOOL »
                       </AnchorBtn>
@@ -654,7 +661,7 @@ const Actions = styled.div`
   padding: 25px 0px 15px;
 `
 
-const AnchorBtn = styled.div`
+const AnchorBtn = styled(Buttons)`
   text-transform: uppercase;
   font-weight: 600;
   font-size: 10px;
@@ -662,6 +669,9 @@ const AnchorBtn = styled.div`
   margin-right: 25px;
   user-select: none;
   cursor: pointer;
+  padding: 0;
+  border: none;
+  outline: none;
 `
 
 const SchoolIcon = styled.img`

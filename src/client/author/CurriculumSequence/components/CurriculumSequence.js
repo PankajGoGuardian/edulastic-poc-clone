@@ -77,6 +77,7 @@ import { allowDuplicateCheck } from '../../src/utils/permissionCheck'
 import { DeleteAssignmentModal } from '../../Assignments/components/DeleteAssignmentModal/deleteAssignmentModal'
 import { toggleDeleteAssignmentModalAction } from '../../sharedDucks/assignments'
 import CloneOnUsePlaylistConfirmationModal from './CloneOnUsePlaylistConfirmationModal'
+import CustomTitleOnCloneModal from './CustomTitleOnCloneModal'
 
 /** @typedef {object} ModuleData
  * @property {String} contentId
@@ -1062,6 +1063,11 @@ class CurriculumSequence extends Component {
               handleCreateNewCopy={this.handleCreateNewCopy}
             />
           )}
+          <CustomTitleOnCloneModal
+              isVisible={true}
+              onCancel={this.handleCloseIsUsedModal}
+              handleCreateNewCopy={this.handleCreateNewCopy}
+            />
         </CurriculumSequenceWrapper>
       </>
     )

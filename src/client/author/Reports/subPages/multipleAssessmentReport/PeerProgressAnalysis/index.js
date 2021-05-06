@@ -90,7 +90,7 @@ const PeerProgressAnalysis = ({
     if (settings.requestFilters.termId || settings.requestFilters.reportId) {
       return () => toggleFilter(null, false)
     }
-  }, [settings, ddfilter, compareBy.key])
+  }, [settings, compareBy.key])
 
   // get paginated data
   useEffect(() => {

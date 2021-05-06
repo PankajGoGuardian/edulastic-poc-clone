@@ -1498,21 +1498,12 @@ function* useThisPlayListSaga({ payload }) {
   try {
     yield put(setUseThisLoading(true))
     const {
-      _id: playlistId,
-      title,
-      grades,
-      subjects,
-      groupId,
-      onChange,
-      isStudent,
       fromUseThis = false,
-      fromRemovePlaylist = false,
       customize = false,
       authors = [],
       forceClone = false,
+      isStudent,
     } = payload
-
-    const _id = playlistId
 
     const currentUserId = yield select(getUserId)
     const currentUserRole = yield select(getUserRole)
@@ -1531,57 +1522,7 @@ function* useThisPlayListSaga({ payload }) {
     ) {
       yield put(setCustomTitleModalVisibleAction(true))
     } else {
-      yield call(userContextApi.setLastUsedPlayList, {
-        _id,
-        title,
-        grades,
-        subjects,
-      })
-      yield call(userContextApi.setRecentUsedPlayLists, {
-        _id,
-        title,
-        grades,
-        subjects,
-      })
-
-      // fetch last used playlist
-      yield put(receiveLastPlayListAction())
-      if (!isStudent) {
-        if (!fromRemovePlaylist)
-          yield call(curriculumSequencesApi.usePlaylist, _id)
-        yield put(receiveRecentPlayListsAction())
-      }
-      yield put(getAllCurriculumSequencesAction([_id]))
-      yield put(setIsUsedModalVisibleAction(false))
-      const location = yield select((state) => state.router.location.pathname)
-      const urlHasUseThis = location.match(/use-this/g)
-      if (isStudent && onChange) {
-        yield put(
-          push({
-            pathname: `/home/playlist/${_id}`,
-            state: { currentGroupId: groupId, fromUseThis },
-          })
-        )
-        yield put(receiveCurrentPlaylistMetrics({ groupId, playlistId: _id }))
-      } else if (onChange && !urlHasUseThis) {
-        yield put(
-          push({
-            pathname: `/author/playlists/${_id}`,
-            state: { from: 'playlistLibrary', fromUseThis },
-          })
-        )
-      } else {
-        yield put(toggleManageContentActiveAction(false))
-        yield put(setShowRightSideAction(true))
-        yield put(setActiveRightPanelViewAction('summary'))
-        yield put(
-          push({
-            pathname: `/author/playlists/playlist/${_id}/use-this`,
-            state: { from: 'myPlaylist', fromUseThis },
-          })
-        )
-        yield put(receiveCurrentPlaylistMetrics({ playlistId: _id }))
-      }
+      cloneThisPlayListAction(payload)
     }
   } catch (error) {
     console.error(error)

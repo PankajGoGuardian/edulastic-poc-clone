@@ -58,7 +58,6 @@ export const Container = styled.div`
   }
 
   .scrollbar-container {
-    overflow: auto !important;
     height: ${(props) => `calc(100vh - ${props.theme.HeaderHeight.xs + 60}px)`};
 
     ::-webkit-scrollbar {

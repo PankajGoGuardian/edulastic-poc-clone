@@ -2946,7 +2946,7 @@ function* updateTestAndNavigate({ payload }) {
       isEditing,
       isDuplicating,
     } = payload
-    const data = yield select(getTestSelector)
+    const data = { ...(yield select(getTestSelector)) }
     const role = yield select(getUserRole)
     const hasUnsavedChanges = yield select((state) => state?.tests?.updated)
     if (hasUnsavedChanges) {

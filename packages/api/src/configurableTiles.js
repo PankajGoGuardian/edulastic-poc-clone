@@ -26,7 +26,19 @@ const fetchRecommendedTest = () =>
       url: `${prefix}/recommend/tests`,
       method: 'get',
     })
-    .then((result) => result?.data?.flatMap((x) => x?.results) || [])
+    .then((result) => {
+      const data = []
+      const res = result?.data?.map((x) => x?.results)
+      const totalElements = result?.data?.flatMap((x) => x?.results)?.length
+      for (let currentIndex = 0; data.length < totalElements; currentIndex++) {
+        res.forEach((arr) => {
+          if (currentIndex < arr?.length) {
+            data.push(arr[currentIndex])
+          }
+        })
+      }
+      return data
+    })
 
 const createTile = (data) =>
   api

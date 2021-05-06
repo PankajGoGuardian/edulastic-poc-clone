@@ -1494,7 +1494,7 @@ function* publishDraftCustomizedPlaylist({ payload }) {
   }
 }
 
-function* useThisPlayListSaga({ payload }) {
+function* cloneThisPlayListSaga({ payload }) {
   try {
     yield put(setUseThisLoading(true))
     const {
@@ -1522,7 +1522,7 @@ function* useThisPlayListSaga({ payload }) {
     ) {
       yield put(setCustomTitleModalVisibleAction(true))
     } else {
-      cloneThisPlayListAction(payload)
+      useThisPlayListAction(payload)
     }
   } catch (error) {
     console.error(error)
@@ -1536,7 +1536,7 @@ function* useThisPlayListSaga({ payload }) {
   }
 }
 
-function* cloneThisPlayListSaga({ payload }) {
+function* useThisPlayListSaga({ payload }) {
   try {
     yield put(setUseThisLoading(true))
     const {

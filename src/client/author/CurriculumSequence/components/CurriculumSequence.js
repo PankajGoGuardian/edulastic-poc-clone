@@ -60,6 +60,8 @@ import {
   unassignAssignmentsfromPlaylistAction,
   duplicatePlaylistRequestAction,
   setIsUsedModalVisibleAction,
+  setCustomTitleModalVisibleAction,
+  cloneThisPlayListAction,
 } from '../ducks'
 import { getSummaryData } from '../util'
 /* eslint-enable */
@@ -192,6 +194,11 @@ class CurriculumSequence extends Component {
     isVisibleAddModule: false,
     moduleForEdit: {},
     unassignData: {},
+    title: '',
+  }
+
+  setTitle = (value) => {
+    this.setState({ title: value })
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -296,10 +303,11 @@ class CurriculumSequence extends Component {
     history.push(`/author/playlists/${duplicatePlayList._id}/edit`)
   }
 
-  handleUseThisClick = ({ forceClone = false }) => {
+  handleUseThisClick = ({ forceClone = false, customTitle = '' }) => {
     const {
       destinationCurriculumSequence,
       useThisPlayList,
+      cloneThisPlayList,
       match: {
         params: { id: _id },
       },
@@ -311,19 +319,33 @@ class CurriculumSequence extends Component {
       customize = null,
       authors,
     } = destinationCurriculumSequence
-    useThisPlayList({
-      _id,
-      title,
-      grades,
-      subjects,
-      customize,
-      fromUseThis: true,
-      authors,
-      forceClone,
-    })
+    if (customTitle !== '') {
+      cloneThisPlayList({
+        _id,
+        title: customTitle,
+        grades,
+        subjects,
+        customize,
+        fromUseThis: true,
+        authors,
+        forceClone,
+      })
+    } else {
+      useThisPlayList({
+        _id,
+        title,
+        grades,
+        subjects,
+        customize,
+        fromUseThis: true,
+        authors,
+        forceClone,
+      })
+    }
   }
 
-  handleCreateNewCopy = () => this.handleUseThisClick({ forceClone: true })
+  handleCreateNewCopy = () =>
+    this.handleUseThisClick({ forceClone: true, customTitle: this.state.title })
 
   handleGotoMyPlaylist = () => {
     const { previouslyUsedPlaylistClone, useThisPlayList } = this.props
@@ -673,6 +695,9 @@ class CurriculumSequence extends Component {
 
   handleCloseIsUsedModal = () => this.props.setIsUsedModalVisible(false)
 
+  handleCloseCustomTitleModal = () =>
+    this.props.setCustomTitleModalVisible(false)
+
   render() {
     const {
       handleRemoveTest,
@@ -738,6 +763,7 @@ class CurriculumSequence extends Component {
       customizeInDraft,
       duplicatePlayList,
       isUsedModalVisible = false,
+      customTitleModalVisible = false,
     } = this.props
 
     const isManageContentActive = activeRightPanel === 'manageContent'
@@ -1063,11 +1089,15 @@ class CurriculumSequence extends Component {
               handleCreateNewCopy={this.handleCreateNewCopy}
             />
           )}
-          <CustomTitleOnCloneModal
-              isVisible={true}
-              onCancel={this.handleCloseIsUsedModal}
-              handleCreateNewCopy={this.handleCreateNewCopy}
+          {customTitleModalVisible && (
+            <CustomTitleOnCloneModal
+              isVisible={customTitleModalVisible}
+              onCancel={this.handleCloseCustomTitleModal}
+              handleCreateNewCopy={this.handleUseThisClick}
+              title={this.state.title}
+              setTitle={this.setTitle}
             />
+          )}
         </CurriculumSequenceWrapper>
       </>
     )
@@ -1105,6 +1135,8 @@ const enhance = compose(
       showRightPanel: state.curriculumSequence?.showRightPanel,
       customizeInDraft: state.curriculumSequence?.customizeInDraft,
       isUsedModalVisible: state.curriculumSequence?.isUsedModalVisible,
+      customTitleModalVisible:
+        state.curriculumSequence?.customTitleModalVisible,
       previouslyUsedPlaylistClone:
         state.curriculumSequence?.previouslyUsedPlaylistClone,
     }),
@@ -1117,6 +1149,7 @@ const enhance = compose(
       setDataForAssign: setDataForAssignAction,
       saveCurriculumSequence: saveCurriculumSequenceAction,
       useThisPlayList: useThisPlayListAction,
+      cloneThisPlayList: cloneThisPlayListAction,
       removeTestFromModule: removeTestFromModuleAction,
       removeTestFromDestinationCurriculum: playlistTestRemoveFromModuleAction,
       addNewUnitToDestination: addNewUnitAction,
@@ -1138,6 +1171,7 @@ const enhance = compose(
       unassignAssignmentsRequest: unassignAssignmentsfromPlaylistAction,
       duplicatePlayList: duplicatePlaylistRequestAction,
       setIsUsedModalVisible: setIsUsedModalVisibleAction,
+      setCustomTitleModalVisible: setCustomTitleModalVisibleAction,
     }
   )
 )

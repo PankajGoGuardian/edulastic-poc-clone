@@ -1512,7 +1512,7 @@ function* useThisPlayListSaga({ payload }) {
       forceClone = false,
     } = payload
 
-    let _id = playlistId
+    const _id = playlistId
 
     const currentUserId = yield select(getUserId)
     const currentUserRole = yield select(getUserRole)
@@ -1552,36 +1552,36 @@ function* useThisPlayListSaga({ payload }) {
         yield put(receiveRecentPlayListsAction())
       }
       yield put(getAllCurriculumSequencesAction([_id]))
-    }
-    yield put(setIsUsedModalVisibleAction(false))
-    const location = yield select((state) => state.router.location.pathname)
-    const urlHasUseThis = location.match(/use-this/g)
-    if (isStudent && onChange) {
-      yield put(
-        push({
-          pathname: `/home/playlist/${_id}`,
-          state: { currentGroupId: groupId, fromUseThis },
-        })
-      )
-      yield put(receiveCurrentPlaylistMetrics({ groupId, playlistId: _id }))
-    } else if (onChange && !urlHasUseThis) {
-      yield put(
-        push({
-          pathname: `/author/playlists/${_id}`,
-          state: { from: 'playlistLibrary', fromUseThis },
-        })
-      )
-    } else {
-      yield put(toggleManageContentActiveAction(false))
-      yield put(setShowRightSideAction(true))
-      yield put(setActiveRightPanelViewAction('summary'))
-      yield put(
-        push({
-          pathname: `/author/playlists/playlist/${_id}/use-this`,
-          state: { from: 'myPlaylist', fromUseThis },
-        })
-      )
-      yield put(receiveCurrentPlaylistMetrics({ playlistId: _id }))
+      yield put(setIsUsedModalVisibleAction(false))
+      const location = yield select((state) => state.router.location.pathname)
+      const urlHasUseThis = location.match(/use-this/g)
+      if (isStudent && onChange) {
+        yield put(
+          push({
+            pathname: `/home/playlist/${_id}`,
+            state: { currentGroupId: groupId, fromUseThis },
+          })
+        )
+        yield put(receiveCurrentPlaylistMetrics({ groupId, playlistId: _id }))
+      } else if (onChange && !urlHasUseThis) {
+        yield put(
+          push({
+            pathname: `/author/playlists/${_id}`,
+            state: { from: 'playlistLibrary', fromUseThis },
+          })
+        )
+      } else {
+        yield put(toggleManageContentActiveAction(false))
+        yield put(setShowRightSideAction(true))
+        yield put(setActiveRightPanelViewAction('summary'))
+        yield put(
+          push({
+            pathname: `/author/playlists/playlist/${_id}/use-this`,
+            state: { from: 'myPlaylist', fromUseThis },
+          })
+        )
+        yield put(receiveCurrentPlaylistMetrics({ playlistId: _id }))
+      }
     }
   } catch (error) {
     console.error(error)
@@ -1635,7 +1635,7 @@ function* cloneThisPlayListSaga({ payload }) {
         curriculumSequencesApi.duplicatePlayList,
         {
           _id,
-          title: `${title} - Customized`,
+          title: `${title}`,
           forUseThis: true,
           forceClone,
         }
@@ -1644,6 +1644,7 @@ function* cloneThisPlayListSaga({ payload }) {
       // if playlist was cloned previously
       if (duplicatedPlaylist.previouslyCloned) {
         // let the user decide to clone again (or) use the cloned
+        yield put(setCustomTitleModalVisibleAction(false))
         yield put(setIsUsedModalVisibleAction(true))
         yield put(
           setPreviouslyUsedPlaylistClone({
@@ -1687,6 +1688,7 @@ function* cloneThisPlayListSaga({ payload }) {
       }
       yield put(getAllCurriculumSequencesAction([_id]))
     }
+    yield put(setCustomTitleModalVisibleAction(false))
     yield put(setIsUsedModalVisibleAction(false))
     const location = yield select((state) => state.router.location.pathname)
     const urlHasUseThis = location.match(/use-this/g)
@@ -2419,6 +2421,7 @@ const initialState = {
     recommendations: [],
   },
   isUsedModalVisible: false,
+  customTitleModalVisible: false,
   previouslyUsedPlaylistClone: null,
   isUseThisLoading: false,
 }
@@ -3295,6 +3298,12 @@ export default createReducer(initialState, {
       state.previouslyUsedPlaylistClone = null
     }
     state.isUsedModalVisible = payload
+  },
+  [SET_CUSTOM_TITLE_MODAL_VISIBLE]: (state, { payload }) => {
+    if (!payload) {
+      state.previouslyUsedPlaylistClone = null
+    }
+    state.customTitleModalVisible = payload
   },
   [SET_PREVIOUSLY_USED_PLAYLIST_CLONE]: (state, { payload }) => {
     state.previouslyUsedPlaylistClone = payload

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Input, Modal } from 'antd'
 import styled from 'styled-components'
 import { EduButton } from '@edulastic/common'
@@ -8,8 +8,9 @@ const CustomTitleOnCloneModal = ({
   isVisible,
   onCancel,
   handleCreateNewCopy,
+  title,
+  setTitle,
 }) => {
-  const [title, setTitle] = useState('')
   return (
     <StyledModal
       title={<h2>Use Playlist</h2>}
@@ -18,33 +19,30 @@ const CustomTitleOnCloneModal = ({
       onCancel={onCancel}
       footer={[
         <ButtonsContainer>
-          <EduButton
-            key="0"
-            data-cy="onCancel"
-            isGhost
-            onClick={onCancel}
-          >
+          <EduButton key="0" data-cy="onCancel" isGhost onClick={onCancel}>
             Cancel
           </EduButton>
           <EduButton
+            disabled={title?.length < 1}
             key="1"
             data-cy="createNewPlaylistClone"
-            onClick={handleCreateNewCopy}
+            onClick={() => handleCreateNewCopy({ customTitle: title })}
           >
             Save
           </EduButton>
         </ButtonsContainer>,
       ]}
     >
-      <StyledContent>
-        Enter name of your playlist
-      </StyledContent>
-      <StyledInput onChange={(e)=>setTitle(e.value)} placeholder="Playlist Name"></StyledInput>
+      <StyledContent>Enter name of your playlist</StyledContent>
+      <StyledInput
+        onChange={(e) => setTitle(e.target.value)}
+        placeholder="Playlist Name"
+      />
     </StyledModal>
   )
 }
 
-export default CustomTitleOnCloneModal;
+export default CustomTitleOnCloneModal
 
 const StyledModal = styled(Modal)`
   .ant-modal-header,

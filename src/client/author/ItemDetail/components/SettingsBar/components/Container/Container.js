@@ -219,6 +219,7 @@ class Container extends Component {
                   marginBottom: '20px',
                   backgroundColor: '#fff',
                 }}
+                data-cy={setting}
               >
                 <Row
                   style={{

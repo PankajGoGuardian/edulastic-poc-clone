@@ -11,6 +11,7 @@ const {
   filter,
   sumBy,
   mapValues,
+  pick,
 } = require('lodash')
 const { produce: next } = require('immer')
 
@@ -417,7 +418,12 @@ const getStandardMetrics = (data = {}, scaleInfo = []) =>
     })
   })
 
-const analysisStandardsData = (compareBy, metricInfo = [], scaleInfo) => {
+const getTotalPoints = (summaryStats, skillInfo, key) =>
+  mapValues(pick(groupBy(summaryStats, key), map(skillInfo, key)), (metric) =>
+    sumBy(metric, 'maxScore')
+  )
+
+const analysisStandardsData = (compareBy, skillInfo, metricInfo = [], performanceSummaryStats = [], scaleInfo) => {
   // if metricInfo is empty return empty data and totalpoints
   if (!metricInfo.length) {
     return [[], []]
@@ -442,15 +448,16 @@ const analysisStandardsData = (compareBy, metricInfo = [], scaleInfo) => {
     }
   })
 
-  const totalPoints = mapValues(
-    data[0].standardMetrics,
-    (metric) => metric.maxScore
+  const totalPoints = getTotalPoints(
+    performanceSummaryStats,
+    skillInfo,
+    'standardId'
   )
 
   return [data, totalPoints]
 }
 
-const analysisDomainsData = (compareBy, skillInfo, metricInfo, scaleInfo) => {
+const analysisDomainsData = (compareBy, skillInfo, metricInfo, performanceSummaryStats, scaleInfo) => {
   // if metricInfo is empty return empty data and totalpoints
   if (!metricInfo.length) {
     return [[], []]
@@ -497,9 +504,10 @@ const analysisDomainsData = (compareBy, skillInfo, metricInfo, scaleInfo) => {
     }
   })
 
-  const totalPoints = mapValues(
-    data[0].standardMetrics,
-    (metric) => metric.maxScore
+  const totalPoints = getTotalPoints(
+    performanceSummaryStats,
+    skillInfo,
+    'domainId'
   )
   return [data, totalPoints]
 }
@@ -517,6 +525,7 @@ const getAnalyzedTableData = (report, viewBy, compareBy) => {
     skillInfo = [],
     scaleInfo = [],
     metricInfo = [],
+    performanceSummaryStats =  [],
   } = report
 
   let filteredMetrics
@@ -549,8 +558,20 @@ const getAnalyzedTableData = (report, viewBy, compareBy) => {
 
   const analyzedTableData =
     viewBy === viewByMode.STANDARDS
-      ? analysisStandardsData(compareBy, filteredMetrics, scaleInfo)
-      : analysisDomainsData(compareBy, skillInfo, filteredMetrics, scaleInfo)
+      ? analysisStandardsData(
+          compareBy,
+          skillInfo,
+          filteredMetrics,
+          performanceSummaryStats,
+          scaleInfo
+        )
+      : analysisDomainsData(
+          compareBy,
+          skillInfo,
+          filteredMetrics,
+          performanceSummaryStats,
+          scaleInfo
+        )
 
   // format student names in the data & sort in ascending order
   const [_data, totalPoints] = analyzedTableData

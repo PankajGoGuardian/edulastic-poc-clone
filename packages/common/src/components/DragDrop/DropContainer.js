@@ -3,7 +3,6 @@ import {
   greyThemeLighter,
   themeColorBlue,
   lightGrey12,
-  fadeBlue,
 } from '@edulastic/colors'
 import { isObject } from 'lodash'
 import styled, { css, withTheme } from 'styled-components'
@@ -71,7 +70,7 @@ const DropContainer = ({
 
   const mergedStyle = {
     ...style,
-    background: isOver ? fadeBlue : style.background || greyThemeLighter,
+    background: style.background || greyThemeLighter,
   }
 
   const onClickHandler = (e) => {

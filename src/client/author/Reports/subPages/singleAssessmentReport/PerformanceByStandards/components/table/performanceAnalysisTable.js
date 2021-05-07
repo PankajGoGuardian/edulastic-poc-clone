@@ -290,8 +290,12 @@ const PerformanceAnalysisTable = ({
   }
 
   const getTableColumns = () => {
+    /**
+     * compareByColumn is destructured to create a new object everytime
+     * so that change detection can detect and return correct fixed columns
+     */
     const _columns = [
-      compareByColumns[compareBy],
+      { ...compareByColumns[compareBy] },
       makeOverallColumn(standardColumnsData, analyzeByConfig),
       ...makeStandardColumns(),
     ]

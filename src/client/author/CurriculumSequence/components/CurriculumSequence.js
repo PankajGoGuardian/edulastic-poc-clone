@@ -320,7 +320,7 @@ class CurriculumSequence extends Component {
       authors,
     } = destinationCurriculumSequence
     if (customTitle !== '') {
-      useThisPlayList({
+      cloneThisPlayList({
         _id,
         title: customTitle,
         grades,
@@ -331,7 +331,7 @@ class CurriculumSequence extends Component {
         forceClone,
       })
     } else {
-      cloneThisPlayList({
+      useThisPlayList({
         _id,
         title,
         grades,

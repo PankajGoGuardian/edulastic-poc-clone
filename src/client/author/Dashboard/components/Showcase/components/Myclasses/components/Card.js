@@ -6,13 +6,13 @@ import CardTextContent from './CardTextContent/cardTextContent'
 
 const CardBox = styled.div``
 
-const Card = ({ data }) => (
+const Card = ({ data, userId }) => (
   <CardBox data-cy={data.name}>
     <Row>
-      <CardImage data={data} />
+      <CardImage data={data} userId={userId} />
     </Row>
     <Row>
-      <CardTextContent data={data} />
+      <CardTextContent data={data} userId={userId} />
     </Row>
   </CardBox>
 )

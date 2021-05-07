@@ -473,6 +473,7 @@ const MyClasses = ({
       <Classes
         activeClasses={allActiveClasses}
         emptyBoxCount={classEmptyBoxCount}
+        userId={user?._id}
       />
       {recommendedTests?.length > 0 && (
         <TestRecommendations

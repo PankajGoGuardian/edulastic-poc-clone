@@ -21,7 +21,7 @@ import {
 } from './styled'
 import { TextWrapper } from '../../../../../styledComponents'
 
-export const CardTextContent = ({ data, history }) => {
+export const CardTextContent = ({ data, history, userId }) => {
   const {
     totalAssignment,
     asgnStatus,
@@ -41,7 +41,10 @@ export const CardTextContent = ({ data, history }) => {
       testType: '',
       termId: '',
     }
-    sessionStorage.setItem('filters[Assignments]', JSON.stringify(filter))
+    sessionStorage.setItem(
+      `assignments_filter_${userId}`,
+      JSON.stringify(filter)
+    )
   }
 
   return (

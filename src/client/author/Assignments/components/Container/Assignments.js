@@ -55,7 +55,11 @@ import {
   LeftWrapper,
   FixedWrapper,
 } from './styled'
-import { getUserRole, isFreeAdminSelector } from '../../../src/selectors/user'
+import {
+  getUserRole,
+  isFreeAdminSelector,
+  getUserId,
+} from '../../../src/selectors/user'
 import PrintTestModal from '../../../src/components/common/PrintTestModal'
 import TestLinkModal from '../TestLinkModal/TestLinkModal'
 
@@ -98,6 +102,7 @@ class Assignments extends Component {
       isFreeAdmin,
       history,
       toggleFreeAdminSubscriptionModal,
+      userId,
     } = this.props
     if (isFreeAdmin) {
       history.push('/author/reports')
@@ -106,7 +111,7 @@ class Assignments extends Component {
 
     const { defaultTermId, terms } = orgData
     const storedFilters =
-      JSON.parse(sessionStorage.getItem('filters[Assignments]')) || {}
+      JSON.parse(sessionStorage.getItem(`assignments_filter_${userId}`)) || {}
     const { showFilter = userRole !== roleuser.TEACHER } = storedFilters
     const filters = {
       ...initialFilterState,
@@ -144,7 +149,11 @@ class Assignments extends Component {
   }
 
   setFilterState = (filterState) => {
-    sessionStorage.setItem('filters[Assignments]', JSON.stringify(filterState))
+    const { userId } = this.props
+    sessionStorage.setItem(
+      `assignments_filter_${userId}`,
+      JSON.stringify(filterState)
+    )
     this.setState({ filterState })
   }
 
@@ -251,6 +260,7 @@ class Assignments extends Component {
   )
 
   toggleFilter = () => {
+    const { userId } = this.props
     this.setState(
       (prev) => ({
         filterState: {
@@ -261,7 +271,7 @@ class Assignments extends Component {
       () => {
         const { filterState } = this.state
         sessionStorage.setItem(
-          'filters[Assignments]',
+          `assignments_filter_${userId}`,
           JSON.stringify(filterState)
         )
       }
@@ -525,6 +535,7 @@ const enhance = compose(
       isFreeAdmin: isFreeAdminSelector(state),
       tagsUpdatingState: getTagsUpdatingStateSelector(state),
       isPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
+      userId: getUserId(state),
     }),
     {
       loadAssignments: receiveAssignmentsAction,

@@ -823,6 +823,14 @@ const QuestionContainer = styled.div`
     padding: 0 35px;
   }
 
+  /**
+   * @see https://snapwiz.atlassian.net/browse/EV-21030
+   * zwibbler canvas has z-index 999
+   */
+  .fr-video {
+    z-index: 1000;
+  }
+
   @media print {
     .__print_question-content-wrapper {
       max-width: calc(100% - 55px);

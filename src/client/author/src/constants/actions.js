@@ -94,7 +94,7 @@ export const TOGGLE_CREATE_ITEM_MODAL = '[testItem] toggle create item modal'
 
 export const CORRECT_ITEM_UPDATE_REQUEST =
   '[testItem] update correct testItem in LCB request'
-export const CORRECT_ITEM_UPDATE_SUCCESS =
+export const SET_CORRECT_ITEM_UPDATE_PROGRESS =
   '[testItem] update correct testItem in LCB success'
 export const TOGGLE_REGRADE_MODAL = '[tests] toggle regrade modal in LCB'
 

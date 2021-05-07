@@ -30,6 +30,7 @@ import {
   deleteQuestionAction,
 } from '../../../author/sharedDucks/questions'
 import {
+  correctItemUpdateProgressAction,
   replaceOriginalItemAction,
   updateCorrectTestItemAction,
 } from '../../../author/src/actions/classBoard'
@@ -112,6 +113,7 @@ const QuestionBottomAction = ({
   isDocBasedTest,
   replaceOriginalItem,
   updating,
+  correctItemUpdateProgress,
   ...questionProps
 }) => {
   // const [openQuestionModal, setOpenQuestionModal] = useState(false)
@@ -129,6 +131,7 @@ const QuestionBottomAction = ({
     setCurrentQuestion('')
     removeQuestion(item.id)
     toggleQuestionModal(false)
+    correctItemUpdateProgress(false)
   }
 
   const onSaveAndPublish = () => {
@@ -434,6 +437,7 @@ const enhance = compose(
       setEditingItemId: setEditingItemIdAction,
       setCurrentStudentId: setCurrentStudentIdAction,
       replaceOriginalItem: replaceOriginalItemAction,
+      correctItemUpdateProgress: correctItemUpdateProgressAction,
     }
   )
 )

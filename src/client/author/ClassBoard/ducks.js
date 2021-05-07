@@ -47,6 +47,7 @@ import {
   updatePauseStatusAction,
   receiveStudentResponseAction,
   reloadLcbDataInStudentViewAction,
+  correctItemUpdateProgressAction,
 } from '../src/actions/classBoard'
 
 import { createFakeData, hasRandomQuestions } from './utils'
@@ -88,7 +89,6 @@ import {
   FETCH_SERVER_TIME,
   PAUSE_STUDENTS,
   CORRECT_ITEM_UPDATE_REQUEST,
-  CORRECT_ITEM_UPDATE_SUCCESS,
   TOGGLE_REGRADE_MODAL,
   RELOAD_LCB_DATA_IN_STUDENT_VIEW,
 } from '../src/constants/actions'
@@ -753,6 +753,7 @@ function* correctItemUpdateSaga({ payload }) {
     cloneItem.data.questions = testItem.data.questions.map((q) =>
       q.id === question.id ? question : q
     )
+    yield put(correctItemUpdateProgressAction(true))
     const result = yield call(testItemsApi.updateCorrectItemById, {
       testItemId,
       testItem: cloneItem,
@@ -761,7 +762,7 @@ function* correctItemUpdateSaga({ payload }) {
       proceedRegrade,
       editRegradeChoice,
     })
-
+    yield put(correctItemUpdateProgressAction(false))
     if (typeof callBack === 'function') {
       // close correct item edit modal here
       callBack()
@@ -808,16 +809,13 @@ function* correctItemUpdateSaga({ payload }) {
           studentId: studentResponse?.data?.testActivity?.userId,
         })
       )
-
-      yield put({
-        type: CORRECT_ITEM_UPDATE_SUCCESS,
-      })
       return notification({
         type: 'success',
         messageKey: 'publishCorrectItemSuccess',
       })
     }
   } catch (error) {
+    yield put(correctItemUpdateProgressAction(false))
     yield put(setRegradeFirestoreDocId(''))
     notification({
       msg: error?.response?.data?.message,

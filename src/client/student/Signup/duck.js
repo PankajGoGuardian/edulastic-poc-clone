@@ -57,6 +57,8 @@ const JOIN_SCHOOL_FAILED = '[signup] update with school failed'
 
 const SAVE_SUBJECTGRADE_REQUEST = '[signup] save with subject and grade request'
 const SAVE_SUBJECTGRADE_FAILED = '[signup] save with subject and grade failed'
+const SAVE_SUBJECTGRADE_RESET =
+  '[signup] save with subject and grade reset state'
 
 const CREATE_AND_JOIN_SCHOOL_REQUEST = '[signup] create and join school request'
 const CREATE_AND_JOIN_SCHOOL_JOIN_REQUEST =
@@ -299,6 +301,9 @@ export default createReducer(initialState, {
     state.saveSubjectGradeloading = true
   },
   [SAVE_SUBJECTGRADE_FAILED]: (state) => {
+    state.saveSubjectGradeloading = false
+  },
+  [SAVE_SUBJECTGRADE_RESET]: (state) => {
     state.saveSubjectGradeloading = false
   },
   [JOIN_SCHOOL_REQUEST]: (state) => {
@@ -567,6 +572,11 @@ function* saveSubjectGradeSaga({ payload }) {
       yield put(persistAuthStateAndRedirectToAction())
     }
   }
+
+  yield put({
+    type: SAVE_SUBJECTGRADE_RESET,
+    payload: {},
+  })
 }
 
 function* getOrgDetailsByShortNameAndOrgTypeSaga({ payload }) {

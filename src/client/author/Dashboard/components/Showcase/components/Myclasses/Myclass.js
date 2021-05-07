@@ -548,6 +548,7 @@ const MyClasses = ({
             districtId={false}
             isTestRecommendationCustomizer
             isModal
+            setShowTestCustomizerModal={setShowTestCustomizerModal}
           />
         </CustomModalStyled>
       )}

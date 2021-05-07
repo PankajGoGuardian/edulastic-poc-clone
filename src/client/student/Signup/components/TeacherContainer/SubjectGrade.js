@@ -75,12 +75,14 @@ class SubjectGrade extends React.Component {
     ).isRequired,
     isModal: PropTypes.bool,
     isTestRecommendationCustomizer: PropTypes.bool,
+    setShowTestCustomizerModal: PropTypes.func,
     user: PropTypes.object.isRequired,
   }
 
   static defaultProps = {
     isModal: false,
     isTestRecommendationCustomizer: false,
+    setShowTestCustomizerModal: () => {},
   }
 
   componentDidMount() {
@@ -101,7 +103,13 @@ class SubjectGrade extends React.Component {
 
   handleSubmit = (e) => {
     const { grades: defaultGrades, subjects: defaultSubjects } = this.state
-    const { form, userInfo, saveSubjectGrade } = this.props
+    const {
+      form,
+      userInfo,
+      saveSubjectGrade,
+      isTestRecommendationCustomizer,
+      setShowTestCustomizerModal,
+    } = this.props
     const isSignUp = true
     e.preventDefault()
     form.validateFields((err, values) => {
@@ -117,6 +125,8 @@ class SubjectGrade extends React.Component {
           curriculumStandards: {},
           defaultGrades,
           defaultSubjects,
+          isTestRecommendationCustomizer,
+          setShowTestCustomizerModal,
         }
 
         map(values.standard, (id) => {

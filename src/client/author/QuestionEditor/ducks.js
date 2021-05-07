@@ -21,7 +21,11 @@ import {
 } from 'lodash'
 import produce from 'immer'
 import { questionType, questionTitle } from '@edulastic/constants'
-import { helpers, notification } from '@edulastic/common'
+import {
+  helpers,
+  notification,
+  captureSentryException,
+} from '@edulastic/common'
 import { push } from 'connected-react-router'
 import * as Sentry from '@sentry/browser'
 import { storeInLocalStorage } from '@edulastic/api/src/utils/Storage'
@@ -796,6 +800,7 @@ function* saveQuestionSaga({
     }
   } catch (err) {
     console.error(err)
+    captureSentryException(err)
     const errorMessage = 'Unable to save the question.'
     if (isTestFlow) {
       yield put(toggleCreateItemModalAction(false))
@@ -837,12 +842,12 @@ const containsEmptyField = (variables) => {
       case !!intersection(_keys, _set.split(',')).length:
         return {
           hasEmptyField: true,
-          errMessage: `You have a parameter named "${name}" that is also given in the text set. This is not supported.`,
+          errMessage: `Your dynamic parameter "${name}" contains a text entry that is also a parameter name. This is not supported right now. Please rename the impacted parameters or entries so that there is no naming overlap.`,
         }
       case !!intersection(_keys, sequence.split(',')).length:
         return {
           hasEmptyField: true,
-          errMessage: `You have a parameter named "${name}" that is also given in the text sequence. This is not supported.`,
+          errMessage: `Your dynamic parameter "${name}" contains a text entry that is also a parameter name. This is not supported right now. Please rename the impacted parameters or entries so that there is no naming overlap.`,
         }
       default:
         break
@@ -850,6 +855,12 @@ const containsEmptyField = (variables) => {
   }
   return { hasEmptyField: false, errMessage: '' }
 }
+
+const hasMathFormula = (variables) =>
+  Object.keys(variables).some((key) => {
+    const { type } = variables[key] || {}
+    return type === 'FORMULA'
+  })
 
 /**
  *
@@ -939,16 +950,9 @@ function* calculateFormulaSaga({ payload }) {
       return []
     }
 
-    const options = question?.isMath
-      ? getOptionsForMath(get(question, 'validation.validResponse.value', []))
-      : {}
-
     const variables =
       payload.data.variables || question.variable.variables || {}
     const examples = payload.data.examples || question.variable.examples || {}
-    const latexValuePairs = [
-      getLatexValuePairs({ id: 'definition', variables, options }),
-    ]
 
     const { hasEmptyField = false, errMessage = '' } = containsEmptyField(
       variables
@@ -961,21 +965,31 @@ function* calculateFormulaSaga({ payload }) {
       return true
     }
 
-    if (examples) {
-      for (const example of examples) {
-        const pair = getLatexValuePairs({
-          id: `example${example.key}`,
-          variables,
-          example,
-          options,
-        })
-        if (pair.latexes.length > 0) {
-          latexValuePairs.push(pair)
+    let results = []
+    if (hasMathFormula(variables)) {
+      const options = question?.isMath
+        ? getOptionsForMath(get(question, 'validation.validResponse.value', []))
+        : {}
+      const latexValuePairs = [
+        getLatexValuePairs({ id: 'definition', variables, options }),
+      ]
+      if (examples) {
+        for (const example of examples) {
+          const pair = getLatexValuePairs({
+            id: `example${example.key}`,
+            variables,
+            example,
+            options,
+          })
+          if (pair.latexes.length > 0) {
+            latexValuePairs.push(pair)
+          }
         }
       }
+      results = yield call(evaluateApi.calculate, latexValuePairs)
     }
+
     const variable = { ...question.variable, examples, variables }
-    const results = yield call(evaluateApi.calculate, latexValuePairs)
     const newQuestion = { ...cloneDeep(question), variable }
     for (const result of results) {
       if (result.id === 'definition') {

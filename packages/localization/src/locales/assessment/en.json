@@ -78,6 +78,7 @@
       "beforeCombinationCount": "Create",
       "afterCombinationCount": "possible value combinations (max 200)",
       "variableGenerate": "Generate",
+      "invalidSeqVariableMsg": "Please note that all dynamic parameters that are of \"sequence\" type need to have the same number of items. Otherwise, it may not be so obvious how the sequences should be aligned.",
       "variableMin": "Min",
       "variableMax": "Max",
       "variableStep": "Step",

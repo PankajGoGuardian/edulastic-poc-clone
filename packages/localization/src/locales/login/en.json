@@ -64,8 +64,8 @@
         "filldetails": "Please fill the details to add a new school.",
         "edulasticsupport": "Edulastic Support will create the school after verifying the data.",
         "infotext": "Please fill the details to add a new school. Edulastic Support will create the school after verifying the data.",
-        "choosesubject": "Provide your",
-        "choosegrade": "curriculum details",
+        "choosesubject": "Choose your",
+        "choosegrade": "subject and grade",
         "gsinfotext": "So you can get relevant content"
       },
       "admin": {

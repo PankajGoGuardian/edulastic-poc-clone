@@ -56,7 +56,6 @@ import {
   FixedWrapper,
 } from './styled'
 import { getUserRole, isFreeAdminSelector } from '../../../src/selectors/user'
-import EditTestModal from '../../../src/components/common/EditTestModal'
 import PrintTestModal from '../../../src/components/common/PrintTestModal'
 import TestLinkModal from '../TestLinkModal/TestLinkModal'
 
@@ -83,7 +82,6 @@ const initialFilterState = {
 class Assignments extends Component {
   state = {
     filterState: {},
-    openEditPopup: false,
     currentTestId: '',
     openPrintModal: false,
     showTestLinkModal: false,
@@ -165,8 +163,8 @@ class Assignments extends Component {
     })
   }
 
-  toggleEditModal = (value, currentTestId) => {
-    this.setState({ openEditPopup: value, currentTestId })
+  toggleEditModal = (currentTestId) => {
+    this.onEnableEdit(currentTestId)
   }
 
   toggleDeleteModal = (currentTestId) => {
@@ -270,9 +268,8 @@ class Assignments extends Component {
     )
   }
 
-  onEnableEdit = () => {
+  onEnableEdit = (currentTestId) => {
     const { history } = this.props
-    const { currentTestId } = this.state
     history.push({
       pathname: `/author/tests/tab/review/id/${currentTestId}`,
       state: { editAssigned: true, showCancelButton: true },
@@ -318,7 +315,6 @@ class Assignments extends Component {
     const {
       filterState,
       currentTestId,
-      openEditPopup,
       currentAssignmentId,
       currentAssignmentClass,
       openPrintModal,
@@ -335,12 +331,6 @@ class Assignments extends Component {
 
     return (
       <div>
-        <EditTestModal
-          visible={openEditPopup}
-          isUsed
-          onCancel={() => this.toggleEditModal(false, '')}
-          onOk={this.onEnableEdit}
-        />
         <TestLinkModal
           isVisible={showTestLinkModal}
           toggleModal={() =>

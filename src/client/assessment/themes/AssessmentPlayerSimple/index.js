@@ -370,6 +370,7 @@ class AssessmentPlayerSimple extends React.Component {
               attachments={attachments}
               history={scratchPad}
               changePreview={this.handleChangePreview}
+              tool={toolsOpenStatus}
             />
             {!previewPlayer && (
               <SubmitConfirmation

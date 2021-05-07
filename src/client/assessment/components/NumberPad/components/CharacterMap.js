@@ -17,6 +17,11 @@ const CharacterMap = ({ onClick, buttonStyle }) => {
           buttonStyle={{ ...buttonStyle, position: 'initial' }}
           onClick={() => onClick(item.value)}
           key={index}
+          data_cy={
+            isEmpty(item.label)
+              ? `custom-keypad-popover-${item.label}`
+              : `custom-keypad-popover-${item.value}`
+          }
         >
           {isEmpty(item.label) ? (
             <EmptyWrapper>{item.label}</EmptyWrapper>

@@ -3,8 +3,7 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import styled, { css } from 'styled-components'
-import { themeColor } from '@edulastic/colors'
-import { withWindowSizes } from '@edulastic/common'
+import { withWindowSizes, withKeyboard } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { test as testConstants } from '@edulastic/constants'
 import {
@@ -154,14 +153,6 @@ const PlayerHeader = ({
                   data-cy="finishTest"
                   onClick={finishTest}
                   disabled={hidePause}
-                  tabIndex="0"
-                  onKeyDown={(e) => {
-                    if (hidePause) return
-                    const code = e.which
-                    if (code === 13 || code === 32) {
-                      finishTest()
-                    }
-                  }}
                 >
                   {!hidePause && (
                     <IconSignoutHighlight style={{ marginRight: '10px' }} />
@@ -176,21 +167,8 @@ const PlayerHeader = ({
           <NavigationHeader>
             <HeaderWrapper justifyContent="space-between">
               {!isDocbased && (
-                <Container
-                  className="quester-question-list"
-                  onClick={handleOpen}
-                >
-                  <StyledButton
-                    data-cy="options"
-                    tabIndex="0"
-                    onKeyDown={(e) => {
-                      if (hidePause) return
-                      const code = e.which
-                      if (code === 13 || code === 32) {
-                        handleOpen()
-                      }
-                    }}
-                  >
+                <Container className="quester-question-list">
+                  <StyledButton data-cy="options" onClick={handleOpen}>
                     <span>
                       {isLast()
                         ? t('common.test.reviewAndSubmit')
@@ -291,7 +269,7 @@ const NavigationHeader = styled(FlexContainer)`
   justify-content: space-between;
 `
 
-const SignOut = styled.div`
+const SignOut = withKeyboard(styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -301,11 +279,7 @@ const SignOut = styled.div`
   svg {
     color: #fff;
   }
-  &:focus {
-    outline: 0;
-    box-shadow: 0 0 0 2px ${themeColor};
-  }
-`
+`)
 
 const RightContent = styled.div`
   display: flex;

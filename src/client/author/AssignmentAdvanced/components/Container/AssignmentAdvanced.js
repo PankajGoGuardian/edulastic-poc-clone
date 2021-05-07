@@ -45,7 +45,6 @@ import {
 import { Breadcrumb } from '../Breadcrumb'
 import TableList from '../TableList'
 import TestPreviewModal from '../../../Assignments/components/Container/TestPreviewModal'
-import EditTestModal from '../../../src/components/common/EditTestModal'
 import ReleaseScoreSettingsModal from '../../../Assignments/components/ReleaseScoreSettingsModal/ReleaseScoreSettingsModal'
 import { releaseScoreAction } from '../../../src/actions/classBoard'
 import {
@@ -76,7 +75,6 @@ const { assignmentStatusBg } = authorAssignment
 
 class AssignmentAdvanced extends Component {
   state = {
-    openEditPopup: false,
     filterStatus: '',
     isHeaderAction: false,
     openPrintModal: false,
@@ -265,10 +263,6 @@ class AssignmentAdvanced extends Component {
     })
   }
 
-  toggleEditModal = (value) => {
-    this.setState({ openEditPopup: value })
-  }
-
   toggleTestPreviewModal = (value) => {
     const { setIsTestPreviewVisible } = this.props
     setIsTestPreviewVisible(!!value)
@@ -307,13 +301,7 @@ class AssignmentAdvanced extends Component {
   }
 
   render() {
-    const {
-      filterStatus,
-      openEditPopup,
-      isHeaderAction,
-      openPrintModal,
-      pageNo,
-    } = this.state
+    const { filterStatus, isHeaderAction, openPrintModal, pageNo } = this.state
     const {
       classList,
       assignmentsSummary,
@@ -376,12 +364,6 @@ class AssignmentAdvanced extends Component {
         {isHeaderAction && (
           <DeleteAssignmentModal testId={testId} testName={assingment?.title} />
         )}
-        <EditTestModal
-          visible={openEditPopup}
-          isUsed
-          onCancel={() => this.toggleEditModal(false)}
-          onOk={this.onEnableEdit}
-        />
 
         <TestPreviewModal
           isModalVisible={isPreviewModalVisible}
@@ -410,7 +392,7 @@ class AssignmentAdvanced extends Component {
                 row: assingment,
                 history,
                 showPreviewModal: this.toggleTestPreviewModal,
-                toggleEditModal: this.toggleEditModal,
+                toggleEditModal: this.onEnableEdit,
                 canEdit: canEditTest(test, userId),
                 userRole,
                 userId,

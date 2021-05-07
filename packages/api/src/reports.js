@@ -123,12 +123,24 @@ const fetchStandardMasteryFilter = (params) =>
     params,
   })
 
-const fetchStandardMasteryBrowseStandards = (params) =>
-  api.callApi({
+const fetchStandardMasteryBrowseStandards = ({
+  curriculumId,
+  ...restParams
+}) => {
+  const curriculumIds =
+    curriculumId && Array.isArray(curriculumId) ? curriculumId : [curriculumId]
+
+  const data = {
+    ...restParams,
+    curriculumIds,
+  }
+
+  return api.callApi({
     url: `/search/browse-standards`,
-    data: params,
+    data,
     method: 'POST',
   })
+}
 
 const fetchQuestionAnalysisReport = (params) =>
   api.callApi({
@@ -247,6 +259,15 @@ const fetchActivityByTeacher = (params) =>
     params,
   })
 
+const generateCSV = (params) =>
+  api
+    .callApi({
+      url: '/report/generate-csv',
+      method: 'POST',
+      data: params,
+    })
+    .then(({ data }) => data.result)
+
 export default {
   fetchReports,
   fetchTestActivityDetail,
@@ -280,4 +301,5 @@ export default {
   fetchEngagementSummary,
   fetchActivityBySchool,
   fetchActivityByTeacher,
+  generateCSV,
 }

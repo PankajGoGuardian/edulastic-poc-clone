@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { themeColorBlue } from '@edulastic/colors'
+import { withKeyboard } from '@edulastic/common'
 
 const getCellColor = (correct, theme) => {
   switch (correct) {
@@ -12,7 +12,7 @@ const getCellColor = (correct, theme) => {
   }
 }
 
-export const Wrapper = styled.div`
+export const Wrapper = withKeyboard(styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -26,8 +26,4 @@ export const Wrapper = styled.div`
   }
   height: calc(100% - 4px);
   width: calc(100% - 4px);
-  &:focus {
-    outline: 2px solid ${themeColorBlue};
-    outline-style: solid;
-  }
-`
+`)

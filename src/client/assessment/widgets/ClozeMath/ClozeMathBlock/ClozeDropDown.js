@@ -128,7 +128,10 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
       <Dropdown
         disabled={disableResponse}
         onChange={(text) => save({ value: text, index }, 'dropDowns', id)}
-        getPopupContainer={(triggerNode) => triggerNode.parentNode}
+        getPopupContainer={() =>
+          document?.getElementById('preview-modal-content-area') ||
+          document?.getElementById('question-main-wrapper')
+        }
         value={val}
         {...dropdownStyle}
       >

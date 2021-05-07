@@ -40,6 +40,7 @@ const PlayerContentArea = ({
   enableMagnifier,
   changePreview,
   blockNavigationToAnsweredQuestions = false,
+  tool,
 }) => {
   const scrollContainerRef = useRef()
   const item = items[currentItem]
@@ -79,6 +80,7 @@ const PlayerContentArea = ({
             enableMagnifier={enableMagnifier}
             updateScratchpadtoStore
             testItemId={item._id}
+            tool={tool}
           />
         )}
         {testItemState === 'check' && (
@@ -100,6 +102,7 @@ const PlayerContentArea = ({
             enableMagnifier={enableMagnifier}
             changePreviewTab={changePreview}
             testItemId={item._id}
+            tool={tool}
           />
         )}
       </MainContent>

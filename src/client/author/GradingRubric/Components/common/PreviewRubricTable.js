@@ -77,9 +77,15 @@ const RatingCards = ({
           >
             <div>
               <div data-cy="ratingName">{rating.name}</div>
-              <div className="points" data-cy="ratingPoint">{`${rating.points} pts`}</div>
+              <div
+                className="points"
+                data-cy="ratingPoint"
+              >{`${rating.points} pts`}</div>
             </div>
-            <div dangerouslySetInnerHTML={{ __html: rating.desc }} />
+            <div
+              data-cy="ratingDesc"
+              dangerouslySetInnerHTML={{ __html: rating.desc }}
+            />
           </RatingSection>
         ))}
       </RatingScrollContainer>
@@ -128,7 +134,7 @@ const PreviewRubricTable = ({
         }
       >
         <CriteriaSection>
-          <div>{c?.name}</div>
+          <div data-cy="criteriaName">{c?.name}</div>
         </CriteriaSection>
         <RatingCards
           criteria={c}

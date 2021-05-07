@@ -1,28 +1,29 @@
 import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { uniqBy, map, round, reduce } from 'lodash'
 
 import { Tooltip } from 'antd'
 import { IconInfo } from '@edulastic/icons'
 import { extraDesktopWidthMax } from '@edulastic/colors'
-import {
-  compareByColumns,
-  analyzeByMode,
-  viewByMode,
-  getMasteryLevel,
-  getOverallRawScore,
-  getFormattedName,
-} from '../../util/transformers'
-import {
-  getHSLFromRange1,
-  getOverallScore,
-  downloadCSV,
-} from '../../../../../common/util'
+import { reportUtils } from '@edulastic/constants'
+
 import { StyledTable } from '../../../../../common/styled'
 import { CustomTableTooltip } from '../../../../../common/components/customTableTooltip'
 import TableTooltipRow from '../../../../../common/components/tooltip/TableTooltipRow'
 import CsvTable from '../../../../../common/components/tables/CsvTable'
+
+const { downloadCSV } = reportUtils.common
+
+const {
+  viewByMode,
+  analyzeByMode,
+  compareByColumns,
+  compareByStudentsColumns,
+  getAnalyzedTableData,
+  formatScore,
+  getAnalyzeByConfig,
+  getStandardColumnsData,
+} = reportUtils.performanceByStandards
 
 const AnalysisTable = styled(StyledTable)`
   .ant-table-layout-fixed {
@@ -98,34 +99,39 @@ const columnHashMap = {
   school: 'schoolName',
 }
 
-const makeStandardColumnConfig = (skill) => ({
-  [viewByMode.STANDARDS]: {
-    title: skill.standard,
-    key: skill.standardId,
-  },
-  [viewByMode.DOMAINS]: {
-    title: skill.domain,
-    key: skill.domainId,
-  },
-})
+/**
+ * converts table header string starting from 4th column
+ * From
+ * "1-ESS1-2 POINTS - 1 50%"
+ * TO
+ * "1-ESS1-2 (POINTS - 1) (50%)"
+ */
+const onCsvConvert = (data) => {
+  const splittedData = data.split('\n')
+  const header = splittedData[0]
+  const columns = header.split(',')
+  for (let i = 3; i < columns.length; i++) {
+    const str = columns[i]
+    const _str = str.toLocaleLowerCase()
+    const indexOfPoints = _str.lastIndexOf('points')
+    const indexOfLastSpace = _str.lastIndexOf(' ')
 
-const getMasteryColorByScore = (score, scaleInfo) =>
-  getMasteryLevel(score, scaleInfo, 'score').color
-
-const compareByStudentsColumns = [
-  {
-    title: 'SIS ID',
-    dataIndex: 'sisId',
-    key: 'sisId',
-    visibleOn: ['csv'],
-  },
-  {
-    title: 'STUDENT NUMBER',
-    dataIndex: 'studentNumber',
-    key: 'studentNumber',
-    visibleOn: ['csv'],
-  },
-]
+    const transformedStr = `${str.substring(
+      0,
+      indexOfPoints - 1
+    )}(${str
+      .substring(indexOfPoints, indexOfLastSpace)
+      .replace(/\s/g, '')})(Avg-${str.substring(
+      indexOfLastSpace + 1,
+      str.length - 1
+    )})"`
+    columns[i] = transformedStr
+  }
+  const _header = columns.join(',')
+  splittedData[0] = _header
+  const finalData = splittedData.join('\n')
+  downloadCSV(`Performance By Standard Report.csv`, finalData)
+}
 
 const PerformanceAnalysisTable = ({
   report,
@@ -134,93 +140,30 @@ const PerformanceAnalysisTable = ({
   compareBy,
   selectedStandards,
   selectedDomains,
-  tableData,
-  totalPoints,
   isCsvDownloading,
 }) => {
-  const formatScore = (score, _analyzeBy) => {
-    switch (_analyzeBy) {
-      case analyzeByMode.SCORE:
-        return `${Math.round(Number(score))}%`
-      case analyzeByMode.RAW_SCORE:
-        return round(score, 2)
-      default:
-        return score
-    }
-  }
-
-  const getAnalyzeField = () => {
-    switch (analyzeBy) {
-      case analyzeByMode.MASTERY_LEVEL:
-        return 'masteryLabel'
-      case analyzeByMode.MASTERY_SCORE:
-        return 'masteryScore'
-      case analyzeByMode.RAW_SCORE:
-        return 'rawScore'
-      case analyzeByMode.SCORE:
-        return 'avgScore'
-      default:
-        return 'avgScore'
-    }
-  }
-
-  const makeStandardColumnData = () => {
-    const { skillInfo } = report
-
-    return {
-      [viewByMode.STANDARDS]: {
-        selectedData: selectedStandards,
-        dataField: 'standardId',
-        standardColumnsData: skillInfo.sort(
-          (a, b) => a.standardId - b.standardId
-        ),
-      },
-      [viewByMode.DOMAINS]: {
-        selectedData: selectedDomains,
-        dataField: 'domainId',
-        standardColumnsData: uniqBy(skillInfo, 'domainId')
-          .filter((o) => o.domain !== null)
-          .sort((a, b) => a.domainId - b.domainId),
-      },
-    }
-  }
-
-  const { scaleInfo } = report
-
-  const getOverallValue = (records = {}, _analyzeBy) => {
-    const allScores = Object.keys(records).map((itemId) => ({
-      totalScore: records[itemId].rawScore || records[itemId].totalScore || 0,
-      maxScore: records[itemId].maxScore || 1,
-    }))
-    const overallRawScore = getOverallRawScore(allScores)
-    const overallScore = getOverallScore(allScores)
-    const masteryLevel = getMasteryLevel(overallScore, scaleInfo)
-    switch (_analyzeBy) {
-      case analyzeByMode.SCORE:
-        return formatScore(overallScore, _analyzeBy)
-      case analyzeByMode.RAW_SCORE:
-        return formatScore(overallRawScore, _analyzeBy)
-      case analyzeByMode.MASTERY_LEVEL:
-        return masteryLevel.masteryLabel
-      case analyzeByMode.MASTERY_SCORE:
-        return masteryLevel.score
-      default:
-        return 'N/A'
-    }
-  }
+  const { scaleInfo, skillInfo } = report
+  const [tableData, totalPoints] = getAnalyzedTableData(
+    report,
+    viewBy,
+    compareBy
+  )
+  const standardColumnsData = getStandardColumnsData(
+    skillInfo,
+    viewBy,
+    selectedStandards,
+    selectedDomains
+  )
+  const analyzeByConfig = getAnalyzeByConfig(analyzeBy, scaleInfo)
 
   const makeOverallColumn = () => {
-    const { selectedData, dataField } = makeStandardColumnData()[viewBy]
-
-    const selectedItems = (metric) =>
-      selectedData.includes(metric[dataField]) || !selectedData.length
+    const { selected, dataField } = standardColumnsData
 
     const getAverage = (student) => {
       const standardMetrics = Object.values(student.standardMetrics).filter(
-        selectedItems
+        (metric) => selected.includes(metric[dataField]) || !selected.length
       )
-      const field = getAnalyzeField()
-
+      const field = analyzeByConfig.field
       const sumTotal = (total, metric) => total + metric[field]
       const overall = standardMetrics.reduce(sumTotal, 0)
       return overall / (standardMetrics.length || 1)
@@ -243,115 +186,71 @@ const PerformanceAnalysisTable = ({
       key: 'overall',
       fixed: 'left',
       width: 160,
+      align: 'center',
       sorter: (a, b) => getAverage(a) - getAverage(b),
-      render: (recordId, record) =>
-        getOverallValue(record.standardMetrics, analyzeBy),
+      render: (data, record) =>
+        analyzeByConfig.getOverall(record.standardMetrics),
     }
   }
 
-  const getFieldTotalValue = (_tableData, _analyzeBy, config) => {
-    const allRecords = _tableData.map(
-      (item) => item.standardMetrics[config.key]
+  const makeStandardColumn = (skill) => {
+    const columnConfig = standardColumnsData.getColumnConfig(skill)
+    const averagePoints = totalPoints[columnConfig.key] || 0
+    const columnRecords = tableData.map(
+      (item) => item.standardMetrics[columnConfig.key]
     )
-    return getOverallValue(allRecords, _analyzeBy)
-  }
-
-  const makeStandardColumns = (_tableData) => {
-    const {
-      selectedData,
-      dataField,
-      standardColumnsData,
-    } = makeStandardColumnData()[viewBy]
-
-    const selectedItems = (skill) =>
-      selectedData.includes(skill[dataField]) || !selectedData.length
-
-    const makeStandardColumn = (skill) => {
-      const config = makeStandardColumnConfig(skill)[viewBy]
-      const field = getAnalyzeField()
-      const averagePoints = totalPoints[config.key] || 0
-
-      return {
-        title: (
-          <p>
-            {config.title}
-            <br />
-            Points - {parseFloat(averagePoints.toFixed(2))}
-            <br />
-            {getFieldTotalValue(_tableData, analyzeBy, config)}
-          </p>
-        ),
-        dataIndex: 'standardMetrics',
-        key: config.key,
-        render: (studentId, student) => {
-          const standard = student.standardMetrics[config.key]
-          let color = 'white'
-
-          if (!standard) {
-            return <ScoreCell color={color}>N/A</ScoreCell>
-          }
-
-          const getColValue = (columnKey, record) => {
-            if (columnKey === 'students') {
-              return `${record.firstName} ${record.lastName}`
-            }
-            if (record[columnHashMap[columnKey]]) {
-              return record[columnHashMap[columnKey]]
-            }
-            return record[columnKey]
-          }
-
-          switch (analyzeBy) {
-            case analyzeByMode.RAW_SCORE:
-            case analyzeByMode.SCORE:
-              color = getHSLFromRange1(standard.avgScore)
-              break
-            default:
-              color = getMasteryColorByScore(standard.masteryScore, scaleInfo)
-              break
-          }
-
-          const toolTipText = (record) => {
-            const compareByColumn = compareByColumns[compareBy]
-
-            let lastItem = null
-
-            switch (analyzeBy) {
-              case analyzeByMode.MASTERY_LEVEL: {
-                lastItem = {
-                  title: 'Mastery Code: ',
-                  value: `${formatScore(
-                    standard[field],
-                    analyzeByMode.MASTERY_LEVEL
-                  )}`,
-                }
-                break
+    const overallColumnValue = analyzeByConfig.getOverall(columnRecords)
+    return {
+      title: (
+        <p>
+          {columnConfig.title}
+          <br />
+          Points - {parseFloat(averagePoints.toFixed(2))}
+          <br />
+          {overallColumnValue}
+        </p>
+      ),
+      dataIndex: 'standardMetrics',
+      key: columnConfig.key,
+      render: (data, record) => {
+        const standard = record.standardMetrics[columnConfig.key]
+        if (!standard) {
+          return <ScoreCell color="white">N/A</ScoreCell>
+        }
+        const color = analyzeByConfig.getColor(standard)
+        const compareByColumn = compareByColumns[compareBy]
+        const compareByColumnValue =
+          compareBy === 'students'
+            ? `${record.firstName} ${record.lastName}`
+            : record[columnHashMap[compareBy]]
+            ? record[columnHashMap[compareBy]]
+            : record[compareBy]
+        const lastTooltipRow =
+          analyzeBy === analyzeByMode.MASTERY_LEVEL
+            ? {
+                title: 'Mastery Code: ',
+                value: `${standard[analyzeByConfig.field]}`,
               }
-              case analyzeByMode.MASTERY_SCORE: {
-                lastItem = {
-                  title: 'Mastery Score: ',
-                  value: `${formatScore(
-                    standard[field],
-                    analyzeByMode.MASTERY_SCORE
-                  )}`,
-                }
-                break
+            : analyzeBy === analyzeByMode.MASTERY_SCORE
+            ? {
+                title: 'Mastery Score: ',
+                value: `${standard[analyzeByConfig.field]}`,
               }
-              default:
-                break
-            }
-
-            return (
+            : null
+        return (
+          <CustomTableTooltip
+            placement="top"
+            title={
               <div>
                 <TableTooltipRow
                   title={`${compareByColumn.title}: `}
-                  value={getColValue(compareBy, record) || ' -'}
+                  value={compareByColumnValue || ' -'}
                 />
                 <TableTooltipRow
                   title={`${
                     viewBy === viewByMode.STANDARDS ? 'Standard' : 'Domain'
                   } : `}
-                  value={config.title}
+                  value={columnConfig.title}
                 />
                 <TableTooltipRow
                   title={`
@@ -365,99 +264,58 @@ const PerformanceAnalysisTable = ({
                       : formatScore(standard.avgScore, analyzeByMode.SCORE)
                   }
                 />
-                {lastItem ? <TableTooltipRow {...lastItem} /> : null}
+                {lastTooltipRow ? (
+                  <TableTooltipRow {...lastTooltipRow} />
+                ) : null}
               </div>
-            )
-          }
-
-          return (
-            <CustomTableTooltip
-              placement="top"
-              title={toolTipText(student)}
-              getCellContents={() => (
-                <ScoreCell color={color}>
-                  {standard ? formatScore(standard[field], analyzeBy) : 'N/A'}
-                </ScoreCell>
-              )}
-            />
-          )
-        },
-      }
+            }
+            getCellContents={() => (
+              <ScoreCell color={color}>
+                {formatScore(standard[analyzeByConfig.field], analyzeBy)}
+              </ScoreCell>
+            )}
+          />
+        )
+      },
     }
-
-    return standardColumnsData.filter(selectedItems).map(makeStandardColumn)
   }
 
-  const getAnalysisColumns = () => {
-    const cols = [
+  const makeStandardColumns = () => {
+    const { selected, dataField, columnsData } = standardColumnsData
+    return columnsData
+      .filter(
+        (skill) => selected.includes(skill[dataField]) || !selected.length
+      )
+      .map(makeStandardColumn)
+  }
+
+  const getTableColumns = () => {
+    const _columns = [
       compareByColumns[compareBy],
-      makeOverallColumn(),
-      ...makeStandardColumns(tableData),
+      makeOverallColumn(standardColumnsData, analyzeByConfig),
+      ...makeStandardColumns(),
     ]
     if (compareBy === 'students') {
       let index = 1
       for (const column of compareByStudentsColumns) {
-        cols.splice(index++, 0, column)
+        _columns.splice(index++, 0, column)
       }
     }
-    return cols
+    return _columns
   }
 
-  /**
-   *
-   * converts table header string starting from 4th column
-   * From
-   * "1-ESS1-2 POINTS - 1 50%"
-   * TO
-   * "1-ESS1-2 (POINTS - 1) (50%)"
-   */
-  const onCsvConvert = (data) => {
-    const splittedData = data.split('\n')
-    const header = splittedData[0]
-    const columns = header.split(',')
-    for (let i = 3; i < columns.length; i++) {
-      const str = columns[i]
-      const _str = str.toLocaleLowerCase()
-      const indexOfPoints = _str.lastIndexOf('points')
-      const indexOfLastSpace = _str.lastIndexOf(' ')
-
-      const transformedStr = `${str.substring(
-        0,
-        indexOfPoints - 1
-      )}(${str
-        .substring(indexOfPoints, indexOfLastSpace)
-        .replace(/\s/g, '')})(Avg-${str.substring(
-        indexOfLastSpace + 1,
-        str.length - 1
-      )})"`
-      columns[i] = transformedStr
-    }
-    const _header = columns.join(',')
-    splittedData[0] = _header
-    const finalData = splittedData.join('\n')
-    downloadCSV(`Performance By Standard Report.csv`, finalData)
-  }
-
-  const columns = getAnalysisColumns()
+  const columns = getTableColumns()
 
   const scrollX = useMemo(() => columns?.length * 160 || '100%', [
     columns?.length,
   ])
-
-  // format the student names in the data & sort in ascending order
-  const dataSource = map(tableData, (d) => ({
-    ...d,
-    studentName: getFormattedName(`${d.firstName || ''} ${d.lastName || ''}`),
-  })).sort((a, b) =>
-    a.studentName.toLowerCase().localeCompare(b.studentName.toLowerCase())
-  )
 
   return (
     <CsvTable
       onCsvConvert={onCsvConvert}
       isCsvDownloading={isCsvDownloading}
       tableToRender={AnalysisTable}
-      dataSource={dataSource}
+      dataSource={tableData}
       scroll={{ x: scrollX }}
       columns={columns}
     />
@@ -471,7 +329,6 @@ PerformanceAnalysisTable.propTypes = {
   compareBy: PropTypes.string.isRequired,
   selectedStandards: PropTypes.array,
   selectedDomains: PropTypes.array,
-  tableData: PropTypes.array.isRequired,
 }
 
 PerformanceAnalysisTable.defaultProps = {

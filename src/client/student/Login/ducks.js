@@ -18,6 +18,7 @@ import userApi from '@edulastic/api/src/user'
 import settingsApi from '@edulastic/api/src/settings'
 import segmentApi from '@edulastic/api/src/segment'
 import schoolApi from '@edulastic/api/src/school'
+import configurableTilesApi from '@edulastic/api/src/configurableTiles'
 import * as TokenStorage from '@edulastic/api/src/utils/Storage'
 import { roleuser, signUpState } from '@edulastic/constants'
 import firebase from 'firebase/app'
@@ -1981,6 +1982,20 @@ function* updateInterestedCurriculumsSaga({ payload }) {
         orgType: payload.orgType,
       })),
     })
+    const userRole = yield select(getUserRole)
+    if (userRole == roleuser.TEACHER) {
+      const _data = yield call(configurableTilesApi.fetchRecommendedTest) || []
+      const data = _data.map((x) => {
+        return { ...x._source, _id: x._id }
+      })
+      if (data?.length) {
+        const userId = yield select(getUserId)
+        localStorage.setItem(
+          `recommendedTest:${userId}:stored`,
+          JSON.stringify(data)
+        )
+      }
+    }
   } catch (e) {
     yield put({ type: UPDATE_INTERESTED_CURRICULUMS_FAILED })
     console.error(e)

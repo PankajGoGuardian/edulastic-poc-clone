@@ -30,6 +30,8 @@ import {
   getIsUseThisLoading,
   useThisPlayListAction,
   setIsUsedModalVisibleAction,
+  setCustomTitleModalVisibleAction,
+  cloneThisPlayListAction,
 } from '../../../CurriculumSequence/ducks'
 import CloneOnUsePlaylistConfirmationModal from '../../../CurriculumSequence/components/CloneOnUsePlaylistConfirmationModal'
 import { allowDuplicateCheck } from '../../../src/utils/permissionCheck'
@@ -40,6 +42,7 @@ import { duplicateTestRequestAction } from '../../../TestPage/ducks'
 import { toggleFreeAdminSubscriptionModalAction } from '../../../../student/Login/ducks'
 import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
 import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/test'
+import CustomTitleOnCloneModal from '../../../CurriculumSequence/components/CustomTitleOnCloneModal'
 
 export const sharedTypeMap = {
   0: 'PUBLIC',
@@ -78,6 +81,7 @@ class Item extends Component {
   state = {
     isOpenModal: false,
     isDeleteModalOpen: false,
+    title: '',
   }
 
   moveToItem = (e) => {
@@ -112,6 +116,10 @@ class Item extends Component {
   onDelete = async (e) => {
     e && e.stopPropagation()
     this.setState({ isDeleteModalOpen: true })
+  }
+
+  setTitle = (value) => {
+    this.setState({ title: value })
   }
 
   assignTest = (e) => {
@@ -222,20 +230,36 @@ class Item extends Component {
 
   handleCreateNewCopy = () => this.handleUseThisClick({ forceClone: true })
 
-  handleUseThisClick = ({ forceClone = false }) => {
-    const { item, useThisPlayList } = this.props
+  handleUseThisClick = ({ forceClone = false, customTitle = '' }) => {
+    const { item, useThisPlayList, cloneThisPlayList } = this.props
     const { title, grades, subjects, customize = null, authors } = item._source
-    useThisPlayList({
-      _id: item._id,
-      title,
-      grades,
-      subjects,
-      customize,
-      fromUseThis: true,
-      authors,
-      forceClone,
-    })
+    if (customTitle !== '') {
+      cloneThisPlayList({
+        _id: item._id,
+        title: customTitle,
+        grades,
+        subjects,
+        customize,
+        fromUseThis: true,
+        authors,
+        forceClone,
+      })
+    } else {
+      useThisPlayList({
+        _id: item._id,
+        title,
+        grades,
+        subjects,
+        customize,
+        fromUseThis: true,
+        authors,
+        forceClone,
+      })
+    }
   }
+
+  handleCloseCustomTitleModal = () =>
+    this.props.setCustomTitleModalVisible(false)
 
   render() {
     const {
@@ -271,6 +295,7 @@ class Item extends Component {
       isUsedModalVisible,
       setIsUsedModalVisible,
       previouslyUsedPlaylistClone,
+      customTitleModalVisible,
     } = this.props
     const showUsedModal =
       isUsedModalVisible &&
@@ -426,6 +451,15 @@ class Item extends Component {
           />
         ) : null}
         <CardViewComponent {...cardViewProps} />
+        {customTitleModalVisible && (
+          <CustomTitleOnCloneModal
+            isVisible={customTitleModalVisible}
+            onCancel={this.handleCloseCustomTitleModal}
+            handleCreateNewCopy={this.handleUseThisClick}
+            title={this.state.title}
+            setTitle={this.setTitle}
+          />
+        )}
       </>
     )
   }
@@ -447,6 +481,8 @@ const enhance = compose(
       isUsedModalVisible: state.curriculumSequence?.isUsedModalVisible,
       previouslyUsedPlaylistClone:
         state.curriculumSequence?.previouslyUsedPlaylistClone,
+      customTitleModalVisible:
+        state.curriculumSequence?.customTitleModalVisible,
     }),
     {
       approveOrRejectSingleTestRequest: approveOrRejectSingleTestRequestAction,
@@ -456,7 +492,9 @@ const enhance = compose(
       toggleFreeAdminSubscriptionModal: toggleFreeAdminSubscriptionModalAction,
       setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
       useThisPlayList: useThisPlayListAction,
+      cloneThisPlayList: cloneThisPlayListAction,
       setIsUsedModalVisible: setIsUsedModalVisibleAction,
+      setCustomTitleModalVisible: setCustomTitleModalVisibleAction,
     }
   )
 )

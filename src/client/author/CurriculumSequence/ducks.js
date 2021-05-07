@@ -129,6 +129,7 @@ export const FETCH_ASSIGNED_REQUEST =
 export const FETCH_ASSIGNED_RESULT =
   '[curriculum-sequence] fetch assigned result'
 export const USE_THIS_PLAYLIST = '[playlist] use this playlist'
+export const CLONE_THIS_PLAYLIST = '[playlist] clone this playlist'
 export const APPROVE_OR_REJECT_SINGLE_PLAYLIST_REQUEST =
   '[curriculum-sequence] approve or reject single playlist request'
 export const APPROVE_OR_REJECT_SINGLE_PLAYLIST_SUCCESS =
@@ -240,6 +241,8 @@ export const SET_CURRENT_ASSIGNMENT_IDS =
 export const DUPLICATE_PLAYLIST_REQUEST = '[playlist] duplicate request'
 export const SET_IS_USED_MODAL_VISIBLE =
   '[playlist] show/hide is used modal popup'
+export const SET_CUSTOM_TITLE_MODAL_VISIBLE =
+  '[playlist] show/hide custom title modal popup'
 export const SET_PREVIOUSLY_USED_PLAYLIST_CLONE =
   '[playlist] previously used playlist clone data'
 
@@ -290,6 +293,7 @@ export const addNewUnitAction = createAction(ADD_NEW_UNIT_INIT)
 export const removeUnitAction = createAction(REMOVE_UNIT_INIT)
 export const fetchAssignedAction = createAction(FETCH_ASSIGNED_REQUEST)
 export const useThisPlayListAction = createAction(USE_THIS_PLAYLIST)
+export const cloneThisPlayListAction = createAction(CLONE_THIS_PLAYLIST)
 
 export const removeItemFromUnitAction = createAction(REMOVE_ITEM_FROM_UNIT)
 export const putCurriculumSequenceAction = createAction(PUT_CURRICULUM_SEQUENCE)
@@ -403,6 +407,9 @@ export const setUseThisLoading = createAction(SET_USE_THIS_LOADER)
 
 export const setIsUsedModalVisibleAction = createAction(
   SET_IS_USED_MODAL_VISIBLE
+)
+export const setCustomTitleModalVisibleAction = createAction(
+  SET_CUSTOM_TITLE_MODAL_VISIBLE
 )
 
 export const setPreviouslyUsedPlaylistClone = createAction(
@@ -1491,6 +1498,47 @@ function* useThisPlayListSaga({ payload }) {
   try {
     yield put(setUseThisLoading(true))
     const {
+      fromUseThis = false,
+      customize = false,
+      authors = [],
+      forceClone = false,
+      isStudent,
+    } = payload
+
+    const currentUserId = yield select(getUserId)
+    const currentUserRole = yield select(getUserRole)
+    const hasPlaylistEditAccess =
+      authors?.find((x) => x._id === currentUserId) ||
+      currentUserRole === roleuser.EDULASTIC_CURATOR
+
+    /**
+     * If customize is enabled and user using the playlist is not
+     * an author nor a co-author then the playlist must be cloned with
+     * modules referencing the original playlist
+     */
+    if (
+      (customize && fromUseThis && !isStudent && !hasPlaylistEditAccess) ||
+      forceClone
+    ) {
+      yield put(setCustomTitleModalVisibleAction(true))
+    } else {
+      yield put(cloneThisPlayListAction(payload))
+    }
+  } catch (error) {
+    console.error(error)
+    notification({ messageKey: 'commonErr' })
+  } finally {
+    const { notificationCallback = null } = payload
+    yield put(setUseThisLoading(false))
+    if (notificationCallback) {
+      notificationCallback()
+    }
+  }
+}
+function* cloneThisPlayListSaga({ payload }) {
+  try {
+    yield put(setUseThisLoading(true))
+    const {
       _id: playlistId,
       title,
       grades,
@@ -1527,7 +1575,7 @@ function* useThisPlayListSaga({ payload }) {
         curriculumSequencesApi.duplicatePlayList,
         {
           _id,
-          title: `${title} - ${new Date().toLocaleString()}`,
+          title: `${title}`,
           forUseThis: true,
           forceClone,
         }
@@ -1536,6 +1584,7 @@ function* useThisPlayListSaga({ payload }) {
       // if playlist was cloned previously
       if (duplicatedPlaylist.previouslyCloned) {
         // let the user decide to clone again (or) use the cloned
+        yield put(setCustomTitleModalVisibleAction(false))
         yield put(setIsUsedModalVisibleAction(true))
         yield put(
           setPreviouslyUsedPlaylistClone({
@@ -1579,6 +1628,7 @@ function* useThisPlayListSaga({ payload }) {
       }
       yield put(getAllCurriculumSequencesAction([_id]))
     }
+    yield put(setCustomTitleModalVisibleAction(false))
     yield put(setIsUsedModalVisibleAction(false))
     const location = yield select((state) => state.router.location.pathname)
     const urlHasUseThis = location.match(/use-this/g)
@@ -2101,6 +2151,7 @@ export function* watcherSaga() {
       moveContentToPlaylistSaga
     ),
     yield takeLatest(USE_THIS_PLAYLIST, useThisPlayListSaga),
+    yield takeLatest(CLONE_THIS_PLAYLIST, cloneThisPlayListSaga),
     yield takeLatest(
       APPROVE_OR_REJECT_SINGLE_PLAYLIST_REQUEST,
       approveOrRejectSinglePlaylistSaga
@@ -2310,6 +2361,7 @@ const initialState = {
     recommendations: [],
   },
   isUsedModalVisible: false,
+  customTitleModalVisible: false,
   previouslyUsedPlaylistClone: null,
   isUseThisLoading: false,
 }
@@ -3186,6 +3238,12 @@ export default createReducer(initialState, {
       state.previouslyUsedPlaylistClone = null
     }
     state.isUsedModalVisible = payload
+  },
+  [SET_CUSTOM_TITLE_MODAL_VISIBLE]: (state, { payload }) => {
+    if (!payload) {
+      state.previouslyUsedPlaylistClone = null
+    }
+    state.customTitleModalVisible = payload
   },
   [SET_PREVIOUSLY_USED_PLAYLIST_CLONE]: (state, { payload }) => {
     state.previouslyUsedPlaylistClone = payload

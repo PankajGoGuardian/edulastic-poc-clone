@@ -66,10 +66,14 @@ export default function withKeyboard(WrappedComponent) {
           tabIndex={isSratchPadEnabled ? '-1' : '0'}
           onKeyDown={(e) => {
             if (isSratchPadEnabled) return
-            const code = e.which
+            const code = e.which || e.keyCode
+            // preventing default behavior if any key is pressed other than tab key
+            if (code !== 9) {
+              e.preventDefault()
+            }
             if (supportedKeys.includes(code)) {
-              if (onClick) onClick()
-              else if (onClickEvent) onClickEvent()
+              if (onClickEvent) onClickEvent()
+              else if (onClick) onClick()
             }
           }}
         />

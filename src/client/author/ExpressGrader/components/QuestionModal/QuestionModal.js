@@ -321,7 +321,7 @@ class QuestionModal extends React.Component {
                 style={{ padding: '20px 3%' }}
                 editResponse={editResponse}
                 toggleEditResponse={() =>
-                  this.setState(({ _editResponse }) => ({
+                  this.setState(({ editResponse: _editResponse }) => ({
                     editResponse: !_editResponse,
                   }))
                 }

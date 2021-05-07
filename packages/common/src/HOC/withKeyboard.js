@@ -7,7 +7,8 @@ export default function withKeyboard(WrappedComponent) {
   const StyledWrappedComponent = styled(WrappedComponent)`
     &:focus {
       outline: 0;
-      box-shadow: 0 0 0 2px ${themeColorBlue};
+      box-shadow: ${({ enableShadowOutline }) =>
+        enableShadowOutline ? `0 0 0 2px ${themeColorBlue}` : 'none'};
     }
   `
 
@@ -16,16 +17,55 @@ export default function withKeyboard(WrappedComponent) {
       WrappedComponent
     )})`
 
+    state = {
+      enableShadowOutline: false,
+    }
+
+    disableShadow = () => {
+      const { enableShadowOutline } = this.state
+      if (enableShadowOutline) this.setState({ enableShadowOutline: false })
+    }
+
+    enableShadow = (event) => {
+      const { enableShadowOutline } = this.state
+      if (event.keyCode === 9 && !enableShadowOutline) {
+        this.setState({ enableShadowOutline: true })
+      }
+    }
+
+    componentDidMount() {
+      // Disable focus styling when mouse button is pressed
+      document.body.addEventListener('mousedown', this.disableShadow)
+
+      // Re-enable focus styling when Tab is pressed
+      document.body.addEventListener('keydown', this.enableShadow)
+    }
+
+    componentWillUnmount() {
+      document.body.removeEventListener('mousedown', this.disableShadow)
+
+      document.body.removeEventListener('keydown', this.enableShadow)
+    }
+
     render() {
-      const { onClick, onClickEvent, onlySpaceKey = false } = this.props
+      const {
+        onClick,
+        onClickEvent,
+        onlySpaceKey = false,
+        tool = [],
+      } = this.props
+      // #5 is for ScratchPad
+      const isSratchPadEnabled = tool.includes(5)
       let supportedKeys = [13, 32]
       if (onlySpaceKey) supportedKeys = [32]
       return (
         <StyledWrappedComponent
           {...this.state}
           {...this.props}
-          tabIndex="0"
+          // If sratchpad is enabled than disabling tab key navigation to prevent user from attempting question
+          tabIndex={isSratchPadEnabled ? '-1' : '0'}
           onKeyDown={(e) => {
+            if (isSratchPadEnabled) return
             const code = e.which
             if (supportedKeys.includes(code)) {
               if (onClick) onClick()

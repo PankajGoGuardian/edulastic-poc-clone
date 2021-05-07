@@ -25,6 +25,7 @@ const AddSchoolAndGradeModal = ({
       visible={isVisible}
       footer={null}
       width="900px"
+      data-cy="signup-add-school-grade"
       onCancel={handleCancel}
       centered
     >

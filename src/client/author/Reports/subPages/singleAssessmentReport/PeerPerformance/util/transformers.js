@@ -154,7 +154,9 @@ const analyseByRawScore = (rawData, groupedData, compareBy) => {
     absent += statusCounts[testActivityStatus.UN_ASSIGNED] || 0
     absent += statusCounts[testActivityStatus.UN_ENROLLED] || 0
     const schoolName = uniq(
-      groupedData[data].map((o) => o.schoolName).filter((txt) => txt)
+      groupedData[data]
+        .map((o) => (isEmpty(o.schoolName) ? ' - ' : o.schoolName))
+        .filter((txt) => txt)
     ).join(', ')
 
     item = {
@@ -225,7 +227,9 @@ const analyseByAboveBelowStandard = (rawData, groupedData, compareBy) => {
     absent += statusCounts[testActivityStatus.UN_ASSIGNED] || 0
     absent += statusCounts[testActivityStatus.UN_ENROLLED] || 0
     const schoolName = uniq(
-      groupedData[data].map((o) => o.schoolName).filter((txt) => txt)
+      groupedData[data]
+        .map((o) => (isEmpty(o.schoolName) ? ' - ' : o.schoolName))
+        .filter((txt) => txt)
     ).join(', ')
 
     item = {
@@ -306,7 +310,9 @@ const analyseByProficiencyBand = (rawData, groupedData, compareBy) => {
     absent += statusCounts[testActivityStatus.UN_ASSIGNED] || 0
     absent += statusCounts[testActivityStatus.UN_ENROLLED] || 0
     const schoolName = uniq(
-      groupedData[data].map((o) => o.schoolName).filter((txt) => txt)
+      groupedData[data]
+        .map((o) => (isEmpty(o.schoolName) ? ' - ' : o.schoolName))
+        .filter((txt) => txt)
     ).join(', ')
 
     item = {

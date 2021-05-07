@@ -641,6 +641,20 @@ const StandardsMasteryReportFilters = ({
                     >
                       <Row type="flex" gutter={[5, 10]}>
                         <Col span={6}>
+                          <FilterLabel data-cy="assignedBy">
+                            Assigned By
+                          </FilterLabel>
+                          <ControlDropDown
+                            by={filters.assignedBy}
+                            selectCB={(e, selected) =>
+                              updateFilterDropdownCB(selected, 'assignedBy')
+                            }
+                            data={staticDropDownData.assignedBy}
+                            prefix="Assigned By"
+                            showPrefixOnSelected={false}
+                          />
+                        </Col>
+                        <Col span={6}>
                           <FilterLabel data-cy="schoolYear">
                             School Year
                           </FilterLabel>
@@ -771,20 +785,6 @@ const StandardsMasteryReportFilters = ({
                             selectCB={(e) =>
                               updateFilterDropdownCB(e, 'groupIds', true)
                             }
-                          />
-                        </Col>
-                        <Col span={6}>
-                          <FilterLabel data-cy="assignedBy">
-                            Assigned By
-                          </FilterLabel>
-                          <ControlDropDown
-                            by={filters.assignedBy}
-                            selectCB={(e, selected) =>
-                              updateFilterDropdownCB(selected, 'assignedBy')
-                            }
-                            data={staticDropDownData.assignedBy}
-                            prefix="Assigned By"
-                            showPrefixOnSelected={false}
                           />
                         </Col>
                       </Row>

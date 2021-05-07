@@ -189,6 +189,18 @@ const EngagementReportFilters = ({
             <Col span={24} style={{ padding: '10px 5px 0 5px' }}>
               <Row type="flex" gutter={[5, 10]}>
                 <Col span={6}>
+                  <FilterLabel data-cy="assignedBy">Assigned By</FilterLabel>
+                  <ControlDropDown
+                    by={filters.assignedBy}
+                    selectCB={(e, selected) =>
+                      updateFilterDropdownCB(selected, 'assignedBy')
+                    }
+                    data={staticDropDownData.assignedBy}
+                    prefix="Assigned By"
+                    showPrefixOnSelected={false}
+                  />
+                </Col>
+                <Col span={6}>
                   <FilterLabel data-cy="schoolYear">School Year</FilterLabel>
                   <ControlDropDown
                     by={filters.termId}
@@ -280,18 +292,6 @@ const EngagementReportFilters = ({
                         : []
                     }
                     options={staticDropDownData.assessmentType}
-                  />
-                </Col>
-                <Col span={6}>
-                  <FilterLabel data-cy="assignedBy">Assigned By</FilterLabel>
-                  <ControlDropDown
-                    by={filters.assignedBy}
-                    selectCB={(e, selected) =>
-                      updateFilterDropdownCB(selected, 'assignedBy')
-                    }
-                    data={staticDropDownData.assignedBy}
-                    prefix="Assigned By"
-                    showPrefixOnSelected={false}
                   />
                 </Col>
               </Row>

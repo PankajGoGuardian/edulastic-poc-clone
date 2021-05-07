@@ -572,6 +572,20 @@ const SingleAssessmentReportFilters = ({
                     tab={staticDropDownData.filterSections.CLASS_FILTERS.title}
                   >
                     <Row type="flex" gutter={[5, 10]}>
+                      <Col span={6}>
+                        <FilterLabel data-cy="assignedBy">
+                          Assigned By
+                        </FilterLabel>
+                        <ControlDropDown
+                          by={filters.assignedBy}
+                          selectCB={(e, selected) =>
+                            updateFilterDropdownCB(selected, 'assignedBy')
+                          }
+                          data={staticDropDownData.assignedBy}
+                          prefix="Assigned By"
+                          showPrefixOnSelected={false}
+                        />
+                      </Col>
                       {role !== 'teacher' && (
                         <>
                           <Col span={6}>
@@ -686,20 +700,6 @@ const SingleAssessmentReportFilters = ({
                           selectCB={(e) =>
                             updateFilterDropdownCB(e, 'groupIds', true)
                           }
-                        />
-                      </Col>
-                      <Col span={6}>
-                        <FilterLabel data-cy="assignedBy">
-                          Assigned By
-                        </FilterLabel>
-                        <ControlDropDown
-                          by={filters.assignedBy}
-                          selectCB={(e, selected) =>
-                            updateFilterDropdownCB(selected, 'assignedBy')
-                          }
-                          data={staticDropDownData.assignedBy}
-                          prefix="Assigned By"
-                          showPrefixOnSelected={false}
                         />
                       </Col>
                     </Row>

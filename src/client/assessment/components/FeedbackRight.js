@@ -25,7 +25,7 @@ import {
   isEmpty,
 } from 'lodash'
 import PropTypes from 'prop-types'
-import React, { Component, useEffect } from 'react'
+import React, { Component, useEffect, useContext } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
@@ -57,11 +57,17 @@ function ScoreInputFocusEffectComponent({
   responseLoading,
   feedbackInputHasFocus,
 }) {
+  const { isAnswerModifiable, expressGrader } = useContext(AnswerContext)
   useEffect(() => {
-    if (scoreInputRef.current && !responseLoading && !feedbackInputHasFocus) {
+    if (
+      scoreInputRef.current &&
+      !responseLoading &&
+      !feedbackInputHasFocus &&
+      !(expressGrader && isAnswerModifiable)
+    ) {
       scoreInputRef.current.focus()
     }
-  }, [responseLoading])
+  }, [responseLoading, isAnswerModifiable, expressGrader])
 
   return null
 }
@@ -104,7 +110,10 @@ class FeedbackRight extends Component {
   }
 
   componentDidMount() {
-    if (this.context?.expressGrader === true) {
+    if (
+      this.context?.expressGrader === true &&
+      !this.context?.isAnswerModifiable
+    ) {
       this.scoreInput?.current?.focus()
     }
   }
@@ -124,7 +133,8 @@ class FeedbackRight extends Component {
     }
 
     if (activity && isUndefined(changed)) {
-      let { score: _score, qActId, _id } = activity
+      let { score: _score } = activity
+      const { qActId, _id } = activity
       let { maxScore: _maxScore } = activity
       const _feedback = get(activity, 'feedback.text', '')
       newState = { ...newState, qActId: qActId || _id }

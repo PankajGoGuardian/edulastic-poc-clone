@@ -128,11 +128,13 @@ const PDFPreview = ({
     }
   }
 
-  const handleDropQuestion = ({ data, itemOffset }) => {
+  const handleDropQuestion = ({ data, itemRect }) => {
     if (annotationContainer.current) {
+      const { x: clientX, y: clientY } = itemRect
+
       const containerRect = annotationContainer.current.getBoundingClientRect()
-      let x = itemOffset.x - containerRect.x
-      let y = itemOffset.y - containerRect.y
+      let x = clientX - containerRect.x - 10
+      let y = clientY - containerRect.y - 10
       x = round(x / pdfScale, 2)
       y = round(y / pdfScale, 2)
 

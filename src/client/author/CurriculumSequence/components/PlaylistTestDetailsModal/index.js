@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { themeColor } from '@edulastic/colors'
 import { Spin } from 'antd'
+import { isUndefined } from 'lodash'
 import { IconEye, IconClose } from '@edulastic/icons'
 import { connect } from 'react-redux'
 import {
@@ -21,7 +22,7 @@ import {
 
 const PlaylistTestDetailsModal = ({
   onClose,
-  modalInitData: { isVisible, currentTestId } = {},
+  modalInitData: { isVisible, requestLatest, currentTestId } = {},
   receiveTestById,
   test = {},
   rows = [],
@@ -32,7 +33,13 @@ const PlaylistTestDetailsModal = ({
   onEditTest,
 }) => {
   useEffect(() => {
-    receiveTestById(currentTestId, true, false, true, playlistId)
+    receiveTestById(
+      currentTestId,
+      isUndefined(requestLatest) ? true : requestLatest,
+      false,
+      true,
+      playlistId
+    )
   }, [])
 
   const defaultPropsForReview = {

@@ -3062,9 +3062,11 @@ export default createReducer(initialState, {
     if (payload?.id) {
       state.playlistTestDetailsModal.isVisible = true
       state.playlistTestDetailsModal.currentTestId = payload.id
+      state.playlistTestDetailsModal.requestLatest = payload.requestLatest
     } else {
       state.playlistTestDetailsModal.isVisible = false
       state.playlistTestDetailsModal.currentTestId = null
+      state.playlistTestDetailsModal.requestLatest = undefined
     }
   },
   [RESET_DESTINATION]: (state, { payload }) => {

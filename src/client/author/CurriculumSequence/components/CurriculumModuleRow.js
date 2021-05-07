@@ -932,13 +932,18 @@ class ModuleRow extends Component {
                                 </Button>
                               </AssignmentButton>
                             ) : (
-                              ((urlHasUseThis && testStatus !== 'draft') ||
+                              (urlHasUseThis ||
                                 (status === 'published' &&
                                   mode === 'embedded')) &&
                               userRole !== roleuser.EDULASTIC_CURATOR && (
                                 <AssignmentButton assigned={isAssigned}>
                                   <Button
                                     data-cy="assignButton"
+                                    title={
+                                      testStatus === 'draft' &&
+                                      'Publish the test to assign'
+                                    }
+                                    disabled={testStatus === 'draft'}
                                     onClick={() =>
                                       assignTest(
                                         _id,
@@ -969,11 +974,7 @@ class ModuleRow extends Component {
                               style={rowInlineStyle}
                               arrow
                             >
-                              <IconActionButton
-                                right={testStatus === 'draft' && 'unset'}
-                                ml={testStatus === 'draft' && 'auto'}
-                                data-cy="moreMenu"
-                              >
+                              <IconActionButton data-cy="moreMenu">
                                 <IconMoreVertical
                                   width={5}
                                   height={14}
@@ -1259,7 +1260,11 @@ class ModuleRow extends Component {
                                       onClick={() =>
                                         !isStudent &&
                                         togglePlaylistTestDetails({
-                                          id: moduleData?.contentId,
+                                          id: moduleData?.assignments?.length
+                                            ? moduleData?.assignments?.[0]
+                                                ?.testId
+                                            : moduleData?.contentId,
+                                          requestLatest: testStatus !== 'draft',
                                         })
                                       }
                                     >

@@ -835,7 +835,10 @@
         "x_axis_image_position": "X axis image position",
         "y_axis_image_position": "Y axis image position",
         "opacity": "Opacity (%)",
-        "show_bg_shape_points": "Show background shape points"
+        "show_bg_shape_points": "Show background shape points",
+        "fileUploadedSuccessfully": "file uploaded successfully",
+        "fileUploadFailed": "file upload failed",
+        "uploadImage": "Upload Image"
       },
       "background_shapes": "Background shapes",
       "minVal": "Minimum value",

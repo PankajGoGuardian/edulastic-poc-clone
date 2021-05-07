@@ -236,8 +236,8 @@ class SubjectGrade extends React.Component {
               <BannerText xs={24} sm={18} md={12}>
                 <SchoolIcon src={schoolIcon} alt="" />
                 <h3>
-                  {t('component.signup.teacher.choosesubject')} <br />{' '}
-                  {t('component.signup.teacher.choosegrade')}
+                  {t('component.signup.teacher.provide')} <br />{' '}
+                  {t('component.signup.teacher.curriculumdetails')}
                 </h3>
                 <h5>{t('component.signup.teacher.gsinfotext')}</h5>
               </BannerText>

@@ -35,6 +35,7 @@ import QuestionWrapper from '../../../../assessment/components/QuestionWrapper'
 import QuestionMetadata from '../../../../assessment/containers/QuestionMetadata'
 import QuestionAuditTrailLogs from '../../../../assessment/containers/QuestionAuditTrailLogs'
 import { ButtonClose } from '../../../ItemDetail/components/Container/styled'
+import Spinner from '../../../../assessment/containers/WidgetOptions/components/Spinner'
 
 import ItemHeader from '../ItemHeader/ItemHeader'
 import {
@@ -125,7 +126,10 @@ class Container extends Component {
   }
 
   handleChangeView = (view) => {
-    const { changeView } = this.props
+    const { changeView, showCalculatingSpinner } = this.props
+    if (showCalculatingSpinner) {
+      return
+    }
     this.setState({
       showHints: false,
     })
@@ -519,6 +523,7 @@ class Container extends Component {
       proceedSave,
       hasUnsavedChanges,
       currentLanguage,
+      showCalculatingSpinner,
       allowedToSelectMultiLanguage,
       t,
     } = this.props
@@ -605,6 +610,7 @@ class Container extends Component {
           </LanguageContext.Provider>
         </QuestionContentWrapper>
         <WarningModal visible={showWarningModal} proceedPublish={proceedSave} />
+        {showCalculatingSpinner && <Spinner />}
       </EditorContainer>
     )
   }

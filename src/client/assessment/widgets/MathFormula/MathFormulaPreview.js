@@ -31,7 +31,6 @@ import { QuestionTitleWrapper } from './styled/QustionNumber'
 import { getStylesFromUiStyleToCssStyle } from '../../utils/helpers'
 import MathSpanWrapper from '../../components/MathSpanWrapper'
 import Instructions from '../../components/Instructions'
-import Spinner from './components/Spinner'
 
 class MathFormulaPreview extends Component {
   static propTypes = {
@@ -259,7 +258,6 @@ class MathFormulaPreview extends Component {
       theme,
       disableResponse,
       answerContextConfig,
-      showCalculatingSpinner,
       view,
       isPrintPreview,
       viewComponent,
@@ -344,7 +342,6 @@ class MathFormulaPreview extends Component {
     }
     return (
       <div>
-        {showCalculatingSpinner && <Spinner />}
         <FlexContainer
           justifyContent="flex-start"
           alignItems="baseline"

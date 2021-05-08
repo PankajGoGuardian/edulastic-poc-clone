@@ -35,6 +35,7 @@ const CustomTitleOnCloneModal = ({
     >
       <StyledContent>Enter name of your playlist</StyledContent>
       <StyledInput
+        data-cy="playlistNameInput"
         onChange={(e) => setTitle(e.target.value)}
         placeholder="Playlist Name"
       />

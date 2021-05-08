@@ -265,6 +265,9 @@ class QuestionModal extends React.Component {
       studentResponseLoading,
       isScoringInProgress,
     } = this.props
+    const blurStyles = studentResponseLoading
+      ? { filter: 'blur(8px)', '-webkit-filter': 'blur(8px)' }
+      : {}
     const { rowIndex, colIndex, loaded, editResponse } = this.state
 
     if (colIndex !== null && rowIndex !== null) {
@@ -296,7 +299,10 @@ class QuestionModal extends React.Component {
             >
               <QuestionWrapper
                 ref={this.containerRef}
-                style={{ marginBottom: windowWidth > 1024 ? '66px' : '99px' }}
+                style={{
+                  marginBottom: windowWidth > 1024 ? '66px' : '99px',
+                  ...blurStyles,
+                }}
               >
                 <Question
                   record={question}

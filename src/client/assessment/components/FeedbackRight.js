@@ -124,7 +124,8 @@ class FeedbackRight extends Component {
     }
 
     if (activity && isUndefined(changed)) {
-      let { score: _score, qActId, _id } = activity
+      let { score: _score } = activity
+      const { qActId, _id } = activity
       let { maxScore: _maxScore } = activity
       const _feedback = get(activity, 'feedback.text', '')
       newState = { ...newState, qActId: qActId || _id }
@@ -281,6 +282,7 @@ class FeedbackRight extends Component {
   }
 
   allowToSubmitScore = (eventType) => {
+    const { changed } = this.state
     /**
      * in case of student did not visit the question, allow teacher trying to grade first time
      * @see EV-25489
@@ -292,7 +294,7 @@ class FeedbackRight extends Component {
     if (isQuestionView) {
       return isEmpty(activity)
     }
-    return activity.isDummy
+    return activity.isDummy && changed
   }
 
   submitScore = (e) => {
@@ -366,6 +368,7 @@ class FeedbackRight extends Component {
   }
 
   render() {
+    const { studentResponseLoading, expressGrader } = this.context
     const {
       studentName,
       widget: { activity },
@@ -421,11 +424,12 @@ class FeedbackRight extends Component {
 
     let _score = adaptiveRound(score || 0)
     if (
-      activity &&
-      activity.graded === false &&
-      (activity.score === 0 || isUndefined(activity.score)) &&
-      !score &&
-      !changed
+      (activity &&
+        activity.graded === false &&
+        (activity.score === 0 || isUndefined(activity.score)) &&
+        !score &&
+        !changed) ||
+      (activity?.isDummy && expressGrader && !changed)
     ) {
       _score = ''
     }
@@ -439,7 +443,6 @@ class FeedbackRight extends Component {
     //   _maxScore = "";
     // }
 
-    const { studentResponseLoading, expressGrader } = this.context
     return (
       <StyledCardTwo
         bordered={isStudentName}

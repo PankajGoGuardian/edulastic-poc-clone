@@ -109,13 +109,11 @@ class Container extends React.Component {
       receiveTestById,
       getDefaultTestSettings,
       changeView,
-      assessment: { grades },
     } = this.props
     receiveTestById(match.params.assessmentId)
     getDefaultTestSettings()
     window.onbeforeunload = () => this.beforeUnload()
     changeView(tabs.DESCRIPTION)
-    this.handleChangeKeypad(grades)
   }
 
   get isEditableTest() {
@@ -130,46 +128,6 @@ class Container extends React.Component {
 
   componentWillUnmount() {
     window.onbeforeunload = () => {}
-  }
-
-  handleChangeKeypad = (grades, updated = false) => {
-    const {
-      setTestData,
-      assessment: { keypad },
-      isPremiumUser,
-    } = this.props
-    if (isPremiumUser && this.isEditableTest) {
-      if (isEmpty(keypad) || keypad.updated === false) {
-        const highestGrade = grades.reduce((acc, curr) => {
-          const currentGrade = parseInt(curr, 10)
-          if (currentGrade > acc) {
-            acc = currentGrade
-          }
-          return acc
-        }, 0)
-        if (highestGrade > 0 && highestGrade <= 5) {
-          setTestData({
-            keypad: { updated, type: 'predefined', value: 'basic' },
-          })
-        } else if (highestGrade > 5 && highestGrade <= 12) {
-          setTestData({
-            keypad: {
-              updated,
-              type: 'predefined',
-              value: 'intermediate',
-            },
-          })
-        } else {
-          setTestData({
-            keypad: {
-              type: 'item-level',
-              value: 'item-level-keypad',
-              updated,
-            },
-          })
-        }
-      }
-    }
   }
 
   beforeUnload = () => {
@@ -372,7 +330,6 @@ class Container extends React.Component {
         return (
           <Description
             setData={setTestData}
-            onChangeKeypad={this.handleChangeKeypad}
             assessment={assessment}
             owner={owner}
           />

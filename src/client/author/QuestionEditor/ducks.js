@@ -851,6 +851,12 @@ const containsEmptyField = (variables) => {
   return { hasEmptyField: false, errMessage: '' }
 }
 
+const hasMathFormula = (variables) =>
+  Object.keys(variables).some((key) => {
+    const { type } = variables[key] || {}
+    return type === 'FORMULA'
+  })
+
 /**
  *
  * @param {*} payload should be an object with testId and isEditFlow flags
@@ -939,16 +945,9 @@ function* calculateFormulaSaga({ payload }) {
       return []
     }
 
-    const options = question?.isMath
-      ? getOptionsForMath(get(question, 'validation.validResponse.value', []))
-      : {}
-
     const variables =
       payload.data.variables || question.variable.variables || {}
     const examples = payload.data.examples || question.variable.examples || {}
-    const latexValuePairs = [
-      getLatexValuePairs({ id: 'definition', variables, options }),
-    ]
 
     const { hasEmptyField = false, errMessage = '' } = containsEmptyField(
       variables
@@ -961,21 +960,31 @@ function* calculateFormulaSaga({ payload }) {
       return true
     }
 
-    if (examples) {
-      for (const example of examples) {
-        const pair = getLatexValuePairs({
-          id: `example${example.key}`,
-          variables,
-          example,
-          options,
-        })
-        if (pair.latexes.length > 0) {
-          latexValuePairs.push(pair)
+    let results = []
+    if (hasMathFormula(variables)) {
+      const options = question?.isMath
+        ? getOptionsForMath(get(question, 'validation.validResponse.value', []))
+        : {}
+      const latexValuePairs = [
+        getLatexValuePairs({ id: 'definition', variables, options }),
+      ]
+      if (examples) {
+        for (const example of examples) {
+          const pair = getLatexValuePairs({
+            id: `example${example.key}`,
+            variables,
+            example,
+            options,
+          })
+          if (pair.latexes.length > 0) {
+            latexValuePairs.push(pair)
+          }
         }
       }
+      results = yield call(evaluateApi.calculate, latexValuePairs)
     }
+
     const variable = { ...question.variable, examples, variables }
-    const results = yield call(evaluateApi.calculate, latexValuePairs)
     const newQuestion = { ...cloneDeep(question), variable }
     for (const result of results) {
       if (result.id === 'definition') {

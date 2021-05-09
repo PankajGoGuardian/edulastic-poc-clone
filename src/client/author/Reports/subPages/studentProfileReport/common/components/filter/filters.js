@@ -176,12 +176,14 @@ const StudentProfileReportFilters = ({
       classIds: '',
       performanceBandProfileId: '',
       standardsProficiencyProfileId: '',
+      assignedBy: search.assignedBy || staticDropDownData.assignedBy[0].key,
     }
     const _tempTagsData = {
       ...tempTagsData,
       termId: urlSchoolYear,
       grades: urlGrades,
       subjects: urlSubjects,
+      assignedBy: search.assignedBy || staticDropDownData.assignedBy[0],
     }
     setFilters(_filters)
     setTempTagsData(_tempTagsData)
@@ -369,6 +371,16 @@ const StudentProfileReportFilters = ({
   const topFilterColSpan =
     loc === 'student-progress-profile' && filters.showApply ? 5 : 6
 
+  const handleTagClick = (filterKey) => {
+    const tabKey =
+      staticDropDownData.tagTypes.find((filter) => filter.key === filterKey)
+        ?.tabKey || -1
+    if (tabKey !== -1) {
+      toggleFilter(null, true)
+      setActiveTabKey(tabKey)
+    }
+  }
+
   return (
     <Row type="flex" gutter={[0, 5]} style={{ width: '100%' }}>
       <Col span={24} style={{ display: 'flex', alignItems: 'center' }}>
@@ -378,6 +390,7 @@ const StudentProfileReportFilters = ({
           tagsData={tagsData}
           tagTypes={tagTypes}
           handleCloseTag={handleCloseTag}
+          handleTagClick={handleTagClick}
         />
         <ReportFiltersContainer visible={!reportId}>
           <StyledEduButton
@@ -402,6 +415,20 @@ const StudentProfileReportFilters = ({
                     tab={staticDropDownData.filterSections.CLASS_FILTERS.title}
                   >
                     <Row type="flex" gutter={[5, 10]}>
+                      <Col span={6}>
+                        <FilterLabel data-cy="assignedBy">
+                          Assigned By
+                        </FilterLabel>
+                        <ControlDropDown
+                          by={filters.assignedBy}
+                          selectCB={(e, selected) =>
+                            updateFilterDropdownCB(selected, 'assignedBy')
+                          }
+                          data={staticDropDownData.assignedBy}
+                          prefix="Assigned By"
+                          showPrefixOnSelected={false}
+                        />
+                      </Col>
                       <Col span={6}>
                         <FilterLabel data-cy="schoolYear">
                           School Year

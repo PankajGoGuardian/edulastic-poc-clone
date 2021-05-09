@@ -6,20 +6,21 @@
     }
   },
   "tagTypes": [
-    { "key": "termId" },
-    { "key": "courseIds" },
-    { "key": "grades", "subType": "class" },
-    { "key": "subjects", "subType": "class" },
-    { "key": "classIds" },
+    { "key": "termId", "tabKey": "0" },
+    { "key": "courseIds", "tabKey": "0" },
+    { "key": "grades", "subType": "class", "tabKey": "0" },
+    { "key": "subjects", "subType": "class", "tabKey": "0" },
+    { "key": "classIds", "tabKey": "0" },
     { "key": "student" },
     { "key": "performanceBandProfileId" },
     { "key": "standardsProficiencyProfileId" },
     { "key": "domainId" },
-    { "key": "standardId" }
+    { "key": "standardId" },
+    { "key": "assignedBy", "tabKey": "0" }
   ],
   "initialFilters": {
     "reportId": "",
-		"termId": "",
+    "termId": "",
     "courseIds": "",
     "grades": "",
     "subjects": "",
@@ -28,8 +29,9 @@
     "standardsProficiencyProfileId": "",
     "domainId": "All",
     "standardId": "All",
-    "showApply": false
-	},
+    "showApply": false,
+    "assignedBy": "anyone"
+  },
   "subjects": [
     { "key": "Mathematics", "title": "Mathematics" },
     { "key": "ELA", "title": "ELA" },
@@ -54,5 +56,9 @@
     { "key": "11", "title": "Grade 11" },
     { "key": "12", "title": "Grade 12" },
     { "key": "other", "title": "Other" }
+  ],
+  "assignedBy": [
+    { "key": "anyone", "title": "Anyone" },
+    { "key": "me", "title": "Me" }
   ]
 }

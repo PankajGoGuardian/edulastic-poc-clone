@@ -862,7 +862,7 @@ class PreviewModal extends React.Component {
             </EduButton>
           </ModalTopAction>
         </HeadingWrapper>
-        <ModalContentArea isMobile={isMobile}>
+        <ModalContentArea isMobile={isMobile} id="preview-modal-content-area">
           {isLoading && (
             <ProgressContainer>
               <Spin tip="" />

@@ -78,6 +78,7 @@
       "beforeCombinationCount": "Create",
       "afterCombinationCount": "possible value combinations (max 200)",
       "variableGenerate": "Generate",
+      "invalidSeqVariableMsg": "Please note that all dynamic parameters that are of \"sequence\" type need to have the same number of items. Otherwise, it may not be so obvious how the sequences should be aligned.",
       "variableMin": "Min",
       "variableMax": "Max",
       "variableStep": "Step",
@@ -834,7 +835,10 @@
         "x_axis_image_position": "X axis image position",
         "y_axis_image_position": "Y axis image position",
         "opacity": "Opacity (%)",
-        "show_bg_shape_points": "Show background shape points"
+        "show_bg_shape_points": "Show background shape points",
+        "fileUploadedSuccessfully": "file uploaded successfully",
+        "fileUploadFailed": "file upload failed",
+        "uploadImage": "Upload Image"
       },
       "background_shapes": "Background shapes",
       "minVal": "Minimum value",

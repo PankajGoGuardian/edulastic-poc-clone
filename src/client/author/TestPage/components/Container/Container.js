@@ -192,7 +192,6 @@ class Container extends PureComponent {
       isVersionFlow,
       getTestIdFromVersionId,
       fetchUserKeypads,
-      test: { grades = [] } = {},
     } = this.props
 
     const { versionId, id } = match.params
@@ -259,9 +258,6 @@ class Container extends PureComponent {
         setRegradeOldId('')
       }
 
-      if (this.isTestEditable) {
-        this.handleChangeKeypad(grades, false, false)
-      }
       if (userRole !== roleuser.EDULASTIC_CURATOR) getDefaultTestSettings()
     } else {
       fetchAssignmentsByTest({ testId: id })
@@ -463,43 +459,6 @@ class Container extends PureComponent {
     }
   }
 
-  handleChangeKeypad = (grades, updated = false, setUpdated = true) => {
-    const { setData, test: { keypad = {} } = {}, isPremiumUser } = this.props
-
-    if (isPremiumUser && (isEmpty(keypad) || keypad.updated === false)) {
-      const highestGrade = grades.reduce((acc, curr) => {
-        const currentGrade = parseInt(curr, 10)
-        if (currentGrade > acc) {
-          acc = currentGrade
-        }
-        return acc
-      }, 0)
-      if (highestGrade > 0 && highestGrade <= 5) {
-        setData({
-          keypad: { updated, type: 'predefined', value: 'basic' },
-        })
-      } else if (highestGrade > 5 && highestGrade <= 12) {
-        setData({
-          updated: setUpdated,
-          keypad: {
-            updated,
-            type: 'predefined',
-            value: 'intermediate',
-          },
-        })
-      } else {
-        setData({
-          updated: setUpdated,
-          keypad: {
-            type: 'item-level',
-            value: 'item-level-keypad',
-            updated,
-          },
-        })
-      }
-    }
-  }
-
   handleChangeGrade = (grades) => {
     const {
       setData,
@@ -513,7 +472,6 @@ class Container extends PureComponent {
       subjects: itemsSubjectAndGrade.subjects,
       grades: [],
     })
-    this.handleChangeKeypad(grades, false)
   }
 
   handleChangeCollection = (_, options) => {

@@ -585,7 +585,7 @@ class Review extends PureComponent {
           <Row>
             <Col lg={24}>
               <SecondHeader>
-                <TestTitle>{test?.title}</TestTitle>
+                <TestTitle data-cy="testTitle">{test?.title}</TestTitle>
               </SecondHeader>
             </Col>
           </Row>

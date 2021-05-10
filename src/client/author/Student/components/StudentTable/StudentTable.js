@@ -74,7 +74,11 @@ import {
 import { receiveSchoolsAction } from '../../../Schools/ducks'
 import Breadcrumb from '../../../src/components/Breadcrumb'
 import AdminSubHeader from '../../../src/components/common/AdminSubHeader/UserSubHeader'
-import { getUserOrgId, getUserRole } from '../../../src/selectors/user'
+import {
+  getUserOrgId,
+  getUserRole,
+  getUserSelector,
+} from '../../../src/selectors/user'
 import {
   addMultiStudentsRequestAction,
   addStudentsToOtherClassAction,
@@ -132,6 +136,20 @@ class StudentTable extends Component {
       refineButtonActive: false,
     }
     const { t, isProxyUser } = this.props
+
+    const { user, subscription } = this.props
+    const { subType, isSubscriptionExpired } = subscription || {}
+    const isPremiumUser = user.user?.features?.premium
+    const isPaidPremium = !(
+      !subType ||
+      subType === 'TRIAL_PREMIUM' ||
+      (subType === 'partial_premium' && !isPremiumUser)
+    )
+
+    const hideProxyFeature =
+      (isSubscriptionExpired || !isPaidPremium) &&
+      !['enterprise', 'partial_premium'].includes(subType)
+
     this.columns = [
       {
         title: t('users.student.name'),
@@ -205,7 +223,7 @@ class StudentTable extends Component {
           const status = get(_source, 'status', '')
           return (
             <div style={{ whiteSpace: 'nowrap' }}>
-              {status === 1 && !isProxyUser ? (
+              {status === 1 && !isProxyUser && !hideProxyFeature ? (
                 <StyledMaskButton
                   onClick={() => this.onProxyStudent(id)}
                   title={`Act as ${fullName}`}
@@ -1009,6 +1027,8 @@ const enhance = compose(
   withNamespaces('manageDistrict'),
   connect(
     (state) => ({
+      user: getUserSelector(state),
+      subscription: state?.subscription?.subscriptionData?.subscription,
       userOrgId: getUserOrgId(state),
       // schoolsData: getSchoolsSelector(state),
       // classList: get(state, ["classesReducer", "data"], []),

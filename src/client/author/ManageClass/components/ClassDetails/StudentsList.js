@@ -32,10 +32,14 @@ import {
   getUserId,
   getUserRole,
   getGroupList,
+  getUserSelector,
 } from '../../../src/selectors/user'
 import { getFormattedName } from '../../../Gradebook/transformers'
 
 const StudentsList = ({
+  user,
+  isSubscriptionExpired = false,
+  subscription,
   cuId,
   cuRole,
   loaded,
@@ -78,6 +82,18 @@ const StudentsList = ({
     groupId,
     groupList,
   })
+
+  const { subType } = subscription || {}
+  const isPremiumUser = user.user?.features?.premium
+  const isPaidPremium = !(
+    !subType ||
+    subType === 'TRIAL_PREMIUM' ||
+    (subType === 'partial_premium' && !isPremiumUser)
+  )
+
+  const hideProxyFeature =
+    (isSubscriptionExpired || !isPaidPremium) &&
+    !['enterprise', 'partial_premium'].includes(subType)
 
   const columns = [
     {
@@ -170,7 +186,10 @@ const StudentsList = ({
     },
     {
       render: (_, { _id, enrollmentStatus, status }) =>
-        !isProxyUser && enrollmentStatus === 1 && status === 1 ? (
+        !isProxyUser &&
+        enrollmentStatus === 1 &&
+        status === 1 &&
+        !hideProxyFeature ? (
           <Tooltip placement="topRight" title="View as Student">
             <GiDominoMask
               onClick={() =>
@@ -240,6 +259,9 @@ StudentsList.propTypes = {
 
 export default connect(
   (state) => ({
+    user: getUserSelector(state),
+    subscription: state?.subscription?.subscriptionData?.subscription,
+    isSubscriptionExpired: state?.subscription?.isSubscriptionExpired,
     cuId: getUserId(state),
     cuRole: getUserRole(state),
     loaded: get(state, 'manageClass.loaded'),

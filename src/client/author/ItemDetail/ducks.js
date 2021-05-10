@@ -723,10 +723,15 @@ const removeTab = (state, payload) =>
 const changeTabTitle = (state, payload) => {
   const { index, value } = payload
   return produce(state, (newState) => {
-    const { passage } = newState
-    if (passage.structure?.tabs?.length) {
-      passage.structure.tabs[index] = value
-    }
+    const { passage, item = {} } = newState
+    const { rows = [], isPassageWithQuestions } = item
+
+    const tabs = isPassageWithQuestions
+      ? get(passage, 'structure.tabs', [])
+      : get(rows, [0, 'tabs'], [])
+
+    tabs[index] = value
+
     return newState
   })
 }

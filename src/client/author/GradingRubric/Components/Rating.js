@@ -32,9 +32,9 @@ const Rating = ({
   }
 
   return (
-    <RatingContaner className={className}>
+    <RatingContaner className={className} data-cy="ratingContainer">
       <div>
-        <span>
+        <span data-cy="ratingName">
           <TextInput
             id={id}
             parentId={parentId}
@@ -48,12 +48,13 @@ const Rating = ({
           <DeleteRating
             className="delete-rating-button"
             title="Delete"
+            data-cy="deleteRating"
             onClick={handleDelete}
           >
             <Icon type="close" />
           </DeleteRating>
         )}
-        <span>
+        <span data-cy="rating">
           <TextInput
             id={id}
             parentId={parentId}
@@ -64,7 +65,7 @@ const Rating = ({
           />
         </span>
       </div>
-      <div>
+      <div data-cy="ratingDescription">
         <TextInput
           id={id}
           parentId={parentId}

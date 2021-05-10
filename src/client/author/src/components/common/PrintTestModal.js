@@ -6,6 +6,7 @@ import {
   greyThemeDark1,
   greyishBorder,
   lightGreySecondary,
+  themeColorBlue,
 } from '@edulastic/colors'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
@@ -201,6 +202,10 @@ const StyledInput = styled(Input)`
   border: 1px solid ${greyishBorder};
   background: ${lightGreySecondary};
   border-radius: 0;
+  &:focus,
+  &:hover {
+    border: 1px solid ${themeColorBlue};
+  }
 `
 
 const Info = styled.div`

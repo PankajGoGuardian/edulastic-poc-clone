@@ -71,7 +71,7 @@ const ItemDetailWidget = ({
     ? onChangeItemLevelPoint
     : onChangeQuestionLevelPoint
 
-  const disablePointsInput =
+  const hidePointsBlock =
     (widgetIndex > 0 && itemData.itemLevelScoring) ||
     (question.rubrics && !itemData.itemLevelScoring)
 
@@ -104,19 +104,26 @@ const ItemDetailWidget = ({
 
           {(!flowLayout || showButtons) && (
             <ButtonsContainer>
-              {!(unscored && showPoints) ? (
-                <Ctrls.Point
-                  value={score}
-                  onChange={scoreChangeHandler}
-                  visible={isPointsBlockVisible}
-                  disabled={disablePointsInput}
-                  isRubricQuestion={
-                    !!question.rubrics && !itemData.itemLevelScoring
-                  }
-                />
-              ) : (
-                <UnScored text="Zero Point" height="50px" />
-              )}
+              {!hidePointsBlock ? (
+                !(unscored && showPoints) ? (
+                  <Ctrls.Point
+                    value={score}
+                    onChange={scoreChangeHandler}
+                    data-cy="pointUpdate"
+                    visible={isPointsBlockVisible}
+                    isRubricQuestion={
+                      !!question.rubrics && !itemData.itemLevelScoring
+                    }
+                    itemLevelScoring={itemData.itemLevelScoring}
+                  />
+                ) : (
+                  <UnScored
+                    width="50px"
+                    height="50px"
+                    top={`${itemData.itemLevelScoring ? -80 : -50}px`}
+                  />
+                )
+              ) : null}
 
               {connectDragSource(
                 <div>

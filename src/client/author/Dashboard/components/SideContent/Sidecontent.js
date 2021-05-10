@@ -5,7 +5,10 @@ import { Col, Icon, Row } from 'antd'
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { isProxyUser as isProxyUserSelector } from '../../../../student/Login/ducks'
+import {
+  isProxyUser as isProxyUserSelector,
+  isDemoPlaygroundUser,
+} from '../../../../student/Login/ducks'
 import videoImg from '../../assets/images/videoImage.png'
 import { LinkWrapper, TextWrapper } from '../styledComponents'
 import {
@@ -92,12 +95,12 @@ const SideContent = (props) => {
     }
   }
 
-  const { isProxyUser, showSliderBtn = true } = props
+  const { isProxyUser, showSliderBtn = true, isDemoAccount = false } = props
 
   return (
     <SideContentContainer
       show={showSideContent}
-      isProxyUser={isProxyUser}
+      isBannerShown={isProxyUser || isDemoAccount}
       showSliderBtn={showSliderBtn}
     >
       <SliderButton onClick={handleSliderClick}>
@@ -164,4 +167,5 @@ const SideContent = (props) => {
 }
 export default connect((state) => ({
   isProxyUser: isProxyUserSelector(state),
+  isDemoAccount: isDemoPlaygroundUser(state),
 }))(SideContent)

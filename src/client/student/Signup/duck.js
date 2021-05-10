@@ -57,6 +57,8 @@ const JOIN_SCHOOL_FAILED = '[signup] update with school failed'
 
 const SAVE_SUBJECTGRADE_REQUEST = '[signup] save with subject and grade request'
 const SAVE_SUBJECTGRADE_FAILED = '[signup] save with subject and grade failed'
+const SAVE_SUBJECTGRADE_RESET =
+  '[signup] save with subject and grade reset state'
 
 const CREATE_AND_JOIN_SCHOOL_REQUEST = '[signup] create and join school request'
 const CREATE_AND_JOIN_SCHOOL_JOIN_REQUEST =
@@ -301,6 +303,9 @@ export default createReducer(initialState, {
   [SAVE_SUBJECTGRADE_FAILED]: (state) => {
     state.saveSubjectGradeloading = false
   },
+  [SAVE_SUBJECTGRADE_RESET]: (state) => {
+    state.saveSubjectGradeloading = false
+  },
   [JOIN_SCHOOL_REQUEST]: (state) => {
     state.updateUserWithSchoolLoading = true
   },
@@ -507,6 +512,10 @@ function* updateUserSignupStateSaga() {
 }
 
 function* saveSubjectGradeSaga({ payload }) {
+  const isTestRecommendationCustomizer = payload?.isTestRecommendationCustomizer
+  const setShowTestCustomizerModal = payload?.setShowTestCustomizerModal
+  delete payload.isTestRecommendationCustomizer
+  delete payload.setShowTestCustomizerModal
   let isSaveSubjectGradeSuccessful = false
   const initialUser = yield select(getUser)
   try {
@@ -546,12 +555,28 @@ function* saveSubjectGradeSaga({ payload }) {
 
   if (isSaveSubjectGradeSuccessful) {
     yield* updateUserSignupStateSaga()
+    notification({
+      msg: isTestRecommendationCustomizer
+        ? 'Updated Successfully.'
+        : 'Sign up completed.',
+      type: 'success',
+    })
+    if (isTestRecommendationCustomizer) {
+      setShowTestCustomizerModal(false)
+    }
   }
 
-  // If user has signUpState ACCESS_WITHOUT_SCHOOL, it means he is already accessing in-session app
-  if (initialUser.currentSignUpState !== signUpState.ACCESS_WITHOUT_SCHOOL) {
-    yield put(persistAuthStateAndRedirectToAction())
+  if (!isTestRecommendationCustomizer) {
+    // If user has signUpState ACCESS_WITHOUT_SCHOOL, it means he is already accessing in-session app
+    if (initialUser.currentSignUpState !== signUpState.ACCESS_WITHOUT_SCHOOL) {
+      yield put(persistAuthStateAndRedirectToAction())
+    }
   }
+
+  yield put({
+    type: SAVE_SUBJECTGRADE_RESET,
+    payload: {},
+  })
 }
 
 function* getOrgDetailsByShortNameAndOrgTypeSaga({ payload }) {

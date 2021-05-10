@@ -3,22 +3,21 @@ import styled from 'styled-components'
 import { MathFormulaDisplay } from '@edulastic/common'
 import { white } from '@edulastic/colors'
 import { IconWrapper } from './styled/IconWrapper'
-import { RightIcon } from './styled/RightIcon'
-import { WrongIcon } from './styled/WrongIcon'
 
 const AnswerBox = ({
-  checked,
-  correct,
   userAnswer,
   indexStr,
   inPopover,
   showIndex,
   lessMinWidth,
+  fillColor,
+  mark,
+  indexBgColor,
   ...rest
 }) => (
-  <Container data-cy="answer-box" {...rest} checked={checked} correct={correct}>
+  <Container data-cy="answer-box" {...rest} fillColor={fillColor}>
     {showIndex && (
-      <IndexBox data-cy="index" checked={checked} correct={correct}>
+      <IndexBox data-cy="index" bg={indexBgColor}>
         {indexStr}
       </IndexBox>
     )}
@@ -26,12 +25,8 @@ const AnswerBox = ({
       inPopover={inPopover}
       dangerouslySetInnerHTML={{ __html: userAnswer || '' }}
     />
-    <IconWrapper
-      data-cy={`icon-${checked && correct}`}
-      rightPosition={lessMinWidth ? 1 : 8}
-    >
-      {checked && correct && <RightIcon />}
-      {checked && !correct && <WrongIcon />}
+    <IconWrapper data-cy="icon-mark" rightPosition={lessMinWidth ? 1 : 8}>
+      {mark}
     </IconWrapper>
   </Container>
 )
@@ -43,18 +38,9 @@ const Container = styled.div`
   vertical-align: ${({ isDragStyle }) => (isDragStyle ? 'middle' : 'bottom')};
   cursor: pointer;
   border-radius: 4px;
-  background: ${({ theme, checked, correct, isPrintPreview }) => {
+  background: ${({ fillColor, isPrintPreview }) => {
     if (isPrintPreview) return white
-    if (!checked) {
-      return theme.checkbox.noAnswerBgColor
-    }
-    if (!correct) {
-      return theme.checkbox.wrongBgColor
-    }
-    if (correct) {
-      return theme.checkbox.rightBgColor
-    }
-    return theme.widgets.clozeDropDown.boxBgColor
+    return fillColor
   }};
 `
 
@@ -83,14 +69,8 @@ const IndexBox = styled.div`
   justify-content: center;
   align-items: center;
   flex-shrink: 0;
-  ${({ theme, checked, correct }) => `
-    background: ${
-      !checked
-        ? theme.checkbox.noAnswerIconColor
-        : correct
-        ? theme.checkbox.rightIconColor
-        : theme.checkbox.wrongIconColor
-    };
+  ${({ theme, bg }) => `
+    background: ${bg};
     color: ${theme.widgets.clozeDropDown.indexBoxColor};
     font-size: ${theme.widgets.clozeDropDown.indexBoxFontSize};
     font-weight: ${theme.widgets.clozeDropDown.indexBoxFontWeight};

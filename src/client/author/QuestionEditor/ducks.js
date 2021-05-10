@@ -21,7 +21,11 @@ import {
 } from 'lodash'
 import produce from 'immer'
 import { questionType, questionTitle } from '@edulastic/constants'
-import { helpers, notification } from '@edulastic/common'
+import {
+  helpers,
+  notification,
+  captureSentryException,
+} from '@edulastic/common'
 import { push } from 'connected-react-router'
 import * as Sentry from '@sentry/browser'
 import { storeInLocalStorage } from '@edulastic/api/src/utils/Storage'
@@ -796,6 +800,7 @@ function* saveQuestionSaga({
     }
   } catch (err) {
     console.error(err)
+    captureSentryException(err)
     const errorMessage = 'Unable to save the question.'
     if (isTestFlow) {
       yield put(toggleCreateItemModalAction(false))
@@ -837,12 +842,12 @@ const containsEmptyField = (variables) => {
       case !!intersection(_keys, _set.split(',')).length:
         return {
           hasEmptyField: true,
-          errMessage: `You have a parameter named "${name}" that is also given in the text set. This is not supported.`,
+          errMessage: `Your dynamic parameter "${name}" contains a text entry that is also a parameter name. This is not supported right now. Please rename the impacted parameters or entries so that there is no naming overlap.`,
         }
       case !!intersection(_keys, sequence.split(',')).length:
         return {
           hasEmptyField: true,
-          errMessage: `You have a parameter named "${name}" that is also given in the text sequence. This is not supported.`,
+          errMessage: `Your dynamic parameter "${name}" contains a text entry that is also a parameter name. This is not supported right now. Please rename the impacted parameters or entries so that there is no naming overlap.`,
         }
       default:
         break

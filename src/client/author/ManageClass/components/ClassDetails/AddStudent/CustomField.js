@@ -123,6 +123,7 @@ const CustomField = ({
     frlStatus: [],
     enlStatus: [],
     sedStatus: [],
+    hispanicEthnicity: [],
     race: [{ max: 40, message: 'Must less than 40 characters!' }],
     iepStatus: [],
     dob: [],

@@ -103,6 +103,8 @@ const ValidEmailIdsTable = ({ validEmailIdsList }) => {
         <span>
           {subscription?.subStartDate
             ? moment(subscription.subStartDate).format('DD MMM, YYYY')
+            : subscription?.subRenewalDate
+            ? moment(subscription.subRenewalDate).format('DD MMM, YYYY')
             : '-'}
         </span>
       ),
@@ -112,7 +114,7 @@ const ValidEmailIdsTable = ({ validEmailIdsList }) => {
       dataIndex: 'subscription',
       render: (subscription) => (
         <span>
-          {subscription?.subStartDate
+          {subscription?.subEndDate
             ? moment(subscription?.subEndDate).format('DD MMM, YYYY')
             : '-'}
         </span>

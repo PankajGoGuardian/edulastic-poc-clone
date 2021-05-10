@@ -29,6 +29,10 @@ const initialState = {
     standardsProficiencyProfileId: '',
     assignedBy: 'anyone',
   },
+  standardFilters: {
+    domainIds: '',
+    standardIds: '',
+  },
   tagsData: {},
 }
 
@@ -39,6 +43,7 @@ export const reportSPRSettingsReducer = createReducer(initialState, {
   [SET_SPR_SETTINGS]: (state, { payload }) => {
     state.selectedStudent = payload.selectedStudent
     state.requestFilters = payload.requestFilters
+    state.standardFilters = payload.standardFilters
   },
   [RESET_ALL_REPORTS]: (state) => (state = initialState),
 })

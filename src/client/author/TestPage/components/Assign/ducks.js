@@ -195,12 +195,14 @@ function* saveAssignment({ payload }) {
     let testIds
     yield put(setAssignmentSavingAction(true))
     if (!payload.playlistModuleId && !payload.playlistId) {
-      testIds = [yield select(getTestIdSelector)]
+      testIds = [yield select(getTestIdSelector)].map((testId) => ({ testId }))
     } else {
       const playlist = yield select(getPlaylistEntitySelector)
       testIds = []
       if (payload.testId) {
-        testIds = [payload.testId]
+        testIds = [
+          { testId: payload.testId, testVersionId: payload.testVersionId },
+        ]
       } else {
         const module = playlist.modules.filter(
           (m) => m._id === payload.playlistModuleId
@@ -213,7 +215,10 @@ function* saveAssignment({ payload }) {
         module &&
           module[0].data.forEach((dat) => {
             if (dat.contentType === 'test') {
-              testIds.push(dat.contentId)
+              testIds.push({
+                testId: dat.contentId,
+                testVersionId: dat.contentVersionId,
+              })
             }
           })
         if (!testIds.length) {
@@ -285,7 +290,7 @@ function* saveAssignment({ payload }) {
         passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF
       assignmentSettings.timedAssignment = false
     }
-    const data = testIds.map((testId) =>
+    const data = testIds.map(({ testId, testVersionId }) =>
       omit(
         {
           ...assignmentSettings,
@@ -295,6 +300,7 @@ function* saveAssignment({ payload }) {
           testType,
           ...visibility,
           testId,
+          testVersionId,
           class: classes,
         },
         [
@@ -375,7 +381,7 @@ function* saveAssignment({ payload }) {
         pathname: `/author/${
           payload.playlistModuleId ? 'playlists' : 'tests'
         }/${
-          payload.playlistModuleId ? payload.playlistId : testIds[0]
+          payload.playlistModuleId ? payload.playlistId : testIds[0].testId
         }/assign/${assignmentId}`,
         state: {
           ...locationState,

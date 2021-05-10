@@ -6,7 +6,7 @@ import { PointsInputWrapper, ItemLevelScoringDesc } from './styled'
 
 const EditButton = ({ onEdit }) => {
   return (
-    <Button onClick={onEdit}>
+    <Button onClick={onEdit} data-cy="editQuestion">
       <IconPencilEdit width={16} height={16} />
     </Button>
   )
@@ -14,7 +14,7 @@ const EditButton = ({ onEdit }) => {
 
 const DeleteButton = ({ onDelete }) => {
   return (
-    <Button onClick={onDelete}>
+    <Button onClick={onDelete} data-cy="deleteQuestion">
       <IconTrash width={16} height={16} />
     </Button>
   )
@@ -22,7 +22,7 @@ const DeleteButton = ({ onDelete }) => {
 
 const MoveButton = () => {
   return (
-    <Button>
+    <Button data-cy="dragHandel">
       <IconMoveArrows width={16} height={16} />
     </Button>
   )
@@ -34,6 +34,7 @@ const PointInput = ({
   visible,
   disabled,
   isRubricQuestion,
+  itemLevelScoring,
 }) => {
   if (!visible) {
     return null
@@ -43,19 +44,19 @@ const PointInput = ({
     <ItemLevelScoringDesc>
       {isRubricQuestion
         ? 'This Question has Grading Rubric attached to it, so points cannot be changed for this question, and it will be equal to the max score of the rubric.'
-        : 'This item is graded as a whole, to grade parts change the option using the Layout and Grading options button in the header'}
+        : 'Total points will be divided equally among the below parts. If you want custom points for different parts, please click on Layout and Grading and switch to part level scoring.'}
     </ItemLevelScoringDesc>
   )
 
-  const PopoverComponent = disabled ? Popover : React.Fragment
+  const PopoverComponent = itemLevelScoring ? Popover : React.Fragment
   const popoverProps = useMemo(() => {
-    return disabled ? { content: desc, placement: 'bottomRight' } : {}
-  }, [disabled])
+    return itemLevelScoring ? { content: desc, placement: 'bottomRight' } : {}
+  }, [itemLevelScoring])
 
   return (
-    <PointsInputWrapper>
+    <PointsInputWrapper itemLevelScoring={itemLevelScoring}>
       <FieldLabel marginBottom="0px" mr="10px">
-        Points
+        {itemLevelScoring && 'Total'} Points
       </FieldLabel>
       <PopoverComponent {...popoverProps}>
         <NumberInputStyled
@@ -66,6 +67,7 @@ const PointInput = ({
           disabled={disabled}
           value={disabled && !isRubricQuestion ? '' : value}
           onChange={onChange}
+          data-cy="point-update"
         />
       </PopoverComponent>
     </PointsInputWrapper>

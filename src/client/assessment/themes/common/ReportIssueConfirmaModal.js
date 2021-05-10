@@ -1,7 +1,5 @@
 import React from 'react'
-import { Button } from 'antd'
 import styled from 'styled-components'
-import { themeColor, white } from '@edulastic/colors'
 import { EduButton } from '@edulastic/common'
 import { ConfirmationModal } from '../../../author/src/components/common/ConfirmationModal'
 
@@ -9,7 +7,6 @@ const ReportIssueConfirmaModal = ({ visible, toggleModal, handleResponse }) => {
   return (
     <ConfirmationModal
       centered
-      textAlign="left"
       visible={visible}
       footer={null}
       textAlign="center"
@@ -46,16 +43,4 @@ const ModalBody = styled.div`
 const Heading = styled.h3`
   font-weight: 600;
   margin-bottom: 1em;
-`
-
-const StyledButton = styled(Button)`
-  color: ${white};
-  background-color: ${themeColor};
-  border-color: ${themeColor};
-  margin: 0px 5px;
-  height: 26px;
-  &:hover,
-  &:focus {
-    color: ${themeColor};
-  }
 `

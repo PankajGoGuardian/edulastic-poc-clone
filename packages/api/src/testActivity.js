@@ -114,6 +114,15 @@ const switchLanguage = ({ testActivityId, ...data }) =>
     })
     .then((result) => result.data.result)
 
+const saveUserWork = ({ testActivityId, groupId, userWork }) =>
+  api
+    .callApi({
+      url: `${prefix}/${testActivityId}/user-work`,
+      method: 'put',
+      data: { userWork, groupId },
+    })
+    .then((result) => result.data.result)
+
 export default {
   create,
   submit,
@@ -127,4 +136,5 @@ export default {
   updateUtaTime,
   incrementTabNavigationCounter,
   switchLanguage,
+  saveUserWork,
 }

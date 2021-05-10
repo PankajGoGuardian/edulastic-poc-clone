@@ -8,7 +8,6 @@ import {
   round,
   sumBy,
   orderBy,
-  isNaN,
 } from 'lodash'
 import { white } from '@edulastic/colors'
 import {
@@ -27,6 +26,7 @@ export const idToLabel = {
   frlStatus: 'frlStatus',
   ellStatus: 'ellStatus',
   iepStatus: 'iepStatus',
+  hispanicEthnicity: 'hispanicEthnicity',
 }
 
 export const idToName = {
@@ -40,6 +40,7 @@ export const idToName = {
   frlStatus: 'FRL Status',
   ellStatus: 'ELL Status',
   iepStatus: 'IEP Status',
+  hispanicEthnicity: 'Hispanic Ethnicity',
 }
 
 export const analyseByToName = {
@@ -173,8 +174,9 @@ export const getFilteredDenormalizedData = (denormalizedData, filters) => {
       item.iepStatus === filters.iepStatus || filters.iepStatus === 'all'
     )
     const raceFlag = !!(item.race === filters.race || filters.race === 'all')
+    const hispanicEthnicityFlag = !!(item.hispanicEthnicity === filters.hispanicEthnicity || filters.hispanicEthnicity === 'all')
     return (
-      genderFlag && frlStatusFlag && ellStatusFlag && iepStatusFlag && raceFlag
+      genderFlag && frlStatusFlag && ellStatusFlag && iepStatusFlag && raceFlag && hispanicEthnicityFlag
     )
   })
 
@@ -254,108 +256,93 @@ export const getChartData = (
 
 const getAnalysedData = (groupedData, compareBy, masteryScale) => {
   const arr = Object.keys(groupedData).map((item) => {
-    let _item = groupedData[item].reduce(
-      (total, currentValue) => {
-        const { maxScore = 0, totalScore = 0, fm = 0 } = currentValue
-        const totalMaxScore = total.totalMaxScore + maxScore
-        const totalTotalScore = total.totalTotalScore + totalScore
-        const totalFinalMastery = total.totalFinalMastery + fm
-        return {
-          totalMaxScore,
-          totalTotalScore,
-          totalFinalMastery,
-        }
-      },
-      { totalMaxScore: 0, totalTotalScore: 0, totalFinalMastery: 0 }
-    )
-
-    let scorePercentUnrounded =
-      (_item.totalTotalScore / _item.totalMaxScore) * 100
-    scorePercentUnrounded = !isNaN(scorePercentUnrounded)
-      ? scorePercentUnrounded
-      : 0
-
-    const rawScoreUnrounded = _item.totalTotalScore || 0
-
-    let fmUnrounded = _item.totalFinalMastery / groupedData[item].length
-    fmUnrounded = !isNaN(fmUnrounded) ? fmUnrounded : 0
-    const fm = fmUnrounded ? Number(fmUnrounded.toFixed(2)) : 0
-
-    const { masteryLevel = 'N/A', masteryName = 'N/A', color = white } = fm
-      ? getProficiencyBand(Math.round(fm), masteryScale, 'score')
-      : {}
-
     const groupedStandardIds = groupBy(groupedData[item], 'standardId')
 
+    // analysed data per standard for item
     const standardsInfo = Object.keys(groupedStandardIds).map((__item) => {
-      let ___item = groupedStandardIds[__item].reduce(
-        (total, currentValue) => {
-          const { maxScore = 0, totalScore = 0, fm: _fm = 0 } = currentValue
-          const totalMaxScore = total.totalMaxScore + maxScore
-          const totalTotalScore = total.totalTotalScore + totalScore
-          const totalFinalMastery = total.totalFinalMastery + _fm
+      const ___item = groupedStandardIds[__item].reduce(
+        (res, ele) => {
+          const _totalScore = Number(ele.totalScore) || 0
+          const _maxScore = Number(ele.maxScore) || 0
+          const _fm = Number(ele.fm) || 0
           return {
-            totalMaxScore,
-            totalTotalScore,
-            totalFinalMastery,
+            totalMaxScore: res.totalMaxScore + _maxScore,
+            totalTotalScore: res.totalTotalScore + _totalScore,
+            totalScorePercent:
+              res.totalScorePercent + (100 * _totalScore) / (_maxScore || 1),
+            totalFinalMastery: res.totalFinalMastery + _fm,
           }
         },
-        { totalMaxScore: 0, totalTotalScore: 0, totalFinalMastery: 0 }
+        {
+          totalMaxScore: 0,
+          totalTotalScore: 0,
+          totalScorePercent: 0,
+          totalFinalMastery: 0,
+        }
       )
-
-      let _scorePercentUnrounded =
-        (___item.totalTotalScore / ___item.totalMaxScore) * 100
-      _scorePercentUnrounded = !isNaN(_scorePercentUnrounded)
-        ? _scorePercentUnrounded
+      const scorePercentUnrounded = groupedStandardIds[__item].length
+        ? ___item.totalScorePercent / groupedStandardIds[__item].length
         : 0
-
-      let _rawScoreUnrounded =
-        ___item.totalTotalScore / groupedStandardIds[__item].length
-      _rawScoreUnrounded = !isNaN(_rawScoreUnrounded) ? _rawScoreUnrounded : 0
-
-      let _fmUnrounded =
-        ___item.totalFinalMastery / groupedStandardIds[__item].length
-      _fmUnrounded = !isNaN(_fmUnrounded) ? _fmUnrounded : 0
-      const _fm = _fmUnrounded ? Number(_fmUnrounded.toFixed(2)) : 0
-
-      const {
-        masteryLevel: _masteryLevel = 'N/A',
-        masteryName: _masteryName = 'N/A',
-        color: _color = white,
-      } = _fm ? getProficiencyBand(Math.round(_fm), masteryScale, 'score') : {}
-
-      ___item = {
+      const rawScoreUnrounded = ___item.totalTotalScore || 0
+      const fmUnrounded = groupedStandardIds[__item].length
+        ? ___item.totalFinalMastery / groupedStandardIds[__item].length
+        : 0
+      const fm = fmUnrounded ? Number(fmUnrounded.toFixed(2)) : 0
+      const { masteryLevel = 'N/A', masteryName = 'N/A', color = white } = fm
+        ? getProficiencyBand(Math.round(fm), masteryScale, 'score')
+        : {}
+      return {
         ...___item,
         standardId: __item,
         standardName: groupedStandardIds[__item][0][idToLabel.standardId],
-        scorePercentUnrounded: _scorePercentUnrounded,
-        scorePercent: Math.round(Number(_scorePercentUnrounded)),
-
-        rawScoreUnrounded: _rawScoreUnrounded,
-        rawScore: Number(_rawScoreUnrounded.toFixed(2)),
-
-        fmUnrounded: _fmUnrounded,
-        fm: _fm,
-        masteryLevel: _masteryLevel,
-        masteryName: _masteryName,
-        color: _color,
+        scorePercentUnrounded,
+        scorePercent: Math.round(Number(scorePercentUnrounded)),
+        rawScoreUnrounded,
+        rawScore: Number(rawScoreUnrounded.toFixed(2)),
+        fmUnrounded,
+        fm,
+        masteryLevel,
+        masteryName,
+        color,
       }
-
-      return ___item
     })
 
-    const { testActivityId, assignmentId, groupId } = groupedData[item][0]
-    _item = {
+    // analysed data for item
+    const _item = standardsInfo.reduce(
+      (res, ele) => ({
+        totalMaxScore: res.totalMaxScore + ele.totalMaxScore,
+        totalTotalScore: res.totalTotalScore + ele.totalTotalScore,
+        totalScorePercent: res.totalScorePercent + ele.scorePercent,
+        totalFinalMastery: res.totalFinalMastery + ele.fm,
+      }),
+      {
+        totalMaxScore: 0,
+        totalTotalScore: 0,
+        totalScorePercent: 0,
+        totalFinalMastery: 0,
+      }
+    )
+    const scorePercentUnrounded = standardsInfo.length
+      ? _item.totalScorePercent / standardsInfo.length
+      : 0
+    const rawScoreUnrounded = _item.totalTotalScore || 0
+    const fmUnrounded = standardsInfo.length
+      ? _item.totalFinalMastery / standardsInfo.length
+      : 0
+    const fm = fmUnrounded ? Number(fmUnrounded.toFixed(2)) : 0
+    const { masteryLevel = 'N/A', masteryName = 'N/A', color = white } = fm
+      ? getProficiencyBand(Math.round(fm), masteryScale, 'score')
+      : {}
+    return {
       ..._item,
+      studentId: _item.compareBy === 'studentId' ? item : _item.studentId,
       compareBy,
       compareByLabel: groupedData[item][0][idToLabel[compareBy]],
       compareByName: idToName[compareBy],
       scorePercentUnrounded,
       scorePercent: Math.round(Number(scorePercentUnrounded)),
-
       rawScoreUnrounded,
       rawScore: Number(rawScoreUnrounded.toFixed(2)),
-
       fmUnrounded,
       fm,
       masteryLevel,
@@ -364,16 +351,10 @@ const getAnalysedData = (groupedData, compareBy, masteryScale) => {
       sisId: groupedData[item][0].sisId,
       studentNumber: groupedData[item][0].studentNumber,
       standardsInfo,
-      testActivityId,
-      assignmentId,
-      groupId,
+      testActivityId: groupedData[item][0].testActivityId,
+      assignmentId: groupedData[item][0].assignmentId,
+      groupId: groupedData[item][0].groupId,
     }
-
-    if (_item.compareBy === 'studentId') {
-      _item.studentId = item
-    }
-
-    return _item
   })
   return arr
 }
@@ -402,7 +383,6 @@ export const getTableData = (
   ) {
     return []
   }
-
   const groupedData = groupBy(
     filteredDenormalizedData.filter((item) => !!item[compareBy]),
     compareBy
@@ -437,13 +417,14 @@ export const groupedByStandard = (
   const standards = groupBy(metricInfo, 'standardId')
   return Object.keys(standards).map((standardId) => {
     const standardData = standards[standardId] || []
-
     const masteryScore = (
       sumBy(standardData, 'fm') / standardData.length
     ).toFixed(2)
     const score = round(
-      (sumBy(standardData, 'totalScore') / sumBy(standardData, 'maxScore')) *
-        100
+      sumBy(
+        standardData,
+        (item) => (100 * (item.totalScore || 0)) / (item.maxScore || 1)
+      ) / standardData.length
     )
     const rawScore = `${(sumBy(standardData, 'totalScore') || 0).toFixed(
       2

@@ -43,6 +43,7 @@ import {
 import {
   getUserSelector,
   getUserThumbnail,
+  getUserFullNameSelector,
 } from '../../author/src/selectors/user'
 import { getAvatarName } from '../../author/ClassBoard/Transformer'
 import RubricGrading from './RubricGrading'
@@ -246,6 +247,7 @@ class FeedbackRight extends Component {
       match,
       userThumbnail,
       itemId,
+      userFullName,
     } = this.props
     const {
       testActivityId,
@@ -260,7 +262,7 @@ class FeedbackRight extends Component {
       body: {
         feedback: {
           teacherId: user.user._id,
-          teacherName: user.user.firstName,
+          teacherName: userFullName,
           text: feedback,
           ...(userThumbnail ? { thumbnail: userThumbnail } : {}),
         },
@@ -560,6 +562,7 @@ const enhance = compose(
       classBoardData: state.author_classboard_testActivity?.data,
       allAnswers: state?.answers,
       userThumbnail: getUserThumbnail(state),
+      userFullName: getUserFullNameSelector(state),
     }),
     {
       loadFeedbackResponses: receiveFeedbackResponseAction,

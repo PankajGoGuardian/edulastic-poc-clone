@@ -9,10 +9,16 @@ import {
   toggleRegradeModalAction,
   getRegradeModalStateSelector,
 } from '../TestPage/ducks'
-import { ACTIONS } from './MainContent'
 import { InputsWrapper, StyledModal } from './styled'
 import { updateCorrectTestItemAction } from '../src/actions/classBoard'
 import RegradeListenerLcb from './RegradeListenerLcb'
+
+const ACTIONS = {
+  SKIP: 'SKIP',
+  SCORE: 'SCORE',
+  MANUAL: 'MANUAL',
+  DISCARD: 'DISCARD',
+}
 
 const Group = Radio.Group
 const RegradeModal = ({
@@ -32,7 +38,7 @@ const RegradeModal = ({
     options: {
       removedQuestion: 'DISCARD',
       addedQuestion: 'SKIP',
-      testSettings: 'EXCLUDE',
+      testSettings: 'ALL',
       editedQuestion: 'SCORE',
     },
   }

@@ -9,7 +9,7 @@ import {
   IconScratchPad,
   IconCloudUpload,
 } from '@edulastic/icons'
-import { extraDesktopWidthMax, white } from '@edulastic/colors'
+import { extraDesktopWidthMax, white, themeColorBlue } from '@edulastic/colors'
 import { Tooltip } from '../../../../common/utils/helpers'
 import { Container } from './styled'
 import { themes } from '../../../../theme'
@@ -136,6 +136,10 @@ export const StyledButton = styled(Button)`
     svg {
       fill: ${white};
     }
+  }
+  &:focus {
+    outline: 0;
+    box-shadow: 0 0 0 2px ${themeColorBlue};
   }
   @media (min-width: ${extraDesktopWidthMax}) {
     margin-right: 5px;

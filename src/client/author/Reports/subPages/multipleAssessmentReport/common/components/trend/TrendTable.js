@@ -25,6 +25,9 @@ import BackendPagination from '../../../../../common/components/BackendPaginatio
 const StyledTable = styled(Table)`
   .ant-table-layout-fixed {
     .ant-table-scroll {
+      .ant-table-body {
+        padding-bottom: 60px;
+      }
       table tbody tr td {
         border-bottom: 1px solid #e9e9e9;
       }
@@ -168,7 +171,7 @@ const getCellAttributes = (test = {}, analyseBy = {}, masteryScale = {}) => {
       break
     default:
       value = formatText(test, analyseBy.key)
-      if (value !== 'Absent') {
+      if (value !== 'Absent' && value !== 'Not Started') {
         color = getHSLFromRange1(test.score)
       }
       break

@@ -3,6 +3,7 @@ import {
   tabletWidth,
   themeColor,
   title,
+  themeColorBlue,
 } from '@edulastic/colors'
 import { AssessmentPlayerContext, EduButton } from '@edulastic/common'
 import { IconSelectCaretDown } from '@edulastic/icons'
@@ -249,6 +250,10 @@ export const StyledSelect = styled(Select)`
     border: 1px solid ${(props) => props.theme.header.settingsInputBorder};
     background: ${lightGreySecondary};
     color: ${title};
+    &:focus {
+      outline: 0;
+      box-shadow: 0 0 0 2px ${themeColorBlue};
+    }
   }
   .ant-select-selection__rendered {
     margin: 2px 15px;

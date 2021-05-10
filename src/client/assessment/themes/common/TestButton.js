@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import { smallDesktopWidth } from '@edulastic/colors'
 import { IconBookmark, IconCheck } from '@edulastic/icons'
+import { withKeyboard } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import PropTypes from 'prop-types'
 import React from 'react'
@@ -44,7 +45,7 @@ const TestButton = ({
           placement="top"
           title={
             checkAnswerInProgress
-              ? 'In progess'
+              ? 'In progress'
               : answerChecksUsedForItem >= settings.maxAnswerChecks
               ? 'Usage limit exceeded'
               : 'Check Answer'
@@ -91,7 +92,7 @@ const Container = styled.div`
   display: flex;
 `
 
-const StyledButton = styled.div`
+const StyledButton = withKeyboard(styled.div`
   margin-right: 5px;
   text-transform: uppercase;
   display: flex;
@@ -146,7 +147,7 @@ const StyledButton = styled.div`
       margin-right: 0px;
     }
   }
-`
+`)
 
 const StyledIconCheck = styled(IconCheck)`
   ${({ theme }) => `

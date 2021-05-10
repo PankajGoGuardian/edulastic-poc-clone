@@ -87,7 +87,10 @@ class ScoreTable extends Component {
       const { testActivity: students } = this.props
       const key = `Q${index}`
       const title = (
-        <StyledDivMid>
+        <StyledDivMid
+          data-cy={students[0].questionActivities[index].barLabel}
+          data-test={`Q${index + 1}`}
+        >
           {students[0].questionActivities[index].barLabel}
         </StyledDivMid>
       )

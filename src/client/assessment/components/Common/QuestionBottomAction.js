@@ -29,7 +29,11 @@ import {
   getCurrentQuestionSelector,
   deleteQuestionAction,
 } from '../../../author/sharedDucks/questions'
-import { updateCorrectTestItemAction } from '../../../author/src/actions/classBoard'
+import {
+  correctItemUpdateProgressAction,
+  replaceOriginalItemAction,
+  updateCorrectTestItemAction,
+} from '../../../author/src/actions/classBoard'
 import {
   getAdditionalDataSelector,
   getIsDocBasedTestSelector,
@@ -47,6 +51,7 @@ import {
   allowDuplicateCheck,
   allowContentEditCheck,
 } from '../../../author/src/utils/permissionCheck'
+import Explanation from './Explanation'
 
 export const ShowUserWork = ({ onClick, loading }) => (
   <EduButton
@@ -101,22 +106,40 @@ const QuestionBottomAction = ({
   setCurrentStudentId,
   isQuestionView,
   isExpressGrader,
+  isGrade,
+  isPrintPreview,
+  previewTab,
+  isLCBView,
   isDocBasedTest,
+  replaceOriginalItem,
+  updating,
+  correctItemUpdateProgress,
   ...questionProps
 }) => {
   // const [openQuestionModal, setOpenQuestionModal] = useState(false)
   const [itemloading, setItemLoading] = useState(false)
   const [hideScoring, setHideScoring] = useState(false)
 
+  const [showExplanation, updateShowExplanation] = useState(isGrade)
+
+  const onClickShowSolutionHandler = (e) => {
+    e.stopPropagation()
+    updateShowExplanation(true)
+  }
+
   const onCloseQuestionModal = () => {
     setCurrentQuestion('')
     removeQuestion(item.id)
     toggleQuestionModal(false)
+    correctItemUpdateProgress(false)
   }
 
   const onSaveAndPublish = () => {
     // for now this component will be visible in 3 views for calling the respectve api we need a reference in which author viewing this component.
     let lcbView = 'student-report'
+    if (updating) {
+      return
+    }
     if (isExpressGrader) {
       lcbView = 'express-grader'
     }
@@ -134,6 +157,7 @@ const QuestionBottomAction = ({
       question: questionData,
       proceedRegrade: false,
       lcbView,
+      isUnscored: item?.validation?.unscored,
       callBack: onCloseQuestionModal,
     }
     updateCorrectItem(payload)
@@ -148,19 +172,20 @@ const QuestionBottomAction = ({
         question?.scoringDisabled ||
           (testItem.itemLevelScoring && testItem.data.questions.length > 1)
       )
+      replaceOriginalItem(testItem)
       setQuestionData(question)
       setCurrentQuestion(question.id)
       setCurrentStudentId(studentId)
+      setEditingItemId(testItem._id)
     } catch (e) {
       setQuestionData(omit(item, 'activity'))
       setCurrentQuestion(item.id)
-    } finally {
       setEditingItemId(item.testItemId)
+    } finally {
       toggleQuestionModal(true)
       setItemLoading(false)
     }
   }
-
   const modalTitle = useMemo(() => {
     if (!QuestionComp || !questionData) {
       return null
@@ -192,7 +217,10 @@ const QuestionBottomAction = ({
             isBlue
             width="115px"
             data-cy="saveAndPublishItem"
-            loading={loadingComponents.includes('saveAndPublishItem')}
+            loading={
+              loadingComponents.includes('saveAndPublishItem') || updating
+            }
+            disabled={updating}
             onClick={onSaveAndPublish}
           >
             SAVE
@@ -200,7 +228,7 @@ const QuestionBottomAction = ({
         </FlexContainer>
       </FlexContainer>
     )
-  }, [questionData, item])
+  }, [questionData, item, updating])
 
   const [isDisableCorrectItem, disableCorrectItemText] = useMemo(() => {
     const hasDynamicVariables = item.variable?.enabled
@@ -240,16 +268,38 @@ const QuestionBottomAction = ({
     </CorrectButton>
   )
 
+  const { sampleAnswer } = item
+
+  const isSolutionVisible =
+    (isLCBView || isExpressGrader || previewTab === 'show') &&
+    !isPrintPreview &&
+    !(
+      !sampleAnswer ||
+      ['passage', 'passageWithQuestions', 'video', 'resource', 'text'].includes(
+        item.type
+      )
+    )
   return (
     <>
       <BottomActionWrapper className={isStudentReport ? 'student-report' : ''}>
+        {isSolutionVisible && !showExplanation && (
+          <EduButton
+            width="110px"
+            height="30px"
+            isGhost
+            onClick={onClickShowSolutionHandler}
+          >
+            Show solution
+          </EduButton>
+        )}
         <div>
           {!hasDrawingResponse && isShowStudentWork && (
             <ShowUserWork onClick={onClickHandler} loading={loading} />
           )}
         </div>
         <RightWrapper>
-          {item &&
+          {showCorrectItem &&
+            item &&
             !isStudentReport &&
             !isDocBasedTest &&
             (isDisableCorrectItem ? (
@@ -268,6 +318,13 @@ const QuestionBottomAction = ({
           {timeSpent && <TimeSpent time={timeSpent} />}
         </RightWrapper>
       </BottomActionWrapper>
+      {isSolutionVisible && (
+        <Explanation
+          isStudentReport={isStudentReport}
+          question={item}
+          show={showExplanation}
+        />
+      )}
       {!isStudentReport &&
         openQuestionModal &&
         QuestionComp &&
@@ -327,7 +384,8 @@ const getPermissionToEdit = (state, props) => {
   const userFeatures = getUserFeatures(state)
   const collections = getCollectionsSelector(state)
   const testItems = get(state, 'classResponse.data.testItems', [])
-  const testItem = testItems.find((t) => t._id === props.item?.testItemId) || {}
+  const testItem =
+    testItems.find((t) => t._id === props.item?.activity?.testItemId) || {}
   const { authors = [] } = testItem || {}
   const isOwner = authors.some((author) => author._id === userId)
   const hasCollectionAccess = allowContentEditCheck(
@@ -368,6 +426,7 @@ const enhance = compose(
       editItemId: get(state, ['authorUi', 'editItemId']),
       currentStudentId: get(state, ['authorUi', 'currentStudentId']),
       isDocBasedTest: getIsDocBasedTestSelector(state),
+      updating: get(state, ['classResponse', 'updating'], false),
     }),
     {
       setQuestionData: setQuestionDataAction,
@@ -377,6 +436,8 @@ const enhance = compose(
       toggleQuestionModal: toggleQuestionEditModalAction,
       setEditingItemId: setEditingItemIdAction,
       setCurrentStudentId: setCurrentStudentIdAction,
+      replaceOriginalItem: replaceOriginalItemAction,
+      correctItemUpdateProgress: correctItemUpdateProgressAction,
     }
   )
 )

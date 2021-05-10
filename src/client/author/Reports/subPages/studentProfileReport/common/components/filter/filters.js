@@ -93,6 +93,7 @@ const StudentProfileReportFilters = ({
   student,
   performanceBandRequired,
   standardProficiencyRequired,
+  standardFiltersRequired,
   setFilters,
   setStudent,
   tempTagsData,
@@ -116,7 +117,9 @@ const StudentProfileReportFilters = ({
   const tagTypes = staticDropDownData.tagTypes.filter(
     (t) =>
       (performanceBandRequired || t.key !== 'performanceBandProfileId') &&
-      (standardProficiencyRequired || t.key !== 'standardsProficiencyProfileId')
+      (standardProficiencyRequired ||
+        t.key !== 'standardsProficiencyProfileId') &&
+      (standardFiltersRequired || !['domainId', 'standardId'].includes(t.key))
   )
   const splittedPath = location.pathname.split('/')
   const urlStudentId = splittedPath[splittedPath.length - 1]
@@ -209,6 +212,17 @@ const StudentProfileReportFilters = ({
       setActiveTabKey(staticDropDownData.filterSections.CLASS_FILTERS.key)
     }
   }, [loc, showFilter])
+
+  useEffect(() => {
+    if (loc !== 'student-progress-profile') {
+      setFilters({
+        ...filters,
+        domainId: '',
+        standardId: '',
+      })
+      setTempTagsData({ ...tempTagsData, domainId: '', standardId: '' })
+    }
+  }, [loc])
 
   if (SPRFilterData !== prevSPRFilterData && !isEmpty(SPRFilterData)) {
     const _student = { ...student }
@@ -368,8 +382,7 @@ const StudentProfileReportFilters = ({
     setTempTagsData(_tempTagsData)
   }
 
-  const topFilterColSpan =
-    loc === 'student-progress-profile' && filters.showApply ? 5 : 6
+  const topFilterColSpan = standardFiltersRequired && filters.showApply ? 5 : 6
 
   const handleTagClick = (filterKey) => {
     const tabKey =
@@ -616,7 +629,7 @@ const StudentProfileReportFilters = ({
               />
             </StyledDropDownContainer>
           )}
-          {loc === 'student-progress-profile' && (
+          {standardFiltersRequired && (
             <>
               <StyledDropDownContainer
                 xs={24}

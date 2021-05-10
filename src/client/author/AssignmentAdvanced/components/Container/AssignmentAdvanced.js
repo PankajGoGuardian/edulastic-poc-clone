@@ -4,9 +4,9 @@ import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import qs from 'qs'
-import { find, isEmpty, get } from 'lodash'
+import { find, get, isEmpty } from 'lodash'
 import { Dropdown } from 'antd'
-import { withWindowSizes, FlexContainer } from '@edulastic/common'
+import { FlexContainer, withWindowSizes } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { authorAssignment } from '@edulastic/colors'
 import { IconMoreVertical } from '@edulastic/icons'
@@ -17,51 +17,50 @@ import {
 } from '../../../src/actions/assignments'
 
 import {
-  getAssignmentsSummary,
   getAssignmentClassList,
-  getToggleReleaseGradeStateSelector,
-  getCurrentTestSelector,
   getAssignmentsLoadingSelector,
-  getBulkActionStatusSelector,
-  stateSelector,
+  getAssignmentsSummary,
   getAssignmentTestList,
+  getBulkActionStatusSelector,
   getBulkActionTypeSelector,
+  getCurrentTestSelector,
+  getToggleReleaseGradeStateSelector,
+  stateSelector,
 } from '../../../src/selectors/assignments'
 import ListHeader from '../../../src/components/common/ListHeader'
 import ActionMenu from '../../../Assignments/components/ActionMenu/ActionMenu'
 import {
-  Container,
-  PaginationInfo,
-  AnchorLink,
   Anchor,
+  AnchorLink,
   Breadcrumbs,
   BtnAction,
-  StyledCard,
-  TableWrapper,
+  Container,
+  PaginationInfo,
   StyledButton,
-  StyledSpan,
+  StyledCard,
   StyledFlexContainer,
+  StyledSpan,
+  TableWrapper,
 } from './styled'
 import { Breadcrumb } from '../Breadcrumb'
 import TableList from '../TableList'
 import TestPreviewModal from '../../../Assignments/components/Container/TestPreviewModal'
-import EditTestModal from '../../../src/components/common/EditTestModal'
 import ReleaseScoreSettingsModal from '../../../Assignments/components/ReleaseScoreSettingsModal/ReleaseScoreSettingsModal'
 import { releaseScoreAction } from '../../../src/actions/classBoard'
 import {
-  bulkOpenAssignmentAction,
   bulkCloseAssignmentAction,
-  bulkPauseAssignmentAction,
+  bulkDownloadGradesAndResponsesAction,
   bulkMarkAsDoneAssignmentAction,
+  bulkOpenAssignmentAction,
+  bulkPauseAssignmentAction,
   bulkReleaseScoreAssignmentAction,
   bulkUnassignAssignmentAction,
-  bulkDownloadGradesAndResponsesAction,
 } from '../../ducks'
 import { toggleDeleteAssignmentModalAction } from '../../../sharedDucks/assignments'
 import {
+  getGroupList,
   getUserId,
   getUserRole,
-  getGroupList,
   getUserSchoolsListSelector,
   isFreeAdminSelector,
 } from '../../../src/selectors/user'
@@ -76,7 +75,6 @@ const { assignmentStatusBg } = authorAssignment
 
 class AssignmentAdvanced extends Component {
   state = {
-    openEditPopup: false,
     filterStatus: '',
     isHeaderAction: false,
     openPrintModal: false,
@@ -90,6 +88,7 @@ class AssignmentAdvanced extends Component {
       history,
       isFreeAdmin,
       toggleFreeAdminSubscriptionModal,
+      userId,
     } = this.props
     if (isFreeAdmin) {
       history.push('/author/reports')
@@ -106,7 +105,7 @@ class AssignmentAdvanced extends Component {
       ignoreQueryPrefix: true,
     })
     const { termId = '', grades = [], assignedBy = '', tags = [] } = JSON.parse(
-      sessionStorage.getItem('filters[Assignments]') || '{}'
+      sessionStorage.getItem(`assignments_filter_${userId}`) || '{}'
     )
     if (isEmpty(assignmentsSummary)) {
       loadAssignmentsSummary({ districtId })
@@ -146,14 +145,14 @@ class AssignmentAdvanced extends Component {
   }
 
   handleListSearch = () => {
-    const { match, location, loadAssignmentsClassList } = this.props
+    const { match, location, loadAssignmentsClassList, userId } = this.props
     const { districtId, testId } = match.params
     const { pageNo, filterStatus } = this.state
     const { testType = '' } = qs.parse(location.search, {
       ignoreQueryPrefix: true,
     })
     const { termId = '', tags = [] } = JSON.parse(
-      sessionStorage.getItem('filters[Assignments]') || '{}'
+      sessionStorage.getItem(`assignments_filter_${userId}`) || '{}'
     )
     loadAssignmentsClassList({
       districtId,
@@ -265,10 +264,6 @@ class AssignmentAdvanced extends Component {
     })
   }
 
-  toggleEditModal = (value) => {
-    this.setState({ openEditPopup: value })
-  }
-
   toggleTestPreviewModal = (value) => {
     const { setIsTestPreviewVisible } = this.props
     setIsTestPreviewVisible(!!value)
@@ -307,13 +302,7 @@ class AssignmentAdvanced extends Component {
   }
 
   render() {
-    const {
-      filterStatus,
-      openEditPopup,
-      isHeaderAction,
-      openPrintModal,
-      pageNo,
-    } = this.state
+    const { filterStatus, isHeaderAction, openPrintModal, pageNo } = this.state
     const {
       classList,
       assignmentsSummary,
@@ -376,12 +365,6 @@ class AssignmentAdvanced extends Component {
         {isHeaderAction && (
           <DeleteAssignmentModal testId={testId} testName={assingment?.title} />
         )}
-        <EditTestModal
-          visible={openEditPopup}
-          isUsed
-          onCancel={() => this.toggleEditModal(false)}
-          onOk={this.onEnableEdit}
-        />
 
         <TestPreviewModal
           isModalVisible={isPreviewModalVisible}
@@ -410,7 +393,7 @@ class AssignmentAdvanced extends Component {
                 row: assingment,
                 history,
                 showPreviewModal: this.toggleTestPreviewModal,
-                toggleEditModal: this.toggleEditModal,
+                toggleEditModal: this.onEnableEdit,
                 canEdit: canEditTest(test, userId),
                 userRole,
                 userId,

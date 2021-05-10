@@ -13,6 +13,8 @@ import { Card, MathFormulaDisplay } from '@edulastic/common'
 import { Rate } from 'antd/lib/index'
 import styled, { css } from 'styled-components'
 
+const DEAFULT_TEST_SRC = 'https://cdn2.edulastic.com/default/default-test-1.jpg'
+
 export const Container = styled(Card)`
   border: ${(props) => (props.isPlaylist ? 'none' : '1px solid #dfdfdf')};
   box-shadow: none;
@@ -103,6 +105,17 @@ export const CardCover = styled.div`
     uri
       ? `url(${uri})`
       : `url(https://cdn2.edulastic.com/default/default-test-1.jpg)`};
+  border-top-right-radius: 8px;
+  border-top-left-radius: 8px;
+
+  &:hover {
+    .showHover {
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+      flex-direction: column;
+    }
+  }
 `
 
 export const Inner = styled.div`
@@ -313,7 +326,7 @@ export const ViewButton = styled.div`
 `
 
 export const ButtonWrapper = styled.div`
-  position: absolute;
+  position: ${({ position }) => position || 'absolute'};
   height: 100%;
   left: 0px;
   right: 0px;
@@ -341,10 +354,7 @@ export const Header = styled.div`
   height: ${({ isPlaylist }) => (isPlaylist ? '99px' : '135px')};
   padding: 10px 15px;
   position: relative;
-  background: url(${(props) =>
-    props.src
-      ? props.src
-      : 'https://cdn2.edulastic.com/default/default-test-1.jpg'});
+  background: url(${({ src }) => src || DEAFULT_TEST_SRC});
   background-repeat: no-repeat;
   background-size: 100% auto;
 

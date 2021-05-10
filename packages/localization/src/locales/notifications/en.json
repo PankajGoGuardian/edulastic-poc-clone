@@ -511,10 +511,6 @@
     "message": "Test created",
     "description": ""
   },
-  "testVersioned": {
-    "message": "Test versioned",
-    "description": ""
-  },
   "successUpdate": {
     "message": "Success update",
     "description": ""
@@ -2013,6 +2009,10 @@
   },
   "studentAssignmentPaused": {
     "message": "Assignment is Paused , Please check with your instructor.",
+    "description": ""
+  },
+  "classAlreadyExist": {
+    "message": "Class already exists in Manage Class",
     "description": ""
   }
 }

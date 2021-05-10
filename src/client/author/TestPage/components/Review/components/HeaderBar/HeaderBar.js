@@ -60,7 +60,7 @@ const HeaderBar = ({
   }
 
   return (
-    <Container windowWidth={windowWidth} hasStickyHeader={hasStickyHeader}>
+    <Container windowWidth={windowWidth}>
       {owner && isEditable ? (
         <Item>
           <CheckboxLabel

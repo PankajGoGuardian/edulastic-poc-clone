@@ -1,33 +1,15 @@
-import React, { useState } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
-import { MathFormulaDisplay, EduButton } from '@edulastic/common'
+import { MathFormulaDisplay } from '@edulastic/common'
 import { mainTextColor, backgroundGrey, lightGrey9 } from '@edulastic/colors'
 import { getFontSize } from '../../utils/helpers'
 
 const Explanation = (props) => {
-  const { question = {}, isGrade, isStudentReport } = props
+  const { question = {}, show, isStudentReport } = props
   const { uiStyle: { fontsize = '' } = {} } = question
 
   const { sampleAnswer } = question
-
-  const [show, updateShow] = useState(isGrade)
-
-  const onClickHandler = (e) => {
-    e.stopPropagation()
-    updateShow(true)
-  }
-
-  if (
-    !sampleAnswer ||
-    question.type === 'passage' ||
-    question.type === 'passageWithQuestions' ||
-    question.type === 'video' ||
-    question.type === 'resource' ||
-    question.type === 'text'
-  ) {
-    return null
-  }
 
   return (
     <div
@@ -49,16 +31,6 @@ const Explanation = (props) => {
             />
           </SolutionText>
         </>
-      )}
-      {!show && (
-        <ShowExplanation
-          width="110px"
-          height="30px"
-          isGhost
-          onClick={onClickHandler}
-        >
-          Show solution
-        </ShowExplanation>
       )}
     </div>
   )
@@ -88,8 +60,4 @@ const SolutionText = styled.div`
   line-height: 2;
   color: ${lightGrey9};
   opacity: 1;
-`
-
-const ShowExplanation = styled(EduButton)`
-  margin-left: ${({ isStudent }) => `${isStudent ? 50 : 0}px`};
 `

@@ -8,6 +8,8 @@ import {
   themeColor,
   desktopWidth,
   extraDesktopWidth,
+  inputBorder1,
+  greyThemeDark1,
 } from '@edulastic/colors'
 
 // left 70 as the side menu space need to be considered.
@@ -47,6 +49,7 @@ export const StyledStudentTabButton = styled.div``
 
 export const StudentButtonDiv = styled.div`
   display: flex;
+  align-items: center;
   .ant-btn-primary {
     background-color: #0e93dc;
   }
@@ -95,12 +98,11 @@ export const PartiallyCorrectButton = styled(StyledTabButton)`
 `
 
 export const GiveOverallFeedBackButton = styled(StyledTabButton)`
-  height: 40px;
+  height: 24px;
   background-color: ${white};
   border: 1px solid ${themeColor};
   color: ${themeColor};
   border-radius: 4px;
-  padding: 15px 10px;
   min-width: 250px;
   position: relative;
   margin-left: 28px;
@@ -121,7 +123,6 @@ export const GiveOverallFeedBackButton = styled(StyledTabButton)`
 
   @media (min-width: ${extraDesktopWidth}) {
     min-width: 300px;
-    padding: 20px 10px;
   }
   @media (max-width: ${desktopWidth}) {
     min-width: auto;
@@ -190,5 +191,134 @@ export const StyledFooter = styled.div`
   button {
     min-width: 150px;
     margin-top: 5px;
+  }
+`
+
+export const SlideContainer = styled.span`
+  height: 300px;
+`
+
+export const SliderContainer = styled.div`
+  position: relative;
+  overflow: hidden;
+  width: 430px;
+  .prev,
+  .next {
+    display: block;
+  }
+`
+
+export const ScrollbarContainer = styled.div`
+  white-space: nowrap;
+  transition: 0.2s;
+  border: 1px solid ${inputBorder1};
+  .scrollbar-container {
+    width: 430px;
+    height: 305px;
+    transition: 0.2s;
+  }
+  .ps__rail-x {
+    display: none;
+  }
+`
+export const PrevButton = styled.div`
+  position: absolute;
+  top: 60%;
+  left: 10px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  z-index: 5;
+`
+export const NextButton = styled(PrevButton)`
+  top: 58.5%;
+  left: auto;
+  right: 10px;
+  transform: translateY(-50%) rotate(180deg);
+`
+
+export const Slides = styled.div`
+  width: 412px;
+  height: 290px;
+  color: ${white};
+  cursor: pointer;
+  display: inline-block;
+  background-image: ${(props) => `url(${props.bgImage})`};
+  background-size: 100% 100%;
+  background-position: top left;
+  background-repeat: no-repeat;
+  border-radius: 4px;
+  margin: 8px 0 8px 8px;
+`
+export const AttachmentFooter = styled.div`
+  width: 456px;
+  margin: auto;
+  padding-top: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+`
+export const SingleDownloadButton = styled(EduButton)`
+  width: 200px;
+  span {
+    height: 24px;
+  }
+`
+
+export const Title = styled.h2`
+  font-weight: 600;
+`
+
+export const Description = styled.p`
+  font-weight: 600;
+  font-size: 15px;
+`
+
+export const FilesViewContainer = styled.div`
+  width: 100%;
+  margin-top: 20px;
+  margin-bottom: 15px;
+`
+
+export const SlideWrapper = styled.div`
+  width: 430px;
+  height: 298px;
+  display: inline-block;
+`
+
+export const InputTitle = styled.h3`
+  color: ${greyThemeDark1};
+  text-align: left;
+  font: normal normal 600 11px/15px Open Sans;
+  letter-spacing: 0px;
+  text-transform: uppercase;
+  margin: 20px 0 -10px 0px;
+`
+
+export const StyledAttachmentModal = styled(Modal)`
+  .ant-modal-body {
+    padding: 0 50px 0 50px;
+  }
+  .ant-modal-header {
+    padding: 24px 46px;
+    border: 0;
+    .ant-modal-title {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -1.1px;
+      margin-top: 8px;
+    }
+  }
+  .ant-modal-footer {
+    border: 0;
+    padding-bottom: 30px;
+  }
+  .ant-modal-close {
+    top: 18px;
+    right: 32px;
+    color: black;
+    svg {
+      width: 20px;
+      height: 20px;
+    }
   }
 `

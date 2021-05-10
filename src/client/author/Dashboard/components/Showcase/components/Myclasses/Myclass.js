@@ -120,17 +120,16 @@ const MyClasses = ({
   }
 
   const checkLocalRecommendedTests = () => {
-    if (user?.recommendedContentUpdated) {
-      configurableTilesApi
-        .fetchRecommendedTest()
-        .then((res) => saveRecommendedTests(res))
-      return
-    }
     const recommendedTestsLocal = localStorage.getItem(
       `recommendedTest:${user?._id}:stored`
     )
     if (recommendedTestsLocal) {
       setRecommendedTests(JSON.parse(recommendedTestsLocal))
+      if (user?.recommendedContentUpdated) {
+        configurableTilesApi
+          .fetchRecommendedTest()
+          .then((res) => saveRecommendedTests(res))
+      }
     } else {
       configurableTilesApi
         .fetchRecommendedTest()

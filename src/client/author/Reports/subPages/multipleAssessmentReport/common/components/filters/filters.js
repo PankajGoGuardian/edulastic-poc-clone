@@ -196,14 +196,11 @@ const MultipleAssessmentReportFilters = ({
         classIds: search.classId || '',
         groupIds: search.groupId || '',
         profileId: urlPerformanceBand?.key || '',
+        assignedBy: search.assignedBy || staticDropDownData.assignedBy[0].key,
       }
       if (role === roleuser.TEACHER) {
         delete _filters.schoolIds
         delete _filters.teacherIds
-      }
-      if (role === roleuser.SCHOOL_ADMIN) {
-        _filters.schoolIds =
-          _filters.schoolIds || get(user, 'institutionIds', []).join(',')
       }
       const assessmentTypesArr = (search.assessmentTypes || '').split(',')
       const _tempTagsData = {
@@ -216,6 +213,7 @@ const MultipleAssessmentReportFilters = ({
         subjects: urlSubjects,
         grades: urlGrades,
         profileId: urlPerformanceBand,
+        assignedBy: search.assignedBy || staticDropDownData.assignedBy[0],
       }
 
       // set tempTagsData, filters and testId
@@ -318,6 +316,16 @@ const MultipleAssessmentReportFilters = ({
     toggleFilter(null, true)
   }
 
+  const handleTagClick = (filterKey) => {
+    const tabKey =
+      staticDropDownData.tagTypes.find((filter) => filter.key === filterKey)
+        ?.tabKey || -1
+    if (tabKey !== -1) {
+      toggleFilter(null, true)
+      setActiveTabKey(tabKey)
+    }
+  }
+
   return (
     <>
       <FilterTags
@@ -326,6 +334,7 @@ const MultipleAssessmentReportFilters = ({
         tagsData={tagsData}
         tagTypes={tagTypes}
         handleCloseTag={handleCloseTag}
+        handleTagClick={handleTagClick}
       />
       <ReportFiltersContainer visible={!reportId}>
         <StyledEduButton
@@ -469,6 +478,20 @@ const MultipleAssessmentReportFilters = ({
                     forceRender
                   >
                     <Row type="flex" gutter={[5, 10]}>
+                      <Col span={6}>
+                        <FilterLabel data-cy="assignedBy">
+                          Assigned By
+                        </FilterLabel>
+                        <ControlDropDown
+                          by={filters.assignedBy}
+                          selectCB={(e, selected) =>
+                            updateFilterDropdownCB(selected, 'assignedBy')
+                          }
+                          data={staticDropDownData.assignedBy}
+                          prefix="Assigned By"
+                          showPrefixOnSelected={false}
+                        />
+                      </Col>
                       {role !== roleuser.TEACHER && (
                         <>
                           <Col span={6}>

@@ -1,7 +1,9 @@
 {
   "analyseByData": [
     { "key": "score", "title": "Score (%)" },
-    { "key": "rawScore", "title": "Raw Score" }
+    { "key": "rawScore", "title": "Raw Score" },
+    { "key": "standard", "title": "Above/Below Standard" },
+    { "key": "proficiencyBand", "title": "Proficiency Band" }
   ],
   "compareByData": [
     { "key": "school", "title": "School", "hiddenFromRole": ["teacher"] },

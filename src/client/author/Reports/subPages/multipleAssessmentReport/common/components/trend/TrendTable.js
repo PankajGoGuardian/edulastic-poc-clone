@@ -171,7 +171,7 @@ const getCellAttributes = (test = {}, analyseBy = {}, masteryScale = {}) => {
       break
     default:
       value = formatText(test, analyseBy.key)
-      if (value !== 'Absent') {
+      if (value !== 'Absent' && value !== 'Not Started') {
         color = getHSLFromRange1(test.score)
       }
       break

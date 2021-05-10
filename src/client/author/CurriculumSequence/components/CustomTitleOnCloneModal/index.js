@@ -26,7 +26,9 @@ const CustomTitleOnCloneModal = ({
             disabled={title?.length < 1}
             key="1"
             data-cy="createNewPlaylistClone"
-            onClick={() => handleCreateNewCopy({ customTitle: title })}
+            onClick={() =>
+              handleCreateNewCopy({ forceClone: true, customTitle: title })
+            }
           >
             Save
           </EduButton>

@@ -724,24 +724,24 @@ class SideMenu extends Component {
               </Menu>
               <MenuFooter>
                 {!isDemoPlaygroundUserProxy &&
-                ['district-admin', 'school-admin', 'teacher'].indexOf(
-                  userRole
-                ) > -1 && (
-                  <DemoPlaygroundButtonContainer isCollapsed={isCollapsed}>
-                    <DemoPlaygroundButton
-                      data-cy="demo-palyground-item"
-                      onClick={this.handlePlayGround}
-                      title={isCollapsed ? 'Demo Playground' : ''}
-                    >
-                      <IconContainer className={isCollapsed ? 'active' : ''}>
-                        <IconDemoAccNav />
-                      </IconContainer>
-                      <LabelMenuItem isCollapsed={isCollapsed}>
-                        Demo Playground
-                      </LabelMenuItem>
-                    </DemoPlaygroundButton>
-                  </DemoPlaygroundButtonContainer>
-                )}
+                  ['district-admin', 'school-admin', 'teacher'].indexOf(
+                    userRole
+                  ) > -1 && (
+                    <DemoPlaygroundButtonContainer isCollapsed={isCollapsed}>
+                      <DemoPlaygroundButton
+                        data-cy="demo-palyground-item"
+                        onClick={this.handlePlayGround}
+                        title={isCollapsed ? 'Demo Playground' : ''}
+                      >
+                        <IconContainer className={isCollapsed ? 'active' : ''}>
+                          <IconDemoAccNav />
+                        </IconContainer>
+                        <LabelMenuItem isCollapsed={isCollapsed}>
+                          Demo Playground
+                        </LabelMenuItem>
+                      </DemoPlaygroundButton>
+                    </DemoPlaygroundButtonContainer>
+                  )}
                 <QuestionButton isCollapsed={isCollapsed}>
                   <a
                     href={helpCenterUrl}
@@ -1183,7 +1183,7 @@ const Menu = styled(AntMenu)`
   @media (max-height: 780px) {
     overflow: auto;
     height: ${({ isBannerShown }) =>
-      isBannerShown ? 'calc(100vh - 220px)' : 'calc(100vh - 190px)'};
+      isBannerShown ? 'calc(100vh - 270px)' : 'calc(100vh - 235px)'};
 
     &::-webkit-scrollbar {
       width: 4px;

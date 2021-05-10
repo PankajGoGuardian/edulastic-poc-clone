@@ -20,11 +20,7 @@ import {
 } from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 
-import {
-  getCsvDownloadingState,
-  getTestListSelector,
-  generateCSVAction,
-} from '../../../ducks'
+import { getCsvDownloadingState, generateCSVAction } from '../../../ducks'
 import {
   getSAFFilterStandardsProficiencyProfiles,
   setStandardMasteryProfileAction,
@@ -69,7 +65,6 @@ const PerformanceByStandards = ({
   resetPerformanceByStandards,
   settings,
   demographicFilters,
-  testList,
   role,
   isCsvDownloading,
   standardProficiencyProfiles,
@@ -123,12 +118,11 @@ const PerformanceByStandards = ({
 
   const isViewByStandards = viewBy === viewByMode.STANDARDS
 
-  const selectedTest = testList.find(
-    (t) => t._id === settings.selectedTest.key
-  ) || { _id: '', title: '' }
   const assessmentName = `${
-    selectedTest.title
-  } (ID:${selectedTest._id.substring(selectedTest._id.length - 5)})`
+    settings.selectedTest.title
+  } (ID:${settings.selectedTest.key.substring(
+    settings.selectedTest.key.length - 5
+  )})`
 
   const reportWithFilteredSkills = useMemo(
     () => getReportWithFilteredSkills(report, scaleInfo, curriculumId),
@@ -435,7 +429,6 @@ const enhance = connect(
     standardProficiencyProfiles: getSAFFilterStandardsProficiencyProfiles(
       state
     ),
-    testList: getTestListSelector(state),
   }),
   {
     getPerformanceByStandards: getPerformanceByStandardsAction,

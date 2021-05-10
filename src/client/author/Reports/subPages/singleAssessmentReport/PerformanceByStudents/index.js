@@ -43,7 +43,7 @@ import {
   resetPerformanceByStudentsAction,
 } from './ducks'
 import { getUserRole } from '../../../../../student/Login/ducks'
-import { getCsvDownloadingState, getTestListSelector } from '../../../ducks'
+import { getCsvDownloadingState } from '../../../ducks'
 import {
   getSAFFilterPerformanceBandProfiles,
   setPerformanceBandProfileAction,
@@ -61,7 +61,6 @@ const PerformanceByStudents = ({
   getPerformanceByStudents,
   resetPerformanceByStudents,
   settings,
-  testList,
   location = { pathname: '' },
   pageTitle,
   filters,
@@ -82,12 +81,11 @@ const PerformanceByStudents = ({
     ],
     [sharedReport]
   )
-  const selectedTest = testList?.find(
-    (test) => test._id === settings.selectedTest.key
-  ) || { _id: '', title: '' }
   const assessmentName = `${
-    selectedTest.title
-  } (ID:${selectedTest._id.substring(selectedTest._id.length - 5)})`
+    settings.selectedTest.title
+  } (ID:${settings.selectedTest.key.substring(
+    settings.selectedTest.key.length - 5
+  )})`
 
   const bandInfo = useMemo(
     () =>
@@ -433,7 +431,6 @@ const withConnect = connect(
     role: getUserRole(state),
     performanceBandProfiles: getSAFFilterPerformanceBandProfiles(state),
     performanceByStudents: getReportsPerformanceByStudents(state),
-    testList: getTestListSelector(state),
   }),
   {
     getPerformanceByStudents: getPerformanceByStudentsRequestAction,

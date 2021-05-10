@@ -19,7 +19,7 @@ import {
 import { QuestionAnalysisTable } from './componenets/table/questionAnalysisTable'
 
 import { getUserRole } from '../../../../../student/Login/ducks'
-import { getCsvDownloadingState, getTestListSelector } from '../../../ducks'
+import { getCsvDownloadingState } from '../../../ducks'
 import {
   getQuestionAnalysisRequestAction,
   getReportsQuestionAnalysis,
@@ -41,7 +41,6 @@ const QuestionAnalysis = ({
   getQuestionAnalysis,
   resetQuestionAnalysis,
   settings,
-  testList,
   sharedReport,
   toggleFilter,
 }) => {
@@ -54,12 +53,11 @@ const QuestionAnalysis = ({
   )
   const [chartFilter, setChartFilter] = useState({})
 
-  const selectedTest = testList.find(
-    (t) => t._id === settings.selectedTest.key
-  ) || { _id: '', title: '' }
   const assessmentName = `${
-    selectedTest.title
-  } (ID:${selectedTest._id.substring(selectedTest._id.length - 5)})`
+    settings.selectedTest.title
+  } (ID:${settings.selectedTest.key.substring(
+    settings.selectedTest.key.length - 5
+  )})`
 
   useEffect(() => () => resetQuestionAnalysis(), [])
 
@@ -226,7 +224,6 @@ export default connect(
     isCsvDownloading: getCsvDownloadingState(state),
     role: getUserRole(state),
     questionAnalysis: getReportsQuestionAnalysis(state),
-    testList: getTestListSelector(state),
   }),
   {
     getQuestionAnalysis: getQuestionAnalysisRequestAction,

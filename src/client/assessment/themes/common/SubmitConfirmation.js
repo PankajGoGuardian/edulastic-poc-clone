@@ -5,7 +5,10 @@ import Modal from 'react-responsive-modal'
 import PropTypes from 'prop-types'
 import { Row } from 'antd'
 import { withNamespaces } from '@edulastic/localization'
-import { assignmentPolicyOptions } from '@edulastic/constants'
+import {
+  assignmentPolicyOptions,
+  keyboard as keyboardConst,
+} from '@edulastic/constants'
 import { themeColorBlue } from '@edulastic/colors'
 import ColWithZoom from '../../../common/components/ColWithZoom'
 
@@ -77,6 +80,13 @@ class SubmitConfirmation extends Component {
                   type="primary"
                   btnType={2}
                   onClick={finishTest}
+                  onKeyDown={(e) => {
+                    const code = e.which || e.keyCode
+                    if (code === keyboardConst.TAB_KEY) {
+                      e.preventDefault()
+                      this?.cancelButtonRef?.focus()
+                    }
+                  }}
                 >
                   {t('exitConfirmation.buttonProceed')}
                 </StyledButton>

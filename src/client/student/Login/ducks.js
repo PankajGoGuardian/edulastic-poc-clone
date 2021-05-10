@@ -1304,7 +1304,8 @@ function redirectToUrl(url) {
 function* logout() {
   try {
     const user = yield select(getUser)
-    if (user.isProxy || user.isPlayground) {
+    const env = appConfig.appEnv
+    if (env !== 'qa' && (user.isProxy || user.isPlayground)) {
       TokenStorage.removeAccessToken(user._id, user.role)
       window.close()
     } else {

@@ -1,5 +1,6 @@
 import { userApi, TokenStorage } from '@edulastic/api'
 import { notification } from '@edulastic/common'
+import AppConfig from '../../app-config'
 
 export async function proxyUser({ userId, email, groupId, currentUser = {} }) {
   const result = await userApi.getProxyUser({ userId, email, groupId })
@@ -62,9 +63,14 @@ export async function proxyDemoPlaygroundUser() {
       result.result._id,
       result.result.role
     )
+    // check if qa environment then open proxy account in same tab
+    let option = '_blank'
+    if (AppConfig.appEnv === 'qa') {
+      option = '_self'
+    }
     window.open(
       `${window.location.protocol}//${window.location.host}/?userId=${result.result._id}&role=${result.result.role}`,
-      '_blank'
+      option
     )
   } else {
     notification({ messageKey: 'someErrorOccuredDuringProxying' })

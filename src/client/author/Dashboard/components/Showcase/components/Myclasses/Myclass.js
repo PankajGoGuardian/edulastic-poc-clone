@@ -131,6 +131,11 @@ const MyClasses = ({
     )
     if (recommendedTestsLocal) {
       setRecommendedTests(JSON.parse(recommendedTestsLocal))
+      if (user?.recommendedContentUpdated) {
+        configurableTilesApi
+          .fetchRecommendedTest()
+          .then((res) => saveRecommendedTests(res))
+      }
     } else {
       configurableTilesApi
         .fetchRecommendedTest()

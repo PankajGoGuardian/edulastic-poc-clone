@@ -50,6 +50,11 @@ const StyledModal = styled(Modal)`
     border: none;
   }
 
+  .ant-modal-content {
+    border: none;
+    box-shadow: none;
+  }
+
   .ant-modal-body {
     margin-top: 24px;
   }

@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { themeColorBlue } from '@edulastic/colors'
+import { keyboard as keyboardConst } from '@edulastic/constants'
 import helpers from '../helpers'
 
 export default function withKeyboard(WrappedComponent) {
@@ -56,8 +57,8 @@ export default function withKeyboard(WrappedComponent) {
       } = this.props
       // #5 is for ScratchPad
       const isSratchPadEnabled = tool.includes(5)
-      let supportedKeys = [13, 32]
-      if (onlySpaceKey) supportedKeys = [32]
+      let supportedKeys = [keyboardConst.ENTER_KEY, keyboardConst.SPACE_KEY]
+      if (onlySpaceKey) supportedKeys = [keyboardConst.SPACE_KEY]
       return (
         <StyledWrappedComponent
           {...this.state}
@@ -68,7 +69,7 @@ export default function withKeyboard(WrappedComponent) {
             if (isSratchPadEnabled) return
             const code = e.which || e.keyCode
             // preventing default behavior if any key is pressed other than tab key
-            if (code !== 9) {
+            if (code !== keyboardConst.TAB_KEY) {
               e.preventDefault()
             }
             if (supportedKeys.includes(code)) {

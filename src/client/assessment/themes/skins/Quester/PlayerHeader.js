@@ -5,7 +5,10 @@ import { connect } from 'react-redux'
 import styled, { css } from 'styled-components'
 import { withWindowSizes, withKeyboard } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
-import { test as testConstants } from '@edulastic/constants'
+import {
+  test as testConstants,
+  keyboard as keyboardConst,
+} from '@edulastic/constants'
 import {
   IconEduLogo,
   IconSignoutHighlight,
@@ -208,6 +211,18 @@ const PlayerHeader = ({
                       moveToPrev()
                       e.target.blur()
                     }}
+                    // added separate keydown event handler to restrict calling on blur event for keyboard event
+                    onKeyDown={(e) => {
+                      const code = e.which || e.keyCode
+                      if (code !== 9) e.preventDefault()
+                      if (
+                        [
+                          keyboardConst.ENTER_KEY,
+                          keyboardConst.SPACE_KEY,
+                        ].includes(code)
+                      )
+                        moveToPrev()
+                    }}
                   >
                     <IconQuester.IconPrevious />
                   </ControlBtn>
@@ -224,6 +239,18 @@ const PlayerHeader = ({
                     onClick={(e) => {
                       moveToNext()
                       e.target.blur()
+                    }}
+                    // added separate keydown event handler to restrict calling on blur event for keyboard event
+                    onKeyDown={(e) => {
+                      const code = e.which || e.keyCode
+                      if (code !== keyboardConst.TAB_KEY) e.preventDefault()
+                      if (
+                        [
+                          keyboardConst.ENTER_KEY,
+                          keyboardConst.SPACE_KEY,
+                        ].includes(code)
+                      )
+                        moveToNext()
                     }}
                     style={{ marginLeft: '15px' }}
                   >

@@ -1539,9 +1539,7 @@ function* useThisPlayListSaga({ payload }) {
         // let the user decide to clone again (or) use the cloned
         yield put(setCustomTitleModalVisibleAction(false))
         yield put(setIsUsedModalVisibleAction(true))
-        console.log('calling setis')
       } else {
-        console.log('calling custom')
         yield put(setIsUsedModalVisibleAction(false))
         yield put(setCustomTitleModalVisibleAction(true))
       }

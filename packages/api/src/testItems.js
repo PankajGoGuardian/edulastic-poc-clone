@@ -174,6 +174,7 @@ const updateCorrectItemById = ({
     createdAt,
     updatedAt,
     __v,
+    passageData,
     ...data
   } = formatData(item)
 

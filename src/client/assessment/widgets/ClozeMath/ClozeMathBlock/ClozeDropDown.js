@@ -1,10 +1,14 @@
-import React, { useRef, useEffect, useState, useMemo } from 'react'
+import React, { useRef, useEffect, useState, useMemo, useContext } from 'react'
 import PropTypes from 'prop-types'
 import { find, indexOf } from 'lodash'
 import styled from 'styled-components'
 import { Select } from 'antd'
 import { darkBlue, lightGrey12 } from '@edulastic/colors'
-import { SelectInputStyled, MathFormulaDisplay } from '@edulastic/common'
+import {
+  SelectInputStyled,
+  MathFormulaDisplay,
+  ScrollContext,
+} from '@edulastic/common'
 import CheckedBlock from './CheckedBlock'
 import { getStemNumeration } from '../../../utils/helpers'
 
@@ -35,6 +39,7 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
   } = item
   const { index } = find(dropDowns, (res) => res.id === id) || {}
   const response = find(responseContainers || [], (cont) => cont.id === id)
+  const { getScrollElement } = useContext(ScrollContext)
 
   const dropdownStyle = useMemo(() => {
     const individualWidth = response?.widthpx || 0
@@ -128,10 +133,7 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
       <Dropdown
         disabled={disableResponse}
         onChange={(text) => save({ value: text, index }, 'dropDowns', id)}
-        getPopupContainer={() =>
-          document?.getElementById('preview-modal-content-area') ||
-          document?.getElementById('question-main-wrapper')
-        }
+        getPopupContainer={() => getScrollElement() || document.body}
         value={val}
         {...dropdownStyle}
       >

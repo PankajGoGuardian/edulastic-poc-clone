@@ -655,7 +655,7 @@ function* saveQuestionSaga({
         testItemsApi.updateById,
         itemDetail._id,
         data,
-        redirectTestId
+        redirectTestId || tId
       )
     }
     yield put(changeUpdatedFlagAction(false))

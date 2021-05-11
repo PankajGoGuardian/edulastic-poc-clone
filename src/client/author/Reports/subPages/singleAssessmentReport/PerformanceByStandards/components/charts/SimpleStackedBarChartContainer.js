@@ -91,13 +91,13 @@ const SimpleStackedBarChartContainer = ({
       switch (analyzeBy) {
         case analyzeByMode.SCORE:
           lastItem = {
-            title: 'Avg.Score(%) : ',
+            title: 'Avg. Score (%) : ',
             value: `${round(payload[0].value)}%`,
           }
           break
         case analyzeByMode.RAW_SCORE:
           lastItem = {
-            title: 'Avg.Score : ',
+            title: 'Avg. Score : ',
             value: `${round(payload[0].payload.rawScore, 2)} / ${
               payload[0].payload.maxScore
             }`,
@@ -115,8 +115,12 @@ const SimpleStackedBarChartContainer = ({
             value={name}
           />
           <BarTooltipRow
-            title="Total Points :"
-            value={get(payload[0], 'payload.maxScore', '')}
+            title="Total Points : "
+            value={get(payload[0], 'payload.totalMaxScore', '')}
+          />
+          <BarTooltipRow
+            title="Total Score : "
+            value={get(payload[0], 'payload.totalTotalScore', '')}
           />
           {lastItem && <BarTooltipRow {...lastItem} />}
         </div>

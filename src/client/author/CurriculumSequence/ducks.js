@@ -1499,7 +1499,6 @@ function* useThisPlayListSaga({ payload }) {
     yield put(setUseThisLoading(true))
     const {
       _id: playlistId,
-      title,
       fromUseThis = false,
       customize = false,
       authors = [],
@@ -1525,23 +1524,34 @@ function* useThisPlayListSaga({ payload }) {
       forceClone
     ) {
       const duplicatedPlaylist = yield call(
-        curriculumSequencesApi.duplicatePlayList,
-        {
-          _id,
-          title: `${title}`,
-          forUseThis: true,
-          forceClone,
-        }
+        curriculumSequencesApi.checkExistingDuplicatedForUser,
+        _id
       )
 
       // if playlist was cloned previously
-      if (duplicatedPlaylist.previouslyCloned && !forceClone) {
+      if (duplicatedPlaylist?.createdBy && !forceClone) {
         // let the user decide to clone again (or) use the cloned
         yield put(setCustomTitleModalVisibleAction(false))
+        yield put(
+          setPreviouslyUsedPlaylistClone({
+            _id: duplicatedPlaylist._id,
+            title: duplicatedPlaylist.title,
+            grades: duplicatedPlaylist.grades,
+            subjects: duplicatedPlaylist.subjects,
+            customize: duplicatedPlaylist.customize,
+            authors: duplicatedPlaylist.authors,
+            derivedFrom: duplicatedPlaylist.derivedFrom,
+          })
+        )
         yield put(setIsUsedModalVisibleAction(true))
       } else {
         yield put(setIsUsedModalVisibleAction(false))
         yield put(setCustomTitleModalVisibleAction(true))
+        yield put(
+          setPreviouslyUsedPlaylistClone({
+            _id,
+          })
+        )
       }
     } else {
       yield put(cloneThisPlayListAction(payload))

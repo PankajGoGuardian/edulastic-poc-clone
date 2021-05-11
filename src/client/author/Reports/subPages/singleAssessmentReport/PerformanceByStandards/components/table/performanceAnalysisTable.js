@@ -195,9 +195,9 @@ const PerformanceAnalysisTable = ({
 
   const makeStandardColumn = (skill) => {
     const columnConfig = standardColumnsData.getColumnConfig(skill)
-    const totalPoints = aggSummaryStats[columnConfig.key]?.totalMaxScore || 0
-    const aggColumnValue =
-      (aggSummaryStats[columnConfig.key] || {})[analyzeByConfig.field] || ''
+    const aggSummaryStat = aggSummaryStats[columnConfig.key] || {}
+    const totalPoints = aggSummaryStat.totalMaxScore || 0
+    const aggColumnValue = aggSummaryStat[analyzeByConfig.field] || ''
     return {
       title: (
         <p>

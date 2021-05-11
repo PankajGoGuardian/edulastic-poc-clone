@@ -716,9 +716,9 @@ const makeStandardColumnsBE = (
 
   const _makeStandardColumnBE = (skill) => {
     const columnConfig = getColumnConfig(skill)
-    const totalPoints = aggSummaryStats[columnConfig.key]?.totalMaxScore || 0
-    const aggColumnValue =
-      (aggSummaryStats[columnConfig.key] || {})[analyzeByConfig.field] || ''
+    const aggSummaryStat = aggSummaryStats[columnConfig.key] || {}
+    const totalPoints = aggSummaryStat.totalMaxScore || 0
+    const aggColumnValue = aggSummaryStat[analyzeByConfig.field] || ''
     return {
       title: `${columnConfig.title} (Points - ${parseFloat(
         totalPoints.toFixed(2)

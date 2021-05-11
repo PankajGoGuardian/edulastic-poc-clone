@@ -1,7 +1,7 @@
 import React from 'react'
-import { Input, Modal } from 'antd'
+import { Input } from 'antd'
 import styled from 'styled-components'
-import { EduButton } from '@edulastic/common'
+import { CustomModalStyled, EduButton } from '@edulastic/common'
 import { ButtonsContainer } from '../../../../common/styled'
 
 const CustomTitleOnCloneModal = ({
@@ -12,8 +12,8 @@ const CustomTitleOnCloneModal = ({
   setTitle,
 }) => {
   return (
-    <StyledModal
-      title={<h2>Use Playlist</h2>}
+    <CustomModalStyled
+      title="Use Playlist"
       width="480px"
       visible={isVisible}
       onCancel={onCancel}
@@ -41,27 +41,16 @@ const CustomTitleOnCloneModal = ({
         onChange={(e) => setTitle(e.target.value)}
         placeholder="Playlist Name"
       />
-    </StyledModal>
+    </CustomModalStyled>
   )
 }
 
 export default CustomTitleOnCloneModal
 
-const StyledModal = styled(Modal)`
-  .ant-modal-header,
-  .ant-modal-footer {
-    border: none;
-  }
-
-  .ant-modal-body {
-    margin-top: 24px;
-  }
-`
-
 const StyledContent = styled.p`
   text-align: left;
-  font-size: 16px;
   padding: 10px;
+  font-size: 14px;
   font-weight: bold;
 `
 
@@ -72,4 +61,6 @@ const StyledInput = styled(Input)`
   margin-left: 10px;
   padding: 10px;
   max-width: 92%;
+  font-size: 14px;
+  font-weight: bold;
 `

@@ -13,7 +13,7 @@ const CustomTitleOnCloneModal = ({
 }) => {
   return (
     <StyledModal
-      title={<h2>Use Playlist</h2>}
+      title="Use Playlist"
       width="480px"
       visible={isVisible}
       onCancel={onCancel}
@@ -52,16 +52,24 @@ const StyledModal = styled(Modal)`
   .ant-modal-footer {
     border: none;
   }
+  .ant-modal-title {
+    margin-left: 5px;
+    font-weight: 700;
+    font-size: 22px;
+    color: #434b5d;
+  }
 
   .ant-modal-body {
-    margin-top: 24px;
+    margin-top: -15px;
+    font-size: 14px;
+    font-weight: bold;
   }
 `
 
 const StyledContent = styled.p`
   text-align: left;
-  font-size: 16px;
   padding: 10px;
+  font-size: 14px;
   font-weight: bold;
 `
 
@@ -72,4 +80,6 @@ const StyledInput = styled(Input)`
   margin-left: 10px;
   padding: 10px;
   max-width: 92%;
+  font-size: 14px;
+  font-weight: bold;
 `

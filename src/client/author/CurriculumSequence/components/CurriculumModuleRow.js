@@ -259,7 +259,9 @@ class ModuleRow extends Component {
           throw new Error('Failed to fetch latest test id!')
         }
       } catch (e) {
-        notification({ msg: 'Failed to load test!' })
+        if (e?.response?.status !== 404) {
+          notification({ msg: 'Failed to load test!' })
+        }
         console.warn(e)
       }
     }

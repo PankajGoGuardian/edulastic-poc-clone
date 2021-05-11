@@ -320,7 +320,8 @@ class SideMenu extends Component {
 
   handlePlayGround = (evt) => {
     evt.stopPropagation()
-    proxyDemoPlaygroundUser()
+    const elementClasses = evt.currentTarget.getAttribute('class')
+    proxyDemoPlaygroundUser(elementClasses.indexOf('automation') > -1)
   }
 
   toggleMenu = () => {

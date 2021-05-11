@@ -1,6 +1,5 @@
 import { userApi, TokenStorage } from '@edulastic/api'
 import { notification } from '@edulastic/common'
-import AppConfig from '../../app-config'
 
 export async function proxyUser({ userId, email, groupId, currentUser = {} }) {
   const result = await userApi.getProxyUser({ userId, email, groupId })
@@ -55,7 +54,7 @@ export async function switchUser(switchToId, personId) {
   }
 }
 
-export async function proxyDemoPlaygroundUser() {
+export async function proxyDemoPlaygroundUser(isAutomation = false) {
   const result = await userApi.getDemoPlaygroundUser()
   if (result.result?._id && result.result?.role) {
     TokenStorage.storeAccessToken(
@@ -65,7 +64,7 @@ export async function proxyDemoPlaygroundUser() {
     )
     // check if qa environment then open proxy account in same tab
     let option = '_blank'
-    if (AppConfig.appEnv === 'qa') {
+    if (isAutomation && process.env.NODE_ENV !== 'production') {
       option = '_self'
     }
     window.open(

@@ -655,7 +655,10 @@ class AuthorTestItemPreview extends Component {
     return (
       <ThemeProvider theme={themes.default}>
         <ScrollContext.Provider
-          value={{ getScrollElement: () => this.scrollContainer.current }}
+          value={{
+            getScrollElement: () =>
+              this.scrollContainer.current || document.body,
+          }}
         >
           {isRejectMode || onlySratchpad
             ? this.renderColumnContentAreaWithRejectNote(

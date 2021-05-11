@@ -728,7 +728,10 @@ class Container extends Component {
     return (
       <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
         <ScrollContext.Provider
-          value={{ getScrollElement: () => this.editModeContainerRef.current }}
+          value={{
+            getScrollElement: () =>
+              this.editModeContainerRef.current || document.body,
+          }}
         >
           <ItemDetailWrapper
             ref={this.editModeContainerRef}

@@ -285,7 +285,9 @@ class TestItemCol extends Component {
 
     return (
       <ScrollContext.Provider
-        value={{ getScrollElement: () => this.scrollContainer.current }}
+        value={{
+          getScrollElement: () => this.scrollContainer.current || document.body,
+        }}
       >
         <Container
           style={style}

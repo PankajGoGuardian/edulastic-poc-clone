@@ -1532,10 +1532,26 @@ function* useThisPlayListSaga({ payload }) {
       if (duplicatedPlaylist?.createdBy && !forceClone) {
         // let the user decide to clone again (or) use the cloned
         yield put(setCustomTitleModalVisibleAction(false))
+        yield put(
+          setPreviouslyUsedPlaylistClone({
+            _id: duplicatedPlaylist._id,
+            title: duplicatedPlaylist.title,
+            grades: duplicatedPlaylist.grades,
+            subjects: duplicatedPlaylist.subjects,
+            customize: duplicatedPlaylist.customize,
+            authors: duplicatedPlaylist.authors,
+            derivedFrom: duplicatedPlaylist.derivedFrom,
+          })
+        )
         yield put(setIsUsedModalVisibleAction(true))
       } else {
         yield put(setIsUsedModalVisibleAction(false))
         yield put(setCustomTitleModalVisibleAction(true))
+        yield put(
+          setPreviouslyUsedPlaylistClone({
+            _id,
+          })
+        )
       }
     } else {
       yield put(cloneThisPlayListAction(payload))
@@ -1582,7 +1598,6 @@ function* cloneThisPlayListSaga({ payload }) {
      * an author nor a co-author then the playlist must be cloned with
      * modules referencing the original playlist
      */
-    console.log('inside cloneThis')
     if (
       (customize && fromUseThis && !isStudent && !hasPlaylistEditAccess) ||
       forceClone

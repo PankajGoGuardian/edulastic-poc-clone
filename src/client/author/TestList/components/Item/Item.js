@@ -295,10 +295,13 @@ class Item extends Component {
       isUsedModalVisible,
       setIsUsedModalVisible,
       customTitleModalVisible,
+      previouslyUsedPlaylistClone,
     } = this.props
-    // const showUsedModal =
-    //   isUsedModalVisible &&
-    //   previouslyUsedPlaylistClone?.derivedFrom?._id === item._id
+    const showUsedModal =
+      isUsedModalVisible &&
+      previouslyUsedPlaylistClone?.derivedFrom?._id === item._id
+    const showCustomTitleModal =
+      customTitleModalVisible && previouslyUsedPlaylistClone?._id === item._id
     const { status, analytics = [] } = isPlaylist ? _source : item
     const likes = analytics?.[0]?.likes || '0'
     const usage = analytics?.[0]?.usage || '0'
@@ -441,7 +444,7 @@ class Item extends Component {
           />
         ) : null}
 
-        {isUsedModalVisible ? (
+        {showUsedModal ? (
           <CloneOnUsePlaylistConfirmationModal
             isVisible={isUsedModalVisible}
             onCancel={() => setIsUsedModalVisible(false)}
@@ -450,7 +453,7 @@ class Item extends Component {
           />
         ) : null}
         <CardViewComponent {...cardViewProps} />
-        {customTitleModalVisible && (
+        {showCustomTitleModal && (
           <CustomTitleOnCloneModal
             isVisible={customTitleModalVisible}
             onCancel={this.handleCloseCustomTitleModal}

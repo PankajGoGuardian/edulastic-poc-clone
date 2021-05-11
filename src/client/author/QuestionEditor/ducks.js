@@ -662,10 +662,6 @@ function* saveQuestionSaga({
     if (item.testId) {
       yield put(setRedirectTestAction(item.testId))
     }
-    yield put({
-      type: UPDATE_ITEM_DETAIL_SUCCESS,
-      payload: { item },
-    })
 
     if (!saveAndPublishFlow) {
       notification({ type: 'success', messageKey: 'itemSavedSuccess' })
@@ -736,6 +732,10 @@ function* saveQuestionSaga({
             },
           })
         )
+        yield put({
+          type: UPDATE_ITEM_DETAIL_SUCCESS,
+          payload: { item },
+        })
         return
       }
 
@@ -767,6 +767,10 @@ function* saveQuestionSaga({
         // add item to test entity
         yield put(addAuthoredItemsAction({ item, tId, isEditFlow }))
       }
+      yield put({
+        type: UPDATE_ITEM_DETAIL_SUCCESS,
+        payload: { item },
+      })
       if (!isEditFlow) return
       yield put(changeViewAction('edit'))
       return
@@ -798,6 +802,10 @@ function* saveQuestionSaga({
         })
       )
     }
+    yield put({
+      type: UPDATE_ITEM_DETAIL_SUCCESS,
+      payload: { item },
+    })
   } catch (err) {
     console.error(err)
     captureSentryException(err)

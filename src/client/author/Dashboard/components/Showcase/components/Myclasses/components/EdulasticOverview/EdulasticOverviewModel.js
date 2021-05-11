@@ -29,6 +29,7 @@ const EdulasticOverviewModel = ({
     <EmbeddedVideoPreviewModal
       closeCallback={handlePreviewModalClose}
       isVisible={isBannerModalVisible} // isBannerModalVisible will have the video preview title and url
+      modalWidth="650px"
     />
   ) : (
     <EdulasticResourceModal

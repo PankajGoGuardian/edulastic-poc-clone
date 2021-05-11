@@ -34,7 +34,7 @@ const PreviewRubricModal = ({
     )
   const titleContent = (
     <HeaderWrapper key="rubric-header">
-      <span data-cy="rubricName">{currentRubricData.name}</span>
+      <span data-cy="rubricNameInPreview">{currentRubricData.name}</span>
       <span data-cy="totalRating">
         <span>{obtained}</span>&nbsp;<span>/</span>&nbsp;
         <span>{maxScore || localMaxScore}</span>

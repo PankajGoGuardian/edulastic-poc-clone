@@ -606,11 +606,24 @@ function* saveQuestionSaga({
         }
 
         draftData.data.questions.forEach((q, index) => {
+          if (index === 0) {
+            if (data.itemLevelScoring && q.scoringDisabled) {
+              // on item level scoring item, first question removed situation.
+              if (!questionType.manuallyGradableQn.includes(data.type)) {
+                set(q, 'validation.validResponse.score', data.itemLevelScore)
+              }
+            }
+            /**
+             * after shuffle we need to reset scoringDisabled to false for the first question
+             * irrespective to itemLevelScoring
+             */
+            q.scoringDisabled = false
+          }
           if (index > 0) {
             if (data.itemLevelScoring) {
               q.scoringDisabled = true
             } else {
-              delete q.scoringDisabled
+              q.scoringDisabled = false
             }
           }
 

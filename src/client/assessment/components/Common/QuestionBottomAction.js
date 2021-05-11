@@ -6,6 +6,7 @@ import {
   FlexContainer,
   EduButton,
   AnswerContext,
+  ScrollContext,
   ItemLevelContext as HideScoringBlockContext,
 } from '@edulastic/common'
 import { TitleWrapper } from '@edulastic/common/src/components/MainHeader'
@@ -332,24 +333,32 @@ const QuestionBottomAction = ({
         questionData?.id === item?.id &&
         currentStudentId === studentId && (
           <QuestionPreviewModal
-            visible={openQuestionModal}
-            onCancel={onCloseQuestionModal}
-            title={modalTitle}
-            footer={null}
             width="1080px"
+            footer={null}
             style={{ top: 10 }}
+            title={modalTitle}
+            visible={openQuestionModal}
+            wrapClassName="edit-regrade-modal"
+            onCancel={onCloseQuestionModal}
           >
-            <AnswerContext.Provider value={{ isAnswerModifiable: true }}>
-              <HideScoringBlockContext.Provider value={hideScoring}>
-                <QuestionComp
-                  {...questionProps}
-                  t={t}
-                  item={questionData}
-                  view={EDIT}
-                  disableResponse={false}
-                />
-              </HideScoringBlockContext.Provider>
-            </AnswerContext.Provider>
+            <ScrollContext.Provider
+              value={{
+                getScrollElement: () =>
+                  document.getElementsByClassName('edit-regrade-modal')[0],
+              }}
+            >
+              <AnswerContext.Provider value={{ isAnswerModifiable: true }}>
+                <HideScoringBlockContext.Provider value={hideScoring}>
+                  <QuestionComp
+                    {...questionProps}
+                    t={t}
+                    item={questionData}
+                    view={EDIT}
+                    disableResponse={false}
+                  />
+                </HideScoringBlockContext.Provider>
+              </AnswerContext.Provider>
+            </ScrollContext.Provider>
           </QuestionPreviewModal>
         )}
     </>

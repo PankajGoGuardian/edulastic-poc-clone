@@ -295,7 +295,10 @@ class QuestionModal extends React.Component {
         {isVisibleModal && question && loaded && (
           <>
             <ScrollContext.Provider
-              value={{ getScrollElement: () => this.containerRef?.current }}
+              value={{
+                getScrollElement: () =>
+                  this.containerRef?.current || document.body,
+              }}
             >
               <QuestionWrapper
                 ref={this.containerRef}

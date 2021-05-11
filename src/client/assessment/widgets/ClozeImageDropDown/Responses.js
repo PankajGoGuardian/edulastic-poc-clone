@@ -83,10 +83,14 @@ class Response extends Component {
 
   editOptions = (index, itemIndex, e) => {
     const { item, setQuestionData } = this.props
+    const responseId = item.responses[index]?.id
+
     setQuestionData(
       produce(item, (draft) => {
-        if (draft.options[index] === undefined) draft.options[index] = []
-        const oldOptionValue = draft.options[index][itemIndex]
+        if (draft.options[index] === undefined) {
+          draft.options[index] = []
+        }
+
         draft.options[index][itemIndex] = e.target.value
         let maxLength = 0
         draft.options.forEach((option) => {
@@ -100,13 +104,15 @@ class Response extends Component {
         }
         draft.uiStyle.widthpx =
           finalWidth < 140 ? 140 : finalWidth > 400 ? 400 : finalWidth
-        if (draft.validation.validResponse.value[index] === oldOptionValue) {
-          draft.validation.validResponse.value.splice(index, 1, e.target.value)
+
+        // update existing correct answers
+        if (draft.validation.validResponse.value[responseId]) {
+          draft.validation.validResponse.value[responseId] = e.target.value
         }
         draft.validation.altResponses = draft.validation.altResponses.map(
           (resp) => {
-            if (resp.value[index] === oldOptionValue) {
-              resp.value.splice(index, 1, e.target.value)
+            if (resp?.value[responseId]) {
+              resp.value[responseId] = e.target.value
             }
             return resp
           }

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
@@ -204,11 +204,7 @@ const validSequence = (sequences) => {
   return seqArrays?.every((seq) => seq.length === seqArrays[0]?.length)
 }
 
-const generateExampleValues = (
-  variables,
-  combinationsCount,
-  shouldCheckSeq
-) => {
+const generateExamples = (variables, combinationsCount, shouldCheckSeq) => {
   const nonSequences = {}
   const sequences = {}
   let results = {}
@@ -262,6 +258,7 @@ const Variables = ({
   item = {},
 }) => {
   const [invalidSeqMsg, setInvalidSeqMsg] = useState('')
+  const [dirty, setDirty] = useState(false)
   const mathFieldRef = useRef()
 
   const variableEnabled = get(questionData, 'variable.enabled', false)
@@ -290,7 +287,9 @@ const Variables = ({
   })
 
   const generate = (evt) => {
-    const [examplesValues, invalid] = generateExampleValues(
+    // only make calculate call when variables has been changed
+    if (!dirty) return
+    const [examplesValues, invalid] = generateExamples(
       variables,
       combinationsCount,
       !!evt // when they click generate button
@@ -301,6 +300,7 @@ const Variables = ({
       setInvalidSeqMsg(t('component.options.invalidSeqVariableMsg'))
       return
     }
+    setDirty(false)
     calculateFormula({ examples: examplesValues, variables })
   }
 
@@ -318,7 +318,7 @@ const Variables = ({
     newData.variable.variables[variableName][param] = value
 
     if (newData.variable.variables[variableName].type !== 'FORMULA') {
-      const [newExampleValue] = generateExampleValues(
+      const [newExampleValue] = generateExamples(
         newData.variable.variables,
         combinationsCount
       )
@@ -332,9 +332,12 @@ const Variables = ({
             }
           })
         }
+      } else {
+        newData.variable.variables[variableName].exampleValue = ''
       }
     }
 
+    setDirty(true)
     setQuestionData(newData)
   }
 
@@ -398,6 +401,14 @@ const Variables = ({
 
     newData.variable[param] = value
     setQuestionData(newData)
+    setDirty(true)
+
+    // need to wait to update redux store
+    setTimeout(() => {
+      if (param === 'enabled' && value) {
+        generate()
+      }
+    }, 30)
   }
 
   const handleKeypressMathInput = (e) => {
@@ -416,11 +427,11 @@ const Variables = ({
     }
   }
 
-  useEffect(() => {
-    if (variableEnabled) {
-      generate()
+  const handleKeyUpInput = (e) => {
+    if (e.key === 'Enter' && dirty) {
+      generate(true)
     }
-  }, [variableEnabled])
+  }
 
   return (
     <Question
@@ -529,7 +540,7 @@ const Variables = ({
                         handleChangeVariableList(variableName, 'formula', latex)
                       }
                       onKeyPress={handleKeypressMathInput}
-                      onBlur={generate}
+                      onBlur={() => generate()}
                     />
                   </Col>
                 )}
@@ -545,8 +556,9 @@ const Variables = ({
                           e.target.value
                         )
                       }
-                      onBlur={generate}
                       size="large"
+                      onBlur={() => generate()}
+                      onKeyUp={handleKeyUpInput}
                     />
                   </Col>
                 )}
@@ -562,7 +574,8 @@ const Variables = ({
                           e.target.value
                         )
                       }
-                      onBlur={generate}
+                      onBlur={() => generate()}
+                      onKeyUp={handleKeyUpInput}
                       size="large"
                     />
                   </Col>
@@ -579,7 +592,8 @@ const Variables = ({
                           e.target.value
                         )
                       }
-                      onBlur={generate}
+                      onBlur={() => generate()}
+                      onKeyUp={handleKeyUpInput}
                       size="large"
                     />
                   </Col>
@@ -598,7 +612,8 @@ const Variables = ({
                           e.target.value ? +e.target.value : ''
                         )
                       }
-                      onBlur={generate}
+                      onBlur={() => generate()}
+                      onKeyUp={handleKeyUpInput}
                       size="large"
                     />
                   </Col>
@@ -617,7 +632,8 @@ const Variables = ({
                           e.target.value ? +e.target.value : ''
                         )
                       }
-                      onBlur={generate}
+                      onBlur={() => generate()}
+                      onKeyUp={handleKeyUpInput}
                       size="large"
                     />
                   </Col>
@@ -636,7 +652,8 @@ const Variables = ({
                           e.target.value ? +e.target.value : ''
                         )
                       }
-                      onBlur={generate}
+                      onKeyUp={handleKeyUpInput}
+                      onBlur={() => generate()}
                       size="large"
                     />
                   </Col>
@@ -654,7 +671,8 @@ const Variables = ({
                           e.target.value ? parseInt(e.target.value, 10) : ''
                         )
                       }
-                      onBlur={generate}
+                      onKeyUp={handleKeyUpInput}
+                      onBlur={() => generate()}
                       size="large"
                     />
                   </Col>
@@ -692,6 +710,8 @@ const Variables = ({
                 onChange={(e) =>
                   handleChangeVariable('combinationsCount', +e.target.value)
                 }
+                onBlur={() => generate()}
+                onKeyUp={handleKeyUpInput}
                 size="large"
                 width="70px"
                 style={{ margin: '0px 15px' }}

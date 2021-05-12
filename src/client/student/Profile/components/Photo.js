@@ -62,6 +62,7 @@ class Photo extends React.Component {
   }
 
   render() {
+    const { isProxy } = this.props
     const { height = 250, windowWidth = 250, imageUrl, mode = '' } = this.props
     const uploadButton = (
       <Container height={height} width={windowWidth}>
@@ -86,7 +87,7 @@ class Photo extends React.Component {
 
     return (
       <UploadWrapper height={height}>
-        <Upload {...props}>
+        <Upload {...props} disabled={isProxy}>
           <Container height={height} width={windowWidth}>
             <ImageContainer height={height}>
               {loading ? (

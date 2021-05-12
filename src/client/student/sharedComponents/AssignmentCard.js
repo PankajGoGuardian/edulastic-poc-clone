@@ -79,7 +79,7 @@ const AssignmentCard = memo(
     t,
     type,
     classId,
-    user: { role: userRole, _id: userId },
+    user: { role: userRole, _id: userId, isProxy },
     proxyUserRole,
     highlightMode,
     index,
@@ -282,7 +282,7 @@ const AssignmentCard = memo(
 
     const StartButtonContainer =
       type === 'assignment' ? (
-        !(userRole === 'parent' || isParentRoleProxy) &&
+        !(isProxy || userRole === 'parent' || isParentRoleProxy) &&
         (safeBrowser &&
         !(new Date(startDate) > new Date(serverTimeStamp) || !startDate) &&
         !isSEB() ? (

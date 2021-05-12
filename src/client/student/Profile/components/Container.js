@@ -79,12 +79,13 @@ class ProfileContainer extends React.Component {
     } = this.props
 
     const { t, user } = this.props
+    const { isProxy } = user
     const { showChangePassword } = this.state
     return (
       <MainContentWrapper>
         <ProfileWrapper display="flex" minHeight="max-content">
           <ProfileImgWrapper>
-            <Photo height={224} windowWidth={224} />
+            <Photo isProxy={isProxy} height={224} windowWidth={224} />
           </ProfileImgWrapper>
           <ProfileContentWrapper>
             <TitleName>Welcome {user.firstName}</TitleName>
@@ -130,7 +131,9 @@ class ProfileContainer extends React.Component {
             </div>
             <ChangePasswordToggleButton
               onClick={() => {
-                this.setState({ showChangePassword: !showChangePassword })
+                isProxy
+                  ? null
+                  : this.setState({ showChangePassword: !showChangePassword })
               }}
             >
               <span>CHANGE PASSWORD</span>

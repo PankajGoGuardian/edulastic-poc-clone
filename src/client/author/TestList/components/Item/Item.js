@@ -296,6 +296,7 @@ class Item extends Component {
       setIsUsedModalVisible,
       customTitleModalVisible,
       previouslyUsedPlaylistClone,
+      isTestRecommendation,
     } = this.props
     const showUsedModal =
       isUsedModalVisible &&
@@ -396,6 +397,7 @@ class Item extends Component {
       isPublisherUser,
       isOrganizationDistrictUser,
       isUseThisLoading,
+      isTestRecommendation,
     }
 
     const CardViewComponent = isPlaylist ? PlaylistCard : TestItemCard

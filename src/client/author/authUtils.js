@@ -54,7 +54,7 @@ export async function switchUser(switchToId, personId) {
   }
 }
 
-export async function proxyDemoPlaygroundUser() {
+export async function proxyDemoPlaygroundUser(isAutomation = false) {
   const result = await userApi.getDemoPlaygroundUser()
   if (result.result?._id && result.result?.role) {
     TokenStorage.storeAccessToken(
@@ -62,9 +62,14 @@ export async function proxyDemoPlaygroundUser() {
       result.result._id,
       result.result.role
     )
+    // check if qa environment then open proxy account in same tab
+    let option = '_blank'
+    if (isAutomation && process.env.NODE_ENV !== 'production') {
+      option = '_self'
+    }
     window.open(
       `${window.location.protocol}//${window.location.host}/?userId=${result.result._id}&role=${result.result.role}`,
-      '_blank'
+      option
     )
   } else {
     notification({ messageKey: 'someErrorOccuredDuringProxying' })

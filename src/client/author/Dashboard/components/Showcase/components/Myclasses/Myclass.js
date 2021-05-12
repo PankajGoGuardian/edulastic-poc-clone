@@ -14,6 +14,7 @@ import {
   CustomModalStyled,
 } from '@edulastic/common'
 import { bannerActions } from '@edulastic/constants/const/bannerActions'
+import notification from '@edulastic/common/src/components/Notification'
 import { segmentApi } from '@edulastic/api'
 import configurableTilesApi from '@edulastic/api/src/configurableTiles'
 import BannerSlider from './components/BannerSlider/BannerSlider'
@@ -30,7 +31,10 @@ import { getDictCurriculumsAction } from '../../../../../src/actions/dictionarie
 import { receiveSearchCourseAction } from '../../../../../Courses/ducks'
 import { fetchCleverClassListRequestAction } from '../../../../../ManageClass/ducks'
 import { receiveTeacherDashboardAction } from '../../../../ducks'
-import { getUserDetails } from '../../../../../../student/Login/ducks'
+import {
+  getUserDetails,
+  setUserAction,
+} from '../../../../../../student/Login/ducks'
 import { resetTestFiltersAction } from '../../../../../TestList/ducks'
 import {
   clearPlaylistFiltersAction,
@@ -74,6 +78,7 @@ const MyClasses = ({
   showHeaderTrialModal,
   setShowHeaderTrialModal,
   lastPlayList,
+  setUser,
 }) => {
   const [showBannerModal, setShowBannerModal] = useState(null)
   const [isPurchaseModalVisible, setIsPurchaseModalVisible] = useState(false)
@@ -116,6 +121,23 @@ const MyClasses = ({
       `recommendedTest:${user?._id}:stored`,
       JSON.stringify(data)
     )
+    if (user?.recommendedContentUpdated) {
+      if (data?.length > 0) {
+        notification({
+          msg: 'Recommended content is updated.',
+          type: 'success',
+        })
+      } else {
+        notification({
+          msg:
+            'No recommended content found currently. We will show them when available.',
+          type: 'info',
+        })
+      }
+    }
+    const temp = user
+    temp.recommendedContentUpdated = false
+    setUser(temp)
     setRecommendedTests(data)
   }
 
@@ -587,6 +609,7 @@ export default compose(
       resetPlaylistFilters: clearPlaylistFiltersAction,
       startTrialAction: slice.actions.startTrialAction,
       setShowHeaderTrialModal: slice.actions.setShowHeaderTrialModal,
+      setUser: setUserAction,
     }
   )
 )(MyClasses)

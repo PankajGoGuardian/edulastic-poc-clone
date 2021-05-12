@@ -20,7 +20,14 @@ const TestRecommendationsContainer = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState(false)
 
-  const gridCountInARow = windowWidth > 1600 ? 6 : windowWidth >= 1366 ? 5 : 3
+  const gridCountInARow =
+    windowWidth >= 1800
+      ? 6
+      : windowWidth >= 1500
+      ? 5
+      : windowWidth >= 1200
+      ? 4
+      : 3
   const numberOfRows = isExpanded ? 4 : 1
   const totalNumberOfItemsToShow = gridCountInARow * numberOfRows
 

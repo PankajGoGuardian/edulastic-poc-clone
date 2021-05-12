@@ -265,6 +265,9 @@ class QuestionModal extends React.Component {
       studentResponseLoading,
       isScoringInProgress,
     } = this.props
+    const blurStyles = studentResponseLoading
+      ? { filter: 'blur(8px)', '-webkit-filter': 'blur(8px)' }
+      : {}
     const { rowIndex, colIndex, loaded, editResponse } = this.state
 
     if (colIndex !== null && rowIndex !== null) {
@@ -292,11 +295,17 @@ class QuestionModal extends React.Component {
         {isVisibleModal && question && loaded && (
           <>
             <ScrollContext.Provider
-              value={{ getScrollElement: () => this.containerRef?.current }}
+              value={{
+                getScrollElement: () =>
+                  this.containerRef?.current || document.body,
+              }}
             >
               <QuestionWrapper
                 ref={this.containerRef}
-                style={{ marginBottom: windowWidth > 1024 ? '66px' : '99px' }}
+                style={{
+                  marginBottom: windowWidth > 1024 ? '66px' : '99px',
+                  ...blurStyles,
+                }}
               >
                 <Question
                   record={question}

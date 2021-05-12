@@ -1,30 +1,36 @@
 import React, { useMemo } from 'react'
-import { Button, Popover } from 'antd'
+import { Button, Popover, Tooltip } from 'antd'
 import { NumberInputStyled, FieldLabel } from '@edulastic/common'
 import { IconMoveArrows, IconPencilEdit, IconTrash } from '@edulastic/icons'
 import { PointsInputWrapper, ItemLevelScoringDesc } from './styled'
 
-const EditButton = ({ onEdit }) => {
+const EditButton = ({ onEdit, disabled, disabledReason }) => {
   return (
-    <Button onClick={onEdit} data-cy="editQuestion">
-      <IconPencilEdit width={16} height={16} />
-    </Button>
+    <Tooltip title={disabled && disabledReason}>
+      <Button onClick={onEdit} data-cy="editQuestion" disabled={disabled}>
+        <IconPencilEdit width={16} height={16} />
+      </Button>
+    </Tooltip>
   )
 }
 
-const DeleteButton = ({ onDelete }) => {
+const DeleteButton = ({ onDelete, disabled, disabledReason }) => {
   return (
-    <Button onClick={onDelete} data-cy="deleteQuestion">
-      <IconTrash width={16} height={16} />
-    </Button>
+    <Tooltip title={disabled && disabledReason}>
+      <Button onClick={onDelete} data-cy="deleteQuestion" disabled={disabled}>
+        <IconTrash width={16} height={16} />
+      </Button>
+    </Tooltip>
   )
 }
 
-const MoveButton = () => {
+const MoveButton = ({ disabled, disabledReason }) => {
   return (
-    <Button data-cy="dragHandel">
-      <IconMoveArrows width={16} height={16} />
-    </Button>
+    <Tooltip title={disabled && disabledReason}>
+      <Button data-cy="dragHandel" disabled={disabled}>
+        <IconMoveArrows width={16} height={16} />
+      </Button>
+    </Tooltip>
   )
 }
 

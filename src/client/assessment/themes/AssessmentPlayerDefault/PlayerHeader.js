@@ -3,6 +3,7 @@ import React from 'react'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import qs from 'qs'
+import { keyboard as keyboardConst } from '@edulastic/constants'
 import { Tooltip } from '../../../common/utils/helpers'
 import {
   ControlBtn,
@@ -130,6 +131,18 @@ const PlayerHeader = ({
                           moveToPrev(null, true)
                           e.target.blur()
                         }}
+                        // added separate keydown event handler to restrict calling on blur event for keyboard event
+                        onKeyDown={(e) => {
+                          const code = e.which || e.keyCode
+                          if (code !== keyboardConst.TAB_KEY) e.preventDefault()
+                          if (
+                            [
+                              keyboardConst.ENTER_KEY,
+                              keyboardConst.SPACE_KEY,
+                            ].includes(code)
+                          )
+                            moveToPrev(null, true)
+                        }}
                       />
                     </Tooltip>
                     {!hideSubmitBtn && (
@@ -142,6 +155,18 @@ const PlayerHeader = ({
                         onClick={(e) => {
                           moveToNext()
                           e.target.blur()
+                        }}
+                        // added separate keydown event handler to restrict calling on blur event for keyboard event
+                        onKeyDown={(e) => {
+                          const code = e.which || e.keyCode
+                          if (code !== keyboardConst.TAB_KEY) e.preventDefault()
+                          if (
+                            [
+                              keyboardConst.ENTER_KEY,
+                              keyboardConst.SPACE_KEY,
+                            ].includes(code)
+                          )
+                            moveToNext()
                         }}
                       >
                         {isLast && <IconSend />}

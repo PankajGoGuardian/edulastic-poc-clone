@@ -8,14 +8,26 @@ export const ScratchpadContainer = styled.div`
   /* froalar z-index is 998 */
   /* @see https://snapwiz.atlassian.net/browse/EV-19269 */
   z-index: 999;
+  top: 0px;
+  left: 0px;
   display: ${({ hideData }) => (hideData ? 'none' : 'block')};
 `
+
+const getBorderColor = ({ readOnly, deleteMode }) => {
+  if (readOnly) {
+    return 'transparent'
+  }
+  if (deleteMode) {
+    return darkRed
+  }
+  return greyThemeLight
+}
 
 export const ZwibblerMain = styled.div`
   width: ${({ width }) => (width ? `${width}px` : '100%')};
   height: ${({ height }) => (height ? `${height}px` : '100%')};
-  border: ${({ readOnly, deleteMode }) =>
-    readOnly ? '0px' : `2px dashed ${deleteMode ? darkRed : greyThemeLight}`};
+  border: 2px dashed;
+  border-color: ${getBorderColor};
   background-size: 30px 30px;
 
   &:focus {

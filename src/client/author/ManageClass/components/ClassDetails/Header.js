@@ -186,7 +186,10 @@ const Header = ({
       testType: '',
       termId: '',
     }
-    sessionStorage.setItem('filters[Assignments]', JSON.stringify(filter))
+    sessionStorage.setItem(
+      `assignments_filter_${user._id}`,
+      JSON.stringify(filter)
+    )
     history.push('/author/assignments')
   }
 

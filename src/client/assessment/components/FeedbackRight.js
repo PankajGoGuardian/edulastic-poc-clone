@@ -43,6 +43,7 @@ import {
 import {
   getUserSelector,
   getUserThumbnail,
+  getUserFullNameSelector,
 } from '../../author/src/selectors/user'
 import { getAvatarName } from '../../author/ClassBoard/Transformer'
 import RubricGrading from './RubricGrading'
@@ -124,7 +125,8 @@ class FeedbackRight extends Component {
     }
 
     if (activity && isUndefined(changed)) {
-      let { score: _score, qActId, _id } = activity
+      let { score: _score } = activity
+      const { qActId, _id } = activity
       let { maxScore: _maxScore } = activity
       const _feedback = get(activity, 'feedback.text', '')
       newState = { ...newState, qActId: qActId || _id }
@@ -245,6 +247,7 @@ class FeedbackRight extends Component {
       match,
       userThumbnail,
       itemId,
+      userFullName,
     } = this.props
     const {
       testActivityId,
@@ -259,7 +262,7 @@ class FeedbackRight extends Component {
       body: {
         feedback: {
           teacherId: user.user._id,
-          teacherName: user.user.firstName,
+          teacherName: userFullName,
           text: feedback,
           ...(userThumbnail ? { thumbnail: userThumbnail } : {}),
         },
@@ -281,6 +284,7 @@ class FeedbackRight extends Component {
   }
 
   allowToSubmitScore = (eventType) => {
+    const { changed } = this.state
     /**
      * in case of student did not visit the question, allow teacher trying to grade first time
      * @see EV-25489
@@ -292,7 +296,7 @@ class FeedbackRight extends Component {
     if (isQuestionView) {
       return isEmpty(activity)
     }
-    return activity.isDummy
+    return activity.isDummy && changed
   }
 
   submitScore = (e) => {
@@ -366,6 +370,7 @@ class FeedbackRight extends Component {
   }
 
   render() {
+    const { studentResponseLoading, expressGrader } = this.context
     const {
       studentName,
       widget: { activity },
@@ -421,11 +426,12 @@ class FeedbackRight extends Component {
 
     let _score = adaptiveRound(score || 0)
     if (
-      activity &&
-      activity.graded === false &&
-      (activity.score === 0 || isUndefined(activity.score)) &&
-      !score &&
-      !changed
+      (activity &&
+        activity.graded === false &&
+        (activity.score === 0 || isUndefined(activity.score)) &&
+        !score &&
+        !changed) ||
+      (activity?.isDummy && expressGrader && !changed)
     ) {
       _score = ''
     }
@@ -439,7 +445,6 @@ class FeedbackRight extends Component {
     //   _maxScore = "";
     // }
 
-    const { studentResponseLoading, expressGrader } = this.context
     return (
       <StyledCardTwo
         bordered={isStudentName}
@@ -557,6 +562,7 @@ const enhance = compose(
       classBoardData: state.author_classboard_testActivity?.data,
       allAnswers: state?.answers,
       userThumbnail: getUserThumbnail(state),
+      userFullName: getUserFullNameSelector(state),
     }),
     {
       loadFeedbackResponses: receiveFeedbackResponseAction,

@@ -1498,12 +1498,15 @@ function* useThisPlayListSaga({ payload }) {
   try {
     yield put(setUseThisLoading(true))
     const {
+      _id: playlistId,
       fromUseThis = false,
       customize = false,
       authors = [],
       forceClone = false,
       isStudent,
     } = payload
+
+    const _id = playlistId
 
     const currentUserId = yield select(getUserId)
     const currentUserRole = yield select(getUserRole)
@@ -1520,7 +1523,36 @@ function* useThisPlayListSaga({ payload }) {
       (customize && fromUseThis && !isStudent && !hasPlaylistEditAccess) ||
       forceClone
     ) {
-      yield put(setCustomTitleModalVisibleAction(true))
+      const duplicatedPlaylist = yield call(
+        curriculumSequencesApi.checkExistingDuplicatedForUser,
+        _id
+      )
+
+      // if playlist was cloned previously
+      if (duplicatedPlaylist?.createdBy && !forceClone) {
+        // let the user decide to clone again (or) use the cloned
+        yield put(setCustomTitleModalVisibleAction(false))
+        yield put(
+          setPreviouslyUsedPlaylistClone({
+            _id: duplicatedPlaylist._id,
+            title: duplicatedPlaylist.title,
+            grades: duplicatedPlaylist.grades,
+            subjects: duplicatedPlaylist.subjects,
+            customize: duplicatedPlaylist.customize,
+            authors: duplicatedPlaylist.authors,
+            derivedFrom: duplicatedPlaylist.derivedFrom,
+          })
+        )
+        yield put(setIsUsedModalVisibleAction(true))
+      } else {
+        yield put(setIsUsedModalVisibleAction(false))
+        yield put(setCustomTitleModalVisibleAction(true))
+        yield put(
+          setPreviouslyUsedPlaylistClone({
+            _id,
+          })
+        )
+      }
     } else {
       yield put(cloneThisPlayListAction(payload))
     }
@@ -1585,7 +1617,7 @@ function* cloneThisPlayListSaga({ payload }) {
       if (duplicatedPlaylist.previouslyCloned) {
         // let the user decide to clone again (or) use the cloned
         yield put(setCustomTitleModalVisibleAction(false))
-        yield put(setIsUsedModalVisibleAction(true))
+        yield put(setIsUsedModalVisibleAction(false))
         yield put(
           setPreviouslyUsedPlaylistClone({
             _id: duplicatedPlaylist._id,
@@ -3114,9 +3146,11 @@ export default createReducer(initialState, {
     if (payload?.id) {
       state.playlistTestDetailsModal.isVisible = true
       state.playlistTestDetailsModal.currentTestId = payload.id
+      state.playlistTestDetailsModal.requestLatest = payload.requestLatest
     } else {
       state.playlistTestDetailsModal.isVisible = false
       state.playlistTestDetailsModal.currentTestId = null
+      state.playlistTestDetailsModal.requestLatest = undefined
     }
   },
   [RESET_DESTINATION]: (state, { payload }) => {

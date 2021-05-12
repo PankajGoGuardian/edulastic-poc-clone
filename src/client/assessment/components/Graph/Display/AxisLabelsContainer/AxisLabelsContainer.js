@@ -153,13 +153,13 @@ class AxisLabelsContainer extends PureComponent {
       })
     )
     const maxContentWidth = Math.min(
-      maxBy(responseDimensions, (dimension) => dimension.width).width,
+      maxBy(responseDimensions, (dimension) => dimension?.width)?.width,
       maxWidth
     )
 
     const maxContentHeight = Math.min(
-      maxBy(responseDimensions, (dimension) => dimension.scrollHeight)
-        .scrollHeight,
+      maxBy(responseDimensions, (dimension) => dimension?.scrollHeight)
+        ?.scrollHeight,
       maxHeight
     )
 

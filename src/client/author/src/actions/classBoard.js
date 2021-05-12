@@ -47,6 +47,7 @@ import {
   CORRECT_ITEM_UPDATE_REQUEST,
   RELOAD_LCB_DATA_IN_STUDENT_VIEW,
   REPLACE_ORIGINAL_ITEM,
+  SET_CORRECT_ITEM_UPDATE_PROGRESS,
 } from '../constants/actions'
 
 export const receiveClassResponseAction = (data) => ({
@@ -282,3 +283,7 @@ export const reloadLcbDataInStudentViewAction = createAction(
 )
 
 export const replaceOriginalItemAction = createAction(REPLACE_ORIGINAL_ITEM)
+
+export const correctItemUpdateProgressAction = createAction(
+  SET_CORRECT_ITEM_UPDATE_PROGRESS
+)

@@ -259,7 +259,9 @@ class ModuleRow extends Component {
           throw new Error('Failed to fetch latest test id!')
         }
       } catch (e) {
-        notification({ msg: 'Failed to load test!' })
+        if (e?.response?.status !== 404) {
+          notification({ msg: 'Failed to load test!' })
+        }
         console.warn(e)
       }
     }
@@ -620,10 +622,9 @@ class ModuleRow extends Component {
     const { _id, data = [] } = module
     const isParentRoleProxy = proxyUserRole === 'parent'
 
-    const contentData =
-      urlHasUseThis || isStudent
-        ? data.filter((test) => test?.status !== 'draft')
-        : data
+    const contentData = isStudent
+      ? data.filter((test) => test?.status !== 'draft')
+      : data
 
     const menu = (
       <Menu data-cy="addContentMenu">
@@ -702,6 +703,7 @@ class ModuleRow extends Component {
                     contentId,
                     contentType,
                     hidden,
+                    status: testStatus,
                   } = moduleData
                   const isTestType = contentType === 'test'
                   const statusList = assignments
@@ -782,19 +784,20 @@ class ModuleRow extends Component {
                   const moreMenu = (
                     <MenuStyled data-cy="assessmentItemMoreMenu">
                       <CaretUp className="fa fa-caret-up" />
-                      {!isStudent && (
-                        <Menu.Item
-                          onClick={() =>
-                            assignTest(
-                              _id,
-                              moduleData.contentId,
-                              moduleData.contentVersionId
-                            )
-                          }
-                        >
-                          Assign Test
-                        </Menu.Item>
-                      )}
+                      {!isStudent &&
+                        (testStatus === 'published' || isAssigned) && (
+                          <Menu.Item
+                            onClick={() =>
+                              assignTest(
+                                _id,
+                                moduleData.contentId,
+                                moduleData.contentVersionId
+                              )
+                            }
+                          >
+                            Assign Test
+                          </Menu.Item>
+                        )}
                       {!isStudent && isAssigned && (
                         <Menu.Item
                           onClick={() =>
@@ -810,10 +813,13 @@ class ModuleRow extends Component {
                         <Menu.Item
                           data-cy="view-test"
                           onClick={() => {
+                            const testIdFromAssignments =
+                              moduleData?.assignments?.[0]?.testId
+                            const testId =
+                              testIdFromAssignments || moduleData.contentId
                             this.viewTest(
-                              moduleData.contentId,
-                              moduleData?.contentVersionId !==
-                                moduleData?.contentId
+                              testId,
+                              moduleData?.contentVersionId !== testId
                             )
                           }}
                         >
@@ -938,6 +944,11 @@ class ModuleRow extends Component {
                                 <AssignmentButton assigned={isAssigned}>
                                   <Button
                                     data-cy="assignButton"
+                                    title={
+                                      testStatus === 'draft' &&
+                                      'Publish the test to assign'
+                                    }
+                                    disabled={testStatus === 'draft'}
                                     onClick={() =>
                                       assignTest(
                                         _id,
@@ -1034,13 +1045,16 @@ class ModuleRow extends Component {
                     >
                       <AssignmentButton>
                         <Button
-                          onClick={() =>
+                          onClick={() => {
+                            const testIdFromAssignments =
+                              moduleData?.assignments?.[0]?.testId
+                            const testId =
+                              testIdFromAssignments || moduleData.contentId
                             this.viewTest(
-                              moduleData?.contentVersionId,
-                              moduleData?.contentVersionId !==
-                                moduleData?.contentId
+                              testId,
+                              moduleData?.contentVersionId !== testId
                             )
-                          }
+                          }}
                         >
                           <IconVisualization width="14px" height="14px" />
                           Preview
@@ -1254,7 +1268,11 @@ class ModuleRow extends Component {
                                       onClick={() =>
                                         !isStudent &&
                                         togglePlaylistTestDetails({
-                                          id: moduleData?.contentId,
+                                          id: moduleData?.assignments?.length
+                                            ? moduleData?.assignments?.[0]
+                                                ?.testId
+                                            : moduleData?.contentId,
+                                          requestLatest: testStatus !== 'draft',
                                         })
                                       }
                                     >

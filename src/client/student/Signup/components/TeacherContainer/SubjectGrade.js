@@ -51,11 +51,16 @@ class SubjectGrade extends React.Component {
     this.subjectRef = createRef()
     this.standardRef = createRef()
     this.standardsRef = createRef()
-    const { defaultGrades, defaultSubjects } = get(props.user, 'user.orgData')
+    const { defaultGrades, defaultSubjects, interestedCurriculums } = get(
+      props.user,
+      'user.orgData'
+    )
 
     this.state = {
       subjects: defaultSubjects || [],
       grades: defaultGrades || [],
+      standards: (interestedCurriculums || []).map((x) => x._id),
+      curriculumStandard: [],
       showStandardsModal: false,
     }
   }
@@ -86,7 +91,26 @@ class SubjectGrade extends React.Component {
   }
 
   componentDidMount() {
-    const { curriculums, getCurriculums } = this.props
+    const {
+      curriculums,
+      getCurriculums,
+      user = {},
+      getDictStandardsForCurriculum,
+    } = this.props
+    const { standards } = this.state
+    const { currentStandardSetStandards } = user?.user || {}
+    const curriculumIds = Object.keys(currentStandardSetStandards || {})
+    if (curriculumIds.length) {
+      const { defaultGrades = [] } = get(this.props.user, 'user.orgData')
+      getDictStandardsForCurriculum(curriculumIds, defaultGrades, '')
+
+      const curriculumStandard = curriculumIds.flatMap((cid) =>
+        standards.includes(parseInt(cid, 10))
+          ? currentStandardSetStandards[cid]
+          : []
+      )
+      this.setState({ curriculumStandard })
+    }
 
     if (isEmpty(curriculums)) {
       getCurriculums()
@@ -187,7 +211,13 @@ class SubjectGrade extends React.Component {
   }
 
   render() {
-    const { grades, subjects, showStandardsModal } = this.state
+    const {
+      grades,
+      subjects,
+      standards,
+      curriculumStandard,
+      showStandardsModal,
+    } = this.state
     const {
       interestedCurriculums,
       curriculums,
@@ -236,8 +266,8 @@ class SubjectGrade extends React.Component {
               <BannerText xs={24} sm={18} md={12}>
                 <SchoolIcon src={schoolIcon} alt="" />
                 <h3>
-                  {t('component.signup.teacher.choosesubject')} <br />{' '}
-                  {t('component.signup.teacher.choosegrade')}
+                  {t('component.signup.teacher.provide')} <br />{' '}
+                  {t('component.signup.teacher.curriculumdetails')}
                 </h3>
                 <h5>{t('component.signup.teacher.gsinfotext')}</h5>
               </BannerText>
@@ -316,6 +346,11 @@ class SubjectGrade extends React.Component {
                   </Form.Item>
                   <Form.Item label="Standard Sets">
                     {getFieldDecorator('standard', {
+                      initialValue: formattedCurriculums?.some((x) =>
+                        standards.includes(x.value)
+                      )
+                        ? standards
+                        : [],
                       rules: [
                         {
                           required: false,
@@ -354,14 +389,11 @@ class SubjectGrade extends React.Component {
                     )}
                   </Form.Item>
 
-                  <Form.Item
-                    label="What are you teaching right now? (optional)"
-                    shouldUpdate={(prevValues, curValues) =>
-                      console.log({ prevValues, curValues }) ||
-                      prevValues !== curValues
-                    }
-                  >
+                  <Form.Item label="What are you teaching right now? (optional)">
                     {getFieldDecorator('curriculumStandards', {
+                      initialValue: curriculumStandards?.elo?.length
+                        ? curriculumStandard
+                        : [],
                       rules: [
                         {
                           required: false,

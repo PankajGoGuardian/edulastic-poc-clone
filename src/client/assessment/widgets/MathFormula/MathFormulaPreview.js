@@ -29,7 +29,9 @@ import { QuestionTitleWrapper } from './styled/QustionNumber'
 
 import { getStylesFromUiStyleToCssStyle } from '../../utils/helpers'
 import Instructions from '../../components/Instructions'
+
 import CheckAnswerBox from './components/CheckAnswerBox'
+
 
 class MathFormulaPreview extends Component {
   static propTypes = {

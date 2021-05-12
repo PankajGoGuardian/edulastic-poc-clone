@@ -143,7 +143,7 @@ const PerformanceAnalysisTable = ({
   isCsvDownloading,
 }) => {
   const { scaleInfo, skillInfo } = report
-  const [tableData, totalPoints] = getAnalyzedTableData(
+  const [tableData, aggSummaryStats] = getAnalyzedTableData(
     report,
     viewBy,
     compareBy
@@ -195,19 +195,17 @@ const PerformanceAnalysisTable = ({
 
   const makeStandardColumn = (skill) => {
     const columnConfig = standardColumnsData.getColumnConfig(skill)
-    const averagePoints = totalPoints[columnConfig.key] || 0
-    const columnRecords = tableData.map(
-      (item) => item.standardMetrics[columnConfig.key]
-    )
-    const overallColumnValue = analyzeByConfig.getOverall(columnRecords)
+    const aggSummaryStat = aggSummaryStats[columnConfig.key] || {}
+    const totalPoints = aggSummaryStat.totalMaxScore || 0
+    const aggColumnValue = aggSummaryStat[analyzeByConfig.field] || ''
     return {
       title: (
         <p>
           {columnConfig.title}
           <br />
-          Points - {parseFloat(averagePoints.toFixed(2))}
+          Points - {parseFloat(totalPoints.toFixed(2))}
           <br />
-          {overallColumnValue}
+          {formatScore(aggColumnValue, analyzeBy)}
         </p>
       ),
       dataIndex: 'standardMetrics',
@@ -253,11 +251,9 @@ const PerformanceAnalysisTable = ({
                   value={columnConfig.title}
                 />
                 <TableTooltipRow
-                  title={`
-                    Avg.Score${
-                      analyzeBy === analyzeByMode.RAW_SCORE ? '' : '(%)'
-                    } :
-                  `}
+                  title={`Avg. Score ${
+                    analyzeBy === analyzeByMode.RAW_SCORE ? '' : '(%)'
+                  } : `}
                   value={
                     analyzeBy === analyzeByMode.RAW_SCORE
                       ? formatScore(standard.rawScore, analyzeByMode.RAW_SCORE)
@@ -290,8 +286,12 @@ const PerformanceAnalysisTable = ({
   }
 
   const getTableColumns = () => {
+    /**
+     * compareByColumn is destructured to create a new object everytime
+     * so that change detection can detect and return correct fixed columns
+     */
     const _columns = [
-      compareByColumns[compareBy],
+      { ...compareByColumns[compareBy] },
       makeOverallColumn(standardColumnsData, analyzeByConfig),
       ...makeStandardColumns(),
     ]

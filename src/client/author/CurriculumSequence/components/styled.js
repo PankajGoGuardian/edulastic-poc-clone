@@ -127,7 +127,8 @@ export const StyledProgressBar = styled(ProgressBar)`
 export const IconActionButton = styled.div`
   width: 22px;
   height: 22px;
-  right: 4px;
+  right: ${({ right }) => right || '4px'};
+  margin-left: ${({ ml }) => ml};
   z-index: 50;
   display: flex;
   justify-content: center;
@@ -136,7 +137,8 @@ export const IconActionButton = styled.div`
 
   @media (min-width: ${smallDesktopWidth}) {
     position: relative;
-    right: 0px;
+    right: ${({ right }) => right || '0px'};
+    margin-left: ${({ ml }) => ml};
   }
 `
 

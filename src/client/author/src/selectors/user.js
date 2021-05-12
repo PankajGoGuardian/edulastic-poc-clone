@@ -35,6 +35,14 @@ export const getUserNameSelector = createSelector(stateSelector, (state) =>
     : 'Anonymous'
 )
 
+export const getUserFullNameSelector = createSelector(
+  stateSelector,
+  (state) => {
+    const { firstName = '', middleName = '', lastName = '' } = state.user
+    return [firstName, middleName, lastName].filter((x) => !!x).join(' ')
+  }
+)
+
 export const getOrgDataSelector = createSelector(
   stateSelector,
   (state) => state?.user?.orgData || {}

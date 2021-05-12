@@ -11,11 +11,8 @@ import { NoDataContainer } from '../../../common/styled'
 import { getCsvDownloadingState } from '../../../ducks'
 import TrendStats from '../common/components/trend/TrendStats'
 import TrendTable from '../common/components/trend/TrendTable'
-import {
-  compareByMap,
-  getCompareByOptions,
-  parseTrendData,
-} from '../common/utils/trend'
+import { compareByMap, getCompareByOptions } from '../common/utils/trend'
+import { useGetBandData } from '../StudentProgress/hooks'
 import Filters from './components/table/Filters'
 import {
   getPeerProgressAnalysisRequestAction,
@@ -28,6 +25,24 @@ import {
 import dropDownData from './static/json/dropDownData.json'
 
 // -----|-----|-----|-----|-----| COMPONENT BEGIN |-----|-----|-----|-----|----- //
+
+const DefaultBandInfo = [
+  {
+    threshold: 70,
+    aboveStandard: 1,
+    name: 'Proficient',
+  },
+  {
+    threshold: 50,
+    aboveStandard: 1,
+    name: 'Basic',
+  },
+  {
+    threshold: 0,
+    aboveStandard: 0,
+    name: 'Below Basic',
+  },
+]
 
 const options = [
   {
@@ -68,10 +83,17 @@ const PeerProgressAnalysis = ({
   role,
   sharedReport,
   toggleFilter,
+  MARFilterData,
 }) => {
-  const userRole = useMemo(() => sharedReport?.sharedBy?.role || role, [
-    sharedReport,
-  ])
+  const [userRole, sharedReportFilters] = useMemo(
+    () => [
+      sharedReport?.sharedBy?.role || role,
+      sharedReport?._id
+        ? { ...sharedReport.filters, reportId: sharedReport._id }
+        : null,
+    ],
+    [sharedReport]
+  )
   const compareByData = [...getCompareByOptions(userRole), ...options]
   const [analyseBy, setAnalyseBy] = useState(head(dropDownData.analyseByData))
   const [compareBy, setCompareBy] = useState(head(compareByData))
@@ -81,6 +103,17 @@ const PeerProgressAnalysis = ({
     page: 0, // set to 0 initially to prevent multiple api request on tab change
     pageSize: 25,
   })
+
+  const profiles = get(MARFilterData, 'data.result.bandInfo', [])
+
+  const bandInfo =
+    profiles.find(
+      (profile) =>
+        profile._id ===
+        (sharedReportFilters || settings.requestFilters).profileId
+    )?.performanceBand ||
+    profiles[0]?.performanceBand ||
+    DefaultBandInfo
 
   useEffect(() => () => resetPeerProgressAnalysis(), [])
 
@@ -137,9 +170,12 @@ const PeerProgressAnalysis = ({
     }
   }, [peerProgressAnalysis])
 
-  const [parsedData, trendCount] = useMemo(
-    () => parseTrendData(metricInfo, compareBy.key, metaInfo, selectedTrend),
-    [metricInfo, compareBy.key, metaInfo, selectedTrend]
+  const [parsedData, trendCount] = useGetBandData(
+    metricInfo,
+    compareBy.key,
+    metaInfo,
+    selectedTrend,
+    bandInfo
   )
 
   const onTrendSelect = (trend) =>

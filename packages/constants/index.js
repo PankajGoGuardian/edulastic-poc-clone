@@ -45,6 +45,7 @@ const assignmentSettingSections = require('./const/assignmentSettingSections')
 const graph = require('./const/graph')
 const questionActivity = require('./const/questionActivity')
 const curriculumGrades = require('./const/curriculumGrades')
+const keyboard = require('./const/keyboard')
 
 // helpers / utils / transformers
 const reportUtils = require('./reportUtils')
@@ -98,4 +99,5 @@ module.exports = {
   questionActivity,
   curriculumGrades,
   reportUtils,
+  keyboard,
 }

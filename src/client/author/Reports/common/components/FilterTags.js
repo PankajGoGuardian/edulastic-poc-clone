@@ -8,6 +8,7 @@ const FilterTags = ({
   tagsData = {},
   tagTypes = [],
   handleCloseTag,
+  handleTagClick,
 }) => {
   const containerRef = useRef(null)
 
@@ -33,6 +34,7 @@ const FilterTags = ({
     const tag = (
       <StyledPopupTag
         closable={closableTypes.includes(type)}
+        onClick={() => handleTagClick(type)}
         onClose={(e) => handleOnClose(e, type, data)}
       >
         <Tooltip title={_title} placement="topLeft">

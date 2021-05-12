@@ -1279,15 +1279,17 @@ export function* updateItemSaga({ payload }) {
     }
     const { redirect = true } = payload // added for doc based assesment, where redirection is not required.
     if (redirect && item._id !== payload.id) {
-      const { isTestFlow, previousTestId } = yield select((state) =>
-        get(state, 'router.location.state', {})
-      )
+      const {
+        isTestFlow,
+        previousTestId,
+        regradeFlow,
+      } = yield select((state) => get(state, 'router.location.state', {}))
       yield put(
         replace(
           payload.testId
             ? `/author/tests/${payload.testId}/editItem/${item._id}`
             : `/author/items/${item._id}/item-detail`,
-          { isTestFlow, previousTestId }
+          { isTestFlow, previousTestId, regradeFlow }
         )
       )
     }

@@ -5,6 +5,7 @@ import { createReducer, createAction } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
 import { test as testContants, roleuser } from '@edulastic/constants'
 import { assignmentApi, testsApi } from '@edulastic/api'
+import * as Sentry from '@sentry/browser'
 import {
   all,
   call,
@@ -289,6 +290,15 @@ function* saveAssignment({ payload }) {
       assignmentSettings.passwordPolicy =
         passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF
       assignmentSettings.timedAssignment = false
+    }
+    // Missing termId notify
+    if (!assignmentSettings.termId) {
+      Sentry.captureException(
+        new Error('[Assignments] missing termId in assigned assignment.')
+      )
+      Sentry.withScope((scope) => {
+        scope.setExtra('assignmentPayload', { ...assignmentSettings, userId })
+      })
     }
     const data = testIds.map(({ testId, testVersionId }) =>
       omit(

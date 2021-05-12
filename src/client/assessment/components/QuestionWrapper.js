@@ -18,7 +18,6 @@ import {
   FieldLabel,
   FlexContainer,
 } from '@edulastic/common'
-import { PaperWrapper } from './Graph/common/styled_components'
 import { themes } from '../../theme'
 import QuestionMenu, { AdvancedOptionsLink } from './QuestionMenu'
 
@@ -82,6 +81,7 @@ import {
   languagePreferenceSelector,
   getCurrentLanguage,
 } from '../../common/components/LanguageSelector/duck'
+import { StyledPaperWrapper } from '../styled/Widget'
 
 const DummyQuestion = () => <></>
 
@@ -489,7 +489,6 @@ class QuestionWrapper extends Component {
           )}
           <div
             className="__print-question-main-wrapper"
-            id="question-main-wrapper"
             style={{ height: !isStudentReport && '100%' }}
           >
             <QuestionContainer
@@ -524,6 +523,7 @@ class QuestionWrapper extends Component {
                 isV1Multipart={isV1Multipart}
                 isStudentReport={isStudentReport}
                 isLCBView={isLCBView}
+                LCBPreviewModal={LCBPreviewModal}
                 borderRadius={isLCBView ? '10px' : borderRadius}
                 style={{
                   width:
@@ -877,4 +877,38 @@ export const EvaluationMessage = styled.div`
   color: rgb(250, 135, 52);
   width: 100%;
   text-align: center;
+`
+
+const getPadding = ({
+  flowLayout,
+  isV1Multipart,
+  isStudentReport,
+  isLCBView,
+}) => {
+  // use the same padding for top, bottom, and left in everywhere,
+  // so we wil render scratchpad data in the same position
+  if (flowLayout) {
+    return '8px 0px'
+  }
+  if (isV1Multipart) {
+    return '8px 35px'
+  }
+  if (isStudentReport) {
+    return '8px 100px 8px 16px'
+  }
+  if (isLCBView) {
+    return '8px 28px 8px'
+  }
+  return '8px 16px'
+}
+
+export const PaperWrapper = styled(StyledPaperWrapper)`
+  padding: ${getPadding};
+  min-width: ${({ style }) => style.minWidth};
+  ${({ style }) => style};
+
+  @media (max-width: ${mobileWidthMax}) {
+    padding: ${({ flowLayout }) => (flowLayout ? '0px' : '8px')};
+    margin-bottom: 15px;
+  }
 `

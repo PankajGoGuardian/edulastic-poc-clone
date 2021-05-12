@@ -17,7 +17,7 @@ import {
   NoDataContainer,
 } from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
-import { getCsvDownloadingState, getTestListSelector } from '../../../ducks'
+import { getCsvDownloadingState } from '../../../ducks'
 import {
   getSAFFilterPerformanceBandProfiles,
   setPerformanceBandProfileAction,
@@ -48,7 +48,6 @@ const PeerPerformance = ({
   getPeerPerformance,
   resetPeerPerformance,
   settings,
-  testList,
   filters,
   sharedReport,
   setPerformanceBandProfile,
@@ -66,21 +65,19 @@ const PeerPerformance = ({
   const peerPerformance = useMemo(() => {
     const peerPerf = { ..._peerPerformance }
     if (peerPerf.metricInfo) {
-      peerPerf.metricInfo = _peerPerformance.metricInfo?.map(mi => ({
+      peerPerf.metricInfo = _peerPerformance.metricInfo?.map((mi) => ({
         ...mi,
         extAttributes: JSON.parse(mi.extAttributes || '{}'),
-        ...JSON.parse(mi.extAttributes || '{}')
+        ...JSON.parse(mi.extAttributes || '{}'),
       }))
     }
     return peerPerf
   }, [_peerPerformance])
-
-  const selectedTest = testList.find(
-    (t) => t._id === settings.selectedTest.key
-  ) || { _id: '', title: '' }
   const assessmentName = `${
-    selectedTest.title
-  } (ID:${selectedTest._id.substring(selectedTest._id.length - 5)})`
+    settings.selectedTest.title
+  } (ID:${settings.selectedTest.key.substring(
+    settings.selectedTest.key.length - 5
+  )})`
 
   const bandInfo = useMemo(
     () =>
@@ -145,12 +142,12 @@ const PeerPerformance = ({
       }
       const _extAttributes = uniq(
         peerPerformance.metricInfo
-          ?.map(mi => Object.keys(mi.extAttributes || {}))
+          ?.map((mi) => Object.keys(mi.extAttributes || {}))
           .flat()
           .sort()
       ).map((eA) => ({
         key: eA,
-        title: idToName(eA)
+        title: idToName(eA),
       }))
       tempCompareBy.push(..._extAttributes)
     }
@@ -338,7 +335,6 @@ const enhance = compose(
       role: getUserRole(state),
       performanceBandProfiles: getSAFFilterPerformanceBandProfiles(state),
       peerPerformance: getReportsPeerPerformance(state),
-      testList: getTestListSelector(state),
     }),
     {
       getPeerPerformance: getPeerPerformanceRequestAction,

@@ -13,6 +13,7 @@ import produce from 'immer'
 import { markQuestionLabel } from '../../assessment/Transformer'
 import { changeDataToPreferredLanguage } from '../../assessment/utils/question'
 import { getCurrentLanguage } from '../../common/components/LanguageSelector/duck'
+import { locationSelector } from '../../assessment/selectors/routes'
 
 // actions types
 export const LOAD_QUESTIONS = '[author questions] load questions'
@@ -364,4 +365,22 @@ export const getQuestionAlignmentSelector = createSelector(
 export const getAuthorQuestionStatus = createSelector(
   getAuthorQuestionSelector,
   (state) => state.updated
+)
+
+export const getIsEditDisbledSelector = createSelector(
+  getQuestionsSelector,
+  locationSelector,
+  (questionsById, location) => {
+    const hasDynamicValues = Object.values(questionsById)?.some((q) =>
+      get(q, 'variable.enabled', false)
+    )
+    const regradeFlow = get(location, 'state.regradeFlow', false)
+    if (hasDynamicValues && regradeFlow) {
+      return [
+        true,
+        'Dynamic Parameter questions have their random values generated when the test is assigned, and they cannot be changed. You will have to grade these questions manually',
+      ]
+    }
+    return [false, '']
+  }
 )

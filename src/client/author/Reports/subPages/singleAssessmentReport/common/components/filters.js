@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { get, isEmpty, pickBy } from 'lodash'
@@ -100,7 +100,6 @@ const SingleAssessmentReportFilters = ({
   const [activeTabKey, setActiveTabKey] = useState(
     staticDropDownData.filterSections.TEST_FILTERS.key
   )
-  const assessmentTypeRef = useRef()
 
   const tagTypes = staticDropDownData.tagTypes.filter(
     (t) =>
@@ -287,6 +286,7 @@ const SingleAssessmentReportFilters = ({
         groupIds: search.groupIds || '',
         standardsProficiencyProfile: urlStandardProficiency?.key || '',
         performanceBandProfile: urlPerformanceBand?.key || '',
+        assignedBy: search.assignedBy || staticDropDownData.assignedBy[0].key,
       }
       if (role === 'teacher') {
         delete _filters.schoolIds
@@ -304,6 +304,7 @@ const SingleAssessmentReportFilters = ({
         subjects: urlSubjects,
         standardsProficiencyProfile: urlStandardProficiency,
         performanceBandProfile: urlPerformanceBand,
+        assignedBy: search.assignedBy || staticDropDownData.assignedBy[0],
       }
       // set tempTagsData, filters and testId
       setTempTagsData(_tempTagsData)
@@ -314,10 +315,22 @@ const SingleAssessmentReportFilters = ({
   }
 
   const onGoClick = () => {
+    // testList cannot be empty when onGoClick is clicked
+    const _testList = testList.map(({ _id, title }) => ({ key: _id, title }))
+    const _selectedTest =
+      _testList.find((t) => t.key === testId) || _testList[0]
+    const _tempTagsData = { ...tempTagsData, testId: _selectedTest }
+
+    // update selectedTest & tempTagsData if testId not present in testList
+    if (_selectedTest.key !== testId) {
+      setTempTagsData(_tempTagsData)
+      setFiltersOrTestId({ testId: _selectedTest.key })
+    }
+
     const settings = {
       filters: { ...filters },
-      selectedTest: { key: testId },
-      tagsData: { ...tempTagsData },
+      selectedTest: { ..._selectedTest },
+      tagsData: { ..._tempTagsData },
     }
     setShowApply(false)
     _onGoClick(settings)
@@ -343,7 +356,7 @@ const SingleAssessmentReportFilters = ({
     ) {
       _onGoClick({
         filters: { ...filters },
-        selectedTest: { key: _testId },
+        selectedTest: { ...selected },
         tagsData: { ..._tempTagsData },
       })
     } else if (!reportId && !isCliUser) {
@@ -408,6 +421,16 @@ const SingleAssessmentReportFilters = ({
     toggleFilter(null, true)
   }
 
+  const handleTagClick = (filterKey) => {
+    const tabKey =
+      staticDropDownData.tagTypes.find((filter) => filter.key === filterKey)
+        ?.tabKey || -1
+    if (tabKey !== -1) {
+      toggleFilter(null, true)
+      setActiveTabKey(tabKey)
+    }
+  }
+
   return (
     <>
       <FilterTags
@@ -416,6 +439,7 @@ const SingleAssessmentReportFilters = ({
         tagsData={tagsData}
         tagTypes={tagTypes}
         handleCloseTag={handleCloseTag}
+        handleTagClick={handleTagClick}
       />
       <ReportFiltersContainer visible={!reportId && !isCliUser}>
         <StyledEduButton
@@ -502,7 +526,6 @@ const SingleAssessmentReportFilters = ({
                         <MultiSelectDropdown
                           dataCy="testTypes"
                           label="Test Type"
-                          el={assessmentTypeRef}
                           onChange={(e) => {
                             const selected = staticDropDownData.assessmentType.filter(
                               (a) => e.includes(a.key)
@@ -551,6 +574,7 @@ const SingleAssessmentReportFilters = ({
                               testId || getTestIdFromURL(location.pathname)
                             }
                             selectCB={updateTestId}
+                            showApply={showApply}
                           />
                         </Col>
                       )}
@@ -561,6 +585,20 @@ const SingleAssessmentReportFilters = ({
                     tab={staticDropDownData.filterSections.CLASS_FILTERS.title}
                   >
                     <Row type="flex" gutter={[5, 10]}>
+                      <Col span={6}>
+                        <FilterLabel data-cy="assignedBy">
+                          Assigned By
+                        </FilterLabel>
+                        <ControlDropDown
+                          by={filters.assignedBy}
+                          selectCB={(e, selected) =>
+                            updateFilterDropdownCB(selected, 'assignedBy')
+                          }
+                          data={staticDropDownData.assignedBy}
+                          prefix="Assigned By"
+                          showPrefixOnSelected={false}
+                        />
+                      </Col>
                       {role !== 'teacher' && (
                         <>
                           <Col span={6}>

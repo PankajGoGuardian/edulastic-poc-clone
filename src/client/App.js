@@ -298,6 +298,20 @@ class App extends Component {
       const path = getWordsInURLPathName(location.pathname)
       const urlSearch = new URLSearchParams(location.search)
       if (user && user.isAuthenticated) {
+        // copy old assignments filter if user is not demo playground user
+        if (!isDemoAccountProxy) {
+          const oldAssignmentFilter = sessionStorage.getItem(
+            'filters[Assignments]'
+          )
+          if (!isEmpty(oldAssignmentFilter)) {
+            sessionStorage.setItem(
+              `assignments_filter_${user.user._id}`,
+              oldAssignmentFilter
+            )
+            // remove old filter key from session storage
+            sessionStorage.removeItem('filters[Assignments]')
+          }
+        }
         // Clear referrer once userId available
         if (
           user &&

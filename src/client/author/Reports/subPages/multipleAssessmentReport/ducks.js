@@ -47,6 +47,7 @@ const initialState = {
     courseId: '',
     classIds: '',
     groupIds: '',
+    assignedBy: 'anyone',
   },
   tagsData: {},
 }

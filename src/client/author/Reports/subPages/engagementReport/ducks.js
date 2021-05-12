@@ -40,6 +40,7 @@ const initialState = {
     grade: '',
     subject: '',
     assessmentTypes: '',
+    assignedBy: 'anyone',
   },
   tagsData: {},
 }

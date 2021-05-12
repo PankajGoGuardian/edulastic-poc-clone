@@ -189,6 +189,7 @@ const MultipleAssessmentReportContainer = (props) => {
 
   const performanceBandRequired = [
     'performance-over-time',
+    'peer-progress-analysis',
     'student-progress',
   ].includes(pageTitle)
 
@@ -271,6 +272,7 @@ const MultipleAssessmentReportContainer = (props) => {
                 {..._props}
                 settings={settings}
                 ddfilter={ddfilter}
+                MARFilterData={MARFilterData}
                 sharedReport={sharedReport}
                 toggleFilter={toggleFilter}
               />

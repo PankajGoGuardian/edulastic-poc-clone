@@ -33,6 +33,7 @@ const ReportsNotificationListener = ({
 }) => {
   const [notificationIds, setNotificationIds] = useState([])
   const [isNotificationVisible, setIsNotificationVisible] = useState(false)
+  const [isNotificationClicked, setIsNotificationClicked] = useState(false)
 
   const userNotifications = Fbs.useFirestoreRealtimeDocuments(
     (db) =>
@@ -41,6 +42,15 @@ const ReportsNotificationListener = ({
         .where('userId', '==', `${user?._id}`),
     [user?._id]
   )
+
+  const updateNotificationDocuments = (docs = [], updateData = {}) => {
+    const batch = Fbs.db.batch()
+    docs.forEach((d) => {
+      const ref = Fbs.db.collection(reportCSVCollectionName).doc(d.__id)
+      batch.update(ref, updateData)
+    })
+    batch.commit().catch((err) => console.error(err))
+  }
 
   const deleteNotificationDocument = (docId) => {
     Fbs.db
@@ -53,8 +63,13 @@ const ReportsNotificationListener = ({
   const showUserNotifications = (docs) => {
     let notificationProps = null
     uniqBy(docs, '__id').forEach((doc) => {
-      const { status, processStatus, message, statusCode } = doc
-      if (
+      const { status, processStatus, message, statusCode, modifiedAt } = doc
+      const daysDiff = (Date.now() - modifiedAt) / (24 * 60 * 60 * 1000)
+      if (daysDiff > 15) {
+        // delete documents older than 15 days
+        // this serves as fallback, timed deletion is handled in db rules
+        deleteNotificationDocument(doc.__id)
+      } else if (
         status === 'initiated' &&
         processStatus === 'done' &&
         !notificationIds.includes(doc.__id)
@@ -66,7 +81,10 @@ const ReportsNotificationListener = ({
               {message}
               <span
                 style={{ color: themeColor, cursor: 'pointer' }}
-                onClick={() => setVisible(true)}
+                onClick={() => {
+                  setVisible(true)
+                  setIsNotificationClicked(true)
+                }}
               >
                 {' Click here to download. '}
               </span>
@@ -78,10 +96,9 @@ const ReportsNotificationListener = ({
             duration: 10,
           }
         } else {
-          styledNotification({ msg: message })
-          // if status is initiated and we are displaying
-          // delete the notification document from firebase
-          deleteNotificationDocument(doc.__id, reportCSVCollectionName)
+          // delete document if the csv generation failed
+          styledNotification({ type: 'error', msg: message })
+          deleteNotificationDocument(doc.__id)
         }
         setGenerateCSVStatus(false)
       }
@@ -108,6 +125,17 @@ const ReportsNotificationListener = ({
       showUserNotifications(userNotifications)
     }
   }, [userNotifications])
+
+  useEffect(() => {
+    if (isNotificationClicked) {
+      const docsToUpdate = reportDocs.filter(
+        (d) => d.status === 'initiated' && d.processStatus === 'done'
+      )
+      // bulk update docs for which the notification has been clicked
+      updateNotificationDocuments(docsToUpdate, { status: 'completed' })
+      setIsNotificationClicked(false)
+    }
+  }, [isNotificationClicked])
 
   return (
     <ReportsNotificationModal

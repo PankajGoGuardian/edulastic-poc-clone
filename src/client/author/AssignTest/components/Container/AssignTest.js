@@ -15,6 +15,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
+import * as Sentry from '@sentry/browser'
 import { receiveClassListAction } from '../../../Classes/ducks'
 import {
   getPlaylistSelector,
@@ -376,6 +377,15 @@ class AssignTest extends React.Component {
     if (value?.length) {
       const [initialClassId] = value
       termId = groupById[initialClassId]?.termId
+      if (!termId) {
+        // Missing termId notify
+        Sentry.captureException(
+          new Error('[Assignments] missing termId in assigned assignment.')
+        )
+        Sentry.withScope((scope) => {
+          scope.setExtra('groupDetails', { group, value })
+        })
+      }
     }
     return {
       classData,

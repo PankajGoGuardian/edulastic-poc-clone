@@ -40,7 +40,7 @@ const TestRecommendationsContainer = ({
           Recommended Content For You
         </TextWrapper>
         <EduButton
-          style={{ marginLeft: '10px' }}
+          style={{ marginLeft: '10px', marginTop: '-6px' }}
           isGhost
           onClick={() => setShowTestCustomizerModal(true)}
         >

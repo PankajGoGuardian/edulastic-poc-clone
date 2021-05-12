@@ -10,11 +10,7 @@ import { isEmpty } from 'lodash'
 import { getUserRole, getUser } from '../../../../src/selectors/user'
 import { NoDataContainer, StyledCard, StyledH3 } from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
-import {
-  getCsvDownloadingState,
-  getPrintingState,
-  getTestListSelector,
-} from '../../../ducks'
+import { getCsvDownloadingState, getPrintingState } from '../../../ducks'
 import { SimplePieChart } from './components/charts/pieChart'
 import { Stats } from './components/stats'
 import {
@@ -49,7 +45,6 @@ const AssessmentSummary = ({
   getAssessmentSummary,
   resetAssessmentSummary,
   settings,
-  testList,
   user,
   match,
   setShowHeader,
@@ -62,12 +57,11 @@ const AssessmentSummary = ({
   const userRole = useMemo(() => sharedReport?.sharedBy?.role || role, [
     sharedReport,
   ])
-  const selectedTest = testList.find(
-    (t) => t._id === settings.selectedTest.key
-  ) || { _id: '', title: '' }
   const assessmentName = `${
-    selectedTest.title
-  } (ID:${selectedTest._id.substring(selectedTest._id.length - 5)})`
+    settings.selectedTest.title
+  } (ID:${settings.selectedTest.key.substring(
+    settings.selectedTest.key.length - 5
+  )})`
 
   useEffect(() => () => resetAssessmentSummary(), [])
 
@@ -203,7 +197,6 @@ const enhance = compose(
       role: getUserRole(state),
       assessmentSummary: getReportsAssessmentSummary(state),
       user: getUser(state),
-      testList: getTestListSelector(state),
     }),
     {
       getAssessmentSummary: getAssessmentSummaryRequestAction,

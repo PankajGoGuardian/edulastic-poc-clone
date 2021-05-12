@@ -27,6 +27,7 @@ const initialState = {
     subject: '',
     performanceBandProfileId: '',
     standardsProficiencyProfileId: '',
+    assignedBy: 'anyone',
   },
   standardFilters: {
     domainIds: '',

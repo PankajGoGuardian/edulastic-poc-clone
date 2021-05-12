@@ -299,7 +299,9 @@ class TestItemCol extends Component {
 
     return (
       <ScrollContext.Provider
-        value={{ getScrollElement: () => this.scrollContainer.current }}
+        value={{
+          getScrollElement: () => this.scrollContainer.current || document.body,
+        }}
       >
         <Container
           style={style}
@@ -354,10 +356,7 @@ class TestItemCol extends Component {
                 )}
             </>
           )}
-          <WidgetContainer
-            isStudentAttempt={isStudentAttempt}
-            data-cy="widgetContainer"
-          >
+          <WidgetContainer data-cy="widgetContainer">
             {widgets
               .filter((widget) => widget.type !== questionType.SECTION_LABEL)
               .map((widget, i, arr) => (

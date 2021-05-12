@@ -606,11 +606,24 @@ function* saveQuestionSaga({
         }
 
         draftData.data.questions.forEach((q, index) => {
+          if (index === 0) {
+            if (data.itemLevelScoring && q.scoringDisabled) {
+              // on item level scoring item, first question removed situation.
+              if (!questionType.manuallyGradableQn.includes(data.type)) {
+                set(q, 'validation.validResponse.score', data.itemLevelScore)
+              }
+            }
+            /**
+             * after shuffle we need to reset scoringDisabled to false for the first question
+             * irrespective to itemLevelScoring
+             */
+            q.scoringDisabled = false
+          }
           if (index > 0) {
             if (data.itemLevelScoring) {
               q.scoringDisabled = true
             } else {
-              delete q.scoringDisabled
+              q.scoringDisabled = false
             }
           }
 
@@ -655,17 +668,13 @@ function* saveQuestionSaga({
         testItemsApi.updateById,
         itemDetail._id,
         data,
-        redirectTestId
+        redirectTestId || tId
       )
     }
     yield put(changeUpdatedFlagAction(false))
     if (item.testId) {
       yield put(setRedirectTestAction(item.testId))
     }
-    yield put({
-      type: UPDATE_ITEM_DETAIL_SUCCESS,
-      payload: { item },
-    })
 
     if (!saveAndPublishFlow) {
       notification({ type: 'success', messageKey: 'itemSavedSuccess' })
@@ -736,6 +745,10 @@ function* saveQuestionSaga({
             },
           })
         )
+        yield put({
+          type: UPDATE_ITEM_DETAIL_SUCCESS,
+          payload: { item },
+        })
         return
       }
 
@@ -767,6 +780,10 @@ function* saveQuestionSaga({
         // add item to test entity
         yield put(addAuthoredItemsAction({ item, tId, isEditFlow }))
       }
+      yield put({
+        type: UPDATE_ITEM_DETAIL_SUCCESS,
+        payload: { item },
+      })
       if (!isEditFlow) return
       yield put(changeViewAction('edit'))
       return
@@ -798,6 +815,10 @@ function* saveQuestionSaga({
         })
       )
     }
+    yield put({
+      type: UPDATE_ITEM_DETAIL_SUCCESS,
+      payload: { item },
+    })
   } catch (err) {
     console.error(err)
     captureSentryException(err)

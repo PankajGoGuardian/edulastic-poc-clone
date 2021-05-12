@@ -28,7 +28,6 @@ const CloneOnUsePlaylistConfirmationModal = ({
           <EduButton
             key="0"
             data-cy="gotoMyPlaylist"
-            isGhost
             onClick={handleGotoMyPlaylist}
           >
             Go to My Playlist

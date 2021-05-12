@@ -224,7 +224,9 @@ class AdvancedTable extends Component {
             showEmbedLinkModal,
             toggleTagsEditModal,
           } = this.props
-          const canEdit = canEditTest(row, userId)
+          const isAssignProgress =
+            row.bulkAssignedCountProcessed < row.bulkAssignedCount
+          const canEdit = canEditTest(row, userId) && !isAssignProgress
           const assignmentTest = assignmentsSummary.find(
             (at) => at.testId === row.testId
           )

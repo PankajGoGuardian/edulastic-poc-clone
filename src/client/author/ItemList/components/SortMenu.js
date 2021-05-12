@@ -1,8 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Menu, Dropdown, Button, message, Tooltip } from 'antd'
+import { Menu, Dropdown, Button } from 'antd'
 import { IconDownEmptyArrow, IconArrowLeft } from '@edulastic/icons'
 import { FlexContainer } from '@edulastic/common'
+import { white, themeColorBlue } from '@edulastic/colors'
 
 const SortMenu = ({ options, onSelect, sortBy, sortDir }) => {
   const sortBy2 = options.find((i) => i.value === sortBy)
@@ -11,11 +12,11 @@ const SortMenu = ({ options, onSelect, sortBy, sortDir }) => {
     onSelect(sortBy2.value, sortDir === 'desc' ? 'asc' : 'desc')
 
   const menu = (
-    <Menu onClick={handleMenuClick}>
+    <StyledMenu onClick={handleMenuClick}>
       {options.map((option) => (
         <Menu.Item key={option.value}>{option.text}</Menu.Item>
       ))}
-    </Menu>
+    </StyledMenu>
   )
   return (
     <FlexContainer>
@@ -57,6 +58,17 @@ const StyledDropdown = styled(Dropdown)`
   min-width: 125px;
   span {
     margin-right: 10px;
+  }
+`
+const StyledMenu = styled(Menu)`
+  .ant-dropdown-menu-item-active {
+    :hover {
+      background: ${themeColorBlue};
+      color: ${white};
+      a {
+        color: ${white};
+      }
+    }
   }
 `
 

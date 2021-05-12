@@ -557,7 +557,7 @@ function* saveSubjectGradeSaga({ payload }) {
     yield* updateUserSignupStateSaga()
     notification({
       msg: isTestRecommendationCustomizer
-        ? 'Updated Successfully.'
+        ? 'Update under process. We will notify shortly once done.'
         : 'Sign up completed.',
       type: 'success',
     })

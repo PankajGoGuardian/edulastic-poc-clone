@@ -21,7 +21,11 @@ const AddSchoolAndGradeModal = ({
 
   return (
     <CustomModalStyled
-      title="What do you teach?"
+      title={
+        userInfo.districtIds && userInfo.districtIds.length === 0
+          ? 'Where do you teach?'
+          : 'What do you teach?'
+      }
       visible={isVisible}
       footer={null}
       width="900px"

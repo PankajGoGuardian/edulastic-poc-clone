@@ -84,10 +84,9 @@ export const Container = styled.div`
 
 export const WidgetContainer = styled.div`
   display: flex;
-  flex-wrap: wrap;
-  align-items: stretch;
+  flex-direction: column;
+  flex: 1;
   position: relative;
-  flex-grow: 1;
   min-height: max-content; // to fix height issue with safari
 `
 export const FilesViewContainer = styled.div`

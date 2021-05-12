@@ -380,15 +380,15 @@ const Scratchpad = ({
     // handle dimension change such as zoom in/out or window resize
     if (zwibbler) {
       zwibbler.resize()
-      if (isStudentAttempt && !readOnly && zwibblerRef.current) {
-        const zwibblerDomRect = zwibblerRef.current.getBoundingClientRect()
-        setScratchpadRect({
-          top: zwibblerDomRect.top,
-          left: zwibblerDomRect.left,
-          width: zwibblerDomRect.width,
-          height: zwibblerDomRect.height,
-        })
-      }
+    }
+    if (isStudentAttempt && !readOnly && zwibblerRef.current) {
+      const zwibblerDomRect = zwibblerRef.current.getBoundingClientRect()
+      setScratchpadRect({
+        top: zwibblerDomRect.top,
+        left: zwibblerDomRect.left,
+        width: zwibblerDomRect.width,
+        height: zwibblerDomRect.height,
+      })
     }
   }, [width, height, conatinerWidth])
 

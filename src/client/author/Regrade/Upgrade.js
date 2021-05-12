@@ -149,7 +149,7 @@ const Upgrade = ({
       visible={visible}
       title={
         <p style={{ fontSize: '22px' }}>
-          {proceedUpgrade ? 'Assignment Regrade' : 'Upgrade'}
+          {proceedUpgrade ? 'Assignment Regrade' : 'Edit Test'}
         </p>
       }
       onCancel={onCancel}
@@ -158,7 +158,7 @@ const Upgrade = ({
       footer={footerButtons}
       modalWidth="520px"
     >
-      <div style={{ textAlign: 'left' }}>
+      <div>
         {proceedUpgrade ? (
           <>
             {showAdd && (
@@ -176,7 +176,7 @@ const Upgrade = ({
           </>
         ) : (
           <p>
-            The test has been edited by one of the co-authors. Please upgrae to
+            The test has been edited by one of the co-authors. Please upgrade to
             latest version of the test to make further edits.
           </p>
         )}

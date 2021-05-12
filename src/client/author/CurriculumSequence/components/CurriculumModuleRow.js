@@ -813,10 +813,13 @@ class ModuleRow extends Component {
                         <Menu.Item
                           data-cy="view-test"
                           onClick={() => {
+                            const testIdFromAssignments =
+                              moduleData?.assignments?.[0]?.testId
+                            const testId =
+                              testIdFromAssignments || moduleData.contentId
                             this.viewTest(
-                              moduleData.contentId,
-                              moduleData?.contentVersionId !==
-                                moduleData?.contentId
+                              testId,
+                              moduleData?.contentVersionId !== testId
                             )
                           }}
                         >
@@ -1042,13 +1045,16 @@ class ModuleRow extends Component {
                     >
                       <AssignmentButton>
                         <Button
-                          onClick={() =>
+                          onClick={() => {
+                            const testIdFromAssignments =
+                              moduleData?.assignments?.[0]?.testId
+                            const testId =
+                              testIdFromAssignments || moduleData.contentId
                             this.viewTest(
-                              moduleData?.contentVersionId,
-                              moduleData?.contentVersionId !==
-                                moduleData?.contentId
+                              testId,
+                              moduleData?.contentVersionId !== testId
                             )
-                          }
+                          }}
                         >
                           <IconVisualization width="14px" height="14px" />
                           Preview

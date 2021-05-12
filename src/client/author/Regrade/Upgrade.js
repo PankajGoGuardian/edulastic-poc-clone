@@ -158,7 +158,7 @@ const Upgrade = ({
       footer={footerButtons}
       modalWidth="520px"
     >
-      <div>
+      <div style={{ textAlign: proceedUpgrade ? 'left' : 'center' }}>
         {proceedUpgrade ? (
           <>
             {showAdd && (

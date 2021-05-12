@@ -558,7 +558,7 @@ const MyClasses = ({
       )}
       {showTestCustomizerModal && (
         <CustomModalStyled
-          title="Where do you teach?"
+          title="What do you teach?"
           visible={showTestCustomizerModal}
           footer={null}
           width="900px"

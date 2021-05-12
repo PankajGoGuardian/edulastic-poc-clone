@@ -21,10 +21,11 @@ const AddSchoolAndGradeModal = ({
 
   return (
     <CustomModalStyled
-      title="Complete the signup to proceed"
+      title="What do you teach?"
       visible={isVisible}
       footer={null}
       width="900px"
+      data-cy="signupSchoolSelectionTitle"
       onCancel={handleCancel}
       centered
     >

@@ -14,8 +14,6 @@ import {
 } from '@edulastic/colors'
 import { IconShare } from '@edulastic/icons'
 
-import { Status } from '../../../AssessmentPage/components/Header/styled'
-
 export const RightFlexContainer = styled(FlexContainer)`
   /* flex-basis: 30%; */
 `
@@ -60,14 +58,19 @@ export const RightWrapper = styled(FlexContainer)`
   }
 `
 
-export const TestStatus = styled(Status)`
+export const TestStatus = styled.span`
+  display: inline-block;
+  font-size: 9px;
+  text-transform: uppercase;
+  border-radius: 4px
   margin-top: 0;
+  text-align: center;
+  border-radius: 4px;
   color: ${(props) => (props.mode === 'embedded' ? white : textColor)};
   background: ${(props) => (props.mode === 'embedded' ? textColor : white)};
-  width: 60px;
-  height: 20px;
   font-weight: 600;
-  margin-left: 0px;
+  padding: 3px 5px;
+  margin-left: 4px;
   &.draft {
     background: ${lightGrey};
     color: ${greyDarken};

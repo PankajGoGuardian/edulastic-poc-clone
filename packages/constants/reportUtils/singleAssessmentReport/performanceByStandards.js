@@ -456,7 +456,7 @@ const analysisStandardsData = (
 ) => {
   // if metricInfo is empty return empty data and totalpoints
   if (!metricInfo.length) {
-    return [[], []]
+    return []
   }
   const groupingField = compareByColumns[compareBy].key
   const grouped = groupBy(metricInfo, groupingField)
@@ -474,7 +474,7 @@ const analysisStandardsData = (
 const analysisDomainsData = (compareBy, skillInfo, metricInfo, scaleInfo) => {
   // if metricInfo is empty return empty data and totalpoints
   if (!metricInfo.length) {
-    return [[], []]
+    return []
   }
   const skillsByStandardId = groupBy(skillInfo, 'standardId')
   const domainByStandardId = skillInfo.reduce(

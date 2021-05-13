@@ -8,9 +8,8 @@ import {
   InputTitle,
   Title,
   Description,
-  FilesViewContainer,
+  ModalInput,
 } from '../styled'
-import FilesView from '../../../assessment/widgets/UploadFile/components/FilesView'
 
 const TestAttachementsModal = ({
   showAttachmentsModal,
@@ -64,14 +63,10 @@ const TestAttachementsModal = ({
       <Description>{description}</Description>
 
       <InputTitle>Attachment Name</InputTitle>
-      <FilesViewContainer>
-        <FilesView
-          files={[attachmentsList[currentAttachmentIndex]]}
-          cols={1}
-          hideDelete
-          disableLink
-        />
-      </FilesViewContainer>
+      <ModalInput
+        disabled
+        value={attachmentsList[currentAttachmentIndex].name}
+      />
       <AttachmentSlider
         currentAttachmentIndex={currentAttachmentIndex}
         setCurrentAttachmentIndex={setCurrentAttachmentIndex}

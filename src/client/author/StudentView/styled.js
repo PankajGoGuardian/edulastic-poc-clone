@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components'
-import { Button, Modal } from 'antd'
+import { Button, Input, Modal } from 'antd'
 import { IconEdit } from '@edulastic/icons'
 import { FlexContainer, EduButton } from '@edulastic/common'
 import {
@@ -8,8 +8,10 @@ import {
   themeColor,
   desktopWidth,
   extraDesktopWidth,
+  sectionBorder,
   inputBorder1,
   greyThemeDark1,
+  lightGrey9,
 } from '@edulastic/colors'
 
 // left 70 as the side menu space need to be considered.
@@ -273,16 +275,22 @@ export const Description = styled.p`
   font-size: 15px;
 `
 
-export const FilesViewContainer = styled.div`
-  width: 100%;
-  margin-top: 20px;
-  margin-bottom: 15px;
+export const ModalInput = styled(Input)`
+  border-color: ${sectionBorder};
+  border-radius: 2px;
+  height: 40px;
+  margin-top: 15px;
+  margin-bottom: 20px;
+  max-width: 450px;
+
+  .ant-input[disabled] {
+    color: ${lightGrey9};
+  }
 `
 
 export const SlideWrapper = styled.div`
   width: 430px;
   height: 298px;
-  display: inline-block;
 `
 
 export const InputTitle = styled.h3`

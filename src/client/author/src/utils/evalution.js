@@ -1,5 +1,4 @@
-import { set, round, min } from 'lodash'
-import produce from 'immer'
+import { set, round, min, cloneDeep } from 'lodash'
 import {
   multipartEvaluationTypes,
   PARTIAL_MATCH,
@@ -40,17 +39,19 @@ export const evaluateItem = async (
         results[evaluationId] = []
         allCorrect = false
       } else {
-        const validationData = itemLevelScoring
-          ? produce(validation.validation, (v) => {
-              const questionScore = itemLevelScore / numberOfQuestions
-              set(v, 'validResponse.score', questionScore)
-              if (Array.isArray(v.altResponses) && numberOfQuestions > 1) {
-                v.altResponses.forEach((altResp) => {
-                  altResp.score = questionScore
-                })
-              }
+        const validationData = cloneDeep(validation.validation)
+        if (itemLevelScoring) {
+          const questionScore = itemLevelScore / numberOfQuestions
+          set(validationData, 'validResponse.score', questionScore)
+          if (
+            Array.isArray(validationData.altResponses) &&
+            numberOfQuestions > 1
+          ) {
+            validationData.altResponses.forEach((altResp) => {
+              altResp.score = questionScore
             })
-          : validation.validation
+          }
+        }
         if (assignPartialCredit) {
           validationData.scoringType = PARTIAL_MATCH
         }

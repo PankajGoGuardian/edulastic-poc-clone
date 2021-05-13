@@ -18,6 +18,7 @@ import { replace, push } from 'connected-react-router'
 import { getTestSelector, getTestIdSelector } from '../../ducks'
 import { formatAssignment } from './utils'
 import { getUserNameSelector, getUserId } from '../../../src/selectors/user'
+import { UPDATE_CURRENT_EDITING_ASSIGNMENT } from '../../../src/constants/actions'
 import { getPlaylistEntitySelector } from '../../../PlaylistPage/ducks'
 import { getUserFeatures, getUserRole } from '../../../../student/Login/ducks'
 import { toggleDeleteAssignmentModalAction } from '../../../sharedDucks/assignments'
@@ -341,6 +342,10 @@ function* saveAssignment({ payload }) {
     })
     const assignment = result?.[0] ? formatAssignment(result[0]) : {}
     yield put({ type: SET_ASSIGNMENT, payload: assignment })
+    yield put({
+      type: UPDATE_CURRENT_EDITING_ASSIGNMENT,
+      payload: assignment,
+    })
     yield put(setAssignmentSavingAction(false))
     yield put(toggleHasCommonAssignmentsPopupAction(false))
     yield put(toggleHasDuplicateAssignmentPopupAction(false))

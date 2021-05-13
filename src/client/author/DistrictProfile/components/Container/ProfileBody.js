@@ -794,7 +794,10 @@ class ProfileBody extends React.Component {
                 </StandardSetsList>
                 <StandardSetsButtons>
                   {showSaveStandSetsBtn && (
-                    <SaveStandardSetsBtn onClick={this.handleSaveStandardSets}>
+                    <SaveStandardSetsBtn
+                      data-cy="save-standardsets"
+                      onClick={this.handleSaveStandardSets}
+                    >
                       SAVE
                     </SaveStandardSetsBtn>
                   )}
@@ -802,6 +805,7 @@ class ProfileBody extends React.Component {
                     width="190px"
                     isBlue
                     onClick={this.handleSelectStandardButton}
+                    data-cy="select-standardsets"
                     type="primary"
                   >
                     Select your standard sets
@@ -815,7 +819,10 @@ class ProfileBody extends React.Component {
                   <StyledDiv>
                     <Title>Default Settings</Title>
                     {showDefaultSettingSave && (
-                      <SaveDefaultSettingsBtn onClick={this.saveSettings}>
+                      <SaveDefaultSettingsBtn
+                        daya-cy="save-settings"
+                        onClick={this.saveSettings}
+                      >
                         SAVE
                       </SaveDefaultSettingsBtn>
                     )}

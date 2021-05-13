@@ -98,7 +98,12 @@ class StandardSetsModal extends Component {
         maskClosable={false}
         centered
         footer={[
-          <EduButton type="primary" key="submit" onClick={this.onConfirm}>
+          <EduButton
+            data-cy="confirm-btn"
+            type="primary"
+            key="submit"
+            onClick={this.onConfirm}
+          >
             Confirm
           </EduButton>,
         ]}
@@ -109,6 +114,7 @@ class StandardSetsModal extends Component {
               placeholder="Select Subject"
               onChange={this.changeSubject}
               getPopupContainer={(triggerNode) => triggerNode.parentNode}
+              data-cy="select-subject"
             >
               {selectsData.allSubjects.map((el) => (
                 <Option key={el.value} value={el.value}>
@@ -123,6 +129,7 @@ class StandardSetsModal extends Component {
             <TextInputStyled
               onChange={this.changeSearch}
               placeholder="Search by name"
+              data-cy="search-by-name"
             />
           </Col>
         </StyledRow>
@@ -135,6 +142,7 @@ class StandardSetsModal extends Component {
                     onChange={() => this.changeStandards(standard.name)}
                     checked={selectedStandards.includes(standard.name)}
                     key={standard.name}
+                    data-cy={standard.name}
                     disabled={
                       selectedStandardById[standard._id]?.orgType ===
                         'district' && role === 'school-admin'

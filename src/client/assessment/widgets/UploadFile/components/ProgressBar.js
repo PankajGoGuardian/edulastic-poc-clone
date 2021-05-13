@@ -62,7 +62,6 @@ const ProgressBar = ({
   hideDelete,
   data,
   onCancel,
-  disableLink,
 }) => {
   if (!data) {
     return null
@@ -110,8 +109,7 @@ const ProgressBar = ({
   }
 
   const NameWrapper = hideDelete ? Link : Fragment
-  const linkProps =
-    hideDelete && !disableLink ? { href: source, target: '_blank' } : {}
+  const linkProps = hideDelete ? { href: source, target: '_blank' } : {}
 
   return (
     <FlexContainer

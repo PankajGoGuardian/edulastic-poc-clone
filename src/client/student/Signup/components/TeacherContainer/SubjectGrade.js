@@ -403,7 +403,7 @@ class SubjectGrade extends React.Component {
                     })(
                       <FilterItemWrapper title="">
                         <IconExpandBoxWrapper
-                          data-cy="browse-standards"
+                          data-cy="browseStandards"
                           className={
                             !(form.getFieldValue('standard') || []).length &&
                             'disabled'

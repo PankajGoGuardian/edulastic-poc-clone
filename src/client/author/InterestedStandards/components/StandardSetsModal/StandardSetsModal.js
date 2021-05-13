@@ -99,7 +99,7 @@ class StandardSetsModal extends Component {
         centered
         footer={[
           <EduButton
-            data-cy="confirm-btn"
+            data-cy="confirmBtn"
             type="primary"
             key="submit"
             onClick={this.onConfirm}
@@ -114,7 +114,7 @@ class StandardSetsModal extends Component {
               placeholder="Select Subject"
               onChange={this.changeSubject}
               getPopupContainer={(triggerNode) => triggerNode.parentNode}
-              data-cy="select-subject"
+              data-cy="selectSubject"
             >
               {selectsData.allSubjects.map((el) => (
                 <Option key={el.value} value={el.value}>
@@ -129,7 +129,7 @@ class StandardSetsModal extends Component {
             <TextInputStyled
               onChange={this.changeSearch}
               placeholder="Search by name"
-              data-cy="search-by-name"
+              data-cy="searchByName"
             />
           </Col>
         </StyledRow>

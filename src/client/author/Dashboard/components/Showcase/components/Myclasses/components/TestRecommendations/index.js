@@ -50,13 +50,13 @@ const TestRecommendationsContainer = ({
           style={{ marginLeft: '10px', marginTop: '-6px' }}
           isGhost
           onClick={() => setShowTestCustomizerModal(true)}
-          data-cy="customize-recommendations"
+          data-cy="customizeRecommendations"
         >
           Customize
         </EduButton>
         {recommendations?.length > gridCountInARow && (
           <ViewMoreButton
-            data-cy={isExpanded ? 'view-less' : 'view-more'}
+            data-cy={isExpanded ? 'viewLess' : 'viewMore'}
             onClick={() => setIsExpanded(!isExpanded)}
           >
             {isExpanded ? 'View Less' : 'View More'}
@@ -70,7 +70,7 @@ const TestRecommendationsContainer = ({
             return (
               <TestCardContainer
                 key={index}
-                data-cy={`recommendation-card-${index}`}
+                data-cy={`recommendationCard${index}`}
               >
                 <CardWrapper
                   owner={

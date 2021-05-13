@@ -50,7 +50,10 @@ const TestRecommendationsContainer = ({
           Customize
         </EduButton>
         {recommendations?.length > gridCountInARow && (
-          <ViewMoreButton onClick={() => setIsExpanded(!isExpanded)}>
+          <ViewMoreButton
+            data-cy={isExpanded ? 'viewLess' : 'viewMore'}
+            onClick={() => setIsExpanded(!isExpanded)}
+          >
             {isExpanded ? 'VIEW LESS' : 'VIEW MORE'}
           </ViewMoreButton>
         )}
@@ -59,7 +62,10 @@ const TestRecommendationsContainer = ({
         {recommendations.map((item, index) => {
           if (index >= totalNumberOfItemsToShow) return
           return (
-            <TestCardContainer key={index}>
+            <TestCardContainer
+              key={index}
+              data-cy={`recommendationCard${index}`}
+            >
               <CardWrapper
                 owner={
                   item.authors && item.authors.some((x) => x._id === userId)

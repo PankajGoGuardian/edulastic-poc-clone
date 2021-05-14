@@ -21,7 +21,11 @@ import {
 } from 'lodash'
 import produce from 'immer'
 import { questionType, questionTitle } from '@edulastic/constants'
-import { helpers, notification } from '@edulastic/common'
+import {
+  helpers,
+  notification,
+  captureSentryException,
+} from '@edulastic/common'
 import { push } from 'connected-react-router'
 import * as Sentry from '@sentry/browser'
 import { storeInLocalStorage } from '@edulastic/api/src/utils/Storage'
@@ -602,11 +606,24 @@ function* saveQuestionSaga({
         }
 
         draftData.data.questions.forEach((q, index) => {
+          if (index === 0) {
+            if (data.itemLevelScoring && q.scoringDisabled) {
+              // on item level scoring item, first question removed situation.
+              if (!questionType.manuallyGradableQn.includes(data.type)) {
+                set(q, 'validation.validResponse.score', data.itemLevelScore)
+              }
+            }
+            /**
+             * after shuffle we need to reset scoringDisabled to false for the first question
+             * irrespective to itemLevelScoring
+             */
+            q.scoringDisabled = false
+          }
           if (index > 0) {
             if (data.itemLevelScoring) {
               q.scoringDisabled = true
             } else {
-              delete q.scoringDisabled
+              q.scoringDisabled = false
             }
           }
 
@@ -651,17 +668,13 @@ function* saveQuestionSaga({
         testItemsApi.updateById,
         itemDetail._id,
         data,
-        redirectTestId
+        redirectTestId || tId
       )
     }
     yield put(changeUpdatedFlagAction(false))
     if (item.testId) {
       yield put(setRedirectTestAction(item.testId))
     }
-    yield put({
-      type: UPDATE_ITEM_DETAIL_SUCCESS,
-      payload: { item },
-    })
 
     if (!saveAndPublishFlow) {
       notification({ type: 'success', messageKey: 'itemSavedSuccess' })
@@ -732,6 +745,10 @@ function* saveQuestionSaga({
             },
           })
         )
+        yield put({
+          type: UPDATE_ITEM_DETAIL_SUCCESS,
+          payload: { item },
+        })
         return
       }
 
@@ -763,6 +780,10 @@ function* saveQuestionSaga({
         // add item to test entity
         yield put(addAuthoredItemsAction({ item, tId, isEditFlow }))
       }
+      yield put({
+        type: UPDATE_ITEM_DETAIL_SUCCESS,
+        payload: { item },
+      })
       if (!isEditFlow) return
       yield put(changeViewAction('edit'))
       return
@@ -794,8 +815,13 @@ function* saveQuestionSaga({
         })
       )
     }
+    yield put({
+      type: UPDATE_ITEM_DETAIL_SUCCESS,
+      payload: { item },
+    })
   } catch (err) {
     console.error(err)
+    captureSentryException(err)
     const errorMessage = 'Unable to save the question.'
     if (isTestFlow) {
       yield put(toggleCreateItemModalAction(false))
@@ -837,12 +863,12 @@ const containsEmptyField = (variables) => {
       case !!intersection(_keys, _set.split(',')).length:
         return {
           hasEmptyField: true,
-          errMessage: `You have a parameter named "${name}" that is also given in the text set. This is not supported.`,
+          errMessage: `Your dynamic parameter "${name}" contains a text entry that is also a parameter name. This is not supported right now. Please rename the impacted parameters or entries so that there is no naming overlap.`,
         }
       case !!intersection(_keys, sequence.split(',')).length:
         return {
           hasEmptyField: true,
-          errMessage: `You have a parameter named "${name}" that is also given in the text sequence. This is not supported.`,
+          errMessage: `Your dynamic parameter "${name}" contains a text entry that is also a parameter name. This is not supported right now. Please rename the impacted parameters or entries so that there is no naming overlap.`,
         }
       default:
         break

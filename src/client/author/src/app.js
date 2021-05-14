@@ -15,7 +15,10 @@ import Sidebar, { isDisablePageInMobile } from './Sidebar/SideMenu'
 import SuccessPage from '../TestPage/components/SuccessPage/SuccessPage'
 import { MainContainer } from './MainStyle'
 import { getUserOrgId, getUserRole } from './selectors/user'
-import { isProxyUser as isProxyUserSelector } from '../../student/Login/ducks'
+import {
+  isProxyUser as isProxyUserSelector,
+  isDemoPlaygroundUser,
+} from '../../student/Login/ducks'
 import {
   receiveDistrictPolicyAction,
   receiveSchoolPolicyAction,
@@ -34,9 +37,6 @@ const AssignTest = loadable(() => import('../AssignTest'), {
   fallback: <Progress />,
 })
 const AssignmentAdvanced = loadable(() => import('../AssignmentAdvanced'), {
-  fallback: <Progress />,
-})
-const Regrade = loadable(() => import('../Regrade'), {
   fallback: <Progress />,
 })
 const AssessmentCreate = loadable(() => import('../AssessmentCreate'), {
@@ -245,6 +245,7 @@ const Author = ({
   schoolId,
   isProxyUser,
   isCliUser,
+  isDemoAccount,
 }) => {
   useEffect(() => {
     if (role === roleuser.SCHOOL_ADMIN && schoolId) {
@@ -279,12 +280,12 @@ const Author = ({
 
   return (
     <ThemeProvider theme={themeToPass}>
-      <StyledLayout isProxyUser={isProxyUser}>
+      <StyledLayout isBannerShown={isProxyUser || isDemoAccount}>
         <MainContainer isPrintPreview={isPrintPreview || isCliUser}>
           <Spin spinning={districtProfileLoading} />
           <SidebarCompnent
             isPrintPreview={isPrintPreview || isCliUser}
-            isProxyUser={isProxyUser}
+            isBannerShown={isProxyUser || isDemoAccount}
             style={{ display: isCliUser && 'none' }}
           />
           <Wrapper>
@@ -297,7 +298,6 @@ const Author = ({
                   path={`${match.url}/assignments`}
                   component={Assignments}
                 />
-
                 <Route
                   exact
                   path={`${match.url}/tests/select`}
@@ -326,11 +326,6 @@ const Author = ({
                   exact
                   path={`${match.url}/assignments/:districtId/:testId`}
                   component={(props) => <AssignmentAdvanced {...props} />}
-                />
-                <Route
-                  exact
-                  path={`${match.url}/assignments/regrade/new/:newTestId/old/:oldTestId`}
-                  component={Regrade}
                 />
                 <Route
                   exact
@@ -904,6 +899,7 @@ export default connect(
     schoolId: get(state, 'user.saSettingsSchool'),
     isProxyUser: isProxyUserSelector(state),
     isCliUser: get(state, 'user.isCliUser', false),
+    isDemoAccount: isDemoPlaygroundUser(state),
   }),
   {
     loadDistrictPolicy: receiveDistrictPolicyAction,
@@ -920,7 +916,7 @@ const SidebarCompnent = styled(Sidebar)`
   @media (max-width: ${tabletWidth}) {
     display: none;
   }
-  top: ${(props) => (props.isProxyUser ? props.theme.BannerHeight : 0)}px;
+  top: ${(props) => (props.isBannerShown ? props.theme.BannerHeight : 0)}px;
 `
 const Wrapper = styled.div`
   position: relative;
@@ -930,8 +926,8 @@ const StyledLayout = styled(Layout)`
   background: ${mainBgColor};
   .fixed-header {
     top: ${(props) =>
-      props.isProxyUser ? props.theme.BannerHeight : 0}px !important;
+      props.isBannerShown ? props.theme.BannerHeight : 0}px !important;
   }
   margin-top: ${(props) =>
-    props.isProxyUser ? props.theme.BannerHeight : 0}px;
+    props.isBannerShown ? props.theme.BannerHeight : 0}px;
 `

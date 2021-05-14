@@ -5,6 +5,7 @@ import {
   white,
   whiteSmoke,
 } from '@edulastic/colors'
+import { EduButton } from '@edulastic/common'
 import { Button, Form, Input } from 'antd'
 import React, { useState } from 'react'
 import { compose } from 'redux'
@@ -34,12 +35,12 @@ const DeleteSchoolModal = ({
   }
 
   const Footer = [
-    <Button ghost onClick={() => toggleModal('REMOVE_SCHOOL', false)}>
+    <EduButton isGhost onClick={() => toggleModal('REMOVE_SCHOOL', false)}>
       NO, CANCEL
-    </Button>,
-    <YesButton disabled={disableButton} onClick={handleResponse}>
+    </EduButton>,
+    <EduButton disabled={disableButton} onClick={handleResponse}>
       YES, REMOVE
-    </YesButton>,
+    </EduButton>,
   ]
 
   const Title = [<Heading>Remove</Heading>]
@@ -125,13 +126,4 @@ const Heading = styled.h4`
 
 const TextInput = styled(Input)`
   text-align: center;
-`
-
-const YesButton = styled(Button)`
-  color: ${(props) =>
-    props.disabled ? 'rgba(0, 0, 0, 0.25)' : white} !important;
-  background-color: ${(props) =>
-    props.disabled ? whiteSmoke : themeColor} !important;
-  border-color: ${(props) =>
-    props.disabled ? numBtnColors.borderColor : themeColor} !important;
 `

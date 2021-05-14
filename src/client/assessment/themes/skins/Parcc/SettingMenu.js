@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { Icon, Menu } from 'antd'
 import { get } from 'lodash'
 import { IconUser } from '@edulastic/icons'
+import { withKeyboard } from '@edulastic/common'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck } from '@fortawesome/free-solid-svg-icons'
 import { StyledButton, StyledDropdown, StyledMenu } from './styled'
@@ -17,6 +18,9 @@ const menuItems = {
   enableAnswerMask: 'Enable Answer Masking',
   testOptions: 'Test Options',
 }
+
+const MenuItem = withKeyboard(Menu.Item)
+
 const SettingMenu = ({
   user: { firstName },
   onSettingsChange,
@@ -28,25 +32,29 @@ const SettingMenu = ({
 }) => {
   const _pauseAllowed = useUtaPauseAllowed(utaId)
   const showPause = _pauseAllowed === undefined ? true : _pauseAllowed
+  const handleSettingsChange = (e) => e && onSettingsChange(e)
 
   const menu = (
-    <StyledMenu onClick={onSettingsChange}>
+    <StyledMenu onClick={handleSettingsChange}>
       {Object.keys(menuItems)
         .filter((item) => item !== 'testOptions' || multiLanguageEnabled)
         .map((key) => (
-          <Menu.Item
+          <MenuItem
             key={key}
             disabled={key === 'enableMagnifier' && !showMagnifier}
+            onClick={() => {
+              handleSettingsChange({ key })
+            }}
           >
             {menuItems[key]}
             {key === 'enableMagnifier' && enableMagnifier && (
               <FontAwesomeIcon icon={faCheck} />
             )}
-          </Menu.Item>
+          </MenuItem>
         ))}
       {showPause && <Menu.Divider />}
       {showPause && (
-        <Menu.Item
+        <MenuItem
           disabled={hidePause}
           {...(hidePause
             ? {
@@ -56,9 +64,12 @@ const SettingMenu = ({
             : {})}
           key="save"
           data-cy="finishTest"
+          onClick={() => {
+            handleSettingsChange({ key: 'save' })
+          }}
         >
           Save & Exit
-        </Menu.Item>
+        </MenuItem>
       )}
     </StyledMenu>
   )
@@ -67,6 +78,7 @@ const SettingMenu = ({
     <StyledDropdown
       overlay={menu}
       getPopupContainer={(triggerNode) => triggerNode.parentNode}
+      trigger={['hover', 'click']}
     >
       <StyledButton style={{ width: 'auto' }} data-cy="exitMenu">
         <IconUser />

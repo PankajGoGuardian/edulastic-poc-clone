@@ -102,13 +102,18 @@ const updatePlaylistStatus = (data) =>
     })
     .then((result) => result.data.result)
 
-const duplicatePlayList = ({ _id, title, forUseThis = false }) =>
+const duplicatePlayList = ({
+  _id,
+  title,
+  forUseThis = false,
+  forceClone = false,
+}) =>
   api
     .callApi({
       method: 'post',
       url: `${prefix}/${_id}/duplicate?title=${title}${
         forUseThis ? `&forUseThis=1` : ''
-      }`,
+      }${forceClone ? '&forceClone=1' : ''}`,
     })
     .then((res) => res.data.result)
 

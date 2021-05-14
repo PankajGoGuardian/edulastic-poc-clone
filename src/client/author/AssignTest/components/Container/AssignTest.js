@@ -15,6 +15,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
+import * as Sentry from '@sentry/browser'
 import { receiveClassListAction } from '../../../Classes/ducks'
 import {
   getPlaylistSelector,
@@ -193,6 +194,7 @@ class AssignTest extends React.Component {
       userFeatures: { premium },
       fetchUserCustomKeypads,
       setCurrentTestSettingsId,
+      location,
     } = this.props
 
     if (isFreeAdmin) {
@@ -236,6 +238,7 @@ class AssignTest extends React.Component {
         dueDate: moment().add('days', 7),
         playlistId: match.params.playlistId,
         playlistModuleId: match.params.moduleId,
+        testVersionId: location?.state?.testVersionId,
         testId: match.params.testId,
         openPolicy: isAdmin
           ? assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER
@@ -328,16 +331,15 @@ class AssignTest extends React.Component {
     this.setState({ isAdvancedView: checked })
   }
 
-  renderHeaderButton = () => {
-    const { isAssigning } = this.props
+  renderHeaderButton = (isAssigning) => {
     return (
       <EduButton
         isBlue
         data-cy="assignButton"
         onClick={this.handleAssign}
-        disabled={isAssigning}
+        loading={isAssigning}
       >
-        ASSIGN
+        {isAssigning ? 'ASSIGNING...' : 'ASSIGN'}
       </EduButton>
     )
   }
@@ -375,6 +377,15 @@ class AssignTest extends React.Component {
     if (value?.length) {
       const [initialClassId] = value
       termId = groupById[initialClassId]?.termId
+      if (!termId) {
+        // Missing termId notify
+        Sentry.captureException(
+          new Error('[Assignments] missing termId in assigned assignment.')
+        )
+        Sentry.withScope((scope) => {
+          scope.setExtra('groupDetails', { group, value })
+        })
+      }
     }
     return {
       classData,
@@ -638,7 +649,12 @@ class AssignTest extends React.Component {
       settingDetails,
       showUpdateSettingModal,
     } = this.state
-    const { assignmentSettings: assignment, isTestLoading, match } = this.props
+    const {
+      assignmentSettings: assignment,
+      isTestLoading,
+      match,
+      isAssigning,
+    } = this.props
     const {
       classList,
       fetchStudents,
@@ -704,6 +720,7 @@ class AssignTest extends React.Component {
           titleIcon={IconAssignment}
           btnTitle="ASSIGN"
           renderButton={this.renderHeaderButton}
+          isLoadingButtonState={isAssigning}
         />
 
         <Container>

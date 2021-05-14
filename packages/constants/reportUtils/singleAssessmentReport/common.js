@@ -1,11 +1,15 @@
-export const transformMetricForStudentGroups = (
+const transformMetricForStudentGroups = (
   studentGroupInfo = [],
   metricInfo = []
 ) => {
   const studentToGroupsMap = {}
   // curate studentId to groups mapping
   studentGroupInfo.forEach((group) => {
-    if (group.groupType === 'custom' && group.students?.length) {
+    if (
+      group.groupType === 'custom' &&
+      group.students &&
+      group.students.length
+    ) {
       group.students.forEach((studentId) => {
         if (!studentToGroupsMap[studentId]) {
           studentToGroupsMap[studentId] = []
@@ -17,7 +21,6 @@ export const transformMetricForStudentGroups = (
       })
     }
   })
-
   // replace group info with student group info in metricInfo
   const transformedMetrics = []
   metricInfo.forEach((studentMetric) => {
@@ -31,4 +34,8 @@ export const transformMetricForStudentGroups = (
     }
   })
   return transformedMetrics
+}
+
+module.exports = {
+  transformMetricForStudentGroups,
 }

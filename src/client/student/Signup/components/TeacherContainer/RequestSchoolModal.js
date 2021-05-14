@@ -41,12 +41,12 @@ class RequestSchool extends React.Component {
     const {
       form,
       districts,
-      createAndJoinSchoolRequestAction,
+      createAndJoinSchoolRequest,
       userInfo,
     } = this.props
     form.validateFields((err, values) => {
       if (!err) {
-        const { name, districtId, address, city, country, state, zip } = values
+        const { name, districtId, address, city, country, us_state, other_state, zip } = values
         const district = find(
           districts,
           ({ districtId: _id }) => _id === districtId.key
@@ -59,7 +59,7 @@ class RequestSchool extends React.Component {
           districtName,
           location: {
             city,
-            state,
+            state: country === 'US' ? us_state : other_state,
             zip,
             address,
             country,
@@ -78,7 +78,7 @@ class RequestSchool extends React.Component {
           _id,
           currentSignUpState,
         } = userInfo
-        createAndJoinSchoolRequestAction({
+        createAndJoinSchoolRequest({
           createSchool: body,
           joinSchool: {
             data: {
@@ -169,7 +169,7 @@ const enhance = compose(
     }),
     {
       searchDistrict: searchDistrictsRequestAction,
-      createAndJoinSchoolRequestAction,
+      createAndJoinSchoolRequest: createAndJoinSchoolRequestAction,
     }
   )
 )

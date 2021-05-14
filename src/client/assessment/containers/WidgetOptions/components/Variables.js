@@ -32,7 +32,7 @@ import {
   notification,
   CustomModalStyled,
 } from '@edulastic/common'
-import { extraDesktopWidthMax } from '@edulastic/colors'
+import { extraDesktopWidthMax, redDark } from '@edulastic/colors'
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 import {
   getQuestionDataSelector,
@@ -49,7 +49,6 @@ import { CustomStyleBtn } from '../../../styled/ButtonStyles'
 import { Subtitle } from '../../../styled/Subtitle'
 import Question from '../../../components/Question'
 import { CheckboxLabel } from '../../../styled/CheckboxWithLabel'
-import ErrorText from './ErrorText'
 import { SelectInputStyled, TextInputStyled } from '../../../styled/InputStyles'
 
 const { defaultNumberPad } = math
@@ -277,14 +276,14 @@ const Variables = ({
       dataIndex: variableName,
       key: variables[variableName].id,
       render: (text) => {
-        return text !== 'Recursion_Error' ? (
+        return text !== 'Recursion_Error' && text !== 'Parsing_Error' ? (
           <MathFormulaDisplay
             dangerouslySetInnerHTML={{
               __html: getMathFormulaTemplate(text),
             }}
           />
         ) : (
-          <ErrorText />
+          <ErrorText>Unable to parse expression</ErrorText>
         )
       },
     }
@@ -661,14 +660,18 @@ const Variables = ({
                   </Col>
                 )}
                 <Col md={5} style={{ paddingTop: 10, paddingLeft: 12 }}>
-                  {variable.exampleValue !== 'Recursion_Error' && (
-                    <MathFormulaDisplay
-                      dangerouslySetInnerHTML={{
-                        __html: getMathFormulaTemplate(variable.exampleValue),
-                      }}
-                    />
+                  {variable.exampleValue !== 'Recursion_Error' &&
+                    variable.exampleValue !== 'Parsing_Error' && (
+                      <MathFormulaDisplay
+                        dangerouslySetInnerHTML={{
+                          __html: getMathFormulaTemplate(variable.exampleValue),
+                        }}
+                      />
+                    )}
+                  {(variable.exampleValue === 'Recursion_Error' ||
+                    variable.exampleValue === 'Parsing_Error') && (
+                    <ErrorText>Unable to parse expression</ErrorText>
                   )}
-                  {variable.exampleValue === 'Recursion_Error' && <ErrorText />}
                 </Col>
               </Row>
             )
@@ -787,4 +790,8 @@ const ErrorMsgModal = styled(CustomModalStyled)`
   .ant-modal-close {
     display: none;
   }
+`
+
+const ErrorText = styled.span`
+  color: ${redDark};
 `

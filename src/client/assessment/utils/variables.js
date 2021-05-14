@@ -89,7 +89,9 @@ export const updateVariables = (item, latexKeys = []) => {
     }))
   })
   item.variable.examples = newExamples
-  item.variable.variables = newVariables
+  if (Object.keys(newVariables).length) {
+    item.variable.variables = newVariables
+  }
 }
 
 export const getMathTemplate = (exampleValue) =>

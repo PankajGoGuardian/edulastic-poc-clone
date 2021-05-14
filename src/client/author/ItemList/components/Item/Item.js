@@ -209,6 +209,7 @@ class Item extends Component {
         0
       const ttsStatusSuccess = {
         name: ttsSuccess ? <IconVolumeUp /> : <IconNoVolume />,
+        text: ' ',
       }
       details.push(ttsStatusSuccess)
     }

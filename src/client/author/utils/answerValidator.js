@@ -177,32 +177,56 @@ const answerValidator = {
       const mathUnitInputs = (answer.mathUnits?.value || []).filter(
         (_answer) => !isEmpty(_answer)
       )
+      let allEmpty = true
       // get all the mathUnit inputs
       // combine text and dropdown as they can be validated together
       const textInputsAndDropdowns = [...textInputs, ...dropdowns]
 
-      // check for empty answers
-      // if validation method is equivSyntax answer will be empty
-      const hasEmptyMathAnswers = isEmpty(
-        mathInputs.filter((mathInput = {}) =>
-          mathInput.method !== methods.EQUIV_SYNTAX
-            ? !isEmpty(mathInput?.value)
-            : true
+      /**
+       * @see https://snapwiz.atlassian.net/browse/EV-27080
+       * return even if a single correct answer is left empty
+       */
+      if (!isEmpty(answer.value)) {
+        allEmpty = false
+        // check for empty answers
+        // if validation method is equivSyntax answer will be empty
+        const hasEmptyMathAnswers = isEmpty(
+          mathInputs.filter((mathInput = {}) =>
+            mathInput.method !== methods.EQUIV_SYNTAX
+              ? !isEmpty(mathInput?.value)
+              : true
+          )
         )
-      )
+        if (hasEmptyMathAnswers) {
+          return true
+        }
+      }
 
-      const hasEmptyMathUnitInputs = isEmpty(
-        mathUnitInputs.filter((input = {}) =>
-          input.method !== methods.EQUIV_SYNTAX ? !isEmpty(input?.value) : true
+      if (!isEmpty(answer.mathUnits?.value || [])) {
+        allEmpty = false
+        const hasEmptyMathUnitInputs = isEmpty(
+          mathUnitInputs.filter((input = {}) =>
+            input.method !== methods.EQUIV_SYNTAX
+              ? !isEmpty(input?.value)
+              : true
+          )
         )
-      )
+        if (hasEmptyMathUnitInputs) {
+          return true
+        }
+      }
 
-      const hasEmptyTextOrDropDown = isEmpty(
-        textInputsAndDropdowns.filter((ans) => !isEmpty(ans.value))
-      )
-      return (
-        hasEmptyTextOrDropDown && hasEmptyMathAnswers && hasEmptyMathUnitInputs
-      )
+      if (!isEmpty(textInputs) || !isEmpty(dropdowns)) {
+        allEmpty = false
+        const hasEmptyTextOrDropDown = isEmpty(
+          textInputsAndDropdowns.filter((ans) => !isEmpty(ans.value))
+        )
+        if (hasEmptyTextOrDropDown) {
+          return true
+        }
+      }
+
+      return allEmpty
     })
     return hasEmpty
   },

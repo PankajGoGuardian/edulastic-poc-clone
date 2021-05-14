@@ -28,8 +28,6 @@ import {
   toggleFreeAdminSubscriptionModalAction,
 } from '../../../../student/Login/ducks'
 import ConfirmCancelTestEditModal from '../../../src/components/common/ConfirmCancelTestEditModal'
-import ConfirmRegradeModal from '../../../src/components/common/ConfirmRegradeModal'
-import EditTestModal from '../../../src/components/common/EditTestModal'
 import FilterToggleBtn from '../../../src/components/common/FilterToggleBtn'
 import { getStatus } from '../../../src/utils/getStatus'
 import {
@@ -37,6 +35,10 @@ import {
   getTestsCreatingSelector,
   shouldDisableSelector,
   getTestItemsSelector,
+  getShowRegradeConfirmPopupSelector,
+  setShowRegradeConfirmPopupAction,
+  getRegradeFirebaseDocIdSelector,
+  getShowUpgradePopupSelector,
 } from '../../ducks'
 import { fetchAssignmentsAction, getAssignmentsSelector } from '../Assign/ducks'
 import TestPageNav from '../TestPageNav/TestPageNav'
@@ -51,6 +53,9 @@ import PrintTestModal from '../../../src/components/common/PrintTestModal'
 import { getIsCurator, isFreeAdminSelector } from '../../../src/selectors/user'
 import { validateQuestionsForDocBased } from '../../../../common/utils/helpers'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
+import RegradeNotificationListener from '../../../Regrade/RegradeNotificationListener'
+import ConfirmRegradeModal from '../../../Regrade/ConfirmRegradeModal'
+import Upgrade from '../../../Regrade/Upgrade'
 
 const {
   statusConstants,
@@ -169,6 +174,10 @@ const TestPageHeader = ({
   isUpdatingTestForRegrade,
   isFreeAdmin,
   toggleFreeAdminSubscriptionModal,
+  showRegradeConfirmPopup,
+  setShowRegradeConfirmPopup,
+  regradeFirebaseDocId,
+  showUpgradePopup,
 }) => {
   let navButtons =
     buttons ||
@@ -177,9 +186,6 @@ const TestPageHeader = ({
       : isDocBased
       ? [...docBasedButtons]
       : [...navButtonsTest])
-  const [openEditPopup, setOpenEditPopup] = useState(false)
-  const [showRegradePopup, setShowRegradePopup] = useState(false)
-  const [currentAction, setCurrentAction] = useState('')
   const [showCancelPopup, setShowCancelPopup] = useState(false)
   const [showPrintOptionPopup, setShowPrintOptionPopup] = useState(false)
 
@@ -195,7 +201,9 @@ const TestPageHeader = ({
       })
     } else if (!creating && test?._id) {
       const testId =
-        test.status === 'draft' && test.isUsed ? test.previousTestId : test._id
+        (test.status === 'draft' && test.isUsed) || showUpgradePopup
+          ? test.previousTestId
+          : test._id
       fetchAssignments({ testId, regradeAssignments: true })
     }
   }, [test?._id, match?.params?.oldId])
@@ -213,16 +221,12 @@ const TestPageHeader = ({
   }
 
   const onCancelRegrade = () => {
-    setShowRegradePopup(false)
-    switch (currentAction) {
-      case 'assign':
-        onAssign()
-        break
-      case 'publish':
-        onPublish()
-        break
-      default:
-    }
+    setShowRegradeConfirmPopup(false)
+    notification({
+      type: 'warn',
+      msg:
+        'Assignment Regrade has been cancelled and changes have not been published.',
+    })
   }
 
   const handlePublish = () => {
@@ -249,7 +253,6 @@ const TestPageHeader = ({
       (updated || test.status !== statusConstants.PUBLISHED) &&
       testAssignments?.length > 0
     ) {
-      setCurrentAction('publish')
       onRegradeConfirm()
       return
     }
@@ -272,21 +275,12 @@ const TestPageHeader = ({
       return onPublish()
     }
     setDisableAlert(true)
-    setCurrentAction('publish')
     onRegradeConfirm()
     return true
   }
 
   const handleAssign = () => {
     if (isFreeAdmin) return toggleFreeAdminSubscriptionModal()
-    if (
-      isUsed &&
-      (updated || test.status !== statusConstants.PUBLISHED) &&
-      testAssignments?.length > 0
-    ) {
-      setCurrentAction('assign')
-      return setShowRegradePopup(true)
-    }
     onAssign()
   }
 
@@ -393,20 +387,10 @@ const TestPageHeader = ({
     !isPlaylist
   return (
     <>
-      <EditTestModal
-        visible={openEditPopup}
-        isUsed={isUsed && !!testAssignments.length}
-        onCancel={() => setOpenEditPopup(false)}
-        onOk={() => {
-          onEnableEdit()
-          setOpenEditPopup(false)
-        }}
-      />
+      <Upgrade />
       <ConfirmRegradeModal
-        visible={showRegradePopup}
-        onCancel={() => setShowRegradePopup(false)}
-        onOk={onRegradeConfirm}
-        onCancelRegrade={onCancelRegrade}
+        visible={showRegradeConfirmPopup}
+        onCancel={onCancelRegrade}
       />
       <ConfirmCancelTestEditModal
         showCancelPopup={showCancelPopup}
@@ -561,11 +545,9 @@ const TestPageHeader = ({
                 title="Edit Test"
                 disabled={editEnable || disableButtons}
                 data-cy="edit-test"
-                onClick={() =>
-                  isEdulasticCurator || isCurator
-                    ? onEnableEdit()
-                    : setOpenEditPopup(true)
-                }
+                onClick={() => {
+                  onEnableEdit(false, true)
+                }}
               >
                 <IconPencilEdit />
               </EduButton>
@@ -612,7 +594,8 @@ const TestPageHeader = ({
                   PUBLISH
                 </EduButton>
               )}
-            {showShareButton &&
+            {!showUpgradePopup &&
+              showShareButton &&
               (owner || testStatus === 'published') &&
               !isPlaylist &&
               !showCancelButton &&
@@ -638,12 +621,12 @@ const TestPageHeader = ({
               !isPlaylist && (
                 <EduButton
                   isBlue
-                  title="Regrade Test"
+                  title="Publish"
                   data-cy="publish"
                   onClick={handleRegrade}
                   disabled={disableButtons || isUpdatingTestForRegrade}
                 >
-                  REGRADE
+                  PUBLISH
                 </EduButton>
               )}
           </RightFlexContainer>
@@ -742,7 +725,8 @@ const TestPageHeader = ({
                   APPROVE
                 </EduButton>
               )}
-            {showShareButton &&
+            {!showUpgradePopup &&
+              showShareButton &&
               (owner || testStatus === 'published') &&
               !isPlaylist &&
               !showCancelButton &&
@@ -771,6 +755,7 @@ const TestPageHeader = ({
           />
         </MainHeader>
       )}
+      {regradeFirebaseDocId && <RegradeNotificationListener />}
     </>
   )
 }
@@ -804,11 +789,15 @@ const enhance = compose(
       authorQuestionsById: state.authorQuestions.byId,
       isUpdatingTestForRegrade: state.tests.updatingTestForRegrade,
       isFreeAdmin: isFreeAdminSelector(state),
+      showRegradeConfirmPopup: getShowRegradeConfirmPopupSelector(state),
+      regradeFirebaseDocId: getRegradeFirebaseDocIdSelector(state),
+      showUpgradePopup: getShowUpgradePopupSelector(state),
     }),
     {
       publishForRegrade: publishForRegradeAction,
       fetchAssignments: fetchAssignmentsAction,
       toggleFreeAdminSubscriptionModal: toggleFreeAdminSubscriptionModalAction,
+      setShowRegradeConfirmPopup: setShowRegradeConfirmPopupAction,
     }
   )
 )

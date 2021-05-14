@@ -42,6 +42,7 @@ const RubricGrading = ({
         onChange={submitRubricResponse}
       />
       <RubricsButton
+        data-cy="viewRubricButton"
         ml="0px"
         noHover
         isGhost

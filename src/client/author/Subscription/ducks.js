@@ -53,7 +53,10 @@ export const getAddOnProductIds = createSelector(
   subscriptionSelector,
   (state) => state.addOnProductIds
 )
-
+export const getShowTrialConfirmationMessageSelector = createSelector(
+  subscriptionSelector,
+  (state) => state.showTrialConfirmationMessage
+)
 export const getBookKeepersInviteSuccessStatus = createSelector(
   subscriptionSelector,
   (state) => state.isBookKeepersInviteSuccess
@@ -66,7 +69,6 @@ const slice = createSlice({
     verificationPending: false,
     subscriptionData: {},
     error: '',
-    showTrialSubsConfirmation: false,
     showTrialConfirmationMessage: '',
     products: [],
     showHeaderTrialModal: false,
@@ -145,9 +147,6 @@ const slice = createSlice({
     },
     resetSubscriptions: (state) => {
       state.subscriptionData = {}
-    },
-    trialSubsConfirmationAction: (state, { payload }) => {
-      state.showTrialSubsConfirmation = payload
     },
     trialConfirmationMessageAction: (state, { payload }) => {
       state.showTrialConfirmationMessage = payload
@@ -455,7 +454,13 @@ function* handleMultiplePurchasePayment({ payload }) {
 
 function* handleStripePayment({ payload }) {
   try {
-    const { stripe, data, productIds, setPaymentServiceModal } = payload
+    const {
+      stripe,
+      data,
+      productIds,
+      setPaymentServiceModal,
+      setShowTrialSubsConfirmation,
+    } = payload
     yield call(message.loading, {
       content: 'Processing Payment, please wait',
       key: 'verify-license',
@@ -473,6 +478,7 @@ function* handleStripePayment({ payload }) {
         yield call(fetchUserSubscription)
         yield put(fetchUserAction({ background: true }))
         yield put(fetchMultipleSubscriptionsAction({ background: true }))
+        setShowTrialSubsConfirmation(true)
       } else {
         notification({
           msg: `API Response failed: ${error}`,
@@ -500,15 +506,16 @@ function* handleStripePayment({ payload }) {
 }
 
 function* handleFreeTrialSaga({ payload }) {
+  const { productIds, setShowTrialSubsConfirmation } = payload
   try {
-    const apiPaymentResponse = yield call(paymentApi.pay, payload)
+    const apiPaymentResponse = yield call(paymentApi.pay, { productIds })
     if (apiPaymentResponse.success) {
       yield put(slice.actions.startTrialSuccessAction(apiPaymentResponse))
       yield put(slice.actions.resetSubscriptions())
       yield call(showSuccessNotifications, apiPaymentResponse, true)
       yield call(fetchUserSubscription)
       yield put(fetchUserAction({ background: true }))
-      yield put(slice.actions.trialSubsConfirmationAction(true))
+      setShowTrialSubsConfirmation(true)
     } else {
       notification({
         type: 'error',

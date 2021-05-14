@@ -1,10 +1,11 @@
 import { createSelector } from 'reselect'
 import { createAction, createReducer, combineReducers } from 'redux-starter-kit'
 import { all, call, put, takeEvery } from 'redux-saga/effects'
-import { notification } from 'antd'
 import { get } from 'lodash'
 
-import { assignmentApi } from '@edulastic/api'
+import { assignmentApi, reportsApi } from '@edulastic/api'
+
+import { styledNotification } from './common/styled'
 
 import {
   reportAssignmentsReducer,
@@ -126,6 +127,11 @@ const SET_SHARING_STATE = '[reports] set sharing state'
 const SET_PRINTING_STATE = '[reports] set printing state'
 const SET_CSV_DOWNLOADING_STATE = '[reports] set csv download state'
 
+const GENERATE_CSV_REQUEST = '[reports] generate csv request'
+const GENERATE_CSV_STATUS = '[reports] generate csv request status'
+const SET_CSV_MODAL_VISIBLE = '[reports] set csv modal visible'
+const SET_CSV_DOCS = '[reports] set csv docs'
+
 const RECEIVE_TEST_LIST_REQUEST = '[reports] receive test list request'
 const RECEIVE_TEST_LIST_REQUEST_SUCCESS =
   '[reports] receive test list request success'
@@ -139,7 +145,14 @@ export const setPrintingStateAction = createAction(SET_PRINTING_STATE)
 export const setCsvDownloadingStateAction = createAction(
   SET_CSV_DOWNLOADING_STATE
 )
+
 export const receiveTestListAction = createAction(RECEIVE_TEST_LIST_REQUEST)
+
+export const generateCSVAction = createAction(GENERATE_CSV_REQUEST)
+export const setGenerateCSVStatusAction = createAction(GENERATE_CSV_STATUS)
+export const setCsvModalVisibleAction = createAction(SET_CSV_MODAL_VISIBLE)
+export const setCsvDocsAction = createAction(SET_CSV_DOCS)
+
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -173,6 +186,16 @@ export const getTestListLoadingSelector = createSelector(
   (state) => state.testListLoading
 )
 
+export const getCsvModalVisible = createSelector(
+  stateSelector,
+  (state) => state.csvModalVisible
+)
+
+export const getCsvDocs = createSelector(
+  stateSelector,
+  (state) => state.csvDocs
+)
+
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -184,6 +207,9 @@ const initialState = {
   isPrinting: false,
   testList: [],
   testListLoading: true,
+  csvModalVisible: false,
+  csvDocs: [],
+  csvLoading: false,
 }
 
 const reports = createReducer(initialState, {
@@ -211,6 +237,15 @@ const reports = createReducer(initialState, {
     state.testListLoading = false
     state.testList = []
     state.error = payload.error
+  },
+  [GENERATE_CSV_STATUS]: (state, { payload }) => {
+    state.csvLoading = payload
+  },
+  [SET_CSV_MODAL_VISIBLE]: (state, { payload }) => {
+    state.csvModalVisible = payload
+  },
+  [SET_CSV_DOCS]: (state, { payload }) => {
+    state.csvDocs = payload
   },
 })
 
@@ -259,6 +294,26 @@ export const reportReducer = combineReducers({
 
 // -----|-----|-----|-----| SAGAS BEGIN |-----|-----|-----|----- //
 
+export function* generateCSVSaga({ payload }) {
+  try {
+    styledNotification({
+      type: 'info',
+      msg:
+        'Download request received. We will notify you as soon as it gets ready.',
+    })
+    const response = yield call(reportsApi.generateCSV, payload)
+    if (!response) {
+      throw new Error('Failed to generate CSV')
+    }
+    yield put({ type: GENERATE_CSV_STATUS, payload: true })
+  } catch (error) {
+    const errorMessage =
+      error.response.data?.message || 'Download request failed.'
+    styledNotification({ msg: errorMessage })
+    yield put({ type: GENERATE_CSV_STATUS, payload: false })
+  }
+}
+
 export function* receiveTestListSaga({ payload }) {
   try {
     const searchResult = yield call(assignmentApi.searchAssignments, payload)
@@ -280,9 +335,9 @@ export function* receiveTestListSaga({ payload }) {
     })
   } catch (error) {
     const msg = 'Failed to receive tests dropdown data. Please try again...'
-    notification({ msg })
+    styledNotification({ msg })
     yield put({
-      type: RECEIVE_TEST_LIST_REQUEST_SUCCESS,
+      type: RECEIVE_TEST_LIST_REQUEST_ERROR,
       payload: { error: msg },
     })
   }
@@ -318,6 +373,7 @@ export function* reportSaga() {
     reportActivityByTeacherSaga(),
     customReportSaga(),
     sharedReportsSaga(),
+    yield takeEvery(GENERATE_CSV_REQUEST, generateCSVSaga),
     yield takeEvery(RECEIVE_TEST_LIST_REQUEST, receiveTestListSaga),
   ])
 }

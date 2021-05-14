@@ -16,8 +16,8 @@ import {
   ItemDetailContext,
   COMPACT,
   FieldLabel,
+  FlexContainer,
 } from '@edulastic/common'
-import { PaperWrapper } from './Graph/common/styled_components'
 import { themes } from '../../theme'
 import QuestionMenu, { AdvancedOptionsLink } from './QuestionMenu'
 
@@ -54,7 +54,6 @@ import { Text } from '../widgets/Text'
 import { MathFormula } from '../widgets/MathFormula'
 import { FormulaEssay } from '../widgets/FormulaEssay'
 import ClozeMath from '../widgets/ClozeMath'
-import { setQuestionDataAction } from '../../author/src/actions/question'
 import { requestScratchPadAction } from '../../author/ExpressGrader/ducks'
 import { Chart } from '../widgets/Charts'
 import { getUserRole, getUserFeatures } from '../../author/src/selectors/user'
@@ -64,7 +63,6 @@ import PreviewRubricTable from '../../author/GradingRubric/Components/common/Pre
 // import { Coding } from '../widgets/Coding'
 
 import Hints from './Hints'
-import Explanation from './Common/Explanation'
 import { EDIT } from '../constants/constantsForQuestions'
 import BottomAction from './Common/QuestionBottomAction'
 import {
@@ -83,137 +81,7 @@ import {
   languagePreferenceSelector,
   getCurrentLanguage,
 } from '../../common/components/LanguageSelector/duck'
-
-const QuestionContainer = styled.div`
-  padding: ${({ noPadding }) => (noPadding ? '0px' : null)};
-  display: ${({ isFlex }) => (isFlex ? 'flex' : 'block')};
-  justify-content: space-between;
-  ${({ style }) => style};
-  @media (max-width: ${mobileWidthMax}) {
-    flex-direction: column;
-  }
-  .ql-indent-1:not(.ql-direction-rtl) {
-    padding-left: 3em;
-  }
-  .ql-indent-1.ql-direction-rtl.ql-align-right {
-    padding-right: 3em;
-  }
-  .ql-indent-2:not(.ql-direction-rtl) {
-    padding-left: 6em;
-  }
-  .ql-indent-2.ql-direction-rtl.ql-align-right {
-    padding-right: 6em;
-  }
-  .ql-indent-3:not(.ql-direction-rtl) {
-    padding-left: 9em;
-  }
-  .ql-indent-3.ql-direction-rtl.ql-align-right {
-    padding-right: 9em;
-  }
-  .ql-indent-4:not(.ql-direction-rtl) {
-    padding-left: 12em;
-  }
-  .ql-indent-4.ql-direction-rtl.ql-align-right {
-    padding-right: 12em;
-  }
-  .ql-indent-5:not(.ql-direction-rtl) {
-    padding-left: 15em;
-  }
-  .ql-indent-5.ql-direction-rtl.ql-align-right {
-    padding-right: 15em;
-  }
-  .ql-indent-6:not(.ql-direction-rtl) {
-    padding-left: 18em;
-  }
-  .ql-indent-6.ql-direction-rtl.ql-align-right {
-    padding-right: 18em;
-  }
-  .ql-indent-7:not(.ql-direction-rtl) {
-    padding-left: 21em;
-  }
-  .ql-indent-7.ql-direction-rtl.ql-align-right {
-    padding-right: 21em;
-  }
-  .ql-indent-8:not(.ql-direction-rtl) {
-    padding-left: 24em;
-  }
-  .ql-indent-8.ql-direction-rtl.ql-align-right {
-    padding-right: 24em;
-  }
-  .ql-indent-9:not(.ql-direction-rtl) {
-    padding-left: 27em;
-  }
-  .ql-indent-9.ql-direction-rtl.ql-align-right {
-    padding-right: 27em;
-  }
-
-  .print-preview-feedback {
-    width: 100%;
-    padding: 0 35px;
-  }
-
-  /**
-   * @see https://snapwiz.atlassian.net/browse/EV-21030
-   * zwibbler canvas has z-index 999
-   */
-  .fr-video {
-    z-index: 1000;
-  }
-
-  @media print {
-    .__print_question-content-wrapper {
-      max-width: calc(100% - 55px);
-      display: block !important;
-      position: relative !important;
-    }
-    .question-wrapper {
-      padding: 5px;
-    }
-    .__print-question-option {
-      margin-top: 20px !important;
-    }
-    .__print-question-main-wrapper {
-      display: inline-table;
-      width: 100%;
-    }
-    .__print-space-reduce {
-      &-qlabel {
-        margin-right: 0.5rem !important;
-        margin-bottom: 0.5rem !important;
-      }
-      &-option {
-        align-items: flex-start !important;
-      }
-      &-options {
-        margin-bottom: 0px !important;
-        label {
-          padding: 0 !important;
-        }
-      }
-      &-stimulus {
-        margin-bottom: 5px !important;
-        & p {
-          br {
-            display: none !important;
-          }
-        }
-      }
-    }
-  }
-`
-
-export const FlexContainer = styled.div`
-  flex: auto;
-  display: flex;
-  flex-direction: column;
-  max-width: 100%;
-`
-
-export const EvaluationMessage = styled.div`
-  color: rgb(250, 135, 52);
-  width: 100%;
-  text-align: center;
-`
+import { StyledPaperWrapper } from '../styled/Widget'
 
 const DummyQuestion = () => <></>
 
@@ -447,6 +315,20 @@ class QuestionWrapper extends Component {
     return changeDataToPreferredLanguage(data, studentLanguagePreference)
   }
 
+  get answerScore() {
+    const { previewScore, previewMaxScore, data } = this.props
+    let score = previewScore
+    let maxScore = previewMaxScore
+    let isGradedExternally = false
+    if (data?.activity) {
+      score = data?.activity?.score
+      maxScore = data?.activity.maxScore
+      isGradedExternally = data?.activity?.isGradedExternally
+    }
+
+    return { score: (score || 0) / (maxScore || 1), isGradedExternally }
+  }
+
   render() {
     const {
       noPadding,
@@ -457,7 +339,6 @@ class QuestionWrapper extends Component {
       showFeedback,
       multiple,
       view,
-      setQuestionData,
       changePreviewTab,
       qIndex,
       itemIndex,
@@ -642,6 +523,7 @@ class QuestionWrapper extends Component {
                 isV1Multipart={isV1Multipart}
                 isStudentReport={isStudentReport}
                 isLCBView={isLCBView}
+                LCBPreviewModal={LCBPreviewModal}
                 borderRadius={isLCBView ? '10px' : borderRadius}
                 style={{
                   width:
@@ -663,16 +545,20 @@ class QuestionWrapper extends Component {
                     : flowLayout
                 }
               >
-                <StyledFlexContainer showScroll={isLCBView || isExpressGrader}>
+                <StyledFlexContainer
+                  showScroll={isLCBView || isExpressGrader}
+                  flexDirection="column"
+                  maxWidth="100%"
+                >
                   {evaluation === 'pending' && (
                     <EvaluationMessage>Evaluation is pending</EvaluationMessage>
                   )}
                   <Question
                     {...restProps}
-                    setQuestionData={setQuestionData}
                     item={data}
                     view={view}
                     evaluation={evaluation}
+                    answerScore={this.answerScore}
                     changePreviewTab={changePreviewTab}
                     qIndex={qIndex}
                     advancedLink={advancedLink}
@@ -704,8 +590,12 @@ class QuestionWrapper extends Component {
                       cleanSections={() => {}}
                       studentId={studentId}
                       t={restProps.t}
-                      isQuestionView={isQuestionView}
+                      isLCBView={isLCBView}
                       isExpressGrader={isExpressGrader}
+                      isQuestionView={isQuestionView}
+                      previewTab={previewTab}
+                      isPrintPreview={isPrintPreview}
+                      isGrade={isGrade}
                     />
                   )}
                   {rubricDetails && studentReportFeedbackVisible && (
@@ -735,14 +625,6 @@ class QuestionWrapper extends Component {
                       isStudentReport={isStudentReport}
                     />
                   )}
-                  {(isLCBView || isExpressGrader || previewTab === 'show') &&
-                    !isPrintPreview && (
-                      <Explanation
-                        isStudentReport={isStudentReport}
-                        question={data}
-                        isGrade={isGrade}
-                      />
-                    )}
                 </StyledFlexContainer>
               </PaperWrapper>
             </QuestionContainer>
@@ -756,7 +638,6 @@ class QuestionWrapper extends Component {
 QuestionWrapper.contextType = ItemDetailContext
 
 QuestionWrapper.propTypes = {
-  setQuestionData: PropTypes.func.isRequired,
   isPresentationMode: PropTypes.bool,
   view: PropTypes.string.isRequired,
   multiple: PropTypes.bool,
@@ -831,9 +712,10 @@ const enhance = compose(
       studentLanguagePreference: languagePreferenceSelector(state, ownProps),
       authLanguage: getCurrentLanguage(state),
       isTestPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
+      previewScore: state?.itemScore?.score, // this used only in the author preview
+      previewMaxScore: state?.itemScore?.maxScore, // this used only in the author preview
     }),
     {
-      setQuestionData: setQuestionDataAction,
       loadScratchPad: requestScratchPadAction,
     }
   )
@@ -870,5 +752,163 @@ const RubricTableWrapper = styled.div`
   .rubric-name {
     font-size: ${(props) => props.theme.standardFont};
     margin: 0px 42px 10px;
+  }
+`
+
+const QuestionContainer = styled.div`
+  padding: ${({ noPadding }) => (noPadding ? '0px' : null)};
+  display: ${({ isFlex }) => (isFlex ? 'flex' : 'block')};
+  justify-content: space-between;
+  ${({ style }) => style};
+  @media (max-width: ${mobileWidthMax}) {
+    flex-direction: column;
+  }
+  .ql-indent-1:not(.ql-direction-rtl) {
+    padding-left: 3em;
+  }
+  .ql-indent-1.ql-direction-rtl.ql-align-right {
+    padding-right: 3em;
+  }
+  .ql-indent-2:not(.ql-direction-rtl) {
+    padding-left: 6em;
+  }
+  .ql-indent-2.ql-direction-rtl.ql-align-right {
+    padding-right: 6em;
+  }
+  .ql-indent-3:not(.ql-direction-rtl) {
+    padding-left: 9em;
+  }
+  .ql-indent-3.ql-direction-rtl.ql-align-right {
+    padding-right: 9em;
+  }
+  .ql-indent-4:not(.ql-direction-rtl) {
+    padding-left: 12em;
+  }
+  .ql-indent-4.ql-direction-rtl.ql-align-right {
+    padding-right: 12em;
+  }
+  .ql-indent-5:not(.ql-direction-rtl) {
+    padding-left: 15em;
+  }
+  .ql-indent-5.ql-direction-rtl.ql-align-right {
+    padding-right: 15em;
+  }
+  .ql-indent-6:not(.ql-direction-rtl) {
+    padding-left: 18em;
+  }
+  .ql-indent-6.ql-direction-rtl.ql-align-right {
+    padding-right: 18em;
+  }
+  .ql-indent-7:not(.ql-direction-rtl) {
+    padding-left: 21em;
+  }
+  .ql-indent-7.ql-direction-rtl.ql-align-right {
+    padding-right: 21em;
+  }
+  .ql-indent-8:not(.ql-direction-rtl) {
+    padding-left: 24em;
+  }
+  .ql-indent-8.ql-direction-rtl.ql-align-right {
+    padding-right: 24em;
+  }
+  .ql-indent-9:not(.ql-direction-rtl) {
+    padding-left: 27em;
+  }
+  .ql-indent-9.ql-direction-rtl.ql-align-right {
+    padding-right: 27em;
+  }
+
+  .print-preview-feedback {
+    width: 100%;
+    padding: 0 35px;
+  }
+
+  /**
+   * @see https://snapwiz.atlassian.net/browse/EV-21030
+   * zwibbler canvas has z-index 999
+   */
+  .fr-video {
+    z-index: 1000;
+  }
+
+  @media print {
+    .__print_question-content-wrapper {
+      max-width: calc(100% - 55px);
+      display: block !important;
+      position: relative !important;
+    }
+    .question-wrapper {
+      padding: 5px;
+    }
+    .__print-question-option {
+      margin-top: 20px !important;
+    }
+    .__print-question-main-wrapper {
+      display: inline-table;
+      width: 100%;
+    }
+    .__print-space-reduce {
+      &-qlabel {
+        margin-right: 0.5rem !important;
+        margin-bottom: 0.5rem !important;
+      }
+      &-option {
+        align-items: flex-start !important;
+      }
+      &-options {
+        margin-bottom: 0px !important;
+        label {
+          padding: 0 !important;
+        }
+      }
+      &-stimulus {
+        margin-bottom: 5px !important;
+        & p {
+          br {
+            display: none !important;
+          }
+        }
+      }
+    }
+  }
+`
+
+export const EvaluationMessage = styled.div`
+  color: rgb(250, 135, 52);
+  width: 100%;
+  text-align: center;
+`
+
+const getPadding = ({
+  flowLayout,
+  isV1Multipart,
+  isStudentReport,
+  isLCBView,
+}) => {
+  // use the same padding for top, bottom, and left in everywhere,
+  // so we wil render scratchpad data in the same position
+  if (flowLayout) {
+    return '8px 0px'
+  }
+  if (isV1Multipart) {
+    return '8px 35px'
+  }
+  if (isStudentReport) {
+    return '8px 100px 8px 16px'
+  }
+  if (isLCBView) {
+    return '8px 28px 8px'
+  }
+  return '8px 16px'
+}
+
+export const PaperWrapper = styled(StyledPaperWrapper)`
+  padding: ${getPadding};
+  min-width: ${({ style }) => style.minWidth};
+  ${({ style }) => style};
+
+  @media (max-width: ${mobileWidthMax}) {
+    padding: ${({ flowLayout }) => (flowLayout ? '0px' : '8px')};
+    margin-bottom: 15px;
   }
 `

@@ -15,8 +15,7 @@ import {
   SlideContainer,
   SlideDescription,
 } from './styled'
-
-import EmbeddedVideoPreviewModal from '../../../../../../../CurriculumSequence/components/ManageContentBlock/components/EmbeddedVideoPreviewModal'
+import EdulasticOverviewModel from '../EdulasticOverview/EdulasticOverviewModel'
 
 const BannerSlider = ({
   bannerSlides,
@@ -108,9 +107,9 @@ const BannerSlider = ({
         </ScrollbarContainer>
       </SliderContainer>
       {isBannerModalVisible && (
-        <EmbeddedVideoPreviewModal
-          closeCallback={handleBannerModalClose}
-          isVisible={isBannerModalVisible}
+        <EdulasticOverviewModel
+          handleBannerModalClose={handleBannerModalClose}
+          isBannerModalVisible={isBannerModalVisible}
         />
       )}
     </>

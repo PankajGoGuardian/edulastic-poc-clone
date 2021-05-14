@@ -76,7 +76,15 @@ const DotPlot = ({
     saveAnswer(localData, active)
   }
 
+  const normalizeTouchEvent = (e) => {
+    if (e?.nativeEvent?.changedTouches?.length) {
+      e.pageX = e.nativeEvent.changedTouches[0].pageX
+      e.pageY = e.nativeEvent.changedTouches[0].pageY
+    }
+  }
+
   const onMouseMove = (e) => {
+    if (window.isIOS || window.isMobileDevice) normalizeTouchEvent(e)
     const newLocalData = cloneDeep(localData)
     if (isMouseDown && cursorY && !deleteMode) {
       const newPxY = convertUnitToPx(initY, gridParams) + e.pageY - cursorY
@@ -87,6 +95,7 @@ const DotPlot = ({
   }
 
   const onMouseDown = (index) => (e) => {
+    if (window.isIOS || window.isMobileDevice) normalizeTouchEvent(e)
     setCursorY(e.pageY)
     setActiveIndex(index)
     setInitY(localData[index].y)
@@ -110,6 +119,8 @@ const DotPlot = ({
       onMouseMove={onMouseMove}
       onMouseUp={onMouseUp}
       onMouseLeave={onMouseLeave}
+      onTouchMove={onMouseMove}
+      onTouchEnd={onMouseUp}
     >
       <Line
         x1={0}

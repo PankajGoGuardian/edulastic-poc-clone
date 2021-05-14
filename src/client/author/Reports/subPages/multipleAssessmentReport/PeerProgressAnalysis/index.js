@@ -65,6 +65,10 @@ const options = [
     key: 'frlStatus',
     title: 'FRL Status',
   },
+  {
+    key: 'hispanicEthnicity',
+    title: 'Hispanic Ethnicity',
+  },
 ]
 
 const PeerProgressAnalysis = ({
@@ -119,7 +123,7 @@ const PeerProgressAnalysis = ({
     if (settings.requestFilters.termId || settings.requestFilters.reportId) {
       return () => toggleFilter(null, false)
     }
-  }, [settings, ddfilter, compareBy.key])
+  }, [settings, compareBy.key])
 
   // get paginated data
   useEffect(() => {

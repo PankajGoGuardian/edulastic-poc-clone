@@ -55,6 +55,7 @@ import {
   ReviewContentWrapper,
   ReviewLeftContainer,
   TestTitle,
+  SecondHeaderWrapper,
 } from './styled'
 import { clearDictAlignmentAction } from '../../../../../src/actions/dictionaries'
 import { getCreateItemModalVisibleSelector } from '../../../../../src/selectors/testItem'
@@ -584,19 +585,18 @@ class Review extends PureComponent {
           <Row>
             <Col lg={24}>
               <SecondHeader>
-                <TestTitle>{test?.title}</TestTitle>
+                <TestTitle data-cy="testTitle">{test?.title}</TestTitle>
               </SecondHeader>
             </Col>
           </Row>
         ) : (
-          <Row>
+          <SecondHeaderWrapper>
             <Col lg={24} xl={owner && isEditable ? 24 : 18}>
               <div ref={this.secondHeaderRef}>
                 <SecondHeader>
                   <Breadcrumb
                     data={breadcrumbData}
                     style={{ position: 'unset' }}
-                    hasStickyHeader={hasStickyHeader}
                   />
                   <HeaderBar
                     onSelectAll={this.handleSelectAll}
@@ -618,7 +618,7 @@ class Review extends PureComponent {
                 </SecondHeader>
               </div>
             </Col>
-          </Row>
+          </SecondHeaderWrapper>
         )}
         <ReviewContentWrapper>
           <ReviewLeftContainer lg={24} xl={18}>

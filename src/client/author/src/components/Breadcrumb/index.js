@@ -27,28 +27,16 @@ const BreadCrumb = (props) => {
                   onClick={breadCrumb.onClick}
                 >
                   {/* pass search here after processing the string or process string here by calling a helper function in utils, currently no such requirement */}
-                  <span
-                    dangerouslySetInnerHTML={{
-                      __html: breadCrumb.title?.toLowerCase(),
-                    }}
-                  />
+                  <span>{breadCrumb.title?.toLowerCase()}</span>
                 </Link>
               ) : index !== data.length - 1 &&
                 !breadCrumb.state &&
                 breadCrumb.to ? (
                 <Link to={breadCrumb.to} onClick={breadCrumb.onClick}>
-                  <span
-                    dangerouslySetInnerHTML={{
-                      __html: breadCrumb.title?.toLowerCase(),
-                    }}
-                  />
+                  <span>{breadCrumb.title?.toLowerCase()}</span>
                 </Link>
               ) : (
-                <span
-                  dangerouslySetInnerHTML={{
-                    __html: breadCrumb.title?.toLowerCase(),
-                  }}
-                />
+                <span>{breadCrumb.title?.toLowerCase()}</span>
               )}
             </Breadcrumb.Item>
           ))}

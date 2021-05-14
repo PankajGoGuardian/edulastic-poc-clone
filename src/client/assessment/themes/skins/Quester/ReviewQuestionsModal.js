@@ -1,8 +1,14 @@
 import React, { useState } from 'react'
 import { compose } from 'redux'
 import styled from 'styled-components'
+import { themeColor } from '@edulastic/colors'
 import { withNamespaces } from '@edulastic/localization'
-import { CustomModalStyled, EduButton, FlexContainer } from '@edulastic/common'
+import {
+  CustomModalStyled,
+  EduButton,
+  FlexContainer,
+  withKeyboard,
+} from '@edulastic/common'
 import { StyledMenu, MenuItem } from './styled'
 
 const getItemStatusColor = (selectedCard) => {
@@ -50,7 +56,7 @@ const ReviewQuestionsModal = ({
 
   const handleQuestionCLick = (e) => {
     handleClose()
-    gotoQuestion(options[parseInt(e.key, 10)])
+    e && gotoQuestion(options[parseInt(e.key, 10)])
   }
 
   return (
@@ -128,6 +134,9 @@ const ReviewQuestionsModal = ({
               disabled={blockNavigationToAnsweredQuestions}
               data-cy="questionSelectOptions"
               bg={getItemStatusColor(selectedCard)}
+              onClick={() => {
+                handleQuestionCLick({ key: option })
+              }}
             >
               {option + 1}
             </MenuItem>
@@ -156,7 +165,7 @@ const enhance = compose(withNamespaces('student'))
 
 export default enhance(ReviewQuestionsModal)
 
-const Card = styled.div`
+const Card = withKeyboard(styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -173,6 +182,7 @@ const Card = styled.div`
   font-weight: 600;
   &:focus {
     outline: none;
+    box-shadow: 0 0 0 2px ${themeColor};
   }
   &:hover {
     color: #ffffff;
@@ -181,7 +191,7 @@ const Card = styled.div`
   :last-child {
     border: none;
   }
-`
+`)
 
 const LegendsContainer = styled.div`
   display: flex;

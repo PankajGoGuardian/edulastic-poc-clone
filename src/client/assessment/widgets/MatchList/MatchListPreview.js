@@ -348,9 +348,13 @@ const MatchListPreview = ({
     width: isPrintPreview ? '100%' : horizontallyAligned ? 1050 : 750,
   }
 
+  /**
+   * @see https://snapwiz.atlassian.net/browse/EV-26868
+   * avoid showing highlight if evaluation is empty
+   */
   const showEvaluate =
     (preview && !isAnswerModifiable && expressGrader) ||
-    (preview && !expressGrader)
+    (preview && !expressGrader && !isEmpty(evaluation))
 
   /**
    * scroll element

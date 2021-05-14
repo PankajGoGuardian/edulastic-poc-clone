@@ -1,6 +1,6 @@
 import { Card, Checkbox, Button, Menu, Col } from 'antd'
 import styled from 'styled-components'
-import { FlexContainer } from '@edulastic/common'
+import { FlexContainer, SelectInputStyled } from '@edulastic/common'
 import {
   mobileWidth,
   mobileWidthLarge,
@@ -360,4 +360,17 @@ export const SwitchBox = styled.span`
       height: 12px;
     }
   }
+`
+export const FilterSelect = styled(SelectInputStyled)`
+  width: ${(props) => props.width};
+  height: ${(props) => props.height};
+  margin-left: 25px;
+  .ant-select-selection-selected-value {
+    font-size: 11px;
+  }
+`
+export const FilterSpan = styled.span`
+  padding-right: 15px;
+  font-size: 12px;
+  font-weight: 600;
 `

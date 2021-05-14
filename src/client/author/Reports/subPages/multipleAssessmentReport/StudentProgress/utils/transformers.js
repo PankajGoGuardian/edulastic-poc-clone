@@ -59,5 +59,11 @@ export const filterMetricInfoByDDFilters = (metricInfo = [], ddfilter) =>
     ) {
       return false
     }
+    if (
+      !isEmpty(ddfilter.hispanicEthnicity) &&
+      toLower(ddfilter.hispanicEthnicity) !== toLower(info.hispanicEthnicity)
+    ) {
+      return false
+    }
     return true
   })

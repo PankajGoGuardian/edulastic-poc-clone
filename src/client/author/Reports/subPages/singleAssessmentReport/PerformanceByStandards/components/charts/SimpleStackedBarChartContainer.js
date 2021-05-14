@@ -2,19 +2,22 @@ import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { find, round, get } from 'lodash'
 
+import { reportUtils } from '@edulastic/constants'
+
 import { SimpleStackedBarChart } from '../../../../../common/components/charts/simpleStackedBarChart'
-import {
+import BarTooltipRow from '../../../../../common/components/tooltip/BarTooltipRow'
+
+const { addColors } = reportUtils.common
+
+const {
   viewByMode,
   analyzeByMode,
   getYLabelString,
   getChartScoreData,
-} from '../../util/transformers'
-import { addColors } from '../../../../../common/util'
-import BarTooltipRow from '../../../../../common/components/tooltip/BarTooltipRow'
+} = reportUtils.performanceByStandards
 
 const SimpleStackedBarChartContainer = ({
   report,
-  filter,
   viewBy,
   analyzeBy,
   onBarClick,
@@ -27,7 +30,6 @@ const SimpleStackedBarChartContainer = ({
 
   let formattedData = useMemo(() => getChartScoreData(report, viewBy), [
     report,
-    filter,
     viewBy,
   ])
 
@@ -89,13 +91,13 @@ const SimpleStackedBarChartContainer = ({
       switch (analyzeBy) {
         case analyzeByMode.SCORE:
           lastItem = {
-            title: 'Avg.Score(%) : ',
+            title: 'Avg. Score (%) : ',
             value: `${round(payload[0].value)}%`,
           }
           break
         case analyzeByMode.RAW_SCORE:
           lastItem = {
-            title: 'Avg.Score : ',
+            title: 'Avg. Score : ',
             value: `${round(payload[0].payload.rawScore, 2)} / ${
               payload[0].payload.maxScore
             }`,
@@ -113,8 +115,12 @@ const SimpleStackedBarChartContainer = ({
             value={name}
           />
           <BarTooltipRow
-            title="Total Points :"
-            value={get(payload[0], 'payload.maxScore', '')}
+            title="Total Points : "
+            value={get(payload[0], 'payload.totalMaxScore', '')}
+          />
+          <BarTooltipRow
+            title="Total Score : "
+            value={get(payload[0], 'payload.totalTotalScore', '')}
           />
           {lastItem && <BarTooltipRow {...lastItem} />}
         </div>
@@ -146,7 +152,6 @@ SimpleStackedBarChartContainer.propTypes = {
   viewBy: PropTypes.string.isRequired,
   analyzeBy: PropTypes.string.isRequired,
   onBarClick: PropTypes.func.isRequired,
-  filter: PropTypes.object.isRequired,
   onResetClick: PropTypes.func.isRequired,
   report: PropTypes.object,
   selectedData: PropTypes.array,

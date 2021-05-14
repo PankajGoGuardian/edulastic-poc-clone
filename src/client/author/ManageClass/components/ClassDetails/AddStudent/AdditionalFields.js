@@ -28,6 +28,7 @@ const AdditionalFields = ({
     iepStatus,
     ellStatus,
     sedStatus,
+    hispanicEthnicity,
     frlStatus,
     race,
     dob,
@@ -103,6 +104,19 @@ const AdditionalFields = ({
         {...restProps}
         fiedlName="sedStatus"
         initialValue={sedStatus}
+      >
+        <SelectInputStyled
+          getPopupContainer={(triggerNode) => triggerNode.parentNode}
+        >
+          <Option value="Yes">Yes</Option>
+          <Option value="No">No</Option>
+        </SelectInputStyled>
+      </Field>
+      <Field
+        label="Hispanic Ethnicity"
+        {...restProps}
+        fiedlName="hispanicEthnicity"
+        initialValue={hispanicEthnicity}
       >
         <SelectInputStyled
           getPopupContainer={(triggerNode) => triggerNode.parentNode}

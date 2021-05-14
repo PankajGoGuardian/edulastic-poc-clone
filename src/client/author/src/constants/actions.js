@@ -94,7 +94,7 @@ export const TOGGLE_CREATE_ITEM_MODAL = '[testItem] toggle create item modal'
 
 export const CORRECT_ITEM_UPDATE_REQUEST =
   '[testItem] update correct testItem in LCB request'
-export const CORRECT_ITEM_UPDATE_SUCCESS =
+export const SET_CORRECT_ITEM_UPDATE_PROGRESS =
   '[testItem] update correct testItem in LCB success'
 export const TOGGLE_REGRADE_MODAL = '[tests] toggle regrade modal in LCB'
 
@@ -163,6 +163,7 @@ export const RECEIVE_CLASS_RESPONSE_ERROR =
   '[classresponses] receive list error'
 export const UPDATE_STUDENT_TEST_ITEMS =
   '[classresponses] update student test items'
+export const REPLACE_ORIGINAL_ITEM = '[classresponses] replace original item'
 export const RECEIVE_STUDENT_RESPONSE_REQUEST =
   '[studentResponse] receive list request'
 export const RECEIVE_STUDENT_RESPONSE_SUCCESS =
@@ -412,6 +413,7 @@ export const MQTT_CLIENT_REMOVE_REQUEST = '[mqtt] Client removed'
 
 export const TOGGLE_QUESTION_EDIT_MODAL_LCB =
   '[edit question] toggle question edit modal in lcb correct item'
+
 export const SET_EDIT_ITEM_ID = '[edit question] set edit itemId'
 export const SET_CURRENT_STUDENT_ID = '[edit question] set current student id'
 

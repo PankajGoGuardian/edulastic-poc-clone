@@ -86,7 +86,7 @@ const StandardsProgress = ({
     if (settings.requestFilters.termId || settings.requestFilters.reportId) {
       return () => toggleFilter(null, false)
     }
-  }, [settings.requestFilters, ddfilter])
+  }, [settings.requestFilters])
 
   useEffect(() => {
     if (pageFilters.barsPageNumber) {

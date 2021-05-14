@@ -9,6 +9,7 @@ import {
   uniq,
   some,
   every,
+  cloneDeep,
 } from 'lodash'
 import { testActivityStatus, questionType } from '@edulastic/constants'
 import produce from 'immer'
@@ -449,7 +450,19 @@ export function getStandardsForStandardBasedReport(
     (x) => `${x._id}`
   )
   const standardsQuestionsMap = {}
-  const questions = testItems.flatMap((x) => x.data.questions)
+  const items = cloneDeep(testItems)
+  const questions = []
+  items.forEach(({ itemLevelScoring, data }) => {
+    if (itemLevelScoring && data?.questions?.length) {
+      const alignment = []
+      data.questions.forEach((question) => {
+        alignment.push(...(question.alignment || []))
+        question.alignment = []
+      })
+      data.questions[0].alignment = alignment
+    }
+    questions.push(...data.questions)
+  })
   for (const q of questions) {
     if (q?.validation?.unscored) {
       continue

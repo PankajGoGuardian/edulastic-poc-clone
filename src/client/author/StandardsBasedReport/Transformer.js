@@ -43,7 +43,12 @@ export const getStandardWisePerformance = (testActivities, std) => {
     const questionActivitiesByQid = groupBy(filteredQuestionActivities, '_id')
 
     for (const qid of std.qIds) {
-      const questionActs = questionActivitiesByQid[qid] || []
+      let questionActs = questionActivitiesByQid[qid] || []
+      if (!questionActs.length) {
+        questionActs = filteredQuestionActivities.filter(({ qids }) =>
+          qids.includes(qid)
+        )
+      }
       for (const qAct of questionActs) {
         const { studentId } = qAct
         if (!performanceStudentWise[studentId]) {

@@ -78,6 +78,7 @@ import {
   setDictAlignmentFromQuestion,
   getIsGradingCheckboxState,
   SAVE_QUESTION_REQUEST,
+  addAuthoredItemsAction,
 } from '../QuestionEditor/ducks'
 import { getNewAlignmentState } from '../src/reducers/dictionaries'
 import {
@@ -1850,8 +1851,9 @@ function* savePassage({ payload }) {
     const hasValidTestId = payload.testId && payload.testId !== 'undefined'
     const testIdParam = hasValidTestId ? payload.testId : null
 
+    let item
     if (currentItem._id === 'new') {
-      const item = yield call(
+      item = yield call(
         testItemsApi.create,
         _omit(currentItem, '_id'),
         ...(testIdParam ? [{ testId: testIdParam }] : [])
@@ -1891,7 +1893,26 @@ function* savePassage({ payload }) {
      * after saving the question it redirects to item detail page
      */
     yield put(changeUpdatedFlagAction(false))
-    yield put(push(url))
+
+    /**
+     * If test flow and test is not created, creating test after passage item is created and redirecting to edit-item page
+     * If not test flow or if test is already created, redirecting to edit-item page
+     * passing addAuthoredItemsAction fromSavePassage flag for getting redirected to edit-item page instead of test review page
+     * @see https://snapwiz.atlassian.net/browse/EV-26929
+     */
+    if (backUrl.includes('tests') && payload?.testId === 'undefined' && item) {
+      yield put(
+        addAuthoredItemsAction({
+          item,
+          tId: payload.testId,
+          isEditFlow: false,
+          fromSavePassage: true,
+          url,
+        })
+      )
+    } else {
+      yield put(push(url))
+    }
   } catch (e) {
     Sentry.captureException(e)
     console.log('error: ', e)

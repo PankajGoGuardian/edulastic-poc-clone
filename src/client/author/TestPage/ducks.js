@@ -2575,6 +2575,19 @@ function* setTestDataAndUpdateSaga({ payload }) {
         },
       })
       yield put(setIsCreatingAction(false))
+
+      // redirecting to edit-item page instead of test review page if after creating a passage item
+      if (payload.fromSavePassage) {
+        if (entity?._id) {
+          yield put(
+            push(payload.url.replace('tests/undefined', `tests/${entity._id}`))
+          )
+        } else {
+          yield put(push(payload.url))
+        }
+        return
+      }
+
       // TODO: is this logic still relevant?
       if (payload.current) {
         yield put(

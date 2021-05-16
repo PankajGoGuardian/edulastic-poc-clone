@@ -668,7 +668,7 @@ function* saveQuestionSaga({
         testItemsApi.updateById,
         itemDetail._id,
         data,
-        redirectTestId || tId
+        redirectTestId || (tId === 'undefined' ? undefined : tId) // testId is 'undefined' in test flow if test not created.
       )
     }
     yield put(changeUpdatedFlagAction(false))
@@ -890,7 +890,13 @@ const hasMathFormula = (variables) =>
  */
 function* addAuthoredItemsToTestSaga({ payload }) {
   try {
-    const { item, tId: testId, isEditFlow } = payload
+    const {
+      item,
+      tId: testId,
+      isEditFlow,
+      fromSavePassage = false,
+      url = '',
+    } = payload
     const testItems = yield select(getSelectedItemSelector)
     const currentGroupIndex = yield select(getCurrentGroupIndexSelector)
     // updated testItems should have the current authored item
@@ -910,7 +916,14 @@ function* addAuthoredItemsToTestSaga({ payload }) {
     // if the item is getting created from test before saving
     // then save and continue else change the route to test
     if (!testId || testId === 'undefined') {
-      yield put(setTestDataAndUpdateAction({ addToTest: true, item }))
+      yield put(
+        setTestDataAndUpdateAction({
+          addToTest: true,
+          item,
+          fromSavePassage,
+          url,
+        })
+      )
     } else {
       const test = yield select(getTestSelector)
       // update the test store with new test ITem

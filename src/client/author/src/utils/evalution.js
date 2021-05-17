@@ -1,4 +1,4 @@
-import { set, round, min, cloneDeep } from 'lodash'
+import { set, round, min, cloneDeep, isEmpty } from 'lodash'
 import {
   multipartEvaluationTypes,
   PARTIAL_MATCH,
@@ -31,7 +31,7 @@ export const evaluateItem = async (
   for (const [index, id] of questionIds.entries()) {
     const evaluationId = `${itemId}_${id}`
     const answer = answers[id]
-    if (validations && validations[id]) {
+    if (validations && validations[id] && !isEmpty(answer)) {
       const validation = replaceVariables(validations[id], [], false)
       const { type } = validations[id]
       const evaluator = evaluators[validation.type]
@@ -91,14 +91,7 @@ export const evaluateItem = async (
       allCorrect = false
     }
   }
-  console.info({
-    answers,
-    results,
-    firstCorrect,
-    allCorrect,
-    itemGradingType,
-    assignPartialCredit,
-  })
+
   if (itemLevelScoring) {
     let achievedScore = min([
       itemLevelScore,

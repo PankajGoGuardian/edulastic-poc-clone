@@ -2630,6 +2630,9 @@ function* getEvaluation(testItemId, newScore) {
   const questions = _keyBy(testItem?.data?.questions, 'id')
   const answers = yield select((state) => get(state, 'answers', {}))
   const answersByQids = answersByQId(answers, testItem._id)
+  if (isEmpty(answersByQids)) {
+    return
+  }
   const evaluation = yield evaluateItem(
     answersByQids,
     questions,
@@ -2652,6 +2655,9 @@ function* getEvaluationFromItem(testItem, newScore) {
   const questions = _keyBy(testItem.data.questions, 'id')
   const answers = yield select((state) => get(state, 'answers', {}))
   const answersByQids = answersByQId(answers, testItem._id)
+  if (isEmpty(answersByQids)) {
+    return
+  }
   const evaluation = yield evaluateItem(
     answersByQids,
     questions,
@@ -2675,6 +2681,18 @@ function* checkAnswerSaga({ payload }) {
       )
     } else {
       evaluationObject = yield getEvaluation(payload.id, scoring[payload.id])
+    }
+    if (isEmpty(evaluationObject)) {
+      yield put({
+        type: CHANGE_PREVIEW,
+        payload: {
+          view: 'check',
+        },
+      })
+      return notification({
+        type: 'warn',
+        messageKey: 'attemptTheQuestonToCheckAnswer',
+      })
     }
     const { evaluation, score, maxScore } = evaluationObject
     yield put({

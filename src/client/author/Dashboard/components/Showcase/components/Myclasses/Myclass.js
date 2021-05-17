@@ -111,16 +111,9 @@ const MyClasses = ({
   }, [])
 
   const saveRecommendedTests = (_data) => {
-    if (!_data || !_data.length) {
-      return
-    }
     const data = _data.map((x) => {
       return { ...x._source, _id: x._id }
     })
-    localStorage.setItem(
-      `recommendedTest:${user?._id}:stored`,
-      JSON.stringify(data)
-    )
     if (user?.recommendedContentUpdated) {
       if (data?.length > 0) {
         notification({
@@ -134,10 +127,17 @@ const MyClasses = ({
           type: 'info',
         })
       }
+      const temp = user
+      temp.recommendedContentUpdated = false
+      setUser(temp)
     }
-    const temp = user
-    temp.recommendedContentUpdated = false
-    setUser(temp)
+    if (!_data || !_data.length) {
+      return
+    }
+    localStorage.setItem(
+      `recommendedTest:${user?._id}:stored`,
+      JSON.stringify(data)
+    )
     setRecommendedTests(data)
   }
 
@@ -148,9 +148,11 @@ const MyClasses = ({
     if (recommendedTestsLocal) {
       setRecommendedTests(JSON.parse(recommendedTestsLocal))
       if (user?.recommendedContentUpdated) {
-        configurableTilesApi
-          .fetchRecommendedTest()
-          .then((res) => saveRecommendedTests(res))
+        setTimeout(() => {
+          configurableTilesApi
+            .fetchRecommendedTest()
+            .then((res) => saveRecommendedTests(res))
+        }, 6000)
       }
     } else {
       configurableTilesApi

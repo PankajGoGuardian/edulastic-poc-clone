@@ -38,6 +38,13 @@ const TestActivityPreview = ({
     if (!questionActivity) {
       return null
     }
+
+    const previewScore = {
+      score: questionActivity.score,
+      maxScore: questionActivity.maxScore,
+      isGradedExternally: false,
+    }
+
     const { userWork } = questionActivity
     const questions = get(testItem, ['data', 'questions'], [])
     const resources = get(testItem, ['data', 'resources'], [])
@@ -86,6 +93,7 @@ const TestActivityPreview = ({
           {...scoringProps}
           studentName={t('common.anonymous')}
           itemId={testItem._id}
+          testPreviewScore={previewScore}
         />
       </TestItemPreviewContainer>
     )

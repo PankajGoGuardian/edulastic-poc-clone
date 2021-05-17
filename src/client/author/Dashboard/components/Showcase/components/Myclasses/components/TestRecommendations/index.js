@@ -80,6 +80,7 @@ const TestRecommendationsContainer = ({
                   blockStyle="tile"
                   windowWidth={windowWidth}
                   history={history}
+                  isTestRecommendation
                 />
               </TestCardContainer>
             )

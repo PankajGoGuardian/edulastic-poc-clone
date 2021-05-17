@@ -4,7 +4,6 @@ import { cardTitleColor, themeColor, darkGrey } from '@edulastic/colors'
 // eslint-disable-next-line no-unused-vars
 import { PremiumLabel, EduButton, LikeIconStyled } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
-import { connect } from 'react-redux'
 import {
   Container,
   Inner,
@@ -32,7 +31,6 @@ import Tags from '../../../src/components/common/Tags'
 import { TestStatus } from '../ListItem/styled'
 import { getAuthorCollectionMap } from '../../../dataUtils'
 import TestStatusWrapper from '../TestStatusWrapper/testStatusWrapper'
-import { getUserSignupStatusSelector } from '../../../src/selectors/user'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 
 const TestItemCard = ({
@@ -60,7 +58,7 @@ const TestItemCard = ({
   isTestLiked,
   handleLikeTest,
   likes,
-  userSignupStatus,
+  isTestRecommendation,
 }) => {
   const [height, setHeight] = useState(0)
   const ref = useRef(null)
@@ -72,6 +70,7 @@ const TestItemCard = ({
     <Container
       src={thumbnail}
       onClick={openModal}
+      isTestRecommendation={isTestRecommendation}
       title={
         <Header src={thumbnail}>
           <Stars />
@@ -136,90 +135,91 @@ const TestItemCard = ({
         </TagsWrapper>
       </TestInfo>
 
-      <MidRow>
-        <Collection isDynamic>
-          <label>COLLECTIONS</label>
-          <CollectionNameWrapper
-            data-cy="test-collection"
-            title={collectionName}
-          >
-            {collectionName}
-          </CollectionNameWrapper>
-        </Collection>
-        <Qcount>
-          <label>{isDocBased ? 'TOTAL QUESTIONS' : 'TOTAL ITEMS'}</label>
-          {/**
-           * For doc based wee need to consider
-           *  total number questions and toal number of items
-           *  */}
-          <div data-cy="test-item-count">
-            {isDocBased ? summary.totalQuestions : summary.totalItems}
-          </div>
-        </Qcount>
-        {isDynamic && (
-          <DynamicIconWrapper title="Dynamic Test. Every student might get different items in assignment">
-            <IconDynamic color={themeColor} />
-          </DynamicIconWrapper>
-        )}
-      </MidRow>
+      {!isTestRecommendation && (
+        <MidRow>
+          <Collection isDynamic>
+            <label>COLLECTIONS</label>
+            <CollectionNameWrapper
+              data-cy="test-collection"
+              title={collectionName}
+            >
+              {collectionName}
+            </CollectionNameWrapper>
+          </Collection>
+          <Qcount>
+            <label>{isDocBased ? 'TOTAL QUESTIONS' : 'TOTAL ITEMS'}</label>
+            {/**
+             * For doc based wee need to consider
+             *  total number questions and toal number of items
+             *  */}
+            <div data-cy="test-item-count">
+              {isDocBased ? summary.totalQuestions : summary.totalItems}
+            </div>
+          </Qcount>
+          {isDynamic && (
+            <DynamicIconWrapper title="Dynamic Test. Every student might get different items in assignment">
+              <IconDynamic color={themeColor} />
+            </DynamicIconWrapper>
+          )}
+        </MidRow>
+      )}
 
-      <Inner>
-        {authorName && (
-          <Author>
-            <AuthorWrapper>
-              {collections.find((o) => o.name === 'Edulastic Certified') ? (
-                getAuthorCollectionMap(true, 30, 30).edulastic_certified.icon
-              ) : (
-                <IconUser color={cardTitleColor} />
+      {!isTestRecommendation && (
+        <Inner>
+          {authorName && (
+            <Author>
+              <AuthorWrapper>
+                {collections.find((o) => o.name === 'Edulastic Certified') ? (
+                  getAuthorCollectionMap(true, 30, 30).edulastic_certified.icon
+                ) : (
+                  <IconUser color={cardTitleColor} />
+                )}
+                <AuthorName data-cy="test-author-name" title={authorName}>
+                  {authorName}
+                </AuthorName>
+              </AuthorWrapper>
+            </Author>
+          )}
+          <StatusRow>
+            <TestStatusWrapper status={status} checkUser={false}>
+              {({ children, ...rest }) => (
+                <TestStatus data-cy="test-status" {...rest} view="tile">
+                  {children}
+                </TestStatus>
               )}
-              <AuthorName data-cy="test-author-name" title={authorName}>
-                {authorName}
-              </AuthorName>
-            </AuthorWrapper>
-          </Author>
-        )}
-        <StatusRow>
-          <TestStatusWrapper status={status} checkUser={false}>
-            {({ children, ...rest }) => (
-              <TestStatus data-cy="test-status" {...rest} view="tile">
-                {children}
-              </TestStatus>
-            )}
-          </TestStatusWrapper>
-        </StatusRow>
-      </Inner>
+            </TestStatusWrapper>
+          </StatusRow>
+        </Inner>
+      )}
 
-      <Footer>
-        {testItemId ? (
-          <PlaylistId data-cy="test-id">
-            <span>#</span>
-            <span>{testItemId}</span>
-          </PlaylistId>
-        ) : null}
-        {status !== 'draft' && (
-          <>
-            <ShareIcon>
-              <IconUsers color={darkGrey} width={14} height={14} /> &nbsp;
-              <IconText>{usage}</IconText>
-            </ShareIcon>
-            <LikeIconStyled isLiked={isTestLiked} onClick={handleLikeTest}>
-              <IconHeart
-                color={isTestLiked ? '#ca481e' : darkGrey}
-                width={14}
-                height={14}
-              />
-              <IconText>{likes}</IconText>
-            </LikeIconStyled>
-          </>
-        )}
-      </Footer>
+      {!isTestRecommendation && (
+        <Footer>
+          {testItemId ? (
+            <PlaylistId data-cy="test-id">
+              <span>#</span>
+              <span>{testItemId}</span>
+            </PlaylistId>
+          ) : null}
+          {status !== 'draft' && (
+            <>
+              <ShareIcon>
+                <IconUsers color={darkGrey} width={14} height={14} /> &nbsp;
+                <IconText>{usage}</IconText>
+              </ShareIcon>
+              <LikeIconStyled isLiked={isTestLiked} onClick={handleLikeTest}>
+                <IconHeart
+                  color={isTestLiked ? '#ca481e' : darkGrey}
+                  width={14}
+                  height={14}
+                />
+                <IconText>{likes}</IconText>
+              </LikeIconStyled>
+            </>
+          )}
+        </Footer>
+      )}
     </Container>
   )
 }
 
-export default connect(
-  (state) => ({
-    userSignupStatus: getUserSignupStatusSelector(state),
-  }),
-  null
-)(TestItemCard)
+export default TestItemCard

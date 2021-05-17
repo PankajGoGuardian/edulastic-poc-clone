@@ -386,14 +386,18 @@ export const getAuthorQuestionStatus = createSelector(
   (state) => state.updated
 )
 
+export const isRegradeFlowSelector = createSelector(
+  locationSelector,
+  (location) => get(location, 'state.regradeFlow', false)
+)
+
 export const getIsEditDisbledSelector = createSelector(
   getQuestionsSelector,
-  locationSelector,
-  (questionsById, location) => {
+  isRegradeFlowSelector,
+  (questionsById, regradeFlow) => {
     const hasDynamicValues = Object.values(questionsById)?.some((q) =>
       get(q, 'variable.enabled', false)
     )
-    const regradeFlow = get(location, 'state.regradeFlow', false)
     if (hasDynamicValues && regradeFlow) {
       return [
         true,

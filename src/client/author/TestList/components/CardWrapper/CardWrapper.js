@@ -47,6 +47,7 @@ class CardWrapper extends Component {
       moduleTitle,
       onRemoveFromCart,
       onAddToCart,
+      isTestRecommendation,
     } = this.props
 
     const itemId = _id?.substr(_id.length - 6)
@@ -74,6 +75,7 @@ class CardWrapper extends Component {
             windowWidth={windowWidth}
             standards={standards}
             isTestLiked={isTestLiked}
+            isTestRecommendation={isTestRecommendation}
           />
         </CardBox>
       )

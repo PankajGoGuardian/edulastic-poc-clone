@@ -4,6 +4,8 @@ import styled from 'styled-components'
 import { connect } from 'react-redux'
 import { isObject, compact } from 'lodash'
 import { math } from '@edulastic/constants'
+import { lightGrey9 } from '@edulastic/colors'
+import { IconMoveArrows } from '@edulastic/icons'
 import { KEYBOARD_BUTTONS, TAB_BUTTONS } from './constants/keyboardButtons'
 import { NUMBER_PAD_ITEMS } from './constants/numberPadItems'
 
@@ -12,6 +14,11 @@ import KeyboardHeader from './components/KeyboardHeader'
 import MainKeyboard from './components/MainKeyboard'
 import FullKeybord from './components/FullKeybord'
 import Keyboard from '../Keyboard'
+import {
+  StyledGripperContainer,
+  StyledGripper,
+  StyledArrowContainer,
+} from './styled/MathKeyboardStyles'
 
 class MathKeyboard extends React.PureComponent {
   static KEYBOARD_BUTTONS = KEYBOARD_BUTTONS
@@ -145,11 +152,20 @@ class MathKeyboard extends React.PureComponent {
       showDropdown,
       docBasedKeypadStyles,
       customKeypads,
+      showDragHandle,
     } = this.props
     const { type, keyboardButtons, numberButtons, selectOptions } = this.state
 
     return (
       <MathKeyboardContainer docBasedKeypadStyles={docBasedKeypadStyles}>
+        {showDragHandle && (
+          <StyledGripperContainer>
+            <StyledGripper />
+            <StyledArrowContainer className="arrow-container">
+              <IconMoveArrows color={lightGrey9} width={15} height={15} />
+            </StyledArrowContainer>
+          </StyledGripperContainer>
+        )}
         <KeyboardHeader
           options={selectOptions}
           showResponse={showResponse}
@@ -186,6 +202,7 @@ MathKeyboard.propTypes = {
   onInput: PropTypes.func,
   onChangeKeypad: PropTypes.func,
   dynamicVariableInput: PropTypes.bool,
+  showDragHandle: PropTypes.bool,
 }
 
 MathKeyboard.defaultProps = {
@@ -197,6 +214,7 @@ MathKeyboard.defaultProps = {
   onInput: () => null,
   onChangeKeypad: () => null,
   dynamicVariableInput: false,
+  showDragHandle: true,
 }
 
 export default connect((state) => ({

@@ -840,9 +840,26 @@ function getScratchPadfromActivity(state, props) {
       data.dimensions = dimensions
       return data
     }
+    let uqaIdList = []
+    if (items?.[currentItem]?.itemLevelScoring) {
+      uqaIdList = (items[currentItem]?.data?.questions || []).map((q) => {
+        const { activity } = q
+        const { qActId, _id } = activity || {}
+        return qActId || _id
+      })
+    }
     questionActivity.qActId = questionActivity.qActId || questionActivity._id
-    const userWorkData = userWork.present[questionActivity.qActId] || {}
+    let userWorkData = {}
+    if (uqaIdList.length) {
+      const currentIdInStore = uqaIdList.find((id) => userWork.present[id])
+      if (currentIdInStore) {
+        userWorkData = userWork.present[currentIdInStore] || {}
+      }
+    } else {
+      userWorkData = userWork.present[questionActivity.qActId] || {}
+    }
     const scratchPadData = { data: userWorkData, dimensions }
+
     return scratchPadData
   }
   return {}

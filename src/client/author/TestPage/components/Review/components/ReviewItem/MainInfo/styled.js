@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components'
-import { WithMathFormula } from '@edulastic/common'
+import { WithMathFormula, NumberInputStyled } from '@edulastic/common'
 import { smallDesktopWidth } from '@edulastic/colors'
 
 const Style = css`
@@ -10,6 +10,17 @@ const Style = css`
   font-weight: normal !important;
   font-style: normal !important;
   text-decoration: none;
+`
+
+export const NumberInputStyledTestPage = styled(NumberInputStyled)`
+  .ant-input-number-handler-wrap:hover {
+    ~ .ant-input-number-input-wrap > .ant-input-number-input {
+      padding-right: 45%;
+    }
+  }
+  .ant-input-number-input {
+    text-align: center;
+  }
 `
 
 export const Stimulus = WithMathFormula(styled.div`

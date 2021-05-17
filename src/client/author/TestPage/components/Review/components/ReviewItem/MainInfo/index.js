@@ -9,7 +9,7 @@ import {
   CheckboxLabel,
   NumberInputStyled,
 } from '@edulastic/common'
-import { Stimulus } from './styled'
+import { Stimulus, NumberInputStyledTestPage } from './styled'
 import Actions from '../Actions'
 
 class MainInfo extends React.Component {
@@ -56,7 +56,7 @@ class MainInfo extends React.Component {
               isEditable={isEditable}
             />
             {!isUnScoredItem ? (
-              <NumberInputStyled
+              <NumberInputStyledTestPage
                 width="60px"
                 value={points}
                 margin="0px 0px 0px 5px"

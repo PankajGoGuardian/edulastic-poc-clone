@@ -1,5 +1,4 @@
-import { set, round, min } from 'lodash'
-import produce from 'immer'
+import { set, round, min, cloneDeep, isEmpty } from 'lodash'
 import {
   multipartEvaluationTypes,
   PARTIAL_MATCH,
@@ -32,7 +31,7 @@ export const evaluateItem = async (
   for (const [index, id] of questionIds.entries()) {
     const evaluationId = `${itemId}_${id}`
     const answer = answers[id]
-    if (validations && validations[id]) {
+    if (validations && validations[id] && !isEmpty(answer)) {
       const validation = replaceVariables(validations[id], [], false)
       const { type } = validations[id]
       const evaluator = evaluators[validation.type]
@@ -40,17 +39,19 @@ export const evaluateItem = async (
         results[evaluationId] = []
         allCorrect = false
       } else {
-        const validationData = itemLevelScoring
-          ? produce(validation.validation, (v) => {
-              const questionScore = itemLevelScore / numberOfQuestions
-              set(v, 'validResponse.score', questionScore)
-              if (Array.isArray(v.altResponses) && numberOfQuestions > 1) {
-                v.altResponses.forEach((altResp) => {
-                  altResp.score = questionScore
-                })
-              }
+        const validationData = cloneDeep(validation.validation)
+        if (itemLevelScoring) {
+          const questionScore = itemLevelScore / numberOfQuestions
+          set(validationData, 'validResponse.score', questionScore)
+          if (
+            Array.isArray(validationData.altResponses) &&
+            numberOfQuestions > 1
+          ) {
+            validationData.altResponses.forEach((altResp) => {
+              altResp.score = questionScore
             })
-          : validation.validation
+          }
+        }
         if (assignPartialCredit) {
           validationData.scoringType = PARTIAL_MATCH
         }
@@ -90,14 +91,7 @@ export const evaluateItem = async (
       allCorrect = false
     }
   }
-  console.info({
-    answers,
-    results,
-    firstCorrect,
-    allCorrect,
-    itemGradingType,
-    assignPartialCredit,
-  })
+
   if (itemLevelScoring) {
     let achievedScore = min([
       itemLevelScore,

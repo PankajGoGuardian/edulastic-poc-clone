@@ -265,14 +265,16 @@ class SummaryTest extends Component {
             </MainContent>
             <Footer>
               <ShortDescription>{t('common.nextStep')}</ShortDescription>
-              <UploadPaperWorkBtn
-                data-cy="uploadTestAttachments"
-                isGhost
-                onClick={openUserWorkUploadModal}
-              >
-                <IconPhotoCamera />{' '}
-                <span>{t('default:UPLOAD PAPER WORK')}</span>
-              </UploadPaperWorkBtn>
+              {false && (
+                <UploadPaperWorkBtn // hidden for 16.0 release EV-27886
+                  data-cy="uploadTestAttachments"
+                  isGhost
+                  onClick={openUserWorkUploadModal}
+                >
+                  <IconPhotoCamera />{' '}
+                  <span>{t('default:UPLOAD PAPER WORK')}</span>
+                </UploadPaperWorkBtn>
+              )}
               <SubmitButton
                 type="primary"
                 onClick={finishTest}

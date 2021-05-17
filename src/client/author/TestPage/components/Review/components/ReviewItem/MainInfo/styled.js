@@ -13,10 +13,10 @@ const Style = css`
 `
 
 export const NumberInputStyledTestPage = styled(NumberInputStyled)`
-  .ant-input-number-handler-wrap:hover {
-    ~ .ant-input-number-input-wrap > .ant-input-number-input {
-      padding-right: 45%;
-    }
+  .ant-input-number-handler-wrap:hover
+    ~ .ant-input-number-input-wrap
+    > .ant-input-number-input {
+    padding-right: 45%;
   }
   .ant-input-number-input {
     text-align: center;

@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import { find, isUndefined } from 'lodash'
+import { find, isUndefined, isEmpty } from 'lodash'
 import { Popover } from 'antd'
 import { response as responseConstant } from '@edulastic/constants'
 import { getEvalautionColor } from '../../../utils/evaluation'
@@ -87,7 +87,8 @@ const CheckedBlock = ({
     answerScore,
     userAnswer && evaluation[id],
     !!answer,
-    allCorrects
+    allCorrects,
+    isEmpty(evaluation)
   )
 
   /**

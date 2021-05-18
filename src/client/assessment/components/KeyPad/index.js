@@ -67,6 +67,12 @@ export default class KeyPad extends React.Component {
       )
     }
 
-    return <MathKeyboard symbols={[symbol]} showDropdown={false} />
+    return (
+      <MathKeyboard
+        symbols={[symbol]}
+        showDropdown={false}
+        showDragHandle={false}
+      />
+    )
   }
 }

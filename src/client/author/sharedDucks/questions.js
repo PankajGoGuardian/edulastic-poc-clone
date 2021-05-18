@@ -8,12 +8,14 @@ import {
   get,
   set,
   sortBy,
+  keys,
 } from 'lodash'
 import produce from 'immer'
 import { markQuestionLabel } from '../../assessment/Transformer'
 import { changeDataToPreferredLanguage } from '../../assessment/utils/question'
 import { getCurrentLanguage } from '../../common/components/LanguageSelector/duck'
 import { locationSelector } from '../../assessment/selectors/routes'
+import { MOVE_WIDGET } from '../src/constants/actions'
 
 // actions types
 export const LOAD_QUESTIONS = '[author questions] load questions'
@@ -232,6 +234,22 @@ const removeAlignment = (state, { payload }) => {
   )
 }
 
+// re sequence questions in multipart types
+// https://snapwiz.atlassian.net/browse/EV-27644
+const reSequencedQ = (state, { payload }) => {
+  const { from, to } = payload
+  const qIds = keys(state.byId)
+  const [movedQId] = qIds.splice(from.widgetIndex, 1)
+  qIds.splice(to.widgetIndex, 0, movedQId)
+
+  const updatedQuestions = {}
+  qIds.forEach((qId) => {
+    updatedQuestions[qId] = state.byId[qId]
+  })
+
+  state.byId = updatedQuestions
+}
+
 export const SET_ITEM_DETAIL_ITEM_LEVEL_SCORING =
   '[itemDetail] set item level scoring'
 export const SET_QUESTION_SCORE = '[author questions] set question score'
@@ -290,6 +308,7 @@ export default createReducer(initialState, {
     delete state.byId[state.current].rubrics
     state.byId[state.current].validation.validResponse.score = 1
   },
+  [MOVE_WIDGET]: reSequencedQ,
 })
 
 // selectors
@@ -367,14 +386,18 @@ export const getAuthorQuestionStatus = createSelector(
   (state) => state.updated
 )
 
+export const isRegradeFlowSelector = createSelector(
+  locationSelector,
+  (location) => get(location, 'state.regradeFlow', false)
+)
+
 export const getIsEditDisbledSelector = createSelector(
   getQuestionsSelector,
-  locationSelector,
-  (questionsById, location) => {
+  isRegradeFlowSelector,
+  (questionsById, regradeFlow) => {
     const hasDynamicValues = Object.values(questionsById)?.some((q) =>
       get(q, 'variable.enabled', false)
     )
-    const regradeFlow = get(location, 'state.regradeFlow', false)
     if (hasDynamicValues && regradeFlow) {
       return [
         true,

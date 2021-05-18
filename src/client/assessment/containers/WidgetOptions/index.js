@@ -9,6 +9,7 @@ import { withNamespaces } from '@edulastic/localization'
 import Scoring from './components/Scoring'
 import Variables from './components/Variables'
 import Question from '../../components/Question'
+import { isRegradeFlowSelector } from '../../../author/sharedDucks/questions'
 
 const types = [evaluationType.exactMatch, evaluationType.partialMatch]
 
@@ -60,6 +61,7 @@ class WidgetOptions extends Component {
       extraInScoring, // extraInScoring (Component required inside scoring section)
       isCorrectAnsTab,
       fromCorrectItem,
+      regradeFlow,
     } = this.props
 
     return (
@@ -87,7 +89,7 @@ class WidgetOptions extends Component {
             />
           </Question>
         )}
-        {showVariables && !fromCorrectItem && (
+        {showVariables && !fromCorrectItem && !regradeFlow && (
           <Variables
             fillSections={fillSections}
             cleanSections={cleanSections}
@@ -106,6 +108,7 @@ const enhance = compose(
   connect(
     (state) => ({
       fromCorrectItem: get(state, ['authorUi', 'questionEditModalOpen']),
+      regradeFlow: isRegradeFlowSelector(state),
     }),
     null
   )

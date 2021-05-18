@@ -25,7 +25,7 @@ export const Container = styled(Card)`
       padding: 16px 12px;
       border: ${(props) => (props.isPlaylist ? '1px solid #dfdfdf' : 'none')};
       border-radius: ${(props) => (props.isPlaylist ? '10px' : '0px')};
-      min-height: 185px;
+      min-height: ${(props) => (props.isTestRecommendation ? '90px' : '185px')};
       height: ${(props) => (props.isPlaylist ? '240px' : null)};
       display: flex;
       flex-direction: column;

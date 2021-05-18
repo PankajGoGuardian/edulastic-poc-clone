@@ -48,7 +48,10 @@ const PlaylistTestDetailsModal = ({
     onChangeCollection: () => {},
   }
 
-  const handleEditTest = () => onEditTest(currentTestId)
+  const handleEditTest = () => {
+    onEditTest(currentTestId)
+    onClose(false)
+  }
 
   return (
     <ModalWrapper

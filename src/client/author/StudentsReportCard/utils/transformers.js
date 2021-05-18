@@ -314,9 +314,11 @@ export const getChartAndStandardTableData = (
     // this is to add score or maxScore of all questions belongs to same standard
     let formatScore = std.reduce(
       (acc, s) => {
+        if (!acc.question.includes(s.question)) {
+          acc.score += s.score
+          acc.maxScore += s.maxScore
+        }
         acc.question.push(s.question)
-        acc.score += s.score
-        acc.maxScore += s.maxScore
         const performance = Number(
           ((acc.score / acc.maxScore) * 100).toFixed(2)
         )

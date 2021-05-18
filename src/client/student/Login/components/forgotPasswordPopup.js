@@ -96,12 +96,9 @@ const ForgotPasswordPopup = (props) => {
           <div className="link-sent">
             <div className="message-container">
               <p>
-                <Icon type="check" /> You've got mail
+                <Icon type="check" /> {requestNewPasswordSuccess.title}
               </p>
-              <p>
-                We sent you an email with instruction on how to reset your
-                password.
-              </p>
+              <p>{requestNewPasswordSuccess.content}</p>
             </div>
             <div className="model-buttons">
               <Button

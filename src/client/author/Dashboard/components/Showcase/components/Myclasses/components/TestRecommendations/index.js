@@ -32,11 +32,7 @@ const TestRecommendationsContainer = ({
 
   return (
     <TestRecommendationsWrapper>
-      <FlexContainer
-        style={{ marginBottom: '1rem' }}
-        justifyContent="left"
-        flexWrap="wrap"
-      >
+      <FlexContainer justifyContent="left" flexWrap="wrap">
         <TextWrapper
           fw="bold"
           size="16px"
@@ -46,7 +42,7 @@ const TestRecommendationsContainer = ({
           Recommended Content For You
         </TextWrapper>
         <EduButton
-          style={{ marginLeft: '10px', marginTop: '-6px' }}
+          style={{ marginLeft: '10px', marginTop: '-6px', padding: '5px' }}
           isGhost
           onClick={() => setShowTestCustomizerModal(true)}
         >

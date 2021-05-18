@@ -2,6 +2,7 @@ import styled from 'styled-components'
 
 export const TestRecommendationsWrapper = styled.div`
   margin-top: 20px;
+  margin-bottom: -13px;
 `
 
 export const ViewMoreButton = styled.a`
@@ -12,5 +13,5 @@ export const ViewMoreButton = styled.a`
 export const TestCardContainer = styled.div`
   width: 240px;
   align-items: flex-end;
-  margin: 0px 5px 10px 0px;
+  margin: 0px 5px -14px 0px;
 `

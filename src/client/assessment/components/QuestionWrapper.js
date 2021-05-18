@@ -316,7 +316,7 @@ class QuestionWrapper extends Component {
   }
 
   get answerScore() {
-    const { previewScore, previewMaxScore, data } = this.props
+    const { previewScore, previewMaxScore, testPreviewScore, data } = this.props
     let score = previewScore
     let maxScore = previewMaxScore
     let isGradedExternally = false
@@ -324,6 +324,18 @@ class QuestionWrapper extends Component {
       score = data?.activity?.score
       maxScore = data?.activity.maxScore
       isGradedExternally = data?.activity?.isGradedExternally
+    }
+
+    // testPreviewScore is from view as student
+    //  {
+    //    score: 1,
+    //    maxScore: 2,
+    //    isGradedExternally: false,
+    //  }
+    if (testPreviewScore && 'score' in testPreviewScore) {
+      score = testPreviewScore.score
+      maxScore = testPreviewScore.maxScore
+      isGradedExternally = testPreviewScore.isGradedExternally
     }
 
     return { score: (score || 0) / (maxScore || 1), isGradedExternally }

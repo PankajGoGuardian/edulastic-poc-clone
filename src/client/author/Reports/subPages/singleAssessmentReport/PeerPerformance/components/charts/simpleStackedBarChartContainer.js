@@ -40,15 +40,15 @@ export const SimpleStackedBarChartContainer = ({
       const { districtAvg, compareBy, compareBylabel } = payload[0].payload
       return (
         <div>
-          <Row type="flex" justify="start">
+          <Row className="tooltip-row" type="flex" justify="start">
             <Col className="tooltip-key">{'Assessment Name: '}</Col>
             <Col className="tooltip-value">{assessmentName}</Col>
           </Row>
-          <Row type="flex" justify="start">
+          <Row className="tooltip-row" type="flex" justify="start">
             <Col className="tooltip-key">{`${idToName(compareBy)}: `}</Col>
             <Col className="tooltip-value">{compareBylabel}</Col>
           </Row>
-          <Row type="flex" justify="start">
+          <Row className="tooltip-row" type="flex" justify="start">
             <Col className="tooltip-key">{'District Average: '}</Col>
             <Col className="tooltip-value">
               {analyseBy === 'score(%)' ? `${districtAvg}%` : districtAvg}

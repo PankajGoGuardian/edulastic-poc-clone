@@ -1,7 +1,8 @@
 import React from 'react'
 import { Table, Badge } from 'antd'
-import { EduButton, notification } from '@edulastic/common'
-import { standardApi } from '@edulastic/api'
+import { EduButton, notification, WithMathFormula } from '@edulastic/common'
+import styled from 'styled-components'
+import { saveStandard } from '../ApiForm/apis'
 
 const columns = [
   {
@@ -41,9 +42,13 @@ const columns = [
     dataIndex: 'tloDescription',
     key: 'tloDescription',
     render: (tloDescription, row) => (
-      <div style={{ color: row.tloDescriptionChange ? '#ff3333' : '#33cc33' }}>
-        {tloDescription}
-      </div>
+      <ParseMathDescription
+        dangerouslySetInnerHTML={{
+          __html: `<div style="color: ${
+            row.tloDescriptionChange ? '#FF3333' : '#33CC33'
+          }">${tloDescription} </div>`,
+        }}
+      />
     ),
   },
   {
@@ -61,9 +66,13 @@ const columns = [
     dataIndex: 'eloDescription',
     key: 'eloDescription',
     render: (eloDescription, row) => (
-      <div style={{ color: row.eloDescriptionChange ? '#ff3333' : '#33cc33' }}>
-        {eloDescription}
-      </div>
+      <ParseMathDescription
+        dangerouslySetInnerHTML={{
+          __html: `<div style="color: ${
+            row.eloDescriptionChange ? '#FF3333' : '#33CC33'
+          }">${eloDescription} </div>`,
+        }}
+      />
     ),
   },
 ]
@@ -72,7 +81,7 @@ const UploadStandard = (props) => {
   const { standardData, clearStandardData, subject } = props
   const uploadStandard = async (subjects) => {
     try {
-      const result = await standardApi.saveStandard(subjects)
+      const result = await saveStandard(subjects)
       notification({
         type: 'success',
         msg: result.data.result.message,
@@ -113,3 +122,4 @@ const UploadStandard = (props) => {
 }
 
 export default UploadStandard
+const ParseMathDescription = WithMathFormula(styled.div``)

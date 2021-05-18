@@ -83,10 +83,6 @@ const Field = ({
   }
 
   const onChangeDate = (date) => onChange(date.toDate().getTime(), rest.name)
-  const uploadProps = {
-    accept: rest.accept,
-    multiple: rest.multiple,
-  }
 
   const handleUpload = (info, endPoint) => {
     try {
@@ -144,7 +140,7 @@ const Field = ({
       case 'upload':
         return (
           <Upload
-            {...uploadProps}
+            {...{ accept: rest.accept, multiple: rest.multiple }}
             disabled={loading}
             customRequest={(info) => handleUpload(info, rest.endPoint)}
           >

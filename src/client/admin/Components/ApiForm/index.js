@@ -35,7 +35,7 @@ const ApiFormsMain = ({
   }, [])
 
   const onChange = (value, type) => {
-    if (type === 'subject') {
+    if (id === 'upload-standard' && type === 'subject') {
       setStandardImportSubject(value)
     }
     if (type === 'upload') {

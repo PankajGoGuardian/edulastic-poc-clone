@@ -97,7 +97,10 @@ import {
   changeDataToPreferredLanguage,
   changeDataInPreferredLanguage,
 } from '../../assessment/utils/question'
-import { getOptionsForMath } from '../../assessment/utils/variables'
+import {
+  getOptionsForMath,
+  getOptionsForClozeMath,
+} from '../../assessment/utils/variables'
 
 // constants
 export const resourceTypeQuestions = {
@@ -985,11 +988,20 @@ function* calculateFormulaSaga({ payload }) {
 
     let results = []
     if (hasMathFormula(variables)) {
+      const isClozeMath = question.type === questionType.EXPRESSION_MULTIPART
       const options = question?.isMath
-        ? getOptionsForMath(get(question, 'validation.validResponse.value', []))
+        ? isClozeMath
+          ? getOptionsForClozeMath(variables, get(question, 'validation', {}))
+          : getOptionsForMath(
+              get(question, 'validation.validResponse.value', [])
+            )
         : {}
       const latexValuePairs = [
-        getLatexValuePairs({ id: 'definition', variables, options }),
+        getLatexValuePairs({
+          id: 'definition',
+          variables,
+          options: isClozeMath ? { options } : options,
+        }),
       ]
       if (examples) {
         for (const example of examples) {
@@ -997,7 +1009,7 @@ function* calculateFormulaSaga({ payload }) {
             id: `example${example.key}`,
             variables,
             example,
-            options,
+            options: isClozeMath ? { options } : options,
           })
           if (pair.latexes.length > 0) {
             latexValuePairs.push(pair)

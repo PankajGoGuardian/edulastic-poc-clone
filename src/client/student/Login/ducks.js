@@ -1,5 +1,5 @@
 import { createAction, createReducer, createSelector } from 'redux-starter-kit'
-import { pick, last, get, set, isBoolean } from 'lodash'
+import { pick, last, get, set, isBoolean, forIn, startsWith } from 'lodash'
 import { takeLatest, call, put, select } from 'redux-saga/effects'
 import { message } from 'antd'
 import { captureSentryException } from '@edulastic/common/src/sentryHelpers'
@@ -1311,7 +1311,12 @@ function* logout() {
       if (user && TokenStorage.getAccessTokenForUser(user._id, user.role)) {
         yield call(userApi.logout)
       }
-      localStorage.clear()
+      // localStorage.clear()
+      forIn(localStorage, (value, objKey) => {
+        if (!startsWith(objKey, 'recommendedTest:')) {
+          localStorage.removeItem(objKey)
+        }
+      })
       sessionStorage.removeItem('cliBannerShown')
       sessionStorage.removeItem('cliBannerVisible')
       sessionStorage.removeItem('addAccountDetails')

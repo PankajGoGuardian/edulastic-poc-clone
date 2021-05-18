@@ -54,11 +54,11 @@ const TestRecommendationsContainer = ({
         </EduButton>
         {recommendations?.length > gridCountInARow && (
           <ViewMoreButton onClick={() => setIsExpanded(!isExpanded)}>
-            {isExpanded ? 'View Less' : 'View More'}
+            {isExpanded ? 'VIEW LESS' : 'VIEW MORE'}
           </ViewMoreButton>
         )}
       </FlexContainer>
-      <FlexContainer justifyContent="space-between" flexWrap="wrap">
+      <FlexContainer justifyContent="left" flexWrap="wrap">
         {recommendations.map((item, index) => {
           if (index >= totalNumberOfItemsToShow) return
           return (

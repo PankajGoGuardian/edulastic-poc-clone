@@ -12,5 +12,5 @@ export const ViewMoreButton = styled.a`
 export const TestCardContainer = styled.div`
   width: 240px;
   align-items: flex-end;
-  margin: 0px 2px 10px 0px;
+  margin: 0px 5px 10px 0px;
 `

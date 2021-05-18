@@ -447,6 +447,7 @@ const SingleAssessmentReportFilters = ({
           isGhost={!showFilter}
           onClick={toggleFilter}
           style={{ height: '24px' }}
+          aria-pressed={(!!showFilter).toString()}
         >
           <IconFilter width={15} height={15} />
           FILTERS

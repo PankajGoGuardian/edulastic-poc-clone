@@ -99,11 +99,11 @@ export const CurriculumCard = styled.div`
 `
 export const Thumbnail = styled.div`
   width: 100%;
-  height: 170px;
+  height: 190px;
   background: ${({ img }) => `url(${img})`};
-  background-size: 100% 100%;
+  background-size: cover;
   background-repeat: no-repeat;
-`
+}`
 
 export const CardFooter = styled.div`
   border-radius: 0px 0px 6px 6px;

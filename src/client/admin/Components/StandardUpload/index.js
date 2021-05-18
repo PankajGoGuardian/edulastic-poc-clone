@@ -94,27 +94,22 @@ const UploadStandard = (props) => {
 
   return (
     <div>
-      {standardData ? (
-        <EduButton
-          onClick={() => {
-            uploadStandard(subject)
-            clearStandardData()
-          }}
-        >
-          Save Standard
-        </EduButton>
-      ) : null}
-      <div
-        style={{
-          float: 'right',
-          position: 'relative',
-          left: '-10px',
-          top: '-25px',
-        }}
-      >
-        <Badge color="green" text="New standard" />
-        <br />
-        <Badge color="red" text="Existing standard" />
+      <div>
+        {standardData ? (
+          <EduButton
+            onClick={() => {
+              uploadStandard(subject)
+              clearStandardData()
+            }}
+          >
+            Save Standard
+          </EduButton>
+        ) : null}
+        <BadgeWrapper>
+          <Badge color="green" text="New standard" />
+          <br />
+          <Badge color="red" text="Existing standard" />
+        </BadgeWrapper>
       </div>
       <Table dataSource={standardData} columns={columns} />
     </div>
@@ -123,3 +118,7 @@ const UploadStandard = (props) => {
 
 export default UploadStandard
 const ParseMathDescription = WithMathFormula(styled.div``)
+const BadgeWrapper = styled.div`
+  float: right;
+  padding-right: 10px;
+`

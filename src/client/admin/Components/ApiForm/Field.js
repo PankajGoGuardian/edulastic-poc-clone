@@ -140,7 +140,8 @@ const Field = ({
       case 'upload':
         return (
           <Upload
-            {...{ accept: rest.accept, multiple: rest.multiple }}
+            accept={rest.accept}
+            multiple={rest.multiple}
             disabled={loading}
             customRequest={(info) => handleUpload(info, rest.endPoint)}
           >

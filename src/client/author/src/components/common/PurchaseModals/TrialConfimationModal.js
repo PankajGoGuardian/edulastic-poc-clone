@@ -20,6 +20,8 @@ import {
   TestStatus,
 } from './styled'
 
+const PREMIUM_SUBTYPES = ['enterprise', 'premium', 'partial_premium']
+
 const TrialConfirmationModal = ({
   visible,
   showTrialSubsConfirmationAction,
@@ -73,7 +75,7 @@ const TrialConfirmationModal = ({
 
   const hasOnlyTeacherPremium =
     hasTrial === 'onlyPremiumTrial' &&
-    (subType === 'premium' || subType === 'TRIAL_PREMIUM') // using hasTrial, its get loaded before the confirmation modal opens
+    (PREMIUM_SUBTYPES.includes(subType) || subType === 'TRIAL_PREMIUM') // using hasTrial, its get loaded before the confirmation modal opens
 
   useEffect(() => {
     if (!hasOnlyTeacherPremium) {
@@ -128,26 +130,25 @@ const TrialConfirmationModal = ({
     }
   }
 
-  const modalTitle =
-    subType === 'premium' ? (
-      <ModalTitle>
-        <div>Premium Subscription</div>
-        {!hasOnlyTeacherPremium && (
-          <div className="expire-on">
-            Your subscription will expire on <b>{subEndDate}</b>.
-          </div>
-        )}
-      </ModalTitle>
-    ) : (
-      <ModalTitle>
-        <div>Free Trial Started</div>
-        {!hasOnlyTeacherPremium && (
-          <div className="expire-on">
-            Your trial will expire on <b>{subEndDate}</b>.
-          </div>
-        )}
-      </ModalTitle>
-    )
+  const modalTitle = PREMIUM_SUBTYPES.includes(subType) ? (
+    <ModalTitle>
+      <div>Premium Subscription</div>
+      {!hasOnlyTeacherPremium && (
+        <div className="expire-on">
+          Your subscription will expire on <b>{subEndDate}</b>.
+        </div>
+      )}
+    </ModalTitle>
+  ) : (
+    <ModalTitle>
+      <div>Free Trial Started</div>
+      {!hasOnlyTeacherPremium && (
+        <div className="expire-on">
+          Your trial will expire on <b>{subEndDate}</b>.
+        </div>
+      )}
+    </ModalTitle>
+  )
 
   return (
     <>
@@ -168,8 +169,8 @@ const TrialConfirmationModal = ({
             {hasOnlyTeacherPremium ? (
               <p>
                 Thanks for trying teacher premium. Your{' '}
-                {subType === 'premium' ? 'subscription' : 'trial'} will expire
-                on <b>{subEndDate}</b>.
+                {PREMIUM_SUBTYPES.includes(subType) ? 'subscription' : 'trial'}{' '}
+                will expire on <b>{subEndDate}</b>.
               </p>
             ) : (
               <>

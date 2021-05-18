@@ -200,12 +200,29 @@ class SubjectGrade extends React.Component {
   }
 
   handleCuriculumChange = (curriculumIds) => {
-    const { getDictStandardsForCurriculum, form } = this.props
+    const {
+      getDictStandardsForCurriculum,
+      form,
+      curriculumStandards,
+    } = this.props
+
     form.setFields({
       standard: {
         value: curriculumIds,
       },
     })
+    const selectedCurriculamStandardIds = form.getFieldValue(
+      'curriculumStandards'
+    )
+    const standardIds = (curriculumStandards.elo || [])
+      .filter(
+        (s) =>
+          selectedCurriculamStandardIds.includes(s.id) &&
+          curriculumIds.includes(s.curriculumId)
+      )
+      .map((s) => s.id)
+
+    this.handleStandardsChange(standardIds)
     const grades = form.getFieldValue('grade')
     getDictStandardsForCurriculum(curriculumIds, grades, '')
   }

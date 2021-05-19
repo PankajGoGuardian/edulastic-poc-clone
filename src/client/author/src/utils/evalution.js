@@ -5,7 +5,7 @@ import {
 } from '@edulastic/constants/const/evaluationType'
 import { manuallyGradableQn } from '@edulastic/constants/const/questionType'
 
-import evaluators from './evaluators'
+import evaluator from './evaluators'
 import { replaceVariables } from '../../../assessment/utils/variables'
 
 const { FIRST_CORRECT_MUST, ALL_CORRECT_MUST } = multipartEvaluationTypes
@@ -34,7 +34,6 @@ export const evaluateItem = async (
     if (validations && validations[id] && !isEmpty(answer)) {
       const validation = replaceVariables(validations[id], [], false)
       const { type } = validations[id]
-      const evaluator = evaluators[validation.type]
       if (!evaluator) {
         results[evaluationId] = []
         allCorrect = false

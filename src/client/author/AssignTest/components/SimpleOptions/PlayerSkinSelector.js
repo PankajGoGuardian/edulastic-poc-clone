@@ -39,11 +39,13 @@ const PlayerSkinSelector = ({
       disabled={disabled}
       isBackgroundWhite={selectBackgroundWhite}
     >
-      {Object.keys(types).map((key) => (
-        <Select.Option key={key} value={key}>
-          {types[key]}
-        </Select.Option>
-      ))}
+      {Object.keys(types)
+        .sort()
+        .map((key) => (
+          <Select.Option key={key} value={key}>
+            {types[key]}
+          </Select.Option>
+        ))}
     </SelectInputStyled>
   )
 

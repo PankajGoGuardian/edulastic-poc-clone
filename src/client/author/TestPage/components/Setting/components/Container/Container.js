@@ -1607,11 +1607,13 @@ class Setting extends Component {
                                 trigger.parentNode
                               }
                             >
-                              {Object.keys(skinTypes).map((key) => (
-                                <Option key={key} value={key}>
-                                  {skinTypes[key]}
-                                </Option>
-                              ))}
+                              {Object.keys(skinTypes)
+                                .sort()
+                                .map((key) => (
+                                  <Option key={key} value={key}>
+                                    {skinTypes[key]}
+                                  </Option>
+                                ))}
                             </SelectInputStyled>
                           </Col>
                           <Col span={24}>

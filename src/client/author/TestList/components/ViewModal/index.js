@@ -312,6 +312,7 @@ class ViewModal extends React.Component {
                   height="32px"
                   width="32px"
                   onClick={this.onShareModalChange}
+                  data-cy="share"
                 >
                   <IconShare />
                 </EduButton>

@@ -66,7 +66,10 @@ const TestRecommendationsContainer = ({
         {recommendations.map((item, index) => {
           if (index >= totalNumberOfItemsToShow) return
           return (
-            <TestCardContainer key={index}>
+            <TestCardContainer
+              key={index}
+              data-cy={`recommendationCard${index}`}
+            >
               <CardWrapper
                 owner={
                   item.authors && item.authors.some((x) => x._id === userId)

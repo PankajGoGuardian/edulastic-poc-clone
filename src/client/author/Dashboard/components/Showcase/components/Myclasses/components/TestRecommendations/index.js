@@ -45,16 +45,24 @@ const TestRecommendationsContainer = ({
           style={{ marginLeft: '10px', marginTop: '-6px', padding: '5px' }}
           isGhost
           onClick={() => setShowTestCustomizerModal(true)}
+          data-cy="customizeRecommendations"
         >
           Customize
         </EduButton>
         {recommendations?.length > gridCountInARow && (
-          <ViewMoreButton onClick={() => setIsExpanded(!isExpanded)}>
+          <ViewMoreButton
+            data-cy="recommendationsViewToggle"
+            onClick={() => setIsExpanded(!isExpanded)}
+          >
             {isExpanded ? 'VIEW LESS' : 'VIEW MORE'}
           </ViewMoreButton>
         )}
       </FlexContainer>
-      <FlexContainer justifyContent="left" flexWrap="wrap">
+      <FlexContainer
+        data-cy="testRecommendationsContainer"
+        justifyContent="left"
+        flexWrap="wrap"
+      >
         {recommendations.map((item, index) => {
           if (index >= totalNumberOfItemsToShow) return
           return (

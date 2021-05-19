@@ -1,5 +1,10 @@
 import { darkGrey, titleColor } from '@edulastic/colors'
-import { CustomModalStyled, EduButton, FieldLabel } from '@edulastic/common'
+import {
+  CustomModalStyled,
+  EduButton,
+  FieldLabel,
+  notification,
+} from '@edulastic/common'
 import { curriculumGrades } from '@edulastic/constants'
 import { IconUsers } from '@edulastic/icons'
 import { Spin } from 'antd'
@@ -7,6 +12,7 @@ import PropTypes from 'prop-types'
 import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { pick } from 'lodash'
+import connect from 'react-redux/es/connect/connect'
 import {
   ContentWrapper,
   CurriculumCard,
@@ -19,6 +25,13 @@ import {
   IconText,
   TestStatus,
 } from './styled'
+import {
+  cloneThisPlayListAction,
+  setCustomTitleModalVisibleAction,
+  setIsUsedModalVisibleAction,
+} from '../../../../CurriculumSequence/ducks'
+import CustomTitleOnCloneModal from '../../../../CurriculumSequence/components/CustomTitleOnCloneModal'
+import CloneOnUsePlaylistConfirmationModal from '../../../../CurriculumSequence/components/CloneOnUsePlaylistConfirmationModal'
 
 const PREMIUM_SUBTYPES = ['enterprise', 'premium', 'partial_premium']
 
@@ -34,9 +47,18 @@ const TrialConfirmationModal = ({
   fetchPlaylists,
   playlists = [],
   useThisPlayList,
+  customTitleModalVisible,
+  setCustomTitleModalVisible,
+  cloneThisPlayList,
+  isUsedModalVisible,
+  setIsUsedModalVisible,
+  previouslyUsedPlaylistClone = {},
 }) => {
   const [selectedProducts, setSelectedProducts] = useState([])
   const [selectedGrades, setSelectedGrades] = useState([])
+  const [customPlaylistTitle, setCustomPlaylistTitle] = useState('')
+  const [selectedPlaylist, setSelectedPlaylist] = useState(null)
+
   const itemBankProducts =
     products.filter(
       (product) =>
@@ -98,11 +120,70 @@ const TrialConfirmationModal = ({
   }, [hasOnlyTeacherPremium, selectedGrades, selectedProducts])
 
   const handleUseThisPlaylist = (playlist) => {
-    handleCloseModal()
-    useThisPlayList(
-      pick(playlist, ['_id', 'title', 'grades', 'subjects', 'customize'])
-    )
+    setSelectedPlaylist(playlist)
+    useThisPlayList({
+      ...pick(playlist, [
+        '_id',
+        'title',
+        'grades',
+        'subjects',
+        'customize',
+        'authors',
+      ]),
+      isStudent: false,
+      fromUseThis: true,
+    })
   }
+
+  const handleCloseCustomTitleModal = () => setCustomTitleModalVisible(false)
+  const handleOpenCustomTitleModal = () => setCustomTitleModalVisible(true)
+
+  const handleCloseIsUsedModal = () => setIsUsedModalVisible(false)
+
+  const handleUseThisClick = () => {
+    if (!customPlaylistTitle) {
+      return notification({
+        type: 'error',
+        msg: 'Missing Playlist Title!',
+      })
+    }
+    cloneThisPlayList({
+      ...pick(selectedPlaylist, [
+        '_id',
+        'grades',
+        'subjects',
+        'customize',
+        'authors',
+      ]),
+      title: customPlaylistTitle,
+      isStudent: false,
+      fromUseThis: true,
+      forceClone: true,
+    })
+  }
+
+  const handleGotoMyPlaylist = () => {
+    if (previouslyUsedPlaylistClone) {
+      const {
+        _id,
+        title,
+        grades,
+        subjects,
+        customize = false,
+        authors,
+      } = previouslyUsedPlaylistClone
+      useThisPlayList({
+        _id,
+        title,
+        grades,
+        subjects,
+        customize,
+        fromUseThis: true,
+        authors,
+      })
+    }
+  }
+
   const showFooter = hasOnlyTeacherPremium ? (
     <EduButton
       data-cy="goToDashboard"
@@ -265,6 +346,25 @@ const TrialConfirmationModal = ({
           </ModalBody>
         </CustomModalStyled>
       )}
+
+      {customTitleModalVisible && (
+        <CustomTitleOnCloneModal
+          isVisible={customTitleModalVisible}
+          onCancel={handleCloseCustomTitleModal}
+          handleCreateNewCopy={handleUseThisClick}
+          title={customPlaylistTitle}
+          setTitle={setCustomPlaylistTitle}
+        />
+      )}
+
+      {isUsedModalVisible && (
+        <CloneOnUsePlaylistConfirmationModal
+          isVisible={isUsedModalVisible}
+          onCancel={handleCloseIsUsedModal}
+          handleGotoMyPlaylist={handleGotoMyPlaylist}
+          handleCreateNewCopy={handleOpenCustomTitleModal}
+        />
+      )}
     </>
   )
 }
@@ -273,7 +373,19 @@ TrialConfirmationModal.propTypes = {
   showTrialSubsConfirmationAction: PropTypes.func.isRequired,
 }
 
-export default TrialConfirmationModal
+export default connect(
+  (state) => ({
+    isUsedModalVisible: state.curriculumSequence?.isUsedModalVisible,
+    customTitleModalVisible: state.curriculumSequence?.customTitleModalVisible,
+    previouslyUsedPlaylistClone:
+      state.curriculumSequence?.previouslyUsedPlaylistClone,
+  }),
+  {
+    setCustomTitleModalVisible: setCustomTitleModalVisibleAction,
+    cloneThisPlayList: cloneThisPlayListAction,
+    setIsUsedModalVisible: setIsUsedModalVisibleAction,
+  }
+)(TrialConfirmationModal)
 
 const ModalBody = styled.div`
   p {

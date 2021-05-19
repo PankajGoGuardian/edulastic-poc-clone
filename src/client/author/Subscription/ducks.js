@@ -222,6 +222,7 @@ function* showSuccessNotifications(apiPaymentResponse, isTrial = false) {
       slice.actions.trialConfirmationMessageAction({
         hasTrial: 'onlyPremiumTrial',
         subEndDate: formatSubEndDate,
+        isTrial,
       })
     )
   } else if (hasItemBankPermissions && !hasSubscriptions) {
@@ -239,6 +240,7 @@ function* showSuccessNotifications(apiPaymentResponse, isTrial = false) {
       slice.actions.trialConfirmationMessageAction({
         hasTrial: 'onlySparkTrial',
         subEndDate: formatSubEndDate,
+        isTrial,
       })
     )
   } else if (hasItemBankPermissions && hasSubscriptions) {
@@ -257,6 +259,7 @@ function* showSuccessNotifications(apiPaymentResponse, isTrial = false) {
       slice.actions.trialConfirmationMessageAction({
         hasTrial: 'haveBothSparkAndPremiumTrial',
         subEndDate: formatSubEndDate,
+        isTrial,
       })
     )
   }

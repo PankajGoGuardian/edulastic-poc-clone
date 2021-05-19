@@ -67,7 +67,7 @@ const TrialConfirmationModal = ({
   }
 
   // using hasTrial for trial and purchase both
-  const { subEndDate, hasTrial } = showTrialConfirmationMessage
+  const { subEndDate, hasTrial, isTrial } = showTrialConfirmationMessage
 
   const productsToShow = products.filter(({ linkedProductId }) =>
     collections.find(({ _id }) => _id === linkedProductId)
@@ -76,6 +76,9 @@ const TrialConfirmationModal = ({
   const hasOnlyTeacherPremium =
     hasTrial === 'onlyPremiumTrial' &&
     (PREMIUM_SUBTYPES.includes(subType) || subType === 'TRIAL_PREMIUM') // using hasTrial, its get loaded before the confirmation modal opens
+
+  const hasBoughtPremiumWithItemBanks =
+    hasTrial === 'haveBothSparkAndPremiumTrial'
 
   useEffect(() => {
     if (!hasOnlyTeacherPremium) {
@@ -130,7 +133,7 @@ const TrialConfirmationModal = ({
     }
   }
 
-  const modalTitle = PREMIUM_SUBTYPES.includes(subType) ? (
+  const modalTitle = !isTrial ? (
     <ModalTitle>
       <div>Premium Subscription</div>
       {!hasOnlyTeacherPremium && (
@@ -169,15 +172,19 @@ const TrialConfirmationModal = ({
             {hasOnlyTeacherPremium ? (
               <p>
                 Thanks for trying teacher premium. Your{' '}
-                {PREMIUM_SUBTYPES.includes(subType) ? 'subscription' : 'trial'}{' '}
-                will expire on <b>{subEndDate}</b>.
+                {!isTrial ? 'subscription' : 'trial'} will expire on{' '}
+                <b>{subEndDate}</b>.
               </p>
             ) : (
               <>
                 <p>
-                  Thanks for trying the Teacher Premium and additional Spark
+                  {`Thanks for ${isTrial ? 'trying' : 'purchasing'} ${
+                    hasBoughtPremiumWithItemBanks
+                      ? ' the Teacher Premium and '
+                      : ''
+                  } additional Spark
                   content. Select the grade and curriculum alignment to get
-                  started.
+                  started.`}
                 </p>
                 <br />
                 <div>

@@ -764,11 +764,18 @@ class CurriculumSequence extends Component {
       duplicatePlayList,
       isUsedModalVisible = false,
       customTitleModalVisible = false,
+      currentUserId,
     } = this.props
 
     const isManageContentActive = activeRightPanel === 'manageContent'
     // check Current user's edit permission
     const hasEditAccess = this.checkWritePermission()
+
+    const { authors } = destinationCurriculumSequence
+    const canEdit =
+      authors?.find((x) => x._id === currentUserId) ||
+      role === roleuser.EDULASTIC_CURATOR
+
     const isNotStudentOrParent = !(role === 'student' || role === 'parent')
 
     // figure out which tab contents to render || just render default playlist
@@ -882,9 +889,9 @@ class CurriculumSequence extends Component {
       'playlist'
     )
     const shouldHidCustomizeButton =
-      (isPlaylistDetailsPage || urlHasUseThis) &&
+      ((isPlaylistDetailsPage && !canEdit) || urlHasUseThis) &&
       status === 'published' &&
-      (!enableCustomize || !canAllowDuplicate)
+      (!(enableCustomize && canEdit) || !canAllowDuplicate)
 
     const playlistsToSwitch = isStudent
       ? curatedStudentPlaylists

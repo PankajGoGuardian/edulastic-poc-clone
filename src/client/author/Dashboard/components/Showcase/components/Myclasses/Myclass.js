@@ -246,7 +246,6 @@ const MyClasses = ({
 
   const handleFeatureClick = ({ config = {}, tags = [], isBlocked }) => {
     const { filters, contentType } = config
-
     if (isBlocked) {
       handleBlockedClick(config)
       return
@@ -258,7 +257,7 @@ const MyClasses = ({
     } else if (content === 'playlists_library') {
       content = 'playlists'
     }
-    if (content === 'playlists' && (!lastPlayList || !lastPlayList.value)) {
+    if (content === 'playlists') {
       setShowTrialSubsConfirmation(true)
       return
     }

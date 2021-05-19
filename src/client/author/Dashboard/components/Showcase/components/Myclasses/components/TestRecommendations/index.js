@@ -45,6 +45,7 @@ const TestRecommendationsContainer = ({
           style={{ marginLeft: '10px', marginTop: '-6px', padding: '5px' }}
           isGhost
           onClick={() => setShowTestCustomizerModal(true)}
+          data-cy="customizeRecommendations"
         >
           Customize
         </EduButton>

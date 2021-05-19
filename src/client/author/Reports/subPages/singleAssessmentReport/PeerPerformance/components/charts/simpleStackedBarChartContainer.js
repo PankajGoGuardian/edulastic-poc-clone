@@ -99,8 +99,8 @@ export const SimpleStackedBarChartContainer = ({
         referenceLineY,
       }
     }
-    if (analyseBy === 'rawScore' && chartData.length > 0) {
-      const maxScore = chartData[0].maxScore
+    if (analyseBy === 'rawScore') {
+      const maxScore = chartData.length ? chartData[0].maxScore : 50
       const arr = ticks(0, maxScore, 10)
       const max = arr[arr.length - 1]
       return {

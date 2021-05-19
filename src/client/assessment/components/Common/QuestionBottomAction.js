@@ -8,6 +8,7 @@ import {
   AnswerContext,
   ScrollContext,
   ItemLevelContext as HideScoringBlockContext,
+  notification,
 } from '@edulastic/common'
 import { TitleWrapper } from '@edulastic/common/src/components/MainHeader'
 import PropTypes from 'prop-types'
@@ -17,7 +18,7 @@ import { round, get, omit } from 'lodash'
 import { Modal, Popover } from 'antd'
 import { roleuser } from '@edulastic/constants'
 import { IconTestBank, IconClockCircularOutline } from '@edulastic/icons'
-import { testItemsApi } from '@edulastic/api'
+import { testItemsApi, testsApi } from '@edulastic/api'
 import { EDIT } from '../../constants/constantsForQuestions'
 import {
   setEditingItemIdAction,
@@ -53,6 +54,7 @@ import {
   allowContentEditCheck,
 } from '../../../author/src/utils/permissionCheck'
 import Explanation from './Explanation'
+import RegradeProgressModal from '../../../author/Regrade/RegradeProgressModal'
 
 export const ShowUserWork = ({ onClick, loading }) => (
   <EduButton
@@ -120,6 +122,8 @@ const QuestionBottomAction = ({
   // const [openQuestionModal, setOpenQuestionModal] = useState(false)
   const [itemloading, setItemLoading] = useState(false)
   const [hideScoring, setHideScoring] = useState(false)
+  const [notifyRegradeProgress, setNotifyRegradeProgress] = useState(false)
+  const [isPublishedChanges, setIsPublishedChanges] = useState(false)
 
   const [showExplanation, updateShowExplanation] = useState(isGrade)
 
@@ -167,6 +171,30 @@ const QuestionBottomAction = ({
   const showQuestionModal = async () => {
     setItemLoading(true)
     try {
+      const latestTest = await testsApi.getById(additionalData?.testId, {
+        data: true,
+        requestLatest: true,
+        editAndRegrade: true,
+      })
+      if (latestTest.isInEditAndRegrade && latestTest.status === 'draft') {
+        setItemLoading(false)
+        return setNotifyRegradeProgress(true)
+      }
+      if (
+        latestTest._id !== additionalData.testId &&
+        latestTest.status === 'published'
+      ) {
+        setIsPublishedChanges(true)
+        setItemLoading(false)
+        return setNotifyRegradeProgress(true)
+      }
+    } catch (e) {
+      setItemLoading(false)
+      return notification({
+        msg: e?.response?.data?.message || 'Unable to retrieve test info.',
+      })
+    }
+    try {
       const testItem = await testItemsApi.getById(item.testItemId)
       const question = testItem.data.questions.find((q) => q.id === item.id)
       setHideScoring(
@@ -187,6 +215,12 @@ const QuestionBottomAction = ({
       setItemLoading(false)
     }
   }
+
+  const onCloseRegardeProgressModal = () => {
+    setNotifyRegradeProgress(false)
+    setIsPublishedChanges(false)
+  }
+
   const modalTitle = useMemo(() => {
     if (!QuestionComp || !questionData) {
       return null
@@ -282,6 +316,13 @@ const QuestionBottomAction = ({
     )
   return (
     <>
+      {notifyRegradeProgress && (
+        <RegradeProgressModal
+          isPublishedChanges={isPublishedChanges}
+          visible={notifyRegradeProgress}
+          onCloseRegardeProgressModal={onCloseRegardeProgressModal}
+        />
+      )}
       <BottomActionWrapper className={isStudentReport ? 'student-report' : ''}>
         {isSolutionVisible && !showExplanation && (
           <EduButton
@@ -316,7 +357,7 @@ const QuestionBottomAction = ({
             ) : (
               correctItemBtn
             ))}
-          {timeSpent && <TimeSpent time={timeSpent} />}
+          {!!timeSpent && <TimeSpent time={timeSpent} />}
         </RightWrapper>
       </BottomActionWrapper>
       {isSolutionVisible && (

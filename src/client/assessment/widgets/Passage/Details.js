@@ -102,7 +102,7 @@ const Details = ({ item, setQuestionData, fillSections, cleanSections, t }) => {
         >
           {t('component.passage.heading')}
         </Subtitle>
-        <WidgetFRInput>
+        <WidgetFRInput data-cy="passageHeading">
           <QuestionTextArea
             onChange={(value) => handleChange('heading', value)}
             value={item.heading || ''}
@@ -124,7 +124,7 @@ const Details = ({ item, setQuestionData, fillSections, cleanSections, t }) => {
         >
           {t('component.passage.contentsTitle')}
         </Subtitle>
-        <WidgetFRInput>
+        <WidgetFRInput data-cy="passageTitle">
           <QuestionTextArea
             placeholder={t('component.passage.enterPassageTitleHere')}
             onChange={(value) => handleChange('contentsTitle', value)}
@@ -141,7 +141,7 @@ const Details = ({ item, setQuestionData, fillSections, cleanSections, t }) => {
         cleanSections={cleanSections}
       >
         {!item.paginated_content && (
-          <div>
+          <div data-cy="passageContent">
             <Subtitle
               id={getFormattedAttrId(
                 `${item?.title}-${t('component.passage.contents')}`
@@ -204,6 +204,7 @@ const Details = ({ item, setQuestionData, fillSections, cleanSections, t }) => {
               size="large"
               value={item.flesch_kincaid || ''}
               onChange={(e) => handleChange('flesch_kincaid', e.target.value)}
+              data-cy="fleschKincaid"
             />
           </Col>
           <Col span={12}>
@@ -212,6 +213,7 @@ const Details = ({ item, setQuestionData, fillSections, cleanSections, t }) => {
               size="large"
               value={item.lexile || ''}
               onChange={(e) => handleChange('lexile', e.target.value)}
+              data-cy="lexile"
             />
           </Col>
         </Row>
@@ -232,7 +234,7 @@ const Details = ({ item, setQuestionData, fillSections, cleanSections, t }) => {
 
         <Row gutter={24}>
           <Col span={24}>
-            <WidgetFRInput>
+            <WidgetFRInput data-cy="instructorStimulus">
               <QuestionTextArea
                 onChange={(value) => handleChange('instructorStimulus', value)}
                 value={item.instructorStimulus || ''}
@@ -248,6 +250,7 @@ const Details = ({ item, setQuestionData, fillSections, cleanSections, t }) => {
                 handleChange('paginated_content', e.target.checked)
               }
               tabIndex={1}
+              data-cy="enablePaginatedContent"
             >
               {t('component.passage.enablePaginatedContent')}
             </CheckboxLabel>

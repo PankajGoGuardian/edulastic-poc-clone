@@ -21,6 +21,8 @@ export const Container = styled(Card)`
   cursor: pointer;
   border-radius: ${(props) => (props.isPlaylist ? '4px' : '10px')};
   &.ant-card {
+    width: ${(props) => (props.isTestRecommendation ? '240px' : null)};
+    height: ${(props) => (props.isTestRecommendation ? '210px' : null)};
     .ant-card-body {
       padding: 16px 12px;
       border: ${(props) => (props.isPlaylist ? '1px solid #dfdfdf' : 'none')};

@@ -1,12 +1,10 @@
 import React, { useState } from 'react'
 import { title } from '@edulastic/colors'
 import { EduButton, FlexContainer } from '@edulastic/common'
-import { Row } from 'antd'
 import { TextWrapper } from '../../../../../styledComponents'
 import {
   TestRecommendationsWrapper,
   ViewMoreButton,
-  CardContainer,
   TestCardContainer,
 } from './styled'
 import CardWrapper from '../../../../../../../TestList/components/CardWrapper/CardWrapper'
@@ -22,22 +20,19 @@ const TestRecommendationsContainer = ({
 
   const gridCountInARow =
     windowWidth >= 1800
+      ? 7
+      : windowWidth >= 1600
       ? 6
-      : windowWidth >= 1500
+      : windowWidth >= 1300
       ? 5
-      : windowWidth >= 1200
-      ? 4
-      : 3
+      : 4
   const numberOfRows = isExpanded ? 4 : 1
-  const totalNumberOfItemsToShow = gridCountInARow * numberOfRows
+  const totalNumberOfItemsToShow =
+    gridCountInARow * numberOfRows > 10 ? 10 : gridCountInARow * numberOfRows
 
   return (
     <TestRecommendationsWrapper>
-      <FlexContainer
-        style={{ marginBottom: '1rem' }}
-        justifyContent="left"
-        flexWrap="wrap"
-      >
+      <FlexContainer justifyContent="left" flexWrap="wrap">
         <TextWrapper
           fw="bold"
           size="16px"
@@ -47,7 +42,7 @@ const TestRecommendationsContainer = ({
           Recommended Content For You
         </TextWrapper>
         <EduButton
-          style={{ marginLeft: '10px', marginTop: '-6px' }}
+          style={{ marginLeft: '10px', marginTop: '-6px', padding: '5px' }}
           isGhost
           onClick={() => setShowTestCustomizerModal(true)}
           data-cy="customizeRecommendations"
@@ -55,38 +50,30 @@ const TestRecommendationsContainer = ({
           Customize
         </EduButton>
         {recommendations?.length > gridCountInARow && (
-          <ViewMoreButton
-            data-cy={isExpanded ? 'viewLess' : 'viewMore'}
-            onClick={() => setIsExpanded(!isExpanded)}
-          >
-            {isExpanded ? 'View Less' : 'View More'}
+          <ViewMoreButton onClick={() => setIsExpanded(!isExpanded)}>
+            {isExpanded ? 'VIEW LESS' : 'VIEW MORE'}
           </ViewMoreButton>
         )}
       </FlexContainer>
-      <CardContainer type="tile">
-        <Row type="flex" justify="flex-start">
-          {recommendations.map((item, index) => {
-            if (index >= totalNumberOfItemsToShow) return
-            return (
-              <TestCardContainer
-                key={index}
-                data-cy={`recommendationCard${index}`}
-              >
-                <CardWrapper
-                  owner={
-                    item.authors && item.authors.some((x) => x._id === userId)
-                  }
-                  item={item}
-                  blockStyle="tile"
-                  windowWidth={windowWidth}
-                  history={history}
-                  isTestRecommendation
-                />
-              </TestCardContainer>
-            )
-          })}
-        </Row>
-      </CardContainer>
+      <FlexContainer justifyContent="left" flexWrap="wrap">
+        {recommendations.map((item, index) => {
+          if (index >= totalNumberOfItemsToShow) return
+          return (
+            <TestCardContainer key={index}>
+              <CardWrapper
+                owner={
+                  item.authors && item.authors.some((x) => x._id === userId)
+                }
+                item={item}
+                blockStyle="tile"
+                windowWidth={windowWidth}
+                history={history}
+                isTestRecommendation
+              />
+            </TestCardContainer>
+          )
+        })}
+      </FlexContainer>
     </TestRecommendationsWrapper>
   )
 }

@@ -84,6 +84,7 @@ const MyClasses = ({
   const [isPurchaseModalVisible, setIsPurchaseModalVisible] = useState(false)
   const [isTrialModalVisible, setIsTrialModalVisible] = useState(false)
   const [productData, setProductData] = useState({})
+  const [clickedBundleId, setClickedBundleId] = useState(null)
   const [showItemBankTrialUsedModal, setShowItemBankTrialUsedModal] = useState(
     false
   )
@@ -257,6 +258,7 @@ const MyClasses = ({
     } else if (content === 'playlists_library') {
       content = 'playlists'
     }
+    setClickedBundleId(filters?.[0]?.collections?.[0])
     if (content === 'playlists') {
       setShowTrialSubsConfirmation(true)
       return
@@ -520,6 +522,7 @@ const MyClasses = ({
         defaultSelectedProductIds={defaultSelectedProductIds}
         setProductData={setProductData}
         trialAddOnProductIds={trialAddOnProductIds}
+        clickedBundleId={clickedBundleId}
       />
       {showItemBankTrialUsedModal && (
         <ItemBankTrialUsedModal

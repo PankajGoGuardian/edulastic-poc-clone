@@ -47,6 +47,8 @@ const TrialConfirmationModal = ({
   fetchPlaylists,
   playlists = [],
   useThisPlayList,
+  interestedGrades,
+  clickedBundleId,
   customTitleModalVisible,
   setCustomTitleModalVisible,
   cloneThisPlayList,
@@ -89,7 +91,20 @@ const TrialConfirmationModal = ({
   }
 
   // using hasTrial for trial and purchase both
-  const { subEndDate, hasTrial, isTrial } = showTrialConfirmationMessage
+  const {
+    subEndDate,
+    hasTrial,
+    isTrial,
+    defaultSelectedItemBankId,
+  } = showTrialConfirmationMessage
+
+  useEffect(() => {
+    setSelectedProducts([clickedBundleId || defaultSelectedItemBankId])
+  }, [defaultSelectedItemBankId, clickedBundleId])
+
+  useEffect(() => {
+    setSelectedGrades(interestedGrades)
+  }, [interestedGrades])
 
   const productsToShow = products.filter(({ linkedProductId }) =>
     collections.find(({ _id }) => _id === linkedProductId)

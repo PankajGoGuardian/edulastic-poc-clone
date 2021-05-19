@@ -214,7 +214,7 @@ const StudentProfileReportFilters = ({
   }, [loc, showFilter])
 
   useEffect(() => {
-    if (standardFiltersRequired && !firstLoad) {
+    if (!standardFiltersRequired && !firstLoad) {
       setFilters({
         ...filters,
         domainId: '',

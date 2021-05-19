@@ -9,11 +9,12 @@ import {
   uniq,
   some,
   every,
+  cloneDeep,
 } from 'lodash'
 import { testActivityStatus, questionType } from '@edulastic/constants'
 import produce from 'immer'
 import { getMathHtml } from '@edulastic/common'
-import { red, yellow, themeColorLighter } from '@edulastic/colors'
+import { red, yellow, themeColorLighter, darkBlue2 } from '@edulastic/colors'
 import { getServerTs } from '../../student/utils'
 import { getFormattedName } from '../Gradebook/transformers'
 
@@ -449,7 +450,19 @@ export function getStandardsForStandardBasedReport(
     (x) => `${x._id}`
   )
   const standardsQuestionsMap = {}
-  const questions = testItems.flatMap((x) => x.data.questions)
+  const items = cloneDeep(testItems)
+  const questions = []
+  items.forEach(({ itemLevelScoring, data }) => {
+    if (itemLevelScoring && data?.questions?.length) {
+      const alignment = []
+      data.questions.forEach((question) => {
+        alignment.push(...(question.alignment || []))
+        question.alignment = []
+      })
+      data.questions[0].alignment = alignment
+    }
+    questions.push(...data.questions)
+  })
   for (const q of questions) {
     if (q?.validation?.unscored) {
       continue
@@ -741,6 +754,7 @@ export const transformGradeBookResponse = (
               ),
               userResponse,
               isPractice,
+              autoGrade,
             }
           }
         )
@@ -864,7 +878,8 @@ export const getStudentCardStatus = (
       break
     case SUBMITTED:
       status.status = student?.graded === 'GRADED' ? 'Graded' : student.status
-      status.color = themeColorLighter
+      status.color =
+        student?.graded === 'GRADED' ? themeColorLighter : darkBlue2
       break
     case ABSENT:
       status.status = 'Absent'

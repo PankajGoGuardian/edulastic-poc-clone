@@ -150,6 +150,7 @@ const ActionContainer = ({
               'frlStatus',
               'iepStatus',
               'sedStatus',
+              'hispanicEthnicity',
               'username',
               'password',
               'contactEmails',

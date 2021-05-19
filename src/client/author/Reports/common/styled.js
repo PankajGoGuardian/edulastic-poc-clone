@@ -1,3 +1,4 @@
+import React from 'react'
 import {
   darkGrey,
   extraDesktopWidthMax,
@@ -10,11 +11,26 @@ import {
   white,
   themeColorBlue,
 } from '@edulastic/colors'
-import { EduButton, Card, FieldLabel } from '@edulastic/common'
+import { EduButton, Card, FieldLabel, notification } from '@edulastic/common'
 import { Text } from '@vx/text'
 import { Col, Slider, Table, Button } from 'antd'
 import styled, { css } from 'styled-components'
 import { CustomChartTooltip } from './components/charts/chartUtils/tooltip'
+
+export const styledNotification = ({ ...props }) =>
+  notification({
+    ...props,
+    msg: (
+      <div
+        style={{
+          whiteSpace: 'nowrap',
+          paddingTop: '1.5px',
+        }}
+      >
+        {props.msg}
+      </div>
+    ),
+  })
 
 export const StyledCell = styled.div`
   height: 100%;
@@ -180,11 +196,12 @@ export const StyledEduButton = styled(EduButton)`
   &:focus {
     &.ant-btn.ant-btn-primary {
       background-color: ${white};
-      color: ${themeColor};
-      border-color: ${themeColor};
+      color: ${({ isBlue }) => (isBlue ? themeColorBlue : themeColor)};
+      border-color: ${({ isBlue }) => (isBlue ? themeColorBlue : themeColor)};
     }
     svg {
-      fill: ${themeColor} !important;
+      fill: ${({ isBlue }) =>
+        isBlue ? themeColorBlue : themeColor} !important;
     }
   }
   /* isGhost prop => filter inactive */
@@ -192,8 +209,9 @@ export const StyledEduButton = styled(EduButton)`
   &:active,
   &:hover {
     &.ant-btn.ant-btn-primary {
-      background-color: ${themeColor};
-      border-color: ${themeColor};
+      background-color: ${({ isBlue }) =>
+        isBlue ? themeColorBlue : themeColor};
+      border-color: ${({ isBlue }) => (isBlue ? themeColorBlue : themeColor)};
       color: ${white};
     }
     svg {

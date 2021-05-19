@@ -1,12 +1,13 @@
 import React, { useEffect, useState, useRef } from 'react'
 import PropTypes from 'prop-types'
-import { filter, isEmpty, isEqual } from 'lodash'
+import { filter, isEmpty, isEqual, keys } from 'lodash'
 import { withRouter } from 'react-router-dom'
 import PlayerHeader from './PlayerHeader'
 import ParentController from './utility/parentController'
 import getUserResponse, {
   insertTestletMML,
   getExtDataForQuestion,
+  getResponseValue,
 } from './utility/helpers'
 import { MainContent, Main, OverlayDiv } from './styled'
 import Magnifier from '../../../common/components/Magnifier'
@@ -314,6 +315,21 @@ const PlayerContent = ({
     insertTestletMML(frameRef.current)
   }
 
+  const handleTestletLog = (log) => {
+    if (!previewPlayer) {
+      const { response } = frameController
+      const logToSave = {}
+      keys(log).forEach((resId) => {
+        const value = getResponseValue(resId, response)
+        logToSave[resId] = {
+          ...log[resId],
+          r: value,
+        }
+      })
+      saveTestletLog(logToSave)
+    }
+  }
+
   useEffect(() => {
     if (testletConfig.testletURL && frameRef.current) {
       const { state: initState = {} } = testletState
@@ -330,7 +346,7 @@ const PlayerContent = ({
         setCurrentScoring,
         handleReponse,
         handleTestletState,
-        handleLog: previewPlayer ? () => null : saveTestletLog,
+        handleLog: handleTestletLog,
         submitTest: saveUserResponse,
         finishedLoad: finishedLoadTestlet,
       })

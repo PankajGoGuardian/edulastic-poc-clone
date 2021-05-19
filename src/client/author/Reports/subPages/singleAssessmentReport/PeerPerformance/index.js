@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { isEmpty } from 'lodash'
+import { isEmpty, uniq } from 'lodash'
 
 import { getUserRole } from '../../../../src/selectors/user'
 import { ControlDropDown } from '../../../common/components/widgets/controlDropDown'
@@ -15,9 +15,10 @@ import {
   StyledH3,
   StyledSignedBarContainer,
   NoDataContainer,
+  StyledDropDownContainer,
 } from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
-import { getCsvDownloadingState, getTestListSelector } from '../../../ducks'
+import { getCsvDownloadingState } from '../../../ducks'
 import {
   getSAFFilterPerformanceBandProfiles,
   setPerformanceBandProfileAction,
@@ -33,8 +34,8 @@ import {
   getReportsPeerPerformanceError,
   resetPeerPerformanceAction,
 } from './ducks'
-import columns from './static/json/tableColumns.json'
 import { idToName, parseData } from './util/transformers'
+import { getColumns } from './util/tableColumns'
 
 // -----|-----|-----|-----|-----| COMPONENT BEGIN |-----|-----|-----|-----|----- //
 
@@ -44,11 +45,10 @@ const PeerPerformance = ({
   isCsvDownloading,
   role,
   performanceBandProfiles,
-  peerPerformance,
+  peerPerformance: _peerPerformance,
   getPeerPerformance,
   resetPeerPerformance,
   settings,
-  testList,
   filters,
   sharedReport,
   setPerformanceBandProfile,
@@ -63,12 +63,22 @@ const PeerPerformance = ({
     ],
     [sharedReport]
   )
-  const selectedTest = testList.find(
-    (t) => t._id === settings.selectedTest.key
-  ) || { _id: '', title: '' }
+  const peerPerformance = useMemo(() => {
+    const peerPerf = { ..._peerPerformance }
+    if (peerPerf.metricInfo) {
+      peerPerf.metricInfo = _peerPerformance.metricInfo?.map((mi) => ({
+        ...mi,
+        extAttributes: JSON.parse(mi.extAttributes || '{}'),
+        ...JSON.parse(mi.extAttributes || '{}'),
+      }))
+    }
+    return peerPerf
+  }, [_peerPerformance])
   const assessmentName = `${
-    selectedTest.title
-  } (ID:${selectedTest._id.substring(selectedTest._id.length - 5)})`
+    settings.selectedTest.title
+  } (ID:${settings.selectedTest.key.substring(
+    settings.selectedTest.key.length - 5
+  )})`
 
   const bandInfo = useMemo(
     () =>
@@ -131,19 +141,34 @@ const PeerPerformance = ({
       if (userRole === 'teacher') {
         tempCompareBy.splice(0, 2)
       }
+      const _extAttributes = uniq(
+        peerPerformance.metricInfo
+          ?.map((mi) => Object.keys(mi.extAttributes || {}))
+          .flat()
+          .sort()
+      ).map((eA) => ({
+        key: eA,
+        title: idToName(eA),
+      }))
+      tempCompareBy.push(..._extAttributes)
     }
   )
-
-  const getColumns = () =>
-    columns.columns[ddfilter.analyseBy][
-      ddfilter.compareBy === 'group' ? 'groupId' : ddfilter.compareBy
-    ]
+  useEffect(() => {
+    if (
+      !compareByDropDownData.map((dd) => dd.key).includes(ddfilter.compareBy)
+    ) {
+      setDdFilter((prevDdFilter) => ({
+        ...prevDdFilter,
+        compareBy: compareByDropDownData[0].key,
+      }))
+    }
+  }, [peerPerformance])
 
   const res = { ...peerPerformance, bandInfo }
   const parsedData = useMemo(() => {
     return {
       data: parseData(res, ddfilter),
-      columns: getColumns(),
+      columns: getColumns(ddfilter),
     }
   }, [res, ddfilter])
 
@@ -205,7 +230,7 @@ const PeerPerformance = ({
             <Row type="flex" justify="start">
               <Col xs={24} sm={24} md={12} lg={8} xl={12}>
                 <StyledH3>
-                  Assessment Performance by {idToName[ddfilter.compareBy]} |{' '}
+                  Assessment Performance by {idToName(ddfilter.compareBy)} |{' '}
                   {assessmentName}
                 </StyledH3>
               </Col>
@@ -217,19 +242,39 @@ const PeerPerformance = ({
                 lg={16}
                 xl={12}
               >
-                <ControlDropDown
-                  prefix="Analyze by"
-                  by={ddfilter.analyseBy}
-                  selectCB={updateAnalyseByCB}
-                  data={dropDownFormat.analyseByDropDownData}
-                />
-                <ControlDropDown
-                  prefix="Compare by"
-                  style={{ marginLeft: 8 }}
-                  by={ddfilter.compareBy}
-                  selectCB={updateCompareByCB}
-                  data={compareByDropDownData}
-                />
+                <Row className="control-dropdown-row">
+                  <StyledDropDownContainer
+                    data-cy="analyzeBy"
+                    xs={24}
+                    sm={24}
+                    md={12}
+                    lg={12}
+                    xl={12}
+                  >
+                    <ControlDropDown
+                      prefix="Analyze by"
+                      by={ddfilter.analyseBy}
+                      selectCB={updateAnalyseByCB}
+                      data={dropDownFormat.analyseByDropDownData}
+                    />
+                  </StyledDropDownContainer>
+                  <StyledDropDownContainer
+                    data-cy="compareBy"
+                    xs={24}
+                    sm={24}
+                    md={12}
+                    lg={12}
+                    xl={12}
+                  >
+                    <ControlDropDown
+                      prefix="Compare by"
+                      style={{ marginLeft: 8 }}
+                      by={ddfilter.compareBy}
+                      selectCB={updateCompareByCB}
+                      data={compareByDropDownData}
+                    />
+                  </StyledDropDownContainer>
+                </Row>
               </Col>
             </Row>
             <div>
@@ -311,7 +356,6 @@ const enhance = compose(
       role: getUserRole(state),
       performanceBandProfiles: getSAFFilterPerformanceBandProfiles(state),
       peerPerformance: getReportsPeerPerformance(state),
-      testList: getTestListSelector(state),
     }),
     {
       getPeerPerformance: getPeerPerformanceRequestAction,

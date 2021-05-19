@@ -187,7 +187,7 @@ const StudentProfileSummary = ({
     if (settings.requestFilters.termId || settings.requestFilters.reportId) {
       return () => toggleFilter(null, false)
     }
-  }, [settings])
+  }, [settings.selectedStudent, settings.requestFilters])
 
   useEffect(() => {
     setSelectedDomain({ key: 'All', title: 'All' })

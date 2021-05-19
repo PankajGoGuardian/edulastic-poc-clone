@@ -226,6 +226,7 @@ class Container extends Component {
           tabIndex: 0,
           testItemId: isTestFlow ? itemId : match.params._id,
           testName: state?.testName || '',
+          regradeFlow: state?.regradeFlow,
         },
       })
     }
@@ -354,6 +355,7 @@ class Container extends Component {
           rows.length > 1 && rowIndex === 0 && columnHasResource,
         isMultiDimensionalLayout,
         isMultipartItem,
+        regradeFlow: state?.regradeFlow,
       },
     })
   }
@@ -654,14 +656,20 @@ class Container extends Component {
         state: { resetView: false, testAuthoring: false, testId: state.testId },
       })
     }
-    const { previousTestId, fadeSidebar } = state || {}
+    const { previousTestId, fadeSidebar, regradeFlow } = state || {}
     history.push({
       // `/author/tests/${tId}/editItem/${item?._id}`
       pathname: isTestFlow
         ? `/author/tests/${testId}/editItem/${_id}`
         : `/author/items/${_id}/item-detail`,
       // To stop view changes, while using pagination buttons
-      state: { isTestFlow, previousTestId, fadeSidebar, resetView: false },
+      state: {
+        isTestFlow,
+        previousTestId,
+        fadeSidebar,
+        resetView: false,
+        regradeFlow,
+      },
     })
   }
 

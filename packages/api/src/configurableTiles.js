@@ -19,6 +19,27 @@ const fetchTileById = (id) =>
     })
     .then((result) => result.data)
 
+const fetchRecommendedTest = () =>
+  api
+    .callApi({
+      useSlowApi: true,
+      url: `${prefix}/recommend/tests`,
+      method: 'get',
+    })
+    .then((result) => {
+      const data = []
+      const res = result?.data?.map((x) => x?.results)
+      const totalElements = result?.data?.flatMap((x) => x?.results)?.length
+      for (let currentIndex = 0; data.length < totalElements; currentIndex++) {
+        res.forEach((arr) => {
+          if (currentIndex < arr?.length) {
+            data.push(arr[currentIndex])
+          }
+        })
+      }
+      return data
+    })
+
 const createTile = (data) =>
   api
     .callApi({
@@ -51,4 +72,5 @@ export default {
   createTile,
   updateTile,
   removeTile,
+  fetchRecommendedTest,
 }

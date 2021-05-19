@@ -9,6 +9,7 @@ import { calculateScore } from './helper'
 const RatingComp = ({ data, selected, onClick }) => (
   <Tooltip title={data.name}>
     <RatingButton
+      data-cy="ratingCard"
       isGhost
       isBlue
       width="38px"
@@ -53,9 +54,9 @@ const PreviewRubricCard = ({ rubricData, rubricFeedback, onChange }) => {
 
   return (
     <div data-cy="rubric-ratings">
-      <RubrickName>{name}</RubrickName>
+      <RubrickName data-cy="rubricName">{name}</RubrickName>
       {(criteria || []).map((c) => (
-        <CriteriaRow key={c.id}>
+        <CriteriaRow data-cy="criteriaRow" key={c.id}>
           <TwoLineEllipsis>{c.name}</TwoLineEllipsis>
           <FlexContainer justifyContent="flex-start" flexWrap="wrap">
             {(c.ratings || []).map((rating) => (

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { sumBy, round } from 'lodash'
 import { Tooltip } from 'antd'
-import { lightGreen4, themeColor } from '@edulastic/colors'
+import { lightGreen4 } from '@edulastic/colors'
 import BarGraph from '../BarGraph/BarGraph'
 import {
   StyledProgress,
@@ -59,8 +59,11 @@ export default class Graph extends Component {
                 <AssignmentTitle color={lightGreen4}>{title}</AssignmentTitle>
               </Tooltip>
             )}
-
+            <GraphDescription margin="3px 0 0 0" top={title ? '32%' : '25%'}>
+              average score
+            </GraphDescription>
             <StyledProgress
+              marginTop={1}
               className="getProgress"
               strokeLinecap="square"
               type="circle"
@@ -70,8 +73,8 @@ export default class Graph extends Component {
               strokeColor="#2B7FF0"
               format={(percent) => `${percent}%`}
             />
-            <GraphDescription margin="3px 0 0 0">
-              average score %
+            <GraphDescription margin="3px 0 0 0" top="67%">
+              MEDIAN {gradebook.median}%
             </GraphDescription>
           </StyledProgressDiv>
           <GraphInfo data-cy="submittedSummary">

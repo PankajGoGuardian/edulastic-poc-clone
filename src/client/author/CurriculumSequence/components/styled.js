@@ -17,7 +17,7 @@ import {
   themeColorBlue,
 } from '@edulastic/colors'
 import { ProgressBar, MathFormulaDisplay } from '@edulastic/common'
-import { Col, Modal } from 'antd'
+import { Col, Modal, Menu } from 'antd'
 import styled, { css } from 'styled-components'
 import { StyledLabel } from '../../Reports/common/styled'
 
@@ -127,7 +127,8 @@ export const StyledProgressBar = styled(ProgressBar)`
 export const IconActionButton = styled.div`
   width: 22px;
   height: 22px;
-  right: 4px;
+  right: ${({ right }) => right || '4px'};
+  margin-left: ${({ ml }) => ml};
   z-index: 50;
   display: flex;
   justify-content: center;
@@ -136,7 +137,8 @@ export const IconActionButton = styled.div`
 
   @media (min-width: ${smallDesktopWidth}) {
     position: relative;
-    right: 0px;
+    right: ${({ right }) => right || '0px'};
+    margin-left: ${({ ml }) => ml};
   }
 `
 
@@ -555,4 +557,15 @@ export const ModuleWrapper = styled.div`
     border: none;
     box-shadow: none;
   }
+`
+export const MenuStyled = styled(Menu)`
+.ant-dropdown-menu-item-active {
+    :hover {
+      background: ${themeColorBlue};
+      color: ${white};
+      a {
+        color: ${white};
+      }
+    }
+  
 `

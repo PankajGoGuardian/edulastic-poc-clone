@@ -7,6 +7,7 @@ import {
   mediumDesktopExactWidth,
   extraDesktopWidthMax,
   grey,
+  white,
 } from '@edulastic/colors'
 import { Col, Row } from 'antd'
 
@@ -79,7 +80,6 @@ export const SecondHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
 
   & > div > .ant-btn {
     background: transparent;
@@ -99,4 +99,14 @@ export const SecondHeader = styled.div`
 export const TestTitle = styled.div`
   font-size: 18px;
   font-weight: bold;
+`
+
+export const SecondHeaderWrapper = styled(Row)`
+  background-color: ${white};
+  display: flex;
+  align-items: center;
+  height: 55px;
+  position: sticky;
+  top: -30px;
+  z-index: 1000;
 `

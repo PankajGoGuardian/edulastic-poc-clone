@@ -1,13 +1,10 @@
 import React, { useState, useEffect, useMemo } from 'react'
-import { connect } from 'react-redux'
 import {
   EduButton,
   FlexContainer,
   MainContentWrapper,
   notification,
 } from '@edulastic/common'
-import qs from 'qs'
-import loadable from '@loadable/component'
 import { Link } from 'react-router-dom'
 import { isBoolean, groupBy, keyBy, difference, map } from 'lodash'
 import TrialModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/TrialModal/index'
@@ -60,12 +57,6 @@ import {
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import CalendlyScheduleModal from './CalendlyScheduleModal'
 import FeatureNotAvailableModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/FeatureNotAvailableModal'
-
-const TrialConfirmationModal = loadable(() =>
-  import(
-    '../../../Dashboard/components/Showcase/components/Myclasses/components/FeaturedContentBundle/TrialConfimationModal'
-  )
-)
 
 const getUpgradeToMultipleUsersPlanAction = ({ openPurchaseLicenseModal }) => (
   <ActionsWrapper>
@@ -225,19 +216,13 @@ const SubscriptionMain = ({
   handleCloseFeatureNotAvailableModal,
   isFreeAdmin,
   setProductData,
-  showTrialSubsConfirmationAction,
-  showTrialConfirmationMessage,
   dashboardTiles,
-  resetTestFilters,
-  resetPlaylistFilters,
-  isConfirmationModalVisible,
-  collections,
-  history,
   productData = {},
+  setTrialAddOnProductIds,
+  setShowTrialSubsConfirmation,
 }) => {
   const [showSelectStates, setShowSelectStates] = useState(false)
   const [isTrialModalVisible, setIsTrialModalVisible] = useState(false)
-  const [trialAddOnProductIds, setTrialAddOnProductIds] = useState([])
   const [hasAllTrialProducts, setHasAllTrialProducts] = useState(false)
 
   const productsKeyedByType = keyBy(products, 'type')
@@ -368,27 +353,6 @@ const SubscriptionMain = ({
   const handleSparkPurchaseClick = (productId) => {
     settingProductData(productId)
     handlePurchaseFlow()
-  }
-
-  const handleGoToCollectionClick = (productId) => {
-    const currentItemBank = getBundleByProductId(productId)
-    const { config = {} } = currentItemBank
-    const { filters, contentType } = config
-
-    const content = contentType?.toLowerCase() || 'tests'
-
-    const entries = filters.reduce((a, c) => ({ ...a, ...c }), {
-      removeInterestedFilters: true,
-    })
-    const filter = qs.stringify(entries)
-
-    if (content === 'tests') {
-      resetTestFilters()
-    } else {
-      resetPlaylistFilters()
-    }
-    history.push(`/author/${content}?${filter}`)
-    showTrialSubsConfirmationAction(false)
   }
 
   const getSparkProductLinks = (title) => {
@@ -548,18 +512,7 @@ const SubscriptionMain = ({
           products={products}
           setTrialAddOnProductIds={setTrialAddOnProductIds}
           hasAllTrialProducts={hasAllTrialProducts}
-        />
-      )}
-      {isConfirmationModalVisible && (
-        <TrialConfirmationModal
-          visible={isConfirmationModalVisible}
-          showTrialSubsConfirmationAction={showTrialSubsConfirmationAction}
-          showTrialConfirmationMessage={showTrialConfirmationMessage}
-          trialAddOnProductIds={trialAddOnProductIds}
-          collections={collections}
-          products={products}
-          handleGoToCollectionClick={handleGoToCollectionClick}
-          history={history}
+          setShowTrialSubsConfirmation={setShowTrialSubsConfirmation}
         />
       )}
       {showFeatureNotAvailableModal && (
@@ -647,6 +600,4 @@ const SubscriptionMain = ({
   )
 }
 
-export default connect((state) => ({
-  products: state?.subscription?.products,
-}))(SubscriptionMain)
+export default SubscriptionMain

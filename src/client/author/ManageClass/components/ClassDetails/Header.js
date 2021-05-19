@@ -102,6 +102,7 @@ const Header = ({
     atlasId = '',
   } = selectedClass
   const { exitPath } = location?.state || {}
+  const isDemoPlaygroundUser = user?.isPlayground
 
   const typeText = type !== 'class' ? 'Group' : 'Class'
 
@@ -185,11 +186,15 @@ const Header = ({
       testType: '',
       termId: '',
     }
-    sessionStorage.setItem('filters[Assignments]', JSON.stringify(filter))
+    sessionStorage.setItem(
+      `assignments_filter_${user._id}`,
+      JSON.stringify(filter)
+    )
     history.push('/author/assignments')
   }
 
-  const showSyncButtons = type === 'class' && active === 1
+  const showSyncButtons =
+    type === 'class' && active === 1 && !isDemoPlaygroundUser
   const showCleverSyncButton = showSyncButtons && enableCleverSync && cleverId
   const showGoogleSyncButton = showSyncButtons && allowGoogleLogin !== false
   const showCanvasSyncButton = showSyncButtons && allowCanvasLogin
@@ -222,7 +227,7 @@ const Header = ({
       headingText={classDetails}
     >
       <div style={{ display: 'flex', alignItems: 'right' }}>
-        {showDropDown ? (
+        {showDropDown && !isDemoPlaygroundUser ? (
           <SelectStyled
             data-cy="sync-options-dropdown"
             minWidth="200px"

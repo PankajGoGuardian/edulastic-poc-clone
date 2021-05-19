@@ -69,7 +69,7 @@ export const PointsInputWrapper = styled.div`
   align-items: center;
   position: absolute;
   right: 0px;
-  top: -40px;
+  top: ${({ itemLevelScoring }) => (itemLevelScoring ? '-80px' : '-40px')};
 
   .ant-input-number-disabled {
     background-color: ${greyLight1};

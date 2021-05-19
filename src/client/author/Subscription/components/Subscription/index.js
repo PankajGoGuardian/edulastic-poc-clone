@@ -12,7 +12,6 @@ import { Wrapper } from '../styled/commonStyled'
 import SubscriptionHeader from '../SubscriptionHeader'
 import SubscriptionMain from '../SubscriptionMain'
 import PurchaseFlowModals from '../../../src/components/common/PurchaseModals'
-import { getCollectionsSelector } from '../../../src/selectors/user'
 import {
   CompareModal,
   PlanCard,
@@ -25,6 +24,10 @@ import {
 import { resetTestFiltersAction } from '../../../TestList/ducks'
 import { clearPlaylistFiltersAction } from '../../../Playlist/ducks'
 import ItemBankTrialUsedModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/FeaturedContentBundle/ItemBankTrialUsedModal'
+import {
+  fetchMultipleSubscriptionsAction,
+  getSubsLicensesSelector,
+} from '../../../ManageSubscription/ducks'
 
 const comparePlansData = [
   {
@@ -188,16 +191,14 @@ const Subscription = (props) => {
     isPremiumTrialUsed,
     itemBankSubscriptions = [],
     startTrialAction,
-    isConfirmationModalVisible,
-    showTrialSubsConfirmationAction,
     products,
     usedTrialItemBankIds = [],
     setPaymentServiceModal,
-    showTrialConfirmationMessage,
     dashboardTiles,
     resetTestFilters,
     resetPlaylistFilters,
-    collections,
+    fetchMultipleSubscriptions,
+    subsLicenses,
   } = props
 
   const [comparePlan, setComparePlan] = useState(false)
@@ -209,6 +210,7 @@ const Subscription = (props) => {
   const [showMultiplePurchaseModal, setShowMultiplePurchaseModal] = useState(
     false
   )
+  const [trialAddOnProductIds, setTrialAddOnProductIds] = useState([])
   const [
     showFeatureNotAvailableModal,
     setShowFeatureNotAvailableModal,
@@ -217,10 +219,14 @@ const Subscription = (props) => {
   const [showItemBankTrialUsedModal, setShowItemBankTrialUsedModal] = useState(
     false
   )
+  const [showTrialSubsConfirmation, setShowTrialSubsConfirmation] = useState(
+    false
+  )
 
   useEffect(() => {
     // getSubscription on mount
     fetchUserSubscriptionStatus()
+    fetchMultipleSubscriptions({})
   }, [])
 
   const isPremiumUser = user?.features?.premium
@@ -362,15 +368,14 @@ const Subscription = (props) => {
         }
         showFeatureNotAvailableModal={showFeatureNotAvailableModal}
         isFreeAdmin={isFreeAdmin}
-        showTrialSubsConfirmationAction={showTrialSubsConfirmationAction}
-        showTrialConfirmationMessage={showTrialConfirmationMessage}
         dashboardTiles={dashboardTiles}
         resetTestFilters={resetTestFilters}
         resetPlaylistFilters={resetPlaylistFilters}
-        isConfirmationModalVisible={isConfirmationModalVisible}
-        collections={collections}
         history={history}
         productData={productData}
+        products={products}
+        setTrialAddOnProductIds={setTrialAddOnProductIds}
+        setShowTrialSubsConfirmation={setShowTrialSubsConfirmation}
       />
       <CompareModal
         title=""
@@ -390,8 +395,12 @@ const Subscription = (props) => {
         defaultSelectedProductIds={defaultSelectedProductIds}
         showMultiplePurchaseModal={showMultiplePurchaseModal}
         setShowMultiplePurchaseModal={setShowMultiplePurchaseModal}
-        setProductData={setProductData}
+        isConfirmationModalVisible={showTrialSubsConfirmation}
+        setShowTrialSubsConfirmation={setShowTrialSubsConfirmation}
         showRenewalOptions={showRenewalOptions}
+        subsLicenses={subsLicenses}
+        setProductData={setProductData}
+        trialAddOnProductIds={trialAddOnProductIds}
       />
 
       <HasLicenseKeyModal
@@ -437,25 +446,20 @@ export default compose(
         state?.subscription?.subscriptionData?.isPremiumTrialUsed,
       itemBankSubscriptions:
         state?.subscription?.subscriptionData?.itemBankSubscriptions,
-      isConfirmationModalVisible:
-        state?.subscription?.showTrialSubsConfirmation,
       products: state?.subscription?.products,
       usedTrialItemBankIds:
         state?.subscription?.subscriptionData?.usedTrialItemBankIds,
-      showTrialConfirmationMessage:
-        state?.subscription?.showTrialConfirmationMessage,
       dashboardTiles: state.dashboardTeacher.configurableTiles,
-      collections: getCollectionsSelector(state),
+      subsLicenses: getSubsLicensesSelector(state),
     }),
     {
       verifyAndUpgradeLicense: slice.actions.upgradeLicenseKeyPending,
       fetchUserSubscriptionStatus: slice.actions.fetchUserSubscriptionStatus,
       startTrialAction: slice.actions.startTrialAction,
-      showTrialSubsConfirmationAction:
-        slice.actions.trialSubsConfirmationAction,
       setPaymentServiceModal: slice.actions.setPaymentServiceModal,
       resetTestFilters: resetTestFiltersAction,
       resetPlaylistFilters: clearPlaylistFiltersAction,
+      fetchMultipleSubscriptions: fetchMultipleSubscriptionsAction,
     }
   )
 )(Subscription)

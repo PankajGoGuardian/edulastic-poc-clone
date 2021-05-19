@@ -330,6 +330,7 @@ class Scoring extends Component {
                     this.handleRubricAction('CREATE NEW')
                     e.target.blur()
                   }}
+                  data-cy="createNewRubric"
                   display="inline-block"
                   padding="0px 16px"
                   width="142px"
@@ -348,6 +349,7 @@ class Scoring extends Component {
                   padding="0px 16px"
                   width="142px"
                   margin="0px 15px 0px 0px"
+                  data-cy="useExistingRubric"
                   disabled={!isCorrectAnsTab}
                   ghost={!isCorrectAnsTab}
                 >
@@ -359,13 +361,16 @@ class Scoring extends Component {
 
         {questionData.rubrics && userFeatures.gradingrubrics && (
           <RubricsContainer>
-            <StyledTag>
+            <StyledTag data-cy="selectedRubric">
               <span
                 onClick={() => this.handleViewRubric(questionData.rubrics._id)}
               >
                 {questionData.rubrics.name}
               </span>
-              <span onClick={() => dissociateRubricFromQuestion()}>
+              <span
+                data-cy="removeRubric"
+                onClick={() => dissociateRubricFromQuestion()}
+              >
                 <Icon type="close" />
               </span>
             </StyledTag>

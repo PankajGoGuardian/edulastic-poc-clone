@@ -43,7 +43,7 @@ const ClassCreatePage = ({
     console.log('error', err)
   }
 
-  const { isUserGoogleLoggedIn, cleverId } = user
+  const { isUserGoogleLoggedIn, cleverId, isPlayground } = user
 
   const createNewClass = () => history.push('/author/manageClass/createClass')
 
@@ -71,7 +71,8 @@ const ClassCreatePage = ({
                 )}
                 onClick={createNewClass}
               />
-              {googleAllowedInstitutions?.length > 0 &&
+              {!isPlayground &&
+                googleAllowedInstitutions?.length > 0 &&
                 !cleverId &&
                 !isClassLink && (
                   <GoogleLogin

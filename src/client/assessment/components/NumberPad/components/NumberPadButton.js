@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 
 import { Item } from '../styled/Item'
 
-const NumberPadButton = ({ children, onClick, buttonStyle }) => (
-  <Item style={buttonStyle} onClick={onClick}>
+const NumberPadButton = ({ children, onClick, buttonStyle, data_cy }) => (
+  <Item style={buttonStyle} onClick={onClick} data-cy={data_cy}>
     {children}
   </Item>
 )

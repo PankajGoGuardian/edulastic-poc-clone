@@ -64,7 +64,8 @@
     "gender": "all",
     "iepStatus": "all",
     "frlStatus": "all",
-    "ellStatus": "all"
+    "ellStatus": "all",
+    "hispanicEthnicity": "all"
   },
   "subjects": [
     { "key": "Mathematics", "title": "Mathematics" },

@@ -12,7 +12,11 @@ import {
   extraDesktopWidthMax,
   mediumDesktopExactWidth,
 } from '@edulastic/colors'
-import { test as testConstants, roleuser } from '@edulastic/constants'
+import {
+  test as testConstants,
+  roleuser,
+  keyboard as keyboardConst,
+} from '@edulastic/constants'
 import { get, round } from 'lodash'
 import { Tooltip } from '../../../../common/utils/helpers'
 import {
@@ -174,6 +178,18 @@ const PlayerHeader = ({
                         moveToPrev()
                         e.target.blur()
                       }}
+                      // added separate keydown event handler to restrict calling on blur event for keyboard event
+                      onKeyDown={(e) => {
+                        const code = e.which || e.keyCode
+                        if (code !== keyboardConst.TAB_KEY) e.preventDefault()
+                        if (
+                          [
+                            keyboardConst.ENTER_KEY,
+                            keyboardConst.SPACE_KEY,
+                          ].includes(code)
+                        )
+                          moveToPrev()
+                      }}
                     />
                   </Tooltip>
                   <Tooltip
@@ -187,6 +203,18 @@ const PlayerHeader = ({
                       onClick={(e) => {
                         moveToNext()
                         e.target.blur()
+                      }}
+                      // added separate keydown event handler to restrict calling on blur event for keyboard event
+                      onKeyDown={(e) => {
+                        const code = e.which || e.keyCode
+                        if (code !== keyboardConst.TAB_KEY) e.preventDefault()
+                        if (
+                          [
+                            keyboardConst.ENTER_KEY,
+                            keyboardConst.SPACE_KEY,
+                          ].includes(code)
+                        )
+                          moveToNext()
                       }}
                       style={{ marginLeft: '5px' }}
                     />

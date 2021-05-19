@@ -24,6 +24,7 @@ const Matrix = (props) => {
     evaluation,
     smallSize,
     isPrintPreview,
+    tool,
   } = props
 
   // We expect stems to be an array, otherwise don't render
@@ -65,6 +66,7 @@ const Matrix = (props) => {
         isMultiple={isMultiple}
         smallSize={smallSize}
         isPrintPreview={isPrintPreview}
+        tool={tool}
       >
         {evaluation && checked && (
           <IconWrapper correct={correct} isPrintPreview={isPrintPreview}>

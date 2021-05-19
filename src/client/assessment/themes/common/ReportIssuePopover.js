@@ -31,20 +31,23 @@ const ReportIssuePopover = ({ item }) => {
             : { opacity: '0', height: '0px', width: '0px', overflow: 'hidden' }
         }
       >
-        <ReportIssue
-          textareaRows="5"
-          item={item}
-          toggleReportIssue={() => toggleVisibility(false)}
-          visible={visible}
-          toggleModal={toggleModal}
-          confirmationResponse={confirmationResponse}
-        />
+        {visible && (
+          <ReportIssue
+            textareaRows="5"
+            item={item}
+            toggleReportIssue={() => toggleVisibility(false)}
+            visible={visible}
+            toggleModal={toggleModal}
+            confirmationResponse={confirmationResponse}
+          />
+        )}
       </Popover>
 
       <StyledButton
         title="Report Issue"
         type="danger"
         onClick={() => toggleVisibility(!visible)}
+        tabIndex="-1"
       >
         <FontAwesomeIcon icon={faExclamationTriangle} aria-hidden="true" />
       </StyledButton>
@@ -67,6 +70,7 @@ const StyledButton = styled(Button)`
   background: transparent;
   padding: 0px 10px;
   font-size: 20px;
+  z-index: 20000;
   &:focus {
     background: transparent;
   }

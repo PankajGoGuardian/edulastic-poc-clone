@@ -29,6 +29,8 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
     disableResponse,
     isPrintPreview,
     allOptions,
+    answerScore,
+    allCorrects,
   } = resprops
   const { getScrollElement } = useContext(ScrollContext)
 
@@ -128,6 +130,8 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
       type="dropDowns"
       onInnerClick={onInnerClick}
       isPrintPreview={isPrintPreview}
+      answerScore={answerScore}
+      allCorrects={allCorrects}
     />
   ) : (
     <DropdownWrapper

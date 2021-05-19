@@ -26,7 +26,7 @@ import {
   fetchAssignmentsByTestAction,
 } from '../../../../publicTest/ducks'
 
-import { Content } from './styled'
+import { Content, ContentBackDrop } from './styled'
 import TestPageHeader from '../TestPageHeader/TestPageHeader'
 import {
   defaultImage,
@@ -53,6 +53,10 @@ import {
   removeTestEntityAction,
   setEditEnableAction,
   getTestIdFromVersionIdAction,
+  getShowUpgradePopupSelector,
+  setShowUpgradePopupAction,
+  receiveTestByIdSuccess as receiveTestByIdSuccessAction,
+  isRegradedByCoAuthor,
 } from '../../ducks'
 import {
   clearSelectedItemsAction,
@@ -295,6 +299,7 @@ class Container extends PureComponent {
       editEnable,
       languagePreference,
       setSelectedLanguage,
+      isUpgradePopupVisible,
     } = this.props
 
     const { testLoaded, studentRedirected } = this.state
@@ -320,7 +325,8 @@ class Container extends PureComponent {
         test?._id &&
         !testLoaded &&
         !test.isInEditAndRegrade &&
-        !isTestLoading
+        !isTestLoading &&
+        !isUpgradePopupVisible
       ) {
         this.onEnableEdit(true)
       }
@@ -579,10 +585,9 @@ class Container extends PureComponent {
       editEnable,
       userFeatures,
       collections,
+      writableCollections,
+      isPlaylist,
     } = this.props
-    if (isTestLoading) {
-      return <Spin />
-    }
     const { params = {} } = match
     const { showCancelButton = false } =
       history.location.state || this.state || {}
@@ -604,7 +609,13 @@ class Container extends PureComponent {
         allowContentEditCheck(test.collections, collections))
     const isEditable =
       isOwner && (editEnable || testStatus === statusConstants.DRAFT)
-
+    const hasCollectionAccess = allowContentEditCheck(
+      test.collections,
+      writableCollections
+    )
+    const isCurator =
+      (hasCollectionAccess && userFeatures.isCurator) ||
+      userRole === roleuser.EDULASTIC_CURATOR
     const props = {
       docUrl,
       annotations,
@@ -613,6 +624,10 @@ class Container extends PureComponent {
       questionsById,
       pageStructure,
       isEditable,
+    }
+
+    if (isTestLoading && !test._id) {
+      return <Spin />
     }
 
     switch (current) {
@@ -680,6 +695,8 @@ class Container extends PureComponent {
             sebPasswordRef={this.sebPasswordRef}
             owner={isOwner}
             showCancelButton={showCancelButton}
+            isCurator={isCurator}
+            isPlaylist={isPlaylist}
           />
         )
       case 'worksheet':
@@ -963,7 +980,7 @@ class Container extends PureComponent {
     }
   }
 
-  onEnableEdit = (onRegrade) => {
+  onEnableEdit = async (onRegrade, editClick) => {
     const {
       test,
       userId,
@@ -973,6 +990,9 @@ class Container extends PureComponent {
       setEditEnable,
       userFeatures,
       collections,
+      setShowUpgradePopup,
+      receiveTestByIdSuccess,
+      testAssignments,
     } = this.props
     const { _id: testId, authors, title, isUsed } = test
     const isCurator =
@@ -981,6 +1001,18 @@ class Container extends PureComponent {
       userRole === roleuser.EDULASTIC_CURATOR
     const canEdit =
       (authors && authors.some((x) => x._id === userId)) || isCurator
+    // If assignments present for the test and user clicking on edit do a quick test fetch and see if co author regraded or not. Else older code.
+    if (editClick && testAssignments.length) {
+      const entity = await testsApi.getById(testId, {
+        data: true,
+        requestLatest: true,
+        editAndRegrade: true,
+      })
+      if (isRegradedByCoAuthor(userId, entity, testId)) {
+        setShowUpgradePopup(true)
+        return receiveTestByIdSuccess(entity)
+      }
+    }
     setEditEnable(true)
     if (canEdit) {
       return this.handleSave()
@@ -1195,6 +1227,8 @@ class Container extends PureComponent {
           setDisableAlert={this.setDisableAlert}
           hasCollectionAccess={hasCollectionAccess}
         />
+        {/* This will work like an overlay during the test save for prevent content edit */}
+        {isTestLoading && test._id && <ContentBackDrop />}
         {this.renderContent()}
         <ItemCloneModal
           fallback={<Progress />}
@@ -1316,6 +1350,7 @@ const enhance = compose(
       isOrganizationDA: isOrganizationDistrictSelector(state),
       languagePreference: getSelectedLanguageSelector(state),
       isPremiumUser: isPremiumUserSelector(state),
+      isUpgradePopupVisible: getShowUpgradePopupSelector(state),
     }),
     {
       createTest: createTestAction,
@@ -1347,6 +1382,8 @@ const enhance = compose(
       getTestIdFromVersionId: getTestIdFromVersionIdAction,
       setSelectedLanguage: setSelectedLanguageAction,
       fetchUserKeypads: fetchCustomKeypadAction,
+      setShowUpgradePopup: setShowUpgradePopupAction,
+      receiveTestByIdSuccess: receiveTestByIdSuccessAction,
     }
   )
 )

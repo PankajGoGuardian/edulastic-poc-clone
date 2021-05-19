@@ -180,20 +180,10 @@ export const getTestGradeAndSubject = (
   }
   return { testGrades, testSubjects }
 }
-// user is created ? then he is author not authored and in authors list he is co-author
-const authorType = (userId, { createdBy, authors }) => {
-  if (userId === createdBy?._id) {
-    return 'author'
-  }
-  if (authors.some((item) => item._id === userId)) {
-    return 'co-author'
-  }
-  return false
-}
 
-const isRegraded = (isAuthor, entity, requestedTestId) => {
+export const isRegradedByCoAuthor = (userId, entity, requestedTestId) => {
   if (
-    isAuthor &&
+    entity.authors.some((item) => item._id === userId) &&
     entity._id !== requestedTestId &&
     entity.previousTestId === requestedTestId &&
     entity.status === 'published' &&
@@ -315,6 +305,9 @@ export const REMOVE_TEST_SETTING_FROM_LIST =
   '[tests] remove test setting from list'
 export const DELETE_TEST_SETTING_REQUEST = '[tests] delete test setting request'
 export const UPDATE_TEST_SETTING_REQUEST = '[tests] update test setting request'
+export const SET_SHOW_REGRADE_CONFIRM =
+  '[tests] set show regrade confirmation popup'
+export const SET_SHOW_UPGRADE_POPUP = '[tests] set show upgrade popup'
 // actions
 
 export const previewCheckAnswerAction = createAction(PREVIEW_CHECK_ANSWER)
@@ -399,6 +392,10 @@ export const setSharingContentStateAction = createAction(
 export const updateEmailNotificationDataAction = createAction(
   UPDATE_EMAIL_NOTIFICATION_DATA
 )
+export const setShowRegradeConfirmPopupAction = createAction(
+  SET_SHOW_REGRADE_CONFIRM
+)
+export const setShowUpgradePopupAction = createAction(SET_SHOW_UPGRADE_POPUP)
 
 export const setAvailableRegradeAction = createAction(SET_REGRADE_ACTIONS)
 
@@ -490,7 +487,7 @@ export const setCreateSuccessAction = () => ({
 })
 
 export const setTestEditAssignedAction = createAction(SET_TEST_EDIT_ASSIGNED)
-export const setRegradeSettingsDataAction = (payload) => ({
+export const regradeTestAction = (payload) => ({
   type: REGRADE_TEST,
   payload,
 })
@@ -731,6 +728,16 @@ export const getAvaialbleRegradeSettingsSelector = createSelector(
   (state) => state.availableRegradeSettings
 )
 
+export const getShowRegradeConfirmPopupSelector = createSelector(
+  stateSelector,
+  (state) => state.showRegradeConfirmPopup
+)
+
+export const getShowUpgradePopupSelector = createSelector(
+  stateSelector,
+  (state) => state.upgrade
+)
+
 export const showGroupsPanelSelector = createSelector(
   getTestEntitySelector,
   ({ itemGroups }) => {
@@ -915,6 +922,8 @@ const initialState = {
   savedTestSettingsList: [],
   currentTestSettingsId: '',
   regradeModalState: null,
+  showRegradeConfirmPopup: false,
+  upgrade: false,
 }
 
 export const testTypeAsProfileNameType = {
@@ -1502,6 +1511,16 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         regradeModalState: payload,
       }
+    case SET_SHOW_REGRADE_CONFIRM:
+      return {
+        ...state,
+        showRegradeConfirmPopup: payload,
+      }
+    case SET_SHOW_UPGRADE_POPUP:
+      return {
+        ...state,
+        upgrade: payload,
+      }
     default:
       return state
   }
@@ -1698,17 +1717,12 @@ function* receiveTestByIdSaga({ payload }) {
       ...(payload.playlistId ? { playlistId: payload.playlistId } : {}),
     })
     const userId = yield select(getUserIdSelector)
-    const typeOfAuthor = authorType(userId, entity)
-    if (payload.editAssigned && isRegraded(typeOfAuthor, entity, payload.id)) {
-      const routerState = yield select(({ router }) => router.location.state) ||
-        {}
-      yield put(setTestDataAction({ updated: false }))
-      yield put(
-        push({
-          pathname: `/author/assignments/regrade/new/${entity._id}/old/${entity.previousTestId}`,
-          state: { ...routerState, isRedirected: true },
-        })
-      )
+    if (
+      payload.editAssigned &&
+      isRegradedByCoAuthor(userId, entity, payload.id)
+    ) {
+      yield put(setShowUpgradePopupAction(true))
+      yield put(receiveTestByIdSuccess(entity))
       return
     }
     entity.passages = [
@@ -1982,7 +1996,6 @@ export function* updateTestSaga({ payload }) {
     const isCurator = yield select(getIsCurator)
     if (oldId !== newId && newId) {
       if (!payload.assignFlow) {
-        notification({ type: 'success', messageKey: 'testVersioned' })
         let url = `/author/tests/${newId}/versioned/old/${oldId}`
         if (currentTab) {
           url = `/author/tests/tab/${currentTab}/id/${newId}/old/${oldId}`
@@ -2135,8 +2148,9 @@ function* updateTestDocBasedSaga({ payload }) {
   }
 }
 
-function* updateRegradeDataSaga({ payload }) {
+function* updateRegradeDataSaga({ payload: _payload }) {
   try {
+    const { notify, ...payload } = _payload
     yield put(setRegradingStateAction(true))
     yield call(testsApi.publishTest, payload.newTestId)
     const { message, firestoreDocId } = yield call(
@@ -2144,16 +2158,30 @@ function* updateRegradeDataSaga({ payload }) {
       payload
     )
     yield put(setRegradeFirestoreDocId(firestoreDocId))
-    notification({ type: 'info', msg: message })
+    if (notify) {
+      notification({ type: 'info', msg: message })
+    } else {
+      notification({
+        type: 'info',
+        msg: 'Changes made to the test are being published',
+      })
+    }
   } catch (err) {
     const {
       data: { message: errorMessage },
     } = err.response
     captureSentryException(err)
-    notification({
-      type: 'error',
-      msg: errorMessage || 'Unable to publish & regrade.',
-    })
+    if (_payload.notify) {
+      notification({
+        type: 'error',
+        msg: errorMessage || 'Unable to publish & regrade.',
+      })
+    } else {
+      notification({
+        type: 'error',
+        msg: 'Publish failed',
+      })
+    }
     yield put(setRegradeFirestoreDocId(''))
     yield put(setRegradingStateAction(false))
   }
@@ -2326,19 +2354,43 @@ function* publishForRegrade({ payload }) {
         disableLoadingIndicator: true,
       },
     })
-    const newTestId = yield select(getTestIdSelector)
-    const locationState = yield select(({ router }) => router.location.state)
-    yield put(
-      push({
-        pathname: `/author/assignments/regrade/new/${newTestId}/old/${_test.previousTestId}`,
-        state: locationState,
-      })
+    const result = yield call(assignmentApi.fetchRegradeSettings, {
+      oldTestId: _test.previousTestId,
+      newTestId: payload,
+    })
+    yield put(setAvailableRegradeAction(result))
+    const isRegradeNeeded = result.some(
+      (item) => item === 'ADD' || item === 'EDIT'
     )
-    yield put(setUpdatingTestForRegradeStateAction(false))
+    if (isRegradeNeeded) {
+      yield put(setShowRegradeConfirmPopupAction(true))
+    } else {
+      const districtId = yield select((state) =>
+        get(state, ['user', 'user', 'orgData', 'districtIds', 0])
+      )
+      yield put(setTestsLoadingAction(true))
+      yield call(updateRegradeDataSaga, {
+        payload: {
+          notify: false,
+          newTestId: payload,
+          oldTestId: _test.previousTestId,
+          assignmentList: [],
+          districtId,
+          applyChangesChoice: 'ALL',
+          options: {
+            removedQuestion: 'DISCARD',
+            testSettings: 'ALL',
+            addedQuestion: 'SKIP',
+            editedQuestion: 'SCORE',
+          },
+        },
+      })
+    }
   } catch (error) {
     Sentry.captureException(error)
     console.error(error)
     notification({ msg: error?.data?.message || 'publish failed.' })
+  } finally {
     yield put(setUpdatingTestForRegradeStateAction(false))
   }
 }
@@ -2655,7 +2707,7 @@ function* checkAnswerSaga({ payload }) {
   }
 }
 
-function* showAnswerSaga({ payload }) {
+function* showAnswerSaga({ payload = {} }) {
   try {
     const testItems = yield select(getTestItemsSelector)
     const testItem = testItems.find((x) => x._id === payload.id) || {}
@@ -2677,7 +2729,7 @@ function* showAnswerSaga({ payload }) {
     const evaluation = yield createShowAnswerData(
       questions,
       answers,
-      testItem._id
+      testItem._id || payload._id
     )
     yield put({
       type: CHANGE_PREVIEW,

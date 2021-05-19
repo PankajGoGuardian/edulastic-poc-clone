@@ -13,7 +13,7 @@ import {
   maxBy,
   isEmpty,
 } from 'lodash'
-import { filterAccordingToRole, percentage } from '../../../../common/util'
+import { filterAccordingToRole, getOverallScore } from '../../../../common/util'
 
 import dropDownData from '../static/json/dropDownData.json'
 
@@ -35,14 +35,6 @@ const sanitizeNullNumberFields = (records, fields = []) => {
   return { sanitizedRecords, allAbsent }
 }
 
-const getOverallScore = (metrics = []) =>
-  round(
-    percentage(
-      sumBy(metrics, (item) => parseFloat(item.totalScore)),
-      sumBy(metrics, (item) => parseFloat(item.maxScore))
-    )
-  )
-
 export const compareByMap = {
   school: 'schoolName',
   teacher: 'teacherName',
@@ -54,6 +46,7 @@ export const compareByMap = {
   iepStatus: 'iepStatus',
   frlStatus: 'frlStatus',
   standard: 'standard',
+  hispanicEthnicity: 'hispanicEthnicity',
 }
 
 const groupByCompareKey = (metricInfo, compareBy) => {
@@ -74,6 +67,8 @@ const groupByCompareKey = (metricInfo, compareBy) => {
       return groupBy(metricInfo, 'ellStatus')
     case 'iepStatus':
       return groupBy(metricInfo, 'iepStatus')
+    case 'hispanicEthnicity':
+      return groupBy(metricInfo, 'hispanicEthnicity')
     case 'frlStatus':
       return groupBy(metricInfo, 'frlStatus')
     case 'standard':
@@ -135,6 +130,8 @@ export const augmentWithData = (
     case 'iepStatus':
       return metricInfo
     case 'frlStatus':
+      return metricInfo
+    case 'hispanicEthnicity':
       return metricInfo
     case 'standard':
       return map(metricInfo, (metric) => {
@@ -267,7 +264,7 @@ export const parseTrendData = (
       tests[key] = {
         records: value,
         allAbsent,
-        score: getOverallScore(sanitizedRecords),
+        score: round(getOverallScore(sanitizedRecords)),
         rawScore: `${(sumBy(sanitizedRecords, 'totalScore') || 0).toFixed(
           2
         )} / ${sumBy(sanitizedRecords, 'maxScore')}`,
@@ -277,9 +274,14 @@ export const parseTrendData = (
     })
     const dInfo = {}
     if (
-      ['race', 'gender', 'ellStatus', 'iepStatus', 'frlStatus'].includes(
-        compareBy
-      )
+      [
+        'race',
+        'gender',
+        'ellStatus',
+        'iepStatus',
+        'frlStatus',
+        'hispanicEthnicity',
+      ].includes(compareBy)
     ) {
       dInfo[compareBy] = isEmpty(metricId) ? '-' : metricId
     }

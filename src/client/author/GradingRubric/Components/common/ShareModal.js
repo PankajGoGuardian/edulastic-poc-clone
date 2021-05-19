@@ -15,7 +15,7 @@ const ShareModal = ({ visible, handleResponse, currentRubricData }) => {
     <EduButton height="40px" isGhost onClick={() => handleResponse('CANCEL')}>
       NO
     </EduButton>,
-    <EduButton height="40px" onClick={() => handleResponse('SAVE', value)}>
+    <EduButton data-cy="saveButton" height="40px" onClick={() => handleResponse('SAVE', value)}>
       SAVE
     </EduButton>,
   ]
@@ -31,9 +31,9 @@ const ShareModal = ({ visible, handleResponse, currentRubricData }) => {
     >
       <StyledModalBody>
         <Radio.Group onChange={(e) => setValue(e.target.value)} value={value}>
-          <StyledRadio value={INDIVIDUAL}>Do not share</StyledRadio>
-          <StyledRadio value={DISTRICT}>Share with district</StyledRadio>
-          <StyledRadio value={PUBLIC}>
+          <StyledRadio value={INDIVIDUAL} data-cy="noShare">Do not share</StyledRadio>
+          <StyledRadio value={DISTRICT} data-cy="districtShare">Share with district</StyledRadio>
+          <StyledRadio value={PUBLIC} data-cy="publicShare">
             Share with whole edulastic community
           </StyledRadio>
         </Radio.Group>

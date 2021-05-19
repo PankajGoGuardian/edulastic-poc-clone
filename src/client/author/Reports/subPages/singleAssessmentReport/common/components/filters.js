@@ -315,10 +315,22 @@ const SingleAssessmentReportFilters = ({
   }
 
   const onGoClick = () => {
+    // testList cannot be empty when onGoClick is clicked
+    const _testList = testList.map(({ _id, title }) => ({ key: _id, title }))
+    const _selectedTest =
+      _testList.find((t) => t.key === testId) || _testList[0]
+    const _tempTagsData = { ...tempTagsData, testId: _selectedTest }
+
+    // update selectedTest & tempTagsData if testId not present in testList
+    if (_selectedTest.key !== testId) {
+      setTempTagsData(_tempTagsData)
+      setFiltersOrTestId({ testId: _selectedTest.key })
+    }
+
     const settings = {
       filters: { ...filters },
-      selectedTest: { key: testId },
-      tagsData: { ...tempTagsData },
+      selectedTest: { ..._selectedTest },
+      tagsData: { ..._tempTagsData },
     }
     setShowApply(false)
     _onGoClick(settings)
@@ -344,7 +356,7 @@ const SingleAssessmentReportFilters = ({
     ) {
       _onGoClick({
         filters: { ...filters },
-        selectedTest: { key: _testId },
+        selectedTest: { ...selected },
         tagsData: { ..._tempTagsData },
       })
     } else if (!reportId && !isCliUser) {
@@ -435,6 +447,7 @@ const SingleAssessmentReportFilters = ({
           isGhost={!showFilter}
           onClick={toggleFilter}
           style={{ height: '24px' }}
+          aria-pressed={(!!showFilter).toString()}
         >
           <IconFilter width={15} height={15} />
           FILTERS
@@ -562,6 +575,7 @@ const SingleAssessmentReportFilters = ({
                               testId || getTestIdFromURL(location.pathname)
                             }
                             selectCB={updateTestId}
+                            showApply={showApply}
                           />
                         </Col>
                       )}

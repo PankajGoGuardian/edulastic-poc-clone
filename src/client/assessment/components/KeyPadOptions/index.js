@@ -269,11 +269,17 @@ const KeyPadOptions = ({
               <FlexContainer justifyContent="space-between">
                 {symbol._id && keypadIsUserCustomKeypad ? (
                   <>
-                    <StyledLink onClick={handleStoreCustomKeypad}>
+                    <StyledLink
+                      onClick={handleStoreCustomKeypad}
+                      data-cy="cutom-keypad-update"
+                    >
                       {t('component.options.updateCustomKeypad')}
                     </StyledLink>
                     <StyledLink> | </StyledLink>
-                    <StyledLink onClick={showModal}>
+                    <StyledLink
+                      onClick={showModal}
+                      data-cy="cutom-keypad-delete"
+                    >
                       {t('component.options.deleteCustomKeypad')}
                     </StyledLink>
                     <HelperIcon
@@ -283,7 +289,10 @@ const KeyPadOptions = ({
                   </>
                 ) : (
                   <>
-                    <StyledLink onClick={handleStoreCustomKeypad}>
+                    <StyledLink
+                      onClick={handleStoreCustomKeypad}
+                      data-cy="cutom-keypad-save"
+                    >
                       {t('component.options.saveAndUseLater')}
                     </StyledLink>
                     <HelperIcon
@@ -298,6 +307,7 @@ const KeyPadOptions = ({
               onChange={handleCustomSymbolLabel}
               value={symbol.label}
               size="large"
+              data-cy="custom-keypad-label"
             />
           </Col>
         </Row>

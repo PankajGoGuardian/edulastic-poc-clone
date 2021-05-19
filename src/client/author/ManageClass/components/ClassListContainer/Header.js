@@ -44,7 +44,7 @@ const Header = ({
   isClassLink,
   history,
 }) => {
-  const { cleverId } = user
+  const { cleverId, isPlayground } = user
 
   const handleLoginSucess = (data) => {
     fetchGoogleClassList({ data })
@@ -132,7 +132,7 @@ const Header = ({
       </FeaturesSwitch>
       <ButtonsWrapper>
         <>
-          {enableCleverSync && (
+          {!isPlayground && enableCleverSync && (
             <EduButton
               isBlue
               isGhost
@@ -142,7 +142,8 @@ const Header = ({
               <span>SYNC NOW WITH CLEVER</span>
             </EduButton>
           )}
-          {googleAllowedInstitutions?.length > 0 &&
+          {!isPlayground &&
+            googleAllowedInstitutions?.length > 0 &&
             !cleverId &&
             !enableCleverSync &&
             !isClassLink && (
@@ -162,7 +163,8 @@ const Header = ({
                 responseType="code"
               />
             )}
-          {canvasAllowedInstitution?.length > 0 &&
+          {!isPlayground &&
+            canvasAllowedInstitution?.length > 0 &&
             !cleverId &&
             !enableCleverSync &&
             !isClassLink && (

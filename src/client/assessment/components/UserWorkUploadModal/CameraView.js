@@ -90,10 +90,16 @@ const CameraWithButtons = ({
       {isUploadingFiles && <Spin />}
       {!hasCameraError && (
         <Footer className>
-          <EduButton height="40px" isGhost onClick={handleCancel}>
+          <EduButton
+            data-cy="cancelUploadButton"
+            height="40px"
+            isGhost
+            onClick={handleCancel}
+          >
             NO, CANCEL
           </EduButton>
           <EduButton
+            data-cy="takePictureButton"
             height="40px"
             onClick={handleTakePhoto}
             disabled={isTakePhotoButtonDisabled}

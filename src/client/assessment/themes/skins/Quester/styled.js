@@ -1,5 +1,7 @@
 import styled from 'styled-components'
 import { Popover, Dropdown, Menu, Icon, Button } from 'antd'
+import { themeColor } from '@edulastic/colors'
+import { withKeyboard } from '@edulastic/common'
 import { themes } from '../../../../theme'
 
 const {
@@ -15,7 +17,7 @@ export const StyledPopover = styled(Popover)`
   }
 `
 
-export const StyledButton = styled.div`
+export const StyledButton = withKeyboard(styled.div`
   background-color: ${header2.background};
   border: 1px solid ${button.background};
   color: ${button.background};
@@ -29,10 +31,7 @@ export const StyledButton = styled.div`
     color: ${header2.background};
     border-color: ${header2.background};
   }
-  &:focus {
-    outline: none;
-  }
-`
+`)
 
 export const ControlBtn = styled(Button)`
   border: 1px solid ${button.background};
@@ -57,6 +56,8 @@ export const ControlBtn = styled(Button)`
   }
   &:focus {
     outline: none;
+    border: none;
+    box-shadow: 0 0 0 3px ${themeColor};
   }
   i {
     display: none;
@@ -103,7 +104,7 @@ export const StyledMenu = styled(Menu)`
   }
 `
 
-export const MenuItem = styled(Menu.Item)`
+export const MenuItem = withKeyboard(styled(Menu.Item)`
   &.ant-menu-item {
     background-color: ${(props) => props.bg};
     color: #fff;
@@ -114,7 +115,7 @@ export const MenuItem = styled(Menu.Item)`
     box-shadow: 1px 2px 4px 1px #333;
   }`}
   }
-`
+`)
 
 export const StyledHeaderTitle = styled.div`
   display: flex;

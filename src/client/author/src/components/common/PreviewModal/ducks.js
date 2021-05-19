@@ -219,7 +219,7 @@ function* editNonAuthoredItemSaga({ payload }) {
       passageItems: testItemIds,
       passageId,
     } = payload
-    const test = yield select(getTestSelector)
+    const test = { ...(yield select(getTestSelector)) }
     yield call(updateTestSaga, {
       payload: { id: testId, data: test },
     })

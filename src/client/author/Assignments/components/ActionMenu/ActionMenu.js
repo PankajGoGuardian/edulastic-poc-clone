@@ -224,12 +224,12 @@ const ActionMenu = ({
           <Menu.Item
             data-cy="edit-Assignment"
             key="edit-Assignment"
-            onClick={() => toggleEditModal(true, currentTestId)}
+            onClick={() => toggleEditModal(currentTestId)}
           >
             <StyledLink target="_blank" rel="noopener noreferrer">
               <img alt="icon" src={classIcon} />
               <SpaceElement />
-              Edit and Regrade
+              Edit Test
             </StyledLink>
           </Menu.Item>
         )}

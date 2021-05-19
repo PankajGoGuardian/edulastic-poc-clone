@@ -34,7 +34,7 @@ const NotificationListener = ({
   let districtId = ''
   let testId = ''
   const { termId = '', grades = [], assignedBy = '' } = JSON.parse(
-    sessionStorage.getItem('filters[Assignments]') || '{}'
+    sessionStorage.getItem(`assignments_filter_${user._id}`) || '{}'
   )
   const { testType = '' } = qs.parse(location.search, {
     ignoreQueryPrefix: true,

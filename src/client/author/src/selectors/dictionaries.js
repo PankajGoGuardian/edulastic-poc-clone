@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect'
-import { keyBy, isEmpty, forEach } from 'lodash'
+import { keyBy, isEmpty, forEach, uniqBy } from 'lodash'
 import selectData from '../../TestPage/components/common/selectsData'
 import {
   getInterestedCurriculumsSelector,
@@ -21,18 +21,6 @@ export const curriculumsByIdSelector = createSelector(
   getCurriculumsListSelector,
   (state) => keyBy(state, '_id')
 )
-
-export const getFormattedCurriculumsSelector = (state, props) => {
-  const showAllStandards = getShowAllCurriculumsSelector(state)
-  const interestedCurriculums = getInterestedCurriculumsSelector(state)
-  const allCurriculums = getCurriculumsListSelector(state)
-  return getFormattedCurriculums(
-    interestedCurriculums,
-    allCurriculums,
-    props,
-    showAllStandards
-  )
-}
 
 export const getFormattedCurriculums = (
   interestedCurriculums = [],
@@ -103,36 +91,50 @@ export const getFormattedCurriculums = (
     : defaultStandard
 }
 
+export const getFormattedCurriculumsSelector = (state, props) => {
+  const showAllStandards = getShowAllCurriculumsSelector(state)
+  const interestedCurriculums = getInterestedCurriculumsSelector(state)
+  const allCurriculums = getCurriculumsListSelector(state)
+  return getFormattedCurriculums(
+    interestedCurriculums,
+    allCurriculums,
+    props,
+    showAllStandards
+  )
+}
+
 export const getDictionariesAlignmentsSelector = createSelector(
   stateSelector,
   (state) => state.alignments
 )
-export const standardsSelector = createSelector(
-  stateSelector,
-  (state) => state.standards
-)
+export const standardsSelector = createSelector(stateSelector, (state) => {
+  const standardsWithId = state.standards.data.map((el) => ({
+    _id: el.id,
+    ...el,
+  }))
+  const elo = standardsWithId.filter((item) => item.level === 'ELO')
+  const tlo = uniqBy(
+    standardsWithId.map((item) => ({
+      identifier: item.tloIdentifier,
+      description: item.tloDescription,
+      position: item.position,
+      _id: item.tloId,
+    })),
+    '_id'
+  )
+  return {
+    ...state.standards,
+    elo,
+    tlo,
+  }
+})
+
 export const getStandardsListSelector = createSelector(
   standardsSelector,
   (state) => {
-    const elo = [...state.elo].sort((a, b) => (a.id <= b.id ? -1 : 1))
-    const mapElosByStandard = { other: [], kindergarten: [] }
-    for (const item of elo) {
-      // TODO - not sure whats the purpose of this logic, but similar thing needs to be done for
-      // PreKindergarten if standards are added in Standards collection for grade PreKindergarten
-      // we don't have anything right now
-      // Assuming that all the elo identifier starting with k will be kindergarten
-      if (item?.identifier?.trim()?.toLowerCase()?.startsWith('k')) {
-        mapElosByStandard.kindergarten.push(item)
-      } else {
-        mapElosByStandard.other.push(item)
-      }
-    }
-    return {
-      elo: [...mapElosByStandard.kindergarten, ...mapElosByStandard.other],
-      tlo: [...state.tlo].sort((a, b) =>
-        a.identifier.toUpperCase() <= b.identifier.toUpperCase() ? -1 : 1
-      ),
-    }
+    const elo = state.elo.sort((a, b) => a.position - b.position)
+    const tlo = state.tlo.sort((a, b) => a.position - b.position)
+    return { elo, tlo }
   }
 )
 export const getRecentStandardsListSelector = createSelector(

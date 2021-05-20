@@ -23,7 +23,7 @@ export const getEvalautionColor = (
     }
   }
 
-  if (attempt && (!correct || score === 0)) {
+  if (attempt && (!correct || isGradedExternally)) {
     if (isGradedExternally && score > 0) {
       // score changd manually, but its wrong
       return {

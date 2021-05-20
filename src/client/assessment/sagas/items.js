@@ -397,7 +397,10 @@ export function* saveUserResponse({ payload }) {
       yield put(push('/home/assignments'))
       notification({ msg: err.response.data })
     } else if (err?.status === 410) {
-      window.location.reload()
+      notification({ messageKey: 'failedSavingAnswer' })
+      setTimeout(() => {
+        window.location.reload()
+      }, 2500)
     } else {
       notification({ messageKey: 'failedSavingAnswer' })
     }

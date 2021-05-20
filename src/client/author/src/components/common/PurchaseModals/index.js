@@ -17,7 +17,11 @@ import {
   slice,
   getShowTrialConfirmationMessageSelector,
 } from '../../../../Subscription/ducks'
-import { getCollectionsSelector, getUserOrgId } from '../../../selectors/user'
+import {
+  getCollectionsSelector,
+  getInterestedGradesSelector,
+  getUserOrgId,
+} from '../../../selectors/user'
 import {
   fetchPlaylistsAction,
   getDashboardPlaylists,
@@ -90,6 +94,8 @@ const PurchaseFlowModals = (props) => {
     playlists,
     history,
     useThisPlayList,
+    interestedGrades,
+    clickedBundleId,
   } = props
 
   const [payWithPoModal, setPayWithPoModal] = useState(false)
@@ -411,6 +417,8 @@ const PurchaseFlowModals = (props) => {
           playlists={playlists}
           subType={subType}
           useThisPlayList={useThisPlayList}
+          interestedGrades={interestedGrades}
+          clickedBundleId={clickedBundleId}
         />
       )}
     </>
@@ -442,6 +450,7 @@ export default compose(
       showTrialConfirmationMessage: getShowTrialConfirmationMessageSelector(
         state
       ),
+      interestedGrades: getInterestedGradesSelector(state),
     }),
     {
       handleStripePayment: slice.actions.stripePaymentAction,

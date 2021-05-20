@@ -26,7 +26,11 @@ const FeaturedContentBundle = ({
       >
         Featured Content Bundles
       </TextWrapper>
-      <FlexContainer justifyContent="space-between" flexWrap="wrap">
+      <FlexContainer
+        data-cy="featuredBundle"
+        justifyContent="space-between"
+        flexWrap="wrap"
+      >
         {featuredBundles.map((bundle) => (
           <Bundle handleClick={handleFeatureClick} bundle={bundle} />
         ))}

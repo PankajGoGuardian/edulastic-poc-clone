@@ -396,6 +396,8 @@ export function* saveUserResponse({ payload }) {
         return yield put(push(`/home/playlist/${isPlaylist?.playlistId}`))
       yield put(push('/home/assignments'))
       notification({ msg: err.response.data })
+    } else if (err?.status === 410) {
+      window.location.reload()
     } else {
       notification({ messageKey: 'failedSavingAnswer' })
     }

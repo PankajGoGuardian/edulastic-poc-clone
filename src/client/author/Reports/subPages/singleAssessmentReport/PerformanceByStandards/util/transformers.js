@@ -164,7 +164,7 @@ export const getAvgPercentage = (metrics = []) => {
   if (metrics.length) {
     const sumOfPercentage = sumBy(
       metrics,
-      (ts) => 100 * (ts.totalScore / ts.maxScore || 1)
+      (ts) => 100 * (ts.totalScore / (ts.maxScore || 1))
     )
     const avgPercentage = sumOfPercentage / metrics.length
     return avgPercentage
@@ -533,10 +533,10 @@ export const getChartScoreData = (report = {}, viewBy) => {
 
   return Object.keys(metricByViewBy).map((id) => {
     const records = metricByViewBy[id]
-    let maxScore = records[0].maxScore / records[0].totalStudents
+    const maxScore = records[0].maxScore / records[0].totalStudents
     const rawScore = getChartOverallRawScore(records)
-
-    const avgScore = getAvgPercentage(records)
+    const avgScore =
+      100 * (sumBy(records, 'totalScore') / (sumBy(records, 'maxScore') || 1))
     return {
       ...findGroupInfo(id, viewBy, skillInfo),
       rawScore,

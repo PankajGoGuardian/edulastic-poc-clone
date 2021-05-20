@@ -1,4 +1,4 @@
-import evaluators from '../evaluators'
+import evaluator from '../evaluators'
 import { replaceVariables } from '../../../../assessment/utils/variables'
 
 const createShowAnswerResult = async (questions, answers, itemId = '') => {
@@ -8,7 +8,6 @@ const createShowAnswerResult = async (questions, answers, itemId = '') => {
   for (const id of questionIds) {
     const evaluationId = `${itemId}_${id}`
     const question = questions[id]
-    const evaluator = evaluators[question.type]
     let answer = answers[evaluationId]
     if (evaluator && question && answer) {
       const { isUnits, isMath, showDropdown } = question

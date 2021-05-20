@@ -1970,6 +1970,7 @@ span.token.active-word {
 
 .ant-modal-mask {
   z-index: 1003;
+  background-color: rgba(0, 0, 0, 0.01);
 }
 
 /* Modified - Ant design default CSS */

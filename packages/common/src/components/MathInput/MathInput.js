@@ -393,6 +393,7 @@ class MathInput extends React.PureComponent {
       disabled,
       maxWidth,
       paddingRight,
+      showDragHandle,
     } = this.props
 
     const {
@@ -466,6 +467,7 @@ class MathInput extends React.PureComponent {
                 this.onInput(key, command, numToMove)
               }
               dynamicVariableInput={dynamicVariableInput}
+              showDragHandle={showDragHandle}
             />
           </MathKeyboardWrapper>
         )}
@@ -499,6 +501,7 @@ MathInput.propTypes = {
   customKeys: PropTypes.array,
   contentLength: PropTypes.number,
   resetMath: PropTypes.bool,
+  showDragHandle: PropTypes.bool,
 }
 
 MathInput.defaultProps = {
@@ -524,6 +527,7 @@ MathInput.defaultProps = {
   symbols: [],
   contentLength: 0,
   resetMath: false,
+  showDragHandle: true,
 }
 
 export default MathInput

@@ -1,5 +1,5 @@
 import { themeColor, darkGrey } from '@edulastic/colors'
-import { EduButton, FlexContainer } from '@edulastic/common'
+import { EduButton, FlexContainer, notification } from '@edulastic/common'
 import {
   test as TEST,
   collections as collectionsConstant,
@@ -136,6 +136,11 @@ class SuccessPage extends React.Component {
       ? regradedAssignments[0]
       : {}
     if (isAssignSuccess || isRegradeSuccess) {
+      if (!assignment._id)
+        return notification({
+          type: 'info',
+          msg: 'Please try to launch LCB from assignment page',
+        })
       history.push(
         `/author/classboard/${assignment._id}/${assignment.class?.[0]?._id}`
       )

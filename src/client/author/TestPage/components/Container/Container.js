@@ -1181,16 +1181,19 @@ class Container extends PureComponent {
           }}
         />
         {this.renderModal()}
-        <ShareModal
-          shareLabel="TEST URL"
-          isVisible={showShareModal}
-          testId={testId}
-          testVersionId={versionId}
-          hasPremiumQuestion={hasPremiumQuestion}
-          isPublished={status === statusConstants.PUBLISHED}
-          onClose={this.onShareModalChange}
-          gradeSubject={gradeSubject}
-        />
+        {showShareModal && (
+          <ShareModal
+            shareLabel="TEST URL"
+            isVisible={showShareModal}
+            testId={testId}
+            testVersionId={versionId}
+            hasPremiumQuestion={hasPremiumQuestion}
+            isPublished={status === statusConstants.PUBLISHED}
+            onClose={this.onShareModalChange}
+            gradeSubject={gradeSubject}
+          />
+        )}
+
         <WarningModal
           visible={showWarningModal}
           proceedPublish={proceedPublish}

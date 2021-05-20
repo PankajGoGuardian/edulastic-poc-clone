@@ -161,7 +161,7 @@ const Details = ({ item, setQuestionData, fillSections, cleanSections, t }) => {
           </div>
         )}
         {item.paginated_content && (
-          <div>
+          <div data-cy="passageContent">
             <Subtitle
               id={getFormattedAttrId(
                 `${item?.title}-${t('component.passage.contentPages')}`
@@ -178,7 +178,7 @@ const Details = ({ item, setQuestionData, fillSections, cleanSections, t }) => {
                 onChange={handleChangePage}
               />
             ) : null}
-            <CustomStyleBtn onClick={handleAddPage}>
+            <CustomStyleBtn onClick={handleAddPage} data-cy="contentAddBtn">
               {t('component.passage.add')}
             </CustomStyleBtn>
           </div>

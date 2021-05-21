@@ -310,11 +310,12 @@ export const removeTabAction = (payload) => ({
   payload,
 })
 
-export const changeTabTitleAction = (index, value) => ({
+export const changeTabTitleAction = (index, value, widgets) => ({
   type: CHANGE_TAB_TITLE,
   payload: {
     index,
     value,
+    widgets,
   },
 })
 
@@ -721,12 +722,14 @@ const removeTab = (state, payload) =>
   })
 
 const changeTabTitle = (state, payload) => {
-  const { index, value } = payload
+  const { index, value, widgets } = payload
   return produce(state, (newState) => {
-    const { passage, item = {} } = newState
-    const { rows = [], isPassageWithQuestions } = item
-
-    const tabs = isPassageWithQuestions
+    const {
+      passage,
+      item: { rows },
+    } = newState
+    const isPassageTab = widgets.some(({ type }) => type === 'passage')
+    const tabs = isPassageTab
       ? get(passage, 'structure.tabs', [])
       : get(rows, [0, 'tabs'], [])
 

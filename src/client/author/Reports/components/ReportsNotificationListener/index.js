@@ -67,7 +67,6 @@ const ReportsNotificationListener = ({
       const daysDiff = (Date.now() - modifiedAt) / (24 * 60 * 60 * 1000)
       if (daysDiff > 15) {
         // delete documents older than 15 days
-        // this serves as fallback, timed deletion is handled in db rules
         deleteNotificationDocument(doc.__id)
       } else if (
         status === 'initiated' &&
@@ -80,6 +79,7 @@ const ReportsNotificationListener = ({
             <>
               {message}
               <span
+                data-cy="download-csv-notification"
                 style={{ color: themeColor, cursor: 'pointer' }}
                 onClick={() => {
                   setVisible(true)
@@ -142,6 +142,8 @@ const ReportsNotificationListener = ({
       visible={visible}
       reportDocs={reportDocs}
       onClose={() => setVisible(false)}
+      // NOTE: uncomment for dev purpose, do not delete
+      // deleteDoc={deleteNotificationDocument}
     />
   )
 }

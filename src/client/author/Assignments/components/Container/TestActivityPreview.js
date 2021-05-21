@@ -32,25 +32,35 @@ const TestActivityPreview = ({
   }, {})
 
   const activities = keyBy(questionActivities, 'testItemId')
+  const qActivities = keyBy(questionActivities, 'qid')
   const testItemsPreview = testItems.map((testItem, index) => {
-    const questionActivity = activities[testItem._id]
+    const testItemActivity = activities[testItem._id]
 
-    if (!questionActivity) {
+    if (!testItemActivity) {
       return null
     }
 
-    const previewScore = {
-      score: questionActivity.score,
-      maxScore: questionActivity.maxScore,
-      isGradedExternally: false,
-    }
-
-    const { userWork } = questionActivity
-    const questions = get(testItem, ['data', 'questions'], [])
-    const resources = get(testItem, ['data', 'resources'], [])
-    const timeSpent = (get(questionActivity, 'timeSpent', 0) / 1000).toFixed(1)
-    const attachments = get(questionActivity, 'scratchPad.attachments', null)
     const { multipartItem, itemLevelScoring, isPassageWithQuestions } = testItem
+    const questions = get(testItem, ['data', 'questions'], []).map((q) => {
+      const qAct = qActivities[q.id]
+      if (!qAct) {
+        return q
+      }
+
+      return {
+        ...q,
+        testPreviewScore: {
+          score: qAct.score,
+          maxScore: qAct.maxScore,
+          isGradedExternally: false,
+        },
+      }
+    })
+
+    const { userWork } = testItemActivity
+    const resources = get(testItem, ['data', 'resources'], [])
+    const timeSpent = (get(testItemActivity, 'timeSpent', 0) / 1000).toFixed(1)
+    const attachments = get(testItemActivity, 'scratchPad.attachments', null)
     const scoringProps = {
       multipartItem,
       itemLevelScoring,
@@ -93,7 +103,6 @@ const TestActivityPreview = ({
           {...scoringProps}
           studentName={t('common.anonymous')}
           itemId={testItem._id}
-          testPreviewScore={previewScore}
         />
       </TestItemPreviewContainer>
     )

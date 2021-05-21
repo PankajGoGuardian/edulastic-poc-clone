@@ -40,12 +40,7 @@ export const previewTestQuestionActivities = createSelector(
   getQuestionsByIdSelector,
   (previewTest, questionsById) => {
     const mergedActivities = keys(questionsById)
-      .map((qId) => {
-        if (previewTest.questionActivities[qId]) {
-          return previewTest.questionActivities[qId]
-        }
-        return null
-      })
+      .map((qId) => previewTest.questionActivities[qId])
       .filter((x) => !!x)
     return mergedActivities
   }

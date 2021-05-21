@@ -320,7 +320,6 @@ class QuestionWrapper extends Component {
       data,
       previewScore,
       previewMaxScore,
-      testPreviewScore,
       itemLevelScoring,
       multipartItem,
     } = this.props
@@ -339,10 +338,10 @@ class QuestionWrapper extends Component {
     //    maxScore: 2,
     //    isGradedExternally: false,
     //  }
-    if (testPreviewScore && 'score' in testPreviewScore) {
-      score = testPreviewScore.score
-      maxScore = testPreviewScore.maxScore
-      isGradedExternally = testPreviewScore.isGradedExternally
+    if (data?.testPreviewScore && 'score' in data.testPreviewScore) {
+      score = data.testPreviewScore.score
+      maxScore = data.testPreviewScore.maxScore
+      isGradedExternally = data.testPreviewScore.isGradedExternally
     }
 
     return {

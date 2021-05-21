@@ -323,23 +323,44 @@ const PerformanceByStandards = ({
           </Col>
           <Col xs={24} sm={24} md={12} lg={16} xl={12}>
             <Row type="flex" justify="end" gutter={[5, 10]}>
-              <StyledDropDownContainer xs={24} sm={24} md={8} lg={8} xl={8}>
+              <StyledDropDownContainer
+                data-cy="viewBy"
+                xs={24}
+                sm={24}
+                md={8}
+                lg={8}
+                xl={8}
+              >
                 <ControlDropDown
-                  prefix="View By"
+                  prefix="View by"
                   by={viewBy}
                   selectCB={handleViewByChange}
                   data={dropDownFormat.viewByDropDownData}
                 />
               </StyledDropDownContainer>
-              <StyledDropDownContainer xs={24} sm={24} md={7} lg={7} xl={7}>
+              <StyledDropDownContainer
+                data-cy="analyzeBy"
+                xs={24}
+                sm={24}
+                md={7}
+                lg={7}
+                xl={7}
+              >
                 <ControlDropDown
-                  prefix="Analyze By"
+                  prefix="Analyze by"
                   by={analyzeBy}
                   selectCB={handleAnalyzeByChange}
                   data={dropDownFormat.analyzeByDropDownData}
                 />
               </StyledDropDownContainer>
-              <StyledDropDownContainer xs={24} sm={24} md={7} lg={7} xl={7}>
+              <StyledDropDownContainer
+                data-cy="standardSet"
+                xs={24}
+                sm={24}
+                md={7}
+                lg={7}
+                xl={7}
+              >
                 <ControlDropDown
                   prefix="Standard Set"
                   by={selectedCurriculumId || { key: '', title: '' }}
@@ -368,9 +389,9 @@ const PerformanceByStandards = ({
             {capitalize(viewBy)} Performance Analysis by{' '}
             {findCompareByTitle(compareBy)} | {assessmentName}
           </CardTitle>
-          <CardDropdownWrapper>
+          <CardDropdownWrapper data-cy="compareBy">
             <ControlDropDown
-              prefix="Compare By"
+              prefix="Compare by"
               by={compareBy}
               selectCB={handleCompareByChange}
               data={filteredDropDownData}

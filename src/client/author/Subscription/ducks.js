@@ -222,11 +222,13 @@ function* showSuccessNotifications(apiPaymentResponse, isTrial = false) {
       slice.actions.trialConfirmationMessageAction({
         hasTrial: 'onlyPremiumTrial',
         subEndDate: formatSubEndDate,
+        isTrial,
       })
     )
   } else if (hasItemBankPermissions && !hasSubscriptions) {
     const { subEndDate } = itemBankPermissions[0]
     const itemBankNames = itemBankPermissions.map((x) => x.name).join(', ')
+    const defaultSelectedItemBankId = itemBankPermissions.map((x) => x.id)[0]
     const formatSubEndDate = moment(subEndDate).format('DD MMM, YYYY')
     if (!isTrial) {
       yield call(notification, {
@@ -239,11 +241,14 @@ function* showSuccessNotifications(apiPaymentResponse, isTrial = false) {
       slice.actions.trialConfirmationMessageAction({
         hasTrial: 'onlySparkTrial',
         subEndDate: formatSubEndDate,
+        isTrial,
+        defaultSelectedItemBankId,
       })
     )
   } else if (hasItemBankPermissions && hasSubscriptions) {
     const { subEndDate } = subscriptions
     const itemBankNames = itemBankPermissions.map((x) => x.name).join(', ')
+    const defaultSelectedItemBankId = itemBankPermissions.map((x) => x.id)[0]
     const formatSubEndDate = moment(subEndDate).format('DD MMM, YYYY')
     if (!isTrial) {
       yield call(notification, {
@@ -257,6 +262,8 @@ function* showSuccessNotifications(apiPaymentResponse, isTrial = false) {
       slice.actions.trialConfirmationMessageAction({
         hasTrial: 'haveBothSparkAndPremiumTrial',
         subEndDate: formatSubEndDate,
+        isTrial,
+        defaultSelectedItemBankId,
       })
     )
   }

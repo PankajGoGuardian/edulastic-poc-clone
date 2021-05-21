@@ -367,17 +367,20 @@ class SuccessPage extends React.Component {
     }
     return (
       <div>
-        <ShareModal
-          shareLabel="TEST URL"
-          isVisible={isShareModalVisible}
-          isPlaylist={isPlaylist}
-          testId={_id}
-          hasPremiumQuestion={hasPremiumQuestion}
-          isPublished={status === statusConstants.PUBLISHED}
-          onClose={this.onShareModalChange}
-          gradeSubject={gradeSubject}
-          testVersionId={test?.versionId}
-        />
+        {isShareModalVisible && (
+          <ShareModal
+            shareLabel="TEST URL"
+            isVisible={isShareModalVisible}
+            isPlaylist={isPlaylist}
+            testId={_id}
+            hasPremiumQuestion={hasPremiumQuestion}
+            isPublished={status === statusConstants.PUBLISHED}
+            onClose={this.onShareModalChange}
+            gradeSubject={gradeSubject}
+            testVersionId={test?.versionId}
+          />
+        )}
+
         <ListHeader
           title={(_module && _module.title) || title}
           renderButton={this.renderHeaderButton}

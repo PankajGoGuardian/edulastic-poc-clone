@@ -787,13 +787,17 @@ class ModuleRow extends Component {
                       {!isStudent &&
                         (testStatus === 'published' || isAssigned) && (
                           <Menu.Item
-                            onClick={() =>
+                            onClick={() => {
+                              const testIdFromAssignments =
+                                moduleData?.assignments?.[0]?.testId
+                              const testId =
+                                testIdFromAssignments || moduleData.contentId
                               assignTest(
                                 _id,
-                                moduleData.contentId,
+                                testId,
                                 moduleData.contentVersionId
                               )
-                            }
+                            }}
                           >
                             Assign Test
                           </Menu.Item>
@@ -829,7 +833,13 @@ class ModuleRow extends Component {
                       {!isStudent && (
                         <Menu.Item
                           data-cy="edit-test"
-                          onClick={() => this.onEditTest(moduleData.contentId)}
+                          onClick={() => {
+                            const testIdFromAssignments =
+                              moduleData?.assignments?.[0]?.testId
+                            const testId =
+                              testIdFromAssignments || moduleData.contentId
+                            this.onEditTest(testId)
+                          }}
                         >
                           Edit test
                         </Menu.Item>
@@ -1265,16 +1275,23 @@ class ModuleRow extends Component {
                                     }
                                   >
                                     <ModuleDataName
-                                      onClick={() =>
-                                        !isStudent &&
-                                        togglePlaylistTestDetails({
-                                          id: moduleData?.assignments?.length
-                                            ? moduleData?.assignments?.[0]
-                                                ?.testId
-                                            : moduleData?.contentId,
-                                          requestLatest: testStatus !== 'draft',
-                                        })
-                                      }
+                                      onClick={() => {
+                                        return (
+                                          !isStudent &&
+                                          togglePlaylistTestDetails({
+                                            id: moduleData?.assignments?.length
+                                              ? moduleData?.assignments?.[0]
+                                                  ?.testId
+                                              : moduleData?.contentId,
+                                            ...(moduleData?.assignments?.length
+                                              ? { requestLatest: false }
+                                              : {
+                                                  requestLatest:
+                                                    testStatus !== 'draft',
+                                                }),
+                                          })
+                                        )
+                                      }}
                                     >
                                       <Tooltip
                                         placement="bottomLeft"

@@ -111,7 +111,8 @@ const UseExisting = ({
   const validateRubric = () => {
     let isValid = true
     if (currentRubricData.name && isValid) {
-      currentRubricData.criteria.every((criteria) => {
+      const curentRubricCriteria = currentRubricData.criteria || []
+      curentRubricCriteria.every((criteria) => {
         if (criteria.name && isValid) {
           const uniqueRatings = []
           criteria.ratings.every((rating) => {
@@ -139,8 +140,8 @@ const UseExisting = ({
         return isValid
       })
       if (isValid) {
-        const uniqueCriteriaArray = uniqBy(currentRubricData.criteria, 'name')
-        if (uniqueCriteriaArray.length < currentRubricData.criteria.length) {
+        const uniqueCriteriaArray = uniqBy(curentRubricCriteria, 'name')
+        if (uniqueCriteriaArray.length < curentRubricCriteria.length) {
           isValid = false
           notification({ messageKey: 'criteriaNameShouldBeUnique' })
         }
@@ -358,7 +359,8 @@ const UseExisting = ({
                       style={btnStyle}
                       onClick={() => setShowShareModal(true)}
                     >
-                      <Icon type="share-alt" /> <span data-cy="shareButton">Share</span>
+                      <Icon type="share-alt" />{' '}
+                      <span data-cy="shareButton">Share</span>
                     </CustomStyleBtn>
                   </>
                 )}

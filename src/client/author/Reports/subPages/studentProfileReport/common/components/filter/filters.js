@@ -214,7 +214,7 @@ const StudentProfileReportFilters = ({
   }, [loc, showFilter])
 
   useEffect(() => {
-    if (loc !== 'student-progress-profile') {
+    if (!standardFiltersRequired && !firstLoad) {
       setFilters({
         ...filters,
         domainId: '',
@@ -411,6 +411,7 @@ const StudentProfileReportFilters = ({
             isGhost={!showFilter}
             onClick={toggleFilter}
             style={{ height: '24px' }}
+            aria-pressed={(!!showFilter).toString()}
           >
             <IconFilter width={15} height={15} />
             FILTERS

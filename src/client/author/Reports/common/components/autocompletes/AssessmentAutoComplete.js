@@ -140,7 +140,7 @@ const AssessmentAutoComplete = ({
       setSearchTerms({ ...DEFAULT_SEARCH_TERMS })
       setFieldValue('')
     }
-  }, [termId, grades, subjects, testTypes])
+  }, [termId, grades, subjects, testTypes, tagIds])
   useEffect(() => {
     if (
       (!searchTerms.text && !searchTerms.selectedText) ||

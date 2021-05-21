@@ -16,7 +16,6 @@ import {
   REMOVE_DICT_ALINMENT,
   UPDATE_RECENT_STANDARDS,
   UPDATE_DICT_ALIGNMENT,
-  CLEAR_ALIGNMENT_STANDARDS,
   UPDATE_RECENT_COLLECTIONS,
 } from '../constants/actions'
 
@@ -35,14 +34,13 @@ const initialItemsState = {
     error: null,
   },
   standards: {
-    elo: [],
-    tlo: [],
+    data: [],
     loading: false,
     error: null,
   },
   defaultCurriculumName: getFromLocalStorage('defaultCurriculumName'),
   defaultCurriculumId:
-    parseInt(getFromLocalStorage('defaultCurriculumId')) || '',
+    parseInt(getFromLocalStorage('defaultCurriculumId'), 10) || '',
   recentStandardsList: getFromLocalStorage('recentStandards')
     ? JSON.parse(getFromLocalStorage('recentStandards'))
     : [],
@@ -101,8 +99,7 @@ const dictionariesReducer = (state = initialItemsState, { type, payload }) => {
         ...state,
         standards: {
           ...state.standards,
-          elo: payload.elo,
-          tlo: payload.tlo,
+          data: payload,
           loading: false,
         },
       }
@@ -120,8 +117,7 @@ const dictionariesReducer = (state = initialItemsState, { type, payload }) => {
         ...state,
         standards: {
           ...state.standards,
-          elo: [],
-          tlo: [],
+          data: [],
         },
       }
     case CLEAR_DICT_ALIGNMENTS:
@@ -138,7 +134,7 @@ const dictionariesReducer = (state = initialItemsState, { type, payload }) => {
         draft.alignments = [newAlignment]
       })
 
-    case SET_ALIGNMENT_FROM_QUESTION:
+    case SET_ALIGNMENT_FROM_QUESTION: {
       const authorAlignments = payload.filter(
         (item) => !item.isEquivalentStandard
       )
@@ -146,7 +142,8 @@ const dictionariesReducer = (state = initialItemsState, { type, payload }) => {
         ...state,
         alignments: authorAlignments,
       }
-    case ADD_DICT_ALIGNMENT:
+    }
+    case ADD_DICT_ALIGNMENT: {
       const alignments = [...state.alignments]
       if (!alignments.some((c) => c.curriculumId === payload.curriculumId))
         alignments.push(payload)
@@ -154,6 +151,7 @@ const dictionariesReducer = (state = initialItemsState, { type, payload }) => {
         ...state,
         alignments,
       }
+    }
     case REMOVE_DICT_ALINMENT:
       return {
         ...state,
@@ -161,25 +159,28 @@ const dictionariesReducer = (state = initialItemsState, { type, payload }) => {
           (item) => item.curriculumId !== payload
         ),
       }
-    case UPDATE_DICT_ALIGNMENT:
+    case UPDATE_DICT_ALIGNMENT: {
       const editedAlignments = [...state.alignments].map((c, index) => {
         if (index === payload.index) return { ...c, ...payload.changedFields }
         return c
       })
 
       return { ...state, alignments: editedAlignments }
-    case UPDATE_RECENT_STANDARDS:
+    }
+    case UPDATE_RECENT_STANDARDS: {
       const { recentStandards } = payload
       return {
         ...state,
         recentStandardsList: recentStandards,
       }
-    case UPDATE_RECENT_COLLECTIONS:
+    }
+    case UPDATE_RECENT_COLLECTIONS: {
       const { recentCollections } = payload
       return {
         ...state,
         recentCollectionsList: recentCollections,
       }
+    }
     default:
       return state
   }

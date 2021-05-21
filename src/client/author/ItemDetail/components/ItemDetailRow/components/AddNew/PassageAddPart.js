@@ -26,7 +26,10 @@ const PassageAddNewPart = ({
     <Tooltip title={isDisabled ? disabedReason : ''}>
       <PassageButtonContainer>
         <PassageAddNewButton onClick={handleAddNew} disabled={isDisabled}>
-          <IconPlusCircle style={{ fill: `${white}` }} />
+          <IconPlusCircle
+            style={{ fill: `${white}` }}
+            data-cy="createNewItem"
+          />
           {isAddFirstPart
             ? t('component.itemDetail.addFirstPart')
             : t('component.itemDetail.addNew')}

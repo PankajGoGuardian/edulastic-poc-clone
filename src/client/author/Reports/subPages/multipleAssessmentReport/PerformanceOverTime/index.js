@@ -30,6 +30,7 @@ const PerformanceOverTime = ({
   MARFilterData,
   sharedReport,
   toggleFilter,
+  ddfilter,
 }) => {
   const sharedReportFilters = useMemo(
     () =>
@@ -59,7 +60,7 @@ const PerformanceOverTime = ({
 
   // get paginated data
   useEffect(() => {
-    const q = { ...settings.requestFilters, ...pageFilters }
+    const q = { ...settings.requestFilters, ...pageFilters, ...ddfilter }
     if ((q.termId || q.reportId) && pageFilters.page) {
       getPerformanceOverTimeRequest(q)
     }

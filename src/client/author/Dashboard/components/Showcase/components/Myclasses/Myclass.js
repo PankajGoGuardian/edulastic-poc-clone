@@ -84,6 +84,7 @@ const MyClasses = ({
   const [isPurchaseModalVisible, setIsPurchaseModalVisible] = useState(false)
   const [isTrialModalVisible, setIsTrialModalVisible] = useState(false)
   const [productData, setProductData] = useState({})
+  const [clickedBundleId, setClickedBundleId] = useState(null)
   const [showItemBankTrialUsedModal, setShowItemBankTrialUsedModal] = useState(
     false
   )
@@ -111,16 +112,9 @@ const MyClasses = ({
   }, [])
 
   const saveRecommendedTests = (_data) => {
-    if (!_data || !_data.length) {
-      return
-    }
     const data = _data.map((x) => {
       return { ...x._source, _id: x._id }
     })
-    localStorage.setItem(
-      `recommendedTest:${user?._id}:stored`,
-      JSON.stringify(data)
-    )
     if (user?.recommendedContentUpdated) {
       if (data?.length > 0) {
         notification({
@@ -134,10 +128,17 @@ const MyClasses = ({
           type: 'info',
         })
       }
+      const temp = user
+      temp.recommendedContentUpdated = false
+      setUser(temp)
     }
-    const temp = user
-    temp.recommendedContentUpdated = false
-    setUser(temp)
+    if (!_data || !_data.length) {
+      return
+    }
+    localStorage.setItem(
+      `recommendedTest:${user?._id}:stored`,
+      JSON.stringify(data)
+    )
     setRecommendedTests(data)
   }
 
@@ -148,9 +149,11 @@ const MyClasses = ({
     if (recommendedTestsLocal) {
       setRecommendedTests(JSON.parse(recommendedTestsLocal))
       if (user?.recommendedContentUpdated) {
-        configurableTilesApi
-          .fetchRecommendedTest()
-          .then((res) => saveRecommendedTests(res))
+        setTimeout(() => {
+          configurableTilesApi
+            .fetchRecommendedTest()
+            .then((res) => saveRecommendedTests(res))
+        }, 6000)
       }
     } else {
       configurableTilesApi
@@ -244,7 +247,6 @@ const MyClasses = ({
 
   const handleFeatureClick = ({ config = {}, tags = [], isBlocked }) => {
     const { filters, contentType } = config
-
     if (isBlocked) {
       handleBlockedClick(config)
       return
@@ -256,7 +258,8 @@ const MyClasses = ({
     } else if (content === 'playlists_library') {
       content = 'playlists'
     }
-    if (content === 'playlists' && (!lastPlayList || !lastPlayList.value)) {
+    setClickedBundleId(filters?.[0]?.collections?.[0])
+    if (content === 'playlists') {
       setShowTrialSubsConfirmation(true)
       return
     }
@@ -519,6 +522,7 @@ const MyClasses = ({
         defaultSelectedProductIds={defaultSelectedProductIds}
         setProductData={setProductData}
         trialAddOnProductIds={trialAddOnProductIds}
+        clickedBundleId={clickedBundleId}
       />
       {showItemBankTrialUsedModal && (
         <ItemBankTrialUsedModal

@@ -196,7 +196,7 @@ class Container extends Component {
         data-cy="itemdetail-content"
       >
         {isPassageQuestion && row.tabs?.length === 0 && (
-          <AddTabButton tabsBtn onClick={() => addTabs()}>
+          <AddTabButton tabsBtn onClick={() => addTabs()} data-cy="addTab">
             <GreenPlusIcon>+</GreenPlusIcon>
             ADD TABS
           </AddTabButton>
@@ -297,6 +297,7 @@ class Container extends Component {
             <PassageButtonContainer>
               <PassageAddNewButton
                 onClick={() => handleAddToPassage('video', tabIndex)}
+                data-cy="addVideoButton"
               >
                 <IconPlusCircle />
                 ADD VIDEO
@@ -305,6 +306,7 @@ class Container extends Component {
             <PassageButtonContainer>
               <PassageAddNewButton
                 onClick={() => handleAddToPassage('passage', tabIndex)}
+                data-cy="addPassageButton"
               >
                 <IconPlusCircle />
                 ADD PASSAGE

@@ -289,7 +289,7 @@ class ViewModal extends React.Component {
       alignment,
       interestedCurriculums
     )
-    const owner = authors.some((item) => item._id === userId)
+    // const owner = authors.some((item) => item._id === userId)
     const contanier = (
       <>
         <ModalHeader>

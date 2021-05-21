@@ -76,6 +76,7 @@ class TestItemCol extends Component {
       isExpressGrader,
       isFeedbackVisible,
       hideCorrectAnswer,
+      isShowStudentWork,
     } = restProps
     const timespent = widget.timespent !== undefined ? widget.timespent : null
     const question = questions[widget.reference]
@@ -192,8 +193,10 @@ class TestItemCol extends Component {
         )}
 
         {/*  on the student side, show feedback for each question only when item level scoring is off */}
+        {/* we don't show teacher feedback on the show student work modal */}
         {isStudentReport &&
           !itemLevelScoring &&
+          !isShowStudentWork &&
           teachCherFeedBack(widget, null, null, showStackedView)}
       </TabContainer>
     )

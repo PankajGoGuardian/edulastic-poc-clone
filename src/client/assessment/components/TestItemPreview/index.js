@@ -344,6 +344,7 @@ class TestItemPreview extends Component {
       userWork,
       itemLevelScoring,
       isPrintPreview,
+      isShowStudentWork,
     } = restProps
 
     const { isFeedbackVisible, collapseDirection } = this.state
@@ -478,14 +479,15 @@ class TestItemPreview extends Component {
           (showFeedback ||
             (showPreviousAttempt !== 'NONE' &&
               isStudentAttempt &&
-              !isStudentReport)) && (
+              !isStudentReport)) &&
+          !isShowStudentWork && (
             <>
               {!isCliUser && (
                 <RenderFeedBack
                   isExpressGrader={isExpressGrader}
                   isPrintPreview={isPrintPreview}
                   isStudentAttempt={isStudentAttempt}
-                  className="__print-feedback-main-wrapper"
+                  className="__print-feedback-main-wrapper testtest"
                 >
                   {this.renderFeedbacks()}
                 </RenderFeedBack>

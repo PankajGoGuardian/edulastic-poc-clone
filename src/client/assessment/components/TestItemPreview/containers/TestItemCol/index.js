@@ -59,7 +59,6 @@ class TestItemCol extends Component {
       isDocBased,
       testReviewStyle = {},
       teachCherFeedBack,
-      itemLevelScoring,
       isPassageWithQuestions,
       hasDrawingResponse,
       attachments,
@@ -76,6 +75,7 @@ class TestItemCol extends Component {
       isExpressGrader,
       isFeedbackVisible,
       hideCorrectAnswer,
+      itemLevelScoring,
     } = restProps
     const timespent = widget.timespent !== undefined ? widget.timespent : null
     const question = questions[widget.reference]

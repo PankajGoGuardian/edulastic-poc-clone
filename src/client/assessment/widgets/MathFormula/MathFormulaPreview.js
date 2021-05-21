@@ -32,7 +32,6 @@ import Instructions from '../../components/Instructions'
 
 import CheckAnswerBox from './components/CheckAnswerBox'
 
-
 class MathFormulaPreview extends Component {
   static propTypes = {
     item: PropTypes.object.isRequired,

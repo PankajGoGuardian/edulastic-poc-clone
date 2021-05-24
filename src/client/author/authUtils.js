@@ -64,7 +64,7 @@ export async function proxyDemoPlaygroundUser(isAutomation = false) {
     )
     // check if qa environment then open proxy account in same tab
     let option = '_blank'
-    if (isAutomation && process.env.NODE_ENV !== 'production') {
+    if (isAutomation) {
       option = '_self'
     }
     window.open(

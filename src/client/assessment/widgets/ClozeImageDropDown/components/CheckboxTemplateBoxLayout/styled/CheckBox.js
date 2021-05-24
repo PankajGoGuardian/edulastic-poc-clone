@@ -18,6 +18,7 @@ const indexBoxBgColor = css`
 export const CheckBox = styled.div`
   display: flex;
   border-radius: 4px;
+  position: relative;
   ${boxBgColor};
 
   .index {
@@ -37,8 +38,10 @@ export const CheckBox = styled.div`
 
   .text {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
-    padding-left: 16px;
+    padding-left: 8px;
+    padding-right: 18px;
+    overflow: hidden;
   }
 `

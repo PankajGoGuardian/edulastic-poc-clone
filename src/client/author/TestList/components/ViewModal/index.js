@@ -290,6 +290,7 @@ class ViewModal extends React.Component {
       alignment,
       interestedCurriculums
     )
+    // const owner = authors.some((item) => item._id === userId)
     const contanier = (
       <>
         <ModalHeader>
@@ -308,20 +309,23 @@ class ViewModal extends React.Component {
           {modalView && (
             <>
               <RightButtonContainer>
-                <EduButton
-                  isGhost
-                  height="32px"
-                  width="32px"
-                  disabled={isDemoPlaygroundUser}
-                  title={
-                    isDemoPlaygroundUser
-                      ? 'This feature is not available in demo account.'
-                      : ''
-                  }
-                  onClick={this.onShareModalChange}
-                >
-                  <IconShare />
-                </EduButton>
+                {/* TODO enable it for owner/curator and EC */}
+                {/* {owner && (
+                  <EduButton
+                    isGhost
+                    height="32px"
+                    width="32px"
+                    disabled={isDemoPlaygroundUser}
+                    title={
+                      isDemoPlaygroundUser
+                        ? 'This feature is not available in demo account.'
+                        : ''
+                    }
+                    onClick={this.onShareModalChange}
+                  >
+                    <IconShare />
+                  </EduButton>
+                )} */}
                 <CloseButton onClick={this.handleModalClose}>
                   <IconClose
                     data-cy="closeTestPopUp"

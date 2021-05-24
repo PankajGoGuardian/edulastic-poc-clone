@@ -56,31 +56,31 @@ export const PeerPerformanceTable = ({
   const colorCell = (colorkey, columnKey, columnTitle) => (data, record) => {
     const tooltipText = (rec) => () => (
       <div>
-        <Row type="flex" justify="start">
+        <Row className="tooltip-row" type="flex" justify="start">
           <Col className="custom-table-tooltip-key">Assessment Name: </Col>
           <Col className="custom-table-tooltip-value">{assessmentName}</Col>
         </Row>
-        <Row type="flex" justify="start">
+        <Row className="tooltip-row" type="flex" justify="start">
           <Col className="custom-table-tooltip-key">{`${idToName(compareBy)}: `}</Col>
           <Col className="custom-table-tooltip-value">{rec.compareBylabel}</Col>
         </Row>
         {analyseBy === 'score(%)' || analyseBy === 'rawScore' ? (
           <>
-            <Row type="flex" justify="start">
+            <Row className="tooltip-row" type="flex" justify="start">
               <Col className="custom-table-tooltip-key">Assigned: </Col>
               <Col className="custom-table-tooltip-value">
                 {rec.graded + rec.absent}
               </Col>
             </Row>
-            <Row type="flex" justify="start">
+            <Row className="tooltip-row" type="flex" justify="start">
               <Col className="custom-table-tooltip-key">Submitted: </Col>
               <Col className="custom-table-tooltip-value">{rec.graded}</Col>
             </Row>
-            <Row type="flex" justify="start">
+            <Row className="tooltip-row" type="flex" justify="start">
               <Col className="custom-table-tooltip-key">Absent: </Col>
               <Col className="custom-table-tooltip-value">{rec.absent}</Col>
             </Row>
-            <Row type="flex" justify="start">
+            <Row className="tooltip-row" type="flex" justify="start">
               <Col className="custom-table-tooltip-key">District Avg: </Col>
               <Col className="custom-table-tooltip-value">
                 {getDisplayValue(
@@ -91,7 +91,7 @@ export const PeerPerformanceTable = ({
                 )}
               </Col>
             </Row>
-            <Row type="flex" justify="start">
+            <Row className="tooltip-row" type="flex" justify="start">
               <Col className="custom-table-tooltip-key">
                 Student Avg Score:{' '}
               </Col>
@@ -114,17 +114,17 @@ export const PeerPerformanceTable = ({
           </>
         ) : (
           <>
-            <Row type="flex" justify="start">
+            <Row className="tooltip-row" type="flex" justify="start">
               <Col className="custom-table-tooltip-key">Performance Band: </Col>
               <Col className="custom-table-tooltip-value">{columnTitle}</Col>
             </Row>
-            <Row type="flex" justify="start">
+            <Row className="tooltip-row" type="flex" justify="start">
               <Col className="custom-table-tooltip-key">Student#: </Col>
               <Col className="custom-table-tooltip-value">
                 {rec[columnKey] === 0 ? 'N/A' : rec[columnKey]}
               </Col>
             </Row>
-            <Row type="flex" justify="start">
+            <Row className="tooltip-row" type="flex" justify="start">
               <Col className="custom-table-tooltip-key">Student(%): </Col>
               <Col className="custom-table-tooltip-value">
                 {rec[columnKey] === 0

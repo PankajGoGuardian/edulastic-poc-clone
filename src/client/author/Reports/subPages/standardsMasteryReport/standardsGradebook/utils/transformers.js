@@ -335,7 +335,7 @@ const getAnalysedData = (groupedData, compareBy, masteryScale) => {
       : {}
     return {
       ..._item,
-      studentId: _item.compareBy === 'studentId' ? item : _item.studentId,
+      studentId: compareBy === 'studentId' ? item : _item.studentId,
       compareBy,
       compareByLabel: groupedData[item][0][idToLabel[compareBy]],
       compareByName: idToName[compareBy],

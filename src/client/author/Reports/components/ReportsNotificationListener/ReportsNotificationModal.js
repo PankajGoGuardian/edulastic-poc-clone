@@ -11,7 +11,12 @@ import { StyledEduButton } from '../../common/styled'
 // constants
 import navigation from '../../common/static/json/navigation.json'
 
-const ReportsNotificationModal = ({ reportDocs = [], visible, onClose }) => {
+const ReportsNotificationModal = ({
+  reportDocs = [],
+  visible,
+  onClose,
+  deleteDoc = () => {},
+}) => {
   const columns = [
     {
       title: 'Report',
@@ -49,14 +54,35 @@ const ReportsNotificationModal = ({ reportDocs = [], visible, onClose }) => {
         </StyledEduButton>
       ),
     },
+    // NOTE: uncomment for dev purpose, do not delete
+    // {
+    //   title: 'Delete',
+    //   key: '__id',
+    //   dataIndex: '__id',
+    //   width: 100,
+    //   align: 'center',
+    //   render: (data) => (
+    //     <StyledEduButton
+    //       isGhost
+    //       isBlue
+    //       noBorder
+    //       title="Delete CSV"
+    //       onClick={() => deleteDoc(data)}
+    //     >
+    //       <Icon type="close" />
+    //     </StyledEduButton>
+    //   ),
+    // },
   ]
 
   return (
     <StyledModal
+      className="download-csv-modal"
       title={
         <div>
           <span>Requested Report Data</span>
           <IconClose
+            className="download-csv-modal-close-icon"
             height={20}
             width={20}
             onClick={onClose}

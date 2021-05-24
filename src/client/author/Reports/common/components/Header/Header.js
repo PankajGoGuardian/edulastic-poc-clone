@@ -137,6 +137,7 @@ const CustomizedHeaderWrapper = ({
       >
         {onDownloadCSVClickCB && !hideDownloadIcon ? (
           <ActionButton
+            data-cy="download-csv"
             isBlue
             isGhost
             IconBtn

@@ -9,6 +9,7 @@ import {
   uniq,
   some,
   every,
+  cloneDeep,
 } from 'lodash'
 import { testActivityStatus, questionType } from '@edulastic/constants'
 import produce from 'immer'
@@ -385,25 +386,25 @@ const extractFunctions = {
     const maths = get(userResponse, 'maths')
     if (!isEmpty(maths) || typeof maths === 'object') {
       const mathResponses = Object.values(maths)
-      return getMathHtml(`${mathResponses[0].value}`)
+      return getMathHtml(`${mathResponses[0]?.value}`)
     }
     const inputs = get(userResponse, 'inputs')
     if (!isEmpty(inputs) || typeof inputs === 'object') {
       const inputResponses = Object.values(inputs)
-      return `${inputResponses[0].value}`
+      return `${inputResponses[0]?.value}`
     }
 
     const dropDowns = get(userResponse, 'dropDowns')
     if (!isEmpty(dropDowns) || typeof inputs === 'object') {
       const dropDownResponses = Object.values(dropDowns)
-      return `${dropDownResponses[0].value}`
+      return `${dropDownResponses[0]?.value}`
     }
 
     const mathUnits = get(userResponse, 'mathUnits')
     if (!isEmpty(mathUnits) || typeof inputs === 'object') {
       const mathUnitResponses = Object.values(mathUnits)
       return getMathHtml(
-        `${mathUnitResponses[0].value} ${mathUnitResponses[0].unit}`
+        `${mathUnitResponses[0]?.value} ${mathUnitResponses[0]?.unit}`
       )
     }
     return ''
@@ -449,7 +450,19 @@ export function getStandardsForStandardBasedReport(
     (x) => `${x._id}`
   )
   const standardsQuestionsMap = {}
-  const questions = testItems.flatMap((x) => x.data.questions)
+  const items = cloneDeep(testItems)
+  const questions = []
+  items.forEach(({ itemLevelScoring, data }) => {
+    if (itemLevelScoring && data?.questions?.length) {
+      const alignment = []
+      data.questions.forEach((question) => {
+        alignment.push(...(question.alignment || []))
+        question.alignment = []
+      })
+      data.questions[0].alignment = alignment
+    }
+    questions.push(...data.questions)
+  })
   for (const q of questions) {
     if (q?.validation?.unscored) {
       continue

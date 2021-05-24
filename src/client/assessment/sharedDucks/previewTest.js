@@ -89,12 +89,20 @@ function* evaluateTestItemSaga({ payload }) {
       .map((qid) => allQuestionsById[qid])
     const qById = keyBy(questions, 'id')
     const answersByQids = answersByQId(answers, testItem._id)
+
+    const { penalty, scoringType } = yield select((state) =>
+      get(state, 'tests.entity', {})
+    )
+    const testSettings = { penalty, scoringType }
     const { evaluation, score, maxScore } = yield evaluateItem(
       answersByQids,
       qById,
       itemLevelScoring,
       itemLevelScore,
-      testItem._id
+      testItem._id,
+      undefined,
+      undefined,
+      testSettings
     )
     const previewUserWork = yield select(
       ({ userWork }) => userWork.present[testItemId]

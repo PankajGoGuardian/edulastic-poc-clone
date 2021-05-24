@@ -84,7 +84,7 @@ const QuestionBottomAction = ({
   item,
   loading,
   isStudentReport,
-  isShowStudentWork,
+  hasShowStudentWork,
   onClickHandler,
   timeSpent,
   hasDrawingResponse,
@@ -335,7 +335,7 @@ const QuestionBottomAction = ({
           </EduButton>
         )}
         <div>
-          {!hasDrawingResponse && isShowStudentWork && (
+          {!hasDrawingResponse && hasShowStudentWork && (
             <ShowUserWork onClick={onClickHandler} loading={loading} />
           )}
         </div>
@@ -412,7 +412,7 @@ QuestionBottomAction.propTypes = {
   setCurrentQuestion: PropTypes.func.isRequired,
   updateCorrectItem: PropTypes.func.isRequired,
   setQuestionData: PropTypes.func.isRequired,
-  isShowStudentWork: PropTypes.bool.isRequired,
+  hasShowStudentWork: PropTypes.bool.isRequired,
   loadingComponents: PropTypes.array.isRequired,
   loading: PropTypes.bool,
   item: PropTypes.object,
@@ -434,8 +434,7 @@ const getPermissionToEdit = (state, props) => {
   const userFeatures = getUserFeatures(state)
   const collections = getCollectionsSelector(state)
   const testItems = get(state, 'classResponse.data.testItems', [])
-  const testItem =
-    testItems.find((t) => t._id === props.item?.activity?.testItemId) || {}
+  const testItem = testItems.find((t) => t._id === props.item?.testItemId) || {}
   const { authors = [] } = testItem || {}
   const isOwner = authors.some((author) => author._id === userId)
   const hasCollectionAccess = allowContentEditCheck(

@@ -158,6 +158,7 @@ const CurriculumHeader = ({
     status,
     title,
     collections: _playlistCollections = [],
+    clonedCollections = [],
     _id,
   } = destinationCurriculumSequence
   const hasCollectionAccess = allowContentEditCheck(
@@ -174,9 +175,9 @@ const CurriculumHeader = ({
     collections.find(
       (c) => c.name === 'Spark Math' && c.owner === 'Edulastic Corp'
     ) || {}
-  const isSparkMathPlaylist = _playlistCollections.some(
-    (item) => item._id === sparkCollection?._id
-  )
+  const isSparkMathPlaylist =
+    _playlistCollections.some((item) => item._id === sparkCollection?._id) ||
+    clonedCollections.some((item) => item._id === sparkCollection?._id)
 
   const shouldHideUseThis = status === 'draft'
   const showUseThisButton =

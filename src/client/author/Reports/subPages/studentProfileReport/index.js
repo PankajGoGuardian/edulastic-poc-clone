@@ -143,7 +143,7 @@ const StudentProfileReportContainer = (props) => {
   }
 
   useEffect(() => {
-    if (loc !== 'student-progress-profile') {
+    if (loc !== 'student-progress-profile' && !firstLoad) {
       setSPRSettings({
         ...settings,
         standardFilters: {

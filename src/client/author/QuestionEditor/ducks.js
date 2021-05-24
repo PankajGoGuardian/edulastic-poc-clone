@@ -657,6 +657,8 @@ function* saveQuestionSaga({
     })
 
     const redirectTestId = yield select(redirectTestIdSelector)
+    // In test flow, if test not created, testId is 'undefined' | EV-27944
+    const _testId = redirectTestId || (tId === 'undefined' ? undefined : tId)
     let item
     // if its a new testItem, create testItem, else update it.
     // TODO: do we need redirect testId here?!
@@ -664,12 +666,7 @@ function* saveQuestionSaga({
       const reqData = omit(data, '_id')
       item = yield call(testItemsApi.create, reqData)
     } else {
-      item = yield call(
-        testItemsApi.updateById,
-        itemDetail._id,
-        data,
-        redirectTestId || tId
-      )
+      item = yield call(testItemsApi.updateById, itemDetail._id, data, _testId)
     }
     yield put(changeUpdatedFlagAction(false))
     if (item.testId) {
@@ -1053,11 +1050,11 @@ function* loadQuestionSaga({ payload }) {
         push({
           pathname: `${pathname}/questions/edit/${data.type}`,
           state: {
+            ...locationState,
             backText: 'question edit',
             backUrl: pathname,
             rowIndex,
             isPassageWithQuestions: isPassageWidget,
-            ...locationState,
           },
         })
       )

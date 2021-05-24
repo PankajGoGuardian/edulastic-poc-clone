@@ -56,15 +56,15 @@ export const SignedStackedBarChartContainer = ({
       const { compareBy: _compareBy, compareBylabel } = payload[0].payload
       return (
         <div>
-          <Row type="flex" justify="start">
+          <Row className="tooltip-row" type="flex" justify="start">
             <Col className="tooltip-key">{`${idToName(_compareBy)}: `}</Col>
             <Col className="tooltip-value">{compareBylabel}</Col>
           </Row>
-          <Row type="flex" justify="start">
+          <Row className="tooltip-row" type="flex" justify="start">
             <Col className="tooltip-key">Band: </Col>
             <Col className="tooltip-value">{payload[barIndex].name}</Col>
           </Row>
-          <Row type="flex" justify="start">
+          <Row className="tooltip-row" type="flex" justify="start">
             <Col className="tooltip-key">{'Student (%): '}</Col>
             <Col className="tooltip-value">
               {`${Math.abs(payload[barIndex].value)}% (${

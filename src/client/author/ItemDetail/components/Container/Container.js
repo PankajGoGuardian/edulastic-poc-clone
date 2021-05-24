@@ -891,6 +891,7 @@ class Container extends Component {
                     height="30px"
                     disabled={itemDeleting}
                     onClick={this.handleRemoveItemRequest}
+                    data-cy="removeItem"
                   >
                     <i className="fa fa-minus-circle" />
                     &nbsp;ITEM
@@ -901,6 +902,7 @@ class Container extends Component {
                   height="30px"
                   disabled={itemDeleting}
                   onClick={this.addItemToPassage}
+                  data-cy="addItem"
                 >
                   <i className="fa fa-plus-circle" />
                   &nbsp;ITEM

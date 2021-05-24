@@ -15,6 +15,7 @@ import {
   StyledH3,
   StyledSignedBarContainer,
   NoDataContainer,
+  StyledDropDownContainer,
 } from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { getCsvDownloadingState } from '../../../ducks'
@@ -241,19 +242,39 @@ const PeerPerformance = ({
                 lg={16}
                 xl={12}
               >
-                <ControlDropDown
-                  prefix="Analyze by"
-                  by={ddfilter.analyseBy}
-                  selectCB={updateAnalyseByCB}
-                  data={dropDownFormat.analyseByDropDownData}
-                />
-                <ControlDropDown
-                  prefix="Compare by"
-                  style={{ marginLeft: 8 }}
-                  by={ddfilter.compareBy}
-                  selectCB={updateCompareByCB}
-                  data={compareByDropDownData}
-                />
+                <Row className="control-dropdown-row">
+                  <StyledDropDownContainer
+                    data-cy="analyzeBy"
+                    xs={24}
+                    sm={24}
+                    md={12}
+                    lg={12}
+                    xl={12}
+                  >
+                    <ControlDropDown
+                      prefix="Analyze by"
+                      by={ddfilter.analyseBy}
+                      selectCB={updateAnalyseByCB}
+                      data={dropDownFormat.analyseByDropDownData}
+                    />
+                  </StyledDropDownContainer>
+                  <StyledDropDownContainer
+                    data-cy="compareBy"
+                    xs={24}
+                    sm={24}
+                    md={12}
+                    lg={12}
+                    xl={12}
+                  >
+                    <ControlDropDown
+                      prefix="Compare by"
+                      style={{ marginLeft: 8 }}
+                      by={ddfilter.compareBy}
+                      selectCB={updateCompareByCB}
+                      data={compareByDropDownData}
+                    />
+                  </StyledDropDownContainer>
+                </Row>
               </Col>
             </Row>
             <div>

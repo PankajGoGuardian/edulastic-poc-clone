@@ -588,7 +588,8 @@ class QuestionWrapper extends Component {
                     setPage={this.setPage}
                   />
                   {showFeedback && !isPrintPreview && (
-                    <BottomAction
+                    <BottomAction 
+                      view={view}
                       isStudentReport={isStudentReport}
                       hasShowStudentWork={!!showStudentWork}
                       onClickHandler={this.openStudentWork}
@@ -609,6 +610,11 @@ class QuestionWrapper extends Component {
                       previewTab={previewTab}
                       isPrintPreview={isPrintPreview}
                       isGrade={isGrade}
+                      data={data}
+                      enableMagnifier={enableMagnifier}
+                      saveHintUsage={saveHintUsage}
+                      isStudent={userRole === 'student'}
+                      itemIndex={itemIndex}
                     />
                   )}
                   {rubricDetails && studentReportFeedbackVisible && (
@@ -626,7 +632,7 @@ class QuestionWrapper extends Component {
                       />
                     </RubricTableWrapper>
                   )}
-                  {view === 'preview' && !isPrintPreview && (
+                  {view === 'preview' && !isLCBView && !isPrintPreview && (
                     <Hints
                       question={data}
                       enableMagnifier={enableMagnifier}

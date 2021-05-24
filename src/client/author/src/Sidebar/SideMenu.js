@@ -563,7 +563,7 @@ class SideMenu extends Component {
         )}
         <FixedSidebar
           className={`${!isCollapsed ? 'full' : ''} ${className}`}
-          onClick={isCollapsed && !isMobile ? this.toggleMenu : null}
+          onMouseEnter={isCollapsed && !isMobile ? this.toggleMenu : null}
           isCollapsed={isCollapsed}
           ref={this.sideMenuRef}
         >

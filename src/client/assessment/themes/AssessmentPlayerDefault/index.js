@@ -366,6 +366,7 @@ class AssessmentPlayerDefault extends React.Component {
       uploadToS3,
       user = {},
       gotoSummary,
+      isShowStudentWork,
     } = this.props
     const { firstName = '', lastName = '' } = user
     const { settings } = this.props
@@ -662,6 +663,7 @@ class AssessmentPlayerDefault extends React.Component {
                     itemLevelScoring={item.itemLevelScoring}
                     studentReportModal={studentReportModal}
                     tool={currentToolMode}
+                    isShowStudentWork={isShowStudentWork}
                   />
                 )}
                 {testItemState === 'check' && (
@@ -698,6 +700,7 @@ class AssessmentPlayerDefault extends React.Component {
                     itemLevelScoring={item.itemLevelScoring}
                     studentReportModal={studentReportModal}
                     tool={currentToolMode}
+                    isShowStudentWork={isShowStudentWork}
                   />
                 )}
               </MainWrapper>

@@ -68,7 +68,7 @@ const ForgotPasswordPopup = (props) => {
           <div>
             <StyledText>
               Please enter your registered username or email. We will email you
-              a link to reset your password
+              a link to reset your password.
             </StyledText>
             <ConnectedForgotPasswordForm
               onSubmit={onSendLink}
@@ -82,7 +82,7 @@ const ForgotPasswordPopup = (props) => {
             <div className="message-container">
               <StyledText>{requestNewPasswordSuccess.content}</StyledText>
               <StyledText>
-                If you did not receive your password reset email shortly,
+                If you do not receive your password reset email shortly,
                 please&nbsp;
                 <a
                   href="https://edulastic.zendesk.com/hc/en-us/requests/new"

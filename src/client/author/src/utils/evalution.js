@@ -17,7 +17,8 @@ export const evaluateItem = async (
   itemLevelScore = 0,
   itemId = '',
   itemGradingType,
-  assignPartialCredit
+  assignPartialCredit,
+  testSettings = {}
 ) => {
   const questionIds = Object.keys(validations)
   const results = {}
@@ -61,6 +62,7 @@ export const evaluateItem = async (
             validation: validationData,
             template: validation.template,
             questionId: id,
+            testSettings,
           },
           type
         )

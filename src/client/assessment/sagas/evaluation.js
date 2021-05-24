@@ -1,5 +1,5 @@
 import { takeEvery, put, all, select, call } from 'redux-saga/effects'
-import { isEmpty, values, keyBy } from 'lodash'
+import { isEmpty, values, keyBy, get } from 'lodash'
 
 import { testItemsApi, attchmentApi as attachmentApi } from '@edulastic/api'
 import {
@@ -145,6 +145,11 @@ function* evaluateAnswers({ payload: groupId }) {
         assignPartialCredit,
       } = items[currentItem]
       const itemQuestions = keyBy(items[currentItem]?.data?.questions, 'id')
+
+      const { penalty, scoringType } = yield select((state) =>
+        get(state, 'tests.entity', {})
+      )
+      const testSettings = { scoringType, penalty }
       evaluationObj = yield evaluateItem(
         allAnswers,
         itemQuestions,
@@ -152,7 +157,8 @@ function* evaluateAnswers({ payload: groupId }) {
         itemLevelScore,
         testItemId,
         itemGradingType,
-        assignPartialCredit
+        assignPartialCredit,
+        testSettings
       )
       evaluations = evaluationObj?.evaluation
     } else {

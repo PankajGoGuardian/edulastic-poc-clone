@@ -130,15 +130,8 @@ const CheckboxTemplateBox = ({
     <IndexBox bgColor={indexBgColor}>{indexStr}</IndexBox>
   )
 
-  return (
-    <WithPopover
-      fontSize={fontSize}
-      containerDimensions={{ width: respWidth, height: respHeight }}
-      index={index}
-      userAnswer={userAnswer}
-      checkAnswer={checkAnswer}
-      indexStr={indexStr}
-    >
+  const getContent = () => {
+    return (
       <DropContainer
         index={index}
         style={dropContainerStyle}
@@ -175,6 +168,20 @@ const CheckboxTemplateBox = ({
           {icons}
         </AnswerBox>
       </DropContainer>
+    )
+  }
+
+  return (
+    <WithPopover
+      fontSize={fontSize}
+      containerDimensions={{ width: respWidth, height: respHeight }}
+      index={index}
+      userAnswer={userAnswer}
+      checkAnswer={checkAnswer}
+      indexStr={indexStr}
+      getContent={getContent}
+    >
+      {getContent(false)}
     </WithPopover>
   )
 }

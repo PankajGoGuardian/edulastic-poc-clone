@@ -1,7 +1,6 @@
 import React from 'react'
 import { measureTextWithImage } from '@edulastic/common'
 import { Popover } from 'antd'
-import { getContent } from '../../../ClozeDragDrop/components/WithPopover'
 
 export function WithPopover({
   children,
@@ -9,6 +8,7 @@ export function WithPopover({
   containerDimensions,
   fontSize,
   checkAnswer,
+  getContent,
 }) {
   const {
     scrollWidth: contentWidth,
@@ -27,7 +27,7 @@ export function WithPopover({
     contentWidth + indexBoxWidth > parseInt(containerWidth, 10)
   const showPopover = heightOverflow || widthOverflow
   if (showPopover) {
-    const popoverContent = getContent(userAnswer, true, false, { fontSize })
+    const popoverContent = getContent(true)
     return (
       <Popover
         placement="bottomLeft"

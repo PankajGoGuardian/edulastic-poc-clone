@@ -18,7 +18,12 @@ import { DragHandler, ChoiceItem } from '../../../components/ChoiceItem'
  * and shows the enitre content, which was clipped in the response box
  */
 
-function getContent(userAnswer, inPopover = false, showDragHandle, itemStyle) {
+export function getContent(
+  userAnswer,
+  inPopover = false,
+  showDragHandle,
+  itemStyle
+) {
   const overrideContainerStyles = {}
   if (inPopover) {
     overrideContainerStyles.overflow = 'auto'

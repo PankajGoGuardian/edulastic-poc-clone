@@ -69,18 +69,12 @@ const Response = ({
       indexBgColor={indexBgColor}
       isPrintPreview={isPrintPreview}
     >
-      <span className="index">{indexStr}</span>
+      {showAnswer && <span className="index">{indexStr}</span>}
       <div className="text">
-        <div className="clipText">
-          <MathSpan dangerouslySetInnerHTML={{ __html: userAnswer }} />
-        </div>
+        <MathSpan dangerouslySetInnerHTML={{ __html: userAnswer }} />
       </div>
       <div className="icons">
-        {userAnswer && (
-          <IconWrapper rightPosition={lessMinWidth ? '5' : '10'}>
-            {mark}
-          </IconWrapper>
-        )}
+        {userAnswer && <IconWrapper>{mark}</IconWrapper>}
         <Pointer
           className={responseContainer.pointerPosition}
           width={responseContainer.width}

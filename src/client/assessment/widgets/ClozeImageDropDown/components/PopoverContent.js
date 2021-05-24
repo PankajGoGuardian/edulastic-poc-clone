@@ -16,9 +16,10 @@ const PopoverContent = ({
   mark,
 }) => (
   <CheckBox
+    isPopover
     fillColor={fillColor}
     indexBgColor={indexBgColor}
-    style={{ fontSize, padding: 20, overflow: 'hidden', margin: '0px 4px' }}
+    style={{ fontSize, margin: '0px 4px' }}
   >
     <div
       className="index"

@@ -322,10 +322,12 @@ class ViewModal extends React.Component {
                         : ''
                     }
                     onClick={this.onShareModalChange}
+                    data-cy="share"
                   >
                     <IconShare />
                   </EduButton>
                 )} */}
+
                 <CloseButton onClick={this.handleModalClose}>
                   <IconClose
                     data-cy="closeTestPopUp"

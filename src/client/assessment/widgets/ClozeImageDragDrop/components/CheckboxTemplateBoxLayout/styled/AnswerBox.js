@@ -14,8 +14,13 @@ export const AnswerBox = styled.div`
   border-radius: 4px;
   height: 100%;
   ${boxBgColor};
+  position: relative;
+  min-height: ${({ boxHeight }) => (boxHeight ? `${boxHeight}px` : '')};
+  overflow: hidden;
+  align-items: flex-start;
 
   .text {
     padding: 0px 8px;
+    padding-right: 20px;
   }
 `

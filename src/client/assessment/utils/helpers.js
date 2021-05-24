@@ -569,7 +569,13 @@ export const Fscreen = {
   requestFullscreenFunction: (element) =>
     element[vendor[key.requestFullscreen]],
   get exitFullscreen() {
-    return document[vendor[key.exitFullscreen]].bind(document)
+    try {
+      return document[vendor[key.exitFullscreen]].bind(document)
+    } catch (e) {
+      // fullscreen api not supported in this device
+      // so, returning noop function
+      return () => {}
+    }
   },
   safeExitfullScreen: () => {
     try {

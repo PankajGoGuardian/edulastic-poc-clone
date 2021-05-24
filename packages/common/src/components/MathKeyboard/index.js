@@ -229,5 +229,6 @@ const MathKeyboardContainer = styled.div`
   min-width: 180px;
   max-width: 520px;
   width: max-content;
+  text-indent: 0;
   ${({ docBasedKeypadStyles }) => docBasedKeypadStyles};
 `

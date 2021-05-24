@@ -11,7 +11,7 @@ import React, { Component } from 'react'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { libraryFilters, sortOptions } from '@edulastic/constants'
+import { libraryFilters, sortOptions, roleuser } from '@edulastic/constants'
 import { withNamespaces } from 'react-i18next'
 import NoDataNotification from '../../../../common/components/NoDataNotification'
 import {
@@ -28,6 +28,8 @@ import {
   getInterestedCurriculumsSelector,
   getInterestedGradesSelector,
   getInterestedSubjectsSelector,
+  getUserFeatures,
+  getUserRole,
 } from '../../../src/selectors/user'
 import CardWrapper from '../../../TestList/components/CardWrapper/CardWrapper'
 import {
@@ -167,6 +169,8 @@ class TestList extends Component {
       interestedGrades,
       sort: initSort = {},
       recentPlaylist,
+      features,
+      userRole,
     } = this.props
 
     const {
@@ -227,8 +231,15 @@ class TestList extends Component {
       filteredSparkInfo: selectedCollectionInfo?.[0] || {},
     })
 
-    if (searchFilters?.collections?.includes(_id) && !recentPlaylist?.length)
+    if (
+      searchFilters?.collections?.includes(_id) &&
+      !recentPlaylist?.length &&
+      !features?.isCurator &&
+      !features.isPublisherAuthor &&
+      userRole !== roleuser.EDULASTIC_CURATOR
+    ) {
       this.setState({ isPlaylistAvailableModalVisible: true })
+    }
   }
 
   updateFilterState = (searchState, sort) => {
@@ -720,6 +731,8 @@ const enhance = compose(
       collectionSelector: getCollectionsSelector(state),
       dashboardTiles: state.dashboardTeacher.configurableTiles,
       isDemoAccount: isDemoPlaygroundUser(state),
+      features: getUserFeatures(state),
+      userRole: getUserRole(state),
     }),
     {
       receivePlaylists: receivePlaylistsAction,

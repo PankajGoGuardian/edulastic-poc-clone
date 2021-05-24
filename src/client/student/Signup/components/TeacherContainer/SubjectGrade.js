@@ -51,9 +51,12 @@ class SubjectGrade extends React.Component {
     this.subjectRef = createRef()
     this.standardRef = createRef()
     this.standardsRef = createRef()
-    const { defaultGrades, defaultSubjects, interestedCurriculums } = get(
-      props.user,
-      'user.orgData'
+    const { userInfo } = this.props
+    const { defaultGrades, defaultSubjects } = get(props.user, 'user.orgData')
+    let { interestedCurriculums } = get(props.user, 'user.orgData')
+
+    interestedCurriculums = interestedCurriculums.filter(
+      (x) => x.orgType === userInfo?.role
     )
 
     this.state = {
@@ -236,7 +239,6 @@ class SubjectGrade extends React.Component {
       showStandardsModal,
     } = this.state
     const {
-      interestedCurriculums,
       curriculums,
       form,
       saveSubjectGradeloading,
@@ -244,10 +246,14 @@ class SubjectGrade extends React.Component {
       isModal,
       isTestRecommendationCustomizer,
       curriculumStandards,
+      userInfo,
     } = this.props
+    let { interestedCurriculums } = this.props
 
     const { showAllStandards } = get(this, 'props.userInfo.orgData', {})
-
+    interestedCurriculums = interestedCurriculums.filter(
+      (x) => x.orgType === userInfo?.role
+    )
     const formattedCurriculums = isEmpty(subjects)
       ? []
       : getFormattedCurriculums(

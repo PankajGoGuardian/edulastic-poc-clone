@@ -396,6 +396,7 @@ class QuestionWrapper extends Component {
       previewTab,
       studentId,
       isQuestionView,
+      isShowStudentWork,
     } = restProps
 
     const userAnswer = get(data, 'activity.userResponse', null)
@@ -483,13 +484,13 @@ class QuestionWrapper extends Component {
         }}
       >
         <>
-          {canShowPlayer && !hideVisibility && (
+          {canShowPlayer && (!hideVisibility || isShowStudentWork) && (
             <AudioControls
               btnWithText={
                 playerSkinType.toLowerCase() ===
                 test.playerSkinValues.edulastic.toLowerCase()
               }
-              hideVisibility={hideVisibility}
+              hideVisibility={hideVisibility && !isShowStudentWork}
               key={data.id}
               item={data}
               page={page}
@@ -589,7 +590,7 @@ class QuestionWrapper extends Component {
                   {showFeedback && !isPrintPreview && (
                     <BottomAction
                       isStudentReport={isStudentReport}
-                      isShowStudentWork={!!showStudentWork}
+                      hasShowStudentWork={!!showStudentWork}
                       onClickHandler={this.openStudentWork}
                       timeSpent={timeSpent}
                       item={data}

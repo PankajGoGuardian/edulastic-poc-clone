@@ -11,6 +11,7 @@ export const MathInputStyles = styled.div`
   min-height: ${({ height }) => height || 'auto'};
   background: ${({ background }) => background};
   position: relative;
+  text-indent: 0
 
   cursor: ${({ disabled }) => disabled && 'not-allowed'};
 
@@ -53,6 +54,7 @@ export const MathInputStyles = styled.div`
     border: 0;
     display: flex;
     align-items: center;
+    text-indent: 0;
 
     /**
     * should override margin for matrix

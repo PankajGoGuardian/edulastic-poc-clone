@@ -19,7 +19,7 @@ export const CheckBox = styled.div`
   background: ${({ theme, fillColor, isPrintPreview }) =>
     isPrintPreview ? white : fillColor || theme.checkbox.noAnswerBgColor};
   color: ${({ theme }) => theme.checkbox.textColor};
-
+  text-indent: 0;
   .index {
     background: ${({ indexBgColor }) => indexBgColor};
   }

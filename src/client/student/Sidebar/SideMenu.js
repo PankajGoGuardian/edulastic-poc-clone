@@ -214,7 +214,9 @@ class SideMenu extends Component {
       <>
         <FixedSidebar
           className={`${!isSidebarCollapsed ? 'full' : ''}`}
-          onClick={isSidebarCollapsed && !isMobile ? this.toggleMenu : null}
+          onMouseEnter={
+            isSidebarCollapsed && !isMobile ? this.toggleMenu : null
+          }
           isSidebarCollapsed={isSidebarCollapsed}
           ref={this.sideMenuRef}
           isProxyUser={isProxyUser}

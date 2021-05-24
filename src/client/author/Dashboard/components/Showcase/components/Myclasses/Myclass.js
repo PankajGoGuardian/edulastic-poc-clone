@@ -246,7 +246,7 @@ const MyClasses = ({
   }
 
   const handleFeatureClick = ({ config = {}, tags = [], isBlocked }) => {
-    const { filters, contentType } = config
+    const { filters, contentType, subscriptionData } = config
     if (isBlocked) {
       handleBlockedClick(config)
       return
@@ -258,7 +258,9 @@ const MyClasses = ({
     } else if (content === 'playlists_library') {
       content = 'playlists'
     }
-    setClickedBundleId(filters?.[0]?.collections?.[0])
+    setClickedBundleId(
+      filters?.[0]?.collections?.[0] || subscriptionData.itemBankId
+    )
     if (content === 'playlists') {
       setShowTrialSubsConfirmation(true)
       return
@@ -523,6 +525,7 @@ const MyClasses = ({
         setProductData={setProductData}
         trialAddOnProductIds={trialAddOnProductIds}
         clickedBundleId={clickedBundleId}
+        setClickedBundleId={setClickedBundleId}
       />
       {showItemBankTrialUsedModal && (
         <ItemBankTrialUsedModal

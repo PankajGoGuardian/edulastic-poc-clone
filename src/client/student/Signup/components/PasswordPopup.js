@@ -46,6 +46,7 @@ const PasswordModal = ({
         <Col span={12} offset={6}>
           <Input
             type="password"
+            autoComplete="off"
             onChange={(e) => onChange(e.currentTarget.value)}
             prefix={<IconLock color={themeColor} />}
           />

@@ -19,11 +19,7 @@ export const augmentWithStudentInfo = (metricInfo = [], orgData = []) => {
     // get the related organisation
     const relatedOrg =
       find(orgData, (org) => org.groupId === student.groupId) || {}
-    const {
-      groupName = 'N/A',
-      schoolName = 'N/A',
-      teacherName = 'N/A',
-    } = relatedOrg
+    const { groupName = '-', schoolName = '-', teacherName = '-' } = relatedOrg
     return { ...student, groupName, schoolName, teacherName }
   })
 
@@ -60,6 +56,12 @@ export const filterMetricInfoByDDFilters = (metricInfo = [], ddfilter) =>
     if (
       !isEmpty(ddfilter.race) &&
       toLower(ddfilter.race) !== toLower(info.race)
+    ) {
+      return false
+    }
+    if (
+      !isEmpty(ddfilter.hispanicEthnicity) &&
+      toLower(ddfilter.hispanicEthnicity) !== toLower(info.hispanicEthnicity)
     ) {
       return false
     }

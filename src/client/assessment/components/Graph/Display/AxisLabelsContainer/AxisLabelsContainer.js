@@ -153,13 +153,13 @@ class AxisLabelsContainer extends PureComponent {
       })
     )
     const maxContentWidth = Math.min(
-      maxBy(responseDimensions, (dimension) => dimension.width).width,
+      maxBy(responseDimensions, (dimension) => dimension?.width)?.width,
       maxWidth
     )
 
     const maxContentHeight = Math.min(
-      maxBy(responseDimensions, (dimension) => dimension.scrollHeight)
-        .scrollHeight,
+      maxBy(responseDimensions, (dimension) => dimension?.scrollHeight)
+        ?.scrollHeight,
       maxHeight
     )
 
@@ -470,18 +470,18 @@ class AxisLabelsContainer extends PureComponent {
     if (this.graphContainerRef.current && offset) {
       const element = this.graphContainerRef.current
       const { x, y } = element.getBoundingClientRect()
-      const px = offset.x - x
-      const py = offset.y - y
+      const px = offset.x - x - 10
+      const py = offset.y - y - 10
       return { x: px, y: py }
     }
     return { x: 0, y: 0 }
   }
 
-  handleDropValue = ({ itemOffset, data, itemRect }) => {
-    const d = this.getDragValueOffset(itemOffset)
-    const { width, height } = itemRect
-    const y = d.y + height / 2 + 15
-    const x = d.x + width / 2 + 25
+  handleDropValue = ({ data, itemRect }) => {
+    const { width, height, x: clientX, y: clientY } = itemRect
+    const d = this.getDragValueOffset({ x: clientX, y: clientY })
+    const y = d.y + height / 2
+    const x = d.x + width / 2
     if (this._graph.addMark(data, x, y)) {
       this.updateValues()
     }

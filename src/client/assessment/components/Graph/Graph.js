@@ -447,6 +447,7 @@ class Graph extends Component {
       'validResponse',
       'rounding',
       'graphType',
+      'comparePoints=False',
     ])
   }
 
@@ -631,7 +632,7 @@ class Graph extends Component {
                 )}
               </QuestionLabelWrapper>
 
-              <QuestionContentWrapper>
+              <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
                 <QuestionTitleWrapper>
                   <StyledStimulus
                     data-cy="questionHeader"

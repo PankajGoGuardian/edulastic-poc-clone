@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
-import { Modal as AntdModal, Radio, Row, Spin } from 'antd'
-import styled from 'styled-components'
+import { Radio, Row, Spin } from 'antd'
 import { get } from 'lodash'
 import { FlexContainer, EduButton, notification } from '@edulastic/common'
 import { TitleWrapper } from '@edulastic/common/src/components/MainHeader'
@@ -10,10 +9,16 @@ import {
   toggleRegradeModalAction,
   getRegradeModalStateSelector,
 } from '../TestPage/ducks'
-import { ACTIONS } from './MainContent'
-import { InputsWrapper } from './styled'
+import { InputsWrapper, StyledModal } from './styled'
 import { updateCorrectTestItemAction } from '../src/actions/classBoard'
 import RegradeListenerLcb from './RegradeListenerLcb'
+
+const ACTIONS = {
+  SKIP: 'SKIP',
+  SCORE: 'SCORE',
+  MANUAL: 'MANUAL',
+  DISCARD: 'DISCARD',
+}
 
 const Group = Radio.Group
 const RegradeModal = ({
@@ -33,7 +38,7 @@ const RegradeModal = ({
     options: {
       removedQuestion: 'DISCARD',
       addedQuestion: 'SKIP',
-      testSettings: 'EXCLUDE',
+      testSettings: 'ALL',
       editedQuestion: 'SCORE',
     },
   }
@@ -73,7 +78,7 @@ const RegradeModal = ({
   }
 
   return (
-    <Modal
+    <StyledModal
       visible
       centered
       title={
@@ -141,7 +146,7 @@ const RegradeModal = ({
       {regradeFirebaseDocId && (
         <RegradeListenerLcb onCloseModal={onCloseRegardModal} />
       )}
-    </Modal>
+    </StyledModal>
   )
 }
 
@@ -156,16 +161,3 @@ export default connect(
     updateCorrectItem: updateCorrectTestItemAction,
   }
 )(RegradeModal)
-
-const Modal = styled(AntdModal)`
-  .ant-modal-header {
-    padding: 8px 30px 8px 24px;
-    .question-bank-icon {
-      width: 16px;
-      height: 19px;
-    }
-  }
-  .ant-modal-close-x {
-    display: none;
-  }
-`

@@ -3,17 +3,21 @@ import {
   TextInputStyled,
   SelectInputStyled,
   CustomModalStyled,
+  beforeUpload,
+  notification,
 } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
-import { evaluationType } from '@edulastic/constants'
+import { evaluationType, aws } from '@edulastic/constants'
 import { Select } from 'antd'
 import PropTypes from 'prop-types'
 import React, { Component, Fragment } from 'react'
 import { compose } from 'redux'
 import { isNaN, isEqual, isEmpty } from 'lodash'
+import { UploadButton } from '../../common/styled_components'
 import { AnnotationSettings, ScoreSettings } from '..'
 import Extras from '../../../../containers/Extras'
 import { CheckboxLabel } from '../../../../styled/CheckboxWithLabel'
+import { CustomStyleBtn } from '../../../../styled/ButtonStyles'
 import { ColumnLabel } from '../../../../styled/Grid'
 import { Subtitle } from '../../../../styled/Subtitle'
 import { Col } from '../../../../styled/WidgetOptions/Col'
@@ -25,6 +29,7 @@ import GraphToolsParams from '../../components/GraphToolsParams'
 import RadiansDropdown from '../../components/RadiansDropdown'
 import PiSymbol from '../../components/PiSymbol'
 import { calcDistance } from '../../common/utils'
+import { uploadToS3 } from '../../../../../author/src/utils/upload'
 
 const types = [evaluationType.exactMatch, evaluationType.partialMatch]
 class QuadrantsMoreOptions extends Component {
@@ -350,6 +355,33 @@ class QuadrantsMoreOptions extends Component {
 
   handleCancelOptsChanges = () => {
     this.updateState()
+  }
+
+  handleBackgroundImageUpload = async (fileInfo) => {
+    const { t, graphData, setBgImg } = this.props
+    const { backgroundImage } = graphData
+    try {
+      const { file } = fileInfo
+      if (!beforeUpload(file)) {
+        return
+      }
+      const imageUrl = await uploadToS3(file, aws.s3Folders.DEFAULT)
+      setBgImg({ ...backgroundImage, src: imageUrl })
+      notification({
+        type: 'success',
+        msg: `${fileInfo.file.name} ${t(
+          'component.graphing.background_options.fileUploadedSuccessfully'
+        )}.`,
+      })
+    } catch (e) {
+      console.log(e)
+      // eslint-disable-next-line no-undef
+      notification({
+        msg: `${fileInfo.file.name} ${t(
+          'component.graphing.background_options.fileUploadFailed'
+        )}.`,
+      })
+    }
   }
 
   render() {
@@ -1103,6 +1135,22 @@ class QuadrantsMoreOptions extends Component {
                 value={backgroundImage.src}
                 onChange={this.handleBgImgInputChange}
               />
+            </Col>
+          </Row>
+          <Row gutter={24}>
+            <Col md={8}>
+              <Label>OR</Label>
+              <UploadButton
+                beforeUpload={() => false}
+                onChange={this.handleBackgroundImageUpload}
+                accept="image/*"
+                multiple={false}
+                showUploadList={false}
+              >
+                <CustomStyleBtn>
+                  {t('component.graphing.background_options.uploadImage')}
+                </CustomStyleBtn>
+              </UploadButton>
             </Col>
           </Row>
           <Row gutter={24}>

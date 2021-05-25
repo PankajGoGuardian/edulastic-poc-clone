@@ -33,6 +33,7 @@ import {
   SearchIcon,
   SearchByNavigationBar,
   SearchByTab,
+  CreateNewTestLink,
 } from './styled'
 import TestPreviewModal from '../../../Assignments/components/Container/TestPreviewModal'
 import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/test'
@@ -177,16 +178,6 @@ const ManageContentBlock = (props) => {
     }
   }
 
-  const onTestMenuChange = ({ key }) => {
-    switch (key) {
-      case '1':
-        window.open('/author/tests/select', '_blank')
-        break
-      default:
-        break
-    }
-  }
-
   const openContentFilterModal = () => setShowContentFilterModal(true)
   const closeContentFilterModal = () => {
     setShowContentFilterModal(false)
@@ -220,7 +211,7 @@ const ManageContentBlock = (props) => {
         {enhanceTextWeight('Website URL')}
       </Menu.Item>
       <Menu.Item data-cy="youtubeResource" key="2">
-        {enhanceTextWeight('Youtube')}
+        {enhanceTextWeight('Video')}
       </Menu.Item>
       <Menu.Item data-cy="externalLtiResource" key="3">
         {enhanceTextWeight('External LTI Resource')}
@@ -229,9 +220,11 @@ const ManageContentBlock = (props) => {
   )
 
   const testMenu = (
-    <Menu onClick={onTestMenuChange}>
+    <Menu>
       <Menu.Item data-cy="createNew" key="1">
-        {enhanceTextWeight('Create New test')}
+        <CreateNewTestLink href="/author/tests/select" target="_blank">
+          {enhanceTextWeight('Create New test')}
+        </CreateNewTestLink>
       </Menu.Item>
     </Menu>
   )
@@ -301,12 +294,15 @@ const ManageContentBlock = (props) => {
               key={resource?.contentId}
               type={resource?.contentType}
               id={resource?.contentId}
+              contentVersionId={resource?.contentId}
               contentTitle={resource?.contentTitle}
               contentDescription={resource?.contentDescription}
               contentUrl={resource?.contentUrl}
               hasStandardsOnCreation={resource?.hasStandardsOnCreation}
               alignment={resource?.alignment}
+              standards={resource?.standards}
               isAdded={testsInPlaylist.includes(resource?._id)}
+              interestedCurriculums={interestedCurriculums}
               previewTest={() =>
                 previewResource(resource?.contentType, {
                   url: resource?.contentUrl,
@@ -330,6 +326,7 @@ const ManageContentBlock = (props) => {
             <ResourceItem
               type="test"
               id={test._id}
+              contentVersionId={test.versionId}
               contentTitle={test.title}
               key={test._id}
               summary={test?.summary}

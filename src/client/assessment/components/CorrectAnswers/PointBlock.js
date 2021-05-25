@@ -39,7 +39,7 @@ const PointBlock = ({
             step={0.5}
           />
         ) : (
-          <UnScored text="UNSCORED" height={"50px"} width={width}/>
+          <UnScored text="Z" height="50px" width={width} />
         )}
       </FlexContainer>
     )

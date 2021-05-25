@@ -79,6 +79,7 @@ const ResponseBoxLayout = ({
                             <DragItem
                               id={`response-item-${index}`}
                               key={value}
+                              style={{ margin: 4 }}
                               data={`${value}_${index}`}
                             >
                               <ResponseWithPopover
@@ -103,6 +104,7 @@ const ResponseBoxLayout = ({
               return (
                 <DragItem
                   id={`response-item-${index}`}
+                  style={{ margin: 4 }}
                   key={value}
                   data={value}
                 >

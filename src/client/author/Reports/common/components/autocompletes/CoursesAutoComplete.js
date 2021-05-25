@@ -47,6 +47,13 @@ const CoursesAutoComplete = ({
   const onSearch = (value) => {
     setSearchTerms({ ...searchTerms, text: value })
   }
+  const onChange = (selected, selectedElements) => {
+    const _selectedCourses = selectedElements.map(({ props }) => ({
+      key: props.value,
+      title: props.title,
+    }))
+    selectCB(_selectedCourses)
+  }
   const onBlur = () => {
     if (searchTerms.text === '' && searchTerms.selectedText !== '') {
       setSearchTerms(DEFAULT_SEARCH_TERMS)
@@ -89,7 +96,7 @@ const CoursesAutoComplete = ({
       dataCy={dataCy}
       label="Course"
       el={CoursesAutoCompleteRef}
-      onChange={(e) => selectCB(dropdownData.filter((d) => e.includes(d.key)))}
+      onChange={onChange}
       onSearch={onSearch}
       onBlur={onBlur}
       onFocus={getDefaultCourseList}

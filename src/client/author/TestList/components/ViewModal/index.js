@@ -2,7 +2,11 @@ import React from 'react'
 import loadable from '@loadable/component'
 import { darkGrey, white, greyThemeDark2 } from '@edulastic/colors'
 import { EduButton, LikeIconStyled, Progress } from '@edulastic/common'
-import { roleuser } from '@edulastic/constants'
+import {
+  roleuser,
+  collections as collectionsConstant,
+  test as testContants,
+} from '@edulastic/constants'
 import TestsApi from '@edulastic/api/src/tests'
 import {
   IconCopy,
@@ -15,6 +19,8 @@ import {
   IconPencilEdit,
   IconAssignment,
   IconDynamic,
+  IconShare,
+  IconClose,
 } from '@edulastic/icons'
 import { Icon, Select, Tooltip, Col, Row, Spin } from 'antd'
 import { find } from 'lodash'
@@ -71,13 +77,22 @@ import {
   TestStatus,
   TestTitleWrapper,
   DynamicIconWrapper,
+  ModalHeader,
+  CloseButton,
+  RightButtonContainer,
 } from './styled'
 import { allowContentEditCheck } from '../../../src/utils/permissionCheck'
-import { getInterestedStandards } from '../../../dataUtils'
+import {
+  getInterestedStandards,
+  hasUserGotAccessToPremiumItem,
+} from '../../../dataUtils'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
+import ShareModal from '../../../src/components/common/ShareModal'
 
 const CloneOptions = loadable(() => import('./CloneOptions'))
 
+const { nonPremiumCollectionsToShareContent } = collectionsConstant
+const { statusConstants } = testContants
 class ViewModal extends React.Component {
   static propTypes = {
     isShow: PropTypes.bool.isRequired,
@@ -111,6 +126,7 @@ class ViewModal extends React.Component {
     showCloneOptions: false,
     summary: null,
     summaryLoading: false,
+    showShareModal: false,
   }
 
   modalRef = React.createRef()
@@ -153,6 +169,12 @@ class ViewModal extends React.Component {
           })
       }
     }
+  }
+
+  onShareModalChange = () => {
+    this.setState((prevState) => ({
+      showShareModal: !prevState.showShareModal,
+    }))
   }
 
   render() {
@@ -205,7 +227,7 @@ class ViewModal extends React.Component {
     if (this.state.summary) {
       summary = this.state.summary
     }
-    const { editedCollections, showCloneOptions } = this.state
+    const { editedCollections, showCloneOptions, showShareModal } = this.state
 
     const modalStyles = {
       modal: {
@@ -241,9 +263,18 @@ class ViewModal extends React.Component {
       .map((grade) => gradesMap[grade])
       .filter((g) => g)
     const subjects = _subjects ? _subjects.filter((f) => !!f) : []
-
+    const gradeSubject = { grades: targetGrades, subjects }
     const isEdulasticCurator = userRole === roleuser.EDULASTIC_CURATOR
-
+    const premiumOrgCollections = collections.filter(
+      ({ _id }) =>
+        !Object.keys(nonPremiumCollectionsToShareContent).includes(_id)
+    )
+    const testItems = (itemGroups || []).flatMap(
+      (itemGroup) => itemGroup.items || []
+    )
+    const hasPremiumQuestion = !!testItems.find((i) =>
+      hasUserGotAccessToPremiumItem(i.collections, premiumOrgCollections)
+    )
     const isDeleteAllowed =
       !!find(authors, (o) => o._id === userId) ||
       (sharedWith?.find((x) => x._id === userId) && permission === 'EDIT') ||
@@ -258,20 +289,49 @@ class ViewModal extends React.Component {
       alignment,
       interestedCurriculums
     )
+    // const owner = authors.some((item) => item._id === userId)
     const contanier = (
       <>
-        <ModalTitle>
-          <Tooltip title={title}>
-            <TestTitleWrapper>{title}</TestTitleWrapper>
-          </Tooltip>
-          <TestStatusWrapper status={status}>
-            {({ children, ...rest }) => (
-              <TestStatus {...rest} view="tile">
-                {children}
-              </TestStatus>
-            )}
-          </TestStatusWrapper>
-        </ModalTitle>
+        <ModalHeader>
+          <ModalTitle>
+            <Tooltip title={title}>
+              <TestTitleWrapper>{title}</TestTitleWrapper>
+            </Tooltip>
+            <TestStatusWrapper status={status}>
+              {({ children, ...rest }) => (
+                <TestStatus {...rest} view="tile">
+                  {children}
+                </TestStatus>
+              )}
+            </TestStatusWrapper>
+          </ModalTitle>
+          {modalView && (
+            <>
+              <RightButtonContainer>
+                {/* TODO enable it for owner/curator and EC */}
+                {/* {owner && (
+                  <EduButton
+                    isGhost
+                    height="32px"
+                    width="32px"
+                    onClick={this.onShareModalChange}
+                    data-cy="share"
+                  >
+                    <IconShare />
+                  </EduButton>
+                )} */}
+
+                <CloseButton onClick={this.handleModalClose}>
+                  <IconClose
+                    data-cy="closeTestPopUp"
+                    height="18px"
+                    width="18px"
+                  />
+                </CloseButton>
+              </RightButtonContainer>
+            </>
+          )}
+        </ModalHeader>
         <ModalContainer>
           <ModalColumn>
             <Image src={thumbnail} />
@@ -640,6 +700,18 @@ class ViewModal extends React.Component {
               </PerfectScrollbar>
             )}
           </ModalColumn>
+          {showShareModal && (
+            <ShareModal
+              shareLabel="TEST URL"
+              isVisible={showShareModal}
+              testId={item._id}
+              testVersionId={item.versionId}
+              hasPremiumQuestion={hasPremiumQuestion}
+              isPublished={status === statusConstants.PUBLISHED}
+              onClose={this.onShareModalChange}
+              gradeSubject={gradeSubject}
+            />
+          )}
         </ModalContainer>
       </>
     )
@@ -650,6 +722,7 @@ class ViewModal extends React.Component {
           open={isShow}
           onClose={this.handleModalClose}
           styles={modalStyles}
+          showCloseIcon={false}
         >
           {contanier}
         </Modal>

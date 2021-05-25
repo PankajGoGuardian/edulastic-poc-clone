@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
@@ -6,6 +6,7 @@ import {
   cloneDeep,
   get,
   has,
+  random,
   isEmpty,
   shuffle,
   range,
@@ -17,20 +18,26 @@ import {
   isUndefined,
   zipObject,
   maxBy,
+  isEqual,
+  round,
 } from 'lodash'
 
 import { Select, Table } from 'antd'
 import styled from 'styled-components'
 import { withNamespaces } from '@edulastic/localization'
 import { variableTypes, math } from '@edulastic/constants'
-import { MathInput, MathFormulaDisplay, notification } from '@edulastic/common'
-import { extraDesktopWidthMax } from '@edulastic/colors'
+import {
+  MathInput,
+  MathFormulaDisplay,
+  notification,
+  CustomModalStyled,
+} from '@edulastic/common'
+import { extraDesktopWidthMax, redDark } from '@edulastic/colors'
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 import {
   getQuestionDataSelector,
   setQuestionDataAction,
   calculateFormulaAction,
-  getCalculatingSelector,
 } from '../../../../author/QuestionEditor/ducks'
 
 import { Block } from '../../../styled/WidgetOptions/Block'
@@ -42,8 +49,6 @@ import { CustomStyleBtn } from '../../../styled/ButtonStyles'
 import { Subtitle } from '../../../styled/Subtitle'
 import Question from '../../../components/Question'
 import { CheckboxLabel } from '../../../styled/CheckboxWithLabel'
-import Spinner from './Spinner'
-import ErrorText from './ErrorText'
 import { SelectInputStyled, TextInputStyled } from '../../../styled/InputStyles'
 
 const { defaultNumberPad } = math
@@ -51,23 +56,27 @@ const { defaultNumberPad } = math
 const SEQUENCE_TYPES = ['NUMBER_SEQUENCE', 'TEXT_SEQUENCE']
 const SET_TYPES = ['NUMBER_SET', 'TEXT_SET']
 
-const cartesian = (args) => {
+const cartesian = (args, combinationsCount) => {
   const r = []
-  const max = args.length - 1
+  const available = args.reduce((acc, curr) => acc * curr.length, 1)
 
-  const helper = (arr, i) => {
-    for (let j = 0, l = args[i].length; j < l; j++) {
-      const a = arr.slice(0) // clone arr
-      a.push(args[i][j])
-      if (i === max) {
-        r.push(a)
-      } else {
-        helper(a, i + 1)
-      }
+  const helper = () => {
+    const c = []
+    for (let j = 0; j < args.length; j++) {
+      const randomIndex = random(0, args[j].length - 1)
+      c.push(args[j][randomIndex])
     }
+    return c
   }
 
-  helper([], 0)
+  let n = 0
+  while (n < combinationsCount && n < available) {
+    const combination = helper()
+    if (!r.some((a) => isEqual(a, combination))) {
+      n++
+      r.push(combination)
+    }
+  }
   return r
 }
 
@@ -87,8 +96,11 @@ const generateExample = (variable) => {
       //  need to include endpoint
       max = parseFloat(max) + step
     }
-
-    return range(min, max, step)
+    if (step === 0) {
+      step = 1
+    }
+    const decimalPart = step.toString().split('.')[1]?.length || 1
+    return range(min, max, step).map((x) => round(x, decimalPart))
   }
   if (SEQUENCE_TYPES.includes(type)) {
     if (isArray(sequence)) {
@@ -111,7 +123,7 @@ const generateExample = (variable) => {
   console.log('ERROR, unknown type:', type)
 }
 
-const processNonSequence = (nonSsequences) => {
+const processNonSequence = (nonSsequences, combinationsCount) => {
   const results = {}
   const input_list = []
   const variableNames = keys(nonSsequences)
@@ -120,7 +132,7 @@ const processNonSequence = (nonSsequences) => {
     input_list.push(generateExample(nonSsequences[variableName]))
   })
 
-  const allCombinations = cartesian(input_list)
+  const allCombinations = cartesian(input_list, combinationsCount)
   variableNames.forEach((variableName, index) => {
     results[variableName] = flatMapDeep(allCombinations, (c) => c[index])
   })
@@ -135,9 +147,9 @@ const processSequence = (sequences) => {
   return results
 }
 
-const mergeResults = (sequences, nonSequences) => {
+const mergeResults = (sequences, nonSequences, combinationsCount) => {
   const results = {}
-  const nonSequenceResults = processNonSequence(nonSequences)
+  const nonSequenceResults = processNonSequence(nonSequences, combinationsCount)
   const sequenceResults = processSequence(sequences)
 
   const nonSequenceLength = first(values(nonSequenceResults)).length
@@ -162,6 +174,9 @@ const mergeResults = (sequences, nonSequences) => {
 
 const shuffleCombinations = (combinations, combinationsCount) => {
   let results = []
+  if (isEmpty(combinations)) {
+    return results
+  }
   const variableNames = keys(combinations)
   const combinationLength = maxBy(values(combinations), (c) => c.length).length
   for (let i = 0; i < combinationLength + 1; i++) {
@@ -184,6 +199,58 @@ const shuffleCombinations = (combinations, combinationsCount) => {
   return results
 }
 
+const validSequence = (sequences) => {
+  const seqArrays = values(sequences)
+  return seqArrays?.every((seq) => seq.length === seqArrays[0]?.length)
+}
+
+const generateExampleValues = (
+  variables,
+  combinationsCount,
+  shouldCheckSeq
+) => {
+  const nonSequences = {}
+  const sequences = {}
+  let results = {}
+  let invalid = false
+
+  keys(variables).forEach((variableName) => {
+    const variable = variables[variableName]
+    if (SEQUENCE_TYPES.includes(variable.type)) {
+      sequences[variableName] = variable
+    } else if (variable.type !== 'FORMULA') {
+      nonSequences[variableName] = variable
+    }
+  })
+
+  if (shouldCheckSeq) {
+    invalid = !validSequence(processSequence(sequences))
+  }
+
+  if (invalid) {
+    return [[], invalid]
+  }
+
+  if (!isEmpty(sequences) && !isEmpty(nonSequences)) {
+    results = mergeResults(sequences, nonSequences, combinationsCount)
+  } else if (!isEmpty(sequences)) {
+    results = processSequence(sequences)
+  } else if (!isEmpty(nonSequences)) {
+    results = processNonSequence(nonSequences, combinationsCount)
+  }
+
+  const examplesValues = shuffleCombinations(results, combinationsCount)
+
+  // remove combinations that has undefined
+  const filtered = examplesValues.filter(
+    (examples) => !values(examples).includes(undefined)
+  )
+  return [filtered, invalid]
+}
+
+const getMathFormulaTemplate = (latex) =>
+  `<span class="input__math" data-latex="${latex}"></span>`
+
 const Variables = ({
   t,
   setQuestionData,
@@ -193,71 +260,48 @@ const Variables = ({
   cleanSections,
   advancedAreOpen,
   item = {},
-  isCalculating,
 }) => {
+  const [invalidSeqMsg, setInvalidSeqMsg] = useState('')
   const mathFieldRef = useRef()
-  const getMathFormulaTemplate = (latex) =>
-    `<span class="input__math" data-latex="${latex}"></span>`
+
   const variableEnabled = get(questionData, 'variable.enabled', false)
   const variables = get(questionData, 'variable.variables', {})
-  const variableCombinationCount = get(
-    questionData,
-    'variable.combinationsCount',
-    25
-  )
+  const combinationsCount = get(questionData, 'variable.combinationsCount', 25)
   const examples = get(questionData, 'variable.examples', [])
 
   const types = Object.keys(variableTypes)
   const columns = Object.keys(variables).map((variableName) => {
-    const isFormula = variables[variableName].type.includes('FORMULA')
     return {
       title: variableName,
       dataIndex: variableName,
       key: variables[variableName].id,
       render: (text) => {
-        if (isFormula) {
-          return text !== 'Recursion_Error' ? (
-            <MathFormulaDisplay
-              dangerouslySetInnerHTML={{
-                __html: getMathFormulaTemplate(text),
-              }}
-            />
-          ) : (
-            <ErrorText />
-          )
-        }
-        return <span>{text}</span>
+        return text !== 'Recursion_Error' && text !== 'Parsing_Error' ? (
+          <MathFormulaDisplay
+            dangerouslySetInnerHTML={{
+              __html: getMathFormulaTemplate(text),
+            }}
+          />
+        ) : (
+          <ErrorText>Unable to parse expression</ErrorText>
+        )
       },
     }
   })
 
-  const generate = () => {
-    const nonSequences = {}
-    const sequences = {}
-    let results = {}
-
-    keys(variables).forEach((variableName) => {
-      const variable = variables[variableName]
-      if (SEQUENCE_TYPES.includes(variable.type)) {
-        sequences[variableName] = variable
-      } else if (variable.type !== 'FORMULA') {
-        nonSequences[variableName] = variable
-      }
-    })
-
-    if (!isEmpty(sequences) && !isEmpty(nonSequences)) {
-      results = mergeResults(sequences, nonSequences)
-    } else if (!isEmpty(sequences)) {
-      results = processSequence(sequences)
-    } else if (!isEmpty(nonSequences)) {
-      results = processNonSequence(nonSequences)
-    }
-    const examplesValues = shuffleCombinations(
-      results,
-      variableCombinationCount
+  const generate = (evt) => {
+    const [examplesValues, invalid] = generateExampleValues(
+      variables,
+      combinationsCount,
+      !!evt // when they click generate button
     )
+
+    if (invalid) {
+      // @see https://snapwiz.atlassian.net/browse/EV-27028
+      setInvalidSeqMsg(t('component.options.invalidSeqVariableMsg'))
+      return
+    }
     calculateFormula({ examples: examplesValues, variables })
-    return examplesValues
   }
 
   const handleChangeVariableList = (
@@ -274,17 +318,23 @@ const Variables = ({
     newData.variable.variables[variableName][param] = value
 
     if (newData.variable.variables[variableName].type !== 'FORMULA') {
-      const newExampleValue = generateExample(
-        newData.variable.variables[variableName]
+      const [newExampleValue] = generateExampleValues(
+        newData.variable.variables,
+        combinationsCount
       )
-      if (newExampleValue) {
+      if (!isEmpty(newExampleValue)) {
         const index = Math.floor(Math.random() * newExampleValue.length)
         if (newExampleValue[index]) {
-          newData.variable.variables[variableName].exampleValue =
-            newExampleValue[index]
+          keys(newExampleValue[index]).forEach((varialeKey) => {
+            if (varialeKey !== 'key') {
+              newData.variable.variables[varialeKey].exampleValue =
+                newExampleValue[index][varialeKey]
+            }
+          })
         }
       }
     }
+
     setQuestionData(newData)
   }
 
@@ -347,15 +397,6 @@ const Variables = ({
     }
 
     newData.variable[param] = value
-    if (
-      param === 'enabled' &&
-      value === true &&
-      newData.variable.variables &&
-      !newData.variable.examples
-    ) {
-      const updatedExamples = generate()
-      newData.variable = { ...newData.variable, examples: updatedExamples }
-    }
     setQuestionData(newData)
   }
 
@@ -375,16 +416,11 @@ const Variables = ({
     }
   }
 
-  const handleCalculateFormula = () => {
-    const hasFormula = Object.keys(variables).some(
-      (variableName) =>
-        variables[variableName].type === 'FORMULA' &&
-        !isEmpty(variables[variableName].formula)
-    )
-    if (hasFormula) {
+  useEffect(() => {
+    if (variableEnabled) {
       generate()
     }
-  }
+  }, [variableEnabled])
 
   return (
     <Question
@@ -493,7 +529,7 @@ const Variables = ({
                         handleChangeVariableList(variableName, 'formula', latex)
                       }
                       onKeyPress={handleKeypressMathInput}
-                      onBlur={handleCalculateFormula}
+                      onBlur={generate}
                     />
                   </Col>
                 )}
@@ -509,7 +545,7 @@ const Variables = ({
                           e.target.value
                         )
                       }
-                      onBlur={handleCalculateFormula}
+                      onBlur={generate}
                       size="large"
                     />
                   </Col>
@@ -526,7 +562,7 @@ const Variables = ({
                           e.target.value
                         )
                       }
-                      onBlur={handleCalculateFormula}
+                      onBlur={generate}
                       size="large"
                     />
                   </Col>
@@ -543,7 +579,7 @@ const Variables = ({
                           e.target.value
                         )
                       }
-                      onBlur={handleCalculateFormula}
+                      onBlur={generate}
                       size="large"
                     />
                   </Col>
@@ -554,14 +590,15 @@ const Variables = ({
                       type="number"
                       data-cy="variableMin"
                       value={variable.min}
+                      step={0.1}
                       onChange={(e) =>
                         handleChangeVariableList(
                           variableName,
                           'min',
-                          e.target.value ? parseInt(e.target.value, 10) : ''
+                          e.target.value ? +e.target.value : ''
                         )
                       }
-                      onBlur={handleCalculateFormula}
+                      onBlur={generate}
                       size="large"
                     />
                   </Col>
@@ -572,14 +609,15 @@ const Variables = ({
                       type="number"
                       data-cy="variableMax"
                       value={variable.max}
+                      step={0.1}
                       onChange={(e) =>
                         handleChangeVariableList(
                           variableName,
                           'max',
-                          e.target.value ? parseInt(e.target.value, 10) : ''
+                          e.target.value ? +e.target.value : ''
                         )
                       }
-                      onBlur={handleCalculateFormula}
+                      onBlur={generate}
                       size="large"
                     />
                   </Col>
@@ -590,6 +628,7 @@ const Variables = ({
                       type="number"
                       data-cy="variableStep"
                       value={variable.step}
+                      step={0.1}
                       onChange={(e) =>
                         handleChangeVariableList(
                           variableName,
@@ -597,7 +636,7 @@ const Variables = ({
                           e.target.value ? +e.target.value : ''
                         )
                       }
-                      onBlur={handleCalculateFormula}
+                      onBlur={generate}
                       size="large"
                     />
                   </Col>
@@ -615,23 +654,24 @@ const Variables = ({
                           e.target.value ? parseInt(e.target.value, 10) : ''
                         )
                       }
-                      onBlur={handleCalculateFormula}
+                      onBlur={generate}
                       size="large"
                     />
                   </Col>
                 )}
                 <Col md={5} style={{ paddingTop: 10, paddingLeft: 12 }}>
-                  {isFormula && variable.exampleValue !== 'Recursion_Error' && (
-                    <MathFormulaDisplay
-                      dangerouslySetInnerHTML={{
-                        __html: getMathFormulaTemplate(variable.exampleValue),
-                      }}
-                    />
+                  {variable.exampleValue !== 'Recursion_Error' &&
+                    variable.exampleValue !== 'Parsing_Error' && (
+                      <MathFormulaDisplay
+                        dangerouslySetInnerHTML={{
+                          __html: getMathFormulaTemplate(variable.exampleValue),
+                        }}
+                      />
+                    )}
+                  {(variable.exampleValue === 'Recursion_Error' ||
+                    variable.exampleValue === 'Parsing_Error') && (
+                    <ErrorText>Unable to parse expression</ErrorText>
                   )}
-                  {isFormula && variable.exampleValue === 'Recursion_Error' && (
-                    <ErrorText />
-                  )}
-                  {!isFormula && <span>{variable.exampleValue}</span>}
                 </Col>
               </Row>
             )
@@ -648,7 +688,7 @@ const Variables = ({
               <TextInputStyled
                 type="number"
                 data-cy="combinationCount"
-                value={variableCombinationCount}
+                value={combinationsCount}
                 onChange={(e) =>
                   handleChangeVariable('combinationsCount', +e.target.value)
                 }
@@ -686,7 +726,18 @@ const Variables = ({
           </Row>
         </Block>
       )}
-      {isCalculating && <Spinner />}
+      <ErrorMsgModal
+        centered
+        visible={!!invalidSeqMsg}
+        onCancel={() => setInvalidSeqMsg('')}
+        footer={
+          <CustomStyleBtn onClick={() => setInvalidSeqMsg('')}>
+            Confirm
+          </CustomStyleBtn>
+        }
+      >
+        {invalidSeqMsg}
+      </ErrorMsgModal>
     </Question>
   )
 }
@@ -713,7 +764,6 @@ const enhance = compose(
   connect(
     (state) => ({
       questionData: getQuestionDataSelector(state),
-      isCalculating: getCalculatingSelector(state),
     }),
     {
       setQuestionData: setQuestionDataAction,
@@ -734,4 +784,14 @@ const DynamicText = styled.div`
   @media (min-width: ${extraDesktopWidthMax}) {
     font-size: ${(props) => props.theme.widgetOptions.labelFontSize};
   }
+`
+
+const ErrorMsgModal = styled(CustomModalStyled)`
+  .ant-modal-close {
+    display: none;
+  }
+`
+
+const ErrorText = styled.span`
+  color: ${redDark};
 `

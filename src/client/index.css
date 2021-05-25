@@ -1910,10 +1910,6 @@ span.token.active-word {
   box-shadow: 0 0 1px 1px #5eb50066;
 }
 
-.jsx-parser p {
-  margin-bottom: 8px;
-}
-
 .katex .mfrac .frac-line {
   min-height: 1vh !important;
 }
@@ -1974,6 +1970,7 @@ span.token.active-word {
 
 .ant-modal-mask {
   z-index: 1003;
+  background-color: rgba(0, 0, 0, 0.01);
 }
 
 /* Modified - Ant design default CSS */
@@ -2046,15 +2043,15 @@ span.token.active-word {
 .ant-radio-input:focus + .ant-radio-inner,
 .ant-radio-wrapper:hover .ant-radio-inner,
 .ant-radio:hover .ant-radio-inner {
-  border-color: #1ab394;
+  border-color: rgba(63, 132, 229, 1);
 }
 
 .ant-radio-checked .ant-radio-inner {
-  border-color: #1ab394;
+  border-color: rgba(63, 132, 229, 1);
 }
 
 .ant-radio-checked .ant-radio-inner::after {
-  background-color: #1ab394;
+  background-color: rgba(63, 132, 229, 1);
 }
 
 .ant-calendar-picker:hover .ant-calendar-picker-input:not(.ant-input-disabled),
@@ -2123,6 +2120,7 @@ span.token.active-word {
 
 .sortableHelper {
   z-index: 10000;
+  opacity: 0.5;
 }
 
 .sortableHelper img {

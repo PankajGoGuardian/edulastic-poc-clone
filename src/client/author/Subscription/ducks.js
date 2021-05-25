@@ -45,10 +45,6 @@ export const getPremiumProductId = createSelector(
   getSubscriptionDataSelector,
   (state) => state.premiumProductId
 )
-export const getIsPaymentServiceModalVisible = createSelector(
-  subscriptionSelector,
-  (state) => state.isPaymentServiceModalVisible
-)
 export const getIsSubscriptionExpired = createSelector(
   subscriptionSelector,
   (state) => state.isSubscriptionExpired
@@ -57,7 +53,10 @@ export const getAddOnProductIds = createSelector(
   subscriptionSelector,
   (state) => state.addOnProductIds
 )
-
+export const getShowTrialConfirmationMessageSelector = createSelector(
+  subscriptionSelector,
+  (state) => state.showTrialConfirmationMessage
+)
 export const getBookKeepersInviteSuccessStatus = createSelector(
   subscriptionSelector,
   (state) => state.isBookKeepersInviteSuccess
@@ -70,10 +69,8 @@ const slice = createSlice({
     verificationPending: false,
     subscriptionData: {},
     error: '',
-    showTrialSubsConfirmation: false,
     showTrialConfirmationMessage: '',
     products: [],
-    isPaymentServiceModalVisible: false,
     showHeaderTrialModal: false,
     addOnProductIds: [],
     isBookKeepersInviteSuccess: false,
@@ -151,17 +148,11 @@ const slice = createSlice({
     resetSubscriptions: (state) => {
       state.subscriptionData = {}
     },
-    trialSubsConfirmationAction: (state, { payload }) => {
-      state.showTrialSubsConfirmation = payload
-    },
     trialConfirmationMessageAction: (state, { payload }) => {
       state.showTrialConfirmationMessage = payload
     },
     setAddOnProducts: (state, { payload }) => {
       state.products = payload
-    },
-    setPaymentServiceModal: (state, { payload }) => {
-      state.isPaymentServiceModalVisible = payload
     },
     setShowHeaderTrialModal: (state, { payload }) => {
       state.showHeaderTrialModal = payload
@@ -231,11 +222,13 @@ function* showSuccessNotifications(apiPaymentResponse, isTrial = false) {
       slice.actions.trialConfirmationMessageAction({
         hasTrial: 'onlyPremiumTrial',
         subEndDate: formatSubEndDate,
+        isTrial,
       })
     )
   } else if (hasItemBankPermissions && !hasSubscriptions) {
     const { subEndDate } = itemBankPermissions[0]
     const itemBankNames = itemBankPermissions.map((x) => x.name).join(', ')
+    const defaultSelectedItemBankId = itemBankPermissions.map((x) => x.id)[0]
     const formatSubEndDate = moment(subEndDate).format('DD MMM, YYYY')
     if (!isTrial) {
       yield call(notification, {
@@ -248,11 +241,14 @@ function* showSuccessNotifications(apiPaymentResponse, isTrial = false) {
       slice.actions.trialConfirmationMessageAction({
         hasTrial: 'onlySparkTrial',
         subEndDate: formatSubEndDate,
+        isTrial,
+        defaultSelectedItemBankId,
       })
     )
   } else if (hasItemBankPermissions && hasSubscriptions) {
     const { subEndDate } = subscriptions
     const itemBankNames = itemBankPermissions.map((x) => x.name).join(', ')
+    const defaultSelectedItemBankId = itemBankPermissions.map((x) => x.id)[0]
     const formatSubEndDate = moment(subEndDate).format('DD MMM, YYYY')
     if (!isTrial) {
       yield call(notification, {
@@ -266,6 +262,8 @@ function* showSuccessNotifications(apiPaymentResponse, isTrial = false) {
       slice.actions.trialConfirmationMessageAction({
         hasTrial: 'haveBothSparkAndPremiumTrial',
         subEndDate: formatSubEndDate,
+        isTrial,
+        defaultSelectedItemBankId,
       })
     )
   }
@@ -405,6 +403,7 @@ function* handleMultiplePurchasePayment({ payload }) {
       emailIds: userEmailIds,
       licenseIds,
       licenseOwnerId,
+      setPaymentServiceModal,
     } = payload
     const { token, error } = yield stripe.createToken(data)
     if (token) {
@@ -427,7 +426,7 @@ function* handleMultiplePurchasePayment({ payload }) {
             apiPaymentResponse.licenseKeys
           )
         )
-        yield put(slice.actions.setPaymentServiceModal(false))
+        setPaymentServiceModal(false)
         yield put(fetchMultipleSubscriptionsAction({ licenseOwnerId }))
         yield put(fetchUserAction({ background: true }))
         notification({
@@ -462,7 +461,13 @@ function* handleMultiplePurchasePayment({ payload }) {
 
 function* handleStripePayment({ payload }) {
   try {
-    const { stripe, data, productIds } = payload
+    const {
+      stripe,
+      data,
+      productIds,
+      setPaymentServiceModal,
+      setShowTrialSubsConfirmation,
+    } = payload
     yield call(message.loading, {
       content: 'Processing Payment, please wait',
       key: 'verify-license',
@@ -475,11 +480,12 @@ function* handleStripePayment({ payload }) {
       })
       if (apiPaymentResponse.success) {
         yield put(slice.actions.stripePaymentSuccess(apiPaymentResponse))
-        yield put(slice.actions.setPaymentServiceModal(false))
+        setPaymentServiceModal(false)
         yield call(showSuccessNotifications, apiPaymentResponse)
         yield call(fetchUserSubscription)
         yield put(fetchUserAction({ background: true }))
         yield put(fetchMultipleSubscriptionsAction({ background: true }))
+        setShowTrialSubsConfirmation(true)
       } else {
         notification({
           msg: `API Response failed: ${error}`,
@@ -507,15 +513,16 @@ function* handleStripePayment({ payload }) {
 }
 
 function* handleFreeTrialSaga({ payload }) {
+  const { productIds, setShowTrialSubsConfirmation } = payload
   try {
-    const apiPaymentResponse = yield call(paymentApi.pay, payload)
+    const apiPaymentResponse = yield call(paymentApi.pay, { productIds })
     if (apiPaymentResponse.success) {
       yield put(slice.actions.startTrialSuccessAction(apiPaymentResponse))
       yield put(slice.actions.resetSubscriptions())
       yield call(showSuccessNotifications, apiPaymentResponse, true)
       yield call(fetchUserSubscription)
       yield put(fetchUserAction({ background: true }))
-      yield put(slice.actions.trialSubsConfirmationAction(true))
+      setShowTrialSubsConfirmation(true)
     } else {
       notification({
         type: 'error',

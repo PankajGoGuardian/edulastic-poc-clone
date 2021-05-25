@@ -11,13 +11,14 @@ import React, { Component } from 'react'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { libraryFilters, sortOptions } from '@edulastic/constants'
+import { libraryFilters, sortOptions, roleuser } from '@edulastic/constants'
 import { withNamespaces } from 'react-i18next'
 import NoDataNotification from '../../../../common/components/NoDataNotification'
 import {
   updateDefaultGradesAction,
   updateDefaultSubjectAction,
   isProxyUser as isProxyUserSelector,
+  isDemoPlaygroundUser,
 } from '../../../../student/Login/ducks'
 import ListHeader from '../../../src/components/common/ListHeader'
 import {
@@ -27,6 +28,8 @@ import {
   getInterestedCurriculumsSelector,
   getInterestedGradesSelector,
   getInterestedSubjectsSelector,
+  getUserFeatures,
+  getUserRole,
 } from '../../../src/selectors/user'
 import CardWrapper from '../../../TestList/components/CardWrapper/CardWrapper'
 import {
@@ -166,6 +169,8 @@ class TestList extends Component {
       interestedGrades,
       sort: initSort = {},
       recentPlaylist,
+      features,
+      userRole,
     } = this.props
 
     const {
@@ -226,8 +231,15 @@ class TestList extends Component {
       filteredSparkInfo: selectedCollectionInfo?.[0] || {},
     })
 
-    if (searchFilters?.collections?.includes(_id) && !recentPlaylist?.length)
+    if (
+      searchFilters?.collections?.includes(_id) &&
+      !recentPlaylist?.length &&
+      !features?.isCurator &&
+      !features.isPublisherAuthor &&
+      userRole !== roleuser.EDULASTIC_CURATOR
+    ) {
       this.setState({ isPlaylistAvailableModalVisible: true })
+    }
   }
 
   updateFilterState = (searchState, sort) => {
@@ -517,6 +529,7 @@ class TestList extends Component {
       isProxyUser,
       sort = {},
       dashboardTiles,
+      isDemoAccount = false,
     } = this.props
 
     const {
@@ -615,7 +628,7 @@ class TestList extends Component {
           <FlexContainer>
             <Filter isShowFilter={isShowFilter}>
               {!isShowFilter && (
-                <AffixWrapper isProxyUser={isProxyUser}>
+                <AffixWrapper isBannerShown={isProxyUser || isDemoAccount}>
                   <ScrollbarWrapper>
                     <PerfectScrollbar>
                       <ScrollBox>
@@ -717,6 +730,9 @@ const enhance = compose(
       recentPlaylist: getRecentPlaylistSelector(state),
       collectionSelector: getCollectionsSelector(state),
       dashboardTiles: state.dashboardTeacher.configurableTiles,
+      isDemoAccount: isDemoPlaygroundUser(state),
+      features: getUserFeatures(state),
+      userRole: getUserRole(state),
     }),
     {
       receivePlaylists: receivePlaylistsAction,

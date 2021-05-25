@@ -165,6 +165,7 @@ const Hints = ({
               isGhost
               onClick={showHintHandler}
               isStudent={isStudent}
+              tabIndex="-1"
             >
               Show Hint
             </ShowHint>

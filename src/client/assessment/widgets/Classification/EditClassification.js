@@ -28,10 +28,7 @@ import { EDIT } from '../../constants/constantsForQuestions'
 
 import { updateVariables } from '../../utils/variables'
 
-import {
-  setQuestionDataAction,
-  setFirstMountAction,
-} from '../../../author/QuestionEditor/ducks'
+import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'
 
 import GroupPossibleResponses from './components/GroupPossibleResponses'
 import ClassificationPreview from './ClassificationPreview'
@@ -68,7 +65,6 @@ const actions = {
 const EditClassification = ({
   item,
   setQuestionData,
-  setFirstMount,
   theme,
   t,
   advancedAreOpen,
@@ -77,7 +73,6 @@ const EditClassification = ({
   cleanSections,
 }) => {
   const {
-    firstMount,
     shuffleOptions,
     transparentPossibleResponses,
     transparentBackgroundImage = true,
@@ -93,13 +88,6 @@ const EditClassification = ({
     imageOptions || { width: 0, height: 0, x: 0, y: 0 }
   )
   const { width: dragItemWidth, height: dragItemHeight } = dragItem
-
-  useEffect(
-    () => () => {
-      setFirstMount(item.id)
-    },
-    []
-  )
 
   useEffect(() => {
     setQuestionData(
@@ -649,7 +637,6 @@ const EditClassification = ({
                 ? handleGroupSortEnd
                 : handleMainPossible(actions.SORTEND)
             }
-            firstFocus={firstMount}
             onChange={
               item.groupPossibleResponses
                 ? handleGroupChange
@@ -799,7 +786,6 @@ const enhance = compose(
   withTheme,
   connect(null, {
     setQuestionData: setQuestionDataAction,
-    setFirstMount: setFirstMountAction,
   })
 )
 

@@ -69,11 +69,11 @@ const filtersDefaultValues = [
     nestedFilters: [
       {
         key: 'grades',
-        value: 'All',
+        value: '',
       },
       {
         key: 'subjects',
-        value: 'All',
+        value: '',
       },
     ],
   },
@@ -93,6 +93,7 @@ const StudentProfileReportFilters = ({
   student,
   performanceBandRequired,
   standardProficiencyRequired,
+  standardFiltersRequired,
   setFilters,
   setStudent,
   tempTagsData,
@@ -116,7 +117,9 @@ const StudentProfileReportFilters = ({
   const tagTypes = staticDropDownData.tagTypes.filter(
     (t) =>
       (performanceBandRequired || t.key !== 'performanceBandProfileId') &&
-      (standardProficiencyRequired || t.key !== 'standardsProficiencyProfileId')
+      (standardProficiencyRequired ||
+        t.key !== 'standardsProficiencyProfileId') &&
+      (standardFiltersRequired || !['domainId', 'standardId'].includes(t.key))
   )
   const splittedPath = location.pathname.split('/')
   const urlStudentId = splittedPath[splittedPath.length - 1]
@@ -176,24 +179,21 @@ const StudentProfileReportFilters = ({
       classIds: '',
       performanceBandProfileId: '',
       standardsProficiencyProfileId: '',
+      assignedBy: search.assignedBy || staticDropDownData.assignedBy[0].key,
     }
     const _tempTagsData = {
       ...tempTagsData,
       termId: urlSchoolYear,
       grades: urlGrades,
       subjects: urlSubjects,
+      assignedBy: search.assignedBy || staticDropDownData.assignedBy[0],
     }
     setFilters(_filters)
     setTempTagsData(_tempTagsData)
-
     if (reportId) {
       getSPRFilterDataRequest({ reportId })
-      setStudent({ key: urlStudentId })
-    } else if (urlStudentId) {
-      getSPRFilterDataRequest({
-        termId: _filters.termId,
-        studentId: urlStudentId,
-      })
+    }
+    if (urlStudentId) {
       setStudent({ key: urlStudentId })
     }
   }, [])
@@ -212,6 +212,17 @@ const StudentProfileReportFilters = ({
       setActiveTabKey(staticDropDownData.filterSections.CLASS_FILTERS.key)
     }
   }, [loc, showFilter])
+
+  useEffect(() => {
+    if (!standardFiltersRequired && !firstLoad) {
+      setFilters({
+        ...filters,
+        domainId: '',
+        standardId: '',
+      })
+      setTempTagsData({ ...tempTagsData, domainId: '', standardId: '' })
+    }
+  }, [loc])
 
   if (SPRFilterData !== prevSPRFilterData && !isEmpty(SPRFilterData)) {
     const _student = { ...student }
@@ -246,8 +257,16 @@ const StudentProfileReportFilters = ({
       }
       setFilters({ ..._filters })
       setTempTagsData({ ..._tempTagsData })
-      setShowApply(true)
-      toggleFilter(null, true)
+      if (location.state?.source === 'standard-reports') {
+        setShowApply(true)
+        toggleFilter(null, true)
+      } else {
+        _onGoClick({
+          filters: { ..._filters },
+          selectedStudent: _student,
+          tagsData: { ..._tempTagsData },
+        })
+      }
       setFirstLoad(false)
     }
     setPrevSPRFilterData(SPRFilterData)
@@ -276,7 +295,9 @@ const StudentProfileReportFilters = ({
     const _tempTagsData = { ...tempTagsData, student: selected }
     if (selected && selected.key) {
       setStudent(selected)
-      setFilters({ ...filters, showApply: true })
+      if (!firstLoad || location.state?.source === 'standard-reports') {
+        setFilters({ ...filters, showApply: true })
+      }
       getSPRFilterDataRequest({
         termId: filters.termId,
         studentId: selected.key,
@@ -289,12 +310,21 @@ const StudentProfileReportFilters = ({
 
   const resetSPRFilters = (nextTagsData, prevFilters, key, selected) => {
     const index = filtersDefaultValues.findIndex((s) => s.key === key)
-    resetFilters(nextTagsData, prevFilters, key, selected, filtersDefaultValues)
+    if (!['grades', 'subjects'].includes(key)) {
+      resetFilters(
+        nextTagsData,
+        prevFilters,
+        key,
+        selected,
+        filtersDefaultValues
+      )
+    }
     if (
       prevFilters[key] !== selected &&
       (index !== -1 || ['grades', 'subjects'].includes(key))
     ) {
       setStudent({ key: '', title: '' })
+      delete nextTagsData.student
       prevFilters.classIds = ''
       delete nextTagsData.classIds
     }
@@ -352,8 +382,17 @@ const StudentProfileReportFilters = ({
     setTempTagsData(_tempTagsData)
   }
 
-  const topFilterColSpan =
-    loc === 'student-progress-profile' && filters.showApply ? 5 : 6
+  const topFilterColSpan = standardFiltersRequired && filters.showApply ? 5 : 6
+
+  const handleTagClick = (filterKey) => {
+    const tabKey =
+      staticDropDownData.tagTypes.find((filter) => filter.key === filterKey)
+        ?.tabKey || -1
+    if (tabKey !== -1) {
+      toggleFilter(null, true)
+      setActiveTabKey(tabKey)
+    }
+  }
 
   return (
     <Row type="flex" gutter={[0, 5]} style={{ width: '100%' }}>
@@ -364,6 +403,7 @@ const StudentProfileReportFilters = ({
           tagsData={tagsData}
           tagTypes={tagTypes}
           handleCloseTag={handleCloseTag}
+          handleTagClick={handleTagClick}
         />
         <ReportFiltersContainer visible={!reportId}>
           <StyledEduButton
@@ -385,11 +425,23 @@ const StudentProfileReportFilters = ({
                 >
                   <Tabs.TabPane
                     key={staticDropDownData.filterSections.CLASS_FILTERS.key}
-                    tab={
-                      staticDropDownData.filterSections.CLASS_FILTERS.title
-                    }
+                    tab={staticDropDownData.filterSections.CLASS_FILTERS.title}
                   >
                     <Row type="flex" gutter={[5, 10]}>
+                      <Col span={6}>
+                        <FilterLabel data-cy="assignedBy">
+                          Assigned By
+                        </FilterLabel>
+                        <ControlDropDown
+                          by={filters.assignedBy}
+                          selectCB={(e, selected) =>
+                            updateFilterDropdownCB(selected, 'assignedBy')
+                          }
+                          data={staticDropDownData.assignedBy}
+                          prefix="Assigned By"
+                          showPrefixOnSelected={false}
+                        />
+                      </Col>
                       <Col span={6}>
                         <FilterLabel data-cy="schoolYear">
                           School Year
@@ -472,7 +524,7 @@ const StudentProfileReportFilters = ({
                   </Tabs.TabPane>
                 </Tabs>
               </Col>
-              <Col span={24} style={{ display: 'flex', paddingTop: '50px' }}>
+              <Col span={24} style={{ display: 'flex', paddingTop: '20px' }}>
                 <StyledEduButton
                   width="25%"
                   height="40px"
@@ -514,7 +566,12 @@ const StudentProfileReportFilters = ({
             display: reportId ? 'none' : 'flex',
           }}
         >
-          <StyledDropDownContainer xs={24} sm={12} lg={topFilterColSpan} data-cy="student">
+          <StyledDropDownContainer
+            xs={24}
+            sm={12}
+            lg={topFilterColSpan}
+            data-cy="student"
+          >
             <StudentAutoComplete
               firstLoad={firstLoad}
               termId={filters.termId}
@@ -572,7 +629,7 @@ const StudentProfileReportFilters = ({
               />
             </StyledDropDownContainer>
           )}
-          {loc === 'student-progress-profile' && (
+          {standardFiltersRequired && (
             <>
               <StyledDropDownContainer
                 xs={24}

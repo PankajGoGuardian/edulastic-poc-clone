@@ -2050,10 +2050,10 @@ export const derivative_alpha = {
 }
 
 export const integral = {
-  handler: '\\int_{}^{}',
+  handler: '\\int',
   label: <CustomImage src={Group1029} width={28} height={39} />,
   types: ['all'],
-  command: 'write',
+  command: 'cmd',
 }
 
 export const limit = {
@@ -2166,7 +2166,7 @@ export const delta_multiple = {
 }
 
 export const integral_single = {
-  handler: '\\int',
+  handler: '\\indefinite',
   label: <CustomImage src={Group3521} width={10} height={28} />,
   types: ['all'],
   command: 'cmd',

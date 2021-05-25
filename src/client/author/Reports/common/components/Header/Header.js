@@ -22,6 +22,8 @@ const CustomizedHeaderWrapper = ({
   showSharedReport,
   title,
   isSharedReport,
+  reportCsvDocs,
+  setCsvModalVisible,
   t,
 }) => {
   const _onShareClickCB = () => {
@@ -83,9 +85,23 @@ const CustomizedHeaderWrapper = ({
     title === 'Activity by Teacher'
   const hideDownloadIcon = title === 'Engagement Summary'
 
+  const showCSVDocsDownloadButton =
+    title === 'Standard Reports' && reportCsvDocs.length
+
   const actionRightButtons = (
     <ActionButtonWrapper>
       {navMenu}
+      {showCSVDocsDownloadButton ? (
+        <ActionButton
+          isBlue
+          isGhost
+          title="Download Data"
+          onClick={() => setCsvModalVisible(true)}
+        >
+          <Icon type="download" />
+          Download Data
+        </ActionButton>
+      ) : null}
       <FeaturesSwitch
         inputFeatures="shareReports"
         actionOnInaccessible="hidden"
@@ -121,6 +137,7 @@ const CustomizedHeaderWrapper = ({
       >
         {onDownloadCSVClickCB && !hideDownloadIcon ? (
           <ActionButton
+            data-cy="download-csv"
             isBlue
             isGhost
             IconBtn

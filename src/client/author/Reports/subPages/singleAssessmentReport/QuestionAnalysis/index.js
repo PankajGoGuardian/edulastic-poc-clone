@@ -1,11 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { isEmpty } from 'lodash'
 
 import { Col, Row } from 'antd'
 import { SpinLoader } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
+import { isEmpty } from 'lodash'
 import { ControlDropDown } from '../../../common/components/widgets/controlDropDown'
 import { StyledH3, NoDataContainer } from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
@@ -19,7 +19,7 @@ import {
 import { QuestionAnalysisTable } from './componenets/table/questionAnalysisTable'
 
 import { getUserRole } from '../../../../../student/Login/ducks'
-import { getCsvDownloadingState, getTestListSelector } from '../../../ducks'
+import { getCsvDownloadingState } from '../../../ducks'
 import {
   getQuestionAnalysisRequestAction,
   getReportsQuestionAnalysis,
@@ -41,7 +41,6 @@ const QuestionAnalysis = ({
   getQuestionAnalysis,
   resetQuestionAnalysis,
   settings,
-  testList,
   sharedReport,
   toggleFilter,
 }) => {
@@ -54,12 +53,11 @@ const QuestionAnalysis = ({
   )
   const [chartFilter, setChartFilter] = useState({})
 
-  const selectedTest = testList.find(
-    (t) => t._id === settings.selectedTest.key
-  ) || { _id: '', title: '' }
   const assessmentName = `${
-    selectedTest.title
-  } (ID:${selectedTest._id.substring(selectedTest._id.length - 5)})`
+    settings.selectedTest.title
+  } (ID:${settings.selectedTest.key.substring(
+    settings.selectedTest.key.length - 5
+  )})`
 
   useEffect(() => () => resetQuestionAnalysis(), [])
 
@@ -71,6 +69,9 @@ const QuestionAnalysis = ({
       }
       getQuestionAnalysis(q)
     }
+    if (settings.requestFilters.termId || settings.requestFilters.reportId) {
+      return () => toggleFilter(null, false)
+    }
   }, [settings.selectedTest, settings.requestFilters])
 
   useEffect(() => {
@@ -78,7 +79,7 @@ const QuestionAnalysis = ({
       (settings.requestFilters.termId || settings.requestFilters.reportId) &&
       !loading &&
       !isEmpty(questionAnalysis) &&
-      !questionAnalysis.metricInfo.length
+      !questionAnalysis.metricInfo?.length
     ) {
       toggleFilter(null, true)
     }
@@ -114,7 +115,12 @@ const QuestionAnalysis = ({
   }
 
   if (loading) {
-    return <SpinLoader position="fixed" />
+    return (
+      <SpinLoader
+        tip="Please wait while we gather the required information..."
+        position="fixed"
+      />
+    )
   }
 
   if (questionAnalysis.isRecommended) {
@@ -131,7 +137,11 @@ const QuestionAnalysis = ({
   }
 
   if (!questionAnalysis.metricInfo?.length || !settings.selectedTest.key) {
-    return <NoDataContainer>No data available currently.</NoDataContainer>
+    return (
+      <NoDataContainer>
+        {settings.requestFilters?.termId ? 'No data available currently.' : ''}
+      </NoDataContainer>
+    )
   }
   return (
     <div>
@@ -214,7 +224,6 @@ export default connect(
     isCsvDownloading: getCsvDownloadingState(state),
     role: getUserRole(state),
     questionAnalysis: getReportsQuestionAnalysis(state),
-    testList: getTestListSelector(state),
   }),
   {
     getQuestionAnalysis: getQuestionAnalysisRequestAction,

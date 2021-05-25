@@ -9,8 +9,16 @@ import styled from 'styled-components'
 import propTypes from 'prop-types'
 import { FlexContainer } from '../..'
 
-const UnScored = ({ width, height, margin, fontSize, text, fontWeight }) => (
-  <Tooltip title="UNSCORED">
+const UnScored = ({
+  width,
+  height,
+  margin,
+  fontSize,
+  text,
+  fontWeight,
+  top,
+}) => (
+  <Tooltip title="Zero Point">
     <UnScoredBlock
       width={width}
       margin={margin}
@@ -19,6 +27,7 @@ const UnScored = ({ width, height, margin, fontSize, text, fontWeight }) => (
       fontSize={fontSize}
       fontWeight={fontWeight}
       height={height}
+      top={top}
     >
       <span>{text}</span>
     </UnScoredBlock>
@@ -39,7 +48,7 @@ UnScored.defaultProps = {
   height: '',
   margin: '',
   fontSize: '',
-  text: 'UNSCORED',
+  text: 'Z',
   fontWeight: '700',
 }
 
@@ -53,6 +62,7 @@ const UnScoredBlock = styled(FlexContainer)`
   height: ${({ height }) => height || 'auto'};
   margin: ${({ margin }) => margin || ''};
   cursor: default;
+  padding: 5px;
   span {
     white-space: nowrap;
     color: ${tagTextColor};
@@ -61,4 +71,5 @@ const UnScoredBlock = styled(FlexContainer)`
     font-size: ${({ fontSize }) => fontSize || ''};
     font-weight: ${({ fontWeight }) => fontWeight || 700};
   }
+  top: ${({ top }) => top || 0};
 `

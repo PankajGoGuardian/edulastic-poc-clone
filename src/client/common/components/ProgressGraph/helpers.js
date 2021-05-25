@@ -5,6 +5,7 @@ import {
   linkColor1,
   themeColorLighter,
   darkBlue2,
+  greyLight1,
 } from '@edulastic/colors'
 import {
   testActivityStatus as testActivityStatusConstants,
@@ -51,6 +52,13 @@ export const bars = {
     dataKey: 'manualGradedNum',
     fill: darkBlue2,
   },
+  unscoredItems: {
+    className: 'unscoredItems',
+    yAxisId: 'left',
+    stackId: 'a',
+    dataKey: 'unscoredItems',
+    fill: greyLight1,
+  },
 }
 
 export const convertData = (
@@ -89,6 +97,7 @@ export const convertData = (
         notStartedNum: 0,
         timeSpent: 0,
         manualGradedNum: 0,
+        unscoredItems: 0,
       }
 
       const activity = activitiesByQid[question.id]
@@ -105,6 +114,7 @@ export const convertData = (
         pendingEvaluation,
       } = activity
       let { notStarted, skipped } = activity
+      const { isPractice } = activity
       let skippedx = false
 
       if (testItemId) {
@@ -128,8 +138,9 @@ export const convertData = (
       if (score > 0) {
         skipped = false
       }
-
-      if (
+      if (isPractice) {
+        questionActivity.unscoredItems += 1
+      } else if (
         (graded === false && !notStarted && !skipped && !score) ||
         pendingEvaluation
       ) {

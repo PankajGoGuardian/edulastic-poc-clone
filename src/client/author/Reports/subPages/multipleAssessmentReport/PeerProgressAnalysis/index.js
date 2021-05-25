@@ -11,11 +11,8 @@ import { NoDataContainer } from '../../../common/styled'
 import { getCsvDownloadingState } from '../../../ducks'
 import TrendStats from '../common/components/trend/TrendStats'
 import TrendTable from '../common/components/trend/TrendTable'
-import {
-  compareByMap,
-  getCompareByOptions,
-  parseTrendData,
-} from '../common/utils/trend'
+import { compareByMap, getCompareByOptions } from '../common/utils/trend'
+import { useGetBandData } from '../StudentProgress/hooks'
 import Filters from './components/table/Filters'
 import {
   getPeerProgressAnalysisRequestAction,
@@ -28,6 +25,24 @@ import {
 import dropDownData from './static/json/dropDownData.json'
 
 // -----|-----|-----|-----|-----| COMPONENT BEGIN |-----|-----|-----|-----|----- //
+
+const DefaultBandInfo = [
+  {
+    threshold: 70,
+    aboveStandard: 1,
+    name: 'Proficient',
+  },
+  {
+    threshold: 50,
+    aboveStandard: 1,
+    name: 'Basic',
+  },
+  {
+    threshold: 0,
+    aboveStandard: 0,
+    name: 'Below Basic',
+  },
+]
 
 const options = [
   {
@@ -50,6 +65,10 @@ const options = [
     key: 'frlStatus',
     title: 'FRL Status',
   },
+  {
+    key: 'hispanicEthnicity',
+    title: 'Hispanic Ethnicity',
+  },
 ]
 
 const PeerProgressAnalysis = ({
@@ -64,10 +83,17 @@ const PeerProgressAnalysis = ({
   role,
   sharedReport,
   toggleFilter,
+  MARFilterData,
 }) => {
-  const userRole = useMemo(() => sharedReport?.sharedBy?.role || role, [
-    sharedReport,
-  ])
+  const [userRole, sharedReportFilters] = useMemo(
+    () => [
+      sharedReport?.sharedBy?.role || role,
+      sharedReport?._id
+        ? { ...sharedReport.filters, reportId: sharedReport._id }
+        : null,
+    ],
+    [sharedReport]
+  )
   const compareByData = [...getCompareByOptions(userRole), ...options]
   const [analyseBy, setAnalyseBy] = useState(head(dropDownData.analyseByData))
   const [compareBy, setCompareBy] = useState(head(compareByData))
@@ -78,12 +104,26 @@ const PeerProgressAnalysis = ({
     pageSize: 25,
   })
 
+  const profiles = get(MARFilterData, 'data.result.bandInfo', [])
+
+  const bandInfo =
+    profiles.find(
+      (profile) =>
+        profile._id ===
+        (sharedReportFilters || settings.requestFilters).profileId
+    )?.performanceBand ||
+    profiles[0]?.performanceBand ||
+    DefaultBandInfo
+
   useEffect(() => () => resetPeerProgressAnalysis(), [])
 
   // set initial page filters
   useEffect(() => {
     setPageFilters({ ...pageFilters, page: 1 })
-  }, [settings, ddfilter, compareBy.key])
+    if (settings.requestFilters.termId || settings.requestFilters.reportId) {
+      return () => toggleFilter(null, false)
+    }
+  }, [settings, compareBy.key])
 
   // get paginated data
   useEffect(() => {
@@ -130,9 +170,12 @@ const PeerProgressAnalysis = ({
     }
   }, [peerProgressAnalysis])
 
-  const [parsedData, trendCount] = useMemo(
-    () => parseTrendData(metricInfo, compareBy.key, metaInfo, selectedTrend),
-    [metricInfo, compareBy.key, metaInfo, selectedTrend]
+  const [parsedData, trendCount] = useGetBandData(
+    metricInfo,
+    compareBy.key,
+    metaInfo,
+    selectedTrend,
+    bandInfo
   )
 
   const onTrendSelect = (trend) =>
@@ -152,11 +195,20 @@ const PeerProgressAnalysis = ({
   const onCsvConvert = (data) => downloadCSV(`Peer Progress.csv`, data)
 
   if (loading) {
-    return <SpinLoader position="fixed" />
+    return (
+      <SpinLoader
+        tip="Please wait while we gather the required information..."
+        position="fixed"
+      />
+    )
   }
 
   if (isEmpty(metricInfo)) {
-    return <NoDataContainer>No data available currently.</NoDataContainer>
+    return (
+      <NoDataContainer>
+        {settings.requestFilters?.termId ? 'No data available currently.' : ''}
+      </NoDataContainer>
+    )
   }
 
   if (error && error.dataSizeExceeded) {

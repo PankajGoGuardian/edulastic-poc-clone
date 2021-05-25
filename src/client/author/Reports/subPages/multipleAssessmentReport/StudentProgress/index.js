@@ -102,6 +102,9 @@ const StudentProgress = ({
   // set initial page filters
   useEffect(() => {
     setPageFilters({ ...pageFilters, page: 1 })
+    if (settings.requestFilters.termId || settings.requestFilters.reportId) {
+      return () => toggleFilter(null, false)
+    }
   }, [settings])
 
   // get paginated data
@@ -155,11 +158,20 @@ const StudentProgress = ({
   )
 
   if (loading) {
-    return <SpinLoader position="fixed" />
+    return (
+      <SpinLoader
+        tip="Please wait while we gather the required information..."
+        position="fixed"
+      />
+    )
   }
 
   if (isEmpty(filteredInfo)) {
-    return <NoDataContainer>No data available currently.</NoDataContainer>
+    return (
+      <NoDataContainer>
+        {settings.requestFilters?.termId ? 'No data available currently.' : ''}
+      </NoDataContainer>
+    )
   }
 
   if (error && error.dataSizeExceeded) {

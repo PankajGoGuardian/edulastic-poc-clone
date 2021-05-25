@@ -14,7 +14,12 @@ import {
   FieldLabel,
   FlexContainer,
 } from '@edulastic/common'
-import { IconFeedback, IconExpand, IconCollapse } from '@edulastic/icons'
+import {
+  IconFeedback,
+  IconExpand,
+  IconCollapse,
+  IconFolder,
+} from '@edulastic/icons'
 import {
   test,
   questionActivity as questionActivityConst,
@@ -55,6 +60,7 @@ import {
   FilterSelect,
   FilterSpan,
 } from '../ClassBoard/components/Container/styled'
+import TestAttachementsModal from './Modals/TestAttachementsModal'
 
 const _getquestionLabels = memoizeOne(getQuestionLabels)
 
@@ -69,6 +75,7 @@ class StudentViewContainer extends Component {
       showTestletPlayer: false,
       hasStickyHeader: false,
       hideCorrectAnswer: true,
+      showAttachmentsModal: false,
     }
   }
 
@@ -160,6 +167,12 @@ class StudentViewContainer extends Component {
   toggleShowCorrectAnswers = () => {
     this.setState((prevState) => ({
       hideCorrectAnswer: !prevState.hideCorrectAnswer,
+    }))
+  }
+
+  toggleAttachmentsModal = () => {
+    this.setState((prevState) => ({
+      showAttachmentsModal: !prevState.showAttachmentsModal,
     }))
   }
 
@@ -259,6 +272,8 @@ class StudentViewContainer extends Component {
       </div>
     )
 
+    const { attachments = [] } = studentTestActivity?.userWork || {}
+
     return (
       <>
         {studentsList.length && studentTestActivity?._id && (
@@ -352,6 +367,22 @@ class StudentViewContainer extends Component {
             )}
           </StudentButtonWrapper>
           <FlexContainer alignItems="center">
+            {false &&
+              attachments.length > 0 && ( // hidden for 16.0 release EV-27886
+                <EduButton
+                  isGhost
+                  data-cy="viewAllAttachmentsButton"
+                  height="24px"
+                  fontSize="9px"
+                  mr="10px"
+                  ml="0px"
+                  onClick={this.toggleAttachmentsModal}
+                  title="View all attachments"
+                >
+                  <IconFolder height="11.3px" width="11.3px" />
+                  <span>Attachments</span>
+                </EduButton>
+              )}
             <EduButton
               isGhost
               height="24px"
@@ -433,6 +464,17 @@ class StudentViewContainer extends Component {
           hasStickyHeader={hasStickyHeader}
           onClick={() => scrollTo(document.querySelector('body'))}
         />
+        {this.state.showAttachmentsModal && (
+          <TestAttachementsModal
+            toggleAttachmentsModal={this.toggleAttachmentsModal}
+            showAttachmentsModal={this.state.showAttachmentsModal}
+            attachmentsList={attachments}
+            title="All Attachments"
+            description="Import content from QTI, WebCT and several other formats."
+            utaId={studentTestActivity?._id}
+            studentData={currentStudent}
+          />
+        )}
       </>
     )
   }

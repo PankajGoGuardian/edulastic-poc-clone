@@ -8,11 +8,14 @@ import {
   get,
   set,
   sortBy,
+  keys,
 } from 'lodash'
 import produce from 'immer'
 import { markQuestionLabel } from '../../assessment/Transformer'
 import { changeDataToPreferredLanguage } from '../../assessment/utils/question'
 import { getCurrentLanguage } from '../../common/components/LanguageSelector/duck'
+import { locationSelector } from '../../assessment/selectors/routes'
+import { MOVE_WIDGET } from '../src/constants/actions'
 
 // actions types
 export const LOAD_QUESTIONS = '[author questions] load questions'
@@ -123,6 +126,9 @@ const updateQuestion = (state, { payload }) => {
         : (draft.possibleResponseGroups[0].responses = draft.possibleResponses)
     })
   } else if (
+    // edit/regrade in lcb, there is no previous question
+    // @see https://snapwiz.atlassian.net/browse/EV-27314
+    prevGroupPossibleResponsesState &&
     groupPossibleResponses === false &&
     groupPossibleResponses !== prevGroupPossibleResponsesState
   ) {
@@ -157,7 +163,9 @@ const changeUIStyle = (state, { payload }) => {
 }
 
 const setFirstMount = (state, { id }) => {
-  state.byId[id].firstMount = false
+  if (state.byId[id]) {
+    state.byId[id].firstMount = false
+  }
 }
 
 // add a new question
@@ -226,6 +234,22 @@ const removeAlignment = (state, { payload }) => {
   )
 }
 
+// re sequence questions in multipart types
+// https://snapwiz.atlassian.net/browse/EV-27644
+const reSequencedQ = (state, { payload }) => {
+  const { from, to } = payload
+  const qIds = keys(state.byId)
+  const [movedQId] = qIds.splice(from.widgetIndex, 1)
+  qIds.splice(to.widgetIndex, 0, movedQId)
+
+  const updatedQuestions = {}
+  qIds.forEach((qId) => {
+    updatedQuestions[qId] = state.byId[qId]
+  })
+
+  state.byId = updatedQuestions
+}
+
 export const SET_ITEM_DETAIL_ITEM_LEVEL_SCORING =
   '[itemDetail] set item level scoring'
 export const SET_QUESTION_SCORE = '[author questions] set question score'
@@ -266,13 +290,11 @@ export default createReducer(initialState, {
           'validation.validResponse.score',
           0
         )
-        if(get(state.byId[key], 'validation.unscored', false)){
+        if (get(state.byId[key], 'validation.unscored', false)) {
           set(state.byId[key], 'validation.validResponse.score', 0)
           continue
         }
-        if (
-          parseFloat(oldScore) === 0
-        ) {
+        if (parseFloat(oldScore) === 0) {
           set(state.byId[key], 'validation.validResponse.score', 1)
         }
       }
@@ -286,6 +308,7 @@ export default createReducer(initialState, {
     delete state.byId[state.current].rubrics
     state.byId[state.current].validation.validResponse.score = 1
   },
+  [MOVE_WIDGET]: reSequencedQ,
 })
 
 // selectors
@@ -361,4 +384,26 @@ export const getQuestionAlignmentSelector = createSelector(
 export const getAuthorQuestionStatus = createSelector(
   getAuthorQuestionSelector,
   (state) => state.updated
+)
+
+export const isRegradeFlowSelector = createSelector(
+  locationSelector,
+  (location) => get(location, 'state.regradeFlow', false)
+)
+
+export const getIsEditDisbledSelector = createSelector(
+  getQuestionsSelector,
+  isRegradeFlowSelector,
+  (questionsById, regradeFlow) => {
+    const hasDynamicValues = Object.values(questionsById)?.some((q) =>
+      get(q, 'variable.enabled', false)
+    )
+    if (hasDynamicValues && regradeFlow) {
+      return [
+        true,
+        'Dynamic Parameter questions have their random values generated when the test is assigned, and they cannot be changed. You will have to grade these questions manually',
+      ]
+    }
+    return [false, '']
+  }
 )

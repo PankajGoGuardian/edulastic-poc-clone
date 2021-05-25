@@ -231,6 +231,9 @@ export const SquareColorDivPink = styled(SquareColorDiv)`
 export const SquareColorDivYellow = styled(SquareColorDiv)`
   background-color: ${yellow1};
 `
+export const SquareColorDivlGrey = styled(SquareColorDiv)`
+  background-color: #e8e8e8;
+`
 
 export const StyledParaF = styled.p`
   font-size: 12px;

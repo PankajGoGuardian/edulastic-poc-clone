@@ -1,6 +1,7 @@
 import {
   extraDesktopWidthMax,
   mediumDesktopExactWidth,
+  themeColorBlue,
 } from '@edulastic/colors'
 import { questionType, test } from '@edulastic/constants'
 import {
@@ -37,7 +38,12 @@ const ToolBar = ({
   changeTool,
   hasDrawingResponse,
 }) => {
-  const { calcType, showMagnifier, enableScratchpad, isTeacherPremium } = settings
+  const {
+    calcType,
+    showMagnifier,
+    enableScratchpad,
+    isTeacherPremium,
+  } = settings
   const isDisableCrossBtn = qType !== questionType.MULTIPLE_CHOICE
 
   const toolbarHandler = (value) => () => {
@@ -215,6 +221,11 @@ ${({ theme, active }) =>
   }
   @media (min-width: ${extraDesktopWidthMax}) {
     margin-right: 10px;
+  }
+
+  &:focus {
+    outline: 0;
+    box-shadow: 0 0 0 2px ${themeColorBlue};
   }
 `
 

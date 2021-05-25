@@ -13,6 +13,7 @@ import {
   setItemLevelScoringAction,
 } from '../../../../ducks'
 import {
+  getIsEditDisbledSelector,
   getQuestionByIdSelector,
   setQuestionScoreAction,
 } from '../../../../../sharedDucks/questions'
@@ -34,6 +35,7 @@ const ItemDetailWidget = ({
   setQuestionScore,
   rowIndex,
   previewTab,
+  itemEditDisabled,
 }) => {
   const [showButtons, setShowButtons] = useState(!flowLayout)
 
@@ -71,10 +73,11 @@ const ItemDetailWidget = ({
     ? onChangeItemLevelPoint
     : onChangeQuestionLevelPoint
 
-  const disablePointsInput =
+  const [isEditDisabled, disabledReason] = itemEditDisabled
+  const hidePointsBlock =
     (widgetIndex > 0 && itemData.itemLevelScoring) ||
-    (question.rubrics && !itemData.itemLevelScoring)
-
+    (question.rubrics && !itemData.itemLevelScoring) ||
+    isEditDisabled
   return (
     connectDragPreview &&
     connectDragSource &&
@@ -104,27 +107,51 @@ const ItemDetailWidget = ({
 
           {(!flowLayout || showButtons) && (
             <ButtonsContainer>
-              {!(unscored && showPoints) ? (
-                <Ctrls.Point
-                  value={score}
-                  onChange={scoreChangeHandler}
-                  visible={isPointsBlockVisible}
-                  disabled={disablePointsInput}
-                  isRubricQuestion={
-                    !!question.rubrics && !itemData.itemLevelScoring
-                  }
-                />
-              ) : (
-                <UnScored text="UNSCORED" height={"50px"} />
-              )}
+              {!hidePointsBlock ? (
+                !(unscored && showPoints) ? (
+                  <Ctrls.Point
+                    value={score}
+                    onChange={scoreChangeHandler}
+                    data-cy="pointUpdate"
+                    visible={isPointsBlockVisible}
+                    isRubricQuestion={
+                      !!question.rubrics && !itemData.itemLevelScoring
+                    }
+                    itemLevelScoring={itemData.itemLevelScoring}
+                  />
+                ) : (
+                  <UnScored
+                    width="50px"
+                    height="50px"
+                    top={`${itemData.itemLevelScoring ? -80 : -50}px`}
+                  />
+                )
+              ) : null}
 
-              {connectDragSource(
+              {isEditDisabled ? (
                 <div>
-                  <Ctrls.Move />
+                  <Ctrls.Move
+                    disabled={isEditDisabled}
+                    disabledReason={disabledReason}
+                  />
                 </div>
+              ) : (
+                connectDragSource(
+                  <div>
+                    <Ctrls.Move />
+                  </div>
+                )
               )}
-              <Ctrls.Edit onEdit={onEdit} />
-              <Ctrls.Delete onDelete={onDelete} />
+              <Ctrls.Edit
+                onEdit={onEdit}
+                disabled={isEditDisabled}
+                disabledReason={disabledReason}
+              />
+              <Ctrls.Delete
+                onDelete={onDelete}
+                disabled={isEditDisabled}
+                disabledReason={disabledReason}
+              />
             </ButtonsContainer>
           )}
         </Container>
@@ -175,6 +202,7 @@ const enhance = compose(
   connect(
     (state, { widget }) => ({
       question: getQuestionByIdSelector(state, widget.reference),
+      itemEditDisabled: getIsEditDisbledSelector(state),
     }),
     {
       setItemDetailDragging: setItemDetailDraggingAction,

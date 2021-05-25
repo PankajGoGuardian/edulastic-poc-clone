@@ -102,7 +102,7 @@ const AssessmentAutoComplete = ({
     })
     const _selectedTests = selectedElements.map(({ props }) => ({
       key: props.value,
-      title: props.children,
+      title: props.title,
     }))
     selectCB(_selectedTests)
   }

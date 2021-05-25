@@ -99,6 +99,9 @@ const StandardsGradebook = ({
   // set initial page filters
   useEffect(() => {
     setPageFilters({ ...pageFilters, page: 1 })
+    if (settings.requestFilters.termId || settings.requestFilters.reportId) {
+      return () => toggleFilter(null, false)
+    }
   }, [settings.requestFilters])
   // get paginated data
   useEffect(() => {
@@ -172,7 +175,12 @@ const StandardsGradebook = ({
   }
 
   if (loading) {
-    return <SpinLoader position="fixed" />
+    return (
+      <SpinLoader
+        tip="Please wait while we gather the required information..."
+        position="fixed"
+      />
+    )
   }
 
   if (error && error.dataSizeExceeded) {
@@ -180,7 +188,11 @@ const StandardsGradebook = ({
   }
 
   if (!filteredDenormalizedData?.length) {
-    return <NoDataContainer>No data available currently.</NoDataContainer>
+    return (
+      <NoDataContainer>
+        {settings.requestFilters?.termId ? 'No data available currently.' : ''}
+      </NoDataContainer>
+    )
   }
 
   return (

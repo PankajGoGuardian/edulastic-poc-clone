@@ -117,13 +117,14 @@ class Scoring extends Component {
           newData.validation.scoringType = evaluationType.EXACT_MATCH
           delete newData.validation.unscored // unset unscored when auto scoring is disabled
         }
-        if (param === 'unscored' && value) {
-          newData.validation.validResponse.score = 0
+        if (param === 'unscored') {
+          const updatedScore = value ? 0 : 1
+          newData.validation.validResponse.score = updatedScore
           newData.validation.altResponses?.forEach((altResp) => {
-            altResp.score = 0
+            altResp.score = updatedScore
           })
           if (newData.validation?.maxScore) {
-            newData.validation.maxScore = 0
+            newData.validation.maxScore = updatedScore
           }
         }
         newData.validation[param] = value
@@ -217,7 +218,7 @@ class Scoring extends Component {
                 <FlexContainer flexDirection="column" mt="8px">
                   <Label>{t('component.options.maxScore')}</Label>
                   {isPractice ? (
-                    <UnscoredBlock text="UNSCORED" height="50px" width="20%" />
+                    <UnscoredBlock height="50px" width="20%" />
                   ) : (
                     <PointsInput
                       data-cy="maxscore"
@@ -329,6 +330,7 @@ class Scoring extends Component {
                     this.handleRubricAction('CREATE NEW')
                     e.target.blur()
                   }}
+                  data-cy="createNewRubric"
                   display="inline-block"
                   padding="0px 16px"
                   width="142px"
@@ -347,6 +349,7 @@ class Scoring extends Component {
                   padding="0px 16px"
                   width="142px"
                   margin="0px 15px 0px 0px"
+                  data-cy="useExistingRubric"
                   disabled={!isCorrectAnsTab}
                   ghost={!isCorrectAnsTab}
                 >
@@ -358,13 +361,16 @@ class Scoring extends Component {
 
         {questionData.rubrics && userFeatures.gradingrubrics && (
           <RubricsContainer>
-            <StyledTag>
+            <StyledTag data-cy="selectedRubric">
               <span
                 onClick={() => this.handleViewRubric(questionData.rubrics._id)}
               >
                 {questionData.rubrics.name}
               </span>
-              <span onClick={() => dissociateRubricFromQuestion()}>
+              <span
+                data-cy="removeRubric"
+                onClick={() => dissociateRubricFromQuestion()}
+              >
                 <Icon type="close" />
               </span>
             </StyledTag>

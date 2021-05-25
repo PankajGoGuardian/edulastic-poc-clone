@@ -5,7 +5,10 @@ import HTML5Backend from 'react-dnd-html5-backend'
 
 export const DndStateContext = React.createContext()
 
-const initState = { actived: null }
+const initState = {
+  actived: null,
+  previewDimensions: [],
+}
 
 const dndState = (state, action) => {
   switch (action.type) {
@@ -13,7 +16,13 @@ const dndState = (state, action) => {
       return { ...state, actived: action.data }
     }
     case 'REMOVE_ACTIVE_DRAG_ITEM': {
-      return { ...state, actived: null }
+      return { ...state, actived: null, previewDimensions: [] }
+    }
+    case 'SET_DROP_AREA_SIZE': {
+      return {
+        ...state,
+        previewDimensions: [...state.previewDimensions, action.data],
+      }
     }
     default:
       return state

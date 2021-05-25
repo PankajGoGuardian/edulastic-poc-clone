@@ -166,11 +166,6 @@ const MultipleAssessmentReportContainer = (props) => {
     setMARSettings({
       requestFilters: {
         ..._requestFilters,
-        testGrade: _requestFilters.grade,
-        testSubject: _requestFilters.subject,
-        grade: _requestFilters.studentGrade,
-        subject: _requestFilters.studentSubject,
-        courseId: _requestFilters.studentCourseId,
         classIds: _requestFilters.classIds || '',
         groupIds: _requestFilters.groupIds || '',
         testIds: selectedTests.join(),
@@ -194,6 +189,7 @@ const MultipleAssessmentReportContainer = (props) => {
 
   const performanceBandRequired = [
     'performance-over-time',
+    'peer-progress-analysis',
     'student-progress',
   ].includes(pageTitle)
 
@@ -254,13 +250,14 @@ const MultipleAssessmentReportContainer = (props) => {
           setTempDdFilter={setTempDdFilter}
           tempTagsData={tempTagsData}
           setTempTagsData={setTempTagsData}
+          tagsData={settings.tagsData}
+          setTagsData={setMARTagsData}
           showApply={showApply}
           setShowApply={setShowApply}
           firstLoad={firstLoad}
           setFirstLoad={setFirstLoad}
           showFilter={showFilter}
           toggleFilter={toggleFilter}
-          tagsData={settings.tagsData}
         />
       </SubHeader>
       <ReportContainer>
@@ -275,6 +272,7 @@ const MultipleAssessmentReportContainer = (props) => {
                 {..._props}
                 settings={settings}
                 ddfilter={ddfilter}
+                MARFilterData={MARFilterData}
                 sharedReport={sharedReport}
                 toggleFilter={toggleFilter}
               />
@@ -309,6 +307,7 @@ const MultipleAssessmentReportContainer = (props) => {
                 {..._props}
                 settings={settings}
                 ddfilter={ddfilter}
+                MARFilterData={MARFilterData}
                 sharedReport={sharedReport}
                 toggleFilter={toggleFilter}
               />

@@ -28,7 +28,7 @@ import {
 } from 'react-sortable-hoc'
 import { compose } from 'redux'
 import { pick, uniq } from 'lodash'
-import { curriculumSequencesApi } from '@edulastic/api'
+import { curriculumSequencesApi, testsApi } from '@edulastic/api'
 import { Tooltip } from '../../../common/utils/helpers'
 import {
   resumeAssignmentAction,
@@ -47,6 +47,7 @@ import {
   togglePlaylistTestDetailsModalWithId,
   toggleAssignmentsAction,
   setCurrentAssignmentIdsAction,
+  editPlaylistTestAction,
 } from '../ducks'
 import { getProgressData } from '../util'
 import ModuleRowView, { InfoProgressBar } from './ModuleRowView'
@@ -77,6 +78,7 @@ import {
   HideLinkLabel,
   CaretUp,
   Bullet,
+  MenuStyled,
 } from './styled'
 import TestPreviewModal from '../../Assignments/components/Container/TestPreviewModal'
 import { getIsPreviewModalVisibleSelector } from '../../../assessment/selectors/test'
@@ -231,7 +233,7 @@ class ModuleRow extends Component {
     })
   }
 
-  assignTest = (moduleId, testId) => {
+  assignTest = (moduleId, testId, testVersionId) => {
     const { history, playlistId } = this.props
     history.push({
       pathname: `/author/playlists/assignments/${playlistId}/${moduleId}/${testId}`,
@@ -239,12 +241,31 @@ class ModuleRow extends Component {
         from: 'myPlaylist',
         fromText: 'My Playlist',
         toUrl: `/author/playlists/playlist/${playlistId}/use-this`,
+        testVersionId,
       },
     })
   }
 
-  viewTest = (testId) => {
+  viewTest = async (id, isVersionId) => {
     const { setIsTestPreviewVisible } = this.props
+    let testId = id
+    if (isVersionId) {
+      try {
+        const { testId: latestTestId } =
+          (await testsApi.getTestIdFromVersionId(testId)) || {}
+        if (latestTestId) {
+          testId = latestTestId
+        } else {
+          throw new Error('Failed to fetch latest test id!')
+        }
+      } catch (e) {
+        if (e?.response?.status !== 404) {
+          notification({ msg: 'Failed to load test!' })
+        }
+        console.warn(e)
+      }
+    }
+
     this.setState({
       selectedTest: testId,
     })
@@ -552,6 +573,11 @@ class ModuleRow extends Component {
     })
   }
 
+  onEditTest = (testId) => {
+    const { editPlaylistTest, playlistId } = this.props
+    editPlaylistTest({ testId, playlistId })
+  }
+
   render() {
     const {
       onCollapseExpand,
@@ -596,10 +622,9 @@ class ModuleRow extends Component {
     const { _id, data = [] } = module
     const isParentRoleProxy = proxyUserRole === 'parent'
 
-    const contentData =
-      urlHasUseThis || isStudent
-        ? data.filter((test) => test?.status !== 'draft')
-        : data
+    const contentData = isStudent
+      ? data.filter((test) => test?.status !== 'draft')
+      : data
 
     const menu = (
       <Menu data-cy="addContentMenu">
@@ -678,6 +703,7 @@ class ModuleRow extends Component {
                     contentId,
                     contentType,
                     hidden,
+                    status: testStatus,
                   } = moduleData
                   const isTestType = contentType === 'test'
                   const statusList = assignments
@@ -756,20 +782,31 @@ class ModuleRow extends Component {
                     : {}
 
                   const moreMenu = (
-                    <Menu data-cy="assessmentItemMoreMenu">
+                    <MenuStyled data-cy="assessmentItemMoreMenu">
                       <CaretUp className="fa fa-caret-up" />
-                      {!isStudent && (
-                        <Menu.Item
-                          onClick={() => assignTest(_id, moduleData.contentId)}
-                        >
-                          Assign Test
-                        </Menu.Item>
-                      )}
+                      {!isStudent &&
+                        (testStatus === 'published' || isAssigned) && (
+                          <Menu.Item
+                            onClick={() => {
+                              const testIdFromAssignments =
+                                moduleData?.assignments?.[0]?.testId
+                              const testId =
+                                testIdFromAssignments || moduleData.contentId
+                              assignTest(
+                                _id,
+                                testId,
+                                moduleData.contentVersionId
+                              )
+                            }}
+                          >
+                            Assign Test
+                          </Menu.Item>
+                        )}
                       {!isStudent && isAssigned && (
                         <Menu.Item
                           onClick={() =>
                             togglePlaylistTestDetails({
-                              id: moduleData?.contentId,
+                              id: moduleData?.assignments?.[0]?.testId,
                             })
                           }
                         >
@@ -779,9 +816,32 @@ class ModuleRow extends Component {
                       {!isStudent && (
                         <Menu.Item
                           data-cy="view-test"
-                          onClick={() => this.viewTest(moduleData.contentId)}
+                          onClick={() => {
+                            const testIdFromAssignments =
+                              moduleData?.assignments?.[0]?.testId
+                            const testId =
+                              testIdFromAssignments || moduleData.contentId
+                            this.viewTest(
+                              testId,
+                              moduleData?.contentVersionId !== testId
+                            )
+                          }}
                         >
                           Preview Test
+                        </Menu.Item>
+                      )}
+                      {!isStudent && (
+                        <Menu.Item
+                          data-cy="edit-test"
+                          onClick={() => {
+                            const testIdFromAssignments =
+                              moduleData?.assignments?.[0]?.testId
+                            const testId =
+                              testIdFromAssignments || moduleData.contentId
+                            this.onEditTest(testId)
+                          }}
+                        >
+                          Edit test
                         </Menu.Item>
                       )}
                       {!isStudent && isSparkMathPlaylist && (
@@ -814,7 +874,7 @@ class ModuleRow extends Component {
                         >
                           Remove
                         </Menu.Item> */}
-                    </Menu>
+                    </MenuStyled>
                   )
 
                   const showHideAssessmentButton = hasEditAccess &&
@@ -894,8 +954,17 @@ class ModuleRow extends Component {
                                 <AssignmentButton assigned={isAssigned}>
                                   <Button
                                     data-cy="assignButton"
+                                    title={
+                                      testStatus === 'draft' &&
+                                      'Publish the test to assign'
+                                    }
+                                    disabled={testStatus === 'draft'}
                                     onClick={() =>
-                                      assignTest(_id, moduleData.contentId)
+                                      assignTest(
+                                        _id,
+                                        moduleData.contentId,
+                                        moduleData.contentVersionId
+                                      )
                                     }
                                   >
                                     {isAssigned ? (
@@ -920,7 +989,7 @@ class ModuleRow extends Component {
                               style={rowInlineStyle}
                               arrow
                             >
-                              <IconActionButton>
+                              <IconActionButton data-cy="moreMenu">
                                 <IconMoreVertical
                                   width={5}
                                   height={14}
@@ -986,7 +1055,16 @@ class ModuleRow extends Component {
                     >
                       <AssignmentButton>
                         <Button
-                          onClick={() => this.viewTest(moduleData?.contentId)}
+                          onClick={() => {
+                            const testIdFromAssignments =
+                              moduleData?.assignments?.[0]?.testId
+                            const testId =
+                              testIdFromAssignments || moduleData.contentId
+                            this.viewTest(
+                              testId,
+                              moduleData?.contentVersionId !== testId
+                            )
+                          }}
                         >
                           <IconVisualization width="14px" height="14px" />
                           Preview
@@ -1197,18 +1275,39 @@ class ModuleRow extends Component {
                                     }
                                   >
                                     <ModuleDataName
-                                      onClick={() =>
-                                        !isStudent &&
-                                        togglePlaylistTestDetails({
-                                          id: moduleData?.contentId,
-                                        })
-                                      }
+                                      onClick={() => {
+                                        return (
+                                          !isStudent &&
+                                          togglePlaylistTestDetails({
+                                            id: moduleData?.assignments?.length
+                                              ? moduleData?.assignments?.[0]
+                                                  ?.testId
+                                              : moduleData?.contentId,
+                                            ...(moduleData?.assignments?.length
+                                              ? { requestLatest: false }
+                                              : {
+                                                  requestLatest:
+                                                    testStatus !== 'draft',
+                                                }),
+                                          })
+                                        )
+                                      }}
                                     >
                                       <Tooltip
                                         placement="bottomLeft"
-                                        title={moduleData.contentTitle}
+                                        title={
+                                          moduleData?.assignments?.length
+                                            ? moduleData?.assignments?.[0]
+                                                ?.title
+                                            : moduleData?.contentTitle
+                                        }
                                       >
-                                        <span>{moduleData.contentTitle}</span>
+                                        <span data-cy="testName">
+                                          {moduleData?.assignments?.length
+                                            ? moduleData?.assignments?.[0]
+                                                ?.title
+                                            : moduleData?.contentTitle}
+                                        </span>
                                         {testType}
                                       </Tooltip>
                                       {!isDesktop && testTags}
@@ -1246,6 +1345,7 @@ class ModuleRow extends Component {
               modalInitData={playlistTestDetailsModalData}
               viewAsStudent={this.viewTest}
               playlistId={playlistId}
+              onEditTest={this.onEditTest}
             />
           )}
         </>
@@ -1263,6 +1363,7 @@ ModuleRow.propTypes = {
   moduleStatus: PropTypes.bool.isRequired,
   status: PropTypes.string.isRequired,
   removeUnit: PropTypes.func.isRequired,
+  editPlaylistTest: PropTypes.func.isRequired,
 }
 
 const enhance = compose(
@@ -1294,6 +1395,7 @@ const enhance = compose(
       toggleAssignments: toggleAssignmentsAction,
       setCurrentAssignmentIds: setCurrentAssignmentIdsAction,
       setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
+      editPlaylistTest: editPlaylistTestAction,
     }
   )
 )

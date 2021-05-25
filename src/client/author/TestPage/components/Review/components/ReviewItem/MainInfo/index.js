@@ -72,7 +72,7 @@ class MainInfo extends React.Component {
                 height="32px"
                 margin="0px 0px 0px 5px"
                 fontSize="10px"
-                text="U"
+                text="Z"
                 fontWeight="700"
               />
             )}

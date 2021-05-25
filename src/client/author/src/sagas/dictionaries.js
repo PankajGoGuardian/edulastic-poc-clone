@@ -41,15 +41,15 @@ function* receiveCurriculumsSaga() {
 function* receiveStandardsSaga({ payload }) {
   try {
     if (payload.curriculumId) {
-      const { elo, tlo } = yield call(dictionariesApi.receiveStandards, payload)
+      const result = yield call(dictionariesApi.receiveStandards, payload)
       yield put({
         type: RECEIVE_DICT_STANDARDS_SUCCESS,
-        payload: { elo, tlo },
+        payload: result,
       })
     } else {
       yield put({
         type: RECEIVE_DICT_STANDARDS_SUCCESS,
-        payload: { elo: [], tlo: [] },
+        payload: [],
       })
     }
   } catch (err) {

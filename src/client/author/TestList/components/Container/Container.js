@@ -123,6 +123,7 @@ import {
   updateDefaultGradesAction,
   updateDefaultSubjectAction,
   isProxyUser as isProxyUserSelector,
+  isDemoPlaygroundUser,
 } from '../../../../student/Login/ducks'
 import CartButton from '../CartButton/cartButton'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
@@ -1136,6 +1137,7 @@ class TestList extends Component {
       resequenceModules,
       testFilters,
       isProxyUser,
+      isDemoAccount,
       t,
       sort = {},
     } = this.props
@@ -1340,7 +1342,7 @@ class TestList extends Component {
 
           <FlexContainer>
             <Filter isShowFilter={isShowFilter}>
-              <AffixWrapper isProxyUser={isProxyUser}>
+              <AffixWrapper isBannerShown={isProxyUser || isDemoAccount}>
                 <ScrollbarWrapper isShowFilter={isShowFilter}>
                   <PerfectScrollbar>
                     <ScrollBox>
@@ -1470,6 +1472,7 @@ const enhance = compose(
       isProxyUser: isProxyUserSelector(state),
       sort: getSortFilterStateSelector(state),
       selectedTests: getSelectedTestsSelector(state),
+      isDemoAccount: isDemoPlaygroundUser(state),
     }),
     {
       getCurriculums: getDictCurriculumsAction,

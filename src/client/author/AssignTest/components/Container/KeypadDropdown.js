@@ -13,7 +13,11 @@ import { customKeypadSelector } from '../../../../assessment/components/KeyPadOp
 const { symbols } = math
 const predefinedKeypads = [
   ...symbols,
-  { value: 'item-level', label: 'Keypad set at item level' },
+  {
+    type: 'item-level',
+    value: 'item-level-keypad',
+    label: 'Keypad set at item level',
+  },
 ]
 
 function KeypadDropdown({
@@ -26,7 +30,7 @@ function KeypadDropdown({
   const keypadDropdownValue = useMemo(() => {
     if (isEmpty(keypadData) || keypadData?.type === 'item-level') {
       // for assignments with old test or new assignments with item level keypad
-      return 'item-level'
+      return 'item-level-keypad'
     }
     if (keypadData.type === 'custom') {
       return keypadData.value?._id
@@ -73,11 +77,14 @@ function KeypadDropdown({
       (keypad) => keypad.value === value
     )
     if (predefinedIndex !== -1) {
-      overrideSettings('keypad', {
-        type: 'predefined',
-        value: predefinedKeypads[predefinedIndex].value,
+      const _keypad = predefinedKeypads[predefinedIndex]
+      const { value: predefinedKeypadValue, type } = _keypad
+      const payload = {
+        type: type || 'predefined', // item level keypad should use type as item-level instead of predefined
+        value: predefinedKeypadValue,
         updated: true,
-      })
+      }
+      overrideSettings('keypad', payload)
       return
     }
     if (testKeypadData?.value?._id === value) {
@@ -93,30 +100,29 @@ function KeypadDropdown({
     <StyledSelectContainer>
       <SelectInputStyled
         data-cy="key-pad-option"
-        defaultValue={keypadDropdownValue}
+        value={keypadDropdownValue}
         onChange={handleChange}
         getPopupContainer={(triggerNode) => triggerNode.parentNode}
         disabled={disabled}
       >
-        {predefinedKeypads.map((keypad) => (
-          <Select.Option key={keypad.label} value={keypad.value}>
-            {keypad.label}
-          </Select.Option>
-        ))}
+        {customKeypads.length > 0 &&
+          customKeypads.map((keypad) => (
+            <Select.Option key={keypad._id} value={keypad._id}>
+              {keypad.label}
+            </Select.Option>
+          ))}
         {testKeypad && (
           <Select.Option value={testKeypad._id}>
             {testKeypad.label}
           </Select.Option>
         )}
-        {customKeypads.length > 0 && (
-          <Select.OptGroup label="My custom keypads">
-            {customKeypads.map((keypad) => (
-              <Select.Option key={keypad._id} value={keypad._id}>
-                {keypad.label}
-              </Select.Option>
-            ))}
-          </Select.OptGroup>
-        )}
+        <Select.OptGroup label="Standard keypads">
+          {predefinedKeypads.map((keypad) => (
+            <Select.Option key={keypad.label} value={keypad.value}>
+              {keypad.label}
+            </Select.Option>
+          ))}
+        </Select.OptGroup>
       </SelectInputStyled>
     </StyledSelectContainer>
   )

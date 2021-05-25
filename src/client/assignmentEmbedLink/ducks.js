@@ -5,6 +5,7 @@ import { assignmentApi, testsApi } from '@edulastic/api'
 import notification from '@edulastic/common/src/components/Notification'
 import { roleuser } from '@edulastic/constants'
 import { getClasses, getUserRole, getUserDetails } from '../student/Login/ducks'
+import { getUserIdSelector } from '../author/src/selectors/user'
 
 export const FETCH_ASSIGNMENTS_BY_TEST_ID =
   '[assignmentEmbedLink] fetch assignments by testId'
@@ -21,12 +22,13 @@ function* fetchAssignmentsByTestIdSaga({ payload }) {
     if (assignments.length > 0) {
       assignments.sort((a, b) => b.createdAt - a.createdAt)
       if (roleuser.DA_SA_ROLE_ARRAY.includes(userRole)) {
+        const userId = yield select(getUserIdSelector)
         const assignmentFilters = JSON.parse(
-          sessionStorage.getItem('filters[Assignments]') || '{}'
+          sessionStorage.getItem(`assignments_filter_${userId}`) || '{}'
         )
         assignmentFilters.termId = assignments[0].termId
         sessionStorage.setItem(
-          'filters[Assignments]',
+          `assignments_filter_${userId}`,
           JSON.stringify(assignmentFilters)
         )
         yield put(

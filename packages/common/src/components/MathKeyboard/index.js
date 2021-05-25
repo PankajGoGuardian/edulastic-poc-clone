@@ -4,7 +4,6 @@ import styled from 'styled-components'
 import { connect } from 'react-redux'
 import { isObject, compact } from 'lodash'
 import { math } from '@edulastic/constants'
-import { FlexContainer } from '@edulastic/common'
 import { lightGrey9 } from '@edulastic/colors'
 import { IconMoveArrows } from '@edulastic/icons'
 import { KEYBOARD_BUTTONS, TAB_BUTTONS } from './constants/keyboardButtons'
@@ -15,6 +14,11 @@ import KeyboardHeader from './components/KeyboardHeader'
 import MainKeyboard from './components/MainKeyboard'
 import FullKeybord from './components/FullKeybord'
 import Keyboard from '../Keyboard'
+import {
+  StyledGripperContainer,
+  StyledGripper,
+  StyledArrowContainer,
+} from './styled/MathKeyboardStyles'
 
 class MathKeyboard extends React.PureComponent {
   static KEYBOARD_BUTTONS = KEYBOARD_BUTTONS
@@ -125,7 +129,7 @@ class MathKeyboard extends React.PureComponent {
       if (!alreadyIncluded) {
         selectOptions = [
           {
-            value: symbols[0].label,
+            value: symbols[0]._id || symbols[0].label, // custom keypad has UUID
             label: symbols[0].label,
           },
           ...math.symbols,
@@ -147,21 +151,20 @@ class MathKeyboard extends React.PureComponent {
       showResponse,
       showDropdown,
       docBasedKeypadStyles,
-      showDragHandle,
       customKeypads,
+      showDragHandle,
     } = this.props
     const { type, keyboardButtons, numberButtons, selectOptions } = this.state
 
     return (
       <MathKeyboardContainer docBasedKeypadStyles={docBasedKeypadStyles}>
         {showDragHandle && (
-          <FlexContainer
-            justifyContent="center"
-            alignItems="center"
-            cursor="move"
-          >
-            <IconMoveArrows color={lightGrey9} width={19} height={19} />
-          </FlexContainer>
+          <StyledGripperContainer>
+            <StyledGripper />
+            <StyledArrowContainer className="arrow-container">
+              <IconMoveArrows color={lightGrey9} width={15} height={15} />
+            </StyledArrowContainer>
+          </StyledGripperContainer>
         )}
         <KeyboardHeader
           options={selectOptions}
@@ -226,5 +229,6 @@ const MathKeyboardContainer = styled.div`
   min-width: 180px;
   max-width: 520px;
   width: max-content;
+  text-indent: 0;
   ${({ docBasedKeypadStyles }) => docBasedKeypadStyles};
 `

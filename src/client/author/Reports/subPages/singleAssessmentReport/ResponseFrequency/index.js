@@ -11,11 +11,7 @@ import { StackedBarChartContainer } from './components/charts/stackedBarChartCon
 import { StyledCard, StyledContainer } from './components/styled'
 import { ResponseFrequencyTable } from './components/table/responseFrequencyTable'
 
-import {
-  getCsvDownloadingState,
-  getPrintingState,
-  getTestListSelector,
-} from '../../../ducks'
+import { getCsvDownloadingState, getPrintingState } from '../../../ducks'
 import {
   getReportsResponseFrequency,
   getReportsResponseFrequencyLoader,
@@ -40,7 +36,6 @@ const ResponseFrequency = ({
   getResponseFrequency,
   resetResponseFrequency,
   settings,
-  testList,
   sharedReport,
   toggleFilter,
 }) => {
@@ -49,12 +44,11 @@ const ResponseFrequency = ({
   const [misunderstoodItems, setMisunderstoodItems] = useState(20)
   const [filter, setFilter] = useState({})
 
-  const selectedTest = testList.find(
-    (t) => t._id === settings.selectedTest.key
-  ) || { _id: '', title: '' }
   const assessmentName = `${
-    selectedTest.title
-  } (ID:${selectedTest._id.substring(selectedTest._id.length - 5)})`
+    settings.selectedTest.title
+  } (ID:${settings.selectedTest.key.substring(
+    settings.selectedTest.key.length - 5
+  )})`
 
   useEffect(() => () => resetResponseFrequency(), [])
 
@@ -65,6 +59,9 @@ const ResponseFrequency = ({
         testId: settings.selectedTest.key,
       }
       getResponseFrequency(q)
+    }
+    if (settings.requestFilters.termId || settings.requestFilters.reportId) {
+      return () => toggleFilter(null, false)
     }
   }, [settings.selectedTest, settings.requestFilters])
 
@@ -129,7 +126,12 @@ const ResponseFrequency = ({
   }
 
   if (loading) {
-    return <SpinLoader position="fixed" />
+    return (
+      <SpinLoader
+        tip="Please wait while we gather the required information..."
+        position="fixed"
+      />
+    )
   }
 
   if (res.isRecommended) {
@@ -146,7 +148,11 @@ const ResponseFrequency = ({
   }
 
   if (isEmpty(res.metrics) || !settings.selectedTest.key) {
-    return <NoDataContainer>No data available currently.</NoDataContainer>
+    return (
+      <NoDataContainer>
+        {settings.requestFilters?.termId ? 'No data available currently.' : ''}
+      </NoDataContainer>
+    )
   }
   return (
     <div>
@@ -233,7 +239,6 @@ const enhance = connect(
     isPrinting: getPrintingState(state),
     isCsvDownloading: getCsvDownloadingState(state),
     responseFrequency: getReportsResponseFrequency(state),
-    testList: getTestListSelector(state),
   }),
   {
     getResponseFrequency: getResponseFrequencyRequestAction,

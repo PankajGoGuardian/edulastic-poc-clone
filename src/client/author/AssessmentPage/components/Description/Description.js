@@ -17,7 +17,6 @@ const Description = ({
   itemsSubjectAndGrade,
   orgCollections,
   owner,
-  onChangeKeypad,
 }) => {
   const [showModal, setShowModal] = useState(false)
 
@@ -27,7 +26,6 @@ const Description = ({
       subjects: itemsSubjectAndGrade.subjects,
       grades: [],
     })
-    onChangeKeypad(grades, true)
   }
 
   const handleChangeSubject = (subjects) => {

@@ -21,6 +21,7 @@ import {
   white,
   themeColor,
   skippedBarColor,
+  greyLight1,
 } from '@edulastic/colors'
 import { IconExpand, IconCollapse } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
@@ -265,6 +266,7 @@ class QuestionViewContainer extends Component {
         })
     }
 
+
     const questionStatusCounts = data.reduce(
       (acc, item) => ({
         wrongNumber: item.wrong + acc.wrongNumber,
@@ -391,7 +393,7 @@ class QuestionViewContainer extends Component {
                   style={{ cursor: 'pointer' }}
                   stackId="a"
                   dataKey="unscoredItems"
-                  fill={skippedBarColor}
+                  fill={greyLight1}
                   onClick={this.onClickChart}
                 />
                 <Bar
@@ -487,7 +489,8 @@ class QuestionViewContainer extends Component {
               ((filter && student.UTASTATUS === testActivityStatus.START) ||
                 (student.UTASTATUS === testActivityStatus.SUBMITTED &&
                   filter &&
-                  filter !== 'skipped'))
+                  filter !== 'skipped' &&
+                  filter !== 'unscoredItems'))
             )
               return null
             return (

@@ -88,6 +88,9 @@ const StandardsPerformance = ({
   // set initial page filters
   useEffect(() => {
     setPageFilters({ ...pageFilters, page: 1 })
+    if (settings.requestFilters.termId || settings.requestFilters.reportId) {
+      return () => toggleFilter(null, false)
+    }
   }, [settings.requestFilters, tableFilters.compareBy.key])
 
   // get paginated data
@@ -149,7 +152,12 @@ const StandardsPerformance = ({
   }
 
   if (loading) {
-    return <SpinLoader position="fixed" />
+    return (
+      <SpinLoader
+        tip="Please wait while we gather the required information..."
+        position="fixed"
+      />
+    )
   }
 
   if (error && error.dataSizeExceeded) {
@@ -157,7 +165,11 @@ const StandardsPerformance = ({
   }
 
   if (!res.metricInfo?.length) {
-    return <NoDataContainer>No data available currently.</NoDataContainer>
+    return (
+      <NoDataContainer>
+        {settings.requestFilters?.termId ? 'No data available currently.' : ''}
+      </NoDataContainer>
+    )
   }
 
   return (

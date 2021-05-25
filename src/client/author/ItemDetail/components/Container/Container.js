@@ -103,7 +103,10 @@ import {
 import { setCreatedItemToTestAction } from '../../../TestPage/ducks'
 import QuestionAuditTrailLogs from '../../../../assessment/containers/QuestionAuditTrailLogs'
 import LanguageSelector from '../../../../common/components/LanguageSelector'
-import { allowedToSelectMultiLanguageInTest } from '../../../src/selectors/user'
+import {
+  allowedToSelectMultiLanguageInTest,
+  isPremiumUserSelector,
+} from '../../../src/selectors/user'
 
 const testItemStatusConstants = {
   DRAFT: 'draft',
@@ -223,6 +226,7 @@ class Container extends Component {
           tabIndex: 0,
           testItemId: isTestFlow ? itemId : match.params._id,
           testName: state?.testName || '',
+          regradeFlow: state?.regradeFlow,
         },
       })
     }
@@ -351,6 +355,7 @@ class Container extends Component {
           rows.length > 1 && rowIndex === 0 && columnHasResource,
         isMultiDimensionalLayout,
         isMultipartItem,
+        regradeFlow: state?.regradeFlow,
       },
     })
   }
@@ -651,14 +656,20 @@ class Container extends Component {
         state: { resetView: false, testAuthoring: false, testId: state.testId },
       })
     }
-    const { previousTestId, fadeSidebar } = state || {}
+    const { previousTestId, fadeSidebar, regradeFlow } = state || {}
     history.push({
       // `/author/tests/${tId}/editItem/${item?._id}`
       pathname: isTestFlow
         ? `/author/tests/${testId}/editItem/${_id}`
         : `/author/items/${_id}/item-detail`,
       // To stop view changes, while using pagination buttons
-      state: { isTestFlow, previousTestId, fadeSidebar, resetView: false },
+      state: {
+        isTestFlow,
+        previousTestId,
+        fadeSidebar,
+        resetView: false,
+        regradeFlow,
+      },
     })
   }
 
@@ -725,7 +736,10 @@ class Container extends Component {
     return (
       <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
         <ScrollContext.Provider
-          value={{ getScrollElement: () => this.editModeContainerRef.current }}
+          value={{
+            getScrollElement: () =>
+              this.editModeContainerRef.current || document.body,
+          }}
         >
           <ItemDetailWrapper
             ref={this.editModeContainerRef}
@@ -877,6 +891,7 @@ class Container extends Component {
                     height="30px"
                     disabled={itemDeleting}
                     onClick={this.handleRemoveItemRequest}
+                    data-cy="removeItem"
                   >
                     <i className="fa fa-minus-circle" />
                     &nbsp;ITEM
@@ -887,6 +902,7 @@ class Container extends Component {
                   height="30px"
                   disabled={itemDeleting}
                   onClick={this.addItemToPassage}
+                  data-cy="addItem"
                 >
                   <i className="fa fa-plus-circle" />
                   &nbsp;ITEM
@@ -925,6 +941,7 @@ class Container extends Component {
       hasAuthorPermission,
       t,
       allowedToSelectMultiLanguage,
+      isPremiumUser,
     } = this.props
 
     let breadCrumbQType = ''
@@ -1016,6 +1033,7 @@ class Container extends Component {
               isMultiDimensionLayout={rows.length > 1}
               isMultipart={item.multipartItem}
               disableScoringLevel={disableScoringLevel}
+              isPremiumUser={isPremiumUser}
             />
           )}
           <ItemHeader
@@ -1173,6 +1191,7 @@ const enhance = compose(
       itemDeleting: get(state, 'itemDetail.deleting', false),
       view: getViewSelector(state),
       allowedToSelectMultiLanguage: allowedToSelectMultiLanguageInTest(state),
+      isPremiumUser: isPremiumUserSelector(state),
     }),
     {
       changeView: changeViewAction,

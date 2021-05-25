@@ -718,7 +718,7 @@ class ProfileBody extends React.Component {
                             validator: this.validateToNextPassword,
                           },
                         ],
-                      })(<Input type="password" />)}
+                      })(<Input type="password" autoComplete="off" />)}
                     </FormItemWrapper>{' '}
                     <FormItemWrapper>
                       <Label>{t('common.title.confirmPaswswordLabel')}</Label>
@@ -735,6 +735,7 @@ class ProfileBody extends React.Component {
                       })(
                         <Input
                           type="password"
+                          autoComplete="off"
                           onBlur={this.handleConfirmBlur}
                         />
                       )}
@@ -793,7 +794,10 @@ class ProfileBody extends React.Component {
                 </StandardSetsList>
                 <StandardSetsButtons>
                   {showSaveStandSetsBtn && (
-                    <SaveStandardSetsBtn onClick={this.handleSaveStandardSets}>
+                    <SaveStandardSetsBtn
+                      data-cy="saveStandardsets"
+                      onClick={this.handleSaveStandardSets}
+                    >
                       SAVE
                     </SaveStandardSetsBtn>
                   )}
@@ -801,6 +805,7 @@ class ProfileBody extends React.Component {
                     width="190px"
                     isBlue
                     onClick={this.handleSelectStandardButton}
+                    data-cy="selectStandardsets"
                     type="primary"
                   >
                     Select your standard sets
@@ -814,7 +819,10 @@ class ProfileBody extends React.Component {
                   <StyledDiv>
                     <Title>Default Settings</Title>
                     {showDefaultSettingSave && (
-                      <SaveDefaultSettingsBtn onClick={this.saveSettings}>
+                      <SaveDefaultSettingsBtn
+                        daya-cy="saveSettings"
+                        onClick={this.saveSettings}
+                      >
                         SAVE
                       </SaveDefaultSettingsBtn>
                     )}

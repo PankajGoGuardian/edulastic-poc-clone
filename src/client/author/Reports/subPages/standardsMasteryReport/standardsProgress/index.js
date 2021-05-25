@@ -83,12 +83,17 @@ const StandardsProgress = ({
   // set initial page filters
   useEffect(() => {
     setPageFilters({ ...pageFilters, barsPageNumber: 1, tablePageNumber: 1 })
-  }, [settings.requestFilters, ddfilter])
+    if (settings.requestFilters.termId || settings.requestFilters.reportId) {
+      return () => toggleFilter(null, false)
+    }
+  }, [settings.requestFilters])
+
   useEffect(() => {
     if (pageFilters.barsPageNumber) {
       setPageFilters({ ...pageFilters, tablePageNumber: 1 })
     }
   }, [tableFilters.compareBy.key])
+
   // get paginated data
   useEffect(() => {
     const _ddfilter = pickBy(ddfilter, (f) => f !== 'all' && !isEmpty(f))
@@ -129,7 +134,12 @@ const StandardsProgress = ({
   }, [denormalizedData])
 
   if (loading) {
-    return <SpinLoader position="fixed" />
+    return (
+      <SpinLoader
+        tip="Please wait while we gather the required information..."
+        position="fixed"
+      />
+    )
   }
 
   if (error && error.dataSizeExceeded) {
@@ -137,7 +147,11 @@ const StandardsProgress = ({
   }
 
   if (!denormalizedData?.length) {
-    return <NoDataContainer>No data available currently.</NoDataContainer>
+    return (
+      <NoDataContainer>
+        {settings.requestFilters?.termId ? 'No data available currently.' : ''}
+      </NoDataContainer>
+    )
   }
 
   return (

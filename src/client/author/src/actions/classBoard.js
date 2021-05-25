@@ -46,6 +46,8 @@ import {
   SET_UPDATED_ACTIVITY_IN_ENTITY,
   CORRECT_ITEM_UPDATE_REQUEST,
   RELOAD_LCB_DATA_IN_STUDENT_VIEW,
+  REPLACE_ORIGINAL_ITEM,
+  SET_CORRECT_ITEM_UPDATE_PROGRESS,
 } from '../constants/actions'
 
 export const receiveClassResponseAction = (data) => ({
@@ -80,10 +82,11 @@ export const receiveGradeBookdAction = (assignmentId, classId) => ({
 export const receiveTestActivitydAction = (
   assignmentId,
   classId,
-  isQuestionsView = false
+  isQuestionsView = false,
+  studentResponseParams
 ) => ({
   type: RECEIVE_TESTACTIVITY_REQUEST,
-  payload: { assignmentId, classId, isQuestionsView },
+  payload: { assignmentId, classId, isQuestionsView, studentResponseParams },
 })
 
 export const releaseScoreAction = (
@@ -277,4 +280,10 @@ export const updateCorrectTestItemAction = createAction(
 
 export const reloadLcbDataInStudentViewAction = createAction(
   RELOAD_LCB_DATA_IN_STUDENT_VIEW
+)
+
+export const replaceOriginalItemAction = createAction(REPLACE_ORIGINAL_ITEM)
+
+export const correctItemUpdateProgressAction = createAction(
+  SET_CORRECT_ITEM_UPDATE_PROGRESS
 )

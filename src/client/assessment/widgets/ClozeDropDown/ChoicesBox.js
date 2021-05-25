@@ -1,8 +1,8 @@
-import React, { useRef } from 'react'
+import React, { useRef, useContext } from 'react'
 import PropTypes from 'prop-types'
 import { find } from 'lodash'
 import styled from 'styled-components'
-import { MathSpan, SelectInputStyled } from '@edulastic/common'
+import { ScrollContext, MathSpan, SelectInputStyled } from '@edulastic/common'
 import { convertToMathTemplate } from '@edulastic/common/src/utils/mathUtils'
 
 const { Option } = SelectInputStyled
@@ -72,7 +72,7 @@ const ChoicesBox = ({ style = {}, resprops, id }) => {
     responsecontainerindividuals,
     userSelections,
   } = resprops
-
+  const { getScrollElement } = useContext(ScrollContext)
   if (!id) return null
   const { responseIds } = item
   const { index } = find(responseIds, (response) => response.id === id)
@@ -103,6 +103,14 @@ const ChoicesBox = ({ style = {}, resprops, id }) => {
     }
   }
 
+  const getPopupContainer = () => {
+    const scrollEl = getScrollElement()
+    if (!scrollEl || (scrollEl === window && 'location' in scrollEl)) {
+      return document.body
+    }
+    return scrollEl
+  }
+
   const dropdownMenuStyle = {
     top: styles?.height ? `${styles.height}px !important` : null,
     left: `0px !important`,
@@ -117,7 +125,7 @@ const ChoicesBox = ({ style = {}, resprops, id }) => {
         }}
         height={heightpx || btnStyle.height}
         placeholder={individualPlacholder || placeholder}
-        getPopupContainer={(triggerNode) => triggerNode.parentNode}
+        getPopupContainer={getPopupContainer}
         data-cy="drop_down_select"
         disabled={disableResponse}
         onChange={selectChange}

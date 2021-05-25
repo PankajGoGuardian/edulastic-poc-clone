@@ -43,6 +43,7 @@ const StudentProgressProfile = ({
   error,
   isCsvDownloading,
   t,
+  toggleFilter,
 }) => {
   const anonymousString = t('common.anonymous')
   const [analyseBy, setAnalyseBy] = useState(head(dropDownData.analyseByData))
@@ -93,11 +94,19 @@ const StudentProgressProfile = ({
 
   useEffect(() => {
     setPageFilters({ ...pageFilters, page: 1 })
-  }, [settings])
+    if (settings.requestFilters.termId || settings.requestFilters.reportId) {
+      return () => toggleFilter(null, false)
+    }
+  }, [
+    settings.selectedStudent,
+    settings.requestFilters,
+    settings.standardFilters,
+  ])
 
   useEffect(() => {
     const q = {
       ...settings.requestFilters,
+      ...settings.standardFilters,
       ...pageFilters,
       studentId: settings.selectedStudent.key,
     }
@@ -127,7 +136,12 @@ const StudentProgressProfile = ({
   )
 
   if (loading) {
-    return <SpinLoader position="fixed" />
+    return (
+      <SpinLoader
+        tip="Please wait while we gather the required information..."
+        position="fixed"
+      />
+    )
   }
 
   if (error && error.dataSizeExceeded) {
@@ -135,7 +149,11 @@ const StudentProgressProfile = ({
   }
 
   if (!settings.selectedStudent?.key) {
-    return <NoDataContainer>No data available currently.</NoDataContainer>
+    return (
+      <NoDataContainer>
+        {settings.requestFilters?.termId ? 'No data available currently.' : ''}
+      </NoDataContainer>
+    )
   }
 
   return (

@@ -12,8 +12,7 @@ import {
   setEditEnableAction,
   setRegradeFirestoreDocId,
 } from '../TestPage/ducks'
-import { correctItemUpdateAction } from '../ClassBoard/ducks'
-import { markQuestionLabel } from '../ClassBoard/Transformer'
+
 import { reloadLcbDataInStudentViewAction } from '../src/actions/classBoard'
 
 const collectionName = 'RegradeAssignments'
@@ -22,8 +21,6 @@ const NotificationListener = ({
   docId,
   onCloseModal,
   setFirestoreDocId,
-  correctItemUpdate,
-  testItems,
   modalState,
   studentResponseData,
   reloadLcbDataInStudentView,
@@ -45,18 +42,15 @@ const NotificationListener = ({
     if (userNotification) {
       const { error, processStatus } = userNotification
       if (processStatus === 'DONE' && !error) {
-        const itemsToReplace = testItems.map((t) =>
-          t._id === modalState.itemData.testItemId ? modalState.item : t
-        )
-        markQuestionLabel(itemsToReplace)
-        correctItemUpdate(itemsToReplace)
-        const { assignmentId, groupId } = modalState.itemData
+        const { assignmentId, groupId, lcbView } = modalState.itemData
         reloadLcbDataInStudentView({
           assignmentId,
           groupId,
           classId: groupId,
           testActivityId: studentResponseData?._id,
           studentId: studentResponseData?.userId,
+          lcbView,
+          modalState,
         })
         antdNotification({
           type: 'success',
@@ -89,14 +83,12 @@ export default compose(
   connect(
     (state) => ({
       docId: getRegradeFirebaseDocIdSelector(state),
-      testItems: get(state, 'classResponse.data.testItems', []),
       modalState: getRegradeModalStateSelector(state),
       studentResponseData: get(state, 'studentResponse.data.testActivity', {}),
     }),
     {
       setEditEnable: setEditEnableAction,
       setFirestoreDocId: setRegradeFirestoreDocId,
-      correctItemUpdate: correctItemUpdateAction,
       reloadLcbDataInStudentView: reloadLcbDataInStudentViewAction,
     }
   )

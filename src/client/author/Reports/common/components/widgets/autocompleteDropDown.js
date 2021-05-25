@@ -163,8 +163,10 @@ const AutocompleteDropDown = ({
         ref={autoRef}
         notFoundContent={
           <Empty
+            className="ant-empty-small"
             image={Empty.PRESENTED_IMAGE_SIMPLE}
             style={{ textAlign: 'left', margin: '10px 0' }}
+            description="No matching results"
           />
         }
       >
@@ -228,6 +230,9 @@ const StyledAutocompleteDropDown = styled(AutocompleteDropDown)`
   }
   .ant-select-dropdown-menu-item {
     font-size: 11px;
+  }
+  .ant-input-suffix .anticon-loading {
+    font-size: 1.4em;
   }
 `
 

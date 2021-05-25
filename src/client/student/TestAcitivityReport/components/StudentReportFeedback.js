@@ -33,7 +33,7 @@ const StudentFeedback = ({
     groupId,
   } = question[qId] || { skipped: true }
 
-  let _score = skipped ? 0 : parseFloat(score.toFixed(2))
+  let _score = skipped ? 0 : parseFloat((score || 0).toFixed(2))
   if (!graded) {
     _score = ''
   }
@@ -101,7 +101,7 @@ const StudentFeedback = ({
               height="32px"
               margin="0px 0px 0px 20px"
               fontSize="14px"
-              text="UNSCORED"
+              text="Zero Point"
               fontWeight="700"
             />
           ) : (

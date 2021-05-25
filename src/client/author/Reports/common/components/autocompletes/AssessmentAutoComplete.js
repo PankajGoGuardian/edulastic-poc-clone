@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { debounce, isEmpty } from 'lodash'
 
 // components & constants
-import { AutoComplete, Input, Icon, Tooltip } from 'antd'
+import { AutoComplete, Input, Icon, Tooltip, Empty } from 'antd'
 import { assignmentStatusOptions, roleuser } from '@edulastic/constants'
 
 // ducks
@@ -14,6 +14,7 @@ import {
   getTestListSelector,
   getTestListLoadingSelector,
 } from '../../../ducks'
+import useDropdownData from '../../hooks/useDropdownData'
 
 const { IN_PROGRESS, IN_GRADING, DONE } = assignmentStatusOptions
 
@@ -32,11 +33,12 @@ const AssessmentAutoComplete = ({
   selectedTestId,
   selectCB,
   tagIds,
+  showApply,
 }) => {
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
   const [fieldValue, setFieldValue] = useState('')
+
   const selectedTest = testList.find((t) => t._id === selectedTestId) || {}
-  const [isFocused, setIsFocused] = useState(false)
 
   // build search query
   const query = useMemo(() => {
@@ -108,18 +110,6 @@ const AssessmentAutoComplete = ({
       selectCB({ key: '', title: '' })
     }
   }
-  const onBlur = () => {
-    // force fetch testList to reset assessment filter to previously selected test
-    if (searchTerms.text !== searchTerms.selectedText) {
-      setSearchTerms({
-        ...searchTerms,
-        selectedText: '',
-        text: searchTerms.selectedText,
-      })
-      setFieldValue(searchTerms.selectedText)
-    }
-    setIsFocused(false)
-  }
   const loadTestListDebounced = useCallback(
     debounce(loadTestList, 500, { trailing: true }),
     []
@@ -127,15 +117,17 @@ const AssessmentAutoComplete = ({
 
   // effects
   useEffect(() => {
-    const { _id, title } = selectedTest
-    if (_id) {
-      setSearchTerms({ text: title, selectedText: title, selectedKey: _id })
-      setFieldValue(title)
-    } else {
-      setSearchTerms({ ...DEFAULT_SEARCH_TERMS, selectedKey: selectedTestId })
-      setFieldValue('')
+    if (firstLoad || (!firstLoad && !showApply)) {
+      const { _id, title } = selectedTest
+      if (_id) {
+        setSearchTerms({ text: title, selectedText: title, selectedKey: _id })
+        setFieldValue(title)
+      } else {
+        setSearchTerms({ ...DEFAULT_SEARCH_TERMS, selectedKey: selectedTestId })
+        setFieldValue('')
+      }
     }
-  }, [selectedTestId])
+  }, [selectedTestId, showApply])
   useEffect(() => {
     if (!searchTerms.selectedText && testList.length) {
       onSelect(testList[0]._id)
@@ -148,7 +140,7 @@ const AssessmentAutoComplete = ({
       setSearchTerms({ ...DEFAULT_SEARCH_TERMS })
       setFieldValue('')
     }
-  }, [termId, grades, subjects, testTypes])
+  }, [termId, grades, subjects, testTypes, tagIds])
   useEffect(() => {
     if (
       (!searchTerms.text && !searchTerms.selectedText) ||
@@ -157,22 +149,12 @@ const AssessmentAutoComplete = ({
       loadTestListDebounced(query)
     }
   }, [query])
+
   // build dropdown data
-  const dropdownData = isEmpty(testList)
-    ? [
-        <AutoComplete.Option disabled key={0} title="no data found">
-          No Data Found
-        </AutoComplete.Option>,
-      ]
-    : testList.map((item) => (
-        <AutoComplete.Option key={item._id} title={item.title}>
-          {`${
-            item.title.length > 25
-              ? `${item.title.slice(0, 22)}...`
-              : item.title
-          } (ID:${item._id.substring(item._id.length - 5) || ''})`}
-        </AutoComplete.Option>
-      ))
+  const dropdownData = useDropdownData(testList, {
+    showId: true,
+    searchText: searchTerms.text || '',
+  })
 
   const selectedTestLabel =
     searchTerms.text === searchTerms.selectedText && selectedTest._id
@@ -183,7 +165,7 @@ const AssessmentAutoComplete = ({
 
   const InputSuffixIcon = loading ? (
     <Icon type="loading" />
-  ) : searchTerms.text && isFocused ? (
+  ) : searchTerms.text ? (
     <></>
   ) : (
     <Icon type="search" />
@@ -198,11 +180,17 @@ const AssessmentAutoComplete = ({
           onSearch={onSearch}
           dataSource={dropdownData}
           onSelect={onSelect}
-          onBlur={onBlur}
-          onFocus={() => setIsFocused(true)}
           onChange={onChange}
-          allowClear={!loading && searchTerms.selectedText && isFocused}
+          allowClear={!loading && searchTerms.selectedText}
           clearIcon={<Icon type="close" style={{ color: '#1AB394' }} />}
+          notFoundContent={
+            <Empty
+              className="ant-empty-small"
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+              style={{ textAlign: 'left', margin: '10px 0' }}
+              description="No matching results"
+            />
+          }
         >
           <Input suffix={InputSuffixIcon} />
         </AutoComplete>
@@ -229,5 +217,9 @@ const AutoCompleteContainer = styled.div`
   }
   .ant-select-selection__clear {
     background: transparent;
+    opacity: 1;
+  }
+  .ant-input-suffix .anticon-loading {
+    font-size: 1.4em;
   }
 `

@@ -1,5 +1,5 @@
 import { createAction, createReducer, createSelector } from 'redux-starter-kit'
-import { pick, last, get, set, isBoolean } from 'lodash'
+import { pick, last, get, set, isBoolean, forIn, startsWith } from 'lodash'
 import { takeLatest, call, put, select } from 'redux-saga/effects'
 import { message } from 'antd'
 import { captureSentryException } from '@edulastic/common/src/sentryHelpers'
@@ -171,8 +171,6 @@ export const TOGGLE_IMAGES_BLOCKED_NOTIFICATION =
   '[user] toggle images blocked notification'
 export const TOGGLE_ROLE_CONFIRMATION =
   '[user] toggle student signing up as teacher'
-export const TOGGLE_MULTIPLE_ACCOUNT_NOTIFICATION =
-  '[user] toggle multiple account notification'
 
 export const PERSIST_AUTH_STATE_AND_REDIRECT =
   '[auth] persist auth entry state and request app bundle'
@@ -271,9 +269,6 @@ export const toggleImageBlockNotificationAction = createAction(
 export const toggleRoleConfirmationPopupAction = createAction(
   TOGGLE_ROLE_CONFIRMATION
 )
-export const toggleMultipleAccountNotificationAction = createAction(
-  TOGGLE_MULTIPLE_ACCOUNT_NOTIFICATION
-)
 
 export const persistAuthStateAndRedirectToAction = createAction(
   PERSIST_AUTH_STATE_AND_REDIRECT
@@ -298,9 +293,6 @@ const initialState = {
   isClassCodeModalOpen: false,
   isImageBlockNotification: false,
   isRoleConfirmation: false,
-  isMultipleAccountNotification: !localStorage.getItem(
-    'isMultipleAccountNotification'
-  ),
   iosRestrictNavigationModalVisible: false,
   showAdminSubscriptionModal: false,
 }
@@ -716,9 +708,6 @@ export default createReducer(initialState, {
       state.email = payload
     }
   },
-  [TOGGLE_MULTIPLE_ACCOUNT_NOTIFICATION]: (state, { payload }) => {
-    state.isMultipleAccountNotification = payload
-  },
   [TOGGLE_FREE_ADMIN_SUBSCRIPTON_ALERT_MODAL]: (state) => {
     state.showAdminSubscriptionModal = !state.showAdminSubscriptionModal
   },
@@ -805,6 +794,11 @@ export const getUserFeatures = createSelector(
 export const isProxyUser = createSelector(
   ['user.user.isProxy'],
   (isProxy) => isProxy
+)
+
+export const isDemoPlaygroundUser = createSelector(
+  ['user.user.isPlayground'],
+  (isPlayground) => isPlayground
 )
 
 export const proxyRole = createSelector(
@@ -1201,7 +1195,8 @@ export function* fetchUser({ payload }) {
       return
     }
     const firebaseUser = yield call(getCurrentFirebaseUser)
-    const user = (yield call(userApi.getUser, firebaseUser ? undefined : true))||{}
+    const user =
+      (yield call(userApi.getUser, firebaseUser ? undefined : true)) || {}
     if (
       (!firebaseUser && user?.firebaseAuthToken) ||
       (firebaseUser && firebaseUser !== user._id)
@@ -1216,7 +1211,7 @@ export function* fetchUser({ payload }) {
       TokenStorage.storeAccessToken(user.token, user._id, user.role, true)
       TokenStorage.selectAccessToken(user._id, user.role)
     }
-    TokenStorage.updateKID(user||{})
+    TokenStorage.updateKID(user || {})
     const searchParam = yield select((state) => state.router.location.search)
     if (searchParam.includes('showCliBanner=1'))
       localStorage.setItem('showCLIBanner', true)
@@ -1244,10 +1239,14 @@ export function* fetchUser({ payload }) {
     }
   } catch (error) {
     console.log('err', error, error)
-    if(error?.response && error?.response?.status === 409 && error?.response?.data?.message === "oldToken"){
-      window.dispatchEvent(new Event('student-session-expired'));
-      return;
-    } 
+    if (
+      error?.response &&
+      error?.response?.status === 409 &&
+      error?.response?.data?.message === 'oldToken'
+    ) {
+      window.dispatchEvent(new Event('student-session-expired'))
+      return
+    }
     notification({ messageKey: 'failedLoadingUserData' })
     if (!(error?.response && error?.response?.status === 501)) {
       if (
@@ -1304,7 +1303,7 @@ function redirectToUrl(url) {
 function* logout() {
   try {
     const user = yield select(getUser)
-    if (user.isProxy) {
+    if (user.isProxy || user.isPlayground) {
       TokenStorage.removeAccessToken(user._id, user.role)
       window.close()
     } else {
@@ -1312,11 +1311,16 @@ function* logout() {
       if (user && TokenStorage.getAccessTokenForUser(user._id, user.role)) {
         yield call(userApi.logout)
       }
-      localStorage.clear()
+      // localStorage.clear()
+      forIn(localStorage, (value, objKey) => {
+        if (!startsWith(objKey, 'recommendedTest:')) {
+          localStorage.removeItem(objKey)
+        }
+      })
       sessionStorage.removeItem('cliBannerShown')
       sessionStorage.removeItem('cliBannerVisible')
       sessionStorage.removeItem('addAccountDetails')
-      sessionStorage.removeItem('filters[Assignments]')
+      sessionStorage.removeItem(`assignments_filter_${user._id}`)
       sessionStorage.removeItem('temporaryClass')
       TokenStorage.removeKID()
       TokenStorage.initKID()
@@ -1324,7 +1328,6 @@ function* logout() {
       yield put({ type: 'RESET' })
       yield call(redirectToUrl, getSignOutUrl())
       removeSignOutUrl()
-      yield put(toggleMultipleAccountNotificationAction(true))
     }
   } catch (e) {
     console.log(e)
@@ -1901,9 +1904,14 @@ function* resetPasswordRequestSaga({ payload }) {
 
 function* resetMyPasswordRequestSaga({ payload }) {
   try {
-    yield call(userApi.resetMyPassword, payload)
-    notification({ type: 'success', messageKey: 'passwordChangedSucessfully' })
-    yield put({ type: RESET_MY_PASSWORD_SUCCESS })
+    const res = yield call(userApi.resetMyPassword, payload)
+    if (res?.status === 200) {
+      notification({
+        type: 'success',
+        messageKey: 'passwordChangedSucessfully',
+      })
+      yield put({ type: RESET_MY_PASSWORD_SUCCESS })
+    }
   } catch (e) {
     console.error(e)
     notification({ messageKey: 'failedToResetPassword' })

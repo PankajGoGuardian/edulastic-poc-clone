@@ -5,23 +5,36 @@ import { withRouter } from 'react-router-dom'
 import loadable from '@loadable/component'
 import { compose } from 'redux'
 import { uniq, compact } from 'lodash'
+import moment from 'moment'
 import {
   getItemBankSubscriptions,
   getProducts,
   getSubscriptionSelector,
-  getIsPaymentServiceModalVisible,
   getPremiumProductId,
   getIsVerificationPending,
   getAddOnProductIds,
   getBookKeepersInviteSuccessStatus,
   slice,
+  getShowTrialConfirmationMessageSelector,
 } from '../../../../Subscription/ducks'
-import IndividualSubscriptionModal from './IndividualSubscriptionModal'
-import { getUserOrgId } from '../../../selectors/user'
+import {
+  getCollectionsSelector,
+  getInterestedGradesSelector,
+  getUserOrgId,
+} from '../../../selectors/user'
+import {
+  fetchPlaylistsAction,
+  getDashboardPlaylists,
+} from '../../../../Dashboard/ducks'
+import { useThisPlayListAction } from '../../../../CurriculumSequence/ducks'
 
 const MultipleLicensePurchase = loadable(() =>
   import('./MultipleLicensePurchase')
 )
+const IndividualSubscriptionModal = loadable(() =>
+  import('./IndividualSubscriptionModal')
+)
+const TrialConfirmationModal = loadable(() => import('./TrialConfimationModal'))
 const UpgradeModal = loadable(() => import('./UpgradeModal'))
 const PaymentServiceModal = loadable(() => import('./PaymentServiceModal'))
 const PayWithPoModal = loadable(() => import('./PayWithPoModal'))
@@ -49,8 +62,6 @@ const PurchaseFlowModals = (props) => {
     itemBankSubscriptions = [],
     premiumProductId,
     products,
-    isPaymentServiceModalVisible,
-    setPaymentServiceModal,
     showSubscriptionAddonModal,
     setShowSubscriptionAddonModal,
     setProductData,
@@ -73,6 +84,19 @@ const PurchaseFlowModals = (props) => {
     bulkInviteBookKeepers,
     isBookKeepersInviteSuccess,
     setBookKeepersInviteSuccess,
+    subsLicenses = [],
+    isConfirmationModalVisible,
+    setShowTrialSubsConfirmation,
+    showTrialConfirmationMessage,
+    trialAddOnProductIds,
+    collections,
+    fetchPlaylists,
+    playlists,
+    history,
+    useThisPlayList,
+    interestedGrades,
+    clickedBundleId,
+    setClickedBundleId,
   } = props
 
   const [payWithPoModal, setPayWithPoModal] = useState(false)
@@ -81,7 +105,11 @@ const PurchaseFlowModals = (props) => {
   const [emailIds, setEmailIds] = useState([])
   const [totalAmount, setTotalAmount] = useState(100)
   const [quantities, setQuantities] = useState({})
+  const [isPaymentServiceModalVisible, setPaymentServiceModal] = useState(false)
 
+  const trialConfirmationMessage = showTrialConfirmationMessage.subEndDate
+    ? showTrialConfirmationMessage
+    : { subEndDate: moment(subEndDate).format('DD MMM, YYYY') }
   /**
    *  a user is paid premium user if
    *  - subType exists and
@@ -105,50 +133,79 @@ const PurchaseFlowModals = (props) => {
 
   const defaultSelectedProductIdsRef = useRef()
 
-  const shouldProrate = useMemo(() => {
+  const getShouldProrate = (endDate) => {
     const oneDay = 1000 * 60 * 60 * 24
-    if (subEndDate) {
-      const remainingDaysForPremiumExpiry = Math.round(
-        (new Date(subEndDate).getTime() - new Date().getTime()) / oneDay
-      )
-
-      return remainingDaysForPremiumExpiry > 90
+    const remainingDaysForPremiumExpiry = Math.round(
+      (new Date(endDate).getTime() - new Date().getTime()) / oneDay
+    )
+    return remainingDaysForPremiumExpiry > 90
+  }
+  const shouldProrateMultiplePurchase = useMemo(() => {
+    if (
+      (showMultiplePurchaseModal || showBuyMoreModal) &&
+      subsLicenses.length
+    ) {
+      // taking the first licesne end data because all the licesnes will have the same end date
+      const endDate = subsLicenses[0]?.expiresOn
+      return getShouldProrate(endDate)
     }
-    return true
-  }, [subEndDate])
+    return false
+  }, [subsLicenses, showMultiplePurchaseModal, showBuyMoreModal])
+
+  const shouldProrate = useMemo(() => {
+    if (showMultiplePurchaseModal || showBuyMoreModal) {
+      return false
+    }
+    if (subEndDate) {
+      return getShouldProrate(subEndDate)
+    }
+    return false
+  }, [subEndDate, showMultiplePurchaseModal, showBuyMoreModal])
 
   const { teacherPremium = {}, itemBankPremium = [] } = useMemo(() => {
     const boughtPremiumBankIds = itemBankSubscriptions
       .filter((x) => !x.isTrial)
       .map((x) => x.itemBankId)
-    const purchasableProducts = products.filter(
-      (x) => !boughtPremiumBankIds.includes(x.linkedProductId)
-    )
-
+    // for individual purchase have to filttered products
+    // for multiples or renew show all products
+    const purchasableProducts = shouldProrate
+      ? products.filter(
+          (x) => !boughtPremiumBankIds.includes(x.linkedProductId)
+        )
+      : products
     const result = purchasableProducts.map((product) => {
       const { id: currentProductId } = product
-      if (
-        !subEndDate ||
-        currentProductId === premiumProductId ||
-        (subEndDate && !isPaidPremium) ||
-        ['enterprise', 'partial_premium'].includes(subType)
-      ) {
-        return {
-          ...product,
-          period: product.period,
-          price: product.price,
+
+      if (!shouldProrateMultiplePurchase) {
+        if (
+          !subEndDate ||
+          currentProductId === premiumProductId ||
+          (subEndDate && !isPaidPremium) ||
+          ['enterprise', 'partial_premium'].includes(subType)
+        ) {
+          return {
+            ...product,
+            period: product.period,
+            price: product.price,
+          }
         }
       }
 
       let dynamicPrice = product.price
       let dynamicPeriodInDays = product.period
-
-      if (shouldProrate) {
+      let endDate = subEndDate
+      if (shouldProrateMultiplePurchase) {
+        // taking the first licesne end data because all the licesnes will have the same end date
+        endDate = subsLicenses[0]?.expiresOn
+      }
+      if (shouldProrate || shouldProrateMultiplePurchase) {
         let currentDate = new Date()
         const itemBankSubEndDate = new Date(
           currentDate.setDate(currentDate.getDate() + product.period)
         ).valueOf()
-        const computedEndDate = Math.min(itemBankSubEndDate, subEndDate)
+        const computedEndDate = endDate
+          ? Math.min(itemBankSubEndDate, new Date(endDate).getTime())
+          : itemBankSubEndDate
         currentDate = Date.now()
         const amountFactor = Math.min(
           (computedEndDate - currentDate) / (itemBankSubEndDate - currentDate),
@@ -168,7 +225,7 @@ const PurchaseFlowModals = (props) => {
       teacherPremium: result[0],
       itemBankPremium: result.slice(1),
     }
-  }, [subEndDate, products])
+  }, [subEndDate, products, subsLicenses, shouldProrateMultiplePurchase])
 
   useEffect(() => {
     if (
@@ -206,7 +263,12 @@ const PurchaseFlowModals = (props) => {
 
   const stripePaymentActionHandler = (data) => {
     if (addOnProductIds?.length) {
-      handleStripePayment({ ...data, productIds: [...addOnProductIds] })
+      handleStripePayment({
+        ...data,
+        productIds: [...addOnProductIds],
+        setPaymentServiceModal,
+        setShowTrialSubsConfirmation,
+      })
     } else {
       handleStripeMultiplePayment({
         ...data,
@@ -214,6 +276,7 @@ const PurchaseFlowModals = (props) => {
         emailIds,
         licenseIds: selectedLicenseId ? [selectedLicenseId] : licenseIds,
         licenseOwnerId,
+        setPaymentServiceModal,
       })
       if (selectedLicenseId) {
         setSelectedLicenseId(null)
@@ -285,7 +348,7 @@ const PurchaseFlowModals = (props) => {
         <MultipleLicensePurchase
           isVisible={showMultiplePurchaseModal}
           handleCloseModal={handleSubscriptionAddonModalClose}
-          products={products}
+          products={[teacherPremium, ...itemBankPremium]}
           handleClick={handleClick}
           setTotalAmount={setTotalAmount}
           teacherPremium={teacherPremium}
@@ -329,7 +392,7 @@ const PurchaseFlowModals = (props) => {
           isVisible={showBuyMoreModal}
           handleCloseModal={handleSubscriptionAddonModalClose}
           handleClick={handleClick}
-          products={products}
+          products={[teacherPremium, ...itemBankPremium]}
           currentItemId={currentItemId}
           setTotalAmount={setTotalAmount}
           setQuantities={setQuantities}
@@ -339,6 +402,25 @@ const PurchaseFlowModals = (props) => {
           totalAmount={totalAmount}
           isEdulasticAdminView={isEdulasticAdminView}
           teacherPremium={teacherPremium}
+          setSelectedLicenseId={setSelectedLicenseId}
+        />
+      )}
+      {isConfirmationModalVisible && (
+        <TrialConfirmationModal
+          visible={isConfirmationModalVisible}
+          showTrialSubsConfirmationAction={setShowTrialSubsConfirmation}
+          showTrialConfirmationMessage={trialConfirmationMessage}
+          trialAddOnProductIds={trialAddOnProductIds}
+          collections={collections}
+          history={history}
+          products={products}
+          fetchPlaylists={fetchPlaylists}
+          playlists={playlists}
+          subType={subType}
+          useThisPlayList={useThisPlayList}
+          interestedGrades={interestedGrades}
+          clickedBundleId={clickedBundleId}
+          setClickedBundleId={setClickedBundleId}
         />
       )}
     </>
@@ -350,6 +432,7 @@ PurchaseFlowModals.defaultProps = {
   setShowSubscriptionAddonModal: () => {},
   setShowBuyMoreModal: () => {},
   setSelectedLicenseId: () => {},
+  setClickedBundleId: () => {},
 }
 
 export default compose(
@@ -361,21 +444,27 @@ export default compose(
       products: getProducts(state),
       verificationPending: getIsVerificationPending(state),
       premiumProductId: getPremiumProductId(state),
-      isPaymentServiceModalVisible: getIsPaymentServiceModalVisible(state),
       user: state.user.user,
       addOnProductIds: getAddOnProductIds(state),
       userOrgId: getUserOrgId(state),
       isBookKeepersInviteSuccess: getBookKeepersInviteSuccessStatus(state),
+      collections: getCollectionsSelector(state),
+      playlists: getDashboardPlaylists(state),
+      showTrialConfirmationMessage: getShowTrialConfirmationMessageSelector(
+        state
+      ),
+      interestedGrades: getInterestedGradesSelector(state),
     }),
     {
       handleStripePayment: slice.actions.stripePaymentAction,
       handleStripeMultiplePayment: slice.actions.stripeMultiplePaymentAction,
       handleEdulasticAdminProductLicense:
         slice.actions.edulasticAdminProductLicenseAction,
-      setPaymentServiceModal: slice.actions.setPaymentServiceModal,
       setAddOnProductIds: slice.actions.setAddOnProductIds,
       bulkInviteBookKeepers: slice.actions.bulkInviteBookKeepersAction,
       setBookKeepersInviteSuccess: slice.actions.setBookKeepersInviteSuccess,
+      fetchPlaylists: fetchPlaylistsAction,
+      useThisPlayList: useThisPlayListAction,
     }
   )
 )(PurchaseFlowModals)

@@ -37,6 +37,7 @@ export const defaultReport = {
   metricInfo: [],
   studInfo: [],
   standardsMap: {},
+  performanceSummaryStats: [],
   defaultStandardId: 0,
 }
 
@@ -55,7 +56,28 @@ export const reportPerformanceByStandardsReducer = createReducer(initialState, {
   [GET_PERFORMANCE_BY_STANDARDS_SUCCESS]: (state, { payload }) => {
     state.loading = false
     state.error = undefined
-    state.performanceByStandards = payload.report
+    const report = payload.report
+    if (!payload.summaryStats) {
+      const {
+        performanceSummaryStats,
+        skillInfo,
+        scaleInfo,
+        standardsMap,
+        defaultStandardId,
+      } = state.performanceByStandards
+      Object.assign(report, { performanceSummaryStats })
+      // by applying diferent compare by(ex: student groups) 
+      // we do not get result. to show only stats copy existing metadata.
+      if (isEmpty(report.metricInfo)) {
+        Object.assign(report, {
+          skillInfo,
+          standardsMap,
+          scaleInfo,
+          defaultStandardId,
+        })
+      }
+    }
+    state.performanceByStandards = report
   },
   [GET_PERFORMANCE_BY_STANDARDS_ERROR]: (state, { payload }) => {
     state.loading = false
@@ -92,9 +114,14 @@ function* getPerformanceByStandardsSaga({ payload }) {
       return
     }
     const { result } = data
-    const report = isEmpty(result) ? defaultReport : result
+    const report = isEmpty(result) ? { ...defaultReport } : result
 
-    yield put(getPerformanceByStandardsSuccessAction({ report }))
+    yield put(
+      getPerformanceByStandardsSuccessAction({
+        report,
+        summaryStats: payload.requestFilters.summaryStats,
+      })
+    )
   } catch (error) {
     notification({ msg: errorMessage })
     yield put(getPerformanceByStandardsErrorAction({ error: errorMessage }))

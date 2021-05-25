@@ -312,6 +312,7 @@ class ClozeDragDropDisplay extends Component {
       view,
       t,
       hideCorrectAnswer,
+      answerScore,
     } = this.props
     const { userAnswers, possibleResponses, parsedTemplate } = this.state
     const { showDraghandle: dragHandler, shuffleOptions } = configureOptions
@@ -381,6 +382,7 @@ class ClozeDragDropDisplay extends Component {
       cAnswers: get(item, 'validation.validResponse.value', []),
       isExpressGrader,
       isPrintPreview,
+      answerScore,
     }
 
     const templateBoxLayoutContainer = (
@@ -551,7 +553,7 @@ class ClozeDragDropDisplay extends Component {
               )}
             </QuestionLabelWrapper>
 
-            <QuestionContentWrapper>
+            <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
               <QuestionTitleWrapper>
                 {!question && questionContent}
               </QuestionTitleWrapper>

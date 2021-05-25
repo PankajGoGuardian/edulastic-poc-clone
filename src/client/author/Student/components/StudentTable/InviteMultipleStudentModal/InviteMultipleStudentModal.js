@@ -88,7 +88,7 @@ class InviteMultipleStudentModal extends Component {
           ? row.students
               .split(/,|;|\n/)
               .filter((_o) => _o.trim().length)
-              .map((x) => x.replace('\t', ' '))
+              .map((x) => x.trim().replace('\t', ' '))
           : []
         if (studentsList.length) {
           inviteStudents({
@@ -262,6 +262,7 @@ class InviteMultipleStudentModal extends Component {
       t,
       form,
       searchAndAddStudents = false,
+      isDemoPlaygroundUser,
     } = this.props
     const { getFieldDecorator } = form
     const {
@@ -385,7 +386,7 @@ class InviteMultipleStudentModal extends Component {
         centered
       >
         <Row gutter={4} type="flex" justify="space-between">
-          {searchAndAddStudents && (
+          {searchAndAddStudents && !isDemoPlaygroundUser && (
             <Col span={13}>
               <SearchTabButton
                 data-cy="searchStudent"
@@ -550,6 +551,7 @@ const enhance = compose(
     (state) => ({
       orgData: get(state, 'user.user.orgData', {}),
       role: get(state, 'user.user.role', null),
+      isDemoPlaygroundUser: get(state, 'user.user.isPlayGround', null),
     }),
     {}
   )

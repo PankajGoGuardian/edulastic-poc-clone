@@ -5,7 +5,7 @@ import { TextWrapper } from '../../../../../styledComponents'
 import Card from '../Card'
 import { CardContainer } from './styled'
 
-const Classes = ({ activeClasses, emptyBoxCount }) => {
+const Classes = ({ activeClasses, emptyBoxCount, userId }) => {
   if (activeClasses.length === 0) {
     return null
   }
@@ -23,7 +23,7 @@ const Classes = ({ activeClasses, emptyBoxCount }) => {
       <FlexContainer justifyContent="space-between" flexWrap="wrap">
         {activeClasses.map((item) => (
           <CardContainer key={item._id}>
-            <Card data={item} />
+            <Card data={item} userId={userId} />
           </CardContainer>
         ))}
         {emptyBoxCount.map((index) => (

@@ -146,6 +146,7 @@ class Display extends Component {
       userAnswers,
       setAnswers,
       hideCorrectAnswer,
+      answerScore,
     } = this.props
 
     const showDropItemBorder = get(item, 'responseLayout.showborder', false)
@@ -268,6 +269,7 @@ class Display extends Component {
         onClickHandler={this.onClickCheckboxHandler}
         isExpressGrader={isExpressGrader}
         isPrintPreview={isPrintPreview}
+        answerScore={answerScore}
       />
     )
     const templateBoxLayout =
@@ -314,7 +316,7 @@ class Display extends Component {
             )}
           </QuestionLabelWrapper>
 
-          <QuestionContentWrapper>
+          <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
             <Stimulus dangerouslySetInnerHTML={{ __html: question }} />
             <TemplateBoxContainer
               hideInternalOverflow={hideInternalOverflow}

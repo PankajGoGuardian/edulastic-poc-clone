@@ -36,6 +36,7 @@ const DeleteItemModal = ({
           </EduButton>
           <EduButton
             key="delete"
+            data-cy="submitConfirm"
             disabled={confirmText.toLocaleLowerCase() !== 'delete'}
             onClick={() => {
               if (confirmText.toLocaleLowerCase() === 'delete') {
@@ -58,6 +59,7 @@ const DeleteItemModal = ({
         </div>
         <div className="delete-confirm-contaner">
           <StyledInput
+            data-cy="confirmationInput"
             className="delete-confirm-input"
             type="text"
             onChange={(event) => setConfirmText(event.currentTarget.value)}

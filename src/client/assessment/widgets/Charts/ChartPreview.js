@@ -234,7 +234,7 @@ const ChartPreview = ({
           )}
         </QuestionLabelWrapper>
 
-        <QuestionContentWrapper>
+        <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
           {view === PREVIEW && (
             <>
               <QuestionTitleWrapper>

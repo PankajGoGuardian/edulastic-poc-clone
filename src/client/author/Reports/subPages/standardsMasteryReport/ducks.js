@@ -51,6 +51,7 @@ const initialState = {
     standardGrade: '',
     profileId: '',
     domainIds: '',
+    assignedBy: 'anyone',
   },
   tagsData: {},
 }

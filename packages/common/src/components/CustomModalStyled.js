@@ -34,7 +34,8 @@ const StyledModal = styled(Modal)`
       background: transparent;
       border: none;
       .ant-modal-title {
-        font-size: 16px;
+        font-size: ${(props) =>
+          props.titleFontSize ? props.titleFontSize : '16px'};
         color: ${title};
         font-weight: 700;
         @media (min-width: ${mediumDesktopExactWidth}) {

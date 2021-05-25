@@ -32,21 +32,22 @@ export const getReportsSARSettings = createSelector(
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //
 
 const initialState = {
-  selectedTest: { key: '' },
+  selectedTest: { key: '', title: '' },
   requestFilters: {
     reportId: '',
     termId: '',
-    subjects: '',
-    grades: '',
+    testSubjects: '',
+    testGrades: '',
     assessmentTypes: '',
     tagIds: '',
     schoolIds: '',
     teacherIds: '',
-    studentSubjects: '',
-    studentGrades: '',
-    studentCourseId: '',
+    subjects: '',
+    grades: '',
+    courseId: '',
     classIds: '',
     groupIds: '',
+    assignedBy: 'anyone',
   },
   tagsData: {},
   reportType: '',

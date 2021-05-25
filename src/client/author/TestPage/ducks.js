@@ -180,20 +180,10 @@ export const getTestGradeAndSubject = (
   }
   return { testGrades, testSubjects }
 }
-// user is created ? then he is author not authored and in authors list he is co-author
-const authorType = (userId, { createdBy, authors }) => {
-  if (userId === createdBy?._id) {
-    return 'author'
-  }
-  if (authors.some((item) => item._id === userId)) {
-    return 'co-author'
-  }
-  return false
-}
 
-const isRegraded = (isAuthor, entity, requestedTestId) => {
+export const isRegradedByCoAuthor = (userId, entity, requestedTestId) => {
   if (
-    isAuthor &&
+    entity.authors.some((item) => item._id === userId) &&
     entity._id !== requestedTestId &&
     entity.previousTestId === requestedTestId &&
     entity.status === 'published' &&
@@ -240,7 +230,7 @@ export const CLEAR_CREATED_ITEMS_FROM_TEST =
   '[test] clear createdItems from test'
 export const PREVIEW_CHECK_ANSWER = '[test] check answer for preview modal'
 export const PREVIEW_SHOW_ANSWER = '[test] show answer for preview modal'
-export const REPLACE_TEST_ITEMS = '[test] replace test items'
+export const REPLACE_TEST_DATA = '[test] replace test data'
 export const UPDATE_TEST_DEFAULT_IMAGE = '[test] update default thumbnail image'
 export const SET_PASSAGE_ITEMS = '[tests] set passage items'
 export const SET_AND_SAVE_PASSAGE_ITEMS = '[tests] set and save passage items'
@@ -315,11 +305,14 @@ export const REMOVE_TEST_SETTING_FROM_LIST =
   '[tests] remove test setting from list'
 export const DELETE_TEST_SETTING_REQUEST = '[tests] delete test setting request'
 export const UPDATE_TEST_SETTING_REQUEST = '[tests] update test setting request'
+export const SET_SHOW_REGRADE_CONFIRM =
+  '[tests] set show regrade confirmation popup'
+export const SET_SHOW_UPGRADE_POPUP = '[tests] set show upgrade popup'
 // actions
 
 export const previewCheckAnswerAction = createAction(PREVIEW_CHECK_ANSWER)
 export const previewShowAnswerAction = createAction(PREVIEW_SHOW_ANSWER)
-export const replaceTestItemsAction = createAction(REPLACE_TEST_ITEMS)
+export const replaceTestDataAction = createAction(REPLACE_TEST_DATA)
 export const setNextPreviewItemAction = createAction(SET_NEXT_PREVIEW_ITEM)
 export const updateDefaultThumbnailAction = createAction(
   UPDATE_TEST_DEFAULT_IMAGE
@@ -399,6 +392,10 @@ export const setSharingContentStateAction = createAction(
 export const updateEmailNotificationDataAction = createAction(
   UPDATE_EMAIL_NOTIFICATION_DATA
 )
+export const setShowRegradeConfirmPopupAction = createAction(
+  SET_SHOW_REGRADE_CONFIRM
+)
+export const setShowUpgradePopupAction = createAction(SET_SHOW_UPGRADE_POPUP)
 
 export const setAvailableRegradeAction = createAction(SET_REGRADE_ACTIONS)
 
@@ -490,7 +487,7 @@ export const setCreateSuccessAction = () => ({
 })
 
 export const setTestEditAssignedAction = createAction(SET_TEST_EDIT_ASSIGNED)
-export const setRegradeSettingsDataAction = (payload) => ({
+export const regradeTestAction = (payload) => ({
   type: REGRADE_TEST,
   payload,
 })
@@ -731,6 +728,16 @@ export const getAvaialbleRegradeSettingsSelector = createSelector(
   (state) => state.availableRegradeSettings
 )
 
+export const getShowRegradeConfirmPopupSelector = createSelector(
+  stateSelector,
+  (state) => state.showRegradeConfirmPopup
+)
+
+export const getShowUpgradePopupSelector = createSelector(
+  stateSelector,
+  (state) => state.upgrade
+)
+
 export const showGroupsPanelSelector = createSelector(
   getTestEntitySelector,
   ({ itemGroups }) => {
@@ -748,27 +755,40 @@ export const showGroupsPanelSelector = createSelector(
 export const getUserListSelector = createSelector(stateSelector, (state) => {
   const usersList = state.sharedUsersList
   const flattenUsers = []
-  usersList.forEach(({ permission, sharedType, sharedWith, sharedId }) => {
-    if (sharedType === 'INDIVIDUAL' || sharedType === 'SCHOOL') {
-      sharedWith.forEach((user) => {
-        flattenUsers.push({
-          userName: user.name,
-          email: user.email || '',
-          _userId: user._id,
+  usersList.forEach(
+    ({
+      permission,
+      sharedType,
+      sharedWith,
+      sharedId,
+      v1LinkShareEnabled = 0,
+    }) => {
+      if (sharedType === 'INDIVIDUAL' || sharedType === 'SCHOOL') {
+        sharedWith.forEach((user) => {
+          flattenUsers.push({
+            userName: user.name,
+            email: user.email || '',
+            _userId: user._id,
+            sharedType,
+            permission,
+            sharedId,
+          })
+        })
+      } else {
+        const shareData = {
+          userName: sharedType,
           sharedType,
           permission,
           sharedId,
-        })
-      })
-    } else {
-      flattenUsers.push({
-        userName: sharedType,
-        sharedType,
-        permission,
-        sharedId,
-      })
+          v1LinkShareEnabled,
+        }
+        if (sharedType === 'LINK') {
+          shareData.v1LinkShareEnabled = v1LinkShareEnabled
+        }
+        flattenUsers.push(shareData)
+      }
     }
-  })
+  )
   return flattenUsers
 })
 
@@ -915,6 +935,9 @@ const initialState = {
   savedTestSettingsList: [],
   currentTestSettingsId: '',
   regradeModalState: null,
+  showRegradeConfirmPopup: false,
+  upgrade: false,
+  loadingSharedUsers: false,
 }
 
 export const testTypeAsProfileNameType = {
@@ -1149,13 +1172,14 @@ export const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         sharedUsersList: payload,
+        loadingSharedUsers: false,
       }
     case CLEAR_CREATED_ITEMS_FROM_TEST:
       return {
         ...state,
         createdItems: [],
       }
-    case REPLACE_TEST_ITEMS:
+    case REPLACE_TEST_DATA:
       return {
         ...state,
         entity: {
@@ -1502,6 +1526,21 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         regradeModalState: payload,
       }
+    case SET_SHOW_REGRADE_CONFIRM:
+      return {
+        ...state,
+        showRegradeConfirmPopup: payload,
+      }
+    case SET_SHOW_UPGRADE_POPUP:
+      return {
+        ...state,
+        upgrade: payload,
+      }
+    case RECEIVE_SHARED_USERS_LIST:
+      return {
+        ...state,
+        loadingSharedUsers: true,
+      }
     default:
       return state
   }
@@ -1614,16 +1653,17 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     passwordExpireIn: entity.passwordExpireIn,
     assignmentPassword: entity.assignmentPassword,
     timedAssignment: entity.timedAssignment,
-    restrictNavigationOut: entity.restrictNavigationOut,
+    restrictNavigationOut: entity.restrictNavigationOut || null,
     restrictNavigationOutAttemptsThreshold:
-      entity.restrictNavigationOutAttemptsThreshold,
-    blockSaveAndContinue: entity.blockSaveAndContinue,
+      entity.restrictNavigationOutAttemptsThreshold || 0,
+    blockSaveAndContinue: entity.blockSaveAndContinue || false,
     scoringType: entity.scoringType,
     penalty: entity.penalty,
     blockNavigationToAnsweredQuestions:
       entity.blockNavigationToAnsweredQuestions || false,
     showMagnifier: !!entity.showMagnifier,
     enableScratchpad: !!entity.enableScratchpad,
+    keypad: entity.keypad,
   }
 
   if (isAdmin) {
@@ -1661,6 +1701,7 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     delete settings.blockSaveAndContinue
     delete settings.restrictNavigationOut
     delete settings.restrictNavigationOutAttemptsThreshold
+    delete settings.keypad
   }
 
   return settings
@@ -1696,17 +1737,12 @@ function* receiveTestByIdSaga({ payload }) {
       ...(payload.playlistId ? { playlistId: payload.playlistId } : {}),
     })
     const userId = yield select(getUserIdSelector)
-    const typeOfAuthor = authorType(userId, entity)
-    if (payload.editAssigned && isRegraded(typeOfAuthor, entity, payload.id)) {
-      const routerState = yield select(({ router }) => router.location.state) ||
-        {}
-      yield put(setTestDataAction({ updated: false }))
-      yield put(
-        push({
-          pathname: `/author/assignments/regrade/new/${entity._id}/old/${entity.previousTestId}`,
-          state: { ...routerState, isRedirected: true },
-        })
-      )
+    if (
+      payload.editAssigned &&
+      isRegradedByCoAuthor(userId, entity, payload.id)
+    ) {
+      yield put(setShowUpgradePopupAction(true))
+      yield put(receiveTestByIdSuccess(entity))
       return
     }
     entity.passages = [
@@ -1980,7 +2016,6 @@ export function* updateTestSaga({ payload }) {
     const isCurator = yield select(getIsCurator)
     if (oldId !== newId && newId) {
       if (!payload.assignFlow) {
-        notification({ type: 'success', messageKey: 'testVersioned' })
         let url = `/author/tests/${newId}/versioned/old/${oldId}`
         if (currentTab) {
           url = `/author/tests/tab/${currentTab}/id/${newId}/old/${oldId}`
@@ -2133,8 +2168,9 @@ function* updateTestDocBasedSaga({ payload }) {
   }
 }
 
-function* updateRegradeDataSaga({ payload }) {
+function* updateRegradeDataSaga({ payload: _payload }) {
   try {
+    const { notify, ...payload } = _payload
     yield put(setRegradingStateAction(true))
     yield call(testsApi.publishTest, payload.newTestId)
     const { message, firestoreDocId } = yield call(
@@ -2142,16 +2178,30 @@ function* updateRegradeDataSaga({ payload }) {
       payload
     )
     yield put(setRegradeFirestoreDocId(firestoreDocId))
-    notification({ type: 'info', msg: message })
+    if (notify) {
+      notification({ type: 'info', msg: message })
+    } else {
+      notification({
+        type: 'info',
+        msg: 'Changes made to the test are being published',
+      })
+    }
   } catch (err) {
     const {
       data: { message: errorMessage },
     } = err.response
     captureSentryException(err)
-    notification({
-      type: 'error',
-      msg: errorMessage || 'Unable to publish & regrade.',
-    })
+    if (_payload.notify) {
+      notification({
+        type: 'error',
+        msg: errorMessage || 'Unable to publish & regrade.',
+      })
+    } else {
+      notification({
+        type: 'error',
+        msg: 'Publish failed',
+      })
+    }
     yield put(setRegradeFirestoreDocId(''))
     yield put(setRegradingStateAction(false))
   }
@@ -2324,19 +2374,43 @@ function* publishForRegrade({ payload }) {
         disableLoadingIndicator: true,
       },
     })
-    const newTestId = yield select(getTestIdSelector)
-    const locationState = yield select(({ router }) => router.location.state)
-    yield put(
-      push({
-        pathname: `/author/assignments/regrade/new/${newTestId}/old/${_test.previousTestId}`,
-        state: locationState,
-      })
+    const result = yield call(assignmentApi.fetchRegradeSettings, {
+      oldTestId: _test.previousTestId,
+      newTestId: payload,
+    })
+    yield put(setAvailableRegradeAction(result))
+    const isRegradeNeeded = result.some(
+      (item) => item === 'ADD' || item === 'EDIT'
     )
-    yield put(setUpdatingTestForRegradeStateAction(false))
+    if (isRegradeNeeded) {
+      yield put(setShowRegradeConfirmPopupAction(true))
+    } else {
+      const districtId = yield select((state) =>
+        get(state, ['user', 'user', 'orgData', 'districtIds', 0])
+      )
+      yield put(setTestsLoadingAction(true))
+      yield call(updateRegradeDataSaga, {
+        payload: {
+          notify: false,
+          newTestId: payload,
+          oldTestId: _test.previousTestId,
+          assignmentList: [],
+          districtId,
+          applyChangesChoice: 'ALL',
+          options: {
+            removedQuestion: 'DISCARD',
+            testSettings: 'ALL',
+            addedQuestion: 'SKIP',
+            editedQuestion: 'SCORE',
+          },
+        },
+      })
+    }
   } catch (error) {
     Sentry.captureException(error)
     console.error(error)
     notification({ msg: error?.data?.message || 'publish failed.' })
+  } finally {
     yield put(setUpdatingTestForRegradeStateAction(false))
   }
 }
@@ -2352,6 +2426,20 @@ function* receiveSharedWithListSaga({ payload }) {
         sharedId: _id,
       })
     )
+    const testData = yield select(getTestEntitySelector)
+    if (
+      (!coAuthors.length ||
+        !coAuthors.some((item) => item.sharedType === 'LINK')) &&
+      testData.v1Attributes?.v1LinkShareEnabled === 1
+    ) {
+      coAuthors.push({
+        permission: 'VIEW',
+        sharedWith: [],
+        sharedType: 'LINK',
+        sharedId: testData._id,
+        v1LinkShareEnabled: 1,
+      })
+    }
     yield put(updateSharedWithListAction(coAuthors))
   } catch (e) {
     Sentry.captureException(e)
@@ -2363,6 +2451,11 @@ function* receiveSharedWithListSaga({ payload }) {
 function* deleteSharedUserSaga({ payload }) {
   try {
     yield call(contentSharingApi.deleteSharedUser, payload)
+    if (payload.v1LinkShareEnabled === 1) {
+      const testData = yield select(getTestEntitySelector)
+      const { v1Attributes, ...rest } = testData
+      yield put(replaceTestDataAction(rest))
+    }
     yield put(
       receiveSharedWithListAction({
         contentId: payload.contentId,
@@ -2576,6 +2669,9 @@ function* getEvaluation(testItemId, newScore) {
   const questions = _keyBy(testItem?.data?.questions, 'id')
   const answers = yield select((state) => get(state, 'answers', {}))
   const answersByQids = answersByQId(answers, testItem._id)
+  if (isEmpty(answersByQids)) {
+    return
+  }
   const evaluation = yield evaluateItem(
     answersByQids,
     questions,
@@ -2598,6 +2694,9 @@ function* getEvaluationFromItem(testItem, newScore) {
   const questions = _keyBy(testItem.data.questions, 'id')
   const answers = yield select((state) => get(state, 'answers', {}))
   const answersByQids = answersByQId(answers, testItem._id)
+  if (isEmpty(answersByQids)) {
+    return
+  }
   const evaluation = yield evaluateItem(
     answersByQids,
     questions,
@@ -2621,6 +2720,18 @@ function* checkAnswerSaga({ payload }) {
       )
     } else {
       evaluationObject = yield getEvaluation(payload.id, scoring[payload.id])
+    }
+    if (isEmpty(evaluationObject)) {
+      yield put({
+        type: CHANGE_PREVIEW,
+        payload: {
+          view: 'check',
+        },
+      })
+      return notification({
+        type: 'warn',
+        messageKey: 'attemptTheQuestonToCheckAnswer',
+      })
     }
     const { evaluation, score, maxScore } = evaluationObject
     yield put({
@@ -2653,7 +2764,7 @@ function* checkAnswerSaga({ payload }) {
   }
 }
 
-function* showAnswerSaga({ payload }) {
+function* showAnswerSaga({ payload = {} }) {
   try {
     const testItems = yield select(getTestItemsSelector)
     const testItem = testItems.find((x) => x._id === payload.id) || {}
@@ -2675,7 +2786,7 @@ function* showAnswerSaga({ payload }) {
     const evaluation = yield createShowAnswerData(
       questions,
       answers,
-      testItem._id
+      testItem._id || payload._id
     )
     yield put({
       type: CHANGE_PREVIEW,
@@ -2944,7 +3055,7 @@ function* updateTestAndNavigate({ payload }) {
       isEditing,
       isDuplicating,
     } = payload
-    const data = yield select(getTestSelector)
+    const data = { ...(yield select(getTestSelector)) }
     const role = yield select(getUserRole)
     const hasUnsavedChanges = yield select((state) => state?.tests?.updated)
     if (hasUnsavedChanges) {

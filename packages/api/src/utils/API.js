@@ -299,6 +299,14 @@ export default class API {
         ) {
           return Promise.reject(err)
         }
+
+        if (
+          data?.response?.status === 409 &&
+          data.response.data?.message === 'oldToken'
+        ) {
+          // returning skeleton reponses to avoid erroring out in Api call
+          return Promise.resolve({ data: { result: null } })
+        }
       }
     )
   }

@@ -153,8 +153,6 @@ const SideMenu = ({
       width="220"
       collapsible
       trigger={null}
-      onMouseEnter={() => toggleState((val) => !val)}
-      onMouseLeave={() => toggleState((val) => !val)}
       collapsed={isCollapsed}
       role="navigation"
     >

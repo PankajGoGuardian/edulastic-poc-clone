@@ -223,7 +223,9 @@ export default connect((state) => ({
   showHints: state.test.showHints,
 }))(Hints)
 
-const HintCont = styled.div``
+const HintCont = styled.div`
+  margin-top: 10px;
+`
 
 const HintItem = styled(FlexContainer)`
   width: 100%;

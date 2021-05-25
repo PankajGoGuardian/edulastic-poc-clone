@@ -512,6 +512,7 @@ const enhance = compose(
 export default enhance(QuestionBottomAction)
 
 export const BottomActionWrapper = styled.div`
+  padding-top: 50px;
   font-size: 19px;
   color: ${greyThemeDark2};
   display: flex;

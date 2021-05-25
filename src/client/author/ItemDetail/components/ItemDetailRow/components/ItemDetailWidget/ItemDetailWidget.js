@@ -36,6 +36,7 @@ const ItemDetailWidget = ({
   rowIndex,
   previewTab,
   itemEditDisabled,
+  dataCy,
 }) => {
   const [showButtons, setShowButtons] = useState(!flowLayout)
 
@@ -85,7 +86,7 @@ const ItemDetailWidget = ({
       <div
         onMouseEnter={onMouseEnterHander}
         onMouseLeave={onMouseLeaveHander}
-        data-cy="item-detail-widget"
+        data-cy={dataCy}
       >
         <Container isDragging={isDragging} flowLayout={flowLayout}>
           <WidgetContainer>

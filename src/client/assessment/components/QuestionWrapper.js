@@ -509,7 +509,11 @@ class QuestionWrapper extends Component {
               disabled={disabled}
               noPadding={noPadding}
               isFlex
-              data-cy="question-container"
+              data-cy={
+                isPassageOrVideoType
+                  ? 'passage-container'
+                  : 'question-container'
+              }
               style={{
                 width: '100%',
                 height: calculatedHeight || (fullHeight ? '100%' : null),

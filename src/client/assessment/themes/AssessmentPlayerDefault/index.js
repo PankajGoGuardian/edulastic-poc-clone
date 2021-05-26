@@ -6,7 +6,7 @@ import { withRouter } from 'react-router-dom'
 import { ThemeProvider } from 'styled-components'
 import { get, isUndefined, last } from 'lodash'
 import { withWindowSizes, notification } from '@edulastic/common'
-import { nonAutoGradableTypes, test } from '@edulastic/constants'
+import { nonAutoGradableTypes } from '@edulastic/constants'
 
 import { playerSkinValues } from '@edulastic/constants/const/test'
 import { themes } from '../../../theme'
@@ -64,7 +64,7 @@ class AssessmentPlayerDefault extends React.Component {
       ? parseInt(last(lastUploadedFileNameExploded), 10) + 1
       : 1
 
-    const calcType = this.calculatorType
+    const calcType = settings.calcType
     this.state = {
       cloneCurrentItem: props.currentItem,
       testItemState: '',
@@ -84,21 +84,6 @@ class AssessmentPlayerDefault extends React.Component {
       cameraImageIndex,
     }
     this.scrollContainer = React.createRef()
-  }
-
-  get calculatorType() {
-    const {
-      settings: { calcType: testCalculatorType } = {},
-      assignmentSettings: { calcType: assignmentCalculatorType } = {},
-    } = this.props
-    let calculatorType = testCalculatorType
-    if (
-      assignmentCalculatorType &&
-      assignmentCalculatorType !== test.calculatorTypes.NONE
-    ) {
-      calculatorType = assignmentCalculatorType
-    }
-    return calculatorType
   }
 
   changeTool = (val) => {
@@ -482,11 +467,6 @@ class AssessmentPlayerDefault extends React.Component {
       headerStyleWidthZoom.padding = 0
     }
 
-    const _settings = {
-      ...settings,
-      calcType: this.calculatorType,
-    }
-
     const qType = get(items, `[${currentItem}].data.questions[0].type`, null)
     const cameraImageName = `${firstName}_${lastName}_${
       currentItem + 1
@@ -530,7 +510,7 @@ class AssessmentPlayerDefault extends React.Component {
             moveToNext={moveToNext}
             showSettingIcon={showSettingIcon}
             answerChecksUsedForItem={answerChecksUsedForItem}
-            settings={_settings}
+            settings={settings}
             items={items}
             isNonAutoGradable={isNonAutoGradable}
             checkAnswer={() => this.changeTabItemState('check')}
@@ -579,7 +559,7 @@ class AssessmentPlayerDefault extends React.Component {
                 checkAnswer={() => this.changeTabItemState('check')}
                 windowWidth={windowWidth}
                 answerChecksUsedForItem={answerChecksUsedForItem}
-                settings={_settings}
+                settings={settings}
                 items={items}
                 currentItem={currentItem}
                 isNonAutoGradable={isNonAutoGradable}
@@ -606,7 +586,7 @@ class AssessmentPlayerDefault extends React.Component {
                 isVisible={isSubmitConfirmationVisible}
                 onClose={() => this.closeSubmitConfirmation()}
                 finishTest={this.finishTest}
-                settings={_settings}
+                settings={settings}
               />
             )}
             <Main

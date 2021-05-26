@@ -62,6 +62,7 @@ import { getAssignmentTestsSelector } from '../../../src/selectors/assignments'
 import { ReactComponent as TimerIcon } from './assets/timer.svg'
 import { canEditTest } from '../../utils'
 import { bulkDownloadGradesAndResponsesAction } from '../../../AssignmentAdvanced/ducks'
+import { isDemoPlaygroundUser } from '../../../../student/Login/ducks'
 
 const convertTableData = (
   data,
@@ -159,6 +160,7 @@ const TableList = ({
   bulkDownloadGradesAndResponses,
   showEmbedLinkModal,
   toggleTagsEditModal,
+  isDemoPlayground = false,
 }) => {
   const [expandedRows, setExpandedRows] = useState([])
   const [details, setdetails] = useState(true)
@@ -647,6 +649,7 @@ const TableList = ({
                 userRole,
                 showEmbedLinkModal,
                 toggleTagsEditModal,
+                isDemoPlaygroundUser: isDemoPlayground,
               })}
               placement="bottomRight"
               trigger={['click']}
@@ -775,6 +778,7 @@ const enhance = compose(
       assignmentTests: getAssignmentTestsSelector(state),
       userRole: getUserRole(state),
       userClassList: getGroupList(state),
+      isDemoPlayground: isDemoPlaygroundUser(state),
     }),
     {
       setItemsToFolder: setItemsMoveFolderAction,

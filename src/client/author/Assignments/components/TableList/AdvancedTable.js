@@ -38,6 +38,7 @@ import {
   TypeIcon,
   TypeWrapper,
 } from './styled'
+import { isDemoPlaygroundUser } from '../../../../student/Login/ducks'
 
 class AdvancedTable extends Component {
   // eslint-disable-next-line react/state-in-constructor
@@ -223,6 +224,7 @@ class AdvancedTable extends Component {
             assignmentsSummary,
             showEmbedLinkModal,
             toggleTagsEditModal,
+            isDemoPlayground = false,
           } = this.props
           const isAssignProgress =
             row.bulkAssignedCountProcessed < row.bulkAssignedCount
@@ -257,6 +259,7 @@ class AdvancedTable extends Component {
                     this.handleRemoveItemsFromFolder(row),
                   showEmbedLinkModal,
                   toggleTagsEditModal,
+                  isDemoPlaygroundUser: isDemoPlayground
                 })}
                 placement="bottomRight"
                 trigger={['click']}
@@ -525,6 +528,7 @@ const enhance = compose(
       selectedRows: getSelectedItems(state),
       assignmentTests: getAssignmentTestsSelector(state),
       userClassList: getGroupList(state),
+      isDemoPlayground: isDemoPlaygroundUser(state),
     }),
     {
       loadAssignmentsSummary: receiveAssignmentsSummaryAction,

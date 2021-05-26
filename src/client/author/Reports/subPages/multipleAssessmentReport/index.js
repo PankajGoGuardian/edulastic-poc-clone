@@ -1,7 +1,7 @@
 /* eslint-disable array-callback-return */
 import React, { useEffect, useState, useMemo } from 'react'
 import { Route } from 'react-router-dom'
-import { isEmpty } from 'lodash'
+import { isEmpty, omit } from 'lodash'
 import next from 'immer'
 import qs from 'qs'
 import { connect } from 'react-redux'
@@ -199,9 +199,16 @@ const MultipleAssessmentReportContainer = (props) => {
   ].includes(pageTitle)
 
   useEffect(() => {
-    if (!demographicsRequired) {
+    if (!demographicsRequired && !firstLoad) {
       setDdFilter({})
       setTempDdFilter({})
+      const removeDemographics = (tags) =>
+        omit(
+          tags,
+          demographics.map((d) => d.key)
+        )
+      setTempTagsData(removeDemographics(tempTagsData))
+      setMARTagsData(removeDemographics(settings.tagsData))
     }
   }, [pageTitle])
 

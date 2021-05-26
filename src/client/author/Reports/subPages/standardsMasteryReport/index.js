@@ -215,6 +215,14 @@ const StandardsMasteryReportContainer = (props) => {
     if (!demographicsRequired) {
       setDdFilter({ ...staticDropDownData.initialDdFilters })
       setTempDdFilter({ ...staticDropDownData.initialDdFilters })
+      setTempTagsData({
+        ...tempTagsData,
+        ...staticDropDownData.initialDdFilterTags,
+      })
+      setSMRTagsData({
+        ...settings.tagsData,
+        ...staticDropDownData.initialDdFilterTags,
+      })
     }
   }, [loc])
 

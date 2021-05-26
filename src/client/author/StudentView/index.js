@@ -367,22 +367,21 @@ class StudentViewContainer extends Component {
             )}
           </StudentButtonWrapper>
           <FlexContainer alignItems="center">
-            {false &&
-              attachments.length > 0 && ( // hidden for 16.0 release EV-27886
-                <EduButton
-                  isGhost
-                  data-cy="viewAllAttachmentsButton"
-                  height="24px"
-                  fontSize="9px"
-                  mr="10px"
-                  ml="0px"
-                  onClick={this.toggleAttachmentsModal}
-                  title="View all attachments"
-                >
-                  <IconFolder height="11.3px" width="11.3px" />
-                  <span>Attachments</span>
-                </EduButton>
-              )}
+            {attachments.length > 0 && (
+              <EduButton
+                isGhost
+                data-cy="viewAllAttachmentsButton"
+                height="24px"
+                fontSize="9px"
+                mr="10px"
+                ml="0px"
+                onClick={this.toggleAttachmentsModal}
+                title="View all attachments"
+              >
+                <IconFolder height="11.3px" width="11.3px" />
+                <span>Attachments</span>
+              </EduButton>
+            )}
             <EduButton
               isGhost
               height="24px"

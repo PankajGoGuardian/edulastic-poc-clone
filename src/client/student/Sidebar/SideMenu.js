@@ -16,7 +16,6 @@ import {
   IconQuestion,
   IconProfileHighlight,
   IconSignoutHighlight,
-  IconPlaylist,
   IconBarChart,
 } from '@edulastic/icons'
 import { helpCenterUrl } from '@edulastic/constants/const/common'
@@ -88,6 +87,7 @@ class SideMenu extends Component {
 
     this.state = {
       isVisible: false,
+      isExpandedOnHover: false,
     }
 
     this.sideMenuRef = React.createRef()
@@ -162,7 +162,7 @@ class SideMenu extends Component {
   }
 
   render() {
-    const { broken, isVisible } = this.state
+    const { broken, isVisible, isExpandedOnHover } = this.state
     const {
       windowWidth,
       currentPath,
@@ -255,7 +255,29 @@ class SideMenu extends Component {
               )}
             </LogoWrapper>
 
-            <MenuWrapper isSidebarCollapsed={isSidebarCollapsed}>
+            <MenuWrapper
+              isSidebarCollapsed={isSidebarCollapsed}
+              onMouseEnter={
+                isSidebarCollapsed && !isMobile && !isExpandedOnHover
+                  ? () => {
+                      this.toggleMenu()
+                      this.setState({
+                        isExpandedOnHover: true,
+                      })
+                    }
+                  : null
+              }
+              onMouseLeave={
+                !isSidebarCollapsed && !isMobile && isExpandedOnHover
+                  ? () => {
+                      this.toggleMenu()
+                      this.setState({
+                        isExpandedOnHover: false,
+                      })
+                    }
+                  : null
+              }
+            >
               {isMobile && isSidebarCollapsed ? (
                 <IconBars type="bars" onClick={this.toggleMenu} />
               ) : null}

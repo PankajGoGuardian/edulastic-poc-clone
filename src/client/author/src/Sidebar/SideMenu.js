@@ -177,6 +177,7 @@ class SideMenu extends Component {
       showTrialUsedModal: false,
       showPurchaseModal: false,
       showTrialSubsConfirmation: false,
+      isExpandedOnHover: false,
     }
 
     this.sideMenuRef = React.createRef()
@@ -411,6 +412,7 @@ class SideMenu extends Component {
       isVisible,
       showModal,
       isSwitchAccountNotification,
+      isExpandedOnHover,
     } = this.state
     const {
       userId,
@@ -610,7 +612,28 @@ class SideMenu extends Component {
                 <OnDarkBgLogo height={isMobile ? '16px' : '26px'} />
               )}
             </LogoWrapper>
-            <MenuWrapper>
+            <MenuWrapper
+              onMouseEnter={
+                isCollapsed && !isMobile && !isExpandedOnHover
+                  ? () => {
+                      this.toggleMenu()
+                      this.setState({
+                        isExpandedOnHover: true,
+                      })
+                    }
+                  : null
+              }
+              onMouseLeave={
+                !isCollapsed && !isMobile && isExpandedOnHover
+                  ? () => {
+                      this.toggleMenu()
+                      this.setState({
+                        isExpandedOnHover: false,
+                      })
+                    }
+                  : null
+              }
+            >
               {locationState?.fadeSidebar && <Overlay />}
               <Menu
                 selectedKeys={[defaultSelectedMenu.toString()]}

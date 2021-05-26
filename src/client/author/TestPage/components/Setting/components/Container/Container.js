@@ -1360,7 +1360,7 @@ class Setting extends Component {
                                   ) ||
                                   !owner ||
                                   !isEditable ||
-                                  !safeBrowser
+                                  safeBrowser
                                 }
                               />{' '}
                               ALERTS

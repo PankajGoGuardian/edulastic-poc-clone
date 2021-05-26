@@ -96,6 +96,7 @@ const PurchaseFlowModals = (props) => {
     useThisPlayList,
     interestedGrades,
     clickedBundleId,
+    setClickedBundleId,
   } = props
 
   const [payWithPoModal, setPayWithPoModal] = useState(false)
@@ -419,6 +420,7 @@ const PurchaseFlowModals = (props) => {
           useThisPlayList={useThisPlayList}
           interestedGrades={interestedGrades}
           clickedBundleId={clickedBundleId}
+          setClickedBundleId={setClickedBundleId}
         />
       )}
     </>
@@ -430,6 +432,7 @@ PurchaseFlowModals.defaultProps = {
   setShowSubscriptionAddonModal: () => {},
   setShowBuyMoreModal: () => {},
   setSelectedLicenseId: () => {},
+  setClickedBundleId: () => {},
 }
 
 export default compose(

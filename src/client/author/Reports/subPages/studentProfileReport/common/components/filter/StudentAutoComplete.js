@@ -131,7 +131,9 @@ const StudentAutoComplete = ({
   }, [selectedStudentId])
   useEffect(() => {
     if (!searchTerms.selectedText && studentList.length) {
-      onSelect(studentList[0]._id)
+      const _tempStudent =
+        studentList.find((s) => s._id === selectedStudentId) || studentList[0]
+      onSelect(_tempStudent._id)
     } else if (firstLoad && !loading && !studentList.length) {
       onSelect()
     }

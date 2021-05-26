@@ -44,11 +44,11 @@ const menuItems = [
     icon: IconClockDashboard,
     path: 'home/assignments',
   },
-  {
+  /*  {
     label: 'Playlist',
     icon: IconPlaylist,
     path: 'home/playlist',
-  },
+  }, */
   {
     label: 'Grades',
     icon: IconReport,
@@ -214,9 +214,7 @@ class SideMenu extends Component {
       <>
         <FixedSidebar
           className={`${!isSidebarCollapsed ? 'full' : ''}`}
-          onMouseEnter={
-            isSidebarCollapsed && !isMobile ? this.toggleMenu : null
-          }
+          onClick={isSidebarCollapsed && !isMobile ? this.toggleMenu : null}
           isSidebarCollapsed={isSidebarCollapsed}
           ref={this.sideMenuRef}
           isProxyUser={isProxyUser}

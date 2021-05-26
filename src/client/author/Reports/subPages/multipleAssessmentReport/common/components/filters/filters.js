@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, Fragment, useRef } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { get, isEmpty, pickBy } from 'lodash'
+import { get, isEmpty, pickBy, reject } from 'lodash'
 import qs from 'qs'
 
 import { Spin, Tabs, Row, Col } from 'antd'
@@ -9,6 +9,7 @@ import { Spin, Tabs, Row, Col } from 'antd'
 import { roleuser } from '@edulastic/constants'
 import { IconFilter } from '@edulastic/icons'
 
+import { reportGroupType } from '@edulastic/constants/const/report'
 import FilterTags from '../../../../../common/components/FilterTags'
 import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
 import MultiSelectDropdown from '../../../../../common/components/widgets/MultiSelectDropdown'
@@ -34,8 +35,6 @@ import {
   getReportsMARFilterData,
   getFiltersSelector,
   setFiltersAction,
-  getTestIdSelector,
-  setTestIdAction,
   getReportsPrevMARFilterData,
   setPrevMARFilterDataAction,
 } from '../../filterDataDucks'
@@ -43,6 +42,7 @@ import { getUserRole, getUser } from '../../../../../../src/selectors/user'
 import { resetStudentFilters } from '../../../../../common/util'
 
 import staticDropDownData from '../../static/staticDropDownData.json'
+import { fetchUpdateTagsDataAction } from '../../../../../ducks'
 
 const ddFilterTypes = Object.keys(staticDropDownData.initialDdFilters)
 
@@ -50,18 +50,15 @@ const MultipleAssessmentReportFilters = ({
   loc,
   isPrinting,
   tagsData,
-  setTagsData,
   loading,
   MARFilterData,
   filters,
-  testIds,
   tempDdFilter,
   tempTagsData,
   user,
   role,
   getMARFilterDataRequest,
   setFilters,
-  setTestIds,
   setTempDdFilter,
   setTempTagsData,
   onGoClick: _onGoClick,
@@ -79,6 +76,7 @@ const MultipleAssessmentReportFilters = ({
   reportId,
   showFilter,
   toggleFilter,
+  fetchUpdateTagsData,
 }) => {
   const [activeTabKey, setActiveTabKey] = useState(
     staticDropDownData.filterSections.TEST_FILTERS.key
@@ -99,16 +97,19 @@ const MultipleAssessmentReportFilters = ({
   const schoolYears = useMemo(() => processSchoolYear(user), [user])
   const defaultTermId = get(user, 'orgData.defaultTermId', '')
 
-  const search = pickBy(
-    qs.parse(location.search, { ignoreQueryPrefix: true, indices: true }),
-    (f) => f !== 'All' && !isEmpty(f)
+  const search = useMemo(
+    () =>
+      pickBy(
+        qs.parse(location.search, { ignoreQueryPrefix: true, indices: true }),
+        (f) => f !== 'All' && !isEmpty(f)
+      ),
+    [location.search]
   )
 
   useEffect(() => {
     if (reportId) {
       getMARFilterDataRequest({ reportId })
       setFilters({ ...filters, ...search })
-      setTestIds([])
     } else if (MARFilterData !== prevMARFilterData) {
       const termId =
         search.termId ||
@@ -145,104 +146,113 @@ const MultipleAssessmentReportFilters = ({
       setActiveTabKey(staticDropDownData.filterSections.TEST_FILTERS.key)
     }
   }, [loc, showFilter])
-
-  if (MARFilterData !== prevMARFilterData && !isEmpty(MARFilterData)) {
-    if (reportId) {
-      _onGoClick({
-        selectedTests: [],
-        filters: { ...filters, ...search },
-        tagsData: {},
-      })
-    } else {
-      // select common assessment as default if assessment type is not set for admins
-      if (
-        location.state?.source === 'standard-reports' &&
-        (user.role === roleuser.DISTRICT_ADMIN ||
-          user.role === roleuser.SCHOOL_ADMIN)
-      ) {
-        search.assessmentTypes = search.assessmentTypes || 'common assessment'
-      }
-      const urlSchoolYear =
-        schoolYears.find((item) => item.key === search.termId) ||
-        schoolYears.find((item) => item.key === defaultTermId) ||
-        (schoolYears[0] ? schoolYears[0] : { key: '', title: '' })
-      const urlTestSubjects = staticDropDownData.subjects.filter(
-        (item) => search.testSubjects && search.testSubjects.includes(item.key)
-      )
-      const urlTestGrades = staticDropDownData.grades.filter(
-        (item) => search.testGrades && search.testGrades.includes(item.key)
-      )
-      const urlSubjects = staticDropDownData.subjects.filter(
-        (item) => search.subjects && search.subjects.includes(item.key)
-      )
-      const urlGrades = staticDropDownData.grades.filter(
-        (item) => search.grades && search.grades.includes(item.key)
-      )
-      const urlPerformanceBand =
-        performanceBandList.find((item) => item.key === search.profileId) ||
-        performanceBandList[0]
-
-      const _filters = {
-        termId: urlSchoolYear.key,
-        testSubjects: urlTestSubjects.map((item) => item.key).join(',') || '',
-        testGrades: urlTestGrades.map((item) => item.key).join(',') || '',
-        tagIds: search.tagIds || '',
-        assessmentTypes: search.assessmentTypes || '',
-        schoolIds: search.schoolIds || '',
-        teacherIds: search.teacherIds || '',
-        subjects: urlSubjects.map((item) => item.key).join(',') || '',
-        grades: urlGrades.map((item) => item.key).join(',') || '',
-        courseId: search.courseId || 'All',
-        classIds: search.classId || '',
-        groupIds: search.groupId || '',
-        profileId: urlPerformanceBand?.key || '',
-        assignedBy: search.assignedBy || staticDropDownData.assignedBy[0].key,
-      }
-      if (role === roleuser.TEACHER) {
-        delete _filters.schoolIds
-        delete _filters.teacherIds
-      }
-      const assessmentTypesArr = (search.assessmentTypes || '').split(',')
-      const _tempTagsData = {
-        termId: urlSchoolYear,
-        testSubjects: urlTestSubjects,
-        testGrades: urlTestGrades,
-        assessmentTypes: staticDropDownData.assessmentType.filter((a) =>
-          assessmentTypesArr.includes(a.key)
-        ),
-        subjects: urlSubjects,
-        grades: urlGrades,
-        profileId: urlPerformanceBand,
-        assignedBy: search.assignedBy || staticDropDownData.assignedBy[0],
-      }
-
-      // set tempTagsData, filters and testId
-      setTempTagsData(_tempTagsData)
-      setFilters(_filters)
-      // TODO: enable selection of testIds from url and saved filters
-      // const urlTestIds = search.testIds ? search.testIds.split(',') : []
-      // setTestIds(urlTestIds)
-      setTestIds([])
-      if (location.state?.source === 'standard-reports') {
-        setShowApply(true)
-        toggleFilter(null, true)
-      } else {
+  useEffect(() => {
+    if (MARFilterData !== prevMARFilterData && !isEmpty(MARFilterData)) {
+      if (reportId) {
         _onGoClick({
-          filters: { ..._filters },
-          selectedTests: [],
-          tagsData: { ..._tempTagsData },
+          filters: { ...filters, ...search },
+          tagsData: {},
         })
+      } else {
+        // select common assessment as default if assessment type is not set for admins
+        if (
+          location.state?.source === 'standard-reports' &&
+          (user.role === roleuser.DISTRICT_ADMIN ||
+            user.role === roleuser.SCHOOL_ADMIN)
+        ) {
+          search.assessmentTypes = search.assessmentTypes || 'common assessment'
+        }
+        const urlSchoolYear =
+          schoolYears.find((item) => item.key === search.termId) ||
+          schoolYears.find((item) => item.key === defaultTermId) ||
+          (schoolYears[0] ? schoolYears[0] : { key: '', title: '' })
+        const urlTestSubjects = staticDropDownData.subjects.filter(
+          (item) =>
+            search.testSubjects && search.testSubjects.includes(item.key)
+        )
+        const urlTestGrades = staticDropDownData.grades.filter(
+          (item) => search.testGrades && search.testGrades.includes(item.key)
+        )
+        const urlSubjects = staticDropDownData.subjects.filter(
+          (item) => search.subjects && search.subjects.includes(item.key)
+        )
+        const urlGrades = staticDropDownData.grades.filter(
+          (item) => search.grades && search.grades.includes(item.key)
+        )
+        const urlPerformanceBand =
+          performanceBandList.find((item) => item.key === search.profileId) ||
+          performanceBandList[0]
+
+        const _filters = {
+          termId: urlSchoolYear.key,
+          testSubjects: urlTestSubjects.map((item) => item.key).join(',') || '',
+          testGrades: urlTestGrades.map((item) => item.key).join(',') || '',
+          tagIds: search.tagIds || '',
+          assessmentTypes: search.assessmentTypes || '',
+          testIds: search.testIds || '',
+          schoolIds: search.schoolIds || '',
+          teacherIds: search.teacherIds || '',
+          subjects: urlSubjects.map((item) => item.key).join(',') || '',
+          grades: urlGrades.map((item) => item.key).join(',') || '',
+          courseId: search.courseId || 'All',
+          classIds: search.classIds || '',
+          groupIds: search.groupIds || '',
+          profileId: urlPerformanceBand?.key || '',
+          assignedBy: search.assignedBy || staticDropDownData.assignedBy[0].key,
+        }
+        if (role === roleuser.TEACHER) {
+          delete _filters.schoolIds
+          delete _filters.teacherIds
+        }
+        const assessmentTypesArr = (search.assessmentTypes || '').split(',')
+        const _tempTagsData = {
+          termId: urlSchoolYear,
+          testSubjects: urlTestSubjects,
+          testGrades: urlTestGrades,
+          assessmentTypes: staticDropDownData.assessmentType.filter((a) =>
+            assessmentTypesArr.includes(a.key)
+          ),
+          subjects: urlSubjects,
+          grades: urlGrades,
+          profileId: urlPerformanceBand,
+          assignedBy: search.assignedBy || staticDropDownData.assignedBy[0],
+        }
+
+        // set tempTagsData, filters and testId
+        setTempTagsData(_tempTagsData)
+        setFilters(_filters)
+        if (location.state?.source === 'standard-reports') {
+          setShowApply(true)
+          toggleFilter(null, true)
+        } else {
+          _onGoClick({
+            filters: { ..._filters },
+            tagsData: { ..._tempTagsData },
+          })
+          fetchUpdateTagsData({
+            schoolIds: reject(_filters.schoolIds?.split(','), isEmpty),
+            teacherIds: reject(_filters.teacherIds?.split(','), isEmpty),
+            classIds: reject(_filters.classIds?.split(','), isEmpty),
+            groupIds: reject(_filters.groupIds?.split(','), isEmpty),
+            tagIds: reject(_filters.tagIds?.split(','), isEmpty),
+            courseIds: reject([search.courseId], isEmpty),
+            testIds: reject(_filters.testIds?.split(','), isEmpty),
+            options: {
+              termId: _filters.termId,
+              schoolIds: reject(_filters.schoolIds?.split(','), isEmpty),
+            },
+          })
+        }
       }
+      setFirstLoad(false)
+      // update prevMARFilterData
+      setPrevMARFilterData(MARFilterData)
     }
-    setFirstLoad(false)
-    // update prevMARFilterData
-    setPrevMARFilterData(MARFilterData)
-  }
+  }, [MARFilterData, prevMARFilterData])
 
   const onGoClick = (_settings = {}) => {
     const settings = {
       filters: { ...filters },
-      selectedTests: testIds,
       tagsData: { ...tempTagsData },
       ..._settings,
     }
@@ -270,23 +280,10 @@ const MultipleAssessmentReportFilters = ({
     setShowApply(true)
   }
 
-  const onSelectTest = (selected) => {
-    setTempTagsData({ ...tempTagsData, testIds: selected })
-    setTestIds(selected.map((o) => o.key))
-    setShowApply(true)
-  }
-
   const handleCloseTag = (type, { key }) => {
     const _tempTagsData = { ...tempTagsData }
-    // handles testIds
-    if (type === 'testIds') {
-      if (testIds.includes(key)) {
-        const _testIds = testIds.filter((d) => d !== key)
-        _tempTagsData[type] = tempTagsData[type].filter((d) => d.key !== key)
-        setTestIds(_testIds)
-      }
-    } // handles tempDdFilters
-    else if (ddFilterTypes.includes(type)) {
+    // handle tempDdFilters
+    if (ddFilterTypes.includes(type)) {
       const _tempDdFilter = { ...tempDdFilter }
       if (tempDdFilter[type] === key) {
         _tempDdFilter[type] = ''
@@ -296,12 +293,12 @@ const MultipleAssessmentReportFilters = ({
     } else {
       const _filters = { ...filters }
       resetStudentFilters(_tempTagsData, _filters, type, '')
-      // handles single selection filters
+      // handle single selection filters
       if (filters[type] === key) {
         _filters[type] = staticDropDownData.initialFilters[type]
         delete _tempTagsData[type]
       }
-      // handles multiple selection filters
+      // handle multiple selection filters
       else if (filters[type].includes(key)) {
         _filters[type] = filters[type]
           .split(',')
@@ -454,28 +451,32 @@ const MultipleAssessmentReportFilters = ({
                           }
                         />
                       </Col>
-                      {prevMARFilterData && (
-                        <Col span={18}>
-                          <AssessmentsAutoComplete
-                            dataCy="tests"
-                            firstLoad={firstLoad}
-                            termId={filters.termId}
-                            grades={filters.testGrades}
-                            subjects={filters.testSubjects}
-                            testTypes={filters.assessmentTypes}
-                            tagIds={filters.tagIds}
-                            selectedTestIds={testIds}
-                            selectCB={onSelectTest}
-                          />
-                        </Col>
-                      )}
+                      <Col span={18}>
+                        <AssessmentsAutoComplete
+                          dataCy="tests"
+                          termId={filters.termId}
+                          grades={filters.testGrades}
+                          subjects={filters.testSubjects}
+                          testTypes={filters.assessmentTypes}
+                          tagIds={filters.tagIds}
+                          selectedTestIds={
+                            filters.testIds
+                              ? filters.testIds.split(',')
+                              : firstLoad && search.testIds
+                              ? search.testIds.split(',')
+                              : []
+                          }
+                          selectCB={(e) =>
+                            updateFilterDropdownCB(e, 'testIds', true)
+                          }
+                        />
+                      </Col>
                     </Row>
                   </Tabs.TabPane>
 
                   <Tabs.TabPane
                     key={staticDropDownData.filterSections.CLASS_FILTERS.key}
                     tab={staticDropDownData.filterSections.CLASS_FILTERS.title}
-                    forceRender
                   >
                     <Row type="flex" gutter={[5, 10]}>
                       <Col span={6}>
@@ -507,10 +508,6 @@ const MultipleAssessmentReportFilters = ({
                               selectCB={(e) =>
                                 updateFilterDropdownCB(e, 'schoolIds', true)
                               }
-                              firstLoad={firstLoad}
-                              tempTagsData={tempTagsData}
-                              setTagsData={setTagsData}
-                              setTempTagsData={setTempTagsData}
                             />
                           </Col>
                           <Col span={6}>
@@ -528,10 +525,6 @@ const MultipleAssessmentReportFilters = ({
                               selectCB={(e) =>
                                 updateFilterDropdownCB(e, 'teacherIds', true)
                               }
-                              firstLoad={firstLoad}
-                              tempTagsData={tempTagsData}
-                              setTagsData={setTagsData}
-                              setTempTagsData={setTempTagsData}
                             />
                           </Col>
                         </>
@@ -711,7 +704,6 @@ const enhance = compose(
       loading: getReportsMARFilterLoadingState(state),
       MARFilterData: getReportsMARFilterData(state),
       filters: getFiltersSelector(state),
-      testIds: getTestIdSelector(state),
       role: getUserRole(state),
       user: getUser(state),
       prevMARFilterData: getReportsPrevMARFilterData(state),
@@ -719,8 +711,12 @@ const enhance = compose(
     {
       getMARFilterDataRequest: getMARFilterDataRequestAction,
       setFilters: setFiltersAction,
-      setTestIds: setTestIdAction,
       setPrevMARFilterData: setPrevMARFilterDataAction,
+      fetchUpdateTagsData: (opts) =>
+        fetchUpdateTagsDataAction({
+          type: reportGroupType.MULTIPLE_ASSESSMENT_REPORT,
+          ...opts,
+        }),
     }
   )
 )

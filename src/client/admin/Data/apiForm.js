@@ -786,4 +786,34 @@ export const apiForms = [
       },
     ],
   },
+  {
+    id: 'upload-standard',
+    name: 'Upload standards',
+    endPoint: 'admin-tool/fetch-standard',
+    method: 'post',
+    slowApi: true,
+    fields: [
+      {
+        name: 'subject',
+        displayName: 'Subject',
+        placeholder: 'Select Subject',
+        type: 'dropdown',
+        required: true,
+        values: [
+          'Mathematics',
+          'ELA',
+          'Social Studies',
+          'Computer Science',
+          'Other Subjects',
+        ],
+      },
+      {
+        name: 'path',
+        type: 'upload',
+        accept: '.xlsx',
+        multiple: false,
+        required: true,
+      },
+    ],
+  },
 ]

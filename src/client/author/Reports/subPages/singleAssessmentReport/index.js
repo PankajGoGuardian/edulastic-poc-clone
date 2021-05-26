@@ -218,9 +218,17 @@ const SingleAssessmentReportContainer = (props) => {
   ].includes(loc)
 
   useEffect(() => {
-    if (!demographicsRequired) {
+    if (!demographicsRequired && !firstLoad) {
       setDdFilter({ ...staticDropDownData.initialDdFilters })
       setTempDdFilter({ ...staticDropDownData.initialDdFilters })
+      setTempTagsData({
+        ...tempTagsData,
+        ...staticDropDownData.initialDdFilterTags,
+      })
+      setSARTagsData({
+        ...settings.tagsData,
+        ...staticDropDownData.initialDdFilterTags,
+      })
     }
   }, [loc])
 

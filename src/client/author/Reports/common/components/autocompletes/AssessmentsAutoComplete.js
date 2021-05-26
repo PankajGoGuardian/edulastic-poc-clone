@@ -111,6 +111,7 @@ const AssessmentAutoComplete = ({
     []
   )
 
+  // effects
   useEffect(() => {
     if ((!searchTerms.text && !searchTerms.selectedText) || searchTerms.text) {
       loadTestListDebounced(query)

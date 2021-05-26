@@ -1,5 +1,5 @@
-import React, { useRef, useEffect } from 'react'
-import { filter, includes } from 'lodash'
+import React, { useRef, useEffect, useMemo } from 'react'
+import { filter, includes, omit } from 'lodash'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
 import { convertTableToCSV } from '../../util'
@@ -22,33 +22,33 @@ const CsvTable = ({
   const Component = tableToRender
   const childrenRef = useRef(null)
 
-  const _pagination = pagination ? { ...pagination } : pagination
-  let _columns = [...columns]
-  if (restProps.isPrinting) {
-    _columns = _columns.map((c) => {
-      delete c.fixed
-      return c
-    })
-  }
-
-  if (pagination && typeof _pagination.pageSize === 'undefined') {
-    _pagination.pageSize = 50
-  }
-
-  if (pagination && typeof _pagination.hideOnSinglePage === 'undefined') {
-    _pagination.hideOnSinglePage = true
-  }
-
-  if (isCsvDownloading) {
-    _pagination.pageSize = dataSource.length
-    _columns = filter(_columns, (column) =>
-      column.visibleOn ? includes(column.visibleOn, 'csv') : true
+  const [_pagination, _columns] = useMemo(() => {
+    let __columns = columns.map((c) =>
+      omit(c, restProps.isPrinting ? ['fixed'] : [])
     )
-  } else {
-    _columns = filter(_columns, (column) =>
-      column.visibleOn ? includes(column.visibleOn, 'browser') : true
-    )
-  }
+    const __pagination = pagination ? { ...pagination } : pagination
+
+    if (isCsvDownloading) {
+      __pagination.pageSize = dataSource.length
+      __columns = filter(__columns, (column) =>
+        column.visibleOn ? includes(column.visibleOn, 'csv') : true
+      )
+    } else {
+      __columns = filter(__columns, (column) =>
+        column.visibleOn ? includes(column.visibleOn, 'browser') : true
+      )
+    }
+
+    if (pagination && typeof __pagination.pageSize === 'undefined') {
+      __pagination.pageSize = 50
+    }
+
+    if (pagination && typeof __pagination.hideOnSinglePage === 'undefined') {
+      __pagination.hideOnSinglePage = true
+    }
+
+    return [__pagination, __columns]
+  }, [columns, restProps.isPrinting, pagination, isCsvDownloading, dataSource])
 
   useEffect(() => {
     if (isCsvDownloading && childrenRef.current) {

@@ -1,12 +1,13 @@
 import React, { useEffect, useMemo, useRef } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { get, isEmpty, pickBy } from 'lodash'
+import { get, isEmpty, pickBy, reject } from 'lodash'
 import qs from 'qs'
 
 import { Row, Col } from 'antd'
 import { IconFilter } from '@edulastic/icons'
 
+import { reportGroupType } from '@edulastic/constants/const/report'
 import FilterTags from '../../../../common/components/FilterTags'
 import { ControlDropDown } from '../../../../common/components/widgets/controlDropDown'
 import MultiSelectDropdown from '../../../../common/components/widgets/MultiSelectDropdown'
@@ -31,6 +32,7 @@ import { resetStudentFilters } from '../../../../common/util'
 import { processSchoolYear } from '../../../multipleAssessmentReport/common/utils/transformers'
 
 import staticDropDownData from '../static/staticDropDownData.json'
+import { fetchUpdateTagsDataAction } from '../../../../ducks'
 
 const EngagementReportFilters = ({
   isPrinting,
@@ -50,6 +52,7 @@ const EngagementReportFilters = ({
   tempTagsData,
   setTempTagsData,
   onGoClick: _onGoClick,
+  fetchUpdateTagsData,
 }) => {
   const assessmentTypesRef = useRef()
   const schoolYears = useMemo(() => processSchoolYear(user), [user])
@@ -98,6 +101,14 @@ const EngagementReportFilters = ({
       toggleFilter(null, true)
     } else {
       _onGoClick({ filters: { ..._filters }, tagsData: { ..._tempTagsData } })
+      fetchUpdateTagsData({
+        schoolIds: reject(_filters.schoolIds?.split(','), isEmpty),
+        teacherIds: reject(_filters.teacherIds?.split(','), isEmpty),
+        options: {
+          termId: _filters.termId,
+          schoolIds: reject(_filters.schoolIds?.split(','), isEmpty),
+        },
+      })
     }
     setFirstLoad(false)
   }, [])
@@ -337,6 +348,11 @@ const enhance = compose(
     {
       setFilters: setFiltersAction,
       setTempTagsData: setTempTagsDataAction,
+      fetchUpdateTagsData: (opts) =>
+        fetchUpdateTagsDataAction({
+          type: reportGroupType.ENGAGEMENT_REPORT,
+          ...opts,
+        }),
     }
   )
 )

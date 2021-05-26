@@ -14,6 +14,7 @@ import ActivateDeactivateUser from '../Components/ActivateDeactivateUser'
 import UpdateUser from '../Components/UpdateUser'
 import ApproveOrganisation from '../Components/ApproveOrganisation'
 import UpdateCoTeacher from '../../author/ManageClass/components/ClassDetails/UpdateCoTeacher/UpdateCoTeacher'
+import UploadStandard from '../Components/StandardUpload'
 
 const CREATE_ADMIN = 'create-admin'
 const ARCHIVE_UNARCHIVE_CLASSES = 'archive-unarchive-classes'
@@ -23,6 +24,7 @@ const APPROVE_SCHOOL_DISTRICT = 'approve-school-district'
 const API_OPTIONS = {
   manageClass: 'manageClass',
 }
+const UPLOAD_STANDARD = 'upload-standard'
 
 const ApiForm = () => {
   const [id, setId] = useState()
@@ -31,6 +33,7 @@ const ApiForm = () => {
   const [orgData, setOrgData] = useState(null)
   const [showUpdateCoTeacher, setShowUpdateCoTeacher] = useState(false)
   const [selectedClass, setSelectedClass] = useState([])
+  const [fileUploadData, setFileUploadData] = useState([])
   const handleOnChange = (_id) => setId(_id)
   let option = apiForms.find((ar) => ar.id === id)
   const handleClassSearch = async ({ classId }) => {
@@ -143,6 +146,7 @@ const ApiForm = () => {
   const clearDistrictData = () => setDistrictData(null)
   const clearUserData = () => setUserData([])
   const clearOrgData = () => setOrgData(null)
+  const clearStandardData = () => setFileUploadData(null)
 
   return (
     <div>
@@ -170,6 +174,9 @@ const ApiForm = () => {
           handleOnSave={handleOnSave}
           note={option.note}
           customSections={option.customSections}
+          id={id}
+          setFileUploadData={setFileUploadData}
+          endPoint={option.endPoint}
         >
           {districtData && id === CREATE_ADMIN && (
             <CreateAdmin
@@ -190,6 +197,13 @@ const ApiForm = () => {
             <ApproveOrganisation
               orgData={orgData}
               clearOrgData={clearOrgData}
+            />
+          )}
+          {fileUploadData && id === UPLOAD_STANDARD && (
+            <UploadStandard
+              standardData={fileUploadData.data}
+              subject={fileUploadData.subject}
+              clearStandardData={clearStandardData}
             />
           )}
         </ApiFormsMain>

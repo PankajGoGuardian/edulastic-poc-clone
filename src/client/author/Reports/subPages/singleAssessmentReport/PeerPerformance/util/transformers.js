@@ -47,17 +47,17 @@ export const analyseByToName = {
 const filterData = (data, filter) => {
   const filteredData = data.filter((item) => {
     if (
-      (item.gender.toLowerCase() === filter.gender.toLowerCase() ||
+      (item.gender?.toLowerCase() === filter.gender.toLowerCase() ||
         filter.gender === 'all') &&
-      (item.frlStatus.toLowerCase() === filter.frlStatus.toLowerCase() ||
+      (item.frlStatus?.toLowerCase() === filter.frlStatus.toLowerCase() ||
         filter.frlStatus === 'all') &&
-      (item.ellStatus.toLowerCase() === filter.ellStatus.toLowerCase() ||
+      (item.ellStatus?.toLowerCase() === filter.ellStatus.toLowerCase() ||
         filter.ellStatus === 'all') &&
-      (item.iepStatus.toLowerCase() === filter.iepStatus.toLowerCase() ||
+      (item.iepStatus?.toLowerCase() === filter.iepStatus.toLowerCase() ||
         filter.iepStatus === 'all') &&
-      (item.race.toLowerCase() === filter.race.toLowerCase() ||
+      (item.race?.toLowerCase() === filter.race.toLowerCase() ||
         filter.race === 'all') &&
-      (item.hispanicEthnicity.toLowerCase() === filter.hispanicEthnicity.toLowerCase() ||
+      (item.hispanicEthnicity?.toLowerCase() === filter.hispanicEthnicity.toLowerCase() ||
         filter.hispanicEthnicity === 'all')
     ) {
       return true

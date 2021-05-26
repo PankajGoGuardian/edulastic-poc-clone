@@ -116,6 +116,12 @@ const ClassAutoComplete = ({
 
   // effects
   useEffect(() => {
+    setSearchResult([])
+    // if (selectedClassIds.length) {
+    //   selectCB({ key: '', title: '' })
+    // }
+  }, [termId, schoolIds, teacherIds, grades, subjects, courseId])
+  useEffect(() => {
     if (isEmpty(searchResult)) {
       setSearchResult(classList)
     }
@@ -125,12 +131,6 @@ const ClassAutoComplete = ({
       loadClassListDebounced(query)
     }
   }, [searchTerms])
-  useEffect(() => {
-    setSearchResult([])
-    // if (selectedClassIds.length) {
-    //   selectCB({ key: '', title: '' })
-    // }
-  }, [termId, schoolIds, teacherIds, grades, subjects, courseId])
   useEffect(() => {
     if (!selectedClassIds.length) {
       setSearchTerms(DEFAULT_SEARCH_TERMS)

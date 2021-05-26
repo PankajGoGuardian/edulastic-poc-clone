@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { connect } from 'react-redux'
-import { get, isEmpty, pickBy } from 'lodash'
+import { get, isEmpty, pickBy, reject } from 'lodash'
 import qs from 'qs'
 
 import { Tabs, Row, Col } from 'antd'
 
 import { IconFilter } from '@edulastic/icons'
 
+import { reportGroupType } from '@edulastic/constants/const/report'
 import FilterTags from '../../../../../common/components/FilterTags'
 import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
 import MultiSelectDropdown from '../../../../../common/components/widgets/MultiSelectDropdown'
@@ -54,6 +55,7 @@ import { getFullNameFromAsString } from '../../../../../../../common/utils/helpe
 import { resetStudentFilters as resetFilters } from '../../../../../common/util'
 
 import staticDropDownData from '../../static/staticDropDownData.json'
+import { fetchUpdateTagsDataAction } from '../../../../../ducks'
 
 const filtersDefaultValues = [
   {
@@ -110,6 +112,7 @@ const StudentProfileReportFilters = ({
   reportId,
   loading,
   studentProgressProfile,
+  fetchUpdateTagsData,
 }) => {
   const [activeTabKey, setActiveTabKey] = useState(
     staticDropDownData.filterSections.CLASS_FILTERS.key
@@ -156,11 +159,16 @@ const StudentProfileReportFilters = ({
   const domainOptions = getDomainOptions(skillInfo)
   const standardOptions = getStandardOptions(skillInfo, filters.domainId)
 
+  const search = useMemo(
+    () =>
+      pickBy(
+        qs.parse(location.search, { ignoreQueryPrefix: true }),
+        (f) => f !== 'All' && !isEmpty(f)
+      ),
+    [location.search]
+  )
+
   useEffect(() => {
-    const search = pickBy(
-      qs.parse(location.search, { ignoreQueryPrefix: true }),
-      (f) => f !== 'All' && !isEmpty(f)
-    )
     const urlSchoolYear =
       termOptions.find((item) => item.key === search.termId) ||
       termOptions.find((item) => item.key === defaultTermId) ||
@@ -176,7 +184,8 @@ const StudentProfileReportFilters = ({
       termId: urlSchoolYear.key,
       grades: urlGrades.map((item) => item.key).join(',') || '',
       subjects: urlSubjects.map((item) => item.key).join(',') || '',
-      classIds: '',
+      classIds: search.classIds || '',
+      courseIds: search.courseIds || '',
       performanceBandProfileId: '',
       standardsProficiencyProfileId: '',
       assignedBy: search.assignedBy || staticDropDownData.assignedBy[0].key,
@@ -265,6 +274,13 @@ const StudentProfileReportFilters = ({
           filters: { ..._filters },
           selectedStudent: _student,
           tagsData: { ..._tempTagsData },
+        })
+        fetchUpdateTagsData({
+          classIds: reject(search.classIds?.split(','), isEmpty),
+          courseIds: reject(search.courseIds?.split(','), isEmpty),
+          options: {
+            termId: _filters.termId,
+          },
         })
       }
       setFirstLoad(false)
@@ -703,6 +719,11 @@ const enhance = connect(
     setFilters: setFiltersAction,
     setStudent: setStudentAction,
     setTempTagsData: setTempTagsDataAction,
+    fetchUpdateTagsData: (opts) =>
+      fetchUpdateTagsDataAction({
+        type: reportGroupType.STUDENT_PROFILE_REPORT,
+        ...opts,
+      }),
   }
 )
 

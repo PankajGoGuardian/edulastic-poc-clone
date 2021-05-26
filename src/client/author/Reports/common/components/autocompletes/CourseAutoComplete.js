@@ -99,6 +99,16 @@ const CourseAutoComplete = ({
     if (selectedCourseId === 'All') {
       setSearchTerms(DEFAULT_SEARCH_TERMS)
       setFieldValue('')
+    } else {
+      const selectedCourse = courseList.find((c) => c._id === selectedCourseId)
+      if (selectedCourse) {
+        setSearchTerms({
+          text: selectedCourse.name,
+          selectedText: selectedCourse.name,
+          selectedKey: selectedCourse._id,
+        })
+        setFieldValue(selectedCourse.name)
+      }
     }
   }, [selectedCourseId])
 

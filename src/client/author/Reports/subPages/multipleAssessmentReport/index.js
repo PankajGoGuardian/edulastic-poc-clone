@@ -162,13 +162,12 @@ const MultipleAssessmentReportContainer = (props) => {
           ? ''
           : _settings.filters[filterType]
     })
-    const { selectedTests = [] } = _settings
     setMARSettings({
       requestFilters: {
         ..._requestFilters,
         classIds: _requestFilters.classIds || '',
         groupIds: _requestFilters.groupIds || '',
-        testIds: selectedTests.join(),
+        testIds: _requestFilters.testIds || '',
       },
     })
     setMARTagsData({ ..._settings.tagsData })
@@ -251,7 +250,6 @@ const MultipleAssessmentReportContainer = (props) => {
           tempTagsData={tempTagsData}
           setTempTagsData={setTempTagsData}
           tagsData={settings.tagsData}
-          setTagsData={setMARTagsData}
           showApply={showApply}
           setShowApply={setShowApply}
           firstLoad={firstLoad}

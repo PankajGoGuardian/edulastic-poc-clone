@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { get, isEmpty, omit, pickBy, groupBy } from 'lodash'
+import { get, isEmpty, omit, pickBy, groupBy, reject } from 'lodash'
 import qs from 'qs'
 
 import { Spin, Tabs, Row, Col } from 'antd'
@@ -9,6 +9,7 @@ import { Spin, Tabs, Row, Col } from 'antd'
 import { roleuser } from '@edulastic/constants'
 import { IconFilter } from '@edulastic/icons'
 
+import { reportGroupType } from '@edulastic/constants/const/report'
 import FilterTags from '../../../../common/components/FilterTags'
 import { ControlDropDown } from '../../../../common/components/widgets/controlDropDown'
 import { MultipleSelect } from '../../../../common/components/widgets/MultipleSelect'
@@ -39,9 +40,7 @@ import {
 
 import {
   getFiltersSelector,
-  getTestIdSelector,
   setFiltersAction,
-  setTestIdAction,
   getStandardsFiltersRequestAction,
   getReportsStandardsFilters,
   getPrevStandardsFiltersSelector,
@@ -53,6 +52,7 @@ import { getReportsStandardsGradebook } from '../../standardsGradebook/ducks'
 import { getReportsStandardsProgress } from '../../standardsProgress/ducks'
 
 import staticDropDownData from '../static/json/staticDropDownData.json'
+import { fetchUpdateTagsDataAction } from '../../../../ducks'
 
 const ddFilterTypes = Object.keys(staticDropDownData.initialDdFilters)
 
@@ -65,8 +65,6 @@ const StandardsMasteryReportFilters = ({
   loading,
   filters,
   setFilters,
-  testIds,
-  setTestIds,
   tempDdFilter,
   setTempDdFilter,
   tempTagsData,
@@ -84,12 +82,14 @@ const StandardsMasteryReportFilters = ({
   setShowApply,
   showFilter,
   toggleFilter,
+  firstLoad,
   setFirstLoad,
   reportId,
   standardsPerformanceSummary,
   standardsGradebook,
   standardsProgress,
   loc,
+  fetchUpdateTagsData,
 }) => {
   const [activeTabKey, setActiveTabKey] = useState(
     staticDropDownData.filterSections.CLASS_FILTERS.key
@@ -167,15 +167,19 @@ const StandardsMasteryReportFilters = ({
     [loc, standardsProgress]
   )
 
+  const search = useMemo(
+    () =>
+      pickBy(
+        qs.parse(location.search, { ignoreQueryPrefix: true }),
+        (f) => f !== 'All' && !isEmpty(f)
+      ),
+    [location.search]
+  )
+
   useEffect(() => {
-    const search = pickBy(
-      qs.parse(location.search, { ignoreQueryPrefix: true }),
-      (f) => f !== 'All' && !isEmpty(f)
-    )
     if (reportId) {
       getStandardsFiltersRequest({ reportId })
       setFilters({ ...filters, ...search })
-      setTestIds([])
     } else {
       getStandardsFiltersRequest({})
     }
@@ -236,12 +240,7 @@ const StandardsMasteryReportFilters = ({
   }, [standardIdFromPageData])
 
   if (prevStandardsFilters !== standardsFilters && !isEmpty(standardsFilters)) {
-    let search = pickBy(
-      qs.parse(location.search, { ignoreQueryPrefix: true }),
-      (f) => f !== 'All' && !isEmpty(f)
-    )
     const source = location.state?.source
-
     if (reportId) {
       _onGoClick({
         filters: { ...filters, ...search },
@@ -255,15 +254,13 @@ const StandardsMasteryReportFilters = ({
       )
       // update search filters from saved filters
       if (source === 'standard-reports') {
-        search = {
-          ...search,
+        Object.assign(search, {
           termId: search.termId || savedFilters.termId,
           grades: search.grades || savedFilters.grades,
           subjects: search.subjects || savedFilters.subjects,
           profileId: search.profileId || savedFilters.profileId,
-        }
+        })
       }
-
       const urlSchoolYear =
         schoolYears.find((item) => item.key === search.termId) ||
         schoolYears.find((item) => item.key === defaultTermId) ||
@@ -303,6 +300,7 @@ const StandardsMasteryReportFilters = ({
         testSubjects: urlTestSubjects.map((item) => item.key).join(',') || '',
         tagIds: search.tagIds || '',
         assessmentTypes: search.assessmentTypes || '',
+        testIds: search.testIds || '',
         curriculumId: urlCurriculum.key || '',
         standardGrade: urlStandardGrade.key,
         profileId: urlStandardProficiency?.key || '',
@@ -332,18 +330,25 @@ const StandardsMasteryReportFilters = ({
       // set tempTagsData, filters and testId
       setTempTagsData(_tempTagsData)
       setFilters(_filters)
-      // TODO: enable selection of testIds from url and saved filters
-      // const urlTestIds = search.testIds ? search.testIds.split(',') : []
-      // setTestIds(urlTestIds)
-      setTestIds([])
       if (source === 'standard-reports') {
         setShowApply(true)
         toggleFilter(null, true)
       } else {
         _onGoClick({
           filters: { ..._filters },
-          selectedTests: [],
           tagsData: { ..._tempTagsData },
+        })
+        fetchUpdateTagsData({
+          teacherIds: reject(_filters.teacherIds?.split(','), isEmpty),
+          classIds: reject(_filters.classIds?.split(','), isEmpty),
+          tagIds: reject(_filters.tagIds?.split(','), isEmpty),
+          groupIds: reject(_filters.groupIds?.split(','), isEmpty),
+          courseIds: reject([search.courseId], isEmpty),
+          testIds: reject(_filters.testIds?.split(','), isEmpty),
+          options: {
+            termId: _filters.termId,
+            schoolIds: reject(_filters.schoolIds?.split(','), isEmpty),
+          },
         })
       }
     }
@@ -357,7 +362,6 @@ const StandardsMasteryReportFilters = ({
   const onGoClick = (_settings = {}) => {
     const settings = {
       filters: { ...filters },
-      selectedTests: testIds,
       tagsData: { ...tempTagsData },
       ..._settings,
     }
@@ -399,12 +403,6 @@ const StandardsMasteryReportFilters = ({
     }
   }
 
-  const onSelectTest = (selected) => {
-    setTempTagsData({ ...tempTagsData, testIds: selected })
-    setTestIds(selected.map((o) => o.key))
-    setShowApply(true)
-  }
-
   const onSelectDomain = (domain) => {
     const _domainIds = toggleItem(filters.domainIds, domain.key).filter((o) =>
       allDomainIds.includes(o)
@@ -423,16 +421,8 @@ const StandardsMasteryReportFilters = ({
 
   const handleCloseTag = (type, { key }) => {
     const _tempTagsData = { ...tempTagsData }
-    // handles testIds
-    if (type === 'testIds') {
-      if (testIds.includes(key)) {
-        const _testIds = testIds.filter((d) => d !== key)
-        _tempTagsData[type] = tempTagsData[type].filter((d) => d.key !== key)
-        setTestIds(_testIds)
-      }
-    }
-    // handles tempDdFilters
-    else if (ddFilterTypes.includes(type)) {
+    // handle tempDdFilters
+    if (ddFilterTypes.includes(type)) {
       const _tempDdFilter = { ...tempDdFilter }
       if (tempDdFilter[type] === key) {
         _tempDdFilter[type] = staticDropDownData.initialDdFilters[type]
@@ -442,12 +432,12 @@ const StandardsMasteryReportFilters = ({
     } else {
       const _filters = { ...filters }
       resetStudentFilters(_tempTagsData, _filters, type, '')
-      // handles single selection filters
+      // handle single selection filters
       if (filters[type] === key) {
         _filters[type] = staticDropDownData.initialFilters[type]
         delete _tempTagsData[type]
       }
-      // handles multiple selection filters
+      // handle multiple selection filters
       else if (filters[type].includes(key)) {
         _filters[type] = Array.isArray(filters[type])
           ? filters[type].filter((f) => f !== key)
@@ -627,8 +617,12 @@ const StandardsMasteryReportFilters = ({
                             subjects={filters.testSubjects}
                             tagIds={filters.tagIds}
                             testTypes={filters.assessmentTypes}
-                            selectedTestIds={testIds}
-                            selectCB={onSelectTest}
+                            selectedTestIds={
+                              filters.testIds ? filters.testIds.split(',') : []
+                            }
+                            selectCB={(e) =>
+                              updateFilterDropdownCB(e, 'testIds', true)
+                            }
                           />
                         </Col>
                       </Row>
@@ -676,6 +670,8 @@ const StandardsMasteryReportFilters = ({
                                 selectedSchoolIds={
                                   filters.schoolIds
                                     ? filters.schoolIds.split(',')
+                                    : firstLoad && search.schoolIds
+                                    ? search.schoolIds.split(',')
                                     : []
                                 }
                                 selectCB={(e) =>
@@ -691,6 +687,8 @@ const StandardsMasteryReportFilters = ({
                                 selectedTeacherIds={
                                   filters.teacherIds
                                     ? filters.teacherIds.split(',')
+                                    : firstLoad && search.teacherIds
+                                    ? search.teacherIds.split(',')
                                     : []
                                 }
                                 selectCB={(e) =>
@@ -941,7 +939,7 @@ const StandardsMasteryReportFilters = ({
             <StyledEduButton
               btnType="primary"
               data-cy="applyRowFilter"
-              onClick={onGoClick}
+              onClick={() => onGoClick()}
               style={{ height: '32px' }}
             >
               APPLY
@@ -959,7 +957,6 @@ const enhance = compose(
       loading: getReportsStandardsFiltersLoader(state),
       standardsFilters: getReportsStandardsFilters(state),
       filters: getFiltersSelector(state),
-      testIds: getTestIdSelector(state) || [],
       user: getUser(state),
       interestedCurriculums: getInterestedCurriculumsSelector(state),
       prevStandardsFilters: getPrevStandardsFiltersSelector(state),
@@ -970,8 +967,12 @@ const enhance = compose(
     {
       getStandardsFiltersRequest: getStandardsFiltersRequestAction,
       setFilters: setFiltersAction,
-      setTestIds: setTestIdAction,
       setPrevStandardsFilters: setPrevStandardsFiltersAction,
+      fetchUpdateTagsData: (opts) =>
+        fetchUpdateTagsDataAction({
+          type: reportGroupType.STANDARDS_MASTERY_REPORT,
+          ...opts,
+        }),
     }
   )
 )

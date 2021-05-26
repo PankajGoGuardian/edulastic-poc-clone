@@ -175,29 +175,23 @@ const StandardsMasteryReportContainer = (props) => {
   }
 
   const onGoClick = (_settings) => {
-    if (_settings.selectedTests) {
-      const _requestFilters = {}
-      Object.keys(_settings.filters).forEach((filterType) => {
-        _requestFilters[filterType] =
-          _settings.filters[filterType] === 'All'
-            ? ''
-            : _settings.filters[filterType]
-      })
-      const {
-        selectedTests = [],
-        filters: { domainIds = [] },
-      } = _settings
-      setSMRSettings({
-        requestFilters: {
-          ..._requestFilters,
-          classIds: _requestFilters.classIds || '',
-          groupIds: _requestFilters.groupIds || '',
-          testIds: selectedTests.join(),
-          domainIds: domainIds.join(),
-        },
-      })
-      setSMRTagsData({ ..._settings.tagsData })
-    }
+    const _requestFilters = {}
+    Object.keys(_settings.filters).forEach((filterType) => {
+      _requestFilters[filterType] =
+        _settings.filters[filterType] === 'All'
+          ? ''
+          : _settings.filters[filterType]
+    })
+    setSMRSettings({
+      requestFilters: {
+        ..._requestFilters,
+        classIds: _requestFilters.classIds || '',
+        groupIds: _requestFilters.groupIds || '',
+        testIds: _requestFilters.testIds || '',
+        domainIds: (_requestFilters.domainIds || []).join(','),
+      },
+    })
+    setSMRTagsData({ ..._settings.tagsData })
     setShowApply(false)
   }
 

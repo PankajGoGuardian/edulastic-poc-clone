@@ -56,7 +56,7 @@ const PerformanceOverTime = ({
     if (settings.requestFilters.termId || settings.requestFilters.reportId) {
       return () => toggleFilter(null, false)
     }
-  }, [settings])
+  }, [settings.requestFilters])
 
   // get paginated data
   useEffect(() => {

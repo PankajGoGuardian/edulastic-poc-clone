@@ -176,7 +176,7 @@ function incrementNavigationCounter({ history, testActivityId }) {
     })
 }
 
-export function ForceFullScreenModal({ visible, takeItLaterCb }) {
+export function ForceFullScreenModal({ visible, takeItLaterCb, fullscreenCb }) {
   return (
     <StyledModal
       destroyOnClose
@@ -196,6 +196,9 @@ export function ForceFullScreenModal({ visible, takeItLaterCb }) {
             type="primary"
             onClick={() => {
               Fscreen.requestFullscreen(document.body)
+              if (fullscreenCb) {
+                fullscreenCb(true)
+              }
             }}
           >
             Enter Full Screen
@@ -426,7 +429,9 @@ export function useTabNavigationCounterEffect({
         clearTimeout(idleTimeoutRef.current)
       }
       totalBlurTimeCounterIntervalRef.current = setInterval(() => {
-        totalTimeInBlur.current += 1
+        if (enabled) {
+          totalTimeInBlur.current += 1
+        }
         window.sessionStorage.totalTimeInBlur = totalTimeInBlur.current
         if (enabled && threshold > 1) {
           const maximumTimeLimit = threshold * 5
@@ -576,6 +581,7 @@ const AssessmentContainer = ({
   } = restProps
 
   const hidePause = blockSaveAndContinue
+  const [enteredIntoFullScreen, setEnteredIntoFullScreen] = useState(false)
   const currentlyFullScreen = useFullScreenListener({
     enabled: restrictNavigationOut,
     assignmentId: assignmentObj?._id,
@@ -588,7 +594,7 @@ const AssessmentContainer = ({
 
   useTabNavigationCounterEffect({
     testActivityId: restProps.utaId,
-    enabled: restrictNavigationOut,
+    enabled: restrictNavigationOut && enteredIntoFullScreen,
     threshold: restrictNavigationOutAttemptsThreshold,
     history,
     assignmentId: assignmentObj?._id,
@@ -1175,6 +1181,7 @@ const AssessmentContainer = ({
           <ForceFullScreenModal
             testActivityId={restProps.utaId}
             history={history}
+            fullscreenCb={setEnteredIntoFullScreen}
             visible={
               !currentlyFullScreen &&
               history.location.pathname.includes('/uta/')

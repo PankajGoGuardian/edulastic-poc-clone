@@ -483,7 +483,7 @@ const MyClasses = ({
   const defaultSelectedProductIds = productData.productId
     ? [productData.productId]
     : []
-
+    
   return (
     <MainContentWrapper padding="30px 25px">
       {!loading && allActiveClasses?.length === 0 && (
@@ -510,11 +510,13 @@ const MyClasses = ({
           history={history}
         />
       )}
-      <FeaturedContentBundle
-        featuredBundles={filteredBundles}
-        handleFeatureClick={handleFeatureClick}
-        emptyBoxCount={featureEmptyBoxCount}
-      />
+      {!isCliUser && (
+        <FeaturedContentBundle
+          featuredBundles={filteredBundles}
+          handleFeatureClick={handleFeatureClick}
+          emptyBoxCount={featureEmptyBoxCount}
+        />
+      )}
       <Launch />
       <PurchaseFlowModals
         showSubscriptionAddonModal={showSubscriptionAddonModal}

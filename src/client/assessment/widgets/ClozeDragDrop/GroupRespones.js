@@ -56,11 +56,32 @@ class GroupResponses extends React.Component {
     )
   }
 
-  remove = (index) => {
+  remove = (index, optionId) => {
     const { item, setQuestionData } = this.props
     setQuestionData(
       produce(item, (draft) => {
         draft.options.splice(index, 1)
+
+        // remove deleted option from valid and alternate answers
+        let validAnswers = draft.validation.validResponse.value
+        if (validAnswers?.length > 0) {
+          validAnswers.forEach((answer, pos) => {
+            if (answer === optionId) {
+              validAnswers[pos] = null
+            }
+          })
+        }
+    
+        let alternateAnswers = draft.validation.altResponses
+        if (alternateAnswers?.length > 0) {
+          alternateAnswers.forEach((alternateAnswer) => {
+            (alternateAnswer?.value || []).forEach((answer, pos) => {
+              if (answer === optionId) {
+                alternateAnswer.value[pos] = null
+              }
+            })
+          })
+        }
         updateVariables(draft)
       })
     )
@@ -153,6 +174,26 @@ class GroupResponses extends React.Component {
     setQuestionData(
       produce(item, (draft) => {
         draft.groupResponses = newGroupResponses
+
+        let validAnswers = draft.validation.validResponse.value
+        if (validAnswers?.length > 0) {
+          validAnswers.forEach((answer, pos) => {
+            if (answer?.group == index) {
+              validAnswers[pos] = null
+            }
+          })
+        }
+
+        let alternateAnswers = draft.validation.altResponses
+        if (alternateAnswers?.length > 0) {
+          alternateAnswers.forEach((alternateAnswer) => {
+            (alternateAnswer?.value || []).forEach((answer, pos) => {
+              if (answer?.group == index) {
+                alternateAnswer.value[pos] = null
+              }
+            })
+          })
+        }
         updateVariables(draft)
       })
     )
@@ -207,7 +248,7 @@ class GroupResponses extends React.Component {
     )
   }
 
-  removeGroupOptions = (index, itemIndex) => {
+  removeGroupOptions = (index, itemIndex, optionId) => {
     const {
       item: { groupResponses = [] },
     } = this.props
@@ -218,6 +259,26 @@ class GroupResponses extends React.Component {
     setQuestionData(
       produce(item, (draft) => {
         draft.groupResponses = newGroupResponses
+
+        let validAnswers = draft.validation.validResponse.value
+        if (validAnswers?.length > 0) {
+          validAnswers.forEach((answer, pos) => {
+            if (answer?.group == index && answer?.data === optionId) {
+              validAnswers[pos] = null
+            }
+          })
+        }
+
+        let alternateAnswers = draft.validation.altResponses
+        if (alternateAnswers?.length > 0) {
+          alternateAnswers.forEach((alternateAnswer) => {
+            (alternateAnswer?.value || []).forEach((answer, pos) => {
+              if (answer?.group == index && answer?.data === optionId) {
+                alternateAnswer.value[pos] = null
+              }
+            })
+          })
+        }
         updateVariables(draft)
       })
     )
@@ -274,7 +335,7 @@ class GroupResponses extends React.Component {
         {!item.hasGroupResponses && (
           <PaddingDiv>
             <QuillSortableList
-              items={item.options.map((o) => o.label)}
+              items={item.options.map((o) => ({ value: o.label, id: o.value }))}
               onSortEnd={this.onSortEnd}
               useDragHandle
               onRemove={this.remove}
@@ -335,13 +396,13 @@ class GroupResponses extends React.Component {
                   {group.options.length > 0 && (
                     <QuillSortableList
                       prefix={`group_${index}`}
-                      items={group.options.map((o) => o.label)}
+                      items={group.options.map((o) => ({ value: o.label, id: o.value }))}
                       onSortEnd={(params) =>
                         this.onSortEndGroupOptions(index, params)
                       }
                       useDragHandle
-                      onRemove={(itemIndex) =>
-                        this.removeGroupOptions(index, itemIndex)
+                      onRemove={(itemIndex, optionId) =>
+                        this.removeGroupOptions(index, itemIndex, optionId)
                       }
                       onChange={(itemIndex, e) =>
                         this.editGroupOptions(index, itemIndex, e)

@@ -1,5 +1,5 @@
 import { CustomModalStyled } from '@edulastic/common'
-import { titleColor } from '@edulastic/colors'
+import { titleColor, themeColorBlue } from '@edulastic/colors'
 import styled from 'styled-components'
 
 export const ConfirmationModal = styled(CustomModalStyled)`
@@ -7,6 +7,12 @@ export const ConfirmationModal = styled(CustomModalStyled)`
   top: ${(props) => (props.top ? props.top : '100px')};
   .ant-modal-content {
     padding: ${(props) => props.padding || null};
+    .ant-modal-close {
+      &:focus {
+        outline: 0;
+        box-shadow: 0 0 0 2px ${themeColorBlue};
+      }
+    }
     .ant-modal-body {
       display: ${(props) => (props.textAlign !== 'left' ? 'flex' : 'block')};
       align-items: center;

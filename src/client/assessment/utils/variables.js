@@ -89,7 +89,9 @@ export const updateVariables = (item, latexKeys = []) => {
     }))
   })
   item.variable.examples = newExamples
-  item.variable.variables = newVariables
+  if (Object.keys(newVariables).length) {
+    item.variable.variables = newVariables
+  }
 }
 
 export const getMathTemplate = (exampleValue) =>
@@ -100,18 +102,17 @@ const replaceValue = (str, variables, isLatex = false, useMathTemplate) => {
   let result = str.replace(mathRegex, '{math-latex}')
   let mathContent = str.match(mathRegex)
   Object.keys(variables).forEach((variableName) => {
-    const isFormula = variables[variableName].type.includes('FORMULA')
     if (isLatex) {
       result = result.replace(
         new RegExp(`@${variableName}`, 'g'),
-        useMathTemplate && isFormula
+        useMathTemplate
           ? getMathTemplate(variables[variableName].exampleValue)
           : ` ${variables[variableName].exampleValue}`
       )
     } else {
       result = result.replace(
         new RegExp(`@${variableName}`, 'g'),
-        useMathTemplate && isFormula
+        useMathTemplate
           ? getMathTemplate(variables[variableName].exampleValue)
           : variables[variableName].exampleValue
       )

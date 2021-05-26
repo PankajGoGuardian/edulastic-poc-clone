@@ -43,7 +43,7 @@ import {
   resetPerformanceByStudentsAction,
 } from './ducks'
 import { getUserRole } from '../../../../../student/Login/ducks'
-import { getCsvDownloadingState, getTestListSelector } from '../../../ducks'
+import { getCsvDownloadingState } from '../../../ducks'
 import {
   getSAFFilterPerformanceBandProfiles,
   setPerformanceBandProfileAction,
@@ -61,7 +61,6 @@ const PerformanceByStudents = ({
   getPerformanceByStudents,
   resetPerformanceByStudents,
   settings,
-  testList,
   location = { pathname: '' },
   pageTitle,
   filters,
@@ -82,12 +81,11 @@ const PerformanceByStudents = ({
     ],
     [sharedReport]
   )
-  const selectedTest = testList?.find(
-    (test) => test._id === settings.selectedTest.key
-  ) || { _id: '', title: '' }
   const assessmentName = `${
-    selectedTest.title
-  } (ID:${selectedTest._id.substring(selectedTest._id.length - 5)})`
+    settings.selectedTest.title
+  } (ID:${settings.selectedTest.key.substring(
+    settings.selectedTest.key.length - 5
+  )})`
 
   const bandInfo = useMemo(
     () =>
@@ -101,20 +99,6 @@ const PerformanceByStudents = ({
     [settings, performanceByStudents]
   )
 
-  useEffect(() => () => resetPerformanceByStudents(), [])
-
-  useEffect(() => {
-    setPerformanceBandProfile(performanceByStudents?.bandInfo || {})
-    if (
-      (settings.requestFilters.termId || settings.requestFilters.reportId) &&
-      !loading &&
-      !isEmpty(performanceByStudents) &&
-      !performanceByStudents.studentMetricInfo.length
-    ) {
-      toggleFilter(null, true)
-    }
-  }, [performanceByStudents])
-
   const [showAddToGroupModal, setShowAddToGroupModal] = useState(false)
   const [selectedRowKeys, onSelectChange] = useState([])
   const [checkedStudents, setCheckedStudents] = useState({})
@@ -127,6 +111,8 @@ const PerformanceByStudents = ({
     current: 0,
   })
 
+  useEffect(() => () => resetPerformanceByStudents(), [])
+
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
       const q = {
@@ -135,11 +121,26 @@ const PerformanceByStudents = ({
       }
       getPerformanceByStudents(q)
     }
+    if (settings.requestFilters.termId || settings.requestFilters.reportId) {
+      return () => toggleFilter(null, false)
+    }
   }, [settings.selectedTest, settings.requestFilters])
 
   useEffect(() => {
     setPagination({ ...pagination, current: 0 })
   }, [range.left, range.right])
+
+  useEffect(() => {
+    setPerformanceBandProfile(performanceByStudents?.bandInfo || {})
+    if (
+      (settings.requestFilters.termId || settings.requestFilters.reportId) &&
+      !loading &&
+      !isEmpty(performanceByStudents) &&
+      !performanceByStudents.studentMetricInfo.length
+    ) {
+      toggleFilter(null, true)
+    }
+  }, [performanceByStudents])
 
   const res = { ...performanceByStudents, bandInfo }
 
@@ -264,7 +265,12 @@ const PerformanceByStudents = ({
   }
 
   if (loading) {
-    return <SpinLoader position="fixed" />
+    return (
+      <SpinLoader
+        tip="Please wait while we gather the required information..."
+        position="fixed"
+      />
+    )
   }
 
   if (error && error.dataSizeExceeded) {
@@ -275,7 +281,11 @@ const PerformanceByStudents = ({
     !performanceByStudents.studentMetricInfo?.length ||
     !settings.selectedTest.key
   ) {
-    return <NoDataContainer>No data available currently.</NoDataContainer>
+    return (
+      <NoDataContainer>
+        {settings.requestFilters?.termId ? 'No data available currently.' : ''}
+      </NoDataContainer>
+    )
   }
   return (
     <>
@@ -421,7 +431,6 @@ const withConnect = connect(
     role: getUserRole(state),
     performanceBandProfiles: getSAFFilterPerformanceBandProfiles(state),
     performanceByStudents: getReportsPerformanceByStudents(state),
-    testList: getTestListSelector(state),
   }),
   {
     getPerformanceByStudents: getPerformanceByStudentsRequestAction,

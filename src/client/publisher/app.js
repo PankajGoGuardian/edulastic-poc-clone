@@ -6,21 +6,24 @@ import { connect } from 'react-redux'
 import { Route, Switch } from 'react-router-dom'
 import styled, { ThemeProvider } from 'styled-components'
 import { getUserOrgId, getUserRole } from '../author/src/selectors/user'
-import { isProxyUser as isProxyUserSelector } from '../student/Login/ducks'
+import {
+  isProxyUser as isProxyUserSelector,
+  isDemoPlaygroundUser,
+} from '../student/Login/ducks'
 import SideMenu from '../author/src/Sidebar/SideMenu'
 import { addThemeBackgroundColor } from '../common/utils/helpers'
 import { themes as globalThemes } from '../theme'
 import { Dashboard } from './pages/Dashboard/dashboard'
 
 const Publisher = (props) => {
-  const { match, selectedTheme, isProxyUser } = props
+  const { match, selectedTheme, isProxyUser, isDemoAccount = false } = props
   const themeToPass = globalThemes[selectedTheme] || globalThemes.default
 
   return (
     <ThemeProvider theme={themeToPass}>
-      <StyledLayout isProxyUser={isProxyUser}>
+      <StyledLayout isBannerShown={isProxyUser || isDemoAccount}>
         <MainContainer>
-          <StyledSideMenu isProxyUser={isProxyUser} />
+          <StyledSideMenu isBannerShown={isProxyUser || isDemoAccount} />
           <Wrapper>
             <ErrorHandler>
               <Switch>
@@ -39,20 +42,21 @@ export default connect(
     orgId: getUserOrgId(state),
     role: getUserRole(state),
     isProxyUser: isProxyUserSelector(state),
+    isDemoAccount: isDemoPlaygroundUser(state),
   }),
   null
 )(Publisher)
 
 const StyledSideMenu = styled(SideMenu)`
-  top: ${(props) => (props.isProxyUser ? props.theme.BannerHeight : 0)}px;
+  top: ${(props) => (props.isBannerShown ? props.theme.BannerHeight : 0)}px;
 `
 
 const StyledLayout = styled(Layout)`
   margin-top: ${(props) =>
-    props.isProxyUser ? props.theme.BannerHeight : 0}px;
+    props.isBannerShown ? props.theme.BannerHeight : 0}px;
   .fixed-header {
     top: ${(props) =>
-      props.isProxyUser ? props.theme.BannerHeight : 0}px !important;
+      props.isBannerShown ? props.theme.BannerHeight : 0}px !important;
   }
 `
 

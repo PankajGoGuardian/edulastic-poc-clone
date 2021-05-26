@@ -13,7 +13,10 @@ import { withNamespaces } from 'react-i18next'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { validateEmail } from '../../../../../common/utils/helpers'
+import {
+  validateEmail,
+  nameValidator,
+} from '../../../../../common/utils/helpers'
 
 import { ModalFormItem } from '../AddStudentModal/styled'
 import {
@@ -83,9 +86,9 @@ class InviteMultipleStudentModal extends Component {
         const { curSel } = this.state
         const studentsList = row.students
           ? row.students
-              .split(/;|\n/)
+              .split(/,|;|\n/)
               .filter((_o) => _o.trim().length)
-              .map((x) => x.replace('\t', ' '))
+              .map((x) => x.trim().replace('\t', ' '))
           : []
         if (studentsList.length) {
           inviteStudents({
@@ -101,7 +104,7 @@ class InviteMultipleStudentModal extends Component {
   validateStudentsList = (rule, value, callback) => {
     const { curSel } = this.state
     const lines = value
-      ? value.split(/;|\n/).filter((_o) => _o.trim().length)
+      ? value.split(/,|;|\n/).filter((_o) => _o.trim().length)
       : []
     let isValidate = true
     if (lines.length) {
@@ -109,6 +112,13 @@ class InviteMultipleStudentModal extends Component {
         for (let i = 0; i < lines.length; i++) {
           if (!validateEmail(lines[i])) {
             isValidate = false
+            break
+          }
+        }
+      } else if (curSel === 'fl' || curSel === 'lf') {
+        for (let i = 0; i < lines.length; i++) {
+          if (!nameValidator(lines[i])) {
+            callback('Please enter valid name for the user.')
             break
           }
         }
@@ -252,6 +262,7 @@ class InviteMultipleStudentModal extends Component {
       t,
       form,
       searchAndAddStudents = false,
+      isDemoPlaygroundUser,
     } = this.props
     const { getFieldDecorator } = form
     const {
@@ -375,7 +386,7 @@ class InviteMultipleStudentModal extends Component {
         centered
       >
         <Row gutter={4} type="flex" justify="space-between">
-          {searchAndAddStudents && (
+          {searchAndAddStudents && !isDemoPlaygroundUser && (
             <Col span={13}>
               <SearchTabButton
                 data-cy="searchStudent"
@@ -540,6 +551,7 @@ const enhance = compose(
     (state) => ({
       orgData: get(state, 'user.user.orgData', {}),
       role: get(state, 'user.user.role', null),
+      isDemoPlaygroundUser: get(state, 'user.user.isPlayGround', null),
     }),
     {}
   )

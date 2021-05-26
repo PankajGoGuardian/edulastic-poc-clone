@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { Upload } from 'antd'
 import TextareaAutosize from 'react-autosize-textarea'
 import {
   greenDark,
@@ -6,12 +7,10 @@ import {
   tabletWidth,
   greenDarkSecondary,
   secondaryTextColor,
-  mobileWidthMax,
   themeColor,
   extraDesktopWidthMax,
 } from '@edulastic/colors'
 import { TextField } from '@edulastic/common'
-import { StyledPaperWrapper } from '../../../styled/Widget'
 
 export const GraphContainer = styled.div`
   & .__prevent-page-break {
@@ -387,26 +386,6 @@ export const Col = styled.div`
   display: block;
 `
 
-export const PaperWrapper = styled(StyledPaperWrapper)`
-  padding: ${(props) =>
-    props.flowLayout
-      ? '0px'
-      : props.isV1Multipart
-      ? '0px 35px'
-      : props.isStudentReport
-      ? '20px 100px 20px 20px'
-      : props.isLCBView
-      ? '16px 28px 8px'
-      : '8px 28px'};
-  min-width: ${({ style }) => style.minWidth};
-  ${({ style }) => style};
-
-  @media (max-width: ${mobileWidthMax}) {
-    padding: ${({ flowLayout }) => (flowLayout ? '0px' : '20px;')};
-    margin-bottom: 15px;
-  }
-`
-
 export const GraphToolbar = createStandardTextSet(styled.div`
   box-sizing: border-box;
   position: relative;
@@ -626,5 +605,14 @@ export const PopupToolsContainer = styled.div`
 
   ${ToolBtn} {
     margin: 0;
+  }
+`
+const { Dragger } = Upload
+export const UploadButton = styled(Dragger)`
+  &.ant-upload.ant-upload-drag {
+    padding: 0px;
+    .ant-upload {
+      padding: 0px;
+    }
   }
 `

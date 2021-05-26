@@ -21,7 +21,7 @@ const FlexContainer = styled.div`
   flex: ${({ flex }) => flex || null};
   ${({ flexProps }) => flexProps};
   cursor: ${({ cursor }) => cursor || null};
-
+  ${({ position }) => position && `position: ${position};`};
   @media (max-width: ${mobileWidthMax}) {
     flex-wrap: ${({ flexWrap }) => flexWrap || 'wrap'};
   }

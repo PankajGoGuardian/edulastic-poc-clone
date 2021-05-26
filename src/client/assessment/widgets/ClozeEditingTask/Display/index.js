@@ -121,6 +121,7 @@ class EditingTypeDisplay extends Component {
       isPrint,
       isPrintPreview,
       hideCorrectAnswer,
+      answerScore,
     } = this.props
 
     const { parsedTemplate } = this.state
@@ -138,6 +139,7 @@ class EditingTypeDisplay extends Component {
       item,
       uiStyle,
       btnStyle,
+      answerScore,
       options: responses,
       onChange: this.selectChange,
       disableResponse,
@@ -193,7 +195,7 @@ class EditingTypeDisplay extends Component {
           )}
         </QuestionLabelWrapper>
 
-        <QuestionContentWrapper>
+        <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
           <QuestionTitleWrapper>
             {!!question && (
               <Stimulus

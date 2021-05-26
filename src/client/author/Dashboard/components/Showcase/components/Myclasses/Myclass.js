@@ -8,15 +8,22 @@ import loadable from '@loadable/component'
 
 // components
 import { Spin } from 'antd'
-import { MainContentWrapper, withWindowSizes } from '@edulastic/common'
+import {
+  MainContentWrapper,
+  withWindowSizes,
+  CustomModalStyled,
+} from '@edulastic/common'
 import { bannerActions } from '@edulastic/constants/const/bannerActions'
+import notification from '@edulastic/common/src/components/Notification'
 import { segmentApi } from '@edulastic/api'
+import configurableTilesApi from '@edulastic/api/src/configurableTiles'
 import BannerSlider from './components/BannerSlider/BannerSlider'
 import FeaturedContentBundle from './components/FeaturedContentBundle/FeaturedContentBundle'
 import ItemBankTrialUsedModal from './components/FeaturedContentBundle/ItemBankTrialUsedModal'
 import Classes from './components/Classes/Classes'
 import Launch from '../../../LaunchHangout/Launch'
 import PurchaseFlowModals from '../../../../../src/components/common/PurchaseModals'
+import SubjectGradeForm from '../../../../../../student/Signup/components/TeacherContainer/SubjectGrade'
 
 // ducks
 import { slice } from '../../../../../Subscription/ducks'
@@ -24,18 +31,22 @@ import { getDictCurriculumsAction } from '../../../../../src/actions/dictionarie
 import { receiveSearchCourseAction } from '../../../../../Courses/ducks'
 import { fetchCleverClassListRequestAction } from '../../../../../ManageClass/ducks'
 import { receiveTeacherDashboardAction } from '../../../../ducks'
-import { getUserDetails } from '../../../../../../student/Login/ducks'
+import {
+  getUserDetails,
+  setUserAction,
+} from '../../../../../../student/Login/ducks'
 import { resetTestFiltersAction } from '../../../../../TestList/ducks'
-import { clearPlaylistFiltersAction } from '../../../../../Playlist/ducks'
+import {
+  clearPlaylistFiltersAction,
+  getLastPlayListSelector,
+} from '../../../../../Playlist/ducks'
 import { getCollectionsSelector } from '../../../../../src/selectors/user'
+import TestRecommendations from './components/TestRecommendations'
 
 const ItemPurchaseModal = loadable(() =>
   import('./components/ItemPurchaseModal')
 )
 const TrialModal = loadable(() => import('./components/TrialModal'))
-const TrialConfirmationModal = loadable(() =>
-  import('./components/FeaturedContentBundle/TrialConfimationModal')
-)
 
 const PREMIUM_TAG = 'PREMIUM'
 
@@ -62,25 +73,31 @@ const MyClasses = ({
   itemBankSubscriptions = [],
   startTrialAction,
   usedTrialItemBankIds = [],
-  showTrialSubsConfirmationAction,
-  showTrialConfirmationMessage,
-  isConfirmationModalVisible,
   subscription: { subType } = {},
   products,
   showHeaderTrialModal,
   setShowHeaderTrialModal,
+  lastPlayList,
+  setUser,
 }) => {
   const [showBannerModal, setShowBannerModal] = useState(null)
   const [isPurchaseModalVisible, setIsPurchaseModalVisible] = useState(false)
   const [isTrialModalVisible, setIsTrialModalVisible] = useState(false)
   const [productData, setProductData] = useState({})
+  const [clickedBundleId, setClickedBundleId] = useState(null)
   const [showItemBankTrialUsedModal, setShowItemBankTrialUsedModal] = useState(
     false
   )
   const [showSubscriptionAddonModal, setShowSubscriptionAddonModal] = useState(
     false
   )
+  const [showTestCustomizerModal, setShowTestCustomizerModal] = useState(false)
   const [trialAddOnProductIds, setTrialAddOnProductIds] = useState([])
+  const [recommendedTests, setRecommendedTests] = useState([])
+
+  const [showTrialSubsConfirmation, setShowTrialSubsConfirmation] = useState(
+    false
+  )
 
   useEffect(() => {
     // fetch clever classes on modal display
@@ -88,12 +105,66 @@ const MyClasses = ({
       fetchCleverClassList()
     }
   }, [showCleverSyncModal])
-
   useEffect(() => {
     getTeacherDashboard()
     getDictCurriculums()
     receiveSearchCourse({ districtId, active: 1 })
   }, [])
+
+  const saveRecommendedTests = (_data) => {
+    const data = _data.map((x) => {
+      return { ...x._source, _id: x._id }
+    })
+    if (user?.recommendedContentUpdated) {
+      if (data?.length > 0) {
+        notification({
+          msg: 'Recommended content is updated.',
+          type: 'success',
+        })
+      } else {
+        notification({
+          msg:
+            'No recommended content found currently. We will show them when available.',
+          type: 'info',
+        })
+      }
+      const temp = user
+      temp.recommendedContentUpdated = false
+      setUser(temp)
+    }
+    if (!_data || !_data.length) {
+      return
+    }
+    localStorage.setItem(
+      `recommendedTest:${user?._id}:stored`,
+      JSON.stringify(data)
+    )
+    setRecommendedTests(data)
+  }
+
+  const checkLocalRecommendedTests = () => {
+    const recommendedTestsLocal = localStorage.getItem(
+      `recommendedTest:${user?._id}:stored`
+    )
+    if (recommendedTestsLocal) {
+      setRecommendedTests(JSON.parse(recommendedTestsLocal))
+      if (user?.recommendedContentUpdated) {
+        setTimeout(() => {
+          configurableTilesApi
+            .fetchRecommendedTest()
+            .then((res) => saveRecommendedTests(res))
+        }, 6000)
+      }
+    } else {
+      configurableTilesApi
+        .fetchRecommendedTest()
+        .then((res) => saveRecommendedTests(res))
+    }
+  }
+
+  useEffect(() => {
+    checkLocalRecommendedTests()
+  }, [user?.recommendedContentUpdated])
 
   const isPremiumUser = user?.features?.premium
 
@@ -136,7 +207,11 @@ const MyClasses = ({
     } else {
       resetPlaylistFilters()
     }
-    history.push(`/author/${contentType}?${filter}`)
+    if (contentType === 'playlist') {
+      history.push(`/author/playlists/${filters[0]?._id}#review`)
+    } else {
+      history.push(`/author/${contentType}?${filter}`)
+    }
   }
 
   const hasAccessToItemBank = (itemBankId) =>
@@ -171,14 +246,25 @@ const MyClasses = ({
   }
 
   const handleFeatureClick = ({ config = {}, tags = [], isBlocked }) => {
-    const { filters, contentType } = config
-
+    const { filters, contentType, subscriptionData } = config
     if (isBlocked) {
       handleBlockedClick(config)
       return
     }
 
-    const content = contentType?.toLowerCase() || 'tests'
+    let content = contentType?.toLowerCase() || 'tests_library'
+    if (content === 'tests_library') {
+      content = 'tests'
+    } else if (content === 'playlists_library') {
+      content = 'playlists'
+    }
+    setClickedBundleId(
+      filters?.[0]?.collections?.[0] || subscriptionData.itemBankId
+    )
+    if (content === 'playlists') {
+      setShowTrialSubsConfirmation(true)
+      return
+    }
     if (tags.includes(PREMIUM_TAG)) {
       if (isPremiumUser) {
         handleContentRedirect(filters, content)
@@ -275,6 +361,12 @@ const MyClasses = ({
       data: { event: `dashboard:banner-${description}:click` },
     })
 
+    const content = data?.contentType?.toLowerCase() || 'tests_library'
+    if (content === 'tests_library') {
+      data.contentType = 'tests'
+    } else if (content === 'playlists_library') {
+      data.contentType = 'playlists'
+    }
     switch (+action) {
       case bannerActions.BANNER_DISPLAY_IN_MODAL:
         setShowBannerModal(data)
@@ -301,6 +393,17 @@ const MyClasses = ({
     }
     return {}
   }, [products])
+
+  const accessibleItembankProductIds = useMemo(() => {
+    const collectionIds = collections.map((collection) => collection._id)
+
+    return products.reduce((a, c) => {
+      if (collectionIds.includes(c?.linkedProductId)) {
+        return a.concat(c.id)
+      }
+      return a
+    }, [])
+  }, [products, collections])
 
   const paidItemBankIds = useMemo(() => {
     if (!itemBankSubscriptions) {
@@ -347,16 +450,6 @@ const MyClasses = ({
     return <Spin style={{ marginTop: '80px' }} />
   }
 
-  const handleGoToCollectionClick = (productId) => {
-    const featuredBundle =
-      featuredBundles &&
-      featuredBundles.find(
-        (bundle) => bundle?.config?.subscriptionData?.productId === productId
-      )
-    handleFeatureClick(featuredBundle)
-    showTrialSubsConfirmationAction(false)
-  }
-
   const widthOfTilesWithMargin = 240 + 2 // 240 is width of tile and 2 is margin-right for each tile
 
   const GridCountInARow = Math.floor(
@@ -400,12 +493,23 @@ const MyClasses = ({
           bannerActionHandler={bannerActionHandler}
           isBannerModalVisible={showBannerModal}
           handleSparkClick={handleSparkClick}
+          accessibleItembankProductIds={accessibleItembankProductIds}
         />
       )}
       <Classes
         activeClasses={allActiveClasses}
         emptyBoxCount={classEmptyBoxCount}
+        userId={user?._id}
       />
+      {recommendedTests?.length > 0 && (
+        <TestRecommendations
+          recommendations={recommendedTests}
+          setShowTestCustomizerModal={setShowTestCustomizerModal}
+          userId={user?._id}
+          windowWidth={windowWidth}
+          history={history}
+        />
+      )}
       <FeaturedContentBundle
         featuredBundles={filteredBundles}
         handleFeatureClick={handleFeatureClick}
@@ -415,8 +519,13 @@ const MyClasses = ({
       <PurchaseFlowModals
         showSubscriptionAddonModal={showSubscriptionAddonModal}
         setShowSubscriptionAddonModal={setShowSubscriptionAddonModal}
+        isConfirmationModalVisible={showTrialSubsConfirmation}
+        setShowTrialSubsConfirmation={setShowTrialSubsConfirmation}
         defaultSelectedProductIds={defaultSelectedProductIds}
         setProductData={setProductData}
+        trialAddOnProductIds={trialAddOnProductIds}
+        clickedBundleId={clickedBundleId}
+        setClickedBundleId={setClickedBundleId}
       />
       {showItemBankTrialUsedModal && (
         <ItemBankTrialUsedModal
@@ -447,23 +556,30 @@ const MyClasses = ({
           toggleModal={toggleTrialModal}
           isPremiumUser={isPremiumUser}
           isPremiumTrialUsed={isPremiumTrialUsed}
+          setShowTrialSubsConfirmation={setShowTrialSubsConfirmation}
           startPremiumTrial={startTrialAction}
           products={products}
           setShowHeaderTrialModal={setShowHeaderTrialModal}
           setTrialAddOnProductIds={setTrialAddOnProductIds}
         />
       )}
-      {isConfirmationModalVisible && (
-        <TrialConfirmationModal
-          visible={isConfirmationModalVisible}
-          showTrialSubsConfirmationAction={showTrialSubsConfirmationAction}
-          showTrialConfirmationMessage={showTrialConfirmationMessage}
-          trialAddOnProductIds={trialAddOnProductIds}
-          collections={collections}
-          products={products}
-          handleGoToCollectionClick={handleGoToCollectionClick}
-          history={history}
-        />
+      {showTestCustomizerModal && (
+        <CustomModalStyled
+          title="What do you teach?"
+          visible={showTestCustomizerModal}
+          footer={null}
+          width="900px"
+          onCancel={() => setShowTestCustomizerModal(false)}
+          centered
+        >
+          <SubjectGradeForm
+            userInfo={user}
+            districtId={false}
+            isTestRecommendationCustomizer
+            isModal
+            setShowTestCustomizerModal={setShowTestCustomizerModal}
+          />
+        </CustomModalStyled>
       )}
     </MainContentWrapper>
   )
@@ -487,11 +603,9 @@ export default compose(
       usedTrialItemBankIds:
         state.subscription?.subscriptionData?.usedTrialItemBankIds,
       subscription: state.subscription?.subscriptionData?.subscription,
-      isConfirmationModalVisible: state.subscription?.showTrialSubsConfirmation,
-      showTrialConfirmationMessage:
-        state.subscription?.showTrialConfirmationMessage,
       products: state.subscription?.products,
       showHeaderTrialModal: state.subscription?.showHeaderTrialModal,
+      lastPlayList: getLastPlayListSelector(state),
     }),
     {
       receiveSearchCourse: receiveSearchCourseAction,
@@ -501,9 +615,8 @@ export default compose(
       resetTestFilters: resetTestFiltersAction,
       resetPlaylistFilters: clearPlaylistFiltersAction,
       startTrialAction: slice.actions.startTrialAction,
-      showTrialSubsConfirmationAction:
-        slice.actions.trialSubsConfirmationAction,
       setShowHeaderTrialModal: slice.actions.setShowHeaderTrialModal,
+      setUser: setUserAction,
     }
   )
 )(MyClasses)

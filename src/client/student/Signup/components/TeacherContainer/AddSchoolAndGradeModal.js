@@ -21,10 +21,15 @@ const AddSchoolAndGradeModal = ({
 
   return (
     <CustomModalStyled
-      title="Complete the signup process to proceed"
+      title={
+        userInfo.districtIds && userInfo.districtIds.length === 0
+          ? 'Where do you teach?'
+          : 'What do you teach?'
+      }
       visible={isVisible}
       footer={null}
       width="900px"
+      data-cy="signupSchoolSelectionTitle"
       onCancel={handleCancel}
       centered
     >

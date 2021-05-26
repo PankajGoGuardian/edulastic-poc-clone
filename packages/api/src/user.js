@@ -324,6 +324,14 @@ const logout = () =>
     method: 'post',
   })
 
+const getDemoPlaygroundUser = () =>
+  api
+    .callApi({
+      url: `${prefix}/playground`,
+      method: 'get',
+    })
+    .then((result) => result.data)
+
 export default {
   getUser,
   fetchUsers,
@@ -360,4 +368,5 @@ export default {
   activateUser,
   updateUsername,
   logout,
+  getDemoPlaygroundUser,
 }

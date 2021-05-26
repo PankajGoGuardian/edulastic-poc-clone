@@ -1,5 +1,5 @@
 import React from 'react'
-import  notification  from 'antd/es/notification'
+import notification from 'antd/es/notification'
 import { EduButton } from '@edulastic/common'
 
 export const notificationMessage = ({

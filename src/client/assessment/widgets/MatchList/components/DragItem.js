@@ -16,6 +16,8 @@ const DragItem = ({
   displayIndex,
   getStyles,
   width,
+  margin,
+  flex,
   centerContent,
 }) => {
   const currentActiveItem = useRef(null)
@@ -106,6 +108,7 @@ const DragItem = ({
           sourceIndex: renderIndex,
         },
         flag,
+        style: { margin, flex },
         key: item.value,
       }
     : {}

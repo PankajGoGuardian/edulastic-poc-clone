@@ -143,6 +143,20 @@ const ClassSyncNotificationListener = ({
   }, [userNotifications])
 
   useEffect(() => {
+    uniqBy(gradesSyncNotifications, '__id').forEach((doc) => {
+      const { status, message, success = false } = doc
+      if (status === 'completed' && !notificationIds.includes(doc.__id)) {
+        notification({ type: success ? 'success' : 'error', msg: message })
+        setNotificationIds([...notificationIds, doc.__id])
+        deleteNotificationDocument(
+          doc.__id,
+          firestoreGoogleGradesSyncStatusCollection
+        )
+      }
+    })
+  }, [gradesSyncNotifications])
+
+  useEffect(() => {
     uniqBy(cleverGradesSyncNotifications, '__id').forEach((doc) => {
       const { status, message, success = false } = doc
       if (status === 'completed' && !notificationIds.includes(doc.__id)) {
@@ -155,16 +169,6 @@ const ClassSyncNotificationListener = ({
       }
     })
   }, [cleverGradesSyncNotifications])
-
-  useEffect(() => {
-    uniqBy(gradesSyncNotifications, '__id').forEach((doc) => {
-      const { status, message, success = false } = doc
-      if (status === 'completed') {
-        notification({ type: success ? 'success' : 'error', msg: message })
-        deleteNotificationDocument(doc.__id)
-      }
-    })
-  }, [gradesSyncNotifications])
 
   useEffect(() => {
     if (user && user.role === roleuser.TEACHER) {

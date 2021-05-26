@@ -319,7 +319,7 @@ const SortListPreview = ({
             )}
           </QuestionLabelWrapper>
 
-          <QuestionContentWrapper>
+          <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
             <QuestionTitleWrapper>
               {stimulus && !smallSize && (
                 <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />

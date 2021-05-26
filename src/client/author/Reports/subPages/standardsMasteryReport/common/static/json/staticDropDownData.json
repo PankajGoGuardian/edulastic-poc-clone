@@ -1,12 +1,12 @@
 {
   "filterSections": {
-    "CLASS_FILTERS": {
-      "key": "0",
-      "title": "Select Classes"
-    },
     "TEST_FILTERS": {
+      "key": "0",
+      "title": "Select Assessments"
+    },
+    "CLASS_FILTERS": {
       "key": "1",
-      "title": "Select Assessment(s)"
+      "title": "Select Classes"
     },
     "DEMOGRAPHIC_FILTERS": {
       "key": "2",
@@ -18,29 +18,31 @@
     }
   },
   "tagTypes": [
-    { "key": "termId" },
-    { "key": "schoolIds" },
-    { "key": "teacherIds" },
-    { "key": "grades", "subType": "class" },
-    { "key": "subjects", "subType": "class" },
-    { "key": "courseId" },
-    { "key": "classIds" },
-    { "key": "groupIds" },
-    { "key": "testGrades", "subType": "test" },
-    { "key": "testSubjects", "subType": "test" },
-    { "key": "tagIds" },
-    { "key": "assessmentTypes" },
-    { "key": "testIds" },
+    { "key": "testGrades", "subType": "test", "tabKey": "0" },
+    { "key": "testSubjects", "subType": "test", "tabKey": "0" },
+    { "key": "tagIds", "tabKey": "0" },
+    { "key": "assessmentTypes", "tabKey": "0" },
+    { "key": "testIds", "tabKey": "0" },
+    { "key": "termId", "tabKey": "1" },
+    { "key": "schoolIds", "tabKey": "1" },
+    { "key": "teacherIds", "tabKey": "1" },
+    { "key": "grades", "subType": "class", "tabKey": "1" },
+    { "key": "subjects", "subType": "class", "tabKey": "1" },
+    { "key": "courseId", "tabKey": "1" },
+    { "key": "classIds", "tabKey": "1" },
+    { "key": "groupIds", "tabKey": "1" },
+    { "key": "assignedBy", "tabKey": "1" },
     { "key": "curriculumId" },
     { "key": "standardGrade", "subType": "standard" },
     { "key": "profileId" },
     { "key": "domainIds" },
     { "key": "standardId" },
-    { "key": "race" },
-    { "key": "gender" },
-    { "key": "iepStatus" },
-    { "key": "frlStatus" },
-    { "key": "ellStatus" }
+    { "key": "race", "tabKey": "2" },
+    { "key": "gender", "tabKey": "2" },
+    { "key": "iepStatus", "tabKey": "2" },
+    { "key": "frlStatus", "tabKey": "2" },
+    { "key": "ellStatus", "tabKey": "2" },
+    { "key": "hispanicEthnicity", "tabKey": "2" }
   ],
   "initialFilters": {
     "reportId": "",
@@ -61,14 +63,16 @@
     "profileId": "",
     "domainIds": [],
     "standardId": "",
-    "showApply": false
+    "showApply": false,
+    "assignedBy": "anyone"
   },
   "initialDdFilters": {
     "race": "all",
     "gender": "all",
     "iepStatus": "all",
     "frlStatus": "all",
-    "ellStatus": "all"
+    "ellStatus": "all",
+    "hispanicEthnicity": "all"
   },
   "subjects": [
     { "key": "Mathematics", "title": "Mathematics" },
@@ -117,5 +121,9 @@
     { "key": "common assessment", "title": "Common" },
     { "key": "assessment", "title": "Class" },
     { "key": "practice", "title": "Practice" }
+  ],
+  "assignedBy": [
+    { "key": "anyone", "title": "Anyone" },
+    { "key": "me", "title": "Me" }
   ]
 }

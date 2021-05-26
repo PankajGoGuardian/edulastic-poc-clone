@@ -24,8 +24,8 @@ import {
 import { math } from '@edulastic/constants'
 
 import { storeInLocalStorage } from '@edulastic/api/src/utils/Storage'
-import { lightGrey9 } from '@edulastic/colors'
 import { IconMoveArrows } from '@edulastic/icons'
+import { lightGrey9 } from '@edulastic/colors'
 import { getPreviewSelector } from '../../../src/selectors/view'
 import { checkAnswerAction } from '../../../src/actions/testItem'
 import { changePreviewAction } from '../../../src/actions/view'

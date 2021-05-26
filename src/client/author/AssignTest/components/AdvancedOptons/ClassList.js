@@ -327,7 +327,7 @@ class ClassList extends React.Component {
         width: '15%',
         key: 'grades',
         dataIndex: 'grades',
-        sorter: (a, b) => a.grades.localeCompare(b.grades),
+        sorter: (a, b) => `${a.grades}`.localeCompare(`${b.grades}`),
         sortDirections: ['descend', 'ascend'],
       },
     ]

@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 import { Button } from 'antd'
 import { math } from '@edulastic/constants'
+import gripper from '../assets/gripper/gripper.svg'
 
 const {
   KeyboardSize: { width: keyWidth },
@@ -224,4 +225,31 @@ export const SymbolContainer = styled.div`
   height: ${`${keyWidth * 4}px`};
   flex-direction: ${({ isAll }) => (isAll ? 'row' : 'column')};
   overflow-y: ${({ isAll }) => (isAll ? 'auto' : 'hidden')};
+`
+export const StyledGripperContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 15px;
+  margin-top: 2px;
+  padding-left: 10px;
+  justify-content: space-evenly;
+  cursor: move;
+  &:hover {
+    .arrow-container {
+      display: block;
+    }
+  }
+`
+export const StyledGripper = styled.div`
+  display: flex;
+  flex-direction: row-reverse;
+  width: 90%;
+  height: 100%;
+  background-image: url(${gripper});
+  background-repeat: repeat-x;
+`
+
+export const StyledArrowContainer = styled.div`
+  display: none;
 `

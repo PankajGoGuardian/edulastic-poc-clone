@@ -483,6 +483,7 @@ class Display extends Component {
       isPrintPreview = false,
       view,
       hideCorrectAnswer,
+      answerScore,
     } = this.props
     const isPrintMode = isPrint || isPrintPreview
     const isWrapText = get(item, 'responseLayout.isWrapText', false)
@@ -740,6 +741,7 @@ class Display extends Component {
             isPrintPreview={isPrintPreview || isPrint}
             options={options}
             idValueMap={idValueMap}
+            answerScore={answerScore}
           />
         </StyledPreviewContainer>
       </StyledPreviewTemplateBox>
@@ -808,7 +810,7 @@ class Display extends Component {
                   <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>
                 )}
               </QuestionLabelWrapper>
-              <QuestionContentWrapper>
+              <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
                 <QuestionTitleWrapper>
                   <Stimulus
                     smallSize={smallSize}

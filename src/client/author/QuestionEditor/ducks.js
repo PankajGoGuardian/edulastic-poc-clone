@@ -21,7 +21,11 @@ import {
 } from 'lodash'
 import produce from 'immer'
 import { questionType, questionTitle } from '@edulastic/constants'
-import { helpers, notification } from '@edulastic/common'
+import {
+  helpers,
+  notification,
+  captureSentryException,
+} from '@edulastic/common'
 import { push } from 'connected-react-router'
 import * as Sentry from '@sentry/browser'
 import { storeInLocalStorage } from '@edulastic/api/src/utils/Storage'
@@ -548,6 +552,7 @@ function* saveQuestionSaga({
       },
     }
 
+    let allQuestionsArePractice = data.data.questions.length > 0
     data = produce(data, (draftData) => {
       if (draftData.data.questions.length > 0) {
         if (data.itemLevelScoring) {
@@ -557,7 +562,10 @@ function* saveQuestionSaga({
             ['data', 'questions', 0, 'validation', 'validResponse', 'score'],
             data.itemLevelScore
           )
-          for (const [index] of draftData.data.questions.entries()) {
+          for (const [index, _question] of draftData.data.questions.entries()) {
+            if (allQuestionsArePractice && !_question?.validation?.unscored) {
+              allQuestionsArePractice = false
+            }
             if (index > 0) {
               set(
                 draftData,
@@ -579,16 +587,52 @@ function* saveQuestionSaga({
           //   draftData.data.questions[index].validation.validResponse.score =
           //     itemScore / draftData.data.questions.length;
           // }
+          for (const _question of draftData.data.questions) {
+            if (allQuestionsArePractice && !_question?.validation?.unscored) {
+              allQuestionsArePractice = false
+            }
+          }
           delete draftData.data.questions[0].itemScore
+        } else if (!data.itemLevelScoring) {
+          for (const _question of draftData.data.questions) {
+            if (allQuestionsArePractice && !_question?.validation?.unscored) {
+              allQuestionsArePractice = false
+            }
+          }
+        }
+
+        if (allQuestionsArePractice) {
+          draftData.itemLevelScore = 0
         }
 
         draftData.data.questions.forEach((q, index) => {
+          if (index === 0) {
+            if (data.itemLevelScoring && q.scoringDisabled) {
+              // on item level scoring item, first question removed situation.
+              if (!questionType.manuallyGradableQn.includes(data.type)) {
+                set(q, 'validation.validResponse.score', data.itemLevelScore)
+              }
+            }
+            /**
+             * after shuffle we need to reset scoringDisabled to false for the first question
+             * irrespective to itemLevelScoring
+             */
+            q.scoringDisabled = false
+          }
           if (index > 0) {
             if (data.itemLevelScoring) {
               q.scoringDisabled = true
             } else {
-              delete q.scoringDisabled
+              q.scoringDisabled = false
             }
+          }
+
+          if (allQuestionsArePractice) {
+            q.itemScore = 0
+            q.validation.validResponse.score = 0
+            ;(q.validation.altResponses || []).forEach((altResponse) => {
+              altResponse.score = 0
+            })
           }
 
           const isMatrices =
@@ -601,6 +645,7 @@ function* saveQuestionSaga({
           }
         })
       }
+
       const itemGrades = draftData.grades.filter(
         (item) => !!item && typeof item === 'string'
       )
@@ -612,6 +657,8 @@ function* saveQuestionSaga({
     })
 
     const redirectTestId = yield select(redirectTestIdSelector)
+    // In test flow, if test not created, testId is 'undefined' | EV-27944
+    const _testId = redirectTestId || (tId === 'undefined' ? undefined : tId)
     let item
     // if its a new testItem, create testItem, else update it.
     // TODO: do we need redirect testId here?!
@@ -619,21 +666,12 @@ function* saveQuestionSaga({
       const reqData = omit(data, '_id')
       item = yield call(testItemsApi.create, reqData)
     } else {
-      item = yield call(
-        testItemsApi.updateById,
-        itemDetail._id,
-        data,
-        redirectTestId
-      )
+      item = yield call(testItemsApi.updateById, itemDetail._id, data, _testId)
     }
     yield put(changeUpdatedFlagAction(false))
     if (item.testId) {
       yield put(setRedirectTestAction(item.testId))
     }
-    yield put({
-      type: UPDATE_ITEM_DETAIL_SUCCESS,
-      payload: { item },
-    })
 
     if (!saveAndPublishFlow) {
       notification({ type: 'success', messageKey: 'itemSavedSuccess' })
@@ -704,6 +742,10 @@ function* saveQuestionSaga({
             },
           })
         )
+        yield put({
+          type: UPDATE_ITEM_DETAIL_SUCCESS,
+          payload: { item },
+        })
         return
       }
 
@@ -735,6 +777,10 @@ function* saveQuestionSaga({
         // add item to test entity
         yield put(addAuthoredItemsAction({ item, tId, isEditFlow }))
       }
+      yield put({
+        type: UPDATE_ITEM_DETAIL_SUCCESS,
+        payload: { item },
+      })
       if (!isEditFlow) return
       yield put(changeViewAction('edit'))
       return
@@ -766,8 +812,13 @@ function* saveQuestionSaga({
         })
       )
     }
+    yield put({
+      type: UPDATE_ITEM_DETAIL_SUCCESS,
+      payload: { item },
+    })
   } catch (err) {
     console.error(err)
+    captureSentryException(err)
     const errorMessage = 'Unable to save the question.'
     if (isTestFlow) {
       yield put(toggleCreateItemModalAction(false))
@@ -809,12 +860,12 @@ const containsEmptyField = (variables) => {
       case !!intersection(_keys, _set.split(',')).length:
         return {
           hasEmptyField: true,
-          errMessage: `You have a parameter named "${name}" that is also given in the text set. This is not supported.`,
+          errMessage: `Your dynamic parameter "${name}" contains a text entry that is also a parameter name. This is not supported right now. Please rename the impacted parameters or entries so that there is no naming overlap.`,
         }
       case !!intersection(_keys, sequence.split(',')).length:
         return {
           hasEmptyField: true,
-          errMessage: `You have a parameter named "${name}" that is also given in the text sequence. This is not supported.`,
+          errMessage: `Your dynamic parameter "${name}" contains a text entry that is also a parameter name. This is not supported right now. Please rename the impacted parameters or entries so that there is no naming overlap.`,
         }
       default:
         break
@@ -822,6 +873,12 @@ const containsEmptyField = (variables) => {
   }
   return { hasEmptyField: false, errMessage: '' }
 }
+
+const hasMathFormula = (variables) =>
+  Object.keys(variables).some((key) => {
+    const { type } = variables[key] || {}
+    return type === 'FORMULA'
+  })
 
 /**
  *
@@ -911,16 +968,9 @@ function* calculateFormulaSaga({ payload }) {
       return []
     }
 
-    const options = question?.isMath
-      ? getOptionsForMath(get(question, 'validation.validResponse.value', []))
-      : {}
-
     const variables =
       payload.data.variables || question.variable.variables || {}
     const examples = payload.data.examples || question.variable.examples || {}
-    const latexValuePairs = [
-      getLatexValuePairs({ id: 'definition', variables, options }),
-    ]
 
     const { hasEmptyField = false, errMessage = '' } = containsEmptyField(
       variables
@@ -933,21 +983,31 @@ function* calculateFormulaSaga({ payload }) {
       return true
     }
 
-    if (examples) {
-      for (const example of examples) {
-        const pair = getLatexValuePairs({
-          id: `example${example.key}`,
-          variables,
-          example,
-          options,
-        })
-        if (pair.latexes.length > 0) {
-          latexValuePairs.push(pair)
+    let results = []
+    if (hasMathFormula(variables)) {
+      const options = question?.isMath
+        ? getOptionsForMath(get(question, 'validation.validResponse.value', []))
+        : {}
+      const latexValuePairs = [
+        getLatexValuePairs({ id: 'definition', variables, options }),
+      ]
+      if (examples) {
+        for (const example of examples) {
+          const pair = getLatexValuePairs({
+            id: `example${example.key}`,
+            variables,
+            example,
+            options,
+          })
+          if (pair.latexes.length > 0) {
+            latexValuePairs.push(pair)
+          }
         }
       }
+      results = yield call(evaluateApi.calculate, latexValuePairs)
     }
+
     const variable = { ...question.variable, examples, variables }
-    const results = yield call(evaluateApi.calculate, latexValuePairs)
     const newQuestion = { ...cloneDeep(question), variable }
     for (const result of results) {
       if (result.id === 'definition') {
@@ -990,11 +1050,11 @@ function* loadQuestionSaga({ payload }) {
         push({
           pathname: `${pathname}/questions/edit/${data.type}`,
           state: {
+            ...locationState,
             backText: 'question edit',
             backUrl: pathname,
             rowIndex,
             isPassageWithQuestions: isPassageWidget,
-            ...locationState,
           },
         })
       )

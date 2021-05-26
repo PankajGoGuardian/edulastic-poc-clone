@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { themeColor } from '@edulastic/colors'
 import { Spin } from 'antd'
+import { isUndefined } from 'lodash'
 import { IconEye, IconClose } from '@edulastic/icons'
 import { connect } from 'react-redux'
 import {
@@ -21,7 +22,7 @@ import {
 
 const PlaylistTestDetailsModal = ({
   onClose,
-  modalInitData: { isVisible, currentTestId } = {},
+  modalInitData: { isVisible, requestLatest, currentTestId } = {},
   receiveTestById,
   test = {},
   rows = [],
@@ -29,15 +30,27 @@ const PlaylistTestDetailsModal = ({
   viewAsStudent,
   isTestLoading,
   playlistId,
+  onEditTest,
 }) => {
   useEffect(() => {
-    receiveTestById(currentTestId, true, false, true, playlistId)
+    receiveTestById(
+      currentTestId,
+      isUndefined(requestLatest) ? true : requestLatest,
+      false,
+      true,
+      playlistId
+    )
   }, [])
 
   const defaultPropsForReview = {
     onChangeGrade: () => {},
     onChangeSubjects: () => {},
     onChangeCollection: () => {},
+  }
+
+  const handleEditTest = () => {
+    onEditTest(currentTestId)
+    onClose(false)
   }
 
   return (
@@ -58,7 +71,13 @@ const PlaylistTestDetailsModal = ({
           back to playlist
         </BreadCrumb>
         <ActionsWrapper>
-          <ActionBtn onClick={() => viewAsStudent(currentTestId)}>
+          <ActionBtn data-cy="editTest" onClick={handleEditTest}>
+            Edit test
+          </ActionBtn>
+          <ActionBtn
+            data-cy="viewAsStudent"
+            onClick={() => viewAsStudent(currentTestId)}
+          >
             <IconEye color={themeColor} width={16} height={16} /> view as
             student
           </ActionBtn>

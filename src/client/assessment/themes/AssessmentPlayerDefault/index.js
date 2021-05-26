@@ -4,9 +4,9 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { ThemeProvider } from 'styled-components'
-import { get, keyBy, isUndefined, last } from 'lodash'
-import { withWindowSizes, ScrollContext, notification } from '@edulastic/common'
-import { nonAutoGradableTypes, test } from '@edulastic/constants'
+import { get, isUndefined, last } from 'lodash'
+import { withWindowSizes, notification } from '@edulastic/common'
+import { nonAutoGradableTypes } from '@edulastic/constants'
 
 import { playerSkinValues } from '@edulastic/constants/const/test'
 import { themes } from '../../../theme'
@@ -64,7 +64,7 @@ class AssessmentPlayerDefault extends React.Component {
       ? parseInt(last(lastUploadedFileNameExploded), 10) + 1
       : 1
 
-    const calcType = this.calculatorType
+    const calcType = settings.calcType
     this.state = {
       cloneCurrentItem: props.currentItem,
       testItemState: '',
@@ -84,21 +84,6 @@ class AssessmentPlayerDefault extends React.Component {
       cameraImageIndex,
     }
     this.scrollContainer = React.createRef()
-  }
-
-  get calculatorType() {
-    const {
-      settings: { calcType: testCalculatorType } = {},
-      assignmentSettings: { calcType: assignmentCalculatorType } = {},
-    } = this.props
-    let calculatorType = testCalculatorType
-    if (
-      assignmentCalculatorType &&
-      assignmentCalculatorType !== test.calculatorTypes.NONE
-    ) {
-      calculatorType = assignmentCalculatorType
-    }
-    return calculatorType
   }
 
   changeTool = (val) => {
@@ -347,7 +332,6 @@ class AssessmentPlayerDefault extends React.Component {
       selectedTheme = 'default',
       closeTestPreviewModal,
       isStudentReport,
-      passage,
       defaultAP,
       playerSkinType,
       title,
@@ -367,6 +351,7 @@ class AssessmentPlayerDefault extends React.Component {
       uploadToS3,
       user = {},
       gotoSummary,
+      isShowStudentWork,
     } = this.props
     const { firstName = '', lastName = '' } = user
     const { settings } = this.props
@@ -482,11 +467,6 @@ class AssessmentPlayerDefault extends React.Component {
       headerStyleWidthZoom.padding = 0
     }
 
-    const _settings = {
-      ...settings,
-      calcType: this.calculatorType,
-    }
-
     const qType = get(items, `[${currentItem}].data.questions[0].type`, null)
     const cameraImageName = `${firstName}_${lastName}_${
       currentItem + 1
@@ -530,7 +510,7 @@ class AssessmentPlayerDefault extends React.Component {
             moveToNext={moveToNext}
             showSettingIcon={showSettingIcon}
             answerChecksUsedForItem={answerChecksUsedForItem}
-            settings={_settings}
+            settings={settings}
             items={items}
             isNonAutoGradable={isNonAutoGradable}
             checkAnswer={() => this.changeTabItemState('check')}
@@ -579,7 +559,7 @@ class AssessmentPlayerDefault extends React.Component {
                 checkAnswer={() => this.changeTabItemState('check')}
                 windowWidth={windowWidth}
                 answerChecksUsedForItem={answerChecksUsedForItem}
-                settings={_settings}
+                settings={settings}
                 items={items}
                 currentItem={currentItem}
                 isNonAutoGradable={isNonAutoGradable}
@@ -606,7 +586,7 @@ class AssessmentPlayerDefault extends React.Component {
                 isVisible={isSubmitConfirmationVisible}
                 onClose={() => this.closeSubmitConfirmation()}
                 finishTest={this.finishTest}
-                settings={_settings}
+                settings={settings}
               />
             )}
             <Main
@@ -617,97 +597,93 @@ class AssessmentPlayerDefault extends React.Component {
               padding="20px 30px"
             >
               <SettingsModal />
-              <ScrollContext.Provider
-                value={{ getScrollElement: () => this.scrollContainer.current }}
+              <MainWrapper
+                responsiveWidth={responsiveWidth}
+                zoomLevel={zoomLevel}
+                ref={this.scrollContainer}
+                hasCollapseButtons={hasCollapseButtons}
+                className="scrollable-main-wrapper"
+                id="assessment-player-default-scroll"
               >
-                <MainWrapper
-                  responsiveWidth={responsiveWidth}
-                  zoomLevel={zoomLevel}
-                  ref={this.scrollContainer}
-                  hasCollapseButtons={hasCollapseButtons}
-                  className="scrollable-main-wrapper"
-                  id="assessment-player-default-scroll"
-                >
-                  {testItemState === '' && (
-                    <TestItemPreview
-                      LCBPreviewModal={LCBPreviewModal}
-                      cols={itemRows}
-                      previousQuestionActivity={previousQuestionActivity}
-                      questions={
-                        passage
-                          ? { ...questions, ...keyBy(passage.data, 'id') }
-                          : questions
-                      }
-                      showCollapseBtn
-                      highlights={highlights}
-                      crossAction={crossAction || {}}
-                      viewComponent="studentPlayer"
-                      setHighlights={this.saveUserWork('resourceId')}
-                      setCrossAction={
-                        enableCrossAction
-                          ? this.saveUserWork('crossAction')
-                          : false
-                      } // this needs only for MCQ and MSQ
-                      scratchPadMode={scratchPadMode}
-                      saveUserWork={this.saveUserWork('scratchpad')}
-                      saveAttachments={this.saveUserWork('attachments')}
-                      attachments={attachments}
-                      userWork={
-                        LCBPreviewModal ? scratchpadActivity.data : scratchPad
-                      }
-                      scratchpadDimensions={
-                        LCBPreviewModal ? scratchpadActivity.dimensions : null
-                      }
-                      preview={preview}
-                      evaluation={evaluation}
-                      changePreviewTab={changePreview}
-                      saveHintUsage={this.saveHintUsage}
-                      enableMagnifier={enableMagnifier}
-                      updateScratchpadtoStore
-                      isPassageWithQuestions={item?.isPassageWithQuestions}
-                      isStudentReport={isStudentReport}
-                      itemId={item._id}
-                      itemLevelScoring={item.itemLevelScoring}
-                      studentReportModal={studentReportModal}
-                    />
-                  )}
-                  {testItemState === 'check' && (
-                    <TestItemPreview
-                      cols={itemRows}
-                      previewTab="check"
-                      preview={preview}
-                      previousQuestionActivity={previousQuestionActivity}
-                      evaluation={evaluation}
-                      verticalDivider={item.verticalDivider}
-                      scrolling={item.scrolling}
-                      questions={questions}
-                      LCBPreviewModal={LCBPreviewModal}
-                      highlights={highlights}
-                      crossAction={crossAction || {}}
-                      showCollapseBtn
-                      viewComponent="studentPlayer"
-                      setHighlights={this.saveUserWork('resourceId')} // this needs only for passage type
-                      setCrossAction={
-                        enableCrossAction
-                          ? this.saveUserWork('crossAction')
-                          : false
-                      } // this needs only for MCQ and MSQ
-                      scratchPadMode={scratchPadMode}
-                      saveUserWork={this.saveUserWork('scratchpad')}
-                      saveAttachments={this.saveUserWork('attachments')}
-                      attachments={attachments}
-                      userWork={scratchPad}
-                      saveHintUsage={this.saveHintUsage}
-                      changePreviewTab={this.handleChangePreview}
-                      isStudentReport={isStudentReport}
-                      enableMagnifier={enableMagnifier}
-                      itemId={item._id}
-                      itemLevelScoring={item.itemLevelScoring}
-                      studentReportModal={studentReportModal}
-                    />
-                  )}
-                </MainWrapper>
-              </ScrollContext.Provider>
+                {testItemState === '' && (
+                  <TestItemPreview
+                    LCBPreviewModal={LCBPreviewModal}
+                    cols={itemRows}
+                    previousQuestionActivity={previousQuestionActivity}
+                    questions={questions}
+                    showCollapseBtn
+                    highlights={highlights}
+                    crossAction={crossAction || {}}
+                    viewComponent="studentPlayer"
+                    setHighlights={this.saveUserWork('resourceId')}
+                    setCrossAction={
+                      enableCrossAction
+                        ? this.saveUserWork('crossAction')
+                        : false
+                    } // this needs only for MCQ and MSQ
+                    scratchPadMode={scratchPadMode}
+                    saveUserWork={this.saveUserWork('scratchpad')}
+                    saveAttachments={this.saveUserWork('attachments')}
+                    attachments={attachments}
+                    userWork={
+                      LCBPreviewModal ? scratchpadActivity.data : scratchPad
+                    }
+                    scratchpadDimensions={
+                      LCBPreviewModal ? scratchpadActivity.dimensions : null
+                    }
+                    preview={preview}
+                    evaluation={evaluation}
+                    changePreviewTab={changePreview}
+                    saveHintUsage={this.saveHintUsage}
+                    enableMagnifier={enableMagnifier}
+                    updateScratchpadtoStore
+                    isPassageWithQuestions={item?.isPassageWithQuestions}
+                    isStudentReport={isStudentReport}
+                    itemId={item._id}
+                    itemLevelScoring={item.itemLevelScoring}
+                    studentReportModal={studentReportModal}
+                    tool={currentToolMode}
+                    isShowStudentWork={isShowStudentWork}
+                  />
+                )}
+                {testItemState === 'check' && (
+                  <TestItemPreview
+                    cols={itemRows}
+                    previewTab="check"
+                    preview={preview}
+                    previousQuestionActivity={previousQuestionActivity}
+                    evaluation={evaluation}
+                    verticalDivider={item.verticalDivider}
+                    scrolling={item.scrolling}
+                    questions={questions}
+                    LCBPreviewModal={LCBPreviewModal}
+                    highlights={highlights}
+                    crossAction={crossAction || {}}
+                    showCollapseBtn
+                    viewComponent="studentPlayer"
+                    setHighlights={this.saveUserWork('resourceId')} // this needs only for passage type
+                    setCrossAction={
+                      enableCrossAction
+                        ? this.saveUserWork('crossAction')
+                        : false
+                    } // this needs only for MCQ and MSQ
+                    scratchPadMode={scratchPadMode}
+                    saveUserWork={this.saveUserWork('scratchpad')}
+                    saveAttachments={this.saveUserWork('attachments')}
+                    attachments={attachments}
+                    userWork={scratchPad}
+                    saveHintUsage={this.saveHintUsage}
+                    changePreviewTab={this.handleChangePreview}
+                    isStudentReport={isStudentReport}
+                    enableMagnifier={enableMagnifier}
+                    itemId={item._id}
+                    itemLevelScoring={item.itemLevelScoring}
+                    studentReportModal={studentReportModal}
+                    tool={currentToolMode}
+                    isShowStudentWork={isShowStudentWork}
+                  />
+                )}
+              </MainWrapper>
             </Main>
 
             <ReportIssuePopover item={item} />
@@ -847,9 +823,26 @@ function getScratchPadfromActivity(state, props) {
       data.dimensions = dimensions
       return data
     }
+    let uqaIdList = []
+    if (items?.[currentItem]?.itemLevelScoring) {
+      uqaIdList = (items[currentItem]?.data?.questions || []).map((q) => {
+        const { activity } = q
+        const { qActId, _id } = activity || {}
+        return qActId || _id
+      })
+    }
     questionActivity.qActId = questionActivity.qActId || questionActivity._id
-    const userWorkData = userWork.present[questionActivity.qActId] || {}
+    let userWorkData = {}
+    if (uqaIdList.length) {
+      const currentIdInStore = uqaIdList.find((id) => userWork.present[id])
+      if (currentIdInStore) {
+        userWorkData = userWork.present[currentIdInStore] || {}
+      }
+    } else {
+      userWorkData = userWork.present[questionActivity.qActId] || {}
+    }
     const scratchPadData = { data: userWorkData, dimensions }
+
     return scratchPadData
   }
   return {}

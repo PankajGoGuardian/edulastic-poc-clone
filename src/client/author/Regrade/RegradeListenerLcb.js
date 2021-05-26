@@ -12,9 +12,8 @@ import {
   setEditEnableAction,
   setRegradeFirestoreDocId,
 } from '../TestPage/ducks'
-import { correctItemUpdateAction } from '../ClassBoard/ducks'
-import { markQuestionLabel } from '../ClassBoard/Transformer'
-import { receiveTestActivitydAction } from '../src/actions/classBoard'
+
+import { reloadLcbDataInStudentViewAction } from '../src/actions/classBoard'
 
 const collectionName = 'RegradeAssignments'
 
@@ -22,10 +21,9 @@ const NotificationListener = ({
   docId,
   onCloseModal,
   setFirestoreDocId,
-  correctItemUpdate,
-  testItems,
   modalState,
-  loadTestActivity,
+  studentResponseData,
+  reloadLcbDataInStudentView,
 }) => {
   const userNotification = Fbs.useFirestoreRealtimeDocument(
     (db) => db.collection(collectionName).doc(docId),
@@ -44,13 +42,16 @@ const NotificationListener = ({
     if (userNotification) {
       const { error, processStatus } = userNotification
       if (processStatus === 'DONE' && !error) {
-        const itemsToReplace = testItems.map((t) =>
-          t.id === modalState.itemData.testItemId ? modalState.item : t
-        )
-        markQuestionLabel(itemsToReplace)
-        correctItemUpdate(itemsToReplace)
-        const { assignmentId, groupId } = modalState.itemData
-        loadTestActivity(assignmentId, groupId)
+        const { assignmentId, groupId, lcbView } = modalState.itemData
+        reloadLcbDataInStudentView({
+          assignmentId,
+          groupId,
+          classId: groupId,
+          testActivityId: studentResponseData?._id,
+          studentId: studentResponseData?.userId,
+          lcbView,
+          modalState,
+        })
         antdNotification({
           type: 'success',
           msg: 'Assignment regrade is successful',
@@ -82,14 +83,13 @@ export default compose(
   connect(
     (state) => ({
       docId: getRegradeFirebaseDocIdSelector(state),
-      testItems: get(state, 'classResponse.data.testItems', []),
       modalState: getRegradeModalStateSelector(state),
+      studentResponseData: get(state, 'studentResponse.data.testActivity', {}),
     }),
     {
       setEditEnable: setEditEnableAction,
       setFirestoreDocId: setRegradeFirestoreDocId,
-      correctItemUpdate: correctItemUpdateAction,
-      loadTestActivity: receiveTestActivitydAction,
+      reloadLcbDataInStudentView: reloadLcbDataInStudentViewAction,
     }
   )
 )(NotificationListener)

@@ -2,7 +2,14 @@ import React, { useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
-import { FlexContainer, EduButton, AnswerContext } from '@edulastic/common'
+import {
+  FlexContainer,
+  EduButton,
+  AnswerContext,
+  ScrollContext,
+  ItemLevelContext as HideScoringBlockContext,
+  notification,
+} from '@edulastic/common'
 import { TitleWrapper } from '@edulastic/common/src/components/MainHeader'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
@@ -11,9 +18,11 @@ import { round, get, omit } from 'lodash'
 import { Modal, Popover } from 'antd'
 import { roleuser } from '@edulastic/constants'
 import { IconTestBank, IconClockCircularOutline } from '@edulastic/icons'
-import { testItemsApi } from '@edulastic/api'
+import { testItemsApi, testsApi } from '@edulastic/api'
 import { EDIT } from '../../constants/constantsForQuestions'
 import {
+  setEditingItemIdAction,
+  setCurrentStudentIdAction,
   setQuestionDataAction,
   toggleQuestionEditModalAction,
 } from '../../../author/src/actions/question'
@@ -22,9 +31,14 @@ import {
   getCurrentQuestionSelector,
   deleteQuestionAction,
 } from '../../../author/sharedDucks/questions'
-import { updateCorrectTestItemAction } from '../../../author/src/actions/classBoard'
+import {
+  correctItemUpdateProgressAction,
+  replaceOriginalItemAction,
+  updateCorrectTestItemAction,
+} from '../../../author/src/actions/classBoard'
 import {
   getAdditionalDataSelector,
+  getIsDocBasedTestSelector,
   getShowCorrectItemButton,
 } from '../../../author/ClassBoard/ducks'
 import {
@@ -39,6 +53,8 @@ import {
   allowDuplicateCheck,
   allowContentEditCheck,
 } from '../../../author/src/utils/permissionCheck'
+import Explanation from './Explanation'
+import RegradeProgressModal from '../../../author/Regrade/RegradeProgressModal'
 
 export const ShowUserWork = ({ onClick, loading }) => (
   <EduButton
@@ -68,7 +84,7 @@ const QuestionBottomAction = ({
   item,
   loading,
   isStudentReport,
-  isShowStudentWork,
+  hasShowStudentWork,
   onClickHandler,
   timeSpent,
   hasDrawingResponse,
@@ -85,46 +101,124 @@ const QuestionBottomAction = ({
   toggleQuestionModal,
   openQuestionModal,
   showCorrectItem,
+  studentId,
+  openQuestionMoal,
+  setEditingItemId,
+  editItemId,
+  currentStudentId,
+  setCurrentStudentId,
+  isQuestionView,
+  isExpressGrader,
+  isGrade,
+  isPrintPreview,
+  previewTab,
+  isLCBView,
+  isDocBasedTest,
+  replaceOriginalItem,
+  updating,
+  correctItemUpdateProgress,
   ...questionProps
 }) => {
   // const [openQuestionModal, setOpenQuestionModal] = useState(false)
   const [itemloading, setItemLoading] = useState(false)
+  const [hideScoring, setHideScoring] = useState(false)
+  const [notifyRegradeProgress, setNotifyRegradeProgress] = useState(false)
+  const [isPublishedChanges, setIsPublishedChanges] = useState(false)
+
+  const [showExplanation, updateShowExplanation] = useState(isGrade)
+
+  const onClickShowSolutionHandler = (e) => {
+    e.stopPropagation()
+    updateShowExplanation(true)
+  }
 
   const onCloseQuestionModal = () => {
     setCurrentQuestion('')
     removeQuestion(item.id)
     toggleQuestionModal(false)
+    correctItemUpdateProgress(false)
   }
 
   const onSaveAndPublish = () => {
-    updateCorrectItem({
+    // for now this component will be visible in 3 views for calling the respectve api we need a reference in which author viewing this component.
+    let lcbView = 'student-report'
+    if (updating) {
+      return
+    }
+    if (isExpressGrader) {
+      lcbView = 'express-grader'
+    }
+    if (isQuestionView) {
+      lcbView = 'question-view'
+    }
+    const payload = {
+      studentId,
       assignmentId: match?.params?.assignmentId,
       testId: additionalData?.testId,
-      testItemId: item?.activity?.testItemId,
-      groupId: item?.activity?.groupId,
-      testActivityId: item?.activity?.testActivityId,
-      studentId: item?.activity?.userId,
+      testItemId: editItemId,
+      groupId: match?.params?.classId || item?.activity?.groupId,
+      testActivityId:
+        item?.activity?.testActivityId || match?.params?.testActivityId,
       question: questionData,
       proceedRegrade: false,
+      lcbView,
       isUnscored: item?.validation?.unscored,
       callBack: onCloseQuestionModal,
-    })
+    }
+    updateCorrectItem(payload)
   }
 
   const showQuestionModal = async () => {
     setItemLoading(true)
     try {
-      const testItem = await testItemsApi.getById(item?.activity?.testItemId)
+      const latestTest = await testsApi.getById(additionalData?.testId, {
+        data: true,
+        requestLatest: true,
+        editAndRegrade: true,
+      })
+      if (latestTest.isInEditAndRegrade && latestTest.status === 'draft') {
+        setItemLoading(false)
+        return setNotifyRegradeProgress(true)
+      }
+      if (
+        latestTest._id !== additionalData.testId &&
+        latestTest.status === 'published'
+      ) {
+        setIsPublishedChanges(true)
+        setItemLoading(false)
+        return setNotifyRegradeProgress(true)
+      }
+    } catch (e) {
+      setItemLoading(false)
+      return notification({
+        msg: e?.response?.data?.message || 'Unable to retrieve test info.',
+      })
+    }
+    try {
+      const testItem = await testItemsApi.getById(item.testItemId)
       const question = testItem.data.questions.find((q) => q.id === item.id)
+      setHideScoring(
+        question?.scoringDisabled ||
+          (testItem.itemLevelScoring && testItem.data.questions.length > 1)
+      )
+      replaceOriginalItem(testItem)
       setQuestionData(question)
       setCurrentQuestion(question.id)
+      setCurrentStudentId(studentId)
+      setEditingItemId(testItem._id)
     } catch (e) {
       setQuestionData(omit(item, 'activity'))
       setCurrentQuestion(item.id)
+      setEditingItemId(item.testItemId)
     } finally {
       toggleQuestionModal(true)
       setItemLoading(false)
     }
+  }
+
+  const onCloseRegardeProgressModal = () => {
+    setNotifyRegradeProgress(false)
+    setIsPublishedChanges(false)
   }
 
   const modalTitle = useMemo(() => {
@@ -158,7 +252,10 @@ const QuestionBottomAction = ({
             isBlue
             width="115px"
             data-cy="saveAndPublishItem"
-            loading={loadingComponents.includes('saveAndPublishItem')}
+            loading={
+              loadingComponents.includes('saveAndPublishItem') || updating
+            }
+            disabled={updating}
             onClick={onSaveAndPublish}
           >
             SAVE
@@ -166,7 +263,7 @@ const QuestionBottomAction = ({
         </FlexContainer>
       </FlexContainer>
     )
-  }, [questionData, item])
+  }, [questionData, item, updating])
 
   const [isDisableCorrectItem, disableCorrectItemText] = useMemo(() => {
     const hasDynamicVariables = item.variable?.enabled
@@ -177,6 +274,9 @@ const QuestionBottomAction = ({
     } = permissionToEdit
     const isDisable = isDisableEdit || hasDynamicVariables || isDisableDuplicate
 
+    if (!showCorrectItem) {
+      return [true, 'Edit permission is restricted by the author']
+    }
     let disableText = ''
     if (isDisableEdit && !allowDuplicate) {
       disableText = 'Edit of Item is restricted by Publisher'
@@ -203,11 +303,39 @@ const QuestionBottomAction = ({
     </CorrectButton>
   )
 
+  const { sampleAnswer } = item
+
+  const isSolutionVisible =
+    (isLCBView || isExpressGrader || previewTab === 'show') &&
+    !isPrintPreview &&
+    !(
+      !sampleAnswer ||
+      ['passage', 'passageWithQuestions', 'video', 'resource', 'text'].includes(
+        item.type
+      )
+    )
   return (
     <>
+      {notifyRegradeProgress && (
+        <RegradeProgressModal
+          isPublishedChanges={isPublishedChanges}
+          visible={notifyRegradeProgress}
+          onCloseRegardeProgressModal={onCloseRegardeProgressModal}
+        />
+      )}
       <BottomActionWrapper className={isStudentReport ? 'student-report' : ''}>
+        {isSolutionVisible && !showExplanation && (
+          <EduButton
+            width="110px"
+            height="30px"
+            isGhost
+            onClick={onClickShowSolutionHandler}
+          >
+            Show solution
+          </EduButton>
+        )}
         <div>
-          {!hasDrawingResponse && isShowStudentWork && (
+          {!hasDrawingResponse && hasShowStudentWork && (
             <ShowUserWork onClick={onClickHandler} loading={loading} />
           )}
         </div>
@@ -215,6 +343,7 @@ const QuestionBottomAction = ({
           {showCorrectItem &&
             item &&
             !isStudentReport &&
+            !isDocBasedTest &&
             (isDisableCorrectItem ? (
               <Popover
                 content={
@@ -228,29 +357,51 @@ const QuestionBottomAction = ({
             ) : (
               correctItemBtn
             ))}
-          {timeSpent && <TimeSpent time={timeSpent} />}
+          {!!timeSpent && <TimeSpent time={timeSpent} />}
         </RightWrapper>
       </BottomActionWrapper>
-      {!isStudentReport && openQuestionModal && QuestionComp && questionData && (
-        <QuestionPreviewModal
-          visible={openQuestionModal}
-          onCancel={onCloseQuestionModal}
-          title={modalTitle}
-          footer={null}
-          width="1080px"
-          style={{ top: 10 }}
-        >
-          <AnswerContext.Provider value={{ isAnswerModifiable: true }}>
-            <QuestionComp
-              {...questionProps}
-              t={t}
-              item={questionData}
-              view={EDIT}
-              disableResponse={false}
-            />
-          </AnswerContext.Provider>
-        </QuestionPreviewModal>
+      {isSolutionVisible && (
+        <Explanation
+          isStudentReport={isStudentReport}
+          question={item}
+          show={showExplanation}
+        />
       )}
+      {!isStudentReport &&
+        openQuestionModal &&
+        QuestionComp &&
+        questionData &&
+        questionData?.id === item?.id &&
+        currentStudentId === studentId && (
+          <QuestionPreviewModal
+            width="1080px"
+            footer={null}
+            style={{ top: 10 }}
+            title={modalTitle}
+            visible={openQuestionModal}
+            wrapClassName="edit-regrade-modal"
+            onCancel={onCloseQuestionModal}
+          >
+            <ScrollContext.Provider
+              value={{
+                getScrollElement: () =>
+                  document.getElementsByClassName('edit-regrade-modal')[0],
+              }}
+            >
+              <AnswerContext.Provider value={{ isAnswerModifiable: true }}>
+                <HideScoringBlockContext.Provider value={hideScoring}>
+                  <QuestionComp
+                    {...questionProps}
+                    t={t}
+                    item={questionData}
+                    view={EDIT}
+                    disableResponse={false}
+                  />
+                </HideScoringBlockContext.Provider>
+              </AnswerContext.Provider>
+            </ScrollContext.Provider>
+          </QuestionPreviewModal>
+        )}
     </>
   )
 }
@@ -261,17 +412,19 @@ QuestionBottomAction.propTypes = {
   setCurrentQuestion: PropTypes.func.isRequired,
   updateCorrectItem: PropTypes.func.isRequired,
   setQuestionData: PropTypes.func.isRequired,
-  isShowStudentWork: PropTypes.bool.isRequired,
+  hasShowStudentWork: PropTypes.bool.isRequired,
   loadingComponents: PropTypes.array.isRequired,
   loading: PropTypes.bool,
   item: PropTypes.object,
   isStudentReport: PropTypes.bool,
+  isQuestionView: PropTypes.bool,
 }
 
 QuestionBottomAction.defaultProps = {
   loading: false,
   isStudentReport: false,
   item: null,
+  isQuestionView: false,
 }
 
 const getPermissionToEdit = (state, props) => {
@@ -281,8 +434,7 @@ const getPermissionToEdit = (state, props) => {
   const userFeatures = getUserFeatures(state)
   const collections = getCollectionsSelector(state)
   const testItems = get(state, 'classResponse.data.testItems', [])
-  const testItem =
-    testItems.find((t) => t._id === props.item?.activity?.testItemId) || {}
+  const testItem = testItems.find((t) => t._id === props.item?.testItemId) || {}
   const { authors = [] } = testItem || {}
   const isOwner = authors.some((author) => author._id === userId)
   const hasCollectionAccess = allowContentEditCheck(
@@ -320,6 +472,10 @@ const enhance = compose(
       additionalData: getAdditionalDataSelector(state),
       permissionToEdit: getPermissionToEdit(state, ownProps),
       showCorrectItem: getShowCorrectItemButton(state),
+      editItemId: get(state, ['authorUi', 'editItemId']),
+      currentStudentId: get(state, ['authorUi', 'currentStudentId']),
+      isDocBasedTest: getIsDocBasedTestSelector(state),
+      updating: get(state, ['classResponse', 'updating'], false),
     }),
     {
       setQuestionData: setQuestionDataAction,
@@ -327,6 +483,10 @@ const enhance = compose(
       updateCorrectItem: updateCorrectTestItemAction,
       removeQuestion: deleteQuestionAction,
       toggleQuestionModal: toggleQuestionEditModalAction,
+      setEditingItemId: setEditingItemIdAction,
+      setCurrentStudentId: setCurrentStudentIdAction,
+      replaceOriginalItem: replaceOriginalItemAction,
+      correctItemUpdateProgress: correctItemUpdateProgressAction,
     }
   )
 )
@@ -377,6 +537,10 @@ const QuestionPreviewModal = styled(Modal)`
   }
   .ant-modal-close-x {
     display: none;
+  }
+  .ant-select-dropdown,
+  .ant-dropdown {
+    z-index: 1003; /* modal has higher z index*/
   }
 `
 

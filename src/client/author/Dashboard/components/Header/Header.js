@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { Link, withRouter } from 'react-router-dom'
@@ -84,7 +84,6 @@ const TEN_DAYS = 10 * 24 * 60 * 60 * 1000
 const HeaderSection = ({
   user,
   isSubscriptionExpired = false,
-  fetchUserSubscriptionStatus,
   t,
   openLaunchHangout,
   subscription,
@@ -121,10 +120,6 @@ const HeaderSection = ({
 
   const { user: userInfo } = user
   const { currentSignUpState } = userInfo
-
-  useEffect(() => {
-    fetchUserSubscriptionStatus()
-  }, [])
 
   const [visible, setvisible] = useState(false)
 
@@ -196,8 +191,9 @@ const HeaderSection = ({
       isCleverUser ||
       canvasAllowedInstitutions.length > 0)
 
-  const hasGoogleMeetAndManageClass =
-    currentSignUpState === signUpState.DONE && allActiveClasses.length > 0
+  const isSignupComplete = currentSignUpState === signUpState.DONE
+
+  const showManageClass = allActiveClasses.length > 0
 
   const isHangoutEnabled =
     districtPolicy?.enableGoogleMeet === true
@@ -211,7 +207,7 @@ const HeaderSection = ({
           <AuthorCompleteSignupButton
             renderButton={(handleClick) => (
               <StyledLink data-cy="completeSignup" onClick={handleClick}>
-                Complete signup process
+                Complete signup
               </StyledLink>
             )}
             trackClick={trackClick('dashboard:complete-sign-up:click')}
@@ -227,21 +223,8 @@ const HeaderSection = ({
             onClick={handleShowTrialModal}
           />
         )}
-        {hasGoogleMeetAndManageClass && (
+        {showManageClass && (
           <>
-            {isHangoutEnabled && (
-              <Tooltip title="Launch Google Meet">
-                <StyledEduButton
-                  IconBtn
-                  isBlue
-                  data-cy="launch-google-meet"
-                  onClick={launchHangout}
-                  isGhost
-                >
-                  <IconHangouts color={themeColor} height={21} width={19} />
-                </StyledEduButton>
-              </Tooltip>
-            )}
             <Tooltip title="Manage Class">
               <Link to="/author/manageClass">
                 <EduButton
@@ -254,8 +237,23 @@ const HeaderSection = ({
                 </EduButton>
               </Link>
             </Tooltip>
+
+            {isSignupComplete && isHangoutEnabled && (
+              <Tooltip title="Launch Google Meet">
+                <StyledEduButton
+                  IconBtn
+                  isBlue
+                  data-cy="launch-google-meet"
+                  onClick={launchHangout}
+                  isGhost
+                >
+                  <IconHangouts color={themeColor} height={21} width={19} />
+                </StyledEduButton>
+              </Tooltip>
+            )}
           </>
         )}
+
         {hasNoActiveClassFallback && (
           <HeaderSyncAction
             fetchClassList={fetchClassList}
@@ -356,7 +354,6 @@ const HeaderSection = ({
 HeaderSection.propTypes = {
   user: PropTypes.object.isRequired,
   isSubscriptionExpired: PropTypes.bool.isRequired,
-  fetchUserSubscriptionStatus: PropTypes.func.isRequired,
   openLaunchHangout: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
 }
@@ -397,7 +394,6 @@ const enhance = compose(
         state.subscription?.subscriptionData?.isPremiumTrialUsed,
     }),
     {
-      fetchUserSubscriptionStatus: slice?.actions?.fetchUserSubscriptionStatus,
       openLaunchHangout: launchHangoutOpen,
       fetchClassList: fetchClassListAction,
       setShowCleverSyncModal: setShowCleverSyncModalAction,

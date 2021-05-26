@@ -1001,7 +1001,7 @@ export const defaultTheme = {
       boxBgCorrectColor: rightBgColor,
       indexBoxColor: containerWhite,
       indexBoxBgColor: themeColorLight,
-      indexBoxNoAnswerBgColor: noAnswerColor,
+      indexBoxNoAnswerBgColor: noAnswerIconColor,
       indexBoxIncorrectBgColor: closeColor,
       indexBoxCorrectBgColor: checkColor,
       indexBoxFontWeight: semiBold,

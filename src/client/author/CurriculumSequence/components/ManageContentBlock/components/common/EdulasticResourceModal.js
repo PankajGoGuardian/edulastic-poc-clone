@@ -12,6 +12,7 @@ const EdulasticResourceModal = ({
   okText = 'SUBMIT',
   canceltext = 'CANCEL',
   hideFooter = false,
+  modalWidth = '',
   children,
 }) => {
   const footer = (
@@ -40,6 +41,7 @@ const EdulasticResourceModal = ({
       onCancel={closeCallback}
       centered
       footer={footer}
+      modalWidth={modalWidth}
     >
       {children}
     </CustomModalStyled>

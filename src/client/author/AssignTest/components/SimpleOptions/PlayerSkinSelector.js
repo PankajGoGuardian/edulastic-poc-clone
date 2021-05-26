@@ -27,6 +27,10 @@ const PlayerSkinSelector = ({
     <SelectInputStyled
       data-cy="playerSkinType"
       onChange={onAssignmentTypeChange}
+      showSearch
+      filterOption={(input, option) =>
+        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+      }
       value={
         playerSkinType.toLowerCase() === playerSkinTypes.edulastic.toLowerCase()
           ? edulastic
@@ -35,18 +39,20 @@ const PlayerSkinSelector = ({
       disabled={disabled}
       isBackgroundWhite={selectBackgroundWhite}
     >
-      {Object.keys(types).map((key) => (
-        <Select.Option key={key} value={key}>
-          {types[key]}
-        </Select.Option>
-      ))}
+      {Object.keys(types)
+        .sort()
+        .map((key) => (
+          <Select.Option key={key} value={key}>
+            {types[key]}
+          </Select.Option>
+        ))}
     </SelectInputStyled>
   )
 
   return fullwidth ? (
     <StyledRow gutter={16}>
       <Col span={10}>
-        <Label>STUDENT PLAYER SKIN</Label>
+        <Label>CHOOSE TEST INTERFACE</Label>
       </Col>
       <Col span={12}>{SelectOption}</Col>
     </StyledRow>
@@ -55,7 +61,7 @@ const PlayerSkinSelector = ({
       <StyledRow gutter={48}>
         {!isAdvanceView && (
           <ColLabel span={24}>
-            <Label>STUDENT PLAYER SKIN</Label>
+            <Label>CHOOSE TEST INTERFACE</Label>
           </ColLabel>
         )}
         <Col span={24}>{SelectOption}</Col>

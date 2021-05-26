@@ -9,6 +9,7 @@ import {
   title,
   greenDark6,
 } from '@edulastic/colors'
+import { IconCharInfo } from '@edulastic/icons'
 import { EduButton, MathFormulaDisplay } from '@edulastic/common'
 
 export const Label = styled.span`
@@ -238,4 +239,12 @@ export const ModalFooter = styled.div`
       padding-right: 0px;
     }
   }
+`
+export const InfoIcon = styled(IconCharInfo)`
+  width: 6px;
+  height: 10px;
+  position: relative;
+  top: -4px;
+  left: -2px;
+  cursor: pointer;
 `

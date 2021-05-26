@@ -327,3 +327,19 @@ export const CloneOptionsWrapper = styled.div`
     }
   }
 `
+export const ModalHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+`
+export const CloseButton = styled.span`
+  display: inline-flex;
+  height: 32px;
+  width: 32px;
+  justify-content: center;
+  align-items: center;
+  margin-left: 10px;
+  cursor: pointer;
+`
+export const RightButtonContainer = styled.div`
+  display: flex;
+`

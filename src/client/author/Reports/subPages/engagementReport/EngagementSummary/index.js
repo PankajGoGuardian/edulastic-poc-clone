@@ -23,6 +23,7 @@ const Engagement = ({
   resetEngagementSummary,
   engagementSummary,
   settings,
+  toggleFilter,
 }) => {
   useEffect(() => () => resetEngagementSummary(), [])
 
@@ -30,6 +31,7 @@ const Engagement = ({
     const q = { ...settings.requestFilters }
     if (q.termId || q.reportId) {
       getEngagementSummaryRequest(q)
+      return () => toggleFilter(null, false)
     }
   }, [settings])
 
@@ -42,7 +44,12 @@ const Engagement = ({
   )
 
   if (loading) {
-    return <SpinLoader position="fixed" />
+    return (
+      <SpinLoader
+        tip="Please wait while we gather the required information..."
+        position="fixed"
+      />
+    )
   }
 
   if (error && error.dataSizeExceeded) {
@@ -50,7 +57,11 @@ const Engagement = ({
   }
 
   if (!timelineData.length) {
-    return <NoDataContainer>No data available currently.</NoDataContainer>
+    return (
+      <NoDataContainer>
+        {settings.requestFilters?.termId ? 'No data available currently.' : ''}
+      </NoDataContainer>
+    )
   }
 
   return (

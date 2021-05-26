@@ -15,8 +15,7 @@ import {
   SlideContainer,
   SlideDescription,
 } from './styled'
-
-import EmbeddedVideoPreviewModal from '../../../../../../../CurriculumSequence/components/ManageContentBlock/components/EmbeddedVideoPreviewModal'
+import EdulasticOverviewModel from '../EdulasticOverview/EdulasticOverviewModel'
 
 const BannerSlider = ({
   bannerSlides,
@@ -24,6 +23,7 @@ const BannerSlider = ({
   handleBannerModalClose,
   isBannerModalVisible,
   handleSparkClick,
+  accessibleItembankProductIds = [],
 }) => {
   const scrollBarRef = useRef(null)
 
@@ -88,7 +88,11 @@ const BannerSlider = ({
                     }
                   >
                     {isSparkTile ? (
-                      <LearnMore data-cy="tryItFree">TRY IT FREE</LearnMore>
+                      !accessibleItembankProductIds?.includes(
+                        slide.config?.subscriptionData?.productId
+                      ) && (
+                        <LearnMore data-cy="tryItFree">TRY IT FREE</LearnMore>
+                      )
                     ) : (
                       <LearnMore data-cy="LearnMore">LEARN MORE</LearnMore>
                     )}
@@ -103,9 +107,9 @@ const BannerSlider = ({
         </ScrollbarContainer>
       </SliderContainer>
       {isBannerModalVisible && (
-        <EmbeddedVideoPreviewModal
-          closeCallback={handleBannerModalClose}
-          isVisible={isBannerModalVisible}
+        <EdulasticOverviewModel
+          handleBannerModalClose={handleBannerModalClose}
+          isBannerModalVisible={isBannerModalVisible}
         />
       )}
     </>

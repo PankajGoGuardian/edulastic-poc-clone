@@ -17,7 +17,7 @@ export const CheckboxStyle = styled(Checkbox)`
   letter-spacing: -0.4px;
   text-align: left;
   color: ${(props) => props.theme.widgetOptions.labelColor};
-  text-transform: uppercase;
+  text-transform: ${(props) => props.textTransform || 'uppercase'};
   margin-bottom: ${({ mb }) => mb || '0px'};
   margin-left: ${({ ml }) => ml || '0px'};
   margin-top: ${({ mt }) => mt || '0px'};

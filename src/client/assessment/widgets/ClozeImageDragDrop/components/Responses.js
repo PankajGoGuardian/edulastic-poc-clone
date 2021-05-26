@@ -38,6 +38,7 @@ class Responses extends React.Component {
       <DragItem
         id={`response-item-${index}`}
         key={option?.id}
+        style={{ margin: 2 }}
         data={{ option, fromRespIndex: index }}
         size={{ width: choiceStyle.widthpx, height: choiceStyle.heightpx }}
       >

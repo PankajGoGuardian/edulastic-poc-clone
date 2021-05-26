@@ -8,13 +8,15 @@ import { IconDescription } from '@edulastic/icons'
 import { Menu } from 'antd'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircle } from '@fortawesome/free-solid-svg-icons'
-import { FlexContainer } from '@edulastic/common'
+import { FlexContainer, withKeyboard } from '@edulastic/common'
 import { StyledPopover, StyledButton, StyledMenu } from './styled'
 import { themes } from '../../../../theme'
 
 const {
   playerSkin: { parcc },
 } = themes
+
+const MenuItem = withKeyboard(Menu.Item)
 
 const ReviewToolbar = ({
   t,
@@ -43,7 +45,8 @@ const ReviewToolbar = ({
     }
   }
 
-  const handleQuestionCLick = (e) => gotoQuestion(options[parseInt(e.key, 10)])
+  const handleQuestionCLick = (e) =>
+    e && gotoQuestion(options[parseInt(e.key, 10)])
 
   const content = (
     <StyledWrapper>
@@ -52,11 +55,14 @@ const ReviewToolbar = ({
         onClick={handleQuestionCLick}
       >
         {getOptions().map((option) => (
-          <Menu.Item
+          <MenuItem
             key={option}
             style={!skipped[option] && { paddingLeft: '33px' }}
             disabled={blockNavigationToAnsweredQuestions}
             data-cy="questionSelectOptions"
+            onClick={() => {
+              handleQuestionCLick({ key: option })
+            }}
           >
             {skipped[option] && (
               <FontAwesomeIcon
@@ -66,7 +72,7 @@ const ReviewToolbar = ({
               />
             )}
             Question {option + 1}
-          </Menu.Item>
+          </MenuItem>
         ))}
       </StyledMenu>
       <FlexContainer style={{ marginTop: '20px' }}>
@@ -101,6 +107,7 @@ const ReviewToolbar = ({
         placement="bottom"
         content={content}
         getPopupContainer={(triggerNode) => triggerNode.parentNode}
+        trigger={['hover', 'click']}
       >
         <StyledButton data-cy="options">
           <StyledIconList />
@@ -125,7 +132,7 @@ const StyledCounter = styled.div`
   font-weight: bold;
 `
 
-const Card = styled.div`
+const Card = withKeyboard(styled.div`
   height: 80px;
   width: 33%;
   display: flex;
@@ -136,7 +143,7 @@ const Card = styled.div`
   font-size: 10px;
   font-weight: 700;
   cursor: pointer;
-`
+`)
 
 const Container = styled.div`
   margin-left: 10px;

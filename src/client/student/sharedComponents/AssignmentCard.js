@@ -11,6 +11,7 @@ import {
   largeDesktopWidth,
   desktopWidth,
   tabletWidth,
+  mediumDesktopExactWidth,
 } from '@edulastic/colors'
 import { test as testConstants } from '@edulastic/constants'
 
@@ -583,6 +584,9 @@ const AttemptDetails = styled(Row)`
   }
   @media (max-width: ${largeDesktopWidth}) {
     width: 100%;
+  }
+  @media (max-width: ${mediumDesktopExactWidth}) {
+    margin-right: 15px;
   }
 `
 

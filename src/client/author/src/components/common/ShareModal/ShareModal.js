@@ -55,6 +55,7 @@ import {
   getShowMessageBodyStateSelector,
   getEmailNotificationMessageSelector,
   updateEmailNotificationDataAction,
+  getTestEntitySelector,
 } from '../../../../TestPage/ducks'
 import {
   getOrgDataSelector,
@@ -184,8 +185,9 @@ class ShareModal extends React.Component {
       userRole,
       updateEmailNotificationData,
       isPublished,
+      testId: _testId,
     } = this.props
-    const testId = match.params.id
+    const testId = match.params.id || _testId
     const isDA = userRole === roleuser.DISTRICT_ADMIN
     if (isDA) {
       this.setState({ permission: 'VIEW' })
@@ -224,11 +226,19 @@ class ShareModal extends React.Component {
   }
 
   removeHandler = (data) => {
-    const { deleteShared, testId, isPlaylist } = this.props
-    const { sharedId, _userId: sharedWith } = data
-    const contentType = isPlaylist ? 'PLAYLIST' : 'TEST'
-
-    deleteShared({ contentId: testId, sharedId, sharedWith, contentType })
+    const { deleteShared, testId, test } = this.props
+    const { sharedId, _userId: sharedWith, v1LinkShareEnabled } = data
+    const unSharePayload = {
+      contentId: testId,
+      sharedId,
+      sharedWith,
+    }
+    if (v1LinkShareEnabled === 1) {
+      unSharePayload.versionId = test.versionId
+      unSharePayload.v1Id = test.v1Id
+      unSharePayload.v1LinkShareEnabled = 1
+    }
+    deleteShared(unSharePayload)
   }
 
   permissionHandler = (value) => {
@@ -450,6 +460,7 @@ class ShareModal extends React.Component {
       sendEmailNotification,
       showMessageBody,
       notificationMessage,
+      loadingSharedUsers,
     } = this.props
     const filteredUserList = userList.filter(
       (user) =>
@@ -525,6 +536,7 @@ class ShareModal extends React.Component {
                   </FlexContainer>
                 </>
               )}
+              {loadingSharedUsers && !sharedUsersList.length && <Spin />}
               {isPublished && sharedUsersList.length !== 0 && (
                 <>
                   <ShareListTitle>WHO HAS ACCESS</ShareListTitle>
@@ -743,6 +755,8 @@ const enhance = compose(
       sendEmailNotification: getShouldSendEmailStateSelector(state),
       showMessageBody: getShowMessageBodyStateSelector(state),
       notificationMessage: getEmailNotificationMessageSelector(state),
+      test: getTestEntitySelector(state),
+      loadingSharedUsers: _get(state, 'tests.loadingSharedUsers', false),
     }),
     {
       getUsers: fetchUsersListAction,

@@ -63,6 +63,7 @@ import DollarPremiumSymbol from '../../../../../AssignTest/components/Container/
 import { SettingContainer } from '../../../../../AssignTest/components/Container/styled'
 import { StyledRow } from '../../../../../AssignTest/components/SimpleOptions/styled'
 import KeypadDropdown from './KeypadDropdown'
+import { getAssignmentsSelector } from '../../../Assign/ducks'
 
 const {
   settingCategories,
@@ -375,6 +376,10 @@ class Setting extends Component {
       isAuthorPublisher,
       calculatorProvider,
       allowedToSelectMultiLanguage,
+      testAssignments,
+      editEnable,
+      isCurator,
+      isPlaylist,
     } = this.props
     const {
       isDocBased,
@@ -529,6 +534,14 @@ class Setting extends Component {
     const navigationThresholdMoreThan1 =
       restrictNavigationOut === 'warn-and-report-after-n-alerts' &&
       restrictNavigationOutAttemptsThreshold > 1
+    const isEdulasticCurator = userRole === roleuser.EDULASTIC_CURATOR
+    const testStatus = entity.status
+    const isRegradeFlow =
+      entity.isUsed &&
+      !!testAssignments.length &&
+      !isEdulasticCurator &&
+      !isCurator &&
+      (testStatus === 'draft' || editEnable)
 
     return (
       <MainContentWrapper ref={this.containerRef}>
@@ -573,7 +586,17 @@ class Setting extends Component {
                 <>
                   <Block id="test-type" smallSize={isSmallSize}>
                     <Row>
-                      <Title>Test Type</Title>
+                      <Title>
+                        <span>Test Type</span>
+                        {isRegradeFlow && !isPlaylist && (
+                          <Tooltip title="Updates made to the test type will not reflect for existing assignments after regrade.">
+                            <IconInfo
+                              color={lightGrey9}
+                              style={{ marginLeft: '10px', cursor: 'pointer' }}
+                            />
+                          </Tooltip>
+                        )}
+                      </Title>
                       <Body smallSize={isSmallSize}>
                         <Row>
                           <Col span={12}>
@@ -1568,13 +1591,19 @@ class Setting extends Component {
                     <Block id="player-skin-type" smallSize={isSmallSize}>
                       <Row>
                         <Title>
-                          Student Player Skin{' '}
+                          Choose Test Interface{' '}
                           <DollarPremiumSymbol premium={selectPlayerSkinType} />
                         </Title>
                         <Body smallSize={isSmallSize}>
                           <Col span={12}>
                             <SelectInputStyled
                               data-cy="playerSkinType"
+                              showSearch
+                              filterOption={(input, option) =>
+                                option.props.children
+                                  .toLowerCase()
+                                  .indexOf(input.toLowerCase()) >= 0
+                              }
                               value={
                                 playerSkinType ===
                                 playerSkinTypes.edulastic.toLowerCase()
@@ -1589,11 +1618,13 @@ class Setting extends Component {
                                 trigger.parentNode
                               }
                             >
-                              {Object.keys(skinTypes).map((key) => (
-                                <Option key={key} value={key}>
-                                  {skinTypes[key]}
-                                </Option>
-                              ))}
+                              {Object.keys(skinTypes)
+                                .sort()
+                                .map((key) => (
+                                  <Option key={key} value={key}>
+                                    {skinTypes[key]}
+                                  </Option>
+                                ))}
                             </SelectInputStyled>
                           </Col>
                           <Col span={24}>
@@ -1842,6 +1873,7 @@ const enhance = compose(
       isAuthorPublisher: isPublisherUserSelector(state),
       editEnable: state.tests?.editEnable,
       allowedToSelectMultiLanguage: allowedToSelectMultiLanguageInTest(state),
+      testAssignments: getAssignmentsSelector(state),
     }),
     {
       setMaxAttempts: setMaxAttemptsAction,

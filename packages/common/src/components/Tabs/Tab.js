@@ -8,7 +8,7 @@ import {
 import { IconClose, IconPencilEdit } from '@edulastic/icons'
 import { Button } from 'antd'
 import PropTypes from 'prop-types'
-import React, { useMemo } from 'react'
+import React, { useMemo, useRef } from 'react'
 import styled from 'styled-components'
 
 const Tab = ({
@@ -28,6 +28,12 @@ const Tab = ({
   isAddTab,
   isPassageQuestion,
 }) => {
+  const tabInput = useRef(null)
+
+  function focusOnTabInput() {
+    tabInput?.current?.focus()
+  }
+
   const textWidth = useMemo(() => (label?.length || 0) * 10 + 10, [label])
 
   const inputTab = (
@@ -38,8 +44,16 @@ const Tab = ({
         style={{ width: `${textWidth}px` }}
         value={label}
         onChange={onChange}
+        ref={tabInput}
       />
-      {active && <IconPencilEdit color={themeColor} width={16} height={16} />}
+      {active && (
+        <IconPencilEdit
+          onClick={focusOnTabInput}
+          color={themeColor}
+          width={16}
+          height={16}
+        />
+      )}
     </EditableTab>
   )
 

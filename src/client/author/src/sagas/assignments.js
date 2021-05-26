@@ -304,15 +304,15 @@ function* syncAssignmentGradesWithCleverSaga({ payload }) {
     } else {
       notification({
         type: 'success',
-        msg: 'Grades are being shared to Clever',
+        msg: 'Grades are being shared to Schoology',
       })
     }
   } catch (err) {
     captureSentryException(err)
     notification({
-      msg: err?.response?.data?.message || 'Failed to share grades to Clever',
+      msg:
+        err?.response?.data?.message || 'Failed to share grades to Schoology',
     })
-    console.error(err)
   }
 }
 

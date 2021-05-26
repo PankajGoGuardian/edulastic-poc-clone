@@ -276,6 +276,7 @@ class AssessmentPlayerSimple extends React.Component {
       utaId,
       uploadToS3,
       user: { firstName = '', lastName = '' },
+      playerSkinType,
     } = this.props
     const {
       showExitPopup,
@@ -297,7 +298,7 @@ class AssessmentPlayerSimple extends React.Component {
 
     let themeToPass = theme[selectedTheme] || theme.default
 
-    themeToPass = { ...themeToPass, ...assessmentPlayerTheme }
+    themeToPass = { ...themeToPass, ...assessmentPlayerTheme, playerSkinType }
     // themeToPass = getZoomedTheme(themeToPass, zoomLevel);
     // themeToPass = playersZoomTheme(themeToPass);
     const scratchPadMode = toolsOpenStatus.indexOf(5) !== -1
@@ -369,6 +370,7 @@ class AssessmentPlayerSimple extends React.Component {
               attachments={attachments}
               history={scratchPad}
               changePreview={this.handleChangePreview}
+              tool={toolsOpenStatus}
             />
             {!previewPlayer && (
               <SubmitConfirmation

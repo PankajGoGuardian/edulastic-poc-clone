@@ -3,7 +3,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { withNamespaces } from '@edulastic/localization'
 import PerfectScrollbar from 'react-perfect-scrollbar'
-
+import { withKeyboard } from '@edulastic/common'
 import { IconGraphRightArrow } from '@edulastic/icons'
 import { smallDesktopWidth } from '@edulastic/colors'
 import FlexContainer from '../common/FlexContainer'
@@ -27,7 +27,7 @@ const SidebarQuestionList = ({
     )}
     {isSidebarVisible && (
       <Questions>
-        <PerfectScrollbar>
+        <PerfectScrollbar style={{ paddingTop: '2px' }}>
           {questions.map((item, index) => {
             const active = selectedQuestion === index
             return (
@@ -69,7 +69,7 @@ SidebarQuestionList.propTypes = {
 
 export default withNamespaces('student')(SidebarQuestionList)
 
-const ItemContainer = styled.div`
+const ItemContainer = withKeyboard(styled.div`
   border-left: solid 5px
     ${(props) =>
       props.active
@@ -82,7 +82,7 @@ const ItemContainer = styled.div`
     props.active
       ? props.theme.widgets.assessmentPlayers.sidebarContentBackgroundColor
       : 'transparent'};
-`
+`)
 
 const Content = styled.div`
   color: ${(props) =>
@@ -145,7 +145,7 @@ export const MinimizeButton = styled.div`
 `
 
 const Questions = styled.div`
-  height: 80vh;
+  height: 87vh;
   overflow: auto;
   margin-top: 20px;
 `

@@ -6,7 +6,6 @@ import { withMathFormula } from '../HOC/withMathFormula'
 
 const Stimulus = withTheme(
   withMathFormula(styled.div`
-    line-height: 1;
     word-break: break-word;
     font-weight: ${fonts.previewFontWeight};
     user-select: ${(props) => (props.userSelect ? 'text !important' : 'none')};
@@ -36,15 +35,6 @@ const Stimulus = withTheme(
 
     @media (max-width: ${desktopWidth}) {
       font-size: ${fonts.previewFontSizeMobile};
-    }
-
-    /**
-  * @see https://snapwiz.atlassian.net/browse/EV-11832
-  * some math content clipped off, so we need to add space at top
-  */
-    & p {
-      margin: 0;
-      padding-top: 2px;
     }
 
     &.migrated-question {

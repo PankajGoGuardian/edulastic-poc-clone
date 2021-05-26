@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { isEmpty } from 'lodash'
 import styled from 'styled-components'
 import { Tooltip } from 'antd'
 import { FlexContainer, FieldLabel } from '@edulastic/common'
@@ -8,6 +9,7 @@ import { calculateScore } from './helper'
 const RatingComp = ({ data, selected, onClick }) => (
   <Tooltip title={data.name}>
     <RatingButton
+      data-cy="ratingCard"
       isGhost
       isBlue
       width="38px"
@@ -22,7 +24,8 @@ const RatingComp = ({ data, selected, onClick }) => (
 )
 
 const PreviewRubricCard = ({ rubricData, rubricFeedback, onChange }) => {
-  const [selectedRatings, setSelectedRatings] = useState({})
+  const INITIAL_RUB_FEEDBACK = {}
+  const [selectedRatings, setSelectedRatings] = useState(INITIAL_RUB_FEEDBACK)
 
   const { criteria, name } = rubricData
 
@@ -42,16 +45,18 @@ const PreviewRubricCard = ({ rubricData, rubricFeedback, onChange }) => {
   }
 
   useEffect(() => {
-    if (rubricFeedback) {
+    if (isEmpty(rubricFeedback)) {
+      setSelectedRatings(INITIAL_RUB_FEEDBACK)
+    } else {
       setSelectedRatings(rubricFeedback)
     }
   }, [rubricFeedback])
 
   return (
     <div data-cy="rubric-ratings">
-      <RubrickName>{name}</RubrickName>
+      <RubrickName data-cy="rubricName">{name}</RubrickName>
       {(criteria || []).map((c) => (
-        <CriteriaRow key={c.id}>
+        <CriteriaRow data-cy="criteriaRow" key={c.id}>
           <TwoLineEllipsis>{c.name}</TwoLineEllipsis>
           <FlexContainer justifyContent="flex-start" flexWrap="wrap">
             {(c.ratings || []).map((rating) => (

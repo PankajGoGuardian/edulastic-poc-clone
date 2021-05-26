@@ -230,7 +230,7 @@ export const getDomainOptions = (skillInfo = []) => [
   })),
 ]
 
-export const getStandardOptions = (skillInfo = [], domainId) => [
+export const getStandardOptions = (skillInfo = [], domainId = 'All') => [
   { key: 'All', title: 'All Standards' },
   ...uniqBy(
     skillInfo.filter(

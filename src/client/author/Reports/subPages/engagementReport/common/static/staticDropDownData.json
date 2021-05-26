@@ -1,11 +1,12 @@
 {
   "tagTypes": [
-    { "key": "termId" },
-    { "key": "schoolIds" },
-    { "key": "teacherIds" },
-    { "key": "grades", "subType": "class" },
-    { "key": "subjects", "subType": "class" },
-    { "key": "assessmentTypes" }
+    { "key": "termId", "tabKey": "0" },
+    { "key": "schoolIds", "tabKey": "0" },
+    { "key": "teacherIds", "tabKey": "0" },
+    { "key": "grades", "subType": "class", "tabKey": "0" },
+    { "key": "subjects", "subType": "class", "tabKey": "0" },
+    { "key": "assessmentTypes", "tabKey": "0" },
+    { "key": "assignedBy", "tabKey": "0" }
   ],
   "initialFilters": {
     "reportId": "",
@@ -14,7 +15,8 @@
     "teacherIds": "",
     "grades": "",
     "subjects": "",
-    "assessmentTypes": ""
+    "assessmentTypes": "",
+    "assignedBy": "anyone"
   },
   "subjects": [
     { "key": "Mathematics", "title": "Mathematics" },
@@ -45,5 +47,9 @@
     { "key": "common assessment", "title": "Common" },
     { "key": "assessment", "title": "Class" },
     { "key": "practice", "title": "Practice" }
+  ],
+  "assignedBy": [
+    { "key": "anyone", "title": "Anyone" },
+    { "key": "me", "title": "Me" }
   ]
 }

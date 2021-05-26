@@ -236,6 +236,20 @@ class UserForm extends React.Component {
                   )}
                 </Form.Item>
               </Field>
+              <Field name="middleName">
+                <FieldLabel>Middle Name</FieldLabel>
+                <Form.Item>
+                  {getFieldDecorator('middleName', {
+                    initialValue: get(_source, 'middleName', ''),
+                  })(
+                    <TextInputStyled
+                      padding="0px 15px 0px 30px"
+                      prefix={<img style={iconSize} src={userIcon} alt="" />}
+                      placeholder="Enter the middle name of the user"
+                    />
+                  )}
+                </Form.Item>
+              </Field>
               <Field name="lastName">
                 <FieldLabel>Last name</FieldLabel>
                 <Form.Item>
@@ -280,6 +294,7 @@ class UserForm extends React.Component {
                       padding="0px 15px 0px 30px"
                       prefix={<img style={iconSize} src={keyIcon} alt="" />}
                       type="password"
+                      autoComplete="off"
                       placeholder="Enter Password"
                     />
                   )}
@@ -300,6 +315,7 @@ class UserForm extends React.Component {
                       padding="0px 15px 0px 30px"
                       prefix={<img style={iconSize} src={keyIcon} alt="" />}
                       type="password"
+                      autoComplete="off"
                       placeholder="Confirm Password"
                     />
                   )}
@@ -392,6 +408,23 @@ class UserForm extends React.Component {
                     )}
                   </Form.Item>
                 </Field>
+                <Field name="hispanicEthnicity">
+                  <FieldLabel>Hispanic Ethnicity</FieldLabel>
+                  <Form.Item>
+                    {getFieldDecorator('hispanicEthnicity', {
+                      initialValue: get(_source, 'hispanicEthnicity', ''),
+                    })(
+                      <SelectInputStyled
+                        getPopupContainer={(triggerNode) =>
+                          triggerNode.parentNode
+                        }
+                      >
+                        <Option value="Yes">Yes</Option>
+                        <Option value="No">No</Option>
+                      </SelectInputStyled>
+                    )}
+                  </Form.Item>
+                </Field>
                 <Field name="race">
                   <FieldLabel>Race</FieldLabel>
                   <Form.Item>
@@ -400,7 +433,6 @@ class UserForm extends React.Component {
                     })(<TextInputStyled placeholder="Race" />)}
                   </Form.Item>
                 </Field>
-
                 <Field name="dob" optional>
                   <FieldLabel>DOB</FieldLabel>
                   <Form.Item>

@@ -28,6 +28,7 @@ import {
   SquareColorDivGreen,
   SquareColorDivGray,
   SquareColorBlue,
+  SquareColorDivlGrey,
   SquareColorDisabled,
   SquareColorDivPink,
   SquareColorDivYellow,
@@ -426,10 +427,14 @@ class DisneyCardContainer extends Component {
                 </PaginationInfoS>
                 <PaginationInfoT className="questions-grid" data-cy="questions">
                   {!student.redirected &&
+                    recentAttemptsGrouped?.[student.studentId]?.length === 0 &&
                     student.questionActivities
                       .filter((x) => !x.disabled)
                       .map((questionAct, questionIndex) => {
                         const weight = questionAct.weight
+                        if (questionAct.isPractice) {
+                          return <SquareColorDivlGrey key={questionIndex} />
+                        }
                         if (
                           questionAct.notStarted ||
                           student.status === 'redirected'

@@ -176,13 +176,13 @@ function removePointForDrag(board) {
 const getClampedCoords = (value, bounds) => clamp(value, bounds[0], bounds[1])
 
 function getConfig(element) {
-  const bounds = element.board.getBoundingBox()
+  const [xMin, yMax, xMax, yMin] = element.board.getBoundingBox()
   const p = element.parents[0]
   const x = element.coords[p].usrCoords[1]
   const y = element.coords[p].usrCoords[2]
 
-  const clampedX = (bounds && getClampedCoords(x, [bounds[0], bounds[1]])) || x
-  const clampedY = (bounds && getClampedCoords(y, [bounds[3], bounds[2]])) || y
+  const clampedX = getClampedCoords(x, [xMin, xMax])
+  const clampedY = getClampedCoords(y, [yMin, yMax])
 
   if (clampedX !== x || clampedY !== y) {
     element.translationPoints[0].moveTo([clampedX, clampedY])

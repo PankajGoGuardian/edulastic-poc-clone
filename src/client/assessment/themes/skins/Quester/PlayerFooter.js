@@ -17,7 +17,7 @@ import { get } from 'lodash'
 import styled from 'styled-components'
 import questionType from '@edulastic/constants/const/questionType'
 import { Rnd } from 'react-rnd'
-import { withWindowSizes } from '@edulastic/common'
+import { withWindowSizes, withKeyboard } from '@edulastic/common'
 import { TokenStorage } from '@edulastic/api'
 import { setZoomLevelAction } from '../../../../student/Sidebar/ducks'
 import AudioControls from '../../../AudioControls'
@@ -119,15 +119,15 @@ const PlayerFooter = ({
 
   return (
     <MainFooter isSidebarVisible className="quester-player-footer">
-      <ActionContainer data-cy="zoomIn">
-        <IconWrap className="hover-effect" onClick={handleZoomOut}>
+      <ActionContainer data-cy="zoomIn" onClick={handleZoomOut}>
+        <IconWrap className="hover-effect">
           <IconMinusRounded color={footer.textColor} />
         </IconWrap>
         <span>ZOOM OUT</span>
       </ActionContainer>
 
-      <ActionContainer data-cy="zoomOut">
-        <IconWrap className="hover-effect" onClick={handleZoomIn}>
+      <ActionContainer data-cy="zoomOut" onClick={handleZoomIn}>
+        <IconWrap className="hover-effect">
           <IconPlus color={footer.textColor} />
         </IconWrap>
         <span>ZOOM IN</span>
@@ -161,7 +161,7 @@ const PlayerFooter = ({
           onClick={handleCheckAnswer}
           title={
             checkAnswerInProgress
-              ? 'In progess'
+              ? 'In progress'
               : answerChecksUsedForItem >= maxAnswerChecks
               ? 'Usage limit exceeded'
               : 'Check Answer'
@@ -375,7 +375,7 @@ const IconMoreVertical = styled(IconMore)`
   right: 10px;
 `
 
-const ActionContainer = styled.div`
+const ActionContainer = withKeyboard(styled.div`
   text-align: center;
   display: flex;
   align-items: center;
@@ -407,7 +407,7 @@ const ActionContainer = styled.div`
         color: ${footer.hover.color};
       }
     `}
-`
+`)
 
 const IconWrap = styled.span`
   padding: 4px 15px 0px 15px;

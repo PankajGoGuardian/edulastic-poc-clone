@@ -170,11 +170,6 @@ const SingleAssessmentReportContainer = (props) => {
       selectedTest: _settings.selectedTest,
       requestFilters: {
         ..._requestFilters,
-        testGrade: _requestFilters.grade,
-        testSubject: _requestFilters.subject,
-        grade: _requestFilters.studentGrade,
-        subject: _requestFilters.studentSubject,
-        courseId: _requestFilters.studentCourseId,
         classIds: _requestFilters.classIds || '',
         groupIds: _requestFilters.groupIds || '',
         profileId: _requestFilters.performanceBandProfile,
@@ -243,6 +238,14 @@ const SingleAssessmentReportContainer = (props) => {
         </Col>
       ))
     : []
+
+  const demographicFilters = useMemo(() => {
+    const _ddFilter = {}
+    Object.keys(ddfilter).forEach((k) => {
+      _ddFilter[k] = ddfilter[k] === 'all' ? '' : ddfilter[k]
+    })
+    return _ddFilter
+  }, [ddfilter])
 
   return (
     <FeaturesSwitch
@@ -350,7 +353,7 @@ const SingleAssessmentReportContainer = (props) => {
                 {..._props}
                 settings={settings}
                 pageTitle={loc}
-                filters={ddfilter}
+                demographicFilters={demographicFilters}
                 sharedReport={sharedReport}
                 toggleFilter={toggleFilter}
               />

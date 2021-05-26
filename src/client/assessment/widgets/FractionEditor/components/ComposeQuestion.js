@@ -3,12 +3,16 @@ import React from 'react'
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 import loadable from '@loadable/component'
 import Progress from '@edulastic/common/src/components/Progress'
+import { connect } from 'react-redux'
 
 import Question from '../../../components/Question/index'
 import { Subtitle } from '../../../styled/Subtitle'
+import { setQuestionDataAction } from '../../../../author/src/actions/question'
 
 const FroalaEditor = loadable(() =>
-  import(/* webpackChunkName: "froalaCommonChunk" */'@edulastic/common/src/components/FroalaEditor')
+  import(
+    /* webpackChunkName: "froalaCommonChunk" */ '@edulastic/common/src/components/FroalaEditor'
+  )
 )
 
 const ComposeQuestion = ({
@@ -54,4 +58,6 @@ const ComposeQuestion = ({
   )
 }
 
-export default ComposeQuestion
+export default connect(null, {
+  setQuestionData: setQuestionDataAction,
+})(ComposeQuestion)

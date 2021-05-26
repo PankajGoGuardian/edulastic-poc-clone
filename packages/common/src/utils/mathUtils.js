@@ -54,6 +54,7 @@ const sanitizeLatex = (latex) => {
     .replace(/\\begin{array}{}\\end{array}/g, '')
     .replace(/\\hbox{--}/g, '–')
     .replace(/\\rightleftharpoons/g, '\\rightleftharpoons ')
+    .replace(/\\indefinite/g, '\\int')
 
   if (_latex.substr(-1) === '\\') {
     _latex = _latex.slice(0, -1)
@@ -75,6 +76,7 @@ export const getMathHtml = (latex) => {
    * @see https://snapwiz.atlassian.net/browse/EV-14386
    * |--- mathQuill ---|--------- Katex ---------|
    * | overarc         | overgroup               |
+   * | indefinite      | int                     |
    * | parallelogram   | text{▱}                 |
    * | undersim        | underset{\\sim}         |
    * | \begin{almatrix}| \left\{\begin{array}{l} |
@@ -188,11 +190,11 @@ export const replaceMathHtmlWithLatexes = (val) => {
 }
 
 export const getInnerValuesForStatic = (studentTemplate, userAnswer) => {
-  // new static math value is an array	
-  // @see: https://snapwiz.atlassian.net/browse/EV-23277	
-  if (isArray(userAnswer)) {	
-    return userAnswer	
-  }	
+  // new static math value is an array
+  // @see: https://snapwiz.atlassian.net/browse/EV-23277
+  if (isArray(userAnswer)) {
+    return userAnswer
+  }
   // old static math value is sting type
   const escapeRegExp = (string) =>
     string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/&amp;/g, '&')

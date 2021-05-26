@@ -46,6 +46,7 @@ import {
   IconUsers,
   IconExclamationMark,
   IconClose,
+  IconDemoAccNav,
 } from '@edulastic/icons'
 import { withWindowSizes, OnDarkBgLogo } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
@@ -55,9 +56,9 @@ import { logoutAction } from '../actions/auth'
 import { toggleSideBarAction } from '../actions/toggleMenu'
 import {
   getUserFeatures,
-  toggleMultipleAccountNotificationAction,
   isProxyUser as isProxyUserSelector,
   toggleFreeAdminSubscriptionModalAction,
+  isDemoPlaygroundUser,
 } from '../../../student/Login/ducks'
 import {
   isOrganizationDistrictSelector,
@@ -65,7 +66,10 @@ import {
   isFreeAdminSelector,
 } from '../selectors/user'
 import SwitchUserModal from '../../../common/components/SwtichUserModal/SwitchUserModal'
-import { switchUser } from '../../authUtils'
+import { switchUser, proxyDemoPlaygroundUser } from '../../authUtils'
+import ItemBankTrialUsedModal from '../../Dashboard/components/Showcase/components/Myclasses/components/FeaturedContentBundle/ItemBankTrialUsedModal'
+import PurchaseFlowModals from '../components/common/PurchaseModals'
+import { slice } from '../../Subscription/ducks'
 
 const menuItems = [
   {
@@ -162,12 +166,24 @@ class SideMenu extends Component {
   constructor(props) {
     super(props)
 
+    const { switchDetails } = this.props
+
     this.state = {
       showModal: false,
       isVisible: false,
+      isSwitchAccountNotification:
+        !localStorage.getItem('isMultipleAccountNotificationShown') &&
+        !!get(switchDetails, 'otherAccounts', []).length,
+      showTrialUsedModal: false,
+      showPurchaseModal: false,
+      showTrialSubsConfirmation: false,
     }
 
     this.sideMenuRef = React.createRef()
+  }
+
+  componentDidMount() {
+    this.props.fetchUserSubscriptionStatus()
   }
 
   get MenuItems() {
@@ -272,6 +288,12 @@ class SideMenu extends Component {
     }
   `
 
+  handleBlockedClick = () => {
+    this.setState({
+      showTrialUsedModal: true,
+    })
+  }
+
   handleMenu = (item) => {
     if (item.key) {
       const {
@@ -283,6 +305,9 @@ class SideMenu extends Component {
       if (label === 'Assignments' && isFreeAdmin) {
         return toggleFreeAdminSubscriptionModal()
       }
+      if (label === 'My Playlist' && !this.props.features.premium) {
+        return this.handleBlockedClick()
+      }
       if (path !== undefined) {
         if (path.match(/playlists\/.{24}\/use-this/)) {
           history.push({ pathname: `/${path}`, state: { from: 'myPlaylist' } })
@@ -291,6 +316,12 @@ class SideMenu extends Component {
         }
       }
     }
+  }
+
+  handlePlayGround = (evt) => {
+    evt.stopPropagation()
+    const elementClasses = evt.currentTarget.getAttribute('class')
+    proxyDemoPlaygroundUser(elementClasses.indexOf('automation') > -1)
   }
 
   toggleMenu = () => {
@@ -335,6 +366,31 @@ class SideMenu extends Component {
     }
   }
 
+  setShowSubscriptionAddonModal = (value) => {
+    this.setState({
+      showPurchaseModal: value,
+    })
+  }
+
+  setShowTrialSubsConfirmation = (value) => {
+    this.setState({
+      showTrialSubsConfirmation: value,
+    })
+  }
+
+  handleCloseModal = () => {
+    this.setState({
+      showTrialUsedModal: false,
+    })
+  }
+
+  handlePurchaseFlow = () => {
+    this.setState({
+      showTrialUsedModal: false,
+      showPurchaseModal: true,
+    })
+  }
+
   getInitials = () => {
     const { firstName, lastName } = this.props
     if (firstName && lastName) return `${firstName[0] + lastName[0]}`
@@ -342,8 +398,20 @@ class SideMenu extends Component {
     if (lastName) return `${lastName.substr(0, 2)}`
   }
 
+  handleCancel = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    this.setState({ isSwitchAccountNotification: false })
+    localStorage.setItem('isMultipleAccountNotificationShown', 'true')
+  }
+
   render() {
-    const { broken, isVisible, showModal } = this.state
+    const {
+      broken,
+      isVisible,
+      showModal,
+      isSwitchAccountNotification,
+    } = this.state
     const {
       userId,
       switchDetails,
@@ -359,9 +427,8 @@ class SideMenu extends Component {
       locationState,
       features,
       showUseThisNotification,
-      isMultipleAccountNotification,
-      toggleMultipleAccountNotification,
       isProxyUser,
+      isDemoPlaygroundUserProxy,
     } = this.props
     if (userRole === roleuser.STUDENT) {
       return null
@@ -390,9 +457,6 @@ class SideMenu extends Component {
     })
 
     const isPublisher = features.isCurator || features.isPublisherAuthor
-    const showMultipleAccountNotification =
-      isMultipleAccountNotification &&
-      !!get(switchDetails, 'otherAccounts', []).length
 
     let _userRole = null
     if (userRole === roleuser.TEACHER) {
@@ -418,7 +482,7 @@ class SideMenu extends Component {
     const otherAccounts = get(switchDetails, 'otherAccounts', [])
     const users = otherAccounts.filter((acc) => acc._id !== userId)
 
-    const footerDropdownMenu = (
+    const footerDropdownMenu = (isDemoAccount = false) => (
       <FooterDropDown
         data-cy="footer-dropdown"
         isVisible={isVisible}
@@ -428,7 +492,16 @@ class SideMenu extends Component {
           onClick={this.onClickFooterDropDownMenu}
           style={{ height: 'auto' }}
         >
-          <Menu.Item key="1" className="removeSelectedBorder">
+          <Menu.Item
+            key="1"
+            className="removeSelectedBorder"
+            disabled={isDemoAccount}
+            title={
+              isDemoAccount
+                ? 'This feature is not available in demo account.'
+                : ''
+            }
+          >
             <Link to="/author/profile">
               <IconProfileHighlight />{' '}
               <span>{isCollapsed ? '' : 'My Profile'}</span>
@@ -470,261 +543,301 @@ class SideMenu extends Component {
     )
 
     return (
-      <FixedSidebar
-        className={`${!isCollapsed ? 'full' : ''} ${className}`}
-        onClick={isCollapsed && !isMobile ? this.toggleMenu : null}
-        isCollapsed={isCollapsed}
-        ref={this.sideMenuRef}
-      >
-        <SwitchUserModal
-          userId={userId}
-          switchUser={switchUser}
-          showModal={showModal}
-          closeModal={() => this.setState({ showModal: false })}
-          otherAccounts={get(switchDetails, 'otherAccounts', [])}
-          personId={get(switchDetails, 'personId')}
-          userRole={userRole}
+      <>
+        <PurchaseFlowModals
+          showSubscriptionAddonModal={this.state.showPurchaseModal}
+          setShowSubscriptionAddonModal={this.setShowSubscriptionAddonModal}
+          isConfirmationModalVisible={this.state.showTrialSubsConfirmation}
+          setShowTrialSubsConfirmation={this.setShowTrialSubsConfirmation}
+          defaultSelectedProductIds={[]}
+          setProductData={() => {}}
         />
-        <SideBar
-          collapsed={isCollapsed}
-          collapsible
-          breakpoint="md"
-          onBreakpoint={(brokenStatus) =>
-            this.setState({ broken: brokenStatus })
-          }
-          width="220"
-          collapsedWidth={broken ? '0' : '70'}
-          className="sideBarwrapper"
+        {this.state.showTrialUsedModal && (
+          <ItemBankTrialUsedModal
+            title="Teacher Premium"
+            isVisible={this.state.showTrialUsedModal}
+            handleCloseModal={this.handleCloseModal}
+            handlePurchaseFlow={this.handlePurchaseFlow}
+            isCurrentItemBankUsed
+          />
+        )}
+        <FixedSidebar
+          className={`${!isCollapsed ? 'full' : ''} ${className}`}
+          onClick={isCollapsed && !isMobile ? this.toggleMenu : null}
+          isCollapsed={isCollapsed}
+          ref={this.sideMenuRef}
         >
-          <ToggleSidemenu
-            onClick={(e) => {
-              e.stopPropagation()
-              this.toggleMenu()
-            }}
+          <SwitchUserModal
+            userId={userId}
+            switchUser={switchUser}
+            showModal={showModal}
+            closeModal={() => this.setState({ showModal: false })}
+            otherAccounts={get(switchDetails, 'otherAccounts', [])}
+            personId={get(switchDetails, 'personId')}
+            userRole={userRole}
+          />
+          <SideBar
+            collapsed={isCollapsed}
+            collapsible
+            breakpoint="md"
+            onBreakpoint={(brokenStatus) =>
+              this.setState({ broken: brokenStatus })
+            }
+            width="220"
+            collapsedWidth={broken ? '0' : '70'}
+            className="sideBarwrapper"
           >
-            <AntIcon type={isCollapsed ? 'right' : 'left'} />
-          </ToggleSidemenu>
-          <LogoWrapper className="logoWrapper">
-            {broken && (
-              <AntIcon
-                className="mobileCloseIcon"
-                type="close"
-                theme="outlined"
-                onClick={this.toggleMenu}
-              />
-            )}
-            {isCollapsed ? (
-              !isMobile && <LogoCompact />
-            ) : (
-              <OnDarkBgLogo height={isMobile ? '16px' : '26px'} />
-            )}
-          </LogoWrapper>
-          <MenuWrapper>
-            {locationState?.fadeSidebar && <Overlay />}
-            <Menu
-              selectedKeys={[defaultSelectedMenu.toString()]}
-              mode="inline"
-              onClick={(item) => this.handleMenu(item)}
-              isProxyUser={isProxyUser}
+            <ToggleSidemenu
+              onClick={(e) => {
+                e.stopPropagation()
+                this.toggleMenu()
+              }}
             >
-              {this.MenuItems.map((menu, index) => {
-                if (menu.divider) {
-                  return (
-                    <MenuItem
-                      divider
-                      visible
-                      data-cy={menu.label}
-                      key={index.toString()}
-                    >
-                      {!isCollapsed ? <span>{menu.label}</span> : <Hr />}
-                    </MenuItem>
+              <AntIcon type={isCollapsed ? 'right' : 'left'} />
+            </ToggleSidemenu>
+            <LogoWrapper className="logoWrapper">
+              {broken && (
+                <AntIcon
+                  className="mobileCloseIcon"
+                  type="close"
+                  theme="outlined"
+                  onClick={this.toggleMenu}
+                />
+              )}
+              {isCollapsed ? (
+                !isMobile && <LogoCompact />
+              ) : (
+                <OnDarkBgLogo height={isMobile ? '16px' : '26px'} />
+              )}
+            </LogoWrapper>
+            <MenuWrapper>
+              {locationState?.fadeSidebar && <Overlay />}
+              <Menu
+                selectedKeys={[defaultSelectedMenu.toString()]}
+                mode="inline"
+                onClick={(item) => this.handleMenu(item)}
+                isBannerShown={isProxyUser || isDemoPlaygroundUserProxy}
+              >
+                {this.MenuItems.map((menu, index) => {
+                  if (menu.divider) {
+                    return (
+                      <MenuItem
+                        divider
+                        visible
+                        data-cy={menu.label}
+                        key={index.toString()}
+                      >
+                        {!isCollapsed ? <span>{menu.label}</span> : <Hr />}
+                      </MenuItem>
+                    )
+                  }
+                  /**
+                   * show playlist based on `features` list
+                   */
+                  if (menu.label === 'Playlist' && !features.playlist) {
+                    return null
+                  }
+                  // to hide Dashboard from side menu if a user is DA or SA.
+                  if (
+                    menu.label === 'Dashboard' &&
+                    ['district-admin', 'school-admin'].includes(userRole) &&
+                    !features.isCurator
+                  ) {
+                    return null
+                  }
+                  // hide Gradebook from side menu based on features list
+                  if (menu.label === 'Gradebook' && !features.gradebook) {
+                    return null
+                  }
+                  const MenuIcon = this.renderIcon(
+                    menu.icon,
+                    isCollapsed,
+                    menu.stroke
                   )
-                }
-                /**
-                 * show playlist based on `features` list
-                 */
-                if (menu.label === 'Playlist' && !features.playlist) {
-                  return null
-                }
-                // to hide Dashboard from side menu if a user is DA or SA.
-                if (
-                  menu.label === 'Dashboard' &&
-                  ['district-admin', 'school-admin'].includes(userRole) &&
-                  !features.isCurator
-                ) {
-                  return null
-                }
-                // hide Gradebook from side menu based on features list
-                if (menu.label === 'Gradebook' && !features.gradebook) {
-                  return null
-                }
-                const MenuIcon = this.renderIcon(
-                  menu.icon,
-                  isCollapsed,
-                  menu.stroke
-                )
-                const isItemVisible =
-                  !menu.role || (menu.role && menu.role.includes(userRole))
+                  const isItemVisible =
+                    !menu.role || (menu.role && menu.role.includes(userRole))
 
-                const disableMenu = isDisablePageInMobile(menu?.path)
-                // hide My Playlist if user is not premium
-                if (menu.label === 'My Playlist' && !features.premium) {
-                  return null
-                }
-                if (
-                  menu.label === 'My Playlist' &&
-                  isCollapsed &&
-                  showUseThisNotification
-                ) {
-                  const content = (
-                    <span>
-                      &quot;In Use&ldquo; Play lists are available in the
-                      &quot;My Playlists&ldquo; area.
-                    </span>
-                  )
+                  let disableMenu = isDisablePageInMobile(menu?.path)
+                  if (
+                    (menu.label === 'Manage School' ||
+                      menu.label === 'Manage District') &&
+                    isDemoPlaygroundUserProxy
+                  ) {
+                    disableMenu = true
+                  }
+                  // hide My Playlist if user is not premium
+                  // if (menu.label === 'My Playlist' && !features.premium) {
+                  //   toggle = this.handleBlockedClick;
+                  // }
+                  if (
+                    menu.label === 'My Playlist' &&
+                    isCollapsed &&
+                    showUseThisNotification
+                  ) {
+                    const content = (
+                      <span>
+                        &quot;In Use&ldquo; Play lists are available in the
+                        &quot;My Playlists&ldquo; area.
+                      </span>
+                    )
+                    return (
+                      <MenuItem
+                        data-cy={menu.label}
+                        key={index.toString()}
+                        onClick={this.toggleMenu}
+                        visible={isItemVisible}
+                        title={isCollapsed ? menu.label : ''}
+                      >
+                        <Popover
+                          visible
+                          placement="right"
+                          content={content}
+                          overlayClassName="antd-notify-custom-popover"
+                        >
+                          <MenuIcon />
+                        </Popover>
+                        <LabelMenuItem isCollapsed={isCollapsed}>
+                          {menu.label}
+                        </LabelMenuItem>
+                      </MenuItem>
+                    )
+                  }
+                  let title = isCollapsed ? menu.label : ''
+                  if (disableMenu && isDemoPlaygroundUserProxy) {
+                    title = 'This feature is not available in demo account.'
+                  }
                   return (
                     <MenuItem
                       data-cy={menu.label}
                       key={index.toString()}
                       onClick={this.toggleMenu}
                       visible={isItemVisible}
-                      title={isCollapsed ? menu.label : ''}
+                      title={title}
+                      disabled={disableMenu}
                     >
-                      <Popover
-                        visible
-                        placement="right"
-                        content={content}
-                        overlayClassName="antd-notify-custom-popover"
-                      >
-                        <MenuIcon />
-                      </Popover>
+                      <MenuIcon />
                       <LabelMenuItem isCollapsed={isCollapsed}>
                         {menu.label}
                       </LabelMenuItem>
                     </MenuItem>
                   )
-                }
-                return (
-                  <MenuItem
-                    data-cy={menu.label}
-                    key={index.toString()}
-                    onClick={this.toggleMenu}
-                    visible={isItemVisible}
-                    title={isCollapsed ? menu.label : ''}
-                    disabled={disableMenu}
+                })}
+              </Menu>
+              <MenuFooter>
+                {!isDemoPlaygroundUserProxy &&
+                  ['district-admin', 'school-admin', 'teacher'].indexOf(
+                    userRole
+                  ) > -1 && (
+                    <DemoPlaygroundButtonContainer isCollapsed={isCollapsed}>
+                      <DemoPlaygroundButton
+                        data-cy="demo-palyground-item"
+                        onClick={this.handlePlayGround}
+                        title={isCollapsed ? 'Demo Playground' : ''}
+                      >
+                        <IconContainer className={isCollapsed ? 'active' : ''}>
+                          <IconDemoAccNav />
+                        </IconContainer>
+                        <LabelMenuItem isCollapsed={isCollapsed}>
+                          Demo Playground
+                        </LabelMenuItem>
+                      </DemoPlaygroundButton>
+                    </DemoPlaygroundButtonContainer>
+                  )}
+                <QuestionButton isCollapsed={isCollapsed}>
+                  <a
+                    href={helpCenterUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      display: 'flex',
+                      width: '100%',
+                      justifyContent: isCollapsed && 'center',
+                    }}
                   >
-                    <MenuIcon />
-                    <LabelMenuItem isCollapsed={isCollapsed}>
-                      {menu.label}
-                    </LabelMenuItem>
-                  </MenuItem>
-                )
-              })}
-            </Menu>
-            <MenuFooter>
-              <QuestionButton isCollapsed={isCollapsed}>
-                <a
-                  href={helpCenterUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    display: 'flex',
-                    width: '100%',
-                    justifyContent: isCollapsed && 'center',
-                  }}
-                >
-                  <IconContainer className={isCollapsed ? 'active' : ''}>
-                    <HelpIcon />
-                  </IconContainer>
-                  <HelpText isCollapsed={isCollapsed}>Help Center</HelpText>
-                </a>
-              </QuestionButton>
-              <UserInfoButton
-                isVisible={isVisible}
-                isCollapsed={isCollapsed}
-                className={`userinfoBtn ${isCollapsed ? 'active' : ''}`}
-              >
-                <Dropdown
-                  onClick={this.toggleDropdown}
-                  overlayStyle={{
-                    position: 'fixed',
-                    minWidth: isCollapsed ? '50px' : '220px',
-                    maxWidth: isCollapsed ? '50px' : '0px',
-                  }}
-                  className="footerDropdown"
-                  overlay={footerDropdownMenu}
-                  trigger={['click']}
-                  placement="topCenter"
+                    <IconContainer className={isCollapsed ? 'active' : ''}>
+                      <HelpIcon />
+                    </IconContainer>
+                    <HelpText isCollapsed={isCollapsed}>Help Center</HelpText>
+                  </a>
+                </QuestionButton>
+                <UserInfoButton
                   isVisible={isVisible}
-                  onVisibleChange={this.handleVisibleChange}
-                  getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                  isCollapsed={isCollapsed}
+                  className={`userinfoBtn ${isCollapsed ? 'active' : ''}`}
                 >
-                  <div>
-                    {profileThumbnail ? (
-                      <UserImg
-                        src={profileThumbnail}
-                        isCollapsed={isCollapsed}
-                      />
-                    ) : (
-                      <PopConfirmWrapper isCollapsed={isCollapsed}>
-                        <Popconfirm
-                          icon={<IconExclamationMark />}
-                          placement="bottomRight"
-                          title={
-                            <>
-                              <CloseIconWrapper
-                                onClick={(e) => {
-                                  e.preventDefault()
-                                  e.stopPropagation()
-                                  toggleMultipleAccountNotification(false)
-                                  localStorage.setItem(
-                                    'isMultipleAccountNotification',
-                                    'true'
-                                  )
-                                }}
-                              >
+                  <Dropdown
+                    onClick={this.toggleDropdown}
+                    overlayStyle={{
+                      position: 'fixed',
+                      minWidth: isCollapsed ? '50px' : '220px',
+                      maxWidth: isCollapsed ? '50px' : '0px',
+                    }}
+                    className="footerDropdown"
+                    overlay={footerDropdownMenu(isDemoPlaygroundUserProxy)}
+                    trigger={['click']}
+                    placement="topCenter"
+                    isVisible={isVisible}
+                    onVisibleChange={this.handleVisibleChange}
+                    getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                  >
+                    <div>
+                      {profileThumbnail ? (
+                        <UserImg
+                          src={profileThumbnail}
+                          isCollapsed={isCollapsed}
+                        />
+                      ) : (
+                        <PopConfirmWrapper isCollapsed={isCollapsed}>
+                          <Popconfirm
+                            icon={<IconExclamationMark />}
+                            placement="bottomRight"
+                            cancelText={
+                              <CloseIconWrapper>
                                 <IconClose />
                               </CloseIconWrapper>
+                            }
+                            onCancel={this.handleCancel}
+                            title={
                               <p>
                                 You can switch between your teacher and student
                                 accounts here.
                               </p>
-                            </>
-                          }
-                          trigger="click"
-                          getPopupContainer={(el) => el.parentNode}
-                          visible={showMultipleAccountNotification}
-                        >
-                          <PseudoDiv isCollapsed={isCollapsed}>
-                            {this.getInitials()}
-                          </PseudoDiv>
-                        </Popconfirm>
-                      </PopConfirmWrapper>
-                    )}
-                    <div
-                      style={{
-                        width: '100px',
-                        display: !isCollapsed ? 'block' : 'none',
-                      }}
-                    >
-                      <UserName>{userName || 'Anonymous'}</UserName>
-                      <UserType isVisible={isVisible}>{_userRole}</UserType>
-                    </div>
+                            }
+                            trigger="click"
+                            getPopupContainer={(el) => el.parentNode}
+                            visible={isSwitchAccountNotification}
+                          >
+                            <PseudoDiv isCollapsed={isCollapsed}>
+                              {this.getInitials()}
+                            </PseudoDiv>
+                          </Popconfirm>
+                        </PopConfirmWrapper>
+                      )}
+                      <div
+                        style={{
+                          width: '100px',
+                          display: !isCollapsed ? 'block' : 'none',
+                        }}
+                      >
+                        <UserName>{userName || 'Anonymous'}</UserName>
+                        <UserType isVisible={isVisible}>{_userRole}</UserType>
+                      </div>
 
-                    {!isCollapsed && (
-                      <IconDropdown
-                        style={{ fontSize: 15, pointerEvents: 'none' }}
-                        className="drop-caret"
-                        type={isVisible ? 'caret-up' : 'caret-down'}
-                      />
-                    )}
-                  </div>
-                </Dropdown>
-              </UserInfoButton>
-            </MenuFooter>
-          </MenuWrapper>
-        </SideBar>
-      </FixedSidebar>
+                      {!isCollapsed && (
+                        <IconDropdown
+                          style={{ fontSize: 15, pointerEvents: 'none' }}
+                          className="drop-caret"
+                          type={isVisible ? 'caret-up' : 'caret-down'}
+                        />
+                      )}
+                    </div>
+                  </Dropdown>
+                </UserInfoButton>
+              </MenuFooter>
+            </MenuWrapper>
+          </SideBar>
+        </FixedSidebar>
+      </>
     )
   }
 }
@@ -774,13 +887,13 @@ const enhance = compose(
         false
       ),
       isFreeAdmin: isFreeAdminSelector(state),
-      isMultipleAccountNotification: state.user.isMultipleAccountNotification,
+      isDemoPlaygroundUserProxy: isDemoPlaygroundUser(state),
     }),
     {
       toggleSideBar: toggleSideBarAction,
       logout: logoutAction,
-      toggleMultipleAccountNotification: toggleMultipleAccountNotificationAction,
       toggleFreeAdminSubscriptionModal: toggleFreeAdminSubscriptionModalAction,
+      fetchUserSubscriptionStatus: slice?.actions?.fetchUserSubscriptionStatus,
     }
   )
 )
@@ -1070,8 +1183,8 @@ const Menu = styled(AntMenu)`
 
   @media (max-height: 780px) {
     overflow: auto;
-    height: ${({ isProxyUser }) =>
-      isProxyUser ? 'calc(100vh - 220px)' : 'calc(100vh - 190px)'};
+    height: ${({ isBannerShown }) =>
+      isBannerShown ? 'calc(100vh - 270px)' : 'calc(100vh - 235px)'};
 
     &::-webkit-scrollbar {
       width: 4px;
@@ -1401,7 +1514,16 @@ const PopConfirmWrapper = styled.div`
   }
 
   .ant-popover-buttons {
-    display: none;
+    .ant-btn {
+      background: none !important;
+      border: none !important;
+      position: absolute;
+      right: 2px;
+      top: 2px;
+    }
+    .ant-btn-primary {
+      display: none;
+    }
   }
 
   .ant-popover-arrow {
@@ -1431,7 +1553,7 @@ const PopConfirmWrapper = styled.div`
 
   .ant-popover-message-title {
     color: white;
-    width: 325px;
+    width: 315px;
     padding-left: 30px;
     font-weight: 600;
     font-size: 16px;
@@ -1465,6 +1587,35 @@ const CloseIconWrapper = styled.div`
 
     path:first-child {
       fill: ${white} !important;
+    }
+  }
+`
+
+const DemoPlaygroundButtonContainer = styled.div`
+  margin: 8px 0px;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+  align-items: center;
+  padding: ${({ isCollapsed }) => (isCollapsed ? '5px 0px' : '5px 25px')};
+  justify-content: ${({ isCollapsed }) =>
+    isCollapsed ? 'center' : 'flex-start'};
+  font-size: ${(props) => props.theme.sideMenu.helpButtonFontSize};
+  cursor: pointer;
+  span {
+    font-weight: 600;
+  }
+`
+
+const DemoPlaygroundButton = styled.div`
+  display: inline-flex;
+  color: #7c93a7;
+  &:hover {
+    svg path {
+      fill: ${themeColor};
+    }
+    span {
+      color: ${themeColor};
     }
   }
 `

@@ -1,12 +1,11 @@
-import { set, round, min } from 'lodash'
-import produce from 'immer'
+import { set, round, min, cloneDeep, isEmpty } from 'lodash'
 import {
   multipartEvaluationTypes,
   PARTIAL_MATCH,
 } from '@edulastic/constants/const/evaluationType'
 import { manuallyGradableQn } from '@edulastic/constants/const/questionType'
 
-import evaluators from './evaluators'
+import evaluator from './evaluators'
 import { replaceVariables } from '../../../assessment/utils/variables'
 
 const { FIRST_CORRECT_MUST, ALL_CORRECT_MUST } = multipartEvaluationTypes
@@ -18,7 +17,8 @@ export const evaluateItem = async (
   itemLevelScore = 0,
   itemId = '',
   itemGradingType,
-  assignPartialCredit
+  assignPartialCredit,
+  testSettings = {}
 ) => {
   const questionIds = Object.keys(validations)
   const results = {}
@@ -32,25 +32,26 @@ export const evaluateItem = async (
   for (const [index, id] of questionIds.entries()) {
     const evaluationId = `${itemId}_${id}`
     const answer = answers[id]
-    if (validations && validations[id]) {
+    if (validations && validations[id] && !isEmpty(answer)) {
       const validation = replaceVariables(validations[id], [], false)
       const { type } = validations[id]
-      const evaluator = evaluators[validation.type]
       if (!evaluator) {
         results[evaluationId] = []
         allCorrect = false
       } else {
-        const validationData = itemLevelScoring
-          ? produce(validation.validation, (v) => {
-              const questionScore = itemLevelScore / numberOfQuestions
-              set(v, 'validResponse.score', questionScore)
-              if (Array.isArray(v.altResponses) && numberOfQuestions > 1) {
-                v.altResponses.forEach((altResp) => {
-                  altResp.score = questionScore
-                })
-              }
+        const validationData = cloneDeep(validation.validation)
+        if (itemLevelScoring) {
+          const questionScore = itemLevelScore / numberOfQuestions
+          set(validationData, 'validResponse.score', questionScore)
+          if (
+            Array.isArray(validationData.altResponses) &&
+            numberOfQuestions > 1
+          ) {
+            validationData.altResponses.forEach((altResp) => {
+              altResp.score = questionScore
             })
-          : validation.validation
+          }
+        }
         if (assignPartialCredit) {
           validationData.scoringType = PARTIAL_MATCH
         }
@@ -61,6 +62,7 @@ export const evaluateItem = async (
             validation: validationData,
             template: validation.template,
             questionId: id,
+            testSettings,
           },
           type
         )
@@ -90,14 +92,7 @@ export const evaluateItem = async (
       allCorrect = false
     }
   }
-  console.info({
-    answers,
-    results,
-    firstCorrect,
-    allCorrect,
-    itemGradingType,
-    assignPartialCredit,
-  })
+
   if (itemLevelScoring) {
     let achievedScore = min([
       itemLevelScore,

@@ -261,7 +261,10 @@ export const getChartAndStandardTableData = (
   // contains all test standards to display
   const standardsTableData = groupBy(
     testItems.reduce((acc, item) => {
-      const questions = item.data.questions
+      // filtering out unscored questions to hide them in standards table in student card
+      const questions = item.data.questions.filter(
+        (x) => !x?.validation?.unscored
+      )
 
       // fetching all uniq standards from questions
       const allStandards = questions.flatMap((q) => {
@@ -273,8 +276,11 @@ export const getChartAndStandardTableData = (
           )
           .map((ali) => ali.domains || [])
           .flat()
+        const questionId = item.itemLevelScoring
+          ? item.data.questions[0]?.id
+          : q.id
         const qActivity =
-          questionActivities.filter((qa) => qa.qid === q.id)[0] || {}
+          questionActivities.filter((qa) => qa.qid === questionId)[0] || {}
 
         // calculating performace percentage
         const { score = 0 } = qActivity
@@ -308,9 +314,11 @@ export const getChartAndStandardTableData = (
     // this is to add score or maxScore of all questions belongs to same standard
     let formatScore = std.reduce(
       (acc, s) => {
+        if (!acc.question.includes(s.question)) {
+          acc.score += s.score
+          acc.maxScore += s.maxScore
+        }
         acc.question.push(s.question)
-        acc.score += s.score
-        acc.maxScore += s.maxScore
         const performance = Number(
           ((acc.score / acc.maxScore) * 100).toFixed(2)
         )

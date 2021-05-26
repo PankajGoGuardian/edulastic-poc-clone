@@ -313,7 +313,6 @@ const MatchListPreview = ({
     width: width || 'auto',
     alignItems: 'center',
     justifyContent: _preview ? 'space-between' : 'center',
-    margin: flag === 'dragItems' ? '4px' : '0px',
     background: isPrintPreview
       ? white
       : _preview
@@ -333,7 +332,6 @@ const MatchListPreview = ({
     color: theme.widgets.matchList.dragItemColor,
     minWidth: dragItemMinWidth,
     maxWidth: 335,
-    padding: '2px 12px',
     overflow: 'hidden',
     transform: 'translate3d(0px, 0px, 0px)',
     minHeight: flag !== 'ans' ? choiceMinHeight : '100%',
@@ -350,9 +348,13 @@ const MatchListPreview = ({
     width: isPrintPreview ? '100%' : horizontallyAligned ? 1050 : 750,
   }
 
+  /**
+   * @see https://snapwiz.atlassian.net/browse/EV-26868
+   * avoid showing highlight if evaluation is empty
+   */
   const showEvaluate =
     (preview && !isAnswerModifiable && expressGrader) ||
-    (preview && !expressGrader)
+    (preview && !expressGrader && !isEmpty(evaluation))
 
   /**
    * scroll element
@@ -385,7 +387,7 @@ const MatchListPreview = ({
             )}
           </QuestionLabelWrapper>
 
-          <QuestionContentWrapper>
+          <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
             <QuestionTitleWrapper>
               {!smallSize && view === PREVIEW && (
                 <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />

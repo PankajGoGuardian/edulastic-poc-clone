@@ -26,6 +26,7 @@ const ActivityBySchool = ({
   resetActivityBySchool,
   activityBySchool,
   settings,
+  toggleFilter,
   isCsvDownloading,
 }) => {
   const [metricFilter, setMetricFilter] = useState({})
@@ -36,6 +37,7 @@ const ActivityBySchool = ({
     const q = { ...settings.requestFilters }
     if (q.termId || q.reportId) {
       getActivityBySchoolRequest(q)
+      return () => toggleFilter(null, false)
     }
   }, [settings])
 
@@ -59,7 +61,12 @@ const ActivityBySchool = ({
   }
 
   if (loading) {
-    return <SpinLoader position="fixed" />
+    return (
+      <SpinLoader
+        tip="Please wait while we gather the required information..."
+        position="fixed"
+      />
+    )
   }
 
   if (error && error.dataSizeExceeded) {
@@ -67,7 +74,11 @@ const ActivityBySchool = ({
   }
 
   if (!metricInfo.length) {
-    return <NoDataContainer>No data available currently.</NoDataContainer>
+    return (
+      <NoDataContainer>
+        {settings.requestFilters?.termId ? 'No data available currently.' : ''}
+      </NoDataContainer>
+    )
   }
 
   return (

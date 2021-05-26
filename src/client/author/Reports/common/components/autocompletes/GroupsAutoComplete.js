@@ -90,6 +90,13 @@ const GroupsAutoComplete = ({
   const onSearch = (value) => {
     setSearchTerms({ ...searchTerms, text: value })
   }
+  const onChange = (selected, selectedElements) => {
+    const _selectedGroups = selectedElements.map(({ props }) => ({
+      key: props.value,
+      title: props.title,
+    }))
+    selectCB(_selectedGroups)
+  }
   const onBlur = () => {
     if (searchTerms.text === '' && searchTerms.selectedText !== '') {
       setSearchTerms(DEFAULT_SEARCH_TERMS)
@@ -147,7 +154,7 @@ const GroupsAutoComplete = ({
       dataCy={dataCy}
       placeholder="All Groups"
       el={groupFilterRef}
-      onChange={(e) => selectCB(dropdownData.filter((d) => e.includes(d.key)))}
+      onChange={onChange}
       onSearch={onSearch}
       onBlur={onBlur}
       onFocus={getDefaultGroupList}

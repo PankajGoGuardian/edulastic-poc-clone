@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import * as moment from 'moment'
-import { get, unset, split, isEmpty, pick, pickBy, identity } from 'lodash'
+import { get, unset, isEmpty, pick, pickBy, identity } from 'lodash'
 import { Dropdown } from 'antd'
 
 import { enrollmentApi } from '@edulastic/api'
@@ -51,6 +51,7 @@ import {
   getSchoolPolicy,
   receiveSchoolPolicyAction,
 } from '../../../DistrictPolicy/ducks'
+import { splitFullName } from '../../../Gradebook/transformers'
 
 const modalStatus = {}
 
@@ -142,12 +143,14 @@ const ActionContainer = ({
               'gender',
               'institutionIds',
               'lastName',
+              'middleName',
               'race',
               'sisId',
               'studentNumber',
               'frlStatus',
               'iepStatus',
               'sedStatus',
+              'hispanicEthnicity',
               'username',
               'password',
               'contactEmails',
@@ -171,15 +174,14 @@ const ActionContainer = ({
             setModalStatus(false)
           } else {
             const { fullName } = values
-            const tempName = split(fullName, ' ')
-            const firstName = tempName[0]
-            const lastName = tempName[1]
+            const [firstName, middleName, lastName] = splitFullName(fullName)
             values.classCode = selectedClass.code
             values.role = 'student'
             values.districtId = districtId
             values.institutionIds = orgData.institutionIds
             values.firstName = firstName
             values.lastName = lastName
+            values.middleName = middleName
 
             const contactEmails = get(values, 'contactEmails')
             if (contactEmails) {

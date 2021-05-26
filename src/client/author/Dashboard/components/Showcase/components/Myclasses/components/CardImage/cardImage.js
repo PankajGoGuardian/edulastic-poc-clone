@@ -19,7 +19,7 @@ import {
 } from './styled'
 import cardImg from '../../../../../../assets/images/cardImg.png'
 
-const CardImage = ({ data, history }) => {
+const CardImage = ({ data, history, userId }) => {
   const { name, grades = [], studentCount, subject, thumbnail, _id } = data
 
   const gotoManageClass = (classId = '') => () => {
@@ -32,7 +32,10 @@ const CardImage = ({ data, history }) => {
       testType: '',
       termId: '',
     }
-    sessionStorage.setItem('filters[Assignments]', JSON.stringify(filter))
+    sessionStorage.setItem(
+      `assignments_filter_${userId}`,
+      JSON.stringify(filter)
+    )
   }
 
   const metaInfo = (

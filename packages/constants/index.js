@@ -1,11 +1,11 @@
 const questionType = require('./const/questionType')
 const questionTitle = require('./const/questionTitle')
 const defaultSymbols = require('./const/defaultSymbols')
-const evaluationType = require('./const/evaluationType.js')
-const nonAutoGradableTypes = require('./const/nonAutoGradableTypes.js')
+const evaluationType = require('./const/evaluationType')
+const nonAutoGradableTypes = require('./const/nonAutoGradableTypes')
 const httpMessages = require('./const/httpMessage')
 const roleuser = require('./const/roleType')
-const math = require('./const/math.js')
+const math = require('./const/math')
 const testActivityStatus = require('./const/testActivityStatus')
 const assignmentSortParams = require('./const/assignmentSortParams')
 const assignmentPolicyOptions = require('./const/assignmentPolicyOptions')
@@ -35,15 +35,20 @@ const libraryFilters = require('./const/filters')
 const collections = require('./const/collections')
 const sortOptions = require('./const/sortOptions')
 const folderTypes = require('./const/folderTypes')
-const regexJs = require('./const/regex.js')
-const report = require('./const/report.js')
-const bannerActions = require('./const/bannerActions.js')
+const regexJs = require('./const/regex')
+const report = require('./const/report')
+const bannerActions = require('./const/bannerActions')
 const appLanguages = require('./const/languages')
 const fileTypes = require('./const/fileTypes')
 const subscriptions = require('./const/subscriptions')
 const assignmentSettingSections = require('./const/assignmentSettingSections')
 const graph = require('./const/graph')
 const questionActivity = require('./const/questionActivity')
+const curriculumGrades = require('./const/curriculumGrades')
+const keyboard = require('./const/keyboard')
+
+// helpers / utils / transformers
+const reportUtils = require('./reportUtils')
 
 module.exports = {
   question,
@@ -92,4 +97,7 @@ module.exports = {
   assignmentSettingSections,
   graph,
   questionActivity,
+  curriculumGrades,
+  reportUtils,
+  keyboard,
 }

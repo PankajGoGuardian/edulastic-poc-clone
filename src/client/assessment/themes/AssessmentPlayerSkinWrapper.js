@@ -231,6 +231,7 @@ const AssessmentPlayerSkinWrapper = ({
       }
       return {
         width: isSidebarVisible ? 'calc(100% - 220px)' : 'calc(100%)',
+        marginLeft: isSidebarVisible ? '220px' : '0px',
         background: restProps.theme.widgets.assessmentPlayers.mainBgColor,
       }
     }
@@ -296,9 +297,7 @@ const AssessmentPlayerSkinWrapper = ({
   return (
     <Magnifier enable={enableMagnifier} offset={getTopOffset()}>
       {header()}
-      <FlexContainer>
-        {playerSkinType.toLowerCase() ===
-          test.playerSkinValues.edulastic.toLowerCase() && leftSideBar()}
+      <FlexContainer position="relative">
         <StyledMainContainer
           mainContainerStyle={getMainContainerStyle()}
           style={getStyle()}
@@ -308,7 +307,10 @@ const AssessmentPlayerSkinWrapper = ({
         >
           {children}
         </StyledMainContainer>
-        {playerSkinType === test.playerSkinValues.edulastic.toLowerCase() &&
+        {playerSkinType.toLowerCase() ===
+          test.playerSkinValues.edulastic.toLowerCase() && leftSideBar()}
+        {playerSkinType.toLowerCase() ===
+          test.playerSkinValues.edulastic.toLowerCase() &&
           defaultAP &&
           navigationBtns()}
         {footer()}
@@ -318,6 +320,8 @@ const AssessmentPlayerSkinWrapper = ({
 }
 
 const Sidebar = styled.div`
+  position: absolute;
+  left: 0;
   width: ${({ isVisible }) => (isVisible ? 220 : 0)}px;
   background-color: ${(props) =>
     props.theme.widgets.assessmentPlayers.sidebarBgColor};
@@ -330,7 +334,8 @@ const StyledMainContainer = styled.div`
   main {
     .jsx-parser {
       p {
-        margin-bottom: 8px;
+        margin-bottom: 0.25rem;
+        line-height: 1.2;
       }
     }
     ${({ mainContainerStyle }) => mainContainerStyle};

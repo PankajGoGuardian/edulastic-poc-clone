@@ -89,7 +89,10 @@ const StudentAssessmentProfile = ({
         studentId: settings.selectedStudent.key,
       })
     }
-  }, [settings])
+    if (settings.requestFilters.termId || settings.requestFilters.reportId) {
+      return () => toggleFilter(null, false)
+    }
+  }, [settings.selectedStudent, settings.requestFilters])
 
   useEffect(() => {
     const metrics = get(studentAssessmentProfile, 'data.result.metricInfo', [])
@@ -124,7 +127,12 @@ const StudentAssessmentProfile = ({
     )
 
   if (loading) {
-    return <SpinLoader position="fixed" />
+    return (
+      <SpinLoader
+        tip="Please wait while we gather the required information..."
+        position="fixed"
+      />
+    )
   }
 
   if (error && error.dataSizeExceeded) {
@@ -140,7 +148,11 @@ const StudentAssessmentProfile = ({
     isEmpty(schoolAvg) ||
     !settings.selectedStudent?.key
   ) {
-    return <NoDataContainer>No data available currently.</NoDataContainer>
+    return (
+      <NoDataContainer>
+        {settings.requestFilters?.termId ? 'No data available currently.' : ''}
+      </NoDataContainer>
+    )
   }
 
   return (

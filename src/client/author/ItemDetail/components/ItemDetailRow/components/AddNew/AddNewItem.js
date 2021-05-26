@@ -8,7 +8,7 @@ import { PassageButtonContainer, PassageAddNewButton } from './styled'
 
 const AddNewItem = ({ onClick, t }) => (
   <PassageButtonContainer>
-    <PassageAddNewButton onClick={onClick}>
+    <PassageAddNewButton onClick={onClick} data-cy="addNewItem">
       <IconPlusCircle style={{ fill: `${white}` }} />
       {t('component.itemDetail.addNewItemToPassage')}
     </PassageAddNewButton>

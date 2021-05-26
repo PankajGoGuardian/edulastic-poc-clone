@@ -1,9 +1,9 @@
 /* eslint-disable default-case */
 import { CheckboxLabel } from '@edulastic/common'
-import { Button, DatePicker, Input, Radio, Select, Table } from 'antd'
+import { Button, DatePicker, Input, Radio, Select, Table, Upload } from 'antd'
 import { get } from 'lodash'
 import React, { useEffect, useState } from 'react'
-import { doValidate } from './apis'
+import { doValidate, uploadFile } from './apis'
 
 const Field = ({
   displayName,
@@ -17,6 +17,7 @@ const Field = ({
 }) => {
   const [response, setResponse] = useState()
   const [value, setValue] = useState()
+  const [loading, setLoading] = useState(false)
 
   const onDropdownVisibleChange = () => {
     const elm = document.querySelector(`.dropdown-custom-menu`)
@@ -83,6 +84,19 @@ const Field = ({
 
   const onChangeDate = (date) => onChange(date.toDate().getTime(), rest.name)
 
+  const handleUpload = (info, endPoint) => {
+    try {
+      const { file } = info
+      setLoading(true)
+      uploadFile(file, endPoint).then((result) => {
+        onChange(result, type)
+        setLoading(false)
+      })
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
   const renderElement = () => {
     switch (type) {
       case 'string':
@@ -123,6 +137,17 @@ const Field = ({
         )
       case 'p':
         return <p>{message}</p>
+      case 'upload':
+        return (
+          <Upload
+            accept={rest.accept}
+            multiple={rest.multiple}
+            disabled={loading}
+            customRequest={(info) => handleUpload(info, rest.endPoint)}
+          >
+            <Button type="primary">Upload File</Button>
+          </Upload>
+        )
       default:
         return null
     }

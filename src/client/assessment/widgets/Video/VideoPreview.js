@@ -25,7 +25,7 @@ const VideoPreview = ({ item, showQuestionNumber, qIndex }) => (
       )}
       {item.heading && <Subtitle>{item.heading}</Subtitle>}
     </QuestionTitleWrapper>
-    {item.summary && <Label>{item.summary}</Label>}
+    {item.summary && <Label data-cy="videoSummary">{item.summary}</Label>}
     {item && item.uiStyle && (
       <Media>
         {({ isFullscreen, playPause }) => (

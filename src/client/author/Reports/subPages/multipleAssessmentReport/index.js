@@ -1,7 +1,7 @@
 /* eslint-disable array-callback-return */
 import React, { useEffect, useState, useMemo } from 'react'
 import { Route } from 'react-router-dom'
-import { isEmpty } from 'lodash'
+import { isEmpty, omit } from 'lodash'
 import next from 'immer'
 import qs from 'qs'
 import { connect } from 'react-redux'
@@ -162,13 +162,12 @@ const MultipleAssessmentReportContainer = (props) => {
           ? ''
           : _settings.filters[filterType]
     })
-    const { selectedTests = [] } = _settings
     setMARSettings({
       requestFilters: {
         ..._requestFilters,
         classIds: _requestFilters.classIds || '',
         groupIds: _requestFilters.groupIds || '',
-        testIds: selectedTests.join(),
+        testIds: _requestFilters.testIds || '',
       },
     })
     setMARTagsData({ ..._settings.tagsData })
@@ -200,9 +199,16 @@ const MultipleAssessmentReportContainer = (props) => {
   ].includes(pageTitle)
 
   useEffect(() => {
-    if (!demographicsRequired) {
+    if (!demographicsRequired && !firstLoad) {
       setDdFilter({})
       setTempDdFilter({})
+      const removeDemographics = (tags) =>
+        omit(
+          tags,
+          demographics.map((d) => d.key)
+        )
+      setTempTagsData(removeDemographics(tempTagsData))
+      setMARTagsData(removeDemographics(settings.tagsData))
     }
   }, [pageTitle])
 
@@ -251,7 +257,6 @@ const MultipleAssessmentReportContainer = (props) => {
           tempTagsData={tempTagsData}
           setTempTagsData={setTempTagsData}
           tagsData={settings.tagsData}
-          setTagsData={setMARTagsData}
           showApply={showApply}
           setShowApply={setShowApply}
           firstLoad={firstLoad}

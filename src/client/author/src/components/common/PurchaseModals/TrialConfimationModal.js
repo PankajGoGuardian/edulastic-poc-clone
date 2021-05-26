@@ -55,6 +55,7 @@ const TrialConfirmationModal = ({
   isUsedModalVisible,
   setIsUsedModalVisible,
   previouslyUsedPlaylistClone = {},
+  setClickedBundleId,
 }) => {
   const [selectedProducts, setSelectedProducts] = useState([])
   const [selectedGrades, setSelectedGrades] = useState([])
@@ -83,6 +84,7 @@ const TrialConfirmationModal = ({
 
   const handleCloseModal = () => {
     showTrialSubsConfirmationAction(false)
+    setClickedBundleId(null)
   }
 
   const handleGoToDashboard = () => {

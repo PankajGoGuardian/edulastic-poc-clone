@@ -67,6 +67,14 @@
     "ellStatus": "all",
     "hispanicEthnicity": "all"
   },
+  "initialDdFilterTags": {
+    "race": {"key": "all", "title": "All"},
+    "gender": {"key": "all", "title": "All"},
+    "iepStatus": {"key": "all", "title": "All"},
+    "frlStatus": {"key": "all", "title": "All"},
+    "ellStatus": {"key": "all", "title": "All"},
+    "hispanicEthnicity": {"key": "all", "title": "All"}
+  },
   "subjects": [
     { "key": "Mathematics", "title": "Mathematics" },
     { "key": "ELA", "title": "ELA" },

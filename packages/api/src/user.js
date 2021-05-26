@@ -93,6 +93,15 @@ const updateUserRole = ({ data, userId }) =>
     })
     .then((result) => result.data.result)
 
+const updateCollectionVisited = ({ data, userId }) =>
+  api
+    .callApi({
+      url: `${prefix}/collectionVisited/${userId}`,
+      method: 'put',
+      data,
+    })
+    .then((result) => result.data.result)
+
 const deleteUser = (data) =>
   api
     .callApi({
@@ -369,4 +378,5 @@ export default {
   updateUsername,
   logout,
   getDemoPlaygroundUser,
+  updateCollectionVisited,
 }

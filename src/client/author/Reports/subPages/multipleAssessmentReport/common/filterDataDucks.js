@@ -19,7 +19,6 @@ const SET_REPORTS_PREV_MAR_FILTER_DATA =
   '[reports] set reports prev mar filter data'
 
 const SET_FILTERS = '[reports] set mar filters'
-const SET_TEST_ID = '[reports] set mar testId'
 const SET_TEMP_DD_FILTER = '[reports] set mar tempDdFilter'
 const SET_TEMP_TAGS_DATA = '[reports] set mar temp tempTagsData'
 
@@ -33,7 +32,6 @@ export const setPrevMARFilterDataAction = createAction(
 )
 
 export const setFiltersAction = createAction(SET_FILTERS)
-export const setTestIdAction = createAction(SET_TEST_ID)
 export const setTempDdFilterAction = createAction(SET_TEMP_DD_FILTER)
 export const setTempTagsDataAction = createAction(SET_TEMP_TAGS_DATA)
 
@@ -54,11 +52,6 @@ export const getReportsMARFilterData = createSelector(
 export const getFiltersSelector = createSelector(
   stateSelector,
   (state) => state.filters
-)
-
-export const getTestIdSelector = createSelector(
-  stateSelector,
-  (state) => state.testId
 )
 
 export const getTempDdFilterSelector = createSelector(
@@ -97,7 +90,6 @@ const initialState = {
   filters: {
     ...staticDropDownData.initialFilters,
   },
-  testId: [],
   tempDdFilter: {},
   tempTagsData: {},
   loading: false,
@@ -155,9 +147,6 @@ export const reportMARFilterDataReducer = createReducer(initialState, {
     state.error = payload.error
   },
   [SET_FILTERS]: setFiltersReducer,
-  [SET_TEST_ID]: (state, { payload }) => {
-    state.testId = payload
-  },
   [SET_TEMP_DD_FILTER]: (state, { payload }) => {
     state.tempDdFilter = payload
   },
@@ -179,7 +168,6 @@ export const reportMARFilterDataReducer = createReducer(initialState, {
 function* getReportsMARFilterDataRequest({ payload }) {
   try {
     const MARFilterData = yield call(reportsApi.fetchMARFilterData, payload)
-
     yield put({
       type: GET_REPORTS_MAR_FILTER_DATA_REQUEST_SUCCESS,
       payload: { MARFilterData },
@@ -196,7 +184,7 @@ function* getReportsMARFilterDataRequest({ payload }) {
 
 export function* reportMARFilterDataSaga() {
   yield all([
-    yield takeEvery(
+    takeEvery(
       GET_REPORTS_MAR_FILTER_DATA_REQUEST,
       getReportsMARFilterDataRequest
     ),

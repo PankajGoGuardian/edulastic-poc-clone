@@ -156,6 +156,9 @@ class Setting extends Component {
     if (isAuthorPublisher) {
       this.updateTestData('testType')(ASSESSMENT)
     }
+    if (entity?.safeBrowser) {
+      this.updateTestData('safeBrowser')(true)
+    }
     // resetting updated state on mount
     resetUpdatedState()
   }
@@ -240,10 +243,15 @@ class Setting extends Component {
         break
       }
       case 'safeBrowser':
-        if (!value)
+        if (!value) {
           setTestData({
             sebPassword: '',
           })
+        } else {
+          setTestData({
+            restrictNavigationOut: undefined,
+          })
+        }
         break
       case 'maxAnswerChecks':
         if (value < 0) value = 0
@@ -1306,7 +1314,9 @@ class Setting extends Component {
                       <Row>
                         <Col span={11}>
                           <StyledRadioGroup
-                            disabled={!owner || !isEditable || !premium}
+                            disabled={
+                              !owner || !isEditable || !premium || safeBrowser
+                            }
                             onChange={this.updateFeatures(
                               'restrictNavigationOut'
                             )}
@@ -1349,7 +1359,8 @@ class Setting extends Component {
                                     'warn-and-report-after-n-alerts'
                                   ) ||
                                   !owner ||
-                                  !isEditable
+                                  !isEditable ||
+                                  safeBrowser
                                 }
                               />{' '}
                               ALERTS

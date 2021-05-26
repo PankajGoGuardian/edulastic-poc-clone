@@ -1,10 +1,12 @@
 import { createSelector } from 'reselect'
 import { createAction, createReducer, combineReducers } from 'redux-starter-kit'
-import { all, call, put, takeEvery } from 'redux-saga/effects'
-import { get } from 'lodash'
+import { all, call, put, takeEvery, select, take } from 'redux-saga/effects'
+import { get, isEmpty, omitBy, mapValues } from 'lodash'
 
+import { assignmentStatusOptions, roleuser } from '@edulastic/constants'
 import { assignmentApi, reportsApi } from '@edulastic/api'
 
+import { reportGroupType } from '@edulastic/constants/const/report'
 import { styledNotification } from './common/styled'
 
 import {
@@ -13,30 +15,62 @@ import {
 } from './assignmentsDucks'
 
 import { RESET_ALL_REPORTS } from './common/reportsRedux'
-
-import { reportSARSettingsReducer } from './subPages/singleAssessmentReport/ducks'
-import { reportMARSettingsReducer } from './subPages/multipleAssessmentReport/ducks'
-import { reportSPRSettingsReducer } from './subPages/studentProfileReport/ducks'
-import { reportSMRSettingsReducer } from './subPages/standardsMasteryReport/ducks'
-import { reportERSettingsReducer } from './subPages/engagementReport/ducks'
+import {
+  getReportsSARSettings,
+  reportSARSettingsReducer,
+  setSARTagsDataAction,
+} from './subPages/singleAssessmentReport/ducks'
 
 import {
+  getReportsMARSettings,
+  reportMARSettingsReducer,
+  setMARTagsDataAction,
+} from './subPages/multipleAssessmentReport/ducks'
+import {
+  getReportsSPRSettings,
+  reportSPRSettingsReducer,
+  setSPRTagsDataAction,
+} from './subPages/studentProfileReport/ducks'
+import {
+  getReportsSMRSettings,
+  reportSMRSettingsReducer,
+  setSMRTagsDataAction,
+} from './subPages/standardsMasteryReport/ducks'
+import {
+  getReportsERSettings,
+  reportERSettingsReducer,
+  setERTagsDataAction,
+} from './subPages/engagementReport/ducks'
+
+import {
+  getTempTagsDataSelector as getSARTempTagsDataSelector,
+  setTempTagsDataAction as setSARTempTagsDataAction,
   reportSARFilterDataReducer,
   reportSARFilterDataSaga,
 } from './subPages/singleAssessmentReport/common/filterDataDucks'
 import {
+  getTempTagsDataSelector as getMARTempTagsDataSelector,
+  setTempTagsDataAction as setMARTempTagsDataAction,
   reportMARFilterDataReducer,
   reportMARFilterDataSaga,
 } from './subPages/multipleAssessmentReport/common/filterDataDucks'
 import {
+  getTempTagsDataSelector as getSPRTempTagsDataSelector,
+  setTempTagsDataAction as setSPRTempTagsDataAction,
   reportSPRFilterDataReducer,
   reportSPRFilterDataSaga,
 } from './subPages/studentProfileReport/common/filterDataDucks'
 import {
+  getTempTagsDataSelector as getSMRTempTagsDataSelector,
+  setTempTagsDataAction as setSMRTempTagsDataAction,
   reportStandardsFilterDataReducer,
   reportStandardsFilterSaga,
 } from './subPages/standardsMasteryReport/common/filterDataDucks'
-import { reportERFilterDataReducer } from './subPages/engagementReport/common/filterDataDucks'
+import {
+  getTempTagsDataSelector as getERTempTagsDataSelector,
+  setTempTagsDataAction as setERTempTagsDataAction,
+  reportERFilterDataReducer,
+} from './subPages/engagementReport/common/filterDataDucks'
 
 import {
   reportAssessmentSummaryReducer,
@@ -122,6 +156,44 @@ import {
   sharedReportsReducer,
   sharedReportsSaga,
 } from './components/sharedReports/ducks'
+import {
+  getClassListSelector,
+  receiveClassListAction,
+  RECEIVE_CLASSLIST_ERROR,
+  RECEIVE_CLASSLIST_SUCCESS,
+} from '../Classes/ducks'
+import {
+  getCourseListSelector,
+  receiveCourseListAction,
+  RECEIVE_COURSE_ERROR,
+  RECEIVE_COURSE_SUCCESS,
+} from '../Courses/ducks'
+import {
+  getTeachersListSelector,
+  receiveTeachersListAction,
+  RECEIVE_TEACHERLIST_ERROR,
+  RECEIVE_TEACHERLIST_SUCCESS,
+} from '../Teacher/ducks'
+import { combineNames } from './common/util'
+import {
+  getSchoolsSelector,
+  receiveSchoolsAction,
+  RECEIVE_SCHOOLS_ERROR,
+  RECEIVE_SCHOOLS_SUCCESS,
+} from '../Schools/ducks'
+import { getOrgDataSelector, getUser } from '../src/selectors/user'
+import {
+  getAllTagsAction,
+  getAllTagsSelector,
+  SET_ALL_TAGS,
+  SET_ALL_TAGS_FAILED,
+} from '../TestPage/ducks'
+import {
+  RECEIVE_GROUPLIST_SUCCESS,
+  RECEIVE_GROUPLIST_ERROR,
+  getGroupListSelector,
+  receiveGroupListAction,
+} from '../Groups/ducks'
 
 const SET_SHARING_STATE = '[reports] set sharing state'
 const SET_PRINTING_STATE = '[reports] set printing state'
@@ -138,6 +210,8 @@ const RECEIVE_TEST_LIST_REQUEST_SUCCESS =
 const RECEIVE_TEST_LIST_REQUEST_ERROR =
   '[reports] receive test list request request error'
 
+const FETCH_UPDATE_TAGS_DATA = '[reports] fetch & update tagsData'
+
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
 export const setSharingStateAction = createAction(SET_SHARING_STATE)
@@ -153,6 +227,7 @@ export const setGenerateCSVStatusAction = createAction(GENERATE_CSV_STATUS)
 export const setCsvModalVisibleAction = createAction(SET_CSV_MODAL_VISIBLE)
 export const setCsvDocsAction = createAction(SET_CSV_DOCS)
 
+export const fetchUpdateTagsDataAction = createAction(FETCH_UPDATE_TAGS_DATA)
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -314,6 +389,258 @@ export function* generateCSVSaga({ payload }) {
   }
 }
 
+const filterMapKeys = (list, ids, key = 'name') =>
+  list
+    .filter((li) => ids.includes(li._id))
+    .map((li) => ({ key: li._id, title: get(li, key) }))
+
+const selectorDict = {
+  [reportGroupType.SINGLE_ASSESSMENT_REPORT]: {
+    getTempTags: getSARTempTagsDataSelector,
+    getSettings: getReportsSARSettings,
+    setTags: setSARTagsDataAction,
+    setTempTags: setSARTempTagsDataAction,
+    remapTags: (tags) => {
+      const { courseIds, ..._tags } = tags
+      return { ..._tags, courseId: courseIds?.[0] }
+    },
+  },
+  [reportGroupType.MULTIPLE_ASSESSMENT_REPORT]: {
+    getTempTags: getMARTempTagsDataSelector,
+    getSettings: getReportsMARSettings,
+    setTags: setMARTagsDataAction,
+    setTempTags: setMARTempTagsDataAction,
+    remapTags: (tags) => {
+      const { courseIds, ..._tags } = tags
+      return { ..._tags, courseId: courseIds?.[0] }
+    },
+  },
+  [reportGroupType.STANDARDS_MASTERY_REPORT]: {
+    getTempTags: getSMRTempTagsDataSelector,
+    getSettings: getReportsSMRSettings,
+    setTags: setSMRTagsDataAction,
+    setTempTags: setSMRTempTagsDataAction,
+    remapTags: (tags) => {
+      const { courseIds, ..._tags } = tags
+      return { ..._tags, courseId: courseIds?.[0] }
+    },
+  },
+  [reportGroupType.STUDENT_PROFILE_REPORT]: {
+    getTempTags: getSPRTempTagsDataSelector,
+    getSettings: getReportsSPRSettings,
+    setTags: setSPRTagsDataAction,
+    setTempTags: setSPRTempTagsDataAction,
+  },
+  [reportGroupType.ENGAGEMENT_REPORT]: {
+    getTempTags: getERTempTagsDataSelector,
+    getSettings: getReportsERSettings,
+    setTags: setERTagsDataAction,
+    setTempTags: setERTempTagsDataAction,
+  },
+}
+
+function* updateTags(tags, type) {
+  if (!selectorDict[type]) return
+  if (Object.values(tags).every((tag) => isEmpty(tag))) return
+  const remappedTags = selectorDict[type].remapTags
+    ? selectorDict[type].remapTags(tags)
+    : tags
+  const tempTagsData = yield select(selectorDict[type].getTempTags)
+  const tagsData = (yield select(selectorDict[type].getSettings)).tagsData
+  yield put(
+    selectorDict[type].setTempTags({ ...tempTagsData, ...remappedTags })
+  )
+  yield put(selectorDict[type].setTags({ ...tagsData, ...remappedTags }))
+}
+
+function* getTagFilters(ids, options) {
+  let result = []
+  if (Array.isArray(ids) && ids.length) {
+    const type = options.tagTypes || [
+      'group',
+      'testitem',
+      'playlist',
+      'test',
+      'assignment',
+    ]
+    yield put(getAllTagsAction({ type }))
+    yield take([SET_ALL_TAGS, SET_ALL_TAGS_FAILED])
+    const list = yield all(
+      type.map((t) => select((state) => getAllTagsSelector(state, t)))
+    )
+    result = filterMapKeys(list.flat(), ids, 'tagName')
+  }
+  return result
+}
+function* getGroupTags(ids, options) {
+  let result = []
+  if (Array.isArray(ids) && ids.length) {
+    const q = {
+      limit: ids.length || 25,
+      page: 1,
+      districtId: options?.districtIds?.[0],
+      search: {
+        name: '',
+        type: ['custom'],
+        groupIds: ids,
+      },
+      queryType: 'OR',
+    }
+
+    yield put(receiveGroupListAction(q))
+    yield take([RECEIVE_GROUPLIST_SUCCESS, RECEIVE_GROUPLIST_ERROR])
+    const list = Object.values(
+      yield select(getGroupListSelector)
+    ).map((li) => ({ ...li, name: li._source.name }))
+    result = filterMapKeys(list, ids)
+  }
+  return result
+}
+function* getTestTags(ids, options) {
+  let result = []
+  if (Array.isArray(ids) && ids.length) {
+    const { IN_PROGRESS, IN_GRADING, DONE } = assignmentStatusOptions
+    const q = {
+      limit: ids.length || 25,
+      page: 1,
+      search: {
+        searchString: '',
+        statuses: [IN_PROGRESS, IN_GRADING, DONE],
+        districtId: options?.districtIds?.[0],
+        testIds: ids,
+      },
+      aggregate: true,
+    }
+    yield put(receiveTestListAction(q))
+    yield take([
+      RECEIVE_TEST_LIST_REQUEST_SUCCESS,
+      RECEIVE_TEST_LIST_REQUEST_ERROR,
+    ])
+    const list = yield select(getTestListSelector)
+    result = filterMapKeys(list, ids, 'title')
+  }
+  return result
+}
+function* getClassTags(ids, options) {
+  let result = []
+  if (Array.isArray(ids) && ids.length) {
+    const q = {
+      limit: ids.length || 25,
+      page: 1,
+      districtId: options.districtIds?.[0],
+      search: {
+        name: '',
+        type: ['class'],
+        groupIds: ids,
+      },
+      queryType: 'OR',
+    }
+    yield put(receiveClassListAction(q))
+    yield take([RECEIVE_CLASSLIST_SUCCESS, RECEIVE_CLASSLIST_ERROR])
+    const list = Object.values(yield select(getClassListSelector))
+    result = filterMapKeys(list, ids, '_source.name')
+  }
+  return result
+}
+function* getCourseTags(ids, options) {
+  let result = []
+  if (Array.isArray(ids) && ids.length) {
+    const q = {
+      limit: ids.length || 25,
+      page: 1,
+      districtId: options.districtIds?.[0],
+      search: {
+        name: [{ type: 'cont', value: '' }],
+        courseIds: ids,
+      },
+    }
+    yield put(receiveCourseListAction(q))
+    yield take([RECEIVE_COURSE_SUCCESS, RECEIVE_COURSE_ERROR])
+    const list = yield select(getCourseListSelector)
+    result = filterMapKeys(list, ids)
+  }
+  return result
+}
+function* getTeacherTags(ids, options) {
+  let result = []
+  if (Array.isArray(ids) && ids.length) {
+    const q = {
+      limit: ids.length || 25,
+      page: 1,
+      districtId: options?.districtIds?.[0],
+      search: {},
+      role: roleuser.TEACHER,
+      teacherIds: ids,
+    }
+    if (!isEmpty(options.schoolIds)) {
+      q.institutionId = options.schoolIds.join(',')
+    }
+    if (!isEmpty(options.termId)) {
+      q.termId = options.termId
+    }
+    if (!isEmpty(options.testIds)) {
+      q.testIds = options.testIds
+    }
+    yield put(receiveTeachersListAction(q))
+    yield take([RECEIVE_TEACHERLIST_SUCCESS, RECEIVE_TEACHERLIST_ERROR])
+    const list = combineNames(yield select(getTeachersListSelector))
+    result = filterMapKeys(list, ids)
+  }
+  return result
+}
+function* getSchoolTags(ids, options) {
+  let result = []
+  if (Array.isArray(ids) && ids.length) {
+    const q = {
+      limit: ids.length || 25,
+      page: 1,
+      districtId: options?.districtIds?.[0],
+      search: {
+        name: [{ type: 'cont', value: '' }],
+      },
+      schoolIds: ids,
+    }
+    yield put(receiveSchoolsAction(q))
+    yield take([RECEIVE_SCHOOLS_SUCCESS, RECEIVE_SCHOOLS_ERROR])
+    const list = yield select(getSchoolsSelector)
+    result = filterMapKeys(list, ids)
+  }
+  return result
+}
+
+const tagGetterMap = {
+  tagIds: getTagFilters,
+  testIds: getTestTags,
+  schoolIds: getSchoolTags,
+  teacherIds: getTeacherTags,
+  courseIds: getCourseTags,
+  classIds: getClassTags,
+  groupIds: getGroupTags,
+}
+
+function* fetchUpdateTagsData({ payload }) {
+  const { options = {}, type, ...keys } = payload
+  try {
+    const orgData = yield select(getOrgDataSelector)
+    const userDetails = yield select(getUser)
+    const params = {
+      ...orgData,
+      ...options,
+      userDetails,
+    }
+    const result = yield all(
+      mapValues(
+        omitBy(tagGetterMap, (v, k) => !keys[k]),
+        (func, key) => func(keys[key], params)
+      )
+    )
+    yield* updateTags(result, type)
+  } catch (error) {
+    const msg = 'Failed to update tags for autocomplete filters from url.'
+    console.error(msg, '\nError =>', error.stack)
+  }
+}
+
 export function* receiveTestListSaga({ payload }) {
   try {
     const searchResult = yield call(assignmentApi.searchAssignments, payload)
@@ -375,6 +702,7 @@ export function* reportSaga() {
     sharedReportsSaga(),
     yield takeEvery(GENERATE_CSV_REQUEST, generateCSVSaga),
     yield takeEvery(RECEIVE_TEST_LIST_REQUEST, receiveTestListSaga),
+    takeEvery(FETCH_UPDATE_TAGS_DATA, fetchUpdateTagsData),
   ])
 }
 

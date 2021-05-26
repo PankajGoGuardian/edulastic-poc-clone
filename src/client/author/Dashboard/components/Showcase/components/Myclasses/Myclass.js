@@ -246,7 +246,7 @@ const MyClasses = ({
   }
 
   const handleFeatureClick = ({ config = {}, tags = [], isBlocked }) => {
-    const { filters, contentType } = config
+    const { filters, contentType, subscriptionData } = config
     if (isBlocked) {
       handleBlockedClick(config)
       return
@@ -258,7 +258,9 @@ const MyClasses = ({
     } else if (content === 'playlists_library') {
       content = 'playlists'
     }
-    setClickedBundleId(filters?.[0]?.collections?.[0])
+    setClickedBundleId(
+      filters?.[0]?.collections?.[0] || subscriptionData.itemBankId
+    )
     if (content === 'playlists') {
       setShowTrialSubsConfirmation(true)
       return
@@ -481,7 +483,7 @@ const MyClasses = ({
   const defaultSelectedProductIds = productData.productId
     ? [productData.productId]
     : []
-
+    
   return (
     <MainContentWrapper padding="30px 25px">
       {!loading && allActiveClasses?.length === 0 && (
@@ -508,11 +510,13 @@ const MyClasses = ({
           history={history}
         />
       )}
-      <FeaturedContentBundle
-        featuredBundles={filteredBundles}
-        handleFeatureClick={handleFeatureClick}
-        emptyBoxCount={featureEmptyBoxCount}
-      />
+      {!isCliUser && (
+        <FeaturedContentBundle
+          featuredBundles={filteredBundles}
+          handleFeatureClick={handleFeatureClick}
+          emptyBoxCount={featureEmptyBoxCount}
+        />
+      )}
       <Launch />
       <PurchaseFlowModals
         showSubscriptionAddonModal={showSubscriptionAddonModal}
@@ -523,6 +527,7 @@ const MyClasses = ({
         setProductData={setProductData}
         trialAddOnProductIds={trialAddOnProductIds}
         clickedBundleId={clickedBundleId}
+        setClickedBundleId={setClickedBundleId}
       />
       {showItemBankTrialUsedModal && (
         <ItemBankTrialUsedModal

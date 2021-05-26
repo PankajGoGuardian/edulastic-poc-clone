@@ -38,7 +38,7 @@ const ActivityByTeacher = ({
       getActivityByTeacherRequest(q)
       return () => toggleFilter(null, false)
     }
-  }, [settings])
+  }, [settings.requestFilters])
 
   const normalizedMetricInfo = useMemo(
     () =>

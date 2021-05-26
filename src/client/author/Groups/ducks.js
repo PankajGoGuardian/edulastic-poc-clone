@@ -7,8 +7,8 @@ import { keyBy } from 'lodash'
 import { push } from 'connected-react-router'
 
 const RECEIVE_GROUPLIST_REQUEST = '[group] receive list request'
-const RECEIVE_GROUPLIST_SUCCESS = '[group] receive list success'
-const RECEIVE_GROUPLIST_ERROR = '[group] receive list error'
+export const RECEIVE_GROUPLIST_SUCCESS = '[group] receive list success'
+export const RECEIVE_GROUPLIST_ERROR = '[group] receive list error'
 
 // Fetch Collaboration Groups Action(s)
 const FETCH_COLLABORATION_GROUP = '[group] fetch collaboration groups'

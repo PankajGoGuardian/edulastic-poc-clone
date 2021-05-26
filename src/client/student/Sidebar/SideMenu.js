@@ -44,11 +44,11 @@ const menuItems = [
     icon: IconClockDashboard,
     path: 'home/assignments',
   },
-  {
+  /*  {
     label: 'Playlist',
     icon: IconPlaylist,
     path: 'home/playlist',
-  },
+  }, */
   {
     label: 'Grades',
     icon: IconReport,

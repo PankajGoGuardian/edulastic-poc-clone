@@ -4,7 +4,7 @@ import React from 'react'
 import { SelectInputStyled } from '@edulastic/common'
 import { ColLabel, Label, StyledRow } from './styled'
 
-const { playerSkinTypes } = test
+const { playerSkinTypes, playerSkinValues } = test
 
 const PlayerSkinSelector = ({
   playerSkinType = playerSkinTypes.edulastic,
@@ -36,16 +36,24 @@ const PlayerSkinSelector = ({
           ? edulastic
           : playerSkinType
       }
-      disabled={disabled}
+      disabled={disabled || playerSkinType === playerSkinValues.testlet}
       isBackgroundWhite={selectBackgroundWhite}
     >
       {Object.keys(types)
         .sort()
-        .map((key) => (
-          <Select.Option key={key} value={key}>
-            {types[key]}
-          </Select.Option>
-        ))}
+        .map((key) => {
+          if (
+            key === playerSkinValues.testlet &&
+            !(playerSkinType === playerSkinValues.testlet)
+          ) {
+            return null
+          }
+          return (
+            <Select.Option key={key} value={key}>
+              {types[key]}
+            </Select.Option>
+          )
+        })}
     </SelectInputStyled>
   )
 

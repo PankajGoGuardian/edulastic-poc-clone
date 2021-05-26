@@ -39,6 +39,7 @@ import {
 import { setMaxAttemptsAction, setSafeBroswePassword } from '../../ducks'
 import {
   allowedToSelectMultiLanguageInTest,
+  isEtsDistrictSelector,
   isPublisherUserSelector,
 } from '../../../../../src/selectors/user'
 import {
@@ -380,6 +381,7 @@ class Setting extends Component {
       editEnable,
       isCurator,
       isPlaylist,
+      isEtsDistrict,
     } = this.props
     const {
       isDocBased,
@@ -1620,11 +1622,16 @@ class Setting extends Component {
                             >
                               {Object.keys(skinTypes)
                                 .sort()
-                                .map((key) => (
-                                  <Option key={key} value={key}>
-                                    {skinTypes[key]}
-                                  </Option>
-                                ))}
+                                .map((key) => {
+                                  if (key === 'testlet' && !isEtsDistrict) {
+                                    return null
+                                  }
+                                  return (
+                                    <Option key={key} value={key}>
+                                      {skinTypes[key]}
+                                    </Option>
+                                  )
+                                })}
                             </SelectInputStyled>
                           </Col>
                           <Col span={24}>
@@ -1874,6 +1881,7 @@ const enhance = compose(
       editEnable: state.tests?.editEnable,
       allowedToSelectMultiLanguage: allowedToSelectMultiLanguageInTest(state),
       testAssignments: getAssignmentsSelector(state),
+      isEtsDistrict: isEtsDistrictSelector(state),
     }),
     {
       setMaxAttempts: setMaxAttemptsAction,

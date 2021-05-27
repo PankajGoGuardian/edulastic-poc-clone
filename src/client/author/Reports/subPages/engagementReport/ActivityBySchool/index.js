@@ -39,7 +39,7 @@ const ActivityBySchool = ({
       getActivityBySchoolRequest(q)
       return () => toggleFilter(null, false)
     }
-  }, [settings])
+  }, [settings.requestFilters])
 
   const metricInfo = useMemo(
     () => get(activityBySchool, 'data.result.metricInfo', []),

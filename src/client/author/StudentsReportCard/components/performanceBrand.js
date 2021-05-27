@@ -134,7 +134,10 @@ const PerformanceBrand = (props, ref) => {
                 justify="start"
               >
                 <Col className="student-report-card-key">Teacher: </Col>
-                <Col className="student-report-card-value">
+                <Col
+                  data-cy="report-teacher"
+                  className="student-report-card-value"
+                >
                   {testData.createdBy?.name || ''}
                 </Col>
               </Row>

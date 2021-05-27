@@ -12,18 +12,9 @@ import {
   getTeachersListSelector,
   receiveTeachersListAction,
 } from '../../../../Teacher/ducks'
+import { combineNames } from '../../util'
 
 const DEFAULT_SEARCH_TERMS = { text: '', selectedText: '', selectedKey: '' }
-
-const transformTeacherList = (list) => {
-  return list.map((t) => ({
-    ...t,
-    name: [t.firstName, t.middleName, t.lastName]
-      .filter((n) => n)
-      .join(' ')
-      .trim(),
-  }))
-}
 
 const TeacherAutoComplete = ({
   dataCy,
@@ -36,17 +27,12 @@ const TeacherAutoComplete = ({
   selectCB,
   testId,
   termId,
-  firstLoad,
-  tempTagsData,
-  setTempTagsData,
-  setTagsData,
 }) => {
   const teacherFilterRef = useRef()
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
   const [searchResult, setSearchResult] = useState([])
-  const [firstUpdate, setFirstUpdate] = useState(false)
 
-  const teacherList = transformTeacherList(teacherListRaw)
+  const teacherList = combineNames(teacherListRaw)
 
   const dropdownData = (searchTerms.text ? teacherList : searchResult).map(
     (item) => {
@@ -111,36 +97,14 @@ const TeacherAutoComplete = ({
   // effects
   useEffect(() => {
     if (selectedTeacherIds.length) {
-      // TODO: add backend support for selected ids in query
       loadTeacherListDebounced(query)
-      setFirstUpdate(true)
     }
   }, [])
   useEffect(() => {
     if (isEmpty(searchResult) || !searchTerms.text) {
-      setSearchResult(transformTeacherList(teacherListRaw))
+      setSearchResult(combineNames(teacherListRaw))
     }
   }, [teacherListRaw])
-  useEffect(() => {
-    const _teachers = dropdownData.filter((d) =>
-      selectedTeacherIds.includes(d.key)
-    )
-    if (
-      firstUpdate &&
-      _teachers.length &&
-      !firstLoad &&
-      setTempTagsData &&
-      setTagsData
-    ) {
-      // TODO: find a better way to do this
-      // add delay for other tag updates to complete
-      setTimeout(() => {
-        setTempTagsData({ ...tempTagsData, teacherIds: _teachers })
-        setTagsData({ ...tempTagsData, teacherIds: _teachers })
-      }, 500)
-      setFirstUpdate(false)
-    }
-  }, [teacherListRaw, firstLoad, firstUpdate])
   useEffect(() => {
     if (searchTerms.text && searchTerms.text !== searchTerms.selectedText) {
       loadTeacherListDebounced(query)

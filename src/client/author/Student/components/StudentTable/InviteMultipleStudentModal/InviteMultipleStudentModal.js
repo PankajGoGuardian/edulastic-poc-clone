@@ -170,7 +170,7 @@ class InviteMultipleStudentModal extends Component {
 
   handleSearch = async (e) => {
     const { userOrgId } = this.props
-    const searchKey = e.target.value.trim()
+    const searchKey = e.target?.value.trim() || e
     const searchData = {
       districtId: userOrgId,
       limit: 1000,
@@ -182,6 +182,7 @@ class InviteMultipleStudentModal extends Component {
       Object.assign(searchData, {
         search: {
           email: [{ type: 'cont', value: searchKey }],
+          name: searchKey,
         },
       })
     if (searchKey.length > 0) {

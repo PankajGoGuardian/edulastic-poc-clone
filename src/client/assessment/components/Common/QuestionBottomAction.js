@@ -54,13 +54,14 @@ import {
   allowContentEditCheck,
 } from '../../../author/src/utils/permissionCheck'
 import Explanation from './Explanation'
+import Hints from '../Hints/index'
 import RegradeProgressModal from '../../../author/Regrade/RegradeProgressModal'
 
 export const ShowUserWork = ({ onClick, loading }) => (
   <EduButton
     data-cy="showStudentWork"
     isGhost
-    height="24px"
+    height="30px"
     type="primary"
     fontSize="10px"
     onClick={onClick}
@@ -84,7 +85,7 @@ const QuestionBottomAction = ({
   item,
   loading,
   isStudentReport,
-  isShowStudentWork,
+  hasShowStudentWork,
   onClickHandler,
   timeSpent,
   hasDrawingResponse,
@@ -117,6 +118,12 @@ const QuestionBottomAction = ({
   replaceOriginalItem,
   updating,
   correctItemUpdateProgress,
+  data,
+  enableMagnifier,
+  saveHintUsage,
+  isStudent,
+  itemIndex,
+  view,
   ...questionProps
 }) => {
   // const [openQuestionModal, setOpenQuestionModal] = useState(false)
@@ -324,21 +331,33 @@ const QuestionBottomAction = ({
         />
       )}
       <BottomActionWrapper className={isStudentReport ? 'student-report' : ''}>
-        {isSolutionVisible && !showExplanation && (
-          <EduButton
-            width="110px"
-            height="30px"
-            isGhost
-            onClick={onClickShowSolutionHandler}
-          >
-            Show solution
-          </EduButton>
-        )}
-        <div>
-          {!hasDrawingResponse && isShowStudentWork && (
+        <LeftWrapper>
+          {!hasDrawingResponse && hasShowStudentWork && (
             <ShowUserWork onClick={onClickHandler} loading={loading} />
           )}
-        </div>
+          {view === 'preview' && isLCBView && !isPrintPreview && (
+            <Hints
+              question={data}
+              enableMagnifier={enableMagnifier}
+              saveHintUsage={saveHintUsage}
+              isStudent={isStudent}
+              itemIndex={itemIndex}
+              isLCBView={isLCBView}
+              isExpressGrader={isExpressGrader}
+              isStudentReport={isStudentReport}
+            />
+          )}
+          {isSolutionVisible && !showExplanation && (
+            <EduButton
+              width="110px"
+              height="30px"
+              isGhost
+              onClick={onClickShowSolutionHandler}
+            >
+              Show solution
+            </EduButton>
+          )}
+        </LeftWrapper>
         <RightWrapper>
           {showCorrectItem &&
             item &&
@@ -412,7 +431,7 @@ QuestionBottomAction.propTypes = {
   setCurrentQuestion: PropTypes.func.isRequired,
   updateCorrectItem: PropTypes.func.isRequired,
   setQuestionData: PropTypes.func.isRequired,
-  isShowStudentWork: PropTypes.bool.isRequired,
+  hasShowStudentWork: PropTypes.bool.isRequired,
   loadingComponents: PropTypes.array.isRequired,
   loading: PropTypes.bool,
   item: PropTypes.object,
@@ -493,13 +512,14 @@ const enhance = compose(
 export default enhance(QuestionBottomAction)
 
 export const BottomActionWrapper = styled.div`
+  padding-top: 50px;
   font-size: 19px;
   color: ${greyThemeDark2};
   display: flex;
   justify-content: space-between;
   margin-top: auto;
-  align-items: center;
-  margin: ${({ margin }) => margin || '24px 0px 16px'};
+  align-items: flex-end;
+  margin: ${({ margin }) => margin || '24px 0px 0px'};
 
   &.student-report {
     position: absolute;
@@ -522,10 +542,19 @@ export const BottomActionWrapper = styled.div`
 `
 
 const RightWrapper = styled.div`
+  width: 30%;
   display: flex;
-  align-items: center;
+  justify-content: space-between;
+  align-items: flex-end;
 `
-
+const LeftWrapper = styled.div`
+  width: 50%;
+  display: flex;
+  align-items: flex-end;
+  & > * {
+    margin-left: 20px;
+  }
+`
 const QuestionPreviewModal = styled(Modal)`
   .ant-modal-header {
     padding: 8px 30px 8px 24px;

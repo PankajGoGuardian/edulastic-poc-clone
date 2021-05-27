@@ -9,6 +9,8 @@ const gridEditEnabledDistricts = {
   '5e4a3ce103b7ad09241750e4': true,
 }
 
+export const etsDistrict = '5e42a351a1ee9000081f7cda'
+
 export const stateSelector = (state) => state.user
 
 export const getUserIdSelector = createSelector(stateSelector, (state) =>
@@ -435,4 +437,9 @@ export const allowedToSelectMultiLanguageInTest = createSelector(
     ]
     return allowedUserIds.includes(state)
   }
+)
+
+export const isEtsDistrictSelector = createSelector(
+  getUserOrgId,
+  (districtId) => districtId === etsDistrict
 )

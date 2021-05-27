@@ -26,6 +26,7 @@ import {
   getUserId,
   getUserRole,
   toggleFreeAdminSubscriptionModalAction,
+  isDemoPlaygroundUser
 } from '../../../../student/Login/ducks'
 import ConfirmCancelTestEditModal from '../../../src/components/common/ConfirmCancelTestEditModal'
 import FilterToggleBtn from '../../../src/components/common/FilterToggleBtn'
@@ -178,6 +179,7 @@ const TestPageHeader = ({
   setShowRegradeConfirmPopup,
   regradeFirebaseDocId,
   showUpgradePopup,
+  isDemoPlayground = false,
 }) => {
   let navButtons =
     buttons ||
@@ -453,10 +455,10 @@ const TestPageHeader = ({
                   isBlue
                   isGhost
                   IconBtn
-                  title="Share"
+                  title={isDemoPlayground ? "This feature is not available in demo account." : "Share"}
                   data-cy="share"
                   onClick={onShare}
-                  disabled={disableButtons}
+                  disabled={disableButtons || isDemoPlayground}
                 >
                   <IconShare />
                 </EduButton>
@@ -653,8 +655,9 @@ const TestPageHeader = ({
                 isGhost
                 IconBtn
                 data-cy="share"
-                disabled={disableButtons}
+                disabled={disableButtons || isDemoPlayground}
                 onClick={onShare}
+                title={isDemoPlayground ? "This feature is not available in demo account." : "Share"}
               >
                 <ShareIcon />
               </EduButton>
@@ -792,6 +795,7 @@ const enhance = compose(
       showRegradeConfirmPopup: getShowRegradeConfirmPopupSelector(state),
       regradeFirebaseDocId: getRegradeFirebaseDocIdSelector(state),
       showUpgradePopup: getShowUpgradePopupSelector(state),
+      isDemoPlayground: isDemoPlaygroundUser(state),
     }),
     {
       publishForRegrade: publishForRegradeAction,

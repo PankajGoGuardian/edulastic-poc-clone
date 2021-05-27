@@ -1,12 +1,15 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
-import { Modal, Button, Input, Icon, Form } from 'antd'
+import { Input, Form } from 'antd'
 import { get, trim } from 'lodash'
-import { white, greenDark, orange } from '@edulastic/colors'
+import { white, greenDark, orange, themeColor } from '@edulastic/colors'
+import { IconMail } from '@edulastic/icons'
+import { CustomModalStyled, EduButton } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { isEmailValid } from '../../../common/utils/helpers'
+import { ButtonsContainer } from '../../../common/styled'
 import {
   requestNewPasswordAction,
   requestNewPasswordResetControlAction,
@@ -15,9 +18,7 @@ import {
 const ForgotPasswordPopup = (props) => {
   const {
     visible,
-    className,
     onCancel,
-    onOk,
     t,
     requestNewPassword,
     user,
@@ -46,20 +47,29 @@ const ForgotPasswordPopup = (props) => {
     onCancel()
   }
 
+  const modalTitle = useMemo(
+    () => (!requestNewPasswordSuccess ? 'Forgot Password' : 'Email Sent'),
+    [requestNewPasswordSuccess]
+  )
+
   return (
-    <Modal
+    <CustomModalStyled
       visible={visible}
-      footer={null}
-      className={className}
-      width="500px"
+      title={modalTitle}
+      modalWidth="500px"
       onCancel={onCancelForgotPassword}
-      destroyOnClose
+      centered
+      titleFontSize="20px"
+      bodyPadding="25px 0px 0px 0px"
+      footer={[]}
     >
-      <div className="third-party-signup-select-role">
+      <div>
         {!requestNewPasswordSuccess ? (
-          <div className="link-not-sent">
-            <p>Forgot Password?</p>
-            <p>Username or Email</p>
+          <div>
+            <StyledText>
+              Please enter your registered username or email. We will email you
+              a link to reset your password.
+            </StyledText>
             <ConnectedForgotPasswordForm
               onSubmit={onSendLink}
               onCancel={onCancelForgotPassword}
@@ -67,52 +77,32 @@ const ForgotPasswordPopup = (props) => {
               requestingNewPassword={requestingNewPassword}
             />
           </div>
-        ) : requestNewPasswordSuccess.result === 'error' ? (
-          <div className="link-sent-failed">
-            <div className="message-container">
-              <p>
-                <Icon type="close-circle" />
-              </p>
-              <p>{requestNewPasswordSuccess.message}</p>
-            </div>
-            <div className="model-buttons">
-              <Button
-                className="try-again-button"
-                key="tryAgain"
-                onClick={onClickTryAgain}
-              >
-                Try Again
-              </Button>
-              <Button
-                className="close-button"
-                key="close"
-                onClick={onClickClose}
-              >
-                Go back to SignIn page
-              </Button>
-            </div>
-          </div>
         ) : (
-          <div className="link-sent">
+          <div>
             <div className="message-container">
-              <p>
-                <Icon type="check" /> {requestNewPasswordSuccess.title}
-              </p>
-              <p>{requestNewPasswordSuccess.content}</p>
+              <StyledText>{requestNewPasswordSuccess.content}</StyledText>
+              <StyledText>
+                If you do not receive your password reset email shortly,
+                please&nbsp;
+                <a
+                  href="https://edulastic.zendesk.com/hc/en-us/requests/new"
+                  rel="noreferrer"
+                  target="_blank"
+                >
+                  contact us
+                </a>
+                .
+              </StyledText>
             </div>
-            <div className="model-buttons">
-              <Button
-                className="close-button"
-                key="close"
-                onClick={onClickClose}
-              >
+            <ButtonsContainer>
+              <EduButton key="close" onClick={onClickClose}>
                 Close
-              </Button>
-            </div>
+              </EduButton>
+            </ButtonsContainer>
           </div>
         )}
       </div>
-    </Modal>
+    </CustomModalStyled>
   )
 }
 
@@ -132,6 +122,7 @@ const ForgotPasswordForm = (props) => {
 
   return (
     <Form onSubmit={onSubmit} autoComplete="new-password">
+      <p>Username / Email</p>
       <Form.Item>
         {getFieldDecorator('email', {
           validateFirst: true,
@@ -162,28 +153,25 @@ const ForgotPasswordForm = (props) => {
         })(
           <Input
             className="email-input"
+            prefix={<IconMail color={themeColor} />}
             placeholder="Enter Registered Username or Email"
             autoComplete="new-password"
           />
         )}
       </Form.Item>
-      <div className="model-buttons">
-        <Form.Item>
-          <Button className="cancel-button" key="cancel" onClick={onCancel}>
-            Cancel
-          </Button>
-        </Form.Item>
-        <Form.Item>
-          <Button
-            className="send-link-button"
-            key="sendLink"
-            htmlType="submit"
-            disabled={requestingNewPassword}
-          >
-            Send Link
-          </Button>
-        </Form.Item>
-      </div>
+      <ButtonsContainer>
+        <EduButton isGhost onClick={onCancel}>
+          Cancel
+        </EduButton>
+        <EduButton
+          htmlType="submit"
+          key="sendLink"
+          ml="20px"
+          disabled={requestingNewPassword}
+        >
+          Email Me
+        </EduButton>
+      </ButtonsContainer>
     </Form>
   )
 }
@@ -308,6 +296,11 @@ const StyledForgotPasswordPopup = styled(ForgotPasswordPopup)`
       }
     }
   }
+`
+
+const StyledText = styled.span`
+  margin-bottom: 20px;
+  display: block;
 `
 
 const enhance = compose(

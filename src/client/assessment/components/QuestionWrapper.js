@@ -316,7 +316,7 @@ class QuestionWrapper extends Component {
   }
 
   get answerScore() {
-    const { previewScore, previewMaxScore, data } = this.props
+    const { previewScore, previewMaxScore, testPreviewScore, data } = this.props
     let score = previewScore
     let maxScore = previewMaxScore
     let isGradedExternally = false
@@ -324,6 +324,18 @@ class QuestionWrapper extends Component {
       score = data?.activity?.score
       maxScore = data?.activity.maxScore
       isGradedExternally = data?.activity?.isGradedExternally
+    }
+
+    // testPreviewScore is from view as student
+    //  {
+    //    score: 1,
+    //    maxScore: 2,
+    //    isGradedExternally: false,
+    //  }
+    if (testPreviewScore && 'score' in testPreviewScore) {
+      score = testPreviewScore.score
+      maxScore = testPreviewScore.maxScore
+      isGradedExternally = testPreviewScore.isGradedExternally
     }
 
     return { score: (score || 0) / (maxScore || 1), isGradedExternally }
@@ -384,6 +396,7 @@ class QuestionWrapper extends Component {
       previewTab,
       studentId,
       isQuestionView,
+      isShowStudentWork,
     } = restProps
 
     const userAnswer = get(data, 'activity.userResponse', null)
@@ -471,13 +484,13 @@ class QuestionWrapper extends Component {
         }}
       >
         <>
-          {canShowPlayer && !hideVisibility && (
+          {canShowPlayer && (!hideVisibility || isShowStudentWork) && (
             <AudioControls
               btnWithText={
                 playerSkinType.toLowerCase() ===
                 test.playerSkinValues.edulastic.toLowerCase()
               }
-              hideVisibility={hideVisibility}
+              hideVisibility={hideVisibility && !isShowStudentWork}
               key={data.id}
               item={data}
               page={page}
@@ -496,7 +509,11 @@ class QuestionWrapper extends Component {
               disabled={disabled}
               noPadding={noPadding}
               isFlex
-              data-cy="question-container"
+              data-cy={
+                isPassageOrVideoType
+                  ? 'passage-container'
+                  : 'question-container'
+              }
               style={{
                 width: '100%',
                 height: calculatedHeight || (fullHeight ? '100%' : null),
@@ -575,9 +592,10 @@ class QuestionWrapper extends Component {
                     setPage={this.setPage}
                   />
                   {showFeedback && !isPrintPreview && (
-                    <BottomAction
+                    <BottomAction 
+                      view={view}
                       isStudentReport={isStudentReport}
-                      isShowStudentWork={!!showStudentWork}
+                      hasShowStudentWork={!!showStudentWork}
                       onClickHandler={this.openStudentWork}
                       timeSpent={timeSpent}
                       item={data}
@@ -596,6 +614,11 @@ class QuestionWrapper extends Component {
                       previewTab={previewTab}
                       isPrintPreview={isPrintPreview}
                       isGrade={isGrade}
+                      data={data}
+                      enableMagnifier={enableMagnifier}
+                      saveHintUsage={saveHintUsage}
+                      isStudent={userRole === 'student'}
+                      itemIndex={itemIndex}
                     />
                   )}
                   {rubricDetails && studentReportFeedbackVisible && (
@@ -613,7 +636,7 @@ class QuestionWrapper extends Component {
                       />
                     </RubricTableWrapper>
                   )}
-                  {view === 'preview' && !isPrintPreview && (
+                  {view === 'preview' && !isLCBView && !isPrintPreview && (
                     <Hints
                       question={data}
                       enableMagnifier={enableMagnifier}

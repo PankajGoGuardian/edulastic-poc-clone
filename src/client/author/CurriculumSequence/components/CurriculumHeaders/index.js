@@ -150,6 +150,7 @@ const CurriculumHeader = ({
   canAllowDuplicate,
   duplicatePlayList,
   writableCollections,
+  isDemoPlaygroundUser,
 }) => {
   const [loadingDelete, setLoadingDelete] = useState(false)
   const {
@@ -157,6 +158,7 @@ const CurriculumHeader = ({
     status,
     title,
     collections: _playlistCollections = [],
+    clonedCollections = [],
     _id,
   } = destinationCurriculumSequence
   const hasCollectionAccess = allowContentEditCheck(
@@ -173,9 +175,9 @@ const CurriculumHeader = ({
     collections.find(
       (c) => c.name === 'Spark Math' && c.owner === 'Edulastic Corp'
     ) || {}
-  const isSparkMathPlaylist = _playlistCollections.some(
-    (item) => item._id === sparkCollection?._id
-  )
+  const isSparkMathPlaylist =
+    _playlistCollections.some((item) => item._id === sparkCollection?._id) ||
+    clonedCollections.some((item) => item._id === sparkCollection?._id)
 
   const shouldHideUseThis = status === 'draft'
   const showUseThisButton =
@@ -239,7 +241,11 @@ const CurriculumHeader = ({
       <MainHeader
         Icon={isDesktop ? IconPlaylist : null}
         headingText={loading ? 'Untitled Playlist' : title}
-        titleText={destinationCurriculumSequence?.alignmentInfo}
+        titleText={
+          loading
+            ? 'Untitled Playlist'
+            : `${title} - ${destinationCurriculumSequence?.alignmentInfo}`
+        }
         titleMaxWidth="22rem"
         justify="space-between"
         headingSubContent={headingSubContent}
@@ -289,6 +295,12 @@ const CurriculumHeader = ({
                   data-cy="share"
                   onClick={onShareClick}
                   IconBtn
+                  disabled={isDemoPlaygroundUser}
+                  title={
+                    isDemoPlaygroundUser
+                      ? 'This feature is not available in demo account.'
+                      : ''
+                  }
                 >
                   <IconShare />
                 </HeaderButton>
@@ -303,6 +315,12 @@ const CurriculumHeader = ({
                 isBlue
                 isGhost
                 data-cy="clone"
+                disabled={isDemoPlaygroundUser}
+                title={
+                  isDemoPlaygroundUser
+                    ? 'This feature is not available in demo account.'
+                    : ''
+                }
                 onClick={() =>
                   duplicatePlayList({
                     _id: destinationCurriculumSequence._id,
@@ -433,6 +451,7 @@ const enhance = compose(
   withRouter,
   connect((state) => ({
     writableCollections: getCollectionsSelector(state),
+    isDemoPlaygroundUser: state?.user?.user?.isPlayground,
   }))
 )
 

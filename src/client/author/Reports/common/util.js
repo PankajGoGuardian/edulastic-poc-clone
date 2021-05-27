@@ -431,3 +431,12 @@ export const resetStudentFilters = (
     resetFilter(filtersToReset, prevFilters, tagsData)
   }
 }
+
+export const combineNames = (list) =>
+  list.map((t) => ({
+    ...t,
+    name: [t.firstName, t.middleName, t.lastName]
+      .filter((n) => n)
+      .join(' ')
+      .trim(),
+  }))

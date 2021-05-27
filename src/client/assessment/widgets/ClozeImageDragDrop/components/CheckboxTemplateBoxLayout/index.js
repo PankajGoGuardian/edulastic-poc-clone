@@ -130,6 +130,41 @@ const CheckboxTemplateBox = ({
     <IndexBox bgColor={indexBgColor}>{indexStr}</IndexBox>
   )
 
+  const getContent = (isPopover = false) => (
+    <AnswerBox
+      isPrintPreview={isPrintPreview}
+      fillColor={fillColor}
+      boxHeight={isPopover ? respHeight : ''}
+    >
+      {!isPopover && responseBoxIndex}
+      <TextContainer
+        options={options}
+        dropTargetIndex={index}
+        userSelections={userSelections}
+        isSnapFitValues={isSnapFitValues}
+        showAnswer={showAnswer}
+        checkAnswer={checkAnswer}
+        lessMinWidth={lessMinWidth}
+        style={
+          checkAnswer
+            ? {
+                borderRadius: 5,
+                justifyContent: lessMinWidth ? 'flex-start' : 'center',
+                width: respWidth,
+                height: respHeight,
+              }
+            : {
+                width: respWidth,
+                height: respHeight,
+              }
+        }
+        isExpressGrader={isExpressGrader}
+        isPrintPreview={isPrintPreview}
+      />
+      {icons}
+    </AnswerBox>
+  )
+
   return (
     <WithPopover
       fontSize={fontSize}
@@ -138,6 +173,7 @@ const CheckboxTemplateBox = ({
       userAnswer={userAnswer}
       checkAnswer={checkAnswer}
       indexStr={indexStr}
+      getContent={getContent}
     >
       <DropContainer
         index={index}
@@ -146,34 +182,7 @@ const CheckboxTemplateBox = ({
         disableResponse={disableResponse}
         noBorder
       >
-        <AnswerBox isPrintPreview={isPrintPreview} fillColor={fillColor}>
-          {responseBoxIndex}
-          <TextContainer
-            options={options}
-            dropTargetIndex={index}
-            userSelections={userSelections}
-            isSnapFitValues={isSnapFitValues}
-            showAnswer={showAnswer}
-            checkAnswer={checkAnswer}
-            lessMinWidth={lessMinWidth}
-            style={
-              checkAnswer
-                ? {
-                    borderRadius: 5,
-                    justifyContent: lessMinWidth ? 'flex-start' : 'center',
-                    width: respWidth,
-                    height: respHeight,
-                  }
-                : {
-                    width: respWidth,
-                    height: respHeight,
-                  }
-            }
-            isExpressGrader={isExpressGrader}
-            isPrintPreview={isPrintPreview}
-          />
-          {icons}
-        </AnswerBox>
+        {getContent()}
       </DropContainer>
     </WithPopover>
   )

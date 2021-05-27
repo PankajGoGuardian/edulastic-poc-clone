@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react'
 import { Row, Col, Select, Input, Icon, InputNumber, Radio } from 'antd'
-import { SelectInputStyled } from '@edulastic/common'
+import { SelectInputStyled, RadioBtn } from '@edulastic/common'
 import { blueBorder, red, green } from '@edulastic/colors'
 import { test } from '@edulastic/constants'
 import Styled from 'styled-components'
@@ -284,7 +284,7 @@ const AntiCheatingGroupContainer = ({
               <AlignSwitchRight
                 disabled={freezeSettings || !premium}
                 size="small"
-                checked={blockSaveAndContinue}
+                checked={!premium ? false : blockSaveAndContinue}
                 data-cy="bockSaveAndContinueSwitch"
                 onChange={(value) =>
                   overRideSettings('blockSaveAndContinue', value)
@@ -334,27 +334,43 @@ const AntiCheatingGroupContainer = ({
             </Col>
             <Col span={14}>
               <StyledRadioGroupWrapper
-                value={restrictNavigationOut || undefined}
-                disabled={freezeSettings || !premium}
+                value={
+                  !premium ? undefined : restrictNavigationOut || undefined
+                }
+                disabled={freezeSettings || !premium || safeBrowser}
                 onChange={(e) => {
                   overRideSettings('restrictNavigationOut', e.target.value)
                 }}
               >
-                <Radio value={undefined} data-cy="restrict-nav-out-disabled">
+                
+                <RadioBtn
+                  value={undefined}
+                  data-cy="restrict-nav-out-disabled"
+                  title={
+                    safeBrowser && 'Disabled since Safe Exam Browser Enabled'
+                  }
+                >
                   DISABLED
-                </Radio>
+                </RadioBtn>
                 <br />
-                <Radio
+                <RadioBtn
+                  title={
+                    safeBrowser && 'Disabled since Safe Exam Browser Enabled'
+                  }
                   value="warn-and-report"
                   data-cy="restrict-nav-out-warn-report"
                 >
                   WARN AND REPORT ONLY
-                </Radio>
+                </RadioBtn>
                 <br />
-                <Radio
+                <RadioBtn
                   value="warn-and-report-after-n-alerts"
                   data-cy="restrict-nav-out-warn-report-alerts"
-                  title="Alert will appear if student has navigated away for more than 5 seconds"
+                  title={
+                    safeBrowser
+                      ? 'Disabled since Safe Exam Browser Enabled'
+                      : 'Alert will appear if student has navigated away for more than 5 seconds'
+                  }
                 >
                   WARN AND BLOCK TEST AFTER{' '}
                   <InputNumberStyled
@@ -362,7 +378,9 @@ const AntiCheatingGroupContainer = ({
                     ref={numInputRef}
                     min={1}
                     value={
-                      restrictNavigationOut
+                      !premium
+                        ? undefined
+                        : restrictNavigationOut
                         ? restrictNavigationOutAttemptsThreshold
                         : undefined
                     }
@@ -384,7 +402,10 @@ const AntiCheatingGroupContainer = ({
                       !(
                         restrictNavigationOut ===
                         'warn-and-report-after-n-alerts'
-                      ) || freezeSettings
+                      ) ||
+                      freezeSettings ||
+                      safeBrowser ||
+                      !premium
                     }
                   />{' '}
                   ALERTS
@@ -398,7 +419,7 @@ const AntiCheatingGroupContainer = ({
                   ) : (
                     ''
                   )}
-                </Radio>
+                </RadioBtn>
               </StyledRadioGroupWrapper>
             </Col>
           </StyledRow>

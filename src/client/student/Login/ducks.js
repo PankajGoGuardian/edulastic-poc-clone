@@ -1,5 +1,5 @@
 import { createAction, createReducer, createSelector } from 'redux-starter-kit'
-import { pick, last, get, set, isBoolean } from 'lodash'
+import { pick, last, get, set, isBoolean, forIn, startsWith } from 'lodash'
 import { takeLatest, call, put, select } from 'redux-saga/effects'
 import { message } from 'antd'
 import { captureSentryException } from '@edulastic/common/src/sentryHelpers'
@@ -18,7 +18,6 @@ import userApi from '@edulastic/api/src/user'
 import settingsApi from '@edulastic/api/src/settings'
 import segmentApi from '@edulastic/api/src/segment'
 import schoolApi from '@edulastic/api/src/school'
-import configurableTilesApi from '@edulastic/api/src/configurableTiles'
 import * as TokenStorage from '@edulastic/api/src/utils/Storage'
 import { roleuser, signUpState } from '@edulastic/constants'
 import firebase from 'firebase/app'
@@ -312,7 +311,8 @@ function getValidRedirectRouteByRole(_url, user) {
       return url.match(/^\/home\//) ||
         url.includes('/author/tests/tab/review/id/') ||
         url.match(/\/embed\//) ||
-        url.includes('author/tests/verid')
+        url.includes('author/tests/verid') ||
+        url.includes('home/tests/verid')
         ? url
         : '/home/assignments'
     case roleuser.EDULASTIC_ADMIN:
@@ -1312,7 +1312,12 @@ function* logout() {
       if (user && TokenStorage.getAccessTokenForUser(user._id, user.role)) {
         yield call(userApi.logout)
       }
-      localStorage.clear()
+      // localStorage.clear()
+      forIn(localStorage, (value, objKey) => {
+        if (!startsWith(objKey, 'recommendedTest:')) {
+          localStorage.removeItem(objKey)
+        }
+      })
       sessionStorage.removeItem('cliBannerShown')
       sessionStorage.removeItem('cliBannerVisible')
       sessionStorage.removeItem('addAccountDetails')
@@ -1982,20 +1987,6 @@ function* updateInterestedCurriculumsSaga({ payload }) {
         orgType: payload.orgType,
       })),
     })
-    const userRole = yield select(getUserRole)
-    if (userRole == roleuser.TEACHER) {
-      const _data = yield call(configurableTilesApi.fetchRecommendedTest) || []
-      const data = _data.map((x) => {
-        return { ...x._source, _id: x._id }
-      })
-      if (data?.length) {
-        const userId = yield select(getUserId)
-        localStorage.setItem(
-          `recommendedTest:${userId}:stored`,
-          JSON.stringify(data)
-        )
-      }
-    }
   } catch (e) {
     yield put({ type: UPDATE_INTERESTED_CURRICULUMS_FAILED })
     console.error(e)

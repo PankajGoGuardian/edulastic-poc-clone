@@ -419,15 +419,17 @@ class Container extends React.Component {
             return t('component.common.modal.exitPageWarning')
           }}
         />
-        <ShareModal
-          shareLabel="TEST URL"
-          isVisible={showShareModal}
-          testId={testId}
-          hasPremiumQuestion={hasPremiumQuestion}
-          isPublished={status === statusConstants.PUBLISHED}
-          onClose={this.onShareModalChange}
-          gradeSubject={gradeSubject}
-        />
+        {showShareModal && (
+          <ShareModal
+            shareLabel="TEST URL"
+            isVisible={showShareModal}
+            testId={testId}
+            hasPremiumQuestion={hasPremiumQuestion}
+            isPublished={status === statusConstants.PUBLISHED}
+            onClose={this.onShareModalChange}
+            gradeSubject={gradeSubject}
+          />
+        )}
         <WarningModal
           visible={showWarningModal}
           proceedPublish={proceedPublish}

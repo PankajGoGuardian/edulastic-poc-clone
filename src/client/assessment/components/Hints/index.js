@@ -161,7 +161,6 @@ const Hints = ({
           {!showCount && (
             <ShowHint
               height="30px"
-              isBlue
               isGhost
               onClick={showHintHandler}
               isStudent={isStudent}
@@ -225,7 +224,7 @@ export default connect((state) => ({
 }))(Hints)
 
 const HintCont = styled.div`
-  margin: 16px 0px;
+  margin-top: 10px;
 `
 
 const HintItem = styled(FlexContainer)`
@@ -273,11 +272,6 @@ const HintContent = styled.div`
 
 const ShowHint = styled(EduButton)`
   margin-left: ${({ isStudent }) => `${isStudent ? 50 : 0}px`};
-  border: none;
-  box-shadow: none;
-  width: auto !important;
-  background: transparent !important;
-  color: ${themeColorBlue} !important;
   position: relative;
   z-index: 998; /* header has z-index 999 */
 `

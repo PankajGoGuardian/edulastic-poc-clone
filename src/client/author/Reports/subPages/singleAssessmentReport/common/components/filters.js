@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { get, isEmpty, pickBy } from 'lodash'
+import { get, isEmpty, pickBy, reject } from 'lodash'
 import qs from 'qs'
 
 import { Spin, Tabs, Row, Col } from 'antd'
@@ -9,6 +9,7 @@ import { Spin, Tabs, Row, Col } from 'antd'
 import { roleuser } from '@edulastic/constants'
 import { IconFilter } from '@edulastic/icons'
 
+import { reportGroupType } from '@edulastic/constants/const/report'
 import FilterTags from '../../../../common/components/FilterTags'
 import { ControlDropDown } from '../../../../common/components/widgets/controlDropDown'
 import MultiSelectDropdown from '../../../../common/components/widgets/MultiSelectDropdown'
@@ -37,7 +38,10 @@ import {
   getPerformanceBandProfile,
   getStandardMasteryScale,
 } from '../filterDataDucks'
-import { getTestListSelector } from '../../../../ducks'
+import {
+  fetchUpdateTagsDataAction,
+  getTestListSelector,
+} from '../../../../ducks'
 import {
   getUserRole,
   getUserOrgId,
@@ -96,6 +100,7 @@ const SingleAssessmentReportFilters = ({
   showFilter,
   toggleFilter,
   testList,
+  fetchUpdateTagsData,
 }) => {
   const [activeTabKey, setActiveTabKey] = useState(
     staticDropDownData.filterSections.TEST_FILTERS.key
@@ -154,12 +159,16 @@ const SingleAssessmentReportFilters = ({
       (p) => p.key === assessmentStandardMasteryScale?._id
     ) ||
     standardProficiencyList[0]
+  const search = useMemo(
+    () =>
+      pickBy(
+        qs.parse(location.search, { ignoreQueryPrefix: true }),
+        (f) => f !== 'All' && !isEmpty(f)
+      ),
+    [location.search]
+  )
 
   useEffect(() => {
-    const search = pickBy(
-      qs.parse(location.search, { ignoreQueryPrefix: true }),
-      (f) => f !== 'All' && !isEmpty(f)
-    )
     if (reportId) {
       getSARFilterDataRequest({ reportId })
       const _testId = getTestIdFromURL(location.pathname)
@@ -226,10 +235,6 @@ const SingleAssessmentReportFilters = ({
   }, [assessmentPerformanceBandProfile, assessmentStandardMasteryScale])
 
   if (SARFilterData !== prevSARFilterData && !isEmpty(SARFilterData)) {
-    const search = pickBy(
-      qs.parse(location.search, { ignoreQueryPrefix: true }),
-      (f) => f !== 'All' && !isEmpty(f)
-    )
     const _testId = getTestIdFromURL(location.pathname) || ''
     if (reportId) {
       _onGoClick({
@@ -309,6 +314,19 @@ const SingleAssessmentReportFilters = ({
       // set tempTagsData, filters and testId
       setTempTagsData(_tempTagsData)
       setFiltersOrTestId({ filters: _filters, testId: _testId })
+      fetchUpdateTagsData({
+        schoolIds: reject(_filters.schoolIds?.split(','), isEmpty),
+        teacherIds: reject(_filters.teacherIds?.split(','), isEmpty),
+        classIds: reject(_filters.classIds?.split(','), isEmpty),
+        tagIds: reject(_filters.tagIds?.split(','), isEmpty),
+        groupIds: reject(_filters.groupIds?.split(','), isEmpty),
+        courseIds: reject([search.courseId], isEmpty),
+        options: {
+          termId: _filters.termId,
+          schoolIds: reject(_filters.schoolIds?.split(','), isEmpty),
+          testIds: reject([_testId], isEmpty),
+        },
+      })
     }
     // update prevSARFilterData
     setPrevSARFilterData(SARFilterData)
@@ -447,7 +465,6 @@ const SingleAssessmentReportFilters = ({
           isGhost={!showFilter}
           onClick={toggleFilter}
           style={{ height: '24px' }}
-          aria-pressed={(!!showFilter).toString()}
         >
           <IconFilter width={15} height={15} />
           FILTERS
@@ -850,6 +867,11 @@ const enhance = compose(
       getSARFilterDataRequest: getSARFilterDataRequestAction,
       setFiltersOrTestId: setFiltersOrTestIdAction,
       setPrevSARFilterData: setPrevSARFilterDataAction,
+      fetchUpdateTagsData: (opts) =>
+        fetchUpdateTagsDataAction({
+          type: reportGroupType.SINGLE_ASSESSMENT_REPORT,
+          ...opts,
+        }),
     }
   )
 )

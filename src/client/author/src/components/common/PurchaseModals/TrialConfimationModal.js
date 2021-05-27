@@ -1,5 +1,10 @@
 import { darkGrey, titleColor } from '@edulastic/colors'
-import { CustomModalStyled, EduButton, FieldLabel } from '@edulastic/common'
+import {
+  CustomModalStyled,
+  EduButton,
+  FieldLabel,
+  notification,
+} from '@edulastic/common'
 import { curriculumGrades } from '@edulastic/constants'
 import { IconUsers } from '@edulastic/icons'
 import { Spin } from 'antd'
@@ -7,6 +12,7 @@ import PropTypes from 'prop-types'
 import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { pick } from 'lodash'
+import connect from 'react-redux/es/connect/connect'
 import {
   ContentWrapper,
   CurriculumCard,
@@ -19,6 +25,15 @@ import {
   IconText,
   TestStatus,
 } from './styled'
+import {
+  cloneThisPlayListAction,
+  setCustomTitleModalVisibleAction,
+  setIsUsedModalVisibleAction,
+} from '../../../../CurriculumSequence/ducks'
+import CustomTitleOnCloneModal from '../../../../CurriculumSequence/components/CustomTitleOnCloneModal'
+import CloneOnUsePlaylistConfirmationModal from '../../../../CurriculumSequence/components/CloneOnUsePlaylistConfirmationModal'
+
+const PREMIUM_SUBTYPES = ['enterprise', 'premium', 'partial_premium']
 
 const TrialConfirmationModal = ({
   visible,
@@ -32,9 +47,21 @@ const TrialConfirmationModal = ({
   fetchPlaylists,
   playlists = [],
   useThisPlayList,
+  interestedGrades,
+  clickedBundleId,
+  customTitleModalVisible,
+  setCustomTitleModalVisible,
+  cloneThisPlayList,
+  isUsedModalVisible,
+  setIsUsedModalVisible,
+  previouslyUsedPlaylistClone = {},
+  setClickedBundleId,
 }) => {
   const [selectedProducts, setSelectedProducts] = useState([])
   const [selectedGrades, setSelectedGrades] = useState([])
+  const [customPlaylistTitle, setCustomPlaylistTitle] = useState('')
+  const [selectedPlaylist, setSelectedPlaylist] = useState(null)
+
   const itemBankProducts =
     products.filter(
       (product) =>
@@ -57,6 +84,7 @@ const TrialConfirmationModal = ({
 
   const handleCloseModal = () => {
     showTrialSubsConfirmationAction(false)
+    setClickedBundleId(null)
   }
 
   const handleGoToDashboard = () => {
@@ -65,7 +93,20 @@ const TrialConfirmationModal = ({
   }
 
   // using hasTrial for trial and purchase both
-  const { subEndDate, hasTrial } = showTrialConfirmationMessage
+  const {
+    subEndDate,
+    hasTrial,
+    isTrial,
+    defaultSelectedItemBankId,
+  } = showTrialConfirmationMessage
+
+  useEffect(() => {
+    setSelectedProducts([clickedBundleId || defaultSelectedItemBankId])
+  }, [defaultSelectedItemBankId, clickedBundleId])
+
+  useEffect(() => {
+    setSelectedGrades(interestedGrades)
+  }, [interestedGrades])
 
   const productsToShow = products.filter(({ linkedProductId }) =>
     collections.find(({ _id }) => _id === linkedProductId)
@@ -73,7 +114,10 @@ const TrialConfirmationModal = ({
 
   const hasOnlyTeacherPremium =
     hasTrial === 'onlyPremiumTrial' &&
-    (subType === 'premium' || subType === 'TRIAL_PREMIUM') // using hasTrial, its get loaded before the confirmation modal opens
+    (PREMIUM_SUBTYPES.includes(subType) || subType === 'TRIAL_PREMIUM') // using hasTrial, its get loaded before the confirmation modal opens
+
+  const hasBoughtPremiumWithItemBanks =
+    hasTrial === 'haveBothSparkAndPremiumTrial'
 
   useEffect(() => {
     if (!hasOnlyTeacherPremium) {
@@ -93,11 +137,70 @@ const TrialConfirmationModal = ({
   }, [hasOnlyTeacherPremium, selectedGrades, selectedProducts])
 
   const handleUseThisPlaylist = (playlist) => {
-    handleCloseModal()
-    useThisPlayList(
-      pick(playlist, ['_id', 'title', 'grades', 'subjects', 'customize'])
-    )
+    setSelectedPlaylist(playlist)
+    useThisPlayList({
+      ...pick(playlist, [
+        '_id',
+        'title',
+        'grades',
+        'subjects',
+        'customize',
+        'authors',
+      ]),
+      isStudent: false,
+      fromUseThis: true,
+    })
   }
+
+  const handleCloseCustomTitleModal = () => setCustomTitleModalVisible(false)
+  const handleOpenCustomTitleModal = () => setCustomTitleModalVisible(true)
+
+  const handleCloseIsUsedModal = () => setIsUsedModalVisible(false)
+
+  const handleUseThisClick = () => {
+    if (!customPlaylistTitle) {
+      return notification({
+        type: 'error',
+        msg: 'Missing Playlist Title!',
+      })
+    }
+    cloneThisPlayList({
+      ...pick(selectedPlaylist, [
+        '_id',
+        'grades',
+        'subjects',
+        'customize',
+        'authors',
+      ]),
+      title: customPlaylistTitle,
+      isStudent: false,
+      fromUseThis: true,
+      forceClone: true,
+    })
+  }
+
+  const handleGotoMyPlaylist = () => {
+    if (previouslyUsedPlaylistClone) {
+      const {
+        _id,
+        title,
+        grades,
+        subjects,
+        customize = false,
+        authors,
+      } = previouslyUsedPlaylistClone
+      useThisPlayList({
+        _id,
+        title,
+        grades,
+        subjects,
+        customize,
+        fromUseThis: true,
+        authors,
+      })
+    }
+  }
+
   const showFooter = hasOnlyTeacherPremium ? (
     <EduButton
       data-cy="goToDashboard"
@@ -128,26 +231,25 @@ const TrialConfirmationModal = ({
     }
   }
 
-  const modalTitle =
-    subType === 'premium' ? (
-      <ModalTitle>
-        <div>Premium Subscription</div>
-        {!hasOnlyTeacherPremium && (
-          <div className="expire-on">
-            Your subscription will expire on <b>{subEndDate}</b>.
-          </div>
-        )}
-      </ModalTitle>
-    ) : (
-      <ModalTitle>
-        <div>Free Trial Started</div>
-        {!hasOnlyTeacherPremium && (
-          <div className="expire-on">
-            Your trial will expire on <b>{subEndDate}</b>.
-          </div>
-        )}
-      </ModalTitle>
-    )
+  const modalTitle = !isTrial ? (
+    <ModalTitle>
+      <div>Premium Subscription</div>
+      {!hasOnlyTeacherPremium && (
+        <div className="expire-on">
+          Your subscription will expire on <b>{subEndDate}</b>.
+        </div>
+      )}
+    </ModalTitle>
+  ) : (
+    <ModalTitle>
+      <div>Free Trial Started</div>
+      {!hasOnlyTeacherPremium && (
+        <div className="expire-on">
+          Your trial will expire on <b>{subEndDate}</b>.
+        </div>
+      )}
+    </ModalTitle>
+  )
 
   return (
     <>
@@ -168,15 +270,19 @@ const TrialConfirmationModal = ({
             {hasOnlyTeacherPremium ? (
               <p>
                 Thanks for trying teacher premium. Your{' '}
-                {subType === 'premium' ? 'subscription' : 'trial'} will expire
-                on <b>{subEndDate}</b>.
+                {!isTrial ? 'subscription' : 'trial'} will expire on{' '}
+                <b>{subEndDate}</b>.
               </p>
             ) : (
               <>
                 <p>
-                  Thanks for trying the Teacher Premium and additional Spark
+                  {`Thanks for ${isTrial ? 'trying' : 'purchasing'} ${
+                    hasBoughtPremiumWithItemBanks
+                      ? ' the Teacher Premium and '
+                      : ''
+                  } additional Spark
                   content. Select the grade and curriculum alignment to get
-                  started.
+                  started.`}
                 </p>
                 <br />
                 <div>
@@ -257,6 +363,25 @@ const TrialConfirmationModal = ({
           </ModalBody>
         </CustomModalStyled>
       )}
+
+      {customTitleModalVisible && (
+        <CustomTitleOnCloneModal
+          isVisible={customTitleModalVisible}
+          onCancel={handleCloseCustomTitleModal}
+          handleCreateNewCopy={handleUseThisClick}
+          title={customPlaylistTitle}
+          setTitle={setCustomPlaylistTitle}
+        />
+      )}
+
+      {isUsedModalVisible && (
+        <CloneOnUsePlaylistConfirmationModal
+          isVisible={isUsedModalVisible}
+          onCancel={handleCloseIsUsedModal}
+          handleGotoMyPlaylist={handleGotoMyPlaylist}
+          handleCreateNewCopy={handleOpenCustomTitleModal}
+        />
+      )}
     </>
   )
 }
@@ -265,7 +390,19 @@ TrialConfirmationModal.propTypes = {
   showTrialSubsConfirmationAction: PropTypes.func.isRequired,
 }
 
-export default TrialConfirmationModal
+export default connect(
+  (state) => ({
+    isUsedModalVisible: state.curriculumSequence?.isUsedModalVisible,
+    customTitleModalVisible: state.curriculumSequence?.customTitleModalVisible,
+    previouslyUsedPlaylistClone:
+      state.curriculumSequence?.previouslyUsedPlaylistClone,
+  }),
+  {
+    setCustomTitleModalVisible: setCustomTitleModalVisibleAction,
+    cloneThisPlayList: cloneThisPlayListAction,
+    setIsUsedModalVisible: setIsUsedModalVisibleAction,
+  }
+)(TrialConfirmationModal)
 
 const ModalBody = styled.div`
   p {

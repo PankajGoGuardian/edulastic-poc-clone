@@ -39,6 +39,7 @@ import {
   getWritableCollectionsSelector,
   getInterestedCurriculumsSelector,
   getUserSignupStatusSelector,
+  getIsCurator,
 } from '../../../src/selectors/user'
 import TestStatusWrapper from '../TestStatusWrapper/testStatusWrapper'
 import {
@@ -158,6 +159,7 @@ class ViewModal extends React.Component {
         item?._id != prevItem?._id &&
         item?._id
       ) {
+        // eslint-disable-next-line react/no-did-update-set-state
         this.setState({ summaryLoading: true, summary: null })
         TestsApi.getSummary(item._id)
           .then((summary) => {
@@ -205,6 +207,8 @@ class ViewModal extends React.Component {
       interestedCurriculums,
       writableCollections,
       userSignupStatus,
+      isDemoPlaygroundUser,
+      isCurator,
     } = this.props
     const {
       title = '',
@@ -289,6 +293,7 @@ class ViewModal extends React.Component {
       alignment,
       interestedCurriculums
     )
+    const owner = authors.some((o) => o._id === userId)
     const contanier = (
       <>
         <ModalHeader>
@@ -307,15 +312,24 @@ class ViewModal extends React.Component {
           {modalView && (
             <>
               <RightButtonContainer>
-                <EduButton
-                  isGhost
-                  height="32px"
-                  width="32px"
-                  onClick={this.onShareModalChange}
-                  data-cy="share"
-                >
-                  <IconShare />
-                </EduButton>
+                {(owner || isCurator) && !isEdulasticCurator && (
+                  <EduButton
+                    isGhost
+                    height="32px"
+                    width="32px"
+                    disabled={isDemoPlaygroundUser}
+                    title={
+                      isDemoPlaygroundUser
+                        ? 'This feature is not available in demo account.'
+                        : ''
+                    }
+                    onClick={this.onShareModalChange}
+                    data-cy="share"
+                  >
+                    <IconShare />
+                  </EduButton>
+                )}
+
                 <CloseButton onClick={this.handleModalClose}>
                   <IconClose
                     data-cy="closeTestPopUp"
@@ -363,6 +377,12 @@ class ViewModal extends React.Component {
                         width="100%"
                         style={{ justifyContent: 'center' }}
                         data-cy="duplicate-button"
+                        disabled={isDemoPlaygroundUser}
+                        title={
+                          isDemoPlaygroundUser
+                            ? 'This feature is not available in demo account.'
+                            : ''
+                        }
                         onClick={() => {
                           this.setState({ showCloneOptions: true })
                         }}
@@ -736,6 +756,8 @@ export default connect(
     isPublisherUser: isPublisherUserSelector(state),
     interestedCurriculums: getInterestedCurriculumsSelector(state),
     writableCollections: getWritableCollectionsSelector(state),
+    isDemoPlaygroundUser: state?.user?.user?.isPlayground,
+    isCurator: getIsCurator(state),
   }),
   {}
 )(ViewModal)

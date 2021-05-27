@@ -24,6 +24,7 @@ import {
   PlaylistId,
   IconText,
   TestStatus,
+  ButtonWrapper,
 } from './styled'
 import {
   cloneThisPlayListAction,
@@ -150,6 +151,10 @@ const TrialConfirmationModal = ({
       isStudent: false,
       fromUseThis: true,
     })
+  }
+
+  const handleDetailsClick = (id) => {
+    history.push(`/author/playlists/${id}#review`)
   }
 
   const handleCloseCustomTitleModal = () => setCustomTitleModalVisible(false)
@@ -332,6 +337,35 @@ const TrialConfirmationModal = ({
                           handleUseThisPlaylist({ _id, ..._source })
                         }
                       >
+                        <ButtonWrapper
+                          position="absolute"
+                          className="showHover"
+                        >
+                          <EduButton
+                            width="130px"
+                            height="35px"
+                            style={{ marginLeft: '0px' }}
+                            onClick={(e) => {
+                              e.preventDefault()
+                              e.stopPropagation()
+                              handleDetailsClick(_id)
+                            }}
+                          >
+                            Details
+                          </EduButton>
+                          <EduButton
+                            width="130px"
+                            height="35px"
+                            style={{ marginLeft: '0px' }}
+                            onClick={(e) => {
+                              e.preventDefault()
+                              e.stopPropagation()
+                              handleUseThisPlaylist({ _id, ..._source })
+                            }}
+                          >
+                            Use This
+                          </EduButton>
+                        </ButtonWrapper>
                         <Thumbnail img={_source.thumbnail} />
                         <CardFooter>
                           <PlaylistId>

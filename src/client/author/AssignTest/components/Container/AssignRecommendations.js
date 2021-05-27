@@ -149,7 +149,7 @@ const AssignRecommendations = ({
     )
 
     if (recommendations.length) {
-      addRecommendations(recommendations)
+      addRecommendations({ recommendations, toggleAssignModal: toggleModal })
     }
   }
 

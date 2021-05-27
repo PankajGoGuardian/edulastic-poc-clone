@@ -643,7 +643,18 @@ const AssessmentContainer = ({
       Modal.info({
         title: "It looks like there aren't any Items in this test.",
         okText: 'Close',
-        onOk: () => setIsTestPreviewVisible(false),
+        centered: true,
+        width: 500,
+        okButtonProps: {
+          style: { background: themeColor, outline: 'none' },
+        },
+        onOk: () => {
+          setIsTestPreviewVisible(false)
+          if (userRole === roleuser.STUDENT) {
+            history.push('/home/assignments')
+          }
+          Modal.destroyAll()
+        },
       })
     }
   }, [loading])

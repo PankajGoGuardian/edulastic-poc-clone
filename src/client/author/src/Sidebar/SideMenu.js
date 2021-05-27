@@ -407,13 +407,12 @@ class SideMenu extends Component {
   }
 
   render() {
-    const {
-      broken,
-      isVisible,
-      showModal,
-      isSwitchAccountNotification,
-      isExpandedOnHover,
-    } = this.state
+    const { broken, isVisible, showModal, isExpandedOnHover } = this.state
+    let { isSwitchAccountNotification } = this.state
+    // For Now we are hiding the switch account notification (Ref: EV-25373)
+    // TODO: Remove hiding notification when implementation of "showing notification only once"
+    isSwitchAccountNotification = false
+
     const {
       userId,
       switchDetails,

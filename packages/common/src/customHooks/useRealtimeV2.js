@@ -27,55 +27,58 @@ const useRealtime = (topics, actionMap, options = {}) => {
     })
   }, [])
 
-  useEffect(() => {
-    if (mqttUrl === '') {
-      return () => {
-        console.log('connecting...')
-      }
-    }
-    const client = mqtt.connect(mqttUrl, options)
-    client.on('connect', () => {
-      setClient(client)
-      for (const topic of topics) {
-        client.subscribe(topic, (err) => {
-          if (err) {
-            console.log(`error subscribing to topic ${topic} `, err)
-          } else {
-            console.log('connected ', topic)
-          }
-        })
-      }
-    })
-
-    client.on('message', (_topic, message) => {
-      const msg = message.toString()
-      try {
-        const msgObj = JSON.parse(msg)
-        console.log('got', msgObj)
-        const type = msgObj.type || 'unknown'
-        if (actionMap[type]) {
-          actionMap[type](msgObj.data)
+  useEffect(
+    () => {
+      if (mqttUrl === '') {
+        return () => {
+          console.log('connecting...')
         }
-      } catch (err) {
-        console.log('err', err)
       }
-    })
+      const client = mqtt.connect(mqttUrl, options)
+      client.on('connect', () => {
+        setClient(client)
+        for (const topic of topics) {
+          client.subscribe(topic, (err) => {
+            if (err) {
+              console.log(`error subscribing to topic ${topic} `, err)
+            } else {
+              console.log('connected ', topic)
+            }
+          })
+        }
+      })
 
-    client.on('error', (err) => {
-      console.error('error in mqtt client', err)
-    })
-
-    return () => {
-      console.warn('destroying client')
-      if (client) {
+      client.on('message', (_topic, message) => {
+        const msg = message.toString()
         try {
-          client.end()
-        } catch (e) {
-          console.warn('error ending realtime connection', e.message, e.stack)
+          const msgObj = JSON.parse(msg)
+          console.log('got', msgObj)
+          const type = msgObj.type || 'unknown'
+          if (actionMap[type]) {
+            actionMap[type](msgObj.data)
+          }
+        } catch (err) {
+          console.log('err', err)
+        }
+      })
+
+      client.on('error', (err) => {
+        console.error('error in mqtt client', err)
+      })
+
+      return () => {
+        console.warn('destroying client')
+        if (client) {
+          try {
+            client.end()
+          } catch (e) {
+            console.warn('error ending realtime connection', e.message, e.stack)
+          }
         }
       }
-    }
-  }, [mqttUrl])
+    },
+    options.dynamicTopics ? [mqttUrl, topics] : [mqttUrl]
+  )
   return retClient
 }
 

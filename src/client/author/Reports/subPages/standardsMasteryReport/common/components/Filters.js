@@ -339,12 +339,13 @@ const StandardsMasteryReportFilters = ({
           tagsData: { ..._tempTagsData },
         })
         fetchUpdateTagsData({
-          teacherIds: reject(_filters.teacherIds?.split(','), isEmpty),
-          classIds: reject(_filters.classIds?.split(','), isEmpty),
           tagIds: reject(_filters.tagIds?.split(','), isEmpty),
-          groupIds: reject(_filters.groupIds?.split(','), isEmpty),
-          courseIds: reject([search.courseId], isEmpty),
           testIds: reject(_filters.testIds?.split(','), isEmpty),
+          schoolIds: reject(_filters.schoolIds?.split(','), isEmpty),
+          teacherIds: reject(_filters.teacherIds?.split(','), isEmpty),
+          courseIds: reject([search.courseId], isEmpty),
+          classIds: reject(_filters.classIds?.split(','), isEmpty),
+          groupIds: reject(_filters.groupIds?.split(','), isEmpty),
           options: {
             termId: _filters.termId,
             schoolIds: reject(_filters.schoolIds?.split(','), isEmpty),
@@ -670,8 +671,6 @@ const StandardsMasteryReportFilters = ({
                                 selectedSchoolIds={
                                   filters.schoolIds
                                     ? filters.schoolIds.split(',')
-                                    : firstLoad && search.schoolIds
-                                    ? search.schoolIds.split(',')
                                     : []
                                 }
                                 selectCB={(e) =>
@@ -687,8 +686,6 @@ const StandardsMasteryReportFilters = ({
                                 selectedTeacherIds={
                                   filters.teacherIds
                                     ? filters.teacherIds.split(',')
-                                    : firstLoad && search.teacherIds
-                                    ? search.teacherIds.split(',')
                                     : []
                                 }
                                 selectCB={(e) =>

@@ -32,8 +32,11 @@ const TeacherAutoComplete = ({
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
   const [searchResult, setSearchResult] = useState([])
 
-  const teacherList = combineNames(teacherListRaw)
+  const teacherList = useMemo(() => combineNames(teacherListRaw), [
+    teacherListRaw,
+  ])
 
+  // build dropdown data
   const dropdownData = (searchTerms.text ? teacherList : searchResult).map(
     (item) => {
       return {
@@ -97,14 +100,14 @@ const TeacherAutoComplete = ({
   // effects
   useEffect(() => {
     if (selectedTeacherIds.length) {
-      loadTeacherListDebounced(query)
+      loadTeacherListDebounced({ ...query, teacherIds: selectedTeacherIds })
     }
   }, [])
   useEffect(() => {
     if (isEmpty(searchResult) || !searchTerms.text) {
-      setSearchResult(combineNames(teacherListRaw))
+      setSearchResult(teacherList)
     }
-  }, [teacherListRaw])
+  }, [teacherList])
   useEffect(() => {
     if (searchTerms.text && searchTerms.text !== searchTerms.selectedText) {
       loadTeacherListDebounced(query)

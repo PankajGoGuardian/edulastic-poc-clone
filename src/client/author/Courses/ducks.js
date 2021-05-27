@@ -138,10 +138,7 @@ export const reducer = createReducer(initialState, {
   },
   [RECEIVE_COURSE_SUCCESS]: (state, { payload }) => {
     state.loading = false
-    payload.result.map((row) => {
-      row.key = row._id
-    })
-    state.data = payload.result
+    state.data = payload.result.map((row) => ({ ...row, key: row._id }))
     state.totalCourseCount = payload.totalCourses
   },
   [RECEIVE_COURSE_ERROR]: (state, { payload }) => {

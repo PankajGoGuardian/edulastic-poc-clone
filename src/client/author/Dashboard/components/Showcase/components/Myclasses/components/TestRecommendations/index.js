@@ -15,6 +15,7 @@ const TestRecommendationsContainer = ({
   userId,
   windowWidth,
   history,
+  isDemoPlaygroundUser = false,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false)
 
@@ -46,6 +47,8 @@ const TestRecommendationsContainer = ({
           isGhost
           onClick={() => setShowTestCustomizerModal(true)}
           data-cy="customizeRecommendations"
+          title={isDemoPlaygroundUser ? "This feature is not available in demo account." : ""}
+          disabled={isDemoPlaygroundUser}
         >
           Customize
         </EduButton>

@@ -33,6 +33,7 @@ import { fetchCleverClassListRequestAction } from '../../../../../ManageClass/du
 import { receiveTeacherDashboardAction } from '../../../../ducks'
 import {
   getUserDetails,
+  isDemoPlaygroundUser,
   setUserAction,
 } from '../../../../../../student/Login/ducks'
 import { resetTestFiltersAction } from '../../../../../TestList/ducks'
@@ -79,6 +80,7 @@ const MyClasses = ({
   setShowHeaderTrialModal,
   lastPlayList,
   setUser,
+  isDemoPlayground = false,
 }) => {
   const [showBannerModal, setShowBannerModal] = useState(null)
   const [isPurchaseModalVisible, setIsPurchaseModalVisible] = useState(false)
@@ -508,6 +510,7 @@ const MyClasses = ({
           userId={user?._id}
           windowWidth={windowWidth}
           history={history}
+          isDemoPlaygroundUser={isDemoPlayground}
         />
       )}
       <FeaturedContentBundle
@@ -606,6 +609,7 @@ export default compose(
       products: state.subscription?.products,
       showHeaderTrialModal: state.subscription?.showHeaderTrialModal,
       lastPlayList: getLastPlayListSelector(state),
+      isDemoPlayground: isDemoPlaygroundUser(state),
     }),
     {
       receiveSearchCourse: receiveSearchCourseAction,

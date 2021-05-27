@@ -205,6 +205,7 @@ class ViewModal extends React.Component {
       interestedCurriculums,
       writableCollections,
       userSignupStatus,
+      isDemoPlaygroundUser,
     } = this.props
     const {
       title = '',
@@ -314,6 +315,12 @@ class ViewModal extends React.Component {
                     isGhost
                     height="32px"
                     width="32px"
+                    disabled={isDemoPlaygroundUser}
+                    title={
+                      isDemoPlaygroundUser
+                        ? 'This feature is not available in demo account.'
+                        : ''
+                    }
                     onClick={this.onShareModalChange}
                     data-cy="share"
                   >
@@ -368,6 +375,12 @@ class ViewModal extends React.Component {
                         width="100%"
                         style={{ justifyContent: 'center' }}
                         data-cy="duplicate-button"
+                        disabled={isDemoPlaygroundUser}
+                        title={
+                          isDemoPlaygroundUser
+                            ? 'This feature is not available in demo account.'
+                            : ''
+                        }
                         onClick={() => {
                           this.setState({ showCloneOptions: true })
                         }}
@@ -741,6 +754,7 @@ export default connect(
     isPublisherUser: isPublisherUserSelector(state),
     interestedCurriculums: getInterestedCurriculumsSelector(state),
     writableCollections: getWritableCollectionsSelector(state),
+    isDemoPlaygroundUser: state?.user?.user?.isPlayground,
   }),
   {}
 )(ViewModal)

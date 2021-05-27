@@ -298,10 +298,10 @@ const QuestionBottomAction = ({
   const correctItemBtn = (
     <CorrectButton
       isGhost
-      height="24px"
+      height="30px"
       type="primary"
       fontSize="10px"
-      mr="8px"
+      mr="15px"
       onClick={showQuestionModal}
       loading={loading || itemloading}
       disabled={isDisableCorrectItem}
@@ -544,7 +544,7 @@ export const BottomActionWrapper = styled.div`
 const RightWrapper = styled.div`
   width: 30%;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: flex-end;
 `
 const LeftWrapper = styled.div`

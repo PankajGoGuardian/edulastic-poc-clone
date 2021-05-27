@@ -469,26 +469,37 @@ const RealTimeV2HookWrapper = ({
   regradedRealtimeAssignment,
   groupId,
 }) => {
-  let topics = [
-    `student_assessment:user:${userId}`,
-    `student_assessment:test:${testId}:group:${groupId}`,
-    `student_assessment:test:${testId}`,
-  ]
-  if (regradedAssignment?.newTestId) {
-    topics = [
-      ...topics,
-      `student_assessment:test:${regradedAssignment?.newTestId}:group:${groupId}`,
+  /**
+   * need to memoize the topics since its going to be used as dependency for
+   * useEffect and its referrence shouldn't change for each re-render
+   */
+  const topicsMemoized = useMemo(() => {
+    let topics = [
+      `student_assessment:user:${userId}`,
+      `student_assessment:test:${testId}:group:${groupId}`,
+      `student_assessment:test:${testId}`,
     ]
-  }
+    if (regradedAssignment?.newTestId) {
+      topics = [
+        ...topics,
+        `student_assessment:test:${regradedAssignment?.newTestId}:group:${groupId}`,
+      ]
+    }
+    return topics
+  }, [userId, testId, groupId, regradedAssignment?.newTestId])
 
-  useRealtimeV2(topics, {
-    regradedAssignment: (payload) => {
-      regradedRealtimeAssignment(payload)
+  useRealtimeV2(
+    topicsMemoized,
+    {
+      regradedAssignment: (payload) => {
+        regradedRealtimeAssignment(payload)
+      },
+      correctItem: (payload) => {
+        regradedRealtimeAssignment(payload)
+      },
     },
-    correctItem: (payload) => {
-      regradedRealtimeAssignment(payload)
-    },
-  })
+    { dynamicTopics: true }
+  )
   return null
 }
 

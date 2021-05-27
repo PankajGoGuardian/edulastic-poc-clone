@@ -176,14 +176,30 @@ class FeedbackRight extends Component {
       allAnswers = {},
       setTeacherEditedScore,
       isExpressGrader,
+      rubricDetails,
     } = this.props
 
     if (isInvalidScore(score)) {
       notification({ type: 'warn', messageKey: 'scoreShouldNumber' })
       return
     }
+
+    const showGradingRubricButton =
+      user.user?.features?.gradingrubrics && !!rubricDetails
+
+    let rubricMaxScore = 0
+    if (rubricDetails)
+      rubricMaxScore = sumBy(
+        rubricDetails.criteria,
+        (c) => maxBy(c.ratings, 'points').points
+      )
+
+    const _maxScore =
+      showGradingRubricButton && rubricMaxScore ? rubricMaxScore : maxScore
+
     const _score = toNumber(score)
-    if (_score > maxScore) {
+
+    if (_score > _maxScore) {
       notification({ type: 'warn', messageKey: 'scoreShouldLess' })
       return
     }

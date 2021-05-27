@@ -67,7 +67,7 @@ import {
 import { canEditTest } from '../../../Assignments/utils'
 import { DeleteAssignmentModal } from '../../../Assignments/components/DeleteAssignmentModal/deleteAssignmentModal'
 import PrintTestModal from '../../../src/components/common/PrintTestModal'
-import { toggleFreeAdminSubscriptionModalAction } from '../../../../student/Login/ducks'
+import { isDemoPlaygroundUser, toggleFreeAdminSubscriptionModalAction } from '../../../../student/Login/ducks'
 import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/test'
 import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
 
@@ -330,6 +330,7 @@ class AssignmentAdvanced extends Component {
       authorAssignmentsState = {},
       assignmentTestList,
       isPreviewModalVisible,
+      isDemoPlayground = false,
     } = this.props
     const {
       assignmentStatusCounts: { notOpen, inProgress, inGrading, done },
@@ -404,6 +405,7 @@ class AssignmentAdvanced extends Component {
                 userClassList,
                 togglePrintModal: this.togglePrintModal,
                 assignmentTest: assingment,
+                isDemoPlaygroundUser: isDemoPlayground,
               })}
               placement="bottomLeft"
               trigger={['hover']}
@@ -505,6 +507,7 @@ const enhance = compose(
       bulkActionType: getBulkActionTypeSelector(state),
       isFreeAdmin: isFreeAdminSelector(state),
       isPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
+      isDemoPlayground: isDemoPlaygroundUser(state),
     }),
     {
       setReleaseScore: releaseScoreAction,

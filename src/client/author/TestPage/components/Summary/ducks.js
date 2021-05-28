@@ -16,7 +16,7 @@ export const getSummarySelector = createSelector(
     const reduceTestItems = (acc, testItem) => {
       const questions = get(testItem, 'data.questions', [])
       const res = questions.map((q) => {
-        const item = scoring.testItems.find(({ id }) => testItem._id === id)
+        const item = scoring?.testItems?.find(({ id }) => testItem._id === id)
         const score = item && item.points ? item.points : 0
 
         return {

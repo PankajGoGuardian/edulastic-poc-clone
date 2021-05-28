@@ -117,7 +117,7 @@ const TestInfoModal = ({
                 style={{ width: 200 }}
                 onChange={setSelectedLanguage}
               >
-                <Option value="" disabled>
+                <Option value="" disabled data-cy="preferredLang">
                   Select Language
                 </Option>
                 <Option value={languageCodes.ENGLISH}>English</Option>

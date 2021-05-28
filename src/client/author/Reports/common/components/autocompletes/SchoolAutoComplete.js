@@ -83,7 +83,7 @@ const SchoolAutoComplete = ({
   // effects
   useEffect(() => {
     if (selectedSchoolIds.length) {
-      loadSchoolListDebounced(query)
+      loadSchoolListDebounced({ ...query, schoolIds: selectedSchoolIds })
     }
   }, [])
   useEffect(() => {

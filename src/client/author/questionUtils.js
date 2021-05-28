@@ -445,6 +445,13 @@ export const isIncompleteQuestion = (item, itemLevelScoring = false) => {
         ]
         defaultErrorMessage = getEmptyCorrectAnswerErrMsg(correctAnswers)
       }
+      if (item?.type === questionType.GRAPH) {
+        const { points, latex } = item?.validation || {}
+        if ((points || latex) && (!points || !latex)) {
+          defaultErrorMessage =
+            'Set both inputs for points on equation under evaluation settings'
+        }
+      }
       return [true, defaultErrorMessage] // [true, msg]
     }
   }

@@ -337,16 +337,26 @@ const AntiCheatingGroupContainer = ({
                 value={
                   !premium ? undefined : restrictNavigationOut || undefined
                 }
-                disabled={freezeSettings || !premium}
+                disabled={freezeSettings || !premium || safeBrowser}
                 onChange={(e) => {
                   overRideSettings('restrictNavigationOut', e.target.value)
                 }}
               >
-                <RadioBtn value={undefined} data-cy="restrict-nav-out-disabled">
+                
+                <RadioBtn
+                  value={undefined}
+                  data-cy="restrict-nav-out-disabled"
+                  title={
+                    safeBrowser && 'Disabled since Safe Exam Browser Enabled'
+                  }
+                >
                   DISABLED
                 </RadioBtn>
                 <br />
                 <RadioBtn
+                  title={
+                    safeBrowser && 'Disabled since Safe Exam Browser Enabled'
+                  }
                   value="warn-and-report"
                   data-cy="restrict-nav-out-warn-report"
                 >
@@ -356,7 +366,11 @@ const AntiCheatingGroupContainer = ({
                 <RadioBtn
                   value="warn-and-report-after-n-alerts"
                   data-cy="restrict-nav-out-warn-report-alerts"
-                  title="Alert will appear if student has navigated away for more than 5 seconds"
+                  title={
+                    safeBrowser
+                      ? 'Disabled since Safe Exam Browser Enabled'
+                      : 'Alert will appear if student has navigated away for more than 5 seconds'
+                  }
                 >
                   WARN AND BLOCK TEST AFTER{' '}
                   <InputNumberStyled
@@ -390,6 +404,7 @@ const AntiCheatingGroupContainer = ({
                         'warn-and-report-after-n-alerts'
                       ) ||
                       freezeSettings ||
+                      safeBrowser ||
                       !premium
                     }
                   />{' '}

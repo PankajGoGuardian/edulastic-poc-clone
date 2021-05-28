@@ -42,6 +42,7 @@ import {
   addItemsToAutoselectGroupsRequestAction,
   getAutoSelectItemsLoadingStatusSelector,
   showGroupsPanelSelector,
+  getTestsCreatingSelector,
 } from '../../../../ducks'
 import { clearAnswersAction } from '../../../../../src/actions/answers'
 import { clearEvaluationAction } from '../../../../../../assessment/actions/evaluation'
@@ -99,11 +100,15 @@ class Review extends PureComponent {
 
   componentDidMount() {
     this.containerRef?.current?.addEventListener('scroll', this.handleScroll)
-    const { test, addItemsToAutoselectGroupsRequest } = this.props
+    const {
+      test,
+      addItemsToAutoselectGroupsRequest,
+      isTestsCreating,
+    } = this.props
     const hasAutoSelectItems = test.itemGroups.some(
       (g) => g.type === testConstants.ITEM_GROUP_TYPES.AUTOSELECT
     )
-    if (hasAutoSelectItems) {
+    if (hasAutoSelectItems && !isTestsCreating) {
       addItemsToAutoselectGroupsRequest(test)
     }
 
@@ -763,6 +768,7 @@ const enhance = compose(
       isPowerPremiumAccount: getIsPowerPremiumAccount(state),
       showGroupsPanel: showGroupsPanelSelector(state),
       isPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
+      isTestsCreating: getTestsCreatingSelector(state),
     }),
     {
       setData: setTestDataAction,

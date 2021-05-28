@@ -72,8 +72,10 @@ class Container extends Component {
     flowLayout,
     previewTab,
   }) => {
-    const { itemData } = this.props
+
+    const { itemData, isPassageQuestion } = this.props
     const { multipartItem } = itemData
+
     return (
       <ItemDetailWidget
         widget={widget}
@@ -84,6 +86,7 @@ class Container extends Component {
         rowIndex={rowIndex}
         flowLayout={flowLayout}
         previewTab={previewTab}
+        isPassageQuestion={isPassageQuestion}
         dataCy={multipartItem ? 'item-detail-widget' : 'passage-content'}
       />
     )
@@ -226,7 +229,9 @@ class Container extends Component {
                           width: `calc(${100 / row.tabs.length}% - 10px)`,
                         }
                   }
-                  onChange={(e) => changeTabTitle(tabIndex, e.target.value)}
+                  onChange={(e) =>
+                    changeTabTitle(tabIndex, e.target.value, row.widgets)
+                  }
                   editable
                   close
                   onClose={() => removeTab(key)}

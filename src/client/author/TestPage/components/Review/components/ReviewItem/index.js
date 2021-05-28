@@ -23,7 +23,7 @@ const ReviewItem = ({
   rows,
   mobile,
   userFeatures,
-  scoring,
+  scoring = {},
   standards,
   groupMinimized,
   groupPoints,

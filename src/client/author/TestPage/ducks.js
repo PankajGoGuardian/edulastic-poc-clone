@@ -2011,6 +2011,12 @@ export function* updateTestSaga({ payload }) {
       return
     }
     yield put(updateTestSuccessAction(entity))
+    const hasAutoSelectItems = entity.itemGroups.some(
+      (g) => g.type === testConst.ITEM_GROUP_TYPES.AUTOSELECT
+    )
+    if (hasAutoSelectItems) {
+      yield put(addItemsToAutoselectGroupsRequestAction(entity))
+    }
     const newId = entity._id
     const userRole = yield select(getUserRole)
     const isCurator = yield select(getIsCurator)

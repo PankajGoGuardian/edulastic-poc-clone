@@ -85,6 +85,7 @@ const Options = ({ setQuestionData, item, t }) => {
               </Col>
               <Col span={6} marginBottom="0px">
                 <CustomStyleBtn
+                  data-cy="addHostedVideo"
                   margin="0px"
                   width="100%"
                   onClick={() =>

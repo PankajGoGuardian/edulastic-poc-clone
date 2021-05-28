@@ -230,13 +230,13 @@ const MultipleAssessmentReportFilters = ({
             tagsData: { ..._tempTagsData },
           })
           fetchUpdateTagsData({
+            tagIds: reject(_filters.tagIds?.split(','), isEmpty),
+            testIds: reject(_filters.testIds?.split(','), isEmpty),
             schoolIds: reject(_filters.schoolIds?.split(','), isEmpty),
             teacherIds: reject(_filters.teacherIds?.split(','), isEmpty),
+            courseIds: reject([search.courseId], isEmpty),
             classIds: reject(_filters.classIds?.split(','), isEmpty),
             groupIds: reject(_filters.groupIds?.split(','), isEmpty),
-            tagIds: reject(_filters.tagIds?.split(','), isEmpty),
-            courseIds: reject([search.courseId], isEmpty),
-            testIds: reject(_filters.testIds?.split(','), isEmpty),
             options: {
               termId: _filters.termId,
               schoolIds: reject(_filters.schoolIds?.split(','), isEmpty),
@@ -460,11 +460,7 @@ const MultipleAssessmentReportFilters = ({
                           testTypes={filters.assessmentTypes}
                           tagIds={filters.tagIds}
                           selectedTestIds={
-                            filters.testIds
-                              ? filters.testIds.split(',')
-                              : firstLoad && search.testIds
-                              ? search.testIds.split(',')
-                              : []
+                            filters.testIds ? filters.testIds.split(',') : []
                           }
                           selectCB={(e) =>
                             updateFilterDropdownCB(e, 'testIds', true)
@@ -501,8 +497,6 @@ const MultipleAssessmentReportFilters = ({
                               selectedSchoolIds={
                                 filters.schoolIds
                                   ? filters.schoolIds.split(',')
-                                  : firstLoad && search.schoolIds
-                                  ? search.schoolIds.split(',')
                                   : []
                               }
                               selectCB={(e) =>
@@ -518,8 +512,6 @@ const MultipleAssessmentReportFilters = ({
                               selectedTeacherIds={
                                 filters.teacherIds
                                   ? filters.teacherIds.split(',')
-                                  : firstLoad && search.teacherIds
-                                  ? search.teacherIds.split(',')
                                   : []
                               }
                               selectCB={(e) =>

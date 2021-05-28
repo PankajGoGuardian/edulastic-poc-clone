@@ -96,7 +96,23 @@ export const CurriculumCard = styled.div`
   border-radius: 6px 6px 0px 0px;
   overflow: hidden;
   cursor: pointer;
+  &:hover {
+    .showHover {
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+      flex-direction: column;
+    }
 `
+export const ButtonWrapper = styled.div`
+  position: ${({ position }) => position || 'absolute'};
+  display: none;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+  width: 160px;
+  height: 190px;
+`
+
 export const Thumbnail = styled.div`
   width: 100%;
   height: 190px;

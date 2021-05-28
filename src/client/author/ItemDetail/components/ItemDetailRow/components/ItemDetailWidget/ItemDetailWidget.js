@@ -173,16 +173,23 @@ ItemDetailWidget.propTypes = {
   rowIndex: PropTypes.number.isRequired,
   widgetIndex: PropTypes.number.isRequired,
   flowLayout: PropTypes.bool,
+  isPassageQuestion: PropTypes.bool,
 }
 
 const itemSource = {
-  beginDrag({ setItemDetailDragging, widgetIndex, rowIndex }) {
+  beginDrag({
+    setItemDetailDragging,
+    widgetIndex,
+    rowIndex,
+    isPassageQuestion,
+  }) {
     setTimeout(() => {
       setItemDetailDragging(true)
     }, 0)
     return {
       rowIndex,
       widgetIndex,
+      isPassageQuestion,
     }
   },
   endDrag({ setItemDetailDragging }) {

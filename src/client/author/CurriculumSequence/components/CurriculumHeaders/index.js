@@ -150,6 +150,7 @@ const CurriculumHeader = ({
   canAllowDuplicate,
   duplicatePlayList,
   writableCollections,
+  isDemoPlaygroundUser,
 }) => {
   const [loadingDelete, setLoadingDelete] = useState(false)
   const {
@@ -294,6 +295,12 @@ const CurriculumHeader = ({
                   data-cy="share"
                   onClick={onShareClick}
                   IconBtn
+                  disabled={isDemoPlaygroundUser}
+                  title={
+                    isDemoPlaygroundUser
+                      ? 'This feature is not available in demo account.'
+                      : ''
+                  }
                 >
                   <IconShare />
                 </HeaderButton>
@@ -308,6 +315,12 @@ const CurriculumHeader = ({
                 isBlue
                 isGhost
                 data-cy="clone"
+                disabled={isDemoPlaygroundUser}
+                title={
+                  isDemoPlaygroundUser
+                    ? 'This feature is not available in demo account.'
+                    : ''
+                }
                 onClick={() =>
                   duplicatePlayList({
                     _id: destinationCurriculumSequence._id,
@@ -438,6 +451,7 @@ const enhance = compose(
   withRouter,
   connect((state) => ({
     writableCollections: getCollectionsSelector(state),
+    isDemoPlaygroundUser: state?.user?.user?.isPlayground,
   }))
 )
 

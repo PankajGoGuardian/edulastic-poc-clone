@@ -10,13 +10,13 @@ import { createSelector } from 'reselect'
 import { assignmentApi, reportsApi, testsApi } from '@edulastic/api'
 import { notification } from '@edulastic/common'
 import { push } from 'connected-react-router'
+import { testActivityStatus } from '@edulastic/constants'
 import { getCurrentGroup, getClassIds } from '../student/Reports/ducks'
 import { getUserId } from '../student/Login/ducks'
 import { transformAssignmentForRedirect } from '../student/Assignments/ducks'
 import { assignmentSchema } from '../student/sharedDucks/AssignmentModule/ducks'
 
 import { reportSchema } from '../student/sharedDucks/ReportsModule/ducks'
-import { testActivityStatus } from '@edulastic/constants'
 import { activeAssignmentClassIdentifiers } from './utils'
 
 const FETCH_PUBLIC_TEST = '[test] fetch publicly shared test'
@@ -146,7 +146,7 @@ function* fetchAssignmentsByTest({ payload }) {
     const userId = yield select(getCurrentUserId)
     const classIds = yield select(getClassIds)
     const [assignments, reports] = yield all([
-      call(assignmentApi.fetchAssigned, groupId, testId),
+      call(assignmentApi.fetchAssigned, groupId, testId, 'all', '', '', true),
       call(reportsApi.fetchReports, groupId, testId),
     ])
     const reportsToTransform = reports.filter(

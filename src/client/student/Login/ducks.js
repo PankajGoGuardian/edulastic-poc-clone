@@ -311,7 +311,8 @@ function getValidRedirectRouteByRole(_url, user) {
       return url.match(/^\/home\//) ||
         url.includes('/author/tests/tab/review/id/') ||
         url.match(/\/embed\//) ||
-        url.includes('author/tests/verid')
+        url.includes('author/tests/verid') ||
+        url.includes('home/tests/verid')
         ? url
         : '/home/assignments'
     case roleuser.EDULASTIC_ADMIN:

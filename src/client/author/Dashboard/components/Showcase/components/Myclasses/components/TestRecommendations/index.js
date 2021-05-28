@@ -15,6 +15,7 @@ const TestRecommendationsContainer = ({
   userId,
   windowWidth,
   history,
+  isDemoPlaygroundUser = false,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false)
 
@@ -46,12 +47,18 @@ const TestRecommendationsContainer = ({
           isGhost
           onClick={() => setShowTestCustomizerModal(true)}
           data-cy="customizeRecommendations"
+          title={
+            isDemoPlaygroundUser
+              ? 'This feature is not available in demo account.'
+              : ''
+          }
+          disabled={isDemoPlaygroundUser}
         >
           Customize
         </EduButton>
         {recommendations?.length > gridCountInARow && (
           <ViewMoreButton
-            data-cy="recommendationsViewToggle"
+            data-cy={isExpanded ? 'viewLess' : 'viewMore'}
             onClick={() => setIsExpanded(!isExpanded)}
           >
             {isExpanded ? 'VIEW LESS' : 'VIEW MORE'}

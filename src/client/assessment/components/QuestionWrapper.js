@@ -510,9 +510,7 @@ class QuestionWrapper extends Component {
               noPadding={noPadding}
               isFlex
               data-cy={
-                isPassageOrVideoType
-                  ? 'passage-container'
-                  : 'question-container'
+                isPassageOrVideoType ? 'passage-content' : 'question-container'
               }
               style={{
                 width: '100%',
@@ -593,6 +591,7 @@ class QuestionWrapper extends Component {
                   />
                   {showFeedback && !isPrintPreview && (
                     <BottomAction
+                      view={view}
                       isStudentReport={isStudentReport}
                       hasShowStudentWork={!!showStudentWork}
                       onClickHandler={this.openStudentWork}
@@ -613,6 +612,11 @@ class QuestionWrapper extends Component {
                       previewTab={previewTab}
                       isPrintPreview={isPrintPreview}
                       isGrade={isGrade}
+                      data={data}
+                      enableMagnifier={enableMagnifier}
+                      saveHintUsage={saveHintUsage}
+                      isStudent={userRole === 'student'}
+                      itemIndex={itemIndex}
                     />
                   )}
                   {rubricDetails && studentReportFeedbackVisible && (
@@ -630,7 +634,7 @@ class QuestionWrapper extends Component {
                       />
                     </RubricTableWrapper>
                   )}
-                  {view === 'preview' && !isPrintPreview && (
+                  {view === 'preview' && !isLCBView && !isPrintPreview && (
                     <Hints
                       question={data}
                       enableMagnifier={enableMagnifier}

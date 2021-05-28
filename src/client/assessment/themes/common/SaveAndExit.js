@@ -66,7 +66,10 @@ const SaveAndExit = ({
       )}
       {showZoomBtn && !LCBPreviewModal && (
         <Tooltip placement="bottom" title="Test Options">
-          <StyledButton onClick={() => setSettingsModalVisibility(true)}>
+          <StyledButton
+            data-cy="testOptions"
+            onClick={() => setSettingsModalVisibility(true)}
+          >
             <IconAccessibility />
           </StyledButton>
         </Tooltip>

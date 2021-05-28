@@ -121,7 +121,7 @@ const SettingsModal = ({
         <EduButton isGhost key="cancel" onClick={handleCancel}>
           CANCEL
         </EduButton>,
-        <EduButton key="submit" onClick={handleApply}>
+        <EduButton data-cy="apply" key="submit" onClick={handleApply}>
           {showReconfirm ? 'CONTINUE' : 'APPLY'}
         </EduButton>,
       ]}
@@ -177,6 +177,7 @@ const SettingsModal = ({
               <div>
                 <CustomColumn>SELECT PREFERRED LANGUAGE</CustomColumn>
                 <StyledSelect
+                  data-cy="langPref"
                   getPopupContainer={(triggerNode) => triggerNode.parentNode}
                   onChange={setChangedLang}
                   value={selectedLang}

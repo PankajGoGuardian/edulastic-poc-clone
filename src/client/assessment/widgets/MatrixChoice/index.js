@@ -106,9 +106,14 @@ const MatrixChoice = ({
   const [numberOfAtAnswersToLoad, setNumberOfAtAnswersToLoad] = useState(0)
   useEffect(() => {
     if (!hideCorrectAnswer) {
-      altResponses?.forEach((_v, i) => {
-        setTimeout(() => setNumberOfAtAnswersToLoad(i + 1), 1500 * (i + 1))
-      })
+      console.log('altResponses', altResponses.length)
+      if (altResponses?.length > 5) {
+        altResponses?.forEach((_v, i) => {
+          setTimeout(() => setNumberOfAtAnswersToLoad(i + 1), 1500 * (i + 1))
+        })
+      } else {
+        setNumberOfAtAnswersToLoad(altResponses.length)
+      }
     }
   }, [])
 

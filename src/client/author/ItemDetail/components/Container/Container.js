@@ -865,7 +865,7 @@ class Container extends Component {
       (item.canAddMultipleItems || item.isPassageWithQuestions) &&
       passage &&
       view !== 'metadata' && (
-        <PassageNavigation>
+        <PassageNavigation data-cy="questionPagination">
           {passageTestItems.length > 1 && (
             <TestItemCount className="pagination-title">
               {passageTestItems.length} ITEMS

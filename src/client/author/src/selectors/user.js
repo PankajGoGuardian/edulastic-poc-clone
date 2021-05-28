@@ -65,6 +65,11 @@ export const getUserRole = createSelector(
   (state) => state?.user?.role
 )
 
+export const getChildrens = createSelector(
+  stateSelector,
+  (state) => state?.user?.children
+)
+
 export const getUserIPZipCode = createSelector(
   stateSelector,
   (state) => state.user.ipZipCode

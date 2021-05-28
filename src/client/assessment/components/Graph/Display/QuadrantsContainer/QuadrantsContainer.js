@@ -6,7 +6,7 @@ import { cloneDeep, isEqual, sortBy } from 'lodash'
 import produce from 'immer'
 
 import { WithResources, notification } from '@edulastic/common'
-import { greyThemeDark3, darkGrey2 } from '@edulastic/colors'
+import { greyThemeDark3, darkGrey2, partialIconColor } from '@edulastic/colors'
 
 import {
   CHECK,
@@ -72,20 +72,16 @@ const colorMap = (type) => {
 }
 
 const getColoredElems = (elements, compareResult) => {
-  if (
-    compareResult &&
-    compareResult.details &&
-    compareResult.details.length > 0
-  ) {
+  const { details = [], inequalities = [] } = compareResult || {}
+  if (details.length > 0) {
     let newElems = cloneDeep(elements)
     const subElems = []
 
     newElems = newElems.map((el) => {
-      if (!el.subElement) {
-        const detail = compareResult.details.find((det) => det.id === el.id)
-        let newEl = {}
-        let result = false
-
+      let newEl = {}
+      let result = false
+      if (!el.subElement && el.type !== CONSTANT.TOOLS.AREA) {
+        const detail = details.find((det) => det.id === el.id)
         if (detail && detail.result) {
           newEl = {
             ...el,
@@ -108,6 +104,24 @@ const getColoredElems = (elements, compareResult) => {
           })
         }
         return newEl
+      }
+      if (el.type === CONSTANT.TOOLS.AREA && inequalities.length > 0) {
+        if (inequalities.every((x) => x)) {
+          return {
+            ...el,
+            priorityColor: trueColor,
+          }
+        }
+        if (inequalities.some((x) => x)) {
+          return {
+            ...el,
+            priorityColor: partialIconColor,
+          }
+        }
+        return {
+          ...el,
+          priorityColor: errorColor,
+        }
       }
       return el
     })

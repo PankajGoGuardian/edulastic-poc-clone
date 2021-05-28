@@ -1,4 +1,14 @@
 import React from 'react'
+import {
+  correctIconColor,
+  correctBgColor,
+  wrongBgColor,
+  wrongIconColor,
+  skippedBgColor,
+  skippedIconColor,
+  partialBgColor,
+  partialIconColor,
+} from '@edulastic/colors'
 import { RightIcon, WrongIcon, PartialIcon } from '../styled/EvaluationIcons'
 
 export const getEvalautionColor = (
@@ -11,15 +21,19 @@ export const getEvalautionColor = (
   const { score, isGradedExternally } = answerScore || {}
   if (!attempt || isEvaluationEmpty) {
     // skipped answer
-    return { fillColor: '#F5F5F5', mark: '', indexBgColor: '#A7A7A7' }
+    return {
+      mark: '',
+      fillColor: skippedBgColor,
+      indexBgColor: skippedIconColor,
+    }
   }
 
   if (allCorrect && score < 1 && score > 0) {
     // its all correct, but score isn't maxScore
     return {
-      fillColor: '#fbfae0',
+      fillColor: partialBgColor,
       mark: <PartialIcon />,
-      indexBgColor: '#bdb956',
+      indexBgColor: partialIconColor,
     }
   }
 
@@ -27,24 +41,24 @@ export const getEvalautionColor = (
     if (isGradedExternally && score > 0) {
       // score changd manually, but its wrong
       return {
-        fillColor: '#fbfae0',
+        fillColor: partialBgColor,
         mark: '',
-        indexBgColor: '#bdb956',
+        indexBgColor: partialIconColor,
       }
     }
     // its wrong answer
     return {
-      fillColor: '#fde0e9',
+      fillColor: wrongBgColor,
       mark: <WrongIcon />,
-      indexBgColor: '#f25783',
+      indexBgColor: wrongIconColor,
     }
   }
   if (attempt && correct) {
     // got max score and its all correct
     return {
-      fillColor: '#e2fcf3',
+      fillColor: correctBgColor,
       mark: <RightIcon />,
-      indexBgColor: '#36d29c',
+      indexBgColor: correctIconColor,
     }
   }
 

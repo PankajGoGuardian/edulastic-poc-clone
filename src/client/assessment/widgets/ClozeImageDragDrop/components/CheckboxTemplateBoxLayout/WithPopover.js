@@ -8,7 +8,7 @@ export function WithPopover({
   containerDimensions,
   fontSize,
   checkAnswer,
-  getContent,
+  getContent = () => {},
 }) {
   const {
     scrollWidth: contentWidth,

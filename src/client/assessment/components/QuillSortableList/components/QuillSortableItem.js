@@ -1,8 +1,8 @@
-import React, { memo } from 'react'
+import React, { memo, useContext } from 'react'
 import { SortableElement } from 'react-sortable-hoc'
 import PropTypes from 'prop-types'
-
-import { FlexContainer } from '@edulastic/common'
+import { appLanguages } from '@edulastic/constants'
+import { FlexContainer, LanguageContext } from '@edulastic/common'
 
 import { SortableItemContainer } from '../styled/SortableItemContainer'
 import { Label } from '../styled/Label'
@@ -28,39 +28,43 @@ const QuillSortableItem = SortableElement(
     placeholder,
     centerContent,
     imageDefaultWidth,
-  }) => (
-    <SortableItemContainer
-      styleType={styleType}
-      fontSize={fontSize}
-      columns={columns}
-    >
-      {label && <Label>{label}</Label>}
-      <FlexContainer flex={1} data-cy="quillSortableItem" alignItems="center">
-        <div className="main">
-          <DragHandle index={indx} />
-          <QuestionTextArea
-            value={value}
-            fontSize={fontSize}
-            placeholder={placeholder}
-            toolbarId={`${toolbarId}${indx}`}
-            onChange={onChange}
-            readOnly={rOnly}
-            centerContent={centerContent}
-            toolbarSize={toolbarSize}
-            imageDefaultWidth={imageDefaultWidth}
-            backgroundColor
-          />
-        </div>
-        {canDelete && onRemove && (
-          <IconTrash
-            data-cypress="deleteButton"
-            data-cy={`delete${indx}`}
-            onClick={onRemove}
-          />
-        )}
-      </FlexContainer>
-    </SortableItemContainer>
-  )
+  }) => {
+    const { currentLanguage: authLanguage } = useContext(LanguageContext)
+    const hideDelete = appLanguages.LANGUAGE_EN !== authLanguage
+    return (
+      <SortableItemContainer
+        styleType={styleType}
+        fontSize={fontSize}
+        columns={columns}
+      >
+        {label && <Label>{label}</Label>}
+        <FlexContainer flex={1} data-cy="quillSortableItem" alignItems="center">
+          <div className="main">
+            <DragHandle index={indx} />
+            <QuestionTextArea
+              value={value}
+              fontSize={fontSize}
+              placeholder={placeholder}
+              toolbarId={`${toolbarId}${indx}`}
+              onChange={onChange}
+              readOnly={rOnly}
+              centerContent={centerContent}
+              toolbarSize={toolbarSize}
+              imageDefaultWidth={imageDefaultWidth}
+              backgroundColor
+            />
+          </div>
+          {canDelete && onRemove && !hideDelete && (
+            <IconTrash
+              data-cypress="deleteButton"
+              data-cy={`delete${indx}`}
+              onClick={onRemove}
+            />
+          )}
+        </FlexContainer>
+      </SortableItemContainer>
+    )
+  }
 )
 
 QuillSortableItem.propTypes = {

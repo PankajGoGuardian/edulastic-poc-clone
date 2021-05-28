@@ -229,7 +229,9 @@ class Container extends Component {
                           width: `calc(${100 / row.tabs.length}% - 10px)`,
                         }
                   }
-                  onChange={(e) => changeTabTitle(tabIndex, e.target.value)}
+                  onChange={(e) =>
+                    changeTabTitle(tabIndex, e.target.value, row.widgets)
+                  }
                   editable
                   close
                   onClose={() => removeTab(key)}

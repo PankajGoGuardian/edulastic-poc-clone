@@ -3,7 +3,10 @@ import {
   multipartEvaluationTypes,
   PARTIAL_MATCH,
 } from '@edulastic/constants/const/evaluationType'
-import { manuallyGradableQn } from '@edulastic/constants/const/questionType'
+import {
+  manuallyGradableQn,
+  PASSAGE,
+} from '@edulastic/constants/const/questionType'
 
 import evaluator from './evaluators'
 import { replaceVariables } from '../../../assessment/utils/variables'
@@ -32,6 +35,14 @@ export const evaluateItem = async (
   for (const [index, id] of questionIds.entries()) {
     const evaluationId = `${itemId}_${id}`
     const answer = answers[id]
+    /**
+     * @see https://snapwiz.atlassian.net/browse/EV-28137
+     * calculate maxScore upfront as evaluation request is not sent for empty user response
+     * exclude passage item score from being added to maxScore
+     */
+    if (!itemLevelScoring && validations && validations[id]?.type !== PASSAGE) {
+      totalMaxScore += validations[id]?.validation?.validResponse?.score || 0
+    }
     if (validations && validations[id] && !isEmpty(answer)) {
       const validation = replaceVariables(validations[id], [], false)
       const { type } = validations[id]
@@ -81,10 +92,6 @@ export const evaluateItem = async (
           totalScore += round(score, 2)
         } else {
           totalScore += score
-        }
-
-        if (!itemLevelScoring) {
-          totalMaxScore += maxScore
         }
       }
     } else {

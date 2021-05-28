@@ -111,7 +111,7 @@ const MatrixChoice = ({
           setTimeout(() => setNumberOfAtAnswersToLoad(i + 1), 1500 * (i + 1))
         })
       } else {
-        setNumberOfAtAnswersToLoad(altResponses.length)
+        setNumberOfAtAnswersToLoad(altResponses?.length || 0)
       }
     }
   }, [])

@@ -30,6 +30,7 @@ import {
   getAssignmentsSelector,
   transformAssignmentForRedirect,
   assignmentIdsByTestIdSelector,
+  assignmentIdsGroupIdsByTestIdSelector,
   notStartedReportsByAssignmentId,
   getSelectedLanguageSelector,
 } from '../ducks'
@@ -86,6 +87,7 @@ const Content = ({
   setAssignmentIsPaused,
   setSelectedLanguage,
   languagePreference,
+  assignmentsGrousByTestId,
 }) => {
   const [
     showVideoResourcePreviewModal,
@@ -115,33 +117,42 @@ const Content = ({
       )
     )
   }
-  const regradeWatchTestIdTopics = Object.keys(assignmentIdsByTestId).map(
-    (item) => `student_assessment:test:${item}`
-  )
+  const regradeWatchTestIdTopics = Object.keys(
+    assignmentsGrousByTestId
+  ).flatMap((item) => [
+    `student_assessment:test:${item}`,
+    ...[...assignmentsGrousByTestId[item]].map(
+      (g) => `student_assessment:test:${item}:group:${g}`
+    ),
+  ])
   if (regradeWatchTestIdTopics.length) {
     topics.push(...regradeWatchTestIdTopics)
   }
-  useRealtimeV2(topics, {
-    addAssignment: transformAssignment,
-    addReport: addRealtimeReport,
-    'absentee-mark': addRealtimeReport,
-    'open-assignment': transformAssignment,
-    'close-assignment': transformAssignment,
-    removeAssignment,
-    regradedAssignment: (payload) => {
-      const assignmentIds = assignmentIdsByTestId[payload.oldTestId]
-      if (assignmentIds && assignmentIds.length) {
-        return updateTestIdRealTime({ assignmentIds, ...payload })
-      }
+  useRealtimeV2(
+    topics,
+    {
+      addAssignment: transformAssignment,
+      addReport: addRealtimeReport,
+      'absentee-mark': addRealtimeReport,
+      'open-assignment': transformAssignment,
+      'close-assignment': transformAssignment,
+      removeAssignment,
+      regradedAssignment: (payload) => {
+        const assignmentIds = assignmentIdsByTestId[payload.oldTestId]
+        if (assignmentIds && assignmentIds.length) {
+          return updateTestIdRealTime({ assignmentIds, ...payload })
+        }
+      },
+      'toggle-pause-assignment': (payload) => {
+        const { activitiesByUserId, paused } = payload
+        const utaId = activitiesByUserId[userId]
+        if (utaId) {
+          setAssignmentIsPaused({ utaId, paused })
+        }
+      },
     },
-    'toggle-pause-assignment': (payload) => {
-      const { activitiesByUserId, paused } = payload
-      const utaId = activitiesByUserId[userId]
-      if (utaId) {
-        setAssignmentIsPaused({ utaId, paused })
-      }
-    },
-  })
+    { topicsWillBeAdded: true }
+  )
 
   useInterval(() => {
     if (needRealtimeDateTracking(allAssignments)) {
@@ -212,6 +223,7 @@ export default connect(
     isLoading: get(state, 'studentAssignment.isLoading'),
     currentChild: state?.user?.currentChild,
     assignmentIdsByTestId: assignmentIdsByTestIdSelector(state),
+    assignmentsGrousByTestId: assignmentIdsGroupIdsByTestIdSelector(state),
     notStartedReportsByAssignment: notStartedReportsByAssignmentId(state),
     languagePreference: getSelectedLanguageSelector(state),
   }),

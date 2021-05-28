@@ -235,6 +235,13 @@ export const hasEmptyAnswers = (item) => {
     if (points && latex) {
       return false
     }
+    /**
+     * @see https://snapwiz.atlassian.net/browse/EV-26250
+     * Both points and latex for points on equation should be set
+     */
+    if ((points || latex) && (!points || !latex)) {
+      return true
+    }
   }
   const hasEmpty = answerValidator[item.type]?.(correctAnswers)
 

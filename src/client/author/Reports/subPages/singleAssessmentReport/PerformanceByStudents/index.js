@@ -6,9 +6,10 @@ import { withNamespaces } from '@edulastic/localization'
 import { Row, Col } from 'antd'
 import { Redirect } from 'react-router-dom'
 import qs from 'qs'
-import { isEmpty } from 'lodash'
+import { get, isEmpty } from 'lodash'
 
 // components
+import { report as reportTypes, reportUtils } from '@edulastic/constants'
 import { EduButton, SpinLoader, notification } from '@edulastic/common'
 import { IconPlusCircle } from '@edulastic/icons'
 
@@ -29,13 +30,6 @@ import PerformanceBandPieChart from './components/charts/StudentPerformancePie'
 
 // ducks & helpers
 import {
-  parseData,
-  getTableData,
-  getColumns,
-  getProficiencyBandData,
-} from './util/transformers'
-import { downloadCSV } from '../../../common/util'
-import {
   getPerformanceByStudentsRequestAction,
   getReportsPerformanceByStudents,
   getReportsPerformanceByStudentsLoader,
@@ -43,42 +37,43 @@ import {
   resetPerformanceByStudentsAction,
 } from './ducks'
 import { getUserRole } from '../../../../../student/Login/ducks'
-import { getCsvDownloadingState } from '../../../ducks'
-import {
-  getSAFFilterPerformanceBandProfiles,
-  setPerformanceBandProfileAction,
-} from '../common/filterDataDucks'
+import { getCsvDownloadingState, generateCSVAction } from '../../../ducks'
+import { setPerformanceBandProfileAction } from '../common/filterDataDucks'
 
-import columns from './static/json/tableColumns.json'
+import { getColumns } from './util/transformers'
+
+const { downloadCSV } = reportUtils.common
+
+const {
+  getProficiencyBandData,
+  parseData,
+  getTableData,
+} = reportUtils.performanceByStudents
+
+const onCsvConvert = (data) => downloadCSV(`Performance by Students.csv`, data)
 
 const PerformanceByStudents = ({
   loading,
   error,
   isCsvDownloading,
   role,
-  performanceBandProfiles,
   performanceByStudents,
   getPerformanceByStudents,
   resetPerformanceByStudents,
   settings,
   location = { pathname: '' },
   pageTitle,
-  filters,
+  demographicFilters,
   t,
   customStudentUserId,
   isCliUser,
   sharedReport,
   setPerformanceBandProfile,
   toggleFilter,
+  generateCSV,
 }) => {
-  const [userRole, sharedReportFilters, isSharedReport] = useMemo(
-    () => [
-      sharedReport?.sharedBy?.role || role,
-      sharedReport?._id
-        ? { ...sharedReport.filters, reportId: sharedReport._id }
-        : null,
-      !!sharedReport?._id,
-    ],
+  const [userRole, isSharedReport] = useMemo(
+    () => [sharedReport?.sharedBy?.role || role, !!sharedReport?._id],
     [sharedReport]
   )
   const assessmentName = `${
@@ -87,19 +82,16 @@ const PerformanceByStudents = ({
     settings.selectedTest.key.length - 5
   )})`
 
-  const bandInfo = useMemo(
-    () =>
-      performanceBandProfiles.find(
-        (profile) =>
-          profile._id ===
-          (sharedReportFilters || settings.requestFilters).profileId
-      )?.performanceBand ||
-      performanceByStudents?.bandInfo?.performanceBand ||
-      [],
-    [settings, performanceByStudents]
-  )
+  const { res, proficiencyBandData } = useMemo(() => {
+    const bandInfo = get(performanceByStudents, 'bandInfo.performanceBand', [])
+    return {
+      res: { ...performanceByStudents, bandInfo },
+      proficiencyBandData: getProficiencyBandData(bandInfo),
+    }
+  }, [performanceByStudents])
 
   const [showAddToGroupModal, setShowAddToGroupModal] = useState(false)
+  const [selectedProficiency, setProficiency] = useState(proficiencyBandData[0])
   const [selectedRowKeys, onSelectChange] = useState([])
   const [checkedStudents, setCheckedStudents] = useState({})
   const [range, setRange] = useState({
@@ -127,6 +119,29 @@ const PerformanceByStudents = ({
   }, [settings.selectedTest, settings.requestFilters])
 
   useEffect(() => {
+    if (
+      isCsvDownloading &&
+      settings.selectedTest &&
+      settings.selectedTest.key &&
+      error &&
+      error.dataSizeExceeded
+    ) {
+      const q = {
+        reportType: reportTypes.reportNavType.PERFORMANCE_BY_STUDENTS,
+        reportFilters: {
+          ...settings.requestFilters,
+          testId: settings.selectedTest.key,
+        },
+        reportExtras: {
+          isCliUser,
+          demographicFilters,
+        },
+      }
+      generateCSV(q)
+    }
+  }, [isCsvDownloading])
+
+  useEffect(() => {
     setPagination({ ...pagination, current: 0 })
   }, [range.left, range.right])
 
@@ -142,16 +157,19 @@ const PerformanceByStudents = ({
     }
   }, [performanceByStudents])
 
-  const res = { ...performanceByStudents, bandInfo }
+  const barChartData = useMemo(() => parseData(res, demographicFilters), [
+    res,
+    demographicFilters,
+  ])
 
-  const proficiencyBandData = getProficiencyBandData(res && res.bandInfo)
-  const [selectedProficiency, setProficiency] = useState(proficiencyBandData[0])
-
-  const parsedData = useMemo(() => parseData(res, filters), [res, filters])
+  const pieChartData = useMemo(
+    () => getTableData(res, demographicFilters, range),
+    [res, demographicFilters]
+  )
 
   const tableData = useMemo(
-    () => getTableData(res, filters, range, selectedProficiency.key),
-    [res, filters, range, selectedProficiency.key]
+    () => getTableData(res, demographicFilters, range, selectedProficiency.key),
+    [res, demographicFilters, range, selectedProficiency.key]
   )
 
   const rowSelection = {
@@ -193,26 +211,14 @@ const PerformanceByStudents = ({
     },
   }
 
-  const updateProficiencyFilter = (_, selected) => {
-    setProficiency(selected)
-  }
-
-  const onCsvConvert = (data) =>
-    downloadCSV(`Performance by Students.csv`, data)
-
-  const _columns = getColumns(
-    columns,
+  const columns = getColumns(
     assessmentName,
     userRole,
     location,
     pageTitle,
     isSharedReport,
     t
-  )
-
-  const columnData = isCliUser
-    ? _columns.filter((col) => col.title !== 'Due Date')
-    : _columns
+  ).filter((col) => !(isCliUser && col.title === 'Due Date'))
 
   const checkedStudentsForModal = tableData
     .filter(
@@ -234,11 +240,6 @@ const PerformanceByStudents = ({
       setShowAddToGroupModal(true)
     }
   }
-
-  const chartData = useMemo(() => getTableData(res, filters, range), [
-    res,
-    filters,
-  ])
 
   // if custom_student_user_id passed as params then
   // it will check if student have assignment for this test
@@ -274,7 +275,7 @@ const PerformanceByStudents = ({
   }
 
   if (error && error.dataSizeExceeded) {
-    return <DataSizeExceeded />
+    return <DataSizeExceeded isDownloadable />
   }
 
   if (
@@ -311,9 +312,9 @@ const PerformanceByStudents = ({
             <Row type="flex" justify="start">
               <Col xs={24} sm={24} md={24} lg={24} xl={24}>
                 <PerformanceBandPieChart
-                  bands={bandInfo}
-                  data={chartData}
-                  onSelect={updateProficiencyFilter}
+                  bands={res.bandInfo}
+                  data={pieChartData}
+                  onSelect={setProficiency}
                 />
               </Col>
             </Row>
@@ -329,7 +330,7 @@ const PerformanceByStudents = ({
             <Row type="flex" justify="start">
               <Col xs={24} sm={24} md={24} lg={24} xl={24}>
                 <SimpleBarChartContainer
-                  data={parsedData}
+                  data={barChartData}
                   setRange={setRange}
                   range={range}
                 />
@@ -374,7 +375,7 @@ const PerformanceByStudents = ({
                   prefix="Proficiency Band - "
                   data={proficiencyBandData}
                   by={selectedProficiency}
-                  selectCB={updateProficiencyFilter}
+                  selectCB={(e, selected) => setProficiency(selected)}
                 />
               </StyledDropDownContainer>
             </Col>
@@ -382,9 +383,11 @@ const PerformanceByStudents = ({
           <Row type="flex" justify="start">
             <Col xs={24} sm={24} md={24} lg={24} xl={24}>
               <CsvTable
-                isCsvDownloading={isCsvDownloading}
+                isCsvDownloading={
+                  !(error && error.dataSizeExceeded) ? isCsvDownloading : null
+                }
                 onCsvConvert={onCsvConvert}
-                columns={columnData}
+                columns={columns}
                 dataSource={tableData}
                 rowSelection={rowSelection}
                 colouredCellsNo={4}
@@ -411,13 +414,13 @@ const reportPropType = PropTypes.shape({
   studentMetricInfo: PropTypes.array,
   metaInfo: PropTypes.array,
   metricInfo: PropTypes.array,
+  bandInfo: PropTypes.object,
 })
 
 PerformanceByStudents.propTypes = {
   loading: PropTypes.bool.isRequired,
   isCsvDownloading: PropTypes.bool.isRequired,
   role: PropTypes.string.isRequired,
-  performanceBandProfiles: PropTypes.array.isRequired,
   performanceByStudents: reportPropType.isRequired,
   getPerformanceByStudents: PropTypes.func.isRequired,
   settings: PropTypes.object.isRequired,
@@ -429,13 +432,13 @@ const withConnect = connect(
     error: getReportsPerformanceByStudentsError(state),
     isCsvDownloading: getCsvDownloadingState(state),
     role: getUserRole(state),
-    performanceBandProfiles: getSAFFilterPerformanceBandProfiles(state),
     performanceByStudents: getReportsPerformanceByStudents(state),
   }),
   {
     getPerformanceByStudents: getPerformanceByStudentsRequestAction,
     setPerformanceBandProfile: setPerformanceBandProfileAction,
     resetPerformanceByStudents: resetPerformanceByStudentsAction,
+    generateCSV: generateCSVAction,
   }
 )
 

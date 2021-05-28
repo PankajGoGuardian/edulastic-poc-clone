@@ -9,12 +9,16 @@ import {
   ReferenceArea,
   LabelList,
 } from 'recharts'
+
+import { reportUtils } from '@edulastic/constants'
 import { lightBlue7 } from '@edulastic/colors'
+
 import {
   NonSelectableResponsiveContainer,
   StyledChartNavButton,
 } from '../styled'
-import { createTicks, getInterval } from '../../util/transformers'
+
+const { createTicks, getInterval } = reportUtils.performanceByStudents
 
 const xAxisLabel = {
   value: 'Score',

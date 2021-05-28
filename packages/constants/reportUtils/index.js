@@ -16,7 +16,7 @@ const singleAssessmentReport = require('./singleAssessmentReport/common')
 // const questionAnalysis = require('./singleAssessmentReport/questionAnalysis')
 // const responseFrequency = require('./singleAssessmentReport/responseFrequency')
 const performanceByStandards = require('./singleAssessmentReport/performanceByStandards')
-// const performanceByStudents = require('./singleAssessmentReport/performanceByStudents')
+const performanceByStudents = require('./singleAssessmentReport/performanceByStudents')
 
 // -----|-----|-----|-----| SINGLE ASSESSMENT REPORT |-----|-----|-----|----- //
 
@@ -40,6 +40,6 @@ module.exports = {
   // questionAnalysis,
   // responseFrequency,
   performanceByStandards,
-  // performanceByStudents,
+  performanceByStudents,
   // TODO...
 }

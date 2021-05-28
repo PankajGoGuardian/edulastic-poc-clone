@@ -64,7 +64,7 @@ const StudentPerformancePie = ({ data, bands, onSelect }) => {
 
   const handleOnSelect = ({ name }) => {
     const selected = { key: name, title: name }
-    onSelect(null, selected)
+    onSelect(selected)
   }
 
   return (

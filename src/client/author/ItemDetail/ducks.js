@@ -755,33 +755,53 @@ const useFlowLayout = (state, { rowIndex, isUseFlowLayout }) => {
   return newState
 }
 
-const moveWidget = (state, { from, to }) =>
-  produce(state, (newState) => {
-    // change the order of widgets
-    const [movedWidget] = newState.item.rows[from.rowIndex].widgets.splice(
-      from.widgetIndex,
-      1
-    )
-    movedWidget.tabIndex = to.tabIndex || 0
-    newState.item.rows[to.rowIndex].widgets.splice(
-      to.widgetIndex,
-      0,
-      movedWidget
-    )
-    newState.qids = newState.item.rows
-      .flatMap((x) => x.widgets)
-      .filter((widget) => widget.widgetType === 'question')
-      .map((x) => x.reference)
-    const { questions } = newState?.item?.data || {}
-    if (Array.isArray(questions) && questions.length > 0) {
-      // change the order of item.data.questions
-      newState.item.data.questions = reSequenceQuestionsWithWidgets(
-        get(newState, `item.rows[${to?.rowIndex}].widgets`),
-        questions
+const moveWidget = (state, { from, to }) => {
+  if (from.isPassageQuestion) {
+    return produce(state, (newState) => {
+      // change the order of widgets
+      const widgets = newState.passage?.structure?.widgets || []
+      const [movedWidget] = widgets.splice(from.widgetIndex, 1)
+      movedWidget.tabIndex = to.tabIndex || 0
+      widgets.splice(to.widgetIndex, 0, movedWidget)
+
+      const { data } = newState?.passage || {}
+      if (Array.isArray(data) && data.length > 0) {
+        // change the order of passage.data
+        newState.passage.data = reSequenceQuestionsWithWidgets(
+          get(newState, `passage.structure.widgets`),
+          data
+        )
+      }
+    })
+  } else {
+    return produce(state, (newState) => {
+      // change the order of widgets
+      const [movedWidget] = newState.item.rows[from.rowIndex].widgets.splice(
+        from.widgetIndex,
+        1
       )
-      markQuestionLabel([newState.item]) // change the question label as per new order
-    }
-  })
+      movedWidget.tabIndex = to.tabIndex || 0
+      newState.item.rows[to.rowIndex].widgets.splice(
+        to.widgetIndex,
+        0,
+        movedWidget
+      )
+      newState.qids = newState.item.rows
+        .flatMap((x) => x.widgets)
+        .filter((widget) => widget.widgetType === 'question')
+        .map((x) => x.reference)
+      const { questions } = newState?.item?.data || {}
+      if (Array.isArray(questions) && questions.length > 0) {
+        // change the order of item.data.questions
+        newState.item.data.questions = reSequenceQuestionsWithWidgets(
+          get(newState, `item.rows[${to?.rowIndex}].widgets`),
+          questions
+        )
+        markQuestionLabel([newState.item]) // change the question label as per new order
+      }
+    })
+  }
+}
 
 export function reducer(state = initialState, { type, payload }) {
   switch (type) {

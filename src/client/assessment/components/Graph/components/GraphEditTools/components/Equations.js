@@ -28,16 +28,28 @@ const emptyEquation = {
   pointsLabel: false,
 }
 
+const getApiLatex = (latex) => {
+  return graphEvaluateApi
+    .convert({ latex })
+    .then(({ result }) => result[0])
+    .catch(() => {
+      notification({ messageKey: 'equationErr' })
+    })
+}
 class Equations extends Component {
   constructor(props) {
     super(props)
 
     this.state = {
       showMathModal: false,
-      selectedEqIndex: -1,
+      selectedIndex: -1,
+      selectedInput: '',
       eqs: props.equations.map((e) => e.latex),
       changedEqs: props.equations.map(() => false),
+      domains: props.equations.map((e) => e.domain),
+      changedDomains: props.equations.map(() => false),
       newEquation: '',
+      newDomain: '',
     }
   }
 
@@ -55,51 +67,82 @@ class Equations extends Component {
     this.setState({
       eqs: equations.map((e) => e.latex),
       changedEqs: equations.map(() => false),
+      domains: equations.map((e) => e.domain),
+      changedDomains: equations.map(() => false),
     })
   }
 
-  setApiLatex = (latex, index = null) => {
-    graphEvaluateApi
-      .convert({ latex })
-      .then(({ result }) => {
-        const { equations, setEquations } = this.props
-        if (index === null) {
-          setEquations(
-            produce(equations, (draft) => {
-              draft.push({
-                ...emptyEquation,
-                id: `jxgEq-${Math.random().toString(36).substr(2, 9)}`,
-                latex,
-                apiLatex: result[0],
-              })
-            })
-          )
-          return
-        }
-        if (!equations[index]) {
-          return
-        }
-        setEquations(
-          produce(equations, (draft) => {
-            draft[index].latex = latex
-            draft[index].apiLatex = result[0]
-          })
-        )
-      })
-      .catch(() => {
-        notification({ messageKey: 'equationErr' })
-      })
-  }
-
-  handleAddEquation = (latex = null) => {
-    const { eqs, changedEqs, newEquation } = this.state
-    if (!newEquation && !latex) {
+  setApiLatices = async (equLatex, domainLatex, index = null) => {
+    const { equations, setEquations } = this.props
+    if (!equLatex) {
       return
     }
-    eqs.push(newEquation || latex)
-    changedEqs.push(false)
-    this.setState({ eqs, changedEqs, newEquation: '' })
-    this.setApiLatex(eqs[eqs.length - 1])
+
+    const promise = [equLatex, domainLatex]
+      .filter((x) => x)
+      .map((latex) => getApiLatex(latex))
+
+    Promise.all(promise).then((results) => {
+      if (index === null) {
+        setEquations(
+          produce(equations, (draft) => {
+            draft.push({
+              ...emptyEquation,
+              id: `jxgEq-${Math.random().toString(36).substr(2, 9)}`,
+              latex: equLatex,
+              apiLatex: results[0],
+              domain: domainLatex,
+              domainApiLatex: results[1] || '',
+            })
+          })
+        )
+      }
+      if (equations[index]) {
+        setEquations(
+          produce(equations, (draft) => {
+            draft[index].latex = equLatex
+            draft[index].apiLatex = results[0]
+            draft[index].domain = domainLatex
+            draft[index].domainApiLatex = results[1] || ''
+          })
+        )
+      }
+    })
+  }
+
+  handleAddEquation = () => {
+    const {
+      eqs,
+      changedEqs,
+      domains,
+      changedDomains,
+      newEquation,
+      newDomain,
+    } = this.state
+    let shouldUpdateState = false
+    if (newEquation) {
+      shouldUpdateState = true
+      eqs.push(newEquation)
+      changedEqs.push(false)
+    }
+
+    if (newDomain) {
+      shouldUpdateState = true
+      domains.push(newDomain)
+      changedDomains.push(false)
+    }
+
+    if (shouldUpdateState) {
+      this.setState({
+        eqs,
+        changedEqs,
+        newEquation: '',
+        domains,
+        changedDomains,
+        newDomain: '',
+      })
+      this.setApiLatices(newEquation, newDomain)
+    }
   }
 
   handleDeleteEquation = (index) => () => {
@@ -109,18 +152,24 @@ class Equations extends Component {
         draft.splice(index, 1)
       })
     )
-    this.setState({ selectedEqIndex: -1 })
+    this.setState({ selectedIndex: -1 })
   }
 
   toggleMathModal = (open, index = -1) => () => {
-    this.setState({ showMathModal: open, selectedEqIndex: index })
+    this.setState({ showMathModal: open, selectedIndex: index })
   }
 
   handleFocus = (index = -1) => {
-    this.setState({ selectedEqIndex: index })
+    this.setState({ selectedIndex: index })
   }
 
-  handleInput = (latex, index = null) => {
+  handleMathInputFocus = (wh, indx) => (vaild) => {
+    if (vaild) {
+      this.setState({ selectedInput: wh, selectedIndex: indx })
+    }
+  }
+
+  handleInputEquation = (latex, index = null) => {
     const { eqs, changedEqs } = this.state
 
     if (index === null) {
@@ -132,46 +181,76 @@ class Equations extends Component {
     }
   }
 
-  handleModalSave = (latex) => {
-    const { eqs, selectedEqIndex } = this.state
-
-    if (selectedEqIndex === -1) {
-      this.handleAddEquation(latex)
+  handleInputDomain = (latex, index = null) => {
+    const { domains, changedDomains } = this.state
+    if (index === null) {
+      this.setState({ newDomain: latex })
     } else {
-      const { equations } = this.props
-      eqs[selectedEqIndex] = latex
-      this.setState({ eqs })
-      if (
-        eqs[selectedEqIndex] &&
-        equations[selectedEqIndex] &&
-        equations[selectedEqIndex].latex !== eqs[selectedEqIndex]
-      ) {
-        this.setApiLatex(eqs[selectedEqIndex], selectedEqIndex)
-      }
+      domains[index] = latex
+      changedDomains[index] = true
+    }
+  }
+
+  handleModalSave = (latex) => {
+    const {
+      eqs,
+      domains,
+      selectedInput,
+      selectedIndex,
+      newDomain,
+      newEquation,
+    } = this.state
+    this.toggleMathModal(false)()
+    let equLatex = selectedIndex === -1 ? newEquation : eqs[selectedIndex]
+    let domainLatex = selectedIndex === -1 ? newDomain : domains[selectedIndex]
+    if (selectedInput === 'domain') {
+      domainLatex = latex
+    } else {
+      equLatex = latex
+    }
+    if (equLatex && domainLatex) {
+      this.setState({ newDomain: '', newEquation: '' })
+      this.setApiLatices(
+        equLatex,
+        domainLatex,
+        selectedIndex === -1 ? null : selectedIndex
+      )
+      return
     }
 
-    this.toggleMathModal(false)()
+    if (selectedInput === 'domain') {
+      if (selectedIndex === -1) {
+        this.setState({ newDomain: latex })
+      } else {
+        domains[selectedIndex] = latex
+        this.setState({ domains })
+      }
+    } else if (selectedIndex === -1) {
+      this.setState({ newEquation: latex })
+    } else {
+      eqs[selectedIndex] = latex
+      this.setState({ eqs })
+    }
   }
 
   saveEquation = (index) => () => {
-    const { eqs, changedEqs } = this.state
+    const { eqs, domains, changedEqs } = this.state
     changedEqs[index] = false
     this.setState({ changedEqs })
-    this.setApiLatex(eqs[index], index)
-  }
-
-  componentWillUnmount() {
-    this.handleAddEquation()
+    this.setApiLatices(eqs[index], domains[index], index)
   }
 
   render() {
     const { t, onChangeKeypad, symbols } = this.props
     const {
       showMathModal,
-      selectedEqIndex,
+      selectedIndex,
       eqs,
+      domains,
       changedEqs,
       newEquation,
+      newDomain,
+      selectedInput,
     } = this.state
 
     return (
@@ -181,16 +260,27 @@ class Equations extends Component {
             key={`equation-wrapper-${index}`}
             onFocus={() => this.handleFocus(index)}
           >
-            <StyledMathInput
+            <EquationInput
               fullWidth
-              style={{ height: '40px', background: backgrounds.primary }}
+              resetMath
               alwaysHideKeyboard
               symbols={symbols}
               numberPad={defaultNumberPad}
               value={eq}
-              onInput={(latex) => this.handleInput(latex, index)}
+              onFocus={this.handleMathInputFocus('equation', index)}
+              onInput={(latex) => this.handleInputEquation(latex, index)}
             />
-            {selectedEqIndex === index && (
+            <DomainInput
+              fullWidth
+              resetMath
+              alwaysHideKeyboard
+              symbols={symbols}
+              value={domains[index]}
+              numberPad={defaultNumberPad}
+              onFocus={this.handleMathInputFocus('domain', index)}
+              onInput={(latex) => this.handleInputDomain(latex, index)}
+            />
+            {selectedIndex === index && (
               <IconKeyboard
                 width={25}
                 height={20}
@@ -199,7 +289,7 @@ class Equations extends Component {
                 onClick={this.toggleMathModal(true, index)}
               />
             )}
-            {(selectedEqIndex === index || changedEqs[index]) && (
+            {(selectedIndex === index || changedEqs[index]) && (
               <StyledEduButton
                 key={`eq-plot-${index}`}
                 onClick={this.saveEquation(index)}
@@ -214,15 +304,26 @@ class Equations extends Component {
             />
           </Wrapper>
         ))}
-        <Wrapper key="equation-wrapper-add" onFocus={this.handleFocus}>
-          <StyledMathInput
+        <Wrapper key="equation-wrapper-add" onFocus={() => this.handleFocus()}>
+          <EquationInput
             fullWidth
-            style={{ height: '40px', background: backgrounds.primary }}
+            resetMath
             alwaysHideKeyboard
             symbols={symbols}
             numberPad={defaultNumberPad}
             value={newEquation}
-            onInput={(latex) => this.handleInput(latex)}
+            onFocus={this.handleMathInputFocus('equation')}
+            onInput={(latex) => this.handleInputEquation(latex)}
+          />
+          <DomainInput
+            fullWidth
+            resetMath
+            alwaysHideKeyboard
+            symbols={symbols}
+            value={newDomain}
+            numberPad={defaultNumberPad}
+            onFocus={this.handleMathInputFocus('domain')}
+            onInput={(latex) => this.handleInputDomain(latex)}
           />
           <IconKeyboard
             key="eq-math-add"
@@ -242,7 +343,15 @@ class Equations extends Component {
           showDropdown
           showResposnse={false}
           width="max-content"
-          value={selectedEqIndex !== -1 ? eqs[selectedEqIndex] : newEquation}
+          value={
+            selectedInput === 'domain'
+              ? selectedIndex !== -1
+                ? domains[selectedIndex]
+                : newDomain
+              : selectedIndex !== -1
+              ? eqs[selectedIndex]
+              : newEquation
+          }
           onSave={(latex) => this.handleModalSave(latex)}
           onClose={this.toggleMathModal(false)}
           onChangeKeypad={onChangeKeypad}
@@ -288,9 +397,21 @@ const Wrapper = styled.div`
   }
 `
 
-const StyledMathInput = styled(MathInput)`
+const EquationInput = styled(MathInput)`
   min-width: 120px;
-  width: 100%;
+  background: ${backgrounds.primary};
+  width: 75%;
+  .input__math {
+    border-radius: 3px;
+  }
+`
+
+const DomainInput = styled(MathInput)`
+  min-width: 80px;
+  background: ${backgrounds.primary};
+  width: 25%;
+  margin-left: 8px;
+
   .input__math {
     border-radius: 3px;
   }

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { CONSTANT } from '../config'
 import { fixApiLatex } from '../utils'
 import { Area } from '.'

@@ -510,9 +510,7 @@ class QuestionWrapper extends Component {
               noPadding={noPadding}
               isFlex
               data-cy={
-                isPassageOrVideoType
-                  ? 'passage-container'
-                  : 'question-container'
+                isPassageOrVideoType ? 'passage-content' : 'question-container'
               }
               style={{
                 width: '100%',
@@ -592,7 +590,7 @@ class QuestionWrapper extends Component {
                     setPage={this.setPage}
                   />
                   {showFeedback && !isPrintPreview && (
-                    <BottomAction 
+                    <BottomAction
                       view={view}
                       isStudentReport={isStudentReport}
                       hasShowStudentWork={!!showStudentWork}

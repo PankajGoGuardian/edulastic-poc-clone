@@ -14,7 +14,11 @@ const DividerContainer = ({
     hideMiddle={hideMiddle}
     stackedView={stackedView}
   >
-    <div className="button-wrapper">
+    <div
+      data-cy="dividerButton"
+      data-test={collapseDirection}
+      className="button-wrapper"
+    >
       <CollapseBtn
         collapseDirection={collapseDirection}
         onClick={() => setCollapseView('left')}

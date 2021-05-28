@@ -117,30 +117,66 @@ const EssayPlainTextPreview = ({
     })
   }
 
-  const handleAction = (action) => () => {
+  const writeToClipBoard = async (data) => {
+    try {
+      await navigator.clipboard.writeText(data)
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  const handleAction = (action) => async () => {
+    /**
+     * @see https://snapwiz.atlassian.net/browse/EV-19378
+     * allow cut/copy/paste through keyboard
+     * syncing cut/copy/paste from keyboard and button actions
+     */
+    let isClipBoardApiAccessible = false
+    if (navigator?.clipboard) {
+      isClipBoardApiAccessible = true
+    }
     switch (action) {
       case COPY:
         if (selection) {
           setBuffer(text.slice(selection.start, selection.end))
+          if (isClipBoardApiAccessible) {
+            await writeToClipBoard(text.slice(selection.start, selection.end))
+          }
         }
         break
       case CUT: {
         if (selection) {
           setBuffer(text.slice(selection.start, selection.end))
           setText(text.slice(0, selection.start) + text.slice(selection.end))
+          if (isClipBoardApiAccessible) {
+            await writeToClipBoard(text.slice(selection.start, selection.end))
+          }
         }
         break
       }
       case PASTE: {
+        let clipBoardText = ''
+        if (isClipBoardApiAccessible) {
+          try {
+            clipBoardText = await navigator.clipboard.readText()
+          } catch (e) {
+            console.log(e)
+          }
+          if (clipBoardText) {
+            setBuffer(clipBoardText)
+          }
+        }
         let val = ''
         if (selection.end) {
           val =
-            text.slice(0, selection.start) + buffer + text.slice(selection.end)
+            text.slice(0, selection.start) +
+            (clipBoardText || buffer) +
+            text.slice(selection.end)
           setText(val)
         } else {
           val =
             text.slice(0, selection.start) +
-            buffer +
+            (clipBoardText || buffer) +
             text.slice(selection.start)
           setText(val)
         }
@@ -276,10 +312,10 @@ const EssayPlainTextPreview = ({
                 }
                 onChange={handleTextChange}
                 size="large"
-                onPaste={preventEvent}
+                onPaste={!item.showPaste && preventEvent}
                 readOnly={disableResponse}
-                onCopy={preventEvent}
-                onCut={preventEvent}
+                onCopy={!item.showCopy && preventEvent}
+                onCut={!item.showCut && preventEvent}
                 placeholder={item.placeholder || ''}
                 disabled={reviewTab}
                 {...getSpellCheckAttributes(item.spellcheck)}

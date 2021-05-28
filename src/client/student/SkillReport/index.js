@@ -31,7 +31,7 @@ const getTermId = (_classes, _classId) =>
 
 const getChildrenUserName = (childrens, childId) => {
   const childDetails = (childrens || []).find((o) => o._id === childId)
-  return childDetails?.userName || childDetails.email || ''
+  return childDetails?.userName || childDetails?.email || ''
 }
 
 const SkillReportContainer = ({
@@ -79,19 +79,32 @@ const SkillReportContainer = ({
 
   useEffect(() => {
     if (classId) {
-      setSettings({
-        ...settings,
-        requestFilters: {
-          ...settings.requestFilters,
-          termId: getTermId(userClasses, classId || fallbackClassId),
-          // if you need to pass multiple ids then pass it as comma separated
-          groupIds: classId,
-        },
-        selectedStudent: {
-          key: currentChild,
-          title: getChildrenUserName(childrens, currentChild),
-        },
-      })
+      const termId = getTermId(userClasses, classId || fallbackClassId)
+      if (userRole === 'parent') {
+        setSettings({
+          ...settings,
+          requestFilters: {
+            ...settings.requestFilters,
+            termId,
+            // if you need to pass multiple ids then pass it as comma separated
+            groupIds: classId,
+          },
+          selectedStudent: {
+            key: currentChild,
+            title: getChildrenUserName(childrens, currentChild),
+          },
+        })
+      } else {
+        setSettings({
+          ...settings,
+          requestFilters: {
+            ...settings.requestFilters,
+            termId,
+            // if you need to pass multiple ids then pass it as comma separated
+            groupIds: classId,
+          },
+        })
+      }
     }
   }, [classId, currentChild])
 

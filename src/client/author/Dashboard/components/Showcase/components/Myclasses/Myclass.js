@@ -260,9 +260,11 @@ const MyClasses = ({
     } else if (content === 'playlists_library') {
       content = 'playlists'
     }
-    setClickedBundleId(
-      filters?.[0]?.collections?.[0] || subscriptionData.itemBankId
-    )
+    if(filters?.[0]?.collections?.[0] || subscriptionData?.itemBankId){
+      setClickedBundleId(
+        filters?.[0]?.collections?.[0] || subscriptionData?.itemBankId
+      )
+    }
     if (content === 'playlists') {
       setShowTrialSubsConfirmation(true)
       return

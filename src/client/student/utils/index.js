@@ -54,7 +54,8 @@ export const formatStudentPastDueTag = (data) => {
 export const maxDueDateFromClassess = (classess, studentId) => {
   // to find all classes have specific student and get max dueDate
   const studentSpecificClasses = classess.filter(
-    (_class) => !_class.students.length || _class.students.includes(studentId)
+    (_class) =>
+      !_class?.students?.length || _class?.students?.includes(studentId)
   )
 
   // filter all class redirected

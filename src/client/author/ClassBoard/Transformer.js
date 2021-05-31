@@ -498,12 +498,12 @@ export function getStandardsForStandardBasedReport(
 
 export const transformGradeBookResponse = (
   {
-    test,
-    testItemsData,
-    students: studentNames,
-    testActivities,
-    testQuestionActivities,
-    passageData,
+    test = {},
+    testItemsData = {},
+    students: studentNames = [],
+    testActivities = [],
+    testQuestionActivities = [],
+    passageData = {},
     status: assignmentStatus,
     endDate,
     ts,

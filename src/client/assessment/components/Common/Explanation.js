@@ -20,7 +20,10 @@ const Explanation = (props) => {
         <>
           <QuestionLabel isStudentReport={isStudentReport}>
             {isStudentReport && (
-              <span style={{ color: '#4aac8b' }}>{question.barLabel}</span>
+              <>
+                <span style={{ color: '#4aac8b' }}>{question.barLabel}</span>
+                <span> - </span>
+              </>
             )}
             Explanation
           </QuestionLabel>

@@ -272,7 +272,10 @@ const QuestionBottomAction = ({
   const { sampleAnswer } = item
 
   const isSolutionVisible =
-    (isLCBView || isExpressGrader || previewTab === 'show') &&
+    (isLCBView ||
+      isExpressGrader ||
+      previewTab === 'show' ||
+      isStudentReport) &&
     !isPrintPreview &&
     !(
       !sampleAnswer ||

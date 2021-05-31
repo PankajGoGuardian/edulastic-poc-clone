@@ -10,14 +10,23 @@ import {
   FlexContainer,
   isSEB,
 } from '@edulastic/common'
-import { IconAccessibility, IconCircleLogout, IconSend } from '@edulastic/icons'
+import {
+  IconAccessibility,
+  IconCircleLogout,
+  IconSend,
+  IconPlusRounded,
+  IconMinusRounded,
+} from '@edulastic/icons'
 import { Button, Tooltip } from 'antd'
 import { get } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
-import { toggleScratchpadVisbilityAction } from '../../../common/components/Scratchpad/duck'
+import {
+  toggleScratchpadVisbilityAction,
+  adjustScratchpadDimensionsAction,
+} from '../../../common/components/Scratchpad/duck'
 import { setSettingsModalVisibilityAction } from '../../../student/Sidebar/ducks'
 import TimedTestTimer from './TimedTestTimer'
 
@@ -52,6 +61,7 @@ const SaveAndExit = ({
   toggleScratchpadVisibility,
   hidePause,
   savingResponse,
+  adjustScratchpad,
 }) => {
   const _pauseAllowed = useUtaPauseAllowed(utaId)
   const showPause = _pauseAllowed === undefined ? pauseAllowed : _pauseAllowed
@@ -60,9 +70,17 @@ const SaveAndExit = ({
     <FlexContainer marginLeft="30px" alignItems="center">
       {timedAssignment && <TimedTestTimer utaId={utaId} groupId={groupId} />}
       {LCBPreviewModal && (
-        <ScratchpadVisibilityToggler onClick={toggleScratchpadVisibility}>
-          {currentVisibilityState} student work
-        </ScratchpadVisibilityToggler>
+        <>
+          <AdjustScratchpad onClick={() => adjustScratchpad(5)}>
+            <IconPlusRounded />
+          </AdjustScratchpad>
+          <AdjustScratchpad onClick={() => adjustScratchpad(-5)}>
+            <IconMinusRounded />
+          </AdjustScratchpad>
+          <ScratchpadVisibilityToggler onClick={toggleScratchpadVisibility}>
+            {currentVisibilityState} student work
+          </ScratchpadVisibilityToggler>
+        </>
       )}
       {showZoomBtn && !LCBPreviewModal && (
         <Tooltip placement="bottom" title="Test Options">
@@ -134,6 +152,7 @@ const SaveAndExit = ({
 
 SaveAndExit.propTypes = {
   finishTest: PropTypes.func.isRequired,
+  adjustScratchpad: PropTypes.func.isRequired,
   onSubmit: PropTypes.func,
   setSettingsModalVisibility: PropTypes.func,
   previewPlayer: PropTypes.bool,
@@ -157,6 +176,7 @@ export default connect(
     savingResponse: get(state, 'test.savingResponse', false),
   }),
   {
+    adjustScratchpad: adjustScratchpadDimensionsAction,
     setSettingsModalVisibility: setSettingsModalVisibilityAction,
     toggleScratchpadVisibility: toggleScratchpadVisbilityAction,
   }
@@ -282,4 +302,8 @@ export const SaveAndExitButton = styled(StyledButton)`
 const ScratchpadVisibilityToggler = styled(SaveAndExitButton)`
   width: auto !important;
   text-transform: uppercase;
+`
+
+const AdjustScratchpad = styled(SaveAndExitButton)`
+  padding: 0px 12px;
 `

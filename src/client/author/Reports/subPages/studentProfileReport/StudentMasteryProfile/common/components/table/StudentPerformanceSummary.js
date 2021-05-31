@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import { round, intersection, filter, map, isEmpty } from 'lodash'
+import { round, intersection, filter, map } from 'lodash'
 import { Row, Col } from 'antd'
 import { greyThemeDark1 } from '@edulastic/colors'
 import { StyledTable, StyledSpan } from '../../styled'
@@ -42,7 +42,7 @@ const columns = [
       if (a.standards.length !== b.standards.length) {
         return a.standards.length - b.standards.length
       }
-      return a.name.localeCompare(b.name)
+      return a.name.localeCompare(b.name, undefined, { numeric: true })
     },
   },
   {

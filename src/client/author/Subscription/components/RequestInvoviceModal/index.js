@@ -18,6 +18,7 @@ import {
   Label,
   StyledInput,
   StyledSelect,
+  StyledInputTextArea,
 } from './styled'
 
 const getFooterComponent = ({
@@ -60,7 +61,7 @@ const RequestInvoiceModal = ({
 }) => {
   const [documentType, setDocumentType] = useState('QUOTE')
   const [customDocumentType, setCustomDocumentType] = useState()
-  const [bookkeeperEmail, setBookkeeperEmail] = useState()
+  const [bookkeeperEmails, setBookkeeperEmails] = useState()
   const [selectedSchoolOrDistrict, setSchoolOrDistrict] = useState()
   const [otherInfo, setOtherInfo] = useState()
 
@@ -80,7 +81,7 @@ const RequestInvoiceModal = ({
 
   const onDocumentTypeChange = (e) => setDocumentType(e.target.value)
   const onCustomTypeChange = (e) => setCustomDocumentType(e.target.value)
-  const handleBookkeepersChange = (e) => setBookkeeperEmail(e.target.value)
+  const handleBookkeepersChange = (e) => setBookkeeperEmails(e.target.value)
   const handleSchoolOrDistrictChange = (value) => setSchoolOrDistrict(value)
 
   const filterOption = (input, option) =>
@@ -103,12 +104,14 @@ const RequestInvoiceModal = ({
       return false
     }
 
-    if (bookkeeperEmail) {
-      const flag = emailRegex.test(bookkeeperEmail.trim())
+    if (bookkeeperEmails) {
+      const flag = bookkeeperEmails
+        .split(',')
+        .every((email) => emailRegex.test(email.trim()))
       if (!flag) {
         notification({
           type: 'warning',
-          msg: 'Invalid email format specified for Bookkeeper.',
+          msg: 'Invalid email format specified for Bookkeeper(s).',
         })
         return false
       }
@@ -125,7 +128,7 @@ const RequestInvoiceModal = ({
         documentType,
         typeDescription: customDocumentType,
         schoolOrDistrict,
-        bookkeeperEmail,
+        bookkeeperEmails: bookkeeperEmails.split(',').map((email) => email),
         cartProducts,
         otherInfo,
       }
@@ -193,13 +196,14 @@ const RequestInvoiceModal = ({
       <Label>Person to email documentation to, such as a bookkeeper</Label>
       <StyledInput
         placeholder="Type email address"
-        value={bookkeeperEmail}
+        value={bookkeeperEmails}
         onChange={handleBookkeepersChange}
       />
 
       <Label>Any other information we need to know about your order?</Label>
-      <StyledInput
+      <StyledInputTextArea
         placeholder="Is there any other information we need to know to fill your request..."
+        rows={4}
         value={otherInfo}
         onChange={setOtherInfo}
       />

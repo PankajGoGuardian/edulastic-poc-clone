@@ -119,3 +119,11 @@ export const StyledSelect = styled(Select)`
     line-height: 46px;
   }
 `
+
+export const StyledInputTextArea = styled(Input.TextArea)`
+  background: ${lightGreySecondary};
+  color: ${secondaryTextColor};
+  /* border-color: ${inputBorder1}; */
+  margin-top: 2px;
+  margin-bottom: 25px;
+`

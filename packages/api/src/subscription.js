@@ -38,9 +38,19 @@ const fetchProducts = (data) =>
     })
     .then((result) => result.data.result)
 
+const requestInvoice = (data) =>
+  api
+    .callApi({
+      method: 'post',
+      url: `${prefix}/request-invoice`,
+      data,
+    })
+    .then((result) => result.data)
+
 export default {
   upgradeUsingLicenseKey,
   subscriptionStatus,
   extendTrialLicense,
   fetchProducts,
+  requestInvoice,
 }

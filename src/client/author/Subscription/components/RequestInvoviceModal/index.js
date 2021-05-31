@@ -8,8 +8,15 @@ import {
   notification,
 } from '@edulastic/common'
 import { emailRegex } from '../../../../common/utils/helpers'
-import { getUserOrgData } from '../../../src/selectors/user'
-import { slice, getInvoiceRequestStatus } from '../../ducks'
+import {
+  getUserFullNameSelector,
+  getUserOrgData,
+} from '../../../src/selectors/user'
+import {
+  slice,
+  getInvoiceRequestStatus,
+  getSubscriptionSelector,
+} from '../../ducks'
 import {
   ModalTitle,
   Container,
@@ -20,6 +27,7 @@ import {
   StyledSelect,
   StyledInputTextArea,
 } from './styled'
+import { getUserDetails } from '../../../../student/Login/ducks'
 
 const getFooterComponent = ({
   handleSubmit,
@@ -39,15 +47,15 @@ const getFooterComponent = ({
 
 // TODO: Remove post integration
 const SAMPLE_PRODUCTS = {
-  1: 100,
-  2: 100,
-  3: 100,
+  '5f0835a1984cfa6bcef1e14d': 10,
+  '60098dbef33e901c6f1021c6': 30,
+  '606eb0f759e92006545eac36': 100,
 }
 
 const SAMPLE_PRODUCT_NAMES = {
-  1: 'Teacher License Count',
-  2: 'Spark Science',
-  3: 'Spark Books',
+  '5f0835a1984cfa6bcef1e14d': 'Teacher License Count',
+  '60098dbef33e901c6f1021c6': 'Spark Science',
+  '606eb0f759e92006545eac36': 'Spark Books',
 }
 
 const RequestInvoiceModal = ({
@@ -58,6 +66,9 @@ const RequestInvoiceModal = ({
   userOrgData = {},
   isRequestInvoiceActionPending = false,
   handleRequestInvoice = () => {},
+  userSubscription,
+  userFullname,
+  userDetails,
 }) => {
   const [documentType, setDocumentType] = useState('QUOTE')
   const [customDocumentType, setCustomDocumentType] = useState()
@@ -71,10 +82,12 @@ const RequestInvoiceModal = ({
       name: x.districtName,
       type: 'DISTRICT',
     }))
+
     const schools = (userOrgData.schools || []).map((x) => ({
       id: x._id,
       name: x.name,
       type: 'SCHOOL',
+      districtId: x.districtId,
     }))
     return [...districts, ...schools]
   }, userOrgData)
@@ -83,6 +96,7 @@ const RequestInvoiceModal = ({
   const onCustomTypeChange = (e) => setCustomDocumentType(e.target.value)
   const handleBookkeepersChange = (e) => setBookkeeperEmails(e.target.value)
   const handleSchoolOrDistrictChange = (value) => setSchoolOrDistrict(value)
+  const handleSetOtherInfo = (e) => setOtherInfo(e.target.value)
 
   const filterOption = (input, option) =>
     option?.props?.children?.toLowerCase()?.indexOf(input.toLowerCase()) >= 0
@@ -124,13 +138,25 @@ const RequestInvoiceModal = ({
       const schoolOrDistrict = schoolsAndDistricts.find(
         (x) => x.id === selectedSchoolOrDistrict
       )
+      const emails = bookkeeperEmails
+        ? bookkeeperEmails
+            .split(',')
+            .map((email) => email.trim())
+            .filter((x) => x)
+        : []
       const payload = {
+        userFullname,
+        userEmail: userDetails.email,
         documentType,
         typeDescription: customDocumentType,
         schoolOrDistrict,
-        bookkeeperEmails: bookkeeperEmails.split(',').map((email) => email),
+        bookkeeperEmails: emails.length ? emails : undefined,
         cartProducts,
         otherInfo,
+        licenseType:
+          userSubscription.subType === 'enterprise'
+            ? 'Enterprise'
+            : 'Teacher Premium',
       }
       handleRequestInvoice(payload)
     }
@@ -205,7 +231,7 @@ const RequestInvoiceModal = ({
         placeholder="Is there any other information we need to know to fill your request..."
         rows={4}
         value={otherInfo}
-        onChange={setOtherInfo}
+        onChange={handleSetOtherInfo}
       />
     </CustomModalStyled>
   )
@@ -215,6 +241,9 @@ export default connect(
   (state) => ({
     userOrgData: getUserOrgData(state),
     isRequestInvoiceActionPending: getInvoiceRequestStatus(state),
+    userSubscription: getSubscriptionSelector(state),
+    userFullname: getUserFullNameSelector(state),
+    userDetails: getUserDetails(state),
   }),
   {
     handleRequestInvoice: slice.actions.requestInvoiceAction,

@@ -5,7 +5,7 @@ import { compose } from 'redux'
 // import { withNamespaces } from '@edulastic/localization' // TODO: Need i18n support
 import { connect } from 'react-redux'
 import { roleuser } from '@edulastic/constants'
-import { slice } from '../../ducks'
+import { getInvoiceRequestSuccessModalVisibility, slice } from '../../ducks'
 import HasLicenseKeyModal from '../HasLicenseKeyModal'
 import PurchaseLicenseModal from '../PurchaseLicenseModal'
 import { Wrapper } from '../styled/commonStyled'
@@ -28,6 +28,8 @@ import {
   fetchMultipleSubscriptionsAction,
   getSubsLicensesSelector,
 } from '../../../ManageSubscription/ducks'
+import RequestInvoiceModal from '../RequestInvoviceModal'
+import InvoiceSuccessModal from '../InvoiceSuccessModal'
 
 const comparePlansData = [
   {
@@ -199,6 +201,8 @@ const Subscription = (props) => {
     resetPlaylistFilters,
     fetchMultipleSubscriptions,
     subsLicenses,
+    isRequestinvoiceSuccessModalVisible,
+    toggleRequestInvoiceSuccessModal,
   } = props
 
   const [comparePlan, setComparePlan] = useState(false)
@@ -222,6 +226,7 @@ const Subscription = (props) => {
   const [showTrialSubsConfirmation, setShowTrialSubsConfirmation] = useState(
     false
   )
+  const [isRequestInvoiceModalVisible, setRequestInvoiceModal] = useState(false)
 
   useEffect(() => {
     // getSubscription on mount
@@ -256,6 +261,9 @@ const Subscription = (props) => {
   const closeHasLicenseKeyModal = () => setHasLicenseKeyModal(false)
   const openPurchaseLicenseModal = () => setpurchaseLicenseModal(true)
   const closePurchaseLicenseModal = () => setpurchaseLicenseModal(false)
+  const closeInvoiceSuccessModal = () => toggleRequestInvoiceSuccessModal(false)
+  // const openRequestInvoiceModal = () => setRequestInvoiceModal(true)
+  const closeRequestInvoiceModal = () => setRequestInvoiceModal(false)
 
   const isSubscribed =
     subType === 'premium' ||
@@ -429,6 +437,16 @@ const Subscription = (props) => {
           isCurrentItemBankUsed={isCurrentItemBankUsed}
         />
       )}
+
+      <InvoiceSuccessModal
+        visible={isRequestinvoiceSuccessModalVisible}
+        onCancel={closeInvoiceSuccessModal}
+      />
+
+      <RequestInvoiceModal
+        visible={isRequestInvoiceModalVisible}
+        onCancel={closeRequestInvoiceModal}
+      />
     </Wrapper>
   )
 }
@@ -451,6 +469,9 @@ export default compose(
         state?.subscription?.subscriptionData?.usedTrialItemBankIds,
       dashboardTiles: state.dashboardTeacher.configurableTiles,
       subsLicenses: getSubsLicensesSelector(state),
+      isRequestinvoiceSuccessModalVisible: getInvoiceRequestSuccessModalVisibility(
+        state
+      ),
     }),
     {
       verifyAndUpgradeLicense: slice.actions.upgradeLicenseKeyPending,
@@ -460,6 +481,8 @@ export default compose(
       resetTestFilters: resetTestFiltersAction,
       resetPlaylistFilters: clearPlaylistFiltersAction,
       fetchMultipleSubscriptions: fetchMultipleSubscriptionsAction,
+      toggleRequestInvoiceSuccessModal:
+        slice.actions.toggleRequestInvoiceSuccessModal,
     }
   )
 )(Subscription)

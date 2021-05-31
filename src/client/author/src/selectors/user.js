@@ -9,6 +9,8 @@ const gridEditEnabledDistricts = {
   '5e4a3ce103b7ad09241750e4': true,
 }
 
+export const etsDistrict = '5e42a351a1ee9000081f7cda'
+
 export const stateSelector = (state) => state.user
 
 export const getUserIdSelector = createSelector(stateSelector, (state) =>
@@ -61,6 +63,11 @@ export const getGroupList = createSelector(
 export const getUserRole = createSelector(
   stateSelector,
   (state) => state?.user?.role
+)
+
+export const getChildrens = createSelector(
+  stateSelector,
+  (state) => state?.user?.children
 )
 
 export const getUserIPZipCode = createSelector(
@@ -427,6 +434,7 @@ export const allowedToSelectMultiLanguageInTest = createSelector(
     const allowedUserIds = [
       // '5f5f729516eaad0008c45a44', // uat user
       // '5d26f2f892df401ddf8c2fd7', // poc user
+      '6034a9c3e6cce4000810e6d1', // cespark1@at.com - automation QA env
       '602383287e63eb0007a54233', // vvk@content.com - Conetnt Author
       '6023834b7e63eb0007a54234', // vvk@approver.com - Content Editor
       '5ee90bb54e6a8b000713dae9', // QA testing author account
@@ -435,4 +443,9 @@ export const allowedToSelectMultiLanguageInTest = createSelector(
     ]
     return allowedUserIds.includes(state)
   }
+)
+
+export const isEtsDistrictSelector = createSelector(
+  getUserOrgId,
+  (districtId) => districtId === etsDistrict
 )

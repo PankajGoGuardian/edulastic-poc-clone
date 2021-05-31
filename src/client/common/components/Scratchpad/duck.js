@@ -12,6 +12,8 @@ const SET_SCRATCHPAD_RECT =
 const TOGGLE_SCRATCHPAD_DATA_VISIBILITY =
   '[scratchpad] toggle scratchpad data visibility'
 const RESET_SCRATCHPAD_DIMENSIONS = '[scratchpad] reset scratchpad dimensions'
+const ADJUST_SCRATCHPAD_DIMENSIONS =
+  '[scratchpad] addjust scratchpad dimenstions'
 
 export const updateScratchpadAction = createAction(UPDATE_SCRATCHPAD)
 export const resetScratchPadDataAction = createAction(RESET_SCRATCHPAD)
@@ -24,6 +26,9 @@ export const resetScratchpadDimensionsAction = createAction(
 )
 export const toggleScratchpadVisbilityAction = createAction(
   TOGGLE_SCRATCHPAD_DATA_VISIBILITY
+)
+export const adjustScratchpadDimensionsAction = createAction(
+  ADJUST_SCRATCHPAD_DIMENSIONS
 )
 
 const initialState = {
@@ -39,6 +44,7 @@ const initialState = {
   selectedNodes: [],
   hideData: false,
   scratchpadRect: {},
+  dimensionsPercent: 100,
 }
 
 export function scratchpad(state = initialState, { type, payload }) {
@@ -69,6 +75,11 @@ export function scratchpad(state = initialState, { type, payload }) {
       return {
         ...state,
         hideData: !state.hideData,
+      }
+    case ADJUST_SCRATCHPAD_DIMENSIONS:
+      return {
+        ...state,
+        dimensionsPercent: state.dimensionsPercent + payload,
       }
     case RESET_SCRATCHPAD:
       return { ...initialState, scratchpadRect: state.scratchpadRect }

@@ -47,7 +47,11 @@ const getStandardWiseSummary = (question, point) => {
   return standardSummary
 }
 
-const createItemsSummaryData = (items = [], scoring, isLimitedDeliveryType) => {
+const createItemsSummaryData = (
+  items = [],
+  scoring = {},
+  isLimitedDeliveryType
+) => {
   const summary = {
     totalPoints: 0,
     totalQuestions: 0,
@@ -109,10 +113,8 @@ const createItemsSummaryData = (items = [], scoring, isLimitedDeliveryType) => {
     } else {
       summary.noStandards.totalQuestions += questions.length
       summary.noStandards.totalPoints = roundOff(
-        summary.noStandards.totalPoints + sumBy(
-          questions,
-          ({ id }) => questionWisePoints[id]
-        )
+        summary.noStandards.totalPoints +
+          sumBy(questions, ({ id }) => questionWisePoints[id])
       )
     }
     summary.totalPoints = roundOff(

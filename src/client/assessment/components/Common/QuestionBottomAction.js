@@ -8,6 +8,7 @@ import {
   AnswerContext,
   ScrollContext,
   ItemLevelContext as HideScoringBlockContext,
+  notification,
 } from '@edulastic/common'
 import { TitleWrapper } from '@edulastic/common/src/components/MainHeader'
 import PropTypes from 'prop-types'
@@ -17,7 +18,7 @@ import { round, get, omit } from 'lodash'
 import { Modal, Popover } from 'antd'
 import { roleuser } from '@edulastic/constants'
 import { IconTestBank, IconClockCircularOutline } from '@edulastic/icons'
-import { testItemsApi } from '@edulastic/api'
+import { testItemsApi, testsApi } from '@edulastic/api'
 import { EDIT } from '../../constants/constantsForQuestions'
 import {
   setEditingItemIdAction,
@@ -53,12 +54,14 @@ import {
   allowContentEditCheck,
 } from '../../../author/src/utils/permissionCheck'
 import Explanation from './Explanation'
+import Hints from '../Hints/index'
+import RegradeProgressModal from '../../../author/Regrade/RegradeProgressModal'
 
 export const ShowUserWork = ({ onClick, loading }) => (
   <EduButton
     data-cy="showStudentWork"
     isGhost
-    height="24px"
+    height="30px"
     type="primary"
     fontSize="10px"
     onClick={onClick}
@@ -115,11 +118,19 @@ const QuestionBottomAction = ({
   replaceOriginalItem,
   updating,
   correctItemUpdateProgress,
+  data,
+  enableMagnifier,
+  saveHintUsage,
+  isStudent,
+  itemIndex,
+  view,
   ...questionProps
 }) => {
   // const [openQuestionModal, setOpenQuestionModal] = useState(false)
   const [itemloading, setItemLoading] = useState(false)
   const [hideScoring, setHideScoring] = useState(false)
+  const [notifyRegradeProgress, setNotifyRegradeProgress] = useState(false)
+  const [isPublishedChanges, setIsPublishedChanges] = useState(false)
 
   const [showExplanation, updateShowExplanation] = useState(isGrade)
 
@@ -167,6 +178,30 @@ const QuestionBottomAction = ({
   const showQuestionModal = async () => {
     setItemLoading(true)
     try {
+      const latestTest = await testsApi.getById(additionalData?.testId, {
+        data: true,
+        requestLatest: true,
+        editAndRegrade: true,
+      })
+      if (latestTest.isInEditAndRegrade && latestTest.status === 'draft') {
+        setItemLoading(false)
+        return setNotifyRegradeProgress(true)
+      }
+      if (
+        latestTest._id !== additionalData.testId &&
+        latestTest.status === 'published'
+      ) {
+        setIsPublishedChanges(true)
+        setItemLoading(false)
+        return setNotifyRegradeProgress(true)
+      }
+    } catch (e) {
+      setItemLoading(false)
+      return notification({
+        msg: e?.response?.data?.message || 'Unable to retrieve test info.',
+      })
+    }
+    try {
       const testItem = await testItemsApi.getById(item.testItemId)
       const question = testItem.data.questions.find((q) => q.id === item.id)
       setHideScoring(
@@ -187,6 +222,12 @@ const QuestionBottomAction = ({
       setItemLoading(false)
     }
   }
+
+  const onCloseRegardeProgressModal = () => {
+    setNotifyRegradeProgress(false)
+    setIsPublishedChanges(false)
+  }
+
   const modalTitle = useMemo(() => {
     if (!QuestionComp || !questionData) {
       return null
@@ -257,10 +298,10 @@ const QuestionBottomAction = ({
   const correctItemBtn = (
     <CorrectButton
       isGhost
-      height="24px"
+      height="30px"
       type="primary"
       fontSize="10px"
-      mr="8px"
+      mr="15px"
       onClick={showQuestionModal}
       loading={loading || itemloading}
       disabled={isDisableCorrectItem}
@@ -285,22 +326,41 @@ const QuestionBottomAction = ({
     )
   return (
     <>
+      {notifyRegradeProgress && (
+        <RegradeProgressModal
+          isPublishedChanges={isPublishedChanges}
+          visible={notifyRegradeProgress}
+          onCloseRegardeProgressModal={onCloseRegardeProgressModal}
+        />
+      )}
       <BottomActionWrapper className={isStudentReport ? 'student-report' : ''}>
-        {isSolutionVisible && !showExplanation && (
-          <EduButton
-            width="110px"
-            height="30px"
-            isGhost
-            onClick={onClickShowSolutionHandler}
-          >
-            Show solution
-          </EduButton>
-        )}
-        <div>
+        <LeftWrapper>
           {!hasDrawingResponse && hasShowStudentWork && (
             <ShowUserWork onClick={onClickHandler} loading={loading} />
           )}
-        </div>
+          {view === 'preview' && isLCBView && !isPrintPreview && (
+            <Hints
+              question={data}
+              enableMagnifier={enableMagnifier}
+              saveHintUsage={saveHintUsage}
+              isStudent={isStudent}
+              itemIndex={itemIndex}
+              isLCBView={isLCBView}
+              isExpressGrader={isExpressGrader}
+              isStudentReport={isStudentReport}
+            />
+          )}
+          {isSolutionVisible && !showExplanation && (
+            <EduButton
+              width="110px"
+              height="30px"
+              isGhost
+              onClick={onClickShowSolutionHandler}
+            >
+              Show solution
+            </EduButton>
+          )}
+        </LeftWrapper>
         <RightWrapper>
           {showCorrectItem &&
             item &&
@@ -319,7 +379,7 @@ const QuestionBottomAction = ({
             ) : (
               correctItemBtn
             ))}
-          {timeSpent && <TimeSpent time={timeSpent} />}
+          {!!timeSpent && <TimeSpent time={timeSpent} />}
         </RightWrapper>
       </BottomActionWrapper>
       {isSolutionVisible && (
@@ -455,13 +515,14 @@ const enhance = compose(
 export default enhance(QuestionBottomAction)
 
 export const BottomActionWrapper = styled.div`
+  padding-top: 50px;
   font-size: 19px;
   color: ${greyThemeDark2};
   display: flex;
   justify-content: space-between;
   margin-top: auto;
-  align-items: center;
-  margin: ${({ margin }) => margin || '24px 0px 16px'};
+  align-items: flex-end;
+  margin: ${({ margin }) => margin || '24px 0px 0px'};
 
   &.student-report {
     position: absolute;
@@ -484,10 +545,19 @@ export const BottomActionWrapper = styled.div`
 `
 
 const RightWrapper = styled.div`
+  width: 30%;
   display: flex;
-  align-items: center;
+  justify-content: flex-end;
+  align-items: flex-end;
 `
-
+const LeftWrapper = styled.div`
+  width: 50%;
+  display: flex;
+  align-items: flex-end;
+  & > * {
+    margin-left: 20px;
+  }
+`
 const QuestionPreviewModal = styled(Modal)`
   .ant-modal-header {
     padding: 8px 30px 8px 24px;

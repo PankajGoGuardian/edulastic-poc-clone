@@ -196,7 +196,7 @@ export const showTestInfoModal = ({
               onChange={handlChange}
               suffixIcon={<IconSelectCaretDown color={themeColor} />}
             >
-              <Option value="" disabled>
+              <Option data-cy="preferredLang" value="" disabled>
                 Select Language
               </Option>
               <Option value={languageCodes.ENGLISH}>English</Option>

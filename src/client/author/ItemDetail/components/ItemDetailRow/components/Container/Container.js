@@ -72,7 +72,9 @@ class Container extends Component {
     flowLayout,
     previewTab,
   }) => {
-    const { itemData } = this.props
+    const { itemData, isPassageQuestion } = this.props
+    const { multipartItem } = itemData
+
     return (
       <ItemDetailWidget
         widget={widget}
@@ -83,6 +85,8 @@ class Container extends Component {
         rowIndex={rowIndex}
         flowLayout={flowLayout}
         previewTab={previewTab}
+        isPassageQuestion={isPassageQuestion}
+        dataCy={multipartItem ? 'item-detail-widget' : 'passage-widget'}
       />
     )
   }
@@ -196,7 +200,7 @@ class Container extends Component {
         data-cy="itemdetail-content"
       >
         {isPassageQuestion && row.tabs?.length === 0 && (
-          <AddTabButton tabsBtn onClick={() => addTabs()}>
+          <AddTabButton tabsBtn onClick={() => addTabs()} data-cy="addTab">
             <GreenPlusIcon>+</GreenPlusIcon>
             ADD TABS
           </AddTabButton>
@@ -224,7 +228,9 @@ class Container extends Component {
                           width: `calc(${100 / row.tabs.length}% - 10px)`,
                         }
                   }
-                  onChange={(e) => changeTabTitle(tabIndex, e.target.value)}
+                  onChange={(e) =>
+                    changeTabTitle(tabIndex, e.target.value, row.widgets)
+                  }
                   editable
                   close
                   onClose={() => removeTab(key)}
@@ -297,6 +303,7 @@ class Container extends Component {
             <PassageButtonContainer>
               <PassageAddNewButton
                 onClick={() => handleAddToPassage('video', tabIndex)}
+                data-cy="addVideoButton"
               >
                 <IconPlusCircle />
                 ADD VIDEO
@@ -305,6 +312,7 @@ class Container extends Component {
             <PassageButtonContainer>
               <PassageAddNewButton
                 onClick={() => handleAddToPassage('passage', tabIndex)}
+                data-cy="addPassageButton"
               >
                 <IconPlusCircle />
                 ADD PASSAGE

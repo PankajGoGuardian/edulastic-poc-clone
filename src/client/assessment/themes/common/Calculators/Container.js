@@ -81,7 +81,10 @@ const CalculatorContainer = ({ calculateMode, changeTool }) => {
   useEffect(() => {
     if (desmosGraphingRef.current && calculateMode === 'GRAPHING_DESMOS') {
       const desmosGraphCalculator = Desmos.GraphingCalculator(
-        desmosGraphingRef.current
+        desmosGraphingRef.current,
+        {
+          degreeMode: true,
+        }
       )
       desmosGraphCalculator.setExpression({ dragMode: Desmos.DragModes.XY })
     }

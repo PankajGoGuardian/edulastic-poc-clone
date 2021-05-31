@@ -264,6 +264,7 @@ const sanitizeSelfClosingTags = (inputString) => {
         "allowfullscreen=''></iframe>"
       )
       .replace(/<meta[\s\S]*?>/g, '') // removes meta tag
+      .replace(/(<col(?!group)[^/>]*)(>)/g, '$1/$2') // replace <col> tag with self closing col tag | EV-26330
   return removeStyleTags(removeCommentsFromHtml(sanitizedString))
 }
 

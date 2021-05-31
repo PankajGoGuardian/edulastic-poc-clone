@@ -71,7 +71,8 @@ const getColumns = (handleOnClickStandard, filters) => {
           </ReStyledTag>
         )
       },
-      sorter: (a, b) => a.standard.localeCompare(b.standard),
+      sorter: (a, b) =>
+        a.standard.localeCompare(b.standard, undefined, { numeric: true }),
     },
     {
       title: 'Description',

@@ -228,7 +228,7 @@ const PassageView = ({
         />
       )}
       {!flowLayout && (
-        <QuestionTitleWrapper>
+        <QuestionTitleWrapper data-cy="heading">
           {item.heading && (
             <Heading dangerouslySetInnerHTML={{ __html: item.heading }} />
           )}
@@ -240,7 +240,12 @@ const PassageView = ({
         />
       )}
       {!item.paginated_content && item.content && (
-        <div id={item.id} className="mainContents" ref={mainContentsRef}>
+        <div
+          id={item.id}
+          className="mainContents"
+          ref={mainContentsRef}
+          data-cy="content"
+        >
           <Stimulus
             className="passage-content"
             onFinish={finishedRendering}
@@ -254,7 +259,7 @@ const PassageView = ({
         item.pages &&
         !!item.pages.length &&
         !flowLayout && (
-          <div>
+          <div data-cy="content">
             <Stimulus
               id="paginatedContents"
               dangerouslySetInnerHTML={{ __html: item.pages[page - 1] }}

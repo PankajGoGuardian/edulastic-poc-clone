@@ -1,9 +1,8 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
-import { Row, Col, Table, Menu, Dropdown, Button, Checkbox, Icon } from 'antd'
-import { map, round } from 'lodash'
-import { IconBarChart } from '@edulastic/icons'
+import { Col, Table } from 'antd'
+import { round } from 'lodash'
 import { themeColor, greyThemeDark1 } from '@edulastic/colors'
 import TrendArrow from '../assets/TrendArrow'
 import { calcArrowPosition } from '../transformers'
@@ -11,40 +10,40 @@ import { calcArrowPosition } from '../transformers'
 // TODO: iff. transformer to fetch the checked groups is required
 // else remove the entire logic for checkedGroups
 
-const handleAddGroupChange = (groupId, checkedGroups, selectedStudents) => {
+const handleAddGroupChange = () => {
   /* TODO: fire an api request */
 }
 
-const getMenuItems = (groups, onChange, checkedGroups) => (
-  <Menu>
-    {map(groups, ({ id, name }) => (
-      <Menu.Item key={id}>
-        <Checkbox
-          // checked={checkedGroups.includes(id)}
-          onChange={() => onChange(id)}
-        >
-          {name}
-        </Checkbox>
-      </Menu.Item>
-    ))}
-  </Menu>
-)
+// const getMenuItems = (groups, onChange) => (
+//   <Menu>
+//     {map(groups, ({ id, name }) => (
+//       <Menu.Item key={id}>
+//         <Checkbox
+//           // checked={checkedGroups.includes(id)}
+//           onChange={() => onChange(id)}
+//         >
+//           {name}
+//         </Checkbox>
+//       </Menu.Item>
+//     ))}
+//   </Menu>
+// )
 
-const GroupsDropdown = ({ groups, onChange, checkedGroups }) => (
-  <DropdownContainer>
-    <Dropdown overlay={getMenuItems(groups, onChange, checkedGroups)}>
-      <StyledButton>
-        ADD TO GROUP <Icon type="down" />
-      </StyledButton>
-    </Dropdown>
-  </DropdownContainer>
-)
+// const GroupsDropdown = ({ groups, onChange, checkedGroups }) => (
+//   <DropdownContainer>
+//     <Dropdown overlay={getMenuItems(groups, onChange, checkedGroups)}>
+//       <StyledButton>
+//         ADD TO GROUP <Icon type="down" />
+//       </StyledButton>
+//     </Dropdown>
+//   </DropdownContainer>
+// )
 
 /* TODO: Revert the temporary changes by referring to EV-12639 */
 
 const getColumns = (
   groupsData,
-  handleAddGroupChange,
+  handleAddGroupChangeLocal,
   checkedGroups,
   termId
 ) => [
@@ -56,6 +55,7 @@ const getColumns = (
     render: (data, record) => {
       return (
         <Link
+          target="_blank"
           to={`/author/reports/student-profile-summary/student/${record.studentId}?termId=${termId}`}
         >
           {data}
@@ -64,13 +64,13 @@ const getColumns = (
     },
   },
   {
-    // title: <GroupsDropdown groups={groupsData} onChange={handleAddGroupChange} checkedGroups={checkedGroups} />,
+    // title: <GroupsDropdown groups={groupsData} onChange={handleAddGroupChangeLocal} checkedGroups={checkedGroups} />,
     title: 'Performance',
     colSpan: 2,
     align: 'left',
     key: 'percentScore',
     dataIndex: 'percentScore',
-    render: (data, record) => `${round(data * 100)}%`,
+    render: (data) => `${round(data * 100)}%`,
   },
   {
     title: 'TrendAngle',
@@ -111,15 +111,15 @@ const getColumns = (
 ]
 
 const AddToGroupTable = ({ studData, groupsData, highlighted, termId }) => {
-  const [selectedRowKeys, onSelectChange] = useState([])
+  const [selectedRowKeys] = useState([])
   const checkedStudents = studData.filter((item, index) =>
     selectedRowKeys.includes(index + 1)
   )
   const checkedGroups = [] /* getCommonGroups(checkedStudents) */
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: onSelectChange,
-  }
+  // const rowSelection = {
+  //   selectedRowKeys,
+  //   onChange: onSelectChange,
+  // }
 
   // merge studData with highlighted
   studData.forEach((item) => {
@@ -150,30 +150,30 @@ const AddToGroupTable = ({ studData, groupsData, highlighted, termId }) => {
 
 export default AddToGroupTable
 
-const DropdownContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-`
+// const DropdownContainer = styled.div`
+//   display: flex;
+//   align-items: center;
+//   justify-content: flex-end;
+// `
 
-const StyledButton = styled(Button)`
-  min-width: 100%;
-  height: 35px;
-  padding: 0px 10px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font: 11px/15px Open Sans;
-  font-weight: 600;
-  color: ${themeColor};
-  svg {
-    fill: ${themeColor};
-  }
-  &:hover,
-  &:focus {
-    color: ${themeColor};
-  }
-`
+// const StyledButton = styled(Button)`
+//   min-width: 100%;
+//   height: 35px;
+//   padding: 0px 10px;
+//   display: flex;
+//   align-items: center;
+//   justify-content: space-between;
+//   font: 11px/15px Open Sans;
+//   font-weight: 600;
+//   color: ${themeColor};
+//   svg {
+//     fill: ${themeColor};
+//   }
+//   &:hover,
+//   &:focus {
+//     color: ${themeColor};
+//   }
+// `
 
 export const StyledTable = styled(Table)`
   .ant-table-body {
@@ -246,6 +246,7 @@ export const StyledTable = styled(Table)`
                 }
               `
             }
+            return null
           })
           return styledRows
         }}

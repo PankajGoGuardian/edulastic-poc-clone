@@ -98,10 +98,11 @@ const MathModal = ({
           showResponse={showResponse}
           showDropdown={showDropdown}
           value={latex}
-          resetMath={true}
+          resetMath
           onInput={(newLatex) => onInput(newLatex)}
           onKeyDown={(evt) => onKeyDown(evt)}
           onChangeKeypad={onChangeKeypad}
+          showDragHandle={false}
         />
       )}
     </Modal>

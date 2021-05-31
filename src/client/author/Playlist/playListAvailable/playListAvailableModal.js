@@ -27,6 +27,7 @@ const PlayListAvailableModal = ({
       visible={isVisible}
       footer={footer}
       onCancel={closeModal}
+      width="665px"
     >
       <ModalBody>
         <div dangerouslySetInnerHTML={{ __html: description }} />

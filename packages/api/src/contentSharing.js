@@ -20,7 +20,7 @@ const getSharedUsersList = ({ contentId, contentType }) =>
     })
     .then((result) => result.data.result)
 
-const deleteSharedUser = ({ contentId, sharedId, sharedWith }) =>
+const deleteSharedUser = ({ contentId, sharedId, sharedWith, ...rest }) =>
   api
     .callApi({
       url: `${prefix}/${contentId}/unshare-entity`,
@@ -28,6 +28,7 @@ const deleteSharedUser = ({ contentId, sharedId, sharedWith }) =>
       data: {
         sharedId,
         sharedWith,
+        ...rest,
       },
     })
     .then((result) => result.data.result)

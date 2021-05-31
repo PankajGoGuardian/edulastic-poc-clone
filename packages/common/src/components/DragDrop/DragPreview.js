@@ -77,7 +77,7 @@ const CustomDragLayer = ({ showPoint, centerPoint }) => {
   // ------------- vertical drag scroll start -----------------
   if (scrollEl) {
     const containerTop = top
-    const containerBottom = bottom - itemDimensions.height - 50 // window.innerHeight - 50;
+    const containerBottom = bottom - 15 // window.innerHeight - 50;
     const yOffset = get(currentOffset, 'y', null)
     const scrollByVertical = yOffset < containerTop ? -10 : 10
 
@@ -104,7 +104,7 @@ const CustomDragLayer = ({ showPoint, centerPoint }) => {
 
   // ------------- horizontal drag scroll start ------------------
   if (horizontalScrollEl) {
-    const containerRight = right - itemDimensions.width
+    const containerRight = right - 15
     const xOffset = get(currentOffset, 'x', null)
     const scrollByHorizontal = xOffset < left ? -10 : 10
 
@@ -141,7 +141,7 @@ const CustomDragLayer = ({ showPoint, centerPoint }) => {
   const style = getItemStyles(initialOffset, currentOffset, itemDimensions)
 
   return (
-    <DragPreviewContainer style={layerStyles} itemDimensions={itemDimensions}>
+    <DragPreviewContainer style={layerStyles}>
       <div style={style}>
         <div className="edu-drag-preview">{preview}</div>
         {showPoint && (

@@ -66,7 +66,7 @@ import MTFillInBlanks from '../../../src/assets/math/math-fill-blanks-blue.svg'
 import MTText from '../../../src/assets/math/math-text-blue.svg'
 import MTMatrices from '../../../src/assets/math/math-matrices-blue.svg'
 import MTUnits from '../../../src/assets/math/math-units-blue.svg'
-import MTEssay from '../../../src/assets/math/math-essay-blue.svg'
+// import MTEssay from '../../../src/assets/math/math-essay-blue.svg'
 // import MTClozeMath from "../../../src/assets/math/cloze-math.svg";
 import MTCombinationClozeText from '../../../src/assets/math/math-multipart-cloze-blue.svg'
 import MTCombinationMulti from '../../../src/assets/math/math-multipart-combination-blue.svg'
@@ -891,7 +891,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       onSelectQuestionType,
     },
     {
-      type: 'edit',
+      type: ['edit', 'math'],
       cardImage: WSEssayRichText,
       data: {
         title: 'Essay with Rich Text',
@@ -2485,38 +2485,38 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       },
       onSelectQuestionType,
     },
-    {
-      type: 'math',
-      cardImage: MTEssay,
-      stimulus: '',
-      data: {
-        title: 'Math Essay',
-        stimulus: '',
-        type: questionType.FORMULA_ESSAY,
-        uiStyle: {
-          defaultMode: 'math',
-          fontsize: 'Normal',
-          textFormattingOptions: [
-            'bold',
-            'italic',
-            'underline',
-            'unorderedList',
-          ],
-          responseFontScale: 'Normal (100%)',
-        },
-        validation: {
-          validResponse: {
-            score: 1,
-          },
-        },
-        numberPad: defaultNumberPad,
-        metadata: {},
-        isMath: true,
-        symbols: ['intermediate'],
-        hints: [{ value: uuids[0], label: '' }],
-      },
-      onSelectQuestionType,
-    },
+    // {
+    //   type: 'math',
+    //   cardImage: MTEssay,
+    //   stimulus: '',
+    //   data: {
+    //     title: 'Math Essay',
+    //     stimulus: '',
+    //     type: questionType.FORMULA_ESSAY,
+    //     uiStyle: {
+    //       defaultMode: 'math',
+    //       fontsize: 'Normal',
+    //       textFormattingOptions: [
+    //         'bold',
+    //         'italic',
+    //         'underline',
+    //         'unorderedList',
+    //       ],
+    //       responseFontScale: 'Normal (100%)',
+    //     },
+    //     validation: {
+    //       validResponse: {
+    //         score: 1,
+    //       },
+    //     },
+    //     numberPad: defaultNumberPad,
+    //     metadata: {},
+    //     isMath: true,
+    //     symbols: ['intermediate'],
+    //     hints: [{ value: uuids[0], label: '' }],
+    //   },
+    //   onSelectQuestionType,
+    // },
     {
       type: ['fill-blanks', 'math', 'multipart'],
       cardImage: MTCombinationClozeText,

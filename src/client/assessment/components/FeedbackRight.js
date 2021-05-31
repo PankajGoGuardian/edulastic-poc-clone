@@ -551,6 +551,7 @@ FeedbackRight.defaultProps = {
 }
 
 const enhance = compose(
+  React.memo,
   withRouter,
   withWindowSizes,
   withNamespaces('header'),

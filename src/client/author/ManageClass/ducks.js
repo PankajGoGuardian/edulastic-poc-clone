@@ -504,9 +504,6 @@ const removeStudentsSuccess = (state, { payload: studentIds }) => {
   state.studentsList.forEach((student, index) => {
     if (studentIdHash[student._id]) {
       const studentDetails = state.studentsList[index]
-      if (!studentDetails.username?.includes('.deactivate')) {
-        studentDetails.username = `${studentDetails.username}.deactivate`
-      }
       studentDetails.enrollmentStatus = '0'
       studentDetails.enrollmentUpdatedAt = new Date().getTime()
     }

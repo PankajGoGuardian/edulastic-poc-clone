@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useContext } from 'react'
+import React, { useState, useEffect, useRef, useContext, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
@@ -77,6 +77,7 @@ const Scratchpad = ({
   hideData,
   setScratchpadRect,
   conatinerWidth,
+  dimensionsPercent,
 }) => {
   const [zwibbler, setZwibbler] = useState()
   const [clipBoard, updateClipBoard] = useState()
@@ -92,8 +93,15 @@ const Scratchpad = ({
   const { isAnswerModifiable, expressGrader } = useContext(AnswerContext)
   const isLineMode = lineTypes.includes(activeMode)
 
-  const height = get(dimensions, 'height', null)
-  const width = get(dimensions, 'width', null)
+  const [height, width] = useMemo(() => {
+    let _height = get(dimensions, 'height', null)
+    let _width = get(dimensions, 'width', null)
+    if (readOnly && dimensionsPercent !== 100 && _height && _width) {
+      _height *= dimensionsPercent / 100
+      _width *= dimensionsPercent / 100
+    }
+    return [_height, _width]
+  }, [dimensions, readOnly, dimensionsPercent])
 
   const toggleProtractor = () => {
     zwibbler.begin()
@@ -432,6 +440,7 @@ const EnhancedComponent = compose(
       deleteMode: state.scratchpad.deleteMode,
       editMode: state.scratchpad.editMode,
       hideData: state.scratchpad.hideData,
+      dimensionsPercent: state.scratchpad.dimensionsPercent,
     }),
     {
       toggleButtons: toggleButtonsAction,

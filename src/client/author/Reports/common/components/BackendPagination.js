@@ -25,7 +25,8 @@ const BackendPagination = ({
     total={
       itemsCount ||
       backendPagination.itemsCount ||
-      backendPagination.pageCount * backendPagination.pageSize
+      backendPagination.pageCount * backendPagination.pageSize ||
+      1 // default count of items to hide pagination when count is 0
     }
     showSizeChanger={false}
     hideOnSinglePage

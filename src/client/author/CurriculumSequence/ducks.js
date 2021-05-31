@@ -2,7 +2,7 @@ import { buffers } from 'redux-saga'
 import { createSelector } from 'reselect'
 import { createAction, createReducer } from 'redux-starter-kit'
 import * as moment from 'moment'
-import { message } from 'antd'
+import { message, Modal } from 'antd'
 import {
   takeLatest,
   takeEvery,
@@ -61,6 +61,7 @@ import {
   receiveRecentPlayListsAction,
   receiveLastPlayListSaga,
 } from '../Playlist/ducks'
+import { themeColor } from '@edulastic/colors'
 
 // Constants
 export const CURRICULUM_TYPE_GUIDE = 'guide'
@@ -1952,7 +1953,8 @@ function* fetchDifferentiationWorkSaga({ payload }) {
   }
 }
 
-function* addRecommendationsSaga({ payload }) {
+function* addRecommendationsSaga({ payload: _payload }) {
+  let { toggleAssignModal, recommendations: payload } = _payload
   try {
     yield put(setRecommendationsToAssignAction({ isAssigning: true }))
     let response = null
@@ -1989,7 +1991,24 @@ function* addRecommendationsSaga({ payload }) {
   } catch (err) {
     console.error(err)
     yield put(setRecommendationsToAssignAction({ isAssigning: false }))
-    yield call(notification, { msg: err.response.data.message })
+    if (
+      err?.response?.data?.statusCode === 404 &&
+      err?.response?.data?.error === 'Item Not Found'
+    ) {
+      toggleAssignModal(false)
+      Modal.info({
+        title: `Test can’t be assigned as there are no items found with selected standards.`,
+        okText: 'Close',
+        centered: true,
+        width: 500,
+        okButtonProps: {
+          style: { background: themeColor, outline: 'none' },
+        },
+        onOk: Modal.destroyAll,
+      })
+    } else {
+      yield call(notification, { msg: err.response.data.message })
+    }
   }
 }
 

@@ -18,7 +18,7 @@ const useDropdownData = (
 ) =>
   useMemo(
     () =>
-      items.map(item => {
+      items.map((item) => {
         const idx = item[title_key].search(
           new RegExp(escapeRegExp(searchText), 'i')
         )
@@ -27,7 +27,7 @@ const useDropdownData = (
           const _titles = [
             _title.slice(0, idx),
             _title.slice(idx, idx + searchText.length),
-            _title.slice(idx + searchText.length)
+            _title.slice(idx + searchText.length),
           ]
           _title = (
             <>
@@ -41,7 +41,7 @@ const useDropdownData = (
           ? {
               overflow: 'hidden',
               textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap'
+              whiteSpace: 'nowrap',
             }
           : {}
         const _optionProps =

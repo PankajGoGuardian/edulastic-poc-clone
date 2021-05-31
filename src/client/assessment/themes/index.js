@@ -176,7 +176,7 @@ function incrementNavigationCounter({ history, testActivityId }) {
     })
 }
 
-export function ForceFullScreenModal({ visible, takeItLaterCb }) {
+export function ForceFullScreenModal({ visible, takeItLaterCb, fullscreenCb }) {
   return (
     <StyledModal
       destroyOnClose
@@ -196,6 +196,9 @@ export function ForceFullScreenModal({ visible, takeItLaterCb }) {
             type="primary"
             onClick={() => {
               Fscreen.requestFullscreen(document.body)
+              if (fullscreenCb) {
+                fullscreenCb(true)
+              }
             }}
           >
             Enter Full Screen
@@ -426,7 +429,9 @@ export function useTabNavigationCounterEffect({
         clearTimeout(idleTimeoutRef.current)
       }
       totalBlurTimeCounterIntervalRef.current = setInterval(() => {
-        totalTimeInBlur.current += 1
+        if (enabled) {
+          totalTimeInBlur.current += 1
+        }
         window.sessionStorage.totalTimeInBlur = totalTimeInBlur.current
         if (enabled && threshold > 1) {
           const maximumTimeLimit = threshold * 5
@@ -464,26 +469,37 @@ const RealTimeV2HookWrapper = ({
   regradedRealtimeAssignment,
   groupId,
 }) => {
-  let topics = [
-    `student_assessment:user:${userId}`,
-    `student_assessment:test:${testId}:group:${groupId}`,
-    `student_assessment:test:${testId}`,
-  ]
-  if (regradedAssignment?.newTestId) {
-    topics = [
-      ...topics,
-      `student_assessment:test:${regradedAssignment?.newTestId}:group:${groupId}`,
+  /**
+   * need to memoize the topics since its going to be used as dependency for
+   * useEffect and its referrence shouldn't change for each re-render
+   */
+  const topicsMemoized = useMemo(() => {
+    let topics = [
+      `student_assessment:user:${userId}`,
+      `student_assessment:test:${testId}:group:${groupId}`,
+      `student_assessment:test:${testId}`,
     ]
-  }
+    if (regradedAssignment?.newTestId) {
+      topics = [
+        ...topics,
+        `student_assessment:test:${regradedAssignment?.newTestId}:group:${groupId}`,
+      ]
+    }
+    return topics
+  }, [userId, testId, groupId, regradedAssignment?.newTestId])
 
-  useRealtimeV2(topics, {
-    regradedAssignment: (payload) => {
-      regradedRealtimeAssignment(payload)
+  useRealtimeV2(
+    topicsMemoized,
+    {
+      regradedAssignment: (payload) => {
+        regradedRealtimeAssignment(payload)
+      },
+      correctItem: (payload) => {
+        regradedRealtimeAssignment(payload)
+      },
     },
-    correctItem: (payload) => {
-      regradedRealtimeAssignment(payload)
-    },
-  })
+    { dynamicTopics: true }
+  )
   return null
 }
 
@@ -576,6 +592,7 @@ const AssessmentContainer = ({
   } = restProps
 
   const hidePause = blockSaveAndContinue
+  const [enteredIntoFullScreen, setEnteredIntoFullScreen] = useState(false)
   const currentlyFullScreen = useFullScreenListener({
     enabled: restrictNavigationOut,
     assignmentId: assignmentObj?._id,
@@ -588,7 +605,7 @@ const AssessmentContainer = ({
 
   useTabNavigationCounterEffect({
     testActivityId: restProps.utaId,
-    enabled: restrictNavigationOut,
+    enabled: restrictNavigationOut && enteredIntoFullScreen,
     threshold: restrictNavigationOutAttemptsThreshold,
     history,
     assignmentId: assignmentObj?._id,
@@ -637,7 +654,18 @@ const AssessmentContainer = ({
       Modal.info({
         title: "It looks like there aren't any Items in this test.",
         okText: 'Close',
-        onOk: () => setIsTestPreviewVisible(false),
+        centered: true,
+        width: 500,
+        okButtonProps: {
+          style: { background: themeColor, outline: 'none' },
+        },
+        onOk: () => {
+          setIsTestPreviewVisible(false)
+          if (userRole === roleuser.STUDENT) {
+            history.push('/home/assignments')
+          }
+          Modal.destroyAll()
+        },
       })
     }
   }, [loading])
@@ -1175,6 +1203,7 @@ const AssessmentContainer = ({
           <ForceFullScreenModal
             testActivityId={restProps.utaId}
             history={history}
+            fullscreenCb={setEnteredIntoFullScreen}
             visible={
               !currentlyFullScreen &&
               history.location.pathname.includes('/uta/')

@@ -92,6 +92,7 @@ const AdvancedOptions = ({
                   : ''
               }
               onChange={(e) => handleUiChange('width', e.target.value)}
+              data-cy="width"
             />
           </Col>
           <Col span={12}>
@@ -105,6 +106,7 @@ const AdvancedOptions = ({
                   : ''
               }
               onChange={(e) => handleUiChange('height', e.target.value)}
+              data-cy="height"
             />
           </Col>
         </Row>
@@ -115,6 +117,7 @@ const AdvancedOptions = ({
               size="large"
               value={item.transcript || ''}
               onChange={(e) => handleChange('transcript', e.target.value)}
+              data-cy="transcript"
             />
           </Col>
         </Row>

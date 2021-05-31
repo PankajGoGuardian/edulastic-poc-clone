@@ -64,6 +64,10 @@ export const RECALCULATE_ADDITIONAL_DATA =
  */
 export const SET_STUDENT_VIEW_FILTER = '[gradebook] set studentview filter'
 export const SET_SHOW_ALL_STUDENTS = '[gradebook]] set show all students filter'
+export const SET_PAGE_NUMBER = '[lcb] set page number action'
+export const SET_LCB_QUESTION_LOADER_STATE =
+  '[lcb] set lcb question loader state'
+export const SET_QUESTION_ID_TO_SCROLL = '[lcb] set question id to scroll'
 
 export const realtimeGradebookActivityAddAction = createAction(
   REALTIME_GRADEBOOK_TEST_ACTIVITY_ADD
@@ -91,6 +95,13 @@ export const realtimeUpdateAssignmentAction = createAction(
 export const recalculateAdditionalDataAction = createAction(
   RECALCULATE_ADDITIONAL_DATA
 )
+export const setPageNumberAction = createAction(SET_PAGE_NUMBER)
+export const setLcbQuestionLoaderStateAcion = createAction(
+  SET_LCB_QUESTION_LOADER_STATE
+)
+export const setQuestionIdToScrollAction = createAction(
+  SET_QUESTION_ID_TO_SCROLL
+)
 
 export const setStudentViewFilterAction = createAction(SET_STUDENT_VIEW_FILTER)
 export const setProgressStatusAction = createAction(SET_PROGRESS_STATUS)
@@ -113,6 +124,9 @@ const initialState = {
   studentViewFilter: null,
   isShowAllStudents: false,
   actionInProgress: false,
+  pageNumber: 1,
+  isQuestionsLoading: false,
+  questionId: '',
 }
 
 const reducer = (state = initialState, { type, payload }) => {
@@ -692,6 +706,21 @@ const reducer = (state = initialState, { type, payload }) => {
           }
           return item
         }),
+      }
+    case SET_PAGE_NUMBER:
+      return {
+        ...state,
+        pageNumber: payload || state.pageNumber + 1,
+      }
+    case SET_LCB_QUESTION_LOADER_STATE:
+      return {
+        ...state,
+        isQuestionsLoading: payload,
+      }
+    case SET_QUESTION_ID_TO_SCROLL:
+      return {
+        ...state,
+        questionId: payload,
       }
     default:
       return state

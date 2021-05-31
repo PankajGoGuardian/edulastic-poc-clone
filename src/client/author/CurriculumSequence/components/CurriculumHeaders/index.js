@@ -241,7 +241,11 @@ const CurriculumHeader = ({
       <MainHeader
         Icon={isDesktop ? IconPlaylist : null}
         headingText={loading ? 'Untitled Playlist' : title}
-        titleText={destinationCurriculumSequence?.alignmentInfo}
+        titleText={
+          loading
+            ? 'Untitled Playlist'
+            : `${title} - ${destinationCurriculumSequence?.alignmentInfo}`
+        }
         titleMaxWidth="22rem"
         justify="space-between"
         headingSubContent={headingSubContent}

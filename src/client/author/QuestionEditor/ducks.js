@@ -1050,11 +1050,11 @@ function* loadQuestionSaga({ payload }) {
         push({
           pathname: `${pathname}/questions/edit/${data.type}`,
           state: {
+            ...locationState,
             backText: 'question edit',
             backUrl: pathname,
             rowIndex,
             isPassageWithQuestions: isPassageWidget,
-            ...locationState,
           },
         })
       )

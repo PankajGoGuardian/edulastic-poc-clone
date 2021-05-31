@@ -20,7 +20,6 @@ const SET_REPORTS_PREV_STANDARDS_FILTERS =
   '[reports] get reports prev standards filters'
 
 const SET_FILTERS = '[reports] set standards filters'
-const SET_TEST_ID = '[reports] set standards testId'
 const SET_TEMP_DD_FILTER = '[reports] set standards tempDdFilters'
 const SET_TEMP_TAGS_DATA = '[reports] set standards temp tempTagsData'
 
@@ -34,7 +33,6 @@ export const setPrevStandardsFiltersAction = createAction(
 )
 
 export const setFiltersAction = createAction(SET_FILTERS)
-export const setTestIdAction = createAction(SET_TEST_ID)
 export const setTempDdFilterAction = createAction(SET_TEMP_DD_FILTER)
 export const setTempTagsDataAction = createAction(SET_TEMP_TAGS_DATA)
 
@@ -60,11 +58,6 @@ export const getReportsStandardsFilters = createSelector(
 export const getFiltersSelector = createSelector(
   stateSelector,
   (state) => state.filters
-)
-
-export const getTestIdSelector = createSelector(
-  stateSelector,
-  (state) => state.testIds
 )
 
 export const getTempDdFilterSelector = createSelector(
@@ -98,7 +91,6 @@ const initialState = {
   filters: {
     ...staticDropDownData.initialFilters,
   },
-  testIds: [],
   tempDdFilter: {
     ...staticDropDownData.initialDdFilters,
   },
@@ -123,9 +115,6 @@ export const reportStandardsFilterDataReducer = createReducer(initialState, {
   },
   [SET_FILTERS]: (state, { payload }) => {
     state.filters = { ...payload }
-  },
-  [SET_TEST_ID]: (state, { payload }) => {
-    state.testIds = payload
   },
   [SET_TEMP_DD_FILTER]: (state, { payload }) => {
     state.tempDdFilter = payload

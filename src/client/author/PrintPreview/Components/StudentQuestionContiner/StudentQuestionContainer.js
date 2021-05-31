@@ -45,6 +45,7 @@ class StudentQuestionContainer extends Component {
     let assignmentId = testActivity ? testActivity.assignmentId : ''
     let groupId = testActivity ? testActivity.groupId : ''
     const userId = testActivity ? testActivity.userId : ''
+    const overallFeedback = testActivity?.feedback?.text || ''
     const classname = additionalData ? additionalData.className : ''
     const testName = additionalData ? additionalData.testName : ''
     const assignedBy = additionalData ? additionalData?.assignedBy?.name : ''
@@ -76,6 +77,12 @@ class StudentQuestionContainer extends Component {
               <Color>Class Name: </Color>
               {classname}
             </InfoItem>
+            {overallFeedback && (
+              <InfoItem>
+                <Color>Overall Feedback: </Color>
+                {overallFeedback}
+              </InfoItem>
+            )}
           </StudentInformation>
           <TimeContainer>
             {testActivity.status !== UTAStatusToConstants.ABSENT &&

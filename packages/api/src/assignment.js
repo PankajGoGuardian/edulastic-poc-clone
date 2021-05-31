@@ -53,7 +53,8 @@ const fetchAssigned = (
   testId = '',
   groupStatus = 'all',
   studentId = '',
-  districtId = ''
+  districtId = '',
+  searchWithVersionId = false
 ) =>
   api
     .callApi({
@@ -65,6 +66,7 @@ const fetchAssigned = (
         groupStatus,
         studentId,
         districtId,
+        searchWithVersionId,
       },
     })
     .then((result) => result.data.result)

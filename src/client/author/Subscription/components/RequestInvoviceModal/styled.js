@@ -126,4 +126,5 @@ export const StyledInputTextArea = styled(Input.TextArea)`
   /* border-color: ${inputBorder1}; */
   margin-top: 2px;
   margin-bottom: 25px;
+  resize: none;
 `

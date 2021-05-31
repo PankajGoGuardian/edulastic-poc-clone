@@ -83,7 +83,7 @@ const ExternalVideoLink = (props) => {
       <FlexRow>
         <FieldLabel>URL</FieldLabel>
         <TextInputStyled
-          placeholder="Enter a URL"
+          placeholder="Enter Youtube URL | Video Embed Code | AWS URL"
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           height="36px"

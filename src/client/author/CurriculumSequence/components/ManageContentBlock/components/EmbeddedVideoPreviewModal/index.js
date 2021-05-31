@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import EdulasticResourceModal from '../common/EdulasticResourceModal'
+import ReactPlayer from 'react-player'
 
 /**
  * EmbeddedVideoPreviewModal modal to preview embedded video links
@@ -75,6 +76,25 @@ const EmbeddedVideoPreviewModal = (props) => {
     )
   }
 
+  const awsService = () => {
+    return (
+      <EdulasticResourceModal
+        headerText={title}
+        {...props}
+        maxWidth="730px"
+        hideFooter
+        smallFont
+        modalWidth={'730px'}
+      >
+        <ReactPlayer
+          width={'640px'}
+          controls={true} 
+          url={url} 
+         />
+      </EdulasticResourceModal>
+    )
+  }
+
   if (url.search(/youtu\.?be(\.com)?\//) !== -1) {
     return youtubeService()
   }
@@ -83,6 +103,9 @@ const EmbeddedVideoPreviewModal = (props) => {
   }
   if (url.includes('drive.google.com')) {
     return googleDriveService()
+  }
+  if (url.includes('cloudfront.net')) {
+    return awsService()
   }
   return (
     <EdulasticResourceModal

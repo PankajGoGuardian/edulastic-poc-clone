@@ -1398,7 +1398,7 @@ export const getCanOpenAssignmentSelector = createSelector(
   getCurrentClassIdSelector,
   getUserRole,
   (additionalData, currentClass, userRole) =>
-    additionalData?.canOpenClass.includes(currentClass) &&
+    additionalData?.canOpenClass?.includes(currentClass) &&
     !(
       additionalData?.openPolicy ===
         assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_ADMIN &&

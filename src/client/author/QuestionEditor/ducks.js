@@ -938,7 +938,13 @@ function* addAuthoredItemsToTestSaga({ payload }) {
 
 function* calculateFormulaSaga({ payload }) {
   try {
-    const getLatexValuePairs = ({ id, variables, example, options }) => ({
+    const getLatexValuePairs = ({
+      id,
+      variables,
+      example,
+      options,
+      isClozeMath,
+    }) => ({
       id,
       latexes: Object.keys(variables)
         .map((variableName) => variables[variableName])
@@ -949,6 +955,7 @@ function* calculateFormulaSaga({ payload }) {
             {
               id: variable.name,
               formula: variable.formula,
+              options: isClozeMath ? options[variable.name] || {} : options,
             },
           ],
           []
@@ -962,7 +969,6 @@ function* calculateFormulaSaga({ payload }) {
             ? example[variableName]
             : variables[variableName].exampleValue,
       })),
-      ...options,
     })
 
     const question = yield select(getCurrentQuestionSelector)
@@ -1000,7 +1006,8 @@ function* calculateFormulaSaga({ payload }) {
         getLatexValuePairs({
           id: 'definition',
           variables,
-          options: isClozeMath ? { options } : options,
+          options,
+          isClozeMath,
         }),
       ]
       if (examples) {
@@ -1009,7 +1016,8 @@ function* calculateFormulaSaga({ payload }) {
             id: `example${example.key}`,
             variables,
             example,
-            options: isClozeMath ? { options } : options,
+            options,
+            isClozeMath,
           })
           if (pair.latexes.length > 0) {
             latexValuePairs.push(pair)

@@ -260,7 +260,7 @@ export const getOptionsForMath = (validations) => {
     transformedOptions = transformOpts(options)
   })
 
-  return { options: transformedOptions }
+  return transformedOptions
 }
 
 export const getOptionsForClozeMath = (variables, validations) => {
@@ -272,8 +272,11 @@ export const getOptionsForClozeMath = (variables, validations) => {
   if (isEmpty(formularKeys)) {
     return {}
   }
-  // TODO: includes math unit
-  const maths = validations.validResponse.value
+
+  const mathInputss = validations.validResponse.value
+  const mathUnits = validations.validResponse.mathUnits.value
+  const maths = mathInputss.concat([mathUnits])
+
   formularKeys.forEach((key) => {
     const mathFields = maths.filter((m) => m[0].value.includes(`@${key}`))
     if (mathFields.length > 1) {

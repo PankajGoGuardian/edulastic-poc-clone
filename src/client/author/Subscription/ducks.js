@@ -61,6 +61,14 @@ export const getBookKeepersInviteSuccessStatus = createSelector(
   subscriptionSelector,
   (state) => state.isBookKeepersInviteSuccess
 )
+export const getInvoiceRequestStatus = createSelector(
+  subscriptionSelector,
+  (state) => state.isRequestInvoiceActionPending
+)
+export const getInvoiceRequestSuccessModalVisibility = createSelector(
+  subscriptionSelector,
+  (state) => state.isRequestinvoiceSuccessModalVisible
+)
 
 const slice = createSlice({
   name: 'subscription',
@@ -74,6 +82,8 @@ const slice = createSlice({
     showHeaderTrialModal: false,
     addOnProductIds: [],
     isBookKeepersInviteSuccess: false,
+    isRequestInvoiceActionPending: false,
+    isRequestinvoiceSuccessModalVisible: false,
   },
   reducers: {
     fetchUserSubscriptionStatus: (state) => {
@@ -164,6 +174,19 @@ const slice = createSlice({
       state.isBookKeepersInviteSuccess = payload
     },
     bulkInviteBookKeepersAction: () => {},
+    requestInvoiceAction: (state) => {
+      state.isRequestInvoiceActionPending = true
+    },
+    requestInvoiceActionSuccess: (state) => {
+      state.isRequestInvoiceActionPending = false
+      state.isRequestinvoiceSuccessModalVisible = true
+    },
+    requestInvoiceActionFailure: (state) => {
+      state.isRequestInvoiceActionPending = false
+    },
+    toggleRequestInvoiceSuccessModal: (state, { payload }) => {
+      state.isRequestinvoiceSuccessModalVisible = payload
+    },
   },
 })
 
@@ -558,6 +581,24 @@ function* bulkInviteBookKeepersSaga({ payload }) {
   }
 }
 
+function* requestInvoiceSaga({ payload }) {
+  try {
+    const result = yield call(subscriptionApi.requestInvoice, payload)
+    if (result?.result?.success) {
+      yield put(slice.actions.requestInvoiceActionSuccess())
+    } else {
+      yield put(slice.actions.requestInvoiceActionFailure())
+    }
+  } catch (err) {
+    yield put(slice.actions.requestInvoiceActionFailure())
+    notification({
+      type: 'error',
+      msg: 'Something went wrong while requesting invoice.',
+    })
+    captureSentryException(err)
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(slice.actions.upgradeLicenseKeyPending, upgradeUserLicense),
@@ -579,5 +620,6 @@ export function* watcherSaga() {
       slice.actions.bulkInviteBookKeepersAction,
       bulkInviteBookKeepersSaga
     ),
+    yield takeEvery(slice.actions.requestInvoiceAction, requestInvoiceSaga),
   ])
 }

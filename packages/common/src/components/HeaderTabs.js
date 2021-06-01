@@ -24,6 +24,7 @@ const HeaderTabs = ({
   linkLabel,
   history,
   hideIcon,
+  activeStyle,
   ...restProps
 }) => {
   const handleOnClick = () => {
@@ -46,7 +47,12 @@ const HeaderTabs = ({
       data-cy={dataCy}
       {...restProps}
     >
-      <StyledAnchor isActive={isActive} hasIcon={!!icon} hideIcon={hideIcon}>
+      <StyledAnchor
+        activeStyle={activeStyle}
+        isActive={isActive}
+        hasIcon={!!icon}
+        hideIcon={hideIcon}
+      >
         {icon}
         <LinkLabel hasIcon={!!icon}>{linkLabel}</LinkLabel>
       </StyledAnchor>
@@ -63,11 +69,13 @@ HeaderTabs.propTypes = {
   linkLabel: PropTypes.any.isRequired,
   icon: PropTypes.any.isRequired,
   onClickHandler: PropTypes.func,
+  activeStyle: PropTypes.object,
 }
 
 HeaderTabs.defaultProps = {
   to: '#',
   onClickHandler: () => {},
+  activeStyle: {},
 }
 
 export default withRouter(HeaderTabs)
@@ -119,6 +127,7 @@ export const StyledAnchor = styled.div`
   border-radius: 4px 4px 0px 0px;
   background-color: ${(props) => (props.isActive ? white : '#E5E5E5')};
   position: relative;
+  ${(props) => props.isActive && props.activeStyle}
   svg {
     fill: ${(props) => (props.isActive ? '#2F4151' : '#87929B')};
     margin-right: 12px;

@@ -7,6 +7,13 @@ import {
   titleColor,
 } from '@edulastic/colors'
 
+export const SubscriptionContentWrapper = styled.div`
+  background: #f9f9f9;
+  width: 100%;
+  height: 100%;
+  padding: 20px 30px;
+`
+
 export const CompareModal = styled(Modal)`
   width: calc(100% - 80px) !important;
 

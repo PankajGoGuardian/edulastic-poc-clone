@@ -31,6 +31,7 @@ const Header = ({
       isPremiumUser={isPremiumUser}
       orgData={orgData}
       userRole={userRole}
+      isManageSubscriptionView
     />
   )
 }

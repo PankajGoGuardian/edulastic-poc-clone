@@ -9,24 +9,6 @@ import { Link } from 'react-router-dom'
 import { isBoolean, groupBy, keyBy, difference, map } from 'lodash'
 import TrialModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/TrialModal/index'
 
-// TODO: Update SVG imports here
-import IMG2 from '../../static/2.png'
-
-import IMG4 from '../../static/text-speech.svg'
-import IMG5 from '../../static/test-security-settings.svg'
-import IMG6 from '../../static/advanced-authoring.svg'
-import IMG7 from '../../static/in-depth-reports.svg'
-import IMG8 from '../../static/playlists.svg'
-import IMG9 from '../../static/collaboration-engagement.svg'
-import IMG10 from '../../static/student-groups.svg'
-import IMG11 from '../../static/parent-portal.svg'
-
-import IMG12 from '../../static/spark.svg'
-import IMG13 from '../../static/book-buddies.svg'
-import IMG14 from '../../static/stem-cross-curricular.svg'
-import IMG15 from '../../static/phonics-practice.svg'
-import IMG16 from '../../static/reading-comprehension-practice.svg'
-
 import { ActionsWrapper, Description, Title } from '../styled/commonStyled'
 import {
   AvailablePlansContainer,
@@ -53,12 +35,21 @@ import {
   PurchaseLink,
   LearnMoreLink,
   HaveLicenseKey,
+  IconWrapper,
+  CardDetails,
+  GradeWrapper,
+  OtherFilters,
+  CardRightWrapper,
+  Price,
+  CardsSection,
+  FilterSection,
 } from './styled'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import CalendlyScheduleModal from './CalendlyScheduleModal'
 import FeatureNotAvailableModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/FeatureNotAvailableModal'
+import { IconQuestionCircle } from '@edulastic/icons'
 
-const getUpgradeToMultipleUsersPlanAction = ({ openPurchaseLicenseModal }) => (
+/* const getUpgradeToMultipleUsersPlanAction = ({ openPurchaseLicenseModal }) => (
   <ActionsWrapper>
     <EduButton height="40px" onClick={openPurchaseLicenseModal} isGhost>
       PURCHASE LICENSE
@@ -79,97 +70,9 @@ const availablePlans = [
       'Administer common assesement, get immediate school or district-wide reports, and enable premium access for all teachers in your school or district.',
     getActionsComp: getUpgradeToMultipleUsersPlanAction,
   },
-]
+] */
 
-const featuresData = [
-  {
-    imgSrc: IMG4,
-    title: 'Text-to-speech',
-    description: 'Enable read aloud for select students',
-  },
-  {
-    imgSrc: IMG5,
-    title: 'Test Security Settings',
-    description: 'Shuffle questions, password protect, and more',
-  },
-  {
-    imgSrc: IMG6,
-    title: 'Advanced Authoring',
-    description:
-      'Activate dynamic parameters, rubrics, & authoring power tools',
-  },
-  {
-    imgSrc: IMG7,
-    title: 'In-depth reports',
-    description:
-      'Analyze data, growth, performance over time, & student mastery profiles.',
-  },
-  {
-    imgSrc: IMG8,
-    title: 'Playlists',
-    description: 'Organize and deliver your assessments by units or modules.',
-  },
-  {
-    imgSrc: IMG9,
-    title: 'Collaboration & Engagement',
-    description: 'Co-author, display present mode, and more.',
-  },
-  {
-    imgSrc: IMG10,
-    title: 'Student Groups',
-    description:
-      'Arrange students for differentiated assignments & instruction.',
-  },
-  {
-    imgSrc: IMG11,
-    title: 'Parent Portal',
-    description: 'Give parents/guardians insight into student progress.',
-  },
-]
-
-const addonsData = [
-  {
-    imgSrc: IMG12,
-    title: 'SparkMath',
-    description:
-      'Pre-built assessments and differentiated Math practice for each student',
-    learnMoreLinks: 'https://edulastic.com/spark-math',
-  },
-  {
-    imgSrc: IMG13,
-    title: 'Book Buddies',
-    description: 'Assessments and prompts on your favorite books',
-    learnMoreLinks: 'https://edulastic.com/spark-reading',
-  },
-  {
-    imgSrc: IMG14,
-    title: 'STEM Cross-curricular',
-    description: 'Science passages with reading and science questions',
-    learnMoreLinks: 'https://edulastic.com/spark-reading',
-  },
-  {
-    imgSrc: IMG15,
-    title: 'Phonics Practice',
-    description:
-      'Full year of practice assignments to help all students master each sound',
-    learnMoreLinks: 'https://edulastic.com/spark-reading',
-  },
-  {
-    imgSrc: IMG16,
-    title: 'Reading Comprehension Practice',
-    description: 'Fiction and nonfiction to practice close reading',
-    learnMoreLinks: 'https://edulastic.com/spark-reading',
-  },
-  {
-    imgSrc: IMG12,
-    title: 'SparkScience',
-    description:
-      'NGSS-aligned pre-built assessments and item banks for grades K-12',
-    learnMoreLinks: 'https://edulastic.com/spark-science',
-  },
-]
-
-const PlansComponent = ({
+/* const PlansComponent = ({
   imgSrc,
   title,
   description,
@@ -194,7 +97,100 @@ const PlansComponent = ({
       isblur,
     })}
   </PlansContainer>
-)
+) */
+
+const productsData = [
+  {
+    icon: <IconQuestionCircle />,
+    title: 'SparkMath',
+    description:
+      'Pre-built assessments and differentiated Math practice for each student. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean non ante fermentum, bibendum ex ut, tincidunt diam.',
+    learnMoreLinks: 'https://edulastic.com/spark-math',
+    grades: 'Grades 6-8',
+    filters: 'ELA & ELL, Social Studies, World Languages',
+    price: '100',
+  },
+  {
+    icon: <IconQuestionCircle />,
+    title: 'Book Buddies',
+    description:
+      'Assessments and prompts on your favorite books. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean non ante fermentum, bibendum ex ut, tincidunt diam.',
+    learnMoreLinks: 'https://edulastic.com/spark-reading',
+    grades: 'Grades 6-8',
+    filters: 'ELA & ELL, Social Studies, World Languages',
+    price: '100',
+  },
+  {
+    icon: <IconQuestionCircle />,
+    title: 'SparkReading',
+    description:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean non ante fermentum, bibendum ex ut, tincidunt diam, bibendum ex ut, tincidunt diam.',
+    learnMoreLinks: 'https://edulastic.com/spark-reading',
+    grades: 'Grades 6-8',
+    filters: 'ELA & ELL, Social Studies, World Languages',
+    price: '100',
+  },
+  {
+    icon: <IconQuestionCircle />,
+    title: 'STEM Cross-curricular',
+    description:
+      'Science passages with reading and science questions. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean non ante fermentum, bibendum ex ut, tincidunt diam.',
+    learnMoreLinks: 'https://edulastic.com/spark-reading',
+    grades: 'Grades 6-8',
+    filters: 'ELA & ELL, Social Studies, World Languages',
+    price: '100',
+  },
+  {
+    icon: <IconQuestionCircle />,
+    title: 'Phonics Practice',
+    description:
+      'Full year of practice assignments to help all students master each sound. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean non ante fermentum, bibendum ex ut, tincidunt diam.',
+    learnMoreLinks: 'https://edulastic.com/spark-reading',
+    grades: 'Grades 6-8',
+    filters: 'ELA & ELL, Social Studies, World Languages',
+    price: '100',
+  },
+  {
+    icon: <IconQuestionCircle />,
+    title: 'SparkWord',
+    description:
+      'NGSS-aligned pre-built assessments and item banks for grades K-12. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean non ante fermentum, bibendum ex ut, tincidunt diam.',
+    learnMoreLinks: 'https://edulastic.com/spark-science',
+    grades: 'Grades 6-8',
+    filters: 'ELA & ELL, Social Studies, World Languages',
+    price: '100',
+  },
+  {
+    icon: <IconQuestionCircle />,
+    title: 'Reading Comprehension Practice',
+    description:
+      'Fiction and nonfiction to practice close Reading. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean non ante fermentum, bibendum ex ut, tincidunt diam.',
+    learnMoreLinks: 'https://edulastic.com/spark-reading',
+    grades: 'Grades 6-8',
+    filters: 'ELA & ELL, Social Studies, World Languages',
+    price: '100',
+  },
+  {
+    icon: <IconQuestionCircle />,
+    title: 'SparkScience',
+    description:
+      'NGSS-aligned pre-built assessments and item banks for grades K-12. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean non ante fermentum, bibendum ex ut, tincidunt diam.',
+    learnMoreLinks: 'https://edulastic.com/spark-science',
+    grades: 'Grades 6-8',
+    filters: 'ELA & ELL, Social Studies, World Languages',
+    price: '100',
+  },
+  {
+    icon: <IconQuestionCircle />,
+    title: 'SparkCS',
+    description:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean non ante fermentum, bibendum ex ut, tincidunt diam, bibendum ex ut, tincidunt diam.',
+    learnMoreLinks: 'https://edulastic.com/spark-science',
+    grades: 'Grades 6-8',
+    filters: 'ELA & ELL, Social Studies, World Languages',
+    price: '100',
+  },
+]
 
 const SubscriptionMain = ({
   openPaymentServiceModal,
@@ -421,30 +417,155 @@ const SubscriptionMain = ({
 
   return (
     <>
-      <MainContentWrapper padding="30px" style={{ display: 'none' }}>
-        <AvailablePlansContainer>
-          {availablePlans.map((plan, index) => (
-            <PlansComponent
-              key={index}
-              openPaymentServiceModal={openPaymentServiceModal}
-              openPurchaseLicenseModal={openPurchaseLicenseModal}
-              {...plan}
-            />
-          ))}
-        </AvailablePlansContainer>
-      </MainContentWrapper>
+      <SectionContainer>
+        <CardsSection>
+          <IconWrapper />
+          <div>
+            <SectionTitle>Teacher Premium</SectionTitle>
+            <CardDetails>
+              <GradeWrapper>Grades 6-8</GradeWrapper>
+              <OtherFilters>
+                ELA & ELL, Social Studies, World Languages
+              </OtherFilters>
+            </CardDetails>
+            <SectionDescription>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean
+              non ante fermentum, bibendum ex ut, tincidunt diam, bibendum ex
+              ut, tincidunt diam.
+            </SectionDescription>
+          </div>
+          <CardRightWrapper flexDirection="column" justifyContent="center">
+            <Price>
+              <span>$ 100</span> per Teacher
+            </Price>
+            <EduButton
+              onClick={handleSelectStateModal}
+              height="32px"
+              width="180px"
+              data-cy="addToCart"
+            >
+              Add to Cart
+            </EduButton>
+            <EduButton
+              onClick={handleSelectStateModal}
+              height="32px"
+              width="180px"
+              isBlue
+              data-cy="LearnMore"
+            >
+              Learn More
+            </EduButton>
+            <EduButton
+              onClick={handleSelectStateModal}
+              height="32px"
+              width="180px"
+              isGhost
+              isBlue
+              data-cy="subscriptionStartTrialbtn"
+            >
+              Try Now
+            </EduButton>
+          </CardRightWrapper>
+        </CardsSection>
 
-      <ContentSection>
-        <ContentCards>
-          {featuresData.map((_, index) => (
-            <ContentCard key={index}>
-              <Img src={featuresData[index].imgSrc} />
-              <h3>{featuresData[index].title}</h3>
-              <FeatureDescription>
-                {featuresData[index].description}
-              </FeatureDescription>
-            </ContentCard>
-          ))}
+        <FilterSection>
+          <div className="line" />
+          <ul>
+            <li className="active">All</li>
+            <li>Math & CS</li>
+            <li>ELA</li>
+            <li>Science</li>
+            <li>Languages</li>
+          </ul>
+        </FilterSection>
+
+        {productsData.map((product) => (
+          <CardsSection>
+            <IconWrapper>{product.icon}</IconWrapper>
+            <div>
+              <SectionTitle>{product.title}</SectionTitle>
+              <CardDetails>
+                <GradeWrapper>{product.grades}</GradeWrapper>
+                <OtherFilters>{product.filters}</OtherFilters>
+              </CardDetails>
+              <SectionDescription>{product.description}</SectionDescription>
+            </div>
+            <CardRightWrapper flexDirection="column" justifyContent="center">
+              <Price>
+                <span>$ {product.price}</span> per Teacher
+              </Price>
+              <EduButton
+                onClick={handleSelectStateModal}
+                height="32px"
+                width="180px"
+                data-cy="addToCart"
+              >
+                Add to Cart
+              </EduButton>
+              <EduButton
+                onClick={handleSelectStateModal}
+                height="32px"
+                width="180px"
+                isBlue
+              >
+                <LearnMoreLink
+                  data-cy="LearnMore"
+                  href={product.learnMoreLinks}
+                  target="_blank"
+                  rel="noreferrer"
+                  className
+                >
+                  Learn more
+                </LearnMoreLink>
+              </EduButton>
+              <EduButton
+                onClick={handleSelectStateModal}
+                height="32px"
+                width="180px"
+                isGhost
+                isBlue
+                data-cy="subscriptionStartTrialbtn"
+              >
+                Try Now
+              </EduButton>
+            </CardRightWrapper>
+          </CardsSection>
+        ))}
+      </SectionContainer>
+
+      {isTrialModalVisible && (
+        <TrialModal
+          addOnProductIds={productsToShowInTrialModal}
+          isVisible={isTrialModalVisible}
+          toggleModal={toggleTrialModal}
+          isPremiumUser={isPremiumUser}
+          isPremiumTrialUsed={isPremiumTrialUsed}
+          startPremiumTrial={startTrialAction}
+          products={products}
+          setTrialAddOnProductIds={setTrialAddOnProductIds}
+          hasAllTrialProducts={hasAllTrialProducts}
+          setShowTrialSubsConfirmation={setShowTrialSubsConfirmation}
+        />
+      )}
+      {showFeatureNotAvailableModal && (
+        <FeatureNotAvailableModal
+          isVisible={showFeatureNotAvailableModal}
+          handleCloseModal={handleCloseFeatureNotAvailableModal}
+          handleSelectStateModal={handleSelectStateModal}
+        />
+      )}
+      {/* <AddonSection>
+        <SectionContainer>
+          <AvailablePlansContainer>
+            {availablePlans.map((plan, index) => (
+              <PlansComponent
+                key={index}
+                openPaymentServiceModal={openPaymentServiceModal}
+                openPurchaseLicenseModal={openPurchaseLicenseModal}
+                {...plan}
+              />
+            ))}
+          </AvailablePlansContainer>
           <FlexContainer
             justifyContent="center"
             style={{ marginTop: '25px', width: '100%' }}
@@ -491,111 +612,24 @@ const SubscriptionMain = ({
               />
             )}
           </FlexContainer>
-          {!isPremium && (
-            <HaveLicenseKey
-              data-cy="subscriptionHaveLicenseKey"
-              onClick={openHasLicenseKeyModal}
-            >
-              {/* HAVE LICENSE KEY */}
-            </HaveLicenseKey>
-          )}
-        </ContentCards>
-      </ContentSection>
-      {isTrialModalVisible && (
-        <TrialModal
-          addOnProductIds={productsToShowInTrialModal}
-          isVisible={isTrialModalVisible}
-          toggleModal={toggleTrialModal}
-          isPremiumUser={isPremiumUser}
-          isPremiumTrialUsed={isPremiumTrialUsed}
-          startPremiumTrial={startTrialAction}
-          products={products}
-          setTrialAddOnProductIds={setTrialAddOnProductIds}
-          hasAllTrialProducts={hasAllTrialProducts}
-          setShowTrialSubsConfirmation={setShowTrialSubsConfirmation}
-        />
-      )}
-      {showFeatureNotAvailableModal && (
-        <FeatureNotAvailableModal
-          isVisible={showFeatureNotAvailableModal}
-          handleCloseModal={handleCloseFeatureNotAvailableModal}
-          handleSelectStateModal={handleSelectStateModal}
-        />
-      )}
-      <AddonSection>
-        <SectionContainer>
-          <SectionTitle>
-            {isPremium
-              ? 'Add ons for your Premium Version'
-              : 'Premium add-ons to make it even better'}
-          </SectionTitle>
-          <SectionDescription>
-            You can bundle one or more of the following add-ons to the premium
-            subscription that will <br /> make it easier to deliver
-            differentiated instruction and keep your students engaged.
-          </SectionDescription>
           <CardContainer>
             {addonsData.map((_, index) => (
               <AddonCard key={index}>
-                <AddonImg src={addonsData[index].imgSrc} />
-                <h3>{addonsData[index].title}</h3>
-                <AddonDescription>
-                  {addonsData[index].description}
-                </AddonDescription>
-                <AddonFooter>
-                  <LearnMoreLink
-                    data-cy="LearnMore"
-                    href={addonsData[index].learnMoreLinks}
-                    target="_blank"
-                    rel="noreferrer"
-                    className
-                  >
-                    Learn more
-                  </LearnMoreLink>
-                  {getSparkProductLinks(addonsData[index].title)}
-                </AddonFooter>
+                <LearnMoreLink
+                  data-cy="LearnMore"
+                  href={addonsData[index].learnMoreLinks}
+                  target="_blank"
+                  rel="noreferrer"
+                  className
+                >
+                  Learn more
+                </LearnMoreLink>
+                {getSparkProductLinks(addonsData[index].title)}
               </AddonCard>
             ))}
           </CardContainer>
         </SectionContainer>
-      </AddonSection>
-
-      {subType !== 'enterprise' && (
-        <EnterpriseSection>
-          <SectionTitle>Enterprise</SectionTitle>
-          <SectionDescription>
-            Get in-depth insights into schoolwide and districtwide progress with
-            Edulastic Enterprise. Deliver common assessments, analyze the
-            instant student data, and manage everything in one place. Enterprise
-            includes Premium and its collaboration, accommodation, and security
-            tools.
-          </SectionDescription>
-          <FlexContainer justifyContent="center" style={{ marginTop: '25px' }}>
-            <EduButton
-              onClick={handleSelectStateModal}
-              height="38px"
-              width="215px"
-              isGhost
-              isBlue
-            >
-              schedule a demo
-            </EduButton>
-            <a
-              target="_blank"
-              href="//docs.google.com/forms/d/e/1FAIpQLSeJN61M1sxuBfqt0_e-YPYYx2E0sLuSxVLGb6wZvxOIuOy1Eg/viewform?c=0&amp;w=1"
-              rel="noopener noreferrer"
-            >
-              <EduButton height="38px" width="215px" isBlue>
-                request a quote
-              </EduButton>
-            </a>
-          </FlexContainer>
-        </EnterpriseSection>
-      )}
-      <CalendlyScheduleModal
-        visible={showSelectStates}
-        setShowSelectStates={setShowSelectStates}
-      />
+      </AddonSection> */}
     </>
   )
 }

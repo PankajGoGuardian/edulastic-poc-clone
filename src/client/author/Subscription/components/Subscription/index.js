@@ -20,6 +20,7 @@ import {
   PlanHeader,
   PlanLabel,
   PlanTitle,
+  SubscriptionContentWrapper,
 } from './styled'
 import { resetTestFiltersAction } from '../../../TestList/ducks'
 import { clearPlaylistFiltersAction } from '../../../Playlist/ducks'
@@ -28,6 +29,8 @@ import {
   fetchMultipleSubscriptionsAction,
   getSubsLicensesSelector,
 } from '../../../ManageSubscription/ducks'
+import EnterpriseTab from '../SubscriptionMain/EnterpriseTab'
+import ContentHeader from '../SubscriptionMain/ContentHeader'
 
 const comparePlansData = [
   {
@@ -222,6 +225,7 @@ const Subscription = (props) => {
   const [showTrialSubsConfirmation, setShowTrialSubsConfirmation] = useState(
     false
   )
+  const [showEnterpriseTab, setShowEnterpriseTab] = useState(false)
 
   useEffect(() => {
     // getSubscription on mount
@@ -340,43 +344,57 @@ const Subscription = (props) => {
         userRole={user.role}
         history={history}
         isCliUser={isCliUser}
+        showEnterpriseTab={showEnterpriseTab}
+        setShowEnterpriseTab={setShowEnterpriseTab}
       />
 
-      <SubscriptionMain
-        isSubscribed={isSubscribed}
-        openPaymentServiceModal={openPaymentServiceModal}
-        openHasLicenseKeyModal={openHasLicenseKeyModal}
-        openPurchaseLicenseModal={openPurchaseLicenseModal}
-        subEndDate={subEndDate}
-        subType={subType}
-        isPremiumTrialUsed={isPremiumTrialUsed}
-        startTrialAction={startTrialAction}
-        isPaidPremium={isPaidPremium}
-        showRenewalOptions={showRenewalOptions}
-        usedTrialItemBankIds={usedTrialItemBankIds}
-        isPremiumUser={isPremiumUser}
-        isPremium={isPremium}
-        setShowSubscriptionAddonModalWithId={
-          setShowSubscriptionAddonModalWithId
-        }
-        hasAllPremiumProductAccess={hasAllPremiumProductAccess}
-        itemBankSubscriptions={itemBankSubscriptions}
-        setProductData={setProductData}
-        setShowItemBankTrialUsedModal={setShowItemBankTrialUsedModal}
-        handleCloseFeatureNotAvailableModal={
-          handleCloseFeatureNotAvailableModal
-        }
-        showFeatureNotAvailableModal={showFeatureNotAvailableModal}
-        isFreeAdmin={isFreeAdmin}
-        dashboardTiles={dashboardTiles}
-        resetTestFilters={resetTestFilters}
-        resetPlaylistFilters={resetPlaylistFilters}
-        history={history}
-        productData={productData}
-        products={products}
-        setTrialAddOnProductIds={setTrialAddOnProductIds}
-        setShowTrialSubsConfirmation={setShowTrialSubsConfirmation}
-      />
+      <SubscriptionContentWrapper>
+        <ContentHeader
+          showEnterpriseTab={showEnterpriseTab}
+          showMultipleSubscriptions={showMultipleSubscriptions}
+          history={history}
+        />
+
+        {showEnterpriseTab ? (
+          <EnterpriseTab isPremium={isPremium} subType={subType} />
+        ) : (
+          <SubscriptionMain
+            isSubscribed={isSubscribed}
+            openPaymentServiceModal={openPaymentServiceModal}
+            openHasLicenseKeyModal={openHasLicenseKeyModal}
+            openPurchaseLicenseModal={openPurchaseLicenseModal}
+            subEndDate={subEndDate}
+            subType={subType}
+            isPremiumTrialUsed={isPremiumTrialUsed}
+            startTrialAction={startTrialAction}
+            isPaidPremium={isPaidPremium}
+            showRenewalOptions={showRenewalOptions}
+            usedTrialItemBankIds={usedTrialItemBankIds}
+            isPremiumUser={isPremiumUser}
+            isPremium={isPremium}
+            setShowSubscriptionAddonModalWithId={
+              setShowSubscriptionAddonModalWithId
+            }
+            hasAllPremiumProductAccess={hasAllPremiumProductAccess}
+            itemBankSubscriptions={itemBankSubscriptions}
+            setProductData={setProductData}
+            setShowItemBankTrialUsedModal={setShowItemBankTrialUsedModal}
+            handleCloseFeatureNotAvailableModal={
+              handleCloseFeatureNotAvailableModal
+            }
+            showFeatureNotAvailableModal={showFeatureNotAvailableModal}
+            isFreeAdmin={isFreeAdmin}
+            dashboardTiles={dashboardTiles}
+            resetTestFilters={resetTestFilters}
+            resetPlaylistFilters={resetPlaylistFilters}
+            history={history}
+            productData={productData}
+            products={products}
+            setTrialAddOnProductIds={setTrialAddOnProductIds}
+            setShowTrialSubsConfirmation={setShowTrialSubsConfirmation}
+          />
+        )}
+      </SubscriptionContentWrapper>
       <CompareModal
         title=""
         visible={comparePlan}

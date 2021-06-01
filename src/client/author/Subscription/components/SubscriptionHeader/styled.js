@@ -1,19 +1,23 @@
 import { themeColorBlue, title, white, themeColor } from '@edulastic/colors'
 import styled from 'styled-components'
-import IMG17 from '../../static/bg-hero.svg'
 
 export const TopBanner = styled.div`
-  background: ${(props) => (props.isBannerVisible ? `url(${IMG17})` : white)};
-  padding-bottom: ${(props) => (props.isBannerVisible ? '80px' : '0px')};
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: 0px 65px;
+  height: 52px;
 `
+
 export const HeaderSubscription = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 15px 30px;
+  background: white;
+  border-bottom: 1px solid #dddddd;
+  height: 52px;
+  position: fixed;
+  right: 0;
+  left: 0;
+  top: 0;
+  z-index: 10;
+  padding: 0px 30px 0px 100px;
   .ant-dropdown-menu-item {
     padding: 0px;
     span {
@@ -31,11 +35,13 @@ export const HeaderSubscription = styled.div`
   }
 `
 export const Title = styled.div`
+  display: flex;
+  align-items: center;
   h2 {
     font-size: 18px;
     display: flex;
     align-items: center;
-    margin: 0px;
+    margin: 0px 25px 0px 0px;
     font-weight: bold;
     span {
       margin-left: 20px;
@@ -77,43 +83,9 @@ export const LearnMore = styled.div`
   text-transform: uppercase;
   font-weight: 600;
 `
-
-export const BannerContent = styled.div`
-  min-height: 200px;
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  align-items: center;
-  h3 {
-    font-size: 30px;
-    font-weight: bold;
-    margin-bottom: 3px;
-  }
-  p {
-    font-size: 14px;
-    margin-bottom: 15px;
-  }
-`
-
 export const ActionButtons = styled.div`
   display: flex;
   align-items: center;
-  .free {
-    color: ${themeColor};
-    padding-right: 25px;
-    padding-left: 15px;
-  }
-  .plan {
-    color: #97a4c1;
-  }
-  .free,
-  .plan {
-    height: 24px;
-    font-size: 10px;
-    display: flex;
-    align-items: center;
-    text-transform: uppercase;
-  }
   .ant-dropdown-menu {
     background: ${themeColorBlue};
     li {
@@ -124,7 +96,44 @@ export const ActionButtons = styled.div`
     }
   }
 `
+export const CustomLink = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: ${themeColorBlue};
+  font-size: 11px;
+  height: 24px;
+  text-transform: uppercase;
+  font-weight: 600;
+  padding-right: 25px;
+  cursor: pointer;
+`
+export const CartButton = styled(CustomLink)`
+  padding-right: 0px;
+  padding-left: 25px;
+  border-left: 1px solid #dddddd;
+  span {
+    color: ${title};
+    margin-right: 5px;
+  }
+`
+
+export const UserStatus = styled.div`
+  display: flex;
+  align-items: center;
+`
 export const PlanText = styled.span`
-  font-size: 14px !important;
+  display: flex;
+  align-items: center;
+  font-size: 11px !important;
   font-weight: bold;
+  text-transform: uppercase;
+  &:not(.plan) {
+    color: ${themeColor};
+    padding-right: 25px;
+    padding-left: 15px;
+  }
+  &.plan {
+    color: #97a4c1;
+  }
 `

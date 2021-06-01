@@ -7,79 +7,32 @@ import {
   extraDesktopWidthMax,
   mediumDesktopExactWidth,
   title,
-  whiteSmoke,
   lightGrey9,
   borderGrey2,
+  lightGrey,
 } from '@edulastic/colors'
-import { CustomModalStyled, EduButton } from '@edulastic/common'
+import { CustomModalStyled, EduButton, FlexContainer } from '@edulastic/common'
 
-export const ContentSection = styled.section`
-  min-height: 300px;
-  padding: 0px 50px;
-  background: transparent linear-gradient(111deg, #0d9c8c 0%, #095592 100%) 0%
-    0% no-repeat padding-box;
-  display: flex;
-  justify-content: center;
-`
-export const ContentCards = styled.div`
-  width: 100%;
-  position: relative;
-  top: -50px;
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  @media (min-width: ${mediumDesktopExactWidth}) {
-    justify-content: space-between;
-    width: 1200px;
-  }
-`
-export const ContentCard = styled.div`
-  width: 290px;
-  height: 200px;
-  background: ${white};
-  box-shadow: 0px 3px 20px #99bdd380;
-  margin: 0px 10px 10px 0px;
-  border-radius: 8px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  padding: 20px;
-  h3 {
-    font-size: 14px;
-    color: ${title};
-    font-weight: bold;
-    margin-bottom: 5px;
-    margin-top: 15px;
-  }
-  @media (min-width: ${mediumDesktopExactWidth}) {
-    &:nth-child(4n + 4) {
-      margin-right: 0px;
-    }
-    padding: 20px 35px;
-  }
-`
-export const FeatureDescription = styled.p`
-  font-size: 14px;
-  color: ${lightGrey9};
-  text-align: center;
-`
 export const Img = styled.img`
   height: 35px;
 `
 export const AddonSection = styled.section`
-  padding: 50px 15px;
+  padding: 50px 25px;
   background: ${white};
   text-align: center;
+  border-radius: 10px;
+  box-shadow: 0px 2px 10px #51586829;
 `
 export const SectionTitle = styled.h2`
-  font-size: 26px;
+  font-size: 18px;
   color: #292f3c;
   font-weight: bold;
+  margin: 0px;
 `
 export const SectionDescription = styled.p`
   font-size: 14px;
-  color: #373a3e;
+  color: rgba(55, 58, 62, 0.8);
+  padding-right: 30px;
 `
 export const SectionContainer = styled.div`
   width: 100%;
@@ -92,7 +45,7 @@ export const CardContainer = styled.div`
   margin-top: 30px;
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-around;
+  justify-content: flex-start;
 `
 export const AddonCard = styled.div`
   width: 100%;
@@ -109,7 +62,7 @@ export const AddonCard = styled.div`
   }
   @media (min-width: ${largeDesktopWidth}) {
     width: calc(100% / 3);
-    padding: 30px 70px;
+    padding: 30px 50px;
   }
 `
 export const AddonImg = styled.img`
@@ -119,18 +72,139 @@ export const AddonDescription = styled.div`
   font-size: 13px;
   color: ${lightGrey9};
 `
-export const EnterpriseSection = styled.div`
-  width: 100%;
-  padding: 50px;
-  background: ${whiteSmoke};
-  border-radius: 4px;
-  text-align: center;
-  margin: 0px auto 50px;
-  @media (min-width: ${mediumDesktopExactWidth}) {
-    width: 1200px;
-    border-radius: 10px;
+export const TopSection = styled.section`
+  padding: 10px 30px 30px;
+  h1 {
+    margin: 0px;
+    font-size: 35px;
+    color: #292f3c;
+    font-weight: bold;
+    letter-spacing: -1.75px;
+  }
+  p {
+    margin: 0px;
+    font-size: 16px;
+    color: ${title};
   }
 `
+export const EnterpriseSection = styled.div`
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  padding: 40px 30px;
+  background: ${white};
+  border-radius: 10px;
+  margin: 0px auto 20px;
+  box-shadow: 0px 2px 10px #51586829;
+`
+export const CardsSection = styled.div`
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  padding: 25px 30px;
+  background: ${white};
+  border-radius: 10px;
+  margin: 0px auto 20px;
+  box-shadow: 0px 2px 10px #51586829;
+`
+
+export const IconWrapper = styled.div`
+  min-width: 50px;
+  height: 50px;
+  margin-right: 30px;
+  background: ${lightGrey};
+  margin-top: 5px;
+  svg {
+    width: 50px;
+    height: 50px;
+  }
+`
+export const CardDetails = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 5px 0px;
+`
+export const GradeWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  font-size: 8px;
+  background: #3dd29f;
+  height: 21px;
+  padding: 0px 15px;
+  border-radius: 2px;
+  text-transform: uppercase;
+  font-weight: bold;
+  color: ${white};
+`
+export const OtherFilters = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 0px 10px;
+  font-size: 12px;
+  color: #607380;
+  text-transform: uppercase;
+  font-weight: 600;
+`
+export const CardRightWrapper = styled(FlexContainer)`
+  .ant-btn {
+    margin-top: 5px;
+  }
+`
+export const Price = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: #738294;
+  span {
+    font-size: 20px;
+    color: #2f4151;
+    font-weight: bold;
+    margin-right: 10px;
+  }
+`
+export const FilterSection = styled.div`
+  padding: 20px 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  .line {
+    width: 100%;
+    background: #d4d4d4;
+    height: 1px;
+  }
+  ul {
+    list-style: none;
+    margin: 0px;
+    padding: 0px 20px;
+    display: flex;
+    align-items: center;
+    background: ${lightGrey};
+    margin-top: -12px;
+    li {
+      background: ${white};
+      padding: 5px 15px;
+      border: 1px solid ${themeColor};
+      color: ${themeColor};
+      min-width: 120px;
+      font-size: 9px;
+      text-transform: uppercase;
+      font-weight: 600;
+      text-align: center;
+      cursor: pointer;
+      &:hover {
+        background: ${themeColor};
+        color: ${white};
+      }
+      &.active {
+        background: ${themeColor};
+        color: ${white};
+      }
+    }
+  }
+`
+
 export const HaveLicenseKey = styled.div`
   text-align: center;
   font-size: 9px;

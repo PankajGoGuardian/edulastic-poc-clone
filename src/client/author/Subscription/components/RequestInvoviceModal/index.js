@@ -60,7 +60,7 @@ const SAMPLE_PRODUCT_NAMES = {
 
 const RequestInvoiceModal = ({
   visible = false,
-  closeModal = () => {},
+  onCancel = () => {},
   cartProducts = SAMPLE_PRODUCTS || {},
   productNamesById = SAMPLE_PRODUCT_NAMES || {},
   userOrgData = {},
@@ -167,7 +167,7 @@ const RequestInvoiceModal = ({
       width="580px"
       visible={visible}
       title={<ModalTitle>Request Invoice</ModalTitle>}
-      onCancel={closeModal}
+      onCancel={onCancel}
       footer={[
         getFooterComponent({
           handleSubmit,

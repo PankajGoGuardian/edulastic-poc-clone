@@ -28,6 +28,7 @@ const ProductsList = ({
   isBuyMore,
   currentItemId,
   subsLicenses,
+  isRequestingQuote,
 }) => {
   const licenseMapKeyByProductId = useMemo(() => {
     if (subsLicenses) {
@@ -114,8 +115,9 @@ const ProductsList = ({
   return (
     <>
       <AddonList
-        marginTop={isBuyMore && '20px'}
-        marginBottom={isBuyMore && '10px'}
+        marginTop={(isBuyMore || isRequestingQuote) && '20px'}
+        marginBottom={(isBuyMore || isRequestingQuote) && '10px'}
+        pr={isRequestingQuote && '30px'}
       >
         {productsToshow.map((product) => (
           <FlexRow key={product.id} alignItems={isBuyMore && 'center'}>
@@ -133,6 +135,7 @@ const ProductsList = ({
                 }
                 disabled={premiumProductId === product.id}
                 textTransform="none"
+                fontSize={isRequestingQuote && '14px'}
               >
                 {product.name}
               </StyledCheckbox>
@@ -165,18 +168,22 @@ const ProductsList = ({
                 />
               </NumberInputWrapper>
             )}
-            <span
-              className="priceCol"
-              data-cy={`${camelCase(product.name)}Price`}
-            >
-              $
-              {product.price *
-                (isNumber(quantities[product.id]) ? quantities[product.id] : 1)}
-            </span>
+            {!isRequestingQuote && (
+              <span
+                className="priceCol"
+                data-cy={`${camelCase(product.name)}Price`}
+              >
+                $
+                {product.price *
+                  (isNumber(quantities[product.id])
+                    ? quantities[product.id]
+                    : 1)}
+              </span>
+            )}
           </FlexRow>
         ))}
       </AddonList>
-      {!isBuyMore && (
+      {!isBuyMore && !isRequestingQuote && (
         <Total>
           <FlexRow>
             <label>Total</label>

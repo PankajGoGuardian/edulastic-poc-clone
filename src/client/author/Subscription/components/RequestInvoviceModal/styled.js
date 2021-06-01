@@ -25,11 +25,12 @@ export const Text = styled.div`
 `
 
 export const SubText = styled.label`
+  display: block;
   width: auto !important;
   text-align: left;
   font: normal normal normal 14px Open Sans;
   color: ${secondaryTextColor};
-  margin-bottom: 6px;
+  margin-bottom: ${({ mb }) => mb || '6px'};
 `
 
 const LabelRequired = css`
@@ -91,7 +92,7 @@ export const StyledInput = styled(Input)`
   height: 46px;
   background: ${lightGreySecondary};
   color: ${secondaryTextColor};
-  /* border-color: ${inputBorder1}; */
+  border-color: ${inputBorder1};
   margin-top: 2px;
   margin-bottom: 25px;
 `
@@ -101,7 +102,7 @@ export const StyledSelect = styled(Select)`
   height: 46px;
   background: ${lightGreySecondary};
   color: ${secondaryTextColor};
-  /* border-color: ${inputBorder1}; */
+  border-color: ${inputBorder1};
   margin-top: 2px;
   margin-bottom: 25px;
 
@@ -109,22 +110,47 @@ export const StyledSelect = styled(Select)`
     background: ${lightGreySecondary};
   }
   .ant-select-selection__rendered {
-    line-height: 34px;
+    line-height: 46px;
+    height: 46px !important;
     .ant-select-selection__placeholder {
       color: ${darkGrey};
     }
   }
 
-  .ant-select-selection__rendered {
-    line-height: 46px;
+  .ant-select-selection {
+    background: ${lightGreySecondary} 0% 0% no-repeat padding-box;
+    border: 1px solid ${inputBorder1};
+    border-radius: 2px;
+  }
+
+  .ant-select-selection--multiple > ul > li,
+  .ant-select-selection--multiple .ant-select-selection__rendered > ul > li {
+    height: 36px;
+    margin-top: 3px;
+    line-height: 36px;
+  }
+
+  .ant-select-selection__choice {
+    background-color: #b9b9b9;
+  }
+  .ant-select-selection-selected-value {
+    line-height: 40px;
+  }
+
+  .ant-select-arrow {
+    color: ${themeColor};
   }
 `
 
 export const StyledInputTextArea = styled(Input.TextArea)`
   background: ${lightGreySecondary};
   color: ${secondaryTextColor};
-  /* border-color: ${inputBorder1}; */
+  border-color: ${inputBorder1};
   margin-top: 2px;
   margin-bottom: 25px;
   resize: none;
+
+  &:placeholder-shown {
+    padding-top: 12px;
+  }
 `

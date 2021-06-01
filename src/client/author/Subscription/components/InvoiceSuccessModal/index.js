@@ -2,7 +2,7 @@ import React from 'react'
 import { IconCheck } from '@edulastic/icons'
 import { CustomModalStyled, FlexContainer } from '@edulastic/common'
 import styled from 'styled-components'
-import { themeColor } from '@edulastic/colors'
+import { secondaryTextColor, themeColor } from '@edulastic/colors'
 
 const InvoiceSuccessModal = ({
   visible = false,
@@ -42,7 +42,7 @@ const Title = styled.h1`
   text-align: left;
   font: normal normal bold 22px/30px Open Sans;
   letter-spacing: -1.1px;
-  color: #434b5d;
+  color: ${secondaryTextColor};
   opacity: 1;
 `
 

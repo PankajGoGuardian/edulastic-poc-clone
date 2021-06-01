@@ -185,7 +185,7 @@ const slice = createSlice({
       state.isRequestInvoiceActionPending = false
     },
     toggleRequestInvoiceSuccessModal: (state, { payload }) => {
-      state.isRequestInvoiceActionPending = payload
+      state.isRequestinvoiceSuccessModalVisible = payload
     },
   },
 })
@@ -584,7 +584,7 @@ function* bulkInviteBookKeepersSaga({ payload }) {
 function* requestInvoiceSaga({ payload }) {
   try {
     const result = yield call(subscriptionApi.requestInvoice, payload)
-    if (result.success) {
+    if (result?.result?.success) {
       yield put(slice.actions.requestInvoiceActionSuccess())
     } else {
       yield put(slice.actions.requestInvoiceActionFailure())

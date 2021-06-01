@@ -486,10 +486,10 @@ export default compose(
       usedTrialItemBankIds:
         state?.subscription?.subscriptionData?.usedTrialItemBankIds,
       dashboardTiles: state.dashboardTeacher.configurableTiles,
-      subsLicenses: getSubsLicensesSelector(state),
       isRequestinvoiceSuccessModalVisible: getInvoiceRequestSuccessModalVisibility(
         state
       ),
+      subsLicenses: getSubsLicensesSelector(state),
     }),
     {
       verifyAndUpgradeLicense: slice.actions.upgradeLicenseKeyPending,

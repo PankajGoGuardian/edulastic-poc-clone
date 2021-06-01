@@ -43,11 +43,16 @@ import {
   Price,
   CardsSection,
   FilterSection,
+  Wrap,
+  TopSection,
 } from './styled'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import CalendlyScheduleModal from './CalendlyScheduleModal'
 import FeatureNotAvailableModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/FeatureNotAvailableModal'
 import { IconQuestionCircle } from '@edulastic/icons'
+import TeacherPremiumCard from './TeacherPremiumCard'
+import FiltersSection from './FilterSection'
+import TabHeaderContent from './TabHeaderContent'
 
 /* const getUpgradeToMultipleUsersPlanAction = ({ openPurchaseLicenseModal }) => (
   <ActionsWrapper>
@@ -216,6 +221,10 @@ const SubscriptionMain = ({
   productData = {},
   setTrialAddOnProductIds,
   setShowTrialSubsConfirmation,
+  history,
+  showMultipleSubscriptions,
+  setShowEnterpriseTab,
+  setShowMultiplePurchaseModal,
 }) => {
   const [showSelectStates, setShowSelectStates] = useState(false)
   const [isTrialModalVisible, setIsTrialModalVisible] = useState(false)
@@ -351,7 +360,7 @@ const SubscriptionMain = ({
     handlePurchaseFlow()
   }
 
-  const getSparkProductLinks = (title) => {
+  /* const getSparkProductLinks = (title) => {
     const dataMap = {
       SparkMath: 'ITEM_BANK_SPARK_MATH',
       SparkScience: 'ITEM_BANK_SPARK_SCIENCE',
@@ -395,7 +404,7 @@ const SubscriptionMain = ({
         )}
       </>
     )
-  }
+  } */
 
   // if the product has paid subscription or the trial is used then its not available for trial.
   const allAvailableTrialItemBankIds = difference(productItemBankIds, [
@@ -418,66 +427,20 @@ const SubscriptionMain = ({
   return (
     <>
       <SectionContainer>
-        <CardsSection>
-          <IconWrapper />
-          <div>
-            <SectionTitle>Teacher Premium</SectionTitle>
-            <CardDetails>
-              <GradeWrapper>Grades 6-8</GradeWrapper>
-              <OtherFilters>
-                ELA & ELL, Social Studies, World Languages
-              </OtherFilters>
-            </CardDetails>
-            <SectionDescription>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean
-              non ante fermentum, bibendum ex ut, tincidunt diam, bibendum ex
-              ut, tincidunt diam.
-            </SectionDescription>
-          </div>
-          <CardRightWrapper flexDirection="column" justifyContent="center">
-            <Price>
-              <span>$ 100</span> per Teacher
-            </Price>
-            <EduButton
-              onClick={handleSelectStateModal}
-              height="32px"
-              width="180px"
-              data-cy="addToCart"
-            >
-              Add to Cart
-            </EduButton>
-            <EduButton
-              onClick={handleSelectStateModal}
-              height="32px"
-              width="180px"
-              isBlue
-              data-cy="LearnMore"
-            >
-              Learn More
-            </EduButton>
-            <EduButton
-              onClick={handleSelectStateModal}
-              height="32px"
-              width="180px"
-              isGhost
-              isBlue
-              data-cy="subscriptionStartTrialbtn"
-            >
-              Try Now
-            </EduButton>
-          </CardRightWrapper>
-        </CardsSection>
+        {subType !== 'enterprise' && (
+          <>
+            <TabHeaderContent
+              setShowMultiplePurchaseModal={setShowMultiplePurchaseModal}
+              setShowEnterpriseTab={setShowEnterpriseTab}
+              showMultipleSubscriptions={showMultipleSubscriptions}
+              history={history}
+            />
 
-        <FilterSection>
-          <div className="line" />
-          <ul>
-            <li className="active">All</li>
-            <li>Math & CS</li>
-            <li>ELA</li>
-            <li>Science</li>
-            <li>Languages</li>
-          </ul>
-        </FilterSection>
+            <TeacherPremiumCard />
+          </>
+        )}
+
+        <FiltersSection />
 
         {productsData.map((product) => (
           <CardsSection>

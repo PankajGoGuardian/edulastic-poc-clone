@@ -17,6 +17,7 @@ import {
   SectionContainer,
   SectionDescription,
   SectionTitle,
+  TopSection,
 } from './styled'
 
 const addonsData = [
@@ -74,44 +75,50 @@ const EnterpriseTab = ({ isPremium, subType }) => {
 
   return (
     <SectionContainer>
-      {subType !== 'enterprise' && (
-        <EnterpriseSection>
-          <IconWrapper />
-          <div>
-            <SectionTitle>Enterprise for Districts or Schools</SectionTitle>
-            <SectionDescription>
-              Get in-depth insights into schoolwide and districtwide progress
-              with Edulastic Enterprise. Deliver common assessments, analyze the
-              instant student data, and manage everything in one place.
-              Enterprise includes Premium and its collaboration, accommodation,
-              and security tools.
-            </SectionDescription>
-          </div>
-          <FlexContainer flexDirection="column" justifyContent="center">
-            <a
-              data-cy="requestQuote"
-              target="_blank"
-              href="//docs.google.com/forms/d/e/1FAIpQLSeJN61M1sxuBfqt0_e-YPYYx2E0sLuSxVLGb6wZvxOIuOy1Eg/viewform?c=0&amp;w=1"
-              rel="noopener noreferrer"
-              style={{ margin: '10px 0px' }}
-            >
-              <EduButton height="32px" width="180px" isBlue>
-                request a quote
-              </EduButton>
-            </a>
-            <EduButton
-              onClick={handleSelectStateModal}
-              height="32px"
-              width="180px"
-              isGhost
-              isBlue
-              data-cy="scheduleDemo"
-            >
-              schedule a demo
+      <TopSection>
+        <h1>Edulastic Enterprise & Add-ons to supercharge instruction.</h1>
+        <p>
+          Upgrade your subscription to Teacher Premium or school or district
+          Enterprise for additional features, and add on subject-specific <br />
+          content bundles that you will love.
+        </p>
+      </TopSection>
+      <EnterpriseSection>
+        <IconWrapper />
+        <div>
+          <SectionTitle>Enterprise for Districts or Schools</SectionTitle>
+          <SectionDescription>
+            Get in-depth insights into schoolwide and districtwide progress with
+            Edulastic Enterprise. Deliver common assessments, analyze the
+            instant student data, and manage everything in one place. Enterprise
+            includes Premium and its collaboration, accommodation, and security
+            tools.
+          </SectionDescription>
+        </div>
+        <FlexContainer flexDirection="column" justifyContent="center">
+          <a
+            data-cy="requestQuote"
+            target="_blank"
+            href="//docs.google.com/forms/d/e/1FAIpQLSeJN61M1sxuBfqt0_e-YPYYx2E0sLuSxVLGb6wZvxOIuOy1Eg/viewform?c=0&amp;w=1"
+            rel="noopener noreferrer"
+            style={{ margin: '10px 0px' }}
+          >
+            <EduButton height="32px" width="180px" isBlue>
+              request a quote
             </EduButton>
-          </FlexContainer>
-        </EnterpriseSection>
-      )}
+          </a>
+          <EduButton
+            onClick={handleSelectStateModal}
+            height="32px"
+            width="180px"
+            isGhost
+            isBlue
+            data-cy="scheduleDemo"
+          >
+            schedule a demo
+          </EduButton>
+        </FlexContainer>
+      </EnterpriseSection>
       <AddonSection>
         <SectionTitle>
           {isPremium

@@ -10,7 +10,7 @@ import { Dropdown, Menu } from 'antd'
 import { capitalize } from 'lodash'
 import moment from 'moment'
 import PropTypes from 'prop-types'
-import React, { memo } from 'react'
+import React, { memo, useEffect } from 'react'
 import { withNamespaces } from 'react-i18next'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import {
@@ -77,6 +77,16 @@ const SubscriptionHeader = ({
   const { defaultGrades = [], defaultSubjects = [] } = orgData
   const isGradeSubjectSelected = defaultGrades.length && defaultSubjects.length
 
+  useEffect(() => {
+    if (
+      isPartialPremiumUgradedUser ||
+      subType === 'enterprise' ||
+      isFreeAdmin
+    ) {
+      setShowEnterpriseTab(true)
+    }
+  }, [])
+
   // hide upgrade if no options will be displayed in dropdown
   const showUpgradeBtn =
     !hasAllPremiumProductAccess || !isPartialPremiumUgradedUser
@@ -124,6 +134,9 @@ const SubscriptionHeader = ({
 
   const licenseExpiryDate = formatDate(subEndDate)
 
+  const showAddonsTab =
+    isPartialPremiumUgradedUser || subType === 'enterprise' || isFreeAdmin
+
   return (
     <TopBanner>
       <HeaderSubscription>
@@ -142,7 +155,7 @@ const SubscriptionHeader = ({
                     isPartialPremiumUgradedUser
                       ? 'Enterprise'
                       : capitalize(subType.replace(/_/g, ' '))
-                  } Version`
+                  }`
                 : 'Free'}
             </PlanText>
           </UserStatus>
@@ -150,7 +163,7 @@ const SubscriptionHeader = ({
         {!isManageSubscriptionView && (
           <HeaderMidContainer>
             <StyledTabs>
-              {subType !== 'enterprise' && (
+              {!showAddonsTab && (
                 <HeaderTabs
                   dataCy="premiumTab"
                   isActive={!showEnterpriseTab}
@@ -166,7 +179,7 @@ const SubscriptionHeader = ({
                 onClickHandler={() => setShowEnterpriseTab(true)}
                 activeStyle={tabsCustomStyle}
               />
-              {subType === 'enterprise' && (
+              {showAddonsTab && (
                 <HeaderTabs
                   dataCy="addonsTab"
                   isActive={!showEnterpriseTab}

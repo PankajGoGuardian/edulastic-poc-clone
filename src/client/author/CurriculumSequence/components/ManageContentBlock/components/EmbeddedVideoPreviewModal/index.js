@@ -75,6 +75,25 @@ const EmbeddedVideoPreviewModal = (props) => {
     )
   }
 
+  const awsService = () => {
+    return (
+      <EdulasticResourceModal
+        headerText={title}
+        {...props}
+        maxWidth="730px"
+        hideFooter
+        smallFont
+        modalWidth={'730px'}
+      >
+        <div style={{width: '640px'}}>
+          <video id="awsVideo" controls>
+            <source src={url} type="video/mp4" />
+          </video>
+        </div>
+      </EdulasticResourceModal>
+    )
+  }
+
   if (url.search(/youtu\.?be(\.com)?\//) !== -1) {
     return youtubeService()
   }
@@ -83,6 +102,9 @@ const EmbeddedVideoPreviewModal = (props) => {
   }
   if (url.includes('drive.google.com')) {
     return googleDriveService()
+  }
+  if (url.includes('cloudfront.net')) {
+    return awsService()
   }
   return (
     <EdulasticResourceModal

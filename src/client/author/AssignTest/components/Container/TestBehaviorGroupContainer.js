@@ -1,16 +1,18 @@
 import React, { useState } from 'react'
-import { Row, Col, Select, Modal } from 'antd'
-import { RadioBtn, CheckboxLabel, SelectInputStyled } from '@edulastic/common'
+import { Col, Modal, Row, Select } from 'antd'
+import { CheckboxLabel, RadioBtn, SelectInputStyled } from '@edulastic/common'
 import { themeColor } from '@edulastic/colors'
-import { test, roleuser } from '@edulastic/constants'
+import { roleuser, test } from '@edulastic/constants'
+import { evalTypeLabels } from '@edulastic/constants/const/test'
+import Styled from 'styled-components'
 import {
   AlignRight,
   AlignSwitchRight,
+  AssignModuleContentSpan,
   CheckBoxWrapper,
   Label,
-  TimeSpentInput,
   StyledRow,
-  AssignModuleContentSpan,
+  TimeSpentInput,
 } from '../SimpleOptions/styled'
 import TestTypeSelector from '../SimpleOptions/TestTypeSelector'
 import DollarPremiumSymbol from './DollarPremiumSymbol'
@@ -63,8 +65,12 @@ const TestBehaviorGroupContainer = ({
     testContentVisibility = testSettings.testContentVisibility ||
       testContentVisibilityOptions.ALWAYS,
     testType = testSettings.testType,
+    applyEBSR = false,
   } = assignmentSettings
-
+  const multipartItems = testSettings.itemGroups
+    .map((o) => o.items)
+    .flat()
+    .filter((o) => o.multipartItem).length
   const {
     assessmentSuperPowersMarkAsDone,
     assessmentSuperPowersShowCalculator,
@@ -219,6 +225,26 @@ const TestBehaviorGroupContainer = ({
                 </Select.Option>
               ))}
             </SelectInputStyled>
+            {(scoringType === evalTypeLabels.PARTIAL_CREDIT ||
+              scoringType === evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT) &&
+            multipartItems ? (
+              <CheckBoxWrapper>
+                <CheckboxLabel
+                  disabled={freezeSettings}
+                  data-cy="applyEBSR"
+                  checked={applyEBSR}
+                  onChange={(e) =>
+                    overRideSettings('applyEBSR', e.target.checked)
+                  }
+                >
+                  <StyledSpan>
+                    APPLY EBSR GREADING (
+                    <StyledItalic>first part has to be correct</StyledItalic>){' '}
+                    FOR ALL MULTIPART ITEMS
+                  </StyledSpan>
+                </CheckboxLabel>
+              </CheckBoxWrapper>
+            ) : null}
           </Col>
         </StyledRow>
       </SettingContainer>
@@ -409,3 +435,11 @@ const TestBehaviorGroupContainer = ({
 }
 
 export default TestBehaviorGroupContainer
+
+const StyledSpan = Styled.span`
+  font-weight: ${(props) => props.theme.semiBold};
+`
+
+const StyledItalic = Styled.i`
+  font-weight: ${(props) => props.theme.regular};
+`

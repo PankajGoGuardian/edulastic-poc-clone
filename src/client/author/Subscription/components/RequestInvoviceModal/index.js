@@ -14,7 +14,7 @@ import {
 } from '../../../src/selectors/user'
 import {
   slice,
-  getInvoiceRequestStatus,
+  getRequestOrSubmitActionStatus,
   getSubscriptionSelector,
 } from '../../ducks'
 import {
@@ -144,7 +144,7 @@ const RequestInvoiceModal = ({
             .map((email) => email.trim())
             .filter((x) => x)
         : []
-      const payload = {
+      const reqPayload = {
         userFullname,
         userEmail: userDetails.email,
         documentType,
@@ -158,7 +158,10 @@ const RequestInvoiceModal = ({
             ? 'Enterprise'
             : 'Teacher Premium',
       }
-      handleRequestInvoice(payload)
+      handleRequestInvoice({
+        reqPayload,
+        closeCallback: onCancel,
+      })
     }
   }
 
@@ -240,7 +243,7 @@ const RequestInvoiceModal = ({
 export default connect(
   (state) => ({
     userOrgData: getUserOrgData(state),
-    isRequestInvoiceActionPending: getInvoiceRequestStatus(state),
+    isRequestInvoiceActionPending: getRequestOrSubmitActionStatus(state),
     userSubscription: getSubscriptionSelector(state),
     userFullname: getUserFullNameSelector(state),
     userDetails: getUserDetails(state),

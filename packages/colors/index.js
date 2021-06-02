@@ -171,6 +171,8 @@ export const redHeart = '#e35783'
 export const inputBorder = '#d9d9d9'
 export const inputBorder1 = '#b9b9b9'
 export const selectColor = '#5a6171'
+export const dragDropUploadText = '#b2b2b2'
+export const dragDropHighlightText = '#1766CE'
 
 export const cardBg = '#f8f8fb'
 export const cardBorder = '#e6e6e6'

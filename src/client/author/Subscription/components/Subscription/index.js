@@ -1,11 +1,12 @@
 import { segmentApi } from '@edulastic/api'
 import React, { useEffect, useState } from 'react'
+import loadable from '@loadable/component'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 // import { withNamespaces } from '@edulastic/localization' // TODO: Need i18n support
 import { connect } from 'react-redux'
 import { roleuser } from '@edulastic/constants'
-import { getInvoiceRequestSuccessModalVisibility, slice } from '../../ducks'
+import { getRequestOrSubmitSuccessVisibility, slice } from '../../ducks'
 import HasLicenseKeyModal from '../HasLicenseKeyModal'
 import PurchaseLicenseModal from '../PurchaseLicenseModal'
 import { Wrapper } from '../styled/commonStyled'
@@ -29,11 +30,13 @@ import {
   fetchMultipleSubscriptionsAction,
   getSubsLicensesSelector,
 } from '../../../ManageSubscription/ducks'
-import RequestInvoiceModal from '../RequestInvoviceModal'
 import EnterpriseTab from '../SubscriptionMain/EnterpriseTab'
 import ContentHeader from '../SubscriptionMain/ContentHeader'
-import RequestQuoteModal from '../RequestQuoteModal'
-import InvoiceSuccessModal from '../InvoiceSuccessModal'
+const RequestInvoiceModal = loadable(() => import('../RequestInvoviceModal'))
+
+const RequestQuoteModal = loadable(() => import('../RequestQuoteModal'))
+const InvoiceSuccessModal = loadable(() => import('../InvoiceSuccessModal'))
+const SubmitPOModal = loadable(() => import('../SubmitPOModal'))
 
 const comparePlansData = [
   {
@@ -205,8 +208,8 @@ const Subscription = (props) => {
     resetPlaylistFilters,
     fetchMultipleSubscriptions,
     subsLicenses,
-    isRequestinvoiceSuccessModalVisible,
-    toggleRequestInvoiceSuccessModal,
+    isRequestOrSubmitSuccessModalVisible,
+    toggleRequestOrSubmitSuccessModal,
   } = props
 
   const [comparePlan, setComparePlan] = useState(false)
@@ -233,6 +236,7 @@ const Subscription = (props) => {
   const [isRequestInvoiceModalVisible, setRequestInvoiceModal] = useState(false)
   const [showEnterpriseTab, setShowEnterpriseTab] = useState(false)
   const [isRequestQuoteModalVisible, setRequestQuoteModal] = useState(false)
+  const [isSubmitPOModalVisible, setSubmitPOModal] = useState(false)
 
   useEffect(() => {
     // getSubscription on mount
@@ -267,11 +271,14 @@ const Subscription = (props) => {
   const closeHasLicenseKeyModal = () => setHasLicenseKeyModal(false)
   const openPurchaseLicenseModal = () => setpurchaseLicenseModal(true)
   const closePurchaseLicenseModal = () => setpurchaseLicenseModal(false)
-  const closeInvoiceSuccessModal = () => toggleRequestInvoiceSuccessModal(false)
+  const closeRequestOrSubmitSuccessModal = () =>
+    toggleRequestOrSubmitSuccessModal(false)
   // const openRequestInvoiceModal = () => setRequestInvoiceModal(true)
   const closeRequestInvoiceModal = () => setRequestInvoiceModal(false)
   const openRequestQuoteModal = () => setRequestQuoteModal(true)
   const closeRequestQuoteModal = () => setRequestQuoteModal(false)
+  const openSubmitPOModal = () => setSubmitPOModal(true)
+  const closeSubmitPOModal = () => setSubmitPOModal(false)
 
   const isSubscribed =
     subType === 'premium' ||
@@ -358,6 +365,7 @@ const Subscription = (props) => {
         isCliUser={isCliUser}
         showEnterpriseTab={showEnterpriseTab}
         setShowEnterpriseTab={setShowEnterpriseTab}
+        uploadPO={openSubmitPOModal}
       />
 
       <SubscriptionContentWrapper>
@@ -464,10 +472,10 @@ const Subscription = (props) => {
         />
       )}
 
-      {isRequestinvoiceSuccessModalVisible && (
+      {isRequestOrSubmitSuccessModalVisible && (
         <InvoiceSuccessModal
-          visible={isRequestinvoiceSuccessModalVisible}
-          onCancel={closeInvoiceSuccessModal}
+          visible={isRequestOrSubmitSuccessModalVisible}
+          onCancel={closeRequestOrSubmitSuccessModal}
         />
       )}
 
@@ -482,6 +490,13 @@ const Subscription = (props) => {
         <RequestQuoteModal
           visible={isRequestQuoteModalVisible}
           onCancel={closeRequestQuoteModal}
+        />
+      )}
+
+      {isSubmitPOModalVisible && (
+        <SubmitPOModal
+          visible={isSubmitPOModalVisible}
+          onCancel={closeSubmitPOModal}
         />
       )}
     </Wrapper>
@@ -505,7 +520,7 @@ export default compose(
       usedTrialItemBankIds:
         state?.subscription?.subscriptionData?.usedTrialItemBankIds,
       dashboardTiles: state.dashboardTeacher.configurableTiles,
-      isRequestinvoiceSuccessModalVisible: getInvoiceRequestSuccessModalVisibility(
+      isRequestOrSubmitSuccessModalVisible: getRequestOrSubmitSuccessVisibility(
         state
       ),
       subsLicenses: getSubsLicensesSelector(state),
@@ -518,8 +533,8 @@ export default compose(
       resetTestFilters: resetTestFiltersAction,
       resetPlaylistFilters: clearPlaylistFiltersAction,
       fetchMultipleSubscriptions: fetchMultipleSubscriptionsAction,
-      toggleRequestInvoiceSuccessModal:
-        slice.actions.toggleRequestInvoiceSuccessModal,
+      toggleRequestOrSubmitSuccessModal:
+        slice.actions.toggleRequestOrSubmitSuccessModal,
     }
   )
 )(Subscription)

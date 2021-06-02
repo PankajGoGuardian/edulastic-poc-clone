@@ -47,10 +47,20 @@ const requestInvoice = (data) =>
     })
     .then((result) => result.data)
 
+const submitPO = (data) =>
+  api
+    .callApi({
+      method: 'post',
+      url: `${prefix}/purchase-orders`,
+      data,
+    })
+    .then((result) => result.data)
+
 export default {
   upgradeUsingLicenseKey,
   subscriptionStatus,
   extendTrialLicense,
   fetchProducts,
   requestInvoice,
+  submitPO,
 }

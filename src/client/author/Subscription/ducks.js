@@ -61,13 +61,13 @@ export const getBookKeepersInviteSuccessStatus = createSelector(
   subscriptionSelector,
   (state) => state.isBookKeepersInviteSuccess
 )
-export const getInvoiceRequestStatus = createSelector(
+export const getRequestOrSubmitActionStatus = createSelector(
   subscriptionSelector,
-  (state) => state.isRequestInvoiceActionPending
+  (state) => state.isRequestOrSubmitActionPending
 )
-export const getInvoiceRequestSuccessModalVisibility = createSelector(
+export const getRequestOrSubmitSuccessVisibility = createSelector(
   subscriptionSelector,
-  (state) => state.isRequestinvoiceSuccessModalVisible
+  (state) => state.isRequestOrSubmitSuccessModalVisible
 )
 
 const slice = createSlice({
@@ -82,8 +82,8 @@ const slice = createSlice({
     showHeaderTrialModal: false,
     addOnProductIds: [],
     isBookKeepersInviteSuccess: false,
-    isRequestInvoiceActionPending: false,
-    isRequestinvoiceSuccessModalVisible: false,
+    isRequestOrSubmitActionPending: false,
+    isRequestOrSubmitSuccessModalVisible: false,
   },
   reducers: {
     fetchUserSubscriptionStatus: (state) => {
@@ -175,17 +175,20 @@ const slice = createSlice({
     },
     bulkInviteBookKeepersAction: () => {},
     requestInvoiceAction: (state) => {
-      state.isRequestInvoiceActionPending = true
+      state.isRequestOrSubmitActionPending = true
     },
-    requestInvoiceActionSuccess: (state) => {
-      state.isRequestInvoiceActionPending = false
-      state.isRequestinvoiceSuccessModalVisible = true
+    submitPOAction: (state) => {
+      state.isRequestOrSubmitActionPending = true
     },
-    requestInvoiceActionFailure: (state) => {
-      state.isRequestInvoiceActionPending = false
+    requestOrSubmitActionSuccess: (state, { payload }) => {
+      state.isRequestOrSubmitActionPending = false
+      state.isRequestOrSubmitSuccessModalVisible = payload
     },
-    toggleRequestInvoiceSuccessModal: (state, { payload }) => {
-      state.isRequestinvoiceSuccessModalVisible = payload
+    requestOrSubmitActionFailure: (state) => {
+      state.isRequestOrSubmitActionPending = false
+    },
+    toggleRequestOrSubmitSuccessModal: (state, { payload }) => {
+      state.isRequestOrSubmitSuccessModalVisible = payload
     },
   },
 })
@@ -583,17 +586,43 @@ function* bulkInviteBookKeepersSaga({ payload }) {
 
 function* requestInvoiceSaga({ payload }) {
   try {
-    const result = yield call(subscriptionApi.requestInvoice, payload)
+    const { closeCallback = () => {}, reqPayload } = payload
+    const result = yield call(subscriptionApi.requestInvoice, reqPayload)
     if (result?.result?.success) {
-      yield put(slice.actions.requestInvoiceActionSuccess())
+      closeCallback()
+      const msg = `We'll be back to you right away with your ${(
+        reqPayload.documentType || ''
+      ).toLowerCase()}!`
+      yield put(slice.actions.requestOrSubmitActionSuccess(msg))
     } else {
-      yield put(slice.actions.requestInvoiceActionFailure())
+      yield put(slice.actions.requestOrSubmitActionFailure())
     }
   } catch (err) {
-    yield put(slice.actions.requestInvoiceActionFailure())
+    yield put(slice.actions.requestOrSubmitActionFailure())
     notification({
       type: 'error',
       msg: 'Something went wrong while requesting invoice.',
+    })
+    captureSentryException(err)
+  }
+}
+
+function* submitPOSaga({ payload }) {
+  try {
+    const { closeCallback = () => {}, reqPayload } = payload
+    const result = yield call(subscriptionApi.submitPO, reqPayload)
+    if (result?.result?.success) {
+      closeCallback()
+      const msg = `We'll be back to you right away with your purchase order!`
+      yield put(slice.actions.requestOrSubmitActionSuccess(msg))
+    } else {
+      yield put(slice.actions.requestOrSubmitActionFailure())
+    }
+  } catch (err) {
+    yield put(slice.actions.requestOrSubmitActionFailure())
+    notification({
+      type: 'error',
+      msg: 'Something went wrong while submiting PO.',
     })
     captureSentryException(err)
   }
@@ -621,5 +650,6 @@ export function* watcherSaga() {
       bulkInviteBookKeepersSaga
     ),
     yield takeEvery(slice.actions.requestInvoiceAction, requestInvoiceSaga),
+    yield takeEvery(slice.actions.submitPOAction, submitPOSaga),
   ])
 }

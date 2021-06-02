@@ -54,6 +54,7 @@ const SubscriptionHeader = ({
   isManageSubscriptionView = false,
   setShowEnterpriseTab,
   showEnterpriseTab,
+  uploadPO,
 }) => {
   const openMultiplePurchaseModal = () => setShowMultiplePurchaseModal(true)
 
@@ -184,7 +185,9 @@ const SubscriptionHeader = ({
               <CustomLink data-cy="comparePlans" onClick={openComparePlanModal}>
                 Compare Plan
               </CustomLink>
-              <CustomLink data-cy="uploadPO">Upload PO</CustomLink>
+              <CustomLink onClick={uploadPO} data-cy="uploadPO">
+                Upload PO
+              </CustomLink>
               <CartButton data-cy="cartButton">
                 <span>01</span> Cart
               </CartButton>

@@ -90,6 +90,14 @@ const sharedKeysObj = {
   LINK: 'LINK',
 }
 
+const shareLevel = {
+  INDIVIDUAL: 0,
+  SCHOOL: 1,
+  DISTRICT: 2,
+  PUBLIC: 3,
+  LINK: 4,
+}
+
 const shareTypeKeys = ['PUBLIC', 'DISTRICT', 'SCHOOL', 'INDIVIDUAL', 'LINK']
 const shareTypeKeyForDa = ['PUBLIC', 'DISTRICT', 'INDIVIDUAL', 'LINK']
 
@@ -461,6 +469,7 @@ class ShareModal extends React.Component {
       showMessageBody,
       notificationMessage,
       loadingSharedUsers,
+      maxSharingLevelAllowed = shareLevel[sharedKeysObj.LINK],
     } = this.props
     const filteredUserList = userList.filter(
       (user) =>
@@ -586,6 +595,8 @@ class ShareModal extends React.Component {
                       value={item}
                       key={item}
                       disabled={
+                        (!isPlaylist &&
+                          shareLevel[item] > maxSharingLevelAllowed) ||
                         (!isPublished && item !== sharedKeysObj.INDIVIDUAL) ||
                         (hasPremiumQuestion && item === sharedKeysObj.PUBLIC) ||
                         features.isCurator ||
@@ -757,6 +768,11 @@ const enhance = compose(
       notificationMessage: getEmailNotificationMessageSelector(state),
       test: getTestEntitySelector(state),
       loadingSharedUsers: _get(state, 'tests.loadingSharedUsers', false),
+      maxSharingLevelAllowed: _get(
+        state,
+        'tests.maxSharingLevelAllowed',
+        shareLevel[sharedKeysObj.LINK]
+      ),
     }),
     {
       getUsers: fetchUsersListAction,

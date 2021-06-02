@@ -308,6 +308,8 @@ export const UPDATE_TEST_SETTING_REQUEST = '[tests] update test setting request'
 export const SET_SHOW_REGRADE_CONFIRM =
   '[tests] set show regrade confirmation popup'
 export const SET_SHOW_UPGRADE_POPUP = '[tests] set show upgrade popup'
+export const SET_MAX_SHARING_LEVEL_ALLOWED =
+  '[tests] set max sharing level allowed'
 // actions
 
 export const previewCheckAnswerAction = createAction(PREVIEW_CHECK_ANSWER)
@@ -497,6 +499,9 @@ export const publishTestAction = createAction(TEST_PUBLISH)
 export const updateTestStatusAction = createAction(UPDATE_TEST_STATUS)
 export const setRegradeOldIdAction = createAction(SET_REGRADE_OLD_TESTID)
 export const updateSharedWithListAction = createAction(UPDATE_SHARED_USERS_LIST)
+export const setMaxSharingLevelAllowedAction = createAction(
+  SET_MAX_SHARING_LEVEL_ALLOWED
+)
 export const receiveSharedWithListAction = createAction(
   RECEIVE_SHARED_USERS_LIST
 )
@@ -1541,6 +1546,11 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         loadingSharedUsers: true,
       }
+    case SET_MAX_SHARING_LEVEL_ALLOWED:
+      return {
+        ...state,
+        maxSharingLevelAllowed: payload,
+      }
     default:
       return state
   }
@@ -2429,8 +2439,12 @@ function* publishForRegrade({ payload }) {
 
 function* receiveSharedWithListSaga({ payload }) {
   try {
-    const result = yield call(contentSharingApi.getSharedUsersList, payload)
-    const coAuthors = result.map(
+    const { sharedEntities = [], maxSharingLevelAllowed } = yield call(
+      contentSharingApi.getSharedUsersList,
+      payload
+    )
+    yield put(setMaxSharingLevelAllowedAction(maxSharingLevelAllowed))
+    const coAuthors = sharedEntities.map(
       ({ permission, sharedWith, sharedType, _id }) => ({
         permission,
         sharedWith,

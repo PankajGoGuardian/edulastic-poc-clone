@@ -5,7 +5,7 @@ import HeaderTabs, {
 } from '@edulastic/common/src/components/HeaderTabs'
 import { HeaderMidContainer } from '@edulastic/common/src/components/MainHeader'
 import { roleuser } from '@edulastic/constants'
-import { IconSubscriptionHighlight } from '@edulastic/icons'
+import { IconCart, IconSubscriptionHighlight } from '@edulastic/icons'
 import { Dropdown, Menu } from 'antd'
 import { capitalize } from 'lodash'
 import moment from 'moment'
@@ -18,6 +18,7 @@ import {
   CartButton,
   CustomLink,
   HeaderSubscription,
+  IconWrapper,
   PlanText,
   Title,
   TopBanner,
@@ -199,7 +200,11 @@ const SubscriptionHeader = ({
               </CustomLink>
               <CustomLink data-cy="uploadPO">Upload PO</CustomLink>
               <CartButton data-cy="cartButton">
-                <span>01</span> Cart
+                <IconWrapper>
+                  <IconCart />
+                  <span>01</span>
+                </IconWrapper>
+                Cart
               </CartButton>
             </>
           )}

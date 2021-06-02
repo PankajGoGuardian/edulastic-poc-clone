@@ -1,58 +1,40 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import { EduButton, FlexContainer, notification } from '@edulastic/common'
 import {
-  EduButton,
-  FlexContainer,
-  MainContentWrapper,
-  notification,
-} from '@edulastic/common'
-import { Link } from 'react-router-dom'
-import { isBoolean, groupBy, keyBy, difference, map } from 'lodash'
-import TrialModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/TrialModal/index'
-
-import { ActionsWrapper, Description, Title } from '../styled/commonStyled'
-import {
-  AvailablePlansContainer,
-  ContentWrapper,
-  FeatureDescription,
-  Img,
-  PlanDetails,
-  PlanImage,
-  PlansContainer,
-  ContentSection,
-  ContentCards,
-  ContentCard,
-  AddonSection,
-  SectionTitle,
-  SectionDescription,
-  SectionContainer,
-  CardContainer,
-  AddonCard,
-  AddonImg,
-  AddonDescription,
-  EnterpriseSection,
-  CustomButton,
-  AddonFooter,
-  PurchaseLink,
-  LearnMoreLink,
-  HaveLicenseKey,
-  IconWrapper,
-  CardDetails,
-  GradeWrapper,
-  OtherFilters,
-  CardRightWrapper,
-  Price,
-  CardsSection,
-  FilterSection,
-  Wrap,
-  TopSection,
-} from './styled'
-import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
-import CalendlyScheduleModal from './CalendlyScheduleModal'
+  IconAlertCircle,
+  IconCalc,
+  IconCloseBook,
+  IconLaptop,
+  IconPhonics,
+  IconPurchasedAlert,
+  IconReading,
+  IconRobot,
+  IconScience,
+  IconScienceLab,
+  IconWord,
+} from '@edulastic/icons'
+import { difference, groupBy, isBoolean, keyBy, map } from 'lodash'
+import React, { useEffect, useMemo, useState } from 'react'
 import FeatureNotAvailableModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/FeatureNotAvailableModal'
-import { IconQuestionCircle } from '@edulastic/icons'
-import TeacherPremiumCard from './TeacherPremiumCard'
+import TrialModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/TrialModal/index'
 import FiltersSection from './FilterSection'
+import {
+  CardDetails,
+  CardRightWrapper,
+  CardsSection,
+  GradeWrapper,
+  IconWrapper,
+  LearnMoreLink,
+  OtherFilters,
+  PremiumRequiredMsg,
+  Price,
+  SectionContainer,
+  SectionDescription,
+  SectionTitle,
+  TrialExpiryMsg,
+} from './styled'
 import TabHeaderContent from './TabHeaderContent'
+import TeacherPremiumCard from './TeacherPremiumCard'
+import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 
 /* const getUpgradeToMultipleUsersPlanAction = ({ openPurchaseLicenseModal }) => (
   <ActionsWrapper>
@@ -106,90 +88,97 @@ const availablePlans = [
 
 const productsData = [
   {
-    icon: <IconQuestionCircle />,
+    id: '5e3d2eb34bdb8a0007e22223',
+    icon: <IconCalc />,
     title: 'SparkMath',
     description:
-      'Pre-built assessments and differentiated Math practice for each student. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean non ante fermentum, bibendum ex ut, tincidunt diam.',
+      'Pre-built assessments and differentiated Math practice for each student.',
     learnMoreLinks: 'https://edulastic.com/spark-math',
     grades: 'Grades 6-8',
     filters: 'ELA & ELL, Social Studies, World Languages',
     price: '100',
   },
   {
-    icon: <IconQuestionCircle />,
+    id: '',
+    icon: <IconCloseBook />,
     title: 'Book Buddies',
-    description:
-      'Assessments and prompts on your favorite books. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean non ante fermentum, bibendum ex ut, tincidunt diam.',
+    description: 'Assessments and prompts on your favorite books.',
     learnMoreLinks: 'https://edulastic.com/spark-reading',
     grades: 'Grades 6-8',
     filters: 'ELA & ELL, Social Studies, World Languages',
     price: '100',
   },
   {
-    icon: <IconQuestionCircle />,
+    id: '',
+    icon: <IconReading />,
     title: 'SparkReading',
     description:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean non ante fermentum, bibendum ex ut, tincidunt diam, bibendum ex ut, tincidunt diam.',
     learnMoreLinks: 'https://edulastic.com/spark-reading',
     grades: 'Grades 6-8',
-    filters: 'ELA & ELL, Social Studies, World Languages',
+    filters:
+      'Book buddies, STEM cross-curricular, Phonics practice, Spark Words and reading comp practice',
     price: '100',
   },
   {
-    icon: <IconQuestionCircle />,
+    id: '',
+    icon: <IconScienceLab />,
     title: 'STEM Cross-curricular',
-    description:
-      'Science passages with reading and science questions. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean non ante fermentum, bibendum ex ut, tincidunt diam.',
+    description: 'Science passages with reading and science questions.',
     learnMoreLinks: 'https://edulastic.com/spark-reading',
     grades: 'Grades 6-8',
     filters: 'ELA & ELL, Social Studies, World Languages',
     price: '100',
   },
   {
-    icon: <IconQuestionCircle />,
+    id: '',
+    icon: <IconPhonics />,
     title: 'Phonics Practice',
     description:
-      'Full year of practice assignments to help all students master each sound. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean non ante fermentum, bibendum ex ut, tincidunt diam.',
+      'Full year of practice assignments to help all students master each sound.',
     learnMoreLinks: 'https://edulastic.com/spark-reading',
     grades: 'Grades 6-8',
     filters: 'ELA & ELL, Social Studies, World Languages',
     price: '100',
   },
   {
-    icon: <IconQuestionCircle />,
+    id: '',
+    icon: <IconWord />,
     title: 'SparkWord',
     description:
-      'NGSS-aligned pre-built assessments and item banks for grades K-12. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean non ante fermentum, bibendum ex ut, tincidunt diam.',
+      'NGSS-aligned pre-built assessments and item banks for grades K-12.',
     learnMoreLinks: 'https://edulastic.com/spark-science',
     grades: 'Grades 6-8',
     filters: 'ELA & ELL, Social Studies, World Languages',
     price: '100',
   },
   {
-    icon: <IconQuestionCircle />,
+    id: '',
+    icon: <IconLaptop />,
     title: 'Reading Comprehension Practice',
-    description:
-      'Fiction and nonfiction to practice close Reading. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean non ante fermentum, bibendum ex ut, tincidunt diam.',
+    description: 'Fiction and nonfiction to practice close Reading.',
     learnMoreLinks: 'https://edulastic.com/spark-reading',
     grades: 'Grades 6-8',
     filters: 'ELA & ELL, Social Studies, World Languages',
     price: '100',
   },
   {
-    icon: <IconQuestionCircle />,
+    id: '',
+    icon: <IconScience />,
     title: 'SparkScience',
     description:
-      'NGSS-aligned pre-built assessments and item banks for grades K-12. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean non ante fermentum, bibendum ex ut, tincidunt diam.',
+      'NGSS-aligned pre-built assessments and item banks for grades K-12.',
     learnMoreLinks: 'https://edulastic.com/spark-science',
     grades: 'Grades 6-8',
     filters: 'ELA & ELL, Social Studies, World Languages',
     price: '100',
   },
   {
-    icon: <IconQuestionCircle />,
+    id: '',
+    icon: <IconRobot />,
     title: 'SparkCS',
     description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean non ante fermentum, bibendum ex ut, tincidunt diam, bibendum ex ut, tincidunt diam.',
+      'Full year of practice assignments to help all students master each sound.',
     learnMoreLinks: 'https://edulastic.com/spark-science',
     grades: 'Grades 6-8',
     filters: 'ELA & ELL, Social Studies, World Languages',
@@ -444,15 +433,31 @@ const SubscriptionMain = ({
 
         {productsData.map((product) => (
           <CardsSection>
-            <IconWrapper>{product.icon}</IconWrapper>
-            <div>
-              <SectionTitle>{product.title}</SectionTitle>
-              <CardDetails>
-                <GradeWrapper>{product.grades}</GradeWrapper>
-                <OtherFilters>{product.filters}</OtherFilters>
-              </CardDetails>
-              <SectionDescription>{product.description}</SectionDescription>
-            </div>
+            <FlexContainer justifyContent="flex-start" alignItems="flex-start">
+              <IconWrapper>{product.icon}</IconWrapper>
+              <div>
+                <SectionTitle>
+                  {product.title}
+                  {!isPremiumUser && (
+                    <PremiumRequiredMsg>
+                      <IconAlertCircle />
+                      <span>Subscription requires access to Premium</span>
+                    </PremiumRequiredMsg>
+                  )}
+                  {usedTrialItemBankIds.includes(product.id) && (
+                    <TrialExpiryMsg>
+                      <IconPurchasedAlert />
+                      <span>FREE TRIAL EXPIRES April 30, 2021</span>
+                    </TrialExpiryMsg>
+                  )}
+                </SectionTitle>
+                <CardDetails>
+                  <GradeWrapper>{product.grades}</GradeWrapper>
+                  <OtherFilters>{product.filters}</OtherFilters>
+                </CardDetails>
+                <SectionDescription>{product.description}</SectionDescription>
+              </div>
+            </FlexContainer>
             <CardRightWrapper flexDirection="column" justifyContent="center">
               <Price>
                 <span>$ {product.price}</span> per Teacher

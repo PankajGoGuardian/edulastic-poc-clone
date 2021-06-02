@@ -18,7 +18,6 @@ import {
   PlanContent,
   PlanDescription,
   PlanHeader,
-  PlanLabel,
   PlanTitle,
   SubscriptionContentWrapper,
 } from './styled'

@@ -121,10 +121,6 @@ export const CartButton = styled(CustomLink)`
   padding-right: 0px;
   padding-left: 25px;
   border-left: 1px solid ${lightGrey16};
-  span {
-    color: ${title};
-    margin-right: 5px;
-  }
 `
 
 export const UserStatus = styled.div`
@@ -144,5 +140,16 @@ export const PlanText = styled.span`
   }
   &.plan {
     color: ${lightBlue11};
+  }
+`
+export const IconWrapper = styled.div`
+  position: relative;
+  margin-right: 5px;
+  span {
+    color: ${title};
+    position: absolute;
+    left: 11px;
+    top: 1px;
+    font-size: 11px;
   }
 `

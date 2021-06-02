@@ -33,6 +33,8 @@ export const AddonSection = styled.section`
   box-shadow: 0px 2px 10px ${boxShadowColor4};
 `
 export const SectionTitle = styled.h2`
+  display: flex;
+  align-items: center;
   font-size: 18px;
   color: ${darkTitle};
   font-weight: bold;
@@ -75,7 +77,7 @@ export const AddonCard = styled.div`
     padding: 40px;
   }
 `
-export const AddonImg = styled.img`
+export const AddonImg = styled.div`
   height: 40px;
 `
 export const AddonDescription = styled.div`
@@ -110,6 +112,7 @@ export const EnterpriseSection = styled.div`
 export const CardsSection = styled.div`
   display: flex;
   align-items: flex-start;
+  justify-content: space-between;
   width: 100%;
   padding: 25px 30px;
   background: ${white};
@@ -118,16 +121,27 @@ export const CardsSection = styled.div`
   box-shadow: 0px 2px 10px ${boxShadowColor4};
 `
 
-export const IconWrapper = styled.div`
-  min-width: 50px;
-  height: 50px;
-  margin-right: 30px;
-  background: ${lightGrey};
-  margin-top: 5px;
-  svg {
-    width: 50px;
-    height: 50px;
+export const PremiumRequiredMsg = styled.span`
+  display: flex;
+  align-items: center;
+  text-transform: uppercase;
+  margin-left: 15px;
+  span {
+    margin-left: 5px;
+    font-size: 10px;
+    color: #e5923f;
   }
+`
+export const TrialExpiryMsg = styled(PremiumRequiredMsg)`
+  span {
+    color: #0b9ad2;
+  }
+`
+
+export const IconWrapper = styled.div`
+  min-width: 52px;
+  margin-right: 30px;
+  margin-top: 5px;
 `
 export const CardDetails = styled.div`
   display: flex;

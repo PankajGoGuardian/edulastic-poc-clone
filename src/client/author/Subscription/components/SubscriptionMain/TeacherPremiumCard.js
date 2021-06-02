@@ -1,4 +1,5 @@
-import { EduButton } from '@edulastic/common'
+import { EduButton, FlexContainer } from '@edulastic/common'
+import { IconSchool } from '@edulastic/icons'
 import React from 'react'
 import {
   CardDetails,
@@ -15,21 +16,25 @@ import {
 const TeacherPremiumCard = () => {
   return (
     <CardsSection>
-      <IconWrapper />
-      <div>
-        <SectionTitle>Teacher Premium</SectionTitle>
-        <CardDetails>
-          <GradeWrapper>Grades 6-8</GradeWrapper>
-          <OtherFilters>
-            ELA & ELL, Social Studies, World Languages
-          </OtherFilters>
-        </CardDetails>
-        <SectionDescription>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean non
-          ante fermentum, bibendum ex ut, tincidunt diam, bibendum ex ut,
-          tincidunt diam.
-        </SectionDescription>
-      </div>
+      <FlexContainer justifyContent="flex-start" alignItems="flex-start">
+        <IconWrapper>
+          <IconSchool />
+        </IconWrapper>
+        <div>
+          <SectionTitle>Teacher Premium</SectionTitle>
+          <CardDetails>
+            <GradeWrapper>Grades 6-8</GradeWrapper>
+            <OtherFilters>
+              ELA & ELL, Social Studies, World Languages
+            </OtherFilters>
+          </CardDetails>
+          <SectionDescription>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean non
+            ante fermentum, bibendum ex ut, tincidunt diam, bibendum ex ut,
+            tincidunt diam.
+          </SectionDescription>
+        </div>
+      </FlexContainer>
       <CardRightWrapper flexDirection="column" justifyContent="center">
         <Price>
           <span>$ 100</span> per Teacher

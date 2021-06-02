@@ -888,10 +888,6 @@ class Container extends PureComponent {
     let itemGroupWithQuestionsCount = 0
     let testHasInvalidItem = false
     for (const itemGroup of test.itemGroups) {
-      if (itemGroup.type === ITEM_GROUP_TYPES.AUTOSELECT) {
-        itemGroupWithQuestionsCount++
-        continue
-      }
       if (
         itemGroup.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
         itemGroup.items.some((item) => item.itemLevelScoring === false)

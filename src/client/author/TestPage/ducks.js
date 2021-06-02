@@ -1892,6 +1892,12 @@ function* createTestSaga({ payload }) {
     const entity = yield createTest(payload.data)
     entity.itemGroups = payload.data.itemGroups
     yield put(createTestSuccessAction(entity))
+    const hasAutoSelectItems = entity.itemGroups.some(
+      (g) => g.type === testConst.ITEM_GROUP_TYPES.AUTOSELECT
+    )
+    if (hasAutoSelectItems) {
+      yield put(addItemsToAutoselectGroupsRequestAction(entity))
+    }
     const currentTab = payload.isCartTest ? 'description' : 'addItems'
     yield put(replace(`/author/tests/tab/${currentTab}/id/${entity._id}`))
     notification({ type: 'success', messageKey: 'testCreated' })

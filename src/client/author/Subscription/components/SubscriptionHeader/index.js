@@ -5,12 +5,12 @@ import HeaderTabs, {
 } from '@edulastic/common/src/components/HeaderTabs'
 import { HeaderMidContainer } from '@edulastic/common/src/components/MainHeader'
 import { roleuser } from '@edulastic/constants'
-import { IconSubscriptionHighlight } from '@edulastic/icons'
+import { IconCart, IconSubscriptionHighlight } from '@edulastic/icons'
 import { Dropdown, Menu } from 'antd'
 import { capitalize } from 'lodash'
 import moment from 'moment'
 import PropTypes from 'prop-types'
-import React, { memo } from 'react'
+import React, { memo, useEffect } from 'react'
 import { withNamespaces } from 'react-i18next'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import {
@@ -18,6 +18,7 @@ import {
   CartButton,
   CustomLink,
   HeaderSubscription,
+  IconWrapper,
   PlanText,
   Title,
   TopBanner,
@@ -77,6 +78,16 @@ const SubscriptionHeader = ({
   const { defaultGrades = [], defaultSubjects = [] } = orgData
   const isGradeSubjectSelected = defaultGrades.length && defaultSubjects.length
 
+  useEffect(() => {
+    if (
+      isPartialPremiumUgradedUser ||
+      subType === 'enterprise' ||
+      isFreeAdmin
+    ) {
+      setShowEnterpriseTab(true)
+    }
+  }, [])
+
   // hide upgrade if no options will be displayed in dropdown
   const showUpgradeBtn =
     !hasAllPremiumProductAccess || !isPartialPremiumUgradedUser
@@ -124,6 +135,9 @@ const SubscriptionHeader = ({
 
   const licenseExpiryDate = formatDate(subEndDate)
 
+  const showAddonsTab =
+    isPartialPremiumUgradedUser || subType === 'enterprise' || isFreeAdmin
+
   return (
     <TopBanner>
       <HeaderSubscription>
@@ -142,7 +156,7 @@ const SubscriptionHeader = ({
                     isPartialPremiumUgradedUser
                       ? 'Enterprise'
                       : capitalize(subType.replace(/_/g, ' '))
-                  } Version`
+                  }`
                 : 'Free'}
             </PlanText>
           </UserStatus>
@@ -150,7 +164,7 @@ const SubscriptionHeader = ({
         {!isManageSubscriptionView && (
           <HeaderMidContainer>
             <StyledTabs>
-              {subType !== 'enterprise' && (
+              {!showAddonsTab && (
                 <HeaderTabs
                   dataCy="premiumTab"
                   isActive={!showEnterpriseTab}
@@ -166,7 +180,7 @@ const SubscriptionHeader = ({
                 onClickHandler={() => setShowEnterpriseTab(true)}
                 activeStyle={tabsCustomStyle}
               />
-              {subType === 'enterprise' && (
+              {showAddonsTab && (
                 <HeaderTabs
                   dataCy="addonsTab"
                   isActive={!showEnterpriseTab}
@@ -186,7 +200,11 @@ const SubscriptionHeader = ({
               </CustomLink>
               <CustomLink data-cy="uploadPO">Upload PO</CustomLink>
               <CartButton data-cy="cartButton">
-                <span>01</span> Cart
+                <IconWrapper>
+                  <IconCart />
+                  <span>01</span>
+                </IconWrapper>
+                Cart
               </CartButton>
             </>
           )}

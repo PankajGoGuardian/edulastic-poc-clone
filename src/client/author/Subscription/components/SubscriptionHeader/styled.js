@@ -1,4 +1,13 @@
-import { themeColorBlue, title, white, themeColor } from '@edulastic/colors'
+import {
+  themeColorBlue,
+  title,
+  white,
+  themeColor,
+  lightGrey16,
+  darkGrey2,
+  lightBlue11,
+  borderGrey4,
+} from '@edulastic/colors'
 import styled from 'styled-components'
 
 export const TopBanner = styled.div`
@@ -10,7 +19,7 @@ export const HeaderSubscription = styled.div`
   align-items: center;
   justify-content: space-between;
   background: white;
-  border-bottom: 1px solid #dddddd;
+  border-bottom: 1px solid ${lightGrey16};
   height: 52px;
   position: fixed;
   right: 0;
@@ -50,7 +59,7 @@ export const Title = styled.div`
 `
 export const ModalBody = styled.div`
   font-size: 14px;
-  color: #304050;
+  color: ${darkGrey2};
 `
 export const FlexRow = styled.div`
   display: flex;
@@ -60,7 +69,7 @@ export const FlexRow = styled.div`
 export const Boxes = styled.div`
   width: 210px;
   height: 210px;
-  border: 2px solid #dadae4;
+  border: 2px solid ${borderGrey4};
   border-radius: 10px;
   color: ${title};
   font-size: 16px;
@@ -111,11 +120,7 @@ export const CustomLink = styled.div`
 export const CartButton = styled(CustomLink)`
   padding-right: 0px;
   padding-left: 25px;
-  border-left: 1px solid #dddddd;
-  span {
-    color: ${title};
-    margin-right: 5px;
-  }
+  border-left: 1px solid ${lightGrey16};
 `
 
 export const UserStatus = styled.div`
@@ -134,6 +139,17 @@ export const PlanText = styled.span`
     padding-left: 15px;
   }
   &.plan {
-    color: #97a4c1;
+    color: ${lightBlue11};
+  }
+`
+export const IconWrapper = styled.div`
+  position: relative;
+  margin-right: 5px;
+  span {
+    color: ${title};
+    position: absolute;
+    left: 11px;
+    top: 1px;
+    font-size: 11px;
   }
 `

@@ -5,11 +5,20 @@ import {
   largeDesktopWidth,
   tabletWidth,
   extraDesktopWidthMax,
-  mediumDesktopExactWidth,
   title,
   lightGrey9,
   borderGrey2,
   lightGrey,
+  boxShadowColor4,
+  darkTitle,
+  lightGreen9,
+  lightGrey13,
+  lightGrey14,
+  filterIconColor,
+  darkGrey2,
+  lightGrey15,
+  lightBlue10,
+  lightGreen10,
 } from '@edulastic/colors'
 import { CustomModalStyled, EduButton, FlexContainer } from '@edulastic/common'
 
@@ -21,11 +30,13 @@ export const AddonSection = styled.section`
   background: ${white};
   text-align: center;
   border-radius: 10px;
-  box-shadow: 0px 2px 10px #51586829;
+  box-shadow: 0px 2px 10px ${boxShadowColor4};
 `
 export const SectionTitle = styled.h2`
+  display: flex;
+  align-items: center;
   font-size: 18px;
-  color: #292f3c;
+  color: ${darkTitle};
   font-weight: bold;
   margin: 0px;
 `
@@ -37,9 +48,6 @@ export const SectionDescription = styled.p`
 export const SectionContainer = styled.div`
   width: 100%;
   margin: 0px auto;
-  @media (min-width: ${mediumDesktopExactWidth}) {
-    width: 1200px;
-  }
 `
 export const CardContainer = styled.div`
   margin-top: 30px;
@@ -64,8 +72,12 @@ export const AddonCard = styled.div`
     width: calc(100% / 3);
     padding: 30px 50px;
   }
+  @media (min-width: ${extraDesktopWidthMax}) {
+    width: calc(100% / 4);
+    padding: 40px;
+  }
 `
-export const AddonImg = styled.img`
+export const AddonImg = styled.div`
   height: 40px;
 `
 export const AddonDescription = styled.div`
@@ -77,7 +89,7 @@ export const TopSection = styled.section`
   h1 {
     margin: 0px;
     font-size: 35px;
-    color: #292f3c;
+    color: ${darkTitle};
     font-weight: bold;
     letter-spacing: -1.75px;
   }
@@ -95,29 +107,41 @@ export const EnterpriseSection = styled.div`
   background: ${white};
   border-radius: 10px;
   margin: 0px auto 20px;
-  box-shadow: 0px 2px 10px #51586829;
+  box-shadow: 0px 2px 10px ${boxShadowColor4};
 `
 export const CardsSection = styled.div`
   display: flex;
   align-items: flex-start;
+  justify-content: space-between;
   width: 100%;
   padding: 25px 30px;
   background: ${white};
   border-radius: 10px;
   margin: 0px auto 20px;
-  box-shadow: 0px 2px 10px #51586829;
+  box-shadow: 0px 2px 10px ${boxShadowColor4};
+`
+
+export const PremiumRequiredMsg = styled.span`
+  display: flex;
+  align-items: center;
+  text-transform: uppercase;
+  margin-left: 15px;
+  span {
+    margin-left: 5px;
+    font-size: 10px;
+    color: #e5923f;
+  }
+`
+export const TrialExpiryMsg = styled(PremiumRequiredMsg)`
+  span {
+    color: #0b9ad2;
+  }
 `
 
 export const IconWrapper = styled.div`
-  min-width: 50px;
-  height: 50px;
+  min-width: 52px;
   margin-right: 30px;
-  background: ${lightGrey};
   margin-top: 5px;
-  svg {
-    width: 50px;
-    height: 50px;
-  }
 `
 export const CardDetails = styled.div`
   display: flex;
@@ -128,20 +152,21 @@ export const GradeWrapper = styled.div`
   display: flex;
   align-items: center;
   font-size: 8px;
-  background: #3dd29f;
+  background: ${lightGreen9};
   height: 21px;
   padding: 0px 15px;
   border-radius: 2px;
   text-transform: uppercase;
   font-weight: bold;
   color: ${white};
+  white-space: nowrap;
 `
 export const OtherFilters = styled.div`
   display: flex;
   align-items: center;
   padding: 0px 10px;
   font-size: 12px;
-  color: #607380;
+  color: ${lightGrey13};
   text-transform: uppercase;
   font-weight: 600;
 `
@@ -155,53 +180,70 @@ export const Price = styled.div`
   align-items: center;
   justify-content: center;
   font-size: 12px;
-  color: #738294;
+  color: ${lightGrey14};
   span {
     font-size: 20px;
-    color: #2f4151;
+    color: ${filterIconColor};
     font-weight: bold;
     margin-right: 10px;
   }
 `
 export const FilterSection = styled.div`
-  padding: 20px 0px;
+  padding: 30px 0px 40px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  text-transform: uppercase;
   .line {
     width: 100%;
-    background: #d4d4d4;
+    background: ${lightGrey15};
     height: 1px;
   }
   ul {
     list-style: none;
     margin: 0px;
-    padding: 0px 20px;
+    padding: 0px;
     display: flex;
     align-items: center;
-    background: ${lightGrey};
-    margin-top: -12px;
     li {
       background: ${white};
       padding: 5px 15px;
       border: 1px solid ${themeColor};
       color: ${themeColor};
-      min-width: 120px;
+      min-width: 115px;
       font-size: 9px;
-      text-transform: uppercase;
       font-weight: 600;
       text-align: center;
       cursor: pointer;
-      &:hover {
-        background: ${themeColor};
-        color: ${white};
+      &:first-child {
+        border-radius: 4px 0px 0px 4px;
+      }
+      &:last-child {
+        border-radius: 0px 4px 4px 0px;
       }
       &.active {
         background: ${themeColor};
         color: ${white};
       }
+      &:hover {
+        background: ${themeColor};
+        color: ${white};
+      }
     }
+  }
+`
+export const Wrap = styled.div`
+  background: ${lightGrey};
+  margin-top: -12px;
+  padding: 0px 20px;
+  display: flex;
+  align-items: center;
+  span {
+    font-size: 10px;
+    color: ${lightGrey13};
+    margin-right: 15px;
+    font-weight: 600;
   }
 `
 
@@ -275,7 +317,7 @@ export const StyledLink = styled.span`
 `
 export const ModalBody = styled.div`
   font-size: 14px;
-  color: #304050;
+  color: ${darkGrey2};
 `
 export const FlexRow = styled.div`
   display: flex;
@@ -322,7 +364,7 @@ export const AddonFooter = styled.div`
   justify-content: center;
   align-items: center;
   font-size: 9px;
-  color: #3f85e5;
+  color: ${lightBlue10};
   padding-top: 12px;
   text-transform: uppercase;
   font-weight: 600;
@@ -339,7 +381,7 @@ export const AddonFooter = styled.div`
   }
 `
 export const PurchaseLink = styled.span`
-  color: #1ab395;
+  color: ${lightGreen10};
 `
 export const LearnMoreLink = styled.a`
   height: 18px;
@@ -347,7 +389,7 @@ export const LearnMoreLink = styled.a`
   padding: 0px 20px;
   display: flex;
   align-items: center;
-  color: #3f85e5;
+  color: ${lightBlue10};
   &:last-child {
     border: none;
   }

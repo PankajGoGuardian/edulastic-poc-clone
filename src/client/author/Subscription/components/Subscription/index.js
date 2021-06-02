@@ -18,7 +18,6 @@ import {
   PlanContent,
   PlanDescription,
   PlanHeader,
-  PlanLabel,
   PlanTitle,
   SubscriptionContentWrapper,
 } from './styled'
@@ -31,13 +30,13 @@ import {
 } from '../../../ManageSubscription/ducks'
 import RequestInvoiceModal from '../RequestInvoviceModal'
 import EnterpriseTab from '../SubscriptionMain/EnterpriseTab'
-import ContentHeader from '../SubscriptionMain/ContentHeader'
 import RequestQuoteModal from '../RequestQuoteModal'
 import InvoiceSuccessModal from '../InvoiceSuccessModal'
 
 const comparePlansData = [
   {
-    cardTitle: 'Free Teacher',
+    cardTitle: 'Free Forever',
+    subTitle: '$0 / MONTH',
     cardLabel: 'FREE FOREVER',
     color: '#5EB500',
     data: [
@@ -77,6 +76,7 @@ const comparePlansData = [
   },
   {
     cardTitle: 'Premium Teacher',
+    subTitle: '$99 / MONTH',
     cardLabel: 'PER TEACHER PRICING',
     color: '#4E95F3',
     data: [
@@ -116,6 +116,7 @@ const comparePlansData = [
   },
   {
     cardTitle: 'Enterprise',
+    subTitle: 'REQUEST A QUOTE',
     cardLabel: 'PER STUDENT PRICING',
     color: '#FFA200',
     data: [
@@ -163,10 +164,12 @@ const PlanDetailsComponent = ({ title, description = '' }) => (
   </>
 )
 
-const Plans = ({ cardTitle, cardLabel, data, color }) => (
+const Plans = ({ cardTitle, subTitle, data, color }) => (
   <PlanCard>
-    <PlanHeader color={color}>{cardTitle}</PlanHeader>
-    <PlanLabel color={color}>{cardLabel}</PlanLabel>
+    <PlanHeader color={color}>
+      <h2>{cardTitle}</h2>
+      <span>{subTitle}</span>
+    </PlanHeader>
     <PlanContent>
       {data.map((item) => (
         <PlanDetailsComponent {...item} />
@@ -361,12 +364,6 @@ const Subscription = (props) => {
       />
 
       <SubscriptionContentWrapper>
-        <ContentHeader
-          showEnterpriseTab={showEnterpriseTab}
-          showMultipleSubscriptions={showMultipleSubscriptions}
-          history={history}
-        />
-
         {showEnterpriseTab ? (
           <EnterpriseTab
             isPremium={isPremium}
@@ -408,11 +405,14 @@ const Subscription = (props) => {
             products={products}
             setTrialAddOnProductIds={setTrialAddOnProductIds}
             setShowTrialSubsConfirmation={setShowTrialSubsConfirmation}
+            showMultipleSubscriptions={showMultipleSubscriptions}
+            setShowEnterpriseTab={setShowEnterpriseTab}
+            setShowMultiplePurchaseModal={setShowMultiplePurchaseModal}
           />
         )}
       </SubscriptionContentWrapper>
       <CompareModal
-        title=""
+        title="Compare Plans"
         visible={comparePlan}
         onCancel={closeComparePlansModal}
         footer={[]}

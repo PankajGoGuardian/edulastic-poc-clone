@@ -74,7 +74,7 @@ const addonsData = [
   },
 ]
 
-const EnterpriseTab = ({ isPremium }) => {
+const EnterpriseTab = ({ isPremium, subType, requestQuote }) => {
   const [showSelectStates, setShowSelectStates] = useState(false)
 
   const handleSelectStateModal = () => setShowSelectStates(true)
@@ -106,17 +106,16 @@ const EnterpriseTab = ({ isPremium }) => {
           </div>
         </FlexContainer>
         <FlexContainer flexDirection="column" justifyContent="center">
-          <a
+          <EduButton
             data-cy="requestQuote"
-            target="_blank"
-            href="//docs.google.com/forms/d/e/1FAIpQLSeJN61M1sxuBfqt0_e-YPYYx2E0sLuSxVLGb6wZvxOIuOy1Eg/viewform?c=0&amp;w=1"
-            rel="noopener noreferrer"
             style={{ margin: '10px 0px' }}
+            onClick={requestQuote}
+            height="32px"
+            width="180px"
+            isBlue
           >
-            <EduButton height="32px" width="180px" isBlue>
-              request a quote
-            </EduButton>
-          </a>
+            request a quote
+          </EduButton>
           <EduButton
             onClick={handleSelectStateModal}
             height="32px"

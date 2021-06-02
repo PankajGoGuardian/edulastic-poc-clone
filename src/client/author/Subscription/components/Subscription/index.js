@@ -29,8 +29,9 @@ import {
   getSubsLicensesSelector,
 } from '../../../ManageSubscription/ducks'
 import RequestInvoiceModal from '../RequestInvoviceModal'
-import InvoiceSuccessModal from '../InvoiceSuccessModal'
 import EnterpriseTab from '../SubscriptionMain/EnterpriseTab'
+import RequestQuoteModal from '../RequestQuoteModal'
+import InvoiceSuccessModal from '../InvoiceSuccessModal'
 
 const comparePlansData = [
   {
@@ -234,6 +235,7 @@ const Subscription = (props) => {
   )
   const [isRequestInvoiceModalVisible, setRequestInvoiceModal] = useState(false)
   const [showEnterpriseTab, setShowEnterpriseTab] = useState(false)
+  const [isRequestQuoteModalVisible, setRequestQuoteModal] = useState(false)
 
   useEffect(() => {
     // getSubscription on mount
@@ -271,6 +273,8 @@ const Subscription = (props) => {
   const closeInvoiceSuccessModal = () => toggleRequestInvoiceSuccessModal(false)
   // const openRequestInvoiceModal = () => setRequestInvoiceModal(true)
   const closeRequestInvoiceModal = () => setRequestInvoiceModal(false)
+  const openRequestQuoteModal = () => setRequestQuoteModal(true)
+  const closeRequestQuoteModal = () => setRequestQuoteModal(false)
 
   const isSubscribed =
     subType === 'premium' ||
@@ -361,7 +365,11 @@ const Subscription = (props) => {
 
       <SubscriptionContentWrapper>
         {showEnterpriseTab ? (
-          <EnterpriseTab isPremium={isPremium} subType={subType} />
+          <EnterpriseTab
+            isPremium={isPremium}
+            subType={subType}
+            requestQuote={openRequestQuoteModal}
+          />
         ) : (
           <SubscriptionMain
             isSubscribed={isSubscribed}
@@ -456,15 +464,26 @@ const Subscription = (props) => {
         />
       )}
 
-      <InvoiceSuccessModal
-        visible={isRequestinvoiceSuccessModalVisible}
-        onCancel={closeInvoiceSuccessModal}
-      />
+      {isRequestinvoiceSuccessModalVisible && (
+        <InvoiceSuccessModal
+          visible={isRequestinvoiceSuccessModalVisible}
+          onCancel={closeInvoiceSuccessModal}
+        />
+      )}
 
-      <RequestInvoiceModal
-        visible={isRequestInvoiceModalVisible}
-        onCancel={closeRequestInvoiceModal}
-      />
+      {isRequestInvoiceModalVisible && (
+        <RequestInvoiceModal
+          visible={isRequestInvoiceModalVisible}
+          onCancel={closeRequestInvoiceModal}
+        />
+      )}
+
+      {isRequestQuoteModalVisible && (
+        <RequestQuoteModal
+          visible={isRequestQuoteModalVisible}
+          onCancel={closeRequestQuoteModal}
+        />
+      )}
     </Wrapper>
   )
 }

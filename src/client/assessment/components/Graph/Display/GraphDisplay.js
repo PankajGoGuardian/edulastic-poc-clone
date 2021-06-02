@@ -322,6 +322,7 @@ class GraphDisplay extends Component {
       annotation,
       graphType,
       list,
+      showConnect,
     } = graphData
 
     const {
@@ -422,6 +423,7 @@ class GraphDisplay extends Component {
       graphData,
       onChangeKeypad,
       symbols,
+      showConnect,
     }
   }
 

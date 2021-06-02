@@ -145,10 +145,12 @@ export const PlanText = styled.span`
 export const IconWrapper = styled.div`
   position: relative;
   margin-right: 5px;
+  width: 34px;
   span {
     color: ${title};
     position: absolute;
-    left: 11px;
+    left: 50%;
+    transform: translateX(-50%);
     top: 1px;
     font-size: 11px;
   }

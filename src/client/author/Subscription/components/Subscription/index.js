@@ -194,7 +194,7 @@ const Subscription = (props) => {
     isSubscriptionExpired,
     verifyAndUpgradeLicense,
     isSuccess = false,
-    subscription: { subEndDate, subType } = {},
+    subscription: { subEndDate, subType, schoolId = '' } = {},
     user,
     fetchUserSubscriptionStatus,
     isPremiumTrialUsed,
@@ -361,6 +361,7 @@ const Subscription = (props) => {
         isCliUser={isCliUser}
         showEnterpriseTab={showEnterpriseTab}
         setShowEnterpriseTab={setShowEnterpriseTab}
+        schoolId={schoolId}
       />
 
       <SubscriptionContentWrapper>

@@ -55,6 +55,7 @@ const SubscriptionHeader = ({
   isManageSubscriptionView = false,
   setShowEnterpriseTab,
   showEnterpriseTab,
+  schoolId,
 }) => {
   const openMultiplePurchaseModal = () => setShowMultiplePurchaseModal(true)
 
@@ -176,7 +177,7 @@ const SubscriptionHeader = ({
               <HeaderTabs
                 dataCy="EnterpriseTab"
                 isActive={showEnterpriseTab}
-                linkLabel="Enterprise (District)"
+                linkLabel={`Enterprise ${schoolId ? '(School)' : '(District)'}`}
                 onClickHandler={() => setShowEnterpriseTab(true)}
                 activeStyle={tabsCustomStyle}
               />

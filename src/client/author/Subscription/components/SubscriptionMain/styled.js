@@ -31,6 +31,9 @@ export const AddonSection = styled.section`
   text-align: center;
   border-radius: 10px;
   box-shadow: 0px 2px 10px ${boxShadowColor4};
+  h2 {
+    justify-content: center;
+  }
 `
 export const SectionTitle = styled.h2`
   display: flex;

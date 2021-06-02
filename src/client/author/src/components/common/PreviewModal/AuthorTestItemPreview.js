@@ -337,6 +337,7 @@ class AuthorTestItemPreview extends Component {
                   passageTestItems.findIndex((i) => i === item.versionId) + 1
                 }
                 onChange={goToItem}
+                data-cy="questionPagination"
               />
             </PassageNavigation>
           )}

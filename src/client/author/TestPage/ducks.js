@@ -1736,7 +1736,7 @@ function validateRestrictNavigationOut(data) {
 }
 
 // saga
-function* receiveTestByIdSaga({ payload }) {
+export function* receiveTestByIdSaga({ payload }) {
   try {
     const tests = yield select((state) => state.tests)
     let createdItems = yield select(getTestCreatedItemsSelector)

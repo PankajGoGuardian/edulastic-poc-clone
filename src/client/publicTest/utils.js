@@ -188,7 +188,7 @@ export const showTestInfoModal = ({
             during the attempt
           </p>
           <p style={{ marginTop: '10px' }}>PREFERRED LANGUAGE</p>
-          <p>
+          <p data-cy="selectLang">
             <Select
               getPopupContainer={(e) => e.parentElement}
               defaultValue={languagePreference || ''}
@@ -196,7 +196,7 @@ export const showTestInfoModal = ({
               onChange={handlChange}
               suffixIcon={<IconSelectCaretDown color={themeColor} />}
             >
-              <Option data-cy="preferredLang" value="" disabled>
+              <Option value="" disabled>
                 Select Language
               </Option>
               <Option value={languageCodes.ENGLISH}>English</Option>

@@ -15,6 +15,7 @@ import {
 } from '@edulastic/icons'
 import { difference, groupBy, isBoolean, keyBy, map, uniq, omit } from 'lodash'
 import React, { useEffect, useMemo, useState } from 'react'
+import { Tooltip } from 'antd'
 import FeatureNotAvailableModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/FeatureNotAvailableModal'
 import TrialModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/TrialModal/index'
 import FiltersSection from './FilterSection'
@@ -37,7 +38,6 @@ import {
 } from './styled'
 import TabHeaderContent from './TabHeaderContent'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
-import { Spin, Tooltip } from 'antd'
 
 const productsMetaData = {
   'Teacher Premium': {
@@ -108,6 +108,7 @@ const SubscriptionMain = ({
   isPaidPremium,
   setCartQuantities,
   cartQuantities,
+  subscription,
 }) => {
   const [showSelectStates, setShowSelectStates] = useState(false)
   const [isTrialModalVisible, setIsTrialModalVisible] = useState(false)
@@ -162,12 +163,12 @@ const SubscriptionMain = ({
 
     return itemBankSubscriptions
       .filter(
-        (subscription) =>
+        (_subscription) =>
           // only include the itembanks which are sold as products
           !subscription.isTrial &&
-          productItemBankIds.includes(subscription.itemBankId)
+          productItemBankIds.includes(_subscription.itemBankId)
       )
-      .map((subscription) => subscription.itemBankId)
+      .map((_subscription) => _subscription.itemBankId)
   }, [itemBankSubscriptions])
 
   const hasUsedAllItemBankTrials = trialUnuseditemBankProductIds.length === 0
@@ -331,261 +332,282 @@ const SubscriptionMain = ({
 
   return (
     <>
-      <SectionContainer>
-        {subType !== 'enterprise' && (
-          <>
-            <TabHeaderContent
-              setShowMultiplePurchaseModal={setShowMultiplePurchaseModal}
-              setShowEnterpriseTab={setShowEnterpriseTab}
-              showMultipleSubscriptions={showMultipleSubscriptions}
-              history={history}
-            />
+      {!productsWithoutTeacherPremium?.length ? (
+        <SpinContainer>
+          <StyledSpin size="large" />
+        </SpinContainer>
+      ) : (
+        <SectionContainer>
+          {subType !== 'enterprise' && (
+            <>
+              <TabHeaderContent
+                setShowMultiplePurchaseModal={setShowMultiplePurchaseModal}
+                setShowEnterpriseTab={setShowEnterpriseTab}
+                showMultipleSubscriptions={showMultipleSubscriptions}
+                history={history}
+              />
 
-            {!['partial_premium', 'enterprise'].includes(subType) && (
-              <CardsSection data-cy={teacherPremium.id}>
-                <FlexContainer
-                  justifyContent="flex-start"
-                  alignItems="flex-start"
-                >
-                  <IconWrapper>{teacherPremium.icon}</IconWrapper>
-                  <div>
-                    <SectionTitle>
-                      {teacherPremium.title}
-                      {isPremiumUser && (
-                        <ExpiryMsg>
-                          <IconPurchasedAlert />
-                          {subType === 'TRIAL_PREMIUM' ? (
-                            <span>
-                              FREE TRIAL EXPIRES{' '}
-                              {new Date(subEndDate).toDateString()}
-                            </span>
-                          ) : (
-                            <span>
-                              purchased - EXPIRES{' '}
-                              {new Date(subEndDate).toDateString()}
-                            </span>
-                          )}
-                        </ExpiryMsg>
-                      )}
-                    </SectionTitle>
-                    <CardDetails>
-                      <GradeWrapper>{teacherPremium.grades}</GradeWrapper>
-                      <OtherFilters>{teacherPremium.filters}</OtherFilters>
-                    </CardDetails>
-                    <SectionDescription>
-                      {teacherPremium.description}
-                    </SectionDescription>
-                  </div>
-                </FlexContainer>
-                <CardRightWrapper
-                  flexDirection="column"
-                  justifyContent="center"
-                >
-                  <Price>
-                    <span>$ {teacherPremium.price}</span> per Teacher
-                  </Price>
-                  <EduButton
-                    onClick={() => toggleCart(teacherPremium.id)}
-                    height="32px"
-                    width="180px"
-                    className={
-                      cartQuantities[teacherPremium.id] ? 'remove' : 'add'
-                    }
-                    data-cy={
-                      cartQuantities[teacherPremium.id]
-                        ? 'removeFromCart'
-                        : 'addToCart'
-                    }
+              {!['partial_premium', 'enterprise'].includes(subType) && (
+                <CardsSection data-cy={teacherPremium.id}>
+                  <FlexContainer
+                    justifyContent="flex-start"
+                    alignItems="flex-start"
                   >
-                    {cartQuantities[teacherPremium.id]
-                      ? 'Remove From Cart'
-                      : 'Add to Cart'}
-                  </EduButton>
-                  <EduButton
-                    onClick={handleSelectStateModal}
-                    height="32px"
-                    width="180px"
-                    isBlue
+                    <IconWrapper>{teacherPremium.icon}</IconWrapper>
+                    <div>
+                      <SectionTitle>
+                        {teacherPremium.title}
+                        {isPremiumUser && (
+                          <ExpiryMsg>
+                            <IconPurchasedAlert />
+                            {subType === 'TRIAL_PREMIUM' ? (
+                              <span>
+                                FREE TRIAL EXPIRES{' '}
+                                {new Date(subEndDate).toDateString()}
+                              </span>
+                            ) : (
+                              <span>
+                                purchased - EXPIRES{' '}
+                                {new Date(subEndDate).toDateString()}
+                              </span>
+                            )}
+                          </ExpiryMsg>
+                        )}
+                      </SectionTitle>
+                      <CardDetails>
+                        <GradeWrapper>{teacherPremium.grades}</GradeWrapper>
+                        <OtherFilters>{teacherPremium.filters}</OtherFilters>
+                      </CardDetails>
+                      <SectionDescription>
+                        {teacherPremium.description}
+                      </SectionDescription>
+                    </div>
+                  </FlexContainer>
+                  <CardRightWrapper
+                    flexDirection="column"
+                    justifyContent="center"
                   >
-                    <LearnMoreLink
-                      data-cy="LearnMore"
-                      href={teacherPremium.learnMoreLinks}
-                      target="_blank"
-                      rel="noreferrer"
-                      className
-                    >
-                      Learn more
-                    </LearnMoreLink>
-                  </EduButton>
-                  {subType !== 'premium' && (
-                    <Tooltip
-                      title={
-                        subType === 'TRIAL_PREMIUM'
-                          ? `Free trial for ${teacherPremium.title} is already utilized. Kindly purchase to access the content.`
-                          : ''
+                    <Price>
+                      <span>$ {teacherPremium.price}</span> per Teacher
+                    </Price>
+                    <EduButton
+                      onClick={() => toggleCart(teacherPremium.id)}
+                      height="32px"
+                      width="180px"
+                      className={
+                        cartQuantities[teacherPremium.id] ? 'remove' : 'add'
                       }
-                      placement="bottom"
+                      data-cy={
+                        cartQuantities[teacherPremium.id]
+                          ? 'removeFromCart'
+                          : 'addToCart'
+                      }
                     >
-                      <div>
+                      {cartQuantities[teacherPremium.id]
+                        ? 'Remove From Cart'
+                        : 'Add to Cart'}
+                    </EduButton>
+                    <EduButton
+                      onClick={handleSelectStateModal}
+                      height="32px"
+                      width="180px"
+                      isBlue
+                    >
+                      <LearnMoreLink
+                        data-cy="LearnMore"
+                        href={teacherPremium.learnMoreLinks}
+                        target="_blank"
+                        rel="noreferrer"
+                        className
+                      >
+                        Learn more
+                      </LearnMoreLink>
+                    </EduButton>
+                    {console.log(
+                      'teacherPremium',
+                      isPremiumTrialUsed,
+                      !subscription.length
+                    )}
+                    {!isPremiumUser && (
+                      <Tooltip
+                        title={
+                          isPremiumTrialUsed && !subscription.length
+                            ? `Free trial for ${teacherPremium.title} is already utilized. Kindly purchase to access the content.`
+                            : ''
+                        }
+                        placement="bottom"
+                      >
                         <EduButton
-                          onClick={() => handleStartTrialButtonClick()}
+                          onClick={() => {
+                            !(isPremiumTrialUsed && !subscription.length)
+                              ? handleStartTrialButtonClick()
+                              : {}
+                          }}
                           height="32px"
                           width="180px"
                           isGhost
                           isBlue
                           data-cy="subscriptionStartTrialbtn"
-                          disabled={subType === 'TRIAL_PREMIUM'}
+                          className={
+                            isPremiumTrialUsed &&
+                            !subscription.length &&
+                            'disabled'
+                          }
                         >
                           Try Now
                         </EduButton>
-                      </div>
-                    </Tooltip>
-                  )}
-                </CardRightWrapper>
-              </CardsSection>
-            )}
-          </>
-        )}
+                      </Tooltip>
+                    )}
+                  </CardRightWrapper>
+                </CardsSection>
+              )}
+            </>
+          )}
 
-        <FiltersSection
-          selected={addonSubject}
-          changeSubject={(v) => setAddonSubject(v)}
-          subjects={uniq(productsWithoutTeacherPremium.map((x) => x.subject))}
-        />
-        {!productsWithoutTeacherPremium?.length && (
-          <SpinContainer>
-            <StyledSpin size="large" />
-          </SpinContainer>
-        )}
-        {productsWithoutTeacherPremium
-          .filter((x) => {
-            if (addonSubject === 'all') {
-              return true
-            } else if (x.subject === addonSubject) {
-              return true
-            } else {
+          <FiltersSection
+            selected={addonSubject}
+            changeSubject={(v) => setAddonSubject(v)}
+            subjects={uniq(productsWithoutTeacherPremium.map((x) => x.subject))}
+          />
+
+          {productsWithoutTeacherPremium
+            .filter((x) => {
+              if (addonSubject === 'all') {
+                return true
+              }
+              if (x.subject === addonSubject) {
+                return true
+              }
               return false
-            }
-          })
-          .map((_product) => {
-            const itemBankSubscription = itemBankSubscriptions.find(
-              (ib) => ib.itemBankId === _product?.linkedProductId
-            )
-            return (
-              <CardsSection data-cy={_product.id}>
-                <FlexContainer
-                  justifyContent="flex-start"
-                  alignItems="flex-start"
-                >
-                  <IconWrapper>{_product.icon}</IconWrapper>
-                  <div>
-                    <SectionTitle>
-                      {_product.title}
-                      {!isPremiumUser && (
-                        <PremiumRequiredMsg>
-                          <IconAlertCircle />
-                          <span>Subscription requires access to Premium</span>
-                        </PremiumRequiredMsg>
-                      )}
-                      {itemBankSubscription && (
-                        <ExpiryMsg>
-                          <IconPurchasedAlert />
-                          {itemBankSubscription?.isTrial ? (
-                            <span>
-                              FREE TRIAL EXPIRES{' '}
-                              {new Date(
-                                itemBankSubscription?.endDate
-                              ).toDateString()}
-                            </span>
-                          ) : (
-                            <span>
-                              purchased - EXPIRES{' '}
-                              {new Date(
-                                itemBankSubscription?.endDate
-                              ).toDateString()}
-                            </span>
-                          )}
-                        </ExpiryMsg>
-                      )}
-                    </SectionTitle>
-                    <CardDetails>
-                      <GradeWrapper>{_product.grades}</GradeWrapper>
-                      <OtherFilters>{_product.filters}</OtherFilters>
-                    </CardDetails>
-                    <SectionDescription>
-                      {_product.description}
-                    </SectionDescription>
-                  </div>
-                </FlexContainer>
-                <CardRightWrapper
-                  flexDirection="column"
-                  justifyContent="center"
-                >
-                  <Price>
-                    <span>$ {_product.price}</span> per Teacher
-                  </Price>
-                  <EduButton
-                    onClick={() => toggleCart(_product.id)}
-                    height="32px"
-                    width="180px"
-                    data-cy={
-                      cartQuantities[_product.id]
-                        ? 'removeFromCart'
-                        : 'addToCart'
-                    }
-                    className={cartQuantities[_product.id] ? 'remove' : 'add'}
+            })
+            .map((_product) => {
+              const itemBankSubscription = itemBankSubscriptions.find(
+                (ib) => ib.itemBankId === _product?.linkedProductId
+              )
+              return (
+                <CardsSection data-cy={_product.id}>
+                  <FlexContainer
+                    justifyContent="flex-start"
+                    alignItems="flex-start"
                   >
-                    {cartQuantities[_product.id]
-                      ? 'Remove from Cart'
-                      : 'Add to Cart'}
-                  </EduButton>
-                  <EduButton
-                    onClick={handleSelectStateModal}
-                    height="32px"
-                    width="180px"
-                    isBlue
+                    <IconWrapper>{_product.icon}</IconWrapper>
+                    <div>
+                      <SectionTitle>
+                        {_product.title}
+                        {!isPremiumUser && (
+                          <PremiumRequiredMsg>
+                            <IconAlertCircle />
+                            <span>Subscription requires access to Premium</span>
+                          </PremiumRequiredMsg>
+                        )}
+                        {itemBankSubscription && (
+                          <ExpiryMsg>
+                            <IconPurchasedAlert />
+                            {itemBankSubscription?.isTrial ? (
+                              <span>
+                                FREE TRIAL EXPIRES{' '}
+                                {new Date(
+                                  itemBankSubscription?.endDate
+                                ).toDateString()}
+                              </span>
+                            ) : (
+                              <span>
+                                purchased - EXPIRES{' '}
+                                {new Date(
+                                  itemBankSubscription?.endDate
+                                ).toDateString()}
+                              </span>
+                            )}
+                          </ExpiryMsg>
+                        )}
+                      </SectionTitle>
+                      <CardDetails>
+                        <GradeWrapper>{_product.grades}</GradeWrapper>
+                        <OtherFilters>{_product.filters}</OtherFilters>
+                      </CardDetails>
+                      <SectionDescription>
+                        {_product.description}
+                      </SectionDescription>
+                    </div>
+                  </FlexContainer>
+                  <CardRightWrapper
+                    flexDirection="column"
+                    justifyContent="center"
                   >
-                    <LearnMoreLink
-                      data-cy="LearnMore"
-                      href={_product.learnMoreLinks}
-                      target="_blank"
-                      rel="noreferrer"
-                      className
-                    >
-                      Learn more
-                    </LearnMoreLink>
-                  </EduButton>
-                  {(!itemBankSubscription || itemBankSubscription.isTrial) && (
-                    <Tooltip
-                      title={
-                        itemBankSubscription?.isTrial
-                          ? `Free trial for ${_product.title} is already utilized. Kindly purchase to access the content.`
-                          : ''
+                    <Price>
+                      <span>$ {_product.price}</span> per Teacher
+                    </Price>
+                    <EduButton
+                      onClick={() => toggleCart(_product.id)}
+                      height="32px"
+                      width="180px"
+                      data-cy={
+                        cartQuantities[_product.id]
+                          ? 'removeFromCart'
+                          : 'addToCart'
                       }
-                      placement="bottom"
+                      className={cartQuantities[_product.id] ? 'remove' : 'add'}
                     >
-                      <div>
+                      {cartQuantities[_product.id]
+                        ? 'Remove from Cart'
+                        : 'Add to Cart'}
+                    </EduButton>
+                    <EduButton
+                      onClick={handleSelectStateModal}
+                      height="32px"
+                      width="180px"
+                      isBlue
+                    >
+                      <LearnMoreLink
+                        data-cy="LearnMore"
+                        href={_product.learnMoreLinks}
+                        target="_blank"
+                        rel="noreferrer"
+                        className
+                      >
+                        Learn more
+                      </LearnMoreLink>
+                    </EduButton>
+                    {!itemBankSubscription && (
+                      <Tooltip
+                        title={
+                          usedTrialItemBankIds.includes(
+                            _product.linkedProductId
+                          )
+                            ? `Free trial for ${_product.title} is already utilized. Kindly purchase to access the content.`
+                            : ''
+                        }
+                        placement="bottom"
+                      >
                         <EduButton
-                          onClick={() =>
-                            handleStartTrialButtonClick(_product.id)
+                          onClick={() => {
+                            !usedTrialItemBankIds.includes(
+                              _product.linkedProductId
+                            )
+                              ? handleStartTrialButtonClick(_product.id)
+                              : {}
+                          }}
+                          className={
+                            usedTrialItemBankIds.includes(
+                              _product.linkedProductId
+                            ) && 'disabled'
                           }
                           height="32px"
                           width="180px"
                           isGhost
                           isBlue
                           data-cy="subscriptionStartTrialbtn"
-                          disabled={itemBankSubscription?.isTrial}
                         >
                           Try Now
                         </EduButton>
-                      </div>
-                    </Tooltip>
-                  )}
-                </CardRightWrapper>
-              </CardsSection>
-            )
-          })}
-      </SectionContainer>
+                      </Tooltip>
+                    )}
+                  </CardRightWrapper>
+                </CardsSection>
+              )
+            })}
+        </SectionContainer>
+      )}
 
       {isTrialModalVisible && (
         <TrialModal

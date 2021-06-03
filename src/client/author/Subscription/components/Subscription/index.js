@@ -204,7 +204,7 @@ const Subscription = (props) => {
     isSubscriptionExpired,
     verifyAndUpgradeLicense,
     isSuccess = false,
-    subscription: { subEndDate, subType, schoolId = '' } = {},
+    subscription = {},
     user,
     isPremiumTrialUsed,
     itemBankSubscriptions = [],
@@ -223,6 +223,8 @@ const Subscription = (props) => {
     cartQuantities,
     setCartQuantities,
   } = props
+
+  const { subEndDate, subType, schoolId = '' } = subscription
 
   const [comparePlan, setComparePlan] = useState(false)
   const [hasLicenseKeyModal, setHasLicenseKeyModal] = useState(false)
@@ -429,6 +431,7 @@ const Subscription = (props) => {
             setShowMultiplePurchaseModal={setShowMultiplePurchaseModal}
             cartQuantities={cartQuantities}
             setCartQuantities={setCartQuantities}
+            subscription={subscription}
           />
         )}
       </SubscriptionContentWrapper>
@@ -456,6 +459,7 @@ const Subscription = (props) => {
         subsLicenses={subsLicenses}
         setProductData={setProductData}
         trialAddOnProductIds={trialAddOnProductIds}
+        setRequestQuoteModal={setRequestQuoteModal}
       />
 
       <HasLicenseKeyModal

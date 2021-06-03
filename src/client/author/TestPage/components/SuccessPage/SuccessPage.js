@@ -437,13 +437,13 @@ class SuccessPage extends React.Component {
                     </FlexText>
                   ) : assignment.testType === _testTypes.COMMON ? (
                     <FlexText>
-                      You can monitor student progress and responses by clicking
-                      on the &nbsp;
+                      You can monitor student progress and responses using
+                      the Live Class Board &nbsp;
                       <span
                         onClick={this.handleAssign}
                         style={{ color: themeColor, cursor: 'pointer' }}
                       >
-                        Go to Live Class Board
+                        Click here
                       </span>
                     </FlexText>
                   ) : (
@@ -463,15 +463,15 @@ class SuccessPage extends React.Component {
                             : 'once it is opened by you from Live Class Board'
                         }.`}
                       </FlexText>
-                      You can monitor student progress and responses by clicking
-                      on the &nbsp;
+                      You can monitor student progress and responses using
+                      the Live Class Board &nbsp;
                       <span
                         onClick={this.handleAssign}
                         style={{ color: themeColor, cursor: 'pointer' }}
                       >
-                        Go to Live Class Board
+                        Click here
                       </span>
-                      &nbsp; button.
+                      &nbsp;to navigate to the Live Class Board
                     </FlexText>
                   )}
                   <Divider />

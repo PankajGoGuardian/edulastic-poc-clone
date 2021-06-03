@@ -432,6 +432,7 @@ const Subscription = (props) => {
             cartQuantities={cartQuantities}
             setCartQuantities={setCartQuantities}
             subscription={subscription}
+            subsLicenses={subsLicenses}
           />
         )}
       </SubscriptionContentWrapper>

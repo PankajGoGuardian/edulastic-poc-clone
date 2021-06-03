@@ -13,6 +13,7 @@ import {
   IconWord,
   IconSchool,
 } from '@edulastic/icons'
+import produce from 'immer'
 import { difference, groupBy, isBoolean, keyBy, map, uniq, omit } from 'lodash'
 import React, { useEffect, useMemo, useState } from 'react'
 import { Tooltip } from 'antd'
@@ -109,6 +110,7 @@ const SubscriptionMain = ({
   setCartQuantities,
   cartQuantities,
   subscription,
+  subsLicenses = [],
 }) => {
   const [showSelectStates, setShowSelectStates] = useState(false)
   const [isTrialModalVisible, setIsTrialModalVisible] = useState(false)
@@ -319,13 +321,101 @@ const SubscriptionMain = ({
     ? [productData?.productId]
     : []
 
-  const toggleCart = (productId) => {
+  const isUserPremium = ['premium', 'enterprise', 'partial_premium'].includes(
+    subType?.toLowerCase?.()
+  )
+
+  const toggleCart = (productId, source) => {
     const quantities = cartQuantities
     if (productId) {
       if (cartQuantities[productId]) {
-        setCartQuantities(omit(quantities, [productId]))
+        // if removing tp and user is not premium
+        if (source === 'tp' && !isUserPremium) {
+          setCartQuantities({})
+        } else if (source === 'tp' && isUserPremium) {
+          setCartQuantities(
+            produce(cartQuantities, (draft) => {
+              delete draft[productId]
+              for (const [_productId, _productCount] of Object.entries(draft)) {
+                const hasBankAccess = itemBankSubscriptions.find((x) => {
+                  return (
+                    x.itemBankId ===
+                    products.find((y) => y.id === _productId)?.linkedProductId
+                  )
+                })
+                if (hasBankAccess && !hasBankAccess.isTrial) {
+                  delete draft[_productId]
+                } else if (hasBankAccess && hasBankAccess.isTrial) {
+                  draft[_productId] = 1
+                }
+              }
+              return draft
+            })
+          )
+        } else {
+          setCartQuantities(
+            produce(cartQuantities, (draft) => {
+              delete draft[productId]
+              return draft
+            })
+          )
+        }
       } else {
-        setCartQuantities({ ...quantities, [productId]: 1 })
+        const changes = { [productId]: 1 }
+
+        const hasAddonAccess =
+          productId === teacherPremium.id ||
+          itemBankSubscriptions.find((x) => {
+            return (
+              x.itemBankId ===
+                products.find((y) => y.id === productId)?.linkedProductId &&
+              !x.isTrial
+            )
+          })
+
+        if (quantities[teacherPremium.id] === undefined && source === 'addon') {
+          // if additions of addons and user is not premium
+          if (!isUserPremium) {
+            Object.assign(changes, { [teacherPremium.id]: 1 })
+            notification({
+              type: 'info',
+              msg: `Note: Teacher Premium is added to cart by default since you are on ${
+                subType === 'TRIAL_PREMIUM' ? 'Trial Premium' : 'free'
+              } plan`,
+            })
+          } else if (isUserPremium && subsLicenses.length && hasAddonAccess) {
+            // if user is premium and adding a bank which he has access to
+            const {
+              totalCount: totalTeacherPremium,
+              usedCount: totalTeacherPremiumUsedCount,
+            } = subsLicenses.find((x) => x.productId === teacherPremium.id)
+
+            const totalRemainingTeacherPremiumCount =
+              totalTeacherPremium - totalTeacherPremiumUsedCount
+
+            const totalRemainingItemBanksLicenseCount = subsLicenses.reduce(
+              (a, c) => {
+                if (c.productId === teacherPremium.id) return a
+                const { totalCount, usedCount } = c
+                const delta = totalCount - usedCount
+                return delta > a ? delta : a
+              },
+              0
+            )
+
+            const diff =
+              totalRemainingTeacherPremiumCount -
+              totalRemainingItemBanksLicenseCount
+            if (diff <= 0) {
+              Object.assign(changes, { [teacherPremium.id]: 1 })
+              notification({
+                type: 'info',
+                msg: `Note: Teacher Premium is added to cart by default since Itembank Licenses cannot be more than `,
+              })
+            }
+          }
+        }
+        setCartQuantities({ ...quantities, ...changes })
       }
     }
   }
@@ -391,7 +481,7 @@ const SubscriptionMain = ({
                       <span>$ {teacherPremium.price}</span> per Teacher
                     </Price>
                     <EduButton
-                      onClick={() => toggleCart(teacherPremium.id)}
+                      onClick={() => toggleCart(teacherPremium.id, 'tp')}
                       height="32px"
                       width="180px"
                       className={
@@ -538,7 +628,7 @@ const SubscriptionMain = ({
                       <span>$ {_product.price}</span> per Teacher
                     </Price>
                     <EduButton
-                      onClick={() => toggleCart(_product.id)}
+                      onClick={() => toggleCart(_product.id, 'addon')}
                       height="32px"
                       width="180px"
                       data-cy={

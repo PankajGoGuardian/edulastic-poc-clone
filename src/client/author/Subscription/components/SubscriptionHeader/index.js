@@ -35,6 +35,19 @@ const tabsCustomStyle = {
   'border-bottom-color': lightGrey,
 }
 
+const CartInfo = ({ cartHasProducts, children }) =>
+  !cartHasProducts ? (
+    <Tooltip
+      placement="bottom"
+      title="Add products to cart to view them here"
+      trigger="hover"
+    >
+      {children}
+    </Tooltip>
+  ) : (
+    <>{children}</>
+  )
+
 const SubscriptionHeader = ({
   openComparePlanModal,
   showRenewalOptions,
@@ -141,6 +154,13 @@ const SubscriptionHeader = ({
 
   const licenseExpiryDate = formatDate(subEndDate)
 
+  const cartHasProducts = Object.keys(cartQuantities)?.length
+
+  const handleCartClick = () => {
+    if (cartHasProducts) {
+      setCartVisible(true)
+    }
+  }
   const showAddonsTab =
     isPartialPremiumUgradedUser || subType === 'enterprise' || isFreeAdmin
 
@@ -207,16 +227,15 @@ const SubscriptionHeader = ({
               <CustomLink onClick={uploadPO} data-cy="uploadPO">
                 Upload PO
               </CustomLink>
-              <CartButton
-                data-cy="cartButton"
-                onClick={() => setCartVisible(true)}
-              >
-                <IconWrapper>
-                  <IconCart />
-                  <span>{cartCount}</span>
-                </IconWrapper>
-                Cart
-              </CartButton>
+              <CartInfo cartHasProducts={cartHasProducts}>
+                <CartButton data-cy="cartButton" onClick={handleCartClick}>
+                  <IconWrapper>
+                    <IconCart />
+                    <span>{cartCount}</span>
+                  </IconWrapper>
+                  Cart
+                </CartButton>
+              </CartInfo>
             </>
           )}
           {isManageSubscriptionView &&

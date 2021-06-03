@@ -1,6 +1,7 @@
 import { NumberInputStyled, notification } from '@edulastic/common'
 import { Tooltip } from 'antd'
-import { camelCase, isNumber, keyBy } from 'lodash'
+import produce from 'immer'
+import { camelCase, isNumber, keyBy, max } from 'lodash'
 import React, { useEffect, useMemo } from 'react'
 import {
   AddonList,
@@ -27,7 +28,7 @@ const ProductsList = ({
   setSelectedProductIds,
   isBuyMore,
   currentItemId,
-  subsLicenses,
+  subsLicenses = [],
   isRequestingQuote,
   isCart,
 }) => {
@@ -66,14 +67,57 @@ const ProductsList = ({
       setQuantities(_quantities)
       setSelectedProductIds((x) => x.concat(id))
     } else {
-      const _quantities = {
-        ...quantities,
-        [id]: undefined,
+      let _quantities = {}
+      if (isCart) {
+        _quantities = produce(quantities, (draft) => {
+          delete draft[id]
+          return draft
+        })
+      } else {
+        _quantities = {
+          ...quantities,
+          [id]: undefined,
+        }
       }
       setQuantities(_quantities)
       setSelectedProductIds((x) => x.filter((y) => y !== id))
     }
   }
+
+  const getTeacherPremiumCountToAdd = (_licenses, quant) => {
+    if (isCart) {
+      const {
+        totalCount: totalTeacherPremium,
+        usedCount: totalTeacherPremiumUsedCount,
+      } = _licenses.find((x) => x.productId === premiumProductId)
+
+      const totalRemainingTeacherPremiumCount =
+        totalTeacherPremium - totalTeacherPremiumUsedCount
+
+      const totalRemainingItemBanksLicenseCount = _licenses.reduce((a, c) => {
+        if (
+          c.productId === premiumProductId ||
+          !Object.keys(quant).includes(c.productId)
+        ) {
+          return a
+        }
+        const { totalCount, usedCount } = c
+        const delta = totalCount - usedCount
+        return delta > a ? delta : a
+      }, 0)
+
+      const availableTeacherPremiumCount =
+        totalRemainingTeacherPremiumCount - totalRemainingItemBanksLicenseCount
+
+      return max(Object.values(quant)) - availableTeacherPremiumCount
+    }
+    return -1
+  }
+
+  const teacherPremiumCountTOAdd = useMemo(() => {
+    return getTeacherPremiumCountToAdd(subsLicenses, quantities)
+  }, [subsLicenses, quantities])
+
   const handleQuantityChange = (itemId) => (value) => {
     if (isBuyMore && !isCart) {
       const tpCount =
@@ -95,6 +139,24 @@ const ProductsList = ({
         return
       }
     }
+
+    if (isCart) {
+      const _quantities = {
+        ...quantities,
+        [itemId]: Math.floor(value),
+      }
+
+      if (itemId !== premiumProductId) {
+        const diff = getTeacherPremiumCountToAdd(subsLicenses, _quantities)
+        if (diff > 0 && diff > (+_quantities[premiumProductId] || 0)) {
+          Object.assign(_quantities, { [premiumProductId]: diff })
+        }
+      }
+
+      setQuantities(_quantities)
+      return
+    }
+
     const _quantities = {
       ...quantities,
       [itemId]: Math.floor(value),
@@ -111,10 +173,11 @@ const ProductsList = ({
     return pressedKey
   }
 
-  useEffect(
-    () => handleQuantityChange(isBuyMore ? currentItemId : premiumProductId)(1),
-    [premiumProductId, currentItemId, isBuyMore]
-  )
+  useEffect(() => {
+    if (!isCart) {
+      handleQuantityChange(isBuyMore ? currentItemId : premiumProductId)(1)
+    }
+  }, [premiumProductId, currentItemId, isBuyMore, isCart])
 
   return (
     <>
@@ -153,9 +216,15 @@ const ProductsList = ({
                   height="28px"
                   width="80px"
                   data-cy={product.type}
-                  min={1}
+                  min={
+                    isCart && premiumProductId === product.id
+                      ? teacherPremiumCountTOAdd
+                      : 1
+                  }
                   max={
-                    premiumProductId === product.id
+                    isCart && teacherPremiumCountTOAdd >= 0
+                      ? Infinity
+                      : premiumProductId === product.id
                       ? Infinity
                       : quantities[premiumProductId] ||
                         Math.max(
@@ -166,7 +235,9 @@ const ProductsList = ({
                         )
                   }
                   disabled={
-                    isBuyMore ? false : quantities[product.id] === undefined
+                    isBuyMore && !isCart
+                      ? false
+                      : quantities[product.id] === undefined
                   }
                   onKeyDown={handleKeyPress}
                 />

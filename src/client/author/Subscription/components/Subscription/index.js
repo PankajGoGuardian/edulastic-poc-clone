@@ -200,7 +200,6 @@ const Subscription = (props) => {
     isSuccess = false,
     subscription: { subEndDate, subType, schoolId = '' } = {},
     user,
-    fetchUserSubscriptionStatus,
     isPremiumTrialUsed,
     itemBankSubscriptions = [],
     startTrialAction,
@@ -247,7 +246,7 @@ const Subscription = (props) => {
 
   useEffect(() => {
     // getSubscription on mount
-    fetchUserSubscriptionStatus()
+    // fetchUserSubscriptionStatus() // fetching already happening from sidemenu mount
     fetchMultipleSubscriptions({})
   }, [])
 
@@ -535,7 +534,6 @@ export default compose(
     }),
     {
       verifyAndUpgradeLicense: slice.actions.upgradeLicenseKeyPending,
-      fetchUserSubscriptionStatus: slice.actions.fetchUserSubscriptionStatus,
       startTrialAction: slice.actions.startTrialAction,
       setPaymentServiceModal: slice.actions.setPaymentServiceModal,
       resetTestFilters: resetTestFiltersAction,

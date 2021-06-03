@@ -19,8 +19,10 @@ import {
   lightGrey15,
   lightBlue10,
   lightGreen10,
+  deleteRed2,
 } from '@edulastic/colors'
 import { CustomModalStyled, EduButton, FlexContainer } from '@edulastic/common'
+import { Spin } from 'antd'
 
 export const Img = styled.img`
   height: 35px;
@@ -135,7 +137,7 @@ export const PremiumRequiredMsg = styled.span`
     color: #e5923f;
   }
 `
-export const TrialExpiryMsg = styled(PremiumRequiredMsg)`
+export const ExpiryMsg = styled(PremiumRequiredMsg)`
   span {
     color: #0b9ad2;
   }
@@ -176,6 +178,22 @@ export const OtherFilters = styled.div`
 export const CardRightWrapper = styled(FlexContainer)`
   .ant-btn {
     margin-top: 5px;
+    &.add {
+      &:focus,
+      &:active {
+        background: ${themeColor};
+        border-color: ${themeColor};
+      }
+    }
+    &.remove {
+      background: ${deleteRed2};
+      border-color: ${deleteRed2};
+      &:focus,
+      &:active {
+        background: ${deleteRed2};
+        border-color: ${deleteRed2};
+      }
+    }
   }
 `
 export const Price = styled.div`
@@ -396,4 +414,20 @@ export const LearnMoreLink = styled.a`
   &:last-child {
     border: none;
   }
+`
+export const SpinContainer = styled.div`
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  z-index: 999;
+  background-color: rgb(0, 0, 0, 0.3);
+`
+
+export const StyledSpin = styled(Spin)`
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 `

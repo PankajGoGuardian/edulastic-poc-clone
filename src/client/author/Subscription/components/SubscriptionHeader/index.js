@@ -6,7 +6,7 @@ import HeaderTabs, {
 import { HeaderMidContainer } from '@edulastic/common/src/components/MainHeader'
 import { roleuser } from '@edulastic/constants'
 import { IconCart, IconSubscriptionHighlight } from '@edulastic/icons'
-import { Dropdown, Menu } from 'antd'
+import { Dropdown, Menu, Tooltip } from 'antd'
 import { capitalize } from 'lodash'
 import moment from 'moment'
 import PropTypes from 'prop-types'
@@ -60,7 +60,6 @@ const SubscriptionHeader = ({
   setCartVisible,
   cartQuantities = {},
 }) => {
-  console.log('cartqu', cartQuantities)
   const openMultiplePurchaseModal = () => setShowMultiplePurchaseModal(true)
   const cartCount = Object.keys(cartQuantities).filter(
     (x) => x && x != 'null' && cartQuantities[x] > 0

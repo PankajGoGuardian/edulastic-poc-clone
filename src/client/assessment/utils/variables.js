@@ -1,4 +1,4 @@
-import { has, omitBy } from 'lodash'
+import { has, omitBy, isEmpty, get } from 'lodash'
 import uuid from 'uuid'
 import produce from 'immer'
 import { questionType } from '@edulastic/constants'
@@ -218,43 +218,75 @@ export const replaceVariables = (
   })
 }
 
-export const getOptionsForMath = (validations) => {
+const transformOpts = (options) => {
   const transformedOptions = {}
+  const optionKeys = Object.keys(options)
+  optionKeys.forEach((key) => {
+    const optionVal = options[key]
 
+    if (key === 'setThousandsSeparator') {
+      if (optionVal.length) {
+        const stringArr = `[${optionVal.map((f) => `'${f}'`)}]`
+        if (optionVal.includes('.') && !options.setDecimalSeparator) {
+          transformedOptions.setDecimalSeparator = ','
+        }
+        transformedOptions[key] = stringArr
+      }
+    } else if (key === 'setDecimalSeparator') {
+      if (optionVal === ',' && !options.setThousandsSeparator) {
+        transformedOptions.setThousandsSeparator = '.'
+      }
+      transformedOptions[key] = optionVal
+    } else if (key === 'allowedUnits') {
+      transformedOptions[key] = `[${optionVal}]`
+    } else if (key === 'syntax') {
+      if (options.argument === undefined) {
+        transformedOptions[key] = optionVal
+      } else {
+        transformedOptions[optionVal] = options.argument
+      }
+    } else if (key === 'significantDecimalPlaces') {
+      transformedOptions.isDecimal = optionVal
+    } else {
+      transformedOptions[key] = optionVal
+    }
+  })
+  return transformedOptions
+}
+export const getOptionsForMath = (validations) => {
+  let transformedOptions = {}
   validations.forEach((val) => {
     const options = omitBy(val.options || {}, (f) => f === false)
-    const optionKeys = Object.keys(options)
-
-    optionKeys.forEach((key) => {
-      const optionVal = options[key]
-
-      if (key === 'setThousandsSeparator') {
-        if (optionVal.length) {
-          const stringArr = `[${optionVal.map((f) => `'${f}'`)}]`
-          if (optionVal.includes('.') && !options.setDecimalSeparator) {
-            transformedOptions.setDecimalSeparator = ','
-          }
-          transformedOptions[key] = stringArr
-        }
-      } else if (key === 'setDecimalSeparator') {
-        if (optionVal === ',' && !options.setThousandsSeparator) {
-          transformedOptions.setThousandsSeparator = '.'
-        }
-        transformedOptions[key] = optionVal
-      } else if (key === 'allowedUnits') {
-        transformedOptions[key] = `[${optionVal}]`
-      } else if (key === 'syntax') {
-        if (options.argument === undefined) {
-          transformedOptions[key] = optionVal
-        } else {
-          transformedOptions[optionVal] = options.argument
-        }
-      } else if (key === 'significantDecimalPlaces') {
-        transformedOptions.isDecimal = optionVal
-      } else {
-        transformedOptions[key] = optionVal
-      }
-    })
+    transformedOptions = transformOpts(options)
   })
-  return { options: transformedOptions }
+
+  return transformedOptions
+}
+
+export const getOptionsForClozeMath = (variables, validations) => {
+  const transformedOptions = {}
+  const formularKeys = Object.keys(variables).filter((key) => {
+    const { type } = variables[key] || {}
+    return type === 'FORMULA'
+  })
+  if (isEmpty(formularKeys)) {
+    return {}
+  }
+
+  const mathInputss = validations.validResponse.value
+  const mathUnits = validations.validResponse.mathUnits.value
+  const maths = mathInputss.concat([mathUnits])
+
+  formularKeys.forEach((key) => {
+    const mathFields = maths.filter((m) => m[0].value.includes(`@${key}`))
+    if (mathFields.length > 1) {
+      // TODO: show a popup here
+    } else if (mathFields.length === 1) {
+      const opts = transformOpts(get(mathFields, '[0][0].options', {}))
+      if (!isEmpty(opts)) {
+        transformedOptions[key] = opts
+      }
+    }
+  })
+  return transformedOptions
 }

@@ -210,6 +210,9 @@ const Subscription = (props) => {
     subsLicenses,
     isRequestinvoiceSuccessModalVisible,
     toggleRequestInvoiceSuccessModal,
+    setCartVisible,
+    cartQuantities,
+    setCartQuantities,
   } = props
 
   const [comparePlan, setComparePlan] = useState(false)
@@ -244,7 +247,6 @@ const Subscription = (props) => {
   }, [])
 
   const isPremiumUser = user?.features?.premium
-
   /**
    *  a user is paid premium user if
    *  - subType exists and
@@ -362,8 +364,9 @@ const Subscription = (props) => {
         showEnterpriseTab={showEnterpriseTab}
         setShowEnterpriseTab={setShowEnterpriseTab}
         schoolId={schoolId}
+        setCartVisible={setCartVisible}
+        cartQuantities={cartQuantities}
       />
-
       <SubscriptionContentWrapper>
         {showEnterpriseTab ? (
           <EnterpriseTab
@@ -409,6 +412,8 @@ const Subscription = (props) => {
             showMultipleSubscriptions={showMultipleSubscriptions}
             setShowEnterpriseTab={setShowEnterpriseTab}
             setShowMultiplePurchaseModal={setShowMultiplePurchaseModal}
+            cartQuantities={cartQuantities}
+            setCartQuantities={setCartQuantities}
           />
         )}
       </SubscriptionContentWrapper>
@@ -510,6 +515,7 @@ export default compose(
         state
       ),
       subsLicenses: getSubsLicensesSelector(state),
+      cartQuantities: state.subscription?.cartQuantities
     }),
     {
       verifyAndUpgradeLicense: slice.actions.upgradeLicenseKeyPending,
@@ -521,6 +527,8 @@ export default compose(
       fetchMultipleSubscriptions: fetchMultipleSubscriptionsAction,
       toggleRequestInvoiceSuccessModal:
         slice.actions.toggleRequestInvoiceSuccessModal,
+      setCartVisible: slice.actions.setCartVisible,
+      setCartQuantities: slice.actions.setCartQuantities,
     }
   )
 )(Subscription)

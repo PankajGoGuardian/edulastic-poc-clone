@@ -29,6 +29,7 @@ const ProductsList = ({
   currentItemId,
   subsLicenses,
   isRequestingQuote,
+  isCart,
 }) => {
   const licenseMapKeyByProductId = useMemo(() => {
     if (subsLicenses) {
@@ -53,7 +54,10 @@ const ProductsList = ({
   }, [_totalPrice])
 
   const handleOnChange = (e, id) => {
-    if (isBuyMore) return
+    if(!id){
+      return
+    }
+    if (isBuyMore && !isCart) return
     if (e.target.checked) {
       const _quantities = {
         ...quantities,
@@ -71,7 +75,7 @@ const ProductsList = ({
     }
   }
   const handleQuantityChange = (itemId) => (value) => {
-    if (isBuyMore) {
+    if (isBuyMore && !isCart) {
       const tpCount =
         licenseMapKeyByProductId[premiumProductId]?.totalCount || 0
       const productCount = licenseMapKeyByProductId[itemId]?.totalCount || 0
@@ -183,7 +187,8 @@ const ProductsList = ({
           </FlexRow>
         ))}
       </AddonList>
-      {!isBuyMore && !isRequestingQuote && (
+
+      {(!isBuyMore||isCart)  && !isRequestingQuote &&  (
         <Total>
           <FlexRow>
             <label>Total</label>

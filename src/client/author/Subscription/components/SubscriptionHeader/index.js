@@ -56,9 +56,12 @@ const SubscriptionHeader = ({
   setShowEnterpriseTab,
   showEnterpriseTab,
   schoolId,
+  setCartVisible,
+  cartQuantities={},
 }) => {
+  console.log('cartqu',cartQuantities)
   const openMultiplePurchaseModal = () => setShowMultiplePurchaseModal(true)
-
+  const cartCount = Object.keys(cartQuantities).filter(x => x && x != "null" && cartQuantities[x]>0).length;
   const handlePurchaseFlow = () => {
     settingProductData()
     if (isFreeAdmin) {
@@ -200,10 +203,10 @@ const SubscriptionHeader = ({
                 Compare Plan
               </CustomLink>
               <CustomLink data-cy="uploadPO">Upload PO</CustomLink>
-              <CartButton data-cy="cartButton">
+              <CartButton data-cy="cartButton" onClick={()=> setCartVisible(true)}>
                 <IconWrapper>
                   <IconCart />
-                  <span>01</span>
+                  <span>{cartCount}</span>
                 </IconWrapper>
                 Cart
               </CartButton>

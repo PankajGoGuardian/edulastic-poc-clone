@@ -5,18 +5,18 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { get, isObject } from 'lodash'
 import Styled from 'styled-components'
-import { Anchor, Col, Row, Select, Tooltip, Icon, InputNumber } from 'antd'
-import { blueBorder, green, red, lightGrey9 } from '@edulastic/colors'
+import { Anchor, Col, Icon, InputNumber, Row, Select, Tooltip } from 'antd'
+import { blueBorder, green, lightGrey9, red } from '@edulastic/colors'
 
 import {
-  MainContentWrapper,
   CheckboxLabel,
+  EduSwitchStyled,
+  FieldLabel,
+  MainContentWrapper,
+  notification,
   RadioBtn,
   SelectInputStyled,
   TextInputStyled,
-  notification,
-  FieldLabel,
-  EduSwitchStyled,
   withWindowSizes,
 } from '@edulastic/common'
 import { roleuser, test as testContants } from '@edulastic/constants'
@@ -32,9 +32,9 @@ import {
   getDisableAnswerOnPaperSelector,
   getReleaseScorePremiumSelector,
   getTestEntitySelector,
+  resetUpdatedStateAction,
   setTestDataAction,
   testTypeAsProfileNameType,
-  resetUpdatedStateAction,
 } from '../../../../ducks'
 import { setMaxAttemptsAction, setSafeBroswePassword } from '../../ducks'
 import {
@@ -48,21 +48,24 @@ import {
   Body,
   Container,
   Description,
+  Label,
   MessageSpan,
   NavigationMenu,
+  RadioWrapper,
+  SettingsCategoryBlock,
   StyledAnchor,
   StyledRadioGroup,
   Title,
-  RadioWrapper,
-  Label,
-  SettingsCategoryBlock,
 } from './styled'
 import PeformanceBand from './PeformanceBand'
 import StandardProficiencyTable from './StandardProficiencyTable'
 import Instruction from './InstructionBlock/InstructionBlock'
 import DollarPremiumSymbol from '../../../../../AssignTest/components/Container/DollarPremiumSymbol'
 import { SettingContainer } from '../../../../../AssignTest/components/Container/styled'
-import { StyledRow } from '../../../../../AssignTest/components/SimpleOptions/styled'
+import {
+  CheckBoxWrapper,
+  StyledRow,
+} from '../../../../../AssignTest/components/SimpleOptions/styled'
 import KeypadDropdown from './KeypadDropdown'
 import { getAssignmentsSelector } from '../../../Assign/ducks'
 
@@ -180,6 +183,16 @@ class Setting extends Component {
     setSafePassword(e.target.value)
   }
 
+  handleApplyEBSR = (event) => {
+    const {
+      target: { checked },
+    } = event
+    const { setTestData } = this.props
+    setTestData({
+      applyEBSR: checked,
+    })
+  }
+
   updateTestData = (key) => (value) => {
     const {
       setTestData,
@@ -240,7 +253,18 @@ class Setting extends Component {
       }
       case 'scoringType': {
         const penalty = value === evalTypeLabels.PARTIAL_CREDIT
-        setTestData({ penalty })
+        const dataToSet = {
+          penalty,
+        }
+        if (
+          ![
+            evalTypeLabels.PARTIAL_CREDIT,
+            evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT,
+          ].includes(value)
+        ) {
+          Object.assign(dataToSet, { applyEBSR: false })
+        }
+        setTestData(dataToSet)
         break
       }
       case 'safeBrowser':
@@ -394,7 +418,6 @@ class Setting extends Component {
       answerOnPaper,
       passwordPolicy,
       maxAnswerChecks,
-      scoringType,
       testType,
       calcType,
       assignmentPassword,
@@ -420,8 +443,18 @@ class Setting extends Component {
       restrictNavigationOutAttemptsThreshold,
       blockSaveAndContinue,
       pauseAllowed,
+      itemGroups = [],
+      applyEBSR = false,
     } = entity
-
+    const scoringType =
+      entity.scoringType === evalTypeLabels.PARTIAL_CREDIT &&
+      entity.penalty === false
+        ? evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT
+        : entity.scoringType
+    const multipartItems = itemGroups
+      .map((o) => o.items)
+      .flat()
+      .filter((o) => o.multipartItem).length
     const breadcrumbData = [
       {
         title: showCancelButton ? 'ASSIGNMENTS / EDIT TEST' : 'TESTS',
@@ -544,6 +577,25 @@ class Setting extends Component {
       !isEdulasticCurator &&
       !isCurator &&
       (testStatus === 'draft' || editEnable)
+
+    const applyEBSRComponent = () => {
+      return (
+        <CheckBoxWrapper>
+          <CheckboxLabel
+            disabled={!owner || !isEditable}
+            data-cy="applyEBSR"
+            checked={applyEBSR}
+            onChange={this.handleApplyEBSR}
+          >
+            <StyledSpan>
+              APPLY EBSR GREADING (
+              <StyledItalic>first part has to be correct</StyledItalic>) FOR ALL
+              MULTIPART ITEMS
+            </StyledSpan>
+          </CheckboxLabel>
+        </CheckBoxWrapper>
+      )
+    }
 
     return (
       <MainContentWrapper ref={this.containerRef}>
@@ -759,6 +811,10 @@ class Setting extends Component {
                                 key={PARTIAL_CREDIT}
                               >
                                 {evalTypes.PARTIAL_CREDIT}
+                                {scoringType === PARTIAL_CREDIT &&
+                                multipartItems
+                                  ? applyEBSRComponent()
+                                  : null}
                               </RadioBtn>
                               <RadioBtn
                                 value={PARTIAL_CREDIT_IGNORE_INCORRECT}
@@ -766,6 +822,11 @@ class Setting extends Component {
                                 key={PARTIAL_CREDIT_IGNORE_INCORRECT}
                               >
                                 {evalTypes.PARTIAL_CREDIT_IGNORE_INCORRECT}
+                                {scoringType ===
+                                  PARTIAL_CREDIT_IGNORE_INCORRECT &&
+                                multipartItems
+                                  ? applyEBSRComponent()
+                                  : null}
                               </RadioBtn>
                               {/* ant-radio-wrapper already has bottom-margin: 18px by default. */}
                               {/* not setting mb (margin bottom) as it is common component */}
@@ -1896,4 +1957,12 @@ export default enhance(Setting)
 
 const InputNumberStyled = Styled(InputNumber)`
     width: 60px;
+`
+
+const StyledSpan = Styled.span`
+  font-weight: ${(props) => props.theme.semiBold};
+`
+
+const StyledItalic = Styled.i`
+  font-weight: ${(props) => props.theme.regular};
 `

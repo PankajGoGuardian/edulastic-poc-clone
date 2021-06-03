@@ -136,7 +136,7 @@ const QuestionBottomAction = ({
 
   const onClickShowSolutionHandler = (e) => {
     e.stopPropagation()
-    updateShowExplanation(true)
+    updateShowExplanation(!showExplanation)
   }
 
   const onCloseQuestionModal = () => {
@@ -350,14 +350,14 @@ const QuestionBottomAction = ({
               isStudentReport={isStudentReport}
             />
           )}
-          {isSolutionVisible && !showExplanation && (
+          {isSolutionVisible && (
             <EduButton
               width="110px"
               height="30px"
               isGhost
               onClick={onClickShowSolutionHandler}
             >
-              Show solution
+              {showExplanation ? 'Hide solution' : 'Show solution'}
             </EduButton>
           )}
         </LeftWrapper>

@@ -19,6 +19,12 @@ import { ShowUserWork } from '../Common/QuestionBottomAction'
 import { IPAD_LANDSCAPE_WIDTH } from '../../constants/others'
 import Divider from './Divider'
 import { changedPlayerContentAction } from '../../../author/sharedDucks/testPlayer'
+import {
+  getPageNumberSelector,
+  LCB_LIMIT_QUESTION_PER_VIEW,
+  SCROLL_SHOW_LIMIT,
+} from '../../../author/ClassBoard/ducks'
+import { setPageNumberAction } from '../../../author/src/reducers/testActivity'
 
 class TestItemPreview extends Component {
   constructor(props) {
@@ -198,28 +204,37 @@ class TestItemPreview extends Component {
   }
 
   renderFeedbacks = () => {
-    const { cols } = this.props
+    const { cols, pageNumber, isDocBased, isQuestionView } = this.props
     const { value } = this.state
     let colIndex = 0
-    return cols.map((col) =>
-      (col?.widgets || [])
-        .filter(
-          (widget) =>
-            widget.type !== questionType.SECTION_LABEL &&
-            widget.widgetType !== 'resource'
-        )
-        .map((widget, i) => (
-          <React.Fragment key={i}>
-            {col.tabs &&
-              !!col.tabs.length &&
-              value === widget.tabIndex &&
-              this.renderFeedback(widget, i, colIndex++, this.showStackedView)}
-            {col.tabs &&
-              !col.tabs.length &&
-              this.renderFeedback(widget, i, colIndex++, this.showStackedView)}
-          </React.Fragment>
-        ))
-    )
+    return cols.map((col) => {
+      const filteredWidgets = (col?.widgets || []).filter(
+        (widget) =>
+          widget.type !== questionType.SECTION_LABEL &&
+          widget.widgetType !== 'resource'
+      )
+      const shouldShowPagination =
+        isDocBased &&
+        filteredWidgets.length > SCROLL_SHOW_LIMIT &&
+        !isQuestionView
+      const widgetsToRender = shouldShowPagination
+        ? filteredWidgets.slice(
+            LCB_LIMIT_QUESTION_PER_VIEW * (pageNumber - 1),
+            LCB_LIMIT_QUESTION_PER_VIEW * pageNumber
+          )
+        : filteredWidgets
+      return widgetsToRender.map((widget, i) => (
+        <React.Fragment key={i}>
+          {col.tabs &&
+            !!col.tabs.length &&
+            value === widget.tabIndex &&
+            this.renderFeedback(widget, i, colIndex++, this.showStackedView)}
+          {col.tabs &&
+            !col.tabs.length &&
+            this.renderFeedback(widget, i, colIndex++, this.showStackedView)}
+        </React.Fragment>
+      ))
+    })
   }
 
   componentDidMount() {
@@ -522,6 +537,7 @@ TestItemPreview.defaultProps = {
 }
 
 const enhance = compose(
+  React.memo,
   withWindowSizes,
   withTheme,
   withNamespaces('student'),
@@ -533,9 +549,11 @@ const enhance = compose(
         'test.settings.showPreviousAttempt',
         'NONE'
       ),
+      pageNumber: getPageNumberSelector(state),
     }),
     {
       changedPlayerContent: changedPlayerContentAction,
+      setPageNumber: setPageNumberAction,
     }
   )
 )

@@ -133,3 +133,15 @@ export const SelectWrapper = styled.div`
   justify-content: space-between;
   margin: 20px 13px;
 `
+export const PaginationWrapper = styled.div`
+  margin-top: 20px;
+`
+export const LoaderContainer = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.12);
+`

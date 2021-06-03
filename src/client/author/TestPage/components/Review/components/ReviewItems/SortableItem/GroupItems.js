@@ -80,6 +80,7 @@ const GroupItems = SortableContainer((props) => {
           IconBtn
           ml="0px"
           onClick={toggleMinizeGroup}
+          dataCy={minimize ? 'iconPlus' : 'iconMinus'}
         >
           {minimize ? <IconPlus /> : <IconMinusRounded />}
         </PlusButton>

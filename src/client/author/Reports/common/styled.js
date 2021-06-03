@@ -132,6 +132,15 @@ export const ReportFiltersWrapper = styled.div`
   -o-transition: all 0.5s ease-in-out;
   transition: all 0.5s ease-in-out;
 
+  .report-filters-inner-wrapper {
+    opacity: ${({ loading }) => (loading ? 0 : 1)};
+    -webkit-transition: all 0.5s ease-in-out;
+    -moz-transition: all 0.5s ease-in-out;
+    -ms-transition: all 0.5s ease-in-out;
+    -o-transition: all 0.5s ease-in-out;
+    transition: all 0.5s ease-in-out;
+  }
+
   .ant-tabs {
     overflow: visible;
     & .ant-tabs-tab {

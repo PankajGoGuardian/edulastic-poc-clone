@@ -21,10 +21,7 @@ import {
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 
 import { getCsvDownloadingState, generateCSVAction } from '../../../ducks'
-import {
-  getSAFFilterStandardsProficiencyProfiles,
-  setStandardMasteryProfileAction,
-} from '../common/filterDataDucks'
+import { setStandardMasteryProfileAction } from '../common/filterDataDucks'
 import CardHeader, {
   CardDropdownWrapper,
   CardTitle,
@@ -67,7 +64,6 @@ const PerformanceByStandards = ({
   demographicFilters,
   role,
   isCsvDownloading,
-  standardProficiencyProfiles,
   location,
   pageTitle,
   sharedReport,
@@ -75,31 +71,9 @@ const PerformanceByStandards = ({
   toggleFilter,
   generateCSV,
 }) => {
-  const [userRole, sharedReportFilters] = useMemo(
-    () => [
-      sharedReport?.sharedBy?.role || role,
-      sharedReport?._id
-        ? { ...sharedReport.filters, reportId: sharedReport._id }
-        : null,
-    ],
-    [sharedReport]
-  )
-  const scaleInfo = useMemo(
-    () =>
-      (
-        standardProficiencyProfiles.find(
-          (s) =>
-            s._id ===
-            (sharedReportFilters || settings.requestFilters)
-              .standardsProficiencyProfile
-        ) || report?.scaleInfo
-      )?.scale,
-    [settings, report]
-  )
-
-  useEffect(() => {
-    setStandardMasteryProfile(report?.scaleInfo || {})
-  }, [report])
+  const userRole = useMemo(() => sharedReport?.sharedBy?.role || role, [
+    sharedReport,
+  ])
 
   const itemsCount = get(report, 'totalCount', 0)
   const [pageFilters, setPageFilters] = useState({
@@ -125,8 +99,8 @@ const PerformanceByStandards = ({
   )})`
 
   const reportWithFilteredSkills = useMemo(
-    () => getReportWithFilteredSkills(report, scaleInfo, curriculumId),
-    [report, curriculumId, scaleInfo]
+    () => getReportWithFilteredSkills(report, curriculumId),
+    [report, curriculumId]
   )
 
   const standardsDropdownData = useMemo(() => {
@@ -204,7 +178,6 @@ const PerformanceByStandards = ({
           testId: settings.selectedTest.key,
         },
         reportExtras: {
-          scaleInfo,
           viewBy,
           analyzeBy,
           curriculumId,
@@ -228,6 +201,7 @@ const PerformanceByStandards = ({
   }
 
   useEffect(() => {
+    setStandardMasteryProfile(report?.scaleInfo || {})
     setSelectedData(reportWithFilteredSkills)
     if (
       (settings.requestFilters.termId || settings.requestFilters.reportId) &&
@@ -423,11 +397,11 @@ const PerformanceByStandards = ({
 
 const reportPropType = PropTypes.shape({
   teacherInfo: PropTypes.array,
-  scaleInfo: PropTypes.array,
   skillInfo: PropTypes.array,
   metricInfo: PropTypes.array,
   studInfo: PropTypes.array,
   standardsMap: PropTypes.object,
+  scaleInfo: PropTypes.object,
 })
 
 PerformanceByStandards.propTypes = {
@@ -435,7 +409,6 @@ PerformanceByStandards.propTypes = {
   settings: PropTypes.object.isRequired,
   report: reportPropType.isRequired,
   isCsvDownloading: PropTypes.bool.isRequired,
-  standardProficiencyProfiles: PropTypes.array.isRequired,
   getPerformanceByStandards: PropTypes.func.isRequired,
   role: PropTypes.string.isRequired,
 }
@@ -447,9 +420,6 @@ const enhance = connect(
     role: getUserRole(state),
     report: getPerformanceByStandardsReportSelector(state),
     isCsvDownloading: getCsvDownloadingState(state),
-    standardProficiencyProfiles: getSAFFilterStandardsProficiencyProfiles(
-      state
-    ),
   }),
   {
     getPerformanceByStandards: getPerformanceByStandardsAction,

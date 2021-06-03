@@ -376,7 +376,7 @@ const SingleAssessmentReportContainer = (props) => {
                 showFilter={showFilter}
                 settings={settings}
                 pageTitle={loc}
-                filters={ddfilter}
+                demographicFilters={demographicFilters}
                 customStudentUserId={customStudentUserId}
                 isCliUser={isCliUser}
                 sharedReport={sharedReport}

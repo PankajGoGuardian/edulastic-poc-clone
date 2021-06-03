@@ -18,6 +18,8 @@ const PonitsOnAnEquation = ({ optionKey, options, onChange }) => {
     setIsAllowed(e.target.checked)
     if (!e.target.checked) {
       onChange('ponitsOnAnEquation', null)
+    } else {
+      onChange('showConnect', true)
     }
   }
 

@@ -7,7 +7,7 @@ import {
 } from '@edulastic/constants'
 import { Tabs } from 'antd'
 import produce from 'immer'
-import { curry, get, keyBy } from 'lodash'
+import { curry, get, keyBy, isBoolean } from 'lodash'
 import * as moment from 'moment'
 import PropTypes from 'prop-types'
 import React from 'react'
@@ -146,6 +146,12 @@ class SimpleOptions extends React.Component {
       assignment = {
         ...assignment,
         restrictNavigationOut: undefined,
+      }
+    }
+    if (field === 'applyEBSR') {
+      assignment = {
+        ...assignment,
+        applyEBSR: isBoolean(value) ? value : false,
       }
     }
 
@@ -327,6 +333,14 @@ class SimpleOptions extends React.Component {
     // SimpleOptions onChange method has similar condition
     if (key === 'scoringType') {
       const penalty = value === evalTypeLabels.PARTIAL_CREDIT
+      if (
+        ![
+          evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT,
+          evalTypeLabels.PARTIAL_CREDIT,
+        ].includes(value)
+      ) {
+        newSettings.applyEBSR = false
+      }
       newSettings.penalty = penalty
     }
 

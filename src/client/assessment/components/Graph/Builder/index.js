@@ -32,6 +32,7 @@ import {
   Title,
   Dashed,
   NumberLineDotPlotPoint,
+  Connectline,
 } from './elements'
 import {
   fillConfigDefaultParameters,
@@ -1716,6 +1717,15 @@ class Board {
 
   isDragMode() {
     return this.$board.mode === this.$board.BOARD_MODE_DRAG
+  }
+
+  connectPoints(elements) {
+    this.removeConnectline()
+    this.connectline = Connectline.create(this.$board, elements)
+  }
+
+  removeConnectline() {
+    Connectline.remove(this.$board, this.connectline)
   }
 }
 

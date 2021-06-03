@@ -3,12 +3,14 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import styled from 'styled-components'
-import { keyBy as _keyBy, isEmpty, get } from 'lodash'
+import memoizeOne from 'memoize-one'
+import { keyBy as _keyBy, isEmpty, get, isEqual, groupBy } from 'lodash'
 // components
 import { AnswerContext } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
+import { questionType } from '@edulastic/constants'
 import produce from 'immer'
-import { Modal, Row, Col } from 'antd'
+import { Modal, Row, Col, Spin, Pagination } from 'antd'
 import TestItemPreview from '../../../../assessment/components/TestItemPreview'
 import {
   loadScratchPadAction,
@@ -18,15 +20,266 @@ import {
 import AssessmentPlayerModal from '../../../Assignments/components/Container/TestPreviewModal'
 import { getRows } from '../../../sharedDucks/itemDetail'
 // styled wrappers
-import { StyledFlexContainer } from './styled'
+import {
+  StyledFlexContainer,
+  PaginationWrapper,
+  LoaderContainer,
+} from './styled'
 import {
   getDynamicVariablesSetIdForViewResponse,
   ttsUserIdSelector,
+  getPageNumberSelector,
+  LCB_LIMIT_QUESTION_PER_VIEW,
+  SCROLL_SHOW_LIMIT,
 } from '../../../ClassBoard/ducks'
 import Worksheet from '../../../AssessmentPage/components/Worksheet/Worksheet'
 import { ThemeButton } from '../../../src/components/common/ThemeButton'
+import {
+  setPageNumberAction,
+  setLcbQuestionLoaderStateAcion,
+  setQuestionIdToScrollAction,
+} from '../../../src/reducers/testActivity'
+import { _scrollTo } from '../../../ClassBoard/components/BarGraph/BarGraph'
 
-function Preview({
+const transformTestItemsForAlgoVariables = (testItems, variablesSetIds) =>
+  produce(testItems, (draft) => {
+    if (!draft) {
+      return
+    }
+
+    const qidSetIds = _keyBy(variablesSetIds, 'qid')
+    for (const [idxItem, item] of draft.entries()) {
+      if (!item.algoVariablesEnabled) {
+        continue
+      }
+      const questions = get(item, 'data.questions', [])
+      for (const [idxQuestion, question] of questions.entries()) {
+        const qid = question.id
+        const setIds = qidSetIds[qid]
+        if (!setIds) {
+          continue
+        }
+        const setKeyId = setIds.setId
+        const examples = get(question, 'variable.examples', [])
+        const variables = get(question, 'variable.variables', {})
+        const example = examples.find((x) => x.key === +setKeyId)
+        if (!example) {
+          continue
+        }
+        for (const variable of Object.keys(variables)) {
+          draft[idxItem].data.questions[idxQuestion].variable.variables[
+            variable
+          ].exampleValue = example[variable]
+        }
+      }
+    }
+  })
+
+const getStudentName = (props) => {
+  const { isPresentationMode, currentStudent } = props
+  if (!currentStudent) return null
+  const name = isPresentationMode
+    ? currentStudent.fakeName
+    : currentStudent.studentName
+  return name
+}
+
+const transformTestItems = (props) => {
+  const {
+    currentStudent,
+    questionActivities,
+    filter,
+    labels = {},
+    isQuestionView = false,
+    testItemsData,
+    testActivityId,
+    passages,
+    variableSetIds,
+    expressGrader,
+    testItemsOrder = {},
+    isPresentationMode,
+  } = props
+  if (!currentStudent || !questionActivities) {
+    return []
+  }
+
+  let { testItems } = props
+
+  if (!expressGrader && testItems && !isQuestionView) {
+    testItems = testItemsData.filter((tid) =>
+      testItems.find((ti) => ti._id === tid._id)
+    )
+  }
+  const userQActivities =
+    currentStudent && currentStudent.questionActivities
+      ? currentStudent.questionActivities
+      : []
+  if (!testItems) {
+    return []
+  }
+
+  testItems = testItems
+    .sort((x, y) => testItemsOrder[x._id] - testItemsOrder[y._id])
+    .map((item) => {
+      const { data, rows, ...others } = item
+      if (!(data && !isEmpty(data.questions))) {
+        return
+      }
+      if (item.itemLevelScoring) {
+        const firstQid = data.questions[0].id
+        const firstQAct = userQActivities.find(
+          (x) => x._id === firstQid && x.testItemId === item._id
+        )
+        if (firstQAct) {
+          if (filter === 'unscoredItems' && !firstQAct.isPractice) {
+            return false
+          }
+
+          if (filter && filter !== 'unscoredItems' && firstQAct.isPractice) {
+            return false
+          }
+
+          if (filter === 'correct' && firstQAct.maxScore !== firstQAct.score) {
+            return false
+          }
+
+          if (
+            filter === 'wrong' &&
+            (firstQAct.score > 0 ||
+              firstQAct.skipped ||
+              firstQAct.graded === false)
+          ) {
+            return false
+          }
+
+          if (
+            filter === 'partial' &&
+            !(firstQAct.score > 0 && firstQAct.score < firstQAct.maxScore)
+          ) {
+            return false
+          }
+          if (
+            filter === 'skipped' &&
+            !(firstQAct.skipped && firstQAct.score === 0)
+          ) {
+            return false
+          }
+          if (filter === 'notGraded' && !(firstQAct.graded === false)) {
+            return false
+          }
+        }
+      }
+
+      let questions = data.questions
+        .map((question) => {
+          const { id } = question
+          let qActivities = questionActivities.filter(
+            ({ qid, id: altId, testItemId }) =>
+              (qid === id || altId === id) && testItemId === item._id
+          )
+          if (qActivities.length > 1) {
+            /**
+             * taking latest qActivity for a qid
+             */
+            const qActivity = qActivities.find(
+              (o) => o.testActivityId === testActivityId
+            )
+            if (qActivity) {
+              qActivities = [qActivity]
+            } else {
+              qActivities = [qActivities[qActivities.length - 1]]
+            }
+          }
+          qActivities = qActivities.map((q) => ({
+            ...q,
+            studentName: getStudentName({ isPresentationMode, currentStudent }),
+            icon: currentStudent.icon,
+            color: currentStudent.color,
+          }))
+          const label = labels[id] || {}
+          if (!item.itemLevelScoring && qActivities[0]) {
+            if (filter === 'unscoredItems' && !qActivities[0].isPractice) {
+              return false
+            }
+
+            if (
+              filter &&
+              filter !== 'unscoredItems' &&
+              qActivities[0].isPractice
+            ) {
+              return false
+            }
+
+            if (
+              filter === 'correct' &&
+              qActivities[0].score < qActivities[0].maxScore
+            ) {
+              return false
+            }
+
+            if (
+              filter === 'wrong' &&
+              (qActivities[0].score > 0 ||
+                qActivities[0].skipped ||
+                qActivities[0].graded === false)
+            ) {
+              return false
+            }
+
+            if (
+              filter === 'skipped' &&
+              !(qActivities[0].skipped && qActivities[0].score === 0)
+            ) {
+              return false
+            }
+            if (filter === 'notGraded' && !(qActivities[0].graded === false)) {
+              return false
+            }
+            if (
+              filter === 'partial' &&
+              !(
+                qActivities[0].score > 0 &&
+                qActivities[0].score < qActivities[0].maxScore
+              )
+            ) {
+              return false
+            }
+          }
+          qActivities = qActivities.map((q) => {
+            const userQuestion = userQActivities.find(
+              ({ _id }) => _id === q.qid
+            )
+            if (userQuestion) {
+              q.timespent = userQuestion.timeSpent
+              q.disabled = userQuestion.disabled
+            }
+
+            return { ...q }
+          })
+          const [activity] = qActivities.length > 0 ? qActivities : [{}]
+          return { ...question, activity, ...label }
+        })
+        .filter((x) => x)
+      if (!questions.length) {
+        return false
+      }
+      if (item.passageId && passages) {
+        const passage = passages.find((p) => p._id === item.passageId)
+        if (passage) {
+          questions = [...questions, passage.data?.[0]]
+        }
+      }
+      const resources = data.resources || []
+      questions = [...questions, ...resources]
+      return { ...others, rows, data: { questions } }
+    })
+    .filter((x) => x)
+  return transformTestItemsForAlgoVariables([...testItems], variableSetIds)
+}
+
+const getTestItems = memoizeOne(transformTestItems, isEqual)
+
+const Preview = ({
   item,
   qIndex,
   studentId,
@@ -46,7 +299,7 @@ function Preview({
   toggleStudentWorkCollapse,
   hideCorrectAnswer,
   testActivityId: utaId,
-}) {
+}) => {
   const rows = getRows(item, false)
   const questions = get(item, ['data', 'questions'], [])
   const resources = get(item, ['data', 'resources'], [])
@@ -139,14 +392,38 @@ Preview.defaultProps = {
   evaluation: {},
 }
 
+const MemoizedPreview = React.memo(Preview)
+
 class ClassQuestions extends Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.state = {
       showPlayerModal: false,
       selectedTestItem: [],
       showDocBasedPlayer: false,
       isStudentWorkCollapseOpen: false,
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    const {
+      studentViewFilter,
+      pageNumber,
+      setPageNumber,
+      setLcbQuestionLoaderState,
+      questionId,
+      MainContentWrapperRef,
+      isQuestionView,
+      setQuestionIdToScroll,
+    } = this.props
+    if (studentViewFilter != prevProps.studentViewFilter && pageNumber !== 1) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      setPageNumber(1)
+    }
+    if (prevProps.pageNumber !== pageNumber && !isQuestionView) {
+      setLcbQuestionLoaderState(false)
+      setQuestionIdToScroll('')
+      _scrollTo(questionId, MainContentWrapperRef?.current)
     }
   }
 
@@ -161,219 +438,6 @@ class ClassQuestions extends Component {
     this.setState({
       showPlayerModal: true,
     })
-  }
-
-  getStudentName = () => {
-    const { isPresentationMode, currentStudent } = this.props
-    if (!currentStudent) return null
-    const name = isPresentationMode
-      ? currentStudent.fakeName
-      : currentStudent.studentName
-    return name
-  }
-
-  getTestItems() {
-    const {
-      currentStudent,
-      questionActivities,
-      studentViewFilter: filter,
-      labels = {},
-      isQuestionView = false,
-      testItemsData,
-      testActivityId,
-      passages,
-    } = this.props
-    if (!currentStudent || !questionActivities) {
-      return []
-    }
-
-    let {
-      classResponse: { testItems },
-    } = this.props
-
-    const { variableSetIds } = this.props
-
-    const { expressGrader } = this.context
-    if (!expressGrader && testItems && !isQuestionView) {
-      testItems = testItemsData.filter((tid) =>
-        testItems.find((ti) => ti._id === tid._id)
-      )
-    }
-    const userQActivities =
-      currentStudent && currentStudent.questionActivities
-        ? currentStudent.questionActivities
-        : []
-    if (!testItems) {
-      return []
-    }
-
-    const { testItemsOrder = {} } = this.props
-    testItems = testItems
-      .sort((x, y) => testItemsOrder[x._id] - testItemsOrder[y._id])
-      .map((item) => {
-        const { data, rows, ...others } = item
-        if (!(data && !isEmpty(data.questions))) {
-          return
-        }
-        if (item.itemLevelScoring) {
-          const firstQid = data.questions[0].id
-          const firstQAct = userQActivities.find(
-            (x) => x._id === firstQid && x.testItemId === item._id
-          )
-          if (firstQAct) {
-            if (filter === 'unscoredItems' && !firstQAct.isPractice) {
-              return false
-            }
-
-            if (filter && filter !== 'unscoredItems' && firstQAct.isPractice) {
-              return false
-            }
-
-            if (
-              filter === 'correct' &&
-              firstQAct.maxScore !== firstQAct.score
-            ) {
-              return false
-            }
-
-            if (
-              filter === 'wrong' &&
-              (firstQAct.score > 0 ||
-                firstQAct.skipped ||
-                firstQAct.graded === false)
-            ) {
-              return false
-            }
-
-            if (
-              filter === 'partial' &&
-              !(firstQAct.score > 0 && firstQAct.score < firstQAct.maxScore)
-            ) {
-              return false
-            }
-            if (
-              filter === 'skipped' &&
-              !(firstQAct.skipped && firstQAct.score === 0)
-            ) {
-              return false
-            }
-            if (filter === 'notGraded' && !(firstQAct.graded === false)) {
-              return false
-            }
-          }
-        }
-
-        let questions = data.questions
-          .map((question) => {
-            const { id } = question
-            let qActivities = questionActivities.filter(
-              ({ qid, id: altId, testItemId }) =>
-                (qid === id || altId === id) && testItemId === item._id
-            )
-            if (qActivities.length > 1) {
-              /**
-               * taking latest qActivity for a qid
-               */
-              const qActivity = qActivities.find(
-                (o) => o.testActivityId === testActivityId
-              )
-              if (qActivity) {
-                qActivities = [qActivity]
-              } else {
-                qActivities = [qActivities[qActivities.length - 1]]
-              }
-            }
-            qActivities = qActivities.map((q) => ({
-              ...q,
-              studentName: this.getStudentName(),
-              icon: currentStudent.icon,
-              color: currentStudent.color,
-            }))
-            const label = labels[id] || {}
-            if (!item.itemLevelScoring && qActivities[0]) {
-              if (filter === 'unscoredItems' && !qActivities[0].isPractice) {
-                return false
-              }
-
-              if (
-                filter &&
-                filter !== 'unscoredItems' &&
-                qActivities[0].isPractice
-              ) {
-                return false
-              }
-
-              if (
-                filter === 'correct' &&
-                qActivities[0].score < qActivities[0].maxScore
-              ) {
-                return false
-              }
-
-              if (
-                filter === 'wrong' &&
-                (qActivities[0].score > 0 ||
-                  qActivities[0].skipped ||
-                  qActivities[0].graded === false)
-              ) {
-                return false
-              }
-
-              if (
-                filter === 'skipped' &&
-                !(qActivities[0].skipped && qActivities[0].score === 0)
-              ) {
-                return false
-              }
-              if (
-                filter === 'notGraded' &&
-                !(qActivities[0].graded === false)
-              ) {
-                return false
-              }
-              if (
-                filter === 'partial' &&
-                !(
-                  qActivities[0].score > 0 &&
-                  qActivities[0].score < qActivities[0].maxScore
-                )
-              ) {
-                return false
-              }
-            }
-            qActivities = qActivities.map((q) => {
-              const userQuestion = userQActivities.find(
-                ({ _id }) => _id === q.qid
-              )
-              if (userQuestion) {
-                q.timespent = userQuestion.timeSpent
-                q.disabled = userQuestion.disabled
-              }
-
-              return { ...q }
-            })
-            const [activity] = qActivities.length > 0 ? qActivities : [{}]
-            return { ...question, activity, ...label }
-          })
-          .filter((x) => x)
-        if (!questions.length) {
-          return false
-        }
-        if (item.passageId && passages) {
-          const passage = passages.find((p) => p._id === item.passageId)
-          if (passage) {
-            questions = [...questions, passage.data?.[0]]
-          }
-        }
-        const resources = data.resources || []
-        questions = [...questions, ...resources]
-        return { ...others, rows, data: { questions } }
-      })
-      .filter((x) => x)
-    return this.transformTestItemsForAlgoVariables(
-      [...testItems],
-      variableSetIds
-    )
   }
 
   showStudentWork = (testItem) => {
@@ -421,40 +485,6 @@ class ClassQuestions extends Component {
     )
   }
 
-  transformTestItemsForAlgoVariables = (testItems, variablesSetIds) =>
-    produce(testItems, (draft) => {
-      if (!draft) {
-        return
-      }
-
-      const qidSetIds = _keyBy(variablesSetIds, 'qid')
-      for (const [idxItem, item] of draft.entries()) {
-        if (!item.algoVariablesEnabled) {
-          continue
-        }
-        const questions = get(item, 'data.questions', [])
-        for (const [idxQuestion, question] of questions.entries()) {
-          const qid = question.id
-          const setIds = qidSetIds[qid]
-          if (!setIds) {
-            continue
-          }
-          const setKeyId = setIds.setId
-          const examples = get(question, 'variable.examples', [])
-          const variables = get(question, 'variable.variables', {})
-          const example = examples.find((x) => x.key === +setKeyId)
-          if (!example) {
-            continue
-          }
-          for (const variable of Object.keys(variables)) {
-            draft[idxItem].data.questions[idxQuestion].variable.variables[
-              variable
-            ].exampleValue = example[variable]
-          }
-        }
-      }
-    })
-
   render() {
     const {
       showPlayerModal,
@@ -481,9 +511,29 @@ class ClassQuestions extends Component {
       ttsUserIds,
       isStudentView,
       hideCorrectAnswer,
+      studentViewFilter: filter,
+      labels,
+      testItemsOrder,
+      pageNumber,
+      setPageNumber,
+      isQuestionsLoading,
+      setLcbQuestionLoaderState,
     } = this.props
-    const testItems = this.getTestItems()
     const { expressGrader: isExpressGrader = false } = this.context
+    const testItems = getTestItems({
+      currentStudent,
+      questionActivities,
+      filter,
+      labels,
+      isQuestionView,
+      testItemsData,
+      testActivityId,
+      passages,
+      testItems: classResponse?.testItems,
+      expressGrader: isExpressGrader,
+      testItemsOrder,
+      isPresentationMode,
+    })
 
     const evaluationStatus = questionActivities.reduce((acc, curr) => {
       if (curr.pendingEvaluation) {
@@ -495,60 +545,6 @@ class ClassQuestions extends Component {
       return acc
     }, {})
 
-    const testItemsPreview = testItems.map((item, index) => {
-      let showStudentWork = null
-      let scractchPadUsed = userWork[item._id]
-      scractchPadUsed = item.data.questions.some(
-        (question) => question?.activity?.scratchPad?.scratchpad
-      )
-      if (scractchPadUsed) {
-        showStudentWork = () => this.showStudentWork(item)
-      }
-      if (testData.isDocBased) {
-        showStudentWork = () => this.setState({ showDocBasedPlayer: true })
-      }
-      const questionActivity = questionActivities.find(
-        (act) => act.testItemId === item._id
-      )
-
-      const questionsWithItemId = item.data.questions.map((q) => ({
-        ...q,
-        testItemId: item._id,
-      }))
-
-      return (
-        <Preview
-          studentId={(currentStudent || {}).studentId}
-          ttsUserIds={ttsUserIds}
-          studentName={
-            (currentStudent || {})[
-              isPresentationMode ? 'fakeName' : 'studentName'
-            ]
-          }
-          key={index}
-          item={{
-            ...item,
-            data: { ...item.data, questions: questionsWithItemId },
-          }}
-          passages={passages}
-          qIndex={qIndex || index}
-          evaluation={evaluationStatus}
-          showStudentWork={showStudentWork}
-          isQuestionView={isQuestionView}
-          isExpressGrader={isExpressGrader}
-          isLCBView={isLCBView}
-          questionActivity={questionActivity}
-          scractchPadUsed={scractchPadUsed}
-          isStudentWorkCollapseOpen={isStudentWorkCollapseOpen}
-          toggleStudentWorkCollapse={this.toggleStudentWorkCollapse}
-          userWork={userWork} // used to determine show student work button
-          t={t}
-          hideCorrectAnswer={hideCorrectAnswer}
-          isStudentView={isStudentView}
-          testActivityId={testActivityId || currentStudent.testActivityId}
-        />
-      )
-    })
     const test = showTestletPlayer
       ? {
           testType: classResponse.testType,
@@ -596,8 +592,41 @@ class ClassQuestions extends Component {
       }
     }
 
+    const shouldShowPagination =
+      !testData.isDocBased &&
+      testItems.length > SCROLL_SHOW_LIMIT &&
+      !isQuestionView
+
+    const itemsToRender = shouldShowPagination
+      ? testItems.slice(
+          LCB_LIMIT_QUESTION_PER_VIEW * (pageNumber - 1),
+          LCB_LIMIT_QUESTION_PER_VIEW * pageNumber
+        )
+      : testItems
+
+    let showPaginationForDocQuestions = false
+    let filteredWidgets = []
+    if (testData.isDocBased) {
+      const widgets = testItems?.[0]?.rows?.[0]?.widgets || []
+      filteredWidgets = widgets.filter(
+        (widget) => widget.type !== questionType.SECTION_LABEL
+      )
+      showPaginationForDocQuestions =
+        filteredWidgets.length > SCROLL_SHOW_LIMIT && !isQuestionView
+    }
+
+    const questionActivitiesGroupedByItemId = groupBy(
+      questionActivities,
+      'testItemId'
+    )
+
     return (
       <>
+        {isQuestionsLoading && !isQuestionView && (
+          <LoaderContainer>
+            <Spin size="large" />
+          </LoaderContainer>
+        )}
         <AssessmentPlayerModal
           isModalVisible={showPlayerModal || showTestletPlayer}
           closeTestPreviewModal={this.hideStudentWork}
@@ -635,7 +664,78 @@ class ClassQuestions extends Component {
             <Worksheet {...docBasedProps} studentWork />
           </StyledModal>
         ) : null}
-        {testItemsPreview}
+        {itemsToRender.map((item, index) => {
+          let showStudentWork = null
+          let scractchPadUsed = userWork[item._id]
+          scractchPadUsed = item.data.questions.some(
+            (question) => question?.activity?.scratchPad?.scratchpad
+          )
+          if (scractchPadUsed) {
+            showStudentWork = () => this.showStudentWork(item)
+          }
+          if (testData.isDocBased) {
+            showStudentWork = () => this.setState({ showDocBasedPlayer: true })
+          }
+          const questionActivity =
+            questionActivitiesGroupedByItemId[item._id]?.[0]
+
+          const questionsWithItemId = item.data.questions.map((q) => ({
+            ...q,
+            testItemId: item._id,
+          }))
+
+          return (
+            <MemoizedPreview
+              studentId={(currentStudent || {}).studentId}
+              ttsUserIds={ttsUserIds}
+              studentName={
+                (currentStudent || {})[
+                  isPresentationMode ? 'fakeName' : 'studentName'
+                ]
+              }
+              key={index}
+              item={{
+                ...item,
+                data: { ...item.data, questions: questionsWithItemId },
+              }}
+              passages={passages}
+              qIndex={qIndex || index}
+              evaluation={evaluationStatus}
+              showStudentWork={showStudentWork}
+              isQuestionView={isQuestionView}
+              isExpressGrader={isExpressGrader}
+              isLCBView={isLCBView}
+              questionActivity={questionActivity}
+              scractchPadUsed={scractchPadUsed}
+              isStudentWorkCollapseOpen={isStudentWorkCollapseOpen}
+              toggleStudentWorkCollapse={this.toggleStudentWorkCollapse}
+              userWork={userWork} // used to determine show student work button
+              t={t}
+              hideCorrectAnswer={hideCorrectAnswer}
+              isStudentView={isStudentView}
+              testActivityId={testActivityId || currentStudent.testActivityId}
+            />
+          )
+        })}
+        {(shouldShowPagination || showPaginationForDocQuestions) && (
+          <PaginationWrapper>
+            <Pagination
+              defaultCurrent={1}
+              current={pageNumber}
+              pageSize={LCB_LIMIT_QUESTION_PER_VIEW}
+              total={
+                showPaginationForDocQuestions
+                  ? filteredWidgets.length
+                  : testItems.length
+              }
+              hideOnSinglePage
+              onChange={(page) => {
+                setLcbQuestionLoaderState(true)
+                setTimeout(() => setPageNumber(page), 1)
+              }}
+            />
+          </PaginationWrapper>
+        )}
       </>
     )
   }
@@ -662,14 +762,26 @@ const withConnect = connect(
     ),
     userWork: get(state, ['userWork', 'present'], {}),
     ttsUserIds: ttsUserIdSelector(state),
+    pageNumber: getPageNumberSelector(state),
+    isQuestionsLoading: get(state, [
+      'author_classboard_testActivity',
+      'isQuestionsLoading',
+    ]),
+    questionId: get(state, ['author_classboard_testActivity', 'questionId']),
   }),
   {
     loadScratchPad: loadScratchPadAction,
     clearUserWork: clearUserWorkAction,
+    setPageNumber: setPageNumberAction,
+    setLcbQuestionLoaderState: setLcbQuestionLoaderStateAcion,
+    setQuestionIdToScroll: setQuestionIdToScrollAction,
   }
 )
 
-export default compose(withConnect, withNamespaces('student'))(ClassQuestions)
+export default compose(
+  withConnect,
+  withNamespaces('student')
+)(React.memo(ClassQuestions))
 
 ClassQuestions.propTypes = {
   classResponse: PropTypes.object.isRequired,

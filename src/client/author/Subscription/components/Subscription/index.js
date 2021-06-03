@@ -388,6 +388,7 @@ const Subscription = (props) => {
             isPremium={isPremium}
             subType={subType}
             requestQuote={openRequestQuoteModal}
+            subEndDate={subEndDate}
           />
         ) : (
           <SubscriptionMain

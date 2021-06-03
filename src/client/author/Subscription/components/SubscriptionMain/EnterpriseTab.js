@@ -1,6 +1,7 @@
 import { EduButton, FlexContainer } from '@edulastic/common'
 import {
   IconOpenBook,
+  IconPurchasedAlert,
   IconPuzzel,
   IconSchool,
   IconServers,
@@ -19,6 +20,7 @@ import {
   AddonSection,
   CardContainer,
   EnterpriseSection,
+  ExpiryMsg,
   IconWrapper,
   SectionContainer,
   SectionDescription,
@@ -74,7 +76,7 @@ const addonsData = [
   },
 ]
 
-const EnterpriseTab = ({ isPremium, subType, requestQuote }) => {
+const EnterpriseTab = ({ isPremium, subType, requestQuote, subEndDate }) => {
   const [showSelectStates, setShowSelectStates] = useState(false)
 
   const handleSelectStateModal = () => setShowSelectStates(true)
@@ -95,7 +97,17 @@ const EnterpriseTab = ({ isPremium, subType, requestQuote }) => {
             <IconSchool />
           </IconWrapper>
           <div>
-            <SectionTitle>Enterprise for Districts or Schools</SectionTitle>
+            <SectionTitle>
+              Enterprise for Districts or Schools
+              {subType === 'enterprise' && (
+                <ExpiryMsg>
+                  <IconPurchasedAlert />
+                  <span>
+                    purchased - EXPIRES {new Date(subEndDate).toDateString()}
+                  </span>
+                </ExpiryMsg>
+              )}
+            </SectionTitle>
             <SectionDescription>
               Get in-depth insights into schoolwide and districtwide progress
               with Edulastic Enterprise. Deliver common assessments, analyze the
@@ -105,29 +117,31 @@ const EnterpriseTab = ({ isPremium, subType, requestQuote }) => {
             </SectionDescription>
           </div>
         </FlexContainer>
-        <FlexContainer flexDirection="column" justifyContent="center">
-          <EduButton
-            data-cy="requestQuote"
-            style={{ margin: '10px 0px' }}
-            onClick={requestQuote}
-            height="32px"
-            width="180px"
-            isBlue
-          >
-            request a quote
-          </EduButton>
-          <EduButton
-            onClick={handleSelectStateModal}
-            height="32px"
-            width="180px"
-            isGhost
-            isBlue
-            data-cy="scheduleDemo"
-            style={{ margin: '0px' }}
-          >
-            schedule a demo
-          </EduButton>
-        </FlexContainer>
+        {subType !== 'enterprise' && (
+          <FlexContainer flexDirection="column" justifyContent="center">
+            <EduButton
+              data-cy="requestQuote"
+              style={{ margin: '10px 0px' }}
+              onClick={requestQuote}
+              height="32px"
+              width="180px"
+              isBlue
+            >
+              request a quote
+            </EduButton>
+            <EduButton
+              onClick={handleSelectStateModal}
+              height="32px"
+              width="180px"
+              isGhost
+              isBlue
+              data-cy="scheduleDemo"
+              style={{ margin: '0px' }}
+            >
+              schedule a demo
+            </EduButton>
+          </FlexContainer>
+        )}
       </EnterpriseSection>
       <AddonSection>
         <SectionTitle>

@@ -33,7 +33,7 @@ import {
   SectionTitle,
   SpinContainer,
   StyledSpin,
-  TrialExpiryMsg,
+  ExpiryMsg,
 } from './styled'
 import TabHeaderContent from './TabHeaderContent'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
@@ -501,14 +501,21 @@ const SubscriptionMain = ({
                   <div>
                     <SectionTitle>
                       {teacherPremium.title}
-                      {isPremiumTrialUsed && (
-                        <TrialExpiryMsg>
+                      {isPremiumUser && (
+                        <ExpiryMsg>
                           <IconPurchasedAlert />
-                          <span>
-                            FREE TRIAL EXPIRES{' '}
-                            {new Date(subEndDate).toDateString()}
-                          </span>
-                        </TrialExpiryMsg>
+                          {subType === 'TRIAL_PREMIUM' ? (
+                            <span>
+                              FREE TRIAL EXPIRES{' '}
+                              {new Date(subEndDate).toDateString()}
+                            </span>
+                          ) : (
+                            <span>
+                              purchased - EXPIRES{' '}
+                              {new Date(subEndDate).toDateString()}
+                            </span>
+                          )}
+                        </ExpiryMsg>
                       )}
                     </SectionTitle>
                     <CardDetails>
@@ -630,18 +637,25 @@ const SubscriptionMain = ({
                           <span>Subscription requires access to Premium</span>
                         </PremiumRequiredMsg>
                       )}
-                      {usedTrialItemBankIds.includes(
-                        _product.linkedProductId
-                      ) && (
-                        <TrialExpiryMsg>
+                      {itemBankSubscription && (
+                        <ExpiryMsg>
                           <IconPurchasedAlert />
-                          <span>
-                            FREE TRIAL EXPIRES{' '}
-                            {new Date(
-                              itemBankSubscription.endDate
-                            ).toDateString()}
-                          </span>
-                        </TrialExpiryMsg>
+                          {itemBankSubscription?.isTrial ? (
+                            <span>
+                              FREE TRIAL EXPIRES{' '}
+                              {new Date(
+                                itemBankSubscription?.endDate
+                              ).toDateString()}
+                            </span>
+                          ) : (
+                            <span>
+                              purchased - EXPIRES{' '}
+                              {new Date(
+                                itemBankSubscription?.endDate
+                              ).toDateString()}
+                            </span>
+                          )}
+                        </ExpiryMsg>
                       )}
                     </SectionTitle>
                     <CardDetails>

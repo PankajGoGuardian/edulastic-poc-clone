@@ -137,7 +137,7 @@ export const PremiumRequiredMsg = styled.span`
     color: #e5923f;
   }
 `
-export const TrialExpiryMsg = styled(PremiumRequiredMsg)`
+export const ExpiryMsg = styled(PremiumRequiredMsg)`
   span {
     color: #0b9ad2;
   }

@@ -60,7 +60,6 @@ const SubscriptionHeader = ({
   setCartVisible,
   cartQuantities = {},
 }) => {
-  console.log('cartqu', cartQuantities)
   const openMultiplePurchaseModal = () => setShowMultiplePurchaseModal(true)
   const cartCount = Object.keys(cartQuantities).filter(
     (x) => x && x != 'null' && cartQuantities[x] > 0

@@ -60,7 +60,7 @@ const getContent = ({ setvisible, needsRenewal }) => (
   <FlexContainer width="475px" alignItems="flex-start">
     <img src={IMG} width="165" height="135" alt="" />
     <FlexContainer flexDirection="column" width="280px" padding="15px 0 0 6px">
-      <PopoverTitle>Access Additional Features</PopoverTitle>
+      <PopoverTitle>Get Started!</PopoverTitle>
       <PopoverDetail>
         Get additional reports, options to assist students, collaborate with
         colleagues, anti-cheating tools and more.
@@ -71,7 +71,7 @@ const getContent = ({ setvisible, needsRenewal }) => (
           NO, THANKS
         </PopoverCancel>
         <Link to="/author/subscription">
-          <UpgradeBtn>{needsRenewal ? 'RENEW NOW' : 'UPGRADE NOW'}</UpgradeBtn>
+          <UpgradeBtn>{needsRenewal ? 'Renew Now' : 'UPGRADE NOW'}</UpgradeBtn>
         </Link>
       </FlexContainer>
     </FlexContainer>

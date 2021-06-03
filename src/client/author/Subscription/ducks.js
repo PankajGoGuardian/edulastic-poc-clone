@@ -84,6 +84,8 @@ const slice = createSlice({
     isBookKeepersInviteSuccess: false,
     isRequestInvoiceActionPending: false,
     isRequestinvoiceSuccessModalVisible: false,
+    cartQuantities:{},
+    cartVisible:false,
   },
   reducers: {
     fetchUserSubscriptionStatus: (state) => {
@@ -187,6 +189,12 @@ const slice = createSlice({
     toggleRequestInvoiceSuccessModal: (state, { payload }) => {
       state.isRequestinvoiceSuccessModalVisible = payload
     },
+    setCartQuantities: (state ,{payload})=> {
+      state.cartQuantities = payload;
+    },
+    setCartVisible: (state, {payload}) =>{
+      state.cartVisible = payload;
+    }
   },
 })
 

@@ -27,6 +27,7 @@ import {
   getDashboardPlaylists,
 } from '../../../../Dashboard/ducks'
 import { useThisPlayListAction } from '../../../../CurriculumSequence/ducks'
+import CartModal from '../../../../Subscription/components/CartModal';
 
 const MultipleLicensePurchase = loadable(() =>
   import('./MultipleLicensePurchase')
@@ -97,6 +98,10 @@ const PurchaseFlowModals = (props) => {
     interestedGrades,
     clickedBundleId,
     setClickedBundleId,
+    cartVisible,
+    setCartVisible,
+    cartQuantities,
+    fromSideMenu
   } = props
 
   const [payWithPoModal, setPayWithPoModal] = useState(false)
@@ -106,7 +111,7 @@ const PurchaseFlowModals = (props) => {
   const [totalAmount, setTotalAmount] = useState(100)
   const [quantities, setQuantities] = useState({})
   const [isPaymentServiceModalVisible, setPaymentServiceModal] = useState(false)
-
+  
   const trialConfirmationMessage = showTrialConfirmationMessage.subEndDate
     ? showTrialConfirmationMessage
     : { subEndDate: moment(subEndDate).format('DD MMM, YYYY') }
@@ -295,6 +300,17 @@ const PurchaseFlowModals = (props) => {
       }))
       setProductsCart(productQuantities)
       setEmailIds(emails)
+    } else if(cartVisible){
+      if(Object.keys(cartQuantities).find(x => cartQuantities[x]>1)){
+        const productQuantities = products.map((product) => ({
+          ...product,
+          quantity: cartQuantities[product.id],
+        }))
+        setProductsCart(productQuantities)
+        setEmailIds(emails)
+      } else {
+        setAddOnProductIds(Object.keys(cartQuantities).filter(x => x != "null" && cartQuantities[x]));
+      }
     } else if (showBuyMoreModal) {
       const productQuantities = productsToshow.map((product) => ({
         ...product,
@@ -308,6 +324,7 @@ const PurchaseFlowModals = (props) => {
           licenseOwnerId,
         })
         handleSubscriptionAddonModalClose()
+        setCartVisible(false);
         setSelectedLicenseId(null)
         return
       }
@@ -318,7 +335,9 @@ const PurchaseFlowModals = (props) => {
 
     setTotalAmount(totalAmount)
     handleSubscriptionAddonModalClose()
+    setCartVisible(false);
     setShowUpgradeModal(true)
+    console.log('current cart',{productsCart,selectedProductIds});
   }
 
   return (
@@ -362,6 +381,21 @@ const PurchaseFlowModals = (props) => {
           setBookKeepersInviteSuccess={setBookKeepersInviteSuccess}
         />
       )}
+
+        {cartVisible  && !fromSideMenu && (
+      <CartModal 
+        visible={cartVisible}
+        products={[teacherPremium, ...itemBankPremium]} 
+        teacherPremium={teacherPremium}
+        setTotalAmount={setTotalAmount}
+        bulkInviteBookKeepers={bulkInviteBookKeepers}
+        districtId={userOrgId}
+        isBookKeepersInviteSuccess={isBookKeepersInviteSuccess}
+        setBookKeepersInviteSuccess={setBookKeepersInviteSuccess}
+        handleClick={handleClick}
+        closeModal={()=> setCartVisible(false)}
+        userId={user?._id}
+         />)}
       {showUpgradeModal && (
         <UpgradeModal
           visible={showUpgradeModal}
@@ -454,6 +488,8 @@ export default compose(
         state
       ),
       interestedGrades: getInterestedGradesSelector(state),
+      cartVisible: state?.subscription?.cartVisible,
+      cartQuantities: state?.subscription?.cartQuantities,
     }),
     {
       handleStripePayment: slice.actions.stripePaymentAction,
@@ -465,6 +501,7 @@ export default compose(
       setBookKeepersInviteSuccess: slice.actions.setBookKeepersInviteSuccess,
       fetchPlaylists: fetchPlaylistsAction,
       useThisPlayList: useThisPlayListAction,
+      setCartVisible: slice.actions.setCartVisible
     }
   )
 )(PurchaseFlowModals)

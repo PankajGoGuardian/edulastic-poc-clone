@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { cloneDeep, get } from 'lodash'
+import { cloneDeep, get, isEmpty } from 'lodash'
 import { helpers, AnswerContext } from '@edulastic/common'
 import JsxParser from 'react-jsx-parser/lib/react-jsx-parser.min'
 import { SHOW, CHECK, CLEAR, EDIT } from '../../constants/constantsForQuestions'
@@ -150,7 +150,11 @@ const ClozeMathPreview = ({
   }, [stimulus])
 
   const allCorrects = useMemo(() => {
-    if (type === CHECK || type === SHOW) {
+    if (
+      (type === CHECK || type === SHOW) &&
+      !isEmpty(item.responseIds) &&
+      !isEmpty(evaluation)
+    ) {
       return Object.keys(item.responseIds)
         .map((key) => item.responseIds[key].map((response) => response.id))
         .flatMap((responseId) => responseId)

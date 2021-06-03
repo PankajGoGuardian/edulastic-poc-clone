@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import { cloneDeep, isEqual, sortBy } from 'lodash'
 import produce from 'immer'
 
-import { WithResources, notification } from '@edulastic/common'
+import { WithResources, notification, EduButton } from '@edulastic/common'
 import { greyThemeDark3, darkGrey2, partialIconColor } from '@edulastic/colors'
 
 import {
@@ -13,6 +13,7 @@ import {
   CLEAR,
   EDIT,
   SHOW,
+  PREVIEW,
 } from '../../../../constants/constantsForQuestions'
 import {
   setElementsStashAction,
@@ -343,6 +344,7 @@ class GraphContainer extends PureComponent {
       elements,
       view,
       evaluation,
+      showConnect,
     } = this.props
 
     const { tools } = toolbar
@@ -440,6 +442,13 @@ class GraphContainer extends PureComponent {
       !isEqual(elements, prevProps.elements)
     ) {
       changePreviewTab(CLEAR)
+    }
+
+    if (
+      !isEqual(elements, prevProps.elements) ||
+      showConnect !== prevProps.showConnect
+    ) {
+      this._graph.removeConnectline()
     }
   }
 
@@ -590,6 +599,7 @@ class GraphContainer extends PureComponent {
       elementsIsCorrect,
       previewTab,
       toolbar,
+      showConnect,
     } = this.props
     const { drawingPrompt } = toolbar
 
@@ -606,6 +616,9 @@ class GraphContainer extends PureComponent {
       this._graph.reset()
       this._graph.resetAnswers()
       this._graph.loadAnswersFromConfig(coloredElements)
+      if (showConnect) {
+        this._graph.connectPoints(coloredElements)
+      }
       return
     }
 
@@ -701,6 +714,17 @@ class GraphContainer extends PureComponent {
     return includeDashed
   }
 
+  get isShowConnectPoints() {
+    const { showConnect, elements, view, disableResponse } = this.props
+    return (
+      showConnect &&
+      view === PREVIEW &&
+      !disableResponse &&
+      elements.filter((e) => e.type === CONSTANT.TOOLS.POINT && !e.subElement)
+        .length > 1
+    )
+  }
+
   selectDrawingObject = (drawingObject) => {
     this.setState({ selectedDrawingObject: drawingObject })
     this._graph.setDrawingObject(drawingObject)
@@ -731,6 +755,11 @@ class GraphContainer extends PureComponent {
     } else {
       notification({ msg: 'at-least 1 tool required', type: 'warning' })
     }
+  }
+
+  handleConnectPoint = () => {
+    const { elements } = this.props
+    this._graph.connectPoints(elements)
   }
 
   render() {
@@ -888,6 +917,11 @@ class GraphContainer extends PureComponent {
                 setQuestionData={setQuestionData}
                 disableDragging={view !== EDIT}
               />
+              {this.isShowConnectPoints && this._graph && (
+                <EduButton onClick={this.handleConnectPoint}>
+                  Connect Points
+                </EduButton>
+              )}
               {elementSettingsAreOpened && this._graph && (
                 <ElementSettingsMenu
                   showColorPicker={

@@ -102,6 +102,7 @@ export const JSXBoxWrapper = styled.div`
   position: relative;
   width: ${(props) => `${props.width}px`};
   flex-shrink: 0;
+  display: flex;
 `
 
 export const JSXBoxWithDrawingObjectsWrapper = styled.div`

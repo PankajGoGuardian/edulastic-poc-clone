@@ -659,6 +659,11 @@ class PreviewModal extends React.Component {
                     height="28px"
                     justifyContent="center"
                     onClick={this.handleSelection}
+                    dataCy={
+                      this.isAddOrRemove
+                        ? 'addCurrentItem'
+                        : 'removeCurrentItem'
+                    }
                   >
                     {this.isAddOrRemove
                       ? 'ADD CURRENT ITEM'
@@ -670,6 +675,9 @@ class PreviewModal extends React.Component {
                       height="28px"
                       justifyContent="center"
                       onClick={this.handleAddAllPassageItems}
+                      dataCy={
+                        hasPassageItemToAdd ? `addAllItems` : `removeAllItems`
+                      }
                     >
                       {hasPassageItemToAdd
                         ? `Add all(${isPassage}) items`
@@ -683,6 +691,7 @@ class PreviewModal extends React.Component {
                   height="28px"
                   justifyContent="center"
                   onClick={this.handleSelection}
+                  data-cy={this.isAddOrRemove ? 'addToTest' : 'removefromTest'}
                 >
                   {this.isAddOrRemove ? 'Add To Test' : 'Remove from Test'}
                 </EduButton>
@@ -795,6 +804,7 @@ class PreviewModal extends React.Component {
                     disabled={
                       isPassage ? !hasMultipleTestItems || deleting : deleting
                     }
+                    data-cy="deleteItem"
                   >
                     <IconTrash title="Delete item" />
                     {/* <span>delete</span> */}

@@ -1027,8 +1027,11 @@ function* publishPlaylistSaga({ payload }) {
 
 function* receiveSharedWithListSaga({ payload }) {
   try {
-    const result = yield call(contentSharingApi.getSharedUsersList, payload)
-    const coAuthors = result.map(
+    const { sharedEntities = [] } = yield call(
+      contentSharingApi.getSharedUsersList,
+      payload
+    )
+    const coAuthors = sharedEntities.map(
       ({ permission, sharedWith, sharedType, _id }) => ({
         permission,
         sharedWith,

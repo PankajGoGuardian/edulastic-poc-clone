@@ -175,4 +175,8 @@ export default {
     'font-size': '12px',
     'font-weight': 'bold',
   },
+  connectline: {
+    strokeColor: graphTickColor,
+    highlightStrokeColor: graphTickColor,
+  },
 }

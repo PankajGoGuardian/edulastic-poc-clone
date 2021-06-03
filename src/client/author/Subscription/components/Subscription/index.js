@@ -19,7 +19,6 @@ import {
   PlanContent,
   PlanDescription,
   PlanHeader,
-  PlanLabel,
   PlanTitle,
   SubscriptionContentWrapper,
 } from './styled'
@@ -40,7 +39,8 @@ const SubmitPOModal = loadable(() => import('../SubmitPOModal'))
 
 const comparePlansData = [
   {
-    cardTitle: 'Free Teacher',
+    cardTitle: 'Free Forever',
+    subTitle: '$0 / MONTH',
     cardLabel: 'FREE FOREVER',
     color: '#5EB500',
     data: [
@@ -80,6 +80,7 @@ const comparePlansData = [
   },
   {
     cardTitle: 'Premium Teacher',
+    subTitle: '$99 / MONTH',
     cardLabel: 'PER TEACHER PRICING',
     color: '#4E95F3',
     data: [
@@ -119,6 +120,7 @@ const comparePlansData = [
   },
   {
     cardTitle: 'Enterprise',
+    subTitle: 'REQUEST A QUOTE',
     cardLabel: 'PER STUDENT PRICING',
     color: '#FFA200',
     data: [
@@ -166,10 +168,12 @@ const PlanDetailsComponent = ({ title, description = '' }) => (
   </>
 )
 
-const Plans = ({ cardTitle, cardLabel, data, color }) => (
+const Plans = ({ cardTitle, subTitle, data, color }) => (
   <PlanCard>
-    <PlanHeader color={color}>{cardTitle}</PlanHeader>
-    <PlanLabel color={color}>{cardLabel}</PlanLabel>
+    <PlanHeader color={color}>
+      <h2>{cardTitle}</h2>
+      <span>{subTitle}</span>
+    </PlanHeader>
     <PlanContent>
       {data.map((item) => (
         <PlanDetailsComponent {...item} />
@@ -194,7 +198,7 @@ const Subscription = (props) => {
     isSubscriptionExpired,
     verifyAndUpgradeLicense,
     isSuccess = false,
-    subscription: { subEndDate, subType } = {},
+    subscription: { subEndDate, subType, schoolId = '' } = {},
     user,
     fetchUserSubscriptionStatus,
     isPremiumTrialUsed,
@@ -210,6 +214,9 @@ const Subscription = (props) => {
     subsLicenses,
     isRequestOrSubmitSuccessModalVisible,
     toggleRequestOrSubmitSuccessModal,
+    setCartVisible,
+    cartQuantities,
+    setCartQuantities,
   } = props
 
   const [comparePlan, setComparePlan] = useState(false)
@@ -245,7 +252,6 @@ const Subscription = (props) => {
   }, [])
 
   const isPremiumUser = user?.features?.premium
-
   /**
    *  a user is paid premium user if
    *  - subType exists and
@@ -366,15 +372,11 @@ const Subscription = (props) => {
         showEnterpriseTab={showEnterpriseTab}
         setShowEnterpriseTab={setShowEnterpriseTab}
         uploadPO={openSubmitPOModal}
+        schoolId={schoolId}
+        setCartVisible={setCartVisible}
+        cartQuantities={cartQuantities}
       />
-
       <SubscriptionContentWrapper>
-        <ContentHeader
-          showEnterpriseTab={showEnterpriseTab}
-          showMultipleSubscriptions={showMultipleSubscriptions}
-          history={history}
-        />
-
         {showEnterpriseTab ? (
           <EnterpriseTab
             isPremium={isPremium}
@@ -416,11 +418,16 @@ const Subscription = (props) => {
             products={products}
             setTrialAddOnProductIds={setTrialAddOnProductIds}
             setShowTrialSubsConfirmation={setShowTrialSubsConfirmation}
+            showMultipleSubscriptions={showMultipleSubscriptions}
+            setShowEnterpriseTab={setShowEnterpriseTab}
+            setShowMultiplePurchaseModal={setShowMultiplePurchaseModal}
+            cartQuantities={cartQuantities}
+            setCartQuantities={setCartQuantities}
           />
         )}
       </SubscriptionContentWrapper>
       <CompareModal
-        title=""
+        title="Compare Plans"
         visible={comparePlan}
         onCancel={closeComparePlansModal}
         footer={[]}
@@ -524,6 +531,7 @@ export default compose(
         state
       ),
       subsLicenses: getSubsLicensesSelector(state),
+      cartQuantities: state.subscription?.cartQuantities,
     }),
     {
       verifyAndUpgradeLicense: slice.actions.upgradeLicenseKeyPending,
@@ -535,6 +543,8 @@ export default compose(
       fetchMultipleSubscriptions: fetchMultipleSubscriptionsAction,
       toggleRequestOrSubmitSuccessModal:
         slice.actions.toggleRequestOrSubmitSuccessModal,
+      setCartVisible: slice.actions.setCartVisible,
+      setCartQuantities: slice.actions.setCartQuantities,
     }
   )
 )(Subscription)

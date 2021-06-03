@@ -70,6 +70,7 @@ import { switchUser, proxyDemoPlaygroundUser } from '../../authUtils'
 import ItemBankTrialUsedModal from '../../Dashboard/components/Showcase/components/Myclasses/components/FeaturedContentBundle/ItemBankTrialUsedModal'
 import PurchaseFlowModals from '../components/common/PurchaseModals'
 import { slice } from '../../Subscription/ducks'
+import AuthorCompleteSignupButton from '../../../common/components/AuthorCompleteSignupButton'
 
 const menuItems = [
   {
@@ -510,12 +511,21 @@ class SideMenu extends Component {
           </Menu.Item>
           {!isPublisher && (
             <Menu.Item key="2" className="removeSelectedBorder">
-              <Link to="/author/subscription">
-                <IconSubscriptionHighlight />{' '}
-                <span data-cy="subscription">
-                  {isCollapsed ? '' : 'Subscription'}
-                </span>
-              </Link>
+              <AuthorCompleteSignupButton
+                renderButton={(handleclick) => {
+                  return (
+                    <a onClick={handleclick}>
+                      <IconSubscriptionHighlight />{' '}
+                      <span data-cy="subscription">
+                        {isCollapsed ? '' : 'Subscription'}
+                      </span>
+                    </a>
+                  )
+                }}
+                onClick={() => {
+                  history.push('/author/subscription')
+                }}
+              />
             </Menu.Item>
           )}
           {users.length ? (
@@ -546,6 +556,7 @@ class SideMenu extends Component {
     return (
       <>
         <PurchaseFlowModals
+          fromSideMenu
           showSubscriptionAddonModal={this.state.showPurchaseModal}
           setShowSubscriptionAddonModal={this.setShowSubscriptionAddonModal}
           isConfirmationModalVisible={this.state.showTrialSubsConfirmation}

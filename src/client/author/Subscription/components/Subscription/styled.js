@@ -1,57 +1,41 @@
 import styled from 'styled-components'
-import { Modal } from 'antd'
 import {
   white,
   secondaryTextColor,
   largeDesktopWidth,
-  titleColor,
+  borderGrey5,
+  lightGrey9,
+  lightGrey,
 } from '@edulastic/colors'
+import { CustomModalStyled } from '@edulastic/common'
 
 export const SubscriptionContentWrapper = styled.div`
-  background: #f9f9f9;
+  background: ${lightGrey};
   width: 100%;
   height: 100%;
   padding: 20px 30px;
 `
 
-export const CompareModal = styled(Modal)`
+export const CompareModal = styled(CustomModalStyled)`
   width: calc(100% - 80px) !important;
 
-  .ant-modal-header,
-  .ant-modal-body,
-  .ant-modal-footer,
   .ant-modal-content {
-    background: transparent;
-    border: none;
-    box-shadow: unset;
-    color: ${titleColor};
-  }
-
-  .ant-modal-body {
-    display: flex;
-    align-items: stretch;
-    justify-content: center;
-    margin-top: 40px;
-  }
-  .ant-modal-close {
-    top: -30px;
-  }
-
-  svg {
-    transform: scale(1.5);
-    fill: ${white};
+    .ant-modal-body {
+      display: flex;
+      align-items: stretch;
+      justify-content: space-between;
+    }
   }
 `
 
 export const PlanCard = styled.div`
-  width: 400px;
-  min-height: 731px;
+  width: 380px;
   background: ${white};
   border-radius: 10px;
   display: flex;
   flex-direction: column;
-  margin: 10px 15px;
   user-select: none;
+  border: 1px solid ${borderGrey5};
 
   @media (max-width: ${largeDesktopWidth}) {
     width: 300px;
@@ -59,24 +43,26 @@ export const PlanCard = styled.div`
 `
 
 export const PlanHeader = styled.div`
-  height: 60px;
-  font-size: 20px;
-  color: ${({ color }) => color};
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`
-
-export const PlanLabel = styled.div`
-  width: 100%;
-  height: 54px;
-  color: ${white};
   background: ${({ color }) => color};
+  height: 110px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 600;
+  flex-direction: column;
+  border-radius: 8px 8px 0px 0px;
+  line-height: 1.5;
+  h2 {
+    font-size: 18px;
+    color: ${white};
+    font-weight: bold;
+    margin: 0px;
+  }
+  span {
+    font-size: 12px;
+    color: ${white};
+    font-weight: 600;
+    letter-spacing: 1.5px;
+  }
 `
 
 export const PlanContent = styled.div`
@@ -91,8 +77,11 @@ export const PlanContent = styled.div`
 export const PlanTitle = styled.div`
   font-weight: 700;
   color: ${secondaryTextColor};
+  font-size: 13px;
 `
 
 export const PlanDescription = styled.div`
   margin-bottom: 23px;
+  font-size: 12px;
+  color: ${lightGrey9};
 `

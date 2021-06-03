@@ -1,53 +1,40 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import { EduButton, FlexContainer, notification } from '@edulastic/common'
 import {
-  EduButton,
-  FlexContainer,
-  MainContentWrapper,
-  notification,
-} from '@edulastic/common'
-import { Link } from 'react-router-dom'
-import { isBoolean, groupBy, keyBy, difference, map } from 'lodash'
-import TrialModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/TrialModal/index'
-
-import { ActionsWrapper, Description, Title } from '../styled/commonStyled'
-import {
-  AvailablePlansContainer,
-  ContentWrapper,
-  FeatureDescription,
-  Img,
-  PlanDetails,
-  PlanImage,
-  PlansContainer,
-  ContentSection,
-  ContentCards,
-  ContentCard,
-  AddonSection,
-  SectionTitle,
-  SectionDescription,
-  SectionContainer,
-  CardContainer,
-  AddonCard,
-  AddonImg,
-  AddonDescription,
-  EnterpriseSection,
-  CustomButton,
-  AddonFooter,
-  PurchaseLink,
-  LearnMoreLink,
-  HaveLicenseKey,
-  IconWrapper,
-  CardDetails,
-  GradeWrapper,
-  OtherFilters,
-  CardRightWrapper,
-  Price,
-  CardsSection,
-  FilterSection,
-} from './styled'
-import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
-import CalendlyScheduleModal from './CalendlyScheduleModal'
+  IconAlertCircle,
+  IconCalc,
+  IconCloseBook,
+  IconLaptop,
+  IconPhonics,
+  IconPurchasedAlert,
+  IconReading,
+  IconRobot,
+  IconScience,
+  IconScienceLab,
+  IconWord,
+  IconSchool,
+} from '@edulastic/icons'
+import { difference, groupBy, isBoolean, keyBy, map, uniq, omit } from 'lodash'
+import React, { useEffect, useMemo, useState } from 'react'
 import FeatureNotAvailableModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/FeatureNotAvailableModal'
-import { IconQuestionCircle } from '@edulastic/icons'
+import TrialModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/TrialModal/index'
+import FiltersSection from './FilterSection'
+import {
+  CardDetails,
+  CardRightWrapper,
+  CardsSection,
+  GradeWrapper,
+  IconWrapper,
+  LearnMoreLink,
+  OtherFilters,
+  PremiumRequiredMsg,
+  Price,
+  SectionContainer,
+  SectionDescription,
+  SectionTitle,
+  TrialExpiryMsg,
+} from './styled'
+import TabHeaderContent from './TabHeaderContent'
+import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 
 /* const getUpgradeToMultipleUsersPlanAction = ({ openPurchaseLicenseModal }) => (
   <ActionsWrapper>
@@ -99,92 +86,136 @@ const availablePlans = [
   </PlansContainer>
 ) */
 
+const productsMetaData = {
+  'Teacher Premium': {
+    icon: <IconSchool />,
+    grades: 'Grades K-12',
+    learnMoreLinks: 'https://edulastic.com/teacher-premium',
+    filters: 'ALL SUBJECTS',
+  },
+  SparkMath: {
+    icon: <IconCalc />,
+    subject: 'math & cs',
+    grades: 'Grades K-12',
+    learnMoreLinks: 'https://edulastic.com/spark-math',
+    filters: 'MATHEMATICS',
+  },
+  SparkScience: {
+    icon: <IconScience />,
+    subject: 'science',
+    grades: 'Grades K-12',
+    learnMoreLinks: 'https://edulastic.com/spark-science',
+    filters: 'SCIENCE',
+  },
+  SparkReading: {
+    icon: <IconReading />,
+    subject: 'ela',
+    grades: 'Grades K-12',
+    learnMoreLinks: 'https://edulastic.com/spark-reading',
+    filters: 'ELA',
+  },
+}
+
+function getProductsWithMetaData(metaData, products) {
+  return products.map(({ ...p }) => {
+    const title = p.name
+    return { ...p, title, ...metaData[p.name] }
+  })
+}
+
 const productsData = [
   {
-    icon: <IconQuestionCircle />,
+    id: '5e3d2eb34bdb8a0007e22223',
+    icon: <IconCalc />,
     title: 'SparkMath',
     description:
-      'Pre-built assessments and differentiated Math practice for each student. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean non ante fermentum, bibendum ex ut, tincidunt diam.',
+      'Pre-built assessments and differentiated Math practice for each student.',
     learnMoreLinks: 'https://edulastic.com/spark-math',
     grades: 'Grades 6-8',
     filters: 'ELA & ELL, Social Studies, World Languages',
     price: '100',
   },
   {
-    icon: <IconQuestionCircle />,
+    id: '',
+    icon: <IconCloseBook />,
     title: 'Book Buddies',
-    description:
-      'Assessments and prompts on your favorite books. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean non ante fermentum, bibendum ex ut, tincidunt diam.',
+    description: 'Assessments and prompts on your favorite books.',
     learnMoreLinks: 'https://edulastic.com/spark-reading',
     grades: 'Grades 6-8',
     filters: 'ELA & ELL, Social Studies, World Languages',
     price: '100',
   },
   {
-    icon: <IconQuestionCircle />,
+    id: '',
+    icon: <IconReading />,
     title: 'SparkReading',
     description:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean non ante fermentum, bibendum ex ut, tincidunt diam, bibendum ex ut, tincidunt diam.',
     learnMoreLinks: 'https://edulastic.com/spark-reading',
     grades: 'Grades 6-8',
-    filters: 'ELA & ELL, Social Studies, World Languages',
+    filters:
+      'Book buddies, STEM cross-curricular, Phonics practice, Spark Words and reading comp practice',
     price: '100',
   },
   {
-    icon: <IconQuestionCircle />,
+    id: '',
+    icon: <IconScienceLab />,
     title: 'STEM Cross-curricular',
-    description:
-      'Science passages with reading and science questions. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean non ante fermentum, bibendum ex ut, tincidunt diam.',
+    description: 'Science passages with reading and science questions.',
     learnMoreLinks: 'https://edulastic.com/spark-reading',
     grades: 'Grades 6-8',
     filters: 'ELA & ELL, Social Studies, World Languages',
     price: '100',
   },
   {
-    icon: <IconQuestionCircle />,
+    id: '',
+    icon: <IconPhonics />,
     title: 'Phonics Practice',
     description:
-      'Full year of practice assignments to help all students master each sound. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean non ante fermentum, bibendum ex ut, tincidunt diam.',
+      'Full year of practice assignments to help all students master each sound.',
     learnMoreLinks: 'https://edulastic.com/spark-reading',
     grades: 'Grades 6-8',
     filters: 'ELA & ELL, Social Studies, World Languages',
     price: '100',
   },
   {
-    icon: <IconQuestionCircle />,
+    id: '',
+    icon: <IconWord />,
     title: 'SparkWord',
     description:
-      'NGSS-aligned pre-built assessments and item banks for grades K-12. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean non ante fermentum, bibendum ex ut, tincidunt diam.',
+      'NGSS-aligned pre-built assessments and item banks for grades K-12.',
     learnMoreLinks: 'https://edulastic.com/spark-science',
     grades: 'Grades 6-8',
     filters: 'ELA & ELL, Social Studies, World Languages',
     price: '100',
   },
   {
-    icon: <IconQuestionCircle />,
+    id: '',
+    icon: <IconLaptop />,
     title: 'Reading Comprehension Practice',
-    description:
-      'Fiction and nonfiction to practice close Reading. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean non ante fermentum, bibendum ex ut, tincidunt diam.',
+    description: 'Fiction and nonfiction to practice close Reading.',
     learnMoreLinks: 'https://edulastic.com/spark-reading',
     grades: 'Grades 6-8',
     filters: 'ELA & ELL, Social Studies, World Languages',
     price: '100',
   },
   {
-    icon: <IconQuestionCircle />,
+    id: '',
+    icon: <IconScience />,
     title: 'SparkScience',
     description:
-      'NGSS-aligned pre-built assessments and item banks for grades K-12. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean non ante fermentum, bibendum ex ut, tincidunt diam.',
+      'NGSS-aligned pre-built assessments and item banks for grades K-12.',
     learnMoreLinks: 'https://edulastic.com/spark-science',
     grades: 'Grades 6-8',
     filters: 'ELA & ELL, Social Studies, World Languages',
     price: '100',
   },
   {
-    icon: <IconQuestionCircle />,
+    id: '',
+    icon: <IconRobot />,
     title: 'SparkCS',
     description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean non ante fermentum, bibendum ex ut, tincidunt diam, bibendum ex ut, tincidunt diam.',
+      'Full year of practice assignments to help all students master each sound.',
     learnMoreLinks: 'https://edulastic.com/spark-science',
     grades: 'Grades 6-8',
     filters: 'ELA & ELL, Social Studies, World Languages',
@@ -216,12 +247,31 @@ const SubscriptionMain = ({
   productData = {},
   setTrialAddOnProductIds,
   setShowTrialSubsConfirmation,
+  history,
+  showMultipleSubscriptions,
+  setShowEnterpriseTab,
+  setShowMultiplePurchaseModal,
+  subEndDate,
+  isPaidPremium,
+  setCartQuantities,
+  cartQuantities,
 }) => {
   const [showSelectStates, setShowSelectStates] = useState(false)
   const [isTrialModalVisible, setIsTrialModalVisible] = useState(false)
   const [hasAllTrialProducts, setHasAllTrialProducts] = useState(false)
+  const [addonSubject, setAddonSubject] = useState('all')
 
   const productsKeyedByType = keyBy(products, 'type')
+
+  const productsDataForDisplay = getProductsWithMetaData(
+    productsMetaData,
+    products
+  )
+  const productsWithoutTeacherPremium = productsDataForDisplay?.filter(
+    (p) => p.name != 'Teacher Premium'
+  )
+  const teacherPremium =
+    productsDataForDisplay?.find((x) => x.name === 'Teacher Premium') || {}
 
   // Whenever trial modal is closed, clear the states it was using
   useEffect(() => {
@@ -351,7 +401,7 @@ const SubscriptionMain = ({
     handlePurchaseFlow()
   }
 
-  const getSparkProductLinks = (title) => {
+  /* const getSparkProductLinks = (title) => {
     const dataMap = {
       SparkMath: 'ITEM_BANK_SPARK_MATH',
       SparkScience: 'ITEM_BANK_SPARK_SCIENCE',
@@ -395,7 +445,7 @@ const SubscriptionMain = ({
         )}
       </>
     )
-  }
+  } */
 
   // if the product has paid subscription or the trial is used then its not available for trial.
   const allAvailableTrialItemBankIds = difference(productItemBankIds, [
@@ -415,122 +465,219 @@ const SubscriptionMain = ({
     ? [productData?.productId]
     : []
 
+  const toggleCart = (productId) => {
+    const quantities = cartQuantities
+    if (productId) {
+      if (cartQuantities[productId]) {
+        setCartQuantities(omit(quantities, [productId]))
+      } else {
+        setCartQuantities({ ...quantities, [productId]: 1 })
+      }
+    }
+  }
+
   return (
     <>
       <SectionContainer>
-        <CardsSection>
-          <IconWrapper />
-          <div>
-            <SectionTitle>Teacher Premium</SectionTitle>
-            <CardDetails>
-              <GradeWrapper>Grades 6-8</GradeWrapper>
-              <OtherFilters>
-                ELA & ELL, Social Studies, World Languages
-              </OtherFilters>
-            </CardDetails>
-            <SectionDescription>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean
-              non ante fermentum, bibendum ex ut, tincidunt diam, bibendum ex
-              ut, tincidunt diam.
-            </SectionDescription>
-          </div>
-          <CardRightWrapper flexDirection="column" justifyContent="center">
-            <Price>
-              <span>$ 100</span> per Teacher
-            </Price>
-            <EduButton
-              onClick={handleSelectStateModal}
-              height="32px"
-              width="180px"
-              data-cy="addToCart"
-            >
-              Add to Cart
-            </EduButton>
-            <EduButton
-              onClick={handleSelectStateModal}
-              height="32px"
-              width="180px"
-              isBlue
-              data-cy="LearnMore"
-            >
-              Learn More
-            </EduButton>
-            <EduButton
-              onClick={handleSelectStateModal}
-              height="32px"
-              width="180px"
-              isGhost
-              isBlue
-              data-cy="subscriptionStartTrialbtn"
-            >
-              Try Now
-            </EduButton>
-          </CardRightWrapper>
-        </CardsSection>
+        {subType !== 'enterprise' && (
+          <>
+            <TabHeaderContent
+              setShowMultiplePurchaseModal={setShowMultiplePurchaseModal}
+              setShowEnterpriseTab={setShowEnterpriseTab}
+              showMultipleSubscriptions={showMultipleSubscriptions}
+              history={history}
+            />
 
-        <FilterSection>
-          <div className="line" />
-          <ul>
-            <li className="active">All</li>
-            <li>Math & CS</li>
-            <li>ELA</li>
-            <li>Science</li>
-            <li>Languages</li>
-          </ul>
-        </FilterSection>
-
-        {productsData.map((product) => (
-          <CardsSection>
-            <IconWrapper>{product.icon}</IconWrapper>
-            <div>
-              <SectionTitle>{product.title}</SectionTitle>
-              <CardDetails>
-                <GradeWrapper>{product.grades}</GradeWrapper>
-                <OtherFilters>{product.filters}</OtherFilters>
-              </CardDetails>
-              <SectionDescription>{product.description}</SectionDescription>
-            </div>
-            <CardRightWrapper flexDirection="column" justifyContent="center">
-              <Price>
-                <span>$ {product.price}</span> per Teacher
-              </Price>
-              <EduButton
-                onClick={handleSelectStateModal}
-                height="32px"
-                width="180px"
-                data-cy="addToCart"
-              >
-                Add to Cart
-              </EduButton>
-              <EduButton
-                onClick={handleSelectStateModal}
-                height="32px"
-                width="180px"
-                isBlue
-              >
-                <LearnMoreLink
-                  data-cy="LearnMore"
-                  href={product.learnMoreLinks}
-                  target="_blank"
-                  rel="noreferrer"
-                  className
+            {!['partial_premium', 'enterprise'].includes(subType) && (
+              <CardsSection>
+                <FlexContainer
+                  justifyContent="flex-start"
+                  alignItems="flex-start"
                 >
-                  Learn more
-                </LearnMoreLink>
-              </EduButton>
-              <EduButton
-                onClick={handleSelectStateModal}
-                height="32px"
-                width="180px"
-                isGhost
-                isBlue
-                data-cy="subscriptionStartTrialbtn"
-              >
-                Try Now
-              </EduButton>
-            </CardRightWrapper>
-          </CardsSection>
-        ))}
+                  <IconWrapper>{teacherPremium.icon}</IconWrapper>
+                  <div>
+                    <SectionTitle>
+                      {teacherPremium.title}
+                      {isPremiumTrialUsed && (
+                        <TrialExpiryMsg>
+                          <IconPurchasedAlert />
+                          <span>
+                            FREE TRIAL EXPIRES{' '}
+                            {new Date(subEndDate).toDateString()}
+                          </span>
+                        </TrialExpiryMsg>
+                      )}
+                    </SectionTitle>
+                    <CardDetails>
+                      <GradeWrapper>{teacherPremium.grades}</GradeWrapper>
+                      <OtherFilters>{teacherPremium.filters}</OtherFilters>
+                    </CardDetails>
+                    <SectionDescription>
+                      {teacherPremium.description}
+                    </SectionDescription>
+                  </div>
+                </FlexContainer>
+                <CardRightWrapper
+                  flexDirection="column"
+                  justifyContent="center"
+                >
+                  <Price>
+                    <span>$ {teacherPremium.price}</span> per Teacher
+                  </Price>
+                  {!isPaidPremium && (
+                    <EduButton
+                      onClick={() => toggleCart(teacherPremium.id)}
+                      height="32px"
+                      width="180px"
+                      data-cy="addToCart"
+                    >
+                      {cartQuantities[teacherPremium.id]
+                        ? 'Remove From Cart'
+                        : 'Add to Cart'}
+                    </EduButton>
+                  )}
+                  <EduButton
+                    onClick={handleSelectStateModal}
+                    height="32px"
+                    width="180px"
+                    isBlue
+                  >
+                    <LearnMoreLink
+                      data-cy="LearnMore"
+                      href={teacherPremium.learnMoreLinks}
+                      target="_blank"
+                      rel="noreferrer"
+                      className
+                    >
+                      Learn more
+                    </LearnMoreLink>
+                  </EduButton>
+                  {!isPremiumTrialUsed && !isPremiumUser && (
+                    <EduButton
+                      onClick={() => handleStartTrialButtonClick()}
+                      height="32px"
+                      width="180px"
+                      isGhost
+                      isBlue
+                      data-cy="subscriptionStartTrialbtn"
+                    >
+                      Try Now
+                    </EduButton>
+                  )}
+                </CardRightWrapper>
+              </CardsSection>
+            )}
+          </>
+        )}
+
+        <FiltersSection
+          selected={addonSubject}
+          changeSubject={(v) => setAddonSubject(v)}
+          subjects={uniq(productsWithoutTeacherPremium.map((x) => x.subject))}
+        />
+
+        {productsWithoutTeacherPremium
+          .filter((x) => {
+            if (addonSubject === 'all') {
+              return true
+            } else if (x.subject === addonSubject) {
+              return true
+            } else {
+              return false
+            }
+          })
+          .map((_product) => {
+            const itemBankSubscription = itemBankSubscriptions.find(
+              (ib) => ib.itemBankId === _product?.linkedProductId
+            )
+            return (
+              <CardsSection>
+                <FlexContainer
+                  justifyContent="flex-start"
+                  alignItems="flex-start"
+                >
+                  <IconWrapper>{_product.icon}</IconWrapper>
+                  <div>
+                    <SectionTitle>
+                      {_product.title}
+                      {!isPremiumUser && (
+                        <PremiumRequiredMsg>
+                          <IconAlertCircle />
+                          <span>Subscription requires access to Premium</span>
+                        </PremiumRequiredMsg>
+                      )}
+                      {usedTrialItemBankIds.includes(
+                        _product.linkedProductId
+                      ) && (
+                        <TrialExpiryMsg>
+                          <IconPurchasedAlert />
+                          <span>
+                            FREE TRIAL EXPIRES{' '}
+                            {new Date(
+                              itemBankSubscription.endDate
+                            ).toDateString()}
+                          </span>
+                        </TrialExpiryMsg>
+                      )}
+                    </SectionTitle>
+                    <CardDetails>
+                      <GradeWrapper>{_product.grades}</GradeWrapper>
+                      <OtherFilters>{_product.filters}</OtherFilters>
+                    </CardDetails>
+                    <SectionDescription>
+                      {_product.description}
+                    </SectionDescription>
+                  </div>
+                </FlexContainer>
+                <CardRightWrapper
+                  flexDirection="column"
+                  justifyContent="center"
+                >
+                  <Price>
+                    <span>$ {_product.price}</span> per Teacher
+                  </Price>
+                  <EduButton
+                    onClick={() => toggleCart(_product.id)}
+                    height="32px"
+                    width="180px"
+                    data-cy="addToCart"
+                  >
+                    {cartQuantities[_product.id]
+                      ? 'Remove from Cart'
+                      : 'Add to Cart'}
+                  </EduButton>
+                  <EduButton
+                    onClick={handleSelectStateModal}
+                    height="32px"
+                    width="180px"
+                    isBlue
+                  >
+                    <LearnMoreLink
+                      data-cy="LearnMore"
+                      href={_product.learnMoreLinks}
+                      target="_blank"
+                      rel="noreferrer"
+                      className
+                    >
+                      Learn more
+                    </LearnMoreLink>
+                  </EduButton>
+                  {!itemBankSubscription && (
+                    <EduButton
+                      onClick={() => handleStartTrialButtonClick(_product.id)}
+                      height="32px"
+                      width="180px"
+                      isGhost
+                      isBlue
+                      data-cy="subscriptionStartTrialbtn"
+                    >
+                      Try Now
+                    </EduButton>
+                  )}
+                </CardRightWrapper>
+              </CardsSection>
+            )
+          })}
       </SectionContainer>
 
       {isTrialModalVisible && (

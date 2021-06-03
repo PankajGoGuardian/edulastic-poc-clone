@@ -338,7 +338,7 @@ function* searchResourceSaga() {
 export function* watcherSaga() {
   yield all([
     yield takeEvery(slice.actions.fetchTests, fetchTestsSaga),
-    yield takeEvery(slice.actions.resetAndFetchTests, fetchTestsSaga),
+    yield takeEvery(slice.actions.resetAndFetchTests, fetchTestsBySearchString),
     yield takeLatest(
       slice.actions.setTestSearchAction,
       fetchTestsBySearchString

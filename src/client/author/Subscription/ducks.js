@@ -519,6 +519,7 @@ function* handleStripePayment({ payload }) {
         yield call(fetchUserSubscription)
         yield put(fetchUserAction({ background: true }))
         yield put(fetchMultipleSubscriptionsAction({ background: true }))
+        yield put(slice.actions.setCartQuantities({}))
         setShowTrialSubsConfirmation(true)
       } else {
         notification({

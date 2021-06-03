@@ -1,35 +1,41 @@
-import React, { useState } from 'react'
-import { connect } from 'react-redux'
-import { Radio } from 'antd'
+import { schoolApi } from '@edulastic/api'
 import {
   captureSentryException,
   CustomModalStyled,
   EduButton,
   FlexContainer,
   notification,
+  NumberInputStyled,
 } from '@edulastic/common'
+import { Radio } from 'antd'
+import { camelCase } from 'lodash'
+import React, { useState } from 'react'
+import { connect } from 'react-redux'
 import { emailRegex } from '../../../../common/utils/helpers'
+import { getUserDetails } from '../../../../student/Login/ducks'
+import {
+  FlexRow,
+  NumberInputWrapper,
+  StyledCheckbox,
+} from '../../../src/components/common/PurchaseModals/SubscriptionAddonModal/styled'
 import {
   getUserFullNameSelector,
   getUserOrgData,
 } from '../../../src/selectors/user'
 import {
-  slice,
+  getProducts,
   getRequestOrSubmitActionStatus,
   getSubscriptionSelector,
-  getProducts,
+  slice,
 } from '../../ducks'
 import {
   ModalTitle,
-  SubText,
   StyledInput,
   StyledInputTextArea,
   StyledSelect,
+  SubText,
 } from '../RequestInvoviceModal/styled'
-import { Label, Container, StyledSpin } from './styled'
-import { getUserDetails } from '../../../../student/Login/ducks'
-import ProductsList from '../../../src/components/common/PurchaseModals/ProductsList'
-import { schoolApi } from '@edulastic/api'
+import { Container, Label, StyledSpin } from './styled'
 
 const getFooterComponent = ({
   handleSubmit,
@@ -110,15 +116,14 @@ const RequestQuoteModal = ({
         msg: 'Email address is required for us to send in the quote.',
       })
       return false
-    } else {
-      const flag = emailRegex.test(userEmail.trim())
-      if (!flag) {
-        notification({
-          type: 'warning',
-          msg: 'Invalid email format specified.',
-        })
-        return false
-      }
+    }
+    const flag = emailRegex.test(userEmail.trim())
+    if (!flag) {
+      notification({
+        type: 'warning',
+        msg: 'Invalid email format specified.',
+      })
+      return false
     }
 
     if (bookkeeperEmails) {
@@ -177,6 +182,54 @@ const RequestQuoteModal = ({
         closeCallback: onCancel,
       })
     }
+  }
+
+  const productsToShow = products.filter((x) => x.type !== 'PREMIUM') || {}
+
+  const productWithStudentLicense = [
+    {
+      id: '604b8207144578097fd1f12f',
+      name: 'student license',
+      type: 'studentLicense',
+    },
+    ...productsToShow,
+  ]
+
+  console.log('productWithStudentLicense', productWithStudentLicense)
+
+  const handleKeyPress = (e) => {
+    const specialCharRegex = new RegExp('[0-9\b\t]+') // allow numbers, backspace and tab
+    const pressedKey = String.fromCharCode(!e.charCode ? e.which : e.charCode)
+    if (!specialCharRegex.test(pressedKey)) {
+      return e.preventDefault()
+    }
+    return pressedKey
+  }
+
+  const handleOnChange = (e, id) => {
+    if (e.target.checked) {
+      const _quantities = {
+        ...quantities,
+        [id]: 1,
+      }
+      setQuantities(_quantities)
+      setSelectedProductIds((x) => x.concat(id))
+    } else {
+      const _quantities = {
+        ...quantities,
+        [id]: undefined,
+      }
+      setQuantities(_quantities)
+      setSelectedProductIds((x) => x.filter((y) => y !== id))
+    }
+  }
+
+  const handleQuantityChange = (itemId) => (value) => {
+    const _quantities = {
+      ...quantities,
+      [itemId]: Math.floor(value),
+    }
+    setQuantities(_quantities)
   }
 
   return (
@@ -253,18 +306,32 @@ const RequestQuoteModal = ({
           onChange={handleSetOtherInfo}
         />
 
-        {products && products.length ? (
-          <ProductsList
-            showMultiplePurchaseModal
-            isRequestingQuote
-            productsToshow={products}
-            setTotalPurchaseAmount={() => {}}
-            teacherPremium={products?.[0]}
-            setQuantities={setQuantities}
-            quantities={quantities}
-            setSelectedProductIds={setSelectedProductIds}
-            selectedProductIds={selectedProductIds}
-          />
+        {productWithStudentLicense && productWithStudentLicense.length ? (
+          productWithStudentLicense.map((product) => (
+            <FlexRow key={product.id}>
+              <StyledCheckbox
+                data-cy={`${camelCase(product.name)}Checkbox`}
+                value={product.name}
+                onChange={(e) => handleOnChange(e, product.id)}
+                checked={selectedProductIds.includes(product.id)}
+                textTransform="none"
+              >
+                {product.name}
+              </StyledCheckbox>
+              <NumberInputWrapper style={{ paddingRight: '20px' }}>
+                <NumberInputStyled
+                  type="number"
+                  value={quantities[product.id]}
+                  onChange={handleQuantityChange(product.id)}
+                  height="28px"
+                  width="80px"
+                  data-cy={product.type}
+                  onKeyDown={handleKeyPress}
+                  disabled={quantities[product.id] === undefined}
+                />
+              </NumberInputWrapper>
+            </FlexRow>
+          ))
         ) : (
           <StyledSpin />
         )}

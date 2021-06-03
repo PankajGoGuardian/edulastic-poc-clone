@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from 'react'
 import {
   CustomModalStyled,
   EduButton,
@@ -6,15 +5,14 @@ import {
   notification,
   TextInputStyled,
 } from '@edulastic/common'
+import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
+import Styled from 'styled-components'
+import { emailRegex } from '../../../common/utils/helpers'
 import ProductsList from '../../src/components/common/PurchaseModals/ProductsList'
 import { EmailWrapper } from '../../src/components/common/PurchaseModals/styled'
-import { emailRegex } from '../../../common/utils/helpers'
-import Styled from 'styled-components'
-import { slice as subscriptionSlice } from '../ducks'
 import { ModalBody } from '../../src/components/common/PurchaseModals/SubscriptionAddonModal/styled'
-const h3style = { fontWeight: 700 }
-const pStyle = { fontWeight: 400 }
+import { slice as subscriptionSlice } from '../ducks'
 
 function CartModal({
   products,
@@ -29,6 +27,7 @@ function CartModal({
   handleClick,
   visible,
   closeModal,
+  handleOpenRequestInvoiceModal,
 }) {
   const teacherPremiumId = teacherPremium?.id
   const [emailValues, setEmailValues] = useState('')
@@ -90,6 +89,15 @@ function CartModal({
 
   const footer = [
     <EduButton
+      isGhost
+      onClick={handleOpenRequestInvoiceModal}
+      data-cy="requestInvoice"
+      width="220px"
+      height="45px"
+    >
+      REQUEST INVOICE
+    </EduButton>,
+    <EduButton
       onClick={handleProceed}
       data-cy="proceedPayment"
       width="220px"
@@ -115,12 +123,12 @@ function CartModal({
       onCancel={closeModal}
     >
       <ModalBody>
-        <p style={pStyle}>
+        <p>
           50 student licenses are included in each teacher license for free.
           Additional student licenses cost <strong>$2/student</strong>
         </p>
 
-        <p style={pStyle}>
+        <p>
           There are additional products that can make instructions easier.
           Subscribe to SparkMath, Spark Reading free trials to see how they can
           help.{' '}

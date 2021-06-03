@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import EdulasticResourceModal from '../common/EdulasticResourceModal'
+import ReactPlayer from 'react-player/lazy'
 
 /**
  * EmbeddedVideoPreviewModal modal to preview embedded video links
@@ -85,11 +86,7 @@ const EmbeddedVideoPreviewModal = (props) => {
         smallFont
         modalWidth={'730px'}
       >
-        <div style={{width: '640px'}}>
-          <video id="awsVideo" controls>
-            <source src={url} type="video/mp4" />
-          </video>
-        </div>
+        <ReactPlayer controls={true} width={'640px'} url={url} />
       </EdulasticResourceModal>
     )
   }

@@ -31,10 +31,13 @@ import {
   SectionContainer,
   SectionDescription,
   SectionTitle,
+  SpinContainer,
+  StyledSpin,
   TrialExpiryMsg,
 } from './styled'
 import TabHeaderContent from './TabHeaderContent'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
+import { Spin, Tooltip } from 'antd'
 
 /* const getUpgradeToMultipleUsersPlanAction = ({ openPurchaseLicenseModal }) => (
   <ActionsWrapper>
@@ -489,7 +492,7 @@ const SubscriptionMain = ({
             />
 
             {!['partial_premium', 'enterprise'].includes(subType) && (
-              <CardsSection>
+              <CardsSection data-cy={teacherPremium.id}>
                 <FlexContainer
                   justifyContent="flex-start"
                   alignItems="flex-start"
@@ -524,18 +527,23 @@ const SubscriptionMain = ({
                   <Price>
                     <span>$ {teacherPremium.price}</span> per Teacher
                   </Price>
-                  {!isPaidPremium && (
-                    <EduButton
-                      onClick={() => toggleCart(teacherPremium.id)}
-                      height="32px"
-                      width="180px"
-                      data-cy="addToCart"
-                    >
-                      {cartQuantities[teacherPremium.id]
-                        ? 'Remove From Cart'
-                        : 'Add to Cart'}
-                    </EduButton>
-                  )}
+                  <EduButton
+                    onClick={() => toggleCart(teacherPremium.id)}
+                    height="32px"
+                    width="180px"
+                    className={
+                      cartQuantities[teacherPremium.id] ? 'remove' : 'add'
+                    }
+                    data-cy={
+                      cartQuantities[teacherPremium.id]
+                        ? 'removeFromCart'
+                        : 'addToCart'
+                    }
+                  >
+                    {cartQuantities[teacherPremium.id]
+                      ? 'Remove From Cart'
+                      : 'Add to Cart'}
+                  </EduButton>
                   <EduButton
                     onClick={handleSelectStateModal}
                     height="32px"
@@ -552,17 +560,29 @@ const SubscriptionMain = ({
                       Learn more
                     </LearnMoreLink>
                   </EduButton>
-                  {!isPremiumTrialUsed && !isPremiumUser && (
-                    <EduButton
-                      onClick={() => handleStartTrialButtonClick()}
-                      height="32px"
-                      width="180px"
-                      isGhost
-                      isBlue
-                      data-cy="subscriptionStartTrialbtn"
+                  {subType !== 'premium' && (
+                    <Tooltip
+                      title={
+                        subType === 'TRIAL_PREMIUM'
+                          ? `Free trial for ${teacherPremium.title} is already utilized. Kindly purchase to access the content.`
+                          : ''
+                      }
+                      placement="bottom"
                     >
-                      Try Now
-                    </EduButton>
+                      <div>
+                        <EduButton
+                          onClick={() => handleStartTrialButtonClick()}
+                          height="32px"
+                          width="180px"
+                          isGhost
+                          isBlue
+                          data-cy="subscriptionStartTrialbtn"
+                          disabled={subType === 'TRIAL_PREMIUM'}
+                        >
+                          Try Now
+                        </EduButton>
+                      </div>
+                    </Tooltip>
                   )}
                 </CardRightWrapper>
               </CardsSection>
@@ -575,7 +595,11 @@ const SubscriptionMain = ({
           changeSubject={(v) => setAddonSubject(v)}
           subjects={uniq(productsWithoutTeacherPremium.map((x) => x.subject))}
         />
-
+        {!productsWithoutTeacherPremium?.length && (
+          <SpinContainer>
+            <StyledSpin size="large" />
+          </SpinContainer>
+        )}
         {productsWithoutTeacherPremium
           .filter((x) => {
             if (addonSubject === 'all') {
@@ -591,7 +615,7 @@ const SubscriptionMain = ({
               (ib) => ib.itemBankId === _product?.linkedProductId
             )
             return (
-              <CardsSection>
+              <CardsSection data-cy={_product.id}>
                 <FlexContainer
                   justifyContent="flex-start"
                   alignItems="flex-start"
@@ -640,7 +664,12 @@ const SubscriptionMain = ({
                     onClick={() => toggleCart(_product.id)}
                     height="32px"
                     width="180px"
-                    data-cy="addToCart"
+                    data-cy={
+                      cartQuantities[_product.id]
+                        ? 'removeFromCart'
+                        : 'addToCart'
+                    }
+                    className={cartQuantities[_product.id] ? 'remove' : 'add'}
                   >
                     {cartQuantities[_product.id]
                       ? 'Remove from Cart'
@@ -662,17 +691,31 @@ const SubscriptionMain = ({
                       Learn more
                     </LearnMoreLink>
                   </EduButton>
-                  {!itemBankSubscription && (
-                    <EduButton
-                      onClick={() => handleStartTrialButtonClick(_product.id)}
-                      height="32px"
-                      width="180px"
-                      isGhost
-                      isBlue
-                      data-cy="subscriptionStartTrialbtn"
+                  {(!itemBankSubscription || itemBankSubscription.isTrial) && (
+                    <Tooltip
+                      title={
+                        itemBankSubscription?.isTrial
+                          ? `Free trial for ${_product.title} is already utilized. Kindly purchase to access the content.`
+                          : ''
+                      }
+                      placement="bottom"
                     >
-                      Try Now
-                    </EduButton>
+                      <div>
+                        <EduButton
+                          onClick={() =>
+                            handleStartTrialButtonClick(_product.id)
+                          }
+                          height="32px"
+                          width="180px"
+                          isGhost
+                          isBlue
+                          data-cy="subscriptionStartTrialbtn"
+                          disabled={itemBankSubscription?.isTrial}
+                        >
+                          Try Now
+                        </EduButton>
+                      </div>
+                    </Tooltip>
                   )}
                 </CardRightWrapper>
               </CardsSection>

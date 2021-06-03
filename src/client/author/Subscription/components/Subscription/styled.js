@@ -43,7 +43,8 @@ export const PlanCard = styled.div`
 `
 
 export const PlanHeader = styled.div`
-  background: ${({ color }) => color};
+  background: ${({ color, bgImg }) => `${color} url(${bgImg})`};
+  background-size: contain;
   height: 110px;
   display: flex;
   align-items: center;

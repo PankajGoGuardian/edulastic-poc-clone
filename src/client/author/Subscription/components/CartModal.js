@@ -12,6 +12,7 @@ import { EmailWrapper } from '../../src/components/common/PurchaseModals/styled'
 import { emailRegex } from '../../../common/utils/helpers'
 import Styled from 'styled-components'
 import { slice as subscriptionSlice } from '../ducks'
+import { ModalBody } from '../../src/components/common/PurchaseModals/SubscriptionAddonModal/styled'
 const h3style = { fontWeight: 700 }
 const pStyle = { fontWeight: 400 }
 
@@ -106,52 +107,54 @@ function CartModal({
   return (
     <CustomModalStyled
       visible={visible}
-      title={<h3 style={h3style}>Your Edulastic Cart</h3>}
+      title="Your Edulastic Cart"
       modalWidth="510px"
       width="510px"
       destroyOnClose
       footer={footer}
       onCancel={closeModal}
     >
-      <p style={pStyle}>
-        50 student licenses are included in each teacher license for free.
-        Additional student licenses cost <strong>$2/student</strong>
-      </p>
+      <ModalBody>
+        <p style={pStyle}>
+          50 student licenses are included in each teacher license for free.
+          Additional student licenses cost <strong>$2/student</strong>
+        </p>
 
-      <p style={pStyle}>
-        There are additional products that can make instructions easier.
-        Subscribe to SparkMath, Spark Reading free trials to see how they can
-        help.{' '}
-      </p>
+        <p style={pStyle}>
+          There are additional products that can make instructions easier.
+          Subscribe to SparkMath, Spark Reading free trials to see how they can
+          help.{' '}
+        </p>
 
-      <StyledProductsList
-        isBuyMore
-        isCart
-        showRenewalOptions={false}
-        showMultiplePurchaseModal={false}
-        productsToshow={products}
-        setTotalPurchaseAmount={setTotalAmount}
-        setQuantities={setQuantities}
-        quantities={quantities}
-        setSelectedProductIds={(...args) => {
-          console.log('setSelectedProductIds', args)
-        }}
-        selectedProductIds={selectedProductIds}
-        currentItemId={null}
-        subsLicenses={[]}
-        teacherPremium={teacherPremium}
-      />
-      {isMultipleQuantities && (
-        <EmailWrapper>
-          <FieldLabel>Bookkeeper Email</FieldLabel>
-          <TextInputStyled
-            value={emailValues}
-            onChange={handleInputEmailAddress}
-            placeholder="Type the emails"
-            height="40px"
-          />
-        </EmailWrapper>
-      )}
+        <StyledProductsList
+          isBuyMore
+          isCart
+          showRenewalOptions={false}
+          showMultiplePurchaseModal={false}
+          productsToshow={products}
+          setTotalPurchaseAmount={setTotalAmount}
+          setQuantities={setQuantities}
+          quantities={quantities}
+          setSelectedProductIds={(...args) => {
+            console.log('setSelectedProductIds', args)
+          }}
+          selectedProductIds={selectedProductIds}
+          currentItemId={null}
+          subsLicenses={[]}
+          teacherPremium={teacherPremium}
+        />
+        {isMultipleQuantities && (
+          <EmailWrapper>
+            <FieldLabel>Bookkeeper Email</FieldLabel>
+            <TextInputStyled
+              value={emailValues}
+              onChange={handleInputEmailAddress}
+              placeholder="Type the emails"
+              height="40px"
+            />
+          </EmailWrapper>
+        )}
+      </ModalBody>
     </CustomModalStyled>
   )
 }

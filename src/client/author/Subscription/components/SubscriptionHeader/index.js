@@ -6,7 +6,7 @@ import HeaderTabs, {
 import { HeaderMidContainer } from '@edulastic/common/src/components/MainHeader'
 import { roleuser } from '@edulastic/constants'
 import { IconCart, IconSubscriptionHighlight } from '@edulastic/icons'
-import { Dropdown, Menu } from 'antd'
+import { Dropdown, Menu, Tooltip } from 'antd'
 import { capitalize } from 'lodash'
 import moment from 'moment'
 import PropTypes from 'prop-types'

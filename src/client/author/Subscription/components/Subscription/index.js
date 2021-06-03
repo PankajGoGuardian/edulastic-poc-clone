@@ -30,6 +30,9 @@ import {
   getSubsLicensesSelector,
 } from '../../../ManageSubscription/ducks'
 import EnterpriseTab from '../SubscriptionMain/EnterpriseTab'
+import FREEIMG from '../../static/free-forever-bg.png'
+import PREMIUMIMG from '../../static/premium-teacher-bg.png'
+import ENTERPRISEIMG from '../../static/enterprise-bg.png'
 
 const RequestInvoiceModal = loadable(() => import('../RequestInvoviceModal'))
 
@@ -43,6 +46,7 @@ const comparePlansData = [
     subTitle: '$0 / MONTH',
     cardLabel: 'FREE FOREVER',
     color: '#5EB500',
+    bgImg: FREEIMG,
     data: [
       {
         title: 'Unlimited Assesments',
@@ -80,9 +84,10 @@ const comparePlansData = [
   },
   {
     cardTitle: 'Premium Teacher',
-    subTitle: '$99 / MONTH',
+    subTitle: '$100 / YEAR',
     cardLabel: 'PER TEACHER PRICING',
     color: '#4E95F3',
+    bgImg: PREMIUMIMG,
     data: [
       {
         title: 'All Free Teacher Features, PLUS:',
@@ -123,6 +128,7 @@ const comparePlansData = [
     subTitle: 'REQUEST A QUOTE',
     cardLabel: 'PER STUDENT PRICING',
     color: '#FFA200',
+    bgImg: ENTERPRISEIMG,
     data: [
       {
         title: 'Premium Teacher for All Teachers, PLUS:',
@@ -168,9 +174,9 @@ const PlanDetailsComponent = ({ title, description = '' }) => (
   </>
 )
 
-const Plans = ({ cardTitle, subTitle, data, color }) => (
+const Plans = ({ cardTitle, subTitle, data, color, bgImg }) => (
   <PlanCard>
-    <PlanHeader color={color}>
+    <PlanHeader bgImg={bgImg} color={color}>
       <h2>{cardTitle}</h2>
       <span>{subTitle}</span>
     </PlanHeader>

@@ -123,6 +123,7 @@ const EnterpriseTab = ({ isPremium, subType, requestQuote }) => {
             isGhost
             isBlue
             data-cy="scheduleDemo"
+            style={{ margin: '0px' }}
           >
             schedule a demo
           </EduButton>

@@ -121,7 +121,11 @@ const SettingsModal = ({
         <EduButton isGhost key="cancel" onClick={handleCancel}>
           CANCEL
         </EduButton>,
-        <EduButton data-cy="apply" key="submit" onClick={handleApply}>
+        <EduButton
+          data-cy={showReconfirm ? 'continue' : 'apply'}
+          key="submit"
+          onClick={handleApply}
+        >
           {showReconfirm ? 'CONTINUE' : 'APPLY'}
         </EduButton>,
       ]}

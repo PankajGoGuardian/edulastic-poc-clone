@@ -9,6 +9,8 @@ import {
   notification,
 } from '@edulastic/common'
 import * as Sentry from '@sentry/browser'
+import { resourceTypeQuestions } from '@edulastic/constants/const/question'
+
 import { evaluateItem } from '../utils/evalution'
 import { hasEmptyAnswers } from '../../utils/answerValidator'
 
@@ -205,6 +207,13 @@ function* evaluateAnswers({ payload }) {
       const _item = yield select((state) => state.itemDetail.item)
       const { itemLevelScore = 0, itemLevelScoring = false } = _item || {}
       const questions = yield select(getQuestionsSelector)
+      // filter out passages and resources before evaluating
+      Object.values(questions).forEach((q) => {
+        const { id, type } = q
+        if (resourceTypeQuestions.includes(type)) {
+          delete questions[id]
+        }
+      })
       const answersByQids = answersByQId(answers, _item._id)
       if (isEmpty(answersByQids)) {
         if (payload?.mode !== 'show') {

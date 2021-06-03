@@ -22,7 +22,7 @@ import {
 import { withNamespaces } from '@edulastic/localization'
 import { testActivityStatus } from '@edulastic/constants'
 import { Dropdown, Select, notification as antNotification } from 'antd'
-import { get, isEmpty, keyBy, last, round, sortBy } from 'lodash'
+import { get, isEmpty, keyBy, last, round, sortBy, uniqBy } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
@@ -1061,10 +1061,13 @@ class ClassBoard extends Component {
     const timeSpent = Math.floor(
       ((studentResponse &&
         studentResponse.questionActivities &&
-        studentResponse.questionActivities.reduce((acc, qa) => {
-          acc += qa.timeSpent || 0
-          return acc
-        }, 0)) ||
+        uniqBy(studentResponse.questionActivities, 'testItemId').reduce(
+          (acc, qa) => {
+            acc += qa.timeSpent || 0
+            return acc
+          },
+          0
+        )) ||
         0) / 1000
     )
     const { status } = studentTestActivity

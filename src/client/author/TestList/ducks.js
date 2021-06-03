@@ -13,6 +13,7 @@ import { notification } from '@edulastic/common'
 import { libraryFilters } from '@edulastic/constants'
 import produce from 'immer'
 import { testsApi, analyticsApi } from '@edulastic/api'
+import { push } from 'connected-react-router'
 import {
   CREATE_TEST_SUCCESS,
   UPDATE_TEST_SUCCESS,
@@ -220,9 +221,16 @@ function* clearAllTestFiltersSaga() {
 
 function* deleteTestSaga({ payload }) {
   try {
-    yield call(testsApi.deleteTest, payload)
-    yield put(deleteTestRequestSuccessAction(payload))
-    notification({ type: 'success', messageKey: 'testDeletedSuccessfully' })
+    const response = yield call(testsApi.deleteTest, payload)
+    if (payload.view === 'testLibrary') {
+      yield put(deleteTestRequestSuccessAction(payload.testId))
+    } else {
+      yield put(push('/author/tests'))
+    }
+    notification({
+      type: 'success',
+      msg: response || 'Test deleted successfully',
+    })
   } catch (error) {
     console.error(error)
     // 403 means dont have permission

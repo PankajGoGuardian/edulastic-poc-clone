@@ -262,7 +262,7 @@ class ClozeDropDownDisplay extends Component {
         </QuestionLabelWrapper>
 
         <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
-          <QuestionTitleWrapper>
+          <QuestionTitleWrapper data-cy="questionStimulus">
             {!!question && (
               <Stimulus
                 qIndex={qIndex}

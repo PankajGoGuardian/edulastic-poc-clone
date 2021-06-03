@@ -137,13 +137,16 @@ const deleteAssignments = ({ testId, assignmentIds = [] }) =>
     })
     .then((result) => result.data.result)
 
-const deleteTest = (testId) =>
+const deleteTest = ({ testId, type }) =>
   api
     .callApi({
       url: `/test/${testId}`,
       method: 'delete',
+      params: {
+        type,
+      },
     })
-    .then((result) => result.data)
+    .then((result) => result.data.result)
 
 const getTestIdFromVersionId = (versionId) =>
   api

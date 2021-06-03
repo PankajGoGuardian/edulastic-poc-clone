@@ -26,7 +26,6 @@ import {
   resetStudentProgressAction,
 } from './ducks'
 import { useGetBandData } from './hooks'
-import { filterMetricInfoByDDFilters } from './utils/transformers'
 
 import dropDownData from './static/json/dropDownData.json'
 import tableColumns from './static/json/tableColumns.json'
@@ -109,7 +108,7 @@ const StudentProgress = ({
 
   // get paginated data
   useEffect(() => {
-    const q = { ...settings.requestFilters, ...pageFilters }
+    const q = { ...settings.requestFilters, ...pageFilters, ...ddfilter }
     if ((q.termId || q.reportId) && pageFilters.page) {
       getStudentProgressRequest(q)
     }
@@ -143,8 +142,7 @@ const StudentProgress = ({
     {}
   )
 
-  const filteredInfo = filterMetricInfoByDDFilters(metricInfo, ddfilter)
-  const filteredInfoWithIncompleteTestData = filteredInfo.map((metric) => {
+  const filteredInfoWithIncompleteTestData = metricInfo.map((metric) => {
     metric.isIncomplete = incompleteTests.includes(metric.testId)
     return metric
   })
@@ -166,7 +164,7 @@ const StudentProgress = ({
     )
   }
 
-  if (isEmpty(filteredInfo)) {
+  if (isEmpty(metricInfo)) {
     return (
       <NoDataContainer>
         {settings.requestFilters?.termId ? 'No data available currently.' : ''}

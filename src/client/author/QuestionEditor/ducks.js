@@ -97,10 +97,7 @@ import {
   changeDataToPreferredLanguage,
   changeDataInPreferredLanguage,
 } from '../../assessment/utils/question'
-import {
-  getOptionsForMath,
-  getOptionsForClozeMath,
-} from '../../assessment/utils/variables'
+import { getOptionsForMath } from '../../assessment/utils/variables'
 
 // constants
 export const resourceTypeQuestions = {
@@ -938,13 +935,7 @@ function* addAuthoredItemsToTestSaga({ payload }) {
 
 function* calculateFormulaSaga({ payload }) {
   try {
-    const getLatexValuePairs = ({
-      id,
-      variables,
-      example,
-      options,
-      isClozeMath,
-    }) => ({
+    const getLatexValuePairs = ({ id, variables, example, options }) => ({
       id,
       latexes: Object.keys(variables)
         .map((variableName) => variables[variableName])
@@ -955,7 +946,6 @@ function* calculateFormulaSaga({ payload }) {
             {
               id: variable.name,
               formula: variable.formula,
-              options: isClozeMath ? options[variable.name] || {} : options,
             },
           ],
           []
@@ -969,6 +959,7 @@ function* calculateFormulaSaga({ payload }) {
             ? example[variableName]
             : variables[variableName].exampleValue,
       })),
+      ...options,
     })
 
     const question = yield select(getCurrentQuestionSelector)
@@ -994,21 +985,11 @@ function* calculateFormulaSaga({ payload }) {
 
     let results = []
     if (hasMathFormula(variables)) {
-      const isClozeMath = question.type === questionType.EXPRESSION_MULTIPART
       const options = question?.isMath
-        ? isClozeMath
-          ? getOptionsForClozeMath(variables, get(question, 'validation', {}))
-          : getOptionsForMath(
-              get(question, 'validation.validResponse.value', [])
-            )
+        ? getOptionsForMath(get(question, 'validation.validResponse.value', []))
         : {}
       const latexValuePairs = [
-        getLatexValuePairs({
-          id: 'definition',
-          variables,
-          options,
-          isClozeMath,
-        }),
+        getLatexValuePairs({ id: 'definition', variables, options }),
       ]
       if (examples) {
         for (const example of examples) {
@@ -1017,7 +998,6 @@ function* calculateFormulaSaga({ payload }) {
             variables,
             example,
             options,
-            isClozeMath,
           })
           if (pair.latexes.length > 0) {
             latexValuePairs.push(pair)

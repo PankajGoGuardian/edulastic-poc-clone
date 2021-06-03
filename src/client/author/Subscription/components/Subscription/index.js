@@ -30,7 +30,7 @@ import {
   getSubsLicensesSelector,
 } from '../../../ManageSubscription/ducks'
 import EnterpriseTab from '../SubscriptionMain/EnterpriseTab'
-import ContentHeader from '../SubscriptionMain/ContentHeader'
+
 const RequestInvoiceModal = loadable(() => import('../RequestInvoviceModal'))
 
 const RequestQuoteModal = loadable(() => import('../RequestQuoteModal'))

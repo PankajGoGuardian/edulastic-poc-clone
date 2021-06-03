@@ -14,8 +14,6 @@ export const themeLightGrayColor = '#BBBFC4'
 export const themeLightGrayBgColor = '#F1F1F1'
 export const themeColorBlue = 'rgba(63, 132, 229, 1)'
 export const themeColorHoverBlue = '#1A73E8'
-export const correctIconColor = '#36D29C'
-export const wrongIconColor = '#F25783'
 
 export const greyThemeDark1 = '#434B5D'
 export const greyThemeDark2 = '#878A91'
@@ -278,3 +276,13 @@ export const filterIconColor = '#2f4151'
 export const playlistTabLink = '#989BA4'
 
 export const graphTickColor = '#435b5d'
+
+// evaluation colors
+export const correctBgColor = '#e2fcf3'
+export const correctIconColor = '#36D29C'
+export const wrongBgColor = '#fde0e9'
+export const wrongIconColor = '#F25783'
+export const skippedBgColor = '#f5f5f5'
+export const skippedIconColor = '#a7a7a7'
+export const partialBgColor = '#fbfae0'
+export const partialIconColor = '#bdb956'

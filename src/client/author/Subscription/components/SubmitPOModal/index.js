@@ -126,14 +126,27 @@ const SubmitPOModal = ({
   }
 
   const validateFileUpload = (file) => {
-    if (!file) return false
+    if (!file) return 'No file found.'
+    if (
+      ![
+        'doc',
+        'docx',
+        'msword',
+        'vnd',
+        'wordprocessingml',
+        'pdf',
+        'image',
+      ].some((x) => file.type.includes(x))
+    ) {
+      return 'Unsupported file format.'
+    }
     const { size = 0 } = file || {}
     const sizeInMegaByte = parseInt((size / (1024 * 1024)).toFixed(2), 10)
 
     if (sizeInMegaByte > 10 || totalAttachmentsSize + sizeInMegaByte > 10)
-      return false
+      return 'Max file upload limit is upto 10MB.'
     setTotalAttachmentsSize(totalAttachmentsSize + sizeInMegaByte)
-    return true
+    return false
   }
 
   const uploadProps = {
@@ -144,10 +157,11 @@ const SubmitPOModal = ({
         const { file, fileList: _fileList = [] } = info
         const fileExists = _fileList.find((x) => x.uid === file.uid)
         if (fileExists) {
-          if (!validateFileUpload(file)) {
+          const validitionError = validateFileUpload(file)
+          if (validitionError) {
             notification({
               type: 'warn',
-              msg: 'Max file upload limit is upto 10MB.',
+              msg: validitionError,
             })
             return
           }
@@ -160,6 +174,7 @@ const SubmitPOModal = ({
             msg: 'File Uploaded Successfully.',
           })
         } else {
+          setFilesList((x) => x.filter((y) => y.uid !== file.uid))
           setAttachments(
             produce(attachments, (draft) => {
               delete draft[file.uid]
@@ -182,6 +197,15 @@ const SubmitPOModal = ({
     multiple: false,
     showUploadList: true,
     fileList,
+    onRemove: (file) => {
+      setFilesList((x) => x.filter((y) => y.uid !== file.uid))
+      setAttachments(
+        produce(attachments, (draft) => {
+          delete draft[file.uid]
+          return draft
+        })
+      )
+    },
   }
 
   return (

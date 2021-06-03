@@ -65,7 +65,7 @@ const TestBehaviorGroupContainer = ({
     testContentVisibility = testSettings.testContentVisibility ||
       testContentVisibilityOptions.ALWAYS,
     testType = testSettings.testType,
-    applyEBSR = false,
+    applyEBSR = testSettings?.applyEBSR,
   } = assignmentSettings
   const multipartItems = testSettings.itemGroups
     .map((o) => o.items)

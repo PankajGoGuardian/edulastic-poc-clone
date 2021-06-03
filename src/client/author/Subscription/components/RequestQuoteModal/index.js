@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { Radio } from 'antd'
 import {
+  captureSentryException,
   CustomModalStyled,
   EduButton,
   FlexContainer,
@@ -14,7 +15,7 @@ import {
 } from '../../../src/selectors/user'
 import {
   slice,
-  getInvoiceRequestStatus,
+  getRequestOrSubmitActionStatus,
   getSubscriptionSelector,
   getProducts,
 } from '../../ducks'
@@ -32,11 +33,11 @@ import { schoolApi } from '@edulastic/api'
 
 const getFooterComponent = ({
   handleSubmit,
-  isRequestInvoiceActionPending,
+  isRequestQuoteActionPending,
   disabled,
 }) => (
   <EduButton
-    loading={isRequestInvoiceActionPending}
+    loading={isRequestQuoteActionPending}
     fontSize="14px"
     width="200px"
     height="48px"
@@ -52,7 +53,7 @@ const RequestQuoteModal = ({
   visible = false,
   onCancel = () => {},
   userOrgData = {},
-  isRequestInvoiceActionPending = false,
+  isRequestQuoteActionPending = false,
   handleRequestQuote = () => {},
   userSubscription,
   userFullname,
@@ -69,25 +70,29 @@ const RequestQuoteModal = ({
   const [schoolsInUserDistrict, setSchoolsInDistrict] = useState([])
 
   const onLicenseTypeChange = async (e) => {
-    setLicenseType(e.target.value)
-    if (e.target.value === 'SCHOOL' && !schoolsInUserDistrict.length) {
-      const result = await schoolApi.getSchools({
-        districtId: userDetails.districtIds[0],
-        search: { status: [2] },
-      })
-      if (result?.data) {
-        const schools = result.data.map((x) => {
-          const { name, districtId } = x._source
-          return {
-            id: x._id,
-            name,
-            districtId,
-          }
+    try {
+      setLicenseType(e.target.value)
+      if (e.target.value === 'SCHOOL' && !schoolsInUserDistrict.length) {
+        const result = await schoolApi.getSchools({
+          districtId: userDetails.districtIds[0],
         })
-        setSchoolsInDistrict(schools)
+        if (result?.data) {
+          const schools = result.data.map((x) => {
+            const { name, districtId } = x._source
+            return {
+              id: x._id,
+              name,
+              districtId,
+            }
+          })
+          setSchoolsInDistrict(schools)
+        }
+      } else {
+        setSelectedchools([])
       }
-    } else {
-      setSelectedchools([])
+    } catch (err) {
+      console.log(err)
+      captureSentryException(err)
     }
   }
   const onEmailChange = (e) => setUserEmail(e.target.value)
@@ -117,10 +122,10 @@ const RequestQuoteModal = ({
     }
 
     if (bookkeeperEmails) {
-      const flag = bookkeeperEmails
+      const _flag = bookkeeperEmails
         .split(',')
         .every((email) => emailRegex.test(email.trim()))
-      if (!flag) {
+      if (!_flag) {
         notification({
           type: 'warning',
           msg: 'Invalid email format specified for Bookkeeper(s).',
@@ -144,7 +149,7 @@ const RequestQuoteModal = ({
               districtId: userOrgData.schools?.[0]?.districtId,
               name: userOrgData.schools?.[0]?.name,
               id: userOrgData.schools?.[0]?.districtId,
-              type: 'SCHOOLS',
+              type: 'SCHOOL',
               schools: selectedSchools, // NEED MORE CLARITY ON THIS FIELD IN PAYLOAD
             }
       const emails = bookkeeperEmails
@@ -153,7 +158,7 @@ const RequestQuoteModal = ({
             .map((email) => email.trim())
             .filter((x) => x)
         : []
-      const payload = {
+      const reqPayload = {
         userFullname,
         userEmail,
         documentType: 'QUOTE',
@@ -166,8 +171,11 @@ const RequestQuoteModal = ({
             ? 'Enterprise'
             : 'Teacher Premium',
       }
-      //   console.log('---->', payload)
-      handleRequestQuote(payload)
+      //   console.log('---->', reqPayload)
+      handleRequestQuote({
+        reqPayload,
+        closeCallback: onCancel,
+      })
     }
   }
 
@@ -180,7 +188,7 @@ const RequestQuoteModal = ({
       footer={[
         getFooterComponent({
           handleSubmit,
-          isRequestInvoiceActionPending,
+          isRequestQuoteActionPending,
           disabled: !products?.length,
         }),
       ]}
@@ -268,7 +276,7 @@ const RequestQuoteModal = ({
 export default connect(
   (state) => ({
     userOrgData: getUserOrgData(state),
-    isRequestInvoiceActionPending: getInvoiceRequestStatus(state),
+    isRequestQuoteActionPending: getRequestOrSubmitActionStatus(state),
     userSubscription: getSubscriptionSelector(state),
     userFullname: getUserFullNameSelector(state),
     userDetails: getUserDetails(state),

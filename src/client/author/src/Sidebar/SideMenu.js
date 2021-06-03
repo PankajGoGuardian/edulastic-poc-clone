@@ -70,7 +70,7 @@ import { switchUser, proxyDemoPlaygroundUser } from '../../authUtils'
 import ItemBankTrialUsedModal from '../../Dashboard/components/Showcase/components/Myclasses/components/FeaturedContentBundle/ItemBankTrialUsedModal'
 import PurchaseFlowModals from '../components/common/PurchaseModals'
 import { slice } from '../../Subscription/ducks'
-import AuthorCompleteSignupButton from '../../../common/components/AuthorCompleteSignupButton';
+import AuthorCompleteSignupButton from '../../../common/components/AuthorCompleteSignupButton'
 
 const menuItems = [
   {
@@ -511,18 +511,21 @@ class SideMenu extends Component {
           </Menu.Item>
           {!isPublisher && (
             <Menu.Item key="2" className="removeSelectedBorder">
-               <AuthorCompleteSignupButton renderButton={(handleclick)=>{
-                return (<a  onClick={handleclick}>
-                  <IconSubscriptionHighlight />{' '}
-                  <span data-cy="subscription">
-                    {isCollapsed ? '' : 'Subscription'}
-                  </span>
-                </a>)
-               }}
-               onClick={()=>{
-                 history.push('/author/subscription')
-               }}
-               />
+              <AuthorCompleteSignupButton
+                renderButton={(handleclick) => {
+                  return (
+                    <a onClick={handleclick}>
+                      <IconSubscriptionHighlight />{' '}
+                      <span data-cy="subscription">
+                        {isCollapsed ? '' : 'Subscription'}
+                      </span>
+                    </a>
+                  )
+                }}
+                onClick={() => {
+                  history.push('/author/subscription')
+                }}
+              />
             </Menu.Item>
           )}
           {users.length ? (

@@ -27,7 +27,7 @@ import {
   getDashboardPlaylists,
 } from '../../../../Dashboard/ducks'
 import { useThisPlayListAction } from '../../../../CurriculumSequence/ducks'
-import CartModal from '../../../../Subscription/components/CartModal';
+import CartModal from '../../../../Subscription/components/CartModal'
 
 const MultipleLicensePurchase = loadable(() =>
   import('./MultipleLicensePurchase')
@@ -101,7 +101,7 @@ const PurchaseFlowModals = (props) => {
     cartVisible,
     setCartVisible,
     cartQuantities,
-    fromSideMenu
+    fromSideMenu,
   } = props
 
   const [payWithPoModal, setPayWithPoModal] = useState(false)
@@ -111,7 +111,7 @@ const PurchaseFlowModals = (props) => {
   const [totalAmount, setTotalAmount] = useState(100)
   const [quantities, setQuantities] = useState({})
   const [isPaymentServiceModalVisible, setPaymentServiceModal] = useState(false)
-  
+
   const trialConfirmationMessage = showTrialConfirmationMessage.subEndDate
     ? showTrialConfirmationMessage
     : { subEndDate: moment(subEndDate).format('DD MMM, YYYY') }
@@ -300,8 +300,8 @@ const PurchaseFlowModals = (props) => {
       }))
       setProductsCart(productQuantities)
       setEmailIds(emails)
-    } else if(cartVisible){
-      if(Object.keys(cartQuantities).find(x => cartQuantities[x]>1)){
+    } else if (cartVisible) {
+      if (Object.keys(cartQuantities).find((x) => cartQuantities[x] > 1)) {
         const productQuantities = products.map((product) => ({
           ...product,
           quantity: cartQuantities[product.id],
@@ -309,7 +309,11 @@ const PurchaseFlowModals = (props) => {
         setProductsCart(productQuantities)
         setEmailIds(emails)
       } else {
-        setAddOnProductIds(Object.keys(cartQuantities).filter(x => x != "null" && cartQuantities[x]));
+        setAddOnProductIds(
+          Object.keys(cartQuantities).filter(
+            (x) => x != 'null' && cartQuantities[x]
+          )
+        )
       }
     } else if (showBuyMoreModal) {
       const productQuantities = productsToshow.map((product) => ({
@@ -324,7 +328,7 @@ const PurchaseFlowModals = (props) => {
           licenseOwnerId,
         })
         handleSubscriptionAddonModalClose()
-        setCartVisible(false);
+        setCartVisible(false)
         setSelectedLicenseId(null)
         return
       }
@@ -335,9 +339,9 @@ const PurchaseFlowModals = (props) => {
 
     setTotalAmount(totalAmount)
     handleSubscriptionAddonModalClose()
-    setCartVisible(false);
+    setCartVisible(false)
     setShowUpgradeModal(true)
-    console.log('current cart',{productsCart,selectedProductIds});
+    console.log('current cart', { productsCart, selectedProductIds })
   }
 
   return (
@@ -382,20 +386,21 @@ const PurchaseFlowModals = (props) => {
         />
       )}
 
-        {cartVisible  && !fromSideMenu && (
-      <CartModal 
-        visible={cartVisible}
-        products={[teacherPremium, ...itemBankPremium]} 
-        teacherPremium={teacherPremium}
-        setTotalAmount={setTotalAmount}
-        bulkInviteBookKeepers={bulkInviteBookKeepers}
-        districtId={userOrgId}
-        isBookKeepersInviteSuccess={isBookKeepersInviteSuccess}
-        setBookKeepersInviteSuccess={setBookKeepersInviteSuccess}
-        handleClick={handleClick}
-        closeModal={()=> setCartVisible(false)}
-        userId={user?._id}
-         />)}
+      {cartVisible && !fromSideMenu && (
+        <CartModal
+          visible={cartVisible}
+          products={[teacherPremium, ...itemBankPremium]}
+          teacherPremium={teacherPremium}
+          setTotalAmount={setTotalAmount}
+          bulkInviteBookKeepers={bulkInviteBookKeepers}
+          districtId={userOrgId}
+          isBookKeepersInviteSuccess={isBookKeepersInviteSuccess}
+          setBookKeepersInviteSuccess={setBookKeepersInviteSuccess}
+          handleClick={handleClick}
+          closeModal={() => setCartVisible(false)}
+          userId={user?._id}
+        />
+      )}
       {showUpgradeModal && (
         <UpgradeModal
           visible={showUpgradeModal}
@@ -501,7 +506,7 @@ export default compose(
       setBookKeepersInviteSuccess: slice.actions.setBookKeepersInviteSuccess,
       fetchPlaylists: fetchPlaylistsAction,
       useThisPlayList: useThisPlayListAction,
-      setCartVisible: slice.actions.setCartVisible
+      setCartVisible: slice.actions.setCartVisible,
     }
   )
 )(PurchaseFlowModals)

@@ -54,7 +54,7 @@ const ProductsList = ({
   }, [_totalPrice])
 
   const handleOnChange = (e, id) => {
-    if(!id){
+    if (!id) {
       return
     }
     if (isBuyMore && !isCart) return
@@ -188,7 +188,7 @@ const ProductsList = ({
         ))}
       </AddonList>
 
-      {(!isBuyMore||isCart)  && !isRequestingQuote &&  (
+      {(!isBuyMore || isCart) && !isRequestingQuote && (
         <Total>
           <FlexRow>
             <label>Total</label>

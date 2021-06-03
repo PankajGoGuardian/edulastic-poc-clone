@@ -18,10 +18,7 @@ const InvoiceSuccessModal = ({
     <FlexContainer mt="40px" flexDirection="column" alignItems="center">
       <StyledIconCheck />
       <Title>Thank You</Title>
-      <SubTitle>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur
-        laoreet sit amet massa eu mattis.
-      </SubTitle>
+      <SubTitle>{visible}</SubTitle>
     </FlexContainer>
   </CustomModalStyled>
 )

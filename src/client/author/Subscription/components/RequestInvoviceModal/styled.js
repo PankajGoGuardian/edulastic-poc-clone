@@ -42,6 +42,9 @@ const LabelRequired = css`
 `
 
 export const Label = styled.p`
+  width: ${({ width }) => width && width + ' !important'};
+  margin-bottom: ${({ mb }) => mb && mb + ' !important'};
+  font-size: ${({ fs }) => fs && fs + ' !important'};
   .ant-modal-content .ant-modal-body p {
     text-align: left;
     font: normal normal normal 12px Open Sans;

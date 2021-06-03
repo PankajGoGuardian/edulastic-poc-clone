@@ -20,6 +20,7 @@ import {
   lightBlue10,
   lightGreen10,
   deleteRed2,
+  themeColorBlue,
 } from '@edulastic/colors'
 import { CustomModalStyled, EduButton, FlexContainer } from '@edulastic/common'
 import { Spin } from 'antd'
@@ -178,6 +179,16 @@ export const OtherFilters = styled.div`
 export const CardRightWrapper = styled(FlexContainer)`
   .ant-btn {
     margin-top: 5px;
+    &.disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+      &:focus,
+      &:hover {
+        background: transparent;
+        color: ${themeColorBlue};
+        border-color: ${themeColorBlue};
+      }
+    }
     &.add {
       &:focus,
       &:active {

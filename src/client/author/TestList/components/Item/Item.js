@@ -446,6 +446,8 @@ class Item extends Component {
             isVisible={isDeleteModalOpen}
             onCancel={this.onDeleteModelCancel}
             testId={item._id}
+            test={item}
+            view="testLibrary"
           />
         ) : null}
 

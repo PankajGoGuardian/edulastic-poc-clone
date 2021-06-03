@@ -1128,7 +1128,7 @@ class Container extends PureComponent {
         testId &&
         (isOwner || isCurator)) ||
       editEnable
-    const showShareButton = !!testId
+    const hasTestId = !!testId
     const allowDuplicate =
       allowDuplicateCheck(test.collections, collections, 'test') || isOwner
     const showDuplicateButton =
@@ -1213,7 +1213,7 @@ class Container extends PureComponent {
           windowWidth={windowWidth}
           showPublishButton={showPublishButton}
           testStatus={testStatus}
-          showShareButton={showShareButton}
+          hasTestId={hasTestId}
           editEnable={editEnable}
           onEnableEdit={this.onEnableEdit}
           onShowSource={this.handleNavChange('source')}

@@ -103,7 +103,8 @@ class SimpleOptions extends React.Component {
       [
         evalTypeLabels.PARTIAL_CREDIT,
         evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT,
-      ].includes(scoringType)
+      ].includes(scoringType) &&
+      isBoolean(applyEBSR)
     ) {
       this.overRideSettings('applyEBSR', applyEBSR)
     }

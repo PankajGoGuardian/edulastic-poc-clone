@@ -307,6 +307,28 @@ export const assignmentIdsByTestIdSelector = createSelector(
   }
 )
 
+export const assignmentIdsGroupIdsByTestIdSelector = createSelector(
+  assignmentsSelector,
+  (assignments) => {
+    const assignmentsGroupsByTestId = {}
+    // eslint-disable-next-line guard-for-in
+    for (const i in assignments) {
+      const { testId, _id } = assignments[i]
+      const classIds = assignments[i]?.['class']?.map((x) => x._id) || []
+      if (_id && testId) {
+        if (!assignmentsGroupsByTestId[testId]) {
+          assignmentsGroupsByTestId[testId] = new Set(classIds)
+        } else {
+          classIds.forEach((x) => {
+            assignmentsGroupsByTestId[testId].add(x)
+          })
+        }
+      }
+    }
+    return assignmentsGroupsByTestId
+  }
+)
+
 export const filterSelector = (state) => state.studentAssignment.filter
 export const stateSelector = (state) => state.studentAssignment
 export const getShowRetakeModalSelector = createSelector(

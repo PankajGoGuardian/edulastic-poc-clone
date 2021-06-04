@@ -77,7 +77,9 @@ const useRealtime = (topics, actionMap, options = {}) => {
         }
       }
     },
-    options.dynamicTopics ? [mqttUrl, topics] : [mqttUrl]
+    options.dynamicTopics
+      ? [mqttUrl, topics]
+      : [mqttUrl, options.topicsWillBeAdded ? topics?.length : 1]
   )
   return retClient
 }

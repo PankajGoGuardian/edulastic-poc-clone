@@ -382,7 +382,7 @@ class Container extends React.Component {
     const showPublishButton =
       (status && status !== statusConstants.PUBLISHED && testId && owner) ||
       editEnable
-    const showShareButton = !!testId
+    const hasTestId = !!testId
     const showEditButton =
       authors &&
       authors.some((x) => x._id === userId) &&
@@ -450,7 +450,7 @@ class Container extends React.Component {
           windowWidth={windowWidth}
           showPublishButton={showPublishButton}
           testStatus={status}
-          showShareButton={showShareButton}
+          hasTestId={hasTestId}
           editEnable={editEnable}
           onEnableEdit={this.onEnableEdit}
           // onShowSource={this.handleNavChange("source")}

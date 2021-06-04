@@ -47,6 +47,7 @@ import {
   getUserFeatures,
   getCollectionsSelector,
   getWritableCollectionsSelector,
+  getCurrentTerm,
 } from '../../../author/src/selectors/user'
 
 import {
@@ -123,6 +124,7 @@ const QuestionBottomAction = ({
   saveHintUsage,
   isStudent,
   itemIndex,
+  currentTerm,
   view,
   ...questionProps
 }) => {
@@ -363,6 +365,7 @@ const QuestionBottomAction = ({
         </LeftWrapper>
         <RightWrapper>
           {showCorrectItem &&
+            currentTerm === additionalData.termId &&
             item &&
             !isStudentReport &&
             !isDocBasedTest &&
@@ -498,6 +501,7 @@ const enhance = compose(
       currentStudentId: get(state, ['authorUi', 'currentStudentId']),
       isDocBasedTest: getIsDocBasedTestSelector(state),
       updating: get(state, ['classResponse', 'updating'], false),
+      currentTerm: getCurrentTerm(state),
     }),
     {
       setQuestionData: setQuestionDataAction,

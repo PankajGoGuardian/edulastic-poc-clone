@@ -32,6 +32,7 @@ import {
   setApproveConfirmationOpenAction,
 } from '../TestPage/components/AddItems/ducks'
 import {
+  clearCreatedItemsAction,
   getTestEntitySelector,
   receiveTestByIdSaga,
   setEditEnableAction,
@@ -251,6 +252,7 @@ function* deleteTestSaga({ payload }) {
       } else yield put(deleteTestRequestSuccessAction(payload.testId))
     } else if (payload.type === testConstants.DELETE_TYPES.ROLLBACK) {
       const { previousTestId } = yield select(getTestEntitySelector)
+      yield put(clearCreatedItemsAction())
       if (previousTestId) {
         yield put(push(`/author/tests/tab/review/id/${previousTestId}`))
         yield call(receiveTestByIdSaga, {

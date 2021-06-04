@@ -500,7 +500,7 @@ class Container extends PureComponent {
       (testStatus && testStatus !== statusConstants.PUBLISHED && testId) ||
       editEnable ||
       state?.editFlow
-    const showShareButton = !!testId
+    const hasTestId = !!testId
     const owner =
       (authors && authors.some((x) => x._id === userId)) ||
       !testId ||
@@ -539,7 +539,7 @@ class Container extends PureComponent {
           windowWidth={windowWidth}
           showPublishButton={showPublishButton}
           testStatus={testStatus}
-          showShareButton={showShareButton}
+          hasTestId={hasTestId}
           editEnable={editEnable}
           onEnableEdit={this.onEnableEdit}
           owner={owner}

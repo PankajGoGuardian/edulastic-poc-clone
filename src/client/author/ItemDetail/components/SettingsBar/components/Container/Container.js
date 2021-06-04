@@ -179,6 +179,7 @@ class Container extends Component {
       isPassageQuestion,
       assignPartialCredit,
       isPremiumUser,
+      disableScoringLevel = false,
     } = this.props
     const singleLayout = type === layouts[0].value
     const { PART_SCORING_TYPE } = multipartEvaluationTypes
@@ -257,6 +258,9 @@ class Container extends Component {
                         vertical
                         checked={this.getRadioCheckedOption(setting, opt)}
                         onClick={(e) => this.handleSettingsChange(e)}
+                        disabled={
+                          disableScoringLevel && opt === 'itemLevelScoring'
+                        }
                         data-cy={opt}
                       >
                         <FieldLabel marginBottom="0px" display="inline-block">

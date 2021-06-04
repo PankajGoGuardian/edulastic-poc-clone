@@ -70,7 +70,6 @@ import { switchUser, proxyDemoPlaygroundUser } from '../../authUtils'
 import ItemBankTrialUsedModal from '../../Dashboard/components/Showcase/components/Myclasses/components/FeaturedContentBundle/ItemBankTrialUsedModal'
 import PurchaseFlowModals from '../components/common/PurchaseModals'
 import { slice } from '../../Subscription/ducks'
-import AuthorCompleteSignupButton from '../../../common/components/AuthorCompleteSignupButton'
 
 const menuItems = [
   {

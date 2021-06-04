@@ -45,19 +45,6 @@ const getFooterComponent = ({
   </EduButton>
 )
 
-// TODO: Remove post integration
-const SAMPLE_PRODUCTS = {
-  '5f0835a1984cfa6bcef1e14d': 10,
-  '60098dbef33e901c6f1021c6': 30,
-  '606eb0f759e92006545eac36': 100,
-}
-
-const SAMPLE_PRODUCT_NAMES = {
-  '5f0835a1984cfa6bcef1e14d': 'Teacher License Count',
-  '60098dbef33e901c6f1021c6': 'Spark Science',
-  '606eb0f759e92006545eac36': 'Spark Books',
-}
-
 const RequestInvoiceModal = ({
   visible = false,
   onCancel = () => {},

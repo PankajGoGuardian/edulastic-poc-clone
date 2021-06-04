@@ -88,6 +88,7 @@ class SimpleOptions extends React.Component {
       scoringType: _scoringType,
       penalty: _penalty,
       safeBrowser,
+      applyEBSR,
     } = testSettings
     const { scoringType = _scoringType, penalty = _penalty } = assignment
     if (safeBrowser === true) {
@@ -98,6 +99,14 @@ class SimpleOptions extends React.Component {
         'scoringType',
         evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT
       )
+    if (
+      [
+        evalTypeLabels.PARTIAL_CREDIT,
+        evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT,
+      ].includes(scoringType)
+    ) {
+      this.overRideSettings('applyEBSR', applyEBSR)
+    }
   }
 
   toggleSettings = () => {

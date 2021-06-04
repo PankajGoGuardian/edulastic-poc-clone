@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
-
+import { test as testConstants } from '@edulastic/constants'
 import { EduButton, RadioBtn } from '@edulastic/common'
 import {
   ModalWrapper,
@@ -11,13 +11,15 @@ import {
   LightGreenSpan,
 } from '../../../../common/components/ConfirmationModal/styled'
 
-import { deleteTestRequestAction } from '../../ducks'
+import {
+  deleteTestRequestAction,
+  getDeleteTestStateSelector,
+  setDeleteTestStateAction,
+} from '../../ducks'
 import { StyledRadioGroup } from '../../../TestPage/components/Setting/components/Container/styled'
 
-const DELETE_TYPES = {
-  ROLLBACK: 'rollback',
-  DELETE_TEST: 'delete',
-}
+const { DELETE_TYPES } = testConstants
+
 const DeleteItemModal = ({
   isVisible,
   onCancel,
@@ -25,6 +27,8 @@ const DeleteItemModal = ({
   testId,
   test,
   view = 'testLibrary',
+  deletingTest = false,
+  setDeleteTestState,
 }) => {
   const [confirmText, setConfirmText] = useState('')
   const [deleteType, setDeleteType] = useState('')
@@ -39,6 +43,12 @@ const DeleteItemModal = ({
     !!test.previousTestId
 
   useEffect(() => {
+    return () => {
+      setDeleteTestState(false)
+    }
+  }, [])
+
+  useEffect(() => {
     if (deleteType === DELETE_TYPES.ROLLBACK) {
       setConfirmText('delete')
     }
@@ -46,6 +56,12 @@ const DeleteItemModal = ({
       setConfirmText('')
     }
   }, [deleteType])
+
+  useEffect(() => {
+    if (deletingTest === 'DONE') {
+      onCancel()
+    }
+  }, [deletingTest])
 
   return (
     <StyledModal
@@ -62,7 +78,7 @@ const DeleteItemModal = ({
             key="cancel"
             onClick={() => onCancel(false)}
           >
-            {deleteType === DELETE_TYPES.ROLLBACK ? 'Cancel' : 'No, Cancel'}
+            {showRollback ? 'Cancel' : 'No, Cancel'}
           </EduButton>
           <EduButton
             key="delete"
@@ -73,8 +89,9 @@ const DeleteItemModal = ({
                 deleteTestRequest({ testId, type: deleteType, view })
               }
             }}
+            loading={deletingTest === 'INPROGRESS'}
           >
-            {deleteType === DELETE_TYPES.ROLLBACK ? 'Proceed' : 'Yes, Delete'}
+            {showRollback ? 'Proceed' : 'Yes, Delete'}
           </EduButton>
         </ModalFooter>,
       ]}
@@ -114,11 +131,20 @@ const DeleteItemModal = ({
         {(deleteType === DELETE_TYPES.DELETE_TEST || !showRollback) && (
           <div>
             <div className="delete-message">
-              <p>Are you sure you want to delete this test?</p>
-              <p>
-                If yes type <LightGreenSpan>DELETE</LightGreenSpan> in the space
-                given below and proceed.
-              </p>
+              {showRollback ? (
+                <p>
+                  Type <LightGreenSpan>DELETE</LightGreenSpan> in the space
+                  given below and proceed.
+                </p>
+              ) : (
+                <>
+                  <p>Are you sure you want to delete this test?</p>
+                  <p>
+                    If yes type <LightGreenSpan>DELETE</LightGreenSpan> in the
+                    space given below and proceed.
+                  </p>
+                </>
+              )}
             </div>
             <div className="delete-confirm-contaner">
               <StyledInput
@@ -136,9 +162,15 @@ const DeleteItemModal = ({
   )
 }
 
-const ConnectedDeleteItemModal = connect(null, {
-  deleteTestRequest: deleteTestRequestAction,
-})(DeleteItemModal)
+const ConnectedDeleteItemModal = connect(
+  (state) => ({
+    deletingTest: getDeleteTestStateSelector(state),
+  }),
+  {
+    deleteTestRequest: deleteTestRequestAction,
+    setDeleteTestState: setDeleteTestStateAction,
+  }
+)(DeleteItemModal)
 
 export { ConnectedDeleteItemModal as DeleteItemModal }
 

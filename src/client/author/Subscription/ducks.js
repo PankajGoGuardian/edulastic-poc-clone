@@ -455,6 +455,7 @@ function* handleMultiplePurchasePayment({ payload }) {
         licenseIds,
       })
       if (apiPaymentResponse.licenseKeys) {
+        yield put(slice.actions.setCartQuantities({}))
         yield put(
           slice.actions.stripeMultiplePaymentSuccessAction(
             apiPaymentResponse.licenseKeys
@@ -513,13 +514,13 @@ function* handleStripePayment({ payload }) {
         token,
       })
       if (apiPaymentResponse.success) {
+        yield put(slice.actions.setCartQuantities({}))
         yield put(slice.actions.stripePaymentSuccess(apiPaymentResponse))
         setPaymentServiceModal(false)
         yield call(showSuccessNotifications, apiPaymentResponse)
         yield call(fetchUserSubscription)
         yield put(fetchUserAction({ background: true }))
         yield put(fetchMultipleSubscriptionsAction({ background: true }))
-        yield put(slice.actions.setCartQuantities({}))
         setShowTrialSubsConfirmation(true)
       } else {
         notification({

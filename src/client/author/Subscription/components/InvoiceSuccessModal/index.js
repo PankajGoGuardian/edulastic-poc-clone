@@ -6,7 +6,7 @@ import { secondaryTextColor, themeColor } from '@edulastic/colors'
 
 const InvoiceSuccessModal = ({
   visible = false,
-  onCancel = () => console.log(this),
+  onCancel = () => {},
 }) => (
   <CustomModalStyled
     visible={visible}

@@ -156,9 +156,7 @@ function CartModal({
           setTotalPurchaseAmount={setTotalAmount}
           setQuantities={setQuantities}
           quantities={quantities}
-          setSelectedProductIds={(...args) => {
-            console.log('setSelectedProductIds', args)
-          }}
+          setSelectedProductIds={() => {}}
           selectedProductIds={selectedProductIds}
           currentItemId={teacherPremiumId}
           subsLicenses={subsLicenses}

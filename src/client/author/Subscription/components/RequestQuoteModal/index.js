@@ -182,7 +182,6 @@ const RequestQuoteModal = ({
             ? 'Enterprise'
             : 'Teacher Premium',
       }
-      //   console.log('---->', reqPayload)
       handleRequestQuote({
         reqPayload,
         closeCallback: onCancel,

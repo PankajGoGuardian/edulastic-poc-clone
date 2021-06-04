@@ -100,7 +100,7 @@ const EmbeddedVideoPreviewModal = (props) => {
   if (url.includes('drive.google.com')) {
     return googleDriveService()
   }
-  if (url.includes('cloudfront.net')) {
+  if (url.includes('cloudfront.net') || url.includes('cdn.edulastic')) {
     return awsService()
   }
   return (

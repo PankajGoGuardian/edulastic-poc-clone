@@ -191,7 +191,7 @@ const SubscriptionMain = ({
   const featuredBundles = FEATURED || []
   const getBundleByProductId = (productId) =>
     (featuredBundles &&
-      featuredBundles.find(
+      featuredBundles?.find(
         (bundle) => bundle?.config?.subscriptionData?.productId === productId
       )) ||
     {}
@@ -325,6 +325,18 @@ const SubscriptionMain = ({
     subType?.toLowerCase?.()
   )
 
+  const totalRemainingTeacherPremiumCount = useMemo(() => {
+    if (subsLicenses && teacherPremium) {
+      const {
+        totalCount: totalTeacherPremium,
+        usedCount: totalTeacherPremiumUsedCount,
+      } = subsLicenses.find((x) => x.productId === teacherPremium?.id) || {}
+
+      return totalTeacherPremium - totalTeacherPremiumUsedCount
+    }
+    return 0
+  }, [subsLicenses, teacherPremium])
+
   const toggleCart = (productId, source) => {
     const quantities = cartQuantities
     if (productId) {
@@ -344,7 +356,18 @@ const SubscriptionMain = ({
                   )
                 })
                 if (hasBankAccess && !hasBankAccess.isTrial) {
-                  delete draft[_productId]
+                  const hasProductLicense = subsLicenses?.find(
+                    (x) => x.productId === _productId
+                  )
+                  if (hasProductLicense) {
+                    const { totalCount = 0, usedCount = 0 } = hasProductLicense
+                    const diff =
+                      totalCount - usedCount + (draft[_productId] || 0)
+
+                    if (totalRemainingTeacherPremiumCount - diff < 0) {
+                      delete draft[_productId]
+                    }
+                  }
                 } else if (hasBankAccess && hasBankAccess.isTrial) {
                   draft[_productId] = 1
                 }
@@ -365,10 +388,10 @@ const SubscriptionMain = ({
 
         const hasAddonAccess =
           productId === teacherPremium.id ||
-          itemBankSubscriptions.find((x) => {
+          itemBankSubscriptions?.find((x) => {
             return (
               x.itemBankId ===
-                products.find((y) => y.id === productId)?.linkedProductId &&
+                products?.find((y) => y.id === productId)?.linkedProductId &&
               !x.isTrial
             )
           })
@@ -385,17 +408,16 @@ const SubscriptionMain = ({
             })
           } else if (isUserPremium && subsLicenses.length && hasAddonAccess) {
             // if user is premium and adding a bank which he has access to
-            const {
-              totalCount: totalTeacherPremium,
-              usedCount: totalTeacherPremiumUsedCount,
-            } = subsLicenses.find((x) => x.productId === teacherPremium.id)
 
-            const totalRemainingTeacherPremiumCount =
-              totalTeacherPremium - totalTeacherPremiumUsedCount
+            const newAddons = { ...quantities, ...changes }
 
             const totalRemainingItemBanksLicenseCount = subsLicenses.reduce(
               (a, c) => {
-                if (c.productId === teacherPremium.id) return a
+                if (
+                  c.productId === teacherPremium.id ||
+                  !Object.keys(newAddons).includes(c.productId)
+                )
+                  return a
                 const { totalCount, usedCount } = c
                 const delta = totalCount - usedCount
                 return delta > a ? delta : a
@@ -406,6 +428,7 @@ const SubscriptionMain = ({
             const diff =
               totalRemainingTeacherPremiumCount -
               totalRemainingItemBanksLicenseCount
+
             if (diff <= 0) {
               Object.assign(changes, { [teacherPremium.id]: 1 })
               notification({
@@ -527,25 +550,30 @@ const SubscriptionMain = ({
                         }
                         placement="bottom"
                       >
-                        <EduButton
+                        <AuthorCompleteSignupButton
+                          renderButton={(handleClick) => (
+                            <EduButton
+                              onClick={handleClick}
+                              height="32px"
+                              width="180px"
+                              isGhost
+                              isBlue
+                              data-cy="subscriptionStartTrialbtn"
+                              className={
+                                isPremiumTrialUsed &&
+                                !subscription.length &&
+                                'disabled'
+                              }
+                            >
+                              Try Now
+                            </EduButton>
+                          )}
                           onClick={() => {
                             !(isPremiumTrialUsed && !subscription.length)
                               ? handleStartTrialButtonClick()
                               : {}
                           }}
-                          height="32px"
-                          width="180px"
-                          isGhost
-                          isBlue
-                          data-cy="subscriptionStartTrialbtn"
-                          className={
-                            isPremiumTrialUsed &&
-                            !subscription.length &&
-                            'disabled'
-                          }
-                        >
-                          Try Now
-                        </EduButton>
+                        />
                       </Tooltip>
                     )}
                   </CardRightWrapper>
@@ -571,7 +599,7 @@ const SubscriptionMain = ({
               return false
             })
             .map((_product) => {
-              const itemBankSubscription = itemBankSubscriptions.find(
+              const itemBankSubscription = itemBankSubscriptions?.find(
                 (ib) => ib.itemBankId === _product?.linkedProductId
               )
               return (
@@ -669,7 +697,24 @@ const SubscriptionMain = ({
                         }
                         placement="bottom"
                       >
-                        <EduButton
+                        <AuthorCompleteSignupButton
+                          renderButton={(handleClick) => (
+                            <EduButton
+                              onClick={handleClick}
+                              className={
+                                usedTrialItemBankIds.includes(
+                                  _product.linkedProductId
+                                ) && 'disabled'
+                              }
+                              height="32px"
+                              width="180px"
+                              isGhost
+                              isBlue
+                              data-cy="subscriptionStartTrialbtn"
+                            >
+                              Try Now
+                            </EduButton>
+                          )}
                           onClick={() => {
                             !usedTrialItemBankIds.includes(
                               _product.linkedProductId
@@ -677,19 +722,7 @@ const SubscriptionMain = ({
                               ? handleStartTrialButtonClick(_product.id)
                               : {}
                           }}
-                          className={
-                            usedTrialItemBankIds.includes(
-                              _product.linkedProductId
-                            ) && 'disabled'
-                          }
-                          height="32px"
-                          width="180px"
-                          isGhost
-                          isBlue
-                          data-cy="subscriptionStartTrialbtn"
-                        >
-                          Try Now
-                        </EduButton>
+                        />
                       </Tooltip>
                     )}
                   </CardRightWrapper>

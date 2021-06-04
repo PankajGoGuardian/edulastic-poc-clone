@@ -102,7 +102,7 @@ const PurchaseFlowModals = (props) => {
     setCartVisible,
     cartQuantities,
     fromSideMenu,
-    setRequestQuoteModal,
+    openRequestInvoiceModal,
   } = props
 
   const [payWithPoModal, setPayWithPoModal] = useState(false)
@@ -356,11 +356,6 @@ const PurchaseFlowModals = (props) => {
     handleSubscriptionAddonModalClose()
     setCartVisible(false)
     setShowUpgradeModal(true)
-    console.log('current cart', { productsCart, selectedProductIds })
-  }
-
-  const handleOpenRequestInvoiceModal = () => {
-    setRequestQuoteModal(true)
   }
 
   return (
@@ -418,7 +413,7 @@ const PurchaseFlowModals = (props) => {
           handleClick={handleClick}
           closeModal={() => setCartVisible(false)}
           userId={user?._id}
-          handleOpenRequestInvoiceModal={handleOpenRequestInvoiceModal}
+          handleOpenRequestInvoiceModal={openRequestInvoiceModal}
           subsLicenses={subsLicenses}
         />
       )}
@@ -493,7 +488,7 @@ PurchaseFlowModals.defaultProps = {
   setShowBuyMoreModal: () => {},
   setSelectedLicenseId: () => {},
   setClickedBundleId: () => {},
-  setRequestQuoteModal: () => {},
+  openRequestInvoiceModal: () => {},
 }
 
 export default compose(

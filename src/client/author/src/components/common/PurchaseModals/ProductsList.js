@@ -84,39 +84,40 @@ const ProductsList = ({
     }
   }
 
-  const getTeacherPremiumCountToAdd = (_licenses, quant) => {
-    if (isCart) {
-      const {
-        totalCount: totalTeacherPremium,
-        usedCount: totalTeacherPremiumUsedCount,
-      } = _licenses.find((x) => x.productId === premiumProductId)
+  const getTeacherPremiumCountToAdd = (_licenses, _quant) => {
+    const quant = { ..._quant }
+    const {
+      totalCount: totalTeacherPremium,
+      usedCount: totalTeacherPremiumUsedCount,
+    } = _licenses?.find((x) => x.productId === premiumProductId) || {}
 
-      const totalRemainingTeacherPremiumCount =
-        totalTeacherPremium - totalTeacherPremiumUsedCount
+    const totalRemainingTeacherPremiumCount =
+      totalTeacherPremium - totalTeacherPremiumUsedCount
 
-      const totalRemainingItemBanksLicenseCount = _licenses.reduce((a, c) => {
-        if (
-          c.productId === premiumProductId ||
-          !Object.keys(quant).includes(c.productId)
-        ) {
-          return a
-        }
-        const { totalCount, usedCount } = c
-        const delta = totalCount - usedCount
-        return delta > a ? delta : a
-      }, 0)
+    const totalRemainingItemBanksLicenseCount = _licenses.reduce((a, c) => {
+      if (
+        c.productId === premiumProductId ||
+        !Object.keys(quant).includes(c.productId)
+      ) {
+        return a
+      }
+      const { totalCount = 0, usedCount = 0 } = c || {}
+      const delta = totalCount - usedCount + quant[c.productId]
+      return delta > a ? delta : a
+    }, 0)
 
-      const availableTeacherPremiumCount =
-        totalRemainingTeacherPremiumCount - totalRemainingItemBanksLicenseCount
+    const availableTeacherPremiumCount =
+      totalRemainingTeacherPremiumCount - totalRemainingItemBanksLicenseCount
 
-      return max(Object.values(quant)) - availableTeacherPremiumCount
-    }
-    return -1
+    return availableTeacherPremiumCount
   }
 
   const teacherPremiumCountTOAdd = useMemo(() => {
+    if (!isCart) {
+      return 1
+    }
     return getTeacherPremiumCountToAdd(subsLicenses, quantities)
-  }, [subsLicenses, quantities])
+  }, [subsLicenses, quantities, isCart])
 
   const handleQuantityChange = (itemId) => (value) => {
     if (isBuyMore && !isCart) {
@@ -147,9 +148,18 @@ const ProductsList = ({
       }
 
       if (itemId !== premiumProductId) {
-        const diff = getTeacherPremiumCountToAdd(subsLicenses, _quantities)
-        if (diff > 0 && diff > (+_quantities[premiumProductId] || 0)) {
-          Object.assign(_quantities, { [premiumProductId]: diff })
+        const teacherPremiumCountTOAdd = getTeacherPremiumCountToAdd(
+          subsLicenses,
+          _quantities
+        )
+
+        if (teacherPremiumCountTOAdd < 0) {
+          Object.assign(_quantities, {
+            [premiumProductId]: Math.max(
+              Math.abs(teacherPremiumCountTOAdd),
+              _quantities[premiumProductId] || 0
+            ),
+          })
         }
       }
 
@@ -217,12 +227,14 @@ const ProductsList = ({
                   width="80px"
                   data-cy={product.type}
                   min={
-                    isCart && premiumProductId === product.id
-                      ? teacherPremiumCountTOAdd
+                    isCart &&
+                    premiumProductId === product.id &&
+                    teacherPremiumCountTOAdd < 0
+                      ? Math.abs(teacherPremiumCountTOAdd)
                       : 1
                   }
                   max={
-                    isCart && teacherPremiumCountTOAdd >= 0
+                    isCart && teacherPremiumCountTOAdd <= 0
                       ? Infinity
                       : premiumProductId === product.id
                       ? Infinity

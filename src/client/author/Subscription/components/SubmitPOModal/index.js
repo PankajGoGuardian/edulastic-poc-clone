@@ -29,18 +29,24 @@ import {
 import { Container } from '../RequestQuoteModal/styled'
 import { getUserDetails } from '../../../../student/Login/ducks'
 import { StyledDragger, StyledInputNumber } from './styled'
+import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 
 const getFooterComponent = ({ handleSubmit, isSubmitPOActionPending }) => (
-  <EduButton
-    loading={isSubmitPOActionPending}
-    fontSize="14px"
-    width="200px"
-    height="48px"
+  <AuthorCompleteSignupButton
+    renderButton={(handleClick) => (
+      <EduButton
+        loading={isSubmitPOActionPending}
+        fontSize="14px"
+        width="200px"
+        height="48px"
+        onClick={handleClick}
+        inverse
+      >
+        SUBMIT
+      </EduButton>
+    )}
     onClick={handleSubmit}
-    inverse
-  >
-    SUBMIT
-  </EduButton>
+  />
 )
 
 const SubmitPOModal = ({

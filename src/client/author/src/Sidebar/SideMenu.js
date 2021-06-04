@@ -511,21 +511,12 @@ class SideMenu extends Component {
           </Menu.Item>
           {!isPublisher && (
             <Menu.Item key="2" className="removeSelectedBorder">
-              <AuthorCompleteSignupButton
-                renderButton={(handleclick) => {
-                  return (
-                    <a onClick={handleclick}>
-                      <IconSubscriptionHighlight />{' '}
-                      <span data-cy="subscription">
-                        {isCollapsed ? '' : 'Subscription'}
-                      </span>
-                    </a>
-                  )
-                }}
-                onClick={() => {
-                  history.push('/author/subscription')
-                }}
-              />
+              <Link to="/author/subscription">
+                <IconSubscriptionHighlight />{' '}
+                <span data-cy="subscription">
+                  {isCollapsed ? '' : 'Subscription'}
+                </span>
+              </Link>
             </Menu.Item>
           )}
           {users.length ? (

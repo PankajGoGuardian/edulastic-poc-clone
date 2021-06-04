@@ -13,8 +13,7 @@ import ProductsList from '../../src/components/common/PurchaseModals/ProductsLis
 import { EmailWrapper } from '../../src/components/common/PurchaseModals/styled'
 import { ModalBody } from '../../src/components/common/PurchaseModals/SubscriptionAddonModal/styled'
 import { getSubscriptionSelector, slice as subscriptionSlice } from '../ducks'
-const h3style = { fontWeight: 700 }
-const pStyle = { fontWeight: 400 }
+import AuthorCompleteSignupButton from '../../../common/components/AuthorCompleteSignupButton'
 
 function CartModal({
   products,
@@ -93,23 +92,33 @@ function CartModal({
   }, [products, quantities])
 
   const footer = [
-    <EduButton
-      isGhost
+    <AuthorCompleteSignupButton
+      renderButton={(handleClick) => (
+        <EduButton
+          isGhost
+          onClick={handleClick}
+          data-cy="requestInvoice"
+          width="220px"
+          height="45px"
+        >
+          REQUEST INVOICE
+        </EduButton>
+      )}
       onClick={handleOpenRequestInvoiceModal}
-      data-cy="requestInvoice"
-      width="220px"
-      height="45px"
-    >
-      REQUEST INVOICE
-    </EduButton>,
-    <EduButton
+    />,
+    <AuthorCompleteSignupButton
+      renderButton={(handleClick) => (
+        <EduButton
+          onClick={handleClick}
+          data-cy="proceedPayment"
+          width="220px"
+          height="45px"
+        >
+          PROCEED WITH PAYMENT
+        </EduButton>
+      )}
       onClick={handleProceed}
-      data-cy="proceedPayment"
-      width="220px"
-      height="45px"
-    >
-      PROCEED WITH PAYMENT
-    </EduButton>,
+    />,
   ]
 
   const selectedProductIds = Object.keys(quantities).filter(

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { Radio } from 'antd'
 import {
@@ -24,7 +24,6 @@ import {
   SubText,
   Label,
   StyledInput,
-  StyledSelect,
   StyledInputTextArea,
 } from './styled'
 import { getUserDetails } from '../../../../student/Login/ducks'
@@ -50,7 +49,6 @@ const RequestInvoiceModal = ({
   onCancel = () => {},
   cartProducts = {},
   productNamesAndPriceById = {},
-  userOrgData = {},
   isRequestInvoiceActionPending = false,
   handleRequestInvoice = () => {},
   userSubscription,
@@ -60,47 +58,18 @@ const RequestInvoiceModal = ({
   const [documentType, setDocumentType] = useState('QUOTE')
   const [customDocumentType, setCustomDocumentType] = useState()
   const [bookkeeperEmails, setBookkeeperEmails] = useState()
-  const [selectedSchoolOrDistrict, setSchoolOrDistrict] = useState()
   const [otherInfo, setOtherInfo] = useState()
-
-  const schoolsAndDistricts = useMemo(() => {
-    const districts = (userOrgData.districts || []).map((x) => ({
-      id: x.districtId,
-      name: x.districtName,
-      type: 'DISTRICT',
-    }))
-
-    const schools = (userOrgData.schools || []).map((x) => ({
-      id: x._id,
-      name: x.name,
-      type: 'SCHOOL',
-      districtId: x.districtId,
-    }))
-    return [...districts, ...schools]
-  }, userOrgData)
 
   const onDocumentTypeChange = (e) => setDocumentType(e.target.value)
   const onCustomTypeChange = (e) => setCustomDocumentType(e.target.value)
   const handleBookkeepersChange = (e) => setBookkeeperEmails(e.target.value)
-  const handleSchoolOrDistrictChange = (value) => setSchoolOrDistrict(value)
   const handleSetOtherInfo = (e) => setOtherInfo(e.target.value)
-
-  const filterOption = (input, option) =>
-    option?.props?.children?.toLowerCase()?.indexOf(input.toLowerCase()) >= 0
 
   const validateFields = () => {
     if (documentType === 'OTHER' && !customDocumentType) {
       notification({
         type: 'warning',
         msg: 'Please specify the type of documentation.',
-      })
-      return false
-    }
-
-    if (!selectedSchoolOrDistrict) {
-      notification({
-        type: 'warning',
-        msg: 'Please select your school or district.',
       })
       return false
     }
@@ -122,9 +91,6 @@ const RequestInvoiceModal = ({
 
   const handleSubmit = () => {
     if (validateFields()) {
-      const schoolOrDistrict = schoolsAndDistricts.find(
-        (x) => x.id === selectedSchoolOrDistrict
-      )
       const emails = bookkeeperEmails
         ? bookkeeperEmails
             .split(',')
@@ -136,7 +102,6 @@ const RequestInvoiceModal = ({
         userEmail: userDetails.email,
         documentType,
         typeDescription: customDocumentType,
-        schoolOrDistrict,
         bookkeeperEmails: emails.length ? emails : undefined,
         cartProducts,
         otherInfo,
@@ -198,20 +163,6 @@ const RequestInvoiceModal = ({
           />
         )}
       </Container>
-
-      <Label required>School or Disctict</Label>
-      <StyledSelect
-        placeholder="Select your school or district"
-        getPopupContainer={(node) => node.parentNode}
-        value={selectedSchoolOrDistrict}
-        onChange={handleSchoolOrDistrictChange}
-        optionFilterProp="children"
-        filterOption={filterOption}
-      >
-        {schoolsAndDistricts.map(({ id, name }) => (
-          <StyledSelect.Option value={id}>{name}</StyledSelect.Option>
-        ))}
-      </StyledSelect>
 
       <Label>Person to email documentation to, such as a bookkeeper</Label>
       <StyledInput

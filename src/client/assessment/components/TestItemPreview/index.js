@@ -457,7 +457,9 @@ class TestItemPreview extends Component {
                       preview={preview}
                       scratchPadMode={scratchPadMode}
                       colWidth={
-                        collapseDirection || cols.length == 1 ? '100%' : '50%'
+                        collapseDirection || cols.length == 1
+                          ? '100%'
+                          : col?.dimension || '50%'
                       }
                       multiple={cols.length > 1}
                       style={this.getStyle(i !== cols.length - 1)}

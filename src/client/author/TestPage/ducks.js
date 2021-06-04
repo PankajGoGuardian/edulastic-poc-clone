@@ -1751,9 +1751,15 @@ export function* receiveTestByIdSaga({ payload }) {
       payload.editAssigned &&
       isRegradedByCoAuthor(userId, entity, payload.id)
     ) {
-      yield put(setShowUpgradePopupAction(true))
-      yield put(receiveTestByIdSuccess(entity))
-      return
+      const regradeAssignments = yield call(
+        assignmentApi.fetchRegradeAssignments,
+        payload.id
+      )
+      if (regradeAssignments?.length) {
+        yield put(setShowUpgradePopupAction(true))
+        yield put(receiveTestByIdSuccess(entity))
+        return
+      }
     }
     entity.passages = [
       ...entity.passages,

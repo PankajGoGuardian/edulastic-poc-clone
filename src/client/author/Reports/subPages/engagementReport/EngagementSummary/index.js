@@ -33,7 +33,7 @@ const Engagement = ({
       getEngagementSummaryRequest(q)
       return () => toggleFilter(null, false)
     }
-  }, [settings])
+  }, [settings.requestFilters])
 
   const [statsData, timelineData] = useMemo(
     () => [

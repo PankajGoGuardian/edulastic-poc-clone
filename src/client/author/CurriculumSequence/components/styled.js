@@ -271,6 +271,7 @@ export const ModuleID = styled.div`
   color: ${white};
   background: ${greenDark6};
   font-size: 12px;
+  padding: 16px;
   border-radius: 2px;
   font-weight: 600;
   user-select: none;
@@ -282,11 +283,6 @@ export const ModuleID = styled.div`
   height: 30px;
   flex-shrink: 0;
   margin-top: 0.8em;
-
-  @media (max-width: ${extraDesktopWidthMax}) {
-    width: 25px;
-    height: 25px;
-  }
 `
 
 export const ellipsisCss = css`

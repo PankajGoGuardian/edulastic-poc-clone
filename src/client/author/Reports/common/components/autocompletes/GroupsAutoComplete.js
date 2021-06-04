@@ -17,7 +17,7 @@ const DEFAULT_SEARCH_TERMS = { text: '', selectedText: '', selectedKey: 'All' }
 
 const GroupsAutoComplete = ({
   userDetails,
-  groupList,
+  groupList: groupListRaw,
   loading,
   loadGroupList,
   termId,
@@ -33,6 +33,8 @@ const GroupsAutoComplete = ({
   const groupFilterRef = useRef()
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
   const [searchResult, setSearchResult] = useState([])
+
+  const groupList = useMemo(() => Object.values(groupListRaw), [groupListRaw])
 
   // build search query
   const query = useMemo(() => {
@@ -100,7 +102,6 @@ const GroupsAutoComplete = ({
   const onBlur = () => {
     if (searchTerms.text === '' && searchTerms.selectedText !== '') {
       setSearchTerms(DEFAULT_SEARCH_TERMS)
-      selectCB({ key: '', title: '' })
     } else {
       setSearchTerms({ ...searchTerms, text: searchTerms.selectedText })
     }
@@ -117,7 +118,13 @@ const GroupsAutoComplete = ({
 
   // effects
   useEffect(() => {
-    if (isEmpty(searchResult)) {
+    if (selectedGroupIds.length) {
+      const _search = { ...query.search, groupIds: selectedGroupIds }
+      loadGroupListDebounced({ ...query, search: _search })
+    }
+  }, [])
+  useEffect(() => {
+    if (isEmpty(searchResult) || !searchTerms.text) {
       setSearchResult(groupList)
     }
   }, [groupList])
@@ -128,25 +135,17 @@ const GroupsAutoComplete = ({
   }, [searchTerms])
   useEffect(() => {
     setSearchResult([])
-    // if (selectedGroupIds.length) {
-    //   selectCB({ key: '', title: '' })
-    // }
   }, [termId, schoolIds, teacherIds, grades, subjects, courseId])
-  useEffect(() => {
-    if (!selectedGroupIds.length) {
-      setSearchTerms(DEFAULT_SEARCH_TERMS)
-    }
-  }, [selectedGroupIds.join(',')])
 
   // build dropdown data
-  const dropdownData = Object.values(
-    searchTerms.text ? groupList : searchResult
-  ).map((item) => {
-    return {
-      key: item._id,
-      title: item._source.name,
+  const dropdownData = (searchTerms.text ? groupList : searchResult).map(
+    (item) => {
+      return {
+        key: item._id,
+        title: item._source.name,
+      }
     }
-  })
+  )
 
   return (
     <MultiSelectSearch

@@ -260,9 +260,11 @@ const MyClasses = ({
     } else if (content === 'playlists_library') {
       content = 'playlists'
     }
-    setClickedBundleId(
-      filters?.[0]?.collections?.[0] || subscriptionData.itemBankId
-    )
+    if(filters?.[0]?.collections?.[0] || subscriptionData?.itemBankId){
+      setClickedBundleId(
+        filters?.[0]?.collections?.[0] || subscriptionData?.itemBankId
+      )
+    }
     if (content === 'playlists') {
       setShowTrialSubsConfirmation(true)
       return
@@ -485,7 +487,7 @@ const MyClasses = ({
   const defaultSelectedProductIds = productData.productId
     ? [productData.productId]
     : []
-
+    
   return (
     <MainContentWrapper padding="30px 25px">
       {!loading && allActiveClasses?.length === 0 && (
@@ -513,11 +515,13 @@ const MyClasses = ({
           isDemoPlaygroundUser={isDemoPlayground}
         />
       )}
-      <FeaturedContentBundle
-        featuredBundles={filteredBundles}
-        handleFeatureClick={handleFeatureClick}
-        emptyBoxCount={featureEmptyBoxCount}
-      />
+      {!isCliUser && (
+        <FeaturedContentBundle
+          featuredBundles={filteredBundles}
+          handleFeatureClick={handleFeatureClick}
+          emptyBoxCount={featureEmptyBoxCount}
+        />
+      )}
       <Launch />
       <PurchaseFlowModals
         showSubscriptionAddonModal={showSubscriptionAddonModal}

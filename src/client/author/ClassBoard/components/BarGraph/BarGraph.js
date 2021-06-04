@@ -39,6 +39,8 @@ import {
   getAggregateByQuestion,
   getItemSummary,
   getHasRandomQuestionselector,
+  getPageNumberSelector,
+  LCB_LIMIT_QUESTION_PER_VIEW,
 } from '../../ducks'
 import {
   MAX_XGA_WIDTH,
@@ -46,6 +48,11 @@ import {
   LARGE_DESKTOP_WIDTH,
   MAX_TAB_WIDTH,
 } from '../../../src/constants/others'
+import {
+  setPageNumberAction,
+  setLcbQuestionLoaderStateAcion,
+  setQuestionIdToScrollAction,
+} from '../../../src/reducers/testActivity'
 
 const bars = {
   correctAttemps: {
@@ -95,7 +102,7 @@ const bars = {
 /**
  * @param {string} qid
  */
-const _scrollTo = (qid, el) => {
+export const _scrollTo = (qid, el) => {
   /**
    * when lcb-student-sticky-bar is made sticky padding 10px is added, before there is no padding
    * 2 because the position of sticky bar changes when it is made sticky,
@@ -351,12 +358,27 @@ class BarGraph extends Component {
       studentview,
       onClickHandler,
       hasRandomQuestions,
+      pageNumber,
+      setPageNumber,
+      setLcbQuestionLoaderState,
+      setQuestionIdToScroll,
     } = this.props
     if (isLoading) {
       return
     }
+    const { qid } = data
     if (studentview) {
-      const { qid } = data
+      const questionNumber = data.name.split('.')[0].substr(1)
+      const questionPageNumber = Math.ceil(
+        questionNumber / LCB_LIMIT_QUESTION_PER_VIEW
+      )
+      if (questionPageNumber !== pageNumber) {
+        setQuestionIdToScroll(qid)
+        setLcbQuestionLoaderState(true)
+        setTimeout(() => setPageNumber(questionPageNumber), 1)
+        return
+      }
+
       return _scrollTo(qid, this.context.current)
     }
     if (hasRandomQuestions) {
@@ -515,6 +537,11 @@ class BarGraph extends Component {
 export default connect(
   (state) => ({
     hasRandomQuestions: getHasRandomQuestionselector(state),
+    pageNumber: getPageNumberSelector(state),
   }),
-  null
+  {
+    setPageNumber: setPageNumberAction,
+    setLcbQuestionLoaderState: setLcbQuestionLoaderStateAcion,
+    setQuestionIdToScroll: setQuestionIdToScrollAction,
+  }
 )(BarGraph)

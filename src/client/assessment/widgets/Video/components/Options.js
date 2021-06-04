@@ -65,9 +65,10 @@ const Options = ({ setQuestionData, item, t }) => {
             value={item.videoType}
             getPopupContainer={(triggerNode) => triggerNode.parentNode}
             onChange={(value) => handleChange('videoType', value)}
+            data-cy="videoType"
           >
             {rendererOptions.map(({ value: val, label }) => (
-              <Select.Option key={val} value={val}>
+              <Select.Option key={val} value={val} data-cy={val}>
                 {label}
               </Select.Option>
             ))}
@@ -84,6 +85,7 @@ const Options = ({ setQuestionData, item, t }) => {
               </Col>
               <Col span={6} marginBottom="0px">
                 <CustomStyleBtn
+                  data-cy="addHostedVideo"
                   margin="0px"
                   width="100%"
                   onClick={() =>
@@ -107,6 +109,7 @@ const Options = ({ setQuestionData, item, t }) => {
               size="large"
               value={item.sourceURL || ''}
               onChange={(e) => handleChange('sourceURL', e.target.value)}
+              data-cy="sourceURL"
             />
           )}
         </Col>
@@ -118,6 +121,7 @@ const Options = ({ setQuestionData, item, t }) => {
             size="large"
             value={item.heading || ''}
             onChange={(e) => handleChange('heading', e.target.value)}
+            data-cy="heading"
           />
         </Col>
       </Row>
@@ -128,6 +132,7 @@ const Options = ({ setQuestionData, item, t }) => {
             size="large"
             value={item.summary || ''}
             onChange={(e) => handleChange('summary', e.target.value)}
+            data-cy="summary"
           />
         </Col>
       </Row>

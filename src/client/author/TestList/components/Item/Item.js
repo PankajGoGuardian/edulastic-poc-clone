@@ -404,27 +404,30 @@ class Item extends Component {
 
     return (
       <>
-        <ViewModal
-          isShow={isOpenModal}
-          close={this.closeModal}
-          onDuplicate={this.duplicate}
-          onEdit={this.moveToItem}
-          onDelete={this.onDelete}
-          onReject={this.onReject}
-          onApprove={this.onApprove}
-          item={item}
-          status={status}
-          owner={isOwner}
-          assign={this.assignTest}
-          isPlaylist={isPlaylist}
-          windowWidth={windowWidth}
-          allowDuplicate={allowDuplicate}
-          previewLink={(e) => this.showPreviewModal(testId, e)}
-          isDynamic={isDynamic}
-          handleLikeTest={this.handleLikeTest}
-          isTestLiked={isTestLiked}
-          collectionName={collectionName}
-        />
+        {isOpenModal && (
+          <ViewModal
+            isShow={isOpenModal}
+            close={this.closeModal}
+            onDuplicate={this.duplicate}
+            onEdit={this.moveToItem}
+            onDelete={this.onDelete}
+            onReject={this.onReject}
+            onApprove={this.onApprove}
+            item={item}
+            status={status}
+            owner={isOwner}
+            assign={this.assignTest}
+            isPlaylist={isPlaylist}
+            windowWidth={windowWidth}
+            allowDuplicate={allowDuplicate}
+            previewLink={(e) => this.showPreviewModal(testId, e)}
+            isDynamic={isDynamic}
+            handleLikeTest={this.handleLikeTest}
+            isTestLiked={isTestLiked}
+            collectionName={collectionName}
+          />
+        )}
+
         {/* Both conditions required so that preview model will trigger unmount */}
         {isPreviewModalVisible && currentTestId && (
           <TestPreviewModal
@@ -443,6 +446,8 @@ class Item extends Component {
             isVisible={isDeleteModalOpen}
             onCancel={this.onDeleteModelCancel}
             testId={item._id}
+            test={item}
+            view="testLibrary"
           />
         ) : null}
 

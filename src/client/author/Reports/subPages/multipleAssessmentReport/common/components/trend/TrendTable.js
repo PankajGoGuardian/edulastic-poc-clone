@@ -314,7 +314,9 @@ const getColumns = (
               const keyword = 'standard'
               return a[keyword]
                 .toLowerCase()
-                .localeCompare(b[keyword].toLowerCase())
+                .localeCompare(b[keyword].toLowerCase(), undefined, {
+                  numeric: true,
+                })
             },
           },
         ]

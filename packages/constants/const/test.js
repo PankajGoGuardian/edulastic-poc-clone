@@ -341,4 +341,8 @@ module.exports = {
     ENGLISH: 'en',
     SPANISH: 'es',
   },
+  DELETE_TYPES: {
+    ROLLBACK: 'rollback',
+    DELETE_TEST: 'delete',
+  },
 }

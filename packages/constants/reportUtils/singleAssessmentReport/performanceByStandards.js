@@ -11,6 +11,7 @@ const {
   filter,
   sumBy,
   pick,
+  get,
 } = require('lodash')
 const { produce: next } = require('immer')
 
@@ -262,14 +263,13 @@ const augmentMetricInfoWithMasteryScore = (metricInfo = [], scaleInfo = []) =>
     }
   })
 
-const getReportWithFilteredSkills = (report, scaleInfo, curriculumId) =>
+const getReportWithFilteredSkills = (report, curriculumId) =>
   next(report, (draftReport) => {
     draftReport.skillInfo = filter(
       draftReport.skillInfo,
       (skill) => String(skill.curriculumId) === String(curriculumId)
     )
-    draftReport.scaleInfo =
-      (draftReport.scaleInfo && draftReport.scaleInfo.scale) || scaleInfo
+    draftReport.scaleInfo = get(draftReport, 'scaleInfo.scale', [])
   })
 
 // -----|-----|-----|-----| COMMON TRANSFORMERS |-----|-----|-----|----- //
@@ -741,7 +741,6 @@ const makeStandardColumnsBE = (
 
 const populateBackendCSV = ({
   result: _report,
-  scaleInfo: _scaleInfo,
   compareBy,
   viewBy,
   analyzeBy,
@@ -749,7 +748,7 @@ const populateBackendCSV = ({
   selectedStandards,
   selectedDomains,
 }) => {
-  const report = getReportWithFilteredSkills(_report, _scaleInfo, curriculumId)
+  const report = getReportWithFilteredSkills(_report, curriculumId)
 
   const { scaleInfo, skillInfo } = report
 

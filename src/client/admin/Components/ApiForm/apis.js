@@ -28,3 +28,25 @@ export const submit = (params, endpoint, method, isSlowApi) =>
     .catch(({ data: errorData }) =>
       notification({ msg: errorData?.message, messageKey: 'apiFormErr' })
     )
+
+export const uploadFile = (file, endPoint) => {
+  const formData = new FormData()
+  formData.append('file', file)
+  return api
+    .callApi({
+      url: endPoint,
+      method: 'post',
+      data: formData,
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+    .then((result) => result.data.result)
+}
+
+export const saveStandard = (subject) =>
+  api.callApi({
+    url: `admin-tool/save-standard`,
+    method: 'post',
+    data: { subject },
+  })

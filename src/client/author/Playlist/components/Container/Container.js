@@ -11,14 +11,16 @@ import React, { Component } from 'react'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { libraryFilters, sortOptions } from '@edulastic/constants'
+import { libraryFilters, sortOptions, roleuser } from '@edulastic/constants'
 import { withNamespaces } from 'react-i18next'
+import { userApi } from '@edulastic/api'
 import NoDataNotification from '../../../../common/components/NoDataNotification'
 import {
   updateDefaultGradesAction,
   updateDefaultSubjectAction,
   isProxyUser as isProxyUserSelector,
   isDemoPlaygroundUser,
+  setUserAction,
 } from '../../../../student/Login/ducks'
 import ListHeader from '../../../src/components/common/ListHeader'
 import {
@@ -28,6 +30,8 @@ import {
   getInterestedCurriculumsSelector,
   getInterestedGradesSelector,
   getInterestedSubjectsSelector,
+  getUserFeatures,
+  getUserRole,
 } from '../../../src/selectors/user'
 import CardWrapper from '../../../TestList/components/CardWrapper/CardWrapper'
 import {
@@ -72,7 +76,6 @@ import {
   checkPlayListAction,
   getSortFilterStateSelector,
   initialSortState,
-  getRecentPlaylistSelector,
 } from '../../ducks'
 import Actions from '../../../ItemList/components/Actions'
 import SelectCollectionModal from '../../../ItemList/components/Actions/SelectCollection'
@@ -166,7 +169,12 @@ class TestList extends Component {
       interestedSubjects,
       interestedGrades,
       sort: initSort = {},
-      recentPlaylist,
+      features,
+      userRole,
+      user,
+      userId,
+      sparkPlaylistCollectionsVisited,
+      setUser,
     } = this.props
 
     const {
@@ -227,8 +235,29 @@ class TestList extends Component {
       filteredSparkInfo: selectedCollectionInfo?.[0] || {},
     })
 
-    if (searchFilters?.collections?.includes(_id) && !recentPlaylist?.length)
+    if (
+      searchFilters?.collections?.includes(_id) &&
+      !sparkPlaylistCollectionsVisited.includes(_id) &&
+      selectedCollectionInfo?.[0]?.isPurchaseAllowed &&
+      !features?.isCurator &&
+      !features.isPublisherAuthor &&
+      userRole !== roleuser.EDULASTIC_CURATOR
+    ) {
       this.setState({ isPlaylistAvailableModalVisible: true })
+      const data = {}
+      data.sparkPlaylistCollectionsVisited = [
+        ...sparkPlaylistCollectionsVisited,
+        _id,
+      ]
+      userApi.updateCollectionVisited({
+        data,
+        userId,
+      })
+      const temp = user
+      temp.sparkPlaylistCollectionsVisited =
+        data.sparkPlaylistCollectionsVisited
+      setUser(temp)
+    }
   }
 
   updateFilterState = (searchState, sort) => {
@@ -707,6 +736,12 @@ const enhance = compose(
       count: getPlaylistsCountSelector(state),
       creating: getTestsCreatingSelector(state),
       userId: get(state, 'user.user._id', false),
+      user: get(state, 'user.user'),
+      sparkPlaylistCollectionsVisited: get(
+        state,
+        'user.user.sparkPlaylistCollectionsVisited',
+        []
+      ),
       defaultGrades: getDefaultGradesSelector(state),
       defaultSubject: getDefaultSubjectSelector(state),
       interestedCurriculums: getInterestedCurriculumsSelector(state),
@@ -716,10 +751,11 @@ const enhance = compose(
       selectedPlayLists: getSelectedPlaylistSelector(state),
       isProxyUser: isProxyUserSelector(state),
       sort: getSortFilterStateSelector(state),
-      recentPlaylist: getRecentPlaylistSelector(state),
       collectionSelector: getCollectionsSelector(state),
       dashboardTiles: state.dashboardTeacher.configurableTiles,
       isDemoAccount: isDemoPlaygroundUser(state),
+      features: getUserFeatures(state),
+      userRole: getUserRole(state),
     }),
     {
       receivePlaylists: receivePlaylistsAction,
@@ -732,6 +768,7 @@ const enhance = compose(
       updateAllPlaylistSearchFilter: updateAllPlaylistSearchFilterAction,
       clearPlaylistFilters: clearPlaylistFiltersAction,
       checkPlayList: checkPlayListAction,
+      setUser: setUserAction,
     }
   )
 )

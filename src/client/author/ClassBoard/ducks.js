@@ -120,6 +120,9 @@ const {
 
 const { testContentVisibility } = test
 
+export const LCB_LIMIT_QUESTION_PER_VIEW = 20
+export const SCROLL_SHOW_LIMIT = 10
+
 function* receiveGradeBookSaga({ payload }) {
   try {
     const entities = yield call(classBoardApi.gradebook, payload)
@@ -872,6 +875,10 @@ export const stateStudentAnswerSelector = (state) =>
 export const stateExpressGraderAnswerSelector = (state) => state.answers
 export const stateQuestionAnswersSelector = (state) =>
   state.classQuestionResponse
+export const getPageNumberSelector = createSelector(
+  stateTestActivitySelector,
+  (state) => state.pageNumber
+)
 
 export const getAnswerByQidSelector = createSelector(
   stateExpressGraderAnswerSelector,

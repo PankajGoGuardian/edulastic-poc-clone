@@ -99,6 +99,17 @@ const getLanguageDataPaths = (patterns, data) => {
   )
 }
 
+const findRemovedIndex = (newOptions = [], prevOptions = []) => {
+  let removedIndex = -1
+  const newValues = newOptions.map((op) => op.value)
+  prevOptions.forEach((op, opIndex) => {
+    if (!newValues.includes(op.value)) {
+      removedIndex = opIndex
+    }
+  })
+  return removedIndex
+}
+
 export const changeDataInPreferredLanguage = (
   language,
   prevQuestion,
@@ -162,6 +173,16 @@ export const changeDataInPreferredLanguage = (
     const changedData = produce(newQuestion, (draft) => {
       keys(draft.languageFeatures).forEach((langKey) => {
         const langDataPaths = getAvailablePaths(draft.languageFeatures[langKey])
+
+        if (newQuestion.type === questionType.MULTIPLE_CHOICE) {
+          const removedIndex = findRemovedIndex(
+            newQuestion?.options,
+            prevQuestion?.options
+          )
+          if (removedIndex !== -1) {
+            draft.languageFeatures[langKey]?.options?.splice(removedIndex, 1)
+          }
+        }
 
         const cleanLangData = {}
         langDataPaths.forEach((path) => {

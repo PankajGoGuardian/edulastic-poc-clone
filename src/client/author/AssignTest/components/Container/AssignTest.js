@@ -124,6 +124,7 @@ const testSettingsOptions = [
   'autoRedirect',
   'autoRedirectSettings',
   'keypad',
+  'applyEBSR',
 ]
 
 const docBasedSettingsOptions = [
@@ -486,6 +487,14 @@ class AssignTest extends React.Component {
 
   validateSettings = (entity) => {
     let isValid = true
+    if (
+      ![
+        evalTypeLabels.PARTIAL_CREDIT,
+        evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT,
+      ].includes(entity.scoringType)
+    ) {
+      entity.applyEBSR = false
+    }
     if (entity.scoringType === evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT) {
       entity.scoringType = evalTypeLabels.PARTIAL_CREDIT
       entity.penalty = false

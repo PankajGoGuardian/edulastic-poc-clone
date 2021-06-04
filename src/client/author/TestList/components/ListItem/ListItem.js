@@ -318,26 +318,28 @@ class ListItem extends Component {
 
     return (
       <>
-        <ViewModal
-          isShow={isOpenModal}
-          close={this.closeModal}
-          item={item}
-          status={testStatus}
-          onEdit={this.moveToItem}
-          onDuplicate={this.duplicate}
-          onReject={this.onReject}
-          onApprove={this.onApprove}
-          assign={this.assignTest}
-          isPlaylist={isPlaylist}
-          windowWidth={windowWidth}
-          allowDuplicate={allowDuplicate}
-          onDeletonDuplicatee={this.onDelete}
-          previewLink={() => this.showPreviewModal(item._id)}
-          isDynamic={isDynamic}
-          handleLikeTest={this.handleLikeTest}
-          isTestLiked={isTestLiked}
-          collectionName={collectionName}
-        />
+        {isOpenModal && (
+          <ViewModal
+            isShow={isOpenModal}
+            close={this.closeModal}
+            item={item}
+            status={testStatus}
+            onEdit={this.moveToItem}
+            onDuplicate={this.duplicate}
+            onReject={this.onReject}
+            onApprove={this.onApprove}
+            assign={this.assignTest}
+            isPlaylist={isPlaylist}
+            windowWidth={windowWidth}
+            allowDuplicate={allowDuplicate}
+            onDeletonDuplicatee={this.onDelete}
+            previewLink={() => this.showPreviewModal(item._id)}
+            isDynamic={isDynamic}
+            handleLikeTest={this.handleLikeTest}
+            isTestLiked={isTestLiked}
+            collectionName={collectionName}
+          />
+        )}
 
         {isPreviewModalVisible && currentTestId && (
           <TestPreviewModal

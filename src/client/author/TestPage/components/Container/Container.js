@@ -1128,7 +1128,7 @@ class Container extends PureComponent {
         testId &&
         (isOwner || isCurator)) ||
       editEnable
-    const showShareButton = !!testId
+    const hasTestId = !!testId
     const allowDuplicate =
       allowDuplicateCheck(test.collections, collections, 'test') || isOwner
     const showDuplicateButton =
@@ -1181,16 +1181,19 @@ class Container extends PureComponent {
           }}
         />
         {this.renderModal()}
-        <ShareModal
-          shareLabel="TEST URL"
-          isVisible={showShareModal}
-          testId={testId}
-          testVersionId={versionId}
-          hasPremiumQuestion={hasPremiumQuestion}
-          isPublished={status === statusConstants.PUBLISHED}
-          onClose={this.onShareModalChange}
-          gradeSubject={gradeSubject}
-        />
+        {showShareModal && (
+          <ShareModal
+            shareLabel="TEST URL"
+            isVisible={showShareModal}
+            testId={testId}
+            testVersionId={versionId}
+            hasPremiumQuestion={hasPremiumQuestion}
+            isPublished={status === statusConstants.PUBLISHED}
+            onClose={this.onShareModalChange}
+            gradeSubject={gradeSubject}
+          />
+        )}
+
         <WarningModal
           visible={showWarningModal}
           proceedPublish={proceedPublish}
@@ -1210,7 +1213,7 @@ class Container extends PureComponent {
           windowWidth={windowWidth}
           showPublishButton={showPublishButton}
           testStatus={testStatus}
-          showShareButton={showShareButton}
+          hasTestId={hasTestId}
           editEnable={editEnable}
           onEnableEdit={this.onEnableEdit}
           onShowSource={this.handleNavChange('source')}

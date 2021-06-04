@@ -180,6 +180,31 @@ export const getRedirect = (
           }
         }
       }
+      /* 
+        // This is for fixing scenario from - https://snapwiz.atlassian.net/browse/EV-25755      
+      */
+      if (classMaxAttempts < reports.length) {
+        const latestRedirect = _maxBy(redirectGroups, 'redirectedDate')
+        const reportsByClassIdentifier =
+          reportsGroupedByClassIdentifier[latestRedirect?.identifier]
+        if (latestRedirect) {
+          if (
+            reportsByClassIdentifier &&
+            reportsByClassIdentifier.some(
+              (item) =>
+                item.status === testActivityStatus.NOT_STARTED ||
+                item.status === testActivityStatus.IN_PROGRESS
+            )
+          ) {
+            classMaxAttempts =
+              reports.filter(
+                (item) =>
+                  item.status === testActivityStatus.SUBMITTED ||
+                  item.status === testActivityStatus.ABSENT
+              ).length + 1
+          }
+        }
+      }
       c.maxAttempts = classMaxAttempts
     }
     return c

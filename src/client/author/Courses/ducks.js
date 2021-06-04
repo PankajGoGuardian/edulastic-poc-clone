@@ -9,8 +9,8 @@ import { notification } from '@edulastic/common'
 import { groupBy, get } from 'lodash'
 
 const RECEIVE_COURSE_REQUEST = '[course] receive data request'
-const RECEIVE_COURSE_SUCCESS = '[course] receive data success'
-const RECEIVE_COURSE_ERROR = '[course] receive data error'
+export const RECEIVE_COURSE_SUCCESS = '[course] receive data success'
+export const RECEIVE_COURSE_ERROR = '[course] receive data error'
 const UPDATE_COURSE_REQUEST = '[course] update data request'
 const UPDATE_COURSE_SUCCESS = '[course] update data success'
 const UPDATE_COURSE_ERROR = '[course] update data error'
@@ -138,10 +138,7 @@ export const reducer = createReducer(initialState, {
   },
   [RECEIVE_COURSE_SUCCESS]: (state, { payload }) => {
     state.loading = false
-    payload.result.map((row) => {
-      row.key = row._id
-    })
-    state.data = payload.result
+    state.data = payload.result.map((row) => ({ ...row, key: row._id }))
     state.totalCourseCount = payload.totalCourses
   },
   [RECEIVE_COURSE_ERROR]: (state, { payload }) => {

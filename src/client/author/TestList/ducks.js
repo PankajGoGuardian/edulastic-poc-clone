@@ -8,11 +8,13 @@ import {
   select,
   takeLatest,
 } from 'redux-saga/effects'
-import { cloneDeep, keyBy } from 'lodash'
+import qs from 'qs'
+import { cloneDeep, keyBy, identity, pickBy } from 'lodash'
 import { notification } from '@edulastic/common'
-import { libraryFilters } from '@edulastic/constants'
+import { libraryFilters, test as testConstants } from '@edulastic/constants'
 import produce from 'immer'
 import { testsApi, analyticsApi } from '@edulastic/api'
+import { push } from 'connected-react-router'
 import {
   CREATE_TEST_SUCCESS,
   UPDATE_TEST_SUCCESS,
@@ -29,6 +31,11 @@ import {
   UPDATE_INITIAL_SEARCH_STATE_ON_LOGIN,
   setApproveConfirmationOpenAction,
 } from '../TestPage/components/AddItems/ducks'
+import {
+  getTestEntitySelector,
+  receiveTestByIdSaga,
+  setEditEnableAction,
+} from '../TestPage/ducks'
 
 const { SMART_FILTERS } = libraryFilters
 export const filterMenuItems = [
@@ -95,6 +102,7 @@ export const REMOVE_TEST_FROM_CART = '[tests] remove test from cart'
 export const TOGGLE_TEST_LIKE = '[tests list] toggle test like'
 export const UPDATE_LIKE_COUNT = '[tests list] update like count'
 export const RESET_TEST_FILTERS = '[tests library] reset test library filters'
+export const SET_DELETE_TEST_STATE = '[test] set delete test state'
 
 // actions
 export const receiveTestsAction = createAction(RECEIVE_TESTS_REQUEST)
@@ -126,6 +134,7 @@ export const removeTestFromCartAction = createAction(REMOVE_TEST_FROM_CART)
 export const toggleTestLikeAction = createAction(TOGGLE_TEST_LIKE)
 export const updateLikeCountAction = createAction(UPDATE_LIKE_COUNT)
 export const resetTestFiltersAction = createAction(RESET_TEST_FILTERS)
+export const setDeleteTestStateAction = createAction(SET_DELETE_TEST_STATE)
 
 // selectors
 export const stateSelector = (state) => state.testList
@@ -164,6 +173,11 @@ export const getSelectedTestsSelector = createSelector(
 export const getSortFilterStateSelector = createSelector(
   stateSelector,
   (state) => state.sort
+)
+
+export const getDeleteTestStateSelector = createSelector(
+  stateSelector,
+  (state) => state.deletingTest
 )
 
 export const getEquivalentStandards = ({ tests, testList }) =>
@@ -220,10 +234,41 @@ function* clearAllTestFiltersSaga() {
 
 function* deleteTestSaga({ payload }) {
   try {
-    yield call(testsApi.deleteTest, payload)
-    yield put(deleteTestRequestSuccessAction(payload))
-    notification({ type: 'success', messageKey: 'testDeletedSuccessfully' })
+    yield put(setDeleteTestStateAction('INPROGRESS'))
+    const response = yield call(testsApi.deleteTest, payload)
+    if (payload.view === 'testLibrary') {
+      if (payload.type === testConstants.DELETE_TYPES.ROLLBACK) {
+        const testFilters = yield select(getTestsFilterSelector)
+        const sort = yield select(getSortFilterStateSelector)
+        const limit = yield select(getTestsLimitSelector)
+        yield put(
+          receiveTestsAction({ page: 1, limit, search: testFilters, sort })
+        )
+        const queryParams = qs.stringify(
+          pickBy({ ...testFilters, page: 1, limit }, identity)
+        )
+        yield put(push(`/author/tests?${queryParams}`))
+      } else yield put(deleteTestRequestSuccessAction(payload.testId))
+    } else if (payload.type === testConstants.DELETE_TYPES.ROLLBACK) {
+      const { previousTestId } = yield select(getTestEntitySelector)
+      if (previousTestId) {
+        yield put(push(`/author/tests/tab/review/id/${previousTestId}`))
+        yield call(receiveTestByIdSaga, {
+          payload: {
+            id: previousTestId,
+            requestLatest: true,
+          },
+        })
+        yield put(setEditEnableAction(false))
+        yield put(setDeleteTestStateAction('DONE'))
+      }
+    } else yield put(push('/author/tests'))
+    notification({
+      type: 'success',
+      msg: response || 'Test deleted successfully',
+    })
   } catch (error) {
+    yield put(setDeleteTestStateAction(false))
     console.error(error)
     // 403 means dont have permission
     notification({
@@ -365,6 +410,7 @@ const initialState = {
   loading: false,
   selectedTests: [],
   sort: { ...initialSortState },
+  deletingTest: false,
 }
 
 export const reducer = (state = initialState, { type, payload }) => {
@@ -493,7 +539,11 @@ export const reducer = (state = initialState, { type, payload }) => {
         },
         sort: { ...initialSortState },
       }
-
+    case SET_DELETE_TEST_STATE:
+      return {
+        ...state,
+        deletingTest: payload,
+      }
     default:
       return state
   }

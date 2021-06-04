@@ -218,9 +218,17 @@ const SingleAssessmentReportContainer = (props) => {
   ].includes(loc)
 
   useEffect(() => {
-    if (!demographicsRequired) {
+    if (!demographicsRequired && !firstLoad) {
       setDdFilter({ ...staticDropDownData.initialDdFilters })
       setTempDdFilter({ ...staticDropDownData.initialDdFilters })
+      setTempTagsData({
+        ...tempTagsData,
+        ...staticDropDownData.initialDdFilterTags,
+      })
+      setSARTagsData({
+        ...settings.tagsData,
+        ...staticDropDownData.initialDdFilterTags,
+      })
     }
   }, [loc])
 
@@ -368,7 +376,7 @@ const SingleAssessmentReportContainer = (props) => {
                 showFilter={showFilter}
                 settings={settings}
                 pageTitle={loc}
-                filters={ddfilter}
+                demographicFilters={demographicFilters}
                 customStudentUserId={customStudentUserId}
                 isCliUser={isCliUser}
                 sharedReport={sharedReport}

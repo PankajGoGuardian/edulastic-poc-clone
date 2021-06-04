@@ -8,7 +8,7 @@ const questionStatusOptions = [
     countValue: 'partiallyCorrectNumber',
   },
   { title: 'Skipped', value: 'skipped', countValue: 'skippedNumber' },
-  { title: 'Unscored', value: 'unscoredItems', countValue: 'unscoredItems' },
+  { title: 'Zero Point', value: 'unscoredItems', countValue: 'unscoredItems' },
   { title: 'Not Graded', value: 'notGraded', countValue: 'notGradedNumber' },
 ]
 

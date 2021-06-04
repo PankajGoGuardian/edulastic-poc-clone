@@ -850,6 +850,7 @@ export const TAB_BUTTONS = [
       cotangent,
       arcsine,
       arccosine,
+      arctangent,
       arcsecant,
       arccosecant,
       secant,

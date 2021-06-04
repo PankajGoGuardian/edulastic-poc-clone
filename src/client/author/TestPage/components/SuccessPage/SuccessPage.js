@@ -1,5 +1,5 @@
 import { themeColor, darkGrey } from '@edulastic/colors'
-import { EduButton, FlexContainer } from '@edulastic/common'
+import { EduButton, FlexContainer, notification } from '@edulastic/common'
 import {
   test as TEST,
   collections as collectionsConstant,
@@ -136,6 +136,11 @@ class SuccessPage extends React.Component {
       ? regradedAssignments[0]
       : {}
     if (isAssignSuccess || isRegradeSuccess) {
+      if (!assignment._id)
+        return notification({
+          type: 'info',
+          msg: 'Please try to launch LCB from assignment page',
+        })
       history.push(
         `/author/classboard/${assignment._id}/${assignment.class?.[0]?._id}`
       )
@@ -362,17 +367,20 @@ class SuccessPage extends React.Component {
     }
     return (
       <div>
-        <ShareModal
-          shareLabel="TEST URL"
-          isVisible={isShareModalVisible}
-          isPlaylist={isPlaylist}
-          testId={_id}
-          hasPremiumQuestion={hasPremiumQuestion}
-          isPublished={status === statusConstants.PUBLISHED}
-          onClose={this.onShareModalChange}
-          gradeSubject={gradeSubject}
-          testVersionId={test?.versionId}
-        />
+        {isShareModalVisible && (
+          <ShareModal
+            shareLabel="TEST URL"
+            isVisible={isShareModalVisible}
+            isPlaylist={isPlaylist}
+            testId={_id}
+            hasPremiumQuestion={hasPremiumQuestion}
+            isPublished={status === statusConstants.PUBLISHED}
+            onClose={this.onShareModalChange}
+            gradeSubject={gradeSubject}
+            testVersionId={test?.versionId}
+          />
+        )}
+
         <ListHeader
           title={(_module && _module.title) || title}
           renderButton={this.renderHeaderButton}
@@ -429,13 +437,13 @@ class SuccessPage extends React.Component {
                     </FlexText>
                   ) : assignment.testType === _testTypes.COMMON ? (
                     <FlexText>
-                      You can monitor student progress and responses by clicking
-                      on the &nbsp;
+                      You can monitor student progress and responses using
+                      the Live Class Board &nbsp;
                       <span
                         onClick={this.handleAssign}
                         style={{ color: themeColor, cursor: 'pointer' }}
                       >
-                        Go to Live Class Board
+                        Click here
                       </span>
                     </FlexText>
                   ) : (
@@ -455,15 +463,15 @@ class SuccessPage extends React.Component {
                             : 'once it is opened by you from Live Class Board'
                         }.`}
                       </FlexText>
-                      You can monitor student progress and responses by clicking
-                      on the &nbsp;
+                      You can monitor student progress and responses using
+                      the Live Class Board &nbsp;
                       <span
                         onClick={this.handleAssign}
                         style={{ color: themeColor, cursor: 'pointer' }}
                       >
-                        Go to Live Class Board
+                        Click here
                       </span>
-                      &nbsp; button.
+                      &nbsp;to navigate to the Live Class Board
                     </FlexText>
                   )}
                   <Divider />

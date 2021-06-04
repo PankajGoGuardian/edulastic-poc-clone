@@ -187,6 +187,7 @@ const DropdownWrapper = styled.div`
   .ant-select-dropdown {
     ${({ menuStyle }) => menuStyle};
   }
+  text-indent: 0;
 `
 
 const Dropdown = styled(SelectInputStyled)`

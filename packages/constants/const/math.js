@@ -392,6 +392,7 @@ const evaluationSettings = {
       // 'allowedUnits',
       'compareSides',
       // 'useTemplate',
+      'ignoreVariableNames',
     ],
   },
   [methods.EQUIV_LITERAL]: [
@@ -404,6 +405,7 @@ const evaluationSettings = {
     'setThousandsSeparator',
     'allowedVariables',
     'ignoreCase',
+    'ignoreVariableNames',
   ],
   [GRAPH_EVALUATION_SETTING]: [
     'graphSegmentChecks',

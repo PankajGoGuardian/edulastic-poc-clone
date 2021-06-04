@@ -1,5 +1,5 @@
 import { takeEvery, call, put, all, select } from 'redux-saga/effects'
-import { get as _get, round } from 'lodash'
+import { get as _get, round, isEmpty } from 'lodash'
 import { testItemsApi } from '@edulastic/api'
 import { LOCATION_CHANGE, push } from 'connected-react-router'
 import { questionType } from '@edulastic/constants'
@@ -9,6 +9,8 @@ import {
   notification,
 } from '@edulastic/common'
 import * as Sentry from '@sentry/browser'
+import { resourceTypeQuestions } from '@edulastic/constants/const/question'
+
 import { evaluateItem } from '../utils/evalution'
 import { hasEmptyAnswers } from '../../utils/answerValidator'
 
@@ -161,6 +163,15 @@ function* evaluateAnswers({ payload }) {
     ) {
       const answers = yield select((state) => _get(state, 'answers', []))
       const answersByQids = answersByQId(answers, item._id)
+      if (isEmpty(answersByQids)) {
+        if (payload?.mode !== 'show') {
+          notification({
+            type: 'warn',
+            messageKey: 'attemptTheQuestonToCheckAnswer',
+          })
+        }
+        return
+      }
       const { evaluation, score, maxScore } = yield evaluateItem(
         answersByQids,
         {
@@ -196,7 +207,23 @@ function* evaluateAnswers({ payload }) {
       const _item = yield select((state) => state.itemDetail.item)
       const { itemLevelScore = 0, itemLevelScoring = false } = _item || {}
       const questions = yield select(getQuestionsSelector)
+      // filter out passages and resources before evaluating
+      Object.values(questions).forEach((q) => {
+        const { id, type } = q
+        if (resourceTypeQuestions.includes(type)) {
+          delete questions[id]
+        }
+      })
       const answersByQids = answersByQId(answers, _item._id)
+      if (isEmpty(answersByQids)) {
+        if (payload?.mode !== 'show') {
+          notification({
+            type: 'warn',
+            messageKey: 'attemptTheQuestonToCheckAnswer',
+          })
+        }
+        return
+      }
       const { evaluation, score, maxScore } = yield evaluateItem(
         answersByQids,
         questions,

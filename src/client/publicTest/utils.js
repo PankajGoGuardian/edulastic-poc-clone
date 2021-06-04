@@ -188,7 +188,7 @@ export const showTestInfoModal = ({
             during the attempt
           </p>
           <p style={{ marginTop: '10px' }}>PREFERRED LANGUAGE</p>
-          <p>
+          <p data-cy="selectLang">
             <Select
               getPopupContainer={(e) => e.parentElement}
               defaultValue={languagePreference || ''}

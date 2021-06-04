@@ -91,6 +91,7 @@ const FeedbackWrapper = ({
   return (
     <StyledFeedbackWrapper
       ref={feedbackRef}
+      key={`feedback_${data.id}`}
       minWidth={
         studentReportFeedbackVisible && displayFeedback && !isPrintPreview
           ? '320px'

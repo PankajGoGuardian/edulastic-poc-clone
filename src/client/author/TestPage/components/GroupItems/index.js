@@ -28,7 +28,6 @@ import {
 import Breadcrumb from '../../../src/components/Breadcrumb'
 import {
   getCurriculumsListSelector,
-  getDictionariesAlignmentsSelector,
   getStandardsListSelector,
   standardsSelector,
 } from '../../../src/selectors/dictionaries'
@@ -87,7 +86,6 @@ const GroupItems = ({
   getCurriculumStandards,
   curriculumStandardsLoading,
   curriculums,
-  alignment,
   removeTestItems,
   deleteItemsGroup,
   test,
@@ -145,6 +143,17 @@ const GroupItems = ({
     text: o.name,
     value: o._id,
   }))
+
+  const searchCurriculumStandards = (searchObject) => {
+    if (!isEqual(searchProps, searchObject)) {
+      setSearchProps(searchObject)
+      getCurriculumStandards(
+        searchObject.id,
+        searchObject.grades,
+        searchObject.searchStr
+      )
+    }
+  }
 
   useEffect(() => {
     setActivePanels(test.itemGroups.map((_, i) => (i + 1).toString()))
@@ -333,20 +342,20 @@ const GroupItems = ({
         messageKey: 'pleaseSelectStantdardBeforeApplying',
       })
     }
-    const { subject, eloStandards } = data
-    const grades = data.grades.length
+    const { subject: _subject, eloStandards } = data
+    const _grades = data.grades.length
       ? data.grades
       : eloStandards[0]?.grades || []
     const {
-      curriculumId,
+      curriculumId: _curriculumId,
       _id: standardId,
       tloId: domainId,
       identifier,
     } = eloStandards[0]
     const standardDetails = {
-      subject,
-      grades,
-      curriculumId,
+      subject: _subject,
+      grades: _grades,
+      curriculumId: _curriculumId,
       standardId,
       domainId,
       identifier,
@@ -374,17 +383,6 @@ const GroupItems = ({
       if (isDuplicate) return
     }
     handleChange('collectionDetails', { _id, name })
-  }
-
-  const searchCurriculumStandards = (searchObject) => {
-    if (!isEqual(searchProps, searchObject)) {
-      setSearchProps(searchObject)
-      getCurriculumStandards(
-        searchObject.id,
-        searchObject.grades,
-        searchObject.searchStr
-      )
-    }
   }
 
   const validateGroups = () => {
@@ -484,6 +482,43 @@ const GroupItems = ({
     return isValid
   }
 
+  const saveGroupToTest = () => {
+    const oldGroupData = test.itemGroups[currentGroupIndex]
+    let updatedGroupData = { ...editGroupDetail }
+    if (editGroupDetail.type === ITEM_GROUP_TYPES.AUTOSELECT) {
+      removeTestItems(oldGroupData.items.map((i) => i._id))
+      updatedGroupData = { ...updatedGroupData, items: [] }
+    } else if (
+      editGroupDetail.type === ITEM_GROUP_TYPES.STATIC &&
+      oldGroupData.type === ITEM_GROUP_TYPES.AUTOSELECT
+    ) {
+      updatedGroupData = { ...updatedGroupData, items: [] }
+    }
+    if (
+      updatedGroupData.deliveryType ===
+        ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
+      updatedGroupData.items.some((item) => item.itemLevelScoring === false)
+    ) {
+      notification({ type: 'warn', messageKey: 'allItemsInsideLimited' })
+      return
+    }
+    const disableAnswerOnPaper =
+      updatedGroupData.deliveryType ===
+        ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM ||
+      updatedGroupData.type === ITEM_GROUP_TYPES.AUTOSELECT
+    if (test.answerOnPaper && disableAnswerOnPaper) {
+      setTestData({ answerOnPaper: false })
+      notification({
+        type: 'warn',
+        messageKey: 'answerOnPaperIsNotSupportedForAutoselecteGroup',
+      })
+    }
+    updateGroupData({ updatedGroupData, groupIndex: currentGroupIndex })
+    setCurrentGroupIndex(null)
+    setEditGroupDetails({})
+    setFetchingItems(false)
+  }
+
   const handleSaveGroup = async () => {
     if (!validateGroup()) {
       return
@@ -531,49 +566,11 @@ const GroupItems = ({
             msg: `There are only ${total} items that meet the search criteria`,
           })
         }
-        const testItems = items.map((i) => ({ ...i, autoselectedItem: true }))
-        saveGroupToTest(testItems)
+        saveGroupToTest()
       })
       .catch((err) => {
         notification({ msg: err.message || 'Failed to fetch test items' })
       })
-    setFetchingItems(false)
-  }
-
-  const saveGroupToTest = (items) => {
-    const oldGroupData = test.itemGroups[currentGroupIndex]
-    let updatedGroupData = { ...editGroupDetail }
-    if (editGroupDetail.type === ITEM_GROUP_TYPES.AUTOSELECT) {
-      removeTestItems(oldGroupData.items.map((i) => i._id))
-      updatedGroupData = { ...updatedGroupData, items }
-    } else if (
-      editGroupDetail.type === ITEM_GROUP_TYPES.STATIC &&
-      oldGroupData.type === ITEM_GROUP_TYPES.AUTOSELECT
-    ) {
-      updatedGroupData = { ...updatedGroupData, items: [] }
-    }
-    if (
-      updatedGroupData.deliveryType ===
-        ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
-      updatedGroupData.items.some((item) => item.itemLevelScoring === false)
-    ) {
-      notification({ type: 'warn', messageKey: 'allItemsInsideLimited' })
-      return
-    }
-    const disableAnswerOnPaper =
-      updatedGroupData.deliveryType ===
-        ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM ||
-      updatedGroupData.type === ITEM_GROUP_TYPES.AUTOSELECT
-    if (test.answerOnPaper && disableAnswerOnPaper) {
-      setTestData({ answerOnPaper: false })
-      notification({
-        type: 'warn',
-        messageKey: 'answerOnPaperIsNotSupportedForAutoselecteGroup',
-      })
-    }
-    updateGroupData({ updatedGroupData, groupIndex: currentGroupIndex })
-    setCurrentGroupIndex(null)
-    setEditGroupDetails({})
     setFetchingItems(false)
   }
 
@@ -592,9 +589,10 @@ const GroupItems = ({
           standards={[]}
           standard={{
             curriculum:
-              curriculums.find((item) => item._id === parseInt(curriculumId))
-                ?.curriculum || '',
-            id: parseInt(curriculumId) || '',
+              curriculums.find(
+                (item) => item._id === parseInt(curriculumId, 10)
+              )?.curriculum || '',
+            id: parseInt(curriculumId, 10) || '',
           }}
           visible={showStandardModal}
           curriculums={curriculums}
@@ -673,7 +671,7 @@ const GroupItems = ({
                       }
                       data-cy={`autoselect-${itemGroup.groupName}`}
                       disabled={currentGroupIndex !== index}
-                      onChange={(e) => handleTypeSelect(index)}
+                      onChange={() => handleTypeSelect(index)}
                     >
                       AUTO SELECT ITEMS BASED ON STANDARDS
                     </CheckboxLabel>
@@ -793,13 +791,13 @@ const GroupItems = ({
                           }
                           disabled={currentGroupIndex !== index}
                         >
-                          {selectsData.allDepthOfKnowledge.map((el, index) => (
+                          {selectsData.allDepthOfKnowledge.map((el, _index) => (
                             <Select.Option
                               key={el.value}
                               value={el.value}
                               data-cy={`${itemGroup.groupName} ${el.text}`}
                             >
-                              {`${index > 0 ? index : ''} ${el.text}`}
+                              {`${_index > 0 ? _index : ''} ${el.text}`}
                             </Select.Option>
                           ))}
                         </Select>
@@ -1001,7 +999,6 @@ const enhance = compose(
       curriculumStandards: getStandardsListSelector(state),
       curriculumStandardsLoading: standardsSelector(state).loading,
       curriculums: getCurriculumsListSelector(state),
-      alignment: getDictionariesAlignmentsSelector(state),
       test: getTestEntitySelector(state),
       interestedGrades: getInterestedGradesSelector(state),
       interestedSubjects: getInterestedSubjectsSelector(state),

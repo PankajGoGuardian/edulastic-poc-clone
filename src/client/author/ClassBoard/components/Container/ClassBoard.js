@@ -22,7 +22,7 @@ import {
 import { withNamespaces } from '@edulastic/localization'
 import { testActivityStatus } from '@edulastic/constants'
 import { Dropdown, Select, notification as antNotification } from 'antd'
-import { get, isEmpty, keyBy, last, round, sortBy } from 'lodash'
+import { get, isEmpty, keyBy, last, round, sortBy, uniqBy } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
@@ -120,7 +120,10 @@ import {
   FilterSelect,
   FilterSpan,
 } from './styled'
-import { setShowAllStudentsAction } from '../../../src/reducers/testActivity'
+import {
+  setShowAllStudentsAction,
+  setPageNumberAction,
+} from '../../../src/reducers/testActivity'
 import {
   updateCliUserAction,
   toggleFreeAdminSubscriptionModalAction,
@@ -486,6 +489,7 @@ class ClassBoard extends Component {
       match,
       history,
       loadTestActivity,
+      setPageNumber,
     } = this.props
     const { assignmentId, classId } = match.params
     this.setState({
@@ -493,7 +497,7 @@ class ClassBoard extends Component {
       selectedStudentId,
       hasStickyHeader: false,
     })
-
+    setPageNumber(1)
     if (name === 'Both') {
       history.push(`/author/classboard/${assignmentId}/${classId}`)
       setCurrentTestActivityId('')
@@ -1029,6 +1033,7 @@ class ClassBoard extends Component {
       studentsPrevSubmittedUtas,
       studentUnselectAll,
       regradeModalState,
+      setPageNumber,
     } = this.props
 
     const {
@@ -1056,10 +1061,13 @@ class ClassBoard extends Component {
     const timeSpent = Math.floor(
       ((studentResponse &&
         studentResponse.questionActivities &&
-        studentResponse.questionActivities.reduce((acc, qa) => {
-          acc += qa.timeSpent || 0
-          return acc
-        }, 0)) ||
+        uniqBy(studentResponse.questionActivities, 'testItemId').reduce(
+          (acc, qa) => {
+            acc += qa.timeSpent || 0
+            return acc
+          },
+          0
+        )) ||
         0) / 1000
     )
     const { status } = studentTestActivity
@@ -1290,6 +1298,7 @@ class ClassBoard extends Component {
         <MainContentWrapper
           ref={this.MainContentWrapperRef}
           onScroll={this.backTopScroll}
+          id="classboard-main-container"
         >
           <LCBScrollContext.Provider value={this.MainContentWrapperRef}>
             <StyledFlexContainer justifyContent="space-between">
@@ -1374,6 +1383,7 @@ class ClassBoard extends Component {
                           itemId: firstQuestion.testItemId,
                           selectedTab: 'questionView',
                         })
+                        setPageNumber(1)
                         loadTestActivity(assignmentId, classId, true)
                         history.push(
                           `/author/classboard/${assignmentId}/${classId}/question-activity/${firstQuestion._id}`
@@ -1880,6 +1890,7 @@ class ClassBoard extends Component {
                     selectedStudent={selectedStudentId}
                     isPresentationMode={isPresentationMode}
                     isCliUser={isCliUser}
+                    MainContentWrapperRef={this.MainContentWrapperRef}
                   />
                   {toggleBackTopIcon && (
                     <BackTop toggleBackTopIcon={toggleBackTopIcon} />
@@ -2032,6 +2043,7 @@ const enhance = compose(
       setShowCanvasShare: setShowCanvasShareAction,
       pauseStudents: togglePauseStudentsAction,
       toggleFreeAdminSubscriptionModal: toggleFreeAdminSubscriptionModalAction,
+      setPageNumber: setPageNumberAction,
     }
   )
 )

@@ -296,7 +296,7 @@ function* addResourceSaga({ payload }) {
     // delay reources fetch so that the added resource gets indexed in ES
     yield delay(500)
     yield put(slice.actions.resetAndSearchResources())
-    notification({ type: 'success', msg: 'Resource Created Successfuly!' })
+    notification({ type: 'success', msg: 'Resource Created Successfully' })
   } catch (e) {
     console.error('Error Occured: addResourceSaga ', e)
   }
@@ -338,7 +338,7 @@ function* searchResourceSaga() {
 export function* watcherSaga() {
   yield all([
     yield takeEvery(slice.actions.fetchTests, fetchTestsSaga),
-    yield takeEvery(slice.actions.resetAndFetchTests, fetchTestsSaga),
+    yield takeEvery(slice.actions.resetAndFetchTests, fetchTestsBySearchString),
     yield takeLatest(
       slice.actions.setTestSearchAction,
       fetchTestsBySearchString

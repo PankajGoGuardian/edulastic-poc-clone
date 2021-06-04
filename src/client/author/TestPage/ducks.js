@@ -230,7 +230,7 @@ export const CLEAR_CREATED_ITEMS_FROM_TEST =
   '[test] clear createdItems from test'
 export const PREVIEW_CHECK_ANSWER = '[test] check answer for preview modal'
 export const PREVIEW_SHOW_ANSWER = '[test] show answer for preview modal'
-export const REPLACE_TEST_ITEMS = '[test] replace test items'
+export const REPLACE_TEST_DATA = '[test] replace test data'
 export const UPDATE_TEST_DEFAULT_IMAGE = '[test] update default thumbnail image'
 export const SET_PASSAGE_ITEMS = '[tests] set passage items'
 export const SET_AND_SAVE_PASSAGE_ITEMS = '[tests] set and save passage items'
@@ -308,11 +308,13 @@ export const UPDATE_TEST_SETTING_REQUEST = '[tests] update test setting request'
 export const SET_SHOW_REGRADE_CONFIRM =
   '[tests] set show regrade confirmation popup'
 export const SET_SHOW_UPGRADE_POPUP = '[tests] set show upgrade popup'
+export const SET_MAX_SHARING_LEVEL_ALLOWED =
+  '[tests] set max sharing level allowed'
 // actions
 
 export const previewCheckAnswerAction = createAction(PREVIEW_CHECK_ANSWER)
 export const previewShowAnswerAction = createAction(PREVIEW_SHOW_ANSWER)
-export const replaceTestItemsAction = createAction(REPLACE_TEST_ITEMS)
+export const replaceTestDataAction = createAction(REPLACE_TEST_DATA)
 export const setNextPreviewItemAction = createAction(SET_NEXT_PREVIEW_ITEM)
 export const updateDefaultThumbnailAction = createAction(
   UPDATE_TEST_DEFAULT_IMAGE
@@ -497,6 +499,9 @@ export const publishTestAction = createAction(TEST_PUBLISH)
 export const updateTestStatusAction = createAction(UPDATE_TEST_STATUS)
 export const setRegradeOldIdAction = createAction(SET_REGRADE_OLD_TESTID)
 export const updateSharedWithListAction = createAction(UPDATE_SHARED_USERS_LIST)
+export const setMaxSharingLevelAllowedAction = createAction(
+  SET_MAX_SHARING_LEVEL_ALLOWED
+)
 export const receiveSharedWithListAction = createAction(
   RECEIVE_SHARED_USERS_LIST
 )
@@ -755,27 +760,40 @@ export const showGroupsPanelSelector = createSelector(
 export const getUserListSelector = createSelector(stateSelector, (state) => {
   const usersList = state.sharedUsersList
   const flattenUsers = []
-  usersList.forEach(({ permission, sharedType, sharedWith, sharedId }) => {
-    if (sharedType === 'INDIVIDUAL' || sharedType === 'SCHOOL') {
-      sharedWith.forEach((user) => {
-        flattenUsers.push({
-          userName: user.name,
-          email: user.email || '',
-          _userId: user._id,
+  usersList.forEach(
+    ({
+      permission,
+      sharedType,
+      sharedWith,
+      sharedId,
+      v1LinkShareEnabled = 0,
+    }) => {
+      if (sharedType === 'INDIVIDUAL' || sharedType === 'SCHOOL') {
+        sharedWith.forEach((user) => {
+          flattenUsers.push({
+            userName: user.name,
+            email: user.email || '',
+            _userId: user._id,
+            sharedType,
+            permission,
+            sharedId,
+          })
+        })
+      } else {
+        const shareData = {
+          userName: sharedType,
           sharedType,
           permission,
           sharedId,
-        })
-      })
-    } else {
-      flattenUsers.push({
-        userName: sharedType,
-        sharedType,
-        permission,
-        sharedId,
-      })
+          v1LinkShareEnabled,
+        }
+        if (sharedType === 'LINK') {
+          shareData.v1LinkShareEnabled = v1LinkShareEnabled
+        }
+        flattenUsers.push(shareData)
+      }
     }
-  })
+  )
   return flattenUsers
 })
 
@@ -924,6 +942,7 @@ const initialState = {
   regradeModalState: null,
   showRegradeConfirmPopup: false,
   upgrade: false,
+  loadingSharedUsers: false,
 }
 
 export const testTypeAsProfileNameType = {
@@ -1158,13 +1177,14 @@ export const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         sharedUsersList: payload,
+        loadingSharedUsers: false,
       }
     case CLEAR_CREATED_ITEMS_FROM_TEST:
       return {
         ...state,
         createdItems: [],
       }
-    case REPLACE_TEST_ITEMS:
+    case REPLACE_TEST_DATA:
       return {
         ...state,
         entity: {
@@ -1521,6 +1541,16 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         upgrade: payload,
       }
+    case RECEIVE_SHARED_USERS_LIST:
+      return {
+        ...state,
+        loadingSharedUsers: true,
+      }
+    case SET_MAX_SHARING_LEVEL_ALLOWED:
+      return {
+        ...state,
+        maxSharingLevelAllowed: payload,
+      }
     default:
       return state
   }
@@ -1706,7 +1736,7 @@ function validateRestrictNavigationOut(data) {
 }
 
 // saga
-function* receiveTestByIdSaga({ payload }) {
+export function* receiveTestByIdSaga({ payload }) {
   try {
     const tests = yield select((state) => state.tests)
     let createdItems = yield select(getTestCreatedItemsSelector)
@@ -1872,6 +1902,12 @@ function* createTestSaga({ payload }) {
     const entity = yield createTest(payload.data)
     entity.itemGroups = payload.data.itemGroups
     yield put(createTestSuccessAction(entity))
+    const hasAutoSelectItems = entity.itemGroups.some(
+      (g) => g.type === testConst.ITEM_GROUP_TYPES.AUTOSELECT
+    )
+    if (hasAutoSelectItems) {
+      yield put(addItemsToAutoselectGroupsRequestAction(entity))
+    }
     const currentTab = payload.isCartTest ? 'description' : 'addItems'
     yield put(replace(`/author/tests/tab/${currentTab}/id/${entity._id}`))
     notification({ type: 'success', messageKey: 'testCreated' })
@@ -1991,6 +2027,12 @@ export function* updateTestSaga({ payload }) {
       return
     }
     yield put(updateTestSuccessAction(entity))
+    const hasAutoSelectItems = entity.itemGroups.some(
+      (g) => g.type === testConst.ITEM_GROUP_TYPES.AUTOSELECT
+    )
+    if (hasAutoSelectItems) {
+      yield put(addItemsToAutoselectGroupsRequestAction(entity))
+    }
     const newId = entity._id
     const userRole = yield select(getUserRole)
     const isCurator = yield select(getIsCurator)
@@ -2397,8 +2439,12 @@ function* publishForRegrade({ payload }) {
 
 function* receiveSharedWithListSaga({ payload }) {
   try {
-    const result = yield call(contentSharingApi.getSharedUsersList, payload)
-    const coAuthors = result.map(
+    const { sharedEntities = [], maxSharingLevelAllowed } = yield call(
+      contentSharingApi.getSharedUsersList,
+      payload
+    )
+    yield put(setMaxSharingLevelAllowedAction(maxSharingLevelAllowed))
+    const coAuthors = sharedEntities.map(
       ({ permission, sharedWith, sharedType, _id }) => ({
         permission,
         sharedWith,
@@ -2406,6 +2452,20 @@ function* receiveSharedWithListSaga({ payload }) {
         sharedId: _id,
       })
     )
+    const testData = yield select(getTestEntitySelector)
+    if (
+      (!coAuthors.length ||
+        !coAuthors.some((item) => item.sharedType === 'LINK')) &&
+      testData.v1Attributes?.v1LinkShareEnabled === 1
+    ) {
+      coAuthors.push({
+        permission: 'VIEW',
+        sharedWith: [],
+        sharedType: 'LINK',
+        sharedId: testData._id,
+        v1LinkShareEnabled: 1,
+      })
+    }
     yield put(updateSharedWithListAction(coAuthors))
   } catch (e) {
     Sentry.captureException(e)
@@ -2417,6 +2477,11 @@ function* receiveSharedWithListSaga({ payload }) {
 function* deleteSharedUserSaga({ payload }) {
   try {
     yield call(contentSharingApi.deleteSharedUser, payload)
+    if (payload.v1LinkShareEnabled === 1) {
+      const testData = yield select(getTestEntitySelector)
+      const { v1Attributes, ...rest } = testData
+      yield put(replaceTestDataAction(rest))
+    }
     yield put(
       receiveSharedWithListAction({
         contentId: payload.contentId,
@@ -2630,6 +2695,9 @@ function* getEvaluation(testItemId, newScore) {
   const questions = _keyBy(testItem?.data?.questions, 'id')
   const answers = yield select((state) => get(state, 'answers', {}))
   const answersByQids = answersByQId(answers, testItem._id)
+  if (isEmpty(answersByQids)) {
+    return
+  }
   const evaluation = yield evaluateItem(
     answersByQids,
     questions,
@@ -2652,6 +2720,9 @@ function* getEvaluationFromItem(testItem, newScore) {
   const questions = _keyBy(testItem.data.questions, 'id')
   const answers = yield select((state) => get(state, 'answers', {}))
   const answersByQids = answersByQId(answers, testItem._id)
+  if (isEmpty(answersByQids)) {
+    return
+  }
   const evaluation = yield evaluateItem(
     answersByQids,
     questions,
@@ -2675,6 +2746,18 @@ function* checkAnswerSaga({ payload }) {
       )
     } else {
       evaluationObject = yield getEvaluation(payload.id, scoring[payload.id])
+    }
+    if (isEmpty(evaluationObject)) {
+      yield put({
+        type: CHANGE_PREVIEW,
+        payload: {
+          view: 'check',
+        },
+      })
+      return notification({
+        type: 'warn',
+        messageKey: 'attemptTheQuestonToCheckAnswer',
+      })
     }
     const { evaluation, score, maxScore } = evaluationObject
     yield put({

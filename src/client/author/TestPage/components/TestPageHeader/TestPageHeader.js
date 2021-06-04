@@ -14,6 +14,7 @@ import {
   IconSettings,
   IconShare,
   IconTestBank,
+  IconTrashAlt,
 } from '@edulastic/icons'
 import PropTypes from 'prop-types'
 import React, { memo, useEffect, useState } from 'react'
@@ -57,6 +58,7 @@ import AuthorCompleteSignupButton from '../../../../common/components/AuthorComp
 import RegradeNotificationListener from '../../../Regrade/RegradeNotificationListener'
 import ConfirmRegradeModal from '../../../Regrade/ConfirmRegradeModal'
 import Upgrade from '../../../Regrade/Upgrade'
+import { DeleteItemModal } from '../../../TestList/components/DeleteItemModal/deleteItemModal'
 
 const {
   statusConstants,
@@ -140,7 +142,7 @@ const TestPageHeader = ({
   windowWidth,
   onEnableEdit,
   showPublishButton,
-  showShareButton,
+  hasTestId,
   testStatus,
   isPlaylist,
   owner,
@@ -190,6 +192,7 @@ const TestPageHeader = ({
       : [...navButtonsTest])
   const [showCancelPopup, setShowCancelPopup] = useState(false)
   const [showPrintOptionPopup, setShowPrintOptionPopup] = useState(false)
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
 
   const isPublishers = !!(features.isCurator || features.isPublisherAuthor)
   const isEdulasticCurator = userRole === roleuser.EDULASTIC_CURATOR
@@ -348,6 +351,14 @@ const TestPageHeader = ({
     )
   }
 
+  const onDelete = () => {
+    setIsDeleteModalOpen(true)
+  }
+
+  const onDeleteModelCancel = () => {
+    setIsDeleteModalOpen(false)
+  }
+
   const headingSubContent = (
     <TestStatus
       data-cy="status"
@@ -400,6 +411,15 @@ const TestPageHeader = ({
         onOk={confirmCancel}
         onClose={() => setCancelState(false)}
       />
+      {isDeleteModalOpen ? (
+        <DeleteItemModal
+          isVisible={isDeleteModalOpen}
+          onCancel={onDeleteModelCancel}
+          testId={test._id}
+          test={test}
+          view="testReview"
+        />
+      ) : null}
       {showPrintOptionPopup && (
         <PrintTestModal
           onProceed={handleOnClickPrintConfirm}
@@ -424,7 +444,7 @@ const TestPageHeader = ({
             current={current}
             buttons={navButtons}
             owner={owner}
-            showPublishButton={!showShareButton || showPublishButton}
+            showPublishButton={!hasTestId || showPublishButton}
           />
 
           <RightFlexContainer
@@ -432,58 +452,67 @@ const TestPageHeader = ({
             justifyContent="flex-end"
             mt="12px"
           >
-            {showShareButton &&
-              !isPlaylist &&
-              !isDocBased &&
-              !test?.isDocBased && (
-                <EduButton
-                  title="Print"
-                  isBlue
-                  isGhost
-                  IconBtn
-                  data-cy="printTest"
-                  disabled={isTestLoading}
-                  onClick={handlePrintTest}
-                >
-                  <IconPrint />
-                </EduButton>
-              )}
-            {showShareButton &&
-              (owner || features.isCurator) &&
-              !isEdulasticCurator && (
-                <EduButton
-                  isBlue
-                  isGhost
-                  IconBtn
-                  title={
-                    isDemoPlayground
-                      ? 'This feature is not available in demo account.'
-                      : 'Share'
-                  }
-                  data-cy="share"
-                  onClick={onShare}
-                  disabled={disableButtons || isDemoPlayground}
-                >
-                  <IconShare />
-                </EduButton>
-              )}
-            {showShareButton &&
-              owner &&
-              showPublishButton &&
-              !showPublishForEC && (
-                <EduButton
-                  isBlue
-                  isGhost
-                  IconBtn
-                  title="Save as Draft"
-                  data-cy="save"
-                  onClick={onSave}
-                  disabled={disableButtons}
-                >
-                  <IconDiskette />
-                </EduButton>
-              )}
-            {showShareButton &&
+            {hasTestId && !isPlaylist && !isDocBased && !test?.isDocBased && (
+              <EduButton
+                title="Print"
+                isBlue
+                isGhost
+                IconBtn
+                data-cy="printTest"
+                disabled={isTestLoading}
+                onClick={handlePrintTest}
+              >
+                <IconPrint />
+              </EduButton>
+            )}
+            {hasTestId && (owner || features.isCurator) && !isEdulasticCurator && (
+              <EduButton
+                isBlue
+                isGhost
+                IconBtn
+                title={
+                  isDemoPlayground
+                    ? 'This feature is not available in demo account.'
+                    : 'Share'
+                }
+                data-cy="share"
+                onClick={onShare}
+                disabled={disableButtons || isDemoPlayground}
+              >
+                <IconShare />
+              </EduButton>
+            )}
+            {hasTestId && owner && test.status === 'draft' && (
+              <EduButton
+                isBlue
+                isGhost
+                IconBtn
+                title={
+                  isDemoPlayground
+                    ? 'This feature is not available in demo account.'
+                    : 'Delete'
+                }
+                data-cy="delete-test"
+                onClick={onDelete}
+                disabled={disableButtons || isDemoPlayground}
+              >
+                <IconTrashAlt />
+              </EduButton>
+            )}
+            {hasTestId && owner && showPublishButton && !showPublishForEC && (
+              <EduButton
+                isBlue
+                isGhost
+                IconBtn
+                title="Save as Draft"
+                data-cy="save"
+                onClick={onSave}
+                disabled={disableButtons}
+              >
+                <IconDiskette />
+              </EduButton>
+            )}
+            {hasTestId &&
             owner &&
             showPublishButton &&
             !isEdulasticCurator &&
@@ -584,7 +613,7 @@ const TestPageHeader = ({
                 CANCEL
               </EduButton>
             )}
-            {showShareButton &&
+            {hasTestId &&
               owner &&
               ((showPublishButton && !isEdulasticCurator) ||
                 showPublishForEC) &&
@@ -605,7 +634,7 @@ const TestPageHeader = ({
                 </EduButton>
               )}
             {!showUpgradePopup &&
-              showShareButton &&
+              hasTestId &&
               (owner || testStatus === 'published') &&
               !isPlaylist &&
               !showCancelButton &&
@@ -674,7 +703,23 @@ const TestPageHeader = ({
                 <ShareIcon />
               </EduButton>
             )}
-
+            {hasTestId && owner && test.status === 'draft' && (
+              <EduButton
+                isBlue
+                isGhost
+                IconBtn
+                title={
+                  isDemoPlayground
+                    ? 'This feature is not available in demo account.'
+                    : 'Delete'
+                }
+                data-cy="delete-test"
+                onClick={onDelete}
+                disabled={disableButtons || isDemoPlayground}
+              >
+                <IconTrashAlt />
+              </EduButton>
+            )}
             {owner && !showPublishForEC && (
               <EduButton
                 isBlue
@@ -688,7 +733,7 @@ const TestPageHeader = ({
                 <IconDiskette />
               </EduButton>
             )}
-            {showShareButton &&
+            {hasTestId &&
             owner &&
             showPublishButton &&
             !isEdulasticCurator &&
@@ -741,7 +786,7 @@ const TestPageHeader = ({
                 </EduButton>
               )}
             {!showUpgradePopup &&
-              showShareButton &&
+              hasTestId &&
               (owner || testStatus === 'published') &&
               !isPlaylist &&
               !showCancelButton &&

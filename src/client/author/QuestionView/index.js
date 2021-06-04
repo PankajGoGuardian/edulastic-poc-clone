@@ -13,7 +13,8 @@ import {
   Line,
 } from 'recharts'
 import { withRouter } from 'react-router'
-import { head, get, isEmpty, round, sumBy } from 'lodash'
+import { Pagination, Spin } from 'antd'
+import { head, get, isEmpty, round, sumBy, groupBy } from 'lodash'
 import {
   greyGraphstroke,
   incorrect,
@@ -53,13 +54,23 @@ import {
   getAssignmentClassIdSelector,
   getClassQuestionSelector,
   getQLabelsSelector,
+  getPageNumberSelector,
+  LCB_LIMIT_QUESTION_PER_VIEW,
+  SCROLL_SHOW_LIMIT,
 } from '../ClassBoard/ducks'
 import HooksContainer from '../ClassBoard/components/HooksContainer/HooksContainer'
-import { setStudentViewFilterAction as setFilterAction } from '../src/reducers/testActivity'
+import {
+  setStudentViewFilterAction as setFilterAction,
+  setPageNumberAction,
+} from '../src/reducers/testActivity'
 import {
   FilterSelect,
   FilterSpan,
 } from '../ClassBoard/components/Container/styled'
+import {
+  PaginationWrapper,
+  LoaderContainer,
+} from '../ClassResponses/components/Container/styled'
 
 /**
  * @param {string} studentId
@@ -95,7 +106,6 @@ CustomTooltip.propTypes = {
 CustomTooltip.defaultProps = {
   payload: {},
 }
-
 class QuestionViewContainer extends Component {
   // eslint-disable-next-line react/static-property-placement
   static contextType = LCBScrollContext
@@ -123,6 +133,8 @@ class QuestionViewContainer extends Component {
 
   state = {
     hideCorrectAnswer: true,
+    userId: '',
+    showQuestionLoader: false,
   }
 
   isMobile = () => window.innerWidth < 480
@@ -141,12 +153,36 @@ class QuestionViewContainer extends Component {
   }
 
   onClickTab = (filter) => {
-    const { setFilter } = this.props
+    const { setFilter, setPageNumber } = this.props
     setFilter(filter)
+    setPageNumber(1)
     scrollTo(document.querySelector('body'), 160, this.context.current)
   }
 
-  onClickChart = (data) => {
+  componentDidUpdate(prevProps) {
+    const { pageNumber, filter, setPageNumber } = this.props
+    const { userId } = this.state
+    if (filter != prevProps.filter && pageNumber !== 1) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      setPageNumber(1)
+    }
+    if (prevProps.pageNumber !== pageNumber) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({ userId: '', showQuestionLoader: false })
+      _scrollTo(userId, this.context?.current)
+    }
+  }
+
+  onClickChart = (data, index) => {
+    const { pageNumber, setPageNumber } = this.props
+    const questionPageNumber = Math.ceil(
+      (index + 1) / LCB_LIMIT_QUESTION_PER_VIEW
+    )
+    if (questionPageNumber !== pageNumber) {
+      this.setState({ userId: data.id, showQuestionLoader: true })
+      setTimeout(() => setPageNumber(questionPageNumber), 1)
+      return
+    }
     _scrollTo(data.id, this.context.current)
   }
 
@@ -154,6 +190,11 @@ class QuestionViewContainer extends Component {
     this.setState((prevState) => ({
       hideCorrectAnswer: !prevState.hideCorrectAnswer,
     }))
+  }
+
+  handleBottomScroll = () => {
+    const { setPageNumber } = this.props
+    setPageNumber()
   }
 
   render() {
@@ -173,8 +214,10 @@ class QuestionViewContainer extends Component {
       additionalData,
       studentsList,
       filter,
+      pageNumber,
+      setPageNumber,
     } = this.props
-    const { loading, hideCorrectAnswer } = this.state
+    const { loading, hideCorrectAnswer, showQuestionLoader } = this.state
     let filteredItems = testItems?.filter((item) =>
       item.data.questions.some((q) => q.id === question.id)
     )
@@ -266,7 +309,6 @@ class QuestionViewContainer extends Component {
         })
     }
 
-
     const questionStatusCounts = data.reduce(
       (acc, item) => ({
         wrongNumber: item.wrong + acc.wrongNumber,
@@ -293,8 +335,56 @@ class QuestionViewContainer extends Component {
       data = data.slice(0, 2)
     }
     const { assignmentId, classId } = match.params
+    const questionActivitiesGroupedByUserId = groupBy(classQuestion, 'userId')
+    const filteredTestActivities =
+      (!loading &&
+        testActivity.filter((student) => {
+          if (
+            !student.testActivityId ||
+            student.status === 'absent' ||
+            student.UTASTATUS === testActivityStatus.NOT_STARTED
+          ) {
+            return false
+          }
+          const qActivities =
+            questionActivitiesGroupedByUserId[student.studentId] || []
+
+          /**
+           * Here if question activity length is 0, which means that there is no attempt for the question
+           * by the student so, for INPROGRESS student we will show unattempted questions only in ALL filter
+           * and for submitted student we will unattempted questions in ALL filter as well as SKIPPED filter
+           * hence returning null in case of other filters.
+           */
+          if (
+            !qActivities.length &&
+            ((filter && student.UTASTATUS === testActivityStatus.START) ||
+              (student.UTASTATUS === testActivityStatus.SUBMITTED &&
+                filter &&
+                filter !== 'skipped' &&
+                filter !== 'unscoredItems'))
+          )
+            return false
+          return true
+        })) ||
+      []
+
+    const shouldShowPagination =
+      filteredTestActivities.length > SCROLL_SHOW_LIMIT
+
+    const itemsToRender = shouldShowPagination
+      ? filteredTestActivities.slice(
+          LCB_LIMIT_QUESTION_PER_VIEW * (pageNumber - 1),
+          LCB_LIMIT_QUESTION_PER_VIEW * pageNumber
+        )
+      : filteredTestActivities
+
     return (
       <>
+        {showQuestionLoader && (
+          <LoaderContainer>
+            <Spin size="large" />
+          </LoaderContainer>
+        )}
         {studentsList.length && itemId && (
           <HooksContainer
             additionalData={additionalData}
@@ -321,8 +411,7 @@ class QuestionViewContainer extends Component {
                   cursor="pointer"
                   dy={10}
                   onClick={({ index }) => {
-                    const { id } = data[index]
-                    _scrollTo(id, this.context.current)
+                    this.onClickChart(data[index], index)
                   }}
                 />
 
@@ -463,54 +552,44 @@ class QuestionViewContainer extends Component {
             </EduButton>
           </StudentButtonWrapper>
         </StudentResponse>
+        {itemsToRender.map((student, index) => {
+          const qActivities =
+            questionActivitiesGroupedByUserId[student.studentId] || []
 
-        {testActivity &&
-          !loading &&
-          testActivity.map((student, index) => {
-            if (
-              !student.testActivityId ||
-              student.status === 'absent' ||
-              student.UTASTATUS === testActivityStatus.NOT_STARTED
-            ) {
-              return null
-            }
-            const qActivities = classQuestion.filter(
-              ({ userId }) => userId === student.studentId
-            )
+          return (
+            <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
+              <ClassQuestions
+                key={index}
+                isQuestionView={isQuestionView}
+                qIndex={qIndex}
+                currentStudent={student}
+                studentViewFilter={filter}
+                classResponse={{ testItems: filteredItems, ...others }}
+                questionActivities={qActivities}
+                isPresentationMode={isPresentationMode}
+                labels={labels}
+                isLCBView
+                hideCorrectAnswer={hideCorrectAnswer}
+              />
+            </AnswerContext.Provider>
+          )
+        })}
 
-            /**
-             * Here if question activity length is 0, which means that there is no attempt for the question
-             * by the student so, for INPROGRESS student we will show unattempted questions only in ALL filter
-             * and for submitted student we will unattempted questions in ALL filter as well as SKIPPED filter
-             * hence returning null in case of other filters.
-             */
-            if (
-              !qActivities.length &&
-              ((filter && student.UTASTATUS === testActivityStatus.START) ||
-                (student.UTASTATUS === testActivityStatus.SUBMITTED &&
-                  filter &&
-                  filter !== 'skipped' &&
-                  filter !== 'unscoredItems'))
-            )
-              return null
-            return (
-              <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
-                <ClassQuestions
-                  key={index}
-                  isQuestionView={isQuestionView}
-                  qIndex={qIndex}
-                  currentStudent={student}
-                  studentViewFilter={filter}
-                  classResponse={{ testItems: filteredItems, ...others }}
-                  questionActivities={qActivities}
-                  isPresentationMode={isPresentationMode}
-                  labels={labels}
-                  isLCBView
-                  hideCorrectAnswer={hideCorrectAnswer}
-                />
-              </AnswerContext.Provider>
-            )
-          })}
+        {shouldShowPagination && (
+          <PaginationWrapper>
+            <Pagination
+              defaultCurrent={1}
+              current={pageNumber}
+              pageSize={LCB_LIMIT_QUESTION_PER_VIEW}
+              total={filteredTestActivities.length}
+              hideOnSinglePage
+              onChange={(page) => {
+                this.setState({ showQuestionLoader: true })
+                setTimeout(() => setPageNumber(page), 1)
+              }}
+            />
+          </PaginationWrapper>
+        )}
       </>
     )
   }
@@ -528,10 +607,12 @@ const enhance = compose(
       studentsList: getAllStudentsList(state),
       filter: state?.author_classboard_testActivity?.studentViewFilter,
       isDocBased: state?.author_classboard_testActivity?.data?.test?.isDocBased,
+      pageNumber: getPageNumberSelector(state),
     }),
     {
       loadClassQuestionResponses: receiveAnswersAction,
       setFilter: setFilterAction,
+      setPageNumber: setPageNumberAction,
     }
   )
 )

@@ -16,7 +16,7 @@ const NoDataContainerCentered = styled(NoDataContainer)`
     font-weight: normal;
   }
 `
-const DataSizeExceeded = () => {
+const DataSizeExceeded = ({ isDownloadable }) => {
   return (
     <NoDataContainerCentered>
       <FontAwesomeIcon icon={faExclamationTriangle} />
@@ -26,6 +26,12 @@ const DataSizeExceeded = () => {
         too much data is returned. Please select additional filters to limit the
         data.
       </p>
+      {isDownloadable && (
+        <p>
+          Alternatively, you can download the entire data using the Download CSV
+          option on top right.
+        </p>
+      )}
     </NoDataContainerCentered>
   )
 }

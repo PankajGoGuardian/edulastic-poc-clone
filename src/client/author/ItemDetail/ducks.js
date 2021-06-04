@@ -310,11 +310,12 @@ export const removeTabAction = (payload) => ({
   payload,
 })
 
-export const changeTabTitleAction = (index, value) => ({
+export const changeTabTitleAction = (index, value, widgets) => ({
   type: CHANGE_TAB_TITLE,
   payload: {
     index,
     value,
+    widgets,
   },
 })
 
@@ -508,12 +509,21 @@ export const getItemDeletingSelector = createSelector(
 
 export const getItemDetailDimensionTypeSelector = createSelector(
   getItemDetailSelector,
-  (state) => {
+  getPassageSelector,
+  (state, passage) => {
     if (!state || !state.rows) return ''
-    const left = state.rows[0].dimension.trim().slice(0, -1)
-    const right = state.rows[1]
-      ? state.rows[1].dimension.trim().slice(0, -1)
-      : '100'
+    let left = '',
+      right = ''
+    // For passage item left is passage and right is item | EV-28080
+    if (state.passageId) {
+      right = state.rows[0].dimension.trim().slice(0, -1)
+      left = (passage?.structure?.dimension || '').trim().slice(0, -1)
+    } else {
+      left = state.rows[0].dimension.trim().slice(0, -1)
+      right = state.rows[1]
+        ? state.rows[1].dimension.trim().slice(0, -1)
+        : '100'
+    }
     return `${left}-${right}`
   }
 )
@@ -589,17 +599,21 @@ const deleteWidget = (state, { rowIndex, widgetIndex }) =>
   })
 
 const updateDimension = (state, { left, right, ...rest }) => {
-  const {
-    item: { rows = [] },
-  } = state
-  if (rows.length > 0 && rows[0].dimension === left) {
+  const { item = {}, passage: { structure = {} } = {} } = state
+  const { rows = [] } = item
+  if (rows.length > 0) {
     /**
      * fixing page crash here when same option is clicked
      * separate bug is to be logged for fixing page crash
      * will ideally prevent in from the action being called in that
      */
-
-    return state
+    // For passage item left is passage and right is item | EV-28080
+    const _dimension = item.passageId
+      ? structure.dimension || ''
+      : rows[0].dimension
+    if (_dimension === left) {
+      return state
+    }
   }
 
   /**
@@ -624,6 +638,9 @@ const updateDimension = (state, { left, right, ...rest }) => {
         ]
       }
       newState.item.rows.length = 1
+      if (newState.item.passageId && newState?.passage?.structure) {
+        newState.passage.structure.dimension = left
+      }
     } else {
       // if its a pasage type. left is passage and right is the testItem
       if (newState.item.passageId) {
@@ -721,12 +738,19 @@ const removeTab = (state, payload) =>
   })
 
 const changeTabTitle = (state, payload) => {
-  const { index, value } = payload
+  const { index, value, widgets } = payload
   return produce(state, (newState) => {
-    const { passage } = newState
-    if (passage.structure?.tabs?.length) {
-      passage.structure.tabs[index] = value
-    }
+    const {
+      passage,
+      item: { rows },
+    } = newState
+    const isPassageTab = widgets.some(({ type }) => type === 'passage')
+    const tabs = isPassageTab
+      ? get(passage, 'structure.tabs', [])
+      : get(rows, [0, 'tabs'], [])
+
+    tabs[index] = value
+
     return newState
   })
 }
@@ -739,33 +763,53 @@ const useFlowLayout = (state, { rowIndex, isUseFlowLayout }) => {
   return newState
 }
 
-const moveWidget = (state, { from, to }) =>
-  produce(state, (newState) => {
-    // change the order of widgets
-    const [movedWidget] = newState.item.rows[from.rowIndex].widgets.splice(
-      from.widgetIndex,
-      1
-    )
-    movedWidget.tabIndex = to.tabIndex || 0
-    newState.item.rows[to.rowIndex].widgets.splice(
-      to.widgetIndex,
-      0,
-      movedWidget
-    )
-    newState.qids = newState.item.rows
-      .flatMap((x) => x.widgets)
-      .filter((widget) => widget.widgetType === 'question')
-      .map((x) => x.reference)
-    const { questions } = newState?.item?.data || {}
-    if (Array.isArray(questions) && questions.length > 0) {
-      // change the order of item.data.questions
-      newState.item.data.questions = reSequenceQuestionsWithWidgets(
-        get(newState, `item.rows[${to?.rowIndex}].widgets`),
-        questions
+const moveWidget = (state, { from, to }) => {
+  if (from.isPassageQuestion) {
+    return produce(state, (newState) => {
+      // change the order of widgets
+      const widgets = newState.passage?.structure?.widgets || []
+      const [movedWidget] = widgets.splice(from.widgetIndex, 1)
+      movedWidget.tabIndex = to.tabIndex || 0
+      widgets.splice(to.widgetIndex, 0, movedWidget)
+
+      const { data } = newState?.passage || {}
+      if (Array.isArray(data) && data.length > 0) {
+        // change the order of passage.data
+        newState.passage.data = reSequenceQuestionsWithWidgets(
+          get(newState, `passage.structure.widgets`),
+          data
+        )
+      }
+    })
+  } else {
+    return produce(state, (newState) => {
+      // change the order of widgets
+      const [movedWidget] = newState.item.rows[from.rowIndex].widgets.splice(
+        from.widgetIndex,
+        1
       )
-      markQuestionLabel([newState.item]) // change the question label as per new order
-    }
-  })
+      movedWidget.tabIndex = to.tabIndex || 0
+      newState.item.rows[to.rowIndex].widgets.splice(
+        to.widgetIndex,
+        0,
+        movedWidget
+      )
+      newState.qids = newState.item.rows
+        .flatMap((x) => x.widgets)
+        .filter((widget) => widget.widgetType === 'question')
+        .map((x) => x.reference)
+      const { questions } = newState?.item?.data || {}
+      if (Array.isArray(questions) && questions.length > 0) {
+        // change the order of item.data.questions
+        newState.item.data.questions = reSequenceQuestionsWithWidgets(
+          get(newState, `item.rows[${to?.rowIndex}].widgets`),
+          questions
+        )
+        markQuestionLabel([newState.item]) // change the question label as per new order
+      }
+    })
+  }
+}
 
 export function reducer(state = initialState, { type, payload }) {
   switch (type) {

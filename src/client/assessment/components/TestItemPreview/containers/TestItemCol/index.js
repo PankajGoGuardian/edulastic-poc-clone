@@ -25,6 +25,10 @@ import { StyleH2Heading } from './styled/Headings'
 import TabContainer from './TabContainer'
 import FilesView from '../../../../widgets/UploadFile/components/FilesView'
 import StudentWorkCollapse from '../../components/StudentWorkCollapse'
+import {
+  LCB_LIMIT_QUESTION_PER_VIEW,
+  SCROLL_SHOW_LIMIT,
+} from '../../../../../author/ClassBoard/ducks'
 
 class TestItemCol extends Component {
   constructor() {
@@ -282,6 +286,9 @@ class TestItemCol extends Component {
       colWidth,
       userWork,
       saveUserWork,
+      pageNumber,
+      setPageNumber,
+      isDocBased,
       ...restProps
     } = this.props
     const { currentTab } = this.state
@@ -293,12 +300,28 @@ class TestItemCol extends Component {
       isStudentAttempt,
       isExpressGrader,
       isStudentReport,
+      isQuestionView,
     } = restProps
 
     const widgets =
       (col?.tabs && !!col?.tabs?.length && isPrintPreview
         ? sortBy(col?.widgets, ['tabIndex'])
         : col?.widgets) || []
+
+    const filteredWidgets = widgets.filter(
+      (widget) => widget.type !== questionType.SECTION_LABEL
+    )
+    const shouldShowPagination =
+      isDocBased &&
+      filteredWidgets.length > SCROLL_SHOW_LIMIT &&
+      !isQuestionView
+
+    const widgetsToRender = shouldShowPagination
+      ? filteredWidgets.slice(
+          LCB_LIMIT_QUESTION_PER_VIEW * (pageNumber - 1),
+          LCB_LIMIT_QUESTION_PER_VIEW * pageNumber
+        )
+      : filteredWidgets
 
     return (
       <ScrollContext.Provider
@@ -360,42 +383,40 @@ class TestItemCol extends Component {
             </>
           )}
           <WidgetContainer data-cy="widgetContainer">
-            {widgets
-              .filter((widget) => widget.type !== questionType.SECTION_LABEL)
-              .map((widget, i, arr) => (
-                <React.Fragment key={i}>
-                  {col.tabs &&
-                    !!col.tabs.length &&
-                    currentTab === widget.tabIndex &&
-                    !isPrintPreview &&
-                    this.renderTabContent(
-                      widget,
-                      col.flowLayout,
-                      i,
-                      showStackedView,
-                      arr.length
-                    )}
-                  {col.tabs &&
-                    !!col.tabs.length &&
-                    isPrintPreview &&
-                    this.renderTabContent(
-                      widget,
-                      col.flowLayout,
-                      i,
-                      showStackedView,
-                      arr.length
-                    )}
-                  {col.tabs &&
-                    !col.tabs.length &&
-                    this.renderTabContent(
-                      widget,
-                      col.flowLayout,
-                      i,
-                      showStackedView,
-                      arr.length
-                    )}
-                </React.Fragment>
-              ))}
+            {widgetsToRender.map((widget, i, arr) => (
+              <React.Fragment key={i}>
+                {col.tabs &&
+                  !!col.tabs.length &&
+                  currentTab === widget.tabIndex &&
+                  !isPrintPreview &&
+                  this.renderTabContent(
+                    widget,
+                    col.flowLayout,
+                    i,
+                    showStackedView,
+                    arr.length
+                  )}
+                {col.tabs &&
+                  !!col.tabs.length &&
+                  isPrintPreview &&
+                  this.renderTabContent(
+                    widget,
+                    col.flowLayout,
+                    i,
+                    showStackedView,
+                    arr.length
+                  )}
+                {col.tabs &&
+                  !col.tabs.length &&
+                  this.renderTabContent(
+                    widget,
+                    col.flowLayout,
+                    i,
+                    showStackedView,
+                    arr.length
+                  )}
+              </React.Fragment>
+            ))}
             {this.showScratchpad && (
               <Scratchpad
                 hideTools
@@ -443,4 +464,4 @@ TestItemCol.defaultProps = {
 
 TestItemCol.contextType = AnswerContext
 
-export default TestItemCol
+export default React.memo(TestItemCol)

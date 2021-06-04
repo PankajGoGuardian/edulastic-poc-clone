@@ -476,7 +476,7 @@ class Questions extends React.Component {
     const { checkAnswer, changePreview } = this.props
 
     changePreview('show')
-    checkAnswer('show')
+    checkAnswer({ mode: 'show' })
   }
 
   handleClear = () => {

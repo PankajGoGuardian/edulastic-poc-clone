@@ -102,7 +102,7 @@ const PurchaseFlowModals = (props) => {
     setCartVisible,
     cartQuantities,
     fromSideMenu,
-    setRequestQuoteModal,
+    openRequestInvoiceModal,
   } = props
 
   const [payWithPoModal, setPayWithPoModal] = useState(false)
@@ -302,7 +302,25 @@ const PurchaseFlowModals = (props) => {
       setProductsCart(productQuantities)
       setEmailIds(emails)
     } else if (cartVisible) {
-      if (Object.keys(cartQuantities).find((x) => cartQuantities[x] > 1)) {
+      /**
+       * If atleast one cart quantity is greater than 1 or
+       * atleast one of the added product is already purchased
+       * then proceed with multiple license purchase flow
+       * else individual purchase
+       */
+      if (
+        Object.keys(cartQuantities).some(
+          (x) =>
+            cartQuantities[x] > 1 ||
+            itemBankSubscriptions.some((permission) => {
+              return (
+                permission.itemBankId ===
+                  products.find((p) => p.id === x)?.linkedProductId &&
+                !permission.isTrial
+              )
+            })
+        )
+      ) {
         const productQuantities = products.map((product) => ({
           ...product,
           quantity: cartQuantities[product.id],
@@ -310,11 +328,7 @@ const PurchaseFlowModals = (props) => {
         setProductsCart(productQuantities)
         setEmailIds(emails)
       } else {
-        setAddOnProductIds(
-          Object.keys(cartQuantities).filter(
-            (x) => x != 'null' && cartQuantities[x]
-          )
-        )
+        setAddOnProductIds(Object.keys(cartQuantities))
       }
     } else if (showBuyMoreModal) {
       const productQuantities = productsToshow.map((product) => ({
@@ -342,11 +356,6 @@ const PurchaseFlowModals = (props) => {
     handleSubscriptionAddonModalClose()
     setCartVisible(false)
     setShowUpgradeModal(true)
-    console.log('current cart', { productsCart, selectedProductIds })
-  }
-
-  const handleOpenRequestInvoiceModal = () => {
-    setRequestQuoteModal(true)
   }
 
   return (
@@ -394,7 +403,7 @@ const PurchaseFlowModals = (props) => {
       {cartVisible && !fromSideMenu && (
         <CartModal
           visible={cartVisible}
-          products={[teacherPremium, ...itemBankPremium]}
+          products={products}
           teacherPremium={teacherPremium}
           setTotalAmount={setTotalAmount}
           bulkInviteBookKeepers={bulkInviteBookKeepers}
@@ -404,7 +413,8 @@ const PurchaseFlowModals = (props) => {
           handleClick={handleClick}
           closeModal={() => setCartVisible(false)}
           userId={user?._id}
-          handleOpenRequestInvoiceModal={handleOpenRequestInvoiceModal}
+          handleOpenRequestInvoiceModal={openRequestInvoiceModal}
+          subsLicenses={subsLicenses}
         />
       )}
       {showUpgradeModal && (
@@ -478,7 +488,7 @@ PurchaseFlowModals.defaultProps = {
   setShowBuyMoreModal: () => {},
   setSelectedLicenseId: () => {},
   setClickedBundleId: () => {},
-  setRequestQuoteModal: () => {},
+  openRequestInvoiceModal: () => {},
 }
 
 export default compose(

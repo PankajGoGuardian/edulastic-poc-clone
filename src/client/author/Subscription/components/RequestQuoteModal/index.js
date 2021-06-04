@@ -11,6 +11,7 @@ import { Radio } from 'antd'
 import { camelCase } from 'lodash'
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
+import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import { emailRegex } from '../../../../common/utils/helpers'
 import { getUserDetails } from '../../../../student/Login/ducks'
 import {
@@ -42,17 +43,22 @@ const getFooterComponent = ({
   isRequestQuoteActionPending,
   disabled,
 }) => (
-  <EduButton
-    loading={isRequestQuoteActionPending}
-    fontSize="14px"
-    width="200px"
-    height="48px"
+  <AuthorCompleteSignupButton
+    renderButton={(handleClick) => (
+      <EduButton
+        loading={isRequestQuoteActionPending}
+        fontSize="14px"
+        width="200px"
+        height="48px"
+        onClick={handleClick}
+        inverse
+        disabled={disabled}
+      >
+        SUBMIT
+      </EduButton>
+    )}
     onClick={handleSubmit}
-    inverse
-    disabled={disabled}
-  >
-    SUBMIT
-  </EduButton>
+  />
 )
 
 const RequestQuoteModal = ({
@@ -186,16 +192,15 @@ const RequestQuoteModal = ({
 
   const productsToShow = products.filter((x) => x.type !== 'PREMIUM') || {}
 
+  // TODO: Replace id once student license is implemented
   const productWithStudentLicense = [
     {
       id: '604b8207144578097fd1f12f',
-      name: 'student license',
+      name: 'Student License',
       type: 'studentLicense',
     },
     ...productsToShow,
   ]
-
-  console.log('productWithStudentLicense', productWithStudentLicense)
 
   const handleKeyPress = (e) => {
     const specialCharRegex = new RegExp('[0-9\b\t]+') // allow numbers, backspace and tab

@@ -61,8 +61,8 @@ const SAMPLE_PRODUCT_NAMES = {
 const RequestInvoiceModal = ({
   visible = false,
   onCancel = () => {},
-  cartProducts = SAMPLE_PRODUCTS || {},
-  productNamesById = SAMPLE_PRODUCT_NAMES || {},
+  cartProducts = {},
+  productNamesAndPriceById = {},
   userOrgData = {},
   isRequestInvoiceActionPending = false,
   handleRequestInvoice = () => {},
@@ -181,14 +181,18 @@ const RequestInvoiceModal = ({
     >
       <Container width="500">
         <Text>Shopping Cart</Text>
-        {Object.entries(cartProducts).map(([id, price]) => (
+        {Object.entries(cartProducts).map(([id, quantity]) => (
           <FlexContainer
             key={id}
             justifyContent="space-between"
             alignItems="center"
           >
-            <SubText key="productName">{productNamesById[id]}</SubText>
-            <SubText key="productPrice">${price}</SubText>
+            <SubText key="productName">
+              {productNamesAndPriceById[id].name}
+            </SubText>
+            <SubText key="productPrice">
+              ${quantity * productNamesAndPriceById[id].price}
+            </SubText>
           </FlexContainer>
         ))}
         <hr />

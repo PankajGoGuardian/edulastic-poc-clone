@@ -1,3 +1,4 @@
+import React, { useEffect, useMemo, useState } from 'react'
 import {
   CustomModalStyled,
   EduButton,
@@ -5,14 +6,14 @@ import {
   notification,
   TextInputStyled,
 } from '@edulastic/common'
-import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import Styled from 'styled-components'
 import { emailRegex } from '../../../common/utils/helpers'
 import ProductsList from '../../src/components/common/PurchaseModals/ProductsList'
 import { EmailWrapper } from '../../src/components/common/PurchaseModals/styled'
 import { ModalBody } from '../../src/components/common/PurchaseModals/SubscriptionAddonModal/styled'
-import { slice as subscriptionSlice } from '../ducks'
+import { getSubscriptionSelector, slice as subscriptionSlice } from '../ducks'
+import AuthorCompleteSignupButton from '../../../common/components/AuthorCompleteSignupButton'
 
 function CartModal({
   products,
@@ -28,14 +29,11 @@ function CartModal({
   visible,
   closeModal,
   handleOpenRequestInvoiceModal,
+  subsLicenses,
 }) {
   const teacherPremiumId = teacherPremium?.id
   const [emailValues, setEmailValues] = useState('')
-  useEffect(() => {
-    if (teacherPremiumId && !quantities[teacherPremiumId]) {
-      setQuantities({ ...quantities, [teacherPremiumId]: 1 })
-    }
-  }, [teacherPremiumId])
+
   const isMultipleQuantities = Object.keys(quantities).find(
     (x) => quantities[x] > 0
   )
@@ -87,25 +85,40 @@ function CartModal({
     })
   }
 
+  const productsToshow = useMemo(() => {
+    return products.filter((x) => {
+      return quantities[x.id]
+    })
+  }, [products, quantities])
+
   const footer = [
-    <EduButton
-      isGhost
+    <AuthorCompleteSignupButton
+      renderButton={(handleClick) => (
+        <EduButton
+          isGhost
+          onClick={handleClick}
+          data-cy="requestInvoice"
+          width="220px"
+          height="45px"
+        >
+          REQUEST INVOICE
+        </EduButton>
+      )}
       onClick={handleOpenRequestInvoiceModal}
-      data-cy="requestInvoice"
-      width="220px"
-      height="45px"
-    >
-      REQUEST INVOICE
-    </EduButton>,
-    <EduButton
+    />,
+    <AuthorCompleteSignupButton
+      renderButton={(handleClick) => (
+        <EduButton
+          onClick={handleClick}
+          data-cy="proceedPayment"
+          width="220px"
+          height="45px"
+        >
+          PROCEED WITH PAYMENT
+        </EduButton>
+      )}
       onClick={handleProceed}
-      data-cy="proceedPayment"
-      width="220px"
-      height="45px"
-      disabled={!quantities[teacherPremium.id]}
-    >
-      PROCEED WITH PAYMENT
-    </EduButton>,
+    />,
   ]
 
   const selectedProductIds = Object.keys(quantities).filter(
@@ -139,7 +152,7 @@ function CartModal({
           isCart
           showRenewalOptions={false}
           showMultiplePurchaseModal={false}
-          productsToshow={products}
+          productsToshow={productsToshow}
           setTotalPurchaseAmount={setTotalAmount}
           setQuantities={setQuantities}
           quantities={quantities}
@@ -147,8 +160,8 @@ function CartModal({
             console.log('setSelectedProductIds', args)
           }}
           selectedProductIds={selectedProductIds}
-          currentItemId={null}
-          subsLicenses={[]}
+          currentItemId={teacherPremiumId}
+          subsLicenses={subsLicenses}
           teacherPremium={teacherPremium}
         />
         {isMultipleQuantities && (
@@ -170,6 +183,7 @@ function CartModal({
 export default connect(
   (state) => ({
     quantities: state?.subscription?.cartQuantities,
+    subscription: getSubscriptionSelector(state),
   }),
   {
     setQuantities: subscriptionSlice.actions.setCartQuantities,

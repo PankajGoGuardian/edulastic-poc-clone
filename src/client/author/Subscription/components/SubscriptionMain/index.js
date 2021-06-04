@@ -13,6 +13,7 @@ import {
   IconWord,
   IconSchool,
 } from '@edulastic/icons'
+import produce from 'immer'
 import { difference, groupBy, isBoolean, keyBy, map, uniq, omit } from 'lodash'
 import React, { useEffect, useMemo, useState } from 'react'
 import { Tooltip } from 'antd'
@@ -38,56 +39,6 @@ import {
 } from './styled'
 import TabHeaderContent from './TabHeaderContent'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
-
-/* const getUpgradeToMultipleUsersPlanAction = ({ openPurchaseLicenseModal }) => (
-  <ActionsWrapper>
-    <EduButton height="40px" onClick={openPurchaseLicenseModal} isGhost>
-      PURCHASE LICENSE
-    </EduButton>
-    <Link to="/author/subscription/manage-licenses">
-      <EduButton height="40px" isGhost>
-        MANAGE LICENSE
-      </EduButton>
-    </Link>
-  </ActionsWrapper>
-)
-
-const availablePlans = [
-  {
-    imgSrc: IMG2,
-    title: 'Upgrade Multiple Users to Premium',
-    description:
-      'Administer common assesement, get immediate school or district-wide reports, and enable premium access for all teachers in your school or district.',
-    getActionsComp: getUpgradeToMultipleUsersPlanAction,
-  },
-] */
-
-/* const PlansComponent = ({
-  imgSrc,
-  title,
-  description,
-  getActionsComp,
-  isblur,
-  openPaymentServiceModal,
-  openPurchaseLicenseModal,
-}) => (
-  <PlansContainer isblur={isblur}>
-    <ContentWrapper>
-      <PlanImage>
-        <img src={imgSrc} alt="" />
-      </PlanImage>
-      <PlanDetails>
-        <Title margin="0 0 8px 0">{title}</Title>
-        <Description>{description}</Description>
-      </PlanDetails>
-    </ContentWrapper>
-    {getActionsComp({
-      openPaymentServiceModal,
-      openPurchaseLicenseModal,
-      isblur,
-    })}
-  </PlansContainer>
-) */
 
 const productsMetaData = {
   'Teacher Premium': {
@@ -126,106 +77,6 @@ function getProductsWithMetaData(metaData, products) {
   })
 }
 
-const productsData = [
-  {
-    id: '5e3d2eb34bdb8a0007e22223',
-    icon: <IconCalc />,
-    title: 'SparkMath',
-    description:
-      'Pre-built assessments and differentiated Math practice for each student.',
-    learnMoreLinks: 'https://edulastic.com/spark-math',
-    grades: 'Grades 6-8',
-    filters: 'ELA & ELL, Social Studies, World Languages',
-    price: '100',
-  },
-  {
-    id: '',
-    icon: <IconCloseBook />,
-    title: 'Book Buddies',
-    description: 'Assessments and prompts on your favorite books.',
-    learnMoreLinks: 'https://edulastic.com/spark-reading',
-    grades: 'Grades 6-8',
-    filters: 'ELA & ELL, Social Studies, World Languages',
-    price: '100',
-  },
-  {
-    id: '',
-    icon: <IconReading />,
-    title: 'SparkReading',
-    description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean non ante fermentum, bibendum ex ut, tincidunt diam, bibendum ex ut, tincidunt diam.',
-    learnMoreLinks: 'https://edulastic.com/spark-reading',
-    grades: 'Grades 6-8',
-    filters:
-      'Book buddies, STEM cross-curricular, Phonics practice, Spark Words and reading comp practice',
-    price: '100',
-  },
-  {
-    id: '',
-    icon: <IconScienceLab />,
-    title: 'STEM Cross-curricular',
-    description: 'Science passages with reading and science questions.',
-    learnMoreLinks: 'https://edulastic.com/spark-reading',
-    grades: 'Grades 6-8',
-    filters: 'ELA & ELL, Social Studies, World Languages',
-    price: '100',
-  },
-  {
-    id: '',
-    icon: <IconPhonics />,
-    title: 'Phonics Practice',
-    description:
-      'Full year of practice assignments to help all students master each sound.',
-    learnMoreLinks: 'https://edulastic.com/spark-reading',
-    grades: 'Grades 6-8',
-    filters: 'ELA & ELL, Social Studies, World Languages',
-    price: '100',
-  },
-  {
-    id: '',
-    icon: <IconWord />,
-    title: 'SparkWord',
-    description:
-      'NGSS-aligned pre-built assessments and item banks for grades K-12.',
-    learnMoreLinks: 'https://edulastic.com/spark-science',
-    grades: 'Grades 6-8',
-    filters: 'ELA & ELL, Social Studies, World Languages',
-    price: '100',
-  },
-  {
-    id: '',
-    icon: <IconLaptop />,
-    title: 'Reading Comprehension Practice',
-    description: 'Fiction and nonfiction to practice close Reading.',
-    learnMoreLinks: 'https://edulastic.com/spark-reading',
-    grades: 'Grades 6-8',
-    filters: 'ELA & ELL, Social Studies, World Languages',
-    price: '100',
-  },
-  {
-    id: '',
-    icon: <IconScience />,
-    title: 'SparkScience',
-    description:
-      'NGSS-aligned pre-built assessments and item banks for grades K-12.',
-    learnMoreLinks: 'https://edulastic.com/spark-science',
-    grades: 'Grades 6-8',
-    filters: 'ELA & ELL, Social Studies, World Languages',
-    price: '100',
-  },
-  {
-    id: '',
-    icon: <IconRobot />,
-    title: 'SparkCS',
-    description:
-      'Full year of practice assignments to help all students master each sound.',
-    learnMoreLinks: 'https://edulastic.com/spark-science',
-    grades: 'Grades 6-8',
-    filters: 'ELA & ELL, Social Studies, World Languages',
-    price: '100',
-  },
-]
-
 const SubscriptionMain = ({
   openPaymentServiceModal,
   openPurchaseLicenseModal,
@@ -259,6 +110,7 @@ const SubscriptionMain = ({
   setCartQuantities,
   cartQuantities,
   subscription,
+  subsLicenses = [],
 }) => {
   const [showSelectStates, setShowSelectStates] = useState(false)
   const [isTrialModalVisible, setIsTrialModalVisible] = useState(false)
@@ -339,7 +191,7 @@ const SubscriptionMain = ({
   const featuredBundles = FEATURED || []
   const getBundleByProductId = (productId) =>
     (featuredBundles &&
-      featuredBundles.find(
+      featuredBundles?.find(
         (bundle) => bundle?.config?.subscriptionData?.productId === productId
       )) ||
     {}
@@ -469,13 +321,124 @@ const SubscriptionMain = ({
     ? [productData?.productId]
     : []
 
-  const toggleCart = (productId) => {
+  const isUserPremium = ['premium', 'enterprise', 'partial_premium'].includes(
+    subType?.toLowerCase?.()
+  )
+
+  const totalRemainingTeacherPremiumCount = useMemo(() => {
+    if (subsLicenses && teacherPremium) {
+      const {
+        totalCount: totalTeacherPremium,
+        usedCount: totalTeacherPremiumUsedCount,
+      } = subsLicenses.find((x) => x.productId === teacherPremium?.id) || {}
+
+      return totalTeacherPremium - totalTeacherPremiumUsedCount
+    }
+    return 0
+  }, [subsLicenses, teacherPremium])
+
+  const toggleCart = (productId, source) => {
     const quantities = cartQuantities
     if (productId) {
       if (cartQuantities[productId]) {
-        setCartQuantities(omit(quantities, [productId]))
+        // if removing tp and user is not premium
+        if (source === 'tp' && !isUserPremium) {
+          setCartQuantities({})
+        } else if (source === 'tp' && isUserPremium) {
+          setCartQuantities(
+            produce(cartQuantities, (draft) => {
+              delete draft[productId]
+              for (const [_productId, _productCount] of Object.entries(draft)) {
+                const hasBankAccess = itemBankSubscriptions.find((x) => {
+                  return (
+                    x.itemBankId ===
+                    products.find((y) => y.id === _productId)?.linkedProductId
+                  )
+                })
+                if (hasBankAccess && !hasBankAccess.isTrial) {
+                  const hasProductLicense = subsLicenses?.find(
+                    (x) => x.productId === _productId
+                  )
+                  if (hasProductLicense) {
+                    const { totalCount = 0, usedCount = 0 } = hasProductLicense
+                    const diff =
+                      totalCount - usedCount + (draft[_productId] || 0)
+
+                    if (totalRemainingTeacherPremiumCount - diff < 0) {
+                      delete draft[_productId]
+                    }
+                  }
+                } else if (hasBankAccess && hasBankAccess.isTrial) {
+                  draft[_productId] = 1
+                }
+              }
+              return draft
+            })
+          )
+        } else {
+          setCartQuantities(
+            produce(cartQuantities, (draft) => {
+              delete draft[productId]
+              return draft
+            })
+          )
+        }
       } else {
-        setCartQuantities({ ...quantities, [productId]: 1 })
+        const changes = { [productId]: 1 }
+
+        const hasAddonAccess =
+          productId === teacherPremium.id ||
+          itemBankSubscriptions?.find((x) => {
+            return (
+              x.itemBankId ===
+                products?.find((y) => y.id === productId)?.linkedProductId &&
+              !x.isTrial
+            )
+          })
+
+        if (quantities[teacherPremium.id] === undefined && source === 'addon') {
+          // if additions of addons and user is not premium
+          if (!isUserPremium) {
+            Object.assign(changes, { [teacherPremium.id]: 1 })
+            notification({
+              type: 'info',
+              msg: `Note: Teacher Premium is added to cart by default since you are on ${
+                subType === 'TRIAL_PREMIUM' ? 'Trial Premium' : 'free'
+              } plan`,
+            })
+          } else if (isUserPremium && subsLicenses.length && hasAddonAccess) {
+            // if user is premium and adding a bank which he has access to
+
+            const newAddons = { ...quantities, ...changes }
+
+            const totalRemainingItemBanksLicenseCount = subsLicenses.reduce(
+              (a, c) => {
+                if (
+                  c.productId === teacherPremium.id ||
+                  !Object.keys(newAddons).includes(c.productId)
+                )
+                  return a
+                const { totalCount, usedCount } = c
+                const delta = totalCount - usedCount
+                return delta > a ? delta : a
+              },
+              0
+            )
+
+            const diff =
+              totalRemainingTeacherPremiumCount -
+              totalRemainingItemBanksLicenseCount
+
+            if (diff <= 0) {
+              Object.assign(changes, { [teacherPremium.id]: 1 })
+              notification({
+                type: 'info',
+                msg: `Note: Teacher Premium is added to cart by default since Itembank Licenses cannot be more than `,
+              })
+            }
+          }
+        }
+        setCartQuantities({ ...quantities, ...changes })
       }
     }
   }
@@ -541,7 +504,7 @@ const SubscriptionMain = ({
                       <span>$ {teacherPremium.price}</span> per Teacher
                     </Price>
                     <EduButton
-                      onClick={() => toggleCart(teacherPremium.id)}
+                      onClick={() => toggleCart(teacherPremium.id, 'tp')}
                       height="32px"
                       width="180px"
                       className={
@@ -587,25 +550,30 @@ const SubscriptionMain = ({
                         }
                         placement="bottom"
                       >
-                        <EduButton
+                        <AuthorCompleteSignupButton
+                          renderButton={(handleClick) => (
+                            <EduButton
+                              onClick={handleClick}
+                              height="32px"
+                              width="180px"
+                              isGhost
+                              isBlue
+                              data-cy="subscriptionStartTrialbtn"
+                              className={
+                                isPremiumTrialUsed &&
+                                !subscription.length &&
+                                'disabled'
+                              }
+                            >
+                              Try Now
+                            </EduButton>
+                          )}
                           onClick={() => {
                             !(isPremiumTrialUsed && !subscription.length)
                               ? handleStartTrialButtonClick()
                               : {}
                           }}
-                          height="32px"
-                          width="180px"
-                          isGhost
-                          isBlue
-                          data-cy="subscriptionStartTrialbtn"
-                          className={
-                            isPremiumTrialUsed &&
-                            !subscription.length &&
-                            'disabled'
-                          }
-                        >
-                          Try Now
-                        </EduButton>
+                        />
                       </Tooltip>
                     )}
                   </CardRightWrapper>
@@ -631,7 +599,7 @@ const SubscriptionMain = ({
               return false
             })
             .map((_product) => {
-              const itemBankSubscription = itemBankSubscriptions.find(
+              const itemBankSubscription = itemBankSubscriptions?.find(
                 (ib) => ib.itemBankId === _product?.linkedProductId
               )
               return (
@@ -688,7 +656,7 @@ const SubscriptionMain = ({
                       <span>$ {_product.price}</span> per Teacher
                     </Price>
                     <EduButton
-                      onClick={() => toggleCart(_product.id)}
+                      onClick={() => toggleCart(_product.id, 'addon')}
                       height="32px"
                       width="180px"
                       data-cy={
@@ -729,7 +697,24 @@ const SubscriptionMain = ({
                         }
                         placement="bottom"
                       >
-                        <EduButton
+                        <AuthorCompleteSignupButton
+                          renderButton={(handleClick) => (
+                            <EduButton
+                              onClick={handleClick}
+                              className={
+                                usedTrialItemBankIds.includes(
+                                  _product.linkedProductId
+                                ) && 'disabled'
+                              }
+                              height="32px"
+                              width="180px"
+                              isGhost
+                              isBlue
+                              data-cy="subscriptionStartTrialbtn"
+                            >
+                              Try Now
+                            </EduButton>
+                          )}
                           onClick={() => {
                             !usedTrialItemBankIds.includes(
                               _product.linkedProductId
@@ -737,19 +722,7 @@ const SubscriptionMain = ({
                               ? handleStartTrialButtonClick(_product.id)
                               : {}
                           }}
-                          className={
-                            usedTrialItemBankIds.includes(
-                              _product.linkedProductId
-                            ) && 'disabled'
-                          }
-                          height="32px"
-                          width="180px"
-                          isGhost
-                          isBlue
-                          data-cy="subscriptionStartTrialbtn"
-                        >
-                          Try Now
-                        </EduButton>
+                        />
                       </Tooltip>
                     )}
                   </CardRightWrapper>

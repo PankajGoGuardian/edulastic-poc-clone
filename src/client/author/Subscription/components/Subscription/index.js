@@ -1,5 +1,5 @@
 import { segmentApi } from '@edulastic/api'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import loadable from '@loadable/component'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
@@ -206,7 +206,6 @@ const Subscription = (props) => {
     isSuccess = false,
     subscription = {},
     user,
-    fetchUserSubscriptionStatus,
     isPremiumTrialUsed,
     itemBankSubscriptions = [],
     startTrialAction,
@@ -255,7 +254,7 @@ const Subscription = (props) => {
 
   useEffect(() => {
     // getSubscription on mount
-    fetchUserSubscriptionStatus()
+    // fetchUserSubscriptionStatus() // fetching already happening from sidemenu mount
     fetchMultipleSubscriptions({})
   }, [])
 
@@ -287,12 +286,21 @@ const Subscription = (props) => {
   const closePurchaseLicenseModal = () => setpurchaseLicenseModal(false)
   const closeRequestOrSubmitSuccessModal = () =>
     toggleRequestOrSubmitSuccessModal(false)
-  // const openRequestInvoiceModal = () => setRequestInvoiceModal(true)
+  const openRequestInvoiceModal = () => setRequestInvoiceModal(true)
   const closeRequestInvoiceModal = () => setRequestInvoiceModal(false)
   const openRequestQuoteModal = () => setRequestQuoteModal(true)
   const closeRequestQuoteModal = () => setRequestQuoteModal(false)
   const openSubmitPOModal = () => setSubmitPOModal(true)
   const closeSubmitPOModal = () => setSubmitPOModal(false)
+
+  const productNamesAndPriceById = useMemo(
+    () =>
+      products?.reduce(
+        (a, c) => ({ ...a, [c.id]: { name: c.name, price: c.price } }),
+        {}
+      ) || {},
+    [products]
+  )
 
   const isSubscribed =
     subType === 'premium' ||
@@ -433,6 +441,7 @@ const Subscription = (props) => {
             cartQuantities={cartQuantities}
             setCartQuantities={setCartQuantities}
             subscription={subscription}
+            subsLicenses={subsLicenses}
           />
         )}
       </SubscriptionContentWrapper>
@@ -460,7 +469,7 @@ const Subscription = (props) => {
         subsLicenses={subsLicenses}
         setProductData={setProductData}
         trialAddOnProductIds={trialAddOnProductIds}
-        setRequestQuoteModal={setRequestQuoteModal}
+        openRequestInvoiceModal={openRequestInvoiceModal}
       />
 
       <HasLicenseKeyModal
@@ -499,6 +508,8 @@ const Subscription = (props) => {
 
       {isRequestInvoiceModalVisible && (
         <RequestInvoiceModal
+          cartProducts={cartQuantities}
+          productNamesAndPriceById={productNamesAndPriceById}
           visible={isRequestInvoiceModalVisible}
           onCancel={closeRequestInvoiceModal}
         />
@@ -546,7 +557,6 @@ export default compose(
     }),
     {
       verifyAndUpgradeLicense: slice.actions.upgradeLicenseKeyPending,
-      fetchUserSubscriptionStatus: slice.actions.fetchUserSubscriptionStatus,
       startTrialAction: slice.actions.startTrialAction,
       setPaymentServiceModal: slice.actions.setPaymentServiceModal,
       resetTestFilters: resetTestFiltersAction,

@@ -982,6 +982,7 @@ function* signup({ payload }) {
       classCode,
       passwordForExistingUser,
       isAdmin,
+      utm_source,
     } = payload
     let nameList = name.split(' ')
     nameList = nameList.filter((item) => !!(item && item.trim()))
@@ -1015,6 +1016,7 @@ function* signup({ payload }) {
       lastName,
       role,
       districtId,
+      utm_source,
     }
 
     if (classCode) {
@@ -1114,11 +1116,12 @@ const getLoggedOutUrl = () => {
   // When u try to change this function change the duplicate function in "packages/api/src/utils/API.js" also
   const path = getWordsInURLPathName(window.location.pathname)
   const pathname = window.location.pathname.toLocaleLowerCase()
+  const search = window.location?.search
   if (pathname === '/getstarted') {
     return '/getStarted'
   }
   if (pathname === '/signup') {
-    return '/signup'
+    return `/signup${search}`
   }
   if (pathname === '/studentsignup') {
     return '/studentsignup'

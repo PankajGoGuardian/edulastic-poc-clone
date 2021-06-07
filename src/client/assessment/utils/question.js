@@ -1,4 +1,4 @@
-import { isObject, get, set, isEmpty, keys } from 'lodash'
+import { isObject, get, set, isEmpty, keys, isString } from 'lodash'
 import { produce } from 'immer'
 import { appLanguages, questionType } from '@edulastic/constants'
 import { isValidUpdate } from '@edulastic/common'
@@ -101,9 +101,15 @@ const getLanguageDataPaths = (patterns, data) => {
 
 const findRemovedIndex = (newOptions = [], prevOptions = []) => {
   let removedIndex = -1
-  const newValues = newOptions.map((op) => op.value)
+  const newValues = newOptions.map((op) => {
+    if (isString(op)) {
+      return op
+    }
+    return op.value
+  })
   prevOptions.forEach((op, opIndex) => {
-    if (!newValues.includes(op.value)) {
+    const compare = isString(op) ? op : op.value
+    if (!newValues.includes(compare)) {
       removedIndex = opIndex
     }
   })
@@ -181,6 +187,21 @@ export const changeDataInPreferredLanguage = (
           )
           if (removedIndex !== -1) {
             draft.languageFeatures[langKey]?.options?.splice(removedIndex, 1)
+          }
+        } else if (newQuestion.type === questionType.CHOICE_MATRIX) {
+          const removedStemIndex = findRemovedIndex(
+            newQuestion?.stems,
+            prevQuestion?.stems
+          )
+          if (removedStemIndex !== -1) {
+            draft.languageFeatures[langKey]?.stems?.splice(removedStemIndex, 1)
+          }
+          const removedOpIndex = findRemovedIndex(
+            newQuestion?.options,
+            prevQuestion?.options
+          )
+          if (removedOpIndex !== -1) {
+            draft.languageFeatures[langKey]?.options?.splice(removedOpIndex, 1)
           }
         }
 

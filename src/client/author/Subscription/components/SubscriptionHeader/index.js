@@ -1,27 +1,52 @@
+import { lightGrey } from '@edulastic/colors'
 import { EduButton } from '@edulastic/common'
-import { IconSubscriptionHighlight } from '@edulastic/icons'
-import PropTypes from 'prop-types'
-import React, { memo } from 'react'
-import { withNamespaces } from 'react-i18next'
-import { Dropdown, Menu } from 'antd'
+import HeaderTabs, {
+  StyledTabs,
+} from '@edulastic/common/src/components/HeaderTabs'
+import { HeaderMidContainer } from '@edulastic/common/src/components/MainHeader'
+import { roleuser } from '@edulastic/constants'
+import { IconCart, IconSubscriptionHighlight } from '@edulastic/icons'
+import { Dropdown, Menu, Tooltip } from 'antd'
 import { capitalize } from 'lodash'
 import moment from 'moment'
-import { roleuser } from '@edulastic/constants'
+import PropTypes from 'prop-types'
+import React, { memo, useEffect } from 'react'
+import { withNamespaces } from 'react-i18next'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import {
-  TopBanner,
-  HeaderSubscription,
-  Title,
   ActionButtons,
-  BannerContent,
-  LearnMore,
+  CartButton,
+  CustomLink,
+  HeaderSubscription,
+  IconWrapper,
   PlanText,
+  Title,
+  TopBanner,
+  UserStatus,
 } from './styled'
 
 function formatDate(subEndDate) {
   if (!subEndDate) return null
   return moment(subEndDate).format('DD MMM, YYYY')
 }
+
+const tabsCustomStyle = {
+  background: lightGrey,
+  'border-bottom-color': lightGrey,
+}
+
+const CartInfo = ({ cartHasProducts, children }) =>
+  !cartHasProducts ? (
+    <Tooltip
+      placement="bottom"
+      title="Add products to cart to view them here"
+      trigger="hover"
+    >
+      {children}
+    </Tooltip>
+  ) : (
+    <>{children}</>
+  )
 
 const SubscriptionHeader = ({
   openComparePlanModal,
@@ -32,20 +57,26 @@ const SubscriptionHeader = ({
   setShowSubscriptionAddonModal,
   hasAllPremiumProductAccess,
   isPremiumUser,
-  isBannerVisible,
   setShowMultiplePurchaseModal,
   settingProductData,
-  showMultipleSubscriptions,
   isFreeAdmin,
   toggleShowFeatureNotAvailableModal,
   title,
   orgData,
   userRole,
-  history,
   isCliUser,
+  isManageSubscriptionView = false,
+  setShowEnterpriseTab,
+  showEnterpriseTab,
+  uploadPO,
+  schoolId,
+  setCartVisible,
+  cartQuantities = {},
 }) => {
   const openMultiplePurchaseModal = () => setShowMultiplePurchaseModal(true)
-
+  const cartCount = Object.keys(cartQuantities).filter(
+    (x) => x && x != 'null' && cartQuantities[x] > 0
+  ).length
   const handlePurchaseFlow = () => {
     settingProductData()
     if (isFreeAdmin) {
@@ -61,14 +92,20 @@ const SubscriptionHeader = ({
     )
   }
 
-  const handleManageSubscription = () => {
-    history.push('/author/manage-subscriptions')
-  }
-
   const isPartialPremiumUgradedUser =
     ['partial_premium'].includes(subType) && isPremiumUser
   const { defaultGrades = [], defaultSubjects = [] } = orgData
   const isGradeSubjectSelected = defaultGrades.length && defaultSubjects.length
+
+  useEffect(() => {
+    if (
+      isPartialPremiumUgradedUser ||
+      subType === 'enterprise' ||
+      isFreeAdmin
+    ) {
+      setShowEnterpriseTab(true)
+    }
+  }, [])
 
   // hide upgrade if no options will be displayed in dropdown
   const showUpgradeBtn =
@@ -117,45 +154,92 @@ const SubscriptionHeader = ({
 
   const licenseExpiryDate = formatDate(subEndDate)
 
+  const cartHasProducts = Object.keys(cartQuantities)?.length
+
+  const handleCartClick = () => {
+    if (cartHasProducts) {
+      setCartVisible(true)
+    }
+  }
+  const showAddonsTab =
+    isPartialPremiumUgradedUser || subType === 'enterprise' || isFreeAdmin
+
   return (
-    <TopBanner isBannerVisible={isBannerVisible}>
+    <TopBanner>
       <HeaderSubscription>
         <Title>
           <h2>
             <IconSubscriptionHighlight width={19} height={19} />
             <span>{title}</span>
           </h2>
+          <UserStatus>
+            <PlanText data-cy="yourPlanSubscription" className="plan">
+              YOUR PLAN
+            </PlanText>
+            <PlanText data-cy="currentPlan" className="free">
+              {isSubscribed && subType && licenseExpiryDate && isPremiumUser
+                ? `${
+                    isPartialPremiumUgradedUser
+                      ? 'Enterprise'
+                      : capitalize(subType.replace(/_/g, ' '))
+                  }`
+                : 'Free'}
+            </PlanText>
+          </UserStatus>
         </Title>
-        <ActionButtons>
-          <PlanText data-cy="yourPlanSubscription" className="plan">
-            YOUR PLAN
-          </PlanText>
-          <PlanText data-cy="currentPlan" className="free">
-            {isSubscribed && subType && licenseExpiryDate && isPremiumUser
-              ? `${
-                  isPartialPremiumUgradedUser
-                    ? 'Enterprise'
-                    : capitalize(subType.replace(/_/g, ' '))
-                } Version`
-              : 'Free'}
-          </PlanText>
-          {isBannerVisible && showMultipleSubscriptions && (
-            <AuthorCompleteSignupButton
-              renderButton={(handleClick) => (
-                <EduButton
-                  data-cy="manageSubscriptionButton"
-                  isBlue
-                  isGhost
-                  height="24px"
-                  onClick={handleClick}
-                >
-                  MANAGE SUBSCRIPTIONS
-                </EduButton>
+        {!isManageSubscriptionView && (
+          <HeaderMidContainer>
+            <StyledTabs>
+              {!showAddonsTab && (
+                <HeaderTabs
+                  dataCy="premiumTab"
+                  isActive={!showEnterpriseTab}
+                  linkLabel="Premium (Teacher)"
+                  onClickHandler={() => setShowEnterpriseTab(false)}
+                  activeStyle={tabsCustomStyle}
+                />
               )}
-              onClick={handleManageSubscription}
-            />
+              <HeaderTabs
+                dataCy="EnterpriseTab"
+                isActive={showEnterpriseTab}
+                linkLabel={`Enterprise ${schoolId ? '(School)' : '(District)'}`}
+                onClickHandler={() => setShowEnterpriseTab(true)}
+                activeStyle={tabsCustomStyle}
+              />
+              {showAddonsTab && (
+                <HeaderTabs
+                  dataCy="addonsTab"
+                  isActive={!showEnterpriseTab}
+                  linkLabel="Add ons"
+                  onClickHandler={() => setShowEnterpriseTab(false)}
+                  activeStyle={tabsCustomStyle}
+                />
+              )}
+            </StyledTabs>
+          </HeaderMidContainer>
+        )}
+        <ActionButtons>
+          {!isManageSubscriptionView && (
+            <>
+              <CustomLink data-cy="comparePlans" onClick={openComparePlanModal}>
+                Compare Plan
+              </CustomLink>
+              <CustomLink onClick={uploadPO} data-cy="uploadPO">
+                Upload PO
+              </CustomLink>
+              <CartInfo cartHasProducts={cartHasProducts}>
+                <CartButton data-cy="cartButton" onClick={handleCartClick}>
+                  <IconWrapper>
+                    <IconCart />
+                    <span>{cartCount}</span>
+                  </IconWrapper>
+                  Cart
+                </CartButton>
+              </CartInfo>
+            </>
           )}
-          {!showRenewalOptions &&
+          {isManageSubscriptionView &&
+            !showRenewalOptions &&
             !(
               ['enterprise'].includes(subType) && roleuser.TEACHER !== userRole
             ) &&
@@ -176,30 +260,13 @@ const SubscriptionHeader = ({
                 </EduButton>
               </Dropdown>
             )}
-          {showRenewalOptions && (
+          {isManageSubscriptionView && showRenewalOptions && (
             <EduButton onClick={handlePurchaseFlow} isBlue height="24px">
               Renew Subscription
             </EduButton>
           )}
         </ActionButtons>
       </HeaderSubscription>
-      {isBannerVisible && (
-        <BannerContent>
-          <h3>
-            {isPremiumUser ? (
-              <span>You are on the Premium Plan</span>
-            ) : (
-              <span>There&apos;s a lot more in premium!</span>
-            )}
-          </h3>
-          <p>
-            {isPremiumUser
-              ? `This plan expires on ${licenseExpiryDate}`
-              : `Upgrade to premium for additional features, including:`}
-          </p>
-          <LearnMore onClick={openComparePlanModal}>Compare Plans</LearnMore>
-        </BannerContent>
-      )}
     </TopBanner>
   )
 }
@@ -209,14 +276,12 @@ SubscriptionHeader.propTypes = {
   setShowSubscriptionAddonModal: PropTypes.func,
   settingProductData: PropTypes.func,
   setShowMultiplePurchaseModal: PropTypes.func,
-  isBannerVisible: PropTypes.bool,
   title: PropTypes.string,
 }
 SubscriptionHeader.defaultProps = {
   setShowSubscriptionAddonModal: () => {},
   settingProductData: () => {},
   setShowMultiplePurchaseModal: () => {},
-  isBannerVisible: true,
   title: 'Subscription',
 }
 

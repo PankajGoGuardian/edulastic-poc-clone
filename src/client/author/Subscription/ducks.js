@@ -61,6 +61,14 @@ export const getBookKeepersInviteSuccessStatus = createSelector(
   subscriptionSelector,
   (state) => state.isBookKeepersInviteSuccess
 )
+export const getRequestOrSubmitActionStatus = createSelector(
+  subscriptionSelector,
+  (state) => state.isRequestOrSubmitActionPending
+)
+export const getRequestOrSubmitSuccessVisibility = createSelector(
+  subscriptionSelector,
+  (state) => state.isRequestOrSubmitSuccessModalVisible
+)
 
 const slice = createSlice({
   name: 'subscription',
@@ -74,6 +82,10 @@ const slice = createSlice({
     showHeaderTrialModal: false,
     addOnProductIds: [],
     isBookKeepersInviteSuccess: false,
+    isRequestOrSubmitActionPending: false,
+    isRequestOrSubmitSuccessModalVisible: false,
+    cartQuantities: {},
+    cartVisible: false,
   },
   reducers: {
     fetchUserSubscriptionStatus: (state) => {
@@ -164,6 +176,28 @@ const slice = createSlice({
       state.isBookKeepersInviteSuccess = payload
     },
     bulkInviteBookKeepersAction: () => {},
+    requestInvoiceAction: (state) => {
+      state.isRequestOrSubmitActionPending = true
+    },
+    submitPOAction: (state) => {
+      state.isRequestOrSubmitActionPending = true
+    },
+    requestOrSubmitActionSuccess: (state, { payload }) => {
+      state.isRequestOrSubmitActionPending = false
+      state.isRequestOrSubmitSuccessModalVisible = payload
+    },
+    requestOrSubmitActionFailure: (state) => {
+      state.isRequestOrSubmitActionPending = false
+    },
+    toggleRequestOrSubmitSuccessModal: (state, { payload }) => {
+      state.isRequestOrSubmitSuccessModalVisible = payload
+    },
+    setCartQuantities: (state, { payload }) => {
+      state.cartQuantities = payload
+    },
+    setCartVisible: (state, { payload }) => {
+      state.cartVisible = payload
+    },
   },
 })
 
@@ -421,6 +455,7 @@ function* handleMultiplePurchasePayment({ payload }) {
         licenseIds,
       })
       if (apiPaymentResponse.licenseKeys) {
+        yield put(slice.actions.setCartQuantities({}))
         yield put(
           slice.actions.stripeMultiplePaymentSuccessAction(
             apiPaymentResponse.licenseKeys
@@ -479,6 +514,7 @@ function* handleStripePayment({ payload }) {
         token,
       })
       if (apiPaymentResponse.success) {
+        yield put(slice.actions.setCartQuantities({}))
         yield put(slice.actions.stripePaymentSuccess(apiPaymentResponse))
         setPaymentServiceModal(false)
         yield call(showSuccessNotifications, apiPaymentResponse)
@@ -558,6 +594,50 @@ function* bulkInviteBookKeepersSaga({ payload }) {
   }
 }
 
+function* requestInvoiceSaga({ payload }) {
+  try {
+    const { closeCallback = () => {}, reqPayload } = payload
+    const result = yield call(subscriptionApi.requestInvoice, reqPayload)
+    if (result?.result?.success) {
+      closeCallback()
+      const msg = `We'll be back to you right away with your ${(
+        reqPayload.documentType || ''
+      ).toLowerCase()}!`
+      yield put(slice.actions.requestOrSubmitActionSuccess(msg))
+    } else {
+      yield put(slice.actions.requestOrSubmitActionFailure())
+    }
+  } catch (err) {
+    yield put(slice.actions.requestOrSubmitActionFailure())
+    notification({
+      type: 'error',
+      msg: 'Something went wrong while requesting invoice.',
+    })
+    captureSentryException(err)
+  }
+}
+
+function* submitPOSaga({ payload }) {
+  try {
+    const { closeCallback = () => {}, reqPayload } = payload
+    const result = yield call(subscriptionApi.submitPO, reqPayload)
+    if (result?.result?.success) {
+      closeCallback()
+      const msg = `We'll be back to you right away with your purchase order!`
+      yield put(slice.actions.requestOrSubmitActionSuccess(msg))
+    } else {
+      yield put(slice.actions.requestOrSubmitActionFailure())
+    }
+  } catch (err) {
+    yield put(slice.actions.requestOrSubmitActionFailure())
+    notification({
+      type: 'error',
+      msg: 'Something went wrong while submiting PO.',
+    })
+    captureSentryException(err)
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(slice.actions.upgradeLicenseKeyPending, upgradeUserLicense),
@@ -579,5 +659,7 @@ export function* watcherSaga() {
       slice.actions.bulkInviteBookKeepersAction,
       bulkInviteBookKeepersSaga
     ),
+    yield takeEvery(slice.actions.requestInvoiceAction, requestInvoiceSaga),
+    yield takeEvery(slice.actions.submitPOAction, submitPOSaga),
   ])
 }

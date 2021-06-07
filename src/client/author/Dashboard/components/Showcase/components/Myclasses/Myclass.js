@@ -37,10 +37,7 @@ import {
   setUserAction,
 } from '../../../../../../student/Login/ducks'
 import { resetTestFiltersAction } from '../../../../../TestList/ducks'
-import {
-  clearPlaylistFiltersAction,
-  getLastPlayListSelector,
-} from '../../../../../Playlist/ducks'
+import { clearPlaylistFiltersAction } from '../../../../../Playlist/ducks'
 import { getCollectionsSelector } from '../../../../../src/selectors/user'
 import TestRecommendations from './components/TestRecommendations'
 
@@ -78,7 +75,6 @@ const MyClasses = ({
   products,
   showHeaderTrialModal,
   setShowHeaderTrialModal,
-  lastPlayList,
   setUser,
   isDemoPlayground = false,
 }) => {
@@ -312,6 +308,18 @@ const MyClasses = ({
     [collections]
   )
 
+  const isSingaporeMathCollectionActive = featuredBundles.filter(
+    (feature) =>
+      (feature.description?.toLowerCase?.()?.includes('singaporemath') ||
+        feature.description?.toLowerCase?.()?.includes('singapore math')) &&
+      feature?.active
+  )
+
+  const isSingaporeMath =
+    user?.referrer?.includes('singapore') ||
+    user?.utm_source?.toLowerCase()?.includes('singapore') ||
+    isSingaporeMathCollectionActive?.length > 0
+
   let filteredBundles = featuredBundles
 
   if (isEurekaMathActive) {
@@ -326,6 +334,26 @@ const MyClasses = ({
     )
     bannerSlides = bannerSlides.filter(
       (banner) => !banner.description?.toLowerCase?.()?.includes('spark')
+    )
+  }
+
+  if (isSingaporeMath) {
+    filteredBundles = filteredBundles.filter(
+      (feature) =>
+        !feature?.config?.subscriptionData?.itemBankId &&
+        !(feature.description?.includes('Engage NY') && feature.description?.includes('Math')) &&
+        !(
+          feature?.config?.excludedPublishers?.includes('SingaporeMath') ||
+          feature?.config?.excludedPublishers?.includes('Singapore Math')
+        )
+    )
+    bannerSlides = bannerSlides.filter(
+      (banner) =>
+        !banner.description?.toLowerCase?.()?.includes('spark') &&
+        !(
+          banner?.config?.excludedPublishers?.includes('SingaporeMath') ||
+          banner?.config?.excludedPublishers?.includes('Singapore Math')
+        )
     )
   }
 
@@ -487,7 +515,7 @@ const MyClasses = ({
   const defaultSelectedProductIds = productData.productId
     ? [productData.productId]
     : []
-    
+
   return (
     <MainContentWrapper padding="30px 25px">
       {!loading && allActiveClasses?.length === 0 && (
@@ -612,7 +640,6 @@ export default compose(
       subscription: state.subscription?.subscriptionData?.subscription,
       products: state.subscription?.products,
       showHeaderTrialModal: state.subscription?.showHeaderTrialModal,
-      lastPlayList: getLastPlayListSelector(state),
       isDemoPlayground: isDemoPlaygroundUser(state),
     }),
     {

@@ -38,4 +38,5 @@ export const userPickFields = [
   'recommendedContentUpdated',
   'sparkPlaylistCollectionsVisited',
   'teachingStandards',
+  'referrer',
 ]

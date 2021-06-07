@@ -91,6 +91,7 @@ class Signup extends React.Component {
       invitedUser,
       invitedUserDetails,
       setInviteDetailsAction,
+      utm_source,
     } = this.props
     e && e.preventDefault()
     form.validateFieldsAndScroll((err, { password, email, name }) => {
@@ -103,6 +104,7 @@ class Signup extends React.Component {
             name: trim(name),
             role: 'teacher',
             policyViolation: t('common.policyviolation'),
+            utm_source,
             errorCallback: this.errorCallback,
           })
         } else if (invitedUser) {

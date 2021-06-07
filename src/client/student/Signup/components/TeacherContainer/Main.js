@@ -24,6 +24,7 @@ import {
   getCanvasSectionListRequestAction,
 } from '../../../../author/ManageClass/ducks'
 import { themes } from '../../../../theme'
+import queryString from 'query-string'
 
 const Container = ({
   user,
@@ -51,6 +52,8 @@ const Container = ({
   const [isAuthorized, setIsAuthorized] = useState(false)
   const [school, setSchool] = useState(null)
   const userInfo = get(user, 'user', {})
+
+  const query = queryString.parse(window.location.search)
 
   const handleAuthorization = async () => {
     const result = await canvasApi.getCanvasAuthURI(
@@ -101,6 +104,7 @@ const Container = ({
           orgType={orgType}
           invitedUser={invitedUser}
           invitedUserDetails={invitedUserDetails}
+          utm_source={query?.utm_source}
         />
       </ThemeProvider>
     )

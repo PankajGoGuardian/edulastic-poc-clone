@@ -7,5 +7,6 @@ module.exports = {
     USER: 'user',
     QTI_IMPORT: 'qtiImports',
     WEBCT_IMPORT: 'webctImports',
+    PO_SUBMISSIONS: 'poSubmissions'
   },
 }

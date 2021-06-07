@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
-import { isObject, compact } from 'lodash'
+import { isObject, compact, isEmpty } from 'lodash'
 import { math } from '@edulastic/constants'
 import { lightGrey9 } from '@edulastic/colors'
 import { IconMoveArrows } from '@edulastic/icons'
@@ -104,13 +104,35 @@ class MathKeyboard extends React.PureComponent {
       )
     }
 
-    const availables = isCustomMode
+    let availables = isCustomMode
       ? compact(
           type.value.map((handler) =>
             allBtns.find((btn) => btn.handler === handler)
           )
         )
       : allBtns.filter((btn) => btn.types.includes(type))
+
+    /**
+     * @see https://snapwiz.atlassian.net/browse/EV-28041
+     * To render custom keys defined in some other item
+     */
+    if (isCustomMode && type?.value) {
+      let excludedCustomKeys = type.value.filter(
+        (handler) =>
+          handler &&
+          !availables.find((btn) => btn.handler === handler) &&
+          !isEmpty(handler.trim())
+      )
+
+      excludedCustomKeys = excludedCustomKeys.map((key) => ({
+        handler: key,
+        label: key,
+        types: [type.label],
+        command: 'write',
+      }))
+
+      availables = availables.concat(excludedCustomKeys)
+    }
 
     let numberButtons = null
     if (this.WITH_NUMBERS.includes(type)) {

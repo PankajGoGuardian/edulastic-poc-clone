@@ -172,6 +172,8 @@ class TestItemCol extends Component {
           widgetIndex={widgetIndex}
           isStudentAttempt={isStudentAttempt}
           isFeedbackVisible={isFeedbackVisible}
+          questions={questions}
+          itemLevelScoring={itemLevelScoring}
         />
         {!isStudentAttempt &&
           !isStudentReport &&

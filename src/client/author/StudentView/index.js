@@ -189,6 +189,7 @@ class StudentViewContainer extends Component {
       match,
       additionalData,
       studentsList,
+      MainContentWrapperRef,
     } = this.props
 
     const {
@@ -453,6 +454,7 @@ class StudentViewContainer extends Component {
                 hideCorrectAnswer={hideCorrectAnswer}
                 isLCBView
                 isStudentView
+                MainContentWrapperRef={MainContentWrapperRef}
               />
             </AnswerContext.Provider>
           )}

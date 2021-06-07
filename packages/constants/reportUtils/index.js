@@ -11,10 +11,6 @@ const common = require('./common')
 // -----|-----|-----|-----| SINGLE ASSESSMENT REPORT |-----|-----|-----|----- //
 
 const singleAssessmentReport = require('./singleAssessmentReport/common')
-// const assessmentSummary = require('./singleAssessmentReport/assessmentSummary')
-// const peerPerformance = require('./singleAssessmentReport/peerPerformance')
-// const questionAnalysis = require('./singleAssessmentReport/questionAnalysis')
-// const responseFrequency = require('./singleAssessmentReport/responseFrequency')
 const performanceByStandards = require('./singleAssessmentReport/performanceByStandards')
 const performanceByStudents = require('./singleAssessmentReport/performanceByStudents')
 
@@ -30,16 +26,20 @@ const performanceByStudents = require('./singleAssessmentReport/performanceByStu
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
 
-// TODO...
+// -----|-----|-----|-----| STANDARDS MASTERY REPORT |-----|-----|-----|----- //
+
+const standardsPerformanceSummary = require('./standardsMasteryReport/standardsPerformanceSummary')
+
+// -----|-----|-----|-----| STANDARDS MASTERY REPORT |-----|-----|-----|----- //
+
+// =====|=====|=====|=====| =============== |=====|=====|=====|===== //
 
 module.exports = {
   common,
+  // SAR
   singleAssessmentReport,
-  // assessmentSummary,
-  // peerPerformance,
-  // questionAnalysis,
-  // responseFrequency,
   performanceByStandards,
   performanceByStudents,
-  // TODO...
+  // SMR
+  standardsPerformanceSummary,
 }

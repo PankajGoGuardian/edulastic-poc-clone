@@ -121,6 +121,9 @@ const PerformanceByStandards = ({
     }
   )
 
+  const generateCSVRequired =
+    itemsCount > pageFilters.pageSize || (error && error.dataSizeExceeded)
+
   useEffect(() => () => resetPerformanceByStandards(), [])
 
   useEffect(() => {
@@ -164,7 +167,7 @@ const PerformanceByStandards = ({
   useEffect(() => {
     if (
       isCsvDownloading &&
-      itemsCount > pageFilters.pageSize &&
+      generateCSVRequired &&
       settings.selectedTest &&
       settings.selectedTest.key
     ) {
@@ -275,7 +278,7 @@ const PerformanceByStandards = ({
   }
 
   if (error && error.dataSizeExceeded) {
-    return <DataSizeExceeded />
+    return <DataSizeExceeded isDownloadable />
   }
 
   if (!report.performanceSummaryStats?.length) {
@@ -379,9 +382,7 @@ const PerformanceByStandards = ({
           compareBy={compareBy}
           selectedStandards={selectedStandards}
           selectedDomains={selectedDomains}
-          isCsvDownloading={
-            itemsCount < pageFilters.pageSize ? isCsvDownloading : null
-          }
+          isCsvDownloading={generateCSVRequired ? null : isCsvDownloading}
           location={location}
           pageTitle={pageTitle}
         />

@@ -9,15 +9,14 @@ import {
   orderBy,
 } from 'lodash'
 
-import {
-  getOverallScore,
-  DemographicCompareByOptions,
-} from '../../../../common/util'
-import {
+import { reportUtils } from '@edulastic/constants'
+
+const { getOverallScore, DemographicCompareByOptions } = reportUtils.common
+const {
   getMasteryLevel,
   getScore,
   getOverallRawScore,
-} from '../../standardsPerformance/utils/transformers'
+} = reportUtils.standardsPerformanceSummary
 
 const getFormattedName = (name) => {
   const nameArr = (name || '').trim().split(' ')

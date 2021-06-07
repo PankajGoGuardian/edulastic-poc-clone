@@ -90,6 +90,8 @@ const PerformanceByStudents = ({
     }
   }, [performanceByStudents])
 
+  const generateCSVRequired = error && error.dataSizeExceeded
+
   const [showAddToGroupModal, setShowAddToGroupModal] = useState(false)
   const [selectedProficiency, setProficiency] = useState(proficiencyBandData[0])
   const [selectedRowKeys, onSelectChange] = useState([])
@@ -121,10 +123,9 @@ const PerformanceByStudents = ({
   useEffect(() => {
     if (
       isCsvDownloading &&
+      generateCSVRequired &&
       settings.selectedTest &&
-      settings.selectedTest.key &&
-      error &&
-      error.dataSizeExceeded
+      settings.selectedTest.key
     ) {
       const q = {
         reportType: reportTypes.reportNavType.PERFORMANCE_BY_STUDENTS,
@@ -383,9 +384,7 @@ const PerformanceByStudents = ({
           <Row type="flex" justify="start">
             <Col xs={24} sm={24} md={24} lg={24} xl={24}>
               <CsvTable
-                isCsvDownloading={
-                  !(error && error.dataSizeExceeded) ? isCsvDownloading : null
-                }
+                isCsvDownloading={generateCSVRequired ? null : isCsvDownloading}
                 onCsvConvert={onCsvConvert}
                 columns={columns}
                 dataSource={tableData}

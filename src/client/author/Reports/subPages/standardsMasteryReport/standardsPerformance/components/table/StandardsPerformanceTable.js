@@ -6,7 +6,7 @@ import { Row, Col, Tooltip } from 'antd'
 import styled from 'styled-components'
 
 import { withNamespaces } from '@edulastic/localization'
-
+import { reportUtils } from '@edulastic/constants'
 import { IconInfo } from '@edulastic/icons'
 import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
 import {
@@ -19,38 +19,15 @@ import { CustomTableTooltip } from '../../../../../common/components/customTable
 import TableTooltipRow from '../../../../../common/components/tooltip/TableTooltipRow'
 import CsvTable from '../../../../../common/components/tables/CsvTable'
 
-import {
+const { downloadCSV } = reportUtils.common
+const {
   getOptionFromKey,
-  getMasteryScore,
-  getScore,
-  getMasteryLevel,
   getMasteryScoreColor,
   getAnalyseByTitle,
   getOverallValue,
   getRecordMasteryLevel,
-} from '../../utils/transformers'
-import { downloadCSV } from '../../../../../common/util'
-
-const getColValue = (record = {}, domainId, analyseByKey, scaleInfo) => {
-  const domain = record.domainData[domainId]
-
-  switch (analyseByKey) {
-    case 'masteryScore':
-      return domain ? getMasteryScore(domain) : 'N/A'
-    case 'score':
-      return domain ? `${getScore(domain)}%` : 'N/A'
-    case 'rawScore':
-      return domain
-        ? `${(domain.totalScore || 0).toFixed(2)} / ${domain.maxScore}`
-        : 0
-    case 'masteryLevel':
-      return domain
-        ? getMasteryLevel(getMasteryScore(domain), scaleInfo).masteryLabel
-        : 'N/A'
-    default:
-      return ''
-  }
-}
+  getColValue,
+} = reportUtils.standardsPerformanceSummary
 
 const getCol = (record = {}, domainId, analyseByKey, scaleInfo) => {
   const domain = record.domainData[domainId] || {}
@@ -61,11 +38,7 @@ const getCol = (record = {}, domainId, analyseByKey, scaleInfo) => {
   const bgColor =
     (analyseByKey === 'masteryLevel' || analyseByKey === 'masteryScore') &&
     getMasteryScoreColor(domain, scaleInfo)
-  return (
-    <ColoredCell bgColor={bgColor}>
-      {getColValue(record, domainId, analyseByKey, scaleInfo)}
-    </ColoredCell>
-  )
+  return <ColoredCell bgColor={bgColor}>{colValue}</ColoredCell>
 }
 
 const getColorCell = (
@@ -206,6 +179,8 @@ export const getColumns = (
   return cols
 }
 
+const onCsvConvert = (data) => downloadCSV(`Mastery By Domain.csv`, data)
+
 const StandardsPerformanceTable = ({
   className,
   tableFilters,
@@ -240,8 +215,6 @@ const StandardsPerformanceTable = ({
 
   const bindOnChange = (prefix, options) => (props) =>
     onChangeTableFilters(prefix, options, props)
-
-  const onCsvConvert = (data) => downloadCSV(`Mastery By Domain.csv`, data)
 
   return (
     <>

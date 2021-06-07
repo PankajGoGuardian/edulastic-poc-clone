@@ -64,7 +64,8 @@ export const reportStandardsPerformanceSummaryReducer = createReducer(
   initialState,
   {
     [RESET_ALL_REPORTS]: (state) => (state = initialState),
-    [RESET_REPORTS_STANDARDS_PERFORMANCE_SUMMARY]: (state) => (state = initialState),
+    [RESET_REPORTS_STANDARDS_PERFORMANCE_SUMMARY]: (state) =>
+      (state = initialState),
     [GET_REPORTS_STANDARDS_PERFORMANCE_SUMMARY_REQUEST]: (state) => {
       state.loading = true
     },

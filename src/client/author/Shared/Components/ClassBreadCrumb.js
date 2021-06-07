@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { Col, Tooltip } from 'antd'
 import styled from 'styled-components'
-import { mobileWidthMax, themeColorBlue, linkColor } from "@edulastic/colors"
+import { mobileWidthMax, themeColorBlue, linkColor } from '@edulastic/colors'
 import { getAdditionalDataSelector } from '../../ClassBoard/ducks'
 import { getUserRole } from '../../../student/Login/ducks'
 import { getUserOrgId } from '../../src/selectors/user'

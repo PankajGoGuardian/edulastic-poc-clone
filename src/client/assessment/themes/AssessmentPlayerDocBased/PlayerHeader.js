@@ -33,7 +33,7 @@ const PlayerHeader = ({
   timedAssignment,
   utaId,
   groupId,
-  hidePause
+  hidePause,
 }) => {
   const isMobile = windowWidth <= MAX_MOBILE_WIDTH
   const { calcType } = settings
@@ -47,7 +47,7 @@ const PlayerHeader = ({
       hidePause={hidePause}
       groupId={groupId}
     />
-  );
+  )
 
   const headerStyle = {
     height: '70px',

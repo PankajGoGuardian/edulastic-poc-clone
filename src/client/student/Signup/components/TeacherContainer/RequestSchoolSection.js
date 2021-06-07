@@ -56,7 +56,15 @@ const RequestSchool = (props) => {
     e.preventDefault()
     form.validateFields((err, values) => {
       if (!err) {
-        const { name, address, city, country, us_state, other_state, zip } = values
+        const {
+          name,
+          address,
+          city,
+          country,
+          us_state,
+          other_state,
+          zip,
+        } = values
         const body = {
           name,
           districtName,

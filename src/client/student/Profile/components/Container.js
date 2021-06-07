@@ -167,7 +167,13 @@ class ProfileContainer extends React.Component {
                         validator: this.compareToFirstPassword,
                       },
                     ],
-                  })(<Input type="password" autoComplete="off" onBlur={this.handleConfirmBlur} />)}
+                  })(
+                    <Input
+                      type="password"
+                      autoComplete="off"
+                      onBlur={this.handleConfirmBlur}
+                    />
+                  )}
                 </FormItemWrapper>{' '}
                 <FormButtonWrapper>
                   <FormButtonsWrapper>

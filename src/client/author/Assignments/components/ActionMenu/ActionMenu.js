@@ -152,11 +152,16 @@ const ActionMenu = ({
           </Link>
         </Menu.Item>
         {!row.hasAutoSelectGroups && (
-          <Menu.Item 
-          data-cy="duplicate" 
-          key="duplicate" 
-          disabled={isDemoPlaygroundUser} 
-          title={isDemoPlaygroundUser ? "This feature is not available in demo account.": ""}>
+          <Menu.Item
+            data-cy="duplicate"
+            key="duplicate"
+            disabled={isDemoPlaygroundUser}
+            title={
+              isDemoPlaygroundUser
+                ? 'This feature is not available in demo account.'
+                : ''
+            }
+          >
             <DuplicateTest duplicateTest={createDuplicateAssignment} />
           </Menu.Item>
         )}

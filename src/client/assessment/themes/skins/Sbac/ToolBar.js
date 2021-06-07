@@ -126,7 +126,7 @@ const ToolBar = ({
           </StyledButton>
         </Tooltip>
       )}
-      {!isDocbased && isTeacherPremium &&(
+      {!isDocbased && isTeacherPremium && (
         <Tooltip placement="top" title="Upload work">
           <StyledButton onClick={toggleUserWorkUploadModal}>
             <IconCloudUpload />

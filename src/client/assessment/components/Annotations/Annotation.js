@@ -10,7 +10,9 @@ import { Row } from '../../styled/WidgetOptions/Row'
 import { Col } from '../../styled/WidgetOptions/Col'
 
 const FroalaEditor = loadable(() =>
-  import(/* webpackChunkName: "froalaCommonChunk" */'@edulastic/common/src/components/FroalaEditor')
+  import(
+    /* webpackChunkName: "froalaCommonChunk" */ '@edulastic/common/src/components/FroalaEditor'
+  )
 )
 
 class Annotation extends Component {

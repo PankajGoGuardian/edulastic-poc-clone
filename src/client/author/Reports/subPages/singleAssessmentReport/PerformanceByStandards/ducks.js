@@ -66,7 +66,7 @@ export const reportPerformanceByStandardsReducer = createReducer(initialState, {
         defaultStandardId,
       } = state.performanceByStandards
       Object.assign(report, { performanceSummaryStats })
-      // by applying diferent compare by(ex: student groups) 
+      // by applying diferent compare by(ex: student groups)
       // we do not get result. to show only stats copy existing metadata.
       if (isEmpty(report.metricInfo)) {
         Object.assign(report, {

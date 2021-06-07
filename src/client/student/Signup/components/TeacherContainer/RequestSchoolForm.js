@@ -242,11 +242,17 @@ class RequestSchoolForm extends React.Component {
         <Row gutter={24}>
           <Col xs={24} sm={12}>
             <Form.Item label="State" style={{ width: '100%' }}>
-              {getFieldDecorator(country === 'US' ? 'us_state' : 'other_state', {
-                rules: [
-                  { required: false, message: 'Please provide a valid state.' },
-                ],
-              })(
+              {getFieldDecorator(
+                country === 'US' ? 'us_state' : 'other_state',
+                {
+                  rules: [
+                    {
+                      required: false,
+                      message: 'Please provide a valid state.',
+                    },
+                  ],
+                }
+              )(
                 country === 'US' ? (
                   <SelectInputStyled
                     data-cy="state"

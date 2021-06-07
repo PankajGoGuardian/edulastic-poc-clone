@@ -12,7 +12,8 @@ const GET_REPORTS_STUDENT_PROGRESS_PROFILE_REQUEST_SUCCESS =
   '[reports] get reports student progress profile success'
 const GET_REPORTS_STUDENT_PROGRESS_PROFILE_REQUEST_ERROR =
   '[reports] get reports student progress profile error'
-  const RESET_REPORTS_STUDENT_PROGRESS_PROFILE = '[reports] reset reports student progress profile'
+const RESET_REPORTS_STUDENT_PROGRESS_PROFILE =
+  '[reports] reset reports student progress profile'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
@@ -60,7 +61,8 @@ const initialState = {
 
 export const reportStudentProgressProfileReducer = createReducer(initialState, {
   [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState),
-  [RESET_REPORTS_STUDENT_PROGRESS_PROFILE]: (state, { payload }) => (state = initialState),
+  [RESET_REPORTS_STUDENT_PROGRESS_PROFILE]: (state, { payload }) =>
+    (state = initialState),
   [GET_REPORTS_STUDENT_PROGRESS_PROFILE_REQUEST]: (state) => {
     state.loading = true
   },

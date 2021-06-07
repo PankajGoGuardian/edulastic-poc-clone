@@ -17,7 +17,7 @@ const MultiSelectDropdown = ({
 }) => {
   const [searchText, setSearchText] = useState('')
   const handleSearch = useCallback(
-    s => {
+    (s) => {
       setSearchText(s)
       onSearch(s)
     },
@@ -31,9 +31,9 @@ const MultiSelectDropdown = ({
     [onBlur]
   )
   const updatedOptions = useMemo(() =>
-    options.map(data => ({
+    options.map((data) => ({
       ...data,
-      title: data.name === 'All' ? `All ${label}` : data.title
+      title: data.name === 'All' ? `All ${label}` : data.title,
     }))
   )
   const dropDownData = useDropdownData(updatedOptions, {
@@ -49,7 +49,7 @@ const MultiSelectDropdown = ({
       <SelectInputStyled
         showSearch={showSearch}
         placeholder={`All ${label}`}
-        mode='multiple'
+        mode="multiple"
         ref={el}
         onChange={onChange}
         onSelect={() => el && el?.current?.blur()}
@@ -60,13 +60,13 @@ const MultiSelectDropdown = ({
         onBlur={handleBlur}
         maxTagTextLength={10}
         optionFilterProp="title"
-        getPopupContainer={triggerNode => triggerNode.parentNode}
+        getPopupContainer={(triggerNode) => triggerNode.parentNode}
         notFoundContent={
           <Empty
-            className='ant-empty-small'
+            className="ant-empty-small"
             image={Empty.PRESENTED_IMAGE_SIMPLE}
             style={{ textAlign: 'left', margin: '10px 0' }}
-            description='No matching results'
+            description="No matching results"
           />
         }
       >

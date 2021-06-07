@@ -38,15 +38,19 @@ class RequestSchool extends React.Component {
 
   handleSubmit = (e) => {
     e.preventDefault()
-    const {
-      form,
-      districts,
-      createAndJoinSchoolRequest,
-      userInfo,
-    } = this.props
+    const { form, districts, createAndJoinSchoolRequest, userInfo } = this.props
     form.validateFields((err, values) => {
       if (!err) {
-        const { name, districtId, address, city, country, us_state, other_state, zip } = values
+        const {
+          name,
+          districtId,
+          address,
+          city,
+          country,
+          us_state,
+          other_state,
+          zip,
+        } = values
         const district = find(
           districts,
           ({ districtId: _id }) => _id === districtId.key

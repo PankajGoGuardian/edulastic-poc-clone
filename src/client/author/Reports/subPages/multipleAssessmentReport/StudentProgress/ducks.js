@@ -12,7 +12,8 @@ const GET_REPORTS_STUDENT_PROGRESS_REQUEST_SUCCESS =
   '[reports] get reports student progress success'
 const GET_REPORTS_STUDENT_PROGRESS_REQUEST_ERROR =
   '[reports] get reports student progress error'
-const RESET_REPORTS_STUDENT_PROGRESS = '[reports] reset reports student progress'
+const RESET_REPORTS_STUDENT_PROGRESS =
+  '[reports] reset reports student progress'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 

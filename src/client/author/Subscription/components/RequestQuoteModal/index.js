@@ -123,6 +123,7 @@ const RequestQuoteModal = ({
       })
       return false
     }
+
     const flag = emailRegex.test(userEmail.trim())
     if (!flag) {
       notification({
@@ -149,20 +150,7 @@ const RequestQuoteModal = ({
 
   const handleSubmit = () => {
     if (validateFields()) {
-      const schoolOrDistrict =
-        enterpriseLicenseType === 'DISTRICT'
-          ? {
-              name: userOrgData.districts?.[0]?.districtName,
-              id: userOrgData.districts?.[0]?.districtId,
-              type: 'DISTRICT',
-            }
-          : {
-              districtId: userOrgData.schools?.[0]?.districtId,
-              name: userOrgData.schools?.[0]?.name,
-              id: userOrgData.schools?.[0]?.districtId,
-              type: 'SCHOOL',
-              schools: selectedSchools, // NEED MORE CLARITY ON THIS FIELD IN PAYLOAD
-            }
+     
       const emails = bookkeeperEmails
         ? bookkeeperEmails
             .split(',')
@@ -173,7 +161,6 @@ const RequestQuoteModal = ({
         userFullname,
         userEmail,
         documentType: 'QUOTE',
-        schoolOrDistrict,
         bookkeeperEmails: emails.length ? emails : undefined,
         cartProducts: quantities,
         otherInfo,
@@ -256,17 +243,6 @@ const RequestQuoteModal = ({
           Let us know what type of price quote or information you're looking for
           and we'll be in touch right away!
         </SubText>
-
-        <Label mb="-2px">Enterprise License For</Label>
-        <FlexContainer width="250px" flexDirection="column">
-          <Radio.Group
-            onChange={onLicenseTypeChange}
-            value={enterpriseLicenseType}
-          >
-            <Radio value="DISTRICT">District</Radio>
-            <Radio value="SCHOOL">School</Radio>
-          </Radio.Group>
-        </FlexContainer>
 
         {enterpriseLicenseType === 'SCHOOL' && (
           <>

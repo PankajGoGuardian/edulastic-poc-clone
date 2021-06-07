@@ -55,7 +55,7 @@ const RequestInvoiceModal = ({
   userFullname,
   userDetails,
 }) => {
-  const [documentType, setDocumentType] = useState('QUOTE')
+  const [documentType, setDocumentType] = useState('INVOICE')
   const [customDocumentType, setCustomDocumentType] = useState()
   const [bookkeeperEmails, setBookkeeperEmails] = useState()
   const [otherInfo, setOtherInfo] = useState()

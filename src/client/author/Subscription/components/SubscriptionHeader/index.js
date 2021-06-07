@@ -109,7 +109,8 @@ const SubscriptionHeader = ({
 
   // hide upgrade if no options will be displayed in dropdown
   const showUpgradeBtn =
-    !hasAllPremiumProductAccess || !isPartialPremiumUgradedUser
+    (!hasAllPremiumProductAccess || !isPartialPremiumUgradedUser) &&
+    !isManageSubscriptionView
 
   const menu = (
     <Menu>

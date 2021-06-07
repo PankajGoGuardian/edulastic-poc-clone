@@ -22,6 +22,7 @@ export const ModalBody = styled.div`
 export const AddonList = styled.div`
   margin-top: ${(props) => props.marginTop || '40px'};
   margin-bottom: ${({ marginBottom }) => marginBottom};
+  padding-right: ${({ pr }) => pr};
 `
 export const FlexRow = styled.div`
   display: flex;
@@ -92,8 +93,9 @@ export const NumberInputWrapper = styled.div`
   }
 `
 export const StyledCheckbox = styled(CheckboxLabel)`
-  width: 150px;
+  width: 160px;
   &.ant-checkbox-wrapper .ant-checkbox + span {
     color: ${title};
+    font-size: ${({ fontSize }) => fontSize};
   }
 `

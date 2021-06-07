@@ -1,6 +1,7 @@
 import { NumberInputStyled, notification } from '@edulastic/common'
 import { Tooltip } from 'antd'
-import { camelCase, isNumber, keyBy } from 'lodash'
+import produce from 'immer'
+import { camelCase, isNumber, keyBy, max } from 'lodash'
 import React, { useEffect, useMemo } from 'react'
 import {
   AddonList,
@@ -27,7 +28,9 @@ const ProductsList = ({
   setSelectedProductIds,
   isBuyMore,
   currentItemId,
-  subsLicenses,
+  subsLicenses = [],
+  isRequestingQuote,
+  isCart,
 }) => {
   const licenseMapKeyByProductId = useMemo(() => {
     if (subsLicenses) {
@@ -52,7 +55,10 @@ const ProductsList = ({
   }, [_totalPrice])
 
   const handleOnChange = (e, id) => {
-    if (isBuyMore) return
+    if (!id) {
+      return
+    }
+    if (isBuyMore && !isCart) return
     if (e.target.checked) {
       const _quantities = {
         ...quantities,
@@ -61,16 +67,60 @@ const ProductsList = ({
       setQuantities(_quantities)
       setSelectedProductIds((x) => x.concat(id))
     } else {
-      const _quantities = {
-        ...quantities,
-        [id]: undefined,
+      let _quantities = {}
+      if (isCart) {
+        _quantities = produce(quantities, (draft) => {
+          delete draft[id]
+          return draft
+        })
+      } else {
+        _quantities = {
+          ...quantities,
+          [id]: undefined,
+        }
       }
       setQuantities(_quantities)
       setSelectedProductIds((x) => x.filter((y) => y !== id))
     }
   }
+
+  const getTeacherPremiumCountToAdd = (_licenses, _quant) => {
+    const quant = { ..._quant }
+    const {
+      totalCount: totalTeacherPremium,
+      usedCount: totalTeacherPremiumUsedCount,
+    } = _licenses?.find((x) => x.productId === premiumProductId) || {}
+
+    const totalRemainingTeacherPremiumCount =
+      totalTeacherPremium - totalTeacherPremiumUsedCount
+
+    const totalRemainingItemBanksLicenseCount = _licenses.reduce((a, c) => {
+      if (
+        c.productId === premiumProductId ||
+        !Object.keys(quant).includes(c.productId)
+      ) {
+        return a
+      }
+      const { totalCount = 0, usedCount = 0 } = c || {}
+      const delta = totalCount - usedCount + quant[c.productId]
+      return delta > a ? delta : a
+    }, 0)
+
+    const availableTeacherPremiumCount =
+      totalRemainingTeacherPremiumCount - totalRemainingItemBanksLicenseCount
+
+    return availableTeacherPremiumCount
+  }
+
+  const teacherPremiumCountTOAdd = useMemo(() => {
+    if (!isCart) {
+      return 1
+    }
+    return getTeacherPremiumCountToAdd(subsLicenses, quantities)
+  }, [subsLicenses, quantities, isCart])
+
   const handleQuantityChange = (itemId) => (value) => {
-    if (isBuyMore) {
+    if (isBuyMore && !isCart) {
       const tpCount =
         licenseMapKeyByProductId[premiumProductId]?.totalCount || 0
       const productCount = licenseMapKeyByProductId[itemId]?.totalCount || 0
@@ -90,6 +140,33 @@ const ProductsList = ({
         return
       }
     }
+
+    if (isCart) {
+      const _quantities = {
+        ...quantities,
+        [itemId]: Math.floor(value),
+      }
+
+      if (itemId !== premiumProductId) {
+        const teacherPremiumCountTOAdd = getTeacherPremiumCountToAdd(
+          subsLicenses,
+          _quantities
+        )
+
+        if (teacherPremiumCountTOAdd < 0) {
+          Object.assign(_quantities, {
+            [premiumProductId]: Math.max(
+              Math.abs(teacherPremiumCountTOAdd),
+              _quantities[premiumProductId] || 0
+            ),
+          })
+        }
+      }
+
+      setQuantities(_quantities)
+      return
+    }
+
     const _quantities = {
       ...quantities,
       [itemId]: Math.floor(value),
@@ -106,16 +183,18 @@ const ProductsList = ({
     return pressedKey
   }
 
-  useEffect(
-    () => handleQuantityChange(isBuyMore ? currentItemId : premiumProductId)(1),
-    [premiumProductId, currentItemId, isBuyMore]
-  )
+  useEffect(() => {
+    if (!isCart) {
+      handleQuantityChange(isBuyMore ? currentItemId : premiumProductId)(1)
+    }
+  }, [premiumProductId, currentItemId, isBuyMore, isCart])
 
   return (
     <>
       <AddonList
-        marginTop={isBuyMore && '20px'}
-        marginBottom={isBuyMore && '10px'}
+        marginTop={(isBuyMore || isRequestingQuote) && '20px'}
+        marginBottom={(isBuyMore || isRequestingQuote) && '10px'}
+        pr={isRequestingQuote && '30px'}
       >
         {productsToshow.map((product) => (
           <FlexRow key={product.id} alignItems={isBuyMore && 'center'}>
@@ -133,6 +212,7 @@ const ProductsList = ({
                 }
                 disabled={premiumProductId === product.id}
                 textTransform="none"
+                fontSize={isRequestingQuote && '14px'}
               >
                 {product.name}
               </StyledCheckbox>
@@ -146,9 +226,17 @@ const ProductsList = ({
                   height="28px"
                   width="80px"
                   data-cy={product.type}
-                  min={1}
+                  min={
+                    isCart &&
+                    premiumProductId === product.id &&
+                    teacherPremiumCountTOAdd < 0
+                      ? Math.abs(teacherPremiumCountTOAdd)
+                      : 1
+                  }
                   max={
-                    premiumProductId === product.id
+                    isCart && teacherPremiumCountTOAdd <= 0
+                      ? Infinity
+                      : premiumProductId === product.id
                       ? Infinity
                       : quantities[premiumProductId] ||
                         Math.max(
@@ -159,24 +247,31 @@ const ProductsList = ({
                         )
                   }
                   disabled={
-                    isBuyMore ? false : quantities[product.id] === undefined
+                    isBuyMore && !isCart
+                      ? false
+                      : quantities[product.id] === undefined
                   }
                   onKeyDown={handleKeyPress}
                 />
               </NumberInputWrapper>
             )}
-            <span
-              className="priceCol"
-              data-cy={`${camelCase(product.name)}Price`}
-            >
-              $
-              {product.price *
-                (isNumber(quantities[product.id]) ? quantities[product.id] : 1)}
-            </span>
+            {!isRequestingQuote && (
+              <span
+                className="priceCol"
+                data-cy={`${camelCase(product.name)}Price`}
+              >
+                $
+                {product.price *
+                  (isNumber(quantities[product.id])
+                    ? quantities[product.id]
+                    : 1)}
+              </span>
+            )}
           </FlexRow>
         ))}
       </AddonList>
-      {!isBuyMore && (
+
+      {(!isBuyMore || isCart) && !isRequestingQuote && (
         <Total>
           <FlexRow>
             <label>Total</label>

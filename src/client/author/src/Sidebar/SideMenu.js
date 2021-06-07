@@ -546,6 +546,7 @@ class SideMenu extends Component {
     return (
       <>
         <PurchaseFlowModals
+          fromSideMenu
           showSubscriptionAddonModal={this.state.showPurchaseModal}
           setShowSubscriptionAddonModal={this.setShowSubscriptionAddonModal}
           isConfirmationModalVisible={this.state.showTrialSubsConfirmation}

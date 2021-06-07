@@ -27,6 +27,7 @@ import {
   getDashboardPlaylists,
 } from '../../../../Dashboard/ducks'
 import { useThisPlayListAction } from '../../../../CurriculumSequence/ducks'
+import CartModal from '../../../../Subscription/components/CartModal'
 
 const MultipleLicensePurchase = loadable(() =>
   import('./MultipleLicensePurchase')
@@ -97,6 +98,11 @@ const PurchaseFlowModals = (props) => {
     interestedGrades,
     clickedBundleId,
     setClickedBundleId,
+    cartVisible,
+    setCartVisible,
+    cartQuantities,
+    fromSideMenu,
+    openRequestInvoiceModal,
   } = props
 
   const [payWithPoModal, setPayWithPoModal] = useState(false)
@@ -295,6 +301,35 @@ const PurchaseFlowModals = (props) => {
       }))
       setProductsCart(productQuantities)
       setEmailIds(emails)
+    } else if (cartVisible) {
+      /**
+       * If atleast one cart quantity is greater than 1 or
+       * atleast one of the added product is already purchased
+       * then proceed with multiple license purchase flow
+       * else individual purchase
+       */
+      if (
+        Object.keys(cartQuantities).some(
+          (x) =>
+            cartQuantities[x] > 1 ||
+            itemBankSubscriptions.some((permission) => {
+              return (
+                permission.itemBankId ===
+                  products.find((p) => p.id === x)?.linkedProductId &&
+                !permission.isTrial
+              )
+            })
+        )
+      ) {
+        const productQuantities = products.map((product) => ({
+          ...product,
+          quantity: cartQuantities[product.id],
+        }))
+        setProductsCart(productQuantities)
+        setEmailIds(emails)
+      } else {
+        setAddOnProductIds(Object.keys(cartQuantities))
+      }
     } else if (showBuyMoreModal) {
       const productQuantities = productsToshow.map((product) => ({
         ...product,
@@ -308,6 +343,7 @@ const PurchaseFlowModals = (props) => {
           licenseOwnerId,
         })
         handleSubscriptionAddonModalClose()
+        setCartVisible(false)
         setSelectedLicenseId(null)
         return
       }
@@ -318,6 +354,7 @@ const PurchaseFlowModals = (props) => {
 
     setTotalAmount(totalAmount)
     handleSubscriptionAddonModalClose()
+    setCartVisible(false)
     setShowUpgradeModal(true)
   }
 
@@ -360,6 +397,24 @@ const PurchaseFlowModals = (props) => {
           districtId={userOrgId}
           isBookKeepersInviteSuccess={isBookKeepersInviteSuccess}
           setBookKeepersInviteSuccess={setBookKeepersInviteSuccess}
+        />
+      )}
+
+      {cartVisible && !fromSideMenu && (
+        <CartModal
+          visible={cartVisible}
+          products={products}
+          teacherPremium={teacherPremium}
+          setTotalAmount={setTotalAmount}
+          bulkInviteBookKeepers={bulkInviteBookKeepers}
+          districtId={userOrgId}
+          isBookKeepersInviteSuccess={isBookKeepersInviteSuccess}
+          setBookKeepersInviteSuccess={setBookKeepersInviteSuccess}
+          handleClick={handleClick}
+          closeModal={() => setCartVisible(false)}
+          userId={user?._id}
+          handleOpenRequestInvoiceModal={openRequestInvoiceModal}
+          subsLicenses={subsLicenses}
         />
       )}
       {showUpgradeModal && (
@@ -433,6 +488,7 @@ PurchaseFlowModals.defaultProps = {
   setShowBuyMoreModal: () => {},
   setSelectedLicenseId: () => {},
   setClickedBundleId: () => {},
+  openRequestInvoiceModal: () => {},
 }
 
 export default compose(
@@ -454,6 +510,8 @@ export default compose(
         state
       ),
       interestedGrades: getInterestedGradesSelector(state),
+      cartVisible: state?.subscription?.cartVisible,
+      cartQuantities: state?.subscription?.cartQuantities,
     }),
     {
       handleStripePayment: slice.actions.stripePaymentAction,
@@ -465,6 +523,7 @@ export default compose(
       setBookKeepersInviteSuccess: slice.actions.setBookKeepersInviteSuccess,
       fetchPlaylists: fetchPlaylistsAction,
       useThisPlayList: useThisPlayListAction,
+      setCartVisible: slice.actions.setCartVisible,
     }
   )
 )(PurchaseFlowModals)

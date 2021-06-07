@@ -1,6 +1,11 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Tabs, AnswerContext, ScrollContext } from '@edulastic/common'
+import {
+  Tabs,
+  AnswerContext,
+  ScrollContext,
+  FlexContainer,
+} from '@edulastic/common'
 import { questionType } from '@edulastic/constants'
 import { isEmpty, sortBy } from 'lodash'
 
@@ -29,6 +34,7 @@ import {
   LCB_LIMIT_QUESTION_PER_VIEW,
   SCROLL_SHOW_LIMIT,
 } from '../../../../../author/ClassBoard/ducks'
+import { FlexItem } from './styled/FlexContainer'
 
 class TestItemCol extends Component {
   constructor() {
@@ -70,12 +76,13 @@ class TestItemCol extends Component {
       saveAttachments,
       isStudentWorkCollapseOpen,
       toggleStudentWorkCollapse,
+      colIndex,
+      isStudentReport,
       ...restProps
     } = this.props
     const {
       LCBPreviewModal,
       isStudentAttempt,
-      isStudentReport,
       isLCBView,
       isExpressGrader,
       isFeedbackVisible,
@@ -140,68 +147,75 @@ class TestItemCol extends Component {
         showBorder={showTabBorder}
         hideCorrectAnswer={hideCorrectAnswer}
       >
-        <QuestionWrapper
-          showFeedback={showFeedback && widget?.widgetType !== 'resource'}
-          evaluation={evaluation}
-          multiple={multiple}
-          type={widget.type}
-          view="preview"
-          qIndex={qIndex}
-          itemIndex={widgetIndex}
-          previewTab={hideEvaluation ? 'check' : previewTab || preview}
-          timespent={timespent}
-          questionId={widget.reference}
-          data={{ ...question, smallSize: true }}
-          noPadding
-          noBoxShadow
-          isFlex
-          flowLayout={flowLayout}
-          prevQActivityForQuestion={prevQActivityForQuestion}
-          LCBPreviewModal={LCBPreviewModal}
-          displayFeedback={displayFeedback}
-          calculatedHeight={showStackedView || fullHeight ? '100%' : 'auto'}
-          fullMode
-          saveAttachments={saveAttachments}
-          attachments={attachments}
-          isStudentWorkCollapseOpen={isStudentWorkCollapseOpen}
-          toggleStudentWorkCollapse={toggleStudentWorkCollapse}
-          {...restProps}
-          hasDrawingResponse={hasDrawingResponse}
-          style={{ ...testReviewStyle, width: 'calc(100% - 256px)' }}
-          // widgetIndex was needed for passages if it has multiple tabs and widgets
-          widgetIndex={widgetIndex}
-          isStudentAttempt={isStudentAttempt}
-          isFeedbackVisible={isFeedbackVisible}
-        />
-        {!isStudentAttempt &&
-          !isStudentReport &&
-          imageAttachments.length > 0 &&
-          !LCBPreviewModal && (
-            <StudentWorkCollapse
+        <FlexContainer flexDirection={isStudentReport && 'column'}>
+          <FlexItem flexGrow="1">
+            <QuestionWrapper
+              showFeedback={showFeedback && widget?.widgetType !== 'resource'}
+              evaluation={evaluation}
+              multiple={multiple}
+              type={widget.type}
+              view="preview"
+              qIndex={qIndex}
+              itemIndex={widgetIndex}
+              previewTab={hideEvaluation ? 'check' : previewTab || preview}
+              timespent={timespent}
+              questionId={widget.reference}
+              data={{ ...question, smallSize: true }}
+              noPadding
+              noBoxShadow
+              isFlex
+              flowLayout={flowLayout}
+              prevQActivityForQuestion={prevQActivityForQuestion}
+              LCBPreviewModal={LCBPreviewModal}
+              displayFeedback={displayFeedback}
+              calculatedHeight={showStackedView || fullHeight ? '100%' : 'auto'}
+              fullMode
+              saveAttachments={saveAttachments}
+              attachments={attachments}
               isStudentWorkCollapseOpen={isStudentWorkCollapseOpen}
               toggleStudentWorkCollapse={toggleStudentWorkCollapse}
-              imageAttachments={imageAttachments}
+              {...restProps}
+              hasDrawingResponse={hasDrawingResponse}
+              style={{ ...testReviewStyle, width: 'calc(100% - 256px)' }}
+              // widgetIndex was needed for passages if it has multiple tabs and widgets
+              widgetIndex={widgetIndex}
+              isStudentAttempt={isStudentAttempt}
+              isFeedbackVisible={isFeedbackVisible}
             />
-          )}
-        {attachments && attachments.length > 0 && !LCBPreviewModal && (
-          <>
-            <StyleH2Heading>Attachments</StyleH2Heading>
-            <FilesViewContainer>
-              <FilesView
-                files={attachments}
-                hideDelete={!isStudentAttempt}
-                onDelete={saveUpdatedAttachments}
-              />
-            </FilesViewContainer>
-          </>
-        )}
+            {!isStudentAttempt &&
+              !isStudentReport &&
+              imageAttachments.length > 0 &&
+              !LCBPreviewModal && (
+                <StudentWorkCollapse
+                  isStudentWorkCollapseOpen={isStudentWorkCollapseOpen}
+                  toggleStudentWorkCollapse={toggleStudentWorkCollapse}
+                  imageAttachments={imageAttachments}
+                />
+              )}
+            {attachments && attachments.length > 0 && !LCBPreviewModal && (
+              <>
+                <StyleH2Heading>Attachments</StyleH2Heading>
+                <FilesViewContainer>
+                  <FilesView
+                    files={attachments}
+                    hideDelete={!isStudentAttempt}
+                    onDelete={saveUpdatedAttachments}
+                  />
+                </FilesViewContainer>
+              </>
+            )}
+          </FlexItem>
 
-        {/*  on the student side, show feedback for each question only when item level scoring is off */}
-        {/* we don't show teacher feedback on the show student work modal */}
-        {isStudentReport &&
-          !itemLevelScoring &&
-          !isShowStudentWork &&
-          teachCherFeedBack(widget, null, null, showStackedView)}
+          {!itemLevelScoring &&
+            !isShowStudentWork &&
+            (isStudentAttempt || isStudentReport) && (
+              <FlexItem padding="0px 16px 8px 0px">
+                {/*  on the student side, show feedback for each question only when item level scoring is off */}
+                {/* we don't show teacher feedback on the show student work modal */}
+                {teachCherFeedBack(widget, null, null, showStackedView)}
+              </FlexItem>
+            )}
+        </FlexContainer>
       </TabContainer>
     )
   }

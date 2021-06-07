@@ -495,7 +495,8 @@ class TestItemPreview extends Component {
             (showPreviousAttempt !== 'NONE' &&
               isStudentAttempt &&
               !isStudentReport)) &&
-          !isShowStudentWork && (
+          !isShowStudentWork &&
+          !(isStudentAttempt && !itemLevelScoring) && (
             <>
               {!isCliUser && (
                 <RenderFeedBack

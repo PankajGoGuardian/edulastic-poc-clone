@@ -102,6 +102,12 @@ class FeedbackRight extends Component {
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ score: 0 })
     }
+    if (
+      prevProps?.widget?.activity?.score !== this.props?.widget?.activity?.score
+    ) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({ changed: false })
+    }
   }
 
   componentDidMount() {
@@ -197,10 +203,6 @@ class FeedbackRight extends Component {
     if (!id || !user || !user.user) {
       return
     }
-
-    setTeacherEditedScore({
-      [id]: rubricResponse ? rubricResponse.score : _score,
-    })
 
     const payload = {
       score: rubricResponse || { score: _score },

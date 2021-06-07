@@ -812,7 +812,8 @@ class Setting extends Component {
                               >
                                 {evalTypes.PARTIAL_CREDIT}
                                 {scoringType === PARTIAL_CREDIT &&
-                                multipartItems
+                                multipartItems &&
+                                premium
                                   ? applyEBSRComponent()
                                   : null}
                               </RadioBtn>
@@ -824,7 +825,8 @@ class Setting extends Component {
                                 {evalTypes.PARTIAL_CREDIT_IGNORE_INCORRECT}
                                 {scoringType ===
                                   PARTIAL_CREDIT_IGNORE_INCORRECT &&
-                                multipartItems
+                                multipartItems &&
+                                premium
                                   ? applyEBSRComponent()
                                   : null}
                               </RadioBtn>

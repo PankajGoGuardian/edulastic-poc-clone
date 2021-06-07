@@ -21,6 +21,7 @@ const AdvancedOptions = ({
     advancedAreOpen={advancedAreOpen}
     fillSections={fillSections}
     cleanSections={cleanSections}
+    showVariables
     item={item}
   >
     <LayoutWrapper

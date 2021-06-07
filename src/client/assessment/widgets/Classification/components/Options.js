@@ -22,11 +22,12 @@ const Options = ({
   cleanSections,
 }) => (
   <WidgetOptions
-    title={t('common.options.title')}
+    item={item}
+    showVariables
     advancedAreOpen={advancedAreOpen}
     fillSections={fillSections}
     cleanSections={cleanSections}
-    item={item}
+    title={t('common.options.title')}
   >
     <LayoutWrapper
       item={item}

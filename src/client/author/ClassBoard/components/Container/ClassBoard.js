@@ -22,7 +22,7 @@ import {
 import { withNamespaces } from '@edulastic/localization'
 import { testActivityStatus } from '@edulastic/constants'
 import { Dropdown, Select, notification as antNotification } from 'antd'
-import { get, isEmpty, keyBy, last, round, sortBy, uniqBy } from 'lodash'
+import { get, isEmpty, keyBy, last, round, sortBy, uniqBy, maxBy } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
@@ -129,7 +129,10 @@ import {
   toggleFreeAdminSubscriptionModalAction,
 } from '../../../../student/Login/ducks'
 import { getSubmittedDate } from '../../utils'
-import { isFreeAdminSelector } from '../../../src/selectors/user'
+import {
+  isFreeAdminSelector,
+  getUserFeatures,
+} from '../../../src/selectors/user'
 import { getRegradeModalStateSelector } from '../../../TestPage/ducks'
 import RegradeModal from '../../../Regrade/RegradeModal'
 
@@ -1034,6 +1037,7 @@ class ClassBoard extends Component {
       studentUnselectAll,
       regradeModalState,
       setPageNumber,
+      userFeatures,
     } = this.props
 
     const {
@@ -1170,6 +1174,19 @@ class ClassBoard extends Component {
         }
         return acc
       }, {})
+
+    const rubricMaxScore = classResponse.itemGroups
+      ?.flatMap((itemGroups) => itemGroups.items)
+      .flatMap((item) => item.data.questions)
+      .filter((q) => !q.scoringDisabled)
+      .flatMap((question) => question.rubrics?.criteria || [])
+      .map((c) => maxBy(c.ratings, 'points').points)
+      .reduce((acc, curr) => acc + curr, 0)
+
+    const _maxScore =
+      userFeatures?.gradingrubrics && rubricMaxScore > 0
+        ? rubricMaxScore
+        : maxScore
 
     return (
       <div>
@@ -1798,7 +1815,7 @@ class ClassBoard extends Component {
                                 }}
                               />
                               <ScoreWrapper data-cy="totalMaxScore">
-                                {round(maxScore, 2) || 0}
+                                {round(_maxScore, 2) || 0}
                               </ScoreWrapper>
                             </div>
                             {allTestActivitiesForStudent.length > 1 &&
@@ -2021,6 +2038,7 @@ const enhance = compose(
       studentsPrevSubmittedUtas: getStudentsPrevSubmittedUtasSelector(state),
       isFreeAdmin: isFreeAdminSelector(state),
       regradeModalState: getRegradeModalStateSelector(state),
+      userFeatures: getUserFeatures(state),
     }),
     {
       loadTestActivity: receiveTestActivitydAction,

@@ -1954,6 +1954,7 @@ export function* updateTestSaga({ payload }) {
       'currentTab',
       'summary',
       'alreadyLiked',
+      'active',
     ]
     // remove createdDate and updatedDate
     const oldId = payload.data._id

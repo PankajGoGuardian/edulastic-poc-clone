@@ -74,7 +74,7 @@ function getProductsWithMetaData(metaData, products) {
   return products.map(({ ...p }) => {
     const title = p.name
     return { ...p, title, ...metaData[p.name] }
-  })
+  }).filter(x => x.price)
 }
 
 const SubscriptionMain = ({
@@ -460,7 +460,7 @@ const SubscriptionMain = ({
                 history={history}
               />
 
-              {!['partial_premium', 'enterprise'].includes(subType) && (
+              {!(['partial_premium', 'enterprise'].includes(subType)|| isFreeAdmin) && (
                 <CardsSection data-cy={teacherPremium.id}>
                   <FlexContainer
                     justifyContent="flex-start"
@@ -539,7 +539,7 @@ const SubscriptionMain = ({
                     {console.log(
                       'teacherPremium',
                       isPremiumTrialUsed,
-                      !subscription.length
+                      !subscription.length,
                     )}
                     {!isPremiumUser && (
                       <Tooltip
@@ -553,6 +553,7 @@ const SubscriptionMain = ({
                         <AuthorCompleteSignupButton
                           renderButton={(handleClick) => (
                             <EduButton
+                              title={isPremiumTrialUsed && (!subscription.length)? `Free trial for ${teacherPremium.title} is already utilized. Kindly purchase to access the content.`:undefined}
                               onClick={handleClick}
                               height="32px"
                               width="180px"
@@ -701,6 +702,9 @@ const SubscriptionMain = ({
                           renderButton={(handleClick) => (
                             <EduButton
                               onClick={handleClick}
+                              title={usedTrialItemBankIds.includes(
+                                _product.linkedProductId
+                              )? `Free trial for ${_product.title} is already utilized. Kindly purchase to access the content.`:undefined}
                               className={
                                 usedTrialItemBankIds.includes(
                                   _product.linkedProductId

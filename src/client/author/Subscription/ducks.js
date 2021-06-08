@@ -193,7 +193,11 @@ const slice = createSlice({
       state.isRequestOrSubmitSuccessModalVisible = payload
     },
     setCartQuantities: (state, { payload }) => {
-      state.cartQuantities = payload
+      if(!Object.keys(payload).find(x => payload[x])){
+        //empty qantities - so closing cart
+        state.cartVisible = false;
+      }
+      state.cartQuantities = payload;
     },
     setCartVisible: (state, { payload }) => {
       state.cartVisible = payload

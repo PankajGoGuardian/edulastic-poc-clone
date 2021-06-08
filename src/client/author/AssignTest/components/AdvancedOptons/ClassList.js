@@ -17,7 +17,7 @@ import {
 import {
   getUserOrgId,
   getSchoolsByUserRoleSelector,
-  getOrgDataSelector,
+  getLatestTermSelector,
 } from '../../../src/selectors/user'
 import { receiveSchoolsAction } from '../../../Schools/ducks'
 import {
@@ -73,7 +73,7 @@ class ClassList extends React.Component {
     selectedClasses: PropTypes.array.isRequired,
     selectClass: PropTypes.func.isRequired,
     test: PropTypes.object.isRequired,
-    orgData: PropTypes.object.isRequired,
+    latestTerm: PropTypes.object.isRequired,
   }
 
   constructor(props) {
@@ -101,7 +101,7 @@ class ClassList extends React.Component {
       loadCourseListData,
       userOrgId,
       getAllTags,
-      orgData,
+      latestTerm,
     } = this.props
 
     if (isEmpty(schools)) {
@@ -114,7 +114,6 @@ class ClassList extends React.Component {
     getAllTags({ type: 'group' })
 
     const { subjects = [], grades = [] } = test
-    const latestTerm = maxBy(orgData.terms, 'startDate')?._id
     this.setState(
       (prevState) => ({
         ...prevState,
@@ -122,7 +121,7 @@ class ClassList extends React.Component {
           ...prevState.searchTerms,
           grades,
           subjects,
-          termIds: latestTerm ? [latestTerm] : [],
+          termIds: latestTerm?.id ? [latestTerm._id] : [],
         },
       }),
       this.loadClassList
@@ -130,11 +129,13 @@ class ClassList extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { test, testType, orgData } = this.props
+    const { test, testType, latestTerm } = this.props
     const { filterClassIds } = this.state
-    if (prevProps.test._id !== test._id || prevProps.orgData != orgData) {
+    if (
+      prevProps.test._id !== test._id ||
+      prevProps.latestTerm?._id != latestTerm?._id
+    ) {
       const { subjects = [], grades = [] } = test
-      const latestTerm = maxBy(orgData?.terms, 'startDate')
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState(
         (prevState) => ({
@@ -143,7 +144,7 @@ class ClassList extends React.Component {
             ...prevState.searchTerms,
             grades,
             subjects,
-            termIds: latestTerm ? [latestTerm._id] : [],
+            termIds: latestTerm?._id ? [latestTerm._id] : [],
           },
         }),
         this.loadClassList
@@ -554,7 +555,7 @@ const enhance = compose(
       test: getTestSelector(state),
       tagList: getAllTagsSelector(state, 'group'),
       assignedClassesById: getAssignedClassesByIdSelector(state),
-      orgData: getOrgDataSelector(state),
+      latestTerm: getLatestTermSelector(state),
     }),
     {
       loadClassListData: receiveClassListAction,

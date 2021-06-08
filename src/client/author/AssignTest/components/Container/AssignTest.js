@@ -33,7 +33,7 @@ import {
   isFreeAdminSelector,
   getUserId,
   getUserFeatures,
-  getOrgDataSelector,
+  getLatestTermSelector,
 } from '../../../src/selectors/user'
 import {
   loadAssignmentsAction,
@@ -197,7 +197,7 @@ class AssignTest extends React.Component {
       fetchUserCustomKeypads,
       setCurrentTestSettingsId,
       location,
-      orgData,
+      latestTerm,
     } = this.props
 
     if (isFreeAdmin) {
@@ -208,7 +208,6 @@ class AssignTest extends React.Component {
     resetStudents()
 
     const { testId } = match.params
-    const latestTerm = maxBy(orgData.terms, 'startDate')?._id
     loadClassList({
       districtId: userOrgId,
       search: {
@@ -216,7 +215,7 @@ class AssignTest extends React.Component {
         subjects: [],
         grades: [],
         active: [1],
-        termIds: latestTerm ? [latestTerm] : [],
+        termIds: latestTerm?._id ? [latestTerm._id] : [],
       },
       page: 1,
       limit: 4000,
@@ -878,7 +877,7 @@ const enhance = compose(
       totalItems: state?.tests?.entity?.isDocBased
         ? state?.tests?.entity?.summary?.totalQuestions
         : state?.tests?.entity?.summary?.totalItems,
-      orgData: getOrgDataSelector(state),
+      latestTerm: getLatestTermSelector(state),
     }),
     {
       loadClassList: receiveClassListAction,

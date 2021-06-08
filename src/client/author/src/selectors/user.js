@@ -1,4 +1,4 @@
-import { get as _get, pick, groupBy } from 'lodash'
+import { get as _get, pick, groupBy, maxBy } from 'lodash'
 import { createSelector } from 'reselect'
 import { roleuser } from '@edulastic/constants'
 import { getSchoolsSelector as getDistrictSchoolsSelector } from '../../Schools/ducks'
@@ -48,6 +48,11 @@ export const getUserFullNameSelector = createSelector(
 export const getOrgDataSelector = createSelector(
   stateSelector,
   (state) => state?.user?.orgData || {}
+)
+
+export const getLatestTermSelector = createSelector(
+  getOrgDataSelector,
+  (orgData) => maxBy(orgData.terms, 'startDate')
 )
 
 export const getCurrentGroup = createSelector(

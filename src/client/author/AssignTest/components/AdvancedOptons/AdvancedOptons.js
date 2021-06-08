@@ -202,8 +202,9 @@ class AdvancedOptons extends React.Component {
               <ClassSelectorLabel>
                 Assign this to
                 <p>
-                  Please select classes to assign this assessment. Options on
-                  the left can be used to filter the list of classes.
+                  Please select classes from the current school year to assign
+                  this test. Options on the left can be used to filter the list
+                  of classes.
                 </p>
               </ClassSelectorLabel>
               <ClassList

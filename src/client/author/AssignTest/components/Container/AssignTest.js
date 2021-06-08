@@ -8,7 +8,7 @@ import {
 import { themeColor } from '@edulastic/colors'
 import { IconAssignment, IconTrash } from '@edulastic/icons'
 import { Spin, Select, Icon } from 'antd'
-import { get, isEmpty, keyBy, omit, pick } from 'lodash'
+import { get, isEmpty, keyBy, omit, pick, maxBy } from 'lodash'
 import * as moment from 'moment'
 import PropTypes from 'prop-types'
 import React from 'react'
@@ -33,6 +33,7 @@ import {
   isFreeAdminSelector,
   getUserId,
   getUserFeatures,
+  getOrgDataSelector,
 } from '../../../src/selectors/user'
 import {
   loadAssignmentsAction,
@@ -196,6 +197,7 @@ class AssignTest extends React.Component {
       fetchUserCustomKeypads,
       setCurrentTestSettingsId,
       location,
+      orgData,
     } = this.props
 
     if (isFreeAdmin) {
@@ -206,6 +208,7 @@ class AssignTest extends React.Component {
     resetStudents()
 
     const { testId } = match.params
+    const latestTerm = maxBy(orgData.terms, 'startDate')?._id
     loadClassList({
       districtId: userOrgId,
       search: {
@@ -213,6 +216,7 @@ class AssignTest extends React.Component {
         subjects: [],
         grades: [],
         active: [1],
+        termIds: latestTerm ? [latestTerm] : [],
       },
       page: 1,
       limit: 4000,
@@ -874,6 +878,7 @@ const enhance = compose(
       totalItems: state?.tests?.entity?.isDocBased
         ? state?.tests?.entity?.summary?.totalQuestions
         : state?.tests?.entity?.summary?.totalItems,
+      orgData: getOrgDataSelector(state),
     }),
     {
       loadClassList: receiveClassListAction,

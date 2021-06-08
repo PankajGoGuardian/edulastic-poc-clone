@@ -42,7 +42,7 @@ const ClassGroupContainer = ({
             <DetailsTooltip
               width={tootltipWidth}
               title="Class/Group"
-              content="Choose one or more classes or groups to receive the test. In the student field below, you can select individuals from these sections if not all students should receive the assignment."
+              content="Choose one or more classes or groups from the current school year to assign the test. In the student field below, you can select individuals from these sections if not all students should receive the assignment."
               premium
             />
             <ClassSelector

@@ -69,6 +69,10 @@ export const getRequestOrSubmitSuccessVisibility = createSelector(
   subscriptionSelector,
   (state) => state.isRequestOrSubmitSuccessModalVisible
 )
+export const getRequestQuoteVisibility = createSelector(
+  subscriptionSelector,
+  (state) => state.isRequestQuoteModalVisible
+)
 
 const slice = createSlice({
   name: 'subscription',
@@ -82,6 +86,7 @@ const slice = createSlice({
     showHeaderTrialModal: false,
     addOnProductIds: [],
     isBookKeepersInviteSuccess: false,
+    isRequestQuoteModalVisible: false,
     isRequestOrSubmitActionPending: false,
     isRequestOrSubmitSuccessModalVisible: false,
     cartQuantities: {},
@@ -201,6 +206,9 @@ const slice = createSlice({
     },
     setCartVisible: (state, { payload }) => {
       state.cartVisible = payload
+    },
+    setRequestQuoteModal: (state, { payload }) => {
+      state.isRequestQuoteModalVisible = payload
     },
   },
 })

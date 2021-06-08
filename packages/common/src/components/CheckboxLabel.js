@@ -12,11 +12,11 @@ export const CheckBoxGrp = Checkbox.Group
 
 export const CheckboxStyle = styled(Checkbox)`
   width: ${({ width }) => width || 'unset'};
-  font-size: ${(props) => props.theme.widgetOptions.labelFontSize};
-  font-weight: ${(props) => props.theme.widgetOptions.labelFontWeight};
+  font-size: ${(props) => props.theme.widgetOptions?.labelFontSize};
+  font-weight: ${(props) => props.theme.widgetOptions?.labelFontWeight};
   letter-spacing: -0.4px;
   text-align: left;
-  color: ${(props) => props.theme.widgetOptions.labelColor};
+  color: ${(props) => props.theme.widgetOptions?.labelColor};
   text-transform: ${(props) => props.textTransform || 'uppercase'};
   margin-bottom: ${({ mb }) => mb || '0px'};
   margin-left: ${({ ml }) => ml || '0px'};

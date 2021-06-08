@@ -6,7 +6,7 @@ import { compose } from 'redux'
 // import { withNamespaces } from '@edulastic/localization' // TODO: Need i18n support
 import { connect } from 'react-redux'
 import { roleuser } from '@edulastic/constants'
-import { getRequestOrSubmitSuccessVisibility, slice } from '../../ducks'
+import { slice } from '../../ducks'
 import HasLicenseKeyModal from '../HasLicenseKeyModal'
 import PurchaseLicenseModal from '../PurchaseLicenseModal'
 import { Wrapper } from '../styled/commonStyled'
@@ -36,8 +36,6 @@ import ENTERPRISEIMG from '../../static/enterprise-bg.png'
 
 const RequestInvoiceModal = loadable(() => import('../RequestInvoviceModal'))
 
-const RequestQuoteModal = loadable(() => import('../RequestQuoteModal'))
-const InvoiceSuccessModal = loadable(() => import('../InvoiceSuccessModal'))
 const SubmitPOModal = loadable(() => import('../SubmitPOModal'))
 
 const comparePlansData = [
@@ -217,11 +215,10 @@ const Subscription = (props) => {
     resetPlaylistFilters,
     fetchMultipleSubscriptions,
     subsLicenses,
-    isRequestOrSubmitSuccessModalVisible,
-    toggleRequestOrSubmitSuccessModal,
     setCartVisible,
     cartQuantities,
     setCartQuantities,
+    setRequestQuoteModal,
   } = props
 
   const { subEndDate, subType, schoolId = '' } = subscription
@@ -249,7 +246,6 @@ const Subscription = (props) => {
   )
   const [isRequestInvoiceModalVisible, setRequestInvoiceModal] = useState(false)
   const [showEnterpriseTab, setShowEnterpriseTab] = useState(false)
-  const [isRequestQuoteModalVisible, setRequestQuoteModal] = useState(false)
   const [isSubmitPOModalVisible, setSubmitPOModal] = useState(false)
 
   useEffect(() => {
@@ -284,12 +280,10 @@ const Subscription = (props) => {
   const closeHasLicenseKeyModal = () => setHasLicenseKeyModal(false)
   const openPurchaseLicenseModal = () => setpurchaseLicenseModal(true)
   const closePurchaseLicenseModal = () => setpurchaseLicenseModal(false)
-  const closeRequestOrSubmitSuccessModal = () =>
-    toggleRequestOrSubmitSuccessModal(false)
+
   const openRequestInvoiceModal = () => setRequestInvoiceModal(true)
   const closeRequestInvoiceModal = () => setRequestInvoiceModal(false)
   const openRequestQuoteModal = () => setRequestQuoteModal(true)
-  const closeRequestQuoteModal = () => setRequestQuoteModal(false)
   const openSubmitPOModal = () => setSubmitPOModal(true)
   const closeSubmitPOModal = () => setSubmitPOModal(false)
 
@@ -500,26 +494,12 @@ const Subscription = (props) => {
         />
       )}
 
-      {isRequestOrSubmitSuccessModalVisible && (
-        <InvoiceSuccessModal
-          visible={isRequestOrSubmitSuccessModalVisible}
-          onCancel={closeRequestOrSubmitSuccessModal}
-        />
-      )}
-
       {isRequestInvoiceModalVisible && (
         <RequestInvoiceModal
           cartProducts={cartQuantities}
           productNamesAndPriceById={productNamesAndPriceById}
           visible={isRequestInvoiceModalVisible}
           onCancel={closeRequestInvoiceModal}
-        />
-      )}
-
-      {isRequestQuoteModalVisible && (
-        <RequestQuoteModal
-          visible={isRequestQuoteModalVisible}
-          onCancel={closeRequestQuoteModal}
         />
       )}
 
@@ -550,9 +530,7 @@ export default compose(
       usedTrialItemBankIds:
         state?.subscription?.subscriptionData?.usedTrialItemBankIds,
       dashboardTiles: state.dashboardTeacher.configurableTiles,
-      isRequestOrSubmitSuccessModalVisible: getRequestOrSubmitSuccessVisibility(
-        state
-      ),
+
       subsLicenses: getSubsLicensesSelector(state),
       cartQuantities: state.subscription?.cartQuantities,
     }),
@@ -563,10 +541,10 @@ export default compose(
       resetTestFilters: resetTestFiltersAction,
       resetPlaylistFilters: clearPlaylistFiltersAction,
       fetchMultipleSubscriptions: fetchMultipleSubscriptionsAction,
-      toggleRequestOrSubmitSuccessModal:
-        slice.actions.toggleRequestOrSubmitSuccessModal,
+
       setCartVisible: slice.actions.setCartVisible,
       setCartQuantities: slice.actions.setCartQuantities,
+      setRequestQuoteModal: slice.actions.setRequestQuoteModal,
     }
   )
 )(Subscription)

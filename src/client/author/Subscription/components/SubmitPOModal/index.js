@@ -41,6 +41,7 @@ const getFooterComponent = ({ handleSubmit, isSubmitPOActionPending }) => (
         height="48px"
         onClick={handleClick}
         inverse
+        data-cy="submitPOBtn"
       >
         SUBMIT
       </EduButton>
@@ -232,8 +233,12 @@ const SubmitPOModal = ({
         <Label mb="-2px">PO For</Label>
         <FlexContainer width="330px" flexDirection="column">
           <Radio.Group onChange={onLicenseTypeChange} value={licenseType}>
-            <Radio value="Enterprise">Enterprise</Radio>
-            <Radio value="Teacher Premium">Teacher Premium</Radio>
+            <Radio data-cy="enterpriseRadio" value="Enterprise">
+              Enterprise
+            </Radio>
+            <Radio data-cy="teacherPremiumRadio" value="Teacher Premium">
+              Teacher Premium
+            </Radio>
           </Radio.Group>
         </FlexContainer>
 
@@ -253,6 +258,7 @@ const SubmitPOModal = ({
           placeholder="Add the # of licenses"
           value={studentLicenseCount}
           onChange={handleicenseCountChange}
+          data-cy="studentLicenseField"
         />
 
         <Label>Addons or other comments</Label>
@@ -261,6 +267,7 @@ const SubmitPOModal = ({
           placeholder="What other products are being purchased with this PO?"
           value={otherInfo}
           onChange={handleSetOtherInfo}
+          data-cy="commentsTextarea"
         />
 
         <Label>Upload PO</Label>
@@ -269,7 +276,7 @@ const SubmitPOModal = ({
             <IconUpload width="36" height="36" color={dragDropUploadText} />
           </div>
           <div className="ant-upload-text">DRAG &amp; DROP YOUR FILE</div>
-          <div className="ant-upload-hint">
+          <div className="ant-upload-hint" data-cy="uploadPOBrowseBtn">
             OR <span>BROWSE</span> PNG, JPG, GIF (TOTAL 10MB MAX.)
           </div>
         </StyledDragger>

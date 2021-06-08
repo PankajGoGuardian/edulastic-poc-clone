@@ -91,7 +91,7 @@ const EnterpriseTab = ({ isPremium, subType, requestQuote, subEndDate }) => {
           content bundles that you will love.
         </p>
       </TopSection>
-      <EnterpriseSection>
+      <EnterpriseSection data-cy="enterpriseCard">
         <FlexContainer justifyContent="flex-start" alignItems="flex-start">
           <IconWrapper>
             <IconSchool />
@@ -100,7 +100,7 @@ const EnterpriseTab = ({ isPremium, subType, requestQuote, subEndDate }) => {
             <SectionTitle>
               Enterprise for Districts or Schools
               {subType === 'enterprise' && (
-                <ExpiryMsg>
+                <ExpiryMsg data-cy="enterpriseAlertMsg">
                   <IconPurchasedAlert />
                   <span>
                     purchased - EXPIRES {new Date(subEndDate).toDateString()}

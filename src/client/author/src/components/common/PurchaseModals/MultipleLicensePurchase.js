@@ -122,6 +122,7 @@ const MultipleLicensePurchase = ({
           onChange={handleInputEmailAddress}
           placeholder="Type the emails"
           height="40px"
+          data-cy="bookKeeperEmailField"
         />
       </EmailWrapper>
     </SubscriptionAddonModal>

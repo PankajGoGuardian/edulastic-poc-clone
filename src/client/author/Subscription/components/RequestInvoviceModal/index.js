@@ -7,6 +7,7 @@ import {
   FlexContainer,
   notification,
 } from '@edulastic/common'
+import { camelCase } from 'lodash'
 import { emailRegex } from '../../../../common/utils/helpers'
 import {
   getUserFullNameSelector,
@@ -39,6 +40,7 @@ const getFooterComponent = ({
     height="48px"
     onClick={handleSubmit}
     inverse
+    data-cy="requestInvoiceSubmitBtn"
   >
     SUBMIT
   </EduButton>
@@ -139,10 +141,16 @@ const RequestInvoiceModal = ({
             justifyContent="space-between"
             alignItems="center"
           >
-            <SubText key="productName">
+            <SubText
+              key="productName"
+              data-cy={camelCase(productNamesAndPriceById[id].name)}
+            >
               {productNamesAndPriceById[id].name}
             </SubText>
-            <SubText key="productPrice">
+            <SubText
+              key="productPrice"
+              data-cy={`${camelCase(productNamesAndPriceById[id].name)}Price`}
+            >
               ${quantity * productNamesAndPriceById[id].price}
             </SubText>
           </FlexContainer>
@@ -150,9 +158,15 @@ const RequestInvoiceModal = ({
         <hr />
         <Label required>Type of Documentation you need</Label>
         <Radio.Group onChange={onDocumentTypeChange} value={documentType}>
-          <Radio value="QUOTE">QUOTE</Radio>
-          <Radio value="INVOICE">INVOICE</Radio>
-          <Radio value="OTHER">OTHER (PLEASE SPECIFY)</Radio>
+          <Radio data-cy="quoteRadio" value="QUOTE">
+            QUOTE
+          </Radio>
+          <Radio data-cy="invoiceRadio" value="INVOICE">
+            INVOICE
+          </Radio>
+          <Radio data-cy="othersRadio" value="OTHER">
+            OTHER (PLEASE SPECIFY)
+          </Radio>
         </Radio.Group>
 
         {documentType === 'OTHER' && (
@@ -160,6 +174,7 @@ const RequestInvoiceModal = ({
             placeholder="Specify the type of documentation"
             value={customDocumentType}
             onChange={onCustomTypeChange}
+            data-cy="typeOfDocument"
           />
         )}
       </Container>
@@ -169,6 +184,7 @@ const RequestInvoiceModal = ({
         placeholder="Type email address"
         value={bookkeeperEmails}
         onChange={handleBookkeepersChange}
+        data-cy="bookKeeperEmailField"
       />
 
       <Label>Any other information we need to know about your order?</Label>
@@ -177,6 +193,7 @@ const RequestInvoiceModal = ({
         rows={4}
         value={otherInfo}
         onChange={handleSetOtherInfo}
+        data-cy="otherComments"
       />
     </CustomModalStyled>
   )

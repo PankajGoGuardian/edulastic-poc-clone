@@ -453,7 +453,7 @@ const SubscriptionMain = ({
                 ['partial_premium', 'enterprise'].includes(subType) ||
                 isFreeAdmin
               ) && (
-                <CardsSection data-cy={teacherPremium.type}>
+                <CardsSection data-cy={`${teacherPremium.type}Card`}>
                   <FlexContainer
                     justifyContent="flex-start"
                     alignItems="flex-start"
@@ -532,11 +532,6 @@ const SubscriptionMain = ({
                         Learn more
                       </LearnMoreLink>
                     </EduButton>
-                    {console.log(
-                      'teacherPremium',
-                      isPremiumTrialUsed,
-                      !subscription.length
-                    )}
                     {!isPremiumUser && (
                       <Tooltip
                         title={
@@ -604,7 +599,7 @@ const SubscriptionMain = ({
                 (ib) => ib.itemBankId === _product?.linkedProductId
               )
               return (
-                <CardsSection data-cy={_product.type}>
+                <CardsSection data-cy={`${_product.type}_Card`}>
                   <FlexContainer
                     justifyContent="flex-start"
                     alignItems="flex-start"
@@ -615,7 +610,7 @@ const SubscriptionMain = ({
                         {_product.title}
                         {!isPremiumUser && (
                           <PremiumRequiredMsg
-                            data-cy={`${_product.type}AlertMsg`}
+                            data-cy={`${_product.type}_AlertMsg`}
                           >
                             <IconAlertCircle />
                             <span>Subscription requires access to Premium</span>

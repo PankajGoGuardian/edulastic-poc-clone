@@ -7,7 +7,7 @@ const UpgradeModal = ({
   visible,
   setShowModal,
   openPaymentServiceModal,
-  openPoServiceModal,
+  openSubmitPOModal = () => {}
 }) => {
   const closeUpgradeModal = () => {
     setShowModal(false)
@@ -36,7 +36,7 @@ const UpgradeModal = ({
           </Boxes>
           <Boxes
             onClick={() => {
-              openPoServiceModal()
+              openSubmitPOModal()
               setShowModal(false)
             }}
             data-cy="payWithPO"

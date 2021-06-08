@@ -50,6 +50,7 @@ function CartModal({
 
       handleClick({
         emails,
+        shouldPayWithCC: true,
       })
     }
     return () => {
@@ -93,10 +94,10 @@ function CartModal({
 
   const footer = [
     <AuthorCompleteSignupButton
-      renderButton={(handleClick) => (
+      renderButton={(callback) => (
         <EduButton
           isGhost
-          onClick={handleClick}
+          onClick={callback}
           data-cy="requestInvoice"
           width="220px"
           height="45px"
@@ -107,14 +108,14 @@ function CartModal({
       onClick={handleOpenRequestInvoiceModal}
     />,
     <AuthorCompleteSignupButton
-      renderButton={(handleClick) => (
+      renderButton={(callback) => (
         <EduButton
-          onClick={handleClick}
+          onClick={callback}
           data-cy="proceedPayment"
           width="220px"
           height="45px"
         >
-          PROCEED WITH PAYMENT
+          Pay with Credit Card
         </EduButton>
       )}
       onClick={handleProceed}

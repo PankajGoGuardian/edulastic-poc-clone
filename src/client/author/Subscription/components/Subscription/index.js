@@ -36,8 +36,6 @@ import ENTERPRISEIMG from '../../static/enterprise-bg.png'
 
 const RequestInvoiceModal = loadable(() => import('../RequestInvoviceModal'))
 
-const SubmitPOModal = loadable(() => import('../SubmitPOModal'))
-
 const comparePlansData = [
   {
     cardTitle: 'Free Forever',
@@ -285,7 +283,6 @@ const Subscription = (props) => {
   const closeRequestInvoiceModal = () => setRequestInvoiceModal(false)
   const openRequestQuoteModal = () => setRequestQuoteModal(true)
   const openSubmitPOModal = () => setSubmitPOModal(true)
-  const closeSubmitPOModal = () => setSubmitPOModal(false)
 
   const productNamesAndPriceById = useMemo(
     () =>
@@ -465,6 +462,8 @@ const Subscription = (props) => {
         setProductData={setProductData}
         trialAddOnProductIds={trialAddOnProductIds}
         openRequestInvoiceModal={openRequestInvoiceModal}
+        isExternalSubmitPOModalVisible={isSubmitPOModalVisible}
+        toggleSubmitPOModal={setSubmitPOModal}
       />
 
       <HasLicenseKeyModal
@@ -502,13 +501,6 @@ const Subscription = (props) => {
           onCancel={closeRequestInvoiceModal}
         />
       )}
-
-      {isSubmitPOModalVisible && (
-        <SubmitPOModal
-          visible={isSubmitPOModalVisible}
-          onCancel={closeSubmitPOModal}
-        />
-      )}
     </Wrapper>
   )
 }
@@ -530,7 +522,6 @@ export default compose(
       usedTrialItemBankIds:
         state?.subscription?.subscriptionData?.usedTrialItemBankIds,
       dashboardTiles: state.dashboardTeacher.configurableTiles,
-
       subsLicenses: getSubsLicensesSelector(state),
       cartQuantities: state.subscription?.cartQuantities,
     }),

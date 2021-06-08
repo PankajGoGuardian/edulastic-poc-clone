@@ -150,7 +150,6 @@ const RequestQuoteModal = ({
 
   const handleSubmit = () => {
     if (validateFields()) {
-     
       const emails = bookkeeperEmails
         ? bookkeeperEmails
             .split(',')

@@ -245,9 +245,6 @@ const SubmitPOModal = ({
           <Label width="220px" required>
             # Student Licenses{' '}
           </Label>{' '}
-          <Label fs="12px">
-            &nbsp;&nbsp;<em>(50/teacher included free)</em>
-          </Label>
         </FlexContainer>
         <StyledInputNumber
           min={1}

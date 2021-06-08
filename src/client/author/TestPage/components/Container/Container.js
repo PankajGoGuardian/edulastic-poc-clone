@@ -1001,6 +1001,8 @@ class Container extends PureComponent {
       userRole === roleuser.EDULASTIC_CURATOR
     const canEdit =
       (authors && authors.some((x) => x._id === userId)) || isCurator
+    const isArchivedInactiveTest =
+      test.status === testContants.statusConstants.ARCHIVED && test.active === 0
     // If assignments present for the test and user clicking on edit do a quick test fetch and see if co author regraded or not. Else older code.
     if (editClick && testAssignments.length) {
       const entity = await testsApi.getById(testId, {
@@ -1014,10 +1016,10 @@ class Container extends PureComponent {
       }
     }
     setEditEnable(true)
-    if (canEdit) {
+    if (canEdit && !isArchivedInactiveTest) {
       return this.handleSave()
     }
-    if (!test.isInEditAndRegrade) {
+    if (!test.isInEditAndRegrade || isArchivedInactiveTest) {
       duplicateTest({
         currentTab,
         title,

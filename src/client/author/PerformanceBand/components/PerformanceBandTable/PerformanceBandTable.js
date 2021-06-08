@@ -379,7 +379,7 @@ export class PerformanceBandTable extends React.Component {
 
   handleAdd = () => {
     const { dataSource } = this.state
-    const keyArray = dataSource.map(item=> item.key )
+    const keyArray = dataSource.map((item) => item.key)
     const totalBands = dataSource.length
 
     const newData = {
@@ -390,11 +390,11 @@ export class PerformanceBandTable extends React.Component {
       from: 0,
       to: 0,
     }
-    const withNewBandValues = dataSource.map((item, i)=> {
-      if(i === totalBands - 1){
+    const withNewBandValues = dataSource.map((item, i) => {
+      if (i === totalBands - 1) {
         return {
           ...item,
-          to: item.from - 1
+          to: item.from - 1,
         }
       }
       return item
@@ -402,7 +402,7 @@ export class PerformanceBandTable extends React.Component {
 
     this.setState({
       editingKey: withNewBandValues[totalBands - 1].key,
-      isChangeState: true,    
+      isChangeState: true,
     })
     this.props.setPerformanceBandData([...withNewBandValues, newData])
   }

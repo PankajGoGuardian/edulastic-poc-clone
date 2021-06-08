@@ -26,6 +26,7 @@ const Options = ({
     fillSections={fillSections}
     cleanSections={cleanSections}
     item={item}
+    showVariables
   >
     <LayoutWrapper
       item={item}

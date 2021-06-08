@@ -13,7 +13,7 @@ const SortBar = ({
   isPresentationMode,
   isCliUser,
   studentsPrevSubmittedUtas,
-  dataCy
+  dataCy,
 }) => {
   const onSortChange = (testActivityId) => {
     if (testActivityId !== undefined) {

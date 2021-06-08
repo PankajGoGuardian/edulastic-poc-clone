@@ -4,10 +4,7 @@ import { CustomModalStyled, FlexContainer } from '@edulastic/common'
 import styled from 'styled-components'
 import { secondaryTextColor, themeColor } from '@edulastic/colors'
 
-const InvoiceSuccessModal = ({
-  visible = false,
-  onCancel = () => {},
-}) => (
+const InvoiceSuccessModal = ({ visible = false, onCancel = () => {} }) => (
   <CustomModalStyled
     visible={visible}
     onCancel={onCancel}

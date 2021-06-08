@@ -4,6 +4,8 @@ import qs from 'qs'
 import { Link } from 'react-router-dom'
 import { Row, Col } from 'antd'
 
+import { reportUtils } from '@edulastic/constants'
+
 import BackendPagination from '../../../../../common/components/BackendPagination'
 import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
 import {
@@ -16,7 +18,6 @@ import TableTooltipRow from '../../../../../common/components/tooltip/TableToolt
 import CsvTable from '../../../../../common/components/tables/CsvTable'
 import { GradebookTable as StyledTable } from '../../../standardsGradebook/components/table/standardsGradebookTable'
 
-import { downloadCSV } from '../../../../../common/util'
 import {
   getTableData,
   getMasteryScoreColor,
@@ -24,7 +25,9 @@ import {
   getOverallColSorter,
   getOverallValue,
 } from '../../utils/transformers'
-import { getAnalyseByTitle } from '../../../standardsPerformance/utils/transformers'
+
+const { downloadCSV } = reportUtils.common
+const { getAnalyseByTitle } = reportUtils.standardsPerformanceSummary
 
 const compareByStudentsColumns = [
   {

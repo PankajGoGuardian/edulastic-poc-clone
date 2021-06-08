@@ -61,7 +61,9 @@ export const PeerPerformanceTable = ({
           <Col className="custom-table-tooltip-value">{assessmentName}</Col>
         </Row>
         <Row className="tooltip-row" type="flex" justify="start">
-          <Col className="custom-table-tooltip-key">{`${idToName(compareBy)}: `}</Col>
+          <Col className="custom-table-tooltip-key">{`${idToName(
+            compareBy
+          )}: `}</Col>
           <Col className="custom-table-tooltip-value">{rec.compareBylabel}</Col>
         </Row>
         {analyseBy === 'score(%)' || analyseBy === 'rawScore' ? (

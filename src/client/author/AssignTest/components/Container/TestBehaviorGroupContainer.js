@@ -227,7 +227,8 @@ const TestBehaviorGroupContainer = ({
             </SelectInputStyled>
             {(scoringType === evalTypeLabels.PARTIAL_CREDIT ||
               scoringType === evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT) &&
-            multipartItems ? (
+            multipartItems &&
+            premium ? (
               <CheckBoxWrapper>
                 <CheckboxLabel
                   disabled={freezeSettings}

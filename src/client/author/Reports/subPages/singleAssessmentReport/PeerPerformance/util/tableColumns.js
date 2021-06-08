@@ -81,7 +81,7 @@ const columns = {
   'score(%)': {},
   rawScore: {},
   aboveBelowStandard: {},
-  proficiencyBand: {}
+  proficiencyBand: {},
 }
 
 // mapping of analyzer Id to helper function
@@ -94,7 +94,7 @@ const _analyzeToMake = {
 
 columns['score(%)']['schoolId'] = makeScorePc({
   ...compareSchool,
-  align: 'left'
+  align: 'left',
 })
 columns['score(%)']['teacherId'] = makeScorePc(
   { ...compareTeacher, align: 'left' },
@@ -163,7 +163,7 @@ columns['proficiencyBand']['hispanicEthnicity'] = makeProficiencyBand(
 columns['proficiencyBand']['gender'] = [
   compareGender,
   { ...submitted, width: 250 },
-  { ...absent, width: 250 }
+  { ...absent, width: 250 },
 ]
 columns['proficiencyBand']['frlStatus'] = makeProficiencyBand(compareFrlStatus)
 columns['proficiencyBand']['ellStatus'] = makeProficiencyBand(compareEllStatus)

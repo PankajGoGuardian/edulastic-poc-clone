@@ -33,8 +33,8 @@ const StyledCheck = styled(Check)`
   }
 `
 const fixedStyle = { 'font-size': 16, 'font-weight': 500 }
-const fixedHash = <span style={fixedStyle}>#</span>,
-  fixedStar = <span style={fixedStyle}>*</span>
+const fixedHash = <span style={fixedStyle}>#</span>
+const fixedStar = <span style={fixedStyle}>*</span>
 
 // column[0] = question,
 // column[1] = yourAnswer
@@ -42,44 +42,52 @@ const fixedHash = <span style={fixedStyle}>#</span>,
 // column[3] = score
 // column[4] = maxScore
 const columnsBase = next(tableColumnsData.questionTable, (arr) => {
-  arr[0].render = (data, record, index) => {
+  arr[0].render = (data, record) => {
     return <StyledCheck record={record}>{data}</StyledCheck>
   }
-  arr[1].render = (data, record, index) => {
+  arr[1].render = (data, record) => {
+    const multipartItemLevel = record.itemLevelScoring && data.length > 1
+    if (multipartItemLevel) {
+      return fixedHash
+    }
     return data.map((yAnswer) => {
-      let content = yAnswer,
-        fixedContent = null
+      const content = yAnswer
+      let fixedContent = null
       if (yAnswer === 'TEI') {
         fixedContent = fixedHash
       } else if (yAnswer === 'Constructed Response') {
         fixedContent = fixedStar
       }
-      return fixedContent ? (
-        fixedContent
-      ) : (
-        <MathFormulaDisplay
-          style={{ marginBottom: '10px', minHeight: '22px' }}
-          dangerouslySetInnerHTML={{ __html: content }}
-        />
+      return (
+        fixedContent || (
+          <MathFormulaDisplay
+            style={{ marginBottom: '10px', minHeight: '22px' }}
+            dangerouslySetInnerHTML={{ __html: content }}
+          />
+        )
       )
     })
   }
-  arr[2].render = (data, record, index) => {
+  arr[2].render = (data, record) => {
+    const multipartItemLevel = record.itemLevelScoring && data.length > 1
+    if (multipartItemLevel) {
+      return fixedHash
+    }
     return data.map((cAnswer) => {
-      let content = cAnswer,
-        fixedContent = null
+      const content = cAnswer
+      let fixedContent = null
       if (cAnswer === 'TEI') {
         fixedContent = fixedHash
       } else if (cAnswer === 'Constructed Response') {
         fixedContent = fixedStar
       }
-      return fixedContent ? (
-        fixedContent
-      ) : (
-        <MathFormulaDisplay
-          style={{ marginBottom: '10px', minHeight: '22px' }}
-          dangerouslySetInnerHTML={{ __html: content }}
-        />
+      return (
+        fixedContent || (
+          <MathFormulaDisplay
+            style={{ marginBottom: '10px', minHeight: '22px' }}
+            dangerouslySetInnerHTML={{ __html: content }}
+          />
+        )
       )
     })
   }
@@ -98,7 +106,7 @@ export function QuestionTableContainer(props) {
 
   // this is checking which columns to display/hide
   const columns = useMemo(() => {
-    return columnsBase.filter((item, index) => {
+    return columnsBase.filter((item) => {
       if (
         !columnsFlags.questionPerformance &&
         ['score', 'maxScore'].includes(item.key)

@@ -15,7 +15,9 @@ import { Row } from '../../../styled/WidgetOptions/Row'
 import { updateVariables } from '../../../utils/variables'
 
 const FroalaEditor = loadable(() =>
-  import(/* webpackChunkName: "froalaCommonChunk" */'@edulastic/common/src/components/FroalaEditor')
+  import(
+    /* webpackChunkName: "froalaCommonChunk" */ '@edulastic/common/src/components/FroalaEditor'
+  )
 )
 
 const ComposeQuestion = ({

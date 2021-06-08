@@ -13,7 +13,8 @@ const GET_REPORTS_QUESTION_ANALYSIS_REQUEST_SUCCESS =
   '[reports] get reports question analysis success'
 const GET_REPORTS_QUESTION_ANALYSIS_REQUEST_ERROR =
   '[reports] get reports question analysis error'
-const RESET_REPORTS_QUESTION_ANALYSIS = '[reports] reset reports question analysis'
+const RESET_REPORTS_QUESTION_ANALYSIS =
+  '[reports] reset reports question analysis'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 

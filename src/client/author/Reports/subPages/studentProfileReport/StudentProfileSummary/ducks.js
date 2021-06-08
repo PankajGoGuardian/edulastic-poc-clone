@@ -61,7 +61,8 @@ const initialState = {
 
 export const reportStudentProfileSummaryReducer = createReducer(initialState, {
   [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState),
-  [RESET_REPORTS_STUDENT_PROFILE_SUMMARY]: (state, { payload }) => (state = initialState),
+  [RESET_REPORTS_STUDENT_PROFILE_SUMMARY]: (state, { payload }) =>
+    (state = initialState),
   [GET_REPORTS_STUDENT_PROFILE_SUMMARY_REQUEST]: (state, { payload }) => {
     state.loading = true
   },

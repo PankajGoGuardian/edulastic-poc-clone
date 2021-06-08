@@ -57,7 +57,8 @@ const filterData = (data, filter) => {
         filter.iepStatus === 'all') &&
       (item.race?.toLowerCase() === filter.race.toLowerCase() ||
         filter.race === 'all') &&
-      (item.hispanicEthnicity?.toLowerCase() === filter.hispanicEthnicity.toLowerCase() ||
+      (item.hispanicEthnicity?.toLowerCase() ===
+        filter.hispanicEthnicity.toLowerCase() ||
         filter.hispanicEthnicity === 'all')
     ) {
       return true

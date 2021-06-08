@@ -1,11 +1,15 @@
 import React from 'react'
 import next from 'immer'
 import { find, sumBy, indexOf } from 'lodash'
-import { getTicks, getMasteryLevel } from '../../utils/transformers'
+
+import { reportUtils } from '@edulastic/constants'
+
 import BarTooltipRow from '../../../../../common/components/tooltip/BarTooltipRow'
 import { SimpleStackedBarChart } from '../../../../../common/components/charts/simpleStackedBarChart'
 import { StyledChartContainer } from '../styled'
 import { StyledH3 } from '../../../../../common/styled'
+
+const { getTicks, getMasteryLevel } = reportUtils.standardsPerformanceSummary
 
 const _yTickFormatter = (text) => text
 

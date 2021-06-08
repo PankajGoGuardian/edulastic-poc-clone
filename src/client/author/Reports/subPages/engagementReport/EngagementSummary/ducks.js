@@ -12,7 +12,8 @@ const GET_REPORTS_ENGAGEMENT_SUMMARY_REQUEST_SUCCESS =
   '[reports] get reports engagement summary success'
 const GET_REPORTS_ENGAGEMENT_SUMMARY_REQUEST_ERROR =
   '[reports] get reports engagement summary error'
-const RESET_REPORTS_ENGAGEMENT_SUMMARY = '[reports] reset reports engagement summary'
+const RESET_REPORTS_ENGAGEMENT_SUMMARY =
+  '[reports] reset reports engagement summary'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 

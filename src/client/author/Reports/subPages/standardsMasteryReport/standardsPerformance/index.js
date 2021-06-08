@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { filter, get, isEmpty } from 'lodash'
 
 import { Col, Row } from 'antd'
+import { report as reportTypes, reportUtils } from '@edulastic/constants'
 import { SpinLoader } from '@edulastic/common'
 import {
   DropDownContainer,
@@ -14,7 +15,7 @@ import StandardsPerformanceChart from './components/charts/StandardsPerformanceC
 import { StyledInnerRow, StyledRow } from './components/styled'
 import StandardsPerformanceTable from './components/table/StandardsPerformanceTable'
 
-import { getCsvDownloadingState } from '../../../ducks'
+import { generateCSVAction, getCsvDownloadingState } from '../../../ducks'
 import { getReportsStandardsFilters } from '../common/filterDataDucks'
 import {
   getReportsStandardsPerformanceSummary,
@@ -24,14 +25,15 @@ import {
   resetStandardsPerformanceSummaryAction,
 } from './ducks'
 
-import {
+import dropDownData from './static/json/dropDownData.json'
+
+const {
   getMasteryLevel,
   getMasteryLevelOptions,
   getMaxMasteryScore,
   getOverallMasteryScore,
   getParsedData,
-} from './utils/transformers'
-import dropDownData from './static/json/dropDownData.json'
+} = reportUtils.standardsPerformanceSummary
 
 const { compareByData, analyseByData } = dropDownData
 
@@ -47,6 +49,7 @@ const StandardsPerformance = ({
   error,
   userRole,
   sharedReport,
+  generateCSV,
 }) => {
   const sharedReportFilters = useMemo(
     () =>
@@ -55,16 +58,23 @@ const StandardsPerformance = ({
         : null,
     [sharedReport]
   )
-  const scaleInfo = get(standardsFilters, 'data.result.scaleInfo', [])
+  const res = useMemo(
+    () => get(standardsPerformanceSummary, 'data.result', {}),
+    [standardsPerformanceSummary]
+  )
+  const scales = get(standardsFilters, 'data.result.scaleInfo', [])
   const selectedScale =
     (
-      scaleInfo.find(
+      res.scaleInfo ||
+      scales.find(
         (s) =>
           s._id === (sharedReportFilters || settings.requestFilters).profileId
-      ) || scaleInfo[0]
+      ) ||
+      scales[0]
     )?.scale || []
   const maxMasteryScore = getMaxMasteryScore(selectedScale)
   const masteryLevelData = getMasteryLevelOptions(selectedScale)
+
   // filter compareBy options according to role
   const compareByDataFiltered = filter(
     compareByData,
@@ -82,6 +92,9 @@ const StandardsPerformance = ({
     pageSize: 10,
   })
   const [selectedDomains, setSelectedDomains] = useState([])
+
+  const generateCSVRequired =
+    res.domainsCount > pageFilters.pageSize || (error && error.dataSizeExceeded)
 
   useEffect(() => () => resetStandardsPerformanceSummary(), [])
 
@@ -122,7 +135,22 @@ const StandardsPerformance = ({
     }
   }, [standardsPerformanceSummary])
 
-  const res = get(standardsPerformanceSummary, 'data.result', {})
+  useEffect(() => {
+    if (isCsvDownloading && generateCSVRequired) {
+      const q = {
+        reportType: reportTypes.reportNavType.STANDARDS_PERFORMANCE_SUMMARY,
+        reportFilters: {
+          ...settings.requestFilters,
+          compareBy: tableFilters.compareBy.key,
+          ...pageFilters,
+        },
+        reportExtras: {
+          tableFilters,
+        },
+      }
+      generateCSV(q)
+    }
+  }, [isCsvDownloading])
 
   const overallMetricMasteryScore = getOverallMasteryScore(res.metricInfo || [])
   const overallMetricMasteryLevel = getMasteryLevel(
@@ -161,7 +189,7 @@ const StandardsPerformance = ({
   }
 
   if (error && error.dataSizeExceeded) {
-    return <DataSizeExceeded />
+    return <DataSizeExceeded isDownloadable />
   }
 
   if (!res.metricInfo?.length) {
@@ -222,7 +250,7 @@ const StandardsPerformance = ({
           domainsData={domainsData}
           scaleInfo={selectedScale}
           selectedDomains={selectedDomains}
-          isCsvDownloading={isCsvDownloading}
+          isCsvDownloading={generateCSVRequired ? null : isCsvDownloading}
           selectedTermId={
             (sharedReportFilters || settings?.requestFilters)?.termId || ''
           }
@@ -243,6 +271,7 @@ const enhance = connect(
   {
     getStandardsPerformanceSummaryRequest: getStandardsPerformanceSummaryRequestAction,
     resetStandardsPerformanceSummary: resetStandardsPerformanceSummaryAction,
+    generateCSV: generateCSVAction,
   }
 )
 

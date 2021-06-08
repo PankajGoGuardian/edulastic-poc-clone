@@ -104,7 +104,13 @@ class ResetPwd extends React.Component {
               rules: [
                 { required: true, message: 'Please input your Password!' },
               ],
-            })(<StyledInput type="password" autoComplete="off"  placeholder="Enter Password" />)}
+            })(
+              <StyledInput
+                type="password"
+                autoComplete="off"
+                placeholder="Enter Password"
+              />
+            )}
           </Form.Item>
           <Form.Item style={{ textAlign: 'center' }}>
             {getFieldDecorator('confirmPwd', {
@@ -114,7 +120,13 @@ class ResetPwd extends React.Component {
                   message: 'Retyped password do not match.',
                 },
               ],
-            })(<StyledInput type="password" autoComplete="off" placeholder="Confirm Password" />)}
+            })(
+              <StyledInput
+                type="password"
+                autoComplete="off"
+                placeholder="Confirm Password"
+              />
+            )}
           </Form.Item>
         </Form>
       </CustomModalStyled>

@@ -259,7 +259,7 @@ class AdvancedTable extends Component {
                     this.handleRemoveItemsFromFolder(row),
                   showEmbedLinkModal,
                   toggleTagsEditModal,
-                  isDemoPlaygroundUser: isDemoPlayground
+                  isDemoPlaygroundUser: isDemoPlayground,
                 })}
                 placement="bottomRight"
                 trigger={['click']}

@@ -4,7 +4,9 @@ import loadable from '@loadable/component'
 import Progress from '@edulastic/common/src/components/Progress'
 
 const FroalaEditor = loadable(() =>
-  import(/* webpackChunkName: "froalaCommonChunk" */'@edulastic/common/src/components/FroalaEditor')
+  import(
+    /* webpackChunkName: "froalaCommonChunk" */ '@edulastic/common/src/components/FroalaEditor'
+  )
 )
 // TODO: decide what to do with first focus
 const QuestionTextArea = ({

@@ -15,7 +15,9 @@ import { FroalaInput } from '../styled/FroalaInput'
 import { CustomStyleBtn } from '../../../../../styled/ButtonStyles'
 
 const FroalaEditor = loadable(() =>
-  import(/* webpackChunkName: "froalaCommonChunk" */'@edulastic/common/src/components/FroalaEditor')
+  import(
+    /* webpackChunkName: "froalaCommonChunk" */ '@edulastic/common/src/components/FroalaEditor'
+  )
 )
 
 class Annotations extends Component {

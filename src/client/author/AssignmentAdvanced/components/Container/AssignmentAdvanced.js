@@ -67,7 +67,10 @@ import {
 import { canEditTest } from '../../../Assignments/utils'
 import { DeleteAssignmentModal } from '../../../Assignments/components/DeleteAssignmentModal/deleteAssignmentModal'
 import PrintTestModal from '../../../src/components/common/PrintTestModal'
-import { isDemoPlaygroundUser, toggleFreeAdminSubscriptionModalAction } from '../../../../student/Login/ducks'
+import {
+  isDemoPlaygroundUser,
+  toggleFreeAdminSubscriptionModalAction,
+} from '../../../../student/Login/ducks'
 import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/test'
 import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
 

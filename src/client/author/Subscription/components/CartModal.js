@@ -137,11 +137,6 @@ function CartModal({
     >
       <ModalBody>
         <p>
-          50 student licenses are included in each teacher license for free.
-          Additional student licenses cost <strong>$2/student</strong>
-        </p>
-
-        <p>
           There are additional products that can make instructions easier.
           Subscribe to SparkMath, Spark Reading free trials to see how they can
           help.{' '}

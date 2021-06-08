@@ -442,6 +442,7 @@ const Subscription = (props) => {
             setCartQuantities={setCartQuantities}
             subscription={subscription}
             subsLicenses={subsLicenses}
+            requestQuote={openRequestQuoteModal}
           />
         )}
       </SubscriptionContentWrapper>

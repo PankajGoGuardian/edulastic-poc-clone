@@ -71,11 +71,11 @@ class GroupResponses extends React.Component {
             }
           })
         }
-    
+
         let alternateAnswers = draft.validation.altResponses
         if (alternateAnswers?.length > 0) {
           alternateAnswers.forEach((alternateAnswer) => {
-            (alternateAnswer?.value || []).forEach((answer, pos) => {
+            ;(alternateAnswer?.value || []).forEach((answer, pos) => {
               if (answer === optionId) {
                 alternateAnswer.value[pos] = null
               }
@@ -187,7 +187,7 @@ class GroupResponses extends React.Component {
         let alternateAnswers = draft.validation.altResponses
         if (alternateAnswers?.length > 0) {
           alternateAnswers.forEach((alternateAnswer) => {
-            (alternateAnswer?.value || []).forEach((answer, pos) => {
+            ;(alternateAnswer?.value || []).forEach((answer, pos) => {
               if (answer?.group == index) {
                 alternateAnswer.value[pos] = null
               }
@@ -272,7 +272,7 @@ class GroupResponses extends React.Component {
         let alternateAnswers = draft.validation.altResponses
         if (alternateAnswers?.length > 0) {
           alternateAnswers.forEach((alternateAnswer) => {
-            (alternateAnswer?.value || []).forEach((answer, pos) => {
+            ;(alternateAnswer?.value || []).forEach((answer, pos) => {
               if (answer?.group == index && answer?.data === optionId) {
                 alternateAnswer.value[pos] = null
               }
@@ -396,7 +396,10 @@ class GroupResponses extends React.Component {
                   {group.options.length > 0 && (
                     <QuillSortableList
                       prefix={`group_${index}`}
-                      items={group.options.map((o) => ({ value: o.label, id: o.value }))}
+                      items={group.options.map((o) => ({
+                        value: o.label,
+                        id: o.value,
+                      }))}
                       onSortEnd={(params) =>
                         this.onSortEndGroupOptions(index, params)
                       }

@@ -170,7 +170,11 @@ const Criteria = ({
         </RatingSection>
         {isEditable && (
           <AddRatingSection>
-            <div className="add-rating-button" data-cy="addRating" onClick={handleAddRating}>
+            <div
+              className="add-rating-button"
+              data-cy="addRating"
+              onClick={handleAddRating}
+            >
               <span>
                 <Icon type="plus" />
               </span>

@@ -19,7 +19,7 @@ import {
   StyledCustomChartTooltip,
   StyledChartNavButton,
   CustomXAxisTickTooltipContainer,
-  ResetButtonClear
+  ResetButtonClear,
 } from '../../styled'
 import {
   CustomChartXTick,

@@ -19,7 +19,7 @@ const MultiSelectSearch = ({
 }) => {
   const [searchText, setSearchText] = useState('')
   const handleSearch = useCallback(
-    s => {
+    (s) => {
       setSearchText(s)
       onSearch(s)
     },
@@ -33,9 +33,9 @@ const MultiSelectSearch = ({
     [onBlur]
   )
   const updatedOptions = useMemo(() =>
-    options.map(data => ({
+    options.map((data) => ({
       ...data,
-      title: data.name === 'All' ? `All ${label}` : data.title
+      title: data.name === 'All' ? `All ${label}` : data.title,
     }))
   )
   const dropDownData = useDropdownData(updatedOptions, {

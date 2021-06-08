@@ -2,8 +2,10 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { get, isEmpty } from 'lodash'
-
 import { Col, Row } from 'antd'
+
+import { reportUtils } from '@edulastic/constants'
+
 import { SpinLoader } from '@edulastic/common'
 import StudentAssignmentModal from '../../../common/components/Popups/studentAssignmentModal'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
@@ -25,13 +27,14 @@ import {
   resetStandardsGradebookAction,
 } from './ducks'
 
-import { getStudentAssignments } from '../../../common/util'
-import { getMaxMasteryScore } from '../standardsPerformance/utils/transformers'
 import {
   getDenormalizedData,
   getFilteredDenormalizedData,
   groupedByStandard,
 } from './utils/transformers'
+
+const { getStudentAssignments } = reportUtils.common
+const { getMaxMasteryScore } = reportUtils.standardsPerformanceSummary
 
 // -----|-----|-----|-----|-----| COMPONENT BEGIN |-----|-----|-----|-----|----- //
 

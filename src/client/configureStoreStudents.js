@@ -5,8 +5,8 @@ import { connectRouter, routerMiddleware } from 'connected-react-router'
 import * as Sentry from '@sentry/browser'
 import reduxReset from 'redux-reset'
 
-import { studentReducers } from './studentReducers';
-import { studentsSagas } from './studentSagas';
+import { studentReducers } from './studentReducers'
+import { studentsSagas } from './studentSagas'
 
 export const history = createBrowserHistory()
 
@@ -19,7 +19,6 @@ const sagaMiddleware = createSagaMiddleware({
 
 const middleware = [sagaMiddleware, routerMiddleware(history)]
 
-
 let store
 
 const composeEnhancers =
@@ -28,7 +27,11 @@ const composeEnhancers =
     ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
     : compose
 
-export default (initialState = {}, reducer = studentReducers, saga = studentsSagas) => {
+export default (
+  initialState = {},
+  reducer = studentReducers,
+  saga = studentsSagas
+) => {
   store = createStore(
     connectRouter(history)(reducer),
     initialState,

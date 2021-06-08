@@ -174,9 +174,17 @@ export const getFilteredDenormalizedData = (denormalizedData, filters) => {
       item.iepStatus === filters.iepStatus || filters.iepStatus === 'all'
     )
     const raceFlag = !!(item.race === filters.race || filters.race === 'all')
-    const hispanicEthnicityFlag = !!(item.hispanicEthnicity === filters.hispanicEthnicity || filters.hispanicEthnicity === 'all')
+    const hispanicEthnicityFlag = !!(
+      item.hispanicEthnicity === filters.hispanicEthnicity ||
+      filters.hispanicEthnicity === 'all'
+    )
     return (
-      genderFlag && frlStatusFlag && ellStatusFlag && iepStatusFlag && raceFlag && hispanicEthnicityFlag
+      genderFlag &&
+      frlStatusFlag &&
+      ellStatusFlag &&
+      iepStatusFlag &&
+      raceFlag &&
+      hispanicEthnicityFlag
     )
   })
 

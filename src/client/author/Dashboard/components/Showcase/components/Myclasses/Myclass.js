@@ -256,7 +256,7 @@ const MyClasses = ({
     } else if (content === 'playlists_library') {
       content = 'playlists'
     }
-    if(filters?.[0]?.collections?.[0] || subscriptionData?.itemBankId){
+    if (filters?.[0]?.collections?.[0] || subscriptionData?.itemBankId) {
       setClickedBundleId(
         filters?.[0]?.collections?.[0] || subscriptionData?.itemBankId
       )
@@ -341,7 +341,10 @@ const MyClasses = ({
     filteredBundles = filteredBundles.filter(
       (feature) =>
         !feature?.config?.subscriptionData?.itemBankId &&
-        !(feature.description?.includes('Engage NY') && feature.description?.includes('Math')) &&
+        !(
+          feature.description?.includes('Engage NY') &&
+          feature.description?.includes('Math')
+        ) &&
         !(
           feature?.config?.excludedPublishers?.includes('SingaporeMath') ||
           feature?.config?.excludedPublishers?.includes('Singapore Math')

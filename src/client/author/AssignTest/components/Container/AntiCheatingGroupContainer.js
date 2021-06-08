@@ -342,7 +342,6 @@ const AntiCheatingGroupContainer = ({
                   overRideSettings('restrictNavigationOut', e.target.value)
                 }}
               >
-                
                 <RadioBtn
                   value={undefined}
                   data-cy="restrict-nav-out-disabled"

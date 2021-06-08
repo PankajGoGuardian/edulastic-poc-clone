@@ -18,7 +18,12 @@ const PayWithPoModal = ({ visible, setShowModal }) => {
         title="Pay with Purchase Order"
         onCancel={() => setShowModal(false)}
         footer={[
-          <EduButton height="45px" width="220px" onClick={handleClick}>
+          <EduButton
+            data-cy="requestInvoice"
+            height="45px"
+            width="220px"
+            onClick={handleClick}
+          >
             REQUEST INVOICE
           </EduButton>,
         ]}

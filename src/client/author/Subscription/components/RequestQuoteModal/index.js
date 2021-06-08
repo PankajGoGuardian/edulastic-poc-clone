@@ -53,6 +53,7 @@ const getFooterComponent = ({
         onClick={handleClick}
         inverse
         disabled={disabled}
+        data-cy="requestQuoteBtn"
       >
         SUBMIT
       </EduButton>
@@ -271,8 +272,12 @@ const RequestQuoteModal = ({
             onChange={onLicenseTypeChange}
             value={enterpriseLicenseType}
           >
-            <Radio value="DISTRICT">District</Radio>
-            <Radio value="SCHOOL">School</Radio>
+            <Radio data-cy="districtRadio" value="DISTRICT">
+              District
+            </Radio>
+            <Radio data-cy="schoolRadio" value="SCHOOL">
+              School
+            </Radio>
           </Radio.Group>
         </FlexContainer>
 
@@ -287,6 +292,7 @@ const RequestQuoteModal = ({
               onChange={handleScoolsSelection}
               optionFilterProp="children"
               filterOption={filterOption}
+              data-cy="selectSchool"
             >
               {schoolsInUserDistrict.map(({ id, name }) => (
                 <StyledSelect.Option value={id}>{name}</StyledSelect.Option>
@@ -301,6 +307,7 @@ const RequestQuoteModal = ({
           placeholder="Type your email address"
           value={userEmail}
           onChange={onEmailChange}
+          data-cy="emailAddressField"
         />
 
         <Label>Person to email documentation to, such as a bookkeeper</Label>
@@ -308,6 +315,7 @@ const RequestQuoteModal = ({
           placeholder="Type email address"
           value={bookkeeperEmails}
           onChange={handleBookkeepersChange}
+          data-cy="bookKeeperEmailField"
         />
 
         <Label>What type of information can we help you with?</Label>
@@ -316,6 +324,7 @@ const RequestQuoteModal = ({
           rows={4}
           value={otherInfo}
           onChange={handleSetOtherInfo}
+          data-cy="otherCommentsField"
         />
 
         {productWithStudentLicense && productWithStudentLicense.length ? (

@@ -30,5 +30,5 @@ if [ $? -ne 0 ]
   exit 1
 fi
 #uploading assets to cloudfront/s3 cdn with different public path and directory
-aws s3 sync ~/edulastic-poc/build s3://edupoc/edulasticv2-development/JS/dist/$dir_name --cache-control public,max-age=604800,immutable --delete--cache-control public,max-age=604800,immutable --delete
+aws s3 sync ~/edulastic-poc/build s3://edupoc/edulasticv2-development/JS/dist/$dir_name --cache-control public,max-age=604800,immutable --delete
 cp -r ~/edulastic-poc/build/* ~/poc_dist/

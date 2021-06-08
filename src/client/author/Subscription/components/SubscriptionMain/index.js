@@ -100,6 +100,7 @@ const SubscriptionMain = ({
   cartQuantities,
   subscription,
   subsLicenses = [],
+  isGradeSubjectSelected,
 }) => {
   const [showSelectStates, setShowSelectStates] = useState(false)
   const [isTrialModalVisible, setIsTrialModalVisible] = useState(false)
@@ -440,7 +441,7 @@ const SubscriptionMain = ({
         </SpinContainer>
       ) : (
         <SectionContainer>
-          {subType !== 'enterprise' && (
+          {!isGradeSubjectSelected && (
             <>
               <TabHeaderContent
                 setShowMultiplePurchaseModal={setShowMultiplePurchaseModal}

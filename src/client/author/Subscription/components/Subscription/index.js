@@ -355,6 +355,13 @@ const Subscription = (props) => {
   const handleCloseFeatureNotAvailableModal = () =>
     setShowFeatureNotAvailableModal(false)
 
+  const { defaultGrades = [], defaultSubjects = [] } = user.orgData
+  const isGradeSubjectSelected =
+    ['enterprise'].includes(subType) &&
+    roleuser.TEACHER === user.role &&
+    defaultGrades.length > 0 &&
+    defaultSubjects.length > 0
+
   return (
     <Wrapper>
       <SubscriptionHeader
@@ -434,6 +441,7 @@ const Subscription = (props) => {
             subscription={subscription}
             subsLicenses={subsLicenses}
             requestQuote={openRequestQuoteModal}
+            isGradeSubjectSelected={isGradeSubjectSelected}
           />
         )}
       </SubscriptionContentWrapper>

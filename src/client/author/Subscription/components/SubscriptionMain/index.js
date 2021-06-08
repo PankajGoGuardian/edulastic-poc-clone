@@ -2,21 +2,16 @@ import { EduButton, FlexContainer, notification } from '@edulastic/common'
 import {
   IconAlertCircle,
   IconCalc,
-  IconCloseBook,
-  IconLaptop,
-  IconPhonics,
   IconPurchasedAlert,
   IconReading,
-  IconRobot,
-  IconScience,
-  IconScienceLab,
-  IconWord,
   IconSchool,
+  IconScience,
 } from '@edulastic/icons'
-import produce from 'immer'
-import { difference, groupBy, isBoolean, keyBy, map, uniq, omit } from 'lodash'
-import React, { useEffect, useMemo, useState } from 'react'
 import { Tooltip } from 'antd'
+import produce from 'immer'
+import { difference, groupBy, isBoolean, keyBy, map, uniq } from 'lodash'
+import React, { useEffect, useMemo, useState } from 'react'
+import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import FeatureNotAvailableModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/FeatureNotAvailableModal'
 import TrialModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/TrialModal/index'
 import FiltersSection from './FilterSection'
@@ -24,6 +19,7 @@ import {
   CardDetails,
   CardRightWrapper,
   CardsSection,
+  ExpiryMsg,
   GradeWrapper,
   IconWrapper,
   LearnMoreLink,
@@ -35,10 +31,8 @@ import {
   SectionTitle,
   SpinContainer,
   StyledSpin,
-  ExpiryMsg,
 } from './styled'
 import TabHeaderContent from './TabHeaderContent'
-import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 
 const productsMetaData = {
   'Teacher Premium': {
@@ -80,20 +74,14 @@ function getProductsWithMetaData(metaData, products) {
 }
 
 const SubscriptionMain = ({
-  openPaymentServiceModal,
-  openPurchaseLicenseModal,
   isPremiumTrialUsed,
-  showRenewalOptions,
   startTrialAction,
   setShowSubscriptionAddonModalWithId,
   usedTrialItemBankIds,
   products,
-  hasAllPremiumProductAccess,
   itemBankSubscriptions,
   setShowItemBankTrialUsedModal,
-  openHasLicenseKeyModal,
   isPremiumUser,
-  isPremium,
   subType,
   showFeatureNotAvailableModal,
   handleCloseFeatureNotAvailableModal,
@@ -108,7 +96,6 @@ const SubscriptionMain = ({
   setShowEnterpriseTab,
   setShowMultiplePurchaseModal,
   subEndDate,
-  isPaidPremium,
   setCartQuantities,
   cartQuantities,
   subscription,
@@ -466,7 +453,7 @@ const SubscriptionMain = ({
                 ['partial_premium', 'enterprise'].includes(subType) ||
                 isFreeAdmin
               ) && (
-                <CardsSection data-cy={teacherPremium.id}>
+                <CardsSection data-cy={teacherPremium.type}>
                   <FlexContainer
                     justifyContent="flex-start"
                     alignItems="flex-start"
@@ -476,7 +463,7 @@ const SubscriptionMain = ({
                       <SectionTitle>
                         {teacherPremium.title}
                         {isPremiumUser && (
-                          <ExpiryMsg>
+                          <ExpiryMsg data-cy={`${teacherPremium.type}AlertMsg`}>
                             <IconPurchasedAlert />
                             {subType === 'TRIAL_PREMIUM' ? (
                               <span>
@@ -493,8 +480,12 @@ const SubscriptionMain = ({
                         )}
                       </SectionTitle>
                       <CardDetails>
-                        <GradeWrapper>{teacherPremium.grades}</GradeWrapper>
-                        <OtherFilters>{teacherPremium.filters}</OtherFilters>
+                        <GradeWrapper data-cy="gradesFilter">
+                          {teacherPremium.grades}
+                        </GradeWrapper>
+                        <OtherFilters data-cy="subjectFilters">
+                          {teacherPremium.filters}
+                        </OtherFilters>
                       </CardDetails>
                       <SectionDescription>
                         {teacherPremium.description}
@@ -505,7 +496,7 @@ const SubscriptionMain = ({
                     flexDirection="column"
                     justifyContent="center"
                   >
-                    <Price>
+                    <Price data-cy={`${teacherPremium.type}Price`}>
                       <span>$ {teacherPremium.price}</span> per Teacher
                     </Price>
                     <EduButton
@@ -613,7 +604,7 @@ const SubscriptionMain = ({
                 (ib) => ib.itemBankId === _product?.linkedProductId
               )
               return (
-                <CardsSection data-cy={_product.id}>
+                <CardsSection data-cy={_product.type}>
                   <FlexContainer
                     justifyContent="flex-start"
                     alignItems="flex-start"
@@ -623,13 +614,15 @@ const SubscriptionMain = ({
                       <SectionTitle>
                         {_product.title}
                         {!isPremiumUser && (
-                          <PremiumRequiredMsg>
+                          <PremiumRequiredMsg
+                            data-cy={`${_product.type}AlertMsg`}
+                          >
                             <IconAlertCircle />
                             <span>Subscription requires access to Premium</span>
                           </PremiumRequiredMsg>
                         )}
                         {itemBankSubscription && (
-                          <ExpiryMsg>
+                          <ExpiryMsg data-cy={`${_product.type}_AlertMsg`}>
                             <IconPurchasedAlert />
                             {itemBankSubscription?.isTrial ? (
                               <span>
@@ -650,8 +643,12 @@ const SubscriptionMain = ({
                         )}
                       </SectionTitle>
                       <CardDetails>
-                        <GradeWrapper>{_product.grades}</GradeWrapper>
-                        <OtherFilters>{_product.filters}</OtherFilters>
+                        <GradeWrapper data-cy="gradesFilter">
+                          {_product.grades}
+                        </GradeWrapper>
+                        <OtherFilters data-cy="subjectFilters">
+                          {_product.filters}
+                        </OtherFilters>
                       </CardDetails>
                       <SectionDescription>
                         {_product.description}
@@ -662,7 +659,7 @@ const SubscriptionMain = ({
                     flexDirection="column"
                     justifyContent="center"
                   >
-                    <Price>
+                    <Price data-cy={`${_product.type}_Price`}>
                       <span>$ {_product.price}</span> per Teacher
                     </Price>
                     <EduButton

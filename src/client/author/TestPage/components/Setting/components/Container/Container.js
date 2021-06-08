@@ -587,11 +587,7 @@ class Setting extends Component {
             checked={applyEBSR}
             onChange={this.handleApplyEBSR}
           >
-            <StyledSpan>
-              APPLY EBSR GREADING (
-              <StyledItalic>first part has to be correct</StyledItalic>) FOR ALL
-              MULTIPART ITEMS
-            </StyledSpan>
+            <StyledSpan>APPLY EBSR GRADING</StyledSpan>
           </CheckboxLabel>
         </CheckBoxWrapper>
       )
@@ -1963,8 +1959,4 @@ const InputNumberStyled = Styled(InputNumber)`
 
 const StyledSpan = Styled.span`
   font-weight: ${(props) => props.theme.semiBold};
-`
-
-const StyledItalic = Styled.i`
-  font-weight: ${(props) => props.theme.regular};
 `

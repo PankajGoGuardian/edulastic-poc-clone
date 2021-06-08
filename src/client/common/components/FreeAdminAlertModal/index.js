@@ -10,16 +10,15 @@ const FreeAdminAlertModal = ({
   isVisible,
   toogleModal,
   setShowSelectStates,
+  setRequestQuoteModal,
 }) => {
-  const handleOk = () => {
-    window.open(
-      'https://docs.google.com/forms/d/e/1FAIpQLSeJN61M1sxuBfqt0_e-YPYYx2E0sLuSxVLGb6wZvxOIuOy1Eg/viewform?c=0&w=1'
-    )
+  const handleScheduleDemo = () => {
+    setShowSelectStates(true)
     toogleModal()
   }
 
-  const handleScheduleDemo = () => {
-    setShowSelectStates(true)
+  const handleRequestQuote = () => {
+    setRequestQuoteModal(true)
     toogleModal()
   }
 
@@ -27,7 +26,7 @@ const FreeAdminAlertModal = ({
     <StyledModal
       title="Feature Not Available"
       visible={isVisible}
-      onOk={handleOk}
+      onOk={handleRequestQuote}
       onCancel={toogleModal}
       centered
       footer={[
@@ -41,7 +40,11 @@ const FreeAdminAlertModal = ({
           >
             CANCEL
           </EduButton>
-          <EduButton height="40px" data-cy="request-quote" onClick={handleOk}>
+          <EduButton
+            height="40px"
+            data-cy="request-quote"
+            onClick={handleRequestQuote}
+          >
             Request a Quote
           </EduButton>
         </div>,

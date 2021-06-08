@@ -2,6 +2,7 @@ import React, { Component, lazy, Suspense, useEffect } from 'react'
 import { capitalize, get, isEmpty, isUndefined } from 'lodash'
 import qs from 'qs'
 import queryString from 'query-string'
+import loadable from '@loadable/component'
 import PropTypes from 'prop-types'
 import { Redirect, Route, Switch, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
@@ -42,6 +43,11 @@ import SsoAuth from '../ssoAuth'
 import FreeAdminAlertModal from './common/components/FreeAdminAlertModal'
 import StudentSessionExpiredModal from './common/components/StudentSessionExpiredModal'
 import CalendlyScheduleModal from './author/Subscription/components/SubscriptionMain/CalendlyScheduleModal'
+import {
+  getRequestOrSubmitSuccessVisibility,
+  getRequestQuoteVisibility,
+  slice as subscriptionSlice,
+} from './author/Subscription/ducks'
 
 const { ASSESSMENT, PRACTICE, TESTLET } = test.type
 // route wise splitting
@@ -100,6 +106,14 @@ const AssignmentEmbedLink = lazy(() =>
   import('./assignmentEmbedLink/container')
 )
 const AudioTagPlayer = lazy(() => import('./AudioTagPlayer'))
+
+const RequestQuoteModal = loadable(() =>
+  import('./author/Subscription/components/RequestQuoteModal')
+)
+
+const InvoiceSuccessModal = loadable(() =>
+  import('./author/Subscription/components/InvoiceSuccessModal')
+)
 
 const Loading = () => (
   <div>
@@ -249,6 +263,16 @@ class App extends Component {
     this.setState({ showSelectStates: value })
   }
 
+  closeRequestQuoteModal = () => {
+    const { setRequestQuoteModal } = this.props
+    setRequestQuoteModal(false)
+  }
+
+  closeRequestOrSubmitSuccessModal = () => {
+    const { toggleRequestOrSubmitSuccessModal } = this.props
+    toggleRequestOrSubmitSuccessModal(false)
+  }
+
   render() {
     const cliBannerVisible = sessionStorage.cliBannerVisible || false
     /**
@@ -264,6 +288,9 @@ class App extends Component {
       isProxyUser,
       shouldWatch,
       isDemoAccountProxy = false,
+      isRequestQuoteModalVisible,
+      setRequestQuoteModal,
+      isRequestOrSubmitSuccessModalVisible,
     } = this.props
     if (
       location.hash.includes('#renderResource/close/') ||
@@ -499,7 +526,20 @@ class App extends Component {
         {!isPremium && roleuser.DA_SA_ROLE_ARRAY.includes(userRole) && (
           <FreeAdminAlertModal
             history={history}
+            setRequestQuoteModal={setRequestQuoteModal}
             setShowSelectStates={this.setShowSelectStates}
+          />
+        )}
+        {isRequestQuoteModalVisible && (
+          <RequestQuoteModal
+            visible={isRequestQuoteModalVisible}
+            onCancel={this.closeRequestQuoteModal}
+          />
+        )}
+        {isRequestOrSubmitSuccessModalVisible && (
+          <InvoiceSuccessModal
+            visible={isRequestOrSubmitSuccessModalVisible}
+            onCancel={this.closeRequestOrSubmitSuccessModal}
           />
         )}
         <CalendlyScheduleModal
@@ -736,17 +776,24 @@ class App extends Component {
 const enhance = compose(
   withRouter,
   connect(
-    ({ user, tutorial }) => ({
+    ({ user, tutorial, subscription }) => ({
       user,
       tutorial: tutorial.currentTutorial,
       fullName: getUserNameSelector({ user }),
       isProxyUser: isProxyUserSelector({ user }),
       shouldWatch: shouldWatchCollectionUpdates({ user }),
       isDemoAccountProxy: isDemoPlaygroundUser({ user }),
+      isRequestQuoteModalVisible: getRequestQuoteVisibility({ subscription }),
+      isRequestOrSubmitSuccessModalVisible: getRequestOrSubmitSuccessVisibility(
+        { subscription }
+      ),
     }),
     {
       fetchUser: fetchUserAction,
       logout: logoutAction,
+      setRequestQuoteModal: subscriptionSlice.actions.setRequestQuoteModal,
+      toggleRequestOrSubmitSuccessModal:
+        subscriptionSlice.actions.toggleRequestOrSubmitSuccessModal,
     }
   )
 )

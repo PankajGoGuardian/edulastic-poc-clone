@@ -40,6 +40,9 @@ const UpgradeModal = loadable(() => import('./UpgradeModal'))
 const PaymentServiceModal = loadable(() => import('./PaymentServiceModal'))
 const PayWithPoModal = loadable(() => import('./PayWithPoModal'))
 const BuyMoreLicensesModal = loadable(() => import('./BuyMoreLicensesModal'))
+const SubmitPOModal = loadable(() =>
+  import('../../../../Subscription/components/SubmitPOModal')
+)
 
 const getInitialSelectedProductIds = ({
   defaultSelectedProductIds,
@@ -103,6 +106,8 @@ const PurchaseFlowModals = (props) => {
     cartQuantities,
     fromSideMenu,
     openRequestInvoiceModal,
+    isExternalSubmitPOModalVisible = false,
+    toggleSubmitPOModal,
   } = props
 
   const [payWithPoModal, setPayWithPoModal] = useState(false)
@@ -112,6 +117,7 @@ const PurchaseFlowModals = (props) => {
   const [totalAmount, setTotalAmount] = useState(100)
   const [quantities, setQuantities] = useState({})
   const [isPaymentServiceModalVisible, setPaymentServiceModal] = useState(false)
+  const [isSubmitPOModalVisible, setSubmitPOModal] = useState(false)
 
   const trialConfirmationMessage = showTrialConfirmationMessage.subEndDate
     ? showTrialConfirmationMessage
@@ -293,7 +299,11 @@ const PurchaseFlowModals = (props) => {
     }
   }
 
-  const handleClick = ({ emails = [], productsToshow = products }) => {
+  const handleClick = ({
+    emails = [],
+    productsToshow = products,
+    shouldPayWithCC = false,
+  }) => {
     if (showMultiplePurchaseModal) {
       const productQuantities = products.map((product) => ({
         ...product,
@@ -355,7 +365,17 @@ const PurchaseFlowModals = (props) => {
     setTotalAmount(totalAmount)
     handleSubscriptionAddonModalClose()
     setCartVisible(false)
-    setShowUpgradeModal(true)
+    if (shouldPayWithCC) {
+      openPaymentServiceModal(true)
+    } else {
+      setShowUpgradeModal(true)
+    }
+  }
+
+  const handleOpenSubmitPOModal = () => setSubmitPOModal(true)
+  const handleCloseSubmitPOModal = () => {
+    toggleSubmitPOModal(false)
+    setSubmitPOModal(false)
   }
 
   return (
@@ -423,6 +443,7 @@ const PurchaseFlowModals = (props) => {
           setShowModal={setShowUpgradeModal}
           openPaymentServiceModal={openPaymentServiceModal}
           openPoServiceModal={openPoServiceModal}
+          openSubmitPOModal={handleOpenSubmitPOModal}
         />
       )}
       {isPaymentServiceModalVisible && (
@@ -478,6 +499,13 @@ const PurchaseFlowModals = (props) => {
           setClickedBundleId={setClickedBundleId}
         />
       )}
+
+      {(isSubmitPOModalVisible || isExternalSubmitPOModalVisible) && (
+        <SubmitPOModal
+          visible={isSubmitPOModalVisible || isExternalSubmitPOModalVisible}
+          onCancel={handleCloseSubmitPOModal}
+        />
+      )}
     </>
   )
 }
@@ -489,6 +517,7 @@ PurchaseFlowModals.defaultProps = {
   setSelectedLicenseId: () => {},
   setClickedBundleId: () => {},
   openRequestInvoiceModal: () => {},
+  toggleSubmitPOModal: () => {},
 }
 
 export default compose(

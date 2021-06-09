@@ -25,6 +25,7 @@ import {
   SCROLL_SHOW_LIMIT,
 } from '../../../author/ClassBoard/ducks'
 import { setPageNumberAction } from '../../../author/src/reducers/testActivity'
+import { getUser } from '../../../author/src/selectors/user'
 
 class TestItemPreview extends Component {
   constructor(props) {
@@ -346,6 +347,9 @@ class TestItemPreview extends Component {
       t,
       isCliUser,
       showPreviousAttempt,
+      testActivityId,
+      studentData,
+      currentStudent,
       ...restProps
     } = this.props
     const {
@@ -475,6 +479,9 @@ class TestItemPreview extends Component {
                       hasDrawingResponse={hasDrawingResponse}
                       isStudentAttempt={isStudentAttempt}
                       isFeedbackVisible={isFeedbackVisible}
+                      testActivityId={testActivityId}
+                      studentData={studentData}
+                      currentStudent={currentStudent}
                     />
                     {collapseDirection === 'right' &&
                       showCollapseButtons &&
@@ -552,6 +559,8 @@ const enhance = compose(
         'NONE'
       ),
       pageNumber: getPageNumberSelector(state),
+      testActivityId: get(state, 'test.testActivityId', ''),
+      studentData: getUser(state),
     }),
     {
       changedPlayerContent: changedPlayerContentAction,

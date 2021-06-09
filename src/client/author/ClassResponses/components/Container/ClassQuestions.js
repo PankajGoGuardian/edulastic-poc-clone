@@ -299,6 +299,7 @@ const Preview = ({
   toggleStudentWorkCollapse,
   hideCorrectAnswer,
   testActivityId: utaId,
+  currentStudent,
 }) => {
   const rows = getRows(item, false)
   const questions = get(item, ['data', 'questions'], [])
@@ -377,6 +378,7 @@ const Preview = ({
         isStudentView={isStudentView}
         testActivityId={utaId}
         hideCorrectAnswer={hideCorrectAnswer}
+        currentStudent={currentStudent}
       />
     </StyledFlexContainer>
   )
@@ -714,6 +716,7 @@ class ClassQuestions extends Component {
               hideCorrectAnswer={hideCorrectAnswer}
               isStudentView={isStudentView}
               testActivityId={testActivityId || currentStudent.testActivityId}
+              currentStudent={currentStudent}
             />
           )
         })}

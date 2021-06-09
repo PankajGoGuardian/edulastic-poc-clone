@@ -29,12 +29,15 @@ import {
   LCB_LIMIT_QUESTION_PER_VIEW,
   SCROLL_SHOW_LIMIT,
 } from '../../../../../author/ClassBoard/ducks'
+import TestAttachementsModal from '../../../../../author/StudentView/Modals/TestAttachementsModal'
 
 class TestItemCol extends Component {
   constructor() {
     super()
     this.state = {
       currentTab: 0,
+      showAttachmentsModal: false,
+      attachmentIndexForPreview: null,
     }
     this.scrollContainer = React.createRef()
   }
@@ -47,6 +50,13 @@ class TestItemCol extends Component {
       },
       () => changedPlayerContent()
     )
+  }
+
+  toggleAttachmentsModal = (index) => {
+    this.setState((prevState) => ({
+      showAttachmentsModal: !prevState.showAttachmentsModal,
+      attachmentIndexForPreview: index,
+    }))
   }
 
   renderTabContent = (widget, flowLayout, widgetIndex, showStackedView) => {
@@ -185,12 +195,14 @@ class TestItemCol extends Component {
           )}
         {attachments && attachments.length > 0 && !LCBPreviewModal && (
           <>
-            <StyleH2Heading>Attachments</StyleH2Heading>
+            {isStudentAttempt && <StyleH2Heading>Attachments</StyleH2Heading>}
             <FilesViewContainer>
               <FilesView
                 files={attachments}
                 hideDelete={!isStudentAttempt}
                 onDelete={saveUpdatedAttachments}
+                openAttachmentViewModal={this.toggleAttachmentsModal}
+                disableLink
               />
             </FilesViewContainer>
           </>
@@ -289,9 +301,16 @@ class TestItemCol extends Component {
       pageNumber,
       setPageNumber,
       isDocBased,
+      testActivityId,
+      studentData,
+      currentStudent,
       ...restProps
     } = this.props
-    const { currentTab } = this.state
+    const {
+      currentTab,
+      showAttachmentsModal,
+      attachmentIndexForPreview,
+    } = this.state
     const {
       showStackedView,
       viewComponent,
@@ -301,6 +320,8 @@ class TestItemCol extends Component {
       isExpressGrader,
       isStudentReport,
       isQuestionView,
+      questions,
+      attachments,
     } = restProps
 
     const widgets =
@@ -323,6 +344,8 @@ class TestItemCol extends Component {
         )
       : filteredWidgets
 
+    const question = Object.values(questions)?.[0]
+    const utaId = testActivityId || question?.activity?.testActivityId || ''
     return (
       <ScrollContext.Provider
         value={{
@@ -425,6 +448,18 @@ class TestItemCol extends Component {
                 readOnly={this.readyOnlyScratchpad}
                 conatinerWidth={colWidth}
                 dimensions={scratchpadDimensions}
+              />
+            )}
+            {showAttachmentsModal && (
+              <TestAttachementsModal
+                toggleAttachmentsModal={this.toggleAttachmentsModal}
+                showAttachmentsModal={showAttachmentsModal}
+                attachmentsList={attachments}
+                title="All Attachments"
+                utaId={utaId}
+                studentData={currentStudent || studentData}
+                attachmentIndexForPreview={attachmentIndexForPreview || 0}
+                isQuestionLevel
               />
             )}
           </WidgetContainer>

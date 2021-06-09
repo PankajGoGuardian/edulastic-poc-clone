@@ -198,6 +198,7 @@ class StudentViewContainer extends Component {
       showTestletPlayer,
       hasStickyHeader,
       hideCorrectAnswer,
+      showAttachmentsModal,
     } = this.state
     const userId = studentResponse.testActivity
       ? studentResponse.testActivity.userId
@@ -465,15 +466,16 @@ class StudentViewContainer extends Component {
           hasStickyHeader={hasStickyHeader}
           onClick={() => scrollTo(document.querySelector('body'))}
         />
-        {this.state.showAttachmentsModal && (
+        {showAttachmentsModal && (
           <TestAttachementsModal
             toggleAttachmentsModal={this.toggleAttachmentsModal}
-            showAttachmentsModal={this.state.showAttachmentsModal}
+            showAttachmentsModal={showAttachmentsModal}
             attachmentsList={attachments}
             title="All Attachments"
             description="Import content from QTI, WebCT and several other formats."
             utaId={studentTestActivity?._id}
             studentData={currentStudent}
+            attachmentNameLabel="Attachment Name"
           />
         )}
       </>

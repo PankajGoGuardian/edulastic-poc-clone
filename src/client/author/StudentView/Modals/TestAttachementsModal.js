@@ -20,9 +20,14 @@ const TestAttachementsModal = ({
   description,
   utaId,
   studentData,
+  attachmentNameLabel = 'Attachment',
+  attachmentIndexForPreview = 0,
+  isQuestionLevel = false,
 }) => {
   const [isZipDownloading, setZipDownloading] = useState(false)
-  const [currentAttachmentIndex, setCurrentAttachmentIndex] = useState(0)
+  const [currentAttachmentIndex, setCurrentAttachmentIndex] = useState(
+    attachmentIndexForPreview || 0
+  )
 
   const footerProps = {
     isZipDownloading,
@@ -48,6 +53,7 @@ const TestAttachementsModal = ({
         .finally(() => setZipDownloading(false))
     },
     downloadLink: attachmentsList[currentAttachmentIndex].source,
+    isQuestionLevel,
   }
 
   return (
@@ -62,7 +68,12 @@ const TestAttachementsModal = ({
     >
       <Description>{description}</Description>
 
-      <InputTitle>Attachment Name</InputTitle>
+      <InputTitle>
+        {attachmentNameLabel}
+        {attachmentNameLabel === 'Attachment'
+          ? ` (${currentAttachmentIndex + 1}/${attachmentsList.length})`
+          : null}
+      </InputTitle>
       <FilesViewContainer>
         <FilesView
           files={[attachmentsList[currentAttachmentIndex]]}

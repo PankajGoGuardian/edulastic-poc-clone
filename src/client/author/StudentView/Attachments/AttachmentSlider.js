@@ -1,5 +1,4 @@
-import React, { useRef } from 'react'
-import { debounce } from 'lodash'
+import React, { useEffect, useRef } from 'react'
 import { IconChevronLeft } from '@edulastic/icons'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import { greyishBorder } from '@edulastic/colors'
@@ -20,22 +19,26 @@ const AttachmentSlider = ({
 }) => {
   const scrollBarRef = useRef(null)
 
-  const handleScroll = debounce((isScrollLeft) => {
+  const handleScroll = (scrollBehavior) => {
     const scrollContainer = scrollBarRef.current._container
-    const { scrollLeft, clientWidth } = scrollContainer
-    const delta = isScrollLeft
-      ? scrollLeft + clientWidth
-      : scrollLeft - clientWidth
+    const { clientWidth } = scrollContainer
     scrollContainer.scrollTo({
-      left: delta,
-      behavior: 'smooth',
+      left: clientWidth * currentAttachmentIndex,
+      behavior: scrollBehavior,
     })
-  }, 200)
+  }
+
+  useEffect(() => {
+    handleScroll('auto')
+  }, [])
+
+  useEffect(() => {
+    handleScroll('smooth')
+  }, [currentAttachmentIndex])
 
   const slidesLength = attachmentsList.length
 
   const handleArrowClick = (isScrollLeft) => {
-    handleScroll(isScrollLeft)
     if (isScrollLeft) {
       setCurrentAttachmentIndex(currentAttachmentIndex + 1)
     } else {

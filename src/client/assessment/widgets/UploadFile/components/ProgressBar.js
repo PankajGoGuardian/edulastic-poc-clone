@@ -1,4 +1,4 @@
-import React, { useMemo, Fragment } from 'react'
+import React, { useMemo } from 'react'
 import styled from 'styled-components'
 import { Progress } from 'antd'
 import PropTypes from 'prop-types'
@@ -63,6 +63,7 @@ const ProgressBar = ({
   data,
   onCancel,
   disableLink,
+  openAttachmentViewModal = false,
 }) => {
   if (!data) {
     return null
@@ -109,7 +110,7 @@ const ProgressBar = ({
     }
   }
 
-  const NameWrapper = hideDelete ? Link : Fragment
+  const NameWrapper = Link
   const linkProps =
     hideDelete && !disableLink ? { href: source, target: '_blank' } : {}
 
@@ -121,14 +122,24 @@ const ProgressBar = ({
       marginLeft={index % cols !== 0 ? '18px' : null}
       justifyContent="space-between"
     >
-      <CustomImage src={icon} role="presentation" />
+      <CustomImage
+        src={icon}
+        role="presentation"
+        onClick={() =>
+          openAttachmentViewModal && openAttachmentViewModal(index)
+        }
+      />
       <FlexContainer
         marginLeft="16px"
         flexDirection="column"
         width="calc(100% - 40px)"
       >
         <FlexContainer justifyContent="space-between" alignItems="center">
-          <FileName>
+          <FileName
+            onClick={() =>
+              openAttachmentViewModal && openAttachmentViewModal(index)
+            }
+          >
             <NameWrapper {...linkProps}>{name}</NameWrapper>
           </FileName>
 

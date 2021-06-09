@@ -1742,9 +1742,11 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           validResponse: {
             score: 1,
             value: [],
+            options: {
+              ignoreLabels: true,
+            },
           },
           altResponses: [],
-          ignoreLabels: true,
         },
         sampleAnswer: '',
         uiStyle: {
@@ -1822,9 +1824,11 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           validResponse: {
             score: 1,
             value: [],
+            options: {
+              ignoreLabels: true,
+            },
           },
           altResponses: [],
-          ignoreLabels: true,
         },
         sampleAnswer: '',
         uiStyle: {

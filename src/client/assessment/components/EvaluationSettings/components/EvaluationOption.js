@@ -9,7 +9,7 @@ import AllowedVariables from './AllowedVariables'
 import Units from './Units'
 import InlineCheckOptions from './InlineCheckOptions'
 import MultipleValues from './MultipleValues'
-import PonitsOnAnEquation from './PonitsOnAnEquation'
+import PointsOnAnEquation from './PointsOnAnEquation'
 
 const textStyle = ['tolerance', 'isIn', 'satisfies']
 const numberStyle = ['significantDecimalPlaces']
@@ -122,7 +122,7 @@ const EvaluationOption = ({
       return null
     }
     return (
-      <PonitsOnAnEquation
+      <PointsOnAnEquation
         optionKey={optionKey}
         options={options}
         onChange={onChangeOption}

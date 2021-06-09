@@ -10,14 +10,14 @@ import { HeadingLabel } from './InlineCheckOptions'
 import LabelWithHelper from './LabelWithHelper'
 import { validations } from './inputsValidations'
 
-const PonitsOnAnEquation = ({ optionKey, options, onChange }) => {
+const PointsOnAnEquation = ({ optionKey, options, onChange }) => {
   const [isAllowed, setIsAllowed] = useState(false)
   const [localLatex, setLocalLatex] = useState('')
 
   const onChangeCheckbox = (e) => {
     setIsAllowed(e.target.checked)
     if (!e.target.checked) {
-      onChange('ponitsOnAnEquation', null)
+      onChange('pointsOnAnEquation', null)
     } else {
       onChange('showConnect', true)
     }
@@ -96,6 +96,7 @@ const PonitsOnAnEquation = ({ optionKey, options, onChange }) => {
             onInput={onChangeMath}
             onBlur={handleBlurMath}
             hideKeypad={false}
+            resetMath
             disabled={!isAllowed}
             showResponse={false}
           />
@@ -105,4 +106,4 @@ const PonitsOnAnEquation = ({ optionKey, options, onChange }) => {
   )
 }
 
-export default PonitsOnAnEquation
+export default PointsOnAnEquation

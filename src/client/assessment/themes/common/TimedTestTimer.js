@@ -82,7 +82,10 @@ const TimedTestTimer = ({
       unsubscribe = db
         .collection(firestoreCollectionName)
         .doc(utaId || 'NONEXISTENT')
-        .onSnapshot((_doc) => setUpstreamUta(_doc.data()))
+        .onSnapshot(
+          (_doc) => setUpstreamUta(_doc.data()),
+          (err) => console.log('FBS ERROR : ', err)
+        )
     }
     if (isAuthorPreview) {
       setCurrentAssignmentTime(allowedTime)

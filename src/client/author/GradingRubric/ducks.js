@@ -103,15 +103,17 @@ function* updateRubricSaga({ payload }) {
       body: payload.rubricData,
     })
     yield put(updateRubricDataAction(data))
-    yield put(
-      setRubricIdAction({
-        metadata: {
-          _id: payload.rubricData._id,
-          name: payload.rubricData.name,
-        },
-        maxScore: payload.maxScore,
-      })
-    )
+    if (payload.changes !== 'SHARED_TYPE') {
+      yield put(
+        setRubricIdAction({
+          metadata: {
+            _id: payload.rubricData._id,
+            name: payload.rubricData.name,
+          },
+          maxScore: payload.maxScore,
+        })
+      )
+    }
     yield put(addRubricToRecentlyUsedAction(payload.rubricData))
     yield put(updateRubricInRecentlyUsedAction(data))
     if (payload.status === 'draft')

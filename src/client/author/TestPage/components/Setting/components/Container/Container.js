@@ -445,6 +445,7 @@ class Setting extends Component {
       pauseAllowed,
       itemGroups = [],
       applyEBSR = false,
+      enableSkipAlert = false,
     } = entity
     const scoringType =
       entity.scoringType === evalTypeLabels.PARTIAL_CREDIT &&
@@ -531,7 +532,13 @@ class Setting extends Component {
           'When enabled, a student can open ScratchPad to show their work. The tool contains options for text, drawing, shapes, rulers, and more.',
         id: 'scratchpad-setting',
       },
-      // { key: 'enableSkipAlert', value: enableSkipAlert },
+      {
+        key: 'enableSkipAlert',
+        value: enableSkipAlert,
+        description:
+          'When enabled, a student can not skip a question without confirmation.',
+        id: 'skip-alert',
+      },
     ]
 
     const checkForCalculator = premium && calculatorProvider !== 'DESMOS'

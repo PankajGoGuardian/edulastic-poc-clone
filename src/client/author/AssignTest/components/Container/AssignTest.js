@@ -121,6 +121,7 @@ const testSettingsOptions = [
   'performanceBand',
   'showMagnifier',
   'enableScratchpad',
+  'enableSkipAlert',
   'autoRedirect',
   'autoRedirectSettings',
   'keypad',

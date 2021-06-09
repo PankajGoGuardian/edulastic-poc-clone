@@ -1673,6 +1673,7 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
       entity.blockNavigationToAnsweredQuestions || false,
     showMagnifier: !!entity.showMagnifier,
     enableScratchpad: !!entity.enableScratchpad,
+    enableSkipAlert: !!entity.enableSkipAlert,
     keypad: entity.keypad,
   }
 
@@ -1708,6 +1709,7 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     settings.passwordPolicy = passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF
     settings.timedAssignment = false
     settings.blockNavigationToAnsweredQuestions = false
+    settings.enableSkipAlert = false
     delete settings.blockSaveAndContinue
     delete settings.restrictNavigationOut
     delete settings.restrictNavigationOutAttemptsThreshold

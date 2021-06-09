@@ -575,6 +575,7 @@ const AssessmentContainer = ({
     qLabels: [],
     show: false,
   })
+  const { enableSkipAlert = false } = testSettings || {}
   const [showRegradedModal, setShowRegradedModal] = useState(false)
 
   const [, uploadFile] = useUploadToS3(userId)
@@ -870,6 +871,9 @@ const AssessmentContainer = ({
           evaluateForPreview({ currentItem, timeSpent })
         }
       } else {
+        if (!enableSkipAlert) {
+          return silentSkip({ index, context })
+        }
         setUnansweredPopupSetting({
           show: true,
           qLabels: unansweredQs.map(
@@ -894,6 +898,9 @@ const AssessmentContainer = ({
           callback: () => changePreview(previewTab),
         })
       } else {
+        if (!enableSkipAlert) {
+          return silentSkip({ index, context })
+        }
         setUnansweredPopupSetting({
           show: true,
           qLabels: unansweredQs.map(
@@ -917,6 +924,12 @@ const AssessmentContainer = ({
     if (isLast() && preview) {
       const unansweredQs = getUnAnsweredQuestions()
       if (unansweredQs.length && !needsToProceed) {
+        if (!enableSkipAlert) {
+          return silentSkip({
+            index: Number(currentItem),
+            context: value,
+          })
+        }
         return setUnansweredPopupSetting({
           show: true,
           qLabels: unansweredQs.map(
@@ -947,6 +960,12 @@ const AssessmentContainer = ({
           locState: { ...history?.location?.state, fromSummary: true },
         })
       } else {
+        if (!enableSkipAlert) {
+          return silentSkip({
+            index: Number(currentItem) + 1,
+            context: 'next',
+          })
+        }
         setUnansweredPopupSetting({
           show: true,
           qLabels: unansweredQs.map(
@@ -1012,6 +1031,19 @@ const AssessmentContainer = ({
       show: false,
     })
     const { index, context } = unansweredPopupSetting
+    if (preview) {
+      return skipOnPreview(index)
+    }
+    if (context === 'next') {
+      await moveToNext(null, true)
+    } else if (context === 'prev') {
+      moveToPrev(null, true)
+    } else {
+      gotoQuestion(index, true)
+    }
+  }
+
+  const silentSkip = async ({ index, context }) => {
     if (preview) {
       return skipOnPreview(index)
     }

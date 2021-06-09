@@ -172,6 +172,10 @@ const getSettings = (test, testActivity, preview) => {
     ? test.releaseScore
     : testActivity?.testActivity?.releaseScore
 
+  const enableSkipAlert = preview
+    ? test.enableSkipAlert
+    : assignmentSettings.enableSkipAlert
+
   return {
     testType,
     calcProvider,
@@ -181,6 +185,7 @@ const getSettings = (test, testActivity, preview) => {
     allowedTime,
     pauseAllowed,
     enableScratchpad,
+    enableSkipAlert,
     calcType: calcType || testContants.calculatorTypes.NONE,
     maxAnswerChecks: maxAnswerChecks || 0,
     passwordPolicy:

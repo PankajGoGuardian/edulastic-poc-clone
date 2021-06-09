@@ -42,6 +42,7 @@ const MiscellaneousGroupContainer = ({
     enableScratchpad = testSettings.enableScratchpad,
     multiLanguageEnabled = !!testSettings.multiLanguageEnabled,
     keypad: keyPadData = testSettings.keypad || {},
+    enableSkipAlert = testSettings.enableSkipAlert,
   } = assignmentSettings
 
   const playerSkinType =
@@ -61,6 +62,13 @@ const MiscellaneousGroupContainer = ({
       description:
         'When enabled, a student can open ScratchPad to show their work. The tool contains options for text, drawing, shapes, rulers, and more.',
       id: 'scratchpad-setting',
+    },
+    {
+      key: 'enableSkipAlert',
+      value: enableSkipAlert,
+      description:
+        'When enabled, a student can not skip a question without confirmation.',
+      id: 'skip-alert',
     },
   ]
 

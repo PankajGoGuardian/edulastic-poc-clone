@@ -8,7 +8,7 @@ import {
 import { themeColor } from '@edulastic/colors'
 import { IconAssignment, IconTrash } from '@edulastic/icons'
 import { Spin, Select, Icon } from 'antd'
-import { get, isEmpty, keyBy, omit, pick, maxBy } from 'lodash'
+import { get, isEmpty, keyBy, omit, pick } from 'lodash'
 import * as moment from 'moment'
 import PropTypes from 'prop-types'
 import React from 'react'
@@ -16,7 +16,10 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import * as Sentry from '@sentry/browser'
-import { receiveClassListAction } from '../../../Classes/ducks'
+import {
+  clearClassListAction,
+  receiveClassListAction,
+} from '../../../Classes/ducks'
 import {
   getPlaylistSelector,
   receivePlaylistByIdAction,
@@ -198,6 +201,7 @@ class AssignTest extends React.Component {
       setCurrentTestSettingsId,
       location,
       latestTerm,
+      clearClassList,
     } = this.props
 
     if (isFreeAdmin) {
@@ -208,18 +212,22 @@ class AssignTest extends React.Component {
     resetStudents()
 
     const { testId } = match.params
-    loadClassList({
-      districtId: userOrgId,
-      search: {
-        institutionIds: [],
-        subjects: [],
-        grades: [],
-        active: [1],
-        termIds: latestTerm?._id ? [latestTerm._id] : [],
-      },
-      page: 1,
-      limit: 4000,
-    })
+    if (latestTerm?.id) {
+      loadClassList({
+        districtId: userOrgId,
+        search: {
+          institutionIds: [],
+          subjects: [],
+          grades: [],
+          active: [1],
+          termIds: [latestTerm._id],
+        },
+        page: 1,
+        limit: 4000,
+      })
+    } else {
+      clearClassList()
+    }
 
     if (premium) {
       fetchUserCustomKeypads()
@@ -881,6 +889,7 @@ const enhance = compose(
     }),
     {
       loadClassList: receiveClassListAction,
+      clearClassList: clearClassListAction,
       fetchStudents: fetchGroupMembersAction,
       fetchAssignments: fetchAssignmentsAction,
       setAssignments: loadAssignmentsAction,

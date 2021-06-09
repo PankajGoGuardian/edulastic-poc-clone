@@ -1,15 +1,18 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { withRouter } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { Select } from 'antd'
+import { Empty, Select } from 'antd'
 import { SelectInputStyled } from '@edulastic/common'
 import { IconGroup, IconClass } from '@edulastic/icons'
 import { lightGrey10 } from '@edulastic/colors'
 import { test as testConst } from '@edulastic/constants'
-import { get, curry, isEmpty, find, uniq, maxBy } from 'lodash'
-import { receiveClassListAction } from '../../../Classes/ducks'
+import { get, curry, isEmpty, find, uniq } from 'lodash'
+import {
+  clearClassListAction,
+  receiveClassListAction,
+} from '../../../Classes/ducks'
 import {
   getAssignedClassesByIdSelector,
   getClassListSelector,
@@ -160,15 +163,19 @@ class ClassList extends React.Component {
   }
 
   loadClassList = () => {
-    const { loadClassListData, userOrgId } = this.props
+    const { loadClassListData, clearClassList, userOrgId } = this.props
     const { searchTerms } = this.state
-    loadClassListData({
-      districtId: userOrgId,
-      queryType: 'OR',
-      search: searchTerms,
-      page: 1,
-      limit: 4000,
-    })
+    if (searchTerms.termIds.length) {
+      loadClassListData({
+        districtId: userOrgId,
+        queryType: 'OR',
+        search: searchTerms,
+        page: 1,
+        limit: 4000,
+      })
+    } else {
+      clearClassList()
+    }
   }
 
   changeFilter = (key, value) => {
@@ -218,6 +225,19 @@ class ClassList extends React.Component {
       selectClass('class', value, classList)
     )
   }
+
+  renderTableEmpty = () => (
+    <Empty
+      description={
+        <span>
+          No Class/Group exists in current term.{' '}
+          <Link target="_blank" to="/author/manageClass">
+            Create new
+          </Link>
+        </span>
+      }
+    />
+  )
 
   render() {
     const {
@@ -536,6 +556,9 @@ class ClassList extends React.Component {
             columns={columns}
             dataSource={tableData}
             pagination={{ pageSize: 20 }}
+            locale={{
+              emptyText: this.renderTableEmpty(),
+            }}
           />
         </TableContainer>
       </ClassListContainer>
@@ -559,6 +582,7 @@ const enhance = compose(
     }),
     {
       loadClassListData: receiveClassListAction,
+      clearClassList: clearClassListAction,
       loadSchoolsData: receiveSchoolsAction,
       loadCourseListData: receiveCourseListAction,
       getAllTags: getAllTagsAction,

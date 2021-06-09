@@ -2014,5 +2014,9 @@
   "classAlreadyExist": {
     "message": "Class already exists in Manage Class",
     "description": ""
+  },
+  "optionRemove": {
+    "message": "Answer choice can not be removed during regrade",
+    "description": ""
   }
 }

@@ -41,6 +41,7 @@ import {
   changeUpdatedFlagAction,
   addQuestionAction,
   getCurrentQuestionSelector,
+  isRegradeFlowSelector,
 } from '../sharedDucks/questions'
 import {
   CLEAR_DICT_ALIGNMENTS,
@@ -49,6 +50,7 @@ import {
 import {
   isIncompleteQuestion,
   hasImproperDynamicParamsConfig,
+  isOptionsRemoved,
 } from '../questionUtils'
 import {
   setTestItemsAction,
@@ -574,6 +576,7 @@ const initialState = {
   showWarningModal: false,
   highlightCollection: false,
   loadingAuditLogs: false,
+  originalItem: null,
 }
 
 const deleteWidget = (state, { rowIndex, widgetIndex }) =>
@@ -816,7 +819,13 @@ export function reducer(state = initialState, { type, payload }) {
     case RECEIVE_ITEM_DETAIL_REQUEST:
       return { ...state, loading: true }
     case RECEIVE_ITEM_DETAIL_SUCCESS:
-      return { ...state, item: payload, loading: false, error: null }
+      return {
+        ...state,
+        item: payload,
+        loading: false,
+        error: null,
+        originalItem: payload,
+      }
 
     case SET_ITEM_QIDS:
       return { ...state, qids: payload }
@@ -1248,6 +1257,16 @@ export function* updateItemSaga({ payload }) {
 
     if (allQuestionsArePractice) {
       data.itemLevelScore = 0
+    }
+    const originalQuestions = yield select((state) =>
+      get(state, ['itemDetail', 'originalItem', 'data', 'questions'])
+    )
+    const regradeFlow = yield select(isRegradeFlowSelector)
+    if (regradeFlow && isOptionsRemoved(originalQuestions, questions)) {
+      return notification({
+        type: 'warn',
+        messageKey: 'optionRemove',
+      })
     }
 
     if (addToTest) {

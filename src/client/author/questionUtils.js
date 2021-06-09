@@ -1,5 +1,5 @@
 import { questionType, question, customTags } from '@edulastic/constants'
-import { get, isString, isEmpty, keys } from 'lodash'
+import { get, isString, isEmpty, keys, keyBy } from 'lodash'
 import striptags from 'striptags'
 import { templateHasImage } from '@edulastic/common'
 import { displayStyles } from '../assessment/widgets/ClozeEditingTask/constants'
@@ -482,4 +482,27 @@ export const hasImproperDynamicParamsConfig = (item) => {
       return [true, 'Dynamic variables option not selected', false]
   }
   return [false]
+}
+
+export const isOptionsRemoved = (originalQuestions, newQuestions) => {
+  const oldQuestionsById = keyBy(originalQuestions, 'id')
+  for (const _question of newQuestions) {
+    const { id, options, type } = _question
+    if (oldQuestionsById[id]) {
+      switch (type) {
+        case MULTIPLE_CHOICE: {
+          const oldOptionValues =
+            oldQuestionsById[id]?.options?.map((opt) => opt.value) || []
+          const newOptionsByValue = keyBy(options, 'value')
+          if (!oldOptionValues.every((value) => newOptionsByValue[value])) {
+            return true
+          }
+          break
+        }
+        default:
+          break
+      }
+    }
+  }
+  return false
 }

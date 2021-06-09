@@ -109,6 +109,7 @@ import { setShowCanvasShareAction } from '../src/reducers/gradeBook'
 import {
   isIncompleteQuestion,
   hasImproperDynamicParamsConfig,
+  isOptionsRemoved,
 } from '../questionUtils'
 import { setRegradeFirestoreDocId } from '../TestPage/ducks'
 
@@ -750,6 +751,12 @@ function* correctItemUpdateSaga({ payload }) {
 
     if (hasImproperConfig) {
       notification({ type: 'warn', msg: warningMsg })
+    }
+    if (isOptionsRemoved(testItem?.data?.questions, [question])) {
+      return notification({
+        type: 'warn',
+        messageKey: 'optionRemove',
+      })
     }
 
     const cloneItem = cloneDeep(testItem)

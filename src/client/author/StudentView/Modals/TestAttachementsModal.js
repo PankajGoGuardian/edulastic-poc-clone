@@ -30,13 +30,12 @@ const TestAttachementsModal = ({
       setZipDownloading(true)
       attachmentApi
         .downloadAllAttachments(utaId)
-        .then((res) => new Blob([res.data], { type: 'application/zip' }))
-        .then((blob) => {
-          const dynamicDownloadUrl = window.URL.createObjectURL(blob)
+        .then((res) => {
+          const url = res.data
           const shadowAnchor = document.createElement('a')
           const fileName = `${studentData.userName}-test-attachments.zip`
           const properties = {
-            href: dynamicDownloadUrl,
+            href: url,
             target: '_blank',
             download: fileName,
           }

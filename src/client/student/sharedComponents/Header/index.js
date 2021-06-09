@@ -65,7 +65,9 @@ const Header = ({
             </EduButton>
           )}
           {showExit && !showReviewResponses && (
-            <EduButton onClick={onExit}>EXIT</EduButton>
+            <EduButton data-cy="finishTest" onClick={onExit}>
+              EXIT
+            </EduButton>
           )}
         </FlexContainer>
       )}

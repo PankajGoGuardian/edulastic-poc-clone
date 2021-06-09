@@ -112,7 +112,6 @@ const SubscriptionMain = ({
   user,
   isGradeSubjectSelected,
 }) => {
-  const [showSelectStates, setShowSelectStates] = useState(false)
   const [isTrialModalVisible, setIsTrialModalVisible] = useState(false)
   const [hasAllTrialProducts, setHasAllTrialProducts] = useState(false)
   const [addonSubject, setAddonSubject] = useState('all')
@@ -182,7 +181,7 @@ const SubscriptionMain = ({
 
   const toggleTrialModal = (value) => setIsTrialModalVisible(value)
 
-  const handleSelectStateModal = () => setShowSelectStates(true)
+  const handleSelectStateModal = () => {}
 
   const handlePurchaseFlow = () => setShowSubscriptionAddonModalWithId()
 
@@ -246,27 +245,27 @@ const SubscriptionMain = ({
 
   // Show item bank trial button when item bank trial is not used yet and user is either premium
   // or hasn't used premium trial yet.
-  const hasStartTrialButton = useMemo(() => {
-    if (!isPremiumTrialUsed && !isPremiumUser) {
-      return true
-    }
+  // const hasStartTrialButton = useMemo(() => {
+  //   if (!isPremiumTrialUsed && !isPremiumUser) {
+  //     return true
+  //   }
 
-    for (const productItemBankId of productItemBankIds) {
-      if (
-        !gethasUsedItemBankTrial(productItemBankId) &&
-        !getIsPaidSparkProduct(productItemBankId)
-      ) {
-        return true
-      }
-    }
+  //   for (const productItemBankId of productItemBankIds) {
+  //     if (
+  //       !gethasUsedItemBankTrial(productItemBankId) &&
+  //       !getIsPaidSparkProduct(productItemBankId)
+  //     ) {
+  //       return true
+  //     }
+  //   }
 
-    return false
-  }, [itemBankSubscriptions, isPremiumTrialUsed, isPremiumUser])
+  //   return false
+  // }, [itemBankSubscriptions, isPremiumTrialUsed, isPremiumUser])
 
-  const handleSparkPurchaseClick = (productId) => {
-    settingProductData(productId)
-    handlePurchaseFlow()
-  }
+  // const handleSparkPurchaseClick = (productId) => {
+  //   settingProductData(productId)
+  //   handlePurchaseFlow()
+  // }
 
   /* const getSparkProductLinks = (title) => {
     const dataMap = {
@@ -360,7 +359,7 @@ const SubscriptionMain = ({
           setCartQuantities(
             produce(cartQuantities, (draft) => {
               delete draft[productId]
-              for (const [_productId, _productCount] of Object.entries(draft)) {
+              for (const [_productId] of Object.entries(draft)) {
                 const hasBankAccess = itemBankSubscriptions.find((x) => {
                   return (
                     x.itemBankId ===
@@ -410,7 +409,7 @@ const SubscriptionMain = ({
 
         if (quantities[teacherPremium.id] === undefined && source === 'addon') {
           // if additions of addons and user is not premium
-          if (!isUserPremium) {
+          if (!isUserPremium && !isFreeAdmin) {
             Object.assign(changes, { [teacherPremium.id]: 1 })
             notification({
               type: 'info',

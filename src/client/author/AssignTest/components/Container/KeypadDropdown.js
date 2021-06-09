@@ -23,7 +23,7 @@ const predefinedKeypads = [
 function KeypadDropdown({
   keypadData,
   customKeypads,
-  overrideSettings,
+  handleKeypadSelection,
   testKeypadData,
   disabled,
 }) {
@@ -65,7 +65,7 @@ function KeypadDropdown({
       (keypad) => keypad._id === value
     )
     if (customKeypadIndex !== -1) {
-      overrideSettings('keypad', {
+      handleKeypadSelection({
         type: 'custom',
         value: customKeypads[customKeypadIndex],
         updated: true,
@@ -84,11 +84,11 @@ function KeypadDropdown({
         value: predefinedKeypadValue,
         updated: true,
       }
-      overrideSettings('keypad', payload)
+      handleKeypadSelection(payload)
       return
     }
     if (testKeypadData?.value?._id === value) {
-      overrideSettings('keypad', {
+      handleKeypadSelection({
         type: 'custom',
         value: testKeypadData.value,
         updated: true,

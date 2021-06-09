@@ -52,7 +52,14 @@ export const getOrgDataSelector = createSelector(
 
 export const getLatestTermSelector = createSelector(
   getOrgDataSelector,
-  (orgData) => maxBy(orgData.terms, 'startDate')
+  (orgData) =>
+    maxBy(
+      orgData.terms?.filter((term) => {
+        const now = Date.now()
+        return term.startDate <= now && now <= term.endDate
+      }),
+      'startDate'
+    )
 )
 
 export const getCurrentGroup = createSelector(

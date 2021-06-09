@@ -100,6 +100,13 @@ import Group8874 from '../assets/units/Group8874.svg'
 import Group8876 from '../assets/units/Group8876.svg'
 import Group8877 from '../assets/units/Group8877.svg'
 import Group8878 from '../assets/units/Group8878.svg'
+import GroupAcre from '../assets/units/acre.svg'
+import GroupBytes from '../assets/units/bytes.svg'
+import GroupMegabyte from '../assets/units/mb.svg'
+import GroupGigabit from '../assets/units/gb.svg'
+import GroupMol from '../assets/units/mol.svg'
+import GroupGramMol from '../assets/units/g-mol.svg'
+import GroupGramLiter from '../assets/units/g-ml.svg'
 
 import Group8879 from '../assets/arrows/Group8879.svg'
 import Group8880 from '../assets/arrows/Group8880.svg'
@@ -653,7 +660,7 @@ export const arccot = {
   command: 'write',
 }
 
-export const mol = {
+export const gmol_inverse = {
   handler: '\\text{g}\\ \\text{mol}^{-1}',
   label: <CustomImage src={Group1054} />,
   types: ['all'],
@@ -920,7 +927,7 @@ export const us_yard = {
 
 export const us_acre = {
   handler: '\\text{acre}',
-  label: 'acre',
+  label: <CustomImage src={GroupAcre} width={38} height={24} />,
   types: ['all'],
   command: 'write',
 }
@@ -2193,4 +2200,46 @@ export const closed_surface = {
   label: <CustomImage src={Group8825} width={26} height={28} />,
   types: ['all'],
   command: 'cmd',
+}
+
+export const bytes = {
+  handler: '\\text{bytes}',
+  label: <CustomImage src={GroupBytes} width={36} height={18} />,
+  types: ['all'],
+  command: 'write',
+}
+
+export const megabyte = {
+  handler: '\\text{MB}',
+  label: <CustomImage src={GroupMegabyte} width={28} height={24} />,
+  types: ['all'],
+  command: 'write',
+}
+
+export const gigabit = {
+  handler: '\\text{GB}',
+  label: <CustomImage src={GroupGigabit} width={26} height={24} />,
+  types: ['all'],
+  command: 'write',
+}
+
+export const mol = {
+  handler: '\\text{mol}',
+  label: <CustomImage src={GroupMol} width={34} height={24} />,
+  types: ['all'],
+  command: 'write',
+}
+
+export const gmol = {
+  handler: '\\text{g/mol}',
+  label: <CustomImage src={GroupGramMol} width={38} height={18} />,
+  types: ['all'],
+  command: 'write',
+}
+
+export const gmliter = {
+  handler: '\\text{g/mL}',
+  label: <CustomImage src={GroupGramLiter} width={32} height={18} />,
+  types: ['all'],
+  command: 'write',
 }

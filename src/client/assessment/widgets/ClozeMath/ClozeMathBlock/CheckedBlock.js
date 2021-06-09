@@ -1,7 +1,8 @@
-import React, { useRef, useEffect } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import { find, isUndefined, isEmpty } from 'lodash'
 import { Popover } from 'antd'
+import { MathSpan } from '@edulastic/common'
 import { response as responseConstant } from '@edulastic/constants'
 import { getEvalautionColor } from '../../../utils/evaluation'
 
@@ -29,21 +30,14 @@ function combineUnitAndValue(userAnswer, isMath, unit) {
 const { mathInputMaxHeight } = responseConstant
 
 const CheckBoxedMathBox = ({ value, style }) => {
-  const filedRef = useRef()
-  const replaceWithMathQuill = () => {
-    if (!window.MathQuill || !filedRef.current) {
-      return
-    }
-    const MQ = window.MathQuill.getInterface(2)
-    const mQuill = MQ.StaticMath(filedRef.current)
-    mQuill.latex(value || '')
-  }
-
-  useEffect(() => {
-    replaceWithMathQuill()
-  }, [value])
-
-  return <span className="value" ref={filedRef} style={style} />
+  return (
+    <MathSpan
+      style={style}
+      dangerouslySetInnerHTML={{
+        __html: `<span class="input__math" data-latex="${value}"></span>`,
+      }}
+    />
+  )
 }
 
 CheckBoxedMathBox.propTypes = {

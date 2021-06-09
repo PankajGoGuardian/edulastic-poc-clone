@@ -1329,7 +1329,17 @@ export function* updateItemSaga({ payload }) {
      * to keep the version sync with the latest in the database
      * @see https://snapwiz.atlassian.net/browse/EV-10507
      */
-    yield put(updatePassageStructureAction(updatedPassage))
+    // EV-28143 | not to show deleted items, thus store active items in store
+    let modifiedPassageData
+    if (passageData?.activeTestItems?.length > 0) {
+      modifiedPassageData = {
+        ...updatedPassage,
+        activeTestItems: passageData.activeTestItems,
+      }
+    } else {
+      modifiedPassageData = { ...updatedPassage }
+    }
+    yield put(updatePassageStructureAction(modifiedPassageData))
 
     yield put({
       type: UPDATE_ITEM_DETAIL_SUCCESS,

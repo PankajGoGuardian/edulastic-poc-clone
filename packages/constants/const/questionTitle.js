@@ -26,5 +26,6 @@ const questionTitle = {
   CHOICE_MATRIX_STANDARD: 'Match Table - Standard',
   RE_SEQUENCE: 'Re-sequence',
   MATRICES: 'Matrices',
+  FORMULA_ESSAY: 'Math Essay',
 }
 module.exports = questionTitle

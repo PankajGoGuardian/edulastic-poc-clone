@@ -341,6 +341,7 @@ const RequestQuoteModal = ({
               </StyledCheckbox>
               <NumberInputWrapper style={{ paddingRight: '20px' }}>
                 <NumberInputStyled
+                  min={1}
                   type="number"
                   value={quantities[product.id]}
                   onChange={handleQuantityChange(product.id)}

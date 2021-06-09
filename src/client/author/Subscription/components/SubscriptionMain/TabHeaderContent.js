@@ -8,6 +8,7 @@ const TabHeaderContent = ({
   showMultipleSubscriptions,
   setShowEnterpriseTab,
   setShowMultiplePurchaseModal,
+  subType,
 }) => {
   const handleManageSubscription = () => {
     history.push('/author/manage-subscriptions')
@@ -35,39 +36,53 @@ const TabHeaderContent = ({
         )}
       </FlexContainer>
       <TopSection>
-        <h1>Edulastic Premium & Add-ons to supercharge instruction.</h1>
-        <p>
-          Upgrade your subscription to Teacher Premium or school or district
-          Enterprise for additional features, and add on subject-specific <br />
-          content bundles that you will love.
-        </p>
-        <FlexContainer justifyContent="flex-start" mt="20px">
-          <AuthorCompleteSignupButton
-            renderButton={(handleClick) => (
+        {subType === 'enterprise' ? (
+          <>
+            <h1>Add ons for your Enterprise Version.</h1>
+            <p>
+              Add on modules make it easier to deliver differentiated
+              instruction and pull all of your data into one place for a
+              holistic view of student understanding and growth.
+            </p>
+          </>
+        ) : (
+          <>
+            <h1>Edulastic Premium & Add-ons to supercharge instruction.</h1>
+            <p>
+              Upgrade your subscription to Teacher Premium or school or district
+              Enterprise for additional features, and add on subject-specific{' '}
+              <br />
+              content bundles that you will love.
+            </p>
+            <FlexContainer justifyContent="flex-start" mt="20px">
+              <AuthorCompleteSignupButton
+                renderButton={(handleClick) => (
+                  <EduButton
+                    data-cy="multipleSubscription"
+                    onClick={handleClick}
+                    ml="0px"
+                    width="215px"
+                    height="38px"
+                    isBlue
+                    isGhost
+                  >
+                    MULTIPLE Subscriptions
+                  </EduButton>
+                )}
+                onClick={openMultiplePurchaseModal}
+              />
               <EduButton
-                data-cy="multipleSubscription"
-                onClick={handleClick}
-                ml="0px"
+                data-cy="enterpriseEdition"
                 width="215px"
                 height="38px"
                 isBlue
-                isGhost
+                onClick={() => setShowEnterpriseTab(true)}
               >
-                MULTIPLE Subscriptions
+                Enterprise Edition
               </EduButton>
-            )}
-            onClick={openMultiplePurchaseModal}
-          />
-          <EduButton
-            data-cy="enterpriseEdition"
-            width="215px"
-            height="38px"
-            isBlue
-            onClick={() => setShowEnterpriseTab(true)}
-          >
-            Enterprise Edition
-          </EduButton>
-        </FlexContainer>
+            </FlexContainer>
+          </>
+        )}
       </TopSection>
     </>
   )

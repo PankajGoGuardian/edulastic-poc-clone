@@ -484,6 +484,7 @@ const SubscriptionMain = ({
                 setShowEnterpriseTab={setShowEnterpriseTab}
                 showMultipleSubscriptions={showMultipleSubscriptions}
                 history={history}
+                subType={subType}
               />
 
               {!(

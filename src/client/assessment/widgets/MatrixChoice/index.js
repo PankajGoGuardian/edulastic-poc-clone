@@ -114,7 +114,7 @@ const MatrixChoice = ({
         setNumberOfAtAnswersToLoad(altResponses?.length || 0)
       }
     }
-  }, [])
+  }, [altResponses, hideCorrectAnswer])
 
   return (
     <>

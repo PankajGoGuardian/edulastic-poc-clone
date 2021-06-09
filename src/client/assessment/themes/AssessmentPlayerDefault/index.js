@@ -546,6 +546,7 @@ class AssessmentPlayerDefault extends React.Component {
               blockNavigationToAnsweredQuestions
             }
             gotoSummary={gotoSummary}
+            isShowStudentWork={isShowStudentWork}
           >
             <FeaturesSwitch
               inputFeatures="studentSettings"

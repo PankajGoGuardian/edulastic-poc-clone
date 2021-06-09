@@ -308,28 +308,28 @@ class ViewModal extends React.Component {
                 </TestStatus>
               )}
             </TestStatusWrapper>
+            {(owner || isCurator) && !isEdulasticCurator && (
+              <EduButton
+                ml="5px"
+                isGhost
+                height="32px"
+                width="32px"
+                disabled={isDemoPlaygroundUser}
+                title={
+                  isDemoPlaygroundUser
+                    ? 'This feature is not available in demo account.'
+                    : ''
+                }
+                onClick={this.onShareModalChange}
+                data-cy="share"
+              >
+                <IconShare />
+              </EduButton>
+            )}
           </ModalTitle>
           {modalView && (
             <>
               <RightButtonContainer>
-                {(owner || isCurator) && !isEdulasticCurator && (
-                  <EduButton
-                    isGhost
-                    height="32px"
-                    width="32px"
-                    disabled={isDemoPlaygroundUser}
-                    title={
-                      isDemoPlaygroundUser
-                        ? 'This feature is not available in demo account.'
-                        : ''
-                    }
-                    onClick={this.onShareModalChange}
-                    data-cy="share"
-                  >
-                    <IconShare />
-                  </EduButton>
-                )}
-
                 <CloseButton onClick={this.handleModalClose}>
                   <IconClose
                     data-cy="closeTestPopUp"

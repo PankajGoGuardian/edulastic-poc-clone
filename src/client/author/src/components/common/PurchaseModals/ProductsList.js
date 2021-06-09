@@ -1,7 +1,8 @@
 import { NumberInputStyled, notification } from '@edulastic/common'
 import { Tooltip } from 'antd'
 import produce from 'immer'
-import { camelCase, isNumber, keyBy, max } from 'lodash'
+import { camelCase, isNumber, keyBy } from 'lodash'
+import { roleuser } from '@edulastic/constants'
 import React, { useEffect, useMemo } from 'react'
 import {
   AddonList,
@@ -31,7 +32,17 @@ const ProductsList = ({
   subsLicenses = [],
   isRequestingQuote,
   isCart,
+  user,
+  itemBankSubscriptions,
+  subType,
+  allProducts,
 }) => {
+  const allProductsKeyed = useMemo(() => {
+    if (allProducts) {
+      return keyBy(allProducts, 'linkedProductId')
+    }
+    return {}
+  }, [allProducts])
   const licenseMapKeyByProductId = useMemo(() => {
     if (subsLicenses) {
       return keyBy(subsLicenses, 'productId')
@@ -84,12 +95,54 @@ const ProductsList = ({
     }
   }
 
-  const getTeacherPremiumCountToAdd = (_licenses, _quant) => {
+  const getTeacherPremiumCountToAdd = (
+    _licenses,
+    _quant,
+    itemBankSubscriptions,
+    userRole,
+    subType
+  ) => {
+    const _licensesKeyed = keyBy(_licenses, 'linkedProductId')
     const quant = { ..._quant }
-    const {
-      totalCount: totalTeacherPremium,
-      usedCount: totalTeacherPremiumUsedCount,
+    let {
+      totalCount: totalTeacherPremium = 0,
+      usedCount: totalTeacherPremiumUsedCount = 0,
     } = _licenses?.find((x) => x.productId === premiumProductId) || {}
+
+    if (
+      subType === 'premium' &&
+      userRole === roleuser.TEACHER &&
+      totalTeacherPremiumUsedCount == 0
+    ) {
+      totalTeacherPremiumUsedCount = totalTeacherPremiumUsedCount + 1
+    }
+
+    if (subType === 'premium' && userRole === roleuser.TEACHER) {
+      for (const addOnSub of itemBankSubscriptions.filter((x) => !x.isTria)) {
+        if (addOnSub.itemBankId) {
+          if (!_licensesKeyed[addOnSub?.itemBankId]) {
+            const productId = allProductsKeyed[addOnSub?.itemBankId].id
+            _licenses = [
+              ..._licenses,
+              {
+                productId,
+                linkedProductId: addOnSub?.itemBankId,
+                totalCount: 1,
+                usedCount: 1,
+              },
+            ]
+          } else {
+            _licenses = produce(_licenses, (_licensesDraft) => {
+              const licensesIndex = _licensesDraft.findIndex(
+                (x) => x?.linkedProductId
+              )
+              _licensesDraft[licensesIndex].totalCount++
+              _licensesDraft[licensesIndex].usedCount++
+            })
+          }
+        }
+      }
+    }
 
     const totalRemainingTeacherPremiumCount =
       totalTeacherPremium - totalTeacherPremiumUsedCount
@@ -108,7 +161,6 @@ const ProductsList = ({
 
     const availableTeacherPremiumCount =
       totalRemainingTeacherPremiumCount - totalRemainingItemBanksLicenseCount
-
     return availableTeacherPremiumCount
   }
 
@@ -116,8 +168,21 @@ const ProductsList = ({
     if (!isCart) {
       return 1
     }
-    return getTeacherPremiumCountToAdd(subsLicenses, quantities)
-  }, [subsLicenses, quantities, isCart])
+    return getTeacherPremiumCountToAdd(
+      subsLicenses,
+      quantities,
+      itemBankSubscriptions,
+      user?.role,
+      subType
+    )
+  }, [
+    subsLicenses,
+    quantities,
+    isCart,
+    itemBankSubscriptions,
+    user?.role,
+    subType,
+  ])
 
   const handleQuantityChange = (itemId) => (value) => {
     if (isBuyMore && !isCart) {
@@ -142,7 +207,7 @@ const ProductsList = ({
     }
 
     if (isCart) {
-      const _quantities = {
+      let _quantities = {
         ...quantities,
         [itemId]: Math.floor(value),
       }
@@ -150,16 +215,26 @@ const ProductsList = ({
       if (itemId !== premiumProductId) {
         const teacherPremiumCountTOAdd = getTeacherPremiumCountToAdd(
           subsLicenses,
-          _quantities
+          _quantities,
+          itemBankSubscriptions,
+          user?.role,
+          subType
         )
 
         if (teacherPremiumCountTOAdd < 0) {
-          Object.assign(_quantities, {
-            [premiumProductId]: Math.max(
-              Math.abs(teacherPremiumCountTOAdd),
-              _quantities[premiumProductId] || 0
-            ),
-          })
+          const existingCartCount = _quantities[premiumProductId] || 0
+          if (teacherPremiumCountTOAdd == -1) {
+            Object.assign(_quantities, {
+              [premiumProductId]: existingCartCount + 1,
+            })
+          } else {
+            Object.assign(_quantities, {
+              [premiumProductId]: Math.max(
+                Math.abs(teacherPremiumCountTOAdd),
+                _quantities[premiumProductId] || 0
+              ),
+            })
+          }
         }
       }
 

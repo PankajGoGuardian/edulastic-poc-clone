@@ -30,12 +30,15 @@ function CartModal({
   closeModal,
   handleOpenRequestInvoiceModal,
   subsLicenses,
+  itemBankSubscriptions,
+  user,
+  subType,
 }) {
   const teacherPremiumId = teacherPremium?.id
   const [emailValues, setEmailValues] = useState('')
 
   const isMultipleQuantities = Object.keys(quantities).find(
-    (x) => quantities[x] > 0
+    (x) => quantities[x] > 1
   )
   const setQuantitiesWithLocalStorage = (quantities) => {
     window.localStorage.cartQuantities = quantities
@@ -157,6 +160,10 @@ function CartModal({
           currentItemId={teacherPremiumId}
           subsLicenses={subsLicenses}
           teacherPremium={teacherPremium}
+          itemBankSubscriptions={itemBankSubscriptions}
+          user={user}
+          subType={subType}
+          allProducts={products}
         />
         {isMultipleQuantities && (
           <EmailWrapper>

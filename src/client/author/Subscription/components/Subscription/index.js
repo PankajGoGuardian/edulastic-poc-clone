@@ -440,6 +440,7 @@ const Subscription = (props) => {
             setCartQuantities={setCartQuantities}
             subscription={subscription}
             subsLicenses={subsLicenses}
+            user={user}
             requestQuote={openRequestQuoteModal}
             isGradeSubjectSelected={isGradeSubjectSelected}
           />

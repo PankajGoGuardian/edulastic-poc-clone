@@ -419,7 +419,6 @@ const PurchaseFlowModals = (props) => {
           setBookKeepersInviteSuccess={setBookKeepersInviteSuccess}
         />
       )}
-
       {cartVisible && !fromSideMenu && (
         <CartModal
           visible={cartVisible}
@@ -433,8 +432,11 @@ const PurchaseFlowModals = (props) => {
           handleClick={handleClick}
           closeModal={() => setCartVisible(false)}
           userId={user?._id}
+          user={user}
           handleOpenRequestInvoiceModal={openRequestInvoiceModal}
           subsLicenses={subsLicenses}
+          itemBankSubscriptions={itemBankSubscriptions}
+          subType={subType}
         />
       )}
       {showUpgradeModal && (

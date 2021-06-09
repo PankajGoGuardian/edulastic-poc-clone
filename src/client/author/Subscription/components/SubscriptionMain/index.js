@@ -7,9 +7,18 @@ import {
   IconSchool,
   IconScience,
 } from '@edulastic/icons'
+import { roleuser } from '@edulastic/constants'
 import { Tooltip } from 'antd'
 import produce from 'immer'
-import { difference, groupBy, isBoolean, keyBy, map, uniq } from 'lodash'
+import {
+  difference,
+  groupBy,
+  isBoolean,
+  keyBy,
+  map,
+  uniq,
+  isEmpty,
+} from 'lodash'
 import React, { useEffect, useMemo, useState } from 'react'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import FeatureNotAvailableModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/FeatureNotAvailableModal'
@@ -100,6 +109,7 @@ const SubscriptionMain = ({
   cartQuantities,
   subscription,
   subsLicenses = [],
+  user,
   isGradeSubjectSelected,
 }) => {
   const [showSelectStates, setShowSelectStates] = useState(false)
@@ -107,8 +117,7 @@ const SubscriptionMain = ({
   const [hasAllTrialProducts, setHasAllTrialProducts] = useState(false)
   const [addonSubject, setAddonSubject] = useState('all')
 
-  const productsKeyedByType = keyBy(products, 'type')
-
+  const subsLicensesKeyed = keyBy(subsLicenses, 'productId')
   const productsDataForDisplay = getProductsWithMetaData(
     productsMetaData,
     products
@@ -193,10 +202,22 @@ const SubscriptionMain = ({
       setHasAllTrialProducts(true)
       return
     }
-    const currentItemBank = getBundleByProductId(productId)
-    const { config = {} } = currentItemBank
-    const { subscriptionData } = config
+    let subscriptionData
 
+    const currentItemBank = getBundleByProductId(productId)
+    if (isEmpty(currentItemBank)) {
+      const product = products.find((x) => x.id === productId)
+      subscriptionData = {
+        productId: product.id,
+        productName: product.name,
+        description: product.description,
+        hasTrial: !!product.trialPeriod,
+        itemBankId: product.linkedProductId,
+      }
+    } else {
+      const { config = {} } = currentItemBank
+      subscriptionData = config.subscriptionData
+    }
     setProductData({
       productId: subscriptionData.productId,
       productName: subscriptionData.productName,
@@ -315,6 +336,7 @@ const SubscriptionMain = ({
     subType?.toLowerCase?.()
   )
 
+  const isTeacher = user?.role === roleuser.TEACHER
   const totalRemainingTeacherPremiumCount = useMemo(() => {
     if (subsLicenses && teacherPremium) {
       const {
@@ -396,31 +418,46 @@ const SubscriptionMain = ({
                 subType === 'TRIAL_PREMIUM' ? 'Trial Premium' : 'free'
               } plan`,
             })
-          } else if (isUserPremium && subsLicenses.length && hasAddonAccess) {
+          } else if (isUserPremium && hasAddonAccess) {
             // if user is premium and adding a bank which he has access to
-
-            const newAddons = { ...quantities, ...changes }
-
-            const totalRemainingItemBanksLicenseCount = subsLicenses.reduce(
-              (a, c) => {
-                if (
-                  c.productId === teacherPremium.id ||
-                  !Object.keys(newAddons).includes(c.productId)
-                )
-                  return a
-                const { totalCount, usedCount } = c
-                const delta = totalCount - usedCount
-                return delta > a ? delta : a
-              },
-              0
-            )
-
-            const diff =
-              totalRemainingTeacherPremiumCount -
-              totalRemainingItemBanksLicenseCount
+            let teacherPremiumCount = 1
+            if (subsLicensesKeyed[teacherPremium.id]) {
+              teacherPremiumCount =
+                subsLicensesKeyed[teacherPremium.id].totalCount
+              if (
+                subsLicensesKeyed[teacherPremium.id].usedCount === 0 &&
+                isTeacher &&
+                subType.toLowerCase() === 'premium'
+              ) {
+                teacherPremiumCount = teacherPremiumCount + 1
+              }
+            }
+            if (cartQuantities[teacherPremium.id]) {
+              teacherPremiumCount =
+                teacherPremiumCount + cartQuantities[teacherPremium.id]
+            }
+            let existingAddonsCount = 1
+            if (subsLicensesKeyed[productId]) {
+              existingAddonsCount = subsLicensesKeyed[productId].totalCount
+              if (
+                subsLicensesKeyed[productId].usedCount === 0 &&
+                isTeacher &&
+                subType.toLowerCase() === 'premium'
+              ) {
+                existingAddonsCount = existingAddonsCount + 1
+              }
+            }
+            if (cartQuantities[productId]) {
+              existingAddonsCount =
+                existingAddonsCount + cartQuantities[productId]
+            }
+            const diff = teacherPremiumCount - existingAddonsCount
 
             if (diff <= 0) {
-              Object.assign(changes, { [teacherPremium.id]: 1 })
+              const existingCartCount = cartQuantities[teacherPremium.id] || 0
+              Object.assign(changes, {
+                [teacherPremium.id]: existingCartCount + 1,
+              })
               notification({
                 type: 'info',
                 msg: `Note: Teacher Premium is added to cart by default since Itembank Licenses cannot be more than `,

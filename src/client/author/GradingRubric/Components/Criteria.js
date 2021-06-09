@@ -161,10 +161,6 @@ const Criteria = ({
           ref={(ref) => {
             scrollBarRef = ref
           }}
-          option={{
-            suppressScrollY: true,
-            useBothWheelAxes: true,
-          }}
         >
           {getRatings()}
         </RatingSection>

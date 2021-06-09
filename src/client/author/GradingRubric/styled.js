@@ -15,7 +15,6 @@ import {
   deleteRed,
   backgroundGrey,
   boxShadowColor2,
-  deleteRed2,
   inputBorder,
   paginationBoxShadowColor,
 } from '@edulastic/colors'

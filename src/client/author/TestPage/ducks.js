@@ -2649,6 +2649,32 @@ function* setTestDataAndUpdateSaga({ payload }) {
         },
       })
       yield put(setIsCreatingAction(false))
+
+      // redirecting to edit-item page instead of test review page if after creating a passage item
+      if (payload.fromSaveMultipartItem) {
+        if (!isEmpty(payload.routerState)) {
+          yield put(
+            push({
+              pathname: payload.url.replace(
+                'tests/undefined',
+                `tests/${entity?._id || 'undefined'}`
+              ),
+              state: payload.routerState,
+            })
+          )
+        } else {
+          yield put(
+            push(
+              payload.url.replace(
+                'tests/undefined',
+                `tests/${entity?._id || 'undefined'}`
+              )
+            )
+          )
+        }
+        return
+      }
+
       // TODO: is this logic still relevant?
       if (payload.current) {
         yield put(

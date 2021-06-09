@@ -1959,4 +1959,5 @@ const InputNumberStyled = Styled(InputNumber)`
 
 const StyledSpan = Styled.span`
   font-weight: ${(props) => props.theme.semiBold};
+  font-size: 12px;
 `

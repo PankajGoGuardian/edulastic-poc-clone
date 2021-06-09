@@ -435,4 +435,5 @@ export default TestBehaviorGroupContainer
 
 const StyledSpan = Styled.span`
   font-weight: ${(props) => props.theme.semiBold};
+  font-size: 11px;
 `

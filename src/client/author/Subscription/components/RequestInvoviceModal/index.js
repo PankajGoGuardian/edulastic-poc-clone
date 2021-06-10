@@ -160,7 +160,11 @@ const RequestInvoiceModal = ({
           </FlexContainer>
         ))}
         <hr />
-        <FlexContainer justifyContent="space-between" alignItems="center">
+        <FlexContainer
+          marginBottom="15px"
+          justifyContent="space-between"
+          alignItems="center"
+        >
           <SubText data-cy="invoiceTotalLabel" className="invoice-total-label">
             Total
           </SubText>

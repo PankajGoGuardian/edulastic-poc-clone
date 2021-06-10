@@ -109,6 +109,7 @@ const PurchaseFlowModals = (props) => {
     openRequestInvoiceModal,
     isExternalSubmitPOModalVisible = false,
     toggleSubmitPOModal,
+    setCartQuantities,
   } = props
 
   const [payWithPoModal, setPayWithPoModal] = useState(false)
@@ -239,6 +240,10 @@ const PurchaseFlowModals = (props) => {
       itemBankPremium: result.slice(1),
     }
   }, [subEndDate, products, subsLicenses, shouldProrateMultiplePurchase])
+
+  useEffect(() => {
+    setCartQuantities(quantities)
+  }, [quantities])
 
   useEffect(() => {
     if (
@@ -422,6 +427,7 @@ const PurchaseFlowModals = (props) => {
           districtId={userOrgId}
           isBookKeepersInviteSuccess={isBookKeepersInviteSuccess}
           setBookKeepersInviteSuccess={setBookKeepersInviteSuccess}
+          handleOpenRequestInvoiceModal={openRequestInvoiceModal}
         />
       )}
       {cartVisible && !fromSideMenu && (
@@ -560,6 +566,7 @@ export default compose(
       fetchPlaylists: fetchPlaylistsAction,
       useThisPlayList: useThisPlayListAction,
       setCartVisible: slice.actions.setCartVisible,
+      setCartQuantities: slice.actions.setCartQuantities,
     }
   )
 )(PurchaseFlowModals)

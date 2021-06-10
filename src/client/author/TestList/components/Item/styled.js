@@ -386,14 +386,14 @@ export const Header = styled.div`
 Header.displayName = 'CardHeader'
 
 export const HeaderThumbnail = styled.img`
-  width: 80%;
-  max-height: 100px;
+  width: 100%;
+  max-height: 135px;
   padding: 0px;
   bottom: 0px;
   position: absolute;
   left: 0;
   right: 0px;
-  margin: 0px auto;
+  object-fit: contain;
 `
 
 const playlistStars = css`

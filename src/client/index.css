@@ -2602,3 +2602,7 @@ div[class*='_pendo'] button {
 .playlist-content-box {
   z-index: 1004;
 }
+
+.ant-scrolling-effect .subscription-header  {
+  padding-right: 40px;
+}

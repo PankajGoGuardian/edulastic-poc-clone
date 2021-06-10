@@ -129,7 +129,6 @@ const SubscriptionMain = ({
   subsLicenses = [],
   user,
   isGradeSubjectSelected,
-  hasPreferences,
 }) => {
   const [isTrialModalVisible, setIsTrialModalVisible] = useState(false)
   const [hasAllTrialProducts, setHasAllTrialProducts] = useState(false)

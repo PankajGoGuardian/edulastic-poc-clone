@@ -157,7 +157,7 @@ const SubscriptionHeader = ({
 
   return (
     <TopBanner>
-      <HeaderSubscription>
+      <HeaderSubscription className="subscription-header">
         <Title>
           <h2>
             <IconSubscriptionHighlight width={19} height={19} />

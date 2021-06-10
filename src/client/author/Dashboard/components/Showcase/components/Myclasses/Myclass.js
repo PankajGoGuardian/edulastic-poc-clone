@@ -250,6 +250,15 @@ const MyClasses = ({
       return
     }
 
+    if (user?.orgData?.defaultGrades?.length > 0) {
+      const commonGrades = user?.orgData?.defaultGrades.filter((value) =>
+        filters[0]?.grades?.includes(value)
+      )
+      if (filters[0]) {
+        filters[0].grades = commonGrades
+      }
+    }
+
     let content = contentType?.toLowerCase() || 'tests_library'
     if (content === 'tests_library') {
       content = 'tests'
@@ -361,6 +370,12 @@ const MyClasses = ({
   }
 
   const handleInAppRedirect = (data) => {
+    const commonGrades = user?.orgData?.defaultGrades.filter((value) =>
+      data?.filters?.grades?.includes(value)
+    )
+    if (data.filters) {
+      data.filters.grades = commonGrades
+    }
     const filter = qs.stringify(data.filters)
     history.push(`/author/${data.contentType}?${filter}`)
   }
@@ -384,13 +399,13 @@ const MyClasses = ({
 
   const handleSparkClick = (id) => {
     const tile = getTileByProductId(id)
-    if (!isEmpty(tile.config)) {
+    if (!isEmpty(tile?.config)) {
       handleFeatureClick(tile)
     }
   }
 
   const bannerActionHandler = (filter = {}, description) => {
-    const { action, data } = filter
+    const { action, data = {} } = filter
     segmentApi.trackUserClick({
       user,
       data: { event: `dashboard:banner-${description}:click` },

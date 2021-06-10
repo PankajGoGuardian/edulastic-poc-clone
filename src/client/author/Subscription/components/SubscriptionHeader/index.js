@@ -37,11 +37,7 @@ const tabsCustomStyle = {
 
 const CartInfo = ({ cartHasProducts, children }) =>
   !cartHasProducts ? (
-    <Tooltip
-      placement="bottom"
-      title="Add products to cart to view them here"
-      trigger="hover"
-    >
+    <Tooltip placement="bottom" title="Your cart is empty!" trigger="hover">
       {children}
     </Tooltip>
   ) : (

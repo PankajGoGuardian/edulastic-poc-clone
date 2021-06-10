@@ -62,22 +62,34 @@ const SubmitPOModal = ({
   const [licenseType, setLicenseType] = useState('Enterprise')
   const [otherInfo, setOtherInfo] = useState()
   const [studentLicenseCount, setStudentLicenseCount] = useState()
+  const [teacherLicenseCount, setTeacherLicenseCount] = useState()
   const [attachments, setAttachments] = useState({})
   const [fileList, setFilesList] = useState([])
   const [totalAttachmentsSize, setTotalAttachmentsSize] = useState(0)
 
-  const onLicenseTypeChange = (e) => setLicenseType(e.target.value)
+  const onLicenseTypeChange = (e) => {
+    setLicenseType(e.target.value)
+    if (e.target.value === 'Enterprise') {
+      setTeacherLicenseCount(undefined)
+    } else {
+      setStudentLicenseCount(undefined)
+    }
+  }
   const handleicenseCountChange = (value) => {
     const re = /^[0-9\b]+$/
     if (!re.test(value)) {
       return
     }
-    setStudentLicenseCount(value)
+    if (licenseType === 'Enterprise') {
+      setStudentLicenseCount(value)
+    } else {
+      setTeacherLicenseCount(value)
+    }
   }
   const handleSetOtherInfo = (e) => setOtherInfo(e.target.value)
 
   const validateFields = () => {
-    if (!studentLicenseCount) {
+    if (!(studentLicenseCount || teacherLicenseCount)) {
       notification({
         type: 'warning',
         msg: 'Please specify the # of licenses.',
@@ -98,6 +110,7 @@ const SubmitPOModal = ({
     setLicenseType('Enterprise')
     setOtherInfo(undefined)
     setStudentLicenseCount(undefined)
+    setTeacherLicenseCount(undefined)
     setAttachments({})
     setFilesList([])
     setTotalAttachmentsSize(0)
@@ -121,6 +134,7 @@ const SubmitPOModal = ({
       otherInfo,
       licenseType,
       studentLicenseCount,
+      teacherLicenseCount,
       attachments: Object.values(attachments),
     }
     handleSubmitPO({
@@ -242,24 +256,49 @@ const SubmitPOModal = ({
           </Radio.Group>
         </FlexContainer>
 
-        <FlexContainer
-          width="100%"
-          alignItems="center"
-          justifyContent="flex-start"
-        >
-          <Label width="220px" required>
-            # Student Licenses{' '}
-          </Label>{' '}
-        </FlexContainer>
-        <StyledInputNumber
-          min={1}
-          step={1}
-          type="number"
-          placeholder="Add the # of licenses"
-          value={studentLicenseCount}
-          onChange={handleicenseCountChange}
-          data-cy="studentLicenseField"
-        />
+        {licenseType === 'Enterprise' ? (
+          <>
+            <FlexContainer
+              width="100%"
+              alignItems="center"
+              justifyContent="flex-start"
+            >
+              <Label width="220px" required>
+                # Student Licenses{' '}
+              </Label>{' '}
+            </FlexContainer>
+            <StyledInputNumber
+              min={1}
+              step={1}
+              type="number"
+              placeholder="Add the # of licenses"
+              value={studentLicenseCount}
+              onChange={handleicenseCountChange}
+              data-cy="studentLicenseField"
+            />
+          </>
+        ) : (
+          <>
+            <FlexContainer
+              width="100%"
+              alignItems="center"
+              justifyContent="flex-start"
+            >
+              <Label width="220px" required>
+                # Teacher Licenses{' '}
+              </Label>{' '}
+            </FlexContainer>
+            <StyledInputNumber
+              min={1}
+              step={1}
+              type="number"
+              placeholder="Add the # of licenses"
+              value={teacherLicenseCount}
+              onChange={handleicenseCountChange}
+              data-cy="teacherLicenseField"
+            />
+          </>
+        )}
 
         <Label>Addons or other comments</Label>
         <StyledInputTextArea

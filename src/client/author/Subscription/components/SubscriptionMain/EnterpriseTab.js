@@ -71,7 +71,7 @@ const addonsData = [
   },
   {
     icon: <IconServers />,
-    title: 'Lorem Ipsum',
+    title: 'Data Warehousing',
     description:
       'Import state test scores, data from other assessments (MAP, iReady, SAT/ACT) and more for a holistic view of student performance and growth.',
   },

@@ -65,8 +65,14 @@ export const Container = styled.div`
     height: 1px;
     border: 0;
     border-top: 0.5px solid ${borderGrey4};
-    margin: 2em 0;
+    margin: 5px 0;
     padding: 0;
+  }
+
+  .invoice-total-label {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 15px;
   }
 
   .ant-radio-group {

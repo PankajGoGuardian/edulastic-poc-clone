@@ -116,7 +116,11 @@ const ProductsList = ({
       userRole === roleuser.TEACHER &&
       totalTeacherPremiumUsedCount == 0
     ) {
-      totalTeacherPremiumUsedCount = totalTeacherPremiumUsedCount + 1
+      totalTeacherPremium += 1
+      totalTeacherPremiumUsedCount += 1
+    }
+    if (quant[teacherPremium.id]) {
+      totalTeacherPremium += quant[teacherPremium.id]
     }
 
     if (subType === 'premium' && userRole === roleuser.TEACHER) {
@@ -146,24 +150,19 @@ const ProductsList = ({
       }
     }
 
-    const totalRemainingTeacherPremiumCount =
-      totalTeacherPremium - totalTeacherPremiumUsedCount
-    const totalRemainingItemBanksLicenseCount = allProducts.reduce((a, cur) => {
-      if (
-        cur.productId === premiumProductId ||
-        !Object.keys(quant).includes(cur.productId)
-      ) {
-        return a
-      }
-      const c = _licenses.find((x) => x.productId)
-
-      const { totalCount = 0, usedCount = 0 } = c || {}
-      const delta = totalCount - usedCount + quant[cur.productId]
-      return delta > a ? delta : a
-    }, 0)
+    const totalRemainingItemBanksLicenseCount = Math.max(
+      allProducts
+        .filter((x) => x.id !== premiumProductId)
+        .map((p) => {
+          const c = _licenses.find((x) => x.productId === p.id)
+          const { totalCount = 0 } = c || {}
+          return (quant[p.productId] || 0) + totalCount
+        })
+    )
 
     const availableTeacherPremiumCount =
-      totalRemainingTeacherPremiumCount - totalRemainingItemBanksLicenseCount
+      totalTeacherPremium - totalRemainingItemBanksLicenseCount
+
     return availableTeacherPremiumCount
   }
 

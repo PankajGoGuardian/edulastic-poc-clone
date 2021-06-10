@@ -119,6 +119,10 @@ const RequestInvoiceModal = ({
     }
   }
 
+  const totalPrice = Object.entries(cartProducts)
+    .map(([id, quantity]) => productNamesAndPriceById[id].price * quantity)
+    .reduce((a, c) => a + c)
+
   return (
     <CustomModalStyled
       width="580px"
@@ -156,6 +160,12 @@ const RequestInvoiceModal = ({
           </FlexContainer>
         ))}
         <hr />
+        <FlexContainer justifyContent="space-between" alignItems="center">
+          <SubText data-cy="invoiceTotalLabel" className="invoice-total-label">
+            Total
+          </SubText>
+          <SubText data-cy="invoiceTotalValue">${totalPrice}</SubText>
+        </FlexContainer>
         <Label required>Type of Documentation you need</Label>
         <Radio.Group onChange={onDocumentTypeChange} value={documentType}>
           <Radio data-cy="quoteRadio" value="QUOTE">

@@ -273,9 +273,9 @@ export const getOptionsForClozeMath = (variables, validations) => {
     return {}
   }
 
-  const mathInputss = validations.validResponse.value
-  const mathUnits = validations.validResponse.mathUnits.value
-  const maths = mathInputss.concat([mathUnits])
+  const mathInputs = validations.validResponse.value
+  const mathUnits = validations.validResponse?.mathUnits?.value
+  const maths = mathUnits ? mathInputs.concat([mathUnits]) : mathInputs
 
   formularKeys.forEach((key) => {
     const mathFields = maths.filter((m) => m[0].value.includes(`@${key}`))

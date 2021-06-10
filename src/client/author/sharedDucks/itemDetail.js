@@ -13,9 +13,8 @@ export const getItemIdSelector = createSelector(
 )
 
 export const getRows = (item, returnDummy = true) =>
-  item.rows.map((row) => ({
-    ...row,
-    widgets: row.widgets
+  item.rows.map((row) => {
+    let widgets = row.widgets
       .map((widget) => {
         let referencePopulate
         let activity = {
@@ -54,12 +53,20 @@ export const getRows = (item, returnDummy = true) =>
             ...widget,
             activity,
             referencePopulate,
+            qIndex: referencePopulate.qIndex,
           }
         }
         return false
       })
-      .filter((o) => o),
-  }))
+      .filter((o) => o)
+    if (item.isDocBased) {
+      widgets = widgets.sort((a, b) => a.qIndex - b.qIndex)
+    }
+    return {
+      ...row,
+      widgets,
+    }
+  })
 
 export const getItemDetailRowsSelector = createSelector(
   getItemDetailSelector,

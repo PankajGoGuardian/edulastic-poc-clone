@@ -1,7 +1,8 @@
 import { takeLatest, takeEvery, call, put, all } from 'redux-saga/effects'
-import { dictionariesApi } from '@edulastic/api'
-import * as Sentry from '@sentry/browser'
-import { notification } from '@edulastic/common'
+// import { dictionariesApi } from '@edulastic/api'
+import dictionariesApi from '@edulastic/api/src/dictionaries'
+import { captureSentryException } from '@edulastic/common/src/sentryHelpers'
+import notification from '@edulastic/common/src/components/Notification'
 import _ from 'lodash'
 import {
   RECEIVE_DICT_CURRICULUMS_REQUEST,
@@ -27,7 +28,7 @@ function* receiveCurriculumsSaga() {
     })
   } catch (err) {
     console.error(err)
-    Sentry.captureException(err)
+    captureSentryException(err)
     const errorMessage = 'Unable to retrive curriculums.'
     notification({ type: 'error', msg: errorMessage })
     yield put({
@@ -40,20 +41,20 @@ function* receiveCurriculumsSaga() {
 function* receiveStandardsSaga({ payload }) {
   try {
     if (payload.curriculumId) {
-      const { elo, tlo } = yield call(dictionariesApi.receiveStandards, payload)
+      const result = yield call(dictionariesApi.receiveStandards, payload)
       yield put({
         type: RECEIVE_DICT_STANDARDS_SUCCESS,
-        payload: { elo, tlo },
+        payload: result,
       })
     } else {
       yield put({
         type: RECEIVE_DICT_STANDARDS_SUCCESS,
-        payload: { elo: [], tlo: [] },
+        payload: [],
       })
     }
   } catch (err) {
     console.error(err)
-    Sentry.captureException(err)
+    captureSentryException(err)
     const errorMessage = 'Unable to retrieve standards.'
     notification({ type: 'error', msg: errorMessage })
     yield put({

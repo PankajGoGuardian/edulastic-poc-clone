@@ -161,10 +161,9 @@ function BulkEditModal({
               getPopupContainer={(triggerNode) => triggerNode.parentNode}
             >
               {coursesForDistrictList.map((course) => (
-                <Option
-                  key={course._id}
-                  value={course._id}
-                >{`${course.name} - ${course.number}`}</Option>
+                <Option key={course._id} value={course._id}>
+                  {`${course.name} - ${course.number}`}
+                </Option>
               ))}
             </SelectInputStyled>
           </div>

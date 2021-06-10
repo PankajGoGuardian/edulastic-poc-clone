@@ -5,6 +5,7 @@ import {
   themeColor,
   whiteSmoke,
   mobileWidthMax,
+  red,
 } from '@edulastic/colors'
 import {
   EduButton,
@@ -15,8 +16,19 @@ import {
   notification,
 } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
+import signUpState from '@edulastic/constants/const/signUpState'
 import { IconClose, IconShare } from '@edulastic/icons'
-import { Col, Row, Select, Spin, Typography, Modal, AutoComplete } from 'antd'
+import {
+  Col,
+  Row,
+  Select,
+  Spin,
+  Typography,
+  Modal,
+  AutoComplete,
+  Checkbox,
+  Input,
+} from 'antd'
 import { debounce, get as _get, isUndefined } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
@@ -38,8 +50,19 @@ import {
   getUserListSelector,
   receiveSharedWithListAction,
   sendTestShareAction,
+  getContentSharingStateSelector,
+  getShouldSendEmailStateSelector,
+  getShowMessageBodyStateSelector,
+  getEmailNotificationMessageSelector,
+  updateEmailNotificationDataAction,
+  getTestEntitySelector,
 } from '../../../../TestPage/ducks'
-import { getOrgDataSelector, getUserRole } from '../../../selectors/user'
+import {
+  getOrgDataSelector,
+  getUserRole,
+  getUserSignupStatusSelector,
+  getUserNameSelector,
+} from '../../../selectors/user'
 import { RadioInputWrapper } from '../RadioInput'
 
 const { Paragraph } = Typography
@@ -56,6 +79,7 @@ const shareTypes = {
   DISTRICT: 'District',
   SCHOOL: 'School',
   INDIVIDUAL: 'Individuals',
+  LINK: 'Link Sharing',
 }
 
 const sharedKeysObj = {
@@ -63,12 +87,50 @@ const sharedKeysObj = {
   DISTRICT: 'DISTRICT',
   SCHOOL: 'SCHOOL',
   INDIVIDUAL: 'INDIVIDUAL',
+  LINK: 'LINK',
 }
 
-const shareTypeKeys = ['PUBLIC', 'DISTRICT', 'SCHOOL', 'INDIVIDUAL']
-const shareTypeKeyForDa = ['PUBLIC', 'DISTRICT', 'INDIVIDUAL']
+const shareLevel = {
+  INDIVIDUAL: 0,
+  SCHOOL: 1,
+  DISTRICT: 2,
+  PUBLIC: 3,
+  LINK: 4,
+}
+
+const shareTypeKeys = ['PUBLIC', 'DISTRICT', 'SCHOOL', 'INDIVIDUAL', 'LINK']
+const shareTypeKeyForDa = ['PUBLIC', 'DISTRICT', 'INDIVIDUAL', 'LINK']
 
 const { Option } = AutoComplete
+
+const SharedRow = ({ data, index, getEmail, getUserName, removeHandler }) => {
+  return (
+    <Row
+      key={index}
+      style={{
+        paddingBottom: 5,
+        display: 'flex',
+        alignItems: 'center',
+      }}
+    >
+      <Col span={12}>
+        {getUserName()}
+        <span>{getEmail()}</span>
+      </Col>
+      <Col span={11}>
+        <span>
+          {data.permission === 'EDIT' && 'Can Edit, Add/Remove Items'}
+        </span>
+        <span>{data.permission === 'VIEW' && 'Can View & Duplicate'}</span>
+      </Col>
+      <Col span={1}>
+        <a data-cy="share-button-close" onClick={() => removeHandler()}>
+          <CloseIcon />
+        </a>
+      </Col>
+    </Row>
+  )
+}
 class ShareModal extends React.Component {
   constructor(props) {
     super(props)
@@ -124,8 +186,16 @@ class ShareModal extends React.Component {
   }
 
   componentDidMount() {
-    const { getSharedUsers, match, isPlaylist, userRole } = this.props
-    const testId = match.params.id
+    const {
+      getSharedUsers,
+      match,
+      isPlaylist,
+      userRole,
+      updateEmailNotificationData,
+      isPublished,
+      testId: _testId,
+    } = this.props
+    const testId = match.params.id || _testId
     const isDA = userRole === roleuser.DISTRICT_ADMIN
     if (isDA) {
       this.setState({ permission: 'VIEW' })
@@ -135,11 +205,23 @@ class ShareModal extends React.Component {
         contentId: testId,
         contentType: isPlaylist ? 'PLAYLIST' : 'TEST',
       })
+    if (!isPublished) {
+      updateEmailNotificationData({
+        sendEmailNotification: true,
+      })
+    }
   }
 
   radioHandler = (e) => {
-    this.setState({ sharedType: e.target.value })
-    const { hasPlaylistEditAccess } = this.props
+    this.setState({
+      sharedType: e.target.value,
+    })
+    const { hasPlaylistEditAccess, updateEmailNotificationData } = this.props
+    updateEmailNotificationData({
+      sendEmailNotification: false,
+      showMessageBody: false,
+      notificationMessage: '',
+    })
     if (e.target.value !== sharedKeysObj.INDIVIDUAL || !hasPlaylistEditAccess) {
       this.setState({
         permission: 'VIEW',
@@ -152,11 +234,19 @@ class ShareModal extends React.Component {
   }
 
   removeHandler = (data) => {
-    const { deleteShared, testId, isPlaylist } = this.props
-    const { sharedId, _userId: sharedWith } = data
-    const contentType = isPlaylist ? 'PLAYLIST' : 'TEST'
-
-    deleteShared({ contentId: testId, sharedId, sharedWith, contentType })
+    const { deleteShared, testId, test } = this.props
+    const { sharedId, _userId: sharedWith, v1LinkShareEnabled } = data
+    const unSharePayload = {
+      contentId: testId,
+      sharedId,
+      sharedWith,
+    }
+    if (v1LinkShareEnabled === 1) {
+      unSharePayload.versionId = test.versionId
+      unSharePayload.v1Id = test.v1Id
+      unSharePayload.v1LinkShareEnabled = 1
+    }
+    deleteShared(unSharePayload)
   }
 
   permissionHandler = (value) => {
@@ -215,7 +305,17 @@ class ShareModal extends React.Component {
 
   handleShare = () => {
     const { currentUser, sharedType, permission, searchString } = this.state
-    const { shareTest, testId, sharedUsersList, isPlaylist } = this.props
+    const {
+      shareTest,
+      testId,
+      sharedUsersList,
+      isPlaylist,
+      testVersionId,
+      authorName,
+      sendEmailNotification,
+      showMessageBody,
+      notificationMessage,
+    } = this.props
     const isExisting = sharedUsersList.some(
       (item) => item._userId === currentUser._userId
     )
@@ -257,6 +357,21 @@ class ShareModal extends React.Component {
       permission,
       contentType: isPlaylist ? 'PLAYLIST' : 'TEST',
     }
+    if (sharedType === sharedKeysObj.INDIVIDUAL && sendEmailNotification) {
+      data.sendEmailNotification = sendEmailNotification
+      data.authorName = authorName
+      if (testVersionId) {
+        data.testVersionId = testVersionId
+      }
+      if (showMessageBody) {
+        if (!notificationMessage)
+          return notification({
+            type: 'warn',
+            msg: 'Please enter the message that you want to send the users',
+          })
+        data.notificationMessage = notificationMessage
+      }
+    }
     shareTest({ data, contentId: testId })
     // do it in a slight delay so that at the moment of blur it should not show warning
     setTimeout(() => {
@@ -292,14 +407,36 @@ class ShareModal extends React.Component {
     return `${data.email && data.email !== 'null' ? ` (${data.email})` : ''}`
   }
 
-  handleClose = () => {
-    const { onClose } = this.props
-    this.setState({
-      currentUser: {},
-      searchString: '',
-      showWarning: false,
+  toggleSendNotification = (e) => {
+    const { updateEmailNotificationData } = this.props
+    updateEmailNotificationData({
+      sendEmailNotification: e.target.checked,
+      showMessageBody: false,
+      notificationMessage: '',
     })
-    onClose()
+  }
+
+  toggleMessageBody = () => {
+    const { showMessageBody, updateEmailNotificationData } = this.props
+    updateEmailNotificationData({
+      showMessageBody: !showMessageBody,
+      notificationMessage: '',
+    })
+  }
+
+  handleMessageChange = ({ target: { value } }) => {
+    const { updateEmailNotificationData } = this.props
+    updateEmailNotificationData({ notificationMessage: value })
+  }
+
+  handleCopyBlock = () => {
+    const { isPlaylist } = this.props
+    return notification({
+      type: 'warn',
+      msg: `Kindly enable ${
+        isPlaylist ? 'playlist' : 'test'
+      } share to copy the URL`,
+    })
   }
 
   render() {
@@ -313,6 +450,7 @@ class ShareModal extends React.Component {
     const {
       shareLabel,
       isVisible,
+      onClose,
       userList = [],
       fetching,
       sharedUsersList,
@@ -325,6 +463,13 @@ class ShareModal extends React.Component {
       features,
       userRole,
       hasPlaylistEditAccess = true,
+      testVersionId,
+      userSignupStatus,
+      sendEmailNotification,
+      showMessageBody,
+      notificationMessage,
+      loadingSharedUsers,
+      maxSharingLevelAllowed = shareLevel[sharedKeysObj.LINK],
     } = this.props
     const filteredUserList = userList.filter(
       (user) =>
@@ -332,13 +477,17 @@ class ShareModal extends React.Component {
         user._id !== currentUserId
     )
     let sharableURL = ''
-    if (sharedType === 'PUBLIC' && !isPlaylist) {
+    if (
+      [sharedKeysObj.PUBLIC, sharedKeysObj.LINK].includes(sharedType) &&
+      !isPlaylist
+    ) {
       sharableURL = `${window.location.origin}/public/view-test/${testId}`
+    } else if (isPlaylist) {
+      sharableURL = `${window.location.origin}/author/playlists/${testId}`
     } else {
-      sharableURL = `${window.location.origin}/author/${
-        isPlaylist ? 'playlists' : 'tests/tab/review/id'
-      }/${testId}`
+      sharableURL = `${window.location.origin}/author/tests/verid/${testVersionId}`
     }
+
     const { districts = [{}], schools } = userOrgData
     // share modal is not for student so we can get
     const [{ districtName = '' }] = districts
@@ -348,93 +497,122 @@ class ShareModal extends React.Component {
       sharedTypeMessage = `Anyone in ${districtName}`
     else if (sharedType === 'SCHOOL')
       sharedTypeMessage = `Anyone in ${schools.map((s) => s.name).join(', ')}`
+    else if (sharedType === 'LINK')
+      sharedTypeMessage = `Anyone with a link can use the Test. Invited users also find it under "Shared with Me" in the library`
+
+    const shareTypeKeysToDisplay = (isDA
+      ? shareTypeKeyForDa
+      : shareTypeKeys
+    ).filter(
+      (shareType) =>
+        (isPlaylist &&
+          ![sharedKeysObj.LINK, sharedKeysObj.PUBLIC].includes(shareType)) ||
+        !isPlaylist
+    )
+
+    const individuals = sharedUsersList.filter(
+      (item) => item.sharedType === sharedKeysObj.INDIVIDUAL
+    )
+
     return (
       <SharingModal
         width="700px"
         footer={null}
         visible={isVisible}
-        onCancel={this.handleClose}
+        onCancel={onClose}
         centered
       >
         <ModalContainer>
           <h2 style={{ fontWeight: 'bold', fontSize: 20 }}>
-            Share with others
+            {isPublished
+              ? 'Share with others'
+              : 'Collaborate with other Co-Authors'}
           </h2>
-          <ShareBlock>
-            <ShareLabel>{shareLabel || 'TEST URL'}</ShareLabel>
-            <FlexContainer>
-              <TitleCopy copyable={{ text: sharableURL }}>
-                <ShareUrlDiv title={sharableURL}>{sharableURL}</ShareUrlDiv>
-              </TitleCopy>
-            </FlexContainer>
-            {sharedUsersList.length !== 0 && (
-              <>
-                <ShareListTitle>Who has access</ShareListTitle>
-                <ShareList>
-                  {sharedUsersList.map((data, index) => (
-                    <Row
-                      key={index}
-                      style={{
-                        paddingBottom: 5,
-                        display: 'flex',
-                        alignItems: 'center',
-                      }}
-                    >
-                      <Col span={12}>
-                        {this.getUserName(data)}
-                        <span>{this.getEmail(data)}</span>
-                      </Col>
-                      <Col span={11}>
-                        <span>
-                          {data.permission === 'EDIT' &&
-                            'Can Edit, Add/Remove Items'}
-                        </span>
-                        <span>
-                          {data.permission === 'VIEW' && 'Can View & Duplicate'}
-                        </span>
-                      </Col>
-                      <Col span={1}>
-                        <a
-                          data-cy="share-button-close"
-                          onClick={() => this.removeHandler(data)}
-                        >
-                          <CloseIcon />
-                        </a>
-                      </Col>
-                    </Row>
-                  ))}
-                </ShareList>
-              </>
-            )}
-          </ShareBlock>
+          {!!(isPublished || (!isPublished && individuals.length)) && (
+            <ShareBlock>
+              {isPublished && (
+                <>
+                  <ShareLabel>{shareLabel || 'TEST URL'}</ShareLabel>
+                  <FlexContainer>
+                    {sharedUsersList.length === 0 && (
+                      <CopyBlockLayer onClick={this.handleCopyBlock} />
+                    )}
+                    <TitleCopy copyable={{ text: sharableURL }}>
+                      <ShareUrlDiv title={sharableURL}>
+                        {sharableURL}
+                      </ShareUrlDiv>
+                    </TitleCopy>
+                  </FlexContainer>
+                </>
+              )}
+              {loadingSharedUsers && !sharedUsersList.length && <Spin />}
+              {isPublished && sharedUsersList.length !== 0 && (
+                <>
+                  <ShareListTitle>WHO HAS ACCESS</ShareListTitle>
+                  <ShareList>
+                    {sharedUsersList.map((data, index) => (
+                      <SharedRow
+                        data={data}
+                        index={index}
+                        getEmail={() => this.getEmail(data)}
+                        getUserName={() => this.getUserName(data)}
+                        removeHandler={() => this.removeHandler(data)}
+                      />
+                    ))}
+                  </ShareList>
+                </>
+              )}
+              {!isPublished && !!individuals.length && (
+                <>
+                  <ShareListTitle>CO-AUTHORS FOR THIS TEST</ShareListTitle>
+                  <ShareList>
+                    {individuals.map((data, index) => (
+                      <SharedRow
+                        data={data}
+                        index={index}
+                        getEmail={() => this.getEmail(data)}
+                        getUserName={() => this.getUserName(data)}
+                        removeHandler={() => this.removeHandler(data)}
+                      />
+                    ))}
+                  </ShareList>
+                </>
+              )}
+            </ShareBlock>
+          )}
           <PeopleBlock>
-            <PeopleLabel>GIVE ACCESS TO</PeopleLabel>
-            <RadioBtnWrapper>
-              <RadioGrp
-                value={sharedType}
-                onChange={(e) => this.radioHandler(e)}
-              >
-                {(isDA ? shareTypeKeyForDa : shareTypeKeys).map((item) => (
-                  <RadioBtn
-                    value={item}
-                    key={item}
-                    disabled={
-                      // disabling public sharing for all
-                      // TODO: enable it back when needed
-                      item === shareTypeKeys[0] ||
-                      (!isPublished && item !== shareTypeKeys[3]) ||
-                      (item === shareTypeKeys[0] && hasPremiumQuestion) ||
-                      ((features.isCurator ||
+            <PeopleLabel>
+              {isPublished ? 'GIVE ACCESS TO' : 'Invite Co-Authors'}
+            </PeopleLabel>
+            {isPublished && (
+              <RadioBtnWrapper>
+                <RadioGrp
+                  value={sharedType}
+                  onChange={(e) => this.radioHandler(e)}
+                >
+                  {shareTypeKeysToDisplay.map((item) => (
+                    <RadioBtn
+                      value={item}
+                      key={item}
+                      disabled={
+                        (!isPlaylist &&
+                          shareLevel[item] > maxSharingLevelAllowed) ||
+                        (!isPublished && item !== sharedKeysObj.INDIVIDUAL) ||
+                        (hasPremiumQuestion && item === sharedKeysObj.PUBLIC) ||
+                        features.isCurator ||
                         features.isPublisherAuthor ||
-                        !hasPlaylistEditAccess) &&
-                        item === 'PUBLIC')
-                    }
-                  >
-                    {shareTypes[item]}
-                  </RadioBtn>
-                ))}
-              </RadioGrp>
-            </RadioBtnWrapper>
+                        !hasPlaylistEditAccess ||
+                        (userSignupStatus ===
+                          signUpState.ACCESS_WITHOUT_SCHOOL &&
+                          item !== sharedKeysObj.INDIVIDUAL)
+                      }
+                    >
+                      {shareTypes[item]}
+                    </RadioBtn>
+                  ))}
+                </RadioGrp>
+              </RadioBtnWrapper>
+            )}
             <FlexContainer
               style={{ marginTop: 5, position: 'relative' }}
               justifyContent="flex-start"
@@ -474,7 +652,7 @@ class ShareModal extends React.Component {
                     style={{
                       position: 'absolute',
                       left: 0,
-                      top: 45,
+                      top: 40,
                       color: '#f5222d',
                     }}
                   >
@@ -504,22 +682,51 @@ class ShareModal extends React.Component {
               </IndividualSelectInputStyled>
             </FlexContainer>
           </PeopleBlock>
+
+          {sharedType === sharedKeysObj.INDIVIDUAL && (
+            <NotificationBlock color={showMessageBody ? red : themeColor}>
+              <div>
+                <Checkbox
+                  onChange={this.toggleSendNotification}
+                  checked={sendEmailNotification}
+                >
+                  Send Email Notification
+                </Checkbox>
+                {sendEmailNotification && (
+                  <span onClick={this.toggleMessageBody}>
+                    {showMessageBody ? '-Discard Message' : '-Add Message'}
+                  </span>
+                )}
+              </div>
+              {showMessageBody && (
+                <Input.TextArea
+                  placeholder="Enter Message"
+                  autoSize={{ minRows: 3, maxRows: 6 }}
+                  value={notificationMessage}
+                  onChange={this.handleMessageChange}
+                />
+              )}
+            </NotificationBlock>
+          )}
+
           <DoneButtonContainer>
             <EduButton
               height="32px"
-              onClick={this.handleClose}
+              width={!isPublished ? '175px' : null}
+              onClick={onClose}
               style={{ display: 'inline-flex' }}
             >
               Cancel
             </EduButton>
             <EduButton
               height="32px"
+              width={!isPublished ? '175px' : null}
               data-cy="share-button-pop"
               onClick={this.handleShare}
               style={{ display: 'inline-flex' }}
             >
               <IconShare />
-              SHARE
+              {isPublished ? 'SHARE' : 'Invite Co-Authors'}
             </EduButton>
           </DoneButtonContainer>
         </ModalContainer>
@@ -553,6 +760,19 @@ const enhance = compose(
       features: getUserFeatures(state),
       userOrgData: getOrgDataSelector(state),
       userRole: getUserRole(state),
+      userSignupStatus: getUserSignupStatusSelector(state),
+      sharingState: getContentSharingStateSelector(state),
+      authorName: getUserNameSelector(state),
+      sendEmailNotification: getShouldSendEmailStateSelector(state),
+      showMessageBody: getShowMessageBodyStateSelector(state),
+      notificationMessage: getEmailNotificationMessageSelector(state),
+      test: getTestEntitySelector(state),
+      loadingSharedUsers: _get(state, 'tests.loadingSharedUsers', false),
+      maxSharingLevelAllowed: _get(
+        state,
+        'tests.maxSharingLevelAllowed',
+        shareLevel[sharedKeysObj.LINK]
+      ),
     }),
     {
       getUsers: fetchUsersListAction,
@@ -560,6 +780,7 @@ const enhance = compose(
       shareTest: sendTestShareAction,
       getSharedUsers: receiveSharedWithListAction,
       deleteShared: deleteSharedUserAction,
+      updateEmailNotificationData: updateEmailNotificationDataAction,
     }
   )
 )
@@ -635,6 +856,20 @@ const PeopleBlock = styled.div`
 
   .ant-radio {
     margin-right: 5px;
+  }
+`
+const NotificationBlock = styled.div`
+  margin-top: 15px;
+  .ant-checkbox-wrapper {
+    font-weight: 600;
+    & + span {
+      display: inline-block;
+      color: ${({ color }) => color};
+      cursor: pointer;
+    }
+  }
+  > textarea {
+    margin-top: 10px;
   }
 `
 
@@ -745,4 +980,9 @@ export const TitleCopy = styled(Paragraph)`
     height: 20px;
     color: ${themeColor};
   }
+`
+export const CopyBlockLayer = styled.div`
+  position: absolute;
+  width: 92%;
+  height: 45px;
 `

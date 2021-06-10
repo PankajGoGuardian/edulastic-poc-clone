@@ -1,16 +1,15 @@
 import styled, { css } from 'styled-components'
 import { Button, Modal } from 'antd'
 import { IconEdit } from '@edulastic/icons'
-import { FlexContainer } from '@edulastic/common'
+import { FlexContainer, EduButton } from '@edulastic/common'
 import {
   mobileWidthMax,
   white,
   themeColor,
   desktopWidth,
-  mobileWidthLarge,
-  mediumDesktopExactWidth,
-  themeColorBlue,
-  themeColorHoverBlue,
+  extraDesktopWidth,
+  inputBorder1,
+  greyThemeDark1,
 } from '@edulastic/colors'
 
 // left 70 as the side menu space need to be considered.
@@ -23,7 +22,7 @@ export const FixedHeaderStyle = css`
   z-index: 999;
   width: auto;
   height: ${(props) => props.theme.HeaderHeight.xs}px;
-  border-bottom: 1px solid black;
+  box-shadow: 1px 8px 11px rgba(0, 0, 0, 0.2);
   padding: 10px 30px;
 `
 
@@ -37,9 +36,9 @@ export const StyledFlexContainer = styled(FlexContainer)`
 `
 
 export const StudentButtonWrapper = styled(FlexContainer)`
-  width: ${(props) => (props.hasAutoWidth ? 'auto' : 'calc(75% - 15px)')};
   justify-content: space-between;
   margin-bottom: 0px;
+  align-items: center;
 
   @media (max-width: ${mobileWidthMax}) {
     flex-direction: column;
@@ -50,6 +49,7 @@ export const StyledStudentTabButton = styled.div``
 
 export const StudentButtonDiv = styled.div`
   display: flex;
+  align-items: center;
   .ant-btn-primary {
     background-color: #0e93dc;
   }
@@ -62,32 +62,26 @@ export const StudentButtonDiv = styled.div`
   }
 `
 
-const StyledTabButton = styled.a`
-  height: 28px;
-  padding: 6px 15px;
-  font-size: 11px;
-  font-weight: 600;
-  background-color: ${({ active }) => (active ? themeColorBlue : white)};
-  color: ${({ active }) => (active ? white : themeColor)};
-  border: 1px solid ${themeColor};
-  border-left: none;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  &:hover {
-    background-color: ${themeColorHoverBlue};
-    color: ${white};
-  }
-  &:first-child {
-    border-left: 1px solid ${themeColor};
+const StyledTabButton = styled(EduButton).attrs(() => ({
+  height: '28px',
+  ml: '0px',
+  isGhost: true,
+  fontSize: '10px',
+}))`
+  border-radius: 0px;
+  border-left: 0px;
+
+  &.ant-btn.ant-btn-primary {
+    background-color: ${({ active }) => active && themeColor};
+    color: ${({ active }) => active && white};
   }
 
-  @media (min-width: ${mediumDesktopExactWidth}) {
-    padding: 6px 30px;
-  }
-  @media (max-width: ${mobileWidthLarge}) {
-    width: 100%;
-    margin: 0 !important;
+  &:focus,
+  &:hover {
+    &.ant-btn.ant-btn-primary {
+      border-color: ${themeColor};
+      background-color: ${themeColor};
+    }
   }
 `
 
@@ -95,6 +89,7 @@ export const CorrectButton = StyledTabButton
 export const WrongButton = StyledTabButton
 
 export const AllButton = styled(StyledTabButton)`
+  border-left: 1px solid;
   border-radius: 4px 0px 0px 4px;
 `
 
@@ -103,14 +98,14 @@ export const PartiallyCorrectButton = styled(StyledTabButton)`
 `
 
 export const GiveOverallFeedBackButton = styled(StyledTabButton)`
-  height: 40px;
+  height: 24px;
   background-color: ${white};
   border: 1px solid ${themeColor};
   color: ${themeColor};
   border-radius: 4px;
-  padding: 15px 10px;
   min-width: 250px;
   position: relative;
+  margin-left: 28px;
   svg {
     position: absolute;
     left: 5px;
@@ -119,16 +114,15 @@ export const GiveOverallFeedBackButton = styled(StyledTabButton)`
     fill: ${themeColor};
   }
   &:hover {
-    background-color: ${themeColorHoverBlue};
+    background-color: ${themeColor};
     color: ${white};
     svg {
       fill: ${white};
     }
   }
 
-  @media (min-width: ${mediumDesktopExactWidth}) {
+  @media (min-width: ${extraDesktopWidth}) {
     min-width: 300px;
-    padding: 20px 10px;
   }
   @media (max-width: ${desktopWidth}) {
     min-width: auto;
@@ -200,7 +194,131 @@ export const StyledFooter = styled.div`
   }
 `
 
-export const ScoreWrapper = styled.div`
-  font-weight: bold;
-  font-size: 20px;
+export const SlideContainer = styled.span`
+  height: 300px;
+`
+
+export const SliderContainer = styled.div`
+  position: relative;
+  overflow: hidden;
+  width: 430px;
+  .prev,
+  .next {
+    display: block;
+  }
+`
+
+export const ScrollbarContainer = styled.div`
+  white-space: nowrap;
+  transition: 0.2s;
+  border: 1px solid ${inputBorder1};
+  .scrollbar-container {
+    width: 430px;
+    height: 305px;
+    transition: 0.2s;
+  }
+  .ps__rail-x {
+    display: none;
+  }
+`
+export const PrevButton = styled.div`
+  position: absolute;
+  top: 60%;
+  left: 10px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  z-index: 5;
+`
+export const NextButton = styled(PrevButton)`
+  top: 58.5%;
+  left: auto;
+  right: 10px;
+  transform: translateY(-50%) rotate(180deg);
+`
+
+export const Slides = styled.div`
+  width: 412px;
+  height: 290px;
+  color: ${white};
+  cursor: pointer;
+  display: inline-block;
+  background-image: ${(props) => `url(${props.bgImage})`};
+  background-size: 100% 100%;
+  background-position: top left;
+  background-repeat: no-repeat;
+  border-radius: 4px;
+  margin: 8px 0 8px 8px;
+`
+export const AttachmentFooter = styled.div`
+  width: 456px;
+  margin: auto;
+  padding-top: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+`
+export const SingleDownloadButton = styled(EduButton)`
+  width: 200px;
+  span {
+    height: 24px;
+  }
+`
+
+export const Title = styled.h2`
+  font-weight: 600;
+`
+
+export const Description = styled.p`
+  font-weight: 600;
+  font-size: 15px;
+`
+
+export const FilesViewContainer = styled.div`
+  width: 100%;
+  margin-top: 20px;
+  margin-bottom: 15px;
+`
+
+export const SlideWrapper = styled.div`
+  width: 430px;
+  height: 298px;
+  display: inline-block;
+`
+
+export const InputTitle = styled.h3`
+  color: ${greyThemeDark1};
+  text-align: left;
+  font: normal normal 600 11px/15px Open Sans;
+  letter-spacing: 0px;
+  text-transform: uppercase;
+  margin: 20px 0 -10px 0px;
+`
+
+export const StyledAttachmentModal = styled(Modal)`
+  .ant-modal-body {
+    padding: 0 50px 0 50px;
+  }
+  .ant-modal-header {
+    padding: 24px 46px;
+    border: 0;
+    .ant-modal-title {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -1.1px;
+      margin-top: 8px;
+    }
+  }
+  .ant-modal-footer {
+    border: 0;
+    padding-bottom: 30px;
+  }
+  .ant-modal-close {
+    top: 18px;
+    right: 32px;
+    color: black;
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
 `

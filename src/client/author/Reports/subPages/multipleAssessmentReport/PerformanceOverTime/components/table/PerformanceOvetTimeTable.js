@@ -3,6 +3,7 @@ import { map } from 'lodash'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { extraDesktopWidthMax } from '@edulastic/colors'
+import { Col, Row } from 'antd'
 import {
   StyledCard,
   StyledTable as Table,
@@ -17,6 +18,7 @@ import {
   downloadCSV,
 } from '../../../../../common/util'
 import CsvTable from '../../../../../common/components/tables/CsvTable'
+import BackendPagination from '../../../../../common/components/BackendPagination'
 
 const StyledTable = styled(Table)`
   .ant-table-layout-fixed {
@@ -75,6 +77,7 @@ const staticFields = [
     width: 250,
     align: 'left',
     sorter: (a, b) => stringCompare(a.testName, b.testName),
+    render: (text, record) => (record.isIncomplete ? `${text} *` : text),
   },
   {
     title: 'Type',
@@ -92,6 +95,8 @@ const staticFields = [
     title: 'Max Possible Score',
     width: 120,
     dataIndex: 'maxPossibleScore',
+    render: (text, record) =>
+      record.maxPossibleScore === null ? `-` : `${record.maxPossibleScore}`,
   },
   {
     title: 'Questions',
@@ -181,12 +186,18 @@ const getColumns = () => {
   return [...staticFields, ...dynamicColumns]
 }
 
-const PerformanceOverTimeTable = ({ dataSource, isCsvDownloading }) => {
+const PerformanceOverTimeTable = ({
+  dataSource,
+  isCsvDownloading,
+  backendPagination,
+  setBackendPagination,
+  showTestIncompleteText = false,
+}) => {
   const onCsvConvert = (data) => downloadCSV(`Performance Over Time.csv`, data)
 
   return (
     <StyledCard>
-      <StyledH3>Assessment Statistics Over Time</StyledH3>
+      <StyledH3>Assessment Statistics</StyledH3>
       <CsvTable
         dataSource={dataSource}
         columns={getColumns()}
@@ -195,7 +206,24 @@ const PerformanceOverTimeTable = ({ dataSource, isCsvDownloading }) => {
         onCsvConvert={onCsvConvert}
         isCsvDownloading={isCsvDownloading}
         scroll={{ x: '100%' }}
+        pagination={isCsvDownloading ? undefined : false}
       />
+      <Row type="flex" align="middle">
+        <Col span={14}>
+          {showTestIncompleteText && (
+            <StyledH3 fontSize="10px" fontWeight="normal" margin="0">
+              * Some assignment(s) for this test are still in progress and hence
+              the results may not be complete
+            </StyledH3>
+          )}
+        </Col>
+        <Col span={10} style={{ minHeight: '52px' }}>
+          <BackendPagination
+            backendPagination={backendPagination}
+            setBackendPagination={setBackendPagination}
+          />
+        </Col>
+      </Row>
     </StyledCard>
   )
 }

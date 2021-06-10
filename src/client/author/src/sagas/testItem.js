@@ -1,10 +1,16 @@
 import { takeEvery, call, put, all, select } from 'redux-saga/effects'
-import { get as _get, round } from 'lodash'
+import { get as _get, round, isEmpty } from 'lodash'
 import { testItemsApi } from '@edulastic/api'
 import { LOCATION_CHANGE, push } from 'connected-react-router'
 import { questionType } from '@edulastic/constants'
-import { Effects, notification } from '@edulastic/common'
+import {
+  captureSentryException,
+  Effects,
+  notification,
+} from '@edulastic/common'
 import * as Sentry from '@sentry/browser'
+import { resourceTypeQuestions } from '@edulastic/constants/const/question'
+
 import { evaluateItem } from '../utils/evalution'
 import { hasEmptyAnswers } from '../../utils/answerValidator'
 
@@ -34,8 +40,9 @@ import {
 import {
   getQuestionsSelector,
   CHANGE_CURRENT_QUESTION,
-  getCurrentQuestionSelector,
 } from '../../sharedDucks/questions'
+import { getQuestionDataSelector } from '../../QuestionEditor/ducks'
+import { answersByQId } from '../../../assessment/selectors/test'
 
 function* createTestItemSaga({
   payload: { data, testFlow, testId, newPassageItem = false, testName },
@@ -105,7 +112,7 @@ function* createTestItemSaga({
     }
   } catch (err) {
     console.error(err)
-    Sentry.captureException(err)
+    captureSentryException(err)
     const errorMessage = 'create item failed'
     notification({ msg: errorMessage })
     yield put({
@@ -124,7 +131,7 @@ function* updateTestItemSaga({ payload }) {
     })
   } catch (err) {
     console.error(err)
-    Sentry.captureException(err)
+    captureSentryException(err)
     const errorMessage = 'Update item is failed'
     notification({ msg: errorMessage })
     yield put({
@@ -136,7 +143,7 @@ function* updateTestItemSaga({ payload }) {
 
 function* evaluateAnswers({ payload }) {
   try {
-    const question = yield select(getCurrentQuestionSelector)
+    const question = yield select(getQuestionDataSelector)
     const item = yield select((state) => state.itemDetail?.item)
     if (question) {
       const hasEmptyAnswer = hasEmptyAnswers(question)
@@ -155,9 +162,27 @@ function* evaluateAnswers({ payload }) {
       !item.isDocBased
     ) {
       const answers = yield select((state) => _get(state, 'answers', []))
-      const { evaluation, score, maxScore } = yield evaluateItem(answers, {
-        [question?.id]: question,
-      })
+      const answersByQids = answersByQId(answers, item._id)
+      if (isEmpty(answersByQids)) {
+        if (payload?.mode !== 'show') {
+          notification({
+            type: 'warn',
+            messageKey: 'attemptTheQuestonToCheckAnswer',
+          })
+        }
+        return
+      }
+      const { evaluation, score, maxScore } = yield evaluateItem(
+        answersByQids,
+        {
+          [question?.id]: question,
+        },
+        undefined,
+        undefined,
+        item._id,
+        item.itemGradingType,
+        item.assignPartialCredit
+      )
 
       yield put({
         type: ADD_ITEM_EVALUATION,
@@ -179,14 +204,34 @@ function* evaluateAnswers({ payload }) {
       }
     } else {
       const answers = yield select((state) => _get(state, 'answers', {}))
-      const items = yield select((state) => state.itemDetail.item)
-      const { itemLevelScore = 0, itemLevelScoring = false } = items || {}
+      const _item = yield select((state) => state.itemDetail.item)
+      const { itemLevelScore = 0, itemLevelScoring = false } = _item || {}
       const questions = yield select(getQuestionsSelector)
+      // filter out passages and resources before evaluating
+      Object.values(questions).forEach((q) => {
+        const { id, type } = q
+        if (resourceTypeQuestions.includes(type)) {
+          delete questions[id]
+        }
+      })
+      const answersByQids = answersByQId(answers, _item._id)
+      if (isEmpty(answersByQids)) {
+        if (payload?.mode !== 'show') {
+          notification({
+            type: 'warn',
+            messageKey: 'attemptTheQuestonToCheckAnswer',
+          })
+        }
+        return
+      }
       const { evaluation, score, maxScore } = yield evaluateItem(
-        answers,
+        answersByQids,
         questions,
         itemLevelScoring,
-        itemLevelScore
+        itemLevelScore,
+        _item._id,
+        _item.itemGradingType,
+        _item.assignPartialCredit
       )
       yield put({
         type: ADD_ITEM_EVALUATION,
@@ -207,7 +252,7 @@ function* evaluateAnswers({ payload }) {
     }
   } catch (err) {
     console.error(err)
-    Sentry.captureException(err)
+    captureSentryException(err)
     const errorMessage =
       err.message ||
       'Expression syntax is incorrect. Please refer to the help docs on what is allowed'
@@ -221,7 +266,7 @@ function* showAnswers() {
     // with check answer itself,it will save evaluation , we dont need this again.
   } catch (err) {
     console.error(err)
-    Sentry.captureException(err)
+    captureSentryException(err)
     const errorMessage = 'Show Answer Failed'
     notification({ msg: errorMessage })
   }
@@ -263,7 +308,7 @@ export default function* watcherSaga() {
   yield all([
     yield takeEvery(CREATE_TEST_ITEM_REQUEST, createTestItemSaga),
     yield Effects.throttleAction(
-      10000,
+      process.env.REACT_APP_QA_ENV ? 60000 : 10000,
       UPDATE_TEST_ITEM_REQUEST,
       updateTestItemSaga
     ),

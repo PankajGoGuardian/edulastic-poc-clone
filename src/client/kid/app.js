@@ -3,12 +3,12 @@ import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { Redirect } from 'react-router-dom'
 import { EduButton } from '@edulastic/common'
-import { StyledH3 } from '../author/Reports/common/styled'
-import { ConfirmationModal as KidModal } from '../author/src/components/common/ConfirmationModal'
 import {
   getFromSessionStorage,
   getFromLocalStorage,
-} from '../../../packages/api/src/utils/Storage'
+} from '@edulastic/api/src/utils/Storage'
+import { StyledH3 } from '../author/Reports/common/styled'
+import { ConfirmationModal as KidModal } from '../author/src/components/common/ConfirmationModal'
 import { fetchUserAction } from '../student/Login/ducks'
 
 const Kid = ({ location, fetchUser }) => {

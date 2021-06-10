@@ -1,7 +1,13 @@
 import React, { memo } from 'react'
 import PropTypes from 'prop-types'
-import { FroalaEditor } from '@edulastic/common'
+import loadable from '@loadable/component'
+import Progress from '@edulastic/common/src/components/Progress'
 
+const FroalaEditor = loadable(() =>
+  import(
+    /* webpackChunkName: "froalaCommonChunk" */ '@edulastic/common/src/components/FroalaEditor'
+  )
+)
 // TODO: decide what to do with first focus
 const QuestionTextArea = ({
   onChange,
@@ -17,8 +23,10 @@ const QuestionTextArea = ({
   fontSize,
   buttons,
   allowQuickInsert,
+  sanitizeClipboardHtml,
 }) => (
   <FroalaEditor
+    fallback={<Progress />}
     placeholder={placeholder}
     onChange={onChange}
     value={value}
@@ -33,6 +41,7 @@ const QuestionTextArea = ({
     fontSize={fontSize}
     buttons={buttons}
     allowQuickInsert={allowQuickInsert}
+    sanitizeClipboardHtml={sanitizeClipboardHtml}
   />
 )
 
@@ -47,6 +56,7 @@ QuestionTextArea.propTypes = {
   border: PropTypes.string,
   imageDefaultWidth: PropTypes.number,
   allowQuickInsert: PropTypes.bool,
+  sanitizeClipboardHtml: PropTypes.bool,
 }
 
 QuestionTextArea.defaultProps = {
@@ -58,6 +68,7 @@ QuestionTextArea.defaultProps = {
   border: 'none',
   imageDefaultWidth: 300,
   allowQuickInsert: true,
+  sanitizeClipboardHtml: false,
 }
 
 export default memo(QuestionTextArea)

@@ -5,16 +5,28 @@ import {
   enrollmentApi,
   classResponseApi,
   canvasApi,
+  utilityApi,
+  testItemsApi,
 } from '@edulastic/api'
 import { createSelector } from 'reselect'
 import { push } from 'connected-react-router'
-import { values as _values, get, keyBy, sortBy, isEmpty, groupBy } from 'lodash'
-import { notification } from '@edulastic/common'
+import {
+  values as _values,
+  get,
+  keyBy,
+  sortBy,
+  isEmpty,
+  groupBy,
+  cloneDeep,
+  round,
+} from 'lodash'
+import { captureSentryException, notification } from '@edulastic/common'
 import {
   test,
   testActivity,
   assignmentPolicyOptions,
   roleuser,
+  testActivityStatus,
 } from '@edulastic/constants'
 import { isNullOrUndefined } from 'util'
 import * as Sentry from '@sentry/browser'
@@ -32,6 +44,10 @@ import {
   redirectToAssignmentsAction,
   updatePasswordDetailsAction,
   toggleViewPasswordAction,
+  updatePauseStatusAction,
+  receiveStudentResponseAction,
+  reloadLcbDataInStudentViewAction,
+  correctItemUpdateProgressAction,
 } from '../src/actions/classBoard'
 
 import { createFakeData, hasRandomQuestions } from './utils'
@@ -41,6 +57,7 @@ import {
   getQuestionLabels,
   transformTestItems,
   transformGradeBookResponse,
+  getStandardsForStandardBasedReport,
 } from './Transformer'
 
 import {
@@ -50,6 +67,7 @@ import {
   RECEIVE_TESTACTIVITY_REQUEST,
   RECEIVE_TESTACTIVITY_SUCCESS,
   RECEIVE_TESTACTIVITY_ERROR,
+  RECEIVE_STUDENT_RESPONSE_REQUEST,
   UPDATE_RELEASE_SCORE,
   SET_MARK_AS_DONE,
   OPEN_ASSIGNMENT,
@@ -67,14 +85,33 @@ import {
   REDIRECT_TO_ASSIGNMENTS,
   REGENERATE_PASSWORD,
   CANVAS_SYNC_GRADES,
+  CANVAS_SYNC_ASSIGNMENT,
+  FETCH_SERVER_TIME,
+  PAUSE_STUDENTS,
+  CORRECT_ITEM_UPDATE_REQUEST,
+  TOGGLE_REGRADE_MODAL,
+  RELOAD_LCB_DATA_IN_STUDENT_VIEW,
 } from '../src/constants/actions'
 
 import { downloadCSV } from '../Reports/common/util'
-import { getUserNameSelector } from '../src/selectors/user'
+import { getUserIdSelector, getUserNameSelector } from '../src/selectors/user'
 import { getAllQids } from '../SummaryBoard/Transformer'
 import { getUserId, getUserRole } from '../../student/Login/ducks'
-import { setProgressStatusAction } from '../src/reducers/testActivity'
+import {
+  setAddedStudentsAction,
+  setLcbActionProgress,
+  setProgressStatusAction,
+  updateServerTimeAction,
+} from '../src/reducers/testActivity'
 import { getServerTs } from '../../student/utils'
+import { setShowCanvasShareAction } from '../src/reducers/gradeBook'
+
+import {
+  isIncompleteQuestion,
+  hasImproperDynamicParamsConfig,
+  isOptionsRemoved,
+} from '../questionUtils'
+import { setRegradeFirestoreDocId } from '../TestPage/ducks'
 
 const {
   authorAssignmentConstants: {
@@ -83,6 +120,9 @@ const {
 } = testActivity
 
 const { testContentVisibility } = test
+
+export const LCB_LIMIT_QUESTION_PER_VIEW = 20
+export const SCROLL_SHOW_LIMIT = 10
 
 function* receiveGradeBookSaga({ payload }) {
   try {
@@ -103,11 +143,12 @@ function* receiveGradeBookSaga({ payload }) {
 }
 
 export function* receiveTestActivitySaga({ payload }) {
+  const { studentResponseParams, ...classResponseParams } = payload || {}
   try {
     // test, testItemsData, testActivities, studentNames, testQuestionActivities
     const { additionalData, ...gradebookData } = yield call(
       classBoardApi.testActivity,
-      payload
+      classResponseParams
     )
     if (!additionalData.recentTestActivitiesGrouped) {
       /**
@@ -116,25 +157,35 @@ export function* receiveTestActivitySaga({ payload }) {
       additionalData.recentTestActivitiesGrouped = {}
     }
     const classResponse = yield call(classResponseApi.classResponse, {
-      ...payload,
+      ...classResponseParams,
       testId: additionalData.testId,
     })
+    const testItems = classResponse.itemGroups
+      .flatMap((itemGroup) => itemGroup.items || [])
+      .map((item) => {
+        item.data.questions = get(item, 'data.questions', []).map((q) => ({
+          ...q,
+        }))
+        return item
+      })
+    const originalItems = cloneDeep(testItems)
+    const reportStandards = getStandardsForStandardBasedReport(
+      testItems,
+      classResponse?.summary?.standardsDescriptions || {}
+    )
+    markQuestionLabel(testItems)
     yield put({
       type: RECEIVE_CLASS_RESPONSE_SUCCESS,
-      payload: classResponse,
+      payload: { ...classResponse, testItems, reportStandards, originalItems },
     })
 
     const students = get(gradebookData, 'students', [])
     // the below methods mutates the gradebookData
-    classResponse.testItems = classResponse.itemGroups.flatMap(
-      (itemGroup) => itemGroup.items || []
-    )
     gradebookData.passageData = classResponse.passages
-    gradebookData.testItemsData = classResponse.testItems
-    gradebookData.testItemsDataKeyed = keyBy(classResponse.testItems, '_id')
+    gradebookData.testItemsData = testItems
+    gradebookData.testItemsDataKeyed = keyBy(testItems, '_id')
     gradebookData.test = classResponse
     gradebookData.endDate = additionalData.endDate
-    markQuestionLabel(gradebookData.testItemsData)
     transformTestItems(gradebookData)
     // attach fake data to students for presentation mode.
     const fakeData = createFakeData(students.length)
@@ -154,49 +205,48 @@ export function* receiveTestActivitySaga({ payload }) {
     )
     if (isRandomDelivery) {
       // students can have different test items so generating student data for each student with its testItems
-      const studentsDataWithTestItems = students.map((student) => {
-        const activity = gradebookData.testActivities.find(
-          (a) => a.userId === student._id
-        )
-        let allItems = []
-        if (activity) {
-          allItems = activity.itemsToDeliverInGroup
-            .flatMap((g) => g.items)
-            .map((id) => {
-              const item = gradebookData.testItemsData.find(
-                (ti) => ti._id === id
-              )
-              if (item) return item
-              return {
-                _id: id,
-                itemLevelScoring: true,
+      const studentsDataWithTestItems = gradebookData.testActivities.map(
+        (activity) => {
+          let allItems = []
+          if (activity) {
+            allItems = activity.itemsToDeliverInGroup
+              .flatMap((g) => g.items)
+              .map((id) => {
+                const item = gradebookData.testItemsData.find(
+                  (ti) => ti._id === id
+                )
+                if (item) return item
+                return {
+                  _id: id,
+                  itemLevelScoring: true,
+                }
+              })
+          } else {
+            classResponse.itemGroups.forEach((group) => {
+              if (
+                group.deliveryType === ALL_RANDOM ||
+                group.deliveryType === LIMITED_RANDOM
+              ) {
+                const dummyItems = [...new Array(group.deliverItemsCount)].map(
+                  () => ({
+                    _id: '',
+                    itemLevelScoring: true,
+                  })
+                )
+                allItems.push(...dummyItems)
+              } else {
+                allItems.push(...group.items)
               }
             })
-        } else {
-          classResponse.itemGroups.forEach((group) => {
-            if (
-              group.deliveryType === ALL_RANDOM ||
-              group.deliveryType === LIMITED_RANDOM
-            ) {
-              const dummyItems = [...new Array(group.deliverItemsCount)].map(
-                () => ({
-                  _id: '',
-                  itemLevelScoring: true,
-                })
-              )
-              allItems.push(...dummyItems)
-            } else {
-              allItems.push(...group.items)
-            }
-          })
-        }
+          }
 
-        return {
-          activityId: activity?._id || '',
-          studentId: student._id,
-          items: allItems,
+          return {
+            activityId: activity?._id || '',
+            studentId: activity.userId,
+            items: allItems,
+          }
         }
-      })
+      )
 
       entities = studentsDataWithTestItems.map((studentData) => {
         const studentActivityData = transformGradeBookResponse({
@@ -219,6 +269,19 @@ export function* receiveTestActivitySaga({ payload }) {
       type: RECEIVE_TESTACTIVITY_SUCCESS,
       payload: { gradebookData, additionalData, entities },
     })
+
+    if (studentResponseParams) {
+      // studentResponseParams has studentId and testActivityId
+      // we need to retrieve student response again,
+      // when regrade is successful in LCB
+      yield put({
+        type: RECEIVE_STUDENT_RESPONSE_REQUEST,
+        payload: {
+          groupId: payload.classId,
+          ...studentResponseParams,
+        },
+      })
+    }
   } catch (err) {
     console.log('err is', err)
     const msg = 'Unable to retrieve test activity.'
@@ -238,7 +301,7 @@ function* releaseScoreSaga({ payload }) {
       msg: 'Successfully updated the release score settings',
     })
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     const {
       data: { message: errorMessage },
     } = err.response
@@ -259,7 +322,7 @@ function* markAsDoneSaga({ payload }) {
       msg: 'Successfully marked as done',
     })
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     const {
       data: { message: errorMessage },
     } = err.response
@@ -302,7 +365,7 @@ function* openAssignmentSaga({ payload }) {
     }
     yield call(notification, { type: 'success', msg: 'Success' })
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     const {
       data: { message: errorMessage },
     } = err.response
@@ -324,7 +387,7 @@ function* closeAssignmentSaga({ payload }) {
     yield put(receiveTestActivitydAction(payload.assignmentId, payload.classId))
     yield call(notification, { type: 'success', msg: 'Success' })
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     const {
       data: { message: errorMessage },
     } = err.response
@@ -341,7 +404,7 @@ function* saveOverallFeedbackSaga({ payload }) {
     yield call(testActivityApi.saveOverallFeedback, payload)
     yield call(notification, { type: 'success', msg: 'feedback saved' })
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     const {
       data: { message: errorMessage },
     } = err.response
@@ -361,7 +424,7 @@ function* markAbsentSaga({ payload }) {
       msg: 'Successfully marked as absent',
     })
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     const {
       data: { message: errorMessage },
     } = err.response
@@ -384,7 +447,7 @@ function* markAsSubmittedSaga({ payload }) {
       msg: 'Successfully marked as submitted',
     })
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     const {
       data: { message: errorMessage },
     } = err.response
@@ -407,7 +470,7 @@ function* togglePauseAssignment({ payload }) {
     const {
       data: { message: errorMessage },
     } = err.response
-    Sentry.captureException(err)
+    captureSentryException(err)
     if (errorMessage === 'Assignment does not exist anymore') {
       yield put(redirectToAssignmentsAction(''))
     }
@@ -427,7 +490,7 @@ function* fetchStudentsByClassSaga({ payload }) {
     )
     yield put(updateClassStudentsAction(students))
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     console.error('Receive students from class failed')
   }
 }
@@ -438,7 +501,7 @@ function* removeStudentsSaga({ payload }) {
     yield put(updateRemovedStudentsAction(students))
     yield call(notification, { type: 'success', msg: 'Successfully removed' })
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     const { data = {} } = err.response || {}
     const { message: errorMessage } = data
     if (errorMessage === 'Assignment does not exist anymore') {
@@ -452,10 +515,12 @@ function* removeStudentsSaga({ payload }) {
 
 function* addStudentsSaga({ payload }) {
   try {
+    yield put(setLcbActionProgress(true))
     yield call(classBoardApi.addStudents, payload)
     yield call(notification, { type: 'success', msg: 'Successfully added' })
+    yield put(setAddedStudentsAction(payload.students))
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     const {
       data: { message: errorMessage },
     } = err.response
@@ -465,6 +530,8 @@ function* addStudentsSaga({ payload }) {
     yield call(notification, {
       msg: err.response.data.message || 'Add students failed',
     })
+  } finally {
+    yield put(setLcbActionProgress(false))
   }
 }
 
@@ -478,7 +545,7 @@ function* getAllTestActivitiesForStudentSaga({ payload }) {
     })
     yield put(setAllTestActivitiesForStudentAction(result))
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     const { data = {} } = err.response || {}
     const { message: errorMessage } = data
     if (errorMessage === 'Assignment does not exist anymore') {
@@ -496,10 +563,17 @@ function* downloadGradesAndResponseSaga({ payload }) {
     const userName = yield select(getUserNameSelector)
     // eslint-disable-next-line no-use-before-define
     const testName = yield select(testNameSelector)
-    const fileName = `${testName}_${userName}.csv`
-    downloadCSV(fileName, data)
+    let fileName = `${testName}_${userName}`
+    const isNonASCIIChar = [...fileName].some(
+      (char) => char.charCodeAt(0) > 127
+    )
+    if (isNonASCIIChar) {
+      fileName = `${payload.assignmentId}_${payload.classId}`
+    }
+
+    downloadCSV(`${fileName}.csv`, data)
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     const {
       data: { message: errorMessage },
     } = err.response
@@ -519,6 +593,7 @@ function* regeneratePasswordSaga({ payload }) {
         assignmentPassword: data.assignmentPassword,
         passwordExpireTime: data.passwordExpireTime,
         passwordExpireIn: data.passwordExpireIn,
+        ts: data.ts,
       })
     )
   } catch (e) {
@@ -536,12 +611,225 @@ function* canvasSyncGradesSaga({ payload }) {
       msg: 'Grades synced with canvas successfully.',
     })
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
+    const {
+      data: { message: errorMessage },
+    } = err.response
+    if (errorMessage === 'Not shared with canvas') {
+      yield put(setShowCanvasShareAction(true))
+      return
+    }
+    yield call(notification, {
+      msg: errorMessage || 'Failed to sync grades with canvas.',
+    })
+  }
+}
+
+function* canvasSyncAssignmentSaga({ payload }) {
+  try {
+    yield call(canvasApi.canvasAssignmentSync, payload)
+    yield call(notification, {
+      type: 'success',
+      msg: 'Assignment synced with canvas successfully.',
+    })
+  } catch (err) {
+    captureSentryException(err)
     const {
       data: { message: errorMessage },
     } = err.response
     yield call(notification, {
-      msg: errorMessage || 'Failed to sync grades with canvas.',
+      msg: errorMessage || 'Failed to sync assignment with canvas.',
+    })
+  }
+}
+
+function* fetchServerTimeSaga() {
+  try {
+    const ts = yield call(utilityApi.fetchServerTime)
+    yield put(updateServerTimeAction(ts))
+  } catch (err) {
+    captureSentryException(err)
+  }
+}
+
+function* togglePauseStudentsSaga({ payload }) {
+  try {
+    const { result } = yield call(classBoardApi.togglePauseStudents, payload)
+    yield put(updatePauseStatusAction({ result, isPaused: payload.isPause }))
+    if (payload.isPause) {
+      return notification({
+        type: 'success',
+        msg: 'Successfully paused students',
+      })
+    }
+    return notification({
+      type: 'success',
+      msg: 'Assignment is open and available for students to work.',
+    })
+  } catch (err) {
+    captureSentryException(err)
+    const {
+      data: { message: errorMessage },
+    } = err.response
+    if (errorMessage === 'Assignment does not exist anymore') {
+      yield put(redirectToAssignmentsAction(''))
+    }
+    yield call(notification, {
+      msg: errorMessage || 'Mark absent students failed',
+    })
+  }
+}
+
+function* reloadLcbDataInStudentView({ payload }) {
+  try {
+    yield call(receiveTestActivitySaga, { payload })
+    if (payload.lcbView === 'student-report') {
+      yield put(receiveStudentResponseAction(payload))
+    }
+    const { modalState } = payload
+    if (payload.lcbView === 'question-view' && modalState) {
+      let firstQuestionId = get(modalState, 'item.data.questions.[0].id')
+      if (
+        !modalState.item.itemLevelScoring &&
+        get(modalState, 'item.data.questions', []).length > 1
+      ) {
+        const previousQid = get(modalState, 'question.id')
+        const prevQuestionInNewItem = get(
+          modalState,
+          'item.data.questions',
+          []
+        ).find((q) => q.previousQuestionId === previousQid)
+        if (prevQuestionInNewItem && prevQuestionInNewItem.id) {
+          firstQuestionId = prevQuestionInNewItem.id
+        }
+      }
+      if (firstQuestionId) {
+        yield put(push(`/`))
+        yield put(
+          push(
+            `/author/classboard/${payload.assignmentId}/${payload.classId}/question-activity/${firstQuestionId}`
+          )
+        )
+      }
+    }
+  } catch (err) {
+    console.error(err)
+    captureSentryException(err)
+    notification({ type: 'error', msg: 'Unable to refresh data' })
+  }
+}
+
+function* correctItemUpdateSaga({ payload }) {
+  try {
+    const {
+      testItemId,
+      testId,
+      question,
+      callBack,
+      assignmentId,
+      proceedRegrade,
+      editRegradeChoice,
+      isUnscored,
+    } = payload
+    const classResponse = yield select((state) => state.classResponse)
+    const testItems = get(classResponse, 'data.originalItems', [])
+    const studentResponse = yield select((state) => state.studentResponse)
+    const testItem = testItems.find((t) => t._id === testItemId) || {}
+    const [isIncomplete, errMsg] = isIncompleteQuestion(
+      question,
+      testItem.itemLevelScoring
+    )
+
+    if (isIncomplete) {
+      notification({ msg: errMsg })
+      return
+    }
+
+    const [hasImproperConfig, warningMsg] = hasImproperDynamicParamsConfig(
+      question
+    )
+
+    if (hasImproperConfig) {
+      notification({ type: 'warn', msg: warningMsg })
+    }
+    if (isOptionsRemoved(testItem?.data?.questions, [question])) {
+      return notification({
+        type: 'warn',
+        messageKey: 'optionRemove',
+      })
+    }
+
+    const cloneItem = cloneDeep(testItem)
+    cloneItem.data.questions = testItem.data.questions.map((q) =>
+      q.id === question.id ? question : q
+    )
+    yield put(correctItemUpdateProgressAction(true))
+    const result = yield call(testItemsApi.updateCorrectItemById, {
+      testItemId,
+      testItem: cloneItem,
+      testId,
+      assignmentId,
+      proceedRegrade,
+      editRegradeChoice,
+    })
+    yield put(correctItemUpdateProgressAction(false))
+    if (typeof callBack === 'function') {
+      // close correct item edit modal here
+      callBack()
+    }
+
+    const { testId: newTestId, isRegradeNeeded } = result
+    if (isUnscored) {
+      notification({
+        type: 'success',
+        messageKey: 'publishCorrectItemSuccess',
+      })
+      return
+    }
+
+    if (proceedRegrade) {
+      yield put({
+        type: TOGGLE_REGRADE_MODAL,
+        payload: {
+          newTestId,
+          oldTestId: testId,
+          itemData: payload,
+          item: result.item,
+          question,
+        },
+      })
+      yield put(setRegradeFirestoreDocId(result.firestoreDocId))
+    }
+    if (isRegradeNeeded && !proceedRegrade) {
+      yield put({
+        type: TOGGLE_REGRADE_MODAL,
+        payload: { newTestId, oldTestId: testId, itemData: payload },
+      })
+    }
+    const { groupId: payloadGroupId, lcbView } = payload
+    if (!isRegradeNeeded && !proceedRegrade && result.item) {
+      yield put(
+        reloadLcbDataInStudentViewAction({
+          assignmentId,
+          classId: payloadGroupId,
+          isQuestionsView: lcbView === 'question-view',
+          lcbView,
+          testActivityId: studentResponse?.data?.testActivity?._id,
+          groupId: studentResponse?.data?.testActivity?.groupId,
+          studentId: studentResponse?.data?.testActivity?.userId,
+        })
+      )
+      return notification({
+        type: 'success',
+        messageKey: 'publishCorrectItemSuccess',
+      })
+    }
+  } catch (error) {
+    yield put(correctItemUpdateProgressAction(false))
+    yield put(setRegradeFirestoreDocId(''))
+    notification({
+      msg: error?.response?.data?.message,
+      messageKey: 'publishCorrectItemFailing',
     })
   }
 }
@@ -559,6 +847,7 @@ export function* watcherSaga() {
     yield takeEvery(MARK_AS_ABSENT, markAbsentSaga),
     yield takeEvery(MARK_AS_SUBMITTED, markAsSubmittedSaga),
     yield takeEvery(REMOVE_STUDENTS, removeStudentsSaga),
+    yield takeEvery(PAUSE_STUDENTS, togglePauseStudentsSaga),
     yield takeEvery(FETCH_STUDENTS, fetchStudentsByClassSaga),
     yield takeEvery(
       GET_ALL_TESTACTIVITIES_FOR_STUDENT,
@@ -569,6 +858,13 @@ export function* watcherSaga() {
     yield takeEvery(REDIRECT_TO_ASSIGNMENTS, redirectToAssignmentsSaga),
     yield takeEvery(REGENERATE_PASSWORD, regeneratePasswordSaga),
     yield takeEvery(CANVAS_SYNC_GRADES, canvasSyncGradesSaga),
+    yield takeEvery(CANVAS_SYNC_ASSIGNMENT, canvasSyncAssignmentSaga),
+    yield takeEvery(FETCH_SERVER_TIME, fetchServerTimeSaga),
+    yield takeEvery(CORRECT_ITEM_UPDATE_REQUEST, correctItemUpdateSaga),
+    yield takeEvery(
+      RELOAD_LCB_DATA_IN_STUDENT_VIEW,
+      reloadLcbDataInStudentView
+    ),
   ])
 }
 
@@ -586,10 +882,37 @@ export const stateStudentAnswerSelector = (state) =>
 export const stateExpressGraderAnswerSelector = (state) => state.answers
 export const stateQuestionAnswersSelector = (state) =>
   state.classQuestionResponse
+export const getPageNumberSelector = createSelector(
+  stateTestActivitySelector,
+  (state) => state.pageNumber
+)
+
+export const getAnswerByQidSelector = createSelector(
+  stateExpressGraderAnswerSelector,
+  (answers) => {
+    const answerByQid = {}
+    Object.keys(answers).forEach((answer) => {
+      const [, qid] = answer.split(/_(.+)/)
+      answerByQid[qid] = answers[answer]
+    })
+    return answerByQid
+  }
+)
+
+export const getTestItemById = createSelector(
+  stateClassResponseSelector,
+  (state, testItemId) =>
+    get(state, 'data.testItems', []).find((t) => t._id === testItemId) || {}
+)
+
+const getTestItemsData = createSelector(
+  stateTestActivitySelector,
+  (state) => state?.data?.testItemsData || []
+)
 
 export const getClassResponseSelector = createSelector(
   stateClassResponseSelector,
-  (state) => state.data
+  (state) => state?.data || {}
 )
 
 export const ttsUserIdSelector = createSelector(
@@ -609,6 +932,11 @@ export const getHasRandomQuestionselector = createSelector(
 export const getTotalPoints = createSelector(
   getClassResponseSelector,
   (_test) => _test?.summary?.totalPoints
+)
+
+export const getIsDocBasedTestSelector = createSelector(
+  getClassResponseSelector,
+  (_test) => _test?.isDocBased
 )
 
 export const getCurrentTestActivityIdSelector = createSelector(
@@ -633,6 +961,23 @@ export const getAssignmentPasswordDetailsSelector = createSelector(
     passwordExpireTime: state?.additionalData?.passwordExpireTime,
     passwordExpireIn: state?.additionalData?.passwordExpireIn,
   })
+)
+
+export const getStudentsPrevSubmittedUtasSelector = createSelector(
+  stateTestActivitySelector,
+  (state) => {
+    const groupedUtas = state?.data?.recentTestActivitiesGrouped || {}
+    const groupedSubmittedUtas = {}
+    for (const [key, value] of Object.entries(groupedUtas)) {
+      const lastSubmittedUTA = value.find(
+        (v) => v.status !== testActivityStatus.ABSENT
+      )
+      if (lastSubmittedUTA) {
+        groupedSubmittedUtas[key] = lastSubmittedUTA
+      }
+    }
+    return groupedSubmittedUtas
+  }
 )
 
 export const getItemSummary = (
@@ -687,6 +1032,7 @@ export const getItemSummary = (
         barLabel,
         timeSpent,
         pendingEvaluation,
+        isPractice,
       } = _activity
 
       let { notStarted, skipped } = _activity
@@ -708,12 +1054,14 @@ export const getItemSummary = (
           notStartedNum: 0,
           timeSpent: 0,
           manualGradedNum: 0,
+          unscoredItems: 0,
         }
       }
       if (testItemId) {
         questionMap[_id].itemLevelScoring = true
         questionMap[_id].itemId = testItemId
       }
+
       if (!notStarted) {
         questionMap[_id].attemptsNum += 1
       } else if (score > 0) {
@@ -722,15 +1070,16 @@ export const getItemSummary = (
         questionMap[_id].notStartedNum += 1
       }
 
-      if (skipped && score === 0) {
+      if (skipped && score === 0 && !isPractice) {
         questionMap[_id].skippedNum += 1
         skippedx = true
       }
       if (score > 0) {
         skipped = false
       }
-
-      if (
+      if (isPractice) {
+        questionMap[_id].unscoredItems += 1
+      } else if (
         (graded === false && !notStarted && !skipped && !score) ||
         pendingEvaluation
       ) {
@@ -759,13 +1108,14 @@ export const getAggregateByQuestion = (entities, studentId) => {
   if (!entities) {
     return {}
   }
-  const total = entities.length
-  const submittedEntities = entities.filter((x) => x.status === 'submitted')
+  const total = entities.filter((x) => x.isAssigned && x.isEnrolled).length
+  const submittedEntities = entities.filter(
+    (x) => x.UTASTATUS === testActivityStatus.SUBMITTED
+  )
   const activeEntities = entities.filter(
     (x) =>
-      x.status === 'inProgress' ||
-      x.status === 'submitted' ||
-      x.status === 'graded'
+      x.UTASTATUS === testActivityStatus.START ||
+      x.UTASTATUS === testActivityStatus.SUBMITTED
   )
   let questionsOrder = {}
   if (entities.length > 0) {
@@ -782,11 +1132,23 @@ export const getAggregateByQuestion = (entities, studentId) => {
     )
   }
   const submittedNumber = submittedEntities.length
-  // TODO: handle absent
-  const absentNumber = 0
+  const absentNumber =
+    entities.filter((x) => x.UTASTATUS === testActivityStatus.ABSENT)?.length ||
+    0
   const scores = activeEntities
     .map(({ score, maxScore }) => score / maxScore)
     .reduce((prev, cur) => prev + cur, 0)
+
+  const scorePercentagePerStudent = activeEntities
+    .map(({ score, maxScore }) => (score / maxScore) * 100)
+    .sort((a, b) => a - b)
+  const numberOfActivities = scorePercentagePerStudent.length
+  const mid = Math.ceil(numberOfActivities / 2)
+  const median =
+    numberOfActivities % 2 === 0
+      ? (scorePercentagePerStudent[mid] + scorePercentagePerStudent[mid - 1]) /
+        2
+      : scorePercentagePerStudent[mid - 1]
   const submittedScoresAverage =
     activeEntities.length > 0 ? scores / activeEntities.length : 0
   // const startedEntities = entities.filter(x => x.status !== "notStarted");
@@ -802,6 +1164,7 @@ export const getAggregateByQuestion = (entities, studentId) => {
     avgScore: submittedScoresAverage,
     questionsOrder,
     itemsSummary,
+    median: round(median, 2) || 0,
   }
   return result
 }
@@ -847,15 +1210,36 @@ export const getAllStudentsList = createSelector(
   (state) => get(state, 'data.students', [])
 )
 
+export const getAdditionalDataSelector = createSelector(
+  stateTestActivitySelector,
+  (state) => state.additionalData
+)
+
+export const getCurrentClassIdSelector = createSelector(
+  getAdditionalDataSelector,
+  (state) => get(state, 'classId', '')
+)
+
+export const getRedirectedDatesSelector = createSelector(
+  getAdditionalDataSelector,
+  (state) => get(state, 'redirectedDates', {})
+)
+
 export const getTestActivitySelector = createSelector(
   getAllActivities,
   getEnrollmentStatus,
   getIsShowAllStudents,
-  (entities, enrollments, showAll) =>
+  getRedirectedDatesSelector,
+  getCurrentClassIdSelector,
+  (entities, enrollments, showAll, redirectedDates, classId) =>
     entities
       .map((item) => ({
         ...item,
         enrollmentStatus: enrollments[item.studentId],
+        redirectedDate:
+          redirectedDates[`student_${item.studentId}`] ||
+          redirectedDates[`class_${classId}`] ||
+          null,
       }))
       .filter((item) => (item.isAssigned && item.isEnrolled) || showAll)
 )
@@ -878,6 +1262,25 @@ export const getActiveAssignedStudents = createSelector(
       (stud) =>
         !removedStudents.includes(stud._id) && enrollments[stud._id] == 1
     )
+)
+
+export const getFirstQuestionEntitiesSelector = createSelector(
+  getTestActivitySelector,
+  getTestItemsData,
+  (uta, itemsData) => {
+    const itemsKeyed = keyBy(itemsData, '_id')
+    const uqa = get(uta, [0, 'questionActivities'], [])
+    const result = uqa.filter((_uqa) => {
+      const { testItemId } = _uqa
+      const item = itemsKeyed[testItemId]
+      if (!item) return false
+      if (item.itemLevelScoring) {
+        delete itemsKeyed[testItemId]
+      }
+      return true
+    })
+    return result
+  }
 )
 
 export const getTestQuestionActivitiesSelector = createSelector(
@@ -932,22 +1335,27 @@ export const getGradeBookSelector = createSelector(
 
 export const notStartedStudentsSelector = createSelector(
   getTestActivitySelector,
-  (state) => state.filter((x) => x.status === 'notStarted')
+  (state) =>
+    state.filter(
+      (x) =>
+        x.UTASTATUS === testActivityStatus.NOT_STARTED &&
+        x.isAssigned &&
+        x.isEnrolled
+    )
 )
 
 export const inProgressStudentsSelector = createSelector(
   getTestActivitySelector,
-  (state) => state.filter((x) => x.status === 'inProgress')
-)
-
-export const getAdditionalDataSelector = createSelector(
-  stateTestActivitySelector,
-  (state) => state.additionalData
+  (state) =>
+    state.filter(
+      (x) =>
+        x.UTASTATUS === testActivityStatus.START && x.isAssigned && x.isEnrolled
+    )
 )
 
 export const testNameSelector = createSelector(
   stateTestActivitySelector,
-  (state) => state.additionalData.testName
+  (state) => state.additionalData?.testName
 )
 
 export const getCanMarkAssignmentSelector = createSelector(
@@ -958,11 +1366,6 @@ export const getCanMarkAssignmentSelector = createSelector(
 export const getClassesCanBeMarkedSelector = createSelector(
   getAdditionalDataSelector,
   (state) => get(state, 'classesCanBeMarked', [])
-)
-
-export const getCurrentClassIdSelector = createSelector(
-  getAdditionalDataSelector,
-  (state) => get(state, 'classId', '')
 )
 
 export const getMarkAsDoneEnableSelector = createSelector(
@@ -1040,14 +1443,23 @@ export const getAssignedBySelector = createSelector(
   (state) => get(state, 'assignedBy', {})
 )
 
+export const getTestAuthorsSelector = createSelector(
+  getAdditionalDataSelector,
+  (state) => get(state, 'testAuthors', [])
+)
+
 export const isItemVisibiltySelector = createSelector(
   stateTestActivitySelector,
   getAdditionalDataSelector,
   getUserId,
   getAssignedBySelector,
-  (state, additionalData, userId, assignedBy) => {
+  getUserRole,
+  (state, additionalData, userId, assignedBy, role) => {
     const assignmentStatus = state?.data?.status
     const contentVisibility = additionalData?.testContentVisibility
+    if (role === roleuser.DISTRICT_ADMIN || role === roleuser.SCHOOL_ADMIN) {
+      return true
+    }
     // For assigned by user content will be always visible.
     if (userId === assignedBy?._id) {
       return true
@@ -1078,6 +1490,27 @@ export const getPasswordPolicySelector = createSelector(
 export const testActivtyLoadingSelector = createSelector(
   stateTestActivitySelector,
   (state) => state.loading
+)
+
+export const actionInProgressSelector = createSelector(
+  stateTestActivitySelector,
+  (state) => state.actionInProgress
+)
+
+export const addedStudentsSelector = createSelector(
+  stateTestActivitySelector,
+  (state) => state.addedStudents
+)
+
+export const disabledAddStudentsList = createSelector(
+  getTestActivitySelector,
+  addedStudentsSelector,
+  (testActivities, addedStudents) => {
+    const existingStudents = testActivities
+      .filter((item) => item.isAssigned && item.enrollmentStatus === 1)
+      .map((item) => item.studentId)
+    return [...existingStudents, ...addedStudents]
+  }
 )
 
 export const showPasswordButonSelector = createSelector(
@@ -1136,6 +1569,11 @@ export const showScoreSelector = createSelector(
   (state) => state.showScore
 )
 
+export const getmultiLanguageEnabled = createSelector(
+  stateClassResponseSelector,
+  (state) => state.data?.multiLanguageEnabled
+)
+
 export const getStudentResponseSelector = createSelector(
   stateStudentResponseSelector,
   (state) => state.data
@@ -1151,6 +1589,11 @@ export const getClassStudentResponseSelector = createSelector(
   (state) => state.data
 )
 
+export const getPrintViewLoadingSelector = createSelector(
+  stateClassStudentResponseSelector,
+  (state) => state.printPreviewLoading
+)
+
 export const getFeedbackResponseSelector = createSelector(
   stateFeedbackResponseSelector,
   (state) => state.data
@@ -1158,7 +1601,7 @@ export const getFeedbackResponseSelector = createSelector(
 
 export const getStudentQuestionSelector = createSelector(
   stateStudentAnswerSelector,
-  stateExpressGraderAnswerSelector,
+  getAnswerByQidSelector,
   (state, egAnswers) => {
     if (!isEmpty(state.data)) {
       const data = Array.isArray(state.data) ? state.data : [state.data]
@@ -1194,7 +1637,7 @@ export const getDynamicVariablesSetIdForViewResponse = (state, studentId) => {
 export const getQIdsSelector = createSelector(
   stateTestActivitySelector,
   (state) => {
-    const testItemsData = get(state, 'data.test.testItems', [])
+    const testItemsData = get(state, 'data.testItemsData', [])
     if (testItemsData.length === 0) {
       return []
     }
@@ -1206,7 +1649,7 @@ export const getQIdsSelector = createSelector(
 export const getQLabelsSelector = createSelector(
   stateTestActivitySelector,
   (state) => {
-    const testItemsData = get(state, 'data.test.testItems', [])
+    const testItemsData = get(state, 'data.testItemsData', [])
     return getQuestionLabels(testItemsData)
   }
 )
@@ -1237,6 +1680,37 @@ export const getShowRefreshMessage = createSelector(
     }
     if (assignedBy.role !== roleuser.TEACHER) {
       return bulkAssignedCountProcessed > bulkAssignedCount
+    }
+    return false
+  }
+)
+
+export const getShowCorrectItemButton = createSelector(
+  getAssignedBySelector,
+  getUserRole,
+  getIsDocBasedTestSelector,
+  getClassResponseSelector,
+  getUserIdSelector,
+  getTestAuthorsSelector,
+  (assignedBy, userRole, isDocBased, _test, userId, testAuthors) => {
+    const assignedRole = assignedBy.role
+    if (!assignedRole || assignedRole === roleuser.STUDENT || isDocBased) {
+      return false
+    }
+    if (_test.freezeSettings) {
+      return testAuthors.some((author) => author._id === userId)
+    }
+    if (assignedRole === roleuser.TEACHER) {
+      return true
+    }
+    if (
+      assignedRole === roleuser.DISTRICT_ADMIN ||
+      assignedRole === roleuser.SCHOOL_ADMIN
+    ) {
+      return (
+        userRole === roleuser.DISTRICT_ADMIN ||
+        userRole === roleuser.SCHOOL_ADMIN
+      )
     }
     return false
   }

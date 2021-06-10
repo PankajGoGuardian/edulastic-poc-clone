@@ -12,6 +12,10 @@ import {
   mediumDesktopExactWidth,
 } from '@edulastic/colors'
 import { IconBookmark } from '@edulastic/icons'
+import {
+  test as testConstants,
+  keyboard as keyboardConst,
+} from '@edulastic/constants'
 import { Tooltip } from '../../../../common/utils/helpers'
 import {
   Header,
@@ -35,6 +39,8 @@ import {
   Container,
 } from './styled'
 import { themes } from '../../../../theme'
+import { setSettingsModalVisibilityAction } from '../../../../student/Sidebar/ducks'
+import SettingsModal from '../../../../student/sharedComponents/SettingsModal'
 
 const {
   playerSkin: { parcc },
@@ -74,6 +80,10 @@ const PlayerHeader = ({
   timedAssignment,
   utaId,
   groupId,
+  hidePause,
+  blockNavigationToAnsweredQuestions = false,
+  setSettingsModalVisibility,
+  testType,
 }) => {
   const totalQuestions = options.length
   const totalBookmarks = bookmarks.filter((b) => b).length
@@ -88,10 +98,15 @@ const PlayerHeader = ({
   }
   const isFirst = () => (isDocbased ? true : currentItem === 0)
   const onSettingsChange = (e) => {
-    if (e.key === 'save') {
-      finishTest()
-    } else if (e.key === 'enableMagnifier') {
-      handleMagnifier()
+    switch (e.key) {
+      case 'save':
+        return finishTest()
+      case 'enableMagnifier':
+        return handleMagnifier()
+      case 'testOptions':
+        return setSettingsModalVisibility(true)
+      default:
+        break
     }
   }
 
@@ -104,6 +119,7 @@ const PlayerHeader = ({
 
   return (
     <FlexContainer>
+      {testType === testConstants.type.PRACTICE && <SettingsModal />}
       <Header
         ref={headerRef}
         style={{
@@ -121,16 +137,32 @@ const PlayerHeader = ({
                 <MainActionWrapper>
                   <Tooltip
                     placement="top"
-                    title="Previous"
+                    title={
+                      blockNavigationToAnsweredQuestions
+                        ? 'This assignment is restricted from navigating back to the previous question.'
+                        : 'Previous'
+                    }
                     overlayStyle={overlayStyle}
                   >
                     <ControlBtn
                       data-cy="prev"
                       icon="left"
-                      disabled={isFirst()}
+                      disabled={isFirst() || blockNavigationToAnsweredQuestions}
                       onClick={(e) => {
                         moveToPrev()
                         e.target.blur()
+                      }}
+                      // added separate keydown event handler to restrict calling on blur event for keyboard event
+                      onKeyDown={(e) => {
+                        const code = e.which || e.keyCode
+                        if (code !== keyboardConst.TAB_KEY) e.preventDefault()
+                        if (
+                          [
+                            keyboardConst.ENTER_KEY,
+                            keyboardConst.SPACE_KEY,
+                          ].includes(code)
+                        )
+                          moveToPrev()
                       }}
                     />
                   </Tooltip>
@@ -146,6 +178,18 @@ const PlayerHeader = ({
                         moveToNext()
                         e.target.blur()
                       }}
+                      // added separate keydown event handler to restrict calling on blur event for keyboard event
+                      onKeyDown={(e) => {
+                        const code = e.which || e.keyCode
+                        if (code !== keyboardConst.TAB_KEY) e.preventDefault()
+                        if (
+                          [
+                            keyboardConst.ENTER_KEY,
+                            keyboardConst.SPACE_KEY,
+                          ].includes(code)
+                        )
+                          moveToNext()
+                      }}
                       style={{ marginLeft: '5px' }}
                     />
                   </Tooltip>
@@ -159,18 +203,23 @@ const PlayerHeader = ({
                         gotoQuestion={gotoQuestion}
                         skipped={skipped}
                         bookmarks={bookmarks}
-                      />
-                      <StyledButton
-                        onClick={
-                          defaultAP
-                            ? toggleBookmark
-                            : () => toggleBookmark(items[currentItem]?._id)
+                        blockNavigationToAnsweredQuestions={
+                          blockNavigationToAnsweredQuestions
                         }
-                        active={isBookmarked}
-                      >
-                        <StyledIconBookmark />
-                        <span>{t('common.test.bookmark')}</span>
-                      </StyledButton>
+                      />
+                      {!blockNavigationToAnsweredQuestions && (
+                        <StyledButton
+                          onClick={
+                            defaultAP
+                              ? toggleBookmark
+                              : () => toggleBookmark(items[currentItem]?._id)
+                          }
+                          active={isBookmarked}
+                        >
+                          <StyledIconBookmark />
+                          <span>{t('common.test.bookmark')}</span>
+                        </StyledButton>
+                      )}
                     </Container>
                   )}
                 </MainActionWrapper>
@@ -185,7 +234,6 @@ const PlayerHeader = ({
                   isDocbased={isDocbased}
                   toggleUserWorkUploadModal={toggleUserWorkUploadModal}
                   timedAssignment={timedAssignment}
-                  utaId={utaId}
                   groupId={groupId}
                 />
               </FlexContainer>
@@ -195,6 +243,7 @@ const PlayerHeader = ({
                   utaId={utaId}
                   showMagnifier={isDocbased ? false : showMagnifier}
                   enableMagnifier={enableMagnifier}
+                  hidePause={hidePause}
                 />
               </FlexContainer>
             </HeaderWrapper>
@@ -222,8 +271,11 @@ const enhance = compose(
     (state) => ({
       settings: state.test.settings,
       timedAssignment: state.test?.settings?.timedAssignment,
+      testType: state.test?.settings?.testType,
     }),
-    null
+    {
+      setSettingsModalVisibility: setSettingsModalVisibilityAction,
+    }
   )
 )
 

@@ -41,7 +41,7 @@ const siderMenuData = [
   },
   {
     icon: 'team',
-    label: 'Classlink Search',
+    label: 'Edlink Setup',
     href: '/admin/search/classlink',
   },
   {
@@ -84,6 +84,7 @@ const SideMenu = ({
 }) => {
   const [isVisible, toggleIsVisible] = useState(false)
   const [showModal, toggleShowModal] = useState(false)
+  const [isExpandedOnHover, setIsExpandedOnHover] = useState(false)
 
   const userName = `${firstName} ${middleName ? `${middleName} ` : ``} ${
     lastName || ``
@@ -175,9 +176,26 @@ const SideMenu = ({
         className="main-menu"
         defaultSelectedKeys={[location.pathname]}
         mode="inline"
+        onMouseEnter={
+          isCollapsed && !isExpandedOnHover
+            ? () => {
+                toggleState((val) => !val)
+                setIsExpandedOnHover(true)
+              }
+            : null
+        }
+        onMouseLeave={
+          !isCollapsed && isExpandedOnHover
+            ? () => {
+                toggleState((val) => !val)
+                setIsExpandedOnHover(false)
+              }
+            : null
+        }
       >
         {siderMenuData.map((item) => (
           <Menu.Item
+            data-cy={item.label}
             onClick={() => {
               toggleState(false)
               if (item.href) {

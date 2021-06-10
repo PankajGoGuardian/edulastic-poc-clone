@@ -1,15 +1,51 @@
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useRef, useState, useEffect, useMemo } from 'react'
 import PropTypes from 'prop-types'
+import { isEmpty } from 'lodash'
+import { connect } from 'react-redux'
+
 import { math } from '@edulastic/constants'
-import { MathKeyboard, reformatMathInputLatex, offset } from '@edulastic/common'
-import { MathInputStyles, DraggableKeyboard, EmptyDiv } from './MathInputStyles'
+import { MathKeyboard, reformatMathInputLatex } from '@edulastic/common'
+
+import { MathInputStyles, EmptyDiv } from './MathInputStyles'
+import Draggable from './Draggable'
 
 import { WithResources } from '../../HOC/withResources'
-import AppConfig from '../../../../../app-config'
+import AppConfig from '../../../../../src/app-config'
+
+const sanitizeLatex = (v) => v.replace(/&amp;/g, '&')
+
+const getKeyboardPosition = (el, symbols) => {
+  const { top, left, height: inputH } = el.getBoundingClientRect()
+
+  // dynamic variable formula input does not pass keyboard type(styles)
+  // so in this case, need to use `basic` mode
+  // @see: https://snapwiz.atlassian.net/browse/EV-21988
+  const { width, height: keyboardH } = math.symbols.find(
+    (x) => x.value === (symbols[0] || 'basic')
+  ) || { width: 0, height: 0 }
+
+  // 8 is margin between math keyboard and math input
+  let x = left
+  let y = top + inputH + 4
+
+  const xdiff = window.innerWidth - left - width
+
+  if (xdiff < 0) {
+    x += xdiff
+  }
+
+  const ydiff = window.innerHeight - y - keyboardH
+  if (ydiff < 0) {
+    y = y - keyboardH - inputH - 8
+  }
+
+  return { x, y }
+}
+
+const getIndex = (el) => parseInt(el.id.replace('inner-', ''), 10)
 
 const StaticMath = ({
   style,
-  onBlur,
   onInput,
   onInnerFieldClick,
   symbols,
@@ -21,206 +57,177 @@ const StaticMath = ({
   alwaysShowKeyboard,
   noBorder,
 }) => {
-  const [mathField, setMathField] = useState(null)
-  const [currentInnerField, setCurrentInnerField] = useState(null)
-  const [showKeyboard, setShowKeyboard] = useState(false)
-  const [keyboardPosition, setKeyboardPosition] = useState({})
-
+  const [keyboardPosition, setKeyboardPosition] = useState(null)
   const containerRef = useRef(null)
+  const currentField = useRef(null)
   const mathFieldRef = useRef(null)
+  const mQuill = useRef(null)
 
-  const handleClick = (e) => {
-    if (
-      e.target.nodeName === 'svg' ||
-      e.target.nodeName === 'path' ||
-      (e.target.nodeName === 'LI' &&
-        e.target.attributes[0]?.nodeValue === 'option')
-    ) {
+  const handleClickOutside = useMemo(() => {
+    return (e) => {
+      if (
+        e.target.nodeName === 'svg' ||
+        e.target.nodeName === 'path' ||
+        (e.target.nodeName === 'LI' &&
+          e.target.attributes[0]?.nodeValue === 'option')
+      ) {
+        return
+      }
+      if (containerRef.current && !containerRef.current.contains(e.target)) {
+        setKeyboardPosition(null)
+        document.removeEventListener('click', handleClickOutside, false)
+      }
+    }
+  }, [])
+
+  const MathKeyboardWrapper = useMemo(
+    () => (alwaysShowKeyboard ? EmptyDiv : Draggable),
+    [alwaysShowKeyboard]
+  )
+
+  const MQ = useMemo(() => {
+    if (window.MathQuill) {
+      return window.MathQuill.getInterface(2)
+    }
+  }, [])
+
+  const handleSave = () => {
+    if (!mQuill.current) {
+      return []
+    }
+    const { innerFields = [] } = mQuill.current
+    const newValues = innerFields.map((field) =>
+      reformatMathInputLatex(field.latex())
+    )
+    onInput(newValues)
+  }
+
+  const handleFocusInner = (innerField) => {
+    const { innerFields = [] } = mQuill.current
+    innerFields.forEach((field) => {
+      // remove retaining cursors from other input fields
+      if (field.id !== innerField.id) {
+        field?.__controller?.cursor?.hide()?.parent?.blur()
+      }
+
+      // check current input field.
+      //  when there are more than two cursors,
+      // remove them except that last one.
+      const cursors = field?.el()?.querySelectorAll('.mq-cursor')
+      if (cursors.length > 1) {
+        cursors.forEach((cursor, index) => {
+          if (index < cursors.length - 1) {
+            cursor.remove()
+          }
+        })
+      }
+    })
+    setKeyboardPosition(getKeyboardPosition(innerField.el(), symbols))
+    onInnerFieldClick(getIndex(innerField.el()))
+    currentField.current = innerField
+    document.addEventListener('click', handleClickOutside, false)
+  }
+
+  const onInputKeyboard = (key, command = 'cmd') => {
+    if (!currentField.current) {
       return
     }
-    if (containerRef.current && !containerRef.current.contains(e.target)) {
-      setShowKeyboard(false)
+    if (key === 'in') {
+      currentField.current.write('in')
+    } else if (key === 'left_move') {
+      currentField.current.keystroke('Left')
+    } else if (key === 'right_move') {
+      currentField.current.keystroke('Right')
+    } else if (key === 'ln--') {
+      currentField.current.write('ln\\left(\\right)')
+    } else if (key === 'leftright3') {
+      currentField.current.write('\\sqrt[3]{}')
+    } else if (key === 'Backspace') {
+      currentField.current.keystroke('Backspace')
+    } else if (key === 'leftright2') {
+      currentField.current.write('^2')
+    } else if (key === 'down_move') {
+      currentField.current.keystroke('Down')
+    } else if (key === 'up_move') {
+      currentField.current.keystroke('Up')
+    } else {
+      currentField.current[command](key)
+    }
+    currentField.current.focus()
+    handleSave()
+  }
+
+  const goTo = (innerFieldIdx) => {
+    if (!mQuill.current) {
+      return
+    }
+    const { innerFields = [] } = mQuill.current
+    const nextField = innerFields[innerFieldIdx]
+    if (nextField) {
+      nextField.focus().el().click()
+      onInnerFieldClick(getIndex(nextField.el()))
     }
   }
 
-  const setInnerFieldsFocuses = () => {
-    if (!mathField || !mathField.innerFields || !mathField.innerFields.length) {
+  const setInnerFields = () => {
+    if (!mQuill.current) {
       return
     }
+    mQuill.current.latex(sanitizeLatex(latex))
+    const { innerFields = [] } = mQuill.current
 
-    if (!window.MathQuill) return
-    const MQ = window.MathQuill.getInterface(2)
-
-    const goTo = (fieldIndex) => {
-      const nextField = mathField.innerFields[fieldIndex]
-      if (nextField) {
-        nextField.focus().el().click()
-        onInnerFieldClick(nextField)
-      }
-    }
-
-    mathField.innerFields.forEach((field) => {
-      const getIndex = (id) => parseInt(id.replace('inner-', ''), 10)
+    innerFields.forEach((field, indx) => {
+      // TODO: use uuid instead of index ?
+      field.el().id = `inner-${indx}`
+      field.el().addEventListener('click', () => {
+        handleFocusInner(field)
+      })
+      field.el().addEventListener('keyup', handleSave)
 
       field.config({
         handlers: {
           upOutOf(pInnerField) {
-            goTo(getIndex(pInnerField.el().id) - 1)
+            goTo(getIndex(pInnerField.el()) - 1)
           },
           downOutOf(pInnerField) {
-            goTo(getIndex(pInnerField.el().id) + 1)
+            goTo(getIndex(pInnerField.el()) + 1)
           },
           moveOutOf: (dir, pInnerField) => {
             if (dir === MQ.L) {
-              goTo(getIndex(pInnerField.el().id) - 1)
+              goTo(getIndex(pInnerField.el()) - 1)
             } else if (dir === MQ.R) {
-              goTo(getIndex(pInnerField.el().id) + 1)
+              goTo(getIndex(pInnerField.el()) + 1)
             }
           },
         },
       })
+
+      field.write('')
+
+      if (innerValues && innerValues[indx]) {
+        field.write(innerValues[indx])
+      }
     })
   }
 
-  const getLatex = () => {
-    if (!mathField) return
-    return reformatMathInputLatex(mathField.latex())
-  }
-
-  const getKeyboardPosition = (el) => {
-    const { top, left, height: inputH } = offset(el) || { left: 0, top: 0 }
-    const { width, height: keyboardH } = math.symbols.find(
-      (x) => x.value === symbols[0]
-    ) || { width: 0, height: 0 }
-
-    let x = window.innerWidth - left - width
-    if (x > 0) {
-      x = 0
-    }
-
-    let y = window.innerHeight - top - (keyboardH - 50) - inputH
-    if (y < 0) {
-      // 8 is margin between math keyboard and math input
-      y = -(keyboardH - 50) - 8
-    } else {
-      y = inputH + 8
-    }
-
-    return { x, y }
-  }
-
-  const onFocus = (newInnerField) => {
-    setKeyboardPosition(getKeyboardPosition(newInnerField.el()))
-    setCurrentInnerField(newInnerField)
-    onInnerFieldClick(newInnerField)
-    setShowKeyboard(true)
-  }
-
-  const onKeyboardClose = () => {
-    setShowKeyboard(false)
-  }
-
-  const sanitizeLatex = (v) => v.replace(/&amp;/g, '&')
-
-  const setLatex = (newLatex) => {
-    if (!mathField) return
-    mathField.latex(sanitizeLatex(newLatex))
-
-    for (let i = 0; i < mathField.innerFields.length; i++) {
-      mathField.innerFields[i].el().id = `inner-${i}`
-      mathField.innerFields[i].el().addEventListener('click', () => {
-        onFocus(mathField.innerFields[i])
-      })
-      mathField.innerFields[i].el().addEventListener('keyup', () => {
-        onInput(getLatex())
-      })
-    }
-
-    setInnerFieldsFocuses()
-  }
-
-  const setInnerFieldValues = (values) => {
-    if (!mathField || !mathField.innerFields) return
-    for (let i = 0; i < mathField.innerFields.length; i++) {
-      if (!mathField.innerFields[i]) continue
-      mathField.innerFields[i].latex('')
-      if (!values[i]) continue
-      mathField.innerFields[i].write(values[i])
-    }
-  }
-
-  const onInputKeyboard = (key, command = 'cmd') => {
-    if (!currentInnerField) return
-    if (key === 'in') {
-      currentInnerField.write('in')
-    } else if (key === 'left_move') {
-      currentInnerField.keystroke('Left')
-    } else if (key === 'right_move') {
-      currentInnerField.keystroke('Right')
-    } else if (key === 'ln--') {
-      currentInnerField.write('ln\\left(\\right)')
-    } else if (key === 'leftright3') {
-      currentInnerField.write('\\sqrt[3]{}')
-    } else if (key === 'Backspace') {
-      currentInnerField.keystroke('Backspace')
-    } else if (key === 'leftright2') {
-      currentInnerField.write('^2')
-    } else if (key === 'down_move') {
-      currentInnerField.keystroke('Down')
-    } else if (key === 'up_move') {
-      currentInnerField.keystroke('Up')
-    } else {
-      currentInnerField[command](key)
-    }
-    currentInnerField.focus()
-
-    onInput(getLatex())
-  }
-
-  const onBlurInput = () => {
-    if (onBlur) {
-      onBlur(getLatex())
-    }
-  }
-
   useEffect(() => {
-    document.addEventListener('click', handleClick, false)
-
-    return function cleanup() {
-      document.removeEventListener('click', handleClick, false)
-    }
-  })
-
-  useEffect(() => {
-    if (!window.MathQuill) return
-    const MQ = window.MathQuill.getInterface(2)
-    if (mathFieldRef.current) {
+    if (mathFieldRef.current && !mQuill.current && MQ) {
       try {
-        setMathField(MQ.StaticMath(mathFieldRef.current))
+        mQuill.current = MQ.StaticMath(mathFieldRef.current)
         // eslint-disable-next-line no-empty
       } catch (e) {}
-      setLatex(latex)
-      setTimeout(() => {
-        setInnerFieldValues(innerValues)
-      })
     }
   }, [mathFieldRef.current])
 
   useEffect(() => {
-    setLatex(latex)
-    setInnerFieldValues(innerValues)
+    setInnerFields()
   }, [latex])
 
   useEffect(() => {
-    // if userAnswer is cleared, innervalues becomes an empty Array,
-    // in which case restore the latex to default
-    if (innerValues.length === 0) setLatex(latex)
-    // TODO: there is a lot of redundant code in these math components, which should be removed.
-    // but since it impacts multiple question types, needs rigorous testing before doing the same.
-    setInnerFieldValues(innerValues)
+    if (isEmpty(innerValues)) {
+      setInnerFields()
+    }
   }, [innerValues])
-
-  const MathKeyboardWrapper = alwaysShowKeyboard ? EmptyDiv : DraggableKeyboard
 
   return (
     <MathInputStyles
@@ -230,7 +237,7 @@ const StaticMath = ({
       minWidth={style.width}
       minHeight={style.height}
     >
-      <div className="input" onBlur={onBlurInput}>
+      <div className="input">
         <div className="input__math" data-cy="answer-math-input-style">
           <span
             className="input__math__field"
@@ -238,10 +245,10 @@ const StaticMath = ({
             data-cy="answer-math-input-field"
           />
         </div>
-        {(showKeyboard || alwaysShowKeyboard) && (
+        {(!isEmpty(keyboardPosition) || alwaysShowKeyboard) && (
           <MathKeyboardWrapper
             className="input__keyboard"
-            default={keyboardPosition}
+            position={keyboardPosition}
           >
             <MathKeyboard
               symbols={symbols}
@@ -249,7 +256,6 @@ const StaticMath = ({
               restrictKeys={restrictKeys}
               customKeys={customKeys}
               showResponse={false}
-              onClose={onKeyboardClose}
               onInput={onInputKeyboard}
             />
           </MathKeyboardWrapper>
@@ -261,7 +267,6 @@ const StaticMath = ({
 
 StaticMath.propTypes = {
   style: PropTypes.object,
-  onBlur: PropTypes.func,
   onInput: PropTypes.func.isRequired,
   onInnerFieldClick: PropTypes.func,
   symbols: PropTypes.array.isRequired,
@@ -279,7 +284,6 @@ StaticMath.defaultProps = {
   restrictKeys: [],
   innerValues: [],
   onInnerFieldClick: () => {},
-  onBlur: () => {},
   alwaysShowKeyboard: false,
 }
 
@@ -296,4 +300,6 @@ const StaticMathWithResources = (props) => (
   </WithResources>
 )
 
-export default StaticMathWithResources
+export default connect((state) => ({
+  customKeypads: state.customKeypad.keypads,
+}))(StaticMathWithResources)

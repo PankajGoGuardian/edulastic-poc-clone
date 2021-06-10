@@ -1,23 +1,36 @@
 import { createAction, createReducer, createSelector } from 'redux-starter-kit'
-import { get, pick } from 'lodash'
-import { notification } from '@edulastic/common'
+import { get, isEmpty, pick } from 'lodash'
+import notification from '@edulastic/common/src/components/Notification'
 import mqtt from 'mqtt'
 import produce from 'immer'
 import { push } from 'connected-react-router'
 import { takeLatest, call, put, select } from 'redux-saga/effects'
+// import {
+//   schoolApi,
+//   userApi,
+//   settingsApi,
+//   TokenStorage,
+//   canvasApi,
+//   realtimeApi,
+// } from '@edulastic/api'
+import schoolApi from '@edulastic/api/src/school'
+import userApi from '@edulastic/api/src/user'
+import settingsApi from '@edulastic/api/src/settings'
+import canvasApi from '@edulastic/api/src/canvas'
+import realtimeApi from '@edulastic/api/src/realtime'
+import * as TokenStorage from '@edulastic/api/src/utils/Storage'
+import { signUpState } from '@edulastic/constants'
 import {
-  schoolApi,
-  userApi,
-  settingsApi,
-  TokenStorage,
-  canvasApi,
-  realtimeApi,
-} from '@edulastic/api'
-import { signupSuccessAction } from '../Login/ducks'
+  persistAuthStateAndRedirectToAction,
+  signupSuccessAction,
+  hideJoinSchoolAction,
+} from '../Login/ducks'
 import { getUser } from '../../author/src/selectors/user'
 
 import { userPickFields } from '../../common/utils/static/user'
 import { updateInitSearchStateAction } from '../../author/TestPage/components/AddItems/ducks'
+import { fetchDashboardTiles } from '../../author/Dashboard/ducks'
+import { slice as subscriptionSlice } from '../../author/Subscription/ducks'
 
 // Types
 const SEARCH_SCHOOL_REQUEST = '[signup] search school request'
@@ -44,6 +57,8 @@ const JOIN_SCHOOL_FAILED = '[signup] update with school failed'
 
 const SAVE_SUBJECTGRADE_REQUEST = '[signup] save with subject and grade request'
 const SAVE_SUBJECTGRADE_FAILED = '[signup] save with subject and grade failed'
+const SAVE_SUBJECTGRADE_RESET =
+  '[signup] save with subject and grade reset state'
 
 const CREATE_AND_JOIN_SCHOOL_REQUEST = '[signup] create and join school request'
 const CREATE_AND_JOIN_SCHOOL_JOIN_REQUEST =
@@ -70,6 +85,7 @@ const SET_PREVIOUS_AUTO_SUGGEST_SCHOOLS =
 
 const BULK_SYNC_CANVAS_CLASS = '[signup] bulk sync canvas class'
 const SET_BULK_SYNC_CANVAS_STATUS = '[signup] set bulk sync canvas status'
+const UPDATE_USER_SIGNUP_STATE = '[user] update user signup state'
 
 // Selectors
 export const saveSubjectGradeloadingSelector = createSelector(
@@ -153,6 +169,10 @@ export const setBulkSyncCanvasStateAction = createAction(
   SET_BULK_SYNC_CANVAS_STATUS
 )
 export const joinSchoolFailedAction = createAction(JOIN_SCHOOL_FAILED)
+
+export const updateUserSignupStateAction = createAction(
+  UPDATE_USER_SIGNUP_STATE
+)
 
 // Reducers
 const initialState = {
@@ -281,6 +301,9 @@ export default createReducer(initialState, {
     state.saveSubjectGradeloading = true
   },
   [SAVE_SUBJECTGRADE_FAILED]: (state) => {
+    state.saveSubjectGradeloading = false
+  },
+  [SAVE_SUBJECTGRADE_RESET]: (state) => {
     state.saveSubjectGradeloading = false
   },
   [JOIN_SCHOOL_REQUEST]: (state) => {
@@ -421,6 +444,10 @@ function* createAndJoinSchoolSaga({ payload = {} }) {
       }
       const user = pick(_result, userPickFields)
       yield put(signupSuccessAction(user))
+      window.localStorage.setItem('author:dashboard:version', 0)
+      yield put(hideJoinSchoolAction())
+      yield put(fetchDashboardTiles())
+      yield put(subscriptionSlice.actions.fetchUserSubscriptionStatus())
     }
   } catch (err) {
     console.log('_err', err)
@@ -440,6 +467,10 @@ function* joinSchoolSaga({ payload = {} }) {
     }
     const user = pick(result, userPickFields)
     yield put(signupSuccessAction(user))
+    window.localStorage.setItem('author:dashboard:version', 0)
+    yield put(hideJoinSchoolAction())
+    yield put(fetchDashboardTiles())
+    yield put(subscriptionSlice.actions.fetchUserSubscriptionStatus())
   } catch (err) {
     yield put({
       type: JOIN_SCHOOL_FAILED,
@@ -449,8 +480,44 @@ function* joinSchoolSaga({ payload = {} }) {
   }
 }
 
+function* updateUserSignupStateSaga() {
+  try {
+    const user = yield select(getUser)
+    if (
+      !isEmpty(user.orgData.districtIds) &&
+      !isEmpty(user.orgData.defaultGrades) &&
+      !isEmpty(user.orgData.defaultSubjects)
+    ) {
+      const data = {
+        email: user.email,
+        districtId: user.orgData.districtIds[0],
+        currentSignUpState: 'DONE',
+        institutionIds: user.orgData.institutionIds,
+      }
+      const _result = yield call(userApi.updateUser, {
+        data,
+        userId: user._id,
+      })
+      const finalUser = {
+        ..._result,
+        features: user.features,
+      }
+      // setting user in store to put updated currentSignupState in store
+      yield put(signupSuccessAction(finalUser))
+    }
+  } catch (err) {
+    console.log('_err', err)
+    notification({ messageKey: 'failedToUpdateUser' })
+  }
+}
+
 function* saveSubjectGradeSaga({ payload }) {
+  const isTestRecommendationCustomizer = payload?.isTestRecommendationCustomizer
+  const setShowTestCustomizerModal = payload?.setShowTestCustomizerModal
+  delete payload.isTestRecommendationCustomizer
+  delete payload.setShowTestCustomizerModal
   let isSaveSubjectGradeSuccessful = false
+  const initialUser = yield select(getUser)
   try {
     const result = yield call(settingsApi.saveInterestedStandards, payload) ||
       {}
@@ -461,7 +528,8 @@ function* saveSubjectGradeSaga({ payload }) {
         draft.orgData = {}
       }
       draft.orgData.interestedCurriculums = result ? result.curriculums : []
-      delete draft.currentSignUpState
+      draft.orgData.defaultSubjects = result?.defaultSubjects || []
+      draft.orgData.defaultGrades = result?.defaultGrades || []
       return draft
     })
     // setting user in store to put orgData in store
@@ -485,29 +553,30 @@ function* saveSubjectGradeSaga({ payload }) {
     }
   }
 
-  try {
-    if (isSaveSubjectGradeSuccessful) {
-      const user = yield select(getUser)
-      // this is meant for teacher flow to save grade subject
-      // so we can directly get districtId by districtIds[0]
-      const data = {
-        email: user.email,
-        districtId: user.orgData?.districtIds?.[0],
-        currentSignUpState: 'DONE',
-        institutionIds: user.orgData.institutionIds,
-      }
-      const _result = yield call(userApi.updateUser, { data, userId: user._id })
-      const finalUser = {
-        ..._result,
-        features: user.features,
-      }
-      // setting user in store to put updated currentSignupState in store
-      yield put(signupSuccessAction(finalUser))
+  if (isSaveSubjectGradeSuccessful) {
+    yield* updateUserSignupStateSaga()
+    notification({
+      msg: isTestRecommendationCustomizer
+        ? 'Update under process. We will notify shortly once done.'
+        : 'Sign up completed.',
+      type: 'success',
+    })
+    if (isTestRecommendationCustomizer) {
+      setShowTestCustomizerModal(false)
     }
-  } catch (err) {
-    console.log('_err', err)
-    notification({ messageKey: 'failedToUpdateUser' })
   }
+
+  if (!isTestRecommendationCustomizer) {
+    // If user has signUpState ACCESS_WITHOUT_SCHOOL, it means he is already accessing in-session app
+    if (initialUser.currentSignUpState !== signUpState.ACCESS_WITHOUT_SCHOOL) {
+      yield put(persistAuthStateAndRedirectToAction())
+    }
+  }
+
+  yield put({
+    type: SAVE_SUBJECTGRADE_RESET,
+    payload: {},
+  })
 }
 
 function* getOrgDetailsByShortNameAndOrgTypeSaga({ payload }) {
@@ -539,7 +608,6 @@ function* getOrgDetailsByShortNameAndOrgTypeSaga({ payload }) {
     yield put({
       type: GET_DISTRICT_BY_SHORT_NAME_AND_ORG_TYPE_FAILED,
     })
-    yield put(push('/login'))
   }
 }
 
@@ -642,4 +710,5 @@ export function* watcherSaga() {
   )
   yield takeLatest(FETCH_SCHOOL_TEACHERS_REQUEST, fetchSchoolTeachersSaga)
   yield takeLatest(BULK_SYNC_CANVAS_CLASS, bulkSyncCanvasClassSaga)
+  yield takeLatest(UPDATE_USER_SIGNUP_STATE, updateUserSignupStateSaga)
 }

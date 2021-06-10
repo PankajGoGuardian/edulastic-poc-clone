@@ -1,7 +1,7 @@
 const inject = (file_path, type = 'script', tag = 'html') => {
   const node = document.getElementsByTagName(tag)[0]
-  const tagType = type == 'link' ? 'link' : 'script'
-  const script = document.createElement(tagType)
+  const tag_type = type == 'link' ? 'link' : 'script'
+  const script = document.createElement(tag_type)
   if (type == 'script') {
     script.setAttribute('type', 'text/javascript')
   } else if (type == 'module') {
@@ -10,7 +10,9 @@ const inject = (file_path, type = 'script', tag = 'html') => {
     script.setAttribute('rel', 'stylesheet')
     script.setAttribute('media', 'screen')
   }
-  script.setAttribute(tagType == 'script' ? 'src' : 'href', file_path)
+
+  script.setAttribute(tag_type == 'script' ? 'src' : 'href', file_path)
+
   node.appendChild(script)
 }
 
@@ -58,11 +60,11 @@ const inject = (file_path, type = 'script', tag = 'html') => {
     document.body.prepend(app)
 
     // Inject script into page
-    console.log('111Injecting Contents....')
+    console.log('Injecting Contents....')
     inject(chrome.runtime.getURL('bundle.js'), 'script', 'html')
+    inject(chrome.runtime.getURL('0.bundle.js'), 'script', 'html')
     inject(chrome.runtime.getURL('1.bundle.js'), 'script', 'html')
     inject(chrome.runtime.getURL('2.bundle.js'), 'script', 'html')
-    inject(chrome.runtime.getURL('3.bundle.js'), 'script', 'html')
-    console.log('Injecting Contents Done....')
+    console.log('Injecting Content Done....')
   }
 })()

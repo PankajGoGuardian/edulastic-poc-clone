@@ -39,6 +39,15 @@ import {
   REGENERATE_PASSWORD,
   UPDATE_PASSWORD_DETAILS,
   CANVAS_SYNC_GRADES,
+  CANVAS_SYNC_ASSIGNMENT,
+  FETCH_SERVER_TIME,
+  PAUSE_STUDENTS,
+  UPDATE_PAUSE_STATUS_ACTION,
+  SET_UPDATED_ACTIVITY_IN_ENTITY,
+  CORRECT_ITEM_UPDATE_REQUEST,
+  RELOAD_LCB_DATA_IN_STUDENT_VIEW,
+  REPLACE_ORIGINAL_ITEM,
+  SET_CORRECT_ITEM_UPDATE_PROGRESS,
 } from '../constants/actions'
 
 export const receiveClassResponseAction = (data) => ({
@@ -70,9 +79,14 @@ export const receiveGradeBookdAction = (assignmentId, classId) => ({
   payload: { assignmentId, classId },
 })
 
-export const receiveTestActivitydAction = (assignmentId, classId) => ({
+export const receiveTestActivitydAction = (
+  assignmentId,
+  classId,
+  isQuestionsView = false,
+  studentResponseParams
+) => ({
   type: RECEIVE_TESTACTIVITY_REQUEST,
-  payload: { assignmentId, classId },
+  payload: { assignmentId, classId, isQuestionsView, studentResponseParams },
 })
 
 export const releaseScoreAction = (
@@ -91,10 +105,18 @@ export const receiveStudentQuestionAction = (
   classId,
   questionId,
   studentId,
-  testItemId
+  testItemId,
+  callItemLevel
 ) => ({
   type: RECEIVE_STUDENT_QUESTION_REQUEST,
-  payload: { assignmentId, classId, questionId, studentId, testItemId },
+  payload: {
+    assignmentId,
+    classId,
+    questionId,
+    studentId,
+    testItemId,
+    callItemLevel,
+  },
 })
 
 export const receiveAnswersAction = (
@@ -130,6 +152,16 @@ export const markAbsentAction = (assignmentId, classId, students) => ({
 export const markSubmittedAction = (assignmentId, classId, students) => ({
   type: MARK_AS_SUBMITTED,
   payload: { assignmentId, classId, students },
+})
+
+export const togglePauseStudentsAction = (
+  assignmentId,
+  classId,
+  students,
+  isPause
+) => ({
+  type: PAUSE_STUDENTS,
+  payload: { assignmentId, classId, students, isPause },
 })
 
 export const downloadGradesResponseAction = (
@@ -235,3 +267,23 @@ export const toggleViewPasswordAction = createAction(TOGGLE_VIEW_PASSWORD_MODAL)
 export const regeneratePasswordAction = createAction(REGENERATE_PASSWORD)
 export const updatePasswordDetailsAction = createAction(UPDATE_PASSWORD_DETAILS)
 export const canvasSyncGradesAction = createAction(CANVAS_SYNC_GRADES)
+export const canvasSyncAssignmentAction = createAction(CANVAS_SYNC_ASSIGNMENT)
+export const fetchServerTimeAction = createAction(FETCH_SERVER_TIME)
+export const updatePauseStatusAction = createAction(UPDATE_PAUSE_STATUS_ACTION)
+export const setUpdateActivityIdInEntityAction = createAction(
+  SET_UPDATED_ACTIVITY_IN_ENTITY
+)
+
+export const updateCorrectTestItemAction = createAction(
+  CORRECT_ITEM_UPDATE_REQUEST
+)
+
+export const reloadLcbDataInStudentViewAction = createAction(
+  RELOAD_LCB_DATA_IN_STUDENT_VIEW
+)
+
+export const replaceOriginalItemAction = createAction(REPLACE_ORIGINAL_ITEM)
+
+export const correctItemUpdateProgressAction = createAction(
+  SET_CORRECT_ITEM_UPDATE_PROGRESS
+)

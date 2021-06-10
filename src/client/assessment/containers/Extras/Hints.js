@@ -14,7 +14,6 @@ import withAddButton from '../../components/HOC/withAddButton'
 import { change, remove, add, sort } from './helpers'
 import { StyledRow } from './styled/StyledRow'
 import QuillSortableList from '../../components/QuillSortableList'
-import { Widget } from '../../styled/Widget'
 import { Subtitle } from '../../styled/Subtitle'
 import Question from '../../components/Question'
 
@@ -26,7 +25,6 @@ const Hints = ({
   setQuestionData,
   fillSections,
   cleanSections,
-  advancedAreOpen,
   visible,
 }) => {
   const prop = 'hints'
@@ -38,11 +36,10 @@ const Hints = ({
 
   return (
     <Question
-      section="advanced"
+      section="extras"
       label={t('component.options.hint')}
       fillSections={fillSections}
       cleanSections={cleanSections}
-      advancedAreOpen={advancedAreOpen}
       visible={visible}
     >
       <>
@@ -58,7 +55,8 @@ const Hints = ({
               onAdd={_add}
               onRemove={_remove}
               onChange={(index, value) =>
-                _change(`metadata.${prop}[${index}]`, value)}
+                _change(`metadata.${prop}[${index}]`, value)
+              }
             />
           </Col>
         </StyledRow>
@@ -73,14 +71,12 @@ Hints.propTypes = {
   item: PropTypes.object.isRequired,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
-  advancedAreOpen: PropTypes.bool,
   visible: PropTypes.bool,
 }
 
 Hints.defaultProps = {
   fillSections: () => {},
   cleanSections: () => {},
-  advancedAreOpen: false,
   visible: true,
 }
 

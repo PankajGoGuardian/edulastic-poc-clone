@@ -27,7 +27,12 @@ const DeleteModal = ({ visible, toggleModal, form }) => {
     <EduButton height="40px" isGhost onClick={() => toggleModal('NO')}>
       NO, CANCEL
     </EduButton>,
-    <EduButton height="40px" disabled={disableButton} onClick={handleResponse}>
+    <EduButton
+      data-cy="submitConfirm"
+      height="40px"
+      disabled={disableButton}
+      onClick={handleResponse}
+    >
       YES, DELETE
     </EduButton>,
   ]
@@ -68,7 +73,7 @@ const DeleteModal = ({ visible, toggleModal, form }) => {
                 validator: validateText,
               },
             ],
-          })(<TextInput type="text" />)}
+          })(<TextInput data-cy="confirmationInput" type="text" />)}
         </FormItem>
       </ModalBody>
     </ConfirmationModal>

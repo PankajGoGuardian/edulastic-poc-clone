@@ -1,21 +1,14 @@
 import { createAction, createReducer } from 'redux-starter-kit'
 import { takeLatest, call, put, all } from 'redux-saga/effects'
 import { createSelector } from 'reselect'
-import { get, isEmpty, omitBy } from 'lodash'
+import { get } from 'lodash'
 
 import { reportsApi } from '@edulastic/api'
 import { notification } from '@edulastic/common'
 
 import { RESET_ALL_REPORTS } from '../../../common/reportsRedux'
 
-const GET_REPORTS_STANDARDS_BROWSESTANDARDS_REQUEST =
-  '[reports] get reports standards browse standards request'
-const GET_REPORTS_STANDARDS_BROWSESTANDARDS_REQUEST_SUCCESS =
-  '[reports] get reports standards browse standards success'
-const GET_REPORTS_STANDARDS_BROWSESTANDARDS_REQUEST_ERROR =
-  '[reports] get reports standards browse standards error'
-const SET_REPORTS_PREV_STANDARDS_BROWSESTANDARDS =
-  '[reports] get reports prev standards browse standards'
+import staticDropDownData from './static/json/staticDropDownData.json'
 
 const GET_REPORTS_STANDARDS_FILTERS_REQUEST =
   '[reports] get reports standards filters request'
@@ -27,26 +20,21 @@ const SET_REPORTS_PREV_STANDARDS_FILTERS =
   '[reports] get reports prev standards filters'
 
 const SET_FILTERS = '[reports] set standards filters'
-const SET_TEST_ID = '[reports] set standards testId'
+const SET_TEMP_DD_FILTER = '[reports] set standards tempDdFilters'
+const SET_TEMP_TAGS_DATA = '[reports] set standards temp tempTagsData'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
-// export const getStandardsProcessRequestsAction = createAction(GET_REPORTS_STANDARDS_PROCESS_REQUESTS);
-export const getStandardsBrowseStandardsRequestAction = createAction(
-  GET_REPORTS_STANDARDS_BROWSESTANDARDS_REQUEST
-)
 export const getStandardsFiltersRequestAction = createAction(
   GET_REPORTS_STANDARDS_FILTERS_REQUEST
-)
-export const setPrevBrowseStandardsAction = createAction(
-  SET_REPORTS_PREV_STANDARDS_BROWSESTANDARDS
 )
 export const setPrevStandardsFiltersAction = createAction(
   SET_REPORTS_PREV_STANDARDS_FILTERS
 )
 
 export const setFiltersAction = createAction(SET_FILTERS)
-export const setTestIdAction = createAction(SET_TEST_ID)
+export const setTempDdFilterAction = createAction(SET_TEMP_DD_FILTER)
+export const setTempTagsDataAction = createAction(SET_TEMP_TAGS_DATA)
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
 
@@ -62,11 +50,6 @@ export const getReportsStandardsFiltersLoader = createSelector(
   (state) => state.loading || state.loadingStandards
 )
 
-export const getReportsStandardsBrowseStandards = createSelector(
-  stateSelector,
-  (state) => state.browseStandards
-)
-
 export const getReportsStandardsFilters = createSelector(
   stateSelector,
   (state) => state.standardsFilters
@@ -77,14 +60,14 @@ export const getFiltersSelector = createSelector(
   (state) => state.filters
 )
 
-export const getTestIdSelector = createSelector(
+export const getTempDdFilterSelector = createSelector(
   stateSelector,
-  (state) => state.testIds
+  (state) => state.tempDdFilter
 )
 
-export const getPrevBrowseStandardsSelector = createSelector(
+export const getTempTagsDataSelector = createSelector(
   stateSelector,
-  (state) => state.prevBrowseStandards
+  (state) => state.tempTagsData
 )
 
 export const getPrevStandardsFiltersSelector = createSelector(
@@ -92,13 +75,8 @@ export const getPrevStandardsFiltersSelector = createSelector(
   (state) => state.prevStandardsFilters
 )
 
-export const getSelectedStandardProficiency = createSelector(
-  getFiltersSelector,
-  getReportsStandardsFilters,
-  (filters, filtersData) => {
-    const scales = filtersData?.scaleInfo || []
-    return (scales.find((s) => s._id === filters.profileId) || scales[0])?.scale
-  }
+export const getSMRFilterDemographics = createSelector(stateSelector, (state) =>
+  get(state, 'standardsFilters.data.result.demographics', [])
 )
 
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
@@ -108,49 +86,19 @@ export const getSelectedStandardProficiency = createSelector(
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //
 
 const initialState = {
-  browseStandards: {},
   standardsFilters: {},
-  prevBrowseStandards: null,
   prevStandardsFilters: null,
   filters: {
-    termId: '',
-    subject: '',
-    grades: ['K'],
-    domainIds: ['All'],
-    profileId: '',
+    ...staticDropDownData.initialFilters,
   },
-  testIds: [],
+  tempDdFilter: {
+    ...staticDropDownData.initialDdFilters,
+  },
+  tempTagsData: {},
   loading: false,
-  loadingStandards: false,
-}
-
-const setFiltersReducer = (state, { payload }) => {
-  state.filters = { ...payload }
-}
-
-const setTestIdReducer = (state, { payload }) => {
-  state.testIds = payload
 }
 
 export const reportStandardsFilterDataReducer = createReducer(initialState, {
-  [GET_REPORTS_STANDARDS_BROWSESTANDARDS_REQUEST]: (state) => {
-    state.loadingStandards = true
-  },
-  [GET_REPORTS_STANDARDS_BROWSESTANDARDS_REQUEST_SUCCESS]: (
-    state,
-    { payload }
-  ) => {
-    state.loadingStandards = false
-    state.browseStandards = payload.browseStandards
-  },
-  [GET_REPORTS_STANDARDS_BROWSESTANDARDS_REQUEST_ERROR]: (
-    state,
-    { payload }
-  ) => {
-    state.loadingStandards = false
-    state.error = payload.error
-  },
-
   [GET_REPORTS_STANDARDS_FILTERS_REQUEST]: (state) => {
     state.loading = true
   },
@@ -162,17 +110,19 @@ export const reportStandardsFilterDataReducer = createReducer(initialState, {
     state.loading = false
     state.error = payload.error
   },
-  [SET_FILTERS]: setFiltersReducer,
-  [SET_TEST_ID]: setTestIdReducer,
-  [RESET_ALL_REPORTS]: (state) => {
-    state = initialState
-  },
-  [SET_REPORTS_PREV_STANDARDS_BROWSESTANDARDS]: (state, { payload }) => {
-    state.prevBrowseStandards = payload
-  },
   [SET_REPORTS_PREV_STANDARDS_FILTERS]: (state, { payload }) => {
     state.prevStandardsFilters = payload
   },
+  [SET_FILTERS]: (state, { payload }) => {
+    state.filters = { ...payload }
+  },
+  [SET_TEMP_DD_FILTER]: (state, { payload }) => {
+    state.tempDdFilter = payload
+  },
+  [SET_TEMP_TAGS_DATA]: (state, { payload }) => {
+    state.tempTagsData = { ...payload }
+  },
+  [RESET_ALL_REPORTS]: (state) => (state = initialState),
 })
 
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //
@@ -180,54 +130,15 @@ export const reportStandardsFilterDataReducer = createReducer(initialState, {
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
 
 // -----|-----|-----|-----| SAGAS BEGIN |-----|-----|-----|----- //
-
-function* getReportsStandardsBrowseStandardsRequest({ payload }) {
-  try {
-    const { curriculumId = false } = payload
-    if (
-      curriculumId &&
-      typeof curriculumId === 'string' &&
-      curriculumId.length
-    ) {
-      payload.curriculumId = parseInt(curriculumId)
-    }
-    const browseStandards = curriculumId
-      ? yield call(reportsApi.fetchStandardMasteryBrowseStandards, payload)
-      : { data: { result: [] } }
-    yield put({
-      type: GET_REPORTS_STANDARDS_BROWSESTANDARDS_REQUEST_SUCCESS,
-      payload: { browseStandards },
-    })
-  } catch (error) {
-    console.log('err', error.stack)
-    const msg = 'Failed to fetch standards Please try again...'
-    notification({ msg })
-    yield put({
-      type: GET_REPORTS_STANDARDS_BROWSESTANDARDS_REQUEST_ERROR,
-      payload: { error: msg },
-    })
-  }
-}
-
 function* getReportsStandardsFiltersRequest({ payload }) {
   try {
-    const { filters: filterData = {}, ...rest } = yield call(
+    const standardsFilters = yield call(
       reportsApi.fetchStandardMasteryFilter,
       payload
     )
-
-    // curate filters for standards mastery
-    const { profileId, subject, termId, grades } = filterData
-    const domainIds = get(filterData, 'domainIds', []).join(',')
-    const filters = omitBy(
-      { profileId, subject, termId, domainIds, grades },
-      isEmpty
-    )
-    const testIds = get(filterData, 'testIds')
-
     yield put({
       type: GET_REPORTS_STANDARDS_FILTERS_REQUEST_SUCCESS,
-      payload: { standardsFilters: { filters, testIds, ...rest } },
+      payload: { standardsFilters },
     })
   } catch (error) {
     console.log('err', error.stack)
@@ -242,10 +153,6 @@ function* getReportsStandardsFiltersRequest({ payload }) {
 
 export function* reportStandardsFilterSaga() {
   yield all([
-    yield takeLatest(
-      GET_REPORTS_STANDARDS_BROWSESTANDARDS_REQUEST,
-      getReportsStandardsBrowseStandardsRequest
-    ),
     yield takeLatest(
       GET_REPORTS_STANDARDS_FILTERS_REQUEST,
       getReportsStandardsFiltersRequest

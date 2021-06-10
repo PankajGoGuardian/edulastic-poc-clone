@@ -1,13 +1,14 @@
-import React, { Fragment, useEffect, useContext } from 'react'
+import React, { Fragment, useEffect, useContext, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
+import { isEmpty } from 'lodash'
 import { WithResources, AnswerContext } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'
 import { StyledPaperWrapper } from '../../styled/Widget'
-import AppConfig from '../../../../../app-config'
+import AppConfig from '../../../../app-config'
 import { replaceVariables } from '../../utils/variables'
 import Authoring from './Authoring'
 import Display from './Display'
@@ -99,8 +100,20 @@ const EditingTask = ({
     previewTab === CHECK || (expressGrader && !isAnswerModifiable)
   const isExpressGrader = expressGrader && previewTab === SHOW
 
+  const hasUserAnswer = useMemo(
+    () =>
+      responseIds?.some(
+        ({ id: responseId }) => !isEmpty(userAnswer[responseId])
+      ),
+    [responseIds, userAnswer]
+  )
   useEffect(() => {
     // Fix me: We might not require this for display type input
+    // don’t re-initialize user response when already exists
+    if (hasUserAnswer) {
+      return
+    }
+
     if (
       isPreview &&
       !isPrint &&

@@ -1,6 +1,7 @@
 import {
   extraDesktopWidthMax,
   mediumDesktopExactWidth,
+  themeColorBlue,
 } from '@edulastic/colors'
 import { questionType, test } from '@edulastic/constants'
 import {
@@ -19,7 +20,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { Tooltip } from '../../../common/utils/helpers'
 
-const { calculatorTypes, SHOW_USER_WORK } = test
+const { calculatorTypes } = test
 
 const ActionButton = ({ title, icon, ...rest }) => (
   <Tooltip placement="top" title={title}>
@@ -35,8 +36,14 @@ const ToolBar = ({
   enableMagnifier,
   toggleUserWorkUploadModal,
   changeTool,
+  hasDrawingResponse,
 }) => {
-  const { calcType, showMagnifier, showUserWork } = settings
+  const {
+    calcType,
+    showMagnifier,
+    enableScratchpad,
+    isTeacherPremium,
+  } = settings
   const isDisableCrossBtn = qType !== questionType.MULTIPLE_CHOICE
 
   const toolbarHandler = (value) => () => {
@@ -85,7 +92,8 @@ const ToolBar = ({
         onClick={toolbarHandler(4)}
         hidden
       />
-      {showUserWork === SHOW_USER_WORK.SCRATCHPAD && (
+
+      {enableScratchpad && !hasDrawingResponse && (
         <ActionButton
           title="Scratch Pad"
           icon={<ScratchPadIcon />}
@@ -101,9 +109,9 @@ const ToolBar = ({
           onClick={handleMagnifier}
         />
       )}
-      {showUserWork === SHOW_USER_WORK.UPLOAD && (
+      {isTeacherPremium && (
         <ActionButton
-          title="Camera"
+          title="Upload work"
           icon={<IconCloudUpload />}
           onClick={toggleUserWorkUploadModal}
         />
@@ -213,6 +221,11 @@ ${({ theme, active }) =>
   }
   @media (min-width: ${extraDesktopWidthMax}) {
     margin-right: 10px;
+  }
+
+  &:focus {
+    outline: 0;
+    box-shadow: 0 0 0 2px ${themeColorBlue};
   }
 `
 

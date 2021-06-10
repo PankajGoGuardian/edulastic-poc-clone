@@ -1,17 +1,19 @@
+import { defaultSymbols } from '@edulastic/constants'
 import React, { Fragment, PureComponent } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { cloneDeep, isEqual, sortBy } from 'lodash'
 import produce from 'immer'
 
-import { WithResources } from '@edulastic/common'
-import { greyThemeDark3, darkGrey2 } from '@edulastic/colors'
+import { WithResources, notification, EduButton } from '@edulastic/common'
+import { greyThemeDark3, darkGrey2, partialIconColor } from '@edulastic/colors'
 
 import {
   CHECK,
   CLEAR,
   EDIT,
   SHOW,
+  PREVIEW,
 } from '../../../../constants/constantsForQuestions'
 import {
   setElementsStashAction,
@@ -45,7 +47,7 @@ import Tools from '../../common/Tools'
 import GraphEditTools from '../../components/GraphEditTools'
 import DrawingObjects from './DrawingObjects'
 import { ElementSettingsMenu } from './ElementSettingsMenu'
-import AppConfig from '../../../../../../../app-config'
+import AppConfig from '../../../../../../app-config'
 
 const trueColor = '#1fe3a1'
 const errorColor = '#ee1658'
@@ -71,20 +73,16 @@ const colorMap = (type) => {
 }
 
 const getColoredElems = (elements, compareResult) => {
-  if (
-    compareResult &&
-    compareResult.details &&
-    compareResult.details.length > 0
-  ) {
+  const { details = [], inequalities = [] } = compareResult || {}
+  if (details.length > 0) {
     let newElems = cloneDeep(elements)
     const subElems = []
 
     newElems = newElems.map((el) => {
-      if (!el.subElement) {
-        const detail = compareResult.details.find((det) => det.id === el.id)
-        let newEl = {}
-        let result = false
-
+      let newEl = {}
+      let result = false
+      if (!el.subElement && el.type !== CONSTANT.TOOLS.AREA) {
+        const detail = details.find((det) => det.id === el.id)
         if (detail && detail.result) {
           newEl = {
             ...el,
@@ -107,6 +105,24 @@ const getColoredElems = (elements, compareResult) => {
           })
         }
         return newEl
+      }
+      if (el.type === CONSTANT.TOOLS.AREA && inequalities.length > 0) {
+        if (inequalities.every((x) => x)) {
+          return {
+            ...el,
+            priorityColor: trueColor,
+          }
+        }
+        if (inequalities.some((x) => x)) {
+          return {
+            ...el,
+            priorityColor: partialIconColor,
+          }
+        }
+        return {
+          ...el,
+          priorityColor: errorColor,
+        }
       }
       return el
     })
@@ -305,8 +321,6 @@ class GraphContainer extends PureComponent {
         }))
         this._graph.setBgObjects(bgShapeValues, backgroundShapes.showPoints)
       }
-
-      this.setElementsToGraph()
     }
 
     this.setGraphUpdateEventHandler()
@@ -329,6 +343,8 @@ class GraphContainer extends PureComponent {
       changePreviewTab,
       elements,
       view,
+      evaluation,
+      showConnect,
     } = this.props
 
     const { tools } = toolbar
@@ -413,8 +429,12 @@ class GraphContainer extends PureComponent {
           this._graph.setBgObjects(bgShapeValues, backgroundShapes.showPoints)
         }
       }
-
-      this.setElementsToGraph(prevProps, refreshElements)
+      if (
+        !isEqual(elements, prevProps.elements) ||
+        !isEqual(evaluation, prevProps.evaluation)
+      ) {
+        this.setElementsToGraph(prevProps, refreshElements)
+      }
     }
 
     if (
@@ -422,6 +442,13 @@ class GraphContainer extends PureComponent {
       !isEqual(elements, prevProps.elements)
     ) {
       changePreviewTab(CLEAR)
+    }
+
+    if (
+      !isEqual(elements, prevProps.elements) ||
+      showConnect !== prevProps.showConnect
+    ) {
+      this._graph.removeConnectline()
     }
   }
 
@@ -572,6 +599,7 @@ class GraphContainer extends PureComponent {
       elementsIsCorrect,
       previewTab,
       toolbar,
+      showConnect,
     } = this.props
     const { drawingPrompt } = toolbar
 
@@ -588,6 +616,9 @@ class GraphContainer extends PureComponent {
       this._graph.reset()
       this._graph.resetAnswers()
       this._graph.loadAnswersFromConfig(coloredElements)
+      if (showConnect) {
+        this._graph.connectPoints(coloredElements)
+      }
       return
     }
 
@@ -626,25 +657,25 @@ class GraphContainer extends PureComponent {
   }
 
   allTools = [
-    'point',
-    'line',
-    'ray',
-    'segment',
-    'vector',
-    'circle',
-    'ellipse',
-    'sine',
-    'tangent',
-    'secant',
-    'exponent',
-    'logarithm',
-    'polynom',
-    'hyperbola',
-    'polygon',
-    'parabola',
-    'parabola2',
-    'area',
-    'dashed',
+    CONSTANT.TOOLS.POINT,
+    CONSTANT.TOOLS.LINE,
+    CONSTANT.TOOLS.RAY,
+    CONSTANT.TOOLS.SEGMENT,
+    CONSTANT.TOOLS.VECTOR,
+    CONSTANT.TOOLS.CIRCLE,
+    CONSTANT.TOOLS.ELLIPSE,
+    CONSTANT.TOOLS.SIN,
+    CONSTANT.TOOLS.TANGENT,
+    CONSTANT.TOOLS.SECANT,
+    CONSTANT.TOOLS.EXPONENT,
+    CONSTANT.TOOLS.LOGARITHM,
+    CONSTANT.TOOLS.POLYNOM,
+    CONSTANT.TOOLS.HYPERBOLA,
+    CONSTANT.TOOLS.POLYGON,
+    CONSTANT.TOOLS.PARABOLA,
+    CONSTANT.TOOLS.PARABOLA2,
+    CONSTANT.TOOLS.AREA,
+    CONSTANT.TOOLS.DASHED,
   ]
 
   allControls = ['undo', 'redo', 'reset', 'delete']
@@ -683,6 +714,17 @@ class GraphContainer extends PureComponent {
     return includeDashed
   }
 
+  get isShowConnectPoints() {
+    const { showConnect, elements, view, disableResponse } = this.props
+    return (
+      showConnect &&
+      view === PREVIEW &&
+      !disableResponse &&
+      elements.filter((e) => e.type === CONSTANT.TOOLS.POINT && !e.subElement)
+        .length > 1
+    )
+  }
+
   selectDrawingObject = (drawingObject) => {
     this.setState({ selectedDrawingObject: drawingObject })
     this._graph.setDrawingObject(drawingObject)
@@ -691,28 +733,33 @@ class GraphContainer extends PureComponent {
   resourcesOnLoaded = () => {
     const { backgroundShapes } = this.props
     const { resourcesLoaded } = this.state
-    if (resourcesLoaded) {
-      return
+    if (!resourcesLoaded) {
+      this.setState({ resourcesLoaded: true }, this.setElementsToGraph)
+      const bgShapeValues = backgroundShapes.values.map((el) => ({
+        ...el,
+        priorityColor: bgColor,
+      }))
+      this._graph.resetBg()
+      this._graph.setBgObjects(bgShapeValues, backgroundShapes.showPoints)
     }
-    this.setState({ resourcesLoaded: true })
-
-    const bgShapeValues = backgroundShapes.values.map((el) => ({
-      ...el,
-      priorityColor: bgColor,
-    }))
-    this._graph.resetBg()
-    this._graph.setBgObjects(bgShapeValues, backgroundShapes.showPoints)
-    this.setElementsToGraph()
   }
 
   setTools = (tools) => {
     const { graphData, setQuestionData } = this.props
+    if (tools.length > 0) {
+      setQuestionData(
+        produce(graphData, (draft) => {
+          draft.toolbar.tools = tools
+        })
+      )
+    } else {
+      notification({ msg: 'at-least 1 tool required', type: 'warning' })
+    }
+  }
 
-    setQuestionData(
-      produce(graphData, (draft) => {
-        draft.toolbar.tools = tools
-      })
-    )
+  handleConnectPoint = () => {
+    const { elements } = this.props
+    this._graph.connectPoints(elements)
   }
 
   render() {
@@ -729,6 +776,8 @@ class GraphContainer extends PureComponent {
       graphData,
       setQuestionData,
       isPrintPreview,
+      onChangeKeypad,
+      symbols,
     } = this.props
     const { tools, drawingPrompt } = toolbar
     const {
@@ -839,6 +888,8 @@ class GraphContainer extends PureComponent {
                         : 0,
                       left: hasAnnotation ? 20 : 0,
                     }}
+                    onChangeKeypad={onChangeKeypad}
+                    symbols={symbols}
                   />
                   <GraphEditTools
                     side="right"
@@ -855,6 +906,8 @@ class GraphContainer extends PureComponent {
                         : 0,
                       left: hasAnnotation ? 20 : 0,
                     }}
+                    onChangeKeypad={onChangeKeypad}
+                    symbols={symbols}
                   />
                 </>
               )}
@@ -864,6 +917,11 @@ class GraphContainer extends PureComponent {
                 setQuestionData={setQuestionData}
                 disableDragging={view !== EDIT}
               />
+              {this.isShowConnectPoints && this._graph && (
+                <EduButton onClick={this.handleConnectPoint}>
+                  Connect Points
+                </EduButton>
+              )}
               {elementSettingsAreOpened && this._graph && (
                 <ElementSettingsMenu
                   showColorPicker={
@@ -917,6 +975,8 @@ GraphContainer.propTypes = {
   changePreviewTab: PropTypes.func,
   elementsIsCorrect: PropTypes.bool,
   advancedElementSettings: PropTypes.bool,
+  onChangeKeypad: PropTypes.func,
+  symbols: PropTypes.array,
 }
 
 GraphContainer.defaultProps = {
@@ -937,6 +997,8 @@ GraphContainer.defaultProps = {
   previewTab: CLEAR,
   changePreviewTab: () => {},
   elementsIsCorrect: false,
+  onChangeKeypad: () => {},
+  symbols: defaultSymbols,
 }
 
 export default connect(

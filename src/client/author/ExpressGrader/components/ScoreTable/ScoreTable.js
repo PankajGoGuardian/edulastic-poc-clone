@@ -14,64 +14,7 @@ import {
   ScoreTitle,
 } from './styled'
 
-function getDataForTable(data) {
-  let dataSource
-  if (data && data.length !== 0) {
-    dataSource = data
-      .filter((std) => std.status === 'submitted')
-      .map((student, index) => {
-        const students = []
-        const rowIndex = index
-        const studentInfo = {
-          studentId: student.studentId,
-          studentName: student.studentName,
-          fakeName: student.fakeName,
-          icon: student.icon,
-          color: student.color,
-        }
-        const testActivityId = student.testActivityId
-          ? student.testActivityId
-          : null
-        student.questionActivities.forEach((question, index1) => {
-          const key = `Q${index1}`
-          question.key = key
-          students[key] = question
-          question.colIndex = index1
-          question.id = question._id
-          question.rowIndex = rowIndex
-          question.studentId = student.studentId
-          question.testActivityId = testActivityId
-          question.score = Number.isNaN(question.score) ? 0 : question.score
-        })
-        students.questions = student.questionActivities.length
-        students.students = studentInfo
-        students.score = {
-          score: Number.isNaN(student.score) ? 0 : student.score,
-          maxScore: student.maxScore,
-        }
-        return students
-      })
-  } else {
-    dataSource = []
-  }
-
-  return dataSource
-}
-
 class ScoreTable extends Component {
-  constructor() {
-    super()
-    this.state = {
-      columnData: [],
-    }
-  }
-
-  static getDerivedStateFromProps(props) {
-    const { testActivity } = props
-    const columnData = getDataForTable(testActivity)
-    return { columnData }
-  }
-
   getColumnsForTable = (length, submittedLength) => {
     const {
       showQuestionModal,
@@ -144,7 +87,10 @@ class ScoreTable extends Component {
       const { testActivity: students } = this.props
       const key = `Q${index}`
       const title = (
-        <StyledDivMid>
+        <StyledDivMid
+          data-cy={students[0].questionActivities[index].barLabel}
+          data-test={`Q${index + 1}`}
+        >
           {students[0].questionActivities[index].barLabel}
         </StyledDivMid>
       )
@@ -156,9 +102,10 @@ class ScoreTable extends Component {
             student.questionActivities[index] &&
             !student.questionActivities[index]?.notStarted
           ) {
-            successScore +=
-              student.questionActivities[index].score /
-              student.questionActivities[index].maxScore
+            const { score = 0, maxScore = 0 } =
+              student.questionActivities[index] || {}
+            const uqaAvg = score / maxScore
+            successScore += Number.isNaN(uqaAvg) ? 0 : uqaAvg
           }
         })
       const averageScore = successScore
@@ -186,13 +133,11 @@ class ScoreTable extends Component {
             title: questionAvarageScore,
             className: 'sub-thead-th th-border-bottom',
             render: (record) => {
-              const { columnData: tableData } = this.state
               const isTest = record && record.testActivityId
 
               const cell = (
                 <QuestionScore
                   question={record}
-                  tableData={tableData}
                   showQuestionModal={showQuestionModal}
                   isTest={isTest}
                   scoreMode={scoreMode}
@@ -215,34 +160,31 @@ class ScoreTable extends Component {
 
   render() {
     let columnInfo = []
-    const { columnData } = this.state
-    const { testActivity, windowWidth } = this.props
+    const { testActivity, tableData } = this.props
     const columnsLength =
       testActivity && testActivity.length !== 0
         ? testActivity[0].questionActivities.length
         : 0
     const submittedLength = testActivity.filter((x) => x.status === 'submitted')
       .length
-    const showColumnsCount =
-      windowWidth < 1366 ? 5 : windowWidth < 1600 ? 7 : 10
     if (columnsLength) {
       columnInfo = this.getColumnsForTable(columnsLength, submittedLength)
     }
-    const scrollX = columnsLength * 100 + 300
+
     const scrollY = window.innerHeight - 250
     // 40 sice of each cell in table + 3 overlapped padding
-    const showY = columnData.length * 43 > scrollY
+    const showY = tableData.length * 43 > scrollY
 
     return (
       <StyledCard bordered={false} marginBottom="0px">
         <TableData
           pagination={false}
           columns={columnInfo}
-          dataSource={columnData}
+          dataSource={tableData}
           // Columns length will be the number of questions
           // Column data length will be number of students
           scroll={{
-            x: columnsLength > showColumnsCount ? scrollX : false,
+            x: 'max-content',
             y: showY ? scrollY : false,
           }}
           rowKey={(record, i) => i}

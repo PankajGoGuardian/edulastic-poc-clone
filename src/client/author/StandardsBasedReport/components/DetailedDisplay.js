@@ -1,4 +1,3 @@
-// @ts-check
 import React, { Component } from 'react'
 import { Icon, Row, Col } from 'antd'
 import { connect } from 'react-redux'
@@ -92,8 +91,9 @@ class DetailedDisplay extends Component {
 
   displayData = () => {
     const { additionalData, isPresentationMode } = this.props
-    const assignmentMasteryArray = additionalData.assignmentMastery || []
-    assignmentMasteryArray.sort((a, b) => b.threshold - a.threshold)
+    const assignmentMasteryArray = [
+      ...(additionalData.assignmentMastery || []),
+    ].sort((a, b) => b.threshold - a.threshold)
     const scoreStudentWise = getStandardWisePerformanceDetailMemoized(
       this.props.testActivity,
       this.props.data,

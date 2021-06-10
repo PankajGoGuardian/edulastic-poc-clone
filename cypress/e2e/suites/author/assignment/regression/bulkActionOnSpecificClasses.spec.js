@@ -117,18 +117,18 @@ describe(`${FileHelper.getSpecName(
       sideBarPage.clickOnAssignment()
       authorAssignmentPage.filterByTestType('All')
       bulkActionPage.clickTestByID(classData.testID)
-      notOpenClasses.slice(0,15).forEach((className) => {
+      notOpenClasses.slice(0, 15).forEach((className) => {
         bulkActionPage.selectClassByClassName(className)
       })
       bulkActionPage.clickOpenActionButton('15', '15')
       numberOfnotOpen = '15'
       numberOfInProgress = '15'
 
-      notOpenClasses.slice(0,15).forEach((className) => {
-          bulkActionPage.verifyAssignmentStatusOfClass(
-            className,
-            teacherSide.IN_PROGRESS
-          )
+      notOpenClasses.slice(0, 15).forEach((className) => {
+        bulkActionPage.verifyAssignmentStatusOfClass(
+          className,
+          teacherSide.IN_PROGRESS
+        )
       })
 
       bulkActionPage.verifyNumberofClassesInFilter(
@@ -185,16 +185,16 @@ describe(`${FileHelper.getSpecName(
       sideBarPage.clickOnAssignment()
       authorAssignmentPage.filterByTestType('All')
       bulkActionPage.clickTestByID(classData.testID)
-      notOpenClasses.slice(0,15).forEach((className) => {
+      notOpenClasses.slice(0, 15).forEach((className) => {
         bulkActionPage.selectClassByClassName(className)
       })
       bulkActionPage.clickPauseActionButton('15', '15')
 
-      notOpenClasses.slice(0,15).forEach((className) => {
-          bulkActionPage.verifyAssignmentStatusOfClass(
-            className,
-            teacherSide.IN_PROGRESS_PAUSED
-          )
+      notOpenClasses.slice(0, 15).forEach((className) => {
+        bulkActionPage.verifyAssignmentStatusOfClass(
+          className,
+          teacherSide.IN_PROGRESS_PAUSED
+        )
       })
 
       bulkActionPage.verifyNumberofClassesInFilter(filter.NOT_OPEN, '15')
@@ -247,7 +247,7 @@ describe(`${FileHelper.getSpecName(
       sideBarPage.clickOnAssignment()
       authorAssignmentPage.filterByTestType('All')
       bulkActionPage.clickTestByID(classData.testID)
-      notOpenClasses.slice(0,15).forEach((className) => {
+      notOpenClasses.slice(0, 15).forEach((className) => {
         bulkActionPage.selectClassByClassName(className)
       })
       bulkActionPage.clickOpenActionButton('15', '15')
@@ -255,11 +255,11 @@ describe(`${FileHelper.getSpecName(
       bulkActionPage.verifyNumberofClassesInFilter(filter.NOT_OPEN, '15')
       bulkActionPage.verifyNumberofClassesInFilter(filter.IN_PROGRESS, '15')
 
-      notOpenClasses.slice(0,15).forEach((className) => {
-          bulkActionPage.verifyAssignmentStatusOfClass(
-            className,
-            teacherSide.IN_PROGRESS
-          )
+      notOpenClasses.slice(0, 15).forEach((className) => {
+        bulkActionPage.verifyAssignmentStatusOfClass(
+          className,
+          teacherSide.IN_PROGRESS
+        )
       })
     })
 
@@ -268,17 +268,17 @@ describe(`${FileHelper.getSpecName(
       sideBarPage.clickOnAssignment()
       authorAssignmentPage.filterByTestType('All')
       bulkActionPage.clickTestByID(classData.testID)
-      notOpenClasses.slice(0,15).forEach((className) => {
-          bulkActionPage.clickIconByClassName(icons.LCB, className)
-          lcbPage.checkSelectAllCheckboxOfStudent()
-          lcbPage.clickOnMarkAsSubmit()
-          lcbPage.clickOnAssignmentLink(classData.assignmentName)
+      notOpenClasses.slice(0, 15).forEach((className) => {
+        bulkActionPage.clickIconByClassName(icons.LCB, className)
+        lcbPage.checkSelectAllCheckboxOfStudent()
+        lcbPage.clickOnMarkAsSubmit()
+        lcbPage.clickOnAssignmentLink(classData.assignmentName)
       })
 
       numberOfInProgress = '0'
       numberOfInGrading = '15'
 
-      notOpenClasses.slice(0,15).forEach((className) => {
+      notOpenClasses.slice(0, 15).forEach((className) => {
         bulkActionPage.selectClassByClassName(className)
       })
 
@@ -292,11 +292,11 @@ describe(`${FileHelper.getSpecName(
         numberOfInGrading
       )
 
-      notOpenClasses.slice(0,15).forEach((className) => {
-          bulkActionPage.verifyAssignmentStatusOfClass(
-            className,
-            teacherSide.IN_GRADING_PAUSED
-          )
+      notOpenClasses.slice(0, 15).forEach((className) => {
+        bulkActionPage.verifyAssignmentStatusOfClass(
+          className,
+          teacherSide.IN_GRADING_PAUSED
+        )
       })
 
       cy.login('teacher', Teacher.email, Teacher.pass)
@@ -346,7 +346,7 @@ describe(`${FileHelper.getSpecName(
       sideBarPage.clickOnAssignment()
       authorAssignmentPage.filterByTestType('All')
       bulkActionPage.clickTestByID(classData.testID)
-      notOpenClasses.slice(0,15).forEach((className) => {
+      notOpenClasses.slice(0, 15).forEach((className) => {
         bulkActionPage.selectClassByClassName(className)
       })
 
@@ -363,11 +363,11 @@ describe(`${FileHelper.getSpecName(
         numberOfInGrading
       )
 
-      notOpenClasses.slice(0,15).forEach((className) => {
-          bulkActionPage.verifyAssignmentStatusOfClass(
-            className,
-            teacherSide.IN_GRADING
-          )
+      notOpenClasses.slice(0, 15).forEach((className) => {
+        bulkActionPage.verifyAssignmentStatusOfClass(
+          className,
+          teacherSide.IN_GRADING
+        )
       })
     })
 
@@ -376,7 +376,7 @@ describe(`${FileHelper.getSpecName(
       sideBarPage.clickOnAssignment()
       authorAssignmentPage.filterByTestType('All')
       bulkActionPage.clickTestByID(classData.testID)
-      notOpenClasses.slice(0,15).forEach((className) => {
+      notOpenClasses.slice(0, 15).forEach((className) => {
         bulkActionPage.selectClassByClassName(className)
       })
 
@@ -389,11 +389,11 @@ describe(`${FileHelper.getSpecName(
       )
       bulkActionPage.verifyNumberofClassesInFilter(filter.DONE, numberOfDone)
 
-      notOpenClasses.slice(0,15).forEach((className) => {
-          bulkActionPage.verifyAssignmentStatusOfClass(
-            className,
-            teacherSide.DONE
-          )
+      notOpenClasses.slice(0, 15).forEach((className) => {
+        bulkActionPage.verifyAssignmentStatusOfClass(
+          className,
+          teacherSide.DONE
+        )
       })
     })
 
@@ -402,8 +402,8 @@ describe(`${FileHelper.getSpecName(
       sideBarPage.clickOnAssignment()
       authorAssignmentPage.filterByTestType('All')
       bulkActionPage.clickTestByID(classData.testID)
-      notOpenClasses.slice(15,30).forEach((className) => {
-          bulkActionPage.selectClassByClassName(className)
+      notOpenClasses.slice(15, 30).forEach((className) => {
+        bulkActionPage.selectClassByClassName(className)
       })
 
       bulkActionPage.clickCloseActionButton('0', '15')
@@ -413,11 +413,11 @@ describe(`${FileHelper.getSpecName(
       )
       bulkActionPage.verifyNumberofClassesInFilter(filter.DONE, numberOfDone)
 
-      notOpenClasses.slice(15,30).forEach((className) => {
-          bulkActionPage.verifyAssignmentStatusOfClass(
-            className,
-            teacherSide.NOT_OPEN
-          )
+      notOpenClasses.slice(15, 30).forEach((className) => {
+        bulkActionPage.verifyAssignmentStatusOfClass(
+          className,
+          teacherSide.NOT_OPEN
+        )
       })
     })
 
@@ -426,8 +426,8 @@ describe(`${FileHelper.getSpecName(
       sideBarPage.clickOnAssignment()
       authorAssignmentPage.filterByTestType('All')
       bulkActionPage.clickTestByID(classData.testID)
-      notOpenClasses.slice(15,30).forEach((className) => {
-          bulkActionPage.selectClassByClassName(className)
+      notOpenClasses.slice(15, 30).forEach((className) => {
+        bulkActionPage.selectClassByClassName(className)
       })
 
       bulkActionPage.clickDoneActionButton('0', '15')
@@ -437,11 +437,11 @@ describe(`${FileHelper.getSpecName(
       )
       bulkActionPage.verifyNumberofClassesInFilter(filter.DONE, numberOfDone)
 
-      notOpenClasses.slice(15,30).forEach((className) => {
-          bulkActionPage.verifyAssignmentStatusOfClass(
-            className,
-            teacherSide.NOT_OPEN
-          )
+      notOpenClasses.slice(15, 30).forEach((className) => {
+        bulkActionPage.verifyAssignmentStatusOfClass(
+          className,
+          teacherSide.NOT_OPEN
+        )
       })
     })
 
@@ -450,18 +450,18 @@ describe(`${FileHelper.getSpecName(
       sideBarPage.clickOnAssignment()
       authorAssignmentPage.filterByTestType('All')
       bulkActionPage.clickTestByID(classData.testID)
-      notOpenClasses.slice(15,30).forEach((className) => {
-          bulkActionPage.selectClassByClassName(className)
+      notOpenClasses.slice(15, 30).forEach((className) => {
+        bulkActionPage.selectClassByClassName(className)
       })
       bulkActionPage.clickOpenActionButton('15', '15')
 
-      notOpenClasses.slice(15,30).forEach((className) => {
-          bulkActionPage.selectClassByClassName(className)
+      notOpenClasses.slice(15, 30).forEach((className) => {
+        bulkActionPage.selectClassByClassName(className)
       })
       bulkActionPage.clickPauseActionButton('15', '15')
 
-      notOpenClasses.slice(15,30).forEach((className) => {
-          bulkActionPage.selectClassByClassName(className)
+      notOpenClasses.slice(15, 30).forEach((className) => {
+        bulkActionPage.selectClassByClassName(className)
       })
       bulkActionPage.clickCloseActionButton('15', '15')
       numberOfDone = '30'
@@ -469,11 +469,11 @@ describe(`${FileHelper.getSpecName(
 
       bulkActionPage.verifyNumberofClassesInFilter(filter.DONE, numberOfDone)
 
-      notOpenClasses.slice(15,30).forEach((className) => {
-          bulkActionPage.verifyAssignmentStatusOfClass(
-            className,
-            teacherSide.DONE
-          )
+      notOpenClasses.slice(15, 30).forEach((className) => {
+        bulkActionPage.verifyAssignmentStatusOfClass(
+          className,
+          teacherSide.DONE
+        )
       })
     })
   })

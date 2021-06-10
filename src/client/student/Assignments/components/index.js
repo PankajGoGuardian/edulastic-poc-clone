@@ -6,7 +6,7 @@ import styled from 'styled-components'
 import { withNamespaces } from 'react-i18next'
 
 // components
-import { Row, Layout, Spin } from 'antd'
+import { Row, Layout, Spin, Modal } from 'antd'
 import { MainContentWrapper, MainHeader, EduButton } from '@edulastic/common'
 import { IconClockDashboard, IconHangouts } from '@edulastic/icons'
 import { white, themeColor } from '@edulastic/colors'
@@ -24,7 +24,10 @@ import {
 } from '../../ManageClass/ducks'
 
 // constants
-import { proxyRole } from '../../Login/ducks'
+import {
+  proxyRole,
+  toggleIosRestrictNavigationModalAction,
+} from '../../Login/ducks'
 
 const Wrapper = styled(Layout)`
   width: 100%;
@@ -39,16 +42,36 @@ const Assignments = ({
   currentChild,
   proxyUserRole,
   isCliUser,
+  districtPolicies,
   t,
+  schoolPolicies,
+  iosRestrictNavigationModalVisible,
+  toggleIosModal,
 }) => {
   const isParentRoleProxy = proxyUserRole === 'parent'
 
   const activeEnrolledClasses = (activeClasses || []).filter(
     (c) => c.status == '1'
   )
+  const hangoutEnabledDistrictMap = (districtPolicies || []).reduce(
+    (acc, o) => {
+      acc[o.districtId] = o.enableGoogleMeet
+      return acc
+    },
+    {}
+  )
+
+  const hangoutEnabledSchoolMap = (schoolPolicies || []).reduce((acc, o) => {
+    acc[o.schoolId] = o.enableGoogleMeet
+    return acc
+  }, {})
 
   const classListWithHangouts = activeEnrolledClasses.filter(
-    (c) => c.hangoutLink
+    (c) =>
+      c.hangoutLink &&
+      (hangoutEnabledDistrictMap[c.districtId] === true
+        ? true
+        : hangoutEnabledSchoolMap[c.institutionId] === true)
   )
 
   const [showHangoutsModal, setShowHangoutsModal] = useState(false)
@@ -64,9 +87,22 @@ const Assignments = ({
   }, [currentChild])
 
   if (loading) return <Spin />
-
+  const isHangoutEnabled = !!classListWithHangouts?.length
   return (
     <Wrapper>
+      <IosModal
+        visible={iosRestrictNavigationModalVisible}
+        centered
+        footer={
+          <EduButton onClick={() => toggleIosModal(false)} type="primary">
+            Ok
+          </EduButton>
+        }
+        onCancel={() => toggleIosModal(false)}
+      >
+        Your teacher has added security settings to this test that are not
+        compatible with an iPad
+      </IosModal>
       <HangoutsModal
         isStudent
         visible={showHangoutsModal}
@@ -85,7 +121,8 @@ const Assignments = ({
       >
         <Row type="flex" align="middle">
           {!!classListWithHangouts.length &&
-            !(userRole === 'parent' || isParentRoleProxy) && (
+            !(userRole === 'parent' || isParentRoleProxy) &&
+            isHangoutEnabled && (
               <StyledEduButton
                 height="40px"
                 style={{ 'margin-right': '20px' }}
@@ -116,6 +153,10 @@ export default withNamespaces('header')(
   connect(
     (state) => ({
       userRole: state?.user?.user?.role,
+      iosRestrictNavigationModalVisible:
+        state?.user?.iosRestrictNavigationModalVisible,
+      districtPolicies: state?.user?.user?.orgData?.districtPolicies,
+      schoolPolicies: state?.user?.user?.orgData?.schoolPolicies,
       allClasses: state.studentEnrollClassList.allClasses,
       activeClasses: state.studentEnrollClassList.filteredClasses,
       loading: state.studentEnrollClassList.loading,
@@ -126,6 +167,7 @@ export default withNamespaces('header')(
     {
       loadAllClasses: getEnrollClassAction,
       setFilterClass: setFilterClassAction,
+      toggleIosModal: toggleIosRestrictNavigationModalAction,
     }
   )(Assignments)
 )
@@ -144,6 +186,16 @@ const StyledEduButton = styled(EduButton)`
   &:focus {
     .b {
       fill: ${themeColor};
+    }
+  }
+`
+
+const IosModal = styled(Modal)`
+  .ant-modal-footer {
+    border-top: 0;
+    text-align: center;
+    button {
+      display: inline-block;
     }
   }
 `

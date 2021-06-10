@@ -165,7 +165,7 @@ class EditClassModal extends Component {
         institutionId = '',
         institutionName = '',
         grades,
-        tags = [],
+        tags,
         endDate,
         course = {},
       } = {},
@@ -211,7 +211,7 @@ class EditClassModal extends Component {
       })
     }
 
-    const alreadySelectedTags = tags?.map((e) => e._id)
+    const alreadySelectedTags = tags?.map((e) => e._id) || []
 
     const subjects = allSubjects.filter((el) => el.value !== '')
 

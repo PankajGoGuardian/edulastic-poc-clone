@@ -12,10 +12,7 @@ const Wrapper = styled.div`
   align-items: center;
   height: 28px;
   padding: 0px 14px 0px 10px;
-  position: absolute;
-  left: 0%;
-  top: 50%;
-  transform: translate(-100%, -50%);
+  margin-left: 5px;
   ${({ customStyle }) => ({ ...customStyle })};
 
   ${({ scoreType, theme }) => {
@@ -49,9 +46,10 @@ const Wrapper = styled.div`
 
 const ScoreBlock = ({ score, maxScore, showScore, customStyle }) => {
   const [type, status] = getTypeAndMsgBasedOnScore(score, maxScore)
+
   return showScore ? (
     <Wrapper customStyle={customStyle} scoreType={status} data-cy="scoreBlock">
-      <div>{score !== 0 ? <IconCheck /> : <IconClose />}</div>
+      <div>{status !== 'Incorrect' ? <IconCheck /> : <IconClose />}</div>
       <div data-cy="score" type={type}>
         {status} ({score}/{maxScore})
       </div>

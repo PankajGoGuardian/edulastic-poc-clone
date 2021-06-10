@@ -1,7 +1,18 @@
 import React, { PureComponent } from 'react'
 import { Row, Col } from 'antd'
 import PropTypes from 'prop-types'
-import { cloneDeep, get, uniq as _uniq, keyBy, set, findIndex } from 'lodash'
+import {
+  cloneDeep,
+  get,
+  uniq as _uniq,
+  keyBy,
+  set,
+  findIndex,
+  isEmpty,
+  flatten,
+  isArray,
+  groupBy,
+} from 'lodash'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
@@ -21,7 +32,6 @@ import {
   setTestItemsAction,
 } from '../../../AddItems/ducks'
 import { getStandardsSelector } from '../../ducks'
-import queryString from 'query-string'
 import {
   setTestDataAction,
   previewCheckAnswerAction,
@@ -32,6 +42,7 @@ import {
   addItemsToAutoselectGroupsRequestAction,
   getAutoSelectItemsLoadingStatusSelector,
   showGroupsPanelSelector,
+  getTestsCreatingSelector,
 } from '../../../../ducks'
 import { clearAnswersAction } from '../../../../../src/actions/answers'
 import { clearEvaluationAction } from '../../../../../../assessment/actions/evaluation'
@@ -45,6 +56,7 @@ import {
   ReviewContentWrapper,
   ReviewLeftContainer,
   TestTitle,
+  SecondHeaderWrapper,
 } from './styled'
 import { clearDictAlignmentAction } from '../../../../../src/actions/dictionaries'
 import { getCreateItemModalVisibleSelector } from '../../../../../src/selectors/testItem'
@@ -56,59 +68,28 @@ import {
 import TestPreviewModal from '../../../../../Assignments/components/Container/TestPreviewModal'
 import ReviewItems from '../ReviewItems'
 import { resetItemScoreAction } from '../../../../../src/ItemScore/ducks'
-import { hidePendoBanner } from '../../../../../../common/utils/helpers'
+import { groupTestItemsByPassageId } from '../helper'
+import { getIsPreviewModalVisibleSelector } from '../../../../../../assessment/selectors/test'
+import { setIsTestPreviewVisibleAction } from '../../../../../../assessment/actions/test'
 
 class Review extends PureComponent {
-  static propTypes = {
-    test: PropTypes.object.isRequired,
-    onChangeGrade: PropTypes.func.isRequired,
-    onChangeSubjects: PropTypes.func.isRequired,
-    rows: PropTypes.array.isRequired,
-    clearEvaluation: PropTypes.func.isRequired,
-    setData: PropTypes.func.isRequired,
-    standards: PropTypes.object.isRequired,
-    current: PropTypes.string.isRequired,
-    windowWidth: PropTypes.number.isRequired,
-    addItemsToAutoselectGroupsRequest: PropTypes.func.isRequired,
-    clearDictAlignment: PropTypes.func.isRequired,
-    owner: PropTypes.bool,
-    onSaveTestId: PropTypes.func,
-    history: PropTypes.any.isRequired,
-    clearAnswer: PropTypes.func.isRequired,
-    checkAnswer: PropTypes.func.isRequired,
-    showAnswer: PropTypes.func.isRequired,
-    updateDefaultThumbnail: PropTypes.func.isRequired,
-    onChangeCollection: PropTypes.func.isRequired,
-    questions: PropTypes.object.isRequired,
-    itemsSubjectAndGrade: PropTypes.any.isRequired,
-    isEditable: PropTypes.bool.isRequired,
-    defaultThumbnail: PropTypes.any.isRequired,
-    setTestItems: PropTypes.func.isRequired,
-    showCancelButton: PropTypes.bool.isRequired,
-    userFeatures: PropTypes.object.isRequired,
-    testItems: PropTypes.array.isRequired,
-  }
-
-  static defaultProps = {
-    owner: false,
-    onSaveTestId: () => {},
-  }
-
   secondHeaderRef = React.createRef()
 
   containerRef = React.createRef()
 
   listWrapperRef = React.createRef()
 
-  state = {
-    isCollapse: true,
-    isShowSummary: true,
-    isModalVisible: false,
-    item: [],
-    isTestPreviewModalVisible: false,
-    currentTestId: '',
-    hasStickyHeader: false,
-    indexForPreview: 0,
+  constructor(props) {
+    super(props)
+    this.state = {
+      isCollapse: true,
+      isShowSummary: true,
+      isModalVisible: false,
+      item: [],
+      currentTestId: '',
+      hasStickyHeader: false,
+      indexForPreview: 0,
+    }
   }
 
   componentWillUnmount() {
@@ -119,28 +100,28 @@ class Review extends PureComponent {
 
   componentDidMount() {
     this.containerRef?.current?.addEventListener('scroll', this.handleScroll)
-    const { test, addItemsToAutoselectGroupsRequest, location } = this.props
+    const {
+      test,
+      addItemsToAutoselectGroupsRequest,
+      isTestsCreating,
+    } = this.props
     const hasAutoSelectItems = test.itemGroups.some(
       (g) => g.type === testConstants.ITEM_GROUP_TYPES.AUTOSELECT
     )
-    if (hasAutoSelectItems) {
+    if (hasAutoSelectItems && !isTestsCreating) {
       addItemsToAutoselectGroupsRequest(test)
     }
 
     // url = http://localhost:3001/author/tests/tab/review/id/testId/
     // ?token=value&firebaseToken=value&userId=value&role=teacher&itemBank=cli&showCLIBanner=1
     // &showAssingmentPreview=1
-    const { showAssignmentPreview } = qs.parse(window.location.search)
+    const { showAssignmentPreview } = qs.parse(window.location.search, {
+      ignoreQueryPrefix: true,
+    })
     if (showAssignmentPreview) {
-      this.setState({
-        isTestPreviewModalVisible: true,
-      })
+      const { setIsTestPreviewVisible } = this.props
+      setIsTestPreviewVisible(true)
     }
-
-    const query = queryString.parse(location.search);
-    const { cliUser } = query;
-
-    hidePendoBanner(cliUser);
   }
 
   // componentDidUpdate(prevProps, prevState) {
@@ -159,8 +140,8 @@ class Review extends PureComponent {
     newData.itemGroups = produce(newData.itemGroups, (itemGroups) => {
       itemGroups
         .flatMap((itemGroup) => itemGroup.items || [])
-        .map((item, i) => {
-          if (values.includes(i)) {
+        .map((item) => {
+          if (values.includes(item._id)) {
             item.selected = true
           } else {
             item.selected = false
@@ -172,11 +153,14 @@ class Review extends PureComponent {
   }
 
   handleSelectAll = (e) => {
-    const { rows } = this.props
+    const { test } = this.props
     const { checked } = e.target
-
     if (checked) {
-      this.setSelected(rows.map((row, i) => i))
+      this.setSelected(
+        test.itemGroups
+          .flatMap((itemGroup) => itemGroup.items || [])
+          .map((item) => item._id)
+      )
     } else {
       this.setSelected([])
     }
@@ -221,14 +205,13 @@ class Review extends PureComponent {
     })
   }
 
-  handleRemoveOne = (indx) => {
+  handleRemoveOne = (itemId) => {
     const { test, setData, setTestItems } = this.props
     const newData = cloneDeep(test)
 
     const itemsSelected = newData.itemGroups
       .flatMap((itemGroup) => itemGroup.items || [])
-      .filter((_, index) => index === indx)
-      .find((item) => item._id)
+      .find((item) => item._id === itemId)
 
     if (!itemsSelected) {
       return notification({
@@ -256,6 +239,42 @@ class Review extends PureComponent {
 
     setTestItems(testItems.map((item) => item._id))
     setData(newData)
+  }
+
+  handleRemoveMultiple = (itemIds) => {
+    if (isEmpty(itemIds)) {
+      return notification({
+        type: 'warn',
+        messageKey: 'pleaseSelectAtleastOneQuestion',
+      })
+    }
+    const { test, setData, setTestItems } = this.props
+    const newData = cloneDeep(test)
+
+    newData.itemGroups = newData.itemGroups.map((itemGroup) => ({
+      ...itemGroup,
+      items: itemGroup.items.filter(
+        (testItem) => !itemIds.includes(testItem._id)
+      ),
+    }))
+
+    newData.scoring.testItems = newData.scoring.testItems.filter((item) => {
+      const foundItem = newData.itemGroups
+        .flatMap((itemGroup) => itemGroup.items || [])
+        .find(({ id }) => id === item._id)
+
+      return !(foundItem && itemIds.includes(foundItem._id))
+    })
+    const testItems = newData.itemGroups.flatMap(
+      (itemGroup) => itemGroup.items || []
+    )
+
+    setTestItems(testItems.map((item) => item._id))
+    setData(newData)
+    notification({
+      type: 'success',
+      msg: `${itemIds.length} item(s) removed successfully`,
+    })
   }
 
   handleCollapse = () => {
@@ -311,12 +330,45 @@ class Review extends PureComponent {
     }
   }
 
+  completeMoveTestItems = (items) => {
+    const { test, setData } = this.props
+    if (test.itemGroups.length > 1) {
+      const itemsGroupedByGroupId = groupBy(items, 'groupId')
+      const testdata = produce(test, (draft) => {
+        draft.itemGroups.forEach((itemGroup) => {
+          itemGroup.items = itemsGroupedByGroupId[itemGroup._id]
+        })
+      })
+      setData(testdata)
+    } else {
+      setData(
+        produce(test, (draft) => {
+          draft.itemGroups[0].items = items
+        })
+      )
+    }
+  }
+
   handleMoveTo = (newIndex) => {
-    const { test } = this.props
-    const oldIndex = test.itemGroups
-      .flatMap(({ items }) => items)
-      .findIndex((item) => item.selected)
-    this.moveTestItems({ oldIndex, newIndex })
+    const { test, setData } = this.props
+
+    setData(
+      produce(test, (draft) => {
+        draft.itemGroups = draft.itemGroups.map((itemGroup) => {
+          const groupedItems = groupTestItemsByPassageId(itemGroup.items)
+          const oldIndex = groupedItems.findIndex((item) => {
+            if (isArray(item)) {
+              return item.some((ite) => ite.selected)
+            }
+            return item.selected
+          })
+          const [removed] = groupedItems.splice(oldIndex, 1)
+          groupedItems.splice(newIndex, 0, removed)
+          itemGroup.items = flatten(groupedItems)
+          return itemGroup
+        })
+      })
+    )
   }
 
   handleChangePoints = (testItemId, itemScore, questionLevelScore) => {
@@ -416,16 +468,16 @@ class Review extends PureComponent {
   }
 
   hidePreviewModal = () => {
-    const { clearAnswer, clearEvaluation } = this.props
-    this.setState({ isTestPreviewModalVisible: false }, () => {
-      clearAnswer()
-      clearEvaluation()
-    })
+    const { clearAnswer, clearEvaluation, setIsTestPreviewVisible } = this.props
+    setIsTestPreviewVisible(false)
+    clearAnswer()
+    clearEvaluation()
   }
 
   showTestPreviewModal = () => {
-    const { test } = this.props
-    this.setState({ isTestPreviewModalVisible: true, currentTestId: test._id })
+    const { test, setIsTestPreviewVisible } = this.props
+    setIsTestPreviewVisible(true)
+    this.setState({ currentTestId: test._id })
   }
 
   handleScroll = (e) => {
@@ -443,7 +495,8 @@ class Review extends PureComponent {
   }
 
   closeTestPreviewModal = () => {
-    this.setState({ isTestPreviewModalVisible: false })
+    const { setIsTestPreviewVisible } = this.props
+    setIsTestPreviewVisible(false)
   }
 
   render() {
@@ -472,13 +525,13 @@ class Review extends PureComponent {
       userRole,
       isPowerPremiumAccount,
       showGroupsPanel,
+      isPreviewModalVisible,
     } = this.props
     const {
       isCollapse,
       isShowSummary,
       isModalVisible,
       item,
-      isTestPreviewModalVisible,
       currentTestId,
       hasStickyHeader,
     } = this.state
@@ -494,9 +547,9 @@ class Review extends PureComponent {
 
     const selected = test?.itemGroups
       ?.flatMap((itemGroup) => itemGroup?.items || [])
-      .reduce((acc, element, i) => {
+      .reduce((acc, element) => {
         if (element.selected) {
-          acc.push(i)
+          acc.push(element._id)
         }
         return acc
       }, [])
@@ -509,22 +562,27 @@ class Review extends PureComponent {
         title: current,
         to: '',
       },
+      {
+        title: test.title,
+        to: '',
+      },
     ]
 
     const isSmallSize = windowWidth > 993 ? 1 : 0
     const grades = _uniq([
       ...(test.grades || []),
       ...itemsSubjectAndGrade.grades,
-    ])
+    ]).filter((grade) => !isEmpty(grade))
     const subjects = _uniq([
       ...(test.subjects || []),
       ...itemsSubjectAndGrade.subjects,
-    ])
+    ]).filter((grade) => !isEmpty(grade))
     const collections = get(test, 'collections', [])
     const passages = get(test, 'passages', [])
     const passagesKeyed = keyBy(passages, '_id')
     const isPublishers =
       userFeatures.isPublisherAuthor || userFeatures.isCurator
+    const groupedItems = groupTestItemsByPassageId(testItems)
 
     return (
       <MainContentWrapper ref={this.containerRef}>
@@ -532,23 +590,22 @@ class Review extends PureComponent {
           <Row>
             <Col lg={24}>
               <SecondHeader>
-                <TestTitle>{test?.title}</TestTitle>
+                <TestTitle data-cy="testTitle">{test?.title}</TestTitle>
               </SecondHeader>
             </Col>
           </Row>
         ) : (
-          <Row>
+          <SecondHeaderWrapper>
             <Col lg={24} xl={owner && isEditable ? 24 : 18}>
               <div ref={this.secondHeaderRef}>
                 <SecondHeader>
                   <Breadcrumb
                     data={breadcrumbData}
                     style={{ position: 'unset' }}
-                    hasStickyHeader={hasStickyHeader}
                   />
                   <HeaderBar
                     onSelectAll={this.handleSelectAll}
-                    itemTotal={testItems.length}
+                    itemTotal={groupedItems.length}
                     selectedItems={selected}
                     onRemoveSelected={this.handleRemoveSelected}
                     onCollapse={this.handleCollapse}
@@ -566,7 +623,7 @@ class Review extends PureComponent {
                 </SecondHeader>
               </div>
             </Col>
-          </Row>
+          </SecondHeaderWrapper>
         )}
         <ReviewContentWrapper>
           <ReviewLeftContainer lg={24} xl={18}>
@@ -576,7 +633,7 @@ class Review extends PureComponent {
               ref={this.listWrapperRef}
             >
               <ReviewItems
-                items={testItems}
+                items={groupedItems}
                 scoring={test.scoring}
                 standards={standards}
                 userFeatures={userFeatures}
@@ -588,7 +645,9 @@ class Review extends PureComponent {
                 onChangePoints={this.handleChangePoints}
                 handlePreview={this.handlePreviewTestItem}
                 moveTestItems={this.moveTestItems}
-                removeTestItem={this.handleRemoveOne}
+                onCompleteMoveItem={this.completeMoveTestItems}
+                removeSingle={this.handleRemoveOne}
+                removeMultiple={this.handleRemoveMultiple}
                 getContainer={() => this.containerRef.current}
                 setSelected={this.setSelected}
                 selected={selected}
@@ -634,6 +693,7 @@ class Review extends PureComponent {
             owner={owner}
             addDuplicate={this.handleDuplicateItem}
             page="review"
+            testStatus={test.status}
             data={item}
             questions={questions}
             checkAnswer={() => checkAnswer(item)}
@@ -644,7 +704,7 @@ class Review extends PureComponent {
           />
         )}
         <TestPreviewModal
-          isModalVisible={isTestPreviewModalVisible}
+          isModalVisible={isPreviewModalVisible}
           testId={currentTestId}
           test={test}
           showStudentPerformance
@@ -653,6 +713,41 @@ class Review extends PureComponent {
       </MainContentWrapper>
     )
   }
+}
+
+Review.propTypes = {
+  test: PropTypes.object.isRequired,
+  onChangeGrade: PropTypes.func.isRequired,
+  onChangeSubjects: PropTypes.func.isRequired,
+  rows: PropTypes.array.isRequired,
+  clearEvaluation: PropTypes.func.isRequired,
+  setData: PropTypes.func.isRequired,
+  standards: PropTypes.object.isRequired,
+  current: PropTypes.string.isRequired,
+  windowWidth: PropTypes.number.isRequired,
+  addItemsToAutoselectGroupsRequest: PropTypes.func.isRequired,
+  clearDictAlignment: PropTypes.func.isRequired,
+  owner: PropTypes.bool,
+  onSaveTestId: PropTypes.func,
+  history: PropTypes.any.isRequired,
+  clearAnswer: PropTypes.func.isRequired,
+  checkAnswer: PropTypes.func.isRequired,
+  showAnswer: PropTypes.func.isRequired,
+  updateDefaultThumbnail: PropTypes.func.isRequired,
+  onChangeCollection: PropTypes.func.isRequired,
+  questions: PropTypes.object.isRequired,
+  itemsSubjectAndGrade: PropTypes.any.isRequired,
+  isEditable: PropTypes.bool.isRequired,
+  defaultThumbnail: PropTypes.any.isRequired,
+  setTestItems: PropTypes.func.isRequired,
+  showCancelButton: PropTypes.bool.isRequired,
+  userFeatures: PropTypes.object.isRequired,
+  testItems: PropTypes.array.isRequired,
+}
+
+Review.defaultProps = {
+  owner: false,
+  onSaveTestId: () => {},
 }
 
 const enhance = compose(
@@ -672,6 +767,8 @@ const enhance = compose(
       userRole: getUserRole(state),
       isPowerPremiumAccount: getIsPowerPremiumAccount(state),
       showGroupsPanel: showGroupsPanelSelector(state),
+      isPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
+      isTestsCreating: getTestsCreatingSelector(state),
     }),
     {
       setData: setTestDataAction,
@@ -684,6 +781,7 @@ const enhance = compose(
       setTestItems: setTestItemsAction,
       addItemsToAutoselectGroupsRequest: addItemsToAutoselectGroupsRequestAction,
       resetItemScore: resetItemScoreAction,
+      setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
     }
   )
 )

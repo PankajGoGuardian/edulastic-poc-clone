@@ -60,10 +60,20 @@ const cleverLogin = () =>
     })
     .then((result) => result.data.result)
 
-const classlinkLogin = (params) =>
+const atlasLogin = (params) =>
   api
     .callApi({
       url: `${prefix}/login-atlas`,
+      method: 'get',
+      params,
+      paramsSerializer: (_params) => qs.stringify(_params),
+    })
+    .then((result) => result.data.result)
+
+const newselaLogin = (params) =>
+  api
+    .callApi({
+      url: `${prefix}/login-newsela`,
       method: 'get',
       params,
       paramsSerializer: (_params) => qs.stringify(_params),
@@ -96,7 +106,7 @@ const cleverSSOLogin = (data) =>
     })
     .then((result) => result.data.result)
 
-const classlinkSSOLogin = (data) =>
+const atlasSSOLogin = (data) =>
   api
     .callApi({
       url: `${prefix}/callback-sso/atlas`,
@@ -146,6 +156,24 @@ const updateInvitedUserDetails = (data) =>
     })
     .then((result) => result.data.result)
 
+const newselaSSOLogin = (data) =>
+  api
+    .callApi({
+      url: `${prefix}/callback-sso/newsela`,
+      method: 'post',
+      data,
+    })
+    .then((result) => result.data.result)
+
+const wordPressLoginData = (data) =>
+  api
+    .callApi({
+      url: `user/wp`,
+      method: 'post',
+      data,
+    })
+    .then((result) => result.data.result)
+
 export default {
   login,
   signup,
@@ -153,9 +181,9 @@ export default {
   googleLogin,
   googleSSOLogin,
   cleverSSOLogin,
-  classlinkSSOLogin,
+  atlasSSOLogin,
   cleverLogin,
-  classlinkLogin,
+  atlasLogin,
   msoLogin,
   msoSSOLogin,
   checkUserExist,
@@ -164,4 +192,7 @@ export default {
   validateClassCode,
   getInvitedUserDetails,
   updateInvitedUserDetails,
+  newselaSSOLogin,
+  newselaLogin,
+  wordPressLoginData,
 }

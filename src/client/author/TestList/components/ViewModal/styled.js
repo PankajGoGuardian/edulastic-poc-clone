@@ -311,3 +311,35 @@ export const DynamicIconWrapper = styled.span`
   font-size: 11px;
   color: ${greyThemeDark2};
 `
+
+export const CloneOptionsWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  justify-content: space-around;
+
+  label.ant-radio-wrapper {
+    display: flex;
+
+    span.ant-radio + * {
+      white-space: normal;
+      margin-bottom: 5px;
+    }
+  }
+`
+export const ModalHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+`
+export const CloseButton = styled.span`
+  display: inline-flex;
+  height: 32px;
+  width: 32px;
+  justify-content: center;
+  align-items: center;
+  margin-left: 10px;
+  cursor: pointer;
+`
+export const RightButtonContainer = styled.div`
+  display: flex;
+`

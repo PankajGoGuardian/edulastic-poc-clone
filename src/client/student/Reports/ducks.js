@@ -3,7 +3,7 @@ import {
   createSelector as createSelectorator,
 } from 'redux-starter-kit'
 import { takeEvery, put, call, all, select } from 'redux-saga/effects'
-import { values, groupBy, last, maxBy } from 'lodash'
+import { values, groupBy, last, maxBy, get } from 'lodash'
 import { createSelector } from 'reselect'
 import { normalize } from 'normalizr'
 import { assignmentApi, reportsApi } from '@edulastic/api'
@@ -27,14 +27,36 @@ import { getServerTs } from '../utils'
 // constants
 export const getCurrentGroup = createSelectorator(
   ['user.user.orgData.defaultClass'],
-  (r) => r
+  (r) => {
+    if (r === 'archive') {
+      return ''
+    }
+    return r
+  }
 )
 
 export const getClassIds = createSelectorator(
   ['user.user.orgData.classList'],
   (cls) => (cls || []).map((cl) => cl._id)
 )
-export const currentUserId = createSelectorator(['user.user._id'], (r) => r)
+export const currentUserId = createSelectorator(
+  ['user.user._id', 'user.currentChild'],
+  (r, currentChild) => currentChild || r
+)
+
+export const getSelectedCassSectionDistrictId = createSelectorator(
+  ['user.user.orgData.classList', 'user.user.orgData.defaultClass'],
+  (cls, selectedClassId) =>
+    (cls || []).filter((cl) => cl._id === selectedClassId)?.[0]?.districtId ||
+    ''
+)
+
+// selecting only first district fro student while getting assignment
+export const getCurrentStudentDistrictId = createSelectorator(
+  ['user.user.children', 'user.currentChild'],
+  (r, currentChild) =>
+    (r || []).filter((o) => o._id === currentChild)?.[0]?.districtIds?.[0] || ''
+)
 
 export const FILTERS = {
   ALL: 'all',
@@ -51,13 +73,16 @@ export const fetchAssignmentsAction = createAction(FETCH_ASSIGNMENTS_DATA)
 
 // sagas
 // fetch and load assignments and reports for the student
-function* fetchAssignments({ payload }) {
+function* fetchAssignments() {
   try {
     const groupId = yield select(getCurrentGroup)
     yield put(setAssignmentsLoadingAction())
+    const groupStatus = yield select((state) =>
+      get(state, 'studentAssignment.groupStatus', 'all')
+    )
     const [assignments, reports] = yield all([
-      call(assignmentApi.fetchAssigned, payload),
-      call(reportsApi.fetchReports, groupId),
+      call(assignmentApi.fetchAssigned, groupId, '', groupStatus),
+      call(reportsApi.fetchReports, groupId, '', '', groupStatus),
     ])
 
     // normalize assignments
@@ -107,6 +132,8 @@ export const filterSelector = (state) => state.studentReport.filter
 const isReport = (assignment, classIds, userId) => {
   // either user has ran out of attempts
   // or assignments is past dueDate
+  const lastAttempt = last(assignment.reports) || {}
+  assignment.reports = assignment.reports.filter((r) => r.status !== 0)
   const maxAttempts = (assignment && assignment.maxAttempts) || 1
   const attempts = (assignment.reports && assignment.reports.length) || 0
   let { endDate } = assignment
@@ -137,9 +164,12 @@ const isReport = (assignment, classIds, userId) => {
       if (currentClass.closed !== undefined) return currentClass.closed
     }
   }
-  const isExpired =
-    maxAttempts <= attempts || new Date(endDate) < new Date(serverTimeStamp)
-  return isExpired || attempts > 0
+  // End date is passed but dont show in report if UTA status is in progress
+  return (
+    attempts >= maxAttempts ||
+    (serverTimeStamp > endDate &&
+      lastAttempt.status !== testActivityStatus.START)
+  )
 }
 
 const statusFilter = (filterType) => (assignment) => {
@@ -172,7 +202,7 @@ export const getAllAssignmentsSelector = createSelector(
   currentUserId,
   (assignmentsObj, reportsObj, currentGroup, classIds, userId) => {
     const classIdentifiers = values(assignmentsObj).flatMap((item) =>
-      item.class.map((item) => item.identifier)
+      item.class.map((c) => c.identifier)
     )
     const reports = values(reportsObj).filter((item) =>
       classIdentifiers.includes(item.assignmentClassIdentifier)
@@ -198,15 +228,11 @@ export const getAllAssignmentsSelector = createSelector(
           ...assignment,
           maxAttempts: clazz.maxAttempts || assignment.maxAttempts,
           classId: clazz._id,
-          reports:
-            groupedReports[`${assignment._id}_${clazz._id}`]?.filter(
-              (item) => item.status !== 0
-            ) || [],
+          reports: groupedReports[`${assignment._id}_${clazz._id}`] || [],
           ...(clazz.allowedTime ? { allowedTime: clazz.allowedTime } : {}),
         }))
       })
       .filter((assignment) => isReport(assignment, classIds, userId))
-
     return assignments.sort((a, b) => {
       const a_report = a.reports.find((report) => !report.archived)
       const b_report = b.reports.find((report) => !report.archived)

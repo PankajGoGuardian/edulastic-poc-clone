@@ -1,10 +1,14 @@
-import React, { useEffect, useState, useRef, Fragment } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import PropTypes from 'prop-types'
-import { filter, isEmpty, isEqual } from 'lodash'
+import { filter, isEmpty, isEqual, keys } from 'lodash'
 import { withRouter } from 'react-router-dom'
 import PlayerHeader from './PlayerHeader'
 import ParentController from './utility/parentController'
-import getUserResponse from './utility/helpers'
+import getUserResponse, {
+  insertTestletMML,
+  getExtDataForQuestion,
+  getResponseValue,
+} from './utility/helpers'
 import { MainContent, Main, OverlayDiv } from './styled'
 import Magnifier from '../../../common/components/Magnifier'
 
@@ -209,31 +213,7 @@ const PlayerContent = ({
       (_q.testletQuestionId || '').includes(testletItemId)
     )
 
-  const saveUserResponse = () => {
-    if (!LCBPreviewModal && !previewPlayer) {
-      const { currentPageIds, response } = frameController
-      const extData = {}
-      for (const scoringId in currentPageIds) {
-        if (Object.prototype.hasOwnProperty.call(currentPageIds, scoringId)) {
-          const eduQuestions = getEduQuestions(scoringId.trim())
-          if (isEmpty(eduQuestions)) {
-            continue
-          }
-
-          eduQuestions.forEach((eduQuestion) => {
-            if (eduQuestion) {
-              extData[eduQuestion.id] = { [scoringId]: response[scoringId] }
-              const timeSpent = Date.now() - lastTime.current
-              onSubmitAnswer(eduQuestion.id, timeSpent, groupId, { extData })
-            }
-          })
-        }
-      }
-    }
-  }
-
-  const nextQuestion = () => {
-    saveUserResponse()
+  const handleNextQustion = () => {
     if (currentPage < testletItems.length) {
       frameController.sendNext()
     } else if (!LCBPreviewModal) {
@@ -248,11 +228,47 @@ const PlayerContent = ({
     }
   }
 
-  const prevQuestion = () => {
-    saveUserResponse()
-    frameController.sendPrevDev()
-    if (enableMagnifier) {
-      hideMagnifier()
+  const saveUserResponse = () => {
+    if (!LCBPreviewModal && !previewPlayer) {
+      const { currentPageIds, response } = frameController
+
+      const timeSpent = Date.now() - lastTime.current
+      const extData = {}
+      lastTime.current = Date.now()
+      // initialize assessment start time
+      window.localStorage.assessmentLastTime = lastTime.current
+      // the screen doesn't have questions.
+      if (isEmpty(currentPageIds)) {
+        return handleNextQustion()
+      }
+
+      for (const scoringId in currentPageIds) {
+        if (Object.prototype.hasOwnProperty.call(currentPageIds, scoringId)) {
+          const eduQuestions = getEduQuestions(scoringId.trim())
+          if (isEmpty(eduQuestions)) {
+            continue
+          }
+          eduQuestions.forEach((eduQuestion) => {
+            if (eduQuestion) {
+              const questionExtData = getExtDataForQuestion(
+                eduQuestion,
+                response[scoringId]
+              )
+              extData[eduQuestion.id] = {
+                [scoringId]: questionExtData,
+              }
+              if (!isEmpty(questionExtData)) {
+                onSubmitAnswer(eduQuestion.id, timeSpent, groupId, {
+                  extData,
+                  callback: handleNextQustion,
+                })
+              }
+            }
+          })
+        }
+      }
+    } else {
+      handleNextQustion()
     }
   }
 
@@ -262,7 +278,9 @@ const PlayerContent = ({
     }
     const { currentPageIds, response } = frameController
     for (const scoringId in currentPageIds) {
-      if (Object.prototype.hasOwnProperty.call(currentPageIds, scoringId)) {
+      if (
+        Object.prototype.hasOwnProperty.call(currentPageIds, scoringId.trim())
+      ) {
         const eduQuestions = getEduQuestions(scoringId.trim())
         if (isEmpty(eduQuestions)) {
           continue
@@ -293,10 +311,28 @@ const PlayerContent = ({
     }
   }
 
+  const finishedLoadTestlet = () => {
+    insertTestletMML(frameRef.current)
+  }
+
+  const handleTestletLog = (log) => {
+    if (!previewPlayer) {
+      const { response } = frameController
+      const logToSave = {}
+      keys(log).forEach((resId) => {
+        const value = getResponseValue(resId, response)
+        logToSave[resId] = {
+          ...log[resId],
+          r: value,
+        }
+      })
+      saveTestletLog(logToSave)
+    }
+  }
+
   useEffect(() => {
     if (testletConfig.testletURL && frameRef.current) {
       const { state: initState = {} } = testletState
-
       frameController = new ParentController(
         testletConfig.testletId,
         initState,
@@ -310,8 +346,9 @@ const PlayerContent = ({
         setCurrentScoring,
         handleReponse,
         handleTestletState,
-        handleLog: previewPlayer ? () => null : saveTestletLog,
-        submitTest: nextQuestion,
+        handleLog: handleTestletLog,
+        submitTest: saveUserResponse,
+        finishedLoad: finishedLoadTestlet,
       })
       if (enableMagnifier) {
         setTimeout(showMagnifier, 1000)
@@ -347,9 +384,8 @@ const PlayerContent = ({
         dropdownOptions={testletItems}
         currentPage={currentPage}
         onOpenExitPopup={openExitPopup}
-        onNextQuestion={nextQuestion}
+        onNextQuestion={saveUserResponse}
         unlockNext={unlockNext || LCBPreviewModal}
-        onPrevQuestion={prevQuestion}
         previewPlayer={previewPlayer}
         enableMagnifier={enableMagnifier}
         {...restProps}

@@ -31,6 +31,7 @@ import {
   getAdjustedHeightAndWidth,
   getAdjustedV1AnnotationCoordinatesForRender,
 } from '../../common/utils'
+import { roundPointToNearestValue } from '../Utils'
 import { Tools } from '../../../../widgets/Charts/components/Tools'
 
 const v1Dimenstions = {
@@ -367,7 +368,20 @@ class NumberLinePlotContainer extends PureComponent {
 
   updateValues() {
     const conf = this._graph.getSegments()
-    const { setValue, setElementsStash } = this.props
+    const { setValue, setElementsStash, numberlineAxis, canvas } = this.props
+    const { ticksDistance, minorTicks, snapToGrid = false } = numberlineAxis
+    const { xMin, xMax } = canvas
+    if (snapToGrid && Array.isArray(conf)) {
+      conf.forEach((obj) => {
+        obj.point1 = roundPointToNearestValue({
+          ticksDistance,
+          minorTicks,
+          point: obj.point1,
+          xMin,
+          xMax,
+        })
+      })
+    }
 
     setValue(conf)
     setElementsStash(conf, this.getStashId())

@@ -19,31 +19,31 @@ const AxisSegmentsOptions = ({
   const fontSizeList = [
     {
       id: 'small',
-      label: 'Small',
+      label: 'small',
       value: 10,
       selected: false,
     },
     {
       id: 'normal',
-      label: 'Normal',
+      label: 'normal',
       value: 12,
       selected: true,
     },
     {
       id: 'large',
-      label: 'Large',
+      label: 'large',
       value: 16,
       selected: false,
     },
     {
       id: 'extra_large',
-      label: 'Extra large',
+      label: 'extraLarge',
       value: 20,
       selected: false,
     },
     {
       id: 'huge',
-      label: 'Huge',
+      label: 'huge',
       value: 24,
       selected: false,
     },

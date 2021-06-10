@@ -30,10 +30,6 @@ const Main = styled.main`
   & p {
     margin: 0;
   }
-
-  @media (max-width: 768px) {
-    padding: 120px 26px 0;
-  }
 `
 
 export default Main

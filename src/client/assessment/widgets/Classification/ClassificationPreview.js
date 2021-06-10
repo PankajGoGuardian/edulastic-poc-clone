@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useContext, useRef } from 'react'
 import PropTypes from 'prop-types'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
 import { cloneDeep, isEqual, get, shuffle, uniq } from 'lodash'
 import 'core-js/features/array/flat'
 import {
@@ -23,7 +25,7 @@ import {
   CHECK,
   EDIT,
 } from '../../constants/constantsForQuestions'
-
+import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'
 import TableLayout from './components/TableLayout'
 import TableRow from './components/TableRow'
 
@@ -66,6 +68,7 @@ const ClassificationPreview = ({
   setQuestionData,
   isPrintPreview,
   isPrint,
+  hideCorrectAnswer,
 }) => {
   const listPosition = get(item, 'uiStyle.possibilityListPosition', 'left')
   const rowHeader = get(item, 'uiStyle.rowHeader', null)
@@ -230,7 +233,9 @@ const ClassificationPreview = ({
 
   const boxes = createEmptyArrayOfArrays()
 
-  const onDrop = (data, itemTo) => {
+  const onDrop = ({ item: _item = {}, from, fromColumnId }, itemTo) => {
+    const { id: itemId = '' } = _item
+
     const maxResponsePerCell = get(item, 'maxResponsePerCell', '')
     const dItems = cloneDeep(dragItems)
     const userAnswers = cloneDeep(answers)
@@ -243,7 +248,7 @@ const ClassificationPreview = ({
 
     // this is called when responses are dragged back to the container from the columns
     if (itemTo.flag === 'dragItems') {
-      const obj = posResp.find((ite) => ite.value === data.item)
+      const obj = posResp.find(({ id }) => id === itemId)
       if (obj) {
         Object.keys(userAnswers).forEach((key) => {
           const arr = userAnswers[key] || []
@@ -252,8 +257,8 @@ const ClassificationPreview = ({
             arr.splice(optionIndex, 1)
           }
         })
-        if (!dItems.flatMap((ite) => ite.value).includes(data.item)) {
-          dItems.push(posResponses.find((resp) => resp.value === data.item))
+        if (!dItems.flatMap(({ id }) => id).includes(itemId)) {
+          dItems.push(posResponses.find(({ id }) => id === itemId))
           setDragItems(dItems)
         }
       }
@@ -263,13 +268,13 @@ const ClassificationPreview = ({
        * responses are dragged from container to columns
        * or, from one column to another
        */
-      const obj = posResp.find((ite) => ite.value === data.item)
+      const obj = posResp.find(({ id }) => id === itemId)
       if (obj) {
         Object.keys(userAnswers).forEach((key) => {
           const arr = userAnswers[key] || []
           if (!duplicateResponses && arr.includes(obj.id)) {
             arr.splice(arr.indexOf(obj.id), 1)
-          } else if (data.from === 'column' && key === data.fromColumnId) {
+          } else if (from === 'column' && key === fromColumnId) {
             /**
              * when going from one column1 to column2
              * remove it from the column1
@@ -289,12 +294,10 @@ const ClassificationPreview = ({
        * get a new list of possible responses
        */
       if (!duplicateResponses) {
-        const includes = posResp
-          .flatMap((_obj) => _obj.value)
-          .includes(data.item)
+        const includes = posResp.flatMap(({ id }) => id).includes(itemId)
         if (includes) {
           dItems.splice(
-            dItems.findIndex((_obj) => _obj.value === data.item),
+            dItems.findIndex((id) => id === itemId),
             1
           )
           setDragItems(dItems)
@@ -360,7 +363,6 @@ const ClassificationPreview = ({
   }
 
   const dragItemProps = {
-    preview,
     disableResponse,
     from: 'container',
     dragHandle: showDragHandle,
@@ -492,7 +494,7 @@ const ClassificationPreview = ({
             )}
           </div>
           {view !== EDIT && <Instructions item={item} />}
-          {previewTab === SHOW || isReviewTab ? (
+          {(previewTab === SHOW || isReviewTab) && !hideCorrectAnswer ? (
             <ChoiceContainer>
               <CorrectAnswers
                 classifications={classifications}
@@ -565,4 +567,11 @@ ClassificationPreview.defaultProps = {
   isReviewTab: false,
 }
 
-export default withNamespaces('assessment')(ClassificationPreview)
+const enhance = compose(
+  withNamespaces('assessment'),
+  connect(null, {
+    setQuestionData: setQuestionDataAction,
+  })
+)
+
+export default enhance(ClassificationPreview)

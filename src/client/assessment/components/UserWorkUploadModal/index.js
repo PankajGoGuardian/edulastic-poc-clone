@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { FlexContainer, hasMediaDevice } from '@edulastic/common'
-import { StyledRadioButton, StyledRadioGroup } from './styled'
-import MainView from './MainView'
+import CameraView from './CameraView'
 import { ConfirmationModal } from '../../../author/src/components/common/ConfirmationModal'
 
 const UserWorkUploadModal = ({
@@ -9,21 +8,21 @@ const UserWorkUploadModal = ({
   onCancel,
   uploadFile,
   onUploadFinished,
+  cameraImageName,
 }) => {
-  const TAB_CAMERA = 'camera'
-  const TAB_DRAG_DROP = 'dragAndDrop'
-  const [activeTab, setActiveTab] = useState(TAB_CAMERA)
   const [hasCamera, setHasCamera] = useState(false)
-  const handleChange = (e) => setActiveTab(e.target.value)
 
-  useEffect(async () => {
-    const hasCameraMediaDevice = await hasMediaDevice('videoinput')
-    setHasCamera(hasCameraMediaDevice)
+  useEffect(() => {
+    async function cameraStateSetter() {
+      const hasCameraMediaDevice = await hasMediaDevice('videoinput')
+      setHasCamera(hasCameraMediaDevice)
+    }
+    cameraStateSetter()
   }, [])
 
   return (
     <ConfirmationModal
-      title="Show your work"
+      title="Upload Work"
       visible={isModalVisible}
       onCancel={onCancel}
       destroyOnClose
@@ -37,25 +36,14 @@ const UserWorkUploadModal = ({
         width="100%"
       >
         {hasCamera && (
-          <StyledRadioGroup
-            defaultValue={activeTab}
-            onChange={handleChange}
-            buttonStyle="solid"
-          >
-            <StyledRadioButton value={TAB_CAMERA}>
-              TAKE A PICTURE
-            </StyledRadioButton>
-            <StyledRadioButton value={TAB_DRAG_DROP}>
-              UPLOAD FILE
-            </StyledRadioButton>
-          </StyledRadioGroup>
+          <CameraView
+            uploadFile={uploadFile}
+            onCancel={onCancel}
+            onUploadFinished={onUploadFinished}
+            delayCount={3}
+            cameraImageName={cameraImageName}
+          />
         )}
-        <MainView
-          isCameraView={hasCamera && activeTab === TAB_CAMERA}
-          uploadFile={uploadFile}
-          onCancel={onCancel}
-          onUploadFinished={onUploadFinished}
-        />
       </FlexContainer>
     </ConfirmationModal>
   )

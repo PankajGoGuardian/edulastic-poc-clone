@@ -76,12 +76,12 @@ const MergeIdsTable = ({
 
   const classlinkHeaders = [
     { label: 'Edulastic Id', key: 'edulasticId' },
-    { label: 'Classlink Id', key: 'atlasId' },
+    { label: 'Edlink Id', key: 'atlasId' },
     { label: 'Status', key: 'status' },
   ]
 
   const headers = isClasslink ? classlinkHeaders : cleverHeaders
-  const title = isClasslink ? 'Classlink' : 'Clever'
+  const title = isClasslink ? 'Edlink' : 'Clever'
 
   const templateHeaders = {
     sch: ['school_id', 'id'],

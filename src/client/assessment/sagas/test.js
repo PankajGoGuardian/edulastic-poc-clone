@@ -4,16 +4,44 @@ import {
   assignmentApi,
   attchmentApi as attachmentApi,
 } from '@edulastic/api'
-import { takeEvery, call, all, put, select, take } from 'redux-saga/effects'
+import {
+  takeEvery,
+  call,
+  all,
+  put,
+  select,
+  take,
+  takeLatest,
+} from 'redux-saga/effects'
 import { Modal } from 'antd'
-import { notification, Effects } from '@edulastic/common'
-import * as Sentry from '@sentry/browser'
+import {
+  notification,
+  Effects,
+  captureSentryException,
+} from '@edulastic/common'
+import { getAccessToken } from '@edulastic/api/src/utils/Storage'
 import { push } from 'react-router-redux'
-import { keyBy as _keyBy, groupBy, get, flatten, cloneDeep, set } from 'lodash'
+import {
+  keyBy as _keyBy,
+  groupBy,
+  get,
+  flatten,
+  cloneDeep,
+  set,
+  isEmpty,
+} from 'lodash'
 import produce from 'immer'
-import { test as testContants, roleuser } from '@edulastic/constants'
+import {
+  test as testContants,
+  roleuser,
+  testActivityStatus,
+} from '@edulastic/constants'
 import { ShuffleChoices } from '../utils/test'
-import { getCurrentGroupWithAllClasses } from '../../student/Login/ducks'
+import { Fscreen, isiOS } from '../utils/helpers'
+import {
+  getCurrentGroupWithAllClasses,
+  toggleIosRestrictNavigationModalAction,
+} from '../../student/Login/ducks'
 import { markQuestionLabel } from '../Transformer'
 import {
   LOAD_TEST,
@@ -35,15 +63,29 @@ import {
   REMOVE_PREVIOUS_ANSWERS,
   CLEAR_USER_WORK,
   SET_SAVE_USER_RESPONSE,
+  SWITCH_LANGUAGE,
+  UPDATE_PLAYER_PREVIEW_STATE,
 } from '../constants/actions'
+import {
+  saveUserResponse as saveUserResponseAction,
+  setSavedBlurTimeAction,
+} from '../actions/items'
+import { saveUserResponse as saveUserResponseSaga } from './items'
 import { loadQuestionsAction } from '../actions/questions'
 import { loadBookmarkAction } from '../sharedDucks/bookmark'
 import {
   setPasswordValidateStatusAction,
   setPasswordStatusAction,
+  languageChangeSuccessAction,
+  setShowTestInfoSuccesAction,
 } from '../actions/test'
 import { setShuffledOptions } from '../actions/shuffledOptions'
-import { SET_RESUME_STATUS } from '../../student/Assignments/ducks'
+import {
+  getCurrentUserId,
+  SET_RESUME_STATUS,
+  transformAssignmentForRedirect,
+  fetchAssignments as fetchAssignmentsSaga,
+} from '../../student/Assignments/ducks'
 import {
   CLEAR_ITEM_EVALUATION,
   CHANGE_VIEW,
@@ -51,7 +93,15 @@ import {
 import { addAutoselectGroupItems } from '../../author/TestPage/ducks'
 import { PREVIEW } from '../constants/constantsForQuestions'
 import { getUserRole } from '../../author/src/selectors/user'
-import { setActiveAssignmentAction } from '../../student/sharedDucks/AssignmentModule/ducks'
+import {
+  setActiveAssignmentAction,
+  utaStartTimeUpdateRequired,
+} from '../../student/sharedDucks/AssignmentModule/ducks'
+import { getClassIds } from '../../student/Reports/ducks'
+import { startAssessmentAction } from '../actions/assessment'
+import { TIME_UPDATE_TYPE } from '../themes/common/TimedTestTimer'
+import { getTestLevelUserWorkSelector } from '../../student/sharedDucks/TestItem'
+
 // import { checkClientTime } from "../../common/utils/helpers";
 
 const { ITEM_GROUP_DELIVERY_TYPES, releaseGradeLabels } = testContants
@@ -82,6 +132,95 @@ const getQuestions = (testItems = []) => {
   return allQuestions
 }
 
+const getSettings = (test, testActivity, preview) => {
+  const { assignmentSettings = {} } = testActivity || {}
+  const calcType = !preview ? assignmentSettings.calcType : test.calcType
+  // graphing calculator is not present for EDULASTIC so defaulting to DESMOS for now, below work around should be removed once EDULASTIC calculator is built
+  const calcProvider =
+    calcType === testContants.calculatorTypes.GRAPHING
+      ? 'DESMOS'
+      : preview
+      ? test.calculatorProvider
+      : testActivity?.calculatorProvider
+
+  const maxAnswerChecks = preview
+    ? test.maxAnswerChecks
+    : assignmentSettings.maxAnswerChecks
+  const passwordPolicy = preview
+    ? test.passwordPolicy
+    : assignmentSettings.passwordPolicy
+  const testType = preview ? test.testType : assignmentSettings.testType
+  const playerSkinType = preview
+    ? test.playerSkinType
+    : assignmentSettings.playerSkinType
+  const showMagnifier = preview
+    ? test.showMagnifier
+    : assignmentSettings.showMagnifier
+  const timedAssignment = preview
+    ? test.timedAssignment
+    : assignmentSettings.timedAssignment
+  const allowedTime = preview
+    ? test.allowedTime
+    : assignmentSettings.allowedTime
+  const pauseAllowed = preview
+    ? test.pauseAllowed
+    : assignmentSettings.pauseAllowed
+  const enableScratchpad = preview
+    ? test.enableScratchpad
+    : assignmentSettings.enableScratchpad
+  const releaseScore = preview
+    ? test.releaseScore
+    : testActivity?.testActivity?.releaseScore
+
+  const enableSkipAlert = preview
+    ? test.enableSkipAlert
+    : assignmentSettings.enableSkipAlert
+
+  return {
+    testType,
+    calcProvider,
+    playerSkinType,
+    showMagnifier,
+    timedAssignment,
+    allowedTime,
+    pauseAllowed,
+    enableScratchpad,
+    enableSkipAlert,
+    calcType: calcType || testContants.calculatorTypes.NONE,
+    maxAnswerChecks: maxAnswerChecks || 0,
+    passwordPolicy:
+      passwordPolicy ||
+      testContants.passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF,
+    showPreviousAttempt: assignmentSettings.showPreviousAttempt || 'NONE',
+    endDate: assignmentSettings.endDate,
+    closePolicy: assignmentSettings.closePolicy,
+    releaseScore,
+    blockNavigationToAnsweredQuestions:
+      assignmentSettings?.blockNavigationToAnsweredQuestions || false,
+    isTeacherPremium: assignmentSettings?.isTeacherPremium || false,
+    blockSaveAndContinue: assignmentSettings?.blockSaveAndContinue || false,
+    restrictNavigationOut: assignmentSettings?.restrictNavigationOut || false,
+    restrictNavigationOutAttemptsThreshold:
+      assignmentSettings?.restrictNavigationOutAttemptsThreshold,
+  }
+}
+
+function getScratchpadDataFromAttachments(attachments) {
+  const scratchPadData = {}
+  attachments.forEach((attachment) => {
+    if (attachment?.referrerId3) {
+      const { referrerId2: itemId, referrerId3: qId } = attachment
+      scratchPadData[itemId] = scratchPadData[itemId] || {
+        scratchpad: {},
+      }
+      scratchPadData[itemId].scratchpad[qId] = attachment.data.scratchpad
+    } else {
+      scratchPadData[attachment.referrerId2] = attachment.data
+    }
+  })
+  return scratchPadData
+}
+
 function* loadTest({ payload }) {
   const {
     testActivityId,
@@ -93,7 +232,6 @@ function* loadTest({ payload }) {
     isShowStudentWork = false,
     playlistId,
     currentAssignmentId,
-    sharedType = '',
   } = payload
   try {
     if (!preview && !testActivityId) {
@@ -131,14 +269,29 @@ function* loadTest({ payload }) {
       },
     })
 
+    const studentAssesment = yield select((state) =>
+      (state.router.location.pathname || '').match(
+        new RegExp('/student/assessment/.*/class/.*/uta/.*/itemId/.*')
+      )
+    )
+
     // for urls that doesnt have groupId, fallback
     const groupId =
       groupIdFromUrl || (yield select(getCurrentGroupWithAllClasses))
 
     // if !preivew, need to load previous responses as well!
     const getTestActivity = !preview
-      ? call(testActivityApi.getById, testActivityId, groupId)
+      ? call(
+          testActivityApi.getById,
+          testActivityId,
+          groupId,
+          !!studentAssesment
+        )
       : false
+    const userAuthenticated = getAccessToken()
+    const getPublicTest = userAuthenticated
+      ? testsApi.getById
+      : testsApi.getPublicTest
     const testRequest = !demo
       ? call(preview ? testsApi.getById : testsApi.getByIdMinimal, testId, {
           validation: true,
@@ -148,26 +301,32 @@ function* loadTest({ payload }) {
           ...(playlistId ? { playlistId } : {}),
           ...(currentAssignmentId ? { assignmentId: currentAssignmentId } : {}),
         }) // when preview(author side) use normal non cached api
-      : call(testsApi.getPublicTest, testId, { sharedType })
+      : call(getPublicTest, testId)
     const _response = yield all([getTestActivity])
     const testActivity = _response?.[0] || {}
+    const isFromSummary = yield select((state) =>
+      get(state, 'router.location.state.fromSummary', false)
+    )
+    const _switchLanguage = yield select((state) =>
+      get(state, 'router.location.state.switchLanguage', false)
+    )
     if (!preview) {
       /**
        * src/client/assessment/sagas/items.js:saveUserResponse
        * requires current assignment id in store (studentAssignment.current)
        */
-      const { assignmentId } = testActivity?.testActivity || {}
+      const { assignmentId, timeInBlur = 0 } = testActivity?.testActivity || {}
       if (assignmentId) {
         yield put(setActiveAssignmentAction(assignmentId))
       }
 
-      const isFromSummary = yield select((state) =>
-        get(state, 'router.location.state.fromSummary', false)
-      )
+      yield put(setSavedBlurTimeAction(timeInBlur))
+
       let passwordValidated =
         testActivity?.assignmentSettings?.passwordPolicy ===
           testContants?.passwordPolicy?.REQUIRED_PASSWORD_POLICY_OFF ||
-        isFromSummary
+        isFromSummary ||
+        _switchLanguage
       if (passwordValidated) {
         yield put(setPasswordValidateStatusAction(true))
       }
@@ -183,6 +342,7 @@ function* loadTest({ payload }) {
         type: TEST_ACTIVITY_LOADING,
         payload: false,
       })
+
       while (!passwordValidated) {
         try {
           const { payload: _payload } = yield take(GET_ASSIGNMENT_PASSWORD)
@@ -210,7 +370,7 @@ function* loadTest({ payload }) {
             yield put(setPasswordStatusAction('validation failed'))
           }
           console.log(err)
-          Sentry.captureException(err)
+          captureSentryException(err)
         }
       }
       yield put(setPasswordStatusAction(''))
@@ -245,49 +405,28 @@ function* loadTest({ payload }) {
     test.testItems = test.itemGroups.flatMap(
       (itemGroup) => itemGroup.items || []
     )
+    const {
+      SKIPPED,
+      SKIPPED_AND_WRONG,
+      SKIPPED_PARTIAL_AND_WRONG,
+    } = testContants.redirectPolicy.QuestionDelivery
     if (
-      testActivity?.assignmentSettings?.questionsDelivery ===
-        testContants.redirectPolicy.QuestionDelivery.SKIPPED_AND_WRONG &&
+      [SKIPPED, SKIPPED_AND_WRONG, SKIPPED_PARTIAL_AND_WRONG].includes(
+        testActivity?.assignmentSettings?.questionsDelivery
+      ) &&
       testActivity.itemsToBeExcluded?.length
     ) {
-      // mutating to filter the excluded items as the settings is to show SKIPPED AND WRONG
+      // mutating to filter the excluded items as the settings is to show SKIPPED AND WRONG / SKIPPED
       test.testItems = test.testItems.filter(
         (item) => !testActivity.itemsToBeExcluded.includes(item._id)
       )
     }
     // eslint-disable-next-line prefer-const
-    let { testItems, passages, testType, metadata } = test
+    let { testItems, passages } = test
 
-    const settings = {
-      // graphing calculator is not present for EDULASTIC so defaulting to DESMOS for now, below work around should be removed once EDULASTIC calculator is built
-      calcProvider:
-        testActivity?.testActivity?.calcType ===
-          testContants.calculatorTypes.GRAPHING ||
-        test.calcType === testContants.calculatorTypes.GRAPHING
-          ? 'DESMOS'
-          : testActivity?.calculatorProvider,
-      calcType:
-        testActivity?.assignmentSettings?.calcType ||
-        test.calcType ||
-        testContants.calculatorTypes.NONE,
-      maxAnswerChecks: testActivity?.assignmentSettings?.maxAnswerChecks || 0,
-      passwordPolicy:
-        testActivity?.assignmentSettings?.passwordPolicy ||
-        testContants.passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF,
-      showPreviousAttempt:
-        testActivity?.assignmentSettings?.showPreviousAttempt || 'NONE',
-      testType: testActivity?.assignmentSettings?.testType,
-      playerSkinType: testActivity?.assignmentSettings?.playerSkinType,
-      showMagnifier: testActivity?.assignmentSettings?.showMagnifier,
-      endDate: testActivity?.assignmentSettings?.endDate,
-      closePolicy: testActivity?.assignmentSettings?.closePolicy,
-      timedAssignment: testActivity?.assignmentSettings?.timedAssignment,
-      allowedTime: testActivity?.assignmentSettings?.allowedTime,
-      pauseAllowed: testActivity?.assignmentSettings?.pauseAllowed,
-      showUserWork: testActivity?.assignmentSettings?.showUserWork,
-      enableSkipAlert: testActivity?.assignmentSettings?.enableSkipAlert,
-      releaseScore: testActivity?.testActivity?.releaseScore,
-    }
+    const settings = getSettings(test, testActivity, preview)
+
+    const testType = settings.testType || test.testType
 
     const answerCheckByItemId = {}
     ;(testActivity.questionActivities || []).forEach((item) => {
@@ -299,12 +438,39 @@ function* loadTest({ payload }) {
       let allAnswers = {}
       let allPrevAnswers = {}
       let allEvaluation = {}
-
+      let assignmentById = yield select(
+        (state) => state?.studentAssignment?.byId || {}
+      )
+      if (isEmpty(assignmentById) || !assignmentById) {
+        // load assignments
+        yield call(fetchAssignmentsSaga)
+      }
       const {
         testActivity: activity,
         questionActivities = [],
         previousQuestionActivities = [],
       } = testActivity
+      assignmentById = yield select(
+        (state) => state?.studentAssignment?.byId || {}
+      )
+
+      if (settings.restrictNavigationOut && isiOS()) {
+        Fscreen.safeExitfullScreen()
+        yield put(push('/home/assignments'))
+        yield put(toggleIosRestrictNavigationModalAction(true))
+        return
+      }
+      if (activity.isPaused) {
+        Fscreen.safeExitfullScreen()
+        yield put(push('/home/assignments'))
+        setTimeout(() => {
+          notification({
+            type: 'warning',
+            msg: 'Your assignment is paused contact your instructor',
+          })
+        }, 2000)
+        return
+      }
       // load bookmarks
       const qActivitiesGroupedByTestItem = groupBy(
         questionActivities,
@@ -338,7 +504,7 @@ function* loadTest({ payload }) {
       previousQuestionActivities.forEach((item) => {
         allPrevAnswers = {
           ...allPrevAnswers,
-          [item.qid]: item.userResponse,
+          [`${item.testItemId}_${item.qid}`]: item.userResponse,
         }
         allEvaluation = {
           ...allEvaluation,
@@ -369,15 +535,11 @@ function* loadTest({ payload }) {
           referrerId: testActivityId,
         }
       )
-      const scratchPadData = {}
-      attachments.forEach((attachment) => {
-        scratchPadData[attachment.referrerId2] = attachment.data
-      })
-
+      const scratchPadData = getScratchpadDataFromAttachments(attachments)
       questionActivities.forEach((item) => {
         allAnswers = {
           ...allAnswers,
-          [item.qid]: item.userResponse,
+          [`${item.testItemId}_${item.qid}`]: item.userResponse,
         }
         if (item.scratchPad) {
           scratchPadData[item.testItemId] = {
@@ -395,7 +557,6 @@ function* loadTest({ payload }) {
           lastAttemptedQuestion = item
         }
       })
-
       if (Object.keys(scratchPadData).length) {
         yield put({
           type: LOAD_SCRATCH_PAD,
@@ -446,20 +607,33 @@ function* loadTest({ payload }) {
       ) || {}
 
       // move to last attended question
-      if (loadFromLast && testType !== testContants.type.TESTLET) {
-        yield put(
-          push({
-            pathname: `${lastAttendedQuestion}`,
-            state: prevLocationState,
+      if (!settings.blockNavigationToAnsweredQuestions && !isFromSummary) {
+        if (loadFromLast && testType !== testContants.type.TESTLET) {
+          const itemId = testItemIds[lastAttendedQuestion]
+          yield put(
+            push({
+              pathname: `${itemId}`,
+              state: prevLocationState,
+            })
+          )
+          yield put({
+            type: SET_RESUME_STATUS,
+            payload: false,
           })
-        )
-        yield put({
-          type: SET_RESUME_STATUS,
-          payload: false,
-        })
+        } else if (testType !== testContants.type.TESTLET) {
+          yield put(
+            push({
+              pathname: `${testItemIds[0]}`,
+              state: prevLocationState,
+            })
+          )
+        }
       }
     }
-    if (!isShowStudentWork) markQuestionLabel(testItems)
+
+    if (!isShowStudentWork) {
+      testItems = markQuestionLabel(testItems)
+    }
     let questions = getQuestions(testItems)
     if (test.passages) {
       const passageItems = test.passages.map((passage) => passage.data || [])
@@ -487,24 +661,95 @@ function* loadTest({ payload }) {
         settings,
         answerCheckByItemId,
         showMagnifier: settings.showMagnifier || test.showMagnifier,
+        languagePreference: testActivity.testActivity?.languagePreference,
+        grades: test.grades,
+        subjects: test.subjects,
       },
     })
+    if (preview) {
+      yield put({
+        type: UPDATE_PLAYER_PREVIEW_STATE,
+        payload: {
+          instruction: test.instruction,
+          hasInstruction: test.hasInstruction,
+          blockNavigationToAnsweredQuestions:
+            test.blockNavigationToAnsweredQuestions,
+          multiLanguageEnabled: test.multiLanguageEnabled,
+        },
+      })
+      if (
+        !(
+          test.multiLanguageEnabled ||
+          test.hasInstruction ||
+          test.timedAssignment
+        )
+      ) {
+        yield put(setShowTestInfoSuccesAction(true))
+      }
+    }
     yield put(setPasswordValidateStatusAction(true))
 
     yield put({
       type: SET_TEST_LOADING_STATUS,
       payload: false,
     })
+
+    if (
+      settings.blockNavigationToAnsweredQuestions &&
+      testActivity.questionActivities.length &&
+      !test.isDocBased
+    ) {
+      const testItemIds = testItems.map((i) => i._id)
+      let lastVisitedQuestion = testActivity.questionActivities[0]
+      let lastVisitedItemIndex = 0
+      testActivity.questionActivities.forEach((item) => {
+        const itemIndex = testItemIds.indexOf(item.testItemId)
+        if (itemIndex > testItemIds.indexOf(lastVisitedQuestion.testItemId)) {
+          lastVisitedQuestion = item
+          lastVisitedItemIndex = itemIndex
+        }
+      })
+
+      const playerTestType =
+        testType === testContants.type.COMMON
+          ? testContants.type.ASSESSMENT
+          : testType
+
+      if (testItems.length === lastVisitedItemIndex + 1) {
+        yield put(
+          push(
+            `/student/${playerTestType}/${testId}/class/${groupId}/uta/${testActivityId}/test-summary`
+          )
+        )
+      } else {
+        const itemId = testItems[lastVisitedItemIndex + 1]._id
+        yield put(
+          push(
+            `/student/${playerTestType}/${testId}/class/${groupId}/uta/${testActivityId}/itemId/${itemId}`
+          )
+        )
+      }
+    }
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     yield put({
       type: SET_TEST_LOADING_ERROR,
       payload: err,
     })
 
     if (preview) {
-      notification({ messageKey: 'youCanNoLongerUse' })
-      return Modal.destroyAll()
+      if (getAccessToken()) {
+        setTimeout(() => {
+          window.location.href = '/author/tests'
+        }, 3000)
+        yield put(push('/author/tests'))
+      } else {
+        notification({ messageKey: 'youCanNoLongerUse' })
+        setTimeout(() => {
+          window.location.href = '/'
+        }, 3000)
+        return Modal.destroyAll()
+      }
     }
 
     let messageKey = 'failedLoadingTest'
@@ -513,10 +758,26 @@ function* loadTest({ payload }) {
     if (err.status) {
       if (err.status === 400) {
         messageKey = 'invalidAction'
+      } else if (err.status === 302) {
+        messageKey = 'testPausedOrClosedByTeacher'
+      } else if (err.status === 403) {
+        if (userRole === roleuser.STUDENT || userRole === roleuser.PARENT) {
+          const { data = {} } = err.response || {}
+          const { message: errorMessage } = data
+          notification({
+            msg: errorMessage || 'Something went wrong!',
+          })
+          Fscreen.exitFullscreen()
+          return yield put(push('/home/assignments'))
+        }
+        notification({
+          msg: 'This test is marked private',
+        })
       }
     }
     if (userRole === roleuser.STUDENT) {
       notification({ messageKey })
+      Fscreen.exitFullscreen()
       return yield put(push('/home/assignments'))
     }
   }
@@ -532,12 +793,20 @@ function* loadPreviousResponses(payload) {
     })
   } catch (err) {
     console.log(err)
-    Sentry.captureException(err)
+    captureSentryException(err)
   }
 }
 
 function* submitTest({ payload }) {
   try {
+    const { itemResponse } = payload
+    if (itemResponse) {
+      const saveUserResponseActionObject = saveUserResponseAction(
+        ...itemResponse
+      )
+      yield call(saveUserResponseSaga, saveUserResponseActionObject)
+    }
+
     yield put({
       type: SET_SAVE_USER_RESPONSE,
       payload: true,
@@ -561,11 +830,31 @@ function* submitTest({ payload }) {
     if (testActivityId === 'test' || !testActivityId) {
       throw new Error('Unable to submit the test.')
     }
-    yield call(testActivityApi.submit, testActivityId, groupId)
+
+    const testLevelAttachments = yield select(getTestLevelUserWorkSelector)
+
+    if ((testLevelAttachments || []).length) {
+      const reqPayload = {
+        testActivityId,
+        groupId,
+        userWork: { attachments: testLevelAttachments },
+      }
+      yield call(testActivityApi.saveUserWork, reqPayload)
+    }
+
+    yield testActivityApi.submit(testActivityId, groupId)
     // log the details on auto submit
     // if (payload.autoSubmit) {
     //   checkClientTime({ testActivityId, timedTest: true });
     // }
+    const isCliUser = yield select((state) => state.user?.isCliUser)
+    if (isCliUser) {
+      window.parent.postMessage(
+        JSON.stringify({ type: 'SUBMIT_ASSIGNMENT' }),
+        '*'
+      )
+    }
+
     yield put({
       type: SET_TEST_ACTIVITY_ID,
       payload: { testActivityId: '' },
@@ -599,7 +888,6 @@ function* submitTest({ payload }) {
 
     if (preventRouteChange) return
     const test = yield select((state) => state.test)
-    const isCliUser = yield select((state) => state.user?.isCliUser)
 
     if (isCliUser) {
       yield put(
@@ -614,17 +902,57 @@ function* submitTest({ payload }) {
       return
     }
 
-    if (test.settings?.releaseScore === releaseGradeLabels.DONT_RELEASE) {
-      return yield put(push(`/home/grades`))
-    }
+    const assignmentId = yield select(
+      (state) => state.studentAssignment.current
+    )
 
-    return yield put(
-      push(
-        `/home/class/${groupId}/test/${test.testId}/testActivityReport/${testActivityId}`
+    // eslint-disable-next-line prefer-const
+    let [assignment, testActivities] = yield Promise.all([
+      assignmentApi.getById(assignmentId),
+      assignmentApi.fetchTestActivities(assignmentId, groupId),
+    ])
+    const userId = yield select(getCurrentUserId)
+    const classIds = yield select(getClassIds)
+    const reportsGroupedByClassIdentifier = groupBy(
+      testActivities,
+      'assignmentClassIdentifier'
+    )
+    const groupedReportsByAssignmentId = groupBy(
+      testActivities,
+      (item) => `${item.assignmentId}_${item.groupId}`
+    )
+    assignment = transformAssignmentForRedirect(
+      groupId,
+      userId,
+      classIds,
+      reportsGroupedByClassIdentifier,
+      groupedReportsByAssignmentId,
+      assignment
+    )
+    const attempts = testActivities.filter((el) =>
+      [testActivityStatus.ABSENT, testActivityStatus.SUBMITTED].includes(
+        el.status
       )
     )
+    let maxAttempt = assignment.class.find((item) => item._id == groupId)
+      ?.maxAttempts
+    if (!maxAttempt) {
+      maxAttempt = assignment.maxAttempts || 1
+    }
+
+    if (attempts.length >= maxAttempt) {
+      if (test.settings?.releaseScore === releaseGradeLabels.DONT_RELEASE) {
+        return yield put(push(`/home/grades`))
+      }
+      return yield put(
+        push(
+          `/home/class/${groupId}/test/${test.testId}/testActivityReport/${testActivityId}`
+        )
+      )
+    }
+    return yield put(push(`/home/assignments`))
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     const { data = {} } = err.response || {}
     const { message: errorMessage } = data
     if (err.status === 403) {
@@ -645,13 +973,68 @@ function* submitTest({ payload }) {
       type: SET_SAVE_USER_RESPONSE,
       payload: false,
     })
+    Fscreen.safeExitfullScreen()
+  }
+}
+
+function* switchLanguage({ payload }) {
+  try {
+    const testActivityId = yield select(
+      (state) => state.test && state.test.testActivityId
+    )
+    const { testActivity } = yield call(testActivityApi.switchLanguage, {
+      testActivityId,
+      ...payload,
+    })
+    const {
+      groupId,
+      testId,
+      _id,
+      itemsToDeliverInGroup,
+      languagePreference,
+    } = testActivity
+    yield put(
+      languageChangeSuccessAction({ languagePreference, testActivityId: _id })
+    )
+    const testType = yield select((state) => state.test && state.test.testType)
+    const urlTestType =
+      testType === testContants.type.COMMON
+        ? testContants.type.ASSESSMENT
+        : testType
+    const firstItemId = itemsToDeliverInGroup[0].items[0]
+    yield put(startAssessmentAction())
+    yield put({
+      type: LOAD_SCRATCH_PAD,
+      payload: {},
+    })
+    yield put(utaStartTimeUpdateRequired(TIME_UPDATE_TYPE.START))
+    yield put(push('/'))
+    yield put(
+      push({
+        pathname: `/student/${urlTestType}/${testId}/class/${groupId}/uta/${_id}/itemId/${firstItemId}`,
+        state: {
+          switchLanguage: true,
+        },
+      })
+    )
+  } catch (err) {
+    console.log(err)
+    captureSentryException(err)
+    notification({
+      msg: err.response?.data?.message || 'Something went wrong!',
+    })
   }
 }
 
 export default function* watcherSaga() {
   yield all([
     yield takeEvery(LOAD_TEST, loadTest),
-    yield Effects.throttleAction(3000, FINISH_TEST, submitTest),
+    yield Effects.throttleAction(
+      process.env.REACT_APP_QA_ENV ? 60000 : 10000,
+      FINISH_TEST,
+      submitTest
+    ),
     yield takeEvery(LOAD_PREVIOUS_RESPONSES_REQUEST, loadPreviousResponses),
+    yield takeLatest(SWITCH_LANGUAGE, switchLanguage),
   ])
 }

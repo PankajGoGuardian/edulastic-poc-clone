@@ -21,7 +21,12 @@ import { ConfirmationModal } from '../../../src/components/common/ConfirmationMo
 
 export const ManageContentOuterWrapper = styled.div`
   width: 400px;
+  height: 100%;
   border-radius: 4px;
+
+  .inner-wrapper {
+    height: 100%;
+  }
 
   @media (max-width: ${extraDesktopWidthMax}) {
     width: 340px;
@@ -74,10 +79,10 @@ export const ToggleManageContent = styled.div`
 
 export const ManageContentContainer = styled.div`
   width: 100%;
+  height: 100%;
   background: ${white};
-  padding: 20px;
-  border-radius: 10px;
-  border: 1px solid ${borderGrey4};
+  padding: 30px 0px 20px 20px;
+  border-left: 1px solid ${borderGrey4};
 
   .ant-spin {
     position: relative;
@@ -150,12 +155,13 @@ export const SearchIcon = styled(IconSearch)`
   transform: translateY(-50%);
   width: 14px;
   height: 14px;
-  cursor: pointer;
 `
 
 export const SearchBar = styled(SelectInputStyled)`
+  transition: 1s;
   &.ant-select .ant-select-selection {
     min-height: 40px;
+    transition: 1s;
 
     @media (max-width: ${extraDesktopWidthMax}) {
       min-height: 38px;
@@ -230,12 +236,12 @@ export const ResourceDataList = styled.div`
   align-items: start;
   height: ${({ urlHasUseThis, isDifferentiationTab }) => {
     if (isDifferentiationTab) {
-      return 'calc(100vh - 355px)'
+      return 'calc(100vh - 230px)'
     }
     if (urlHasUseThis) {
-      return 'calc(100vh - 305px)'
+      return 'calc(100vh - 230px)'
     }
-    return 'calc(100vh - 345px)'
+    return 'calc(100vh - 220px)'
   }};
 
   &::-webkit-scrollbar {
@@ -327,5 +333,15 @@ export const ModalWrapper = styled(Modal)`
         }
       }
     }
+  }
+`
+export const FlexRow = styled.div`
+  width: 100%;
+  margin-bottom: 15px;
+`
+
+export const CreateNewTestLink = styled.a`
+  &:hover {
+    color: white;
   }
 `

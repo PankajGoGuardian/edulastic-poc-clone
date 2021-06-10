@@ -38,7 +38,10 @@ const CurriculumSubHeader = ({
   } = destinationCurriculumSequence
 
   const subHeaderIcon1 = !!grades.length && (
-    <SubHeaderInfoCard data-cy="playlist-grade">
+    <SubHeaderInfoCard
+      data-test={isManageContentActive}
+      data-cy="playlist-grade"
+    >
       <GraduationCapIcon color="grey" />
       <SubHeaderInfoCardText>Grade {grades.join(', ')}</SubHeaderInfoCardText>
     </SubHeaderInfoCard>
@@ -89,9 +92,9 @@ const CurriculumSubHeader = ({
               <SubHeaderTitle>Module progress</SubHeaderTitle>
               <SubHeaderModuleProgressContainer data-cy="module-pogress">
                 <div>
-                  <span className="assigned">{`${assigned}/${
-                    summaryData?.length || 0
-                  }`}</span>
+                  <span className="assigned">
+                    {`${assigned}/${summaryData?.length || 0}`}
+                  </span>
                   <span className="assigned-label">Assigned</span>
                 </div>
                 <SubHeaderModuleProgressTagContainer>
@@ -124,6 +127,7 @@ const CurriculumSubHeader = ({
                     isGhost
                     isBlue
                     onClick={toggleManageContentClick('manageContent')}
+                    data-cy="customizeContent"
                   >
                     Customize Content
                   </CustomizeButton>
@@ -138,6 +142,7 @@ const CurriculumSubHeader = ({
                   <StyledButton
                     isGhost
                     onClick={toggleManageContentClick('summary')}
+                    data-cy="viewSummary"
                   >
                     View Summary
                   </StyledButton>

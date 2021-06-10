@@ -7,9 +7,13 @@ import { Select } from 'antd'
 import { SelectInputStyled } from '@edulastic/common'
 import { IconGroup, IconClass } from '@edulastic/icons'
 import { lightGrey10 } from '@edulastic/colors'
+import { test as testConst } from '@edulastic/constants'
 import { get, curry, isEmpty, find, uniq } from 'lodash'
 import { receiveClassListAction } from '../../../Classes/ducks'
-import { getClassListSelector } from '../../duck'
+import {
+  getAssignedClassesByIdSelector,
+  getClassListSelector,
+} from '../../duck'
 import {
   getUserOrgId,
   getSchoolsByUserRoleSelector,
@@ -120,7 +124,8 @@ class ClassList extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { test } = this.props
+    const { test, testType } = this.props
+    const { filterClassIds } = this.state
     if (prevProps.test._id !== test._id) {
       const { subjects = [], grades = [] } = test
       // eslint-disable-next-line react/no-did-update-set-state
@@ -134,7 +139,14 @@ class ClassList extends React.Component {
           },
         }),
         this.loadClassList
-      )
+      ) // eslint-disable-line
+    }
+    if (
+      prevProps.testType !== testType &&
+      testType === testConst.type.COMMON &&
+      filterClassIds.length
+    ) {
+      this.setState({ filterClassIds: [] }) // eslint-disable-line
     }
   }
 
@@ -157,15 +169,30 @@ class ClassList extends React.Component {
   }
 
   handleClassTypeFilter = (key) => {
+    const { selectClass, classList, selectedClasses } = this.props
+    const _selectedClasses = classList
+      .filter(
+        (item) =>
+          (key === 'all' || item.type === key) &&
+          selectedClasses.includes(item._id)
+      )
+      .map((item) => item._id)
+    selectClass('class', _selectedClasses, classList)
     this.setState({ classType: key })
   }
 
   handleSelectAll = (checked) => {
-    const { selectClass, classList } = this.props
-    const { filterClassIds } = this.state
+    const { selectClass, classList, assignedClassesById, testType } = this.props
+    const { filterClassIds, classType } = this.state
     let filterclassList = []
     if (checked) {
-      const selectedClasses = classList.map((item) => item._id)
+      const selectedClasses = classList
+        .filter(
+          (item) =>
+            (classType === 'all' || item.type === classType) &&
+            !assignedClassesById[testType][item._id]
+        )
+        .map((item) => item._id)
       selectClass('class', selectedClasses, classList)
       filterclassList = selectedClasses
     } else {
@@ -178,7 +205,7 @@ class ClassList extends React.Component {
 
   handleClassSelectFromDropDown = (value) => {
     const { classList, selectClass } = this.props
-    this.setState({ filterClassIds: value }, () =>
+    this.setState({ classType: 'all', filterClassIds: value }, () =>
       selectClass('class', value, classList)
     )
   }
@@ -191,9 +218,10 @@ class ClassList extends React.Component {
       selectClass,
       selectedClasses,
       tagList,
+      assignedClassesById,
+      testType,
     } = this.props
     const { searchTerms, classType, filterClassIds } = this.state
-
     const tableData = classList
       .filter((item) => {
         if (!filterClassIds.length)
@@ -216,6 +244,13 @@ class ClassList extends React.Component {
         }
       },
       onSelectAll: this.handleSelectAll,
+      getCheckboxProps: (record) => {
+        if (record && record.key && assignedClassesById[testType][record.key]) {
+          return {
+            disabled: true,
+          }
+        }
+      },
     }
 
     const selectedClassData =
@@ -227,7 +262,7 @@ class ClassList extends React.Component {
           ?.filter((i) => !!i)
       )?.length || 0
     const classesCount = selectedClassData?.filter(
-      ({ type }) => type === 'class'
+      ({ type }) => classType === 'all' || type === classType
     )?.length
     const studentsCount =
       selectedClassData?.reduce(
@@ -241,7 +276,7 @@ class ClassList extends React.Component {
         width: '25%',
         dataIndex: 'className',
         key: 'className',
-        sorter: (a, b) => a.className > b.className,
+        sorter: (a, b) => a.className.localeCompare(b.className),
         sortDirections: ['descend', 'ascend'],
         render: (className, row) => (
           <div>
@@ -260,7 +295,7 @@ class ClassList extends React.Component {
                 color={lightGrey10}
               />
             )}
-            <span>{className}</span>
+            <span data-cy="className">{className}</span>
             <Tags
               data-cy="tags"
               tags={row.tags}
@@ -276,7 +311,7 @@ class ClassList extends React.Component {
         width: '25%',
         dataIndex: 'teacher',
         key: 'teacher',
-        sorter: (a, b) => a.teacher > b.teacher,
+        sorter: (a, b) => a.teacher.localeCompare(b.teacher),
         sortDirections: ['descend', 'ascend'],
       },
       {
@@ -284,7 +319,7 @@ class ClassList extends React.Component {
         width: '25%',
         key: 'subject',
         dataIndex: 'subject',
-        sorter: (a, b) => a.subject > b.subject,
+        sorter: (a, b) => a.subject.localeCompare(b.subject),
         sortDirections: ['descend', 'ascend'],
       },
       {
@@ -292,7 +327,7 @@ class ClassList extends React.Component {
         width: '15%',
         key: 'grades',
         dataIndex: 'grades',
-        sorter: (a, b) => a.grades > b.grades,
+        sorter: (a, b) => `${a.grades}`.localeCompare(`${b.grades}`),
         sortDirections: ['descend', 'ascend'],
       },
     ]
@@ -303,6 +338,7 @@ class ClassList extends React.Component {
           <StyledRowLabel>
             School
             <SelectInputStyled
+              data-cy="schoolSelect"
               mode="multiple"
               placeholder="All School"
               showSearch
@@ -335,6 +371,7 @@ class ClassList extends React.Component {
                   .toLowerCase()
                   .indexOf(input.toLowerCase()) >= 0
               }
+              data-cy="class-grades-filter"
             >
               {allGrades.map(
                 ({ value, text, isContentGrade }) =>
@@ -360,6 +397,7 @@ class ClassList extends React.Component {
                   .toLowerCase()
                   .indexOf(input.toLowerCase()) >= 0
               }
+              data-cy="class-subject-filter"
             >
               {allSubjects.map(({ value, text }) => (
                 <Select.Option key={value} value={value}>
@@ -372,6 +410,7 @@ class ClassList extends React.Component {
           <StyledRowLabel>
             Course
             <SelectInputStyled
+              data-cy="selectCourses"
               mode="multiple"
               placeholder="All Course"
               onChange={changeField('courseIds')}
@@ -393,9 +432,12 @@ class ClassList extends React.Component {
           <StyledRowLabel>
             Show Class/Groups
             <SelectInputStyled
+              data-cy="showClassGroup"
               placeholder="All"
               onChange={this.handleClassTypeFilter}
               showSearch
+              value={classType}
+              disabled={filterClassIds.length}
               filterOption={(input, option) =>
                 option.props.children
                   .toLowerCase()
@@ -427,9 +469,14 @@ class ClassList extends React.Component {
                   .indexOf(input.toLowerCase()) >= 0
               }
               value={filterClassIds}
+              data-cy="selectClass"
             >
               {classList.map(({ name, _id }) => (
-                <Select.Option key={name} value={_id}>
+                <Select.Option
+                  key={name}
+                  value={_id}
+                  disabled={assignedClassesById[testType][_id]}
+                >
                   {name}
                 </Select.Option>
               ))}
@@ -440,6 +487,7 @@ class ClassList extends React.Component {
             Tags
             <SelectInputStyled
               mode="multiple"
+              data-cy="tagSelect"
               value={searchTerms.tags}
               placeholder="All Tags"
               onChange={changeField('tags')}
@@ -497,6 +545,7 @@ const enhance = compose(
       courseList: getCourseListSelector(state),
       test: getTestSelector(state),
       tagList: getAllTagsSelector(state, 'group'),
+      assignedClassesById: getAssignedClassesByIdSelector(state),
     }),
     {
       loadClassListData: receiveClassListAction,

@@ -42,7 +42,7 @@ const columns = [
       if (a.standards.length !== b.standards.length) {
         return a.standards.length - b.standards.length
       }
-      return a.name.localeCompare(b.name)
+      return a.name.localeCompare(b.name, undefined, { numeric: true })
     },
   },
   {
@@ -101,6 +101,29 @@ const columns = [
   },
 ]
 
+const standardsTableColumns = [
+  'DOMAIN',
+  'STANDARD',
+  'DESCRIPTION ',
+  'MASTERY ',
+  'ASSESSMENT ',
+  'TOTAL QUESTIONS ',
+  'SCORE ',
+  'MAX POSSIBLE SCORE ',
+  'AVG. SCORE(%) ',
+]
+
+const standardsTableKeys = [
+  'standard',
+  'standardName',
+  'masteryName',
+  'testCount',
+  'questionCount',
+  'totalScore',
+  'maxScore',
+  'scoreFormatted',
+]
+
 const StudentPerformanceSummary = ({
   data,
   selectedMastery,
@@ -146,9 +169,33 @@ const StudentPerformanceSummary = ({
 
   useEffect(() => {
     expandAllRows
-      ? setExpandedRows([...Array(filteredDomains).keys()])
+      ? setExpandedRows([...filteredDomains.keys()])
       : setExpandedRows([])
   }, [expandAllRows])
+
+  useEffect(() => {
+    if (expandedRowProps.isCsvDownloading) {
+      const csv = [standardsTableColumns.join(',')]
+      const csvRawData = [[...standardsTableColumns]]
+      for (const domain of filteredDomains) {
+        for (const standardInfo of domain.standards) {
+          const row = []
+          row.push(domain.name)
+          for (const key of standardsTableKeys) {
+            const rowData = String(standardInfo[key])
+              .replace(/(\r\n|\n|\r)/gm, ' ')
+              .replace(/(\s+)/gm, ' ')
+              .replace(/"/g, '""')
+            row.push(`"${rowData}"`)
+          }
+          csvRawData.push(row)
+          csv.push(row.join(','))
+        }
+      }
+      const csvText = csv.join('\n')
+      expandedRowProps.onCsvConvert(csvText, csvRawData)
+    }
+  }, [expandedRowProps.isCsvDownloading])
 
   return (
     <Row>

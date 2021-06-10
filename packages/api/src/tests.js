@@ -42,6 +42,14 @@ const getByIdMinimal = (id, params = {}) =>
     })
     .then((result) => result.data.result)
 
+const getSummary = (id) =>
+  api
+    .callApi({
+      url: `${prefix}/${id}/summary`,
+      method: 'get',
+    })
+    .then((result) => result.data)
+
 const create = (data) =>
   api
     .callApi({
@@ -88,12 +96,11 @@ const updateBulkTestsStatus = (data) =>
     })
     .then((result) => result.data.result)
 
-const getPublicTest = (testId, params = {}) =>
+const getPublicTest = (testId) =>
   api
     .callApi({
       url: `public/test/${testId}`,
       method: 'get',
-      params,
     })
     .then((result) => result.data.result)
 
@@ -130,13 +137,24 @@ const deleteAssignments = ({ testId, assignmentIds = [] }) =>
     })
     .then((result) => result.data.result)
 
-const deleteTest = (testId) =>
+const deleteTest = ({ testId, type }) =>
   api
     .callApi({
       url: `/test/${testId}`,
       method: 'delete',
+      params: {
+        type,
+      },
     })
-    .then((result) => result.data)
+    .then((result) => result.data.result)
+
+const getTestIdFromVersionId = (versionId) =>
+  api
+    .callApi({
+      url: `${prefix}/version/${versionId}`,
+      method: 'get',
+    })
+    .then((result) => result.data.result)
 
 export default {
   getAll,
@@ -153,4 +171,6 @@ export default {
   getDefaultTestSettings,
   deleteAssignments,
   deleteTest,
+  getTestIdFromVersionId,
+  getSummary,
 }

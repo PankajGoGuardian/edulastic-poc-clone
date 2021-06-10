@@ -1,16 +1,15 @@
 import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { compose } from 'redux'
-import { message, Select } from 'antd'
+import { Select } from 'antd'
 import { withNamespaces } from '@edulastic/localization'
-import { Checkbox, notification } from '@edulastic/common'
+import { notification } from '@edulastic/common'
 
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 import { fractionStringToNumber } from '../../../../utils/helpers'
 import { FRACTION_FORMATS } from '../../../../constants/constantsForQuestions'
 import { RENDERING_BASE } from '../../Builder/config/constants'
 import Extras from '../../../../containers/Extras'
-import { MoreOptionsInput } from '../../common/styled_components'
 
 import { Row } from '../../../../styled/WidgetOptions/Row'
 import { Col } from '../../../../styled/WidgetOptions/Col'
@@ -377,7 +376,8 @@ class AxisSegmentsMoreOptions extends Component {
                   this.handleNumberlineCheckboxChange(
                     'leftArrow',
                     numberlineAxis.leftArrow
-                  )}
+                  )
+                }
                 name="leftArrow"
                 checked={numberlineAxis.leftArrow}
               >
@@ -390,7 +390,8 @@ class AxisSegmentsMoreOptions extends Component {
                   this.handleNumberlineCheckboxChange(
                     'rightArrow',
                     numberlineAxis.rightArrow
-                  )}
+                  )
+                }
                 name="rightArrow"
                 checked={numberlineAxis.rightArrow}
               >
@@ -404,7 +405,8 @@ class AxisSegmentsMoreOptions extends Component {
                   this.handleNumberlineCheckboxChange(
                     'stackResponses',
                     numberlineAxis.stackResponses
-                  )}
+                  )
+                }
                 checked={numberlineAxis.stackResponses}
               >
                 {t('component.graphing.layoutoptions.stackResponses')}
@@ -503,7 +505,8 @@ class AxisSegmentsMoreOptions extends Component {
                   this.handleNumberlineCheckboxChange(
                     'showTicks',
                     numberlineAxis.showTicks
-                  )}
+                  )
+                }
                 checked={numberlineAxis.showTicks}
               >
                 {t('component.graphing.ticksoptions.showticks')}
@@ -516,7 +519,8 @@ class AxisSegmentsMoreOptions extends Component {
                   this.handleNumberlineCheckboxChange(
                     'showMax',
                     numberlineAxis.showMax
-                  )}
+                  )
+                }
                 checked={numberlineAxis.showMax}
               >
                 {t('component.graphing.labelsoptions.showmax')}
@@ -529,7 +533,8 @@ class AxisSegmentsMoreOptions extends Component {
                   this.handleNumberlineCheckboxChange(
                     'showMin',
                     numberlineAxis.showMin
-                  )}
+                  )
+                }
                 checked={numberlineAxis.showMin}
               >
                 {t('component.graphing.labelsoptions.showmin')}
@@ -542,7 +547,8 @@ class AxisSegmentsMoreOptions extends Component {
                   this.handleNumberlineCheckboxChange(
                     'snapToTicks',
                     numberlineAxis.snapToTicks
-                  )}
+                  )
+                }
                 checked={numberlineAxis.snapToTicks}
               >
                 {t('component.graphing.ticksoptions.snaptoticks')}
@@ -586,7 +592,8 @@ class AxisSegmentsMoreOptions extends Component {
                   this.handleNumberlineCheckboxChange(
                     'showLabels',
                     numberlineAxis.showLabels
-                  )}
+                  )
+                }
                 checked={numberlineAxis.showLabels}
               >
                 {t('component.graphing.labelsoptions.showLabels')}
@@ -599,7 +606,8 @@ class AxisSegmentsMoreOptions extends Component {
                   this.handleNumberlineCheckboxChange(
                     'labelShowMax',
                     numberlineAxis.labelShowMax
-                  )}
+                  )
+                }
                 checked={numberlineAxis.labelShowMax}
               >
                 {t('component.graphing.labelsoptions.showmax')}
@@ -612,7 +620,8 @@ class AxisSegmentsMoreOptions extends Component {
                   this.handleNumberlineCheckboxChange(
                     'labelShowMin',
                     numberlineAxis.labelShowMin
-                  )}
+                  )
+                }
                 checked={numberlineAxis.labelShowMin}
               >
                 {t('component.graphing.labelsoptions.showmin')}
@@ -622,14 +631,10 @@ class AxisSegmentsMoreOptions extends Component {
         </Question>
 
         <Extras
-          isSection={false}
-          cleanSections={cleanSections}
           fillSections={fillSections}
+          cleanSections={cleanSections}
           advancedAreOpen={advancedAreOpen}
-        >
-          <Extras.Distractors />
-          <Extras.Hints />
-        </Extras>
+        />
       </>
     )
   }

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="24px" height="22px" viewBox="0 0 24 22" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 43.1 (39012) - http://www.bohemiancoding.com/sketch -->
+    <title>Group 3 Copy</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Desktop-HD" transform="translate(-479.000000, -395.000000)">
+            <g id="Group-3-Copy" transform="translate(480.000000, 396.000000)">
+                <g id="Group-4">
+                    <g id="Group-2-Copy-2">
+                        <path d="M8.91428571,0.356571429 L8.91428571,17.472" id="Line" stroke="#676A6C" stroke-linecap="square"></path>
+                        <path d="M8.91428571,0.356571429 L8.91428571,17.472" id="Line-Copy" stroke="#676A6C" stroke-linecap="square" transform="translate(8.914286, 8.914286) rotate(-90.000000) translate(-8.914286, -8.914286) "></path>
+                        <rect id="Rectangle-2" fill="#FFFFFF" x="7.84457143" y="7.84457143" width="2.13942857" height="2.13942857"></rect>
+                    </g>
+                    <g id="chat" transform="translate(12.000000, 11.000000)" stroke="#676A6C">
+                        <path d="M10,4.35167464 C10,2.16241627 7.7625,0.386363636 5,0.386363636 C2.23833333,0.386363636 0,2.16241627 0,4.35167464 C0,5.49409093 0.612083332,6.52019141 1.5875,7.24289472 C1.40416667,7.70531099 1.09333333,8.30885167 0.5675,8.92703351 C1.56583333,8.92703351 2.85208333,8.79933014 3.8425,8.20433014 C4.21541667,8.27590909 4.60125,8.31617225 5,8.31617225 C7.76166668,8.31617225 10,6.54093304 10,4.35167464 Z" id="Shape"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

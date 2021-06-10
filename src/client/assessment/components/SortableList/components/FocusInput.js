@@ -20,7 +20,7 @@ class FocusInput extends Component {
     dirty: false,
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState({
       value: nextProps.value,
     })

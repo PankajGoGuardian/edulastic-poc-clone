@@ -1,37 +1,42 @@
-import styled from 'styled-components'
-import {
-  mobileWidth,
-  greyThemeLight,
-  greyishBorder,
-  boxShadowDefault,
-} from '@edulastic/colors'
-import { Rnd } from 'react-rnd'
+import styled, { css } from 'styled-components'
+import { mobileWidth, greyThemeLight, greyishBorder } from '@edulastic/colors'
 
+const disableStyles = css`
+  pointer-events: none;
+  user-select: none;
+`
 export const MathInputStyles = styled.div`
   min-width: ${({ width, fullWidth }) =>
     width || (fullWidth ? '100%' : 'fit-content')};
-  height: ${({ height }) => height || 'auto'};
+  min-height: ${({ height }) => height || 'auto'};
   background: ${({ background }) => background};
   position: relative;
+  text-indent: 0
+
+  cursor: ${({ disabled }) => disabled && 'not-allowed'};
 
   .input {
     position: relative;
     height: 100%;
+    ${({ disabled }) => disabled && disableStyles}
   }
 
   .input__math {
-    height: 100%;
     width: 100%;
-    min-width: 40px;
-    min-height: 32px;
+    height: 100%;
+    min-width: ${({ width }) => width || '40px'};
+    min-height: ${({ height }) => height || '32px'};
+    max-width: ${({ maxWidth }) => maxWidth || '100%'};
     display: inline-flex;
     position: relative;
     border-radius: 2px;
     border: ${({ noBorder }) => !noBorder && `1px solid ${greyThemeLight}`};
+    font-size: ${({ fontSize }) => `${fontSize || 'inherit'}`};
     padding: ${({ width, noPadding }) =>
       width ? 'unset' : !noPadding && '5px 15px'};
     align-items: center;
-    padding-right: 25px;
+    padding-right: ${({ pr }) => pr || ' 25px'};
+    padding-left: 8px;
 
     &.clear {
       background: ${(props) => props.theme.common.mathInputMathClearBgColor};
@@ -49,6 +54,7 @@ export const MathInputStyles = styled.div`
     border: 0;
     display: flex;
     align-items: center;
+    text-indent: 0;
 
     /**
     * should override margin for matrix
@@ -79,9 +85,6 @@ export const MathInputStyles = styled.div`
     .mq-root-block {
       font-size: ${({ fontSize }) => `${fontSize || 'inherit'}`};
       padding-top: 5px;
-      * {
-        font-style: unset;
-      }
     }
   }
 
@@ -161,15 +164,6 @@ export const MathInputStyles = styled.div`
       flex-direction: column;
     }
   }
-`
-
-export const DraggableKeyboard = styled(Rnd).attrs((props) => ({
-  disableDragging: props.disableDragging,
-  enableResizing: false,
-}))`
-  box-shadow: ${boxShadowDefault};
-  position: ${({ disableDragging }) => !disableDragging && 'fixed !important'};
-  z-index: 1100;
 `
 
 export const EmptyDiv = styled.div``

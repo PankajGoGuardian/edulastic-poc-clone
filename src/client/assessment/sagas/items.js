@@ -1,8 +1,12 @@
 import { takeLatest, call, put, all, select } from 'redux-saga/effects'
 import { push } from 'connected-react-router'
-import * as Sentry from '@sentry/browser'
-import { uploadToS3, notification, Effects } from '@edulastic/common'
-import { maxBy, isEmpty } from 'lodash'
+import {
+  uploadToS3,
+  notification,
+  Effects,
+  captureSentryException,
+} from '@edulastic/common'
+import { maxBy, isEmpty, isPlainObject } from 'lodash'
 import {
   itemsApi,
   testItemActivityApi,
@@ -23,11 +27,14 @@ import {
   LOAD_ANSWERS,
   CLEAR_USER_WORK,
   CLEAR_HINT_USAGE,
+  SET_SAVE_USER_RESPONSE,
 } from '../constants/actions'
 import { getPreviousAnswersListSelector } from '../selectors/answers'
 import { redirectPolicySelector } from '../selectors/test'
 import { getServerTs } from '../../student/utils'
+import { Fscreen } from '../utils/helpers'
 import { utaStartTimeUpdateRequired } from '../../student/sharedDucks/AssignmentModule/ducks'
+import { scratchpadDomRectSelector } from '../../common/components/Scratchpad/duck'
 
 const {
   POLICY_CLOSE_MANUALLY_BY_ADMIN,
@@ -38,6 +45,8 @@ const manuallyClosePolicies = [
   POLICY_CLOSE_MANUALLY_IN_CLASS,
   POLICY_CLOSE_MANUALLY_BY_ADMIN,
 ]
+
+const TIMESPENT_CLAMPING_THRESHOLD = 60 * 60 * 1000
 
 const defaultUploadFolder = aws.s3Folders.DEFAULT
 
@@ -50,7 +59,7 @@ function* receiveItemSaga({ payload }) {
       payload: { item },
     })
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     console.error(err)
     yield put({
       type: RECEIVE_ITEM_ERROR,
@@ -75,18 +84,58 @@ export const getQuestionIds = (item) => {
   return questions
 }
 
-function* saveUserResponse({ payload }) {
+function getFilterAndUpdateForAttachments({
+  uta,
+  itemId,
+  qId,
+  userId,
+  scratchpadUri,
+}) {
+  const update = {
+    data: { scratchpad: scratchpadUri },
+    referrerId: uta,
+    userId,
+    type: 'scratchpad',
+    referrerType: 'TestActivityContent',
+    referrerId2: itemId,
+    status: 'published',
+  }
+  const filter = {
+    referrerId: uta,
+    referrerId2: itemId,
+  }
+  if (qId) {
+    update.referrerId3 = qId
+    filter.referrerId3 = qId
+  }
+
+  return { update, filter }
+}
+
+async function getFileNameAndQidMap(qId, data, folder) {
+  const fileName = await uploadToS3(data, folder)
+  return { qId, fileName }
+}
+
+export function* saveUserResponse({ payload }) {
   try {
-    const ts = payload.timeSpent || 0
+    // setting savingResponse true only when the saveUserResponse is being called
+    yield put({
+      type: SET_SAVE_USER_RESPONSE,
+      payload: true,
+    })
+    const ts = Math.min(payload.timeSpent || 0, TIMESPENT_CLAMPING_THRESHOLD)
     const {
       autoSave,
       shouldClearUserWork = false,
       isPlaylist = false,
       callback,
       pausing,
+      questionId,
       extData,
     } = payload
     const itemIndex = payload.itemId
+    const timeInBlur = yield select((state) => state.test?.blurTime)
     const assignmentsByIds = yield select(
       (state) => state.studentAssignment && state.studentAssignment.byId
     )
@@ -105,6 +154,9 @@ function* saveUserResponse({ payload }) {
     const timedAssignment = yield select(
       (state) => state.test?.settings?.timedAssignment
     )
+    if (pausing) {
+      Fscreen.safeExitfullScreen()
+    }
     if (pausing && timedAssignment) {
       const utaId = yield select((state) => state.test.testActivityId)
       if (utaId) {
@@ -182,26 +234,40 @@ function* saveUserResponse({ payload }) {
     const itemAnswers = {}
     const shuffles = {}
     const timesSpent = {}
+    const testItemId = currentItem._id
     questions.forEach((question) => {
-      timesSpent[question] = ts / questions.length
-      itemAnswers[question] = answers[question]
+      if (isDocBased) {
+        if (questionId && question === questionId) {
+          timesSpent[questionId] = ts
+        } else {
+          timesSpent[question] = 0
+        }
+      } else {
+        timesSpent[question] = ts / questions.length
+      }
+      itemAnswers[question] = answers[`${testItemId}_${question}`]
       // Redirect flow user hasnt selected new answer for this question.
       // check this only for policy "STUDENT_RESPONSE_AND_FEEDBACK"
+      const {
+        STUDENT_RESPONSE_AND_FEEDBACK,
+        SCORE_RESPONSE_AND_FEEDBACK,
+      } = assignmentPolicyOptions.showPreviousAttemptOptions
+      const hasPrevResponse = [
+        STUDENT_RESPONSE_AND_FEEDBACK,
+        SCORE_RESPONSE_AND_FEEDBACK,
+      ].includes(redirectPolicy)
       if (
-        redirectPolicy ===
-          assignmentPolicyOptions.showPreviousAttemptOptions
-            .STUDENT_RESPONSE_AND_FEEDBACK &&
-        !answers[question] &&
-        !!userPrevAnswer[question]
+        hasPrevResponse &&
+        !answers[`${testItemId}_${question}`] &&
+        !!userPrevAnswer[`${testItemId}_${question}`]
       ) {
-        itemAnswers[question] = userPrevAnswer[question]
+        itemAnswers[question] = userPrevAnswer[`${testItemId}_${question}`]
       }
       if (shuffledOptions[question]) {
         shuffles[question] = shuffledOptions[question]
       }
     })
 
-    const testItemId = currentItem._id
     const _userWork = yield select(
       ({ userWork }) => userWork.present[testItemId] || {}
     )
@@ -223,18 +289,17 @@ function* saveUserResponse({ payload }) {
     if (!isEmpty(extData)) {
       activity.extData = extData
     }
+    if (timeInBlur) {
+      activity.timeInBlur = timeInBlur
+    }
 
     let userWorkData = { ..._userWork, scratchpad: false }
     let shouldSaveOrUpdateAttachment = false
     const scratchPadUsed = !isEmpty(_userWork?.scratchpad)
 
     if (scratchPadUsed) {
-      const { height, width } = yield select((state) => state.scratchpad)
-      userWorkData = {
-        ...userWorkData,
-        scratchpad: true,
-        dimensions: { height, width },
-      }
+      const dimensions = yield select(scratchpadDomRectSelector)
+      userWorkData = { ...userWorkData, scratchpad: true, dimensions }
       shouldSaveOrUpdateAttachment = true
     }
     activity.userWork = userWorkData
@@ -243,26 +308,41 @@ function* saveUserResponse({ payload }) {
     if (shouldSaveOrUpdateAttachment) {
       const fileData = isDocBased
         ? { ..._userWork.scratchpad, name: `${userTestActivityId}_${userId}` }
-        : _userWork.scratchpad
-      const scratchpadUri = yield call(
-        uploadToS3,
-        fileData,
-        defaultUploadFolder
-      )
-      const update = {
-        data: { scratchpad: scratchpadUri },
-        referrerId: userTestActivityId,
-        userId,
-        type: 'scratchpad',
-        referrerType: 'TestActivityContent',
-        referrerId2: testItemId,
-        status: 'published',
+        : _userWork
+
+      // multiple scratchpad in item
+      if (isPlainObject(fileData?.scratchpad)) {
+        const listOfFilenameAndQuestionIdDict = yield all(
+          Object.entries(fileData.scratchpad).map(([qid, scratchpadData]) =>
+            call(getFileNameAndQidMap, qid, scratchpadData, defaultUploadFolder)
+          )
+        )
+        yield all(
+          listOfFilenameAndQuestionIdDict.map(({ qId, fileName }) => {
+            const { update, filter } = getFilterAndUpdateForAttachments({
+              uta: userTestActivityId,
+              itemId: testItemId,
+              userId,
+              qId,
+              scratchpadUri: fileName,
+            })
+            return call(attachmentApi.updateAttachment, { update, filter })
+          })
+        )
+      } else if (fileData?.scratchpad) {
+        const scratchpadUri = yield call(
+          uploadToS3,
+          fileData.scratchpad,
+          defaultUploadFolder
+        )
+        const { update, filter } = getFilterAndUpdateForAttachments({
+          uta: userTestActivityId,
+          itemId: testItemId,
+          userId,
+          scratchpadUri,
+        })
+        yield call(attachmentApi.updateAttachment, { update, filter })
       }
-      const filter = {
-        referrerId: userTestActivityId,
-        referrerId2: testItemId,
-      }
-      yield call(attachmentApi.updateAttachment, { update, filter })
     }
     if (passageId) {
       const highlights = yield select(
@@ -309,7 +389,7 @@ function* saveUserResponse({ payload }) {
   } catch (err) {
     yield put({ type: SAVE_USER_RESPONSE_ERROR })
     console.log(err)
-    Sentry.captureException(err)
+    captureSentryException(err)
     if (err.status === 403) {
       const { isPlaylist = false } = payload
       if (isPlaylist)
@@ -320,6 +400,11 @@ function* saveUserResponse({ payload }) {
       notification({ messageKey: 'failedSavingAnswer' })
     }
     // yield call(message.error, "Failed saving the Answer");
+  } finally {
+    yield put({
+      type: SET_SAVE_USER_RESPONSE,
+      payload: false,
+    })
   }
 }
 
@@ -336,15 +421,26 @@ function* loadUserResponse({ payload }) {
       },
     })
   } catch (e) {
-    Sentry.captureException(e)
+    captureSentryException(e)
     notification({ messageKey: 'failedLoadingAnswer' })
   }
 }
 
+const timeOut =
+  process.env.NODE_ENV === 'development'
+    ? 12000
+    : process.env.REACT_APP_QA_ENV
+    ? 60000
+    : 8000
+
+/*
+  The race condition in Effects.throttleAction times out on slow connections/dev envs
+  TODO: to detect slow connections and increase the timeout maybe
+*/
 export default function* watcherSaga() {
   yield all([
     yield takeLatest(RECEIVE_ITEM_REQUEST, receiveItemSaga),
-    yield Effects.throttleAction(8000, SAVE_USER_RESPONSE, saveUserResponse),
+    yield Effects.throttleAction(timeOut, SAVE_USER_RESPONSE, saveUserResponse),
     yield takeLatest(LOAD_USER_RESPONSE, loadUserResponse),
   ])
 }

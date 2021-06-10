@@ -15,8 +15,11 @@ import MixMatchCorrectAnswer from './MixMatchCorrectAnswer'
 import { updateVariables } from '../../utils/variables'
 
 class SetCorrectAnswers extends Component {
-  state = {
-    currentTab: 0,
+  constructor() {
+    super()
+    this.state = {
+      currentTab: 0,
+    }
   }
 
   handleTabChange = (currentTab) => {
@@ -114,7 +117,7 @@ class SetCorrectAnswers extends Component {
       produce(item, (draft) => {
         const validAnswers = draft.validation.validResponse.value
         draft.validation.altResponses.push({
-          score: 1,
+          score: draft?.validation?.validResponse?.score,
           id: uuid(),
           value: validAnswers.map((answer) => ({ ...answer, value: '' })),
         })
@@ -212,7 +215,7 @@ class SetCorrectAnswers extends Component {
     if (currentTab === 0) {
       return validation.validResponse
     }
-    return validation.altResponses[currentTab - 1]
+    return validation.altResponses[currentTab - 1] || {}
   }
 
   render() {

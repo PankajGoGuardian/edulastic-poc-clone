@@ -1,33 +1,76 @@
 import { createSelector } from 'reselect'
 import { createAction, createReducer, combineReducers } from 'redux-starter-kit'
-import { all } from 'redux-saga/effects'
+import { all, call, put, takeEvery, select, take } from 'redux-saga/effects'
+import { get, isEmpty, omitBy, mapValues } from 'lodash'
+
+import { assignmentStatusOptions, roleuser } from '@edulastic/constants'
+import { assignmentApi, reportsApi } from '@edulastic/api'
+
+import { reportGroupType } from '@edulastic/constants/const/report'
+import { styledNotification } from './common/styled'
 
 import {
   reportAssignmentsReducer,
   reportAssignmentsSaga,
 } from './assignmentsDucks'
 
-import { reportSARSettingsReducer } from './subPages/singleAssessmentReport/ducks'
-import { reportMARSettingsReducer } from './subPages/multipleAssessmentReport/ducks'
-import { reportSPRSettingsReducer } from './subPages/studentProfileReport/ducks'
-import { reportSMRSettingsReducer } from './subPages/standardsMasteryReport/ducks'
+import { RESET_ALL_REPORTS } from './common/reportsRedux'
+import {
+  getReportsSARSettings,
+  reportSARSettingsReducer,
+  setSARTagsDataAction,
+} from './subPages/singleAssessmentReport/ducks'
 
 import {
+  getReportsMARSettings,
+  reportMARSettingsReducer,
+  setMARTagsDataAction,
+} from './subPages/multipleAssessmentReport/ducks'
+import {
+  getReportsSPRSettings,
+  reportSPRSettingsReducer,
+  setSPRTagsDataAction,
+} from './subPages/studentProfileReport/ducks'
+import {
+  getReportsSMRSettings,
+  reportSMRSettingsReducer,
+  setSMRTagsDataAction,
+} from './subPages/standardsMasteryReport/ducks'
+import {
+  getReportsERSettings,
+  reportERSettingsReducer,
+  setERTagsDataAction,
+} from './subPages/engagementReport/ducks'
+
+import {
+  getTempTagsDataSelector as getSARTempTagsDataSelector,
+  setTempTagsDataAction as setSARTempTagsDataAction,
   reportSARFilterDataReducer,
   reportSARFilterDataSaga,
 } from './subPages/singleAssessmentReport/common/filterDataDucks'
 import {
+  getTempTagsDataSelector as getMARTempTagsDataSelector,
+  setTempTagsDataAction as setMARTempTagsDataAction,
   reportMARFilterDataReducer,
   reportMARFilterDataSaga,
 } from './subPages/multipleAssessmentReport/common/filterDataDucks'
 import {
+  getTempTagsDataSelector as getSPRTempTagsDataSelector,
+  setTempTagsDataAction as setSPRTempTagsDataAction,
   reportSPRFilterDataReducer,
   reportSPRFilterDataSaga,
 } from './subPages/studentProfileReport/common/filterDataDucks'
 import {
+  getTempTagsDataSelector as getSMRTempTagsDataSelector,
+  setTempTagsDataAction as setSMRTempTagsDataAction,
   reportStandardsFilterDataReducer,
   reportStandardsFilterSaga,
 } from './subPages/standardsMasteryReport/common/filterDataDucks'
+import {
+  getTempTagsDataSelector as getERTempTagsDataSelector,
+  setTempTagsDataAction as setERTempTagsDataAction,
+  reportERFilterDataReducer,
+} from './subPages/engagementReport/common/filterDataDucks'
 
 import {
   reportAssessmentSummaryReducer,
@@ -78,6 +121,10 @@ import {
   reportStudentAssessmentProfileSaga,
 } from './subPages/studentProfileReport/StudentAssessmentProfile/ducks'
 import {
+  reportStudentProgressProfileReducer,
+  reportStudentProgressProfileSaga,
+} from './subPages/studentProfileReport/StudentProgressProfile/ducks'
+import {
   reportStandardsPerformanceSummaryReducer,
   reportStandardsPerformanceSummarySaga,
 } from './subPages/standardsMasteryReport/standardsPerformance/ducks'
@@ -86,20 +133,101 @@ import {
   reportStandardsGradebookSaga,
 } from './subPages/standardsMasteryReport/standardsGradebook/ducks'
 import {
+  reportStandardsProgressReducer,
+  reportStandardsProgressSaga,
+} from './subPages/standardsMasteryReport/standardsProgress/ducks'
+import {
+  reportEngagementSummaryReducer,
+  reportEngagementSummarySaga,
+} from './subPages/engagementReport/EngagementSummary/ducks'
+import {
+  reportActivityBySchoolReducer,
+  reportActivityBySchoolSaga,
+} from './subPages/engagementReport/ActivityBySchool/ducks'
+import {
+  reportActivityByTeacherReducer,
+  reportActivityByTeacherSaga,
+} from './subPages/engagementReport/ActivityByTeacher/ducks'
+import {
   customReportReducer,
   customReportSaga,
 } from './components/customReport/ducks'
+import {
+  sharedReportsReducer,
+  sharedReportsSaga,
+} from './components/sharedReports/ducks'
+import {
+  getClassListSelector,
+  receiveClassListAction,
+  RECEIVE_CLASSLIST_ERROR,
+  RECEIVE_CLASSLIST_SUCCESS,
+} from '../Classes/ducks'
+import {
+  getCourseListSelector,
+  receiveCourseListAction,
+  RECEIVE_COURSE_ERROR,
+  RECEIVE_COURSE_SUCCESS,
+} from '../Courses/ducks'
+import {
+  getTeachersListSelector,
+  receiveTeachersListAction,
+  RECEIVE_TEACHERLIST_ERROR,
+  RECEIVE_TEACHERLIST_SUCCESS,
+} from '../Teacher/ducks'
+import { combineNames } from './common/util'
+import {
+  getSchoolsSelector,
+  receiveSchoolsAction,
+  RECEIVE_SCHOOLS_ERROR,
+  RECEIVE_SCHOOLS_SUCCESS,
+} from '../Schools/ducks'
+import { getOrgDataSelector, getUser } from '../src/selectors/user'
+import {
+  getAllTagsAction,
+  getAllTagsSelector,
+  SET_ALL_TAGS,
+  SET_ALL_TAGS_FAILED,
+} from '../TestPage/ducks'
+import {
+  RECEIVE_GROUPLIST_SUCCESS,
+  RECEIVE_GROUPLIST_ERROR,
+  getGroupListSelector,
+  receiveGroupListAction,
+} from '../Groups/ducks'
 
+const SET_SHARING_STATE = '[reports] set sharing state'
 const SET_PRINTING_STATE = '[reports] set printing state'
 const SET_CSV_DOWNLOADING_STATE = '[reports] set csv download state'
 
+const GENERATE_CSV_REQUEST = '[reports] generate csv request'
+const GENERATE_CSV_STATUS = '[reports] generate csv request status'
+const SET_CSV_MODAL_VISIBLE = '[reports] set csv modal visible'
+const SET_CSV_DOCS = '[reports] set csv docs'
+
+const RECEIVE_TEST_LIST_REQUEST = '[reports] receive test list request'
+const RECEIVE_TEST_LIST_REQUEST_SUCCESS =
+  '[reports] receive test list request success'
+const RECEIVE_TEST_LIST_REQUEST_ERROR =
+  '[reports] receive test list request request error'
+
+const FETCH_UPDATE_TAGS_DATA = '[reports] fetch & update tagsData'
+
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
+export const setSharingStateAction = createAction(SET_SHARING_STATE)
 export const setPrintingStateAction = createAction(SET_PRINTING_STATE)
 export const setCsvDownloadingStateAction = createAction(
   SET_CSV_DOWNLOADING_STATE
 )
 
+export const receiveTestListAction = createAction(RECEIVE_TEST_LIST_REQUEST)
+
+export const generateCSVAction = createAction(GENERATE_CSV_REQUEST)
+export const setGenerateCSVStatusAction = createAction(GENERATE_CSV_STATUS)
+export const setCsvModalVisibleAction = createAction(SET_CSV_MODAL_VISIBLE)
+export const setCsvDocsAction = createAction(SET_CSV_DOCS)
+
+export const fetchUpdateTagsDataAction = createAction(FETCH_UPDATE_TAGS_DATA)
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -107,6 +235,11 @@ export const setCsvDownloadingStateAction = createAction(
 // -----|-----|-----|-----| SELECTORS BEGIN |-----|-----|-----|----- //
 
 export const stateSelector = (state) => state.reportReducer.reports
+
+export const getSharingState = createSelector(
+  stateSelector,
+  (state) => state.isSharing
+)
 
 export const getPrintingState = createSelector(
   stateSelector,
@@ -118,6 +251,26 @@ export const getCsvDownloadingState = createSelector(
   (state) => state.isCsvDownloading
 )
 
+export const getTestListSelector = createSelector(
+  stateSelector,
+  (state) => state.testList
+)
+
+export const getTestListLoadingSelector = createSelector(
+  stateSelector,
+  (state) => state.testListLoading
+)
+
+export const getCsvModalVisible = createSelector(
+  stateSelector,
+  (state) => state.csvModalVisible
+)
+
+export const getCsvDocs = createSelector(
+  stateSelector,
+  (state) => state.csvDocs
+)
+
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -125,15 +278,49 @@ export const getCsvDownloadingState = createSelector(
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //
 
 const initialState = {
+  isSharing: false,
   isPrinting: false,
+  testList: [],
+  testListLoading: true,
+  csvModalVisible: false,
+  csvDocs: [],
+  csvLoading: false,
 }
 
 const reports = createReducer(initialState, {
+  [RESET_ALL_REPORTS]: (state) => {
+    state.testList = []
+    state.testListLoading = true
+  },
+  [SET_SHARING_STATE]: (state, { payload }) => {
+    state.isSharing = payload
+  },
   [SET_PRINTING_STATE]: (state, { payload }) => {
     state.isPrinting = payload
   },
   [SET_CSV_DOWNLOADING_STATE]: (state, { payload }) => {
     state.isCsvDownloading = payload
+  },
+  [RECEIVE_TEST_LIST_REQUEST]: (state) => {
+    state.testListLoading = true
+  },
+  [RECEIVE_TEST_LIST_REQUEST_SUCCESS]: (state, { payload }) => {
+    state.testListLoading = false
+    state.testList = payload.testList
+  },
+  [RECEIVE_TEST_LIST_REQUEST_ERROR]: (state, { payload }) => {
+    state.testListLoading = false
+    state.testList = []
+    state.error = payload.error
+  },
+  [GENERATE_CSV_STATUS]: (state, { payload }) => {
+    state.csvLoading = payload
+  },
+  [SET_CSV_MODAL_VISIBLE]: (state, { payload }) => {
+    state.csvModalVisible = payload
+  },
+  [SET_CSV_DOCS]: (state, { payload }) => {
+    state.csvDocs = payload
   },
 })
 
@@ -145,11 +332,13 @@ export const reportReducer = combineReducers({
   reportMARSettingsReducer,
   reportSPRSettingsReducer,
   reportSMRSettingsReducer,
+  reportERSettingsReducer,
 
   reportSARFilterDataReducer,
   reportMARFilterDataReducer,
   reportSPRFilterDataReducer,
   reportStandardsFilterDataReducer,
+  reportERFilterDataReducer,
 
   reportAssessmentSummaryReducer,
   reportPeerPerformanceReducer,
@@ -163,9 +352,15 @@ export const reportReducer = combineReducers({
   reportStudentProfileSummaryReducer,
   reportStudentMasteryProfileReducer,
   reportStudentAssessmentProfileReducer,
+  reportStudentProgressProfileReducer,
   reportStandardsPerformanceSummaryReducer,
   reportStandardsGradebookReducer,
+  reportStandardsProgressReducer,
+  reportEngagementSummaryReducer,
+  reportActivityBySchoolReducer,
+  reportActivityByTeacherReducer,
   customReportReducer,
+  sharedReportsReducer,
 })
 
 // -----|-----|-----|-----| REDUCER ENDED |-----|-----|-----|----- //
@@ -174,7 +369,308 @@ export const reportReducer = combineReducers({
 
 // -----|-----|-----|-----| SAGAS BEGIN |-----|-----|-----|----- //
 
-export function* reportSaga(params) {
+export function* generateCSVSaga({ payload }) {
+  try {
+    styledNotification({
+      type: 'info',
+      msg:
+        'Download request received. We will notify you as soon as it gets ready.',
+    })
+    const response = yield call(reportsApi.generateCSV, payload)
+    if (!response) {
+      throw new Error('Failed to generate CSV')
+    }
+    yield put({ type: GENERATE_CSV_STATUS, payload: true })
+  } catch (error) {
+    const errorMessage =
+      error.response.data?.message || 'Download request failed.'
+    styledNotification({ msg: errorMessage })
+    yield put({ type: GENERATE_CSV_STATUS, payload: false })
+  }
+}
+
+const filterMapKeys = (list, ids, key = 'name') =>
+  list
+    .filter((li) => ids.includes(li._id))
+    .map((li) => ({ key: li._id, title: get(li, key) }))
+
+const selectorDict = {
+  [reportGroupType.SINGLE_ASSESSMENT_REPORT]: {
+    getTempTags: getSARTempTagsDataSelector,
+    getSettings: getReportsSARSettings,
+    setTags: setSARTagsDataAction,
+    setTempTags: setSARTempTagsDataAction,
+    remapTags: (tags) => {
+      const { courseIds, ..._tags } = tags
+      return { ..._tags, courseId: courseIds?.[0] }
+    },
+  },
+  [reportGroupType.MULTIPLE_ASSESSMENT_REPORT]: {
+    getTempTags: getMARTempTagsDataSelector,
+    getSettings: getReportsMARSettings,
+    setTags: setMARTagsDataAction,
+    setTempTags: setMARTempTagsDataAction,
+    remapTags: (tags) => {
+      const { courseIds, ..._tags } = tags
+      return { ..._tags, courseId: courseIds?.[0] }
+    },
+  },
+  [reportGroupType.STANDARDS_MASTERY_REPORT]: {
+    getTempTags: getSMRTempTagsDataSelector,
+    getSettings: getReportsSMRSettings,
+    setTags: setSMRTagsDataAction,
+    setTempTags: setSMRTempTagsDataAction,
+    remapTags: (tags) => {
+      const { courseIds, ..._tags } = tags
+      return { ..._tags, courseId: courseIds?.[0] }
+    },
+  },
+  [reportGroupType.STUDENT_PROFILE_REPORT]: {
+    getTempTags: getSPRTempTagsDataSelector,
+    getSettings: getReportsSPRSettings,
+    setTags: setSPRTagsDataAction,
+    setTempTags: setSPRTempTagsDataAction,
+  },
+  [reportGroupType.ENGAGEMENT_REPORT]: {
+    getTempTags: getERTempTagsDataSelector,
+    getSettings: getReportsERSettings,
+    setTags: setERTagsDataAction,
+    setTempTags: setERTempTagsDataAction,
+  },
+}
+
+function* updateTags(tags, type) {
+  if (!selectorDict[type]) return
+  if (Object.values(tags).every((tag) => isEmpty(tag))) return
+  const remappedTags = selectorDict[type].remapTags
+    ? selectorDict[type].remapTags(tags)
+    : tags
+  const tempTagsData = yield select(selectorDict[type].getTempTags)
+  const tagsData = (yield select(selectorDict[type].getSettings)).tagsData
+  yield put(
+    selectorDict[type].setTempTags({ ...tempTagsData, ...remappedTags })
+  )
+  yield put(selectorDict[type].setTags({ ...tagsData, ...remappedTags }))
+}
+
+function* getTagFilters(ids, options) {
+  let result = []
+  if (Array.isArray(ids) && ids.length) {
+    const type = options.tagTypes || [
+      'group',
+      'testitem',
+      'playlist',
+      'test',
+      'assignment',
+    ]
+    yield put(getAllTagsAction({ type }))
+    yield take([SET_ALL_TAGS, SET_ALL_TAGS_FAILED])
+    const list = yield all(
+      type.map((t) => select((state) => getAllTagsSelector(state, t)))
+    )
+    result = filterMapKeys(list.flat(), ids, 'tagName')
+  }
+  return result
+}
+function* getGroupTags(ids, options) {
+  let result = []
+  if (Array.isArray(ids) && ids.length) {
+    const q = {
+      limit: ids.length || 25,
+      page: 1,
+      districtId: options?.districtIds?.[0],
+      search: {
+        name: '',
+        type: ['custom'],
+        groupIds: ids,
+      },
+      queryType: 'OR',
+    }
+
+    yield put(receiveGroupListAction(q))
+    yield take([RECEIVE_GROUPLIST_SUCCESS, RECEIVE_GROUPLIST_ERROR])
+    const list = Object.values(
+      yield select(getGroupListSelector)
+    ).map((li) => ({ ...li, name: li._source.name }))
+    result = filterMapKeys(list, ids)
+  }
+  return result
+}
+function* getTestTags(ids, options) {
+  let result = []
+  if (Array.isArray(ids) && ids.length) {
+    const { IN_PROGRESS, IN_GRADING, DONE } = assignmentStatusOptions
+    const q = {
+      limit: ids.length || 25,
+      page: 1,
+      search: {
+        searchString: '',
+        statuses: [IN_PROGRESS, IN_GRADING, DONE],
+        districtId: options?.districtIds?.[0],
+        testIds: ids,
+      },
+      aggregate: true,
+    }
+    yield put(receiveTestListAction(q))
+    yield take([
+      RECEIVE_TEST_LIST_REQUEST_SUCCESS,
+      RECEIVE_TEST_LIST_REQUEST_ERROR,
+    ])
+    const list = yield select(getTestListSelector)
+    result = filterMapKeys(list, ids, 'title')
+  }
+  return result
+}
+function* getClassTags(ids, options) {
+  let result = []
+  if (Array.isArray(ids) && ids.length) {
+    const q = {
+      limit: ids.length || 25,
+      page: 1,
+      districtId: options.districtIds?.[0],
+      search: {
+        name: '',
+        type: ['class'],
+        groupIds: ids,
+      },
+      queryType: 'OR',
+    }
+    yield put(receiveClassListAction(q))
+    yield take([RECEIVE_CLASSLIST_SUCCESS, RECEIVE_CLASSLIST_ERROR])
+    const list = Object.values(yield select(getClassListSelector))
+    result = filterMapKeys(list, ids, '_source.name')
+  }
+  return result
+}
+function* getCourseTags(ids, options) {
+  let result = []
+  if (Array.isArray(ids) && ids.length) {
+    const q = {
+      limit: ids.length || 25,
+      page: 1,
+      districtId: options.districtIds?.[0],
+      search: {
+        name: [{ type: 'cont', value: '' }],
+        courseIds: ids,
+      },
+    }
+    yield put(receiveCourseListAction(q))
+    yield take([RECEIVE_COURSE_SUCCESS, RECEIVE_COURSE_ERROR])
+    const list = yield select(getCourseListSelector)
+    result = filterMapKeys(list, ids)
+  }
+  return result
+}
+function* getTeacherTags(ids, options) {
+  let result = []
+  if (Array.isArray(ids) && ids.length) {
+    const q = {
+      limit: ids.length || 25,
+      page: 1,
+      districtId: options?.districtIds?.[0],
+      search: {},
+      role: roleuser.TEACHER,
+      teacherIds: ids,
+    }
+    if (!isEmpty(options.schoolIds)) {
+      q.institutionId = options.schoolIds.join(',')
+    }
+    if (!isEmpty(options.termId)) {
+      q.termId = options.termId
+    }
+    if (!isEmpty(options.testIds)) {
+      q.testIds = options.testIds
+    }
+    yield put(receiveTeachersListAction(q))
+    yield take([RECEIVE_TEACHERLIST_SUCCESS, RECEIVE_TEACHERLIST_ERROR])
+    const list = combineNames(yield select(getTeachersListSelector))
+    result = filterMapKeys(list, ids)
+  }
+  return result
+}
+function* getSchoolTags(ids, options) {
+  let result = []
+  if (Array.isArray(ids) && ids.length) {
+    const q = {
+      limit: ids.length || 25,
+      page: 1,
+      districtId: options?.districtIds?.[0],
+      search: {
+        name: [{ type: 'cont', value: '' }],
+      },
+      schoolIds: ids,
+    }
+    yield put(receiveSchoolsAction(q))
+    yield take([RECEIVE_SCHOOLS_SUCCESS, RECEIVE_SCHOOLS_ERROR])
+    const list = yield select(getSchoolsSelector)
+    result = filterMapKeys(list, ids)
+  }
+  return result
+}
+
+const tagGetterMap = {
+  tagIds: getTagFilters,
+  testIds: getTestTags,
+  schoolIds: getSchoolTags,
+  teacherIds: getTeacherTags,
+  courseIds: getCourseTags,
+  classIds: getClassTags,
+  groupIds: getGroupTags,
+}
+
+function* fetchUpdateTagsData({ payload }) {
+  const { options = {}, type, ...keys } = payload
+  try {
+    const orgData = yield select(getOrgDataSelector)
+    const userDetails = yield select(getUser)
+    const params = {
+      ...orgData,
+      ...options,
+      userDetails,
+    }
+    const result = yield all(
+      mapValues(
+        omitBy(tagGetterMap, (v, k) => !keys[k]),
+        (func, key) => func(keys[key], params)
+      )
+    )
+    yield* updateTags(result, type)
+  } catch (error) {
+    const msg = 'Failed to update tags for autocomplete filters from url.'
+    console.error(msg, '\nError =>', error.stack)
+  }
+}
+
+export function* receiveTestListSaga({ payload }) {
+  try {
+    const searchResult = yield call(assignmentApi.searchAssignments, payload)
+    const assignmentBuckets = get(
+      searchResult,
+      'aggregations.buckets.buckets',
+      []
+    )
+    const testList = assignmentBuckets
+      .map(({ key: _id, assignments }) => {
+        const hits = get(assignments, 'hits.hits', [])
+        const title = get(hits[0], '_source.title', '')
+        return { _id, title }
+      })
+      .filter(({ _id, title }) => _id && title)
+    yield put({
+      type: RECEIVE_TEST_LIST_REQUEST_SUCCESS,
+      payload: { testList },
+    })
+  } catch (error) {
+    const msg = 'Failed to receive tests dropdown data. Please try again...'
+    styledNotification({ msg })
+    yield put({
+      type: RECEIVE_TEST_LIST_REQUEST_ERROR,
+      payload: { error: msg },
+    })
+  }
+}
+
+export function* reportSaga() {
   yield all([
     reportAssignmentsSaga(),
 
@@ -192,12 +688,21 @@ export function* reportSaga(params) {
     reportPerformanceOverTimeSaga(),
     reportPeerProgressAnalysisSaga(),
     reportStudentProgressSaga(),
+    reportStudentProgressProfileSaga(),
     reportStudentProfileSummarySaga(),
     reportStudentMasteryProfileSaga(),
     reportStudentAssessmentProfileSaga(),
     reportStandardsPerformanceSummarySaga(),
     reportStandardsGradebookSaga(),
+    reportStandardsProgressSaga(),
+    reportEngagementSummarySaga(),
+    reportActivityBySchoolSaga(),
+    reportActivityByTeacherSaga(),
     customReportSaga(),
+    sharedReportsSaga(),
+    yield takeEvery(GENERATE_CSV_REQUEST, generateCSVSaga),
+    yield takeEvery(RECEIVE_TEST_LIST_REQUEST, receiveTestListSaga),
+    takeEvery(FETCH_UPDATE_TAGS_DATA, fetchUpdateTagsData),
   ])
 }
 

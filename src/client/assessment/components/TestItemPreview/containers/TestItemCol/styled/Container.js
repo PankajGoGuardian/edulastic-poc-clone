@@ -1,19 +1,80 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { mobileWidth } from '@edulastic/colors'
+import { test as testConstants } from '@edulastic/constants'
+
+const { playerSkinValues } = testConstants
+// need to calculate zoomed style
+// see: https://snapwiz.atlassian.net/browse/EV-21562
+const zoomedStyle = css`
+  ${(props) => {
+    const { theme, isStudentAttempt, viewComponent } = props
+    if (!isStudentAttempt) {
+      return
+    }
+
+    const { shouldZoom, zoomLevel, headerHeight = 90, playerSkinType } = theme
+    const zoomed = zoomLevel > '1' && zoomLevel !== undefined
+    const questerFooterHeight = 66
+    const practicePlayerFooterHeight = 20
+    // need to think about padding of Main wrapper
+    // see: themes/common/Main.js
+
+    let paddingTopBottom = 20
+    if (zoomed) {
+      if (zoomLevel >= 1.5 && zoomLevel < 1.75) {
+        paddingTopBottom = 30
+      }
+      if (zoomLevel >= 1.75) {
+        paddingTopBottom = 35
+      }
+    }
+
+    paddingTopBottom *= 2
+
+    // 8 is margin-top of Container. Check this file
+    const hasFooter =
+      viewComponent === 'practicePlayer' &&
+      (playerSkinType === playerSkinValues.quester ||
+        playerSkinType === playerSkinValues.edulastic)
+    let header = hasFooter ? 180 : headerHeight + paddingTopBottom + 8
+    if (playerSkinType === 'quester') {
+      // This adjustment was required to fix the practice player with questar skin.
+      header += viewComponent === 'practicePlayer' ? -20 : questerFooterHeight
+    }
+    if (
+      viewComponent === 'practicePlayer' &&
+      playerSkinType === playerSkinValues.edulastic
+    ) {
+      header += practicePlayerFooterHeight
+    }
+    if (shouldZoom && zoomed) {
+      header /= zoomLevel
+      return `
+        min-height: calc(${100 / zoomLevel}vh - ${header}px);
+        max-height: calc(${100 / zoomLevel}vh - ${header}px);
+      `
+    }
+    return `
+      min-height: calc(100vh - ${header}px);
+      max-height: calc(100vh - ${header}px);
+    `
+  }}
+`
 
 export const Container = styled.div`
-  width: ${({ width }) => width};
   display: flex;
+  width: ${({ colWidth }) => colWidth || '100%'};
   flex-direction: column;
   border-right-color: ${(props) =>
     props.theme.testItemPreview.itemColBorderColor};
-  background-color: ${(props) => props.hasCollapseButtons && '#fff'};
-  border-radius: ${(props) => props.hasCollapseButtons && '10px'};
-  min-height: ${(props) => props.hasCollapseButtons && 'calc(100vh - 122px)'};
-  max-height: ${(props) => props.hasCollapseButtons && 'calc(100vh - 122px)'};
-  padding-top: ${(props) => props.hasCollapseButtons && '15px'};
-  overflow: ${(props) => props.hasCollapseButtons && 'auto'};
-  ${({ height }) => height && `height: ${height}`};
+  background-color: ${(props) => props.isStudentAttempt && '#fff'};
+  border-radius: ${(props) => props.isStudentAttempt && '8px'};
+  padding-top: ${(props) => props.isStudentAttempt && '12px'};
+  overflow: ${(props) =>
+    props.isStudentAttempt || props.isExpressGrader || props.isStudentReport
+      ? 'auto'
+      : 'hidden'};
+  ${zoomedStyle}
   @media (max-width: ${mobileWidth}) {
     padding-left: 0px;
     margin-right: ${(props) => !props.value && '20px'};
@@ -23,11 +84,11 @@ export const Container = styled.div`
 
 export const WidgetContainer = styled.div`
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  padding-top: 20px;
-  ${({ style }) => style};
+  flex-direction: column;
+  flex: 1;
+  position: relative;
+  min-height: max-content; // to fix height issue with safari
 `
 export const FilesViewContainer = styled.div`
-  padding: 35px;
+  padding: 10px 35px;
 `

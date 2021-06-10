@@ -1,14 +1,12 @@
 import React, { useRef, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import { find, isUndefined } from 'lodash'
+import { find, isUndefined, isEmpty } from 'lodash'
 import { Popover } from 'antd'
-import { measureText } from '@edulastic/common'
+import { response as responseConstant } from '@edulastic/constants'
+import { getEvalautionColor } from '../../../utils/evaluation'
 
 import { IconWrapper } from './styled/IconWrapper'
-import { RightIcon } from './styled/RightIcon'
-import { WrongIcon } from './styled/WrongIcon'
 import { CheckBox } from './styled/CheckBox'
-import { getMathTemplate } from '../../../utils/variables'
 
 /**
  *
@@ -27,6 +25,8 @@ function combineUnitAndValue(userAnswer, isMath, unit) {
       : userAnswer.value
     : userAnswer?.unit || ''
 }
+
+const { mathInputMaxHeight } = responseConstant
 
 const CheckBoxedMathBox = ({ value, style }) => {
   const filedRef = useRef()
@@ -59,10 +59,11 @@ const CheckedBlock = ({
   type,
   isMath,
   width,
-  height,
   onInnerClick,
   showIndex,
   isPrintPreview = false,
+  answerScore,
+  allCorrects,
 }) => {
   const { responseIds } = item
   const { index } = find(responseIds[type], (res) => res.id === id)
@@ -79,31 +80,32 @@ const CheckedBlock = ({
   ) {
     unit = `\\text{${unit}}`
   }
-  let checkBoxClass = ''
 
-  if (userAnswer && evaluation[id] !== undefined) {
-    checkBoxClass = evaluation[id] ? 'right' : 'wrong'
-  }
+  const answer = combineUnitAndValue(userAnswer, isMath, unit)
 
-  const showValue = combineUnitAndValue(userAnswer, isMath, unit)
+  const { fillColor, mark, indexBgColor } = getEvalautionColor(
+    answerScore,
+    userAnswer && evaluation[id],
+    !!answer,
+    allCorrects,
+    isEmpty(evaluation)
+  )
 
   /**
    * if its math or math with units, need to convert the latex string to actual math template
    * passing latex string to the function would give incorrect dimensions
    * as latex might have extra special characters for rendering math
    */
-  const answer = isMath ? getMathTemplate(showValue) : showValue
-  const { width: textWidth } = measureText(answer, { padding: '0 0 0 11px' })
-  const availableWidth = textWidth - (showIndex ? 58 : 26)
-  const showPopover = textWidth > availableWidth
+  const showPopover = !!answer // show popover when answer is provided
 
   const popoverContent = (isPopover) => (
     <CheckBox
-      className={!isPrintPreview && checkBoxClass}
+      fillColor={fillColor}
+      isPrintPreview={isPrintPreview}
+      indexBgColor={indexBgColor}
       key={`input_${index}`}
       onClick={onInnerClick}
       width={isPopover ? null : width}
-      height={height}
     >
       {showIndex && (
         <span
@@ -124,23 +126,22 @@ const CheckedBlock = ({
       >
         {isMath ? (
           <CheckBoxedMathBox
-            value={showValue}
+            value={answer}
             style={{
-              height: !isPopover && height,
               minWidth: 'unset',
               display: 'flex',
               alignItems: 'center',
               textAlign: 'left',
+              maxHeight: !isPopover && mathInputMaxHeight,
+              padding: isPopover && '4px 0px',
             }}
           />
         ) : (
-          showValue
+          answer
         )}
       </span>
       {userAnswer && !isUndefined(evaluation[id]) && (
-        <IconWrapper>
-          {checkBoxClass === 'right' ? <RightIcon /> : <WrongIcon />}
-        </IconWrapper>
+        <IconWrapper>{mark}</IconWrapper>
       )}
     </CheckBox>
   )
@@ -160,18 +161,16 @@ CheckedBlock.propTypes = {
   id: PropTypes.string.isRequired,
   showIndex: PropTypes.bool,
   isMath: PropTypes.bool,
-  onInnerClick: PropTypes.func,
   width: PropTypes.string,
-  height: PropTypes.string,
+  onInnerClick: PropTypes.func,
 }
 
 CheckedBlock.defaultProps = {
   isMath: false,
   showIndex: false,
   userAnswer: '',
+  width: '120px',
   onInnerClick: () => {},
-  width: 120,
-  height: 'auto',
 }
 
 export default CheckedBlock

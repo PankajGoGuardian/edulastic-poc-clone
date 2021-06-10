@@ -41,6 +41,7 @@ const HotspotPreview = ({
   t,
   evaluation,
   changePreviewTab,
+  hideCorrectAnswer,
 }) => {
   const {
     areas,
@@ -81,7 +82,7 @@ const HotspotPreview = ({
     fill: areaAttributes?.local?.find((attr) => attr.area === i)
       ? areaAttributes.local.find((attr) => attr.area === i).fill
       : areaAttributes.global.fill,
-    stroke: areaAttributes.local.find((attr) => attr.area === i)
+    stroke: areaAttributes?.local?.find((attr) => attr.area === i)
       ? areaAttributes.local.find((attr) => attr.area === i).stroke
       : areaAttributes.global.stroke,
   })
@@ -105,7 +106,7 @@ const HotspotPreview = ({
             <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>
           )}
         </QuestionLabelWrapper>
-        <QuestionContentWrapper>
+        <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
           <QuestionTitleWrapper>
             {view === PREVIEW && !smallSize && (
               <Stimulus
@@ -149,7 +150,7 @@ const HotspotPreview = ({
             </Svg>
           </BlockContainer>
           {view !== EDIT && <Instructions item={item} />}
-          {previewTab === 'show' && !smallSize && (
+          {previewTab === 'show' && !hideCorrectAnswer && !smallSize && (
             <>
               <CorrectAnswersContainer
                 title={t('component.graphing.correctAnswer')}

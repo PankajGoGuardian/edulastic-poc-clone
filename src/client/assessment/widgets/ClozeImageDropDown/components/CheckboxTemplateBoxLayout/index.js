@@ -32,9 +32,14 @@ const CheckboxTemplateBoxLayout = ({
   isExpressGrader,
   item,
   isPrintPreview,
+  answerScore,
 }) => {
   const widthGreaterThanWindowWidth =
     window.innerWidth > parseInt(smallDesktopWidth.replace('px', ''), 10)
+  const allCorrect =
+    responseContainers?.length === Object.keys(evaluation)?.length &&
+    Object.keys(evaluation)?.every((id) => evaluation[id])
+
   return (
     <StyledTemplateBox fontSize={fontSize}>
       <TemplateCover
@@ -120,6 +125,8 @@ const CheckboxTemplateBoxLayout = ({
               isPrintPreview={isPrintPreview}
               imageWidth={imageWidth}
               imageHeight={imageHeight}
+              allCorrect={allCorrect}
+              answerScore={answerScore}
             />
           )
         })}

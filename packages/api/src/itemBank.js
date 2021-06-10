@@ -48,11 +48,12 @@ const deletePermission = ({ bankId, id }) =>
     })
     .then((result) => result.data.data)
 
-const getPermissions = (bankId) =>
+const getPermissions = ({ _id, paginationData }) =>
   api
     .callApi({
-      url: `${prefix}/${bankId}/permissions`,
+      url: `${prefix}/${_id}/permissions`,
       method: 'get',
+      params: paginationData,
     })
     .then((result) => result.data)
 

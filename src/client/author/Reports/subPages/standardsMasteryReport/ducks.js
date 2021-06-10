@@ -3,11 +3,13 @@ import { createAction, createReducer } from 'redux-starter-kit'
 
 import { RESET_ALL_REPORTS } from '../../common/reportsRedux'
 
-const SET_SMR_SETTINGS = '[SMR settings] get smr settings'
+const SET_SMR_SETTINGS = '[SMR settings] set smr settings'
+const SET_SMR_TAGS_DATA = '[SMR settings] set smr tags data'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
 export const setSMRSettingsAction = createAction(SET_SMR_SETTINGS)
+export const setSMRTagsDataAction = createAction(SET_SMR_TAGS_DATA)
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
 
@@ -30,20 +32,38 @@ export const getReportsSMRSettings = createSelector(
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //
 
 const initialState = {
-  selectedTest: [],
   requestFilters: {
+    reportId: '',
     termId: '',
+    schoolIds: '',
+    teacherIds: '',
     subject: '',
-    grades: ['K'],
-    domainIds: ['All'],
-    // classSectionId: "",
-    // assessmentType: ""
+    grade: '',
+    courseId: '',
+    classIds: '',
+    groupIds: '',
+    testSubject: '',
+    testGrade: '',
+    assessmentTypes: '',
+    tagIds: '',
+    testIds: '',
+    curriculumId: '',
+    standardGrade: '',
+    profileId: '',
+    domainIds: '',
+    assignedBy: 'anyone',
   },
+  tagsData: {},
 }
 
 export const reportSMRSettingsReducer = createReducer(initialState, {
-  [SET_SMR_SETTINGS]: (state, { payload }) => (state = { ...payload }),
-  [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState),
+  [SET_SMR_TAGS_DATA]: (state, { payload }) => {
+    state.tagsData = { ...payload }
+  },
+  [SET_SMR_SETTINGS]: (state, { payload }) => {
+    state.requestFilters = payload.requestFilters
+  },
+  [RESET_ALL_REPORTS]: (state) => (state = initialState),
 })
 
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //

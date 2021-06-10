@@ -113,6 +113,7 @@ class ReportsPage {
     })
 
   validateStats(attemptNum, attempt, score, percent, totalAttempt) {
+    this.closeMultipleAttempts()
     if (attempt.split('/')[1] !== '1')
       this.getAttemptCount().should('have.text', attempt)
     if (score) {
@@ -138,7 +139,7 @@ class ReportsPage {
   }
 
   validateAttemptLinkStats(totalAttempt, attemptNum, score, percent) {
-    this.getAttempts().should('be.visible').click()
+    this.openMultipleAttempts()
     if (percent) this.getPercentage().should('have.length', totalAttempt)
     if (score)
       this.getPercentage()
@@ -157,7 +158,7 @@ class ReportsPage {
       this.getPercentage()
         .eq(totalAttempt - attemptNum)
         .should('have.text', `${Math.round(percent)}%`)
-    this.getAttempts().should('be.visible').click()
+    this.closeMultipleAttempts()
     this.getPercentage().should('have.length', 0)
     this.getDate()
   }
@@ -463,6 +464,27 @@ class ReportsPage {
       default:
         break
     }
+  }
+
+  closeMultipleAttempts = () => {
+    this.getStatus().then(() => {
+      if (Cypress.$('[data-cy="attempt-rows-expanded"]').length) {
+        this.getAttempts().click()
+        cy.get('[data-cy="attempt-rows-expanded"]').should('have.length', 0)
+      }
+    })
+  }
+
+  openMultipleAttempts = () => {
+    this.getStatus().then(() => {
+      if (!Cypress.$('[data-cy="attempt-rows-expanded"]').length) {
+        this.getAttempts().click()
+        cy.get('[data-cy="attempt-rows-expanded"]').should(
+          'have.length.greaterThan',
+          0
+        )
+      }
+    })
   }
 
   // *** APPHELPERS END ***

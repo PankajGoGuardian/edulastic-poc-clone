@@ -1,6 +1,9 @@
 import { themeColor, darkGrey } from '@edulastic/colors'
-import { EduButton, FlexContainer } from '@edulastic/common'
-import { test } from '@edulastic/constants'
+import { EduButton, FlexContainer, notification } from '@edulastic/common'
+import {
+  test as TEST,
+  collections as collectionsConstant,
+} from '@edulastic/constants'
 import { IconLock, IconPencilEdit } from '@edulastic/icons'
 import { Divider } from 'antd'
 import { get } from 'lodash'
@@ -57,8 +60,10 @@ import {
 
 import ImageCard from './ImageCard'
 import { getAssignmentsSelector, fetchAssignmentsAction } from '../Assign/ducks'
+import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 
-const { statusConstants, passwordPolicy, type: _testTypes } = test
+const { statusConstants, passwordPolicy, type: _testTypes } = TEST
+const { nonPremiumCollectionsToShareContent } = collectionsConstant
 
 const sharedWithPriorityOrder = ['Public', 'District', 'School']
 const AUTOMATICALLY_ON_START_DATE = 'Automatically on Start Date'
@@ -122,14 +127,20 @@ class SuccessPage extends React.Component {
       isAssignSuccess,
       isRegradeSuccess,
       regradedAssignments,
+      assignment: _assignment,
     } = this.props
     const { _id } = test
     const assignment = isAssignSuccess
-      ? this.props.assignment
+      ? _assignment
       : isRegradeSuccess
       ? regradedAssignments[0]
       : {}
     if (isAssignSuccess || isRegradeSuccess) {
+      if (!assignment._id)
+        return notification({
+          type: 'info',
+          msg: 'Please try to launch LCB from assignment page',
+        })
       history.push(
         `/author/classboard/${assignment._id}/${assignment.class?.[0]?._id}`
       )
@@ -139,15 +150,15 @@ class SuccessPage extends React.Component {
   }
 
   onShareModalChange = () => {
-    this.setState({
-      isShareModalVisible: !this.state.isShareModalVisible,
-    })
+    this.setState((prevState) => ({
+      isShareModalVisible: !prevState.isShareModalVisible,
+    }))
   }
 
   toggleShareWithGC = () => {
-    this.setState({
-      shareWithGCEnable: !this.state.shareWithGCEnable,
-    })
+    this.setState((prevState) => ({
+      shareWithGCEnable: !prevState.shareWithGCEnable,
+    }))
   }
 
   renderHeaderButton = () => {
@@ -177,11 +188,16 @@ class SuccessPage extends React.Component {
             {`Return to ${fromText}`}
           </EduButton>
         )}
-        <EduButton isBlue data-cy="assignButton" onClick={this.handleAssign}>
-          {isAssignSuccess || isRegradeSuccess
-            ? 'Go to Live Classboard'
-            : 'ASSIGN'}
-        </EduButton>
+        <AuthorCompleteSignupButton
+          renderButton={(handleClick) => (
+            <EduButton isBlue data-cy="assignButton" onClick={handleClick}>
+              {isAssignSuccess || isRegradeSuccess
+                ? 'Go to Live Classboard'
+                : 'ASSIGN'}
+            </EduButton>
+          )}
+          onClick={this.handleAssign}
+        />
       </>
     )
   }
@@ -225,9 +241,11 @@ class SuccessPage extends React.Component {
       userId,
       collections,
       published,
-      syncWithGoogleClassroomInProgress,
       history,
+      syncWithGoogleClassroomInProgress,
+      classList,
     } = this.props
+
     const { isShareModalVisible, shareWithGCEnable } = this.state
     const { title, _id, status, grades, subjects, authors = [] } = isPlaylist
       ? playlist
@@ -235,10 +253,10 @@ class SuccessPage extends React.Component {
     let shareUrl = ''
     if (this.getHighPriorityShared === 'Public' && !isPlaylist) {
       shareUrl = `${window.location.origin}/public/view-test/${_id}`
+    } else if (isPlaylist) {
+      shareUrl = `${window.location.origin}/author/playlists/${_id}`
     } else {
-      shareUrl = `${window.location.origin}/author/${
-        isPlaylist ? 'playlists' : 'tests/tab/review/id'
-      }/${_id}`
+      shareUrl = `${window.location.origin}/author/tests/verid/${test?.versionId}`
     }
     const currentClass = (assignment.class && assignment.class[0]) || {}
     const assignmentStatus =
@@ -263,9 +281,16 @@ class SuccessPage extends React.Component {
 
     let hasPremiumQuestion = false
     if (!isPlaylist) {
-      const { testItems = [] } = test
+      const { itemGroups = [] } = test
+      const testItems = (itemGroups || []).flatMap(
+        (itemGroup) => itemGroup.items || []
+      )
+      const premiumOrgCollections = collections.filter(
+        ({ _id: id }) =>
+          !Object.keys(nonPremiumCollectionsToShareContent).includes(id)
+      )
       hasPremiumQuestion = !!testItems.find((i) =>
-        hasUserGotAccessToPremiumItem(i.collections, collections)
+        hasUserGotAccessToPremiumItem(i.collections, premiumOrgCollections)
       )
     }
 
@@ -333,20 +358,29 @@ class SuccessPage extends React.Component {
       (m) => m?._id === assignedPlaylistModuleId
     )
     const moduleTitle = _module?.title || ''
-
-    const { openPolicy } = assignment
-
+    let isGoogleClassroomAssigned = false
+    const { openPolicy, class: clazz = [] } = assignment
+    // check if any group assigned is google group
+    const assignedClassIds = clazz.map((o) => o._id)
+    if (classList.find((o) => assignedClassIds.includes(o._id) && o.googleId)) {
+      isGoogleClassroomAssigned = true
+    }
     return (
       <div>
-        <ShareModal
-          shareLabel="TEST URL"
-          isVisible={isShareModalVisible}
-          testId={_id}
-          hasPremiumQuestion={hasPremiumQuestion}
-          isPublished={status === statusConstants.PUBLISHED}
-          onClose={this.onShareModalChange}
-          gradeSubject={gradeSubject}
-        />
+        {isShareModalVisible && (
+          <ShareModal
+            shareLabel="TEST URL"
+            isVisible={isShareModalVisible}
+            isPlaylist={isPlaylist}
+            testId={_id}
+            hasPremiumQuestion={hasPremiumQuestion}
+            isPublished={status === statusConstants.PUBLISHED}
+            onClose={this.onShareModalChange}
+            gradeSubject={gradeSubject}
+            testVersionId={test?.versionId}
+          />
+        )}
+
         <ListHeader
           title={(_module && _module.title) || title}
           renderButton={this.renderHeaderButton}
@@ -397,19 +431,19 @@ class SuccessPage extends React.Component {
                       they can work on the assignment. The auto-generated
                       password is time sensitive and will be revealed to the
                       teacher or the proctor when the assignment is opened. when
-                      students are ready, click on the > Open button to view the
-                      password, announce to students and make the assignment
+                      students are ready, click on the &gt; Open button to view
+                      the password, announce to students and make the assignment
                       available for the student to work on.
                     </FlexText>
                   ) : assignment.testType === _testTypes.COMMON ? (
                     <FlexText>
-                      You can monitor student progress and responses by clicking
-                      on the &nbsp;
+                      You can monitor student progress and responses using the
+                      Live Class Board &nbsp;
                       <span
                         onClick={this.handleAssign}
                         style={{ color: themeColor, cursor: 'pointer' }}
                       >
-                        Go to Live Class Board
+                        Click here
                       </span>
                     </FlexText>
                   ) : (
@@ -429,15 +463,15 @@ class SuccessPage extends React.Component {
                             : 'once it is opened by you from Live Class Board'
                         }.`}
                       </FlexText>
-                      You can monitor student progress and responses by clicking
-                      on the &nbsp;
+                      You can monitor student progress and responses using the
+                      Live Class Board &nbsp;
                       <span
                         onClick={this.handleAssign}
                         style={{ color: themeColor, cursor: 'pointer' }}
                       >
-                        Go to Live Class Board
+                        Click here
                       </span>
-                      &nbsp; button.
+                      &nbsp;to navigate to the Live Class Board
                     </FlexText>
                   )}
                   <Divider />
@@ -548,24 +582,28 @@ class SuccessPage extends React.Component {
                     </TitleCopy>
                   </FlexShareBox>
                 </FlexWrapperUrlBox>
-                <FlexWrapperClassroomBox>
-                  <FlexTitleBox>
-                    <FlexShareTitle>Share with Google Classroom</FlexShareTitle>
-                    <FlexShareMessage>
-                      Click on Google Classroom button to share the assignment
-                    </FlexShareMessage>
-                  </FlexTitleBox>
-                  <EduButton
-                    isGhost
-                    data-cy="Share with Google Classroom"
-                    onClick={this.shareWithGoogleClassroom}
-                    disabled={
-                      syncWithGoogleClassroomInProgress || !shareWithGCEnable
-                    }
-                  >
-                    Google Classroom
-                  </EduButton>
-                </FlexWrapperClassroomBox>
+                {isAssignSuccess && isGoogleClassroomAssigned && (
+                  <FlexWrapperClassroomBox>
+                    <FlexTitleBox>
+                      <FlexShareTitle>
+                        Share with Google Classroom
+                      </FlexShareTitle>
+                      <FlexShareMessage>
+                        Click on Google Classroom button to share the assignment
+                      </FlexShareMessage>
+                    </FlexTitleBox>
+                    <EduButton
+                      isGhost
+                      data-cy="Share with Google Classroom"
+                      onClick={this.shareWithGoogleClassroom}
+                      disabled={
+                        syncWithGoogleClassroomInProgress || !shareWithGCEnable
+                      }
+                    >
+                      Google Classroom
+                    </EduButton>
+                  </FlexWrapperClassroomBox>
+                )}
               </FlexShareContainer>
             </FlexContainerWrapperRight>
           </FlexContainerWrapper>
@@ -593,6 +631,7 @@ const enhance = compose(
       collections: getCollectionsSelector(state),
       regradedAssignments: getAssignmentsSelector(state),
       syncWithGoogleClassroomInProgress: getAssignmentSyncInProgress(state),
+      classList: get(state, 'user.user.orgData.classList', []),
     }),
     {
       fetchAssignmentById: receiveAssignmentByAssignmentIdAction,
@@ -613,4 +652,11 @@ SuccessPage.propTypes = {
   playlist: PropTypes.object,
   fetchPlaylistById: PropTypes.func.isRequired,
   fetchTestByID: PropTypes.func.isRequired,
+}
+
+SuccessPage.defaultProps = {
+  isAssignSuccess: false,
+  isRegradeSuccess: false,
+  test: {},
+  playlist: {},
 }

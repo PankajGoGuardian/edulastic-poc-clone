@@ -1,66 +1,132 @@
-import { set, round } from 'lodash'
-import produce from 'immer'
-import { questionType } from '@edulastic/constants'
-import evaluators from './evaluators'
+import { set, round, min, cloneDeep, isEmpty } from 'lodash'
+import {
+  multipartEvaluationTypes,
+  PARTIAL_MATCH,
+} from '@edulastic/constants/const/evaluationType'
+import {
+  manuallyGradableQn,
+  PASSAGE,
+} from '@edulastic/constants/const/questionType'
+
+import evaluator from './evaluators'
 import { replaceVariables } from '../../../assessment/utils/variables'
+
+const { FIRST_CORRECT_MUST, ALL_CORRECT_MUST } = multipartEvaluationTypes
 
 export const evaluateItem = async (
   answers,
   validations,
   itemLevelScoring = false,
-  itemLevelScore = 0
+  itemLevelScore = 0,
+  itemId = '',
+  itemGradingType,
+  assignPartialCredit,
+  testSettings = {}
 ) => {
   const questionIds = Object.keys(validations)
   const results = {}
   let totalScore = 0
   let totalMaxScore = itemLevelScoring ? itemLevelScore : 0
-  const questionsNum = Object.keys(validations).filter(
+  const numberOfQuestions = Object.keys(validations).filter(
     (x) => validations?.[x]?.validation
   ).length
-  for (const id of questionIds) {
+  let allCorrect = true
+  let firstCorrect = false
+  for (const [index, id] of questionIds.entries()) {
+    const evaluationId = `${itemId}_${id}`
     const answer = answers[id]
-    if (validations && validations[id]) {
+    /**
+     * @see https://snapwiz.atlassian.net/browse/EV-28137
+     * calculate maxScore upfront as evaluation request is not sent for empty user response
+     * exclude passage item score from being added to maxScore
+     */
+    if (!itemLevelScoring && validations && validations[id]?.type !== PASSAGE) {
+      totalMaxScore += validations[id]?.validation?.validResponse?.score || 0
+    }
+    if (validations && validations[id] && !isEmpty(answer)) {
       const validation = replaceVariables(validations[id], [], false)
       const { type } = validations[id]
-      const evaluator = evaluators[validation.type]
       if (!evaluator) {
-        results[id] = []
+        results[evaluationId] = []
+        allCorrect = false
       } else {
+        const validationData = cloneDeep(validation.validation)
+        if (itemLevelScoring) {
+          const questionScore = itemLevelScore / numberOfQuestions
+          set(validationData, 'validResponse.score', questionScore)
+          if (
+            Array.isArray(validationData.altResponses) &&
+            numberOfQuestions > 1
+          ) {
+            validationData.altResponses.forEach((altResp) => {
+              altResp.score = questionScore
+            })
+          }
+        }
+        if (assignPartialCredit) {
+          validationData.scoringType = PARTIAL_MATCH
+        }
         const { evaluation, score = 0, maxScore } = await evaluator(
           {
             userResponse: answer,
             hasGroupResponses: validation.hasGroupResponses,
-            validation: itemLevelScoring
-              ? produce(validation.validation, (v) => {
-                  set(v, 'validResponse.score', itemLevelScore / questionsNum)
-                })
-              : validation.validation,
+            validation: validationData,
+            template: validation.template,
             questionId: id,
+            testSettings,
           },
           type
         )
 
-        results[id] = evaluation
+        const isCorrect = score === maxScore
+        // manually gradeable should not account for all correct
+        if (allCorrect && !manuallyGradableQn.includes(type)) {
+          allCorrect = isCorrect
+        }
+        if (index === 0) {
+          firstCorrect = isCorrect
+        }
+
+        results[evaluationId] = evaluation
         if (itemLevelScoring) {
           totalScore += round(score, 2)
         } else {
           totalScore += score
         }
-
-        if (!itemLevelScoring) {
-          totalMaxScore += maxScore
-        }
       }
     } else {
-      results[id] = []
+      results[evaluationId] = []
+      allCorrect = false
     }
   }
+
   if (itemLevelScoring) {
+    let achievedScore = min([
+      itemLevelScore,
+      allCorrect ? itemLevelScore : totalScore,
+    ])
+    if (itemGradingType === FIRST_CORRECT_MUST && !firstCorrect) {
+      achievedScore = 0
+    } else if (itemGradingType === ALL_CORRECT_MUST) {
+      if (Object.keys(answers).length === 0 || !allCorrect) {
+        achievedScore = 0
+      }
+    }
+
     return {
       evaluation: results,
       maxScore: itemLevelScore,
-      score: totalScore > itemLevelScore ? itemLevelScore : totalScore,
+      score: achievedScore,
     }
   }
+
+  if (itemGradingType === FIRST_CORRECT_MUST && !firstCorrect) {
+    totalScore = 0
+  } else if (itemGradingType === ALL_CORRECT_MUST) {
+    if (Object.keys(answers).length === 0 || !allCorrect) {
+      totalScore = 0
+    }
+  }
+
   return { evaluation: results, maxScore: totalMaxScore, score: totalScore }
 }

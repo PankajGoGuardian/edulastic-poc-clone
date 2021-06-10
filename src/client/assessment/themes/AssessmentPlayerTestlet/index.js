@@ -17,7 +17,11 @@ import { updateTestPlayerAction } from '../../../author/sharedDucks/testPlayer'
 import { finishTestAcitivityAction } from '../../actions/test'
 
 // components
-import { Container, CalculatorContainer } from '../common'
+import {
+  Container,
+  CalculatorContainer,
+  getDefaultCalculatorProvider,
+} from '../common'
 import PlayerContent from './PlayerContent'
 import SubmitConfirmation from '../common/SubmitConfirmation'
 
@@ -60,14 +64,28 @@ class AssessmentPlayerTestlet extends React.Component {
     this.setState({ currentTool: tool })
   }
 
-  submitAnswer = (uuid, timeSpent, groupId, extData) => {
-    const { items, saveUserAnswer } = this.props
+  getCurrentItemIndex = (uuid) => {
+    const { items } = this.props
     const currentItemIndex = findIndex(items, (item) =>
       get(item, 'data.questions', [])
         .map((q) => q.id)
         .includes(uuid)
     )
-    saveUserAnswer(currentItemIndex, timeSpent, false, groupId, extData)
+    return currentItemIndex
+  }
+
+  submitAnswer = (uuid, timeSpent, groupId, extData) => {
+    const { saveUserAnswer } = this.props
+    const itemIndex = this.getCurrentItemIndex(uuid)
+    saveUserAnswer(itemIndex, timeSpent, false, groupId, extData)
+  }
+
+  setUserAnswerToStore = (uuid, answers) => {
+    const { items, setUserAnswer } = this.props
+    const itemIndex = this.getCurrentItemIndex(uuid)
+    if (items[itemIndex]) {
+      setUserAnswer(items[itemIndex]._id, uuid, answers)
+    }
   }
 
   saveTestletLog = (log) => {
@@ -102,7 +120,9 @@ class AssessmentPlayerTestlet extends React.Component {
     const { calcProvider, calcType } = settings
     const calculateMode =
       calcProvider && calcType !== 'NONE'
-        ? `${calcType}_${calcProvider}`
+        ? `${calcType}_${
+            calcProvider || getDefaultCalculatorProvider(calcType)
+          }`
         : false
 
     return (
@@ -111,6 +131,7 @@ class AssessmentPlayerTestlet extends React.Component {
           <PlayerContent
             {...this.props}
             currentTool={currentTool}
+            setUserAnswer={this.setUserAnswerToStore}
             openExitPopup={this.openExitPopup}
             changeTool={this.changeTool}
             calculateMode={calculateMode}
@@ -166,12 +187,12 @@ export default connect(
   (state) => ({
     evaluation: state.evaluation,
     testActivityId: state.test ? state.test.testActivityId : '',
-    questions: state.assessmentplayerQuestions.byId,
     settings: state.test.settings,
     zoomLevel: state.ui.zoomLevel,
     selectedTheme: state.ui.selectedTheme,
     timedAssignment: state.test?.settings?.timedAssignment,
     currentAssignmentTime: state.test?.currentAssignmentTime,
+    savingResponse: state?.test?.savingResponse,
     stopTimerFlag: state.test?.stopTimerFlag,
   }),
   {

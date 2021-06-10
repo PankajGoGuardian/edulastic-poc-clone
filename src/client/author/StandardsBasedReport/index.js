@@ -18,10 +18,24 @@ import {
 } from '../ClassBoard/ducks'
 import { StyledFlexContainer, DivWrapper } from './components/styled'
 import ClassBreadBrumb from '../Shared/Components/ClassBreadCrumb'
+import { isFreeAdminSelector } from '../src/selectors/user'
+import { toggleFreeAdminSubscriptionModalAction } from '../../student/Login/ducks'
 
 class StandardsBasedReport extends Component {
   componentDidMount() {
-    const { loadTestActivity, match, testActivity, additionalData } = this.props
+    const {
+      loadTestActivity,
+      match,
+      testActivity,
+      additionalData,
+      history,
+      isFreeAdmin,
+      toggleFreeAdminSubscriptionModal,
+    } = this.props
+    if (isFreeAdmin) {
+      history.push('/author/reports')
+      return toggleFreeAdminSubscriptionModal()
+    }
     if (!size(testActivity) && isEmpty(additionalData)) {
       const { assignmentId, classId } = match.params
       loadTestActivity(assignmentId, classId)
@@ -42,12 +56,14 @@ class StandardsBasedReport extends Component {
     const {
       testActivity,
       additionalData,
+      reportStandards,
       creating,
       match: {
         params: { assignmentId, classId },
       },
       labels,
       testQIds,
+      testStandardsLength,
     } = this.props
     const testActivityId = this.getTestActivity(testActivity)
 
@@ -74,7 +90,9 @@ class StandardsBasedReport extends Component {
               testActivities={testActivity}
               labels={labels}
               additionalData={additionalData}
+              reportStandards={reportStandards}
               qids={testQIds}
+              testStandardsEmpty={testStandardsLength === 0}
             />
           </DivWrapper>
         </MainContentWrapper>
@@ -90,9 +108,14 @@ const enhance = compose(
       additionalData: getAdditionalDataSelector(state),
       testQIds: getQIdsSelector(state),
       labels: getQLabelsSelector(state),
+      testStandardsLength:
+        state.classResponse?.data?.reportStandards?.length || 0,
+      reportStandards: state.classResponse?.data?.reportStandards || [],
+      isFreeAdmin: isFreeAdminSelector(state),
     }),
     {
       loadTestActivity: receiveTestActivitydAction,
+      toggleFreeAdminSubscriptionModal: toggleFreeAdminSubscriptionModalAction,
     }
   )
 )

@@ -1,8 +1,9 @@
 import { IconSend } from '@edulastic/icons'
-import queryString from 'query-string'
 import React from 'react'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
+import qs from 'qs'
+import { keyboard as keyboardConst } from '@edulastic/constants'
 import { Tooltip } from '../../../common/utils/helpers'
 import {
   ControlBtn,
@@ -59,11 +60,14 @@ const PlayerHeader = ({
   enableMagnifier,
   toggleUserWorkUploadModal,
   timedAssignment,
+  hasDrawingResponse,
   utaId,
   groupId,
   location,
+  hidePause,
+  blockNavigationToAnsweredQuestions = false,
 }) => {
-  const query = queryString.parse(location.search)
+  const query = qs.parse(location.search, { ignoreQueryPrefix: true })
   const { cliUser } = query
   const hideSubmitBtn = cliUser && previewPlayer && isLast
 
@@ -71,11 +75,14 @@ const PlayerHeader = ({
     <SaveAndExit
       timedAssignment={timedAssignment}
       utaId={utaId}
+      hidePause={hidePause}
       groupId={groupId}
       previewPlayer={previewPlayer}
       showZoomBtn
       finishTest={finishTest}
       isCliUserPreview={cliUser}
+      LCBPreviewModal={LCBPreviewModal}
+      zoomLevel={zoomLevel}
     />
   )
 
@@ -100,10 +107,17 @@ const PlayerHeader = ({
                       zoomLevel={zoomLevel}
                       moveToNext={moveToNext}
                       utaId={utaId}
+                      blockNavigationToAnsweredQuestions={
+                        blockNavigationToAnsweredQuestions
+                      }
                     />
                     <Tooltip
                       placement="top"
-                      title="Previous"
+                      title={
+                        blockNavigationToAnsweredQuestions
+                          ? 'This assignment is restricted from navigating back to the previous question.'
+                          : 'Previous'
+                      }
                       overlayStyle={overlayStyle}
                     >
                       <ControlBtn.Back
@@ -117,6 +131,18 @@ const PlayerHeader = ({
                           moveToPrev(null, true)
                           e.target.blur()
                         }}
+                        // added separate keydown event handler to restrict calling on blur event for keyboard event
+                        onKeyDown={(e) => {
+                          const code = e.which || e.keyCode
+                          if (code !== keyboardConst.TAB_KEY) e.preventDefault()
+                          if (
+                            [
+                              keyboardConst.ENTER_KEY,
+                              keyboardConst.SPACE_KEY,
+                            ].includes(code)
+                          )
+                            moveToPrev(null, true)
+                        }}
                       />
                     </Tooltip>
                     {!hideSubmitBtn && (
@@ -129,6 +155,18 @@ const PlayerHeader = ({
                         onClick={(e) => {
                           moveToNext()
                           e.target.blur()
+                        }}
+                        // added separate keydown event handler to restrict calling on blur event for keyboard event
+                        onKeyDown={(e) => {
+                          const code = e.which || e.keyCode
+                          if (code !== keyboardConst.TAB_KEY) e.preventDefault()
+                          if (
+                            [
+                              keyboardConst.ENTER_KEY,
+                              keyboardConst.SPACE_KEY,
+                            ].includes(code)
+                          )
+                            moveToNext()
                         }}
                       >
                         {isLast && <IconSend />}
@@ -148,6 +186,10 @@ const PlayerHeader = ({
                     toggleBookmark={toggleBookmark}
                     isBookmarked={isBookmarked}
                     handletoggleHints={handletoggleHints}
+                    blockNavigationToAnsweredQuestions={
+                      blockNavigationToAnsweredQuestions
+                    }
+                    LCBPreviewModal={LCBPreviewModal}
                   />
                 )}
                 {!LCBPreviewModal && (
@@ -182,6 +224,7 @@ const PlayerHeader = ({
                         toggleUserWorkUploadModal={toggleUserWorkUploadModal}
                         timedAssignment={timedAssignment}
                         utaId={utaId}
+                        hasDrawingResponse={hasDrawingResponse}
                         groupId={groupId}
                       />
                     )}

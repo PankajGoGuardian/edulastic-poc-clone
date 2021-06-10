@@ -1,0 +1,20 @@
+{
+	"columns": [{
+		"title": "School",
+		"dataIndex": "schoolName",
+		"key": "schoolName",
+		"align": "left"
+	}, {
+		"title": "Assessments Assigned",
+		"dataIndex": "testCount",
+		"key": "testCount"
+	}, {
+		"title": "Active Teachers",
+		"dataIndex": "teacherCount",
+		"key": "teacherCount"
+	}, {
+		"title": "Students Taking Assessment",
+		"dataIndex": "studentCount",
+		"key": "studentCount"
+	}]
+}

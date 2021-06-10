@@ -1,11 +1,6 @@
 import React, { useState, memo, useEffect, useRef } from 'react'
 import { withRouter } from 'react-router-dom'
-import {
-  notification,
-  EduButton,
-  FlexContainer,
-  MathFormulaDisplay,
-} from '@edulastic/common'
+import { notification, EduButton, handleChromeOsSEB } from '@edulastic/common'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { withNamespaces } from '@edulastic/localization'
@@ -15,17 +10,15 @@ import {
   lightGreySecondary,
   largeDesktopWidth,
   desktopWidth,
-  black,
-  themeColor,
   tabletWidth,
+  mediumDesktopExactWidth,
 } from '@edulastic/colors'
 import { test as testConstants } from '@edulastic/constants'
 
 import PropTypes from 'prop-types'
 import styled, { withTheme } from 'styled-components'
 import { first, maxBy, isNaN } from 'lodash'
-import { Row, Col, Icon, Modal } from 'antd'
-import { TokenStorage } from '@edulastic/api'
+import { Row, Col } from 'antd'
 import { maxDueDateFromClassess, getServerTs } from '../utils'
 
 //  components
@@ -40,8 +33,10 @@ import { ConfirmationModal } from '../../author/src/components/common/Confirmati
 import {
   startAssignmentAction,
   resumeAssignmentAction,
+  getSebUrl,
 } from '../Assignments/ducks'
 import { proxyRole } from '../Login/ducks'
+import { showTestInfoModal } from '../../publicTest/utils'
 
 const isSEB = () => window.navigator.userAgent.includes('SEB')
 
@@ -61,28 +56,16 @@ const SafeBrowserButton = ({
     ? t('common.retake')
     : t('common.startAssignment')
 
-  const token = TokenStorage.getAccessToken()
-  let url
-  if (process.env.POI_APP_API_URI.startsWith('http')) {
-    url = `${process.env.POI_APP_API_URI.replace('http', 'seb').replace(
-      'https',
-      'seb'
-    )}/test-activity/seb/test/${testId}/type/${testType}/assignment/${assignmentId}`
-  } else if (process.env.POI_APP_API_URI.startsWith('//')) {
-    url = `${window.location.protocol.replace('http', 'seb')}${
-      process.env.POI_APP_API_URI
-    }/test-activity/seb/test/${testId}/type/${testType}/assignment/${assignmentId}`
-  } else {
-    console.warn(`** can't figure out where to put seb protocol **`)
-  }
+  const url = getSebUrl({
+    testId,
+    testType,
+    assignmentId,
+    testActivityId,
+    groupId: classId,
+  })
 
-  if (testActivityId) {
-    url += `/testActivity/${testActivityId}`
-  }
-
-  url += `/token/${token}/settings.seb?classId=${classId}`
   return (
-    <SafeStartAssignButton href={url} assessment>
+    <SafeStartAssignButton href={url} onClick={handleChromeOsSEB} assessment>
       {startButtonText}
     </SafeStartAssignButton>
   )
@@ -100,6 +83,12 @@ const AssignmentCard = memo(
     user: { role: userRole, _id: userId },
     proxyUserRole,
     highlightMode,
+    index,
+    uta = {},
+    setSelectedLanguage,
+    languagePreference,
+    history,
+    setEmbeddedVideoPreviewModal,
   }) => {
     const [showAttempts, setShowAttempts] = useState(false)
     const toggleAttemptsView = () => setShowAttempts((prev) => !prev)
@@ -137,6 +126,8 @@ const AssignmentCard = memo(
       assignedBy,
       hasInstruction = false,
       instruction = '',
+      multiLanguageEnabled = false,
+      studentResources = [],
     } = data
 
     const serverTimeStamp = getServerTs(data)
@@ -212,6 +203,16 @@ const AssignmentCard = memo(
     if (maxAttempts < reports.length && !isNaN(maxAttempts)) {
       maxAttempts = reports.length
     }
+    if (!isPaused) {
+      isPaused = Object.keys(uta).length
+        ? !!uta?.isPaused
+        : !!lastAttempt.isPaused
+    }
+    useEffect(() => {
+      if (index <= 2 && reports.length > 0 && maxAttempts > 1) {
+        setShowAttempts(true)
+      }
+    }, [index])
     const startTest = () => {
       // On start check if assignment is expired or not
       if (endDate && serverTimeStamp > endDate) {
@@ -219,60 +220,30 @@ const AssignmentCard = memo(
         return
       }
 
-      if (!resume && (timedAssignment || hasInstruction)) {
-        const timedContent = pauseAllowed ? (
-          <p>
-            {' '}
-            This is a timed assignment which should be finished within the time
-            limit set for this assignment. The time limit for this assignment is{' '}
-            <span data-cy="test-time" style={{ fontWeight: 700 }}>
-              {' '}
-              {allowedTime / (60 * 1000)} minutes
-            </span>
-            . Do you want to continue?
-          </p>
-        ) : (
-          <p>
-            {' '}
-            This is a timed assignment which should be finished within the time
-            limit set for this assignment. The time limit for this assignment is{' '}
-            <span data-cy="test-time" style={{ fontWeight: 700 }}>
-              {' '}
-              {allowedTime / (60 * 1000)} minutes
-            </span>{' '}
-            and you can’t quit in between. Do you want to continue?
-          </p>
-        )
-
-        const content = (
-          <FlexContainer flexDirection="column">
-            {timedAssignment && timedContent}
-            {hasInstruction && instruction && (
-              <MathFormulaDisplay
-                dangerouslySetInnerHTML={{ __html: instruction }}
-                style={{ marginTop: '1rem' }}
-              />
-            )}
-          </FlexContainer>
-        )
-
-        Modal.confirm({
-          title: 'Do you want to Continue ?',
-          content,
-          onOk: () => {
-            if (attemptCount < maxAttempts)
-              startAssignment({ testId, assignmentId, testType, classId })
-            Modal.destroyAll()
-          },
-          okText: 'Continue',
-          // okType: "danger",
-          centered: true,
-          width: 500,
-          okButtonProps: {
-            style: { background: themeColor },
-          },
+      if (
+        !resume &&
+        (timedAssignment || hasInstruction || multiLanguageEnabled)
+      ) {
+        return showTestInfoModal({
+          pauseAllowed,
+          allowedTime,
+          multiLanguageEnabled,
+          setSelectedLanguage,
+          languagePreference,
+          timedAssignment,
+          hasInstruction,
+          instruction,
+          attemptCount,
+          maxAttempts,
+          startAssignment,
+          testId,
+          assignmentId,
+          testType,
+          classId,
+          history,
+          title,
+          notifyCancel: false,
         })
-        return
       }
 
       if (resume) {
@@ -284,7 +255,13 @@ const AssignmentCard = memo(
           classId,
         })
       } else if (attemptCount < maxAttempts) {
-        startAssignment({ testId, assignmentId, testType, classId })
+        startAssignment({
+          testId,
+          assignmentId,
+          testType,
+          classId,
+          languagePreference,
+        })
       }
     }
 
@@ -355,37 +332,22 @@ const AssignmentCard = memo(
 
     const isValidAttempt = attempted
 
-    const getColSize = () => {
-      let colsCount = 1
-
-      if (isValidAttempt) {
-        colsCount += 1
-      }
-
-      if (type == 'assignment') {
-        return colsCount
-      }
-
-      return 4
-    }
-
     const onRetakeModalConfirm = () => {
       setShowRetakeModal(false)
       setRetakeConfirmation(true)
       startTest()
     }
 
-    const selectedColSize = 24 / getColSize(type)
     let btnWrapperSize = 24
     if (type !== 'assignment') {
       btnWrapperSize = releaseScore === releaseGradeLabels.DONT_RELEASE ? 18 : 6
     } else if (isValidAttempt) {
-      btnWrapperSize = 12
+      btnWrapperSize = 18
     }
 
     const ScoreDetail = (
       <>
-        <AnswerAndScore xs={selectedColSize}>
+        <AnswerAndScore xs={6}>
           {releaseScore === releaseGradeLabels.WITH_ANSWERS && (
             <>
               <span data-cy="score">
@@ -396,7 +358,7 @@ const AssignmentCard = memo(
             </>
           )}
         </AnswerAndScore>
-        <AnswerAndScore xs={selectedColSize}>
+        <AnswerAndScore xs={6}>
           <span data-cy="percent">{Math.round(scorePercentage)}%</span>
           <Title>{t('common.score')}</Title>
         </AnswerAndScore>
@@ -453,19 +415,12 @@ const AssignmentCard = memo(
             lastAttempt={lastAttempt}
             isDueDate={!!dueDate}
             serverTimeStamp={serverTimeStamp}
+            timedAssignment={timedAssignment}
+            allowedTime={allowedTime}
+            timedTestIconType={theme.assignment.cardTimeIconType}
+            setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
+            studentResources={studentResources}
           />
-          <TimeIndicator type={type}>
-            {timedAssignment && (
-              <>
-                <Icon
-                  className="timerIcon"
-                  color={black}
-                  type={theme.assignment.cardTimeIconType}
-                />
-                <StyledLabel>{allowedTime / (60 * 1000)} minutes</StyledLabel>
-              </>
-            )}
-          </TimeIndicator>
 
           <ButtonAndDetail>
             <DetailContainer type={type}>
@@ -473,7 +428,7 @@ const AssignmentCard = memo(
                 {isValidAttempt && (
                   <>
                     <Attempts
-                      xs={selectedColSize}
+                      xs={6}
                       onClick={() => {
                         if (maxAttempts > 1) {
                           toggleAttemptsView()
@@ -498,7 +453,6 @@ const AssignmentCard = memo(
                 )}
                 {StartButtonContainer && (
                   <StyledActionButton
-                    isAssignment={type == 'assignment'}
                     isValidAttempt={isValidAttempt}
                     sm={btnWrapperSize}
                   >
@@ -631,6 +585,9 @@ const AttemptDetails = styled(Row)`
   @media (max-width: ${largeDesktopWidth}) {
     width: 100%;
   }
+  @media (max-width: ${mediumDesktopExactWidth}) {
+    margin-right: 15px;
+  }
 `
 
 const AnswerAndScore = styled(Col)`
@@ -655,8 +612,8 @@ const StyledActionButton = styled(AnswerAndScore)`
     align-items: center;
   }
 
-  align-items: ${({ isValidAttempt, isAssignment }) =>
-    !isValidAttempt || isAssignment ? 'flex-end' : 'center'};
+  align-items: ${({ isValidAttempt }) =>
+    !isValidAttempt ? 'flex-end' : 'center'};
   justify-content: center;
 `
 
@@ -691,21 +648,4 @@ const Title = styled.div`
   @media (max-width: ${smallDesktopWidth}) {
     font-size: ${(props) => props.theme.smallLinkFontSize};
   }
-`
-
-const TimeIndicator = styled.div`
-  width: 125px;
-  margin: auto;
-  padding-top: ${(props) => props.type === 'reports' && '25px'};
-
-  .timerIcon {
-    transform: scale(1.2);
-  }
-`
-
-const StyledLabel = styled.label`
-  margin-left: 10px;
-  text-transform: uppercase;
-  font: 11px/15px Open Sans;
-  font-weight: 600;
 `

@@ -7,9 +7,11 @@ import { compose } from 'redux'
 import { withNamespaces } from '@edulastic/localization'
 import { Row, Col, Button, Spin } from 'antd'
 import { withRouter } from 'react-router-dom'
-import { get } from 'lodash'
-import { IconSend } from '@edulastic/icons'
+import { get, isEmpty } from 'lodash'
+import { EduButton, FlexContainer, withKeyboard } from '@edulastic/common'
+import { IconPhotoCamera, IconSend } from '@edulastic/icons'
 import { test as testTypes } from '@edulastic/constants'
+import PerfectScrollbar from 'react-perfect-scrollbar'
 import {
   largeDesktopWidth,
   desktopWidth,
@@ -24,6 +26,11 @@ import { attemptSummarySelector } from '../ducks'
 import { getAssignmentsSelector } from '../../Assignments/ducks'
 import { loadTestAction } from '../../../assessment/actions/test'
 import { testLoadingSelector } from '../../../assessment/selectors/test'
+import FilesView from '../../../assessment/widgets/UploadFile/components/FilesView'
+import { saveUserWorkAction } from '../../../assessment/actions/userWork'
+import { getTestLevelUserWorkSelector } from '../../sharedDucks/TestItem'
+import TestAttachementsModal from '../../../author/StudentView/Modals/TestAttachementsModal'
+import { getUser } from '../../../author/src/selectors/user'
 
 const { ASSESSMENT, PRACTICE, TESTLET } = testTypes.type
 class SummaryTest extends Component {
@@ -31,6 +38,8 @@ class SummaryTest extends Component {
     super(props)
     this.state = {
       buttonIdx: null,
+      showAttachmentsModal: false,
+      attachmentIndexForPreview: null,
     }
   }
 
@@ -57,7 +66,10 @@ class SummaryTest extends Component {
   }
 
   goToQuestion = (testId, testActivityId, q) => () => {
-    const { history, items, match, test } = this.props
+    const { history, items, match, test, submitingResponse } = this.props
+    if (submitingResponse) {
+      return
+    }
     const { assessmentType, groupId } = match.params
     let targetItemIndex = items.reduce((acc, item, index) => {
       if (item.data.questions.some(({ id }) => id === q)) acc = index
@@ -71,7 +83,7 @@ class SummaryTest extends Component {
 
     if (test.testType !== TESTLET) {
       history.push(
-        `/student/${assessmentType}/${testId}/class/${groupId}/uta/${testActivityId}/qid/${targetItemIndex}`,
+        `/student/${assessmentType}/${testId}/class/${groupId}/uta/${testActivityId}/itemId/${items[targetItemIndex]._id}`,
         {
           fromSummary: true,
           question: q,
@@ -90,6 +102,20 @@ class SummaryTest extends Component {
     }
   }
 
+  deleteAttachment = (attachmentIndex) => {
+    const { userWork, saveUserWork } = this.props
+    const attachments = [...(userWork || [])]
+    attachments.splice(attachmentIndex, 1)
+    saveUserWork({ attachments })
+  }
+
+  toggleAttachmentsModal = (index) => {
+    this.setState((prevState) => ({
+      showAttachmentsModal: !prevState.showAttachmentsModal,
+      attachmentIndexForPreview: index,
+    }))
+  }
+
   render() {
     const {
       questionList: questionsAndOrder,
@@ -98,12 +124,20 @@ class SummaryTest extends Component {
       finishTest,
       savingResponse,
       testLoading,
+      blockNavigationToAnsweredQuestions,
+      openUserWorkUploadModal,
+      userWork,
+      studentData,
     } = this.props
     const { isDocBased, items } = test
     const isDocBasedFlag = (!isDocBased && items.length === 0) || isDocBased
     const { blocks: questionList, itemWiseQids = [] } = questionsAndOrder
     const itemIds = Object.keys(itemWiseQids)
-    const { buttonIdx } = this.state
+    const {
+      buttonIdx,
+      showAttachmentsModal,
+      attachmentIndexForPreview,
+    } = this.state
     if (testLoading) {
       return <Spin />
     }
@@ -205,11 +239,20 @@ class SummaryTest extends Component {
                             key={index * 100 + qIndex}
                             type={type}
                             isVisible={buttonIdx === null || buttonIdx === type}
-                            onClick={this.goToQuestion(
-                              test?.testId,
-                              test?.testActivityId,
-                              q
-                            )}
+                            onClick={
+                              blockNavigationToAnsweredQuestions
+                                ? () => {}
+                                : this.goToQuestion(
+                                    test?.testId,
+                                    test?.testActivityId,
+                                    q
+                                  )
+                            }
+                            cursor={
+                              blockNavigationToAnsweredQuestions
+                                ? 'not-allowed'
+                                : 'pointer'
+                            }
                           >
                             <span> {qInd} </span>
                           </QuestionColorBlock>
@@ -220,9 +263,34 @@ class SummaryTest extends Component {
                   })}
                 </QuestionBlock>
               </Questions>
+              {!isEmpty(userWork) && (
+                <FlexContainer flexDirection="column" mt="40px">
+                  <QuestionText lg={8} md={24}>
+                    {t('default:Attachments')}
+                  </QuestionText>
+                  <PerfectScrollbar>
+                    <FilesView
+                      cols={3}
+                      mt="12px"
+                      onDelete={this.deleteAttachment}
+                      files={userWork}
+                      openAttachmentViewModal={this.toggleAttachmentsModal}
+                      disableLink
+                    />
+                  </PerfectScrollbar>
+                </FlexContainer>
+              )}
             </MainContent>
             <Footer>
               <ShortDescription>{t('common.nextStep')}</ShortDescription>
+              <UploadPaperWorkBtn
+                data-cy="uploadTestAttachments"
+                isGhost
+                onClick={openUserWorkUploadModal}
+              >
+                <IconPhotoCamera />{' '}
+                <span>{t('default:UPLOAD PAPER WORK')}</span>
+              </UploadPaperWorkBtn>
               <SubmitButton
                 type="primary"
                 onClick={finishTest}
@@ -233,6 +301,17 @@ class SummaryTest extends Component {
             </Footer>
           </Container>
         </AssignmentContentWrapperSummary>
+        {showAttachmentsModal && (
+          <TestAttachementsModal
+            toggleAttachmentsModal={this.toggleAttachmentsModal}
+            showAttachmentsModal={showAttachmentsModal}
+            attachmentsList={userWork}
+            title="All Attachments"
+            utaId={test?.testActivityId}
+            studentData={studentData}
+            attachmentIndexForPreview={attachmentIndexForPreview || 0}
+          />
+        )}
       </ThemeProvider>
     )
   }
@@ -260,17 +339,23 @@ const enhance = compose(
       assignments: getAssignmentsSelector(state),
       test: state.test,
       items: state.test.items,
+      submitingResponse: state.test.savingResponse,
       assignmentId: get(
         state,
         'author_classboard_testActivity.assignmentId',
         ''
       ),
+      userWork: getTestLevelUserWorkSelector(state),
       classId: get(state, 'author_classboard_testActivity.classId', ''),
       savingResponse: state?.test?.savingResponse,
       testLoading: testLoadingSelector(state),
+      blockNavigationToAnsweredQuestions:
+        state.test?.settings?.blockNavigationToAnsweredQuestions,
+      studentData: getUser(state),
     }),
     {
       loadTest: loadTestAction,
+      saveUserWork: saveUserWorkAction,
     }
   )
 )
@@ -492,7 +577,7 @@ const QuestionBlock = styled.div`
   }
 `
 
-const QuestionColorBlock = styled.div`
+const QuestionColorBlock = withKeyboard(styled.div`
   width: 60px;
   height: 40px;
   border-radius: 4px;
@@ -507,7 +592,7 @@ const QuestionColorBlock = styled.div`
   align-items: center;
   justify-content: center;
   margin-top: 5px;
-  cursor: pointer;
+  cursor: ${({ cursor }) => cursor || 'pointer'};
   &:hover {
     box-shadow: 4px 6px 11px 0px rgba(0, 0, 0, 0.2);
   }
@@ -524,7 +609,7 @@ const QuestionColorBlock = styled.div`
   @media (max-width: ${tabletWidth}) {
     margin-right: 20px;
   }
-`
+`)
 
 const Footer = styled(Container)`
   margin-top: 121px;
@@ -563,4 +648,17 @@ const SubmitButton = styled(Button)`
     fill: ${mainBgColor};
     margin-right: 10px;
   }
+`
+
+const UploadPaperWorkBtn = styled(EduButton)`
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  position: fixed !important;
+  right: 125px;
+  top: 10px;
+  height: 32px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
 `

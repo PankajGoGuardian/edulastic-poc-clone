@@ -2,6 +2,7 @@ import FileHelper from '../../../../../framework/util/fileHelper'
 import TestLibrary from '../../../../../framework/author/tests/testLibraryPage'
 import Regrade from '../../../../../framework/author/tests/regrade/regrade'
 import {
+  redirectType,
   regradeOptions,
   studentSide,
 } from '../../../../../framework/constants/assignmentStatus'
@@ -392,6 +393,7 @@ describe(`>${FileHelper.getSpecName(
             it('> redirect student', () => {
               lcb.selectCheckBoxByStudentName(studentdata[0].name)
               lcb.clickOnRedirect()
+              lcb.redirectPopup.selectRedirectPolicy(redirectType.FEEDBACK_ONLY)
               lcb.clickOnRedirectSubmit()
             })
 
@@ -689,6 +691,7 @@ describe(`>${FileHelper.getSpecName(
             it('> redirect student', () => {
               lcb.selectCheckBoxByStudentName(studentdata[0].name)
               lcb.clickOnRedirect()
+              lcb.redirectPopup.selectRedirectPolicy(redirectType.FEEDBACK_ONLY)
               lcb.clickOnRedirectSubmit()
             })
 

@@ -3,6 +3,7 @@ module.exports = {
   minWidth: 20,
   minHeight: 32,
   maxHeight: 200,
+  mathInputMaxHeight: 64,
   expectedAnsMinHeight: 35,
   minWidthShowAnswer: 111,
   indexSizeSmallBox: 10,

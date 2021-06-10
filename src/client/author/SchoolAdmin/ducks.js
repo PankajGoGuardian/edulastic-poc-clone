@@ -3,8 +3,7 @@ import { createSelector } from 'reselect'
 import { takeEvery, takeLatest, call, put, all } from 'redux-saga/effects'
 import { enrollmentApi, userApi } from '@edulastic/api'
 import { keyBy, get, omit } from 'lodash'
-import { notification } from '@edulastic/common'
-import * as Sentry from '@sentry/browser'
+import { captureSentryException, notification } from '@edulastic/common'
 import { receiveClassEnrollmentListAction } from '../ClassEnrollment/ducks'
 import { UPDATE_POWER_TEACHER_TOOLS_SUCCESS } from '../../student/Login/ducks'
 
@@ -38,7 +37,6 @@ const ADD_BULK_TEACHER_ERROR = '[teacher] add bulk teacher error'
 
 const SET_TEACHERDETAIL_MODAL_VISIBLE =
   '[teacher] set teacher detail modal visible'
-const TOGGLE_BROADCAST_SUMMARY = '[broadcast] toggle broadcast summary'
 
 const REMOVE_USERS_ENROLLMENTS_REQUEST = '[Admin] remove enrollment request'
 const REMOVE_USERS_ENROLLMENTS_SUCCESS = '[Admin] remove enrollment success'
@@ -96,10 +94,6 @@ export const setTeachersDetailsModalVisibleAction = createAction(
   SET_TEACHERDETAIL_MODAL_VISIBLE
 )
 
-export const toggleBroadcastSummaryAction = createAction(
-  TOGGLE_BROADCAST_SUMMARY
-)
-
 export const removeUserEnrollmentsAction = createAction(
   REMOVE_USERS_ENROLLMENTS_REQUEST
 )
@@ -155,11 +149,21 @@ const initialState = {
   delete: null,
   deleting: false,
   deleteError: null,
+  // searchName: "",
+  // filtersColumn: "",
+  // filtersValue: "",
+  // filtersText: "",
   showActiveUsers: true,
   pageNo: 1,
   bulkTeacherData: [],
   teacherDetailsModalVisible: false,
-  showBroadcastSummary: false,
+  // filters: {
+  //   other: {
+  //     type: "",
+  //     value: ""
+  //   }
+  // },
+  // role: ""
 }
 
 export const reducer = createReducer(initialState, {
@@ -304,10 +308,6 @@ export const reducer = createReducer(initialState, {
       })
     }
   },
-
-  [TOGGLE_BROADCAST_SUMMARY]: (state, { payload }) => {
-    state.showBroadcastSummary = payload
-  },
   [REMOVE_USERS_ENROLLMENTS_REQUEST]: (state) => {
     state.deleting = true
   },
@@ -327,7 +327,7 @@ function* receiveSchoolAdminSaga({ payload }) {
     const data = yield call(userApi.fetchUsers, payload)
     yield put(receiveSchoolAdminSuccessAction(data))
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     const errorMessage = 'Unable to fetch admin info.'
     notification({ type: 'error', msg: errorMessage })
     yield put(receiveSchoolAdminErrorAction({ error: errorMessage }))
@@ -343,7 +343,7 @@ function* updateSchoolAdminSaga({ payload }) {
     const {
       data: { message: errorMessage },
     } = err.response
-    Sentry.captureException(err)
+    captureSentryException(err)
     notification({
       type: 'error',
       msg: errorMessage || 'Unable to update the user.',
@@ -391,7 +391,7 @@ function* createSchoolAdminSaga({ payload }) {
     }
     notification({ type: 'success', msg })
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     const errorMessage =
       err.response.data.message || 'Unable to create the user.'
     notification({ type: 'error', msg: errorMessage })
@@ -415,7 +415,7 @@ function* deleteSchoolAdminSaga({ payload }) {
     }
     notification({ type: 'success', messageKey: 'userSucessfullyDeactivated' })
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     const errorMessage = 'Unable to delete school admin.'
     notification({ type: 'error', msg: errorMessage })
     yield put(deleteSchoolAdminErrorAction({ deleteError: errorMessage }))
@@ -439,7 +439,7 @@ function* addBulkTeacherAdminSaga({ payload }) {
       })
     yield put(addBulkTeacherAdminSuccessAction({ res, _bulkTeachers }))
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     const errorMessage = 'Unable to add teachers in bulk.'
     notification({ type: 'error', msg: errorMessage })
     yield put(addBulkTeacherAdminErrorAction({ bulkAddError: errorMessage }))
@@ -460,9 +460,12 @@ function* removeUserEnrollmentsSaga({ payload }) {
     if (isFetchClassEnrollmentList) {
       yield put(receiveClassEnrollmentListAction(payload.listReq))
     }
-    notification({ type: 'success', messageKey: 'userSuccessfullyUn-enrolled' })
+    notification({
+      type: 'success',
+      messageKey: 'userSuccessfullyUn-enrolled',
+    })
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     const errorMessage = 'Error on removing user enrollments.'
     notification({ msg: errorMessage })
     yield put(deleteSchoolAdminErrorAction({ deleteError: errorMessage }))

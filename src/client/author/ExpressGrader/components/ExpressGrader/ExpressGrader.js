@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { isEmpty, size, get } from 'lodash'
 import memoizeOne from 'memoize-one'
+import { Spin } from 'antd'
 
 // components
 import {
@@ -13,7 +14,7 @@ import {
   FlexContainer,
   toggleIntercomDisplay,
 } from '@edulastic/common'
-import AppConfig from '../../../../../../app-config'
+import AppConfig from '../../../../../app-config'
 import ScoreTable from '../ScoreTable/ScoreTable'
 import ScoreCard from '../ScoreCard/ScoreCard'
 import QuestionModal from '../QuestionModal/QuestionModal'
@@ -27,6 +28,7 @@ import ExpressGraderScoreColors from '../ExpressGraderScoreColors'
 import ViewModeSwitch from './ViewModeSwitch'
 import DownloadCSV from './DownloadCSV'
 import GridEditSwitch from './GridEditSwitch'
+import RegradeModal from '../../../Regrade/RegradeModal'
 // actions
 import {
   receiveTestActivitydAction,
@@ -41,6 +43,9 @@ import {
 } from '../../../ClassBoard/ducks'
 import { toggleScoreModeAction, disableScoreModeAction } from '../../ducks'
 import { getFeedbackResponseSelector } from '../../../src/selectors/feedback'
+import { isFreeAdminSelector } from '../../../src/selectors/user'
+import { toggleFreeAdminSubscriptionModalAction } from '../../../../student/Login/ducks'
+import { getRegradeModalStateSelector } from '../../../TestPage/ducks'
 
 /**
  *
@@ -63,21 +68,86 @@ const transform = (testActivities) =>
 
 const transformMemoized = memoizeOne(transform)
 
+export function getDataForTable(data) {
+  let dataSource
+  if (data && data.length !== 0) {
+    dataSource = data
+      .filter((std) => std.status === 'submitted')
+      .map((student, index) => {
+        const students = []
+        const rowIndex = index
+        const studentInfo = {
+          studentId: student.studentId,
+          studentName: student.studentName,
+          fakeName: student.fakeName,
+          icon: student.icon,
+          color: student.color,
+        }
+        const testActivityId = student.testActivityId
+          ? student.testActivityId
+          : null
+        student.questionActivities.forEach((question, index1) => {
+          const key = `Q${index1}`
+          question.key = key
+          students[key] = question
+          question.colIndex = index1
+          question.id = question._id
+          question.rowIndex = rowIndex
+          question.studentId = student.studentId
+          question.testActivityId = testActivityId
+          question.score = Number.isNaN(question.score) ? 0 : question.score
+        })
+        students.questions = student.questionActivities.length
+        students.students = studentInfo
+        students.score = {
+          score: Number.isNaN(student.score) ? 0 : student.score,
+          maxScore: student.maxScore,
+        }
+        return students
+      })
+  } else {
+    dataSource = []
+  }
+
+  return dataSource
+}
+
 class ExpressGrader extends Component {
   constructor(props) {
     super(props)
     this.state = {
       record: null,
-      tableData: null,
       isVisibleModal: false,
       isGridEditOn: false,
     }
   }
 
   componentDidMount() {
-    const { loadTestActivity, match, testActivity, additionalData } = this.props
-    if (!size(testActivity) && isEmpty(additionalData)) {
-      const { assignmentId, classId } = match.params
+    const {
+      loadTestActivity,
+      match,
+      testActivity,
+      additionalData,
+      authorClassBoard,
+      history,
+      isFreeAdmin,
+      toggleFreeAdminSubscriptionModal,
+    } = this.props
+    if (isFreeAdmin) {
+      history.push('/author/reports')
+      return toggleFreeAdminSubscriptionModal()
+    }
+    const { assignmentId, classId } = match.params
+    let shouldLoadTestActivity = false
+    if (!size(testActivity) || isEmpty(additionalData)) {
+      shouldLoadTestActivity = true
+    } else if (
+      authorClassBoard.classId !== classId ||
+      authorClassBoard.assignmentId !== assignmentId
+    ) {
+      shouldLoadTestActivity = true
+    }
+    if (shouldLoadTestActivity) {
       loadTestActivity(assignmentId, classId)
     }
   }
@@ -88,8 +158,9 @@ class ExpressGrader extends Component {
   }
 
   static getDerivedStateFromProps(props) {
-    const { changedFeedback } = props
-    const newState = { changedFeedback: !isEmpty(changedFeedback) }
+    const { changedFeedback, testActivity } = props
+    const columnData = getDataForTable(transformMemoized(testActivity))
+    const newState = { changedFeedback: !isEmpty(changedFeedback), columnData }
     return newState
   }
 
@@ -98,13 +169,18 @@ class ExpressGrader extends Component {
     history.push(`${match.url}/create`)
   }
 
-  showQuestionModal = (record, tableData) => {
+  showQuestionModal = (record) => {
     toggleIntercomDisplay()
     this.setState({
       record,
-      tableData,
       isVisibleModal: true,
     })
+  }
+
+  updateRecord = (data) => {
+    if (!isEmpty(data)) {
+      this.setState({ record: data })
+    }
   }
 
   hideQuestionModal = () => {
@@ -145,8 +221,10 @@ class ExpressGrader extends Component {
       windowWidth,
       toggleScoreMode,
       scoreMode,
+      authorClassBoard,
+      regradeModalState,
     } = this.props
-    const { isVisibleModal, record, tableData, isGridEditOn } = this.state
+    const { isVisibleModal, record, isGridEditOn, columnData } = this.state
     const { assignmentId, classId, testActivityId } = match.params
     const isMobile = this.isMobile()
     const testActivity = transformMemoized(_testActivity)
@@ -158,7 +236,7 @@ class ExpressGrader extends Component {
         groupId={classId}
       >
         <div>
-          <HooksContainer assignmentId={assignmentId} classId={classId} />
+          <HooksContainer assignmentId={assignmentId} classId={classId} isEG />
           <ClassHeader
             classId={classId}
             active="expressgrader"
@@ -168,67 +246,76 @@ class ExpressGrader extends Component {
             testActivityId={testActivityId}
             testActivity={testActivity}
           />
-          <MainContentWrapper padding="20px 30px 0px 30px">
-            <WithResources
-              resources={[
-                `${AppConfig.katexPath}/katex.min.css`,
-                `${AppConfig.katexPath}/katex.min.js`,
-              ]}
-              fallBack={<span />}
-            >
-              <StyledFlexContainer justifyContent="space-between">
-                <ClassBreadBrumb />
+          {authorClassBoard.loading ? (
+            <Spin style={{ position: 'fixed' }} />
+          ) : (
+            <MainContentWrapper padding="20px 30px 0px 30px">
+              <WithResources
+                resources={[
+                  `${AppConfig.katexPath}/katex.min.css`,
+                  `${AppConfig.katexPath}/katex.min.js`,
+                ]}
+                fallBack={<span />}
+              >
+                <StyledFlexContainer justifyContent="space-between">
+                  <ClassBreadBrumb />
 
-                <FlexContainer justifyContent="space-between">
-                  <ViewModeSwitch
-                    scoreMode={scoreMode}
-                    toggleScoreMode={toggleScoreMode}
-                  />
-                  <GridEditSwitch
-                    isGridEditOn={isGridEditOn}
-                    toggleGridEdit={this.toggleGridEdit}
-                    scoreMode={scoreMode}
-                  />
-                  <FlexContainer>
-                    <PresentationToggleSwitch groupId={classId} />
-                    <DownloadCSV />
+                  <FlexContainer justifyContent="space-between">
+                    <ViewModeSwitch
+                      scoreMode={scoreMode}
+                      toggleScoreMode={toggleScoreMode}
+                    />
+                    <GridEditSwitch
+                      isGridEditOn={isGridEditOn}
+                      toggleGridEdit={this.toggleGridEdit}
+                      scoreMode={scoreMode}
+                    />
+                    <FlexContainer>
+                      <PresentationToggleSwitch groupId={classId} />
+                      <DownloadCSV />
+                    </FlexContainer>
                   </FlexContainer>
-                </FlexContainer>
-              </StyledFlexContainer>
-              {!isMobile && (
-                <>
-                  <ScoreTable
+                </StyledFlexContainer>
+                {!isMobile && (
+                  <>
+                    <ScoreTable
+                      scoreMode={scoreMode}
+                      tableData={columnData}
+                      isGridEditOn={isGridEditOn}
+                      testActivity={testActivity}
+                      showQuestionModal={this.showQuestionModal}
+                      isPresentationMode={isPresentationMode}
+                      windowWidth={windowWidth}
+                      groupId={classId}
+                    />
+                    <ExpressGraderScoreColors />
+                  </>
+                )}
+
+                {isMobile && (
+                  <ScoreCard
                     scoreMode={scoreMode}
-                    isGridEditOn={isGridEditOn}
                     testActivity={testActivity}
-                    showQuestionModal={this.showQuestionModal}
-                    isPresentationMode={isPresentationMode}
-                    windowWidth={windowWidth}
-                    groupId={classId}
                   />
-                  <ExpressGraderScoreColors />
-                </>
-              )}
+                )}
 
-              {isMobile && (
-                <ScoreCard scoreMode={scoreMode} testActivity={testActivity} />
-              )}
-
-              {isVisibleModal && (
-                <QuestionModal
-                  record={record}
-                  tableData={tableData}
-                  isVisibleModal={isVisibleModal}
-                  showQuestionModal={this.showQuestionModal}
-                  hideQuestionModal={this.hideQuestionModal}
-                  isPresentationMode={isPresentationMode}
-                  groupId={classId}
-                  windowWidth={windowWidth}
-                  scoreMode={scoreMode}
-                />
-              )}
-            </WithResources>
-          </MainContentWrapper>
+                {isVisibleModal && (
+                  <QuestionModal
+                    record={record}
+                    tableData={columnData}
+                    isVisibleModal={isVisibleModal}
+                    hideQuestionModal={this.hideQuestionModal}
+                    isPresentationMode={isPresentationMode}
+                    groupId={classId}
+                    windowWidth={windowWidth}
+                    scoreMode={scoreMode}
+                    updateRecord={this.updateRecord}
+                  />
+                )}
+                {!isEmpty(regradeModalState) && <RegradeModal />}
+              </WithResources>
+            </MainContentWrapper>
+          )}
         </div>
       </FeaturesSwitch>
     )
@@ -247,7 +334,10 @@ const enhance = compose(
         ['author_classboard_testActivity', 'presentationMode'],
         false
       ),
+      authorClassBoard: get(state, ['author_classboard_testActivity'], {}),
       scoreMode: state?.expressGraderReducer?.scoreMode,
+      isFreeAdmin: isFreeAdminSelector(state),
+      regradeModalState: getRegradeModalStateSelector(state),
     }),
     {
       loadTestActivity: receiveTestActivitydAction,
@@ -255,6 +345,7 @@ const enhance = compose(
       clearEgAnswers: clearAnswersAction,
       toggleScoreMode: toggleScoreModeAction,
       disableScoreMode: disableScoreModeAction,
+      toggleFreeAdminSubscriptionModal: toggleFreeAdminSubscriptionModalAction,
     }
   )
 )

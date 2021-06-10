@@ -8,8 +8,9 @@ import {
   authorAssignment,
   tabletWidth,
   testTypeColor,
-  lightGrey4,
   themeColorBlue,
+  lightGrey4,
+  lightGrey5,
 } from '@edulastic/colors'
 
 const { assignmentStatusBg } = authorAssignment
@@ -227,4 +228,12 @@ export const MoreOption = styled.div`
 export const AssessmentTypeWrapper = styled.div`
   display: flex;
   justify-content: center;
+`
+export const ClassNameCell = styled.div`
+  display: flex;
+  flex-direction: column;
+  > .schoolName {
+    font-weight: 500;
+    color: ${lightGrey5};
+  }
 `

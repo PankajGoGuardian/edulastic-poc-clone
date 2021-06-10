@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
-import React, { useRef } from 'react'
-import { Select } from 'antd'
+import React, { useRef, useEffect } from 'react'
+import { Select, Tooltip } from 'antd'
 import { withNamespaces } from '@edulastic/localization'
 import { IconBookmark, IconSend } from '@edulastic/icons'
 import styled from 'styled-components'
@@ -18,61 +18,89 @@ const QuestionSelectDropdown = ({
   dropdownStyle = {},
   moveToNext,
   utaId,
+  blockNavigationToAnsweredQuestions,
+  zoomLevel,
 }) => {
   const dropdownWrapper = useRef(null)
-  const menuStyle = {
-    top: `${dropdownWrapper.current?.clientHeight}px !important`,
-    left: `0px !important`,
-  }
+
+  useEffect(() => {
+    if (dropdownWrapper?.current?.clientWidth) {
+      const zoomValue = parseFloat(zoomLevel)
+      const effectiveClientWidth =
+        zoomValue * dropdownWrapper.current?.clientWidth
+
+      const interval = setInterval(() => {
+        const ele1 = document.getElementsByClassName(
+          'question-select-list-dropdown'
+        )
+        const ele = ele1[0]
+        if (ele) {
+          const childEle = ele.childNodes[0]
+          ele.style.minWidth = `${effectiveClientWidth}px`
+          childEle.style.zoom = zoomLevel
+          clearInterval(interval)
+        }
+      }, 2000)
+      return () => clearInterval(interval)
+    }
+  }, [dropdownWrapper, zoomLevel])
+
   const showSubmit =
     sessionStorage.getItem('testAttemptReviewVistedId') === utaId
-  const scrollableContainer = document.getElementById(
-    'assessment-player-default-scroll'
-  )
   return (
     <SelectContainer
       ref={dropdownWrapper}
-      menuStyle={menuStyle}
       style={dropdownStyle}
       skinb={skinb}
       className="question-select-dropdown"
     >
-      <Select
-        getPopupContainer={(triggerNode) =>
-          scrollableContainer || triggerNode.parentNode
+      <Tooltip
+        placement="bottom"
+        title={
+          blockNavigationToAnsweredQuestions
+            ? 'This assignment is restricted from navigating back to the previous question.'
+            : null
         }
-        value={currentItem}
-        data-cy="options"
-        onChange={(value) => {
-          value === 'SUBMIT'
-            ? moveToNext(null, true, value)
-            : gotoQuestion(parseInt(value, 10))
-        }}
       >
-        {options.map((item, index) => (
-          <Select.Option
-            data-cy="questionSelectOptions"
-            key={index}
-            value={item}
-          >
-            {`${t('common.layout.selectbox.question')} ${index + 1}/${
-              options.length
-            }`}
-            {bookmarks[index] ? (
-              <IconBookmark color="#f8c165" height={16} />
-            ) : skipped[index] ? (
-              <SkippedIcon className="fa fa-exclamation-circle" />
-            ) : (
-              ''
-            )}
-          </Select.Option>
-        ))}
-        {showSubmit && (
-          <Select.Option key={options.length} value="SUBMIT">
-            Submit <IconSend />
-          </Select.Option>
-        )}
-      </Select>
+        <Select
+          dropdownStyle={{
+            zIndex: 1100,
+          }}
+          dropdownClassName="question-select-list-dropdown"
+          value={currentItem}
+          data-cy="options"
+          onChange={(value) => {
+            value === 'SUBMIT'
+              ? moveToNext(null, true, value)
+              : gotoQuestion(parseInt(value, 10))
+          }}
+          disabled={blockNavigationToAnsweredQuestions}
+        >
+          {options.map((item, index) => (
+            <Select.Option
+              data-cy="questionSelectOptions"
+              key={index}
+              value={item}
+            >
+              {`${t('common.layout.selectbox.question')} ${index + 1}/${
+                options.length
+              }`}
+              {bookmarks[index] ? (
+                <IconBookmark color="#f8c165" height={16} />
+              ) : skipped[index] ? (
+                <SkippedIcon className="fa fa-exclamation-circle" />
+              ) : (
+                ''
+              )}
+            </Select.Option>
+          ))}
+          {showSubmit && (
+            <Select.Option key={options.length} value="SUBMIT">
+              Submit <IconSend />
+            </Select.Option>
+          )}
+        </Select>
+      </Tooltip>
     </SelectContainer>
   )
 }

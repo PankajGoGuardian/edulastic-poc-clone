@@ -82,8 +82,6 @@ class AddNewUserForm extends React.Component {
     } = this.props
 
     const classCode = form.getFieldValue('code') || ''
-    // reset pre-populated state data
-    this.resetPrePopulatedDataFromState()
     try {
       const res = await userApi.checkUser({
         username: value,
@@ -118,7 +116,10 @@ class AddNewUserForm extends React.Component {
         return null
       }
 
-      this.setState((prevState) => ({ ...prevState, userExistsInClass: false }))
+      this.setState((prevState) => ({
+        ...prevState,
+        userExistsInClass: false,
+      }))
 
       // student exists in other class
       if (user._id) {
@@ -170,30 +171,6 @@ class AddNewUserForm extends React.Component {
       userInfo: {},
     }))
     callback()
-  }
-
-  resetPrePopulatedDataFromState = () => {
-    const { form } = this.props
-    this.setState((prevState) => ({
-      ...prevState,
-      schoolsState: {
-        list: [],
-      },
-      selectedSchoolId: '',
-      disabledSchool: false,
-      role: 'student',
-    }))
-    form.setFields({
-      fullName: {
-        value: '',
-      },
-      password: {
-        value: '',
-      },
-      confirmPassword: {
-        value: '',
-      },
-    })
   }
 
   prePopulateDataToState = () => {
@@ -569,8 +546,8 @@ class AddNewUserForm extends React.Component {
                         triggerNode.parentNode
                       }
                     >
-                      <Option value="active">Yes</Option>
-                      <Option value="deActive">No</Option>
+                      <Option value="Yes">Yes</Option>
+                      <Option value="No">No</Option>
                     </SelectInputStyled>
                   )}
                 </Form.Item>
@@ -584,8 +561,8 @@ class AddNewUserForm extends React.Component {
                         triggerNode.parentNode
                       }
                     >
-                      <Option value="active">Yes</Option>
-                      <Option value="deActive">No</Option>
+                      <Option value="Yes">Yes</Option>
+                      <Option value="No">No</Option>
                     </SelectInputStyled>
                   )}
                 </Form.Item>
@@ -599,8 +576,8 @@ class AddNewUserForm extends React.Component {
                         triggerNode.parentNode
                       }
                     >
-                      <Option value="active">Yes</Option>
-                      <Option value="deActive">No</Option>
+                      <Option value="Yes">Yes</Option>
+                      <Option value="No">No</Option>
                     </SelectInputStyled>
                   )}
                 </Form.Item>
@@ -614,8 +591,23 @@ class AddNewUserForm extends React.Component {
                         triggerNode.parentNode
                       }
                     >
-                      <Option value="active">Yes</Option>
-                      <Option value="deActive">No</Option>
+                      <Option value="Yes">Yes</Option>
+                      <Option value="No">No</Option>
+                    </SelectInputStyled>
+                  )}
+                </Form.Item>
+              </Field>
+              <Field name="hispanicEthnicity">
+                <FieldLabel>Hispanic Ethnicity</FieldLabel>
+                <Form.Item>
+                  {getFieldDecorator('hispanicEthnicity')(
+                    <SelectInputStyled
+                      getPopupContainer={(triggerNode) =>
+                        triggerNode.parentNode
+                      }
+                    >
+                      <Option value="Yes">Yes</Option>
+                      <Option value="No">No</Option>
                     </SelectInputStyled>
                   )}
                 </Form.Item>
@@ -633,12 +625,7 @@ class AddNewUserForm extends React.Component {
                 <FieldLabel>DOB</FieldLabel>
                 <Form.Item>
                   {getFieldDecorator('dob')(
-                    <DatePickerStyled
-                      format="DD MMM, YYYY"
-                      disabledDate={(current) =>
-                        current && current.valueOf() > Date.now()
-                      }
-                    />
+                    <DatePickerStyled format="DD MMM, YYYY" />
                   )}
                 </Form.Item>
               </Field>
@@ -659,10 +646,10 @@ class AddNewUserForm extends React.Component {
                 </Form.Item>
               </Field>
               <Field name="contactEmails">
-                <FieldLabel>Contact</FieldLabel>
+                <FieldLabel>Parents/Guardians</FieldLabel>
                 <Form.Item>
                   {getFieldDecorator('contactEmails')(
-                    <TextInputStyled placeholder="Enter Contact" />
+                    <TextInputStyled placeholder="Enter email comma separated..." />
                   )}
                 </Form.Item>
               </Field>

@@ -1,7 +1,7 @@
 import JXG from 'jsxgraph'
-import { isObject } from 'lodash'
-import { tickLabel } from './utils'
-import { Tangent, Logarithm, Sin, Parabola, Parabola2 } from './elements'
+import { isObject, round } from 'lodash'
+import { tickLabel, radianTickLabel } from './utils'
+import { Tangent, Logarithm, Sin, Cos, Parabola, Parabola2 } from './elements'
 
 /**
  * Graph parameters
@@ -126,6 +126,13 @@ export const getLabelPositionParameters = (elementType) => {
         anchorX: 'left',
         anchorY: 'middle',
       }
+    case Cos.jxgType:
+      return {
+        position: 'lft',
+        offset: [10, 0],
+        anchorX: 'left',
+        anchorY: 'middle',
+      }
     case Parabola.jxgType:
     case Parabola2.jxgType:
       return {
@@ -195,10 +202,18 @@ export const defaultGridParameters = () => ({ ...gridParameters })
 
 function mergeAxesParameters(target, parameters) {
   if (parameters.x.ticksDistance) {
-    target.x.ticks.ticksDistance = parseFloat(parameters.x.ticksDistance)
+    let xTickDistance = parseFloat(parameters.x.ticksDistance)
+    if (parameters.x.useRadians) {
+      xTickDistance = round(Math.PI / xTickDistance, 2)
+    }
+    target.x.ticks.ticksDistance = xTickDistance
   }
   if (parameters.y.ticksDistance) {
-    target.y.ticks.ticksDistance = parseFloat(parameters.y.ticksDistance)
+    let yTickDistance = parseFloat(parameters.y.ticksDistance)
+    if (parameters.y.useRadians) {
+      yTickDistance = round(Math.PI / yTickDistance, 2)
+    }
+    target.y.ticks.ticksDistance = yTickDistance
   }
   if (parameters.x.name) {
     target.x.withLabel = true
@@ -208,6 +223,14 @@ function mergeAxesParameters(target, parameters) {
     target.y.withLabel = true
     target.y.name = parameters.y.name
   }
+
+  if ('showAxis' in parameters.x) {
+    target.x.visible = parameters.x.showAxis
+  }
+  if ('showAxis' in parameters.y) {
+    target.y.visible = parameters.y.showAxis
+  }
+
   if ('showTicks' in parameters.x && parameters.x.showTicks === false) {
     target.x.ticks.majorHeight = 0
   }
@@ -238,16 +261,34 @@ function mergeAxesParameters(target, parameters) {
   if ('gridY' in parameters) {
     target.grid.gridY = parameters.gridY
   }
-  target.x.ticks.generateLabelText = tickLabel(
-    'x',
-    parameters.x.commaInLabel,
-    parameters.x.drawZero
-  )
-  target.y.ticks.generateLabelText = tickLabel(
-    'y',
-    parameters.y.commaInLabel,
-    parameters.y.drawZero
-  )
+
+  if (parameters.x.useRadians) {
+    target.x.ticks.generateLabelText = radianTickLabel(
+      'x',
+      parameters.x.drawZero,
+      parameters.x.ticksDistance
+    )
+  } else {
+    target.x.ticks.generateLabelText = tickLabel(
+      'x',
+      parameters.x.commaInLabel,
+      parameters.x.drawZero
+    )
+  }
+
+  if (parameters.y.useRadians) {
+    target.y.ticks.generateLabelText = radianTickLabel(
+      'y',
+      parameters.y.drawZero,
+      parameters.y.ticksDistance
+    )
+  } else {
+    target.y.ticks.generateLabelText = tickLabel(
+      'y',
+      parameters.y.commaInLabel,
+      parameters.y.drawZero
+    )
+  }
 }
 
 export function mergeParams(defaultConfig, userConfig) {
@@ -260,9 +301,15 @@ export function mergeParams(defaultConfig, userConfig) {
     mergeAxesParameters(defaultConfig.defaultaxes, userConfig.axesParameters)
   }
   if ('gridParameters' in userConfig) {
-    defaultConfig.grid = {
-      ...defaultConfig.grid,
-      ...userConfig.gridParameters,
+    const { gridParameters: userGridPrams } = userConfig
+    if ('gridX' in userGridPrams) {
+      defaultConfig.grid.gridX = userGridPrams.gridX
+    }
+    if ('gridY' in userGridPrams) {
+      defaultConfig.grid.gridY = userGridPrams.gridY
+    }
+    if ('showGrid' in userGridPrams) {
+      defaultConfig.grid.visible = userGridPrams.showGrid
     }
   }
   return defaultConfig

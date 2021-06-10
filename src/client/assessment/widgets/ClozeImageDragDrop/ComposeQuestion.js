@@ -63,26 +63,11 @@ class ComposeQuestion extends Component {
     this.canvasRef = createRef()
     this.imageRndRef = createRef()
     this.imagePreviewRef = createRef()
-  }
-
-  state = {
-    isEditableResizeMove: false,
-    isAnnotationBelow: false,
-    isResizingImage: false,
-  }
-
-  static propTypes = {
-    t: PropTypes.func.isRequired,
-    item: PropTypes.object.isRequired,
-    setQuestionData: PropTypes.func.isRequired,
-    theme: PropTypes.object.isRequired,
-    fillSections: PropTypes.func,
-    cleanSections: PropTypes.func,
-  }
-
-  static defaultProps = {
-    fillSections: () => {},
-    cleanSections: () => {},
+    this.state = {
+      isEditableResizeMove: false,
+      isAnnotationBelow: false,
+      isResizingImage: false,
+    }
   }
 
   onChangeQuestion = (stimulus) => {
@@ -232,8 +217,8 @@ class ComposeQuestion extends Component {
   }
 
   handleChange = async (info) => {
+    const { t } = this.props
     try {
-      const { t } = this.props
       const { file } = info
       if (!beforeUpload(file)) {
         return
@@ -664,9 +649,9 @@ class ComposeQuestion extends Component {
               data-cy="keep-aspect-ratio"
               defaultChecked={isEditAriaLabels}
               checked={responseLayout && responseLayout.keepAspectRatio}
-              onChange={(val) =>
+              onChange={(val) => {
                 this.onResponsePropChange('keepAspectRatio', val.target.checked)
-              }
+              }}
             >
               {t('component.cloze.imageText.keepAspectRatio')}
             </CheckboxLabel>
@@ -707,9 +692,9 @@ class ComposeQuestion extends Component {
             overlay={() => (
               <ChromePicker
                 color={background}
-                onChangeComplete={(color) =>
+                onChangeComplete={(color) => {
                   this.onItemPropChange('background', color.hex)
-                }
+                }}
               />
             )}
             trigger={['click']}
@@ -749,13 +734,13 @@ class ComposeQuestion extends Component {
                 style={{
                   backgroundColor: 'transparent',
                   boxShadow: 'none',
-                  border: '1px solid lightgray',
                 }}
                 question={item}
                 setQuestionData={setQuestionData}
                 disableDragging={false}
                 isAbove={!isAnnotationBelow}
                 onDoubleClick={toggleIsAnnotationBelow}
+                noBorder
               />
               {item.imageUrl && (
                 <>
@@ -790,8 +775,9 @@ class ComposeQuestion extends Component {
                     disableDragging={!isEditableResizeMove}
                     onDragStop={(evt, d) => handleDragStop(d)}
                     onDrag={(evt, d) => this.handleDragging(d)}
-                    onResizeStop={(e, direction, ref) =>
-                      this.handleResizeStop(ref)}
+                    onResizeStop={(e, direction, ref) => {
+                      this.handleResizeStop(ref)
+                    }}
                     onResize={(e, direction, ref) => this.handleResizing(ref)}
                     onResizeStart={this.handleResizeStart}
                   >
@@ -867,9 +853,9 @@ class ComposeQuestion extends Component {
               <CheckboxLabel
                 data-cy="drag-drop-image-aria-check"
                 defaultChecked={isEditAriaLabels}
-                onChange={(val) =>
+                onChange={(val) => {
                   this.onItemPropChange('isEditAriaLabels', val.target.checked)
-                }
+                }}
               >
                 {t('component.cloze.imageDragDrop.editAriaLabels')}
               </CheckboxLabel>
@@ -880,12 +866,12 @@ class ComposeQuestion extends Component {
                 defaultChecked={
                   responseLayout && responseLayout.showdashedborder
                 }
-                onChange={(val) =>
+                onChange={(val) => {
                   this.onResponsePropChange(
                     'showdashedborder',
                     val.target.checked
                   )
-                }
+                }}
               >
                 {t('component.cloze.imageDragDrop.showdashedborder')}
               </CheckboxLabel>
@@ -896,12 +882,12 @@ class ComposeQuestion extends Component {
                 defaultChecked={
                   responseLayout && responseLayout.transparentbackground
                 }
-                onChange={(val) =>
+                onChange={(val) => {
                   this.onResponsePropChange(
                     'transparentbackground',
                     val.target.checked
                   )
-                }
+                }}
               >
                 {t('component.cloze.imageDragDrop.transparentbackground')}
               </CheckboxLabel>
@@ -910,9 +896,9 @@ class ComposeQuestion extends Component {
               <CheckboxLabel
                 data-cy="drag-drop-image-border-check"
                 defaultChecked={responseLayout && responseLayout.showborder}
-                onChange={(val) =>
+                onChange={(val) => {
                   this.onResponsePropChange('showborder', val.target.checked)
-                }
+                }}
               >
                 {t('component.cloze.imageDragDrop.showborder')}
               </CheckboxLabel>
@@ -923,12 +909,12 @@ class ComposeQuestion extends Component {
                 defaultChecked={
                   responseLayout && responseLayout.isSnapFitValues
                 }
-                onChange={(val) =>
+                onChange={(val) => {
                   this.onResponsePropChange(
                     'isSnapFitValues',
                     val.target.checked
                   )
-                }
+                }}
               >
                 {t('component.cloze.imageDragDrop.snapfittodroparea')}
               </CheckboxLabel>
@@ -937,9 +923,9 @@ class ComposeQuestion extends Component {
               <CheckboxLabel
                 data-cy="drag-drop-image-wrap-text-to-fit"
                 defaultChecked={responseLayout && responseLayout.isWrapText}
-                onChange={(e) =>
+                onChange={(e) => {
                   this.onResponsePropChange('isWrapText', e.target.checked)
-                }
+                }}
               >
                 {t('component.cloze.imageDragDrop.wrapTextToFitDropArea')}
               </CheckboxLabel>
@@ -969,11 +955,12 @@ class ComposeQuestion extends Component {
                       data-cy="image-alternate-input"
                       size="large"
                       defaultValue={imageAlterText}
-                      onChange={(val) =>
+                      onChange={(val) => {
                         this.onItemPropChange(
                           'imageAlterText',
                           val.target.value
-                        )}
+                        )
+                      }}
                     />
                   </div>
                 </Col>
@@ -989,8 +976,9 @@ class ComposeQuestion extends Component {
                       <span className="index-box">{index + 1}</span>
                       <TextInputStyled
                         defaultValue={responseContainer.label}
-                        onChange={(e) =>
-                          this.onResponseLabelChange(index, e.target.value)}
+                        onChange={(e) => {
+                          this.onResponseLabelChange(index, e.target.value)
+                        }}
                       />
                     </div>
                   ))}
@@ -1002,6 +990,20 @@ class ComposeQuestion extends Component {
       </Question>
     )
   }
+}
+
+ComposeQuestion.propTypes = {
+  t: PropTypes.func.isRequired,
+  item: PropTypes.object.isRequired,
+  setQuestionData: PropTypes.func.isRequired,
+  theme: PropTypes.object.isRequired,
+  fillSections: PropTypes.func,
+  cleanSections: PropTypes.func,
+}
+
+ComposeQuestion.defaultProps = {
+  fillSections: () => {},
+  cleanSections: () => {},
 }
 
 const enhance = compose(

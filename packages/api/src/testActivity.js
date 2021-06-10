@@ -37,12 +37,12 @@ const previousResponses = (testActivityId) =>
     })
     .then((result) => result.data.result)
 
-const getById = (testActivityId, groupId) =>
+const getById = (testActivityId, groupId, studentAssesment = false) =>
   api
     .callApi({
       url: `${prefix}/${testActivityId}`,
       method: 'get',
-      params: { groupId },
+      params: { groupId, studentAssesment },
     })
     .then((result) => result.data.result)
 
@@ -62,6 +62,16 @@ const saveOverallFeedback = ({ testActivityId, groupId, feedback: data }) =>
       data,
     })
     .then((result) => result.data.result)
+
+function incrementTabNavigationCounter(id) {
+  return api
+    .callApi({
+      url: `${prefix}/${id}/tab-navigation-counter`,
+      method: 'put',
+      data: {},
+    })
+    .then((result) => result.data)
+}
 
 const updateResponseEntryAndScore = ({ testActivityId, itemId, ...data }) =>
   api
@@ -95,6 +105,24 @@ const updateUtaTime = ({ utaId, type, syncOffset }) =>
     })
     .then((result) => result.data.result)
 
+const switchLanguage = ({ testActivityId, ...data }) =>
+  api
+    .callApi({
+      url: `${prefix}/${testActivityId}/switch-preferred-language`,
+      method: 'post',
+      data,
+    })
+    .then((result) => result.data.result)
+
+const saveUserWork = ({ testActivityId, groupId, userWork }) =>
+  api
+    .callApi({
+      url: `${prefix}/${testActivityId}/user-work`,
+      method: 'put',
+      data: { userWork, groupId },
+    })
+    .then((result) => result.data.result)
+
 export default {
   create,
   submit,
@@ -106,4 +134,7 @@ export default {
   updateResponseEntryAndScore,
   updateQuestionFeedBack,
   updateUtaTime,
+  incrementTabNavigationCounter,
+  switchLanguage,
+  saveUserWork,
 }

@@ -66,7 +66,6 @@ export const Widget = styled.div`
   .ant-select {
     &-selection-selected-value {
       ${(props) => createStandardTextStyle(props)}
-      padding-left: 10px;
       letter-spacing: 0.3px;
       color: ${selectColor};
       max-height: 40px;
@@ -90,7 +89,6 @@ export const Widget = styled.div`
 
   .ant-input {
     ${(props) => createStandardTextStyle(props)}
-    padding-left: 21px;
     letter-spacing: 0.3px;
     color: ${selectColor};
     min-height: 35px;

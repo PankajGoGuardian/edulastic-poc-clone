@@ -1,6 +1,11 @@
 {
   "plugins": ["cypress", "prettier"],
-  "extends": ["airbnb", "plugin:cypress/recommended", "prettier"],
+  "extends": [
+    "airbnb",
+    "plugin:cypress/recommended",
+    "prettier",
+    "prettier/react"
+  ],
   "parser": "babel-eslint",
   "env": {
     "browser": true,
@@ -10,6 +15,8 @@
     "jquery": true
   },
   "rules": {
+    "react/state-in-constructor": 0,
+    "react/static-property-placement": 0,
     "react/jsx-filename-extension": [
       1,
       {
@@ -31,7 +38,6 @@
     "no-alert": 0,
     "jsx-a11y/label-has-for": 0,
     "jsx-a11y/label-has-associated-control": 0,
-    "max-len": "warn",
     "react/no-did-mount-set-state": 0,
     "no-nested-ternary": 0,
     "operator-linebreak": 0,
@@ -57,7 +63,14 @@
     "cypress/no-unnecessary-waiting": "warn",
     "react/jsx-closing-tag-location": 0,
     "react/jsx-indent": 0,
-    "react/jsx-props-no-spreading": 1,
+    "react/jsx-props-no-spreading": [
+      1,
+      {
+        "html": "enforce",
+        "custom": "ignore",
+        "explicitSpread": "enforce"
+      }
+    ],
     "prettier/prettier": [
       "error",
       {

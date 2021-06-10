@@ -127,6 +127,11 @@ const QuestionScoreCell = ({
     if (!isNull(nextInput)) {
       target.blur()
       nextInput.focus()
+      // select existing score while navigating cells using arrow keys
+      if (nextInput.setSelectionRange && nextInput.value) {
+        event.preventDefault()
+        nextInput.setSelectionRange(0, nextInput.value.length)
+      }
     }
   }
 

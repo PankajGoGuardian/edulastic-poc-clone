@@ -1,7 +1,5 @@
-// @ts-check
 import { userApi, TokenStorage } from '@edulastic/api'
-import { message } from 'antd'
-import { FlexContainer, notification } from '@edulastic/common'
+import { notification } from '@edulastic/common'
 
 export async function proxyUser({ userId, email, groupId, currentUser = {} }) {
   const result = await userApi.getProxyUser({ userId, email, groupId })
@@ -13,7 +11,7 @@ export async function proxyUser({ userId, email, groupId, currentUser = {} }) {
     )
     TokenStorage.storeInLocalStorage('proxyParent', JSON.stringify(currentUser))
     window.open(
-      `${location.protocol}//${location.host}/?userId=${result.result._id}&role=${result.result.role}`,
+      `${window.location.protocol}//${window.location.host}/?userId=${result.result._id}&role=${result.result.role}`,
       '_blank'
     )
   } else {
@@ -31,7 +29,7 @@ export async function switchRole(role) {
       result.result.role
     )
     window.open(
-      `${location.protocol}//${location.host}/?userId=${result.result.userId}&role=${result.result.role}`,
+      `${window.location.protocol}//${window.location.host}/?userId=${result.result.userId}&role=${result.result.role}`,
       '_blank'
     )
   } else {
@@ -48,11 +46,33 @@ export async function switchUser(switchToId, personId) {
       result.result.role
     )
     window.open(
-      `${location.protocol}//${location.host}/?userId=${result.result._id}&role=${result.result.role}`,
+      `${window.location.protocol}//${window.location.host}/?userId=${result.result._id}&role=${result.result.role}`,
       '_blank'
     )
   } else {
     notification({ messageKey: 'ErrorOccuredSwicthingRole' })
+  }
+}
+
+export async function proxyDemoPlaygroundUser(isAutomation = false) {
+  const result = await userApi.getDemoPlaygroundUser()
+  if (result.result?._id && result.result?.role) {
+    TokenStorage.storeAccessToken(
+      result.result.token,
+      result.result._id,
+      result.result.role
+    )
+    // check if qa environment then open proxy account in same tab
+    let option = '_blank'
+    if (isAutomation) {
+      option = '_self'
+    }
+    window.open(
+      `${window.location.protocol}//${window.location.host}/?userId=${result.result._id}&role=${result.result.role}`,
+      option
+    )
+  } else {
+    notification({ messageKey: 'someErrorOccuredDuringProxying' })
   }
 }
 

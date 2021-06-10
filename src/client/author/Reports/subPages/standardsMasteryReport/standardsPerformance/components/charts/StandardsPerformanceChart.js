@@ -1,11 +1,15 @@
 import React from 'react'
 import next from 'immer'
 import { find, sumBy, indexOf } from 'lodash'
-import { getTicks, getMasteryLevel } from '../../utils/transformers'
+
+import { reportUtils } from '@edulastic/constants'
+
 import BarTooltipRow from '../../../../../common/components/tooltip/BarTooltipRow'
 import { SimpleStackedBarChart } from '../../../../../common/components/charts/simpleStackedBarChart'
 import { StyledChartContainer } from '../styled'
 import { StyledH3 } from '../../../../../common/styled'
+
+const { getTicks, getMasteryLevel } = reportUtils.standardsPerformanceSummary
 
 const _yTickFormatter = (text) => text
 
@@ -13,11 +17,8 @@ const StandardsPerformanceChart = ({
   data,
   selectedDomains,
   setSelectedDomains,
-  filterValues,
-  filterOptions,
-  onFilterChange,
   maxMasteryScore,
-  rawDomainData,
+  skillInfo,
   scaleInfo,
   ...chartProps
 }) => {
@@ -27,15 +28,15 @@ const StandardsPerformanceChart = ({
     const [domain = {}] = _data
     const { payload = {} } = domain
     const domainInfo =
-      find(rawDomainData, (d) => `${d.tloId}` === `${payload.domainId}`) || {}
+      find(skillInfo, (d) => `${d.domainId}` === `${payload.domainId}`) || {}
     const studentCount = sumBy(payload.records, (record) =>
       parseInt(record.totalStudents, 10)
     )
 
     return (
       <div>
-        <BarTooltipRow title="Domain: " value={payload.domainName} />
-        <BarTooltipRow title="Description: " value={domainInfo.description} />
+        <BarTooltipRow title="Domain: " value={domainInfo.domain} />
+        <BarTooltipRow title="Description: " value={domainInfo.domainName} />
         <BarTooltipRow
           title="Avg Mastery Score: "
           value={payload.masteryScore}

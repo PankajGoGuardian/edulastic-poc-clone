@@ -5,7 +5,14 @@ import {
   linkColor1,
   themeColorLighter,
   darkBlue2,
+  greyLight1,
 } from '@edulastic/colors'
+import {
+  testActivityStatus as testActivityStatusConstants,
+  questionType,
+} from '@edulastic/constants'
+
+const { SUBMITTED } = testActivityStatusConstants
 
 export const NUMBER_OF_BARS = 10
 
@@ -45,9 +52,20 @@ export const bars = {
     dataKey: 'manualGradedNum',
     fill: darkBlue2,
   },
+  unscoredItems: {
+    className: 'unscoredItems',
+    yAxisId: 'left',
+    stackId: 'a',
+    dataKey: 'unscoredItems',
+    fill: greyLight1,
+  },
 }
 
-export const convertData = (questionActivities, testItems) => {
+export const convertData = (
+  questionActivities,
+  testItems,
+  testActivityStatus
+) => {
   let maxAttemps = 0
   let maxTimeSpent = 0
   let data = []
@@ -60,7 +78,7 @@ export const convertData = (questionActivities, testItems) => {
 
   data = testItems
     .reduce((acc, curr) => [...acc, ...get(curr, 'data.questions', [])], [])
-    .filter((x) => !x.scoringDisabled)
+    .filter((x) => !x.scoringDisabled && x.type !== questionType.SECTION_LABEL)
     .map((question, index) => {
       const { barLabel } = question
       const questionActivity = {
@@ -79,10 +97,12 @@ export const convertData = (questionActivities, testItems) => {
         notStartedNum: 0,
         timeSpent: 0,
         manualGradedNum: 0,
+        unscoredItems: 0,
       }
 
       const activity = activitiesByQid[question.id]
       if (isEmpty(activity)) {
+        questionActivity.skippedNum = testActivityStatus === SUBMITTED ? 1 : 0
         return questionActivity
       }
       const {
@@ -94,6 +114,7 @@ export const convertData = (questionActivities, testItems) => {
         pendingEvaluation,
       } = activity
       let { notStarted, skipped } = activity
+      const { isPractice } = activity
       let skippedx = false
 
       if (testItemId) {
@@ -117,8 +138,9 @@ export const convertData = (questionActivities, testItems) => {
       if (score > 0) {
         skipped = false
       }
-
-      if (
+      if (isPractice) {
+        questionActivity.unscoredItems += 1
+      } else if (
         (graded === false && !notStarted && !skipped && !score) ||
         pendingEvaluation
       ) {

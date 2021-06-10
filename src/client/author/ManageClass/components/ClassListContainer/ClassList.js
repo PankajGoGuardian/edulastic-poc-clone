@@ -11,7 +11,7 @@ import ClassSelector from './ClassSelector'
 import selectsData from '../../../TestPage/components/common/selectsData'
 import ClassCreatePage from './ClassCreatePage'
 import { TableWrapper, ClassListTable, Tags, SubHeader } from './styled'
-import { fetchClassListAction } from '../../ducks'
+import { fetchClassListAction, setFilterClassAction } from '../../ducks'
 import GoogleBanner from './GoogleBanner'
 import { getUserDetails } from '../../../../student/Login/ducks'
 import Header from './Header'
@@ -40,6 +40,9 @@ const ClassList = ({
   canvasAllowedInstitution,
   handleCanvasBulkSync,
   isCleverUser,
+  studentsList,
+  setFilterClass,
+  filterClass,
 }) => {
   const recentInstitute = institutions[institutions.length - 1]
   const findGrade = (_grade = []) =>
@@ -54,19 +57,19 @@ const ClassList = ({
       .map((_o) => _o.tagName)
       .join(', ')
 
-  const [filterClass, setFilterClass] = useState(null)
   const [classGroups, setClassGroups] = useState([])
   const [currentTab, setCurrentTab] = useState(
     location?.state?.currentTab || 'class'
   )
 
-  useEffect(() => {
-    setClassGroups(groups)
-  }, [groups])
+  const showClassGroups = filterClass === 'Active' ? groups : archiveGroups
 
   useEffect(() => {
-    setFilterClass('Active')
-    setClassGroups(groups)
+    setClassGroups(showClassGroups)
+  }, [showClassGroups])
+
+  useEffect(() => {
+    setClassGroups(showClassGroups)
   }, [currentTab])
 
   const columns = [
@@ -177,6 +180,9 @@ const ClassList = ({
     setCurrentTab(value)
   }
 
+  const isClassLink =
+    studentsList && studentsList.filter((id) => id?.atlasId).length > 0
+
   return (
     <>
       <Header
@@ -193,13 +199,11 @@ const ClassList = ({
         enableCleverSync={isCleverUser}
         user={user}
         handleCanvasBulkSync={handleCanvasBulkSync}
+        isClassLink={isClassLink}
       />
       <MainContentWrapper>
         <SubHeader>
           <ClassSelector
-            groups={groups}
-            archiveGroups={archiveGroups}
-            setClassGroups={setClassGroups}
             filterClass={filterClass}
             setFilterClass={setFilterClass}
             currentTab={currentTab}
@@ -230,6 +234,7 @@ const ClassList = ({
                   user={user}
                   fetchClassList={fetchClassList}
                   googleAllowedInstitutions={googleAllowedInstitutions}
+                  isClassLink={isClassLink}
                 />
               )}
             </>
@@ -271,9 +276,12 @@ const enhance = compose(
         state
       ),
       isCleverUser: getCleverLibraryUserSelector(state),
+      studentsList: get(state, 'manageClass.studentsList', {}),
+      filterClass: get(state, 'manageClass.filterClass', 'Active'),
     }),
     {
       fetchClassList: fetchClassListAction,
+      setFilterClass: setFilterClassAction,
     }
   )
 )

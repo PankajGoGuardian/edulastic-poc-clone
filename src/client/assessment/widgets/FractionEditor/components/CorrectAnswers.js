@@ -66,18 +66,18 @@ const CorrectAnswers = ({
   }
 
   const handleCorrectAnswerPointsChange = (score) => {
-    if (+score > 0) {
-      setQuestionData(
-        produce(item, (draft) => {
-          draft.validation.validResponse = {
-            ...draft.validation.validResponse,
-            score: +score,
-          }
-        })
-      )
-    } else {
-      notification({ messageKey: 'scoreShouldBeGreateThanZero' })
+    if (!(score > 0)) {
+      return
     }
+    const points = parseFloat(score, 10)
+    setQuestionData(
+      produce(item, (draft) => {
+        draft.validation.validResponse = {
+          ...draft.validation.validResponse,
+          score: points,
+        }
+      })
+    )
   }
 
   return (
@@ -104,7 +104,7 @@ const CorrectAnswers = ({
           )}
           size="default"
           value={get(item, 'validation.validResponse.score', 1)}
-          onBlur={handleCorrectAnswerPointsChange}
+          onChange={handleCorrectAnswerPointsChange}
           style={{ width: '140px', marginRight: '25px', background: '#F8F8FB' }}
         />
       </FlexContainer>

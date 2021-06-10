@@ -91,6 +91,7 @@ class ErrorHandler extends React.Component {
 export default withRouter(ErrorHandler)
 
 const GoBacK = styled.h3`
+  cursor: pointer;
   color: ${greenPrimary};
 `
 

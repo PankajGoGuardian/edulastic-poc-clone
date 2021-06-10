@@ -2,7 +2,11 @@
 import React from 'react'
 import styled from 'styled-components'
 import { IconCorrect } from '@edulastic/icons'
-import { themeColor, largeDesktopWidth } from '@edulastic/colors'
+import {
+  themeColor,
+  largeDesktopWidth,
+  themeColorBlue,
+} from '@edulastic/colors'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleRight, faAngleLeft } from '@fortawesome/free-solid-svg-icons'
 import { FlexContainer } from '../common'
@@ -12,6 +16,7 @@ import {
   IPAD_LANDSCAPE_WIDTH,
   LARGE_DESKTOP_WIDTH,
 } from '../../constants/others'
+import { Tooltip } from '../../../common/utils/helpers'
 
 const PlayerFooter = ({
   isFirst,
@@ -21,22 +26,42 @@ const PlayerFooter = ({
   t,
   unansweredQuestionCount,
   isSidebarVisible,
+  blockNavigationToAnsweredQuestions,
 }) => (
   <MainFooter
     isSidebarVisible={isSidebarVisible}
     className="practice-player-footer"
   >
     <FlexContainer>
-      <PrevButton data-cy="prev" disabled={isFirst()} onClick={moveToPrev}>
-        <FontAwesomeIcon icon={faAngleLeft} />
-      </PrevButton>
-      <NextButton data-cy="next" onClick={moveToNext}>
-        <span>{isLast() ? t('pagination.submit') : t('pagination.next')}</span>
-        <FontAwesomeIcon icon={faAngleRight} />
-      </NextButton>
+      <Tooltip
+        placement="left"
+        title={
+          blockNavigationToAnsweredQuestions
+            ? 'This assignment is restricted from navigating back to the previous question.'
+            : 'Previous'
+        }
+      >
+        <span>
+          <PrevButton
+            data-cy="prev"
+            disabled={isFirst() || blockNavigationToAnsweredQuestions}
+            onClick={moveToPrev}
+          >
+            <FontAwesomeIcon icon={faAngleLeft} />
+          </PrevButton>
+        </span>
+      </Tooltip>
+      <Tooltip placement="right" title="Next">
+        <NextButton data-cy="next" onClick={moveToNext}>
+          <span>
+            {isLast() ? t('pagination.submit') : t('pagination.next')}
+          </span>
+          <FontAwesomeIcon icon={faAngleRight} />
+        </NextButton>
+      </Tooltip>
     </FlexContainer>
     <StyledFlexContainer>
-      <QuestionsLeftToAttempt data-cy="questionLeftToAttempt">
+      <QuestionsLeftToAttempt data-cy="questionLeftToAttempt" tabIndex="-1">
         <IconCorrect color={themeColor} />
         {unansweredQuestionCount} Left
       </QuestionsLeftToAttempt>
@@ -55,6 +80,8 @@ const MainFooter = styled.div`
   right: 0;
   padding: 22px 35px;
   z-index: 2;
+  border-top: 15px solid
+    ${(props) => props.theme.widgets.assessmentPlayers.mainBgColor};
   background-color: ${(props) =>
     props.theme.widgets.assessmentPlayers.mainBgColor};
   @media (max-width: ${largeDesktopWidth}) {
@@ -81,8 +108,14 @@ const ControlBtn = styled.button`
   position: relative;
   display: block;
   text-transform: uppercase;
+  &:focus {
+    border: none;
+    outline: 0;
+    box-shadow: 0 0 0 2px ${themeColorBlue};
+  }
   &[disabled] {
     background-color: ${(props) => props.theme.btnDisabled};
+    cursor: not-allowed;
   }
   .fa {
     position: absolute;

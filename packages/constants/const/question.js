@@ -9,5 +9,6 @@ module.exports = {
     questionType.TEXT,
   ],
   DEFAULT_STIMULUS: '<p>[Click here to view the full content]</p>',
+  sectionLabelType: 'sectionLabel',
   EMPTY_ANSWER: 'EDULASTIC_EMPTY_CORRECT_ANSWER',
 }

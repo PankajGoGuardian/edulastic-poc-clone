@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { Upload } from 'antd'
 import TextareaAutosize from 'react-autosize-textarea'
 import {
   greenDark,
@@ -6,12 +7,10 @@ import {
   tabletWidth,
   greenDarkSecondary,
   secondaryTextColor,
-  mobileWidthMax,
   themeColor,
   extraDesktopWidthMax,
 } from '@edulastic/colors'
 import { TextField } from '@edulastic/common'
-import { StyledPaperWrapper } from '../../../styled/Widget'
 
 export const GraphContainer = styled.div`
   & .__prevent-page-break {
@@ -387,30 +386,12 @@ export const Col = styled.div`
   display: block;
 `
 
-export const PaperWrapper = styled(StyledPaperWrapper)`
-  padding: ${(props) =>
-    props.flowLayout
-      ? '0px'
-      : props.isV1Multipart
-      ? '0px 35px'
-      : props.isStudentReport
-      ? '20px 100px 20px 20px'
-      : '35px'};
-  min-width: ${({ style }) => style.minWidth};
-  ${({ style }) => style};
-
-  @media (max-width: ${mobileWidthMax}) {
-    padding: ${({ flowLayout }) => (flowLayout ? '0px' : '20px;')};
-    margin-bottom: 15px;
-  }
-`
-
 export const GraphToolbar = createStandardTextSet(styled.div`
   box-sizing: border-box;
   position: relative;
   width: 100%;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   padding: 0 0 10px 0;
   font-size: ${(props) => (props.fontSize ? props.fontSize : 14)}px;
 
@@ -435,7 +416,7 @@ export const ToolbarLeft = styled.ul`
 
 export const ToolbarRight = styled.ul`
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   margin: 0;
   padding: 0;
 
@@ -450,11 +431,7 @@ export const ToolbarItem = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-
-  svg {
-    margin-bottom: 4px;
-  }
+  justify-content: ${({ justifyContent }) => justifyContent || 'flex-end'};
 `
 
 export const ToolbarItemLabel = styled.span`
@@ -462,6 +439,63 @@ export const ToolbarItemLabel = styled.span`
   text-transform: uppercase;
   font-size: ${({ fontSize }) => fontSize || '10px'};
   line-height: 1;
+  margin-top: 4px;
+  margin-bottom: 6px;
+
+  &.icon-point-label {
+    margin-top: 8px;
+  }
+  &.icon-polygon-label {
+    margin-top: 9px;
+  }
+  &.icon-vector-label {
+    margin-top: 4px;
+  }
+  &.icon-ray-label {
+    margin-top: 6px;
+  }
+  &.icon-line-label {
+    margin-top: 6px;
+  }
+  &.icon-ellipse-label {
+    margin-top: 7px;
+  }
+  &.icon-circle-label {
+    margin-top: 7px;
+  }
+  &.icon-parabola2-label {
+    margin-top: 2px;
+  }
+  &.icon-parabola-label {
+    margin-top: 6px;
+  }
+  &.icon-hyperbola-label {
+    margin-top: 0px;
+  }
+  &.icon-sin-label {
+    margin-top: 2px;
+  }
+  &.icon-cos-label {
+    margin-top: 2px;
+  }
+  &.icon-area-label {
+    margin-top: 7px;
+  }
+  &.icon-dashed-label {
+    margin-top: 6px;
+  }
+  &.icon-tan-label {
+    margin-top: 2px;
+  }
+  &.icon-segment-label {
+    margin-top: 6px;
+  }
+  &.icon-secant-label {
+    margin-top: 2px;
+  }
+  &.icon-exponential-label {
+    font-size: 9.5px;
+  }
 `
 
 export const ToolbarItemIcon = styled.div`
@@ -493,7 +527,6 @@ export const ToolBtn = styled.li`
   > ${ToolbarItem} {
     svg {
       color: #878a91;
-      stroke: #878a91;
       fill: #878a91;
     }
   }
@@ -503,12 +536,10 @@ export const ToolBtn = styled.li`
   &.active {
     background-color: #878a91;
     color: ${(props) => props.theme.containerWhite};
-    border: none;
 
     > ${ToolbarItem} {
       svg {
         color: ${(props) => props.theme.containerWhite};
-        stroke: ${(props) => props.theme.containerWhite};
         fill: ${(props) => props.theme.containerWhite};
       }
     }
@@ -574,5 +605,14 @@ export const PopupToolsContainer = styled.div`
 
   ${ToolBtn} {
     margin: 0;
+  }
+`
+const { Dragger } = Upload
+export const UploadButton = styled(Dragger)`
+  &.ant-upload.ant-upload-drag {
+    padding: 0px;
+    .ant-upload {
+      padding: 0px;
+    }
   }
 `

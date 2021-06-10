@@ -13,28 +13,13 @@ export const updateClassDataAction = (payload) => ({
   payload,
 })
 
+export const setAuthModalAction = (payload) => ({
+  type: 'SET_AUTH_MODAL',
+  payload,
+})
+
 export const setDropdownTabAction = (payload) => ({
   type: 'SET_DROPDOWN_TAB',
-  payload,
-})
-
-export const setQuestionItemsAction = (payload) => ({
-  type: 'SET_QUESTION_ITEMS',
-  payload,
-})
-
-export const setEvaluationAction = (payload) => ({
-  type: 'SET_EVALUATION',
-  payload,
-})
-
-export const saveAnswerAction = (payload) => ({
-  type: 'SAVE_ANSWER',
-  payload,
-})
-
-export const clearAnswerAction = (payload) => ({
-  type: 'CLEAR_ANSWER',
   payload,
 })
 
@@ -42,10 +27,8 @@ const iniialState = {
   authToken: '',
   user: {},
   classData: {},
+  isAuthModal: false,
   dropdownTab: '',
-  questionItems: [],
-  evaluation: {},
-  userAnswer: {},
 }
 
 const edulasticReducer = (state = { ...iniialState }, { type, payload }) => {
@@ -66,33 +49,15 @@ const edulasticReducer = (state = { ...iniialState }, { type, payload }) => {
         ...state,
         classData: payload,
       }
+    case 'SET_AUTH_MODAL':
+      return {
+        ...state,
+        classData: payload,
+      }
     case 'SET_DROPDOWN_TAB':
       return {
         ...state,
         dropdownTab: payload,
-      }
-    case 'SET_QUESTION_ITEMS':
-      return {
-        ...state,
-        questionItems: payload,
-      }
-    case 'SET_EVALUATION':
-      return {
-        ...state,
-        evaluation: payload,
-      }
-    case 'SAVE_ANSWER':
-      return {
-        ...state,
-        userAnswer: {
-          ...state.userAnswer,
-          [payload.questionId]: payload.answer,
-        },
-      }
-    case 'CLEAR_ANSWER':
-      return {
-        ...state,
-        userAnswer: {},
       }
 
     default:

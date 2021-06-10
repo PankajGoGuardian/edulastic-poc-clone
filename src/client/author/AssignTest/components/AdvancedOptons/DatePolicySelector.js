@@ -5,8 +5,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { getUserRole } from '../../../src/selectors/user'
 import selectsData from '../../../TestPage/components/common/selectsData'
-import TestTypeSelector from '../SimpleOptions/TestTypeSelector'
-import PlayerSkinSelector from '../SimpleOptions/PlayerSkinSelector'
 import { Label, StyledDatePicker, StyledRow, StyledSelect } from './styled'
 import { getIsOverrideFreezeSelector } from '../../../TestPage/ducks'
 
@@ -17,10 +15,7 @@ const DatePolicySelector = ({
   openPolicy: selectedOpenPolicy,
   closePolicy: selectedClosePolicy,
   userRole,
-  testType,
   passwordPolicy = testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF,
-  playerSkinType,
-  freezeSettings,
 }) => {
   const disabledStartDate = (_startDate) => {
     if (!_startDate || !endDate) {
@@ -59,8 +54,8 @@ const DatePolicySelector = ({
             style={{ width: '100%' }}
             size="large"
             disabledDate={disabledStartDate}
-            showTime={{ use12Hours: true }}
-            format="YYYY-MM-DD hh:mm:ss a"
+            showTime={{ use12Hours: true, format: 'hh:mm a' }}
+            format="YYYY-MM-DD hh:mm a"
             value={moment(startDate)}
             placeholder="Open Date"
             onChange={changeField('startDate')}
@@ -78,8 +73,8 @@ const DatePolicySelector = ({
             style={{ width: '100%' }}
             size="large"
             disabledDate={disabledEndDate}
-            showTime={{ use12Hours: true }}
-            format="YYYY-MM-DD hh:mm:ss a"
+            showTime={{ use12Hours: true, format: 'hh:mm a' }}
+            format="YYYY-MM-DD hh:mm a"
             value={moment(endDate)}
             placeholder="Close Date"
             showToday={false}
@@ -121,29 +116,6 @@ const DatePolicySelector = ({
               </Select.Option>
             ))}
           </StyledSelect>
-        </Col>
-      </StyledRow>
-      <StyledRow gutter={24}>
-        <Col xs={24} md={12} lg={6}>
-          <Label>Test Type</Label>
-          <TestTypeSelector
-            isAdvanceView
-            userRole={userRole}
-            testType={testType}
-            onAssignmentTypeChange={changeField('testType')}
-            disabled={freezeSettings}
-          />
-        </Col>
-        <Col xs={24} md={12} lg={6}>
-          <Label>Student Player Skin</Label>
-          <PlayerSkinSelector
-            isAdvanceView
-            testType={testType}
-            userRole={userRole}
-            playerSkinType={playerSkinType}
-            onAssignmentTypeChange={changeField('playerSkinType')}
-            disabled={freezeSettings}
-          />
         </Col>
       </StyledRow>
     </>

@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { message } from 'antd'
 import { notification } from '@edulastic/common'
-import { getLaunchHangoutStatus, launchHangoutClose } from '../../duck'
+import { getLaunchHangoutStatus, launchHangoutClose } from '../../ducks'
 import HangoutsModal from '../../../../student/Assignments/components/HangoutsModal'
 import { getClasses } from '../../../../student/Login/ducks'
 import {
@@ -160,8 +160,8 @@ const Launch = ({
       return
     }
 
-    const CLIENT_ID = process.env.POI_APP_GOOGLE_CLIENT_ID
-    const API_KEY = process.env.POI_APP_GOOGLE_API_KEY
+    const CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID
+    const API_KEY = process.env.REACT_APP_GOOGLE_API_KEY
     if (CLIENT_ID && API_KEY) {
       const loadGapiClient = new Promise((resolve) => {
         window.gapi.load('client:auth2', resolve)

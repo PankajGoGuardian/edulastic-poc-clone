@@ -1,12 +1,11 @@
-/* eslint-disable react/prop-types */
 import PropTypes from 'prop-types'
 import React from 'react'
 import styled from 'styled-components'
 import { withNamespaces } from '@edulastic/localization'
 import PerfectScrollbar from 'react-perfect-scrollbar'
-
+import { withKeyboard } from '@edulastic/common'
 import { IconGraphRightArrow } from '@edulastic/icons'
-import { desktopWidth, smallDesktopWidth } from '@edulastic/colors'
+import { smallDesktopWidth } from '@edulastic/colors'
 import FlexContainer from '../common/FlexContainer'
 import Circle from '../common/Circle'
 
@@ -17,6 +16,7 @@ const SidebarQuestionList = ({
   t,
   isSidebarVisible,
   toggleSideBar,
+  blockNavigationToAnsweredQuestions,
 }) => (
   <SidebarWrapper>
     <MinimizeButton onClick={toggleSideBar} minimized={isSidebarVisible}>
@@ -27,7 +27,7 @@ const SidebarQuestionList = ({
     )}
     {isSidebarVisible && (
       <Questions>
-        <PerfectScrollbar>
+        <PerfectScrollbar style={{ paddingTop: '2px' }}>
           {questions.map((item, index) => {
             const active = selectedQuestion === index
             return (
@@ -35,6 +35,7 @@ const SidebarQuestionList = ({
                 active={active}
                 key={index}
                 onClick={() => {
+                  if (blockNavigationToAnsweredQuestions) return
                   gotoQuestion(index)
                 }}
               >
@@ -45,7 +46,10 @@ const SidebarQuestionList = ({
                     r={6}
                     active={active}
                   />
-                  <Content active={active}>
+                  <Content
+                    active={active}
+                    disableClickEvents={blockNavigationToAnsweredQuestions}
+                  >
                     {t('common.layout.questionlist.question')} {index + 1}
                   </Content>
                 </FlexContainer>
@@ -65,7 +69,7 @@ SidebarQuestionList.propTypes = {
 
 export default withNamespaces('student')(SidebarQuestionList)
 
-const ItemContainer = styled.div`
+const ItemContainer = withKeyboard(styled.div`
   border-left: solid 5px
     ${(props) =>
       props.active
@@ -78,7 +82,7 @@ const ItemContainer = styled.div`
     props.active
       ? props.theme.widgets.assessmentPlayers.sidebarContentBackgroundColor
       : 'transparent'};
-`
+`)
 
 const Content = styled.div`
   color: ${(props) =>
@@ -90,7 +94,8 @@ const Content = styled.div`
   line-height: 1;
   letter-spacing: 0.2px;
   text-transform: capitalize;
-  cursor: pointer;
+  cursor: ${({ disableClickEvents }) =>
+    disableClickEvents ? 'not-allowed' : 'pointer'};
 
   @media (max-width: ${smallDesktopWidth}) {
     font-size: ${(props) => props.theme.linkFontSize};
@@ -100,6 +105,7 @@ const Content = styled.div`
 
 const SidebarWrapper = styled.div`
   position: relative;
+  padding-top: 20px;
 `
 
 const Title = styled(Content)`
@@ -110,8 +116,8 @@ const Title = styled(Content)`
 
 export const MinimizeButton = styled.div`
   position: absolute;
-  top: -7px;
-  right: -15px;
+  top: 0px;
+  right: ${({ minimized }) => (minimized ? '-15px' : '-25px')};
   padding: 9px;
   z-index: 10;
   background: ${(props) =>
@@ -139,7 +145,7 @@ export const MinimizeButton = styled.div`
 `
 
 const Questions = styled.div`
-  height: 80vh;
+  height: 87vh;
   overflow: auto;
   margin-top: 20px;
 `

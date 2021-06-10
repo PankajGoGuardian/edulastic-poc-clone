@@ -49,7 +49,6 @@ class MultipleChoice extends Component {
   getRenderData = () => {
     const { item: templateItem, history, view } = this.props
     const item = view === EDIT ? templateItem : replaceVariables(templateItem)
-
     const locationState = history.location.state
     const isDetailPage =
       locationState !== undefined ? locationState.itemDetail : false
@@ -70,6 +69,7 @@ class MultipleChoice extends Component {
         validation: templateItem.validation,
       }
     }
+
     return {
       previewStimulus,
       previewDisplayOptions,
@@ -223,7 +223,8 @@ class MultipleChoice extends Component {
                       this.handleOptionsChange(
                         'multipleResponses',
                         !multipleResponses
-                      )}
+                      )
+                    }
                     checked={multipleResponses}
                   >
                     {t('component.multiplechoice.multipleResponses')}

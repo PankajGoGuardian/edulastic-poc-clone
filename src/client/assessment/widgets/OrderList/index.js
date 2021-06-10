@@ -104,6 +104,7 @@ const OrderList = ({
   changePreviewTab,
   advancedLink,
   isReviewTab,
+  hideCorrectAnswer,
   isPrintPreview,
 }) => {
   const [correctTab, setCorrectTab] = useState(0)
@@ -143,7 +144,11 @@ const OrderList = ({
     )
   }
 
-  const handleUpdatePoints = (points) => {
+  const handleUpdatePoints = (score) => {
+    if (!(score > 0)) {
+      return
+    }
+    const points = parseFloat(score, 10)
     setQuestionData(
       produce(item, (draft) => {
         if (correctTab === 0) {
@@ -163,7 +168,7 @@ const OrderList = ({
           draft.validation.altResponses = []
         }
         draft.validation.altResponses.push({
-          score: 1,
+          score: draft?.validation?.validResponse?.score,
           value: keys(draft.list).reduce(
             (acc, curr, currIndex) => ({ ...acc, [curr]: currIndex }),
             {}
@@ -365,7 +370,7 @@ const OrderList = ({
               )}
             </QuestionLabelWrapper>
 
-            <QuestionContentWrapper>
+            <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
               <QuestionTitleWrapper>
                 <QuestionHeader
                   qIndex={qIndex}
@@ -390,7 +395,7 @@ const OrderList = ({
               )}
 
               {view !== EDIT && <Instructions item={item} />}
-              {previewTab === SHOW || isReviewTab ? (
+              {(previewTab === SHOW || isReviewTab) && !hideCorrectAnswer ? (
                 <>
                   <CorrectAnswersContainer
                     title={t('component.orderlist.correctanswer')}

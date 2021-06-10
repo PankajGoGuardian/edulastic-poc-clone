@@ -6,9 +6,12 @@ import {
   SET_QUESTION_ALIGNMENT_REMOVE_ROW,
   SET_QUESTION,
   LOAD_QUESTION,
+  TOGGLE_QUESTION_EDIT_MODAL_LCB,
+  SET_EDIT_ITEM_ID,
+  SET_CURRENT_STUDENT_ID,
 } from '../constants/actions'
 import {
-  UPDATE_QUESTION,
+  UPDATE_QUESTION_REQUEST,
   SET_FIRST_MOUNT,
   CHANGE_ITEM,
   CHANGE_ITEM_UI_STYLE,
@@ -22,6 +25,21 @@ export const receiveQuestionByIdAction = (id) => ({
   },
 })
 
+export const toggleQuestionEditModalAction = (isOpen) => ({
+  type: TOGGLE_QUESTION_EDIT_MODAL_LCB,
+  payload: isOpen,
+})
+
+export const setEditingItemIdAction = (payload) => ({
+  type: SET_EDIT_ITEM_ID,
+  payload,
+})
+
+export const setCurrentStudentIdAction = (payload) => ({
+  type: SET_CURRENT_STUDENT_ID,
+  payload,
+})
+
 export const saveQuestionAction = () => ({
   type: SAVE_QUESTION_REQUEST,
 })
@@ -32,7 +50,7 @@ export const changeLabelAction = (value) => ({
 })
 
 export const setQuestionDataAction = (question) => ({
-  type: UPDATE_QUESTION,
+  type: UPDATE_QUESTION_REQUEST,
   payload: question,
 })
 

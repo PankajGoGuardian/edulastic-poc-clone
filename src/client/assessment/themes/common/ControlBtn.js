@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import { Button } from 'antd'
+import { themeColorBlue } from '@edulastic/colors'
 
 const Back = styled(Button)`
   width: ${(props) => (props.next ? (props.skin ? '58px' : '187px') : '58px')};
@@ -51,6 +52,10 @@ const Back = styled(Button)`
       skin
         ? `1px solid ${theme.widgets.assessmentPlayers.mainContentBgColor}`
         : ''};
+  }
+  &:focus {
+    outline: 0;
+    box-shadow: 0 0 0 2px ${themeColorBlue};
   }
 
   &[disabled] {
@@ -185,6 +190,11 @@ const Next = styled(Button)`
       fill: ${({ theme }) =>
         theme.widgets.assessmentPlayers.mainContentBgColor};
     }
+  }
+  &:focus {
+    border: none;
+    outline: 0;
+    box-shadow: 0 0 0 2px ${themeColorBlue};
   }
 `
 export default {

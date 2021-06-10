@@ -35,7 +35,8 @@ const Selector = ({
           onDeselect={onDeselect}
           getPopupContainer={(node) => node.parentNode}
           filterOption={(input, option) =>
-            option.props.children.toLowerCase().includes(input.toLowerCase())}
+            option.props.children.toLowerCase().includes(input.toLowerCase())
+          }
           notFoundContent={isLoading ? <Spin /> : 'Not data'}
           value={value}
           labelInValue

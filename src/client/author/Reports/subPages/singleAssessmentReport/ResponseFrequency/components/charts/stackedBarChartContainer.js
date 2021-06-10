@@ -4,43 +4,42 @@ import { SimpleStackedBarChart } from '../../../../../common/components/charts/s
 import { getHSLFromRange1 } from '../../../../../common/util'
 import BarTooltipRow from '../../../../../common/components/tooltip/BarTooltipRow'
 
-export const StackedBarChartContainer = (props) => {
-  const dataParser = (filter) => {
-    const hmap = groupBy(props.data, 'qType')
-
-    const arr = Object.keys(hmap).map((data, i) => {
+export const StackedBarChartContainer = ({
+  data: propsData,
+  filter: propsFilter,
+  assessment: propsAssessment,
+  onBarClickCB,
+  onResetClickCB,
+}) => {
+  const dataParser = () => {
+    const hmap = groupBy(propsData, 'qType')
+    const arr = Object.keys(hmap).map((data) => {
       const qCount = hmap[data].length
       const tmp = hmap[data].reduce(
-        (total, currentValue, currentIndex) => {
-          const {
-            corr_cnt = 0,
-            incorr_cnt = 0,
-            skip_cnt = 0,
-            part_cnt = 0,
-          } = currentValue
+        (res, ele) => {
+          const { total_score = 0, total_max_score = 0 } = ele
           return {
-            corr_cnt: total.corr_cnt + corr_cnt,
-            incorr_cnt: total.incorr_cnt + incorr_cnt,
-            skip_cnt: total.skip_cnt + skip_cnt,
-            part_cnt: total.part_cnt + part_cnt,
+            total_score: res.total_score + total_score,
+            total_max_score: res.total_max_score + total_max_score,
           }
         },
-        { corr_cnt: 0, incorr_cnt: 0, skip_cnt: 0, part_cnt: 0 }
+        {
+          total_score: 0,
+          total_max_score: 0,
+        }
       )
-
-      const sum = tmp.corr_cnt + tmp.incorr_cnt + tmp.skip_cnt + tmp.part_cnt
       tmp.name = data
       tmp.qCount = qCount
-      tmp.correct = Number(((tmp.corr_cnt / sum) * 100).toFixed(0))
-      if (isNaN(tmp.correct)) tmp.correct = 0
+      tmp.correct = tmp.total_max_score
+        ? Math.round((tmp.total_score / tmp.total_max_score) * 100)
+        : 0
       tmp.incorrect = 100 - tmp.correct
-      if (props.filter[tmp.name] || Object.keys(props.filter).length === 0) {
+      if (propsFilter[tmp.name] || Object.keys(propsFilter).length === 0) {
         tmp.fill = getHSLFromRange1(tmp.correct)
       } else {
         tmp.fill = '#cccccc'
       }
-
-      tmp.assessment = props.assessment.testName
+      tmp.assessment = propsAssessment.testName
       return tmp
     })
     return arr
@@ -48,16 +47,8 @@ export const StackedBarChartContainer = (props) => {
 
   const getTooltipJSX = (payload) => {
     if (payload && payload.length) {
-      let corr_cnt
-      let incorr_cnt
-      let part_cnt
-      let skip_cnt
       let qCount
-      if (payload && payload.length === 2) {
-        corr_cnt = payload[0].payload.corr_cnt
-        incorr_cnt = payload[0].payload.incorr_cnt
-        part_cnt = payload[0].payload.part_cnt
-        skip_cnt = payload[0].payload.skip_cnt
+      if (payload.length === 2) {
         qCount = payload[0].payload.qCount
       }
       return (
@@ -95,19 +86,6 @@ export const StackedBarChartContainer = (props) => {
     return `${payload.value} (${getDataByName(payload.value)})`
   }
 
-  const chartData = useMemo(() => dataParser(props.filter), [
-    props.data,
-    props.filter,
-  ])
-
-  const onBarClickCB = (key) => {
-    props.onBarClickCB(key)
-  }
-
-  const onResetClickCB = () => {
-    props.onResetClickCB()
-  }
-
   const getChartSpecifics = () => {
     return {
       barsData: [
@@ -128,6 +106,7 @@ export const StackedBarChartContainer = (props) => {
     }
   }
 
+  const chartData = useMemo(dataParser, [propsData, propsFilter])
   const chartSpecifics = getChartSpecifics()
 
   return (
@@ -142,7 +121,7 @@ export const StackedBarChartContainer = (props) => {
       onResetClickCB={onResetClickCB}
       getXTickText={getXTickText}
       yAxisLabel="Performance"
-      filter={props.filter}
+      filter={propsFilter}
     />
   )
 }

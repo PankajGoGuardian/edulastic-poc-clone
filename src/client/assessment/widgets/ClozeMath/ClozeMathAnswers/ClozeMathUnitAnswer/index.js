@@ -19,9 +19,11 @@ const ClozeMathUnitAnswer = ({
   onChangeKeypad,
   onChangeAllowedOptions,
   toggleAdditional,
+  extraOptions,
+  tabIndex,
 }) => {
   const [collapseHeight, setCollapseHeight] = useState('auto')
-  const { responseContainers = [], uiStyle, allowedVariables = {} } = item
+  const { responseContainers = [], uiStyle } = item
   const response = responseContainers.find(
     (cont) => cont.index === answer.index
   )
@@ -77,7 +79,7 @@ const ClozeMathUnitAnswer = ({
       >
         <Panel header={`Math with Units ${answer.index + 1}`}>
           <MathFormulaAnswerMethod
-            key={answer.index}
+            key={`${answer.id}-${tabIndex}`}
             item={item}
             index={0}
             answer={answer.value}
@@ -94,6 +96,7 @@ const ClozeMathUnitAnswer = ({
             showDefaultMode
             isClozeMath
             isClozeMathWithUnit
+            extraOptions={extraOptions}
             {...answer}
           />
         </Panel>
@@ -112,6 +115,7 @@ ClozeMathUnitAnswer.propTypes = {
   onChange: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
   item: PropTypes.object.isRequired,
+  tabIndex: PropTypes.number.isRequired,
 }
 
 export default withNamespaces('assessment')(ClozeMathUnitAnswer)

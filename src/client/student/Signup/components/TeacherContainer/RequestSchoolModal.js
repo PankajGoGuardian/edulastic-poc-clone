@@ -6,6 +6,7 @@ import {
 } from '@edulastic/colors'
 import { CustomModalStyled, EduButton } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
+import { signUpState } from '@edulastic/constants'
 import { Form } from 'antd'
 import { find, get } from 'lodash'
 import PropTypes from 'prop-types'
@@ -37,15 +38,19 @@ class RequestSchool extends React.Component {
 
   handleSubmit = (e) => {
     e.preventDefault()
-    const {
-      form,
-      districts,
-      createAndJoinSchoolRequestAction,
-      userInfo,
-    } = this.props
+    const { form, districts, createAndJoinSchoolRequest, userInfo } = this.props
     form.validateFields((err, values) => {
       if (!err) {
-        const { name, districtId, address, city, country, state, zip } = values
+        const {
+          name,
+          districtId,
+          address,
+          city,
+          country,
+          us_state,
+          other_state,
+          zip,
+        } = values
         const district = find(
           districts,
           ({ districtId: _id }) => _id === districtId.key
@@ -58,7 +63,7 @@ class RequestSchool extends React.Component {
           districtName,
           location: {
             city,
-            state,
+            state: country === 'US' ? us_state : other_state,
             zip,
             address,
             country,
@@ -69,12 +74,22 @@ class RequestSchool extends React.Component {
         if (district.districtId) {
           body.districtId = district.districtId
         }
-        const { firstName, middleName, lastName, email, _id } = userInfo
-        createAndJoinSchoolRequestAction({
+        const {
+          firstName,
+          middleName,
+          lastName,
+          email,
+          _id,
+          currentSignUpState,
+        } = userInfo
+        createAndJoinSchoolRequest({
           createSchool: body,
           joinSchool: {
             data: {
-              currentSignUpState: 'PREFERENCE_NOT_SELECTED',
+              currentSignUpState:
+                currentSignUpState === signUpState.ACCESS_WITHOUT_SCHOOL
+                  ? 'ACCESS_WITHOUT_SCHOOL'
+                  : 'PREFERENCE_NOT_SELECTED',
               email,
               firstName,
               middleName,
@@ -158,7 +173,7 @@ const enhance = compose(
     }),
     {
       searchDistrict: searchDistrictsRequestAction,
-      createAndJoinSchoolRequestAction,
+      createAndJoinSchoolRequest: createAndJoinSchoolRequestAction,
     }
   )
 )

@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import styled, { withTheme } from 'styled-components'
 import { throttle } from 'lodash'
@@ -22,8 +22,8 @@ class QuestionMenu extends Component {
 
   handleScroll = (option) => {
     window.removeEventListener('scroll', this.throttledFindActiveTab)
-    const { main, advanced, theme } = this.props
-    const options = [...main, ...advanced]
+    const { main, advanced, extras, theme } = this.props
+    const options = [...main, ...advanced, ...extras]
     const activeTab = options.findIndex((opt) => opt.label === option.label)
     this.setState({ activeTab }, () => {
       const node = option.el
@@ -50,12 +50,13 @@ class QuestionMenu extends Component {
   }
 
   findActiveTab = () => {
-    const { main, advanced, advancedAreOpen, theme } = this.props
+    const { main, advanced, extras, advancedAreOpen, theme } = this.props
     const { activeTab } = this.state
     let allOptions = main
     if (advancedAreOpen) {
       allOptions = allOptions.concat(advanced)
     }
+    allOptions = allOptions.concat(extras)
     for (let i = 0; i < allOptions.length; i++) {
       const elm = allOptions[i].el
       if (
@@ -91,78 +92,54 @@ class QuestionMenu extends Component {
     this.setState({ isVideoModalVisible: true })
   }
 
+  get menuOptions() {
+    const { main, advanced, extras, isPremiumUser, isPowerTeacher } = this.props
+    if (!isPremiumUser || !isPowerTeacher) {
+      return (main || []).concat(extras) || []
+    }
+    return ((main || []).concat(advanced) || []).concat(extras) || []
+  }
+
   render() {
     const {
-      main,
-      advanced,
-      advancedAreOpen,
       handleAdvancedOpen,
       windowWidth,
       questionTitle,
-      hideAdvancedToggleOption,
+      isPremiumUser,
+      isPowerTeacher,
     } = this.props
     const { activeTab, isVideoModalVisible } = this.state
 
     return (
       <Menu>
-        <ScrollbarContainer>
-          <MainOptions
-            activeTab={activeTab}
-            main={main}
-            advancedAreOpen={advancedAreOpen}
-            windowWidth={windowWidth}
-          >
-            {main &&
-              main.map((option, index) => (
-                <Option
-                  key={index}
-                  onClick={(e) => this.handleScroll(option, e)}
-                  className={`option ${index === activeTab && 'active'}`}
-                >
-                  {option.label}
-                </Option>
-              ))}
+        <ScrollbarContainer height="auto" mb="10px">
+          <MainOptions activeTab={activeTab} windowWidth={windowWidth}>
+            {this.menuOptions.map((option, index) => (
+              <Option
+                key={index}
+                onClick={(e) => this.handleScroll(option, e)}
+                className={`option ${index === activeTab && 'active'}`}
+              >
+                {option.label}
+              </Option>
+            ))}
           </MainOptions>
-          {advanced.length > 0 && (
-            <>
-              <AdvancedOptionsLink
-                handleAdvancedOpen={handleAdvancedOpen}
-                advancedAreOpen={advancedAreOpen}
-                hideAdvancedToggleOption={hideAdvancedToggleOption}
-              />
-              {advancedAreOpen && (
-                <AdvancedOptions>
-                  {advanced.map((option, index) => (
-                    <Option
-                      key={index}
-                      onClick={(e) => this.handleScroll(option, e)}
-                      className={`option ${
-                        main.length + index === activeTab && 'active'
-                      }`}
-                    >
-                      {option.label}
-                    </Option>
-                  ))}
-                </AdvancedOptions>
-              )}
-            </>
+          {!isPowerTeacher && (
+            <AdvancedOptionsLink
+              handleAdvancedOpen={handleAdvancedOpen}
+              isPremiumUser={isPremiumUser}
+            />
           )}
         </ScrollbarContainer>
-
-        {!advancedAreOpen ? (
-          <div
-            style={{ position: 'absolute', bottom: '180px', width: '100%' }}
-            onClick={this.openModal}
-          >
-            <VideoThumbnail
-              questionTitle={questionTitle}
-              title="How to author video"
-              width="100%"
-              maxWidth="100%"
-              margin="30px 0 0 0"
-            />
-          </div>
-        ) : null}
+        <VideoThumbnailWapper onClick={this.openModal}>
+          <VideoThumbnail
+            questionTitle={questionTitle}
+            title="How to author video"
+            width="100%"
+            maxWidth="100%"
+            margin="30px 0 0 0"
+          />
+        </VideoThumbnailWapper>
         <IframeVideoModal
           questionTitle={questionTitle}
           visible={isVideoModalVisible}
@@ -176,6 +153,7 @@ class QuestionMenu extends Component {
 QuestionMenu.propTypes = {
   main: PropTypes.array,
   advanced: PropTypes.array,
+  extras: PropTypes.array,
   advancedAreOpen: PropTypes.bool.isRequired,
   handleAdvancedOpen: PropTypes.func.isRequired,
   windowWidth: PropTypes.number.isRequired,
@@ -186,6 +164,7 @@ QuestionMenu.propTypes = {
 QuestionMenu.defaultProps = {
   main: [],
   advanced: [],
+  extras: [],
   scrollContainer: null,
   questionTitle: '',
 }
@@ -203,6 +182,8 @@ const Menu = styled.div`
 const ScrollbarContainer = styled(PerfectScrollbar)`
   padding-top: 10px;
   padding-left: 10px;
+  height: ${({ height }) => height || ''};
+  margin-bottom: ${({ mb }) => mb || ''};
   max-height: ${(props) =>
     `calc(100vh - ${props.theme.HeaderHeight.xs + 110}px)`};
   /* 110px is for top-Bottom padding(60) and breadcrumbs height(50) */
@@ -224,12 +205,6 @@ const MainOptions = styled.ul`
   border-left: 2px solid #b9d5fa;
 
   &::before {
-    opacity: ${(props) =>
-      props.activeTab > props.main.length - 1
-        ? props.advancedAreOpen
-          ? 1
-          : 0
-        : 1};
     width: 12px;
     height: 12px;
     border-radius: 50%;
@@ -240,20 +215,10 @@ const MainOptions = styled.ul`
     top: -5px;
     z-index: 5;
     transition: 0.2s ease transform, 0.2s ease opacity;
-    transform: translateY(
-      ${(props) =>
-        `${
-          props.activeTab *
-            (props.windowWidth >= extraDesktopWidthMax.replace('px', '')
-              ? 80
-              : 50) +
-          (props.activeTab > props.main.length - 1
-            ? props.windowWidth >= extraDesktopWidthMax.replace('px', '')
-              ? 50
-              : 79
-            : 0)
-        }px`}
-    );
+    transform: ${({ activeTab, windowWidth }) => {
+      const h = windowWidth >= parseInt(extraDesktopWidthMax, 10) ? 80 : 50
+      return `translateY(${activeTab * h}px)`
+    }};
   }
 `
 
@@ -300,8 +265,7 @@ const Option = styled.li`
   }
 `
 
-const AdvancedOptions = styled.ul`
-  list-style: none;
-  padding: 0;
-  border-left: 2px solid #b9d5fa;
+const VideoThumbnailWapper = styled.div`
+  position: relative;
+  width: 100%;
 `

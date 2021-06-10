@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { Row, Col } from 'antd'
-import { find, keyBy, omitBy, isEmpty, isNaN } from 'lodash'
+import { find, groupBy, keyBy, omitBy, isEmpty, isNaN } from 'lodash'
 import { StyledCard, StyledTable } from '../styled'
 import { CustomTableTooltip } from '../../../../../common/components/customTableTooltip'
 import { ResponseTag } from './responseTag'
@@ -18,6 +18,7 @@ export const ResponseFrequencyTable = ({
   data: dataSource,
   correctThreshold,
   incorrectFrequencyThreshold,
+  isSharedReport,
 }) => {
   /**
    * set column details for frequency table
@@ -27,7 +28,9 @@ export const ResponseFrequencyTable = ({
     Number(a.qLabel.substring(1)) - Number(b.qLabel.substring(1))
   columns[0].render = (text, record) => {
     const { pathname, search } = window.location
-    return (
+    return isSharedReport ? (
+      text
+    ) : (
       <Link
         to={{
           pathname: `/author/classboard/${record.assignmentId}/${record.groupId}/question-activity/${record.uid}`,
@@ -52,24 +55,25 @@ export const ResponseFrequencyTable = ({
   }
 
   columns[4].sorter = (a, b) => {
-    const aSum =
-      (a.corr_cnt || 0) +
-      (a.incorr_cnt || 0) +
-      (a.skip_cnt || 0) +
-      (a.part_cnt || 0)
-    const bSum =
-      (b.corr_cnt || 0) +
-      (b.incorr_cnt || 0) +
-      (b.skip_cnt || 0) +
-      (b.part_cnt || 0)
-    const aCorrectP = ((a.corr_cnt / aSum) * 100).toFixed(0)
-    const bCorrectP = ((b.corr_cnt / bSum) * 100).toFixed(0)
-    return (aCorrectP || 0) - (bCorrectP || 0)
+    return (
+      a.total_score / (a.total_max_score || 1) -
+      b.total_score / (b.total_max_score || 1)
+    )
   }
   columns[4].render = (data, record) => {
     const tooltipText = (rec) => () => {
-      const { corr_cnt = 0, incorr_cnt = 0, skip_cnt = 0, part_cnt = 0 } = rec
+      const {
+        corr_cnt = 0,
+        incorr_cnt = 0,
+        skip_cnt = 0,
+        part_cnt = 0,
+        total_score = 0,
+        total_max_score = 0,
+      } = rec
       const sum = corr_cnt + incorr_cnt + skip_cnt + part_cnt
+      const averagePerformance = total_max_score
+        ? Math.round((total_score / total_max_score) * 100)
+        : 0
       return (
         <div>
           <Row type="flex" justify="start">
@@ -97,7 +101,7 @@ export const ResponseFrequencyTable = ({
           <Row type="flex" justify="start">
             <Col className="custom-table-tooltip-key">Performance: </Col>
             <Col className="custom-table-tooltip-value">
-              {Math.round((corr_cnt / sum) * 100)}%
+              {averagePerformance}%
             </Col>
           </Row>
           <Row type="flex" justify="start">
@@ -136,14 +140,13 @@ export const ResponseFrequencyTable = ({
       )
     }
 
-    const { corr_cnt = 0, incorr_cnt = 0, skip_cnt = 0, part_cnt = 0 } = record
-    const sum = corr_cnt + incorr_cnt + skip_cnt + part_cnt
-    let correct = ((corr_cnt / sum) * 100).toFixed(0)
-    if (isNaN(correct)) correct = 0
-
+    const { total_score = 0, total_max_score = 0 } = record
+    const averagePerformance = total_max_score
+      ? Math.round((total_score / total_max_score) * 100)
+      : 0
     return (
       <CustomTableTooltip
-        correct={correct}
+        correct={averagePerformance}
         correctThreshold={correctThreshold}
         placement="top"
         title={tooltipText(record)}
@@ -208,7 +211,7 @@ export const ResponseFrequencyTable = ({
         let isCorrect = true
         for (const key of slittedKeyArr) {
           for (let i = 0; i < record.options.length; i++) {
-            // IMPORTANT: double == instead of === cuz we need to compare number keys with string keys
+            // NOTE: comparison of number keys with string keys
             if (record.options[i].value == key) {
               str += numToAlp[i]
               const tmp = find(record.validation, (vstr) => key == vstr)
@@ -223,10 +226,13 @@ export const ResponseFrequencyTable = ({
         ) {
           str = record.validation[0] === comboKey ? 'Correct' : 'Incorrect'
         }
-
+        // sort characters in str
+        if (str && !['Correct', 'Incorrect'].includes(str)) {
+          str = str.split('').sort().join('')
+        }
         return {
-          value: Math.round((data[comboKey] / sum) * 100),
-          count: data[comboKey],
+          value: (data[comboKey] / sum) * 100 || 0,
+          count: data[comboKey] || 0,
           name: str,
           key: str,
           isCorrect,
@@ -239,9 +245,33 @@ export const ResponseFrequencyTable = ({
     const checkForQtypes = [
       'multiple choice - standard',
       'multiple choice - multiple response',
-      // "multiple selection"
     ]
 
+    const groupForQtypes = [
+      ...checkForQtypes,
+      'multiple choice - block layout',
+      'multiple selection',
+    ]
+
+    // group arr data by key
+    if (groupForQtypes.includes(record.qType.toLocaleLowerCase())) {
+      const groupedArr = groupBy(arr, 'key')
+      arr = Object.keys(groupedArr).map((k) => {
+        const { value, count } = groupedArr[k].reduce(
+          (res, ele) => ({
+            value: res.value + ele.value,
+            count: res.count + ele.count,
+          }),
+          {
+            value: 0,
+            count: 0,
+          }
+        )
+        return { ...groupedArr[k][0], value, count }
+      })
+    }
+
+    // augment arr data for missing choices (keys)
     if (
       checkForQtypes.includes(record.qType.toLocaleLowerCase()) &&
       hasChoiceData
@@ -267,15 +297,12 @@ export const ResponseFrequencyTable = ({
       }
     }
 
-    arr.sort((a, b) => {
-      if (a.name < b.name) {
-        return -1
-      }
-      if (a.name > b.name) {
-        return 1
-      }
-      return 0
-    })
+    // arr with rounded values & sorted by name
+    arr = arr
+      .map((_data) => ({ ..._data, value: Math.round(_data.value) }))
+      .sort((a, b) =>
+        (a.name || '').toLowerCase().localeCompare((b.name || '').toLowerCase())
+      )
 
     return (
       <Row type="flex" justify="start" className="table-tag-container">

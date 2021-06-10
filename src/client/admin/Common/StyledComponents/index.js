@@ -1,8 +1,4 @@
-import {
-  extraDesktopWidthMax,
-  lightGrey,
-  mobileWidthMax,
-} from '@edulastic/colors'
+import { extraDesktopWidthMax, mobileWidthMax } from '@edulastic/colors'
 import { IconLogoCompact } from '@edulastic/icons'
 import {
   Button as AntdButton,
@@ -10,7 +6,6 @@ import {
   Input,
   Layout,
   Pagination,
-  Select,
   Spin,
 } from 'antd'
 import styled from 'styled-components'
@@ -33,12 +28,11 @@ export const Button = styled.button`
   ${(props) =>
     props.noStyle &&
     `
-    background: none;
-    border: none;
-    border: 0;
-    border-radius: 0;
+    background:none;
+    border:none;
+    border:0;
+    border-radius:0
   `}
-  outline: 0;
   opacity: ${(props) => (props.disabled ? '0.2' : '1')};
   cursor: pointer;
 `
@@ -106,18 +100,6 @@ export const StyledFilterDiv = styled.div`
 export const RightFilterDiv = styled.div`
   display: flex;
   align-items: center;
-`
-
-export const StyledFilterSelect = styled(Select)`
-  width: 300px;
-  margin-left: 20px;
-  &:first-child {
-    margin-left: 0;
-  }
-  .ant-select-selection {
-    background: ${lightGrey};
-    border: 1px solid #e1e1e1;
-  }
 `
 
 export const StyledTableContainer = styled.div`

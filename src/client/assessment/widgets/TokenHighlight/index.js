@@ -1,11 +1,10 @@
 import React, { Fragment, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'
 
+import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'
 import { PREVIEW, EDIT, CLEAR } from '../../constants/constantsForQuestions'
 import { replaceVariables } from '../../utils/variables'
-
 import TokenHighlightPreview from './TokenHighlightPreview'
 import TokenHighlightEdit from './TokenHighlightEdit'
 

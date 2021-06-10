@@ -14,10 +14,12 @@ const handlePointDrag = (board, point, yPosition, isStacked = false) => {
   let lastTruePosition = null
   const isVertical = checkOrientation(board)
 
-  point.on('drag', (e) => {
-    if (e.movementX === 0 && e.movementY === 0) {
-      return
-    }
+  point.on('drag', () => {
+    // don't use e.movementX === 0 && e.movementY === 0
+    // movementX and movementY are always zero on Safari
+    // it seems like the bug is in JSXGraph library
+    // https://snapwiz.atlassian.net/browse/EV-19969
+    // https://snapwiz.atlassian.net/browse/EV-23207
 
     let currentPosition = isVertical ? point.Y() : point.X()
 
@@ -34,23 +36,37 @@ const handlePointDrag = (board, point, yPosition, isStacked = false) => {
     }
 
     point.setPosition(JXG.COORDS_BY_USER, [
-      isVertical ? yPosition : lastTruePosition,
-      isVertical ? lastTruePosition : yPosition,
+      isVertical ? yPosition : point.X(),
+      isVertical ? point.Y() : yPosition,
     ])
     point.dragged = true
     board.dragged = true
   })
 
   point.on('up', () => {
-    availablePositions = null
-    lastTruePosition = null
     if (point.dragged) {
       point.dragged = false
+      let currentPosition = isVertical ? point.Y() : point.X()
+
+      if (board.numberlineSnapToTicks) {
+        currentPosition = getClosestTick(currentPosition, board.numberlineAxis)
+      }
+
+      if (
+        availablePositions.findIndex(
+          (pos) => currentPosition > pos.start && currentPosition < pos.end
+        ) > -1
+      ) {
+        lastTruePosition = currentPosition
+      }
+
       point.setPosition(JXG.COORDS_BY_USER, [
-        isVertical ? yPosition : point.X(),
-        isVertical ? point.Y() : yPosition,
+        isVertical ? yPosition : lastTruePosition,
+        isVertical ? lastTruePosition : yPosition,
       ])
       board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE)
+      availablePositions = null
+      lastTruePosition = null
     }
   })
 

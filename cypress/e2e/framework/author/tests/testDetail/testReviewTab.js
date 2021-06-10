@@ -31,7 +31,7 @@ export default class TestReviewTab {
   getMoveTo = () => cy.get('[data-cy="moveto"]')
 
   getPointsOnQueCardByid = (id) =>
-    this.getQueCardByItemIdInCollapsed(id).find('.ant-input-lg')
+    this.getQueCardByItemIdInCollapsed(id).find('.ant-input-number-input')
 
   getAllquestionInReview = () => cy.get('[data-cy="styled-wrapped-component"]')
 
@@ -53,21 +53,11 @@ export default class TestReviewTab {
       .next()
       .find('[data-cy="styled-wrapped-component"]')
 
-  getCheckBoxByItemId = (itemId, expanded = false) => {
-    if (expanded)
-      return this.getQueCardByItemIdInCollapsed(itemId).find(
-        '.ant-checkbox-input'
-      )
-
-    return this.getQueCardByItemIdInCollapsed(itemId)
-      .prev()
-      .find('.ant-checkbox-input')
-  }
+  getCheckBoxByItemId = (itemId) =>
+    this.getQueCardByItemIdInCollapsed(itemId).find('.ant-checkbox-input')
 
   getDragHandlerByItemId = (itemId) => {
-    return this.getQueCardByItemIdInCollapsed(itemId)
-      .prev()
-      .find('[stroke="currentColor"]')
+    return this.getQueCardByItemIdInCollapsed(itemId).prev().find('svg')
   }
 
   getDeleteButtonByItemId = (itemid) =>
@@ -204,7 +194,11 @@ export default class TestReviewTab {
       )
 
   asesrtPointsByid = (id, points) => {
-    this.getPointsOnQueCardByid(id).should('have.value', points.toString())
+    this.getPointsOnQueCardByid(id).should(
+      'have.attr',
+      'aria-valuenow',
+      points.toString()
+    )
   }
 
   verifyQustionById = (id) => {
@@ -215,7 +209,7 @@ export default class TestReviewTab {
     this.getQueCardByItemIdInCollapsed(id)
       .children()
       .first()
-      .should('have.attr', 'data-cy-item-index', (index - 1).toString())
+      .should('have.attr', 'data-cy-item-index', index.toString())
   }
 
   verifyNoOfItemsInGroupByNo = (group, itemCount) => {

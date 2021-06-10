@@ -1,8 +1,8 @@
 import React, { Fragment } from 'react'
 import styled from 'styled-components'
-import { EduButton } from '@edulastic/common'
+import EduButton from '@edulastic/common/src/components/Button'
 import i18n from '@edulastic/localization'
-import { notification as antNotification } from 'antd'
+import antNotification from 'antd/es/notification'
 import './notification.scss'
 
 const defaultConf = {
@@ -10,7 +10,7 @@ const defaultConf = {
   className: 'customized-notification',
   message: '',
   description: '',
-  type: 'error',
+  type: 'warn',
   buttonLink: '',
   buttonText: '',
   showButton: false,
@@ -31,7 +31,7 @@ const defaultConf = {
  * @param {{type?:String, messageKey: String, showButton?:boolean, msg?:String }} options
  */
 const notification = (options) => {
-  const { messageKey, msg, ...restOptions } = options
+  const { messageKey, msg, exact, ...restOptions } = options
   // get messages from localization
   let translatedMessage =
     msg ||
@@ -41,8 +41,12 @@ const notification = (options) => {
     ? ''
     : i18n.t(`notifications:${messageKey}.description`)
 
-  if (restOptions.type === 'error') {
-    translatedMessage = `${translatedMessage} Please contact Edulastic support.`
+  if (
+    restOptions.type === 'error' &&
+    translatedMessage !== 'Incorrect' &&
+    !exact
+  ) {
+    translatedMessage = `${translatedMessage} Please try again later, or email support@edulastic.com.`
   }
 
   const config = {
@@ -82,6 +86,7 @@ const notification = (options) => {
     )
     antNotification[type]({
       description: messageTemplate,
+      duration: 6.5, // default notification duration
       ...rest,
     })
   }

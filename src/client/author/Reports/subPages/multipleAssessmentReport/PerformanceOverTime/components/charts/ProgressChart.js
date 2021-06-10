@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import next from 'immer'
-import { indexOf, includes } from 'lodash'
+import { includes } from 'lodash'
 import { toggleItem } from '../../../../../common/util'
 
 import ScoreChart from './ScoreChart'
@@ -13,6 +12,8 @@ const ProgressChart = ({
   selectedItems,
   setSelectedItems,
   bandInfo,
+  backendPagination,
+  setBackendPagination,
 }) => {
   const handleToggleSelectedBars = (item) => {
     const newSelectedTests = toggleItem(selectedItems, item.uniqId)
@@ -28,6 +29,8 @@ const ProgressChart = ({
       onBarClickCB={handleToggleSelectedBars}
       selectedTests={selectedItems}
       onResetClickCB={onResetClick}
+      backendPagination={backendPagination}
+      setBackendPagination={setBackendPagination}
     />
   ) : (
     <BandChart
@@ -37,6 +40,8 @@ const ProgressChart = ({
       onBarClickCB={handleToggleSelectedBars}
       selectedTests={selectedItems}
       onResetClickCB={onResetClick}
+      backendPagination={backendPagination}
+      setBackendPagination={setBackendPagination}
     />
   )
 

@@ -12,9 +12,11 @@ import {
   launchAssignmentFromLinkAction,
   startAssignmentAction,
   redirectToDashboardAction,
+  retakeModalResponseAction,
 } from './Assignments/ducks'
 import { changeClassAction, getUserRole } from './Login/ducks'
 import { showTestInstructionsAction } from './sharedDucks/AssignmentModule/ducks'
+import { ConfirmationModal } from '../author/src/components/common/ConfirmationModal'
 
 const StartAssignment = ({
   match,
@@ -28,6 +30,8 @@ const StartAssignment = ({
   assignment,
   setShowTestInstruction,
   history,
+  showRetakeModal,
+  retakeModalResponse,
 }) => {
   useEffect(() => {
     const { assignmentId, groupId } = match.params
@@ -45,6 +49,7 @@ const StartAssignment = ({
         allowedTime,
         testId,
         testType = 'assessment',
+        safeBrowser,
       } = timedAssignment
       const content = pauseAllowed ? (
         <p>
@@ -80,7 +85,13 @@ const StartAssignment = ({
             testType,
             groupId,
           })
-          startAssignment({ testId, assignmentId, testType, classId: groupId })
+          startAssignment({
+            testId,
+            assignmentId,
+            testType,
+            classId: groupId,
+            safeBrowser,
+          })
           console.warn('==Initiated assignment successfully==')
           Modal.destroyAll()
         },
@@ -105,8 +116,14 @@ const StartAssignment = ({
 
   const continueToTest = () => {
     const { assignmentId, groupId } = match.params
-    const { testId, testType = 'assessment' } = assignment
-    startAssignment({ testId, assignmentId, testType, classId: groupId })
+    const { testId, testType = 'assessment', safeBrowser } = assignment
+    startAssignment({
+      testId,
+      assignmentId,
+      testType,
+      classId: groupId,
+      safeBrowser,
+    })
     setShowTestInstruction({ showInstruction: false, assignment: {} })
   }
 
@@ -139,7 +156,35 @@ const StartAssignment = ({
       </CustomModalStyled>
     )
   }
-  return <div> Initializing Assignment... </div>
+  return (
+    <div>
+      {showRetakeModal && (
+        <ConfirmationModal
+          title="Retake Assignment"
+          visible={showRetakeModal}
+          destroyOnClose
+          onCancel={() => retakeModalResponse(false)}
+          footer={[
+            <EduButton isGhost onClick={() => retakeModalResponse(false)}>
+              Cancel
+            </EduButton>,
+            <EduButton
+              data-cy="launch-retake"
+              onClick={() => retakeModalResponse(true)}
+            >
+              Launch
+            </EduButton>,
+          ]}
+        >
+          <p>
+            You are going to attempt the assignment again. Are you sure you want
+            to Start?
+          </p>
+        </ConfirmationModal>
+      )}
+      <div> Initializing Assignment... </div>
+    </div>
+  )
 }
 
 StartAssignment.propTypes = {
@@ -153,6 +198,7 @@ export default connect(
     timedAssignment: studentAssignment.unconfirmedTimedAssignment,
     showInstruction: studentAssignment.showInstruction,
     assignment: studentAssignment.assignment,
+    showRetakeModal: studentAssignment.showRetakeModal,
   }),
   {
     launchAssignment: launchAssignmentFromLinkAction,
@@ -161,5 +207,6 @@ export default connect(
     changeClass: changeClassAction,
     userRole: getUserRole,
     setShowTestInstruction: showTestInstructionsAction,
+    retakeModalResponse: retakeModalResponseAction,
   }
 )(StartAssignment)

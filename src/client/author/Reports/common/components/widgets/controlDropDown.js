@@ -3,12 +3,7 @@ import React, { useState, useCallback } from 'react'
 import { Button, Dropdown, Menu, Icon, Empty } from 'antd'
 import styled from 'styled-components'
 import { partial } from 'lodash'
-import {
-  fadedGrey,
-  lightGreySecondary,
-  themeColor,
-  themeColorBlue,
-} from '@edulastic/colors'
+import { fadedGrey, lightGreySecondary, themeColor } from '@edulastic/colors'
 
 import { useInternalEffect } from '../../hooks/useInternalEffect'
 
@@ -56,7 +51,10 @@ const ControlDropDown = ({
     let item = null
     if (data.length) {
       item = data.find((_item) => {
-        if (_item.key === selected.key) {
+        if (typeof selected === 'string' && _item.key === selected) {
+          return true
+        }
+        if (typeof selected === 'object' && _item.key === selected.key) {
           return true
         }
       })
@@ -177,7 +175,7 @@ const StyledControlDropDown = styled(ControlDropDown)`
 
   .ant-dropdown-menu-item-selected,
   .ant-dropdown-menu-item-active {
-    background-color: ${themeColorBlue};
+    background-color: ${themeColor};
     color: #ffffff;
   }
 

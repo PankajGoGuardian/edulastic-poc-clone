@@ -22,9 +22,6 @@ const AssignmentsClasses = ({
   assignmentRows,
   handleActionClick,
 }) => {
-  if (!assignmentRows.length) {
-    return null
-  }
   const data = assignmentRows?.map((assignment, index) => ({
     key: index,
     ...assignment,
@@ -152,16 +149,19 @@ const AssignmentsClasses = ({
       ),
     },
   ]
-
   return (
-    <AssignmentsClassesContainer
-      onClick={(e) => {
-        e.preventDefault()
-        e.stopPropagation()
-      }}
-    >
-      <TableData columns={columns} dataSource={data} pagination={false} />
-    </AssignmentsClassesContainer>
+    <>
+      {data.length > 0 && (
+        <AssignmentsClassesContainer
+          onClick={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+          }}
+        >
+          <TableData columns={columns} dataSource={data} pagination={false} />
+        </AssignmentsClassesContainer>
+      )}
+    </>
   )
 }
 

@@ -27,6 +27,7 @@ const NumberPad = ({
             buttonStyle={buttonStyle}
             onSelect={selectHandler(index)}
             item={item}
+            index={index}
           />
         </NumberPadContext.Provider>
       ))}

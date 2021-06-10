@@ -2,10 +2,24 @@ import React, { useEffect } from 'react'
 import { notification } from '@edulastic/common'
 import './notification.scss'
 
-const AppUpdate = ({ visible }) => {
+const AppUpdate = ({ visible, isCliUser }) => {
   const handleOk = () => {
     setTimeout(() => {
-      window.location.reload(true)
+      if (
+        window.frameElement ||
+        window.self !== window.top ||
+        window.location !== window.parent.location
+      ) {
+        const cliAppRefreshUrl = localStorage.getItem('cliAppRefreshUrl')
+        if (isCliUser && cliAppRefreshUrl) {
+          localStorage.removeItem('cliAppRefreshUrl')
+          window.location.href = cliAppRefreshUrl
+        } else {
+          window.location.reload(true)
+        }
+      } else {
+        window.location.reload(true)
+      }
     }, 100)
   }
 

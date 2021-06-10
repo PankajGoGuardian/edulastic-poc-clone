@@ -1,67 +1,47 @@
 /* eslint-disable guard-for-in */
 /* eslint-disable prefer-promise-reject-errors */
-import React, { useState, useEffect } from 'react'
-import { Button } from 'antd'
-import { Howl, Howler } from 'howler'
-import styled, { css } from 'styled-components'
-import { connect } from 'react-redux'
-
+import { white, themeColorBlue } from '@edulastic/colors'
+import { EduButton, notification } from '@edulastic/common'
 import { questionType } from '@edulastic/constants'
-import { EduButton } from '@edulastic/common'
-import { themeColor, white } from '@edulastic/colors'
 import {
-  IconPlayFilled,
   IconAudioPause,
+  IconExclamationMark,
+  IconPlayBig,
+  IconPlayFilled,
   IconStop,
   IconStopCircle,
-  IconPlayBig,
 } from '@edulastic/icons'
-
-import { curentPlayerDetailsSelector } from './selectors/test'
+import * as Sentry from '@sentry/browser'
+import { Tooltip } from 'antd'
+import { Howl, Howler } from 'howler'
+import React, { useEffect, useMemo, useState } from 'react'
+import { connect } from 'react-redux'
+import styled, { css } from 'styled-components'
+import AppConfig from '../../app-config'
 import { setCurrentAudioDetailsAction } from './actions/test'
-import AppConfig from '../../../app-config'
+import { curentPlayerDetailsSelector } from './selectors/test'
 
 const ALPHABET = 'abcdefghijklmnopqrstuvwxyz'
-
-const ControlButtons = styled(Button)`
-  width: 40px;
-  height: 40px;
-  padding: 12px;
-  margin-right: 10px;
-  transition: none;
-  background: ${themeColor};
-  position: relative;
-  z-index: 1020;
-  &.ant-btn[disabled] {
-    background: ${themeColor};
-  }
-  &:hover,
-  &:focus,
-  &:active {
-    background: ${themeColor};
-  }
-
-  i {
-    position: absolute;
-    left: 13px;
-    top: 12px;
-  }
-  &.ant-btn.ant-btn-loading {
-    pointer-events: all;
-    cursor: default;
-  }
-`
 
 const AudioButton = styled(EduButton)`
   position: relative;
   z-index: 998;
+  &.ant-btn.ant-btn-primary.not-supported {
+    background: white;
+    border: 1px solid #de0b83;
+  }
+  &:focus {
+    border: none;
+    outline: 0;
+    box-shadow: 0 0 0 2px ${themeColorBlue};
+  }
 `
 
 const AudioControls = ({
   item: questionData = {},
   btnWithText = false,
   audioSrc,
-  qId,
+  qId: targetQId,
   currentPlayingDetails,
   setCurrentPlayingDetails,
   className,
@@ -74,31 +54,82 @@ const AudioControls = ({
   const [currentHowl, setCurrentHowl] = useState({})
   const [pageHowls, setPageHowls] = useState([])
 
+  const qId = useMemo(() => targetQId, [targetQId])
+
   // Loading audio
-  const audioLoadResolve = (url) =>
-    new Promise((resolve, reject) => {
+  const audioLoadResolve = (url) => {
+    const _prom = new Promise((resolve, reject) => {
+      const srcArr = [url].filter((a) => a)
+
+      if (!srcArr.length) {
+        reject([4, 'Tried to initialize howl with empty urls'], url)
+      }
+
       const sound = new Howl({
-        src: url,
+        src: srcArr,
+        preload: false,
         html5: true,
       })
-      sound.load()
-      sound.on('load', () => {
-        resolve(sound)
+
+      resolve(sound)
+
+      sound.on('playerror', (...args) => {
+        reject({ args, url })
       })
-      sound.on('loaderror', (id, e) => {
-        reject({ id, e, url })
+      sound.on('loaderror', (...args) => {
+        reject({ args, url })
       })
     })
 
+    _prom.catch((err) => {
+      setLoading(false)
+      Sentry.withScope((scope) => {
+        scope.setExtra('error', err)
+        notification({ type: 'error', messageKey: 'ttsErrorMessage' })
+        Sentry.captureException(
+          new Error('[AudioControls] audio load failure.')
+        )
+      })
+    })
+
+    return _prom
+  }
+
   // Playing audio
-  const audioPlayResolve = (_howl) =>
-    new Promise((resolve) => {
-      _howl?.play()
+  const audioPlayResolve = (_howl) => {
+    if (!_howl) return
+
+    const _prom = new Promise((resolve, reject) => {
+      _howl?.load()
+      if (_howl?.state() === 'loading' || _howl?.state() === 'unloaded') {
+        _howl.on('load', () => {
+          if (!_howl?.playing(_howl?._idRef)) _howl._idRef = _howl?.play()
+        })
+      } else if (!_howl?.playing(_howl?._idRef)) _howl._idRef = _howl?.play()
+
+      _howl?.on('playerror', (...args) => {
+        reject({ args })
+      })
+
+      setCurrentHowl(_howl)
       _howl?.once('end', () => {
         resolve(_howl)
       })
-      setCurrentHowl(_howl)
     })
+
+    _prom.catch((err) => {
+      setLoading(false)
+      Sentry.withScope((scope) => {
+        scope.setExtra('error', err)
+        notification({ type: 'error', messageKey: 'ttsErrorMessage' })
+        Sentry.captureException(
+          new Error('[AudioControls] audio playing failure.')
+        )
+      })
+    })
+
+    return _prom
+  }
 
   // Stop all audios
   const stopAllAudios = () => {
@@ -107,6 +138,15 @@ const AudioControls = ({
       findAllPlayingHowls.forEach((item) => item.stop())
     }
   }
+
+  useEffect(() => {
+    const isSupported = Howler.codecs('mp3')
+
+    if (!isSupported) {
+      notification({ type: 'error', msg: 'Audio format is not supported.' })
+      Sentry.captureException(new Error('[AudioControls] Mp3 not supported.'))
+    }
+  }, [])
 
   useEffect(() => {
     if (!audioSrc) return
@@ -125,7 +165,8 @@ const AudioControls = ({
             choiceAudio
           ).then((choice) => {
             setOptionHowl((prev) => ({ ...prev, [`choice_${i}`]: choice }))
-            audioLoad[i] = audioLoadResolve(optionUrls[item].optionAudioURL)
+            if (!optionUrls?.[item].optionAudioURL) return
+            audioLoad[i] = audioLoadResolve(optionUrls?.[item].optionAudioURL)
             audioLoad[i].then((val) => {
               setOptionHowl((prev) => ({ ...prev, [item]: val }))
             })
@@ -136,26 +177,32 @@ const AudioControls = ({
         })
       } else if (questionData.type === questionType.PASSAGE) {
         if (!questionData.paginated_content) {
-          audioLoadResolve(questionData.tts.content.contentAudioURL).then(
+          if (!questionData?.tts?.content.contentAudioURL) return
+          audioLoadResolve(questionData?.tts?.content.contentAudioURL).then(
             (contentAudio) => {
               setPageHowls([contentAudio])
               setLoading(false)
             }
           )
         } else {
-          Promise.all(
-            questionData.tts.pages.map((p) =>
-              audioLoadResolve(p.contentAudioURL)
-            )
-          ).then((contentAudios) => {
-            setPageHowls(contentAudios)
+          const pageAudio = questionData.tts.pages
+            .filter((p) => p?.contentAudioUrl)
+            .map((p) => audioLoadResolve(p?.contentAudioURL))
+
+          if (pageAudio.length) {
+            Promise.all(pageAudio).then((contentAudios) => {
+              setPageHowls(contentAudios)
+              setLoading(false)
+            })
+          } else {
             setLoading(false)
-          })
+          }
         }
       } else {
         setLoading(false)
       }
     })
+
     return () => {
       setCurrentPlayingDetails()
       stopAllAudios()
@@ -164,7 +211,10 @@ const AudioControls = ({
   }, [qId])
 
   const handlePlayPauseAudio = () => {
-    if (loading) return
+    if (loading || !currentHowl) {
+      return
+    }
+
     if (currentHowl?.playing()) {
       currentHowl.pause()
       currentHowl.isPaused = true
@@ -186,8 +236,20 @@ const AudioControls = ({
           for (const i in mapOptById) {
             const item = mapOptById[i]
             const choiceAudioHowl = optionHowl[`choice_${i}`]
-            await audioPlayResolve(choiceAudioHowl)
-            await audioPlayResolve(optionHowl[item])
+
+            if (choiceAudioHowl) await audioPlayResolve(choiceAudioHowl)
+            else
+              Sentry.captureException(
+                new Error(
+                  `[AudioControls] Option audio missing for choice_${i}`
+                )
+              )
+
+            if (optionHowl[item]) await audioPlayResolve(optionHowl[item])
+            else
+              Sentry.captureException(
+                new Error(`[AudioControls] Option audio missing for ${item}`)
+              )
           }
           setCurrentPlayingDetails()
         }
@@ -209,6 +271,8 @@ const AudioControls = ({
     }
   }
 
+  const isSupported = Howler.codecs('mp3')
+
   const handleStopAudio = () => {
     currentHowl?.stop()
     setCurrentPlayingDetails()
@@ -218,60 +282,74 @@ const AudioControls = ({
     : currentPlayingDetails.qId === qId
     ? 'Pause'
     : 'Play'
-  return !btnWithText ? (
+  return (
     <AudioButtonsWrapper
       btnWithText={btnWithText}
       hideVisibility={hideVisibility}
       className={className}
     >
-      <ControlButtons
-        onClick={handlePlayPauseAudio}
-        loading={loading}
-        title={playPauseToolTip}
-      >
-        {currentPlayingDetails.qId === qId ? (
-          <IconAudioPause color={white} className="audio-pause" />
-        ) : (
-          !loading && <IconPlayFilled color={white} className="audio-play" />
-        )}
-      </ControlButtons>
-      <ControlButtons
-        onClick={handleStopAudio}
-        disabled={currentPlayingDetails.qId !== qId}
-        title="Stop"
-      >
-        <IconStop color={white} className="audio-stop" />
-      </ControlButtons>
-    </AudioButtonsWrapper>
-  ) : (
-    <AudioButtonsWrapper
-      btnWithText={btnWithText}
-      hideVisibility={hideVisibility}
-      className={className}
-    >
-      <AudioButton height="40px" onClick={handlePlayPauseAudio}>
-        {currentPlayingDetails.qId === qId ? (
-          <>
-            <IconAudioPause />
-            PAUSE
-          </>
-        ) : (
-          !loading && (
+      {isSupported ? (
+        <>
+          <AudioButton
+            title={!btnWithText ? playPauseToolTip : ''}
+            loading={loading}
+            height="40px"
+            IconBtn={!btnWithText}
+            onClick={handlePlayPauseAudio}
+          >
+            {currentPlayingDetails.qId === qId ? (
+              <>
+                {btnWithText ? (
+                  <>
+                    <IconAudioPause /> PAUSE
+                  </>
+                ) : (
+                  <IconAudioPause color={white} className="audio-pause" />
+                )}
+              </>
+            ) : (
+              <>
+                {btnWithText ? (
+                  <>
+                    <IconPlayBig /> PLAY
+                  </>
+                ) : (
+                  <IconPlayFilled color={white} className="audio-play" />
+                )}
+              </>
+            )}
+          </AudioButton>
+          <AudioButton
+            title={!btnWithText ? 'Stop' : ''}
+            loading={loading}
+            height="40px"
+            IconBtn={!btnWithText}
+            onClick={handleStopAudio}
+            disabled={currentPlayingDetails.qId !== qId}
+          >
             <>
-              <IconPlayBig />
-              PLAY
+              {btnWithText ? (
+                <>
+                  <IconStopCircle /> STOP
+                </>
+              ) : (
+                <IconStop color={white} className="audio-stop" />
+              )}
             </>
-          )
-        )}
-      </AudioButton>
-      <AudioButton
-        height="40px"
-        onClick={handleStopAudio}
-        disabled={currentPlayingDetails.qId !== qId}
-      >
-        <IconStopCircle />
-        STOP
-      </AudioButton>
+          </AudioButton>
+        </>
+      ) : (
+        <Tooltip title="MP3 playback is not supported in this browser">
+          <AudioButton
+            height="40px"
+            IconBtn={!btnWithText}
+            className="not-supported"
+            disabled
+          >
+            <IconExclamationMark width={20} height={20} color={white} />
+          </AudioButton>
+        </Tooltip>
+      )}
     </AudioButtonsWrapper>
   )
 }
@@ -287,7 +365,7 @@ export default connect(
 
 const AudioButtonsWrapper = styled.div`
   top: 0px;
-  padding: 20px 20px 0;
+  padding: 8px 20px;
   ${({ btnWithText, hideVisibility }) => {
     const visibility = hideVisibility ? 'hidden' : 'visible'
     const display = btnWithText ? 'flex' : 'block'

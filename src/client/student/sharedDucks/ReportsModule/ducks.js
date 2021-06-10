@@ -18,6 +18,8 @@ export const SET_FILTER = '[studentReport] set filter'
 export const ADD_REPORT_REALTIME = '[studentAssignment] add report realtime'
 export const SET_TESTACTIVITY = '[studentReport] set current testActivity'
 export const SET_PASSAGES_DATA = '[studentReport] set passages data'
+export const SET_ASSIGNMENT_IS_PAUSED =
+  '[studentReport] set assignment is paused'
 
 // actions
 export const setReportsAction = createAction(SET_REPORTS)
@@ -27,6 +29,9 @@ export const setFilterAction = createAction(SET_FILTER)
 export const addRealtimeReportAction = createAction(ADD_REPORT_REALTIME)
 export const setTestActivityAction = createAction(SET_TESTACTIVITY)
 export const setPassagesDataAction = createAction(SET_PASSAGES_DATA)
+export const setAssignmentIsPausedAction = createAction(
+  SET_ASSIGNMENT_IS_PAUSED
+)
 
 // initialState
 const initialState = {
@@ -96,6 +101,12 @@ export default createReducer(initialState, {
       if (!state.allIds.includes(report._id)) {
         state.allIds.push(report._id)
       }
+    }
+  },
+  [SET_ASSIGNMENT_IS_PAUSED]: (state, { payload }) => {
+    const { utaId, paused } = payload
+    if (state.byId[utaId]) {
+      state.byId[utaId].isPaused = paused
     }
   },
 })

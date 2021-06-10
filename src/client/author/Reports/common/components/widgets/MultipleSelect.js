@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import { find, map } from 'lodash'
 import { Select } from 'antd'
@@ -15,7 +15,7 @@ const getOption = ({ props = {} }) => ({
 const buildDropDownData = (datum, selected, prefix) => {
   const arr = [
     <OptGroup key="group" label={prefix || ''}>
-      {datum.map((item, index) => {
+      {datum.map((item) => {
         const isSelected = find(
           selected,
           (selectedItem) => selectedItem.key == item.key
@@ -51,9 +51,10 @@ const MultipleSelect = ({
   data = [],
   comData,
   placeholder = '',
+  dropdownStyle,
 }) => {
   const selected = [].concat(by) // convert selected value to an array even if an object is passed
-  const _displayValue = [].concat(valueToDisplay) || selected
+  const _displayValue = [].concat(valueToDisplay || selected)
   const dataSource = buildDropDownData(data, selected, prefix)
 
   const _onChange = (values, items) => onChange(map(items, getOption), comData)
@@ -72,6 +73,8 @@ const MultipleSelect = ({
         value={map(_displayValue, (item) => item.title)}
         placeholder={placeholder}
         mode="multiple"
+        dropdownStyle={dropdownStyle}
+        getPopupContainer={(triggerNode) => triggerNode.parentNode}
       >
         {dataSource}
       </Select>

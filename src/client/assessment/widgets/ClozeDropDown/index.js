@@ -24,7 +24,7 @@ import { ContentArea } from '../../styled/ContentArea'
 import ChoicesForResponses from './ChoicesForResponses'
 import Question from '../../components/Question'
 import { StyledPaperWrapper } from '../../styled/Widget'
-import AppConfig from '../../../../../app-config'
+import AppConfig from '../../../../app-config'
 import { CheckboxLabel } from '../../styled/CheckboxWithLabel'
 
 const EmptyWrapper = styled.div``
@@ -57,6 +57,7 @@ class ClozeDropDown extends Component {
         validation: templateItem.validation,
       }
     }
+
     return {
       previewStimulus,
       previewDisplayOptions,
@@ -162,7 +163,8 @@ class ClozeDropDown extends Component {
                         this.handleOptionsChange(
                           'shuffleOptions',
                           !shuffleOptions
-                        )}
+                        )
+                      }
                       checked={shuffleOptions}
                     >
                       {t('component.cloze.dropDown.shuffleoptions')}

@@ -18,63 +18,71 @@ const TrendStats = ({
   renderFilters,
   heading,
   handleAddToGroupClick,
+  isSharedReport,
+  showTrendStats = true,
 }) => {
   const trends = Object.keys(trendTypes)
 
   return (
     <UpperContainer>
-      <PaddedContainer>
-        <Row>
-          <Col xs={24} sm={24} md={10} lg={10} xl={10}>
-            <StyledH3>{heading}</StyledH3>
-          </Col>
-          <Col
-            xs={24}
-            sm={24}
-            md={14}
-            lg={14}
-            xl={14}
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'flex-end',
-            }}
-          >
-            {!!handleAddToGroupClick && (
-              <FeaturesSwitch
-                inputFeatures="studentGroups"
-                actionOnInaccessible="hidden"
+      <Row>
+        <Col xs={24} sm={24} md={16} lg={16} xl={16}>
+          {showTrendStats && (
+            <>
+              <StyledH3 fontSize="16px" margin="0">
+                {heading}
+              </StyledH3>
+            </>
+          )}
+        </Col>
+        <Col
+          xs={24}
+          sm={24}
+          md={8}
+          lg={8}
+          xl={8}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+          }}
+        >
+          {!!handleAddToGroupClick && !isSharedReport && (
+            <FeaturesSwitch
+              inputFeatures="studentGroups"
+              actionOnInaccessible="hidden"
+            >
+              <EduButton
+                style={{
+                  height: '32px',
+                  padding: '0 15px 0 10px',
+                  marginRight: '5px',
+                }}
+                onClick={handleAddToGroupClick}
               >
-                <EduButton
-                  style={{
-                    height: '32px',
-                    padding: '0 15px 0 10px',
-                    marginRight: '5px',
-                  }}
-                  onClick={handleAddToGroupClick}
-                >
-                  <IconPlusCircle /> Add To Student Group
-                </EduButton>
-              </FeaturesSwitch>
-            )}
-            {renderFilters()}
-          </Col>
-        </Row>
-      </PaddedContainer>
-      <TrendContainer>
-        {trends.map((trend) => (
-          <Col span={8}>
-            <PaddedContainer>
-              <TrendCard
-                type={trend}
-                count={trendCount[trend]}
-                onClick={() => onTrendSelect(trend)}
-                isSelected={selectedTrend ? selectedTrend === trend : true}
-              />
-            </PaddedContainer>
-          </Col>
-        ))}
-      </TrendContainer>
+                <IconPlusCircle /> Add To Student Group
+              </EduButton>
+            </FeaturesSwitch>
+          )}
+          {renderFilters()}
+        </Col>
+      </Row>
+      {showTrendStats && (
+        <TrendContainer>
+          {trends.map((trend) => (
+            <Col span={8}>
+              <PaddedContainer>
+                <TrendCard
+                  type={trend}
+                  count={trendCount[trend]}
+                  onClick={() => onTrendSelect(trend)}
+                  isSelected={selectedTrend ? selectedTrend === trend : true}
+                />
+              </PaddedContainer>
+            </Col>
+          ))}
+        </TrendContainer>
+      )}
     </UpperContainer>
   )
 }
@@ -112,6 +120,7 @@ const UpperContainer = styled(StyledCard)`
 `
 const PaddedContainer = styled.div`
   padding: 0px 18px;
+  padding-left: ${(props) => props.paddingLeft};
 `
 
 const TrendContainer = styled(Row)`

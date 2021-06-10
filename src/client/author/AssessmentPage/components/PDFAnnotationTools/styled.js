@@ -1,7 +1,14 @@
 import styled from 'styled-components'
+import {
+  themeColorBlue,
+  title,
+  white,
+  greyThemeDark2,
+  themeColorHoverBlue,
+} from '@edulastic/colors'
 
 export const ToolsWrapper = styled.div`
-  background: ${({ active }) => active && '#f1f1f1'};
+  background: ${({ active }) => active && themeColorBlue};
   width: auto;
   height: 40px;
   cursor: pointer;
@@ -13,7 +20,7 @@ export const ToolsWrapper = styled.div`
 `
 
 export const ToolWrapper = styled.div`
-  background: ${({ active }) => active && '#f1f1f1'};
+  background: ${({ active }) => active && themeColorBlue};
   width: 50px;
   height: 40px;
   cursor: pointer;
@@ -22,8 +29,23 @@ export const ToolWrapper = styled.div`
   justify-content: center;
   cursor: ${({ disabled }) => disabled && 'not-allowed'};
 
+  svg {
+    fill: ${({ active, disabled }) =>
+      disabled ? greyThemeDark2 : active ? white : title};
+    path {
+      fill: ${({ active, disabled }) =>
+        disabled ? greyThemeDark2 : active ? white : title};
+    }
+  }
+
   &:hover {
-    ${({ disabled }) => !disabled && '#f8f8f8'};
+    background: ${({ disabled }) => !disabled && themeColorHoverBlue};
+    svg {
+      fill: ${({ disabled }) => (disabled ? greyThemeDark2 : white)};
+      path {
+        fill: ${({ disabled }) => (disabled ? greyThemeDark2 : white)};
+      }
+    }
   }
 `
 

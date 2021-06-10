@@ -1,16 +1,16 @@
 /* eslint-disable func-names */
 /* eslint-disable */
 /* global $ */
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useContext } from 'react'
 import PropTypes from 'prop-types'
 import styled, { withTheme, css } from 'styled-components'
-import { cloneDeep, debounce, isEmpty } from 'lodash'
+import { cloneDeep, debounce, isEmpty, isEqual } from 'lodash'
 import { message } from 'antd'
-import { notification } from '@edulastic/common'
+import { notification, LanguageContext } from '@edulastic/common'
 import Editor from 'react-froala-wysiwyg'
 import uuid from 'uuid/v4'
 import { withMathFormula } from '../HOC/withMathFormula'
-import { aws, math } from '@edulastic/constants'
+import { aws, math, appLanguages } from '@edulastic/constants'
 import {
   white,
   dashBorderColor,
@@ -29,8 +29,10 @@ import {
   reIndexResponses,
   canInsert,
   beforeUpload,
+  isValidUpdate,
 } from '../helpers'
 import headings from './FroalaPlugins/headings'
+import customPastePlugin from './FroalaPlugins/customPastePlugin'
 
 import MathModal from './MathModal'
 
@@ -185,7 +187,7 @@ const DEFAULT_TOOLBAR_BUTTONS = {
 const defaultCharacterSets = [
   {
     title: 'spanish',
-    char: 's',
+    char: 'es',
     list: [
       {
         char: '&aacute;',
@@ -253,6 +255,222 @@ const defaultCharacterSets = [
       },
     ],
   },
+  {
+    title: 'german',
+    char: 'de',
+    list: [
+      {
+        char: '&Auml;',
+        desc: 'Capital A-umlaut',
+      },
+      {
+        char: '&auml;',
+        desc: 'Lowercase a-umlaut',
+      },
+      {
+        char: '&Eacute;',
+        desc: 'Capital E-acute',
+      },
+      {
+        char: '&eacute;',
+        desc: 'Lowercase E-acute',
+      },
+      {
+        char: '&Ouml;',
+        desc: 'Capital O-umlaut',
+      },
+      {
+        char: '&ouml;',
+        desc: 'Lowercase o-umlaut',
+      },
+      {
+        char: '&Uuml;',
+        desc: 'Capital U-umlaut',
+      },
+      {
+        char: '&uuml;',
+        desc: 'Lowercase u-umlaut',
+      },
+      {
+        char: '&szlig;',
+        desc: 'SZ ligature',
+      },
+      {
+        char: '&laquo;',
+        desc: 'Left angle quotes',
+      },
+      {
+        char: '&raquo;',
+        desc: 'Right angle quotes',
+      },
+      {
+        char: '&bdquo;',
+        desc: 'Left lower quotes',
+      },
+      {
+        char: '&#8220;',
+        desc: 'Left quotes',
+      },
+      {
+        char: '&#8221;',
+        desc: 'Right quotes',
+      },
+      {
+        char: '&deg;',
+        desc: 'Degree sign (Grad)',
+      },
+      {
+        char: '&euro;',
+        desc: 'Euro',
+      },
+      {
+        char: '&pound;',
+        desc: 'Pound Sterling',
+      },
+    ],
+  },
+  {
+    title: 'french',
+    char: 'fr',
+    list: [
+      {
+        char: '&Agrave;',
+        desc: 'Capital A-grave',
+      },
+      {
+        char: '&agrave;',
+        desc: 'Lowercase a-grave',
+      },
+      {
+        char: '&Acirc;',
+        desc: 'Capital A-circumflex',
+      },
+      {
+        char: '&acirc;',
+        desc: 'Lowercase a-circumflex',
+      },
+      {
+        char: '&AElig;',
+        desc: 'Capital AE Ligature',
+      },
+      {
+        char: '&aelig;',
+        desc: 'Lowercase AE Ligature',
+      },
+      {
+        char: '&Ccedil;',
+        desc: 'Capital C-cedilla',
+      },
+      {
+        char: '&ccedil;',
+        desc: 'Lowercase c-cedilla',
+      },
+      {
+        char: '&Egrave;',
+        desc: 'Capital E-grave',
+      },
+      {
+        char: '&egrave;',
+        desc: 'Lowercase e-grave',
+      },
+      {
+        char: '&Eacute;',
+        desc: 'Capital E-acute',
+      },
+      {
+        char: '&eacute;',
+        desc: 'Lowercase e-acute',
+      },
+      {
+        char: '&Ecirc;',
+        desc: 'Capital E-circumflex',
+      },
+      {
+        char: '&ecirc;',
+        desc: 'Lowercase e-circumflex',
+      },
+      {
+        char: '&Euml;',
+        desc: 'Capital E-umlaut',
+      },
+      {
+        char: '&euml;',
+        desc: 'Lowercase e-umlaut',
+      },
+      {
+        char: '&Icirc;',
+        desc: 'Capital I-circumflex',
+      },
+      {
+        char: '&icirc;',
+        desc: 'Lowercase i-circumflex',
+      },
+      {
+        char: '&Iuml;',
+        desc: 'Capital I-umlaut',
+      },
+      {
+        char: '&iuml;',
+        desc: 'Lowercase i-umlaut',
+      },
+      {
+        char: '&Ocirc;',
+        desc: 'Capital O-circumflex',
+      },
+      {
+        char: '&ocirc;',
+        desc: 'Lowercase o-circumflex',
+      },
+      {
+        char: '&OElig;',
+        desc: 'Capital OE ligature',
+      },
+      {
+        char: '&oelig;',
+        desc: 'Lowercase oe ligature',
+      },
+      {
+        char: '&Ugrave;',
+        desc: 'Capital U-grave',
+      },
+      {
+        char: '&ugrave;',
+        desc: 'Lowercase u-grave',
+      },
+      {
+        char: '&Ucirc;',
+        desc: 'Capital U-circumflex',
+      },
+      {
+        char: '&ucirc;',
+        desc: 'Lowercase u-circumflex',
+      },
+      {
+        char: '&Uuml;',
+        desc: 'Capital U-umlaut',
+      },
+      {
+        char: '&uuml;',
+        desc: 'Lowercase u-umlaut',
+      },
+      {
+        char: '&laquo;',
+        desc: 'Left angle quotes',
+      },
+      {
+        char: '&raquo;',
+        desc: 'Right angle quotes',
+      },
+      {
+        char: '&euro;',
+        desc: 'Euro',
+      },
+      {
+        char: '&#8355',
+        desc: 'Franc',
+      },
+    ],
+  },
 ]
 
 const NoneDiv = styled.div`
@@ -292,6 +510,12 @@ const BackgroundStyleWrapper = styled.div.attrs({
         `
       }
     }}
+    .fr-view {
+      > p {
+        padding: 0px !important;
+        text-indent: 0pt !important;
+      }
+    }
   }
 
   ${({ border }) => {
@@ -388,6 +612,8 @@ export const Placeholder = styled.div.attrs({
 
 //adds h1 & h2 buttons commands to froala editor.
 headings(FroalaEditor)
+// adds past event handler
+customPastePlugin(FroalaEditor)
 
 const getFixedPostion = (el) => {
   return {
@@ -502,6 +728,7 @@ const CustomEditor = ({
   const [toolbarExpanded, setToolbarExpanded] = useState(false)
   const [configState, setConfigState] = useState(null)
   const [mathField, setMathField] = useState(null)
+  const { currentLanguage } = useContext(LanguageContext)
 
   const EditorRef = useRef(null)
 
@@ -532,7 +759,7 @@ const CustomEditor = ({
   const specialCharactersSets = getSpecialCharacterSets(customCharacters)
   const initialConfig = Object.assign(
     {
-      key: process.env.POI_APP_FROALA_KEY,
+      key: process.env.REACT_APP_FROALA_KEY,
       imageInsertButtons: ['imageUpload'], // hide other image uplaod options
       imageDefaultDisplay: 'inline',
       linkAlwaysBlank: true, // adding to make link always open in blank
@@ -595,6 +822,9 @@ const CustomEditor = ({
           const closestMathParent = evt.currentTarget.closest(
             'span.input__math'
           )
+          const paraRemove = evt.currentTarget.closest(
+            'span.paragraph-number-remove'
+          )
           if (closestMathParent) {
             this.selection.save()
             setCurrentLatex(closestMathParent.getAttribute('data-latex'))
@@ -602,6 +832,13 @@ const CustomEditor = ({
             setMathModalIsEditable(mqeditable !== 'false')
             setCurrentMathEl(closestMathParent)
             setMathModal(true)
+          } else if (paraRemove) {
+            paraRemove.parentElement.remove()
+            this.selection.save()
+            const updatedHtml = reIndexResponses(this.html.get(true))
+            if (updatedHtml) {
+              this.html.set(updatedHtml)
+            }
           } else {
             setCurrentLatex('')
             setCurrentMathEl(null)
@@ -613,7 +850,7 @@ const CustomEditor = ({
             const parent = range.commonAncestorContainer
             if (parent && range.startOffset === range.endOffset) {
               const cursorEl = parent.childNodes[range.startOffset - 1]
-              if (!cursorEl || !cursorEl.tagName) return
+              if (!$(cursorEl).length || !cursorEl || !cursorEl.tagName) return
 
               if (
                 [
@@ -769,6 +1006,33 @@ const CustomEditor = ({
               this.toolbar.hide()
             }
           }
+        },
+        'file.beforeUpload': function (files = []) {
+          const file = files[0]
+
+          if (!file) {
+            this.popups.hideAll()
+            notification({ messageKey: 'fileUploadErr' })
+            return false
+          }
+
+          // currently supporting only pdf through file upload
+          if (file.type !== 'application/pdf') {
+            this.popups.hideAll()
+            notification({ messageKey: 'fileTypeErr' })
+            return false
+          }
+
+          uploadToS3(file, aws.s3Folders.DEFAULT)
+            .then((url) => {
+              this.file.insert(url, file.name)
+            })
+            .catch((e) => {
+              console.error(e)
+              this.popups.hideAll()
+              notification({ messageKey: 'fileUploadErr' })
+            })
+          return false
         },
         'commands.after': function (cmd) {
           if (cmd === 'moreText') {
@@ -1165,6 +1429,21 @@ const CustomEditor = ({
     setPrevValue(value)
     setContent(replaceLatexesWithMathHtml(value))
   }, [value])
+
+  useEffect(() => {
+    if (
+      value &&
+      content &&
+      currentLanguage &&
+      currentLanguage !== appLanguages.LANGUAGE_EN &&
+      hasResponseBoxBtn() &&
+      !isValidUpdate(value, content)
+    ) {
+      // in spanish mode, if they add/remove responseboxes
+      // use previous content instead of updated
+      setChange(value)
+    }
+  }, [content])
 
   return (
     <>

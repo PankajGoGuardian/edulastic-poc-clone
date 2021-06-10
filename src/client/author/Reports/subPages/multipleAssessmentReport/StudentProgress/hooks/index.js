@@ -7,14 +7,16 @@ export const useGetBandData = (
   compareByKey,
   orgData,
   selectedTrend,
-  bandInfo
+  bandInfo,
+  sortBy = 'assessmentDate'
 ) => {
   return useMemo(() => {
     const [parsedData, trendCount] = parseTrendData(
       metricInfo,
       compareByKey,
       orgData,
-      selectedTrend
+      selectedTrend,
+      sortBy
     )
     const dataWithBand = augmentWithBand(parsedData, bandInfo)
     const dataWithStudentInfo = augmentWithStudentInfo(dataWithBand, orgData)

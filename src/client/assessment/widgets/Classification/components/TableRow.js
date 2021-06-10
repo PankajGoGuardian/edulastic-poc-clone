@@ -88,6 +88,7 @@ const TableRow = ({
           width="100%"
           padding="0"
           marginTop="0"
+          data-cy="rowHeader"
         >
           <CenteredText
             style={{
@@ -120,6 +121,7 @@ const TableRow = ({
             key={index + columns}
             justifyContent="center"
             width="100%"
+            data-cy="rowTitle"
           >
             <MathFormulaDisplay
               style={{
@@ -139,6 +141,9 @@ const TableRow = ({
     const hasAnswer =
       Array.isArray(answers?.[column.id]) && answers[column.id].length > 0
 
+    // -40 is column header height
+    const colHeight = get(column, 'height', parseInt(height, 10)) - 40
+
     cols.push(
       <ResponseRnd
         hasRowTitle={hasRowTitle}
@@ -154,7 +159,8 @@ const TableRow = ({
           />
         </ColumnHeader>
         <DropContainer
-          height={height}
+          index={index}
+          height={`${colHeight}px`}
           borderColor={lightGrey12}
           isTransparent={isBackgroundImageTransparent}
           drop={onDropHandler(
@@ -171,7 +177,7 @@ const TableRow = ({
               const valid = get(evaluation, [column.id, responseId], undefined)
               return (
                 <DragItem
-                  key={answerIndex}
+                  key={resp?.id || answerIndex}
                   isTransparent={isTransparent}
                   dragHandle={dragHandle}
                   valid={isReviewTab ? true : valid}
@@ -179,7 +185,7 @@ const TableRow = ({
                   noPadding
                   {...dragItemSize}
                   from="column"
-                  item={(resp && resp.value) || ''}
+                  item={resp}
                   fromColumnId={column.id}
                 />
               )

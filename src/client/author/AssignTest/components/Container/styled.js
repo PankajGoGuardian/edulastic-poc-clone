@@ -4,9 +4,12 @@ import {
   linkColor,
   mobileWidth,
   tabletWidth,
+  themeColor,
+  backgroundGrey2,
+  white,
 } from '@edulastic/colors'
 import { Card, FlexContainer } from '@edulastic/common'
-import { Radio, Switch } from 'antd'
+import { Radio, Switch, Modal } from 'antd'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
@@ -66,6 +69,12 @@ export const Anchor = styled.a`
   font-weight: bold;
 `
 
+export const TextAnchor = styled.span`
+  text-transform: uppercase;
+  color: ${linkColor};
+  cursor: pointer;
+`
+
 export const FullFlexContainer = styled(FlexContainer)`
   @media (max-width: ${tabletWidth}) {
     width: 100%;
@@ -114,4 +123,115 @@ export const ViewSwitch = styled(Switch)`
 export const Paragraph = styled.p`
   margin-bottom: 15px;
   text-align: ${(props) => props.alignItems && props.alignItems};
+`
+export const TabContentContainer = styled.div`
+  width: ${({ width }) => (width || window.innerWidth <= 780 ? '100%' : '50%')};
+  margin: auto;
+`
+export const SettingContainer = styled.div`
+  position: relative;
+`
+export const SavedSettingsContainer = styled.div`
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  > div:first-child {
+    margin-right: 15px;
+  }
+  .ant-select {
+    width: 200px;
+  }
+  .ant-select-selection {
+    border-color: ${themeColor};
+  }
+  .ant-select-selection-selected-value {
+    font-size: 12px;
+    color: ${themeColor};
+  }
+  .ant-select-dropdown-menu {
+    li {
+      font-size: 12px;
+      word-break: break-word;
+      > span {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        align-items: center;
+      }
+      &:hover {
+        svg {
+          fill: ${white};
+          path {
+            fill: ${white};
+          }
+        }
+        span {
+          color: ${white};
+        }
+      }
+    }
+    .save-settings-option {
+      border-top: 1px solid rgba(238, 236, 236, 1);
+      padding: 8px 12px;
+      font-size: 11px;
+      i {
+        font-size: 18px;
+      }
+      > span {
+        justify-content: space-around;
+        color: #3f85e5;
+        font-weight: 600;
+        line-height: normal;
+        > svg {
+          fill: #3f85e5;
+        }
+      }
+    }
+  }
+`
+
+export const StyledModal = styled(Modal)`
+  .ant-modal-header {
+    border-bottom: none;
+    h2 {
+      margin-bottom: 0px;
+      font-weight: 600;
+    }
+  }
+  .ant-modal-body {
+    div {
+      text-align: center;
+      font-size: 15px;
+      > span {
+        color: ${themeColor};
+        font-weight: 600;
+      }
+    }
+    label {
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      display: inline-block;
+    }
+    input {
+      height: 40px;
+      background: ${backgroundGrey2};
+    }
+  }
+  .ant-modal-footer {
+    border-top: none;
+    > div {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 10px;
+      button {
+        font-size: 12px;
+        height: 35px;
+        padding: 0px 30px;
+      }
+    }
+  }
+`
+export const DeleteIconContainer = styled.span`
+  display: none;
 `

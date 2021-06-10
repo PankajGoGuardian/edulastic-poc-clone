@@ -22,6 +22,7 @@ import {
 } from '../../../TestPage/ducks'
 import PreviewModal from '../../../src/components/common/PreviewModal'
 import { resetItemScoreAction } from '../../../src/ItemScore/ducks'
+import { setPrevewItemAction } from '../../../src/components/common/PreviewModal/ducks'
 
 const ItemListContainer = ({
   items,
@@ -37,6 +38,7 @@ const ItemListContainer = ({
   search,
   userRole,
   resetScore,
+  setPrevewItem,
 }) => {
   if (!items.length) {
     return (
@@ -89,6 +91,8 @@ const ItemListContainer = ({
       if (index !== -1) {
         resetScore() // we should reset the score block, or it retains old data
         updateIndexForPreview(index)
+        const testItem = get(items, `[${index}]`, null)
+        setPrevewItem(testItem) // setting testPreviewItem
       }
     }
   }
@@ -156,6 +160,7 @@ export default compose(
       checkAnswer: previewCheckAnswerAction,
       showAnswer: previewShowAnswerAction,
       resetScore: resetItemScoreAction,
+      setPrevewItem: setPrevewItemAction,
     }
   )
 )(ItemListContainer)

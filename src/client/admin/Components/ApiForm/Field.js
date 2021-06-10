@@ -1,11 +1,13 @@
+/* eslint-disable default-case */
 import { CheckboxLabel } from '@edulastic/common'
-import { Button, DatePicker, Input, Radio, Select, Table } from 'antd'
+import { Button, DatePicker, Input, Radio, Select, Table, Upload } from 'antd'
 import { get } from 'lodash'
 import React, { useEffect, useState } from 'react'
-import { doValidate } from './apis'
+import { doValidate, uploadFile } from './apis'
 
 const Field = ({
   displayName,
+  labelStyle,
   type,
   validate,
   onChange,
@@ -15,9 +17,7 @@ const Field = ({
 }) => {
   const [response, setResponse] = useState()
   const [value, setValue] = useState()
-  useEffect(() => {
-    document.addEventListener('click', onDropdownVisibleChange)
-  }, [])
+  const [loading, setLoading] = useState(false)
 
   const onDropdownVisibleChange = () => {
     const elm = document.querySelector(`.dropdown-custom-menu`)
@@ -29,6 +29,11 @@ const Field = ({
       document.removeEventListener('click', onDropdownVisibleChange)
     }
   }
+
+  useEffect(() => {
+    document.addEventListener('click', onDropdownVisibleChange)
+  }, [])
+
   const handleValidation = () => {
     setResponse([])
     onChange({})
@@ -67,17 +72,30 @@ const Field = ({
 
   const onChangeCheckbox = (e) => onChange(e.target.checked, rest.name)
   const handleOnChange = (e) => {
-    let value
+    let _value
     if (typeof e === 'object') {
-      value = e.target.value
+      _value = e.target.value
     } else {
-      value = e
+      _value = e
     }
-    onChange(value, rest.name)
-    setValue(value)
+    onChange(_value, rest.name)
+    setValue(_value)
   }
 
   const onChangeDate = (date) => onChange(date.toDate().getTime(), rest.name)
+
+  const handleUpload = (info, endPoint) => {
+    try {
+      const { file } = info
+      setLoading(true)
+      uploadFile(file, endPoint).then((result) => {
+        onChange(result, type)
+        setLoading(false)
+      })
+    } catch (err) {
+      console.error(err)
+    }
+  }
 
   const renderElement = () => {
     switch (type) {
@@ -119,6 +137,17 @@ const Field = ({
         )
       case 'p':
         return <p>{message}</p>
+      case 'upload':
+        return (
+          <Upload
+            accept={rest.accept}
+            multiple={rest.multiple}
+            disabled={loading}
+            customRequest={(info) => handleUpload(info, rest.endPoint)}
+          >
+            <Button type="primary">Upload File</Button>
+          </Upload>
+        )
       default:
         return null
     }
@@ -129,6 +158,7 @@ const Field = ({
       const display = validate?.response?.display || {}
       switch (display?.type) {
         case 'table':
+          // eslint-disable-next-line no-case-declarations
           const columns = display.fields.map((field) => {
             return {
               title: field.name,
@@ -162,7 +192,7 @@ const Field = ({
     }
   }
 
-  const { text, parentField, position, align } = note
+  const { text, parentField, position, style } = note
 
   return (
     <div
@@ -171,22 +201,24 @@ const Field = ({
       }}
     >
       <div
-        style={{
-          fontSize: '15px',
-          fontWeight: 600,
-          marginBottom: '5px',
-        }}
+        style={
+          labelStyle || {
+            fontSize: '15px',
+            fontWeight: 600,
+            marginBottom: '5px',
+          }
+        }
       >
         {displayName}
       </div>
       {rest.name === parentField && position === 'top' && (
-        <span className="note" style={{ float: align }}>
+        <span className="note" style={style}>
           {text}
         </span>
       )}
       {renderElement()}
       {rest.name === parentField && position === 'bottom' && (
-        <span className="note" style={{ float: align }}>
+        <span className="note" style={style}>
           {text}
         </span>
       )}

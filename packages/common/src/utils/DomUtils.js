@@ -38,3 +38,7 @@ export function scrollTo(el, subtractScroll = 0, scrollEl) {
     scrollEl.scrollTo(0, top - subtractScroll)
   }
 }
+
+export const isDOMElement = (element) => {
+  return typeof element.type === 'string'
+}

@@ -9,6 +9,7 @@ import { Form } from 'antd'
 import { withNamespaces } from '@edulastic/localization'
 import { EduButton, notification } from '@edulastic/common'
 import { userApi } from '@edulastic/api'
+import { signupStateBykey } from '@edulastic/constants/const/signUpState'
 import {
   themeColor,
   mobileWidthLarge,
@@ -25,11 +26,8 @@ import RequestSchoolForm from './RequestSchoolForm'
 const RequestSchool = (props) => {
   const [requestButtonDisabled, setRequestButtonDisabled] = useState(true)
   const { form, userInfo, createAndAddSchool, t, creatingAddingSchool } = props
-  const {
-    orgData: {
-      districts: [{ districtId, districtName }],
-    },
-  } = userInfo
+  const { orgData, currentSignUpState } = userInfo
+  const { districtId, districtName } = orgData.districts?.[0] || {}
 
   useEffect(() => {
     ;(async function checkDistrictPolicy() {
@@ -43,6 +41,7 @@ const RequestSchool = (props) => {
           email: userInfo.email,
           type: userInfo.role,
           signOnMethod,
+          currentSignUpState: signupStateBykey[currentSignUpState],
         }
         await userApi.validateDistrictPolicy(checkDistrictPolicyPayload)
         setRequestButtonDisabled(false)
@@ -57,14 +56,22 @@ const RequestSchool = (props) => {
     e.preventDefault()
     form.validateFields((err, values) => {
       if (!err) {
-        const { name, address, city, country, state, zip } = values
+        const {
+          name,
+          address,
+          city,
+          country,
+          us_state,
+          other_state,
+          zip,
+        } = values
         const body = {
           name,
           districtName,
           districtId,
           location: {
             city,
-            state,
+            state: country === 'US' ? us_state : other_state,
             zip,
             address,
             country,

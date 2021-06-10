@@ -8,6 +8,7 @@ const prefix = '/assignments'
 const create = (data) =>
   api
     .callApi({
+      useSlowApi: true,
       url: `${prefix}`,
       method: 'post',
       data,
@@ -47,11 +48,26 @@ const fetchRegradeAssignments = (testId) =>
     })
     .then((result) => result.data.result)
 
-const fetchAssigned = (groupId = '', testId = '') =>
+const fetchAssigned = (
+  groupId = '',
+  testId = '',
+  groupStatus = 'all',
+  studentId = '',
+  districtId = '',
+  searchWithVersionId = false
+) =>
   api
     .callApi({
-      url: `${prefix}?groupId=${groupId}&testId=${testId}`,
-      method: 'get',
+      url: `${prefix}/all`,
+      method: 'post',
+      params: {
+        groupId,
+        testId,
+        groupStatus,
+        studentId,
+        districtId,
+        searchWithVersionId,
+      },
     })
     .then((result) => result.data.result)
 
@@ -64,19 +80,24 @@ const fetchTeacherAssignments = ({
     testType = '',
     classId = '',
     status = '',
+    tags = [],
+    testId = '',
   },
   folderId = '',
 }) =>
   api
     .callApi({
-      url: `${prefix}?groupId=${groupId}&grade=${grades}&subject=${subject}&termId=${termId}&testType=${testType}&classId=${classId}&status=${status}&folderId=${folderId}`,
-      method: 'get',
+      useSlowApi: true,
+      url: `${prefix}/all?groupId=${groupId}&grade=${grades}&subject=${subject}&termId=${termId}&testType=${testType}&classId=${classId}&status=${status}&folderId=${folderId}&testId=${testId}`,
+      method: 'post',
+      data: { tags },
     })
     .then((result) => result.data.result)
 
 const regrade = (data) =>
   api
     .callApi({
+      useSlowApi: true,
       url: `${prefix}/regrade`,
       method: 'post',
       data,
@@ -100,7 +121,12 @@ const fetchTestActivities = (assignmentId, groupId) =>
     })
     .then((result) => result.data.result)
 
-const duplicateAssignment = ({ _id, title, isInEditAndRegrade = false }) =>
+const duplicateAssignment = ({
+  _id,
+  title,
+  isInEditAndRegrade = false,
+  cloneItems = false,
+}) =>
   api
     .callApi({
       url: `test/${_id}/duplicate`,
@@ -109,6 +135,7 @@ const duplicateAssignment = ({ _id, title, isInEditAndRegrade = false }) =>
           ? title
           : `${title}-${moment().format('MM/DD/YYYY HH:mm')}`,
         isInEditAndRegrade,
+        cloneItems,
       },
       method: 'post',
     })
@@ -117,28 +144,50 @@ const duplicateAssignment = ({ _id, title, isInEditAndRegrade = false }) =>
 const redirect = (assignmentId, data) =>
   api
     .callApi({
+      useSlowApi: true,
       url: `${prefix}/${assignmentId}/redirect`,
       method: 'POST',
       data,
     })
     .then((result) => result.data.result)
 
-const fetchAssignmentsSummary = ({ districtId = '', filters, sort }) =>
+const fetchAssignmentsSummary = ({
+  districtId = '',
+  filters: { tags, ...filters },
+  sort,
+}) =>
   api
     .callApi({
+      useSlowApi: true,
       url: `${prefix}/district/${districtId}`,
-      method: 'get',
+      method: 'post',
       params: { ...filters, ...sort },
       paramsSerializer: (params) =>
         qs.stringify(params, { arrayFormat: 'comma' }),
+      data: { tags },
     })
     .then((result) => result.data.result)
 
-const fetchAssignmentsClassList = ({ districtId, testId, testType, termId }) =>
+const fetchAssignmentsClassList = ({
+  districtId,
+  testId,
+  testType,
+  termId,
+  pageNo = 1,
+  status = '',
+  grades = [],
+  assignedBy = '',
+  tags,
+}) =>
   api
     .callApi({
-      url: `${prefix}/district/${districtId}/test/${testId}?testType=${testType}&termId=${termId}`,
-      method: 'get',
+      useSlowApi: true,
+      url: `${prefix}/district/${districtId}/test/${testId}`,
+      method: 'post',
+      params: { testType, termId, pageNo, status, grades, assignedBy },
+      paramsSerializer: (params) =>
+        qs.stringify(params, { arrayFormat: 'comma' }),
+      data: { tags },
     })
     .then((result) => result.data.result)
 
@@ -177,6 +226,47 @@ const syncWithGoogleClassroom = (data) =>
     })
     .then((result) => result.data.result)
 
+const fetchByTestId = (testId) =>
+  api
+    .callApi({
+      url: `${prefix}/test/${testId}`,
+      method: 'get',
+    })
+    .then((result) => result.data.result)
+
+const searchAssignments = (data) =>
+  api
+    .callApi({
+      url: `search/assignments`,
+      method: 'post',
+      data,
+    })
+    .then((result) => result.data.result)
+
+const syncWithSchoologyClassroom = (data) =>
+  api
+    .callApi({
+      url: `${prefix}/share-with-atlas`,
+      method: 'POST',
+      data,
+    })
+    .then((result) => result.data.result)
+
+const fetchRegradeSettings = ({ oldTestId, newTestId }) =>
+  api
+    .callApi({
+      url: `${prefix}/regrade-actions/old/${oldTestId}/new/${newTestId}`,
+      method: 'GET',
+    })
+    .then((result) => result.data.result)
+
+const editTagsRequest = (payload) =>
+  api.callApi({
+    url: `${prefix}/edit-tags`,
+    method: 'post',
+    data: payload,
+  })
+
 export default {
   create,
   update,
@@ -196,4 +286,9 @@ export default {
   updateClassSettings,
   getDifferentiationStudentList,
   syncWithGoogleClassroom,
+  fetchByTestId,
+  searchAssignments,
+  syncWithSchoologyClassroom,
+  fetchRegradeSettings,
+  editTagsRequest,
 }

@@ -40,15 +40,15 @@ export const SimpleStackedBarChartContainer = ({
       const { districtAvg, compareBy, compareBylabel } = payload[0].payload
       return (
         <div>
-          <Row type="flex" justify="start">
+          <Row className="tooltip-row" type="flex" justify="start">
             <Col className="tooltip-key">{'Assessment Name: '}</Col>
             <Col className="tooltip-value">{assessmentName}</Col>
           </Row>
-          <Row type="flex" justify="start">
-            <Col className="tooltip-key">{`${idToName[compareBy]}: `}</Col>
+          <Row className="tooltip-row" type="flex" justify="start">
+            <Col className="tooltip-key">{`${idToName(compareBy)}: `}</Col>
             <Col className="tooltip-value">{compareBylabel}</Col>
           </Row>
-          <Row type="flex" justify="start">
+          <Row className="tooltip-row" type="flex" justify="start">
             <Col className="tooltip-key">{'District Average: '}</Col>
             <Col className="tooltip-value">
               {analyseBy === 'score(%)' ? `${districtAvg}%` : districtAvg}
@@ -99,8 +99,8 @@ export const SimpleStackedBarChartContainer = ({
         referenceLineY,
       }
     }
-    if (analyseBy === 'rawScore' && chartData.length > 0) {
-      const maxScore = chartData[0].maxScore
+    if (analyseBy === 'rawScore') {
+      const maxScore = chartData.length ? chartData[0].maxScore : 50
       const arr = ticks(0, maxScore, 10)
       const max = arr[arr.length - 1]
       return {
@@ -134,6 +134,7 @@ export const SimpleStackedBarChartContainer = ({
       yAxisLabel={chartSpecifics.yAxisLabel}
       filter={filter}
       referenceLineY={chartSpecifics.referenceLineY}
+      pageSize={10}
     />
   )
 }

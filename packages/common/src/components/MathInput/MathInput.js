@@ -1,16 +1,18 @@
-import { MathKeyboard, reformatMathInputLatex, offset } from '@edulastic/common'
+import {
+  MathKeyboard,
+  reformatMathInputLatex,
+  notification,
+} from '@edulastic/common'
 import { math } from '@edulastic/constants'
 import { isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
-import {
-  MathInputStyles,
-  DraggableKeyboard,
-  EmptyDiv,
-  KeyboardIcon,
-} from './MathInputStyles'
 
-const { EMBED_RESPONSE } = math
+import { MathInputStyles, EmptyDiv, KeyboardIcon } from './MathInputStyles'
+import Draggable from './Draggable'
+
+const { EMBED_RESPONSE, keyboardMethods } = math
+const MAX_CONTENT_LENGTH = 1200
 
 class MathInput extends React.PureComponent {
   state = {
@@ -60,19 +62,20 @@ class MathInput extends React.PureComponent {
       mathFieldFocus
     ) {
       onFocus(false)
-      this.setState({ mathFieldFocus: false }, this.handleBlur)
+      this.setState({ mathFieldFocus: false })
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const { mathField } = this.state
-    if (mathField && mathField.latex() !== nextProps.value) {
+    const { resetMath } = this.props
+    if (resetMath && mathField && mathField.latex() !== nextProps.value) {
       mathField.latex(this.sanitizeLatex(nextProps.value))
     }
   }
 
   componentDidMount() {
-    const { defaultFocus, value, isDocbasedSection } = this.props
+    const { defaultFocus, value } = this.props
     if (!window.MathQuill) return
 
     const MQ = window.MathQuill.getInterface(2)
@@ -103,7 +106,7 @@ class MathInput extends React.PureComponent {
       {
         mathField,
         keyboardPosition,
-        hideKeyboardByDefault: window.isMobileDevice || isDocbasedSection,
+        hideKeyboardByDefault: window.isMobileDevice,
       },
       () => {
         // const { hideKeyboardByDefault } = this.state;
@@ -115,6 +118,8 @@ class MathInput extends React.PureComponent {
         textarea.addEventListener('keyup', this.handleChangeField)
         textarea.addEventListener('keypress', this.handleKeypress)
         textarea.addEventListener('keydown', this.handleTabKey, false)
+        textarea.addEventListener('paste', this.handlePaste)
+        textarea.addEventListener('blur', this.handleBlur, false)
         document.addEventListener('click', this.handleClick, false)
       }
     )
@@ -122,40 +127,83 @@ class MathInput extends React.PureComponent {
 
   getKeyboardPosition() {
     const { symbols } = this.props
-    const { top, left, height: inputH } = offset(this.containerRef.current) || {
-      left: 0,
-      top: 0,
-    }
+    const {
+      top,
+      left,
+      height: inputH,
+    } = this.containerRef.current.getBoundingClientRect()
+
+    // dynamic variable formula input does not pass keyboard type(styles)
+    // so in this case, need to use `basic` mode
+    // @see: https://snapwiz.atlassian.net/browse/EV-21988
+
     const { width, height: keyboardH } = math.symbols.find(
-      (x) => x.value === symbols[0]
+      (x) => x.value === (symbols[0] || keyboardMethods.BASIC)
     ) || { width: 0, height: 0 }
 
-    let x = window.innerWidth - left - width
-    if (x > 0) {
-      x = 0
+    // 8 is margin between math keyboard and math input
+    let x = left
+    let y = top + inputH + 4
+
+    const xdiff = window.innerWidth - left - width
+
+    if (xdiff < 0) {
+      x += xdiff
     }
 
-    let y = window.innerHeight - top - keyboardH - inputH
-    if (y < 0) {
-      // 8 is margin between math keyboard and math input
-      y = -keyboardH - 8
-    } else {
-      y = inputH + 8
+    const ydiff = window.innerHeight - y - keyboardH
+    if (ydiff < 0) {
+      y = y - keyboardH - inputH - 8
     }
 
     return { x, y }
   }
 
-  handleTabKey = (e) => {
-    if (e?.keyCode === 9) {
+  maxContentLimit = (textLength) => {
+    return textLength >= MAX_CONTENT_LENGTH
+  }
+
+  handlePaste = (evt) => {
+    const { contentLength } = this.props
+    const clipData = evt.clipboardData || window.clipboardData
+    const clipText = clipData.getData('text/plain') || ''
+    const text = clipText + this.mQuill.latex()
+
+    // Checks max limit on pasting
+    if (
+      this.maxContentLimit(text.length) ||
+      this.maxContentLimit(contentLength + clipText?.length)
+    ) {
+      evt.preventDefault()
+      notification({ messageKey: 'maxContentLimit' })
+    }
+  }
+
+  handleTabKey = (evt) => {
+    // Checks max limit on keypress
+    const { contentLength } = this.props
+
+    if ([8, 9].includes(evt?.keyCode)) {
       this.setState({ mathFieldFocus: false })
+    }
+    const text = this.mQuill.latex() || ''
+    if (
+      this.maxContentLimit(text.length) ||
+      this.maxContentLimit(contentLength)
+    ) {
+      evt.preventDefault()
     }
   }
 
   sanitizeLatex = (v) => (v?.toString() || '').replace(/&amp;/g, '&')
 
   handleKeypress = (e) => {
-    const { restrictKeys, allowNumericOnly, value = '' } = this.props
+    const {
+      restrictKeys,
+      allowNumericOnly,
+      value = '',
+      onKeyPress,
+    } = this.props
     const isNonNumericKey = e.key && !e.key.match(/[0-9+-.%^@/]/g)
 
     if (!isEmpty(restrictKeys)) {
@@ -189,12 +237,15 @@ class MathInput extends React.PureComponent {
         e.stopPropagation()
       }
     }
+    if (onKeyPress) {
+      onKeyPress(e)
+    }
   }
 
-  handleBlur = () => {
+  handleBlur = (ev) => {
     const { onBlur } = this.props
     if (onBlur) {
-      onBlur()
+      onBlur(ev)
     }
   }
 
@@ -208,8 +259,19 @@ class MathInput extends React.PureComponent {
 
   onInput = (key, command = 'cmd', numToMove) => {
     const { mathField } = this.state
+    const { contentLength } = this.props
 
     if (!mathField) return
+
+    const text = reformatMathInputLatex(mathField.latex()) || ''
+
+    // Checks max limit when using math keyboard
+    if (
+      this.maxContentLimit(text.length) ||
+      this.maxContentLimit(contentLength)
+    ) {
+      return ''
+    }
 
     switch (key) {
       case 'in':
@@ -267,9 +329,11 @@ class MathInput extends React.PureComponent {
   }
 
   onClickMathField = () => {
+    const { disabled } = this.props
     const { hideKeyboardByDefault } = this.state
-    if (!hideKeyboardByDefault) {
-      this.setState({ mathFieldFocus: true }, this.focus)
+    if (!hideKeyboardByDefault && !disabled) {
+      const keyboardPosition = this.getKeyboardPosition()
+      this.setState({ mathFieldFocus: true, keyboardPosition }, this.focus)
     }
   }
 
@@ -296,11 +360,11 @@ class MathInput extends React.PureComponent {
         const { hideKeyboardByDefault } = this.state
         const textarea = this.mQuill.el().querySelector('.mq-textarea textarea')
         if (hideKeyboardByDefault) {
-          // textarea.removeAttribute("readonly");
+          textarea.removeAttribute('readonly')
           textarea.focus()
         } else {
+          textarea.setAttribute('readonly', 'readonly')
           textarea.blur()
-          // textarea.setAttribute("readonly", "readonly");
           this.setState({ mathFieldFocus: true })
         }
       }
@@ -325,7 +389,11 @@ class MathInput extends React.PureComponent {
       className,
       restrictKeys,
       customKeys,
-      isDocbasedSection = false,
+      dynamicVariableInput,
+      disabled,
+      maxWidth,
+      paddingRight,
+      showDragHandle,
     } = this.props
 
     const {
@@ -339,40 +407,37 @@ class MathInput extends React.PureComponent {
       mathFieldFocus &&
       !hideKeyboardByDefault
 
-    const MathKeyboardWrapper = alwaysShowKeyboard
-      ? EmptyDiv
-      : DraggableKeyboard
+    const MathKeyboardWrapper = alwaysShowKeyboard ? EmptyDiv : Draggable
 
     return (
       <MathInputStyles
         fullWidth={fullWidth}
         className={className}
         fontStyle={
-          symbols[0] === 'units_si' || symbols[0] === 'units_us'
+          symbols[0] === keyboardMethods.UNITS_SI ||
+          symbols[0] === keyboardMethods.UNITS_US
             ? 'normal'
             : 'italic'
         }
         width={style.width}
+        maxWidth={maxWidth}
         height={height}
+        pr={paddingRight}
         background={background}
         fontSize={style.fontSize}
         ref={this.containerRef}
         onKeyUp={onKeyUp}
+        disabled={disabled}
       >
         <div className="input" onClick={this.onClickMathField}>
           <div
             onKeyDown={onKeyDown}
             className="input__math answer-math-input-field"
-            style={{
-              ...style,
-              minHeight: style.height,
-              fontSize: style.fontSize ? style.fontSize : 'inherit',
-            }}
             data-cy="answer-math-input-field"
           >
             <span className="input__math__field" ref={this.mathFieldRef} />
 
-            {(window.isMobileDevice || isDocbasedSection) && (
+            {window.isMobileDevice && (
               <KeyboardIcon
                 onClick={this.toggleHideKeyboard}
                 className={
@@ -388,7 +453,7 @@ class MathInput extends React.PureComponent {
         {(visibleKeypad || alwaysShowKeyboard) && (
           <MathKeyboardWrapper
             className="input__keyboard"
-            default={keyboardPosition}
+            position={keyboardPosition}
           >
             <MathKeyboard
               symbols={symbols}
@@ -401,6 +466,8 @@ class MathInput extends React.PureComponent {
               onInput={(key, command, numToMove) =>
                 this.onInput(key, command, numToMove)
               }
+              dynamicVariableInput={dynamicVariableInput}
+              showDragHandle={showDragHandle}
             />
           </MathKeyboardWrapper>
         )}
@@ -414,7 +481,7 @@ MathInput.propTypes = {
   alwaysHideKeyboard: PropTypes.bool,
   defaultFocus: PropTypes.bool,
   onInput: PropTypes.func.isRequired,
-  symbols: PropTypes.array.isRequired,
+  symbols: PropTypes.array,
   numberPad: PropTypes.array.isRequired,
   onInnerFieldClick: PropTypes.func,
   showDropdown: PropTypes.bool,
@@ -425,11 +492,16 @@ MathInput.propTypes = {
   onBlur: PropTypes.func,
   onChangeKeypad: PropTypes.func,
   onKeyDown: PropTypes.func,
+  onKeyPress: PropTypes.func,
   fullWidth: PropTypes.bool,
   className: PropTypes.string,
   restrictKeys: PropTypes.array,
   allowNumericOnly: PropTypes.bool,
+  disabled: PropTypes.bool,
   customKeys: PropTypes.array,
+  contentLength: PropTypes.number,
+  resetMath: PropTypes.bool,
+  showDragHandle: PropTypes.bool,
 }
 
 MathInput.defaultProps = {
@@ -447,9 +519,15 @@ MathInput.defaultProps = {
   onFocus: () => {},
   onBlur: () => {},
   onKeyDown: () => {},
+  onKeyPress: () => {},
   onChangeKeypad: () => {},
   fullWidth: false,
+  disabled: false,
   className: '',
+  symbols: [],
+  contentLength: 0,
+  resetMath: false,
+  showDragHandle: true,
 }
 
 export default MathInput

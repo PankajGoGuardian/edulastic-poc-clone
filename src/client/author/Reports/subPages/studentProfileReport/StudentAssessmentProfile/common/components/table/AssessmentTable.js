@@ -84,6 +84,7 @@ const getFormattedLink = (record, location, pageTitle, value) => (
 
 const getCol = (
   text,
+  isSharedReport,
   backgroundColor,
   columnKey,
   location,
@@ -91,7 +92,7 @@ const getCol = (
   record
 ) => {
   let value = text === undefined || text === null ? 'N/A' : `${text}%`
-  if (columnKey === 'score') {
+  if (columnKey === 'score' && !isSharedReport) {
     value = getFormattedLink(record, location, pageTitle, value)
   }
   return (
@@ -101,83 +102,82 @@ const getCol = (
   )
 }
 
-const tableColumns = (location, pageTitle) => [
+const tableColumns = (location, pageTitle, isSharedReport) => [
   {
     title: 'Assessment Name',
     dataIndex: 'testName',
     key: 'testName',
     align: 'left',
     fixed: 'left',
-    width: 180,
-    render: (data, record) => (
-      <Link
-        to={`/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${record.testActivityId}`}
-      >
-        {data}
-      </Link>
-    ),
+    width: 200,
+    render: (data, record) =>
+      !isSharedReport ? (
+        <Link
+          to={`/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${record.testActivityId}`}
+        >
+          {data}
+        </Link>
+      ) : (
+        data
+      ),
   },
   {
     title: 'Assessment Type',
     dataIndex: 'testType',
-    width: 100,
+    width: 180,
     key: 'testType',
   },
   {
     title: 'Day of Assessment Start',
     dataIndex: 'assignmentDateFormatted',
     key: 'assignmentDateFormatted',
-    width: 130,
+    width: 180,
     className: 'assessmentDate',
     sorter: (a, b) => a.assignmentDate - b.assignmentDate,
   },
   {
     title: 'Total Questions',
     dataIndex: 'totalQuestions',
-    width: 90,
     key: 'totalQuestions',
   },
   {
     title: 'Score',
     dataIndex: 'rawScore',
     className: 'rawscore',
-    width: 90,
     key: 'rawScore',
     render: (data, record) =>
-      getFormattedLink(record, location, pageTitle, data),
+      !isSharedReport
+        ? getFormattedLink(record, location, pageTitle, data)
+        : data,
   },
   {
     title: 'District (Avg. Score%)',
     dataIndex: 'districtAvg',
-    width: 90,
     key: 'districtAvg',
   },
   {
     title: 'School (Avg Score%)',
     dataIndex: 'schoolAvg',
-    width: 90,
     key: 'schoolAvg',
   },
   {
     title: 'Class (Avg Score%)',
     dataIndex: 'groupAvg',
-    width: 90,
     key: 'groupAvg',
   },
 ]
 
-const getColumns = (studentName = '', location, pageTitle) => [
-  ...tableColumns(location, pageTitle),
+const getColumns = (studentName = '', location, pageTitle, isSharedReport) => [
+  ...tableColumns(location, pageTitle, isSharedReport),
   {
     title: 'Student (Score%)',
     dataIndex: 'score',
     align: 'right',
     key: 'score',
-    width: 90,
     sorter: (a, b) => a.score - b.score,
     render: (score, record) => {
       if (isNaN(score) && score !== null) {
-        return getCol(score, '#cccccc')
+        return getCol(score, isSharedReport, '#cccccc')
       }
 
       const toolTipText = () => (
@@ -224,6 +224,7 @@ const getColumns = (studentName = '', location, pageTitle) => [
           getCellContents={() =>
             getCol(
               score,
+              isSharedReport,
               getHSLFromRange1(score),
               'score',
               location,
@@ -245,8 +246,9 @@ const AssessmentTable = ({
   onCsvConvert,
   location,
   pageTitle,
+  isSharedReport,
 }) => {
-  const columns = getColumns(studentName, location, pageTitle)
+  const columns = getColumns(studentName, location, pageTitle, isSharedReport)
 
   const filteredData = filter(data, (test) =>
     selectedTests.length ? includes(selectedTests, test.uniqId) : true
@@ -258,7 +260,7 @@ const AssessmentTable = ({
       columns={columns}
       colouredCellsNo={1}
       tableToRender={StyledTable}
-      scroll={{ x: '100%' }}
+      scroll={{ x: 1000 }}
       onCsvConvert={onCsvConvert}
       isCsvDownloading={isCsvDownloading}
     />

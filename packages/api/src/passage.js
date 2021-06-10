@@ -25,12 +25,17 @@ const update = ({ _id, ...data }) =>
     })
     .then((result) => result.data.result)
 
-const duplicate = ({ passageId, testItemIds, testId }) =>
+const duplicate = ({
+  passageId,
+  testItemIds,
+  testId,
+  replaceOldItem = false,
+}) =>
   api
     .callApi({
       url: `${prefix}/${passageId}/duplicate`,
       method: 'post',
-      data: { testItemIds, testId },
+      data: { testItemIds, testId, replaceOldItem },
     })
     .then((result) => result.data.result)
 

@@ -81,12 +81,11 @@ We are using [`reselect`](https://github.com/reduxjs/reselect#readme) for writin
 ```js
 import { createSelector } from "reselect";
 
-const shopItemsSelector = state => state.shop.items;
-const taxPercentSelector = state => state.shop.taxPercent;
+const shopItemsSelector = (state) => state.shop.items;
+const taxPercentSelector = (state) => state.shop.taxPercent;
 
-const subtotalSelector = createSelector(
-  shopItemsSelector,
-  items => items.reduce((acc, item) => acc + item.value, 0)
+const subtotalSelector = createSelector(shopItemsSelector, (items) =>
+  items.reduce((acc, item) => acc + item.value, 0)
 );
 
 const taxSelector = createSelector(
@@ -104,7 +103,10 @@ export const totalSelector = createSelector(
 let exampleState = {
   shop: {
     taxPercent: 8,
-    items: [{ name: "apple", value: 1.2 }, { name: "orange", value: 0.95 }]
+    items: [
+      { name: "apple", value: 1.2 },
+      { name: "orange", value: 0.95 }
+    ]
   }
 };
 ```
@@ -143,8 +145,8 @@ const addTodo = (state, { payload }) => {
 };
 
 // reducer
-export default (reducer = createReducer(initialState, {
+export default reducer = createReducer(initialState, {
   [ADD_TODO]: addTodo,
   [DELETE_TODO]: deleteTodo
-}));
+});
 ```

@@ -1,21 +1,32 @@
 import React, { PureComponent } from 'react'
+import loadable from '@loadable/component'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Spin } from 'antd'
-import { withRouter, Prompt } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 import { cloneDeep, uniq as _uniq, isEmpty, get, without } from 'lodash'
 import uuidv4 from 'uuid/v4'
-import { withWindowSizes, notification } from '@edulastic/common'
-import { test as testContants, roleuser } from '@edulastic/constants'
-import { testsApi, assignmentApi } from '@edulastic/api'
+import {
+  withWindowSizes,
+  notification,
+  Progress,
+  CustomPrompt,
+} from '@edulastic/common'
+import {
+  test as testContants,
+  roleuser,
+  collections as collectionsConstant,
+} from '@edulastic/constants'
+import { testsApi } from '@edulastic/api'
 import { themeColor } from '@edulastic/colors'
+import { withNamespaces } from '@edulastic/localization'
 import {
   getAllAssignmentsSelector,
   fetchAssignmentsByTestAction,
 } from '../../../../publicTest/ducks'
 
-import { Content } from './styled'
+import { Content, ContentBackDrop } from './styled'
 import TestPageHeader from '../TestPageHeader/TestPageHeader'
 import {
   defaultImage,
@@ -41,6 +52,11 @@ import {
   updateLastUsedCollectionListAction,
   removeTestEntityAction,
   setEditEnableAction,
+  getTestIdFromVersionIdAction,
+  getShowUpgradePopupSelector,
+  setShowUpgradePopupAction,
+  receiveTestByIdSuccess as receiveTestByIdSuccessAction,
+  isRegradedByCoAuthor,
 } from '../../ducks'
 import {
   clearSelectedItemsAction,
@@ -63,6 +79,8 @@ import {
   getCollectionsToAddContent,
   isOrganizationDistrictUserSelector,
   getWritableCollectionsSelector,
+  isOrganizationDistrictSelector,
+  isPremiumUserSelector,
 } from '../../../src/selectors/user'
 import SourceModal from '../../../QuestionEditor/components/SourceModal/SourceModal'
 import ShareModal from '../../../src/components/common/ShareModal'
@@ -94,7 +112,12 @@ import { redirectToStudentPage } from '../../../../publicTest/utils'
 import {
   startAssignmentAction,
   resumeAssignmentAction,
+  getSelectedLanguageSelector,
 } from '../../../../student/Assignments/ducks'
+import { setSelectedLanguageAction } from '../../../../student/sharedDucks/AssignmentModule/ducks'
+import { fetchCustomKeypadAction } from '../../../../assessment/components/KeyPadOptions/ducks'
+
+const ItemCloneModal = loadable(() => import('../ItemCloneConfirmationModal'))
 
 const { getDefaultImage } = testsApi
 const {
@@ -104,84 +127,23 @@ const {
   ITEM_GROUP_TYPES,
   ITEM_GROUP_DELIVERY_TYPES,
 } = testContants
+const { nonPremiumCollectionsToShareContent } = collectionsConstant
 
 class Container extends PureComponent {
-  propTypes = {
-    createTest: PropTypes.func.isRequired,
-    updateTest: PropTypes.func.isRequired,
-    receiveTestById: PropTypes.func.isRequired,
-    setData: PropTypes.func.isRequired,
-    setDefaultData: PropTypes.func.isRequired,
-    match: PropTypes.object.isRequired,
-    rows: PropTypes.array.isRequired,
-    creating: PropTypes.bool.isRequired,
-    windowWidth: PropTypes.number.isRequired,
-    test: PropTypes.object,
-    user: PropTypes.object,
-    isTestLoading: PropTypes.bool.isRequired,
-    clearSelectedItems: PropTypes.func.isRequired,
-    saveCurrentEditingTestId: PropTypes.func.isRequired,
-    history: PropTypes.object.isRequired,
-    currentTab: PropTypes.string,
-    testStatus: PropTypes.string,
-    userId: PropTypes.string,
-    updated: PropTypes.bool,
-    showWarningModal: PropTypes.bool,
-    proceedPublish: PropTypes.func.isRequired,
-    clearTestAssignments: PropTypes.func.isRequired,
-    editAssigned: PropTypes.bool,
-    createdItems: PropTypes.array,
-    setRegradeOldId: PropTypes.func.isRequired,
-    getDefaultTestSettings: PropTypes.func.isRequired,
-    location: PropTypes.object.isRequired,
-    userRole: PropTypes.string,
-    isReleaseScorePremium: PropTypes.bool,
-    receiveItemDetailById: PropTypes.func.isRequired,
-    questionsUpdated: PropTypes.bool,
-    getItemsSubjectAndGrade: PropTypes.func.isRequired,
-    itemsSubjectAndGrade: PropTypes.object,
-    collectionsToShow: PropTypes.array,
-    updateDefaultThumbnail: PropTypes.func.isRequired,
-    questions: PropTypes.array,
-    questionsById: PropTypes.object,
-    updateDocBasedTest: PropTypes.func.isRequired,
-    userFeatures: PropTypes.object.isRequired,
-    publishTest: PropTypes.func.isRequired,
-    duplicateTest: PropTypes.func.isRequired,
-    collections: PropTypes.array,
-    approveOrRejectSingleTestRequest: PropTypes.func.isRequired,
-  }
-
-  static defaultProps = {
-    test: null,
-    user: {},
-    currentTab: 'review',
-    testStatus: '',
-    userId: '',
-    updated: false,
-    showWarningModal: false,
-    editAssigned: false,
-    createdItems: [],
-    userRole: 'teacher',
-    isReleaseScorePremium: false,
-    questionsUpdated: false,
-    itemsSubjectAndGrade: {},
-    collectionsToShow: [],
-    questions: [],
-    questionsById: {},
-    collections: [],
+  constructor() {
+    super()
+    this.state = {
+      showModal: false,
+      showShareModal: false,
+      isShowFilter: true,
+      showCancelButton: false,
+      testLoaded: false,
+      disableAlert: false,
+      showCloneModal: false,
+    }
   }
 
   sebPasswordRef = React.createRef()
-
-  state = {
-    showModal: false,
-    showShareModal: false,
-    isShowFilter: true,
-    showCancelButton: false,
-    testLoaded: false,
-    disableAlert: false,
-  }
 
   gotoTab = (tab) => {
     const { history, match, location } = this.props
@@ -230,8 +192,16 @@ class Container extends PureComponent {
       location: _location,
       fetchAssignmentsByTest,
       setEditEnable,
+      isOrganizationDA,
+      isVersionFlow,
+      getTestIdFromVersionId,
+      fetchUserKeypads,
     } = this.props
+
+    const { versionId, id } = match.params
+
     if (userRole !== roleuser.STUDENT) {
+      fetchUserKeypads()
       const self = this
       const { showCancelButton = false, editAssigned = false } =
         history.location.state || this.state
@@ -256,10 +226,12 @@ class Container extends PureComponent {
           notification({ type: 'success', msg })
         }
       }
-
-      if (match.params.id && match.params.id != 'undefined') {
+      if (isVersionFlow && versionId && versionId != 'undefined') {
         this.setState({ testLoaded: false })
-        receiveTestById(match.params.id, true, editAssigned)
+        getTestIdFromVersionId(versionId)
+      } else if (id && id != 'undefined') {
+        this.setState({ testLoaded: false })
+        receiveTestById(id, true, editAssigned)
       } else if (!_location?.state?.persistStore) {
         // currently creating test do nothing
         this.gotoTab('description')
@@ -270,10 +242,13 @@ class Container extends PureComponent {
           userRole === roleuser.DISTRICT_ADMIN ||
           userRole === roleuser.SCHOOL_ADMIN
         ) {
-          setData({ testType: testContants.type.COMMON, freezeSettings: true })
+          setData({
+            testType: testContants.type.COMMON,
+            freezeSettings: !isOrganizationDA,
+          })
         }
         if (userRole === roleuser.TEACHER && isReleaseScorePremium) {
-          setData({ releaseScore: releaseGradeLabels.WITH_RESPONSE })
+          setData({ releaseScore: releaseGradeLabels.WITH_ANSWERS })
         }
       }
       if (showCancelButton) {
@@ -282,18 +257,26 @@ class Container extends PureComponent {
       }
 
       if (editAssigned) {
-        setRegradeOldId(match.params.id)
+        setRegradeOldId(id)
       } else {
         setRegradeOldId('')
       }
+
       if (userRole !== roleuser.EDULASTIC_CURATOR) getDefaultTestSettings()
     } else {
-      fetchAssignmentsByTest({ testId: match.params.id })
+      fetchAssignmentsByTest({ testId: id })
     }
   }
 
   componentWillUnmount() {
-    const { match, removeTestEntity, resetPageState } = this.props
+    const {
+      match,
+      removeTestEntity,
+      resetPageState,
+      setEditEnable,
+    } = this.props
+    // disable edit on unmount
+    setEditEnable(false)
     // clear test entity only on edit and regrade flow
     if (match.params.id) removeTestEntity()
     resetPageState()
@@ -314,6 +297,9 @@ class Container extends PureComponent {
       resumeAssignment,
       setEditEnable,
       editEnable,
+      languagePreference,
+      setSelectedLanguage,
+      isUpgradePopupVisible,
     } = this.props
 
     const { testLoaded, studentRedirected } = this.state
@@ -329,7 +315,7 @@ class Container extends PureComponent {
         const testItemId =
           typeof testItem === 'object' ? testItem._id : testItem
         if (testItemId) {
-          receiveItemDetailById(testItemId)
+          receiveItemDetailById(testItemId, { testId: test._id })
         }
       }
       const { editAssigned = false } = history.location.state || {}
@@ -339,7 +325,8 @@ class Container extends PureComponent {
         test?._id &&
         !testLoaded &&
         !test.isInEditAndRegrade &&
-        !isTestLoading
+        !isTestLoading &&
+        !isUpgradePopupVisible
       ) {
         this.onEnableEdit(true)
       }
@@ -378,7 +365,9 @@ class Container extends PureComponent {
             history,
             startAssignment,
             resumeAssignment,
-            test
+            test,
+            languagePreference,
+            setSelectedLanguage
           )
           // eslint-disable-next-line react/no-did-update-set-state
           this.setState({ studentRedirected: true })
@@ -424,7 +413,7 @@ class Container extends PureComponent {
       updated,
       editEnable,
     } = this.props
-    const { authors, itemGroups = [] } = test
+    const { authors, itemGroups = [], _id } = test
     if (!test?.title?.trim()?.length) {
       notification({ type: 'warn', messageKey: 'pleaseEnterName' })
       return
@@ -441,9 +430,16 @@ class Container extends PureComponent {
       (authors && authors.some((x) => x._id === userId)) || !params.id
     const isEditable =
       isOwner && (editEnable || testStatus === statusConstants.DRAFT)
+    const totalTestItems = itemGroups.flatMap(
+      (itemGroup) => itemGroup.items || []
+    ).length
+    const isAutoSelectGroup =
+      test.itemGroups[0].type === ITEM_GROUP_TYPES.AUTOSELECT
+
     if (
       isEditable &&
-      itemGroups.flatMap((itemGroup) => itemGroup.items || []).length > 0 &&
+      (totalTestItems > 0 || isAutoSelectGroup) &&
+      !(totalTestItems === 1 && !_id && !isAutoSelectGroup) && // avoid redundant new test creation api call when user adds first item and quickly switches the tab
       updated &&
       !firstFlow
     ) {
@@ -548,6 +544,29 @@ class Container extends PureComponent {
     saveCurrentEditingTestId(test._id)
   }
 
+  get isTestEditable() {
+    const {
+      test,
+      match,
+      userId,
+      userFeatures,
+      userRole,
+      collections,
+      editEnable,
+      testStatus,
+    } = this.props
+    const { params = {} } = match
+
+    const isOwner =
+      (test.authors && test.authors.some((x) => x._id === userId)) ||
+      !params.id ||
+      userRole === roleuser.EDULASTIC_CURATOR ||
+      (userFeatures.isCurator &&
+        allowContentEditCheck(test.collections, collections))
+
+    return isOwner && (editEnable || testStatus === statusConstants.DRAFT)
+  }
+
   renderContent = () => {
     const {
       test,
@@ -566,10 +585,9 @@ class Container extends PureComponent {
       editEnable,
       userFeatures,
       collections,
+      writableCollections,
+      isPlaylist,
     } = this.props
-    if (isTestLoading) {
-      return <Spin />
-    }
     const { params = {} } = match
     const { showCancelButton = false } =
       history.location.state || this.state || {}
@@ -591,7 +609,13 @@ class Container extends PureComponent {
         allowContentEditCheck(test.collections, collections))
     const isEditable =
       isOwner && (editEnable || testStatus === statusConstants.DRAFT)
-
+    const hasCollectionAccess = allowContentEditCheck(
+      test.collections,
+      writableCollections
+    )
+    const isCurator =
+      (hasCollectionAccess && userFeatures.isCurator) ||
+      userRole === roleuser.EDULASTIC_CURATOR
     const props = {
       docUrl,
       annotations,
@@ -600,6 +624,10 @@ class Container extends PureComponent {
       questionsById,
       pageStructure,
       isEditable,
+    }
+
+    if (isTestLoading && !test._id) {
+      return <Spin />
     }
 
     switch (current) {
@@ -667,6 +695,8 @@ class Container extends PureComponent {
             sebPasswordRef={this.sebPasswordRef}
             owner={isOwner}
             showCancelButton={showCancelButton}
+            isCurator={isCurator}
+            isPlaylist={isPlaylist}
           />
         )
       case 'worksheet':
@@ -684,7 +714,7 @@ class Container extends PureComponent {
       case 'groupItems':
         return (
           <Content>
-            <GroupItems />
+            <GroupItems handleSaveTest={this.handleSave} />
           </Content>
         )
       default:
@@ -780,7 +810,10 @@ class Container extends PureComponent {
       updateDocBasedTest,
     } = this.props
 
-    if (!validateQuestionsForDocBased(assessmentQuestions)) {
+    if (
+      test.isDocBased &&
+      !validateQuestionsForDocBased(assessmentQuestions, true)
+    ) {
       return
     }
     updateDocBasedTest(test._id, test, true)
@@ -853,6 +886,7 @@ class Container extends PureComponent {
     }
     // for itemGroup with limted delivery type should not contain items with question level scoring
     let itemGroupWithQuestionsCount = 0
+    let testHasInvalidItem = false
     for (const itemGroup of test.itemGroups) {
       if (
         itemGroup.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
@@ -866,9 +900,24 @@ class Container extends PureComponent {
       if (itemGroup.items.some((item) => item.data.questions.length > 0)) {
         itemGroupWithQuestionsCount++
       }
+
+      if (
+        itemGroup.items.some(
+          (item) =>
+            item.data.questions.length <= 0 && item.data.resources.length <= 0
+        )
+      ) {
+        testHasInvalidItem = true
+      }
     }
+
     if (!itemGroupWithQuestionsCount) {
       notification({ messageKey: `noQuestions` })
+      return false
+    }
+
+    if (testHasInvalidItem) {
+      notification({ messageKey: `testHasInvalidItem` })
       return false
     }
     return true
@@ -902,6 +951,7 @@ class Container extends PureComponent {
 
   handlePublishTest = (assignFlow = false) => {
     const {
+      questions: assessmentQuestions,
       publishTest,
       test,
       match,
@@ -910,6 +960,12 @@ class Container extends PureComponent {
       setEditEnable,
     } = this.props
     const { _id } = test
+    if (
+      test.isDocBased &&
+      !validateQuestionsForDocBased(assessmentQuestions, false)
+    ) {
+      return
+    }
     if (this.validateTest(test)) {
       const newTest = this.modifyTest()
       publishTest({
@@ -924,7 +980,7 @@ class Container extends PureComponent {
     }
   }
 
-  onEnableEdit = (onRegrade) => {
+  onEnableEdit = async (onRegrade, editClick) => {
     const {
       test,
       userId,
@@ -934,6 +990,9 @@ class Container extends PureComponent {
       setEditEnable,
       userFeatures,
       collections,
+      setShowUpgradePopup,
+      receiveTestByIdSuccess,
+      testAssignments,
     } = this.props
     const { _id: testId, authors, title, isUsed } = test
     const isCurator =
@@ -942,11 +1001,25 @@ class Container extends PureComponent {
       userRole === roleuser.EDULASTIC_CURATOR
     const canEdit =
       (authors && authors.some((x) => x._id === userId)) || isCurator
+    const isArchivedInactiveTest =
+      test.status === testContants.statusConstants.ARCHIVED && test.active === 0
+    // If assignments present for the test and user clicking on edit do a quick test fetch and see if co author regraded or not. Else older code.
+    if (editClick && testAssignments.length) {
+      const entity = await testsApi.getById(testId, {
+        data: true,
+        requestLatest: true,
+        editAndRegrade: true,
+      })
+      if (isRegradedByCoAuthor(userId, entity, testId)) {
+        setShowUpgradePopup(true)
+        return receiveTestByIdSuccess(entity)
+      }
+    }
     setEditEnable(true)
-    if (canEdit) {
+    if (canEdit && !isArchivedInactiveTest) {
       return this.handleSave()
     }
-    if (!test.isInEditAndRegrade) {
+    if (!test.isInEditAndRegrade || isArchivedInactiveTest) {
       duplicateTest({
         currentTab,
         title,
@@ -957,15 +1030,19 @@ class Container extends PureComponent {
     }
   }
 
-  handleDuplicateTest = async (e) => {
-    e && e.stopPropagation()
-    const { history, test, setEditEnable } = this.props
-    const duplicateTest = await assignmentApi.duplicateAssignment({
+  showCloneModal = () => {
+    this.setState({ showCloneModal: true })
+  }
+
+  handleDuplicateTest = (cloneItems) => {
+    const { test, duplicateTest } = this.props
+    duplicateTest({
       _id: test._id,
       title: test.title,
+      redirectToNewTest: true,
+      cloneItems,
     })
-    history.push(`/author/tests/${duplicateTest._id}`)
-    setEditEnable(true)
+    this.setState({ showCloneModal: false })
   }
 
   renderModal = () => {
@@ -1001,6 +1078,10 @@ class Container extends PureComponent {
     this.setState({ disableAlert: payload })
   }
 
+  handleCloneModalVisibility = (visibility) => {
+    this.setState({ showCloneModal: visibility })
+  }
+
   render() {
     const {
       creating,
@@ -1019,11 +1100,12 @@ class Container extends PureComponent {
       userRole,
       editEnable,
       writableCollections,
+      t,
     } = this.props
     if (userRole === roleuser.STUDENT) {
       return null
     }
-    const { showShareModal, isShowFilter } = this.state
+    const { showShareModal, isShowFilter, showCloneModal } = this.state
     const current = currentTab
     const {
       _id: testId,
@@ -1033,6 +1115,7 @@ class Container extends PureComponent {
       subjects,
       itemGroups,
       isDocBased,
+      versionId,
     } = test
     const hasCollectionAccess = allowContentEditCheck(
       test.collections,
@@ -1047,7 +1130,7 @@ class Container extends PureComponent {
         testId &&
         (isOwner || isCurator)) ||
       editEnable
-    const showShareButton = !!testId
+    const hasTestId = !!testId
     const allowDuplicate =
       allowDuplicateCheck(test.collections, collections, 'test') || isOwner
     const showDuplicateButton =
@@ -1065,34 +1148,54 @@ class Container extends PureComponent {
       !showEditButton &&
       !showDuplicateButton &&
       (testStatus === 'draft' || editEnable)
+
+    const premiumOrgCollections = collections.filter(
+      ({ _id }) =>
+        !Object.keys(nonPremiumCollectionsToShareContent).includes(_id)
+    )
     const testItems = (itemGroups || []).flatMap(
       (itemGroup) => itemGroup.items || []
     )
     const hasPremiumQuestion = !!testItems.find((i) =>
-      hasUserGotAccessToPremiumItem(i.collections, collections)
+      hasUserGotAccessToPremiumItem(i.collections, premiumOrgCollections)
     )
 
     const gradeSubject = { grades, subjects }
 
     return (
       <>
-        <Prompt
-          when={this.beforeUnload()}
-          message={(loc) =>
-            loc.pathname.startsWith('/author/tests') ||
-            'There are unsaved changes. Are you sure you want to leave?'
-          }
+        <CustomPrompt
+          when={!!updated}
+          onUnload
+          message={(loc = {}) => {
+            const { pathname = '' } = loc
+
+            const testFlowPath = RegExp('/author/tests/\\w*')
+            const allow =
+              testFlowPath.test(pathname) ||
+              pathname.startsWith('/author/assignments/')
+
+            if (allow) {
+              return true
+            }
+
+            return t('component.common.modal.exitPageWarning')
+          }}
         />
         {this.renderModal()}
-        <ShareModal
-          shareLabel="TEST URL"
-          isVisible={showShareModal}
-          testId={testId}
-          hasPremiumQuestion={hasPremiumQuestion}
-          isPublished={status === statusConstants.PUBLISHED}
-          onClose={this.onShareModalChange}
-          gradeSubject={gradeSubject}
-        />
+        {showShareModal && (
+          <ShareModal
+            shareLabel="TEST URL"
+            isVisible={showShareModal}
+            testId={testId}
+            testVersionId={versionId}
+            hasPremiumQuestion={hasPremiumQuestion}
+            isPublished={status === statusConstants.PUBLISHED}
+            onClose={this.onShareModalChange}
+            gradeSubject={gradeSubject}
+          />
+        )}
+
         <WarningModal
           visible={showWarningModal}
           proceedPublish={proceedPublish}
@@ -1112,7 +1215,7 @@ class Container extends PureComponent {
           windowWidth={windowWidth}
           showPublishButton={showPublishButton}
           testStatus={testStatus}
-          showShareButton={showShareButton}
+          hasTestId={hasTestId}
           editEnable={editEnable}
           onEnableEdit={this.onEnableEdit}
           onShowSource={this.handleNavChange('source')}
@@ -1122,22 +1225,97 @@ class Container extends PureComponent {
           isShowFilter={isShowFilter}
           isTestLoading={isTestLoading}
           showDuplicateButton={showDuplicateButton}
-          handleDuplicateTest={this.handleDuplicateTest}
+          handleDuplicateTest={this.showCloneModal}
           showCancelButton={showCancelButton}
           onCuratorApproveOrReject={this.onCuratorApproveOrReject}
           validateTest={this.validateTest}
           setDisableAlert={this.setDisableAlert}
           hasCollectionAccess={hasCollectionAccess}
         />
+        {/* This will work like an overlay during the test save for prevent content edit */}
+        {isTestLoading && test._id && <ContentBackDrop />}
         {this.renderContent()}
+        <ItemCloneModal
+          fallback={<Progress />}
+          handleDuplicateTest={this.handleDuplicateTest}
+          visible={showCloneModal}
+          toggleVisibility={this.handleCloneModalVisibility}
+        />
       </>
     )
   }
 }
 
+Container.propTypes = {
+  createTest: PropTypes.func.isRequired,
+  updateTest: PropTypes.func.isRequired,
+  receiveTestById: PropTypes.func.isRequired,
+  setData: PropTypes.func.isRequired,
+  setDefaultData: PropTypes.func.isRequired,
+  match: PropTypes.object.isRequired,
+  rows: PropTypes.array.isRequired,
+  creating: PropTypes.bool.isRequired,
+  windowWidth: PropTypes.number.isRequired,
+  test: PropTypes.object,
+  user: PropTypes.object,
+  isTestLoading: PropTypes.bool.isRequired,
+  clearSelectedItems: PropTypes.func.isRequired,
+  saveCurrentEditingTestId: PropTypes.func.isRequired,
+  history: PropTypes.object.isRequired,
+  currentTab: PropTypes.string,
+  testStatus: PropTypes.string,
+  userId: PropTypes.string,
+  updated: PropTypes.bool,
+  showWarningModal: PropTypes.bool,
+  proceedPublish: PropTypes.func.isRequired,
+  clearTestAssignments: PropTypes.func.isRequired,
+  editAssigned: PropTypes.bool,
+  createdItems: PropTypes.array,
+  setRegradeOldId: PropTypes.func.isRequired,
+  getDefaultTestSettings: PropTypes.func.isRequired,
+  location: PropTypes.object.isRequired,
+  userRole: PropTypes.string,
+  isReleaseScorePremium: PropTypes.bool,
+  receiveItemDetailById: PropTypes.func.isRequired,
+  questionsUpdated: PropTypes.bool,
+  getItemsSubjectAndGrade: PropTypes.func.isRequired,
+  itemsSubjectAndGrade: PropTypes.object,
+  collectionsToShow: PropTypes.array,
+  updateDefaultThumbnail: PropTypes.func.isRequired,
+  questions: PropTypes.array,
+  questionsById: PropTypes.object,
+  updateDocBasedTest: PropTypes.func.isRequired,
+  userFeatures: PropTypes.object.isRequired,
+  publishTest: PropTypes.func.isRequired,
+  duplicateTest: PropTypes.func.isRequired,
+  collections: PropTypes.array,
+  approveOrRejectSingleTestRequest: PropTypes.func.isRequired,
+}
+
+Container.defaultProps = {
+  test: null,
+  user: {},
+  currentTab: 'review',
+  testStatus: '',
+  userId: '',
+  updated: false,
+  showWarningModal: false,
+  editAssigned: false,
+  createdItems: [],
+  userRole: 'teacher',
+  isReleaseScorePremium: false,
+  questionsUpdated: false,
+  itemsSubjectAndGrade: {},
+  collectionsToShow: [],
+  questions: [],
+  questionsById: {},
+  collections: [],
+}
+
 const enhance = compose(
   withRouter,
   withWindowSizes,
+  withNamespaces('author'),
   connect(
     (state) => ({
       test: getTestSelector(state),
@@ -1174,6 +1352,10 @@ const enhance = compose(
       editEnable: get(state, 'tests.editEnable'),
       pageNumber: state?.testsAddItems?.page || 1,
       isOrganizationDistrictUser: isOrganizationDistrictUserSelector(state),
+      isOrganizationDA: isOrganizationDistrictSelector(state),
+      languagePreference: getSelectedLanguageSelector(state),
+      isPremiumUser: isPremiumUserSelector(state),
+      isUpgradePopupVisible: getShowUpgradePopupSelector(state),
     }),
     {
       createTest: createTestAction,
@@ -1202,6 +1384,11 @@ const enhance = compose(
       resumeAssignment: resumeAssignmentAction,
       setEditEnable: setEditEnableAction,
       resetPageState: resetPageStateAction,
+      getTestIdFromVersionId: getTestIdFromVersionIdAction,
+      setSelectedLanguage: setSelectedLanguageAction,
+      fetchUserKeypads: fetchCustomKeypadAction,
+      setShowUpgradePopup: setShowUpgradePopupAction,
+      receiveTestByIdSuccess: receiveTestByIdSuccessAction,
     }
   )
 )

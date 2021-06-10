@@ -1,4 +1,4 @@
-/* global $ */
+import { isArray } from 'lodash'
 import Helpers, { templateHasMath } from '../helpers'
 import { getMathTemplate } from '../../../../src/client/assessment/utils/variables'
 
@@ -53,6 +53,8 @@ const sanitizeLatex = (latex) => {
     .replace(/\\end{armatrix}/g, '\\end{array}\\right\\}')
     .replace(/\\begin{array}{}\\end{array}/g, '')
     .replace(/\\hbox{--}/g, '–')
+    .replace(/\\rightleftharpoons/g, '\\rightleftharpoons ')
+    .replace(/\\indefinite/g, '\\int')
 
   if (_latex.substr(-1) === '\\') {
     _latex = _latex.slice(0, -1)
@@ -74,6 +76,7 @@ export const getMathHtml = (latex) => {
    * @see https://snapwiz.atlassian.net/browse/EV-14386
    * |--- mathQuill ---|--------- Katex ---------|
    * | overarc         | overgroup               |
+   * | indefinite      | int                     |
    * | parallelogram   | text{▱}                 |
    * | undersim        | underset{\\sim}         |
    * | \begin{almatrix}| \left\{\begin{array}{l} |
@@ -106,10 +109,15 @@ export const getMathHtml = (latex) => {
    * @see https://github.com/KaTeX/KaTeX/issues/312#issuecomment-307592919
    */
   _latex = addSpaceMatrixFraction(_latex)
-  let katexString = window.katex.renderToString(_latex, {
-    throwOnError: false,
-    displayMode: true,
-  })
+  let katexString = '<span></span>'
+  try {
+    katexString = window.katex.renderToString(_latex, {
+      throwOnError: false,
+      displayMode: true,
+    })
+  } catch (e) {
+    console.warn('Katex parse error : ', _latex, e)
+  }
   // styles are applied to stimulus in itemBank/testReview(collapsed view)
   // it was affecting math content as well and EV-10152 was caused
   // we can use this class to omit styles from being applied to math
@@ -182,6 +190,12 @@ export const replaceMathHtmlWithLatexes = (val) => {
 }
 
 export const getInnerValuesForStatic = (studentTemplate, userAnswer) => {
+  // new static math value is an array
+  // @see: https://snapwiz.atlassian.net/browse/EV-23277
+  if (isArray(userAnswer)) {
+    return userAnswer
+  }
+  // old static math value is sting type
   const escapeRegExp = (string) =>
     string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/&amp;/g, '&')
 

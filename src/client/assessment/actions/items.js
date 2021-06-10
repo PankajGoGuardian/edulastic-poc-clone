@@ -7,7 +7,17 @@ import {
   SAVE_USER_RESPONSE,
   LOAD_USER_RESPONSE,
   SAVE_TESTLET_USER_RESPONSE,
+  SAVE_BLUR_TIME,
+  SET_SAVED_BLUR_TIME,
 } from '../constants/actions'
+
+export function saveBlurTimeAction(time) {
+  return { type: SAVE_BLUR_TIME, payload: time }
+}
+
+export function setSavedBlurTimeAction(time) {
+  return { type: SET_SAVED_BLUR_TIME, payload: time }
+}
 
 export const receiveItemsAction = ({ page, limit, search }) => ({
   type: RECEIVE_ITEMS_REQUEST,

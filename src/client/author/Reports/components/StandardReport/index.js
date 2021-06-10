@@ -1,11 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
-// import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
+
 import { MultipleAssessmentReport } from '../multipleAssessmentReport'
 import { SingleAssessmentReport } from '../singleAssessmentReport'
-import { StandardsMasteryReport } from '../standardsMasteryReport'
+import StandardsMasteryReport from '../standardsMasteryReport'
 import { StudentProfileReport } from '../studentProfileReport'
 import { SubscriptionReport } from '../subscriptionReport'
+import { EngagementReport } from '../engagementReport'
 // import SearchBox from "./SearchBox";
 import {
   StandardReportWrapper,
@@ -14,7 +15,7 @@ import {
   ReportCardsWrapper,
 } from './styled'
 
-const StandardReport = ({ premium }) => (
+const StandardReport = ({ premium, isAdmin, loc }) => (
   <StandardReportWrapper>
     {!premium && (
       <NonPremiumBar>we give access to only one report now</NonPremiumBar>
@@ -23,20 +24,26 @@ const StandardReport = ({ premium }) => (
     <StyledContainer premium={premium}>
       <ReportCardsWrapper>
         <StyledCard className="single-assessment-reports report">
-          <SingleAssessmentReport premium={premium} />
+          <SingleAssessmentReport premium={premium} loc={loc} />
         </StyledCard>
 
         <StyledCard className="multiple-assessment-reports report">
-          <MultipleAssessmentReport premium={premium} />
+          <MultipleAssessmentReport premium={premium} loc={loc} />
         </StyledCard>
 
         <StyledCard className="standards-mastery-reports report">
-          <StandardsMasteryReport premium={premium} />
+          <StandardsMasteryReport premium={premium} loc={loc} />
         </StyledCard>
 
         <StyledCard className="student-profile-reports report">
-          <StudentProfileReport premium={premium} />
+          <StudentProfileReport premium={premium} loc={loc} />
         </StyledCard>
+
+        {isAdmin && (
+          <StyledCard className="engagement-reports report">
+            <EngagementReport premium={premium} loc={loc} />
+          </StyledCard>
+        )}
       </ReportCardsWrapper>
       {!premium && (
         <StyledCard

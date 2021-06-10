@@ -81,7 +81,7 @@ class Layout extends Component {
     ]
 
     const labelTypeOptions = [
-      { value: 'none', label: '\u00A0' },
+      { value: 'none', label: t('component.options.hideNumeration') },
       { value: 'number', label: t('component.options.numerical') },
       {
         value: 'upper-alpha',

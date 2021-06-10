@@ -13,17 +13,21 @@ import { Card, MathFormulaDisplay } from '@edulastic/common'
 import { Rate } from 'antd/lib/index'
 import styled, { css } from 'styled-components'
 
+const DEAFULT_TEST_SRC = 'https://cdn2.edulastic.com/default/default-test-1.jpg'
+
 export const Container = styled(Card)`
   border: ${(props) => (props.isPlaylist ? 'none' : '1px solid #dfdfdf')};
   box-shadow: none;
   cursor: pointer;
   border-radius: ${(props) => (props.isPlaylist ? '4px' : '10px')};
   &.ant-card {
+    width: ${(props) => (props.isTestRecommendation ? '240px' : null)};
+    height: ${(props) => (props.isTestRecommendation ? '210px' : null)};
     .ant-card-body {
       padding: 16px 12px;
       border: ${(props) => (props.isPlaylist ? '1px solid #dfdfdf' : 'none')};
       border-radius: ${(props) => (props.isPlaylist ? '10px' : '0px')};
-      min-height: 185px;
+      min-height: ${(props) => (props.isTestRecommendation ? '90px' : '185px')};
       height: ${(props) => (props.isPlaylist ? '240px' : null)};
       display: flex;
       flex-direction: column;
@@ -59,6 +63,60 @@ export const Container = styled(Card)`
 
   .ant-card-head-title {
     padding: 0;
+  }
+`
+
+export const FullSizeThumbnailCard = styled(Card)`
+  height: 100%;
+  box-shadow: none;
+  cursor: pointer;
+  padding: ${({ isPlaylist }) => (isPlaylist ? '15px 0px 0px' : '0px')};
+  border: ${({ isPlaylist }) => (isPlaylist ? 'none' : '1px solid #dfdfdf')};
+
+  & .ant-card-cover {
+    height: 300px;
+  }
+
+  & .ant-card-actions {
+    border: 1px solid #dfdfdf;
+    border-top: 0px;
+    background: inherit;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    padding: 0px 12px;
+
+    > li {
+      margin: 10px 0;
+      border-right: none;
+    }
+    .playlist-status {
+      height: 20px;
+      float: right;
+      display: flex;
+      align-items: center;
+    }
+  }
+`
+
+export const CardCover = styled.div`
+  height: 100%;
+  background-size: cover;
+  background-position: left top;
+  background-repeat: no-repeat;
+  background-image: ${({ uri }) =>
+    uri
+      ? `url(${uri})`
+      : `url(https://cdn2.edulastic.com/default/default-test-1.jpg)`};
+  border-top-right-radius: 8px;
+  border-top-left-radius: 8px;
+
+  &:hover {
+    .showHover {
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+      flex-direction: column;
+    }
   }
 `
 
@@ -173,6 +231,7 @@ export const ShareIcon = styled.div`
   max-width: 60px;
   display: inline-flex;
   align-items: center;
+  float: right;
 `
 
 export const EllipsisWrapper = styled.div`
@@ -269,7 +328,7 @@ export const ViewButton = styled.div`
 `
 
 export const ButtonWrapper = styled.div`
-  position: absolute;
+  position: ${({ position }) => position || 'absolute'};
   height: 100%;
   left: 0px;
   right: 0px;
@@ -297,10 +356,7 @@ export const Header = styled.div`
   height: ${({ isPlaylist }) => (isPlaylist ? '99px' : '135px')};
   padding: 10px 15px;
   position: relative;
-  background: url(${(props) =>
-    props.src
-      ? props.src
-      : 'https://cdn2.edulastic.com/default/default-test-1.jpg'});
+  background: url(${({ src }) => src || DEAFULT_TEST_SRC});
   background-repeat: no-repeat;
   background-size: 100% auto;
 

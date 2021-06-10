@@ -14,6 +14,7 @@ import {
 import { beforeUpload, notification } from '@edulastic/common'
 import { uploadToS3 } from '../../../src/utils/upload'
 import { updateProfileImageAction } from '../../../../student/Login/ducks'
+import { signupStateBykey } from '@edulastic/constants/const/signUpState'
 
 class Photo extends React.Component {
   state = {
@@ -44,6 +45,7 @@ class Photo extends React.Component {
           thumbnail: imageUrl,
           email: user.email,
           districtId: user?.districtIds?.[0],
+          currentSignUpState: signupStateBykey[user.currentSignUpState],
         },
         userId: user._id,
       })

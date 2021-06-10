@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -7,7 +7,7 @@ import { get } from 'lodash'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import { useRealtimeV2 } from '@edulastic/common'
-import { getCurrentGroup } from '../../Login/ducks'
+import { getClasses, getCurrentGroup } from '../../Login/ducks'
 
 // actions
 import { fetchAssignmentsAction, getAssignmentsSelector } from '../ducks'
@@ -17,6 +17,8 @@ import AssignmentCard from '../../sharedComponents/AssignmentCard'
 import NoDataNotification from '../../../common/components/NoDataNotification'
 import { assignmentIdsByTestIdSelector } from '../../Assignments/ducks'
 import { updateTestIdRealTimeAction } from '../../sharedDucks/AssignmentModule/ducks'
+import { setAssignmentIsPausedAction } from '../../sharedDucks/ReportsModule/ducks'
+import EmbeddedVideoPreviewModal from '../../../author/CurriculumSequence/components/ManageContentBlock/components/EmbeddedVideoPreviewModal'
 
 const Content = ({
   flag,
@@ -28,13 +30,30 @@ const Content = ({
   location: { state = {} },
   assignmentIdsByTestId,
   updateTestIdRealTime,
+  setAssignmentIsPaused,
+  allClasses,
+  userId,
 }) => {
+  const [
+    showVideoResourcePreviewModal,
+    seShowVideoResourcePreviewModal,
+  ] = useState(null)
+
   useEffect(() => {
     fetchAssignments(currentGroup)
   }, [currentChild, currentGroup])
   const topics = Object.keys(assignmentIdsByTestId).map(
     (item) => `student_assessment:test:${item}`
   )
+
+  if (allClasses) {
+    const listenGroups = [
+      ...(currentGroup
+        ? [`student_assignment:class:${currentGroup}`]
+        : allClasses.map((x) => `student_assignment:class:${x._id}`)),
+    ]
+    topics.push(...listenGroups)
+  }
 
   useRealtimeV2(topics, {
     regradedAssignment: (payload) => {
@@ -43,11 +62,21 @@ const Content = ({
         return updateTestIdRealTime({ assignmentIds, ...payload })
       }
     },
+    'toggle-pause-assignment': (payload) => {
+      const { activitiesByUserId, paused } = payload
+      const utaId = activitiesByUserId[userId]
+      if (utaId) {
+        setAssignmentIsPaused({ utaId, paused })
+      }
+    },
   })
   if (isLoading) {
     return <Spin size="large" />
   }
   const { highlightAssignment } = state
+  const setEmbeddedVideoPreviewModal = (x) => seShowVideoResourcePreviewModal(x)
+  const resetVideoPreviewModal = () => seShowVideoResourcePreviewModal(null)
+
   return (
     <LayoutContent flag={flag}>
       <Wrapper>
@@ -57,17 +86,26 @@ const Content = ({
             description="You don't have any completed assignment."
           />
         ) : (
-          assignments.map((item) => (
+          assignments.map((item, i) => (
             <AssignmentCard
               key={`${item._id}_${item.classId}`}
               data={item}
               classId={item.classId}
               type="reports"
               highlightMode={item._id === highlightAssignment}
+              index={i}
+              setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
             />
           ))
         )}
       </Wrapper>
+
+      {showVideoResourcePreviewModal && (
+        <EmbeddedVideoPreviewModal
+          isVisible={showVideoResourcePreviewModal}
+          closeCallback={resetVideoPreviewModal}
+        />
+      )}
     </LayoutContent>
   )
 }
@@ -82,10 +120,13 @@ const enhance = compose(
       assignments: getAssignmentsSelector(state),
       currentChild: state?.user?.currentChild,
       assignmentIdsByTestId: assignmentIdsByTestIdSelector(state),
+      allClasses: getClasses(state),
+      userId: get(state, 'user.user._id'),
     }),
     {
       fetchAssignments: fetchAssignmentsAction,
       updateTestIdRealTime: updateTestIdRealTimeAction,
+      setAssignmentIsPaused: setAssignmentIsPausedAction,
     }
   )
 )

@@ -1,11 +1,30 @@
 import { createAction, createReducer } from 'redux-starter-kit'
-import { takeEvery, put, call, all, fork } from 'redux-saga/effects'
-import { keyBy as _keyBy, isEmpty, orderBy } from 'lodash'
+import { takeEvery, put, call, all, fork, select } from 'redux-saga/effects'
+import {
+  keyBy as _keyBy,
+  isEmpty,
+  orderBy,
+  keyBy,
+  maxBy,
+  groupBy,
+} from 'lodash'
+import produce from 'immer'
+import { push } from 'connected-react-router'
+
 import {
   reportsApi,
   testsApi,
   attchmentApi as attachmentApi,
+  assignmentApi,
 } from '@edulastic/api'
+import {
+  questionType,
+  testActivityStatus,
+  test as testConstants,
+  roleuser,
+} from '@edulastic/constants'
+import { notification } from '@edulastic/common'
+
 import { setTestItemsAction, SET_CURRENT_ITEM } from '../sharedDucks/TestItem'
 import {
   setTestActivityAction,
@@ -24,6 +43,12 @@ import {
 } from '../../author/TestPage/ducks'
 import { markQuestionLabel } from '../../assessment/Transformer'
 import { loadQuestionsAction } from '../../author/sharedDucks/questions'
+import {
+  getCurrentUserId,
+  transformAssignmentForRedirect,
+} from '../Assignments/ducks'
+import { getClassIds } from '../Reports/ducks'
+import { getUserRole } from '../../author/src/selectors/user'
 
 export const LOAD_TEST_ACTIVITY_REPORT =
   '[studentReports] load testActivity  report'
@@ -39,18 +64,34 @@ export const loadTestActivityReportAction = createAction(
 export const setFeedbackReportAction = createAction(SET_FEEDBACK)
 export const setTestActivitiesAction = createAction(SET_TEST_ACTIVITIES)
 
-function* loadAttachmentsFromServer({ referrerId, referrerId2, qActId }) {
+function* loadAttachmentsFromServer({
+  referrerId,
+  referrerId2,
+  qActId: uqaId,
+  qid,
+}) {
   try {
-    const { attachments = [] } = yield call(attachmentApi.loadAllAttachments, {
+    const filterQuery = {
       referrerId,
       referrerId2,
-    })
-    if (attachments.length > 0) {
-      const scratchpadData = {}
-      for (const attachment of attachments) {
-        const { data = {} } = attachment
-        scratchpadData[qActId] = data.scratchpad
+    }
+    let { attachments = [] } = yield call(
+      attachmentApi.loadAllAttachments,
+      filterQuery
+    )
+    if (attachments.length > 1) {
+      attachments = attachments.filter((a) => a.referrerId3 === qid)
+    }
+    const scratchpadData = {}
+    for (const attachment of attachments) {
+      const { data = {}, referrerId3 } = attachment
+      if (referrerId3 && referrerId3 === qid) {
+        scratchpadData[uqaId] = { [referrerId3]: data.scratchpad }
+      } else {
+        scratchpadData[uqaId] = data.scratchpad
       }
+    }
+    if (scratchpadData[uqaId]) {
       yield put({ type: SAVE_USER_WORK, payload: scratchpadData })
     }
   } catch (error) {
@@ -60,11 +101,12 @@ function* loadAttachmentsFromServer({ referrerId, referrerId2, qActId }) {
 
 function* getAttachmentsForItems({ testActivityId, testItemsIdArray = [] }) {
   yield all(
-    testItemsIdArray.map(({ testItemId, qActId }) =>
+    testItemsIdArray.map(({ testItemId, qActId, qid, _id }) =>
       call(loadAttachmentsFromServer, {
         referrerId: testActivityId,
         referrerId2: testItemId,
-        qActId,
+        qActId: qActId || _id,
+        qid,
       })
     )
   )
@@ -79,7 +121,9 @@ function* loadPassageHighlightFromServer({ referrerId, referrerId2 }) {
     const passageData = {}
     for (const attachment of attachments) {
       const { data } = attachment
-      passageData[referrerId2] = data
+      passageData[referrerId2] = {
+        [referrerId]: data,
+      }
     }
     yield put({ type: SAVE_USER_WORK, payload: passageData })
   } catch (error) {
@@ -98,6 +142,97 @@ function* loadPassagesForItems({ testActivityId, passages }) {
   )
 }
 
+function* checkAssessmentExpiredDetails({
+  assignmentId,
+  groupId,
+  test,
+  activities,
+}) {
+  try {
+    let assignment = yield call(assignmentApi.getById, assignmentId)
+    const testActivities = isEmpty(activities)
+      ? yield call(assignmentApi.fetchTestActivities, assignmentId, groupId)
+      : activities
+    const userId = yield select(getCurrentUserId)
+    const classIds = yield select(getClassIds)
+    const reportsGroupedByClassIdentifier = groupBy(
+      testActivities,
+      'assignmentClassIdentifier'
+    )
+    const groupedReportsByAssignmentId = groupBy(
+      testActivities,
+      (item) => `${item.assignmentId}_${item.groupId}`
+    )
+    assignment = transformAssignmentForRedirect(
+      groupId,
+      userId,
+      classIds,
+      reportsGroupedByClassIdentifier,
+      groupedReportsByAssignmentId,
+      assignment
+    )
+    const assignmentClass = assignment.class.filter(
+      (c) =>
+        c.redirect !== true &&
+        c._id === groupId &&
+        (!c.students.length ||
+          (c.students.length && c.students.includes(userId)))
+    )
+    const userClassList = assignment.class.filter(
+      (c) =>
+        c._id === groupId &&
+        (!c.students.length ||
+          (c.students.length && c.students.includes(userId)))
+    )
+    const { endDate } = maxBy(userClassList, 'endDate') || {}
+    let maxAttempts
+    if (assignmentClass[0].maxAttempts) {
+      maxAttempts = assignmentClass[0].maxAttempts
+    } else {
+      maxAttempts = test.maxAttempts
+    }
+    const attempts = testActivities.filter((el) =>
+      [testActivityStatus.ABSENT, testActivityStatus.SUBMITTED].includes(
+        el.status
+      )
+    )
+    return {
+      maxAttempts,
+      attempts: attempts.length,
+      endDate,
+      serverTimeStamp: assignment.ts,
+    }
+  } catch (e) {
+    console.warn('Something went wrong', e)
+  }
+}
+
+const createQuestionActiviy = (item = {}, question = {}, testActivity = {}) => {
+  const qActivity = {
+    qid: question.id,
+    testActivityId: testActivity._id,
+    testItemId: item._id,
+    groupId: testActivity.groupId,
+    assignedBy: testActivity.assignedBy,
+    assignmentId: testActivity.assignmentId,
+    autoGrade: item.autoGrade,
+    bookmarked: false,
+    correct: false,
+    districtId: testActivity.districtId,
+    evaluation: {},
+    graded: item.autoGrade,
+    maxScore: item.maxScore,
+    qLabel: question.barLabel,
+    qType: question.type,
+    score: item.autoGrade ? 0 : '',
+    scratchPad: { scratchpad: false },
+    skipped: item.autoGrade,
+    testId: testActivity.testId,
+    timeSpent: 0,
+  }
+  return qActivity
+}
+
 function* loadTestActivityReport({ payload }) {
   try {
     const { testActivityId, groupId, testId } = payload
@@ -109,7 +244,7 @@ function* loadTestActivityReport({ payload }) {
     yield put({
       type: REMOVE_ANSWERS,
     })
-    const [test, reports, activities] = yield all([
+    const [test, reports] = yield all([
       call(testsApi.getByIdMinimal, testId, {
         data: true,
         isReport: true,
@@ -117,17 +252,62 @@ function* loadTestActivityReport({ payload }) {
         groupId,
       }),
       call(reportsApi.fetchTestActivityReport, testActivityId, groupId),
-      call(reportsApi.fetchReports, groupId, testId),
     ])
-    const testItems = test.itemGroups.flatMap(
+
+    if (reports.testActivity && reports.testActivity.isPaused) {
+      yield put(push(`/home/grades`))
+      return notification({
+        type: 'warn',
+        messageKey: 'studentAssignmentPaused',
+      })
+    }
+
+    reports.questionActivities = reports.questionActivities.map((qa) => {
+      if (qa.autoGrade === false && qa.score === undefined) {
+        return {
+          ...qa,
+          graded: false,
+        }
+      }
+      return qa
+    })
+
+    const { assignmentId, releaseScore } = reports.testActivity
+    const activities = yield call(
+      reportsApi.fetchReports,
+      groupId,
+      testId,
+      assignmentId
+    )
+    if (releaseScore === testConstants.releaseGradeLabels.WITH_ANSWERS) {
+      const { attempts, maxAttempts, endDate, serverTimeStamp } = yield call(
+        checkAssessmentExpiredDetails,
+        {
+          assignmentId,
+          groupId,
+          test,
+          activities,
+        }
+      )
+      if (attempts < maxAttempts) {
+        reports.testActivity.releaseScore =
+          testConstants.releaseGradeLabels.WITH_RESPONSE
+      }
+      if (endDate <= serverTimeStamp) {
+        reports.testActivity.releaseScore = releaseScore
+      }
+    }
+    let testItems = test.itemGroups.flatMap(
       (itemGroup) => itemGroup.items || []
     )
-    markQuestionLabel(testItems)
+    testItems = markQuestionLabel(testItems)
     const questions = getQuestions(test.itemGroups)
     const questionsWithActivities = questions.map((question) => {
       if (!question.activity) {
         const activity = reports.questionActivities.find(
-          (qActivity) => qActivity.qid === question.id
+          (qActivity) =>
+            qActivity.qid === question.id &&
+            qActivity.testItemId === question.testItemId
         )
         return {
           ...question,
@@ -136,14 +316,12 @@ function* loadTestActivityReport({ payload }) {
       }
       return question
     })
-    const { questionActivities = [] } = reports
+    const { questionActivities = [], testActivity = {} } = reports
     const { passages = [] } = test
-    const scratchpadUsedItems = questionActivities.reduce((items, activity) => {
-      if (activity?.scratchPad?.scratchpad === true) {
-        items.push({ testItemId: activity.testItemId, qActId: activity._id })
-      }
-      return items
-    }, [])
+    const scratchpadUsedItems = questionActivities.filter((activity) => {
+      const { scratchPad: { scratchpad = false } = {}, qType } = activity
+      return qType === questionType.HIGHLIGHT_IMAGE && scratchpad === true
+    })
 
     yield fork(getAttachmentsForItems, {
       testActivityId: payload.testActivityId,
@@ -156,9 +334,25 @@ function* loadTestActivityReport({ payload }) {
         passages,
       })
     }
-    const _testItems = testItems.filter(
-      ({ data = {} }) => data.questions.length
+    const qActsKeysByQid = keyBy(
+      questionActivities,
+      (uqa) => `${uqa.testItemId}_${uqa.qid}`
     )
+    const _testItems = testItems
+      .filter(({ data = {} }) => data.questions?.length)
+      .map((item) =>
+        produce(item, (draft) => {
+          draft.data.questions.forEach((question) => {
+            if (qActsKeysByQid[`${item._id}_${question.id}`]) {
+              question.activity = qActsKeysByQid[`${item._id}_${question.id}`]
+            } else {
+              const uqa = createQuestionActiviy(item, question, testActivity)
+              reports.questionActivities.push(uqa)
+              question.activity = uqa
+            }
+          })
+        })
+      )
 
     yield put(loadQuestionsAction(_keyBy(questionsWithActivities, 'id')))
     yield put(receiveTestByIdSuccess(test))
@@ -181,7 +375,7 @@ function* loadTestActivityReport({ payload }) {
     questionActivities.forEach((item) => {
       allAnswers = {
         ...allAnswers,
-        [item.qid]: item.userResponse,
+        [`${item.testItemId}_${item.qid}`]: item.userResponse,
       }
       if (item.scratchPad) {
         const newUserWork = { ...item.scratchPad }
@@ -200,7 +394,7 @@ function* loadTestActivityReport({ payload }) {
       type: ADD_ITEM_EVALUATION,
       payload: {
         ...questionActivities.reduce((result, item) => {
-          result[item.qid] = item.evaluation
+          result[`${item.testItemId}_${item.qid}`] = item.evaluation
           return result
         }, {}),
       },
@@ -212,7 +406,17 @@ function* loadTestActivityReport({ payload }) {
       payload: allAnswers,
     })
   } catch (e) {
-    console.log(e)
+    const role = yield select(getUserRole)
+    if (e.status === 404 && role === roleuser.STUDENT) {
+      yield put(push(`/home/grades`))
+      return notification({
+        msg:
+          e?.response?.data?.message || 'No active Assignments/Activity found',
+      })
+    }
+    return notification({
+      msg: e?.response?.data?.message || 'Something went wrong',
+    })
   }
 }
 

@@ -9,15 +9,17 @@ import { IconFilterClass } from '@edulastic/icons'
 import { Select } from 'antd'
 import { isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import {
   changeChildAction,
   changeClassAction,
-  getCurrentGroup,
+  getCurrentGroupExactValue,
 } from '../Login/ducks'
 import { getFormattedName } from '../../author/Gradebook/transformers'
+import { setSelectedGroupStatusAction } from '../sharedDucks/AssignmentModule/ducks'
+import { getCurrentTerm } from '../../author/src/selectors/user'
 
 const ClassSelector = ({
   t,
@@ -26,39 +28,63 @@ const ClassSelector = ({
   changeClass,
   allClasses,
   showAllClassesOption,
+  setSelectedGroupStatus,
+  currentTerm,
 }) => {
   const [isShown, setShown] = useState(false)
+  const activeClasses = classList.filter((item) => item.active === 1)
   useEffect(() => {
     if (!showAllClassesOption) {
       /* For skill report we are not showing "All options", so when we route to the skill-report 
        page we pick the first class id by default and exit out of useEffect */
-      if (!currentGroup && classList.length) changeClass(classList[0]?._id)
+      if (!currentGroup && activeClasses.length)
+        changeClass(activeClasses[0]?._id)
     } else {
-      if (currentGroup === '' && classList.length === 1) {
+      if (
+        currentGroup === '' &&
+        classList.length === 1 &&
+        activeClasses.length
+      ) {
         // all classes. but really only one classes available
-        changeClass(classList[0]._id)
+        changeClass(activeClasses[0]._id)
       }
-      if (currentGroup !== '') {
+      if (currentGroup !== '' && currentGroup !== 'archive') {
         // not all classes
 
-        const currentGroupInList = classList.find((x) => x._id === currentGroup)
+        const currentGroupInList = activeClasses.find(
+          (x) => x._id === currentGroup
+        )
         if (!currentGroupInList) {
           // currently selected class is not in the list. so selecting first available class
-          if (classList.length > 0 && !sessionStorage.temporaryClass) {
-            changeClass(classList[0]._id)
+          if (activeClasses.length > 0 && !sessionStorage.temporaryClass) {
+            changeClass(activeClasses[0]._id)
           }
         }
       }
     }
-  }, [classList, currentGroup, showAllClassesOption])
+  }, [activeClasses, currentGroup, showAllClassesOption])
   const temporaryClassId = sessionStorage.getItem('temporaryClass')
   const tempClass =
     allClasses.find((clazz) => clazz._id === temporaryClassId) || {}
   const currentClass =
-    classList.length === 0 &&
+    activeClasses.length === 0 &&
     currentGroup &&
     isEmpty(tempClass) &&
     allClasses.find((c) => c._id === currentGroup)
+  const handleChangeClass = (value) => {
+    if (value === '') {
+      setSelectedGroupStatus('all')
+    } else if (value === 'archive') {
+      setSelectedGroupStatus('archive')
+    } else {
+      setSelectedGroupStatus('active')
+    }
+    changeClass(value)
+  }
+
+  const hasArchivedClasses = classList.some(
+    (item) => item.active === 0 && item.termId === currentTerm
+  )
 
   return (
     <>
@@ -68,12 +94,12 @@ const ClassSelector = ({
       <AssignmentSelectClass id="class-dropdown-wrapper" isShown={isShown}>
         <ClassLabel>{t('common.classLabel')}</ClassLabel>
         <Select
+          data-cy="select-class"
           value={currentGroup}
           getPopupContainer={() =>
-            document.getElementById('class-dropdown-wrapper')}
-          onChange={(value) => {
-            changeClass(value)
-          }}
+            document.getElementById('class-dropdown-wrapper')
+          }
+          onChange={handleChangeClass}
         >
           {classList.length > 1 && showAllClassesOption && (
             <Select.Option key="all" value="">
@@ -86,7 +112,7 @@ const ClassSelector = ({
               {tempClass.name}
             </Select.Option>
           )}
-          {classList.map(
+          {activeClasses.map(
             (cl) =>
               temporaryClassId !== cl._id && (
                 <Select.Option key={cl._id} value={cl._id}>
@@ -97,6 +123,11 @@ const ClassSelector = ({
           {currentClass && (
             <Select.Option key={currentClass._id} value={currentClass._id}>
               {currentClass.name}
+            </Select.Option>
+          )}
+          {hasArchivedClasses && showAllClassesOption && (
+            <Select.Option key="archive" value="archive">
+              Archived Classes
             </Select.Option>
           )}
         </Select>
@@ -110,19 +141,24 @@ ClassSelector.propTypes = {
 }
 
 const stateToProps = (state) => ({
-  currentGroup: getCurrentGroup(state),
+  currentGroup: getCurrentGroupExactValue(state),
   allClasses: state.studentEnrollClassList.allClasses,
+  currentTerm: getCurrentTerm(state),
 })
-export default connect(stateToProps, { changeClass: changeClassAction })(
-  ClassSelector
-)
+export default connect(stateToProps, {
+  changeClass: changeClassAction,
+  setSelectedGroupStatus: setSelectedGroupStatusAction,
+})(ClassSelector)
 
 function StudentSelect({ changeChild, childs, currentChild }) {
   if ((childs || []).length <= 1) {
     return null
   }
   return (
-    <AssignmentSelectClass id="class-dropdown-wrapper">
+    <AssignmentSelectClass
+      id="class-dropdown-wrapper"
+      style={{ marginRight: '20px' }}
+    >
       <ClassLabel>student</ClassLabel>
       <Select
         value={currentChild}
@@ -158,7 +194,7 @@ const ClassLabel = styled.span`
   font-size: ${(props) => props.theme.header.headerClassTitleFontSize};
   color: ${(props) => props.theme.header.headerClassTitleColor};
   font-weight: 600;
-  margin-right: 30px;
+  margin-right: 10px;
   align-items: center;
   letter-spacing: 0.2px;
 

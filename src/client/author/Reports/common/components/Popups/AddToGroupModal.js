@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import * as Sentry from '@sentry/browser'
 
 // components
 import PerfectScrollbar from 'react-perfect-scrollbar'
@@ -15,6 +14,7 @@ import {
   withWindowSizes,
   notification,
   CustomModalStyled,
+  captureSentryException,
 } from '@edulastic/common'
 
 // api, ducks, helpers
@@ -37,6 +37,7 @@ import {
   groupsLoadingSelector,
 } from '../../../../sharedDucks/groups'
 import { requestEnrolExistingUserToClassAction } from '../../../../ClassEnrollment/ducks'
+import { getFormattedName } from '../../../../Gradebook/transformers'
 
 const getParentUrl = (urlList) => {
   // urlList[2] decides the origin of the createClass route
@@ -56,7 +57,7 @@ const getParentUrl = (urlList) => {
 
 const ScrollElement = ({ item, onClick, ticked }) => (
   <div
-    data-cy={`${item.lastName}, ${item.firstName}`}
+    data-cy={getFormattedName(item.firstName, item.middleName, item.lastName)}
     className="scrollbar-element"
     onClick={() => onClick(item._id)}
   >
@@ -66,7 +67,7 @@ const ScrollElement = ({ item, onClick, ticked }) => (
         spacing="0.26px"
         fontStyle="14px/19px Open Sans"
       >
-        {item.firstName || ''} {item.lastName || ''}
+        {getFormattedName(item.firstName, item.middleName, item.lastName)}
       </StyledDiv>
       <StyledDiv color={lightGrey5} spacing="0.2px">
         {item.username || ''}
@@ -182,7 +183,7 @@ const AddToGroupModal = ({
         const {
           data: { message: errorMessage },
         } = err.response
-        Sentry.captureException(err)
+        captureSentryException(err)
         notification({ msg: errorMessage })
       }
       setStudentsToRemove([])

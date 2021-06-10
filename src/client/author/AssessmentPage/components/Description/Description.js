@@ -15,8 +15,8 @@ const Description = ({
   getItemsSubjectAndGrade,
   assessment,
   itemsSubjectAndGrade,
-  owner,
   orgCollections,
+  owner,
 }) => {
   const [showModal, setShowModal] = useState(false)
 

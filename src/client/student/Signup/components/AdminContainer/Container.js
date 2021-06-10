@@ -79,6 +79,7 @@ class AdminSignup extends React.Component {
           name,
           role: 'teacher',
           errorCallback: this.errorCallback,
+          isAdmin: true,
         })
       }
     })
@@ -155,7 +156,7 @@ class AdminSignup extends React.Component {
 
     return (
       <div>
-        {!validatePartnerUrl(partner) ? <Redirect exact to="/login" /> : null}
+        {!validatePartnerUrl(partner) ? <Redirect exact to="/" /> : null}
         <RegistrationWrapper
           image={partner.partnerKey === 'login' ? adminBg : partner.background}
         >
@@ -209,7 +210,10 @@ class AdminSignup extends React.Component {
                         span={20}
                         offset={2}
                         onClick={() => {
-                          googleLoginAction({ role: 'teacher' })
+                          googleLoginAction({
+                            role: 'teacher',
+                            isAdmin: true,
+                          })
                         }}
                       >
                         <img src={googleIcon} alt="" />{' '}
@@ -219,7 +223,10 @@ class AdminSignup extends React.Component {
                         span={20}
                         offset={2}
                         onClick={() => {
-                          msoLoginAction({ role: 'teacher' })
+                          msoLoginAction({
+                            role: 'teacher',
+                            isAdmin: true,
+                          })
                         }}
                       >
                         <img src={icon365} alt="" />{' '}
@@ -310,6 +317,7 @@ class AdminSignup extends React.Component {
                               <Input
                                 prefix={<IconLock color={themeColor} />}
                                 type="password"
+                                autoComplete="off"
                               />
                             )}
                           </FormItem>

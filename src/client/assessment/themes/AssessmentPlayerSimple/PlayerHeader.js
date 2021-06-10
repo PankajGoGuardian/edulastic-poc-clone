@@ -59,6 +59,9 @@ const PlayerHeader = ({
   timedAssignment,
   utaId,
   groupId,
+  hidePause,
+  blockNavigationToAnsweredQuestions,
+  LCBPreviewModal = false,
 }) => {
   const [isToolbarModalVisible, setToolbarModalVisible] = useState(false)
 
@@ -79,8 +82,10 @@ const PlayerHeader = ({
   const rightButtons = (
     <SaveAndExit
       utaId={utaId}
+      groupId={groupId}
       previewPlayer={previewPlayer}
       showZoomBtn
+      hidePause={hidePause}
       finishTest={onOpenExitPopup}
       timedAssignment={timedAssignment}
     />
@@ -102,6 +107,7 @@ const PlayerHeader = ({
         isBookmarked={isBookmarked}
         handletoggleHints={onshowHideHints}
         changeTool={toggleToolsOpenStatus}
+        blockNavigationToAnsweredQuestions={blockNavigationToAnsweredQuestions}
       />
       <SettingsModal />
       <Header ref={headerRef}>
@@ -121,6 +127,9 @@ const PlayerHeader = ({
                     gotoQuestion={gotoQuestion}
                     options={dropdownOptions}
                     skinb="true"
+                    blockNavigationToAnsweredQuestions={
+                      blockNavigationToAnsweredQuestions
+                    }
                   />
                 )}
                 {showSettingIcon && (
@@ -149,6 +158,10 @@ const PlayerHeader = ({
                     toggleBookmark={() => toggleBookmark(item._id)}
                     isBookmarked={isBookmarked}
                     handletoggleHints={onshowHideHints}
+                    blockNavigationToAnsweredQuestions={
+                      blockNavigationToAnsweredQuestions
+                    }
+                    LCBPreviewModal={LCBPreviewModal}
                   />
                 )}
                 {!showSettingIcon && (

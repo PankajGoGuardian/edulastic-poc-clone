@@ -1,4 +1,5 @@
 import { createSlice } from 'redux-starter-kit'
+import { createSelector } from 'reselect'
 import { delay } from 'redux-saga'
 import {
   takeEvery,
@@ -13,6 +14,13 @@ import { notification } from '@edulastic/common'
 
 export const sliceName = 'playlistTestBox'
 const LIMIT = 20
+
+const stateSelector = (state) => state?.[sliceName]
+
+export const getPlaylistContentFilters = createSelector(
+  stateSelector,
+  (state) => state
+)
 
 export const FILTERS = [
   {
@@ -59,6 +67,8 @@ const slice = createSlice({
     collection: '',
     sources: [],
     isLoading: false,
+    alignment: {},
+    selectedStandards: [],
     loadedPage: 0,
     filter: 'ENTIRE_LIBRARY',
     searchString: undefined,
@@ -75,6 +85,9 @@ const slice = createSlice({
       state.collection = collection
     },
     fetchTests: (state) => {
+      state.isLoading = true
+    },
+    fetchResources: (state) => {
       state.isLoading = true
     },
     fetchTestsSuccess: (state, { payload }) => {
@@ -107,6 +120,12 @@ const slice = createSlice({
     setSourcesAction: (state, { payload }) => {
       state.sources = payload
     },
+    setAlignmentAction: (state, { payload }) => {
+      state.alignment = payload
+    },
+    setSelectedStandardsAction: (state, { payload }) => {
+      state.selectedStandards = payload
+    },
     resetLoadedPage: (state) => {
       state.loadedPage = 0
     },
@@ -115,8 +134,15 @@ const slice = createSlice({
       state.loadedPage = 0
       state.tests = []
     },
+    resetSelectedStandards: (state) => {
+      state.selectedStandards = []
+    },
     setTestSearchAction: (state, { payload }) => {
       state.searchString = payload
+    },
+    setResourceSearchAction: (state, { payload }) => {
+      state.searchString = payload
+      state.loadedPage = 0
     },
     showTestPreviewModal: (state, { payload }) => {
       state.selectedTestForPreview = payload
@@ -138,20 +164,41 @@ const slice = createSlice({
     addResource: (state) => {
       state.searchResourceBy = 'resources'
     },
-    fetchResource: (state) => {
+    searchResource: (state) => {
       state.isLoading = true
     },
     fetchResourceResult: (state, { payload }) => {
       state.isLoading = false
-      state.resources = payload
+      if (state.loadedPage === 0) {
+        state.resources = payload
+      } else {
+        state.resources.push(...payload)
+      }
+      state.loadedPage += 1
     },
-    resetAndFetchResources: (state) => {
+    resetAndSearchResources: (state) => {
       state.isLoading = true
       state.loadedPage = 0
       state.resources = []
     },
+    resetContentFilters: (state) => {
+      state.status = ''
+      state.authoredBy = ''
+      state.subject = ''
+      state.grades = []
+      state.collection = ''
+      state.sources = []
+      state.alignment = {}
+      state.selectedStandards = []
+      state.loadedPage = 0
+      state.filter = 'ENTIRE_LIBRARY'
+      state.searchString = undefined
+    },
   },
 })
+
+export const closePlayListTestPreviewModalAction = () =>
+  slice.actions.closeTestPreviewModal()
 
 export default slice
 
@@ -164,7 +211,6 @@ function* fetchTestsSaga() {
       loadedPage,
       filter,
       collection,
-      searchString,
     } = yield select((state) => state[sliceName])
     // Add authoredBy and sources once BE is fixed
 
@@ -178,7 +224,6 @@ function* fetchTestsSaga() {
               grades,
               filter,
               collections: collection === '' ? [] : [collection],
-              searchString,
             },
             page: loadedPage + 1,
             limit: LIMIT,
@@ -233,10 +278,11 @@ function* fetchExternalToolsSaga({ payload }) {
 
 function* fetchDataSaga({ payload }) {
   try {
+    yield put(slice.actions.resetContentFilters())
     if (payload === 'tests') {
       yield put(slice.actions.resetAndFetchTests())
     } else {
-      yield put(slice.actions.resetAndFetchResources())
+      yield put(slice.actions.resetAndSearchResources())
     }
   } catch (e) {
     console.error('Error Occured: fetchDataSaga ', e)
@@ -246,30 +292,53 @@ function* fetchDataSaga({ payload }) {
 function* addResourceSaga({ payload }) {
   try {
     yield call(resourcesApi.addResource, payload)
-    yield put(slice.actions.resetAndFetchResources())
+    yield put(slice.actions.resetSelectedStandards())
+    // delay reources fetch so that the added resource gets indexed in ES
+    yield delay(500)
+    yield put(slice.actions.resetAndSearchResources())
+    notification({ type: 'success', msg: 'Resource Created Successfully' })
   } catch (e) {
     console.error('Error Occured: addResourceSaga ', e)
   }
 }
 
-function* fetchResourceSaga() {
+function* searchResourceSaga() {
   try {
-    const result = yield call(resourcesApi.fetchResources)
+    const {
+      loadedPage,
+      selectedStandards,
+      searchString,
+      alignment,
+    } = yield select((state) => state[sliceName]) || {}
+
+    const selectedStandardIds = selectedStandards?.map((x) => x._id) || []
+    const data = {
+      page: loadedPage + 1,
+      limit: LIMIT,
+      search: {
+        searchString,
+        curriculumId: alignment?.curriculumId,
+        standardIds: selectedStandardIds,
+        subject: alignment?.subject,
+      },
+    }
+    const result = yield call(resourcesApi.searchResource, data)
     if (!result) {
       notification({ msg: result.error })
       yield put(slice.actions.fetchResourceResult([]))
     } else {
-      yield put(slice.actions.fetchResourceResult(result))
+      const _data = result.map((x) => ({ ...x._source, contentId: x._id }))
+      yield put(slice.actions.fetchResourceResult(_data))
     }
   } catch (e) {
-    console.error('Error Occured: fetchResourceSaga ', e)
+    console.error('Error Occured: searchResourceSaga ', e)
   }
 }
 
 export function* watcherSaga() {
   yield all([
     yield takeEvery(slice.actions.fetchTests, fetchTestsSaga),
-    yield takeEvery(slice.actions.resetAndFetchTests, fetchTestsSaga),
+    yield takeEvery(slice.actions.resetAndFetchTests, fetchTestsBySearchString),
     yield takeLatest(
       slice.actions.setTestSearchAction,
       fetchTestsBySearchString
@@ -280,7 +349,9 @@ export function* watcherSaga() {
     ),
     yield takeEvery(slice.actions.setSearchByTab, fetchDataSaga),
     yield takeEvery(slice.actions.addResource, addResourceSaga),
-    yield takeEvery(slice.actions.fetchResource, fetchResourceSaga),
-    yield takeEvery(slice.actions.resetAndFetchResources, fetchResourceSaga),
+    yield takeEvery(slice.actions.searchResource, searchResourceSaga),
+    yield takeEvery(slice.actions.resetAndSearchResources, searchResourceSaga),
+    yield takeEvery(slice.actions.setResourceSearchAction, searchResourceSaga),
+    yield takeEvery(slice.actions.fetchResources, searchResourceSaga),
   ])
 }

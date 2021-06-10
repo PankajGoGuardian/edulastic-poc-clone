@@ -21,10 +21,11 @@ import {
   TRUE_OR_FALSE,
   ESSAY_PLAIN_TEXT,
 } from '@edulastic/constants/const/questionType'
-import { methods, defaultNumberPad } from '@edulastic/constants/const/math'
+import { math } from '@edulastic/constants'
 
 import { storeInLocalStorage } from '@edulastic/api/src/utils/Storage'
-import { FaBars } from 'react-icons/fa'
+import { IconMoveArrows } from '@edulastic/icons'
+import { lightGrey9 } from '@edulastic/colors'
 import { getPreviewSelector } from '../../../src/selectors/view'
 import { checkAnswerAction } from '../../../src/actions/testItem'
 import { changePreviewAction } from '../../../src/actions/view'
@@ -50,9 +51,11 @@ import { deleteAnnotationAction } from '../../../TestPage/ducks'
 import { getRecentStandardsListSelector } from '../../../src/selectors/dictionaries'
 import { updateRecentStandardsAction } from '../../../src/actions/dictionaries'
 
-const DragHandle = sortableHandle(() => (
-  <StyledHandleSpan>
-    <FaBars />
+const { methods, defaultNumberPad } = math
+
+const DragHandle = sortableHandle(({ questionIndex }) => (
+  <StyledHandleSpan data-cy={`handel${questionIndex}`}>
+    <IconMoveArrows color={lightGrey9} width={19} height={19} />
   </StyledHandleSpan>
 ))
 
@@ -79,6 +82,8 @@ const SortableQuestionItem = SortableElement(
     groupId,
     qId,
     clearHighlighted,
+    resetTimeSpentOnQuestion,
+    itemId,
   }) => (
     <div
       onClick={() => {
@@ -97,7 +102,9 @@ const SortableQuestionItem = SortableElement(
         paddingTop: questionIndex === 1 && 6,
       }}
     >
-      {!testMode && !review && <DragHandle review={review} />}
+      {!testMode && !review && (
+        <DragHandle review={review} questionIndex={questionIndex} />
+      )}
       <QuestionItem
         key={key}
         index={index}
@@ -119,6 +126,8 @@ const SortableQuestionItem = SortableElement(
         groupId={groupId}
         qId={qId}
         clearHighlighted={clearHighlighted}
+        resetTimeSpentOnQuestion={resetTimeSpentOnQuestion}
+        itemId={itemId}
       />
     </div>
   )
@@ -134,7 +143,6 @@ const defaultQuestionValue = {
       method: methods.EQUIV_SYMBOLIC,
       options: {
         inverseResult: false,
-        significantDecimalPlaces: 10,
       },
       value: '',
     },
@@ -293,33 +301,13 @@ class Questions extends React.Component {
   constructor(props) {
     super(props)
     this.containerRef = React.createRef()
+    this.state = {
+      currentEditQuestionIndex: -1,
+    }
   }
 
-  static propTypes = {
-    list: PropTypes.array,
-    questionsById: PropTypes.object,
-    addQuestion: PropTypes.func.isRequired,
-    updateQuestion: PropTypes.func.isRequired,
-    deleteQuestion: PropTypes.func.isRequired,
-    checkAnswer: PropTypes.func.isRequired,
-    changePreview: PropTypes.func.isRequired,
-    previewMode: PropTypes.string.isRequired,
-    viewMode: PropTypes.string.isRequired,
-    noCheck: PropTypes.bool,
-    answersById: PropTypes.object,
-    highlighted: PropTypes.string,
-  }
-
-  static defaultProps = {
-    list: [],
-    questionsById: {},
-    noCheck: false,
-    answersById: {},
-    highlighted: undefined,
-  }
-
-  state = {
-    currentEditQuestionIndex: -1,
+  componentDidMount() {
+    this.resetTimeSpentOnQuestion()
   }
 
   scrollToBottom = () => {
@@ -332,6 +320,10 @@ class Questions extends React.Component {
     }
   }
 
+  resetTimeSpentOnQuestion = () => {
+    window.localStorage.setItem('docAssessmentLastTimestamp', Date.now())
+  }
+
   handleAddQuestion = (
     type,
     index,
@@ -341,7 +333,7 @@ class Questions extends React.Component {
     const { addQuestion, list, isDocBased = false } = this.props
     const questions = list.filter((q) => q.type !== 'sectionLabel')
 
-    const lastQuestion = questions[questions.length - 1]
+    const lastQuestion = maxBy(questions, 'qIndex')
 
     const questionIndex =
       index ||
@@ -484,7 +476,7 @@ class Questions extends React.Component {
     const { checkAnswer, changePreview } = this.props
 
     changePreview('show')
-    checkAnswer('show')
+    checkAnswer({ mode: 'show' })
   }
 
   handleClear = () => {
@@ -534,6 +526,7 @@ class Questions extends React.Component {
       groupId,
       qId,
       clearHighlighted,
+      itemId,
     } = this.props
     const minAvailableQuestionIndex =
       (maxBy(list, 'qIndex') || { qIndex: 0 }).qIndex + 1
@@ -582,7 +575,7 @@ class Questions extends React.Component {
                     onDelete={this.handleDeleteQuestion(question.id)}
                     previewMode={previewMode}
                     viewMode={viewMode}
-                    answer={answersById[question.id]}
+                    answer={answersById[`${itemId}_${question.id}`]}
                     onDragStart={onDragStart}
                     highlighted={highlighted === question.id}
                     testMode={testMode}
@@ -591,6 +584,8 @@ class Questions extends React.Component {
                     clearHighlighted={clearHighlighted}
                     groupId={groupId}
                     qId={qId}
+                    resetTimeSpentOnQuestion={this.resetTimeSpentOnQuestion}
+                    itemId={itemId}
                   />
                 )
               )}
@@ -609,16 +604,20 @@ class Questions extends React.Component {
               <AnswerAction
                 active={previewMode === 'check'}
                 onClick={this.handleCheckAnswer}
+                data-cy="checkAnswer"
               >
                 Check Answer
               </AnswerAction>
               <AnswerAction
                 active={previewMode === 'show'}
                 onClick={this.handleShowAnswer}
+                data-cy="showAnswer"
               >
                 Show Answer
               </AnswerAction>
-              <AnswerAction onClick={this.handleClear}>Clear</AnswerAction>
+              <AnswerAction onClick={this.handleClear} data-cy="clearAnswer">
+                Clear
+              </AnswerAction>
             </AnswerActionsWrapper>
           )}
         </QuestionsWrapper>
@@ -636,6 +635,29 @@ class Questions extends React.Component {
       </>
     )
   }
+}
+
+Questions.propTypes = {
+  list: PropTypes.array,
+  questionsById: PropTypes.object,
+  addQuestion: PropTypes.func.isRequired,
+  updateQuestion: PropTypes.func.isRequired,
+  deleteQuestion: PropTypes.func.isRequired,
+  checkAnswer: PropTypes.func.isRequired,
+  changePreview: PropTypes.func.isRequired,
+  previewMode: PropTypes.string.isRequired,
+  viewMode: PropTypes.string.isRequired,
+  noCheck: PropTypes.bool,
+  answersById: PropTypes.object,
+  highlighted: PropTypes.string,
+}
+
+Questions.defaultProps = {
+  list: [],
+  questionsById: {},
+  noCheck: false,
+  answersById: {},
+  highlighted: undefined,
 }
 
 const enhance = compose(

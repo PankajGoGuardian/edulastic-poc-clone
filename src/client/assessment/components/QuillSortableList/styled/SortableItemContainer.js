@@ -54,7 +54,7 @@ export const SortableItemContainer = styled.div.attrs({
         : `1px solid ${greyThemeLight}`};
 
     .froala-wrapper {
-      padding: 8px 0px;
+      padding: 5px 0px;
       width: calc(
         100% - 65px
       ); /* 65px is the combined width of hamburger and delete icons  */

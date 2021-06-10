@@ -24,6 +24,7 @@ const Matrix = (props) => {
     evaluation,
     smallSize,
     isPrintPreview,
+    tool,
   } = props
 
   // We expect stems to be an array, otherwise don't render
@@ -45,11 +46,11 @@ const Matrix = (props) => {
       checked = response.value[responseId]
     }
 
-    const handleChange = (e) => {
+    const handleChange = () => {
       const checkData = {
         columnIndex,
         rowIndex,
-        checked: e.target.checked,
+        checked: !checked,
       }
 
       onCheck(checkData)
@@ -65,6 +66,7 @@ const Matrix = (props) => {
         isMultiple={isMultiple}
         smallSize={smallSize}
         isPrintPreview={isPrintPreview}
+        tool={tool}
       >
         {evaluation && checked && (
           <IconWrapper correct={correct} isPrintPreview={isPrintPreview}>
@@ -200,7 +202,7 @@ Matrix.defaultProps = {
 export default Matrix
 
 const MathSpan = WithMathFormula(styled.div`
-  height: 100%;
+  min-height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;

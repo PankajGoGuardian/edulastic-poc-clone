@@ -11,7 +11,7 @@ import { updateVariables } from '../../utils/variables'
 
 import { latexKeys } from './constants'
 
-const { methods } = math
+const { methods, simplifiedOptions } = math
 
 const initialMethod = {
   method: methods.EQUIV_SYMBOLIC,
@@ -20,8 +20,11 @@ const initialMethod = {
 const initialOption = {}
 
 class MathFormulaAnswers extends React.Component {
-  state = {
-    currentTab: 0,
+  constructor() {
+    super()
+    this.state = {
+      currentTab: 0,
+    }
   }
 
   setCorrectTab = (currentTab) => this.setState({ currentTab })
@@ -35,7 +38,7 @@ class MathFormulaAnswers extends React.Component {
           draft.validation.altResponses = []
         }
         draft.validation.altResponses.push({
-          score: 1,
+          score: draft?.validation?.validResponse?.score,
           value: [initialMethod],
         })
 
@@ -48,9 +51,32 @@ class MathFormulaAnswers extends React.Component {
   handleChangeAnswer = ({ index, prop, value }) => {
     const { item, setQuestionData } = this.props
     const { currentTab } = this.state
-
+    // optionKey === 'isSimplifiedFraction' ||
+    // optionKey === 'isSimplifiedExpression'
     setQuestionData(
       produce(item, (draft) => {
+        if (prop === 'options') {
+          let hasSimplified = false
+          Object.keys(value).forEach((optKey) => {
+            if (simplifiedOptions.includes(optKey)) {
+              hasSimplified = true
+              value.isSimplified = true
+              if (!draft.extraOpts) {
+                draft.extraOpts = {}
+              }
+              draft.extraOpts[currentTab] = {
+                [optKey]: value[optKey],
+              }
+              delete value[optKey]
+            }
+          })
+          if (!hasSimplified) {
+            if (draft.extraOpts) {
+              delete draft.extraOpts[currentTab]
+            }
+            delete value.isSimplified
+          }
+        }
         // default mode selection
         if (prop === 'keypadMode') {
           draft.keypadMode = value // adding new fields to testItem
@@ -94,7 +120,11 @@ class MathFormulaAnswers extends React.Component {
     )
   }
 
-  handleChangePoints = (points) => {
+  handleChangePoints = (score) => {
+    if (!(score > 0)) {
+      return
+    }
+    const points = parseFloat(score, 10)
     const { item, setQuestionData } = this.props
     const { currentTab } = this.state
     setQuestionData(
@@ -253,7 +283,16 @@ class MathFormulaAnswers extends React.Component {
     if (currentTab === 0) {
       return item.validation.validResponse
     }
-    return item.validation.altResponses[currentTab - 1]
+    return item.validation.altResponses[currentTab - 1] || {}
+  }
+
+  get extraOpts() {
+    const { item } = this.props
+    const { currentTab } = this.state
+    if (item.extraOpts) {
+      return item.extraOpts[currentTab] || {}
+    }
+    return {}
   }
 
   render() {
@@ -281,6 +320,7 @@ class MathFormulaAnswers extends React.Component {
           key={`mathanswer-${currentTab}`}
           onChangeAllowedOptions={this.handleAllowedOptions}
           answer={this.response.value}
+          extraOptions={this.extraOpts}
           setQuestionData={setQuestionData}
           onChangeKeypad={this.handleKeypadMode}
           keypadOffset={keypadOffset}

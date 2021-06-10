@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import get from 'lodash/get'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
+
 import {
   EduButton,
   FlexContainer,
@@ -17,6 +18,7 @@ import {
   title,
   themeColorBlue,
 } from '@edulastic/colors'
+
 import { getFontSize } from '../../utils/helpers'
 import { Label } from '../../styled/WidgetOptions/Label'
 
@@ -31,21 +33,13 @@ const Hints = ({
   isExpressGrader,
   isStudentReport,
 }) => {
-  const { hints = [], id } = question
-  const validHints = hints?.filter((hint) => hint?.label)
+  const { id } = question
+  const validHints = useMemo(() => {
+    return (question?.hints || []).filter((hint) => hint?.label)
+  }, [question])
+
   const hintCount = validHints.length
   const fontSize = getFontSize(get(question, 'uiStyle.fontsize'))
-
-  if (
-    !hintCount ||
-    question.type === 'passage' ||
-    question.type === 'passageWithQuestions' ||
-    question.type === 'video' ||
-    question.type === 'resource' ||
-    question.type === 'text'
-  ) {
-    return null
-  }
 
   const hintContRef = useRef()
 
@@ -110,6 +104,17 @@ const Hints = ({
     updateShowCount(0)
   }, [id])
 
+  if (
+    !hintCount ||
+    question.type === 'passage' ||
+    question.type === 'passageWithQuestions' ||
+    question.type === 'video' ||
+    question.type === 'resource' ||
+    question.type === 'text'
+  ) {
+    return null
+  }
+
   return (
     <>
       {!isStudentReport && hintCount > 0 && (
@@ -126,9 +131,9 @@ const Hints = ({
                   <HintItem data-cy="hint-subcontainer" key={value}>
                     <LabelWrapper>
                       <HintLabel>
-                        <Label data-cy="hint-count" marginBottom="0px">{`${
-                          index + 1
-                        }/${hintCount}`}</Label>
+                        <Label data-cy="hint-count" marginBottom="0px">
+                          {`${index + 1}/${hintCount}`}
+                        </Label>
                       </HintLabel>
                     </LabelWrapper>
 
@@ -146,7 +151,7 @@ const Hints = ({
                           data-cy="more-hint"
                           onClick={showMoreHints}
                         >
-                          + Get Another Hint {`${index + 2}/${hintCount}`}
+                          + Get Another Hint {`${index + 1}/${hintCount}`}
                         </ShowMoreHint>
                       )}
                     </div>
@@ -156,10 +161,10 @@ const Hints = ({
           {!showCount && (
             <ShowHint
               height="30px"
-              isBlue
               isGhost
               onClick={showHintHandler}
               isStudent={isStudent}
+              tabIndex="-1"
             >
               Show Hint
             </ShowHint>
@@ -219,7 +224,7 @@ export default connect((state) => ({
 }))(Hints)
 
 const HintCont = styled.div`
-  margin: 16px 0px;
+  margin-top: 10px;
 `
 
 const HintItem = styled(FlexContainer)`
@@ -267,11 +272,6 @@ const HintContent = styled.div`
 
 const ShowHint = styled(EduButton)`
   margin-left: ${({ isStudent }) => `${isStudent ? 50 : 0}px`};
-  border: none;
-  box-shadow: none;
-  width: auto !important;
-  background: transparent !important;
-  color: ${themeColorBlue} !important;
   position: relative;
   z-index: 998; /* header has z-index 999 */
 `

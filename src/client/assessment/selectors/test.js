@@ -1,5 +1,4 @@
 import { createSelector } from 'reselect'
-import { cloneDeep } from 'lodash'
 import { test as testConstants } from '@edulastic/constants'
 import { getAnswersListSelector } from './answers'
 
@@ -31,14 +30,22 @@ export const currentQuestions = createSelector(currentItemSelector, (item) => {
   }, [])
 })
 
+export const answersByQId = (answers, testItemId) => {
+  const newAnswers = {}
+  Object.keys(answers).forEach((key) => {
+    const [itemId, qId] = key.split(/_(.+)/)
+    if (testItemId === itemId) {
+      // updating answer key as qId itself as it is for a single item evaluation.
+      newAnswers[qId] = answers[key]
+    }
+  })
+  return newAnswers
+}
+
 export const answersForCheck = createSelector(
   getAnswersListSelector,
-  currentQuestions,
-  (answers) => {
-    const newAnswers = cloneDeep(answers)
-
-    return newAnswers
-  }
+  currentItemSelector,
+  (answers, item) => answersByQId(answers, item._id)
 )
 
 export const itemQuestionsSelector = createSelector(
@@ -92,17 +99,24 @@ export const curentPlayerDetailsSelector = createSelector(
 
 export const playerSkinTypeSelector = createSelector(stateSelector, (state) => {
   const { playerSkinType } = state
-
-  // TODO: need to remove once test APIs are done
-  if (playerSkinType === playerSkinValues.testlet) {
-    return playerSkinValues.testlet
-  }
-
-  if (playerSkinType === playerSkinValues.cmas) {
-    return playerSkinValues.parcc
-  }
-  if (playerSkinType === playerSkinValues.casspp) {
-    return playerSkinValues.sbac
-  }
-  return playerSkinType || playerSkinValues.edulastic
+  return playerSkinValues[playerSkinType] || playerSkinValues.edulastic
 })
+
+export const getPreviewPlayerStateSelector = createSelector(
+  stateSelector,
+  (state) => ({
+    pauseAllowed: state.settings.pauseAllowed,
+    allowedTime: state.settings.allowedTime,
+    timedAssignment: state.settings.timedAssignment,
+    multiLanguageEnabled: state.previewState.multiLanguageEnabled,
+    hasInstruction: state.previewState.hasInstruction,
+    instruction: state.previewState.instruction,
+    languagePreference: state.languagePreference,
+    viewTestInfoSuccess: state.viewTestInfoSuccess,
+  })
+)
+
+export const getIsPreviewModalVisibleSelector = createSelector(
+  stateSelector,
+  (state) => state.isTestPreviewModalVisible
+)

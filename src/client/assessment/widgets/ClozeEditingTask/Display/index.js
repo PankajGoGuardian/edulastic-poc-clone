@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { isUndefined, mapValues, cloneDeep, orderBy } from 'lodash'
 import { withTheme } from 'styled-components'
-import JsxParser from 'react-jsx-parser'
+import JsxParser from 'react-jsx-parser/lib/react-jsx-parser.min'
 
 import {
   helpers,
@@ -120,6 +120,8 @@ class EditingTypeDisplay extends Component {
       view,
       isPrint,
       isPrintPreview,
+      hideCorrectAnswer,
+      answerScore,
     } = this.props
 
     const { parsedTemplate } = this.state
@@ -137,6 +139,7 @@ class EditingTypeDisplay extends Component {
       item,
       uiStyle,
       btnStyle,
+      answerScore,
       options: responses,
       onChange: this.selectChange,
       disableResponse,
@@ -192,7 +195,7 @@ class EditingTypeDisplay extends Component {
           )}
         </QuestionLabelWrapper>
 
-        <QuestionContentWrapper>
+        <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
           <QuestionTitleWrapper>
             {!!question && (
               <Stimulus
@@ -212,7 +215,7 @@ class EditingTypeDisplay extends Component {
             />
           )}
           {view !== EDIT && <Instructions item={item} />}
-          {(showAnswer || isExpressGrader) && (
+          {(showAnswer || isExpressGrader) && !hideCorrectAnswer && (
             <>
               <CorrectAnswerBoxLayout
                 fontSize={fontSize}

@@ -42,10 +42,10 @@ export const getTestItemQuestions = (item) => {
   return []
 }
 // selectors
-const module = 'studentTestItems'
-export const getCurrentItemSelector = (state) => state[module].current
-export const getItemCountSelector = (state) => state[module].items.length
-export const getItemsSelector = (state) => state[module].items
+const _module = 'studentTestItems'
+export const getCurrentItemSelector = (state) => state[_module].current
+export const getItemCountSelector = (state) => state[_module].items.length
+export const getItemsSelector = (state) => state[_module].items
 export const getTestFeedbackSelector = (state) => state.testFeedback
 export const userWorkSelector = (state) => state.userWork.present
 
@@ -88,13 +88,18 @@ export const itemHasUserWorkSelector = createSelector(
   }
 )
 
+export const getTestLevelUserWorkSelector = createSelector(
+  userWorkSelector,
+  (state) => state.attachments
+)
+
 export const questionActivityFromFeedbackSelector = createSelector(
   getItemSelector,
   getTestFeedbackSelector,
   (item, questionActivities) => {
     if (item) {
       const questionActivity =
-        questionActivities.find((act) => act.testItemId === item._id) || {}
+        questionActivities.filter((act) => act.testItemId === item._id) || {}
       return questionActivity
     }
     return {}
@@ -104,12 +109,15 @@ export const questionActivityFromFeedbackSelector = createSelector(
 export const userWorkFromQuestionActivitySelector = createSelector(
   questionActivityFromFeedbackSelector,
   userWorkSelector,
-  (questionActivity, userWork) => {
-    if (questionActivity) {
-      return userWork[questionActivity._id]
-    }
+  (questionActivities = [], userWork) => {
+    const scratchPadData = (questionActivities || []).reduce((acc, curr) => {
+      if (userWork[curr._id]) {
+        acc[curr._id] = userWork[curr._id]
+      }
+      return acc
+    }, {})
 
-    return {}
+    return scratchPadData
   }
 )
 
@@ -129,3 +137,14 @@ export const getMaxScoreFromCurrentItem = (state) => {
     0
   )
 }
+
+export const highlightsStudentReportSelector = createSelector(
+  userWorkSelector,
+  getItemSelector,
+  (state) => get(state, `[studentReport][testActivity]`, {}),
+  (userWork, item, testActivity) => {
+    const { passageId } = item
+    const { _id: testActivityId } = testActivity
+    return get(userWork, `[${passageId}][${testActivityId}].resourceId`, '')
+  }
+)

@@ -5,7 +5,6 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { debounce, uniq, get } from 'lodash'
 import { Pagination, Spin } from 'antd'
-import Qs from 'query-string'
 import { roleuser, sortOptions } from '@edulastic/constants'
 import {
   withWindowSizes,
@@ -16,6 +15,7 @@ import {
 import { withNamespaces } from '@edulastic/localization'
 import { IconPlusCircle, IconItemGroup } from '@edulastic/icons'
 import { themeColor } from '@edulastic/colors'
+import qs from 'qs'
 import { ItemsPagination, Selected } from './styled'
 import {
   getCurriculumsListSelector,
@@ -137,7 +137,7 @@ class AddItems extends PureComponent {
       needToSetFilter,
       sort: initSort,
     } = this.props
-    const query = Qs.parse(window.location.search)
+    const query = qs.parse(window.location.search, { ignoreQueryPrefix: true })
     let search = {}
     const sessionSort =
       JSON.parse(sessionStorage.getItem('sortBy[itemList]')) || {}
@@ -150,7 +150,7 @@ class AddItems extends PureComponent {
 
     if (needToSetFilter) {
       const {
-        subject = interestedSubjects?.[0] || '',
+        subject = interestedSubjects?.[0],
         grades = interestedGrades || [],
         curriculumId = firstCurriculum?.subject === interestedSubjects?.[0]
           ? firstCurriculum?._id
@@ -168,7 +168,7 @@ class AddItems extends PureComponent {
         ...initSearch,
         ...sessionFilters,
         ...applyAuthoredFilter,
-        subject: selectedSubjects[0] || subject,
+        subject: selectedSubjects[0] || subject || [],
         grades: uniq([...selectedGrades, ...grades]),
         curriculumId: parseInt(curriculumId, 10) || '',
       }
@@ -530,7 +530,7 @@ class AddItems extends PureComponent {
           <Element>
             <MobileFilterIcon>
               <FilterToggleBtn
-                isShowFilter={isShowFilter}
+                isShowFilter={!isShowFilter}
                 toggleFilter={toggleFilter}
               />
             </MobileFilterIcon>

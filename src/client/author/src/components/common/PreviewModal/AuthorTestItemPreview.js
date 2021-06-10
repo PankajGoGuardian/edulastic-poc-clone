@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import {
   EduButton,
   ScrollContext,
@@ -52,22 +53,14 @@ import {
   ScratchpadTool,
   Scratchpad,
 } from '../../../../../common/components/Scratchpad'
+import { getCurrentLanguage } from '../../../../../common/components/LanguageSelector/duck'
+import { changeDataToPreferredLanguage } from '../../../../../assessment/utils/question'
 
 /**
  * As ItemPreview Modal and MultipartItem are using this component,
  * we need to set ScrollContext for each case.
  */
 class AuthorTestItemPreview extends Component {
-  static defaultProps = {
-    showFeedback: false,
-    fullModal: false,
-    verticalDivider: false,
-    scrolling: false,
-    style: { padding: 0, display: 'flex' },
-    qIndex: null,
-    student: {},
-  }
-
   constructor(props) {
     super(props)
     this.state = {
@@ -195,6 +188,7 @@ class AuthorTestItemPreview extends Component {
       item,
       cols,
       isMultipart,
+      authorLanguage,
       ...restProps
     } = this.props
     // const questionCount = get(item, ["data", "questions"], []).length;
@@ -206,7 +200,10 @@ class AuthorTestItemPreview extends Component {
     // const alphabets = "abcdefghijklmnopqrstuvwxyz";
 
     // const subIndex = this.getSubIndex(colIndex, widget, sectionQue, subCount);
-    const question = questions[widget.reference]
+    const question = changeDataToPreferredLanguage(
+      questions[widget.reference] || {},
+      authorLanguage
+    )
     // if (isMultiPart || resourceCount > 0) {
     //   if (!question.qSubLabel) {
     //     question.qSubLabel = alphabets[subIndex - resourceCount];
@@ -219,7 +216,8 @@ class AuthorTestItemPreview extends Component {
     //       // need to remove the resource count fromt the subCount
     //       // because resources should not have labels
     //       // hence, reduce that many from the question's subCount    (EV-10560)
-    //       qLabel: isMultiPart || resourceCount > 0 ? alphabets[subIndex - resourceCount] : "" // show subIndex if multipart, otherwise nothing
+    //       qLabel: isMultiPart || resourceCount > 0 ? alphabets[subIndex - resourceCount] : ""
+    // show subIndex if multipart, otherwise nothing
     //     };
     if (!question) {
       return <div />
@@ -251,7 +249,9 @@ class AuthorTestItemPreview extends Component {
           LCBPreviewModal={LCBPreviewModal}
           borderRadius={borderRadius}
           {...restProps}
-          tabIndex={widget.tabIndex} // tabIndex was need to for passage when it has multiple tabs
+          // widgetIndex was needed for passages if it has multiple tabs and widgets
+          widgetIndex={widgetIndex}
+          testItemId={item._id}
         />
       </Tabs.TabContainer>
     )
@@ -319,10 +319,13 @@ class AuthorTestItemPreview extends Component {
 
   renderRightButtons = () => {
     const { isPassage, item, goToItem, passageTestItems, page } = this.props
+    const { collapseDirection } = this.state
+    const showButtons = collapseDirection !== 'right'
 
     return (
       <>
         {isPassage &&
+          showButtons &&
           passageTestItems.length > 1 &&
           (page === 'addItems' || page === 'itemList') && (
             <PassageNavigation>
@@ -334,6 +337,7 @@ class AuthorTestItemPreview extends Component {
                   passageTestItems.findIndex((i) => i === item.versionId) + 1
                 }
                 onChange={goToItem}
+                data-cy="questionPagination"
               />
             </PassageNavigation>
           )}
@@ -341,8 +345,8 @@ class AuthorTestItemPreview extends Component {
     )
   }
 
-  getScrollContainerProps = (showScratch) => {
-    const { page, fullModal, viewComponent, isPassage } = this.props
+  getScrollContainerProps = (showScratch, hasTabs) => {
+    const { page, isMobile, viewComponent } = this.props
     const commonProps = {
       style: {
         overflow: 'auto',
@@ -355,10 +359,12 @@ class AuthorTestItemPreview extends Component {
     // 90px is scratchpad toolbox height
     if (viewComponent === 'authorPreviewPopup') {
       const tempHeight =
-        isPassage && fullModal
-          ? 'calc(100vh - 160px)'
-          : fullModal
+        hasTabs && isMobile
+          ? 'calc(100vh - 138px)'
+          : isMobile
           ? 'calc(100vh - 100px)'
+          : hasTabs
+          ? 'calc(70vh - 38px)'
           : '70vh'
       commonProps.style.height = showScratch
         ? `calc(${tempHeight} - 90px)`
@@ -390,12 +396,11 @@ class AuthorTestItemPreview extends Component {
       windowWidth,
       onlySratchpad,
       viewComponent,
-      fullModal,
       item,
       isPassage,
       ...restProps
     } = this.props
-    const { value, isEnableScratchpad } = this.state
+    const { value, isEnableScratchpad, collapseDirection } = this.state
     const { createdBy, data = {}, maxScore, _id } = item
     const { questions = [] } = data
     const [firstQuestion = {}] = questions
@@ -413,10 +418,16 @@ class AuthorTestItemPreview extends Component {
       tags,
     } = firstQuestion
 
+    const hasTabs =
+      col.tabs &&
+      !!col.tabs.length &&
+      windowWidth >= MAX_MOBILE_WIDTH &&
+      (collapseDirection === 'right' || !collapseDirection)
+
     let subCount = 0
     const columns = (
       <>
-        {col.tabs && !!col.tabs.length && windowWidth >= MAX_MOBILE_WIDTH && (
+        {hasTabs && (
           <Tabs value={value} onChange={this.handleTabChange}>
             {col.tabs.map((tab, tabIndex) => (
               <Tabs.Tab
@@ -451,7 +462,7 @@ class AuthorTestItemPreview extends Component {
         {showScratch && isEnableScratchpad && <ScratchpadTool />}
         <WidgetContainer
           alignItems="flex-start"
-          {...this.getScrollContainerProps(showScratch)}
+          {...this.getScrollContainerProps(showScratch, hasTabs)}
         >
           <ScratchpadAndWidgetWrapper>
             {showScratch && isEnableScratchpad && (
@@ -499,6 +510,7 @@ class AuthorTestItemPreview extends Component {
               bloomsTaxonomy={bloomsTaxonomy}
               tags={tags}
               standards={standardIdentfiers}
+              item={item}
             />
           )}
           {isPassage && colIndex === 1 && (
@@ -510,6 +522,7 @@ class AuthorTestItemPreview extends Component {
               authorDifficulty={authorDifficulty}
               bloomsTaxonomy={bloomsTaxonomy}
               tags={tags}
+              item={item}
             />
           )}
         </WidgetContainer>
@@ -576,7 +589,7 @@ class AuthorTestItemPreview extends Component {
     scratchpadData,
     saveScratchpad,
   }) => {
-    const { cols, passageNavigator } = this.props
+    const { cols } = this.props
     const { collapseDirection } = this.state
 
     return cols.map((col, i) => {
@@ -599,7 +612,6 @@ class AuthorTestItemPreview extends Component {
           }
         >
           <ColumnContentArea>
-            {i === 1 && passageNavigator}
             {i === 0
               ? this.renderLeftButtons(showScratch, showNotification)
               : this.renderRightButtons()}
@@ -644,7 +656,10 @@ class AuthorTestItemPreview extends Component {
     return (
       <ThemeProvider theme={themes.default}>
         <ScrollContext.Provider
-          value={{ getScrollElement: () => this.scrollContainer.current }}
+          value={{
+            getScrollElement: () =>
+              this.scrollContainer.current || document.body,
+          }}
         >
           {isRejectMode || onlySratchpad
             ? this.renderColumnContentAreaWithRejectNote(
@@ -657,6 +672,17 @@ class AuthorTestItemPreview extends Component {
     )
   }
 }
+
+AuthorTestItemPreview.defaultProps = {
+  showFeedback: false,
+  isMobile: false,
+  verticalDivider: false,
+  scrolling: false,
+  style: { padding: 0, display: 'flex' },
+  qIndex: null,
+  student: {},
+}
+
 const enhance = compose(
   withWindowSizes,
   connect(
@@ -666,6 +692,7 @@ const enhance = compose(
       userId: getUserId(state),
       user: getUserSelector(state).user,
       userRole: getUserRole(state),
+      authorLanguage: getCurrentLanguage(state),
     }),
     {
       deleteItem: deleteItemAction,

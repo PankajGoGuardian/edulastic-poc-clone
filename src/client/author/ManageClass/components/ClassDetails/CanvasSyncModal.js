@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { Button, Select, Spin } from 'antd'
-import { EduButton, notification } from '@edulastic/common'
+import {
+  CheckboxLabel,
+  EduButton,
+  notification,
+  SelectInputStyled,
+} from '@edulastic/common'
 import styled from 'styled-components'
 import {
   backgroundGrey2,
@@ -25,10 +30,14 @@ const CanvasSyncModal = ({
   groupId,
   institutionId,
   isFetchingCanvasData,
+  syncCanvasCoTeacher,
 }) => {
   const [course, setCourse] = useState(canvasCode)
   const [section, setSection] = useState(canvasCourseSectionCode)
-  const [idDisabled, setIsDisabled] = useState(
+  const [sectionError, setSectionError] = useState(false)
+  const [courseError, setCourseError] = useState(false)
+  const [coTeacherFlag, setCoTeacherFlag] = useState(syncCanvasCoTeacher)
+  const [isDisabled, setIsDisabled] = useState(
     !!canvasCode && !!canvasCourseSectionCode
   )
 
@@ -53,16 +62,25 @@ const CanvasSyncModal = ({
     !canvasSectionList?.length
 
   useEffect(() => {
-    getCanvasCourseListRequest(institutionId)
-    if (course && section) {
-      getCanvasSectionListRequest({ institutionId, allCourseIds: [course] })
+    if (institutionId) {
+      canvasCourseList = []
+      getCanvasCourseListRequest(institutionId)
     }
-  }, [])
+  }, [institutionId])
+
+  useEffect(() => {
+    if (canvasCourseList.length && institutionId) {
+      getCanvasSectionListRequest({ allCourseIds: [course], institutionId })
+    }
+  }, [canvasCourseList])
 
   const handleCourseChange = (value) => {
     getCanvasSectionListRequest({ institutionId, allCourseIds: [value] })
     setCourse(value)
     setSection('')
+    setCoTeacherFlag(false)
+    setCourseError(false)
+    setSectionError(false)
   }
 
   useEffect(() => {
@@ -76,9 +94,18 @@ const CanvasSyncModal = ({
     }
   }, [canvasSectionList])
 
+  const onCoTeacherChange = ({ target }) => {
+    setCoTeacherFlag(target.checked)
+  }
+
   const handleSync = () => {
-    if (!course || !section) {
-      return notification({ msg: 'bothCourseandSectionRequired' })
+    if (!course) {
+      setCourseError(true)
+      return
+    }
+    if (!section) {
+      setSectionError(true)
+      return
     }
 
     const {
@@ -90,7 +117,7 @@ const CanvasSyncModal = ({
       ({ id }) => id === section
     )
     if (!selectedSectionDetails) {
-      return notification({ msg: 'bothCourseandSectionRequired' })
+      return notification({ messageKey: 'bothCourseandSectionRequired' })
     }
 
     const { id: sectionId, name: sectionName } = selectedSectionDetails
@@ -104,6 +131,7 @@ const CanvasSyncModal = ({
       sectionName,
       institutionId,
       districtId: user?.districtIds?.[0],
+      syncCanvasCoTeacher: coTeacherFlag,
     }
     syncClassWithCanvas(data)
   }
@@ -145,30 +173,35 @@ const CanvasSyncModal = ({
       {isFetchingCanvasData && <Spin />}
       <FieldWrapper>
         <label>Course</label>
-        <Select
+        <SelectInputStyled
           placeholder="Select a Course"
           value={+course || undefined}
           onChange={handleCourseChange}
           getPopupContainer={(triggerNode) => triggerNode.parentNode}
-          disabled={idDisabled}
+          disabled={isDisabled}
+          isError={courseError}
         >
           {canvasCourseList.map((c) => (
             <Select.Option key={c.id} value={+c.id}>
               {c.name}
             </Select.Option>
           ))}
-        </Select>
+        </SelectInputStyled>
+        {courseError && <FieldError>Please select Course</FieldError>}
       </FieldWrapper>
       <FieldWrapper>
         <label>Section</label>
-        <Select
+        <SelectInputStyled
           placeholder="Select a Section"
           value={+section || undefined}
           onChange={(value) => {
             setSection(value)
+            setCourseError(false)
+            setSectionError(false)
           }}
           getPopupContainer={(triggerNode) => triggerNode.parentNode}
-          disabled={idDisabled}
+          disabled={isDisabled}
+          isError={sectionError}
           notFoundContent={
             activeCanvasClassSectionCode?.length ? (
               <div style={{ color: black }}>
@@ -182,8 +215,18 @@ const CanvasSyncModal = ({
               {s.name}
             </Select.Option>
           ))}
-        </Select>
+        </SelectInputStyled>
+        {sectionError && <FieldError>Please select Section</FieldError>}
       </FieldWrapper>
+      <CheckboxLabel
+        style={{ margin: '10px 0px 20px 0px' }}
+        checked={coTeacherFlag}
+        onChange={onCoTeacherChange}
+        disabled={isDisabled}
+      >
+        Enroll Co-Teacher (All teachers present in Canvas class will share the
+        same class)
+      </CheckboxLabel>
     </StyledModal>
   )
 }
@@ -233,4 +276,12 @@ const FieldWrapper = styled.div`
       }
     }
   }
+`
+const FieldError = styled.span`
+  color: red;
+  font-size: 13px;
+  width: 100%;
+  text-align: left;
+  display: inline-block;
+  padding: 5px 0px;
 `

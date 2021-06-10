@@ -1,25 +1,30 @@
-import { get, without, countBy } from 'lodash'
+import { get, without } from 'lodash'
 import { createHmac } from 'crypto-browserify'
-import AppConfig from '../../../app-config'
+import AppConfig from '../../../src/app-config'
 
 const allowedRoles = ['teacher', 'school-admin', 'district-admin']
-const minFeatures = 5
+
+const trackingParameters = {
+  CATEGORY_WEB_APPLICATION: 'Web Application',
+}
 
 const getUserDetails = ({
   email,
-  userName: username,
+  username,
   role,
   orgData,
   clever = false,
   clever_district = false,
   gm = false,
   orgData: { districts = [] },
+  isAdmin = false,
 }) => {
   // setting first district details for student other user role will have only one district
   const {
     districtId = '',
     districtName: district = '',
     districtState: state = '',
+    districtCountry: country = '',
     v1Id,
   } = districts?.[0] || {}
   const schoolId =
@@ -41,6 +46,8 @@ const getUserDetails = ({
     districtId: v1Id || districtId,
     district,
     state,
+    country,
+    isAdmin,
   }
 }
 
@@ -48,12 +55,12 @@ const analyticsIdentify = ({ user }) => {
   if (!AppConfig.isSegmentEnabled) {
     return
   }
-  if (user) {
+  if (user && user.orgData) {
     const {
       role = '',
       _id,
       v1Id,
-      features = { premiumUser: false },
+      features = { premium: false },
       firstName,
       lastName,
       orgData: {
@@ -72,8 +79,7 @@ const analyticsIdentify = ({ user }) => {
           grade,
           subject,
           name: without([firstName, lastName], undefined, null, '').join(' '),
-          premium_user:
-            (countBy(Object.values(features), Boolean).true || 0) > minFeatures,
+          premium_user: features.premium,
         },
         {
           Intercom: {
@@ -118,7 +124,97 @@ const unloadIntercom = ({ user }) => {
   }
 }
 
+const trackTeacherClickOnUpgradeSubscription = ({ user }) => {
+  if (!AppConfig.isSegmentEnabled) {
+    return
+  }
+  if (user) {
+    const { role = '', _id, v1Id } = user
+    const userId = v1Id || _id
+    const event = 'upgrade initiated by teacher'
+    const category = 'Web Application'
+    const userData = getUserDetails(user)
+    if (role === 'teacher' && window.analytics) {
+      window.analytics.track(event, {
+        userId: `${userId}`,
+        ...userData,
+        category,
+      })
+    }
+  }
+}
+
+const trackUserClick = ({ user, data }) => {
+  if (!AppConfig.isSegmentEnabled) {
+    return
+  }
+
+  const { event, category = trackingParameters.CATEGORY_WEB_APPLICATION } = data
+  if (user) {
+    const { role = '', _id, v1Id } = user
+    const userId = v1Id || _id
+    const userData = getUserDetails(user)
+    if (role === 'teacher' && window.analytics) {
+      window.analytics.track(event, {
+        userId: `${userId}`,
+        ...userData,
+        category,
+      })
+    }
+  }
+}
+
+const trackTeacherSignUp = ({ user }) => {
+  if (!AppConfig.isSegmentEnabled) {
+    return
+  }
+  if (user) {
+    const { role = '', _id, v1Id, isAdmin } = user
+    const event = isAdmin ? 'Administrator Signed Up' : 'Teacher Signed Up'
+    const userId = v1Id || _id
+    const category = 'Web Application'
+    if (role === 'teacher' && window.analytics) {
+      analyticsIdentify({ user })
+      const userData = getUserDetails(user)
+      window.analytics.track(event, {
+        userId: `${userId}`,
+        ...userData,
+        category,
+      })
+    }
+  }
+}
+
+const trackProductPurchase = ({ user, data }) => {
+  if (!AppConfig.isSegmentEnabled) {
+    return
+  }
+  const {
+    event,
+    category = trackingParameters.CATEGORY_WEB_APPLICATION,
+    ...rest
+  } = data
+  if (user) {
+    const { role = '', _id, v1Id } = user
+    const userId = v1Id || _id
+    const userData = getUserDetails(user)
+    if (role === 'teacher' && window.analytics) {
+      window.analytics.track(event, {
+        userId: `${userId}`,
+        ...userData,
+        ...rest,
+        category,
+      })
+    }
+  }
+}
+
 export default {
   unloadIntercom,
   analyticsIdentify,
+  trackTeacherClickOnUpgradeSubscription,
+  trackTeacherSignUp,
+  trackUserClick,
+  trackingParameters,
+  trackProductPurchase,
 }

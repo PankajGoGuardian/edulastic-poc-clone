@@ -5,6 +5,7 @@ import { createReducer, createAction } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
 import { test as testContants, roleuser } from '@edulastic/constants'
 import { assignmentApi, testsApi } from '@edulastic/api'
+import * as Sentry from '@sentry/browser'
 import {
   all,
   call,
@@ -14,18 +15,17 @@ import {
   takeLatest,
 } from 'redux-saga/effects'
 import { replace, push } from 'connected-react-router'
-import {
-  SET_ASSIGNMENT,
-  SET_TEST_DATA,
-  getTestSelector,
-  getTestIdSelector,
-} from '../../ducks'
+import { getTestSelector, getTestIdSelector } from '../../ducks'
 import { formatAssignment } from './utils'
 import { getUserNameSelector, getUserId } from '../../../src/selectors/user'
+import { UPDATE_CURRENT_EDITING_ASSIGNMENT } from '../../../src/constants/actions'
 import { getPlaylistEntitySelector } from '../../../PlaylistPage/ducks'
-import { getUserRole } from '../../../../student/Login/ducks'
+import { getUserFeatures, getUserRole } from '../../../../student/Login/ducks'
 import { toggleDeleteAssignmentModalAction } from '../../../sharedDucks/assignments'
 import { updateAssingnmentSettingsAction } from '../../../AssignTest/duck'
+
+const { completionTypes, calculatorTypes, passwordPolicy } = testContants
+
 // constants
 export const SAVE_ASSIGNMENT = '[assignments] save assignment'
 export const UPDATE_ASSIGNMENT = '[assignments] update assignment'
@@ -42,6 +42,8 @@ export const TOGGLE_CONFIRM_COMMON_ASSIGNMENTS =
 export const UPDATE_ASSIGN_FAIL_DATA = '[assignments] update error data'
 export const TOGGLE_DUPLICATE_ASSIGNMENT_POPUP =
   '[assignments] toggle duplicate assignmnts popup'
+export const SET_ASSIGNMENT = '[assignments] set assignment'
+export const SET_TEST_DATA = '[tests] set test data'
 
 // actions
 export const setAssignmentAction = createAction(SET_ASSIGNMENT)
@@ -195,12 +197,14 @@ function* saveAssignment({ payload }) {
     let testIds
     yield put(setAssignmentSavingAction(true))
     if (!payload.playlistModuleId && !payload.playlistId) {
-      testIds = [yield select(getTestIdSelector)]
+      testIds = [yield select(getTestIdSelector)].map((testId) => ({ testId }))
     } else {
       const playlist = yield select(getPlaylistEntitySelector)
       testIds = []
       if (payload.testId) {
-        testIds = [payload.testId]
+        testIds = [
+          { testId: payload.testId, testVersionId: payload.testVersionId },
+        ]
       } else {
         const module = playlist.modules.filter(
           (m) => m._id === payload.playlistModuleId
@@ -213,7 +217,10 @@ function* saveAssignment({ payload }) {
         module &&
           module[0].data.forEach((dat) => {
             if (dat.contentType === 'test') {
-              testIds.push(dat.contentId)
+              testIds.push({
+                testId: dat.contentId,
+                testVersionId: dat.contentVersionId,
+              })
             }
           })
         if (!testIds.length) {
@@ -270,16 +277,41 @@ function* saveAssignment({ payload }) {
       delete payload.performanceBand
       delete payload.standardGradingScale
     }
-    const data = testIds.map((testId) =>
+    const features = yield select(getUserFeatures)
+    const assignmentSettings = { ...payload }
+    if (features.free && !features.premium) {
+      assignmentSettings.maxAttempts = 1
+      assignmentSettings.markAsDone = completionTypes.AUTOMATICALLY
+      assignmentSettings.safeBrowser = false
+      assignmentSettings.shuffleAnswers = false
+      assignmentSettings.shuffleQuestions = false
+      assignmentSettings.calcType = calculatorTypes.NONE
+      assignmentSettings.answerOnPaper = false
+      assignmentSettings.maxAnswerChecks = 0
+      assignmentSettings.passwordPolicy =
+        passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF
+      assignmentSettings.timedAssignment = false
+    }
+    // Missing termId notify
+    if (!assignmentSettings.termId) {
+      Sentry.captureException(
+        new Error('[Assignments] missing termId in assigned assignment.')
+      )
+      Sentry.withScope((scope) => {
+        scope.setExtra('assignmentPayload', { ...assignmentSettings, userId })
+      })
+    }
+    const data = testIds.map(({ testId, testVersionId }) =>
       omit(
         {
-          ...payload,
+          ...assignmentSettings,
           startDate,
           endDate,
           dueDate,
           testType,
           ...visibility,
           testId,
+          testVersionId,
           class: classes,
         },
         [
@@ -310,6 +342,10 @@ function* saveAssignment({ payload }) {
     })
     const assignment = result?.[0] ? formatAssignment(result[0]) : {}
     yield put({ type: SET_ASSIGNMENT, payload: assignment })
+    yield put({
+      type: UPDATE_CURRENT_EDITING_ASSIGNMENT,
+      payload: assignment,
+    })
     yield put(setAssignmentSavingAction(false))
     yield put(toggleHasCommonAssignmentsPopupAction(false))
     yield put(toggleHasDuplicateAssignmentPopupAction(false))
@@ -360,7 +396,7 @@ function* saveAssignment({ payload }) {
         pathname: `/author/${
           payload.playlistModuleId ? 'playlists' : 'tests'
         }/${
-          payload.playlistModuleId ? payload.playlistId : testIds[0]
+          payload.playlistModuleId ? payload.playlistId : testIds[0].testId
         }/assign/${assignmentId}`,
         state: {
           ...locationState,

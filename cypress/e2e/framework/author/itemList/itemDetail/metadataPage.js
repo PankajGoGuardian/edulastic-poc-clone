@@ -111,20 +111,11 @@ class MetadataPage {
   }
 
   setStandard = (standard) => {
-    this.getSearchStandardSelect().click()
-    this.waitForStandarSearch()
-    // TODO : remove backspace once application bug gets fixed
     this.clearStandards()
-
-    cy.focused().then(($ele) => {
+    this.getSearchStandardSelect().click({ force: true })
+    this.waitForStandarSearch()
+    cy.focused().then(() => {
       standard.forEach((std) => {
-        // TODO : optimise below when standard search needed
-        /* std.split("").forEach(ch => {
-          cy.get("@searchInput").type(ch);
-          cy.wait("@searchStandard");
-        }); 
-        cy.wait(3000); // UI renders list slow even after api responsed
-       */
         this.getDropDownMenu()
           .should('have.length.greaterThan', 1)
           .contains(std)

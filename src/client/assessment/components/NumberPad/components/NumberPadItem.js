@@ -8,7 +8,7 @@ import CharacterMap from './CharacterMap'
 import NumberPadButton from './NumberPadButton'
 import { EmptyWrapper } from '../styled/EmptyWrapper'
 
-const NumberPadItem = ({ item, onSelect, t, buttonStyle }) => {
+const NumberPadItem = ({ item, onSelect, t, buttonStyle, index }) => {
   const [visible, setVisible] = useState(false)
 
   const isEmpty = (label) => label === 'empty'
@@ -26,6 +26,11 @@ const NumberPadItem = ({ item, onSelect, t, buttonStyle }) => {
       <NumberPadButton
         buttonStyle={buttonStyle}
         onClick={() => setVisible(!visible)}
+        data_cy={
+          isEmpty(item.label)
+            ? `custom-keypad-${item.label}-${index}`
+            : `custom-keypad-${item.value}`
+        }
       >
         {isEmpty(item.label) ? (
           <EmptyWrapper>{item.label}</EmptyWrapper>

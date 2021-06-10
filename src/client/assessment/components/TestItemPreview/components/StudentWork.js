@@ -11,9 +11,8 @@ const FlexItem = styled.div`
   padding: 10px;
 `
 
-const StudentWork = ({ imageAttachments, renderScratchPadImage }) => {
+const StudentWork = ({ imageAttachments }) => {
   const ScrollbarRef = useRef(null)
-  const scratchpad = renderScratchPadImage()
 
   // This is needed for fixing a known bug in perfect-scrollbar library where
   // scrollbar exceeds the content length on some screen sizes
@@ -28,7 +27,6 @@ const StudentWork = ({ imageAttachments, renderScratchPadImage }) => {
         flexWrap="no-wrap"
         justifyContent="space-between"
       >
-        {scratchpad && <FlexItem>{scratchpad}</FlexItem>}
         {imageAttachments.map((imageFile) => (
           <FlexItem>
             <StyledImage src={imageFile.source} alt={imageFile.name} />
@@ -41,7 +39,6 @@ const StudentWork = ({ imageAttachments, renderScratchPadImage }) => {
 
 StudentWork.propTypes = {
   imageAttachments: PropTypes.array.isRequired,
-  renderScratchPadImage: PropTypes.func.isRequired,
 }
 
 export default StudentWork

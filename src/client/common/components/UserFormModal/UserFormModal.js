@@ -236,6 +236,20 @@ class UserForm extends React.Component {
                   )}
                 </Form.Item>
               </Field>
+              <Field name="middleName">
+                <FieldLabel>Middle Name</FieldLabel>
+                <Form.Item>
+                  {getFieldDecorator('middleName', {
+                    initialValue: get(_source, 'middleName', ''),
+                  })(
+                    <TextInputStyled
+                      padding="0px 15px 0px 30px"
+                      prefix={<img style={iconSize} src={userIcon} alt="" />}
+                      placeholder="Enter the middle name of the user"
+                    />
+                  )}
+                </Form.Item>
+              </Field>
               <Field name="lastName">
                 <FieldLabel>Last name</FieldLabel>
                 <Form.Item>
@@ -280,6 +294,7 @@ class UserForm extends React.Component {
                       padding="0px 15px 0px 30px"
                       prefix={<img style={iconSize} src={keyIcon} alt="" />}
                       type="password"
+                      autoComplete="off"
                       placeholder="Enter Password"
                     />
                   )}
@@ -300,6 +315,7 @@ class UserForm extends React.Component {
                       padding="0px 15px 0px 30px"
                       prefix={<img style={iconSize} src={keyIcon} alt="" />}
                       type="password"
+                      autoComplete="off"
                       placeholder="Confirm Password"
                     />
                   )}
@@ -335,8 +351,8 @@ class UserForm extends React.Component {
                           triggerNode.parentNode
                         }
                       >
-                        <Option value="active">Yes</Option>
-                        <Option value="deActive">No</Option>
+                        <Option value="Yes">Yes</Option>
+                        <Option value="No">No</Option>
                       </SelectInputStyled>
                     )}
                   </Form.Item>
@@ -352,8 +368,8 @@ class UserForm extends React.Component {
                           triggerNode.parentNode
                         }
                       >
-                        <Option value="active">Yes</Option>
-                        <Option value="deActive">No</Option>
+                        <Option value="Yes">Yes</Option>
+                        <Option value="No">No</Option>
                       </SelectInputStyled>
                     )}
                   </Form.Item>
@@ -369,8 +385,8 @@ class UserForm extends React.Component {
                           triggerNode.parentNode
                         }
                       >
-                        <Option value="active">Yes</Option>
-                        <Option value="deActive">No</Option>
+                        <Option value="Yes">Yes</Option>
+                        <Option value="No">No</Option>
                       </SelectInputStyled>
                     )}
                   </Form.Item>
@@ -386,8 +402,25 @@ class UserForm extends React.Component {
                           triggerNode.parentNode
                         }
                       >
-                        <Option value="active">Yes</Option>
-                        <Option value="deActive">No</Option>
+                        <Option value="Yes">Yes</Option>
+                        <Option value="No">No</Option>
+                      </SelectInputStyled>
+                    )}
+                  </Form.Item>
+                </Field>
+                <Field name="hispanicEthnicity">
+                  <FieldLabel>Hispanic Ethnicity</FieldLabel>
+                  <Form.Item>
+                    {getFieldDecorator('hispanicEthnicity', {
+                      initialValue: get(_source, 'hispanicEthnicity', ''),
+                    })(
+                      <SelectInputStyled
+                        getPopupContainer={(triggerNode) =>
+                          triggerNode.parentNode
+                        }
+                      >
+                        <Option value="Yes">Yes</Option>
+                        <Option value="No">No</Option>
                       </SelectInputStyled>
                     )}
                   </Form.Item>
@@ -400,20 +433,12 @@ class UserForm extends React.Component {
                     })(<TextInputStyled placeholder="Race" />)}
                   </Form.Item>
                 </Field>
-
                 <Field name="dob" optional>
                   <FieldLabel>DOB</FieldLabel>
                   <Form.Item>
                     {getFieldDecorator('dob', {
                       initialValue: dobValue ? moment(dobValue) : null,
-                    })(
-                      <DatePickerStyled
-                        format="DD MMM, YYYY"
-                        disabledDate={(current) =>
-                          current && current.valueOf() > Date.now()
-                        }
-                      />
-                    )}
+                    })(<DatePickerStyled format="DD MMM, YYYY" />)}
                   </Form.Item>
                 </Field>
                 <Field name="gender">
@@ -435,13 +460,15 @@ class UserForm extends React.Component {
                   </Form.Item>
                 </Field>
                 <Field name="contactEmails">
-                  <FieldLabel>Contact</FieldLabel>
+                  <FieldLabel>Parents/Guardians</FieldLabel>
                   <Form.Item>
                     {getFieldDecorator('contactEmails', {
                       initialValue: contactEmails
                         ? contactEmails.join(',')
                         : '',
-                    })(<TextInputStyled placeholder="Enter Contact" />)}
+                    })(
+                      <TextInputStyled placeholder="Enter email comma separated..." />
+                    )}
                   </Form.Item>
                 </Field>
                 <Field name="tts">

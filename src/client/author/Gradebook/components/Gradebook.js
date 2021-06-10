@@ -13,7 +13,12 @@ import {
   withWindowSizes,
   notification,
 } from '@edulastic/common'
-import { IconInterface, IconFilter, IconPlusCircle } from '@edulastic/icons'
+import {
+  IconInterface,
+  IconFilter,
+  IconPlusCircle,
+  IconCloseFilter,
+} from '@edulastic/icons'
 import { themeColorBlue } from '@edulastic/colors'
 import GradebookFilters from './Gradebook/GradebookFilters'
 import GradebookTable from './Gradebook/GradebookTable'
@@ -294,7 +299,19 @@ const Gradebook = ({
             </ScrollbarContainer>
           )}
           <FilterButton showFilter={showFilter} onClick={toggleShowFilter}>
-            <IconFilter width={20} height={20} />
+            {showFilter ? (
+              <IconCloseFilter
+                data-test={showFilter ? 'expanded' : 'collapsed'}
+                data-cy="smart-filter"
+              />
+            ) : (
+              <IconFilter
+                width={20}
+                height={20}
+                data-test={showFilter ? 'expanded' : 'collapsed'}
+                data-cy="smart-filter"
+              />
+            )}
           </FilterButton>
           {loading ? (
             <TableContainer showFilter={showFilter}>
@@ -340,7 +357,6 @@ const Gradebook = ({
                 <GradebookStatusColors />
                 {/* NOTE: When status filter is set for Gradebook, assignment pagination is dependent on student pagination */}
                 <Pagination
-                  style={{ paddingRight: '55px', marginTop: '-5px' }}
                   current={pagination.studentPage}
                   pageSize={pagination.studentPageSize}
                   onChange={(studentPage) =>

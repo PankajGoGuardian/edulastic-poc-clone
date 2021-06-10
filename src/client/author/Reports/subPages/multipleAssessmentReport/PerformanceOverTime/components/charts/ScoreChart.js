@@ -23,6 +23,8 @@ const ScoreChart = ({
   onBarClickCB,
   selectedTests,
   onResetClickCB,
+  backendPagination,
+  setBackendPagination,
 }) => {
   const xDataKey = 'uniqId'
   const dataWithColors = addColors(data, selectedTests, xDataKey, 'score')
@@ -33,6 +35,8 @@ const ScoreChart = ({
         return `${round(score)}%`
       case 'rawScore':
         return ''
+      default:
+      // do nothing
     }
   }
 
@@ -54,13 +58,17 @@ const ScoreChart = ({
             </tspan>
           </>
         )
+      default:
+      // do nothing
     }
   }
 
-  const getXTickText = (payload, data) => {
+  const getXTickText = (payload, _data) => {
     const currentBarData =
-      find(data, (item) => item[xDataKey] === payload.value) || {}
-    return currentBarData.testName || ''
+      find(_data, (item) => item[xDataKey] === payload.value) || {}
+    return currentBarData.isIncomplete
+      ? `${currentBarData.testName} *`
+      : currentBarData.testName || ''
   }
 
   const _onBarClickCB = (key) => {
@@ -80,7 +88,11 @@ const ScoreChart = ({
           />
           <BarTooltipRow
             title="Assessment : "
-            value={record.testName || 'N/A'}
+            value={
+              record.isIncomplete
+                ? `${record.testName} *`
+                : record.testName || 'N/A'
+            }
           />
           <BarTooltipRow title="Student Count : " value={record.totalGraded} />
           <BarTooltipRow
@@ -111,6 +123,8 @@ const ScoreChart = ({
       onBarClickCB={_onBarClickCB}
       onResetClickCB={onResetClickCB}
       filter={selectedTests}
+      backendPagination={backendPagination}
+      setBackendPagination={setBackendPagination}
     />
   )
 }

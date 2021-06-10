@@ -7,6 +7,10 @@ import { get } from 'lodash'
 
 import { RESET_ALL_REPORTS } from '../../../common/reportsRedux'
 
+import { getFullName } from './utils/transformers'
+
+import staticDropDownData from './static/staticDropDownData.json'
+
 const GET_REPORTS_SPR_FILTER_DATA_REQUEST =
   '[reports] get reports spr filter data request'
 const GET_REPORTS_SPR_FILTER_DATA_REQUEST_SUCCESS =
@@ -26,7 +30,7 @@ const GET_REPORTS_SPR_STUDENT_DATA_REQUEST_ERROR =
 
 const SET_FILTERS = '[reports] set spr filters'
 const SET_STUDENT_ID = '[reports] set spr student'
-const SET_SELECTED_CLASS = '[reports] set selected class'
+const SET_TEMP_TAGS_DATA = '[reports] set spr temp tags data'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
@@ -39,7 +43,7 @@ export const setPrevSPRFilterDataAction = createAction(
 
 export const setFiltersAction = createAction(SET_FILTERS)
 export const setStudentAction = createAction(SET_STUDENT_ID)
-export const setSelectedClassAction = createAction(SET_SELECTED_CLASS)
+export const setTempTagsDataAction = createAction(SET_TEMP_TAGS_DATA)
 
 export const getSPRStudentDataRequestAction = createAction(
   GET_REPORTS_SPR_STUDENT_DATA_REQUEST
@@ -92,14 +96,14 @@ export const getFiltersSelector = createSelector(
   (state) => state.filters
 )
 
-export const getSelectedClassSelector = createSelector(
-  stateSelector,
-  (state) => state.selectedClass
-)
-
 export const getStudentSelector = createSelector(
   stateSelector,
   (state) => state.student
+)
+
+export const getTempTagsDataSelector = createSelector(
+  stateSelector,
+  (state) => state.tempTagsData
 )
 
 export const getReportsPrevSPRFilterData = createSelector(
@@ -129,25 +133,17 @@ export const getStudentsLoading = createSelector(
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //
 
 const initialState = {
+  prevSPRFilterData: null,
   SPRFilterData: {},
   studentList: [],
-  prevSPRFilterData: null,
   filters: {
-    termId: '',
-    courseId: '',
-    grade: 'All',
-    subject: 'All',
-    performanceBandProfileId: '',
-    standardsProficiencyProfileId: '',
+    ...staticDropDownData.initialFilters,
   },
   student: {
     key: '',
     title: '',
   },
-  selectedClass: {
-    key: '',
-    title: '',
-  },
+  tempTagsData: {},
   loading: false,
 }
 
@@ -169,8 +165,8 @@ export const reportSPRFilterDataReducer = createReducer(initialState, {
   [SET_STUDENT_ID]: (state, { payload }) => {
     state.student = payload
   },
-  [SET_SELECTED_CLASS]: (state, { payload }) => {
-    state.selectedClass = payload
+  [SET_TEMP_TAGS_DATA]: (state, { payload }) => {
+    state.tempTagsData = payload
   },
   [SET_REPORTS_PREV_SPR_FILTER_DATA]: (state, { payload }) => {
     state.prevSPRFilterData = payload
@@ -178,10 +174,7 @@ export const reportSPRFilterDataReducer = createReducer(initialState, {
   [RESET_REPORTS_SPR_FILTER_DATA]: (state) => {
     state.SPRFilterData = {}
   },
-  // eslint-disable-next-line no-unused-vars
-  [RESET_ALL_REPORTS]: (state) => {
-    state = initialState
-  },
+  [RESET_ALL_REPORTS]: (state) => (state = initialState),
   [GET_REPORTS_SPR_STUDENT_DATA_REQUEST]: (state) => {
     state.loading = true
   },
@@ -222,9 +215,13 @@ function* getReportsSPRFilterDataRequest({ payload }) {
 function* receiveStudentsListSaga({ payload }) {
   try {
     const result = yield call(reportsApi.fetchStudentList, payload)
+    const studentList = get(result, 'data.result', []).map((item) => ({
+      _id: item._id,
+      title: getFullName(item),
+    }))
     yield put({
       type: GET_REPORTS_SPR_STUDENT_DATA_REQUEST_SUCCESS,
-      payload: { studentList: get(result, 'data.result', []) },
+      payload: { studentList },
     })
   } catch (err) {
     const msg = 'Unable to fetch students list.'

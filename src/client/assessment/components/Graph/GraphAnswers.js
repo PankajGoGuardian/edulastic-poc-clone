@@ -2,11 +2,12 @@ import React, { Fragment, Component } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import PropTypes from 'prop-types'
-import { Select } from 'antd'
 import { cloneDeep } from 'lodash'
+import produce from 'immer'
 
 import { TabContainer } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
+import { defaultSymbols } from '@edulastic/constants'
 
 import CorrectAnswers from '../CorrectAnswers'
 import GraphDisplay from './Display/GraphDisplay'
@@ -16,14 +17,14 @@ import {
   getQuestionDataSelector,
 } from '../../../author/QuestionEditor/ducks'
 import { CheckboxLabel } from '../../styled/CheckboxWithLabel'
-import { SelectInputStyled } from '../../styled/InputStyles'
-import { Label } from '../../styled/WidgetOptions/Label'
-import { Row } from '../../styled/WidgetOptions/Row'
-import { Col } from '../../styled/WidgetOptions/Col'
+import { CONSTANT } from './Builder/config'
 
 class GraphAnswers extends Component {
-  state = {
-    tab: 0,
+  constructor() {
+    super()
+    this.state = {
+      tab: 0,
+    }
   }
 
   handleTabChange = (tab) => {
@@ -58,22 +59,26 @@ class GraphAnswers extends Component {
 
   updateValidationValue = (value) => {
     const { question, setQuestionData } = this.props
-    const { validation, toolbar } = question
-    for (let i = 0; i < value.length; i++) {
-      if (
-        typeof value[i].label !== 'boolean' &&
-        typeof value[i].label !== 'undefined'
-      ) {
-        value[i].label = value[i].label
-          .replace(/<p>/g, '')
-          .replace(/<\/p>/g, '')
+
+    const newQuestion = produce(question, (draft) => {
+      const { validation, toolbar } = draft
+      for (let i = 0; i < value.length; i++) {
+        if (
+          typeof value[i].label !== 'boolean' &&
+          typeof value[i].label !== 'undefined'
+        ) {
+          value[i].label = value[i].label
+            .replace(/<p>/g, '')
+            .replace(/<\/p>/g, '')
+        }
       }
-    }
-    if (toolbar && toolbar.drawingPrompt) {
-      toolbar.drawingObjects = this.getDrawingObjects(value)
-    }
-    validation.validResponse.value = value
-    setQuestionData({ ...question, validation, toolbar })
+      if (toolbar && toolbar.drawingPrompt) {
+        toolbar.drawingObjects = this.getDrawingObjects(value)
+      }
+      validation.validResponse.value = value
+    })
+
+    setQuestionData(newQuestion)
   }
 
   updateAltValidationValue = (value, tabIndex) => {
@@ -94,23 +99,23 @@ class GraphAnswers extends Component {
 
   getDrawingObjects = (value) => {
     const allowedTypes = [
-      'point',
-      'line',
-      'ray',
-      'segment',
-      'vector',
-      'circle',
-      'ellipse',
-      'sine',
-      'tangent',
-      'secant',
-      'exponent',
-      'logarithm',
-      'polynom',
-      'hyperbola',
-      'polygon',
-      'parabola',
-      'parabola2',
+      CONSTANT.TOOLS.POINT,
+      CONSTANT.TOOLS.LINE,
+      CONSTANT.TOOLS.RAY,
+      CONSTANT.TOOLS.SEGMENT,
+      CONSTANT.TOOLS.VECTOR,
+      CONSTANT.TOOLS.CIRCLE,
+      CONSTANT.TOOLS.ELLIPSE,
+      CONSTANT.TOOLS.SIN,
+      CONSTANT.TOOLS.TANGENT,
+      CONSTANT.TOOLS.SECANT,
+      CONSTANT.TOOLS.EXPONENT,
+      CONSTANT.TOOLS.LOGARITHM,
+      CONSTANT.TOOLS.POLYNOM,
+      CONSTANT.TOOLS.HYPERBOLA,
+      CONSTANT.TOOLS.POLYGON,
+      CONSTANT.TOOLS.PARABOLA,
+      CONSTANT.TOOLS.PARABOLA2,
     ]
 
     const shapes = value.filter(
@@ -137,7 +142,13 @@ class GraphAnswers extends Component {
     })
   }
 
-  handleChangePoints = (points) => {
+  handleChangePoints = (score) => {
+    if (!(score > 0)) {
+      return
+    }
+
+    const points = parseFloat(score, 10)
+
     const { tab } = this.state
     if (tab === 0) {
       this.handleUpdateCorrectScore(points)
@@ -147,47 +158,7 @@ class GraphAnswers extends Component {
   }
 
   renderOptions = () => {
-    const {
-      t,
-      getIgnoreLabelsOptions,
-      graphData,
-      handleSelectIgnoreLabels,
-      handleNumberlineChange,
-    } = this.props
-
-    if (
-      graphData.graphType === 'quadrants' ||
-      graphData.graphType === 'firstQuadrant'
-    ) {
-      return (
-        <>
-          <Row marginTop={15} gutter={24}>
-            {/* 
-              NOTE: Slicing of the array is done to keep the functionality of ignoring repeated shapes together but split into two options -
-              1 - Ignore Repeated Shapes (yes/no) => yes should default to "Compare by slope" on "yes"
-              2 - Compare By (slope / points) => on selecting ignore repeated shapes, the default option gets selected automatically
-            */}
-            {/* Removing Ignore repeated shapes and Compare by dropdown ref: https://snapwiz.atlassian.net/browse/EV-14738 */}
-            <Col span={6}>
-              <Label>Ignore labels</Label>
-              <SelectInputStyled
-                data-cy="ignoreLabels"
-                onChange={(val) => handleSelectIgnoreLabels(val)}
-                options={getIgnoreLabelsOptions()}
-                getPopupContainer={(triggerNode) => triggerNode.parentNode}
-                value={graphData.validation.ignoreLabels || 'yes'}
-              >
-                {getIgnoreLabelsOptions().map((option) => (
-                  <Select.Option data-cy={option.value} key={option.value}>
-                    {option.label}
-                  </Select.Option>
-                ))}
-              </SelectInputStyled>
-            </Col>
-          </Row>
-        </>
-      )
-    }
+    const { t, graphData, handleNumberlineChange } = this.props
 
     if (graphData.graphType === 'axisLabels') {
       const { numberlineAxis } = graphData
@@ -209,7 +180,14 @@ class GraphAnswers extends Component {
   }
 
   render() {
-    const { graphData, view, previewTab, ...rest } = this.props
+    const {
+      graphData,
+      view,
+      previewTab,
+      onChangeKeypad,
+      symbols,
+      ...rest
+    } = this.props
     const { tab } = this.state
     const { validation } = graphData
     const points =
@@ -244,6 +222,8 @@ class GraphAnswers extends Component {
                 elements={graphData.validation.validResponse.value}
                 disableResponse={false}
                 item={graphData}
+                onChangeKeypad={onChangeKeypad}
+                symbols={symbols}
                 isCorrectAnsTab
               />
             </TabContainer>
@@ -265,6 +245,8 @@ class GraphAnswers extends Component {
                       disableResponse={false}
                       onChange={(val) => this.updateAltValidationValue(val, i)}
                       item={graphData}
+                      onChangeKeypad={onChangeKeypad}
+                      symbols={symbols}
                     />
                   </TabContainer>
                 )
@@ -288,9 +270,15 @@ GraphAnswers.propTypes = {
   view: PropTypes.string.isRequired,
   getIgnoreLabelsOptions: PropTypes.func.isRequired,
   handleSelectIgnoreLabels: PropTypes.func.isRequired,
-  getIgnoreRepeatedShapesOptions: PropTypes.func.isRequired,
   handleSelectIgnoreRepeatedShapes: PropTypes.func.isRequired,
   handleNumberlineChange: PropTypes.func.isRequired,
+  onChangeKeypad: PropTypes.func,
+  symbols: PropTypes.array,
+}
+
+GraphAnswers.defaultProps = {
+  onChangeKeypad: () => {},
+  symbols: defaultSymbols,
 }
 
 const enhance = compose(

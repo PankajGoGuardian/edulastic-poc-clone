@@ -2,8 +2,9 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import qs from 'qs'
 import { compose } from 'redux'
-import queryString from 'query-string'
+import { Spin } from 'antd'
 import { mobileWidthMax } from '@edulastic/colors'
 import { PrintActionWrapper } from '@edulastic/common'
 import StudentQuestionContainer from '../StudentQuestionContiner/StudentQuestionContainer'
@@ -24,6 +25,7 @@ import {
   getTestActivitySelector,
   getAdditionalDataSelector,
   getAssignmentClassIdSelector,
+  getPrintViewLoadingSelector,
 } from '../../../ClassBoard/ducks'
 
 class PrintPreview extends Component {
@@ -34,10 +36,10 @@ class PrintPreview extends Component {
       location,
     } = this.props
     const { assignmentId, classId } = match.params
-    const selectedStudents = queryString.parse(location.search, {
-      arrayFormat: 'comma',
+    const selectedStudents = qs.parse(location.search, {
+      ignoreQueryPrefix: true,
+      comma: true,
     })
-
     let _selectedStudents
     if (typeof selectedStudents.selectedStudents === 'string') {
       _selectedStudents = [selectedStudents.selectedStudents]
@@ -58,24 +60,9 @@ class PrintPreview extends Component {
       classResponse,
       classStudentResponse,
       additionalData,
+      printPreviewLoading,
     } = this.props
     const { assignmentIdClassId } = this.props
-
-    const renderClassStudentsResponse = []
-    if (classStudentResponse && Object.keys(classStudentResponse).length > 0) {
-      classStudentResponse.forEach((studentResponse) => {
-        const renderStudentResponse = (
-          <StudentQuestionContainer
-            testActivity={testActivity}
-            assignmentIdClassId={assignmentIdClassId}
-            classResponse={classResponse}
-            studentResponse={studentResponse}
-            additionalData={additionalData}
-          />
-        )
-        renderClassStudentsResponse.push(renderStudentResponse)
-      })
-    }
 
     return (
       <>
@@ -89,7 +76,19 @@ class PrintPreview extends Component {
               lastic
             </StyledTitle>
             <QuestionContentArea>
-              {renderClassStudentsResponse}
+              {printPreviewLoading && <Spin />}
+              {classStudentResponse &&
+              Object.keys(classStudentResponse).length > 0
+                ? classStudentResponse.map((studentResponse) => (
+                    <StudentQuestionContainer
+                      testActivity={testActivity}
+                      assignmentIdClassId={assignmentIdClassId}
+                      classResponse={classResponse}
+                      studentResponse={studentResponse}
+                      additionalData={additionalData}
+                    />
+                  ))
+                : ''}
             </QuestionContentArea>
           </PrintPreviewContainer>
         </PrintPreviewBack>
@@ -106,6 +105,7 @@ const enhance = compose(
       classResponse: getClassResponseSelector(state),
       classStudentResponse: getClassStudentResponseSelector(state),
       additionalData: getAdditionalDataSelector(state),
+      printPreviewLoading: getPrintViewLoadingSelector(state),
     }),
     {
       fetchPrintPreviewEssentialsAction,

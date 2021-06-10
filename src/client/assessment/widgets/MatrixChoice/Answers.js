@@ -8,8 +8,11 @@ import Question from '../../components/Question'
 import Matrix from './components/Matrix'
 
 class Answers extends Component {
-  state = {
-    correctTab: 0,
+  constructor() {
+    super()
+    this.state = {
+      correctTab: 0,
+    }
   }
 
   setCorrectTab = (tabNumber) => {
@@ -54,7 +57,11 @@ class Answers extends Component {
     )
   }
 
-  handleChangePoints = (points) => {
+  handleChangePoints = (score) => {
+    if (!(score > 0)) {
+      return
+    }
+    const points = parseFloat(score, 10)
     const { item, setQuestionData } = this.props
     const { correctTab } = this.state
     const isAlt = correctTab > 0
@@ -99,8 +106,8 @@ class Answers extends Component {
             draft.validation.altResponses = []
           }
           draft.validation.altResponses.push({
-            score: 1,
-            value: item.validation.validResponse.value,
+            score: item?.validation?.validResponse?.score,
+            value: item?.validation?.validResponse?.value,
           })
         })
       )

@@ -14,25 +14,25 @@ const buttonWrapperExtraStyle = css`
     collapseDirection === 'left'
       ? 'auto'
       : collapseDirection === 'right'
-      ? '-20px'
+      ? '-22px'
       : '-22px'};
   right: ${({ collapseDirection }) =>
     collapseDirection === 'right'
       ? 'auto'
       : collapseDirection === 'left'
-      ? '-20px'
+      ? '-22px'
       : '-22px'};
 `
 
 export const Divider = styled.div`
   width: 0px;
-  border: 1px solid #dadae4;
+  border: ${({ hideMiddle }) => !hideMiddle && '1px solid #dadae4'};
   position: relative;
   background-color: ${(props) =>
     props.isCollapsed ? '#e5e5e5' : 'transparent'};
   border-radius: 10px;
-  z-index: 1;
-  height: 65vh;
+  z-index: 1000;
+  height: ${({ stackedView }) => (stackedView ? 'auto' : '80%')};
   .button-wrapper {
     background: #a7b5c1;
     display: flex;

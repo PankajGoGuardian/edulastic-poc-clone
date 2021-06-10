@@ -3,10 +3,12 @@ import API from './utils/API'
 const api = new API()
 const prefix = '/canvas'
 
-const getCanvasAuthURI = (institutionId) =>
+const getCanvasAuthURI = (institutionId, type = '') =>
   api
     .callApi({
-      url: `${prefix}/sso-details?institutionId=${institutionId}`,
+      url: `${prefix}/sso-details?institutionId=${institutionId}${
+        type ? `&type=${type}` : ''
+      }`,
       method: 'get',
     })
     .then((result) => result.data.result)
@@ -54,6 +56,16 @@ const canvasGradesSync = (data) =>
     })
     .then((result) => result.data.result)
 
+const canvasAssignmentSync = (data) =>
+  api
+    .callApi({
+      useSlowApi: true,
+      url: `${prefix}/sync-assignment-manually`,
+      method: 'post',
+      data,
+    })
+    .then((result) => result.data.result)
+
 export default {
   getCanvasAuthURI,
   fetchCourseList,
@@ -61,4 +73,5 @@ export default {
   bulkSync,
   canvasSync,
   canvasGradesSync,
+  canvasAssignmentSync,
 }

@@ -33,7 +33,8 @@ const InputField = ({ name, value, onChange, type = 'number', t }) => (
       type={type}
       value={value}
       onChange={(e) =>
-        onChange(name, type === 'text' ? e.target.value : +e.target.value)}
+        onChange(name, type === 'text' ? e.target.value : +e.target.value)
+      }
     />
   </>
 )

@@ -1,10 +1,10 @@
+import React, { useEffect, useState } from 'react'
 import { largeDesktopWidth } from '@edulastic/colors'
 import { useRealtimeV2 } from '@edulastic/common'
 import useInterval from '@use-it/interval'
 import { Layout, Spin } from 'antd'
 import { get, values } from 'lodash'
 import PropTypes from 'prop-types'
-import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import NoDataNotification from '../../../common/components/NoDataNotification'
@@ -15,9 +15,13 @@ import {
   addRealtimeAssignmentAction,
   removeAssignmentAction,
   rerenderAssignmentsAction,
+  setSelectedLanguageAction,
   updateTestIdRealTimeAction,
 } from '../../sharedDucks/AssignmentModule/ducks'
-import { addRealtimeReportAction } from '../../sharedDucks/ReportsModule/ducks'
+import {
+  addRealtimeReportAction,
+  setAssignmentIsPausedAction,
+} from '../../sharedDucks/ReportsModule/ducks'
 import { Wrapper } from '../../styled'
 // actions
 import {
@@ -26,7 +30,11 @@ import {
   getAssignmentsSelector,
   transformAssignmentForRedirect,
   assignmentIdsByTestIdSelector,
+  assignmentIdsGroupIdsByTestIdSelector,
+  notStartedReportsByAssignmentId,
+  getSelectedLanguageSelector,
 } from '../ducks'
+import EmbeddedVideoPreviewModal from '../../../author/CurriculumSequence/components/ManageContentBlock/components/EmbeddedVideoPreviewModal'
 
 const withinThreshold = (targetDate, threshold) => {
   const diff = new Date(targetDate) - Date.now()
@@ -75,7 +83,17 @@ const Content = ({
   currentChild,
   assignmentIdsByTestId,
   updateTestIdRealTime,
+  notStartedReportsByAssignment,
+  setAssignmentIsPaused,
+  setSelectedLanguage,
+  languagePreference,
+  assignmentsGrousByTestId,
 }) => {
+  const [
+    showVideoResourcePreviewModal,
+    seShowVideoResourcePreviewModal,
+  ] = useState(null)
+
   useEffect(() => {
     fetchAssignments(currentGroup)
   }, [currentChild, currentGroup])
@@ -99,26 +117,42 @@ const Content = ({
       )
     )
   }
-  const regradeWatchTestIdTopics = Object.keys(assignmentIdsByTestId).map(
-    (item) => `student_assessment:test:${item}`
-  )
+  const regradeWatchTestIdTopics = Object.keys(
+    assignmentsGrousByTestId
+  ).flatMap((item) => [
+    `student_assessment:test:${item}`,
+    ...[...assignmentsGrousByTestId[item]].map(
+      (g) => `student_assessment:test:${item}:group:${g}`
+    ),
+  ])
   if (regradeWatchTestIdTopics.length) {
     topics.push(...regradeWatchTestIdTopics)
   }
-  useRealtimeV2(topics, {
-    addAssignment: transformAssignment,
-    addReport: addRealtimeReport,
-    'absentee-mark': addRealtimeReport,
-    'open-assignment': transformAssignment,
-    'close-assignment': transformAssignment,
-    removeAssignment,
-    regradedAssignment: (payload) => {
-      const assignmentIds = assignmentIdsByTestId[payload.oldTestId]
-      if (assignmentIds && assignmentIds.length) {
-        return updateTestIdRealTime({ assignmentIds, ...payload })
-      }
+  useRealtimeV2(
+    topics,
+    {
+      addAssignment: transformAssignment,
+      addReport: addRealtimeReport,
+      'absentee-mark': addRealtimeReport,
+      'open-assignment': transformAssignment,
+      'close-assignment': transformAssignment,
+      removeAssignment,
+      regradedAssignment: (payload) => {
+        const assignmentIds = assignmentIdsByTestId[payload.oldTestId]
+        if (assignmentIds && assignmentIds.length) {
+          return updateTestIdRealTime({ assignmentIds, ...payload })
+        }
+      },
+      'toggle-pause-assignment': (payload) => {
+        const { activitiesByUserId, paused } = payload
+        const utaId = activitiesByUserId[userId]
+        if (utaId) {
+          setAssignmentIsPaused({ utaId, paused })
+        }
+      },
     },
-  })
+    { topicsWillBeAdded: true }
+  )
 
   useInterval(() => {
     if (needRealtimeDateTracking(allAssignments)) {
@@ -135,14 +169,22 @@ const Content = ({
     />
   )
 
+  const setEmbeddedVideoPreviewModal = (x) => seShowVideoResourcePreviewModal(x)
+  const resetVideoPreviewModal = () => seShowVideoResourcePreviewModal(null)
+
   const renderAssignments = () => (
     <AssignmentWrapper>
-      {assignments.map((item) => (
+      {assignments.map((item, i) => (
         <AssignmentCard
           key={`${item._id}_${item.classId}`}
           data={item}
           classId={item.classId}
+          index={i}
           type="assignment"
+          uta={notStartedReportsByAssignment[`${item._id}_${item.classId}`]}
+          languagePreference={languagePreference}
+          setSelectedLanguage={setSelectedLanguage}
+          setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
         />
       ))}
     </AssignmentWrapper>
@@ -159,6 +201,13 @@ const Content = ({
             : noDataNotification()
           : showLoader()}
       </Wrapper>
+
+      {showVideoResourcePreviewModal && (
+        <EmbeddedVideoPreviewModal
+          isVisible={showVideoResourcePreviewModal}
+          closeCallback={resetVideoPreviewModal}
+        />
+      )}
     </LayoutContent>
   )
 }
@@ -174,6 +223,9 @@ export default connect(
     isLoading: get(state, 'studentAssignment.isLoading'),
     currentChild: state?.user?.currentChild,
     assignmentIdsByTestId: assignmentIdsByTestIdSelector(state),
+    assignmentsGrousByTestId: assignmentIdsGroupIdsByTestIdSelector(state),
+    notStartedReportsByAssignment: notStartedReportsByAssignmentId(state),
+    languagePreference: getSelectedLanguageSelector(state),
   }),
   {
     fetchAssignments: fetchAssignmentsAction,
@@ -182,6 +234,8 @@ export default connect(
     rerenderAssignments: rerenderAssignmentsAction,
     removeAssignment: removeAssignmentAction,
     updateTestIdRealTime: updateTestIdRealTimeAction,
+    setAssignmentIsPaused: setAssignmentIsPausedAction,
+    setSelectedLanguage: setSelectedLanguageAction,
   }
 )(Content)
 

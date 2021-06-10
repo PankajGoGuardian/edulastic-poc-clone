@@ -75,7 +75,7 @@ export const MinimizeButton = styled.div`
 
 export const PDFAnnotationToolsWrapper = styled.div`
   width: 100%;
-  height: 40px;
+  height: 42px;
   background: ${white};
   position: absolute;
   z-index: 1;
@@ -88,6 +88,11 @@ export const PDFViewerContainer = styled.div`
   width: ${({ width }) => width}px;
   overflow-x: auto;
   padding: 0px 15px;
+
+  .pdfViewer {
+    position: relative;
+    z-index: 1;
+  }
 
   .pdfViewer .canvasWrapper {
     overflow: hidden;

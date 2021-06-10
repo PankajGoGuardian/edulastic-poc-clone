@@ -24,6 +24,7 @@ class MathFormulaAnswer extends Component {
       onChangeShowDropdown,
       toggleAdditional,
       view = '',
+      extraOptions,
     } = this.props
 
     const handleChangeMethod = (index) => (prop, val) => {
@@ -77,6 +78,7 @@ class MathFormulaAnswer extends Component {
               unitsDropdown={dropdownUnit}
               keypadMode={keypadMode}
               customUnits={customUnits}
+              extraOptions={extraOptions}
               {...method}
             />
           ))}

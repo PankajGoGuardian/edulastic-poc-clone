@@ -2,20 +2,12 @@ import React, { useState, useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
 import { Modal as AntModal } from 'antd'
 import styled from 'styled-components'
-import { math } from '@edulastic/constants'
+import { math, defaultSymbols } from '@edulastic/constants'
 import MathInput from '../MathInput'
 import KatexInput from '../KatexInput'
 import EduButton from '../EduButton'
 import FlexContainer from '../FlexContainer'
 
-const defaultSymbols = [
-  'basic',
-  'intermediate',
-  'advanced',
-  'units_si',
-  'units_us',
-  'all',
-]
 const { defaultNumberPad } = math
 
 const MathModal = ({
@@ -29,15 +21,18 @@ const MathModal = ({
   onSave,
   onClose,
   width,
+  onChangeKeypad,
 }) => {
   const mathInputRef = useRef(null)
   const [latex, setLatex] = useState(value || '')
+  const [latexMode, setLatextMode] = useState(false)
 
   useEffect(() => {
     if (show) {
       if (mathInputRef.current) {
         mathInputRef.current.setFocus()
       }
+      setLatextMode(false)
       setLatex(value)
     }
   }, [show])
@@ -50,6 +45,11 @@ const MathModal = ({
     if (evt.which === 13) {
       onSave(latex)
     }
+  }
+
+  const switchMode = (evt) => {
+    setLatextMode(!latexMode)
+    evt?.target?.blur()
   }
 
   return (
@@ -65,18 +65,29 @@ const MathModal = ({
         style: { overflow: 'auto', display: show ? 'block' : 'none' },
       }}
       footer={
-        <FlexContainer justifyContent="flex-start">
-          <EduButton isGhost onClick={() => onClose()}>
-            CANCEL
+        <FlexContainer justifyContent="space-between">
+          <EduButton
+            noBorder={!latexMode}
+            isGhost={!latexMode}
+            onClick={switchMode}
+          >
+            {!isEditable || latexMode ? 'KEYPAD MODE' : 'LATEX MODE'}
           </EduButton>
-          <EduButton type="primary" onClick={() => onSave(latex)}>
-            OK
-          </EduButton>
+          <FlexContainer>
+            <EduButton isGhost onClick={() => onClose()}>
+              CANCEL
+            </EduButton>
+            <EduButton type="primary" onClick={() => onSave(latex)}>
+              OK
+            </EduButton>
+          </FlexContainer>
         </FlexContainer>
       }
     >
-      {!isEditable && <KatexInput value={latex} onInput={onInput} />}
-      {isEditable && (
+      {(!isEditable || latexMode) && (
+        <KatexInput value={latex} onInput={onInput} />
+      )}
+      {!latexMode && isEditable && (
         <MathInput
           ref={mathInputRef}
           fullWidth
@@ -87,8 +98,11 @@ const MathModal = ({
           showResponse={showResponse}
           showDropdown={showDropdown}
           value={latex}
+          resetMath
           onInput={(newLatex) => onInput(newLatex)}
           onKeyDown={(evt) => onKeyDown(evt)}
+          onChangeKeypad={onChangeKeypad}
+          showDragHandle={false}
         />
       )}
     </Modal>
@@ -106,6 +120,7 @@ MathModal.propTypes = {
   value: PropTypes.string,
   onSave: PropTypes.func,
   onClose: PropTypes.func,
+  onChangeKeypad: PropTypes.func,
 }
 
 MathModal.defaultProps = {
@@ -119,6 +134,7 @@ MathModal.defaultProps = {
   showResponse: false,
   onSave: () => {},
   onClose: () => {},
+  onChangeKeypad: () => {},
 }
 
 export default MathModal

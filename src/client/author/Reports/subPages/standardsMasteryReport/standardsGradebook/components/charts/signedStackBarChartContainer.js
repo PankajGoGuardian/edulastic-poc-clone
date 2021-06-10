@@ -11,6 +11,9 @@ export const SignedStackBarChartContainer = ({
   masteryScale = [],
   role,
   onBarClickCB,
+  onBarResetClickCB,
+  backendPagination,
+  setBackendPagination,
 }) => {
   const chartData = useMemo(
     () => getChartData(filteredDenormalizedData, masteryScale, filters, role),
@@ -88,8 +91,6 @@ export const SignedStackBarChartContainer = ({
     onBarClickCB(key)
   }
 
-  const _onResetClickCB = () => {}
-
   const yTickFormatter = () => ''
 
   const barsLabelFormatter = (val) => {
@@ -106,11 +107,14 @@ export const SignedStackBarChartContainer = ({
       xAxisDataKey="standard"
       getTooltipJSX={getTooltipJSX}
       onBarClickCB={_onBarClickCB}
-      onResetClickCB={_onResetClickCB}
+      onResetClickCB={onBarResetClickCB}
       yAxisLabel={chartSpecifics.yAxisLabel}
       yTickFormatter={yTickFormatter}
       barsLabelFormatter={barsLabelFormatter}
       filter={chartFilter}
+      backendPagination={backendPagination}
+      setBackendPagination={setBackendPagination}
+      margin={{ top: 0, right: 60, left: 10, bottom: 0 }}
     />
   )
 }

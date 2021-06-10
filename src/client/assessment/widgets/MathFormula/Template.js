@@ -4,7 +4,7 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import produce from 'immer'
 import { cloneDeep } from 'lodash'
-
+import { math } from '@edulastic/constants'
 import { MathInput } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
@@ -26,6 +26,30 @@ class Template extends Component {
       setQuestionData(
         produce(item, (draft) => {
           draft.template = val
+
+          // Should remove previous correct answers
+          draft.validation.validResponse.value = [
+            {
+              method: math.methods.EQUIV_SYMBOLIC,
+              options: {
+                inverseResult: false,
+              },
+              value: '',
+            },
+          ]
+          if (draft.validation.altResponses) {
+            draft.validation.altResponses.forEach((_, i) => {
+              draft.validation.altResponses[i].value = [
+                {
+                  method: math.methods.EQUIV_SYMBOLIC,
+                  options: {
+                    inverseResult: false,
+                  },
+                  value: '',
+                },
+              ]
+            })
+          }
           updateVariables(draft, latexKeys)
         })
       )

@@ -47,7 +47,6 @@ class ClassEdit extends React.Component {
       })
     ).isRequired,
     form: PropTypes.object.isRequired,
-    userId: PropTypes.string.isRequired,
     selctedClass: PropTypes.object.isRequired,
     userOrgData: PropTypes.object.isRequired,
     updateClass: PropTypes.func.isRequired,
@@ -93,7 +92,7 @@ class ClassEdit extends React.Component {
 
   handleSubmit = (e) => {
     e.preventDefault()
-    const { form, userId, userOrgData, allTagsData } = this.props
+    const { form, userOrgData, allTagsData } = this.props
     const {
       districtIds: [districtId],
     } = userOrgData
@@ -101,8 +100,13 @@ class ClassEdit extends React.Component {
       if (!err) {
         const { updateClass, curriculums, selctedClass } = this.props
         const { standardSets, endDate, startDate, tags, description } = values
-        const { _id: classId, type } = selctedClass
-
+        const {
+          _id: classId,
+          type,
+          owners = [],
+          parent,
+          primaryTeacherId,
+        } = selctedClass
         const updatedStandardsSets = standardSets?.map((el) => {
           const selectedCurriculum = find(
             curriculums,
@@ -113,11 +117,11 @@ class ClassEdit extends React.Component {
             name: selectedCurriculum.curriculum,
           }
         })
-
+        const ownersIds = owners.map((o) => o.id)
         values.districtId = districtId
         values.type = type
-        values.parent = { id: userId }
-        values.owners = [userId]
+        values.parent = { id: parent.id || primaryTeacherId }
+        values.owners = ownersIds
         values.description = description || ''
         values.institutionId =
           values.institutionId || selctedClass.institutionId

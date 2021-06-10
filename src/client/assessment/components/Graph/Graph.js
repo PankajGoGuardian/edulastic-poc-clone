@@ -1,7 +1,8 @@
 import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, get, omit, pickBy, identity, isObject } from 'lodash'
+import { produce } from 'immer'
 import {
   CorrectAnswersContainer,
   Stimulus,
@@ -12,10 +13,12 @@ import {
   QuestionContentWrapper,
   QuestionSubLabel,
 } from '@edulastic/common'
+import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 
 import { compose } from 'redux'
 import styled from 'styled-components'
 import { withNamespaces } from '@edulastic/localization'
+import { defaultSymbols, math as mathConstants } from '@edulastic/constants'
 import { getFontSize } from '../../utils/helpers'
 import { ContentArea } from '../../styled/ContentArea'
 import {
@@ -34,6 +37,7 @@ import {
   GraphQuadrants,
   NumberLinePlot,
 } from './Authoring'
+
 import GraphAnswers from './GraphAnswers'
 import { GraphDisplay } from './Display'
 import {
@@ -43,9 +47,18 @@ import {
 import Annotations from '../Annotations/Annotations'
 
 import Question from '../Question'
+import { Subtitle } from '../../styled/Subtitle'
+import { Col } from '../../styled/WidgetOptions/Col'
+import { Row } from '../../styled/WidgetOptions/Row'
+import EvaluationSettings from '../EvaluationSettings'
 import { StyledPaperWrapper } from '../../styled/Widget'
 import Instructions from '../Instructions'
 import { EDIT } from '../../constants/constantsForQuestions'
+import { CONSTANT } from './Builder/config'
+
+const { GRAPH_EVALUATION_SETTING, subEvaluationSettingsGrouped } = mathConstants
+
+const hidePointOnEquation = ['axisSegments', 'axisLabels', 'fractionEditor']
 
 const EmptyWrapper = styled.div``
 
@@ -66,26 +79,17 @@ const SmallSizeAxisWrapper = styled.div`
   right: 0;
 `
 
-const getIgnoreRepeatedShapesOptions = () => [
-  { value: 'no', label: 'No' },
-  { value: 'yes', label: 'Compare by slope' },
-  { value: 'strict', label: 'Compare by points' },
-]
-
-const getIgnoreLabelsOptions = () => [
-  { value: 'no', label: 'No' },
-  { value: 'yes', label: 'Yes' },
-]
-
 const getFontSizeList = () => [
-  { value: 'small', label: 'Small' },
-  { value: 'normal', label: 'Normal' },
-  { value: 'large', label: 'Large' },
-  { value: 'extra_large', label: 'Extra large' },
-  { value: 'huge', label: 'Huge' },
+  { value: 'small', label: 'small' },
+  { value: 'normal', label: 'normal' },
+  { value: 'large', label: 'large' },
+  { value: 'extra_large', label: 'extraLarge' },
+  { value: 'huge', label: 'huge' },
 ]
 
 class Graph extends Component {
+  // Todo: need to fix, there are more
+  // eslint-disable-next-line react/static-property-placement
   static contextType = AnswerContext
 
   getOptionsComponent = () => {
@@ -105,6 +109,15 @@ class Graph extends Component {
       default:
         return GraphQuadrants
     }
+  }
+
+  handleKeypadMode = (keypad = 'basic') => {
+    const { item, setQuestionData } = this.props
+    setQuestionData(
+      produce(item, (draft) => {
+        draft.symbols = [keypad]
+      })
+    )
   }
 
   getMoreOptionsComponent = () => {
@@ -169,23 +182,23 @@ class Graph extends Component {
 
   getDrawingObjects = (value) => {
     const allowedTypes = [
-      'point',
-      'line',
-      'ray',
-      'segment',
-      'vector',
-      'circle',
-      'ellipse',
-      'sine',
-      'tangent',
-      'secant',
-      'exponent',
-      'logarithm',
-      'polynom',
-      'hyperbola',
-      'polygon',
-      'parabola',
-      'parabola2',
+      CONSTANT.TOOLS.POINT,
+      CONSTANT.TOOLS.LINE,
+      CONSTANT.TOOLS.RAY,
+      CONSTANT.TOOLS.SEGMENT,
+      CONSTANT.TOOLS.VECTOR,
+      CONSTANT.TOOLS.CIRCLE,
+      CONSTANT.TOOLS.ELLIPSE,
+      CONSTANT.TOOLS.SIN,
+      CONSTANT.TOOLS.TANGENT,
+      CONSTANT.TOOLS.SECANT,
+      CONSTANT.TOOLS.EXPONENT,
+      CONSTANT.TOOLS.LOGARITHM,
+      CONSTANT.TOOLS.POLYNOM,
+      CONSTANT.TOOLS.HYPERBOLA,
+      CONSTANT.TOOLS.POLYGON,
+      CONSTANT.TOOLS.PARABOLA,
+      CONSTANT.TOOLS.PARABOLA2,
     ]
 
     const shapes = value.filter(
@@ -311,12 +324,28 @@ class Graph extends Component {
     setQuestionData({ ...item, annotation: options })
   }
 
-  handleCanvasChange = (canvas, uiStyle) => {
-    const { setQuestionData, item } = this.props
-    let newItem = { ...item, canvas }
-    if (uiStyle) {
-      newItem = { ...newItem, uiStyle }
-    }
+  handleCanvasChange = (canvas, uiStyle, removeElement) => {
+    const { item, setQuestionData } = this.props
+    const newItem = produce(item, (draft) => {
+      if (canvas) {
+        item.canvas = canvas
+      }
+      if (uiStyle) {
+        item.uiStyle = uiStyle
+      }
+      if (removeElement) {
+        if (!draft.validation) {
+          draft.validation = {}
+        }
+        draft.validation.validResponse.value = []
+        if (draft.validation.altResponses) {
+          draft.validation.altResponses.forEach((alt) => {
+            alt.value = []
+          })
+        }
+        draft.background_shapes = []
+      }
+    })
     setQuestionData(newItem)
   }
 
@@ -336,7 +365,7 @@ class Graph extends Component {
 
     const response = {
       id: `alt-${Math.random().toString(36)}`,
-      score: 1,
+      score: newItem?.validation?.validResponse?.score,
       value: [],
     }
 
@@ -373,18 +402,62 @@ class Graph extends Component {
     saveAnswer(qid)
   }
 
-  handleSelectIgnoreRepeatedShapes = (value) => {
+  handleChangeEvaluationOption = (prop, value) => {
     const { item, setQuestionData } = this.props
-    const newItem = cloneDeep(item)
-    newItem.validation.ignore_repeated_shapes = value
-    setQuestionData({ ...newItem })
+    const newItem = produce(item, (draft) => {
+      if (!draft.validation) {
+        draft.validation = {}
+      }
+      if (prop === 'ponitsOnAnEquation' && !value) {
+        draft.validation.points = null
+        draft.validation.latex = null
+        draft.showConnect = false
+        // draft.validation.apiLatex = null
+      } else if (prop === 'ponitsOnAnEquation' && isObject(value)) {
+        draft.validation = {
+          ...draft.validation,
+          ...value,
+        }
+      } else if (prop === 'showConnect') {
+        draft.showConnect = value
+      } else {
+        draft.validation[prop] = value
+      }
+      draft.validation.compareStartAndLength =
+        draft.validation.compareLength && draft.validation.compareStartPoint
+
+      const evaluationOptions = [
+        ...subEvaluationSettingsGrouped.graphSegmentChecks,
+        ...subEvaluationSettingsGrouped.graphPolygonChecks,
+      ]
+
+      draft.validation['comparePoints=False'] = Object.keys(draft.validation)
+        .filter((option) => draft.validation[option])
+        .some((option) => evaluationOptions.includes(option))
+
+      draft.validation = pickBy(draft.validation, identity)
+    })
+    setQuestionData(newItem)
   }
 
-  handleSelectIgnoreLabels = (value) => {
-    const { item, setQuestionData } = this.props
-    const newItem = cloneDeep(item)
-    newItem.validation.ignoreLabels = value
-    setQuestionData({ ...newItem })
+  get optionsForEvaluation() {
+    const { item } = this.props
+    const validation = get(item, 'validation', {})
+
+    return omit(validation, [
+      'altResponses',
+      'scoringType',
+      'validResponse',
+      'rounding',
+      'graphType',
+      'comparePoints=False',
+    ])
+  }
+
+  get showBackgroundShapes() {
+    const { item } = this.props
+    const { graphType } = item
+    return ['axisSegments', 'axisLabels'].indexOf(graphType) === -1
   }
 
   render() {
@@ -406,8 +479,11 @@ class Graph extends Component {
       showQuestionNumber,
       setQuestionData,
       advancedLink,
+      hideCorrectAnswer,
       ...restProps
     } = this.props
+
+    const { symbols = defaultSymbols, graphType } = item
 
     const mapFontName = {
       extra_large: 'xlarge',
@@ -469,16 +545,16 @@ class Graph extends Component {
                   graphData={item}
                   previewTab={previewTab}
                   onAddAltResponses={this.handleAddAltResponses}
-                  getIgnoreLabelsOptions={getIgnoreLabelsOptions}
                   onRemoveAltResponses={this.handleRemoveAltResponses}
-                  handleSelectIgnoreLabels={this.handleSelectIgnoreLabels}
-                  getIgnoreRepeatedShapesOptions={
-                    getIgnoreRepeatedShapesOptions
-                  }
-                  handleSelectIgnoreRepeatedShapes={
-                    this.handleSelectIgnoreRepeatedShapes
-                  }
                   handleNumberlineChange={this.handleNumberlineChange}
+                  onChangeKeypad={this.handleKeypadMode}
+                  symbols={symbols}
+                />
+                <EvaluationSettings
+                  method={GRAPH_EVALUATION_SETTING}
+                  options={this.optionsForEvaluation}
+                  hidePointOnEquation={hidePointOnEquation.includes(graphType)}
+                  changeOptions={this.handleChangeEvaluationOption}
                 />
               </Question>
 
@@ -495,6 +571,39 @@ class Graph extends Component {
                   editable
                 />
               </Question>
+
+              {this.showBackgroundShapes && (
+                <Question
+                  section="main"
+                  label="Background Shapes"
+                  cleanSections={cleanSections}
+                  fillSections={fillSections}
+                  deskHeight={item.uiStyle?.layoutHeight}
+                  advancedAreOpen
+                >
+                  <Subtitle
+                    id={getFormattedAttrId(
+                      `${item?.title}-${t(
+                        'component.graphing.background_shapes'
+                      )}`
+                    )}
+                  >
+                    {t('component.graphing.background_shapes')}
+                  </Subtitle>
+                  <Row>
+                    <Col md={24}>
+                      <GraphDisplay
+                        view={EDIT}
+                        advancedElementSettings
+                        graphData={item}
+                        onChange={this.handleBgShapesChange}
+                        elements={item.background_shapes}
+                        bgShapes
+                      />
+                    </Col>
+                  </Row>
+                </Question>
+              )}
 
               {advancedLink}
 
@@ -526,7 +635,7 @@ class Graph extends Component {
                 )}
               </QuestionLabelWrapper>
 
-              <QuestionContentWrapper>
+              <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
                 <QuestionTitleWrapper>
                   <StyledStimulus
                     data-cy="questionHeader"
@@ -550,56 +659,59 @@ class Graph extends Component {
                   />
                 )}
                 {view !== EDIT && <Instructions item={item} />}
-                {previewTab === 'show' && item.canvas && item.uiStyle && (
-                  <>
-                    <CorrectAnswersContainer
-                      minWidth="max-content"
-                      title={t('component.graphing.correctAnswer')}
-                      titleMargin="4px"
-                      noBackground
-                      showBorder
-                      padding="0px"
-                      margin="20px 0px"
-                    >
-                      <GraphDisplay
-                        disableResponse
-                        graphData={item}
-                        view={view}
-                        previewTab={previewTab}
-                        elements={validation.validResponse.value}
-                        evaluation={evaluation}
-                        elementsIsCorrect
-                        {...restProps}
-                      />
-                    </CorrectAnswersContainer>
+                {previewTab === 'show' &&
+                  !hideCorrectAnswer &&
+                  item.canvas &&
+                  item.uiStyle && (
+                    <>
+                      <CorrectAnswersContainer
+                        minWidth="max-content"
+                        title={t('component.graphing.correctAnswer')}
+                        titleMargin="4px"
+                        noBackground
+                        showBorder
+                        padding="0px"
+                        margin="20px 0px"
+                      >
+                        <GraphDisplay
+                          disableResponse
+                          graphData={item}
+                          view={view}
+                          previewTab={previewTab}
+                          elements={validation.validResponse.value}
+                          evaluation={evaluation}
+                          elementsIsCorrect
+                          {...restProps}
+                        />
+                      </CorrectAnswersContainer>
 
-                    {validation.altResponses &&
-                      validation.altResponses.map((altAnswer, i) => (
-                        <CorrectAnswersContainer
-                          minWidth="max-content"
-                          title={`${t('component.graphing.alternateAnswer')} ${
-                            i + 1
-                          }`}
-                          titleMargin="4px"
-                          noBackground
-                          showBorder
-                          padding="0px"
-                          margin="20px 0px"
-                        >
-                          <GraphDisplay
-                            disableResponse
-                            graphData={item}
-                            view={view}
-                            previewTab={previewTab}
-                            elements={altAnswer.value}
-                            evaluation={evaluation}
-                            elementsIsCorrect
-                            {...restProps}
-                          />
-                        </CorrectAnswersContainer>
-                      ))}
-                  </>
-                )}
+                      {validation.altResponses &&
+                        validation.altResponses.map((altAnswer, i) => (
+                          <CorrectAnswersContainer
+                            minWidth="max-content"
+                            title={`${t(
+                              'component.graphing.alternateAnswer'
+                            )} ${i + 1}`}
+                            titleMargin="4px"
+                            noBackground
+                            showBorder
+                            padding="0px"
+                            margin="20px 0px"
+                          >
+                            <GraphDisplay
+                              disableResponse
+                              graphData={item}
+                              view={view}
+                              previewTab={previewTab}
+                              elements={altAnswer.value}
+                              evaluation={evaluation}
+                              elementsIsCorrect
+                              {...restProps}
+                            />
+                          </CorrectAnswersContainer>
+                        ))}
+                    </>
+                  )}
               </QuestionContentWrapper>
             </FlexContainer>
           </Wrapper>

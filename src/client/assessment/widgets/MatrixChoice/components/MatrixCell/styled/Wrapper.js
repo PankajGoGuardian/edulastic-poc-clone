@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { withKeyboard } from '@edulastic/common'
 
 const getCellColor = (correct, theme) => {
   switch (correct) {
@@ -11,7 +12,7 @@ const getCellColor = (correct, theme) => {
   }
 }
 
-export const Wrapper = styled.div`
+export const Wrapper = withKeyboard(styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -19,9 +20,10 @@ export const Wrapper = styled.div`
     !props.isPrintPreview && getCellColor(props.correct, props.theme)};
   padding: ${(props) => (props.smallSize ? 1 : 16)}px;
   position: relative;
+  cursor: pointer;
   .inline-label {
     margin-right: ${({ isPrintPreview }) => (isPrintPreview ? '0px' : '10px')};
   }
   height: calc(100% - 4px);
   width: calc(100% - 4px);
-`
+`)

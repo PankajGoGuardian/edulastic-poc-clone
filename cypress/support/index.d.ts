@@ -13,7 +13,7 @@ declare namespace Cypress {
      * cy.login('teacher',"teacher-at-snapwiz.com",'testpassword') - will login with 'teacher-at-snapwiz.com'
      */
 
-    login(role: string, email: string, password: string): Chainable<any>;
+    login(role: string, email: string, password: string): Chainable<any>
 
     /**
      * Login with user via API
@@ -25,7 +25,7 @@ declare namespace Cypress {
      * cy.setToken('teacher-at-snapwiz.com','testpassword') - will set token with credential 'teacher-at-snapwiz.com' and 'testpassword'
      */
 
-    setToken(username: string, password: string): Chainable<any>;
+    setToken(username: string, password: string): Chainable<any>
 
     /** set viewport size
      * @param {array} viewport size in [height,width]
@@ -45,7 +45,7 @@ declare namespace Cypress {
      * cy.setResolution('macbook-15') - will set viewport size to 1440 * 900
      */
 
-    setResolution(username: string, password: string): Chainable<any>;
+    setResolution(username: string, password: string): Chainable<any>
 
     /**
      * scroll down the current page and capture snapshots & compare
@@ -54,7 +54,7 @@ declare namespace Cypress {
      * cy.scrollPageAndMatchImageSnapshots(50) - will scroll the page down by currentPageClientHeight - 50 px
      */
 
-    scrollPageAndMatchImageSnapshots(scrollOffset: number): Chainable<any>;
+    scrollPageAndMatchImageSnapshots(scrollOffset: number): Chainable<any>
 
     /**
      * scroll down the current page and capture snapshots & compare
@@ -65,6 +65,6 @@ declare namespace Cypress {
      * Object { hasScroll, minScrolls, scrollSize }
      */
 
-    isPageScrollPresent(scrollOffset: number): Chainable<any>;
+    isPageScrollPresent(scrollOffset: number): Chainable<any>
   }
 }

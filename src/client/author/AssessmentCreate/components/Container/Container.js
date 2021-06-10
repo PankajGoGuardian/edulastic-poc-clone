@@ -3,10 +3,10 @@ import React from 'react'
 import { withRouter } from 'react-router'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
+import qs from 'qs'
 import PropTypes from 'prop-types'
-import { Spin, message } from 'antd'
+import { Spin } from 'antd'
 import { debounce } from 'lodash'
-import qs from 'query-string'
 import { MainHeader, MainContentWrapper, notification } from '@edulastic/common'
 
 import { withNamespaces } from 'react-i18next'
@@ -68,7 +68,9 @@ class Container extends React.Component {
 
   componentDidMount() {
     const { location, receiveTestById } = this.props
-    const { assessmentId } = qs.parse(location.search)
+    const { assessmentId } = qs.parse(location.search, {
+      ignoreQueryPrefix: true,
+    })
 
     if (assessmentId) {
       receiveTestById(assessmentId)
@@ -94,7 +96,9 @@ class Container extends React.Component {
 
   handleUploadPDF = debounce(({ file }) => {
     const { location, createAssessment, isAddPdf = false } = this.props
-    const { assessmentId } = qs.parse(location.search)
+    const { assessmentId } = qs.parse(location.search, {
+      ignoreQueryPrefix: true,
+    })
     if (file.type !== 'application/pdf') {
       return notification({ messageKey: 'fileFormatNotSupported' })
     }
@@ -114,7 +118,9 @@ class Container extends React.Component {
     event.stopPropagation()
 
     const { location, createAssessment, isAddPdf } = this.props
-    const { assessmentId } = qs.parse(location.search)
+    const { assessmentId } = qs.parse(location.search, {
+      ignoreQueryPrefix: true,
+    })
 
     createAssessment({ assessmentId, isAddPdf })
   }

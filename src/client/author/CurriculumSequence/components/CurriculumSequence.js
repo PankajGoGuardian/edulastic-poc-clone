@@ -59,6 +59,9 @@ import {
   checkPreviouslyCustomizedAction,
   unassignAssignmentsfromPlaylistAction,
   duplicatePlaylistRequestAction,
+  setIsUsedModalVisibleAction,
+  setCustomTitleModalVisibleAction,
+  cloneThisPlayListAction,
 } from '../ducks'
 import { getSummaryData } from '../util'
 /* eslint-enable */
@@ -75,6 +78,8 @@ import CurriculumRightPanel from './CurriculumRightPanel'
 import { allowDuplicateCheck } from '../../src/utils/permissionCheck'
 import { DeleteAssignmentModal } from '../../Assignments/components/DeleteAssignmentModal/deleteAssignmentModal'
 import { toggleDeleteAssignmentModalAction } from '../../sharedDucks/assignments'
+import CloneOnUsePlaylistConfirmationModal from './CloneOnUsePlaylistConfirmationModal'
+import CustomTitleOnCloneModal from './CustomTitleOnCloneModal'
 
 /** @typedef {object} ModuleData
  * @property {String} contentId
@@ -189,6 +194,11 @@ class CurriculumSequence extends Component {
     isVisibleAddModule: false,
     moduleForEdit: {},
     unassignData: {},
+    title: '',
+  }
+
+  setTitle = (value) => {
+    this.setState({ title: value })
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -293,10 +303,11 @@ class CurriculumSequence extends Component {
     history.push(`/author/playlists/${duplicatePlayList._id}/edit`)
   }
 
-  handleUseThisClick = () => {
+  handleUseThisClick = ({ forceClone = false, customTitle = '' }) => {
     const {
       destinationCurriculumSequence,
       useThisPlayList,
+      cloneThisPlayList,
       match: {
         params: { id: _id },
       },
@@ -306,15 +317,57 @@ class CurriculumSequence extends Component {
       grades,
       subjects,
       customize = null,
+      authors,
     } = destinationCurriculumSequence
-    useThisPlayList({
-      _id,
-      title,
-      grades,
-      subjects,
-      customize,
-      fromUseThis: true,
-    })
+    if (customTitle !== '') {
+      cloneThisPlayList({
+        _id,
+        title: customTitle,
+        grades,
+        subjects,
+        customize,
+        fromUseThis: true,
+        authors,
+        forceClone,
+      })
+    } else {
+      useThisPlayList({
+        _id,
+        title,
+        grades,
+        subjects,
+        customize,
+        fromUseThis: true,
+        authors,
+        forceClone,
+      })
+    }
+  }
+
+  handleCreateNewCopy = () =>
+    this.handleUseThisClick({ forceClone: true, customTitle: this.state.title })
+
+  handleGotoMyPlaylist = () => {
+    const { previouslyUsedPlaylistClone, useThisPlayList } = this.props
+    if (previouslyUsedPlaylistClone) {
+      const {
+        _id,
+        title,
+        grades,
+        subjects,
+        customize = null,
+        authors,
+      } = previouslyUsedPlaylistClone
+      useThisPlayList({
+        _id,
+        title,
+        grades,
+        subjects,
+        customize,
+        fromUseThis: true,
+        authors,
+      })
+    }
   }
 
   handleAddUnitOpen = () => {
@@ -465,7 +518,7 @@ class CurriculumSequence extends Component {
       setShowRightPanel,
       toggleManageContent,
       checkPreviouslyCustomized,
-      isConfirmedCustomization,
+      location,
     } = this.props
     const { authors } = destinationCurriculumSequence
     const canEdit =
@@ -479,8 +532,9 @@ class CurriculumSequence extends Component {
     //   return;
     // }
     const isAuthoringFlowReview = current === 'review'
+    const isPlaylistDetailsPage = location?.hash === '#review'
+    const isPublishedPage = location?.state?.publishedPlaylist
     if (
-      !isConfirmedCustomization &&
       !isManageContentActive &&
       !canEdit &&
       !isStudent &&
@@ -501,6 +555,18 @@ class CurriculumSequence extends Component {
         okButtonProps: {
           style: { background: themeColor, outline: 'none' },
         },
+      })
+    } else if (
+      (isPlaylistDetailsPage || isPublishedPage) &&
+      contentName === 'manageContent'
+    ) {
+      const {
+        history,
+        destinationCurriculumSequence: { _id },
+      } = this.props
+      return history.push({
+        pathname: `/author/playlists/${_id}/edit`,
+        state: { editFlow: true },
       })
     } else {
       setShowRightPanel(true)
@@ -627,6 +693,11 @@ class CurriculumSequence extends Component {
     this.setState({ unassignData: {} })
   }
 
+  handleCloseIsUsedModal = () => this.props.setIsUsedModalVisible(false)
+
+  handleCloseCustomTitleModal = () =>
+    this.props.setCustomTitleModalVisible(false)
+
   render() {
     const {
       handleRemoveTest,
@@ -666,6 +737,8 @@ class CurriculumSequence extends Component {
       handleTestsSort,
       features,
       urlHasUseThis,
+      isEditPage,
+      isCreatePage,
       isPublisherUser,
       isStudent,
       isTeacher,
@@ -689,10 +762,20 @@ class CurriculumSequence extends Component {
       removePlaylistFromUse,
       customizeInDraft,
       duplicatePlayList,
+      isUsedModalVisible = false,
+      customTitleModalVisible = false,
+      currentUserId,
     } = this.props
+
     const isManageContentActive = activeRightPanel === 'manageContent'
     // check Current user's edit permission
     const hasEditAccess = this.checkWritePermission()
+
+    const { authors } = destinationCurriculumSequence
+    const canEdit =
+      authors?.find((x) => x._id === currentUserId) ||
+      role === roleuser.EDULASTIC_CURATOR
+
     const isNotStudentOrParent = !(role === 'student' || role === 'parent')
 
     // figure out which tab contents to render || just render default playlist
@@ -726,14 +809,15 @@ class CurriculumSequence extends Component {
       customize = true,
       modules,
       collections: _playlistCollections = [],
+      clonedCollections = [],
     } = destinationCurriculumSequence
     const sparkCollection =
       collections.find(
         (c) => c.name === 'Spark Math' && c.owner === 'Edulastic Corp'
       ) || {}
-    const isSparkMathPlaylist = _playlistCollections.some(
-      (item) => item._id === sparkCollection?._id
-    )
+    const isSparkMathPlaylist =
+      _playlistCollections.some((item) => item._id === sparkCollection?._id) ||
+      clonedCollections.some((item) => item._id === sparkCollection?._id)
 
     const getplaylistMetrics = () => {
       const temp = {}
@@ -805,9 +889,9 @@ class CurriculumSequence extends Component {
       'playlist'
     )
     const shouldHidCustomizeButton =
-      (isPlaylistDetailsPage || urlHasUseThis) &&
+      ((isPlaylistDetailsPage && !canEdit) || urlHasUseThis) &&
       status === 'published' &&
-      (!enableCustomize || !canAllowDuplicate)
+      (!(enableCustomize && canEdit) || !canAllowDuplicate)
 
     const playlistsToSwitch = isStudent
       ? curatedStudentPlaylists
@@ -950,6 +1034,8 @@ class CurriculumSequence extends Component {
                         onSortEnd={onSortEnd}
                         handleTestsSort={handleTestsSort}
                         urlHasUseThis={urlHasUseThis}
+                        isEditPage={isEditPage}
+                        isCreatePage={isCreatePage}
                         summaryData={summaryData}
                         playlistMetrics={playlistMetrics}
                         playlistClassList={playlistClassList}
@@ -1003,6 +1089,23 @@ class CurriculumSequence extends Component {
                 />
               )}
           </MainContentWrapper>
+          {isUsedModalVisible && (
+            <CloneOnUsePlaylistConfirmationModal
+              isVisible={isUsedModalVisible}
+              onCancel={this.handleCloseIsUsedModal}
+              handleGotoMyPlaylist={this.handleGotoMyPlaylist}
+              handleCreateNewCopy={this.handleCreateNewCopy}
+            />
+          )}
+          {customTitleModalVisible && (
+            <CustomTitleOnCloneModal
+              isVisible={customTitleModalVisible}
+              onCancel={this.handleCloseCustomTitleModal}
+              handleCreateNewCopy={this.handleUseThisClick}
+              title={this.state.title}
+              setTitle={this.setTitle}
+            />
+          )}
         </CurriculumSequenceWrapper>
       </>
     )
@@ -1039,8 +1142,11 @@ const enhance = compose(
         state.curriculumSequence?.isVideoResourcePreviewModal,
       showRightPanel: state.curriculumSequence?.showRightPanel,
       customizeInDraft: state.curriculumSequence?.customizeInDraft,
-      isConfirmedCustomization:
-        state.curriculumSequence?.isConfirmedCustomization,
+      isUsedModalVisible: state.curriculumSequence?.isUsedModalVisible,
+      customTitleModalVisible:
+        state.curriculumSequence?.customTitleModalVisible,
+      previouslyUsedPlaylistClone:
+        state.curriculumSequence?.previouslyUsedPlaylistClone,
     }),
     {
       onGuideChange: changeGuideAction,
@@ -1051,6 +1157,7 @@ const enhance = compose(
       setDataForAssign: setDataForAssignAction,
       saveCurriculumSequence: saveCurriculumSequenceAction,
       useThisPlayList: useThisPlayListAction,
+      cloneThisPlayList: cloneThisPlayListAction,
       removeTestFromModule: removeTestFromModuleAction,
       removeTestFromDestinationCurriculum: playlistTestRemoveFromModuleAction,
       addNewUnitToDestination: addNewUnitAction,
@@ -1071,6 +1178,8 @@ const enhance = compose(
       toggleDeleteAssignmentModal: toggleDeleteAssignmentModalAction,
       unassignAssignmentsRequest: unassignAssignmentsfromPlaylistAction,
       duplicatePlayList: duplicatePlaylistRequestAction,
+      setIsUsedModalVisible: setIsUsedModalVisibleAction,
+      setCustomTitleModalVisible: setCustomTitleModalVisibleAction,
     }
   )
 )
@@ -1125,7 +1234,7 @@ const StyledFlexContainer = styled(FlexContainer)`
 
 export const ContentContainer = styled.div`
   width: ${({ showRightPanel }) =>
-    showRightPanel ? 'calc(100% - 400px)' : '100%'};
+    showRightPanel ? 'calc(100% - 360px)' : '100%'};
   padding-right: 5px;
   margin: 0px;
   margin-right: 10px;

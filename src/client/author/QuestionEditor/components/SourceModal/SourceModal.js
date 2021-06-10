@@ -1,5 +1,5 @@
-import React, { Component, lazy } from 'react'
-
+import React, { Component } from 'react'
+import { lazy } from '@loadable/component'
 import PropTypes from 'prop-types'
 import { Modal } from '../../../src/components/common'
 

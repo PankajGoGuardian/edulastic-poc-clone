@@ -19,7 +19,7 @@ const StyledModal = styled(Modal)`
   top: ${(props) => (props.top ? props.top : '100px')};
   .ant-modal-content {
     background: ${white};
-    padding: 25px;
+    padding: ${(props) => props.padding || '25px 45px'};
     .ant-modal-close {
       color: ${title};
       top: 10px;
@@ -34,7 +34,8 @@ const StyledModal = styled(Modal)`
       background: transparent;
       border: none;
       .ant-modal-title {
-        font-size: 16px;
+        font-size: ${(props) =>
+          props.titleFontSize ? props.titleFontSize : '16px'};
         color: ${title};
         font-weight: 700;
         @media (min-width: ${mediumDesktopExactWidth}) {
@@ -46,7 +47,8 @@ const StyledModal = styled(Modal)`
       display: ${(props) => (props.centerContent ? 'flex' : 'block')};
       align-items: center;
       background: transparent;
-      padding: 25px 0px;
+      padding: ${(props) =>
+        props.bodyPadding ? props.bodyPadding : '25px 0px'};
 
       & > h4 {
         color: ${title};
@@ -60,6 +62,11 @@ const StyledModal = styled(Modal)`
         font-weight: 600;
         width: 100%;
         margin-bottom: 10px;
+        &.label {
+          font-size: 11px;
+          margin-bottom: 5px;
+          text-transform: uppercase;
+        }
       }
     }
     .ant-modal-footer {

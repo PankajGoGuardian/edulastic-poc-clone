@@ -35,6 +35,10 @@ const quadrantsDefaultConfig = {
         minorHeight: 1,
         majorHeight: 15,
         ticksDistance: 1,
+        label: {
+          display: 'html',
+          offset: [0, -8],
+        },
       },
       firstArrow: {
         size: 5,
@@ -62,6 +66,10 @@ const quadrantsDefaultConfig = {
         minorHeight: 0,
         ticksDistance: 1,
         majorHeight: 15,
+        label: {
+          display: 'html',
+          offset: [-8, 0],
+        },
       },
       firstArrow: {
         size: 5,

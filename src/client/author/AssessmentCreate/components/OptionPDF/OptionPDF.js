@@ -22,7 +22,7 @@ const OptionPDF = () => (
 
     <TextWrapper>{descriptionBottom}</TextWrapper>
     <Link to="/author/tests/snapquiz">
-      <EduButton isGhost width="234px">
+      <EduButton data-cy="uploadPdf" isGhost width="234px">
         UPLOAD PDF
       </EduButton>
     </Link>

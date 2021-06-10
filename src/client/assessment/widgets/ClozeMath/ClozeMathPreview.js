@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useContext, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { cloneDeep, get } from 'lodash'
+import { cloneDeep, get, isEmpty } from 'lodash'
 import { helpers, AnswerContext } from '@edulastic/common'
-import JsxParser from 'react-jsx-parser'
+import JsxParser from 'react-jsx-parser/lib/react-jsx-parser.min'
 import { SHOW, CHECK, CLEAR, EDIT } from '../../constants/constantsForQuestions'
 import AnswerBox from './AnswerBox'
 import { withCheckAnswerButton } from '../../components/HOC/withCheckAnswerButton'
@@ -36,6 +36,8 @@ const ClozeMathPreview = ({
   isPrintPreview,
   allOptions = [],
   enableMagnifier = false,
+  hideCorrectAnswer,
+  answerScore,
 }) => {
   const [newHtml, setNewHtml] = useState('')
   const { isAnswerModifiable } = useContext(AnswerContext)
@@ -147,6 +149,20 @@ const ClozeMathPreview = ({
     }
   }, [stimulus])
 
+  const allCorrects = useMemo(() => {
+    if (
+      (type === CHECK || type === SHOW) &&
+      !isEmpty(item.responseIds) &&
+      !isEmpty(evaluation)
+    ) {
+      return Object.keys(item.responseIds)
+        .map((key) => item.responseIds[key].map((response) => response.id))
+        .flatMap((responseId) => responseId)
+        .every((responseId) => evaluation[responseId])
+    }
+    return false
+  }, [evaluation, item.responseIds, type])
+
   const testUserAnswer = {}
   if (testItem) {
     const keynameMap = {
@@ -200,6 +216,8 @@ const ClozeMathPreview = ({
             disableResponse: disableResponse || !isAnswerModifiable,
             isPrintPreview,
             allOptions,
+            answerScore,
+            allCorrects,
           },
         }}
         showWarnings
@@ -213,7 +231,7 @@ const ClozeMathPreview = ({
         jsx={newHtml}
       />
       {type !== EDIT && <Instructions item={item} />}
-      {(isExpressGrader || type === SHOW) && (
+      {(isExpressGrader || type === SHOW) && !hideCorrectAnswer && (
         <AnswerBox
           mathAnswers={allAnswers.mathAnswers}
           dropdownAnswers={allAnswers.dropdownAnswers}

@@ -18,9 +18,7 @@ export default class GroupPopup {
   getSelectedStudentsContainer = () => cy.get('[data-cy="students-left"]')
 
   getSelectedStudentByName = (studentName) =>
-    this.getSelectedStudentsContainer().find(
-      `[data-cy="${(studentName)}"]`
-    )
+    this.getSelectedStudentsContainer().find(`[data-cy="${studentName}"]`)
 
   getGroupStudentByName = (studentName) =>
     this.getStudentsAlreadyInGroupContainer().find(`[data-cy="${studentName}"]`)

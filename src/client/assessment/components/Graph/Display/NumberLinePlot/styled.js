@@ -174,12 +174,13 @@ export const GraphWrapper = styled.div`
 `
 
 export const JSXBox = styled.div`
-  background-color: ${(props) => props.theme.widgets.chart.bgColor} !important;
+  background-color: transparent !important;
+  z-index: 2;
   position: relative;
   overflow: hidden;
   border: 1px solid #e8e8e8;
   border-radius: 0;
-  margin: ${(props) => (props.margin ? `${props.margin}px` : 'auto')};
+  margin: ${(props) => props.margin && `${props.margin}px`};
 `
 
 export const DropdownMenu = styled.ul`

@@ -16,7 +16,11 @@ import {
   getTestEntitySelector,
   getReleaseScorePremiumSelector,
 } from '../TestPage/ducks'
-import { getUserRole, getCollectionsSelector } from '../src/selectors/user'
+import {
+  getUserRole,
+  getCollectionsSelector,
+  isOrganizationDistrictSelector,
+} from '../src/selectors/user'
 import {
   APPROVE_OR_REJECT_SINGLE_ITEM_REQUEST,
   APPROVE_OR_REJECT_SINGLE_ITEM_SUCCESS,
@@ -230,12 +234,13 @@ export function* createTestFromCart({ payload: { testName } }) {
   )
 
   const userRole = yield select(getUserRole)
+  const isOrganizationDA = yield select(isOrganizationDistrictSelector)
   if (
     userRole === roleuser.DISTRICT_ADMIN ||
     userRole === roleuser.SCHOOL_ADMIN
   ) {
     test.testType = testConstant.type.COMMON
-    test.freezeSettings = true
+    test.freezeSettings = !isOrganizationDA
   }
   const updatedTest = {
     ...test,

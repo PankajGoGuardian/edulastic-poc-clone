@@ -7,10 +7,14 @@ import CorrectAnswers from '../../components/CorrectAnswers'
 import CorrectAnswer from './CorrectAnswer'
 
 class SetCorrectAnswers extends Component {
-  state = {
-    currentTab: 0,
+  constructor() {
+    super()
+    this.state = {
+      currentTab: 0,
+    }
   }
 
+  // eslint-disable-next-line react/static-property-placement
   static contextType = ItemLevelContext
 
   componentDidUpdate(prevProps) {
@@ -46,7 +50,7 @@ class SetCorrectAnswers extends Component {
     setQuestionData(
       produce(item, (draft) => {
         const response = {
-          score: 1,
+          score: draft?.validation?.validResponse?.score,
           value: new Array(draft.responseIds.length).fill(null),
         }
 

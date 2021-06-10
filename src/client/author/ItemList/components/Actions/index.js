@@ -68,7 +68,10 @@ const Actions = ({
       }))
     }
     if (type === 'TEST') {
-      itemsToAdd = selectedTests?.map((x) => ({ itemId: x._id, name: x.title }))
+      itemsToAdd = selectedTests?.map((x) => ({
+        itemId: x._id,
+        name: x.title,
+      }))
     }
     return itemsToAdd
   }

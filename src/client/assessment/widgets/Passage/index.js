@@ -23,6 +23,7 @@ const EmptyWrapper = styled.div``
 // Do not change id here
 const PassageWrapper = styled(Paper).attrs(() => ({
   id: 'passage-wrapper',
+  className: 'passage-wrapper',
 }))`
   border-radius: ${({ flowLayout }) => (flowLayout ? 0 : 10)}px;
   background: ${({ flowLayout }) => (flowLayout ? 'transparent' : white)};
@@ -30,7 +31,7 @@ const PassageWrapper = styled(Paper).attrs(() => ({
     flowLayout ? 'unset' : `0 3px 10px 0 ${boxShadowDefault}`};
   position: relative;
   text-align: justify;
-  word-break: break-all;
+  word-break: break-word;
 `
 
 const Passage = ({
@@ -93,15 +94,16 @@ Passage.defaultProps = {
   cleanSections: () => {},
 }
 
+function getHighlightForAuthor(state, props) {
+  const { item } = props
+  return get(state, `userWork.present[${item.id}]`)
+}
+
 const enhance = compose(
   withNamespaces('assessment'),
   connect(
-    (state, ownProps) => ({
-      userWork: get(
-        state,
-        `userWork.present[${ownProps.passageTestItemID}].resourceId`,
-        []
-      ),
+    (state, props) => ({
+      userWork: getHighlightForAuthor(state, props),
     }),
     {
       setQuestionData: setQuestionDataAction,

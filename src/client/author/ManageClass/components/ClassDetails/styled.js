@@ -75,7 +75,7 @@ export const StudentsTable = styled(EduTableStyled)`
           color: ${secondaryTextColor};
           &:last-child {
             padding: 0px;
-            width: 40px;
+            width: 10%;
             svg {
               display: none;
               width: auto;
@@ -257,7 +257,7 @@ export const ClassLink = styled.span`
 
 export const CodeWrapper = styled(Row)`
   width: 100%;
-  justify-content: space-between;
+  justify-content: end;
 `
 
 export const ClassCode = styled(Col)`

@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-
+import { response as responseConstant } from '@edulastic/constants'
 import { white } from '@edulastic/colors'
 
 export const CheckBox = styled.div`
@@ -9,35 +9,23 @@ export const CheckBox = styled.div`
   height: ${(props) => props.height || 'auto'};
   min-height: ${(props) => props.height || '32px'};
   min-width: ${(props) => props.width || '140px'};
+  max-height: ${responseConstant.mathInputMaxHeight};
   margin: 0px 2px 0px 2px;
   font-weight: 700;
   align-items: center;
   border-radius: 2px;
   padding-right: 24px;
   vertical-align: middle;
-  background: ${({ theme }) => theme.checkbox.noAnswerBgColor};
+  background: ${({ theme, fillColor, isPrintPreview }) =>
+    isPrintPreview ? white : fillColor || theme.checkbox.noAnswerBgColor};
   color: ${({ theme }) => theme.checkbox.textColor};
-
+  text-indent: 0;
   .index {
-    background: ${({ theme }) => theme.checkbox.noAnswerIconColor};
+    background: ${({ indexBgColor }) => indexBgColor};
   }
 
   .mq-math-mode {
     border: 0px;
-  }
-
-  &.wrong {
-    background: ${({ theme }) => theme.checkbox.wrongBgColor};
-    .index {
-      background: ${({ theme }) => theme.checkbox.wrongIconColor};
-    }
-  }
-
-  &.right {
-    background: ${({ theme }) => theme.checkbox.rightBgColor};
-    .index {
-      background: ${({ theme }) => theme.checkbox.rightIconColor};
-    }
   }
 
   .index {

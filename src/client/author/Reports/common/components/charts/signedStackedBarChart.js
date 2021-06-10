@@ -13,12 +13,13 @@ import {
   Legend,
   ReferenceLine,
 } from 'recharts'
-import { isEmpty, findLast, head } from 'lodash'
+import { isEmpty, findLast } from 'lodash'
 import styled from 'styled-components'
 import {
   StyledCustomChartTooltip,
   StyledChartNavButton,
   CustomXAxisTickTooltipContainer,
+  ResetButtonClear,
 } from '../../styled'
 import {
   CustomChartXTick,
@@ -65,9 +66,10 @@ const LabelText = (props) => {
 
 export const SignedStackedBarChart = ({
   margin = { top: 0, right: 60, left: 60, bottom: 0 },
-  xTickTooltipPosition = 460,
-  xTickToolTipWidth = 110,
-  pageSize,
+  legendWrapperStyle = { top: -10 },
+  xTickTooltipPosition = 420,
+  xTickToolTipWidth = 200,
+  pageSize: _pageSize,
   barsData,
   data = [],
   yDomain = [-100, 110],
@@ -82,11 +84,14 @@ export const SignedStackedBarChart = ({
   barsLabelFormatter = _barsLabelFormatter,
   referenceLine = 0,
   filter = {},
+  legendPayload,
+  backendPagination, // structure: { page: x, pageSize: y, pageCount: z }
+  setBackendPagination,
 }) => {
-  const page = pageSize || 7
+  const pageSize = _pageSize || backendPagination?.pageSize || 7
   const [pagination, setPagination] = useState({
     startIndex: 0,
-    endIndex: page - 1,
+    endIndex: pageSize - 1,
   })
   const [copyData, setCopyData] = useState(null)
   const [barIndex, setBarIndex] = useState(null)
@@ -112,7 +117,7 @@ export const SignedStackedBarChart = ({
   if (data !== copyData) {
     setPagination({
       startIndex: 0,
-      endIndex: page - 1,
+      endIndex: pageSize - 1,
     })
     setCopyData(data)
   }
@@ -120,15 +125,16 @@ export const SignedStackedBarChart = ({
   const chartData = useMemo(() => [...data], [pagination])
 
   const renderData = useMemo(
-    () => chartData.slice(pagination.startIndex, pagination.startIndex + page),
+    () =>
+      chartData.slice(pagination.startIndex, pagination.startIndex + pageSize),
     [pagination, data]
   )
 
   const scrollLeft = () => {
     let diff
     if (pagination.startIndex > 0) {
-      if (pagination.startIndex >= page) {
-        diff = page
+      if (pagination.startIndex >= pageSize) {
+        diff = pageSize
       } else {
         diff = pagination.startIndex
       }
@@ -142,8 +148,8 @@ export const SignedStackedBarChart = ({
   const scrollRight = () => {
     let diff
     if (pagination.endIndex < chartData.length - 1) {
-      if (chartData.length - 1 - pagination.endIndex >= page) {
-        diff = page
+      if (chartData.length - 1 - pagination.endIndex >= pageSize) {
+        diff = pageSize
       } else {
         diff = chartData.length - 1 - pagination.endIndex
       }
@@ -210,13 +216,35 @@ export const SignedStackedBarChart = ({
     const positive = barKeys.filter((ite) => barData[ite.key] > 0)
     const negative = barKeys.filter((ite) => barData[ite.key] < 0)
     return (
-      findLast(positive)?.idx === bdIndex || head(negative)?.idx === bdIndex
+      findLast(positive)?.idx === bdIndex || findLast(negative)?.idx === bdIndex
     )
   }
 
+  // chart navigation visibility and control
+  const chartNavLeftVisibility = backendPagination
+    ? backendPagination.page > 1
+    : !(pagination.startIndex == 0)
+  const chartNavRightVisibility = backendPagination
+    ? backendPagination.page < backendPagination.pageCount
+    : !(chartData.length <= pagination.endIndex + 1)
+  const chartNavLeftClick = () =>
+    backendPagination
+      ? setBackendPagination({
+          ...backendPagination,
+          page: backendPagination.page - 1,
+        })
+      : scrollLeft()
+  const chartNavRightClick = () =>
+    backendPagination
+      ? setBackendPagination({
+          ...backendPagination,
+          page: backendPagination.page + 1,
+        })
+      : scrollRight()
+
   return (
     <StyledSignedStackedBarChartContainer>
-      <a
+      <ResetButtonClear
         onClick={onResetClick}
         style={
           Object.keys(filter).length > 0
@@ -225,16 +253,16 @@ export const SignedStackedBarChart = ({
         }
       >
         Reset
-      </a>
+      </ResetButtonClear>
       <StyledChartNavButton
         type="primary"
         shape="circle"
         icon="caret-left"
         IconBtn
         className="navigator navigator-left"
-        onClick={scrollLeft}
+        onClick={chartNavLeftClick}
         style={{
-          visibility: pagination.startIndex == 0 ? 'hidden' : 'visible',
+          visibility: chartNavLeftVisibility ? 'visible' : 'hidden',
         }}
       />
       <StyledChartNavButton
@@ -243,10 +271,9 @@ export const SignedStackedBarChart = ({
         icon="caret-right"
         IconBtn
         className="navigator navigator-right"
-        onClick={scrollRight}
+        onClick={chartNavRightClick}
         style={{
-          visibility:
-            chartData.length <= pagination.endIndex + 1 ? 'hidden' : 'visible',
+          visibility: chartNavRightVisibility ? 'visible' : 'hidden',
         }}
       />
       <CustomXAxisTickTooltipContainer
@@ -294,10 +321,12 @@ export const SignedStackedBarChart = ({
             }
           />
           <Legend
-            align="left"
+            wrapperStyle={legendWrapperStyle}
+            align="right"
             verticalAlign="top"
             onMouseEnter={onLegendMouseEnter}
             onMouseLeave={onLegendMouseLeave}
+            payload={legendPayload}
           />
           <ReferenceLine y={referenceLine} stroke={constants.COLOR_BLACK} />
           {barsData.map((bdItem, bdIndex) => {

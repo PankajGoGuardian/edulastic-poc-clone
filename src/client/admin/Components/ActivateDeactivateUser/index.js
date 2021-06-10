@@ -18,6 +18,7 @@ import {
 import { StyledRadioGroup } from './styled'
 
 const fields = {
+  _id: 'User ID',
   username: 'Username',
   firstName: 'First Name',
   lastName: 'Last Name',

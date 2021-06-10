@@ -1,5 +1,5 @@
 import { questionType, question, customTags } from '@edulastic/constants'
-import { get, isString, isEmpty, keys } from 'lodash'
+import { get, isString, isEmpty, keys, keyBy } from 'lodash'
 import striptags from 'striptags'
 import { templateHasImage } from '@edulastic/common'
 import { displayStyles } from '../assessment/widgets/ClozeEditingTask/constants'
@@ -412,12 +412,13 @@ export const isIncompleteQuestion = (item, itemLevelScoring = false) => {
 
   // if  empty options are present
   if (item.options && hasEmptyOptions(item)) {
-    return [true, 'Correct answer for answer choice cannot be empty']
+    return [true, 'Answer choices should not be empty']
   }
   // if not yet returned with an error, then it should be a fine question!
 
   if (!questionType.manuallyGradableQn.includes(item.type)) {
     const { score } = item?.validation?.validResponse || {}
+    const { unscored = false } = item?.validation
 
     // when item level scoring is on score is removed from the validation object
     // so we should not validate question level score
@@ -426,7 +427,7 @@ export const isIncompleteQuestion = (item, itemLevelScoring = false) => {
       if (score === undefined) {
         return [true, 'Score needs to be set']
       }
-      if (parseFloat(score, 10) === 0) {
+      if (!unscored && parseFloat(score, 10) === 0) {
         return [true, 'Score cannot be zero']
       }
     }
@@ -443,6 +444,13 @@ export const isIncompleteQuestion = (item, itemLevelScoring = false) => {
           ...(item?.validation?.altResponses || []),
         ]
         defaultErrorMessage = getEmptyCorrectAnswerErrMsg(correctAnswers)
+      }
+      if (item?.type === questionType.GRAPH) {
+        const { points, latex } = item?.validation || {}
+        if ((points || latex) && (!points || !latex)) {
+          defaultErrorMessage =
+            'Set both inputs for points on equation under evaluation settings'
+        }
       }
       return [true, defaultErrorMessage] // [true, msg]
     }
@@ -474,4 +482,27 @@ export const hasImproperDynamicParamsConfig = (item) => {
       return [true, 'Dynamic variables option not selected', false]
   }
   return [false]
+}
+
+export const isOptionsRemoved = (originalQuestions, newQuestions) => {
+  const oldQuestionsById = keyBy(originalQuestions, 'id')
+  for (const _question of newQuestions) {
+    const { id, options, type } = _question
+    if (oldQuestionsById[id]) {
+      switch (type) {
+        case MULTIPLE_CHOICE: {
+          const oldOptionValues =
+            oldQuestionsById[id]?.options?.map((opt) => opt.value) || []
+          const newOptionsByValue = keyBy(options, 'value')
+          if (!oldOptionValues.every((value) => newOptionsByValue[value])) {
+            return true
+          }
+          break
+        }
+        default:
+          break
+      }
+    }
+  }
+  return false
 }

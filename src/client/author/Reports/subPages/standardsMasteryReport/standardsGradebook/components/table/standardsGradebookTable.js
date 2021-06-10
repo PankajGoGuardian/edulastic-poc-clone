@@ -1,12 +1,13 @@
 /* eslint-disable array-callback-return */
 import React, { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { Row, Col } from 'antd'
-import { isEmpty } from 'lodash'
+import { Row, Col, Tooltip } from 'antd'
+import { isEmpty, flatMap, keyBy } from 'lodash'
 import styled from 'styled-components'
 import next from 'immer'
 import { withNamespaces } from '@edulastic/localization'
 
+import { IconInfo } from '@edulastic/icons'
 import { extraDesktopWidthMax } from '@edulastic/colors'
 import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
 
@@ -23,21 +24,17 @@ import {
   idToName,
   analyseByToKeyToRender,
   analyseByToName,
+  getStandardProgressNav,
 } from '../../utils/transformers'
 
 import dropDownFormat from '../../static/json/dropDownFormat.json'
 import { reportLinkColor } from '../../../../multipleAssessmentReport/common/utils/constants'
 
-const GradebookTable = styled(StyledTable)`
+export const GradebookTable = styled(StyledTable)`
   .ant-table-layout-fixed {
     .ant-table-scroll {
       table tbody tr td {
         border-bottom: 1px solid #e9e9e9;
-      }
-      .ant-table-thead {
-        th {
-          white-space: nowrap;
-        }
       }
       .ant-table-body {
         overflow-x: auto !important;
@@ -75,16 +72,24 @@ const GradebookTable = styled(StyledTable)`
       }
     }
   }
-  .ant-table-tbody {
-    td {
-      min-width: 100px;
-      padding: 0;
-      &:nth-child(1) {
-        padding: 0px 8px;
-      }
-    }
-  }
 `
+
+const compareByStudentsColumns = [
+  {
+    title: 'SIS ID',
+    dataIndex: 'sisId',
+    width: 150,
+    key: 'sisId',
+    visibleOn: ['csv'],
+  },
+  {
+    title: 'STUDENT NUMBER',
+    dataIndex: 'studentNumber',
+    width: 150,
+    key: 'studentNumber',
+    visibleOn: ['csv'],
+  },
+]
 
 const StandardsGradebookTableComponent = ({
   filteredDenormalizedData,
@@ -96,12 +101,14 @@ const StandardsGradebookTableComponent = ({
   handleOnClickStandard,
   standardsData,
   location,
+  navigationItems,
   pageTitle,
+  isSharedReport,
   t,
 }) => {
   const [tableDdFilters, setTableDdFilters] = useState({
     masteryLevel: 'all',
-    analyseBy: 'score(%)',
+    analyseBy: 'masteryScore',
     compareBy: role === 'teacher' ? 'studentId' : 'schoolId',
   })
 
@@ -176,18 +183,24 @@ const StandardsGradebookTableComponent = ({
     standardName,
     standardId
   ) => (data, record) => {
-    const tooltipText = (rec) => (
+    const standardToRender =
+      record.standardsInfo[index]?.standardId === standardId
+        ? record.standardsInfo[index]
+        : record.standardsInfo.find((std) => std.standardId === standardId)
+    const tooltipText = (
       <div>
         <Row type="flex" justify="start">
           <Col className="custom-table-tooltip-key">
             {idToName[_compareBy]}:{' '}
           </Col>
-          <Col className="custom-table-tooltip-value">{rec.compareByLabel}</Col>
+          <Col className="custom-table-tooltip-value">
+            {record.compareByLabel}
+          </Col>
         </Row>
         <Row type="flex" justify="start">
           <Col className="custom-table-tooltip-key">Standard: </Col>
           <Col className="custom-table-tooltip-value">
-            {rec.standardsInfo[index]?.standardName}
+            {standardToRender?.standardName}
           </Col>
         </Row>
 
@@ -197,12 +210,12 @@ const StandardsGradebookTableComponent = ({
           </Col>
           {_analyseBy === 'rawScore' ? (
             <Col className="custom-table-tooltip-value">
-              {rec.standardsInfo[index]?.totalTotalScore}/
-              {rec.standardsInfo[index]?.totalMaxScore}
+              {standardToRender?.totalTotalScore}/
+              {standardToRender?.totalMaxScore}
             </Col>
           ) : (
             <Col className="custom-table-tooltip-value">
-              {rec.standardsInfo[index]?.[analyseByToKeyToRender[_analyseBy]]}
+              {standardToRender?.[analyseByToKeyToRender[_analyseBy]]}
               {_analyseBy === 'score(%)' ? '%' : ''}
             </Col>
           )}
@@ -215,37 +228,30 @@ const StandardsGradebookTableComponent = ({
       studentId: record.studentId,
       standardId,
       profileId: filters.profileId,
+      assessmentTypes:
+        filters.assessmentTypes !== 'All' ? filters.assessmentTypes : '',
     }
     const getCellContents = (props) => {
       const { printData } = props
-      if (_compareBy === 'studentId') {
-        return (
-          <ColoredCell
-            bgColor={record.standardsInfo?.[index]?.color}
-            onClick={
-              printData === 'N/A'
-                ? () => null
-                : () =>
-                    handleOnClickStandard(
-                      obj,
-                      standardName,
-                      record.compareByLabel
-                    )
-            }
-          >
-            {printData}
-          </ColoredCell>
-        )
-      }
-      return (
-        <ColoredCell bgColor={record.standardsInfo?.[index]?.color}>
+      const bgColor =
+        (_analyseBy === 'masteryLevel' || _analyseBy === 'masteryScore') &&
+        standardToRender?.color
+      return _compareBy === 'studentId' && printData !== 'N/A' ? (
+        <ColoredCell
+          bgColor={bgColor}
+          onClick={() =>
+            handleOnClickStandard(obj, standardName, record.compareByLabel)
+          }
+        >
           {printData}
         </ColoredCell>
+      ) : (
+        <ColoredCell bgColor={bgColor}>{printData}</ColoredCell>
       )
     }
 
     const printData = getDisplayValue(
-      record.standardsInfo[index],
+      standardToRender,
       _analyseBy,
       data,
       record
@@ -255,102 +261,135 @@ const StandardsGradebookTableComponent = ({
       <CustomTableTooltip
         printData={printData}
         placement="top"
-        title={tooltipText(record)}
+        title={tooltipText}
         getCellContents={getCellContents}
       />
     )
   }
 
   const getColumnsData = () => {
-    const extraColsNeeded =
-      filteredTableData.length && filteredTableData[0].standardsInfo.length
     let result = [
       {
         title: idToName[tableDdFilters.compareBy],
         dataIndex: tableDdFilters.compareBy,
         key: tableDdFilters.compareBy,
-        width: 150,
+        width: 200,
         fixed: 'left',
-        ellipsis: true,
         sorter: (a, b) =>
           a.compareByLabel
             .toLowerCase()
             .localeCompare(b.compareByLabel.toLowerCase()),
         render: (data, record) =>
-          record.compareBy === 'studentId' ? (
+          record.compareBy === 'studentId' && !isSharedReport ? (
             <Link
               to={`/author/reports/student-profile-summary/student/${data}?termId=${filters?.termId}`}
             >
               {record.compareByLabel || t('common.anonymous')}
             </Link>
           ) : (
-            record.compareByLabel
+            record.compareByLabel || t('common.anonymous')
           ),
       },
       {
-        title: 'Overall',
+        title: (
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              textAlign: 'center',
+            }}
+          >
+            <span>Avg. Standard Performance</span>
+            <Tooltip title="This is the average performance across all the standards assessed">
+              <IconInfo height={10} />
+            </Tooltip>
+          </div>
+        ),
         dataIndex: analyseByToKeyToRender[tableDdFilters.analyseBy],
         key: analyseByToKeyToRender[tableDdFilters.analyseBy],
-        align: 'left',
         width: 150,
         sorter: (a, b) => {
           const key = analyseByToKeyToRender[tableDdFilters.analyseBy]
-          return a[key] - b[key]
+          return tableDdFilters.analyseBy === 'masteryLevel'
+            ? a.fm - b.fm
+            : a[key] - b[key]
         },
-        render: (data, record) => (
-          <Link
-            style={{ color: reportLinkColor }}
-            to={{
-              pathname: `/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${record.testActivityId}`,
-              state: {
-                // this will be consumed in /src/client/author/Shared/Components/ClassBreadCrumb.js
-                breadCrumb: [
-                  {
-                    title: 'INSIGHTS',
-                    to: '/author/reports',
-                  },
-                  {
-                    title: pageTitle,
-                    to: `${location.pathname}${location.search}`,
-                  },
-                ],
-              },
-            }}
-          >
-            {tableDdFilters.analyseBy === 'score(%)'
+        render: (data, record) => {
+          const dataToRender =
+            tableDdFilters.analyseBy === 'score(%)'
               ? `${data}%`
               : tableDdFilters.analyseBy === 'rawScore'
               ? `${data}/${record.totalMaxScore}`
-              : data}
-          </Link>
-        ),
-      },
-      {
-        title: 'SIS ID',
-        dataIndex: 'sisId',
-        width: 150,
-        key: 'sisId',
-        visibleOn: ['csv'],
+              : data
+          return !isSharedReport ? (
+            <Link
+              style={{ color: reportLinkColor }}
+              to={{
+                pathname: `/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${record.testActivityId}`,
+                state: {
+                  // this will be consumed in /src/client/author/Shared/Components/ClassBreadCrumb.js
+                  breadCrumb: [
+                    {
+                      title: 'INSIGHTS',
+                      to: '/author/reports',
+                    },
+                    {
+                      title: pageTitle,
+                      to: `${location.pathname}${location.search}`,
+                    },
+                  ],
+                },
+              }}
+            >
+              {dataToRender}
+            </Link>
+          ) : (
+            dataToRender
+          )
+        },
       },
     ]
 
-    if (extraColsNeeded) {
-      result = [
-        ...result,
-        ...filteredTableData[0].standardsInfo.map((item, index) => ({
-          title: (
-            <>
-              <span>{item.standardName}</span>
-              <br />
-              <span>
-                {getCurrentStandard(item.standardId, tableDdFilters.analyseBy)}
-              </span>
-            </>
+    if (tableDdFilters.compareBy === 'studentId') {
+      let index = 1
+      for (const column of compareByStudentsColumns) {
+        result.splice(index++, 0, column)
+      }
+    }
+
+    result = [
+      ...result,
+      ...Object.values(
+        keyBy(
+          flatMap(filteredTableData, ({ standardsInfo }) => standardsInfo),
+          'standardId'
+        )
+      ).map((item, index) => {
+        const standardProgressNav = !isSharedReport
+          ? getStandardProgressNav(
+              navigationItems,
+              item.standardId,
+              tableDdFilters.compareBy
+            )
+          : null
+        const titleComponent = (
+          <>
+            <span>{item.standardName}</span>
+            <br />
+            <span>
+              {getCurrentStandard(item.standardId, tableDdFilters.analyseBy)}
+            </span>
+          </>
+        )
+        return {
+          title: standardProgressNav ? (
+            <Link to={standardProgressNav}>{titleComponent}</Link>
+          ) : (
+            titleComponent
           ),
           dataIndex: item.standardId,
           key: item.standardId,
           align: 'center',
-          width: 150,
           render: renderStandardIdColumns(
             index,
             tableDdFilters.compareBy,
@@ -358,14 +397,19 @@ const StandardsGradebookTableComponent = ({
             item.standardName,
             item.standardId
           ),
-        })),
-      ]
-    }
+        }
+      }),
+    ]
 
     return result
   }
 
   const columnsData = getColumnsData()
+
+  const scrollX = useMemo(() => {
+    const visibleColumns = columnsData.filter((column) => !column.visibleOn)
+    return visibleColumns.length * 180 || '100%'
+  }, [columnsData])
 
   const compareByDropDownData = next(
     dropDownFormat.compareByDropDownData,
@@ -406,7 +450,7 @@ const StandardsGradebookTableComponent = ({
               <StyledDropDownContainer xs={24} sm={24} md={11} lg={11} xl={8}>
                 <ControlDropDown
                   data={compareByDropDownData}
-                  by={compareByDropDownData[0]}
+                  by={tableDdFilters.compareBy}
                   prefix="Compare By"
                   selectCB={tableFilterDropDownCB}
                   comData="compareBy"
@@ -415,7 +459,7 @@ const StandardsGradebookTableComponent = ({
               <StyledDropDownContainer xs={24} sm={24} md={12} lg={12} xl={8}>
                 <ControlDropDown
                   data={dropDownFormat.analyseByDropDownData}
-                  by={dropDownFormat.analyseByDropDownData[0]}
+                  by={tableDdFilters.analyseBy}
                   prefix="Analyze By"
                   selectCB={tableFilterDropDownCB}
                   comData="analyseBy"
@@ -432,7 +476,7 @@ const StandardsGradebookTableComponent = ({
             tableToRender={GradebookTable}
             onCsvConvert={onCsvConvert}
             isCsvDownloading={isCsvDownloading}
-            scroll={{ x: '100%' }}
+            scroll={{ x: scrollX }}
           />
         </Row>
       </StyledCard>

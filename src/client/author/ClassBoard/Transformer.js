@@ -1,10 +1,20 @@
 /* eslint-disable no-unused-vars */
-// @ts-check
-import { keyBy, groupBy, get, values, flatten, isEmpty } from 'lodash'
+import {
+  keyBy,
+  groupBy,
+  get,
+  values,
+  flatten,
+  isEmpty,
+  uniq,
+  some,
+  every,
+  cloneDeep,
+} from 'lodash'
 import { testActivityStatus, questionType } from '@edulastic/constants'
-import DotProp from 'dot-prop'
+import produce from 'immer'
 import { getMathHtml } from '@edulastic/common'
-import { red, yellow, themeColorLighter } from '@edulastic/colors'
+import { red, yellow, themeColorLighter, darkBlue2 } from '@edulastic/colors'
 import { getServerTs } from '../../student/utils'
 import { getFormattedName } from '../Gradebook/transformers'
 
@@ -25,13 +35,20 @@ export const markQuestionLabel = (testItems) => {
       item.data.questions[0].qLabel = i + 1
       item.data.questions[0].barLabel = `Q${i + 1}`
     } else if (item.isDocBased) {
+      let qIndex = 0
       item.data.questions = item.data.questions
-        .filter((q) => q.type !== questionType.SECTION_LABEL)
-        .map((q, qIndex) => ({
-          ...q,
-          qLabel: `Q${qIndex + 1}`,
-          barLabel: `Q${qIndex + 1}`,
-        }))
+        .sort((a, b) => a.qIndex - b.qIndex)
+        .map((q) => {
+          if (q.type === questionType.SECTION_LABEL) {
+            return q
+          }
+          qIndex++
+          return {
+            ...q,
+            qLabel: `Q${qIndex}`,
+            barLabel: `Q${qIndex}`,
+          }
+        })
     } else {
       item.data.questions = item.data.questions.map((q, qIndex) => ({
         ...q,
@@ -55,6 +72,9 @@ export const getAllQidsAndWeight = (testItemIds, testItemsDataKeyed) => {
       (testItemsDataKeyed[testItemId].data &&
         testItemsDataKeyed[testItemId].data.questions) ||
       []
+    const isPracticeItem =
+      testItemsDataKeyed[testItemId]?.itemLevelScoring &&
+      every(questions, ({ validation }) => validation && validation.unscored)
     if (!questions.length) {
       qids = [
         ...qids,
@@ -66,6 +86,7 @@ export const getAllQidsAndWeight = (testItemIds, testItemsDataKeyed) => {
           qids: [],
           qLabel: '',
           barLabel: '',
+          isPractice: false,
         },
       ]
     } else if (testItemsDataKeyed[testItemId].itemLevelScoring) {
@@ -85,6 +106,9 @@ export const getAllQidsAndWeight = (testItemIds, testItemsDataKeyed) => {
             qids: questions.map((_x) => _x.id),
             qLabel: x.qLabel,
             barLabel: x.barLabel,
+            isPractice: testItemsDataKeyed[testItemId]?.itemLevelScoring
+              ? isPracticeItem
+              : x?.validation?.unscored || false,
           })),
       ]
     } else {
@@ -98,6 +122,9 @@ export const getAllQidsAndWeight = (testItemIds, testItemsDataKeyed) => {
           qids: [x.id],
           qLabel: x.qLabel,
           barLabel: x.barLabel,
+          isPractice: testItemsDataKeyed[testItemId]?.itemLevelScoring
+            ? isPracticeItem
+            : x?.validation?.unscored || false,
         })),
       ]
     }
@@ -130,12 +157,13 @@ export const getQuestionLabels = (testItemsData = []) => {
         barLabel: `Q${i + 1}`,
       }
     } else {
+      let qLabelCount = 1
       for (let qIndex = 0; qIndex < item.data.questions.length; qIndex++) {
         const q = item.data.questions[qIndex]
-        if (item.isDocBased) {
+        if (item.isDocBased && q.type !== questionType.SECTION_LABEL) {
           result[q.id] = {
-            qLabel: `Q${qIndex + 1}`,
-            barLabel: `Q${qIndex + 1}`,
+            qLabel: `Q${qLabelCount}`,
+            barLabel: `Q${qLabelCount++}`,
           }
         } else {
           result[q.id] = {
@@ -157,20 +185,7 @@ export const getQuestionLabels = (testItemsData = []) => {
  * @returns {number}
  */
 const getMaxScoreFromQuestion = (question) => {
-  let possibleScores = [
-    DotProp.get(question, 'validation.validResponse.score', 0),
-  ]
-  const alternateResponses = DotProp.get(
-    question,
-    'validation.altResponses',
-    false
-  )
-  if (alternateResponses) {
-    possibleScores = possibleScores.concat(
-      alternateResponses.map((r) => r.score)
-    )
-  }
-  return Math.max(...possibleScores)
+  return get(question, 'validation.validResponse.score', 0)
 }
 
 /**
@@ -178,16 +193,19 @@ const getMaxScoreFromQuestion = (question) => {
  * @param {string} qid
  * @param {Object[]} testItemsData
  */
-export const getMaxScoreOfQid = (qid, testItemsData, qActivityMaxScore) => {
+export const getMaxScoreOfQid = (qid, testItemsData, qActivityMaxScore) => (
+  testItemId
+) => {
   if (!qid) {
     return qActivityMaxScore || 1
   }
   // TODO: Need to make it more efficient . no need to loop through all items
   for (const testItem of testItemsData) {
     const questions = get(testItem, ['data', 'questions'], [])
-    const questionIndex = questions.findIndex((x) => x.id === qid)
+    const questionIndex = questions.findIndex(
+      (x) => x.id === qid && (!testItemId || testItem._id === testItemId)
+    )
     const questionNeeded = questions[questionIndex]
-
     if (questionNeeded) {
       // for item level scoring handle scores as whole instead of each questions
       if (testItem.itemLevelScoring && questionIndex === 0) {
@@ -207,7 +225,7 @@ const getSkippedStatusOfQuestion = (
   testItemId,
   questionActivitiesMap,
   testItems,
-  questionActivityId
+  qId
 ) => {
   const questionActivities = Object.values(questionActivitiesMap)
   const questions = questionActivities.filter(
@@ -227,7 +245,7 @@ const getSkippedStatusOfQuestion = (
     }
     return false
   }
-  return questionActivitiesMap[questionActivityId]?.skipped
+  return questionActivitiesMap[`${testItemId}_${qId}`]?.skipped
 }
 
 /**
@@ -245,7 +263,9 @@ const getMaxScoreFromItem = (testItem) => {
     return total
   }
   for (const question of testItem?.data?.questions || []) {
-    total += getMaxScoreFromQuestion(question)
+    if (!question?.validation?.unscored) {
+      total += getMaxScoreFromQuestion(question)
+    }
   }
   return total
 }
@@ -301,12 +321,14 @@ export function stripHtml(html) {
 
 const extractFunctions = {
   [questionType.MULTIPLE_CHOICE]: (question = {}, userResponse = []) =>
-    userResponse
-      .map((r) => question?.options?.findIndex((x) => x?.value === r))
-      .map((x) => alphabets[x]?.toUpperCase())
-      .join(','),
+    Array.isArray(userResponse)
+      ? userResponse
+          .map((r) => question?.options?.findIndex((x) => x?.value === r))
+          .map((x) => alphabets[x]?.toUpperCase())
+          .join(',')
+      : userResponse,
   [questionType.CLOZE_DRAG_DROP]: (question = {}, userResponse = []) =>
-    typeof userResponse === 'object'
+    Array.isArray(userResponse)
       ? userResponse
           .filter((x) => x)
           .map((r) => question?.options?.find((x) => x?.value === r)?.label)
@@ -315,7 +337,7 @@ const extractFunctions = {
           .join(',')
       : userResponse,
   [questionType.CLOZE_DROP_DOWN]: (question = {}, userResponse = []) =>
-    typeof userResponse === 'object'
+    Array.isArray(userResponse)
       ? userResponse
           .filter((x) => x)
           .map((x) => x?.value)
@@ -324,7 +346,7 @@ const extractFunctions = {
           .join(',')
       : userResponse,
   [questionType.CLOZE_TEXT]: (question = {}, userResponse = []) =>
-    typeof userResponse === 'object'
+    Array.isArray(userResponse)
       ? userResponse
           .filter((x) => x)
           .map((x) => x?.value)
@@ -357,16 +379,49 @@ const extractFunctions = {
     userResponse ? 'CR' : '',
   [questionType.FORMULA_ESSAY]: (question, userResponse = '') =>
     userResponse ? 'CR' : '',
+  [questionType.EXPRESSION_MULTIPART]: (question, userResponse = '') => {
+    if (isEmpty(userResponse)) {
+      return ''
+    }
+    const maths = get(userResponse, 'maths')
+    if (!isEmpty(maths) || typeof maths === 'object') {
+      const mathResponses = Object.values(maths)
+      return getMathHtml(`${mathResponses[0]?.value}`)
+    }
+    const inputs = get(userResponse, 'inputs')
+    if (!isEmpty(inputs) || typeof inputs === 'object') {
+      const inputResponses = Object.values(inputs)
+      return `${inputResponses[0]?.value}`
+    }
+
+    const dropDowns = get(userResponse, 'dropDowns')
+    if (!isEmpty(dropDowns) || typeof inputs === 'object') {
+      const dropDownResponses = Object.values(dropDowns)
+      return `${dropDownResponses[0]?.value}`
+    }
+
+    const mathUnits = get(userResponse, 'mathUnits')
+    if (!isEmpty(mathUnits) || typeof inputs === 'object') {
+      const mathUnitResponses = Object.values(mathUnits)
+      return getMathHtml(
+        `${mathUnitResponses[0]?.value} ${mathUnitResponses[0]?.unit}`
+      )
+    }
+    return ''
+  },
 }
 export function getResponseTobeDisplayed(
   testItem = {},
   userResponse,
-  questionId
+  questionId,
+  currentQuestionActivity
 ) {
   const question =
     (testItem.data?.questions || [])?.find((q) => q.id === questionId) || {}
   const qType = question.type
-
+  if (currentQuestionActivity?.skipped) {
+    return '-'
+  }
   if (
     testItem.data?.questions?.filter(
       (x) => x.type !== questionType.SECTION_LABEL
@@ -377,9 +432,62 @@ export function getResponseTobeDisplayed(
     return 'TEI'
   }
   if (extractFunctions[qType]) {
-    return extractFunctions[qType](question, userResponse)
+    return extractFunctions[qType](
+      question,
+      userResponse,
+      currentQuestionActivity
+    )
   }
   return userResponse ? 'TEI' : ''
+}
+
+export function getStandardsForStandardBasedReport(
+  testItems,
+  standardsDescriptions
+) {
+  const standardsDescriptionsKeyed = keyBy(
+    standardsDescriptions,
+    (x) => `${x._id}`
+  )
+  const standardsQuestionsMap = {}
+  const items = cloneDeep(testItems)
+  const questions = []
+  items.forEach(({ itemLevelScoring, data }) => {
+    if (itemLevelScoring && data?.questions?.length) {
+      const alignment = []
+      data.questions.forEach((question) => {
+        alignment.push(...(question.alignment || []))
+        question.alignment = []
+      })
+      data.questions[0].alignment = alignment
+    }
+    questions.push(...data.questions)
+  })
+  for (const q of questions) {
+    if (q?.validation?.unscored) {
+      continue
+    }
+    const standards =
+      q.alignment
+        ?.flatMap((x) => x?.domains || [])
+        .flatMap((x) => x?.standards || []) || []
+    for (const std of standards) {
+      if (standardsQuestionsMap[`${std.id}`]) {
+        standardsQuestionsMap[`${std.id}`].qIds = uniq([
+          ...standardsQuestionsMap[`${std.id}`].qIds,
+          q.id,
+        ])
+      } else {
+        standardsQuestionsMap[`${std.id}`] = {
+          ...std,
+          desc: standardsDescriptionsKeyed[`${std._id}`]?.desc,
+          qIds: [q.id],
+          ...(std.name ? { identifier: std.name } : {}),
+        }
+      }
+    }
+  }
+  return values(standardsQuestionsMap)
 }
 
 export const transformGradeBookResponse = (
@@ -399,19 +507,20 @@ export const transformGradeBookResponse = (
   /**
    * TODO: need to refactor
    */
-  testItemsData = testItemsData.map((testItem) => {
-    if (testItem.data) {
-      testItem.data.questions = testItem.data.questions.filter(
-        (q) => q.type !== questionType.SECTION_LABEL
-      )
-      testItem.rows = testItem.rows.map((row) => {
-        row.widgets = row.widgets.filter(
-          (w) => w.type !== questionType.SECTION_LABEL
+  testItemsData = produce(testItemsData, (draft) => {
+    draft.forEach((testItem) => {
+      if (testItem.data) {
+        testItem.data.questions = testItem.data.questions.filter(
+          (q) => q.type !== questionType.SECTION_LABEL
         )
-        return row
-      })
-    }
-    return testItem
+        testItem.rows = testItem.rows.map((row) => {
+          row.widgets = row.widgets.filter(
+            (w) => w.type !== questionType.SECTION_LABEL
+          )
+          return row
+        })
+      }
+    })
   })
 
   const serverTimeStamp = getServerTs({ ts })
@@ -423,9 +532,10 @@ export const transformGradeBookResponse = (
   )
   const testItemsDataKeyed = keyBy(testItemsData, '_id')
   const qids = getAllQidsAndWeight(testItemIds, testItemsDataKeyed)
-  const testMaxScore = testItemsData.reduce(
-    (prev, cur) => prev + getMaxScoreFromItem(cur),
-    0
+  const testMaxScore = Number(
+    Number(
+      testItemsData.reduce((prev, cur) => prev + getMaxScoreFromItem(cur), 0)
+    ).toFixed(2)
   )
   const questionActivitiesGrouped = groupBy(
     testQuestionActivities,
@@ -467,6 +577,7 @@ export const transformGradeBookResponse = (
     qLabel: x.qLabel,
     barLabel: x.barLabel,
     scoringDisabled: true,
+    isPractice: x.isPractice,
   }))
   return studentNames
     .map(
@@ -482,6 +593,7 @@ export const transformGradeBookResponse = (
         icon,
       }) => {
         const testActivity = studentTestActivities[studentId]
+        // console.log('testActivity', testActivity, studentId)
         if (!testActivity) {
           return false
         }
@@ -514,13 +626,7 @@ export const transformGradeBookResponse = (
 
         const questionActivitiesIndexed =
           (questionActivitiesRaw &&
-            keyBy(questionActivitiesRaw, (x) => x.qid)) ||
-          {}
-        const questionActivitiesKeyedByItemId =
-          (questionActivitiesRaw &&
-            keyBy(questionActivitiesRaw, (x) =>
-              test.isDocBased ? x._id : x.testItemId
-            )) ||
+            keyBy(questionActivitiesRaw, (x) => `${x.testItemId}_${x.qid}`)) ||
           {}
 
         const questionActivities = qids.map(
@@ -535,22 +641,21 @@ export const transformGradeBookResponse = (
               barLabel,
               qLabel,
               _id: qActId,
+              isPractice,
             },
             index
           ) => {
             const _id = el
             const currentQuestionActivity =
-              questionActivitiesIndexed[el] ||
-              questionActivitiesKeyedByItemId[testItemId]
+              questionActivitiesIndexed[`${testItemId}_${el}`]
             const questionMaxScore =
               maxScore ||
-              maxScore == 0 ||
-              getMaxScoreOfQid(
-                _id,
-                testItemsData,
-                currentQuestionActivity?.maxScore
-              )
-
+              (maxScore == 0 &&
+                getMaxScoreOfQid(
+                  _id,
+                  testItemsData,
+                  currentQuestionActivity?.maxScore
+                )(testItemId))
             if (!currentQuestionActivity) {
               return {
                 _id,
@@ -566,8 +671,19 @@ export const transformGradeBookResponse = (
                 score: 0,
                 qLabel,
                 ...(submitted
-                  ? { skipped: true, score: 0, maxScore: questionMaxScore }
-                  : { notStarted: true, score: 0, maxScore: questionMaxScore }),
+                  ? {
+                      skipped: true,
+                      score: 0,
+                      maxScore: questionMaxScore,
+                      isDummy: true,
+                    }
+                  : {
+                      notStarted: true,
+                      score: 0,
+                      maxScore: questionMaxScore,
+                      isDummy: true,
+                    }),
+                isPractice,
               }
             }
             let {
@@ -584,6 +700,7 @@ export const transformGradeBookResponse = (
               pendingEvaluation,
               scratchPad,
               userResponse,
+              autoGrade,
               ...remainingProps
             } = currentQuestionActivity
             skipped = getSkippedStatusOfQuestion(
@@ -603,6 +720,11 @@ export const transformGradeBookResponse = (
               }
             }
 
+            let _graded = graded
+            if (autoGrade === false && score === undefined) {
+              _graded = false
+            }
+
             return {
               ...(studentResponse ? remainingProps : {}),
               _id,
@@ -617,7 +739,7 @@ export const transformGradeBookResponse = (
               testItemId,
               qids: _qids,
               testActivityId,
-              graded,
+              graded: _graded,
               qLabel,
               barLabel,
               pendingEvaluation,
@@ -627,9 +749,12 @@ export const transformGradeBookResponse = (
               responseToDisplay: getResponseTobeDisplayed(
                 testItemsDataKeyed[testItemId],
                 userResponse,
-                _id
+                _id,
+                currentQuestionActivity
               ),
               userResponse,
+              isPractice,
+              autoGrade,
             }
           }
         )
@@ -647,7 +772,14 @@ export const transformGradeBookResponse = (
         const isValidQuestionActivity = (x = {}) =>
           (x.qids && x.qids.length && x.testActivityId) || x.qid
         // has own property  then pick it or else default to true
-        const { isEnrolled = true, isAssigned = true } = testActivity
+        const {
+          isEnrolled = true,
+          isAssigned = true,
+          isPaused = false,
+          tabNavigationCounter: outNavigationCounter = 0,
+          pauseReason,
+          languagePreference = 'en',
+        } = testActivity
         return {
           studentId,
           studentName: fullName,
@@ -679,6 +811,10 @@ export const transformGradeBookResponse = (
                 }))
               : questionActivities.filter((x) => isValidQuestionActivity(x)),
           endDate: testActivity.endDate,
+          isPaused,
+          outNavigationCounter,
+          pauseReason,
+          languagePreference,
         }
       }
     )
@@ -693,22 +829,37 @@ export const getStudentCardStatus = (
 ) => {
   const status = {}
   const { NOT_STARTED, START, SUBMITTED, ABSENT } = testActivityStatus
-  const { UTASTATUS, isEnrolled, isAssigned } = student
+  const { UTASTATUS, isEnrolled, isAssigned, isPaused } = student
   if (student.redirected && UTASTATUS === NOT_STARTED) {
     status.status = 'Redirected'
     status.color = themeColorLighter
+    if (isPaused) {
+      status.status = `${status.status} (paused)`
+    }
     return status
   }
 
   if (isEnrolled === false) {
     status.status = 'Not Enrolled'
+    if (UTASTATUS === ABSENT) {
+      status.status = 'Absent'
+    }
+    if (isAssigned === false) {
+      status.status = 'Unassigned'
+    }
     status.color = red
+    if (isPaused) {
+      status.status = `${status.status} (paused)`
+    }
     return status
   }
 
   if (isAssigned === false) {
     status.status = 'Unassigned'
     status.color = red
+    if (isPaused) {
+      status.status = `${status.status} (paused)`
+    }
     return status
   }
 
@@ -727,7 +878,8 @@ export const getStudentCardStatus = (
       break
     case SUBMITTED:
       status.status = student?.graded === 'GRADED' ? 'Graded' : student.status
-      status.color = themeColorLighter
+      status.color =
+        student?.graded === 'GRADED' ? themeColorLighter : darkBlue2
       break
     case ABSENT:
       status.status = 'Absent'
@@ -736,6 +888,9 @@ export const getStudentCardStatus = (
     default:
       status.status = 'Not Started'
       status.color = red
+  }
+  if (isPaused) {
+    status.status = `${status.status} (paused)`
   }
   return status
 }

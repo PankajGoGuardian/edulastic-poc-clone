@@ -22,8 +22,10 @@ import {
   receiveCurrentPlaylistMetrics,
   playlistDestinationReorderTestsAction,
   addItemIntoPlaylistModuleAction,
+  resequenceModulesCSAction,
 } from '../ducks'
 import ShareModal from '../../src/components/common/ShareModal'
+import AssignRecommendations from '../../AssignTest'
 import { CollectionsSelectModal } from '../../PlaylistPage/components/CollectionsSelectModal/collectionsSelectModal'
 
 /**
@@ -91,6 +93,17 @@ class CurriculumContainer extends Component {
     /**
      * state for handling drag and drop
      */
+    selectedData: {
+      REVIEW: [],
+      PRACTICE: [],
+      CHALLENGE: [],
+    },
+  }
+
+  setSelectedData = (data) => {
+    this.setState({
+      selectedData: data,
+    })
   }
 
   expandAll = () => {
@@ -183,7 +196,11 @@ class CurriculumContainer extends Component {
           attrsToOmit.push('standardIdentifiers')
         }
         const newItem = omit(item, attrsToOmit)
-        addIntoModule({ item: newItem, moduleIndex: toModuleIndex, afterIndex })
+        addIntoModule({
+          item: newItem,
+          moduleIndex: toModuleIndex,
+          afterIndex,
+        })
       } else {
         notification({
           msg: `Dropped ${
@@ -317,6 +334,11 @@ class CurriculumContainer extends Component {
     )
   }
 
+  onSortEnd = (indexes) => {
+    const { resequenceModules } = this.props
+    resequenceModules(indexes)
+  }
+
   render() {
     const {
       windowWidth,
@@ -331,6 +353,7 @@ class CurriculumContainer extends Component {
       expandedModules,
       showShareModal,
       showSelectCollectionsModal,
+      selectedData,
     } = this.state
     const {
       handleSelectContent,
@@ -341,6 +364,7 @@ class CurriculumContainer extends Component {
       handleShare,
       onShareModalChange,
       collapseExpandModule,
+      onSortEnd,
     } = this
 
     const { sourceCurriculumSequence } = this.getSourceDestinationCurriculum()
@@ -358,6 +382,17 @@ class CurriculumContainer extends Component {
 
     // check Current user's edit permission
     const hasEditAccess = this.checkWritePermission()
+
+    const { recommendationsToAssign } = curriculumSequences
+
+    if (recommendationsToAssign.isRecommendationAssignView) {
+      return (
+        <AssignRecommendations
+          isAssignRecommendations
+          playlistId={match.params.id || match.params.playlistId}
+        />
+      )
+    }
 
     return (
       <>
@@ -395,6 +430,7 @@ class CurriculumContainer extends Component {
           onShareClick={handleShare}
           windowWidth={windowWidth}
           onDrop={onDrop}
+          onSortEnd={onSortEnd}
           match={match}
           mode={mode}
           loading={loading}
@@ -402,6 +438,8 @@ class CurriculumContainer extends Component {
           onBeginDrag={onBeginDrag}
           onCuratorApproveOrReject={this.onCuratorApproveOrReject}
           urlHasUseThis={urlHasUseThis}
+          selectedRows={selectedData}
+          setSelectedRows={this.setSelectedData}
         />
       </>
     )
@@ -430,6 +468,7 @@ CurriculumContainer.propTypes = {
   searchCurriculumSequences: PropTypes.func.isRequired,
   moveContentInPlaylist: PropTypes.func.isRequired,
   toggleAddContent: PropTypes.func.isRequired,
+  resequenceModules: PropTypes.func.isRequired,
 }
 
 CurriculumContainer.defaultProps = {
@@ -471,6 +510,7 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(playlistDestinationReorderTestsAction(payload)),
   addIntoModule: (payload) =>
     dispatch(addItemIntoPlaylistModuleAction(payload)),
+  resequenceModules: (payload) => dispatch(resequenceModulesCSAction(payload)),
 })
 
 const enhance = compose(

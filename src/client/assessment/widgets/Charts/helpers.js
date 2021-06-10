@@ -84,3 +84,10 @@ export const displayHorizontalLines = (showGridlines) =>
   showGridlines === SHOW_GRIDLINES_Y_ONLY ||
   showGridlines === SHOW_GRIDLINES_BOTH ||
   showGridlines === true
+
+export const getFilteredAnswerData = (answer) => {
+  if (!Array.isArray(answer)) {
+    return answer
+  }
+  return answer.map(({ x, y }) => ({ x, y }))
+}

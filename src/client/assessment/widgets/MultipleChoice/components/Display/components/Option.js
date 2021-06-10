@@ -1,10 +1,11 @@
 import { themeColorBlue, white, themeColorHoverBlue } from '@edulastic/colors'
-import { MathFormulaDisplay } from '@edulastic/common'
+import { MathFormulaDisplay, withKeyboard } from '@edulastic/common'
 import produce from 'immer'
 import { flatten, isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { useState } from 'react'
 import styled from 'styled-components'
+import { isTouchDevice } from '../../../../../utils/helpers'
 import { ALPHABET } from '../../../constants/alphabet'
 import { CheckboxContainer } from '../styled/CheckboxContainer'
 import { IconCheck } from '../styled/IconCheck'
@@ -38,6 +39,7 @@ const Option = (props) => {
     fontSize,
     isPrintPreview,
     fromSetAnswers,
+    tool = [],
   } = props
   let className = ''
   let correctAnswers = []
@@ -124,6 +126,8 @@ const Option = (props) => {
   const getLabel = (inx) => {
     if (uiStyle.type === 'block') {
       switch (uiStyle.choiceLabel) {
+        case 'none':
+          return ''
         case 'number':
           return inx + 1
         case 'lower-alpha':
@@ -147,6 +151,8 @@ const Option = (props) => {
     }
   }
 
+  const label = getLabel(index)
+
   const container = (
     <>
       <CheckboxContainer
@@ -163,7 +169,9 @@ const Option = (props) => {
           onChange={onChangeHandler}
         />
       </CheckboxContainer>
-      <span className="labelOnly">{getLabel(index)}</span>
+      <span className="labelOnly" style={{ display: !label && 'none' }}>
+        {label}
+      </span>
     </>
   )
 
@@ -173,12 +181,16 @@ const Option = (props) => {
       isSelected={isSelected}
       multipleResponses={multipleResponses}
       className="__print-space-reduce-option"
+      onClickEvent={onChangeHandler}
+      tool={tool}
+      onlySpaceKey
     >
       {uiStyle.type !== 'radioBelow' && container}
       <MultiChoiceContent
         fontSize={fontSize}
         smallSize={smallSize}
         uiStyleType={uiStyle.type}
+        label={label}
       >
         <MathFormulaDisplay
           fontSize={fontSize}
@@ -210,13 +222,14 @@ const Option = (props) => {
       userSelect={!!setCrossAction}
       isPrintPreview={isPrintPreview}
       showBorder={showBorder}
+      label={label}
       onMouseEnter={() => {
-        if (setCrossAction) {
+        if (setCrossAction && !isTouchDevice()) {
           toggleHover(true)
         }
       }}
       onMouseLeave={() => {
-        if (setCrossAction) {
+        if (setCrossAction && !isTouchDevice()) {
           toggleHover(false)
         }
       }}
@@ -232,7 +245,7 @@ const Option = (props) => {
   )
 }
 
-const StyledOptionsContainer = styled.div`
+const StyledOptionsContainer = withKeyboard(styled.div`
   flex: 1;
   display: flex;
   justify-content: flex-start;
@@ -291,7 +304,7 @@ const StyledOptionsContainer = styled.div`
       border-color: ${themeColorHoverBlue};
     }
   }
-`
+`)
 
 Option.propTypes = {
   index: PropTypes.number.isRequired,

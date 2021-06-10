@@ -20,11 +20,17 @@ import CustomBar from './CustomBar'
 import { BarGraphWrapper, BarLegendContainer, ChartNavButton } from './styled'
 import { NUMBER_OF_BARS, bars, convertData } from './helpers'
 
-const BarGraph = ({ questionActivities, testItems, onClickBar, isGreyBar }) => {
+const BarGraph = ({
+  questionActivities,
+  testItems,
+  onClickBar,
+  isGreyBar,
+  testActivityStatus,
+}) => {
   const [page, setPage] = useState(0)
   const [maxAttemps, maxTimeSpent, data] = useMemo(
-    () => convertData(questionActivities, testItems),
-    [questionActivities, testItems]
+    () => convertData(questionActivities, testItems, testActivityStatus),
+    [questionActivities, testItems, testActivityStatus]
   )
   const renderData = data.slice(
     page * NUMBER_OF_BARS,

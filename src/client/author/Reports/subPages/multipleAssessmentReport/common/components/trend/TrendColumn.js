@@ -27,13 +27,18 @@ const TrendColumn = ({ tests, type }) => {
             if (!payload[0]) {
               return null
             }
-
-            const { testName, score } = payload[0].payload
+            const score = payload[0]?.payload?.score
+            const testName = payload[0]?.payload?.records[0]?.testName
 
             return (
               <StyledTooltip>
-                <span>Assessment : {testName}</span>
-                <span>Performance {`${score}%`}</span>
+                <span>
+                  Assessment :{' '}
+                  {testName.length > 40
+                    ? `${testName.slice(0, 37).trim()}...`
+                    : testName}
+                </span>
+                <span>Performance : {`${score}%`}</span>
               </StyledTooltip>
             )
           }}
@@ -74,12 +79,12 @@ const StyledContainer = styled.div`
 `
 
 const StyledTooltip = styled.div`
-  min-width: 150px;
-  max-width: 300px;
+  min-width: 200px;
+  max-width: 500px;
   background-color: #f0f0f0;
   color: black;
   border: solid 1px #bebebe;
-  box-shadow: 0 0 20px #c0c0c0;
+  box-shadow: 0 0 10px #c0c0c0;
   padding: 5px;
   font-size: 11px;
   text-align: left;

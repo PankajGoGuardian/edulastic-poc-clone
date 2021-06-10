@@ -15,9 +15,12 @@ import { getCollectionsSelector } from '../../../src/selectors/user'
 import { getAllTagsSelector } from '../../../TestPage/ducks'
 import selectsData from '../../../TestPage/components/common/selectsData'
 
+// TK instead of PK for PreKindergarten is intentional
 const gradeKeys = {
   O: 'Other',
   K: 'Kindergarten',
+  TK: 'PreKindergarten',
+  tk: 'PreKindergarten',
   o: 'Other',
   k: 'Kindergarten',
 }
@@ -121,7 +124,7 @@ const HeaderFilter = ({
   const getTags = (data, type, bodyArr, popOverArray, containerWidthObj) => {
     if (type === 'grades' && data.length) {
       data.forEach((d) => {
-        const tagTitle = ['O', 'K', 'o', 'k'].includes(d)
+        const tagTitle = ['O', 'K', 'o', 'k', 'TK', 'tk'].includes(d)
           ? gradeKeys[d]
           : `Grade ${d}`
         getTag(type, d, tagTitle, bodyArr, popOverArray, containerWidthObj)

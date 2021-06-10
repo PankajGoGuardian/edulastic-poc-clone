@@ -12,6 +12,8 @@ const methods = {
   // CHECK_IF_TRUE: "isTrue"
 }
 
+const GRAPH_EVALUATION_SETTING = 'graphEvaluationSetting'
+
 const fields = {
   INTEGER: 'integerType',
   REAL: 'realType',
@@ -27,6 +29,7 @@ const syntaxes = {
   DECIMAL: 'isDecimal',
   SIMPLE_FRACTION: 'isSimpleFraction',
   MIXED_FRACTION: 'isMixedFraction',
+  IMPROPER_FRACTION: 'isImproperFraction',
   EXPONENT: 'isExponent',
   STANDARD_FORM: 'isStandardForm',
   SLOPE_INTERCEPT_FORM: 'isSlopeInterceptForm',
@@ -48,32 +51,82 @@ const units = [
   { value: 'units_si', label: 'Units (SI)' },
 ]
 
+const keyboardMethods = {
+  NUMBERS_ONLY: 'numeric_only',
+  BASIC: 'basic',
+  BASIC_WO_NUMBER: 'basic_wo_number',
+  INTERMEDIATE: 'intermediate',
+  INTERMEDIATE_WO_NUMBER: 'intermediate_wo_number',
+  ADVANCED_MATRICES: 'advanced_matrices',
+  ADVANCED_TRIGNOMETRY: 'advanced_trignometry',
+  GEOMETRY: 'geometry',
+  UNITS_SI: 'units_si',
+  UNITS_US: 'units_us',
+  ALL_BUTTONS: 'all',
+}
+
 const symbols = [
-  { value: 'basic', label: 'Basic', width: 400, height: 320 },
   {
-    value: 'basic_wo_number',
+    value: keyboardMethods.NUMBERS_ONLY,
+    label: 'Numbers Only',
+    width: 280,
+    height: 250,
+  },
+  { value: keyboardMethods.BASIC, label: 'Basic', width: 400, height: 320 },
+  {
+    value: keyboardMethods.BASIC_WO_NUMBER,
     label: 'Basic w/o Numbers',
     width: 280,
     height: 250,
   },
-  { value: 'intermediate', label: 'Intermediate', width: 520, height: 270 },
   {
-    value: 'intermediate_wo_number',
+    value: keyboardMethods.INTERMEDIATE,
+    label: 'Intermediate',
+    width: 520,
+    height: 270,
+  },
+  {
+    value: keyboardMethods.INTERMEDIATE_WO_NUMBER,
     label: 'Intermediate w/o Numbers',
     width: 400,
     height: 250,
   },
-  { value: 'advanced_matrices', label: 'Matrices', width: 300, height: 190 },
   {
-    value: 'advanced_trignometry',
+    value: keyboardMethods.ADVANCED_MATRICES,
+    label: 'Matrices',
+    width: 300,
+    height: 190,
+  },
+  {
+    value: keyboardMethods.ADVANCED_TRIGNOMETRY,
     label: 'Trignometry',
     width: 400,
     height: 250,
   },
-  { value: 'geometry', label: 'Geometry', width: 400, height: 250 },
-  { value: 'units_si', label: 'Units (SI)', width: 400, height: 250 },
-  { value: 'units_us', label: 'Units (US)', width: 400, height: 250 },
-  { value: 'all', label: 'Full', width: 520, height: 190 },
+  {
+    value: keyboardMethods.GEOMETRY,
+    label: 'Geometry',
+    width: 400,
+    height: 250,
+  },
+  {
+    value: keyboardMethods.UNITS_SI,
+    label: 'Units (SI)',
+    width: 400,
+    height: 250,
+  },
+  {
+    value: keyboardMethods.UNITS_US,
+    label: 'Units (US)',
+    width: 400,
+    height: 250,
+  },
+  {
+    value: keyboardMethods.ALL_BUTTONS,
+    label: 'Full',
+    width: 520,
+    height: 190,
+  },
 ]
 
 const symbolsAll = [
@@ -125,8 +178,9 @@ const methodOptions = {
     'allowEulersNumber',
     'isFactorised',
     'isExpanded',
-    'isSimplified',
+    'isSimplifiedExpression',
     'isMixedFraction',
+    'isImproperFraction',
     'ignoreAlphabeticCharacter',
     'inverseResult',
     'interpretAsSet',
@@ -148,7 +202,7 @@ const methodOptions = {
     'ignoreTrailingZeros',
     'ignoreOrder',
     'ignoreCoefficientOfOne',
-    'literalIgnoreLeadingAndTrailingSpaces',
+    'ignoreLeadingAndTrailingSpaces',
     'literalTreatMultipleSpacesAsOne',
     'inverseResult',
     'allowedVariables',
@@ -206,15 +260,16 @@ const methodOptions = {
 // need to create finalised constants for the keys
 const methodOptionsGrouped = {
   [methods.EQUIV_SYMBOLIC]: {
-    'STUDENT’S RESPONSE SHOULD BE: ': [
+    'STUDENT ANSWER MUST BE': [
+      'isSimplifiedExpression',
+      'isMixedFraction',
+      'isImproperFraction',
       'isFactorised',
       'isExpanded',
-      'isSimplified',
-      'isMixedFraction',
       'isRationalized',
       'requireIntervalNotation',
     ],
-    'INTERPRET THE VALUES AS: ': [
+    'INTERPRET THE ANSWER AS': [
       'automatic',
       'interpretAsSet',
       'interpretAsInterval',
@@ -243,7 +298,7 @@ const methodOptionsGrouped = {
       'ignoreTrailingZeros',
       'ignoreOrder',
       'ignoreCoefficientOfOne',
-      'literalIgnoreLeadingAndTrailingSpaces',
+      'ignoreLeadingAndTrailingSpaces',
       'literalTreatMultipleSpacesAsOne',
       'inverseResult',
       'setDecimalSeparator',
@@ -254,6 +309,126 @@ const methodOptionsGrouped = {
   // [methods.EQUIV_SYNTAX]: {
   //   Default: ["notExpected", "syntax", "argument", "rule"]
   // }
+}
+
+const simplifiedOptions = ['isSimplifiedFraction', 'isSimplifiedExpression']
+
+const interpret = [
+  'automatic',
+  'interpretAsSet',
+  'interpretAsInterval',
+  'interpretAsNumber',
+  'interpretAsList',
+]
+const fractionForms = [
+  'isSimplifiedFraction',
+  'isMixedFraction',
+  'isImproperFraction',
+  'isRationalized',
+]
+const expressionForms = ['isSimplifiedExpression', 'isFactorised', 'isExpanded']
+const numberFormat = [
+  'integerType',
+  // 'numberType',
+  'scientificType',
+  'isDecimal',
+  'isExponentialForm',
+]
+const accuracyForms = ['tolerance', 'significantDecimalPlaces']
+const multipleValues = ['requireIntervalNotation', 'isIn', 'satisfies']
+const equationForms = [
+  'isLineStandardForm',
+  'isLineSlopeInterceptForm',
+  'isLinePointSlopeForm',
+  'isQuadraticStandardForm',
+  'isPolynomialStandardForm',
+  'isPolynomialFactoredForm',
+  'isConicStandardForm',
+  'isParabolaVertexForm',
+]
+
+// Graph Types evaluation settings
+const graphSegmentChecks = [
+  'compareStartPoint',
+  'compareLength',
+  // 'compareStartAndLength',
+]
+const graphLineChecks = ['isParallel', 'isPerpendicular']
+const graphPolygonChecks = [
+  'compareArea',
+  'isSquare',
+  'isCongruent',
+  'isSimilar',
+  'hasRightAngle',
+  'comparePerimeter',
+]
+const graphMiscellaneous = ['tolerance', 'ignoreLabels']
+const graphPointsOnAnEquation = ['latex', 'points']
+
+const evaluationSettings = {
+  [methods.EQUIV_SYMBOLIC]: {
+    'STUDENT ANSWER MUST BE': [
+      'fractionForms',
+      'expressionForms',
+      'numberFormat',
+      'accuracyForms',
+      'multipleValues',
+      'equationForms',
+    ],
+    'INTERPRET THE ANSWER AS': [
+      'interpret',
+      'setDecimalSeparator',
+      'setThousandsSeparator',
+      'allowEulersNumber',
+      // 'complexType',
+      'interpretTrigArgAsDegree',
+      'interpretAsImaginary',
+    ],
+    MISCELLANEOUS: [
+      'ignoreCase',
+      'allowedVariables',
+      'allowNumericOnly',
+      'ignoreAlphabeticCharacters',
+      // 'allowedUnits',
+      'compareSides',
+      // 'useTemplate',
+      'ignoreVariableNames',
+    ],
+  },
+  [methods.EQUIV_LITERAL]: [
+    'ignoreTrailingZeros',
+    'ignoreOrder',
+    'ignoreCoefficientOfOne',
+    'ignoreLeadingAndTrailingSpaces',
+    // 'inverseResult',
+    'setDecimalSeparator',
+    'setThousandsSeparator',
+    'allowedVariables',
+    'ignoreCase',
+    'ignoreVariableNames',
+  ],
+  [GRAPH_EVALUATION_SETTING]: [
+    'graphSegmentChecks',
+    'graphLineChecks',
+    'graphPolygonChecks',
+    'graphMiscellaneous',
+    'graphPointsOnAnEquation',
+  ],
+}
+
+const subEvaluationSettingsGrouped = {
+  interpret,
+  fractionForms,
+  expressionForms,
+  numberFormat,
+  accuracyForms,
+  multipleValues,
+  equationForms,
+  graphSegmentChecks,
+  graphLineChecks,
+  graphPolygonChecks,
+  graphMiscellaneous,
+  graphPointsOnAnEquation,
 }
 
 const characterMapButtons = [
@@ -356,4 +531,9 @@ module.exports = {
   characterMapButtons,
   defaultNumberPad,
   methodOptionsGrouped,
+  evaluationSettings,
+  subEvaluationSettingsGrouped,
+  keyboardMethods,
+  GRAPH_EVALUATION_SETTING,
+  simplifiedOptions,
 }

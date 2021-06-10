@@ -9,7 +9,7 @@ import {
   takeLatest,
 } from 'redux-saga/effects'
 import { createSelector } from 'reselect'
-import { notification } from '@edulastic/common'
+import { captureSentryException, notification } from '@edulastic/common'
 import { get, findIndex, keyBy } from 'lodash'
 import {
   googleApi,
@@ -21,11 +21,12 @@ import {
 } from '@edulastic/api'
 import * as Sentry from '@sentry/browser'
 import { push } from 'connected-react-router'
-import { receiveTeacherDashboardAction } from '../Dashboard/duck'
+import { receiveTeacherDashboardAction } from '../Dashboard/ducks'
 import { fetchGroupsAction, addGroupAction } from '../sharedDucks/groups'
 import {
   setUserGoogleLoggedInAction,
   addClassToUserAction,
+  fetchUserAction,
 } from '../../student/Login/ducks'
 import { requestEnrolExistingUserToClassAction } from '../ClassEnrollment/ducks'
 import {
@@ -74,6 +75,15 @@ export const getManageCoTeacherModalVisibleStateSelector = createSelector(
   (state) => state.showUpdateCoTeachersModal
 )
 
+export const getGoogleAuthRequiredSelector = createSelector(
+  manageClassSelector,
+  (state) => state.googleAuthenticationRequired
+)
+
+export const getGoogleClassCodeSelector = createSelector(
+  manageClassSelector,
+  (state) => state.googleClassCode
+)
 // action types
 
 export const FETCH_CLASS_LIST = '[manageClass] fetch google class'
@@ -92,6 +102,8 @@ export const CREATE_CLASS_FAILED = '[manageClass] creat a class failed'
 export const UPDATE_CLASS_REQUEST = '[manageClass] update a class request'
 export const UPDATE_CLASS_SUCCESS = '[manageClass] update a class success'
 export const UPDATE_CLASS_FAILED = '[manageClass] update a class failed'
+export const UPDATE_ARCHIVED_CLASS_FAILED =
+  '[manageClass] update archived class failed'
 
 export const FETCH_STUDENTS_BY_ID_REQUEST =
   '[manageClass] fetch students request by classId'
@@ -178,6 +190,16 @@ export const SET_UPDATE_COTEACHER_MODAL =
 export const UPDATE_CO_TEACHER_REQUEST =
   '[manageClass] update co-teacher request'
 
+export const SET_FILTER_CLASS = '[manageClass] set filter class'
+
+export const SET_GOOGLE_AUTHENTICATION_REQUIRED =
+  '[manageClass] set google authentication required'
+
+export const SET_GOOGLE_CLASS_CODE = '[manageClass] set google class_code'
+
+export const SAVE_GOOGLE_TOKENS_AND_RETRY_SYNC =
+  '[manageClass] save google tokens and retry sync'
+
 // action creators
 
 export const fetchClassListAction = createAction(FETCH_CLASS_LIST)
@@ -194,6 +216,9 @@ export const createClassSuccessAction = createAction(CREATE_CLASS_SUCCESS)
 export const updateClassAction = createAction(UPDATE_CLASS_REQUEST)
 export const updateClassSuccessAction = createAction(UPDATE_CLASS_SUCCESS)
 export const updateClassFailedAction = createAction(UPDATE_CLASS_FAILED)
+export const updateArchivedClassFailedAction = createAction(
+  UPDATE_ARCHIVED_CLASS_FAILED
+)
 
 export const fetchStudentsByIdAction = createAction(
   FETCH_STUDENTS_BY_ID_REQUEST
@@ -289,10 +314,22 @@ export const removeClassSyncNotificationAction = createAction(
 
 export const setShowCleverSyncModalAction = createAction(SET_CLEVER_SYNC_MODAL)
 
+export const setFilterClassAction = createAction(SET_FILTER_CLASS)
+
 export const updateCoTeacherAction = createAction(UPDATE_CO_TEACHER_REQUEST)
 
 export const showUpdateCoTeacherModalAction = createAction(
   SET_UPDATE_COTEACHER_MODAL
+)
+
+export const setGoogleAuthenticationRequiredAction = createAction(
+  SET_GOOGLE_AUTHENTICATION_REQUIRED
+)
+
+export const setGoogleClassCodeAction = createAction(SET_GOOGLE_CLASS_CODE)
+
+export const saveGoogleTokensAndRetrySyncAction = createAction(
+  SAVE_GOOGLE_TOKENS_AND_RETRY_SYNC
 )
 
 // initial State
@@ -319,7 +356,14 @@ const initialState = {
   classNotFoundError: false,
   unarchivingClass: false,
   showCleverSyncModal: false,
+  filterClass: 'Active',
   showUpdateCoTeachersModal: false,
+  googleAuthenticationRequired: false,
+  googleClassCode: '',
+}
+
+const setFilterClass = (state, { payload }) => {
+  state.filterClass = payload
 }
 
 const setShowCleverSyncModal = (state, { payload }) => {
@@ -397,6 +441,10 @@ const updateClassFailed = (state, { payload }) => {
   state.error = payload
 }
 
+const updateArchivedClassFailed = (state) => {
+  state.updating = false
+}
+
 const addStudentRequest = (state) => {
   state.submitted = true
   state.added = false
@@ -456,9 +504,6 @@ const removeStudentsSuccess = (state, { payload: studentIds }) => {
   state.studentsList.forEach((student, index) => {
     if (studentIdHash[student._id]) {
       const studentDetails = state.studentsList[index]
-      if (!studentDetails.username?.includes('.deactivate')) {
-        studentDetails.username = `${studentDetails.username}.deactivate`
-      }
       studentDetails.enrollmentStatus = '0'
       studentDetails.enrollmentUpdatedAt = new Date().getTime()
     }
@@ -520,6 +565,7 @@ export default createReducer(initialState, {
   [UPDATE_CLASS_REQUEST]: updateClass,
   [UPDATE_CLASS_SUCCESS]: updateClassSuccess,
   [UPDATE_CLASS_FAILED]: updateClassFailed,
+  [UPDATE_ARCHIVED_CLASS_FAILED]: updateArchivedClassFailed,
   [ADD_STUDENT_REQUEST]: addStudentRequest,
   [ADD_STUDENT_SUCCESS]: addStudentSuccess,
   [ADD_STUDENT_FAILED]: addStudentFailed,
@@ -567,8 +613,14 @@ export default createReducer(initialState, {
     state.unarchivingClass = false
   },
   [SET_CLEVER_SYNC_MODAL]: setShowCleverSyncModal,
-
+  [SET_FILTER_CLASS]: setFilterClass,
   [SET_UPDATE_COTEACHER_MODAL]: setshowUpdateCoTeachersModal,
+  [SET_GOOGLE_AUTHENTICATION_REQUIRED]: (state) => {
+    state.googleAuthenticationRequired = !state.googleAuthenticationRequired
+  },
+  [SET_GOOGLE_CLASS_CODE]: (state, { payload }) => {
+    state.googleClassCode = payload
+  },
 })
 
 function* fetchClassList({ payload }) {
@@ -579,6 +631,7 @@ function* fetchClassList({ payload }) {
     yield put(setUserGoogleLoggedInAction(true))
     yield put(setGoogleCourseListAction(result.courseDetails))
     yield put(fetchClassListStatusAction(false))
+    yield put(setFilterClassAction(data.filterClass))
   } catch (e) {
     Sentry.captureException(e)
     const errorMessage = 'fetching classlist failed'
@@ -603,7 +656,7 @@ function* fetchStudentsByClassId({ payload }) {
 
 function* receiveCreateClassRequest({ payload }) {
   try {
-    const { studentIds, ...rest } = payload
+    const { studentIds, callUserMeApi, ...rest } = payload
     const result = yield call(groupApi.createGroup, rest)
     const { name, type, code: classCode, districtId } = result
     const typeText = type === 'custom' ? 'group' : 'class'
@@ -624,6 +677,9 @@ function* receiveCreateClassRequest({ payload }) {
         msg: `${name} is created. Please add students to your ${typeText} and begin using Edulastic.`,
       })
     }
+    if (callUserMeApi) {
+      yield put(fetchUserAction({ background: true }))
+    }
     yield put(createClassSuccessAction(result))
     yield put(addGroupAction(result))
     yield put(addClassToUserAction(result))
@@ -631,7 +687,7 @@ function* receiveCreateClassRequest({ payload }) {
     const {
       data: { message: errorMessage },
     } = err.response
-    Sentry.captureException(err)
+    captureSentryException(err)
     notification({ msg: errorMessage })
     yield put(createClassFailedAction({ message: errorMessage }))
   }
@@ -644,9 +700,19 @@ function* receiveUpdateClass({ payload }) {
       body: params,
       groupId: classId,
     })
-    const successMessage = 'Class details updated successfully!'
-    notification({ type: 'success', msg: successMessage })
-    yield put(updateClassSuccessAction(result))
+    if (result?.status === 400) {
+      notification({
+        type: 'warn',
+        msg:
+          `${result?.message}` ||
+          'Failed to update the class. Please try again later.',
+      })
+      yield put(updateArchivedClassFailedAction())
+    } else {
+      const successMessage = 'Class details updated successfully!'
+      notification({ type: 'success', msg: successMessage })
+      yield put(updateClassSuccessAction(result))
+    }
   } catch (error) {
     yield put(updateClassFailedAction(error))
   }
@@ -764,7 +830,10 @@ function* syncClass({ payload }) {
     }
     yield put(setSyncClassLoadingAction(true))
     yield call(googleApi.syncClass, payload)
-    notification({ type: 'success', messageKey: 'googleClassImportInProgress' })
+    notification({
+      type: 'success',
+      messageKey: 'googleClassImportInProgress',
+    })
   } catch (e) {
     Sentry.captureException(e)
     yield put(setSyncClassLoadingAction(false))
@@ -775,20 +844,33 @@ function* syncClass({ payload }) {
 
 function* syncClassUsingCode({ payload }) {
   try {
-    const { googleCode, groupId: classId, institutionId } = payload
-    yield put(setSyncClassLoadingAction(true))
-    yield call(googleApi.syncClass, {
+    const {
       googleCode,
       groupId: classId,
       institutionId,
+      syncGoogleCoTeacher,
+    } = payload
+    yield put(setSyncClassLoadingAction(true))
+    const result = yield call(googleApi.syncClass, {
+      googleCode,
+      groupId: classId,
+      institutionId,
+      syncGoogleCoTeacher,
     })
     yield put(setSyncClassLoadingAction(false))
-    notification({ type: 'success', messageKey: 'googleClassImportInProgress' })
+    if (result?.message === 'invalid_grant') {
+      yield put(setGoogleAuthenticationRequiredAction(true))
+      yield put(setGoogleClassCodeAction(payload.googleCode))
+    } else {
+      notification({
+        type: 'success',
+        messageKey: 'googleClassImportInProgress',
+      })
+    }
   } catch (err) {
     const { data = {} } = err.response || {}
     const { message: errorMessage } = data
-
-    Sentry.captureException(err)
+    captureSentryException(err)
     if (errorMessage === 'No class found') {
       yield put(setClassNotFoundErrorAction(true))
     } else {
@@ -808,7 +890,7 @@ function* getCanvasCourseListRequestSaga({ payload }) {
       yield put(getCanvasCourseListSuccessAction(courseList))
     }
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     console.error(err)
     yield put(getCanvasCourseListFailedAction())
     notification({ messageKey: 'failedToGetCourseList' })
@@ -823,7 +905,7 @@ function* getCanvasSectionListRequestSaga({ payload }) {
       notification({ type: 'info', messageKey: 'noCourseSectionFound' })
     }
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     console.error(err)
     yield put(getCanvasSectionListFailedAction())
     notification({ messageKey: 'failedToGetCourseSectionList' })
@@ -839,7 +921,7 @@ function* syncClassWithCanvasSaga({ payload }) {
     yield put(fetchStudentsByIdAction({ classId }))
     notification({ type: 'success', messageKey: 'syncWithCanvasIsComplete' })
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     console.error(err)
     notification({ messageKey: 'classSyncWithCanvasFailed' })
     yield put(setSyncClassLoadingAction(false))
@@ -857,7 +939,7 @@ function* fetchCleverClassListRequestSaga() {
       })
     }
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     console.error(err)
     yield put(fetchCleverClassListFailedAction())
     const errorMessage = err?.response?.data?.message
@@ -894,7 +976,7 @@ function* syncClassListWithCleverSaga({ payload }) {
       // no default
     }
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     console.error(err)
     const errorMessage = err?.response?.data?.message
     if (err.status === 403 && errorMessage) {
@@ -918,7 +1000,7 @@ function* unarchiveClass({ payload }) {
     if (exitPath) yield put(push('/'))
     yield put(push(exitPath || '/author/manageClass'))
   } catch (err) {
-    Sentry.captureException(err)
+    captureSentryException(err)
     console.error(err)
     yield put(unarchiveClassFailedAction())
     notification({
@@ -939,12 +1021,34 @@ function* removeClassSyncNotification() {
   }
 }
 
-// update co-teacher or ptimary teacher for the group
+function* saveGoogleTokensAndRetrySyncSaga({ payload }) {
+  try {
+    yield put(setGoogleAuthenticationRequiredAction())
+    const { code, ...classSyncData } = payload
+    yield call(googleApi.saveGoogleTokens, { code })
+    const googleCode = yield select(getGoogleClassCodeSelector)
+    yield put(syncClassUsingCodeAction({ ...classSyncData, googleCode }))
+  } catch (err) {
+    Sentry.captureException(err)
+    notification({
+      msg: err?.response?.data?.message || `Class Sync failed`,
+    })
+  }
+}
+
+// update co-teacher or primary teacher for the group
 function* updateGroupTeachers({ payload }) {
   yield put(addLoadingComponentAction({ componentName: 'updateButton' }))
   try {
-    yield call(groupApi.updateCoTeacher, payload)
+    const { removedTeacherIds = [] } = payload
+    const userId = yield select((state) => state.user.user._id || '')
+    const group = yield call(groupApi.updateCoTeacher, payload)
     yield put(showUpdateCoTeacherModalAction(false))
+    if (removedTeacherIds?.length && removedTeacherIds.includes(userId)) {
+      yield put(push('/author/manageClass'))
+    } else {
+      yield put(setClassAction(group))
+    }
     notification({
       type: 'success',
       msg: `Group co-teachers updated.`,
@@ -994,5 +1098,9 @@ export function* watcherSaga() {
       removeClassSyncNotification
     ),
     yield takeLatest(UPDATE_CO_TEACHER_REQUEST, updateGroupTeachers),
+    yield takeLatest(
+      SAVE_GOOGLE_TOKENS_AND_RETRY_SYNC,
+      saveGoogleTokensAndRetrySyncSaga
+    ),
   ])
 }

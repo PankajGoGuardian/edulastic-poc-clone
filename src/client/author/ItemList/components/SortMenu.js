@@ -2,8 +2,8 @@ import React from 'react'
 import styled from 'styled-components'
 import { Menu, Dropdown, Button } from 'antd'
 import { IconDownEmptyArrow, IconArrowLeft } from '@edulastic/icons'
-import { white, themeColorBlue } from '@edulastic/colors'
 import { FlexContainer } from '@edulastic/common'
+import { white, themeColorBlue } from '@edulastic/colors'
 
 const SortMenu = ({ options, onSelect, sortBy, sortDir }) => {
   const sortBy2 = options.find((i) => i.value === sortBy)
@@ -71,4 +71,5 @@ const StyledMenu = styled(Menu)`
     }
   }
 `
+
 export default SortMenu

@@ -147,7 +147,8 @@ function AddStudentsToOtherClass({
           </div>
         }
         okText={t('users.student.addtoanotherclass.oktext')}
-        canUndone
+        showConfirmationText
+        hideUndoneText
         centered
       />
 

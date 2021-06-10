@@ -1,11 +1,14 @@
 /* eslint-disable react/prop-types */
 import { smallDesktopWidth } from '@edulastic/colors'
 import { IconBookmark, IconCheck } from '@edulastic/icons'
+import { withKeyboard } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { compose } from 'redux'
+import { connect } from 'react-redux'
 import styled from 'styled-components'
+import { TokenStorage } from '@edulastic/api'
 import { Tooltip } from '../../../common/utils/helpers'
 
 const TestButton = ({
@@ -15,31 +18,47 @@ const TestButton = ({
   answerChecksUsedForItem,
   toggleBookmark,
   isBookmarked = false,
-}) => (
-  <Container>
-    <Tooltip placement="top" title="Bookmark">
-      <StyledButton onClick={toggleBookmark} active={isBookmarked}>
-        <StyledIconBookmark />
-        <span>{t('common.test.bookmark')}</span>
-      </StyledButton>
-    </Tooltip>
-    {settings.maxAnswerChecks > 0 && (
-      <Tooltip
-        placement="top"
-        title={
-          answerChecksUsedForItem >= settings.maxAnswerChecks
-            ? 'Usage limit exceeded'
-            : 'Check Answer'
-        }
-      >
-        <StyledButton onClick={checkAnswer} data-cy="checkAnswer">
-          <StyledIconCheck />
-          <span> {t('common.test.checkanswer')}</span>
-        </StyledButton>
-      </Tooltip>
-    )}
+  checkAnswerInProgress,
+  blockNavigationToAnsweredQuestions = false,
+  LCBPreviewModal,
+}) => {
+  const handleCheckAnswer = () => {
+    if (checkAnswerInProgress || typeof checkAnswer !== 'function') {
+      return null
+    }
+    checkAnswer()
+  }
 
-    {/* {showHintButton(questions) ? (
+  const hideCheckAnswer = !TokenStorage.getAccessToken()
+  return (
+    <Container>
+      {!blockNavigationToAnsweredQuestions && !LCBPreviewModal && (
+        <Tooltip placement="top" title="Bookmark">
+          <StyledButton onClick={toggleBookmark} active={isBookmarked}>
+            <StyledIconBookmark />
+            <span>{t('common.test.bookmark')}</span>
+          </StyledButton>
+        </Tooltip>
+      )}
+      {settings.maxAnswerChecks > 0 && !hideCheckAnswer && (
+        <Tooltip
+          placement="top"
+          title={
+            checkAnswerInProgress
+              ? 'In progress'
+              : answerChecksUsedForItem >= settings.maxAnswerChecks
+              ? 'Usage limit exceeded'
+              : 'Check Answer'
+          }
+        >
+          <StyledButton onClick={handleCheckAnswer} data-cy="checkAnswer">
+            <StyledIconCheck />
+            <span> {t('common.test.checkanswer')}</span>
+          </StyledButton>
+        </Tooltip>
+      )}
+
+      {/* {showHintButton(questions) ? (
         <Tooltip placement="top" title="Hint">
           <StyledButton onClick={handletoggleHints}>
             <StyledIconLightBulb />
@@ -47,14 +66,24 @@ const TestButton = ({
           </StyledButton>
         </Tooltip>
       ) : null} */}
-  </Container>
-)
+    </Container>
+  )
+}
 
 TestButton.propTypes = {
   t: PropTypes.func.isRequired,
+  LCBPreviewModal: PropTypes.bool,
 }
 
-const enhance = compose(withNamespaces('student'))
+TestButton.defaultProps = {
+  LCBPreviewModal: false,
+}
+
+const mapStateToProps = (state) => ({
+  checkAnswerInProgress: state?.test?.checkAnswerInProgress,
+})
+
+const enhance = compose(withNamespaces('student'), connect(mapStateToProps))
 
 export default enhance(TestButton)
 
@@ -63,7 +92,7 @@ const Container = styled.div`
   display: flex;
 `
 
-const StyledButton = styled.div`
+const StyledButton = withKeyboard(styled.div`
   margin-right: 5px;
   text-transform: uppercase;
   display: flex;
@@ -118,7 +147,7 @@ const StyledButton = styled.div`
       margin-right: 0px;
     }
   }
-`
+`)
 
 const StyledIconCheck = styled(IconCheck)`
   ${({ theme }) => `

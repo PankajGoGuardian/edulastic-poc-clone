@@ -315,6 +315,24 @@ const getSubscription = ({ districtId, schoolId }) =>
     })
     .then(({ data }) => data.result)
 
+const updateSubscriptionApi = ({ data, subscriptionId }) =>
+  api
+    .callApi({
+      url: `/subscription/${subscriptionId}`,
+      method: 'put',
+      data,
+    })
+    .then(({ data: response }) => response.result)
+
+const bulkUpdateSubscriptionApi = (data) =>
+  api
+    .callApi({
+      url: `/subscription/bulk`,
+      method: 'put',
+      data,
+    })
+    .then(({ data: response }) => response.result)
+
 export default {
   getSubscription,
   searchUpdateDistrict,
@@ -349,4 +367,6 @@ export default {
   saveOrgPermissionsApi,
   searchUsersByEmailsOrIds,
   searchClasslinkDistrict,
+  updateSubscriptionApi,
+  bulkUpdateSubscriptionApi,
 }

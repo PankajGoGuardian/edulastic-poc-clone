@@ -10,7 +10,14 @@ import { Spin } from 'antd'
 import BasicCalculator from './BasicCalculator'
 import EduScientificCalculator from './EduScientificCalculator'
 import CalculatorTitle from './components/CalculatorTitle'
-import AppConfig from '../../../../../../app-config'
+import AppConfig from '../../../../../app-config'
+
+export function getDefaultCalculatorProvider(type) {
+  if (type === 'SCIENTIFIC') {
+    return 'DESMOS'
+  }
+  return 'EDULASTIC'
+}
 
 const defaultRndPros = {
   geogebraCalculator: { x: 0, y: 0, width: 800, height: 635 },
@@ -74,7 +81,10 @@ const CalculatorContainer = ({ calculateMode, changeTool }) => {
   useEffect(() => {
     if (desmosGraphingRef.current && calculateMode === 'GRAPHING_DESMOS') {
       const desmosGraphCalculator = Desmos.GraphingCalculator(
-        desmosGraphingRef.current
+        desmosGraphingRef.current,
+        {
+          degreeMode: true,
+        }
       )
       desmosGraphCalculator.setExpression({ dragMode: Desmos.DragModes.XY })
     }
@@ -84,7 +94,9 @@ const CalculatorContainer = ({ calculateMode, changeTool }) => {
     }
 
     if (desmosScientificRef.current && calculateMode === 'SCIENTIFIC_DESMOS') {
-      Desmos.ScientificCalculator(desmosScientificRef.current)
+      Desmos.ScientificCalculator(desmosScientificRef.current, {
+        degreeMode: true,
+      })
     }
 
     if (calculateMode === 'GRAPHING_GEOGEBRASCIENTIFIC') {

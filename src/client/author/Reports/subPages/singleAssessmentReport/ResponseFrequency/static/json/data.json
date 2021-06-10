@@ -27,9 +27,9 @@
       "width": 50
     },
     {
-      "title": "Correct %",
-      "dataIndex": "corr_cnt",
-      "key": "corr_cnt",
+      "title": "Performance %",
+      "dataIndex": "total_score",
+      "key": "total_score",
       "width": 100
     },
     {

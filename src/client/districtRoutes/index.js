@@ -1,37 +1,28 @@
-import React, { useEffect, lazy } from 'react'
+import React, { useEffect } from 'react'
+import { lazy } from '@loadable/component'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { Switch, Route, Redirect } from 'react-router-dom'
 import { get } from 'lodash'
 import { withNamespaces } from '@edulastic/localization'
-import {
-  isDistrictPolicyAllowed,
-  isDistrictPolicyAvailable,
-} from '../common/utils/helpers'
+import { isDistrictPolicyAllowed } from '../common/utils/helpers'
 
 import { getOrgDetailsByShortNameAndOrgTypeAction } from '../student/Signup/duck'
 
 const TeacherSignup = lazy(() =>
-  import(
-    /* webpackChunkName: "teacherSignup" */ '../student/Signup/components/TeacherContainer/Container'
-  )
+  import('../student/Signup/components/TeacherContainer/Container')
 )
-const Auth = lazy(() => import(/* webpackChunkName: "auth" */ '../Auth'))
+const Auth = lazy(() => import('../Auth'))
 const GetStarted = lazy(() =>
-  import(
-    /* webpackChunkName: "getStarted" */ '../student/Signup/components/GetStartedContainer'
-  )
+  import('../student/Signup/components/GetStartedContainer')
 )
 const StudentSignup = lazy(() =>
-  import(
-    /* webpackChunkName: "studentSignup" */ '../student/Signup/components/StudentContainer'
-  )
+  import('../student/Signup/components/StudentContainer')
 )
 
 const DistrictRoutes = ({
   match,
-  location,
-  getOrgDetailsByShortNameAndOrgTypeAction,
+  getOrgDetailsByShortNameAndOrgType,
   generalSettings,
   districtPolicy,
   districtUrlLoading,
@@ -41,7 +32,7 @@ const DistrictRoutes = ({
   const { orgShortName } = match.params
   const isSignupUsingDaURL = !!orgShortName
   useEffect(() => {
-    getOrgDetailsByShortNameAndOrgTypeAction({
+    getOrgDetailsByShortNameAndOrgType({
       data: {
         shortName: orgShortName,
         orgType: orgType === 'school' ? 'institution' : 'district',
@@ -154,7 +145,7 @@ const enhance = compose(
       districtUrlLoading: get(state, 'signup.districtUrlLoading', true),
     }),
     {
-      getOrgDetailsByShortNameAndOrgTypeAction,
+      getOrgDetailsByShortNameAndOrgType: getOrgDetailsByShortNameAndOrgTypeAction,
     }
   )
 )

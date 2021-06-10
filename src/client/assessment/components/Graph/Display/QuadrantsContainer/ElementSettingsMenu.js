@@ -70,7 +70,8 @@ export const ElementSettingsMenu = ({
                 pointIsVisible,
                 elementColor,
                 true
-              )}
+              )
+            }
           />
         </Row>
         <Row style={{ marginBottom: '20px' }}>
@@ -130,7 +131,8 @@ export const ElementSettingsMenu = ({
                 labelIsVisible,
                 pointIsVisible,
                 elementColor
-              )}
+              )
+            }
             color="primary"
             outlined
           >

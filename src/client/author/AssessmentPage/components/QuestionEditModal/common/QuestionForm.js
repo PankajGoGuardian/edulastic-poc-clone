@@ -13,8 +13,10 @@ export const QuestionFormWrapper = styled(Paper)`
 `
 
 export const FormGroup = styled.div`
+  width: ${({ width }) => width};
+  margin-left: ${({ ml }) => ml};
   &:not(:last-child) {
-    margin-bottom: 28px;
+    margin-bottom: 10px;
   }
   .ant-input {
     &:focus,

@@ -141,9 +141,11 @@ class ChoicesForResponse extends Component {
                   'component.cloze.dropDown.choicesforresponse'
                 )} ${response.index + 1}`
               )}
-            >{`${t('component.cloze.dropDown.choicesforresponse')} ${
-              response.index + 1
-            }`}</Subtitle>
+            >
+              {`${t('component.cloze.dropDown.choicesforresponse')} ${
+                response.index + 1
+              }`}
+            </Subtitle>
             <SortableList
               useDragHandle
               items={options[response.id] || []}

@@ -5,33 +5,14 @@ import SVG from '@edulastic/icons/src/common/SVG'
 const IconGraphVector = (props) => (
   <SVG
     xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 32.153 23.206"
+    width="25.138"
+    height="10.125"
+    viewBox="0 0 25.138 10.125"
     {...props}
   >
-    <g transform="translate(15.056 -558.511) rotate(30)">
-      <path
-        fill="none"
-        strokeLinecap="round"
-        strokeWidth="2"
-        d="M292.38,486l-14.988,14.988"
-        transform="translate(0.848 -0.151)"
-      />
-      <circle
-        cx="3.769"
-        cy="3.769"
-        r="3.769"
-        transform="translate(274 497.155)"
-      />
-      <circle
-        cx="2.769"
-        cy="2.769"
-        r="2.769"
-        transform="translate(292 481.155)"
-      />
-      <path
-        d="M0,0H5.809L2.693,3.167,0,5.809Z"
-        transform="translate(291.033 488.382) rotate(90)"
-      />
+    <g transform="translate(-332.514 -309.563)">
+      <path d="M333.513,319.688a1,1,0,0,1-.258-1.966l20.474-5.487a1,1,0,0,1,.517,1.932l-20.474,5.486A.962.962,0,0,1,333.513,319.688Z" />
+      <path d="M357.651,312.467l-2.9,5.031-1.185-4.282-.941-3.653Z" />
     </g>
   </SVG>
 )

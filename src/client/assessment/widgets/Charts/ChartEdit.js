@@ -10,7 +10,7 @@ import Options from './components/Options'
 import ChartPreview from './ChartPreview'
 import PointsList from './components/PointsList'
 import AxisOptions from './AxisOption'
-import { getReCalculatedPoints } from './helpers'
+import { getFilteredAnswerData, getReCalculatedPoints } from './helpers'
 
 import ComposeQuestion from './ComposeQuestion'
 import { AnnotationBlock } from './AnnotationBlock'
@@ -162,7 +162,7 @@ const ChartEdit = ({
           draft.validation.altResponses = []
         }
         draft.validation.altResponses.push({
-          score: 1,
+          score: draft?.validation?.validResponse?.score,
           value: draft.validation.validResponse.value.map((chartData) => ({
             ...chartData,
             y: initValue,
@@ -174,24 +174,41 @@ const ChartEdit = ({
   }
 
   const handlePointsChange = (val) => {
+    if (!(val > 0)) {
+      return
+    }
+    const points = parseFloat(val, 10)
     setQuestionData(
       produce(item, (draft) => {
         if (currentTab === 0) {
-          draft.validation.validResponse.score = val
+          draft.validation.validResponse.score = points
         } else {
-          draft.validation.altResponses[currentTab - 1].score = val
+          draft.validation.altResponses[currentTab - 1].score = points
         }
       })
     )
   }
 
   const handleAnswerChange = (ans) => {
+    /*
+     * chart data contains additional data as well
+     * keep only required data in the validation, ignore the rest
+     * TODO:
+     * check for other chart types and remove the question type check
+     */
     setQuestionData(
       produce(item, (draft) => {
+        let answerToSave = ans
+        if (
+          draft.type === questionType.LINE_CHART &&
+          Array.isArray(answerToSave)
+        ) {
+          answerToSave = getFilteredAnswerData(ans)
+        }
         if (currentTab === 0) {
-          draft.validation.validResponse.value = ans
+          draft.validation.validResponse.value = answerToSave
         } else {
-          draft.validation.altResponses[currentTab - 1].value = ans
+          draft.validation.altResponses[currentTab - 1].value = answerToSave
         }
       })
     )

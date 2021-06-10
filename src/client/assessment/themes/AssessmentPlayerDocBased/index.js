@@ -10,7 +10,11 @@ import { withNamespaces } from '@edulastic/localization'
 
 import { questionType } from '@edulastic/constants'
 import { withWindowSizes } from '@edulastic/common'
-import { Container, CalculatorContainer } from '../common'
+import {
+  Container,
+  CalculatorContainer,
+  getDefaultCalculatorProvider,
+} from '../common'
 import SubmitConfirmation from '../common/SubmitConfirmation'
 import { themes } from '../../../theme'
 import assessmentPlayerTheme from '../AssessmentPlayerSimple/themeStyle.json'
@@ -55,7 +59,10 @@ class AssessmentPlayerDocBased extends React.Component {
   static getDerivedStateFromProps(props, state) {
     return {
       ...state,
-      calculateMode: `${props?.settings?.calcType}_${props?.settings?.calcProvider}`,
+      calculateMode: `${props?.settings?.calcType}_${
+        props?.settings?.calcProvider ||
+        getDefaultCalculatorProvider(props?.settings?.calcType)
+      }`,
     }
   }
 
@@ -146,6 +153,7 @@ class AssessmentPlayerDocBased extends React.Component {
       settings,
       playerSkinType,
       groupId,
+      hidePause,
     } = this.props
 
     const item = items[0]
@@ -180,6 +188,7 @@ class AssessmentPlayerDocBased extends React.Component {
             currentToolMode={currentToolMode}
             onChangeTool={this.onChangeTool}
             finishTest={this.openExitPopup}
+            hidePause={hidePause}
           >
             {!loading && (
               <WorksheetComponent

@@ -1,4 +1,4 @@
-import { takeLatest, call } from 'redux-saga/effects'
+import { all, takeLatest, call } from 'redux-saga/effects'
 import { assessmentApi } from '@edulastic/api'
 
 import { AUTHOR_QUESTION } from '../constants/actions'
@@ -8,5 +8,5 @@ function* authorQuestion(action) {
 }
 
 export default function* watcherSaga() {
-  yield takeLatest(AUTHOR_QUESTION, authorQuestion)
+  yield all([yield takeLatest(AUTHOR_QUESTION, authorQuestion)])
 }

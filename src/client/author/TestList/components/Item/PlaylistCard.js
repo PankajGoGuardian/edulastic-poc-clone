@@ -1,4 +1,5 @@
 import React from 'react'
+import { message } from 'antd'
 import { first } from 'lodash'
 import { IconUser, IconUsers } from '@edulastic/icons'
 import { cardTitleColor, darkGrey } from '@edulastic/colors'
@@ -25,6 +26,8 @@ import {
   PlaylistSkinType,
   Grade,
   ButtonWrapper,
+  FullSizeThumbnailCard,
+  CardCover,
 } from './styled'
 import Tags from '../../../src/components/common/Tags'
 import { TestStatus } from '../ListItem/styled'
@@ -42,12 +45,122 @@ const PlaylistCard = ({
   standardsIdentifiers,
   authorName,
   testItemId,
-  allowDuplicate,
-  duplicatePlayList,
+  history,
+  useThisPlayList,
   _id,
+  isPublisherUser,
+  isOrganizationDistrictUser,
+  isUseThisLoading,
 }) => {
   const grade = first(_source.grades)
-  const { thumbnail } = _source
+  const { thumbnail, skin } = _source
+  const isFullSizeImage = skin === 'FULL_SIZE'
+  const isDraft = status === 'draft'
+
+  const handleUseThisClick = () => {
+    const { title, grades, subjects, customize = null, authors } = _source
+    const msg = message.loading('Using this playlist. Please Wait....', 0)
+
+    useThisPlayList({
+      _id,
+      title,
+      grades,
+      subjects,
+      customize,
+      fromUseThis: true,
+      notificationCallback: msg,
+      authors,
+    })
+  }
+
+  const handleDetailsClick = () => {
+    history.push(`/author/playlists/${_id}#review`)
+  }
+
+  const playListId = testItemId ? (
+    <PlaylistId data-cy="test-id" key="playlistId">
+      <span>#</span>
+      <span>{testItemId}</span>
+    </PlaylistId>
+  ) : null
+
+  const playListStatus = (
+    <TestStatusWrapper
+      status={status || _source?.status}
+      checkUser={false}
+      key="playlist-status"
+    >
+      {({ children, ...rest }) => (
+        <TestStatus
+          {...rest}
+          view="tile"
+          data-cy="test-status"
+          className="playlist-status"
+        >
+          {children}
+        </TestStatus>
+      )}
+    </TestStatusWrapper>
+  )
+
+  const playListUsage = !isDraft && (
+    <ShareIcon>
+      <IconUsers color={darkGrey} width={14} height={14} /> &nbsp;
+      <IconText>{usage}</IconText>
+    </ShareIcon>
+  )
+
+  const showUseThisButton =
+    _source.status === 'published' &&
+    !isOrganizationDistrictUser &&
+    !isPublisherUser
+
+  if (isFullSizeImage) {
+    return (
+      <FullSizeThumbnailCard
+        isPlaylist
+        onClick={moveToItem}
+        cover={
+          <CardCover uri={thumbnail}>
+            <ButtonWrapper position="relative" className="showHover">
+              <EduButton
+                width="145px"
+                height="45px"
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  handleDetailsClick()
+                }}
+              >
+                Details
+              </EduButton>
+
+              {showUseThisButton && (
+                <EduButton
+                  loading={isUseThisLoading}
+                  disabled={isUseThisLoading}
+                  width="145px"
+                  height="45px"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    handleUseThisClick()
+                  }}
+                >
+                  Use This
+                </EduButton>
+              )}
+            </ButtonWrapper>
+          </CardCover>
+        }
+        actions={[
+          playListId,
+          playListUsage,
+          isDraft ? playListStatus : '',
+        ].filter((x) => x)}
+      />
+    )
+  }
 
   return (
     <Container
@@ -61,19 +174,33 @@ const PlaylistCard = ({
             <Grade>Grade {grade}</Grade>
           </PlaylistCardHeaderRow>
 
-          {allowDuplicate && (
-            <ButtonWrapper className="showHover">
+          <ButtonWrapper className="showHover">
+            <EduButton
+              height="32px"
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                handleDetailsClick()
+              }}
+            >
+              Details
+            </EduButton>
+
+            {showUseThisButton && (
               <EduButton
+                loading={isUseThisLoading}
+                disabled={isUseThisLoading}
                 height="32px"
                 onClick={(e) => {
+                  e.preventDefault()
                   e.stopPropagation()
-                  duplicatePlayList({ _id, title: _source.title })
+                  handleUseThisClick()
                 }}
               >
-                clone
+                Use This
               </EduButton>
-            </ButtonWrapper>
-          )}
+            )}
+          </ButtonWrapper>
 
           <Stars isPlaylist />
           {collections.find((o) => o.name === 'Edulastic Certified') &&
@@ -121,33 +248,12 @@ const PlaylistCard = ({
             </AuthorWrapper>
           </Author>
         )}
-        <StatusRow>
-          <TestStatusWrapper
-            status={status || _source?.status}
-            checkUser={false}
-          >
-            {({ children, ...rest }) => (
-              <TestStatus data-cy="test-status" {...rest} view="tile">
-                {children}
-              </TestStatus>
-            )}
-          </TestStatusWrapper>
-        </StatusRow>
+        <StatusRow>{playListStatus}</StatusRow>
       </Inner>
 
       <Footer>
-        {testItemId ? (
-          <PlaylistId data-cy="test-id">
-            <span>#</span>
-            <span>{testItemId}</span>
-          </PlaylistId>
-        ) : null}
-        {status !== 'draft' && (
-          <ShareIcon>
-            <IconUsers color={darkGrey} width={14} height={14} /> &nbsp;
-            <IconText>{usage}</IconText>
-          </ShareIcon>
-        )}
+        {playListId}
+        {playListUsage}
       </Footer>
     </Container>
   )

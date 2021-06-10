@@ -48,6 +48,7 @@ const ShadingPreview = ({
   showQuestionNumber,
   disableResponse,
   evaluation,
+  hideCorrectAnswer,
 }) => {
   const { canvas, validation } = item
   const fontSize = getFontSize(get(item, 'uiStyle.fontsize'))
@@ -166,7 +167,7 @@ const ShadingPreview = ({
             <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>
           )}
         </QuestionLabelWrapper>
-        <QuestionContentWrapper>
+        <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
           <QuestionTitleWrapper>
             {view === PREVIEW && !smallSize && (
               <Stimulus
@@ -219,7 +220,8 @@ const ShadingPreview = ({
                     width="320px"
                     value={Array.isArray(userAnswer?.[0]) ? 1 : userAnswer?.[0]}
                     onChange={(e) =>
-                      saveAnswer([e.target.value > 0 ? +e.target.value : 1])}
+                      saveAnswer([e.target.value > 0 ? +e.target.value : 1])
+                    }
                   />
                 )}
               </>
@@ -237,7 +239,7 @@ const ShadingPreview = ({
             )}
           </FlexContainer>
           {view !== EDIT && <Instructions item={item} />}
-          {previewTab === SHOW && (
+          {previewTab === SHOW && !hideCorrectAnswer && (
             <>
               <CorrectAnswersContainer
                 title={t('component.shading.correctAnswer')}

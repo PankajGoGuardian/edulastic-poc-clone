@@ -1,20 +1,29 @@
-import { groupBy, minBy, cloneDeep, countBy, uniq } from 'lodash'
-import { testActivityStatus } from '@edulastic/constants'
-import { getHSLFromRange1 } from '../../../../common/util'
-import { transformMetricForStudentGroups } from '../../common/utils/transformers'
+import {
+  groupBy,
+  minBy,
+  cloneDeep,
+  countBy,
+  uniq,
+  isEmpty,
+  orderBy,
+  startCase,
+  isNil,
+} from 'lodash'
 
-export const idToLabel = {
+import { testActivityStatus, reportUtils } from '@edulastic/constants'
+
+const { getHSLFromRange1, DemographicCompareByOptions } = reportUtils.common
+
+const { transformMetricForStudentGroups } = reportUtils.singleAssessmentReport
+
+const _idToLabel = {
   schoolId: 'schoolName',
   groupId: 'groupName',
   teacherId: 'teacherName',
-  race: 'race',
-  gender: 'gender',
-  frlStatus: 'frlStatus',
-  ellStatus: 'ellStatus',
-  iepStatus: 'iepStatus',
 }
+export const idToLabel = (id) => _idToLabel[id] || id
 
-export const idToName = {
+const _idToName = {
   schoolId: 'School',
   groupId: 'Class',
   group: 'Student Group',
@@ -24,7 +33,9 @@ export const idToName = {
   frlStatus: 'FRL Status',
   ellStatus: 'ELL Status',
   iepStatus: 'IEP Status',
+  hispanicEthnicity: 'Hispanic Ethnicity',
 }
+export const idToName = (id) => _idToName[id] || startCase(id)
 
 export const analyseByToName = {
   'score(%)': 'Score (%)',
@@ -36,16 +47,19 @@ export const analyseByToName = {
 const filterData = (data, filter) => {
   const filteredData = data.filter((item) => {
     if (
-      (item.gender.toLowerCase() === filter.gender.toLowerCase() ||
+      (item.gender?.toLowerCase() === filter.gender.toLowerCase() ||
         filter.gender === 'all') &&
-      (item.frlStatus.toLowerCase() === filter.frlStatus.toLowerCase() ||
+      (item.frlStatus?.toLowerCase() === filter.frlStatus.toLowerCase() ||
         filter.frlStatus === 'all') &&
-      (item.ellStatus.toLowerCase() === filter.ellStatus.toLowerCase() ||
+      (item.ellStatus?.toLowerCase() === filter.ellStatus.toLowerCase() ||
         filter.ellStatus === 'all') &&
-      (item.iepStatus.toLowerCase() === filter.iepStatus.toLowerCase() ||
+      (item.iepStatus?.toLowerCase() === filter.iepStatus.toLowerCase() ||
         filter.iepStatus === 'all') &&
-      (item.race.toLowerCase() === filter.race.toLowerCase() ||
-        filter.race === 'all')
+      (item.race?.toLowerCase() === filter.race.toLowerCase() ||
+        filter.race === 'all') &&
+      (item.hispanicEthnicity?.toLowerCase() ===
+        filter.hispanicEthnicity.toLowerCase() ||
+        filter.hispanicEthnicity === 'all')
     ) {
       return true
     }
@@ -61,9 +75,9 @@ const analyseByScorePercent = (rawData, groupedData, compareBy) => {
         const { maxScore = 0, totalScore = 0, progressStatus } = currentValue
         return {
           // progressStatus = 2 is for absent student, needs to be excluded
-          totalMaxScore: (total.totalMaxScore +=
-            progressStatus === 2 ? 0 : maxScore),
-          totalTotalScore: (total.totalTotalScore += totalScore),
+          totalMaxScore:
+            total.totalMaxScore + (progressStatus === 2 ? 0 : maxScore),
+          totalTotalScore: total.totalTotalScore + totalScore,
         }
       },
       { totalMaxScore: 0, totalTotalScore: 0 }
@@ -84,7 +98,9 @@ const analyseByScorePercent = (rawData, groupedData, compareBy) => {
     absent += statusCounts[testActivityStatus.UN_ASSIGNED] || 0
     absent += statusCounts[testActivityStatus.UN_ENROLLED] || 0
     const schoolName = uniq(
-      groupedData[data].map((o) => o.schoolName).filter((txt) => txt)
+      groupedData[data]
+        .map((o) => (isEmpty(o.schoolName) ? ' - ' : o.schoolName))
+        .filter((txt) => txt)
     ).join(', ')
 
     item = {
@@ -101,9 +117,11 @@ const analyseByScorePercent = (rawData, groupedData, compareBy) => {
       className,
       [compareBy]: data,
       compareBy,
-      compareBylabel: groupedData[data][0][idToLabel[compareBy]]
-        ? groupedData[data][0][idToLabel[compareBy]]
-        : 'NA',
+      compareBylabel:
+        !isNil(groupedData[data][0][idToLabel(compareBy)]) &&
+        groupedData[data][0][idToLabel(compareBy)] !== ''
+          ? groupedData[data][0][idToLabel(compareBy)]
+          : '-',
       fill: getHSLFromRange1(avgStudentScorePercent),
       dFill: getHSLFromRange1(rawData.districtAvgPerf),
     }
@@ -119,9 +137,9 @@ const analyseByRawScore = (rawData, groupedData, compareBy) => {
         const { maxScore = 0, totalScore = 0, progressStatus } = currentValue
         return {
           // progressStatus = 2 is for absent student, needs to be excluded
-          totalMaxScore: (total.totalMaxScore +=
-            progressStatus === 2 ? 0 : maxScore),
-          totalTotalScore: (total.totalTotalScore += totalScore),
+          totalMaxScore:
+            total.totalMaxScore + (progressStatus === 2 ? 0 : maxScore),
+          totalTotalScore: total.totalTotalScore + totalScore,
         }
       },
       { totalMaxScore: 0, totalTotalScore: 0 }
@@ -141,7 +159,9 @@ const analyseByRawScore = (rawData, groupedData, compareBy) => {
     absent += statusCounts[testActivityStatus.UN_ASSIGNED] || 0
     absent += statusCounts[testActivityStatus.UN_ENROLLED] || 0
     const schoolName = uniq(
-      groupedData[data].map((o) => o.schoolName).filter((txt) => txt)
+      groupedData[data]
+        .map((o) => (isEmpty(o.schoolName) ? ' - ' : o.schoolName))
+        .filter((txt) => txt)
     ).join(', ')
 
     item = {
@@ -159,9 +179,11 @@ const analyseByRawScore = (rawData, groupedData, compareBy) => {
       className,
       [compareBy]: data,
       compareBy,
-      compareBylabel: groupedData[data][0][idToLabel[compareBy]]
-        ? groupedData[data][0][idToLabel[compareBy]]
-        : 'NA',
+      compareBylabel:
+        !isNil(groupedData[data][0][idToLabel(compareBy)]) &&
+        groupedData[data][0][idToLabel(compareBy)] !== ''
+          ? groupedData[data][0][idToLabel(compareBy)]
+          : '-',
       fill: getHSLFromRange1((avgStudentScore / maxScore) * 100),
       dFill: getHSLFromRange1(rawData.districtAvgPerf),
     }
@@ -212,7 +234,9 @@ const analyseByAboveBelowStandard = (rawData, groupedData, compareBy) => {
     absent += statusCounts[testActivityStatus.UN_ASSIGNED] || 0
     absent += statusCounts[testActivityStatus.UN_ENROLLED] || 0
     const schoolName = uniq(
-      groupedData[data].map((o) => o.schoolName).filter((txt) => txt)
+      groupedData[data]
+        .map((o) => (isEmpty(o.schoolName) ? ' - ' : o.schoolName))
+        .filter((txt) => txt)
     ).join(', ')
 
     item = {
@@ -227,9 +251,11 @@ const analyseByAboveBelowStandard = (rawData, groupedData, compareBy) => {
       className,
       [compareBy]: data,
       compareBy,
-      compareBylabel: groupedData[data][0][idToLabel[compareBy]]
-        ? groupedData[data][0][idToLabel[compareBy]]
-        : 'NA',
+      compareBylabel:
+        !isNil(groupedData[data][0][idToLabel(compareBy)]) &&
+        groupedData[data][0][idToLabel(compareBy)] !== ''
+          ? groupedData[data][0][idToLabel(compareBy)]
+          : '-',
       fill_0: getHSLFromRange1(100),
       fill_1: getHSLFromRange1(0),
     }
@@ -276,7 +302,7 @@ const analyseByProficiencyBand = (rawData, groupedData, compareBy) => {
 
     const proficiencyPercentages = {}
 
-    bandInfoAsc.map((o, index) => {
+    bandInfoAsc.forEach((o, index) => {
       const prof = Math.round((item[o.name] / (item.total || 1)) * 100)
       const fill = Math.round((100 / (bandInfo.length - 1)) * index)
       if (proficienciesDetail[o.name].aboveStandard !== 1) {
@@ -293,7 +319,9 @@ const analyseByProficiencyBand = (rawData, groupedData, compareBy) => {
     absent += statusCounts[testActivityStatus.UN_ASSIGNED] || 0
     absent += statusCounts[testActivityStatus.UN_ENROLLED] || 0
     const schoolName = uniq(
-      groupedData[data].map((o) => o.schoolName).filter((txt) => txt)
+      groupedData[data]
+        .map((o) => (isEmpty(o.schoolName) ? ' - ' : o.schoolName))
+        .filter((txt) => txt)
     ).join(', ')
 
     item = {
@@ -307,9 +335,11 @@ const analyseByProficiencyBand = (rawData, groupedData, compareBy) => {
       className,
       [compareBy]: data,
       compareBy,
-      compareBylabel: groupedData[data][0][idToLabel[compareBy]]
-        ? groupedData[data][0][idToLabel[compareBy]]
-        : 'NA',
+      compareBylabel:
+        !isNil(groupedData[data][0][idToLabel(compareBy)]) &&
+        groupedData[data][0][idToLabel(compareBy)] !== ''
+          ? groupedData[data][0][idToLabel(compareBy)]
+          : '-',
     }
 
     return item
@@ -317,10 +347,22 @@ const analyseByProficiencyBand = (rawData, groupedData, compareBy) => {
   return arr
 }
 
-export const parseData = (rawData, data, filter) => {
+export const parseData = (rawData, filter) => {
   let compareBy = filter.compareBy
+  let data = (rawData.metricInfo || []).map((d) => {
+    const gender =
+      d.gender.toLowerCase() === 'm'
+        ? 'Male'
+        : d.gender.toLowerCase() === 'f'
+        ? 'Female'
+        : d.gender
+    return { ...d, gender }
+  })
+  if (DemographicCompareByOptions.includes(compareBy)) {
+    data = orderBy(data, compareBy, ['asc'])
+  }
   if (filter.compareBy === 'group') {
-    data = transformMetricForStudentGroups(rawData.metaInfo, data)
+    data = transformMetricForStudentGroups(rawData.studentGroupInfo, data)
     compareBy = 'groupId'
   }
   const filteredData = filterData(data, filter)

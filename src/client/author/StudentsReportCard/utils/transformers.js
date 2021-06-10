@@ -1,4 +1,4 @@
-import { get, keyBy, values, round, groupBy, isUndefined } from 'lodash'
+import { get, keyBy, values, round, groupBy, isUndefined, uniq } from 'lodash'
 import next from 'immer'
 import { questionType } from '@edulastic/constants'
 import { responseDisplayOption } from './constants'
@@ -8,6 +8,22 @@ import { formatToMathAnswer } from '../../../assessment/widgets/MathFormula/comp
 // format answers for doc based
 const formatAnswerForDocBased = (value, q, options = {}) => {
   return options[value]?.label || value?.value || value || '-'
+}
+
+// to return data for 'Your answer' and 'Correct Anser', as per question Type
+// Responses: 'ETI'/'CR'/<User response>
+export const formatAnswertoDisplay = (value, type, title) => {
+  const matchedType = responseDisplayOption[type]
+  if (matchedType) {
+    if (
+      !matchedType.titles ||
+      (matchedType.titles && matchedType.titles.includes(title))
+    ) {
+      return matchedType.value
+    }
+    return value
+  }
+  return value
 }
 
 // to format correct/user answer
@@ -28,7 +44,7 @@ export const formatAnswers = (
     responses = [responses]
   }
 
-  const answer = responses.map((item, index) => {
+  const answer = responses.map((item) => {
     if (isDocBased) {
       return formatAnswerForDocBased(item, q, options)
     }
@@ -135,12 +151,7 @@ export const getQuestionTableData = (
 
   const questionTableData = testItemsData
     .map((item) => {
-      const {
-        isPassageWithQuestions,
-        itemLevelScoring,
-        multipartItem,
-        itemLevelScore,
-      } = item
+      const { itemLevelScoring, itemLevelScore } = item
       const questions = item.data.questions || []
 
       // for itemLevelScoring, all questions response needs to show in one row
@@ -209,7 +220,7 @@ export const getQuestionTableData = (
           q.isCorrect = qActivity?.score
           q.correct = qActivity?.correct
           q.partialCorrect = qActivity?.partialCorrect
-          q.questionNumber = `${q.barLabel?.substr(1)}${q.qSubLabel || ''}`
+          q.questionNumber = `${q.barLabel?.substr(1)}`
           totalScore += q.maxScore
           obtainedScore += q.score
         }
@@ -222,7 +233,8 @@ export const getQuestionTableData = (
 
 export const getChartAndStandardTableData = (
   studentResponse,
-  author_classboard_testActivity
+  author_classboard_testActivity,
+  interestedCurriculums = {}
 ) => {
   const testItems = get(
     author_classboard_testActivity,
@@ -231,6 +243,7 @@ export const getChartAndStandardTableData = (
   )
   const questionActivities = get(studentResponse, 'data.questionActivities', [])
 
+  const interestedCrclmById = keyBy(interestedCurriculums, '_id')
   // formatting all mastery types
   const assignmentMastery = get(
     author_classboard_testActivity,
@@ -248,19 +261,30 @@ export const getChartAndStandardTableData = (
   // contains all test standards to display
   const standardsTableData = groupBy(
     testItems.reduce((acc, item) => {
-      const questions = item.data.questions
+      // filtering out unscored questions to hide them in standards table in student card
+      const questions = item.data.questions.filter(
+        (x) => !x?.validation?.unscored
+      )
 
       // fetching all uniq standards from questions
       const allStandards = questions.flatMap((q) => {
-        // finding all doamins from question alignment
+        // finding all doamins from question alignment which are not multistandard mapped
         const domains = (q.alignment || [])
+          .filter(
+            (el) =>
+              !el.isEquivalentStandard && interestedCrclmById[el.curriculumId]
+          )
           .map((ali) => ali.domains || [])
           .flat()
+        const questionId = item.itemLevelScoring
+          ? item.data.questions[0]?.id
+          : q.id
         const qActivity =
-          questionActivities.filter((qa) => qa.qid === q.id)[0] || {}
+          questionActivities.filter((qa) => qa.qid === questionId)[0] || {}
 
         // calculating performace percentage
-        let { score = 0, maxScore } = qActivity
+        const { score = 0 } = qActivity
+        let { maxScore } = qActivity
         if (!maxScore) {
           maxScore = q.validation?.validResponse?.score
         }
@@ -271,7 +295,9 @@ export const getChartAndStandardTableData = (
             ...std,
             domain: d.name,
             question:
-              typeof q.qLabel === 'string' ? q.qLabel?.substr(1) : q.qLabel,
+              typeof q.qLabel === 'string'
+                ? q.qLabel
+                : `Q${q.barLabel?.substr(1)}`,
             performance,
             score: round(score, 2),
             maxScore,
@@ -286,21 +312,24 @@ export const getChartAndStandardTableData = (
 
   const data = Object.values(standardsTableData).flatMap((std) => {
     // this is to add score or maxScore of all questions belongs to same standard
-    const formatScore = std.reduce(
+    let formatScore = std.reduce(
       (acc, s) => {
+        if (!acc.question.includes(s.question)) {
+          acc.score += s.score
+          acc.maxScore += s.maxScore
+        }
         acc.question.push(s.question)
-        acc.score += s.score
-        acc.maxScore += s.maxScore
         const performance = Number(
           ((acc.score / acc.maxScore) * 100).toFixed(2)
         )
-        acc.performance = !isNaN(performance) ? performance : 0
+        acc.performance = !Number.isNaN(performance) ? performance : 0
 
         // calculating mastery
-        const mastery = assignmentMastery.find((_item, index) => {
+        const mastery = assignmentMastery.find((_item) => {
           if (acc.performance >= _item.threshold) {
             return true
           }
+          return false
         })
         if (mastery) {
           assignmentMasteryMap[mastery.masteryLevel].count++
@@ -310,6 +339,7 @@ export const getChartAndStandardTableData = (
       },
       { question: [], score: 0, maxScore: 0 }
     )
+    formatScore = { ...formatScore, question: uniq(formatScore.question) }
     return {
       ...std[0],
       ...formatScore,
@@ -318,20 +348,4 @@ export const getChartAndStandardTableData = (
 
   const chartData = values(assignmentMasteryMap)
   return { standardsTableData: data, chartData, assignmentMasteryMap }
-}
-
-// to return data for 'Your answer' and 'Correct Anser', as per question Type
-// Responses: 'ETI'/'CR'/<User response>
-export const formatAnswertoDisplay = (value, type, title) => {
-  const matchedType = responseDisplayOption[type]
-  if (matchedType) {
-    if (
-      !matchedType.titles ||
-      (matchedType.titles && matchedType.titles.includes(title))
-    ) {
-      return matchedType.value
-    }
-    return value
-  }
-  return value
 }

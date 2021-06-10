@@ -9,7 +9,16 @@ import {
   get,
 } from 'lodash'
 import { helpers } from '@edulastic/common'
-import { test as testConstants, collections } from '@edulastic/constants'
+import {
+  test as testConstants,
+  collections,
+  question as questionConstants,
+} from '@edulastic/constants'
+
+const roundOff = (number) =>
+  number ? Number(Number(number).toFixed(2)) : number
+
+const { sectionLabelType } = questionConstants
 
 const { nonPremiumCollections = {} } = collections
 
@@ -17,15 +26,16 @@ const { getQuestionLevelScore, getPoints } = helpers
 
 const getStandardWiseSummary = (question, point) => {
   let standardSummary
-  if (question) {
-    const points = point
+  if (question && question.type !== sectionLabelType) {
+    const unscored = get(question, 'validation.unscored', false)
+    const points = unscored ? 0 : point
     const alignment = get(question, 'alignment', [])
     standardSummary = flatMap(
       alignment,
       ({ domains, isEquivalentStandard = false, curriculumId }) =>
         flatMap(domains, ({ standards }) =>
           map(standards, ({ name }) => ({
-            curriculumId: `${curriculumId}`,
+            curriculumId,
             identifier: name,
             totalPoints: points,
             totalQuestions: 1,
@@ -37,7 +47,11 @@ const getStandardWiseSummary = (question, point) => {
   return standardSummary
 }
 
-const createItemsSummaryData = (items = [], scoring, isLimitedDeliveryType) => {
+const createItemsSummaryData = (
+  items = [],
+  scoring = {},
+  isLimitedDeliveryType
+) => {
   const summary = {
     totalPoints: 0,
     totalQuestions: 0,
@@ -47,13 +61,18 @@ const createItemsSummaryData = (items = [], scoring, isLimitedDeliveryType) => {
   }
   if (!items || !items.length) return summary
   for (const item of items) {
+    const itemStandards = []
     const { itemLevelScoring, maxScore, itemLevelScore, _id } = item
-    const itemPoints = isLimitedDeliveryType
-      ? 1
-      : scoring[_id] ||
-        (itemLevelScoring === true && itemLevelScore) ||
-        maxScore
-    const questions = get(item, 'data.questions', [])
+    const questions = get(item, 'data.questions', []).filter(
+      ({ type }) => type !== sectionLabelType
+    )
+    let itemPoints = 0
+    itemPoints =
+      scoring[_id] || (itemLevelScoring === true && itemLevelScore) || maxScore
+
+    if (isLimitedDeliveryType) {
+      itemPoints = 1
+    }
     const itemTotalQuestions = questions.length
     const questionWisePoints = getQuestionLevelScore(
       { ...item, isLimitedDeliveryType },
@@ -67,18 +86,22 @@ const createItemsSummaryData = (items = [], scoring, isLimitedDeliveryType) => {
         questionWisePoints[question.id]
       )
       if (standardSummary) {
-        summary.standards.push(...standardSummary)
+        summary.standards.push(
+          ...uniqBy(standardSummary, (x) => `${x.curriculumId}${x.identifier}`)
+        )
+        itemStandards.push(...standardSummary)
       }
     }
-    if (summary.standards.length > 0) {
+
+    if (itemStandards.length > 0) {
       const standardSummary = groupBy(summary.standards, 'curriculumId')
       const standardSumm = map(standardSummary, (objects, curriculumId) => {
         const obj = groupBy(objects, 'identifier')
         const standardObj = map(obj, (elements, identifier) => ({
-          curriculumId,
+          curriculumId: parseInt(curriculumId, 10),
           identifier,
           totalQuestions: sumBy(elements, 'totalQuestions'),
-          totalPoints: sumBy(elements, 'totalPoints'),
+          totalPoints: roundOff(sumBy(elements, 'totalPoints')),
           isEquivalentStandard: !some(elements, [
             'isEquivalentStandard',
             false,
@@ -89,12 +112,14 @@ const createItemsSummaryData = (items = [], scoring, isLimitedDeliveryType) => {
       summary.standards = flatten(standardSumm)
     } else {
       summary.noStandards.totalQuestions += questions.length
-      summary.noStandards.totalPoints += sumBy(
-        questions,
-        ({ id }) => questionWisePoints[id]
+      summary.noStandards.totalPoints = roundOff(
+        summary.noStandards.totalPoints +
+          sumBy(questions, ({ id }) => questionWisePoints[id])
       )
     }
-    summary.totalPoints += itemPoints
+    summary.totalPoints = roundOff(
+      (summary.totalPoints + parseFloat(itemPoints)).toFixed(2)
+    )
     summary.totalQuestions += itemTotalQuestions
   }
   return summary
@@ -161,19 +186,34 @@ export const createGroupSummary = (test) => {
   return summary
 }
 
-// Kidergarten should out put as the first grade and other should be the last grade.
+// TK instead of PK for PreKindergarten is intentional
+// PreKindergarten, Kindergarten should be first and Other should be last
 // Eg: grades = ["1","2","K","O"]
+// Order should be PreKindergarten, Kindergarten, 1...12, Other
+// TK, K, 1...12, O
 export const sortGrades = (grades) => {
   if (!grades || !grades.length) {
     return []
   }
   let sortedGrades = grades
-    .filter((item) => item !== 'K' && item !== 'O')
+    .filter((item) => {
+      const convertedGrade = (item || '').toLowerCase()
+      return (
+        convertedGrade !== 'k' &&
+        convertedGrade !== 'o' &&
+        convertedGrade !== 'tk'
+      )
+    })
     .sort((a, b) => a - b)
   if (grades.includes('K')) {
     sortedGrades = ['K', ...sortedGrades]
   } else if (grades.includes('k')) {
     sortedGrades = ['k', ...sortedGrades]
+  }
+  if (grades.includes('TK')) {
+    sortedGrades = ['TK', ...sortedGrades]
+  } else if (grades.includes('tk')) {
+    sortedGrades = ['tk', ...sortedGrades]
   }
   if (grades.includes('O')) {
     sortedGrades = [...sortedGrades, 'O']

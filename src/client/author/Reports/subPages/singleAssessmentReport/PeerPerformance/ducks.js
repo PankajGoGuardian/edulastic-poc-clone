@@ -3,9 +3,9 @@ import { takeLatest, call, put, all } from 'redux-saga/effects'
 import { createSelector } from 'reselect'
 import { reportsApi } from '@edulastic/api'
 import { createAction, createReducer } from 'redux-starter-kit'
+import { notification } from '@edulastic/common'
 
 import { RESET_ALL_REPORTS } from '../../../common/reportsRedux'
-import { getOrgDataFromSARFilter } from '../common/filterDataDucks'
 
 const GET_REPORTS_PEER_PERFORMANCE_REQUEST =
   '[reports] get reports sub-groups performance request'
@@ -13,11 +13,16 @@ const GET_REPORTS_PEER_PERFORMANCE_REQUEST_SUCCESS =
   '[reports] get reports sub-groups performance success'
 const GET_REPORTS_PEER_PERFORMANCE_REQUEST_ERROR =
   '[reports] get reports sub-groups performance error'
+const RESET_REPORTS_PEER_PERFORMANCE =
+  '[reports] reset reports sub-groups performance'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
 export const getPeerPerformanceRequestAction = createAction(
   GET_REPORTS_PEER_PERFORMANCE_REQUEST
+)
+export const resetPeerPerformanceAction = createAction(
+  RESET_REPORTS_PEER_PERFORMANCE
 )
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
@@ -29,19 +34,19 @@ export const getPeerPerformanceRequestAction = createAction(
 export const stateSelector = (state) =>
   state.reportReducer.reportPeerPerformanceReducer
 
-const _getReportsPeerPerformance = createSelector(
+export const getReportsPeerPerformance = createSelector(
   stateSelector,
   (state) => state.peerPerformance
 )
 
-export const getReportsPeerPerformance = (state) => ({
-  ..._getReportsPeerPerformance(state),
-  metaInfo: getOrgDataFromSARFilter(state),
-})
-
 export const getReportsPeerPerformanceLoader = createSelector(
   stateSelector,
   (state) => state.loading
+)
+
+export const getReportsPeerPerformanceError = createSelector(
+  stateSelector,
+  (state) => state.error
 )
 
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
@@ -58,17 +63,19 @@ export const defaultReport = {
 }
 
 const initialState = {
-  peerPerformance: defaultReport,
+  peerPerformance: {},
   loading: false,
 }
 
 export const reportPeerPerformanceReducer = createReducer(initialState, {
-  [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState),
-  [GET_REPORTS_PEER_PERFORMANCE_REQUEST]: (state, { payload }) => {
+  [RESET_ALL_REPORTS]: (state) => (state = initialState),
+  [RESET_REPORTS_PEER_PERFORMANCE]: (state) => (state = initialState),
+  [GET_REPORTS_PEER_PERFORMANCE_REQUEST]: (state) => {
     state.loading = true
   },
   [GET_REPORTS_PEER_PERFORMANCE_REQUEST_SUCCESS]: (state, { payload }) => {
     state.loading = false
+    state.error = false
     state.peerPerformance = payload.peerPerformance
   },
   [GET_REPORTS_PEER_PERFORMANCE_REQUEST_ERROR]: (state, { payload }) => {
@@ -85,17 +92,17 @@ export const reportPeerPerformanceReducer = createReducer(initialState, {
 
 function* getReportsPeerPerformanceRequest({ payload }) {
   try {
-    payload.requestFilters.classIds =
-      payload.requestFilters?.classIds?.join(',') ||
-      payload.requestFilters?.classId ||
-      ''
-    payload.requestFilters.groupIds =
-      payload.requestFilters?.groupIds?.join(',') ||
-      payload.requestFilters?.groupId ||
-      ''
-    const {
-      data: { result },
-    } = yield call(reportsApi.fetchPeerPerformanceReport, payload)
+    const { data } = yield call(reportsApi.fetchPeerPerformanceReport, payload)
+
+    if (data && data?.dataSizeExceeded) {
+      yield put({
+        type: GET_REPORTS_PEER_PERFORMANCE_REQUEST_ERROR,
+        payload: { error: { ...data } },
+      })
+      return
+    }
+    const { result } = data
+
     const peerPerformance = isEmpty(result) ? defaultReport : result
 
     yield put({

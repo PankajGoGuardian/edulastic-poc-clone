@@ -71,6 +71,10 @@ const ItemDetailContainer = ({
   }, [itemId])
 
   const saveItem = () => {
+    /**
+     * using same data while deleting questions
+     * src/client/author/ItemDetail/components/Container/Container.js
+     */
     updateItem(itemId, item, testId, isTestFlow, location.state)
   }
 

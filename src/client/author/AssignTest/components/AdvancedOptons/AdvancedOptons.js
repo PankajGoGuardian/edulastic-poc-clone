@@ -2,10 +2,9 @@ import React from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import produce from 'immer'
-import { notification } from '@edulastic/common'
 import { curry } from 'lodash'
 import * as moment from 'moment'
-import { Col, Icon } from 'antd'
+import { Col } from 'antd'
 import {
   test as testConst,
   assignmentPolicyOptions,
@@ -13,13 +12,12 @@ import {
 } from '@edulastic/constants'
 import ClassList from './ClassList'
 import DatePolicySelector from './DatePolicySelector'
-import Settings from '../SimpleOptions/Settings'
 import {
   OptionConationer,
   InitOptions,
-  StyledRowLabel,
-  SettingsBtn,
   ClassSelectorLabel,
+  StyledRow,
+  Label,
 } from './styled'
 import { isFeatureAccessible } from '../../../../features/components/FeaturesSwitch'
 import { getUserFeatures } from '../../../../student/Login/ducks'
@@ -33,6 +31,8 @@ import {
   getIsOverrideFreezeSelector,
 } from '../../../TestPage/ducks'
 import { getDefaultSettings } from '../../../../common/utils/helpers'
+import { getAssignedClassesByIdSelector } from '../../duck'
+import TagFilter from '../../../src/components/common/TagFilter'
 
 const { releaseGradeLabels } = testConst
 class AdvancedOptons extends React.Component {
@@ -40,14 +40,7 @@ class AdvancedOptons extends React.Component {
     assignment: PropTypes.object.isRequired,
     testSettings: PropTypes.object.isRequired,
     updateOptions: PropTypes.func.isRequired,
-  }
-
-  constructor(props) {
-    super(props)
-    this.state = {
-      showSettings: false,
-      _releaseGradeKeys: nonPremiumReleaseGradeKeys,
-    }
+    isAssignRecommendations: PropTypes.bool.isRequired,
   }
 
   static getDerivedStateFromProps(nextProps) {
@@ -72,15 +65,6 @@ class AdvancedOptons extends React.Component {
     }
   }
 
-  toggleSettings = () => {
-    const { freezeSettings } = this.props
-    const { showSettings } = this.state
-    if (freezeSettings && !showSettings) {
-      notification({ type: 'warn', messageKey: 'overrrideSettingsRestricted' })
-    }
-    this.setState({ showSettings: !showSettings })
-  }
-
   onChange = (field, value, groups) => {
     const {
       onClassFieldChange,
@@ -89,6 +73,7 @@ class AdvancedOptons extends React.Component {
       isReleaseScorePremium,
       userRole,
       defaultTestProfiles,
+      assignedClassesById,
     } = this.props
     if (field === 'class') {
       const { classData, termId } = onClassFieldChange(value, groups)
@@ -140,6 +125,11 @@ class AdvancedOptons extends React.Component {
         } else {
           state.releaseScore = releaseGradeLabels.WITH_ANSWERS
         }
+        if (value === testConst.type.COMMON) {
+          state.class = state.class.filter(
+            (item) => !assignedClassesById[value][item._id]
+          )
+        }
       }
       if (field === 'passwordPolicy') {
         if (
@@ -168,10 +158,14 @@ class AdvancedOptons extends React.Component {
   updateStudents = (studentList) => this.onChange('students', studentList)
 
   render() {
-    const { testSettings = {}, assignment, updateOptions } = this.props
+    const {
+      testSettings = {},
+      assignment,
+      isAssignRecommendations,
+    } = this.props
     const classIds = assignment?.class?.map((item) => item._id) || []
-    const { showSettings, _releaseGradeKeys } = this.state
     const changeField = curry(this.onChange)
+    const { tags = testSettings.tags } = assignment
 
     return (
       <OptionConationer>
@@ -191,43 +185,34 @@ class AdvancedOptons extends React.Component {
               assignment.showMagnifier || testSettings.showMagnifier
             }
           />
-          <StyledRowLabel gutter={16}>
-            <Col>
-              <SettingsBtn
-                data-cy="override"
-                onClick={this.toggleSettings}
-                isVisible={showSettings}
-              >
-                OVERRIDE TEST SETTINGS{' '}
-                {showSettings ? (
-                  <Icon type="caret-up" />
-                ) : (
-                  <Icon type="caret-down" />
-                )}
-              </SettingsBtn>
+
+          <StyledRow gutter={24}>
+            <Col xs={24} md={12} lg={6}>
+              <Label>Tags</Label>
+              <TagFilter
+                selectedTags={tags}
+                canCreate
+                onChangeField={(type, value) => this.onChange(type, value)}
+              />
             </Col>
-          </StyledRowLabel>
+          </StyledRow>
 
-          {showSettings && (
-            <Settings
-              assignmentSettings={assignment}
-              updateAssignmentSettings={updateOptions}
-              changeField={changeField}
-              testSettings={testSettings}
-              _releaseGradeKeys={_releaseGradeKeys}
-              isAdvanced
-            />
+          {!isAssignRecommendations && (
+            <>
+              <ClassSelectorLabel>
+                Assign this to
+                <p>
+                  Please select classes to assign this assessment. Options on
+                  the left can be used to filter the list of classes.
+                </p>
+              </ClassSelectorLabel>
+              <ClassList
+                selectedClasses={classIds}
+                selectClass={this.onChange}
+                testType={assignment.testType || testSettings.testType}
+              />
+            </>
           )}
-
-          <ClassSelectorLabel>
-            Assign this to
-            <p>
-              {'Please select classes to assign this assessment.'}
-              {'Options on the left can be used to filter the list of classes.'}
-            </p>
-          </ClassSelectorLabel>
-
-          <ClassList selectedClasses={classIds} selectClass={this.onChange} />
         </InitOptions>
       </OptionConationer>
     )
@@ -239,4 +224,5 @@ export default connect((state) => ({
   isReleaseScorePremium: getReleaseScorePremiumSelector(state),
   defaultTestProfiles: defaultTestTypeProfilesSelector(state),
   freezeSettings: getIsOverrideFreezeSelector(state),
+  assignedClassesById: getAssignedClassesByIdSelector(state),
 }))(AdvancedOptons)

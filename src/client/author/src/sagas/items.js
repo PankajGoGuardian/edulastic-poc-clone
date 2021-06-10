@@ -1,7 +1,6 @@
 import { takeEvery, takeLatest, call, put, all } from 'redux-saga/effects'
 import { itemsApi } from '@edulastic/api'
-import * as Sentry from '@sentry/browser'
-import { notification } from '@edulastic/common'
+import { captureSentryException, notification } from '@edulastic/common'
 
 import {
   RECEIVE_ITEM_REQUEST,
@@ -24,7 +23,7 @@ export function* receiveItemsSaga({ payload }) {
     })
   } catch (err) {
     console.error(err)
-    Sentry.captureException(err)
+    captureSentryException(err)
     const errorMessage = 'Unable to retrieve the items.'
     notification({ type: 'error', messageKey: 'receiveItemFailing' })
     yield put({
@@ -44,7 +43,7 @@ export function* receiveItemSaga({ payload }) {
     })
   } catch (err) {
     console.error(err)
-    Sentry.captureException(err)
+    captureSentryException(err)
     const errorMessage = 'Unable to retrieve the item.'
     notification({ type: 'error', msg: errorMessage })
     yield put({
@@ -63,7 +62,7 @@ export function* createItemSaga({ payload }) {
     })
   } catch (err) {
     console.error(err)
-    Sentry.captureException(err)
+    captureSentryException(err)
     const errorMessage = 'Create item is failed'
     notification({ msg: errorMessage })
     yield put({
@@ -82,7 +81,7 @@ export function* updateItemSaga({ payload }) {
     })
   } catch (err) {
     console.error(err)
-    Sentry.captureException(err)
+    captureSentryException(err)
     const errorMessage = 'Update item is failed'
     notification({ msg: errorMessage })
     yield put({

@@ -1,9 +1,9 @@
 import React from 'react'
+import { compose } from 'redux'
 import PropTypes from 'prop-types'
-import { Link } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 import { withNamespaces } from 'react-i18next'
 import { GoogleLogin } from 'react-google-login'
-import * as Sentry from '@sentry/browser'
 
 // components
 import {
@@ -11,6 +11,7 @@ import {
   MainHeader,
   HeaderTabs,
   notification,
+  captureSentryException,
 } from '@edulastic/common'
 import { canvasApi } from '@edulastic/api'
 import {
@@ -26,6 +27,7 @@ import { ButtonsWrapper } from './styled'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import authorizeCanvas from '../../../../common/utils/CanavsAuthorizationModule'
 import { scopes } from './ClassCreatePage'
+import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 
 const Header = ({
   fetchGoogleClassList,
@@ -39,9 +41,10 @@ const Header = ({
   canvasAllowedInstitution,
   user,
   handleCanvasBulkSync,
+  isClassLink,
+  history,
 }) => {
-  const { orgData } = user
-  const { isCleverDistrict } = orgData
+  const { cleverId, isPlayground } = user
 
   const handleLoginSucess = (data) => {
     fetchGoogleClassList({ data })
@@ -66,14 +69,14 @@ const Header = ({
           })
           .catch((err) => {
             console.error('Error while authorizing', err)
-            Sentry.captureException(err)
+            captureSentryException(err)
             notification({ messageKey: 'errorOccuredWhileAuthorizing' })
           })
       } else {
         handleCanvasBulkSync()
       }
     } catch (err) {
-      Sentry.captureException(err)
+      captureSentryException(err)
       notification(
         err.status === 403 && err.response.data?.message
           ? {
@@ -96,6 +99,12 @@ const Header = ({
       text: 'Groups',
     },
   ]
+
+  const createNewClass = () =>
+    history.push({
+      pathname: '/author/manageClass/createClass',
+      state: { type: currentTab },
+    })
 
   return (
     <MainHeader Icon={IconManage} headingText={t('common.manageClassTitle')}>
@@ -123,7 +132,7 @@ const Header = ({
       </FeaturesSwitch>
       <ButtonsWrapper>
         <>
-          {enableCleverSync && (
+          {!isPlayground && enableCleverSync && (
             <EduButton
               isBlue
               isGhost
@@ -133,11 +142,13 @@ const Header = ({
               <span>SYNC NOW WITH CLEVER</span>
             </EduButton>
           )}
-          {googleAllowedInstitutions?.length > 0 &&
-            !isCleverDistrict &&
-            !enableCleverSync && (
+          {!isPlayground &&
+            googleAllowedInstitutions?.length > 0 &&
+            !cleverId &&
+            !enableCleverSync &&
+            !isClassLink && (
               <GoogleLogin
-                clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
+                clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
                 buttonText="Sync with Google Classroom"
                 render={(renderProps) => (
                   <EduButton isBlue isGhost onClick={renderProps.onClick}>
@@ -152,9 +163,11 @@ const Header = ({
                 responseType="code"
               />
             )}
-          {canvasAllowedInstitution?.length > 0 &&
-            !isCleverDistrict &&
-            !enableCleverSync && (
+          {!isPlayground &&
+            canvasAllowedInstitution?.length > 0 &&
+            !cleverId &&
+            !enableCleverSync &&
+            !isClassLink && (
               <EduButton isBlue isGhost onClick={handleSyncWithCanvas}>
                 <img
                   alt="Canvas"
@@ -166,18 +179,15 @@ const Header = ({
               </EduButton>
             )}
         </>
-        <Link
-          to={{
-            pathname: '/author/manageClass/createClass',
-            state: { type: currentTab },
-          }}
-          data-cy="createClass"
-        >
-          <EduButton isBlue>
-            <IconPlusCircle />
-            <span>Create {currentTab}</span>
-          </EduButton>
-        </Link>
+        <AuthorCompleteSignupButton
+          renderButton={(handleClick) => (
+            <EduButton data-cy="createClass" isBlue onClick={handleClick}>
+              <IconPlusCircle />
+              <span>Create {currentTab}</span>
+            </EduButton>
+          )}
+          onClick={createNewClass}
+        />
       </ButtonsWrapper>
     </MainHeader>
   )
@@ -185,6 +195,9 @@ const Header = ({
 
 Header.propTypes = {
   fetchGoogleClassList: PropTypes.func.isRequired,
+  history: PropTypes.object.isRequired,
 }
 
-export default withNamespaces('header')(Header)
+const enhance = compose(withNamespaces('header'), withRouter)
+
+export default enhance(Header)

@@ -10,7 +10,7 @@ export const PrintPreviewBack = styled.div`
 export const PrintPreviewContainer = styled.div`
   padding: 0;
   width: 210mm;
-  height: 297mm;
+  height: ${(props) => props.height || '297mm'};
   margin: 0 auto;
   background-color: #fff;
   font-variant: normal !important;
@@ -93,6 +93,9 @@ export const CardContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   align-content: flex-start;
+  @media print {
+    page-break-before: always;
+  }
 `
 
 export const StyledCard = styled(Card)`

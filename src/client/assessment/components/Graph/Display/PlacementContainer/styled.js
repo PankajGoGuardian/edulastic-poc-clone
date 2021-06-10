@@ -138,7 +138,8 @@ export const JSXBoxWrapper = styled.div`
 export const JSXBox = styled.div`
   // IMPORTANT: TRY NOT TO WRITE SVG ELEMENTS STYLE HERE CUZ ATTRIBUTES GET OVERRIDEN
 
-  background-color: ${(props) => props.theme.widgets.chart.bgColor} !important;
+  background-color: transparent !important; // to show annotation
+  z-index: 2;
   position: relative;
   overflow: hidden;
   ${borderStyle}
@@ -146,6 +147,7 @@ export const JSXBox = styled.div`
   .fr-box {
     border-radius: 4px;
     &.drag-drop {
+      width: ${({ dragDropWidth }) => dragDropWidth};
       border: 1px solid ${greyishBorder};
       &.incorrect {
         border: 1px solid
@@ -162,9 +164,11 @@ export const JSXBox = styled.div`
     fill: ${(props) => props.theme.widgets.chart.labelStrokeColor};
   }
 
-  div {
-    color: ${(props) => props.theme.widgets.chart.labelStrokeColor};
-    background-color: ${(props) => props.theme.widgets.chart.bgColor};
+  .drag-drop {
+    div {
+      color: ${(props) => props.theme.widgets.chart.labelStrokeColor};
+      background-color: ${(props) => props.theme.widgets.chart.bgColor};
+    }
   }
 
   .drag-drop-content {

@@ -5,10 +5,16 @@ import { withNamespaces } from '@edulastic/localization'
 import { CustomStyleBtn } from '../../styled/ButtonStyles'
 
 const withAddButton = (WrappedComponent) => {
-  const withAddButtonHocComponent = ({ buttonText, onAdd, t, ...props }) => (
+  const withAddButtonHocComponent = ({
+    buttonText,
+    buttonWidth,
+    onAdd,
+    t,
+    ...props
+  }) => (
     <>
       <WrappedComponent t={t} {...props} />
-      <CustomStyleBtn data-cy="addButton" onClick={onAdd}>
+      <CustomStyleBtn data-cy="addButton" onClick={onAdd} width={buttonWidth}>
         {buttonText || t('component.options.addNewChoice')}
       </CustomStyleBtn>
     </>

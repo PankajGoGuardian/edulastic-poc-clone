@@ -47,9 +47,11 @@ export default class QuestionEssay extends React.Component {
     return null
   }
 
-  handleScoreChange = (score) => {
+  handleScoreChange = (_score) => {
     const { numberOfRows } = this.state
     const { onUpdate } = this.props
+    // eslint-disable-next-line no-restricted-properties
+    const score = window.isNaN(_score) || !_score ? 0 : _score
     this.setState({ score }, () => {
       const data = {
         validation: {
@@ -95,6 +97,7 @@ export default class QuestionEssay extends React.Component {
             min={1}
             value={numberOfRows}
             onChange={this.changeNumberOfRows}
+            data-cy="minHeightOption"
           />
           <Points>Minimum Line height</Points>
         </FormGroup>
@@ -103,6 +106,7 @@ export default class QuestionEssay extends React.Component {
             min={0}
             value={score}
             onChange={this.handleScoreChange}
+            data-cy="points"
           />
           <Points>Points</Points>
         </FormGroup>

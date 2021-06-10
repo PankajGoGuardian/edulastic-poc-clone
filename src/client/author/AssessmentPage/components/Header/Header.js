@@ -10,6 +10,7 @@ import HeaderWrapper from '../../../src/mainContent/headerWrapper'
 import Title from '../../common/Title'
 import TestPageNav from '../../../TestPage/components/TestPageNav/TestPageNav'
 import { Status, SaveWrapper } from './styled'
+import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 
 const style = { justifyContent: 'center', background: 'white' }
 
@@ -38,14 +39,19 @@ const Header = ({
         >
           <IconDiskette color={themeColor} fill={themeColor} />
         </EduButton>
-        <EduButton
-          data-cy="assign"
-          style={{ ...style, width: 120 }}
-          size="large"
+        <AuthorCompleteSignupButton
+          renderButton={(handleClick) => (
+            <EduButton
+              data-cy="assign"
+              style={{ ...style, width: 120 }}
+              size="large"
+              onClick={handleClick}
+            >
+              Assign
+            </EduButton>
+          )}
           onClick={onAssign}
-        >
-          Assign
-        </EduButton>
+        />
         <EduButton
           data-cy="publish"
           style={{ ...style, width: 120 }}

@@ -5,7 +5,6 @@ import {
   mobileWidthMax,
   themeColor,
   white,
-  themeColorBlue,
 } from '@edulastic/colors'
 import { MainContentWrapper } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
@@ -18,8 +17,7 @@ import styled from 'styled-components'
 import { resetMyPasswordAction } from '../../Login/ducks'
 import { Wrapper } from '../../styled'
 import Photo from './Photo'
-import { getFormattedName } from '../../../author/Gradebook/transformers';
-
+import { getFormattedName } from '../../../author/Gradebook/transformers'
 
 const FormItem = Form.Item
 class ProfileContainer extends React.Component {
@@ -94,24 +92,34 @@ class ProfileContainer extends React.Component {
               <Photo height={224} windowWidth={100} mode="small" />
             </ProfileImgMobileWrapper>
             <div>
-              <Title>{t('common.title.student')}</Title>
+              <Title>
+                {user.role === 'parent'
+                  ? t('common.title.parent')
+                  : t('common.title.student')}
+              </Title>
               <Details>
-                <DetailRow>
-                  <DetailTitle>
-                    {t('common.title.firstNameInputLabel')}
-                  </DetailTitle>
-                  <DetailData>{user.firstName || 'Anonymous'}</DetailData>
-                </DetailRow>
-                <DetailRow>
-                  <DetailTitle>{t('common.title.middleNameInputLabel')}</DetailTitle>
-                  <DetailData>{user.middleName}</DetailData>
-                </DetailRow>
-                <DetailRow>
-                  <DetailTitle>
-                    {t('common.title.lastNameInputLabel')}
-                  </DetailTitle>
-                  <DetailData>{user.lastName}</DetailData>
-                </DetailRow>
+                {user.role === 'student' && (
+                  <>
+                    <DetailRow>
+                      <DetailTitle>
+                        {t('common.title.firstNameInputLabel')}
+                      </DetailTitle>
+                      <DetailData>{user.firstName || 'Anonymous'}</DetailData>
+                    </DetailRow>
+                    <DetailRow>
+                      <DetailTitle>
+                        {t('common.title.middleNameInputLabel')}
+                      </DetailTitle>
+                      <DetailData>{user.middleName}</DetailData>
+                    </DetailRow>
+                    <DetailRow>
+                      <DetailTitle>
+                        {t('common.title.lastNameInputLabel')}
+                      </DetailTitle>
+                      <DetailData>{user.lastName}</DetailData>
+                    </DetailRow>
+                  </>
+                )}
                 <DetailRow>
                   <DetailTitle>
                     {t('common.title.emailUsernameLabel')}
@@ -145,7 +153,7 @@ class ProfileContainer extends React.Component {
                         validator: this.validateToNextPassword,
                       },
                     ],
-                  })(<Input type="password" />)}
+                  })(<Input type="password" autoComplete="off" />)}
                 </FormItemWrapper>{' '}
                 <FormItemWrapper>
                   <Label>{t('common.title.confirmPaswswordLabel')}</Label>
@@ -159,14 +167,24 @@ class ProfileContainer extends React.Component {
                         validator: this.compareToFirstPassword,
                       },
                     ],
-                  })(<Input type="password" onBlur={this.handleConfirmBlur} />)}
+                  })(
+                    <Input
+                      type="password"
+                      autoComplete="off"
+                      onBlur={this.handleConfirmBlur}
+                    />
+                  )}
                 </FormItemWrapper>{' '}
                 <FormButtonWrapper>
                   <FormButtonsWrapper>
                     <SaveButton type="primary" htmlType="submit">
                       {t('common.title.save')}
                     </SaveButton>
-                    <CancelButton type="primary" onClick={this.handleCancel}>
+                    <CancelButton
+                      type="primary"
+                      ghost
+                      onClick={this.handleCancel}
+                    >
                       {t('common.title.cancel')}
                     </CancelButton>
                   </FormButtonsWrapper>
@@ -191,7 +209,11 @@ function ChildrenTable({ childs }) {
     {
       title: 'Name',
       key: 'name',
-      render: data => <a>{getFormattedName(data.firstName, data.middleName, data.lastName)}</a>
+      render: (data) => (
+        <a>
+          {getFormattedName(data.firstName, data.middleName, data.lastName)}
+        </a>
+      ),
     },
     {
       title: 'Grade',
@@ -213,7 +235,10 @@ function ChildrenTable({ childs }) {
       key: 'districts',
       // In case of parent role table will be displayed and
       // for parent we can user first district to get the name
-      render: orgData => orgData?.districts?.map(x => <Tag key={x._id}> {x.districtName}</Tag>)
+      render: (orgData) =>
+        orgData?.districts?.map((x) => (
+          <Tag key={x._id}> {x.districtName}</Tag>
+        )),
     },
   ]
 
@@ -427,9 +452,8 @@ const ActionButton = styled(Button)`
 const SaveButton = styled(ActionButton)`
   &:hover,
   &:focus {
-    background: ${themeColorBlue};
-    color: ${white};
-    border-color: ${themeColorBlue};
+    background: ${themeColor};
+    border-color: ${themeColor};
   }
 `
 
@@ -439,8 +463,8 @@ const CancelButton = styled(ActionButton)`
   border: 1px solid ${themeColor};
   &:hover,
   &:focus {
-    background-color: ${themeColorBlue};
-    color: ${white};
-    border: 1px solid ${themeColorBlue};
+    background: ${white};
+    color: ${themeColor};
+    border: 1px solid ${themeColor};
   }
 `

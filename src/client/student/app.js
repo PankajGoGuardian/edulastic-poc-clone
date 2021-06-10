@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react'
 import { Route, Switch } from 'react-router-dom'
 import PropTypes from 'prop-types'
+import qs from 'qs'
 import { ErrorHandler } from '@edulastic/common'
 import styled, { ThemeProvider } from 'styled-components'
 import { Layout } from 'antd'
 import { connect } from 'react-redux'
 import { mobileWidthLarge } from '@edulastic/colors'
-import queryString from 'query-string'
 // import { getZoomedTheme } from "./zoomTheme";
 import Sidebar from './Sidebar/SideMenu'
 import { Assignment } from './Assignments'
@@ -28,6 +28,7 @@ import {
   isProxyUser as isProxyUserSelector,
   updateCliUserAction,
 } from './Login/ducks'
+import { AssignmentEmbedLink } from '../assignmentEmbedLink'
 
 const StudentApp = ({
   match,
@@ -42,7 +43,7 @@ const StudentApp = ({
   // themeToPass = { ...themeToPass, ...globalThemes.zoomed(themeToPass) };
 
   useEffect(() => {
-    const searchParams = queryString.parse(location.search)
+    const searchParams = qs.parse(location.search, { ignoreQueryPrefix: true })
     if (searchParams.cliUser) {
       updateCliUser(true)
     }
@@ -88,6 +89,12 @@ const StudentApp = ({
                 <Route
                   path={`${match.url}/playlist`}
                   component={StudentPlaylist}
+                />
+                <Route
+                  path={`${match.url}/tests/verid/:versionId`}
+                  render={(props) => (
+                    <AssignmentEmbedLink {...props} isVersionId />
+                  )}
                 />
                 <Route component={NotFound} />
               </Switch>

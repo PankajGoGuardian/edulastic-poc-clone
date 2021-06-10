@@ -94,8 +94,8 @@ const HangoutsModal = ({
             </EduButton>
           ) : (
             <GoogleLogin
-              clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
-              developerKey={process.env.POI_APP_GOOGLE_KEY}
+              clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
+              developerKey={process.env.REACT_APP_GOOGLE_KEY}
               render={(renderProps) => (
                 <>
                   <EduButton

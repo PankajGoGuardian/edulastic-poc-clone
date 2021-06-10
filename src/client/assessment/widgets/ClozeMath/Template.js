@@ -14,15 +14,20 @@ import {
   isEmpty,
   get,
 } from 'lodash'
+import loadable from '@loadable/component'
+import Progress from '@edulastic/common/src/components/Progress'
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
-
 import { math } from '@edulastic/constants'
-import { FroalaEditor } from '@edulastic/common'
-
 // import { ToolbarContainer } from "../../styled/ToolbarContainer";
 // import { FroalaContainer } from "../../styled/FroalaContainer";
 import { Subtitle } from '../../styled/Subtitle'
 import Question from '../../components/Question'
+
+const FroalaEditor = loadable(() =>
+  import(
+    /* webpackChunkName: "froalaCommonChunk" */ '@edulastic/common/src/components/FroalaEditor'
+  )
+)
 
 const { methods } = math
 
@@ -455,6 +460,19 @@ class Template extends Component {
       return newOptions
     }
 
+    const _reduceExtraOptions = (responseIds, extraOpts) => {
+      const _allIds = flattenDeep(
+        _keys(responseIds).map((key) => responseIds[key])
+      ).map((res) => res.id)
+      const extraOptionsIds = _keys(extraOpts)
+      extraOptionsIds.forEach((id) => {
+        if (!_allIds.includes(id)) {
+          delete extraOpts[id]
+        }
+      })
+      return extraOpts
+    }
+
     const _updateTemplate = (val) => {
       const newItem = produce(item, (draft) => {
         draft.stimulus = val
@@ -470,6 +488,13 @@ class Template extends Component {
         )
 
         draft.options = _reduceOptions(draft.responseIds, draft.options)
+
+        if (draft.extraOpts) {
+          draft.extraOpts = _reduceExtraOptions(
+            draft.responseIds,
+            draft.extraOpts
+          )
+        }
       })
 
       if (!newItem.options) {
@@ -505,6 +530,7 @@ class Template extends Component {
         </Subtitle>
 
         <FroalaEditor
+          fallback={<Progress />}
           data-cy="templateBox"
           onChange={_updateTemplate}
           value={item.stimulus}

@@ -56,6 +56,11 @@ export const getBulkActionStatusSelector = createSelector(
   (state) => state.bulkActionInprogress
 )
 
+export const getBulkActionTypeSelector = createSelector(
+  stateSelector,
+  (state) => state.bulkActionType
+)
+
 export const getTestsSelector = createSelector(
   getEntitiesSelector,
   getAssignmentsByTestSelector,
@@ -116,4 +121,14 @@ export const getAssignmentFilterSelector = createSelector(
 export const getAssignmentSyncInProgress = createSelector(
   stateSelector,
   (state) => state.syncWithGoogleClassroomInProgress
+)
+
+export const getSchoologyAssignmentSyncInProgress = createSelector(
+  stateSelector,
+  (state) => state.syncWithSchoologyClassroomInProgress
+)
+
+export const getTagsUpdatingStateSelector = createSelector(
+  stateSelector,
+  (state) => state.tagsUpdatingState
 )

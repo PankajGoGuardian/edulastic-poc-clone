@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { themeColorBlue } from '@edulastic/colors'
 
 const SelectContainer = styled.div`
   position: relative;
@@ -13,6 +14,11 @@ const SelectContainer = styled.div`
   .ant-select {
     height: 40px;
     width: 100%;
+    &-focused {
+      border: none;
+      outline: 0;
+      box-shadow: 0 0 0 2px ${themeColorBlue};
+    }
   }
   .ant-select-selection {
     display: flex;

@@ -1,24 +1,35 @@
 /* eslint-disable array-callback-return */
-import React, { useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { connect } from 'react-redux'
 import { Route } from 'react-router-dom'
 import next from 'immer'
 import qs from 'qs'
-import { FlexContainer } from '@edulastic/common'
-import { IconFilter } from '@edulastic/icons'
-import { getNavigationTabLinks } from '../../common/util'
 
-import navigation from '../../common/static/json/navigation.json'
+import { Spin } from 'antd'
+
+import { SubHeader } from '../../common/components/Header'
+
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
-
 import StudentMasteryProfile from './StudentMasteryProfile'
 import StudentAssessmentProfile from './StudentAssessmentProfile'
 import StudentProfileSummary from './StudentProfileSummary'
-import StudentProfileReportsFilters from './common/components/filter/StudentProfileReportsFilters'
+import StudentProfileReportFilters from './common/components/filter/filters'
+import StudentProgressProfile from './StudentProgressProfile'
+import ShareReportModal from '../../common/components/Popups/ShareReportModal'
 
-import { setSPRSettingsAction, getReportsSPRSettings } from './ducks'
+import {
+  setSPRSettingsAction,
+  getReportsSPRSettings,
+  setSPRTagsDataAction,
+} from './ducks'
 import { resetAllReportsAction } from '../../common/reportsRedux'
-import { ReportContaner, FilterButton } from '../../common/styled'
+import { ReportContainer } from '../../common/styled'
+import { getSharingState, setSharingStateAction } from '../../ducks'
+import { getSharedReportList } from '../../components/sharedReports/ducks'
+
+import navigation from '../../common/static/json/navigation.json'
+
+import { getNavigationTabLinks } from '../../common/util'
 
 const StudentProfileReportContainer = (props) => {
   const {
@@ -28,11 +39,29 @@ const StudentProfileReportContainer = (props) => {
     updateNavigation,
     location,
     match,
+    showApply,
     showFilter,
     onRefineResultsCB,
     setSPRSettings,
+    setSPRTagsData,
     resetAllReports,
+    sharingState,
+    setSharingState,
+    sharedReportList,
+    breadcrumbData,
+    isCliUser,
+    isPrinting,
   } = props
+
+  const [firstLoad, setFirstLoad] = useState(true)
+  const [reportId] = useState(
+    qs.parse(location.search, { ignoreQueryPrefix: true }).reportId
+  )
+
+  const sharedReport = useMemo(
+    () => sharedReportList.find((s) => s._id === reportId),
+    [reportId, sharedReportList]
+  )
 
   useEffect(
     () => () => {
@@ -50,6 +79,7 @@ const StudentProfileReportContainer = (props) => {
         const val = filt[item] === '' ? 'All' : filt[item]
         obj[item] = val
       })
+      obj.reportId = reportId || ''
       return next(
         navigation.navigation[navigation.locToData[loc].group],
         (draft) => {
@@ -79,57 +109,120 @@ const StudentProfileReportContainer = (props) => {
     updateNavigation(computedChartNavigatorLinks)
   }, [settings])
 
-  const onGoClick = (_settings) => {
-    const modifiedFilter = {}
-    Object.keys(_settings.filters).forEach((filterType) => {
-      if (_settings.filters[filterType] === 'All') {
-        modifiedFilter[filterType] = ''
-      } else {
-        modifiedFilter[filterType] = _settings.filters[filterType]
-      }
-    })
-    setSPRSettings({
-      requestFilters: _settings.filters,
-      selectedStudent: _settings.selectedStudent,
-    })
+  const setShowApply = (status) => {
+    onRefineResultsCB(null, status, 'applyButton')
   }
-  const toggleFilter = (e) => {
+
+  const toggleFilter = (e, status) => {
     if (onRefineResultsCB) {
-      onRefineResultsCB(e, !showFilter)
+      onRefineResultsCB(e, status === false ? status : status || !showFilter)
     }
   }
+
+  const onGoClick = (_settings) => {
+    const _requestFilters = {}
+    Object.keys(_settings.filters).forEach((filterType) => {
+      _requestFilters[filterType] =
+        _settings.filters[filterType] === 'All'
+          ? ''
+          : _settings.filters[filterType]
+    })
+    setSPRSettings({
+      requestFilters: {
+        ..._requestFilters,
+        profileId: _requestFilters.standardsProficiencyProfileId,
+      },
+      standardFilters: {
+        domainIds: _requestFilters.domainId,
+        standardIds: _requestFilters.standardId,
+      },
+      selectedStudent: _settings.selectedStudent,
+    })
+    setSPRTagsData({ ..._settings.tagsData })
+    setShowApply(false)
+  }
+
+  useEffect(() => {
+    if (loc !== 'student-progress-profile' && !firstLoad) {
+      setSPRSettings({
+        ...settings,
+        standardFilters: {
+          domainIds: '',
+          standardIds: '',
+        },
+      })
+      setSPRTagsData({ ...settings.tagsData, domainId: '', standardId: '' })
+    }
+  }, [loc])
+
+  const performanceBandRequired = [
+    'student-profile-summary',
+    'student-assessment-profile',
+  ].includes(loc)
+
+  const standardProficiencyRequired = [
+    'student-profile-summary',
+    'student-mastery-profile',
+    'student-progress-profile',
+  ].includes(loc)
+
+  const standardFiltersRequired = ['student-progress-profile'].includes(loc)
 
   return (
     <FeaturesSwitch
       inputFeatures="singleAssessmentReport"
       actionOnInaccessible="hidden"
     >
-      <FlexContainer alignItems="flex-start">
-        <StudentProfileReportsFilters
-          onGoClick={onGoClick}
-          loc={loc}
-          history={history}
-          location={location}
-          match={match}
-          style={showFilter ? { display: 'block' } : { display: 'none' }}
-          performanceBandRequired={[
-            '/author/reports/student-profile-summary',
-            '/author/reports/student-assessment-profile',
-          ].find((x) => window.location.pathname.startsWith(x))}
-          standardProficiencyRequired={[
-            '/author/reports/student-profile-summary',
-            '/author/reports/student-mastery-profile',
-          ].find((x) => window.location.pathname.startsWith(x))}
-        />
-        <FilterButton showFilter={showFilter} onClick={toggleFilter}>
-          <IconFilter />
-        </FilterButton>
-        <ReportContaner showFilter={showFilter}>
+      <>
+        {sharingState && (
+          <ShareReportModal
+            reportType={loc}
+            reportFilters={{
+              ...settings.requestFilters,
+              ...settings.standardFilters,
+              studentId: settings?.selectedStudent?.key,
+            }}
+            showModal={sharingState}
+            setShowModal={setSharingState}
+          />
+        )}
+        <SubHeader
+          breadcrumbData={breadcrumbData}
+          isCliUser={isCliUser}
+          alignment="baseline"
+        >
+          <StudentProfileReportFilters
+            isPrinting={isPrinting}
+            reportId={reportId}
+            onGoClick={onGoClick}
+            loc={loc}
+            history={history}
+            location={location}
+            match={match}
+            tagsData={settings.tagsData}
+            performanceBandRequired={performanceBandRequired}
+            standardProficiencyRequired={standardProficiencyRequired}
+            standardFiltersRequired={standardFiltersRequired}
+            showApply={showApply}
+            setShowApply={setShowApply}
+            showFilter={showFilter}
+            toggleFilter={toggleFilter}
+            firstLoad={firstLoad}
+            setFirstLoad={setFirstLoad}
+          />
+        </SubHeader>
+        <ReportContainer>
+          {firstLoad && <Spin size="large" />}
           <Route
             exact
             path="/author/reports/student-mastery-profile/student/:studentId?"
             render={(_props) => (
-              <StudentMasteryProfile {..._props} settings={settings} />
+              <StudentMasteryProfile
+                {..._props}
+                settings={settings}
+                sharedReport={sharedReport}
+                toggleFilter={toggleFilter}
+              />
             )}
           />
           <Route
@@ -140,6 +233,8 @@ const StudentProfileReportContainer = (props) => {
                 {..._props}
                 settings={settings}
                 pageTitle={loc}
+                sharedReport={sharedReport}
+                toggleFilter={toggleFilter}
               />
             )}
           />
@@ -151,11 +246,26 @@ const StudentProfileReportContainer = (props) => {
                 {..._props}
                 settings={settings}
                 pageTitle={loc}
+                sharedReport={sharedReport}
+                toggleFilter={toggleFilter}
               />
             )}
           />
-        </ReportContaner>
-      </FlexContainer>
+          <Route
+            exact
+            path="/author/reports/student-progress-profile/student/:studentId?"
+            render={(_props) => (
+              <StudentProgressProfile
+                {..._props}
+                settings={settings}
+                pageTitle={loc}
+                sharedReport={sharedReport}
+                toggleFilter={toggleFilter}
+              />
+            )}
+          />
+        </ReportContainer>
+      </>
     </FeaturesSwitch>
   )
 }
@@ -163,10 +273,14 @@ const StudentProfileReportContainer = (props) => {
 const enhance = connect(
   (state) => ({
     settings: getReportsSPRSettings(state),
+    sharingState: getSharingState(state),
+    sharedReportList: getSharedReportList(state),
   }),
   {
+    setSPRTagsData: setSPRTagsDataAction,
     setSPRSettings: setSPRSettingsAction,
     resetAllReports: resetAllReportsAction,
+    setSharingState: setSharingStateAction,
   }
 )
 

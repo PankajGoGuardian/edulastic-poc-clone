@@ -1,13 +1,14 @@
 import { takeLatest, call, put, all } from 'redux-saga/effects'
 import { createSelector } from 'reselect'
 import { createAction, createReducer } from 'redux-starter-kit'
-import { groupBy, set, get } from 'lodash'
-import * as Sentry from '@sentry/browser'
+import { get } from 'lodash'
 
 import { reportsApi } from '@edulastic/api'
 import { notification } from '@edulastic/common'
 
 import { RESET_ALL_REPORTS } from '../../../common/reportsRedux'
+
+import staticDropDownData from './static/staticDropDownData.json'
 
 const GET_REPORTS_SAR_FILTER_DATA_REQUEST =
   '[reports] get reports sar filter data request'
@@ -19,13 +20,13 @@ const RESET_REPORTS_SAR_FILTER_DATA = '[reports] reset reports sar filter data'
 const RESET_REPORTS_SAR_FILTERS = '[reports] reset reports sar filters'
 const SET_REPORTS_PREV_SAR_FILTER_DATA =
   '[reports] set reports prev sar filter data'
-const SET_REPORTS_FILTER_PB_PROFILE =
-  '[reports] set performance band profile filter'
-const SET_REPORTS_FILTER_SP_PROFILE =
-  '[reports] set standards proficiency profile filter'
 
-const SET_FILTERS = '[reports] set sar filters'
-const SET_TEST_ID = '[reports] set sar testId'
+const SET_FILTERS_OR_TEST_ID = '[reports] set sar filters or testId'
+const SET_TEMP_DD_FILTER = '[reports] set sar tempDdFilter'
+const SET_TEMP_TAGS_DATA = '[reports] set sar temp tempTagsData'
+
+const SET_PERFORMANCE_BAND_PROFILE = '[reports] set sar peformance band profile'
+const SET_STANDARD_MANTERY_PROFILE = '[reports] set sar standard matery profile'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
@@ -37,13 +38,18 @@ export const setPrevSARFilterDataAction = createAction(
   SET_REPORTS_PREV_SAR_FILTER_DATA
 )
 
-export const setFiltersAction = createAction(SET_FILTERS)
-export const setTestIdAction = createAction(SET_TEST_ID)
-export const setPerformanceBandProfileFilterAction = createAction(
-  SET_REPORTS_FILTER_PB_PROFILE
+export const setFiltersOrTestIdAction = createAction(SET_FILTERS_OR_TEST_ID)
+
+export const setTempDdFilterAction = createAction(SET_TEMP_DD_FILTER)
+
+export const setTempTagsDataAction = createAction(SET_TEMP_TAGS_DATA)
+
+export const setPerformanceBandProfileAction = createAction(
+  SET_PERFORMANCE_BAND_PROFILE
 )
-export const setStandardsProficiencyProfileFilterAction = createAction(
-  SET_REPORTS_FILTER_SP_PROFILE
+
+export const setStandardMasteryProfileAction = createAction(
+  SET_STANDARD_MANTERY_PROFILE
 )
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
@@ -60,14 +66,19 @@ export const getReportsSARFilterData = createSelector(
   (state) => state.SARFilterData
 )
 
-export const getFiltersSelector = createSelector(
+export const getFiltersAndTestIdSelector = createSelector(
   stateSelector,
-  (state) => state.filters
+  ({ filters, testId }) => ({ filters, testId })
 )
 
-export const getTestIdSelector = createSelector(
+export const getTempDdFilterSelector = createSelector(
   stateSelector,
-  (state) => state.testId
+  (state) => state.tempDdFilter
+)
+
+export const getTempTagsDataSelector = createSelector(
+  stateSelector,
+  (state) => state.tempTagsData
 )
 
 export const getReportsPrevSARFilterData = createSelector(
@@ -80,19 +91,9 @@ export const getReportsSARFilterLoadingState = createSelector(
   (state) => state.loading
 )
 
-export const getSAFFilterSelectedPerformanceBandProfile = createSelector(
-  stateSelector,
-  (state) => state.filters.performanceBandProfile
-)
-
 export const getSAFFilterPerformanceBandProfiles = createSelector(
   stateSelector,
   (state) => get(state, 'SARFilterData.data.result.bandInfo', [])
-)
-
-export const getSAFFilterSelectedStandardsProficiencyProfile = createSelector(
-  stateSelector,
-  (state) => state.filters.standardsProficiencyProfile
 )
 
 export const getSAFFilterStandardsProficiencyProfiles = createSelector(
@@ -100,8 +101,18 @@ export const getSAFFilterStandardsProficiencyProfiles = createSelector(
   (state) => get(state, 'SARFilterData.data.result.scaleInfo', [])
 )
 
-export const getOrgDataFromSARFilter = createSelector(stateSelector, (state) =>
-  get(state, 'SARFilterData.data.result.orgData', [])
+export const getSAFilterDemographics = createSelector(stateSelector, (state) =>
+  get(state, 'SARFilterData.data.result.demographics', [])
+)
+
+export const getPerformanceBandProfile = createSelector(
+  stateSelector,
+  (state) => state.performanceBandProfile
+)
+
+export const getStandardMasteryScale = createSelector(
+  stateSelector,
+  (state) => state.standardsProficiencyProfile
 )
 
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
@@ -114,72 +125,18 @@ const initialState = {
   SARFilterData: {},
   prevSARFilterData: null,
   filters: {
-    termId: '',
-    subject: 'All',
-    grade: 'All',
-    courseId: 'All',
-    classId: 'All',
-    groupId: 'All',
-    schoolId: 'All',
-    teacherId: 'All',
-    assessmentType: 'All',
-    performanceBandProfile: '',
-    standardsProficiencyProfile: '',
+    ...staticDropDownData.initialFilters,
   },
   testId: '',
+  tempDdFilter: {
+    ...staticDropDownData.initialDdFilters,
+  },
+  tempTagsData: {},
   loading: false,
 }
 
-const setFiltersReducer = (state, { payload }) => {
-  if (payload.filters && payload.orgDataArr) {
-    const byGroupId = groupBy(
-      payload.orgDataArr.filter((item, index) => {
-        const checkForGrades =
-          (item.grades || '')
-            .split(',')
-            .filter((g) => g.length)
-            .includes(payload.filters.grade) || payload.filters.grade === 'All'
-        if (
-          item.groupId &&
-          checkForGrades &&
-          (item.subject === payload.filters.subject ||
-            payload.filters.subject === 'All') &&
-          (item.courseId === payload.filters.courseId ||
-            payload.filters.courseId === 'All')
-        ) {
-          return true
-        }
-      }),
-      'groupId'
-    )
-    // map filtered class ids & custom group ids by group type
-    const classIds = []
-    const groupIds = []
-    Object.keys(byGroupId).forEach((item) => {
-      const key = byGroupId[item][0].groupId
-      const groupType = byGroupId[item][0].groupType
-      groupType === 'class' ? classIds.push(key) : groupIds.push(key)
-    })
-    // set default filters for missing class id & group id
-    if (!classIds.includes(payload.filters.classId)) {
-      payload.filters.classId = 'All'
-    }
-    if (!groupIds.includes(payload.filters.groupId)) {
-      payload.filters.groupId = 'All'
-    }
-    // update state
-    state.filters = { ...payload.filters }
-  } else {
-    state.filters = { ...payload }
-  }
-}
-
-const setTestIdReducer = (state, { payload }) => {
-  state.testId = payload
-}
-
 export const reportSARFilterDataReducer = createReducer(initialState, {
-  [GET_REPORTS_SAR_FILTER_DATA_REQUEST]: (state, { payload }) => {
+  [GET_REPORTS_SAR_FILTER_DATA_REQUEST]: (state) => {
     state.loading = true
   },
   [GET_REPORTS_SAR_FILTER_DATA_REQUEST_SUCCESS]: (state, { payload }) => {
@@ -190,20 +147,31 @@ export const reportSARFilterDataReducer = createReducer(initialState, {
     state.loading = false
     state.error = payload.error
   },
-  [SET_FILTERS]: setFiltersReducer,
-  [SET_REPORTS_FILTER_PB_PROFILE]: (state, { payload }) => {
-    set(state, 'filters.performanceBandProfile', payload)
+  [SET_FILTERS_OR_TEST_ID]: (state, { payload }) => {
+    const { testId, filters } = payload
+    if (filters) {
+      state.filters = filters
+    }
+    state.testId = testId
   },
-  [SET_REPORTS_FILTER_SP_PROFILE]: (state, { payload }) => {
-    set(state, 'filters.standardsProficiencyProfile', payload)
+  [SET_TEMP_DD_FILTER]: (state, { payload }) => {
+    state.tempDdFilter = payload
   },
-  [SET_TEST_ID]: setTestIdReducer,
-  [RESET_REPORTS_SAR_FILTER_DATA]: (state, { payload }) => {
+  [SET_TEMP_TAGS_DATA]: (state, { payload }) => {
+    state.tempTagsData = payload
+  },
+  [RESET_REPORTS_SAR_FILTER_DATA]: (state) => {
     state.SARFilterData = {}
   },
-  [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState),
+  [RESET_ALL_REPORTS]: (state) => (state = initialState),
   [SET_REPORTS_PREV_SAR_FILTER_DATA]: (state, { payload }) => {
     state.prevSARFilterData = payload
+  },
+  [SET_PERFORMANCE_BAND_PROFILE]: (state, { payload }) => {
+    state.performanceBandProfile = payload
+  },
+  [SET_STANDARD_MANTERY_PROFILE]: (state, { payload }) => {
+    state.standardsProficiencyProfile = payload
   },
 })
 
@@ -216,41 +184,13 @@ export const reportSARFilterDataReducer = createReducer(initialState, {
 function* getReportsSARFilterDataRequest({ payload }) {
   try {
     yield put({ type: RESET_REPORTS_SAR_FILTER_DATA })
-    const response = yield call(reportsApi.fetchSARFilterData, payload)
-
-    // filter out testData with empty testId(aka reportKey)
-    const responseResult = get(response, 'data.result', {})
-    const testData = get(responseResult, 'testData', [])
-    const filteredTestData = testData.filter((t) => t.testId)
-
-    // send faulty data to sentry
-    if (testData.length !== filteredTestData.length) {
-      Sentry.withScope((scope) => {
-        scope.setExtra(
-          'testData',
-          testData.filter((t) => !t.testId)
-        )
-        Sentry.captureException(
-          new Error('[SARFilters] fetched testData has empty testId(s)')
-        )
-      })
-    }
-
-    const SARFilterData = {
-      data: {
-        result: {
-          ...responseResult,
-          testData: filteredTestData,
-        },
-      },
-    }
-
+    const SARFilterData = yield call(reportsApi.fetchSARFilterData, payload)
     yield put({
       type: GET_REPORTS_SAR_FILTER_DATA_REQUEST_SUCCESS,
       payload: { SARFilterData },
     })
   } catch (error) {
-    const msg = 'Failed to fetch filter data Please try again...'
+    const msg = 'Failed to fetch filter data. Please try again...'
     notification({ msg })
     yield put({
       type: GET_REPORTS_SAR_FILTER_DATA_REQUEST_ERROR,

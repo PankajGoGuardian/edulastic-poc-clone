@@ -70,6 +70,7 @@ const ImageCard = ({
 
   return (
     <Container
+      data-cy={_id}
       src={thumbnail}
       onClick={() => {}}
       title={
@@ -81,10 +82,10 @@ const ImageCard = ({
       }
     >
       <TestInfo style={{ textAlign: 'left' }}>
-        <StyledLink title={contentData.title || title}>
+        <StyledLink data-cy="test-title" title={contentData.title || title}>
           {contentData.title || title}
         </StyledLink>
-        <TagsWrapper isPlaylist={isPlaylist}>
+        <TagsWrapper data-cy="test-standards" isPlaylist={isPlaylist}>
           <Tags
             show={4}
             tags={contentData.standardsIdentifiers || standardsIdentifiers}
@@ -101,6 +102,7 @@ const ImageCard = ({
           <Collection>
             <label>COLLECTIONS</label>
             <CollectionNameWrapper
+              data-cy="test-collection"
               title="Private Library"
               style={{ color: secondaryTextColor }}
             >
@@ -113,7 +115,9 @@ const ImageCard = ({
              * For doc based wee need to consider
              *  total number questions and toal number of items
              *  */}
-            <div>{isDocBased ? totalQuestions : totalItems}</div>
+            <div data-cy="test-item-count">
+              {isDocBased ? totalQuestions : totalItems}
+            </div>
           </Qcount>
         </MidRow>
       )}
@@ -123,7 +127,9 @@ const ImageCard = ({
           <Author>
             <AuthorWrapper>
               <IconUser color={cardTitleColor} />
-              <AuthorName title={authorName}>{authorName}</AuthorName>
+              <AuthorName data-cy="test-author-name" title={authorName}>
+                {authorName}
+              </AuthorName>
             </AuthorWrapper>
           </Author>
         )}
@@ -142,7 +148,7 @@ const ImageCard = ({
         {itemId ? (
           <PlaylistId>
             <span>#</span>
-            <span>{itemId}</span>
+            <span data-cy="test-id">{itemId}</span>
           </PlaylistId>
         ) : null}
         {status !== 'draft' && (

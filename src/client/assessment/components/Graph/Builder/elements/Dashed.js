@@ -1,4 +1,5 @@
 import JXG from 'jsxgraph'
+import { notification } from '@edulastic/common'
 import {
   Exponent,
   Hyperbola,
@@ -8,6 +9,7 @@ import {
   Polynom,
   Secant,
   Sin,
+  Cos,
   Tangent,
 } from '.'
 import { CONSTANT } from '../config'
@@ -24,14 +26,33 @@ const availableTypes = [
   Parabola.jxgType,
   Parabola2.jxgType,
   Polynom.jxgType,
-  Secant.jxgType,
   Sin.jxgType,
-  Tangent.jxgType,
+  Cos.jxgType,
 ]
 
 function onHandler() {
   return (board, event) => {
     const elementsUnderMouse = getAllObjectsUnderMouse(board, event)
+    const hasTanget = elementsUnderMouse.some(
+      (el) => el.type === Tangent.jxgType
+    )
+    if (hasTanget) {
+      notification({
+        msg: 'Cannot use Dashed with Tangent',
+        type: 'warning',
+      })
+      return
+    }
+    const hasSecant = elementsUnderMouse.some(
+      (el) => el.type === Secant.jxgType
+    )
+    if (hasSecant) {
+      notification({
+        msg: 'Cannot use Dashed with Secant',
+        type: 'warning',
+      })
+      return
+    }
     const elementsToUpdate = board.elements.filter(
       (el) =>
         availableTypes.includes(el.type) &&

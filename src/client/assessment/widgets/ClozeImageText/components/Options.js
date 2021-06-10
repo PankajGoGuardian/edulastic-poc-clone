@@ -37,13 +37,10 @@ const Options = ({
       item={item}
     />
     <Extras
-      advancedAreOpen={advancedAreOpen}
       fillSections={fillSections}
       cleanSections={cleanSections}
-    >
-      <Extras.Distractors />
-      <Extras.Hints />
-    </Extras>
+      advancedAreOpen={advancedAreOpen}
+    />
   </WidgetOptions>
 )
 

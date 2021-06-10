@@ -5,6 +5,7 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { Paper } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
+
 import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'
 import { ContentArea } from '../../styled/ContentArea'
 import TextContent from './TextContent'

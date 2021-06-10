@@ -1,6 +1,7 @@
 module.exports = {
   nonPremiumCollections: {
     '6564756c61737469635f656e': 'Engage Ny',
+    '536d61727453746172745f44': 'SmartStart Diagnostics',
     '6564756c61737469635f6365': 'Edulastic Certified',
     '5e3aa8ba83bf19bcab67d0bb': 'CLILESSONS Bank',
     '5e3aa8ba83bf19bcab67d0cb': 'CLI SC MSMS Bank',
@@ -26,5 +27,11 @@ module.exports = {
     '5f0da8996ea7a80007cb65d8': 'CLI World Languages Chinese',
     '5f0eb316c5a0450007eaa2d9': 'CLI World Languages French',
     '5ef23b2a588604000731e38f': 'CL Mirrors and Windows',
+  },
+
+  nonPremiumCollectionsToShareContent: {
+    '6564756c61737469635f656e': 'Engage Ny',
+    '6564756c61737469635f6365': 'Edulastic Certified',
+    '536d61727453746172745f44': 'SmartStart Diagnostics',
   },
 }

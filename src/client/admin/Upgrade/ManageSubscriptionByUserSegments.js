@@ -33,8 +33,6 @@ const ManageSubscriptionByUserSegments = Form.create({
       subType = 'partial_premium',
       districtId,
       schoolId,
-      grades,
-      subjects,
       notes,
       subStartDate,
       subEndDate,

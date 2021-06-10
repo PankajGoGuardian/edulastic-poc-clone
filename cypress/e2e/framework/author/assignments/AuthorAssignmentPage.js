@@ -48,7 +48,7 @@ class AuthorAssignmentPage {
 
   getOptionInDropDownByAttribute = (option) => cy.get(`[data-cy="${option}"]`)
 
-  getCreateNewAssignments = () => cy.get('[data-cy="new-assignment"]')
+  getCreateNewAssignments = () => cy.get('[data-cy="createNew"]')
 
   getChooseFromPlaylistsButton = () => cy.get('button').contains('PLAYLIST')
 
@@ -157,7 +157,7 @@ class AuthorAssignmentPage {
       .click({ force: true })
       .then(() => {
         // pop up that comes up when we try to edit a assigned test
-        cy.contains('This test is already assigned to students.')
+        cy.contains('Edit will move the test to Draft')
           .parent()
           .contains('span', 'PROCEED')
           .click({ force: true })
@@ -321,6 +321,8 @@ class AuthorAssignmentPage {
     this.getOptionInDropDownByAttribute('summary-grades').click()
     // cy.wait("@load-summary");
   }
+
+  clickOnNewAssignment = () => this.getCreateNewAssignments().click()
 
   filterByTestType = (testType) => {
     this.smartFilter.expandFilter()

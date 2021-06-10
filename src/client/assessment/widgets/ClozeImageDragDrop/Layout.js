@@ -4,7 +4,7 @@ import styled from 'styled-components'
 
 import { Select, notification } from '@edulastic/common'
 import { response, ChoiceDimensions } from '@edulastic/constants'
-import { Input, message } from 'antd'
+// import { Input, message } from 'antd'
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 
 import { withNamespaces } from '@edulastic/localization'
@@ -86,7 +86,7 @@ class Layout extends Component {
       t,
       fillSections,
       cleanSections,
-      responses,
+      // responses,
       item,
     } = this.props
     const changeUiStyle = (prop, value) => {
@@ -100,17 +100,17 @@ class Layout extends Component {
       })
     }
 
-    const changeIndividualUiStyle = (prop, value, id) => {
-      onChange(
-        'responses',
-        responses.map((resp) => {
-          if (resp.id === id) {
-            resp[prop] = value
-          }
-          return resp
-        })
-      )
-    }
+    // const changeIndividualUiStyle = (prop, value, id) => {
+    //   onChange(
+    //     'responses',
+    //     responses.map((resp) => {
+    //       if (resp.id === id) {
+    //         resp[prop] = value
+    //       }
+    //       return resp
+    //     })
+    //   )
+    // }
 
     return (
       <Question
@@ -133,6 +133,7 @@ class Layout extends Component {
               <Label>{t('component.options.stemNumerationReviewOnly')}</Label>
               <SelectWrapper>
                 <Select
+                  getPopupContainer={(triggerNode) => triggerNode.parentNode}
                   onChange={(val) => changeUiStyle('stemNumeration', val)}
                   options={[
                     {
@@ -156,6 +157,7 @@ class Layout extends Component {
               <Label>{t('component.options.fontSize')}</Label>
               <SelectWrapper>
                 <Select
+                  getPopupContainer={(triggerNode) => triggerNode.parentNode}
                   onChange={(fontsize) => changeUiStyle('fontsize', fontsize)}
                   options={[
                     { value: 'small', label: t('component.options.small') },
@@ -175,6 +177,7 @@ class Layout extends Component {
               <Label>{t('component.options.responsecontainerposition')}</Label>
               <SelectWrapper>
                 <Select
+                  getPopupContainer={(triggerNode) => triggerNode.parentNode}
                   onChange={(val) =>
                     changeUiStyle('responsecontainerposition', val)
                   }
@@ -251,15 +254,15 @@ const SelectWrapper = styled.div`
   }
 `
 
-const IndividualContainer = styled.div`
-  position: relative;
-`
+// const IndividualContainer = styled.div`
+//   position: relative;
+// `
 
-const Delete = styled.div`
-  padding: 3px 10px;
-  border-radius: 3px;
-  background: lightgray;
-  position: absolute;
-  right: 10px;
-  top: 0;
-`
+// const Delete = styled.div`
+//   padding: 3px 10px;
+//   border-radius: 3px;
+//   background: lightgray;
+//   position: absolute;
+//   right: 10px;
+//   top: 0;
+// `

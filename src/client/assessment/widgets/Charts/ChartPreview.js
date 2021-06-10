@@ -41,6 +41,7 @@ import { Tools } from './components/Tools'
 import ChartEditTool from './components/ChartEditTool'
 import { StyledPaperWrapper } from '../../styled/Widget'
 import Instructions from '../../components/Instructions'
+import { getFilteredAnswerData } from './helpers'
 
 const ChartPreview = ({
   item,
@@ -61,6 +62,7 @@ const ChartPreview = ({
   setStashIndex,
   setQuestionData,
   isReviewTab,
+  hideCorrectAnswer,
 }) => {
   const answerContextConfig = useContext(AnswerContext)
   const fontSize = getFontSize(get(item, 'uiStyle.fontsize'))
@@ -101,7 +103,7 @@ const ChartPreview = ({
 
   useEffect(() => {
     if (!answerIsActual()) {
-      const answer = data.map(({ x, y }) => ({ x, y }))
+      const answer = getFilteredAnswerData(data)
       saveAnswer(answer)
       setElementsStash(answer, getStashId())
     }
@@ -133,16 +135,25 @@ const ChartPreview = ({
 
   const saveAnswerHandler = (ans, index) => {
     changePreviewTab(CLEAR)
-
+    let answerToSave = ans
+    /*
+     * chart data contains additional data as well
+     * keep only required data in the validation, ignore the rest
+     * TODO:
+     * check for other chart types and remove the question type check
+     */
+    if (chartType === questionType.LINE_CHART && Array.isArray(answerToSave)) {
+      answerToSave = getFilteredAnswerData(ans)
+    }
     if (tool === 'delete' && index >= 0) {
-      const newAnswer = cloneDeep(ans)
+      const newAnswer = cloneDeep(answerToSave)
       newAnswer[index].y = data[index].y || uiStyle.yAxisMin
       setTool('')
       saveAnswer(newAnswer)
       setElementsStash(newAnswer, getStashId())
     } else {
-      saveAnswer(ans)
-      setElementsStash(ans, getStashId())
+      saveAnswer(answerToSave)
+      setElementsStash(answerToSave, getStashId())
     }
   }
 
@@ -223,7 +234,7 @@ const ChartPreview = ({
           )}
         </QuestionLabelWrapper>
 
-        <QuestionContentWrapper>
+        <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
           {view === PREVIEW && (
             <>
               <QuestionTitleWrapper>
@@ -265,34 +276,37 @@ const ChartPreview = ({
 
             {view !== EDIT && <Instructions item={item} />}
 
-            {view === PREVIEW && (previewTab === SHOW || expressGrader) && (
-              <CorrectAnswersContainer
-                title={t('component.chart.correctAnswer')}
-                noBackground
-                showBorder
-                padding="14px 45px"
-                margin="38px 0px"
-              >
-                <ChartContainer>
-                  <CurrentChart
-                    name={name}
-                    data={answerData}
-                    gridParams={calculatedParams}
-                    deleteMode={tool === 'delete'}
-                    view={view}
-                    disableResponse
-                    previewTab={previewTab}
-                    saveAnswer={saveAnswerHandler}
-                    item={item}
-                    setQuestionData={setQuestionData}
-                    showAnswer
-                  />
-                </ChartContainer>
-              </CorrectAnswersContainer>
-            )}
+            {view === PREVIEW &&
+              (previewTab === SHOW || expressGrader) &&
+              !hideCorrectAnswer && (
+                <CorrectAnswersContainer
+                  title={t('component.chart.correctAnswer')}
+                  noBackground
+                  showBorder
+                  padding="14px 45px"
+                  margin="38px 0px"
+                >
+                  <ChartContainer>
+                    <CurrentChart
+                      name={name}
+                      data={answerData}
+                      gridParams={calculatedParams}
+                      deleteMode={tool === 'delete'}
+                      view={view}
+                      disableResponse
+                      previewTab={previewTab}
+                      saveAnswer={saveAnswerHandler}
+                      item={item}
+                      setQuestionData={setQuestionData}
+                      showAnswer
+                    />
+                  </ChartContainer>
+                </CorrectAnswersContainer>
+              )}
 
             {view === PREVIEW &&
               previewTab === SHOW &&
+              !hideCorrectAnswer &&
               altAnswerData.length > 0 &&
               altAnswerData.map((ans, index) => (
                 <CorrectAnswersContainer

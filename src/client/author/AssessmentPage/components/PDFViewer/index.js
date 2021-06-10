@@ -1,9 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Spin } from 'antd'
-import pdfjsLib from 'pdfjs-dist'
 import { PDFJSAnnotate } from '@edulastic/ext-libs'
+
 import { BLANK_URL } from '../Worksheet/Worksheet'
 import PdfStoreAdapter from './PdfStoreAdapter'
+
+const pdfjsLib = require('pdfjs-dist')
+
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+  'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.1.266/build/pdf.worker.min.js'
 
 const { UI } = PDFJSAnnotate
 
@@ -15,7 +20,7 @@ const PDFViewer = ({
   setOriginalDimensions,
   currentAnnotationTool,
   annotationToolsProperties,
-  annotationsStack,
+  annotations,
   currentPage,
   authoringMode,
 }) => {
@@ -99,9 +104,9 @@ const PDFViewer = ({
             setPdfDocument(_pdfDocument)
             setDocLoading(false)
           })
-          .catch((err) => console.error(`Error on page ${pageNumber}: ${err}`))
+          .catch((err) => console.log(`Error on page ${pageNumber}: ${err}`))
       })
-      .catch((err) => console.error(`Error: ${err}`))
+      .catch((err) => console.log(`Errorsss: ${err}`))
   }
 
   useEffect(() => {
@@ -114,8 +119,6 @@ const PDFViewer = ({
   }, [authoringMode, currentAnnotationTool, annotationToolsProperties])
 
   useEffect(() => {
-    pdfjsLib.GlobalWorkerOptions.workerSrc =
-      'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.4.456/build/pdf.worker.min.js'
     if (!pdfDocument) {
       loadPdf()
     }
@@ -131,6 +134,7 @@ const PDFViewer = ({
       loadPdf()
     }
   }, [currentPage])
+
   useEffect(() => {
     if (
       !docLoading &&
@@ -148,16 +152,18 @@ const PDFViewer = ({
         pdfDocument,
         scale: pdfScale || 1.33,
         rotate: rotate || 0,
+        authoringMode,
       }
       UI.renderPage(pageNumber, RENDER_OPTIONS)
     }
   }, [
     docLoading,
     pdfDocument,
+    pageNumber,
     currentPage,
     pdfScale,
     rotate,
-    annotationsStack.length,
+    annotations,
   ])
 
   if (docLoading) {

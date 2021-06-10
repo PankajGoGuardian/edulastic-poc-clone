@@ -49,6 +49,7 @@ const SortableItem = sortableElement((props) => {
     handleTestsSort,
     isReview,
     urlHasUseThis,
+    isEditPage,
     summaryData,
     playlistMetrics,
     playlistClassList,
@@ -67,10 +68,11 @@ const SortableItem = sortableElement((props) => {
     ...rest
   } = props
 
+  const hasModuleSort = isManageContentActive || isReview
   const handleTestSort = (prop) => handleTestsSort({ ...prop, mIndex: id })
   return (
     <AssignmentItemContainer data-cy="curriculum-module">
-      {isReview && <SortableTestsHandle />}
+      {hasModuleSort && <SortableTestsHandle />}
       <DropContainer
         theme={themes.default}
         width={isReview ? 'calc(100% - 40px)' : '100%'}
@@ -99,6 +101,7 @@ const SortableItem = sortableElement((props) => {
           customize={customize}
           handleTestsSort={handleTestSort}
           urlHasUseThis={urlHasUseThis}
+          isEditPage={isEditPage}
           isManageContentActive={isManageContentActive}
           summaryData={summaryData}
           playlistMetrics={playlistMetrics}
@@ -142,7 +145,8 @@ const Curriculum = (props) => {
     status,
     isManageContentActive,
     hasEditAccess,
-    urlHasUseThis,
+    isEditPage,
+    isCreatePage,
   } = props
 
   const { _id: playlistId, modules = [] } = curriculum
@@ -166,7 +170,8 @@ const Curriculum = (props) => {
     return () =>
       resetDestination({
         isAuthoring:
-          Object.keys(curriculum).length && hasEditAccess && !urlHasUseThis,
+          Object.keys(curriculum).length && hasEditAccess && isEditPage,
+        isCreatePage,
       })
   }, [modulesContainerRef])
 

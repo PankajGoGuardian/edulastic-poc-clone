@@ -117,7 +117,7 @@ export default function SubjectStandard({
         pagination={false}
       >
         <Column
-          title={`${isClasslink ? 'Classlink' : 'Clever'} Subject`}
+          title={`${isClasslink ? 'Edlink' : 'Clever'} Subject`}
           key="subject"
           render={renderSubject}
         />

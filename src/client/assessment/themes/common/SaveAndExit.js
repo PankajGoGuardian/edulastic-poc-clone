@@ -2,25 +2,38 @@ import {
   extraDesktopWidthMax,
   mediumDesktopExactWidth,
   smallDesktopWidth,
+  themeColorBlue,
 } from '@edulastic/colors'
 import {
   EduButton,
   FireBaseService as Fbs,
   FlexContainer,
+  isSEB,
 } from '@edulastic/common'
-import { IconAccessibility, IconCircleLogout, IconSend } from '@edulastic/icons'
-import { Button } from 'antd'
+import {
+  IconAccessibility,
+  IconCircleLogout,
+  IconSend,
+  IconPlusRounded,
+  IconMinusRounded,
+} from '@edulastic/icons'
+import { Button, Tooltip } from 'antd'
+import { get } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
-import { get } from 'lodash'
-import { toggleScratchpadVisbilityAction } from '../../../common/components/Scratchpad/duck'
+import {
+  toggleScratchpadVisbilityAction,
+  adjustScratchpadDimensionsAction,
+} from '../../../common/components/Scratchpad/duck'
 import { setSettingsModalVisibilityAction } from '../../../student/Sidebar/ducks'
 import TimedTestTimer from './TimedTestTimer'
 
 export function useUtaPauseAllowed(utaId) {
-  utaId = utaId || 'undefined'
+  if (!utaId) {
+    return true
+  }
   const firestoreCollectionName = 'timedAssignmentUTAs'
   const uta = Fbs.useFirestoreRealtimeDocument(
     (db) => db.collection(firestoreCollectionName).doc(utaId),
@@ -29,6 +42,7 @@ export function useUtaPauseAllowed(utaId) {
   const utaPauseAllowed = uta?.pauseAllowed || false
   return uta ? utaPauseAllowed : undefined
 }
+const inSEB = isSEB()
 
 const SaveAndExit = ({
   finishTest,
@@ -40,64 +54,97 @@ const SaveAndExit = ({
   utaId,
   groupId,
   timedAssignment,
+  isCliUserPreview,
   isCliUser,
   LCBPreviewModal,
   hideData,
   toggleScratchpadVisibility,
-  isCliUserPreview,
+  hidePause,
+  savingResponse,
+  adjustScratchpad,
 }) => {
   const _pauseAllowed = useUtaPauseAllowed(utaId)
   const showPause = _pauseAllowed === undefined ? pauseAllowed : _pauseAllowed
   const currentVisibilityState = hideData ? 'show' : 'hide'
-
   return (
     <FlexContainer marginLeft="30px" alignItems="center">
       {timedAssignment && <TimedTestTimer utaId={utaId} groupId={groupId} />}
       {LCBPreviewModal && (
-        <ScratchpadVisibilityToggler onClick={toggleScratchpadVisibility}>
-          {currentVisibilityState} student work
-        </ScratchpadVisibilityToggler>
+        <>
+          <AdjustScratchpad onClick={() => adjustScratchpad(5)}>
+            <IconPlusRounded />
+          </AdjustScratchpad>
+          <AdjustScratchpad onClick={() => adjustScratchpad(-5)}>
+            <IconMinusRounded />
+          </AdjustScratchpad>
+          <ScratchpadVisibilityToggler onClick={toggleScratchpadVisibility}>
+            {currentVisibilityState} student work
+          </ScratchpadVisibilityToggler>
+        </>
       )}
-      {showZoomBtn && (
-        <StyledButton
-          title="Visual Assistance"
-          onClick={() => setSettingsModalVisibility(true)}
-        >
-          <IconAccessibility />
-        </StyledButton>
+      {showZoomBtn && !LCBPreviewModal && (
+        <Tooltip placement="bottom" title="Test Options">
+          <StyledButton
+            data-cy="testOptions"
+            onClick={() => setSettingsModalVisibility(true)}
+          >
+            <IconAccessibility />
+          </StyledButton>
+        </Tooltip>
       )}
       {showPause &&
+        !inSEB &&
         (previewPlayer ? (
           <>
             {!isCliUserPreview && (
-              <SaveAndExitButton
-                title="Exit"
-                data-cy="finishTest"
-                onClick={finishTest}
+              <Tooltip
+                placement="bottom"
+                title={
+                  hidePause
+                    ? 'This assignment is configured to completed in a single sitting'
+                    : 'Exit'
+                }
               >
-                <IconCircleLogout />
-                EXIT
-              </SaveAndExitButton>
+                <SaveAndExitButton
+                  data-cy="finishTest"
+                  disabled={hidePause}
+                  onClick={finishTest}
+                >
+                  <IconCircleLogout />
+                  EXIT
+                </SaveAndExitButton>
+              </Tooltip>
             )}
           </>
         ) : (
           <>
             {!isCliUser && (
-              <SaveAndExitButton
-                title="Save & Exit"
-                data-cy="finishTest"
-                onClick={finishTest}
+              <Tooltip
+                placement="bottomRight"
+                title={
+                  hidePause
+                    ? 'This assignment is configured to completed in a single sitting'
+                    : 'Save & Exit'
+                }
               >
-                <IconCircleLogout />
-              </SaveAndExitButton>
+                <SaveAndExitButton
+                  disabled={hidePause}
+                  data-cy="finishTest"
+                  onClick={finishTest}
+                >
+                  <IconCircleLogout />
+                </SaveAndExitButton>
+              </Tooltip>
             )}
           </>
         ))}
       {onSubmit && (
-        <EduButton isGhost onClick={onSubmit}>
-          <IconSend />
-          SUBMIT
-        </EduButton>
+        <div id="submitTestButton" tabIndex="-1">
+          <EduButton isGhost onClick={onSubmit} loading={savingResponse}>
+            <IconSend />
+            SUBMIT
+          </EduButton>
+        </div>
       )}
     </FlexContainer>
   )
@@ -105,10 +152,12 @@ const SaveAndExit = ({
 
 SaveAndExit.propTypes = {
   finishTest: PropTypes.func.isRequired,
+  adjustScratchpad: PropTypes.func.isRequired,
   onSubmit: PropTypes.func,
   setSettingsModalVisibility: PropTypes.func,
   previewPlayer: PropTypes.bool,
   showZoomBtn: PropTypes.bool,
+  savingResponse: PropTypes.bool,
 }
 
 SaveAndExit.defaultProps = {
@@ -116,6 +165,7 @@ SaveAndExit.defaultProps = {
   previewPlayer: false,
   setSettingsModalVisibility: () => null,
   onSubmit: null,
+  savingResponse: false,
 }
 
 export default connect(
@@ -123,8 +173,10 @@ export default connect(
     pauseAllowed: state.test?.settings?.pauseAllowed,
     isCliUser: get(state, 'user.isCliUser', false),
     hideData: state?.scratchpad?.hideData,
+    savingResponse: get(state, 'test.savingResponse', false),
   }),
   {
+    adjustScratchpad: adjustScratchpadDimensionsAction,
     setSettingsModalVisibility: setSettingsModalVisibilityAction,
     toggleScratchpadVisibility: toggleScratchpadVisbilityAction,
   }
@@ -159,6 +211,8 @@ const StyledButton = styled(Button)`
     svg {
       fill: ${({ theme }) => theme.default.headerRightButtonBgColor};
     }
+    outline: 0;
+    box-shadow: 0 0 0 2px ${themeColorBlue};
   }
 
   &:hover,
@@ -216,6 +270,12 @@ export const SaveAndExitButton = styled(StyledButton)`
     }
   }
 
+  &:focus {
+    border: none;
+    outline: 0;
+    box-shadow: 0 0 0 2px ${themeColorBlue};
+  }
+
   span {
     margin-left: 8px;
   }
@@ -242,4 +302,8 @@ export const SaveAndExitButton = styled(StyledButton)`
 const ScratchpadVisibilityToggler = styled(SaveAndExitButton)`
   width: auto !important;
   text-transform: uppercase;
+`
+
+const AdjustScratchpad = styled(SaveAndExitButton)`
+  padding: 0px 12px;
 `

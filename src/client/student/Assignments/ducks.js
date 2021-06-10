@@ -2,8 +2,16 @@ import {
   createAction,
   createSelector as createSelectorator,
 } from 'redux-starter-kit'
-import { takeLatest, put, call, all, select } from 'redux-saga/effects'
-import { values, groupBy, last, partial, maxBy as _maxBy, sortBy } from 'lodash'
+import { takeLatest, put, call, all, select, take } from 'redux-saga/effects'
+import {
+  values,
+  groupBy,
+  last,
+  partial,
+  maxBy as _maxBy,
+  sortBy,
+  get,
+} from 'lodash'
 import { createSelector } from 'reselect'
 import { normalize } from 'normalizr'
 import { push } from 'connected-react-router'
@@ -12,18 +20,31 @@ import {
   reportsApi,
   testActivityApi,
   testsApi,
+  TokenStorage,
 } from '@edulastic/api'
-import { test as testConst, testActivityStatus } from '@edulastic/constants'
-import { Effects, notification } from '@edulastic/common'
-import * as Sentry from '@sentry/browser'
+import {
+  test as testConst,
+  testActivityStatus,
+  assignmentStatusOptions,
+} from '@edulastic/constants'
+import {
+  captureSentryException,
+  Effects,
+  notification,
+  handleChromeOsSEB,
+} from '@edulastic/common'
 import {
   getCurrentSchool,
   fetchUserAction,
   getUserRole,
-  getUserId,
+  toggleIosRestrictNavigationModalAction,
 } from '../Login/ducks'
 
-import { getCurrentGroup, getClassIds } from '../Reports/ducks'
+import {
+  getCurrentGroup,
+  getCurrentStudentDistrictId,
+  getSelectedCassSectionDistrictId,
+} from '../Reports/ducks'
 // external actions
 import {
   assignmentSchema,
@@ -34,17 +55,21 @@ import {
   setConfirmationForTimedAssessmentAction,
   setIsActivityCreatingAction,
   utaStartTimeUpdateRequired,
+  setShowRetakeModalAction,
+  setSelectedLanguageAction,
 } from '../sharedDucks/AssignmentModule/ducks'
 
 import {
   setReportsAction,
   reportSchema,
 } from '../sharedDucks/ReportsModule/ducks'
+import { isiOS } from '../../assessment/utils/helpers'
 import { clearOrderOfOptionsInStore } from '../../assessment/actions/assessmentPlayer'
 import { getServerTs } from '../utils'
 import { TIME_UPDATE_TYPE } from '../../assessment/themes/common/TimedTestTimer'
 
 const { COMMON, ASSESSMENT, TESTLET } = testConst.type
+const { DONE, ARCHIVED, NOT_OPEN, IN_PROGRESS } = assignmentStatusOptions
 // constants
 export const FILTERS = {
   ALL: 'all',
@@ -52,7 +77,15 @@ export const FILTERS = {
   IN_PROGRESS: 'inProgress',
 }
 
-export const getCurrentUserId = createSelectorator(['user.user._id'], (r) => r)
+export const getCurrentUserId = createSelectorator(
+  ['user.user._id', 'user.currentChild'],
+  (r, currentChild) => {
+    if (currentChild) {
+      return currentChild
+    }
+    return r
+  }
+)
 
 // types
 export const FETCH_ASSIGNMENTS_DATA = '[studentAssignments] fetch assignments'
@@ -65,6 +98,7 @@ export const LAUNCH_ASSIGNMENT_FROM_LINK =
   '[studentAssignemnts] launch assignment from link'
 export const REDIRECT_TO_DASHBOARD =
   '[studentAssignments] redirect to dashboard'
+export const RETAKE_MODAL_RESPONSE = '[assessment] retake modal response'
 
 // actions
 export const fetchAssignmentsAction = createAction(FETCH_ASSIGNMENTS_DATA)
@@ -77,6 +111,7 @@ export const launchAssignmentFromLinkAction = createAction(
   LAUNCH_ASSIGNMENT_FROM_LINK
 )
 export const redirectToDashboardAction = createAction(REDIRECT_TO_DASHBOARD)
+export const retakeModalResponseAction = createAction(RETAKE_MODAL_RESPONSE)
 
 const getAssignmentClassId = (assignment, groupId, classIds) => {
   if (groupId) {
@@ -88,6 +123,15 @@ const getAssignmentClassId = (assignment, groupId, classIds) => {
   }, new Set())
   return classIds.find((x) => assignmentClassIds.has(x))
 }
+
+const getClassIds = createSelectorator(['user.user.orgData.classList'], (cls) =>
+  (cls || []).map((cl) => cl._id)
+)
+
+const getUserId = createSelectorator(
+  ['user.user._id', 'user.currentChild'],
+  (_id, currentChild) => currentChild || _id
+)
 
 /**
  * get current redirect status of the assignment
@@ -133,6 +177,31 @@ export const getRedirect = (
             reportsByClassIdentifier.length === 0
           ) {
             classMaxAttempts = reports.length + 1
+          }
+        }
+      }
+      /* 
+        // This is for fixing scenario from - https://snapwiz.atlassian.net/browse/EV-25755      
+      */
+      if (classMaxAttempts < reports.length) {
+        const latestRedirect = _maxBy(redirectGroups, 'redirectedDate')
+        const reportsByClassIdentifier =
+          reportsGroupedByClassIdentifier[latestRedirect?.identifier]
+        if (latestRedirect) {
+          if (
+            reportsByClassIdentifier &&
+            reportsByClassIdentifier.some(
+              (item) =>
+                item.status === testActivityStatus.NOT_STARTED ||
+                item.status === testActivityStatus.IN_PROGRESS
+            )
+          ) {
+            classMaxAttempts =
+              reports.filter(
+                (item) =>
+                  item.status === testActivityStatus.SUBMITTED ||
+                  item.status === testActivityStatus.ABSENT
+              ).length + 1
           }
         }
       }
@@ -201,10 +270,29 @@ const reportsSelector = createSelector(reportsById, (reports) => {
   return filteredReports
 })
 
+export const notStartedReportsByAssignmentId = createSelector(
+  reportsById,
+  (reports) => {
+    const filteredReports = {}
+    if (!Object.keys(reports).length) {
+      return filteredReports
+    }
+    for (const r in reports) {
+      if (reports[r]?.status === testActivityStatus.NOT_STARTED) {
+        const report = reports[r]
+        const { assignmentId, groupId } = report
+        filteredReports[`${assignmentId}_${groupId}`] = report
+      }
+    }
+    return filteredReports
+  }
+)
+
 export const assignmentIdsByTestIdSelector = createSelector(
   assignmentsSelector,
   (assignments) => {
     const assignmentsByTestId = {}
+    // eslint-disable-next-line guard-for-in
     for (const i in assignments) {
       const { testId, _id } = assignments[i]
       if (_id && testId) {
@@ -219,8 +307,63 @@ export const assignmentIdsByTestIdSelector = createSelector(
   }
 )
 
+export const assignmentIdsGroupIdsByTestIdSelector = createSelector(
+  assignmentsSelector,
+  (assignments) => {
+    const assignmentsGroupsByTestId = {}
+    // eslint-disable-next-line guard-for-in
+    for (const i in assignments) {
+      const { testId, _id } = assignments[i]
+      const classIds = assignments[i]?.['class']?.map((x) => x._id) || []
+      if (_id && testId) {
+        if (!assignmentsGroupsByTestId[testId]) {
+          assignmentsGroupsByTestId[testId] = new Set(classIds)
+        } else {
+          classIds.forEach((x) => {
+            assignmentsGroupsByTestId[testId].add(x)
+          })
+        }
+      }
+    }
+    return assignmentsGroupsByTestId
+  }
+)
+
 export const filterSelector = (state) => state.studentAssignment.filter
 export const stateSelector = (state) => state.studentAssignment
+export const getShowRetakeModalSelector = createSelector(
+  stateSelector,
+  (state) => state.showRetakeModal
+)
+
+const getAssignmentClassStatus = (assignment, classId) => {
+  const statusMap = {
+    'NOT OPEN': 0,
+    'IN PROGRESS': 1,
+    'IN GRADING': 2,
+    DONE: 3,
+    ARCHIVED: 4,
+  }
+  let currentStatus = 'ARCHIVED'
+  let currentStatusValue = 4
+  for (const clazz of assignment.class) {
+    if (clazz._id === classId) {
+      const { startDate } = clazz
+      const isStartDateElapsed = startDate && startDate < Date.now()
+      const statusValue = statusMap[clazz.status]
+      if (statusValue < currentStatusValue) {
+        currentStatusValue = statusValue
+        currentStatus = clazz.status
+        if (isStartDateElapsed && clazz.status === NOT_OPEN) {
+          currentStatus = IN_PROGRESS
+          currentStatusValue = statusMap[IN_PROGRESS]
+        }
+      }
+    }
+  }
+
+  return currentStatus
+}
 
 /**
  *
@@ -233,14 +376,20 @@ export const stateSelector = (state) => state.studentAssignment
  *
  */
 export const isLiveAssignment = (assignment, classIds, userId) => {
+  let { endDate } = assignment
+  const { class: groups = [], classId: currentGroup } = assignment
+  const assignmentStatus = getAssignmentClassStatus(assignment, currentGroup)
+  if ([DONE, ARCHIVED, NOT_OPEN].includes(assignmentStatus)) {
+    return false
+  }
   // max attempts should be less than total attempts made
   // and end Dtae should be greateer than current one :)
   const maxAttempts = (assignment && assignment.maxAttempts) || 1
   const attempts = (assignment.reports && assignment.reports.length) || 0
-  const lastAttempt = last(assignment.reports) || {}
+  const lastAttempt = _maxBy(assignment.reports, 'createdAt') || {}
   const serverTimeStamp = getServerTs(assignment)
   // eslint-disable-next-line
-  let { endDate, class: groups = [], classId: currentGroup } = assignment
+
   // when attempts over no need to check for any other condition to hide assignment from assignments page
   if (maxAttempts <= attempts && lastAttempt.status !== 0) return false
   if (!endDate) {
@@ -268,8 +417,11 @@ export const isLiveAssignment = (assignment, classIds, userId) => {
       return !currentClass.closed
     }
   }
-  // End date is not passed consider as live assignment
-  return endDate > serverTimeStamp
+  // End date is passed but still show in assignments if UTA status is in progress
+  if (serverTimeStamp > endDate) {
+    return lastAttempt.status === testActivityStatus.START
+  }
+  return true
 }
 
 const statusFilter = (filterType) => (assignment) => {
@@ -315,7 +467,7 @@ export const getAllAssignmentsSelector = createSelector(
   getUserId,
   (assignmentsObj, reportsObj, currentGroup, classIds, userId) => {
     const classIdentifiers = values(assignmentsObj).flatMap((item) =>
-      item.class.map((item) => item.identifier)
+      item.class.map((i) => i.identifier)
     )
     const reports = values(reportsObj).filter((item) =>
       classIdentifiers.includes(item.assignmentClassIdentifier)
@@ -352,6 +504,9 @@ export const getAllAssignmentsSelector = createSelector(
           ...(clazz.pauseAllowed !== undefined && !assignment.redir
             ? { pauseAllowed: clazz.pauseAllowed }
             : {}),
+          ...(clazz.multiLanguageEnabled && !assignment.redir
+            ? { multiLanguageEnabled: clazz.multiLanguageEnabled }
+            : {}),
         }))
       })
       .filter((assignment) => isLiveAssignment(assignment, classIds, userId))
@@ -371,20 +526,20 @@ export const getAssignmentsSelector = createSelector(
 export const assignmentsCountByFilerNameSelector = createSelector(
   getAllAssignmentsSelector,
   (assignments) => {
-    let IN_PROGRESS = 0
+    let _IN_PROGRESS = 0
     let NOT_STARTED = 0
     assignments.forEach((assignment) => {
       const attempts = (assignment.reports && assignment.reports.length) || 0
       if (attempts === 0) {
         NOT_STARTED++
       } else if (attempts > 0) {
-        IN_PROGRESS++
+        _IN_PROGRESS++
       }
     })
     return {
       ALL: assignments.length,
       NOT_STARTED,
-      IN_PROGRESS,
+      IN_PROGRESS: _IN_PROGRESS,
     }
   }
 )
@@ -394,17 +549,81 @@ export const getLoadAssignmentSelector = createSelector(
   (state) => state.loadAssignment
 )
 
+export const getSelectedLanguageSelector = createSelector(
+  stateSelector,
+  (state) => state.languagePreference
+)
+
+function isSEB() {
+  return window.navigator.userAgent.includes('SEB')
+}
+
+function redirectToUrl(url) {
+  window.location.href = url
+}
+
+export function getSebUrl({
+  testId,
+  testType,
+  assignmentId,
+  testActivityId,
+  groupId,
+}) {
+  const token = TokenStorage.getAccessToken()
+  // ideally a constant like testType should have been a single word not a double word
+  // like "common assessment" or a single word like just "common" and this two word
+  // seems to be causing problem when used in a url while launching the SEB
+  // so just transforming common assessment => common_assessment
+  // encodeURI/encodeURIComponent doesn't seem to work as well
+  const convertedType = (testType || '').split(' ').join('_')
+  let url
+  if (process.env.REACT_APP_API_URI.startsWith('http')) {
+    url = `${process.env.REACT_APP_API_URI.replace('http', 'seb').replace(
+      'https',
+      'seb'
+    )}/test-activity/seb/test/${testId}/type/${convertedType}/assignment/${assignmentId}`
+  } else if (process.env.REACT_APP_API_URI.startsWith('//')) {
+    url = `${window.location.protocol.replace('http', 'seb')}${
+      process.env.REACT_APP_API_URI
+    }/test-activity/seb/test/${testId}/type/${convertedType}/assignment/${assignmentId}`
+  } else {
+    console.warn(`** can't figure out where to put seb protocol **`)
+  }
+
+  if (testActivityId) {
+    url += `/testActivity/${testActivityId}`
+  }
+
+  url += `/token/${token}/settings.seb?classId=${groupId}`
+  return url
+}
+
 // sagas
 // fetch and load assignments and reports for the student
-function* fetchAssignments() {
+export function* fetchAssignments() {
   try {
     yield put(setAssignmentsLoadingAction())
     const groupId = yield select(getCurrentGroup)
     const userId = yield select(getCurrentUserId)
     const classIds = yield select(getClassIds)
+    const groupStatus = yield select((state) =>
+      get(state, 'studentAssignment.groupStatus', 'all')
+    )
+    // get districtId from group if selected otherwise get from student
+    let districtId = yield select(getSelectedCassSectionDistrictId)
+    if (!districtId) {
+      districtId = yield select(getCurrentStudentDistrictId)
+    }
     const [assignments, reports] = yield all([
-      call(assignmentApi.fetchAssigned, groupId),
-      call(reportsApi.fetchReports, groupId),
+      call(
+        assignmentApi.fetchAssigned,
+        groupId,
+        '',
+        groupStatus,
+        userId,
+        districtId
+      ),
+      call(reportsApi.fetchReports, groupId, '', '', groupStatus),
     ])
 
     const reportsGroupedByClassIdentifier = groupBy(
@@ -460,7 +679,23 @@ function* startAssignment({ payload }) {
       classId,
       isPlaylist = false,
       studentRecommendation,
+      safeBrowser,
     } = payload
+    const languagePreference = yield select(getSelectedLanguageSelector)
+    if (safeBrowser && !isSEB()) {
+      const sebUrl = getSebUrl({
+        testId,
+        testType,
+        assignmentId,
+        groupId: classId,
+      })
+      yield put(push(`/home/assignments`))
+      if (!handleChromeOsSEB()) {
+        yield call(redirectToUrl(sebUrl))
+      }
+      return
+    }
+
     if (!isPlaylist && !studentRecommendation) {
       if (!assignmentId || !testId) throw new Error('insufficient data')
     } else if (!testId) throw new Error('insufficient data')
@@ -489,10 +724,15 @@ function* startAssignment({ payload }) {
     }
 
     if (assignmentId) {
-      const { timedAssignment } = yield call(
+      const { timedAssignment, restrictNavigationOut } = yield call(
         assignmentApi.getById,
         assignmentId
       ) || {}
+      if (isiOS() && restrictNavigationOut) {
+        yield put(push('/home/assignments'))
+        yield put(toggleIosRestrictNavigationModalAction(true))
+        return
+      }
       if (timedAssignment) {
         yield put(utaStartTimeUpdateRequired(TIME_UPDATE_TYPE.START))
       }
@@ -507,13 +747,17 @@ function* startAssignment({ payload }) {
           isLoading: true,
         })
       )
-      const { _id } = yield testActivityApi.create({
+      const recommendationData = {
         groupId: classId,
         institutionId,
         groupType,
         testId,
         studentRecommendationId: studentRecommendation._id,
-      })
+      }
+      if (languagePreference) {
+        recommendationData.languagePreference = languagePreference
+      }
+      const { _id } = yield testActivityApi.create(recommendationData)
       testActivityId = _id
     } else if (isPlaylist && !assignmentId) {
       yield put(
@@ -522,24 +766,32 @@ function* startAssignment({ payload }) {
           isLoading: true,
         })
       )
-      const { _id } = yield testActivityApi.create({
+      const playListData = {
         playlistModuleId: isPlaylist.moduleId,
         playlistId: isPlaylist.playlistId,
         groupId: classId,
         institutionId,
         groupType,
         testId,
-      })
+      }
+      if (languagePreference) {
+        playListData.languagePreference = languagePreference
+      }
+      const { _id } = yield testActivityApi.create(playListData)
       testActivityId = _id
     } else {
       yield put(setIsActivityCreatingAction({ assignmentId, isLoading: true }))
-      const { _id } = yield testActivityApi.create({
+      const testData = {
         assignmentId,
         groupId: classId,
         institutionId,
         groupType,
         testId,
-      })
+      }
+      if (languagePreference) {
+        testData.languagePreference = languagePreference
+      }
+      const { _id } = yield testActivityApi.create(testData)
       testActivityId = _id
     }
 
@@ -550,7 +802,7 @@ function* startAssignment({ payload }) {
           push({
             pathname: `/student/${
               testType === COMMON ? ASSESSMENT : testType
-            }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`,
+            }/${testId}/class/${classId}/uta/${testActivityId}/itemId/new`,
             state: {
               playlistRecommendationsFlow: true,
               playlistId: studentRecommendation.playlistId,
@@ -562,7 +814,7 @@ function* startAssignment({ payload }) {
           push({
             pathname: `/student/${
               testType === COMMON ? ASSESSMENT : testType
-            }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`,
+            }/${testId}/class/${classId}/uta/${testActivityId}/itemId/new`,
             state: {
               playlistAssignmentFlow: true,
               playlistId: isPlaylist.playlistId,
@@ -574,7 +826,7 @@ function* startAssignment({ payload }) {
           push(
             `/student/${
               testType === COMMON ? ASSESSMENT : testType
-            }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`
+            }/${testId}/class/${classId}/uta/${testActivityId}/itemId/new`
           )
         )
       }
@@ -588,7 +840,6 @@ function* startAssignment({ payload }) {
 
     // TODO:load previous responses if resume!!
   } catch (err) {
-    Sentry.captureException(err)
     const { status, data = {}, response = {} } = err
     console.error(
       '====== Assignment Failed ======',
@@ -605,10 +856,12 @@ function* startAssignment({ payload }) {
       notification({ msg: message })
       yield put(push('/home/assignments'))
     }
+    captureSentryException(err)
   } finally {
     yield put(
       setIsActivityCreatingAction({ assignmentId: '', isLoading: false })
     )
+    yield put(setSelectedLanguageAction(''))
   }
 }
 
@@ -663,7 +916,7 @@ function* resumeAssignment({ payload }) {
     if (studentRecommendation) {
       yield put(
         push({
-          pathname: `/student/${testType}/${testId}/class/${classId}/uta/${testActivityId}/qid/0`,
+          pathname: `/student/${testType}/${testId}/class/${classId}/uta/${testActivityId}/itemId/new`,
           state: {
             playlistRecommendationsFlow: true,
             playlistId: studentRecommendation.playlistId,
@@ -676,7 +929,7 @@ function* resumeAssignment({ payload }) {
           push({
             pathname: `/student/${
               testType === COMMON ? ASSESSMENT : testType
-            }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`,
+            }/${testId}/class/${classId}/uta/${testActivityId}/itemId/new`,
             state: {
               playlistAssignmentFlow: true,
               playlistId: isPlaylist.playlistId,
@@ -688,7 +941,7 @@ function* resumeAssignment({ payload }) {
           push(
             `/student/${
               testType === COMMON ? ASSESSMENT : testType
-            }/${testId}/class/${classId}/uta/${testActivityId}/qid/0`
+            }/${testId}/class/${classId}/uta/${testActivityId}/itemId/new`
           )
         )
       }
@@ -769,21 +1022,43 @@ function* launchAssignment({ payload }) {
         timedAssignment,
         hasInstruction,
         instruction,
+        safeBrowser = false,
       } = assignment
+      const assignmentClass = assignment.class.filter(
+        (c) =>
+          c.redirect !== true &&
+          c._id === groupId &&
+          (!c.students.length ||
+            (c.students.length && c.students.includes(userId)))
+      )
       if (lastActivity && lastActivity.status === 0) {
-        yield put(
-          resumeAssignmentAction({
-            testId,
-            testType,
-            assignmentId,
-            testActivityId: lastActivity._id,
-            classId: groupId,
-          })
-        )
+        if (safeBrowser && !isSEB()) {
+          yield put(push(`/home/assignments`))
+          if (!handleChromeOsSEB()) {
+            const sebUrl = getSebUrl({
+              testId,
+              testType,
+              testActivityId: lastActivity._id,
+              assignmentId,
+              groupId,
+            })
+            yield call(redirectToUrl, sebUrl)
+          }
+        } else {
+          yield put(
+            resumeAssignmentAction({
+              testId,
+              testType,
+              assignmentId,
+              testActivityId: lastActivity._id,
+              classId: groupId,
+            })
+          )
+        }
       } else {
         let maxAttempt
-        if (assignment.maxAttempts) {
-          maxAttempt = assignment.maxAttempts
+        if (assignmentClass[0].maxAttempts) {
+          maxAttempt = assignmentClass[0].maxAttempts
         } else {
           const test = yield call(testsApi.getByIdMinimal, testId)
           maxAttempt = test.maxAttempts
@@ -794,9 +1069,18 @@ function* launchAssignment({ payload }) {
           )
         )
         if (
-          maxAttempt > attempts.length &&
+          maxAttempt > attempts.length ||
           lastActivity.status === testActivityStatus.NOT_STARTED
         ) {
+          if (!resume && attempts.length > 0) {
+            yield put(setShowRetakeModalAction(true))
+            const { payload: res } = yield take(RETAKE_MODAL_RESPONSE)
+            yield put(setShowRetakeModalAction(false))
+            if (!res) {
+              yield put(push(`/home/grades`))
+              return
+            }
+          }
           if (!resume && timedAssignment) {
             yield put(setConfirmationForTimedAssessmentAction(assignment))
             return
@@ -813,6 +1097,7 @@ function* launchAssignment({ payload }) {
               assignmentId,
               testType,
               classId: groupId,
+              safeBrowser,
             })
           )
         } else {
@@ -846,7 +1131,11 @@ function* redirectToDashboard() {
 export function* watcherSaga() {
   yield all([
     yield takeLatest(FETCH_ASSIGNMENTS_DATA, fetchAssignments),
-    yield Effects.throttleAction(10000, START_ASSIGNMENT, startAssignment),
+    yield Effects.throttleAction(
+      process.env.REACT_APP_QA_ENV ? 60000 : 10000,
+      START_ASSIGNMENT,
+      startAssignment
+    ),
     yield takeLatest(RESUME_ASSIGNMENT, resumeAssignment),
     yield takeLatest(BOOTSTRAP_ASSESSMENT, bootstrapAssesment),
     yield takeLatest(LAUNCH_ASSIGNMENT_FROM_LINK, launchAssignment),

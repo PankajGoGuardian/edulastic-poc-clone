@@ -115,6 +115,22 @@ const manuallyGradableQn = [
   ESSAY_PLAIN_TEXT,
 ]
 
+const useLanguageFeatureQn = [
+  EXPRESSION_MULTIPART,
+  CLOZE_DRAG_DROP,
+  CLOZE_DROP_DOWN,
+  CLOZE_TEXT,
+  CHOICE_MATRIX,
+  MATH,
+  FORMULA_ESSAY,
+  MULTIPLE_CHOICE,
+  TOKEN_HIGHLIGHT,
+  CLOZE_IMAGE_DRAG_DROP,
+  PASSAGE,
+  TEXT,
+  VIDEO,
+]
+
 module.exports = {
   SHORT_TEXT,
   DRAWING,
@@ -159,4 +175,5 @@ module.exports = {
   FRACTION_EDITOR,
   EDITING_TASK,
   CODING,
+  useLanguageFeatureQn,
 }

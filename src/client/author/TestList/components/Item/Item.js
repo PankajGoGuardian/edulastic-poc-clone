@@ -4,7 +4,6 @@ import { compose } from 'redux'
 import { uniqBy } from 'lodash'
 import PropTypes from 'prop-types'
 import { withNamespaces } from '@edulastic/localization'
-import { assignmentApi } from '@edulastic/api'
 import { test } from '@edulastic/constants'
 import {
   getOrgDataSelector,
@@ -12,6 +11,8 @@ import {
   isPublisherUserSelector,
   getUserRole,
   getUserId,
+  isFreeAdminSelector,
+  isOrganizationDistrictUserSelector,
 } from '../../../src/selectors/user'
 import ViewModal from '../ViewModal'
 import TestPreviewModal from '../../../Assignments/components/Container/TestPreviewModal'
@@ -24,11 +25,24 @@ import {
   approveOrRejectSingleTestRequestAction,
   toggleTestLikeAction,
 } from '../../ducks'
-import { duplicatePlaylistRequestAction } from '../../../CurriculumSequence/ducks'
+import {
+  duplicatePlaylistRequestAction,
+  getIsUseThisLoading,
+  useThisPlayListAction,
+  setIsUsedModalVisibleAction,
+  setCustomTitleModalVisibleAction,
+  cloneThisPlayListAction,
+} from '../../../CurriculumSequence/ducks'
+import CloneOnUsePlaylistConfirmationModal from '../../../CurriculumSequence/components/CloneOnUsePlaylistConfirmationModal'
 import { allowDuplicateCheck } from '../../../src/utils/permissionCheck'
 import PlaylistCard from './PlaylistCard'
 import TestItemCard from './TestItemCard'
 import { isPremiumContent } from '../../../TestPage/utils'
+import { duplicateTestRequestAction } from '../../../TestPage/ducks'
+import { toggleFreeAdminSubscriptionModalAction } from '../../../../student/Login/ducks'
+import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
+import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/test'
+import CustomTitleOnCloneModal from '../../../CurriculumSequence/components/CustomTitleOnCloneModal'
 
 export const sharedTypeMap = {
   0: 'PUBLIC',
@@ -46,7 +60,7 @@ class Item extends Component {
     testItemId: PropTypes.string,
     orgCollections: PropTypes.array.isRequired,
     currentTestId: PropTypes.string,
-    isPreviewModalVisible: PropTypes.bool,
+    isPreviewModalVisible: PropTypes.bool.isRequired,
     isPlaylist: PropTypes.bool,
     approveOrRejectSingleTestRequest: PropTypes.func.isRequired,
     orgData: PropTypes.object.isRequired,
@@ -59,7 +73,6 @@ class Item extends Component {
     authorName: '',
     currentTestId: '',
     owner: false,
-    isPreviewModalVisible: false,
     testItemId: '',
     isPlaylist: false,
     standards: [],
@@ -68,6 +81,7 @@ class Item extends Component {
   state = {
     isOpenModal: false,
     isDeleteModalOpen: false,
+    title: '',
   }
 
   moveToItem = (e) => {
@@ -86,11 +100,17 @@ class Item extends Component {
     }
   }
 
-  duplicate = async (e) => {
-    e && e.stopPropagation()
-    const { history, item } = this.props
-    const duplicateTest = await assignmentApi.duplicateAssignment(item)
-    history.push(`/author/tests/${duplicateTest._id}`)
+  duplicate = (cloneOption) => {
+    const { item, duplicateTest } = this.props
+    const { _id, title } = item || {}
+    if (_id && title) {
+      duplicateTest({
+        _id,
+        title,
+        redirectToNewTest: true,
+        cloneItems: cloneOption,
+      })
+    }
   }
 
   onDelete = async (e) => {
@@ -98,17 +118,28 @@ class Item extends Component {
     this.setState({ isDeleteModalOpen: true })
   }
 
+  setTitle = (value) => {
+    this.setState({ title: value })
+  }
+
   assignTest = (e) => {
-    e && e.stopPropagation()
-    const { history, item } = this.props
-    history.push({
-      pathname: `/author/assignments/${item._id}`,
-      state: {
-        from: 'testLibrary',
-        fromText: 'Test Library',
-        toUrl: '/author/tests',
-      },
-    })
+    e?.stopPropagation()
+    const {
+      history,
+      item,
+      isFreeAdmin,
+      toggleFreeAdminSubscriptionModal,
+    } = this.props
+    if (isFreeAdmin) toggleFreeAdminSubscriptionModal()
+    else
+      history.push({
+        pathname: `/author/assignments/${item._id}`,
+        state: {
+          from: 'testLibrary',
+          fromText: 'Test Library',
+          toUrl: '/author/tests',
+        },
+      })
   }
 
   closeModal = () => {
@@ -120,12 +151,16 @@ class Item extends Component {
   }
 
   hidePreviewModal = () => {
-    this.setState({ isPreviewModalVisible: false })
+    const { setIsTestPreviewVisible } = this.props
+    setIsTestPreviewVisible(false)
+    this.setState({ currentTestId: '' })
   }
 
   showPreviewModal = (testId, e) => {
     e && e.stopPropagation()
-    this.setState({ isPreviewModalVisible: true, currentTestId: testId })
+    const { setIsTestPreviewVisible } = this.props
+    setIsTestPreviewVisible(true)
+    this.setState({ currentTestId: testId })
   }
 
   get name() {
@@ -170,6 +205,62 @@ class Item extends Component {
     })
   }
 
+  handleGotoMyPlaylist = () => {
+    const { previouslyUsedPlaylistClone, useThisPlayList } = this.props
+    if (previouslyUsedPlaylistClone) {
+      const {
+        _id,
+        title,
+        grades,
+        subjects,
+        customize = null,
+        authors,
+      } = previouslyUsedPlaylistClone
+      useThisPlayList({
+        _id,
+        title,
+        grades,
+        subjects,
+        authors,
+        customize,
+        fromUseThis: true,
+      })
+    }
+  }
+
+  handleCreateNewCopy = () => this.handleUseThisClick({ forceClone: true })
+
+  handleUseThisClick = ({ forceClone = false, customTitle = '' }) => {
+    const { item, useThisPlayList, cloneThisPlayList } = this.props
+    const { title, grades, subjects, customize = null, authors } = item._source
+    if (customTitle !== '') {
+      cloneThisPlayList({
+        _id: item._id,
+        title: customTitle,
+        grades,
+        subjects,
+        customize,
+        fromUseThis: true,
+        authors,
+        forceClone,
+      })
+    } else {
+      useThisPlayList({
+        _id: item._id,
+        title,
+        grades,
+        subjects,
+        customize,
+        fromUseThis: true,
+        authors,
+        forceClone,
+      })
+    }
+  }
+
+  handleCloseCustomTitleModal = () =>
+    this.props.setCustomTitleModalVisible(false)
+
   render() {
     const {
       item: {
@@ -177,7 +268,6 @@ class Item extends Component {
         tags = [],
         _source = {},
         thumbnail,
-        status,
         _id: testId,
         collections = [],
         summary = {},
@@ -197,16 +287,26 @@ class Item extends Component {
       currentUserId,
       isTestLiked,
       duplicatePlayList,
+      isPreviewModalVisible,
+      useThisPlayList,
+      history,
+      isOrganizationDistrictUser,
+      isUseThisLoading,
+      isUsedModalVisible,
+      setIsUsedModalVisible,
+      customTitleModalVisible,
+      previouslyUsedPlaylistClone,
+      isTestRecommendation,
     } = this.props
-    const { analytics = [] } = isPlaylist ? _source : item
+    const showUsedModal =
+      isUsedModalVisible &&
+      previouslyUsedPlaylistClone?.derivedFrom?._id === item._id
+    const showCustomTitleModal =
+      customTitleModalVisible && previouslyUsedPlaylistClone?._id === item._id
+    const { status, analytics = [] } = isPlaylist ? _source : item
     const likes = analytics?.[0]?.likes || '0'
     const usage = analytics?.[0]?.usage || '0'
-    const {
-      isOpenModal,
-      currentTestId,
-      isPreviewModalVisible,
-      isDeleteModalOpen,
-    } = this.state
+    const { isOpenModal, currentTestId, isDeleteModalOpen } = this.state
     const standardsIdentifiers = isPlaylist
       ? flattenPlaylistStandards(_source?.modules)
       : standards.map((_item) => _item.identifier)
@@ -292,47 +392,83 @@ class Item extends Component {
       isTestLiked,
       allowDuplicate,
       duplicatePlayList,
+      history,
+      useThisPlayList,
+      isPublisherUser,
+      isOrganizationDistrictUser,
+      isUseThisLoading,
+      isTestRecommendation,
     }
 
     const CardViewComponent = isPlaylist ? PlaylistCard : TestItemCard
 
     return (
       <>
-        <ViewModal
-          isShow={isOpenModal}
-          close={this.closeModal}
-          onDuplicate={this.duplicate}
-          onEdit={this.moveToItem}
-          onDelete={this.onDelete}
-          onReject={this.onReject}
-          onApprove={this.onApprove}
-          item={item}
-          status={status}
-          owner={isOwner}
-          assign={this.assignTest}
-          isPlaylist={isPlaylist}
-          windowWidth={windowWidth}
-          allowDuplicate={allowDuplicate}
-          previewLink={(e) => this.showPreviewModal(testId, e)}
-          isDynamic={isDynamic}
-          handleLikeTest={this.handleLikeTest}
-          isTestLiked={isTestLiked}
-          collectionName={collectionName}
-        />
-        <TestPreviewModal
-          isModalVisible={isPreviewModalVisible}
-          testId={currentTestId}
-          showStudentPerformance
-          closeTestPreviewModal={this.hidePreviewModal}
-        />
+        {isOpenModal && (
+          <ViewModal
+            isShow={isOpenModal}
+            close={this.closeModal}
+            onDuplicate={this.duplicate}
+            onEdit={this.moveToItem}
+            onDelete={this.onDelete}
+            onReject={this.onReject}
+            onApprove={this.onApprove}
+            item={item}
+            status={status}
+            owner={isOwner}
+            assign={this.assignTest}
+            isPlaylist={isPlaylist}
+            windowWidth={windowWidth}
+            allowDuplicate={allowDuplicate}
+            previewLink={(e) => this.showPreviewModal(testId, e)}
+            isDynamic={isDynamic}
+            handleLikeTest={this.handleLikeTest}
+            isTestLiked={isTestLiked}
+            collectionName={collectionName}
+          />
+        )}
+
+        {/* Both conditions required so that preview model will trigger unmount */}
+        {isPreviewModalVisible && currentTestId && (
+          <TestPreviewModal
+            isModalVisible={isPreviewModalVisible}
+            testId={currentTestId}
+            showStudentPerformance
+            closeTestPreviewModal={this.hidePreviewModal}
+            resetOnClose={() => {
+              this.setState({ currentTestId: '' })
+            }}
+            unmountOnClose
+          />
+        )}
         {isDeleteModalOpen ? (
           <DeleteItemModal
             isVisible={isDeleteModalOpen}
             onCancel={this.onDeleteModelCancel}
             testId={item._id}
+            test={item}
+            view="testLibrary"
+          />
+        ) : null}
+
+        {showUsedModal ? (
+          <CloneOnUsePlaylistConfirmationModal
+            isVisible={isUsedModalVisible}
+            onCancel={() => setIsUsedModalVisible(false)}
+            handleGotoMyPlaylist={this.handleGotoMyPlaylist}
+            handleCreateNewCopy={this.handleCreateNewCopy}
           />
         ) : null}
         <CardViewComponent {...cardViewProps} />
+        {showCustomTitleModal && (
+          <CustomTitleOnCloneModal
+            isVisible={customTitleModalVisible}
+            onCancel={this.handleCloseCustomTitleModal}
+            handleCreateNewCopy={this.handleUseThisClick}
+            title={this.state.title}
+            setTitle={this.setTitle}
+          />
+        )}
       </>
     )
   }
@@ -347,11 +483,27 @@ const enhance = compose(
       isPublisherUser: isPublisherUserSelector(state),
       userRole: getUserRole(state),
       currentUserId: getUserId(state),
+      isFreeAdmin: isFreeAdminSelector(state),
+      isPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
+      isOrganizationDistrictUser: isOrganizationDistrictUserSelector(state),
+      isUseThisLoading: getIsUseThisLoading(state),
+      isUsedModalVisible: state.curriculumSequence?.isUsedModalVisible,
+      previouslyUsedPlaylistClone:
+        state.curriculumSequence?.previouslyUsedPlaylistClone,
+      customTitleModalVisible:
+        state.curriculumSequence?.customTitleModalVisible,
     }),
     {
       approveOrRejectSingleTestRequest: approveOrRejectSingleTestRequestAction,
       toggleTestLikeRequest: toggleTestLikeAction,
       duplicatePlayList: duplicatePlaylistRequestAction,
+      duplicateTest: duplicateTestRequestAction,
+      toggleFreeAdminSubscriptionModal: toggleFreeAdminSubscriptionModalAction,
+      setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
+      useThisPlayList: useThisPlayListAction,
+      cloneThisPlayList: cloneThisPlayListAction,
+      setIsUsedModalVisible: setIsUsedModalVisibleAction,
+      setCustomTitleModalVisible: setCustomTitleModalVisibleAction,
     }
   )
 )

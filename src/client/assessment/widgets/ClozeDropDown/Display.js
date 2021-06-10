@@ -11,7 +11,7 @@ import {
   orderBy,
 } from 'lodash'
 import styled, { withTheme } from 'styled-components'
-import JsxParser from 'react-jsx-parser'
+import JsxParser from 'react-jsx-parser/lib/react-jsx-parser.min'
 
 import {
   helpers,
@@ -145,6 +145,8 @@ class ClozeDropDownDisplay extends Component {
       view,
       isPrint,
       isPrintPreview,
+      hideCorrectAnswer,
+      answerScore,
     } = this.props
 
     const { parsedTemplate } = this.state
@@ -171,7 +173,7 @@ class ClozeDropDownDisplay extends Component {
       item.validation.altResponses.length > 0
 
     const answerBox =
-      showAnswer || isExpressGrader ? (
+      (showAnswer || isExpressGrader) && !hideCorrectAnswer ? (
         <>
           <CorrectAnswerBoxLayout
             fontSize={fontSize}
@@ -221,6 +223,7 @@ class ClozeDropDownDisplay extends Component {
         item && item.activity && item.activity.evaluation
           ? item.activity.evaluation
           : evaluation,
+      answerScore,
     }
     const displayOptions = orderBy(item.responseIds, ['index']).map(
       (option) => options[option.id]
@@ -258,8 +261,8 @@ class ClozeDropDownDisplay extends Component {
           )}
         </QuestionLabelWrapper>
 
-        <QuestionContentWrapper>
-          <QuestionTitleWrapper>
+        <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
+          <QuestionTitleWrapper data-cy="questionStimulus">
             {!!question && (
               <Stimulus
                 qIndex={qIndex}

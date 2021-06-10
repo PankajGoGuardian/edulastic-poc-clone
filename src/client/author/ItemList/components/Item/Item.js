@@ -31,10 +31,8 @@ import { testItemsApi } from '@edulastic/api'
 import CollectionTag from '@edulastic/common/src/components/CollectionTag/CollectionTag'
 import {
   getTestItemAuthorName,
-  getTestItemCollectionName,
   getQuestionType,
   getTestItemAuthorIcon,
-  getTestItemCollectionIcon,
   showPremiumLabelOnContent,
 } from '../../../dataUtils'
 import { MAX_TAB_WIDTH } from '../../../src/constants/others'
@@ -73,7 +71,7 @@ import {
 import { getUserFeatures } from '../../../../student/Login/ducks'
 import PassageConfirmationModal from '../../../TestPage/components/PassageConfirmationModal/PassageConfirmationModal'
 import Tags from '../../../src/components/common/Tags'
-import appConfig from '../../../../../../app-config'
+import appConfig from '../../../../../app-config'
 import SelectGroupModal from '../../../TestPage/components/AddItems/SelectGroupModal'
 import {
   getCollectionsSelector,
@@ -86,33 +84,19 @@ import {
 } from '../../../TestList/components/ListItem/styled'
 import { toggleTestItemLikeAction } from '../../ducks'
 import TestStatusWrapper from '../../../TestList/components/TestStatusWrapper/testStatusWrapper'
+import { WithToolTip } from './AddOrRemove'
 
 const { ITEM_GROUP_TYPES, ITEM_GROUP_DELIVERY_TYPES } = testContants
 
 // render single item
 class Item extends Component {
-  static propTypes = {
-    item: PropTypes.object.isRequired,
-    history: PropTypes.object.isRequired,
-    t: PropTypes.func.isRequired,
-    gotoSummary: PropTypes.func,
-    showAnser: PropTypes.func.isRequired,
-    openPreviewModal: PropTypes.func.isRequired,
-    windowWidth: PropTypes.number.isRequired,
-    onToggleToCart: PropTypes.func.isRequired,
-    selectedToCart: PropTypes.bool,
-    page: PropTypes.string.isRequired,
-  }
-
-  static defaultProps = {
-    selectedToCart: false,
-    gotoSummary: () => {},
-  }
-
-  state = {
-    isOpenedDetails: false,
-    passageConfirmModalVisible: false,
-    selectedId: '',
+  constructor(props) {
+    super(props)
+    this.state = {
+      isOpenedDetails: false,
+      passageConfirmModalVisible: false,
+      selectedId: '',
+    }
   }
 
   moveToItem = () => {
@@ -128,7 +112,7 @@ class Item extends Component {
   }
 
   handleToggleItemToCart = (item) => async () => {
-    const { onToggleToCart, selectedToCart, setPassageItems } = this.props
+    const { onToggleToCart, setPassageItems } = this.props
     if (item.passageId) {
       const passageItems = await testItemsApi.getPassageItems(item.passageId)
       setPassageItems(passageItems)
@@ -191,12 +175,8 @@ class Item extends Component {
           .depthOfKnowledge,
       },
       {
-        name: getTestItemAuthorIcon(),
-        text: getTestItemAuthorName(item),
-      },
-      {
-        name: getTestItemCollectionIcon(item, collections),
-        text: getTestItemCollectionName(item, collections),
+        name: getTestItemAuthorIcon(item, collections),
+        text: getTestItemAuthorName(item, collections),
       },
       {
         name: <IdIcon />,
@@ -402,16 +382,17 @@ class Item extends Component {
       passageItems,
       page,
       openPreviewModal,
-      selectedItems,
-      item,
     } = this.props
     const removing = this.isRemovingForAuthoring()
     this.setState({ passageConfirmModalVisible: false })
-    // add all the passage items to test.
+
     if (value) {
+      // add all the passage items to test.
       notification({
         type: 'success',
-        messageKey: removing ? 'itemRemovedTest' : 'itemAddedTest',
+        msg: removing
+          ? `${passageItems.length} Item(s) removed from test`
+          : `${passageItems.length} Item(s) added to test`,
       })
       return setAndSavePassageItems({ passageItems, page, remove: removing })
     }
@@ -454,6 +435,8 @@ class Item extends Component {
     const isDynamicItem = item.data?.questions?.some(
       (q) => q?.variable?.enabled
     )
+    const hasQuestions =
+      Array.isArray(item?.data?.questions) && item.data.questions.length > 0
 
     return (
       <WithResources
@@ -464,9 +447,9 @@ class Item extends Component {
           {passageConfirmModalVisible && (
             <PassageConfirmationModal
               visible={passageConfirmModalVisible}
-              closeModal={() =>
+              closeModal={() => {
                 this.setState(() => ({ passageConfirmModalVisible: false }))
-              }
+              }}
               itemsCount={passageItemsCount}
               handleResponse={this.handleResponse}
               removing={this.isRemovingForAuthoring()}
@@ -505,7 +488,20 @@ class Item extends Component {
                     <IconEye />
                     <span>{t('component.item.view').toUpperCase()}</span>
                   </EduButton>
-                  {!hideAddRemove && (
+                  {!hideAddRemove && !hasQuestions ? (
+                    <WithToolTip>
+                      <AddRemoveButton
+                        isGhost
+                        IconBtn
+                        selectedToCart={selectedToCart}
+                        width="60px"
+                        height="36px"
+                        className="disabled"
+                      >
+                        {selectedToCart ? <IconClose /> : <IconPlus />}
+                      </AddRemoveButton>
+                    </WithToolTip>
+                  ) : (
                     <AddRemoveButton
                       isGhost
                       IconBtn
@@ -540,16 +536,30 @@ class Item extends Component {
                     {/* found 17,3 values by trial & error */}
                     <IconEye />
                   </EduButton>
-                  <AddRemoveBtn
-                    style={{ width: '70px', height: '35px' }}
-                    loading={selectedId === item._id}
-                    onClick={() =>
-                      this.handleAddRemove(item, this.isAddOrRemove)
-                    }
-                    isAddOrRemove={this.isAddOrRemove}
-                  >
-                    {this.isAddOrRemove ? 'ADD' : 'REMOVE'}
-                  </AddRemoveBtn>
+                  {!hasQuestions && (
+                    <WithToolTip>
+                      <AddRemoveBtn
+                        style={{ width: '70px', height: '35px' }}
+                        isAddOrRemove={this.isAddOrRemove}
+                        className="disabled"
+                        noHover
+                      >
+                        {this.isAddOrRemove ? 'ADD' : 'REMOVE'}
+                      </AddRemoveBtn>
+                    </WithToolTip>
+                  )}
+                  {hasQuestions && (
+                    <AddRemoveBtn
+                      style={{ width: '70px', height: '35px' }}
+                      loading={selectedId === item._id}
+                      onClick={() => {
+                        this.handleAddRemove(item, this.isAddOrRemove)
+                      }}
+                      isAddOrRemove={this.isAddOrRemove}
+                    >
+                      {this.isAddOrRemove ? 'ADD' : 'REMOVE'}
+                    </AddRemoveBtn>
+                  )}
                 </>
               ))}
           </Question>
@@ -624,9 +634,9 @@ class Item extends Component {
                   {isPublisher ? (
                     <AddRemoveBtnPublisher
                       loading={selectedId === item._id}
-                      onClick={() =>
+                      onClick={() => {
                         this.handleAddRemove(item, this.isAddOrRemove)
-                      }
+                      }}
                       isAddOrRemove={this.isAddOrRemove}
                     >
                       {this.isAddOrRemove ? 'ADD' : `${groupName}`}
@@ -635,9 +645,9 @@ class Item extends Component {
                   ) : (
                     <AddRemoveBtn
                       loading={selectedId === item._id}
-                      onClick={() =>
+                      onClick={() => {
                         this.handleAddRemove(item, this.isAddOrRemove)
-                      }
+                      }}
                       isAddOrRemove={this.isAddOrRemove}
                     >
                       {this.isAddOrRemove ? 'ADD' : 'REMOVE'}
@@ -667,6 +677,24 @@ class Item extends Component {
       </WithResources>
     )
   }
+}
+
+Item.propTypes = {
+  item: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
+  t: PropTypes.func.isRequired,
+  gotoSummary: PropTypes.func,
+  showAnser: PropTypes.func.isRequired,
+  openPreviewModal: PropTypes.func.isRequired,
+  windowWidth: PropTypes.number.isRequired,
+  onToggleToCart: PropTypes.func.isRequired,
+  selectedToCart: PropTypes.bool,
+  page: PropTypes.string.isRequired,
+}
+
+Item.defaultProps = {
+  selectedToCart: false,
+  gotoSummary: () => {},
 }
 
 const enhance = compose(

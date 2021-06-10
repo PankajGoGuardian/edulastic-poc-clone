@@ -20,6 +20,7 @@ const MathEssayInputLine = ({
   item,
   onChangeType,
   disableResponse,
+  contentLength,
 }) => {
   const inputRef = useRef()
   const fontSize = getFontSize(item?.uiStyle?.fontsize)
@@ -121,6 +122,7 @@ const MathEssayInputLine = ({
           onFocus={handleFocus}
           {...inputProps}
           onKeyUp={(e) => handleKeyUp(line.text)(e)}
+          contentLength={contentLength}
         />
       )}
       {actionButtons}
@@ -138,6 +140,7 @@ MathEssayInputLine.propTypes = {
   setActive: PropTypes.func.isRequired,
   id: PropTypes.string.isRequired,
   disableResponse: PropTypes.bool,
+  contentLength: PropTypes.number,
 }
 
 MathEssayInputLine.defaultProps = {
@@ -146,6 +149,7 @@ MathEssayInputLine.defaultProps = {
     text: '',
     type: 'text',
   },
+  contentLength: 0,
 }
 
 export default MathEssayInputLine

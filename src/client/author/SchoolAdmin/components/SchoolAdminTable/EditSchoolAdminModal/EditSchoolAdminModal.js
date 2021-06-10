@@ -164,6 +164,7 @@ class EditSchoolAdminModal extends Component {
               )(
                 <TextInputStyled
                   type="password"
+                  autoComplete="off"
                   placeholder={t('users.schooladmin.editsa.enterpassword')}
                 />
               )}
@@ -187,6 +188,7 @@ class EditSchoolAdminModal extends Component {
               })(
                 <TextInputStyled
                   type="password"
+                  autoComplete="off"
                   placeholder={t(
                     'users.schooladmin.editsa.enterconfirmpassword'
                   )}

@@ -11,6 +11,10 @@ import { customReportReducer } from './admin/Components/CustomReportContainer/du
 import commonReducers from './common/ducks'
 import { slice as resetPasswordSlice } from './SetParentPassword/ducks'
 import { publicTestReducer } from './publicTest/ducks'
+import user from './student/Login/ducks'
+import signup from './student/Signup/duck'
+import authorUi from './author/src/reducers/authorUi'
+import dictionaries from './author/src/reducers/dictionaries'
 
 const rootReducer = combineReducers({
   ...assessmentReducers,
@@ -24,6 +28,13 @@ const rootReducer = combineReducers({
   ...commonReducers,
   resetPassword: resetPasswordSlice.reducer,
   publicTest: publicTestReducer,
+})
+
+export const loginReducer = combineReducers({
+  authorUi,
+  user,
+  signup,
+  dictionaries,
 })
 
 export default rootReducer

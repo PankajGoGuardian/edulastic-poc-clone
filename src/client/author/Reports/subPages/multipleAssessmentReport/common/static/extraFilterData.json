@@ -7,7 +7,10 @@
         { "key": "all", "title": "All" },
         { "key": "American Indian", "title": "American Indian" },
         { "key": "Asian", "title": "Asian" },
-        { "key": "Black or African American", "title": "Black or African American" },
+        {
+          "key": "Black or African American",
+          "title": "Black or African American"
+        },
         { "key": "Caucasian", "title": "Caucasian" },
         { "key": "Two or More Races", "title": "Two or More Races" }
       ]
@@ -24,17 +27,29 @@
     {
       "key": "ellStatus",
       "title": "ELL Status",
-      "data": [{ "key": "all", "title": "All" }, { "key": "no", "title": "No" }, { "key": "yes", "title": "Yes" }]
+      "data": [
+        { "key": "all", "title": "All" },
+        { "key": "no", "title": "No" },
+        { "key": "yes", "title": "Yes" }
+      ]
     },
     {
       "key": "iepStatus",
       "title": "IEP Status",
-      "data": [{ "key": "all", "title": "All" }, { "key": "no", "title": "No" }, { "key": "yes", "title": "Yes" }]
+      "data": [
+        { "key": "all", "title": "All" },
+        { "key": "no", "title": "No" },
+        { "key": "yes", "title": "Yes" }
+      ]
     },
     {
       "key": "frlStatus",
       "title": "FRL Status",
-      "data": [{ "key": "all", "title": "All" }, { "key": "no", "title": "No" }, { "key": "yes", "title": "Yes" }]
+      "data": [
+        { "key": "all", "title": "All" },
+        { "key": "no", "title": "No" },
+        { "key": "yes", "title": "Yes" }
+      ]
     }
   ],
   "performance-over-time": [
@@ -45,7 +60,10 @@
         { "key": "all", "title": "All" },
         { "key": "American Indian", "title": "American Indian" },
         { "key": "Asian", "title": "Asian" },
-        { "key": "Black or African American", "title": "Black or African American" },
+        {
+          "key": "Black or African American",
+          "title": "Black or African American"
+        },
         { "key": "Caucasian", "title": "Caucasian" },
         { "key": "Two or More Races", "title": "Two or More Races" }
       ]
@@ -62,17 +80,29 @@
     {
       "key": "ellStatus",
       "title": "ELL Status",
-      "data": [{ "key": "all", "title": "All" }, { "key": "no", "title": "No" }, { "key": "yes", "title": "Yes" }]
+      "data": [
+        { "key": "all", "title": "All" },
+        { "key": "no", "title": "No" },
+        { "key": "yes", "title": "Yes" }
+      ]
     },
     {
       "key": "iepStatus",
       "title": "IEP Status",
-      "data": [{ "key": "all", "title": "All" }, { "key": "no", "title": "No" }, { "key": "yes", "title": "Yes" }]
+      "data": [
+        { "key": "all", "title": "All" },
+        { "key": "no", "title": "No" },
+        { "key": "yes", "title": "Yes" }
+      ]
     },
     {
       "key": "frlStatus",
       "title": "FRL Status",
-      "data": [{ "key": "all", "title": "All" }, { "key": "no", "title": "No" }, { "key": "yes", "title": "Yes" }]
+      "data": [
+        { "key": "all", "title": "All" },
+        { "key": "no", "title": "No" },
+        { "key": "yes", "title": "Yes" }
+      ]
     }
   ],
   "peer-progress-analysis": [
@@ -83,7 +113,10 @@
         { "key": "all", "title": "All" },
         { "key": "American Indian", "title": "American Indian" },
         { "key": "Asian", "title": "Asian" },
-        { "key": "Black or African American", "title": "Black or African American" },
+        {
+          "key": "Black or African American",
+          "title": "Black or African American"
+        },
         { "key": "Caucasian", "title": "Caucasian" },
         { "key": "Two or More Races", "title": "Two or More Races" }
       ]
@@ -100,17 +133,29 @@
     {
       "key": "ellStatus",
       "title": "ELL Status",
-      "data": [{ "key": "all", "title": "All" }, { "key": "no", "title": "No" }, { "key": "yes", "title": "Yes" }]
+      "data": [
+        { "key": "all", "title": "All" },
+        { "key": "no", "title": "No" },
+        { "key": "yes", "title": "Yes" }
+      ]
     },
     {
       "key": "iepStatus",
       "title": "IEP Status",
-      "data": [{ "key": "all", "title": "All" }, { "key": "no", "title": "No" }, { "key": "yes", "title": "Yes" }]
+      "data": [
+        { "key": "all", "title": "All" },
+        { "key": "no", "title": "No" },
+        { "key": "yes", "title": "Yes" }
+      ]
     },
     {
       "key": "frlStatus",
       "title": "FRL Status",
-      "data": [{ "key": "all", "title": "All" }, { "key": "no", "title": "No" }, { "key": "yes", "title": "Yes" }]
+      "data": [
+        { "key": "all", "title": "All" },
+        { "key": "no", "title": "No" },
+        { "key": "yes", "title": "Yes" }
+      ]
     }
   ]
 }

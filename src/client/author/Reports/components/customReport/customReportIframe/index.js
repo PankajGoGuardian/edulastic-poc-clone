@@ -3,15 +3,18 @@ import { connect } from 'react-redux'
 import { Spin } from 'antd'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
+
 import { IconExpandArrowIn, IconExpandArrowOut } from '@edulastic/icons'
 import { themeColor } from '@edulastic/colors'
+import { SubHeader } from '../../../common/components/Header'
+import { StyledContainer, StyledIframe } from '../../../common/styled'
+
 import {
   getCustomReportLoader,
   getCustomReportURL as getCustomReportURLSelector,
   getCustomReportURLAction,
   getCustomReportName,
 } from '../ducks'
-import { StyledContainer, StyledIframe } from '../../../common/styled'
 
 const CustomReportIframe = (props) => {
   const {
@@ -21,6 +24,8 @@ const CustomReportIframe = (props) => {
     match: { params },
     setDynamicBreadcrumb,
     customReportName,
+    breadcrumbData,
+    isCliUser,
   } = props
   const frameRef = useRef()
 
@@ -48,31 +53,34 @@ const CustomReportIframe = (props) => {
   }
 
   return (
-    <StyledContainer
-      style={
-        isFull
-          ? fullScreenStyle
-          : { position: 'relative', height: 'calc(100vh - 165px)' }
-      }
-    >
-      {!isLoading && (
-        <ExpandButton onClick={toggleExpand} isFull={isFull}>
-          {isFull ? <IconExpandArrowOut /> : <IconExpandArrowIn />}
-        </ExpandButton>
-      )}
-      {isLoading ? (
-        <Spin size="small" />
-      ) : (
-        <StyledIframe
-          width="100%"
-          height="100%"
-          ref={frameRef}
-          id={params?.id || ''}
-          src={reportUrl}
-          title="Custom Report"
-        />
-      )}
-    </StyledContainer>
+    <>
+      <SubHeader breadcrumbData={breadcrumbData} isCliUser={isCliUser} />
+      <StyledContainer
+        style={
+          isFull
+            ? fullScreenStyle
+            : { position: 'relative', height: 'calc(100vh - 165px)' }
+        }
+      >
+        {!isLoading && (
+          <ExpandButton onClick={toggleExpand} isFull={isFull}>
+            {isFull ? <IconExpandArrowOut /> : <IconExpandArrowIn />}
+          </ExpandButton>
+        )}
+        {isLoading ? (
+          <Spin size="small" />
+        ) : (
+          <StyledIframe
+            width="100%"
+            height="100%"
+            ref={frameRef}
+            id={params?.id || ''}
+            src={reportUrl}
+            title="Custom Report"
+          />
+        )}
+      </StyledContainer>
+    </>
   )
 }
 

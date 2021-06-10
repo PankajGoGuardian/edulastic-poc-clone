@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { get } from 'lodash'
-import { Spin, message } from 'antd'
+import { Spin } from 'antd'
 import { notification } from '@edulastic/common'
 import styled from 'styled-components'
 import { greyLight1 } from '@edulastic/colors'
@@ -18,11 +18,15 @@ import {
 import {
   startAssignmentAction,
   resumeAssignmentAction,
+  getSelectedLanguageSelector,
 } from '../../student/Assignments/ducks'
 import { getUser } from '../../author/src/selectors/user'
 import { redirectToStudentPage, redirectToDashbord } from '../utils'
 
 import { fetchUserAction } from '../../student/Login/ducks'
+import { setSelectedLanguageAction } from '../../student/sharedDucks/AssignmentModule/ducks'
+import { getIsPreviewModalVisibleSelector } from '../../assessment/selectors/test'
+import { setIsTestPreviewVisibleAction } from '../../assessment/actions/test'
 
 const ARCHIVED_TEST_MSG =
   'You can no longer use this as sharing access has been revoked by author'
@@ -42,9 +46,12 @@ const PublicTestPage = ({
   startAssignment,
   resumeAssignment,
   fetchUser,
+  languagePreference,
+  setSelectedLanguage,
+  setIsTestPreviewVisible,
+  isPreviewModalVisible,
 }) => {
   const { testId } = match.params
-  const [showPreviewModal, setShowPreviewModal] = useState(false)
   const [publicTest, setPublicTest] = useState()
 
   const redirectToTestPreview = (
@@ -69,7 +76,7 @@ const PublicTestPage = ({
       const { role } = user
       // fetch test to check if test archieved or not
       testsApi
-        .getPublicTest(testId, { sharedType: 'PUBLIC' })
+        .getPublicTest(testId)
         .then((_test) => {
           const isTestArchieved =
             _test.status === testConstants.statusConstants.ARCHIVED
@@ -91,11 +98,14 @@ const PublicTestPage = ({
             redirectToTestPreview(_test._id, isTestArchieved, isTestInDraft)
           }
         })
-        .catch(() => {
-          notification({
-            type: 'info',
-            messageKey: 'tryingToAccessPrivateTest',
-          })
+        .catch((err) => {
+          const { message } = err?.response?.data || {}
+          if (message !== 'Resource not available') {
+            notification({
+              type: 'info',
+              messageKey: 'tryingToAccessPrivateTest',
+            })
+          }
           if (role !== 'student' || role !== 'parent') {
             redirectToTestPreview(testId)
           } else {
@@ -105,7 +115,7 @@ const PublicTestPage = ({
         })
     } else if (!authenticating || !TokenStorage.getAccessToken()) {
       if (!test) {
-        fetchTest({ testId, sharedType: 'PUBLIC' })
+        fetchTest({ testId })
       } else if (
         test?.status === testConstants.statusConstants.ARCHIVED ||
         test?.status === testConstants.statusConstants.DRAFT
@@ -132,7 +142,9 @@ const PublicTestPage = ({
         history,
         startAssignment,
         resumeAssignment,
-        publicTest
+        publicTest,
+        languagePreference,
+        setSelectedLanguage
       )
     }
   }, [loadingAssignments])
@@ -151,17 +163,25 @@ const PublicTestPage = ({
       localStorage.setItem('publicUrlAccess', getCurrentPath())
     }
 
-    history.push({
-      pathname: `/author/assignments/${test._id}`,
-      state: {
-        from: 'testLibrary',
-        fromText: 'Test Library',
-        toUrl: '/author/tests',
-      },
-    })
+    if (!user?.isAuthenticated) {
+      localStorage.setItem(
+        'loginRedirectUrl',
+        `/author/assignments/${test._id}`
+      )
+      history.push('/login')
+    } else {
+      history.push({
+        pathname: `/author/assignments/${test._id}`,
+        state: {
+          from: 'testLibrary',
+          fromText: 'Test Library',
+          toUrl: '/author/tests',
+        },
+      })
+    }
   }
 
-  const handleShowPreviewModal = () => setShowPreviewModal(true)
+  const handleShowPreviewModal = () => setIsTestPreviewVisible(true)
 
   // if test is not public, then redirect to login page
   if (error) {
@@ -184,13 +204,12 @@ const PublicTestPage = ({
         status={test.status}
         previewLink={handleShowPreviewModal}
       />
-      {showPreviewModal && (
+      {isPreviewModalVisible && (
         <TestPreviewModal
           isModalVisible
           testId={test?._id || testId}
-          closeTestPreviewModal={() => setShowPreviewModal(false)}
+          closeTestPreviewModal={() => setIsTestPreviewVisible(false)}
           demo
-          sharedType="PUBLIC"
         />
       )}
     </StyledMainWrapper>
@@ -233,6 +252,8 @@ export default connect(
     authenticating: get(state, 'user.authenticating', false),
     assignments: getAllAssignmentsSelector(state),
     loadingAssignments: get(state, 'publicTest.loadingAssignments'),
+    languagePreference: getSelectedLanguageSelector(state),
+    isPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
   }),
   {
     fetchTest: fetchTestAction,
@@ -240,5 +261,7 @@ export default connect(
     startAssignment: startAssignmentAction,
     resumeAssignment: resumeAssignmentAction,
     fetchUser: fetchUserAction,
+    setSelectedLanguage: setSelectedLanguageAction,
+    setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
   }
 )(PublicTestPage)

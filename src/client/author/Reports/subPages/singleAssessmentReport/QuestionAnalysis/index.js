@@ -1,14 +1,14 @@
-import { SpinLoader } from '@edulastic/common'
-import { Col, Row } from 'antd'
-import { get, isEmpty } from 'lodash'
-import PropTypes from 'prop-types'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
-import { getUserRole } from '../../../../../student/Login/ducks'
-import { EmptyData } from '../../../common/components/emptyData'
+import PropTypes from 'prop-types'
+
+import { Col, Row } from 'antd'
+import { SpinLoader } from '@edulastic/common'
+import { roleuser } from '@edulastic/constants'
+import { isEmpty } from 'lodash'
 import { ControlDropDown } from '../../../common/components/widgets/controlDropDown'
-import { StyledH3 } from '../../../common/styled'
-import { getCsvDownloadingState } from '../../../ducks'
+import { StyledH3, NoDataContainer } from '../../../common/styled'
+import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { SimpleStackedBarWithLineChartContainer } from './componenets/charts/simpleStackedBarWithLineChartContainer'
 import {
   StyledCard,
@@ -17,35 +17,73 @@ import {
   UpperContainer,
 } from './componenets/styled'
 import { QuestionAnalysisTable } from './componenets/table/questionAnalysisTable'
+
+import { getUserRole } from '../../../../../student/Login/ducks'
+import { getCsvDownloadingState } from '../../../ducks'
 import {
   getQuestionAnalysisRequestAction,
   getReportsQuestionAnalysis,
   getReportsQuestionAnalysisLoader,
+  getReportsQuestionAnalysisError,
+  resetQuestionAnalysisAction,
 } from './ducks'
-import dropDownData from './static/json/dropDownData.json'
+
 import { getChartData, getTableData } from './utils/transformers'
+
+import dropDownData from './static/json/dropDownData.json'
 
 const QuestionAnalysis = ({
   loading,
+  error,
   isCsvDownloading,
   role,
   questionAnalysis,
   getQuestionAnalysis,
+  resetQuestionAnalysis,
   settings,
+  sharedReport,
+  toggleFilter,
 }) => {
+  const [userRole, isSharedReport] = useMemo(
+    () => [sharedReport?.sharedBy?.role || role, !!sharedReport?._id],
+    [sharedReport]
+  )
   const [compareBy, setCompareBy] = useState(
-    role === 'teacher' ? 'groupId' : 'schoolId'
+    userRole === roleuser.TEACHER ? 'groupId' : 'schoolId'
   )
   const [chartFilter, setChartFilter] = useState({})
 
+  const assessmentName = `${
+    settings.selectedTest.title
+  } (ID:${settings.selectedTest.key.substring(
+    settings.selectedTest.key.length - 5
+  )})`
+
+  useEffect(() => () => resetQuestionAnalysis(), [])
+
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
-      const q = {}
-      q.testId = settings.selectedTest.key
-      q.requestFilters = { ...settings.requestFilters }
+      const q = {
+        requestFilters: { ...settings.requestFilters },
+        testId: settings.selectedTest.key,
+      }
       getQuestionAnalysis(q)
     }
-  }, [settings])
+    if (settings.requestFilters.termId || settings.requestFilters.reportId) {
+      return () => toggleFilter(null, false)
+    }
+  }, [settings.selectedTest, settings.requestFilters])
+
+  useEffect(() => {
+    if (
+      (settings.requestFilters.termId || settings.requestFilters.reportId) &&
+      !loading &&
+      !isEmpty(questionAnalysis) &&
+      !questionAnalysis.metricInfo?.length
+    ) {
+      toggleFilter(null, true)
+    }
+  }, [questionAnalysis])
 
   const chartData = useMemo(() => getChartData(questionAnalysis.metricInfo), [
     questionAnalysis,
@@ -58,7 +96,7 @@ const QuestionAnalysis = ({
 
   const { compareByDropDownData, dropDownKeyToLabel } = dropDownData
 
-  const updateCompareByCB = (event, selected, comData) => {
+  const updateCompareByCB = (event, selected) => {
     setCompareBy(selected.key)
   }
 
@@ -76,79 +114,91 @@ const QuestionAnalysis = ({
     setChartFilter({})
   }
 
-  if (isEmpty(questionAnalysis) && !loading) {
+  if (loading) {
     return (
-      <>
-        <EmptyData />
-      </>
+      <SpinLoader
+        tip="Please wait while we gather the required information..."
+        position="fixed"
+      />
     )
   }
 
-  const assessmentName = get(settings, 'selectedTest.title', '')
+  if (questionAnalysis.isRecommended) {
+    return (
+      <NoDataContainer fontSize="12px">
+        The Questions for each student have been dynamically selected and as a
+        result, question based comparison is unavailable for the assignment.
+      </NoDataContainer>
+    )
+  }
 
+  if (error && error.dataSizeExceeded) {
+    return <DataSizeExceeded />
+  }
+
+  if (!questionAnalysis.metricInfo?.length || !settings.selectedTest.key) {
+    return (
+      <NoDataContainer>
+        {settings.requestFilters?.termId ? 'No data available currently.' : ''}
+      </NoDataContainer>
+    )
+  }
   return (
     <div>
-      {loading ? (
-        <SpinLoader position="fixed" />
-      ) : (
-        <>
-          <UpperContainer>
-            <StyledCard>
-              <StyledH3>
-                Question Performance Analysis | {assessmentName}
-              </StyledH3>
-              <SimpleStackedBarWithLineChartContainer
-                chartData={chartData}
-                onBarClickCB={onBarClickCB}
-                onResetClickCB={onResetClickCB}
-                filter={chartFilter}
-              />
-              <StyledP style={{ marginTop: '-30px' }}>
-                ITEMS (SORTED BY PERFORMANCE IN ASCENDING ORDER)
-              </StyledP>
-            </StyledCard>
-          </UpperContainer>
-          <TableContainer>
-            <StyledCard>
-              <Row type="flex" justify="start" className="parent-row">
-                <Col className="top-row-container">
-                  <Row type="flex" justify="space-between" className="top-row">
-                    <Col>
-                      <StyledH3>
-                        Detailed Performance Analysis{' '}
-                        {role !== 'teacher'
-                          ? `By ${dropDownKeyToLabel[compareBy]}`
-                          : ''}{' '}
-                        | {assessmentName}
-                      </StyledH3>
-                    </Col>
-                    <Col>
-                      {role !== 'teacher' ? (
-                        <ControlDropDown
-                          prefix="Compare by"
-                          by={compareByDropDownData[0]}
-                          selectCB={updateCompareByCB}
-                          data={compareByDropDownData}
-                        />
-                      ) : null}
-                    </Col>
-                  </Row>
+      <UpperContainer>
+        <StyledCard>
+          <StyledH3>Question Performance Analysis | {assessmentName}</StyledH3>
+          <SimpleStackedBarWithLineChartContainer
+            chartData={chartData}
+            onBarClickCB={onBarClickCB}
+            onResetClickCB={onResetClickCB}
+            filter={chartFilter}
+          />
+          <StyledP style={{ marginTop: '-30px' }}>
+            ITEMS (SORTED BY PERFORMANCE IN ASCENDING ORDER)
+          </StyledP>
+        </StyledCard>
+      </UpperContainer>
+      <TableContainer>
+        <StyledCard>
+          <Row type="flex" justify="start" className="parent-row">
+            <Col className="top-row-container">
+              <Row type="flex" justify="space-between" className="top-row">
+                <Col>
+                  <StyledH3>
+                    Detailed Performance Analysis{' '}
+                    {userRole !== roleuser.TEACHER
+                      ? `By ${dropDownKeyToLabel[compareBy]}`
+                      : ''}{' '}
+                    | {assessmentName}
+                  </StyledH3>
                 </Col>
-                <Col className="bottom-table-container">
-                  <QuestionAnalysisTable
-                    isCsvDownloading={isCsvDownloading}
-                    tableData={tableData}
-                    compareBy={compareBy}
-                    filter={chartFilter}
-                    role={role}
-                    compareByTitle={dropDownKeyToLabel[compareBy]}
-                  />
+                <Col>
+                  {userRole !== roleuser.TEACHER ? (
+                    <ControlDropDown
+                      prefix="Compare by"
+                      by={compareByDropDownData[0]}
+                      selectCB={updateCompareByCB}
+                      data={compareByDropDownData}
+                    />
+                  ) : null}
                 </Col>
               </Row>
-            </StyledCard>
-          </TableContainer>
-        </>
-      )}
+            </Col>
+            <Col className="bottom-table-container">
+              <QuestionAnalysisTable
+                isCsvDownloading={isCsvDownloading}
+                tableData={tableData}
+                compareBy={compareBy}
+                filter={chartFilter}
+                role={userRole}
+                compareByTitle={dropDownKeyToLabel[compareBy]}
+                isSharedReport={isSharedReport}
+              />
+            </Col>
+          </Row>
+        </StyledCard>
+      </TableContainer>
     </div>
   )
 }
@@ -170,9 +220,13 @@ QuestionAnalysis.propTypes = {
 export default connect(
   (state) => ({
     loading: getReportsQuestionAnalysisLoader(state),
+    error: getReportsQuestionAnalysisError(state),
     isCsvDownloading: getCsvDownloadingState(state),
     role: getUserRole(state),
     questionAnalysis: getReportsQuestionAnalysis(state),
   }),
-  { getQuestionAnalysis: getQuestionAnalysisRequestAction }
+  {
+    getQuestionAnalysis: getQuestionAnalysisRequestAction,
+    resetQuestionAnalysis: resetQuestionAnalysisAction,
+  }
 )(QuestionAnalysis)

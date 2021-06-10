@@ -9,10 +9,23 @@ import {
   select,
   take,
 } from 'redux-saga/effects'
-import { cloneDeep, values, get, omit, set, uniqBy, intersection } from 'lodash'
+import {
+  cloneDeep,
+  values,
+  get,
+  omit,
+  set,
+  uniqBy,
+  intersection,
+  uniq,
+} from 'lodash'
 import produce from 'immer'
-import { questionType } from '@edulastic/constants'
-import { helpers, notification } from '@edulastic/common'
+import { questionType, questionTitle } from '@edulastic/constants'
+import {
+  helpers,
+  notification,
+  captureSentryException,
+} from '@edulastic/common'
 import { push } from 'connected-react-router'
 import * as Sentry from '@sentry/browser'
 import { storeInLocalStorage } from '@edulastic/api/src/utils/Storage'
@@ -44,6 +57,7 @@ import {
 import {
   SET_RUBRIC_ID,
   UPDATE_QUESTION,
+  UPDATE_QUESTION_REQUEST,
   SET_FIRST_MOUNT,
   getCurrentQuestionSelector,
   getQuestionsArraySelector,
@@ -78,6 +92,13 @@ import {
 } from '../src/selectors/user'
 import { getTestEntitySelector } from '../AssignTest/duck'
 import { reSequenceQuestionsWithWidgets } from '../../common/utils/helpers'
+import { getCurrentLanguage } from '../../common/components/LanguageSelector/duck'
+import {
+  changeDataToPreferredLanguage,
+  changeDataInPreferredLanguage,
+} from '../../assessment/utils/question'
+import { getOptionsForMath } from '../../assessment/utils/variables'
+
 // constants
 export const resourceTypeQuestions = {
   PASSAGE: questionType.PASSAGE,
@@ -131,7 +152,7 @@ export const saveQuestionAction = (testId, isTestFlow, isEditFlow = false) => ({
 })
 
 export const setQuestionDataAction = (question) => ({
-  type: UPDATE_QUESTION,
+  type: UPDATE_QUESTION_REQUEST,
   payload: question,
 })
 
@@ -317,7 +338,8 @@ export const getQuestionSelector = createSelector(
 )
 export const getQuestionDataSelector = createSelector(
   getCurrentQuestionSelector,
-  (state) => state
+  getCurrentLanguage,
+  (state, currentLang) => changeDataToPreferredLanguage(state, currentLang)
 )
 export const getQuestionAlignmentSelector = createSelector(
   getCurrentQuestionSelector,
@@ -477,7 +499,10 @@ function* saveQuestionSaga({
     const locationState = yield select((state) => state.router.location.state)
     updateItemWithAlignmentDetails(itemDetail, alignments)
     let currentQuestionIds = getQuestionIds(itemDetail)
-    const { rowIndex, tabIndex } = locationState || { rowIndex: 0, tabIndex: 1 }
+    const { rowIndex, tabIndex } = locationState || {
+      rowIndex: 0,
+      tabIndex: 1,
+    }
     const { id } = question
     const entity = {
       ...question,
@@ -527,6 +552,7 @@ function* saveQuestionSaga({
       },
     }
 
+    let allQuestionsArePractice = data.data.questions.length > 0
     data = produce(data, (draftData) => {
       if (draftData.data.questions.length > 0) {
         if (data.itemLevelScoring) {
@@ -536,7 +562,10 @@ function* saveQuestionSaga({
             ['data', 'questions', 0, 'validation', 'validResponse', 'score'],
             data.itemLevelScore
           )
-          for (const [index] of draftData.data.questions.entries()) {
+          for (const [index, _question] of draftData.data.questions.entries()) {
+            if (allQuestionsArePractice && !_question?.validation?.unscored) {
+              allQuestionsArePractice = false
+            }
             if (index > 0) {
               set(
                 draftData,
@@ -558,18 +587,57 @@ function* saveQuestionSaga({
           //   draftData.data.questions[index].validation.validResponse.score =
           //     itemScore / draftData.data.questions.length;
           // }
+          for (const _question of draftData.data.questions) {
+            if (allQuestionsArePractice && !_question?.validation?.unscored) {
+              allQuestionsArePractice = false
+            }
+          }
           delete draftData.data.questions[0].itemScore
+        } else if (!data.itemLevelScoring) {
+          for (const _question of draftData.data.questions) {
+            if (allQuestionsArePractice && !_question?.validation?.unscored) {
+              allQuestionsArePractice = false
+            }
+          }
+        }
+
+        if (allQuestionsArePractice) {
+          draftData.itemLevelScore = 0
         }
 
         draftData.data.questions.forEach((q, index) => {
+          if (index === 0) {
+            if (data.itemLevelScoring && q.scoringDisabled) {
+              // on item level scoring item, first question removed situation.
+              if (!questionType.manuallyGradableQn.includes(data.type)) {
+                set(q, 'validation.validResponse.score', data.itemLevelScore)
+              }
+            }
+            /**
+             * after shuffle we need to reset scoringDisabled to false for the first question
+             * irrespective to itemLevelScoring
+             */
+            q.scoringDisabled = false
+          }
           if (index > 0) {
             if (data.itemLevelScoring) {
               q.scoringDisabled = true
             } else {
-              delete q.scoringDisabled
+              q.scoringDisabled = false
             }
           }
-          if (q.template) {
+
+          if (allQuestionsArePractice) {
+            q.itemScore = 0
+            q.validation.validResponse.score = 0
+            ;(q.validation.altResponses || []).forEach((altResponse) => {
+              altResponse.score = 0
+            })
+          }
+
+          const isMatrices =
+            q.type === questionType.MATH && q.title === questionTitle.MATRICES
+          if (q.template && !isMatrices) {
             q.template = helpers.removeIndexFromTemplate(q.template)
           }
           if (q.templateMarkUp) {
@@ -577,9 +645,20 @@ function* saveQuestionSaga({
           }
         })
       }
+
+      const itemGrades = draftData.grades.filter(
+        (item) => !!item && typeof item === 'string'
+      )
+      const itemSubjects = draftData.subjects.filter(
+        (item) => !!item && typeof item === 'string'
+      )
+      draftData.grades = uniq(itemGrades)
+      draftData.subjects = uniq(itemSubjects)
     })
 
     const redirectTestId = yield select(redirectTestIdSelector)
+    // In test flow, if test not created, testId is 'undefined' | EV-27944
+    const _testId = redirectTestId || (tId === 'undefined' ? undefined : tId)
     let item
     // if its a new testItem, create testItem, else update it.
     // TODO: do we need redirect testId here?!
@@ -587,21 +666,12 @@ function* saveQuestionSaga({
       const reqData = omit(data, '_id')
       item = yield call(testItemsApi.create, reqData)
     } else {
-      item = yield call(
-        testItemsApi.updateById,
-        itemDetail._id,
-        data,
-        redirectTestId
-      )
+      item = yield call(testItemsApi.updateById, itemDetail._id, data, _testId)
     }
     yield put(changeUpdatedFlagAction(false))
     if (item.testId) {
       yield put(setRedirectTestAction(item.testId))
     }
-    yield put({
-      type: UPDATE_ITEM_DETAIL_SUCCESS,
-      payload: { item },
-    })
 
     if (!saveAndPublishFlow) {
       notification({ type: 'success', messageKey: 'itemSavedSuccess' })
@@ -672,6 +742,10 @@ function* saveQuestionSaga({
             },
           })
         )
+        yield put({
+          type: UPDATE_ITEM_DETAIL_SUCCESS,
+          payload: { item },
+        })
         return
       }
 
@@ -703,6 +777,10 @@ function* saveQuestionSaga({
         // add item to test entity
         yield put(addAuthoredItemsAction({ item, tId, isEditFlow }))
       }
+      yield put({
+        type: UPDATE_ITEM_DETAIL_SUCCESS,
+        payload: { item },
+      })
       if (!isEditFlow) return
       yield put(changeViewAction('edit'))
       return
@@ -711,11 +789,9 @@ function* saveQuestionSaga({
       locationState.testAuthoring === false
         ? { testAuthoring: false, testId: locationState.testId }
         : {}
-    const {
-      previousTestId,
-      regradeFlow,
-      isTestFlow: _isTestFlow,
-    } = yield select((state) => state.router?.location?.state || {})
+    const { previousTestId, regradeFlow } = yield select(
+      (state) => state.router?.location?.state || {}
+    )
 
     if (itemDetail) {
       yield put(
@@ -736,8 +812,13 @@ function* saveQuestionSaga({
         })
       )
     }
+    yield put({
+      type: UPDATE_ITEM_DETAIL_SUCCESS,
+      payload: { item },
+    })
   } catch (err) {
     console.error(err)
+    captureSentryException(err)
     const errorMessage = 'Unable to save the question.'
     if (isTestFlow) {
       yield put(toggleCreateItemModalAction(false))
@@ -763,10 +844,11 @@ const containsEmptyField = (variables) => {
       formula = '',
       set: _set = '',
       sequence = '',
+      name,
     } = variables[key]
     switch (true) {
       // variables must be set
-      case type !== 'FORMULA' && !exampleValue:
+      case type !== 'FORMULA' && !exampleValue && exampleValue !== 0:
         return {
           hasEmptyField: true,
           errMessage: 'dynamic parameters has empty fields',
@@ -778,13 +860,12 @@ const containsEmptyField = (variables) => {
       case !!intersection(_keys, _set.split(',')).length:
         return {
           hasEmptyField: true,
-          errMessage: 'dynamic parameters can not use variable name inside set',
+          errMessage: `Your dynamic parameter "${name}" contains a text entry that is also a parameter name. This is not supported right now. Please rename the impacted parameters or entries so that there is no naming overlap.`,
         }
       case !!intersection(_keys, sequence.split(',')).length:
         return {
           hasEmptyField: true,
-          errMessage:
-            'dynamic parameters can not use variable name inside sequence',
+          errMessage: `Your dynamic parameter "${name}" contains a text entry that is also a parameter name. This is not supported right now. Please rename the impacted parameters or entries so that there is no naming overlap.`,
         }
       default:
         break
@@ -792,6 +873,12 @@ const containsEmptyField = (variables) => {
   }
   return { hasEmptyField: false, errMessage: '' }
 }
+
+const hasMathFormula = (variables) =>
+  Object.keys(variables).some((key) => {
+    const { type } = variables[key] || {}
+    return type === 'FORMULA'
+  })
 
 /**
  *
@@ -848,7 +935,7 @@ function* addAuthoredItemsToTestSaga({ payload }) {
 
 function* calculateFormulaSaga({ payload }) {
   try {
-    const getLatexValuePairs = (id, variables, example) => ({
+    const getLatexValuePairs = ({ id, variables, example, options }) => ({
       id,
       latexes: Object.keys(variables)
         .map((variableName) => variables[variableName])
@@ -872,6 +959,7 @@ function* calculateFormulaSaga({ payload }) {
             ? example[variableName]
             : variables[variableName].exampleValue,
       })),
+      ...options,
     })
 
     const question = yield select(getCurrentQuestionSelector)
@@ -879,10 +967,10 @@ function* calculateFormulaSaga({ payload }) {
     if (!question.variable || !question.variable.enabled) {
       return []
     }
+
     const variables =
       payload.data.variables || question.variable.variables || {}
     const examples = payload.data.examples || question.variable.examples || {}
-    const latexValuePairs = [getLatexValuePairs('definition', variables)]
 
     const { hasEmptyField = false, errMessage = '' } = containsEmptyField(
       variables
@@ -895,20 +983,31 @@ function* calculateFormulaSaga({ payload }) {
       return true
     }
 
-    if (examples) {
-      for (const example of examples) {
-        const pair = getLatexValuePairs(
-          `example${example.key}`,
-          variables,
-          example
-        )
-        if (pair.latexes.length > 0) {
-          latexValuePairs.push(pair)
+    let results = []
+    if (hasMathFormula(variables)) {
+      const options = question?.isMath
+        ? getOptionsForMath(get(question, 'validation.validResponse.value', []))
+        : {}
+      const latexValuePairs = [
+        getLatexValuePairs({ id: 'definition', variables, options }),
+      ]
+      if (examples) {
+        for (const example of examples) {
+          const pair = getLatexValuePairs({
+            id: `example${example.key}`,
+            variables,
+            example,
+            options,
+          })
+          if (pair.latexes.length > 0) {
+            latexValuePairs.push(pair)
+          }
         }
       }
+      results = yield call(evaluateApi.calculate, latexValuePairs)
     }
+
     const variable = { ...question.variable, examples, variables }
-    const results = yield call(evaluateApi.calculate, latexValuePairs)
     const newQuestion = { ...cloneDeep(question), variable }
     for (const result of results) {
       if (result.id === 'definition') {
@@ -926,7 +1025,7 @@ function* calculateFormulaSaga({ payload }) {
     }
 
     yield put({
-      type: UPDATE_QUESTION,
+      type: UPDATE_QUESTION_REQUEST,
       payload: newQuestion,
     })
   } catch (err) {
@@ -951,11 +1050,11 @@ function* loadQuestionSaga({ payload }) {
         push({
           pathname: `${pathname}/questions/edit/${data.type}`,
           state: {
+            ...locationState,
             backText: 'question edit',
             backUrl: pathname,
             rowIndex,
             isPassageWithQuestions: isPassageWidget,
-            ...locationState,
           },
         })
       )
@@ -984,6 +1083,20 @@ function* loadQuestionSaga({ payload }) {
   }
 }
 
+function* updateQuestionSaga({ payload }) {
+  const prevQuestion = yield select(getCurrentQuestionSelector)
+  const currentLanguage = yield select(getCurrentLanguage)
+
+  yield put({
+    type: UPDATE_QUESTION,
+    payload: changeDataInPreferredLanguage(
+      currentLanguage,
+      prevQuestion,
+      payload
+    ),
+  })
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_QUESTION_REQUEST, receiveQuestionSaga),
@@ -991,5 +1104,6 @@ export function* watcherSaga() {
     yield takeEvery(LOAD_QUESTION, loadQuestionSaga),
     yield takeLatest(CALCULATE_FORMULA, calculateFormulaSaga),
     yield takeEvery(ADD_AUTHORED_ITEMS_TO_TEST, addAuthoredItemsToTestSaga),
+    yield takeLatest(UPDATE_QUESTION_REQUEST, updateQuestionSaga),
   ])
 }

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { connect } from 'react-redux'
-import { get, head, toLower } from 'lodash'
+import { get, head, isEmpty } from 'lodash'
 
 import { SpinLoader, notification } from '@edulastic/common'
 import AddToGroupModal from '../../../common/components/Popups/AddToGroupModal'
@@ -9,20 +9,21 @@ import AnalyseByFilter from '../common/components/filters/AnalyseByFilter'
 import TrendStats from '../common/components/trend/TrendStats'
 import TrendTable from '../common/components/trend/TrendTable'
 import FeaturesSwitch from '../../../../../features/components/FeaturesSwitch'
-
+import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import {
   downloadCSV,
   filterAccordingToRole,
   getFormattedName,
 } from '../../../common/util'
+import { NoDataContainer } from '../../../common/styled'
 import { getCsvDownloadingState } from '../../../ducks'
-import { getUserRole, getUser } from '../../../../src/selectors/user'
-import { getFiltersSelector } from '../common/filterDataDucks'
-import { usefetchProgressHook } from '../common/hooks'
+import { getUserRole } from '../../../../src/selectors/user'
 import {
   getReportsStudentProgress,
   getReportsStudentProgressLoader,
   getStudentProgressRequestAction,
+  getReportsStudentProgressError,
+  resetStudentProgressAction,
 } from './ducks'
 import { useGetBandData } from './hooks'
 
@@ -54,29 +55,66 @@ const compareBy = {
 
 const StudentProgress = ({
   getStudentProgressRequest,
+  resetStudentProgress,
   studentProgress,
   MARFilterData,
   isCsvDownloading,
   settings,
   loading,
+  error,
   role,
-  user,
-  filters,
   pageTitle,
   location,
   ddfilter,
+  sharedReport,
+  toggleFilter,
 }) => {
-  const profiles = MARFilterData?.data?.result?.bandInfo || []
+  const [userRole, sharedReportFilters, isSharedReport] = useMemo(
+    () => [
+      sharedReport?.sharedBy?.role || role,
+      sharedReport?._id
+        ? { ...sharedReport.filters, reportId: sharedReport._id }
+        : null,
+      !!sharedReport?._id,
+    ],
+    [sharedReport]
+  )
+  const profiles = get(MARFilterData, 'data.result.bandInfo', [])
 
   const bandInfo =
-    profiles.find((profile) => profile._id === filters.profileId)
-      ?.performanceBand ||
+    profiles.find(
+      (profile) =>
+        profile._id ===
+        (sharedReportFilters || settings.requestFilters).profileId
+    )?.performanceBand ||
     profiles[0]?.performanceBand ||
     DefaultBandInfo
 
-  usefetchProgressHook(settings, getStudentProgressRequest, user)
-  const [analyseBy, setAnalyseBy] = useState(head(dropDownData.analyseByData))
+  // support for tests pagination from backend
+  const [pageFilters, setPageFilters] = useState({
+    page: 0, // set to 0 initially to prevent multiple api request on tab change
+    pageSize: 25,
+  })
 
+  useEffect(() => () => resetStudentProgress(), [])
+
+  // set initial page filters
+  useEffect(() => {
+    setPageFilters({ ...pageFilters, page: 1 })
+    if (settings.requestFilters.termId || settings.requestFilters.reportId) {
+      return () => toggleFilter(null, false)
+    }
+  }, [settings.requestFilters])
+
+  // get paginated data
+  useEffect(() => {
+    const q = { ...settings.requestFilters, ...pageFilters, ...ddfilter }
+    if ((q.termId || q.reportId) && pageFilters.page) {
+      getStudentProgressRequest(q)
+    }
+  }, [pageFilters])
+
+  const [analyseBy, setAnalyseBy] = useState(head(dropDownData.analyseByData))
   const [selectedTrend, setSelectedTrend] = useState('')
   const [showAddToGroupModal, setShowAddToGroupModal] = useState(false)
   const [selectedRowKeys, onSelectChange] = useState([])
@@ -86,65 +124,69 @@ const StudentProgress = ({
   )
 
   useEffect(() => {
-    setMetricInfo(get(studentProgress, 'data.result.metricInfo', []))
+    const metrics = get(studentProgress, 'data.result.metricInfo', [])
+    setMetricInfo(metrics)
+    if (
+      (settings.requestFilters.termId || settings.requestFilters.reportId) &&
+      !loading &&
+      !isEmpty(studentProgress) &&
+      !metrics.length
+    ) {
+      toggleFilter(null, true)
+    }
   }, [studentProgress])
 
-  useEffect(() => {
-    const filteredInfo = get(
-      studentProgress,
-      'data.result.metricInfo',
-      []
-    ).filter((info) => {
-      if (ddfilter.gender !== 'all' && ddfilter.gender !== info.gender) {
-        return false
-      }
-      if (
-        ddfilter.frlStatus !== 'all' &&
-        toLower(ddfilter.frlStatus) !== toLower(info.frlStatus)
-      ) {
-        return false
-      }
-      if (
-        ddfilter.ellStatus !== 'all' &&
-        toLower(ddfilter.ellStatus) !== toLower(info.ellStatus)
-      ) {
-        return false
-      }
-      if (
-        ddfilter.iepStatus !== 'all' &&
-        toLower(ddfilter.iepStatus) !== toLower(info.iepStatus)
-      ) {
-        return false
-      }
-      if (ddfilter.race !== 'all' && ddfilter.race !== info.race) {
-        return false
-      }
-      return true
-    })
-    setMetricInfo(filteredInfo)
-  }, [ddfilter])
+  const { metaInfo = [], testsCount = 0, incompleteTests = [] } = get(
+    studentProgress,
+    'data.result',
+    {}
+  )
 
-  const { orgData = [], testData = [] } = get(MARFilterData, 'data.result', {})
+  const filteredInfoWithIncompleteTestData = metricInfo.map((metric) => {
+    metric.isIncomplete = incompleteTests.includes(metric.testId)
+    return metric
+  })
+
   const [data, trendCount] = useGetBandData(
-    metricInfo,
+    filteredInfoWithIncompleteTestData,
     compareBy.key,
-    orgData,
+    metaInfo,
     selectedTrend,
     bandInfo
   )
 
   if (loading) {
-    return <SpinLoader position="fixed" />
+    return (
+      <SpinLoader
+        tip="Please wait while we gather the required information..."
+        position="fixed"
+      />
+    )
   }
 
-  const customTableColumns = filterAccordingToRole(tableColumns, role)
+  if (isEmpty(metricInfo)) {
+    return (
+      <NoDataContainer>
+        {settings.requestFilters?.termId ? 'No data available currently.' : ''}
+      </NoDataContainer>
+    )
+  }
+
+  if (error && error.dataSizeExceeded) {
+    return <DataSizeExceeded />
+  }
+  const customTableColumns = filterAccordingToRole(tableColumns, userRole)
 
   const onTrendSelect = (trend) =>
     setSelectedTrend(trend === selectedTrend ? '' : trend)
   const onCsvConvert = (_data) => downloadCSV(`Student Progress.csv`, _data)
 
   const dataSource = data
-    .map((d) => ({ ...d, studentName: getFormattedName(d.studentName) }))
+    .map((d) => ({
+      ...d,
+      studentName: getFormattedName(d.studentName),
+      schoolName: isEmpty(d.schoolName) ? '-' : d.schoolName,
+    }))
     .sort((a, b) =>
       a.studentName.toLowerCase().localeCompare(b.studentName.toLowerCase())
     )
@@ -193,11 +235,12 @@ const StudentProgress = ({
         />
       </FeaturesSwitch>
       <TrendStats
-        heading="How well are students progressing ?"
+        heading="Student progress over time"
         trendCount={trendCount}
         selectedTrend={selectedTrend}
         onTrendSelect={onTrendSelect}
         handleAddToGroupClick={handleAddToGroupClick}
+        isSharedReport={isSharedReport}
         renderFilters={() => (
           <AnalyseByFilter
             onFilterChange={setAnalyseBy}
@@ -206,27 +249,33 @@ const StudentProgress = ({
         )}
       />
       <TrendTable
-        filters={filters}
+        showTestIncompleteText={!!incompleteTests?.length}
+        filters={sharedReportFilters || settings.requestFilters}
         onCsvConvert={onCsvConvert}
         isCsvDownloading={isCsvDownloading}
         data={dataSource}
         rowSelection={rowSelection}
-        testData={testData}
         compareBy={compareBy}
         analyseBy={analyseBy}
         ddfilter={ddfilter}
-        rawMetric={metricInfo}
+        rawMetric={filteredInfoWithIncompleteTestData}
         customColumns={customTableColumns}
         isCellClickable
         location={location}
         pageTitle={pageTitle}
+        isSharedReport={isSharedReport}
+        backendPagination={{
+          ...pageFilters,
+          itemsCount: testsCount,
+        }}
+        setBackendPagination={setPageFilters}
         toolTipContent={(record) => (
           <>
             <TableTooltipRow
               title={`Student Name : `}
               value={record.studentName}
             />
-            {role === 'teacher' ? (
+            {userRole === 'teacher' ? (
               <TableTooltipRow
                 title={`Class Name : `}
                 value={record.groupName}
@@ -235,7 +284,7 @@ const StudentProgress = ({
               <>
                 <TableTooltipRow
                   title={`School Name : `}
-                  value={record.schoolName}
+                  value={record.schoolName || `-`}
                 />
                 <TableTooltipRow
                   title={`Teacher Name : `}
@@ -254,13 +303,13 @@ const enhance = connect(
   (state) => ({
     studentProgress: getReportsStudentProgress(state),
     loading: getReportsStudentProgressLoader(state),
-    filters: getFiltersSelector(state),
+    error: getReportsStudentProgressError(state),
     role: getUserRole(state),
-    user: getUser(state),
     isCsvDownloading: getCsvDownloadingState(state),
   }),
   {
     getStudentProgressRequest: getStudentProgressRequestAction,
+    resetStudentProgress: resetStudentProgressAction,
   }
 )
 

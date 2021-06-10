@@ -5,11 +5,19 @@ import { HeaderMidContainer } from '@edulastic/common/src/components/MainHeader'
 import { StyledTabs } from '@edulastic/common/src/components/HeaderTabs'
 import { playlistPageNavButtons } from './navButtonsList'
 
-const PlaylistPageNav = ({ onChange, current, showDifferentiationTab }) => (
+const PlaylistPageNav = ({
+  onChange,
+  current,
+  showDifferentiationTab,
+  showInsightTab,
+}) => (
   <HeaderMidContainer>
     <StyledTabs>
       {playlistPageNavButtons.map(({ value, text }) => {
         if (value === 'differentiation' && !showDifferentiationTab) {
+          return null
+        }
+        if (value === 'insights' && !showInsightTab) {
           return null
         }
         return (

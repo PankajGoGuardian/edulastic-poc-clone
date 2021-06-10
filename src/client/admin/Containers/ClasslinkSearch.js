@@ -29,8 +29,8 @@ const listOfRadioOptions = [
   },
   {
     id: 'atlasId',
-    label: 'Classlink Id',
-    message: 'Please enter valid Classlink ID',
+    label: 'Edlink Id',
+    message: 'Please enter valid Edlink ID',
   },
 ]
 

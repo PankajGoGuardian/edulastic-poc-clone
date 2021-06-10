@@ -117,10 +117,10 @@ const Criteria = ({
   }
 
   return (
-    <CriteriaContainer isEditable={isEditable}>
+    <CriteriaContainer isEditable={isEditable} data-cy="criteria">
       <CriteriaHeader>
         <CriteriaDetails>
-          <div>
+          <div data-cy="criteriaName">
             <TextInput
               id={id}
               isEditable={isEditable}
@@ -136,6 +136,7 @@ const Criteria = ({
             <CustomStyleBtn
               margin="0px"
               title="Clone"
+              data-cy="cloneCriteria"
               onClick={handleDuplicate}
             >
               <FontAwesomeIcon icon={faClone} aria-hidden="true" />
@@ -146,6 +147,7 @@ const Criteria = ({
             <DeleteCriteria
               className="delete-critera-button"
               title="Delete"
+              data-cy="deleteCriteria"
               onClick={handleDelete}
             >
               <FontAwesomeIcon icon={faTrash} aria-hidden="true" />
@@ -168,7 +170,11 @@ const Criteria = ({
         </RatingSection>
         {isEditable && (
           <AddRatingSection>
-            <div className="add-rating-button" onClick={handleAddRating}>
+            <div
+              className="add-rating-button"
+              data-cy="addRating"
+              onClick={handleAddRating}
+            >
               <span>
                 <Icon type="plus" />
               </span>

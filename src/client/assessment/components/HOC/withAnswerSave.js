@@ -4,12 +4,14 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
 import { AnswerContext } from '@edulastic/common'
+import { isUndefined } from 'lodash'
 import { setUserAnswerAction } from '../../actions/answers'
 import {
   getUserAnswerSelector,
   getEvaluationByIdSelector,
   getUserPrevAnswerSelector,
 } from '../../selectors/answers'
+import { changedPlayerContentAction } from '../../../author/sharedDucks/testPlayer'
 
 const getQuestionId = (questionId) => questionId || 'tmp'
 
@@ -20,21 +22,26 @@ export default (WrappedComponent) => {
     evaluation,
     userAnswer: _userAnswer,
     userPrevAnswer,
+    changedPlayerContent,
     ...props
   }) => {
     const { data: question } = props
     const questionId = getQuestionId(question?.id)
     const answerContext = useContext(AnswerContext)
-
     const saveAnswer = (data) => {
       if (answerContext.isAnswerModifiable && questionId) {
-        setUserAnswer(questionId, data)
+        const _testItemId =
+          testItemId || props.itemId || props.data?.activity?.testItemId
+        setUserAnswer(_testItemId, questionId, data)
+        changedPlayerContent()
       }
     }
 
     const userAnswer = answerContext.hideAnswers
       ? undefined
-      : _userAnswer || userPrevAnswer
+      : isUndefined(_userAnswer)
+      ? userPrevAnswer
+      : _userAnswer
 
     // `isReviewTab` is being only passed from test page's review tab, in which case
     // userAnswer nor evaluation should be propagated forward. Doing the same will cause
@@ -68,6 +75,7 @@ export default (WrappedComponent) => {
       },
       {
         setUserAnswer: setUserAnswerAction,
+        changedPlayerContent: changedPlayerContentAction,
       }
     )
   )

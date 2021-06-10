@@ -1,17 +1,10 @@
-import React, { useState, useContext } from 'react'
+import React, { useState } from 'react'
+import UnScored from '@edulastic/common/src/components/Unscored'
 import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { Button } from 'antd'
-import { get } from 'lodash'
-import { IconMoveArrows, IconPencilEdit, IconTrash } from '@edulastic/icons'
-import { white } from '@edulastic/colors'
+import { get, every } from 'lodash'
 import { DragSource } from 'react-dnd'
-import { withNamespaces } from '@edulastic/localization'
-
-import ItemDetailContext, {
-  COMPACT,
-} from '@edulastic/common/src/contexts/ItemDetailContext'
 import QuestionWrapper from '../../../../../../assessment/components/QuestionWrapper'
 import { Types } from '../../../../constants'
 import {
@@ -20,10 +13,12 @@ import {
   setItemLevelScoringAction,
 } from '../../../../ducks'
 import {
+  getIsEditDisbledSelector,
   getQuestionByIdSelector,
   setQuestionScoreAction,
 } from '../../../../../sharedDucks/questions'
-import { Container, Buttons } from './styled'
+import Ctrls from './Controls'
+import { Container, WidgetContainer, ButtonsContainer } from './styled'
 
 const ItemDetailWidget = ({
   widget,
@@ -32,41 +27,69 @@ const ItemDetailWidget = ({
   isDragging,
   connectDragSource,
   connectDragPreview,
-  t,
   widgetIndex,
   question,
   flowLayout,
   itemData,
-  setItemLevelScoring,
   setItemLevelScore,
   setQuestionScore,
   rowIndex,
   previewTab,
+  itemEditDisabled,
+  dataCy,
 }) => {
-  const { layoutType } = useContext(ItemDetailContext)
   const [showButtons, setShowButtons] = useState(!flowLayout)
+
   const onMouseEnterHander = () => {
     if (flowLayout) setShowButtons(true)
   }
+
   const onMouseLeaveHander = () => {
     if (flowLayout) setShowButtons(false)
   }
+
+  const onChangeQuestionLevelPoint = (score) => {
+    setQuestionScore({ score: +score, qid: question.id })
+  }
+
+  const onChangeItemLevelPoint = (score) => {
+    setItemLevelScore(+score)
+  }
+
   const showPoints = !(rowIndex === 0 && itemData.rows.length > 1)
   const isPointsBlockVisible =
-    itemData.itemLevelScoring && widgetIndex === 0 && showPoints
+    (itemData.itemLevelScoring && widgetIndex === 0 && showPoints) ||
+    widget.widgetType === 'question'
+
+  const score = itemData.itemLevelScoring
+    ? itemData.itemLevelScore
+    : get(question, 'validation.validResponse.score', 0)
+  const unscored = itemData.itemLevelScoring
+    ? every(
+        get(itemData, 'data.questions', []),
+        ({ validation }) => validation && validation.unscored
+      )
+    : get(question, 'validation.unscored', false)
+  const scoreChangeHandler = itemData.itemLevelScoring
+    ? onChangeItemLevelPoint
+    : onChangeQuestionLevelPoint
+
+  const [isEditDisabled, disabledReason] = itemEditDisabled
+  const hidePointsBlock =
+    (widgetIndex > 0 && itemData.itemLevelScoring) ||
+    (question.rubrics && !itemData.itemLevelScoring) ||
+    isEditDisabled
   return (
     connectDragPreview &&
     connectDragSource &&
     connectDragPreview(
-      <div onMouseEnter={onMouseEnterHander} onMouseLeave={onMouseLeaveHander}>
+      <div
+        onMouseEnter={onMouseEnterHander}
+        onMouseLeave={onMouseLeaveHander}
+        data-cy={dataCy}
+      >
         <Container isDragging={isDragging} flowLayout={flowLayout}>
-          <div
-            style={{
-              flex: '10',
-              maxWidth: '100%',
-              paddingRight: isPointsBlockVisible ? '30px' : '',
-            }}
-          >
+          <WidgetContainer>
             {(widget.widgetType === 'question' ||
               widget.widgetType === 'resource') && (
               <QuestionWrapper
@@ -81,71 +104,56 @@ const ItemDetailWidget = ({
                 disableResponse
               />
             )}
-          </div>
+          </WidgetContainer>
 
           {(!flowLayout || showButtons) && (
-            <div style={{ flex: '1' }}>
-              <Buttons>
-                {isPointsBlockVisible && (
-                  <div className="points">
-                    Points :{' '}
-                    <input
-                      className="ant-input"
-                      type="number"
-                      min={0.5}
-                      step={0.5}
-                      value={itemData.itemLevelScore}
-                      onChange={(e) => {
-                        const v = parseFloat(e.target.value)
-                        setItemLevelScore(v)
-                      }}
-                    />
-                  </div>
-                )}
+            <ButtonsContainer>
+              {!hidePointsBlock ? (
+                !(unscored && showPoints) ? (
+                  <Ctrls.Point
+                    value={score}
+                    onChange={scoreChangeHandler}
+                    data-cy="pointUpdate"
+                    visible={isPointsBlockVisible}
+                    isRubricQuestion={
+                      !!question.rubrics && !itemData.itemLevelScoring
+                    }
+                    itemLevelScoring={itemData.itemLevelScoring}
+                  />
+                ) : (
+                  <UnScored
+                    width="50px"
+                    height="50px"
+                    top={`${itemData.itemLevelScoring ? -80 : -50}px`}
+                  />
+                )
+              ) : null}
 
-                {!itemData.itemLevelScoring &&
-                  widget.widgetType === 'question' && (
-                    <div className="points">
-                      Points :{' '}
-                      <input
-                        className="ant-input"
-                        type="number"
-                        min={0.5}
-                        step={0.5}
-                        value={get(
-                          question,
-                          'validation.validResponse.score',
-                          0
-                        )}
-                        onChange={(e) => {
-                          const v = parseFloat(e.target.value)
-                          setQuestionScore({ score: v, qid: question.id })
-                          //
-                        }}
-                      />
-                    </div>
-                  )}
-
-                {connectDragSource(
+              {isEditDisabled ? (
+                <div>
+                  <Ctrls.Move
+                    disabled={isEditDisabled}
+                    disabledReason={disabledReason}
+                  />
+                </div>
+              ) : (
+                connectDragSource(
                   <div>
-                    <Button title={t('move')} shape="circle">
-                      <IconMoveArrows
-                        color={white}
-                        style={{ fontSize: 11 }}
-                        width={16}
-                        height={16}
-                      />
-                    </Button>
+                    <Ctrls.Move />
                   </div>
-                )}
-                <Button title={t('edit')} onClick={onEdit} shape="circle">
-                  <IconPencilEdit color={white} width={16} height={16} />
-                </Button>
-                <Button title={t('delete')} onClick={onDelete} shape="circle">
-                  <IconTrash color={white} width={16} height={16} />
-                </Button>
-              </Buttons>
-            </div>
+                )
+              )}
+              <Ctrls.Edit
+                onEdit={onEdit}
+                disabled={isEditDisabled}
+                disabledReason={disabledReason}
+              />
+              <Ctrls.Delete
+                onDelete={onDelete}
+                disabled={isEditDisabled}
+                disabledReason={disabledReason}
+              />
+            </ButtonsContainer>
           )}
         </Container>
       </div>
@@ -165,16 +173,23 @@ ItemDetailWidget.propTypes = {
   rowIndex: PropTypes.number.isRequired,
   widgetIndex: PropTypes.number.isRequired,
   flowLayout: PropTypes.bool,
+  isPassageQuestion: PropTypes.bool,
 }
 
 const itemSource = {
-  beginDrag({ setItemDetailDragging, widgetIndex, rowIndex }) {
+  beginDrag({
+    setItemDetailDragging,
+    widgetIndex,
+    rowIndex,
+    isPassageQuestion,
+  }) {
     setTimeout(() => {
       setItemDetailDragging(true)
     }, 0)
     return {
       rowIndex,
       widgetIndex,
+      isPassageQuestion,
     }
   },
   endDrag({ setItemDetailDragging }) {
@@ -192,10 +207,10 @@ function collect(c, monitor) {
 }
 
 const enhance = compose(
-  withNamespaces('default'),
   connect(
     (state, { widget }) => ({
       question: getQuestionByIdSelector(state, widget.reference),
+      itemEditDisabled: getIsEditDisbledSelector(state),
     }),
     {
       setItemDetailDragging: setItemDetailDraggingAction,

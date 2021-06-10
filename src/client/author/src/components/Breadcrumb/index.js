@@ -7,44 +7,36 @@ import styled, { css } from 'styled-components'
 import { linkColor, themeColorBlue } from '@edulastic/colors'
 
 const BreadCrumb = (props) => {
-  const { data, style, ellipsis } = props
+  const { data, style, ellipsis, hasStickyHeader } = props
 
   return (
     <Container
       ellipsis={ellipsis}
       style={style}
-      hasStickyHeader={props.hasStickyHeader}
+      hasStickyHeader={hasStickyHeader}
     >
       <Breadcrumb>
         {Array.isArray(data) &&
           data.map((breadCrumb = {}, index) => (
             <Breadcrumb.Item key={`bread${index}`}>
-              {index !== data.length - 1 && breadCrumb.state ? (
+              {index !== data.length - 1 &&
+              breadCrumb.state &&
+              breadCrumb.to ? (
                 <Link
                   to={{ pathname: breadCrumb.to, state: breadCrumb.state }}
                   onClick={breadCrumb.onClick}
                 >
                   {/* pass search here after processing the string or process string here by calling a helper function in utils, currently no such requirement */}
-                  <span
-                    dangerouslySetInnerHTML={{
-                      __html: breadCrumb.title?.toLowerCase(),
-                    }}
-                  />
+                  <span>{breadCrumb.title?.toLowerCase()}</span>
                 </Link>
-              ) : index !== data.length - 1 && !breadCrumb.state ? (
+              ) : index !== data.length - 1 &&
+                !breadCrumb.state &&
+                breadCrumb.to ? (
                 <Link to={breadCrumb.to} onClick={breadCrumb.onClick}>
-                  <span
-                    dangerouslySetInnerHTML={{
-                      __html: breadCrumb.title?.toLowerCase(),
-                    }}
-                  />
+                  <span>{breadCrumb.title?.toLowerCase()}</span>
                 </Link>
               ) : (
-                <span
-                  dangerouslySetInnerHTML={{
-                    __html: breadCrumb.title?.toLowerCase(),
-                  }}
-                />
+                <span>{breadCrumb.title?.toLowerCase()}</span>
               )}
             </Breadcrumb.Item>
           ))}

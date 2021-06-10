@@ -2,9 +2,8 @@ import React, { useEffect, useState, useRef } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
+import _qs from 'qs'
 import { Row, Col } from 'antd'
-import queryString from 'query-string'
-
 import { withRouter } from 'react-router-dom'
 import { testsApi } from '@edulastic/api'
 import {
@@ -76,7 +75,7 @@ function useTestFetch(testId, type, filterQuestions, assignmentId, groupId) {
 
 const PrintAssessment = ({ match, userRole, features, location }) => {
   const containerRef = useRef(null)
-  const query = queryString.parse(location.search)
+  const query = _qs.parse(location.search, { ignoreQueryPrefix: true })
   const { type, qs, assignmentId, groupId } = query
   const filterQuestions = type === 'custom' ? formatQuestionLists(qs) : []
   const { testId } = match.params
@@ -97,7 +96,7 @@ const PrintAssessment = ({ match, userRole, features, location }) => {
     !isAdmin &&
     (test?.testContentVisibility === testContentVisibilityOptions.HIDDEN ||
       test?.testContentVisibility === testContentVisibilityOptions.GRADING)
-
+  const questions = test.questions.filter((q) => q.type)
   return (
     <>
       <PrintActionWrapper />
@@ -117,9 +116,9 @@ const PrintAssessment = ({ match, userRole, features, location }) => {
           <span> Created By {test?.createdBy?.name} </span> <br />
         </StyledHeader>
         <hr />
-        {!isContentHidden ? (
+        {!isContentHidden && questions.length ? (
           <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
-            {test.questions.map((question, index) => {
+            {questions.map((question, index) => {
               const questionHeight =
                 question.type == 'clozeImageDropDown'
                   ? { minHeight: '500px' }
@@ -168,6 +167,10 @@ const PrintAssessment = ({ match, userRole, features, location }) => {
               </StyledAnswerWrapper>
             )}
           </AnswerContext.Provider>
+        ) : !questions.length && !isContentHidden ? (
+          <div style={{ textAlign: 'center' }}>
+            <b>You are not authorized to view the test content.</b>
+          </div>
         ) : (
           <div>
             <b>
@@ -277,6 +280,15 @@ const PrintAssessmentContainer = styled.div`
   }
   @page {
     margin: 10px;
+  }
+  /** 
+  * To avoid overflowing of sqare-root sign while printing  
+  * check https://snapwiz.atlassian.net/browse/EV-24370
+ */
+  @media print {
+    .hide-tail {
+      overflow: hidden !important;
+    }
   }
 `
 

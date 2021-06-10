@@ -2,17 +2,18 @@ import { createSelector } from 'reselect'
 import { createAction } from 'redux-starter-kit'
 import { call, put, all, takeEvery, select } from 'redux-saga/effects'
 import { push, replace } from 'connected-react-router'
-import { omit, get, set } from 'lodash'
+import { omit, get, set, isNumber, isEmpty } from 'lodash'
 import {
   curriculumSequencesApi,
   contentSharingApi,
   testsApi,
+  resourcesApi,
 } from '@edulastic/api'
 import produce from 'immer'
 import { notification } from '@edulastic/common'
 import { white, themeColor } from '@edulastic/colors'
 import {
-  SET_MAX_ATTEMPT,
+  // SET_MAX_ATTEMPT,
   UPDATE_TEST_IMAGE,
   SET_SAFE_BROWSE_PASSWORD,
 } from '../src/constants/actions'
@@ -296,62 +297,85 @@ const moveContentInPlaylist = (playlist, payload) => {
     fromModuleIndex,
     fromContentIndex,
     testItem,
+    afterIndex,
   } = payload
-  let newPlaylist
-  if (!toContentIndex && fromModuleIndex >= 0) {
-    newPlaylist = produce(playlist, (draft) => {
-      if (toModuleIndex !== 0 && !toModuleIndex) {
-        return notification({ messageKey: 'invalidModuleSelect' })
-      }
-      if (draft.modules[toModuleIndex] && draft.modules[fromModuleIndex]) {
-        draft.modules[toModuleIndex].data.push(
-          draft.modules[fromModuleIndex].data[fromContentIndex]
-        )
-        draft.modules[fromModuleIndex].data.splice(fromContentIndex, 1)
-      }
+  let newPlaylist = playlist
+
+  // If no valid destination module.
+  if (
+    (toModuleIndex !== 0 && !toModuleIndex) ||
+    !playlist.modules?.[toModuleIndex]
+  ) {
+    notification({ messageKey: 'invalidModuleSelect' })
+    return newPlaylist
+  }
+
+  // If valid fromModuleIndex but module is not present in playlist
+  if (fromModuleIndex >= 0 && !playlist.modules?.[fromModuleIndex]) {
+    return newPlaylist
+  }
+
+  const newItem =
+    fromModuleIndex >= 0
+      ? playlist.modules[fromModuleIndex]?.data[fromContentIndex]
+      : testItem
+
+  // If the item is already present in destination module
+  const isItemExistingInModule = playlist.modules[toModuleIndex]?.data?.some(
+    (x) => x?.contentId === (newItem.id || newItem.contentId)
+  )
+
+  if (isItemExistingInModule) {
+    notification({
+      msg: `Dropped ${
+        newItem.contentType === 'test' ? 'Test' : 'Resource'
+      } already exists in this module`,
     })
-  } else if (fromModuleIndex >= 0) {
+
+    return newPlaylist
+  }
+
+  if (fromModuleIndex >= 0) {
     newPlaylist = produce(playlist, (draft) => {
-      if (toModuleIndex !== 0 && !toModuleIndex) {
-        return notification({ messageKey: 'invalidModuleSelect' })
+      if (!toContentIndex) {
+        // Move item to different module
+        draft.modules[toModuleIndex].data.push(newItem)
+      } else {
+        // Move item in same module
+        draft.modules[toModuleIndex].data.splice(toContentIndex, 0, newItem)
       }
-      draft.modules[toModuleIndex].data.splice(
-        toContentIndex,
-        0,
-        draft.modules[fromModuleIndex].data[fromContentIndex]
-      )
+
       draft.modules[fromModuleIndex].data.splice(fromContentIndex, 1)
     })
   } else if (testItem) {
-    const itemExistsInModule = playlist.modules?.[toModuleIndex]?.data?.find(
-      (x) => x?.contentId === testItem.id
-    )
-    if (!itemExistsInModule) {
-      set(testItem, 'contentId', testItem.id)
-      const attrsToOmit = ['id', 'type', 'fromPlaylistTestsBox']
+    // Moving item from test search to a module
+    set(testItem, 'contentId', testItem.id)
+    const attrsToOmit = ['id', 'type', 'fromPlaylistTestsBox']
 
-      if (testItem.contentType === 'test') {
-        attrsToOmit.push(...['contentDescription', 'contentUrl'])
-      } else {
-        attrsToOmit.push('standardIdentifiers')
-      }
-
-      const newItem = omit(testItem, attrsToOmit)
-
+    if (testItem.contentType === 'test') {
+      attrsToOmit.push(...['contentDescription', 'contentUrl'])
       newPlaylist = produce(playlist, (draft) => {
-        draft.modules[toModuleIndex].data.push(newItem)
+        if (isNumber(afterIndex) && afterIndex >= 0) {
+          draft.modules[toModuleIndex].data.splice(afterIndex + 1, 0, newItem)
+        } else {
+          draft.modules[toModuleIndex].data.push(newItem)
+        }
       })
     } else {
-      notification({
-        msg: `Dropped ${
-          testItem.contentType === 'test' ? 'Test' : 'Resource'
-        } already exists in this module`,
-      })
-      newPlaylist = playlist
+      attrsToOmit.push('standardIdentifiers')
     }
-  } else {
-    newPlaylist = playlist
+
+    const newTestItem = omit(testItem, attrsToOmit)
+
+    newPlaylist = produce(playlist, (draft) => {
+      if (isNumber(afterIndex) && afterIndex >= 0) {
+        draft.modules[toModuleIndex].data.splice(afterIndex + 1, 0, newTestItem)
+      } else {
+        draft.modules[toModuleIndex].data.push(newTestItem)
+      }
+    })
   }
+
   return newPlaylist
 }
 
@@ -399,7 +423,10 @@ function deleteModuleFromPlaylist(playlist, payload) {
   const newPlaylist = produce(playlist, (draft) => {
     if (payload !== undefined) {
       draft.modules.splice(payload, 1)
-      notification({ type: 'success', messageKey: 'moduleRemovedFromPlaylist' })
+      notification({
+        type: 'success',
+        messageKey: 'moduleRemovedFromPlaylist',
+      })
     } else {
       notification({ messageKey: 'moduleRemovedFromPlaylistErr' })
     }
@@ -420,7 +447,6 @@ function resequenceModulesInPlaylist(playlist, payload) {
 
 function resequenceTestsInModule(playlist, payload) {
   const { oldIndex, newIndex, mIndex } = payload
-  console.log('playlist', playlist)
   const newPlaylist = produce(playlist, (draft) => {
     const obj = draft.modules[mIndex].data.splice(oldIndex, 1)
     draft.modules[mIndex].data.splice(newIndex, 0, obj[0])
@@ -464,6 +490,9 @@ function addSubresource(entity, payload) {
     fromPlaylistTestsBox,
     standardIdentifiers,
     status,
+    contentSubType,
+    hasStandardsOnCreation,
+    standards = [],
     ...itemObj
   } = item
   const newEntity = produce(entity, (draft) => {
@@ -472,8 +501,19 @@ function addSubresource(entity, payload) {
     }
     const resources = draft.modules[moduleIndex].data[itemIndex].resources
 
-    if (!resources.find((x) => x.contentId === contentId)) {
-      resources.push({ contentId, contentType, ...itemObj })
+    if (
+      !resources.find(
+        (x) => x.contentId === contentId && x.contentSubType === contentSubType
+      )
+    ) {
+      const updateStandards = !hasStandardsOnCreation && standards.length < 15
+      resources.push({
+        contentId,
+        contentType,
+        contentSubType,
+        updateStandards,
+        ...itemObj,
+      })
       draft.modules[moduleIndex].data[itemIndex].resources = resources
     }
   })
@@ -481,12 +521,15 @@ function addSubresource(entity, payload) {
 }
 
 function removeSubResource(entity, payload) {
-  const { moduleIndex, contentId, itemIndex } = payload
+  const { moduleIndex, contentId, itemIndex, contentSubType } = payload
   const newEntity = produce(entity, (draft) => {
     if (draft.modules[moduleIndex].data[itemIndex].resources) {
       draft.modules[moduleIndex].data[itemIndex].resources = draft.modules[
         moduleIndex
-      ].data[itemIndex].resources.filter((x) => x.contentId !== contentId)
+      ].data[itemIndex].resources.filter(
+        (x) =>
+          !(x.contentId === contentId && x.contentSubType === contentSubType)
+      )
     }
   })
   return newEntity
@@ -612,14 +655,18 @@ export const reducer = (state = initialState, { type, payload }) => {
           thumbnail: payload.fileUrl,
         },
       }
-    case SET_MAX_ATTEMPT:
-      return {
-        ...state,
-        entity: {
-          ...state.entity,
-          maxAttempts: payload.data,
-        },
-      }
+    /* This is never used by playlist but since
+     *  this piece of code existed since begining
+     *  It's being commented out as a fix for EV-26191
+     */
+    // case SET_MAX_ATTEMPT:
+    //   return {
+    //     ...state,
+    //     entity: {
+    //       ...state.entity,
+    //       maxAttempts: payload.data,
+    //     },
+    //   }
     case SET_SAFE_BROWSE_PASSWORD:
       return {
         ...state,
@@ -793,6 +840,7 @@ function* createPlaylistSaga({ payload }) {
       'createdDate',
       'updatedDate',
       'testItems',
+      'playlistMode',
     ])
 
     const entity = yield call(curriculumSequencesApi.create, {
@@ -802,7 +850,10 @@ function* createPlaylistSaga({ payload }) {
     yield put(createPlaylistSuccessAction(entity))
     yield put(replace(`/author/playlists/${entity._id}/edit${hash}`))
 
-    yield call(notification, { type: 'success', messageKey: 'playlistCreated' })
+    yield call(notification, {
+      type: 'success',
+      messageKey: 'playlistCreated',
+    })
   } catch (err) {
     yield call(notification, { messageKey: 'playlistCreateErr' })
     yield put(createPlaylistErrorAction('playlistCreateErr'))
@@ -822,23 +873,50 @@ function* updatePlaylistSaga({ payload }) {
       '_id',
       '__v',
       'testItems',
+      'playlistMode',
     ])
 
+    const resourceMap = {}
     dataToSend.modules = dataToSend.modules.map((mod) => {
-      mod.data = mod.data.map((test) =>
-        omit(test, ['standards', 'alignment', 'assignments'])
-      )
+      mod.data = mod.data.map((test) => {
+        if (test.contentType === 'test' && test.resources) {
+          const testId = test.contentId
+          test.resources = test.resources.map((resource) => {
+            const { contentId: resourceId, updateStandards } = resource
+            if (updateStandards) {
+              resourceMap[testId] = [...(resourceMap[testId] || []), resourceId]
+            }
+            return omit(resource, ['updateStandards'])
+          })
+        }
+        return omit(test, [
+          'standards',
+          'alignment',
+          'assignments',
+          'hasStandardsOnCreation',
+        ])
+      })
       return mod
     })
+
+    if (!dataToSend.skin) {
+      delete dataToSend.skin
+    }
 
     const entity = yield call(curriculumSequencesApi.update, {
       id: oldId,
       data: dataToSend,
     })
 
+    if (!isEmpty(resourceMap)) {
+      yield call(resourcesApi.updateStandards, resourceMap)
+    }
     yield put(updatePlaylistSuccessAction(entity))
     if (!payload.hideNotification) {
-      yield call(notification, { type: 'success', messageKey: 'playlistSaved' })
+      yield call(notification, {
+        type: 'success',
+        messageKey: 'playlistSaved',
+      })
     }
     const newId = entity._id
     if (oldId !== newId && newId) {
@@ -881,7 +959,6 @@ function* publishPlaylistSaga({ payload }) {
       !get(data, 'collections', []).length
     ) {
       yield call(notification, {
-        type: 'warn',
         messageKey: 'publishPlaylistErrWithAssociated',
       })
       return
@@ -898,7 +975,12 @@ function* publishPlaylistSaga({ payload }) {
     ])
     dataToSend.modules = dataToSend.modules.map((mod) => {
       mod.data = mod.data.map((test) =>
-        omit(test, ['standards', 'alignment', 'assignments'])
+        omit(test, [
+          'standards',
+          'alignment',
+          'assignments',
+          'hasStandardsOnCreation',
+        ])
       )
       return mod
     })
@@ -928,7 +1010,13 @@ function* publishPlaylistSaga({ payload }) {
         messageKey: 'publishedPlaylist',
       })
     }
-    yield put(push(`/author/playlists/${id}`))
+
+    yield put(
+      push({
+        pathname: `/author/playlists/${id}`,
+        state: { publishedPlaylist: true },
+      })
+    )
   } catch (error) {
     yield call(notification, {
       msg: error?.data?.message,
@@ -939,8 +1027,11 @@ function* publishPlaylistSaga({ payload }) {
 
 function* receiveSharedWithListSaga({ payload }) {
   try {
-    const result = yield call(contentSharingApi.getSharedUsersList, payload)
-    const coAuthors = result.map(
+    const { sharedEntities = [] } = yield call(
+      contentSharingApi.getSharedUsersList,
+      payload
+    )
+    const coAuthors = sharedEntities.map(
       ({ permission, sharedWith, sharedType, _id }) => ({
         permission,
         sharedWith,
@@ -950,7 +1041,10 @@ function* receiveSharedWithListSaga({ payload }) {
     )
     yield put(updateSharedWithListAction(coAuthors))
   } catch (e) {
-    yield call(notification, { type: 'error', messageKey: 'getSharedUsersErr' })
+    yield call(notification, {
+      type: 'error',
+      messageKey: 'getSharedUsersErr',
+    })
   }
 }
 

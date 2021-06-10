@@ -40,6 +40,12 @@ export const SET_ACTIVITY_CREATING =
   '[studentAssignments] set test activity creating'
 export const TOGGLE_UTA_TIME_UPDATE_REQUIRED =
   '[studentAssignments] toggle - uta time update required'
+export const SET_SHOW_RETAKE_MODAL_STATE =
+  '[studentAssignments] set show retake modal state'
+export const SET_SELECTED_GROUP_STATUS =
+  '[studentAssignments] set selected group status'
+export const SET_LANGUAGE_PREFERENCE =
+  '[studentAssignments] set selected language'
 
 // action dispatchers
 export const setAssignmentsLoadingAction = createAction(SET_LOADING)
@@ -49,6 +55,9 @@ export const setFilterAction = createAction(SET_FILTER)
 export const addRealtimeAssignmentAction = createAction(ADD_ASSIGNMENT_REALTIME)
 export const rerenderAssignmentsAction = createAction(RERENDER_ASSIGNMENTS)
 export const removeAssignmentAction = createAction(REMOVE_ASSIGNMENT)
+export const setSelectedGroupStatusAction = createAction(
+  SET_SELECTED_GROUP_STATUS
+)
 export const regradedRealtimeAssignmentAction = createAction(
   REGRADE_ASSIGNMENT_REALTIME
 )
@@ -66,6 +75,11 @@ export const setIsActivityCreatingAction = createAction(SET_ACTIVITY_CREATING)
 export const utaStartTimeUpdateRequired = createAction(
   TOGGLE_UTA_TIME_UPDATE_REQUIRED
 )
+export const setShowRetakeModalAction = createAction(
+  SET_SHOW_RETAKE_MODAL_STATE
+)
+
+export const setSelectedLanguageAction = createAction(SET_LANGUAGE_PREFERENCE)
 
 // initial State
 const initialState = {
@@ -82,6 +96,9 @@ const initialState = {
     isLoading: false,
   },
   updateUtaTimeType: null,
+  showRetakeModal: false,
+  groupStatus: 'all',
+  languagePreference: '',
 }
 
 // reducers
@@ -165,6 +182,15 @@ export default createReducer(initialState, {
   },
   [TOGGLE_UTA_TIME_UPDATE_REQUIRED]: (state, { payload }) => {
     state.updateUtaTimeType = payload
+  },
+  [SET_SHOW_RETAKE_MODAL_STATE]: (state, { payload }) => {
+    state.showRetakeModal = payload
+  },
+  [SET_SELECTED_GROUP_STATUS]: (state, { payload }) => {
+    state.groupStatus = payload
+  },
+  [SET_LANGUAGE_PREFERENCE]: (state, { payload }) => {
+    state.languagePreference = payload
   },
 })
 

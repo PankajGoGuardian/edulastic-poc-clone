@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { cloneDeep } from 'lodash'
+import { defaultSymbols } from '@edulastic/constants'
 
 import { Overlay, Popup, PopupContent } from '../../common/styled_components'
 
@@ -132,6 +133,8 @@ class GraphEditTools extends Component {
       setEquations,
       hideEquationTool,
       hideSettingTool,
+      onChangeKeypad,
+      symbols,
     } = this.props
 
     const { selectedTool } = this.state
@@ -154,6 +157,8 @@ class GraphEditTools extends Component {
                         <Equations
                           equations={equations}
                           setEquations={setEquations}
+                          onChangeKeypad={onChangeKeypad}
+                          symbols={symbols}
                         />
                       </PopupContent>
                     </Popup>
@@ -227,6 +232,8 @@ GraphEditTools.propTypes = {
   hideSettingTool: PropTypes.bool,
   hideEquationTool: PropTypes.bool,
   margin: PropTypes.object,
+  onChangeKeypad: PropTypes.func,
+  symbols: PropTypes.array,
 }
 
 GraphEditTools.defaultProps = {
@@ -236,6 +243,8 @@ GraphEditTools.defaultProps = {
   hideSettingTool: false,
   hideEquationTool: false,
   margin: { top: 0, left: 0 },
+  onChangeKeypad: () => {},
+  symbols: defaultSymbols,
 }
 
 export default GraphEditTools

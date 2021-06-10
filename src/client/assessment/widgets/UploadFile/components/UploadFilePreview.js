@@ -68,7 +68,7 @@ const UploadFilePreview = ({
             <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>
           )}
         </QuestionLabelWrapper>
-        <QuestionContentWrapper>
+        <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
           <QuestionTitleWrapper>
             <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
           </QuestionTitleWrapper>
@@ -105,15 +105,17 @@ const UploadFilePreview = ({
             <Uploader onCompleted={uploadFinished} mt="26px" item={item} />
           )}
 
-          <SubTitle>Attachments</SubTitle>
-          {(!isEmpty(attachments) || !isEmpty(localAttachments)) && (
-            <FilesView
-              cols={3}
-              mt="12px"
-              hideDelete={isReadOnly}
-              onDelete={deleteAttachment}
-              files={attachments?.length ? attachments : localAttachments}
-            />
+          {!isEmpty(localAttachments) && (
+            <>
+              <SubTitle>Attachments</SubTitle>
+              <FilesView
+                cols={3}
+                mt="12px"
+                hideDelete={isReadOnly}
+                onDelete={deleteAttachment}
+                files={localAttachments}
+              />
+            </>
           )}
 
           <Instructions item={item} />

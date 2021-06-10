@@ -151,7 +151,8 @@ export const GraphWrapper = styled.div`
 `
 
 export const JSXBox = styled.div`
-  background-color: ${(props) => props.theme.widgets.chart.bgColor} !important;
+  background-color: transparent !important; // to show annotation
+  z-index: 2;
   position: relative;
   overflow: hidden;
 

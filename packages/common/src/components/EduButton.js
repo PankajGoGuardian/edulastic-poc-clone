@@ -11,13 +11,21 @@ import {
   themeColorBlue,
   themeColorHoverBlue,
 } from '@edulastic/colors'
+import { getSanitizedProps } from '@edulastic/common'
 import PropTypes from 'prop-types'
 
-const EduButton = ({ children, ...restProps }) => (
-  <StyledButton type="primary" {...restProps}>
-    {children}
-  </StyledButton>
-)
+const EduButton = ({ children, ...restProps }) => {
+  const blacklistedPropsDOMElements = ['features', 'groupList']
+  const sanitizedProps = getSanitizedProps(
+    restProps,
+    blacklistedPropsDOMElements
+  )
+  return (
+    <StyledButton type="primary" {...sanitizedProps}>
+      {children}
+    </StyledButton>
+  )
+}
 
 EduButton.propTypes = {
   btnType: PropTypes.string,
@@ -39,6 +47,7 @@ const getStyle = ({
   IconBtn,
   ml,
   mr,
+  noBorder,
   style = {},
 }) => {
   const defaultStyle = {
@@ -55,6 +64,7 @@ const getStyle = ({
     textTransform: 'uppercase',
     width: width || (IconBtn ? '45px' : null),
     textShadow: 'none',
+    border: noBorder && '0px',
   }
   return { ...defaultStyle, ...style }
 }
@@ -167,6 +177,7 @@ const StyledButton = styled(Button)`
   @media (min-width: ${extraDesktopWidthMax}) {
     &.ant-btn {
       margin-left: ${(props) => props.ml || '5px'};
+      margin-right: ${(props) => props.mr || '0px'};
       height: ${(props) => props.height || '36px'};
     }
   }

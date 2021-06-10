@@ -38,6 +38,8 @@ const EmptyWrapper = styled.div`
 class ClozeImageDragDrop extends Component {
   static contextType = AnswerContext
 
+  static contextType = AnswerContext
+
   getRenderData = () => {
     const { item: templateItem, history, view } = this.props
     const itemForPreview = replaceVariables(templateItem)
@@ -194,7 +196,8 @@ class ClozeImageDragDrop extends Component {
                           this.handleOptionsChange(
                             'duplicatedResponses',
                             !duplicatedResponses
-                          )}
+                          )
+                        }
                         defaultChecked={duplicatedResponses}
                         mb="10px"
                       >
@@ -206,7 +209,8 @@ class ClozeImageDragDrop extends Component {
                           this.handleOptionsChange(
                             'show_draghandle',
                             !showDraghandle
-                          )}
+                          )
+                        }
                         defaultChecked={showDraghandle}
                         mb="10px"
                       >
@@ -218,7 +222,8 @@ class ClozeImageDragDrop extends Component {
                           this.handleOptionsChange(
                             'shuffleOptions',
                             !shuffleOptions
-                          )}
+                          )
+                        }
                         defaultChecked={shuffleOptions}
                         mb="10px"
                       >
@@ -230,7 +235,8 @@ class ClozeImageDragDrop extends Component {
                           this.handleOptionsChange(
                             'transparent_responses',
                             !transparentResponses
-                          )}
+                          )
+                        }
                         defaultChecked={transparentResponses}
                         mb="10px"
                       >
@@ -246,7 +252,8 @@ class ClozeImageDragDrop extends Component {
                         max={10}
                         defaultValue={item.maxRespCount}
                         onChange={(val) =>
-                          this.handleOptionsChange('maxRespCount', val)}
+                          this.handleOptionsChange('maxRespCount', val)
+                        }
                       />
                       <Label>
                         {t('component.cloze.imageDragDrop.maximumresponses')}

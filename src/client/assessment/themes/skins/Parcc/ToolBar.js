@@ -9,7 +9,7 @@ import {
   IconScratchPad,
   IconCloudUpload,
 } from '@edulastic/icons'
-import { extraDesktopWidthMax, white } from '@edulastic/colors'
+import { extraDesktopWidthMax, white, themeColorBlue } from '@edulastic/colors'
 import { Tooltip } from '../../../../common/utils/helpers'
 import { Container } from './styled'
 import { themes } from '../../../../theme'
@@ -20,7 +20,7 @@ const {
 } = themes
 const { tools } = parcc
 
-const { calculatorTypes, SHOW_USER_WORK } = test
+const { calculatorTypes } = test
 const ToolBar = ({
   settings = {},
   tool = [],
@@ -29,9 +29,9 @@ const ToolBar = ({
   qType,
   isDocbased = false,
   timedAssignment,
-  toggleUserWorkUploadModal,
   utaId,
   groupId,
+  toggleUserWorkUploadModal,
 }) => {
   const toolbarHandler = (value) => changeTool(value)
 
@@ -40,7 +40,7 @@ const ToolBar = ({
     changeCaculateMode(value)
   }
 
-  const { calcType, showUserWork } = settings
+  const { calcType, enableScratchpad, isTeacherPremium } = settings
   const isDisableCrossBtn = qType !== questionType.MULTIPLE_CHOICE
 
   return (
@@ -75,7 +75,7 @@ const ToolBar = ({
         </Tooltip>
       )}
 
-      {!isDocbased && showUserWork === SHOW_USER_WORK.SCRATCHPAD && (
+      {!isDocbased && enableScratchpad && (
         <Tooltip placement="top" title="Scratch Pad">
           <StyledButton
             active={tool.indexOf(5) !== -1}
@@ -85,8 +85,8 @@ const ToolBar = ({
           </StyledButton>
         </Tooltip>
       )}
-      {!isDocbased && showUserWork === SHOW_USER_WORK.UPLOAD && (
-        <Tooltip placement="top" title="Upload Work">
+      {!isDocbased && isTeacherPremium && (
+        <Tooltip placement="top" title="Upload work">
           <StyledButton onClick={toggleUserWorkUploadModal}>
             <IconCloudUpload />
           </StyledButton>
@@ -136,6 +136,10 @@ export const StyledButton = styled(Button)`
     svg {
       fill: ${white};
     }
+  }
+  &:focus {
+    outline: 0;
+    box-shadow: 0 0 0 2px ${themeColorBlue};
   }
   @media (min-width: ${extraDesktopWidthMax}) {
     margin-right: 5px;

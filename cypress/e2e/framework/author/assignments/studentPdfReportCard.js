@@ -4,6 +4,7 @@ import {
   attemptTypes,
   questionTypeKey as queTypes,
   queColor,
+  questionTypeKey,
 } from '../../constants/questionTypes'
 import { REPORT_HEADERS } from '../../constants/assignmentStatus'
 import {
@@ -85,7 +86,7 @@ export default class StudentsReportCard {
   getQuestionTableRowByIndex = (index) =>
     this.getQuestionTableBody().find(`[data-row-key="${index - 1}"]`)
 
-  // TODO: fix below back to data-cy attr once ui issue is resolved, EV-21749,  
+  // TODO: fix below back to data-cy attr once ui issue is resolved, EV-21749,
   getStandardTableRowByStandard = (standard) =>
     this.getStandardTableBody().contains('td', standard).closest('tr')
 
@@ -199,13 +200,30 @@ export default class StudentsReportCard {
       })
   }
 
-  verifyEntryByIndexOfSelectedRow = (index, data, delimeter = ',') => {
-    if (Array.isArray(data))
-      this.getEntryByIndexOfSelectedRow(index).should(
-        'contain.text',
-        data.join(`${delimeter}`)
-      )
-    else this.getEntryByIndexOfSelectedRow(index).should('contain.text', data)
+  verifyEntryByIndexOfSelectedRow = (
+    index,
+    data,
+    delimeter,
+    message,
+    queType = false
+  ) => {
+    const cellData = (_.isArray(data)
+      ? data.join(`${delimeter}`)
+      : data
+    ).toString()
+
+    switch (queType) {
+      case questionTypeKey.MATH_NUMERIC:
+        this.getEntryByIndexOfSelectedRow(index).should((ele) =>
+          expect(ele, message).to.contain.text(cellData)
+        )
+        break
+      default:
+        this.getEntryByIndexOfSelectedRow(index).should((ele) =>
+          expect(ele, message).to.have.text(cellData)
+        )
+        break
+    }
   }
 
   verifyQuestionTableHeaders = ({ questionHeaderOptions }) => {

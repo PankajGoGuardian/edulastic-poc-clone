@@ -91,6 +91,7 @@ class Signup extends React.Component {
       invitedUser,
       invitedUserDetails,
       setInviteDetailsAction,
+      utm_source,
     } = this.props
     e && e.preventDefault()
     form.validateFieldsAndScroll((err, { password, email, name }) => {
@@ -103,6 +104,7 @@ class Signup extends React.Component {
             name: trim(name),
             role: 'teacher',
             policyViolation: t('common.policyviolation'),
+            utm_source,
             errorCallback: this.errorCallback,
           })
         } else if (invitedUser) {
@@ -244,7 +246,7 @@ class Signup extends React.Component {
           onClickProceed={this.onClickProceed}
         />
         {!isSignupUsingDaURL && !validatePartnerUrl(partner) ? (
-          <Redirect exact to="/login" />
+          <Redirect exact to="/" />
         ) : null}
         <RegistrationWrapper image={image}>
           <RegistrationHeader type="flex" align="middle">

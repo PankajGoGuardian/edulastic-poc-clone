@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import Moment from 'moment'
-import { get } from 'lodash'
-import queryString from 'query-string'
+import { Progress, Layout, Row, Col } from 'antd'
+import { get, round } from 'lodash'
 import { PrintActionWrapper } from '@edulastic/common'
-
+import qs from 'qs'
 import { receiveTestActivitydAction } from '../src/actions/classBoard'
 import { getSortedTestActivitySelector } from '../ClassBoard/ducks'
 import StudentReportPage from './components/StudentReportPage'
@@ -25,13 +25,16 @@ const StudentsReportCard = ({
   const gradedTestActivities = testActivity.filter(
     (ta) => ta.status === 'submitted' && ta.graded === 'GRADED'
   )
-  let { options } = queryString.parse(location.search)
-  options = options.split(',').map((o) => o.trim())
-  options = options.reduce((acc, option) => {
+  let { options = '' } = qs.parse(location.search.substr(1), {
+    ignoreQueryPrefix: true,
+  })
+  options = options?.split(',')?.map((o) => o.trim())
+  options = options?.reduce((acc, option) => {
     acc[option] = true
     return acc
   }, {})
 
+  const [numStudentsLoaded, setNumStudentsLoaded] = useState({})
   // load all test activity;
   useEffect(() => {
     loadTestActivity(assignmentId, classId)
@@ -45,19 +48,47 @@ const StudentsReportCard = ({
     )}`
   }, [classResponse])
 
+  const setLoadedCb = useCallback((index) => {
+    if (!numStudentsLoaded[index]) {
+      setNumStudentsLoaded((loaded) => ({ ...loaded, [index]: true }))
+    }
+  })
+
+  const totalLength = gradedTestActivities?.length || 0,
+    loadedCount = Object.keys(numStudentsLoaded).length,
+    allLoaded = totalLength === loadedCount,
+    percentLoaded = round((loadedCount / totalLength) * 100, 1)
+
   return (
     <>
-      <PrintActionWrapper />
+      {allLoaded ? (
+        <PrintActionWrapper />
+      ) : (
+        <Layout.Content>
+          <center>
+            <h2>Loading reports...</h2>
+          </center>
+          <Row>
+            <Col span={22} offset={1}>
+              <Progress status="active" percent={percentLoaded} />
+            </Col>
+          </Row>
+        </Layout.Content>
+      )}
       <StudentsReportCardContainer>
-        {gradedTestActivities.map((ta) => (
-          <StudentReportPage
-            testActivity={ta}
-            groupId={classId}
-            sections={options}
-            classResponse={classResponse}
-            performanceBandsData={performanceBandsData}
-          />
-        ))}
+        {gradedTestActivities.map((ta, index) =>
+          index <= loadedCount ? (
+            <StudentReportPage
+              testActivity={ta}
+              groupId={classId}
+              sections={options}
+              classResponse={classResponse}
+              performanceBandsData={performanceBandsData}
+              index={index}
+              setLoaded={setLoadedCb}
+            />
+          ) : null
+        )}
       </StudentsReportCardContainer>
     </>
   )

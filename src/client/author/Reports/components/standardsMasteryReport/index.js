@@ -1,9 +1,11 @@
 import React from 'react'
 
+import { withRouter } from 'react-router'
 import { LinkItem, CardsWrapper } from '../../common/components/linkItem'
 import { BoxHeading } from '../../common/components/boxHeading'
 import SMRGradbook from '../../../src/assets/reports/smr-gradbook/smr-gradbook.png'
 import SMRPerformance from '../../../src/assets/reports/smr-performance-summary/smr-performance-summary.png'
+import SMRProgress from '../../../src/assets/reports/smr-standards-progress/smr-standards-progress.png'
 
 const links = [
   {
@@ -20,25 +22,34 @@ const links = [
     thumbnail: SMRGradbook,
     location: '/author/reports/standards-gradebook',
     description:
-      'View a summary of proficiency on all standards assessed on one or assessments. Can be filtered by individual, class, or group.',
+      'View a summary of proficiency on all standards assessed on one or more tests. Can be filtered by individual, class, or group.',
   },
-  // {
-  //   key: "standardsProgess",
-  //   title: "Standards Progress",
-  //   thumbnail: SMRGradbook,
-  //   location: "/author/reports/standards-progress",
-  //   description:
-  //     "View an aggregate of proficiency levels on a specific standard across one or more assessments. Can be filtered by individual, class, or group."
-  // }
+  {
+    key: 'standardsProgress',
+    title: 'Standards Progress',
+    thumbnail: SMRProgress,
+    location: '/author/reports/standards-progress',
+    description:
+      'View a summary of proficiency levels on a specific standard across one or more assessments. Can be filtered by individual, class, or group.',
+  },
 ]
 
-export const StandardsMasteryReport = ({ premium }) => (
+const StandardsMasteryReport = ({ premium, history, loc }) => (
   <div>
     <BoxHeading heading="Standards Mastery Report" iconType="pie-chart" />
     <CardsWrapper>
       {links.map((data) => (
-        <LinkItem key={data.title} data={data} tiles premium={premium} />
+        <LinkItem
+          history={history}
+          key={data.title}
+          data={data}
+          tiles
+          premium={premium}
+          loc={loc}
+        />
       ))}
     </CardsWrapper>
   </div>
 )
+
+export default withRouter(StandardsMasteryReport)

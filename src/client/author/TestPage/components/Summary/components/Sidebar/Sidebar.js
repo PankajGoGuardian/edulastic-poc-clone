@@ -16,10 +16,10 @@ import { selectsData } from '../../../common'
 import SummaryHeader from '../SummaryHeader/SummaryHeader'
 import { AnalyticsItem, Block, ErrorWrapper, MetaTitle } from './styled'
 
-export const renderAnalytics = (title, Icon, isLiked = false) => (
+export const renderAnalytics = (title, Icon, isLiked = false, cyAttrIndex) => (
   <AnalyticsItem>
     <Icon color={isLiked ? red : '#bbbfc4'} width={15} height={15} />
-    <MetaTitle>{title}</MetaTitle>
+    <MetaTitle data-cy={`detail_index-${cyAttrIndex}`}>{title}</MetaTitle>
   </AnalyticsItem>
 )
 

@@ -25,10 +25,12 @@ const CorrectAnswerBoxLayout = ({
   if (hasGroupResponses) {
     results = {}
     userAnswers.forEach((userAnswer) => {
-      if (results[userAnswer.group] === undefined) {
-        results[userAnswer.group] = []
+      if (userAnswer) {
+        if (results[userAnswer.group] === undefined) {
+          results[userAnswer.group] = []
+        }
+        results[userAnswer.group].push(userAnswer.data)
       }
-      results[userAnswer.group].push(userAnswer.data)
     })
   } else {
     results = userAnswers

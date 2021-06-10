@@ -16,7 +16,7 @@ import {
   greyThemeDark1,
   smallDesktopWidth,
   extraDesktopWidthMax,
-  themeColorBlue,
+  filterIconColor,
 } from '@edulastic/colors'
 
 export const StudentLabel = styled.div`
@@ -41,19 +41,19 @@ export const FilterButton = styled(Button)`
   border-radius: 3px;
   position: fixed;
   z-index: 1;
-  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3);
+  box-shadow: none;
   margin-left: ${(props) => (props.showFilter ? '240px' : '-23px')};
-  background: ${(props) =>
-    props.showFilter ? themeColorBlue : white} !important;
-  border: 1px solid ${themeColorBlue} !important;
+  background: white !important;
+  border: none !important;
   &:focus,
   &:hover {
     outline: unset;
-    color: ${(props) => (props.isShowFilter ? white : themeColorBlue)};
+    color: ${(props) => (props.isShowFilter ? white : filterIconColor)};
   }
   svg,
   svg:hover {
-    fill: ${(props) => (props.showFilter ? white : themeColorBlue)};
+    fill: ${(props) =>
+      props.showFilter ? themeColor : filterIconColor} !important;
   }
 `
 
@@ -87,7 +87,7 @@ export const RightArrow = styled(Arrow)`
 export const TableContainer = styled.div`
   max-height: 100%;
   width: ${(props) => (props.showFilter ? 'calc(100% - 240px)' : '100%')};
-  padding-left: ${(props) => (props.showFilter ? '30px' : '0px')};
+  padding-left: ${(props) => (props.showFilter ? '40px' : '20px')};
   .ant-spin {
     position: relative;
   }
@@ -345,9 +345,6 @@ export const StyledTable = styled(Table)`
               font-size: 12px;
               font-weight: 600;
               color: ${greyThemeDark1};
-              a:hover {
-                color: ${themeColorBlue};
-              }
               @media (min-width: ${extraDesktopWidthMax}) {
                 font-size: 14px;
               }

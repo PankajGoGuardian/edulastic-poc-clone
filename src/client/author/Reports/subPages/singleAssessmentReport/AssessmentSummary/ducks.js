@@ -13,11 +13,23 @@ const GET_REPORTS_ASSESSMENT_SUMMARY_REQUEST_SUCCESS =
   '[reports] get reports assessment summary success'
 const GET_REPORTS_ASSESSMENT_SUMMARY_REQUEST_ERROR =
   '[reports] get reports assessment summary error'
+const SET_REPORTS_ASSESSMENT_SUMMARY_LOADING =
+  '[reports] set reports assessment summary loading'
+const RESET_REPORTS_ASSESSMENT_SUMMARY =
+  '[reports] reset reports assessment summary'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
 export const getAssessmentSummaryRequestAction = createAction(
   GET_REPORTS_ASSESSMENT_SUMMARY_REQUEST
+)
+
+export const setReportsAssesmentSummaryLoadingAction = createAction(
+  SET_REPORTS_ASSESSMENT_SUMMARY_LOADING
+)
+
+export const resetReportsAssessmentSummaryAction = createAction(
+  RESET_REPORTS_ASSESSMENT_SUMMARY
 )
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
@@ -39,6 +51,11 @@ export const getReportsAssessmentSummaryLoader = createSelector(
   (state) => state.loading
 )
 
+export const getReportsAssessmentSummaryError = createSelector(
+  stateSelector,
+  (state) => state.error
+)
+
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -46,27 +63,33 @@ export const getReportsAssessmentSummaryLoader = createSelector(
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //
 
 export const defaultReport = {
-  bandInfo: [],
+  bandInfo: {},
   metricInfo: [],
 }
 
 const initialState = {
-  assessmentSummary: defaultReport,
-  loading: false,
+  assessmentSummary: {},
+  loading: true,
 }
 
 export const reportAssessmentSummaryReducer = createReducer(initialState, {
   [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState),
+  [RESET_REPORTS_ASSESSMENT_SUMMARY]: (state, { payload }) =>
+    (state = initialState),
   [GET_REPORTS_ASSESSMENT_SUMMARY_REQUEST]: (state, { payload }) => {
     state.loading = true
   },
   [GET_REPORTS_ASSESSMENT_SUMMARY_REQUEST_SUCCESS]: (state, { payload }) => {
     state.loading = false
+    state.error = false
     state.assessmentSummary = payload.assessmentSummary
   },
   [GET_REPORTS_ASSESSMENT_SUMMARY_REQUEST_ERROR]: (state, { payload }) => {
     state.loading = false
     state.error = payload.error
+  },
+  [SET_REPORTS_ASSESSMENT_SUMMARY_LOADING]: (state, { payload }) => {
+    state.loading = payload
   },
 })
 
@@ -78,17 +101,18 @@ export const reportAssessmentSummaryReducer = createReducer(initialState, {
 
 function* getReportsAssessmentSummaryRequest({ payload }) {
   try {
-    payload.requestFilters.classIds =
-      payload.requestFilters?.classIds?.join(',') ||
-      payload.requestFilters?.classId ||
-      ''
-    payload.requestFilters.groupIds =
-      payload.requestFilters?.groupIds?.join(',') ||
-      payload.requestFilters?.groupId ||
-      ''
-    const {
-      data: { result },
-    } = yield call(reportsApi.fetchAssessmentSummaryReport, payload)
+    const { data } = yield call(
+      reportsApi.fetchAssessmentSummaryReport,
+      payload
+    )
+    if (data && data?.dataSizeExceeded) {
+      yield put({
+        type: GET_REPORTS_ASSESSMENT_SUMMARY_REQUEST_ERROR,
+        payload: { error: { ...data } },
+      })
+      return
+    }
+    const { result } = data
     const assessmentSummary = isEmpty(result) ? defaultReport : result
 
     yield put({

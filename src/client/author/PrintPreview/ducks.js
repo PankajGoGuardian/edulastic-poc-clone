@@ -8,6 +8,7 @@ import {
   getAdditionalDataSelector,
   receiveTestActivitySaga,
 } from '../ClassBoard/ducks'
+import { SET_CLASS_STUDENT_RESPONSES_LOADING } from '../src/constants/actions'
 
 export const FETCH_PRINT_PREVIEW_ESSENTIALS =
   '[printPreview] fetch print preview essentials'
@@ -25,15 +26,23 @@ export const fetchPrintPreviewEssentialsAction = createAction(
 // -----|-----|-----|-----| SAGAS BEGIN |-----|-----|-----|----- //
 
 function* fetchPrintPreviewEssentials({ payload }) {
-  const { assignmentId, classId: groupId, selectedStudents } = payload
+  const { assignmentId, classId: groupId, selectedStudents = [] } = payload
   try {
-    const _payload = { assignmentId, classId: groupId }
+    const _payload = {
+      assignmentId,
+      classId: groupId,
+      includeStudents: selectedStudents,
+    }
+    yield put({
+      type: SET_CLASS_STUDENT_RESPONSES_LOADING,
+      payload: true,
+    })
     yield call(receiveTestActivitySaga, { payload: _payload })
 
     const testActivity = yield select(getTestActivitySelector)
     const additionalData = yield select(getAdditionalDataSelector)
 
-    const { testId, classId } = additionalData
+    const { classId } = additionalData
 
     let selectedActivities = testActivity.filter(
       (item) => selectedStudents.includes(item.studentId) && item.testActivityId

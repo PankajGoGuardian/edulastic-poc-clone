@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import Qs from 'qs'
 import { withRouter } from 'react-router-dom'
 import { keyBy as _keyBy, get } from 'lodash'
-import queryString from 'query-string'
 import { questionType } from '@edulastic/constants'
 import TestItemPreview from '../../../../assessment/components/TestItemPreview'
 import { getRows } from '../../../sharedDucks/itemDetail'
@@ -53,7 +53,7 @@ Preview.propTypes = {
 class StudentQuestions extends Component {
   getTestItems() {
     const { currentStudent, questionActivities, location } = this.props
-    const { type, qs } = queryString.parse(location.search)
+    const { type, qs } = Qs.parse(location.search, { ignoreQueryPrefix: true })
     // convert query string to array format
     const formattedFilteredQs = formatQuestionLists(qs)
     let {
@@ -85,9 +85,13 @@ class StudentQuestions extends Component {
       const questions = filterQuestions.map((question) => {
         const { id } = question
         let qIndex = 0
-        let qActivities = questionActivities.filter(({ qid }) => qid === id)
+        let qActivities = questionActivities.filter(
+          ({ qid, testItemId }) => qid === id && testItemId === item._id
+        )
         qActivities = qActivities.map((q) => {
-          const userQuestion = userQActivities.find(({ _id }) => _id === q.qid)
+          const userQuestion = userQActivities.find(
+            ({ _id, testItemId }) => _id === q.qid && testItemId === item._id
+          )
           if (userQuestion) {
             q.qIndex = ++qIndex
             q.timespent = userQuestion.timespent
@@ -178,7 +182,7 @@ class StudentQuestions extends Component {
   }
 }
 
-export default withRouter(StudentQuestions)
+export default withRouter(React.memo(StudentQuestions))
 
 StudentQuestions.propTypes = {
   classResponse: PropTypes.object.isRequired,

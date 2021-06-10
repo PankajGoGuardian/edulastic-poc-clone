@@ -1,10 +1,38 @@
 /* eslint-disable */
-import { get, round, isNaN, isString } from 'lodash'
+import { get, round, isNaN, isString, omit, isEqual } from 'lodash'
 import { notification } from '@edulastic/common'
+import * as Sentry from '@sentry/browser'
 import { fileApi } from '@edulastic/api'
 import { aws, question } from '@edulastic/constants'
+import { useLayoutEffect } from 'react'
 import { replaceLatexesWithMathHtml } from './utils/mathUtils'
-import AppConfig from '../../../app-config'
+import AppConfig from '../../../src/app-config'
+
+export function useLayoutEffectDebounced(func, values, time) {
+  useLayoutEffect(() => {
+    let db = setTimeout(() => {
+      func()
+    }, time)
+
+    return () => clearTimeout(db)
+  }, values)
+}
+
+export const isSEB = () => window.navigator.userAgent.includes('SEB')
+
+export function handleChromeOsSEB(e) {
+  const isChromeOs = /(CrOS)/.test(window.navigator.userAgent)
+  if (isChromeOs) {
+    if (e) {
+      e.preventDefault()
+    }
+    notification({
+      msg: `This Assignment has been assigned with Safe Exam Browser which is not supported on this device. Please contact your instructor to update the settings for the assignment or use a compatible device(Mac/iPad/Windows).`,
+      duration: 7,
+    })
+  }
+  return isChromeOs
+}
 
 export const ALPHABET = [
   'A',
@@ -33,6 +61,41 @@ export const ALPHABET = [
   'X',
   'Y',
   'Z',
+]
+
+export const BLOCK_LEVEL_TAGS = [
+  'TABLE',
+  'TR',
+  'TD',
+  'UL',
+  'LI',
+  'OL',
+  'DIV',
+  'ADDRESS',
+  'FIELDSET',
+  'FIGCAPTION',
+  'FORM',
+  'DIALOG',
+  'HR',
+  'DT ',
+  'H1',
+  'H2',
+  'H3',
+  'H4',
+  'H5',
+  'H6',
+  'ARTICLE',
+  'MAIN',
+  'ASIDE',
+  'FIGURE',
+  'NAV',
+  'BLOCKQUOTE',
+  'DETAILS',
+  'PRE',
+  'DL',
+  'HEADER',
+  'SECTION',
+  'HGROUP',
 ]
 
 const REGEXP = /[xy]/g
@@ -107,10 +170,10 @@ function convertBlobToFile(blob) {
   return null
 }
 
-function convertStringToBlob(str) {
+function convertStringToFile(str) {
   const blob = new Blob([str], { type: 'text/plain;charset=utf-8' })
-  blob.name = `scratchpad-${Date.now()}.text`
-  return blob
+  const file = new File([blob], `scratchpad-${Date.now()}.text`)
+  return file
 }
 
 const s3Folders = Object.values(aws.s3Folders)
@@ -138,7 +201,7 @@ export const uploadToS3 = async (
   if (isString(file)) {
     // this case will come from scratchpad
     // create new file with the string
-    fileToUpload = convertStringToBlob(file)
+    fileToUpload = convertStringToFile(file)
   }
 
   const { name: fileName } = fileToUpload
@@ -201,6 +264,7 @@ const sanitizeSelfClosingTags = (inputString) => {
         "allowfullscreen=''></iframe>"
       )
       .replace(/<meta[\s\S]*?>/g, '') // removes meta tag
+      .replace(/(<col(?!group)[^/>]*)(>)/g, '$1/$2') // replace <col> tag with self closing col tag | EV-26330
   return removeStyleTags(removeCommentsFromHtml(sanitizedString))
 }
 
@@ -242,6 +306,12 @@ const parseTemplate = (tmpl) => {
     return ''
   }
   const parsedHTML = $('<div />').html(temp)
+  // Clean v1 math content for jsx parser
+  $(parsedHTML)
+    .find('.MathJax')
+    .each(function () {
+      $(this).replaceWith(`<span>${$(this).html()}</span>`)
+    })
 
   $(parsedHTML)
     .find('textinput, mathinput, textdropdown, response, mathunit')
@@ -263,6 +333,9 @@ const parseTemplate = (tmpl) => {
 
 export const getResponsesCount = (element) =>
   $(element).find('textinput, textdropdown, mathinput, mathunit').length
+
+const closeBtn =
+  '<span contenteditable="false" class="paragraph-number-remove">x</span>'
 
 export const reIndexResponses = (htmlStr) => {
   const parsedHTML = $('<div />').html(htmlStr)
@@ -287,7 +360,7 @@ export const reIndexResponses = (htmlStr) => {
       $(this).attr('contenteditable', false)
 
       if ($(this).context.nodeName === 'PARAGRAPHNUMBER') {
-        $(this).html(`<label>${index + 1}</label>`)
+        $(this).html(`${index + 1}${closeBtn}`)
       }
 
       const text = $('<div>').append($(this).clone()).html()
@@ -296,6 +369,13 @@ export const reIndexResponses = (htmlStr) => {
     })
 
   return $(parsedHTML).html()
+}
+
+export const isValidUpdate = (prevContent = '', currentContent = '') => {
+  const uuidPattern = /id="(\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12})"/g
+  const prevIds = prevContent.match(uuidPattern)
+  const newIds = currentContent.match(uuidPattern)
+  return isEqual(prevIds, newIds)
 }
 
 const tagMapping = {
@@ -326,44 +406,24 @@ export const sanitizeForReview = (stimulus) => {
     'span',
   ]
   let tagFound = false
-  let firstImageSkipped = false
-
   tagsToRemove.forEach((tagToRemove) => {
     jqueryEl.find(tagToRemove).each(function () {
       const elem = $(this).context
-      const elemNodeName = elem.nodeName
-      const isImageElement = elemNodeName === 'IMG'
-
-      let shouldReplace
-      switch (elemNodeName) {
-        case 'SPAN':
-          // replace if tag is not span
-          // span comes when we use italic or bold
-          // sanitize other tags (mainly input responses) from stimulus except span
-          shouldReplace = false
-          break
-        case 'IMG':
-          shouldReplace = firstImageSkipped
-          break
-        default:
-          shouldReplace = true
-      }
-
+      // replace if tag is not span
+      // span comes when we use italic or bold
+      const shouldReplace = elem.nodeName !== 'SPAN' // sanitize other tags (mainly input responses) from stimulus except span
       const latex = elem.getAttribute('data-latex')
       // sanitize span only if matrix is rendered using a span tag
       // do no sanitize if span does not have latex (in case we use bold or italic)
-      if (elemNodeName === 'SPAN' && latex && latex.includes('matrix')) {
+      if (elem.nodeName === 'SPAN' && latex && latex.includes('matrix')) {
         $(this).replaceWith(` [matrix] `)
       }
       if (shouldReplace) {
         if (tagMapping[tagToRemove]) {
-          $(this).replaceWith(`${tagMapping[tagToRemove]} `)
+          $(this).replaceWith(` ${tagMapping[tagToRemove]} `)
         } else {
-          $(this).replaceWith(`[${tagToRemove}] `)
+          $(this).replaceWith(`  [${tagToRemove}] `)
         }
-      }
-      if (isImageElement) {
-        firstImageSkipped = true
       }
       tagFound = true
     })
@@ -427,7 +487,7 @@ export const removeIndexFromTemplate = (tmpl) => {
       $(this).removeAttr('responseindex')
       $(this).removeAttr('contenteditable')
     })
-  return $(parsedHTML).html()
+  return sanitizeString($(parsedHTML).html())
 }
 
 export const allowedFileTypes = [
@@ -533,6 +593,16 @@ export const clearSelection = () => {
   }
 }
 
+export const getRangeAtFirst = () => {
+  const selection = getSelection()
+  if (!selection.rangeCount) {
+    console.log('Unable to find a native DOM range from the current selection.')
+    return
+  }
+
+  return selection.getRangeAt(0)
+}
+
 /**
  *
  * @param {string} className class name of new element, default is 'token active-word
@@ -542,14 +612,14 @@ export const clearSelection = () => {
 export const highlightSelectedText = (
   className = 'token active-word',
   tag = 'span',
-  style
+  style,
+  prevRange = null
 ) => {
-  const selection = getSelection()
-  if (!selection.rangeCount) {
-    console.log('Unable to find a native DOM range from the current selection.')
+  const range = prevRange || getRangeAtFirst()
+  if (!range) {
     return
   }
-  const range = selection.getRangeAt(0)
+
   const {
     endContainer,
     endOffset,
@@ -557,7 +627,21 @@ export const highlightSelectedText = (
     startOffset,
     commonAncestorContainer,
   } = range
+
   if (startOffset === endOffset) {
+    clearSelection()
+    return
+  }
+
+  const cloned = range.cloneContents()
+  const childNodeNames = [...get(cloned, 'childNodes', {})]
+    .map((childElement) => childElement.tagName)
+    .filter((x) => x)
+  const hasBlockedNode = BLOCK_LEVEL_TAGS.some((n) =>
+    childNodeNames.includes(n)
+  )
+
+  if (hasBlockedNode) {
     clearSelection()
     return
   }
@@ -924,7 +1008,64 @@ export const sanitizeString = (str) =>
     .replace(/&gt;/g, '>')
     .replace(/&quot;/g, '"')
 
+// Used when we want to spread all the props(...rest) but some.
+export const getSanitizedProps = (props, blackListedProps) => {
+  return omit(props, blackListedProps)
+}
+
+export const captureSentryException = (err, extraData) => {
+  // Ignore BE's business errors
+  if (!err || (err && [409, 302, 422, 403].includes(err.status))) {
+    return
+  }
+
+  Sentry.withScope((scope) => {
+    if (extraData) {
+      scope.setExtra('extraData', extraData)
+    }
+    Sentry.captureException(err)
+  })
+}
+
+const removeImageTags = (text = '') => {
+  if (typeof text !== 'string') return text
+  return text.replace(/<img[^>]+\>/gi, '')
+}
+
+export const replaceLatexTemplate = (str) => {
+  return str.replace(
+    /#{(.*?)#}/g,
+    '<span class="input__math" data-latex="$1"></span>'
+  )
+}
+
+export const removeTokenFromHtml = (str) => {
+  const tokenArr = []
+  const regex = new RegExp(
+    '<span(.*?)class="token active-word"(.*?)>(.*?)</span>',
+    'g'
+  )
+  let match = regex.exec(str)
+
+  while (match !== null) {
+    tokenArr.push(match.splice(3))
+    match = regex.exec(str)
+  }
+
+  tokenArr.forEach((elem) => {
+    const replaceStr = elem.splice(0)
+    str = str.replace(
+      new RegExp(
+        `<span(.*?)class="token active-word"(.*?)>${replaceStr}</span>`
+      ),
+      replaceStr
+    )
+  })
+  return str
+}
+
 export default {
+  removeImageTags,
   sanitizeSelfClosingTags,
   getDisplayName,
   getPaginationInfo,
@@ -948,5 +1089,9 @@ export default {
   executePromisesInSequence,
   sanitizeString,
   uuid,
+  getSanitizedProps,
+  captureSentryException,
+  replaceLatexTemplate,
   hasMediaDevice,
+  removeTokenFromHtml,
 }

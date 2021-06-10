@@ -2,7 +2,6 @@ import { takeEvery, call, put, all } from 'redux-saga/effects'
 import { createSelector } from 'reselect'
 import { createAction, createReducer } from 'redux-starter-kit'
 import { rubricsApi } from '@edulastic/api'
-import { message } from 'antd'
 import { notification } from '@edulastic/common'
 import { setRubricIdAction } from '../sharedDucks/questions'
 import { setItemLevelScoreFromRubricAction } from '../ItemDetail/ducks'
@@ -104,15 +103,17 @@ function* updateRubricSaga({ payload }) {
       body: payload.rubricData,
     })
     yield put(updateRubricDataAction(data))
-    yield put(
-      setRubricIdAction({
-        metadata: {
-          _id: payload.rubricData._id,
-          name: payload.rubricData.name,
-        },
-        maxScore: payload.maxScore,
-      })
-    )
+    if (payload.changes !== 'SHARED_TYPE') {
+      yield put(
+        setRubricIdAction({
+          metadata: {
+            _id: payload.rubricData._id,
+            name: payload.rubricData.name,
+          },
+          maxScore: payload.maxScore,
+        })
+      )
+    }
     yield put(addRubricToRecentlyUsedAction(payload.rubricData))
     yield put(updateRubricInRecentlyUsedAction(data))
     if (payload.status === 'draft')
@@ -122,6 +123,13 @@ function* updateRubricSaga({ payload }) {
         type: 'success',
         messageKey: 'rubricUpdatedAndSPublished',
       })
+    else if (payload.changes === 'SHARED_TYPE') {
+      // to use custom message for specific changes
+      notification({
+        type: 'success',
+        messageKey: 'rubricSharedSuccessfully',
+      })
+    }
   } catch (err) {
     notification({ messageKey: 'failedToUpdateRubric' })
   }
@@ -157,7 +165,7 @@ function* getRubricByIdSaga({ payload }) {
   }
 }
 
-function* addRubricToRecentlyUsedSaga({ payload }) {
+function addRubricToRecentlyUsedSaga({ payload }) {
   let localStoredRubrics = localStorage.getItem('recentlyUsedRubrics')
   if (localStoredRubrics) {
     localStoredRubrics = JSON.parse(localStoredRubrics)

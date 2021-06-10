@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-curly-newline */
 import React from 'react'
 import PropTypes from 'prop-types'
 import produce from 'immer'
@@ -7,7 +6,13 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
 import { get, debounce } from 'lodash'
 import { ActionCreators } from 'redux-undo'
-import { withWindowSizes, notification, helpers } from '@edulastic/common'
+import {
+  WithResources,
+  withWindowSizes,
+  notification,
+  helpers,
+  toggleIntercomDisplay,
+} from '@edulastic/common'
 import { white, themeColor } from '@edulastic/colors'
 import styled from 'styled-components'
 import { Modal, Button } from 'antd'
@@ -43,6 +48,9 @@ import {
   uploadToDriveAction,
 } from '../../../AssessmentCreate/ducks'
 import PDFAnnotationTools from '../PDFAnnotationTools'
+import AppConfig from '../../../../../app-config'
+import { isImagesBlockedByBrowser } from '../../../../common/utils/helpers'
+import { toggleImageBlockNotificationAction } from '../../../../student/Login/ducks'
 
 const swap = (array, i, j) => {
   const copy = array.slice()
@@ -99,33 +107,17 @@ class WorksheetComponent extends React.Component {
     }
   }
 
-  // eslint-disable-next-line react/static-property-placement
-  static propTypes = {
-    setTestData: PropTypes.func.isRequired,
-    userWork: PropTypes.object.isRequired,
-    questions: PropTypes.array.isRequired,
-    questionsById: PropTypes.object.isRequired,
-    answersById: PropTypes.object,
-    pageStructure: PropTypes.array,
-    review: PropTypes.bool,
-    noCheck: PropTypes.bool,
-    annotations: PropTypes.array,
-  }
-
-  // eslint-disable-next-line react/static-property-placement
-  static defaultProps = {
-    review: false,
-    annotations: [],
-    noCheck: false,
-    pageStructure: [],
-    answersById: {},
-  }
-
   cancelUpload
 
   componentDidMount() {
-    const { saveUserWork, itemDetail, freeFormNotes } = this.props
-
+    const {
+      saveUserWork,
+      itemDetail,
+      freeFormNotes,
+      isImageBlockNotification,
+      toggleImageBlockNotification,
+    } = this.props
+    toggleIntercomDisplay()
     const fromFreeFormNotes = {}
     if (itemDetail?._id) {
       for (const key in freeFormNotes) {
@@ -145,6 +137,11 @@ class WorksheetComponent extends React.Component {
       }
       saveUserWork({ [itemDetail._id]: { scratchpad: freeFormNotes || {} } })
     }
+    isImagesBlockedByBrowser().then((flag) => {
+      if (flag && !isImageBlockNotification) {
+        toggleImageBlockNotification(true)
+      }
+    })
   }
 
   handleHighlightQuestion = (questionId, pdfPreview = false) => {
@@ -579,8 +576,8 @@ class WorksheetComponent extends React.Component {
       pdfAnnotations = [],
       isEditable,
       currentPage: _currentPageInProps,
-      match = {},
       groupId,
+      itemDetail,
     } = this.props
 
     const {
@@ -594,7 +591,6 @@ class WorksheetComponent extends React.Component {
       currentPage: _currentPageInState,
     } = this.state
 
-    const { qid } = match.params || {}
     const currentPage = onPageChange ? _currentPageInProps : _currentPageInState
     let { answersById } = this.props
     if (studentWorkAnswersById) {
@@ -634,8 +630,6 @@ class WorksheetComponent extends React.Component {
               }
               undoAnnotationsOperation={undoAnnotationsOperation}
               redoAnnotationsOperation={redoAnnotationsOperation}
-              pdfAnnotations={pdfAnnotations}
-              onHighlightQuestion={this.handleHighlightQuestion}
             />
           </PDFAnnotationToolsWrapper>
         )}
@@ -654,6 +648,7 @@ class WorksheetComponent extends React.Component {
             footer={[
               <StyledCancelBtn
                 onClick={() => this.setDeleteConfirmation(false)}
+                data-cy="no"
               >
                 No
               </StyledCancelBtn>,
@@ -663,6 +658,7 @@ class WorksheetComponent extends React.Component {
                   this.handleDeletePage(selected)
                   this.setDeleteConfirmation(false)
                 }}
+                data-cy="yes"
               >
                 Yes
               </StyledSubmitBtn>,
@@ -744,6 +740,8 @@ class WorksheetComponent extends React.Component {
               currentAnnotationTool={currentAnnotationTool}
               setCurrentAnnotationTool={setCurrentAnnotationTool}
               annotationToolsProperties={annotationToolsProperties}
+              toggleIntercomDisplay={toggleIntercomDisplay}
+              itemId={itemDetail?._id}
             />
           </PDFViewerContainer>
 
@@ -767,8 +765,9 @@ class WorksheetComponent extends React.Component {
             reportMode={reportMode}
             setCurrentAnnotationTool={setCurrentAnnotationTool}
             groupId={groupId}
-            qId={qid}
+            qId={0} // For doc based qid (question index) can always be 0
             clearHighlighted={this.clearHighlighted}
+            itemId={itemDetail?._id}
           />
         </WorksheetWrapper>
       </div>
@@ -776,9 +775,36 @@ class WorksheetComponent extends React.Component {
   }
 }
 
+WorksheetComponent.propTypes = {
+  setTestData: PropTypes.func.isRequired,
+  userWork: PropTypes.object.isRequired,
+  questions: PropTypes.array.isRequired,
+  questionsById: PropTypes.object.isRequired,
+  answersById: PropTypes.object,
+  pageStructure: PropTypes.array,
+  review: PropTypes.bool,
+  noCheck: PropTypes.bool,
+  annotations: PropTypes.array,
+}
+
+WorksheetComponent.defaultProps = {
+  review: false,
+  annotations: [],
+  noCheck: false,
+  pageStructure: [],
+  answersById: {},
+}
+
 const withForwardedRef = (Component) => {
-  // eslint-disable-next-line react/jsx-props-no-spreading
-  const handle = (props, ref) => <Component {...props} forwardedRef={ref} />
+  const handle = (props, ref) => (
+    <WithResources
+      resources={[`${AppConfig.jqueryPath}/jquery.min.js`]}
+      fallBack={<span />}
+      onLoaded={() => null}
+    >
+      <Component {...props} forwardedRef={ref} />{' '}
+    </WithResources>
+  )
 
   const name = Component.displayName || Component.name
   handle.displayName = `withForwardedRef(${name})`
@@ -825,6 +851,7 @@ const enhance = compose(
       annotationToolsProperties: state.tests.annotationToolsProperties,
       isAnnotationsStackEmpty: state.tests.annotationsStack?.length === 0,
       pdfAnnotations: state.tests.entity?.annotations,
+      isImageBlockNotification: state.user.isImageBlockNotification,
     }),
     {
       saveUserWork: saveUserWorkAction,
@@ -839,6 +866,7 @@ const enhance = compose(
       updateToolProperties: updateAnnotationToolsPropertiesAction,
       undoAnnotationsOperation: undoAnnotationsAction,
       redoAnnotationsOperation: redoAnnotationsAction,
+      toggleImageBlockNotification: toggleImageBlockNotificationAction,
     }
   )
 )

@@ -9,7 +9,7 @@ import {
   smallDesktopWidth,
   mediumDesktopExactWidth,
   extraDesktopWidthMax,
-  themeColorBlue,
+  filterIconColor,
 } from '@edulastic/colors'
 import {
   FlexContainer,
@@ -104,8 +104,14 @@ export const StyledCard = styled(Card)`
   overflow-x: auto;
   box-shadow: none;
   border-radius: 0;
+  height: calc(100% - 40px);
   .ant-card-body {
     padding: 0px 0px 60px;
+    .ant-table-pagination {
+      position: fixed;
+      bottom: 15px;
+      right: 30px;
+    }
   }
 `
 
@@ -178,19 +184,18 @@ export const FilterButton = styled(Button)`
   position: fixed;
   margin-left: -23px;
   margin-top: 8px;
-  z-index: 1;
-  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3);
-  background: ${(props) =>
-    props.showFilter ? themeColorBlue : white} !important;
-  border: 1px solid ${themeColorBlue} !important;
+  z-index: 2;
+  box-shadow: none;
+  background: ${white} !important;
   &:focus,
   &:hover {
     outline: unset;
-    color: ${(props) => (props.isShowFilter ? white : themeColorBlue)};
+    color: ${(props) => (props.isShowFilter ? white : filterIconColor)};
   }
 
   svg {
-    fill: ${(props) => (props.showFilter ? white : themeColorBlue)} !important;
+    fill: ${(props) =>
+      props.showFilter ? themeColor : filterIconColor} !important;
   }
 
   @media (max-width: ${smallDesktopWidth}) {
@@ -202,4 +207,15 @@ export const FilterButton = styled(Button)`
 export const TableWrapper = styled.div`
   position: relative;
   width: 100%;
+`
+
+export const TestItemPreviewContainer = styled(FlexContainer)`
+  width: 100%;
+  margin-bottom: 0px;
+  padding-top: 20px;
+  align-items: stretch;
+  height: 100%;
+  p {
+    padding: 2px 0 0 0;
+  }
 `

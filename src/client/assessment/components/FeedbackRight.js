@@ -16,22 +16,23 @@ import { withNamespaces } from '@edulastic/localization'
 import { Avatar, Card, Input } from 'antd'
 import {
   get,
-  isEqual,
   isUndefined,
   maxBy,
   round,
   sumBy,
   toNumber,
+  isNaN,
+  isEmpty,
 } from 'lodash'
 import PropTypes from 'prop-types'
-import React, { Component, Fragment, useEffect } from 'react'
+import React, { Component, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import styled from 'styled-components'
 import * as Sentry from '@sentry/browser'
-import { setTeacherEditedScore } from '../../author/ExpressGrader/ducks'
-import PreviewRubricModal from '../../author/GradingRubric/Components/common/PreviewRubricModal'
+import UnScored from '@edulastic/common/src/components/Unscored'
+import { setTeacherEditedScore as setTeacherEditedScoreAction } from '../../author/ExpressGrader/ducks'
 import { updateStudentQuestionActivityScoreAction } from '../../author/sharedDucks/classResponses'
 import { hasValidAnswers } from '../utils/answer'
 import { receiveFeedbackResponseAction } from '../../author/src/actions/classBoard'
@@ -42,8 +43,10 @@ import {
 import {
   getUserSelector,
   getUserThumbnail,
+  getUserFullNameSelector,
 } from '../../author/src/selectors/user'
 import { getAvatarName } from '../../author/ClassBoard/Transformer'
+import RubricGrading from './RubricGrading'
 
 const { TextArea } = Input
 
@@ -64,29 +67,48 @@ function ScoreInputFocusEffectComponent({
   return null
 }
 
+const isInvalidScore = (score) => (!score || isNaN(score)) && score != 0
+
 class FeedbackRight extends Component {
   constructor(props) {
     super(props)
 
     let { maxScore } = props?.widget?.activity || {}
-    const { score } = props?.widget?.activity || {}
-
+    let { score } = props?.widget?.activity || {}
     if (!maxScore) {
       maxScore = props?.widget?.validation?.validResponse?.score || 0
+    }
+
+    if (props?.isQuestionView && isEmpty(props?.widget?.activity)) {
+      score = 0
     }
 
     this.state = {
       score,
       maxScore,
-      showPreviewRubric: false,
       showFeedbackSaveBtn: false,
       feedbackInputHasFocus: false,
     }
 
     this.scoreInput = React.createRef()
+    this.feedbackInputRef = React.createRef()
+    this.scoreRegex = new RegExp(/^[0-9]*(\.){0,1}([0-9]+)?$/)
   }
 
   static contextType = AnswerContext
+
+  componentDidUpdate(prevProps) {
+    if (prevProps?.widget?.activity && !this.props?.widget?.activity) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({ score: 0 })
+    }
+    if (
+      prevProps?.widget?.activity?.score !== this.props?.widget?.activity?.score
+    ) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({ changed: false })
+    }
+  }
 
   componentDidMount() {
     if (this.context?.expressGrader === true) {
@@ -95,11 +117,12 @@ class FeedbackRight extends Component {
   }
 
   static getDerivedStateFromProps(
-    { widget: { activity, validation } },
+    { widget: { activity, validation }, isQuestionView },
     preState
   ) {
     let newState = {}
-    const { submitted, feedback, maxScore, changed } = preState || {}
+    const { submitted, feedback, maxScore, changed, qActId: _qActId } =
+      preState || {}
     if (submitted) {
       newState = {
         submitted: false,
@@ -108,10 +131,19 @@ class FeedbackRight extends Component {
     }
 
     if (activity && isUndefined(changed)) {
-      const { score: _score } = activity
+      let { score: _score } = activity
+      const { qActId, _id } = activity
       let { maxScore: _maxScore } = activity
       const _feedback = get(activity, 'feedback.text', '')
-      newState = { ...newState, score: _score }
+      newState = { ...newState, qActId: qActId || _id }
+
+      if (isQuestionView && isEmpty(activity)) {
+        _score = 0
+      }
+
+      if (!isInvalidScore(_score) || _qActId !== (qActId || _id)) {
+        newState = { ...newState, score: _score }
+      }
 
       if (!_maxScore) {
         _maxScore = validation?.validResponse?.score || 0
@@ -124,6 +156,7 @@ class FeedbackRight extends Component {
       if (_feedback !== feedback) {
         newState = { ...newState, feedback: _feedback }
       }
+
       return newState
     }
 
@@ -147,9 +180,11 @@ class FeedbackRight extends Component {
       studentId,
       itemId,
       allAnswers = {},
+      setTeacherEditedScore,
+      isExpressGrader,
     } = this.props
 
-    if ((!score || isNaN(score)) && score != 0) {
+    if (isInvalidScore(score)) {
       notification({ type: 'warn', messageKey: 'scoreShouldNumber' })
       return
     }
@@ -169,10 +204,6 @@ class FeedbackRight extends Component {
       return
     }
 
-    this.props.setTeacherEditedScore({
-      [id]: rubricResponse ? rubricResponse.score : _score,
-    })
-
     const payload = {
       score: rubricResponse || { score: _score },
       testActivityId: testActivityId || this.getTestActivityId(),
@@ -185,6 +216,11 @@ class FeedbackRight extends Component {
     if (currentScreen === 'live_class_board') {
       payload.shouldReceiveStudentResponse = true
     }
+
+    if (isExpressGrader) {
+      payload.fromExpressGrader = true
+    }
+
     if (payload.testActivityId && payload.itemId) {
       if (allAnswers[id]) {
         // adding user responses only when not empty
@@ -212,64 +248,84 @@ class FeedbackRight extends Component {
       widget: { id, activity = {} },
       match,
       userThumbnail,
+      itemId,
+      userFullName,
     } = this.props
     const {
       testActivityId,
       groupId = match?.params?.classId,
       testItemId,
     } = activity
-    if (!id || !user || !user.user || !testActivityId) {
+
+    if (!id || !user || !user.user) {
       return
     }
     loadFeedbackResponses({
       body: {
         feedback: {
           teacherId: user.user._id,
-          teacherName: user.user.firstName,
+          teacherName: userFullName,
           text: feedback,
           ...(userThumbnail ? { thumbnail: userThumbnail } : {}),
         },
         groupId,
       },
       studentId,
-      testActivityId,
+      testActivityId: testActivityId || this.getTestActivityId(),
       questionId: id,
-      itemId: testItemId,
+      itemId: testItemId || itemId,
     })
   }
 
   preCheckSubmit = () => {
-    const { changed } = this.state
-    if (changed) {
-      this.setState({ submitted: true }, this.onFeedbackSubmit)
+    const { changed, showFeedbackSaveBtn } = this.state
+    if (changed || showFeedbackSaveBtn) {
+      this.onFeedbackSubmit()
     }
     this.setState({ showFeedbackSaveBtn: false })
   }
 
-  submitScore = () => {
+  allowToSubmitScore = (eventType) => {
     const { changed } = this.state
-    if (changed) {
-      this.setState({ submitted: true }, this.onScoreSubmit)
+    /**
+     * in case of student did not visit the question, allow teacher trying to grade first time
+     * @see EV-25489
+     */
+    if (eventType !== 'blur') {
+      return false
+    }
+    const { isQuestionView, widget: { activity = {} } = {} } = this.props
+    if (isQuestionView) {
+      return isEmpty(activity)
+    }
+    return activity.isDummy && changed
+  }
+
+  submitScore = (e) => {
+    const { changed } = this.state
+    const allowSubmitScore = this.allowToSubmitScore(e?.type)
+    if (changed || allowSubmitScore) {
+      this.onScoreSubmit()
     }
   }
 
   onChangeScore = (e) => {
     const value = e.target.value
-    if (!isNaN(value) || value === '.') {
+    const isValid = this.scoreRegex.test(value)
+    if ((isValid && !isNaN(value)) || value === '.') {
       this.setState({ score: value, changed: true })
     }
   }
 
   onChangeFeedback = (e) => {
-    this.setState({ feedback: e.target.value, changed: true })
+    this.setState({
+      changed: true,
+      feedback: e.target.value,
+      showFeedbackSaveBtn: !!e.target.value,
+    })
   }
 
-  onKeyDownFeedback = (e) => {
-    this.arrowKeyHandler(e)
-    this.setState({ showFeedbackSaveBtn: true })
-  }
-
-  arrowKeyHandler = ({ keyCode }) => {
+  onKeyDownFeedback = ({ keyCode }) => {
     /**
      * arrow keys or escape key
      */
@@ -291,38 +347,32 @@ class FeedbackRight extends Component {
     }
   }
 
-  handleRubricAction = async () => {
-    const { rubricDetails } = this.props
-    if (rubricDetails) this.setState({ showPreviewRubric: true })
-  }
-
-  handleRubricResponse = (res) => {
-    if (res && this.state.score != res.score) {
-      this.setState({ score: res.score || 0, changed: true })
-    }
-  }
-
-  handleRubricModal = (res) => {
-    const {
-      widget: {
-        activity: { rubricFeedback, score },
-      },
-    } = this.props
-    this.setState({ showPreviewRubric: false })
-    if (
-      res &&
-      (!isEqual(res.rubricFeedback, rubricFeedback) || score !== res.score)
-    )
-      this.setState({ score: res.score }, () => {
+  handleRubricResponse = (res, isSubmit) => {
+    this.setState({ score: res.score }, () => {
+      if (isSubmit) {
         this.onScoreSubmit(res)
-      })
+      }
+    })
   }
 
   focusFeedbackInput = () => this.setState({ feedbackInputHasFocus: true })
 
-  blurFeedbackInput = () => this.setState({ feedbackInputHasFocus: false })
+  blurFeedbackInput = () =>
+    this.setState({ feedbackInputHasFocus: false, isShowFeedbackInput: false })
+
+  showFeedbackInput = () => {
+    this.setState(
+      { isShowFeedbackInput: true, feedbackInputHasFocus: true },
+      () => {
+        if (this.feedbackInputRef.current) {
+          this.feedbackInputRef.current.focus()
+        }
+      }
+    )
+  }
 
   render() {
+    const { studentResponseLoading, expressGrader } = this.context
     const {
       studentName,
       widget: { activity },
@@ -334,15 +384,16 @@ class FeedbackRight extends Component {
       user,
       disabled,
       isPracticeQuestion,
+      isAbsolutePos,
     } = this.props
     const {
       score,
       maxScore,
       feedback,
-      showPreviewRubric,
       changed,
       showFeedbackSaveBtn,
       feedbackInputHasFocus,
+      isShowFeedbackInput,
     } = this.state
     let rubricMaxScore = 0
     if (rubricDetails)
@@ -351,7 +402,6 @@ class FeedbackRight extends Component {
         (c) => maxBy(c.ratings, 'points').points
       )
     const { rubricFeedback } = activity || {}
-    const isError = rubricDetails ? rubricMaxScore < score : maxScore < score
     const isStudentName = studentName !== undefined && studentName.length !== 0
     let title
     const showGradingRubricButton =
@@ -378,24 +428,25 @@ class FeedbackRight extends Component {
 
     let _score = adaptiveRound(score || 0)
     if (
-      activity &&
-      activity.graded === false &&
-      (activity.score === 0 || isUndefined(activity.score)) &&
-      !score &&
-      !changed &&
-      !activity.skipped
+      (activity &&
+        activity.graded === false &&
+        (activity.score === 0 || isUndefined(activity.score)) &&
+        !score &&
+        !changed) ||
+      (activity?.isDummy && expressGrader && !changed)
     ) {
       _score = ''
     }
 
-    const _maxScore = rubricMaxScore || maxScore
+    const _maxScore =
+      showGradingRubricButton && rubricMaxScore ? rubricMaxScore : maxScore
 
+    const isError = _maxScore < score
     // TODO: uncomment when practice question scoring is implemented (EV-12869)
     // if (isPracticeQuestion) {
     //   _maxScore = "";
     // }
 
-    const { studentResponseLoading, expressGrader } = this.context
     return (
       <StyledCardTwo
         bordered={isStudentName}
@@ -410,66 +461,71 @@ class FeedbackRight extends Component {
             responseLoading={studentResponseLoading}
           />
         )}
-        <StyledDivSec>
-          <ScoreInputWrapper>
-            <ScoreInput
-              data-cy="scoreInput"
-              onChange={this.onChangeScore}
-              onBlur={this.submitScore}
-              value={_score}
-              disabled={
-                isPresentationMode ||
-                isPracticeQuestion ||
-                studentResponseLoading
-              }
-              ref={this.scoreInput}
-              onKeyDown={this.arrowKeyHandler}
-              pattern="[0-9]+([\.,][0-9]+)?"
-              tabIndex={0}
-            />
-            <TextPara>{_maxScore}</TextPara>
-          </ScoreInputWrapper>
-        </StyledDivSec>
+        {!isPracticeQuestion ? (
+          <StyledDivSec>
+            <ScoreInputWrapper>
+              <ScoreInput
+                data-cy="scoreInput"
+                onChange={this.onChangeScore}
+                onBlur={this.submitScore}
+                value={_score}
+                disabled={
+                  isPresentationMode ||
+                  isPracticeQuestion ||
+                  studentResponseLoading
+                }
+                ref={this.scoreInput}
+                onKeyDown={this.onKeyDownFeedback}
+                tabIndex={0}
+              />
+              <TextPara>{_maxScore}</TextPara>
+            </ScoreInputWrapper>
+          </StyledDivSec>
+        ) : (
+          <UnScored data-cy="unscoredInput" text="Zero Point" height="50px" />
+        )}
         {showGradingRubricButton && (
-          <RubricsWrapper>
-            <RubricsButton onClick={() => this.handleRubricAction()}>
-              Grading Rubric
-            </RubricsButton>
-          </RubricsWrapper>
-        )}
-        <LeaveDiv>
-          <span>{isError ? 'Score is too large' : 'Student Feedback!'}</span>
-          {showFeedbackSaveBtn && (
-            <EduButton height="32px" onClick={this.preCheckSubmit}>
-              Save
-            </EduButton>
-          )}
-        </LeaveDiv>
-        {!isError && (
-          <>
-            <FeedbackInput
-              tabIndex={0}
-              data-cy="feedBackInput"
-              onChange={this.onChangeFeedback}
-              value={feedback}
-              onFocus={this.focusFeedbackInput}
-              onBlur={this.blurFeedbackInput}
-              disabled={!activity || isPresentationMode}
-              onKeyDown={this.onKeyDownFeedback}
-              autoSize
-            />
-          </>
-        )}
-
-        {showPreviewRubric && (
-          <PreviewRubricModal
-            visible={showPreviewRubric}
-            currentRubricData={rubricDetails}
-            onRubricResponseUpdate={this.handleRubricResponse}
-            toggleModal={this.handleRubricModal}
+          <RubricGrading
+            rubricData={rubricDetails}
             maxScore={rubricMaxScore}
             rubricFeedback={rubricFeedback}
+            currentScore={activity?.score}
+            onRubricResponse={this.handleRubricResponse}
           />
+        )}
+        {!isError && (
+          <FeedbaclInputWrapper>
+            <FeedbackInputInnerWrapper isAbsolutePos={isAbsolutePos}>
+              <LeaveDiv>
+                <span>
+                  {isError ? 'Score is too large' : 'Student Feedback!'}
+                </span>
+                {showFeedbackSaveBtn && (
+                  <EduButton height="32px" onClick={this.preCheckSubmit}>
+                    Save
+                  </EduButton>
+                )}
+              </LeaveDiv>
+              {!isShowFeedbackInput && (
+                <FeedbackDisplay onClick={this.showFeedbackInput}>
+                  {feedback}
+                </FeedbackDisplay>
+              )}
+              <FeedbackInput
+                tabIndex={0}
+                autoSize
+                ref={this.feedbackInputRef}
+                data-cy="feedBackInput"
+                onChange={this.onChangeFeedback}
+                value={feedback}
+                onFocus={this.focusFeedbackInput}
+                onBlur={this.blurFeedbackInput}
+                disabled={!activity || isPresentationMode}
+                onKeyDown={this.onKeyDownFeedback}
+                isShowFeedbackInput={isShowFeedbackInput}
+              />
+            </FeedbackInputInnerWrapper>
+          </FeedbaclInputWrapper>
         )}
       </StyledCardTwo>
     )
@@ -497,6 +553,7 @@ FeedbackRight.defaultProps = {
 }
 
 const enhance = compose(
+  React.memo,
   withRouter,
   withWindowSizes,
   withNamespaces('header'),
@@ -508,11 +565,12 @@ const enhance = compose(
       classBoardData: state.author_classboard_testActivity?.data,
       allAnswers: state?.answers,
       userThumbnail: getUserThumbnail(state),
+      userFullName: getUserFullNameSelector(state),
     }),
     {
       loadFeedbackResponses: receiveFeedbackResponseAction,
       updateQuestionActivityScore: updateStudentQuestionActivityScoreAction,
-      setTeacherEditedScore,
+      setTeacherEditedScore: setTeacherEditedScoreAction,
     }
   )
 )
@@ -602,7 +660,7 @@ const TextPara = styled.p`
 `
 
 const LeaveDiv = styled.div`
-  margin: 20px 0px 10px;
+  margin: 0px 0px 10px;
   font-weight: 600;
   color: ${tabGrey};
   font-size: 13px;
@@ -626,8 +684,20 @@ const FeedbackInput = styled(TextArea)`
   border-radius: 2px;
   display: inline-block;
   background: #f8f8f8;
-  min-height: 80px !important;
-  max-height: 100% !important;
+  display: ${({ isShowFeedbackInput }) => !isShowFeedbackInput && 'none'};
+`
+const FeedbackDisplay = styled.div`
+  width: 100%;
+  padding: 4px 11px;
+  overflow: hidden;
+  background: #f8f8f8;
+  border-radius: 2px;
+  line-height: 1.5;
+  max-height: 32px;
+  min-height: 32px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  cursor: pointer;
 `
 
 const UserAvatar = styled(Avatar)`
@@ -644,19 +714,15 @@ const UserAvatar = styled(Avatar)`
   text-transform: uppercase;
 `
 
-const RubricsWrapper = styled.div`
-  margin-top: 15px;
+const FeedbaclInputWrapper = styled.div`
+  min-height: 74px;
+  margin-top: 12px;
+  position: relative;
 `
 
-const RubricsButton = styled.span`
-  display: block;
-  text-align: center;
-  padding: 10px;
-  color: ${white};
-  background: ${themeColor};
-  border-radius: 4px;
-  cursor: pointer;
-  text-transform: uppercase;
-  font-size: ${(props) => props.theme.smallFontSize};
-  font-weight: ${(props) => props.theme.semiBold};
+const FeedbackInputInnerWrapper = styled.div`
+  background: ${white};
+  position: ${({ isAbsolutePos }) => isAbsolutePos && 'absolute'};
+  bottom: ${({ isAbsolutePos }) => isAbsolutePos && 0};
+  width: 100%;
 `

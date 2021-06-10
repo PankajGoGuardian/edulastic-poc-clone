@@ -5,6 +5,7 @@ import { ThemeProvider } from 'styled-components'
 import { MathSpan, MathInput } from '@edulastic/common'
 import { themes } from '../../../../../../theme'
 import { QuestionText } from '../../common/Form'
+import { isSubmitButton } from '../../../../common/helpers'
 
 export default class FormMath extends React.Component {
   static propTypes = {
@@ -48,10 +49,13 @@ export default class FormMath extends React.Component {
     )
   }
 
-  handleBlur = () => {
-    const { clearHighlighted, saveQuestionResponse } = this.props
-    clearHighlighted()
-    saveQuestionResponse()
+  handleBlur = (ev) => {
+    // preventing blur event when relatedTarget is submit button
+    if (!isSubmitButton(ev)) {
+      const { clearHighlighted, saveQuestionResponse } = this.props
+      clearHighlighted()
+      saveQuestionResponse()
+    }
   }
 
   renderForm = (mode) => {
@@ -87,7 +91,6 @@ export default class FormMath extends React.Component {
           fullWidth
           ref={(el) => highlighted && el?.setFocus()}
           onBlur={this.handleBlur}
-          isDocbasedSection
           restrictKeys={restrictKeys}
           allowNumericOnly={allowNumericOnly}
         />

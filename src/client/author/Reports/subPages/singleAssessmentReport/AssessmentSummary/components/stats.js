@@ -1,15 +1,11 @@
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
 import { Row } from 'antd'
-import { get } from 'lodash'
 import { greyishDarker1 } from '@edulastic/colors'
-import { roleuser } from '@edulastic/constants'
-import { StyledH3, Capitalized } from '../../../../common/styled'
+import { StyledH3 } from '../../../../common/styled'
 import StatItem from './StatItem'
 
-export const Stats = (props) => {
-  const { role, name, user } = props
-  let { data } = props
+export const Stats = ({ name, data }) => {
   const defaultState = {
     avgScore: 0,
     total: 0,
@@ -17,12 +13,6 @@ export const Stats = (props) => {
     studentsAssigned: 0,
     studentsGraded: 0,
     studentsAbsent: 0,
-  }
-
-  const rolesMap = {
-    teacher: 'class',
-    'school-admin': 'school',
-    'district-admin': 'district',
   }
 
   const parseData = (filteredData) => {
@@ -65,19 +55,13 @@ export const Stats = (props) => {
   }
 
   const state = useMemo(() => {
-    const schoolIds = get(user, 'orgData.schools', []).map(({ _id }) => _id)
-
-    if (role == roleuser.SCHOOL_ADMIN) {
-      data = props.data.filter((d) => schoolIds.includes(d.schoolId))
-    }
+    // schoolId filter for SA is already handled in report apis
     return data ? parseData(data) : defaultState
   }, [data])
 
   return (
     <StyledRow>
-      <StyledH3>
-        <Capitalized>{rolesMap[role]}</Capitalized> Statistics of {name}
-      </StyledH3>
+      <StyledH3 data-cy="assessmentName">Overall Statistics of {name}</StyledH3>
       <StyledInnerRow
         gutter={15}
         type="flex"
@@ -85,10 +69,12 @@ export const Stats = (props) => {
         className="average-stats"
       >
         <StatItem
+          dataCy="averageScore"
           heading="Average Score"
           value={`${state.avgScore}/${Math.round(state.total)}`}
         />
         <StatItem
+          dataCy="avgStudentScore"
           heading="Average Student Score"
           value={`${state.avgStudentScore}%`}
         />
@@ -100,19 +86,22 @@ export const Stats = (props) => {
         className="average-stats"
       >
         <StatItem
+          dataCy="studentsAssigned"
           fontSize="14px"
-          heading="Students Assigned"
+          heading="Total Assigned"
           value={state.studentsAssigned}
         />
         <StatItem
+          dataCy="studentsGraded"
           fontSize="14px"
-          heading="Students Submitted"
+          heading="Students Submitted & Graded"
           value={state.studentsGraded}
         />
         {/* added extra white space for responsiveness */}
         <StatItem
+          dataCy="studentsAbsent"
           fontSize="14px"
-          heading="Students  Absent"
+          heading="Students Not Started, In Progress & Absent"
           value={state.studentsAbsent}
         />
       </StyledInnerRow>

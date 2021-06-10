@@ -8,15 +8,21 @@ import {
   get,
   set,
   sortBy,
+  keys,
 } from 'lodash'
 import produce from 'immer'
 import { markQuestionLabel } from '../../assessment/Transformer'
-import { UPDATE_TEST_DOC_BASED_REQUEST } from '../TestPage/ducks'
+import { changeDataToPreferredLanguage } from '../../assessment/utils/question'
+import { getCurrentLanguage } from '../../common/components/LanguageSelector/duck'
+import { locationSelector } from '../../assessment/selectors/routes'
+import { MOVE_WIDGET } from '../src/constants/actions'
 
 // actions types
 export const LOAD_QUESTIONS = '[author questions] load questions'
 export const ADD_ITEMS_QUESTION = '[author question] load question'
 export const UPDATE_QUESTION = '[author questions] update questions'
+export const UPDATE_QUESTION_REQUEST =
+  '[author questions] update questions request'
 export const CHANGE_LABEL = '[author questions] change label'
 export const SET_FIRST_MOUNT = '[author questions] set first mount'
 export const CHANGE_ITEM = '[author questions] change item'
@@ -45,6 +51,9 @@ export const deleteQuestionAction = createAction(DELETE_QUESTION)
 export const setRubricIdAction = createAction(SET_RUBRIC_ID)
 export const removeRubricIdAction = createAction(REMOVE_RUBRIC_ID)
 export const changeUpdatedFlagAction = createAction(CHANGE_UPDATE_FLAG)
+
+export const UPDATE_TEST_DOC_BASED_REQUEST =
+  '[tests] update doc based test request'
 // initialState
 const initialState = {
   byId: {},
@@ -117,6 +126,9 @@ const updateQuestion = (state, { payload }) => {
         : (draft.possibleResponseGroups[0].responses = draft.possibleResponses)
     })
   } else if (
+    // edit/regrade in lcb, there is no previous question
+    // @see https://snapwiz.atlassian.net/browse/EV-27314
+    prevGroupPossibleResponsesState &&
     groupPossibleResponses === false &&
     groupPossibleResponses !== prevGroupPossibleResponsesState
   ) {
@@ -151,7 +163,9 @@ const changeUIStyle = (state, { payload }) => {
 }
 
 const setFirstMount = (state, { id }) => {
-  state.byId[id].firstMount = false
+  if (state.byId[id]) {
+    state.byId[id].firstMount = false
+  }
 }
 
 // add a new question
@@ -220,11 +234,27 @@ const removeAlignment = (state, { payload }) => {
   )
 }
 
+// re sequence questions in multipart types
+// https://snapwiz.atlassian.net/browse/EV-27644
+const reSequencedQ = (state, { payload }) => {
+  const { from, to } = payload
+  const qIds = keys(state.byId)
+  const [movedQId] = qIds.splice(from.widgetIndex, 1)
+  qIds.splice(to.widgetIndex, 0, movedQId)
+
+  const updatedQuestions = {}
+  qIds.forEach((qId) => {
+    updatedQuestions[qId] = state.byId[qId]
+  })
+
+  state.byId = updatedQuestions
+}
+
 export const SET_ITEM_DETAIL_ITEM_LEVEL_SCORING =
   '[itemDetail] set item level scoring'
 export const SET_QUESTION_SCORE = '[author questions] set question score'
 export const setQuestionScoreAction = createAction(SET_QUESTION_SCORE)
-const module = 'authorQuestions'
+const _module = 'authorQuestions'
 
 // reducer
 export default createReducer(initialState, {
@@ -260,6 +290,10 @@ export default createReducer(initialState, {
           'validation.validResponse.score',
           0
         )
+        if (get(state.byId[key], 'validation.unscored', false)) {
+          set(state.byId[key], 'validation.validResponse.score', 0)
+          continue
+        }
         if (parseFloat(oldScore) === 0) {
           set(state.byId[key], 'validation.validResponse.score', 1)
         }
@@ -274,14 +308,15 @@ export default createReducer(initialState, {
     delete state.byId[state.current].rubrics
     state.byId[state.current].validation.validResponse.score = 1
   },
+  [MOVE_WIDGET]: reSequencedQ,
 })
 
 // selectors
 
-export const getCurrentQuestionIdSelector = (state) => state[module].current
-export const getQuestionsSelector = (state) => state[module].byId
+export const getCurrentQuestionIdSelector = (state) => state[_module].current
+export const getQuestionsSelector = (state) => state[_module].byId
 export const getTestStateSelector = (state) => state.tests
-export const getAuthorQuestionSelector = (state) => state[module]
+export const getAuthorQuestionSelector = (state) => state[_module]
 
 export const getTestSelector = createSelector(
   getTestStateSelector,
@@ -293,9 +328,7 @@ export const getQuestionsSelectorForReview = createSelector(
   (state) => {
     const testItems =
       state?.itemGroups?.flatMap((itemGroup) => itemGroup.items || []) || []
-    const testItemsLabeled = produce(testItems, (draft) => {
-      markQuestionLabel(draft)
-    })
+    const testItemsLabeled = markQuestionLabel(testItems)
     const passages = get(state, 'tests.entity.passages', [])
     const questionsKeyed = testItemsLabeled.reduce((acc, item) => {
       const questions = get(item, 'data.questions', [])
@@ -330,8 +363,16 @@ export const getQuestionsArraySelector = createSelector(
   (questions) => _values(questions)
 )
 
-export const getQuestionByIdSelector = (state, qId) =>
-  state[module].byId[qId] || {}
+// export const getQuestionByIdSelector = (state, qId) =>
+//   state[_module].byId[qId] || {}
+// this selector was used only in the ItemDetailWidget component.
+export const getQuestionByIdSelector = createSelector(
+  getQuestionsSelector,
+  getCurrentLanguage,
+  (_, qId) => qId,
+  (questionsById, currentLang, qId) =>
+    changeDataToPreferredLanguage(questionsById[qId] || {}, currentLang)
+)
 
 // get alignment of current question
 export const getQuestionAlignmentSelector = createSelector(
@@ -343,4 +384,26 @@ export const getQuestionAlignmentSelector = createSelector(
 export const getAuthorQuestionStatus = createSelector(
   getAuthorQuestionSelector,
   (state) => state.updated
+)
+
+export const isRegradeFlowSelector = createSelector(
+  locationSelector,
+  (location) => get(location, 'state.regradeFlow', false)
+)
+
+export const getIsEditDisbledSelector = createSelector(
+  getQuestionsSelector,
+  isRegradeFlowSelector,
+  (questionsById, regradeFlow) => {
+    const hasDynamicValues = Object.values(questionsById)?.some((q) =>
+      get(q, 'variable.enabled', false)
+    )
+    if (hasDynamicValues && regradeFlow) {
+      return [
+        true,
+        'Dynamic Parameter questions have their random values generated when the test is assigned, and they cannot be changed. You will have to grade these questions manually',
+      ]
+    }
+    return [false, '']
+  }
 )

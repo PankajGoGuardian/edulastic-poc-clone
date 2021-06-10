@@ -1,34 +1,27 @@
 import { SpinLoader } from '@edulastic/common'
 import { Col, Row } from 'antd'
 import next from 'immer'
-import {
-  capitalize,
-  filter as filterArr,
-  find,
-  indexOf,
-  intersectionBy,
-} from 'lodash'
+import { capitalize, find, indexOf, isEmpty, get } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
-import {
-  getInterestedCurriculumsSelector,
-  getUserRole,
-} from '../../../../src/selectors/user'
-import { EmptyData } from '../../../common/components/emptyData'
-import { AutocompleteDropDown } from '../../../common/components/widgets/autocompleteDropDown'
+
+import { report as reportTypes, reportUtils } from '@edulastic/constants'
+
+import { getUserRole } from '../../../../src/selectors/user'
 import { ControlDropDown } from '../../../common/components/widgets/controlDropDown'
+import BackendPagination from '../../../common/components/BackendPagination'
 import {
   StyledCard,
   StyledDropDownContainer,
   StyledH3,
   StyledSignedBarContainer,
+  NoDataContainer,
 } from '../../../common/styled'
-import { getCsvDownloadingState } from '../../../ducks'
-import {
-  getSAFFilterSelectedStandardsProficiencyProfile,
-  getSAFFilterStandardsProficiencyProfiles,
-} from '../common/filterDataDucks'
+import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
+
+import { getCsvDownloadingState, generateCSVAction } from '../../../ducks'
+import { setStandardMasteryProfileAction } from '../common/filterDataDucks'
 import CardHeader, {
   CardDropdownWrapper,
   CardTitle,
@@ -40,14 +33,17 @@ import {
   getPerformanceByStandardsAction,
   getPerformanceByStandardsLoadingSelector,
   getPerformanceByStandardsReportSelector,
+  getPerformanceByStandardsErrorSelector,
+  resetPerformanceByStandardsAction,
 } from './ducks'
 import dropDownFormat from './static/json/dropDownFormat.json'
-import {
-  analysisParseData,
+
+const {
+  viewByMode,
   analyzeByMode,
   compareByMode,
-  viewByMode,
-} from './util/transformers'
+  getReportWithFilteredSkills,
+} = reportUtils.performanceByStandards
 
 const findCompareByTitle = (key = '') => {
   if (!key) return ''
@@ -60,112 +56,165 @@ const findCompareByTitle = (key = '') => {
 
 const PerformanceByStandards = ({
   loading,
+  error,
   report = {},
   getPerformanceByStandards,
-  match,
+  resetPerformanceByStandards,
   settings,
+  demographicFilters,
   role,
-  interestedCurriculums,
   isCsvDownloading,
-  selectedStandardProficiencyProfile,
-  standardProficiencyProfiles,
   location,
   pageTitle,
-  filters,
+  sharedReport,
+  setStandardMasteryProfile,
+  toggleFilter,
+  generateCSV,
 }) => {
-  const scaleInfo = useMemo(
-    () =>
-      (
-        standardProficiencyProfiles.find(
-          (s) => s._id === selectedStandardProficiencyProfile
-        ) || standardProficiencyProfiles[0]
-      )?.scale,
-    [selectedStandardProficiencyProfile, standardProficiencyProfiles]
-  )
+  const userRole = useMemo(() => sharedReport?.sharedBy?.role || role, [
+    sharedReport,
+  ])
 
+  const itemsCount = get(report, 'totalCount', 0)
+  const [pageFilters, setPageFilters] = useState({
+    page: 0, // set to 0 initially to prevent multiple api request on tab change
+    pageSize: 50,
+  })
+  const [summaryStats, setSummaryStats] = useState(true)
   const [viewBy, setViewBy] = useState(viewByMode.STANDARDS)
   const [analyzeBy, setAnalyzeBy] = useState(analyzeByMode.SCORE)
   const [compareBy, setCompareBy] = useState(
-    role === 'teacher' ? compareByMode.STUDENTS : compareByMode.SCHOOL
+    userRole === 'teacher' ? compareByMode.STUDENTS : compareByMode.SCHOOL
   )
-  const [standardId, setStandardId] = useState('')
+  const [curriculumId, setCurriculumId] = useState('')
   const [selectedStandards, setSelectedStandards] = useState([])
   const [selectedDomains, setSelectedDomains] = useState([])
 
-  const compareByIndex = compareBy === compareByMode.STUDENTS ? 1 : 0
   const isViewByStandards = viewBy === viewByMode.STANDARDS
 
+  const assessmentName = `${
+    settings.selectedTest.title
+  } (ID:${settings.selectedTest.key.substring(
+    settings.selectedTest.key.length - 5
+  )})`
+
   const reportWithFilteredSkills = useMemo(
-    () =>
-      next(report, (draftReport) => {
-        draftReport.skillInfo = filterArr(
-          draftReport.skillInfo,
-          (skill) => String(skill.curriculumId) === String(standardId)
-        )
-        draftReport.scaleInfo = scaleInfo
-      }),
-    [report, standardId, scaleInfo]
+    () => getReportWithFilteredSkills(report, curriculumId),
+    [report, curriculumId]
   )
 
   const standardsDropdownData = useMemo(() => {
-    const { standardsMap } = reportWithFilteredSkills
+    const { standardsMap = {} } = reportWithFilteredSkills
     const standardsMapArr = Object.keys(standardsMap).map((item) => ({
-      _id: +item,
-      name: standardsMap[item],
+      key: +item,
+      title: standardsMap[item],
     }))
-    let intersected = standardsMapArr
-    if (interestedCurriculums && interestedCurriculums.length) {
-      intersected = intersectionBy(
-        standardsMapArr,
-        interestedCurriculums,
-        '_id'
-      )
-    }
-    intersected = intersected.map((item) => ({
-      key: item._id,
-      title: item.name,
-    }))
-    return intersected || []
-  }, [report])
+    return standardsMapArr || []
+  }, [reportWithFilteredSkills])
 
   const filteredDropDownData = dropDownFormat.compareByDropDownData.filter(
     (o) => {
       if (o.allowedRoles) {
-        return o.allowedRoles.includes(role)
+        return o.allowedRoles.includes(userRole)
       }
       return true
     }
   )
 
-  const getTitleByTestId = () => {
-    const {
-      selectedTest: { title: testTitle = '' },
-    } = settings
-    return testTitle
-  }
+  const generateCSVRequired =
+    itemsCount > pageFilters.pageSize || (error && error.dataSizeExceeded)
+
+  useEffect(() => () => resetPerformanceByStandards(), [])
 
   useEffect(() => {
-    if (settings.selectedTest && settings.selectedTest.key) {
-      const q = {}
-      q.testId = settings.selectedTest.key
-      q.requestFilters = { ...settings.requestFilters }
-      getPerformanceByStandards(q)
+    setSummaryStats(true)
+    setPageFilters({ ...pageFilters, page: 1 })
+    if (settings.requestFilters.termId || settings.requestFilters.reportId) {
+      return () => toggleFilter(null, false)
     }
-  }, [settings])
+    /**
+     * NOTE: demographicFilters are updated along with requestFilters
+     * hence, removed demographic filters dependency from useEffect
+     * to prevent duplicate API from being fired
+     */
+  }, [settings.selectedTest, settings.requestFilters])
 
-  const setSelectedData = ({ defaultStandardId }) => {
-    const _defaultStandardId =
-      standardsDropdownData.find((s) => `${s.key}` === `${defaultStandardId}`)
+  useEffect(() => {
+    setPageFilters({ ...pageFilters, page: 1 })
+  }, [compareBy])
+
+  useEffect(() => {
+    if (
+      settings.selectedTest &&
+      settings.selectedTest.key &&
+      pageFilters.page
+    ) {
+      const q = {
+        requestFilters: {
+          ...settings.requestFilters,
+          compareBy,
+          summaryStats,
+          ...pageFilters,
+          ...demographicFilters,
+        },
+        testId: settings.selectedTest.key,
+      }
+      getPerformanceByStandards(q)
+      setSummaryStats(false)
+    }
+  }, [pageFilters])
+
+  useEffect(() => {
+    if (
+      isCsvDownloading &&
+      generateCSVRequired &&
+      settings.selectedTest &&
+      settings.selectedTest.key
+    ) {
+      const q = {
+        reportType: reportTypes.reportNavType.PERFORMANCE_BY_STANDARDS,
+        reportFilters: {
+          ...settings.requestFilters,
+          compareBy,
+          ...pageFilters,
+          ...demographicFilters,
+          testId: settings.selectedTest.key,
+        },
+        reportExtras: {
+          viewBy,
+          analyzeBy,
+          curriculumId,
+          selectedStandards,
+          selectedDomains,
+        },
+      }
+      generateCSV(q)
+    }
+  }, [isCsvDownloading])
+
+  const setSelectedData = ({ defaultCurriculumId }) => {
+    const _defaultCurriculumId =
+      standardsDropdownData.find((s) => `${s.key}` === `${defaultCurriculumId}`)
         ?.key ||
       standardsDropdownData?.[0]?.key ||
       ''
-    setStandardId(_defaultStandardId)
+    setCurriculumId(_defaultCurriculumId)
     setSelectedStandards([])
     setSelectedDomains([])
   }
 
   useEffect(() => {
+    setStandardMasteryProfile(report?.scaleInfo || {})
     setSelectedData(reportWithFilteredSkills)
+    if (
+      (settings.requestFilters.termId || settings.requestFilters.reportId) &&
+      !loading &&
+      !isEmpty(report) &&
+      !report.performanceSummaryStats.length &&
+      (!report.metricInfo.length || !report.studInfo.length)
+    ) {
+      toggleFilter(null, true)
+    }
   }, [report])
 
   const handleResetSelection = () => {
@@ -204,27 +253,12 @@ const PerformanceByStandards = ({
     setCompareBy(selected.key)
   }
 
-  const handleStandardIdChange = (selected) => {
-    setStandardId(selected.key)
+  const handleCurriculumIdChange = (selected) => {
+    setCurriculumId(selected.key)
   }
 
-  if (loading) {
-    return <SpinLoader position="fixed" />
-  }
-
-  const [tableData, totalPoints] = analysisParseData(
-    reportWithFilteredSkills,
-    viewBy,
-    compareBy,
-    filters
-  )
-
-  const { testId } = match.params
-  const testName = getTitleByTestId(testId)
-  const assignmentInfo = `${testName}`
-
-  const selectedStandardId = standardsDropdownData.find(
-    (s) => `${s.key}` === `${standardId}`
+  const selectedCurriculumId = standardsDropdownData.find(
+    (s) => `${s.key}` === `${curriculumId}`
   )
 
   const selectedItems = isViewByStandards ? selectedStandards : selectedDomains
@@ -234,11 +268,24 @@ const PerformanceByStandards = ({
       ? SimpleStackedBarChartContainer
       : SignedStackedBarChartContainer
 
-  if (!report.metricInfo.length || !report.studInfo.length) {
+  if (loading) {
     return (
-      <>
-        <EmptyData />
-      </>
+      <SpinLoader
+        tip="Please wait while we gather the required information..."
+        position="fixed"
+      />
+    )
+  }
+
+  if (error && error.dataSizeExceeded) {
+    return <DataSizeExceeded isDownloadable />
+  }
+
+  if (!report.performanceSummaryStats?.length) {
+    return (
+      <NoDataContainer>
+        {settings.requestFilters?.termId ? 'No data available currently.' : ''}
+      </NoDataContainer>
     )
   }
 
@@ -248,41 +295,55 @@ const PerformanceByStandards = ({
         <Row type="flex" justify="start">
           <Col xs={24} sm={24} md={12} lg={8} xl={12}>
             <StyledH3>
-              Performance by {capitalize(`${viewBy}s`)} | {assignmentInfo}
+              Performance by {capitalize(`${viewBy}s`)} | {assessmentName}
             </StyledH3>
           </Col>
           <Col xs={24} sm={24} md={12} lg={16} xl={12}>
-            <Row>
-              <StyledDropDownContainer xs={24} sm={24} md={8} lg={8} xl={8}>
+            <Row type="flex" justify="end" gutter={[5, 10]}>
+              <StyledDropDownContainer
+                data-cy="viewBy"
+                xs={24}
+                sm={24}
+                md={8}
+                lg={8}
+                xl={8}
+              >
                 <ControlDropDown
-                  prefix="View By"
-                  by={dropDownFormat.viewByDropDownData[0]}
+                  prefix="View by"
+                  by={viewBy}
                   selectCB={handleViewByChange}
                   data={dropDownFormat.viewByDropDownData}
                 />
               </StyledDropDownContainer>
-              <StyledDropDownContainer xs={24} sm={24} md={7} lg={7} xl={7}>
-                <ControlDropDown
-                  style={{ marginLeft: 8 }}
-                  prefix="Analyze By"
-                  by={dropDownFormat.analyzeByDropDownData[0]}
-                  selectCB={handleAnalyzeByChange}
-                  data={dropDownFormat.analyzeByDropDownData}
-                />
-              </StyledDropDownContainer>
               <StyledDropDownContainer
-                padding="0px 5px"
+                data-cy="analyzeBy"
                 xs={24}
                 sm={24}
                 md={7}
                 lg={7}
                 xl={7}
               >
-                <AutocompleteDropDown
-                  prefix="Standard set"
-                  by={selectedStandardId || { key: '', title: '' }}
-                  selectCB={handleStandardIdChange}
+                <ControlDropDown
+                  prefix="Analyze by"
+                  by={analyzeBy}
+                  selectCB={handleAnalyzeByChange}
+                  data={dropDownFormat.analyzeByDropDownData}
+                />
+              </StyledDropDownContainer>
+              <StyledDropDownContainer
+                data-cy="standardSet"
+                xs={24}
+                sm={24}
+                md={7}
+                lg={7}
+                xl={7}
+              >
+                <ControlDropDown
+                  prefix="Standard Set"
+                  by={selectedCurriculumId || { key: '', title: '' }}
+                  selectCB={handleCurriculumIdChange}
                   data={standardsDropdownData}
+                  showPrefixOnSelected={false}
                 />
               </StyledDropDownContainer>
             </Row>
@@ -291,7 +352,6 @@ const PerformanceByStandards = ({
         <StyledSignedBarContainer>
           <BarToRender
             report={reportWithFilteredSkills}
-            filter={filters}
             viewBy={viewBy}
             analyzeBy={analyzeBy}
             onBarClick={handleToggleSelectedData}
@@ -304,29 +364,32 @@ const PerformanceByStandards = ({
         <CardHeader>
           <CardTitle>
             {capitalize(viewBy)} Performance Analysis by{' '}
-            {findCompareByTitle(compareBy)} | {assignmentInfo}
+            {findCompareByTitle(compareBy)} | {assessmentName}
           </CardTitle>
-          <CardDropdownWrapper>
+          <CardDropdownWrapper data-cy="compareBy">
             <ControlDropDown
-              prefix="Compare By"
-              by={filteredDropDownData[compareByIndex]}
+              prefix="Compare by"
+              by={compareBy}
               selectCB={handleCompareByChange}
               data={filteredDropDownData}
             />
           </CardDropdownWrapper>
         </CardHeader>
         <PerformanceAnalysisTable
-          tableData={tableData}
           report={reportWithFilteredSkills}
           viewBy={viewBy}
           analyzeBy={analyzeBy}
           compareBy={compareBy}
           selectedStandards={selectedStandards}
           selectedDomains={selectedDomains}
-          totalPoints={totalPoints}
-          isCsvDownloading={isCsvDownloading}
+          isCsvDownloading={generateCSVRequired ? null : isCsvDownloading}
           location={location}
           pageTitle={pageTitle}
+        />
+        <BackendPagination
+          itemsCount={itemsCount}
+          backendPagination={pageFilters}
+          setBackendPagination={setPageFilters}
         />
       </StyledCard>
     </>
@@ -335,22 +398,18 @@ const PerformanceByStandards = ({
 
 const reportPropType = PropTypes.shape({
   teacherInfo: PropTypes.array,
-  scaleInfo: PropTypes.array,
   skillInfo: PropTypes.array,
   metricInfo: PropTypes.array,
   studInfo: PropTypes.array,
   standardsMap: PropTypes.object,
+  scaleInfo: PropTypes.object,
 })
 
 PerformanceByStandards.propTypes = {
   loading: PropTypes.bool.isRequired,
   settings: PropTypes.object.isRequired,
   report: reportPropType.isRequired,
-  match: PropTypes.object.isRequired,
   isCsvDownloading: PropTypes.bool.isRequired,
-  selectedStandardProficiencyProfile: PropTypes.string.isRequired,
-  standardProficiencyProfiles: PropTypes.array.isRequired,
-  interestedCurriculums: PropTypes.array.isRequired,
   getPerformanceByStandards: PropTypes.func.isRequired,
   role: PropTypes.string.isRequired,
 }
@@ -358,19 +417,16 @@ PerformanceByStandards.propTypes = {
 const enhance = connect(
   (state) => ({
     loading: getPerformanceByStandardsLoadingSelector(state),
+    error: getPerformanceByStandardsErrorSelector(state),
     role: getUserRole(state),
-    interestedCurriculums: getInterestedCurriculumsSelector(state),
     report: getPerformanceByStandardsReportSelector(state),
     isCsvDownloading: getCsvDownloadingState(state),
-    selectedStandardProficiencyProfile: getSAFFilterSelectedStandardsProficiencyProfile(
-      state
-    ),
-    standardProficiencyProfiles: getSAFFilterStandardsProficiencyProfiles(
-      state
-    ),
   }),
   {
     getPerformanceByStandards: getPerformanceByStandardsAction,
+    setStandardMasteryProfile: setStandardMasteryProfileAction,
+    resetPerformanceByStandards: resetPerformanceByStandardsAction,
+    generateCSV: generateCSVAction,
   }
 )
 

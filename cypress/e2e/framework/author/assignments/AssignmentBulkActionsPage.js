@@ -58,6 +58,7 @@ export default class AssignmentBulkActionsPage {
             0
           )
           cy.wait('@assignment')
+          cy.wait(1000)
           break
         case icons.EXPRESS_GRADER:
           cy.url().then((url) => {
@@ -106,7 +107,7 @@ export default class AssignmentBulkActionsPage {
 
   selectClassByClassName = (className, check = true) => {
     this.getClassRows().each(($row) => {
-      if ($row.find(`td`).eq(1).text() == className) {
+      if ($row.find('[class="schoolName"]').prev().text() == className) {
         if (check) {
           if (
             !$row
@@ -181,8 +182,8 @@ export default class AssignmentBulkActionsPage {
   }
 
   verifyTotalClassesSelected = (total) => {
-    this.getTotalSelected().should(($ele) => {
-      expect($ele, 'Total selected class does not match').to.have.text(total)
+    this.getTotalSelected().then(($ele) => {
+      assert.equal($ele.text(), total, 'Total selected class does not match :')
     })
   }
 
@@ -341,24 +342,26 @@ export default class AssignmentBulkActionsPage {
 
   filterBy = (filterStatus) => {
     this.getFilterOption(filterStatus).click()
-    cy.wait(500)
+    cy.wait(1000)
   }
 
   verifyNumberofClassesInFilter = (filterStatus, number) => {
-    this.getFilterOption(filterStatus).should(($ele) => {
-      expect(
-        $ele,
-        'Number of classes in the filter does not match'
-      ).to.have.text(number)
+    this.getFilterOption(filterStatus).then(($ele) => {
+      assert.equal(
+        $ele.text(),
+        number,
+        `Unexpected number of classes in the filter :`
+      )
     })
   }
 
   verifyNumberofClassesFiltered = (numberOfClasses) => {
-    this.getClassRows().should(($ele) => {
-      expect(
-        $ele,
-        'Number of classes filtered does not match'
-      ).to.have.lengthOf(numberOfClasses)
+    this.getClassRows().then(($classRows) => {
+      assert.equal(
+        $classRows.length,
+        numberOfClasses,
+        `Unexpected number of classes filtered: `
+      )
     })
   }
 
@@ -379,9 +382,10 @@ export default class AssignmentBulkActionsPage {
     this.getClassRows()
       .find(`td > button`)
       .each(($row) => {
-        expect($row, 'Color doesnot match').to.have.css(
-          'background-color',
-          filterColor
+        assert.equal(
+          $row.css('background-color'),
+          filterColor,
+          'Filter color and classes status color not matching'
         )
       })
   }

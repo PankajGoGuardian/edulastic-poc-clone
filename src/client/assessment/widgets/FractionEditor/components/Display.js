@@ -31,6 +31,7 @@ const Display = ({
   userAnswer,
   changePreviewTab,
   isReviewTab,
+  hideCorrectAnswer,
   view,
   t,
 }) => {
@@ -71,7 +72,7 @@ const Display = ({
         )}
       </QuestionLabelWrapper>
 
-      <QuestionContentWrapper>
+      <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
         <FlexContainer justifyContent="space-between">
           <FlexContainer
             justifyContent="flex-start"
@@ -143,7 +144,7 @@ const Display = ({
           )}
         </FractionContainer>
         {view && view !== EDIT && <Instructions item={item} />}
-        {previewTab === SHOW && (
+        {previewTab === SHOW && !hideCorrectAnswer && (
           <FractionContainer className="__prevent-page-break">
             <CorrectAnswerBox
               fractionProperties={fractionProperties}

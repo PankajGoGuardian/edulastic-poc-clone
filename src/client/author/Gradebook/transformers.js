@@ -77,12 +77,15 @@ export const TEST_TYPE_COLOR = {
   'common assessment': '#FF9100',
 }
 
-export const getFormattedName  = (
+export const getFormattedName = (
   firstName = '',
   middleName = '',
   lastName = ''
 ) => {
-  if ((!firstName && !lastName && !middleName) || (firstName && firstName === 'Anonymous')) {
+  if (
+    (!firstName && !lastName && !middleName) ||
+    (firstName && firstName === 'Anonymous')
+  ) {
     return 'Anonymous'
   }
   let fullName = ''
@@ -102,6 +105,27 @@ export const getFormattedName  = (
       : `${capitalize(middleName)}`
   }
   return fullName
+}
+
+export const splitFullName = (fullName = '') => {
+  const trimmedFullName = fullName.trim()
+  let firstName = ''
+  let middleName = ''
+  let lastName = ''
+  if (trimmedFullName) {
+    const splitNames = trimmedFullName.split(' ').map((o) => (o || '').trim())
+    if (splitNames.length === 1) {
+      firstName = splitNames[0]
+    } else if (splitNames.length === 2) {
+      firstName = splitNames[0]
+      lastName = splitNames[1]
+    } else if (splitNames.length > 2) {
+      firstName = splitNames[0]
+      middleName = splitNames.slice(1, splitNames.length - 1).join(' ')
+      lastName = splitNames[splitNames.length - 1]
+    }
+  }
+  return [firstName, middleName, lastName]
 }
 
 export const getUniqAssessments = (assessments = []) => {

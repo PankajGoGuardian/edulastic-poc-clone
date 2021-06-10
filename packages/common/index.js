@@ -1,10 +1,8 @@
 import * as StyledComponents from './src/components/StyledComponents'
 import * as Effects from './src/effects'
 import * as FireBaseService from './src/Firebase'
-import * as MeetFirebase from './src/MeetFirebase'
 
 export { FireBaseService }
-export { MeetFirebase }
 export { default as MainHeader } from './src/components/MainHeader'
 export { default as Paper } from './src/components/Paper'
 export { default as Select } from './src/components/Select'
@@ -35,6 +33,7 @@ export {
   TextAreaInputStyled,
   FieldLabel,
 } from './src/components/InputStyles'
+export { default as BackTop } from './src/components/BackTop'
 export { EduTableStyled } from './src/components/EduTableStyled'
 export { LikeIconStyled } from './src/components/LikeIconStyled'
 export { EduSwitchStyled } from './src/components/EduSwitchStyled'
@@ -72,7 +71,6 @@ export { StyledComponents }
 export { Effects }
 export { default as TypeToConfirmModal } from './src/components/TypeToConfirmModal'
 export { default as PremiumTag } from './src/components/PremiumTag/PremiumTag'
-export { default as VirtualList } from './src/components/VirtualList'
 export { default as Hints } from './src/components/Hints'
 export { default as ErrorHandler } from './src/components/ErrorHandler'
 export { default as OfflineNotifier } from './src/components/OfflineNotifier'
@@ -87,13 +85,15 @@ export { default as CustomPrompt } from './src/components/CustomPrompt'
 export { default as notification } from './src/components/Notification'
 export { default as DragDropInnerContainer } from './src/components/DragDrop/DragDropInnerContainer'
 export { default as PremiumLabel } from './src/components/PremiumLabel'
+export { default as HelperIcon } from './src/components/HelperIconWithPopover'
 
 // HOC
 export { default as withWindowSizes } from './src/HOC/withWindowSizes'
 export { default as withWindowScroll } from './src/HOC/withWindowScroll'
 export { WithResources, useResources } from './src/HOC/withResources'
 export { withMathFormula as WithMathFormula } from './src/HOC/withMathFormula'
-export { scrollTo, offset } from './src/utils/DomUtils'
+export { default as withKeyboard } from './src/HOC/withKeyboard'
+export { scrollTo, offset, isDOMElement } from './src/utils/DomUtils'
 export {
   default as helpers,
   isMobileDevice,
@@ -115,11 +115,21 @@ export {
   getFormattedAttrId,
   toggleIntercomDisplay,
   sanitizeString,
+  getSanitizedProps,
+  isSEB,
+  captureSentryException,
+  handleChromeOsSEB,
+  useLayoutEffectDebounced,
+  getRangeAtFirst,
+  replaceLatexTemplate,
   hasMediaDevice,
+  isValidUpdate,
+  removeTokenFromHtml,
 } from './src/helpers'
 
 // contexts
 export { default as AnswerContext } from './src/contexts/AnswerContext'
+export { default as LanguageContext } from './src/contexts/LanguageContext'
 export { default as ScratchPadContext } from './src/contexts/ScratchPadContext'
 export { default as ScrollContext } from './src/contexts/ScrollContext'
 export { default as LCBScrollContext } from './src/contexts/LCBScrollContext'

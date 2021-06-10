@@ -3,13 +3,15 @@ import PropTypes from 'prop-types'
 import { measureText, DragDrop } from '@edulastic/common'
 import { Popover } from 'antd'
 import { response as dimensions } from '@edulastic/constants'
+import { isEmpty } from 'lodash'
 import { getStemNumeration } from '../../../../utils/helpers'
 import getImageDimensionsHook from '../../../../hooks/imageDimensions'
+import { getEvalautionColor } from '../../../../utils/evaluation'
 
-import CheckMark from './styled/CheckMark'
 import { AnswerBox } from './styled/AnswerBox'
 import { IndexBox } from './styled/IndexBox'
 import { AnswerContent } from './styled/AnswerContent'
+import { IconWrapper } from './styled/IconWrapper'
 
 const { DropContainer, DragItem } = DragDrop
 
@@ -31,17 +33,31 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     globalSettings,
     disableResponse,
     isPrintPreview,
+    answerScore,
   } = resprops
 
   const { index: dropTargetIndex } =
     (responseIDs && responseIDs.find((response) => response.id === id)) || {}
   const choiceAttempted =
-    userSelections.length > 0 && !!userSelections[dropTargetIndex]
+    userSelections.length > 0 &&
+    !!userSelections[dropTargetIndex] &&
+    !isEmpty(evaluation)
   const status = choiceAttempted
     ? evaluation[dropTargetIndex]
       ? 'right'
       : 'wrong'
     : null
+
+  const allCorrect =
+    responseIDs && responseIDs.every((res) => evaluation[res.index])
+  const correct = status === 'right'
+  const { fillColor, mark, indexBgColor } = getEvalautionColor(
+    answerScore,
+    correct,
+    choiceAttempted,
+    allCorrect
+  )
+
   const indexStr = getStemNumeration(stemNumeration, dropTargetIndex)
   const btnStyle = { ...responseBtnStyle }
   const response =
@@ -59,6 +75,13 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
       ? `${heightpx}px`
       : 'auto'
     : 'auto'
+  /**
+   * Avoiding same value of minHeight and maxHeight
+   * check https://snapwiz.atlassian.net/browse/EV-24405
+   */
+  if (!response.heightpx) {
+    btnStyle.maxHeight = dimensions.maxHeight
+  }
   btnStyle.minHeight = !globalSettings
     ? heightpx
       ? `${heightpx}px`
@@ -138,29 +161,22 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     }
   }
 
-  const correct = status === 'right'
-
   const getContent = (maxHeight = '') => (
     <AnswerBox
       onMouseEnter={handleHover}
       onMouseLeave={handleHover}
       maxHeight={maxHeight}
-      checked={choiceAttempted}
-      correct={correct}
       isPrintPreview={isPrintPreview}
+      fillColor={fillColor}
     >
-      {!checkAnswer && (
-        <IndexBox checked={choiceAttempted} correct={correct}>
-          {indexStr}
-        </IndexBox>
-      )}
+      {!checkAnswer && <IndexBox bgColor={indexBgColor}>{indexStr}</IndexBox>}
       <AnswerContent
         style={{ width: 'auto' }}
         showIndex={!checkAnswer}
         dangerouslySetInnerHTML={{ __html: label || '' }}
         isPrintPreview={isPrintPreview}
       />
-      {choiceAttempted && <CheckMark correct={correct} />}
+      {mark && <IconWrapper inPopover>{mark}</IconWrapper>}
     </AnswerBox>
   )
 

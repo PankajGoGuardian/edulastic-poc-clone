@@ -21,6 +21,7 @@ const Preview = ({
   changeView,
   evaluation,
   isPrintPreview,
+  tool = [],
 }) => {
   const handleCheck = ({ columnIndex, rowIndex, checked }) => {
     const newAnswer = cloneDeep(userAnswer)
@@ -63,6 +64,7 @@ const Preview = ({
           evaluation={evaluation}
           smallSize={smallSize}
           isPrintPreview={isPrintPreview}
+          tool={tool}
         />
       </QuestionContent>
 

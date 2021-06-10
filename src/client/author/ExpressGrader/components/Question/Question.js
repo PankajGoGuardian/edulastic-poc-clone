@@ -34,7 +34,8 @@ class Question extends Component {
         classId,
         _id,
         studentId,
-        weight > 1 ? testItemId : undefined
+        testItemId,
+        weight > 1
       )
     }
   }
@@ -44,6 +45,7 @@ class Question extends Component {
       studentQuestionResponseTestActivityId,
       record,
       studentResponseLoading,
+      teacherEditedScore,
     } = this.props
     const { prevStudentQuestionResponseTestActivityId, prevRecord } = prevProps
     // inidcating inconsitent state , due to rapid switching of students.
@@ -53,12 +55,11 @@ class Question extends Component {
       prevRecord?.testActivityId == prevStudentQuestionResponseTestActivityId &&
       studentQuestionResponseTestActivityId != record?.testActivityId
     if (
-      (!isEqual(prevProps.teacherEditedScore, this.props.teacherEditedScore) ||
+      (!isEqual(prevProps.teacherEditedScore, teacherEditedScore) ||
         forceLoad) &&
       !studentResponseLoading
     ) {
       const {
-        record,
         loadStudentQuestionResponses,
         assignmentClassId: { assignmentId, classId },
       } = this.props
@@ -69,7 +70,8 @@ class Question extends Component {
           classId,
           _id,
           studentId,
-          weight > 1 ? testItemId : undefined
+          testItemId,
+          weight > 1
         )
       }
     }
@@ -83,6 +85,8 @@ class Question extends Component {
       qIndex,
       student,
       isPresentationMode,
+      editResponse,
+      studentResponseLoading,
     } = this.props
 
     let selectedItems = testItems.filter(
@@ -126,9 +130,9 @@ class Question extends Component {
     return (
       <AnswerContext.Provider
         value={{
-          isAnswerModifiable: this.props.editResponse,
+          isAnswerModifiable: editResponse,
           expressGrader: true,
-          studentResponseLoading: this.props.studentResponseLoading,
+          studentResponseLoading,
         }}
       >
         <ClassQuestions

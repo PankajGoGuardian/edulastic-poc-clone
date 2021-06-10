@@ -48,6 +48,7 @@ import {
   receiveDistrictPolicyAction,
   receiveSchoolPolicyAction,
 } from '../../../DistrictPolicy/ducks'
+import { getFormattedName } from '../../../Gradebook/transformers'
 import AddStudentModal from '../../../ManageClass/components/ClassDetails/AddStudent/AddStudentModal'
 import { MergeStudentsModal } from '../../../MergeUsers'
 import {
@@ -128,7 +129,6 @@ class StudentTable extends Component {
           filterAdded: false,
         },
       ],
-      currentPage: 1,
       refineButtonActive: false,
     }
     const { t, isProxyUser } = this.props
@@ -136,21 +136,16 @@ class StudentTable extends Component {
       {
         title: t('users.student.name'),
         render: (_, { _source }) => {
-          const firstName = get(_source, 'firstName', '')
-          const lastName = get(_source, 'lastName', '')
-          return (
-            <span>
-              {firstName === 'Anonymous' || isEmpty(firstName)
-                ? 'Anonymous'
-                : firstName}{' '}
-              {lastName}
-            </span>
-          )
+          const firstName = get(_source, 'firstName', '') || ''
+          const lastName = get(_source, 'lastName', '') || ''
+          const middleName = get(_source, 'middleName', '') || ''
+          const fullName = getFormattedName(firstName, middleName, lastName)
+          return <span>{fullName}</span>
         },
         sortDirections: ['descend', 'ascend'],
         sorter: (a, b) => {
-          const prev = get(a, '_source.firstName', '')
-          const next = get(b, '_source.firstName', '')
+          const prev = get(a, '_source.firstName', '') || ''
+          const next = get(b, '_source.firstName', '') || ''
           return next.localeCompare(prev)
         },
       },
@@ -161,8 +156,8 @@ class StudentTable extends Component {
           record._source.username || record._source.email,
         sortDirections: ['descend', 'ascend'],
         sorter: (a, b) => {
-          const prev = get(a, '_source.username', '')
-          const next = get(b, '_source.username', '')
+          const prev = get(a, '_source.username', '') || ''
+          const next = get(b, '_source.username', '') || ''
           return next.localeCompare(prev)
         },
       },
@@ -205,12 +200,9 @@ class StudentTable extends Component {
         render: (id, { _source }) => {
           const firstName = get(_source, 'firstName', '')
           const lastName = get(_source, 'lastName', '')
+          const middleName = get(_source, 'middleName', '') || ''
+          const fullName = getFormattedName(firstName, middleName, lastName)
           const status = get(_source, 'status', '')
-          const fullName =
-            firstName === 'Anonymous' ||
-            (isEmpty(firstName) && isEmpty(lastName))
-              ? 'Student'
-              : `${firstName} ${lastName}`
           return (
             <div style={{ whiteSpace: 'nowrap' }}>
               {status === 1 && !isProxyUser ? (

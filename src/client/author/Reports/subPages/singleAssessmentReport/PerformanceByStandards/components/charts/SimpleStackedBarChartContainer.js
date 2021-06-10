@@ -2,21 +2,22 @@ import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { find, round, get } from 'lodash'
 
+import { reportUtils } from '@edulastic/constants'
+
 import { SimpleStackedBarChart } from '../../../../../common/components/charts/simpleStackedBarChart'
-import {
+import BarTooltipRow from '../../../../../common/components/tooltip/BarTooltipRow'
+
+const { addColors } = reportUtils.common
+
+const {
   viewByMode,
   analyzeByMode,
   getYLabelString,
   getChartScoreData,
-} from '../../util/transformers'
-import { addColors } from '../../../../../common/util'
-import BarTooltipRow from '../../../../../common/components/tooltip/BarTooltipRow'
-
-const defaultSkillInfo = { standard: '', domain: '' }
+} = reportUtils.performanceByStandards
 
 const SimpleStackedBarChartContainer = ({
   report,
-  filter,
   viewBy,
   analyzeBy,
   onBarClick,
@@ -27,9 +28,8 @@ const SimpleStackedBarChartContainer = ({
   const barDataKey = 'avgScore'
   const ticks = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
 
-  let formattedData = useMemo(() => getChartScoreData(report, filter, viewBy), [
+  let formattedData = useMemo(() => getChartScoreData(report, viewBy), [
     report,
-    filter,
     viewBy,
   ])
 
@@ -37,21 +37,7 @@ const SimpleStackedBarChartContainer = ({
     return addColors(formattedData, selectedData, xDataKey)
   }, [formattedData, selectedData, xDataKey])
 
-  const { skillInfo } = report
-
-  const tickFormatter = (id) => {
-    const dataField =
-      viewBy === viewByMode.STANDARDS ? 'standardId' : 'domainId'
-    const labelKey = viewBy === viewByMode.STANDARDS ? 'standard' : 'domain'
-
-    const skill = skillInfo.find((info) => info[dataField] === id)
-
-    return (skill || defaultSkillInfo)[labelKey]
-  }
-
-  formattedData = data.sort((a, b) =>
-    tickFormatter(a[xDataKey]).localeCompare(tickFormatter(b[xDataKey]))
-  )
+  formattedData = data.sort((a, b) => a[xDataKey] - b[xDataKey])
 
   const yTickformatLabel = (score) => {
     switch (analyzeBy) {
@@ -59,6 +45,7 @@ const SimpleStackedBarChartContainer = ({
         return `${Math.round(Number(score))}%`
       case analyzeByMode.RAW_SCORE:
         return ''
+      default:
     }
   }
 
@@ -80,6 +67,7 @@ const SimpleStackedBarChartContainer = ({
             </tspan>
           </>
         )
+      default:
     }
   }
 
@@ -103,18 +91,19 @@ const SimpleStackedBarChartContainer = ({
       switch (analyzeBy) {
         case analyzeByMode.SCORE:
           lastItem = {
-            title: 'Avg.Score(%) : ',
+            title: 'Avg. Score (%) : ',
             value: `${round(payload[0].value)}%`,
           }
           break
         case analyzeByMode.RAW_SCORE:
           lastItem = {
-            title: 'Avg.Score : ',
+            title: 'Avg. Score : ',
             value: `${round(payload[0].payload.rawScore, 2)} / ${
               payload[0].payload.maxScore
             }`,
           }
           break
+        default:
       }
 
       return (
@@ -126,8 +115,12 @@ const SimpleStackedBarChartContainer = ({
             value={name}
           />
           <BarTooltipRow
-            title="Total Points :"
-            value={get(payload[0], 'payload.maxScore', '')}
+            title="Total Points : "
+            value={get(payload[0], 'payload.totalMaxScore', '')}
+          />
+          <BarTooltipRow
+            title="Total Score : "
+            value={get(payload[0], 'payload.totalTotalScore', '')}
           />
           {lastItem && <BarTooltipRow {...lastItem} />}
         </div>
@@ -159,7 +152,6 @@ SimpleStackedBarChartContainer.propTypes = {
   viewBy: PropTypes.string.isRequired,
   analyzeBy: PropTypes.string.isRequired,
   onBarClick: PropTypes.func.isRequired,
-  filter: PropTypes.object.isRequired,
   onResetClick: PropTypes.func.isRequired,
   report: PropTypes.object,
   selectedData: PropTypes.array,

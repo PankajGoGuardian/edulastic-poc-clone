@@ -30,10 +30,7 @@ const Options = ({ t, fillSections, cleanSections, advancedAreOpen, item }) => {
     >
       <LayoutsComponent {...leftSideProp} />
 
-      <Extras {...leftSideProp}>
-        <Extras.Distractors />
-        <Extras.Hints />
-      </Extras>
+      <Extras {...leftSideProp} />
     </WidgetOptions>
   )
 }

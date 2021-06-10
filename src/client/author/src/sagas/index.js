@@ -32,6 +32,7 @@ import { districtAdminSaga } from '../../DistrictAdmin'
 import { schoolAdminSaga } from '../../SchoolAdmin'
 import { coursesSaga } from '../../Courses'
 import { classesSaga } from '../../Classes'
+import { groupsSaga } from '../../Groups'
 import folderSaga from './folder'
 import { interestedStandardsSaga } from '../../InterestedStandards'
 import { playlistSaga } from '../../Playlist'
@@ -52,6 +53,8 @@ import { mergeUsersSaga } from '../../MergeUsers'
 import { gradebookSaga } from '../../Gradebook'
 import { advancedAssignmentsSaga } from '../../AssignmentAdvanced'
 import { watcherSaga as previewModalSaga } from '../components/common/PreviewModal/ducks'
+import { collaborationGroupSaga } from '../../Collaboration/index'
+import { languageSaga } from '../../../common/components/LanguageSelector/duck'
 
 const authorSagas = [
   itemsSaga(),
@@ -87,6 +90,7 @@ const authorSagas = [
   schoolAdminSaga(),
   coursesSaga(),
   classesSaga(),
+  groupsSaga(),
   folderSaga(),
   playlistSaga(),
   playlistPageSaga(),
@@ -108,6 +112,8 @@ const authorSagas = [
   gradebookSaga(),
   previewModalSaga(),
   advancedAssignmentsSaga(),
+  collaborationGroupSaga(),
+  languageSaga(),
 ]
 
 export default authorSagas

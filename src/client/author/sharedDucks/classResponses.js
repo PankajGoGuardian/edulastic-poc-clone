@@ -28,7 +28,6 @@ import {
   RECEIVE_STUDENT_RESPONSE_SUCCESS,
   RECEIVE_STUDENT_RESPONSE_ERROR,
   RECEIVE_CLASSSTUDENT_RESPONSE_REQUEST,
-  RECEIVE_CLASSSTUDENT_RESPONSE_SUCCESS,
   RECEIVE_CLASSSTUDENT_RESPONSE_ERROR,
   RECEIVE_FEEDBACK_RESPONSE_REQUEST,
   RECEIVE_FEEDBACK_RESPONSE_SUCCESS,
@@ -41,7 +40,8 @@ import {
   RECEIVE_CLASS_QUESTION_ERROR,
   RESPONSE_ENTRY_SCORE_SUCCESS,
   UPDATE_STUDENT_TEST_ITEMS,
-  RECEIVE_ATTACHMENTS_RESPONSE_REQUEST,
+  ADD_CLASS_STUDENT_RESPONSE,
+  SET_CLASS_STUDENT_RESPONSES_LOADING,
 } from '../src/constants/actions'
 import { gradebookTestItemAddAction } from '../src/reducers/testActivity'
 
@@ -63,9 +63,7 @@ export const updateStudentQuestionActivityScoreAction = createAction(
   UPDATE_STUDENT_ACTIVITY_SCORE
 )
 
-export const fetchItemAttachmentsAction = createAction(
-  RECEIVE_ATTACHMENTS_RESPONSE_REQUEST
-)
+const addClassStudentRespnseAction = createAction(ADD_CLASS_STUDENT_RESPONSE)
 
 function* receiveClassResponseSaga({ payload }) {
   try {
@@ -90,18 +88,31 @@ function* receiveClassResponseSaga({ payload }) {
 
 function* loadAttachmentsFromServer(filter) {
   try {
-    const { referrerId, referrerId2, uqaId } = filter
+    const { referrerId, referrerId2, uqaId, qid } = filter
     // TODO
     // perf optimisation
     // call the api only if data is not present in the store
-    const { attachments = [] } = yield call(attachmentApi.loadAllAttachments, {
+    const filterQuery = {
       referrerId,
       referrerId2,
-    })
+    }
+    let { attachments = [] } = yield call(
+      attachmentApi.loadAllAttachments,
+      filterQuery
+    )
+
+    if (attachments.length > 1) {
+      attachments = attachments.filter((a) => a.referrerId3 === qid)
+    }
+
     const scratchpadData = {}
     for (const attachment of attachments) {
-      const { data } = attachment
-      scratchpadData[uqaId] = data.scratchpad
+      const { data, referrerId3 } = attachment
+      if (referrerId3) {
+        scratchpadData[uqaId] = { [referrerId3]: data.scratchpad }
+      } else {
+        scratchpadData[uqaId] = data.scratchpad
+      }
     }
     yield put({ type: SAVE_USER_WORK, payload: scratchpadData })
   } catch (error) {
@@ -111,11 +122,12 @@ function* loadAttachmentsFromServer(filter) {
 
 function* getAttachmentsForItems({ testActivityId, testItemsIdArray = [] }) {
   yield all(
-    testItemsIdArray.map(({ testItemId, uqaId }) =>
+    testItemsIdArray.map(({ testItemId, uqaId, _id, qid }) =>
       call(loadAttachmentsFromServer, {
         referrerId: testActivityId,
         referrerId2: testItemId,
-        uqaId,
+        uqaId: uqaId || _id,
+        qid,
       })
     )
   )
@@ -130,7 +142,9 @@ function* loadPassageHighlightFromServer({ referrerId, referrerId2 }) {
     const passageData = {}
     for (const attachment of attachments) {
       const { data } = attachment
-      passageData[referrerId2] = data
+      passageData[referrerId2] = {
+        [referrerId]: data,
+      }
     }
     yield put({ type: SAVE_USER_WORK, payload: passageData })
   } catch (error) {
@@ -149,49 +163,23 @@ function* loadPassagesForItems({ testActivityId, passages }) {
   )
 }
 
-function getScratchpadUsedItemsFromActivities(actGroups = {}) {
-  const items = []
-  Object.keys(actGroups).forEach((key) => {
-    const activities = actGroups[key]
-    let showScratchByDefault
-    let scratchUsed
-    for (const activity of activities) {
-      if (activity?.scratchPad?.scratchpad === true) {
-        scratchUsed = true
-      }
-      if (activity.qType === questionType.HIGHLIGHT_IMAGE) {
-        showScratchByDefault = true
-      }
-      if (scratchUsed && showScratchByDefault) {
-        break
-      }
-    }
-    if (scratchUsed && showScratchByDefault) {
-      items.push({
-        utaId: activities[0].testActivityId,
-        uqaId: activities[0]._id,
-        testItemId: key,
-      })
-    }
-  })
-  return items
-}
-
 function* receiveStudentResponseSaga({ payload }) {
   try {
     const studentResponse = yield call(
       classResponseApi.studentResponse,
       payload
     )
-    const { questionActivities = [] } = studentResponse
-
+    const { questionActivities: uqas = [] } = studentResponse
+    const sc = uqas.filter(
+      (uqa) =>
+        uqa?.scratchPad?.scratchpad &&
+        uqa.qType === questionType.HIGHLIGHT_IMAGE
+    )
     // student view LCB
-    const actGroups = groupBy(questionActivities, 'testItemId')
-    const scratchpadUsedItems = getScratchpadUsedItemsFromActivities(actGroups)
 
     yield fork(getAttachmentsForItems, {
       testActivityId: payload.testActivityId,
-      testItemsIdArray: scratchpadUsedItems,
+      testItemsIdArray: sc,
     })
 
     const originalData = yield select(
@@ -273,40 +261,37 @@ function* receiveStudentResponseSaga({ payload }) {
   }
 }
 
-function* receiveAttachmentsResponseSaga({ payload }) {
-  try {
-    const test = payload.questionActivities.map(
-      ({ testActivityId, qActId, testItemId }) => ({
-        utaId: testActivityId,
-        uqaId: qActId,
-        testItemId,
-      })
-    )
-
-    yield call(getAttachmentsForItems, {
-      testActivityId: payload.testActivityId,
-      testItemsIdArray: test,
-    })
-  } catch (e) {
-    console.log(e)
-  }
-}
-
 function* receiveClassStudentResponseSaga({ payload }) {
   try {
-    const classStudentResponse = []
-    for (let i = 0; i < payload.selectedActivities.length; i++) {
-      classStudentResponse.push(
-        yield call(classResponseApi.studentResponse, {
-          testActivityId: payload.selectedActivities[i],
-          groupId: payload.groupId,
+    const { groupId, selectedActivities } = payload
+    const classStudentResponse = yield call(classResponseApi.studentResponses, {
+      testActivityIds: selectedActivities,
+      groupId,
+    })
+    yield put({
+      type: SET_CLASS_STUDENT_RESPONSES_LOADING,
+      payload: false,
+    })
+    for (let index = 0; index < classStudentResponse.length; index++) {
+      const value = classStudentResponse[index]
+      /**
+       *  a trick to right away render 1st student response.
+       *  otherwise, all students items would be batched and
+       *  rendered at the same time and it will take long time to see anything on screen.
+       *  Now this delay would give enough time for the react to render the first response
+       */
+      if (index !== 0) {
+        yield delay(500)
+      }
+      // doing adding response one by one instead of all at once to avoid freezing browser when too many students selected for printing
+      yield put(
+        addClassStudentRespnseAction({
+          value,
+          first: index === 0,
+          last: index === classStudentResponse.length - 1,
         })
       )
     }
-    yield put({
-      type: RECEIVE_CLASSSTUDENT_RESPONSE_SUCCESS,
-      payload: classStudentResponse,
-    })
   } catch (err) {
     const errorMessage = 'Unable to retrieve class student response.'
     notification({ type: 'error', messageKey: 'receiveTestFailing' })
@@ -363,7 +348,7 @@ function* receiveStudentQuestionSaga({ payload }) {
   try {
     // express grader
     let feedbackResponse
-    if (payload.testItemId) {
+    if (payload.callItemLevel) {
       feedbackResponse = yield call(
         classResponseApi.receiveStudentItemQuestionResponse,
         payload
@@ -373,39 +358,24 @@ function* receiveStudentQuestionSaga({ payload }) {
         classResponseApi.receiveStudentQuestionResponse,
         payload
       )
-      const { qid, score, autoGrade } = feedbackResponse || {}
-      if (!autoGrade) {
+      const { qid, score, autoGrade, graded = true } = feedbackResponse || {}
+      if (!autoGrade && graded) {
         yield put(setTeacherEditedScore({ [qid]: score }))
       }
     }
-
     if (feedbackResponse) {
-      const scratchpadUsedItems = []
+      let scratchpadUsedItems = []
+      const scratchpadUsed = (obj) =>
+        obj.qType === questionType.HIGHLIGHT_IMAGE &&
+        obj?.scratchPad?.scratchpad === true
       if (Array.isArray(feedbackResponse)) {
         // multipart item
-        const scratchpadUsed = (obj) => obj?.scratchPad?.scratchpad === true
-        const idObjMapper = (obj) => {
-          const { _id: uqaId, testItemId, testActivityId } = obj
-          return { uqaId, testItemId, testActivityId }
-        }
-        const [item] = feedbackResponse.filter(scratchpadUsed).map(idObjMapper)
-        if (item) {
-          scratchpadUsedItems.push(item)
-        }
+        scratchpadUsedItems = feedbackResponse.filter(scratchpadUsed)
       } else if (isPlainObject(feedbackResponse)) {
         // item having single question
-        const {
-          qType,
-          scratchPad,
-          _id: uqaId,
-          testItemId,
-          testActivityId,
-        } = feedbackResponse
-        if (
-          qType === questionType.HIGHLIGHT_IMAGE &&
-          scratchPad.scratchpad === true
-        ) {
-          scratchpadUsedItems.push({ uqaId, testItemId, testActivityId })
+        const { _id: uqaId, testItemId, testActivityId, qid } = feedbackResponse
+        if (scratchpadUsed(feedbackResponse)) {
+          scratchpadUsedItems = [{ uqaId, testItemId, testActivityId, qid }]
         }
       }
       if (scratchpadUsedItems.length > 0) {
@@ -453,27 +423,27 @@ function* receiveClassQuestionSaga({ payload }) {
         payload
       )
     } else {
+      // TODO: Need analyse and remove this api and conditions. I could find the instance using it.
       feedbackResponse = yield call(
         classResponseApi.questionClassQuestionResponse,
         payload
       )
     }
 
-    let scratchpadUsedItems = []
-    const actGroupByUser = groupBy(feedbackResponse, 'userId')
-
-    Object.keys(actGroupByUser).forEach((key) => {
-      const groupByItem = groupBy(actGroupByUser[key], 'testItemId')
-      const curritems = getScratchpadUsedItemsFromActivities(groupByItem)
-      scratchpadUsedItems = scratchpadUsedItems.concat(curritems)
-    })
-
-    for (const item of scratchpadUsedItems) {
-      yield fork(getAttachmentsForItems, {
-        testActivityId: item.utaId,
-        testItemsIdArray: [item],
-      })
-    }
+    const sc = yield feedbackResponse.filter(
+      (uqa) =>
+        uqa?.scratchPad?.scratchpad &&
+        uqa.qType === questionType.HIGHLIGHT_IMAGE
+    )
+    const scGrouped = yield groupBy(sc, 'testActivityId')
+    yield all(
+      Object.keys(scGrouped).map((utaId) =>
+        fork(getAttachmentsForItems, {
+          testActivityId: utaId,
+          testItemsIdArray: scGrouped[utaId],
+        })
+      )
+    )
     feedbackResponse = feedbackResponse.map((x) => {
       if (x.graded === false) {
         Object.assign(x, { score: 0 })
@@ -504,6 +474,7 @@ function* updateStudentScore(payload) {
       score,
       groupId,
       studentId,
+      fromExpressGrader = false,
       shouldReceiveStudentResponse = false,
     } = payload
 
@@ -525,7 +496,10 @@ function* updateStudentScore(payload) {
       graded,
       skipped,
       ...question
-    } of questionActivities) {
+      // update only edited questionActivities
+    } of questionActivities.filter(
+      (x) => x.testActivityId === testActivityId && x.testItemId === itemId
+    )) {
       gradeBookTestItemAddPayload.push({
         testActivityId: _testActivityId,
         score: _score,
@@ -549,6 +523,21 @@ function* updateStudentScore(payload) {
         type: RECEIVE_STUDENT_RESPONSE_REQUEST,
         payload: { testActivityId, groupId, studentId },
       })
+    }
+
+    if (fromExpressGrader) {
+      const qAct = questionActivities.find(
+        (act) =>
+          act.testActivityId === testActivityId &&
+          act.testItemId === itemId &&
+          act.qid === questionId
+      )
+      if (qAct) {
+        yield put({
+          type: RECEIVE_STUDENT_QUESTION_SUCCESS,
+          payload: qAct,
+        })
+      }
     }
 
     notification({ type: 'success', messageKey: 'scoreSucessfullyUpdated' })
@@ -577,10 +566,6 @@ export function* watcherSaga() {
     yield takeLatest(
       RECEIVE_FEEDBACK_RESPONSE_REQUEST,
       receiveFeedbackResponseSaga
-    ),
-    yield takeLatest(
-      RECEIVE_ATTACHMENTS_RESPONSE_REQUEST,
-      receiveAttachmentsResponseSaga
     ),
   ])
   const requestChan = yield actionChannel(UPDATE_STUDENT_ACTIVITY_SCORE)

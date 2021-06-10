@@ -1,9 +1,9 @@
 import { themeColor, white } from '@edulastic/colors'
 import { withWindowSizes } from '@edulastic/common'
-import { IconFilter } from '@edulastic/icons'
+import { IconCloseFilter, IconFilter } from '@edulastic/icons'
 import { Col, Row, Spin } from 'antd'
 import { get } from 'lodash'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import styled from 'styled-components'
@@ -58,11 +58,10 @@ const Insights = ({
   currentPlaylist,
   playlistInsights,
   studentProgress,
-  fetchPlaylistInsightsAction,
-  getStudentProgressRequestAction,
+  fetchPlaylistInsightsAction: _fetchPlaylistInsightsAction,
+  getStudentProgressRequestAction: _getStudentProgressRequestAction,
   loading,
   loadingProgress,
-  windowWidth,
 }) => {
   const { _id: playlistId, modules } = currentPlaylist
 
@@ -73,44 +72,52 @@ const Insights = ({
   // fetch playlist insights
   useEffect(() => {
     if (playlistId) {
-      fetchPlaylistInsightsAction({ playlistId })
+      _fetchPlaylistInsightsAction({ playlistId })
     }
   }, [playlistId])
 
   // fetch student progress data
-  useEffect(() => {
-    const termId =
+  const termId = useMemo(() => {
+    return (
       get(user, 'orgData.defaultTermId', '') ||
       get(user, 'orgData.terms', [])?.[0]?._id
+    )
+  }, [user])
+
+  useEffect(() => {
     if (overallProgressCheck && termId) {
-      getStudentProgressRequestAction({ termId, insights: true })
+      _getStudentProgressRequestAction({ termId, insights: true })
     } else if (playlistId && termId) {
       if (filters.modules.length) {
         const playlistModuleIds = filters.modules.map((i) => i.key).join(',')
-        getStudentProgressRequestAction({
+        _getStudentProgressRequestAction({
           termId,
           playlistId,
           playlistModuleIds,
           insights: true,
         })
       } else {
-        getStudentProgressRequestAction({ termId, playlistId, insights: true })
+        _getStudentProgressRequestAction({ termId, playlistId, insights: true })
       }
     }
-  }, [overallProgressCheck, playlistId, filters.modules])
+  }, [overallProgressCheck, playlistId, filters.modules, termId])
 
   const { metricInfo: progressInfo } = get(studentProgress, 'data.result', {})
-  const [trendData, trendCount] = useGetBandData(
+  const [trendData] = useGetBandData(
     progressInfo || [],
     'student',
     [],
     '',
-    defaultBandInfo
+    defaultBandInfo,
+    'startDate'
   )
 
   const { studInfo = [], metricInfo = [], scaleInfo = [] } = playlistInsights
   const masteryData = getMasteryData(scaleInfo[0]?.scale)
-  const filterData = { ...getFilterData(modules, filters.modules), masteryData }
+  const filterData = {
+    ...getFilterData(modules, filters.modules),
+    masteryData,
+  }
 
   // merge trendData with studInfo;
   const studInfoMap = getMergedTrendMap(studInfo, trendData)
@@ -130,7 +137,7 @@ const Insights = ({
   }
 
   return loading ? (
-    <Spin style={{ marginTop: '400px' }} />
+    <Spin />
   ) : (
     <InsightsContainer type="flex" gutter={10} justify="center">
       {showFilter && (
@@ -150,13 +157,13 @@ const Insights = ({
           showFilter={showFilter}
           variant="filter"
           onClick={toggleFilter}
+          data-cy="smart-filter"
         >
-          <IconFilter
-            data-cy="smart-filter"
-            color={showFilter ? white : themeColor}
-            width={20}
-            height={20}
-          />
+          {showFilter ? (
+            <IconCloseFilter />
+          ) : (
+            <IconFilter width={20} height={20} />
+          )}
         </FilterIcon>
         <StyledCol>
           {loadingProgress ? (
@@ -177,6 +184,7 @@ const Insights = ({
             studData={curatedMetrics}
             groupsData={filterData?.groupsData}
             highlighted={highlighted}
+            termId={termId}
           />
         </Row>
       </RightContainer>
@@ -205,6 +213,7 @@ export default enhance(Insights)
 
 const InsightsContainer = styled(Row)`
   width: 100%;
+  height: 100%;
 `
 
 const FilterIcon = styled(FilterButton)`
@@ -218,6 +227,7 @@ const FilterColumn = styled(Col)`
 
 const GraphContainer = styled(Col)`
   width: ${(props) => `calc(100% - ${props.showFilter ? '470px' : '250px'})`};
+  height: fit-content;
 `
 
 const RightContainer = styled(Col)`
@@ -227,4 +237,5 @@ const RightContainer = styled(Col)`
 const StyledCol = styled(Col)`
   display: flex;
   justify-content: center;
+  height: 100%;
 `

@@ -1,6 +1,6 @@
 import { Card, Checkbox, Button, Menu, Col } from 'antd'
 import styled from 'styled-components'
-import { FlexContainer } from '@edulastic/common'
+import { FlexContainer, SelectInputStyled } from '@edulastic/common'
 import {
   mobileWidth,
   mobileWidthLarge,
@@ -230,7 +230,7 @@ export const MenuItems = styled(Menu.Item)`
   }
   &:not(.ant-dropdown-menu-item-disabled):hover {
     color: ${white};
-    background-color: ${themeColorBlue};
+    background-color: ${themeColor};
   }
 `
 
@@ -246,6 +246,10 @@ export const ButtonIconWrap = styled.span`
   display: block;
   left: 10px;
   position: absolute;
+  padding-top: 2px;
+  &.more {
+    padding-top: 4px;
+  }
 `
 
 export const BarDiv = styled.div`
@@ -356,4 +360,17 @@ export const SwitchBox = styled.span`
       height: 12px;
     }
   }
+`
+export const FilterSelect = styled(SelectInputStyled)`
+  width: ${(props) => props.width};
+  height: ${(props) => props.height};
+  margin-left: 25px;
+  .ant-select-selection-selected-value {
+    font-size: 11px;
+  }
+`
+export const FilterSpan = styled.span`
+  padding-right: 15px;
+  font-size: 12px;
+  font-weight: 600;
 `

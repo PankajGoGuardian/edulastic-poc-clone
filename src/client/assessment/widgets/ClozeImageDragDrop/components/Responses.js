@@ -8,32 +8,18 @@ import { MathSpan } from '@edulastic/common'
 import { ChoiceItem, DragHandler } from '../../../components/ChoiceItem'
 
 class Responses extends React.Component {
-  static propTypes = {
-    responses: PropTypes.array.isRequired,
-    dragHandler: PropTypes.bool,
-    fontSize: PropTypes.string,
-    heightpx: PropTypes.number.isRequired,
-    maxWidth: PropTypes.number.isRequired,
-    minWidth: PropTypes.number.isRequired,
-    overflow: PropTypes.string,
-    shuffleOptions: PropTypes.bool,
-    transparentResponses: PropTypes.bool,
-    width: PropTypes.number.isRequired,
-    widthpx: PropTypes.number.isRequired,
-  }
-
-  static defaultProps = {
-    dragHandler: false,
-    overflow: 'hidden',
-    shuffleOptions: false,
-    transparentResponses: false,
-    fontSize: '13px',
-  }
-
   shouldComponentUpdate(nextProps) {
-    const { responses: currentResponses } = this.props
-    const { responses: nextResponses } = nextProps
-    const responsesAreEqual = isEqual(currentResponses, nextResponses)
+    const {
+      responses: currentResponses,
+      transparentResponses: currentTransparentResponses,
+    } = this.props
+    const {
+      responses: nextResponses,
+      transparentResponses: prevTransparentResponses,
+    } = nextProps
+    const responsesAreEqual =
+      isEqual(currentResponses, nextResponses) &&
+      isEqual(currentTransparentResponses, prevTransparentResponses)
 
     return !responsesAreEqual
   }
@@ -51,7 +37,8 @@ class Responses extends React.Component {
     return dragItems.map((option = '', index) => (
       <DragItem
         id={`response-item-${index}`}
-        key={`response-item-${index}`}
+        key={option?.id}
+        style={{ margin: 2 }}
         data={{ option, fromRespIndex: index }}
         size={{ width: choiceStyle.widthpx, height: choiceStyle.heightpx }}
       >
@@ -60,6 +47,7 @@ class Responses extends React.Component {
           className={
             transparentResponses ? 'draggable_box_transparent' : 'draggable_box'
           }
+          transparentResponses={transparentResponses}
         >
           {dragHandler && <DragHandler />}
           <MathSpan dangerouslySetInnerHTML={{ __html: option.value }} />
@@ -67,6 +55,28 @@ class Responses extends React.Component {
       </DragItem>
     ))
   }
+}
+
+Responses.propTypes = {
+  responses: PropTypes.array.isRequired,
+  dragHandler: PropTypes.bool,
+  fontSize: PropTypes.string,
+  heightpx: PropTypes.number.isRequired,
+  maxWidth: PropTypes.number.isRequired,
+  minWidth: PropTypes.number.isRequired,
+  overflow: PropTypes.string,
+  shuffleOptions: PropTypes.bool,
+  transparentResponses: PropTypes.bool,
+  width: PropTypes.number.isRequired,
+  widthpx: PropTypes.number.isRequired,
+}
+
+Responses.defaultProps = {
+  dragHandler: false,
+  overflow: 'hidden',
+  shuffleOptions: false,
+  transparentResponses: false,
+  fontSize: '13px',
 }
 
 export default Responses

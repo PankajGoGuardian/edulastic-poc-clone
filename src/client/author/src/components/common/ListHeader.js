@@ -17,10 +17,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Dropdown } from 'antd'
 import { get } from 'lodash'
 import PropTypes from 'prop-types'
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
 // components
-import { Link } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import styled from 'styled-components'
 import CartButton from '../../../ItemList/components/CartButton/CartButton'
@@ -28,7 +28,6 @@ import CartButton from '../../../ItemList/components/CartButton/CartButton'
 import {
   addBulkTeacherAdminAction,
   setTeachersDetailsModalVisibleAction,
-  toggleBroadcastSummaryAction,
 } from '../../../SchoolAdmin/ducks'
 import StudentsDetailsModal from '../../../Student/components/StudentTable/StudentsDetailsModal/StudentsDetailsModal'
 import InviteMultipleTeacherModal from '../../../Teacher/components/TeacherTable/InviteMultipleTeacherModal/InviteMultipleTeacherModal'
@@ -37,8 +36,7 @@ import {
   getUserOrgId,
   getUserRole,
 } from '../../selectors/user'
-import BroadcastSummaryModal from '../../../Extended/BroadcastSummaryModal'
-import BroadcastIcon from '../../assets/broadcast'
+import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 
 const ListHeader = ({
   onCreate,
@@ -64,19 +62,10 @@ const ListHeader = ({
   newTest,
   toggleSidebar,
   titleWidth,
-  showBroadcastSummary = false,
-  toggleBroadcastSummary,
+  history,
+  isLoadingButtonState = false,
 }) => {
   const [inviteTeacherModalVisible, toggleInviteTeacherModal] = useState(false)
-  const [isMeetActive, setMeetActive] = useState({})
-
-  useEffect(() => {
-    window.chrome?.runtime?.sendMessage?.(
-      process.env.EXTENSION_ID || 'eadjoeopijphkogdmabgffpiiebjdgoo',
-      { type: 'REQUEST_MEETINGS_STATUS' },
-      (response = {}) => response.meetingID && setMeetActive(response)
-    )
-  }, [])
 
   const sendInvite = (userDetails) => {
     addBulkTeacher({ addReq: userDetails })
@@ -90,6 +79,8 @@ const ListHeader = ({
     setTeachersDetailsModalVisible(false)
   }
 
+  const createNewAssignment = () => history.push('/author/assignments/select')
+
   return (
     <MainHeader titleMaxWidth={titleWidth} Icon={titleIcon} headingText={title}>
       {midTitle && (
@@ -100,32 +91,16 @@ const ListHeader = ({
 
       <RightButtonWrapper>
         <MobileHeaderFilterIcon>{renderFilterIcon()}</MobileHeaderFilterIcon>
-        {isMeetActive.meetingID && (
-          <div
-            onClick={() => toggleBroadcastSummary(true)}
-            title="Broadcast Results"
-          >
-            <BroadcastIcon
-              iconStyle={{
-                fill: '#BBBFC4',
-                width: '28px',
-                height: '28px',
-                margin: '0 14px',
-                cursor: 'pointer',
-              }}
-            />
-          </div>
-        )}
         {renderFilter(isAdvancedView)}
         {hasButton &&
           !createAssignment &&
           (renderButton ? (
             <>
               {windowWidth > 768 ? (
-                renderButton()
+                renderButton(isLoadingButtonState)
               ) : (
                 <Dropdown
-                  overlay={renderButton()}
+                  overlay={renderButton(isLoadingButtonState)}
                   trigger={['click']}
                   getPopupContainer={(triggerNode) => triggerNode.parentNode}
                   overlayClassName="mobile-buttons-dropdown"
@@ -174,13 +149,15 @@ const ListHeader = ({
                 <Link to="/author/gradebook">VIEW GRADEBOOK </Link>
               </EduButton>
             )}
-
-            <EduButton data-cy="createNew" isBlue>
-              <Link to="/author/assignments/select">
-                <IconPlusStyled />
-                NEW ASSIGNMENT
-              </Link>
-            </EduButton>
+            <AuthorCompleteSignupButton
+              renderButton={(handleClick) => (
+                <EduButton data-cy="createNew" isBlue onClick={handleClick}>
+                  <IconPlusStyled />
+                  NEW ASSIGNMENT
+                </EduButton>
+              )}
+              onClick={createNewAssignment}
+            />
           </>
         )}
       </RightButtonWrapper>
@@ -201,13 +178,6 @@ const ListHeader = ({
           title="Teacher Details"
         />
       )}
-      {isMeetActive.meetingID && showBroadcastSummary && (
-        <BroadcastSummaryModal
-          visible={showBroadcastSummary}
-          closeModal={() => toggleBroadcastSummary(false)}
-          meetingID={isMeetActive.meetingID}
-        />
-      )}
     </MainHeader>
   )
 }
@@ -217,6 +187,7 @@ ListHeader.propTypes = {
   createAssignment: PropTypes.bool,
   t: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
+  history: PropTypes.object.isRequired,
   btnTitle: PropTypes.string,
   renderExtra: PropTypes.func,
   renderFilter: PropTypes.func,
@@ -245,6 +216,7 @@ ListHeader.defaultProps = {
 const enhance = compose(
   withNamespaces('manageDistrict'),
   withWindowSizes,
+  withRouter,
   connect(
     (state) => ({
       userOrgId: getUserOrgId(state),
@@ -256,12 +228,10 @@ const enhance = compose(
         ['schoolAdminReducer', 'teacherDetailsModalVisible'],
         false
       ),
-      showBroadcastSummary: state.schoolAdminReducer.showBroadcastSummary,
     }),
     {
       addBulkTeacher: addBulkTeacherAdminAction,
       setTeachersDetailsModalVisible: setTeachersDetailsModalVisibleAction,
-      toggleBroadcastSummary: toggleBroadcastSummaryAction,
     }
   )
 )

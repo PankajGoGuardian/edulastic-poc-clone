@@ -11,7 +11,8 @@
           "title": "ASSESSMENT SUMMARY"
         }
       ],
-      "group": "singleAssessmentReport"
+      "group": "singleAssessmentReport",
+      "groupTitle": "Single Assessment Report"
     },
     "peer-performance": {
       "title": "Sub-group Performance",
@@ -24,7 +25,8 @@
           "title": "SUB-GROUP PERFORMANCE"
         }
       ],
-      "group": "singleAssessmentReport"
+      "group": "singleAssessmentReport",
+      "groupTitle": "Single Assessment Report"
     },
     "question-analysis": {
       "title": "Question Analysis",
@@ -37,7 +39,8 @@
           "title": "QUESTION ANALYSIS"
         }
       ],
-      "group": "singleAssessmentReport"
+      "group": "singleAssessmentReport",
+      "groupTitle": "Single Assessment Report"
     },
     "response-frequency": {
       "title": "Response Frequency",
@@ -50,7 +53,8 @@
           "title": "RESPONSE FREQUENCY"
         }
       ],
-      "group": "singleAssessmentReport"
+      "group": "singleAssessmentReport",
+      "groupTitle": "Single Assessment Report"
     },
     "performance-by-standards": {
       "title": "Performance by Standards",
@@ -63,7 +67,8 @@
           "title": "PERFORMANCE BY STANDARDS"
         }
       ],
-      "group": "singleAssessmentReport"
+      "group": "singleAssessmentReport",
+      "groupTitle": "Single Assessment Report"
     },
     "performance-by-students": {
       "title": "Performance by Students",
@@ -76,7 +81,8 @@
           "title": "PERFORMANCE BY STUDENTS"
         }
       ],
-      "group": "singleAssessmentReport"
+      "group": "singleAssessmentReport",
+      "groupTitle": "Single Assessment Report"
     },
     "standards-performance-summary": {
       "title": "Standards Performance Summary",
@@ -89,7 +95,8 @@
           "title": "STANDARDS PERFORMANCE SUMMARY"
         }
       ],
-      "group": "standardsMasteryReport"
+      "group": "standardsMasteryReport",
+      "groupTitle": "Standards Mastery Report"
     },
     "standards-gradebook": {
       "title": "Standards Gradebook",
@@ -102,7 +109,22 @@
           "title": "STANDARDS GRADEBOOK"
         }
       ],
-      "group": "standardsMasteryReport"
+      "group": "standardsMasteryReport",
+      "groupTitle": "Standards Mastery Report"
+    },
+    "standards-progress": {
+      "title": "Standards Progress",
+      "breadcrumb": [
+        {
+          "title": "INSIGHTS",
+          "to": "/author/reports"
+        },
+        {
+          "title": "STANDARDS PROGRESS"
+        }
+      ],
+      "group": "standardsMasteryReport",
+      "groupTitle": "Standards Mastery Report"
     },
     "performance-over-time": {
       "title": "Performance Over Time",
@@ -115,7 +137,8 @@
           "title": "PERFORMANCE OVER TIME"
         }
       ],
-      "group": "multipleAssessmentReport"
+      "group": "multipleAssessmentReport",
+      "groupTitle": "Multiple Assessment Report"
     },
     "peer-progress-analysis": {
       "title": "Peer Progress Analysis",
@@ -128,10 +151,11 @@
           "title": "PEER PROGRESS ANALYSIS"
         }
       ],
-      "group": "multipleAssessmentReport"
+      "group": "multipleAssessmentReport",
+      "groupTitle": "Multiple Assessment Report"
     },
     "student-progress": {
-      "title": "Student progress",
+      "title": "Student Progress",
       "breadcrumb": [
         {
           "title": "INSIGHTS",
@@ -141,7 +165,8 @@
           "title": "STUDENT PROGRESS"
         }
       ],
-      "group": "multipleAssessmentReport"
+      "group": "multipleAssessmentReport",
+      "groupTitle": "Multiple Assessment Report"
     },
     "student-profile-summary": {
       "title": "Student Profile Summary",
@@ -154,7 +179,8 @@
           "title": "STUDENT PROFILE SUMMARY"
         }
       ],
-      "group": "studentProfileReport"
+      "group": "studentProfileReport",
+      "groupTitle": "Student Profile Report"
     },
     "student-mastery-profile": {
       "title": "Student Mastery Profile",
@@ -167,7 +193,8 @@
           "title": "STUDENT MASTERY PROFILE"
         }
       ],
-      "group": "studentProfileReport"
+      "group": "studentProfileReport",
+      "groupTitle": "Student Profile Report"
     },
     "student-assessment-profile": {
       "title": "Student Assessment Profile",
@@ -180,7 +207,66 @@
           "title": "STUDENT ASSESSMENT PROFILE"
         }
       ],
-      "group": "studentProfileReport"
+      "group": "studentProfileReport",
+      "groupTitle": "Student Profile Report"
+    },
+    "student-progress-profile": {
+      "title": "Student Standards Progress",
+      "breadcrumb": [
+        {
+          "title": "INSIGHTS",
+          "to": "/author/reports/"
+        },
+        {
+          "title": "STUDENT STANDARDS PROGRESS"
+        }
+      ],
+      "group": "studentProfileReport",
+      "groupTitle": "Student Profile Report"
+    },
+    "engagement-summary": {
+      "title": "Engagement Summary",
+      "breadcrumb": [
+        {
+          "title": "INSIGHTS",
+          "to": "/author/reports/"
+        },
+        {
+          "title": "ENGAGEMENT SUMMARY"
+        }
+      ],
+      "group": "engagementReport",
+      "groupTitle": "Engagement Report"
+    },
+
+    "activity-by-school": {
+      "title": "Activity by School",
+      "breadcrumb": [
+        {
+          "title": "INSIGHTS",
+          "to": "/author/reports/"
+        },
+        {
+          "title": "ACTIVITY BY SCHOOL"
+        }
+      ],
+      "group": "engagementReport",
+      "groupTitle": "Engagement Report"
+    },
+
+    "activity-by-teacher": {
+      "title": "Activity by Teacher",
+      "breadcrumb": [
+        {
+          "title": "INSIGHTS",
+          "to": "/author/reports/"
+        },
+        {
+          "title": "ACTIVITY BY TEACHER"
+        }
+      ],
+      "group": "engagementReport",
+      "groupTitle": "Engagement Report"
     },
     "standard-reports": {
       "title": "Standard Reports",
@@ -201,6 +287,16 @@
         }
       ],
       "group": "mainReport"
+    },
+    "shared-reports": {
+      "title": "Shared Reports",
+      "breadcrumb": [
+        {
+          "title": "SHARED REPORTS",
+          "to": "/author/reports/shared-reports"
+        }
+      ],
+      "group": "mainReport"
     }
   },
   "navigation": {
@@ -212,7 +308,7 @@
       },
       {
         "key": "peer-performance",
-        "title": "PERFORMANCE",
+        "title": "SUB-GROUP",
         "location": "/author/reports/peer-performance/test/"
       },
       {
@@ -246,6 +342,11 @@
         "key": "standards-gradebook",
         "title": "Standards Gradebook",
         "location": "/author/reports/standards-gradebook"
+      },
+      {
+        "key": "standards-progress",
+        "title": "Standards Progress",
+        "location": "/author/reports/standards-progress"
       }
     ],
     "multipleAssessmentReport": [
@@ -268,18 +369,40 @@
     "studentProfileReport": [
       {
         "key": "student-profile-summary",
-        "title": "Student Profile Summary",
+        "title": "Student Summary",
         "location": "/author/reports/student-profile-summary/student/"
       },
       {
         "key": "student-mastery-profile",
-        "title": "Student Mastery Profile",
+        "title": "Student Mastery",
         "location": "/author/reports/student-mastery-profile/student/"
       },
       {
         "key": "student-assessment-profile",
         "title": "Student Assessment Profile",
         "location": "/author/reports/student-assessment-profile/student/"
+      },
+      {
+        "key": "student-progress-profile",
+        "title": "Student Standards Progress",
+        "location": "/author/reports/student-progress-profile/student/"
+      }
+    ],
+    "engagementReport": [
+      {
+        "key": "engagement-summary",
+        "title": "Summary",
+        "location": "/author/reports/engagement-summary"
+      },
+      {
+        "key": "activity-by-school",
+        "title": "Activity by School",
+        "location": "/author/reports/activity-by-school"
+      },
+      {
+        "key": "activity-by-teacher",
+        "title": "Activity by Teacher",
+        "location": "/author/reports/activity-by-teacher"
       }
     ],
     "mainReport": [
@@ -292,6 +415,11 @@
         "key": "custom-reports",
         "title": "CUSTOM REPORTS",
         "location": "/author/reports/custom-reports/"
+      },
+      {
+        "key": "shared-reports",
+        "title": "SHARED REPORTS",
+        "location": "/author/reports/shared-reports/"
       }
     ]
   }

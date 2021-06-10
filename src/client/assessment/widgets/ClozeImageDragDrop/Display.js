@@ -482,6 +482,8 @@ class Display extends Component {
       isPrint = false,
       isPrintPreview = false,
       view,
+      hideCorrectAnswer,
+      answerScore,
     } = this.props
     const isPrintMode = isPrint || isPrintPreview
     const isWrapText = get(item, 'responseLayout.isWrapText', false)
@@ -566,8 +568,8 @@ class Display extends Component {
           style={{
             backgroundColor: 'transparent',
             boxShadow: 'none',
-            border: preview ? null : '1px solid lightgray',
           }}
+          noBorder
           question={item}
           setQuestionData={setQuestionData}
         />
@@ -710,15 +712,10 @@ class Display extends Component {
     )
 
     const checkboxTemplateBoxLayout = (
-      <StyledPreviewTemplateBox
-        fontSize={fontSize}
-        height={isPrintMode ? '' : computedHeight}
-      >
+      <StyledPreviewTemplateBox fontSize={fontSize} height={computedHeight}>
         <StyledPreviewContainer
-          width={isPrintMode ? '' : previewContainerWidth}
-          height={
-            isPrintMode ? '' : this.getCalculatedHeight(maxHeight, canvasHeight)
-          }
+          width={previewContainerWidth}
+          height={this.getCalculatedHeight(maxHeight, canvasHeight)}
           ref={this.previewContainerRef}
         >
           <CheckboxTemplateBoxLayout
@@ -738,13 +735,13 @@ class Display extends Component {
             showBorder={showBorder}
             showDropItemBorder={showDropItemBorder}
             isExpressGrader={isExpressGrader}
-            isPrintMode={isPrintMode}
             imageHeight={this.getCalculatedHeight(maxHeight, canvasHeight)}
             imageWidth={previewContainerWidth}
             fontSize={fontSize}
             isPrintPreview={isPrintPreview || isPrint}
             options={options}
             idValueMap={idValueMap}
+            answerScore={answerScore}
           />
         </StyledPreviewContainer>
       </StyledPreviewTemplateBox>
@@ -766,7 +763,6 @@ class Display extends Component {
         transparentResponses={transparentResponses}
         responseContainerPosition={responsecontainerposition}
         getHeading={getHeading}
-        isPrintMode={isPrintMode}
         {...choiceStyle}
       />
     )
@@ -790,14 +786,21 @@ class Display extends Component {
 
     const responseBoxLayout = isReviewTab ? <div /> : previewResponseBoxLayout
     const answerBox =
-      showAnswer || isExpressGrader ? correctAnswerBoxLayout : <div />
+      (showAnswer || isExpressGrader) && !hideCorrectAnswer ? (
+        correctAnswerBoxLayout
+      ) : (
+        <div />
+      )
 
     return (
       <div style={{ fontSize }}>
         <HorizontalScrollContext.Provider
           value={{ getScrollElement: () => this.displayWrapperRef.current }}
         >
-          <StyledDisplayContainer ref={this.displayWrapperRef}>
+          <StyledDisplayContainer
+            ref={this.displayWrapperRef}
+            isPrintMode={isPrintMode}
+          >
             <FlexContainer justifyContent="flex-start" alignItems="baseline">
               <QuestionLabelWrapper>
                 {showQuestionNumber && (
@@ -807,7 +810,7 @@ class Display extends Component {
                   <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>
                 )}
               </QuestionLabelWrapper>
-              <QuestionContentWrapper>
+              <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
                 <QuestionTitleWrapper>
                   <Stimulus
                     smallSize={smallSize}

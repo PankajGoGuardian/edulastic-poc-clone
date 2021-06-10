@@ -21,11 +21,16 @@ export default class ManageGroupPage extends TeacherManageClassPage {
 
   getStudentRow = (email, exist = true) => {
     if (exist == true)
-      cy.get('.ant-table-tbody').
-        contains('span', `${email}`).parent().parent().children().eq(0);
+      cy.get('.ant-table-tbody')
+        .contains('span', `${email}`)
+        .parent()
+        .parent()
+        .children()
+        .eq(0)
     else {
-      cy.get('.ant-table-tbody').
-        contains('span', `${email}`).should('not.exist')
+      cy.get('.ant-table-tbody')
+        .contains('span', `${email}`)
+        .should('not.exist')
     }
   }
 

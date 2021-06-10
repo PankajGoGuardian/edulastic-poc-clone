@@ -1,7 +1,12 @@
+// TK instead of PK for PreKindergarten is intentional
 const GRADES_LIST = [
   {
     label: 'All',
     value: 'All',
+  },
+  {
+    label: 'PreKindergarten',
+    value: 'TK',
   },
   {
     label: 'Kindergarten',

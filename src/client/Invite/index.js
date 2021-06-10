@@ -1,4 +1,5 @@
-import React, { lazy, useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
+import { lazy } from '@loadable/component'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter, Redirect } from 'react-router'
@@ -16,7 +17,7 @@ const TeacherSignup = lazy(() =>
 
 const Invite = ({ user, location, history, getInviteDetailsAction }) => {
   useEffect(() => {
-    const queryParams = qs.parse(location.search.substring(1))
+    const queryParams = qs.parse(location.search, { ignoreQueryPrefix: true })
     const params = {
       uid: queryParams.uid,
     }

@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { cloneDeep, uniqBy } from 'lodash'
+import { cloneDeep, uniqBy, isEmpty } from 'lodash'
 
 import { withNamespaces } from '@edulastic/localization'
 
@@ -45,6 +45,11 @@ const CustomGroup = ({ onChange, value, customKeys, buttonStyle, t }) => {
         ({ handler }) => num === handler
       )
       const isCustom = customKeys.find((key) => key === num)
+      /**
+       * @see https://snapwiz.atlassian.net/browse/EV-28041
+       * To render custom keys defined in some other item
+       */
+      const _num = num && typeof num === 'string' ? num.trim() : undefined
 
       if (res) {
         res = {
@@ -55,6 +60,26 @@ const CustomGroup = ({ onChange, value, customKeys, buttonStyle, t }) => {
         res = {
           value: num,
           label: num,
+        }
+      } else if (!isEmpty(_num)) {
+        res = {
+          value: _num,
+          label: _num,
+        }
+      }
+
+      if (!res) {
+        const tabButtonKey = MathKeyboard.TAB_BUTTONS_FLATTENED.find(
+          (button) => {
+            const { handler } = button || {}
+            return handler === num
+          }
+        )
+        if (tabButtonKey) {
+          res = {
+            value: tabButtonKey.handler,
+            label: tabButtonKey.label,
+          }
         }
       }
 

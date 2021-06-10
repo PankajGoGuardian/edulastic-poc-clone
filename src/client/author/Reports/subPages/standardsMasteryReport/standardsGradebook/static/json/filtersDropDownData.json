@@ -19,6 +19,7 @@
   },
   "subjects": [{ "key": "All", "title": "All Subjects" }],
   "grades": [
+    { "key": "TK", "title": "PreKindergarten" },
     { "key": "K", "title": "Kindergarten" },
     { "key": "1", "title": "Grade 1" },
     { "key": "2", "title": "Grade 2" },
@@ -32,7 +33,7 @@
     { "key": "10", "title": "Grade 10" },
     { "key": "11", "title": "Grade 11" },
     { "key": "12", "title": "Grade 12" },
-    { "key": "other", "title": "Other" }
+    { "key": "O", "title": "Other" }
   ],
   "assessmentType": [
     { "key": "All", "title": "All Assessment Types" },

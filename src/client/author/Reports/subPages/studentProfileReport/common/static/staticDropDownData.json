@@ -1,0 +1,64 @@
+{
+  "filterSections": {
+    "CLASS_FILTERS": {
+      "key": "0",
+      "title": "Select Classes"
+    }
+  },
+  "tagTypes": [
+    { "key": "termId", "tabKey": "0" },
+    { "key": "courseIds", "tabKey": "0" },
+    { "key": "grades", "subType": "class", "tabKey": "0" },
+    { "key": "subjects", "subType": "class", "tabKey": "0" },
+    { "key": "classIds", "tabKey": "0" },
+    { "key": "student" },
+    { "key": "performanceBandProfileId" },
+    { "key": "standardsProficiencyProfileId" },
+    { "key": "domainId" },
+    { "key": "standardId" },
+    { "key": "assignedBy", "tabKey": "0" }
+  ],
+  "initialFilters": {
+    "reportId": "",
+    "termId": "",
+    "courseIds": "",
+    "grades": "",
+    "subjects": "",
+    "classIds": "",
+    "performanceBandProfileId": "",
+    "standardsProficiencyProfileId": "",
+    "domainId": "All",
+    "standardId": "All",
+    "showApply": false,
+    "assignedBy": "anyone"
+  },
+  "subjects": [
+    { "key": "Mathematics", "title": "Mathematics" },
+    { "key": "ELA", "title": "ELA" },
+    { "key": "Science", "title": "Science" },
+    { "key": "Social Studies", "title": "Social Studies" },
+    { "key": "Computer Science", "title": "Computer Science" },
+    { "key": "Other Subjects", "title": "Other Subjects" }
+  ],
+  "grades": [
+    { "key": "TK", "title": "PreKindergarten" },
+    { "key": "K", "title": "Kindergarten" },
+    { "key": "1", "title": "Grade 1" },
+    { "key": "2", "title": "Grade 2" },
+    { "key": "3", "title": "Grade 3" },
+    { "key": "4", "title": "Grade 4" },
+    { "key": "5", "title": "Grade 5" },
+    { "key": "6", "title": "Grade 6" },
+    { "key": "7", "title": "Grade 7" },
+    { "key": "8", "title": "Grade 8" },
+    { "key": "9", "title": "Grade 9" },
+    { "key": "10", "title": "Grade 10" },
+    { "key": "11", "title": "Grade 11" },
+    { "key": "12", "title": "Grade 12" },
+    { "key": "other", "title": "Other" }
+  ],
+  "assignedBy": [
+    { "key": "anyone", "title": "Anyone" },
+    { "key": "me", "title": "Me" }
+  ]
+}

@@ -22,7 +22,7 @@ import { CheckboxLabel } from '../../../styled/CheckboxWithLabel'
 import { Row } from '../../../styled/WidgetOptions/Row'
 import { Col } from '../../../styled/WidgetOptions/Col'
 
-const { methods } = math
+const { methods, simplifiedOptions } = math
 
 const initialMethod = {
   method: methods.EQUIV_SYMBOLIC,
@@ -88,7 +88,7 @@ const ClozeMathAnswers = ({
     }
 
     newItem.validation.altResponses.push({
-      score: 1,
+      score: newItem?.validation?.validResponse?.score,
       value: mathValidAnswers,
       textinput: { value: inputValidAnswers },
       dropdown: { value: dropdownValidAnswers },
@@ -128,21 +128,63 @@ const ClozeMathAnswers = ({
     )
   }
 
-  const _changeCorrectMethod = ({ methodId, methodIndex, prop, value }) => {
-    const newItem = cloneDeep(item)
-    const validAnswers = get(newItem, 'validation.validResponse.value', [])
-    forEach(validAnswers, (answer) => {
-      if (answer[0].id === methodId) {
-        answer[methodIndex][prop] = value
-        // reset the previous options whenever method changes
-        // @see https://snapwiz.atlassian.net/browse/EV-17804
-        if (prop === 'method' && isObject(answer[methodIndex]?.options)) {
-          answer[methodIndex].options = {}
+  const changeExtraOptions = (draft, value, answerId) => {
+    let hasSimplified = false
+    Object.keys(value).forEach((optkey) => {
+      if (simplifiedOptions.includes(optkey)) {
+        hasSimplified = true
+        value.isSimplified = true
+
+        if (!draft.extraOpts) {
+          draft.extraOpts = {}
         }
+        if (!draft.extraOpts[answerId]) {
+          draft.extraOpts[answerId] = {}
+        }
+        draft.extraOpts[answerId][correctTab] = {
+          [optkey]: value[optkey],
+        }
+        delete value[optkey]
       }
     })
-    set(newItem, `validation.validResponse.value`, validAnswers)
-    setQuestionData(newItem)
+
+    if (!hasSimplified) {
+      if (draft.extraOpts && draft.extraOpts[answerId]) {
+        delete draft.extraOpts[answerId][correctTab]
+      }
+      delete value.isSimplified
+    }
+    return [draft.extraOpts, value]
+  }
+
+  const _changeCorrectMethod = ({ methodId, methodIndex, prop, value }) => {
+    setQuestionData(
+      produce(item, (draft) => {
+        const validAnswers = get(draft, 'validation.validResponse.value', [])
+        let _value = value
+        forEach(validAnswers, (answer) => {
+          if (answer[0].id === methodId) {
+            if (prop === 'options') {
+              const [extraOpts, updatedValue] = changeExtraOptions(
+                draft,
+                _value,
+                methodId
+              )
+              if (extraOpts) {
+                draft.extraOpts = extraOpts
+              }
+              _value = updatedValue
+            }
+            answer[methodIndex][prop] = _value
+            // reset the previous options whenever method changes
+            // @see https://snapwiz.atlassian.net/browse/EV-17804
+            if (prop === 'method' && isObject(answer[methodIndex]?.options)) {
+              answer[methodIndex].options = {}
+            }
+          }
+        })
+      })
+    )
   }
 
   const _addCorrectMethod = (methodId) => {
@@ -253,18 +295,32 @@ const ClozeMathAnswers = ({
     prop,
     value,
   }) => {
-    const newItem = cloneDeep(item)
-    forEach(newItem.validation.altResponses[answerIndex].value, (answer) => {
-      if (answer[0].id === methodId) {
-        answer[methodIndex][prop] = value
-        // reset the previous options whenever method changes
-        // @see https://snapwiz.atlassian.net/browse/EV-17804
-        if (prop === 'method' && isObject(answer[methodIndex]?.options)) {
-          answer[methodIndex].options = {}
-        }
-      }
-    })
-    setQuestionData(newItem)
+    setQuestionData(
+      produce(item, (draft) => {
+        let _value = value
+        forEach(draft.validation.altResponses[answerIndex].value, (answer) => {
+          if (answer[0].id === methodId) {
+            if (prop === 'options') {
+              const [extraOpts, updatedValue] = changeExtraOptions(
+                draft,
+                _value,
+                methodId
+              )
+              if (extraOpts) {
+                draft.extraOpts = extraOpts
+              }
+              _value = updatedValue
+            }
+            answer[methodIndex][prop] = _value
+            // reset the previous options whenever method changes
+            // @see https://snapwiz.atlassian.net/browse/EV-17804
+            if (prop === 'method' && isObject(answer[methodIndex]?.options)) {
+              answer[methodIndex].options = {}
+            }
+          }
+        })
+      })
+    )
   }
 
   const _changeAltInputMethod = (answerIndex) => ({ value, answerId }) => {
@@ -346,34 +402,6 @@ const ClozeMathAnswers = ({
       })
     )
   }
-  /**
-   *
-   * @param {boolean} val
-   * @param {string} inputId
-   * @param {boolean} isClozeMath
-   *
-   */
-  const toggleAdditional = (val = false, inputId = '', isClozeMath = false) => {
-    setQuestionData(
-      produce(item, (draft) => {
-        /**
-         * for normal math we are stroing flag value as boolean
-         * for expressionMultipart we need unique values for each math input box
-         * so store as object
-         *
-         * https://snapwiz.atlassian.net/browse/EV-12937
-         */
-        if (isClozeMath) {
-          draft.showAdditional = {
-            ...draft.showAdditional,
-            ...(inputId && { [inputId]: val }),
-          }
-        } else {
-          draft.showAdditional = val
-        }
-      })
-    )
-  }
 
   // -----|-----|-----|------ Math Unit answers handler -----|-----|-----|------ //
   const updateValidation = (
@@ -416,19 +444,31 @@ const ClozeMathAnswers = ({
   }) => {
     setQuestionData(
       produce(item, (draft) => {
+        let _value = value
+        if (prop === 'options') {
+          const [extraOpts, updatedValue] = changeExtraOptions(
+            draft,
+            _value,
+            answerId
+          )
+          if (extraOpts) {
+            draft.extraOpts = extraOpts
+          }
+          _value = updatedValue
+        }
         if (prop === 'value' || prop === 'unit' || prop === 'options') {
           draft.validation = updateValidation(
             draft.validation,
             altAnswerIndex,
             answerId,
             prop,
-            value
+            _value
           )
         } else {
           const mathUnitResponses = draft.responseIds.mathUnits
           forEach(mathUnitResponses, (res) => {
             if (res.id === answerId) {
-              res[prop] = value
+              res[prop] = _value
             }
           })
           if (prop === 'keypadMode' || prop === 'customUnits') {
@@ -447,7 +487,7 @@ const ClozeMathAnswers = ({
               altAnswerIndex,
               answerId,
               prop,
-              value
+              _value
             )
           }
           draft.responseIds.mathUnits = mathUnitResponses
@@ -513,7 +553,7 @@ const ClozeMathAnswers = ({
       points={
         correctTab === 0
           ? get(item, 'validation.validResponse.score', 1)
-          : get(item, `validation.altResponses[${correctTab - 1}].score`, 1)
+          : get(item, `validation.altResponses[${correctTab - 1}].score`)
       }
       fillSections={fillSections}
       cleanSections={cleanSections}
@@ -532,6 +572,7 @@ const ClozeMathAnswers = ({
                       item={item}
                       onChange={_updateInputCorrectAnswer}
                       answers={[answer]}
+                      tabIndex={correctTab}
                     />
                   )
                 }
@@ -553,11 +594,19 @@ const ClozeMathAnswers = ({
                       key={index}
                       onChange={_changeAltInputMethod(correctTab - 1)}
                       answers={[altAnswer]}
+                      tabIndex={correctTab}
                     />
                   )
                 }
               }
               if (answer.type === 'maths') {
+                const answerId = answer.value[0].id
+                const extraOpts = get(
+                  item,
+                  ['extraOpts', answerId, correctTab],
+                  {}
+                )
+
                 if (correctTab === 0) {
                   return (
                     <MathFormulaAnswer
@@ -571,8 +620,9 @@ const ClozeMathAnswers = ({
                       onAdd={_addCorrectMethod}
                       onDelete={_deleteCorrectMethod}
                       answers={[answer]}
-                      toggleAdditional={toggleAdditional}
                       onChangeKeypad={onChangeKeypad}
+                      extraOptions={extraOpts}
+                      tabIndex={correctTab}
                     />
                   )
                 }
@@ -584,10 +634,7 @@ const ClozeMathAnswers = ({
                   )
                   const altAnswer = {
                     ...answer,
-                    value: find(
-                      _altMathVlaues,
-                      (av) => av[0].id === answer.value[0].id
-                    ),
+                    value: find(_altMathVlaues, (av) => av[0].id === answerId),
                   }
                   return (
                     <MathFormulaAnswer
@@ -602,7 +649,8 @@ const ClozeMathAnswers = ({
                       onDelete={_deleteAltMethod(correctTab - 1)}
                       answers={[altAnswer]}
                       onChangeKeypad={onChangeKeypad}
-                      toggleAdditional={toggleAdditional}
+                      extraOptions={extraOpts}
+                      tabIndex={correctTab}
                     />
                   )
                 }
@@ -615,6 +663,7 @@ const ClozeMathAnswers = ({
                       item={item}
                       onChange={_updateDropDownCorrectAnswer}
                       answers={[answer]}
+                      tabIndex={correctTab}
                     />
                   )
                 }
@@ -634,11 +683,18 @@ const ClozeMathAnswers = ({
                       item={item}
                       onChange={_changeAltDropDownMethod(correctTab - 1)}
                       answers={[altAnswer]}
+                      tabIndex={correctTab}
                     />
                   )
                 }
               }
               if (answer.type === 'mathUnits') {
+                const answerId = answer.id
+                const extraOpts = get(
+                  item,
+                  ['extraOpts', answerId, correctTab],
+                  {}
+                )
                 if (correctTab === 0) {
                   return (
                     <MathUnitAnswer
@@ -651,7 +707,8 @@ const ClozeMathAnswers = ({
                         index
                       )}
                       onChangeKeypad={onChangeKeypad}
-                      toggleAdditional={toggleAdditional}
+                      extraOptions={extraOpts}
+                      tabIndex={correctTab}
                     />
                   )
                 }
@@ -678,7 +735,8 @@ const ClozeMathAnswers = ({
                         index
                       )}
                       onChangeKeypad={onChangeKeypad}
-                      toggleAdditional={toggleAdditional}
+                      extraOptions={extraOpts}
+                      tabIndex={correctTab}
                     />
                   )
                 }

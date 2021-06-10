@@ -11,10 +11,36 @@ import {
   flattenDeep,
   round,
   get,
+  values,
 } from 'lodash'
 import { questionType } from '@edulastic/constants'
+import AppConfig from '../../../../../app-config'
 
 const ALPHABET = 'abcdefghijklmnopqrstuvwxyz'
+
+export const insertTestletMML = (useFrame) => {
+  if (useFrame) {
+    const head = useFrame.contentWindow.document.getElementsByTagName('head')[0]
+
+    // Define the script
+    const script = useFrame.contentWindow.document.createElement('script')
+    script.type = 'text/javascript'
+    script.src = AppConfig.testletMathJax
+    script.text =
+      'MathJax.Hub.Config({extensions: ["tex2jax.js"], jax: ["input/TeX","output/HTML-CSS"]}); MathJax.Hub.Startup.onload();'
+
+    head.appendChild(script)
+
+    // Assign this testlet to be loaded with a local MML
+    const localMMLAttr = useFrame.contentWindow.document.createAttribute(
+      'data-testler'
+    )
+    localMMLAttr.value = 'true'
+    useFrame.contentWindow.document
+      .getElementsByTagName('body')[0]
+      .setAttributeNode(localMMLAttr)
+  }
+}
 
 const getLineFromExpression = (
   expressions,
@@ -132,10 +158,8 @@ const generateAnswers = {
       if (options[opIndex] && value) {
         return options[opIndex].value
       }
-      return false
+      return undefined
     })
-    // .filter((x) => !!x)
-
     return data
   },
   [questionType.CLOZE_IMAGE_DRAG_DROP](
@@ -172,6 +196,24 @@ const generateAnswers = {
       data[op.id] = value || ''
     })
 
+    return data
+  },
+  [questionType.CLOZE_IMAGE_DROP_DOWN](
+    item,
+    testletResponseIds,
+    testletResponses
+  ) {
+    const { responses, options } = item
+    const data = {}
+    responses.forEach((responseBox, index) => {
+      const value = testletResponses[testletResponseIds[index]]
+      const opIndex = ALPHABET.indexOf(value)
+      if (value && options[index]) {
+        data[responseBox.id] = options[opIndex][opIndex]
+      } else {
+        data[responseBox.id] = ''
+      }
+    })
     return data
   },
   [questionType.CLOZE_IMAGE_DROP_DOWN](
@@ -249,17 +291,18 @@ const generateAnswers = {
     }
 
     const data = testletResponseIds.map((id) => {
-      const value = testletResponses[id]
+      let value = testletResponses[id]
       if (!value) {
         return
       }
       if (isArray(value)) {
         // multiple response
         return value.map((v) => {
-          const opIndex = _alphabet.indexOf(v)
+          const opIndex = _alphabet.indexOf(v.trim())
           return options[opIndex]?.value
         })
       }
+      value = value.trim()
       // Radio type.
       const opIndex = _alphabet.indexOf(value)
       return options[opIndex]?.value
@@ -286,6 +329,9 @@ const generateAnswers = {
     return data
   },
   [questionType.MATH](item, testletResponseIds, testletResponses) {
+    return getSimpleTextAnswer(testletResponseIds, testletResponses)
+  },
+  [questionType.ESSAY_RICH_TEXT](item, testletResponseIds, testletResponses) {
     return getSimpleTextAnswer(testletResponseIds, testletResponses)
   },
   [questionType.SHORT_TEXT](item, testletResponseIds, testletResponses) {
@@ -364,6 +410,25 @@ const generateAnswers = {
     })
     return data
   },
+  [questionType.CLASSIFICATION](item, testletResponseIds, testletResponses) {
+    const { possibleResponses, classifications } = item
+    const data = {}
+    testletResponseIds.forEach((responseId, index) => {
+      const value = testletResponses[responseId]
+      const classification = classifications[index]
+      if (classification) {
+        data[classification.id] = []
+        const responses = convertStrToArr(value)
+        responses.forEach((response) => {
+          const opIndex = ALPHABET.indexOf(response)
+          if (possibleResponses[opIndex] && response) {
+            data[classification.id].push(possibleResponses[opIndex].id)
+          }
+        })
+      }
+    })
+    return data
+  },
   [questionType.HOTSPOT](item, testletResponseIds, testletResponses) {
     // TODO: need to improve logic if the response ids are greater than 2.
     const data = testletResponseIds.map((id) => {
@@ -407,3 +472,28 @@ const getUserResponse = (item, responses) => {
 }
 
 export default getUserResponse
+
+export const getExtDataForQuestion = (item, responses) => {
+  const responseIds = convertStrToArr(item.testletResponseIds)
+  const questionExtData = {}
+  responseIds.forEach((id) => {
+    if (responses && responses[id]) {
+      questionExtData[id] = responses[id]
+    }
+  })
+
+  return questionExtData
+}
+
+export const getResponseValue = (responseId, response) => {
+  const responseById = {}
+  values(response).forEach((res) => {
+    if (typeof res !== 'string') {
+      keys(res).forEach((resId) => {
+        responseById[resId] = res[resId]
+      })
+    }
+  })
+
+  return responseById[responseId] || ''
+}

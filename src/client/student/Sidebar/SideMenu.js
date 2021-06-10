@@ -16,8 +16,9 @@ import {
   IconQuestion,
   IconProfileHighlight,
   IconSignoutHighlight,
-  IconPlaylist,
+  IconBarChart,
 } from '@edulastic/icons'
+import { helpCenterUrl } from '@edulastic/constants/const/common'
 import { withWindowSizes, OnDarkBgLogo } from '@edulastic/common'
 import {
   white,
@@ -28,7 +29,6 @@ import {
   mediumDesktopExactWidth,
   greyThemeLighter,
   smallDesktopWidth,
-  themeColorBlue,
   mobileWidthLarge,
 } from '@edulastic/colors'
 import { toggleSideBarAction } from './ducks'
@@ -43,22 +43,21 @@ const menuItems = [
     icon: IconClockDashboard,
     path: 'home/assignments',
   },
-  {
+  /*  {
     label: 'Playlist',
     icon: IconPlaylist,
     path: 'home/playlist',
-  },
+  }, */
   {
     label: 'Grades',
     icon: IconReport,
     path: 'home/grades',
   },
-  // TODO: uncomment once the backend query for student mastery profile reports is fixed
-  // {
-  //   label: "Skill Mastery",
-  //   icon: IconBarChart,
-  //   path: "home/skill-mastery"
-  // },
+  {
+    label: 'Skill Mastery',
+    icon: IconBarChart,
+    path: 'home/skill-mastery',
+  },
   {
     label: 'My Classes',
     icon: IconManage,
@@ -88,6 +87,7 @@ class SideMenu extends Component {
 
     this.state = {
       isVisible: false,
+      isExpandedOnHover: false,
     }
 
     this.sideMenuRef = React.createRef()
@@ -162,7 +162,7 @@ class SideMenu extends Component {
   }
 
   render() {
-    const { broken, isVisible } = this.state
+    const { broken, isVisible, isExpandedOnHover } = this.state
     const {
       windowWidth,
       currentPath,
@@ -255,7 +255,29 @@ class SideMenu extends Component {
               )}
             </LogoWrapper>
 
-            <MenuWrapper isSidebarCollapsed={isSidebarCollapsed}>
+            <MenuWrapper
+              isSidebarCollapsed={isSidebarCollapsed}
+              onMouseEnter={
+                isSidebarCollapsed && !isMobile && !isExpandedOnHover
+                  ? () => {
+                      this.toggleMenu()
+                      this.setState({
+                        isExpandedOnHover: true,
+                      })
+                    }
+                  : null
+              }
+              onMouseLeave={
+                !isSidebarCollapsed && !isMobile && isExpandedOnHover
+                  ? () => {
+                      this.toggleMenu()
+                      this.setState({
+                        isExpandedOnHover: false,
+                      })
+                    }
+                  : null
+              }
+            >
               {isMobile && isSidebarCollapsed ? (
                 <IconBars type="bars" onClick={this.toggleMenu} />
               ) : null}
@@ -291,7 +313,7 @@ class SideMenu extends Component {
               <MenuFooter>
                 <QuestionButton isSidebarCollapsed={isSidebarCollapsed}>
                   <a
-                    href="https://edulastic.zendesk.com/hc/en-us"
+                    href={helpCenterUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     style={{
@@ -567,7 +589,7 @@ const Menu = styled(AntMenu)`
         border: none;
         background-color: ${themeColor};
         &:hover {
-          background-color: ${themeColorBlue};
+          background-color: #fff;
           svg {
             fill: ${themeColor};
           }
@@ -706,7 +728,6 @@ const FooterDropDown = styled.div`
   ul {
     overflow: hidden;
     max-width: 100%;
-
     .ant-menu-item:not(.ant-menu-item-selected) svg {
       fill: ${(props) => props.theme.sideMenu.userInfoDropdownItemTextColor};
       &:hover,
@@ -738,10 +759,11 @@ const FooterDropDown = styled.div`
         height: 50px;
         background: ${(props) =>
           props.theme.sideMenu.userInfoDropdownItemBgColor};
-        &:hover {
-          background-color: ${themeColorBlue};
-          color: ${white};
-        }
+        /* &:hover,
+        &:focus {
+          background: ${(props) =>
+          props.theme.sideMenu.userInfoDropdownItemBgHoverColor};
+        } */
         a {
           color: ${(props) =>
             props.theme.sideMenu.userInfoDropdownItemTextColor};

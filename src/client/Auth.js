@@ -1,31 +1,48 @@
-import React, { lazy } from 'react'
+import React, { useState, useEffect } from 'react'
+import { lazy } from '@loadable/component'
 import PropTypes from 'prop-types'
-import { withRouter, Redirect } from 'react-router'
+import { withRouter } from 'react-router'
 import { get } from 'lodash'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { removeFromLocalStorage } from '@edulastic/api/src/utils/Storage'
-import { roleuser } from '@edulastic/constants'
+import Spin from 'antd/es/spin'
+import {
+  removeFromLocalStorage,
+  getAccessToken,
+} from '@edulastic/api/src/utils/Storage'
 import { SelectRolePopup } from './student/SsoLogin/selectRolePopup'
 import { UnauthorizedPopup } from './student/SsoLogin/UnauthorizedPopup'
 import StudentSignup from './student/Signup/components/StudentContainer'
 import AdminSignup from './student/Signup/components/AdminContainer/Container'
 import TeacherSignup from './student/Signup/components/TeacherContainer/Container'
 
-import { isLoggedInForPrivateRoute } from './common/utils/helpers'
+import {
+  isLoggedInForPrivateRoute,
+  isHashAssessmentUrl,
+  getSchoologyTestId,
+} from './common/utils/helpers'
+import { persistAuthStateAndRedirectToAction } from './student/Login/ducks'
 
 const GetStarted = lazy(() =>
-  import(
-    /* webpackChunkName: "getStarted" */ './student/Signup/components/GetStartedContainer'
-  )
+  import('./student/Signup/components/GetStartedContainer')
 )
-const Login = lazy(() =>
-  import(/* webpackChunkName: "login" */ './student/Login/components')
-)
+const Login = lazy(() => import('./student/Login/components'))
 
-const SsoLogin = lazy(() =>
-  import(/* webpackChunkName:"SSo Login" */ './student/SsoLogin')
-)
+const SsoLogin = lazy(() => import('./student/SsoLogin'))
+
+const RedirectToTest = lazy(() => import('./author/RedirectToTest'))
+
+function getCurrentPath() {
+  const location = window.location
+  return `${location.pathname}${location.search}${location.hash}`
+}
+
+function canShowLoginForAddAccount(user) {
+  const addAccountToUser = JSON.parse(
+    window.sessionStorage.addAccountDetails || '{}'
+  )?.addAccountTo
+  return user?.userId === addAccountToUser
+}
 
 const Auth = ({
   user,
@@ -35,31 +52,54 @@ const Auth = ({
   districtPolicy,
   orgShortName,
   orgType,
+  persistAuthStateAndRedirectTo,
 }) => {
-  if (
-    ![
-      '#signup',
-      '#login',
-      '#register/close/student',
-      '#register/close/teacher',
-      '#register/close/admin',
-    ].includes(location.hash)
-  ) {
-    window.location.hash = '#login'
+  const [loading, setLoading] = useState(!!getAccessToken())
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false)
+    }, 1000)
+
+    const onBeforeUnload = () => setLoading(true)
+
+    window.addEventListener('beforeunload', onBeforeUnload)
+    return () => {
+      window.removeEventListener('beforeunload', onBeforeUnload)
+    }
+  }, [])
+  const loggedInForPrivateRoute = isLoggedInForPrivateRoute(user)
+
+  const showLoginForAddAccount = canShowLoginForAddAccount(user)
+  useEffect(() => {
+    if (loggedInForPrivateRoute && !showLoginForAddAccount) {
+      const currentUrl = getCurrentPath()
+      const schoologyTestId = getSchoologyTestId()
+      if (
+        isHashAssessmentUrl() ||
+        schoologyTestId ||
+        window.location.pathname.includes('/assignments/embed/')
+      ) {
+        persistAuthStateAndRedirectTo({
+          toUrl: schoologyTestId
+            ? `/assignments/embed/${schoologyTestId}`
+            : currentUrl,
+        })
+      } else {
+        persistAuthStateAndRedirectTo()
+      }
+    }
+  }, [loggedInForPrivateRoute, showLoginForAddAccount])
+
+  if (isHashAssessmentUrl()) {
+    const v1Id = location.hash.split('/')[2]
+    return <RedirectToTest v1Id={v1Id} />
   }
 
-  if (isLoggedInForPrivateRoute(user)) {
-    switch (user.user.role) {
-      case roleuser.EDULASTIC_ADMIN:
-        return <Redirect exact to="/admin/search/clever" />
-      case roleuser.DISTRICT_ADMIN:
-      case roleuser.SCHOOL_ADMIN:
-        return <Redirect exact to="/author/assignments" />
-      case roleuser.TEACHER:
-        return <Redirect exact to="/author/dashboard" />
-      case roleuser.STUDENT:
-        return <Redirect exact to="/home/assignments" />
-    }
+  if (
+    ((user?.authenticating && getAccessToken()) || loading) &&
+    !showLoginForAddAccount
+  ) {
+    return <Spin />
   }
 
   if (location?.state?.showUnauthorized) {
@@ -92,7 +132,9 @@ const Auth = ({
               orgShortName={orgShortName}
               orgType={orgType}
             />
-            <SelectRolePopup visible footer={null} />
+            {user?.user?.role ? null : (
+              <SelectRolePopup visible footer={null} />
+            )}
           </>
         )}
       </>
@@ -140,7 +182,9 @@ const enhance = compose(
     (state) => ({
       user: get(state, 'user', null),
     }),
-    {}
+    {
+      persistAuthStateAndRedirectTo: persistAuthStateAndRedirectToAction,
+    }
   )
 )
 export default enhance(Auth)

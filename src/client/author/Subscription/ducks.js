@@ -1,11 +1,78 @@
+import { captureSentryException, notification } from '@edulastic/common'
 import { message } from 'antd'
+import { isEmpty, uniq, compact } from 'lodash'
 import moment from 'moment'
-import { notification } from '@edulastic/common'
+import { takeEvery, call, put, all, select } from 'redux-saga/effects'
+import {
+  subscriptionApi,
+  paymentApi,
+  segmentApi,
+  userApi,
+} from '@edulastic/api'
 import { createSlice } from 'redux-starter-kit'
-import { takeEvery, call, put, all } from 'redux-saga/effects'
-import { subscriptionApi, paymentApi } from '@edulastic/api'
-import * as Sentry from '@sentry/browser'
+import { createSelector } from 'reselect'
 import { fetchUserAction } from '../../student/Login/ducks'
+import { fetchMultipleSubscriptionsAction } from '../ManageSubscription/ducks'
+import { getUserSelector } from '../src/selectors/user'
+
+// selectors
+const subscriptionSelector = (state) => state.subscription
+export const getSubscriptionDataSelector = createSelector(
+  subscriptionSelector,
+  (state) => state.subscriptionData
+)
+export const getSubscriptionSelector = createSelector(
+  getSubscriptionDataSelector,
+  (state) => state.subscription
+)
+export const getSuccessSelector = createSelector(
+  getSubscriptionDataSelector,
+  (state) => state.success
+)
+export const getProducts = createSelector(
+  subscriptionSelector,
+  (state) => state.products
+)
+export const getItemBankSubscriptions = createSelector(
+  getSubscriptionDataSelector,
+  (state) => state.itemBankSubscriptions
+)
+export const getIsVerificationPending = createSelector(
+  subscriptionSelector,
+  (state) => state.verificationPending
+)
+export const getPremiumProductId = createSelector(
+  getSubscriptionDataSelector,
+  (state) => state.premiumProductId
+)
+export const getIsSubscriptionExpired = createSelector(
+  subscriptionSelector,
+  (state) => state.isSubscriptionExpired
+)
+export const getAddOnProductIds = createSelector(
+  subscriptionSelector,
+  (state) => state.addOnProductIds
+)
+export const getShowTrialConfirmationMessageSelector = createSelector(
+  subscriptionSelector,
+  (state) => state.showTrialConfirmationMessage
+)
+export const getBookKeepersInviteSuccessStatus = createSelector(
+  subscriptionSelector,
+  (state) => state.isBookKeepersInviteSuccess
+)
+export const getRequestOrSubmitActionStatus = createSelector(
+  subscriptionSelector,
+  (state) => state.isRequestOrSubmitActionPending
+)
+export const getRequestOrSubmitSuccessVisibility = createSelector(
+  subscriptionSelector,
+  (state) => state.isRequestOrSubmitSuccessModalVisible
+)
+export const getRequestQuoteVisibility = createSelector(
+  subscriptionSelector,
+  (state) => state.isRequestQuoteModalVisible
+)
 
 const slice = createSlice({
   name: 'subscription',
@@ -14,6 +81,16 @@ const slice = createSlice({
     verificationPending: false,
     subscriptionData: {},
     error: '',
+    showTrialConfirmationMessage: '',
+    products: [],
+    showHeaderTrialModal: false,
+    addOnProductIds: [],
+    isBookKeepersInviteSuccess: false,
+    isRequestQuoteModalVisible: false,
+    isRequestOrSubmitActionPending: false,
+    isRequestOrSubmitSuccessModalVisible: false,
+    cartQuantities: {},
+    cartVisible: false,
   },
   reducers: {
     fetchUserSubscriptionStatus: (state) => {
@@ -43,26 +120,200 @@ const slice = createSlice({
     stripePaymentAction: (state) => {
       state.verificationPending = true
     },
+    stripeMultiplePaymentAction: (state) => {
+      state.verificationPending = true
+    },
+    edulasticAdminProductLicenseAction: (state) => {
+      state.verificationPending = true
+    },
+    stripeMultiplePaymentFailureAction: (state) => {
+      state.verificationPending = false
+    },
+    stripeMultiplePaymentSuccessAction: (state, { payload }) => {
+      state.verificationPending = false
+      state.multiplePaymentData = payload
+    },
     stripePaymentSuccess: (state, { payload }) => {
       state.verificationPending = false
       state.subscriptionData = payload
       state.error = ''
+      state.addOnProductIds = []
     },
     stripePaymentFailure: (state, { payload }) => {
+      state.verificationPending = false
+      state.error = payload
+    },
+    updateUserSubscriptionExpired: (state, { payload }) => {
+      state.isSubscriptionExpired = true
+      state.verificationPending = false
+      state.subscriptionData = payload
+      state.error = ''
+    },
+    startTrialAction: (state) => {
+      state.verificationPending = true
+    },
+    startTrialSuccessAction: (state, { payload }) => {
+      state.verificationPending = false
+      state.subscriptionData = payload
+      state.error = ''
+    },
+    startTrialFailureAction: (state, { payload }) => {
       state.verificationPending = false
       state.subscriptionData = {}
       state.error = payload
     },
-    updateUserSubscriptionExpired: (state) => {
-      state.isSubscriptionExpired = true
-      state.verificationPending = false
+    resetSubscriptions: (state) => {
       state.subscriptionData = {}
-      state.error = ''
+    },
+    trialConfirmationMessageAction: (state, { payload }) => {
+      state.showTrialConfirmationMessage = payload
+    },
+    setAddOnProducts: (state, { payload }) => {
+      state.products = payload
+    },
+    setShowHeaderTrialModal: (state, { payload }) => {
+      state.showHeaderTrialModal = payload
+    },
+    setAddOnProductIds: (state, { payload }) => {
+      state.addOnProductIds = payload
+    },
+    setBookKeepersInviteSuccess: (state, { payload }) => {
+      state.isBookKeepersInviteSuccess = payload
+    },
+    bulkInviteBookKeepersAction: () => {},
+    requestInvoiceAction: (state) => {
+      state.isRequestOrSubmitActionPending = true
+    },
+    submitPOAction: (state) => {
+      state.isRequestOrSubmitActionPending = true
+    },
+    requestOrSubmitActionSuccess: (state, { payload }) => {
+      state.isRequestOrSubmitActionPending = false
+      state.isRequestOrSubmitSuccessModalVisible = payload
+    },
+    requestOrSubmitActionFailure: (state) => {
+      state.isRequestOrSubmitActionPending = false
+    },
+    toggleRequestOrSubmitSuccessModal: (state, { payload }) => {
+      state.isRequestOrSubmitSuccessModalVisible = payload
+    },
+    setCartQuantities: (state, { payload }) => {
+      if (!Object.keys(payload).find((x) => payload[x])) {
+        // empty qantities - so closing cart
+        state.cartVisible = false
+      }
+      state.cartQuantities = payload
+    },
+    setCartVisible: (state, { payload }) => {
+      state.cartVisible = payload
+    },
+    setRequestQuoteModal: (state, { payload }) => {
+      state.isRequestQuoteModalVisible = payload
     },
   },
 })
 
 export { slice }
+
+function* showSuccessNotifications(apiPaymentResponse, isTrial = false) {
+  const { subscriptions, itemBankPermissions = [] } = apiPaymentResponse
+  const hasSubscriptions = Object.keys(subscriptions).length > 0
+  const hasItemBankPermissions = !isEmpty(itemBankPermissions)
+  const subscriptionPeriod = isTrial ? '14 days' : 'an year'
+  const premiumType = isTrial ? 'Trial Premium' : 'Premium'
+  const { user } = yield select(getUserSelector)
+  const eventType = isTrial ? 'trial' : 'purchase'
+  if (hasSubscriptions) {
+    const { subEndDate } = subscriptions
+    segmentApi.trackProductPurchase({
+      user,
+      data: {
+        event: `order premium ${eventType}`,
+        Premium_status: eventType,
+        Premium_purchase_date: new Date(),
+        Premium_expiry_date: new Date(subEndDate),
+      },
+    })
+  }
+  if (hasItemBankPermissions) {
+    const purchaseDate = new Date()
+    itemBankPermissions.forEach((permissions) => {
+      const { name, subEndDate } = permissions
+      const [pFirstName, pSecondName] = name.split(' ')
+      const productName = `${pFirstName[0]}${pSecondName}`
+      const data = {
+        event: `order ${productName.toLowerCase()} ${eventType}`,
+        [`${productName}_status`]: eventType,
+        [`${productName}_purchase_date`]: purchaseDate,
+        [`${productName}_expiry_date`]: new Date(subEndDate),
+      }
+      segmentApi.trackProductPurchase({
+        user,
+        data,
+      })
+    })
+  }
+
+  if (hasSubscriptions && !hasItemBankPermissions) {
+    const { subEndDate } = subscriptions
+    const formatSubEndDate = moment(subEndDate).format('DD MMM, YYYY')
+    if (!isTrial) {
+      yield call(notification, {
+        type: 'success',
+        msg: `Congratulations! Your account is upgraded to ${premiumType} version for ${subscriptionPeriod} and the subscription will expire on ${formatSubEndDate}`,
+        key: 'handle-payment',
+      })
+    }
+    yield put(
+      slice.actions.trialConfirmationMessageAction({
+        hasTrial: 'onlyPremiumTrial',
+        subEndDate: formatSubEndDate,
+        isTrial,
+      })
+    )
+  } else if (hasItemBankPermissions && !hasSubscriptions) {
+    const { subEndDate } = itemBankPermissions[0]
+    const itemBankNames = itemBankPermissions.map((x) => x.name).join(', ')
+    const defaultSelectedItemBankId = itemBankPermissions.map((x) => x.id)[0]
+    const formatSubEndDate = moment(subEndDate).format('DD MMM, YYYY')
+    if (!isTrial) {
+      yield call(notification, {
+        type: 'success',
+        msg: `Congratulations! You are subscribed to ${itemBankNames} ${premiumType} Itembank(s) for ${subscriptionPeriod} and the subscription will expire on ${formatSubEndDate}`,
+        key: 'handle-payment',
+      })
+    }
+    yield put(
+      slice.actions.trialConfirmationMessageAction({
+        hasTrial: 'onlySparkTrial',
+        subEndDate: formatSubEndDate,
+        isTrial,
+        defaultSelectedItemBankId,
+      })
+    )
+  } else if (hasItemBankPermissions && hasSubscriptions) {
+    const { subEndDate } = subscriptions
+    const itemBankNames = itemBankPermissions.map((x) => x.name).join(', ')
+    const defaultSelectedItemBankId = itemBankPermissions.map((x) => x.id)[0]
+    const formatSubEndDate = moment(subEndDate).format('DD MMM, YYYY')
+    if (!isTrial) {
+      yield call(notification, {
+        type: 'success',
+        msg: `Congratulations! Your account is upgraded to ${premiumType} version and You are now subscribed to ${itemBankNames}
+              Premium Itembank for ${subscriptionPeriod} and the subscription will expire on ${formatSubEndDate}`,
+        key: 'handle-payment',
+      })
+    }
+    yield put(
+      slice.actions.trialConfirmationMessageAction({
+        hasTrial: 'haveBothSparkAndPremiumTrial',
+        subEndDate: formatSubEndDate,
+        isTrial,
+        defaultSelectedItemBankId,
+      })
+    )
+  }
+}
 
 function* upgradeUserLicense({ payload }) {
   try {
@@ -92,27 +343,206 @@ function* upgradeUserLicense({ payload }) {
   }
 }
 
+function* fetchUserSubscription() {
+  try {
+    const apiUserSubscriptionStatus = yield call(
+      subscriptionApi.subscriptionStatus
+    )
+    const { result } = apiUserSubscriptionStatus || {}
+    if (result?.subscription?.status === 0) {
+      result.subscription = null
+      if (result?.itemBankSubscriptions?.length) {
+        result.itemBankSubscriptions = result.itemBankSubscriptions.filter(
+          (x) => x.isTrial
+        )
+      }
+    }
+
+    const premiumProductId = result?.products.find(
+      (product) => product.type === 'PREMIUM'
+    )?.id
+    const data = {
+      isPremiumTrialUsed: result?.isPremiumTrialUsed,
+      itemBankSubscriptions: result?.itemBankSubscriptions,
+      usedTrialItemBankIds: result?.usedTrialItemBankIds,
+      premiumProductId,
+    }
+
+    yield put(
+      slice.actions.setAddOnProducts(
+        apiUserSubscriptionStatus?.result?.products || []
+      )
+    )
+    if (apiUserSubscriptionStatus?.result.subscription === -1) {
+      yield put(slice.actions.updateUserSubscriptionExpired(data))
+      return
+    }
+    if (result.subscription) {
+      Object.assign(data, {
+        subscription: result.subscription,
+      })
+      if (result.subscription._id) {
+        Object.assign(data, {
+          success: true,
+        })
+      }
+      yield put(slice.actions.updateUserSubscriptionStatus({ data, error: '' }))
+    } else
+      yield put(
+        slice.actions.updateUserSubscriptionStatus({
+          data: {},
+          error: result,
+        })
+      )
+  } catch (err) {
+    yield put(
+      slice.actions.updateUserSubscriptionStatus({ data: {}, error: err })
+    )
+    console.error('ERROR WHILE FETCHING USER SUBSCRIPTION : ', err)
+    captureSentryException(err)
+  }
+}
+
+function* handleEdulasticAdminProductLicenseSaga({ payload }) {
+  try {
+    const {
+      products,
+      emailIds: userEmailIds,
+      licenseIds,
+      licenseOwnerId,
+    } = payload
+    const _products = products.reduce((allProducts, product) => {
+      const { quantity, id, linkedProductId } = product
+      allProducts[id || linkedProductId] = quantity
+      return allProducts
+    }, {})
+    const apiPaymentResponse = yield call(paymentApi.licensePurchase, {
+      products: _products,
+      userEmailIds,
+      licenseIds,
+      licenseOwnerId,
+    })
+    if (apiPaymentResponse.licenseKeys) {
+      yield put(
+        slice.actions.stripeMultiplePaymentSuccessAction(
+          apiPaymentResponse.licenseKeys
+        )
+      )
+      yield put(
+        fetchMultipleSubscriptionsAction({ background: true, licenseOwnerId })
+      )
+    }
+  } catch (err) {
+    notification({
+      type: 'error',
+      msg: 'Process failed.',
+    })
+    console.error(
+      '[Edulastic Admin] ERROR WHILE PROCESSING LICENSE PURCHASE : ',
+      err
+    )
+    captureSentryException(err)
+  }
+}
+
+function* handleMultiplePurchasePayment({ payload }) {
+  try {
+    yield call(message.loading, {
+      content: 'Processing Payment, please wait',
+      key: 'verify-license',
+    })
+    const {
+      stripe,
+      data,
+      productIds,
+      emailIds: userEmailIds,
+      licenseIds,
+      licenseOwnerId,
+      setPaymentServiceModal,
+    } = payload
+    const { token, error } = yield stripe.createToken(data)
+    if (token) {
+      const products = productIds.reduce((allProducts, product) => {
+        const { quantity, id, linkedProductId } = product
+        if (quantity) {
+          allProducts[id || linkedProductId] = quantity
+        }
+        return allProducts
+      }, {})
+      const apiPaymentResponse = yield call(paymentApi.licensePurchase, {
+        token,
+        products,
+        userEmailIds,
+        licenseIds,
+      })
+      if (apiPaymentResponse.licenseKeys) {
+        yield put(slice.actions.setCartQuantities({}))
+        yield put(
+          slice.actions.stripeMultiplePaymentSuccessAction(
+            apiPaymentResponse.licenseKeys
+          )
+        )
+        setPaymentServiceModal(false)
+        yield put(fetchMultipleSubscriptionsAction({ licenseOwnerId }))
+        yield put(fetchUserAction({ background: true }))
+        notification({
+          type: 'success',
+          msg: `Payment successful.`,
+        })
+      } else {
+        notification({
+          type: 'error',
+          msg: `Payment failed.`,
+        })
+        yield put(slice.actions.stripeMultiplePaymentFailureAction())
+      }
+    } else {
+      notification({
+        type: 'error',
+        msg: `Creating token failed : ${error.message}`,
+      })
+      yield put(slice.actions.stripeMultiplePaymentFailureAction())
+      console.error('ERROR WHILE PROCESSING PAYMENT [Create Token] : ', error)
+    }
+  } catch (err) {
+    yield put(slice.actions.stripeMultiplePaymentFailureAction())
+    notification({
+      type: 'error',
+      msg: 'Payment failed.',
+    })
+    console.error('ERROR WHILE PROCESSING LICENSE PURCHASE : ', err)
+    captureSentryException(err)
+  }
+}
+
 function* handleStripePayment({ payload }) {
   try {
-    const { stripe, data } = payload
+    const {
+      stripe,
+      data,
+      productIds,
+      setPaymentServiceModal,
+      setShowTrialSubsConfirmation,
+    } = payload
     yield call(message.loading, {
       content: 'Processing Payment, please wait',
       key: 'verify-license',
     })
     const { token, error } = yield stripe.createToken(data)
     if (token) {
-      const apiPaymentResponse = yield call(paymentApi.pay, { token })
+      const apiPaymentResponse = yield call(paymentApi.pay, {
+        productIds: uniq(compact(productIds)),
+        token,
+      })
       if (apiPaymentResponse.success) {
+        yield put(slice.actions.setCartQuantities({}))
         yield put(slice.actions.stripePaymentSuccess(apiPaymentResponse))
-        const { subEndDate } = apiPaymentResponse.subscription
-        notification({
-          type: 'success',
-          msg: `Congratulations! Your account is upgraded to Premium version for a year and the subscription will expire on ${moment(
-            subEndDate
-          ).format('DD MMM, YYYY')}`,
-          key: 'handle-payment',
-        })
+        setPaymentServiceModal(false)
+        yield call(showSuccessNotifications, apiPaymentResponse)
+        yield call(fetchUserSubscription)
         yield put(fetchUserAction({ background: true }))
+        yield put(fetchMultipleSubscriptionsAction({ background: true }))
+        setShowTrialSubsConfirmation(true)
       } else {
         notification({
           msg: `API Response failed: ${error}`,
@@ -131,43 +561,101 @@ function* handleStripePayment({ payload }) {
   } catch (err) {
     yield put(slice.actions.stripePaymentFailure(err?.data?.message))
     notification({
-      msg: `Payment Failed : ${err?.data?.message}`,
+      msg: `Payment Failed : ${err?.response?.data?.message}`,
       Key: 'handle-payment',
     })
     console.error('ERROR WHILE PROCESSING PAYMENT : ', err)
-    Sentry.captureException(err)
+    captureSentryException(err)
   }
 }
 
-function* fetchUserSubscription() {
+function* handleFreeTrialSaga({ payload }) {
+  const { productIds, setShowTrialSubsConfirmation } = payload
   try {
-    const apiUserSubscriptionStatus = yield call(
-      subscriptionApi.subscriptionStatus
-    )
-    if (apiUserSubscriptionStatus?.result === -1) {
-      yield put(slice.actions.updateUserSubscriptionExpired())
-      return
+    const apiPaymentResponse = yield call(paymentApi.pay, { productIds })
+    if (apiPaymentResponse.success) {
+      yield put(slice.actions.startTrialSuccessAction(apiPaymentResponse))
+      yield put(slice.actions.resetSubscriptions())
+      yield call(showSuccessNotifications, apiPaymentResponse, true)
+      yield call(fetchUserSubscription)
+      yield put(fetchUserAction({ background: true }))
+      setShowTrialSubsConfirmation(true)
+    } else {
+      notification({
+        type: 'error',
+        msg: `API Response failed`,
+        Key: 'handle-trial',
+      })
+      console.error('API Response failed')
     }
-    if (apiUserSubscriptionStatus.result) {
-      const data = {
-        success: true,
-        subscription: apiUserSubscriptionStatus.result,
-      }
-
-      yield put(slice.actions.updateUserSubscriptionStatus({ data, error: '' }))
-    } else
-      yield put(
-        slice.actions.updateUserSubscriptionStatus({
-          data: {},
-          error: apiUserSubscriptionStatus.result,
-        })
-      )
   } catch (err) {
-    yield put(
-      slice.actions.updateUserSubscriptionStatus({ data: {}, error: err })
-    )
-    console.error('ERROR WHILE FETCHING USER SUBSCRIPTION : ', err)
-    Sentry.captureException(err)
+    yield put(slice.actions.startTrialFailureAction(err?.data?.message))
+    notification({
+      msg: `Trial Subscription : ${err?.response?.data?.message}`,
+      Key: 'handle-trial',
+    })
+    console.error('ERROR WHILE PROCESSING TRIAL SUBSCRIPTION : ', err)
+    captureSentryException(err)
+  }
+}
+
+function* bulkInviteBookKeepersSaga({ payload }) {
+  try {
+    if (payload?.userDetails?.length) {
+      yield call(userApi.adddBulkTeacher, payload)
+    }
+
+    yield put(slice.actions.setBookKeepersInviteSuccess(true))
+  } catch (err) {
+    notification({
+      type: 'error',
+      msg: 'Something went wrong while inviting bookeepers',
+    })
+    captureSentryException(err)
+  }
+}
+
+function* requestInvoiceSaga({ payload }) {
+  try {
+    const { closeCallback = () => {}, reqPayload } = payload
+    const result = yield call(subscriptionApi.requestInvoice, reqPayload)
+    if (result?.result?.success) {
+      closeCallback()
+      const msg = `We'll be back to you right away with your ${(
+        reqPayload.documentType || ''
+      ).toLowerCase()}!`
+      yield put(slice.actions.requestOrSubmitActionSuccess(msg))
+    } else {
+      yield put(slice.actions.requestOrSubmitActionFailure())
+    }
+  } catch (err) {
+    yield put(slice.actions.requestOrSubmitActionFailure())
+    notification({
+      type: 'error',
+      msg: 'Something went wrong while requesting invoice.',
+    })
+    captureSentryException(err)
+  }
+}
+
+function* submitPOSaga({ payload }) {
+  try {
+    const { closeCallback = () => {}, reqPayload } = payload
+    const result = yield call(subscriptionApi.submitPO, reqPayload)
+    if (result?.result?.success) {
+      closeCallback()
+      const msg = `We'll be back to you right away with your purchase order!`
+      yield put(slice.actions.requestOrSubmitActionSuccess(msg))
+    } else {
+      yield put(slice.actions.requestOrSubmitActionFailure())
+    }
+  } catch (err) {
+    yield put(slice.actions.requestOrSubmitActionFailure())
+    notification({
+      type: 'error',
+      msg: 'Something went wrong while submiting PO.',
+    })
+    captureSentryException(err)
   }
 }
 
@@ -176,8 +664,23 @@ export function* watcherSaga() {
     yield takeEvery(slice.actions.upgradeLicenseKeyPending, upgradeUserLicense),
     yield takeEvery(slice.actions.stripePaymentAction, handleStripePayment),
     yield takeEvery(
+      slice.actions.stripeMultiplePaymentAction,
+      handleMultiplePurchasePayment
+    ),
+    yield takeEvery(
+      slice.actions.edulasticAdminProductLicenseAction,
+      handleEdulasticAdminProductLicenseSaga
+    ),
+    yield takeEvery(slice.actions.startTrialAction, handleFreeTrialSaga),
+    yield takeEvery(
       slice.actions.fetchUserSubscriptionStatus,
       fetchUserSubscription
     ),
+    yield takeEvery(
+      slice.actions.bulkInviteBookKeepersAction,
+      bulkInviteBookKeepersSaga
+    ),
+    yield takeEvery(slice.actions.requestInvoiceAction, requestInvoiceSaga),
+    yield takeEvery(slice.actions.submitPOAction, submitPOSaga),
   ])
 }

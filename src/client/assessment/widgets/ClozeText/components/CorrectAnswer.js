@@ -9,13 +9,8 @@ import { IndexBox } from '../styled/IndexBox'
 
 export const Answer = ({ answer, getStemNumeration, stemNumeration }) => {
   const [showPopover, togglePopover] = useState(false)
-  const content = (
-    <AnswerContent
-      dangerouslySetInnerHTML={{
-        __html: answer.value,
-      }}
-    />
-  )
+
+  const content = <AnswerContent>{answer.value}</AnswerContent>
 
   return (
     <CorrectAnswerBox

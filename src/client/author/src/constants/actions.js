@@ -92,6 +92,12 @@ export const CLEAR_ITEM_EVALUATION = '[evaluation] clear evaluation'
 
 export const TOGGLE_CREATE_ITEM_MODAL = '[testItem] toggle create item modal'
 
+export const CORRECT_ITEM_UPDATE_REQUEST =
+  '[testItem] update correct testItem in LCB request'
+export const SET_CORRECT_ITEM_UPDATE_PROGRESS =
+  '[testItem] update correct testItem in LCB success'
+export const TOGGLE_REGRADE_MODAL = '[tests] toggle regrade modal in LCB'
+
 // Tests
 export const RECEIVE_TESTS_REQUEST = '[tests] receive list request'
 export const RECEIVE_TESTS_SUCCESS = '[tests] receive list success'
@@ -157,6 +163,7 @@ export const RECEIVE_CLASS_RESPONSE_ERROR =
   '[classresponses] receive list error'
 export const UPDATE_STUDENT_TEST_ITEMS =
   '[classresponses] update student test items'
+export const REPLACE_ORIGINAL_ITEM = '[classresponses] replace original item'
 export const RECEIVE_STUDENT_RESPONSE_REQUEST =
   '[studentResponse] receive list request'
 export const RECEIVE_STUDENT_RESPONSE_SUCCESS =
@@ -167,8 +174,11 @@ export const RECEIVE_CLASSSTUDENT_RESPONSE_REQUEST =
   '[classStudentResponse] receive list request'
 export const RECEIVE_CLASSSTUDENT_RESPONSE_SUCCESS =
   '[classStudentResponse] receive list success'
+export const ADD_CLASS_STUDENT_RESPONSE = '[classStudentResponse] add response'
 export const RECEIVE_CLASSSTUDENT_RESPONSE_ERROR =
   '[classStudentResponse] receive list error'
+export const SET_CLASS_STUDENT_RESPONSES_LOADING =
+  '[classStudentResponse] set print preview loading'
 export const RECEIVE_FEEDBACK_RESPONSE_REQUEST =
   '[feedbackResponse] receive list request'
 export const RECEIVE_FEEDBACK_RESPONSE_SUCCESS =
@@ -177,8 +187,6 @@ export const CLEAR_FEEDBACK_RESPONSE =
   '[feedbackResonse] clear feedback response'
 export const RECEIVE_FEEDBACK_RESPONSE_ERROR =
   '[feedbackResponse] receive list error'
-export const RECEIVE_ATTACHMENTS_RESPONSE_REQUEST =
-  '[attachmentsResonse] receive attachments request'
 
 // Classboard
 export const RECEIVE_GRADEBOOK_REQUEST = '[gradebook] receive list request'
@@ -196,6 +204,10 @@ export const UPDATE_OVERALL_FEEDBACK = '[gradebook] update overalll feedback'
 export const MARK_AS_ABSENT = '[gradebook] mark student/students as absent'
 export const MARK_AS_SUBMITTED =
   '[gradebook] mark student/students as submitted'
+export const PAUSE_STUDENTS = '[gradebook] pause students'
+export const UPDATE_PAUSE_STATUS_ACTION =
+  'gradebook update paused status on cards'
+
 export const UPDATE_SUBMITTED_STUDENTS =
   '[gradebook] update student activity as submitted'
 export const DOWNLOAD_GRADES_RESPONSES =
@@ -226,8 +238,15 @@ export const TOGGLE_VIEW_PASSWORD_MODAL =
 export const REGENERATE_PASSWORD = '[gradebook] regenerate password action'
 export const UPDATE_PASSWORD_DETAILS =
   '[gradebook] update password details action'
+export const SET_UPDATED_ACTIVITY_IN_ENTITY =
+  '[gradebook] set updated activityId in entity'
+
+export const FETCH_SERVER_TIME = '[gradebook] fetch server time'
 
 export const CANVAS_SYNC_GRADES = '[gradebook] sync grades with canvas'
+export const CANVAS_SYNC_ASSIGNMENT = '[gradebook] sync assignment with canvas'
+export const SET_SHOW_CANVAS_SHARE =
+  '[gradebook] set show canvas share notification'
 
 export const RECEIVE_TESTACTIVITY_REQUEST =
   '[testActivity] receive list request'
@@ -238,6 +257,7 @@ export const TOGGLE_PRESENTATION_MODE =
   '[testActivity] toggle presentation mode'
 export const RESPONSE_ENTRY_SCORE_SUCCESS =
   '[testActivity] response entry score success'
+
 // assignments
 export const RECEIVE_ASSIGNMENTS_REQUEST = '[assignments] receive list request'
 export const RECEIVE_ASSIGNMENTS_SUCCESS = '[assignments] receive list success'
@@ -280,6 +300,9 @@ export const DELETE_ASSIGNMENT_REQUEST_FAILED =
 
 export const ADVANCED_ASSIGNMENT_VIEW = '[assignments] change view'
 
+export const EDIT_TAGS_REQUEST = '[assignments] edit tags request'
+export const SET_TAGS_UPDATING_STATE = '[assignments] set tags updating state'
+
 export const RECEIVE_CLASS_QUESTION_REQUEST = '[answers] receive list request'
 export const RECEIVE_CLASS_QUESTION_SUCCESS = '[answers] receive list success'
 export const RECEIVE_CLASS_QUESTION_ERROR = '[answers] receive list error'
@@ -297,6 +320,20 @@ export const SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_ERROR =
 export const TOGGLE_STUDENT_REPORT_CARD_SETTINGS =
   '[assignments] show student report card popup'
 
+export const SYNC_ASSIGNMENT_GRADES_WITH_GOOGLE_CLASSROOM_REQUEST =
+  '[LCB] sync assignment grades with google classroom request'
+
+export const SYNC_ASSIGNMENT_GRADES_WITH_CLEVER_REQUEST =
+  '[LCB] sync assignment grades with clever request'
+
+export const SYNC_ASSIGNMENT_WITH_SCHOOLOGY_CLASSROOM_REQUEST =
+  '[LCB] sync assignment with schoology classroom request'
+export const SYNC_ASSIGNMENT_WITH_SCHOOLOGY_CLASSROOM_SUCCESS =
+  '[LCB] sync assignment with schoology classroom success'
+export const SYNC_ASSIGNMENT_WITH_SCHOOLOGY_CLASSROOM_ERROR =
+  '[LCB] sync assignment with schoology classroom error'
+export const SYNC_ASSIGNMENT_GRADES_WITH_SCHOOLOGY_CLASSROOM_REQUEST =
+  '[LCB] sync assignment grades with schoology classroom request'
 // answers
 export const CLEAR_ANSWERS = '[answers] clear answers'
 
@@ -370,3 +407,15 @@ export const SET_QUESTION_CATEGORY =
   '[pickUpQuestion] set question category success'
 export const SET_QUESTION_TAB = '[pickUpQuestion] set question tab success'
 export const SET_SCROLL_TOP = '[pickUpQuestion] set scroll top value'
+
+export const MQTT_CLIENT_SAVE_REQUEST = '[mqtt] Client saved'
+export const MQTT_CLIENT_REMOVE_REQUEST = '[mqtt] Client removed'
+
+export const TOGGLE_QUESTION_EDIT_MODAL_LCB =
+  '[edit question] toggle question edit modal in lcb correct item'
+
+export const SET_EDIT_ITEM_ID = '[edit question] set edit itemId'
+export const SET_CURRENT_STUDENT_ID = '[edit question] set current student id'
+
+export const RELOAD_LCB_DATA_IN_STUDENT_VIEW =
+  '[lcb] reload lcb data in student view'

@@ -2,8 +2,6 @@ import {
   secondaryTextColor,
   themeColor,
   themeColorLighter,
-  white,
-  themeColorBlue,
 } from '@edulastic/colors'
 import { SpinLoader, FlexContainer } from '@edulastic/common'
 import { IconCollapse2 } from '@edulastic/icons'
@@ -18,6 +16,7 @@ import StudentAssignmentModal from '../../../common/components/Popups/studentAss
 import BarTooltipRow from '../../../common/components/tooltip/BarTooltipRow'
 import { ControlDropDown } from '../../../common/components/widgets/controlDropDown'
 import { StyledCard, NoDataContainer } from '../../../common/styled'
+import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import {
   downloadCSV,
   getStudentAssignments,
@@ -25,16 +24,14 @@ import {
 } from '../../../common/util'
 import { getCsvDownloadingState } from '../../../ducks'
 import StudentPerformancePie from '../common/components/charts/StudentPerformancePie'
-import {
-  getFiltersSelector,
-  getReportsSPRFilterData,
-  getSelectedStandardProficiency,
-  getStudentSelector,
-} from '../common/filterDataDucks'
+import { getReportsSPRFilterData } from '../common/filterDataDucks'
 import { useGetStudentMasteryData } from '../common/hooks'
-import { getGrades, getStudentName } from '../common/utils/transformers'
+import {
+  getGrades,
+  getStudentName,
+  getDomainOptionsByGradeSubject,
+} from '../common/utils/transformers'
 import StudentPerformanceSummary from './common/components/table/StudentPerformanceSummary'
-import { getDomainOptions } from './common/utils/transformers'
 import {
   getReportsStudentMasteryProfile,
   getReportsStudentMasteryProfileLoader,
@@ -42,18 +39,25 @@ import {
   getStudentStandardData,
   getStudentStandardLoader,
   getStudentStandardsAction,
+  getReportsStudentMasteryProfileError,
+  resetStudentMasteryProfileAction,
 } from './ducks'
 
-const usefilterRecords = (records, domain) =>
+import staticDropDownData from '../../singleAssessmentReport/common/static/staticDropDownData.json'
+import { getUserRole } from '../../../../src/selectors/user'
+
+const usefilterRecords = (records, domain, grade, subject) =>
   // Note: record.domainId could be integer or string
   useMemo(
     () =>
       filter(
         records,
         (record) =>
-          domain === 'All' || String(record.domainId) === String(domain)
+          (domain === 'All' || String(record.domainId) === String(domain)) &&
+          (grade === 'All' || record.grades.includes(grade)) &&
+          (subject === 'All' || record.subject === subject)
       ),
-    [records, domain]
+    [records, domain, grade, subject]
   )
 const getTooltip = (payload) => {
   if (payload && payload.length) {
@@ -67,34 +71,66 @@ const getTooltip = (payload) => {
   return false
 }
 
+const allGrades = [
+  { key: 'All', title: 'All Grades' },
+  ...staticDropDownData.grades,
+]
+const allSubjects = [
+  { key: 'All', title: 'All Subjects' },
+  ...staticDropDownData.subjects,
+]
+
 const StudentMasteryProfile = ({
   settings,
   loading,
+  error,
   SPRFilterData,
   isCsvDownloading,
   studentMasteryProfile,
   getStudentMasteryProfileRequest,
-  selectedStandardProficiency,
-  filters,
+  resetStudentMasteryProfile,
   getStudentStandards,
   studentStandardData,
-  selectedStudent,
   loadingStudentStandard,
+  sharedReport,
   t,
+  toggleFilter,
+  userRole,
 }) => {
+  const sharedReportFilters = useMemo(
+    () =>
+      sharedReport?._id
+        ? { ...sharedReport.filters, reportId: sharedReport?._id }
+        : null,
+    [sharedReport]
+  )
+
+  const { scaleInfo: scales = [] } = get(SPRFilterData, 'data.result', {})
+
+  const scaleInfo = (
+    scales.find(
+      (x) =>
+        x._id === (sharedReportFilters || settings.requestFilters).profileId
+    ) || scales[0]
+  )?.scale
+
   const { metricInfo = [], studInfo = [], skillInfo = [] } = get(
     studentMasteryProfile,
     'data.result',
     {}
   )
-  const scaleInfo = selectedStandardProficiency
-
-  const studentClassData = SPRFilterData?.data?.result?.studentClassData || []
-  const studentClassInformation = studentClassData[0] || {}
 
   const [selectedDomain, setSelectedDomain] = useState({
     key: 'All',
     title: 'All',
+  })
+  const [selectedSubject, setSelectedSubject] = useState({
+    key: 'All',
+    title: 'All Subjects',
+  })
+  const [selectedGrade, setSelectedGrade] = useState({
+    key: 'All',
+    title: 'All Subjects',
   })
   const [selectedMastery, setSelectedMastery] = useState([])
   const [expandRows, setExpandRows] = useState(false)
@@ -112,40 +148,85 @@ const StudentMasteryProfile = ({
 
   const filteredStandards = usefilterRecords(
     studentStandards,
-    selectedDomain.key
+    selectedDomain.key,
+    selectedGrade.key,
+    selectedSubject.key
   )
-  const filteredDomains = usefilterRecords(studentDomains, selectedDomain.key)
-  const domainOptions = getDomainOptions(studentDomains)
+  const filteredDomains = usefilterRecords(
+    studentDomains,
+    selectedDomain.key,
+    selectedGrade.key,
+    selectedSubject.key
+  )
+  const domainOptions = getDomainOptionsByGradeSubject(
+    studentDomains,
+    selectedGrade.key,
+    selectedSubject.key
+  )
 
   const [showStudentAssignmentModal, setStudentAssignmentModal] = useState(
     false
   )
   const [clickedStandard, setClickedStandard] = useState(undefined)
 
+  useEffect(() => () => resetStudentMasteryProfile(), [])
+
   useEffect(() => {
-    const { selectedStudent: _selectedStudent, requestFilters } = settings
-    if (_selectedStudent.key && requestFilters.termId) {
+    if (settings.selectedStudent.key && settings.requestFilters.termId) {
       getStudentMasteryProfileRequest({
-        ...requestFilters,
-        studentId: _selectedStudent.key,
+        ...settings.requestFilters,
+        studentId: settings.selectedStudent.key,
       })
     }
-  }, [settings])
+    if (settings.requestFilters.termId || settings.requestFilters.reportId) {
+      return () => toggleFilter(null, false)
+    }
+  }, [settings.selectedStudent, settings.requestFilters])
 
   useEffect(() => {
     setSelectedMastery([])
   }, [selectedDomain.key])
 
+  useEffect(() => {
+    setSelectedDomain({ key: 'All', title: 'All' })
+  }, [selectedGrade, selectedSubject])
+
+  useEffect(() => {
+    const metrics = get(studentMasteryProfile, 'data.result.metricInfo', [])
+    if (
+      (settings.requestFilters.termId || settings.requestFilters.reportId) &&
+      !loading &&
+      !isEmpty(studentMasteryProfile) &&
+      !metrics.length
+    ) {
+      toggleFilter(null, true)
+    }
+  }, [studentMasteryProfile])
+
   const onDomainSelect = (_, selected) => setSelectedDomain(selected)
+  const onSubjectSelect = (_, selected) => setSelectedSubject(selected)
+  const onGradeSelect = (_, selected) => setSelectedGrade(selected)
   const onSectionClick = (item) =>
     setSelectedMastery(toggleItem(selectedMastery, item.masteryLabel))
 
   if (loading) {
-    return <SpinLoader position="fixed" />
+    return (
+      <SpinLoader
+        tip="Please wait while we gather the required information..."
+        position="fixed"
+      />
+    )
+  }
+
+  if (error && error.dataSizeExceeded) {
+    return <DataSizeExceeded />
   }
 
   const studentInformation = studInfo[0] || {}
-  const studentName = getStudentName(selectedStudent, studentInformation)
+  const studentName = getStudentName(
+    settings.selectedStudent,
+    studentInformation
+  )
 
   const anonymousString = t('common.anonymous')
 
@@ -168,8 +249,12 @@ const StudentMasteryProfile = ({
     setClickedStandard(undefined)
   }
 
-  if (isEmpty(studInfo)) {
-    return <NoDataContainer>No data available currently.</NoDataContainer>
+  if (isEmpty(metricInfo) || !settings.selectedStudent?.key) {
+    return (
+      <NoDataContainer>
+        {settings.requestFilters?.termId ? 'No data available currently.' : ''}
+      </NoDataContainer>
+    )
   }
 
   return (
@@ -184,7 +269,11 @@ const StudentMasteryProfile = ({
                 <StyledAatar size={150} icon="user" />
               )}
             </FlexContainer>
-            <FlexContainer flexDirection="column" alignItems="flex-start">
+            <FlexContainer
+              flexDirection="column"
+              alignItems="flex-start"
+              justifyContent="center"
+            >
               <StyledP marginTop="30px">
                 <StyledName>{studentName || anonymousString}</StyledName>
               </StyledP>
@@ -192,20 +281,17 @@ const StudentMasteryProfile = ({
                 <StyledText weight="Bold"> Grade: </StyledText>
                 <StyledText>{getGrades(studInfo)}</StyledText>
               </StyledP>
-              <StyledP>
-                <StyledText weight="Bold"> Subject: </StyledText>
-                <StyledText>{studentClassInformation.standardSet}</StyledText>
-              </StyledP>
             </FlexContainer>
           </FlexContainer>
         </ReStyledCard>
-        <ReStyledCard maxW="300px" ml="20px">
+        <ReStyledCard maxW="50%" ml="20px">
           <StudentPerformancePie
             selectedMastery={selectedMastery}
             data={filteredStandards}
             scaleInfo={scaleInfo}
             onSectionClick={onSectionClick}
             getTooltip={getTooltip}
+            showAsRow
           />
         </ReStyledCard>
       </FlexContainer>
@@ -213,6 +299,22 @@ const StudentMasteryProfile = ({
       <ReStyledCard>
         <FilterRow justifyContent="space-between">
           <DropdownContainer>
+            {userRole !== 'student' && (
+              <ControlDropDown
+                by={selectedGrade}
+                selectCB={onGradeSelect}
+                data={allGrades}
+                prefix="Standard Grade"
+                showPrefixOnSelected={false}
+              />
+            )}
+            <ControlDropDown
+              by={selectedSubject}
+              selectCB={onSubjectSelect}
+              data={allSubjects}
+              prefix="Standard Subject"
+              showPrefixOnSelected={false}
+            />
             <ControlDropDown
               showPrefixOnSelected={false}
               by={selectedDomain}
@@ -221,7 +323,10 @@ const StudentMasteryProfile = ({
               prefix="Domain(s)"
             />
           </DropdownContainer>
-          <StyledButton onClick={() => setExpandRows(!expandRows)}>
+          <StyledButton
+            onClick={() => setExpandRows(!expandRows)}
+            data-cy="expand-row"
+          >
             <IconCollapse2 color={themeColor} width={12} height={12} />
             <span className="button-label">
               {expandRows ? 'COLLAPSE' : 'EXPAND'} ROWS
@@ -237,8 +342,7 @@ const StudentMasteryProfile = ({
             data: filteredStandards,
             selectedMastery,
             handleOnClickStandard,
-            filters,
-            termId: settings.requestFilters.termId,
+            filters: sharedReportFilters || settings.requestFilters,
           }}
           expandAllRows={expandRows}
           setExpandAllRows={(flag) => setExpandRows(flag)}
@@ -264,16 +368,16 @@ const withConnect = connect(
     studentMasteryProfile: getReportsStudentMasteryProfile(state),
     SPRFilterData: getReportsSPRFilterData(state),
     loading: getReportsStudentMasteryProfileLoader(state),
+    error: getReportsStudentMasteryProfileError(state),
     isCsvDownloading: getCsvDownloadingState(state),
-    selectedStandardProficiency: getSelectedStandardProficiency(state),
-    filters: getFiltersSelector(state),
     studentStandardData: getStudentStandardData(state),
-    selectedStudent: getStudentSelector(state),
     loadingStudentStandard: getStudentStandardLoader(state),
+    userRole: getUserRole(state),
   }),
   {
     getStudentMasteryProfileRequest: getStudentMasteryProfileRequestAction,
     getStudentStandards: getStudentStandardsAction,
+    resetStudentMasteryProfile: resetStudentMasteryProfileAction,
   }
 )
 
@@ -327,10 +431,18 @@ const StyledName = styled.span`
 `
 
 const DropdownContainer = styled.div`
+  display: flex;
+
   .control-dropdown {
     .ant-btn {
       width: 100%;
     }
+  }
+  .control-dropdown {
+    margin-left: 10px;
+  }
+  .control-dropown:first-child {
+    margin-left: 0px;
   }
 `
 
@@ -346,14 +458,8 @@ const StyledButton = styled(Button)`
   color: ${themeColor};
   border-color: ${themeColor};
   &:hover {
-    background: ${themeColorBlue};
-    color: ${white};
-    border-color: ${themeColorBlue};
-    svg > * {
-      fill: ${white};
-    }
+    color: ${themeColor};
   }
-
   &:focus {
     color: ${themeColor};
   }

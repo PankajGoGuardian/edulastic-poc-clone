@@ -1,7 +1,6 @@
 import { call, put, all, takeLatest } from 'redux-saga/effects'
 import { createSelector } from 'reselect'
 import { reportsApi } from '@edulastic/api'
-import { message } from 'antd'
 import { notification } from '@edulastic/common'
 import { createAction, createReducer } from 'redux-starter-kit'
 
@@ -19,6 +18,8 @@ const GET_STUDENT_STANDARDS_SUCCESS =
   '[reports] student mastery profile get student standards success'
 const GET_STUDENT_STANDARDS_FAILED =
   '[reports] student mastery profile get student standards failed'
+const RESET_REPORTS_STUDENT_MASTERY_PROFILE =
+  '[reports] reset reports student mastery profile'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
@@ -27,6 +28,9 @@ export const getStudentMasteryProfileRequestAction = createAction(
 )
 export const getStudentStandardsAction = createAction(
   GET_STUDENT_STANDARDS_REQUEST
+)
+export const resetStudentMasteryProfileAction = createAction(
+  RESET_REPORTS_STUDENT_MASTERY_PROFILE
 )
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
@@ -48,6 +52,11 @@ export const getReportsStudentMasteryProfileLoader = createSelector(
   (state) => state.loading
 )
 
+export const getReportsStudentMasteryProfileError = createSelector(
+  stateSelector,
+  (state) => state.error
+)
+
 export const getStudentStandardData = createSelector(
   stateSelector,
   (state) => state.studentStandard
@@ -67,12 +76,14 @@ export const getStudentStandardLoader = createSelector(
 const initialState = {
   studentMasteryProfile: {},
   studentStandard: [],
-  loading: true,
+  loading: false,
   loadingStudentStandard: false,
 }
 
 export const reportStudentMasteryProfileReducer = createReducer(initialState, {
   [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState),
+  [RESET_REPORTS_STUDENT_MASTERY_PROFILE]: (state, { payload }) =>
+    (state = initialState),
   [GET_REPORTS_STUDENT_MASTERY_PROFILE_REQUEST]: (state, { payload }) => {
     state.loading = true
   },
@@ -81,6 +92,7 @@ export const reportStudentMasteryProfileReducer = createReducer(initialState, {
     { payload }
   ) => {
     state.loading = false
+    state.error = false
     state.studentMasteryProfile = payload.studentMasteryProfile
   },
   [GET_REPORTS_STUDENT_MASTERY_PROFILE_REQUEST_ERROR]: (state, { payload }) => {
@@ -111,7 +123,15 @@ function* getReportsStudentMasteryProfileRequest({ payload }) {
       reportsApi.fetchStudentMasteryProfileReport,
       payload
     )
-
+    const dataSizeExceeded =
+      studentMasteryProfile?.data?.dataSizeExceeded || false
+    if (dataSizeExceeded) {
+      yield put({
+        type: GET_REPORTS_STUDENT_MASTERY_PROFILE_REQUEST_ERROR,
+        payload: { error: { ...studentMasteryProfile.data } },
+      })
+      return
+    }
     yield put({
       type: GET_REPORTS_STUDENT_MASTERY_PROFILE_REQUEST_SUCCESS,
       payload: { studentMasteryProfile },

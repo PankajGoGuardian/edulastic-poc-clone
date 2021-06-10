@@ -13,15 +13,13 @@ import {
   notification,
 } from '@edulastic/common'
 import { IconClose } from '@edulastic/icons'
-import { math } from '@edulastic/constants'
+import { math, defaultSymbols } from '@edulastic/constants'
 import { backgrounds, greyThemeDark2 } from '@edulastic/colors'
 
 import { CONSTANT } from '../../../Builder/config/index'
 import { IconKeyboard } from '../styled/IconKeyboard'
 
 const { defaultNumberPad } = math
-
-const symbols = ['basic']
 
 const emptyEquation = {
   _type: 98,
@@ -167,7 +165,7 @@ class Equations extends Component {
   }
 
   render() {
-    const { t } = this.props
+    const { t, onChangeKeypad, symbols } = this.props
     const {
       showMathModal,
       selectedEqIndex,
@@ -247,6 +245,7 @@ class Equations extends Component {
           value={selectedEqIndex !== -1 ? eqs[selectedEqIndex] : newEquation}
           onSave={(latex) => this.handleModalSave(latex)}
           onClose={this.toggleMathModal(false)}
+          onChangeKeypad={onChangeKeypad}
         />
       </Container>
     )
@@ -257,8 +256,14 @@ Equations.propTypes = {
   t: PropTypes.func.isRequired,
   setEquations: PropTypes.func.isRequired,
   equations: PropTypes.array.isRequired,
+  onChangeKeypad: PropTypes.func,
+  symbols: PropTypes.array,
 }
 
+Equations.defaultProps = {
+  onChangeKeypad: () => {},
+  symbols: defaultSymbols,
+}
 export default withNamespaces('assessment')(Equations)
 
 const Container = styled.div`

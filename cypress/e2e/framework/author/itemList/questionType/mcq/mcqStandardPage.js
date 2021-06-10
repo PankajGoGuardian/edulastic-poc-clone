@@ -113,7 +113,7 @@ class MCQStandardPage {
 
   // advance options
   clickOnAdvancedOptions() {
-    cy.contains('ADVANCED OPTIONS').should('be.visible').click({ force: true })
+    // cy.contains('ADVANCED OPTIONS').should('be.visible').click({ force: true })
     return this
   }
 

@@ -9,6 +9,8 @@ const DRAW_TRIANGLE = 'drawTriangle'
 const DRAW_TEXT = 'drawText'
 const DRAW_MATH = 'drawMath'
 const DRAW_MEASURE_TOOL = 'drawMeasureTool'
+const DRAW_RULER_TOOL = 'drawRulerTool'
+const DRAW_PROTRACTOR = 'drawProtractor'
 const SELECT_TOOL = 'selectTool'
 const COPY = 'copy'
 const PASTE = 'paste'
@@ -44,4 +46,6 @@ module.exports = {
   UNDO_TOOL,
   REDO_TOOL,
   DELETE_TOOL,
+  DRAW_RULER_TOOL,
+  DRAW_PROTRACTOR,
 }

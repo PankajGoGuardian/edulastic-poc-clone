@@ -3,6 +3,9 @@ import styled from 'styled-components'
 import { Row, Col } from 'antd'
 import { groupBy, uniqBy } from 'lodash'
 import next from 'immer'
+import qs from 'qs'
+import { withRouter } from 'react-router-dom'
+import { compose } from 'redux'
 import { StyledTable } from '../styled'
 
 import {
@@ -18,9 +21,23 @@ import CsvTable from '../../../../../common/components/tables/CsvTable'
 
 import columnData from '../../static/json/tableColumns.json'
 
-export const AssessmentStatisticTable = (props) => {
-  const [tableType, setTableType] = useState({ key: 'school', title: 'School' })
-  const { data, role, className, name, isCsvDownloading, isPrinting } = props
+const AssessmentStatisticTable = (props) => {
+  const [tableType, setTableType] = useState({
+    key: 'school',
+    title: 'School',
+  })
+  const {
+    data,
+    role,
+    className,
+    name,
+    isCsvDownloading,
+    isPrinting,
+    location,
+  } = props
+
+  const query = qs.parse(location.search, { ignoreQueryPrefix: true })
+  const { cliUser } = query
 
   if (role === 'teacher' && tableType.key !== 'class') {
     const o = { key: 'class', title: 'Class' }
@@ -42,6 +59,7 @@ export const AssessmentStatisticTable = (props) => {
       const obj = { ...__data[0], key }
 
       let maxAssessmentDate = 0
+      let maxDueDate = 0
       let sumTotalScore = 0
       let sumTotalMaxScore = 0
       let sumStudentsAbsent = 0
@@ -56,6 +74,7 @@ export const AssessmentStatisticTable = (props) => {
           totalScore = 0,
           totalMaxScore = 0,
           assessmentDate,
+          dueDate,
           studentsAbsent,
           studentsAssigned,
           studentsGraded,
@@ -69,6 +88,8 @@ export const AssessmentStatisticTable = (props) => {
 
         if (maxAssessmentDate < assessmentDate)
           maxAssessmentDate = assessmentDate
+
+        if (maxDueDate < dueDate) maxDueDate = dueDate
 
         sumStudentsAbsent += studentsAbsent
         sumStudentsAssigned += studentsAssigned
@@ -90,13 +111,15 @@ export const AssessmentStatisticTable = (props) => {
       if (sumTotalScore) {
         avgScore = (sumTotalScore / sumStudentsGraded || 0).toFixed(2)
       }
+
       const result = {
         ...obj,
         avgStudentScore,
         scoreVariance: scoreVariance.toFixed(2),
         scoreStdDeviation: getStandardDeviation(scoreVariance).toFixed(2),
         avgScore,
-        assessmentDate: formatDate(maxAssessmentDate),
+        assessmentDate: formatDate(maxAssessmentDate, true),
+        dueDate: formatDate(maxDueDate, true),
         studentsAbsent: sumStudentsAbsent,
         studentsAssigned: sumStudentsAssigned,
         studentsGraded: sumStudentsGraded,
@@ -127,19 +150,21 @@ export const AssessmentStatisticTable = (props) => {
 
   const getColumns = (_tableType) =>
     next([...columnData[_tableType.key].columns], (columns) => {
+      columns[0].render = (text) => text || '-'
       if (role === 'teacher') {
-        columns.splice(0, 1)
+        columns?.splice(0, 1)
+        cliUser && columns.splice(2, 1)
         columns[0].sorter = sortAlphabets('groupName')
       } else {
         columns[0].sorter = sortAlphabets('schoolId')
       }
 
       if (_tableType.key === 'school' || role === 'teacher') {
-        columns[1].sorter = sortNumbers('avgStudentScore')
-        columns[1].render = (text) => `${text}%`
+        columns[6].sorter = sortNumbers('avgStudentScore')
+        columns[6].render = (text) => `${text}%`
       } else {
-        columns[2].sorter = sortNumbers('avgStudentScore')
-        columns[2].render = (text) => `${text}%`
+        columns[7].sorter = sortNumbers('avgStudentScore')
+        columns[7].render = (text) => `${text}%`
       }
     })
 
@@ -179,7 +204,7 @@ export const AssessmentStatisticTable = (props) => {
       <Row type="flex" justify="start" className="top-area">
         <Col className="top-area-col table-title">
           <StyledH3>
-            Assessment Statistics of {name} by{' '}
+            Assignment Statistics for {name} by{' '}
             <span className="stats-grouped-by">{tableType.title}</span>
           </StyledH3>
         </Col>
@@ -205,10 +230,18 @@ export const AssessmentStatisticTable = (props) => {
         isCsvDownloading={isCsvDownloading}
         tableToRender={PrintableTable}
         scroll={{ x: '100%' }}
+        pagination={{
+          hideOnSinglePage: true,
+          pageSize: 10,
+        }}
       />
     </div>
   )
 }
+
+const enhance = compose(withRouter)
+
+export default enhance(AssessmentStatisticTable)
 
 const StyledControlDropDownContainer = styled(Col)`
   display: flex;

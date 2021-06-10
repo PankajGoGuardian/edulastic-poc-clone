@@ -1,7 +1,6 @@
 import { takeLatest, call, put, all } from 'redux-saga/effects'
 import { createSelector } from 'reselect'
 import { reportsApi } from '@edulastic/api'
-import { message } from 'antd'
 import { notification } from '@edulastic/common'
 import { createAction, createReducer } from 'redux-starter-kit'
 
@@ -13,11 +12,17 @@ const GET_REPORTS_STANDARDS_PERFORMANCE_SUMMARY_REQUEST_SUCCESS =
   '[reports] get reports standards performance summary success'
 const GET_REPORTS_STANDARDS_PERFORMANCE_SUMMARY_REQUEST_ERROR =
   '[reports] get reports standards performance summary error'
+const RESET_REPORTS_STANDARDS_PERFORMANCE_SUMMARY =
+  '[reports] reset reports standards performance summary'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
 export const getStandardsPerformanceSummaryRequestAction = createAction(
   GET_REPORTS_STANDARDS_PERFORMANCE_SUMMARY_REQUEST
+)
+
+export const resetStandardsPerformanceSummaryAction = createAction(
+  RESET_REPORTS_STANDARDS_PERFORMANCE_SUMMARY
 )
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
@@ -39,6 +44,11 @@ export const getReportsStandardsPerformanceSummaryLoader = createSelector(
   (state) => state.loading
 )
 
+export const getReportsStandardsPerformanceSummaryError = createSelector(
+  stateSelector,
+  (state) => state.error
+)
+
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -47,17 +57,16 @@ export const getReportsStandardsPerformanceSummaryLoader = createSelector(
 
 const initialState = {
   standardsPerformanceSummary: {},
-  loading: true,
+  loading: false,
 }
 
 export const reportStandardsPerformanceSummaryReducer = createReducer(
   initialState,
   {
-    [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState),
-    [GET_REPORTS_STANDARDS_PERFORMANCE_SUMMARY_REQUEST]: (
-      state,
-      { payload }
-    ) => {
+    [RESET_ALL_REPORTS]: (state) => (state = initialState),
+    [RESET_REPORTS_STANDARDS_PERFORMANCE_SUMMARY]: (state) =>
+      (state = initialState),
+    [GET_REPORTS_STANDARDS_PERFORMANCE_SUMMARY_REQUEST]: (state) => {
       state.loading = true
     },
     [GET_REPORTS_STANDARDS_PERFORMANCE_SUMMARY_REQUEST_SUCCESS]: (
@@ -65,6 +74,7 @@ export const reportStandardsPerformanceSummaryReducer = createReducer(
       { payload }
     ) => {
       state.loading = false
+      state.error = false
       state.standardsPerformanceSummary = payload.standardsPerformanceSummary
     },
     [GET_REPORTS_STANDARDS_PERFORMANCE_SUMMARY_REQUEST_ERROR]: (
@@ -89,8 +99,15 @@ function* getReportsStandardsPerformanceSummaryRequest({ payload }) {
       reportsApi.fetchStandardsPerformanceSummaryReport,
       payload
     )
-    // const standardsPerformanceSummary = { data: tempData };
-
+    const dataSizeExceeded =
+      standardsPerformanceSummary?.data?.dataSizeExceeded || false
+    if (dataSizeExceeded) {
+      yield put({
+        type: GET_REPORTS_STANDARDS_PERFORMANCE_SUMMARY_REQUEST_ERROR,
+        payload: { error: { ...standardsPerformanceSummary.data } },
+      })
+      return
+    }
     yield put({
       type: GET_REPORTS_STANDARDS_PERFORMANCE_SUMMARY_REQUEST_SUCCESS,
       payload: { standardsPerformanceSummary },

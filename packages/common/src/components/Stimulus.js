@@ -6,14 +6,13 @@ import { withMathFormula } from '../HOC/withMathFormula'
 
 const Stimulus = withTheme(
   withMathFormula(styled.div`
-    margin-bottom: 15px;
+    word-break: break-word;
+    font-weight: ${fonts.previewFontWeight};
+    user-select: ${(props) => (props.userSelect ? 'text !important' : 'none')};
+
     img {
       max-height: unset !important;
     }
-    word-break: break-word;
-    font-size: ${(props) => props.fontSize};
-    font-weight: ${fonts.previewFontWeight};
-    user-select: ${(props) => (props.userSelect ? 'text !important' : 'none')};
 
     & * {
       user-select: ${(props) =>
@@ -38,15 +37,6 @@ const Stimulus = withTheme(
       font-size: ${fonts.previewFontSizeMobile};
     }
 
-    /**
-  * @see https://snapwiz.atlassian.net/browse/EV-11832
-  * some math content clipped off, so we need to add space at top
-  */
-    & p {
-      margin: 0;
-      padding-top: 2px;
-    }
-
     &.migrated-question {
       img {
         /**
@@ -55,6 +45,14 @@ const Stimulus = withTheme(
         */
         max-width: unset !important;
       }
+    }
+
+    /**
+   * @see https://snapwiz.atlassian.net/browse/EV-22888
+   * words breaking into single character each line
+   */
+    & table {
+      word-break: normal;
     }
   `)
 )

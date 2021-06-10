@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import io from 'socket.io-client'
 import { connect } from 'react-redux'
 import { EVENTS } from '../constants'
@@ -13,7 +13,7 @@ import {
 let socket
 
 const destroyWSSConnection = ({ meetingID, clientId }) => {
-  window.addEventListener('beforeunload', async (_) => {
+  window.addEventListener('beforeunload', async (event) => {
     // wait for meet to relay call ended message
     while (document.querySelector("[data-call-ended='true']") == null) {
       await new Promise((r) => setTimeout(r, 200))
@@ -37,14 +37,14 @@ const WebSocketConnection = ({
   addMessage,
   removeMessage,
   addHand,
+  updateRoomData,
 }) => {
   useEffect(() => {
     socket = io(host)
     window['edu-meet'] = socket
-    if (process.env.TEST_ENV != 'app')
-      socket.on(EVENTS.CONNECT, () =>
-        console.log('Socket Connection Successful...')
-      )
+    socket.on(EVENTS.CONNECT, () =>
+      console.log('Socket Connection Successful...')
+    )
     // socket.on('connect_error', err => console.log("Web Socket Connection Failed !"));
   }, [host])
 
@@ -59,7 +59,7 @@ const WebSocketConnection = ({
               ...userData,
               userId: user._id,
               role: user.role,
-              classId: user?.orgData?.classList[0]?._id,
+              classId: user?.orgData?.defaultClass,
             },
           },
           (err) => {
@@ -80,7 +80,7 @@ const WebSocketConnection = ({
           socket.emit(EVENTS.ACTIVITY, {
             meetingID: userData.meetingID,
             userId: user._id,
-            classId: user?.orgData?.classList[0]?._id,
+            classId: user.orgData.defaultClass,
             activity: request,
           })
         }

@@ -3,18 +3,20 @@ import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { get } from 'lodash'
-import { Anchor, Col, Row, Select, Tooltip } from 'antd'
-import { blueBorder, green, red, lightGrey9 } from '@edulastic/colors'
+import { get, isObject } from 'lodash'
+import Styled from 'styled-components'
+import { Anchor, Col, Icon, InputNumber, Row, Select, Tooltip } from 'antd'
+import { blueBorder, green, lightGrey9, red } from '@edulastic/colors'
+
 import {
-  MainContentWrapper,
   CheckboxLabel,
+  EduSwitchStyled,
+  FieldLabel,
+  MainContentWrapper,
+  notification,
   RadioBtn,
   SelectInputStyled,
   TextInputStyled,
-  notification,
-  FieldLabel,
-  EduSwitchStyled,
   withWindowSizes,
 } from '@edulastic/common'
 import { roleuser, test as testContants } from '@edulastic/constants'
@@ -30,31 +32,42 @@ import {
   getDisableAnswerOnPaperSelector,
   getReleaseScorePremiumSelector,
   getTestEntitySelector,
+  resetUpdatedStateAction,
   setTestDataAction,
   testTypeAsProfileNameType,
-  resetUpdatedStateAction,
 } from '../../../../ducks'
 import { setMaxAttemptsAction, setSafeBroswePassword } from '../../ducks'
-import { isPublisherUserSelector } from '../../../../../src/selectors/user'
 import {
-  AdvancedSettings,
+  allowedToSelectMultiLanguageInTest,
+  isEtsDistrictSelector,
+  isPublisherUserSelector,
+} from '../../../../../src/selectors/user'
+import {
   Block,
   BlueText,
   Body,
   Container,
   Description,
+  Label,
   MessageSpan,
   NavigationMenu,
+  RadioWrapper,
+  SettingsCategoryBlock,
   StyledAnchor,
   StyledRadioGroup,
   Title,
-  RadioWrapper,
-  Label,
 } from './styled'
 import PeformanceBand from './PeformanceBand'
 import StandardProficiencyTable from './StandardProficiencyTable'
-import SubscriptionsBlock from './SubscriptionsBlock'
 import Instruction from './InstructionBlock/InstructionBlock'
+import DollarPremiumSymbol from '../../../../../AssignTest/components/Container/DollarPremiumSymbol'
+import { SettingContainer } from '../../../../../AssignTest/components/Container/styled'
+import {
+  CheckBoxWrapper,
+  StyledRow,
+} from '../../../../../AssignTest/components/SimpleOptions/styled'
+import KeypadDropdown from './KeypadDropdown'
+import { getAssignmentsSelector } from '../../../Assign/ducks'
 
 const {
   settingCategories,
@@ -77,8 +90,7 @@ const {
   passwordPolicyOptions,
   playerSkinTypes,
   playerSkinValues,
-  SHOW_USER_WORK,
-  SHOW_USER_WORK_OPTIONS,
+  settingsList,
 } = testContants
 
 const { Option } = Select
@@ -108,9 +120,11 @@ class Setting extends Component {
 
     this.state = {
       showPassword: false,
-      showAdvancedOption: false,
       inputBlur: false,
       _releaseGradeKeys: nonPremiumReleaseGradeKeys,
+      isTestBehaviorGroupExpanded: true,
+      isAntiCheatingGroupExpanded: true,
+      isMiscellaneousGroupExpanded: true,
     }
 
     this.containerRef = React.createRef()
@@ -139,34 +153,22 @@ class Setting extends Component {
   }
 
   componentDidMount = () => {
-    const {
-      entity,
-      isAuthorPublisher,
-      resetUpdatedState,
-      editEnable,
-    } = this.props
+    const { entity, isAuthorPublisher, resetUpdatedState } = this.props
     if (entity?.scoringType === PARTIAL_CREDIT && !entity?.penalty) {
       this.updateTestData('scoringType')(PARTIAL_CREDIT_IGNORE_INCORRECT)
     }
     if (isAuthorPublisher) {
       this.updateTestData('testType')(ASSESSMENT)
     }
-    if (entity?.status === 'published' && !editEnable) {
-      resetUpdatedState()
+    if (entity?.safeBrowser) {
+      this.updateTestData('safeBrowser')(true)
     }
+    // resetting updated state on mount
+    resetUpdatedState()
   }
 
   handleShowPassword = () => {
     this.setState((state) => ({ showPassword: !state.showPassword }))
-  }
-
-  // enableHandler = e => {
-  //   this.setState({ enable: e.target.value });
-  // };
-
-  advancedHandler = () => {
-    const { showAdvancedOption } = this.state
-    this.setState({ showAdvancedOption: !showAdvancedOption })
   }
 
   updateAttempt = (e) => {
@@ -179,6 +181,16 @@ class Setting extends Component {
   setPassword = (e) => {
     const { setSafePassword } = this.props
     setSafePassword(e.target.value)
+  }
+
+  handleApplyEBSR = (event) => {
+    const {
+      target: { checked },
+    } = event
+    const { setTestData } = this.props
+    setTestData({
+      applyEBSR: checked,
+    })
   }
 
   updateTestData = (key) => (value) => {
@@ -241,14 +253,30 @@ class Setting extends Component {
       }
       case 'scoringType': {
         const penalty = value === evalTypeLabels.PARTIAL_CREDIT
-        setTestData({ penalty })
+        const dataToSet = {
+          penalty,
+        }
+        if (
+          ![
+            evalTypeLabels.PARTIAL_CREDIT,
+            evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT,
+          ].includes(value)
+        ) {
+          Object.assign(dataToSet, { applyEBSR: false })
+        }
+        setTestData(dataToSet)
         break
       }
       case 'safeBrowser':
-        if (!value)
+        if (!value) {
           setTestData({
             sebPassword: '',
           })
+        } else {
+          setTestData({
+            restrictNavigationOut: undefined,
+          })
+        }
         break
       case 'maxAnswerChecks':
         if (value < 0) value = 0
@@ -283,7 +311,10 @@ class Setting extends Component {
 
   updateFeatures = (key) => (e) => {
     const { setTestData } = this.props
-    const featVal = e.target.value
+    let featVal = isObject(e) ? e.target.value : e
+    if (typeof featVal === 'undefined') {
+      featVal = null
+    }
     this.setState({ [key]: featVal })
     setTestData({
       [key]: featVal,
@@ -309,7 +340,7 @@ class Setting extends Component {
     if (value) {
       setTestData({
         [attr]: value,
-        pauseAllowed: false,
+        pauseAllowed: true,
         allowedTime: totalItems * 60 * 1000,
       })
       return
@@ -332,8 +363,27 @@ class Setting extends Component {
     })
   }
 
+  togglePanel = (panelType, value) => {
+    this.setState({ [panelType]: value })
+  }
+
+  get keypadDropdownValue() {
+    const { entity: { keypad: testKeypad = {} } = {} } = this.props
+    if (!testKeypad.type) return 'item-level-keypad'
+    if (testKeypad.type === 'custom') {
+      return testKeypad.value?._id
+    }
+    return testKeypad.value
+  }
+
   render() {
-    const { showPassword, _releaseGradeKeys } = this.state
+    const {
+      showPassword,
+      _releaseGradeKeys,
+      isTestBehaviorGroupExpanded,
+      isAntiCheatingGroupExpanded,
+      isMiscellaneousGroupExpanded,
+    } = this.state
     const {
       current,
       history,
@@ -350,22 +400,26 @@ class Setting extends Component {
       districtPermissions = [],
       isAuthorPublisher,
       calculatorProvider,
+      allowedToSelectMultiLanguage,
+      testAssignments,
+      editEnable,
+      isCurator,
+      isPlaylist,
+      isEtsDistrict,
     } = this.props
-
     const {
       isDocBased,
       releaseScore,
       safeBrowser,
       sebPassword,
+      blockNavigationToAnsweredQuestions,
       shuffleQuestions,
       shuffleAnswers,
       answerOnPaper,
       passwordPolicy,
       maxAnswerChecks,
-      scoringType,
       testType,
       calcType,
-      showUserWork = SHOW_USER_WORK.UPLOAD,
       assignmentPassword,
       passwordExpireIn,
       markAsDone,
@@ -376,16 +430,32 @@ class Setting extends Component {
       standardGradingScale,
       testContentVisibility = testContentVisibilityOptions.ALWAYS,
       playerSkinType = playerSkinTypes.edulastic.toLowerCase(),
-      showMagnifier = true,
+      showMagnifier = false,
       timedAssignment,
       allowedTime,
+      enableScratchpad = false,
       freezeSettings = false,
       hasInstruction = false,
       instruction = '',
       testletConfig = {},
+      multiLanguageEnabled,
+      restrictNavigationOut,
+      restrictNavigationOutAttemptsThreshold,
+      blockSaveAndContinue,
+      pauseAllowed,
+      itemGroups = [],
+      applyEBSR = false,
       enableSkipAlert = false,
     } = entity
-
+    const scoringType =
+      entity.scoringType === evalTypeLabels.PARTIAL_CREDIT &&
+      entity.penalty === false
+        ? evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT
+        : entity.scoringType
+    const multipartItems = itemGroups
+      .map((o) => o.items)
+      .flat()
+      .filter((o) => o.multipartItem).length
     const breadcrumbData = [
       {
         title: showCancelButton ? 'ASSIGNMENTS / EDIT TEST' : 'TESTS',
@@ -423,7 +493,8 @@ class Setting extends Component {
       'check-answer-tries-per-question',
     ]
 
-    const availableFeatures = settingCategories.slice(0, -5).map((category) => {
+    const availableFeatures = {}
+    settingsList.slice(0, -5).forEach((category) => {
       if (isDocBased && categories.includes(category.id)) return null
       if (
         features[settingCategoriesFeatureMap[category.id]] ||
@@ -433,30 +504,42 @@ class Setting extends Component {
           gradeSubject: { grades, subjects },
         })
       ) {
-        return settingCategoriesFeatureMap[category.id]
-      }
-      if (settingCategoriesFeatureMap[category.id] === 'releaseScore') {
-        // release score is free feature
-        return settingCategoriesFeatureMap[category.id]
+        availableFeatures[settingCategoriesFeatureMap[category.id]] = true
       }
       return null
     })
 
     const edulastic = `${playerSkinTypes.edulastic} ${
-      testType?.includes('assessment') ? 'Test' : 'Practice'
+      testType.includes('assessment') ? 'Test' : 'Practice'
     }`
     const skinTypes = {
       ...playerSkinTypes,
       edulastic,
     }
 
-    // TODO: check publisher here to add/remove testlet option into skinTypes
-    skinTypes[playerSkinValues.testlet] = 'ETS Testlet Player'
-
     const accessibilityData = [
-      { key: 'showMagnifier', value: showMagnifier },
-      { key: 'enableSkipAlert', value: enableSkipAlert },
-    ].filter((a) => features[a.key])
+      {
+        key: 'showMagnifier',
+        value: showMagnifier,
+        description:
+          'This tool provides visual assistance. When enabled, students can move the magnifier around the page to enlarge areas of their screen.',
+        id: 'magnifier-setting',
+      },
+      {
+        key: 'enableScratchpad',
+        value: enableScratchpad,
+        description:
+          'When enabled, a student can open ScratchPad to show their work. The tool contains options for text, drawing, shapes, rulers, and more.',
+        id: 'scratchpad-setting',
+      },
+      {
+        key: 'enableSkipAlert',
+        value: enableSkipAlert,
+        description:
+          'When enabled, a student can not skip a question without confirmation.',
+        id: 'skip-alert',
+      },
+    ]
 
     const checkForCalculator = premium && calculatorProvider !== 'DESMOS'
     const calculatorKeysAvailable =
@@ -474,6 +557,49 @@ class Setting extends Component {
       })
     }
 
+    const {
+      assessmentSuperPowersMarkAsDone = false,
+      assessmentSuperPowersShowCalculator = false,
+      assessmentSuperPowersTimedTest = false,
+      assessmentSuperPowersCheckAnswerTries = false,
+      maxAttemptAllowed = false,
+      assessmentSuperPowersShuffleQuestions = false,
+      assessmentSuperPowersShuffleAnswerChoice = false,
+      assessmentSuperPowersRequirePassword = false,
+      assessmentSuperPowersRestrictQuestionBackNav = false,
+      assessmentSuperPowersRequireSafeExamBrowser = false,
+      assessmentSuperPowersAnswerOnPaper = false,
+      performanceBands = false,
+      selectPlayerSkinType = false,
+    } = availableFeatures
+
+    const navigationThresholdMoreThan1 =
+      restrictNavigationOut === 'warn-and-report-after-n-alerts' &&
+      restrictNavigationOutAttemptsThreshold > 1
+    const isEdulasticCurator = userRole === roleuser.EDULASTIC_CURATOR
+    const testStatus = entity.status
+    const isRegradeFlow =
+      entity.isUsed &&
+      !!testAssignments.length &&
+      !isEdulasticCurator &&
+      !isCurator &&
+      (testStatus === 'draft' || editEnable)
+
+    const applyEBSRComponent = () => {
+      return (
+        <CheckBoxWrapper>
+          <CheckboxLabel
+            disabled={!owner || !isEditable}
+            data-cy="applyEBSR"
+            checked={applyEBSR}
+            onChange={this.handleApplyEBSR}
+          >
+            <StyledSpan>APPLY EBSR GRADING</StyledSpan>
+          </CheckboxLabel>
+        </CheckBoxWrapper>
+      )
+    }
+
     return (
       <MainContentWrapper ref={this.containerRef}>
         <Breadcrumb data={breadcrumbData} />
@@ -486,702 +612,504 @@ class Setting extends Component {
                   offsetTop={125}
                   getContainer={() => this.containerRef.current || window}
                 >
-                  {settingCategories
-                    .filter((item) =>
-                      item.adminFeature ? userRole !== roleuser.TEACHER : true
-                    )
-                    .slice(0, -6)
-                    .map((category) => {
-                      if (
-                        availableFeatures.includes(
-                          settingCategoriesFeatureMap[category.id]
-                        )
-                      ) {
-                        return (
-                          <Anchor.Link
-                            key={category.id}
-                            href={`${history.location.pathname}#${category.id}`}
-                            title={category.title.toLowerCase()}
-                          />
-                        )
-                      }
-                      return null
-                    })}
-                  {features.premium &&
-                    advancedSettingCategoris.map((category) => (
+                  {settingCategories.map((category) => {
+                    return (
                       <Anchor.Link
                         key={category.id}
                         href={`${history.location.pathname}#${category.id}`}
                         title={category.title.toLowerCase()}
                       />
-                    ))}
+                    )
+                  })}
                 </StyledAnchor>
-                {/* Hiding temporarly for deploying */}
-                {/* {!isDocBased && features.premium && (
-                  <AdvancedButton onClick={this.advancedHandler} show={showAdvancedOption}>
-                    {showAdvancedOption ? "HIDE ADVANCED OPTIONS" : "SHOW ADVANCED OPTIONS"}
-                    <IconCaretDown color={themeColor} width={11} height={6} />
-                  </AdvancedButton>
-                )} */}
               </NavigationMenu>
             </Col>
+
             <Col span={isSmallSize ? 24 : 18}>
-              <Block id="test-type" smallSize={isSmallSize}>
-                <Row>
-                  <Title>Test Type</Title>
-                  <Body smallSize={isSmallSize}>
-                    <Row>
-                      <SelectInputStyled
-                        width="70%"
-                        value={testType}
-                        disabled={!owner || !isEditable}
-                        onChange={this.updateTestData('testType')}
-                        getPopupContainer={(trigger) => trigger.parentNode}
-                      >
-                        {(userRole === roleuser.DISTRICT_ADMIN ||
-                          userRole === roleuser.SCHOOL_ADMIN ||
-                          testType === COMMON) &&
-                          !districtPermissions.includes('publisher') && (
-                            <Option key={COMMON} value={COMMON}>
-                              Common Assessment
-                            </Option>
-                          )}
-                        {Object.keys(
-                          isAuthorPublisher
-                            ? authorPublisherTestTypes
-                            : testTypes
-                        ).map((key) => (
-                          <Option key={key} value={key}>
-                            {isAuthorPublisher
-                              ? authorPublisherTestTypes[key]
-                              : testTypes[key]}
-                          </Option>
-                        ))}
-                      </SelectInputStyled>
-                    </Row>
-                    {(userRole === roleuser.DISTRICT_ADMIN ||
-                      userRole === roleuser.SCHOOL_ADMIN) &&
-                      testType === COMMON && (
-                        <>
-                          <br />
-                          <Row>
-                            <CheckboxLabel
-                              disabled={!owner || !isEditable}
-                              data-cy="freeze-settings"
-                              checked={freezeSettings}
-                              onChange={(e) =>
-                                this.updateTestData('freezeSettings')(
-                                  e.target.checked
-                                )
-                              }
-                            >
-                              Freeze Settings
-                            </CheckboxLabel>
-                            <Tooltip title="Instructors won’t be allowed to override the test settings while assigning it.">
-                              <IconInfo
-                                color={lightGrey9}
-                                style={{ cursor: 'pointer' }}
-                              />
-                            </Tooltip>
-                          </Row>
-                        </>
-                      )}
-                  </Body>
-                </Row>
-              </Block>
-              {availableFeatures.includes('maxAttemptAllowed') && (
-                <Block id="maximum-attempts-allowed">
-                  <Title>Maximum Attempts Allowed</Title>
-                  <Body>
-                    <FieldLabel>Quantity</FieldLabel>
-                    <TextInputStyled
-                      type="number"
-                      width="100px"
-                      disabled={!owner || !isEditable}
-                      size="large"
-                      value={maxAttempts}
-                      onChange={this.updateAttempt}
-                      min={1}
-                      step={1}
-                    />
-                  </Body>
-                </Block>
-              )}
-
-              {/* Add instruction starts */}
-              <Block id="add-instruction" smallSize={isSmallSize}>
-                <Title>
-                  <span>Test Instructions</span>
-                  <EduSwitchStyled
-                    disabled={!owner || !isEditable}
-                    data-cy="add-test-instruction"
-                    defaultChecked={hasInstruction}
-                    onChange={() =>
-                      this.updateTestData('hasInstruction')(!hasInstruction)
-                    }
-                  />
-                </Title>
-                <Body smallSize={isSmallSize}>
-                  <Description>
-                    Add instructions for the students here. For example,
-                    &ldquo;You will be allowed two attempts on this quiz.&ldquo;
-                    Or, &ldquo;This test is worth 30% of your grade.&ldquo;
-                  </Description>
-                  {hasInstruction && (
-                    <Instruction
-                      border="border"
-                      size="SM"
-                      updateTestData={this.updateTestData}
-                      instruction={instruction}
-                    />
-                  )}
-                </Body>
-              </Block>
-              {/* Add instruction ends */}
-
-              {availableFeatures.includes(
-                'assessmentSuperPowersMarkAsDone'
-              ) && (
-                <Block id="mark-as-done" smallSize={isSmallSize}>
-                  <Title>Mark as Done</Title>
-                  <Body smallSize={isSmallSize}>
-                    <Row type="flex" align="middle">
-                      <Col span={8}>
-                        <StyledRadioGroup
-                          disabled={!owner || !isEditable}
-                          onChange={this.updateFeatures('markAsDone')}
-                          value={markAsDone}
-                        >
-                          {Object.keys(completionTypes).map((item) => (
-                            <RadioBtn
-                              value={completionTypes[item]}
-                              key={completionTypes[item]}
-                            >
-                              {completionTypes[item]}
-                            </RadioBtn>
-                          ))}
-                        </StyledRadioGroup>
-                      </Col>
-                      <Col span={16}>
-                        <Description>
-                          {'Control when class will be marked as Done. '}
-                          <BlueText>Automatically</BlueText>
-                          {
-                            ' when all students are graded and due date has passed OR '
-                          }
-                          <BlueText>Manually</BlueText>
-                          {' when you click the "Mark as Done" button.'}
-                        </Description>
-                      </Col>
-                    </Row>
-                  </Body>
-                </Block>
-              )}
-
-              <Block id="release-scores" smallSize={isSmallSize}>
-                <Title>
-                  Release Scores{' '}
-                  {releaseScore === releaseGradeLabels.DONT_RELEASE
-                    ? '[OFF]'
-                    : '[ON]'}
-                </Title>
-                <Body smallSize={isSmallSize}>
-                  <StyledRadioGroup
-                    disabled={!owner || !isEditable}
-                    onChange={this.updateFeatures('releaseScore')}
-                    value={releaseScore}
-                  >
-                    {_releaseGradeKeys.map((item) => (
-                      <RadioBtn value={item} key={item}>
-                        {releaseGradeTypes[item]}
-                      </RadioBtn>
-                    ))}
-                  </StyledRadioGroup>
-                </Body>
-              </Block>
-
-              {availableFeatures.includes(
-                'assessmentSuperPowersRequireSafeExamBrowser'
-              ) && (
-                <Block id="require-safe-exame-browser" smallSize={isSmallSize}>
-                  <Title>
-                    <span>Safe Exam Browser/Kiosk Mode</span>
-                    <Tooltip
-                      title="Ensure a secure testing environment by using Safe Exam Browser or Edulastic Kiosk Mode to 
-                  lockdown the student's device. To use this feature, Safe Exam Browser (on Windows/Mac/iPad) must 
-                  be installed on the student device. On Chromebook, Edulastic Kiosk Mode 2.1 must be installed.
-                    The quit password can be used by teacher or proctor to safely exit Safe Exam Browser in the middle 
-                  of an assessment. The quit password should not be revealed to the students. The quit password cannot 
-                  be used to exit Chromebook Kiosk mode."
-                    >
-                      <IconInfo
-                        color={lightGrey9}
-                        style={{ cursor: 'pointer', marginLeft: '10px' }}
-                      />
-                    </Tooltip>
-                    <EduSwitchStyled
-                      disabled={!owner || !isEditable}
-                      defaultChecked={safeBrowser}
-                      onChange={this.updateTestData('safeBrowser')}
-                    />
-                  </Title>
-                  <Body smallSize={isSmallSize}>
-                    <Row>
-                      <Col span={24}>
-                        {safeBrowser && (
-                          <TextInputStyled
-                            className={`sebPassword ${
-                              sebPassword && sebPassword.length
-                                ? ' good'
-                                : ' dirty'
-                            }`}
-                            disabled={!owner || !isEditable}
-                            ref={sebPasswordRef}
-                            prefix={
-                              <i
-                                className={`fa fa-eye${
-                                  showPassword ? '-slash' : ''
-                                }`}
-                                onClick={this.handleShowPassword}
-                              />
-                            }
-                            onChange={this.setPassword}
-                            size="large"
-                            value={sebPassword}
-                            type={showPassword ? 'text' : 'password'}
-                            placeholder="Quit Password"
-                          />
-                        )}
-                      </Col>
-                    </Row>
-                    <Description>
-                      Ensure a secure testing environment by using Safe Exam
-                      Browser or Edulastic Kiosk Mode to lockdown the
-                      student&apos;s device. To use this feature, Safe Exam
-                      Browser (on Windows/Mac/iPad) must be installed on the
-                      student device. On Chromebook, Edulastic Kiosk Mode 2.1
-                      must be installed. <br />
-                      The quit password can be used by teacher or proctor to
-                      safely exit Safe Exam Browser in the middle of an
-                      assessment. The quit password should not be revealed to
-                      the students. The quit password cannot be used to exit
-                      Chromebook Kiosk mode.
-                    </Description>
-                  </Body>
-                </Block>
-              )}
-
-              {availableFeatures.includes(
-                'assessmentSuperPowersShuffleQuestions'
-              ) && (
-                <Block id="suffle-question" smallSize={isSmallSize}>
-                  <Title>
-                    <span>Shuffle Questions</span>
-                    <EduSwitchStyled
-                      disabled={!owner || !isEditable}
-                      defaultChecked={shuffleQuestions}
-                      data-cy="shuffleQuestions"
-                      onChange={this.updateTestData('shuffleQuestions')}
-                    />
-                  </Title>
-                  <Body smallSize={isSmallSize}>
-                    <Description>
-                      {'If '}
-                      <BlueText>ON</BlueText>, then order of questions will be
-                      different for each student.
-                    </Description>
-                  </Body>
-                </Block>
-              )}
-
-              {availableFeatures.includes(
-                'assessmentSuperPowersShuffleAnswerChoice'
-              ) && (
-                <Block id="show-answer-choice" smallSize={isSmallSize}>
-                  <Title>
-                    <span>Shuffle Answer Choice</span>
-                    <EduSwitchStyled
-                      disabled={!owner || !isEditable}
-                      defaultChecked={shuffleAnswers}
-                      data-cy="shuffleChoices"
-                      onChange={this.updateTestData('shuffleAnswers')}
-                    />
-                  </Title>
-                  <Body smallSize={isSmallSize}>
-                    <Description>
-                      {'If set to '}
-                      <BlueText>ON</BlueText>, answer choices for multiple
-                      choice and multiple select questions will be randomly
-                      shuffled for students.
-                    </Description>
-                  </Body>
-                </Block>
-              )}
-
-              {availableFeatures.includes(
-                'assessmentSuperPowersShowCalculator'
-              ) && (
-                <Block id="show-calculator" smallSize={isSmallSize}>
-                  <Title>Show Calculator</Title>
-                  <Body smallSize={isSmallSize}>
-                    <Row>
-                      <Col span={8}>
-                        <StyledRadioGroup
-                          disabled={!owner || !isEditable}
-                          onChange={this.updateFeatures('calcType')}
-                          value={calcType}
-                        >
-                          {calculatorKeysAvailable.map((item) => (
-                            <RadioBtn data-cy={item} value={item} key={item}>
-                              {calculators[item]}
-                            </RadioBtn>
-                          ))}
-                        </StyledRadioGroup>
-                      </Col>
-                      <Col span={16}>
-                        <Description>
-                          Choose if student can use a calculator, also select
-                          the type of calculator that would be shown to the
-                          students.
-                        </Description>
-                      </Col>
-                    </Row>
-                  </Body>
-                </Block>
-              )}
-
-              {availableFeatures.includes(
-                'assessmentSuperPowersShowUserWork'
-              ) && (
-                <Block id="show-user-work" smallSize={isSmallSize}>
-                  <Title>Show your work</Title>
-                  <Body smallSize={isSmallSize}>
-                    <Row>
-                      <Col span={8}>
-                        <StyledRadioGroup
-                          disabled={!owner || !isEditable}
-                          onChange={this.updateFeatures('showUserWork')}
-                          value={showUserWork}
-                        >
-                          {SHOW_USER_WORK_OPTIONS.map((item) => (
-                            <RadioBtn
-                              data-cy={item.value}
-                              value={item.value}
-                              key={item.value}
-                            >
-                              {item.label}
-                            </RadioBtn>
-                          ))}
-                        </StyledRadioGroup>
-                      </Col>
-                      <Col span={16}>
-                        <Description>
-                          Allow students to show their work using the
-                          scratchpad, by using their webcam to take a picture or
-                          by uploading a document for each question
-                        </Description>
-                      </Col>
-                    </Row>
-                  </Body>
-                </Block>
-              )}
-
-              {availableFeatures.includes(
-                'assessmentSuperPowersAnswerOnPaper'
-              ) && (
-                <Block id="answer-on-paper" smallSize={isSmallSize}>
-                  <Title>
-                    <span>Answer on Paper</span>
-                    <EduSwitchStyled
-                      disabled={!owner || !isEditable || disableAnswerOnPaper}
-                      defaultChecked={answerOnPaper}
-                      onChange={this.updateTestData('answerOnPaper')}
-                      data-cy="answer-on-paper"
-                    />
-                  </Title>
-                  <Body smallSize={isSmallSize}>
-                    <Description>
-                      Use this opinion if you are administering this assessment
-                      on paper. If you use this opinion, you will have <br /> to
-                      manually grade student responses after the assessment is
-                      closed.
-                    </Description>
-                  </Body>
-                </Block>
-              )}
-
-              {!!availableFeatures.includes(
-                'assessmentSuperPowersRequirePassword'
-              ) && (
-                <Block id="test-type" smallSize={isSmallSize}>
-                  <Row>
-                    <Title>Require Password</Title>
-                    <Body smallSize={isSmallSize}>
-                      <Row gutter={24}>
-                        <Col span={12}>
-                          <SelectInputStyled
-                            value={passwordPolicy}
-                            data-cy={passwordPolicy}
-                            disabled={!owner || !isEditable}
-                            onChange={this.updateTestData('passwordPolicy')}
-                            getPopupContainer={(trigger) => trigger.parentNode}
-                          >
-                            {Object.keys(passwordPolicyOptions).map((key) => (
-                              <Option
-                                key={key}
-                                value={passwordPolicyValues[key]}
-                              >
-                                {passwordPolicyOptions[key]}
-                              </Option>
-                            ))}
-                          </SelectInputStyled>
-                        </Col>
-                        <Col span={12}>
-                          {passwordPolicy ===
-                          passwordPolicyValues.REQUIRED_PASSWORD_POLICY_STATIC ? (
-                            <Description>
-                              <TextInputStyled
-                                required
-                                color={isPasswordValid()}
-                                disabled={!owner || !isEditable}
-                                onBlur={this.handleBlur}
-                                onChange={(e) =>
-                                  this.updateTestData('assignmentPassword')(
-                                    e.target.value
-                                  )
-                                }
-                                size="large"
-                                value={assignmentPassword}
-                                type="text"
-                                placeholder="Enter Password"
-                              />
-                              {validationMessage ? (
-                                <MessageSpan>{validationMessage}</MessageSpan>
-                              ) : (
-                                ''
-                              )}
-                            </Description>
-                          ) : passwordPolicy ===
-                            passwordPolicyValues.REQUIRED_PASSWORD_POLICY_DYNAMIC ? (
-                            <Description>
-                              <TextInputStyled
-                                required
-                                type="number"
-                                disabled={!owner || !isEditable}
-                                onChange={this.handleUpdatePasswordExpireIn}
-                                value={passwordExpireIn / 60}
-                                style={{ width: '100px', marginRight: '10px' }}
-                                max={999}
-                                min={1}
-                                step={1}
-                              />{' '}
-                              Minutes
-                            </Description>
-                          ) : (
-                            ''
-                          )}
-                        </Col>
-                        <Col span={24} style={{ marginTop: '10px' }}>
-                          {passwordPolicy ===
-                          passwordPolicyValues.REQUIRED_PASSWORD_POLICY_STATIC ? (
-                            <Description>
-                              The password is entered by you and does not
-                              change. Students must enter this password before
-                              they can take the assessment.
-                            </Description>
-                          ) : passwordPolicy ===
-                            passwordPolicyValues.REQUIRED_PASSWORD_POLICY_DYNAMIC ? (
-                            <Description>
-                              Students must enter a password to take the
-                              assessment. The password is auto-generated and
-                              revealed only when the assessment is opened. If
-                              you select this method, you also need to specify
-                              the time in minutes after which the password would
-                              automatically expire. Use this method for highly
-                              sensitive and secure assessments. If you select
-                              this method, the teacher or the proctor must open
-                              the assessment manually and announce the password
-                              in class when the students are ready to take the
-                              assessment.
-                            </Description>
-                          ) : (
-                            <Description>
-                              Require your students to type a password when
-                              opening the assessment. Password ensures that your{' '}
-                              <br /> students can access this assessment only in
-                              the classroom
-                            </Description>
-                          )}
-                        </Col>
-                      </Row>
-                    </Body>
-                  </Row>
-                </Block>
-              )}
-              {availableFeatures.includes(
-                'assessmentSuperPowersCheckAnswerTries'
-              ) && (
-                <Block
-                  id="check-answer-tries-per-question"
-                  smallSize={isSmallSize}
+              <SettingsCategoryBlock id="test-behavior">
+                <span>Test Behavior</span>
+                <span
+                  onClick={() =>
+                    this.togglePanel(
+                      'isTestBehaviorGroupExpanded',
+                      !isTestBehaviorGroupExpanded
+                    )
+                  }
                 >
-                  <Title>Check Answer Tries Per Question</Title>
-                  <Body smallSize={isSmallSize}>
-                    <Row gutter={24}>
-                      <Col span={12}>
-                        <TextInputStyled
-                          disabled={!owner || !isEditable}
-                          onChange={(e) =>
-                            this.updateTestData('maxAnswerChecks')(
-                              e.target.value
-                            )
-                          }
-                          size="large"
-                          value={maxAnswerChecks}
-                          type="number"
-                          min={0}
-                          placeholder="Number of tries"
-                        />
-                      </Col>
-                    </Row>
-                  </Body>
-                </Block>
-              )}
-
-              <Block id="evaluation-method" smallSize={isSmallSize}>
-                <Title>Evaluation Method</Title>
-                <Body smallSize={isSmallSize}>
-                  <Row>
-                    <Col span={8}>
-                      <StyledRadioGroup
-                        disabled={!owner || !isEditable}
-                        onChange={(e) =>
-                          this.updateTestData('scoringType')(e.target.value)
-                        }
-                        value={scoringType}
-                      >
-                        <RadioBtn
-                          value={ALL_OR_NOTHING}
-                          data-cy={ALL_OR_NOTHING}
-                          key={ALL_OR_NOTHING}
-                        >
-                          {evalTypes.ALL_OR_NOTHING}
-                        </RadioBtn>
-                        <RadioBtn
-                          value={PARTIAL_CREDIT}
-                          data-cy={PARTIAL_CREDIT}
-                          key={PARTIAL_CREDIT}
-                        >
-                          {evalTypes.PARTIAL_CREDIT}
-                        </RadioBtn>
-                        <RadioBtn
-                          value={PARTIAL_CREDIT_IGNORE_INCORRECT}
-                          data-cy={PARTIAL_CREDIT_IGNORE_INCORRECT}
-                          key={PARTIAL_CREDIT_IGNORE_INCORRECT}
-                        >
-                          {evalTypes.PARTIAL_CREDIT_IGNORE_INCORRECT}
-                        </RadioBtn>
-                        {/* ant-radio-wrapper already has bottom-margin: 18px by default. */}
-                        {/* not setting mb (margin bottom) as it is common component */}
-                        <RadioBtn
-                          value={ITEM_LEVEL_EVALUATION}
-                          data-cy={ITEM_LEVEL_EVALUATION}
-                          key={ITEM_LEVEL_EVALUATION}
-                          style={{ marginBottom: '0px' }}
-                        >
-                          {evalTypes.ITEM_LEVEL_EVALUATION}
-                        </RadioBtn>
-                      </StyledRadioGroup>
-                    </Col>
-                    <Col span={16}>
-                      <Description>
-                        Choose if students should be awarded partial credit for
-                        their answers or not. If partial credit is allowed, then
-                        choose whether the student should be penalized for
-                        incorrect answers or not (applicable only for multiple
-                        selection question and multi part question with multiple
-                        selection widgets)
-                      </Description>
-                    </Col>
-                  </Row>
-                </Body>
-              </Block>
-
-              {availableFeatures.includes('assessmentSuperPowersTimedTest') && (
-                <Block id="timed-test" smallSize={isSmallSize}>
-                  <Title>
-                    <span>Timed Test</span>
-                    <Tooltip title="The time can be modified in one minute increments.  When the time limit is reached, students will be locked out of the assessment.  If the student begins an assessment and exits with time remaining, upon returning, the timer will start up again where the student left off.  This ensures that the student does not go over the allotted time.">
-                      <IconInfo
-                        color={lightGrey9}
-                        style={{ marginLeft: '10px', cursor: 'pointer' }}
-                      />
-                    </Tooltip>
-                    <EduSwitchStyled
-                      disabled={!owner || !isEditable}
-                      defaultChecked={false}
-                      checked={timedAssignment}
-                      data-cy="assignment-time-switch"
-                      onChange={this.updateTimedTest('timedAssignment')}
-                    />
-                  </Title>
-                  <Body smallSize={isSmallSize}>
-                    <Row type="flex" align="middle">
-                      <Col span={8}>
-                        {timedAssignment && (
-                          <>
-                            {/* eslint-disable no-restricted-globals */}
-                            <TextInputStyled
-                              type="number"
-                              width="100px"
-                              size="large"
-                              data-cy="assignment-time"
-                              style={{ margin: '0px 20px 0px 0px' }}
-                              value={
-                                !isNaN(allowedTime)
-                                  ? allowedTime / (60 * 1000)
-                                  : 1
-                              }
-                              onChange={(e) => {
-                                if (
-                                  e.target.value.length <= 3 &&
-                                  e.target.value <= 300
-                                ) {
-                                  this.updateTestData('allowedTime')(
-                                    e.target.value * 60 * 1000
-                                  )
-                                }
-                              }}
-                              min={1}
-                              max={300}
-                              step={1}
+                  <Icon type={isTestBehaviorGroupExpanded ? 'minus' : 'plus'} />
+                </span>
+              </SettingsCategoryBlock>
+              {isTestBehaviorGroupExpanded && (
+                <>
+                  <Block id="test-type" smallSize={isSmallSize}>
+                    <Row>
+                      <Title>
+                        <span>Test Type</span>
+                        {isRegradeFlow && !isPlaylist && (
+                          <Tooltip title="Updates made to the test type will not reflect for existing assignments after regrade.">
+                            <IconInfo
+                              color={lightGrey9}
+                              style={{ marginLeft: '10px', cursor: 'pointer' }}
                             />
-                            <Label>Minutes</Label>
-                            {/* eslint-enable no-restricted-globals */}
-                          </>
+                          </Tooltip>
                         )}
-                      </Col>
-                      <Col span={16}>
-                        {timedAssignment && (
+                      </Title>
+                      <Body smallSize={isSmallSize}>
+                        <Row>
+                          <Col span={12}>
+                            <SelectInputStyled
+                              value={testType}
+                              disabled={!owner || !isEditable}
+                              onChange={this.updateTestData('testType')}
+                              getPopupContainer={(trigger) =>
+                                trigger.parentNode
+                              }
+                              data-cy="testType"
+                            >
+                              {(userRole === roleuser.DISTRICT_ADMIN ||
+                                userRole === roleuser.SCHOOL_ADMIN ||
+                                testType === COMMON) &&
+                                !districtPermissions.includes('publisher') && (
+                                  <Option key={COMMON} value={COMMON}>
+                                    Common Assessment
+                                  </Option>
+                                )}
+                              {Object.keys(
+                                isAuthorPublisher
+                                  ? authorPublisherTestTypes
+                                  : testTypes
+                              ).map((key) => (
+                                <Option key={key} value={key}>
+                                  {isAuthorPublisher
+                                    ? authorPublisherTestTypes[key]
+                                    : testTypes[key]}
+                                </Option>
+                              ))}
+                            </SelectInputStyled>
+                          </Col>
+                        </Row>
+                        <Description>
+                          Designate what type of assignment you are delivering.
+                          You’ll be able to use these categories later to filter
+                          reports so make sure practice is set as practice.
+                        </Description>
+                      </Body>
+                    </Row>
+                  </Block>
+
+                  {(userRole === roleuser.DISTRICT_ADMIN ||
+                    userRole === roleuser.SCHOOL_ADMIN) &&
+                    testType === COMMON && (
+                      <Block id="freeze-settings" smallSize={isSmallSize}>
+                        <Row>
                           <CheckboxLabel
                             disabled={!owner || !isEditable}
-                            data-cy="exit-allowed"
+                            data-cy="freeze-settings"
+                            checked={freezeSettings}
                             onChange={(e) =>
-                              this.updateTestData('pauseAllowed')(
+                              this.updateTestData('freezeSettings')(
                                 e.target.checked
                               )
                             }
                           >
-                            Allow student to save and continue later.
+                            Freeze Settings
                           </CheckboxLabel>
+                          <Tooltip title="Instructors won’t be allowed to override the test settings while assigning it.">
+                            <IconInfo
+                              color={lightGrey9}
+                              style={{ cursor: 'pointer' }}
+                            />
+                          </Tooltip>
+                        </Row>
+                      </Block>
+                    )}
+
+                  {/* Add instruction starts */}
+                  <Block id="add-instruction" smallSize={isSmallSize}>
+                    <SettingContainer>
+                      <Title>
+                        <span>Test Instructions</span>
+                        <EduSwitchStyled
+                          disabled={!owner || !isEditable}
+                          data-cy="add-test-instruction"
+                          defaultChecked={hasInstruction}
+                          onChange={() =>
+                            this.updateTestData('hasInstruction')(
+                              !hasInstruction
+                            )
+                          }
+                        />
+                      </Title>
+                      <Body smallSize={isSmallSize}>
+                        <Description>
+                          Add instructions for the students here. For example,
+                          &ldquo;You will be allowed two attempts on this
+                          quiz.&ldquo; Or, &ldquo;This test is worth 30% of your
+                          grade.&ldquo;
+                        </Description>
+                        {hasInstruction && (
+                          <Instruction
+                            border="border"
+                            size="SM"
+                            updateTestData={this.updateTestData}
+                            instruction={instruction}
+                            disabled={!owner || !isEditable}
+                          />
                         )}
-                      </Col>
-                    </Row>
-                    <Description style={{ marginTop: '10px' }}>
-                      Select <BlueText> ON </BlueText>, If you want to set a
-                      time limit on the test. Adjust the minutes accordingly.
-                    </Description>
-                  </Body>
+                      </Body>
+                    </SettingContainer>
+                  </Block>
+                  {/* Add instruction ends */}
+                  <Block id="release-scores" smallSize={isSmallSize}>
+                    <Title>
+                      Release Scores{' '}
+                      {releaseScore === releaseGradeLabels.DONT_RELEASE
+                        ? '[OFF]'
+                        : '[ON]'}
+                    </Title>
+                    <Body smallSize={isSmallSize}>
+                      <StyledRadioGroup
+                        disabled={!owner || !isEditable}
+                        onChange={this.updateFeatures('releaseScore')}
+                        value={releaseScore}
+                      >
+                        {_releaseGradeKeys.map((item) => (
+                          <RadioBtn value={item} key={item}>
+                            {releaseGradeTypes[item]}
+                          </RadioBtn>
+                        ))}
+                      </StyledRadioGroup>
+                      <Description>
+                        Decide what students immediately get to see upon
+                        submitting an assessment.
+                      </Description>
+                    </Body>
+                  </Block>
+
+                  <Block id="evaluation-method" smallSize={isSmallSize}>
+                    <SettingContainer>
+                      <Title>Evaluation Method</Title>
+                      <Body smallSize={isSmallSize}>
+                        <Row>
+                          <Col span={8}>
+                            <StyledRadioGroup
+                              disabled={!owner || !isEditable}
+                              onChange={(e) =>
+                                this.updateTestData('scoringType')(
+                                  e.target.value
+                                )
+                              }
+                              value={scoringType}
+                            >
+                              <RadioBtn
+                                value={ALL_OR_NOTHING}
+                                data-cy={ALL_OR_NOTHING}
+                                key={ALL_OR_NOTHING}
+                              >
+                                {evalTypes.ALL_OR_NOTHING}
+                              </RadioBtn>
+                              <RadioBtn
+                                value={PARTIAL_CREDIT}
+                                data-cy={PARTIAL_CREDIT}
+                                key={PARTIAL_CREDIT}
+                              >
+                                {evalTypes.PARTIAL_CREDIT}
+                                {scoringType === PARTIAL_CREDIT &&
+                                multipartItems &&
+                                premium
+                                  ? applyEBSRComponent()
+                                  : null}
+                              </RadioBtn>
+                              <RadioBtn
+                                value={PARTIAL_CREDIT_IGNORE_INCORRECT}
+                                data-cy={PARTIAL_CREDIT_IGNORE_INCORRECT}
+                                key={PARTIAL_CREDIT_IGNORE_INCORRECT}
+                              >
+                                {evalTypes.PARTIAL_CREDIT_IGNORE_INCORRECT}
+                                {scoringType ===
+                                  PARTIAL_CREDIT_IGNORE_INCORRECT &&
+                                multipartItems &&
+                                premium
+                                  ? applyEBSRComponent()
+                                  : null}
+                              </RadioBtn>
+                              {/* ant-radio-wrapper already has bottom-margin: 18px by default. */}
+                              {/* not setting mb (margin bottom) as it is common component */}
+                              <RadioBtn
+                                value={ITEM_LEVEL_EVALUATION}
+                                data-cy={ITEM_LEVEL_EVALUATION}
+                                key={ITEM_LEVEL_EVALUATION}
+                                style={{ marginBottom: '0px' }}
+                              >
+                                {evalTypes.ITEM_LEVEL_EVALUATION}
+                              </RadioBtn>
+                            </StyledRadioGroup>
+                          </Col>
+                          <Col span={16}>
+                            <Description>
+                              Choose if students should be awarded partial
+                              credit for their answers or not. If partial credit
+                              is allowed, then choose whether the student should
+                              be penalized for incorrect answers or not
+                              (applicable only for multiple selection question
+                              and multi part question with multiple selection
+                              widgets)
+                            </Description>
+                          </Col>
+                        </Row>
+                      </Body>
+                    </SettingContainer>
+                  </Block>
+
+                  <Block id="mark-as-done" smallSize={isSmallSize}>
+                    <SettingContainer>
+                      <Title>
+                        Mark as Done{' '}
+                        <DollarPremiumSymbol
+                          premium={assessmentSuperPowersMarkAsDone}
+                        />
+                      </Title>
+                      <Body smallSize={isSmallSize}>
+                        <Row type="flex" align="middle">
+                          <Col span={8}>
+                            <StyledRadioGroup
+                              disabled={
+                                !owner ||
+                                !isEditable ||
+                                !assessmentSuperPowersMarkAsDone
+                              }
+                              onChange={this.updateFeatures('markAsDone')}
+                              value={markAsDone}
+                            >
+                              {Object.keys(completionTypes).map((item) => (
+                                <RadioBtn
+                                  value={completionTypes[item]}
+                                  key={completionTypes[item]}
+                                  data-cy={`mark-as-done-${completionTypes[item]}`}
+                                >
+                                  {completionTypes[item]}
+                                </RadioBtn>
+                              ))}
+                            </StyledRadioGroup>
+                          </Col>
+                          <Col span={16}>
+                            <Description>
+                              When an assignment is marked “Done”, data flows to
+                              the reports. Automatically will mark it as done
+                              when all students are graded and the due date has
+                              passed, OR choose Manually and select the Mark as
+                              Done button when ready.
+                            </Description>
+                          </Col>
+                        </Row>
+                      </Body>
+                    </SettingContainer>
+                  </Block>
+
+                  <Block id="show-calculator" smallSize={isSmallSize}>
+                    <SettingContainer>
+                      <Title>
+                        Show Calculator{' '}
+                        <DollarPremiumSymbol
+                          premium={assessmentSuperPowersShowCalculator}
+                        />
+                      </Title>
+                      <Body smallSize={isSmallSize}>
+                        <Row>
+                          <Col span={8}>
+                            <StyledRadioGroup
+                              disabled={
+                                !owner ||
+                                !isEditable ||
+                                !assessmentSuperPowersShowCalculator
+                              }
+                              onChange={this.updateFeatures('calcType')}
+                              value={calcType}
+                            >
+                              {calculatorKeysAvailable.map((item) => (
+                                <RadioBtn
+                                  data-cy={item}
+                                  value={item}
+                                  key={item}
+                                >
+                                  {calculators[item]}
+                                </RadioBtn>
+                              ))}
+                            </StyledRadioGroup>
+                          </Col>
+                          <Col span={16}>
+                            <Description>
+                              If students can use an on-screen calculator,
+                              select the type to make available on the test.
+                            </Description>
+                          </Col>
+                        </Row>
+                      </Body>
+                    </SettingContainer>
+                  </Block>
+
+                  <Block id="timed-test" smallSize={isSmallSize}>
+                    <SettingContainer>
+                      <Title>
+                        <span>
+                          Timed Test{' '}
+                          <DollarPremiumSymbol
+                            premium={assessmentSuperPowersTimedTest}
+                          />
+                        </span>
+                        <Tooltip title="Timed test allows you to control how long students have to take the test. When the time limit is reached, students will be locked out of the assessment. Choose the time and whether students can pause and continue later or if the test should be taken in a single sitting.">
+                          <IconInfo
+                            color={lightGrey9}
+                            style={{ marginLeft: '10px', cursor: 'pointer' }}
+                          />
+                        </Tooltip>
+                        <EduSwitchStyled
+                          disabled={
+                            !owner ||
+                            !isEditable ||
+                            !assessmentSuperPowersTimedTest
+                          }
+                          defaultChecked={false}
+                          checked={timedAssignment}
+                          data-cy="assignment-time-switch"
+                          onChange={this.updateTimedTest('timedAssignment')}
+                        />
+                      </Title>
+                      <Body smallSize={isSmallSize}>
+                        <Row type="flex" align="middle">
+                          <Col span={8}>
+                            {timedAssignment && (
+                              <>
+                                {/* eslint-disable no-restricted-globals */}
+                                <TextInputStyled
+                                  type="number"
+                                  width="100px"
+                                  size="large"
+                                  data-cy="assignment-time"
+                                  style={{ margin: '0px 20px 0px 0px' }}
+                                  value={
+                                    !isNaN(allowedTime)
+                                      ? allowedTime / (60 * 1000)
+                                      : 1
+                                  }
+                                  onChange={(e) => {
+                                    if (
+                                      e.target.value.length <= 3 &&
+                                      e.target.value <= 300
+                                    ) {
+                                      this.updateTestData('allowedTime')(
+                                        e.target.value * 60 * 1000
+                                      )
+                                    }
+                                  }}
+                                  min={1}
+                                  max={300}
+                                  step={1}
+                                />
+                                <Label>Minutes</Label>
+                                {/* eslint-enable no-restricted-globals */}
+                              </>
+                            )}
+                          </Col>
+                          <Col span={16}>
+                            {timedAssignment && (
+                              <CheckboxLabel
+                                checked={pauseAllowed}
+                                disabled={!owner || !isEditable}
+                                data-cy="exit-allowed"
+                                onChange={(e) =>
+                                  this.updateTestData('pauseAllowed')(
+                                    e.target.checked
+                                  )
+                                }
+                              >
+                                Allow student to save and continue later.
+                              </CheckboxLabel>
+                            )}
+                          </Col>
+                        </Row>
+                        <Description style={{ marginTop: '10px' }}>
+                          Timed test allows you to control how long students
+                          have to take the test. When the time limit is reached,
+                          students will be locked out of the assessment. Choose
+                          the time and whether students can pause and continue
+                          later or if the test should be taken in a single
+                          sitting.
+                        </Description>
+                      </Body>
+                    </SettingContainer>
+                  </Block>
+
+                  <Block id="maximum-attempts-allowed">
+                    <SettingContainer>
+                      <Title>
+                        Maximum Attempts Allowed{' '}
+                        <DollarPremiumSymbol premium={maxAttemptAllowed} />
+                      </Title>
+                      <Body>
+                        <FieldLabel>Quantity</FieldLabel>
+                        <TextInputStyled
+                          type="number"
+                          width="100px"
+                          disabled={!owner || !isEditable || !maxAttemptAllowed}
+                          size="large"
+                          value={maxAttempts}
+                          onChange={this.updateAttempt}
+                          min={1}
+                          step={1}
+                        />
+                        <Description>
+                          Select the number of times a student can attempt the
+                          test. Note, this can be overridden at a later time in
+                          the settings if necessary.
+                        </Description>
+                      </Body>
+                    </SettingContainer>
+                  </Block>
+                </>
+              )}
+
+              {!isDocBased && (
+                <Block
+                  id="check-answer-tries-per-question"
+                  smallSize={isSmallSize}
+                >
+                  <SettingContainer>
+                    <Title>
+                      Check Answer Tries Per Question{' '}
+                      <DollarPremiumSymbol
+                        premium={assessmentSuperPowersCheckAnswerTries}
+                      />
+                    </Title>
+                    <Body smallSize={isSmallSize}>
+                      <Row gutter={24}>
+                        <Col span={12}>
+                          <TextInputStyled
+                            disabled={
+                              !owner ||
+                              !isEditable ||
+                              !assessmentSuperPowersCheckAnswerTries
+                            }
+                            onChange={(e) =>
+                              this.updateTestData('maxAnswerChecks')(
+                                e.target.value
+                              )
+                            }
+                            size="large"
+                            value={maxAnswerChecks}
+                            type="number"
+                            min={0}
+                            placeholder="Number of tries"
+                          />
+                        </Col>
+                      </Row>
+                      <Description>
+                        Allow students to check their answer before moving on to
+                        the next question. Enter the number of attempts allowed
+                        per question.
+                      </Description>
+                    </Body>
+                  </SettingContainer>
                 </Block>
               )}
 
@@ -1205,78 +1133,663 @@ class Setting extends Component {
                 </Block>
               )}
 
-              {availableFeatures.includes('performanceBands') && (
-                <Block id="performance-bands" smallSize={isSmallSize}>
-                  <PeformanceBand
-                    setSettingsData={(val) =>
-                      this.updateTestData('performanceBand')(val)
-                    }
-                    performanceBand={performanceBand}
-                    disabled={!owner || !isEditable}
-                  />
-                </Block>
+              <SettingsCategoryBlock id="anti-cheating">
+                <span>
+                  Anti-Cheating <DollarPremiumSymbol premium={premium} />
+                </span>
+                <span
+                  onClick={() =>
+                    this.togglePanel(
+                      'isAntiCheatingGroupExpanded',
+                      !isAntiCheatingGroupExpanded
+                    )
+                  }
+                >
+                  <Icon type={isAntiCheatingGroupExpanded ? 'minus' : 'plus'} />
+                </span>
+              </SettingsCategoryBlock>
+              {isAntiCheatingGroupExpanded && (
+                <>
+                  {!isDocBased && (
+                    <Block id="suffle-question" smallSize={isSmallSize}>
+                      <SettingContainer>
+                        <Title>
+                          <span>
+                            Shuffle Items{' '}
+                            <DollarPremiumSymbol
+                              premium={assessmentSuperPowersShuffleQuestions}
+                            />
+                          </span>
+                          <EduSwitchStyled
+                            disabled={
+                              !owner ||
+                              !isEditable ||
+                              !assessmentSuperPowersShuffleQuestions
+                            }
+                            defaultChecked={shuffleQuestions}
+                            data-cy="shuffleQuestions"
+                            onChange={this.updateTestData('shuffleQuestions')}
+                          />
+                        </Title>
+                        <Body smallSize={isSmallSize}>
+                          <Description>
+                            {'If '}
+                            <BlueText>ON</BlueText>, then order of questions
+                            will be different for each student.
+                          </Description>
+                        </Body>
+                      </SettingContainer>
+                    </Block>
+                  )}
+
+                  {!isDocBased && (
+                    <Block id="show-answer-choice" smallSize={isSmallSize}>
+                      <SettingContainer>
+                        <Title>
+                          <span>
+                            Shuffle Answer Choice{' '}
+                            <DollarPremiumSymbol
+                              premium={assessmentSuperPowersShuffleAnswerChoice}
+                            />
+                          </span>
+                          <EduSwitchStyled
+                            disabled={
+                              !owner ||
+                              !isEditable ||
+                              !assessmentSuperPowersShuffleAnswerChoice
+                            }
+                            defaultChecked={shuffleAnswers}
+                            data-cy="shuffleChoices"
+                            onChange={this.updateTestData('shuffleAnswers')}
+                          />
+                        </Title>
+                        <Body smallSize={isSmallSize}>
+                          <Description>
+                            {'If set to '}
+                            <BlueText>ON</BlueText>, answer choices for multiple
+                            choice and multiple select questions will be
+                            randomly shuffled for students. Text to speech does
+                            not work when the answer choices are shuffled.
+                          </Description>
+                        </Body>
+                      </SettingContainer>
+                    </Block>
+                  )}
+
+                  <Block id="require-password" smallSize={isSmallSize}>
+                    <SettingContainer>
+                      <Row>
+                        <Title>
+                          Test Password{' '}
+                          <DollarPremiumSymbol
+                            premium={assessmentSuperPowersRequirePassword}
+                          />
+                        </Title>
+                        <Body smallSize={isSmallSize}>
+                          <Row gutter={24}>
+                            <Col span={12}>
+                              <SelectInputStyled
+                                value={passwordPolicy}
+                                data-cy={passwordPolicy}
+                                disabled={
+                                  !owner ||
+                                  !isEditable ||
+                                  !assessmentSuperPowersRequirePassword
+                                }
+                                onChange={this.updateTestData('passwordPolicy')}
+                                getPopupContainer={(trigger) =>
+                                  trigger.parentNode
+                                }
+                              >
+                                {Object.keys(passwordPolicyOptions).map(
+                                  (key) => (
+                                    <Option
+                                      key={key}
+                                      value={passwordPolicyValues[key]}
+                                    >
+                                      {passwordPolicyOptions[key]}
+                                    </Option>
+                                  )
+                                )}
+                              </SelectInputStyled>
+                            </Col>
+                            <Col span={12}>
+                              {passwordPolicy ===
+                              passwordPolicyValues.REQUIRED_PASSWORD_POLICY_STATIC ? (
+                                <Description>
+                                  <TextInputStyled
+                                    required
+                                    color={isPasswordValid()}
+                                    disabled={
+                                      !owner ||
+                                      !isEditable ||
+                                      !assessmentSuperPowersRequirePassword
+                                    }
+                                    onBlur={this.handleBlur}
+                                    onChange={(e) =>
+                                      this.updateTestData('assignmentPassword')(
+                                        e.target.value
+                                      )
+                                    }
+                                    size="large"
+                                    value={assignmentPassword}
+                                    type="text"
+                                    placeholder="Enter Password"
+                                  />
+                                  {validationMessage ? (
+                                    <MessageSpan>
+                                      {validationMessage}
+                                    </MessageSpan>
+                                  ) : (
+                                    ''
+                                  )}
+                                </Description>
+                              ) : passwordPolicy ===
+                                passwordPolicyValues.REQUIRED_PASSWORD_POLICY_DYNAMIC ? (
+                                <Description>
+                                  <TextInputStyled
+                                    required
+                                    type="number"
+                                    disabled={
+                                      !owner ||
+                                      !isEditable ||
+                                      !assessmentSuperPowersRequirePassword
+                                    }
+                                    onChange={this.handleUpdatePasswordExpireIn}
+                                    value={passwordExpireIn / 60}
+                                    style={{
+                                      width: '100px',
+                                      marginRight: '10px',
+                                    }}
+                                    max={999}
+                                    min={1}
+                                    step={1}
+                                  />{' '}
+                                  Minutes
+                                </Description>
+                              ) : (
+                                ''
+                              )}
+                            </Col>
+                            <Col span={24} style={{ marginTop: '10px' }}>
+                              {passwordPolicy ===
+                              passwordPolicyValues.REQUIRED_PASSWORD_POLICY_STATIC ? (
+                                <Description>
+                                  The password is entered by you and does not
+                                  change. Students must enter this password
+                                  before they can take the assessment.
+                                </Description>
+                              ) : passwordPolicy ===
+                                passwordPolicyValues.REQUIRED_PASSWORD_POLICY_DYNAMIC ? (
+                                <Description>
+                                  Students must enter a password to take the
+                                  assessment. The password is auto-generated and
+                                  revealed only when the assessment is opened.
+                                  If you select this method, you also need to
+                                  specify the time in minutes after which the
+                                  password would automatically expire. Use this
+                                  method for highly sensitive and secure
+                                  assessments. If you select this method, the
+                                  teacher or the proctor must open the
+                                  assessment manually and announce the password
+                                  in class when the students are ready to take
+                                  the assessment.
+                                </Description>
+                              ) : (
+                                <Description>
+                                  Require your students to type a password when
+                                  opening the assessment.
+                                </Description>
+                              )}
+                            </Col>
+                          </Row>
+                        </Body>
+                      </Row>
+                    </SettingContainer>
+                  </Block>
+
+                  <Block id="block-save-and-continue" smallSize={isSmallSize}>
+                    <Title>
+                      <span>
+                        Complete Test in One Sitting
+                        <DollarPremiumSymbol premium={premium} />
+                      </span>
+                      <EduSwitchStyled
+                        disabled={!owner || !isEditable || !premium}
+                        checked={blockSaveAndContinue}
+                        data-cy="bockSaveAndContinueSwitch"
+                        onChange={(v) =>
+                          this.updateTestData('blockSaveAndContinue')(v)
+                        }
+                      />
+                    </Title>
+                    <Body smallSize={isSmallSize}>
+                      <Description>
+                        If <b>ON</b>, then students will not be allowed to exit
+                        the test without submitting. In case they close the app
+                        they will be paused and the instructor will need to
+                        manually resume.
+                      </Description>
+                    </Body>
+                  </Block>
+
+                  <Block id="restrict-navigation-out" smallSize={isSmallSize}>
+                    <Title>
+                      Restrict Navigation Out of Test{' '}
+                      <DollarPremiumSymbol premium={premium} />
+                    </Title>
+                    <Body smallSize={isSmallSize}>
+                      <Row>
+                        <Col span={11}>
+                          <StyledRadioGroup
+                            disabled={
+                              !owner || !isEditable || !premium || safeBrowser
+                            }
+                            onChange={this.updateFeatures(
+                              'restrictNavigationOut'
+                            )}
+                            value={restrictNavigationOut || undefined}
+                          >
+                            <RadioBtn
+                              value={undefined}
+                              key="disabled"
+                              data-cy="restrict-nav-out-disabled"
+                            >
+                              DISABLED
+                            </RadioBtn>
+                            <RadioBtn
+                              value="warn-and-report"
+                              key="warn-and-report"
+                              data-cy="restrict-nav-out-warn-report"
+                            >
+                              WARN AND REPORT ONLY
+                            </RadioBtn>
+                            <RadioBtn
+                              value="warn-and-report-after-n-alerts"
+                              key="warn-and-report-after-n-alerts"
+                              data-cy="restrict-nav-out-warn-report-alerts"
+                            >
+                              WARN AND BLOCK TEST AFTER
+                              <InputNumberStyled
+                                size="small"
+                                value={
+                                  restrictNavigationOut
+                                    ? restrictNavigationOutAttemptsThreshold
+                                    : undefined
+                                }
+                                min={1}
+                                onChange={this.updateFeatures(
+                                  'restrictNavigationOutAttemptsThreshold'
+                                )}
+                                disabled={
+                                  !(
+                                    restrictNavigationOut ===
+                                    'warn-and-report-after-n-alerts'
+                                  ) ||
+                                  !owner ||
+                                  !isEditable ||
+                                  safeBrowser
+                                }
+                              />{' '}
+                              ALERTS
+                              {navigationThresholdMoreThan1 ? (
+                                <>
+                                  {' '}
+                                  <br />{' '}
+                                  <span style={{ textTransform: 'lowercase' }}>
+                                    {`or maximum of ${
+                                      restrictNavigationOutAttemptsThreshold * 5
+                                    } sec.`}
+                                  </span>{' '}
+                                </>
+                              ) : (
+                                ''
+                              )}
+                            </RadioBtn>
+                          </StyledRadioGroup>
+                        </Col>
+                        <Col span={13}>
+                          <Description>
+                            If <b>ON</b>, then students must take the test in
+                            full screen mode to prevent opening another browser
+                            window. Alert will appear if student has navigated
+                            away for more than 5 seconds. If the designated
+                            number of alerts are exceeded, the student’s
+                            assignment will be paused and the instructor will
+                            need to manually reset.
+                            {navigationThresholdMoreThan1 ? (
+                              <>
+                                <br />
+                                <br />
+                                Alert will appear if student has navigated away
+                                for more than 5 seconds and student will be
+                                blocked after{' '}
+                                {restrictNavigationOutAttemptsThreshold *
+                                  5}{' '}
+                                seconds{' '}
+                              </>
+                            ) : (
+                              ''
+                            )}
+                          </Description>
+                        </Col>
+                      </Row>
+                    </Body>
+                  </Block>
+
+                  <Block id="restrict-back-navigation" smallSize={isSmallSize}>
+                    <SettingContainer>
+                      <Title>
+                        <span>
+                          Restrict Question Navigation{' '}
+                          <DollarPremiumSymbol
+                            premium={
+                              assessmentSuperPowersRestrictQuestionBackNav
+                            }
+                          />
+                        </span>
+                        <EduSwitchStyled
+                          disabled={
+                            !owner ||
+                            !isEditable ||
+                            !assessmentSuperPowersRestrictQuestionBackNav ||
+                            isDocBased
+                          }
+                          defaultChecked={blockNavigationToAnsweredQuestions}
+                          data-cy="restrict-back-nav-switch-test"
+                          onChange={this.updateTestData(
+                            'blockNavigationToAnsweredQuestions'
+                          )}
+                        />
+                      </Title>
+                      <Body smallSize={isSmallSize}>
+                        <Description>
+                          {'If '}
+                          <BlueText>ON</BlueText>, then students will be
+                          restricted from navigating back to the previous
+                          question. Recommended to use along with Shuffle
+                          Questions for preventing cheating among students.
+                          (This setting is not applicable for SnapQuiz)
+                        </Description>
+                      </Body>
+                    </SettingContainer>
+                  </Block>
+
+                  <Block
+                    id="require-safe-exame-browser"
+                    smallSize={isSmallSize}
+                  >
+                    <SettingContainer>
+                      <Title>
+                        <span>
+                          Require Safe Exam Browser{' '}
+                          <DollarPremiumSymbol
+                            premium={
+                              assessmentSuperPowersRequireSafeExamBrowser
+                            }
+                          />
+                        </span>
+                        <Tooltip
+                          title="Ensure a secure testing environment by using Safe Exam Browser
+                      to lockdown the student's device. To use this feature, Safe Exam Browser 
+                      (on Windows/Mac/iPad) must be installed on the student device. The quit 
+                      password can be used by teacher or proctor to safely exit Safe Exam Browser 
+                      in the middle of an assessment. The quit password should not be revealed to 
+                      the students. If you select this option, students must use devices (Windows, 
+                      Mac or iPad) with Safe Exam Browser installed."
+                        >
+                          <IconInfo
+                            color={lightGrey9}
+                            style={{ cursor: 'pointer', marginLeft: '10px' }}
+                          />
+                        </Tooltip>
+                        <EduSwitchStyled
+                          disabled={
+                            !owner ||
+                            !isEditable ||
+                            !assessmentSuperPowersRequireSafeExamBrowser
+                          }
+                          defaultChecked={safeBrowser}
+                          onChange={this.updateTestData('safeBrowser')}
+                        />
+                      </Title>
+                      <Body smallSize={isSmallSize}>
+                        <Row>
+                          <Col span={24}>
+                            {safeBrowser && (
+                              <TextInputStyled
+                                className={`sebPassword ${
+                                  sebPassword && sebPassword.length
+                                    ? ' good'
+                                    : ' dirty'
+                                }`}
+                                disabled={
+                                  !owner ||
+                                  !isEditable ||
+                                  !assessmentSuperPowersRequireSafeExamBrowser
+                                }
+                                ref={sebPasswordRef}
+                                prefix={
+                                  <i
+                                    className={`fa fa-eye${
+                                      showPassword ? '-slash' : ''
+                                    }`}
+                                    onClick={this.handleShowPassword}
+                                  />
+                                }
+                                onChange={this.setPassword}
+                                size="large"
+                                value={sebPassword}
+                                type={showPassword ? 'text' : 'password'}
+                                placeholder="Quit Password"
+                              />
+                            )}
+                          </Col>
+                        </Row>
+                        <Description>
+                          Ensure a secure testing environment by using Safe Exam
+                          Browser to lockdown the student&apos;s device. To use
+                          this feature, Safe Exam Browser (on Windows/Mac/iPad)
+                          must be installed on the student device. The quit
+                          password can be used by teacher or proctor to safely
+                          exit Safe Exam Browser in the middle of an assessment.
+                          The quit password should not be revealed to the
+                          students. If you select this option, students must use
+                          devices (Windows, Mac or iPad) with Safe Exam Browser
+                          installed.
+                        </Description>
+                      </Body>
+                    </SettingContainer>
+                  </Block>
+                </>
               )}
 
-              {!premium && <SubscriptionsBlock />}
-
-              <Block id="standards-proficiency" smallSize={isSmallSize}>
-                <StandardProficiencyTable
-                  standardGradingScale={standardGradingScale}
-                  setSettingsData={(val) =>
-                    this.updateTestData('standardGradingScale')(val)
+              <SettingsCategoryBlock id="miscellaneous">
+                <span>
+                  Miscellaneous <DollarPremiumSymbol premium={premium} />
+                </span>
+                <span
+                  onClick={() =>
+                    this.togglePanel(
+                      'isMiscellaneousGroupExpanded',
+                      !isMiscellaneousGroupExpanded
+                    )
                   }
-                  disabled={!owner || !isEditable}
-                />
-              </Block>
+                >
+                  <Icon
+                    type={isMiscellaneousGroupExpanded ? 'minus' : 'plus'}
+                  />
+                </span>
+              </SettingsCategoryBlock>
+              {isMiscellaneousGroupExpanded && (
+                <>
+                  <Block id="answer-on-paper" smallSize={isSmallSize}>
+                    <SettingContainer>
+                      <Title>
+                        <span>
+                          Answer on Paper
+                          <DollarPremiumSymbol
+                            premium={assessmentSuperPowersAnswerOnPaper}
+                          />
+                        </span>
+                        <EduSwitchStyled
+                          disabled={
+                            !owner ||
+                            !isEditable ||
+                            disableAnswerOnPaper ||
+                            !assessmentSuperPowersAnswerOnPaper
+                          }
+                          defaultChecked={answerOnPaper}
+                          onChange={this.updateTestData('answerOnPaper')}
+                          data-cy="answer-on-paper"
+                        />
+                      </Title>
+                      <Body smallSize={isSmallSize}>
+                        <Description>
+                          Use this option if you are administering this
+                          assessment on paper. If you use this option, you will
+                          have to manually grade student responses after the
+                          assessment is closed.
+                        </Description>
+                      </Body>
+                    </SettingContainer>
+                  </Block>
 
-              <AdvancedSettings show>
-                {availableFeatures.includes('selectPlayerSkinType') &&
-                  testType !== 'testlet' &&
-                  !isDocBased && (
+                  {testType !== 'testlet' && !isDocBased && (
                     <Block id="player-skin-type" smallSize={isSmallSize}>
                       <Row>
-                        <Title>Student Player Skin</Title>
+                        <Title>
+                          Choose Test Interface{' '}
+                          <DollarPremiumSymbol premium={selectPlayerSkinType} />
+                        </Title>
                         <Body smallSize={isSmallSize}>
-                          <SelectInputStyled
-                            value={
-                              playerSkinType ===
-                              playerSkinTypes.edulastic.toLowerCase()
-                                ? edulastic
-                                : playerSkinType
-                            }
-                            data-cy="playerSkinType"
-                            disabled={!owner || !isEditable}
-                            onChange={this.updateTestData('playerSkinType')}
-                            getPopupContainer={(trigger) => trigger.parentNode}
-                          >
-                            {Object.keys(skinTypes).map((key) => (
-                              <Option key={key} value={key}>
-                                {skinTypes[key]}
-                              </Option>
-                            ))}
-                          </SelectInputStyled>
+                          <Col span={12}>
+                            <SelectInputStyled
+                              data-cy="playerSkinType"
+                              showSearch
+                              filterOption={(input, option) =>
+                                option.props.children
+                                  .toLowerCase()
+                                  .indexOf(input.toLowerCase()) >= 0
+                              }
+                              value={
+                                playerSkinType ===
+                                playerSkinTypes.edulastic.toLowerCase()
+                                  ? edulastic
+                                  : playerSkinType
+                              }
+                              disabled={
+                                !owner || !isEditable || !selectPlayerSkinType
+                              }
+                              onChange={this.updateTestData('playerSkinType')}
+                              getPopupContainer={(trigger) =>
+                                trigger.parentNode
+                              }
+                            >
+                              {Object.keys(skinTypes)
+                                .sort()
+                                .map((key) => {
+                                  if (key === 'testlet' && !isEtsDistrict) {
+                                    return null
+                                  }
+                                  return (
+                                    <Option key={key} value={key}>
+                                      {skinTypes[key]}
+                                    </Option>
+                                  )
+                                })}
+                            </SelectInputStyled>
+                          </Col>
+                          <Col span={24}>
+                            <Description>
+                              Teachers can change the look and feel of the
+                              assessments to more closely align with formats
+                              similar to state and nationally administered
+                              assessments. If you don’t see your state, select
+                              the generic option, Edulastic Test.
+                            </Description>
+                          </Col>
                         </Body>
                       </Row>
                     </Block>
                   )}
-                {!!accessibilityData.length && (
+
+                  {/* Multi language start */}
+                  {allowedToSelectMultiLanguage && (
+                    <Block id="multi-language-enabled" smallSize={isSmallSize}>
+                      <Body>
+                        <Title>
+                          <span>Multi-Language</span>
+                          <EduSwitchStyled
+                            disabled={!owner || !isEditable}
+                            data-cy="multi-language-enabled"
+                            defaultChecked={multiLanguageEnabled}
+                            onChange={() =>
+                              this.updateTestData('multiLanguageEnabled')(
+                                !multiLanguageEnabled
+                              )
+                            }
+                          />
+                        </Title>
+                        <Body smallSize={isSmallSize}>
+                          <Description>
+                            Select <BlueText> ON </BlueText> , If you want to
+                            enable multiple languages for the test.
+                          </Description>
+                        </Body>
+                      </Body>
+                    </Block>
+                  )}
+                  {/* Multi language Ends */}
+
+                  <Block id="performance-bands" smallSize={isSmallSize}>
+                    <PeformanceBand
+                      setSettingsData={(val) =>
+                        this.updateTestData('performanceBand')(val)
+                      }
+                      performanceBand={performanceBand}
+                      disabled={!owner || !isEditable || !performanceBands}
+                      isFeatureAvailable={performanceBands}
+                    />
+                    <Description>
+                      Performance bands are set by district or school admins.
+                      Teachers can modify cut scores/thresholds for class
+                      assignments.
+                    </Description>
+                  </Block>
+
+                  <Block id="standards-proficiency" smallSize={isSmallSize}>
+                    <StandardProficiencyTable
+                      standardGradingScale={standardGradingScale}
+                      setSettingsData={(val) =>
+                        this.updateTestData('standardGradingScale')(val)
+                      }
+                      disabled={!owner || !isEditable || !premium}
+                      isFeatureAvailable={premium}
+                    />
+                    <Description>
+                      Standards based scales are set by district or school
+                      admins. Teachers can modify performance threshold scores
+                      for class assignments to track mastery by standards
+                      assessed.
+                    </Description>
+                  </Block>
+
                   <Block id="accessibility" smallSize={isSmallSize}>
-                    <Title>Accessibility</Title>
+                    <Title>
+                      Accessibility <DollarPremiumSymbol premium={premium} />
+                    </Title>
                     <RadioWrapper
                       disabled={!owner || !isEditable}
                       style={{
-                        marginTop: '29px',
+                        marginTop: '20px',
                         marginBottom: 0,
                         flexDirection: 'row',
                       }}
                     >
                       {accessibilityData.map((o) => (
-                        <Row
-                          key={o.key}
-                          style={{ width: '100%' }}
-                          align="middle"
-                        >
-                          <Col span={12}>
+                        <StyledRow key={o.key} align="middle">
+                          <Col span={6}>
                             <span
                               style={{
                                 fontSize: 13,
@@ -1289,204 +1802,97 @@ class Setting extends Component {
                           </Col>
                           <Col span={12}>
                             <StyledRadioGroup
-                              disabled={!owner || !isEditable}
+                              disabled={
+                                !owner || !isEditable || !features[o.key]
+                              }
                               onChange={(e) =>
                                 this.updateTestData(o.key)(e.target.value)
                               }
                               defaultValue={o.value}
                               style={{ flexDirection: 'row', height: '18px' }}
                             >
-                              <RadioBtn value>ENABLE</RadioBtn>
-                              <RadioBtn value={false}>DISABLE</RadioBtn>
+                              <RadioBtn data-cy={`${o.key}-enable`} value>
+                                ENABLE
+                              </RadioBtn>
+                              <RadioBtn
+                                data-cy={`${o.key}-disable`}
+                                value={false}
+                              >
+                                DISABLE
+                              </RadioBtn>
                             </StyledRadioGroup>
                           </Col>
-                        </Row>
+                          <Col span={24}>
+                            <Description>{o.description}</Description>
+                          </Col>
+                        </StyledRow>
                       ))}
                     </RadioWrapper>
+                    <RadioWrapper
+                      disabled={!owner || !isEditable}
+                      style={{
+                        marginTop: '5px',
+                        marginBottom: 0,
+                        flexDirection: 'row',
+                      }}
+                    >
+                      <StyledRow align="middle">
+                        <Col span={6}>
+                          <span
+                            style={{
+                              fontSize: 13,
+                              fontWeight: 600,
+                              textTransform: 'uppercase',
+                            }}
+                          >
+                            Keypad <DollarPremiumSymbol premium={premium} />
+                          </span>
+                        </Col>
+                        <Col span={12}>
+                          <KeypadDropdown
+                            value={this.keypadDropdownValue}
+                            onChangeHandler={this.updateTestData('keypad')}
+                            disabled={!owner || !isEditable || !premium}
+                          />
+                        </Col>
+                        <Col span={24}>
+                          <Description>
+                            Select keypad to apply current selection to all
+                            questions in the test
+                          </Description>
+                        </Col>
+                      </StyledRow>
+                    </RadioWrapper>
                   </Block>
-                )}
-                {playerSkinType === playerSkinValues.testlet.toLowerCase() && (
-                  <Block id="external-metadata" smallSize={isSmallSize}>
-                    <Title>External Metadata</Title>
-                    <Row gutter={16} style={{ marginTop: 20 }}>
-                      <Col span={12}>
-                        <FieldLabel>EMBED URL</FieldLabel>
-                        <TextInputStyled
-                          size="large"
-                          type="text"
-                          onChange={this.updateExternalData('testletURL')}
-                          value={testletConfig?.testletURL || ''}
-                        />
-                      </Col>
-                      <Col span={12}>
-                        <FieldLabel>EMBED ID</FieldLabel>
-                        <TextInputStyled
-                          size="large"
-                          type="text"
-                          onChange={this.updateExternalData('testletId')}
-                          value={testletConfig?.testletId || ''}
-                        />
-                      </Col>
-                    </Row>
-                  </Block>
-                )}
-                {/* {availableFeatures.includes("enableMagnifier") && (
-              <Block id="enable-magnifier" smallSize={isSmallSize}>
-                <Title>Accessibility</Title>
-                <Body smallSize={isSmallSize}>
-                  <Row>
-                    <Col span={12}>
-                      <span style={{ fontSize: 13, fontWeight: 600 }}>Magnifier</span>
-                    </Col>
-                    <Col span={12}>
-                      <StyledRadioGroup
-                        disabled={!owner || !isEditable}
-                        onChange={this.updateFeatures("enableMagnifier")}
-                        value={true}
-                        style={{flexDirection: "row"}}
-                      >
-                        <RadioBtn value={true} key="true">
-                          ENABLE
-                        </RadioBtn>
-                        <RadioBtn value={false} key="false">
-                          DISABLE
-                        </RadioBtn>
-                      </StyledRadioGroup>
-                    </Col>
-                  </Row>
-                </Body>
-              </Block>
-            )} */}
-                {/* <Block id="navigations" smallSize={isSmallSize}>
-                <Title>Navigation / Control</Title>
-                <RadioWrapper style={{ marginTop: "29px" }}>
-                  {navigations.map(navigation => (
-                    <Row key={navigation} style={{ width: "100%", marginBottom: 15 }}>
-                      <Col span={8}>
-                        <span style={{ fontSize: 13, fontWeight: 600 }}>{navigation}</span>
-                      </Col>
-                      <Col span={16}>
-                        <RadioGroup
-                          disabled={!owner || !isEditable}
-                          onChange={this.enableHandler}
-                          defaultValue={enable}
-                        >
-                          <Radio value>Enable</Radio>
-                          <Radio value={false}>Disable</Radio>
-                        </RadioGroup>
-                      </Col>
-                    </Row>
-                  ))}
-                </RadioWrapper>
-                <Body smallSize={isSmallSize}>
-                  <Row gutter={28}>
-                    <Col span={12}>
-                      <InputTitle>On Submit Redirect URL</InputTitle>
-                      <ActivityInput placeholder="https://edulastic.com/" />
-                    </Col>
-                    <Col span={12}>
-                      <InputTitle>On Discard Redirect URL</InputTitle>
-                      <ActivityInput placeholder="https://edulastic.com/" />
-                    </Col>
-                    <Col span={12} style={{ paddingTop: 15 }}>
-                      <InputTitle>On Save Redirect URL</InputTitle>
-                      <ActivityInput placeholder="https://edulastic.com/" />
-                    </Col>
-                  </Row>
-                </Body>
-              </Block>
 
-              <Block id="accessibility" smallSize={isSmallSize}>
-                <Title>Accessibility</Title>
-                <RadioWrapper disabled={!owner || !isEditable} style={{ marginTop: "29px", marginBottom: 0 }}>
-                  {Object.keys(accessibilities).map(item => (
-                    <Row key={accessibilities[item]} style={{ width: "100%" }}>
-                      <Col span={8}>
-                        <span style={{ fontSize: 13, fontWeight: 600 }}>{accessibilities[item]}</span>
-                      </Col>
-                      <Col span={16}>
-                        <RadioGroup
-                          disabled={!owner || !isEditable}
-                          onChange={this.enableHandler}
-                          defaultValue={enable}
-                        >
-                          <Radio value>Enable</Radio>
-                          <Radio value={false}>Disable</Radio>
-                        </RadioGroup>
-                      </Col>
-                    </Row>
-                  ))}
-                </RadioWrapper>
-              </Block>
-
-              <UiTime />
-
-              <Block id="administration" smallSize={isSmallSize}>
-                <Title>Administration</Title>
-                <RadioWrapper style={{ marginTop: "29px" }}>
-                  <Row style={{ width: "100%", marginBottom: 15 }}>
-                    <Col span={8}>
-                      <span style={{ fontSize: 13, fontWeight: 600 }}>Configuration Panel</span>
-                    </Col>
-                    <Col span={16}>
-                      <RadioGroup disabled={!owner || !isEditable} onChange={this.enableHandler} defaultValue={enable}>
-                        <Radio value>Enable</Radio>
-                        <Radio value={false}>Disable</Radio>
-                      </RadioGroup>
-                    </Col>
-                  </Row>
-                </RadioWrapper>
-                <Body style={{ marginTop: 0, marginBottom: "15px" }} smallSize={isSmallSize}>
-                  <Row gutter={28}>
-                    <Col span={12}>
-                      <InputTitle>Password</InputTitle>
-                      <Input disabled={!owner || !isEditable} placeholder="Your Password" />
-                    </Col>
-                  </Row>
-                </Body>
-                <RadioWrapper>
-                  <Row style={{ width: "100%" }}>
-                    <Col span={8}>
-                      <span style={{ fontSize: 13, fontWeight: 600 }}>Save & Quit</span>
-                    </Col>
-                    <Col span={16}>
-                      <RadioGroup disabled={!owner || !isEditable} onChange={this.enableHandler} defaultValue={enable}>
-                        <Radio value>Enable</Radio>
-                        <Radio value={false}>Disable</Radio>
-                      </RadioGroup>
-                    </Col>
-                  </Row>
-                </RadioWrapper>
-
-                <RadioWrapper>
-                  <Row style={{ width: "100%" }}>
-                    <Col span={8}>
-                      <span style={{ fontSize: 13, fontWeight: 600 }}>Exit & Discard</span>
-                    </Col>
-                    <Col span={16}>
-                      <RadioGroup disabled={!owner || !isEditable} onChange={this.enableHandler} defaultValue={enable}>
-                        <Radio value>Enable</Radio>
-                        <Radio value={false}>Disable</Radio>
-                      </RadioGroup>
-                    </Col>
-                  </Row>
-                </RadioWrapper>
-
-                <RadioWrapper style={{ marginBottom: 0 }}>
-                  <Row style={{ width: "100%" }}>
-                    <Col span={8}>
-                      <span style={{ fontSize: 13, fontWeight: 600 }}>Extend Assessment Time</span>
-                    </Col>
-                    <Col span={16}>
-                      <RadioGroup disabled={!owner || !isEditable} onChange={this.enableHandler} defaultValue={enable}>
-                        <Radio value>Enable</Radio>
-                        <Radio value={false}>Disable</Radio>
-                      </RadioGroup>
-                    </Col>
-                  </Row>
-                </RadioWrapper>
-              </Block> */}
-              </AdvancedSettings>
+                  {playerSkinType ===
+                    playerSkinValues.testlet.toLowerCase() && (
+                    <Block id="external-metadata" smallSize={isSmallSize}>
+                      <Title>External Metadata</Title>
+                      <Row gutter={16} style={{ marginTop: 20 }}>
+                        <Col span={12}>
+                          <FieldLabel>EMBED URL</FieldLabel>
+                          <TextInputStyled
+                            size="large"
+                            type="text"
+                            onChange={this.updateExternalData('testletURL')}
+                            value={testletConfig?.testletURL || ''}
+                          />
+                        </Col>
+                        <Col span={12}>
+                          <FieldLabel>EMBED ID</FieldLabel>
+                          <TextInputStyled
+                            size="large"
+                            type="text"
+                            onChange={this.updateExternalData('testletId')}
+                            value={testletConfig?.testletId || ''}
+                          />
+                        </Col>
+                      </Row>
+                    </Block>
+                  )}
+                </>
+              )}
             </Col>
           </Row>
         </Container>
@@ -1539,6 +1945,9 @@ const enhance = compose(
         : state?.tests?.entity?.summary?.totalItems,
       isAuthorPublisher: isPublisherUserSelector(state),
       editEnable: state.tests?.editEnable,
+      allowedToSelectMultiLanguage: allowedToSelectMultiLanguageInTest(state),
+      testAssignments: getAssignmentsSelector(state),
+      isEtsDistrict: isEtsDistrictSelector(state),
     }),
     {
       setMaxAttempts: setMaxAttemptsAction,
@@ -1550,3 +1959,12 @@ const enhance = compose(
 )
 
 export default enhance(Setting)
+
+const InputNumberStyled = Styled(InputNumber)`
+    width: 60px;
+`
+
+const StyledSpan = Styled.span`
+  font-weight: ${(props) => props.theme.semiBold};
+  font-size: 12px;
+`

@@ -120,20 +120,14 @@ describe(`${FileHelper.getSpecName(
               // add items
               testLibrary.header.clickOnAddItems()
               testLibrary.searchFilters.routeSearch()
-              test.itemKeys.forEach((itemKey, index) => {
-                // create new items
-                if (index === 2) {
-                  itemListPage.createItem(itemKey, index, false)
-                  testLibrary.searchFilters.waitForSearchResponse()
-                  testLibrary.searchFilters.waitForSearchResponse()
-                  // Redirect has been changed back to add-item tab in app
-                  cy.wait(1000)
-                }
-              })
 
-              cy.wait(1000)
+              // create new items
+              itemListPage.createItem(test.itemKeys[2], 2, false)
+              testLibrary.searchFilters.waitForSearchResponse()
+              // Redirect has been changed back to add-item tab in app
+              testLibrary.header.clickOnSaveButton(true)
               testLibrary.header.clickOnReview() // Redirect has been changed back to add-item tab in app
-              cy.contains('View as Student')
+              cy.contains('View as Student', { timeout: 60000 })
               itemKeys.forEach((itemKey) => {
                 testLibrary.review.verifyItemByContent(itemKey)
               })

@@ -10,6 +10,8 @@ import { getAccessToken, getTraceId, initKID, initTID } from './Storage'
 
 const ASSETS_REFRESH_STAMP = 'assetsRefreshDateStamp'
 
+const ErrStatRegex = /5[0-9][0-9]/
+
 const getCurrentPath = () => {
   const location = window.location
   return `${location.pathname}${location.search}${location.hash}`
@@ -137,6 +139,7 @@ const SemverCompare = (a, b) => {
 }
 
 const tokenUpdateHeader = 'x-token-refresh'
+const kidUpdateHeader = 'x-kid-refresh'
 
 export default class API {
   constructor(baseURL = config.api, defaultToken = false) {
@@ -149,7 +152,20 @@ export default class API {
       },
     })
     this.instance.interceptors.request.use((_config) => {
+      // there are some APIs which take more time than the others,
+      // such APIs are routed to another url which will use a aws lambda with much higher timeout
+      // some of the example APIs are in packages/api/src/reports.js
+      if (_config.useSlowApi) {
+        _config.baseURL = config.apis || _config.baseURL
+      }
       _config['client-epoch'] = Date.now().toString()
+      _config.headers['X-Client-Time'] = new Date().toISOString()
+      _config.headers['X-Client-Tz-Offset'] = new Date().getTimezoneOffset()
+      if (window.localStorage.getItem('originalreferrer')) {
+        _config.headers['X-Orig-Referrer'] = window.localStorage.getItem(
+          'originalreferrer'
+        )
+      }
       const token =
         getParentsStudentToken(_config) || defaultToken || getAccessToken()
       if (token) {
@@ -168,6 +184,19 @@ export default class API {
       (response) => {
         const appVersion = process.env.__CLIENT_VERSION__ || 'NA'
         const serverAppVersion = response.headers['server-version'] || ''
+
+        // store the info in window object
+        window.__CLIENT_VERSION__ = appVersion
+        window.__SERVER_VERSION__ = serverAppVersion
+        const updatedToken = response.headers[tokenUpdateHeader]
+        // const oldAccessToken = getAccessToken();
+        if (updatedToken) {
+          updateUserToken(updatedToken, response.headers[kidUpdateHeader])
+          // TODO: if needed , implement responding to access token changes
+          /* if (oldAccessToken && oldAccessToken != updatedToken) {
+            window.dispatchEvent(new Event('access-token-updated'));
+          } */
+        }
 
         // if the server version is higher than the client version, then try to resync
         if (
@@ -197,21 +226,12 @@ export default class API {
           const event = new Event('request-client-update')
           window.dispatchEvent(event)
         }
-        const updatedToken = response.headers[tokenUpdateHeader]
-        // const oldAccessToken = getAccessToken();
-        if (updatedToken) {
-          updateUserToken(updatedToken)
-          // TODO: if needed , implement responding to access token changes
-          /* if (oldAccessToken && oldAccessToken != updatedToken) {
-            window.dispatchEvent(new Event('access-token-updated'));
-          } */
-        }
         return response
       },
       (data) => {
         const reqUrl = data.response?.config?.url || 'NA'
         const err = new Error(
-          `API failed while trying to fetch: ${reqUrl}: message: ${
+          `Sorry, you have hit an unexpected error and the product team has been notified. We will fix it as soon as possible. url: ${reqUrl}: message: ${
             data.response?.data?.message || 'NA'
           }`
         )
@@ -221,7 +241,7 @@ export default class API {
         err.response = data.response
 
         // log in to sentry, exclude low priority status
-        if (![400, 403].includes(err.status))
+        if (err.status && String(err.status).match(ErrStatRegex)) {
           Sentry.withScope((scope) => {
             const fingerPrint = getUrlFragment(reqUrl) || reqUrl
 
@@ -245,6 +265,7 @@ export default class API {
               JSON.stringify(data.response?.config?.data || {})
             )
           })
+        }
 
         if (data && data.response && data.response.status) {
           if (data.response.status === 401) {
@@ -263,10 +284,29 @@ export default class API {
               localStorage.setItem('loginRedirectUrl', getCurrentPath())
             }
             window.location.href = '/login'
+          } else if (
+            data.response.status === 409 &&
+            data.response.data?.message === 'oldToken'
+          ) {
+            window.dispatchEvent(new Event('student-session-expired'))
           }
         }
+        if (
+          !(
+            data?.response?.status === 409 &&
+            data.response.data?.message === 'oldToken'
+          )
+        ) {
+          return Promise.reject(err)
+        }
 
-        return Promise.reject(err)
+        if (
+          data?.response?.status === 409 &&
+          data.response.data?.message === 'oldToken'
+        ) {
+          // returning skeleton reponses to avoid erroring out in Api call
+          return Promise.resolve({ data: { result: null } })
+        }
       }
     )
   }

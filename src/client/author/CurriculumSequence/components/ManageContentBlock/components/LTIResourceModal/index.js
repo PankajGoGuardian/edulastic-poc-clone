@@ -1,18 +1,33 @@
 import React, { useState, useEffect } from 'react'
-import { message, Select } from 'antd'
-import { notification } from '@edulastic/common'
+import { Select } from 'antd'
+import {
+  FieldLabel,
+  notification,
+  SelectInputStyled,
+  TextInputStyled,
+} from '@edulastic/common'
 import PropTypes from 'prop-types'
-import { Title, StyledInput, StyledSelect } from '../common/commonStyles'
+import { storeInLocalStorage } from '@edulastic/api/src/utils/Storage'
 import EdulasticResourceModal from '../common/EdulasticResourceModal'
-import { privacyOptions, configOptions, matchOptions } from './selectData.js'
+import { privacyOptions, configOptions, matchOptions } from './selectData'
+import ResourcesAlignment from '../../../ResourcesAlignment'
+import { FlexRow } from '../../styled'
 
 // LTIResourceModal modal to external lti links
 
 const LTIResourceModal = (props) => {
-  const { closeCallback, addResource, externalToolsProviders = [] } = props
+  const {
+    closeCallback,
+    addResource,
+    alignment,
+    setAlignment,
+    externalToolsProviders = [],
+    selectedStandards,
+    setSelectedStandards,
+    curriculum = '',
+  } = props
 
   const [isAddNew, setAddNew] = useState(false)
-  const [toolProvider, setToolProvider] = useState('')
   const [title, setTitle] = useState('')
   const [url, setUrl] = useState('')
   const [consumerKey, setConsumerKey] = useState('')
@@ -20,8 +35,6 @@ const LTIResourceModal = (props) => {
   const [privacy, setPrivacy] = useState('')
   const [configurationType, setConfigType] = useState('')
   const [matchBy, setMatchBy] = useState('')
-
-  useEffect(() => clearFields, [])
 
   const clearFields = () => {
     setTitle('')
@@ -34,6 +47,7 @@ const LTIResourceModal = (props) => {
     setAddNew(false)
   }
 
+  useEffect(() => clearFields, [])
   const validateFields = () => {
     if (!title) return 'Title is required'
     if (!url) return 'URL is required'
@@ -49,11 +63,17 @@ const LTIResourceModal = (props) => {
 
   const submitCallback = () => {
     const validationStatus = validateFields()
+    const selectedStandardIds = selectedStandards?.map((x) => x._id) || []
     if (!validationStatus) {
+      storeInLocalStorage(
+        'recentStandards',
+        JSON.stringify({ recentStandards: selectedStandards || [] })
+      )
       addResource({
         contentTitle: title,
         contentUrl: url,
         contentType: 'lti_resource',
+        standards: selectedStandardIds,
         data: {
           consumerKey,
           sharedSecret,
@@ -93,74 +113,99 @@ const LTIResourceModal = (props) => {
       submitCallback={submitCallback}
       {...props}
     >
-      <Title>TOOL PROVIDER</Title>
-      <StyledSelect
-        placeholder="Select a tool"
-        onChange={() => setAddNew(true)}
-        getPopupContainer={(node) => node.parentNode}
-      >
-        {getToolProviderOptions()}
-        <Select.Option value="add-new">Add New Resource</Select.Option>
-      </StyledSelect>
-      <br />
-      <Title>Title</Title>
-      <StyledInput
-        placeholder="Enter a title"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-      />
-      <br />
-      <Title>URL</Title>
-      <StyledInput
-        placeholder="Enter a url"
-        value={url}
-        onChange={(e) => setUrl(e.target.value)}
-      />
+      <FlexRow>
+        <FieldLabel>TOOL PROVIDER</FieldLabel>
+        <SelectInputStyled
+          placeholder="Select a tool"
+          onChange={() => setAddNew(true)}
+          getPopupContainer={(node) => node.parentNode}
+          height="36px"
+        >
+          {getToolProviderOptions()}
+          <Select.Option value="add-new">Add New Resource</Select.Option>
+        </SelectInputStyled>
+      </FlexRow>
+      <FlexRow>
+        <FieldLabel>Title</FieldLabel>
+        <TextInputStyled
+          placeholder="Enter a title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          height="36px"
+        />
+      </FlexRow>
+      <FlexRow>
+        <FieldLabel>URL</FieldLabel>
+        <TextInputStyled
+          placeholder="Enter a url"
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+          height="36px"
+        />
+      </FlexRow>
       {isAddNew && (
         <>
-          <br />
-          <Title>CONSUMER KEY</Title>
-          <StyledInput
-            placeholder="Enter a Consumer key"
-            value={consumerKey}
-            onChange={(e) => setConsumerKey(e.target.value)}
-          />
-          <br />
-          <Title>SHARED SECRET</Title>
-          <StyledInput
-            placeholder="Enter a shared secret"
-            value={sharedSecret}
-            onChange={(e) => setSharedSecret(e.target.value)}
-          />
-          <br />
-          <Title>PRIVACY</Title>
-          <StyledSelect
-            placeholder="Select privacy"
-            onChange={(value) => setPrivacy(value)}
-            getPopupContainer={(node) => node.parentNode}
-          >
-            {getPrivacyOptions()}
-          </StyledSelect>
-          <br />
-          <Title>CONFIGURATION TYPE</Title>
-          <StyledSelect
-            placeholder="Select configuration type"
-            onChange={(value) => setConfigType(value)}
-            getPopupContainer={(node) => node.parentNode}
-          >
-            {getConfigTypeOptions()}
-          </StyledSelect>
-          <br />
-          <Title>MATCH BY</Title>
-          <StyledSelect
-            placeholder="Select match by"
-            onChange={(value) => setMatchBy(value)}
-            getPopupContainer={(node) => node.parentNode}
-          >
-            {getMatchByOptions()}
-          </StyledSelect>
+          <FlexRow>
+            <FieldLabel>CONSUMER KEY</FieldLabel>
+            <TextInputStyled
+              placeholder="Enter a Consumer key"
+              value={consumerKey}
+              onChange={(e) => setConsumerKey(e.target.value)}
+              height="36px"
+            />
+          </FlexRow>
+          <FlexRow>
+            <FieldLabel>SHARED SECRET</FieldLabel>
+            <TextInputStyled
+              placeholder="Enter a shared secret"
+              value={sharedSecret}
+              onChange={(e) => setSharedSecret(e.target.value)}
+              height="36px"
+            />
+          </FlexRow>
+          <FlexRow>
+            <FieldLabel>PRIVACY</FieldLabel>
+            <SelectInputStyled
+              placeholder="Select privacy"
+              onChange={(value) => setPrivacy(value)}
+              getPopupContainer={(node) => node.parentNode}
+              height="36px"
+            >
+              {getPrivacyOptions()}
+            </SelectInputStyled>
+          </FlexRow>
+          <FlexRow>
+            <FieldLabel>CONFIGURATION TYPE</FieldLabel>
+            <SelectInputStyled
+              placeholder="Select configuration type"
+              onChange={(value) => setConfigType(value)}
+              getPopupContainer={(node) => node.parentNode}
+              height="36px"
+            >
+              {getConfigTypeOptions()}
+            </SelectInputStyled>
+          </FlexRow>
+          <FlexRow>
+            <FieldLabel>MATCH BY</FieldLabel>
+            <SelectInputStyled
+              placeholder="Select match by"
+              onChange={(value) => setMatchBy(value)}
+              getPopupContainer={(node) => node.parentNode}
+              height="36px"
+            >
+              {getMatchByOptions()}
+            </SelectInputStyled>
+          </FlexRow>
         </>
       )}
+      <FlexRow>
+        <ResourcesAlignment
+          alignment={alignment}
+          setAlignment={setAlignment}
+          setSelectedStandards={setSelectedStandards}
+          curriculum={curriculum}
+        />
+      </FlexRow>
     </EdulasticResourceModal>
   )
 }

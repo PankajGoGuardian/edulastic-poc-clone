@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import PerfectScrollbar from 'react-perfect-scrollbar'
 import { notification } from '@edulastic/common'
 import { drawTools } from '@edulastic/constants'
 import MainToolBox from './MainToolBox'
@@ -60,25 +61,27 @@ const Tools = (props) => {
 
   return (
     <ToolBoxContainer alignItems="stretch" flexDirection="column">
-      <MainToolBox
-        onChangeTool={onChangeTool}
-        deleteMode={deleteMode}
-        activeMode={activeMode}
-        canRedo={canRedo}
-        canUndo={canUndo}
-      />
-      <SubToolBox
-        activeMode={activeMode}
-        fillColor={fillColor}
-        lineWidth={lineWidth}
-        lineColor={lineColor}
-        fontSize={fontSize}
-        fontFamily={fontFamily}
-        fontColor={fontColor}
-        selectedNodes={selectedNodes}
-        onChangeOption={onChangeOption}
-        onClickEditBtn={onClickEditingButton}
-      />
+      <PerfectScrollbar options={{ suppressScrollY: true }}>
+        <MainToolBox
+          onChangeTool={onChangeTool}
+          deleteMode={deleteMode}
+          activeMode={activeMode}
+          canRedo={canRedo}
+          canUndo={canUndo}
+        />
+        <SubToolBox
+          activeMode={activeMode}
+          fillColor={fillColor}
+          lineWidth={lineWidth}
+          lineColor={lineColor}
+          fontSize={fontSize}
+          fontFamily={fontFamily}
+          fontColor={fontColor}
+          selectedNodes={selectedNodes}
+          onChangeOption={onChangeOption}
+          onClickEditBtn={onClickEditingButton}
+        />
+      </PerfectScrollbar>
     </ToolBoxContainer>
   )
 }

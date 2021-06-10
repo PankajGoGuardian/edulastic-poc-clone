@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import { find, forEach, round } from 'lodash'
 import { SignedStackedBarChart } from '../../../../../common/components/charts/signedStackedBarChart'
@@ -41,7 +41,7 @@ const dataParser = (data, bandInfo) => {
   })
 }
 
-const yTickFormatter = (val) => {
+const yTickFormatter = () => {
   return ''
 }
 
@@ -60,7 +60,7 @@ const getChartSpecifics = (analyseBy, bandInfo) => {
   const barsData = []
 
   if (analyseBy === 'standard') {
-    forEach(standardInfo, (value, index) => {
+    forEach(standardInfo, (value) => {
       barsData.push({
         key: `${value.key} Percentage`,
         stackId: 'a',
@@ -70,11 +70,11 @@ const getChartSpecifics = (analyseBy, bandInfo) => {
       })
     })
   } else {
-    forEach(bandInfo, (value, index) => {
+    forEach(bandInfo, (value) => {
       barsData.push({
         key: `${value.name} Percentage`,
         stackId: 'a',
-        fill: getHSLFromRange1(round((100 / (bandInfo.length - 1)) * index)),
+        fill: value.color,
         unit: '%',
         name: value.name,
       })
@@ -94,6 +94,8 @@ const BandChart = ({
   analyseBy,
   onBarClickCB,
   onResetClickCB,
+  backendPagination,
+  setBackendPagination,
 }) => {
   const xAxisDataKey = 'uniqId'
 
@@ -106,11 +108,14 @@ const BandChart = ({
 
   const getTooltipJSX = (payload, barIndex) => {
     if (payload && payload.length && barIndex !== null) {
-      const { testName = '' } = payload[0].payload
+      const { testName = '', isIncomplete } = payload[0].payload
       const currentPayload = payload[barIndex] || {}
       return (
         <div>
-          <BarTooltipRow title="Assessment : " value={testName || 'N/A'} />
+          <BarTooltipRow
+            title="Assessment : "
+            value={isIncomplete ? `${testName} *` : testName || 'N/A'}
+          />
           <BarTooltipRow title="Band : " value={currentPayload.name || 'N/A'} />
           <BarTooltipRow
             title="Student (%): "
@@ -128,10 +133,12 @@ const BandChart = ({
     onBarClickCB(clickedBarData)
   }
 
-  const getXTickText = (payload, data) => {
+  const getXTickText = (payload, _data) => {
     const currentBarData =
-      find(data, (item) => item[xAxisDataKey] === payload.value) || {}
-    return currentBarData.testName || ''
+      find(_data, (item) => item[xAxisDataKey] === payload.value) || {}
+    return currentBarData.isIncomplete
+      ? `${currentBarData.testName} *`
+      : currentBarData.testName || ''
   }
 
   const chartSpecifics = getChartSpecifics(analyseBy, orderedBandInfo)
@@ -151,6 +158,8 @@ const BandChart = ({
         onBarClickCB={_onBarClickCB}
         onResetClickCB={onResetClickCB}
         margin={{ top: 0, right: 20, left: 20, bottom: 40 }}
+        backendPagination={backendPagination}
+        setBackendPagination={setBackendPagination}
       />
     </StyledSignedBarContainer>
   )

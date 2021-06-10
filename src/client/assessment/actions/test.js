@@ -7,6 +7,12 @@ import {
   SET_PASSWORD_STATUS_MESSAGE,
   TEST_ACTIVITY_LOADING,
   UPDATE_CURRENT_AUDIO_DEATILS,
+  SWITCH_LANGUAGE,
+  LANG_CHANGE_SUCCESS,
+  SET_VIEW_TEST_INFO_SUCCESS,
+  SET_TEST_LOADING_STATUS,
+  SET_PREVIEW_LANGUAGE,
+  SET_IS_TEST_PREVIEW_VISIBLE,
 } from '../constants/actions'
 
 export const loadTestAction = (payload) => ({
@@ -45,5 +51,35 @@ export const setTestActivityLoadingAction = (payload) => ({
 
 export const setCurrentAudioDetailsAction = (payload) => ({
   type: UPDATE_CURRENT_AUDIO_DEATILS,
+  payload,
+})
+
+export const switchLanguageAction = (payload) => ({
+  type: SWITCH_LANGUAGE,
+  payload,
+})
+
+export const languageChangeSuccessAction = (payload) => ({
+  type: LANG_CHANGE_SUCCESS,
+  payload,
+})
+
+export const setShowTestInfoSuccesAction = (payload) => ({
+  type: SET_VIEW_TEST_INFO_SUCCESS,
+  payload,
+})
+
+export const setTestLoadingAction = (payload) => ({
+  type: SET_TEST_LOADING_STATUS,
+  payload,
+})
+
+export const setPreviewLanguageAction = (payload) => ({
+  type: SET_PREVIEW_LANGUAGE,
+  payload,
+})
+
+export const setIsTestPreviewVisibleAction = (payload) => ({
+  type: SET_IS_TEST_PREVIEW_VISIBLE,
   payload,
 })

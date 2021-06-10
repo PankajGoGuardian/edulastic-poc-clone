@@ -57,10 +57,13 @@ function create(board, object, settings = {}) {
       }
     })
 
-    point.on('drag', (e) => {
-      if (e.movementX === 0 && e.movementY === 0) {
-        return
-      }
+    point.on('drag', () => {
+      // don't use e.movementX === 0 && e.movementY === 0
+      // movementX and movementY are always zero on Safari
+      // it seems like the bug is in JSXGraph library
+      // https://snapwiz.atlassian.net/browse/EV-19969
+      // https://snapwiz.atlassian.net/browse/EV-23207
+
       point.dragged = true
       board.dragged = true
       EditButton.cleanButton(board, point)

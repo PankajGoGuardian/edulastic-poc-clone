@@ -10,7 +10,7 @@ import EditClassification from './EditClassification'
 import ClassificationPreview from './ClassificationPreview'
 
 import { ContentArea } from '../../styled/ContentArea'
-import AppConfig from '../../../../../app-config'
+import AppConfig from '../../../../app-config'
 
 const Classification = (props) => {
   const { view, item } = props

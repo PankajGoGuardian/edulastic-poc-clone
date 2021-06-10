@@ -7,7 +7,9 @@ import CommonInput from './common/CommonInput'
 
 const MaximumResponsesPerCell = ({ t, type, ...restProps }) => (
   <>
-    <Label>{t('component.options.maximumResponsesPerCell')}</Label>
+    <Label data-cy="maximumResponsesPerCellInput">
+      {t('component.options.maximumResponsesPerCell')}
+    </Label>
     <CommonInput
       data-cy="maximumResponsesPerCellInput"
       min={0}

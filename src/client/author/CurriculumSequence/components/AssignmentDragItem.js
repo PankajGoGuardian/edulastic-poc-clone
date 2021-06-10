@@ -95,7 +95,8 @@ class AssignmentDragItem extends Component {
                   <FlexContainer>
                     <ModuleDataName
                       onClick={() =>
-                        togglePlaylistTestDetails({ id: moduleData?.contentId })}
+                        togglePlaylistTestDetails({ id: moduleData?.contentId })
+                      }
                       isDragging={isDragging}
                       isReview
                     >

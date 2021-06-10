@@ -126,12 +126,14 @@ class AddClassModal extends Component {
       limit: 25,
       page: 1,
       role: 'teacher',
+      status: 1,
     }
 
     value &&
       Object.assign(searchData, {
         search: {
           username: [{ type: 'cont', value }],
+          email: [{ type: 'cont', value }],
         },
       })
 
@@ -307,10 +309,9 @@ class AddClassModal extends Component {
                   getPopupContainer={(triggerNode) => triggerNode.parentNode}
                 >
                   {courseList.map((course) => (
-                    <Option
-                      key={course._id}
-                      value={course._id}
-                    >{`${course.name} - ${course.number}`}</Option>
+                    <Option key={course._id} value={course._id}>
+                      {`${course.name} - ${course.number}`}
+                    </Option>
                   ))}
                 </SelectInputStyled>
               )}
@@ -387,7 +388,10 @@ class AddClassModal extends Component {
                 >
                   {teacherList.map((teacher) => (
                     <Option key={teacher._id} value={teacher._id}>
-                      {`${get(teacher, ['_source', 'username'], '')}`}
+                      {`${
+                        get(teacher, ['_source', 'username'], '') ||
+                        get(teacher, ['_source', 'email'], '')
+                      }`}
                     </Option>
                   ))}
                 </SelectInputStyled>

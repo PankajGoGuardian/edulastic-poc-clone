@@ -3,6 +3,14 @@ import { createSelector } from 'reselect'
 import { roleuser } from '@edulastic/constants'
 import { getSchoolsSelector as getDistrictSchoolsSelector } from '../../Schools/ducks'
 
+// Express grader enabling grid edit for selected districts
+const gridEditEnabledDistricts = {
+  // DSST Public Schools district
+  '5e4a3ce103b7ad09241750e4': true,
+}
+
+export const etsDistrict = '5e42a351a1ee9000081f7cda'
+
 export const stateSelector = (state) => state.user
 
 export const getUserIdSelector = createSelector(stateSelector, (state) =>
@@ -29,9 +37,17 @@ export const getUserNameSelector = createSelector(stateSelector, (state) =>
     : 'Anonymous'
 )
 
+export const getUserFullNameSelector = createSelector(
+  stateSelector,
+  (state) => {
+    const { firstName = '', middleName = '', lastName = '' } = state.user
+    return [firstName, middleName, lastName].filter((x) => !!x).join(' ')
+  }
+)
+
 export const getOrgDataSelector = createSelector(
   stateSelector,
-  (state) => state.user.orgData
+  (state) => state?.user?.orgData || {}
 )
 
 export const getCurrentGroup = createSelector(
@@ -47,6 +63,11 @@ export const getGroupList = createSelector(
 export const getUserRole = createSelector(
   stateSelector,
   (state) => state?.user?.role
+)
+
+export const getChildrens = createSelector(
+  stateSelector,
+  (state) => state?.user?.children
 )
 
 export const getUserIPZipCode = createSelector(
@@ -115,6 +136,26 @@ export const getOrgItemBanksSelector = createSelector(stateSelector, (state) =>
   _get(state, 'user.orgData.itemBanks', [])
 )
 
+export const isFreeAdminSelector = createSelector(
+  getUserRole,
+  getUserFeatures,
+  (userRole, userFeatures) =>
+    roleuser.DA_SA_ROLE_ARRAY.includes(userRole) && !userFeatures.premium
+)
+
+export const getUserSignupStatusSelector = createSelector(
+  stateSelector,
+  (state) => _get(state, 'signupStatus', '')
+)
+
+export const getIsGridEditEnabledSelector = createSelector(
+  stateSelector,
+  (state) => {
+    const userDistricts = _get(state, 'user.districtIds', [])
+    return userDistricts.some((dId) => gridEditEnabledDistricts[dId])
+  }
+)
+
 export const getCollectionsSelector = createSelector(
   getOrgItemBanksSelector,
   (state) => state.filter((item) => item.status === 1)
@@ -145,22 +186,33 @@ export const getWritableCollectionsSelector = createSelector(
     )
 )
 
+export const convertCollectionsToBucketList = (collections) => {
+  const flatttenBuckets = collections.flatMap((collection) =>
+    collection.buckets.map((bucket) => ({
+      ...bucket,
+      _id: collection._id,
+      bucketId: bucket._id,
+      collectionStatus: collection.status,
+      collectionName: collection.name,
+      collectionDescription: collection.description,
+      accessLevel: collection.accessLevel || '',
+      districtId: collection.districtId,
+    }))
+  )
+  return flatttenBuckets || []
+}
+
 export const getItemBucketsSelector = createSelector(
   getCustomCollectionsSelector,
   (state) => {
-    const flatttenBuckets = state.flatMap((collection) =>
-      collection.buckets.map((bucket) => ({
-        ...bucket,
-        _id: collection._id,
-        bucketId: bucket._id,
-        collectionStatus: collection.status,
-        collectionName: collection.name,
-        collectionDescription: collection.description,
-        accessLevel: collection.accessLevel || '',
-        districtId: collection.districtId,
-      }))
-    )
-    return flatttenBuckets
+    return convertCollectionsToBucketList(state)
+  }
+)
+
+export const getItemBucketsForAllCollectionsSelector = createSelector(
+  getCollectionsSelector,
+  (state) => {
+    return convertCollectionsToBucketList(state)
   }
 )
 
@@ -179,6 +231,11 @@ export const isPublisherUserSelector = createSelector(
   getIsPublisherAuthor,
   getIsCurator,
   (isPublisherAuthor, isCurator) => isPublisherAuthor || isCurator
+)
+
+export const isCuratorRoleSelector = createSelector(
+  getUserRole,
+  (role) => role === roleuser.EDULASTIC_CURATOR
 )
 
 export const getCollectionsToAddContent = createSelector(
@@ -321,19 +378,24 @@ export const getIsPowerPremiumAccount = createSelector(
   (state) => state.isPowerTeacher && state.features.premium
 )
 
+export const isPremiumUserSelector = createSelector(getUser, (userData) =>
+  _get(userData, ['features', 'premium'], false)
+)
+
 export const getInterestedCurriculumsByOrgType = createSelector(
   getInterestedCurriculumsSelector,
   getUserRole,
   (interestedCurriculums, role) => {
     const byOrgType = groupBy(interestedCurriculums, 'orgType')
+    const { ORG_TYPE } = roleuser
     if (role === roleuser.TEACHER) {
-      return byOrgType.teacher || []
+      return byOrgType[ORG_TYPE.TEACHER] || []
     }
     if (role === roleuser.SCHOOL_ADMIN) {
-      return byOrgType.institution || []
+      return byOrgType[ORG_TYPE.SCHOOL_ADMIN] || []
     }
     if (role === roleuser.DISTRICT_ADMIN) {
-      return byOrgType.district || []
+      return byOrgType[ORG_TYPE.DISTRICT_ADMIN] || []
     }
     return interestedCurriculums
   }
@@ -354,4 +416,36 @@ export const isCoTeacherSelector = createSelector(
     role === roleuser.DISTRICT_ADMIN ||
     role === roleuser.SCHOOL_ADMIN ||
     role === roleuser.TEACHER
+)
+
+export const getUserPreferredLanguage = createSelector(
+  getUserSelector,
+  (state) => state?.user?.preferredLanguage
+)
+
+export const currentUserIdSelector = createSelector(
+  getUserSelector,
+  (state) => state?.user?._id
+)
+
+export const allowedToSelectMultiLanguageInTest = createSelector(
+  currentUserIdSelector,
+  (state) => {
+    const allowedUserIds = [
+      '5f5f729516eaad0008c45a44', // uat user
+      // '5d26f2f892df401ddf8c2fd7', // poc user
+      '6034a9c3e6cce4000810e6d1', // cespark1@at.com - automation QA env
+      '602383287e63eb0007a54233', // vvk@content.com - Conetnt Author
+      '6023834b7e63eb0007a54234', // vvk@approver.com - Content Editor
+      '5ee90bb54e6a8b000713dae9', // QA testing author account
+      '5e3138446247305142d94332', // QA testing publisher account
+      '5ec422aabdde150007764df1', // "Edulastic Premium Content"
+    ]
+    return allowedUserIds.includes(state)
+  }
+)
+
+export const isEtsDistrictSelector = createSelector(
+  getUserOrgId,
+  (districtId) => districtId === etsDistrict
 )

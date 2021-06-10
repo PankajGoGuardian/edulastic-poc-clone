@@ -1,15 +1,10 @@
 import { test } from '@edulastic/constants'
 import { Col, Select } from 'antd'
 import React from 'react'
-import {
-  ColLabel,
-  Label,
-  StyledRow,
-  StyledRowSelect,
-  StyledSelect,
-} from './styled'
+import { SelectInputStyled } from '@edulastic/common'
+import { ColLabel, Label, StyledRow } from './styled'
 
-const { playerSkinTypes } = test
+const { playerSkinTypes, playerSkinValues } = test
 
 const PlayerSkinSelector = ({
   playerSkinType = playerSkinTypes.edulastic,
@@ -29,38 +24,52 @@ const PlayerSkinSelector = ({
   }
 
   const SelectOption = (
-    <StyledSelect
+    <SelectInputStyled
       data-cy="playerSkinType"
       onChange={onAssignmentTypeChange}
+      showSearch
+      filterOption={(input, option) =>
+        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+      }
       value={
         playerSkinType.toLowerCase() === playerSkinTypes.edulastic.toLowerCase()
           ? edulastic
           : playerSkinType
       }
-      disabled={disabled}
+      disabled={disabled || playerSkinType === playerSkinValues.testlet}
       isBackgroundWhite={selectBackgroundWhite}
     >
-      {Object.keys(types).map((key) => (
-        <Select.Option key={key} value={key}>
-          {types[key]}
-        </Select.Option>
-      ))}
-    </StyledSelect>
+      {Object.keys(types)
+        .sort()
+        .map((key) => {
+          if (
+            key === playerSkinValues.testlet &&
+            !(playerSkinType === playerSkinValues.testlet)
+          ) {
+            return null
+          }
+          return (
+            <Select.Option key={key} value={key}>
+              {types[key]}
+            </Select.Option>
+          )
+        })}
+    </SelectInputStyled>
   )
 
   return fullwidth ? (
-    <StyledRowSelect gutter={16}>
-      <Col span={12}>
-        <Label>STUDENT PLAYER SKIN</Label>
+    <StyledRow gutter={16}>
+      <Col span={10}>
+        <Label>CHOOSE TEST INTERFACE</Label>
       </Col>
       <Col span={12}>{SelectOption}</Col>
-    </StyledRowSelect>
+    </StyledRow>
   ) : (
     <>
       <StyledRow gutter={48}>
         {!isAdvanceView && (
           <ColLabel span={24}>
-            <Label>STUDENT PLAYER SKIN</Label>
+            <Label>CHOOSE TEST INTERFACE</Label>
           </ColLabel>
         )}
         <Col span={24}>{SelectOption}</Col>

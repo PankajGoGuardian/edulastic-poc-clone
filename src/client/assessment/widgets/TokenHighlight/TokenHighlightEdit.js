@@ -83,7 +83,7 @@ const TokenHighlightEdit = ({
         }
 
         draft.validation.altResponses.push({
-          score: 1,
+          score: draft?.validation?.validResponse?.score,
           value: [],
         })
       })
@@ -92,12 +92,16 @@ const TokenHighlightEdit = ({
   }
 
   const handlePointsChange = (val) => {
+    if (!(val > 0)) {
+      return
+    }
+    const points = parseFloat(val, 10)
     setQuestionData(
       produce(item, (draft) => {
         if (correctTab === 0) {
-          draft.validation.validResponse.score = val
+          draft.validation.validResponse.score = points
         } else {
-          draft.validation.altResponses[correctTab - 1].score = val
+          draft.validation.altResponses[correctTab - 1].score = points
         }
 
         updateVariables(draft)

@@ -1,31 +1,79 @@
 import React, { useState } from 'react'
 import { Select } from 'antd'
 import { notification } from '@edulastic/common'
-import { adminApi } from '@edulastic/api'
+import { adminApi, groupApi, enrollmentApi } from '@edulastic/api'
 
+import { flatten } from 'mathjs/src/utils/array'
+import { regexJs } from '@edulastic/constants'
 import { apiForms } from '../Data/apiForm'
 import ApiFormsMain from '../Components/ApiForm'
 
 import { submit } from '../Components/ApiForm/apis'
 import CreateAdmin from '../Components/CreateAdmin'
 import ActivateDeactivateUser from '../Components/ActivateDeactivateUser'
+import UpdateUser from '../Components/UpdateUser'
 import ApproveOrganisation from '../Components/ApproveOrganisation'
+import UpdateCoTeacher from '../../author/ManageClass/components/ClassDetails/UpdateCoTeacher/UpdateCoTeacher'
+import UploadStandard from '../Components/StandardUpload'
 
 const CREATE_ADMIN = 'create-admin'
+const ARCHIVE_UNARCHIVE_CLASSES = 'archive-unarchive-classes'
 const ACTIVATE_DEACTIVATE_USER = 'activate-deactivate-user'
+const UPDATE_USER = 'update-user'
 const APPROVE_SCHOOL_DISTRICT = 'approve-school-district'
+const API_OPTIONS = {
+  manageClass: 'manageClass',
+}
+const UPLOAD_STANDARD = 'upload-standard'
 
 const ApiForm = () => {
   const [id, setId] = useState()
   const [districtData, setDistrictData] = useState(null)
   const [userData, setUserData] = useState([])
   const [orgData, setOrgData] = useState(null)
-
+  const [showUpdateCoTeacher, setShowUpdateCoTeacher] = useState(false)
+  const [selectedClass, setSelectedClass] = useState([])
+  const [fileUploadData, setFileUploadData] = useState([])
   const handleOnChange = (_id) => setId(_id)
-  const option = apiForms.find((ar) => ar.id === id)
-
-  const handleOnSave = (data) => {
-    if (option.id === CREATE_ADMIN) {
+  let option = apiForms.find((ar) => ar.id === id)
+  const handleClassSearch = async ({ classId }) => {
+    if (regexJs.validMongoId.test(classId)) {
+      try {
+        await enrollmentApi.fetch(classId).then((response) => {
+          if (response && response.group) {
+            setSelectedClass(response.group)
+            return setShowUpdateCoTeacher(true)
+          }
+          throw new Error('No results found')
+        })
+      } catch (e) {
+        notification({
+          type: 'warning',
+          msg: 'No results found',
+        })
+      }
+    } else {
+      notification({
+        type: 'warning',
+        msg: 'Sorry, No search results found for this ID',
+      })
+    }
+  }
+  const handleOnSave = (data, sectionId) => {
+    const isSlowApi = option.slowApi || false
+    if (id === API_OPTIONS.manageClass) {
+      return handleClassSearch(data, sectionId)
+    }
+    if (option.id === ARCHIVE_UNARCHIVE_CLASSES) {
+      groupApi
+        .archiveUnarchiveClasses({
+          archive: data.archive,
+          groupIds: data.groupIds,
+        })
+        .then((res) => {
+          notification({ type: res?.type || 'success', msg: res?.message })
+        })
+    } else if (option.id === CREATE_ADMIN) {
       adminApi.searchUpdateDistrict({ id: data.districtId }).then((res) => {
         if (res?.data?.length) {
           setDistrictData(res.data[0])
@@ -34,10 +82,35 @@ const ApiForm = () => {
         }
       })
     } else {
-      submit(data, option.endPoint, option.method).then((res) => {
+      if (id === 'delta-sync') {
+        option = apiForms.find((ar) => ar.id === id)
+        option =
+          (option.customSections || []).find((o) => o.id === sectionId) ||
+          option
+        data = option.fields.reduce((acc, o) => {
+          if (data[o.name]) {
+            acc[o.name] = data[o.name]
+          }
+          return acc
+        }, {})
+      } else if (id === 'tts') {
+        const idRegex = new RegExp(/^[0-9a-fA-F]{24}$/)
+        if (!idRegex.test(data.testId)) {
+          notification({
+            type: 'warning',
+            msg: 'Invalid test id.',
+            messageKey: 'apiFormSucc',
+          })
+          return
+        }
+      }
+      submit(data, option.endPoint, option.method, isSlowApi).then((res) => {
         if (res?.result) {
           if (res.result.success || res.status === 200) {
-            if (option.id === ACTIVATE_DEACTIVATE_USER) {
+            if (
+              option.id === ACTIVATE_DEACTIVATE_USER ||
+              option.id === UPDATE_USER
+            ) {
               setUserData(res.result)
               if (!res.result.length) {
                 notification({
@@ -73,6 +146,7 @@ const ApiForm = () => {
   const clearDistrictData = () => setDistrictData(null)
   const clearUserData = () => setUserData([])
   const clearOrgData = () => setOrgData(null)
+  const clearStandardData = () => setFileUploadData(null)
 
   return (
     <div>
@@ -93,10 +167,16 @@ const ApiForm = () => {
       </Select>
       {id && (
         <ApiFormsMain
-          fields={option.fields}
+          fields={
+            option.fields || flatten(option.customSections.map((o) => o.fields))
+          }
           name={option.name}
           handleOnSave={handleOnSave}
           note={option.note}
+          customSections={option.customSections}
+          id={id}
+          setFileUploadData={setFileUploadData}
+          endPoint={option.endPoint}
         >
           {districtData && id === CREATE_ADMIN && (
             <CreateAdmin
@@ -110,13 +190,30 @@ const ApiForm = () => {
               clearUserData={clearUserData}
             />
           )}
+          {userData.length > 0 && id === UPDATE_USER && (
+            <UpdateUser userData={userData} clearUserData={clearUserData} />
+          )}
           {orgData && id === APPROVE_SCHOOL_DISTRICT && (
             <ApproveOrganisation
               orgData={orgData}
               clearOrgData={clearOrgData}
             />
           )}
+          {fileUploadData && id === UPLOAD_STANDARD && (
+            <UploadStandard
+              standardData={fileUploadData.data}
+              subject={fileUploadData.subject}
+              clearStandardData={clearStandardData}
+            />
+          )}
         </ApiFormsMain>
+      )}
+      {showUpdateCoTeacher && (
+        <UpdateCoTeacher
+          isOpen={showUpdateCoTeacher}
+          selectedClass={selectedClass}
+          handleCancel={() => setShowUpdateCoTeacher(false)}
+        />
       )}
     </div>
   )

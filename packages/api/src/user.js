@@ -16,7 +16,7 @@ const getUser = (needFirebaseLoginToken = undefined) =>
         needFirebaseLoginToken,
       },
     })
-    .then((result) => result.data.result)
+    .then((result) => result?.data?.result)
 
 const getProxyUser = (params) =>
   api
@@ -77,6 +77,7 @@ const createUser = (data) =>
 const updateUser = ({ data, userId }) =>
   api
     .callApi({
+      useSlowApi: true,
       url: `${prefix}/${userId}`,
       method: 'put',
       data,
@@ -87,6 +88,15 @@ const updateUserRole = ({ data, userId }) =>
   api
     .callApi({
       url: `${prefix}/role/${userId}`,
+      method: 'put',
+      data,
+    })
+    .then((result) => result.data.result)
+
+const updateCollectionVisited = ({ data, userId }) =>
+  api
+    .callApi({
+      url: `${prefix}/collectionVisited/${userId}`,
       method: 'put',
       data,
     })
@@ -138,8 +148,8 @@ const checkUser = (payload) =>
       url: `${prefix}/username-email/`,
       params: {
         username: `${payload.username}`,
-        districtId: `${payload.districtId}`,
-        classCode: `${payload.classCode}`,
+        districtId: payload.districtId ? `${payload.districtId}` : null,
+        classCode: payload.classCode ? `${payload.classCode}` : null,
         role: `${payload.role}`,
       },
       method: 'get',
@@ -310,6 +320,27 @@ const activateUser = ({ userId, activate }) =>
     method: 'put',
   })
 
+const updateUsername = ({ username, userId, newUsername }) =>
+  api.callApi({
+    url: `/admin-tool/username`,
+    method: 'put',
+    data: { username, userId, newUsername },
+  })
+
+const logout = () =>
+  api.callApi({
+    url: `${prefix}/logout`,
+    method: 'post',
+  })
+
+const getDemoPlaygroundUser = () =>
+  api
+    .callApi({
+      url: `${prefix}/playground`,
+      method: 'get',
+    })
+    .then((result) => result.data)
+
 export default {
   getUser,
   fetchUsers,
@@ -344,4 +375,8 @@ export default {
   mergeUsers,
   updatePowerTeacherTools,
   activateUser,
+  updateUsername,
+  logout,
+  getDemoPlaygroundUser,
+  updateCollectionVisited,
 }

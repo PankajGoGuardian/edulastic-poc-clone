@@ -23,6 +23,8 @@ const HeaderTabs = ({
   icon,
   linkLabel,
   history,
+  hideIcon,
+  activeStyle,
   ...restProps
 }) => {
   const handleOnClick = () => {
@@ -45,7 +47,12 @@ const HeaderTabs = ({
       data-cy={dataCy}
       {...restProps}
     >
-      <StyledAnchor isActive={isActive} hasIcon={!!icon}>
+      <StyledAnchor
+        activeStyle={activeStyle}
+        isActive={isActive}
+        hasIcon={!!icon}
+        hideIcon={hideIcon}
+      >
         {icon}
         <LinkLabel hasIcon={!!icon}>{linkLabel}</LinkLabel>
       </StyledAnchor>
@@ -62,11 +69,13 @@ HeaderTabs.propTypes = {
   linkLabel: PropTypes.any.isRequired,
   icon: PropTypes.any.isRequired,
   onClickHandler: PropTypes.func,
+  activeStyle: PropTypes.object,
 }
 
 HeaderTabs.defaultProps = {
   to: '#',
   onClickHandler: () => {},
+  activeStyle: {},
 }
 
 export default withRouter(HeaderTabs)
@@ -110,18 +119,19 @@ export const StyledAnchor = styled.div`
   border: 1px solid ${(props) => (props.isActive ? '#2f4151' : '#E5E5E5')};
   border-bottom-color: ${(props) => props.isActive && white};
   width: auto;
-  padding: 0px 40px;
+  padding: 0px 16px;
   text-align: center;
-  height: ${(props) => (props.isActive ? '51px' : '50px')};
+  height: ${(props) => (props.isActive ? '43px' : '42px')};
   margin: 0 2px;
   margin-bottom: ${(props) => (props.isActive ? '-1px' : '0px')};
   border-radius: 4px 4px 0px 0px;
   background-color: ${(props) => (props.isActive ? white : '#E5E5E5')};
   position: relative;
+  ${(props) => props.isActive && props.activeStyle}
   svg {
     fill: ${(props) => (props.isActive ? '#2F4151' : '#87929B')};
-    margin-right: 20px;
-    display: none;
+    margin-right: 12px;
+    display: ${({ hideIcon }) => hideIcon && 'none'};
     &:hover {
       fill: ${(props) => (props.isActive ? '#2F4151' : '#87929B')};
     }

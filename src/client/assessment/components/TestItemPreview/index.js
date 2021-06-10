@@ -1,63 +1,48 @@
 /* eslint-disable react/no-did-update-set-state */
 import React, { Component } from 'react'
+import { get, isEqual, every } from 'lodash'
 import { compose } from 'redux'
 import PropTypes from 'prop-types'
-import { ThemeProvider, withTheme } from 'styled-components'
-import { get, isEqual } from 'lodash'
+import styled, { ThemeProvider, withTheme } from 'styled-components'
+
 import { white } from '@edulastic/colors'
 import { withNamespaces } from '@edulastic/localization'
-import { IconClockCircularOutline } from '@edulastic/icons'
-import { withWindowSizes } from '@edulastic/common'
+import { AssessmentPlayerContext, withWindowSizes } from '@edulastic/common'
 import { questionType } from '@edulastic/constants'
 
 import { connect } from 'react-redux'
 import { themes } from '../../../theme'
 import TestItemCol from './containers/TestItemCol'
-import { Container } from './styled/Container'
+import { Container, RenderFeedBack } from './styled/Container'
 import FeedbackWrapper from '../FeedbackWrapper'
-import {
-  Scratchpad,
-  ScratchpadTool,
-} from '../../../common/components/Scratchpad'
-import { TimeSpentWrapper } from '../QuestionWrapper'
-import ShowUserWork from '../Common/ShowUserWork'
+import { ShowUserWork } from '../Common/QuestionBottomAction'
 import { IPAD_LANDSCAPE_WIDTH } from '../../constants/others'
 import Divider from './Divider'
+import { changedPlayerContentAction } from '../../../author/sharedDucks/testPlayer'
+import {
+  getPageNumberSelector,
+  LCB_LIMIT_QUESTION_PER_VIEW,
+  SCROLL_SHOW_LIMIT,
+} from '../../../author/ClassBoard/ducks'
+import { setPageNumberAction } from '../../../author/src/reducers/testActivity'
+import { getUser } from '../../../author/src/selectors/user'
 
 class TestItemPreview extends Component {
-  static propTypes = {
-    cols: PropTypes.array.isRequired,
-    verticalDivider: PropTypes.bool,
-    scrolling: PropTypes.bool,
-    preview: PropTypes.string.isRequired,
-    windowWidth: PropTypes.number.isRequired,
-    showFeedback: PropTypes.bool,
-    style: PropTypes.object,
-    questions: PropTypes.object.isRequired,
-    student: PropTypes.object,
-  }
-
-  static defaultProps = {
-    showFeedback: false,
-    verticalDivider: false,
-    scrolling: false,
-    style: { padding: 0, display: 'flex' },
-    student: {},
-  }
-
   constructor(props) {
     super(props)
-    const { isPassageWithQuestions, inLCB } = props
+    const { isPassageWithQuestions, isLCBView } = props
     const toggleCollapseMode =
       (window.innerWidth < IPAD_LANDSCAPE_WIDTH && isPassageWithQuestions) ||
-      (isPassageWithQuestions && inLCB)
+      (isPassageWithQuestions && isLCBView)
     this.state = {
       toggleCollapseMode,
       collapseDirection: toggleCollapseMode ? 'left' : '',
       value: 0,
       dimensions: { height: 0, width: 0 },
+      isFeedbackVisible: false,
     }
     this.containerRef = React.createRef()
+    this.feedbackRef = React.createRef()
   }
 
   getStyle = (first) => {
@@ -79,18 +64,29 @@ class TestItemPreview extends Component {
   }
 
   setCollapseView = (dir) => {
-    this.setState((prevState) => ({
-      collapseDirection:
-        !prevState.toggleCollapseMode && prevState.collapseDirection ? '' : dir,
-    }))
+    this.setState(
+      (prevState) => ({
+        collapseDirection:
+          !prevState.toggleCollapseMode && prevState.collapseDirection
+            ? ''
+            : dir,
+      }),
+      () => {
+        const { changedPlayerContent } = this.props
+        changedPlayerContent()
+      }
+    )
   }
 
   renderCollapseButtons = () => {
+    const { isLCBView } = this.props
     const { collapseDirection } = this.state
     return (
       <Divider
         collapseDirection={collapseDirection}
         setCollapseView={this.setCollapseView}
+        hideMiddle={isLCBView}
+        stackedView={this.showStackedView}
       />
     )
   }
@@ -100,18 +96,19 @@ class TestItemPreview extends Component {
       isDocBased,
       isPassageWithQuestions,
       isStudentReport,
-      viewComponent,
+      itemLevelScoring,
     } = this.props
-    const isStudentAttempt = ['studentPlayer', 'practicePlayer'].includes(
-      viewComponent
-    )
+    const { isStudentAttempt } = this.context
     let shouldShowFeedback
     let shouldTakeDimensionsFromStore
-
     switch (true) {
-      case isStudentAttempt:
-        shouldShowFeedback = true
+      case isStudentAttempt && itemLevelScoring:
+        shouldShowFeedback = widgetIndex === 0 && colIndex === 0
         shouldTakeDimensionsFromStore = false
+        break
+      case isStudentAttempt && !itemLevelScoring:
+        shouldShowFeedback = true
+        shouldTakeDimensionsFromStore = true
         break
 
       case isDocBased || stackedView:
@@ -158,12 +155,15 @@ class TestItemPreview extends Component {
       isStudentReport,
       isPresentationMode,
       questions,
+      isExpressGrader,
       isPrintPreview,
       showCollapseBtn,
       studentId,
       studentName,
       itemId,
+      itemLevelScoring,
       t,
+      isQuestionView,
     } = this.props
 
     const [
@@ -175,51 +175,67 @@ class TestItemPreview extends Component {
       stackedView,
     })
     const question = questions[widget.reference]
+    const isPracticeQuestion = itemLevelScoring
+      ? every(questions, ({ validation }) => validation && validation.unscored)
+      : get(question, 'validation.unscored', false)
     const prevQActivityForQuestion = previousQuestionActivity.find(
       (qa) => qa.qid === question.id
     )
-
+    const testActivityId = question?.activity?.testActivityId
     return displayFeedback ? (
       <FeedbackWrapper
         showFeedback={showFeedback}
         displayFeedback={displayFeedback}
         isPrintPreview={isPrintPreview}
+        isExpressGrader={isExpressGrader}
+        isQuestionView={isQuestionView}
         showCollapseBtn={showCollapseBtn}
         prevQActivityForQuestion={prevQActivityForQuestion}
-        data={{ ...question, smallSize: true }}
+        data={{ ...question, isPracticeQuestion, smallSize: true }}
         isStudentReport={isStudentReport}
         isPresentationMode={isPresentationMode}
         shouldTakeDimensionsFromStore={shouldTakeDimensionsFromStore}
         studentId={studentId}
         studentName={studentName || t('common.anonymous')}
         itemId={itemId}
+        key={`${testActivityId}_${index}`}
+        ref={this.feedbackRef}
       />
     ) : null
   }
 
-  renderFeedbacks = (showStackedView) => {
-    const { cols } = this.props
+  renderFeedbacks = () => {
+    const { cols, pageNumber, isDocBased, isQuestionView } = this.props
     const { value } = this.state
     let colIndex = 0
-    return cols.map((col) =>
-      (col?.widgets || [])
-        .filter(
-          (widget) =>
-            widget.type !== questionType.SECTION_LABEL &&
-            widget.widgetType !== 'resource'
-        )
-        .map((widget, i) => (
-          <React.Fragment key={i}>
-            {col.tabs &&
-              !!col.tabs.length &&
-              value === widget.tabIndex &&
-              this.renderFeedback(widget, i, colIndex++, showStackedView)}
-            {col.tabs &&
-              !col.tabs.length &&
-              this.renderFeedback(widget, i, colIndex++, showStackedView)}
-          </React.Fragment>
-        ))
-    )
+    return cols.map((col) => {
+      const filteredWidgets = (col?.widgets || []).filter(
+        (widget) =>
+          widget.type !== questionType.SECTION_LABEL &&
+          widget.widgetType !== 'resource'
+      )
+      const shouldShowPagination =
+        isDocBased &&
+        filteredWidgets.length > SCROLL_SHOW_LIMIT &&
+        !isQuestionView
+      const widgetsToRender = shouldShowPagination
+        ? filteredWidgets.slice(
+            LCB_LIMIT_QUESTION_PER_VIEW * (pageNumber - 1),
+            LCB_LIMIT_QUESTION_PER_VIEW * pageNumber
+          )
+        : filteredWidgets
+      return widgetsToRender.map((widget, i) => (
+        <React.Fragment key={i}>
+          {col.tabs &&
+            !!col.tabs.length &&
+            value === widget.tabIndex &&
+            this.renderFeedback(widget, i, colIndex++, this.showStackedView)}
+          {col.tabs &&
+            !col.tabs.length &&
+            this.renderFeedback(widget, i, colIndex++, this.showStackedView)}
+        </React.Fragment>
+      ))
+    })
   }
 
   componentDidMount() {
@@ -235,6 +251,15 @@ class TestItemPreview extends Component {
         })
       }
     }
+
+    /**
+     * https://snapwiz.atlassian.net/browse/EV-20465
+     * When feedbackElem is getting rendered we can say it is visible
+     * */
+    const feedbackElem = this.feedbackRef.current
+    if (feedbackElem) {
+      this.setState({ isFeedbackVisible: true })
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -244,6 +269,7 @@ class TestItemPreview extends Component {
       isPassageWithQuestions,
       scratchPadMode,
       isLCBView,
+      changedPlayerContent,
     } = this.props
     if (
       !scratchPadMode &&
@@ -251,40 +277,55 @@ class TestItemPreview extends Component {
       window.innerWidth < IPAD_LANDSCAPE_WIDTH &&
       (!isEqual(cols, preCols) || scratchPadMode !== prevProps.scratchPadMode)
     ) {
-      this.setState({ toggleCollapseMode: true, collapseDirection: 'left' })
+      this.setState(
+        { toggleCollapseMode: true, collapseDirection: 'left' },
+        () => {
+          changedPlayerContent()
+        }
+      )
     } else if (
       scratchPadMode !== prevProps.scratchPadMode &&
       scratchPadMode &&
       !isLCBView
     ) {
-      this.setState({ collapseDirection: '' })
+      this.setState({ collapseDirection: '' }, () => {
+        changedPlayerContent()
+      })
     }
   }
 
-  get defaultScratchpadVisibility() {
+  get showStackedView() {
     const {
+      isLCBView,
+      isQuestionView,
+      multipartItem: v2Multipart,
+      isPassageWithQuestions,
+      itemLevelScoring,
       cols,
-      viewComponent,
-      isExpressGrader,
-      history: scratchpadData,
-      disableResponse: isAnswerModifiable,
+      isPrintPreview,
     } = this.props
-    const widgets = (cols || []).flatMap((col) => col?.widgets).filter((_) => _)
-    const showScratchpadByDefault = widgets.some(
-      (x) => x.type === questionType.HIGHLIGHT_IMAGE
-    )
-    const isStudentAttempt = ['studentPlayer', 'practicePlayer'].includes(
-      viewComponent
-    )
-    if (showScratchpadByDefault && !isStudentAttempt) {
-      if (isExpressGrader && !isAnswerModifiable) {
-        // return true even if no data, it will create a fresh one to draw
-        return true
+    const isV1Multipart = (cols || []).some((col) => col.isV1Multipart)
+    let showStackedView = false
+
+    if (
+      (isLCBView && !isQuestionView && !isPassageWithQuestions) ||
+      isPrintPreview
+    ) {
+      if (
+        !itemLevelScoring &&
+        this.widgets.length > 1 &&
+        (v2Multipart || isV1Multipart)
+      ) {
+        showStackedView = true
       }
-      // return true only if there is scratchpad data
-      return !!scratchpadData
     }
-    return false
+
+    return showStackedView
+  }
+
+  get widgets() {
+    const { cols } = this.props
+    return (cols || []).flatMap((col) => col?.widgets).filter((q) => q)
   }
 
   render() {
@@ -297,47 +338,44 @@ class TestItemPreview extends Component {
       questions,
       student,
       metaData,
-      disableResponse,
       evaluation,
       previewTab,
-      LCBPreviewModal,
-      isStudentReport,
       showCollapseBtn = false,
       scratchPadMode,
-      scratchpadDimensions,
-      saveHistory,
-      history,
       fontFamily,
       theme,
       t,
       isCliUser,
-      isScratchpadImageMode,
+      showPreviousAttempt,
+      testActivityId,
+      studentData,
+      currentStudent,
       ...restProps
     } = this.props
     const {
+      isStudentReport,
+      LCBPreviewModal,
       isLCBView,
       isReviewTab,
       isExpressGrader,
-      viewComponent,
       isQuestionView,
       showStudentWork,
-      timeSpent,
-      multipartItem,
+      userWork,
       itemLevelScoring,
-      isPassageWithQuestions,
       isPrintPreview,
+      isShowStudentWork,
     } = restProps
 
-    const { collapseDirection } = this.state
-    const widgets = (cols || []).flatMap((col) => col?.widgets).filter((q) => q)
+    const { isFeedbackVisible, collapseDirection } = this.state
+    const { isStudentAttempt } = this.context
+
+    const widgets = this.widgets
+
     if (widgets.length === 0) {
       return null
     }
 
     const isSingleQuestionView = widgets.length === 1
-    const isStudentAttempt = ['studentPlayer', 'practicePlayer'].includes(
-      viewComponent
-    )
     const hideInternalOverflow =
       isLCBView || isQuestionView || isExpressGrader || isReviewTab
     const hasResourceTypeQuestion = widgets.find(
@@ -346,52 +384,21 @@ class TestItemPreview extends Component {
     // show collapse button only in student player or in author preview mode.
     const showCollapseButtons = hasResourceTypeQuestion && showCollapseBtn
 
-    const readyOnlyScratchpad = isStudentReport || isLCBView || LCBPreviewModal
-    const showScratchpadByDefault = widgets.some(
+    const hasDrawingResponse = widgets.some(
       (x) => x.type === questionType.HIGHLIGHT_IMAGE
     )
-    const showScratchToolBar =
-      (scratchPadMode && !LCBPreviewModal) ||
-      (!disableResponse && isExpressGrader && showScratchpadByDefault)
-
-    let showStackedView = false
-    if (isLCBView && !isQuestionView && !isPassageWithQuestions) {
-      if (multipartItem && !itemLevelScoring) {
-        showStackedView = true
-      }
-    }
 
     let dataSource = cols
-    if (!showStackedView && (isQuestionView || isExpressGrader)) {
+    if (!this.showStackedView && (isQuestionView || isExpressGrader)) {
       dataSource = dataSource.filter((col) => (col?.widgets || []).length > 0)
     }
 
-    const borderProps = showScratchpadByDefault
+    const borderProps = hasDrawingResponse
       ? {
           border: isLCBView ? '1px solid #DADAE4' : 'none',
           borderRadius: '10px',
         }
       : {}
-
-    const shouldHideScratchpad = isLCBView && !!hasResourceTypeQuestion
-    const scratchpadHeight = get(scratchpadDimensions, 'height', null)
-    const scratchpadWidth = get(scratchpadDimensions, 'width', null)
-    if (
-      scratchpadHeight &&
-      !isStudentAttempt &&
-      isLCBView &&
-      isSingleQuestionView &&
-      style &&
-      // Condition in which scratch pad is shown
-      (isScratchpadImageMode ||
-        ((this.defaultScratchpadVisibility || scratchPadMode) &&
-          !shouldHideScratchpad))
-    ) {
-      style.height = scratchpadHeight + 20
-      if (isScratchpadImageMode && scratchpadWidth) {
-        style.width = scratchpadWidth
-      }
-    }
 
     return (
       <ThemeProvider theme={{ ...themes.default }}>
@@ -404,20 +411,17 @@ class TestItemPreview extends Component {
             flexGrow: 1,
             width: '100%',
             overflow: !isStudentAttempt && !isPrintPreview && 'auto', // dont give auto for student attempt causes https://snapwiz.atlassian.net/browse/EV-12598
-            background:
-              isExpressGrader || showScratchpadByDefault ? white : null,
-            'margin-bottom': showScratchpadByDefault && '10px',
+            background: isExpressGrader && hasDrawingResponse ? white : null,
+            'margin-bottom': hasDrawingResponse && '10px',
           }}
           className="__print-item-fix-width"
         >
-          {showScratchToolBar && <ScratchpadTool />}
           <Container
             width={windowWidth}
             style={{
               ...style,
               padding: 0,
             }}
-            isStudentAttempt={isStudentAttempt}
             isCollapsed={!!collapseDirection}
             ref={this.containerRef}
             className="test-item-preview"
@@ -428,7 +432,7 @@ class TestItemPreview extends Component {
                 height: '100%',
                 display: 'flex',
                 flexDirection:
-                  showStackedView || isPrintPreview ? 'column' : 'row',
+                  this.showStackedView || isPrintPreview ? 'column' : 'row',
               }}
             >
               {dataSource.map((col, i) => {
@@ -436,15 +440,7 @@ class TestItemPreview extends Component {
                   (collapseDirection === 'left' && i === 0) ||
                   (collapseDirection === 'right' && i === 1)
                 if (hideColumn && showCollapseButtons) return ''
-                const isOnlyPassage = (col?.widgets || []).every(
-                  (widget) => widget?.type === 'passage'
-                )
-                const widgetCount = (col?.widgets || []).length
-                const fullHeight =
-                  ((isExpressGrader || isLCBView) &&
-                    i === 0 &&
-                    isOnlyPassage) ||
-                  widgetCount === 1
+
                 return (
                   <>
                     {(i > 0 || collapseDirection === 'left') &&
@@ -458,35 +454,34 @@ class TestItemPreview extends Component {
                       colCount={cols.length}
                       colIndex={i}
                       col={
-                        collapseDirection ? { ...col, dimension: '90%' } : col
+                        collapseDirection ? { ...col, dimension: '100%' } : col
                       }
                       view="preview"
                       metaData={metaData}
                       preview={preview}
+                      scratchPadMode={scratchPadMode}
+                      colWidth={
+                        collapseDirection || cols.length == 1
+                          ? '100%'
+                          : col?.dimension || '50%'
+                      }
                       multiple={cols.length > 1}
                       style={this.getStyle(i !== cols.length - 1)}
                       windowWidth={windowWidth}
                       showFeedback={showFeedback}
                       questions={questions}
                       student={student}
-                      disableResponse={disableResponse}
-                      LCBPreviewModal={LCBPreviewModal}
                       previewTab={previewTab}
-                      fullHeight={fullHeight}
                       isSingleQuestionView={isSingleQuestionView}
                       hideInternalOverflow={hideInternalOverflow}
-                      testReviewStyle={{
-                        height: fullHeight ? '100%' : 'auto',
-                        paddingTop: 0,
-                      }}
-                      isScratchpadImageMode={isScratchpadImageMode}
-                      showStackedView={showStackedView}
-                      isPassageWithQuestions={isPassageWithQuestions}
+                      showStackedView={this.showStackedView}
                       teachCherFeedBack={this.renderFeedback}
-                      isStudentReport={isStudentReport}
-                      itemLevelScoring={itemLevelScoring}
-                      showScratchpadByDefault={showScratchpadByDefault}
+                      hasDrawingResponse={hasDrawingResponse}
                       isStudentAttempt={isStudentAttempt}
+                      isFeedbackVisible={isFeedbackVisible}
+                      testActivityId={testActivityId}
+                      studentData={studentData}
+                      currentStudent={currentStudent}
                     />
                     {collapseDirection === 'right' &&
                       showCollapseButtons &&
@@ -495,46 +490,31 @@ class TestItemPreview extends Component {
                 )
               })}
             </div>
-            {(isScratchpadImageMode ||
-              ((this.defaultScratchpadVisibility || scratchPadMode) &&
-                !shouldHideScratchpad)) && (
-              <Scratchpad
-                saveData={saveHistory}
-                data={history}
-                hideTools
-                readOnly={readyOnlyScratchpad}
-                dimensions={scratchpadDimensions}
-              />
-            )}
           </Container>
-          {!isScratchpadImageMode &&
-            showScratchpadByDefault &&
-            (isLCBView || isExpressGrader) &&
-            history && (
-              <TimeSpentWrapper margin="0px 12px 12px">
-                <ShowUserWork isGhost onClickHandler={showStudentWork} mr="8px">
-                  Show student work
-                </ShowUserWork>
-                <IconClockCircularOutline />
-                {timeSpent}s
-              </TimeSpentWrapper>
-            )}
+          {hasDrawingResponse && (isLCBView || isExpressGrader) && userWork && (
+            <ShowUserWorkWrapper>
+              <ShowUserWork onClick={showStudentWork} />
+            </ShowUserWorkWrapper>
+          )}
         </div>
         {/* on the student side, show single feedback only when item level scoring is on */}
-        {!isScratchpadImageMode &&
-          ((itemLevelScoring && isStudentReport) ||
-            (!isStudentReport && !isReviewTab)) && (
+        {((itemLevelScoring && isStudentReport) ||
+          (!isStudentReport && !isReviewTab)) &&
+          (showFeedback ||
+            (showPreviousAttempt !== 'NONE' &&
+              isStudentAttempt &&
+              !isStudentReport)) &&
+          !isShowStudentWork && (
             <>
               {!isCliUser && (
-                <div
-                  style={{
-                    position: 'relative',
-                    'min-width': !isPrintPreview && '265px',
-                  }}
-                  className="__print-feedback-main-wrapper"
+                <RenderFeedBack
+                  isExpressGrader={isExpressGrader}
+                  isPrintPreview={isPrintPreview}
+                  isStudentAttempt={isStudentAttempt}
+                  className="__print-feedback-main-wrapper testtest"
                 >
-                  {this.renderFeedbacks(showStackedView)}
-                </div>
+                  {this.renderFeedbacks()}
+                </RenderFeedBack>
               )}
             </>
           )}
@@ -543,13 +523,60 @@ class TestItemPreview extends Component {
   }
 }
 
+TestItemPreview.contextType = AssessmentPlayerContext
+
+TestItemPreview.propTypes = {
+  cols: PropTypes.array.isRequired,
+  verticalDivider: PropTypes.bool,
+  scrolling: PropTypes.bool,
+  preview: PropTypes.string.isRequired,
+  windowWidth: PropTypes.number.isRequired,
+  showFeedback: PropTypes.bool,
+  style: PropTypes.object,
+  questions: PropTypes.object.isRequired,
+  student: PropTypes.object,
+}
+
+TestItemPreview.defaultProps = {
+  showFeedback: false,
+  verticalDivider: false,
+  scrolling: false,
+  style: { padding: 0, display: 'flex' },
+  student: {},
+}
+
 const enhance = compose(
+  React.memo,
   withWindowSizes,
   withTheme,
   withNamespaces('student'),
-  connect((state) => ({
-    isCliUser: get(state, 'user.isCliUser', false),
-  }))
+  connect(
+    (state) => ({
+      isCliUser: get(state, 'user.isCliUser', false),
+      showPreviousAttempt: get(
+        state,
+        'test.settings.showPreviousAttempt',
+        'NONE'
+      ),
+      pageNumber: getPageNumberSelector(state),
+      testActivityId: get(state, 'test.testActivityId', ''),
+      studentData: getUser(state),
+    }),
+    {
+      changedPlayerContent: changedPlayerContentAction,
+      setPageNumber: setPageNumberAction,
+    }
+  )
 )
 
 export default enhance(TestItemPreview)
+
+const ShowUserWorkWrapper = styled.div`
+  position: relative;
+
+  button {
+    position: absolute;
+    top: -50px;
+    left: 28px;
+  }
+`

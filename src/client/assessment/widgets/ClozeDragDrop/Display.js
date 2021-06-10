@@ -4,7 +4,7 @@ import React, { Component, Fragment } from 'react'
 import { cloneDeep, get } from 'lodash'
 import uuid from 'uuid/v4'
 
-import JsxParser from 'react-jsx-parser'
+import JsxParser from 'react-jsx-parser/lib/react-jsx-parser.min'
 import {
   PreWrapper,
   helpers,
@@ -60,7 +60,7 @@ class ClozeDragDropDisplay extends Component {
     this.setState({ parsedTemplate: helpers.parseTemplate(stimulus) })
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (this.state !== undefined) {
       const possibleResponses = this.getInitialResponses(nextProps)
       const parsedTemplate = helpers.parseTemplate(nextProps.stimulus)
@@ -311,6 +311,8 @@ class ClozeDragDropDisplay extends Component {
       question,
       view,
       t,
+      hideCorrectAnswer,
+      answerScore,
     } = this.props
     const { userAnswers, possibleResponses, parsedTemplate } = this.state
     const { showDraghandle: dragHandler, shuffleOptions } = configureOptions
@@ -380,6 +382,7 @@ class ClozeDragDropDisplay extends Component {
       cAnswers: get(item, 'validation.validResponse.value', []),
       isExpressGrader,
       isPrintPreview,
+      answerScore,
     }
 
     const templateBoxLayoutContainer = (
@@ -494,7 +497,11 @@ class ClozeDragDropDisplay extends Component {
         <div style={responseBoxStyle}>{previewResponseBoxLayout}</div>
       )
     const answerBox =
-      showAnswer || isExpressGrader ? correctAnswerBoxLayout : <></>
+      (showAnswer || isExpressGrader) && !hideCorrectAnswer ? (
+        correctAnswerBoxLayout
+      ) : (
+        <></>
+      )
 
     const questionContent = (
       <div>
@@ -546,7 +553,7 @@ class ClozeDragDropDisplay extends Component {
               )}
             </QuestionLabelWrapper>
 
-            <QuestionContentWrapper>
+            <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
               <QuestionTitleWrapper>
                 {!question && questionContent}
               </QuestionTitleWrapper>

@@ -73,25 +73,25 @@ class EditItemPage {
     //   cy.get('[data-cy="toggleAdvancedOptionsButton"]')
     //     .should("be.visible")
     //     .click({ force: true });
-    cy.get('body')
-      .contains(' ADVANCED OPTIONS')
-      .then((ele) => {
-        if (ele.parent().siblings().length === 3) {
-          cy.wrap(ele).click()
-        }
-      })
+
+    // cy.get('body')
+    //   .contains(' ADVANCED OPTIONS')
+    //   .then((ele) => {
+    //     if (ele.parent().siblings().length === 3) {
+    //       cy.wrap(ele).click()
+    //     }
+    //   })
 
     return this
   }
 
   hideAdvancedOptions() {
-    const $button = Cypress.$('[data-cy="toggleAdvancedOptionsButton"]')
-
-    if ($button.next().length) {
-      cy.get('[data-cy="toggleAdvancedOptionsButton"]')
-        .should('be.visible')
-        .click({ force: true })
-    }
+    // const $button = Cypress.$('[data-cy="toggleAdvancedOptionsButton"]')
+    // if ($button.next().length) {
+    //   cy.get('[data-cy="toggleAdvancedOptionsButton"]')
+    //     .should('be.visible')
+    //     .click({ force: true })
+    // }
 
     return this
   }

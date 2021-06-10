@@ -1,12 +1,19 @@
 html {
   box-sizing: border-box;
-  font-family: "Open Sans";
+  font-family: 'Open Sans';
 }
 
 *,
 *:after,
 *:before {
   box-sizing: inherit;
+}
+
+*:not(.passage-wrapper, .passage-content) {
+  user-select: text !important;
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  -ms-user-select: text !important;
 }
 
 a#logo {
@@ -20,12 +27,26 @@ a[disabled] {
 body {
   margin: 0;
   padding: 0;
-  font-family: "Open Sans";
+  font-family: 'Open Sans';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: #ffffff;
   color: #444;
   overflow-x: hidden;
+}
+
+body:fullscreen {
+  background-color: white;
+}
+body:-webkit-full-screen {
+  background-color: white;
+}
+body:-moz-full-screen {
+  background-color: white;
+}
+
+::backdrop {
+  background-color: white;
 }
 
 .ant-layout {
@@ -249,9 +270,9 @@ select {
  * Correct the inability to style clickable types in iOS and Safari.
  */
 
-[type="button"],
-[type="reset"],
-[type="submit"],
+[type='button'],
+[type='reset'],
+[type='submit'],
 button {
   -webkit-appearance: button;
 }
@@ -260,9 +281,9 @@ button {
  * Remove the inner border and padding in Firefox.
  */
 
-[type="button"]::-moz-focus-inner,
-[type="reset"]::-moz-focus-inner,
-[type="submit"]::-moz-focus-inner,
+[type='button']::-moz-focus-inner,
+[type='reset']::-moz-focus-inner,
+[type='submit']::-moz-focus-inner,
 button::-moz-focus-inner {
   border-style: none;
   padding: 0;
@@ -271,9 +292,9 @@ button::-moz-focus-inner {
 /**
  * Restore the focus styles unset by the previous rule.
  */
-[type="button"]:-moz-focusring,
-[type="reset"]:-moz-focusring,
-[type="submit"]:-moz-focusring,
+[type='button']:-moz-focusring,
+[type='reset']:-moz-focusring,
+[type='submit']:-moz-focusring,
 button:-moz-focusring {
   outline: 1px dotted ButtonText;
 }
@@ -329,8 +350,8 @@ textarea {
  * 2. Remove the padding in IE 10.
  */
 
-[type="checkbox"],
-[type="radio"] {
+[type='checkbox'],
+[type='radio'] {
   box-sizing: border-box;
   /* 1 */
   padding: 0;
@@ -341,8 +362,8 @@ textarea {
  * Correct the cursor style of increment and decrement buttons in Chrome.
  */
 
-[type="number"]::-webkit-inner-spin-button,
-[type="number"]::-webkit-outer-spin-button {
+[type='number']::-webkit-inner-spin-button,
+[type='number']::-webkit-outer-spin-button {
   height: auto;
 }
 
@@ -351,7 +372,7 @@ textarea {
  * 2. Correct the outline style in Safari.
  */
 
-[type="search"] {
+[type='search'] {
   -webkit-appearance: textfield;
   /* 1 */
   outline-offset: -2px;
@@ -362,7 +383,7 @@ textarea {
  * Remove the inner padding in Chrome and Safari on macOS.
  */
 
-[type="search"]::-webkit-search-decoration {
+[type='search']::-webkit-search-decoration {
   -webkit-appearance: none;
 }
 
@@ -414,7 +435,7 @@ template {
 [hidden] {
   display: none;
 }
-@import "~antd/dist/antd.css";
+@import '~antd/dist/antd.css';
 
 .toolgroup {
   background: white;
@@ -515,7 +536,7 @@ span.ql-table {
 }
 
 span.ql-table::after {
-  content: "TABLE";
+  content: 'TABLE';
   line-height: 24px;
 }
 
@@ -542,19 +563,19 @@ button.ql-insertInput span {
 }
 
 .ql-picker.ql-table .ql-picker-label::before {
-  content: "TABLE";
+  content: 'TABLE';
 }
 
 span.ql-contain::after {
-  content: "WRAP";
+  content: 'WRAP';
 }
 
 span.ql-table-insert-rows::after {
-  content: "ROWS+";
+  content: 'ROWS+';
 }
 
 span.ql-table-insert-columns::after {
-  content: "COLS+";
+  content: 'COLS+';
 }
 
 .ql-contain,
@@ -666,7 +687,7 @@ table.quill-table td {
   background: #0288d1;
 }
 
-input[type="checkbox"] {
+input[type='checkbox'] {
   zoom: 1.3;
   margin-right: 5px;
 }
@@ -679,7 +700,7 @@ input[type="checkbox"] {
   cursor: pointer;
 }
 
-.draggable_box div[draggable="true"] {
+.draggable_box div[draggable='true'] {
   padding: 8px 20px;
 }
 
@@ -927,7 +948,7 @@ textinput {
 
 paragraphnumber {
   padding: 0 5px;
-  margin-right: 10px;
+  margin: 0px 0.3em;
   min-height: 10px;
   color: #fff;
   line-height: 1.5;
@@ -935,6 +956,27 @@ paragraphnumber {
   cursor: pointer;
   position: relative;
   min-width: 20px;
+}
+
+paragraphnumber .paragraph-number-remove {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  color: #434b5d;
+  background: #f8f8f8;
+  display: none;
+  border-radius: 50%;
+  width: 14px;
+  height: 14px;
+  line-height: 1;
+  text-align: center;
+  font-size: 0.65rem;
+  border: 1px solid #b9b9b9;
+  user-select: none;
+}
+
+.fr-wrapper .paragraph-number-remove {
+  display: inline-block;
 }
 
 response {
@@ -951,23 +993,23 @@ response {
 }
 
 response::after {
-  content: "Response";
+  content: 'Response';
 }
 
 mathinput::after {
-  content: "Math Input";
+  content: 'Math Input';
 }
 
 mathunit::after {
-  content: "Math w/ unit";
+  content: 'Math w/ unit';
 }
 
 textdropdown::after {
-  content: "Text Dropdown";
+  content: 'Text Dropdown';
 }
 
 textinput::after {
-  content: "Text Input";
+  content: 'Text Input';
 }
 
 response::after,
@@ -1010,7 +1052,7 @@ textinput::before {
   box-sizing: border-box;
 }
 
-[draggable="true"] {
+[draggable='true'] {
   -moz-user-select: none;
   -khtml-user-select: none;
   -webkit-user-select: none;
@@ -1217,7 +1259,7 @@ textinput::before {
 #mainQuill .ql-formats:not(:last-child)::after {
   background: transparent !important;
   display: block;
-  content: "|";
+  content: '|';
   font-weight: 600;
   font-size: 18px;
   position: absolute;
@@ -1415,8 +1457,8 @@ span.token.active-word {
 .isKeyboardUser a:focus,
 .isKeyboardUser button:focus,
 .isKeyboardUser input:focus,
-.isKeyboardUser input[type="checkbox"]:focus + label,
-.isKeyboardUser input[type="radio"]:focus + span,
+.isKeyboardUser input[type='checkbox']:focus + label,
+.isKeyboardUser input[type='radio']:focus + span,
 .isKeyboardUser select:focus,
 .isKeyboardUser:focus {
   outline: 1px dashed #000;
@@ -1604,7 +1646,7 @@ span.token.active-word {
 }
 
 .liveinspect-keydata .kds-parentheses {
-  font-family: "Arial Narrow", Arial, sans-serif;
+  font-family: 'Arial Narrow', Arial, sans-serif;
   font-size: 300%;
   font-weight: normal;
   position: relative;
@@ -1620,7 +1662,7 @@ span.token.active-word {
 }
 
 .liveinspect-keydata .kds-pi {
-  font-family: "Times New Roman", serif;
+  font-family: 'Times New Roman', serif;
   font-size: 1.2em;
 }
 
@@ -1868,10 +1910,6 @@ span.token.active-word {
   box-shadow: 0 0 1px 1px #5eb50066;
 }
 
-.jsx-parser p {
-  margin-bottom: 8px;
-}
-
 .katex .mfrac .frac-line {
   min-height: 1vh !important;
 }
@@ -1957,23 +1995,23 @@ span.token.active-word {
   background-color: #1ab394;
 }
 
-.fr-toolbar .fr-command.fr-btn[data-cmd="response"],
-.fr-toolbar .fr-command.fr-btn[data-cmd="responseBoxes"],
-.fr-toolbar .fr-command.fr-btn[data-cmd="textdropdown"],
-.fr-toolbar .fr-command.fr-btn[data-cmd="textinput"] {
+.fr-toolbar .fr-command.fr-btn[data-cmd='response'],
+.fr-toolbar .fr-command.fr-btn[data-cmd='responseBoxes'],
+.fr-toolbar .fr-command.fr-btn[data-cmd='textdropdown'],
+.fr-toolbar .fr-command.fr-btn[data-cmd='textinput'] {
   border: 1px #000 dotted;
   height: 34px;
   padding: 0 4px;
   top: 4px;
 }
 
-.fr-toolbar .fr-command.fr-btn[data-cmd="responseBoxes"]::after {
+.fr-toolbar .fr-command.fr-btn[data-cmd='responseBoxes']::after {
   right: 4px !important;
   top: 14px !important;
 }
 
-.fr-toolbar .fr-command.fr-btn[data-cmd="textdropdown"]::after {
-  content: "";
+.fr-toolbar .fr-command.fr-btn[data-cmd='textdropdown']::after {
+  content: '';
   width: 0;
   height: 0;
   border-color: #5f5f5f;
@@ -2048,8 +2086,18 @@ span.token.active-word {
   background-color: #1ab394;
 }
 
-.ant-table-thead > tr > th .ant-table-column-sorter .ant-table-column-sorter-inner .ant-table-column-sorter-down.on,
-.ant-table-thead > tr > th .ant-table-column-sorter .ant-table-column-sorter-inner .ant-table-column-sorter-up.on {
+.ant-table-thead
+  > tr
+  > th
+  .ant-table-column-sorter
+  .ant-table-column-sorter-inner
+  .ant-table-column-sorter-down.on,
+.ant-table-thead
+  > tr
+  > th
+  .ant-table-column-sorter
+  .ant-table-column-sorter-inner
+  .ant-table-column-sorter-up.on {
   color: #1ab394;
 }
 
@@ -2071,6 +2119,7 @@ span.token.active-word {
 
 .sortableHelper {
   z-index: 10000;
+  opacity: 0.5;
 }
 
 .sortableHelper img {
@@ -2156,7 +2205,7 @@ iframe {
   padding: 0px;
 }
 
-div[class*="_pendo"] button {
+div[class*='_pendo'] button {
   cursor: pointer;
 }
 
@@ -2209,7 +2258,9 @@ div[class*="_pendo"] button {
   left: 75px !important;
 }
 
-.antd-notify-custom-popover.ant-popover-placement-right > .ant-popover-content > .ant-popover-arrow {
+.antd-notify-custom-popover.ant-popover-placement-right
+  > .ant-popover-content
+  > .ant-popover-arrow {
   border-bottom-color: #2f4151;
   border-left-color: #2f4151;
 }
@@ -2222,7 +2273,9 @@ div[class*="_pendo"] button {
   top: 1px;
 }
 
-.antd-notify-custom-popover.ant-popover-placement-bottom > .ant-popover-content > .ant-popover-arrow {
+.antd-notify-custom-popover.ant-popover-placement-bottom
+  > .ant-popover-content
+  > .ant-popover-arrow {
   border-top-color: #2f4151;
   border-left-color: #2f4151;
 }
@@ -2434,7 +2487,7 @@ div[class*="_pendo"] button {
   color: #1ab394;
 }
 
-.drop-target-box:not([id*="null"]):hover {
+.drop-target-box:not([id*='null']):hover {
   border-color: #1a73e8 !important;
 }
 
@@ -2443,7 +2496,9 @@ div[class*="_pendo"] button {
   color: white;
 }
 
-.ant-select-dropdown.ant-select-dropdown--multiple .ant-select-dropdown-menu-item:hover .ant-select-selected-icon {
+.ant-select-dropdown.ant-select-dropdown--multiple
+  .ant-select-dropdown-menu-item:hover
+  .ant-select-selected-icon {
   color: white;
 }
 
@@ -2475,4 +2530,75 @@ div[class*="_pendo"] button {
 
 .text-entry-altanswer-button .ant-popover-inner-content {
   padding: 0px !important;
+}
+
+.ant-modal-confirm-custom-styled {
+  min-width: 50%;
+  top: 100px;
+}
+
+.ant-modal-confirm-custom-styled
+  .ant-modal-confirm-body
+  > .anticon
+  + .ant-modal-confirm-title
+  + .ant-modal-confirm-content {
+  background: #fff;
+  padding: 0;
+  margin-left: 0;
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 14px;
+  color: rgb(67, 75, 93);
+}
+
+.ant-modal-confirm-custom-styled .ant-modal-confirm-title {
+  font-size: 22px;
+  color: #434b5d;
+  font-weight: 700;
+}
+.ant-modal-confirm-custom-styled .ant-modal-confirm-body {
+  background: transparent;
+  padding: 0px 25px;
+}
+
+.ant-modal-confirm-custom-styled p {
+  font-size: 14px;
+  color: #444;
+  font-weight: 600;
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 0 !important;
+}
+.ant-modal-confirm-custom-styled .ant-modal-confirm-btns {
+  border: none;
+  display: flex;
+  justify-content: center;
+  padding: 0px;
+  float: unset;
+}
+.ant-modal-confirm-custom-styled .ant-modal-confirm-btns .ant-btn:nth-child(1) {
+  background-color: rgb(255, 255, 255);
+  border-color: rgb(26, 179, 148);
+  color: rgb(26, 179, 148);
+}
+.ant-modal-confirm-custom-styled .ant-modal-confirm-btns .ant-btn:nth-child(2) {
+  background-color: rgb(26, 179, 148);
+  border-color: rgb(26, 179, 148);
+  color: rgb(255, 255, 255);
+}
+
+.ant-modal-confirm-custom-styled .ant-modal-confirm-btns .ant-btn {
+  padding: 0px 30px 0 30px;
+  height: 40px;
+  font-size: 12px;
+}
+
+.ant-modal-confirm-custom-styled .ant-modal-confirm-btns .ant-btn:hover {
+  background-color: rgb(26, 115, 232);
+  border-color: rgb(26, 115, 232);
+  color: rgb(255, 255, 255);
+}
+
+.playlist-content-box {
+  z-index: 1004;
 }

@@ -1,6 +1,6 @@
 import { takeEvery, call, put, all, select } from 'redux-saga/effects'
 import { questionsApi, testItemsApi } from '@edulastic/api'
-import { notification } from '@edulastic/common'
+import { captureSentryException, notification } from '@edulastic/common'
 import { get } from 'lodash'
 import * as Sentry from '@sentry/browser'
 import { history } from '../../../configureStore'
@@ -30,7 +30,7 @@ function* receiveQuestionSaga({ payload }) {
     })
   } catch (err) {
     console.error(err)
-    Sentry.captureException(err)
+    captureSentryException(err)
     const errorMessage = 'Unable to retrieve the question.'
     notification({ type: 'error', msg: errorMessage })
     yield put({
@@ -117,15 +117,12 @@ function* saveQuestionSaga() {
           backUrl: '/author/items',
           itemDetail: false,
           ...stateToFollow,
-          isTestFlow,
-          previousTestId,
-          regradeFlow,
         },
       })
     }
   } catch (err) {
     console.error(err)
-    Sentry.captureException(err)
+    captureSentryException(err)
     const errorMessage = 'Unable to save the question.'
     notification({ type: 'error', messageKey: 'saveQuestionFailing' })
     yield put({

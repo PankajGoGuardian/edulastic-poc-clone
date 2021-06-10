@@ -1,12 +1,15 @@
 import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
-
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { get } from 'lodash'
 import { evaluationType } from '@edulastic/constants'
 import { withNamespaces } from '@edulastic/localization'
 
 import Scoring from './components/Scoring'
 import Variables from './components/Variables'
 import Question from '../../components/Question'
+import { isRegradeFlowSelector } from '../../../author/sharedDucks/questions'
 
 const types = [evaluationType.exactMatch, evaluationType.partialMatch]
 
@@ -57,6 +60,8 @@ class WidgetOptions extends Component {
       showScoringType,
       extraInScoring, // extraInScoring (Component required inside scoring section)
       isCorrectAnsTab,
+      fromCorrectItem,
+      regradeFlow,
     } = this.props
 
     return (
@@ -84,7 +89,7 @@ class WidgetOptions extends Component {
             />
           </Question>
         )}
-        {showVariables && (
+        {showVariables && !fromCorrectItem && !regradeFlow && (
           <Variables
             fillSections={fillSections}
             cleanSections={cleanSections}
@@ -98,4 +103,15 @@ class WidgetOptions extends Component {
   }
 }
 
-export default withNamespaces('assessment')(WidgetOptions)
+const enhance = compose(
+  withNamespaces('assessment'),
+  connect(
+    (state) => ({
+      fromCorrectItem: get(state, ['authorUi', 'questionEditModalOpen']),
+      regradeFlow: isRegradeFlowSelector(state),
+    }),
+    null
+  )
+)
+
+export default enhance(WidgetOptions)

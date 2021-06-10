@@ -18,6 +18,8 @@ const CREATE_DISTRICT_POLICY_SUCCESS = '[district policy] create data success'
 const CREATE_DISTRICT_POLICY_ERROR = '[district policy] create data error'
 
 const CHANGE_DISTRICT_POLICY_ACTION = '[district policy] save changed data'
+const SAVE_CANVAS_INTEGRATION_KEYS_REQUEST =
+  '[district policy] save canvas integration keys request'
 
 export const receiveDistrictPolicyAction = createAction(
   RECEIVE_DISTRICT_POLICY_REQUEST
@@ -51,6 +53,10 @@ export const createDistrictPolicyErrorAction = createAction(
 
 export const changeDistrictPolicyAction = createAction(
   CHANGE_DISTRICT_POLICY_ACTION
+)
+
+export const saveCanvasKeysRequestAction = createAction(
+  SAVE_CANVAS_INTEGRATION_KEYS_REQUEST
 )
 
 // reducers
@@ -213,6 +219,24 @@ function* createDictrictPolicySaga({ payload }) {
   }
 }
 
+function* saveCanvasKeysRequestSaga({ payload }) {
+  try {
+    const result = yield call(settingsApi.saveCanvasIntegrationKeys, payload)
+    yield put(updateDistrictPolicySuccessAction(result))
+    notification({
+      type: 'success',
+      msg: 'Canvas Integration keys saved successfully',
+    })
+  } catch (err) {
+    notification({
+      type: 'error',
+      msg:
+        err?.response?.data?.message ||
+        'Unable to save Canvas Integration keys',
+    })
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_DISTRICT_POLICY_REQUEST, receiveDistrictPolicySaga),
@@ -222,6 +246,12 @@ export function* watcherSaga() {
   ])
   yield all([
     yield takeEvery(CREATE_DISTRICT_POLICY_REQUEST, createDictrictPolicySaga),
+  ])
+  yield all([
+    yield takeEvery(
+      SAVE_CANVAS_INTEGRATION_KEYS_REQUEST,
+      saveCanvasKeysRequestSaga
+    ),
   ])
 }
 

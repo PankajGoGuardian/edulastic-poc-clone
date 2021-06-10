@@ -2,8 +2,10 @@ import React, { useEffect, useState, useRef } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import * as Sentry from '@sentry/browser'
-import { firestore } from 'firebase'
-import { Icon, notification } from 'antd'
+import firebase from 'firebase/app'
+// Required for side-effects
+import 'firebase/firestore'
+import { Icon } from 'antd'
 import { withRouter } from 'react-router-dom'
 import styled from 'styled-components'
 import moment from 'moment'
@@ -11,8 +13,11 @@ import { isEqual, omit } from 'lodash'
 import { white, red } from '@edulastic/colors'
 import useInterval from '@use-it/interval'
 import { db } from '@edulastic/common/src/Firebase'
+import { notification } from '@edulastic/common'
+import { roleuser } from '@edulastic/constants'
 import AssignmentTimeEndedAlert from './AssignmentTimeEndedAlert'
 import { utaStartTimeUpdateRequired } from '../../../student/sharedDucks/AssignmentModule/ducks'
+import { getUserRole } from '../../../author/src/selectors/user'
 
 export const TIME_UPDATE_TYPE = {
   START: 'start',
@@ -42,10 +47,9 @@ const getFormattedTime = (currentAssignmentTime) => {
 const firestoreCollectionName = 'timedAssignmentUTAs'
 
 function handlePaused(history) {
-  // TODO: replace with proper text as required
-  notification.open({
-    message: 'The assignment is paused',
-    description: `The assignment can't be attempted now , since its in paused state`,
+  notification({
+    msg: 'Assignment is Paused , Please check with your instructor.',
+    zIndex: 10000,
   })
   history.push('/home/assignments')
 }
@@ -59,19 +63,30 @@ const TimedTestTimer = ({
   updateUtaTimeType = null,
   resetUpdateUtaType,
   isPasswordValidated,
+  userRole,
+  isPreview,
+  allowedTime,
+  style = {},
 }) => {
   const [uta, setUtaDoc] = useState()
   const [upstreamUta, setUpstreamUta] = useState()
   const [autoSubmitPopUp, setAutoSubmitpopUp] = useState(false)
   const [currentAssignmentTime, setCurrentAssignmentTime] = useState(null)
-  const docRef = useRef(db.collection(firestoreCollectionName).doc(utaId))
-
+  const docRef = useRef(
+    db.collection(firestoreCollectionName).doc(utaId || 'NONEXISTENT')
+  )
+  const isAuthorPreview = userRole !== roleuser.STUDENT && isPreview
   useEffect(() => {
     let unsubscribe = () => {}
-    unsubscribe = db
-      .collection(firestoreCollectionName)
-      .doc(utaId)
-      .onSnapshot((_doc) => setUpstreamUta(_doc.data()))
+    if (!isAuthorPreview) {
+      unsubscribe = db
+        .collection(firestoreCollectionName)
+        .doc(utaId || 'NONEXISTENT')
+        .onSnapshot((_doc) => setUpstreamUta(_doc.data()))
+    }
+    if (isAuthorPreview) {
+      setCurrentAssignmentTime(allowedTime)
+    }
     return () => unsubscribe()
   }, [])
 
@@ -81,7 +96,7 @@ const TimedTestTimer = ({
       omit(upstreamUta, ['lastResumed', 'timeSpent'])
     )
 
-    if (isModified) {
+    if (isModified && !isAuthorPreview) {
       setUtaDoc(upstreamUta)
       const pausedByStudent =
         upstreamUta &&
@@ -93,18 +108,15 @@ const TimedTestTimer = ({
         updateUtaTimeType === TIME_UPDATE_TYPE.START
       const isPasswordProtected =
         isPasswordValidated && updateUtaTimeType === TIME_UPDATE_TYPE.RESUME
-      const timeStamp = firestore.FieldValue.serverTimestamp()
+      const timeStamp = firebase.firestore.FieldValue.serverTimestamp()
       if (pausedByStudent || initialUtaUpdate || isPasswordProtected) {
-        let data = { startTime: timeStamp }
+        let data = { startTime: timeStamp, status: UTA_STATUS.ACTIVE }
         if (updateUtaTimeType === TIME_UPDATE_TYPE.RESUME) {
           const timeStampType =
             !uta || uta?.startTime
               ? { lastResumed: timeStamp }
               : { startTime: timeStamp }
-          data = {
-            ...timeStampType,
-            status: UTA_STATUS.ACTIVE,
-          }
+          data = { ...timeStampType, status: UTA_STATUS.ACTIVE }
         }
         resetUpdateUtaType(null)
         docRef.current.update(data)
@@ -129,7 +141,7 @@ const TimedTestTimer = ({
             const { timeSpent = 0 } = snapshot.data()
             const _syncOffset = uta.allowedTime - currentAssignmentTime || 0
             docRef.current.update({
-              lastResumed: firestore.FieldValue.serverTimestamp(),
+              lastResumed: firebase.firestore.FieldValue.serverTimestamp(),
               timeSpent: Math.max(timeSpent, _syncOffset),
             })
           })
@@ -166,7 +178,7 @@ const TimedTestTimer = ({
           const { timeSpent = 0 } = snapshot.data()
           const _syncOffset = uta.allowedTime - currentAssignmentTime || 0
           docRef.current.update({
-            lastResumed: firestore.FieldValue.serverTimestamp(),
+            lastResumed: firebase.firestore.FieldValue.serverTimestamp(),
             timeSpent: Math.max(timeSpent, _syncOffset),
           })
         })
@@ -177,7 +189,7 @@ const TimedTestTimer = ({
           )
         )
       }
-    } else if (currentAssignmentTime > 0) {
+    } else if (currentAssignmentTime > 0 && !isAuthorPreview) {
       Sentry.captureException(
         new Error(
           `[Timed Assignment] Unable to Sync time ${currentAssignmentTime} on uta ${utaId} and group ${groupId}`
@@ -188,11 +200,12 @@ const TimedTestTimer = ({
 
   return (
     <>
-      {uta && currentAssignmentTime !== 0 && (
+      {(uta || isAuthorPreview) && (
         <TimerWrapper
           isDanger={currentAssignmentTime <= CAUTION_TIME}
           fgColor={fgColor}
           bgColor={bgColor}
+          style={style}
         >
           <Icon type="clock-circle" />
           <Label
@@ -205,11 +218,12 @@ const TimedTestTimer = ({
           </Label>
         </TimerWrapper>
       )}
-      {autoSubmitPopUp && uta && (
+      {autoSubmitPopUp && (uta || isAuthorPreview) && (
         <AssignmentTimeEndedAlert
           isVisible={autoSubmitPopUp}
           groupId={groupId}
           utaId={utaId}
+          isAuthorPreview={isAuthorPreview}
         />
       )}
     </>
@@ -222,6 +236,9 @@ const enhance = compose(
     (state) => ({
       updateUtaTimeType: state.studentAssignment.updateUtaTimeType,
       isPasswordValidated: state.test.isPasswordValidated,
+      isPreview: state.test.isTestPreviewModalVisible,
+      userRole: getUserRole(state),
+      allowedTime: state.test.settings.allowedTime,
     }),
     {
       resetUpdateUtaType: utaStartTimeUpdateRequired,

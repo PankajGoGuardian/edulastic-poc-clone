@@ -12,13 +12,17 @@ import {
   tabletWidth,
   themeColor,
   themeColorBlue,
+  white,
+  textColor,
+  lightGrey,
+  greyDarken,
+  publishedColor,
 } from '@edulastic/colors'
 import {
   IconPencilEdit,
   IconPlaylist,
   IconShare,
   IconSave,
-  IconAirdrop,
   IconUseThis,
   IconTrash,
   IconMoreVertical,
@@ -47,6 +51,30 @@ const HeaderButton = styled(EduButton)`
     span {
       display: none;
     }
+  }
+`
+
+const PlaylistStatus = styled.span`
+  margin-top: 0;
+  color: ${(props) => (props.mode === 'embedded' ? white : textColor)};
+  background: ${(props) => (props.mode === 'embedded' ? textColor : white)};
+  width: 60px;
+  height: 20px;
+  font-weight: 600;
+  margin-left: 10px;
+  display: inline-block;
+  font-size: 9px;
+  text-transform: uppercase;
+  border-radius: 4px;
+  text-align: center;
+  padding-top: 3px;
+  &.draft {
+    background: ${lightGrey};
+    color: ${greyDarken};
+  }
+  &.published {
+    background: ${publishedColor};
+    color: white;
   }
 `
 /**
@@ -107,7 +135,6 @@ const CurriculumHeader = ({
   updateDestinationPlaylist,
   handleEditClick,
   handleUseThisClick,
-  openDropPlaylistModal,
   onShareClick,
   onApproveClick,
   handleNavChange,
@@ -123,6 +150,7 @@ const CurriculumHeader = ({
   canAllowDuplicate,
   duplicatePlayList,
   writableCollections,
+  isDemoPlaygroundUser,
 }) => {
   const [loadingDelete, setLoadingDelete] = useState(false)
   const {
@@ -130,6 +158,7 @@ const CurriculumHeader = ({
     status,
     title,
     collections: _playlistCollections = [],
+    clonedCollections = [],
     _id,
   } = destinationCurriculumSequence
   const hasCollectionAccess = allowContentEditCheck(
@@ -146,9 +175,9 @@ const CurriculumHeader = ({
     collections.find(
       (c) => c.name === 'Spark Math' && c.owner === 'Edulastic Corp'
     ) || {}
-  const isSparkMathPlaylist = _playlistCollections.some(
-    (item) => item._id === sparkCollection?._id
-  )
+  const isSparkMathPlaylist =
+    _playlistCollections.some((item) => item._id === sparkCollection?._id) ||
+    clonedCollections.some((item) => item._id === sparkCollection?._id)
 
   const shouldHideUseThis = status === 'draft'
   const showUseThisButton =
@@ -198,20 +227,35 @@ const CurriculumHeader = ({
     </Menu>
   )
 
+  const headingSubContent =
+    urlHasUseThis && !isPublisherUser ? (
+      switchPlaylist
+    ) : (
+      <PlaylistStatus className={status} data-cy="playlist-status">
+        {status}
+      </PlaylistStatus>
+    )
+
   if (mode !== 'embedded') {
     return (
       <MainHeader
         Icon={isDesktop ? IconPlaylist : null}
         headingText={loading ? 'Untitled Playlist' : title}
+        titleText={
+          loading
+            ? 'Untitled Playlist'
+            : `${title} - ${destinationCurriculumSequence?.alignmentInfo}`
+        }
         titleMaxWidth="22rem"
         justify="space-between"
-        headingSubContent={urlHasUseThis && !isPublisherUser && switchPlaylist}
+        headingSubContent={headingSubContent}
       >
         {urlHasUseThis && !isMobile && (
           <PlaylistPageNav
             onChange={handleNavChange}
             current={currentTab}
             showDifferentiationTab={isSparkMathPlaylist}
+            showInsightTab={role === roleuser.TEACHER}
           />
         )}
 
@@ -227,14 +271,13 @@ const CurriculumHeader = ({
                   isGhost
                   isBlue
                   data-cy="delete-playlist"
-                  IconBtn={!shouldHideUseThis}
+                  IconBtn
                   onClick={() => {
                     setLoadingDelete()
                     handleConfirmForDeletePlaylist(_id, title, deletePlaylist)
                   }}
                 >
                   <IconTrash />
-                  {shouldHideUseThis && 'DELETE'}
                 </HeaderButton>
               </Tooltip>
             )}
@@ -245,15 +288,23 @@ const CurriculumHeader = ({
             features.isCurator) &&
             !customizeInDraft &&
             role !== roleuser.EDULASTIC_CURATOR && (
-              <HeaderButton
-                isBlue
-                isGhost
-                data-cy="share"
-                onClick={onShareClick}
-                IconBtn
-              >
-                <IconShare />
-              </HeaderButton>
+              <Tooltip placement="bottom" title="SHARE">
+                <HeaderButton
+                  isBlue
+                  isGhost
+                  data-cy="share"
+                  onClick={onShareClick}
+                  IconBtn
+                  disabled={isDemoPlaygroundUser}
+                  title={
+                    isDemoPlaygroundUser
+                      ? 'This feature is not available in demo account.'
+                      : ''
+                  }
+                >
+                  <IconShare />
+                </HeaderButton>
+              </Tooltip>
             )}
 
           {(canAllowDuplicate ||
@@ -264,6 +315,12 @@ const CurriculumHeader = ({
                 isBlue
                 isGhost
                 data-cy="clone"
+                disabled={isDemoPlaygroundUser}
+                title={
+                  isDemoPlaygroundUser
+                    ? 'This feature is not available in demo account.'
+                    : ''
+                }
                 onClick={() =>
                   duplicatePlayList({
                     _id: destinationCurriculumSequence._id,
@@ -336,7 +393,7 @@ const CurriculumHeader = ({
               <Tooltip placement="bottom" title="EDIT">
                 <HeaderButton
                   isBlue
-                  isGhost
+                  isGhost={!shouldHideUseThis}
                   data-cy="edit-playlist"
                   onClick={handleEditClick}
                   IconBtn={!shouldHideUseThis}
@@ -394,6 +451,7 @@ const enhance = compose(
   withRouter,
   connect((state) => ({
     writableCollections: getCollectionsSelector(state),
+    isDemoPlaygroundUser: state?.user?.user?.isPlayground,
   }))
 )
 

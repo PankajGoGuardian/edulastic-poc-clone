@@ -3,18 +3,38 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { withTheme } from 'styled-components'
 import { compose } from 'redux'
+import { round, isEqual } from 'lodash'
+import loadable from '@loadable/component'
+import Progress from '@edulastic/common/src/components/Progress'
+import { defaultSymbols } from '@edulastic/constants'
 
 import { fractionStringToNumber } from '../../../utils/helpers'
 import { CLEAR } from '../../../constants/constantsForQuestions'
-import { QuadrantsContainer } from './QuadrantsContainer'
-import { AxisLabelsContainer } from './AxisLabelsContainer'
-import { AxisSegmentsContainer } from './AxisSegmentsContainer'
 import { setQuestionDataAction } from '../../../../author/src/actions/question'
-import { PlacementContainer } from './PlacementContainer'
-import { NumberLinePlot } from './NumberLinePlot'
 import { smallestZoomLevel } from '../../../../common/utils/static/zoom'
 import { ifZoomed } from '../../../../common/utils/helpers'
 import { MIN_SNAP_SIZE } from '../Builder/config/constants'
+import GraphInView from './GraphInView'
+
+const QuadrantsContainer = loadable(() =>
+  import('./QuadrantsContainer/QuadrantsContainer')
+)
+
+const PlacementContainer = loadable(() =>
+  import('./PlacementContainer/PlacementContainer')
+)
+
+const AxisSegmentsContainer = loadable(() =>
+  import('./AxisSegmentsContainer/AxisSegmentsContainer')
+)
+
+const AxisLabelsContainer = loadable(() =>
+  import('./AxisLabelsContainer/AxisLabelsContainer')
+)
+
+const NumberLinePlot = loadable(() =>
+  import('./NumberLinePlot/NumberLinePlotContainer')
+)
 
 const graphDimensionsMultiplierHashMap = {
   sm: 1.5,
@@ -56,8 +76,11 @@ const getSnapSize = (snapTo, axisDistance) => {
 }
 
 class GraphDisplay extends Component {
-  state = {
-    graphIsValid: false,
+  constructor(props) {
+    super(props)
+    this.state = {
+      graphIsValid: false,
+    }
   }
 
   componentDidMount() {
@@ -196,6 +219,32 @@ class GraphDisplay extends Component {
     }
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    const { inLCB, isExpressGrader, tReady, windowHeight } = this.props
+    const { graphIsValid } = this.state
+    // a perf optimization done in LCB view to avoid unresponsive question view.
+    // without this, for every update graph re-rendering causing freezing
+    // we are checking graphData.activity,graphData.elements,bgShapes for change
+    // TODO: re-factor graph components to be more efficient in other parts of app
+    if (
+      inLCB &&
+      !isExpressGrader &&
+      this.props?.graphData &&
+      isEqual(
+        nextProps?.graphData?.activity,
+        this.props?.graphData?.activity
+      ) &&
+      isEqual(nextProps?.bgShapes, this.props?.bgShapes) &&
+      tReady === nextProps.tReady &&
+      windowHeight === nextProps.windowHeight &&
+      graphIsValid === nextState.graphIsValid
+    ) {
+      return false
+    }
+
+    return true
+  }
+
   getGraphContainerProps = () => {
     const { graphData } = this.props
     const { graphType } = graphData
@@ -215,6 +264,36 @@ class GraphDisplay extends Component {
     }
   }
 
+  getCanvas = () => {
+    const { graphData } = this.props
+    const { uiStyle, canvas } = graphData
+    const { xRadians, yRadians } = uiStyle
+
+    // Canvas Size
+    const xMin = xRadians
+      ? round(Math.PI * parseFloat(canvas.xMin), 2)
+      : parseFloat(canvas.xMin)
+    const xMax = xRadians
+      ? round(Math.PI * parseFloat(canvas.xMax), 2)
+      : parseFloat(canvas.xMax)
+    const yMin = yRadians
+      ? round(Math.PI * parseFloat(canvas.yMin), 2)
+      : parseFloat(canvas.yMin)
+    const yMax = yRadians
+      ? round(Math.PI * parseFloat(canvas.yMax), 2)
+      : parseFloat(canvas.yMax)
+
+    // Grid Distance
+    const xDistance = xRadians
+      ? round(Math.PI / safeParseFloat(uiStyle.xDistance), 2)
+      : safeParseFloat(uiStyle.xDistance)
+    const yDistance = yRadians
+      ? round(Math.PI / safeParseFloat(uiStyle.yDistance), 2)
+      : safeParseFloat(uiStyle.yDistance)
+
+    return [xMin, xMax, yMin, yMax, xDistance, yDistance]
+  }
+
   getQuadrantsProps = () => {
     const {
       view,
@@ -230,11 +309,12 @@ class GraphDisplay extends Component {
       elementsIsCorrect,
       advancedElementSettings,
       setQuestionData,
+      onChangeKeypad,
+      symbols,
     } = this.props
 
     const {
       uiStyle,
-      canvas,
       backgroundImage,
       background_shapes,
       toolbar,
@@ -242,6 +322,7 @@ class GraphDisplay extends Component {
       annotation,
       graphType,
       list,
+      showConnect,
     } = graphData
 
     const {
@@ -249,15 +330,11 @@ class GraphDisplay extends Component {
       xShowAxis = true,
       yShowAxis = true,
       drawLabelZero = true,
+      xRadians,
+      yRadians,
     } = uiStyle
 
-    const xMin = parseFloat(canvas.xMin)
-    const xMax = parseFloat(canvas.xMax)
-    const yMin = parseFloat(canvas.yMin)
-    const yMax = parseFloat(canvas.yMax)
-    const xDistance = safeParseFloat(uiStyle.xDistance)
-    const yDistance = safeParseFloat(uiStyle.yDistance)
-
+    const [xMin, xMax, yMin, yMax, xDistance, yDistance] = this.getCanvas()
     const { width = 0, height = 0 } = this.getGraphDimensions(uiStyle)
 
     return {
@@ -276,14 +353,8 @@ class GraphDisplay extends Component {
       },
       pointParameters: {
         snapToGrid: true,
-        snapSizeX: getSnapSize(
-          uiStyle.layoutSnapto,
-          parseFloat(uiStyle.xDistance)
-        ),
-        snapSizeY: getSnapSize(
-          uiStyle.layoutSnapto,
-          parseFloat(uiStyle.yDistance)
-        ),
+        snapSizeX: getSnapSize(uiStyle.layoutSnapto, xDistance),
+        snapSizeY: getSnapSize(uiStyle.layoutSnapto, yDistance),
         showInfoBox: uiStyle.displayPositionOnHover,
         withLabel: false,
         size: uiStyle.displayPositionPoint === false ? 0 : 3,
@@ -299,6 +370,7 @@ class GraphDisplay extends Component {
         commaInLabel: uiStyle.xCommaInLabel,
         showAxis: xShowAxis,
         drawZero: drawLabelZero,
+        useRadians: xRadians,
       },
       yAxesParameters: {
         ticksDistance: safeParseFloat(uiStyle.yTickDistance),
@@ -311,6 +383,7 @@ class GraphDisplay extends Component {
         commaInLabel: uiStyle.yCommaInLabel,
         showAxis: yShowAxis,
         drawZero: drawLabelZero && !xShowAxis,
+        useRadians: yRadians,
       },
       gridParams: {
         gridX: xDistance,
@@ -348,6 +421,9 @@ class GraphDisplay extends Component {
       advancedElementSettings,
       setQuestionData,
       graphData,
+      onChangeKeypad,
+      symbols,
+      showConnect,
     }
   }
 
@@ -509,6 +585,7 @@ class GraphDisplay extends Component {
         rightArrow: numberlineAxis && numberlineAxis.rightArrow,
         showTicks: numberlineAxis && numberlineAxis.showTicks,
         snapToTicks: numberlineAxis && numberlineAxis.snapToTicks,
+        snapToGrid: numberlineAxis && numberlineAxis.snapToGrid,
         showMin: numberlineAxis && numberlineAxis.showMin,
         showMax: numberlineAxis && numberlineAxis.showMax,
         ticksDistance:
@@ -664,6 +741,12 @@ class GraphDisplay extends Component {
           numberlineAxis && numberlineAxis.shuffleAnswerChoices,
         responseBoxPosition:
           (numberlineAxis && numberlineAxis.responseBoxPosition) || 'bottom',
+        strokeColor: uiStyle.xStrokeColor || '#434B5D',
+        highlightStrokeColor: uiStyle.xStrokeHoverColor || '#434B5D',
+        tickColors: {
+          strokeColor: '#434B5D',
+          highlightStrokeColor: '#434B5D',
+        },
       },
       layout: {
         width: parseInt(width, 10),
@@ -687,27 +770,6 @@ class GraphDisplay extends Component {
         ),
         showInfoBox: uiStyle.displayPositionOnHover,
         withLabel: false,
-      },
-      xAxesParameters: {
-        ticksDistance: safeParseFloat(uiStyle.xTickDistance),
-        name: uiStyle.xShowAxisLabel ? uiStyle.xAxisLabel : '',
-        showTicks: !uiStyle.xHideTicks,
-        drawLabels: uiStyle.xDrawLabel,
-        maxArrow: uiStyle.xMaxArrow,
-        minArrow: uiStyle.xMinArrow,
-        commaInLabel: uiStyle.xCommaInLabel,
-        strokeColor: uiStyle.xStrokeColor ? uiStyle.xStrokeColor : '#434B5D',
-        tickEndings: uiStyle.xTickEndings ? uiStyle.xTickEndings : false,
-      },
-      yAxesParameters: {
-        ticksDistance: safeParseFloat(uiStyle.yTickDistance),
-        name: uiStyle.yShowAxisLabel ? uiStyle.yAxisLabel : '',
-        showTicks: !uiStyle.yHideTicks,
-        drawLabels: uiStyle.yDrawLabel,
-        maxArrow: uiStyle.yMaxArrow,
-        minArrow: uiStyle.yMinArrow,
-        commaInLabel: uiStyle.yCommaInLabel,
-        minorTicks: uiStyle.yMinorTicks ? uiStyle.yMinorTicks : 0,
       },
       gridParams: {
         gridY: safeParseFloat(uiStyle.yDistance),
@@ -737,13 +799,15 @@ class GraphDisplay extends Component {
     const GraphContainer = this.getGraphContainer()
 
     return (
-      <>
+      <GraphInView isPartial className="__prevent-page-break">
         {graphIsValid ? (
-          <div className="__prevent-page-break">
+          <>
             {/* zoomLevel change css transform: scale() style,
-                after changing this style you need to do full reinit of component with jsxgraph object */}
+              after changing this style 
+              you need to do full reinit of component with jsxgraph object */}
             {zl === 1 && (
               <GraphContainer
+                fallback={<Progress />}
                 theme={theme}
                 {...this.getGraphContainerProps()}
                 isPrintPreview={isPrint || isPrintPreview}
@@ -751,6 +815,7 @@ class GraphDisplay extends Component {
             )}
             {zl === 1.5 && (
               <GraphContainer
+                fallback={<Progress />}
                 theme={theme}
                 {...this.getGraphContainerProps()}
                 isPrintPreview={isPrint || isPrintPreview}
@@ -758,6 +823,7 @@ class GraphDisplay extends Component {
             )}
             {zl === 1.75 && (
               <GraphContainer
+                fallback={<Progress />}
                 theme={theme}
                 {...this.getGraphContainerProps()}
                 isPrintPreview={isPrint || isPrintPreview}
@@ -765,6 +831,7 @@ class GraphDisplay extends Component {
             )}
             {zl === 2.5 && (
               <GraphContainer
+                fallback={<Progress />}
                 theme={theme}
                 {...this.getGraphContainerProps()}
                 isPrintPreview={isPrint || isPrintPreview}
@@ -772,16 +839,17 @@ class GraphDisplay extends Component {
             )}
             {zl === 3 && (
               <GraphContainer
+                fallback={<Progress />}
                 theme={theme}
                 {...this.getGraphContainerProps()}
                 isPrintPreview={isPrint || isPrintPreview}
               />
             )}
-          </div>
+          </>
         ) : (
           <div>Wrong parameters</div>
         )}
-      </>
+      </GraphInView>
     )
   }
 }
@@ -804,6 +872,8 @@ GraphDisplay.propTypes = {
   elementsIsCorrect: PropTypes.bool,
   advancedElementSettings: PropTypes.bool,
   zoomLevel: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  onChangeKeypad: PropTypes.func,
+  symbols: PropTypes.array,
 }
 
 GraphDisplay.defaultProps = {
@@ -821,6 +891,8 @@ GraphDisplay.defaultProps = {
   disableResponse: false,
   elementsIsCorrect: false,
   zoomLevel: 1,
+  onChangeKeypad: () => {},
+  symbols: defaultSymbols,
 }
 
 const enhance = compose(

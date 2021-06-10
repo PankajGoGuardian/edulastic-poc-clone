@@ -1,17 +1,20 @@
 import React from 'react'
-import { Layout } from 'antd'
+import { Layout, Spin } from 'antd'
+import { connect } from 'react-redux'
 import HeaderSection from './Header/Header'
 import MainContent from './Showcase/showcase'
-import SideContent from './SideContent/Sidecontent'
-import { ContentWrapper } from './styled'
 
-const Dashboard = () => {
+const Dashboard = ({ userId }) => {
+  if (!userId) {
+    return <Spin />
+  }
   return (
     <Layout>
       <HeaderSection />
       <MainContent />
-      <SideContent />
     </Layout>
   )
 }
-export default Dashboard
+export default connect((state) => ({
+  userId: state?.user?.user?._id,
+}))(Dashboard)

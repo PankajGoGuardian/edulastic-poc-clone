@@ -1,26 +1,37 @@
 import {
   extraDesktopWidthMax,
+  grey,
   mobileWidthMax,
   themeColor,
   title,
   white,
 } from '@edulastic/colors'
+import { IconExpandBox } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
 import { Button, Col, Form, Row, Select } from 'antd'
 import { find, get, isEmpty, map, mapKeys, pick } from 'lodash'
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { createRef } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import styled from 'styled-components'
+import StandardsSearchModal from '../../../../author/ItemList/components/Search/StandardsSearchModal'
 // actions
-import { getDictCurriculumsAction } from '../../../../author/src/actions/dictionaries'
+import {
+  getDictCurriculumsAction,
+  getDictStandardsForCurriculumAction,
+} from '../../../../author/src/actions/dictionaries'
 // selectors
 import {
   getCurriculumsListSelector,
   getFormattedCurriculums,
+  getStandardsListSelector,
 } from '../../../../author/src/selectors/dictionaries'
-import { getInterestedCurriculumsSelector } from '../../../../author/src/selectors/user'
+import {
+  getInterestedCurriculumsSelector,
+  getUserSelector,
+} from '../../../../author/src/selectors/user'
+import { FilterItemWrapper } from '../../../../author/TestList/components/Container/FiltersSidebar'
 import selectsData from '../../../../author/TestPage/components/common/selectsData'
 import {
   saveSubjectGradeAction,
@@ -34,9 +45,27 @@ const schoolIcon =
   '//cdn.edulastic.com/JS/webresources/images/as/signup-join-school-icon.png'
 
 class SubjectGrade extends React.Component {
-  state = {
-    subjects: [],
-    grades: [],
+  constructor(props) {
+    super(props)
+    this.gradeRef = createRef()
+    this.subjectRef = createRef()
+    this.standardRef = createRef()
+    this.standardsRef = createRef()
+    const { userInfo } = this.props
+    const { defaultGrades, defaultSubjects } = get(props.user, 'user.orgData')
+    let { interestedCurriculums } = get(props.user, 'user.orgData')
+
+    interestedCurriculums = interestedCurriculums.filter(
+      (x) => x.orgType === userInfo?.role
+    )
+
+    this.state = {
+      subjects: defaultSubjects || [],
+      grades: defaultGrades || [],
+      standards: (interestedCurriculums || []).map((x) => x._id),
+      curriculumStandard: [],
+      showStandardsModal: false,
+    }
   }
 
   static propTypes = {
@@ -52,10 +81,39 @@ class SubjectGrade extends React.Component {
         subject: PropTypes.string.isRequired,
       })
     ).isRequired,
+    isModal: PropTypes.bool,
+    isTestRecommendationCustomizer: PropTypes.bool,
+    setShowTestCustomizerModal: PropTypes.func,
+    user: PropTypes.object.isRequired,
+  }
+
+  static defaultProps = {
+    isModal: false,
+    isTestRecommendationCustomizer: false,
+    setShowTestCustomizerModal: () => {},
   }
 
   componentDidMount() {
-    const { curriculums, getCurriculums } = this.props
+    const {
+      curriculums,
+      getCurriculums,
+      user = {},
+      getDictStandardsForCurriculum,
+    } = this.props
+    const { standards } = this.state
+    const { currentStandardSetStandards } = user?.user || {}
+    const curriculumIds = Object.keys(currentStandardSetStandards || {})
+    if (curriculumIds.length) {
+      const { defaultGrades = [] } = get(this.props.user, 'user.orgData')
+      getDictStandardsForCurriculum(curriculumIds, defaultGrades, '')
+
+      const curriculumStandard = curriculumIds.flatMap((cid) =>
+        standards.includes(parseInt(cid, 10))
+          ? currentStandardSetStandards[cid]
+          : []
+      )
+      this.setState({ curriculumStandard })
+    }
 
     if (isEmpty(curriculums)) {
       getCurriculums()
@@ -72,12 +130,18 @@ class SubjectGrade extends React.Component {
 
   handleSubmit = (e) => {
     const { grades: defaultGrades, subjects: defaultSubjects } = this.state
-    const { form, userInfo, saveSubjectGrade } = this.props
+    const {
+      form,
+      userInfo,
+      saveSubjectGrade,
+      isTestRecommendationCustomizer,
+      setShowTestCustomizerModal,
+    } = this.props
     const isSignUp = true
     e.preventDefault()
     form.validateFields((err, values) => {
       if (!err) {
-        const { curriculums } = this.props
+        const { curriculums, curriculumStandards = {} } = this.props
 
         const data = {
           orgId: userInfo._id,
@@ -85,8 +149,11 @@ class SubjectGrade extends React.Component {
           districtId: userInfo.districtId,
           isSignUp,
           curriculums: [],
+          curriculumStandards: {},
           defaultGrades,
           defaultSubjects,
+          isTestRecommendationCustomizer,
+          setShowTestCustomizerModal,
         }
 
         map(values.standard, (id) => {
@@ -102,21 +169,91 @@ class SubjectGrade extends React.Component {
           data.curriculums.push(newCurriculum)
         })
 
+        map(values.curriculumStandards, (id) => {
+          const standard = find(
+            curriculumStandards.elo || [],
+            (x) => x._id === id
+          )
+          data.curriculumStandards[standard.curriculumId] = (
+            data.curriculumStandards[standard.curriculumId] || []
+          ).concat(id)
+        })
+
         saveSubjectGrade({ ...data })
       }
     })
   }
 
-  render() {
-    const { subjects } = this.state
+  handleSetShowModal = () => {
+    const { form, curriculumStandards } = this.props
+    if (
+      !(form.getFieldValue('standard') || []).length ||
+      !curriculumStandards.elo.length
+    )
+      return
+    this.setState({ showStandardsModal: true })
+  }
+
+  handleStandardsChange = (standardIds) => {
+    const { form } = this.props
+
+    form.setFieldsValue({
+      curriculumStandards: standardIds,
+    })
+  }
+
+  handleCuriculumChange = (curriculumIds) => {
     const {
-      interestedCurriculums,
+      getDictStandardsForCurriculum,
+      form,
+      curriculumStandards,
+    } = this.props
+
+    form.setFields({
+      standard: {
+        value: curriculumIds,
+      },
+    })
+    const selectedCurriculamStandardIds = form.getFieldValue(
+      'curriculumStandards'
+    )
+    const standardIds = (curriculumStandards.elo || [])
+      .filter(
+        (s) =>
+          selectedCurriculamStandardIds.includes(s.id) &&
+          curriculumIds.includes(s.curriculumId)
+      )
+      .map((s) => s.id)
+
+    this.handleStandardsChange(standardIds)
+    const grades = form.getFieldValue('grade')
+    getDictStandardsForCurriculum(curriculumIds, grades, '')
+  }
+
+  render() {
+    const {
+      grades,
+      subjects,
+      standards,
+      curriculumStandard,
+      showStandardsModal,
+    } = this.state
+    const {
       curriculums,
       form,
       saveSubjectGradeloading,
       t,
+      isModal,
+      isTestRecommendationCustomizer,
+      curriculumStandards,
+      userInfo,
     } = this.props
+    let { interestedCurriculums } = this.props
+
     const { showAllStandards } = get(this, 'props.userInfo.orgData', {})
+    interestedCurriculums = interestedCurriculums.filter(
+      (x) => x.orgType === userInfo?.role
+    )
     const formattedCurriculums = isEmpty(subjects)
       ? []
       : getFormattedCurriculums(
@@ -130,16 +267,30 @@ class SubjectGrade extends React.Component {
       (item) => item.isContentGrade !== true
     )
     const _allSubjects = allSubjects.filter((item) => item.value)
+
+    const standardSets = form.getFieldValue('standard') || []
+
+    const selectedCurriculam = {
+      text:
+        formattedCurriculums
+          ?.filter((x) => standardSets.includes(x.value))
+          ?.map((x) => x.text)
+          ?.join(', ') || '',
+    }
+
     return (
       <>
-        <SubjectGradeBody>
-          <Col xs={{ span: 20, offset: 2 }} lg={{ span: 18, offset: 3 }}>
+        <SubjectGradeBody hasMinHeight={!isModal}>
+          <Col
+            xs={{ span: 20, offset: 2 }}
+            lg={{ span: isModal ? 22 : 18, offset: isModal ? 1 : 3 }}
+          >
             <FlexWrapper type="flex" align="middle">
               <BannerText xs={24} sm={18} md={12}>
                 <SchoolIcon src={schoolIcon} alt="" />
                 <h3>
-                  {t('component.signup.teacher.choosesubject')} <br />{' '}
-                  {t('component.signup.teacher.choosegrade')}
+                  {t('component.signup.teacher.provide')} <br />{' '}
+                  {t('component.signup.teacher.curriculumdetails')}
                 </h3>
                 <h5>{t('component.signup.teacher.gsinfotext')}</h5>
               </BannerText>
@@ -147,6 +298,7 @@ class SubjectGrade extends React.Component {
                 <SelectForm onSubmit={this.handleSubmit}>
                   <Form.Item label="Grade">
                     {getFieldDecorator('grade', {
+                      initialValue: grades,
                       rules: [
                         {
                           required: true,
@@ -166,6 +318,12 @@ class SubjectGrade extends React.Component {
                         placeholder="Select a grade or multiple grades"
                         mode="multiple"
                         onChange={this.updateGrades}
+                        ref={this.gradeRef}
+                        onSelect={() => this.gradeRef?.current?.blur()}
+                        onDeselect={() => this.gradeRef?.current?.blur()}
+                        getPopupContainer={(triggerNode) =>
+                          triggerNode.parentNode
+                        }
                         showArrow
                       >
                         {filteredAllGrades.map((el) => (
@@ -179,10 +337,11 @@ class SubjectGrade extends React.Component {
 
                   <Form.Item label="Subjects">
                     {getFieldDecorator('subjects', {
+                      initialValue: subjects,
                       rules: [
                         {
                           required: true,
-                          message: 'Subject Area is not selected',
+                          message: 'Subject(s) is not selected',
                         },
                       ],
                     })(
@@ -192,6 +351,12 @@ class SubjectGrade extends React.Component {
                         size="large"
                         placeholder="Select a subject"
                         onChange={this.updateSubjects}
+                        ref={this.subjectRef}
+                        onSelect={() => this.subjectRef?.current?.blur()}
+                        onDeselect={() => this.subjectRef?.current?.blur()}
+                        getPopupContainer={(triggerNode) =>
+                          triggerNode.parentNode
+                        }
                         showArrow
                       >
                         {_allSubjects.map((el) => (
@@ -204,10 +369,15 @@ class SubjectGrade extends React.Component {
                   </Form.Item>
                   <Form.Item label="Standard Sets">
                     {getFieldDecorator('standard', {
+                      initialValue: formattedCurriculums?.some((x) =>
+                        standards.includes(x.value)
+                      )
+                        ? standards
+                        : [],
                       rules: [
                         {
                           required: false,
-                          message: 'Standard Area is not selected',
+                          message: 'Standard Set is not selected',
                         },
                       ],
                     })(
@@ -218,6 +388,13 @@ class SubjectGrade extends React.Component {
                         size="large"
                         placeholder="Select your standard sets"
                         mode="multiple"
+                        onChange={this.handleCuriculumChange}
+                        ref={this.standardRef}
+                        onSelect={() => this.standardRef?.current?.blur()}
+                        onDeselect={() => this.standardRef?.current?.blur()}
+                        getPopupContainer={(triggerNode) =>
+                          triggerNode.parentNode
+                        }
                         showArrow
                       >
                         {formattedCurriculums.map(
@@ -235,19 +412,81 @@ class SubjectGrade extends React.Component {
                     )}
                   </Form.Item>
 
+                  <Form.Item label="What are you teaching right now? (optional)">
+                    {getFieldDecorator('curriculumStandards', {
+                      initialValue: curriculumStandards?.elo?.length
+                        ? curriculumStandard
+                        : [],
+                      rules: [
+                        {
+                          required: false,
+                          message: 'Standard(s) is not selected',
+                        },
+                      ],
+                    })(
+                      <FilterItemWrapper title="">
+                        <IconExpandBoxWrapper
+                          data-cy="browseStandards"
+                          className={
+                            !(form.getFieldValue('standard') || []).length &&
+                            'disabled'
+                          }
+                        >
+                          <IconExpandBox onClick={this.handleSetShowModal} />
+                        </IconExpandBoxWrapper>
+                        <GradeSelect
+                          data-cy="standards"
+                          value={form.getFieldValue('curriculumStandards')}
+                          optionFilterProp="children"
+                          filterOption
+                          size="large"
+                          placeholder="Select topic / standard"
+                          mode="multiple"
+                          onChange={this.handleStandardsChange}
+                          disabled={
+                            !(form.getFieldValue('standard') || []).length
+                          }
+                          ref={this.standardsRef}
+                          onSelect={() => this.standardsRef?.current?.blur()}
+                          onDeselect={() => this.standardsRef?.current?.blur()}
+                          getPopupContainer={(triggerNode) =>
+                            triggerNode.parentNode
+                          }
+                        >
+                          {curriculumStandards.elo.map(
+                            ({ _id, identifier }) => (
+                              <Option key={`${_id}-${identifier}`} value={_id}>
+                                {identifier}
+                              </Option>
+                            )
+                          )}
+                        </GradeSelect>
+                      </FilterItemWrapper>
+                    )}
+                  </Form.Item>
+
                   <ProceedBtn
                     data-cy="getStarted"
                     type="primary"
                     htmlType="submit"
-                    disabled={saveSubjectGradeloading}
+                    loading={saveSubjectGradeloading}
                   >
-                    Get Started
+                    {isTestRecommendationCustomizer ? 'Update' : 'Get Started'}
                   </ProceedBtn>
                 </SelectForm>
               </Col>
             </FlexWrapper>
           </Col>
         </SubjectGradeBody>
+        {showStandardsModal && (
+          <StandardsSearchModal
+            setShowModal={(x) => this.setState({ showStandardsModal: x })}
+            showModal={showStandardsModal}
+            standardIds={form.getFieldValue('curriculumStandards') || []}
+            handleApply={this.handleStandardsChange}
+            selectedCurriculam={selectedCurriculam}
+          />
+        )}
       </>
     )
   }
@@ -260,12 +499,15 @@ const enhance = compose(
   connect(
     (state) => ({
       curriculums: getCurriculumsListSelector(state),
+      user: getUserSelector(state),
       interestedCurriculums: getInterestedCurriculumsSelector(state),
       saveSubjectGradeloading: saveSubjectGradeloadingSelector(state),
+      curriculumStandards: getStandardsListSelector(state),
     }),
     {
       getCurriculums: getDictCurriculumsAction,
       saveSubjectGrade: saveSubjectGradeAction,
+      getDictStandardsForCurriculum: getDictStandardsForCurriculumAction,
     }
   )
 )
@@ -273,9 +515,10 @@ const enhance = compose(
 export default enhance(SubjectGradeForm)
 
 const SubjectGradeBody = styled(Row)`
-  padding: 60px 0px;
+  padding: 30px 0px;
   background: ${white};
-  min-height: calc(100vh - 93px);
+  ${({ hasMinHeight = true }) =>
+    hasMinHeight && `min-height: calc(100vh - 93px);`}
 `
 
 const FlexWrapper = styled(Row)`
@@ -414,5 +657,18 @@ const ProceedBtn = styled(Button)`
   }
   @media (min-width: ${extraDesktopWidthMax}) {
     font-size: 11px;
+  }
+`
+
+const IconExpandBoxWrapper = styled.div`
+  right: 10px;
+  margin-top: 5px;
+  position: absolute;
+  z-index: 1;
+  cursor: pointer;
+  &.disabled {
+    svg path {
+      fill: ${grey};
+    }
   }
 `

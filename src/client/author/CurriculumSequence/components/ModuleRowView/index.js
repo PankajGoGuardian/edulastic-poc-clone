@@ -3,11 +3,7 @@ import { Dropdown, Icon, Menu, Col } from 'antd'
 import { IconMoreVertical, IconVerified } from '@edulastic/icons'
 import { lightGrey5, themeColor, themeColorLighter } from '@edulastic/colors'
 import { removeCommentsFromHtml } from '@edulastic/common/src/helpers'
-import {
-  StyledLabel,
-  StyledTag,
-  MenuStyled,
-} from '../../../Reports/common/styled'
+import { StyledLabel, StyledTag } from '../../../Reports/common/styled'
 import { Tooltip } from '../../../../common/utils/helpers'
 
 import ProgressBars from './ProgressBars'
@@ -82,7 +78,7 @@ const ModuleRowView = (props) => {
   }
 
   const moduleManagementMenu = (
-    <MenuStyled data-cy="moduleItemMoreMenu">
+    <Menu data-cy="moduleItemMoreMenu">
       <CaretUp className="fa fa-caret-up" />
       {!isDesktop && (
         <Menu.Item onClick={onClickHideShow}>
@@ -95,7 +91,7 @@ const ModuleRowView = (props) => {
       <Menu.Item onClick={addModuleMenuClick}>Add Module</Menu.Item>
       <Menu.Item onClick={editModuleMenuClick}>Edit Module</Menu.Item>
       <Menu.Item onClick={deleteModuleMenuClick}>Delete Module</Menu.Item>
-    </MenuStyled>
+    </Menu>
   )
 
   const hideLink = !hideEditOptions &&

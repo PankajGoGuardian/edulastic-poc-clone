@@ -11,8 +11,10 @@ export const ActionButton = styled(EduButton)`
   width: 30px;
   height: 30px;
   box-shadow: 0 2px 4px 0 rgba(201, 208, 219, 0.5);
-  border: none;
-  margin-right: 4px;
+
+  &:first-child {
+    margin-left: 0px;
+  }
 
   & svg {
     fill: ${themeColor};

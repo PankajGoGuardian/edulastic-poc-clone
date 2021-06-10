@@ -20,10 +20,11 @@ import {
   EduButton,
   EduSwitchStyled,
 } from '@edulastic/common'
+import { signupStateBykey } from '@edulastic/constants/const/signUpState'
 import { withNamespaces } from '@edulastic/localization'
 import { Form, Icon, Input, Select, Tag, Modal } from 'antd'
 import produce from 'immer'
-import { isEqual, map, omit, get } from 'lodash'
+import { isEqual, map, omit, get, isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
@@ -54,6 +55,8 @@ import { selectsData } from '../../../TestPage/components/common'
 import JoinSchool from '../../../../student/Signup/components/TeacherContainer/JoinSchool'
 import { getInterestedCurriculumsByOrgType } from '../../../src/selectors/user'
 
+const { ORG_TYPE } = roleuser
+
 const FormItem = Form.Item
 class ProfileBody extends React.Component {
   state = {
@@ -70,7 +73,6 @@ class ProfileBody extends React.Component {
     defaultGrades: [],
     defaultSubjects: [],
     autoShareGCAssignment: undefined,
-    showDefaultSettingSave: false,
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -134,6 +136,7 @@ class ProfileBody extends React.Component {
       form: { getFieldValue },
       user,
       updateUserDetails,
+      userInfo: { currentSignUpState },
     } = this.props
     const { showChangePassword, isEditProfile } = this.state
     const isnotNormalLogin =
@@ -152,6 +155,7 @@ class ProfileBody extends React.Component {
       firstName: isEditProfile ? getFieldValue('firstName') : user.firstName,
       lastName: isEditProfile ? getFieldValue('lastName') : user.lastName,
       title: isEditProfile ? getFieldValue('title') : user.title,
+      currentSignUpState: signupStateBykey[currentSignUpState],
     }
     if (showChangePassword) data.password = getFieldValue('password')
 
@@ -228,19 +232,12 @@ class ProfileBody extends React.Component {
     }
     const orgType =
       role === roleuser.DISTRICT_ADMIN
-        ? 'district'
+        ? ORG_TYPE.DISTRICT_ADMIN
         : role === roleuser.SCHOOL_ADMIN
-        ? 'institution'
-        : 'teacher'
-    let orgId = user._id
-    if (role === roleuser.DISTRICT_ADMIN) {
-      orgId = user.districtIds[0]
-    }
-    if (role === roleuser.SCHOOL_ADMIN) {
-      orgId = user.institutionIds[0]
-    }
+        ? ORG_TYPE.SCHOOL_ADMIN
+        : ORG_TYPE.TEACHER
     const standardsData = {
-      orgId,
+      orgId: user._id,
       orgType,
       curriculums: curriculumsData,
     }
@@ -258,33 +255,32 @@ class ProfileBody extends React.Component {
       isPowerTeacher,
     } = this.state
     const { role } = user
+
     const orgType =
       role === roleuser.DISTRICT_ADMIN
-        ? 'district'
+        ? ORG_TYPE.DISTRICT_ADMIN
         : role === roleuser.SCHOOL_ADMIN
-        ? 'institution'
-        : 'teacher'
-    let orgId = user._id
-    if (role === roleuser.DISTRICT_ADMIN) {
-      orgId = user.districtIds[0]
-    }
-    if (role === roleuser.SCHOOL_ADMIN) {
-      orgId = user.institutionIds[0]
-    }
-    const settingsToUpdate = {
-      orgId,
+        ? ORG_TYPE.SCHOOL_ADMIN
+        : ORG_TYPE.TEACHER
+    let settingsToUpdate = {
+      orgId: user._id,
       orgType,
-      defaultGrades,
-      defaultSubjects,
       autoShareGCAssignment,
       isPowerTeacher,
     }
+
+    if (!isEmpty(defaultSubjects)) {
+      settingsToUpdate = { ...settingsToUpdate, defaultSubjects }
+    }
+
+    if (!isEmpty(defaultGrades)) {
+      settingsToUpdate = { ...settingsToUpdate, defaultGrades }
+    }
+
     updateDefaultSettings(settingsToUpdate)
-    this.setState({ showDefaultSettingSave: false })
   }
 
   onSettingChange = (value, field) => {
-    this.setState({ showDefaultSettingSave: true })
     switch (field) {
       case 'grade': {
         this.setState({ defaultGrades: value })
@@ -313,19 +309,12 @@ class ProfileBody extends React.Component {
     )
     const orgType =
       role === roleuser.DISTRICT_ADMIN
-        ? 'district'
+        ? ORG_TYPE.DISTRICT_ADMIN
         : role === roleuser.SCHOOL_ADMIN
-        ? 'institution'
-        : 'teacher'
-    let orgId = user._id
-    if (role === roleuser.DISTRICT_ADMIN) {
-      orgId = user.districtIds[0]
-    }
-    if (role === roleuser.SCHOOL_ADMIN) {
-      orgId = user.institutionIds[0]
-    }
+        ? ORG_TYPE.SCHOOL_ADMIN
+        : ORG_TYPE.TEACHER
     const standardsData = {
-      orgId,
+      orgId: user._id,
       orgType,
       curriculums: updatedInterestedCurriculums,
     }
@@ -375,7 +364,12 @@ class ProfileBody extends React.Component {
 
   getStandardSets = () => {
     const { interestedCurriculums } = this.state
-    const curriculums = interestedCurriculums.map((curriculum) => (
+    // remove duplicate objects with same name
+    const targetInterestedCurriculums = interestedCurriculums.filter(
+      (v, i, a) => a.findIndex((t) => t.name === v.name) === i
+    )
+
+    const curriculums = targetInterestedCurriculums.map((curriculum) => (
       <StyledTag id={curriculum._id}>
         {curriculum.name}
         <Icon
@@ -578,7 +572,6 @@ class ProfileBody extends React.Component {
       defaultGrades = [],
       defaultSubjects = [],
       autoShareGCAssignment = false,
-      showDefaultSettingSave = false,
       interestedCurriculums,
     } = this.state
     // checking if institution policy/ district policy is enabled
@@ -594,7 +587,16 @@ class ProfileBody extends React.Component {
       curriculums: interestedCurriculums,
     }
     const { features, role } = user
+    const {
+      defaultGrades: userGrades,
+      defaultSubjects: userSubjects,
+      autoShareGCAssignment: userAutoShareGCAssignment,
+    } = get(user, 'orgData')
     let showPowerTools = false
+    const showDefaultSettingSave =
+      !isEqual(userGrades, defaultGrades) ||
+      !isEqual(userSubjects, defaultSubjects) ||
+      !isEqual(userAutoShareGCAssignment, autoShareGCAssignment)
 
     if (
       [
@@ -633,6 +635,7 @@ class ProfileBody extends React.Component {
                     ) ? (
                       <>
                         <EditProfileButton
+                          data-cy="editMyProfile"
                           isGhost
                           type="primary"
                           onClick={() => {
@@ -670,7 +673,9 @@ class ProfileBody extends React.Component {
                         <DetailData>{user.firstName}</DetailData>
                       </DetailRow>
                       <DetailRow>
-                        <DetailTitle>{t('common.title.middleNameInputLabel')}</DetailTitle>
+                        <DetailTitle>
+                          {t('common.title.middleNameInputLabel')}
+                        </DetailTitle>
                         <DetailData>{user.middleName || ''}</DetailData>
                       </DetailRow>
                       <DetailRow>
@@ -690,18 +695,14 @@ class ProfileBody extends React.Component {
                     this.getEditProfileContent()
                   )}
                 </UserDetail>
-                {user.role === 'edulastic-curator' ? null : (
-                  <ChangePasswordToggleButton
-                    onClick={() => {
-                      this.setState({ showChangePassword: !showChangePassword })
-                    }}
-                  >
-                    <span>Change Password</span>
-                    <Icon
-                      type={showChangePassword ? 'caret-up' : 'caret-down'}
-                    />
-                  </ChangePasswordToggleButton>
-                )}
+                <ChangePasswordToggleButton
+                  onClick={() => {
+                    this.setState({ showChangePassword: !showChangePassword })
+                  }}
+                >
+                  <span>Change Password</span>
+                  <Icon type={showChangePassword ? 'caret-up' : 'caret-down'} />
+                </ChangePasswordToggleButton>
 
                 {showChangePassword && (
                   <FormWrapper>
@@ -717,7 +718,7 @@ class ProfileBody extends React.Component {
                             validator: this.validateToNextPassword,
                           },
                         ],
-                      })(<Input type="password" />)}
+                      })(<Input type="password" autoComplete="off" />)}
                     </FormItemWrapper>{' '}
                     <FormItemWrapper>
                       <Label>{t('common.title.confirmPaswswordLabel')}</Label>
@@ -734,6 +735,7 @@ class ProfileBody extends React.Component {
                       })(
                         <Input
                           type="password"
+                          autoComplete="off"
                           onBlur={this.handleConfirmBlur}
                         />
                       )}
@@ -744,6 +746,7 @@ class ProfileBody extends React.Component {
                   <FormButtonWrapper>
                     <FormItem>
                       <EduButton
+                        data-cy="saveUserInformation"
                         width="100px"
                         type="primary"
                         onClick={this.handleSubmit}
@@ -786,10 +789,15 @@ class ProfileBody extends React.Component {
             {showDefaultSettings && (
               <SchoolWrapper>
                 <StandardSetsLabel>Standard Sets</StandardSetsLabel>
-                <StandardSetsList>{this.getStandardSets()}</StandardSetsList>
+                <StandardSetsList data-cy="interestedStandards">
+                  {this.getStandardSets()}
+                </StandardSetsList>
                 <StandardSetsButtons>
                   {showSaveStandSetsBtn && (
-                    <SaveStandardSetsBtn onClick={this.handleSaveStandardSets}>
+                    <SaveStandardSetsBtn
+                      data-cy="saveStandardsets"
+                      onClick={this.handleSaveStandardSets}
+                    >
                       SAVE
                     </SaveStandardSetsBtn>
                   )}
@@ -797,6 +805,7 @@ class ProfileBody extends React.Component {
                     width="190px"
                     isBlue
                     onClick={this.handleSelectStandardButton}
+                    data-cy="selectStandardsets"
                     type="primary"
                   >
                     Select your standard sets
@@ -810,7 +819,10 @@ class ProfileBody extends React.Component {
                   <StyledDiv>
                     <Title>Default Settings</Title>
                     {showDefaultSettingSave && (
-                      <SaveDefaultSettingsBtn onClick={this.saveSettings}>
+                      <SaveDefaultSettingsBtn
+                        daya-cy="saveSettings"
+                        onClick={this.saveSettings}
+                      >
                         SAVE
                       </SaveDefaultSettingsBtn>
                     )}
@@ -820,6 +832,7 @@ class ProfileBody extends React.Component {
                     data-cy="gradeSelect"
                     mode="multiple"
                     size="large"
+                    value={defaultGrades}
                     placeholder="Please select"
                     defaultValue={defaultGrades}
                     onChange={(value) => this.onSettingChange(value, 'grade')}
@@ -845,6 +858,7 @@ class ProfileBody extends React.Component {
                     size="large"
                     margin="0px 0px 15px"
                     placeholder="Please select"
+                    value={defaultSubjects}
                     defaultValue={defaultSubjects}
                     onChange={(value) => this.onSettingChange(value, 'subject')}
                     optionFilterProp="children"
@@ -876,7 +890,10 @@ class ProfileBody extends React.Component {
                     </SwitchWrapper>
                   )}
                   {showPowerTools && (
-                    <SwitchWrapper style={{ justifyContent: 'space-between' }}>
+                    <SwitchWrapper
+                      style={{ justifyContent: 'space-between' }}
+                      data-cy="powerUser"
+                    >
                       <FieldLabel>{t('common.title.powerUser')}</FieldLabel>
                       <EduSwitchStyled
                         defaultChecked={userInfo.isPowerTeacher}
@@ -930,7 +947,10 @@ class ProfileBody extends React.Component {
             width="90%"
             style={{ maxWidth: 1100 }}
           >
-            <JoinSchool userInfo={userInfo} fromUserProfile />
+            <JoinSchool
+              userInfo={userInfo}
+              fromUserProfile={!isEmpty(userInfo.orgData.districtIds)}
+            />
           </StyledModal>
         )}
       </MainContentWrapper>

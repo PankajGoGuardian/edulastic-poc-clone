@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
-import { test, questionType } from '@edulastic/constants'
+import { test } from '@edulastic/constants'
 import { FlexContainer } from '@edulastic/common'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleRight, faAngleLeft } from '@fortawesome/free-solid-svg-icons'
@@ -11,8 +11,11 @@ import ParccHeader from './skins/Parcc/PlayerHeader'
 import SidebarQuestionList from './AssessmentPlayerSimple/PlayerSideBar'
 import { IPAD_LANDSCAPE_WIDTH } from '../constants/others'
 import { Nav } from './common'
+import PlayerFooter from './skins/Quester/PlayerFooter'
+import QuesterHeader from './skins/Quester/PlayerHeader'
 import SbacHeader from './skins/Sbac/PlayerHeader'
 import Magnifier from '../../common/components/Magnifier'
+import { Tooltip } from '../../common/utils/helpers'
 
 const AssessmentPlayerSkinWrapper = ({
   children,
@@ -20,7 +23,6 @@ const AssessmentPlayerSkinWrapper = ({
   docUrl,
   playerSkinType = test.playerSkinValues.edulastic,
   handleMagnifier,
-  qId,
   enableMagnifier = false,
   ...restProps
 }) => {
@@ -28,32 +30,49 @@ const AssessmentPlayerSkinWrapper = ({
   const {
     moveToNext,
     moveToPrev,
-    currentItem,
-    qType,
     changeTool,
+    currentItem,
+    windowWidth,
     toggleToolsOpenStatus,
-    tool,
-    toolsOpenStatus,
+    hasDrawingResponse,
   } = restProps
 
+  const isPadMode = windowWidth < IPAD_LANDSCAPE_WIDTH - 1
+
+  const { blockNavigationToAnsweredQuestions = false } = restProps
+
+  const handleRestrictQuestionBackNav = (e) => {
+    e.preventDefault()
+    if (blockNavigationToAnsweredQuestions) {
+      const matched = e.target.location.pathname.match(
+        new RegExp('/student/(assessment|practice)/.*/class/.*/uta/.*/.*')
+      )
+      if (matched) {
+        window.history.go(1)
+        return false
+      }
+    }
+  }
+
   useEffect(() => {
-    const toolsStatusArray = toolsOpenStatus || tool
+    if (blockNavigationToAnsweredQuestions) {
+      window.addEventListener('popstate', handleRestrictQuestionBackNav)
+      return () =>
+        window.removeEventListener('popstate', handleRestrictQuestionBackNav)
+    }
+  }, [])
+
+  useEffect(() => {
     const toolToggleFunc = toggleToolsOpenStatus || changeTool
     // 5 is Scratchpad mode
-    if (
-      qType === questionType.HIGHLIGHT_IMAGE &&
-      toolToggleFunc &&
-      !toolsStatusArray?.includes(5)
-    ) {
-      toolToggleFunc(5)
-    } else if (
-      qType !== questionType.HIGHLIGHT_IMAGE &&
-      toolToggleFunc &&
-      toolsStatusArray?.includes(5)
-    ) {
+    if (hasDrawingResponse && toolToggleFunc) {
       toolToggleFunc(5)
     }
-  }, [qType, qId])
+  }, [currentItem])
+
+  useEffect(() => {
+    setSidebarVisible(!isPadMode)
+  }, [windowWidth])
 
   const toggleSideBar = () => {
     setSidebarVisible(!isSidebarVisible)
@@ -77,6 +96,18 @@ const AssessmentPlayerSkinWrapper = ({
     if (playerSkinType == 'sbac') {
       return (
         <SbacHeader
+          {...restProps}
+          options={restProps.options || restProps.dropdownOptions}
+          defaultAP={defaultAP}
+          isDocbased={isDocBased}
+          handleMagnifier={handleMagnifier}
+          enableMagnifier={enableMagnifier}
+        />
+      )
+    }
+    if (playerSkinType === 'quester') {
+      return (
+        <QuesterHeader
           {...restProps}
           options={restProps.options || restProps.dropdownOptions}
           defaultAP={defaultAP}
@@ -112,6 +143,23 @@ const AssessmentPlayerSkinWrapper = ({
     )
   }
 
+  const footer = () => {
+    if (playerSkinType === 'quester') {
+      const toolToggleFunc = toggleToolsOpenStatus || changeTool
+      const tool = restProps.toolsOpenStatus || restProps.tool
+      return (
+        <PlayerFooter
+          {...restProps}
+          handleMagnifier={handleMagnifier}
+          enableMagnifier={enableMagnifier}
+          changeTool={toolToggleFunc}
+          tool={tool}
+        />
+      )
+    }
+    return null
+  }
+
   const leftSideBar = () => {
     if (!defaultAP && !isDocBased) {
       return (
@@ -123,6 +171,9 @@ const AssessmentPlayerSkinWrapper = ({
             toggleSideBar={toggleSideBar}
             isSidebarVisible={isSidebarVisible}
             theme={restProps.theme}
+            blockNavigationToAnsweredQuestions={
+              blockNavigationToAnsweredQuestions
+            }
           />
         </Sidebar>
       )
@@ -135,11 +186,7 @@ const AssessmentPlayerSkinWrapper = ({
       playerSkinType.toLowerCase() ===
       test.playerSkinValues.edulastic.toLowerCase()
     ) {
-      if (isDocBased || defaultAP) {
-        return { width: '100%' }
-      }
       return {
-        margin: '40px 40px 0 40px',
         width: '100%',
       }
     }
@@ -149,16 +196,26 @@ const AssessmentPlayerSkinWrapper = ({
       return {
         paddingLeft: 0,
         paddingRight: 0,
-        marginTop: defaultAP ? '82px' : '47px',
+        marginTop: defaultAP ? '82px' : '68px',
       }
     }
     if (
       playerSkinType.toLowerCase() === test.playerSkinValues.sbac.toLowerCase()
     ) {
       return {
+        paddingLeft: defaultAP ? 0 : '10px',
+        paddingRight: defaultAP ? 0 : '10px',
+        marginTop: defaultAP ? '78px' : '68px',
+      }
+    }
+    if (
+      playerSkinType.toLowerCase() ===
+      test.playerSkinValues.quester.toLowerCase()
+    ) {
+      return {
         paddingLeft: 0,
         paddingRight: 0,
-        marginTop: defaultAP ? '78px' : '38px',
+        marginTop: '48px',
       }
     }
     return { width: '100%' }
@@ -174,13 +231,17 @@ const AssessmentPlayerSkinWrapper = ({
       }
       return {
         width: isSidebarVisible ? 'calc(100% - 220px)' : 'calc(100%)',
+        marginLeft: isSidebarVisible ? '220px' : '0px',
         background: restProps.theme.widgets.assessmentPlayers.mainBgColor,
       }
     }
     if (
       playerSkinType.toLowerCase() ===
         test.playerSkinValues.parcc.toLowerCase() ||
-      playerSkinType.toLowerCase() === test.playerSkinValues.sbac.toLowerCase()
+      playerSkinType.toLowerCase() ===
+        test.playerSkinValues.sbac.toLowerCase() ||
+      playerSkinType.toLowerCase() ===
+        test.playerSkinValues.quester.toLowerCase()
     ) {
       return {
         width: '100%',
@@ -192,23 +253,35 @@ const AssessmentPlayerSkinWrapper = ({
   const navigationBtns = () => (
     <>
       {currentItem > 0 && (
-        <Nav.BackArrow
-          left="0px"
+        <Tooltip
+          placement="right"
+          title={
+            blockNavigationToAnsweredQuestions
+              ? 'This assignment is restricted from navigating back to the previous question.'
+              : 'Previous'
+          }
+        >
+          <Nav.BackArrow
+            left="0px"
+            borderRadius="0px"
+            width="30"
+            onClick={blockNavigationToAnsweredQuestions ? () => {} : moveToPrev}
+            disabled={blockNavigationToAnsweredQuestions}
+          >
+            <FontAwesomeIcon icon={faAngleLeft} />
+          </Nav.BackArrow>
+        </Tooltip>
+      )}
+      <Tooltip placement="left" title="Next">
+        <Nav.NextArrow
+          right="0px"
           borderRadius="0px"
           width="30"
-          onClick={moveToPrev}
+          onClick={moveToNext}
         >
-          <FontAwesomeIcon icon={faAngleLeft} />
-        </Nav.BackArrow>
-      )}
-      <Nav.NextArrow
-        right="0px"
-        borderRadius="0px"
-        width="30"
-        onClick={moveToNext}
-      >
-        <FontAwesomeIcon icon={faAngleRight} />
-      </Nav.NextArrow>
+          <FontAwesomeIcon icon={faAngleRight} />
+        </Nav.NextArrow>
+      </Tooltip>
     </>
   )
 
@@ -224,9 +297,7 @@ const AssessmentPlayerSkinWrapper = ({
   return (
     <Magnifier enable={enableMagnifier} offset={getTopOffset()}>
       {header()}
-      <FlexContainer>
-        {playerSkinType.toLowerCase() ===
-          test.playerSkinValues.edulastic.toLowerCase() && leftSideBar()}
+      <FlexContainer position="relative">
         <StyledMainContainer
           mainContainerStyle={getMainContainerStyle()}
           style={getStyle()}
@@ -236,39 +307,40 @@ const AssessmentPlayerSkinWrapper = ({
         >
           {children}
         </StyledMainContainer>
-        {playerSkinType === test.playerSkinValues.edulastic.toLowerCase() &&
+        {playerSkinType.toLowerCase() ===
+          test.playerSkinValues.edulastic.toLowerCase() && leftSideBar()}
+        {playerSkinType.toLowerCase() ===
+          test.playerSkinValues.edulastic.toLowerCase() &&
           defaultAP &&
           navigationBtns()}
+        {footer()}
       </FlexContainer>
     </Magnifier>
   )
 }
 
 const Sidebar = styled.div`
-  width: ${({ isVisible }) => (isVisible ? 220 : 65)}px;
+  position: absolute;
+  left: 0;
+  width: ${({ isVisible }) => (isVisible ? 220 : 0)}px;
   background-color: ${(props) =>
     props.theme.widgets.assessmentPlayers.sidebarBgColor};
   color: ${(props) => props.theme.widgets.assessmentPlayers.sidebarTextColor};
-  padding-top: ${({ isVisible }) => (isVisible ? '35px' : '68px')};
-  height: ${({ isVisible }) => (isVisible ? 'auto' : '100vh')};
-  @media (max-width: ${IPAD_LANDSCAPE_WIDTH - 1}px) {
-    display: none;
-  }
+  padding-top: 64px;
+  transition: all 0.3s ease;
 `
 
 const StyledMainContainer = styled.div`
   main {
     .jsx-parser {
       p {
-        margin-bottom: 8px;
+        margin-bottom: 0.25rem;
+        line-height: 1.2;
       }
     }
     ${({ mainContainerStyle }) => mainContainerStyle};
-    @media (max-width: 768px) {
-      padding: 58px 0 0;
-    }
     .practice-player-footer {
-      left: ${({ isSidebarVisible }) => (isSidebarVisible ? '220px' : '65px')};
+      left: ${({ isSidebarVisible }) => (isSidebarVisible ? '220px' : '0px')};
     }
     .question-tab-container {
       height: fit-content !important;
@@ -292,9 +364,9 @@ const StyledMainContainer = styled.div`
           : 'none!important'
       };
       z-index: 1;
-      position: fixed;
+      position: absolute;
       top: 50%;
-      right: 0;
+      right: 0px;
       > div {
         display: flex!important;
         flex-direction: column;

@@ -47,6 +47,7 @@ export const QuestionContentWrapper = styled.div`
   padding: 0px 30px 30px;
   overflow: auto;
   position: relative;
+  z-index: ${({ zIndex }) => zIndex};
   @media (min-width: ${mediumDesktopExactWidth}) {
     /** 50px is height of BreadCrumbBar and 5px is height of scrollbar(horizontal) */
     min-height: ${({ theme }) =>

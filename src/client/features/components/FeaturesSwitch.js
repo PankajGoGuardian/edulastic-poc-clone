@@ -1,7 +1,8 @@
-// @ts-check
 import React from 'react'
 import { connect } from 'react-redux'
 import { Switch, Redirect } from 'react-router-dom'
+import { isDOMElement } from '@edulastic/common'
+import { getSanitizedProps } from '@edulastic/common/src/helpers'
 import { getUserFeatures } from '../../student/Login/ducks'
 import { getGroupList } from '../../author/src/selectors/user'
 import { isFeatureAccessibleToUser as isFeatureAccessible } from '../featuresUtils'
@@ -32,9 +33,14 @@ const FeaturesSwitch = (props) => {
     </Switch>
   )
 
-  const _children = React.Children.map(children, (child, index) => {
+  const blacklistedPropsDOMElements = ['features', 'groupList']
+
+  const _children = React.Children.map(children, (child) => {
+    const featureSwitchProps = isDOMElement(child)
+      ? getSanitizedProps(props, blacklistedPropsDOMElements)
+      : { ...props }
     return React.cloneElement(child, {
-      ...props,
+      ...featureSwitchProps,
       ...child.props,
       children: child.props.children,
       actionOnInaccessible,

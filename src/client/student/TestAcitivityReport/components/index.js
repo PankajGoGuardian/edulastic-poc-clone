@@ -1,11 +1,17 @@
-import { MainContentWrapper, EduButton, FlexContainer } from '@edulastic/common'
+import {
+  MainContentWrapper,
+  EduButton,
+  FlexContainer,
+  notification,
+  useRealtimeV2,
+} from '@edulastic/common'
 import { IconReport } from '@edulastic/icons'
 import { Spin } from 'antd'
 import { get } from 'lodash'
 import PropTypes from 'prop-types'
-import { test as testConstants } from '@edulastic/constants'
+import { test as testConstants, testActivityStatus } from '@edulastic/constants'
 import styled from 'styled-components'
-import React, { useEffect, useState, Fragment } from 'react'
+import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
@@ -31,7 +37,10 @@ import ReportListContent from './Container'
 import TestActivitySubHeader from './SubHeader'
 import ProgressGraph from '../../../common/components/ProgressGraph'
 import OverallFeedback from './OverallFeedback'
+import { FilesViewContainer } from '../../../author/StudentView/styled'
+import FilesView from '../../../assessment/widgets/UploadFile/components/FilesView'
 
+const { ABSENT, NOT_STARTED } = testActivityStatus
 const { releaseGradeLabels } = testConstants
 const continueBtns = [
   releaseGradeLabels.WITH_ANSWERS,
@@ -58,12 +67,29 @@ const ReportListContainer = ({
   attempts,
   testActivity,
   questionActivities,
+  userId,
 }) => {
   const [assignmentItemTitle, setAssignmentItemTitle] = useState(null)
   const [showGraph, setShowGraph] = useState(true)
   const { isDocBased } = test
-  const { releaseScore } = testActivity
+  const { releaseScore, userWork } = testActivity
 
+  const attachments = userWork?.attachments
+
+  const topics = [`student_assignment:class:${match.params.classId}`]
+  useRealtimeV2(topics, {
+    'toggle-pause-assignment': (payload) => {
+      const { activitiesByUserId, paused } = payload
+      const utaId = activitiesByUserId[userId]
+      if (match.params.id === utaId && paused) {
+        notification({
+          type: 'warn',
+          messageKey: 'studentAssignmentPaused',
+        })
+        return history.push(`/home/grades`)
+      }
+    },
+  })
   const setCurrentItemFromGraph = (qIndex) => {
     if (continueBtns.includes(releaseScore)) {
       setCurrentItem(qIndex)
@@ -156,6 +182,12 @@ const ReportListContainer = ({
             {!isCliUser && <OverallFeedback />}
           </>
         )}
+        {attachments && (
+          <FilesViewContainer style={{ margin: '22px' }}>
+            <AttachmentsTitle>Attachements</AttachmentsTitle>
+            <FilesView files={attachments} hideDelete />
+          </FilesViewContainer>
+        )}
         {showReviewResponses && !dontRelease && !isCliUser && (
           <FlexContainer mt="16px">
             <EduButton onClick={reviewResponses} isBlue isGhost>
@@ -189,7 +221,10 @@ const enhance = compose(
       testItems: getItemsSelector(state),
       questionActivities: getFeedbackTransformedSelector(state),
       testActivity: get(state, `[studentReport][testActivity]`, {}),
-      attempts: get(state, `testActivities`, []),
+      attempts: get(state, `testActivities`, []).filter(
+        ({ status }) => status !== ABSENT && status !== NOT_STARTED
+      ),
+      userId: get(state, 'user.user._id'),
     }),
     {
       setCurrentItem: setCurrentItemAction,
@@ -209,4 +244,10 @@ ReportListContainer.propTypes = {
 
 const AssignmentItemTitleView = styled.span`
   cursor: pointer;
+`
+const AttachmentsTitle = styled.p`
+  font-size: 16px;
+  font-weight: 700;
+  margin-left: 10px;
+  margin-bottom: 17px;
 `

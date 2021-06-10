@@ -22,4 +22,5 @@ export const TD = styled.div`
   display: flex;
   margin: 8px;
   align-items: ${({ center }) => (center ? 'center' : null)};
+  margin-top: ${({ marginTop }) => marginTop || ''};
 `

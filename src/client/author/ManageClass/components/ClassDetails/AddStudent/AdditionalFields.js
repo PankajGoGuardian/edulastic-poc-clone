@@ -19,34 +19,24 @@ const AdditionalFields = ({
   foundUserContactEmails,
   ...restProps
 }) => {
-  let {
+  const isEditMode = isEdit && stds && stds.length
+  const [studentDetails = {}] = stds || []
+
+  const {
     sisId,
     studentNumber,
     iepStatus,
     ellStatus,
     sedStatus,
+    hispanicEthnicity,
     frlStatus,
     race,
     dob,
     gender,
     contactEmails = foundUserContactEmails,
-  } = std
-  if (isEdit && stds && stds.length) {
-    const [studentDetails = {}] = stds
-    ;({
-      sisId,
-      studentNumber,
-      iepStatus,
-      ellStatus,
-      sedStatus,
-      frlStatus,
-      race,
-      dob,
-      gender,
-      contactEmails,
-    } = studentDetails)
-    contactEmails = contactEmails && contactEmails.join(',')
-  }
+  } = isEditMode ? studentDetails : std
+
+  const _contactEmails = (contactEmails || []).join(',')
 
   const dateProps = {}
   if (dob) {
@@ -79,8 +69,8 @@ const AdditionalFields = ({
         <SelectInputStyled
           getPopupContainer={(triggerNode) => triggerNode.parentNode}
         >
-          <Option value="active">Yes</Option>
-          <Option value="deActive">No</Option>
+          <Option value="Yes">Yes</Option>
+          <Option value="No">No</Option>
         </SelectInputStyled>
       </Field>
       <Field
@@ -92,8 +82,8 @@ const AdditionalFields = ({
         <SelectInputStyled
           getPopupContainer={(triggerNode) => triggerNode.parentNode}
         >
-          <Option value="active">Yes</Option>
-          <Option value="deActive">No</Option>
+          <Option value="Yes">Yes</Option>
+          <Option value="No">No</Option>
         </SelectInputStyled>
       </Field>
       <Field
@@ -105,8 +95,8 @@ const AdditionalFields = ({
         <SelectInputStyled
           getPopupContainer={(triggerNode) => triggerNode.parentNode}
         >
-          <Option value="active">Yes</Option>
-          <Option value="deActive">No</Option>
+          <Option value="Yes">Yes</Option>
+          <Option value="No">No</Option>
         </SelectInputStyled>
       </Field>
       <Field
@@ -118,18 +108,28 @@ const AdditionalFields = ({
         <SelectInputStyled
           getPopupContainer={(triggerNode) => triggerNode.parentNode}
         >
-          <Option value="active">Yes</Option>
-          <Option value="deActive">No</Option>
+          <Option value="Yes">Yes</Option>
+          <Option value="No">No</Option>
+        </SelectInputStyled>
+      </Field>
+      <Field
+        label="Hispanic Ethnicity"
+        {...restProps}
+        fiedlName="hispanicEthnicity"
+        initialValue={hispanicEthnicity}
+      >
+        <SelectInputStyled
+          getPopupContainer={(triggerNode) => triggerNode.parentNode}
+        >
+          <Option value="Yes">Yes</Option>
+          <Option value="No">No</Option>
         </SelectInputStyled>
       </Field>
       <Field label="Race" {...restProps} fiedlName="race" initialValue={race}>
         <TextInputStyled placeholder="Race" />
       </Field>
       <Field label="DOB" optional {...restProps} fiedlName="dob" {...dateProps}>
-        <DatePickerStyled
-          format="DD MMM, YYYY"
-          disabledDate={(current) => current && current.valueOf() > Date.now()}
-        />
+        <DatePickerStyled format="DD MMM, YYYY" />
       </Field>
       <Field
         label="Gender"
@@ -149,7 +149,7 @@ const AdditionalFields = ({
         label="Parents/Guardians"
         {...restProps}
         fiedlName="contactEmails"
-        initialValue={contactEmails}
+        initialValue={_contactEmails}
       >
         <TextInputStyled placeholder="Enter email comma separated..." />
       </Field>

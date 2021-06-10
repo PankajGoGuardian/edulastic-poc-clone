@@ -347,6 +347,7 @@ class StudentSignup extends React.Component {
               data-cy="password"
               prefix={<IconLock color={themeColor} />}
               type="password"
+              autoComplete="off"
               placeholder="Password"
             />
           )}
@@ -470,7 +471,7 @@ class StudentSignup extends React.Component {
           onClickProceed={this.onClickProceed}
         />
         {!isSignupUsingDaURL && !validatePartnerUrl(partner) ? (
-          <Redirect exact to="/login" />
+          <Redirect exact to="/" />
         ) : null}
         <RegistrationWrapper
           image={

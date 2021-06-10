@@ -5,7 +5,6 @@ import {
   formatAnswers,
   formatOptions,
 } from '../StudentsReportCard/utils/transformers'
-import { replaceVariables } from '../../assessment/utils/variables'
 
 const defaultManualGradedType = questionType.manuallyGradableQn
 
@@ -23,7 +22,10 @@ export const getOrderedQuestionsAndAnswers = (
   const questions = testItems?.reduce((acc, item, index) => {
     // if it's a passage type question, insert passage before the questions
     // also, if the current testItem has same passageId as previous one, dont insert the passage again!
-    let qs = item?.data?.questions || []
+    const ques = get(item, 'data.questions', [])
+    const resources = get(item, 'data.resources', [])
+
+    let qs = [...resources, ...ques]
     if (type === 'custom') {
       qs = qs.filter((q) => filterQs.includes(q.qLabel))
     } else if (type === 'manualGraded') {
@@ -95,7 +97,7 @@ export const getOrderedQuestionsAndAnswers = (
     if (!a.qLabel) {
       return [...acc]
     }
-    const answers = a.answers.map((ans) => {
+    const _answers = a.answers.map((ans) => {
       if (ans === 'TEI') {
         return TEI
       }
@@ -104,7 +106,7 @@ export const getOrderedQuestionsAndAnswers = (
       }
       return ans
     })
-    a.answers = answers
+    a.answers = _answers
     return [...acc, a]
   }, [])
   return {
@@ -118,8 +120,8 @@ export const formatQuestionLists = (qs = '') =>
     .split(',')
     .map((q) => {
       const range = q.split('-')
-      let start = parseInt(range[0])
-      let end = parseInt(range[1])
+      let start = parseInt(range[0], 10)
+      let end = parseInt(range[1], 10)
       if (start > end) {
         const temp = start
         start = end
@@ -134,4 +136,4 @@ export const formatQuestionLists = (qs = '') =>
       return [start, end]
     })
     .flat()
-    .filter((q) => !isNaN(q))
+    .filter((q) => !Number.isNaN(q))

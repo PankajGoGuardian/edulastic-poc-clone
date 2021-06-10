@@ -33,6 +33,7 @@ const PlayerHeader = ({
   timedAssignment,
   utaId,
   groupId,
+  hidePause,
 }) => {
   const isMobile = windowWidth <= MAX_MOBILE_WIDTH
   const { calcType } = settings
@@ -43,6 +44,8 @@ const PlayerHeader = ({
       finishTest={onOpenExitPopup}
       onSubmit={!previewPlayer ? onSubmit : null}
       utaId={utaId}
+      hidePause={hidePause}
+      groupId={groupId}
     />
   )
 

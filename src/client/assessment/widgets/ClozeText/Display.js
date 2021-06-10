@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import produce from 'immer'
 import styled, { withTheme } from 'styled-components'
 import { findIndex, find, isEmpty, get } from 'lodash'
-import JsxParser from 'react-jsx-parser'
+import JsxParser from 'react-jsx-parser/lib/react-jsx-parser.min'
 import {
   InstructorStimulus,
   helpers,
@@ -167,6 +167,8 @@ class ClozeTextDisplay extends Component {
       isPrint = false,
       isV1Migrated,
       isPrintPreview = false,
+      hideCorrectAnswer,
+      answerScore,
     } = this.props
 
     const { parsedTemplate } = this.state
@@ -188,6 +190,7 @@ class ClozeTextDisplay extends Component {
       isV1Migrated,
       cAnswers: get(item, 'validation.validResponse.value', []),
       isPrintPreview,
+      answerScore,
     }
 
     const QuestionContent = (
@@ -212,7 +215,7 @@ class ClozeTextDisplay extends Component {
     )
 
     const answerBox =
-      showAnswer || isExpressGrader ? (
+      (showAnswer || isExpressGrader) && !hideCorrectAnswer ? (
         <>
           <CorrectAnswerBoxLayout
             fontSize={fontSize}
@@ -257,7 +260,7 @@ class ClozeTextDisplay extends Component {
             )}
           </QuestionLabelWrapper>
 
-          <QuestionContentWrapper>
+          <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
             <QuestionTitleWrapper>
               {!!question && (
                 <Stimulus

@@ -1,10 +1,14 @@
 import { createAction, createReducer } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
 import { get, isEmpty, keyBy, keys, values } from 'lodash'
+import { questionType } from '@edulastic/constants'
 import { takeEvery, put, all, select } from 'redux-saga/effects'
 import { getQuestionsByIdSelector } from '../selectors/questions'
 import { getAnswersListSelector } from '../selectors/answers'
 import { evaluateItem } from '../../author/src/utils/evalution'
+import { answersByQId } from '../selectors/test'
+
+const defaultManualGradedType = questionType.manuallyGradableQn
 
 // constants
 export const EVALUATE_CURRENT_ANSWERS =
@@ -40,19 +44,7 @@ export const previewTestQuestionActivities = createSelector(
         if (previewTest.questionActivities[qId]) {
           return previewTest.questionActivities[qId]
         }
-        return {
-          score: 0,
-          timeSpent: 0,
-          graded: true,
-          skipped: true,
-          pendingEvaluation: false,
-          _id: questionsById[qId].id,
-          maxScore: questionsById[qId].itemScore,
-          qLabel: isEmpty(questionsById[qId].qSubLabel)
-            ? questionsById[qId].barLabel
-            : `${questionsById[qId].barLabel}.${questionsById[qId].qSubLabel}`,
-          evaluation: {},
-        }
+        return null
       })
       .filter((x) => !!x)
     return mergedActivities
@@ -89,35 +81,54 @@ function* evaluateTestItemSaga({ payload }) {
 
     const testItemId = get(testItem, '_id', '')
     const itemLevelScore = get(testItem, 'itemLevelScore', 0)
-    const itemLevelScoring = get(testItem, 'itemLevelScore', false)
+    const itemLevelScoring = get(testItem, 'itemLevelScoring', false)
     const questions = get(testItem, 'rows', [])
       .flatMap((x) => x?.widgets)
       .filter((x) => !isEmpty(x) && x.widgetType === 'question')
       .reduce((acc, curr) => [...acc, curr.reference], [])
       .map((qid) => allQuestionsById[qid])
     const qById = keyBy(questions, 'id')
+    const answersByQids = answersByQId(answers, testItem._id)
+
+    const { penalty, scoringType } = yield select((state) =>
+      get(state, 'tests.entity', {})
+    )
+    const testSettings = { penalty, scoringType }
     const { evaluation, score, maxScore } = yield evaluateItem(
-      answers,
+      answersByQids,
       qById,
       itemLevelScoring,
-      itemLevelScore
+      itemLevelScore,
+      testItem._id,
+      undefined,
+      undefined,
+      testSettings
+    )
+    const previewUserWork = yield select(
+      ({ userWork }) => userWork.present[testItemId]
     )
 
     const activities = questions.map((q) => {
       const activity = {
-        _id: q.id,
+        qid: q.id,
         maxScore,
         timeSpent,
         testItemId,
         graded: true,
         notStarted: false,
-        score: answers[q.id] ? score : 0,
-        skipped: isEmpty(answers[q.id]),
-        pendingEvaluation: isEmpty(evaluation),
+        score: answers[`${testItemId}_${q.id}`] ? score : 0,
+        skipped:
+          isEmpty(answers[`${testItemId}_${q.id}`]) &&
+          !defaultManualGradedType.includes(q.type),
+        pendingEvaluation:
+          isEmpty(evaluation) || defaultManualGradedType.includes(q.type),
         qLabel: isEmpty(q.qSubLabel)
           ? q.barLabel
           : `${q.barLabel}.${q.qSubLabel}`,
-        evaluation: evaluation[q.id],
+        evaluation: evaluation[`${testItemId}_${q.id}`],
+      }
+      if (previewUserWork) {
+        activity.userWork = previewUserWork
       }
       return activity
     })
@@ -125,7 +136,7 @@ function* evaluateTestItemSaga({ payload }) {
     yield put({
       type: UPDATE_PREVIEW_TEST_ACTIVITIES,
       payload: {
-        activities: keyBy(activities, '_id'),
+        activities: keyBy(activities, 'qid'),
         itemScores: {
           [testItemId]: { score },
         },

@@ -30,6 +30,7 @@ const StandardsModal = ({
   getCurriculumStandards,
   curriculumStandardsLoading,
   singleSelect = false,
+  isPlaylistView = false,
 }) => {
   const [state, setState] = useState({
     standard,
@@ -85,14 +86,20 @@ const StandardsModal = ({
       subject: val,
       standard: { ...prevState.standard, curriculum: '' },
     }))
-    getCurriculumStandards({ id: '', grades: state.grades, searchStr: '' })
+    if (!isPlaylistView) {
+      getCurriculumStandards({ id: '', grades: state.grades, searchStr: '' })
+    }
     setDefaultInterests({ subject: val })
   }
 
   const handleChangeStandard = (curriculum, event) => {
     const id = event.key
     setState({ ...state, standard: { id, curriculum } })
-    getCurriculumStandards({ id, grades: state.grades, searchStr: '' })
+    if (isPlaylistView) {
+      getCurriculumStandards(id)
+    } else {
+      getCurriculumStandards({ id, grades: state.grades, searchStr: '' })
+    }
     setDefaultInterests({ curriculumId: id })
   }
 

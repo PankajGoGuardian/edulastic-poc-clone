@@ -19,6 +19,7 @@ const PerformanceBrand = (props, ref) => {
     className,
     showPerformanceBand,
     performanceBandsData,
+    author_classboard_testActivity = {},
   } = props
   const {
     chartData,
@@ -32,7 +33,8 @@ const PerformanceBrand = (props, ref) => {
   const perfomancePercentage = (data.obtainedScore / data.totalScore) * 100
 
   // finding matching performance band wrt scored percentange from selected performance band group
-  const { performanceBand } = classResponse
+  const { performanceBand } =
+    author_classboard_testActivity?.additionalData || classResponse
   const selectedBandsData = performanceBandsData.find(
     (o) => o._id === performanceBand?._id
   ) ||
@@ -132,7 +134,10 @@ const PerformanceBrand = (props, ref) => {
                 justify="start"
               >
                 <Col className="student-report-card-key">Teacher: </Col>
-                <Col className="student-report-card-value">
+                <Col
+                  data-cy="report-teacher"
+                  className="student-report-card-value"
+                >
                   {testData.createdBy?.name || ''}
                 </Col>
               </Row>

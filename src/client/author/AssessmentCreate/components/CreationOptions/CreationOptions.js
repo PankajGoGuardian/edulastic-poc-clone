@@ -27,7 +27,9 @@ CreationOptions.propTypes = {
 const enhance = compose(
   withRouter,
   connect((state) => ({
-    isShowQTI: QTI_DISTRICTS.includes(state?.user?.user?.districtIds[0]),
+    isShowQTI: QTI_DISTRICTS.some((qtiDistrict) =>
+      (state?.user?.user?.districtIds || []).includes(qtiDistrict)
+    ),
   }))
 )
 

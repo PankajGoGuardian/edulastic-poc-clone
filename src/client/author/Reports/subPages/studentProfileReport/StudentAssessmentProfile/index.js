@@ -5,13 +5,11 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { withNamespaces } from '@edulastic/localization'
 import { NoDataContainer, StyledCard, StyledH3 } from '../../../common/styled'
+import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { downloadCSV, toggleItem } from '../../../common/util'
 import { getCsvDownloadingState } from '../../../ducks'
 import AssessmentChart from '../common/components/charts/AssessmentChart'
-import {
-  getBandInfoSelected,
-  getReportsSPRFilterData,
-} from '../common/filterDataDucks'
+import { getReportsSPRFilterData } from '../common/filterDataDucks'
 import {
   augementAssessmentChartData,
   getStudentName,
@@ -22,50 +20,91 @@ import {
   getReportsStudentAssessmentProfile,
   getReportsStudentAssessmentProfileLoader,
   getStudentAssessmentProfileRequestAction,
+  getReportsStudentAssessmentProfileError,
+  resetStudentAssessmentProfileAction,
 } from './ducks'
 
 const StudentAssessmentProfile = ({
-  match,
   loading,
+  error,
   settings,
   SPRFilterData,
   studentAssessmentProfile,
-  getStudentAssessmentProfileRequestAction,
+  getStudentAssessmentProfile,
+  resetStudentAssessmentProfile,
   isCsvDownloading,
-  bandInfoSelected: bandInfo,
   location,
   pageTitle,
-  history,
+  sharedReport,
   t,
+  toggleFilter,
 }) => {
-  const { selectedStudent } = settings
   const anonymousString = t('common.anonymous')
 
-  const studentClassData = SPRFilterData?.data?.result?.studentClassData || []
+  const [sharedReportFilters, isSharedReport] = useMemo(
+    () => [
+      sharedReport?._id
+        ? { ...sharedReport.filters, reportId: sharedReport?._id }
+        : null,
+      !!sharedReport?._id,
+    ],
+    [sharedReport]
+  )
+
+  const { studentClassData = [], bandInfo: bands = [] } = get(
+    SPRFilterData,
+    'data.result',
+    {}
+  )
+
+  const bandInfo = (
+    bands.find(
+      (x) =>
+        x._id ===
+        (sharedReportFilters || settings.requestFilters)
+          .performanceBandProfileId
+    ) || bands[0]
+  )?.performanceBand
 
   const [selectedTests, setSelectedTests] = useState([])
 
   const rawData = get(studentAssessmentProfile, 'data.result', {})
 
   const [chartData, tableData] = useMemo(() => {
-    const chartData = augementAssessmentChartData(
+    const _chartData = augementAssessmentChartData(
       rawData.metricInfo,
       bandInfo,
       studentClassData
     )
-    const tableData = getData(rawData, chartData, bandInfo)
-    return [chartData, tableData]
+    const _tableData = getData(rawData, _chartData, bandInfo)
+    return [_chartData, _tableData]
   }, [rawData, bandInfo])
 
+  useEffect(() => () => resetStudentAssessmentProfile(), [])
+
   useEffect(() => {
-    const { selectedStudent, requestFilters } = settings
-    if (selectedStudent.key && requestFilters.termId) {
-      getStudentAssessmentProfileRequestAction({
-        ...requestFilters,
-        studentId: selectedStudent.key,
+    if (settings.selectedStudent.key && settings.requestFilters.termId) {
+      getStudentAssessmentProfile({
+        ...settings.requestFilters,
+        studentId: settings.selectedStudent.key,
       })
     }
-  }, [settings])
+    if (settings.requestFilters.termId || settings.requestFilters.reportId) {
+      return () => toggleFilter(null, false)
+    }
+  }, [settings.selectedStudent, settings.requestFilters])
+
+  useEffect(() => {
+    const metrics = get(studentAssessmentProfile, 'data.result.metricInfo', [])
+    if (
+      (settings.requestFilters.termId || settings.requestFilters.reportId) &&
+      !loading &&
+      !isEmpty(studentAssessmentProfile) &&
+      !metrics.length
+    ) {
+      toggleFilter(null, true)
+    }
+  }, [studentAssessmentProfile])
 
   const {
     districtAvg = [],
@@ -74,9 +113,12 @@ const StudentAssessmentProfile = ({
     schoolAvg = [],
   } = rawData
   const studentInformation = studentClassData[0] || {}
-  const studentName = getStudentName(selectedStudent, studentInformation)
+  const studentName = getStudentName(
+    settings.selectedStudent,
+    studentInformation
+  )
 
-  const onTestSelect = (item, record) =>
+  const onTestSelect = (item) =>
     setSelectedTests(toggleItem(selectedTests, item.uniqId))
   const onCsvConvert = (data) =>
     downloadCSV(
@@ -85,7 +127,16 @@ const StudentAssessmentProfile = ({
     )
 
   if (loading) {
-    return <SpinLoader position="fixed" />
+    return (
+      <SpinLoader
+        tip="Please wait while we gather the required information..."
+        position="fixed"
+      />
+    )
+  }
+
+  if (error && error.dataSizeExceeded) {
+    return <DataSizeExceeded />
   }
 
   if (
@@ -94,9 +145,14 @@ const StudentAssessmentProfile = ({
     isEmpty(districtAvg) ||
     isEmpty(groupAvg) ||
     isEmpty(metricInfo) ||
-    isEmpty(schoolAvg)
+    isEmpty(schoolAvg) ||
+    !settings.selectedStudent?.key
   ) {
-    return <NoDataContainer>No data available currently.</NoDataContainer>
+    return (
+      <NoDataContainer>
+        {settings.requestFilters?.termId ? 'No data available currently.' : ''}
+      </NoDataContainer>
+    )
   }
 
   return (
@@ -105,9 +161,6 @@ const StudentAssessmentProfile = ({
         <StyledH3>
           Assessment Performance Details of {studentName || anonymousString}
         </StyledH3>
-        <p>
-          <b>Subject : {studentInformation.standardSet || 'N/A'}</b>
-        </p>
         <AssessmentChart
           data={chartData}
           selectedTests={selectedTests}
@@ -125,6 +178,7 @@ const StudentAssessmentProfile = ({
           selectedTests={selectedTests}
           location={location}
           pageTitle={pageTitle}
+          isSharedReport={isSharedReport}
         />
       </StyledCard>
     </>
@@ -135,12 +189,13 @@ const withConnect = connect(
   (state) => ({
     studentAssessmentProfile: getReportsStudentAssessmentProfile(state),
     loading: getReportsStudentAssessmentProfileLoader(state),
+    error: getReportsStudentAssessmentProfileError(state),
     SPRFilterData: getReportsSPRFilterData(state),
     isCsvDownloading: getCsvDownloadingState(state),
-    bandInfoSelected: getBandInfoSelected(state),
   }),
   {
-    getStudentAssessmentProfileRequestAction,
+    getStudentAssessmentProfile: getStudentAssessmentProfileRequestAction,
+    resetStudentAssessmentProfile: resetStudentAssessmentProfileAction,
   }
 )
 

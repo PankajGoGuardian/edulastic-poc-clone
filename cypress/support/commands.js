@@ -217,7 +217,7 @@ Cypress.Commands.add(
         cy.wait(`@assignment-${login_index}`, { timeout: 120000 })
         cy.wait(`@testActivity${login_index}`, { timeout: 120000 })
         break
-      
+
       case 'schoolAdmin':
         cy.wait(`@district`, { timeout: 120000 })
         break
@@ -294,7 +294,7 @@ Cypress.Commands.add(
       }).then(({ body: responseBody }) => {
         const assignments =
           responseBody.result.assignments || responseBody.result
-        //const tests = responseBody.result.tests || []
+        // const tests = responseBody.result.tests || []
         assignments.forEach((asgnDO) => {
           const assignment = {}
           assignment._id = asgnDO._id
@@ -317,8 +317,8 @@ Cypress.Commands.add(
               'Content-Type': 'application/json',
             },
             retryOnStatusCodeFailure: true,
-          }).then(({ body }) => {
-            console.log(`${test._id} :: `, body.result)
+          }).then(({ body: bodyNew }) => {
+            console.log(`${test._id} :: `, bodyNew.result)
           })
         })
         /* testAssign.forEach((test) => {

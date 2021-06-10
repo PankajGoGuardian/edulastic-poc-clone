@@ -34,7 +34,7 @@ export default class QuestionChoice extends React.Component {
     this.setDefaultState(question)
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const { question: prevQuestion } = this.props
     const { question: nextQuestion } = nextProps
 
@@ -97,10 +97,11 @@ export default class QuestionChoice extends React.Component {
     )
   }
 
-  handleSetScore = (score) => {
+  handleSetScore = (_score) => {
     const { correctAnswers } = this.state
     const { onUpdate } = this.props
-
+    // eslint-disable-next-line no-restricted-properties
+    const score = window.isNaN(_score) || !_score ? 0 : _score
     this.setState({ score }, () => {
       const data = {
         validation: {
@@ -139,6 +140,7 @@ export default class QuestionChoice extends React.Component {
                 border: `1px solid ${inputBorder}`,
                 borderRadius: '0px',
               }}
+              data-cy="options"
             />
           </FormGroup>
         )}
@@ -155,9 +157,15 @@ export default class QuestionChoice extends React.Component {
               options={options}
               value={correctAnswers}
               onChange={this.handleSetCorrectAnswers}
+              data-cy="answerLabels"
             />
           )}
-          <InputNumber min={0} value={score} onChange={this.handleSetScore} />
+          <InputNumber
+            min={0}
+            value={score}
+            onChange={this.handleSetScore}
+            data-cy="points"
+          />
           <Points>Points</Points>
         </FormGroup>
       </QuestionFormWrapper>

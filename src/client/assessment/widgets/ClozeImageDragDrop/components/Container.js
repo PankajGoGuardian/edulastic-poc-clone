@@ -47,17 +47,7 @@ const Wrapper = styled.div`
   .text-wrapper {
     display: flex;
     height: 100%;
-    width: calc(100% - 20px);
     overflow: hidden;
-
-    ::after {
-      content: '...';
-      position: absolute;
-      right: 5px;
-      display: flex;
-      align-items: center;
-      height: 100%;
-    }
 
     div[draggable='true'] {
       width: max-content !important;

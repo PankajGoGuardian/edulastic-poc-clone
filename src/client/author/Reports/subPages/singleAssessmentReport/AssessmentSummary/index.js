@@ -1,12 +1,15 @@
 import { SpinLoader } from '@edulastic/common'
-import { Col } from 'antd'
-import { get } from 'lodash'
+import { Col, Empty } from 'antd'
 import PropTypes from 'prop-types'
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
+import { withRouter } from 'react-router-dom'
+import { isEmpty } from 'lodash'
+
 import { getUserRole, getUser } from '../../../../src/selectors/user'
-import { StyledCard, StyledH3 } from '../../../common/styled'
+import { NoDataContainer, StyledCard, StyledH3 } from '../../../common/styled'
+import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { getCsvDownloadingState, getPrintingState } from '../../../ducks'
 import { SimplePieChart } from './components/charts/pieChart'
 import { Stats } from './components/stats'
@@ -19,49 +22,124 @@ import {
   getAssessmentSummaryRequestAction,
   getReportsAssessmentSummary,
   getReportsAssessmentSummaryLoader,
+  setReportsAssesmentSummaryLoadingAction,
+  getReportsAssessmentSummaryError,
+  resetReportsAssessmentSummaryAction,
 } from './ducks'
+import { setPerformanceBandProfileAction } from '../common/filterDataDucks'
+
+const CustomCliEmptyComponent = () => (
+  <Empty
+    description="Reports are not available for this test yet. Please try again later..."
+    style={{ marginTop: '25vh' }}
+  />
+)
 
 const AssessmentSummary = ({
   loading,
+  error,
   isPrinting,
   isCsvDownloading,
   role,
   assessmentSummary,
   getAssessmentSummary,
+  resetAssessmentSummary,
   settings,
   user,
+  match,
+  setShowHeader,
+  preventHeaderRender,
+  setAssesmentSummaryLoading,
+  sharedReport,
+  setPerformanceBandProfile,
+  toggleFilter,
 }) => {
+  const userRole = useMemo(() => sharedReport?.sharedBy?.role || role, [
+    sharedReport,
+  ])
+  const assessmentName = `${
+    settings.selectedTest.title
+  } (ID:${settings.selectedTest.key.substring(
+    settings.selectedTest.key.length - 5
+  )})`
+
+  useEffect(() => () => resetAssessmentSummary(), [])
+
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
-      const q = {}
-      q.testId = settings.selectedTest.key
-      const {
-        performanceBandProfile,
-        ...requestFilters
-      } = settings.requestFilters
-      q.requestFilters = {
-        ...requestFilters,
-        profileId: performanceBandProfile,
+      const q = {
+        requestFilters: { ...settings.requestFilters },
+        testId: settings.selectedTest.key,
       }
-
+      if (settings.cliUser && q.testId) {
+        const { testId } = match.params
+        if (testId !== q.testId) {
+          setAssesmentSummaryLoading(false)
+          setShowHeader(false)
+          preventHeaderRender(true)
+          return
+        }
+      }
       getAssessmentSummary(q)
+    } else if (settings.cliUser) {
+      // On first teacher launch no data is available to teacher
+      // Hide header tab(s) for cliUsers
+      setAssesmentSummaryLoading(false)
+      setShowHeader(false)
+      preventHeaderRender(true)
+    } else if (settings.selectedTest && !settings.selectedTest.key) {
+      setAssesmentSummaryLoading(false)
     }
-  }, [settings])
+    if (settings.requestFilters.termId || settings.requestFilters.reportId) {
+      return () => toggleFilter(null, false)
+    }
+  }, [settings.selectedTest, settings.requestFilters, settings.cliUser])
+
+  useEffect(() => {
+    setPerformanceBandProfile(assessmentSummary?.bandInfo || {})
+    if (
+      (settings.requestFilters.termId || settings.requestFilters.reportId) &&
+      !loading &&
+      !isEmpty(assessmentSummary) &&
+      !assessmentSummary.metricInfo.length
+    ) {
+      toggleFilter(null, true)
+    }
+  }, [assessmentSummary])
 
   const { bandInfo, metricInfo } = assessmentSummary
 
-  const assessmentName = get(settings, 'selectedTest.title', '')
+  if (loading) {
+    return (
+      <SpinLoader
+        tip="Please wait while we gather the required information..."
+        position="fixed"
+      />
+    )
+  }
+  if (settings.cliUser && !metricInfo?.length) {
+    return <CustomCliEmptyComponent />
+  }
 
-  return loading ? (
-    <SpinLoader position="fixed" />
-  ) : (
+  if (error && error.dataSizeExceeded) {
+    return <DataSizeExceeded />
+  }
+
+  if (!metricInfo?.length || !settings.selectedTest.key) {
+    return (
+      <NoDataContainer>
+        {settings.requestFilters?.termId ? 'No data available currently.' : ''}
+      </NoDataContainer>
+    )
+  }
+  return (
     <>
       <UpperContainer type="flex">
         <StyledCard className="sub-container district-statistics">
           <Stats
             name={assessmentName}
             data={metricInfo}
-            role={role}
+            role={userRole}
             user={user}
           />
         </StyledCard>
@@ -69,17 +147,17 @@ const AssessmentSummary = ({
           <StyledH3 textAlign="center">
             Students in Performance Bands (%)
           </StyledH3>
-          <SimplePieChart data={bandInfo} />
+          <SimplePieChart data={bandInfo.performanceBand} />
         </StyledCard>
       </UpperContainer>
       <TableContainer>
         <Col>
           <StyledCard>
-            {role ? (
+            {userRole ? (
               <StyledAssessmentStatisticTable
                 name={assessmentName}
                 data={metricInfo}
-                role={role}
+                role={userRole}
                 isPrinting={isPrinting}
                 isCsvDownloading={isCsvDownloading}
               />
@@ -109,9 +187,11 @@ AssessmentSummary.propTypes = {
 }
 
 const enhance = compose(
+  withRouter,
   connect(
     (state) => ({
       loading: getReportsAssessmentSummaryLoader(state),
+      error: getReportsAssessmentSummaryError(state),
       isPrinting: getPrintingState(state),
       isCsvDownloading: getCsvDownloadingState(state),
       role: getUserRole(state),
@@ -120,6 +200,9 @@ const enhance = compose(
     }),
     {
       getAssessmentSummary: getAssessmentSummaryRequestAction,
+      setAssesmentSummaryLoading: setReportsAssesmentSummaryLoadingAction,
+      resetAssessmentSummary: resetReportsAssessmentSummaryAction,
+      setPerformanceBandProfile: setPerformanceBandProfileAction,
     }
   )
 )

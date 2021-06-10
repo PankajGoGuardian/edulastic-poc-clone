@@ -1,13 +1,13 @@
 import { createSlice } from 'redux-starter-kit'
 import { takeEvery, call, put, all, select } from 'redux-saga/effects'
 import { assignmentApi } from '@edulastic/api'
-import * as Sentry from '@sentry/browser'
-import { notification } from '@edulastic/common'
+import { captureSentryException, notification } from '@edulastic/common'
 import { omitBy, isUndefined, isEmpty, invert, set, get, maxBy } from 'lodash'
 import {
   assignmentPolicyOptions,
   assignmentStatusOptions,
 } from '@edulastic/constants'
+import { receiveTestActivitySaga } from '../ClassBoard/ducks'
 
 const slice = createSlice({
   initialState: {
@@ -76,6 +76,19 @@ const slice = createSlice({
             newDueDate.setHours(23, 59, 59)
           )
           state.updateSettings.endDate = newDueDate.setHours(23, 59, 59)
+        } else if (key === 'autoRedirect') {
+          if (value === true) {
+            const autoRedirectSettings = {
+              maxRedirects: 1,
+              showPreviousAttempt: 'STUDENT_RESPONSE_AND_FEEDBACK',
+              questionsDelivery: 'ALL',
+            }
+            state.assignment.autoRedirectSettings = autoRedirectSettings
+            state.updateSettings.autoRedirectSettings = autoRedirectSettings
+          } else {
+            delete state.assignment.autoRedirectSettings
+            delete state.updateSettings.autoRedirectSettings
+          }
         }
       }
     },
@@ -135,6 +148,9 @@ function* loadAssignmentSaga({ payload }) {
       maxAttempts,
       maxAnswerChecks,
       calcType,
+      passwordPolicy,
+      passwordExpireIn,
+      assignmentPassword,
     } = data.class[0] || {}
     if (openPolicy) {
       data.openPolicy = openPolicy
@@ -160,12 +176,22 @@ function* loadAssignmentSaga({ payload }) {
     if (calcType) {
       data.calcType = calcType
     }
+    if (passwordPolicy !== undefined) {
+      data.passwordPolicy = passwordPolicy
+      if (passwordExpireIn !== undefined) {
+        data.passwordExpireIn = passwordExpireIn
+      }
+      if (assignmentPassword !== undefined) {
+        data.assignmentPassword = assignmentPassword
+      }
+    }
+    yield call(receiveTestActivitySaga, { payload })
     yield put(slice.actions.loadAssignmentSucess(data))
   } catch (err) {
     const {
       data: { message: errorMessage },
     } = err.response
-    Sentry.captureException(err)
+    captureSentryException(err)
     yield put(slice.actions.stopLoading())
     notification({ msg: errorMessage || 'Loading assignment failed' })
   }
@@ -173,6 +199,7 @@ function* loadAssignmentSaga({ payload }) {
 
 function getSettingsSelector(state) {
   const assignment = state.LCBAssignmentSettings?.updateSettings || {}
+  const existingSettings = state.LCBAssignmentSettings?.assignment || {}
   const {
     openPolicy,
     closePolicy,
@@ -186,7 +213,69 @@ function getSettingsSelector(state) {
     answerOnPaper,
     maxAttempts,
     maxAnswerChecks,
+    passwordPolicy,
+    passwordExpireIn,
+    assignmentPassword,
+    autoRedirect,
+    autoRedirectSettings,
+    blockNavigationToAnsweredQuestions,
+    multiLanguageEnabled,
   } = assignment
+
+  const passWordPolicySettings = { passwordPolicy }
+
+  if (passwordPolicy === 1 || passwordExpireIn) {
+    passWordPolicySettings.passwordExpireIn =
+      existingSettings.passwordExpireIn === undefined
+        ? 900
+        : existingSettings.passwordExpireIn
+    passWordPolicySettings.passwordPolicy = existingSettings.passwordPolicy
+    if (!passWordPolicySettings.passwordExpireIn) {
+      notification({ msg: 'Please set password expiry time' })
+      return false
+    }
+  }
+  if (passwordPolicy === 2 || assignmentPassword) {
+    passWordPolicySettings.assignmentPassword =
+      existingSettings.assignmentPassword
+    passWordPolicySettings.passwordPolicy = existingSettings.passwordPolicy
+    if (!existingSettings.assignmentPassword) {
+      notification({ msg: 'Please set the assignment password' })
+      return false
+    }
+  }
+
+  if (autoRedirect === true) {
+    if (!autoRedirectSettings.showPreviousAttempt) {
+      notification({
+        type: 'warn',
+        msg: 'Please set the value for Show Previous Attempt',
+      })
+      return false
+    }
+    if (!autoRedirectSettings.questionsDelivery) {
+      notification({
+        type: 'warn',
+        msg: 'Please set the value for Question Delivery',
+      })
+      return false
+    }
+    if (!autoRedirectSettings.scoreThreshold) {
+      notification({
+        type: 'warn',
+        msg: 'Please set Score Threshold value',
+      })
+      return false
+    }
+    if (!autoRedirectSettings.maxRedirects) {
+      notification({
+        type: 'warn',
+        msg: 'Please set value of Max Attempts Allowed for auto redirect',
+      })
+      return false
+    }
+  }
+
   return omitBy(
     {
       openPolicy,
@@ -201,6 +290,11 @@ function getSettingsSelector(state) {
       answerOnPaper,
       maxAttempts,
       maxAnswerChecks,
+      ...passWordPolicySettings,
+      autoRedirect,
+      autoRedirectSettings,
+      blockNavigationToAnsweredQuestions,
+      multiLanguageEnabled,
     },
     isUndefined
   )
@@ -210,6 +304,9 @@ function* updateAssignmentClassSettingsSaga({ payload }) {
   const { assignmentId, classId } = payload
   try {
     const settings = yield select(getSettingsSelector)
+    if (settings === false) {
+      return
+    }
     if (isEmpty(settings)) {
       notification({ messageKey: 'noChangesToBeSaved' })
       return
@@ -220,14 +317,19 @@ function* updateAssignmentClassSettingsSaga({ payload }) {
       settings,
     })
     yield put(slice.actions.updateAssignmentClassSettingsSucess())
-    notification({ type: 'success', messageKey: 'settingsUpdatedSuccessfully' })
+    notification({
+      type: 'success',
+      messageKey: 'settingsUpdatedSuccessfully',
+    })
   } catch (err) {
     const {
       data: { message: errorMessage },
     } = err.response
-    Sentry.captureException(err)
+    captureSentryException(err)
     yield put(slice.actions.updateAssignmentClassSettingsError())
-    notification({ msg: errorMessage || 'Updating assignment settings failed' })
+    notification({
+      msg: errorMessage || 'Updating assignment settings failed',
+    })
   }
 }
 

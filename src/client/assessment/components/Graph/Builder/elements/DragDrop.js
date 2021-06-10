@@ -1,5 +1,6 @@
 import { replaceLatexesWithMathHtml } from '@edulastic/common/src/utils/mathUtils'
-import { IconCloseTextFormat, IconCorrectTextFormat } from '@edulastic/icons'
+import { IconCloseTextFormat } from '@edulastic/icons/src/IconClose'
+import { IconCorrectTextFormat } from '@edulastic/icons/src/IconCorrect'
 
 import { clamp } from 'lodash'
 import { CONSTANT } from '../config'
@@ -117,10 +118,13 @@ function create(board, object, settings) {
     id,
   })
 
-  const dragHandler = (e) => {
-    if (e.movementX === 0 && e.movementY === 0) {
-      return
-    }
+  const dragHandler = () => {
+    // don't use e.movementX === 0 && e.movementY === 0
+    // movementX and movementY are always zero on Safari
+    // it seems like the bug is in JSXGraph library
+    // https://snapwiz.atlassian.net/browse/EV-19969
+    // https://snapwiz.atlassian.net/browse/EV-23207
+
     disableSnapToGrid(point)
     disableSnapToGrid(mark)
     newElement.dragged = true
@@ -172,13 +176,13 @@ function removePointForDrag(board) {
 const getClampedCoords = (value, bounds) => clamp(value, bounds[0], bounds[1])
 
 function getConfig(element) {
-  const bounds = element.board.getBoundingBox()
+  const [xMin, yMax, xMax, yMin] = element.board.getBoundingBox()
   const p = element.parents[0]
   const x = element.coords[p].usrCoords[1]
   const y = element.coords[p].usrCoords[2]
 
-  const clampedX = (bounds && getClampedCoords(x, [bounds[0], bounds[1]])) || x
-  const clampedY = (bounds && getClampedCoords(y, [bounds[3], bounds[2]])) || y
+  const clampedX = getClampedCoords(x, [xMin, xMax])
+  const clampedY = getClampedCoords(y, [yMin, yMax])
 
   if (clampedX !== x || clampedY !== y) {
     element.translationPoints[0].moveTo([clampedX, clampedY])

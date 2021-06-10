@@ -121,7 +121,8 @@ class Layout extends Component {
               <Col md={12}>
                 <StemNumerationOption
                   onChange={(val) =>
-                    changeUiStyle('validationStemNumeration', val)}
+                    changeUiStyle('validationStemNumeration', val)
+                  }
                   value={get(
                     item,
                     'uiStyle.validationStemNumeration',

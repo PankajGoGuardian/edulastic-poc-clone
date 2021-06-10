@@ -29,9 +29,19 @@ export const StyledTextArea = styled(TextArea)`
   min-height: 120px !important;
   background-color: ${lightGrey3};
   border-radius: 5px;
-  &:focus::placeholder {
-    color: transparent;
-  }
+`
+
+export const PlaceHolderText = styled.p`
+  color: #bfbfbf;
+  position: absolute;
+  margin-top: 22px;
+  margin-left: 14px;
+  font-size: 14px;
+  line-height: 21px;
+  pointer-events: none;
+  user-select: none;
+  display: ${(props) => (props.visible ? 'block' : 'none')};
+  z-index: 1;
 `
 
 export const SelUserKindDiv = styled(Row)`

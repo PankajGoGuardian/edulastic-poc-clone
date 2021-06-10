@@ -77,18 +77,19 @@ class ChoicesForDropDown extends Component {
 
   editOptions = (dropDownId, itemIndex, e) => {
     const { item, setQuestionData } = this.props
-    const prevDropDownAnswers = get(
-      item,
-      'validation.validResponse.dropdown.value',
-      []
-    )
-    const prevAnswerIndex = findIndex(
-      prevDropDownAnswers,
-      (answer) => answer.id === dropDownId
-    )
 
     setQuestionData(
       produce(item, (draft) => {
+        const prevDropDownAnswers = get(
+          draft,
+          'validation.validResponse.dropdown.value',
+          []
+        )
+        const prevAnswerIndex = findIndex(
+          prevDropDownAnswers,
+          (answer) => answer.id === dropDownId
+        )
+
         if (draft.options[dropDownId] === undefined)
           draft.options[dropDownId] = []
         const prevOption = draft.options[dropDownId][itemIndex]

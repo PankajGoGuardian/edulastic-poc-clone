@@ -1,15 +1,20 @@
 {
   "manifest_version": 2,
   "name": "Edu Meet",
-  "version": "0.4.15",
+  "version": "0.1.0",
   "description": "Google Meet Emoji Reactions Extension",
   "content_scripts": [
     {
       "matches": ["*://meet.google.com/**-**-**", "*://*.snapwiz.net/*"],
-      "js": ["content.js", "muteInject.js"]
+      "js": ["content.js"]
     }
   ],
-  "web_accessible_resources": ["content.js", "bundle.js", "*.bundle.js", "img/*", "muteInject.js"],
+  "web_accessible_resources": [
+    "content.js",
+    "bundle.js",
+    "*.bundle.js",
+    "img/*"
+  ],
   "background": {
     "scripts": ["background.js"]
   },
@@ -28,7 +33,7 @@
     "webRequestBlocking"
   ],
   "externally_connectable": {
-    "matches": ["*://meet.google.com/**-**-**", "http://localhost:3001/*"]
+    "matches": ["*://meet.google.com/**-**-**"]
   },
   "optional_permissions": ["notifications", "*://meet.google.com/**-**-**"],
   "content_security_policy": "script-src 'self' https://www.gstatic.com/ https://*.firebaseio.com https://www.googleapis.com; object-src 'self'"

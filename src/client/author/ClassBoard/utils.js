@@ -131,10 +131,26 @@ export const hasRandomQuestions = (itemGroups = []) => {
  * if assignmnet not closed enddate will redurn
  */
 export const getRedirectEndDate = (_class, dueDate) => {
-  const { endDate, closed } = _class
-
+  const { closed, ts: dateNow, dueDate: classDue } = _class
+  const endDate = classDue || _class.endDate
+  const diffInSecs = (endDate - dateNow) / 1000
+  const diffInHours = diffInSecs / (60 * 60)
+  if (diffInHours < 24 || !endDate) {
+    return moment().add(2, 'day')
+  }
   if (closed || dueDate > moment(endDate)) {
     return dueDate
   }
   return endDate
+}
+
+export const getSubmittedDate = (activityEndDate, classEndDate) => {
+  let endDate = activityEndDate
+  if (activityEndDate && classEndDate) {
+    endDate = activityEndDate < classEndDate ? activityEndDate : classEndDate
+  }
+  if (!endDate) {
+    return '-'
+  }
+  return moment(endDate).format('MMM DD, YYYY HH:mm')
 }

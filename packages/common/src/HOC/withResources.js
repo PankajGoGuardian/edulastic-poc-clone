@@ -9,7 +9,7 @@
  *
  *  Ummm... prolly this code belongs to "mines of Moria"! 👻
  */
-// @ts-check
+ 
 import React, { useState, useEffect } from 'react'
 import load from 'loadjs'
 

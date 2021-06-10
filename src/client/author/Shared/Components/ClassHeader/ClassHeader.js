@@ -13,6 +13,8 @@ import {
 import {
   assignmentPolicyOptions,
   test as testContants,
+  testActivityStatus,
+  testActivity as testActivityConstants,
 } from '@edulastic/constants'
 import {
   IconBookMarkButton,
@@ -32,6 +34,7 @@ import { connect } from 'react-redux'
 import { Link, withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import { smallDesktopWidth } from '@edulastic/colors'
+import * as TokenStorage from '@edulastic/api/src/utils/Storage'
 import ConfirmationModal from '../../../../common/components/ConfirmationModal'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import { DeleteAssignmentModal } from '../../../Assignments/components/DeleteAssignmentModal/deleteAssignmentModal'
@@ -51,14 +54,20 @@ import {
   showPasswordButonSelector,
   showScoreSelector,
   getIsShowUnAssignSelector,
+  testActivtyLoadingSelector,
 } from '../../../ClassBoard/ducks'
 import { toggleDeleteAssignmentModalAction } from '../../../sharedDucks/assignments'
 import {
   googleSyncAssignmentAction,
   toggleReleaseScoreSettingsAction,
   toggleStudentReportCardSettingsAction,
+  googleSyncAssignmentGradesAction,
+  schoologySyncAssignmentGradesAction,
+  schoologySyncAssignmentAction,
+  cleverSyncAssignmentGradesAction,
 } from '../../../src/actions/assignments'
 import {
+  canvasSyncAssignmentAction,
   canvasSyncGradesAction,
   closeAssignmentAction,
   markAsDoneAction,
@@ -72,6 +81,7 @@ import WithDisableMessage from '../../../src/components/common/ToggleDisable'
 import { gradebookUnSelectAllAction } from '../../../src/reducers/gradeBook'
 import {
   getAssignmentSyncInProgress,
+  getSchoologyAssignmentSyncInProgress,
   getToggleReleaseGradeStateSelector,
   getToggleStudentReportCardStateSelector,
 } from '../../../src/selectors/assignments'
@@ -97,6 +107,10 @@ import ViewPasswordModal from './ViewPasswordModal'
 import { allowedSettingPageToDisplay } from './utils/transformers'
 
 const { POLICY_OPEN_MANUALLY_BY_TEACHER } = assignmentPolicyOptions
+const {
+  gradingStatus,
+  authorAssignmentConstants: { assignmentStatus: assignmentStatusConstants },
+} = testActivityConstants
 
 const classViewRoutesByActiveTabName = {
   classboard: 'classboard',
@@ -236,6 +250,25 @@ class ClassHeader extends Component {
   }
 
   toggleCloseModal = (value) => {
+    if (value === true) {
+      const {
+        additionalData: { testId },
+        closeAssignment,
+        testActivity,
+        isActivityLoading,
+        match,
+      } = this.props
+      if (isActivityLoading) return
+      const { SUBMITTED, ABSENT } = testActivityStatus
+      const isAllDone = testActivity.every(
+        ({ UTASTATUS }) => UTASTATUS === SUBMITTED || UTASTATUS === ABSENT
+      )
+      if (isAllDone) {
+        const { classId, assignmentId } = match.params
+        closeAssignment(assignmentId, classId, testId)
+        return
+      }
+    }
     this.setState({ isCloseModalVisible: value, modalInputVal: '' })
   }
 
@@ -259,12 +292,87 @@ class ClassHeader extends Component {
   onStudentReportCardsClick = () => {
     const { testActivity, toggleStudentReportCardPopUp } = this.props
     const isAnyBodyGraded = testActivity.some(
-      (item) => item.status === 'submitted' && item.graded === 'GRADED'
+      (item) =>
+        item.UTASTATUS === testActivityStatus.SUBMITTED &&
+        item.graded === gradingStatus.GRADED
     )
     if (isAnyBodyGraded) {
       toggleStudentReportCardPopUp(true)
     } else {
       notification({ messageKey: 'noStudentIsGradedToGenerateReportCard' })
+    }
+  }
+
+  handleAssignmentGradesSync = (data) => {
+    const { googleSyncAssignmentGrades, additionalData } = this.props
+    if (
+      additionalData.releaseScore ===
+      testContants.releaseGradeTypes.DONT_RELEASE
+    ) {
+      return notification({
+        msg:
+          'Please update release score policy to sync grades to Google Classroom',
+      })
+    }
+    googleSyncAssignmentGrades(data)
+  }
+
+  handleSchoologyAssignmentGradesSync = (data) => {
+    const { schoologySyncAssignmentGrades, additionalData } = this.props
+    if (
+      additionalData.releaseScore ===
+      testContants.releaseGradeTypes.DONT_RELEASE
+    ) {
+      return notification({
+        msg:
+          'Please update release score policy to sync grades to Schoology Classroom',
+      })
+    }
+    schoologySyncAssignmentGrades(data)
+  }
+
+  handleCleverAssignmentGradesSync = (data) => {
+    const { cleverSyncAssignmentGrades, additionalData } = this.props
+    if (
+      additionalData.releaseScore ===
+      testContants.releaseGradeTypes.DONT_RELEASE
+    ) {
+      return notification({
+        msg: 'Please update release score policy to sync grades to clever',
+      })
+    }
+    cleverSyncAssignmentGrades(data)
+  }
+  componentDidMount() {
+    // if redirect is happening for LCB and user did action schoology sync
+    const atlasShareOriginUrl =
+      TokenStorage.getFromLocalStorage('atlasShareOriginUrl') || ''
+    const schoologySync = localStorage.getItem('schoologyShare')
+    if (
+      atlasShareOriginUrl &&
+      atlasShareOriginUrl.indexOf('classboard') > -1 &&
+      schoologySync
+    ) {
+      const fragments = atlasShareOriginUrl.split('/')
+      const assignmentId = fragments[3]
+      const classSectionId = fragments[4]
+      const {
+        schoologySyncAssignmentGrades,
+        schoologySyncAssignment,
+      } = this.props
+      if (schoologySync === 'grades') {
+        schoologySyncAssignmentGrades({
+          assignmentId,
+          groupId: classSectionId,
+        })
+      } else if (schoologySync === 'assignment') {
+        schoologySyncAssignment({
+          assignmentIds: [assignmentId],
+          groupId: classSectionId,
+        })
+      }
+      localStorage.removeItem('atlasShareOriginUrl')
+      localStorage.removeItem('schoologyShare')
     }
   }
 
@@ -289,17 +397,22 @@ class ClassHeader extends Component {
       isViewPassword,
       hasRandomQuestions,
       orgClasses,
+      districtPolicy,
       canvasSyncGrades,
       googleSyncAssignment,
       syncWithGoogleClassroomInProgress,
       isShowStudentReportCardSettingPopup,
       toggleStudentReportCardPopUp,
       userId,
-      assignedById,
+      isDemoPlaygroundUser,
       windowWidth,
       canvasAllowedInstitutions,
       isCliUser,
       isShowUnAssign,
+      canvasSyncAssignment,
+      studentsUTAData,
+      schoologySyncAssignment,
+      syncWithSchoologyClassroomInProgress,
     } = this.props
     const {
       visible,
@@ -336,16 +449,56 @@ class ClassHeader extends Component {
         : closed
         ? 'DONE'
         : assignmentStatus
-    const { canvasCode, canvasCourseSectionCode, googleId: groupGoogleId } =
-      orgClasses.find(({ _id }) => _id === classId) || {}
+    const {
+      canvasCode,
+      canvasCourseSectionCode,
+      googleId: groupGoogleId,
+      atlasId: groupAtlasId,
+      atlasProviderName = '',
+      cleverId: groupCleverId,
+    } = orgClasses.find(({ _id }) => _id === classId) || {}
     const showSyncGradesWithCanvasOption =
-      canvasCode && canvasCourseSectionCode && canvasAllowedInstitutions.length
+      !isDemoPlaygroundUser &&
+      canvasCode &&
+      canvasCourseSectionCode &&
+      canvasAllowedInstitutions.length
 
     // hiding seeting tab if assignment assigned by either DA/SA
     const showSettingTab = allowedSettingPageToDisplay(assignedBy, userId)
 
     const isSmallDesktop = windowWidth <= parseInt(smallDesktopWidth, 10)
     const loading = _classId !== classId
+
+    const showGoogleGradeSyncOption =
+      !isDemoPlaygroundUser &&
+      groupGoogleId &&
+      assignmentStatusForDisplay !== assignmentStatusConstants.NOT_OPEN &&
+      studentsUTAData.some(
+        (uta) =>
+          uta.graded === gradingStatus.GRADED ||
+          uta.UTASTATUS === testActivityStatus.SUBMITTED
+      )
+
+    const showSchoologyGradeSyncOption =
+      !isDemoPlaygroundUser &&
+      groupAtlasId &&
+      atlasProviderName.toLocaleUpperCase() === 'SCHOOLOGY' &&
+      assignmentStatusForDisplay !== assignmentStatusConstants.NOT_OPEN &&
+      studentsUTAData.some(
+        (uta) =>
+          uta.graded === gradingStatus.GRADED ||
+          uta.UTASTATUS === testActivityStatus.SUBMITTED
+      )
+
+    const showCleverGradeSyncOption =
+      !isDemoPlaygroundUser &&
+      districtPolicy?.cleverGradeSyncEnabled &&
+      assignmentStatusForDisplay !== assignmentStatusConstants.NOT_OPEN &&
+      studentsUTAData.some(
+        (uta) =>
+          uta.graded === gradingStatus.GRADED ||
+          uta.UTASTATUS === testActivityStatus.SUBMITTED
+      )
 
     const renderOpenClose = (
       <OpenCloseWrapper>
@@ -359,8 +512,7 @@ class ClassHeader extends Component {
             OPEN
           </EduButton>
         ) : (
-          assignmentStatusForDisplay !== 'DONE' &&
-          canPause && (
+          (isPaused || (assignmentStatusForDisplay !== 'DONE' && canPause)) && (
             <EduButton
               isBlue
               isGhost
@@ -371,7 +523,7 @@ class ClassHeader extends Component {
                   : this.togglePauseModal(true)
               }
             >
-              {isPaused ? 'OPEN' : 'PAUSE'}
+              {isPaused ? 'RESUME' : 'PAUSE'}
             </EduButton>
           )
         )}
@@ -417,11 +569,7 @@ class ClassHeader extends Component {
         <MenuItems
           data-cy="releaseScore"
           key="key2"
-          onClick={() =>
-            assignedById !== userId
-              ? notification({ messageKey: 'youAreNotAuthorizedToUpdate' })
-              : toggleReleaseGradePopUp(true)
-          }
+          onClick={() => toggleReleaseGradePopUp(true)}
         >
           Release Score
         </MenuItems>
@@ -452,15 +600,39 @@ class ClassHeader extends Component {
             <MenuItems
               key="key6"
               onClick={() =>
+                canvasSyncAssignment({ assignmentId, groupId: classId })
+              }
+            >
+              Share on Canvas
+            </MenuItems>
+          )}
+        {showSyncGradesWithCanvasOption &&
+          assignmentStatusForDisplay !== 'NOT OPEN' && (
+            <MenuItems
+              key="key7"
+              onClick={() =>
                 canvasSyncGrades({ assignmentId, groupId: classId })
               }
             >
               Canvas Grade Sync
             </MenuItems>
           )}
-        {groupGoogleId && (
+        {showGoogleGradeSyncOption && (
           <MenuItems
-            key="key7"
+            key="key8"
+            onClick={() =>
+              this.handleAssignmentGradesSync({
+                assignmentId,
+                groupId: classId,
+              })
+            }
+          >
+            Sync Grades to Google Classroom
+          </MenuItems>
+        )}
+        {!isDemoPlaygroundUser && groupGoogleId && (
+          <MenuItems
+            key="key9"
             onClick={() =>
               googleSyncAssignment({
                 assignmentIds: [assignmentId],
@@ -470,6 +642,48 @@ class ClassHeader extends Component {
             disabled={syncWithGoogleClassroomInProgress}
           >
             Sync with Google Classroom
+          </MenuItems>
+        )}
+        {showSchoologyGradeSyncOption && (
+          <MenuItems
+            key="key10"
+            onClick={() =>
+              this.handleSchoologyAssignmentGradesSync({
+                assignmentId,
+                groupId: classId,
+              })
+            }
+          >
+            Sync Grades to Schoology Classroom
+          </MenuItems>
+        )}
+        {!isDemoPlaygroundUser &&
+          groupAtlasId &&
+          atlasProviderName.toLocaleUpperCase() === 'SCHOOLOGY' && (
+            <MenuItems
+              key="key11"
+              onClick={() =>
+                schoologySyncAssignment({
+                  assignmentIds: [assignmentId],
+                  groupId: classId,
+                })
+              }
+              disabled={syncWithSchoologyClassroomInProgress}
+            >
+              Sync with Schoology Classroom
+            </MenuItems>
+          )}
+        {showCleverGradeSyncOption && (
+          <MenuItems
+            key="key12"
+            onClick={() =>
+              this.handleCleverAssignmentGradesSync({
+                assignmentId,
+                groupId: classId,
+              })
+            }
+          >
+            Sync Grades to Schoology
           </MenuItems>
         )}
         <FeaturesSwitch
@@ -541,6 +755,7 @@ class ClassHeader extends Component {
                   : ''}
                 <div>
                   {!!(dueDate || endDate) &&
+                    !isCliUser &&
                     `(Due on ${moment(dueOnDate).format('MMM DD, YYYY')})`}
                 </div>
               </StyledParaSecond>
@@ -653,19 +868,22 @@ class ClassHeader extends Component {
                 {/* Needed this check as password modal has a timer hook which should not load until all password details are loaded */}
                 {isViewPassword && <ViewPasswordModal />}
                 <ConfirmationModal
-                  title="Pause"
+                  title="Pause Assignment"
                   show={isPauseModalVisible}
                   onOk={() => this.handlePauseAssignment(!isPaused)}
                   onCancel={() => this.togglePauseModal(false)}
-                  inputVal={modalInputVal}
+                  inputVal="PAUSE"
                   placeHolder="Type the action"
                   onInputChange={this.handleValidateInput}
                   expectedVal="PAUSE"
-                  canUndone
+                  showConfirmationText
+                  hideUndoneText
+                  hideConfirmation
                   bodyText={
                     <div>
-                      Are you sure you want to pause? Once paused,no student
-                      would be able to answer the test unless you resume it.
+                      Are you sure you want to pause assignment for{' '}
+                      {additionalData.className} ? Once paused, no student would
+                      be able to answer the assignment unless you resume it.
                     </div>
                   }
                   okText="Yes, Pause"
@@ -707,7 +925,8 @@ class ClassHeader extends Component {
                     </div>
                   }
                   okText="Yes, Close"
-                  canUndone
+                  showConfirmationText
+                  hideUndoneText
                 />
               </StyledDiv>
             </RightSideButtonWrapper>
@@ -742,6 +961,11 @@ const enhance = compose(
         ['author_classboard_testActivity', 'data', 'status'],
         ''
       ),
+      studentsUTAData: get(
+        state,
+        ['author_classboard_testActivity', 'entities'],
+        []
+      ),
       isShowReleaseSettingsPopup: getToggleReleaseGradeStateSelector(state),
       notStartedStudents: notStartedStudentsSelector(state),
       inProgressStudents: inProgressStudentsSelector(state),
@@ -752,6 +976,7 @@ const enhance = compose(
       isViewPassword: getViewPasswordSelector(state),
       hasRandomQuestions: getHasRandomQuestionselector(state),
       orgClasses: getGroupList(state),
+      districtPolicy: get(state, 'user.user.orgData.policies.district'),
       canvasAllowedInstitutions: getCanvasAllowedInstitutionPoliciesSelector(
         state
       ),
@@ -759,10 +984,13 @@ const enhance = compose(
       isShowStudentReportCardSettingPopup: getToggleStudentReportCardStateSelector(
         state
       ),
-      assignedById:
-        state?.author_classboard_testActivity?.additionalData?.assignedBy?._id,
       userId: state?.user?.user?._id,
+      isDemoPlaygroundUser: state?.user?.user?.isPlayground,
       isShowUnAssign: getIsShowUnAssignSelector(state),
+      isActivityLoading: testActivtyLoadingSelector(state),
+      syncWithSchoologyClassroomInProgress: getSchoologyAssignmentSyncInProgress(
+        state
+      ),
     }),
     {
       loadTestActivity: receiveTestActivitydAction,
@@ -777,7 +1005,12 @@ const enhance = compose(
       toggleViewPassword: toggleViewPasswordAction,
       canvasSyncGrades: canvasSyncGradesAction,
       googleSyncAssignment: googleSyncAssignmentAction,
+      googleSyncAssignmentGrades: googleSyncAssignmentGradesAction,
+      cleverSyncAssignmentGrades: cleverSyncAssignmentGradesAction,
       toggleStudentReportCardPopUp: toggleStudentReportCardSettingsAction,
+      canvasSyncAssignment: canvasSyncAssignmentAction,
+      schoologySyncAssignment: schoologySyncAssignmentAction,
+      schoologySyncAssignmentGrades: schoologySyncAssignmentGradesAction,
     }
   )
 )

@@ -21,6 +21,7 @@ const NumberKeyboard = ({ buttons, onInput }) => {
             <Button
               key={i}
               onClick={handleClickNumPad(item)}
+              onTouchEnd={handleClickNumPad(item)}
               data-cy={`virtual-keyboard-${item.data_cy || item.value}`}
             >
               <Label>{item.label}</Label>

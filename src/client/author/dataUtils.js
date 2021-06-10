@@ -1,6 +1,5 @@
 import React from 'react'
 import { get, keyBy, uniqBy, uniq, memoize } from 'lodash'
-import { getFromLocalStorage } from '@edulastic/api/src/utils/Storage'
 import { questionType as questionTypes } from '@edulastic/constants'
 import { UserIcon } from './ItemList/components/Item/styled'
 import { EdulasticVerified } from './TestList/components/ListItem/styled'
@@ -57,17 +56,9 @@ export const getTestAuthorName = (item, orgCollections) => {
   return authors.length && authors[0].name
 }
 
-export const getTestItemAuthorName = (item) => {
-  const { owner = '', authors = [] } = item
-  if (owner) {
-    const author = authors.find((_item) => _item._id === owner) || {}
-    return author.name || authors?.[0]?.name || 'Anonymous'
-  }
-  return (authors.length && authors?.[0]?.name) || 'Anonymous'
-}
+export const getTestItemAuthorName = (item, orgCollections) => {
+  const { owner = '', collections = [], authors = [] } = item
 
-export const getTestItemCollectionName = (item, orgCollections) => {
-  const { collections = [] } = item
   if (collections.length) {
     // TO DO : this if block hasnt been tested cuz data wasnt present at the time of development
     const collectionItem = hasUserGotAccessToPremiumItem(
@@ -79,9 +70,14 @@ export const getTestItemCollectionName = (item, orgCollections) => {
       return collectionItem.name
     }
   }
+  if (owner) {
+    const author = authors.find((_item) => _item._id === owner) || {}
+    return author.name || authors?.[0]?.name || 'Anonymous'
+  }
+  return (authors.length && authors?.[0]?.name) || 'Anonymous'
 }
 
-export const getTestItemCollectionIcon = (item, orgCollections) => {
+export const getTestItemAuthorIcon = (item, orgCollections) => {
   const { collections = [] } = item
 
   if (collections.length) {
@@ -96,9 +92,9 @@ export const getTestItemCollectionIcon = (item, orgCollections) => {
       return collectionMap[collectionItem.name].icon
     }
   }
-}
 
-export const getTestItemAuthorIcon = () => <UserIcon data-cy="user" />
+  return <UserIcon data-cy="user" />
+}
 
 export const getPlaylistAuthorName = (item) => {
   const {
@@ -202,14 +198,16 @@ export const getInterestedStandards = (
     )
 
     standardData.forEach((standard) => {
-      const equivStandard = equivalentStandards.find((eqSt) =>
+      const equivStandards = equivalentStandards.filter((eqSt) =>
         curriculumIds.includes(eqSt.curriculumId)
       )
-      if (equivStandard) {
-        interestedStandards.push({
-          ...standard,
-          identifier: equivStandard.identifier,
-        })
+      if (equivStandards.length) {
+        for (const eqSt of equivStandards) {
+          interestedStandards.push({
+            ...standard,
+            identifier: eqSt.identifier,
+          })
+        }
       }
     })
   }
@@ -246,21 +244,28 @@ export const getDefaultInterests = () =>
   JSON.parse(sessionStorage.getItem('filters[globalSessionFilters]')) || {}
 
 export const sortTestItemQuestions = (testItems) => {
-  for (const [, item] of testItems.entries()) {
+  const sortedTestItems = testItems.map((item) => {
     if (!(item.data && item.data.questions)) {
-      continue
+      return item
     }
     // sort questions based on widegets
     const questions = keyBy(get(item, 'data.questions', []), 'id')
     const widgets = (item.rows || []).reduce(
-      (acc, curr) => [...acc, ...curr.widgets],
+      (acc, curr) => [...acc, ...(curr.widgets || [])],
       []
     )
-    item.data.questions = widgets
-      .map((widget) => questions[widget.reference])
-      .filter((q) => !!q)
-  }
-  return testItems
+    return {
+      ...item,
+      data: {
+        ...item.data,
+        questions: widgets
+          .map((widget) => questions[widget.reference])
+          .filter((q) => !!q),
+      },
+    }
+  })
+
+  return sortedTestItems
 }
 
 // Show premium label on items/tests/playlists

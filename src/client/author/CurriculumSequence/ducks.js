@@ -1,7 +1,8 @@
 import { buffers } from 'redux-saga'
+import { createSelector } from 'reselect'
 import { createAction, createReducer } from 'redux-starter-kit'
 import * as moment from 'moment'
-import { message } from 'antd'
+import { message, Modal } from 'antd'
 import {
   takeLatest,
   takeEvery,
@@ -17,7 +18,8 @@ import { v4 } from 'uuid'
 import { normalize, schema } from 'normalizr'
 import { push } from 'connected-react-router'
 import * as Sentry from '@sentry/browser'
-import { notification } from '@edulastic/common'
+import { captureSentryException, notification } from '@edulastic/common'
+import { roleuser } from '@edulastic/constants'
 import {
   curriculumSequencesApi,
   assignmentApi,
@@ -26,13 +28,25 @@ import {
   recommendationsApi,
   TokenStorage as Storage,
   testsApi,
+  resourcesApi,
 } from '@edulastic/api'
 import produce from 'immer'
 import { setCurrentAssignmentAction } from '../TestPage/components/Assign/ducks'
-import { getUserSelector, getUserId } from '../src/selectors/user'
+import {
+  getUserSelector,
+  getUserId,
+  getUserRole,
+  getCollectionsSelector,
+  getWritableCollectionsSelector,
+} from '../src/selectors/user'
+import {
+  allowDuplicateCheck,
+  allowContentEditCheck,
+} from '../src/utils/permissionCheck'
 import {
   publishTestAction,
   receiveTestByIdAction,
+  duplicateTestRequestAction,
   getTestSelector,
   UPDATE_TEST_STATUS,
   RECEIVE_TEST_BY_ID_SUCCESS,
@@ -47,6 +61,7 @@ import {
   receiveRecentPlayListsAction,
   receiveLastPlayListSaga,
 } from '../Playlist/ducks'
+import { themeColor } from '@edulastic/colors'
 
 // Constants
 export const CURRICULUM_TYPE_GUIDE = 'guide'
@@ -92,6 +107,8 @@ export const SET_SELECTED_ITEMS_FOR_ASSIGN =
   '[curriculum-sequence] set selected items for assign'
 export const SET_SELECTED_ITEMS_FOR_ASSIGN_INIT =
   '[curriculum-sequence] set selected items for assign init'
+export const SET_RECOMMENDATIONS_TO_ASSIGN =
+  '[curriculum-sequence] recommendations to assign'
 export const SET_DATA_FOR_ASSIGN_INIT =
   '[curriculum-sequence] set data for assign init'
 export const SET_DATA_FOR_ASSIGN = '[curriculum-sequence] set data for assign'
@@ -113,6 +130,7 @@ export const FETCH_ASSIGNED_REQUEST =
 export const FETCH_ASSIGNED_RESULT =
   '[curriculum-sequence] fetch assigned result'
 export const USE_THIS_PLAYLIST = '[playlist] use this playlist'
+export const CLONE_THIS_PLAYLIST = '[playlist] clone this playlist'
 export const APPROVE_OR_REJECT_SINGLE_PLAYLIST_REQUEST =
   '[curriculum-sequence] approve or reject single playlist request'
 export const APPROVE_OR_REJECT_SINGLE_PLAYLIST_SUCCESS =
@@ -163,7 +181,17 @@ export const FETCH_DIFFERENTIATION_WORK =
   '[differentiation] fetch differentiation work'
 export const SET_DIFFERENTIATION_WORK =
   '[differentiation] set differentiation work'
+export const SET_DIFFERENTIATION_SELECTED_DATA =
+  '[differentiation] set differentiation selected data'
+export const ADD_TYPE_BASED_DIFFERENTIATION_RESOURCES =
+  '[differentiation] add differentiation resources'
+export const REMOVE_TYPE_BASED_DIFFERENTIATION_RESOURCES =
+  '[differentiation] remove differentiation resources'
+export const CLEAR_ALL_DIFFERENTIATION_RESOURCES =
+  '[differentiation] clear all differentiation resources'
 export const ADD_TEST_TO_DIFFERENTIATION = '[differentiation] add test'
+export const REMOVE_RESOURCE_FROM_DIFFERENTIATION =
+  '[differentiation] remove resource'
 export const ADD_RECOMMENDATIONS_ACTIONS =
   '[differentiation] add recommendations'
 export const UPDATE_FETCH_DIFFERENTIATION_WORK_LOADING_STATE =
@@ -212,6 +240,16 @@ export const TOGGLE_ASSIGNMENTS = '[playlist] toggle assignments'
 export const SET_CURRENT_ASSIGNMENT_IDS =
   '[playlist] set current assignment ids'
 export const DUPLICATE_PLAYLIST_REQUEST = '[playlist] duplicate request'
+export const SET_IS_USED_MODAL_VISIBLE =
+  '[playlist] show/hide is used modal popup'
+export const SET_CUSTOM_TITLE_MODAL_VISIBLE =
+  '[playlist] show/hide custom title modal popup'
+export const SET_PREVIOUSLY_USED_PLAYLIST_CLONE =
+  '[playlist] previously used playlist clone data'
+
+export const EDIT_PLAYLIST_TEST = '[playlist] edit playlist test'
+export const SET_USE_THIS_LOADER =
+  '[playlist] set/unset loader while using playlist'
 
 // Actions
 export const updateCurriculumSequenceList = createAction(
@@ -242,6 +280,9 @@ export const createAssignmentNowAction = createAction(CREATE_ASSIGNMENT_NOW)
 export const setSelectedItemsForAssignAction = createAction(
   SET_SELECTED_ITEMS_FOR_ASSIGN_INIT
 )
+export const setRecommendationsToAssignAction = createAction(
+  SET_RECOMMENDATIONS_TO_ASSIGN
+)
 export const setDataForAssignAction = createAction(SET_DATA_FOR_ASSIGN_INIT)
 export const addContentToCurriculumSequenceAction = createAction(
   ADD_CONTENT_TO_CURRICULUM_RESULT
@@ -253,6 +294,7 @@ export const addNewUnitAction = createAction(ADD_NEW_UNIT_INIT)
 export const removeUnitAction = createAction(REMOVE_UNIT_INIT)
 export const fetchAssignedAction = createAction(FETCH_ASSIGNED_REQUEST)
 export const useThisPlayListAction = createAction(USE_THIS_PLAYLIST)
+export const cloneThisPlayListAction = createAction(CLONE_THIS_PLAYLIST)
 
 export const removeItemFromUnitAction = createAction(REMOVE_ITEM_FROM_UNIT)
 export const putCurriculumSequenceAction = createAction(PUT_CURRICULUM_SEQUENCE)
@@ -288,6 +330,18 @@ export const fetchDifferentiationWorkAction = createAction(
 export const setDifferentiationWorkAction = createAction(
   SET_DIFFERENTIATION_WORK
 )
+export const setDifferentiationSelectedDataAction = createAction(
+  SET_DIFFERENTIATION_SELECTED_DATA
+)
+export const addDifferentiationResourcesAction = createAction(
+  ADD_TYPE_BASED_DIFFERENTIATION_RESOURCES
+)
+export const removeDifferentiationResourcesAction = createAction(
+  REMOVE_TYPE_BASED_DIFFERENTIATION_RESOURCES
+)
+export const clearAllDiffenrentiationResourcesAction = createAction(
+  CLEAR_ALL_DIFFERENTIATION_RESOURCES
+)
 export const addRecommendationsAction = createAction(
   ADD_RECOMMENDATIONS_ACTIONS
 )
@@ -300,6 +354,9 @@ export const updateDestinationCurriculumSequenceRequestAction = createAction(
 export const updateWorkStatusDataAction = createAction(UPDATE_WORK_STATUS_DATA)
 export const addTestToDifferentationAction = createAction(
   ADD_TEST_TO_DIFFERENTIATION
+)
+export const removeResourceFromDifferentiationAction = createAction(
+  REMOVE_RESOURCE_FROM_DIFFERENTIATION
 )
 export const addResourceToDifferentiationAction = createAction(
   ADD_RESOURCE_TO_DIFFERENTIATION
@@ -346,6 +403,18 @@ export const setCurrentAssignmentIdsAction = createAction(
 )
 export const duplicatePlaylistRequestAction = createAction(
   DUPLICATE_PLAYLIST_REQUEST
+)
+export const setUseThisLoading = createAction(SET_USE_THIS_LOADER)
+
+export const setIsUsedModalVisibleAction = createAction(
+  SET_IS_USED_MODAL_VISIBLE
+)
+export const setCustomTitleModalVisibleAction = createAction(
+  SET_CUSTOM_TITLE_MODAL_VISIBLE
+)
+
+export const setPreviouslyUsedPlaylistClone = createAction(
+  SET_PREVIOUSLY_USED_PLAYLIST_CLONE
 )
 
 export const getAllCurriculumSequencesAction = (ids, showNotification) => {
@@ -440,6 +509,8 @@ export const checkPreviouslyCustomizedAction = createAction(
   CHECK_PREVIOUSLY_CUSTOMIZED
 )
 
+export const editPlaylistTestAction = createAction(EDIT_PLAYLIST_TEST)
+
 // State getters
 const getCurriculumSequenceState = (state) => state.curriculumSequence
 
@@ -455,6 +526,21 @@ export const getDifferentiationWorkLoadingStateSelector = (state) =>
 export const getWorkStatusDataSelector = (state) =>
   state.curriculumSequence.workStatusData
 
+export const getRecommendationsToAssignSelector = createSelector(
+  getCurriculumSequenceState,
+  (curriculumSequence) => curriculumSequence.recommendationsToAssign
+)
+
+export const getDifferentiationSelectedDataSelector = createSelector(
+  getCurriculumSequenceState,
+  (curriculumSequence) => curriculumSequence.differentiationSelectedData
+)
+
+export const getDifferentiationResourcesSelector = createSelector(
+  getCurriculumSequenceState,
+  (curriculumSequence) => curriculumSequence.differentiationResources
+)
+
 const getPublisher = (state) => {
   if (!state.curriculumSequence) return ''
 
@@ -463,6 +549,11 @@ const getPublisher = (state) => {
 
 const getDestinationCurriculumSequence = (state) =>
   state.curriculumSequence.destinationCurriculumSequence
+
+export const getIsUseThisLoading = createSelector(
+  getCurriculumSequenceState,
+  (curriculumSequence) => curriculumSequence.isUseThisLoading
+)
 
 function* makeApiRequest(
   idsForFetch = [],
@@ -633,17 +724,30 @@ function* putCurriculumSequence({ payload }) {
       'isAuthor',
       'collectionName',
       'testItems',
+      'playlistMode',
     ])
+    const resourceMap = {}
     dataToSend.modules = dataToSend.modules.map((mod) => {
-      mod.data = mod.data.map((test) =>
-        omit(test, [
+      mod.data = mod.data.map((test) => {
+        if (test.contentType === 'test' && test.resources) {
+          const testId = test.contentId
+          test.resources = test.resources.map((resource) => {
+            const { contentId: resourceId, updateStandards } = resource
+            if (updateStandards) {
+              resourceMap[testId] = [...(resourceMap[testId] || []), resourceId]
+            }
+            return omit(resource, ['updateStandards'])
+          })
+        }
+        return omit(test, [
           'standards',
           'alignment',
           'assignments',
           'testType',
           'status',
+          'hasStandardsOnCreation',
         ])
-      )
+      })
       return mod
     })
     const response = yield curriculumSequencesApi.updateCurriculumSequence(
@@ -651,6 +755,10 @@ function* putCurriculumSequence({ payload }) {
       dataToSend
     )
     if (Object.keys(response).length > 0) {
+      if (!isEmpty(resourceMap)) {
+        yield call(resourcesApi.updateStandards, resourceMap)
+      }
+
       const { authors, version, _id } = response
       const userId = yield select(getUserId)
       if (authors && authors.map((author) => author._id).includes(userId)) {
@@ -929,7 +1037,9 @@ function* createAssignmentNow({ payload }) {
             toUnit: newUnit,
           },
         })
-        yield assign({ payload: { assignment: currentAssignment, assignData } })
+        yield assign({
+          payload: { assignment: currentAssignment, assignData },
+        })
       } catch (error) {
         notification({ messageKey: 'createMiscErr' })
         console.warn('Error create misc unit.', error)
@@ -1134,6 +1244,86 @@ function* duplicatePlayListSaga({ payload }) {
   }
 }
 
+function* editPlaylistTestSaga({ payload }) {
+  try {
+    const { testId, playlistId } = payload
+
+    if (!testId || !playlistId) {
+      notification({ msg: 'Insufficient parameters passed!' })
+      return
+    }
+
+    // In case of 'View test details' modal, test is already loaded in store.
+    let test = yield select(getTestSelector)
+
+    if (!test || test._id !== testId) {
+      // Fetch test
+      yield put(receiveTestByIdAction(testId, true, false, true, playlistId))
+      yield take(RECEIVE_TEST_BY_ID_SUCCESS)
+      test = yield select(getTestSelector)
+    }
+
+    const userCollections = yield select(getCollectionsSelector)
+    const userWritableCollections = yield select(getWritableCollectionsSelector)
+    const user = yield select(getUserSelector)
+    const userId = get(user, 'user._id')
+    const userRole = get(user, 'user.role')
+    const userFeatures = get(user, 'user.features')
+
+    const isDuplicateAllowed = allowDuplicateCheck(
+      test?.collections,
+      userCollections,
+      'test'
+    )
+    const hasCollectionAccess = allowContentEditCheck(
+      test?.collections,
+      userWritableCollections
+    )
+    const isOwner = test?.authors?.some((x) => x._id === userId)
+    const isEditDisabled = !(
+      isOwner ||
+      userRole === roleuser.EDULASTIC_CURATOR ||
+      (hasCollectionAccess && userFeatures.isCurator)
+    )
+
+    if (isEditDisabled && !isDuplicateAllowed) {
+      notification({ msg: 'Edit Test is restricted by the author' })
+      return
+    }
+
+    const tab = test?.title ? 'review' : 'description'
+    // Redirect user to edit page of the test.
+    if (!isEditDisabled) {
+      yield put(
+        push({
+          pathname: `/author/tests/tab/${tab}/id/${test._id}`,
+          state: {
+            editTestFlow: true,
+          },
+        })
+      )
+      return
+    }
+
+    // Clone the test and redirect user to edit page of cloned test.
+    if (isDuplicateAllowed) {
+      yield put(
+        duplicateTestRequestAction({
+          _id: testId,
+          title: test?.title || '',
+          redirectToNewTest: false,
+          // By default we keep reference to all the items in test in cloned test.
+          cloneItems: false,
+          isInEditAndRegrade: true,
+          currentTab: tab,
+        })
+      )
+    }
+  } catch (e) {
+    notification({ messageKey: 'commonErr' })
+  }
+}
+
 function* duplicateManageContentSaga({ payload }) {
   try {
     const { _id: originalId, title: originalTitle, grades, subjects } = payload
@@ -1307,36 +1497,172 @@ function* publishDraftCustomizedPlaylist({ payload }) {
 
 function* useThisPlayListSaga({ payload }) {
   try {
+    yield put(setUseThisLoading(true))
     const {
-      _id,
+      _id: playlistId,
+      fromUseThis = false,
+      customize = false,
+      authors = [],
+      forceClone = false,
+      isStudent,
+    } = payload
+
+    const _id = playlistId
+
+    const currentUserId = yield select(getUserId)
+    const currentUserRole = yield select(getUserRole)
+    const hasPlaylistEditAccess =
+      authors?.find((x) => x._id === currentUserId) ||
+      currentUserRole === roleuser.EDULASTIC_CURATOR
+
+    /**
+     * If customize is enabled and user using the playlist is not
+     * an author nor a co-author then the playlist must be cloned with
+     * modules referencing the original playlist
+     */
+    if (
+      (customize && fromUseThis && !isStudent && !hasPlaylistEditAccess) ||
+      forceClone
+    ) {
+      const duplicatedPlaylist = yield call(
+        curriculumSequencesApi.checkExistingDuplicatedForUser,
+        _id
+      )
+
+      // if playlist was cloned previously
+      if (duplicatedPlaylist?.createdBy && !forceClone) {
+        // let the user decide to clone again (or) use the cloned
+        yield put(setCustomTitleModalVisibleAction(false))
+        yield put(
+          setPreviouslyUsedPlaylistClone({
+            _id: duplicatedPlaylist._id,
+            title: duplicatedPlaylist.title,
+            grades: duplicatedPlaylist.grades,
+            subjects: duplicatedPlaylist.subjects,
+            customize: duplicatedPlaylist.customize,
+            authors: duplicatedPlaylist.authors,
+            derivedFrom: duplicatedPlaylist.derivedFrom,
+          })
+        )
+        yield put(setIsUsedModalVisibleAction(true))
+      } else {
+        yield put(setIsUsedModalVisibleAction(false))
+        yield put(setCustomTitleModalVisibleAction(true))
+        yield put(
+          setPreviouslyUsedPlaylistClone({
+            _id,
+          })
+        )
+      }
+    } else {
+      yield put(cloneThisPlayListAction(payload))
+    }
+  } catch (error) {
+    console.error(error)
+    notification({ messageKey: 'commonErr' })
+  } finally {
+    const { notificationCallback = null } = payload
+    yield put(setUseThisLoading(false))
+    if (notificationCallback) {
+      notificationCallback()
+    }
+  }
+}
+function* cloneThisPlayListSaga({ payload }) {
+  try {
+    yield put(setUseThisLoading(true))
+    const {
+      _id: playlistId,
       title,
       grades,
       subjects,
       groupId,
       onChange,
       isStudent,
-      fromUseThis,
+      fromUseThis = false,
       fromRemovePlaylist = false,
+      customize = false,
+      authors = [],
+      forceClone = false,
     } = payload
-    yield call(userContextApi.setLastUsedPlayList, {
-      _id,
-      title,
-      grades,
-      subjects,
-    })
-    yield call(userContextApi.setRecentUsedPlayLists, {
-      _id,
-      title,
-      grades,
-      subjects,
-    })
-    yield put(receiveLastPlayListAction())
-    if (!isStudent) {
-      if (!fromRemovePlaylist)
-        yield call(curriculumSequencesApi.usePlaylist, _id)
+
+    let _id = playlistId
+
+    const currentUserId = yield select(getUserId)
+    const currentUserRole = yield select(getUserRole)
+    const hasPlaylistEditAccess =
+      authors?.find((x) => x._id === currentUserId) ||
+      currentUserRole === roleuser.EDULASTIC_CURATOR
+
+    /**
+     * If customize is enabled and user using the playlist is not
+     * an author nor a co-author then the playlist must be cloned with
+     * modules referencing the original playlist
+     */
+    if (
+      (customize && fromUseThis && !isStudent && !hasPlaylistEditAccess) ||
+      forceClone
+    ) {
+      // get the newly/previously cloned playlist
+      const duplicatedPlaylist = yield call(
+        curriculumSequencesApi.duplicatePlayList,
+        {
+          _id,
+          title: `${title}`,
+          forUseThis: true,
+          forceClone,
+        }
+      )
+
+      // if playlist was cloned previously
+      if (duplicatedPlaylist.previouslyCloned) {
+        // let the user decide to clone again (or) use the cloned
+        yield put(setCustomTitleModalVisibleAction(false))
+        yield put(setIsUsedModalVisibleAction(false))
+        yield put(
+          setPreviouslyUsedPlaylistClone({
+            _id: duplicatedPlaylist._id,
+            title: duplicatedPlaylist.title,
+            grades: duplicatedPlaylist.grades,
+            subjects: duplicatedPlaylist.subjects,
+            customize: duplicatedPlaylist.customize,
+            authors: duplicatedPlaylist.authors,
+            derivedFrom: duplicatedPlaylist.derivedFrom,
+          })
+        )
+        return
+      }
+
+      _id = duplicatedPlaylist._id
+
+      yield put(receiveLastPlayListAction())
       yield put(receiveRecentPlayListsAction())
+      yield put(updateCurriculumSequenceAction(duplicatedPlaylist))
+    } else {
+      yield call(userContextApi.setLastUsedPlayList, {
+        _id,
+        title,
+        grades,
+        subjects,
+      })
+      yield call(userContextApi.setRecentUsedPlayLists, {
+        _id,
+        title,
+        grades,
+        subjects,
+      })
+
+      // fetch last used playlist
+      yield put(receiveLastPlayListAction())
+      if (!isStudent) {
+        if (!fromRemovePlaylist)
+          yield call(curriculumSequencesApi.usePlaylist, _id)
+        yield put(receiveRecentPlayListsAction())
+      }
+      yield put(getAllCurriculumSequencesAction([_id]))
     }
-    yield put(getAllCurriculumSequencesAction([_id]))
+    yield put(setCustomTitleModalVisibleAction(false))
+    yield put(setIsUsedModalVisibleAction(false))
     const location = yield select((state) => state.router.location.pathname)
     const urlHasUseThis = location.match(/use-this/g)
     if (isStudent && onChange) {
@@ -1369,6 +1695,12 @@ function* useThisPlayListSaga({ payload }) {
   } catch (error) {
     console.error(error)
     notification({ messageKey: 'commonErr' })
+  } finally {
+    const { notificationCallback = null } = payload
+    yield put(setUseThisLoading(false))
+    if (notificationCallback) {
+      notificationCallback()
+    }
   }
 }
 
@@ -1379,10 +1711,7 @@ function* approveOrRejectSinglePlaylistSaga({ payload }) {
       (!payload.collections ||
         (payload.collections && !payload.collections.length))
     ) {
-      notification({
-        type: 'warn',
-        messageKey: 'publishPlaylistErrWithAssociated',
-      })
+      notification({ messageKey: 'publishPlaylistErrWithAssociated' })
       return
     }
     yield call(curriculumSequencesApi.updatePlaylistStatus, payload)
@@ -1559,12 +1888,25 @@ function structureWorkData(workData, statusData, firstLoad = false) {
         })
       } else {
         draft[type].forEach((i) => {
-          const currentStatus = currentStatusArray.find(
-            (s) =>
-              (s.derivedFrom === 'STANDARDS' &&
-                s.standardIdentifiers.includes(i.standardIdentifier)) ||
-              (s.derivedFrom === 'TESTS' && s.resourceId === i.testId)
-          )
+          const currentStatus = currentStatusArray.find((s) => {
+            let isStandardRecommended
+            if (type.toUpperCase() === 'PRACTICE') {
+              isStandardRecommended =
+                s.derivedFrom === 'STANDARDS' &&
+                s.standardIdentifiers.includes(i.standardIdentifier)
+            } else {
+              isStandardRecommended =
+                s.derivedFrom === 'STANDARDS' &&
+                s.standardIdentifiers.includes(i.standardIdentifier) &&
+                (!s.skillIdentifiers ||
+                  s.skillIdentifiers.includes(i.skillIdentifier))
+            }
+            const isTestRecommended =
+              s.derivedFrom === 'TESTS' && s.resourceId === i.testId
+
+            return isStandardRecommended || isTestRecommended
+          })
+
           if (currentStatus) {
             const { masteryRange, studentTestActivities, users } = currentStatus
             i.status = 'ADDED'
@@ -1611,8 +1953,10 @@ function* fetchDifferentiationWorkSaga({ payload }) {
   }
 }
 
-function* addRecommendationsSaga({ payload }) {
+function* addRecommendationsSaga({ payload: _payload }) {
+  let { toggleAssignModal, recommendations: payload } = _payload
   try {
+    yield put(setRecommendationsToAssignAction({ isAssigning: true }))
     let response = null
     if (Array.isArray(payload)) {
       for (const payloadItem of payload) {
@@ -1624,12 +1968,20 @@ function* addRecommendationsSaga({ payload }) {
     } else {
       response = yield call(recommendationsApi.acceptRecommendations, payload)
     }
+
     payload = Array.isArray(payload) ? payload[0] : payload
     yield put(updateFetchWorkLoadingStateAction(true))
     const statusData = yield call(recommendationsApi.getRecommendationsStatus, {
       assignmentId: payload.assignmentId,
       groupId: payload.groupId,
     })
+    yield put(
+      setRecommendationsToAssignAction({
+        isAssigning: false,
+        isRecommendationAssignView: false,
+        recommendations: [],
+      })
+    )
     yield put(updateWorkStatusDataAction(statusData))
     const workData = yield select(getDifferentiationWorkSelector)
     const structuredData = structureWorkData(workData, statusData)
@@ -1638,7 +1990,25 @@ function* addRecommendationsSaga({ payload }) {
     yield put(updateFetchWorkLoadingStateAction(false))
   } catch (err) {
     console.error(err)
-    yield call(notification, { msg: err.response.data.message })
+    yield put(setRecommendationsToAssignAction({ isAssigning: false }))
+    if (
+      err?.response?.data?.statusCode === 404 &&
+      err?.response?.data?.error === 'Item Not Found'
+    ) {
+      toggleAssignModal(false)
+      Modal.info({
+        title: `Test can’t be assigned as there are no items found with selected standards.`,
+        okText: 'Close',
+        centered: true,
+        width: 500,
+        okButtonProps: {
+          style: { background: themeColor, outline: 'none' },
+        },
+        onOk: Modal.destroyAll,
+      })
+    } else {
+      yield call(notification, { msg: err.response.data.message })
+    }
   }
 }
 
@@ -1650,29 +2020,53 @@ const moveContentInPlaylist = (state, { payload }) => {
     fromContentIndex,
   } = payload
   let newPlaylist
-  if (!toContentIndex) {
-    newPlaylist = produce(state.destinationCurriculumSequence, (draft) => {
-      if (toModuleIndex != 0 && !toModuleIndex) {
-        return notification({ messageKey: 'invalidModuleSelected' })
-      }
-      draft.modules[toModuleIndex].data.push(
-        draft.modules[fromModuleIndex].data[fromContentIndex]
-      )
-      draft.modules[fromModuleIndex].data.splice(fromContentIndex, 1)
-    })
-  } else {
-    newPlaylist = produce(state.destinationCurriculumSequence, (draft) => {
-      if (toModuleIndex != 0 && !toModuleIndex) {
-        return notification({ messageKey: 'invalidModuleSelected' })
-      }
-      draft.modules[toModuleIndex].data.splice(
-        toContentIndex,
-        0,
-        draft.modules[fromModuleIndex].data[fromContentIndex]
-      )
-      draft.modules[fromModuleIndex].data.splice(fromContentIndex, 1)
-    })
+  // If no valid destination module.
+  if (
+    (toModuleIndex !== 0 && !toModuleIndex) ||
+    !state.destinationCurriculumSequence.modules?.[toModuleIndex]
+  ) {
+    notification({ messageKey: 'invalidModuleSelect' })
+    return state
   }
+
+  // If valid fromModuleIndex but module is not present in playlist
+  if (
+    fromModuleIndex >= 0 &&
+    !state.destinationCurriculumSequence.modules?.[fromModuleIndex]
+  ) {
+    return newPlaylist
+  }
+
+  const newItem =
+    state.destinationCurriculumSequence.modules[fromModuleIndex].data[
+      fromContentIndex
+    ]
+  const isItemExistingInModule = state.destinationCurriculumSequence.modules[
+    toModuleIndex
+  ]?.data?.some((x) => x?.contentId === newItem?.contentId)
+
+  if (isItemExistingInModule) {
+    notification({
+      msg: `Dropped ${
+        newItem.contentType === 'test' ? 'Test' : 'Resource'
+      } already exists in this module`,
+    })
+
+    return state
+  }
+
+  newPlaylist = produce(state.destinationCurriculumSequence, (draft) => {
+    if (!toContentIndex) {
+      // Move item to different module
+      draft.modules[toModuleIndex].data.push(newItem)
+    } else {
+      // Move item in same module
+      draft.modules[toModuleIndex].data.splice(toContentIndex, 0, newItem)
+    }
+
+    draft.modules[fromModuleIndex].data.splice(fromContentIndex, 1)
+  })
+
   return {
     ...state,
     destinationCurriculumSequence: {
@@ -1778,7 +2172,7 @@ function* unassignAssignmentsfromPlaylistSaga({ payload }) {
   } catch (err) {
     notification({ msg: 'Failed to unassign Assignment(s)' })
     console.error(err)
-    Sentry.captureException(err)
+    captureSentryException(err)
   }
 }
 
@@ -1808,6 +2202,7 @@ export function* watcherSaga() {
       moveContentToPlaylistSaga
     ),
     yield takeLatest(USE_THIS_PLAYLIST, useThisPlayListSaga),
+    yield takeLatest(CLONE_THIS_PLAYLIST, cloneThisPlayListSaga),
     yield takeLatest(
       APPROVE_OR_REJECT_SINGLE_PLAYLIST_REQUEST,
       approveOrRejectSinglePlaylistSaga
@@ -1852,6 +2247,7 @@ export function* watcherSaga() {
       unassignAssignmentsfromPlaylistSaga
     ),
     yield takeLatest(DUPLICATE_PLAYLIST_REQUEST, duplicatePlayListSaga),
+    yield takeLatest(EDIT_PLAYLIST_TEST, editPlaylistTestSaga),
   ])
 
   const currSequenceUpdateQueue = yield actionChannel(
@@ -1993,6 +2389,8 @@ const initialState = {
   loadingInsights: true,
   differentiationStudentList: [],
   differentiationWork: {},
+  differentiationSelectedData: {},
+  differentiationResources: {},
   isFetchingDifferentiationWork: false,
   workStatusData: {},
 
@@ -2006,7 +2404,17 @@ const initialState = {
   showRightPanel: true,
   customizeInDraft: false,
   currentAssignmentIds: [],
+
   isConfirmedCustomization: false,
+  recommendationsToAssign: {
+    isRecommendationAssignView: false,
+    isAssigning: false,
+    recommendations: [],
+  },
+  isUsedModalVisible: false,
+  customTitleModalVisible: false,
+  previouslyUsedPlaylistClone: null,
+  isUseThisLoading: false,
 }
 
 /**
@@ -2224,6 +2632,27 @@ const setSelectedItemsForAssignReducer = (state, { payload }) => {
     state.selectedItemsForAssign.push(payload)
   } else if (Array.isArray(payload)) {
     state.selectedItemsForAssign = payload
+  }
+}
+
+/**
+ * @param {State} state
+ * @param {Object<String, String>} args
+ * @param {Object} [args.payload]
+ */
+const setRecommendationsToAssignReducer = (state, { payload }) => {
+  if (!payload) {
+    return state
+  }
+
+  const recommendationsToAssign = { ...state.recommendationsToAssign }
+
+  return {
+    ...state,
+    recommendationsToAssign: {
+      ...recommendationsToAssign,
+      ...payload,
+    },
   }
 }
 
@@ -2453,6 +2882,7 @@ export default createReducer(initialState, {
   [TOGGLE_ADD_CONTENT]: toggleAddContentReducer,
   [CREATE_ASSIGNMENT_OK]: createAssignmentReducer,
   [SET_SELECTED_ITEMS_FOR_ASSIGN]: setSelectedItemsForAssignReducer,
+  [SET_RECOMMENDATIONS_TO_ASSIGN]: setRecommendationsToAssignReducer,
   [SET_DATA_FOR_ASSIGN]: setDataForAssignReducer,
   [REMOVE_ITEM_FROM_UNIT]: removeItemFromUnitReducer,
   [ADD_NEW_UNIT]: addNewUnitReducer,
@@ -2528,6 +2958,50 @@ export default createReducer(initialState, {
   [SET_DIFFERENTIATION_WORK]: (state, { payload }) => {
     state.differentiationWork = payload
   },
+  [SET_DIFFERENTIATION_SELECTED_DATA]: (state, { payload }) => {
+    state.differentiationSelectedData = {
+      ...state.differentiationSelectedData,
+      ...payload,
+    }
+  },
+  [ADD_TYPE_BASED_DIFFERENTIATION_RESOURCES]: (state, { payload }) => {
+    const {
+      type,
+      contentId,
+      contentTitle,
+      contentType,
+      contentSubType,
+      contentUrl,
+    } = payload
+    const alreadyPresent = (state.differentiationResources?.[type] || []).find(
+      (x) => x.contentId === contentId
+    )
+    if (!alreadyPresent) {
+      state.differentiationResources[type] = [
+        ...(state.differentiationResources[type] || []),
+        {
+          type,
+          contentId,
+          contentVersionId: contentId,
+          description: contentTitle,
+          contentTitle,
+          contentType,
+          contentSubType,
+          contentUrl,
+        },
+      ]
+    }
+  },
+  [REMOVE_TYPE_BASED_DIFFERENTIATION_RESOURCES]: (state, { payload }) => {
+    const { type, contentId } = payload
+    state.differentiationResources[type] =
+      state.differentiationResources?.[type]?.filter(
+        (x) => x.contentId !== contentId
+      ) || []
+  },
+  [CLEAR_ALL_DIFFERENTIATION_RESOURCES]: (state) => {
+    state.differentiationResources = {}
+  },
   [ADD_TEST_TO_DIFFERENTIATION]: (state, { payload }) => {
     const { type, testId, masteryRange, title, testStandards } = payload
     const alreadyPresent = Object.keys(state.differentiationWork)
@@ -2542,6 +3016,12 @@ export default createReducer(initialState, {
         testStandards,
       })
     }
+  },
+  [REMOVE_RESOURCE_FROM_DIFFERENTIATION]: (state, { payload }) => {
+    const { type, testId } = payload
+    state.differentiationWork[type] = state.differentiationWork[type]?.filter(
+      (x) => x.testId !== testId
+    )
   },
   [ADD_RESOURCE_TO_DIFFERENTIATION]: (state, { payload }) => {
     const {
@@ -2573,7 +3053,7 @@ export default createReducer(initialState, {
     state.isFetchingDifferentiationWork = payload
   },
   [PLAYLIST_REMOVE_SUBRESOURCE]: (state, { payload }) => {
-    const { moduleIndex, contentId, itemIndex } = payload
+    const { moduleIndex, contentId, itemIndex, contentSubType } = payload
     if (
       state.destinationCurriculumSequence.modules[moduleIndex].data[itemIndex]
         .resources
@@ -2582,7 +3062,10 @@ export default createReducer(initialState, {
         itemIndex
       ].resources = state.destinationCurriculumSequence.modules[
         moduleIndex
-      ].data[itemIndex].resources.filter((x) => x.contentId !== contentId)
+      ].data[itemIndex].resources.filter(
+        (x) =>
+          !(x.contentId === contentId && x.contentSubType === contentSubType)
+      )
     }
   },
   [PLAYLIST_ADD_SUBRESOURCE]: (state, { payload }) => {
@@ -2594,6 +3077,9 @@ export default createReducer(initialState, {
       fromPlaylistTestsBox,
       standardIdentifiers,
       status,
+      contentSubType,
+      hasStandardsOnCreation,
+      standards = [],
       ...itemObj
     } = item
     if (
@@ -2607,8 +3093,19 @@ export default createReducer(initialState, {
     const resources =
       state.destinationCurriculumSequence.modules[moduleIndex].data[itemIndex]
         .resources
-    if (!resources.find((x) => x.contentId === contentId)) {
-      resources.push({ contentId, contentType, ...itemObj })
+    if (
+      !resources.find(
+        (x) => x.contentId === contentId && x.contentSubType === contentSubType
+      )
+    ) {
+      const updateStandards = !hasStandardsOnCreation && standards.length < 15
+      resources.push({
+        contentId,
+        contentType,
+        contentSubType,
+        updateStandards,
+        ...itemObj,
+      })
     }
   },
   [PLAYLIST_ADD_ITEM_INTO_MODULE]: (state, { payload }) => {
@@ -2660,9 +3157,6 @@ export default createReducer(initialState, {
   },
   [TOGGLE_MANAGE_CONTENT_ACTIVE]: (state, { payload }) => {
     state.activeRightPanel = payload
-    if (payload === 'manageContent') {
-      state.isConfirmedCustomization = true
-    }
   },
   [UPDATE_SIGNED_REQUEST_FOR_RESOURCE]: (state, { payload }) => {
     state.signedRequest = payload
@@ -2671,9 +3165,11 @@ export default createReducer(initialState, {
     if (payload?.id) {
       state.playlistTestDetailsModal.isVisible = true
       state.playlistTestDetailsModal.currentTestId = payload.id
+      state.playlistTestDetailsModal.requestLatest = payload.requestLatest
     } else {
       state.playlistTestDetailsModal.isVisible = false
       state.playlistTestDetailsModal.currentTestId = null
+      state.playlistTestDetailsModal.requestLatest = undefined
     }
   },
   [RESET_DESTINATION]: (state, { payload }) => {
@@ -2682,12 +3178,13 @@ export default createReducer(initialState, {
     } else {
       state.destinationCurriculumSequence = {}
     }
-    if (payload.isAuthoring) {
+    if (payload.isAuthoring || payload.isCreatePage) {
       state.activeRightPanel = 'manageContent'
+    } else {
+      state.activeRightPanel = 'summary'
     }
 
     state.destinationDirty = false
-    state.isConfirmedCustomization = false
   },
   [SET_DESTINATION_ORIGINAL]: (state, { payload }) => {
     state.originalData = payload
@@ -2695,7 +3192,6 @@ export default createReducer(initialState, {
   [RESET_DESTINATION_FLAGS]: (state) => {
     state.activeRightPanel = 'summary'
     state.destinationDirty = false
-    state.isConfirmedCustomization = false
   },
   [SET_VIDEO_PREVIEW_RESOURCE_MODAL]: (state, { payload }) => {
     state.isVideoResourcePreviewModal = payload
@@ -2789,5 +3285,23 @@ export default createReducer(initialState, {
   },
   [SET_CURRENT_ASSIGNMENT_IDS]: (state, { payload }) => {
     state.currentAssignmentIds = payload
+  },
+  [SET_IS_USED_MODAL_VISIBLE]: (state, { payload }) => {
+    if (!payload) {
+      state.previouslyUsedPlaylistClone = null
+    }
+    state.isUsedModalVisible = payload
+  },
+  [SET_CUSTOM_TITLE_MODAL_VISIBLE]: (state, { payload }) => {
+    if (!payload) {
+      state.previouslyUsedPlaylistClone = null
+    }
+    state.customTitleModalVisible = payload
+  },
+  [SET_PREVIOUSLY_USED_PLAYLIST_CLONE]: (state, { payload }) => {
+    state.previouslyUsedPlaylistClone = payload
+  },
+  [SET_USE_THIS_LOADER]: (state, { payload }) => {
+    state.isUseThisLoading = payload
   },
 })

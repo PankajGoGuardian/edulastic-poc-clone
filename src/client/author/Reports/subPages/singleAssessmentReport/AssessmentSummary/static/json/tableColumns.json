@@ -9,34 +9,41 @@
         "align": "left"
       },
       {
-        "title": "Avg. Student Score (%)",
-        "dataIndex": "avgStudentScore",
-        "key": "avgStudentScore",
-        "width": 100
-      },
-      {
-        "title": "#Assigned",
-        "dataIndex": "studentsAssigned",
-        "key": "studentsAssigned",
-        "width": 70
-      },
-      {
-        "title": "#Submitted",
-        "dataIndex": "studentsGraded",
-        "key": "studentsGraded",
-        "width": 70
-      },
-      {
-        "title": "#Absent",
-        "dataIndex": "studentsAbsent",
-        "key": "studentsAbsent",
-        "width": 70
-      },
-      {
-        "title": "Assessment Date",
+        "title": "Assigned On",
         "dataIndex": "assessmentDate",
         "key": "assessmentDate",
         "className": "assessmentDate",
+        "width": 150
+      },
+      {
+        "title": "Due On",
+        "dataIndex": "dueDate",
+        "key": "dueDate",
+        "className": "dueDate",
+        "width": 150
+      },
+      {
+        "title": "Total Assigned",
+        "dataIndex": "studentsAssigned",
+        "key": "studentsAssigned",
+        "width": 100
+      },
+      {
+        "title": "Students Submitted & Graded",
+        "dataIndex": "studentsGraded",
+        "key": "studentsGraded",
+        "width": 130
+      },
+      {
+        "title": "Students Not Started, In Progress & Absent",
+        "dataIndex": "studentsAbsent",
+        "key": "studentsAbsent",
+        "width": 130
+      },
+      {
+        "title": "Avg. Student Score (%)",
+        "dataIndex": "avgStudentScore",
+        "key": "avgStudentScore",
         "width": 100
       },
       {
@@ -88,34 +95,41 @@
         "align": "left"
       },
       {
-        "title": "Avg. Student Score (%)",
-        "dataIndex": "avgStudentScore",
-        "key": "avgStudentScore",
-        "width": 100
-      },
-      {
-        "title": "#Assigned",
-        "dataIndex": "studentsAssigned",
-        "key": "studentsAssigned",
-        "width": 70
-      },
-      {
-        "title": "#Submitted",
-        "dataIndex": "studentsGraded",
-        "key": "studentsGraded",
-        "width": 70
-      },
-      {
-        "title": "#Absent",
-        "dataIndex": "studentsAbsent",
-        "key": "studentsAbsent",
-        "width": 70
-      },
-      {
-        "title": "Assessment Date",
+        "title": "Assigned On",
         "dataIndex": "assessmentDate",
         "key": "assessmentDate",
         "className": "assessmentDate",
+        "width": 150
+      },
+      {
+        "title": "Due On",
+        "dataIndex": "dueDate",
+        "key": "dueDate",
+        "className": "dueDate",
+        "width": 150
+      },
+      {
+        "title": "Total Assigned",
+        "dataIndex": "studentsAssigned",
+        "key": "studentsAssigned",
+        "width": 100
+      },
+      {
+        "title": "Students Submitted & Graded",
+        "dataIndex": "studentsGraded",
+        "key": "studentsGraded",
+        "width": 130
+      },
+      {
+        "title": "Students Not Started, In Progress & Absent",
+        "dataIndex": "studentsAbsent",
+        "key": "studentsAbsent",
+        "width": 130
+      },
+      {
+        "title": "Avg. Student Score (%)",
+        "dataIndex": "avgStudentScore",
+        "key": "avgStudentScore",
         "width": 100
       },
       {
@@ -169,35 +183,44 @@
         "align": "left"
       },
       {
+        "title": "Assigned On",
+        "dataIndex": "assessmentDate",
+        "key": "assessmentDate",
+        "className": "assessmentDate",
+        "width": 170,
+        "align": "left"
+      },
+      {
+        "title": "Due On",
+        "dataIndex": "dueDate",
+        "key": "dueDate",
+        "className": "dueDate",
+        "width": 170,
+        "align": "left"
+      },
+      {
+        "title": "Total Assigned",
+        "dataIndex": "studentsAssigned",
+        "key": "studentsAssigned",
+        "width": 100
+      },
+      {
+        "title": "Students Submitted & Graded",
+        "dataIndex": "studentsGraded",
+        "key": "studentsGraded",
+        "width": 130
+      },
+      {
+        "title": "Students Not Started, In Progress & Absent",
+        "dataIndex": "studentsAbsent",
+        "key": "studentsAbsent",
+        "width": 130
+      },
+      {
         "title": "Avg. Student Score (%)",
         "dataIndex": "avgStudentScore",
         "key": "avgStudentScore",
         "width": 141
-      },
-      {
-        "title": "#Assigned",
-        "dataIndex": "studentsAssigned",
-        "key": "studentsAssigned",
-        "width": 70
-      },
-      {
-        "title": "#Submitted",
-        "dataIndex": "studentsGraded",
-        "key": "studentsGraded",
-        "width": 70
-      },
-      {
-        "title": "#Absent",
-        "dataIndex": "studentsAbsent",
-        "key": "studentsAbsent",
-        "width": 70
-      },
-      {
-        "title": "Assessment Date",
-        "dataIndex": "assessmentDate",
-        "key": "assessmentDate",
-        "className": "assessmentDate",
-        "width": 110
       },
       {
         "title": "Min. Score",

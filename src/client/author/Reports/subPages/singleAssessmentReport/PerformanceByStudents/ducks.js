@@ -6,7 +6,6 @@ import { notification } from '@edulastic/common'
 import { createAction, createReducer } from 'redux-starter-kit'
 
 import { RESET_ALL_REPORTS } from '../../../common/reportsRedux'
-import { getOrgDataFromSARFilter } from '../common/filterDataDucks'
 
 const GET_REPORTS_PERFORMANCE_BY_STUDENTS_REQUEST =
   '[reports] get reports performance by students request'
@@ -14,11 +13,16 @@ const GET_REPORTS_PERFORMANCE_BY_STUDENTS_REQUEST_SUCCESS =
   '[reports] get reports performance by students success'
 const GET_REPORTS_PERFORMANCE_BY_STUDENTS_REQUEST_ERROR =
   '[reports] get reports performance by students error'
+const RESET_REPORTS_PERFORMANCE_BY_STUDENTS =
+  '[reports] reset reports performance by students'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
 export const getPerformanceByStudentsRequestAction = createAction(
   GET_REPORTS_PERFORMANCE_BY_STUDENTS_REQUEST
+)
+export const resetPerformanceByStudentsAction = createAction(
+  RESET_REPORTS_PERFORMANCE_BY_STUDENTS
 )
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
@@ -30,19 +34,19 @@ export const getPerformanceByStudentsRequestAction = createAction(
 export const stateSelector = (state) =>
   state.reportReducer.reportPerformanceByStudentsReducer
 
-const _getReportsPerformanceByStudents = createSelector(
+export const getReportsPerformanceByStudents = createSelector(
   stateSelector,
   (state) => state.performanceByStudents
 )
 
-export const getReportsPerformanceByStudents = (state) => ({
-  ..._getReportsPerformanceByStudents(state),
-  metaInfo: getOrgDataFromSARFilter(state),
-})
-
 export const getReportsPerformanceByStudentsLoader = createSelector(
   stateSelector,
   (state) => state.loading
+)
+
+export const getReportsPerformanceByStudentsError = createSelector(
+  stateSelector,
+  (state) => state.error
 )
 
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
@@ -61,13 +65,14 @@ export const defaultReport = {
 }
 
 const initialState = {
-  performanceByStudents: defaultReport,
+  performanceByStudents: {},
   loading: false,
 }
 
 export const reportPerformanceByStudentsReducer = createReducer(initialState, {
-  [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState),
-  [GET_REPORTS_PERFORMANCE_BY_STUDENTS_REQUEST]: (state, { payload }) => {
+  [RESET_ALL_REPORTS]: (state) => (state = initialState),
+  [RESET_REPORTS_PERFORMANCE_BY_STUDENTS]: (state) => (state = initialState),
+  [GET_REPORTS_PERFORMANCE_BY_STUDENTS_REQUEST]: (state) => {
     state.loading = true
   },
   [GET_REPORTS_PERFORMANCE_BY_STUDENTS_REQUEST_SUCCESS]: (
@@ -75,6 +80,7 @@ export const reportPerformanceByStudentsReducer = createReducer(initialState, {
     { payload }
   ) => {
     state.loading = false
+    state.error = false
     state.performanceByStudents = payload.performanceByStudents
   },
   [GET_REPORTS_PERFORMANCE_BY_STUDENTS_REQUEST_ERROR]: (state, { payload }) => {
@@ -91,17 +97,18 @@ export const reportPerformanceByStudentsReducer = createReducer(initialState, {
 
 function* getReportsPerformanceByStudentsRequest({ payload }) {
   try {
-    payload.requestFilters.classIds =
-      payload.requestFilters?.classIds?.join(',') ||
-      payload.requestFilters?.classId ||
-      ''
-    payload.requestFilters.groupIds =
-      payload.requestFilters?.groupIds?.join(',') ||
-      payload.requestFilters?.groupId ||
-      ''
-    const {
-      data: { result },
-    } = yield call(reportsApi.fetchPerformanceByStudentsReport, payload)
+    const { data } = yield call(
+      reportsApi.fetchPerformanceByStudentsReport,
+      payload
+    )
+    if (data && data?.dataSizeExceeded) {
+      yield put({
+        type: GET_REPORTS_PERFORMANCE_BY_STUDENTS_REQUEST_ERROR,
+        payload: { error: { ...data } },
+      })
+      return
+    }
+    const { result } = data
     const performanceByStudents = isEmpty(result) ? defaultReport : result
 
     yield put({

@@ -3,29 +3,35 @@ import { greyLight1, greyThemeLight } from '@edulastic/colors'
 import { FlexContainer, withWindowSizes } from '@edulastic/common'
 import { IconList, IconPlaylist2, IconTile } from '@edulastic/icons'
 import { Button, Input, Row, Spin } from 'antd'
+import qs from 'qs'
 import { debounce, get, pick, isEqual } from 'lodash'
 import moment from 'moment'
 import PropTypes from 'prop-types'
-import * as qs from 'query-string'
 import React, { Component } from 'react'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { libraryFilters, sortOptions } from '@edulastic/constants'
+import { libraryFilters, sortOptions, roleuser } from '@edulastic/constants'
 import { withNamespaces } from 'react-i18next'
+import { userApi } from '@edulastic/api'
 import NoDataNotification from '../../../../common/components/NoDataNotification'
 import {
   updateDefaultGradesAction,
   updateDefaultSubjectAction,
   isProxyUser as isProxyUserSelector,
+  isDemoPlaygroundUser,
+  setUserAction,
 } from '../../../../student/Login/ducks'
 import ListHeader from '../../../src/components/common/ListHeader'
 import {
+  getCollectionsSelector,
   getDefaultGradesSelector,
   getDefaultSubjectSelector,
   getInterestedCurriculumsSelector,
   getInterestedGradesSelector,
   getInterestedSubjectsSelector,
+  getUserFeatures,
+  getUserRole,
 } from '../../../src/selectors/user'
 import CardWrapper from '../../../TestList/components/CardWrapper/CardWrapper'
 import {
@@ -79,6 +85,7 @@ import InputTag from '../../../ItemList/components/ItemFilter/SearchTag'
 import SideContent from '../../../Dashboard/components/SideContent/Sidecontent'
 import SortMenu from '../../../ItemList/components/SortMenu'
 import FilterToggleBtn from '../../../src/components/common/FilterToggleBtn'
+import PlaylistAvailableModal from '../../playListAvailable/playListAvailableModal'
 
 function getUrlFilter(filter) {
   if (filter === 'AUTHORED_BY_ME') {
@@ -95,6 +102,7 @@ function getUrlFilter(filter) {
   }
   return ''
 }
+
 class TestList extends Component {
   static propTypes = {
     playlists: PropTypes.array.isRequired,
@@ -123,6 +131,8 @@ class TestList extends Component {
     blockStyle: 'tile',
     isShowFilter: false,
     openSidebar: false,
+    isPlaylistAvailableModalVisible: false,
+    filteredSparkInfo: {},
   }
 
   getUrlToPush(page = undefined) {
@@ -140,6 +150,10 @@ class TestList extends Component {
     return urlToPush
   }
 
+  closePlaylistAvailableModal = () => {
+    this.setState({ isPlaylistAvailableModalVisible: false })
+  }
+
   componentDidMount() {
     const {
       receivePlaylists,
@@ -150,11 +164,19 @@ class TestList extends Component {
       getAllTags,
       match: { params = {} },
       playListFilters,
+      collectionSelector = [],
       history,
       interestedSubjects,
       interestedGrades,
       sort: initSort = {},
+      features,
+      userRole,
+      user,
+      userId,
+      sparkPlaylistCollectionsVisited,
+      setUser,
     } = this.props
+
     const {
       subject = interestedSubjects || [],
       grades = interestedGrades || [],
@@ -163,11 +185,18 @@ class TestList extends Component {
       JSON.parse(sessionStorage.getItem('filters[playList]')) || {}
     const sessionSortFilters =
       JSON.parse(sessionStorage.getItem('sort[playList]')) || {}
-    const searchFilters = {
-      ...playListFilters,
-      ...sessionFilters,
-      grades,
-      subject,
+    let searchParams = qs.parse(location.search, { ignoreQueryPrefix: true })
+    let searchFilters = {}
+
+    if (searchParams.removeInterestedFilters) {
+      searchFilters = playListFilters
+    } else {
+      searchFilters = {
+        ...playListFilters,
+        ...sessionFilters,
+        subject,
+        grades,
+      }
     }
 
     const sort = {
@@ -177,7 +206,6 @@ class TestList extends Component {
       ...sessionSortFilters,
     }
 
-    let searchParams = qs.parse(location.search)
     searchParams = this.typeCheck(searchParams, searchFilters)
 
     if (Object.keys(searchParams).length) {
@@ -196,6 +224,40 @@ class TestList extends Component {
     receivePlaylists({ page: pageFinal, limit, search: searchFilters, sort })
     getAllTags({ type: 'playlist' })
     receiveRecentPlayLists()
+
+    const selectedCollectionInfo = collectionSelector.filter(
+      (x) => x._id === searchFilters?.collections[0]
+    )
+
+    const { _id } = selectedCollectionInfo?.[0] || {}
+
+    this.setState({
+      filteredSparkInfo: selectedCollectionInfo?.[0] || {},
+    })
+
+    if (
+      searchFilters?.collections?.includes(_id) &&
+      !sparkPlaylistCollectionsVisited.includes(_id) &&
+      selectedCollectionInfo?.[0]?.isPurchaseAllowed &&
+      !features?.isCurator &&
+      !features.isPublisherAuthor &&
+      userRole !== roleuser.EDULASTIC_CURATOR
+    ) {
+      this.setState({ isPlaylistAvailableModalVisible: true })
+      const data = {}
+      data.sparkPlaylistCollectionsVisited = [
+        ...sparkPlaylistCollectionsVisited,
+        _id,
+      ]
+      userApi.updateCollectionVisited({
+        data,
+        userId,
+      })
+      const temp = user
+      temp.sparkPlaylistCollectionsVisited =
+        data.sparkPlaylistCollectionsVisited
+      setUser(temp)
+    }
   }
 
   updateFilterState = (searchState, sort) => {
@@ -484,9 +546,17 @@ class TestList extends Component {
       t,
       isProxyUser,
       sort = {},
+      dashboardTiles,
+      isDemoAccount = false,
     } = this.props
 
-    const { blockStyle, isShowFilter, openSidebar } = this.state
+    const {
+      blockStyle,
+      isShowFilter,
+      openSidebar,
+      isPlaylistAvailableModalVisible,
+      filteredSparkInfo,
+    } = this.state
     const { searchString } = playListFilters
     const renderFilterIcon = () => (
       <FilterToggleBtn
@@ -494,6 +564,13 @@ class TestList extends Component {
         toggleFilter={this.toggleFilter}
       />
     )
+
+    const sparkDescription = dashboardTiles?.find(
+      (x) => x.config?.subscriptionData?.itemBankId === filteredSparkInfo._id
+    )
+
+    const { description = '', title = '' } =
+      sparkDescription?.config?.subscriptionData || {}
 
     return (
       <>
@@ -569,7 +646,7 @@ class TestList extends Component {
           <FlexContainer>
             <Filter isShowFilter={isShowFilter}>
               {!isShowFilter && (
-                <AffixWrapper isProxyUser={isProxyUser}>
+                <AffixWrapper isBannerShown={isProxyUser || isDemoAccount}>
                   <ScrollbarWrapper>
                     <PerfectScrollbar>
                       <ScrollBox>
@@ -633,6 +710,14 @@ class TestList extends Component {
             </Main>
           </FlexContainer>
           <SelectCollectionModal contentType="PLAYLIST" />
+          {isPlaylistAvailableModalVisible && (
+            <PlaylistAvailableModal
+              isVisible={isPlaylistAvailableModalVisible}
+              closeModal={this.closePlaylistAvailableModal}
+              description={description}
+              title={title}
+            />
+          )}
         </Container>
       </>
     )
@@ -651,6 +736,12 @@ const enhance = compose(
       count: getPlaylistsCountSelector(state),
       creating: getTestsCreatingSelector(state),
       userId: get(state, 'user.user._id', false),
+      user: get(state, 'user.user'),
+      sparkPlaylistCollectionsVisited: get(
+        state,
+        'user.user.sparkPlaylistCollectionsVisited',
+        []
+      ),
       defaultGrades: getDefaultGradesSelector(state),
       defaultSubject: getDefaultSubjectSelector(state),
       interestedCurriculums: getInterestedCurriculumsSelector(state),
@@ -660,6 +751,11 @@ const enhance = compose(
       selectedPlayLists: getSelectedPlaylistSelector(state),
       isProxyUser: isProxyUserSelector(state),
       sort: getSortFilterStateSelector(state),
+      collectionSelector: getCollectionsSelector(state),
+      dashboardTiles: state.dashboardTeacher.configurableTiles,
+      isDemoAccount: isDemoPlaygroundUser(state),
+      features: getUserFeatures(state),
+      userRole: getUserRole(state),
     }),
     {
       receivePlaylists: receivePlaylistsAction,
@@ -672,6 +768,7 @@ const enhance = compose(
       updateAllPlaylistSearchFilter: updateAllPlaylistSearchFilterAction,
       clearPlaylistFilters: clearPlaylistFiltersAction,
       checkPlayList: checkPlayListAction,
+      setUser: setUserAction,
     }
   )
 )

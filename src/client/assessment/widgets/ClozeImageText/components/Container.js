@@ -73,14 +73,16 @@ const Container = ({ t, onChange, uiStyle, responses = [], changeStyle }) => {
                   ..._response,
                   width: parseInt(uiStyle.widthpx, 10),
                 }))
-              )}
+              )
+            }
             onChange={(e) =>
               onChange(
                 'widthpx',
                 +e.target.value > response.maxWidth
                   ? response.maxWidth
                   : +e.target.value
-              )}
+              )
+            }
             value={uiStyle.widthpx}
           />
         </Col>
@@ -98,14 +100,16 @@ const Container = ({ t, onChange, uiStyle, responses = [], changeStyle }) => {
                   ..._response,
                   height: parseInt(uiStyle.heightpx, 10),
                 }))
-              )}
+              )
+            }
             onChange={(e) =>
               onChange(
                 'heightpx',
                 +e.target.value > response.maxHeight
                   ? response.maxHeight
                   : +e.target.value
-              )}
+              )
+            }
             value={uiStyle.heightpx}
           />
         </Col>

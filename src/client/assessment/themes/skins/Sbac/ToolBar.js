@@ -1,4 +1,6 @@
 import React, { useState } from 'react'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { test, questionType } from '@edulastic/constants'
@@ -7,44 +9,41 @@ import {
   IconClose,
   IconScratchPad,
   IconMagnify,
+  IconLanguage,
   IconCloudUpload,
 } from '@edulastic/icons'
 import { Tooltip } from '../../../../common/utils/helpers'
 import { Container, StyledButton, StyledIcon } from './styled'
 import TimedTestTimer from '../../common/TimedTestTimer'
-import { enableUpdate } from '@edulastic/ext-libs/src/pdf-annotate'
+import { setSettingsModalVisibilityAction } from '../../../../student/Sidebar/ducks'
+import { getIsMultiLanguageEnabled } from '../../../../common/components/LanguageSelector/duck'
 
-const { calculatorTypes, SHOW_USER_WORK } = test
+const { calculatorTypes } = test
 
 const zoomIndex = [1, 1.5, 1.75, 2.5, 3]
 
 const ToolBar = ({
   settings = {},
   tool = [],
-  changeCaculateMode,
   changeTool,
   qType,
   setZoomLevel,
-  zoomLevel,
   isDocbased,
   handleMagnifier,
-  toggleUserWorkUploadModal,
   showMagnifier,
   enableMagnifier,
   timedAssignment,
   utaId,
   groupId,
   header,
+  multiLanguageEnabled,
+  setSettingsModalVisibility,
+  toggleUserWorkUploadModal,
 }) => {
   const [zoom, setZoom] = useState(0)
   const toolbarHandler = (value) => changeTool(value)
 
-  const handleCalculateMode = (value) => {
-    changeTool(2)
-    changeCaculateMode(value)
-  }
-
-  const { calcType, showUserWork } = settings
+  const { calcType, enableScratchpad, isTeacherPremium } = settings
   const isDisableCrossBtn = qType !== questionType.MULTIPLE_CHOICE
   const handleZoomIn = () => {
     if (zoom !== zoomIndex.length - 1) {
@@ -58,6 +57,10 @@ const ToolBar = ({
       setZoomLevel(zoomIndex[zoom - 1])
       setZoom(zoom - 1)
     }
+  }
+
+  const showLangSwitchPopUp = () => {
+    setSettingsModalVisibility(true)
   }
 
   return (
@@ -92,20 +95,13 @@ const ToolBar = ({
         </Tooltip>
       )}
 
-      {!isDocbased && showUserWork === SHOW_USER_WORK.SCRATCHPAD && (
+      {!isDocbased && enableScratchpad && (
         <Tooltip placement="top" title="Scratch Pad">
           <StyledButton
             active={tool.indexOf(5) !== -1}
             onClick={() => toolbarHandler(5)}
           >
             <ScratchPadIcon />
-          </StyledButton>
-        </Tooltip>
-      )}
-      {!isDocbased && showUserWork === SHOW_USER_WORK.UPLOAD && (
-        <Tooltip placement="top" title="Upload Work">
-          <StyledButton onClick={toggleUserWorkUploadModal}>
-            <IconCloudUpload />
           </StyledButton>
         </Tooltip>
       )}
@@ -130,6 +126,20 @@ const ToolBar = ({
           </StyledButton>
         </Tooltip>
       )}
+      {!isDocbased && isTeacherPremium && (
+        <Tooltip placement="top" title="Upload work">
+          <StyledButton onClick={toggleUserWorkUploadModal}>
+            <IconCloudUpload />
+          </StyledButton>
+        </Tooltip>
+      )}
+      {multiLanguageEnabled && (
+        <Tooltip placement="top" title="Select Language">
+          <StyledButton onClick={showLangSwitchPopUp}>
+            <IconLanguage />
+          </StyledButton>
+        </Tooltip>
+      )}
       {timedAssignment && (
         <TimedTestTimer
           utaId={utaId}
@@ -142,14 +152,24 @@ const ToolBar = ({
 }
 
 ToolBar.propTypes = {
-  changeCaculateMode: PropTypes.func.isRequired,
   tool: PropTypes.array.isRequired,
   changeTool: PropTypes.func.isRequired,
   settings: PropTypes.object.isRequired,
   qType: PropTypes.string.isRequired,
 }
 
-export default ToolBar
+const enhance = compose(
+  connect(
+    (state) => ({
+      multiLanguageEnabled: getIsMultiLanguageEnabled(state),
+    }),
+    {
+      setSettingsModalVisibility: setSettingsModalVisibilityAction,
+    }
+  )
+)
+
+export default enhance(ToolBar)
 
 export const CaculatorIcon = styled(IconCalculator)`
   ${({ theme }) => `

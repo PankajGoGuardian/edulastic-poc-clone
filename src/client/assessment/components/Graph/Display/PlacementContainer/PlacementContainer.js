@@ -41,7 +41,7 @@ import {
 } from './styled'
 import Tools from '../../common/Tools'
 import DragDropValues from './DragDropValues'
-import AppConfig from '../../../../../../../app-config'
+import AppConfig from '../../../../../../app-config'
 
 const valueHeightHashMap = {
   1: {
@@ -331,6 +331,7 @@ class PlacementContainer extends PureComponent {
           prevProps.xAxesParameters.commaInLabel ||
         xAxesParameters.showAxis !== prevProps.xAxesParameters.showAxis ||
         xAxesParameters.drawZero !== prevProps.xAxesParameters.drawZero ||
+        xAxesParameters.useRadians !== prevProps.xAxesParameters.useRadians ||
         yAxesParameters.ticksDistance !==
           prevProps.yAxesParameters.ticksDistance ||
         yAxesParameters.name !== prevProps.yAxesParameters.name ||
@@ -341,7 +342,8 @@ class PlacementContainer extends PureComponent {
         yAxesParameters.commaInLabel !==
           prevProps.yAxesParameters.commaInLabel ||
         yAxesParameters.showAxis !== prevProps.yAxesParameters.showAxis ||
-        yAxesParameters.drawZero !== prevProps.yAxesParameters.drawZero
+        yAxesParameters.drawZero !== prevProps.yAxesParameters.drawZero ||
+        yAxesParameters.useRadians !== prevProps.yAxesParameters.useRadians
       ) {
         this._graph.setAxesParameters({
           x: {
@@ -562,18 +564,21 @@ class PlacementContainer extends PureComponent {
     if (this.graphContainerRef.current && offset) {
       const element = this.graphContainerRef.current
       const { x, y } = element.getBoundingClientRect()
-      const px = offset.x - x
-      const py = offset.y - y
+      const px = offset.x - x - 10
+      const py = offset.y - y - 10
       return { x: px, y: py }
     }
     return { x: 0, y: 0 }
   }
 
-  handleDropValue = ({ itemOffset, data, itemRect }) => {
-    const d = this.getDragValueOffset(itemOffset)
-    const { width, height } = itemRect
+  handleDropValue = ({ data, itemRect }) => {
+    const { width, height, x: clientX, y: clientY } = itemRect
+    const d = this.getDragValueOffset({ x: clientX, y: clientY })
+    const x = d.x + width / 4
+    const y = d.y + height
+
     if (
-      this._graph.addDragDropValue(data, d.x + width / 4, d.y + height, {
+      this._graph.addDragDropValue(data, x, y, {
         width,
         height,
       })
@@ -675,6 +680,7 @@ class PlacementContainer extends PureComponent {
                       showBorder={hasAnnotation}
                       isPrintPreview={isPrintPreview}
                       style={{ width: layout.width, height: layout.height }}
+                      dragDropWidth="auto"
                     />
                   </DropContainer>
                 </div>

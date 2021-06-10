@@ -21,6 +21,7 @@ const AdvancedOptions = ({
     advancedAreOpen={advancedAreOpen}
     fillSections={fillSections}
     cleanSections={cleanSections}
+    showVariables
     item={item}
   >
     <LayoutWrapper
@@ -31,13 +32,10 @@ const AdvancedOptions = ({
       cleanSections={cleanSections}
     />
     <Extras
-      advancedAreOpen={advancedAreOpen}
       fillSections={fillSections}
       cleanSections={cleanSections}
-    >
-      <Extras.Distractors />
-      <Extras.Hints />
-    </Extras>
+      advancedAreOpen={advancedAreOpen}
+    />
   </WidgetOptions>
 )
 

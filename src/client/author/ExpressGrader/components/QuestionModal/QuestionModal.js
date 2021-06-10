@@ -1,13 +1,8 @@
 import React, { createRef } from 'react'
 import PropTypes from 'prop-types'
 
-import {
-  ScrollContext,
-  LCBScrollContext,
-  notification,
-} from '@edulastic/common'
-import { message } from 'antd'
-import { get, isEmpty, values } from 'lodash'
+import { ScrollContext, notification } from '@edulastic/common'
+import { get, isEmpty } from 'lodash'
 import { connect } from 'react-redux'
 import * as Sentry from '@sentry/browser'
 import Question from '../Question/Question'
@@ -23,7 +18,7 @@ import {
 } from '../../ducks'
 import { hasValidAnswers } from '../../../../assessment/utils/answer'
 import {
-  stateExpressGraderAnswerSelector,
+  getAnswerByQidSelector,
   getStudentQuestionSelector,
 } from '../../../ClassBoard/ducks'
 import BottomNavigation from '../BottomNavigation/BottomNavigation'
@@ -49,6 +44,7 @@ class QuestionModal extends React.Component {
   }
 
   componentDidMount() {
+    // TODO: attach only the event listener, move rest of code into getDerivedStateFromProps
     const { record, tableData, scoreMode } = this.props
     const loaded = true
     let maxQuestions = null
@@ -71,7 +67,8 @@ class QuestionModal extends React.Component {
     document.addEventListener('keyup', this.keyListener, false)
   }
 
-  componentWillReceiveProps(nextProps) {
+  // TODO: refactor to getDerivedStateFromProps
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const { record, tableData } = nextProps
     const loaded = true
     const newcolIndex = record ? record.colIndex : null
@@ -110,11 +107,6 @@ class QuestionModal extends React.Component {
     }
   }
 
-  showModal = () => {
-    const { showQuestionModal } = this.props
-    showQuestionModal()
-  }
-
   hideModal = () => {
     this.submitResponse()
     const { hideQuestionModal } = this.props
@@ -123,12 +115,18 @@ class QuestionModal extends React.Component {
 
   nextStudent = (event) => {
     const { maxStudents } = this.state
-    const { rowIndex } = this.state
+    const { rowIndex, colIndex } = this.state
+    const { tableData, updateRecord } = this.props
+
     const nextIndex = rowIndex + 1
     if (nextIndex !== maxStudents) {
       this.submitResponse()
       this.setState({ loaded: false }, () => {
-        this.setState({ rowIndex: nextIndex, loaded: true })
+        this.setState({ rowIndex: nextIndex, loaded: true }, () => {
+          if (typeof updateRecord === 'function') {
+            updateRecord(get(tableData, [nextIndex, `Q${colIndex}`]))
+          }
+        })
       })
     } else {
       event.stopPropagation()
@@ -137,12 +135,18 @@ class QuestionModal extends React.Component {
   }
 
   prevStudent = (event) => {
-    const { rowIndex } = this.state
+    const { rowIndex, colIndex } = this.state
+    const { tableData, updateRecord } = this.props
+
     if (rowIndex !== 0) {
       this.submitResponse()
       const prevIndex = rowIndex - 1
       this.setState({ loaded: false }, () => {
-        this.setState({ rowIndex: prevIndex, loaded: true })
+        this.setState({ rowIndex: prevIndex, loaded: true }, () => {
+          if (typeof updateRecord === 'function') {
+            updateRecord(get(tableData, [prevIndex, `Q${colIndex}`]))
+          }
+        })
       })
     } else {
       event?.stopPropagation()
@@ -150,7 +154,7 @@ class QuestionModal extends React.Component {
   }
 
   getQuestion = () => {
-    const { rowIndex, colIndex, loaded } = this.state
+    const { rowIndex, colIndex } = this.state
     const { tableData } = this.props
     return get(tableData, [rowIndex, `Q${colIndex}`])
   }
@@ -216,12 +220,18 @@ class QuestionModal extends React.Component {
 
   nextQuestion = () => {
     const { maxQuestions } = this.state
-    const { colIndex } = this.state
+    const { rowIndex, colIndex } = this.state
     const nextIndex = colIndex + 1
+    const { tableData, updateRecord } = this.props
+
     if (nextIndex !== maxQuestions) {
       this.submitResponse()
       this.setState({ loaded: false }, () => {
-        this.setState({ colIndex: nextIndex, loaded: true })
+        this.setState({ colIndex: nextIndex, loaded: true }, () => {
+          if (typeof updateRecord === 'function') {
+            updateRecord(get(tableData, [rowIndex, `Q${nextIndex}`]))
+          }
+        })
       })
     } else {
       notification({ type: 'success', messageKey: 'finishedGrading' })
@@ -230,11 +240,17 @@ class QuestionModal extends React.Component {
 
   prevQuestion = () => {
     this.submitResponse()
-    const { colIndex } = this.state
+    const { rowIndex, colIndex } = this.state
+    const { tableData, updateRecord } = this.props
+
     if (colIndex !== 0) {
       const prevIndex = colIndex - 1
       this.setState({ loaded: false }, () => {
-        this.setState({ colIndex: prevIndex, loaded: true })
+        this.setState({ colIndex: prevIndex, loaded: true }, () => {
+          if (typeof updateRecord === 'function') {
+            updateRecord(get(tableData, [rowIndex, `Q${prevIndex}`]))
+          }
+        })
       })
     }
   }
@@ -244,18 +260,20 @@ class QuestionModal extends React.Component {
     const {
       isVisibleModal,
       tableData,
-      record,
       isPresentationMode,
       windowWidth,
       studentResponseLoading,
       isScoringInProgress,
-      studentQuestionResponseTestActivityId,
     } = this.props
-    const { rowIndex, colIndex, loaded, row, editResponse } = this.state
+    const blurStyles = studentResponseLoading
+      ? { filter: 'blur(8px)', '-webkit-filter': 'blur(8px)' }
+      : {}
+    const { rowIndex, colIndex, loaded, editResponse } = this.state
 
     if (colIndex !== null && rowIndex !== null) {
       question = tableData[rowIndex][`Q${colIndex}`]
     }
+
     let student = {}
     if (rowIndex !== null) {
       student = tableData[rowIndex].students
@@ -275,13 +293,19 @@ class QuestionModal extends React.Component {
         bodyStyle={{ background: '#f0f2f5', height: '100%', overflowY: 'auto' }}
       >
         {isVisibleModal && question && loaded && (
-          <LCBScrollContext.Provider value={this.containerRef}>
+          <>
             <ScrollContext.Provider
-              value={{ getScrollElement: () => this.containerRef?.current }}
+              value={{
+                getScrollElement: () =>
+                  this.containerRef?.current || document.body,
+              }}
             >
               <QuestionWrapper
                 ref={this.containerRef}
-                style={{ marginBottom: windowWidth > 1024 ? '66px' : '99px' }}
+                style={{
+                  marginBottom: windowWidth > 1024 ? '66px' : '99px',
+                  ...blurStyles,
+                }}
               >
                 <Question
                   record={question}
@@ -306,13 +330,13 @@ class QuestionModal extends React.Component {
                 style={{ padding: '20px 3%' }}
                 editResponse={editResponse}
                 toggleEditResponse={() =>
-                  this.setState(({ editResponse }) => ({
-                    editResponse: !editResponse,
+                  this.setState(({ editResponse: _editResponse }) => ({
+                    editResponse: !_editResponse,
                   }))
                 }
               />
             </BottomNavigationWrapper>
-          </LCBScrollContext.Provider>
+          </>
         )}
       </ModalWrapper>
     )
@@ -323,7 +347,6 @@ QuestionModal.propTypes = {
   record: PropTypes.object.isRequired,
   tableData: PropTypes.array.isRequired,
   isVisibleModal: PropTypes.bool.isRequired,
-  showQuestionModal: PropTypes.func.isRequired,
   hideQuestionModal: PropTypes.func.isRequired,
   isPresentationMode: PropTypes.bool,
 }
@@ -334,7 +357,7 @@ QuestionModal.defaultProps = {
 
 export default connect(
   (state) => ({
-    userResponse: stateExpressGraderAnswerSelector(state),
+    userResponse: getAnswerByQidSelector(state),
     allResponse: getStudentQuestionSelector(state),
     teacherEditedScore: getTeacherEditedScoreSelector(state),
     studentResponseLoading: state.studentQuestionResponse?.loading,

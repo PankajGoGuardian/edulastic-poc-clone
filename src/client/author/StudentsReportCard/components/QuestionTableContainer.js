@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import next from 'immer'
 import styled from 'styled-components'
 import { Icon } from 'antd'
@@ -32,71 +32,102 @@ const StyledCheck = styled(Check)`
     margin-left: 29px;
   }
 `
+const fixedStyle = { 'font-size': 16, 'font-weight': 500 }
+const fixedHash = <span style={fixedStyle}>#</span>
+const fixedStar = <span style={fixedStyle}>*</span>
 
-export const QuestionTableContainer = (props) => {
+// column[0] = question,
+// column[1] = yourAnswer
+// column[2] = correctAnswer
+// column[3] = score
+// column[4] = maxScore
+const columnsBase = next(tableColumnsData.questionTable, (arr) => {
+  arr[0].render = (data, record) => {
+    return <StyledCheck record={record}>{data}</StyledCheck>
+  }
+  arr[1].render = (data, record) => {
+    const multipartItemLevel = record.itemLevelScoring && data.length > 1
+    if (multipartItemLevel) {
+      return fixedHash
+    }
+    return data.map((yAnswer) => {
+      const content = yAnswer
+      let fixedContent = null
+      if (yAnswer === 'TEI') {
+        fixedContent = fixedHash
+      } else if (yAnswer === 'Constructed Response') {
+        fixedContent = fixedStar
+      }
+      return (
+        fixedContent || (
+          <MathFormulaDisplay
+            style={{ marginBottom: '10px', minHeight: '22px' }}
+            dangerouslySetInnerHTML={{ __html: content }}
+          />
+        )
+      )
+    })
+  }
+  arr[2].render = (data, record) => {
+    const multipartItemLevel = record.itemLevelScoring && data.length > 1
+    if (multipartItemLevel) {
+      return fixedHash
+    }
+    return data.map((cAnswer) => {
+      const content = cAnswer
+      let fixedContent = null
+      if (cAnswer === 'TEI') {
+        fixedContent = fixedHash
+      } else if (cAnswer === 'Constructed Response') {
+        fixedContent = fixedStar
+      }
+      return (
+        fixedContent || (
+          <MathFormulaDisplay
+            style={{ marginBottom: '10px', minHeight: '22px' }}
+            dangerouslySetInnerHTML={{ __html: content }}
+          />
+        )
+      )
+    })
+  }
+})
+
+export function QuestionTableContainer(props) {
   const { dataSource, columnsFlags } = props
 
-  // column[0] = question,
-  // column[1] = yourAnswer
-  // column[2] = correctAnswer
-  // column[3] = score
-  // column[4] = maxScore
-  let columns = next(tableColumnsData.questionTable, (arr) => {
-    arr[0].render = (data, record, index) => {
-      return <StyledCheck record={record}>{data}</StyledCheck>
-    }
-    arr[1].render = (data, record, index) => {
-      return data.map((yAnswer) => {
-        let content = yAnswer
-        if (yAnswer === 'TEI') {
-          content = "<span style='font-size:16px;font-weight: 500;'>#</span>"
-        } else if (yAnswer === 'Constructed Response') {
-          content = "<span style='font-size:16px;font-weight: 500;'>*</span>"
-        }
-        return (
-          <MathFormulaDisplay
-            style={{ marginBottom: '10px', minHeight: '22px' }}
-            dangerouslySetInnerHTML={{ __html: content }}
-          />
-        )
-      })
-    }
-    arr[2].render = (data, record, index) => {
-      return data.map((cAnswer) => {
-        let content = cAnswer
-        if (cAnswer === 'TEI') {
-          content = "<span style='font-size:16px;font-weight: 500;'>#</span>"
-        } else if (cAnswer === 'Constructed Response') {
-          content = "<span style='font-size:16px;font-weight: 500;'>*</span>"
-        }
-        return (
-          <MathFormulaDisplay
-            style={{ marginBottom: '10px', minHeight: '22px' }}
-            dangerouslySetInnerHTML={{ __html: content }}
-          />
-        )
-      })
+  dataSource.forEach((data) => {
+    const { validation, maxScore } = data
+    if (validation && validation.unscored && maxScore === 0) {
+      data.score = 'Unscored'
+      data.maxScore = 'Unscored'
     }
   })
 
   // this is checking which columns to display/hide
-  columns = columns.filter((item, index) => {
-    if (
-      !columnsFlags.questionPerformance &&
-      ['score', 'maxScore'].includes(item.key)
-    ) {
-      return false
-    }
+  const columns = useMemo(() => {
+    return columnsBase.filter((item) => {
+      if (
+        !columnsFlags.questionPerformance &&
+        ['score', 'maxScore'].includes(item.key)
+      ) {
+        return false
+      }
 
-    if (!columnsFlags.studentResponse && item.key === 'yourAnswer') {
-      return false
-    }
+      if (!columnsFlags.studentResponse && item.key === 'yourAnswer') {
+        return false
+      }
 
-    if (!columnsFlags.correctAnswer && item.key === 'correctAnswer') {
-      return false
-    }
-    return true
-  })
+      if (!columnsFlags.correctAnswer && item.key === 'correctAnswer') {
+        return false
+      }
+      return true
+    })
+  }, [
+    !!columnsFlags.questionPerformance,
+    !!columnsFlags.correctAnswer,
+    !!columnsFlags.studentResponse,
+  ])
 
   return (
     <StyledTable

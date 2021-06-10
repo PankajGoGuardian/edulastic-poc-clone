@@ -1,5 +1,5 @@
 import React from 'react'
-import { CustomImage } from './keyboardButtons'
+import { CustomImage } from './CustomImage'
 import lefticon from '../assets/headerButtons/left.svg'
 import righticon from '../assets/headerButtons/right.svg'
 // import redoicon from "../assets/headerButtons/redo.svg";

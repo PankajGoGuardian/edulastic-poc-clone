@@ -7,7 +7,6 @@ const { Panel } = Collapse
 
 const StudentWorkCollapse = ({
   imageAttachments,
-  renderScratchPadImage,
   isStudentWorkCollapseOpen,
   toggleStudentWorkCollapse,
 }) => {
@@ -20,10 +19,7 @@ const StudentWorkCollapse = ({
       isGhost
     >
       <Panel header="Student Work" key="studentWork">
-        <StudentWork
-          imageAttachments={imageAttachments}
-          renderScratchPadImage={renderScratchPadImage}
-        />
+        <StudentWork imageAttachments={imageAttachments} />
       </Panel>
     </StyledCollapse>
   )

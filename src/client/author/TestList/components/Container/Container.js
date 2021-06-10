@@ -10,7 +10,7 @@ import {
   isEqual,
   omit,
 } from 'lodash'
-import * as qs from 'query-string'
+import qs from 'qs'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import PropTypes from 'prop-types'
 import { compose } from 'redux'
@@ -123,6 +123,7 @@ import {
   updateDefaultGradesAction,
   updateDefaultSubjectAction,
   isProxyUser as isProxyUserSelector,
+  isDemoPlaygroundUser,
 } from '../../../../student/Login/ducks'
 import CartButton from '../CartButton/cartButton'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
@@ -243,7 +244,7 @@ class TestList extends Component {
       sort: initSort = {},
     } = this.props
     const {
-      subject = interestedSubjects || [],
+      subject = interestedSubjects,
       grades = interestedGrades || [],
       curriculumId = firstCurriculum &&
       firstCurriculum.subject === interestedSubjects?.[0]
@@ -254,12 +255,24 @@ class TestList extends Component {
       JSON.parse(sessionStorage.getItem('filters[testList]')) || {}
     const sessionSort =
       JSON.parse(sessionStorage.getItem('sortBy[testList]')) || {}
-    const searchFilters = {
-      ...testFilters,
-      ...sessionFilters,
-      subject,
-      grades,
-      curriculumId: parseInt(curriculumId, 10) || '',
+
+    // propagate filter from query params to the store (test.filters)
+    let searchParams = qs.parse(location.search, { ignoreQueryPrefix: true })
+
+    let searchFilters = {}
+
+    if (searchParams.removeInterestedFilters) {
+      searchFilters = {
+        ...testFilters,
+      }
+    } else {
+      searchFilters = {
+        ...testFilters,
+        ...sessionFilters,
+        subject,
+        grades,
+        curriculumId: parseInt(curriculumId, 10) || '',
+      }
     }
 
     const sort = {
@@ -269,8 +282,6 @@ class TestList extends Component {
       ...sessionSort,
     }
 
-    // propagate filter from query params to the store (test.filters)
-    let searchParams = qs.parse(location.search)
     searchParams = this.typeCheck(searchParams, searchFilters)
     if (Object.keys(searchParams).length) {
       searchParams.curriculumId =
@@ -651,7 +662,10 @@ class TestList extends Component {
 
     if (item?.status === 'draft' || item?.status === 'rejected') {
       const testStatus = item?.status === 'draft' ? 'Draft' : 'Rejected'
-      notification({ type: 'warn', msg: `${testStatus} tests cannot be added` })
+      notification({
+        type: 'warn',
+        msg: `${testStatus} tests cannot be added`,
+      })
       return
     }
 
@@ -1123,6 +1137,7 @@ class TestList extends Component {
       resequenceModules,
       testFilters,
       isProxyUser,
+      isDemoAccount,
       t,
       sort = {},
     } = this.props
@@ -1327,7 +1342,7 @@ class TestList extends Component {
 
           <FlexContainer>
             <Filter isShowFilter={isShowFilter}>
-              <AffixWrapper isProxyUser={isProxyUser}>
+              <AffixWrapper isBannerShown={isProxyUser || isDemoAccount}>
                 <ScrollbarWrapper isShowFilter={isShowFilter}>
                   <PerfectScrollbar>
                     <ScrollBox>
@@ -1457,6 +1472,7 @@ const enhance = compose(
       isProxyUser: isProxyUserSelector(state),
       sort: getSortFilterStateSelector(state),
       selectedTests: getSelectedTestsSelector(state),
+      isDemoAccount: isDemoPlaygroundUser(state),
     }),
     {
       getCurriculums: getDictCurriculumsAction,

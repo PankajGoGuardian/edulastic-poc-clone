@@ -10,10 +10,36 @@ import {
   ADVANCED_ASSIGNMENT_VIEW,
   SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_REQUEST,
   TOGGLE_STUDENT_REPORT_CARD_SETTINGS,
+  SYNC_ASSIGNMENT_GRADES_WITH_GOOGLE_CLASSROOM_REQUEST,
+  SYNC_ASSIGNMENT_WITH_SCHOOLOGY_CLASSROOM_REQUEST,
+  SYNC_ASSIGNMENT_GRADES_WITH_SCHOOLOGY_CLASSROOM_REQUEST,
+  EDIT_TAGS_REQUEST,
+  SET_TAGS_UPDATING_STATE,
+  SYNC_ASSIGNMENT_GRADES_WITH_CLEVER_REQUEST,
 } from '../constants/actions'
 
 export const googleSyncAssignmentAction = (payload) => ({
   type: SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_REQUEST,
+  payload,
+})
+
+export const googleSyncAssignmentGradesAction = (payload) => ({
+  type: SYNC_ASSIGNMENT_GRADES_WITH_GOOGLE_CLASSROOM_REQUEST,
+  payload,
+})
+
+export const cleverSyncAssignmentGradesAction = (payload) => ({
+  type: SYNC_ASSIGNMENT_GRADES_WITH_CLEVER_REQUEST,
+  payload,
+})
+
+export const schoologySyncAssignmentAction = (payload) => ({
+  type: SYNC_ASSIGNMENT_WITH_SCHOOLOGY_CLASSROOM_REQUEST,
+  payload,
+})
+
+export const schoologySyncAssignmentGradesAction = (payload) => ({
+  type: SYNC_ASSIGNMENT_GRADES_WITH_SCHOOLOGY_CLASSROOM_REQUEST,
   payload,
 })
 
@@ -63,5 +89,15 @@ export const setAssignmentFiltersAction = (payload) => ({
 
 export const toggleStudentReportCardSettingsAction = (payload) => ({
   type: TOGGLE_STUDENT_REPORT_CARD_SETTINGS,
+  payload,
+})
+
+export const editTagsRequestAction = (payload) => ({
+  type: EDIT_TAGS_REQUEST,
+  payload,
+})
+
+export const setTagsUpdatingStateAction = (payload) => ({
+  type: SET_TAGS_UPDATING_STATE,
   payload,
 })

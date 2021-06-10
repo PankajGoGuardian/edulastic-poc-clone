@@ -3,16 +3,18 @@ import styled from 'styled-components'
 import { isUndefined, last, get, isEmpty, keyBy } from 'lodash'
 import { Tooltip as AntDTooltip, Modal } from 'antd'
 import { notification } from '@edulastic/common'
+import { EDULASTIC_CURATOR } from '@edulastic/constants/const/roleType'
 import { themeColor } from '@edulastic/colors'
 import { signUpState, test as testConst } from '@edulastic/constants'
 import * as Sentry from '@sentry/browser'
 import { API } from '@edulastic/api'
+import qs from 'qs'
 import { Partners } from './static/partnerData'
 import { smallestZoomLevel } from './static/zoom'
 import { breakpoints } from '../../student/zoomTheme'
 
 // eslint-disable-next-line no-control-regex
-const emailRegex = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/
+export const emailRegex = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/
 
 const api = new API()
 
@@ -41,7 +43,9 @@ export const isLoggedInForPrivateRoute = (user) => {
     if (
       user.user &&
       user.user.role === 'teacher' &&
-      (user.signupStatus === signUpState.DONE || isUndefined(user.signupStatus))
+      (user.signupStatus === signUpState.DONE ||
+        user.signupStatus === signUpState.ACCESS_WITHOUT_SCHOOL ||
+        isUndefined(user.signupStatus))
     ) {
       return true
     }
@@ -65,7 +69,9 @@ export const isLoggedInForLoggedOutRoute = (user) => {
     if (
       user.user &&
       user.user.role === 'teacher' &&
-      (user.signupStatus === signUpState.DONE || isUndefined(user.signupStatus))
+      (user.signupStatus === signUpState.DONE ||
+        user.signupStatus === signUpState.ACCESS_WITHOUT_SCHOOL ||
+        isUndefined(user.signupStatus))
     ) {
       return true
     }
@@ -210,7 +216,7 @@ export const getFullNameFromString = (name) => {
 }
 
 export const getInitialsFromName = (obj) =>
-  obj.firstName[0] + (obj.lastName ? obj.lastName[0] : '')
+  (obj.firstName?.[0] || '') + (obj?.lastName?.[0] || '')
 
 export const getDistrictSignOutUrl = (generalSettings) => {
   if (generalSettings.orgType === 'institution') {
@@ -230,8 +236,8 @@ export const getStartedUrl = () => '/getStarted'
 
 export const removeSignOutUrl = () => sessionStorage.removeItem('signOutUrl')
 
-export const validateQuestionsForDocBased = (questions) => {
-  if (!questions.length) {
+export const validateQuestionsForDocBased = (questions, forDraft = false) => {
+  if (!forDraft && !questions.filter((q) => q.type !== 'sectionLabel').length) {
     notification({ type: 'warn', messageKey: 'aleastOneQuestion' })
     return false
   }
@@ -258,7 +264,7 @@ export const validateQuestionsForDocBased = (questions) => {
       return !isEmpty(validationValue)
     })
 
-  if (!correctAnswerPicked) {
+  if (!forDraft && !correctAnswerPicked) {
     notification({ type: 'warn', messageKey: 'correctAnswer' })
     return false
   }
@@ -290,8 +296,9 @@ export const nameValidator = (name) => {
   // should contain at least three char (eg: stu, st1 s01)
   // should contain only one space between name/word
   // can contain number after initial alphabet
+  // can contain special characters ' and - after initial alphabet
 
-  const namePattern = /^(?!\d)[a-zA-Z\d]{2,}[a-zA-Z\d]+(?: [a-zA-z\d]+)*$/
+  const namePattern = /^(?!\d)(?!-)(?!')[a-zA-Z\d-']{2,}(?: [a-zA-z\d-']+)*$/
   if (!trimmedName || !namePattern.test(trimmedName)) {
     return false
   }
@@ -438,10 +445,80 @@ export const checkClientTime = (meta = {}) => {
   })
 }
 
-/** Use this helper to hide edulastic welcome banner for Mahia CLI users. this banner is coming from pendo */
-export const hidePendoBanner = (isCliUser) => {
-  const el = document.getElementById("pendo-base");
-  if (el && isCliUser) {
-    el.style.display = "none";
+// Converts any given blob into a base64 encoded string.
+const convertBlobToBase64 = (blob) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onerror = reject
+    reader.onload = () => {
+      resolve(reader.result)
+    }
+    reader.readAsDataURL(blob)
+  })
+}
+
+const handleOnLoad = (image) =>
+  new Promise((resolve) => {
+    image.onload = () => resolve(image.naturalWidth)
+    // if images are blocked onload is never called
+    setTimeout(() => !image.complete && resolve(0), 1000)
+  })
+
+export const isImagesBlockedByBrowser = async () => {
+  try {
+    let renderedImage = document.querySelector('img')
+    // if image tag is rendered then check for naturalWidth
+    if (renderedImage) {
+      return !renderedImage.naturalWidth
+    }
+    // else fetch 1x1 image and try rendering it in background
+    const image = document.createElement('img')
+    const fetchResult = await fetch(
+      'https://cdn.edulastic.com/default/edu-logo.png'
+    )
+    const id = 'customRenderedEduImage'
+    const src = await convertBlobToBase64(await fetchResult.blob())
+    image.setAttribute('src', src)
+    image.setAttribute('id', id)
+    image.style.display = 'none'
+    document.body.appendChild(image)
+    renderedImage = document.getElementById(id)
+    if (renderedImage) {
+      const naturalWidth = await handleOnLoad(renderedImage)
+      return !naturalWidth
+    }
+  } catch (error) {
+    console.warn(error)
   }
+}
+
+export const canUseAllOptionsByDefault = (permissions = [], userRole = '') => {
+  return (
+    userRole === EDULASTIC_CURATOR ||
+    ['author', 'curator'].some((permission) => permissions.includes(permission))
+  )
+}
+
+export const isHashAssessmentUrl = () => {
+  return (
+    window.location.hash.includes('#renderResource/close/') ||
+    window.location.hash.includes('#assessmentQuestions/close/')
+  )
+}
+
+export const getSchoologyTestId = () => {
+  const location = window.location
+  if (
+    window.location.pathname === '/auth/clever' &&
+    location.search.includes('assignment')
+  ) {
+    const { state = '' } = qs.parse(location.search, {
+      ignoreQueryPrefix: true,
+    })
+    const testId = state.split(':')[1] || ''
+    if (testId && testId.length === 24) {
+      return testId
+    }
+  }
+  return ''
 }

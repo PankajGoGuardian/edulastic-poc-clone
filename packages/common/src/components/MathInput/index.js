@@ -2,14 +2,14 @@ import React from 'react'
 import { WithResources } from '../../HOC/withResources'
 
 import MathInput from './MathInput'
-import AppConfig from '../../../../../app-config'
+import AppConfig from '../../../../../src/app-config'
 
 class MathInputWithResources extends React.PureComponent {
   mathInputRef = React.createRef()
 
   setFocus = () => {
-    if (this.mathInputRef.current) {
-      this.mathInputRef.current.focus()
+    if (this.mathInputRef?.current) {
+      this.mathInputRef.current.focus?.()
     }
   }
 

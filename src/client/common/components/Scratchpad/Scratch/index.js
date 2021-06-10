@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useContext } from 'react'
+import React, { useState, useEffect, useRef, useContext, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
@@ -12,6 +12,7 @@ import {
   AssessmentPlayerContext,
   AnswerContext,
 } from '@edulastic/common'
+import * as Sentry from '@sentry/browser'
 import { ScratchpadContainer, ZwibblerMain } from './styled'
 import ToolBox from '../Tools'
 import {
@@ -20,12 +21,13 @@ import {
   toggleButtonsAction,
   updateEditModeAction,
   updateScratchpadAction,
+  setScratchpadRectAction,
 } from '../duck'
 import MathTool from './MathTool'
-import protractorImg from './assets/protractor.png'
-import centimeterImg from './assets/ruler.png'
+import protractorImg from './assets/protractor.svg'
+import centimeterImg from './assets/centimeter.svg'
 
-import AppConfig from '../../../../../../app-config'
+import AppConfig from '../../../../../app-config'
 
 const lineTypes = [
   drawTools.FREE_DRAW,
@@ -35,6 +37,21 @@ const lineTypes = [
 ]
 
 const textTypes = [drawTools.DRAW_MATH, drawTools.DRAW_TEXT]
+function safeZwibblerLoad(zwibbler, data) {
+  try {
+    zwibbler.load(data)
+  } catch (e) {
+    try {
+      // eslint-disable-next-line no-control-regex
+      zwibbler.load(data.replace(/[^\x00-\x80]/g, ''))
+    } catch (e2) {
+      Sentry.withScope((scope) => {
+        scope.setExtra('zwibbler-data', data)
+        Sentry.captureException(e2)
+      })
+    }
+  }
+}
 
 const Scratchpad = ({
   activeMode,
@@ -58,6 +75,9 @@ const Scratchpad = ({
   hideTools,
   clearClicked, // this is from highlight image,
   hideData,
+  setScratchpadRect,
+  conatinerWidth,
+  dimensionsPercent,
 }) => {
   const [zwibbler, setZwibbler] = useState()
   const [clipBoard, updateClipBoard] = useState()
@@ -73,16 +93,21 @@ const Scratchpad = ({
   const { isAnswerModifiable, expressGrader } = useContext(AnswerContext)
   const isLineMode = lineTypes.includes(activeMode)
 
-  const height = get(dimensions, 'height', null)
-  const width = get(dimensions, 'width', null)
+  const [height, width] = useMemo(() => {
+    let _height = get(dimensions, 'height', null)
+    let _width = get(dimensions, 'width', null)
+    if (readOnly && dimensionsPercent !== 100 && _height && _width) {
+      _height *= dimensionsPercent / 100
+      _width *= dimensionsPercent / 100
+    }
+    return [_height, _width]
+  }, [dimensions, readOnly, dimensionsPercent])
 
   const toggleProtractor = () => {
     zwibbler.begin()
     const protractor = zwibbler.findNode('protractor')
-    const centimeter = zwibbler.findNode('centimeter')
-    if (protractor || centimeter) {
+    if (protractor) {
       zwibbler.deleteNode(protractor)
-      zwibbler.deleteNode(centimeter)
     } else {
       zwibbler.createNode('ImageNode', {
         url: protractorImg,
@@ -90,17 +115,27 @@ const Scratchpad = ({
         rotateAround: [191, 191],
         rotateHandle: [191, -10],
         lockSize: true,
-        matrix: [1, 0, 0, 1, 12, 75],
+        matrix: [1.7, 0, 0, 1.7, 15, 40],
         zIndex: 1,
       })
+    }
+    zwibbler.commit(true)
+    updateScratchpad({ activeMode: '' })
+  }
 
+  const toggleRuler = () => {
+    zwibbler.begin()
+    const centimeter = zwibbler.findNode('centimeter')
+    if (centimeter) {
+      zwibbler.deleteNode(centimeter)
+    } else {
       zwibbler.createNode('ImageNode', {
         url: centimeterImg,
         tag: 'centimeter',
         rotateAround: [191, 191],
         rotateHandle: [191, -10],
         lockSize: true,
-        matrix: [1, 0, 0, 1, 4, 4],
+        matrix: [0.7, 0, 0, 0.7, 15, 40],
         zIndex: 1,
       })
     }
@@ -154,8 +189,11 @@ const Scratchpad = ({
         case drawTools.DRAW_TRIANGLE:
           zwibbler.usePolygonTool(3, 0, 1.0, options)
           break
-        case drawTools.DRAW_MEASURE_TOOL:
+        case drawTools.DRAW_PROTRACTOR:
           toggleProtractor()
+          break
+        case drawTools.DRAW_RULER_TOOL:
+          toggleRuler()
           break
         case drawTools.DRAW_MATH: {
           mathNodeRef.current = new MathTool({ ctx: zwibbler })
@@ -231,7 +269,7 @@ const Scratchpad = ({
   }, [editMode])
 
   const onClickHandler = () => {
-    if (zwibbler && !deleteMode) {
+    if (zwibbler && !deleteMode && !readOnly) {
       setSelectedNodes(
         zwibbler.getSelectedNodes().map((id) => {
           const {
@@ -273,6 +311,7 @@ const Scratchpad = ({
         scrollbars: false,
         readOnly,
         setFocus: false, // Zwibbler will be unable to intercept any keyboard commands
+        allowZoom: !isStudentAttempt,
       })
       newZwibbler.on('node-clicked', (node) => {
         if (isDeleteMode.current) {
@@ -289,11 +328,18 @@ const Scratchpad = ({
           canUndo: newZwibbler.canUndo(),
         })
       })
+      newZwibbler.on('paste', () => {
+        // preventing pasting of images currently
+        return false
+      })
       setZwibbler(newZwibbler)
-      if (!readOnly) {
-        updateScratchpad({
-          width: zwibblerRef.current.clientWidth,
-          height: zwibblerRef.current.clientHeight,
+      if (isStudentAttempt && !readOnly) {
+        const zwibblerDomRect = zwibblerRef.current.getBoundingClientRect()
+        setScratchpadRect({
+          top: zwibblerDomRect.top,
+          left: zwibblerDomRect.left,
+          width: zwibblerDomRect.width,
+          height: zwibblerDomRect.height,
         })
       }
     }
@@ -318,7 +364,7 @@ const Scratchpad = ({
        * @see https://snapwiz.atlassian.net/browse/EV-17241
        */
       if (isStudentAttempt && prevItemIndex !== currentItem && data) {
-        zwibbler.load(data)
+        safeZwibblerLoad(zwibbler, data)
         setPrevItemIndex(currentItem)
       } else if (isStudentAttempt && prevItemIndex !== currentItem && !data) {
         zwibbler.newDocument()
@@ -327,7 +373,7 @@ const Scratchpad = ({
         /**
          * readonly mode views (lcb, expressGrader(edit response off), etc...)
          */
-        zwibbler.load(data)
+        safeZwibblerLoad(zwibbler, data)
       }
     }
   }, [data, zwibbler, currentItem])
@@ -339,10 +385,20 @@ const Scratchpad = ({
   }, [isAnswerModifiable, expressGrader])
 
   useEffect(() => {
+    // handle dimension change such as zoom in/out or window resize
     if (zwibbler) {
       zwibbler.resize()
     }
-  }, [width, height])
+    if (isStudentAttempt && !readOnly && zwibblerRef.current) {
+      const zwibblerDomRect = zwibblerRef.current.getBoundingClientRect()
+      setScratchpadRect({
+        top: zwibblerDomRect.top,
+        left: zwibblerDomRect.left,
+        width: zwibblerDomRect.width,
+        height: zwibblerDomRect.height,
+      })
+    }
+  }, [width, height, conatinerWidth])
 
   return (
     <ScratchpadContainer ref={zwibblerContainer} hideData={hideData}>
@@ -352,6 +408,7 @@ const Scratchpad = ({
         id="zwibbler-main"
         ref={zwibblerRef}
         onClick={onClickHandler}
+        onTouchStart={onClickHandler}
         hideToolBar={hideToolBar}
         readOnly={readOnly}
         height={height}
@@ -383,6 +440,7 @@ const EnhancedComponent = compose(
       deleteMode: state.scratchpad.deleteMode,
       editMode: state.scratchpad.editMode,
       hideData: state.scratchpad.hideData,
+      dimensionsPercent: state.scratchpad.dimensionsPercent,
     }),
     {
       toggleButtons: toggleButtonsAction,
@@ -390,6 +448,7 @@ const EnhancedComponent = compose(
       setSelectedNodes: setSelectedNodesAction,
       updateEditMode: updateEditModeAction,
       updateScratchpad: updateScratchpadAction,
+      setScratchpadRect: setScratchpadRectAction,
     }
   )
 )(Scratchpad)

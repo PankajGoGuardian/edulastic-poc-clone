@@ -4,18 +4,20 @@ import styled, { ThemeProvider, withTheme } from 'styled-components'
 import { questionType, test, roleuser } from '@edulastic/constants'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { get, round } from 'lodash'
-import { IconClockCircularOutline } from '@edulastic/icons'
-
+import { get, isEqual } from 'lodash'
 import { withNamespaces } from '@edulastic/localization'
 import {
   mobileWidthMax,
   smallDesktopWidth,
   borderGrey2,
-  greyThemeDark2,
 } from '@edulastic/colors'
-import { withWindowSizes, ItemDetailContext, COMPACT } from '@edulastic/common'
-import { PaperWrapper } from './Graph/common/styled_components'
+import {
+  withWindowSizes,
+  ItemDetailContext,
+  COMPACT,
+  FieldLabel,
+  FlexContainer,
+} from '@edulastic/common'
 import { themes } from '../../theme'
 import QuestionMenu, { AdvancedOptionsLink } from './QuestionMenu'
 
@@ -52,179 +54,34 @@ import { Text } from '../widgets/Text'
 import { MathFormula } from '../widgets/MathFormula'
 import { FormulaEssay } from '../widgets/FormulaEssay'
 import ClozeMath from '../widgets/ClozeMath'
-import { setQuestionDataAction } from '../../author/src/actions/question'
 import { requestScratchPadAction } from '../../author/ExpressGrader/ducks'
-import { toggleAdvancedSections } from '../actions/questions'
 import { Chart } from '../widgets/Charts'
 import { getUserRole, getUserFeatures } from '../../author/src/selectors/user'
 import AudioControls from '../AudioControls'
 
-import { getFontSize } from '../utils/helpers'
 import PreviewRubricTable from '../../author/GradingRubric/Components/common/PreviewRubricTable'
-import { Coding } from '../widgets/Coding'
+// import { Coding } from '../widgets/Coding'
 
 import Hints from './Hints'
-import Explanation from './Common/Explanation'
 import { EDIT } from '../constants/constantsForQuestions'
-import ShowUserWork from './Common/ShowUserWork'
-import { playerSkinTypeSelector } from '../selectors/test'
+import BottomAction from './Common/QuestionBottomAction'
+import {
+  getIsPreviewModalVisibleSelector,
+  playerSkinTypeSelector,
+} from '../selectors/test'
 import {
   isItemVisibiltySelector,
   ttsUserIdSelector,
 } from '../../author/ClassBoard/ducks'
 import ItemInvisible from '../../author/ExpressGrader/components/Question/ItemInvisible'
-
-const QuestionContainer = styled.div`
-  padding: ${({ noPadding }) => (noPadding ? '0px' : null)};
-  display: ${({ isFlex }) => (isFlex ? 'flex' : 'block')};
-  justify-content: space-between;
-  ${({ style }) => style};
-  @media (max-width: ${mobileWidthMax}) {
-    flex-direction: column;
-  }
-  .ql-indent-1:not(.ql-direction-rtl) {
-    padding-left: 3em;
-  }
-  .ql-indent-1.ql-direction-rtl.ql-align-right {
-    padding-right: 3em;
-  }
-  .ql-indent-2:not(.ql-direction-rtl) {
-    padding-left: 6em;
-  }
-  .ql-indent-2.ql-direction-rtl.ql-align-right {
-    padding-right: 6em;
-  }
-  .ql-indent-3:not(.ql-direction-rtl) {
-    padding-left: 9em;
-  }
-  .ql-indent-3.ql-direction-rtl.ql-align-right {
-    padding-right: 9em;
-  }
-  .ql-indent-4:not(.ql-direction-rtl) {
-    padding-left: 12em;
-  }
-  .ql-indent-4.ql-direction-rtl.ql-align-right {
-    padding-right: 12em;
-  }
-  .ql-indent-5:not(.ql-direction-rtl) {
-    padding-left: 15em;
-  }
-  .ql-indent-5.ql-direction-rtl.ql-align-right {
-    padding-right: 15em;
-  }
-  .ql-indent-6:not(.ql-direction-rtl) {
-    padding-left: 18em;
-  }
-  .ql-indent-6.ql-direction-rtl.ql-align-right {
-    padding-right: 18em;
-  }
-  .ql-indent-7:not(.ql-direction-rtl) {
-    padding-left: 21em;
-  }
-  .ql-indent-7.ql-direction-rtl.ql-align-right {
-    padding-right: 21em;
-  }
-  .ql-indent-8:not(.ql-direction-rtl) {
-    padding-left: 24em;
-  }
-  .ql-indent-8.ql-direction-rtl.ql-align-right {
-    padding-right: 24em;
-  }
-  .ql-indent-9:not(.ql-direction-rtl) {
-    padding-left: 27em;
-  }
-  .ql-indent-9.ql-direction-rtl.ql-align-right {
-    padding-right: 27em;
-  }
-
-  .print-preview-feedback {
-    width: 100%;
-    padding: 0 35px;
-  }
-
-  @media print {
-    .__print_question-content-wrapper {
-      max-width: calc(100% - 55px);
-      display: block !important;
-      position: relative !important;
-    }
-    .question-wrapper {
-      padding: 5px;
-    }
-    .__print-question-option {
-      margin-top: 20px !important;
-    }
-    .__print-question-main-wrapper {
-      display: inline-table;
-      width: 100%;
-    }
-    .__print-space-reduce {
-      &-qlabel {
-        margin-right: 0.5rem !important;
-        margin-bottom: 0.5rem !important;
-      }
-      &-option {
-        align-items: flex-start !important;
-      }
-      &-options {
-        margin-bottom: 0px !important;
-        label {
-          padding: 0 !important;
-        }
-      }
-      &-stimulus {
-        margin-bottom: 5px !important;
-        & p {
-          br {
-            display: none !important;
-          }
-        }
-      }
-    }
-  }
-`
-
-export const TimeSpentWrapper = styled.p`
-  font-size: 19px;
-  color: ${greyThemeDark2};
-  display: flex;
-  justify-content: flex-end;
-  margin-top: auto;
-  align-items: center;
-  padding-top: 10px;
-  margin: ${({ margin }) => margin};
-  &.student-report {
-    position: absolute;
-    top: 25px;
-    right: 0px;
-    background: #f3f3f3;
-    padding: 10px 15px;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: 600;
-    svg {
-      margin-right: 10px;
-      fill: #6a737f;
-    }
-  }
-  svg {
-    margin-right: 8px;
-    fill: ${greyThemeDark2};
-  }
-`
-
-export const FlexContainer = styled.div`
-  flex: auto;
-  display: flex;
-  flex-direction: column;
-  max-width: 100%;
-`
-
-export const EvaluationMessage = styled.div`
-  color: rgb(250, 135, 52);
-  width: 100%;
-  text-align: center;
-`
+import { canUseAllOptionsByDefault } from '../../common/utils/helpers'
+import { getFontSize } from '../utils/helpers'
+import { changeDataToPreferredLanguage } from '../utils/question'
+import {
+  languagePreferenceSelector,
+  getCurrentLanguage,
+} from '../../common/components/LanguageSelector/duck'
+import { StyledPaperWrapper } from '../styled/Widget'
 
 const DummyQuestion = () => <></>
 
@@ -299,26 +156,28 @@ const getQuestion = (type) => {
       return FractionEditor
     case questionType.SECTION_LABEL:
       return DummyQuestion
-    case questionType.CODING:
-      return Coding
+    // case questionType.CODING:
+    //   return Coding
     case questionType.UPLOAD_FILE:
       return UploadFile
     default:
-      return null
+      return () => null
   }
 }
 
 const { TEACHER, SCHOOL_ADMIN, DISTRICT_ADMIN } = roleuser
 
 class QuestionWrapper extends Component {
-  static contextType = ItemDetailContext
-
-  state = {
-    main: [],
-    advanced: [],
-    activeTab: 0,
-    shuffledOptsOrder: [],
-    page: 1,
+  constructor(props) {
+    super(props)
+    this.state = {
+      main: [],
+      advanced: [],
+      extras: [],
+      activeTab: 0,
+      shuffledOptsOrder: [],
+      page: 1,
+    }
   }
 
   setPage = (page) => this.setState({ page })
@@ -361,7 +220,7 @@ class QuestionWrapper extends Component {
 
   static getDerivedStateFromProps(props) {
     if (props.view !== EDIT) {
-      return { main: [], advanced: [], activeTab: 0 }
+      return { main: [], advanced: [], extras: [], activeTab: 0 }
     }
     return null
   }
@@ -371,9 +230,115 @@ class QuestionWrapper extends Component {
    * @returns {boolean} whether current student is a tts user
    */
   get ttsVisibilityAuthorSide() {
-    const { studentId, ttsUserIds = [], userRole, data } = this.props
+    const {
+      studentId,
+      ttsUserIds = [],
+      userRole,
+      data,
+      isTestPreviewModalVisible,
+    } = this.props
     const key = data?.activity?.userId || studentId
-    return userRole === 'teacher' && ttsUserIds.includes(key)
+    return (
+      userRole !== roleuser.STUDENT &&
+      (ttsUserIds.includes(key) || isTestPreviewModalVisible)
+    )
+  }
+
+  shouldComponentUpdate(prevProps) {
+    const {
+      data: prevData,
+      windowWidth: prevWindowWidth,
+      windowHeight: prevWindowHeight,
+      userWork: prevUserWork,
+      hideCorrectAnswer: prevHideCorrectAnswer,
+    } = prevProps
+    const {
+      data,
+      isLCBView,
+      isExpressGrader,
+      windowWidth,
+      windowHeight,
+      userWork,
+      hideCorrectAnswer,
+    } = this.props
+
+    if (
+      isLCBView &&
+      !isExpressGrader &&
+      data?.activity &&
+      isEqual(prevUserWork, userWork) &&
+      isEqual(prevData, data) &&
+      prevWindowHeight === windowHeight &&
+      prevWindowWidth === windowWidth &&
+      hideCorrectAnswer === prevHideCorrectAnswer
+    ) {
+      return false
+    }
+    return true
+  }
+
+  openStudentWork = () => {
+    const { data, loadScratchPad, showStudentWork } = this.props
+    // load the data from server and then show
+    loadScratchPad({
+      testActivityId: data?.activity?.testActivityId,
+      testItemId: data?.activity?.testItemId,
+      qActId: data?.activity?.qActId || data?.activity?._id,
+      callback: () => showStudentWork(),
+    })
+  }
+
+  get advancedAreOpen() {
+    const {
+      userRole,
+      features,
+      isPremiumUser,
+      isPowerTeacher,
+      permissions,
+    } = this.props
+
+    const isDistrictAdmin =
+      (userRole === TEACHER &&
+        !features.isPublisherAuthor &&
+        !features.isCurator) ||
+      [DISTRICT_ADMIN, SCHOOL_ADMIN].includes(userRole)
+
+    return (
+      (isDistrictAdmin && isPowerTeacher && isPremiumUser) ||
+      canUseAllOptionsByDefault(permissions, userRole)
+    )
+  }
+
+  // we will use this method only for LCB and student report
+  get renderData() {
+    const { data, studentLanguagePreference } = this.props
+    return changeDataToPreferredLanguage(data, studentLanguagePreference)
+  }
+
+  get answerScore() {
+    const { previewScore, previewMaxScore, testPreviewScore, data } = this.props
+    let score = previewScore
+    let maxScore = previewMaxScore
+    let isGradedExternally = false
+    if (data?.activity) {
+      score = data?.activity?.score
+      maxScore = data?.activity.maxScore
+      isGradedExternally = data?.activity?.isGradedExternally
+    }
+
+    // testPreviewScore is from view as student
+    //  {
+    //    score: 1,
+    //    maxScore: 2,
+    //    isGradedExternally: false,
+    //  }
+    if (testPreviewScore && 'score' in testPreviewScore) {
+      score = testPreviewScore.score
+      maxScore = testPreviewScore.maxScore
+      isGradedExternally = testPreviewScore.isGradedExternally
+    }
+
+    return { score: (score || 0) / (maxScore || 1), isGradedExternally }
   }
 
   render() {
@@ -382,46 +347,61 @@ class QuestionWrapper extends Component {
       isFlex,
       type,
       timespent,
-      data,
+      data: _originalData,
       showFeedback,
       multiple,
       view,
-      setQuestionData,
       changePreviewTab,
       qIndex,
       itemIndex,
       windowWidth,
       flowLayout,
       isPresentationMode,
-      handleAdvancedOpen,
-      advancedAreOpen,
       userRole,
       disableResponse,
-      isStudentReport,
-      LCBPreviewModal,
+      showStudentWork,
       showUserTTS,
       selectedTheme = 'default',
       isPrintPreview = false,
       evaluation,
       scrollContainer,
-      isQuestionView,
-      isExpressGrader,
+      loadScratchPad,
       saveHintUsage,
       theme,
-      isLCBView,
       isGrade,
       enableMagnifier,
       playerSkinType = test.playerSkinValues.edulastic,
       isPowerTeacher = false,
       isPremiumUser = false,
-      isScratchpadImageMode,
       features,
       isItemsVisible,
+      permissions,
       ...restProps
     } = this.props
+
+    const data = this.renderData
+
+    const _isPowerTeacher =
+      isPowerTeacher || canUseAllOptionsByDefault(permissions, userRole)
+    const {
+      isExpressGrader,
+      isStudentReport,
+      isLCBView,
+      LCBPreviewModal,
+      calculatedHeight,
+      fullHeight,
+      showBorder,
+      borderRadius,
+      hasDrawingResponse,
+      previewTab,
+      studentId,
+      isQuestionView,
+      isShowStudentWork,
+    } = restProps
+
     const userAnswer = get(data, 'activity.userResponse', null)
     const timeSpent = get(data, 'activity.timeSpent', false)
-    const { main, advanced, activeTab, page } = this.state
+    const { main, advanced, extras, activeTab, page } = this.state
     const disabled =
       get(data, 'activity.disabled', false) || data.scoringDisabled
     const { layoutType } = this.context
@@ -454,10 +434,11 @@ class QuestionWrapper extends Component {
     }
 
     const canShowPlayer =
-      ((showUserTTS === 'yes' && userRole === 'student') ||
+      ((showUserTTS === 'yes' && userRole === roleuser.STUDENT) ||
         this.ttsVisibilityAuthorSide) &&
       data.tts &&
-      data.tts.taskStatus === 'COMPLETED'
+      data.tts.taskStatus === 'COMPLETED' &&
+      playerSkinType !== test.playerSkinValues.quester
 
     /**
      * we need to render the tts buttons at author, if it was rendered at student side
@@ -477,34 +458,20 @@ class QuestionWrapper extends Component {
     // themeToPass = getZoomedTheme(themeToPass, zoomLevel);
     // themeToPass = playersZoomTheme(themeToPass);
 
-    const showQuestionMenu = windowWidth > parseInt(smallDesktopWidth, 10)
+    const showQuestionMenu =
+      view === EDIT && windowWidth > parseInt(smallDesktopWidth, 10)
 
     const advancedLink =
-      !showQuestionMenu && advanced.length > 0 ? (
+      !this.advancedAreOpen && !showQuestionMenu && advanced.length > 0 ? (
         <AdvancedOptionsLink
-          handleAdvancedOpen={handleAdvancedOpen}
-          advancedAreOpen={advancedAreOpen}
           bottom
+          isPremiumUser={isPremiumUser}
+          isPowerTeacher={_isPowerTeacher}
         />
       ) : null
 
     const { rubrics: rubricDetails } = data
     const rubricFeedback = data?.activity?.rubricFeedback
-
-    const { calculatedHeight, fullHeight } = restProps
-    let openAdvancedOptions = false
-
-    if (
-      (userRole === TEACHER &&
-        !features.isPublisherAuthor &&
-        !features.isCurator) ||
-      [DISTRICT_ADMIN, SCHOOL_ADMIN].includes(userRole)
-    ) {
-      openAdvancedOptions = true
-      if (isPremiumUser && isPowerTeacher) {
-        openAdvancedOptions = false
-      }
-    }
 
     return (
       <ThemeProvider
@@ -517,13 +484,13 @@ class QuestionWrapper extends Component {
         }}
       >
         <>
-          {canShowPlayer ? (
+          {canShowPlayer && (!hideVisibility || isShowStudentWork) && (
             <AudioControls
               btnWithText={
                 playerSkinType.toLowerCase() ===
                 test.playerSkinValues.edulastic.toLowerCase()
               }
-              hideVisibility={hideVisibility}
+              hideVisibility={hideVisibility && !isShowStudentWork}
               key={data.id}
               item={data}
               page={page}
@@ -532,35 +499,36 @@ class QuestionWrapper extends Component {
               isPaginated={data.paginated_content}
               className="question-audio-controller"
             />
-          ) : (
-            ''
           )}
           <div
             className="__print-question-main-wrapper"
-            style={{ height: '100%' }}
+            style={{ height: !isStudentReport && '100%' }}
           >
             <QuestionContainer
               className={`fr-view question-container question-container-id-${data.id}`}
               disabled={disabled}
               noPadding={noPadding}
               isFlex
-              data-cy="question-container"
+              data-cy={
+                isPassageOrVideoType ? 'passage-content' : 'question-container'
+              }
               style={{
                 width: '100%',
                 height: calculatedHeight || (fullHeight ? '100%' : null),
               }}
             >
-              {view === EDIT && showQuestionMenu && (
+              {showQuestionMenu && (
                 <QuestionMenuWrapper>
                   <QuestionMenu
                     activeTab={activeTab}
                     main={main}
                     advanced={advanced}
-                    advancedAreOpen={openAdvancedOptions || advancedAreOpen}
-                    handleAdvancedOpen={handleAdvancedOpen}
+                    extras={extras}
+                    advancedAreOpen={this.advancedAreOpen}
                     scrollContainer={scrollContainer}
                     questionTitle={data?.title || ''}
-                    hideAdvancedToggleOption={openAdvancedOptions}
+                    isPremiumUser={isPremiumUser}
+                    isPowerTeacher={_isPowerTeacher}
                   />
                 </QuestionMenuWrapper>
               )}
@@ -569,7 +537,9 @@ class QuestionWrapper extends Component {
                 disabled={disabled}
                 isV1Multipart={isV1Multipart}
                 isStudentReport={isStudentReport}
-                borderRadius={isLCBView ? '10px' : restProps.borderRadius}
+                isLCBView={isLCBView}
+                LCBPreviewModal={LCBPreviewModal}
+                borderRadius={isLCBView ? '10px' : borderRadius}
                 style={{
                   width:
                     !isPrintPreview &&
@@ -582,10 +552,7 @@ class QuestionWrapper extends Component {
                   display: 'flex',
                   boxShadow: 'none',
                   paddingRight: layoutType === COMPACT ? '100px' : null,
-                  border:
-                    isLCBView && !restProps.showScratchpadByDefault
-                      ? '1px solid #DADAE4'
-                      : null,
+                  border: showBorder ? '1px solid #DADAE4' : null,
                 }}
                 flowLayout={
                   type === questionType.CODING && view === 'preview'
@@ -593,23 +560,24 @@ class QuestionWrapper extends Component {
                     : flowLayout
                 }
               >
-                <StyledFlexContainer showScroll={isLCBView || isExpressGrader}>
+                <StyledFlexContainer
+                  showScroll={isLCBView || isExpressGrader}
+                  flexDirection="column"
+                  maxWidth="100%"
+                >
                   {evaluation === 'pending' && (
-                    <EvaluationMessage>
-                      {' '}
-                      Evaluation is pending{' '}
-                    </EvaluationMessage>
+                    <EvaluationMessage>Evaluation is pending</EvaluationMessage>
                   )}
                   <Question
                     {...restProps}
-                    setQuestionData={setQuestionData}
                     item={data}
                     view={view}
                     evaluation={evaluation}
+                    answerScore={this.answerScore}
                     changePreviewTab={changePreviewTab}
                     qIndex={qIndex}
                     advancedLink={advancedLink}
-                    advancedAreOpen={openAdvancedOptions || advancedAreOpen}
+                    advancedAreOpen={this.advancedAreOpen}
                     cleanSections={this.cleanSections}
                     fillSections={this.fillSections}
                     showQuestionNumber={!isPassageOrVideoType && data.qLabel}
@@ -621,59 +589,63 @@ class QuestionWrapper extends Component {
                     page={page}
                     setPage={this.setPage}
                   />
-                  {!isScratchpadImageMode &&
-                    !restProps.showScratchpadByDefault &&
-                    showFeedback &&
-                    !isPrintPreview && (
-                      <>
-                        <TimeSpentWrapper
-                          className={isStudentReport ? 'student-report' : ''}
-                        >
-                          {timeSpent && (
-                            <>
-                              <IconClockCircularOutline />
-                              {round(timeSpent / 1000, 1)}s
-                            </>
-                          )}
-                        </TimeSpentWrapper>
-                      </>
-                    )}
-                  {!isScratchpadImageMode &&
-                    rubricDetails &&
-                    studentReportFeedbackVisible && (
-                      <RubricTableWrapper>
-                        <span>Graded Rubric</span>
-                        <PreviewRubricTable
-                          data={rubricDetails}
-                          rubricFeedback={rubricFeedback}
-                          isDisabled
-                        />
-                      </RubricTableWrapper>
-                    )}
-                  {!isScratchpadImageMode &&
-                    view === 'preview' &&
-                    !isPrintPreview && (
-                      <Hints
-                        question={data}
-                        enableMagnifier={enableMagnifier}
-                        saveHintUsage={saveHintUsage}
-                        isStudent={userRole === 'student'}
-                        itemIndex={itemIndex}
-                        isLCBView={isLCBView}
-                        isExpressGrader={isExpressGrader}
-                        isStudentReport={isStudentReport}
+                  {showFeedback && !isPrintPreview && (
+                    <BottomAction
+                      view={view}
+                      isStudentReport={isStudentReport}
+                      hasShowStudentWork={!!showStudentWork}
+                      onClickHandler={this.openStudentWork}
+                      timeSpent={timeSpent}
+                      item={data}
+                      QuestionComp={Question}
+                      advancedLink={advancedLink}
+                      advancedAreOpen={this.advancedAreOpen}
+                      hasDrawingResponse={hasDrawingResponse}
+                      saveAnswer={restProps.saveAnswer}
+                      fillSections={() => {}}
+                      cleanSections={() => {}}
+                      studentId={studentId}
+                      t={restProps.t}
+                      isLCBView={isLCBView}
+                      isExpressGrader={isExpressGrader}
+                      isQuestionView={isQuestionView}
+                      previewTab={previewTab}
+                      isPrintPreview={isPrintPreview}
+                      isGrade={isGrade}
+                      data={data}
+                      enableMagnifier={enableMagnifier}
+                      saveHintUsage={saveHintUsage}
+                      isStudent={userRole === 'student'}
+                      itemIndex={itemIndex}
+                    />
+                  )}
+                  {rubricDetails && studentReportFeedbackVisible && (
+                    <RubricTableWrapper>
+                      <FieldLabel className="rubric-title">
+                        Graded Rubric
+                      </FieldLabel>
+                      <FieldLabel className="rubric-name">
+                        {rubricDetails.name}
+                      </FieldLabel>
+                      <PreviewRubricTable
+                        data={rubricDetails}
+                        rubricFeedback={rubricFeedback}
+                        isDisabled
                       />
-                    )}
-                  {!isScratchpadImageMode &&
-                    (isLCBView ||
-                      isExpressGrader ||
-                      restProps.previewTab === 'show') && (
-                      <Explanation
-                        isStudentReport={isStudentReport}
-                        question={data}
-                        isGrade={isGrade}
-                      />
-                    )}
+                    </RubricTableWrapper>
+                  )}
+                  {view === 'preview' && !isLCBView && !isPrintPreview && (
+                    <Hints
+                      question={data}
+                      enableMagnifier={enableMagnifier}
+                      saveHintUsage={saveHintUsage}
+                      isStudent={userRole === 'student'}
+                      itemIndex={itemIndex}
+                      isLCBView={isLCBView}
+                      isExpressGrader={isExpressGrader}
+                      isStudentReport={isStudentReport}
+                    />
+                  )}
                 </StyledFlexContainer>
               </PaperWrapper>
             </QuestionContainer>
@@ -684,8 +656,9 @@ class QuestionWrapper extends Component {
   }
 }
 
+QuestionWrapper.contextType = ItemDetailContext
+
 QuestionWrapper.propTypes = {
-  setQuestionData: PropTypes.func.isRequired,
   isPresentationMode: PropTypes.bool,
   view: PropTypes.string.isRequired,
   multiple: PropTypes.bool,
@@ -702,13 +675,12 @@ QuestionWrapper.propTypes = {
   qIndex: PropTypes.number,
   windowWidth: PropTypes.number.isRequired,
   flowLayout: PropTypes.bool,
-  advancedAreOpen: PropTypes.bool,
-  handleAdvancedOpen: PropTypes.func,
   userRole: PropTypes.string.isRequired,
   disableResponse: PropTypes.bool,
   clearAnswers: PropTypes.func,
   saveHintUsage: PropTypes.func,
   LCBPreviewModal: PropTypes.any,
+  permissions: PropTypes.array,
 }
 
 QuestionWrapper.defaultProps = {
@@ -727,11 +699,10 @@ QuestionWrapper.defaultProps = {
   clearAnswers: () => {},
   changePreviewTab: () => {},
   flowLayout: false,
-  advancedAreOpen: false,
-  handleAdvancedOpen: () => {},
   saveHintUsage: () => {},
   disableResponse: false,
   isPresentationMode: false,
+  permissions: [],
 }
 
 const enhance = compose(
@@ -741,13 +712,12 @@ const enhance = compose(
   withTheme,
   withNamespaces('assessment'),
   connect(
-    (state) => ({
+    (state, ownProps) => ({
       isPresentationMode: get(
         state,
         ['author_classboard_testActivity', 'presentationMode'],
         false
       ),
-      advancedAreOpen: state.assessmentplayerQuestions.advancedAreOpen,
       showUserTTS: get(state, 'user.user.tts', 'no'),
       selectedTheme: state.ui.selectedTheme,
       zoomLevel: state.ui.zoomLevel,
@@ -756,13 +726,18 @@ const enhance = compose(
       playerSkinType: playerSkinTypeSelector(state),
       isPowerTeacher: get(state, ['user', 'user', 'isPowerTeacher'], false),
       isPremiumUser: get(state, ['user', 'user', 'features', 'premium'], false),
+      permissions: get(state, 'user.user.permissions', []),
       features: getUserFeatures(state),
       isItemsVisible: isItemVisibiltySelector(state),
       ttsUserIds: ttsUserIdSelector(state),
+      studentLanguagePreference: languagePreferenceSelector(state, ownProps),
+      authLanguage: getCurrentLanguage(state),
+      isTestPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
+      previewScore: state?.itemScore?.score, // this used only in the author preview
+      previewMaxScore: state?.itemScore?.maxScore, // this used only in the author preview
     }),
     {
-      setQuestionData: setQuestionDataAction,
-      handleAdvancedOpen: toggleAdvancedSections,
+      loadScratchPad: requestScratchPadAction,
     }
   )
 )
@@ -772,6 +747,7 @@ export default enhance(QuestionWrapper)
 const StyledFlexContainer = styled(FlexContainer)`
   font-size: ${(props) => props.theme.fontSize};
   overflow: ${({ showScroll }) => showScroll && 'auto'};
+  width: 100%;
 `
 
 const QuestionMenuWrapper = styled.div`
@@ -788,11 +764,172 @@ const RubricTableWrapper = styled.div`
   border-radius: 10px;
   margin-top: 10px;
   padding: 10px 10px 0px;
-  > span {
+
+  .rubric-title {
     font-size: ${(props) => props.theme.titleSectionFontSize};
     font-weight: ${(props) => props.theme.semiBold};
-    display: inline-block;
     margin: 0px 16px 10px;
-    text-transform: uppercase;
+  }
+  .rubric-name {
+    font-size: ${(props) => props.theme.standardFont};
+    margin: 0px 42px 10px;
+  }
+`
+
+const QuestionContainer = styled.div`
+  padding: ${({ noPadding }) => (noPadding ? '0px' : null)};
+  display: ${({ isFlex }) => (isFlex ? 'flex' : 'block')};
+  justify-content: space-between;
+  ${({ style }) => style};
+  @media (max-width: ${mobileWidthMax}) {
+    flex-direction: column;
+  }
+  .ql-indent-1:not(.ql-direction-rtl) {
+    padding-left: 3em;
+  }
+  .ql-indent-1.ql-direction-rtl.ql-align-right {
+    padding-right: 3em;
+  }
+  .ql-indent-2:not(.ql-direction-rtl) {
+    padding-left: 6em;
+  }
+  .ql-indent-2.ql-direction-rtl.ql-align-right {
+    padding-right: 6em;
+  }
+  .ql-indent-3:not(.ql-direction-rtl) {
+    padding-left: 9em;
+  }
+  .ql-indent-3.ql-direction-rtl.ql-align-right {
+    padding-right: 9em;
+  }
+  .ql-indent-4:not(.ql-direction-rtl) {
+    padding-left: 12em;
+  }
+  .ql-indent-4.ql-direction-rtl.ql-align-right {
+    padding-right: 12em;
+  }
+  .ql-indent-5:not(.ql-direction-rtl) {
+    padding-left: 15em;
+  }
+  .ql-indent-5.ql-direction-rtl.ql-align-right {
+    padding-right: 15em;
+  }
+  .ql-indent-6:not(.ql-direction-rtl) {
+    padding-left: 18em;
+  }
+  .ql-indent-6.ql-direction-rtl.ql-align-right {
+    padding-right: 18em;
+  }
+  .ql-indent-7:not(.ql-direction-rtl) {
+    padding-left: 21em;
+  }
+  .ql-indent-7.ql-direction-rtl.ql-align-right {
+    padding-right: 21em;
+  }
+  .ql-indent-8:not(.ql-direction-rtl) {
+    padding-left: 24em;
+  }
+  .ql-indent-8.ql-direction-rtl.ql-align-right {
+    padding-right: 24em;
+  }
+  .ql-indent-9:not(.ql-direction-rtl) {
+    padding-left: 27em;
+  }
+  .ql-indent-9.ql-direction-rtl.ql-align-right {
+    padding-right: 27em;
+  }
+
+  .print-preview-feedback {
+    width: 100%;
+    padding: 0 35px;
+  }
+
+  /**
+   * @see https://snapwiz.atlassian.net/browse/EV-21030
+   * zwibbler canvas has z-index 999
+   */
+  .fr-video {
+    z-index: 1000;
+  }
+
+  @media print {
+    .__print_question-content-wrapper {
+      max-width: calc(100% - 55px);
+      display: block !important;
+      position: relative !important;
+    }
+    .question-wrapper {
+      padding: 5px;
+    }
+    .__print-question-option {
+      margin-top: 20px !important;
+    }
+    .__print-question-main-wrapper {
+      display: inline-table;
+      width: 100%;
+    }
+    .__print-space-reduce {
+      &-qlabel {
+        margin-right: 0.5rem !important;
+        margin-bottom: 0.5rem !important;
+      }
+      &-option {
+        align-items: flex-start !important;
+      }
+      &-options {
+        margin-bottom: 0px !important;
+        label {
+          padding: 0 !important;
+        }
+      }
+      &-stimulus {
+        margin-bottom: 5px !important;
+        & p {
+          br {
+            display: none !important;
+          }
+        }
+      }
+    }
+  }
+`
+
+export const EvaluationMessage = styled.div`
+  color: rgb(250, 135, 52);
+  width: 100%;
+  text-align: center;
+`
+
+const getPadding = ({
+  flowLayout,
+  isV1Multipart,
+  isStudentReport,
+  isLCBView,
+}) => {
+  // use the same padding for top, bottom, and left in everywhere,
+  // so we wil render scratchpad data in the same position
+  if (flowLayout) {
+    return '8px 0px'
+  }
+  if (isV1Multipart) {
+    return '8px 35px'
+  }
+  if (isStudentReport) {
+    return '8px 100px 8px 16px'
+  }
+  if (isLCBView) {
+    return '8px 28px 8px'
+  }
+  return '8px 16px'
+}
+
+export const PaperWrapper = styled(StyledPaperWrapper)`
+  padding: ${getPadding};
+  min-width: ${({ style }) => style.minWidth};
+  ${({ style }) => style};
+
+  @media (max-width: ${mobileWidthMax}) {
+    padding: ${({ flowLayout }) => (flowLayout ? '0px' : '8px')};
+    margin-bottom: 15px;
   }
 `

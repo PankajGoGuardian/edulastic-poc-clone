@@ -3,11 +3,13 @@ import { createAction, createReducer } from 'redux-starter-kit'
 
 import { RESET_ALL_REPORTS } from '../../common/reportsRedux'
 
-const SET_MAR_SETTINGS = '[MAR settings] get mar settings'
+const SET_MAR_SETTINGS = '[MAR settings] set mar settings'
+const SET_MAR_TAGS_DATA = '[MAR settings] set mar tags data'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
 export const setMARSettingsAction = createAction(SET_MAR_SETTINGS)
+export const setMARTagsDataAction = createAction(SET_MAR_TAGS_DATA)
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
 
@@ -30,23 +32,34 @@ export const getReportsMARSettings = createSelector(
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //
 
 const initialState = {
-  selectedTest: [{ key: '', title: '' }],
   requestFilters: {
+    reportId: '',
     termId: '',
-    subject: '',
-    grade: '',
-    courseId: '',
-    groupId: '',
-    schoolId: '',
-    teacherId: '',
-    assessmentType: '',
+    testSubjects: '',
+    testGrades: '',
+    assessmentTypes: '',
+    tagIds: '',
     testIds: '',
+    schoolIds: '',
+    teacherIds: '',
+    subjects: '',
+    grades: '',
+    courseId: '',
+    classIds: '',
+    groupIds: '',
+    assignedBy: 'anyone',
   },
+  tagsData: {},
 }
 
 export const reportMARSettingsReducer = createReducer(initialState, {
-  [SET_MAR_SETTINGS]: (state, { payload }) => (state = { ...payload }),
-  [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState),
+  [SET_MAR_TAGS_DATA]: (state, { payload }) => {
+    state.tagsData = { ...payload }
+  },
+  [SET_MAR_SETTINGS]: (state, { payload }) => {
+    state.requestFilters = payload.requestFilters
+  },
+  [RESET_ALL_REPORTS]: (state) => (state = initialState),
 })
 
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //

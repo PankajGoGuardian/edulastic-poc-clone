@@ -4,7 +4,6 @@ import {
   groupBy,
   sumBy,
   includes,
-  filter,
   map,
   orderBy,
   round,
@@ -16,6 +15,30 @@ import next from 'immer'
 import moment from 'moment'
 import calcMethod from './static/json/calcMethod.json'
 
+const studentFiltersDefaultValues = [
+  {
+    key: 'schoolIds',
+    value: '',
+  },
+  {
+    key: 'teacherIds',
+    value: '',
+  },
+  {
+    key: '',
+    nestedFilters: [
+      {
+        key: 'classIds',
+        value: '',
+      },
+      {
+        key: 'groupIds',
+        value: '',
+      },
+    ],
+  },
+]
+
 export const testTypeHashMap = {
   practice: 'practice',
   common: 'common',
@@ -24,9 +47,19 @@ export const testTypeHashMap = {
   assessment: 'class',
 }
 
+export const DemographicCompareByOptions = [
+  'gender',
+  'race',
+  'gender',
+  'frlStatus',
+  'ellStatus',
+  'iepStatus',
+  'hispanicEthnicity',
+]
+
 export const percentage = (
-  numerator,
-  denominator,
+  numerator = 0,
+  denominator = 0,
   roundCalculation = false
 ) => {
   if (numerator == 0 && denominator == 0) {
@@ -51,7 +84,7 @@ export const getVariance = (arr) => {
 
   sum = 0
   for (let i = 0; i < arr.length; i++) {
-    sum += Math.pow(arr[i] - mean, 2)
+    sum += (arr[i] - mean) ** 2
   }
 
   const variance = Number((sum / arr.length).toFixed(2))
@@ -91,23 +124,28 @@ export const getDropDownTestIds = (arr) => {
 }
 
 export const filterData = (data, filter) => {
-  const filteredData = data.filter((item) => {
-    if (
-      (item.gender.toLowerCase() === filter.gender.toLowerCase() ||
-        filter.gender === 'all') &&
-      (item.frlStatus.toLowerCase() === filter.frlStatus.toLowerCase() ||
-        filter.frlStatus === 'all') &&
-      (item.ellStatus.toLowerCase() === filter.ellStatus.toLowerCase() ||
-        filter.ellStatus === 'all') &&
-      (item.iepStatus.toLowerCase() === filter.iepStatus.toLowerCase() ||
-        filter.iepStatus === 'all') &&
-      (item.race.toLowerCase() === filter.race.toLowerCase() ||
-        filter.race === 'all')
-    ) {
-      return true
-    }
-    return false
-  })
+  const filteredData = data.filter(
+    (item) =>
+      (!filter.gender ||
+        filter.gender === 'all' ||
+        item.gender.toLowerCase() === filter.gender.toLowerCase()) &&
+      (!filter.frlStatus ||
+        filter.frlStatus === 'all' ||
+        item.frlStatus.toLowerCase() === filter.frlStatus.toLowerCase()) &&
+      (!filter.ellStatus ||
+        filter.ellStatus === 'all' ||
+        item.ellStatus.toLowerCase() === filter.ellStatus.toLowerCase()) &&
+      (!filter.iepStatus ||
+        filter.iepStatus === 'all' ||
+        item.iepStatus.toLowerCase() === filter.iepStatus.toLowerCase()) &&
+      (!filter.race ||
+        filter.race === 'all' ||
+        item.race.toLowerCase() === filter.race.toLowerCase()) &&
+      (!filter.hispanicEthnicity ||
+        filter.hispanicEthnicity === 'all' ||
+        item.hispanicEthnicity.toLowerCase() ===
+          filter.hispanicEthnicity.toLowerCase())
+  )
   return filteredData
 }
 
@@ -134,6 +172,7 @@ export const processFilteredClassAndGroupIds = (orgDataArr, currentFilter) => {
       ) {
         return true
       }
+      return false
     }),
     'groupId'
   )
@@ -206,13 +245,17 @@ export const processTeacherIds = (orgDataArr) => {
 }
 
 export const getOverallScore = (metrics = []) =>
-  roundedPercentage(
-    sumBy(metrics, (item) => parseFloat(item.totalScore)),
-    sumBy(metrics, (item) => parseFloat(item.maxScore))
-  )
+  metrics.length
+    ? sumBy(metrics, (item) =>
+        percentage(
+          parseFloat(item.totalScore) || 0,
+          parseFloat(item.maxScore) || 1
+        )
+      ) / metrics.length
+    : 0
 
 export const filterAccordingToRole = (columns, role) =>
-  filter(columns, (column) => !includes(column.hiddenFromRole, role))
+  columns.filter((column) => !includes(column.hiddenFromRole, role))
 
 export const addColors = (
   data = [],
@@ -352,5 +395,48 @@ export const getStudentAssignments = (
   return [...assignments, overallAssignmentDetail]
 }
 
-export const formatDate = (milliseconds) =>
-  milliseconds ? moment(parseInt(milliseconds)).format('MMM DD, YYYY') : 'N/A'
+export const formatDate = (milliseconds, showTime) => {
+  if (showTime && milliseconds) {
+    return moment(parseInt(milliseconds, 10)).format('MMM DD, YYYY, h:mm A')
+  }
+  return milliseconds
+    ? moment(parseInt(milliseconds, 10)).format('MMM DD, YYYY')
+    : 'NA'
+}
+
+const resetFilter = (filtersToReset, prevFilters, tagsData) => {
+  for (const filter of filtersToReset) {
+    if (filter.nestedFilters) {
+      resetFilter(filter.nestedFilters, prevFilters, tagsData)
+    } else {
+      prevFilters[filter.key] = filter.value
+      delete tagsData[filter.key]
+    }
+  }
+}
+
+export const resetStudentFilters = (
+  tagsData,
+  prevFilters,
+  key,
+  selected,
+  defaultValues = studentFiltersDefaultValues
+) => {
+  const index = defaultValues.findIndex((s) => s.key === key)
+  if (index !== -1 && prevFilters[key] !== selected) {
+    const filtersToReset = defaultValues.slice(index + 1)
+    resetFilter(filtersToReset, prevFilters, tagsData)
+  } else if (['grades', 'subjects', 'courseId'].includes(key)) {
+    const filtersToReset = defaultValues.slice(2)
+    resetFilter(filtersToReset, prevFilters, tagsData)
+  }
+}
+
+export const combineNames = (list) =>
+  list.map((t) => ({
+    ...t,
+    name: [t.firstName, t.middleName, t.lastName]
+      .filter((n) => n)
+      .join(' ')
+      .trim(),
+  }))

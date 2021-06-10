@@ -1,6 +1,13 @@
+import React from 'react'
+import loadable from '@loadable/component'
 import { darkGrey, white, greyThemeDark2 } from '@edulastic/colors'
-import { EduButton, LikeIconStyled } from '@edulastic/common'
-import { roleuser } from '@edulastic/constants'
+import { EduButton, LikeIconStyled, Progress } from '@edulastic/common'
+import {
+  roleuser,
+  collections as collectionsConstant,
+  test as testContants,
+} from '@edulastic/constants'
+import TestsApi from '@edulastic/api/src/tests'
 import {
   IconCopy,
   IconDescription,
@@ -12,11 +19,12 @@ import {
   IconPencilEdit,
   IconAssignment,
   IconDynamic,
+  IconShare,
+  IconClose,
 } from '@edulastic/icons'
-import { Icon, Select, Tooltip, Col, Row } from 'antd'
+import { Icon, Select, Tooltip, Col, Row, Spin } from 'antd'
 import { find } from 'lodash'
 import PropTypes from 'prop-types'
-import React from 'react'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import { connect } from 'react-redux'
 import Modal from 'react-responsive-modal'
@@ -30,6 +38,8 @@ import {
   isPublisherUserSelector,
   getWritableCollectionsSelector,
   getInterestedCurriculumsSelector,
+  getUserSignupStatusSelector,
+  getIsCurator,
 } from '../../../src/selectors/user'
 import TestStatusWrapper from '../TestStatusWrapper/testStatusWrapper'
 import {
@@ -68,10 +78,22 @@ import {
   TestStatus,
   TestTitleWrapper,
   DynamicIconWrapper,
+  ModalHeader,
+  CloseButton,
+  RightButtonContainer,
 } from './styled'
 import { allowContentEditCheck } from '../../../src/utils/permissionCheck'
-import { getInterestedStandards } from '../../../dataUtils'
+import {
+  getInterestedStandards,
+  hasUserGotAccessToPremiumItem,
+} from '../../../dataUtils'
+import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
+import ShareModal from '../../../src/components/common/ShareModal'
 
+const CloneOptions = loadable(() => import('./CloneOptions'))
+
+const { nonPremiumCollectionsToShareContent } = collectionsConstant
+const { statusConstants } = testContants
 class ViewModal extends React.Component {
   static propTypes = {
     isShow: PropTypes.bool.isRequired,
@@ -102,6 +124,10 @@ class ViewModal extends React.Component {
 
   state = {
     editedCollections: null,
+    showCloneOptions: false,
+    summary: null,
+    summaryLoading: false,
+    showShareModal: false,
   }
 
   modalRef = React.createRef()
@@ -114,10 +140,48 @@ class ViewModal extends React.Component {
     this.setState({ editedCollections: newCollections })
   }
 
+  handleModalClose = () => {
+    const { close } = this.props
+    this.setState({ showCloneOptions: false }, close)
+  }
+
+  hideCloneOptions = () => {
+    this.setState({ showCloneOptions: false })
+  }
+
+  componentDidUpdate(prevProps) {
+    const { item, isShow } = this.props
+    const { prevItem } = prevProps
+    if (item?.cw || item?.sharedType === 'PUBLIC') {
+      if (
+        isShow != prevProps?.isShow &&
+        isShow &&
+        item?._id != prevItem?._id &&
+        item?._id
+      ) {
+        // eslint-disable-next-line react/no-did-update-set-state
+        this.setState({ summaryLoading: true, summary: null })
+        TestsApi.getSummary(item._id)
+          .then((summary) => {
+            this.setState({ summary, summaryLoading: false })
+          })
+          .catch((e) => {
+            console.warn('error loading tests', e)
+            this.setState({ summaryLoading: false })
+          })
+      }
+    }
+  }
+
+  onShareModalChange = () => {
+    this.setState((prevState) => ({
+      showShareModal: !prevState.showShareModal,
+    }))
+  }
+
   render() {
     const {
       isShow,
-      close,
       item,
       assign,
       isPlaylist,
@@ -142,6 +206,9 @@ class ViewModal extends React.Component {
       collectionName,
       interestedCurriculums,
       writableCollections,
+      userSignupStatus,
+      isDemoPlaygroundUser,
+      isCurator,
     } = this.props
     const {
       title = '',
@@ -152,7 +219,6 @@ class ViewModal extends React.Component {
       thumbnail = '',
       analytics = [],
       itemGroups = [],
-      summary = {},
       alignment = [],
       permission,
       _source,
@@ -161,8 +227,11 @@ class ViewModal extends React.Component {
       collections: _collections = [],
       isDocBased,
     } = item
-
-    const { editedCollections } = this.state
+    let { summary = {} } = item
+    if (this.state.summary) {
+      summary = this.state.summary
+    }
+    const { editedCollections, showCloneOptions, showShareModal } = this.state
 
     const modalStyles = {
       modal: {
@@ -176,6 +245,7 @@ class ViewModal extends React.Component {
     }
 
     const gradesMap = {
+      TK: 'PreKindergarten',
       K: 'Kindergarten',
       1: 'Grade 1',
       2: 'Grade 2',
@@ -197,9 +267,18 @@ class ViewModal extends React.Component {
       .map((grade) => gradesMap[grade])
       .filter((g) => g)
     const subjects = _subjects ? _subjects.filter((f) => !!f) : []
-
+    const gradeSubject = { grades: targetGrades, subjects }
     const isEdulasticCurator = userRole === roleuser.EDULASTIC_CURATOR
-
+    const premiumOrgCollections = collections.filter(
+      ({ _id }) =>
+        !Object.keys(nonPremiumCollectionsToShareContent).includes(_id)
+    )
+    const testItems = (itemGroups || []).flatMap(
+      (itemGroup) => itemGroup.items || []
+    )
+    const hasPremiumQuestion = !!testItems.find((i) =>
+      hasUserGotAccessToPremiumItem(i.collections, premiumOrgCollections)
+    )
     const isDeleteAllowed =
       !!find(authors, (o) => o._id === userId) ||
       (sharedWith?.find((x) => x._id === userId) && permission === 'EDIT') ||
@@ -214,206 +293,267 @@ class ViewModal extends React.Component {
       alignment,
       interestedCurriculums
     )
+    const owner = authors.some((o) => o._id === userId)
     const contanier = (
       <>
-        <ModalTitle>
-          <Tooltip title={title}>
-            <TestTitleWrapper>{title}</TestTitleWrapper>
-          </Tooltip>
-          <TestStatusWrapper status={status}>
-            {({ children, ...rest }) => (
-              <TestStatus {...rest} view="tile">
-                {children}
-              </TestStatus>
+        <ModalHeader>
+          <ModalTitle>
+            <Tooltip title={title}>
+              <TestTitleWrapper>{title}</TestTitleWrapper>
+            </Tooltip>
+            <TestStatusWrapper status={status}>
+              {({ children, ...rest }) => (
+                <TestStatus {...rest} view="tile">
+                  {children}
+                </TestStatus>
+              )}
+            </TestStatusWrapper>
+            {(owner || isCurator) && !isEdulasticCurator && (
+              <EduButton
+                ml="5px"
+                isGhost
+                height="32px"
+                width="32px"
+                disabled={isDemoPlaygroundUser}
+                title={
+                  isDemoPlaygroundUser
+                    ? 'This feature is not available in demo account.'
+                    : ''
+                }
+                onClick={this.onShareModalChange}
+                data-cy="share"
+              >
+                <IconShare />
+              </EduButton>
             )}
-          </TestStatusWrapper>
-        </ModalTitle>
+          </ModalTitle>
+          {modalView && (
+            <>
+              <RightButtonContainer>
+                <CloseButton onClick={this.handleModalClose}>
+                  <IconClose
+                    data-cy="closeTestPopUp"
+                    height="18px"
+                    width="18px"
+                  />
+                </CloseButton>
+              </RightButtonContainer>
+            </>
+          )}
+        </ModalHeader>
         <ModalContainer>
           <ModalColumn>
             <Image src={thumbnail} />
           </ModalColumn>
-          <ModalColumn justify="center" ref={this.modalRef}>
-            {!publicAccess && (
-              <ButtonContainer>
-                <EduButton
-                  isGhost
-                  height="40px"
-                  width="100%"
-                  style={{ justifyContent: 'center' }}
-                  data-cy="details-button"
-                  onClick={() => {
-                    onEdit()
-                  }}
-                >
-                  <IconDescription />
-                  <span>DETAILS</span>
-                </EduButton>
-                {allowDuplicate && !isEdulasticCurator && (
-                  <EduButton
-                    isGhost
-                    height="40px"
-                    width="100%"
-                    style={{ justifyContent: 'center' }}
-                    data-cy="duplicate-button"
-                    onClick={() => {
-                      onDuplicate()
-                    }}
-                  >
-                    <IconCopy />
-                    <span>CLONE</span>
-                  </EduButton>
-                )}
 
-                {status === 'inreview' && hasCollectionAccess ? (
-                  <FeaturesSwitch
-                    inputFeatures="isCurator"
-                    actionOnInaccessible="hidden"
-                  >
+          <ModalColumn justify="center" ref={this.modalRef}>
+            {showCloneOptions ? (
+              <CloneOptions
+                fallback={<Progress />}
+                hideOptions={this.hideCloneOptions}
+                onDuplicate={onDuplicate}
+              />
+            ) : (
+              <>
+                {!publicAccess && (
+                  <ButtonContainer>
                     <EduButton
                       isGhost
                       height="40px"
                       width="100%"
                       style={{ justifyContent: 'center' }}
-                      data-cy="reject-button"
+                      data-cy="details-button"
                       onClick={() => {
-                        onReject()
+                        onEdit()
                       }}
                     >
-                      <Icon type="stop" />
-                      <span>REJECT</span>
+                      <IconDescription />
+                      <span>DETAILS</span>
                     </EduButton>
-                  </FeaturesSwitch>
-                ) : null}
-                {isDeleteAllowed ? (
+                    {allowDuplicate && !isEdulasticCurator && (
+                      <EduButton
+                        isGhost
+                        height="40px"
+                        width="100%"
+                        style={{ justifyContent: 'center' }}
+                        data-cy="duplicate-button"
+                        disabled={isDemoPlaygroundUser}
+                        title={
+                          isDemoPlaygroundUser
+                            ? 'This feature is not available in demo account.'
+                            : ''
+                        }
+                        onClick={() => {
+                          this.setState({ showCloneOptions: true })
+                        }}
+                      >
+                        <IconCopy />
+                        <span>CLONE</span>
+                      </EduButton>
+                    )}
+
+                    {status === 'inreview' && hasCollectionAccess ? (
+                      <FeaturesSwitch
+                        inputFeatures="isCurator"
+                        actionOnInaccessible="hidden"
+                      >
+                        <EduButton
+                          isGhost
+                          height="40px"
+                          width="100%"
+                          style={{ justifyContent: 'center' }}
+                          data-cy="reject-button"
+                          onClick={() => {
+                            onReject()
+                          }}
+                        >
+                          <Icon type="stop" />
+                          <span>REJECT</span>
+                        </EduButton>
+                      </FeaturesSwitch>
+                    ) : null}
+                    {isDeleteAllowed ? (
+                      <EduButton
+                        isGhost
+                        height="40px"
+                        width="100%"
+                        style={{ justifyContent: 'center' }}
+                        data-cy="delete-button"
+                        onClick={() => onDelete()}
+                      >
+                        <IconTrashAlt />
+                        <span>DELETE</span>
+                      </EduButton>
+                    ) : null}
+                  </ButtonContainer>
+                )}
+                {!publicAccess && hasCollectionAccess && (
+                  <ButtonContainer>
+                    {status === 'inreview' || status === 'rejected' ? (
+                      <FeaturesSwitch
+                        inputFeatures="isCurator"
+                        actionOnInaccessible="hidden"
+                      >
+                        <EduButton
+                          isGhost
+                          height="40px"
+                          data-cy="approve-button"
+                          onClick={() => {
+                            onApprove(
+                              editedCollections !== null
+                                ? editedCollections
+                                : _collections
+                            )
+                          }}
+                        >
+                          <Icon type="check" />
+                          <span>Approve</span>
+                        </EduButton>
+                      </FeaturesSwitch>
+                    ) : null}
+                  </ButtonContainer>
+                )}
+                <ButtonContainer
+                  className={publicAccess ? 'public-access-btn-wrapper' : ''}
+                >
                   <EduButton
-                    isGhost
                     height="40px"
                     width="100%"
-                    style={{ justifyContent: 'center' }}
-                    data-cy="delete-button"
-                    onClick={() => onDelete()}
+                    isGhost
+                    justifyContent="center"
+                    data-cy="preview-button"
+                    onClick={previewLink}
                   >
-                    <IconTrashAlt />
-                    <span>DELETE</span>
+                    {!publicAccess && <IconEye />}
+                    Preview
                   </EduButton>
-                ) : null}
-              </ButtonContainer>
-            )}
-            {!publicAccess && hasCollectionAccess && (
-              <ButtonContainer>
+                  {publicAccess && (
+                    <AuthorCompleteSignupButton
+                      renderButton={(handleClick) => (
+                        <EduButton
+                          height="40px"
+                          width="100%"
+                          justifyContent="center"
+                          data-cy="edit/assign-button"
+                          onClick={handleClick}
+                        >
+                          <span>ASSIGN</span>
+                        </EduButton>
+                      )}
+                      onClick={assign}
+                    />
+                  )}
+                  {permission !== 'VIEW' &&
+                    !isEdulasticCurator &&
+                    !publicAccess &&
+                    status !== 'published' &&
+                    hasCollectionAccess && (
+                      <EduButton
+                        height="40px"
+                        width="100%"
+                        justifyContent="center"
+                        data-cy="edit/assign-button"
+                        onClick={onEdit}
+                      >
+                        <IconPencilEdit height={14} />
+                        <span>EDIT</span>
+                      </EduButton>
+                    )}
+                  {status === 'published' &&
+                    !isEdulasticCurator &&
+                    !publicAccess &&
+                    !isPublisherUser && (
+                      <AuthorCompleteSignupButton
+                        renderButton={(handleClick) => (
+                          <EduButton
+                            height="40px"
+                            width="100%"
+                            justifyContent="center"
+                            data-cy="edit/assign-button"
+                            onClick={handleClick}
+                          >
+                            <IconAssignment />
+                            <span>ASSIGN</span>
+                          </EduButton>
+                        )}
+                        onClick={assign}
+                      />
+                    )}
+                </ButtonContainer>
                 {status === 'inreview' || status === 'rejected' ? (
                   <FeaturesSwitch
                     inputFeatures="isCurator"
                     actionOnInaccessible="hidden"
                   >
-                    <EduButton
-                      isGhost
-                      height="40px"
-                      data-cy="approve-button"
-                      onClick={() => {
-                        onApprove(
+                    <ButtonContainer>
+                      <StyledSelect
+                        mode="multiple"
+                        size="medium"
+                        style={{ width: '100%' }}
+                        value={
                           editedCollections !== null
-                            ? editedCollections
-                            : _collections
-                        )
-                      }}
-                    >
-                      <Icon type="check" />
-                      <span>Approve</span>
-                    </EduButton>
+                            ? editedCollections.map((o) => o._id)
+                            : _collections.map((o) => o._id)
+                        }
+                        filterOption={(input, option) =>
+                          option.props.title
+                            .toLowerCase()
+                            .includes(input.toLowerCase())
+                        }
+                        getPopupContainer={() => this.modalRef.current}
+                        onChange={this.onCollectionsChange}
+                      >
+                        {collections.map(({ _id, name }) => (
+                          <Select.Option key={_id} value={_id} title={name}>
+                            {name}
+                          </Select.Option>
+                        ))}
+                      </StyledSelect>
+                    </ButtonContainer>
                   </FeaturesSwitch>
                 ) : null}
-              </ButtonContainer>
+              </>
             )}
-            <ButtonContainer
-              className={publicAccess ? 'public-access-btn-wrapper' : ''}
-            >
-              <EduButton
-                height="40px"
-                width="100%"
-                isGhost
-                justifyContent="center"
-                data-cy="preview-button"
-                onClick={previewLink}
-              >
-                {!publicAccess && <IconEye />}
-                Preview
-              </EduButton>
-              {publicAccess && (
-                <EduButton
-                  height="40px"
-                  width="100%"
-                  justifyContent="center"
-                  data-cy="assign-button"
-                  onClick={assign}
-                >
-                  <span>ASSIGN</span>
-                </EduButton>
-              )}
-              {permission !== 'VIEW' &&
-                !isEdulasticCurator &&
-                !publicAccess &&
-                status !== 'published' &&
-                hasCollectionAccess && (
-                  <EduButton
-                    height="40px"
-                    width="100%"
-                    justifyContent="center"
-                    data-cy="edit/assign-button"
-                    onClick={onEdit}
-                  >
-                    <IconPencilEdit height={14} />
-                    <span>EDIT</span>
-                  </EduButton>
-                )}
-              {status === 'published' &&
-                !isEdulasticCurator &&
-                !publicAccess &&
-                !isPublisherUser && (
-                  <EduButton
-                    height="40px"
-                    width="100%"
-                    justifyContent="center"
-                    data-cy="edit/assign-button"
-                    onClick={assign}
-                  >
-                    <IconAssignment />
-                    <span>ASSIGN</span>
-                  </EduButton>
-                )}
-            </ButtonContainer>
-            {status === 'inreview' || status === 'rejected' ? (
-              <FeaturesSwitch
-                inputFeatures="isCurator"
-                actionOnInaccessible="hidden"
-              >
-                <ButtonContainer>
-                  <StyledSelect
-                    mode="multiple"
-                    size="medium"
-                    style={{ width: '100%' }}
-                    value={
-                      editedCollections !== null
-                        ? editedCollections.map((o) => o._id)
-                        : _collections.map((o) => o._id)
-                    }
-                    filterOption={(input, option) =>
-                      option.props.title
-                        .toLowerCase()
-                        .includes(input.toLowerCase())
-                    }
-                    getPopupContainer={() => this.modalRef.current}
-                    onChange={this.onCollectionsChange}
-                  >
-                    {collections.map(({ _id, name }) => (
-                      <Select.Option key={_id} value={_id} title={name}>
-                        {name}
-                      </Select.Option>
-                    ))}
-                  </StyledSelect>
-                </ButtonContainer>
-              </FeaturesSwitch>
-            ) : null}
           </ModalColumn>
           <ModalColumn>
             <div>
@@ -509,76 +649,96 @@ class ViewModal extends React.Component {
                 </SummaryCard>
               </SummaryCardContainer>
             </SummaryContainer>
-            <PerfectScrollbar>
-              {/* one group with AUTOSELECT or multiple groups can be considered as publisher test */}
-              {summary?.groupSummary?.length > 1 ||
-              itemGroups?.[0]?.type === 'AUTOSELECT' ? (
-                summary?.groupSummary?.map((group, i) => {
-                  const standards = interestedStandards?.map(
-                    (x) => x.identifier
-                  )
-                  return (
-                    <>
-                      <GroupName>{itemGroups[i]?.groupName}</GroupName>
-                      <SummaryCardContainer>
-                        <GroupSummaryCard>
-                          <GroupSummaryCardValue>
-                            {group.totalItems}
-                          </GroupSummaryCardValue>
-                          <SummaryCardLabel>Items</SummaryCardLabel>
-                        </GroupSummaryCard>
-                        <GroupSummaryCard>
-                          <Tags
-                            tags={standards}
-                            key="standards"
-                            show={2}
-                            isStandards
-                          />
-                        </GroupSummaryCard>
-                      </SummaryCardContainer>
-                    </>
-                  )
-                })
-              ) : (
-                <SummaryList>
-                  <ListHeader>
-                    <ListHeaderCell>SUMMARY</ListHeaderCell>
-                    <ListHeaderCell>Qs</ListHeaderCell>
-                    <ListHeaderCell>POINTS</ListHeaderCell>
-                  </ListHeader>
-                  {!!summary?.standards?.length &&
-                    interestedStandards.map(
-                      (data) =>
-                        !data.isEquivalentStandard && (
-                          <ListRow data-cy={data.identifier}>
-                            <ListCell>
-                              <SammaryMark>{data.identifier}</SammaryMark>
-                            </ListCell>
-                            <ListCell>{data.totalQuestions}</ListCell>
-                            <ListCell>{data.totalPoints}</ListCell>
-                          </ListRow>
-                        )
+            {this.state.summaryLoading ? (
+              <Spin />
+            ) : (
+              <PerfectScrollbar>
+                {/* one group with AUTOSELECT or multiple groups can be considered as publisher test */}
+                {summary?.groupSummary?.length > 1 ||
+                itemGroups?.[0]?.type === 'AUTOSELECT' ? (
+                  summary?.groupSummary?.map((group, i) => {
+                    const standards = interestedStandards?.map(
+                      (x) => x.identifier
+                    )
+                    return (
+                      <>
+                        <GroupName>{itemGroups[i]?.groupName}</GroupName>
+                        <SummaryCardContainer>
+                          <GroupSummaryCard>
+                            <GroupSummaryCardValue>
+                              {group.totalItems}
+                            </GroupSummaryCardValue>
+                            <SummaryCardLabel>Items</SummaryCardLabel>
+                          </GroupSummaryCard>
+                          <GroupSummaryCard>
+                            <Tags
+                              tags={standards}
+                              key="standards"
+                              show={2}
+                              isStandards
+                            />
+                          </GroupSummaryCard>
+                        </SummaryCardContainer>
+                      </>
+                    )
+                  })
+                ) : (
+                  <SummaryList>
+                    <ListHeader>
+                      <ListHeaderCell>SUMMARY</ListHeaderCell>
+                      <ListHeaderCell>Qs</ListHeaderCell>
+                      <ListHeaderCell>POINTS</ListHeaderCell>
+                    </ListHeader>
+                    {!!summary?.standards?.length &&
+                      summary.standards.map((data) => (
+                        <ListRow data-cy={data.identifier}>
+                          <ListCell>
+                            <SammaryMark>{data.identifier}</SammaryMark>
+                          </ListCell>
+                          <ListCell>{data.totalQuestions}</ListCell>
+                          <ListCell>{data.totalPoints}</ListCell>
+                        </ListRow>
+                      ))}
+                    {summary?.noStandards?.totalQuestions > 0 && (
+                      <ListRow>
+                        <ListCell>
+                          <SammaryMark>No Standard</SammaryMark>
+                        </ListCell>
+                        <ListCell>
+                          {summary.noStandards.totalQuestions}
+                        </ListCell>
+                        <ListCell>{summary.noStandards.totalPoints}</ListCell>
+                      </ListRow>
                     )}
-                  {summary?.noStandards?.totalQuestions > 0 && (
-                    <ListRow>
-                      <ListCell>
-                        <SammaryMark>No Standard</SammaryMark>
-                      </ListCell>
-                      <ListCell>{summary.noStandards.totalQuestions}</ListCell>
-                      <ListCell>{summary.noStandards.totalPoints}</ListCell>
-                    </ListRow>
-                  )}
-                </SummaryList>
-              )}
-            </PerfectScrollbar>
+                  </SummaryList>
+                )}
+              </PerfectScrollbar>
+            )}
           </ModalColumn>
+          {showShareModal && (
+            <ShareModal
+              shareLabel="TEST URL"
+              isVisible={showShareModal}
+              testId={item._id}
+              testVersionId={item.versionId}
+              hasPremiumQuestion={hasPremiumQuestion}
+              isPublished={status === statusConstants.PUBLISHED}
+              onClose={this.onShareModalChange}
+              gradeSubject={gradeSubject}
+            />
+          )}
         </ModalContainer>
       </>
     )
 
     if (modalView) {
       return (
-        <Modal open={isShow} onClose={close} styles={modalStyles}>
+        <Modal
+          open={isShow}
+          onClose={this.handleModalClose}
+          styles={modalStyles}
+          showCloseIcon={false}
+        >
           {contanier}
         </Modal>
       )
@@ -589,12 +749,15 @@ class ViewModal extends React.Component {
 
 export default connect(
   (state) => ({
+    userSignupStatus: getUserSignupStatusSelector(state),
     userId: getUserIdSelector(state),
     collections: getCollectionsSelector(state),
     userRole: getUserRole(state),
     isPublisherUser: isPublisherUserSelector(state),
     interestedCurriculums: getInterestedCurriculumsSelector(state),
     writableCollections: getWritableCollectionsSelector(state),
+    isDemoPlaygroundUser: state?.user?.user?.isPlayground,
+    isCurator: getIsCurator(state),
   }),
   {}
 )(ViewModal)

@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { withRouter } from 'react-router'
 import { compose } from 'redux'
 import PropTypes from 'prop-types'
-import { findIndex, isUndefined, get, throttle, round } from 'lodash'
+import { findIndex, isUndefined, get } from 'lodash'
 import { setAutoFreeze } from 'immer'
 import memoizeOne from 'memoize-one'
 import { Input, Tooltip } from 'antd'
@@ -11,25 +12,27 @@ import {
   scrollTo,
   EduButton,
   FieldLabel,
-  LCBScrollContext,
+  FlexContainer,
 } from '@edulastic/common'
-import { IconFeedback } from '@edulastic/icons'
-import { test } from '@edulastic/constants'
+import {
+  IconFeedback,
+  IconExpand,
+  IconCollapse,
+  IconFolder,
+} from '@edulastic/icons'
+import {
+  test,
+  questionActivity as questionActivityConst,
+} from '@edulastic/constants'
 import { white } from '@edulastic/colors'
 import {
-  AllButton,
-  CorrectButton,
-  WrongButton,
+  StyledFlexContainer,
   StyledStudentTabButton,
-  PartiallyCorrectButton,
-  GiveOverallFeedBackButton,
   StudentButtonWrapper,
   StudentButtonDiv,
   ScrollToTopButton,
   StyledModal,
   StyledFooter,
-  StyledFlexContainer,
-  ScoreWrapper,
 } from './styled'
 
 import ClassQuestions from '../ClassResponses/components/Container/ClassQuestions'
@@ -43,58 +46,60 @@ import {
 import { setStudentViewFilterAction } from '../src/reducers/testActivity'
 // selectors
 import {
-  getAssignmentClassIdSelector,
   getClassQuestionSelector,
   getStudentResponseSelector,
   getTestItemsOrderSelector,
   getCurrentTestActivityIdSelector,
+  getAdditionalDataSelector,
+  getAllStudentsList,
 } from '../ClassBoard/ducks'
 
 import { getQuestionLabels } from '../ClassBoard/Transformer'
+import HooksContainer from '../ClassBoard/components/HooksContainer/HooksContainer'
+import {
+  FilterSelect,
+  FilterSpan,
+} from '../ClassBoard/components/Container/styled'
+import TestAttachementsModal from './Modals/TestAttachementsModal'
 
 const _getquestionLabels = memoizeOne(getQuestionLabels)
 
 setAutoFreeze(false)
 
 class StudentViewContainer extends Component {
-  static contextType = LCBScrollContext
+  constructor(props) {
+    super(props)
 
-  state = {
-    showFeedbackPopup: false,
-    showTestletPlayer: false,
-    hasStickyHeader: false,
+    this.state = {
+      showFeedbackPopup: false,
+      showTestletPlayer: false,
+      hasStickyHeader: false,
+      hideCorrectAnswer: true,
+      showAttachmentsModal: false,
+    }
   }
 
   feedbackRef = React.createRef()
 
   questionsContainerRef = React.createRef()
 
-  handleScroll = throttle(() => {
+  handleScroll = () => {
     const { hasStickyHeader } = this.state
     const elementTop =
       this.questionsContainerRef.current?.getBoundingClientRect().top || 0
-    if (elementTop < 200 && !hasStickyHeader) {
+    if (elementTop < 100 && !hasStickyHeader) {
       this.setState({ hasStickyHeader: true })
-    } else if (elementTop > 200 && hasStickyHeader) {
+    } else if (elementTop > 100 && hasStickyHeader) {
       this.setState({ hasStickyHeader: false })
-    }
-  }, 500)
-
-  componentWillUnmount() {
-    const { current } = this.context
-
-    if (current) {
-      current.removeEventListener('scroll', this.handleScroll)
     }
   }
 
-  componentDidMount() {
-    // get the current scroll context from LCBScrollContext
-    const { current } = this.context
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.handleScroll)
+  }
 
-    if (current) {
-      current.addEventListener('scroll', this.handleScroll)
-    }
+  componentDidMount() {
+    window.addEventListener('scroll', this.handleScroll)
   }
 
   static getDerivedStateFromProps(nextProps, preState) {
@@ -102,9 +107,10 @@ class StudentViewContainer extends Component {
       selectedStudent,
       loadStudentResponses,
       studentItems,
-      assignmentIdClassId: { classId } = {},
       currentTestActivityId = '',
+      match,
     } = nextProps
+    const { classId } = match?.params || {}
     const { selectedStudent: _selectedStudent } = preState || {}
 
     if (selectedStudent !== _selectedStudent) {
@@ -140,14 +146,12 @@ class StudentViewContainer extends Component {
   handleApply = () => {
     const {
       saveOverallFeedback,
-      assignmentIdClassId,
       studentResponse,
       updateOverallFeedback,
     } = this.props
-    const studentTestActivity = studentResponse && studentResponse.testActivity
-    const testActivityId = studentTestActivity && studentTestActivity._id
+    const { _id: testActivityId, groupId } = studentResponse?.testActivity || {}
     const feedback = this.feedbackRef.current.state.value
-    saveOverallFeedback(testActivityId, assignmentIdClassId.classId, {
+    saveOverallFeedback(testActivityId, groupId, {
       text: feedback,
     })
     updateOverallFeedback({ text: feedback })
@@ -160,6 +164,18 @@ class StudentViewContainer extends Component {
     scrollTo(document.querySelector('body'))
   }
 
+  toggleShowCorrectAnswers = () => {
+    this.setState((prevState) => ({
+      hideCorrectAnswer: !prevState.hideCorrectAnswer,
+    }))
+  }
+
+  toggleAttachmentsModal = () => {
+    this.setState((prevState) => ({
+      showAttachmentsModal: !prevState.showAttachmentsModal,
+    }))
+  }
+
   render() {
     const {
       classResponse,
@@ -170,7 +186,10 @@ class StudentViewContainer extends Component {
       testItemsOrder,
       filter,
       isCliUser,
-      renderStudentSelectList,
+      match,
+      additionalData,
+      studentsList,
+      MainContentWrapperRef,
     } = this.props
 
     const {
@@ -178,6 +197,8 @@ class StudentViewContainer extends Component {
       showFeedbackPopup,
       showTestletPlayer,
       hasStickyHeader,
+      hideCorrectAnswer,
+      showAttachmentsModal,
     } = this.state
     const userId = studentResponse.testActivity
       ? studentResponse.testActivity.userId
@@ -189,41 +210,54 @@ class StudentViewContainer extends Component {
       return studentId === userId
     })
 
+    const { classId, assignmentId } = match?.params || {}
+
+    const showStudentWorkButton = test.type.TESTLET === classResponse.testType
+
     // show the total count.
     const questionActivities = studentResponse?.questionActivities || []
     const activeQuestions = questionActivities.filter(
       (x) => !(x.disabled || x.scoringDisabled)
     )
-    const totalNumber = activeQuestions.length
 
-    const correctNumber = activeQuestions.filter(
-      (x) => x.score === x.maxScore && x.score > 0
-    ).length
-
-    const wrongNumber = activeQuestions.filter(
-      (x) => x.score === 0 && x.maxScore > 0 && x.graded && !x.skipped
-    ).length
-
-    const partiallyCorrectNumber = activeQuestions.filter(
-      (x) => x.score > 0 && x.score < x.maxScore
-    ).length
-
-    const { totalScore, maxScore } = activeQuestions.reduce(
-      (acc, x) => {
-        acc.totalScore += x.score
-        acc.maxScore += x.maxScore
+    const questionStatusCounts = activeQuestions.reduce(
+      (acc, cur) => {
+        if (!cur.isPractice && cur.score === cur.maxScore && cur.score > 0) {
+          acc.correctNumber += 1
+        }
+        if (
+          !cur.isPractice &&
+          cur.score === 0 &&
+          cur.maxScore > 0 &&
+          cur.graded &&
+          !cur.skipped
+        ) {
+          acc.wrongNumber += 1
+        }
+        if (!cur.isPractice && cur.score > 0 && cur.score < cur.maxScore) {
+          acc.partiallyCorrectNumber += 1
+        }
+        if (!cur.isPractice && cur.skipped && cur.score === 0) {
+          acc.skippedNumber += 1
+        }
+        if (!cur.isPractice && !cur.skipped && cur.graded === false) {
+          acc.notGradedNumber += 1
+        }
+        if (cur.isPractice) {
+          acc.unscoredItems += 1
+        }
         return acc
       },
-      { totalScore: 0, maxScore: 0 }
+      {
+        totalNumber: activeQuestions.length,
+        correctNumber: 0,
+        wrongNumber: 0,
+        partiallyCorrectNumber: 0,
+        skippedNumber: 0,
+        notGradedNumber: 0,
+        unscoredItems: 0,
+      }
     )
-
-    const skippedNumber = activeQuestions.filter(
-      (x) => x.skipped && x.score === 0
-    ).length
-
-    const notGradedNumber = activeQuestions.filter(
-      (x) => !x.skipped && x.graded === false
-    ).length
 
     const studentTestActivity = studentResponse && studentResponse.testActivity
     const initFeedbackValue =
@@ -240,8 +274,21 @@ class StudentViewContainer extends Component {
       </div>
     )
 
+    const { attachments = [] } = studentTestActivity?.userWork || {}
+
     return (
       <>
+        {studentsList.length && studentTestActivity?._id && (
+          <HooksContainer
+            additionalData={additionalData}
+            classId={classId}
+            assignmentId={assignmentId}
+            testActivityId={studentTestActivity?._id}
+            studentsList={studentsList}
+            selectedTab="Student"
+          />
+        )}
+
         {showFeedbackPopup && (
           <StyledModal
             centered
@@ -287,76 +334,99 @@ class StudentViewContainer extends Component {
           hasStickyHeader={hasStickyHeader}
           className="lcb-student-sticky-bar"
         >
-          <StudentButtonWrapper hasAutoWidth={hasStickyHeader}>
+          <StudentButtonWrapper>
             <StudentButtonDiv>
-              <AllButton
-                active={filter === null}
-                onClick={() => this.onClickTab(null)}
+              <FilterSpan>FILTER BY STATUS</FilterSpan>
+              <FilterSelect
+                className="student-status-filter"
+                value={filter}
+                dropdownMenuStyle={{ fontSize: 29 }}
+                getPopupContainer={(trigger) => trigger.parentElement}
+                onChange={this.onClickTab}
+                width="170px"
+                height="24px"
               >
-                ALL ({totalNumber})
-              </AllButton>
-              <CorrectButton
-                active={filter === 'correct'}
-                onClick={() => this.onClickTab('correct')}
-              >
-                CORRECT ({correctNumber})
-              </CorrectButton>
-              <WrongButton
-                active={filter === 'wrong'}
-                onClick={() => this.onClickTab('wrong')}
-              >
-                INCORRECT ({wrongNumber})
-              </WrongButton>
-              <WrongButton
-                active={filter === 'partial'}
-                onClick={() => this.onClickTab('partial')}
-              >
-                PARTIALLY CORRECT ({partiallyCorrectNumber})
-              </WrongButton>
-              <WrongButton
-                active={filter === 'skipped'}
-                onClick={() => this.onClickTab('skipped')}
-              >
-                SKIPPED ({skippedNumber})
-              </WrongButton>
-              <PartiallyCorrectButton
-                active={filter === 'notGraded'}
-                onClick={() => this.onClickTab('notGraded')}
-              >
-                NOT GRADED ({notGradedNumber})
-              </PartiallyCorrectButton>
+                {questionActivityConst.questionStatusOptions.map(
+                  ({ title, value, countValue }, i) => (
+                    <FilterSelect.Option
+                      className="student-status-filter-item"
+                      key={i}
+                      value={value}
+                      style={{ fontSize: 11 }}
+                    >
+                      {title} ({questionStatusCounts[countValue]})
+                    </FilterSelect.Option>
+                  )
+                )}
+              </FilterSelect>
             </StudentButtonDiv>
+            {showStudentWorkButton && (
+              <StyledStudentTabButton
+                onClick={() => this.setState({ showTestletPlayer: true })}
+              >
+                SHOW STUDENT WORK
+              </StyledStudentTabButton>
+            )}
           </StudentButtonWrapper>
-          {hasStickyHeader && (
-            <>
-              {renderStudentSelectList()}
-              <ScoreWrapper>
-                {round(totalScore, 2) || 0} / {round(maxScore, 2) || 0}
-              </ScoreWrapper>
-            </>
-          )}
-          {!isCliUser && (
-            <GiveOverallFeedBackButton
-              data-cy="overallFeedback"
-              onClick={() => this.handleShowFeedbackPopup(true)}
-              active
+          <FlexContainer alignItems="center">
+            {attachments.length > 0 && (
+              <EduButton
+                isGhost
+                data-cy="viewAllAttachmentsButton"
+                height="24px"
+                fontSize="9px"
+                mr="10px"
+                ml="0px"
+                onClick={this.toggleAttachmentsModal}
+                title="View all attachments"
+              >
+                <IconFolder height="11.3px" width="11.3px" />
+                <span>Attachments</span>
+              </EduButton>
+            )}
+            <EduButton
+              isGhost
+              height="24px"
+              fontSize="9px"
+              mr="10px"
+              ml="0px"
+              onClick={this.toggleShowCorrectAnswers}
+              title="Minimizing view hides correct answers, maximize to view them"
             >
-              <IconFeedback color={white} />
-              {initFeedbackValue.length ? (
-                <Tooltip
-                  title={feedbackButtonToolTip}
-                  placement={hasStickyHeader ? 'bottom' : 'top'}
-                >
-                  <span>
-                    {`${initFeedbackValue.slice(0, 30)}
-                      ${initFeedbackValue.length > 30 ? '.....' : ''}`}
-                  </span>
-                </Tooltip>
+              {hideCorrectAnswer ? (
+                <IconExpand height="11.3px" width="11.3px" />
               ) : (
-                'GIVE OVERALL FEEDBACK'
+                <IconCollapse height="11.3px" width="11.3px" />
               )}
-            </GiveOverallFeedBackButton>
-          )}
+              <span data-cy="showCorrectAnswer" data-test={!hideCorrectAnswer}>
+                {hideCorrectAnswer ? 'Maximize view' : 'Minimize view'}
+              </span>
+            </EduButton>
+            {!isCliUser && (
+              <Tooltip
+                title={initFeedbackValue.length ? feedbackButtonToolTip : null}
+                placement={hasStickyHeader ? 'bottom' : 'top'}
+              >
+                <EduButton
+                  data-cy="overallFeedback"
+                  onClick={() => this.handleShowFeedbackPopup(true)}
+                  height="24px"
+                  fontSize="9px"
+                  isGhost
+                >
+                  <IconFeedback color={white} height="13px" width="14px" />
+                  {initFeedbackValue.length ? (
+                    <span>
+                      {`${initFeedbackValue.slice(0, 30)}
+                      ${initFeedbackValue.length > 30 ? '.....' : ''}`}
+                    </span>
+                  ) : (
+                    'GIVE OVERALL FEEDBACK'
+                  )}
+                </EduButton>
+              </Tooltip>
+            )}
+          </FlexContainer>
         </StyledFlexContainer>
 
         <div ref={this.questionsContainerRef}>
@@ -380,7 +450,11 @@ class StudentViewContainer extends Component {
                 closeTestletPlayer={() =>
                   this.setState({ showTestletPlayer: false })
                 }
+                testActivityId={studentResponse?.testActivity?._id}
+                hideCorrectAnswer={hideCorrectAnswer}
                 isLCBView
+                isStudentView
+                MainContentWrapperRef={MainContentWrapperRef}
               />
             </AnswerContext.Provider>
           )}
@@ -392,17 +466,29 @@ class StudentViewContainer extends Component {
           hasStickyHeader={hasStickyHeader}
           onClick={() => scrollTo(document.querySelector('body'))}
         />
+        {showAttachmentsModal && (
+          <TestAttachementsModal
+            toggleAttachmentsModal={this.toggleAttachmentsModal}
+            showAttachmentsModal={showAttachmentsModal}
+            attachmentsList={attachments}
+            title="All Attachments"
+            description="Import content from QTI, WebCT and several other formats."
+            utaId={studentTestActivity?._id}
+            studentData={currentStudent}
+            attachmentNameLabel="Attachment Name"
+          />
+        )}
       </>
     )
   }
 }
 
 const enhance = compose(
+  withRouter,
   connect(
     (state) => ({
       classQuestion: getClassQuestionSelector(state),
       studentResponse: getStudentResponseSelector(state),
-      assignmentIdClassId: getAssignmentClassIdSelector(state),
       testItemsOrder: getTestItemsOrderSelector(state),
       currentTestActivityId: getCurrentTestActivityIdSelector(state),
       isPresentationMode: get(
@@ -417,6 +503,8 @@ const enhance = compose(
       ),
       entities: get(state, 'author_classboard_testActivity.entities', []),
       filter: state?.author_classboard_testActivity?.studentViewFilter,
+      additionalData: getAdditionalDataSelector(state),
+      studentsList: getAllStudentsList(state),
     }),
     {
       loadStudentResponses: receiveStudentResponseAction,
@@ -436,9 +524,7 @@ StudentViewContainer.propTypes = {
   isPresentationMode: PropTypes.bool,
   saveOverallFeedback: PropTypes.func.isRequired,
   updateOverallFeedback: PropTypes.func.isRequired,
-  assignmentIdClassId: PropTypes.array.isRequired,
   testItemsOrder: PropTypes.any.isRequired,
-  renderStudentSelectList: PropTypes.func,
 }
 StudentViewContainer.defaultProps = {
   selectedStudent: '',

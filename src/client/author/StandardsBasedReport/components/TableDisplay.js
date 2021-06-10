@@ -1,4 +1,3 @@
-// @ts-check
 import { smallDesktopWidth } from '@edulastic/colors'
 import { round, sum, values, isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
@@ -69,7 +68,7 @@ class TableDisplay extends Component {
   }
 
   static getDerivedStateFromProps(props, state) {
-    const { additionalData: { standards = [] } = {} } = props
+    const { reportStandards: standards } = props
     const submittedActs = props.testActivities.filter(
       (x) => x.status === 'submitted'
     )
@@ -122,7 +121,9 @@ class TableDisplay extends Component {
     const performances = values(
       getStandardWisePerformanceMemoized(testActivities, std)
     )
-    return (sum(performances) / performances.length) * 100
+    return performances.length
+      ? (sum(performances) / performances.length) * 100
+      : 0
   }
 
   getMasterySummary = (data) => {
@@ -146,11 +147,13 @@ class TableDisplay extends Component {
   render() {
     const { stdId, perfomancePercentage } = this.state
     const {
-      additionalData: { standards = [], assignmentMastery = [] } = {},
+      additionalData: { assignmentMastery = [] } = {},
+      reportStandards: standards,
       hasRandomQuestions,
       testActivities,
       qids,
       labels,
+      testStandardsEmpty,
     } = this.props
     const questionsColumn = hasRandomQuestions
       ? []
@@ -212,7 +215,7 @@ class TableDisplay extends Component {
       (act) => act.status === 'submitted'
     ).length
     const data = standards.map((std, index) => {
-      const perfomancePercentage = this.getPerfomancePercentage(std)
+      const _perfomancePercentage = this.getPerfomancePercentage(std)
       return {
         key: index + 1,
         stdId: std._id,
@@ -224,8 +227,8 @@ class TableDisplay extends Component {
               .map((id) => labels[id].barLabel)
           ),
         ].join(','),
-        masterySummary: perfomancePercentage,
-        performanceSummary: perfomancePercentage,
+        masterySummary: _perfomancePercentage,
+        performanceSummary: _perfomancePercentage,
         icon: submittedLength ? (
           stdId === std._id ? (
             <div>
@@ -247,12 +250,16 @@ class TableDisplay extends Component {
         <NoDataNotification
           heading="Standard based report not available"
           description={
-            <>
-              Standard Based Report can be generated based on the Interested
-              Standards. To setup please go to{' '}
-              <Link to="/author/profile">My Profile</Link> and select your
-              Interested Standards.
-            </>
+            testStandardsEmpty ? (
+              `Standard Based Report cannot be generated as there are no standards associated with the items in the test.`
+            ) : (
+              <>
+                Standard Based Report can be generated based on the Interested
+                Standards. To setup please go to{' '}
+                <Link to="/author/profile">My Profile</Link> and select your
+                Interested Standards.
+              </>
+            )
           }
         />
       )
@@ -362,6 +369,5 @@ const CustomQuestionCell = styled(QuestionCell)`
 
 TableDisplay.propTypes = {
   /* eslint-disable react/require-default-props */
-  testActivity: PropTypes.object,
   additionalData: PropTypes.object,
 }

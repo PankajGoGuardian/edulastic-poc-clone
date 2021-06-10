@@ -1,15 +1,19 @@
 import React, { useEffect } from 'react'
 import { Spin } from 'antd'
 import { withRouter } from 'react-router'
-import qs from 'query-string'
 import { testsApi, TokenStorage } from '@edulastic/api'
 import { notification } from '@edulastic/common'
-
+import qs from 'qs'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import AppConfig from '../../../app-config'
+import AppConfig from '../../app-config'
 
-const RedirectToTest = ({ location: { search }, history, user }) => {
+const RedirectToTest = ({
+  location: { search },
+  history,
+  user,
+  v1Id: v1IdFromProps,
+}) => {
   const handleFailed = (e) => {
     console.log(e)
     notification({ type: 'error', msg: 'Unable to find the associated test.' })
@@ -27,13 +31,22 @@ const RedirectToTest = ({ location: { search }, history, user }) => {
       handleFailed('Missing Salt Key')
     }
   }
+
+  const redirectToUrl = (url) => {
+    history.push(url)
+    if (v1IdFromProps) {
+      window.location.reload(url)
+    }
+  }
+
   useEffect(() => {
-    const { eAId, aId } = qs.parse(search)
-    const v1Id = eAId || aId
+    const { eAId, aId } = qs.parse(search, { ignoreQueryPrefix: true })
+    const v1Id = eAId || aId || v1IdFromProps
     let testId = v1Id
 
     if (isNaN(v1Id)) {
-      testId = decrypt(atob(v1Id))
+      const decodedData = decodeURIComponent(v1Id)
+      testId = decrypt(atob(decodedData))
     }
 
     if (testId) {
@@ -47,9 +60,16 @@ const RedirectToTest = ({ location: { search }, history, user }) => {
             }
             if (!user?.authenticating || !TokenStorage.getAccessToken()) {
               // not authenticated user flow
-              history.push(`/public/view-test/${id}`)
+              if (
+                window.location.pathname.includes('demo/assessmentPreview') ||
+                window.location.host.startsWith('preview')
+              ) {
+                redirectToUrl(`/public/test/${id}`)
+              } else {
+                redirectToUrl(`/public/view-test/${id}`)
+              }
             } else {
-              history.push(`/author/tests/${id}`)
+              redirectToUrl(`/author/tests/${id}`)
             }
           })
           .catch(handleFailed)

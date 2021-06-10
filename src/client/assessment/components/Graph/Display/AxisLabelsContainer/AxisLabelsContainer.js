@@ -1,10 +1,10 @@
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { isEqual, max } from 'lodash'
+import { isEqual, maxBy } from 'lodash'
 import next from 'immer'
 
-import { WithResources, measureText } from '@edulastic/common'
+import { DragDrop, WithResources, measureText } from '@edulastic/common'
 import { response } from '@edulastic/constants'
 
 import {
@@ -19,7 +19,6 @@ import {
 } from '../../../../actions/graphTools'
 
 import {
-  defaultAxesParameters,
   defaultGraphParameters,
   defaultGridParameters,
   defaultPointParameters,
@@ -36,13 +35,16 @@ import {
   getAdjustedHeightAndWidth,
   getAdjustedV1AnnotationCoordinatesForRender,
 } from '../../common/utils'
-import AppConfig from '../../../../../../../app-config'
+import AppConfig from '../../../../../../app-config'
+import { roundPointToNearestValue } from '../Utils'
 
 const v1Dimenstions = {
   v1Height: 432,
   v1Width: 720,
 }
 export const defaultTitleWidth = 150
+
+const { DragPreview, DropContainer } = DragDrop
 
 const getColoredElems = (elements, compareResult) => {
   if (
@@ -120,11 +122,12 @@ class AxisLabelsContainer extends PureComponent {
     }
 
     this.updateValues = this.updateValues.bind(this)
-
+    this.graphContainerRef = React.createRef()
     this.axisLabelsContainerRef = React.createRef()
   }
 
-  // -2 done to make room for the border when width is an integer but the actual width is slightly less
+  // -2 done to make room for the border when width is an integer
+  // but the actual width is slightly less
   get parentHeight() {
     return this.axisLabelsContainerRef?.current?.clientHeight || 0
   }
@@ -143,15 +146,28 @@ class AxisLabelsContainer extends PureComponent {
 
   get choiceMaxWidth() {
     const { list } = this.props
-    const { maxWidth } = response
+    const { maxWidth, maxHeight } = response
+    const responseDimensions = list.map((value) =>
+      measureText(value.text, {
+        padding: '0 10px 0 0',
+      })
+    )
     const maxContentWidth = Math.min(
-      max(list.map((value) => measureText(value.text).width)),
+      maxBy(responseDimensions, (dimension) => dimension?.width)?.width,
       maxWidth
     )
+
+    const maxContentHeight = Math.min(
+      maxBy(responseDimensions, (dimension) => dimension?.scrollHeight)
+        ?.scrollHeight,
+      maxHeight
+    )
+
     if (!this.isHorizontal && defaultTitleWidth > maxContentWidth) {
-      return defaultTitleWidth
+      return [defaultTitleWidth, maxContentHeight]
     }
-    return maxContentWidth
+
+    return [maxContentWidth, maxContentHeight]
   }
 
   get adjustedHeightWidth() {
@@ -161,6 +177,8 @@ class AxisLabelsContainer extends PureComponent {
       disableResponse,
     } = this.props
 
+    const [choiceWidth] = this.choiceMaxWidth
+
     return getAdjustedHeightAndWidth(
       this.parentWidth,
       this.parentHeight,
@@ -168,8 +186,9 @@ class AxisLabelsContainer extends PureComponent {
       this.MIN_WIDTH,
       this.MIN_HEIGHT,
       responseBoxPosition,
-      this.choiceMaxWidth,
-      disableResponse
+      choiceWidth,
+      disableResponse,
+      50
     )
   }
 
@@ -178,8 +197,6 @@ class AxisLabelsContainer extends PureComponent {
       canvas,
       numberlineAxis,
       pointParameters,
-      xAxesParameters,
-      yAxesParameters,
       layout,
       gridParams,
       graphData,
@@ -215,15 +232,6 @@ class AxisLabelsContainer extends PureComponent {
       this._graph.setPointParameters({
         ...defaultPointParameters(),
         ...pointParameters,
-      })
-      this._graph.setAxesParameters({
-        x: {
-          ...defaultAxesParameters(),
-          ...xAxesParameters,
-        },
-        y: {
-          ...yAxesParameters,
-        },
       })
       this._graph.setGridParameters({
         ...defaultGridParameters(),
@@ -316,7 +324,20 @@ class AxisLabelsContainer extends PureComponent {
 
   updateValues() {
     const conf = this._graph.getMarks()
-    const { setValue, setElementsStash } = this.props
+    const { setValue, setElementsStash, numberlineAxis, canvas } = this.props
+    const { ticksDistance, minorTicks, snapToTicks = false } = numberlineAxis
+    const { xMin, xMax } = canvas
+    if (snapToTicks && Array.isArray(conf)) {
+      conf.forEach((obj) => {
+        obj.position = roundPointToNearestValue({
+          ticksDistance,
+          minorTicks,
+          point: obj.position,
+          xMin,
+          xMax,
+        })
+      })
+    }
     setValue(conf)
     setElementsStash(conf, this.getStashId())
   }
@@ -440,15 +461,30 @@ class AxisLabelsContainer extends PureComponent {
     this.setElementsToGraph()
   }
 
-  onAddMark = (mark, x, y) => {
-    if (this._graph.addMark(mark, x, y)) {
-      this.updateValues()
-    }
-  }
-
   getMarkValues = () => {
     const { list, elements } = this.props
     return list.filter((elem) => !elements.some((el) => elem.id === el.id))
+  }
+
+  getDragValueOffset = (offset) => {
+    if (this.graphContainerRef.current && offset) {
+      const element = this.graphContainerRef.current
+      const { x, y } = element.getBoundingClientRect()
+      const px = offset.x - x - 10
+      const py = offset.y - y - 10
+      return { x: px, y: py }
+    }
+    return { x: 0, y: 0 }
+  }
+
+  handleDropValue = ({ data, itemRect }) => {
+    const { width, height, x: clientX, y: clientY } = itemRect
+    const d = this.getDragValueOffset({ x: clientX, y: clientY })
+    const y = d.y + height / 2
+    const x = d.x + width / 2
+    if (this._graph.addMark(data, x, y)) {
+      this.updateValues()
+    }
   }
 
   render() {
@@ -463,15 +499,11 @@ class AxisLabelsContainer extends PureComponent {
       view,
       graphData,
       setQuestionData,
-      list,
-      zoomLevel,
-      theme,
       isPrintPreview,
     } = this.props
-    const { shouldZoom } = theme
     const { isV1Migrated } = graphData
-
     const adjustedHeightWidth = this.adjustedHeightWidth
+    const [choiceWidth] = this.choiceMaxWidth
 
     let _graphData = graphData
     if (isV1Migrated) {
@@ -492,10 +524,11 @@ class AxisLabelsContainer extends PureComponent {
         }
       })
     }
-    // +20 is padding between container and choices
+
+    // +50 is padding between container and choices
     const responseBoxWidth = this.isHorizontal
       ? '100%'
-      : `${this.choiceMaxWidth + 100}px`
+      : `${choiceWidth + 50}px`
 
     return (
       <div
@@ -531,30 +564,28 @@ class AxisLabelsContainer extends PureComponent {
             >
               {!disableResponse && (
                 <ResponseBox
-                  shouldZoom={shouldZoom}
-                  scale={zoomLevel}
-                  bounds={`.jsxbox-with-response-box-response-options.${this._graphId}`}
                   values={this.getMarkValues()}
-                  onAddMark={this.onAddMark}
-                  markCount={(list || []).length}
                   separationDistanceX={separationDistanceX}
                   separationDistanceY={separationDistanceY}
-                  position={responseBoxPosition}
                   responseBoxWidth={responseBoxWidth}
-                  choiceWidth={this.choiceMaxWidth}
-                  minWidth={Math.min(
-                    adjustedHeightWidth.width,
-                    this.parentWidth
-                  )}
-                  minHeight={adjustedHeightWidth.height}
+                  isHorizontal={this.isHorizontal}
                 />
               )}
               <div className="jsxbox-with-annotation">
-                <JSXBox
-                  id={this._graphId}
-                  className="jxgbox"
-                  margin={layout.margin}
-                />
+                <div ref={this.graphContainerRef}>
+                  <DropContainer
+                    noBorder
+                    drop={this.handleDropValue}
+                    hover={this.handleDraggingValue}
+                    style={adjustedHeightWidth}
+                  >
+                    <JSXBox
+                      id={this._graphId}
+                      className="jxgbox"
+                      margin={layout.margin}
+                    />
+                  </DropContainer>
+                </div>
                 <AnnotationRnd
                   question={_graphData}
                   setQuestionData={setQuestionData}
@@ -568,6 +599,7 @@ class AxisLabelsContainer extends PureComponent {
               </div>
             </div>
           </ContainerWithResponses>
+          <DragPreview showPoint centerPoint />
         </GraphWrapper>
       </div>
     )
@@ -579,10 +611,6 @@ AxisLabelsContainer.propTypes = {
   numberlineAxis: PropTypes.object.isRequired,
   layout: PropTypes.object.isRequired,
   pointParameters: PropTypes.object.isRequired,
-  xAxesParameters: PropTypes.object.isRequired,
-  yAxesParameters: PropTypes.object.isRequired,
-  gridParams: PropTypes.object.isRequired,
-  list: PropTypes.array,
   evaluation: PropTypes.any,
   setValue: PropTypes.func.isRequired,
   elements: PropTypes.array.isRequired,
@@ -598,12 +626,9 @@ AxisLabelsContainer.propTypes = {
   previewTab: PropTypes.string,
   changePreviewTab: PropTypes.func,
   elementsIsCorrect: PropTypes.bool,
-  zoomLevel: PropTypes.number,
-  theme: PropTypes.object,
 }
 
 AxisLabelsContainer.defaultProps = {
-  list: [],
   evaluation: null,
   stash: {},
   stashIndex: {},
@@ -612,8 +637,6 @@ AxisLabelsContainer.defaultProps = {
   previewTab: CLEAR,
   changePreviewTab: () => {},
   elementsIsCorrect: false,
-  zoomLevel: 1,
-  theme: {},
 }
 
 export default connect(

@@ -1,8 +1,7 @@
-import { EduButton } from '@edulastic/common'
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 import { IMAGE_LIST_DEFAULT_WIDTH } from '@edulastic/constants/const/imageConstants'
 import { withNamespaces } from '@edulastic/localization'
-import { Checkbox, Col, Row } from 'antd'
+import { Col, Row } from 'antd'
 import PropTypes from 'prop-types'
 import React, { Component, Fragment } from 'react'
 import ReactDOM from 'react-dom'
@@ -63,12 +62,11 @@ class GroupPossibleResponses extends Component {
               {t('component.classification.groupPossibleRespTitle')}
             </CheckboxLabel>
             <Row gutter={24}>
-              {items.map((item, index) => (
+              {items.map((_item, index) => (
                 <Col data-cy={`group-container-${index}`} key={index}>
                   <Group
                     prefix={`group${index}`}
-                    item={item}
-                    firstFocus={firstFocus}
+                    item={_item}
                     index={index}
                     groupHeadText={t(
                       'component.classification.titleOfGroupTitle'
@@ -125,7 +123,6 @@ GroupPossibleResponses.propTypes = {
   onAdd: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   onRemove: PropTypes.func.isRequired,
-  firstFocus: PropTypes.bool.isRequired,
   onSortEnd: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
   checkboxVal: PropTypes.bool.isRequired,

@@ -16,7 +16,8 @@ export const FieldLabel = styled.label`
   font-stretch: ${(props) => props.theme.widgetOptions.labelFontStretch};
   line-height: 1.38;
   text-align: left;
-  color: ${(props) => props.theme.widgetOptions.labelColor};
+  white-space: ${(props) => props.nowrap || 'nowrap'};
+  color: ${(props) => props.color || props.theme.widgetOptions.labelColor};
   display: ${(props) => (props.display ? props.display : 'block')};
   text-transform: uppercase;
   margin-top: ${(props) => props.mt || '0px'};
@@ -48,6 +49,7 @@ const inputCommonStyle = {
 
 export const SearchInputStyled = styled(Input.Search)`
   &.ant-input-search {
+    width: ${(props) => props.width || '100%'};
     .ant-input {
       ${inputCommonStyle};
       ${(props) => props.style};
@@ -57,6 +59,11 @@ export const SearchInputStyled = styled(Input.Search)`
         border: 1px solid ${themeColorBlue} !important;
         background-color: ${greyThemeLighter};
         box-shadow: none;
+      }
+    }
+    .ant-input-suffix {
+      svg {
+        fill: ${themeColor};
       }
     }
   }
@@ -82,6 +89,7 @@ export const TextInputStyled = styled((props) => (
     .ant-input {
       ${inputCommonStyle};
       ${(props) => props.style};
+      text-align: ${(props) => props.align || 'left'};
       color: ${({ theme }) => theme.questionTextColor};
       &:focus,
       &:hover {
@@ -126,6 +134,10 @@ export const NumberInputStyled = styled(InputNumber)`
       background-color: ${(props) => props.bg || greyThemeLighter};
       box-shadow: none;
     }
+    .ant-input-number-input {
+      height: ${(props) => props.height || '32px'};
+      padding: 0px;
+    }
   }
 `
 
@@ -152,6 +164,7 @@ export const SelectInputStyled = styled(Select)`
     margin: ${(props) => props.margin || '0px'};
     min-width: ${({ minWidth }) => minWidth || ''};
     &.ant-select-disabled {
+      opacity: 0.7;
       .ant-select-selection {
         background-color: ${(props) => props.bg || greyThemeLighter};
         cursor: not-allowed;
@@ -193,13 +206,14 @@ export const SelectInputStyled = styled(Select)`
       justify-content: flex-start;
       background-color: ${(props) => props.bg || greyThemeLighter};
       border: ${(props) =>
-        props.noBorder ? 'none' : `1px solid ${greyThemeLight}`};
+        props.noBorder
+          ? 'none'
+          : `1px solid ${props.isError ? 'red' : greyThemeLight}`};
       color: #6a737f;
       font-size: ${(props) => props.fontSize || '13px'};
       width: ${(props) => props.width || '100%'};
       height: ${(props) => props.height || '100%'};
       min-height: ${(props) => props.height || '32px'};
-      padding: ${(props) => props.padding || '0px'};
       border-radius: 2px;
       font-weight: 600;
       line-height: 1.38;
@@ -207,7 +221,8 @@ export const SelectInputStyled = styled(Select)`
       &.ant-select-selection--single {
         .ant-select-selection__rendered {
           width: 100%;
-          padding: ${(props) => (props.noBorder ? '0px' : '0px 30px 0px 15px')};
+          padding: ${({ noBorder, padding }) =>
+            padding || (noBorder ? '0px' : '0px 30px 0px 15px')};
           line-height: ${(props) => props.height || '32px'};
           margin: 0px;
           .ant-select-selection-selected-value {
@@ -223,7 +238,7 @@ export const SelectInputStyled = styled(Select)`
         .ant-select-arrow {
           font-size: ${(props) => props.arrowFontSize || '14px'};
           position: absolute;
-          top: 20px;
+          top: ${({ size }) => (size === 'large' ? '20px' : '15px')};
         }
         .ant-select-selection__rendered {
           width: 100%;
@@ -281,5 +296,11 @@ export const SelectInputStyled = styled(Select)`
         }
       }
     }
+  }
+  .ant-select-selection__clear {
+    background: transparent;
+  }
+  .ant-input-suffix .anticon-loading {
+    font-size: 1.4em;
   }
 `

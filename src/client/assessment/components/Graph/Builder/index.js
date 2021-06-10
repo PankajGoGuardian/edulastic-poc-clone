@@ -1,7 +1,8 @@
 /* eslint-disable */
 import JXG from 'jsxgraph'
-import { isNumber } from 'lodash'
+import { isNumber, cloneDeep } from 'lodash'
 import getDefaultConfig, { CONSTANT } from './config'
+import * as Sentry from '@sentry/browser'
 import {
   Area,
   Circle,
@@ -26,10 +27,12 @@ import {
   Polynom,
   Secant,
   Sin,
+  Cos,
   Tangent,
   Title,
   Dashed,
   NumberLineDotPlotPoint,
+  Connectline,
 } from './elements'
 import {
   fillConfigDefaultParameters,
@@ -130,7 +133,7 @@ class Board {
 
     this.$board = JXG.JSXGraph.initBoard(
       id,
-      mergeParams(getDefaultConfig(), this.parameters)
+      mergeParams(cloneDeep(getDefaultConfig()), this.parameters)
     )
     this.$board.setZoom(1, 1)
 
@@ -234,6 +237,9 @@ class Board {
       case CONSTANT.TOOLS.SIN:
         this.creatingHandler = Sin.onHandler()
         return
+      case CONSTANT.TOOLS.COS:
+        this.creatingHandler = Cos.onHandler()
+        return
       case CONSTANT.TOOLS.POLYGON:
         this.creatingHandler = Polygon.onHandler()
         return
@@ -293,7 +299,13 @@ class Board {
         this.creatingHandler = () => {}
         return
       default:
-        throw new Error('Unknown tool:', tool)
+        if (!tool) {
+          console.warn('No tool present', tool)
+          Sentry.captureException(new Error('noToolException'))
+        } else {
+          console.warn('unknown tool', tool)
+          Sentry.captureException(new Error('unknownToolException'))
+        }
     }
   }
 
@@ -312,6 +324,8 @@ class Board {
         return Polygon.clean(this)
       case CONSTANT.TOOLS.SIN:
         return Sin.clean(this)
+      case CONSTANT.TOOLS.COS:
+        return Cos.clean(this)
       case CONSTANT.TOOLS.PARABOLA:
         return Parabola.clean(this)
       case CONSTANT.TOOLS.PARABOLA2:
@@ -341,6 +355,7 @@ class Board {
       ...Circle.getTempPoints(),
       ...Polygon.getTempPoints(),
       ...Sin.getTempPoints(),
+      ...Cos.getTempPoints(),
       ...Parabola.getTempPoints(),
       ...Parabola2.getTempPoints(),
       ...Ellipse.getTempPoints(),
@@ -768,6 +783,8 @@ class Board {
             return Polynom.getConfig(e)
           case Sin.jxgType:
             return Sin.getConfig(e)
+          case Cos.jxgType:
+            return Cos.getConfig(e)
           case Parabola.jxgType:
             return Parabola.getConfig(e)
           case Parabola2.jxgType:
@@ -1287,6 +1304,26 @@ class Board {
           }
         )
 
+      case Cos.jxgType:
+        this.labelForEq.push(object.points[0].label, object.points[1].label)
+        return Cos.create(
+          this,
+          object,
+          object.points.map((point) =>
+            Point.create(this, point, {
+              pointIsVisible:
+                !checkPointVisibility || (showPoints && point.pointIsVisible),
+              labelIsVisible:
+                !checkLabelVisibility || (showPoints && point.labelIsVisible),
+              fixed,
+            })
+          ),
+          {
+            labelIsVisible: !checkLabelVisibility || object.labelIsVisible,
+            fixed,
+          }
+        )
+
       case Parabola.jxgType:
         this.labelForEq.push(object.points[0].label, object.points[1].label)
         return Parabola.create(
@@ -1472,8 +1509,8 @@ class Board {
             result,
             labelHTML: [labelPoint1, labelPoint2],
           })
-        } else if (result.includes('ellipse')) {
-          var coords = getPoints('ellipse', result)
+        } else if (result.includes(CONSTANT.TOOLS.ELLIPSE)) {
+          var coords = getPoints(CONSTANT.TOOLS.ELLIPSE, result)
 
           const labelPoint1 = getLabel(this.labelForEq)
 
@@ -1661,7 +1698,7 @@ class Board {
    * settings::bgImageParameters
    * @see https://jsxgraph.org/docs/symbols/Image.html
    */
-  setBgImage(bgImageParameters) {
+  setBgImage(bgImageParameters = {}) {
     const bgImage = this.createElement('image', [
       bgImageParameters.urlImg,
       ...getImageCoordsByPercent(this.parameters, bgImageParameters),
@@ -1680,6 +1717,15 @@ class Board {
 
   isDragMode() {
     return this.$board.mode === this.$board.BOARD_MODE_DRAG
+  }
+
+  connectPoints(elements) {
+    this.removeConnectline()
+    this.connectline = Connectline.create(this.$board, elements)
+  }
+
+  removeConnectline() {
+    Connectline.remove(this.$board, this.connectline)
   }
 }
 

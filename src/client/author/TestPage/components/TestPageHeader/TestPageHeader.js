@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-curly-newline */
 import { tabletWidth, white, themeColor } from '@edulastic/colors'
 import { MainHeader, EduButton, notification } from '@edulastic/common'
 import { roleuser, test as testConstants } from '@edulastic/constants'
@@ -10,9 +9,12 @@ import {
   IconPencilEdit,
   IconPrint,
   IconReview,
+  IconTick,
   IconSend,
   IconSettings,
   IconShare,
+  IconTestBank,
+  IconTrashAlt,
 } from '@edulastic/icons'
 import PropTypes from 'prop-types'
 import React, { memo, useEffect, useState } from 'react'
@@ -20,15 +22,14 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import { Modal } from 'antd'
-import { get } from 'lodash'
 import {
   getUserFeatures,
   getUserId,
   getUserRole,
+  toggleFreeAdminSubscriptionModalAction,
+  isDemoPlaygroundUser,
 } from '../../../../student/Login/ducks'
 import ConfirmCancelTestEditModal from '../../../src/components/common/ConfirmCancelTestEditModal'
-import ConfirmRegradeModal from '../../../src/components/common/ConfirmRegradeModal'
-import EditTestModal from '../../../src/components/common/EditTestModal'
 import FilterToggleBtn from '../../../src/components/common/FilterToggleBtn'
 import { getStatus } from '../../../src/utils/getStatus'
 import {
@@ -36,6 +37,10 @@ import {
   getTestsCreatingSelector,
   shouldDisableSelector,
   getTestItemsSelector,
+  getShowRegradeConfirmPopupSelector,
+  setShowRegradeConfirmPopupAction,
+  getRegradeFirebaseDocIdSelector,
+  getShowUpgradePopupSelector,
 } from '../../ducks'
 import { fetchAssignmentsAction, getAssignmentsSelector } from '../Assign/ducks'
 import TestPageNav from '../TestPageNav/TestPageNav'
@@ -47,7 +52,13 @@ import {
   TestStatus,
 } from './styled'
 import PrintTestModal from '../../../src/components/common/PrintTestModal'
-import { getIsCurator } from '../../../src/selectors/user'
+import { getIsCurator, isFreeAdminSelector } from '../../../src/selectors/user'
+import { validateQuestionsForDocBased } from '../../../../common/utils/helpers'
+import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
+import RegradeNotificationListener from '../../../Regrade/RegradeNotificationListener'
+import ConfirmRegradeModal from '../../../Regrade/ConfirmRegradeModal'
+import Upgrade from '../../../Regrade/Upgrade'
+import { DeleteItemModal } from '../../../TestList/components/DeleteItemModal/deleteItemModal'
 
 const {
   statusConstants,
@@ -66,7 +77,7 @@ export const navButtonsTest = [
     text: 'Add Items',
   },
   {
-    icon: <IconReview color={white} width={24} height={24} />,
+    icon: <IconTick color={white} width={16} height={16} />,
     value: 'review',
     text: 'Review',
   },
@@ -131,7 +142,7 @@ const TestPageHeader = ({
   windowWidth,
   onEnableEdit,
   showPublishButton,
-  showShareButton,
+  hasTestId,
   testStatus,
   isPlaylist,
   owner,
@@ -162,7 +173,15 @@ const TestPageHeader = ({
   playlistHasDraftTests,
   isCurator,
   hasCollectionAccess,
-  loadingComponents,
+  authorQuestionsById,
+  isUpdatingTestForRegrade,
+  isFreeAdmin,
+  toggleFreeAdminSubscriptionModal,
+  showRegradeConfirmPopup,
+  setShowRegradeConfirmPopup,
+  regradeFirebaseDocId,
+  showUpgradePopup,
+  isDemoPlayground = false,
 }) => {
   let navButtons =
     buttons ||
@@ -171,18 +190,15 @@ const TestPageHeader = ({
       : isDocBased
       ? [...docBasedButtons]
       : [...navButtonsTest])
-  const [openEditPopup, setOpenEditPopup] = useState(false)
-  const [showRegradePopup, setShowRegradePopup] = useState(false)
-  const [currentAction, setCurrentAction] = useState('')
   const [showCancelPopup, setShowCancelPopup] = useState(false)
   const [showPrintOptionPopup, setShowPrintOptionPopup] = useState(false)
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
 
   const isPublishers = !!(features.isCurator || features.isPublisherAuthor)
   const isEdulasticCurator = userRole === roleuser.EDULASTIC_CURATOR
 
   useEffect(() => {
-    /* TODO: As this component used also in playlist page, please call below api 
-    conditionally if no purpose of calling assignments list. */
+    // TODO: As this component used also in playlist page, please call below api conditionally if no purpose of calling assignments list.
     if (!creating && match?.params?.oldId) {
       fetchAssignments({
         testId: match?.params?.oldId,
@@ -190,28 +206,32 @@ const TestPageHeader = ({
       })
     } else if (!creating && test?._id) {
       const testId =
-        test.status === 'draft' && test.isUsed ? test.previousTestId : test._id
+        (test.status === 'draft' && test.isUsed) || showUpgradePopup
+          ? test.previousTestId
+          : test._id
       fetchAssignments({ testId, regradeAssignments: true })
     }
   }, [test?._id, match?.params?.oldId])
 
   const onRegradeConfirm = () => {
     if (validateTest(test)) {
+      if (test.isDocBased) {
+        const assessmentQuestions = Object.values(authorQuestionsById || {})
+        if (!validateQuestionsForDocBased(assessmentQuestions, false)) {
+          return
+        }
+      }
       publishForRegrade(test._id)
     }
   }
 
   const onCancelRegrade = () => {
-    setShowRegradePopup(false)
-    switch (currentAction) {
-      case 'assign':
-        onAssign()
-        break
-      case 'publish':
-        onPublish()
-        break
-      default:
-    }
+    setShowRegradeConfirmPopup(false)
+    notification({
+      type: 'warn',
+      msg:
+        'Assignment Regrade has been cancelled and changes have not been published.',
+    })
   }
 
   const handlePublish = () => {
@@ -238,7 +258,6 @@ const TestPageHeader = ({
       (updated || test.status !== statusConstants.PUBLISHED) &&
       testAssignments?.length > 0
     ) {
-      setCurrentAction('publish')
       onRegradeConfirm()
       return
     }
@@ -261,20 +280,12 @@ const TestPageHeader = ({
       return onPublish()
     }
     setDisableAlert(true)
-    setCurrentAction('publish')
     onRegradeConfirm()
     return true
   }
 
   const handleAssign = () => {
-    if (
-      isUsed &&
-      (updated || test.status !== statusConstants.PUBLISHED) &&
-      testAssignments?.length > 0
-    ) {
-      setCurrentAction('assign')
-      return setShowRegradePopup(true)
-    }
+    if (isFreeAdmin) return toggleFreeAdminSubscriptionModal()
     onAssign()
   }
 
@@ -321,7 +332,10 @@ const TestPageHeader = ({
       (test?.testContentVisibility === testContentVisibilityOptions.HIDDEN ||
         test?.testContentVisibility === testContentVisibilityOptions.GRADING)
     ) {
-      return notification({ type: 'warn', messageKey: 'viewOfItemsRestricted' })
+      return notification({
+        type: 'warn',
+        messageKey: 'viewOfItemsRestricted',
+      })
     }
     setShowPrintOptionPopup(true)
   }
@@ -335,6 +349,14 @@ const TestPageHeader = ({
       `/author/printAssessment/${test?._id}?type=${type}&qs=${customValue}`,
       '_blank'
     )
+  }
+
+  const onDelete = () => {
+    setIsDeleteModalOpen(true)
+  }
+
+  const onDeleteModelCancel = () => {
+    setIsDeleteModalOpen(false)
   }
 
   const headingSubContent = (
@@ -378,20 +400,10 @@ const TestPageHeader = ({
     !isPlaylist
   return (
     <>
-      <EditTestModal
-        visible={openEditPopup}
-        isUsed={isUsed && !!testAssignments.length}
-        onCancel={() => setOpenEditPopup(false)}
-        onOk={() => {
-          onEnableEdit()
-          setOpenEditPopup(false)
-        }}
-      />
+      <Upgrade />
       <ConfirmRegradeModal
-        visible={showRegradePopup}
-        onCancel={() => setShowRegradePopup(false)}
-        onOk={onRegradeConfirm}
-        onCancelRegrade={onCancelRegrade}
+        visible={showRegradeConfirmPopup}
+        onCancel={onCancelRegrade}
       />
       <ConfirmCancelTestEditModal
         showCancelPopup={showCancelPopup}
@@ -399,6 +411,15 @@ const TestPageHeader = ({
         onOk={confirmCancel}
         onClose={() => setCancelState(false)}
       />
+      {isDeleteModalOpen ? (
+        <DeleteItemModal
+          isVisible={isDeleteModalOpen}
+          onCancel={onDeleteModelCancel}
+          testId={test._id}
+          test={test}
+          view="testReview"
+        />
+      ) : null}
       {showPrintOptionPopup && (
         <PrintTestModal
           onProceed={handleOnClickPrintConfirm}
@@ -411,9 +432,11 @@ const TestPageHeader = ({
           headingText={
             title || (isPlaylist ? 'Untitled Playlist' : 'Untitled Test')
           }
+          Icon={IconTestBank}
           headingSubContent={headingSubContent}
-          flexDirection="column"
-          alignItems="flex-start"
+          titleMarginTop="10px"
+          flexDirection="row"
+          alignItems="center"
           titleMaxWidth="250px"
         >
           <TestPageNav
@@ -421,61 +444,75 @@ const TestPageHeader = ({
             current={current}
             buttons={navButtons}
             owner={owner}
-            showPublishButton={!showShareButton || showPublishButton}
+            showPublishButton={!hasTestId || showPublishButton}
           />
 
-          <RightFlexContainer childMarginRight="5" justifyContent="flex-end">
-            {showShareButton &&
-              !isPlaylist &&
-              !isDocBased &&
-              !test?.isDocBased && (
-                <EduButton
-                  title="Print"
-                  isBlue
-                  isGhost
-                  IconBtn
-                  data-cy="printTest"
-                  disabled={isTestLoading}
-                  onClick={handlePrintTest}
-                >
-                  <IconPrint />
-                </EduButton>
-              )}
-            {showShareButton &&
-              (owner || features.isCurator) &&
-              !isEdulasticCurator && (
-                <EduButton
-                  isBlue
-                  isGhost
-                  IconBtn
-                  title="Share"
-                  data-cy="share"
-                  onClick={onShare}
-                  disabled={disableButtons}
-                >
-                  <IconShare />
-                </EduButton>
-              )}
-            {showShareButton &&
-              owner &&
-              showPublishButton &&
-              !showPublishForEC && (
-                <EduButton
-                  isBlue
-                  isGhost
-                  IconBtn
-                  title="Save as Draft"
-                  data-cy="save"
-                  onClick={onSave}
-                  disabled={disableButtons}
-                  loading={loadingComponents.includes('saveButton')}
-                >
-                  {!loadingComponents.includes('saveButton') && (
-                    <IconDiskette />
-                  )}
-                </EduButton>
-              )}
-            {showShareButton &&
+          <RightFlexContainer
+            childMarginRight="5"
+            justifyContent="flex-end"
+            mt="12px"
+          >
+            {hasTestId && !isPlaylist && !isDocBased && !test?.isDocBased && (
+              <EduButton
+                title="Print"
+                isBlue
+                isGhost
+                IconBtn
+                data-cy="printTest"
+                disabled={isTestLoading}
+                onClick={handlePrintTest}
+              >
+                <IconPrint />
+              </EduButton>
+            )}
+            {hasTestId && (owner || features.isCurator) && !isEdulasticCurator && (
+              <EduButton
+                isBlue
+                isGhost
+                IconBtn
+                title={
+                  isDemoPlayground
+                    ? 'This feature is not available in demo account.'
+                    : 'Share'
+                }
+                data-cy="share"
+                onClick={onShare}
+                disabled={disableButtons || isDemoPlayground}
+              >
+                <IconShare />
+              </EduButton>
+            )}
+            {hasTestId && owner && test.status === 'draft' && (
+              <EduButton
+                isBlue
+                isGhost
+                IconBtn
+                title={
+                  isDemoPlayground
+                    ? 'This feature is not available in demo account.'
+                    : 'Delete'
+                }
+                data-cy="delete-test"
+                onClick={onDelete}
+                disabled={disableButtons || isDemoPlayground}
+              >
+                <IconTrashAlt />
+              </EduButton>
+            )}
+            {hasTestId && owner && showPublishButton && !showPublishForEC && (
+              <EduButton
+                isBlue
+                isGhost
+                IconBtn
+                title="Save as Draft"
+                data-cy="save"
+                onClick={onSave}
+                disabled={disableButtons}
+              >
+                <IconDiskette />
+              </EduButton>
+            )}
+            {hasTestId &&
             owner &&
             showPublishButton &&
             !isEdulasticCurator &&
@@ -542,12 +579,10 @@ const TestPageHeader = ({
                 IconBtn
                 title="Edit Test"
                 disabled={editEnable || disableButtons}
-                data-cy="edit"
-                onClick={() =>
-                  isEdulasticCurator || isCurator
-                    ? onEnableEdit()
-                    : setOpenEditPopup(true)
-                }
+                data-cy="edit-test"
+                onClick={() => {
+                  onEnableEdit(false, true)
+                }}
               >
                 <IconPencilEdit />
               </EduButton>
@@ -557,8 +592,12 @@ const TestPageHeader = ({
                 isBlue
                 isGhost
                 IconBtn
-                title="Duplicate Test"
-                disabled={editEnable || disableButtons}
+                title={
+                  isDemoPlayground
+                    ? 'This feature is not available in demo account.'
+                    : 'Duplicate Test'
+                }
+                disabled={editEnable || disableButtons || isDemoPlayground}
                 data-cy="duplicate"
                 onClick={() => handleDuplicateTest()}
               >
@@ -574,7 +613,7 @@ const TestPageHeader = ({
                 CANCEL
               </EduButton>
             )}
-            {showShareButton &&
+            {hasTestId &&
               owner &&
               ((showPublishButton && !isEdulasticCurator) ||
                 showPublishForEC) &&
@@ -594,20 +633,26 @@ const TestPageHeader = ({
                   PUBLISH
                 </EduButton>
               )}
-            {showShareButton &&
+            {!showUpgradePopup &&
+              hasTestId &&
               (owner || testStatus === 'published') &&
               !isPlaylist &&
               !showCancelButton &&
               !isPublishers &&
               !isEdulasticCurator && (
-                <EduButton
-                  isBlue
-                  data-cy="assign"
-                  disabled={disableButtons}
+                <AuthorCompleteSignupButton
+                  renderButton={(handleClick) => (
+                    <EduButton
+                      isBlue
+                      data-cy="assign"
+                      disabled={disableButtons}
+                      onClick={handleClick}
+                    >
+                      ASSIGN
+                    </EduButton>
+                  )}
                   onClick={handleAssign}
-                >
-                  ASSIGN
-                </EduButton>
+                />
               )}
             {isRegradeFlow &&
               !showEditButton &&
@@ -615,12 +660,12 @@ const TestPageHeader = ({
               !isPlaylist && (
                 <EduButton
                   isBlue
-                  title="Regrade Test"
+                  title="Publish"
                   data-cy="publish"
                   onClick={handleRegrade}
-                  disabled={disableButtons}
+                  disabled={disableButtons || isUpdatingTestForRegrade}
                 >
-                  REGRADE
+                  PUBLISH
                 </EduButton>
               )}
           </RightFlexContainer>
@@ -647,13 +692,34 @@ const TestPageHeader = ({
                 isGhost
                 IconBtn
                 data-cy="share"
-                disabled={disableButtons}
+                disabled={disableButtons || isDemoPlayground}
                 onClick={onShare}
+                title={
+                  isDemoPlayground
+                    ? 'This feature is not available in demo account.'
+                    : 'Share'
+                }
               >
                 <ShareIcon />
               </EduButton>
             )}
-
+            {hasTestId && owner && test.status === 'draft' && (
+              <EduButton
+                isBlue
+                isGhost
+                IconBtn
+                title={
+                  isDemoPlayground
+                    ? 'This feature is not available in demo account.'
+                    : 'Delete'
+                }
+                data-cy="delete-test"
+                onClick={onDelete}
+                disabled={disableButtons || isDemoPlayground}
+              >
+                <IconTrashAlt />
+              </EduButton>
+            )}
             {owner && !showPublishForEC && (
               <EduButton
                 isBlue
@@ -667,7 +733,7 @@ const TestPageHeader = ({
                 <IconDiskette />
               </EduButton>
             )}
-            {showShareButton &&
+            {hasTestId &&
             owner &&
             showPublishButton &&
             !isEdulasticCurator &&
@@ -719,20 +785,26 @@ const TestPageHeader = ({
                   APPROVE
                 </EduButton>
               )}
-            {showShareButton &&
+            {!showUpgradePopup &&
+              hasTestId &&
               (owner || testStatus === 'published') &&
               !isPlaylist &&
               !showCancelButton &&
               !isPublishers &&
               !isEdulasticCurator && (
-                <EduButton
-                  isBlue
-                  disabled={disableButtons}
-                  data-cy="assign"
+                <AuthorCompleteSignupButton
+                  renderButton={(handleClick) => (
+                    <EduButton
+                      isBlue
+                      disabled={disableButtons}
+                      data-cy="assign"
+                      onClick={handleClick}
+                    >
+                      ASSIGN
+                    </EduButton>
+                  )}
                   onClick={handleAssign}
-                >
-                  ASSIGN
-                </EduButton>
+                />
               )}
           </RightWrapper>
           <TestPageNav
@@ -743,6 +815,7 @@ const TestPageHeader = ({
           />
         </MainHeader>
       )}
+      {regradeFirebaseDocId && <RegradeNotificationListener />}
     </>
   )
 }
@@ -773,11 +846,19 @@ const enhance = compose(
       isLoadingData: shouldDisableSelector(state),
       testItems: getTestItemsSelector(state),
       isCurator: getIsCurator(state),
-      loadingComponents: get(state, ['authorUi', 'currentlyLoading'], []),
+      authorQuestionsById: state.authorQuestions.byId,
+      isUpdatingTestForRegrade: state.tests.updatingTestForRegrade,
+      isFreeAdmin: isFreeAdminSelector(state),
+      showRegradeConfirmPopup: getShowRegradeConfirmPopupSelector(state),
+      regradeFirebaseDocId: getRegradeFirebaseDocIdSelector(state),
+      showUpgradePopup: getShowUpgradePopupSelector(state),
+      isDemoPlayground: isDemoPlaygroundUser(state),
     }),
     {
       publishForRegrade: publishForRegradeAction,
       fetchAssignments: fetchAssignmentsAction,
+      toggleFreeAdminSubscriptionModal: toggleFreeAdminSubscriptionModalAction,
+      setShowRegradeConfirmPopup: setShowRegradeConfirmPopupAction,
     }
   )
 )

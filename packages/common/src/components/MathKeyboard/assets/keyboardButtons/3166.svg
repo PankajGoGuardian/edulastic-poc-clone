@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="12px" height="13px" viewBox="0 0 12 13" version="1.1"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>not-equal</title>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="not-equal" fill="#707070" fill-rule="nonzero">
+            <polygon id="Path" points="3.596 9.681 0.976 9.681 0.976 7.659 4.536 7.659 5.696 5.177 0.976 5.177 0.976 3.167 6.636 3.167 8.107 0 9.971 0.8 8.837 3.17 11.487 3.17 11.487 5.18 7.916 5.18 6.748 7.659 11.488 7.659 11.488 9.68 5.805 9.68 4.356 12.78 2.515 12.01"></polygon>
+        </g>
+    </g>
+</svg>

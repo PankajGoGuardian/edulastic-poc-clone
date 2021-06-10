@@ -1,88 +1,101 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { get } from 'lodash'
+import { get, groupBy, isEmpty, difference, map } from 'lodash'
+import qs from 'qs'
+import loadable from '@loadable/component'
 
 // components
-import { Col, Row, Spin } from 'antd'
-import { MainContentWrapper } from '@edulastic/common'
-import { title } from '@edulastic/colors'
-import { TextWrapper } from '../../../styledComponents'
-import { CardBox } from './styled'
-import CardImage from './components/CardImage/cardImage'
-import CardTextContent from './components/CardTextContent/cardTextContent'
-import CreateClassPage from './components/CreateClassPage/createClassPage'
+import { Spin } from 'antd'
+import {
+  MainContentWrapper,
+  withWindowSizes,
+  CustomModalStyled,
+} from '@edulastic/common'
+import { bannerActions } from '@edulastic/constants/const/bannerActions'
+import notification from '@edulastic/common/src/components/Notification'
+import { segmentApi } from '@edulastic/api'
+import configurableTilesApi from '@edulastic/api/src/configurableTiles'
+import BannerSlider from './components/BannerSlider/BannerSlider'
+import FeaturedContentBundle from './components/FeaturedContentBundle/FeaturedContentBundle'
+import ItemBankTrialUsedModal from './components/FeaturedContentBundle/ItemBankTrialUsedModal'
+import Classes from './components/Classes/Classes'
 import Launch from '../../../LaunchHangout/Launch'
-import ClassSelectModal from '../../../../../ManageClass/components/ClassListContainer/ClassSelectModal'
-import CanvasClassSelectModal from '../../../../../ManageClass/components/ClassListContainer/CanvasClassSelectModal'
-// static data
+import PurchaseFlowModals from '../../../../../src/components/common/PurchaseModals'
+import SubjectGradeForm from '../../../../../../student/Signup/components/TeacherContainer/SubjectGrade'
 
 // ducks
+import { slice } from '../../../../../Subscription/ducks'
 import { getDictCurriculumsAction } from '../../../../../src/actions/dictionaries'
 import { receiveSearchCourseAction } from '../../../../../Courses/ducks'
+import { fetchCleverClassListRequestAction } from '../../../../../ManageClass/ducks'
+import { receiveTeacherDashboardAction } from '../../../../ducks'
 import {
-  fetchClassListAction,
-  fetchCleverClassListRequestAction,
-  syncClassesWithCleverAction,
-  getCleverClassListSelector,
-  getCanvasCourseListRequestAction,
-  getCanvasSectionListRequestAction,
-  setShowCleverSyncModalAction,
-} from '../../../../../ManageClass/ducks'
-import { receiveTeacherDashboardAction } from '../../../../duck'
-import {
-  getGoogleAllowedInstitionPoliciesSelector,
-  getCanvasAllowedInstitutionPoliciesSelector,
-  getInterestedGradesSelector,
-  getInterestedSubjectsSelector,
-  getCleverLibraryUserSelector,
-} from '../../../../../src/selectors/user'
-import { getUserDetails } from '../../../../../../student/Login/ducks'
-import { getFormattedCurriculumsSelector } from '../../../../../src/selectors/dictionaries'
+  getUserDetails,
+  isDemoPlaygroundUser,
+  setUserAction,
+} from '../../../../../../student/Login/ducks'
+import { resetTestFiltersAction } from '../../../../../TestList/ducks'
+import { clearPlaylistFiltersAction } from '../../../../../Playlist/ducks'
+import { getCollectionsSelector } from '../../../../../src/selectors/user'
+import TestRecommendations from './components/TestRecommendations'
 
-const Card = ({ data }) => (
-  <CardBox data-cy={data.name}>
-    <Row>
-      <CardImage data={data} />
-    </Row>
-    <Row>
-      <CardTextContent data={data} />
-    </Row>
-  </CardBox>
+const ItemPurchaseModal = loadable(() =>
+  import('./components/ItemPurchaseModal')
 )
+const TrialModal = loadable(() => import('./components/TrialModal'))
+
+const PREMIUM_TAG = 'PREMIUM'
+
+const sortByOrder = (prop) =>
+  prop.sort((a, b) => a.config?.order - b.config?.order)
 
 const MyClasses = ({
   getTeacherDashboard,
   classData,
   loading,
-  fetchClassList,
   history,
-  isUserGoogleLoggedIn,
   getDictCurriculums,
   receiveSearchCourse,
   districtId,
-  googleAllowedInstitutions,
-  canvasAllowedInstitutions,
-  courseList,
-  loadingCleverClassList,
-  cleverClassList,
-  getStandardsListBySubject,
   fetchCleverClassList,
-  syncCleverClassList,
-  defaultGrades = [],
-  defaultSubjects = [],
-  isCleverUser,
-  institutionIds,
-  canvasCourseList,
-  canvasSectionList,
-  getCanvasCourseListRequest,
-  getCanvasSectionListRequest,
   user,
   showCleverSyncModal,
-  setShowCleverSyncModal,
+  dashboardTiles,
+  windowWidth,
+  resetTestFilters,
+  resetPlaylistFilters,
+  collections,
+  isPremiumTrialUsed,
+  itemBankSubscriptions = [],
+  startTrialAction,
+  usedTrialItemBankIds = [],
+  subscription: { subType } = {},
+  products,
+  showHeaderTrialModal,
+  setShowHeaderTrialModal,
+  setUser,
+  isDemoPlayground = false,
 }) => {
-  const [showCanvasSyncModal, setShowCanvasSyncModal] = useState(false)
+  const [showBannerModal, setShowBannerModal] = useState(null)
+  const [isPurchaseModalVisible, setIsPurchaseModalVisible] = useState(false)
+  const [isTrialModalVisible, setIsTrialModalVisible] = useState(false)
+  const [productData, setProductData] = useState({})
+  const [clickedBundleId, setClickedBundleId] = useState(null)
+  const [showItemBankTrialUsedModal, setShowItemBankTrialUsedModal] = useState(
+    false
+  )
+  const [showSubscriptionAddonModal, setShowSubscriptionAddonModal] = useState(
+    false
+  )
+  const [showTestCustomizerModal, setShowTestCustomizerModal] = useState(false)
+  const [trialAddOnProductIds, setTrialAddOnProductIds] = useState([])
+  const [recommendedTests, setRecommendedTests] = useState([])
+
+  const [showTrialSubsConfirmation, setShowTrialSubsConfirmation] = useState(
+    false
+  )
 
   useEffect(() => {
     // fetch clever classes on modal display
@@ -90,12 +103,84 @@ const MyClasses = ({
       fetchCleverClassList()
     }
   }, [showCleverSyncModal])
-
   useEffect(() => {
     getTeacherDashboard()
     getDictCurriculums()
     receiveSearchCourse({ districtId, active: 1 })
   }, [])
+
+  const saveRecommendedTests = (_data) => {
+    const data = _data.map((x) => {
+      return { ...x._source, _id: x._id }
+    })
+    if (user?.recommendedContentUpdated) {
+      if (data?.length > 0) {
+        notification({
+          msg: 'Recommended content is updated.',
+          type: 'success',
+        })
+      } else {
+        notification({
+          msg:
+            'No recommended content found currently. We will show them when available.',
+          type: 'info',
+        })
+      }
+      const temp = user
+      temp.recommendedContentUpdated = false
+      setUser(temp)
+    }
+    if (!_data || !_data.length) {
+      return
+    }
+    localStorage.setItem(
+      `recommendedTest:${user?._id}:stored`,
+      JSON.stringify(data)
+    )
+    setRecommendedTests(data)
+  }
+
+  const checkLocalRecommendedTests = () => {
+    const recommendedTestsLocal = localStorage.getItem(
+      `recommendedTest:${user?._id}:stored`
+    )
+    if (recommendedTestsLocal) {
+      setRecommendedTests(JSON.parse(recommendedTestsLocal))
+      if (user?.recommendedContentUpdated) {
+        setTimeout(() => {
+          configurableTilesApi
+            .fetchRecommendedTest()
+            .then((res) => saveRecommendedTests(res))
+        }, 6000)
+      }
+    } else {
+      configurableTilesApi
+        .fetchRecommendedTest()
+        .then((res) => saveRecommendedTests(res))
+    }
+  }
+
+  useEffect(() => {
+    checkLocalRecommendedTests()
+  }, [user?.recommendedContentUpdated])
+
+  const isPremiumUser = user?.features?.premium
+
+  /**
+   *  a user is paid premium user if
+   *  - subType exists and
+   *  - premium is not through trial ie, only - (enterprise, premium, partial_premium) and
+   *  - is partial premium user & premium is true
+   *
+   * TODO: refactor and define this at the top level
+   */
+  const isPaidPremium = !(
+    !subType ||
+    subType === 'TRIAL_PREMIUM' ||
+    (subType === 'partial_premium' && !isPremiumUser)
+  )
+
+  const isCliUser = user.openIdProvider === 'CLI'
 
   const sortableClasses = classData
     .filter((d) => d.asgnStartDate !== null && d.asgnStartDate !== undefined)
@@ -108,102 +193,468 @@ const MyClasses = ({
   const allActiveClasses = allClasses.filter(
     (c) => c.active === 1 && c.type === 'class'
   )
-  const ClassCards = allActiveClasses.map((item) => (
-    <Col xs={24} sm={24} md={12} lg={12} xl={8} xxl={6} key={item._id}>
-      <Card data={item} />
-    </Col>
-  ))
+
+  const handleContentRedirect = (filters, contentType) => {
+    const entries = filters.reduce((a, c) => ({ ...a, ...c }), {
+      removeInterestedFilters: true,
+    })
+    const filter = qs.stringify(entries)
+
+    if (contentType === 'tests') {
+      resetTestFilters()
+    } else {
+      resetPlaylistFilters()
+    }
+    if (contentType === 'playlist') {
+      history.push(`/author/playlists/${filters[0]?._id}#review`)
+    } else {
+      history.push(`/author/${contentType}?${filter}`)
+    }
+  }
+
+  const hasAccessToItemBank = (itemBankId) =>
+    collections.some((collection) => collection._id === itemBankId)
+
+  const handleBlockedClick = ({ subscriptionData }) => {
+    if (
+      usedTrialItemBankIds.includes(subscriptionData.productId) ||
+      (isPremiumTrialUsed && !isPremiumUser)
+    ) {
+      setShowItemBankTrialUsedModal(true)
+    } else {
+      setIsPurchaseModalVisible(true)
+    }
+    setProductData({
+      productId: subscriptionData.productId,
+      productName: subscriptionData.productName,
+      description: subscriptionData.description,
+      hasTrial: subscriptionData.hasTrial,
+      itemBankId: subscriptionData.itemBankId,
+    })
+  }
+
+  const togglePurchaseModal = (value) => setIsPurchaseModalVisible(value)
+  const toggleTrialModal = (value) => setIsTrialModalVisible(value)
+  const handleCloseItemTrialModal = () => setShowItemBankTrialUsedModal(false)
+
+  const handlePurchaseFlow = () => {
+    setShowSubscriptionAddonModal(true)
+    setIsPurchaseModalVisible(false)
+    setShowItemBankTrialUsedModal(false)
+  }
+
+  const handleFeatureClick = ({ config = {}, tags = [], isBlocked }) => {
+    const { filters, contentType, subscriptionData } = config
+    if (isBlocked) {
+      handleBlockedClick(config)
+      return
+    }
+
+    let content = contentType?.toLowerCase() || 'tests_library'
+    if (content === 'tests_library') {
+      content = 'tests'
+    } else if (content === 'playlists_library') {
+      content = 'playlists'
+    }
+    if (filters?.[0]?.collections?.[0] || subscriptionData?.itemBankId) {
+      setClickedBundleId(
+        filters?.[0]?.collections?.[0] || subscriptionData?.itemBankId
+      )
+    }
+    if (content === 'playlists') {
+      setShowTrialSubsConfirmation(true)
+      return
+    }
+    if (tags.includes(PREMIUM_TAG)) {
+      if (isPremiumUser) {
+        handleContentRedirect(filters, content)
+      } else {
+        history.push(`/author/subscription`)
+      }
+    } else {
+      handleContentRedirect(filters, content)
+    }
+  }
+
+  const getFeatureBundles = (bundles) =>
+    bundles.map((bundle) => {
+      const { subscriptionData } = bundle.config
+      if (!subscriptionData?.productId) {
+        return bundle
+      }
+
+      const { imageUrl: imgUrl, premiumImageUrl } = bundle
+      const isBlocked = !hasAccessToItemBank(subscriptionData.itemBankId)
+      const imageUrl = isBlocked ? premiumImageUrl : imgUrl
+
+      return {
+        ...bundle,
+        isBlocked,
+        imageUrl,
+      }
+    })
+
+  const { BANNER, FEATURED } = groupBy(dashboardTiles, 'type')
+  let bannerSlides = sortByOrder(BANNER || [])
+  const featuredBundles = sortByOrder(getFeatureBundles(FEATURED || []))
+
+  const isEurekaMathActive = useMemo(
+    () =>
+      collections.some(
+        (itemBank) =>
+          itemBank.owner === 'Great Minds DATA' &&
+          itemBank.name === 'Eureka Math'
+      ),
+    [collections]
+  )
+
+  const isSingaporeMathCollectionActive = featuredBundles.filter(
+    (feature) =>
+      (feature.description?.toLowerCase?.()?.includes('singaporemath') ||
+        feature.description?.toLowerCase?.()?.includes('singapore math')) &&
+      feature?.active
+  )
+
+  const isSingaporeMath =
+    user?.referrer?.includes('singapore') ||
+    user?.utm_source?.toLowerCase()?.includes('singapore') ||
+    isSingaporeMathCollectionActive?.length > 0
+
+  let filteredBundles = featuredBundles
+
+  if (isEurekaMathActive) {
+    filteredBundles = filteredBundles.filter(
+      (feature) => feature.description !== 'Engage NY'
+    )
+  }
+
+  if (isCliUser) {
+    filteredBundles = filteredBundles.filter(
+      (feature) => !feature?.config?.subscriptionData?.itemBankId
+    )
+    bannerSlides = bannerSlides.filter(
+      (banner) => !banner.description?.toLowerCase?.()?.includes('spark')
+    )
+  }
+
+  if (isSingaporeMath) {
+    filteredBundles = filteredBundles.filter(
+      (feature) =>
+        !feature?.config?.subscriptionData?.itemBankId &&
+        !(
+          feature.description?.includes('Engage NY') &&
+          feature.description?.includes('Math')
+        ) &&
+        !(
+          feature?.config?.excludedPublishers?.includes('SingaporeMath') ||
+          feature?.config?.excludedPublishers?.includes('Singapore Math')
+        )
+    )
+    bannerSlides = bannerSlides.filter(
+      (banner) =>
+        !banner.description?.toLowerCase?.()?.includes('spark') &&
+        !(
+          banner?.config?.excludedPublishers?.includes('SingaporeMath') ||
+          banner?.config?.excludedPublishers?.includes('Singapore Math')
+        )
+    )
+  }
+
+  const handleInAppRedirect = (data) => {
+    const filter = qs.stringify(data.filters)
+    history.push(`/author/${data.contentType}?${filter}`)
+  }
+
+  const handleExternalRedirect = (data) => {
+    window.open(data.externalUrl, '_blank')
+  }
+
+  const getTileByProductId = (productId) => {
+    if (productId) {
+      return (
+        featuredBundles &&
+        featuredBundles.find(
+          (bundle) => bundle?.config?.subscriptionData?.productId === productId
+        )
+      )
+    }
+
+    return {}
+  }
+
+  const handleSparkClick = (id) => {
+    const tile = getTileByProductId(id)
+    if (!isEmpty(tile.config)) {
+      handleFeatureClick(tile)
+    }
+  }
+
+  const bannerActionHandler = (filter = {}, description) => {
+    const { action, data } = filter
+    segmentApi.trackUserClick({
+      user,
+      data: { event: `dashboard:banner-${description}:click` },
+    })
+
+    const content = data?.contentType?.toLowerCase() || 'tests_library'
+    if (content === 'tests_library') {
+      data.contentType = 'tests'
+    } else if (content === 'playlists_library') {
+      data.contentType = 'playlists'
+    }
+    switch (+action) {
+      case bannerActions.BANNER_DISPLAY_IN_MODAL:
+        setShowBannerModal(data)
+        break
+      case bannerActions.BANNER_APP_REDIRECT:
+        handleInAppRedirect(data)
+        break
+      case bannerActions.BANNER_EXTERNAL_REDIRECT:
+        handleExternalRedirect(data)
+        break
+      default:
+        break
+    }
+  }
+
+  const { productItemBankIds = [] } = useMemo(() => {
+    if (products) {
+      const itemBankProducts = products.filter(({ type }) => type !== 'PREMIUM')
+      return {
+        productItemBankIds: itemBankProducts.map(
+          ({ linkedProductId }) => linkedProductId
+        ),
+      }
+    }
+    return {}
+  }, [products])
+
+  const accessibleItembankProductIds = useMemo(() => {
+    const collectionIds = collections.map((collection) => collection._id)
+
+    return products.reduce((a, c) => {
+      if (collectionIds.includes(c?.linkedProductId)) {
+        return a.concat(c.id)
+      }
+      return a
+    }, [])
+  }, [products, collections])
+
+  const paidItemBankIds = useMemo(() => {
+    if (!itemBankSubscriptions) {
+      return []
+    }
+
+    return itemBankSubscriptions
+      .filter(
+        (subscription) =>
+          // only include the itembanks which are sold as products
+          !subscription.isTrial &&
+          productItemBankIds.includes(subscription.itemBankId)
+      )
+      .map((subscription) => subscription.itemBankId)
+  }, [itemBankSubscriptions])
+
+  const productsToShowInTrialModal = useMemo(() => {
+    if (!showHeaderTrialModal || isTrialModalVisible) {
+      return [productData.productId]
+    }
+
+    // if the product has paid subscription or the trial is used then its not available for trial.
+    const allAvailableTrialItemBankIds = difference(productItemBankIds, [
+      ...paidItemBankIds,
+      ...usedTrialItemBankIds,
+    ])
+
+    const allAvailableItemProductIds = map(
+      products.filter((product) =>
+        allAvailableTrialItemBankIds.includes(product.linkedProductId)
+      ),
+      'id'
+    )
+
+    return allAvailableItemProductIds
+  }, [
+    itemBankSubscriptions,
+    products,
+    showHeaderTrialModal,
+    isTrialModalVisible,
+  ])
+
+  if (loading) {
+    return <Spin style={{ marginTop: '80px' }} />
+  }
+
+  const widthOfTilesWithMargin = 240 + 2 // 240 is width of tile and 2 is margin-right for each tile
+
+  const GridCountInARow = Math.floor(
+    (windowWidth - 120) / widthOfTilesWithMargin
+  ) // here 120 is width of side-menu 70px and padding of container 50px
+
+  const getClassCardModular = allActiveClasses.length % GridCountInARow
+  const classEmptyBoxCount = getClassCardModular
+    ? new Array(GridCountInARow - getClassCardModular).fill(1)
+    : []
+
+  const getFeatureCardModular = filteredBundles.length % GridCountInARow
+  const featureEmptyBoxCount = getFeatureCardModular
+    ? new Array(GridCountInARow - getFeatureCardModular).fill(1)
+    : []
+
+  const isTrialItemBank =
+    itemBankSubscriptions &&
+    itemBankSubscriptions?.length > 0 &&
+    itemBankSubscriptions?.filter((x) => {
+      return x.itemBankId === productData?.itemBankId && x.isTrial
+    })?.length > 0
+
+  const showTrialButton =
+    (!isPremiumTrialUsed || !isPaidPremium) && !isTrialItemBank
+
+  const isCurrentItemBankUsed = usedTrialItemBankIds.includes(
+    productData?.itemBankId
+  )
+
+  const defaultSelectedProductIds = productData.productId
+    ? [productData.productId]
+    : []
 
   return (
-    <MainContentWrapper padding="30px">
-      <ClassSelectModal
-        type="clever"
-        visible={showCleverSyncModal}
-        onSubmit={syncCleverClassList}
-        onCancel={() => setShowCleverSyncModal(false)}
-        loading={loadingCleverClassList}
-        classListToSync={cleverClassList}
-        courseList={courseList}
-        getStandardsListBySubject={getStandardsListBySubject}
-        refreshPage="dashboard"
-        existingGroups={allClasses}
-        defaultGrades={defaultGrades}
-        defaultSubjects={defaultSubjects}
-      />
-      <CanvasClassSelectModal
-        visible={showCanvasSyncModal}
-        onCancel={() => setShowCanvasSyncModal(false)}
-        user={user}
-        getCanvasCourseListRequest={getCanvasCourseListRequest}
-        getCanvasSectionListRequest={getCanvasSectionListRequest}
-        canvasCourseList={canvasCourseList}
-        canvasSectionList={canvasSectionList}
-        institutionId={institutionIds[0]}
-      />
-      <TextWrapper size="20px" color={title} style={{ marginBottom: '1rem' }}>
-        My Classes
-      </TextWrapper>
-      {loading ? (
-        <Spin style={{ marginTop: '80px' }} />
-      ) : allActiveClasses.length == 0 ? (
-        <CreateClassPage
-          fetchClassList={fetchClassList}
-          history={history}
-          isUserGoogleLoggedIn={isUserGoogleLoggedIn}
-          allowGoogleLogin={googleAllowedInstitutions.length > 0}
-          canvasAllowedInstitutions={canvasAllowedInstitutions}
-          enableCleverSync={isCleverUser}
-          setShowCleverSyncModal={setShowCleverSyncModal}
-          handleCanvasBulkSync={() => setShowCanvasSyncModal(true)}
-          user={user}
+    <MainContentWrapper padding="30px 25px">
+      {!loading && allActiveClasses?.length === 0 && (
+        <BannerSlider
+          bannerSlides={bannerSlides}
+          handleBannerModalClose={() => setShowBannerModal(null)}
+          bannerActionHandler={bannerActionHandler}
+          isBannerModalVisible={showBannerModal}
+          handleSparkClick={handleSparkClick}
+          accessibleItembankProductIds={accessibleItembankProductIds}
         />
-      ) : (
-        <Row gutter={20}>{ClassCards}</Row>
+      )}
+      <Classes
+        activeClasses={allActiveClasses}
+        emptyBoxCount={classEmptyBoxCount}
+        userId={user?._id}
+      />
+      {recommendedTests?.length > 0 && (
+        <TestRecommendations
+          recommendations={recommendedTests}
+          setShowTestCustomizerModal={setShowTestCustomizerModal}
+          userId={user?._id}
+          windowWidth={windowWidth}
+          history={history}
+          isDemoPlaygroundUser={isDemoPlayground}
+        />
+      )}
+      {!isCliUser && (
+        <FeaturedContentBundle
+          featuredBundles={filteredBundles}
+          handleFeatureClick={handleFeatureClick}
+          emptyBoxCount={featureEmptyBoxCount}
+        />
       )}
       <Launch />
+      <PurchaseFlowModals
+        showSubscriptionAddonModal={showSubscriptionAddonModal}
+        setShowSubscriptionAddonModal={setShowSubscriptionAddonModal}
+        isConfirmationModalVisible={showTrialSubsConfirmation}
+        setShowTrialSubsConfirmation={setShowTrialSubsConfirmation}
+        defaultSelectedProductIds={defaultSelectedProductIds}
+        setProductData={setProductData}
+        trialAddOnProductIds={trialAddOnProductIds}
+        clickedBundleId={clickedBundleId}
+        setClickedBundleId={setClickedBundleId}
+      />
+      {showItemBankTrialUsedModal && (
+        <ItemBankTrialUsedModal
+          title={productData.productName}
+          isVisible={showItemBankTrialUsedModal}
+          handleCloseModal={handleCloseItemTrialModal}
+          handlePurchaseFlow={handlePurchaseFlow}
+          isCurrentItemBankUsed={isCurrentItemBankUsed}
+        />
+      )}
+      {isPurchaseModalVisible && (
+        <ItemPurchaseModal
+          title={productData.productName}
+          description={productData.description}
+          productId={productData.productId}
+          isVisible={isPurchaseModalVisible}
+          toggleModal={togglePurchaseModal}
+          toggleTrialModal={toggleTrialModal}
+          handlePurchaseFlow={handlePurchaseFlow}
+          showTrialButton={showTrialButton}
+          isPremiumUser={isPremiumUser}
+        />
+      )}
+      {(isTrialModalVisible || showHeaderTrialModal) && (
+        <TrialModal
+          addOnProductIds={productsToShowInTrialModal}
+          isVisible={isTrialModalVisible || showHeaderTrialModal}
+          toggleModal={toggleTrialModal}
+          isPremiumUser={isPremiumUser}
+          isPremiumTrialUsed={isPremiumTrialUsed}
+          setShowTrialSubsConfirmation={setShowTrialSubsConfirmation}
+          startPremiumTrial={startTrialAction}
+          products={products}
+          setShowHeaderTrialModal={setShowHeaderTrialModal}
+          setTrialAddOnProductIds={setTrialAddOnProductIds}
+        />
+      )}
+      {showTestCustomizerModal && (
+        <CustomModalStyled
+          title="What do you teach?"
+          visible={showTestCustomizerModal}
+          footer={null}
+          width="900px"
+          onCancel={() => setShowTestCustomizerModal(false)}
+          centered
+        >
+          <SubjectGradeForm
+            userInfo={user}
+            districtId={false}
+            isTestRecommendationCustomizer
+            isModal
+            setShowTestCustomizerModal={setShowTestCustomizerModal}
+          />
+        </CustomModalStyled>
+      )}
     </MainContentWrapper>
   )
 }
 
 export default compose(
+  withWindowSizes,
   withRouter,
   connect(
     (state) => ({
       classData: state.dashboardTeacher.data,
-      isUserGoogleLoggedIn: get(state, 'user.user.isUserGoogleLoggedIn'),
-      googleAllowedInstitutions: getGoogleAllowedInstitionPoliciesSelector(
-        state
-      ),
-      canvasAllowedInstitutions: getCanvasAllowedInstitutionPoliciesSelector(
-        state
-      ),
-      fetchClassListLoading: state.manageClass.fetchClassListLoading,
       districtId: state.user.user?.orgData?.districtIds?.[0],
       loading: state.dashboardTeacher.loading,
       user: getUserDetails(state),
-      institutionIds: get(state, 'user.user.institutionIds', []),
-      canvasCourseList: get(state, 'manageClass.canvasCourseList', []),
-      canvasSectionList: get(state, 'manageClass.canvasSectionList', []),
-      courseList: get(state, 'coursesReducer.searchResult'),
-      isCleverUser: getCleverLibraryUserSelector(state),
-      loadingCleverClassList: get(state, 'manageClass.loadingCleverClassList'),
-      cleverClassList: getCleverClassListSelector(state),
-      getStandardsListBySubject: (subject) =>
-        getFormattedCurriculumsSelector(state, { subject }),
-      defaultGrades: getInterestedGradesSelector(state),
-      defaultSubjects: getInterestedSubjectsSelector(state),
       showCleverSyncModal: get(state, 'manageClass.showCleverSyncModal', false),
+      collections: getCollectionsSelector(state),
+      isPremiumTrialUsed:
+        state.subscription?.subscriptionData?.isPremiumTrialUsed,
+      itemBankSubscriptions:
+        state.subscription?.subscriptionData?.itemBankSubscriptions,
+      usedTrialItemBankIds:
+        state.subscription?.subscriptionData?.usedTrialItemBankIds,
+      subscription: state.subscription?.subscriptionData?.subscription,
+      products: state.subscription?.products,
+      showHeaderTrialModal: state.subscription?.showHeaderTrialModal,
+      isDemoPlayground: isDemoPlaygroundUser(state),
     }),
     {
-      fetchClassList: fetchClassListAction,
       receiveSearchCourse: receiveSearchCourseAction,
       getDictCurriculums: getDictCurriculumsAction,
       getTeacherDashboard: receiveTeacherDashboardAction,
       fetchCleverClassList: fetchCleverClassListRequestAction,
-      syncCleverClassList: syncClassesWithCleverAction,
-      getCanvasCourseListRequest: getCanvasCourseListRequestAction,
-      getCanvasSectionListRequest: getCanvasSectionListRequestAction,
-      setShowCleverSyncModal: setShowCleverSyncModalAction,
+      resetTestFilters: resetTestFiltersAction,
+      resetPlaylistFilters: clearPlaylistFiltersAction,
+      startTrialAction: slice.actions.startTrialAction,
+      setShowHeaderTrialModal: slice.actions.setShowHeaderTrialModal,
+      setUser: setUserAction,
     }
   )
 )(MyClasses)

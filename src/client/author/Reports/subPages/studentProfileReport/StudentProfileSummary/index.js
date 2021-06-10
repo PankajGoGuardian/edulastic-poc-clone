@@ -1,37 +1,42 @@
+import React, { useEffect, useMemo, useState } from 'react'
 import { backgrounds, labelGrey, secondaryTextColor } from '@edulastic/colors'
 import { SpinLoader, FlexContainer } from '@edulastic/common'
-import { Icon } from 'antd'
+import { Icon, Avatar } from 'antd'
 import { get, isEmpty } from 'lodash'
 import { compose } from 'redux'
-import { withNamespaces } from '@edulastic/localization'
-import React, { useEffect, useMemo } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
+
+import { withNamespaces } from '@edulastic/localization'
 import BarTooltipRow from '../../../common/components/tooltip/BarTooltipRow'
 import { NoDataContainer, StyledCard, StyledH3 } from '../../../common/styled'
+import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { downloadCSV } from '../../../common/util'
 import { getCsvDownloadingState } from '../../../ducks'
 import AssessmentChart from '../common/components/charts/AssessmentChart'
 import StudentPerformancePie from '../common/components/charts/StudentPerformancePie'
-import {
-  getBandInfoSelected,
-  getReportsSPRFilterData,
-  getSelectedStandardProficiency,
-  getReportsSPRFilterLoadingState,
-} from '../common/filterDataDucks'
+import { getReportsSPRFilterData } from '../common/filterDataDucks'
 import { useGetStudentMasteryData } from '../common/hooks'
 import {
   augementAssessmentChartData,
   getGrades,
   getStudentName,
+  getDomainOptionsByGradeSubject,
 } from '../common/utils/transformers'
+import { ControlDropDown } from '../../../common/components/widgets/controlDropDown'
 import StandardMasteryDetailsTable from './common/components/table/StandardMasteryDetailsTable'
-import { augmentDomainStandardMasteryData } from './common/utils/transformers'
+import {
+  augmentDomainStandardMasteryData,
+  filterData as filterStandards,
+} from './common/utils/transformers'
 import {
   getReportsStudentProfileSummary,
   getReportsStudentProfileSummaryLoader,
   getStudentProfileSummaryRequestAction,
+  getReportsStudentProfileSummaryError,
+  resetStudentProfileSummaryAction,
 } from './ducks'
+import staticDropDownData from '../../singleAssessmentReport/common/static/staticDropDownData.json'
 
 const getTooltip = (payload) => {
   if (payload && payload.length) {
@@ -52,40 +57,90 @@ const getTooltip = (payload) => {
   }
   return false
 }
+const allGrades = [
+  { key: 'All', title: 'All Grades' },
+  ...staticDropDownData.grades,
+]
+const allSubjects = [
+  { key: 'All', title: 'All Subjects' },
+  ...staticDropDownData.subjects,
+]
 
 const StudentProfileSummary = ({
   loading,
+  error,
   settings,
   isCsvDownloading,
   SPRFilterData,
   studentProfileSummary,
   getStudentProfileSummaryRequest,
-  bandInfoSelected,
-  selectedStandardProficiency,
+  resetStudentProfileSummary,
   location,
   pageTitle,
   history,
+  sharedReport,
   t,
-  reportsSPRFilterLoadingState,
+  toggleFilter,
 }) => {
-  const { selectedStudent } = settings
-  const bandInfo = bandInfoSelected
-  const scaleInfo = selectedStandardProficiency
+  const [selectedDomain, setSelectedDomain] = useState({
+    key: 'All',
+    title: 'All',
+  })
+  const [selectedSubject, setSelectedSubject] = useState({
+    key: 'All',
+    title: 'All Subjects',
+  })
+  const [selectedGrade, setSelectedGrade] = useState({
+    key: 'All',
+    title: 'All Subjects',
+  })
+
+  const [sharedReportFilters, isSharedReport] = useMemo(
+    () => [
+      sharedReport?._id
+        ? { ...sharedReport.filters, reportId: sharedReport?._id }
+        : null,
+      !!sharedReport?._id,
+    ],
+    [sharedReport]
+  )
+
+  const {
+    studentClassData = [],
+    bandInfo: bands = [],
+    scaleInfo: scales = [],
+  } = get(SPRFilterData, 'data.result', {})
+
+  const bandInfo = (
+    bands.find(
+      (x) =>
+        x._id ===
+        (sharedReportFilters || settings.requestFilters)
+          .performanceBandProfileId
+    ) || bands[0]
+  )?.performanceBand
+
+  const scaleInfo = (
+    scales.find(
+      (x) =>
+        x._id === (sharedReportFilters || settings.requestFilters).profileId
+    ) || scales[0]
+  )?.scale
+
+  const studentClassInfo = studentClassData[0] || {}
 
   const studentProfileSummaryData = get(
     studentProfileSummary,
     'data.result',
     {}
   )
-
   const {
     asessmentMetricInfo = [],
     studInfo = [],
     skillInfo = [],
     metricInfo = [],
   } = studentProfileSummaryData
-  const { studentClassData = [] } = get(SPRFilterData, 'data.result', {})
-  const studentClassInfo = studentClassData[0] || {}
+
   const data = useMemo(
     () => augementAssessmentChartData(asessmentMetricInfo, bandInfo),
     [asessmentMetricInfo, bandInfo]
@@ -97,42 +152,89 @@ const StudentProfileSummary = ({
     studentClassInfo,
     asessmentMetricInfo
   )
+  const domainOptions = getDomainOptionsByGradeSubject(
+    domains,
+    selectedGrade.key,
+    selectedSubject.key
+  )
   const domainsWithMastery = augmentDomainStandardMasteryData(
     domains,
-    scaleInfo
+    scaleInfo,
+    selectedDomain.key,
+    selectedGrade.key,
+    selectedSubject.key
+  )
+  const filteredStandards = filterStandards(
+    standards,
+    selectedDomain.key,
+    selectedGrade.key,
+    selectedSubject.key
   )
 
+  const onDomainSelect = (_, selected) => setSelectedDomain(selected)
+  const onSubjectSelect = (_, selected) => setSelectedSubject(selected)
+  const onGradeSelect = (_, selected) => setSelectedGrade(selected)
+
+  useEffect(() => () => resetStudentProfileSummary(), [])
+
   useEffect(() => {
-    const { selectedStudent: _selectedStudent, requestFilters } = settings
-    if (_selectedStudent.key && requestFilters.termId) {
+    if (settings.selectedStudent.key && settings.requestFilters.termId) {
       getStudentProfileSummaryRequest({
-        ...requestFilters,
-        studentId: _selectedStudent.key,
+        ...settings.requestFilters,
+        studentId: settings.selectedStudent.key,
       })
     }
-  }, [settings])
+    if (settings.requestFilters.termId || settings.requestFilters.reportId) {
+      return () => toggleFilter(null, false)
+    }
+  }, [settings.selectedStudent, settings.requestFilters])
+
+  useEffect(() => {
+    setSelectedDomain({ key: 'All', title: 'All' })
+  }, [selectedGrade, selectedSubject])
+
+  useEffect(() => {
+    const metrics = get(studentProfileSummary, 'data.result.metricInfo', [])
+    if (
+      (settings.requestFilters.termId || settings.requestFilters.reportId) &&
+      !loading &&
+      !isEmpty(studentProfileSummary) &&
+      !metrics.length
+    ) {
+      toggleFilter(null, true)
+    }
+  }, [studentProfileSummary])
 
   const _onBarClickCB = (key, args) => {
-    history.push({
-      pathname: `/author/classboard/${args.assignmentId}/${args.groupId}/test-activity/${args.testActivityId}`,
-      state: {
-        // this will be consumed in /src/client/author/Shared/Components/ClassBreadCrumb.js
-        breadCrumb: [
-          {
-            title: 'INSIGHTS',
-            to: '/author/reports',
-          },
-          {
-            title: pageTitle,
-            to: `${location.pathname}${location.search}`,
-          },
-        ],
-      },
-    })
+    !isSharedReport &&
+      history.push({
+        pathname: `/author/classboard/${args.assignmentId}/${args.groupId}/test-activity/${args.testActivityId}`,
+        state: {
+          // this will be consumed in /src/client/author/Shared/Components/ClassBreadCrumb.js
+          breadCrumb: [
+            {
+              title: 'INSIGHTS',
+              to: '/author/reports',
+            },
+            {
+              title: pageTitle,
+              to: `${location.pathname}${location.search}`,
+            },
+          ],
+        },
+      })
+  }
+  if (loading) {
+    return (
+      <SpinLoader
+        tip="Please wait while we gather the required information..."
+        position="fixed"
+      />
+    )
   }
 
-  if (loading || reportsSPRFilterLoadingState) {
-    return <SpinLoader position="fixed" />
+  if (error && error.dataSizeExceeded) {
+    return <DataSizeExceeded />
   }
 
   if (
@@ -141,14 +243,21 @@ const StudentProfileSummary = ({
     isEmpty(asessmentMetricInfo) ||
     isEmpty(metricInfo) ||
     isEmpty(skillInfo) ||
-    isEmpty(studInfo)
+    isEmpty(studInfo) ||
+    !settings.selectedStudent?.key
   ) {
-    return <NoDataContainer>No data available currently.</NoDataContainer>
+    return (
+      <NoDataContainer>
+        {settings.requestFilters?.termId ? 'No data available currently.' : ''}
+      </NoDataContainer>
+    )
   }
 
   const studentInformation = studInfo[0] || {}
-
-  const studentName = getStudentName(selectedStudent, studentInformation)
+  const studentName = getStudentName(
+    settings.selectedStudent,
+    studentInformation
+  )
   const anonymousString = t('common.anonymous')
 
   const onCsvConvert = (_data) =>
@@ -165,7 +274,11 @@ const StudentProfileSummary = ({
         <StudentDetailsCard width="280px" mr="20px">
           <IconContainer>
             <UserIconWrapper>
-              <StyledIcon type="user" />
+              {studentInformation.thumbnail ? (
+                <StyledAatar size={150} src={studentInformation.thumbnail} />
+              ) : (
+                <StyledIcon type="user" />
+              )}
             </UserIconWrapper>
           </IconContainer>
           <StudentDetailsContainer>
@@ -175,8 +288,6 @@ const StudentProfileSummary = ({
             <p>{getGrades(studInfo)}</p>
             <span>SCHOOL</span>
             <p>{studentClassInfo.schoolName || 'N/A'}</p>
-            <span>SUBJECT</span>
-            <p>{studentClassInfo.standardSet || 'N/A'}</p>
           </StudentDetailsContainer>
         </StudentDetailsCard>
         <Card width="calc(100% - 300px)">
@@ -185,7 +296,7 @@ const StudentProfileSummary = ({
             studentInformation={studentClassInfo}
             xTickTooltipPosition={400}
             onBarClickCB={_onBarClickCB}
-            isBarClickable
+            isBarClickable={!isSharedReport}
             printWidth={700}
           />
         </Card>
@@ -195,13 +306,38 @@ const StudentProfileSummary = ({
         <FlexContainer alignItems="stretch">
           <Card width="280px" mr="20px">
             <StudentPerformancePie
-              data={standards}
+              data={filteredStandards}
               scaleInfo={scaleInfo}
               getTooltip={getTooltip}
               title=""
             />
           </Card>
           <Card width="calc(100% - 300px)">
+            <FilterRow justifyContent="space-between">
+              <DropdownContainer>
+                <ControlDropDown
+                  by={selectedGrade}
+                  selectCB={onGradeSelect}
+                  data={allGrades}
+                  prefix="Standard Grade"
+                  showPrefixOnSelected={false}
+                />
+                <ControlDropDown
+                  by={selectedSubject}
+                  selectCB={onSubjectSelect}
+                  data={allSubjects}
+                  prefix="Standard Subject"
+                  showPrefixOnSelected={false}
+                />
+                <ControlDropDown
+                  showPrefixOnSelected={false}
+                  by={selectedDomain}
+                  selectCB={onDomainSelect}
+                  data={domainOptions}
+                  prefix="Domain(s)"
+                />
+              </DropdownContainer>
+            </FilterRow>
             <StandardMasteryDetailsTable
               onCsvConvert={onCsvConvert}
               isCsvDownloading={isCsvDownloading}
@@ -218,14 +354,13 @@ const withConnect = connect(
   (state) => ({
     studentProfileSummary: getReportsStudentProfileSummary(state),
     loading: getReportsStudentProfileSummaryLoader(state),
+    error: getReportsStudentProfileSummaryError(state),
     SPRFilterData: getReportsSPRFilterData(state),
     isCsvDownloading: getCsvDownloadingState(state),
-    bandInfoSelected: getBandInfoSelected(state),
-    selectedStandardProficiency: getSelectedStandardProficiency(state),
-    reportsSPRFilterLoadingState: getReportsSPRFilterLoadingState(state),
   }),
   {
     getStudentProfileSummaryRequest: getStudentProfileSummaryRequestAction,
+    resetStudentProfileSummary: resetStudentProfileSummaryAction,
   }
 )
 
@@ -233,6 +368,13 @@ export default compose(
   withConnect,
   withNamespaces('student')
 )(StudentProfileSummary)
+
+const StyledAatar = styled(Avatar)`
+  @media print {
+    -webkit-print-color-adjust: exact;
+    color-adjust: exact;
+  }
+`
 
 const Card = styled(StyledCard)`
   width: ${({ width }) => width};
@@ -289,5 +431,26 @@ const StudentDetailsContainer = styled.div`
   p {
     color: ${secondaryTextColor};
     margin-bottom: 15px;
+  }
+`
+const FilterRow = styled(FlexContainer)`
+  @media print {
+    display: none;
+  }
+`
+const DropdownContainer = styled.div`
+  display: flex;
+  margin-bottom: 10px;
+
+  .control-dropdown {
+    .ant-btn {
+      width: 100%;
+    }
+  }
+  .control-dropdown {
+    margin-left: 10px;
+  }
+  .control-dropown:first-child {
+    margin-left: 0px;
   }
 `

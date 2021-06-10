@@ -1,20 +1,28 @@
 import { createAction, createReducer, createSelector } from 'redux-starter-kit'
-import { pick, last, get, set } from 'lodash'
+import { pick, last, get, set, isBoolean, forIn, startsWith } from 'lodash'
 import { takeLatest, call, put, select } from 'redux-saga/effects'
 import { message } from 'antd'
-import { notification } from '@edulastic/common'
+import { captureSentryException } from '@edulastic/common/src/sentryHelpers'
+import notification from '@edulastic/common/src/components/Notification'
 import { push } from 'connected-react-router'
-import {
-  authApi,
-  userApi,
-  TokenStorage,
-  settingsApi,
-  segmentApi,
-  schoolApi,
-} from '@edulastic/api'
-import { roleuser } from '@edulastic/constants'
-import * as firebase from 'firebase/app'
+// import {
+//   authApi,
+//   userApi,
+//   TokenStorage,
+//   settingsApi,
+//   segmentApi,
+//   schoolApi,
+// } from '@edulastic/api'
+import authApi from '@edulastic/api/src/auth'
+import userApi from '@edulastic/api/src/user'
+import settingsApi from '@edulastic/api/src/settings'
+import segmentApi from '@edulastic/api/src/segment'
+import schoolApi from '@edulastic/api/src/school'
+import * as TokenStorage from '@edulastic/api/src/utils/Storage'
+import { roleuser, signUpState } from '@edulastic/constants'
+import firebase from 'firebase/app'
 import * as Sentry from '@sentry/browser'
+import roleType from '@edulastic/constants/const/roleType'
 import { fetchAssignmentsAction } from '../Assignments/ducks'
 import {
   receiveLastPlayListAction,
@@ -27,11 +35,13 @@ import {
   getSignOutUrl,
   removeSignOutUrl,
   getStartedUrl,
+  isHashAssessmentUrl,
 } from '../../common/utils/helpers'
 import { userPickFields } from '../../common/utils/static/user'
 import {
   signupDistrictPolicySelector,
   signupGeneralSettingsSelector,
+  updateUserSignupStateAction,
 } from '../Signup/duck'
 import { getUser } from '../../author/src/selectors/user'
 import { updateInitSearchStateAction } from '../../author/TestPage/components/AddItems/ducks'
@@ -41,17 +51,24 @@ import {
   addLoadingComponentAction,
   removeLoadingComponentAction,
 } from '../../author/src/actions/authorUi'
+import appConfig from '../../../app-config'
+import {
+  schoologySyncAssignmentAction,
+  schoologySyncAssignmentGradesAction,
+} from '../../author/src/actions/assignments'
 
 // types
 export const LOGIN = '[auth] login'
 export const GOOGLE_LOGIN = '[auth] google login'
 export const CLEVER_LOGIN = '[auth] clever login'
-export const CLASSLINK_LOGIN = '[auth] classlink login'
+export const ATLAS_LOGIN = '[auth] atlas login'
+export const NEWSELA_LOGIN = '[auth] newsela login'
 export const MSO_LOGIN = '[auth] mso login'
 export const GOOGLE_SSO_LOGIN = '[auth] google sso login'
 export const CLEVER_SSO_LOGIN = '[auth] clever sso login'
 export const MSO_SSO_LOGIN = '[auth] mso sso login'
-export const CLASSLINK_SSO_LOGIN = '[auth] classlink sso login'
+export const ATLAS_SSO_LOGIN = '[auth] atlas sso login'
+export const NEWSELA_SSO_LOGIN = '[auth] newsela sso login'
 export const GET_USER_DATA = '[auth] get user data from sso response'
 export const SET_USER = '[auth] set user'
 export const SIGNUP = '[auth] signup'
@@ -150,17 +167,31 @@ export const ADD_COLLECTION_PERMISSION = '[user] update item bank permission'
 export const REMOVE_COLLECTION_PERMISSION = '[user] remove item bank permission'
 export const SET_CLI_USER = '[user] set cli user'
 export const TOGGLE_CLASS_CODE_MODAL = '[user] toggle class code modal'
+export const TOGGLE_IMAGES_BLOCKED_NOTIFICATION =
+  '[user] toggle images blocked notification'
+export const TOGGLE_ROLE_CONFIRMATION =
+  '[user] toggle student signing up as teacher'
+
+export const PERSIST_AUTH_STATE_AND_REDIRECT =
+  '[auth] persist auth entry state and request app bundle'
+
+export const TOGGLE_IOS_RESTRICT_NAVIGATION_MODAL =
+  '[user] toggle ios restrict navigation modal'
+export const TOGGLE_FREE_ADMIN_SUBSCRIPTON_ALERT_MODAL =
+  '[auth] toggle free admin subscription alert modal'
 
 // actions
 export const setSettingsSaSchoolAction = createAction(SET_SETTINGS_SA_SCHOOL)
 export const loginAction = createAction(LOGIN)
 export const googleLoginAction = createAction(GOOGLE_LOGIN)
 export const cleverLoginAction = createAction(CLEVER_LOGIN)
-export const classlinkLoginAction = createAction(CLASSLINK_LOGIN)
+export const atlasLoginAction = createAction(ATLAS_LOGIN)
+export const newselaLoginAction = createAction(NEWSELA_LOGIN)
 export const msoLoginAction = createAction(MSO_LOGIN)
 export const googleSSOLoginAction = createAction(GOOGLE_SSO_LOGIN)
 export const cleverSSOLoginAction = createAction(CLEVER_SSO_LOGIN)
-export const classlinkSSOLoginAction = createAction(CLASSLINK_SSO_LOGIN)
+export const atlasSSOLoginAction = createAction(ATLAS_SSO_LOGIN)
+export const newselaSSOLoginAction = createAction(NEWSELA_SSO_LOGIN)
 export const getUserDataAction = createAction(GET_USER_DATA)
 export const msoSSOLoginAction = createAction(MSO_SSO_LOGIN)
 export const setUserAction = createAction(SET_USER)
@@ -232,6 +263,24 @@ export const removeItemBankPermissionAction = createAction(
 )
 export const updateCliUserAction = createAction(SET_CLI_USER)
 export const toggleClassCodeModalAction = createAction(TOGGLE_CLASS_CODE_MODAL)
+export const toggleImageBlockNotificationAction = createAction(
+  TOGGLE_IMAGES_BLOCKED_NOTIFICATION
+)
+export const toggleRoleConfirmationPopupAction = createAction(
+  TOGGLE_ROLE_CONFIRMATION
+)
+
+export const persistAuthStateAndRedirectToAction = createAction(
+  PERSIST_AUTH_STATE_AND_REDIRECT
+)
+
+export const toggleIosRestrictNavigationModalAction = createAction(
+  TOGGLE_IOS_RESTRICT_NAVIGATION_MODAL
+)
+
+export const toggleFreeAdminSubscriptionModalAction = createAction(
+  TOGGLE_FREE_ADMIN_SUBSCRIPTON_ALERT_MODAL
+)
 
 const initialState = {
   addAccount: false,
@@ -242,6 +291,112 @@ const initialState = {
   currentChild: null,
   isCliUser: false,
   isClassCodeModalOpen: false,
+  isImageBlockNotification: false,
+  isRoleConfirmation: false,
+  iosRestrictNavigationModalVisible: false,
+  showAdminSubscriptionModal: false,
+}
+
+function getValidRedirectRouteByRole(_url, user) {
+  const url = (_url || '').trim()
+  if (url.includes('home/group') && url.includes('assignment')) {
+    return url
+  }
+  switch (user.role) {
+    case roleuser.TEACHER:
+      return url.match(/^\/author\//) || url.match(/\/embed\//)
+        ? url
+        : '/author/dashboard'
+    case roleuser.STUDENT:
+      return url.match(/^\/home\//) ||
+        url.includes('/author/tests/tab/review/id/') ||
+        url.match(/\/embed\//) ||
+        url.includes('author/tests/verid') ||
+        url.includes('home/tests/verid')
+        ? url
+        : '/home/assignments'
+    case roleuser.EDULASTIC_ADMIN:
+      return url.match(/^\/admin\//) ? url : '/admin/proxyUser'
+    case roleuser.EDULASTIC_CURATOR:
+      return url.match(/^\/author\//) ? url : '/author/items'
+    case roleuser.SCHOOL_ADMIN:
+      return url.match(/^\/author\/(?!.*dashboard)/)
+        ? url
+        : '/author/assignments'
+    case roleuser.DISTRICT_ADMIN:
+      if ((user.permissions || []).includes('curator'))
+        return url.match(/^\/publisher\//) ||
+          url.match(/^\/author\/(?!.*dashboard)/)
+          ? url
+          : '/publisher/dashboard'
+      if (!user?.features?.premium) {
+        return url.match(/^\/author\/(?!.*dashboard)(?!.*assignments)/)
+          ? url
+          : '/author/reports'
+      }
+      return url.match(/^\/author\/(?!.*dashboard)/)
+        ? url
+        : '/author/assignments'
+    default:
+      return url
+  }
+}
+
+const getRouteByGeneralRoute = (user) => {
+  switch (user.user.role) {
+    case roleuser.EDULASTIC_ADMIN:
+      return '/admin/search/clever'
+    case roleuser.DISTRICT_ADMIN:
+    case roleuser.SCHOOL_ADMIN:
+      if (!user?.user?.features?.premium) return '/author/reports'
+      return '/author/assignments'
+    case roleuser.TEACHER:
+      return '/author/dashboard'
+    case roleuser.STUDENT:
+    case roleuser.PARENT:
+      return '/home/assignments'
+    default:
+  }
+}
+
+const loginPaths = ['/', '/resetPassword', '/districtLogin', '/district']
+
+const isPartOfLoginRoutes = (pathname) =>
+  !loginPaths.some((path) =>
+    (pathname || window.location.pathname).startsWith(path)
+  )
+
+function* persistAuthStateAndRedirectToSaga({ payload }) {
+  const { _redirectRoute, toUrl } = payload || {}
+  const { authorUi, signup: signUp, user } = yield select((_state) => _state) ||
+    {}
+
+  if (!user.user) return
+
+  let redirectRoute = _redirectRoute || ''
+
+  const appRedirectPath = localStorage.getItem('loginRedirectUrl')
+
+  if (appRedirectPath && !isPartOfLoginRoutes(appRedirectPath)) {
+    redirectRoute = getValidRedirectRouteByRole(
+      appRedirectPath,
+      user.user || {}
+    )
+    localStorage.removeItem('loginRedirectUrl')
+  } else if (toUrl && !isPartOfLoginRoutes(toUrl) && toUrl != '/') {
+    redirectRoute = toUrl
+  } else if (!window.location.pathname.includes('home/group')) {
+    redirectRoute = getRouteByGeneralRoute(user)
+  }
+
+  localStorage.setItem(
+    'authState',
+    JSON.stringify({ authorUi, signup: signUp, user })
+  )
+
+  if (redirectRoute) {
+    window.location.replace(redirectRoute)
+  }
 }
 
 const setUser = (state, { payload }) => {
@@ -264,6 +419,7 @@ const setUser = (state, { payload }) => {
   }
   state.user.middleName = payload.middleName || undefined
   state.user.lastName = payload.lastName || undefined
+  state.user.openIdProvider = payload.openIdProvider || undefined
   set(state.user, 'orgData.defaultClass', defaultClass)
   set(state.user, 'orgData.selectedGrades', defaultGrades)
   set(state.user, 'orgData.selectedSubject', defaultSubject)
@@ -299,6 +455,9 @@ export default createReducer(initialState, {
   [SET_USER]: setUser,
   [SET_SETTINGS_SA_SCHOOL]: (state, { payload }) => {
     state.saSettingsSchool = payload
+  },
+  [TOGGLE_IOS_RESTRICT_NAVIGATION_MODAL]: (state, { payload }) => {
+    state.iosRestrictNavigationModalVisible = payload
   },
   [CHANGE_CLASS]: (state, { payload }) => {
     if (!(state.user && state.user.orgData)) {
@@ -482,8 +641,8 @@ export default createReducer(initialState, {
     state.updatingDefaultSettings = false
     const { defaultGrades, defaultSubjects, autoShareGCAssignment } = payload
     Object.assign(state.user.orgData, {
-      defaultGrades,
-      defaultSubjects,
+      defaultGrades: defaultGrades || [],
+      defaultSubjects: defaultSubjects || [],
       autoShareGCAssignment,
     })
   },
@@ -500,6 +659,10 @@ export default createReducer(initialState, {
     if (!payload?.usernames) {
       Object.assign(state.user, {
         isPowerTeacher: !state.user.isPowerTeacher,
+      })
+    } else if (Object.prototype.hasOwnProperty.call(payload, 'enable')) {
+      Object.assign(state.user, {
+        isPowerTeacher: payload.enable,
       })
     }
     state.updatingPowerTeacher = false
@@ -535,6 +698,20 @@ export default createReducer(initialState, {
   [TOGGLE_CLASS_CODE_MODAL]: (state, { payload }) => {
     state.isClassCodeModalOpen = payload
   },
+  [TOGGLE_IMAGES_BLOCKED_NOTIFICATION]: (state, { payload }) => {
+    state.isImageBlockNotification = payload
+  },
+  [TOGGLE_ROLE_CONFIRMATION]: (state, { payload }) => {
+    if (isBoolean(payload)) {
+      state.isRoleConfirmation = payload
+    } else {
+      state.isRoleConfirmation = true
+      state.email = payload
+    }
+  },
+  [TOGGLE_FREE_ADMIN_SUBSCRIPTON_ALERT_MODAL]: (state) => {
+    state.showAdminSubscriptionModal = !state.showAdminSubscriptionModal
+  },
 })
 
 export const getUserDetails = createSelector(['user.user'], (user) => user)
@@ -550,6 +727,16 @@ export const getClasses = createSelector(
 )
 
 export const getCurrentGroup = createSelector(
+  ['user.user.orgData.defaultClass'],
+  (r) => {
+    if (r === 'archive') {
+      return ''
+    }
+    return r
+  }
+)
+
+export const getCurrentGroupExactValue = createSelector(
   ['user.user.orgData.defaultClass'],
   (r) => r
 )
@@ -610,6 +797,11 @@ export const isProxyUser = createSelector(
   (isProxy) => isProxy
 )
 
+export const isDemoPlaygroundUser = createSelector(
+  ['user.user.isPlayground'],
+  (isPlayground) => isPlayground
+)
+
 export const proxyRole = createSelector(
   ['user.user.proxyRole'],
   (proxyrole) => proxyrole
@@ -634,30 +826,6 @@ const routeSelector = (state) => state.router.location.pathname
 
 function getCurrentFirebaseUser() {
   return firebase.auth().currentUser?.uid || undefined
-}
-
-function getValidRedirectRouteByRole(_url, user) {
-  const url = (_url || '').trim()
-  switch (user.role) {
-    case roleuser.TEACHER:
-      return url.match(/^\/author\//) ? url : '/author/dashboard'
-    case roleuser.STUDENT:
-      return url.match(/^\/home\//) ? url : '/home/assignments'
-    case roleuser.EDULASTIC_ADMIN:
-      return url.match(/^\/admin\//) ? url : '/admin/proxyUser'
-    case roleuser.EDULASTIC_CURATOR:
-      return url.match(/^\/author\//) ? url : '/author/items'
-    case roleuser.SCHOOL_ADMIN:
-      return url.match(/^\/author\//) ? url : '/author/assignments'
-    case roleuser.DISTRICT_ADMIN:
-      if ((user.permissions || []).includes('curator'))
-        return url.match(/^\/publisher\//) || url.match(/^\/author\//)
-          ? url
-          : '/publisher/dashboard'
-      return url.match(/^\/author\//) ? url : '/author/assignments'
-    default:
-      return url
-  }
 }
 
 function* login({ payload }) {
@@ -735,9 +903,6 @@ function* login({ payload }) {
           const publicUrl = localStorage.getItem('publicUrlAccess')
           localStorage.removeItem('publicUrlAccess')
           yield put(push({ pathname: publicUrl, state: { isLoading: true } }))
-        } else {
-          localStorage.removeItem('loginRedirectUrl')
-          yield put(push(redirectUrl))
         }
       }
 
@@ -752,8 +917,11 @@ function* login({ payload }) {
     const { status, data = {} } = err
     console.error(err)
     let errorMessage = 'You have entered an invalid email/username or password.'
-    if ((status === 403 || status === 412) && data.message) {
-      errorMessage = data.message
+    if (
+      (status === 403 || status === 412) &&
+      (data.message || err?.response?.data?.message)
+    ) {
+      errorMessage = data.message || err?.response?.data?.message
     }
     notification({ msg: errorMessage })
   } finally {
@@ -813,6 +981,8 @@ function* signup({ payload }) {
       role,
       classCode,
       passwordForExistingUser,
+      isAdmin,
+      utm_source,
     } = payload
     let nameList = name.split(' ')
     nameList = nameList.filter((item) => !!(item && item.trim()))
@@ -846,6 +1016,7 @@ function* signup({ payload }) {
       lastName,
       role,
       districtId,
+      utm_source,
     }
 
     if (classCode) {
@@ -854,6 +1025,10 @@ function* signup({ payload }) {
 
     if (passwordForExistingUser) {
       obj.passwordForExistingUser = passwordForExistingUser
+    }
+
+    if (isAdmin) {
+      obj.isAdmin = isAdmin
     }
 
     const addAccount = yield select(getAddAccount)
@@ -900,15 +1075,24 @@ function* signup({ payload }) {
       ) {
         yield firebase.auth().signInWithCustomToken(result.firebaseAuthToken)
       }
+      yield call(segmentApi.trackTeacherSignUp, { user: result })
+
       yield put(signupSuccessAction(result))
       localStorage.removeItem('loginRedirectUrl')
 
       if (generalSettings) {
         setSignOutUrl(getDistrictSignOutUrl(generalSettings))
       }
-
-      // Important redirection code removed, redirect code already present in /src/client/App.js
-      // it receives new user props in each steps of teacher signup and for other roles
+      if (user.role === roleType.STUDENT) {
+        yield put(persistAuthStateAndRedirectToAction())
+      } else if (
+        user.role === roleType.TEACHER &&
+        user.currentSignUpState === signUpState.ACCESS_WITHOUT_SCHOOL
+      ) {
+        window.location = '/author/dashboard'
+      } else {
+        yield put(push('/Signup'))
+      }
     }
   } catch (err) {
     const { role } = payload
@@ -932,17 +1116,18 @@ const getLoggedOutUrl = () => {
   // When u try to change this function change the duplicate function in "packages/api/src/utils/API.js" also
   const path = getWordsInURLPathName(window.location.pathname)
   const pathname = window.location.pathname.toLocaleLowerCase()
+  const search = window.location?.search
   if (pathname === '/getstarted') {
     return '/getStarted'
   }
   if (pathname === '/signup') {
-    return '/signup'
+    return `/signup${search}`
   }
   if (pathname === '/studentsignup') {
     return '/studentsignup'
   }
   if (
-    pathname === '/login' &&
+    pathname === '/' &&
     (window.location.hash.includes('register') ||
       window.location.hash.includes('signup'))
   ) {
@@ -972,7 +1157,7 @@ const getLoggedOutUrl = () => {
   if (pathname === '/resetpassword') {
     return window.location.href.split(window.location.origin)[1]
   }
-  if (pathname === '/inviteteacher') {
+  if (pathname === '/inviteteacher' || isHashAssessmentUrl()) {
     return `${window.location.pathname}${window.location.search}${window.location.hash}`
   }
   return '/login'
@@ -990,6 +1175,11 @@ export function* fetchUser({ payload }) {
         localStorage.setItem('loginRedirectUrl', getCurrentPath())
       }
       yield put(push(getLoggedOutUrl()))
+      // Capture referrer when no access-token
+      const referrer = window.document.referrer
+      if (!window.localStorage.getItem('originalreferrer') && referrer) {
+        window.localStorage.setItem('originalreferrer', referrer)
+      }
       return
     }
     if (payload && payload.addAccount === 'true') {
@@ -1000,13 +1190,19 @@ export function* fetchUser({ payload }) {
           addAccountTo: payload.userId,
         })
       )
-      yield put(push('/login'))
+      if (
+        !isPartOfLoginRoutes() &&
+        !window.location.pathname.includes('home/group')
+      ) {
+        yield put(push('/login'))
+      }
       return
     }
     const firebaseUser = yield call(getCurrentFirebaseUser)
-    const user = yield call(userApi.getUser, firebaseUser ? undefined : true)
+    const user =
+      (yield call(userApi.getUser, firebaseUser ? undefined : true)) || {}
     if (
-      (!firebaseUser && user.firebaseAuthToken) ||
+      (!firebaseUser && user?.firebaseAuthToken) ||
       (firebaseUser && firebaseUser !== user._id)
     ) {
       yield firebase.auth().signInWithCustomToken(user.firebaseAuthToken)
@@ -1019,7 +1215,7 @@ export function* fetchUser({ payload }) {
       TokenStorage.storeAccessToken(user.token, user._id, user.role, true)
       TokenStorage.selectAccessToken(user._id, user.role)
     }
-    TokenStorage.updateKID(user)
+    TokenStorage.updateKID(user || {})
     const searchParam = yield select((state) => state.router.location.search)
     if (searchParam.includes('showCliBanner=1'))
       localStorage.setItem('showCLIBanner', true)
@@ -1047,6 +1243,14 @@ export function* fetchUser({ payload }) {
     }
   } catch (error) {
     console.log('err', error, error)
+    if (
+      error?.response &&
+      error?.response?.status === 409 &&
+      error?.response?.data?.message === 'oldToken'
+    ) {
+      window.dispatchEvent(new Event('student-session-expired'))
+      return
+    }
     notification({ messageKey: 'failedLoadingUserData' })
     if (!(error?.response && error?.response?.status === 501)) {
       if (
@@ -1096,24 +1300,37 @@ export function* fetchV1Redirect({ payload: id }) {
   }
 }
 
+function redirectToUrl(url) {
+  window.location.href = url
+}
+
 function* logout() {
   try {
     const user = yield select(getUser)
-    if (user.isProxy) {
+    if (user.isProxy || user.isPlayground) {
       TokenStorage.removeAccessToken(user._id, user.role)
       window.close()
     } else {
       yield call(segmentApi.unloadIntercom, { user })
-      localStorage.clear()
+      if (user && TokenStorage.getAccessTokenForUser(user._id, user.role)) {
+        yield call(userApi.logout)
+      }
+      // localStorage.clear()
+      forIn(localStorage, (value, objKey) => {
+        if (!startsWith(objKey, 'recommendedTest:')) {
+          localStorage.removeItem(objKey)
+        }
+      })
       sessionStorage.removeItem('cliBannerShown')
       sessionStorage.removeItem('cliBannerVisible')
       sessionStorage.removeItem('addAccountDetails')
-      sessionStorage.removeItem('filters[Assignments]')
+      sessionStorage.removeItem(`assignments_filter_${user._id}`)
+      sessionStorage.removeItem('temporaryClass')
       TokenStorage.removeKID()
       TokenStorage.initKID()
-      TokenStorage.removeTokens()
+      TokenStorage.removeAllTokens()
       yield put({ type: 'RESET' })
-      yield put(push(getSignOutUrl()))
+      yield call(redirectToUrl, getSignOutUrl())
       removeSignOutUrl()
     }
   } catch (e) {
@@ -1133,6 +1350,7 @@ function* changeClass({ payload }) {
 }
 
 function* googleLogin({ payload }) {
+  localStorage.removeItem('thirdPartySignOnRole')
   const generalSettings = yield select(signupGeneralSettingsSelector)
   let districtId
   if (generalSettings) {
@@ -1152,6 +1370,9 @@ function* googleLogin({ payload }) {
     if (payload) {
       if (payload.role === 'teacher') {
         localStorage.setItem('thirdPartySignOnRole', payload.role)
+        if (payload.isAdmin) {
+          localStorage.setItem('thirdPartySignOnAdditionalRole', 'admin')
+        }
         role = 'teacher'
       } else if (payload.role === 'student') {
         localStorage.setItem('thirdPartySignOnRole', payload.role)
@@ -1174,6 +1395,7 @@ function* googleLogin({ payload }) {
     }
 
     const res = yield call(authApi.googleLogin, params)
+    TokenStorage.removeAllTokens()
     window.location.href = res
   } catch (e) {
     notification({
@@ -1186,6 +1408,12 @@ function* googleLogin({ payload }) {
 
 function* googleSSOLogin({ payload }) {
   const _payload = { ...payload }
+
+  const isAllowed = localStorage.getItem('studentRoleConfirmation')
+  if (isAllowed) {
+    _payload.isTeacherAllowed = true
+    localStorage.removeItem('studentRoleConfirmation')
+  }
 
   let generalSettings = localStorage.getItem('thirdPartySignOnGeneralSettings')
   if (generalSettings) {
@@ -1201,7 +1429,7 @@ function* googleSSOLogin({ payload }) {
         _payload.classCode = classCode
       }
     }
-    const res = yield call(authApi.googleSSOLogin, _payload)
+    const { isNewUser, ...res } = yield call(authApi.googleSSOLogin, _payload)
     if (res.reAuthGoogle) {
       TokenStorage.storeInLocalStorage(
         'payloadForUserData',
@@ -1209,13 +1437,25 @@ function* googleSSOLogin({ payload }) {
       )
       window.location.href = '/auth/google'
     } else {
+      if (isNewUser) {
+        yield call(segmentApi.trackTeacherSignUp, { user: res })
+      }
       yield put(getUserDataAction(res))
     }
   } catch (e) {
     const errorMessage = get(e, 'response.data.message', 'Google Login failed')
+    if (e.status === 409) {
+      const email = get(e, 'response.data.email', 'Email')
+      yield put(toggleRoleConfirmationPopupAction(email))
+      return
+    }
     if (errorMessage === 'signInUserNotFound') {
       yield put(push(getStartedUrl()))
       notification({ type: 'warn', messageKey: 'signInUserNotFound' })
+    } else if (errorMessage === 'teacherSignUpNotAllowed') {
+      yield put(push(getSignOutUrl()))
+      removeSignOutUrl()
+      notification({ type: 'warn', messageKey: 'teacherSignUpNotAllowed' })
     } else {
       notification({ msg: errorMessage })
       yield put(push(getSignOutUrl()))
@@ -1225,9 +1465,11 @@ function* googleSSOLogin({ payload }) {
   localStorage.removeItem('thirdPartySignOnRole')
   localStorage.removeItem('thirdPartySignOnClassCode')
   localStorage.removeItem('thirdPartySignOnGeneralSettings')
+  localStorage.removeItem('thirdPartySignOnAdditionalRole')
 }
 
 function* msoLogin({ payload }) {
+  localStorage.removeItem('thirdPartySignOnRole')
   const generalSettings = yield select(signupGeneralSettingsSelector)
   let districtId
   if (generalSettings) {
@@ -1246,6 +1488,9 @@ function* msoLogin({ payload }) {
     if (payload) {
       if (payload.role === 'teacher') {
         localStorage.setItem('thirdPartySignOnRole', payload.role)
+        if (payload.isAdmin) {
+          localStorage.setItem('thirdPartySignOnAdditionalRole', 'admin')
+        }
         role = 'teacher'
       } else if (payload.role === 'student') {
         localStorage.setItem('thirdPartySignOnRole', payload.role)
@@ -1263,6 +1508,7 @@ function* msoLogin({ payload }) {
       })
     }
     const res = yield call(authApi.msoLogin)
+    TokenStorage.removeAllTokens()
     window.location.href = res
   } catch (e) {
     notification({ msg: get(e, 'response.data.message', 'MSO Login failed') })
@@ -1271,6 +1517,12 @@ function* msoLogin({ payload }) {
 
 function* msoSSOLogin({ payload }) {
   const _payload = { ...payload }
+
+  const isAllowed = localStorage.getItem('studentRoleConfirmation')
+  if (isAllowed) {
+    _payload.isTeacherAllowed = true
+    localStorage.removeItem('studentRoleConfirmation')
+  }
 
   let generalSettings = localStorage.getItem('thirdPartySignOnGeneralSettings')
   if (generalSettings) {
@@ -1286,13 +1538,25 @@ function* msoSSOLogin({ payload }) {
         _payload.classCode = classCode
       }
     }
-    const res = yield call(authApi.msoSSOLogin, _payload)
+    const { isNewUser, ...res } = yield call(authApi.msoSSOLogin, _payload)
+    if (isNewUser) {
+      yield call(segmentApi.trackTeacherSignUp, { user: res })
+    }
     yield put(getUserDataAction(res))
   } catch (e) {
     const errorMessage = get(e, 'response.data.message', 'MSO Login failed')
+    if (e.status === 409) {
+      const email = get(e, 'response.data.email', 'Email')
+      yield put(toggleRoleConfirmationPopupAction(email))
+      return
+    }
     if (errorMessage === 'signInUserNotFound') {
       yield put(push(getStartedUrl()))
       notification({ type: 'warn', messageKey: 'signInUserNotFound' })
+    } else if (errorMessage === 'teacherSignUpNotAllowed') {
+      yield put(push(getSignOutUrl()))
+      removeSignOutUrl()
+      notification({ type: 'warn', messageKey: 'teacherSignUpNotAllowed' })
     } else {
       notification({ msg: errorMessage })
       yield put(push(getSignOutUrl()))
@@ -1302,6 +1566,7 @@ function* msoSSOLogin({ payload }) {
   localStorage.removeItem('thirdPartySignOnRole')
   localStorage.removeItem('thirdPartySignOnClassCode')
   localStorage.removeItem('thirdPartySignOnGeneralSettings')
+  localStorage.removeItem('thirdPartySignOnAdditionalRole')
 }
 
 function* cleverLogin({ payload }) {
@@ -1320,6 +1585,7 @@ function* cleverLogin({ payload }) {
       localStorage.setItem('thirdPartySignOnRole', payload)
     }
     const res = yield call(authApi.cleverLogin)
+    TokenStorage.removeAllTokens()
     window.location.href = res
   } catch (e) {
     notification({ messageKey: 'cleverLoginFailed' })
@@ -1342,7 +1608,7 @@ function* cleverSSOLogin({ payload }) {
   } catch (err) {
     const { data = {} } = err.response || {}
     const { message: errorMessage } = data
-    Sentry.captureException(err)
+    captureSentryException(err)
     if (
       errorMessage ===
       'User not yet authorized to use Edulastic. Please contact your district administrator!'
@@ -1364,7 +1630,7 @@ function* cleverSSOLogin({ payload }) {
   localStorage.removeItem('thirdPartySignOnGeneralSettings')
 }
 
-function* classlinkLogin({ payload }) {
+function* atlasLogin({ payload }) {
   const generalSettings = yield select(signupGeneralSettingsSelector)
   const params = {}
   if (generalSettings) {
@@ -1380,14 +1646,15 @@ function* classlinkLogin({ payload }) {
     if (payload) {
       localStorage.setItem('thirdPartySignOnRole', payload)
     }
-    const res = yield call(authApi.classlinkLogin, params)
+    const res = yield call(authApi.atlasLogin, params)
+    TokenStorage.removeAllTokens()
     window.location.href = res
   } catch (e) {
-    notification({ messageKey: 'classlinkLoginFailed' })
+    notification({ messageKey: 'atlasLoginFailed' })
   }
 }
 
-function* classlinkSSOLogin({ payload }) {
+function* atlasSSOLogin({ payload }) {
   const _payload = { ...payload }
 
   let generalSettings = localStorage.getItem('thirdPartySignOnGeneralSettings')
@@ -1398,7 +1665,7 @@ function* classlinkSSOLogin({ payload }) {
   }
 
   try {
-    const res = yield call(authApi.classlinkSSOLogin, _payload)
+    const res = yield call(authApi.atlasSSOLogin, _payload)
     yield put(getUserDataAction(res))
   } catch (e) {
     if (
@@ -1413,13 +1680,74 @@ function* classlinkSSOLogin({ payload }) {
         })
       )
     } else {
-      notification({ msg: e?.data?.message || 'Classlink Login failed' })
+      notification({ msg: e?.data?.message || 'Atlas Login failed' })
       yield put(push(getSignOutUrl()))
     }
     removeSignOutUrl()
   }
   localStorage.removeItem('thirdPartySignOnRole')
   localStorage.removeItem('thirdPartySignOnGeneralSettings')
+}
+
+function* newselaLogin({ payload }) {
+  const generalSettings = yield select(signupGeneralSettingsSelector)
+  const params = {}
+  if (generalSettings) {
+    localStorage.setItem(
+      'thirdPartySignOnGeneralSettings',
+      JSON.stringify(generalSettings)
+    )
+    setSignOutUrl(getDistrictSignOutUrl(generalSettings))
+    params.districtId = generalSettings.orgId
+  }
+
+  try {
+    if (payload) {
+      localStorage.setItem('thirdPartySignOnRole', payload)
+    }
+    const res = yield call(authApi.newselaLogin, params)
+    TokenStorage.removeAllTokens()
+    window.location.href = res
+  } catch (e) {
+    notification({ messageKey: 'newselaLoginFailed' })
+  }
+}
+
+function* newselaSSOLogin({ payload }) {
+  try {
+    if (payload.code) {
+      const res = yield call(authApi.newselaSSOLogin, payload)
+      yield put(getUserDataAction(res))
+    } else {
+      const {
+        loginUrl: authUrl,
+        clientId: newselaClientId,
+        redirectUrl: newselaRedirectUrl,
+      } = appConfig.newsela
+
+      const ssoRedirect = `${authUrl}?client_id=${newselaClientId}&response_type=code&redirect_uri=${newselaRedirectUrl}`
+      window.location.replace(ssoRedirect)
+      return
+    }
+  } catch (e) {
+    if (
+      e?.response?.data?.message ===
+      'User not yet authorized to use Edulastic. Please contact your district administrator!'
+    ) {
+      yield put(
+        push({
+          pathname: getSignOutUrl(),
+          state: { showUnauthorized: true },
+          hash: '#login',
+        })
+      )
+    } else {
+      notification({ messageKey: 'newselaLoginFailed' })
+      yield put(push(getSignOutUrl()))
+    }
+    removeSignOutUrl()
+  }
+  localStorage.removeItem('thirdPartySignOnRole')
 }
 
 function* getUserData({ payload: res }) {
@@ -1445,14 +1773,42 @@ function* getUserData({ payload: res }) {
 
     const isAuthUrl = /signup|login/gi.test(redirectUrl)
     if (redirectUrl && !isAuthUrl) {
-      localStorage.removeItem('loginRedirectUrl')
+      // if redirect is happening for LCB and user did action schoology sync
+      const schoologySync = localStorage.getItem('schoologyShare')
+      if ((redirectUrl || '').includes('classboard')) {
+        const fragments = redirectUrl.split('/')
+        const assignmentId = fragments[3]
+        const classSectionId = fragments[4]
+        if (schoologySync === 'grades') {
+          schoologySyncAssignmentGradesAction({
+            assignmentId,
+            groupId: classSectionId,
+          })
+        } else if (schoologySync === 'assignment') {
+          schoologySyncAssignmentAction({
+            assignmentIds: [assignmentId],
+            groupId: classSectionId,
+          })
+        }
+      }
+      if (
+        !(
+          user?.role === roleuser.STUDENT &&
+          redirectUrl.includes('author/tests/verid') &&
+          window.location.pathname.includes('/auth')
+        )
+      ) {
+        // When student is authenticating and redirect url is a test sharing link, do not clear the loginRedirectUrl from storage
+        // This will allow us to correct the URL (replace author with home) and redirect on persistAuthStateAndRedirectToSaga call
+        localStorage.removeItem('loginRedirectUrl')
+      }
       yield put(push(redirectUrl))
     }
 
     // Important redirection code removed, redirect code already present in /src/client/App.js
     // it receives new user props in each steps of teacher signup and for other roles
   } catch (e) {
-    console.warn(e)
+    console.log(e)
     notification({ messageKey: 'failedToFetchUserData' })
 
     yield put(push(getSignOutUrl()))
@@ -1479,7 +1835,7 @@ function* updateUserRoleSaga({ payload }) {
     yield put(signupSuccessAction(_user))
     yield call(fetchUser, {}) // needed to update org and other user data to local store
   } catch (e) {
-    console.warn('e', e)
+    console.log('e', e)
     notification({
       msg: get(
         e,
@@ -1516,7 +1872,7 @@ function* resetPasswordUserSaga({ payload }) {
     if (res) {
       yield put({ type: RESET_PASSWORD_USER_SUCCESS, payload: res })
     } else {
-      yield put(push('/login'))
+      yield put(push('/'))
     }
   } catch (e) {
     notification({
@@ -1524,7 +1880,7 @@ function* resetPasswordUserSaga({ payload }) {
         ? e.response.data.message
         : 'Failed to user data.',
     })
-    yield put(push('/login'))
+    yield put(push('/'))
   }
 }
 
@@ -1552,9 +1908,14 @@ function* resetPasswordRequestSaga({ payload }) {
 
 function* resetMyPasswordRequestSaga({ payload }) {
   try {
-    yield call(userApi.resetMyPassword, payload)
-    notification({ type: 'success', messageKey: 'passwordChangedSucessfully' })
-    yield put({ type: RESET_MY_PASSWORD_SUCCESS })
+    const res = yield call(userApi.resetMyPassword, payload)
+    if (res?.status === 200) {
+      notification({
+        type: 'success',
+        messageKey: 'passwordChangedSucessfully',
+      })
+      yield put({ type: RESET_MY_PASSWORD_SUCCESS })
+    }
   } catch (e) {
     console.error(e)
     notification({ messageKey: 'failedToResetPassword' })
@@ -1632,7 +1993,13 @@ function* updateInterestedCurriculumsSaga({ payload }) {
   } catch (e) {
     yield put({ type: UPDATE_INTERESTED_CURRICULUMS_FAILED })
     console.error(e)
-    notification({ messageKey: 'failedToUploadStandardSets' })
+    if (e.status === 403 && e.response.data?.message) {
+      notification({
+        msg: e.response.data.message,
+      })
+    } else {
+      notification({ messageKey: 'failedToUploadStandardSets' })
+    }
   }
 }
 
@@ -1722,7 +2089,7 @@ function* getInviteDetailsSaga({ payload }) {
     const result = yield call(authApi.getInvitedUserDetails, payload)
     yield put({ type: GET_INVITE_DETAILS_SUCCESS, payload: result })
   } catch (e) {
-    yield put(push('/login'))
+    yield put(push('/'))
   }
 }
 
@@ -1758,6 +2125,7 @@ function* updateDefaultSettingsSaga({ payload }) {
       messageKey: 'defaultSettingsUpdatedSuccessfully',
     })
     yield put({ type: UPDATE_DEFAULT_SETTINGS_SUCCESS, payload })
+    yield put(updateUserSignupStateAction())
   } catch (e) {
     yield put({ type: UPDATE_DEFAULT_SETTINGS_FAILED })
     console.error(e)
@@ -1791,11 +2159,13 @@ export function* watcherSaga() {
   yield takeLatest(CHANGE_CLASS, changeClass)
   yield takeLatest(GOOGLE_LOGIN, googleLogin)
   yield takeLatest(CLEVER_LOGIN, cleverLogin)
-  yield takeLatest(CLASSLINK_LOGIN, classlinkLogin)
+  yield takeLatest(ATLAS_LOGIN, atlasLogin)
+  yield takeLatest(NEWSELA_LOGIN, newselaLogin)
   yield takeLatest(MSO_LOGIN, msoLogin)
   yield takeLatest(GOOGLE_SSO_LOGIN, googleSSOLogin)
   yield takeLatest(CLEVER_SSO_LOGIN, cleverSSOLogin)
-  yield takeLatest(CLASSLINK_SSO_LOGIN, classlinkSSOLogin)
+  yield takeLatest(ATLAS_SSO_LOGIN, atlasSSOLogin)
+  yield takeLatest(NEWSELA_SSO_LOGIN, newselaSSOLogin)
   yield takeLatest(GET_USER_DATA, getUserData)
   yield takeLatest(MSO_SSO_LOGIN, msoSSOLogin)
   yield takeLatest(UPDATE_USER_ROLE_REQUEST, updateUserRoleSaga)
@@ -1825,4 +2195,8 @@ export function* watcherSaga() {
   )
   yield takeLatest(UPDATE_DEFAULT_SETTINGS_REQUEST, updateDefaultSettingsSaga)
   yield takeLatest(UPDATE_POWER_TEACHER_TOOLS_REQUEST, updatePowerTeacher)
+  yield takeLatest(
+    PERSIST_AUTH_STATE_AND_REDIRECT,
+    persistAuthStateAndRedirectToSaga
+  )
 }

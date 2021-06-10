@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { message } from 'antd'
 import { get, groupBy, isEmpty, last } from 'lodash'
 import { ticks } from 'd3-array'
 import { connect } from 'react-redux'
@@ -14,6 +13,7 @@ import {
   linkColor1,
   themeColorLighter,
   darkBlue2,
+  greyLight1,
 } from '@edulastic/colors'
 import {
   ComposedChart,
@@ -39,6 +39,8 @@ import {
   getAggregateByQuestion,
   getItemSummary,
   getHasRandomQuestionselector,
+  getPageNumberSelector,
+  LCB_LIMIT_QUESTION_PER_VIEW,
 } from '../../ducks'
 import {
   MAX_XGA_WIDTH,
@@ -46,6 +48,11 @@ import {
   LARGE_DESKTOP_WIDTH,
   MAX_TAB_WIDTH,
 } from '../../../src/constants/others'
+import {
+  setPageNumberAction,
+  setLcbQuestionLoaderStateAcion,
+  setQuestionIdToScrollAction,
+} from '../../../src/reducers/testActivity'
 
 const bars = {
   correctAttemps: {
@@ -83,12 +90,19 @@ const bars = {
     dataKey: 'manualGradedNum',
     fill: darkBlue2,
   },
+  unscoredItems: {
+    className: 'unscoredItems',
+    yAxisId: 'left',
+    stackId: 'a',
+    dataKey: 'unscoredItems',
+    fill: greyLight1,
+  },
 }
 
 /**
  * @param {string} qid
  */
-const _scrollTo = (qid, el) => {
+export const _scrollTo = (qid, el) => {
   /**
    * when lcb-student-sticky-bar is made sticky padding 10px is added, before there is no padding
    * 2 because the position of sticky bar changes when it is made sticky,
@@ -220,6 +234,9 @@ class BarGraph extends Component {
             if (studentViewFilter === 'notGraded' && x.manualGradedNum > 0) {
               return true
             }
+            if (studentViewFilter === 'unscoredItems' && x.unscoredItems > 0) {
+              return true
+            }
             return false
           })
         }
@@ -245,6 +262,7 @@ class BarGraph extends Component {
           partialAttempts: item.partialNum || 0,
           incorrectAttemps: item.wrongNum,
           manualGradedNum: item.manualGradedNum,
+          unscoredItems: item.unscoredItems,
           avgTimeSpent: item.avgTimeSpent || 0,
           itemLevelScoring: item.itemLevelScoring,
           skippedNum: item.skippedNum,
@@ -340,12 +358,27 @@ class BarGraph extends Component {
       studentview,
       onClickHandler,
       hasRandomQuestions,
+      pageNumber,
+      setPageNumber,
+      setLcbQuestionLoaderState,
+      setQuestionIdToScroll,
     } = this.props
     if (isLoading) {
       return
     }
+    const { qid } = data
     if (studentview) {
-      const { qid } = data
+      const questionNumber = data.name.split('.')[0].substr(1)
+      const questionPageNumber = Math.ceil(
+        questionNumber / LCB_LIMIT_QUESTION_PER_VIEW
+      )
+      if (questionPageNumber !== pageNumber) {
+        setQuestionIdToScroll(qid)
+        setLcbQuestionLoaderState(true)
+        setTimeout(() => setPageNumber(questionPageNumber), 1)
+        return
+      }
+
       return _scrollTo(qid, this.context.current)
     }
     if (hasRandomQuestions) {
@@ -413,9 +446,7 @@ class BarGraph extends Component {
           }}
         />
         {isBoth && (
-          <LegendContainer
-            style={{ marginBottom: '-18px', paddingLeft: '80px' }}
-          >
+          <LegendContainer style={{ paddingLeft: '80px' }}>
             <Legends />
           </LegendContainer>
         )}
@@ -506,6 +537,11 @@ class BarGraph extends Component {
 export default connect(
   (state) => ({
     hasRandomQuestions: getHasRandomQuestionselector(state),
+    pageNumber: getPageNumberSelector(state),
   }),
-  null
+  {
+    setPageNumber: setPageNumberAction,
+    setLcbQuestionLoaderState: setLcbQuestionLoaderStateAcion,
+    setQuestionIdToScroll: setQuestionIdToScrollAction,
+  }
 )(BarGraph)

@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react'
 import { withRouter } from 'react-router-dom'
 import { uniqBy } from 'lodash'
-import * as qs from 'query-string'
-import {
-  FireBaseService as Fbs,
-  notification as antdNotification,
-} from '@edulastic/common'
+import qs from 'qs'
+import antdNotification from '@edulastic/common/src/components/Notification'
+import * as Fbs from '@edulastic/common/src/Firebase'
 import { roleuser } from '@edulastic/constants'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
@@ -35,10 +33,12 @@ const NotificationListener = ({
   const [notificationIds, setNotificationIds] = useState([])
   let districtId = ''
   let testId = ''
-  const { termId = '' } = JSON.parse(
-    sessionStorage.getItem('filters[Assignments]') || '{}'
+  const { termId = '', grades = [], assignedBy = '' } = JSON.parse(
+    sessionStorage.getItem(`assignments_filter_${user._id}`) || '{}'
   )
-  const { testType = '' } = qs.parse(location.search)
+  const { testType = '' } = qs.parse(location.search, {
+    ignoreQueryPrefix: true,
+  })
   if (testType) {
     const locationArray = location?.pathname?.split('/') || []
     districtId = locationArray[locationArray?.length - 2] || ''
@@ -121,7 +121,16 @@ const NotificationListener = ({
           action !== DOWNLOAD_GRADES_AND_RESPONSE
         ) {
           fetchAssignmentsSummaryAction({ districtId })
-          fetchAssignmentClassList({ districtId, testId, testType, termId })
+          fetchAssignmentClassList({
+            districtId,
+            testId,
+            testType,
+            termId,
+            pageNo: 1,
+            status: '',
+            grades,
+            assignedBy,
+          })
         }
 
         // if user at assignments home page and bulk action has been processed successfully

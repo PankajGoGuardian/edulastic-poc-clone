@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { InputNumber } from 'antd'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, isEmpty } from 'lodash'
 import { ThemeProvider } from 'styled-components'
 
 import { math } from '@edulastic/constants'
@@ -15,7 +15,7 @@ import {
   Points,
 } from '../../common/QuestionForm'
 
-const { methods } = math
+const { methods, simplifiedOptions } = math
 
 const QuestionMath = ({ onUpdate, question }) => {
   const toggleAdditional = (val) => {
@@ -23,8 +23,26 @@ const QuestionMath = ({ onUpdate, question }) => {
   }
 
   const handleAnswerChange = (prop, value) => {
-    const { validation } = question
+    const { validation, extraOpts = {} } = question
+
+    const newExtraOpts = { ...extraOpts }
     const nextValidation = cloneDeep(validation)
+    if (prop === 'options') {
+      value.isSimplified = false
+      simplifiedOptions.forEach((key) => {
+        if (value[key]) {
+          value.isSimplified = true
+          newExtraOpts[key] = value[key]
+          delete value[key]
+        } else if (newExtraOpts[key]) {
+          delete newExtraOpts[key]
+        }
+      })
+      if (!value.isSimplified) {
+        delete value.isSimplified
+      }
+    }
+
     if (
       prop === 'method' &&
       nextValidation.validResponse.value[0][prop] !== value
@@ -56,16 +74,17 @@ const QuestionMath = ({ onUpdate, question }) => {
     ) {
       delete nextValidation.validResponse.value[0].value
     }
-
     const data = {
       validation: nextValidation,
+      extraOpts: newExtraOpts,
     }
-
     onUpdate(data)
   }
 
-  const handleScoreChange = (score) => {
+  const handleScoreChange = (_score) => {
     const { validResponse } = question.validation
+    // eslint-disable-next-line no-restricted-properties
+    const score = window.isNaN(_score) || !_score ? 0 : _score
     const data = {
       validation: {
         scoringType: EXACT_MATCH,
@@ -99,7 +118,7 @@ const QuestionMath = ({ onUpdate, question }) => {
 
   return (
     <ThemeProvider theme={themes.default}>
-      <QuestionFormWrapper>
+      <QuestionFormWrapper key={question.id}>
         <FormGroup>
           <MathFormulaAnswerMethod
             labelValue="Correct Answer"
@@ -114,10 +133,16 @@ const QuestionMath = ({ onUpdate, question }) => {
             style={{ width: '250px' }}
             isDocbasedSection
             {...value}
+            extraOptions={question.extraOpts}
           />
         </FormGroup>
         <FormGroup>
-          <InputNumber min={0} value={score} onChange={handleScoreChange} />
+          <InputNumber
+            min={0}
+            value={score}
+            onChange={handleScoreChange}
+            data-cy="points"
+          />
           <Points>Points</Points>
         </FormGroup>
       </QuestionFormWrapper>

@@ -61,7 +61,7 @@ const ChoiceBoxes = ({
                       <DragItem
                         {...dragItemProps}
                         renderIndex={getStemNumeration(stemNumeration, ind)}
-                        item={ite.value}
+                        item={ite}
                         key={ite.id}
                       />
                     ))}
@@ -83,8 +83,8 @@ const ChoiceBoxes = ({
                   {verifiedDragItems.map((ite) => (
                     <DragItem
                       {...dragItemProps}
-                      key={ite.id}
-                      item={ite.value}
+                      key={ite?.id}
+                      item={ite}
                       renderIndex={possibleResponses.indexOf(ite)}
                       disableResponse={disableResponse || !isAnswerModifiable}
                     />

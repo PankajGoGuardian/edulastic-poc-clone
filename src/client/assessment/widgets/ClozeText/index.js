@@ -21,7 +21,7 @@ import Display from './Display'
 import { ContentArea } from '../../styled/ContentArea'
 import Question from '../../components/Question'
 import { StyledPaperWrapper } from '../../styled/Widget'
-import AppConfig from '../../../../../app-config'
+import AppConfig from '../../../../app-config'
 import { CheckboxLabel } from '../../styled/CheckboxWithLabel'
 
 const EmptyWrapper = styled.div``
@@ -31,9 +31,9 @@ class ClozeText extends Component {
 
   getRenderData = () => {
     const { item: templateItem, history, view } = this.props
+
     const itemForPreview = replaceVariables(templateItem)
     const item = view === EDIT ? templateItem : itemForPreview
-
     const locationState = history.location.state
     const isDetailPage =
       locationState !== undefined ? locationState.itemDetail : false
@@ -42,6 +42,7 @@ class ClozeText extends Component {
       : item.options
     let previewStimulus
     let itemForEdit
+
     if (item.smallSize || isDetailPage) {
       previewStimulus = item.stimulus
       itemForEdit = templateItem
@@ -54,6 +55,7 @@ class ClozeText extends Component {
         validation: templateItem.validation,
       }
     }
+
     return {
       previewStimulus,
       previewDisplayOptions,

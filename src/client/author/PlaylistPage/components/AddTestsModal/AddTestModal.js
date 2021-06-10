@@ -27,7 +27,7 @@ class AddTestModal extends React.Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const { flag } = this.state
     const { isVisible } = nextProps
     if (isVisible && !flag) {

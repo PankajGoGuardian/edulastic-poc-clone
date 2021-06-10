@@ -1,7 +1,6 @@
-import { takeEvery, takeLatest, call, put, all } from 'redux-saga/effects'
+import { takeLatest, call, put, all } from 'redux-saga/effects'
 import { createSelector } from 'reselect'
 import { reportsApi } from '@edulastic/api'
-import { message } from 'antd'
 import { notification } from '@edulastic/common'
 import { createAction, createReducer } from 'redux-starter-kit'
 
@@ -19,6 +18,8 @@ const GET_STUDENT_STANDARDS_SUCCESS =
   '[reports] standard gradebook get student standards success'
 const GET_STUDENT_STANDARDS_FAILED =
   '[reports] standard gradebook get student standards failed'
+const RESET_REPORTS_STANDARDS_GRADEBOOK =
+  '[reports] reset reports standards gradebook'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
@@ -28,6 +29,9 @@ export const getStandardsGradebookRequestAction = createAction(
 )
 export const getStudentStandardsAction = createAction(
   GET_STUDENT_STANDARDS_REQUEST
+)
+export const resetStandardsGradebookAction = createAction(
+  RESET_REPORTS_STANDARDS_GRADEBOOK
 )
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
 
@@ -48,6 +52,11 @@ export const getReportsStandardsGradebookLoader = createSelector(
   (state) => state.loading
 )
 
+export const getReportsStandardsGradebookError = createSelector(
+  stateSelector,
+  (state) => state.error
+)
+
 export const getStudentStandardData = createSelector(
   stateSelector,
   (state) => state.studentStandard
@@ -65,12 +74,12 @@ export const getStudentStandardLoader = createSelector(
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //
 
 const initialState = {
-  loader: true,
+  loader: false,
   standardsGradebook: {},
   filters: {
     termId: '',
     subject: 'All',
-    grades: ['K'],
+    grades: ['TK'],
     domainIds: ['All'],
     // classSectionId: "All",
     // assessmentType: "All"
@@ -81,12 +90,14 @@ const initialState = {
 }
 
 export const reportStandardsGradebookReducer = createReducer(initialState, {
-  [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState),
-  [GET_REPORTS_STANDARDS_GRADEBOOK_REQUEST]: (state, { payload }) => {
+  [RESET_ALL_REPORTS]: (state) => (state = initialState),
+  [RESET_REPORTS_STANDARDS_GRADEBOOK]: (state) => (state = initialState),
+  [GET_REPORTS_STANDARDS_GRADEBOOK_REQUEST]: (state) => {
     state.loading = true
   },
   [GET_REPORTS_STANDARDS_GRADEBOOK_REQUEST_SUCCESS]: (state, { payload }) => {
     state.loading = false
+    state.error = false
     state.standardsGradebook = payload.standardsGradebook
   },
   [GET_REPORTS_STANDARDS_GRADEBOOK_REQUEST_ERROR]: (state, { payload }) => {
@@ -117,6 +128,14 @@ function* getReportsStandardsGradebookRequest({ payload }) {
       reportsApi.fetchStandardsGradebookReport,
       payload
     )
+    const dataSizeExceeded = standardsGradebook?.data?.dataSizeExceeded || false
+    if (dataSizeExceeded) {
+      yield put({
+        type: GET_REPORTS_STANDARDS_GRADEBOOK_REQUEST_ERROR,
+        payload: { error: { ...standardsGradebook.data } },
+      })
+      return
+    }
     yield put({
       type: GET_REPORTS_STANDARDS_GRADEBOOK_REQUEST_SUCCESS,
       payload: { standardsGradebook },

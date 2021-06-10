@@ -6,7 +6,6 @@ import { notification } from '@edulastic/common'
 import { createAction, createReducer } from 'redux-starter-kit'
 
 import { RESET_ALL_REPORTS } from '../../../common/reportsRedux'
-import { getOrgDataFromSARFilter } from '../common/filterDataDucks'
 
 const GET_REPORTS_QUESTION_ANALYSIS_REQUEST =
   '[reports] get reports question analysis request'
@@ -14,11 +13,16 @@ const GET_REPORTS_QUESTION_ANALYSIS_REQUEST_SUCCESS =
   '[reports] get reports question analysis success'
 const GET_REPORTS_QUESTION_ANALYSIS_REQUEST_ERROR =
   '[reports] get reports question analysis error'
+const RESET_REPORTS_QUESTION_ANALYSIS =
+  '[reports] reset reports question analysis'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
 export const getQuestionAnalysisRequestAction = createAction(
   GET_REPORTS_QUESTION_ANALYSIS_REQUEST
+)
+export const resetQuestionAnalysisAction = createAction(
+  RESET_REPORTS_QUESTION_ANALYSIS
 )
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
@@ -30,19 +34,19 @@ export const getQuestionAnalysisRequestAction = createAction(
 export const stateSelector = (state) =>
   state.reportReducer.reportQuestionAnalysisReducer
 
-const _getReportsQuestionAnalysis = createSelector(
+export const getReportsQuestionAnalysis = createSelector(
   stateSelector,
   (state) => state.questionAnalysis
 )
 
-export const getReportsQuestionAnalysis = (state) => ({
-  ..._getReportsQuestionAnalysis(state),
-  metaInfo: getOrgDataFromSARFilter(state),
-})
-
 export const getReportsQuestionAnalysisLoader = createSelector(
   stateSelector,
   (state) => state.loading
+)
+
+export const getReportsQuestionAnalysisError = createSelector(
+  stateSelector,
+  (state) => state.error
 )
 
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
@@ -57,17 +61,19 @@ export const defaultReport = {
 }
 
 const initialState = {
-  questionAnalysis: defaultReport,
+  questionAnalysis: {},
   loading: false,
 }
 
 export const reportQuestionAnalysisReducer = createReducer(initialState, {
-  [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState),
-  [GET_REPORTS_QUESTION_ANALYSIS_REQUEST]: (state, { payload }) => {
+  [RESET_ALL_REPORTS]: (state) => (state = initialState),
+  [RESET_REPORTS_QUESTION_ANALYSIS]: (state) => (state = initialState),
+  [GET_REPORTS_QUESTION_ANALYSIS_REQUEST]: (state) => {
     state.loading = true
   },
   [GET_REPORTS_QUESTION_ANALYSIS_REQUEST_SUCCESS]: (state, { payload }) => {
     state.loading = false
+    state.error = false
     state.questionAnalysis = payload.questionAnalysis
   },
   [GET_REPORTS_QUESTION_ANALYSIS_REQUEST_ERROR]: (state, { payload }) => {
@@ -84,17 +90,17 @@ export const reportQuestionAnalysisReducer = createReducer(initialState, {
 
 function* getReportsQuestionAnalysisRequest({ payload }) {
   try {
-    payload.requestFilters.classIds =
-      payload.requestFilters?.classIds?.join(',') ||
-      payload.requestFilters?.classId ||
-      ''
-    payload.requestFilters.groupIds =
-      payload.requestFilters?.groupIds?.join(',') ||
-      payload.requestFilters?.groupId ||
-      ''
-    const {
-      data: { result },
-    } = yield call(reportsApi.fetchQuestionAnalysisReport, payload)
+    const { data } = yield call(reportsApi.fetchQuestionAnalysisReport, payload)
+
+    if (data && data?.dataSizeExceeded) {
+      yield put({
+        type: GET_REPORTS_QUESTION_ANALYSIS_REQUEST_ERROR,
+        payload: { error: { ...data } },
+      })
+      return
+    }
+    const { result } = data
+
     const questionAnalysis = isEmpty(result) ? defaultReport : result
 
     yield put({

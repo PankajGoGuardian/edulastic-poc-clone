@@ -2,6 +2,6 @@ import styled from 'styled-components'
 
 export const MinMaxSeparator = styled.span`
   line-height: 1;
-  width: 27px;
+  width: 20px;
   text-align: center;
 `

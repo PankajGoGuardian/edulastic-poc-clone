@@ -1,7 +1,6 @@
 import { takeEvery, call, put, all } from 'redux-saga/effects'
 import { testItemsApi } from '@edulastic/api'
-import * as Sentry from '@sentry/browser'
-import { notification } from '@edulastic/common'
+import { captureSentryException, notification } from '@edulastic/common'
 import { keyBy as _keyBy, get } from 'lodash'
 
 import {
@@ -30,7 +29,7 @@ function* receiveItemSaga({ payload }) {
     yield put(loadQuestionsAction(questions))
   } catch (err) {
     console.log('err is', err)
-    Sentry.captureException(err)
+    captureSentryException(err)
     const errorMessage = 'Unable to retrieve the item.'
     notification({ type: 'error', msg: errorMessage })
     yield put({
@@ -56,7 +55,7 @@ export function* updateItemSaga({ payload }) {
     notification({ type: 'success', messageKey: 'itemSavedSuccess' })
   } catch (err) {
     console.error(err)
-    Sentry.captureException(err)
+    captureSentryException(err)
     const errorMessage = 'Unable to save the item.'
     notification({ type: 'error', msg: errorMessage })
     yield put({

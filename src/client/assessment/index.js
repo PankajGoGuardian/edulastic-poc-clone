@@ -1,16 +1,28 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { compose } from 'redux'
 import { Spin } from 'antd'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Switch, Route, withRouter } from 'react-router-dom'
+import { WithResources } from '@edulastic/common/src/HOC/withResources'
+import { notification } from '@edulastic/common'
+import AppConfig from '../../app-config'
 
 // themes
 import ThemeContainer from './themes/index'
-import { loadTestAction } from './actions/test'
+import {
+  loadTestAction,
+  setPreviewLanguageAction,
+  setShowTestInfoSuccesAction,
+} from './actions/test'
 import { startAssessmentAction } from './actions/assessment'
-import { testActivityLoadingSelector } from './selectors/test'
+import {
+  getPreviewPlayerStateSelector,
+  testActivityLoadingSelector,
+  testLoadingSelector,
+} from './selectors/test'
 import RequirePassword from './RequirePassword'
+import { showTestInfoModal } from '../publicTest/utils'
 
 const isPublic = window.location.href.indexOf('/public/') > -1
 
@@ -27,7 +39,7 @@ const AssessmentPlayer = ({
   LCBPreviewModal,
   closeTestPreviewModal,
   submitPreviewTest,
-  isShowStudentWork = false,
+  isStudentReport = false,
   showTools,
   startAssessment,
   passages,
@@ -35,7 +47,14 @@ const AssessmentPlayer = ({
   studentReportModal,
   currentAssignmentId,
   currentAssignmentClass,
-  sharedType,
+  playerPreviewState,
+  setShowTestInfoSucces,
+  setSelectedLanguage,
+  loading,
+  history,
+  title,
+  testType,
+  isModalVisible,
   ...restProps
 }) => {
   testId = preview ? testId : match.params.id
@@ -51,10 +70,9 @@ const AssessmentPlayer = ({
       demo,
       test,
       groupId: groupId || currentAssignmentClass,
-      isShowStudentWork,
+      isStudentReport,
       playlistId,
       currentAssignmentId,
-      sharedType,
     })
   }, [testId])
 
@@ -63,7 +81,9 @@ const AssessmentPlayer = ({
     window.confirmBeforeGoBack = (e) => {
       e.preventDefault()
       const matched = e.target.location.pathname.match(
-        new RegExp('/student/assessment/.*/class/.*/uta/.*/qid/.*')
+        new RegExp(
+          '/student/(assessment|practice)/.*/class/.*/uta/.*/itemId/.*'
+        )
       )
       if (!matched) {
         if (
@@ -72,15 +92,13 @@ const AssessmentPlayer = ({
           )
         ) {
           // to remove attached event from window after execuation done
-          setTimeout(() => {
-            window.removeEventListener('popstate', window.confirmBeforeGoBack)
-            delete window.confirmBeforeGoBack
-          }, 1000)
+
           return true
         }
         window.history.go(1)
         return false
       }
+      console.warn('ev', e)
     }
   }
 
@@ -94,6 +112,15 @@ const AssessmentPlayer = ({
     // note: for modern browsers support for custom messages has been deprecated
     return 'Are you sure you want to quit'
   }
+
+  const handleStartPreview = ({ selectedLang }) => {
+    if (playerPreviewState.multiLanguageEnabled && !selectedLang) {
+      notification({ type: 'warn', messageKey: 'selectLanguage' })
+    } else {
+      setShowTestInfoSucces(true)
+    }
+  }
+  const [isInfoVisible, setIsInfoVisible] = useState(false)
 
   useEffect(() => {
     if (isPublic) {
@@ -114,19 +141,50 @@ const AssessmentPlayer = ({
       window.removeEventListener('beforeunload', confirmBeforeQuitting)
     }
   }, [])
+  if (
+    preview &&
+    !loading &&
+    !playerPreviewState.viewTestInfoSuccess &&
+    isModalVisible
+  ) {
+    if (!isInfoVisible) {
+      setIsInfoVisible(true)
+      showTestInfoModal({
+        pauseAllowed: playerPreviewState.pauseAllowed,
+        allowedTime: playerPreviewState.allowedTime,
+        multiLanguageEnabled: playerPreviewState.multiLanguageEnabled,
+        languagePreference: playerPreviewState.languagePreference,
+        timedAssignment: playerPreviewState.timedAssignment,
+        hasInstruction: playerPreviewState.hasInstruction,
+        instruction: playerPreviewState.instruction,
+        setSelectedLanguage,
+        startAssignment: handleStartPreview,
+        attemptCount: 0,
+        maxAttempts: 1,
+        testId,
+        testType,
+        history,
+        title,
+        notifyCancel: false,
+        closeTestPreviewModal,
+        preview: true,
+      })
+    }
+    return null
+  }
 
-  if (preview) {
+  if (preview && playerPreviewState.viewTestInfoSuccess) {
     return (
       <ThemeContainer
         closeTestPreviewModal={closeTestPreviewModal}
         submitPreviewTest={submitPreviewTest}
         LCBPreviewModal={LCBPreviewModal}
         test={test}
-        defaultAP
+        defaultAP={defaultAP}
         preview
         demo={demo}
         showTools={showTools}
-        showScratchPad={isShowStudentWork}
+        isStudentReport={isStudentReport}
         passages={passages}
         studentReportModal={studentReportModal}
         {...restProps}
@@ -144,30 +202,40 @@ const AssessmentPlayer = ({
   return (
     <Switch>
       <Route
-        path={`${match.url}/qid/:qid`}
+        path={`${match.url}/itemId/:itemId`}
         render={() => (
-          <ThemeContainer
-            passages={passages}
-            utaId={utaId}
-            defaultAP={defaultAP}
-            url={match.url}
-            groupId={groupId}
-            testId={match.params.id}
-          />
+          <WithResources
+            resources={[`${AppConfig.jqueryPath}/jquery.min.js`]}
+            fallBack={<Spin />}
+          >
+            <ThemeContainer
+              passages={passages}
+              utaId={utaId}
+              defaultAP={defaultAP}
+              url={match.url}
+              groupId={groupId}
+              testId={match.params.id}
+            />
+          </WithResources>
         )}
       />
       <Route
         path={`${match.url}`}
         render={() => (
-          <ThemeContainer
-            passages={passages}
-            utaId={utaId}
-            defaultAP={defaultAP}
-            url={match.url}
-            testletType
-            groupId={groupId}
-            testId={match.params.id}
-          />
+          <WithResources
+            resources={[`${AppConfig.jqueryPath}/jquery.min.js`]}
+            fallBack={<Spin />}
+          >
+            <ThemeContainer
+              passages={passages}
+              utaId={utaId}
+              defaultAP={defaultAP}
+              url={match.url}
+              testletType
+              groupId={groupId}
+              testId={match.params.id}
+            />
+          </WithResources>
         )}
       />
     </Switch>
@@ -203,10 +271,17 @@ const enhance = compose(
     (state) => ({
       isPasswordValidated: state.test.isPasswordValidated,
       testActivityLoading: testActivityLoadingSelector(state),
+      playerPreviewState: getPreviewPlayerStateSelector(state),
+      loading: testLoadingSelector(state),
+      title: state.test.title,
+      testType: state.test.testType,
+      zoomLevel: state.ui.zoomLevel,
     }),
     {
       loadTest: loadTestAction,
       startAssessment: startAssessmentAction,
+      setShowTestInfoSucces: setShowTestInfoSuccesAction,
+      setSelectedLanguage: setPreviewLanguageAction,
     }
   )
 )

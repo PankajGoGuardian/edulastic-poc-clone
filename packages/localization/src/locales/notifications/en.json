@@ -27,6 +27,18 @@
     "message": "image upload failed",
     "description": ""
   },
+  "maxContentLimit": {
+    "message": "Max response limit reached",
+    "description": ""
+  },
+  "fileUploadErr": {
+    "message": "File upload failed",
+    "description": ""
+  },
+  "fileTypeErr": {
+    "message": "Unsupported file type",
+    "description": ""
+  },
   "videoUploadErr": {
     "message": "Video upload failed",
     "description": ""
@@ -268,8 +280,8 @@
     "description": ""
   },
   "curriculumMakeApiErr": {
-    "message": "You don't have access to view test details",
-    "description": "You can no longer use this as sharing access has been revoked by author."
+    "message": "You can no longer use this, as sharing access has been revoked by author",
+    "description": ""
   },
   "curriculumMakeApiWarn": {
     "message": "Operation failed!",
@@ -375,6 +387,18 @@
     "message": "Unable to retrieve the test info.",
     "description": ""
   },
+  "publishCorrectItemFailing": {
+    "message": "Corrections/updates made to the item(s) failed",
+    "description": ""
+  },
+  "publishCorrectItemDiscarded": {
+    "message": "All corrections/edits made to item(s) have been discarded",
+    "description": ""
+  },
+  "publishCorrectItemSuccess": {
+    "message": "Corrections/updates made to the item(s) are saved successfully and students will start receiving the updated items starting now",
+    "description": ""
+  },
   "itemAddedTest": {
     "message": "Item added to test",
     "description": ""
@@ -417,6 +441,10 @@
   },
   "noQuestions": {
     "message": "Test has only instructions. Test must have question to be published",
+    "description": ""
+  },
+  "testHasInvalidItem": {
+    "message": "Test has at least one item without any question. To publish a test each item must have at least one valid question.",
     "description": ""
   },
   "teacherRemovedSuccessfully": {
@@ -481,10 +509,6 @@
   },
   "testCreated": {
     "message": "Test created",
-    "description": ""
-  },
-  "testVersioned": {
-    "message": "Test versioned",
     "description": ""
   },
   "successUpdate": {
@@ -647,6 +671,14 @@
     "message": " No students selected",
     "description": ""
   },
+  "noStudentSelectedForPause": {
+    "message": "At least one student should be selected to Pause.",
+    "description": ""
+  },
+  "noStudentSelectedForResume": {
+    "message": "At least one student should be selected to Resume.",
+    "description": ""
+  },
   "assessmentAlreadyAssignedToAllStudents": {
     "message": "This assessment is already assigned to all students in the class.",
     "description": ""
@@ -788,7 +820,7 @@
     "description": ""
   },
   "tryingToAccessPrivateTest": {
-    "message": "Trying to access private test",
+    "message": "This test is marked private",
     "description": ""
   },
   "redirectSuccessful": {
@@ -875,6 +907,10 @@
     "message": "Rubric is saved and published",
     "description": ""
   },
+  "rubricSharedSuccessfully": {
+    "message": "Rubric share was successful.",
+    "description": ""
+  },
   "itemIsSaved": {
     "message": "Item is saved",
     "description": ""
@@ -948,7 +984,7 @@
     "description": ""
   },
   "feedbackSuccessfullyUpdate": {
-    "message": "Feedback successully update",
+    "message": "Feedback successfully updated",
     "description": ""
   },
   "scoreSucessfullyUpdated": {
@@ -1743,6 +1779,14 @@
     "message": "error parent code",
     "description": ""
   },
+  "errorParentCodeExpired": {
+    "message": "Invitation link expired. Please login using your credentials.",
+    "description": ""
+  },
+  "errorParentCodeNotFound": {
+    "message": "Invitation code not found.",
+    "description": ""
+  },
   "errorSettingPassword": {
     "message": "error setting password",
     "description": ""
@@ -1767,8 +1811,12 @@
     "message": "Clever Login failed",
     "description": ""
   },
-  "classlinkLoginFailed": {
-    "message": "Classlink Login failed",
+  "atlasLoginFailed": {
+    "message": "Atlas Login failed",
+    "description": ""
+  },
+  "newselaLoginFailed": {
+    "message": "Newsela Login failed",
     "description": ""
   },
   "failedToFetchUserData": {
@@ -1820,7 +1868,11 @@
     "description": ""
   },
   "testIsExpired": {
-    "message": "Test is expired",
+    "message": "The due date for this assignment has passed",
+    "description": ""
+  },
+  "selectLanguage": {
+    "message": "Please select your preferred language to continue",
     "description": ""
   },
   "failedToUpdateUser": {
@@ -1935,6 +1987,14 @@
     "message": "Failed to load test.",
     "description": ""
   },
+  "testPausedOrClosedByTeacher": {
+    "message": "Assessment is paused or closed by teacher.",
+    "description": ""
+  },
+  "testPausedByTeacher": {
+    "message": "Assignment is paused at class level. Kindly resume assignment to use this action.",
+    "description": ""
+  },
   "invalidAction": {
     "message": "Invalid Action.",
     "description": ""
@@ -1945,6 +2005,30 @@
   },
   "signInUserNotFound": {
     "message": "It seems you are new to Edulastic! Please select your role.",
+    "description": ""
+  },
+  "ttsErrorMessage": {
+    "message": "Can not load read aloud text-to-speech, internet connection is slow.",
+    "description": ""
+  },
+  "assignmentSharedWithSchoologyClassroom": {
+    "message": "Assignment is shared with Schoology Classroom successfully",
+    "description": ""
+  },
+  "teacherSignUpNotAllowed": {
+    "message": "Teacher Signup is not allowed for your district.",
+    "description": ""
+  },
+  "studentAssignmentPaused": {
+    "message": "Assignment is Paused , Please check with your instructor.",
+    "description": ""
+  },
+  "classAlreadyExist": {
+    "message": "Class already exists in Manage Class",
+    "description": ""
+  },
+  "optionRemove": {
+    "message": "Answer choice can not be removed during regrade",
     "description": ""
   }
 }

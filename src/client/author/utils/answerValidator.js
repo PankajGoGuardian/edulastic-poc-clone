@@ -1,5 +1,11 @@
 import { questionType, math } from '@edulastic/constants'
-import { isEmpty, keys, values as _values } from 'lodash'
+import {
+  isEmpty,
+  keys,
+  values as _values,
+  isPlainObject,
+  isNumber,
+} from 'lodash'
 
 const { methods } = math
 
@@ -8,7 +14,11 @@ const answerValidator = {
     const hasEmpty = answers.some(
       (answer) =>
         isEmpty(answer.value) ||
-        isEmpty(answer.value.filter((x) => !isEmpty(x)))
+        isEmpty(answer.value.filter((x) => (isNumber(x) ? x : !isEmpty(x))))
+      /**
+       * @see https://snapwiz.atlassian.net/browse/EV-25781
+       * x can be a number, thus not checking with isEmpty method for a number.
+       */
     )
     return hasEmpty
   },
@@ -64,7 +74,25 @@ const answerValidator = {
     return hasEmpty
   },
   [questionType.CLOZE_DRAG_DROP](answers) {
-    return this.generalValidator(answers)
+    const hasEmpty = answers.some((answer, index) => {
+      if (isEmpty(answer.value)) {
+        return true
+      }
+      if (
+        index === 0 &&
+        keys(answer.value).some((id) => isEmpty(answer.value[id]))
+      ) {
+        return true
+      }
+      if (
+        index > 0 &&
+        isEmpty(keys(answer.value).filter((id) => !isEmpty(answer.value[id])))
+      ) {
+        return true
+      }
+      return false
+    })
+    return hasEmpty
   },
   [questionType.CLOZE_IMAGE_DRAG_DROP](answers) {
     const hasEmpty = answers.some(
@@ -202,7 +230,20 @@ export const hasEmptyAnswers = (item) => {
     item?.validation?.validResponse,
     ...(item?.validation?.altResponses || []),
   ]
-
+  if (isPlainObject(item) && item.type === questionType.GRAPH) {
+    const { validation: { points, latex } = {} } = item
+    if (points && latex) {
+      return false
+    }
+    /**
+     * @see https://snapwiz.atlassian.net/browse/EV-26250
+     * Both points and latex for points on equation should be set
+     */
+    if ((points || latex) && (!points || !latex)) {
+      return true
+    }
+  }
   const hasEmpty = answerValidator[item.type]?.(correctAnswers)
+
   return hasEmpty
 }

@@ -11,14 +11,25 @@ import HeaderNavigation from './HeaderNavigation'
 
 const CustomizedHeaderWrapper = ({
   windowWidth,
+  onShareClickCB,
   onPrintClickCB,
   onDownloadCSVClickCB,
   navigationItems = [],
   activeNavigationKey = '',
   hideSideMenu,
   isCliUser,
+  showCustomReport,
+  showSharedReport,
+  title,
+  isSharedReport,
+  reportCsvDocs,
+  setCsvModalVisible,
   t,
 }) => {
+  const _onShareClickCB = () => {
+    onShareClickCB()
+  }
+
   const _onPrintClickCB = () => {
     onPrintClickCB()
   }
@@ -38,9 +49,22 @@ const CustomizedHeaderWrapper = ({
         item.key !== 'peer-performance' && item.key !== 'response-frequency'
     )
   }
+  if (!showCustomReport && activeNavigationKey !== 'custom-reports') {
+    filterNavigationItems = filterNavigationItems.filter(
+      (item) => item.key !== 'custom-reports'
+    )
+  }
+  if (!showSharedReport && activeNavigationKey !== 'shared-reports') {
+    filterNavigationItems = filterNavigationItems.filter(
+      (item) => item.key !== 'shared-reports'
+    )
+  }
+
   const availableNavItems = isSmallDesktop
     ? filterNavigationItems.filter((ite) => ite.key === activeNavigationKey)
-    : filterNavigationItems
+    : filterNavigationItems.length > 1
+    ? filterNavigationItems
+    : []
 
   const ActionButtonWrapper = isSmallDesktop ? Menu : Fragment
   const ActionButton = isSmallDesktop ? Menu.Item : EduButton
@@ -55,18 +79,46 @@ const CustomizedHeaderWrapper = ({
         ))
     : null
 
+  const hideShareIcon =
+    title === 'Engagement Summary' ||
+    title === 'Activity by School' ||
+    title === 'Activity by Teacher'
+  const hideDownloadIcon = title === 'Engagement Summary'
+
+  const showCSVDocsDownloadButton =
+    title === 'Standard Reports' && reportCsvDocs.length
+
   const actionRightButtons = (
     <ActionButtonWrapper>
       {navMenu}
-      {/* TODO: Uncomment and add support for sharing reports */}
-      {/* <FeaturesSwitch inputFeatures="shareReports" actionOnInaccessible="hidden">
-        {onShareClickCB ? (
-          <ActionButton isGhost IconBtn title="Share" onClick={_onShareClickCB}>
+      {showCSVDocsDownloadButton ? (
+        <ActionButton
+          isBlue
+          isGhost
+          title="Download Data"
+          onClick={() => setCsvModalVisible(true)}
+        >
+          <Icon type="download" />
+          Download Data
+        </ActionButton>
+      ) : null}
+      <FeaturesSwitch
+        inputFeatures="shareReports"
+        actionOnInaccessible="hidden"
+      >
+        {onShareClickCB && !isSharedReport && !hideShareIcon ? (
+          <ActionButton
+            isBlue
+            isGhost
+            IconBtn
+            title="Share"
+            onClick={_onShareClickCB}
+          >
             <Icon type="share-alt" />
             {isSmallDesktop && <span>Share</span>}
           </ActionButton>
         ) : null}
-      </FeaturesSwitch> */}
+      </FeaturesSwitch>
       {onPrintClickCB ? (
         <ActionButton
           isBlue
@@ -83,8 +135,9 @@ const CustomizedHeaderWrapper = ({
         inputFeatures="downloadReports"
         actionOnInaccessible="hidden"
       >
-        {onDownloadCSVClickCB ? (
+        {onDownloadCSVClickCB && !hideDownloadIcon ? (
           <ActionButton
+            data-cy="download-csv"
             isBlue
             isGhost
             IconBtn
@@ -112,24 +165,11 @@ const CustomizedHeaderWrapper = ({
       Icon={IconBarChart}
       hideSideMenu={hideSideMenu}
     >
-      {navigationItems.length ? (
-        activeNavigationKey === 'standard-reports' ? (
-          <FeaturesSwitch
-            inputFeatures="customReport"
-            actionOnInaccessible="hidden"
-            key="customReport"
-          >
-            <HeaderNavigation
-              navigationItems={availableNavItems}
-              activeItemKey={activeNavigationKey}
-            />
-          </FeaturesSwitch>
-        ) : (
-          <HeaderNavigation
-            navigationItems={availableNavItems}
-            activeItemKey={activeNavigationKey}
-          />
-        )
+      {availableNavItems.length ? (
+        <HeaderNavigation
+          navigationItems={availableNavItems}
+          activeItemKey={activeNavigationKey}
+        />
       ) : null}
       <StyledCol>
         {!isSmallDesktop && actionRightButtons}

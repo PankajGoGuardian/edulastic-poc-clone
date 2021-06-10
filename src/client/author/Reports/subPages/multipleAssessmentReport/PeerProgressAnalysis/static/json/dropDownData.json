@@ -1,5 +1,10 @@
 {
-  "analyseByData": [{ "key": "score", "title": "Score (%)" }, { "key": "rawScore", "title": "Raw Score" }],
+  "analyseByData": [
+    { "key": "score", "title": "Score (%)" },
+    { "key": "rawScore", "title": "Raw Score" },
+    { "key": "standard", "title": "Above/Below Standard" },
+    { "key": "proficiencyBand", "title": "Proficiency Band" }
+  ],
   "compareByData": [
     { "key": "school", "title": "School", "hiddenFromRole": ["teacher"] },
     { "key": "teacher", "title": "Teacher", "hiddenFromRole": ["teacher"] },

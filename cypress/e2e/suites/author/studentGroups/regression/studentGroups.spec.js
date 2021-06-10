@@ -28,23 +28,23 @@ const studentAssignment = new AssignmentsPage()
 const students = {
   1: {
     email: 'grstudent006@snapwiz.com',
-    studentName: 'Stgroup, Student060'
+    studentName: 'Stgroup, Student060',
   },
   2: {
     email: 'grstudent007@snapwiz.com',
-    studentName: 'Stgroup, Student070'
+    studentName: 'Stgroup, Student070',
   },
   3: {
     email: 'grstudent008@snapwiz.com',
-    studentName: 'Stgroup, Student080'
+    studentName: 'Stgroup, Student080',
   },
   4: {
     email: 'grstudent009@snapwiz.com',
-    studentName: 'Stgroup, Student090'
+    studentName: 'Stgroup, Student090',
   },
   5: {
     email: 'grstudent0010@snapwiz.com',
-    studentName: 'Stgroup, Student0010'
+    studentName: 'Stgroup, Student0010',
   },
 }
 
@@ -84,7 +84,7 @@ describe(`${FileHelper.getSpecName(
   const studentGroup2 = [students[3], students[4]]
   const studentGroup3 = [students[1], students[2]]
   const studentGroup4 = [students[2], students[3]]
-  const studentGroup2Edit = [students[5]];
+  const studentGroup2Edit = [students[5]]
 
   before(() => {
     cy.deleteAllAssignments(undefined, teacher, password, [testIdForReport])
@@ -92,20 +92,20 @@ describe(`${FileHelper.getSpecName(
     // testLibrary.createTest().then(_id => {
     // testId = _id;
     // });
-  });
+  })
 
-  context("> create new group from report", () => {
-    before("get report", () => {
-      sideBar.clickOnReport();
-      pbsReport.clickOnReportLink();
-    });
+  context('> create new group from report', () => {
+    before('get report', () => {
+      sideBar.clickOnReport()
+      pbsReport.clickOnReportLink()
+    })
 
-    it("> select student from report and create group", () => {
+    it('> select student from report and create group', () => {
       //selecting student 1 and 2 and creating new group
-      pbsReport.selectStudentByName(students[1].studentName);
-      pbsReport.selectStudentByName(students[2].studentName);
-      pbsReport.clickOnActionAddToGroup();
-      groupPopup.clickOnAddNewButton();
+      pbsReport.selectStudentByName(students[1].studentName)
+      pbsReport.selectStudentByName(students[2].studentName)
+      pbsReport.clickOnActionAddToGroup()
+      groupPopup.clickOnAddNewButton()
       // TODO: add group creation part
       manageGroup.fillGroupDetail({ ...groups[1] })
       manageGroup.clickOnSaveGroup()
@@ -179,10 +179,10 @@ describe(`${FileHelper.getSpecName(
 
       it('> verify added students in group pop up', () => {
         pbsReport.clickOnActionAddToGroup()
-          // groupPopup.selectGroup(groups[1].name);
-          ;[...studentGroup1, ...studentGroup1Edit].forEach((student) =>
-            groupPopup.verifyStudentInAddedList(student.studentName)
-          )
+        // groupPopup.selectGroup(groups[1].name);
+        ;[...studentGroup1, ...studentGroup1Edit].forEach((student) =>
+          groupPopup.verifyStudentInAddedList(student.studentName)
+        )
       })
 
       it('> verify group details on manage group', () => {
@@ -191,9 +191,9 @@ describe(`${FileHelper.getSpecName(
         // assignment count on manange group page can not be verifed as it takes 8~10 mins to sync up from redshift.
         manageGroup.verifyGroupRowDetails(groups[1].name, 4)
         manageGroup.clickOnGroupRowByName(groups[1].name)
-          ;[...studentGroup1, ...studentGroup1Edit].forEach((student) =>
-            manageGroup.getStudentRow(student.email, true)
-          )
+        ;[...studentGroup1, ...studentGroup1Edit].forEach((student) =>
+          manageGroup.getStudentRow(student.email, true)
+        )
 
         it('> verify added students on teacher assignemnt/lcb', () => {
           sideBar.clickOnAssignment()
@@ -505,7 +505,7 @@ describe(`${FileHelper.getSpecName(
       })
       it('assign test to 2 groups, common student', () => {
         testLibrary.assignPage.visitAssignPageById(testId)
-        testLibrary.assignPage.selectMultipleCLasses(classestobeassigned);
+        testLibrary.assignPage.selectMultipleCLasses(classestobeassigned)
         testLibrary.assignPage.clickOnAssign({ duplicate: true })
       })
 
@@ -523,29 +523,31 @@ describe(`${FileHelper.getSpecName(
       })
     })
 
-    context('Assign test to two groups together - with cancel duplicate', () => {
-      const classestobeassigned = [groups[4].name, groups[3].name]
-      before('Delete all assignments', () => {
-        cy.deleteAllAssignments(undefined, teacher, password, [
-          testIdForReport,
-        ])
-        cy.login('teacher', teacher, password)
-      })
-      it('Assign test with cancel duplicate', () => {
-        testLibrary.assignPage.visitAssignPageById(testId);
-        testLibrary.assignPage.selectMultipleCLasses(classestobeassigned);
-        testLibrary.assignPage.clickOnAssign({
-          duplicate: false,
-          willNotAssign: true,
+    context(
+      'Assign test to two groups together - with cancel duplicate',
+      () => {
+        const classestobeassigned = [groups[4].name, groups[3].name]
+        before('Delete all assignments', () => {
+          cy.deleteAllAssignments(undefined, teacher, password, [
+            testIdForReport,
+          ])
+          cy.login('teacher', teacher, password)
         })
-      })
-      it('Verify no tests at Student Side', () => {
-        cy.login('student', students[1].email, password)
-        studentAssignmentsPage.verifyAbsenceOfTest(testId)
-        cy.login('student', students[2].email, password)
-        studentAssignmentsPage.verifyAbsenceOfTest(testId)
-      })
-    }
+        it('Assign test with cancel duplicate', () => {
+          testLibrary.assignPage.visitAssignPageById(testId)
+          testLibrary.assignPage.selectMultipleCLasses(classestobeassigned)
+          testLibrary.assignPage.clickOnAssign({
+            duplicate: false,
+            willNotAssign: true,
+          })
+        })
+        it('Verify no tests at Student Side', () => {
+          cy.login('student', students[1].email, password)
+          studentAssignmentsPage.verifyAbsenceOfTest(testId)
+          cy.login('student', students[2].email, password)
+          studentAssignmentsPage.verifyAbsenceOfTest(testId)
+        })
+      }
     )
 
     context('Assigning tests to two groups one after another', () => {

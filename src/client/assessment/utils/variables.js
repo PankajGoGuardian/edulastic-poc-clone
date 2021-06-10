@@ -1,6 +1,7 @@
-import { has } from 'lodash'
+import { has, omitBy } from 'lodash'
 import uuid from 'uuid'
 import produce from 'immer'
+import { questionType } from '@edulastic/constants'
 
 const mathRegex = /<span class="input__math" data-latex="([^"]+)"><\/span>/g
 
@@ -88,7 +89,9 @@ export const updateVariables = (item, latexKeys = []) => {
     }))
   })
   item.variable.examples = newExamples
-  item.variable.variables = newVariables
+  if (Object.keys(newVariables).length) {
+    item.variable.variables = newVariables
+  }
 }
 
 export const getMathTemplate = (exampleValue) =>
@@ -104,7 +107,7 @@ const replaceValue = (str, variables, isLatex = false, useMathTemplate) => {
         new RegExp(`@${variableName}`, 'g'),
         useMathTemplate
           ? getMathTemplate(variables[variableName].exampleValue)
-          : variables[variableName].exampleValue
+          : ` ${variables[variableName].exampleValue}`
       )
     } else {
       result = result.replace(
@@ -118,7 +121,7 @@ const replaceValue = (str, variables, isLatex = false, useMathTemplate) => {
       mathContent = mathContent.map((content) =>
         content.replace(
           new RegExp(`@${variableName}`, 'g'),
-          variables[variableName].exampleValue
+          ` ${variables[variableName].exampleValue}`
         )
       )
     }
@@ -190,12 +193,20 @@ export const replaceVariables = (
     !item.variable.enabled
   )
     return item
+  const keysToIgnore = ['id', 'validation', 'variable', 'template']
   return produce(item, (draft) => {
     Object.keys(item).forEach((key) => {
       if (key === 'id' || key === 'variable') return
-      if (key === 'validation') {
-        useMathTemplate = false
+      if (
+        [
+          questionType.CLOZE_DROP_DOWN,
+          questionType.CLOZE_IMAGE_DROP_DOWN,
+          questionType.EXPRESSION_MULTIPART,
+        ].includes(item.type)
+      ) {
+        keysToIgnore.push('options')
       }
+      useMathTemplate = !keysToIgnore.includes(key)
       draft[key] = replaceValues(
         draft[key],
         item.variable,
@@ -205,4 +216,45 @@ export const replaceVariables = (
       )
     })
   })
+}
+
+export const getOptionsForMath = (validations) => {
+  const transformedOptions = {}
+
+  validations.forEach((val) => {
+    const options = omitBy(val.options || {}, (f) => f === false)
+    const optionKeys = Object.keys(options)
+
+    optionKeys.forEach((key) => {
+      const optionVal = options[key]
+
+      if (key === 'setThousandsSeparator') {
+        if (optionVal.length) {
+          const stringArr = `[${optionVal.map((f) => `'${f}'`)}]`
+          if (optionVal.includes('.') && !options.setDecimalSeparator) {
+            transformedOptions.setDecimalSeparator = ','
+          }
+          transformedOptions[key] = stringArr
+        }
+      } else if (key === 'setDecimalSeparator') {
+        if (optionVal === ',' && !options.setThousandsSeparator) {
+          transformedOptions.setThousandsSeparator = '.'
+        }
+        transformedOptions[key] = optionVal
+      } else if (key === 'allowedUnits') {
+        transformedOptions[key] = `[${optionVal}]`
+      } else if (key === 'syntax') {
+        if (options.argument === undefined) {
+          transformedOptions[key] = optionVal
+        } else {
+          transformedOptions[optionVal] = options.argument
+        }
+      } else if (key === 'significantDecimalPlaces') {
+        transformedOptions.isDecimal = optionVal
+      } else {
+        transformedOptions[key] = optionVal
+      }
+    })
+  })
+  return { options: transformedOptions }
 }

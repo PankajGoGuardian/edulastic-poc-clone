@@ -6,9 +6,10 @@ import {
   TextInputStyled,
 } from '@edulastic/common'
 import { Col, Form, Row, Select } from 'antd'
+import { map } from 'lodash'
 import React, { Component } from 'react'
 import { ButtonsContainer, ModalFormItem } from '../../../../../common/styled'
-import { states } from '../../../../../student/Signup/components/TeacherContainer/constants'
+import { statesWithCodes } from '../../../../../student/Signup/components/TeacherContainer/constants'
 import { StyledSpin, StyledSpinContainer } from './styled'
 
 const Option = Select.Option
@@ -31,7 +32,7 @@ class CreateSchoolModal extends Component {
     const returnedCountryList = await countryApi.getCountries()
     this.setState({
       countryList: returnedCountryList,
-      stateList: states,
+      stateList: statesWithCodes,
       showSpin: false,
     })
   }
@@ -97,9 +98,9 @@ class CreateSchoolModal extends Component {
       form.setFieldsValue({ state: '' })
     } else {
       this.setState({
-        stateList: states,
+        stateList: statesWithCodes,
       })
-      form.setFieldsValue({ state: states[0] })
+      form.setFieldsValue({ state: Object.keys(statesWithCodes)[0] })
     }
   }
 
@@ -127,9 +128,9 @@ class CreateSchoolModal extends Component {
     ))
 
     const country = getFieldValue('country')
-    const stateOptions = stateList.map((state) => (
-      <Option value={state} key={state}>
-        {state}
+    const stateOptions = map(stateList, (value, key) => (
+      <Option value={key} key={key}>
+        {value}
       </Option>
     ))
 
@@ -224,7 +225,9 @@ class CreateSchoolModal extends Component {
           </Col>
           <Col span={12}>
             <ModalFormItem label={t('school.state')}>
-              {getFieldDecorator('state', { initialValue: states[0] })(
+              {getFieldDecorator('state', {
+                initialValue: Object.keys(statesWithCodes)[0],
+              })(
                 country === 'US' ? (
                   <SelectInputStyled
                     showSearch

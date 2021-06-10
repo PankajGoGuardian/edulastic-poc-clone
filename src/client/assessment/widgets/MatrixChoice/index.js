@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useMemo } from 'react'
+import React, { Fragment, useState, useMemo, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { compose } from 'redux'
@@ -65,6 +65,7 @@ const MatrixChoice = ({
   evaluation,
   isReviewTab,
   showQuestionNumber,
+  hideCorrectAnswer,
   ...restProps
 }) => {
   const [feedbackAttempts, setFeedbackAttempts] = useState(
@@ -102,6 +103,18 @@ const MatrixChoice = ({
 
   const validResponse = item.validation?.validResponse
   const altResponses = item.validation?.altResponses
+  const [numberOfAtAnswersToLoad, setNumberOfAtAnswersToLoad] = useState(0)
+  useEffect(() => {
+    if (!hideCorrectAnswer) {
+      if (altResponses?.length > 5) {
+        altResponses?.forEach((_v, i) => {
+          setTimeout(() => setNumberOfAtAnswersToLoad(i + 1), 1500 * (i + 1))
+        })
+      } else {
+        setNumberOfAtAnswersToLoad(altResponses?.length || 0)
+      }
+    }
+  }, [])
 
   return (
     <>
@@ -158,10 +171,10 @@ const MatrixChoice = ({
               )}
             </QuestionLabelWrapper>
 
-            <QuestionContentWrapper>
+            <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
               <MathFormulaDisplay
                 style={{ marginBottom: 20 }}
-                dangerouslySetInnerHTML={{ __html: item.stimulus }}
+                dangerouslySetInnerHTML={{ __html: itemForPreview.stimulus }}
               />
               <div style={{ width: '100%' }}>
                 {previewTab === CLEAR ? (
@@ -197,7 +210,7 @@ const MatrixChoice = ({
 
           {view !== EDIT && <Instructions item={item} />}
 
-          {(previewTab === SHOW || isReviewTab) && (
+          {(previewTab === SHOW || isReviewTab) && !hideCorrectAnswer && (
             <>
               <CorrectAnswersContainer
                 item={item}
@@ -219,25 +232,33 @@ const MatrixChoice = ({
               </CorrectAnswersContainer>
 
               {altResponses &&
-                altResponses.map((altAnswer, i) => (
-                  <CorrectAnswersContainer
-                    title={`${t('component.matrix.alternateAnswer')} ${i + 1}`}
-                  >
-                    <Preview
-                      saveAnswer={() => {}}
-                      userAnswer={altAnswer}
-                      item={itemForPreview}
-                      feedbackAttempts={feedbackAttempts}
-                      onCheckAnswer={() => {}}
-                      previewTab={previewTab}
-                      disableResponse
-                      changeView={() => {}}
-                      pl="20px"
-                      evaluation={altAnswer.value}
-                      {...restProps}
-                    />
-                  </CorrectAnswersContainer>
-                ))}
+                altResponses.map((altAnswer, i) => {
+                  if (!(i + 1 <= numberOfAtAnswersToLoad)) {
+                    return null
+                  }
+                  return (
+                    <CorrectAnswersContainer
+                      title={`${t('component.matrix.alternateAnswer')} ${
+                        i + 1
+                      }`}
+                      key={i}
+                    >
+                      <Preview
+                        saveAnswer={() => {}}
+                        userAnswer={altAnswer}
+                        item={itemForPreview}
+                        feedbackAttempts={feedbackAttempts}
+                        onCheckAnswer={() => {}}
+                        previewTab={previewTab}
+                        disableResponse
+                        changeView={() => {}}
+                        pl="20px"
+                        evaluation={altAnswer.value}
+                        {...restProps}
+                      />
+                    </CorrectAnswersContainer>
+                  )
+                })}
             </>
           )}
         </Wrapper>

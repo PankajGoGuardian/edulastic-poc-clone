@@ -72,18 +72,18 @@ const CreateUpload = ({
           beforeUpload={() => false}
           accept=".pdf"
         >
-          <RoundedButton>
+          <RoundedButton data-cy="uploadPdfFromFiles">
             <IconCloudUpload color={themeColor} />
           </RoundedButton>
         </UploadDragger>
         {/* TODO add proper client ID and developer key via .env files */}
         <GooglePicker
-          clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
+          clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
           onChange={handleDriveUpload}
           onAuthFailed={handleAuthFailed}
           mimeTypes={['application/pdf']}
         >
-          <RoundedButton>
+          <RoundedButton data-cy="uploadPdfFromDrive">
             <IconGdrive color={themeColor} />
           </RoundedButton>
         </GooglePicker>

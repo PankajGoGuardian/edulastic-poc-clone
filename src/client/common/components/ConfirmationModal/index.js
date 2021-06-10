@@ -20,15 +20,17 @@ const ConfirmationModal = ({
   show,
   onOk,
   onCancel,
-  inputVal,
+  inputVal = '',
   onInputChange,
   expectedVal,
   bodyText,
   okText = '',
-  canUndone,
+  showConfirmationText,
+  hideUndoneText,
   bodyStyle = {},
   bodyTextStyle,
   placeHolder,
+  hideConfirmation = false,
 }) => (
   <ConfirmationModalStyled
     centered
@@ -59,15 +61,17 @@ const ConfirmationModal = ({
         <Col span={24}>
           <StyledDiv>
             {bodyText}&nbsp;
-            {canUndone ? null : <span>This action can NOT be undone.</span>}
+            {hideUndoneText ? null : (
+              <span>This action can NOT be undone.</span>
+            )}
           </StyledDiv>
 
-          {canUndone ? (
+          {showConfirmationText && !hideConfirmation ? (
             <StyledDiv style={bodyTextStyle}>
               If Yes, type<LightGreenSpan> {expectedVal} </LightGreenSpan>
               in the space given below and proceed.
             </StyledDiv>
-          ) : (
+          ) : hideConfirmation ? null : (
             <StyledDiv style={bodyTextStyle}>
               If you are sure, please type{' '}
               <LightGreenSpan> {expectedVal} </LightGreenSpan> in the space
@@ -76,20 +80,22 @@ const ConfirmationModal = ({
           )}
         </Col>
       </Row>
-      <Row>
-        <StyledCol span={24}>
-          <TextInputStyled
-            align="center"
-            placeHolderAlign="left"
-            placeholder={placeHolder}
-            data-cy="confirmationInput"
-            value={inputVal}
-            onChange={onInputChange}
-            // here paste is not allowed, and user has to manually type in inputVal
-            onPaste={(e) => e.preventDefault()}
-          />
-        </StyledCol>
-      </Row>
+      {!hideConfirmation && (
+        <Row>
+          <StyledCol span={24}>
+            <TextInputStyled
+              align="center"
+              placeHolderAlign="left"
+              placeholder={placeHolder}
+              data-cy="confirmationInput"
+              value={inputVal}
+              onChange={onInputChange}
+              // here paste is not allowed, and user has to manually type in inputVal
+              onPaste={(e) => e.preventDefault()}
+            />
+          </StyledCol>
+        </Row>
+      )}
     </InitOptions>
   </ConfirmationModalStyled>
 )

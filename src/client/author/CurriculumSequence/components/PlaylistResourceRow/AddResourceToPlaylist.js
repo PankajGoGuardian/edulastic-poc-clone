@@ -1,32 +1,10 @@
 import React, { Fragment } from 'react'
 import { useDrop } from 'react-dnd'
 import { connect } from 'react-redux'
-import { SupportResourceDropTarget, NewActivityTarget } from './styled'
+import { Row, Col } from 'antd'
+import { SupportResourceDropTarget } from './styled'
 import { addSubresourceToPlaylistAction } from '../../ducks'
-
 import { addSubresourceToPlaylistAction as addSubresourceInPlaylistAction } from '../../../PlaylistPage/ducks'
-
-function NewActivityTargetContainer({ children, ...props }) {
-  const [{ isOver }, dropRef] = useDrop({
-    accept: 'item',
-    collect: (monitor) => ({
-      isOver: !!monitor.isOver(),
-      contentType: monitor.getItem()?.contentType,
-    }),
-    drop: (item) => {
-      const { moduleIndex, onDrop } = props
-      if (onDrop) {
-        onDrop(moduleIndex, item, true)
-      }
-    },
-  })
-
-  return (
-    <NewActivityTarget {...props} ref={dropRef} active={isOver}>
-      {children}
-    </NewActivityTarget>
-  )
-}
 
 function SubResourceDropContainer({ children, ...props }) {
   const [{ isOver }, dropRef] = useDrop({
@@ -36,9 +14,13 @@ function SubResourceDropContainer({ children, ...props }) {
       contentType: monitor.getItem()?.contentType,
     }),
     drop: (item) => {
-      const { moduleIndex, itemIndex, addSubresource } = props
+      const { moduleIndex, itemIndex, addSubresource, contentSubType } = props
       if (addSubresource) {
-        addSubresource({ moduleIndex, itemIndex, item })
+        addSubresource({
+          moduleIndex,
+          itemIndex,
+          item: { ...item, contentSubType },
+        })
       }
     },
   })
@@ -55,29 +37,35 @@ const AddResourceToPlaylist = ({
   isTestType,
   moduleIndex,
   addSubresource,
-  onDrop,
-  showNewActivity,
   showSupportingResource,
 }) => (
   <>
     {isTestType && showSupportingResource && (
-      <SubResourceDropContainer
-        data-cy="supporting-resource"
-        moduleIndex={moduleIndex}
-        addSubresource={addSubresource}
-        itemIndex={index}
-      >
-        <span>Supporting Resource</span>
-      </SubResourceDropContainer>
-    )}
-    {showNewActivity && (
-      <NewActivityTargetContainer
-        moduleIndex={moduleIndex}
-        afterIndex={index}
-        onDrop={onDrop}
-      >
-        <span> New activity</span>
-      </NewActivityTargetContainer>
+      <Row gutter={16}>
+        <Col md={8}>
+          <SubResourceDropContainer
+            data-cy="studentResourceDropContainer"
+            moduleIndex={moduleIndex}
+            addSubresource={addSubresource}
+            itemIndex={index}
+            contentSubType="STUDENT"
+          >
+            <span>Student Resource</span>
+          </SubResourceDropContainer>
+        </Col>
+
+        <Col md={8}>
+          <SubResourceDropContainer
+            data-cy="teacherResourceDropContainer"
+            moduleIndex={moduleIndex}
+            addSubresource={addSubresource}
+            itemIndex={index}
+            contentSubType="TEACHER"
+          >
+            <span>Teacher Resource</span>
+          </SubResourceDropContainer>
+        </Col>
+      </Row>
     )}
   </>
 )

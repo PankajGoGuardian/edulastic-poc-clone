@@ -1,9 +1,19 @@
 import React from 'react'
 
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
-import { FroalaEditor } from '@edulastic/common'
+import loadable from '@loadable/component'
+import Progress from '@edulastic/common/src/components/Progress'
+import { connect } from 'react-redux'
+
 import Question from '../../../components/Question/index'
 import { Subtitle } from '../../../styled/Subtitle'
+import { setQuestionDataAction } from '../../../../author/src/actions/question'
+
+const FroalaEditor = loadable(() =>
+  import(
+    /* webpackChunkName: "froalaCommonChunk" */ '@edulastic/common/src/components/FroalaEditor'
+  )
+)
 
 const ComposeQuestion = ({
   fillSections,
@@ -14,10 +24,10 @@ const ComposeQuestion = ({
   produce,
   item,
 }) => {
-  const onChangeQuestion = (stimulus) => {
+  const onChangeQuestion = (_stimulus) => {
     setQuestionData(
       produce(item, (draft) => {
-        draft.stimulus = stimulus
+        draft.stimulus = _stimulus
       })
     )
   }
@@ -36,6 +46,7 @@ const ComposeQuestion = ({
         {t('common.question.composeQuestion')}
       </Subtitle>
       <FroalaEditor
+        fallback={<Progress />}
         tag="textarea"
         placeholder={t('common.question.questionPlaceholder')}
         value={stimulus}
@@ -47,4 +58,6 @@ const ComposeQuestion = ({
   )
 }
 
-export default ComposeQuestion
+export default connect(null, {
+  setQuestionData: setQuestionDataAction,
+})(ComposeQuestion)

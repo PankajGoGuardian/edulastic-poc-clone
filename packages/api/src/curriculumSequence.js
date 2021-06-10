@@ -102,13 +102,18 @@ const updatePlaylistStatus = (data) =>
     })
     .then((result) => result.data.result)
 
-const duplicatePlayList = ({ _id, title, forUseThis = false }) =>
+const duplicatePlayList = ({
+  _id,
+  title,
+  forUseThis = false,
+  forceClone = false,
+}) =>
   api
     .callApi({
       method: 'post',
       url: `${prefix}/${_id}/duplicate?title=${title}${
         forUseThis ? `&forUseThis=1` : ''
-      }`,
+      }${forceClone ? '&forceClone=1' : ''}`,
     })
     .then((res) => res.data.result)
 
@@ -133,6 +138,7 @@ const fetchPlaylistMetrics = (data) => {
   const queryString = qs.stringify(data)
   return api
     .callApi({
+      useSlowApi: true,
       method: 'get',
       url: `/report/playlist-metrics?${queryString}`,
     })
@@ -143,6 +149,7 @@ const fetchPlaylistInsights = (data) => {
   const queryString = qs.stringify(data)
   return api
     .callApi({
+      useSlowApi: true,
       method: 'get',
       url: `/report/insights?${queryString}`,
     })

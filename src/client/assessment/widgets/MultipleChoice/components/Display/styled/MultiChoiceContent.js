@@ -9,10 +9,10 @@ export const MultiChoiceContent = styled.div`
   font-size: ${(props) =>
     props.fontSize ||
     props.theme.widgets.multipleChoice.multiChoiceContentFontSize};
-  margin-left: ${({ uiStyleType }) =>
+  margin-left: ${({ uiStyleType, label }) =>
     uiStyleType === 'radioBelow'
       ? '0px'
-      : uiStyleType === 'block'
+      : uiStyleType === 'block' && label
       ? '52px'
       : '8px'};
   position: relative;

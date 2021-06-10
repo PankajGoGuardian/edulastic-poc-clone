@@ -4,10 +4,11 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { ThemeProvider } from 'styled-components'
-import { get, keyBy, isUndefined } from 'lodash'
-import { withWindowSizes, ScrollContext, notification } from '@edulastic/common'
+import { get, isUndefined, last } from 'lodash'
+import { withWindowSizes, notification } from '@edulastic/common'
 import { nonAutoGradableTypes } from '@edulastic/constants'
 
+import { playerSkinValues } from '@edulastic/constants/const/test'
 import { themes } from '../../../theme'
 import MainWrapper from './MainWrapper'
 import ToolbarModal from '../common/ToolbarModal'
@@ -17,11 +18,19 @@ import {
   toggleBookmarkAction,
   bookmarksByIndexSelector,
 } from '../../sharedDucks/bookmark'
-import { getSkippedAnswerSelector } from '../../selectors/answers'
+import {
+  assignmentLevelSettingsSelector,
+  getSkippedAnswerSelector,
+} from '../../selectors/answers'
 import ReportIssuePopover from '../common/ReportIssuePopover'
-import { hidePendoBanner, isZoomGreator } from '../../../common/utils/helpers'
+import { isZoomGreator } from '../../../common/utils/helpers'
 import SettingsModal from '../../../student/sharedComponents/SettingsModal'
-import { Main, Container, CalculatorContainer } from '../common'
+import {
+  Main,
+  Container,
+  CalculatorContainer,
+  getDefaultCalculatorProvider,
+} from '../common'
 import TestItemPreview from '../../components/TestItemPreview'
 import {
   MAX_MOBILE_WIDTH,
@@ -48,7 +57,14 @@ import UserWorkUploadModal from '../../components/UserWorkUploadModal'
 class AssessmentPlayerDefault extends React.Component {
   constructor(props) {
     super(props)
-    const { settings } = props
+    const { settings, attachments = [] } = props
+    const lastUploadedFileNameExploded =
+      last(attachments)?.name?.split('_') || []
+    const cameraImageIndex = last(lastUploadedFileNameExploded)
+      ? parseInt(last(lastUploadedFileNameExploded), 10) + 1
+      : 1
+
+    const calcType = settings.calcType
     this.state = {
       cloneCurrentItem: props.currentItem,
       testItemState: '',
@@ -56,50 +72,22 @@ class AssessmentPlayerDefault extends React.Component {
       isSubmitConfirmationVisible: false,
       isSavePauseModalVisible: false,
       history: 0,
-      calculateMode: `${settings.calcType}_${settings.calcProvider}`,
+      calculateMode: `${calcType}_${
+        settings.calcProvider || getDefaultCalculatorProvider(calcType)
+      }`,
       currentToolMode: [0],
       enableCrossAction: false,
       minWidth: 480,
       defaultContentWidth: 900,
       defaultHeaderHeight: 62,
       isUserWorkUploadModalVisible: false,
+      cameraImageIndex,
     }
+    this.scrollContainer = React.createRef()
   }
-
-  static propTypes = {
-    theme: PropTypes.object,
-    scratchPad: PropTypes.any.isRequired,
-    highlights: PropTypes.any.isRequired,
-    isFirst: PropTypes.func.isRequired,
-    moveToNext: PropTypes.func.isRequired,
-    moveToPrev: PropTypes.func.isRequired,
-    currentItem: PropTypes.any.isRequired,
-    items: PropTypes.any.isRequired,
-    gotoQuestion: PropTypes.any.isRequired,
-    itemRows: PropTypes.array.isRequired,
-    evaluation: PropTypes.any.isRequired,
-    showHints: PropTypes.func.isRequired,
-    checkAnswer: PropTypes.func.isRequired,
-    history: PropTypes.func.isRequired,
-    windowWidth: PropTypes.number.isRequired,
-    questions: PropTypes.object.isRequired,
-    userWork: PropTypes.object.isRequired,
-    settings: PropTypes.object.isRequired,
-    answerChecksUsedForItem: PropTypes.number.isRequired,
-    previewPlayer: PropTypes.bool.isRequired,
-    saveUserWork: PropTypes.func.isRequired,
-    LCBPreviewModal: PropTypes.any.isRequired,
-    setUserAnswer: PropTypes.func.isRequired,
-    userAnswers: PropTypes.object.isRequired,
-  }
-
-  static defaultProps = {
-    theme: themes,
-  }
-
-  scrollContainer = React.createRef()
 
   changeTool = (val) => {
+    const { hasDrawingResponse, playerSkinType } = this.props
     let { currentToolMode, enableCrossAction } = this.state
     if (val === 3 || val === 5) {
       const index = currentToolMode.indexOf(val)
@@ -112,10 +100,18 @@ class AssessmentPlayerDefault extends React.Component {
       if (currentToolMode.includes(5)) {
         const { items, currentItem } = this.props
         if (!isUndefined(currentItem) && Array.isArray(items)) {
-          if (showScratchpadInfoNotification(items[currentItem])) {
+          if (
+            !hasDrawingResponse &&
+            showScratchpadInfoNotification(items[currentItem])
+          ) {
+            const config =
+              playerSkinType === playerSkinValues.quester
+                ? { bottom: '64px' }
+                : {}
             notification({
               type: 'info',
               messageKey: 'scratchpadInfoMultipart',
+              ...config,
             })
           }
         }
@@ -137,11 +133,15 @@ class AssessmentPlayerDefault extends React.Component {
       answerChecksUsedForItem,
       settings,
       groupId,
+      playerSkinType,
     } = this.props
+    const config =
+      playerSkinType === playerSkinValues.quester ? { bottom: '64px' } : {}
     if (answerChecksUsedForItem >= settings.maxAnswerChecks)
       return notification({
         type: 'warn',
         messageKey: 'checkAnswerLimitExceededForItem',
+        ...config,
       })
     checkAnswer(groupId)
     this.setState({ testItemState: value })
@@ -188,16 +188,8 @@ class AssessmentPlayerDefault extends React.Component {
 
   // will dispatch user work to store on here for scratchpad, passage highlight, or cross answer
   // sourceId will be one of 'scratchpad', 'resourceId', and 'crossAction'
-  saveHistory = (sourceId) => (data) => {
-    const {
-      saveUserWork,
-      items,
-      currentItem,
-      setUserAnswer,
-      userAnswers,
-      userWork,
-      passage,
-    } = this.props
+  saveUserWork = (sourceId) => (data) => {
+    const { saveUserWork, items, currentItem, userWork, passage } = this.props
     this.setState(({ history }) => ({ history: history + 1 }))
 
     // resourceId(passage) will use passage._id
@@ -206,14 +198,21 @@ class AssessmentPlayerDefault extends React.Component {
     if (sourceId === 'resourceId') {
       userWorkId = passage._id
     }
+    const scratchpadData = {}
+    if (sourceId === 'scratchpad' && data.questionId) {
+      const { questionId, userWorkData } = data
+      // keep all other question data in scratchpad
+      scratchpadData[sourceId] = {
+        ...(userWork[sourceId] || {}),
+        [questionId]: userWorkData,
+      }
+    } else {
+      scratchpadData[sourceId] = data
+    }
 
     saveUserWork({
-      [userWorkId]: { ...userWork, [sourceId]: data },
+      [userWorkId]: { ...(userWork || {}), ...scratchpadData },
     })
-    const qId = items[currentItem].data.questions[0].id
-    if (!userAnswers[qId]) {
-      setUserAnswer(qId, [])
-    }
   }
 
   saveHintUsage = (hintUsage) => {
@@ -240,7 +239,14 @@ class AssessmentPlayerDefault extends React.Component {
       size,
       source,
     }))
-    this.saveHistory('attachments')([...(attachments || []), ...newAttachments])
+    this.saveUserWork('attachments')([
+      ...(attachments || []),
+      ...newAttachments,
+    ])
+    this.setState(({ cameraImageIndex }) => ({
+      cameraImageIndex: cameraImageIndex + 1,
+    }))
+
     this.closeUserWorkUploadModal()
   }
 
@@ -257,9 +263,17 @@ class AssessmentPlayerDefault extends React.Component {
         currentToolMode.push(0)
       }
 
+      const { attachments = [] } = next
+      const lastUploadedFileNameExploded =
+        last(attachments)?.name?.split('_') || []
+      const cameraImageIndex = last(lastUploadedFileNameExploded)
+        ? parseInt(last(lastUploadedFileNameExploded), 10) + 1
+        : 1
+
       const nextState = {
         currentToolMode,
         cloneCurrentItem: next.currentItem,
+        cameraImageIndex,
         history: 0,
         enableCrossAction: currentToolMode.indexOf(3) !== -1,
         testItemState: '', // start in clear preview mode (attemptable mode)
@@ -268,11 +282,6 @@ class AssessmentPlayerDefault extends React.Component {
     }
 
     return null
-  }
-
-  componentDidMount() {
-    const { isCliUser } = this.props
-    hidePendoBanner(isCliUser)
   }
 
   componentDidUpdate(previousProps) {
@@ -305,7 +314,6 @@ class AssessmentPlayerDefault extends React.Component {
       moveToNext,
       moveToPrev,
       gotoQuestion,
-      settings,
       previewPlayer,
       scratchPad,
       attachments,
@@ -323,8 +331,7 @@ class AssessmentPlayerDefault extends React.Component {
       zoomLevel: _zoomLevel,
       selectedTheme = 'default',
       closeTestPreviewModal,
-      showScratchPad,
-      passage,
+      isStudentReport,
       defaultAP,
       playerSkinType,
       title,
@@ -337,8 +344,17 @@ class AssessmentPlayerDefault extends React.Component {
       timedAssignment = false,
       groupId,
       utaId,
+      hasDrawingResponse,
+      studentReportModal,
+      hidePause,
+      blockNavigationToAnsweredQuestions,
       uploadToS3,
+      user = {},
+      gotoSummary,
+      isShowStudentWork,
     } = this.props
+    const { firstName = '', lastName = '' } = user
+    const { settings } = this.props
     const {
       testItemState,
       isToolbarModalVisible,
@@ -351,6 +367,7 @@ class AssessmentPlayerDefault extends React.Component {
       defaultHeaderHeight,
       currentToolMode,
       isUserWorkUploadModalVisible,
+      cameraImageIndex,
     } = this.state
     const calcBrands = ['DESMOS', 'GEOGEBRASCIENTIFIC', 'EDULASTIC']
     const dropdownOptions = Array.isArray(items)
@@ -372,10 +389,12 @@ class AssessmentPlayerDefault extends React.Component {
       })
     }
 
-    const scratchPadMode = currentToolMode.indexOf(5) !== -1 || showScratchPad
+    const scratchPadMode = currentToolMode.indexOf(5) !== -1 || isStudentReport
 
     // calculate width of question area
-    const availableWidth = windowWidth - 70
+    const isQuester = playerSkinType === playerSkinValues.quester
+    const reduceOriginalMarginWidth = isQuester ? 0 : 70
+    const availableWidth = windowWidth - reduceOriginalMarginWidth
     let responsiveWidth = availableWidth
     let zoomLevel = _zoomLevel
 
@@ -393,13 +412,13 @@ class AssessmentPlayerDefault extends React.Component {
       responsiveWidth = availableWidth / zoomLevel
     }
     // 20, 18 and 12 are right margin for right nave on zooming
-    if (zoomLevel >= 1.5 && zoomLevel < 1.75) {
+    if (zoomLevel >= 1.5 && zoomLevel < 1.75 && !isQuester) {
       responsiveWidth -= 20
     }
-    if (zoomLevel >= 1.75 && zoomLevel < 2.5) {
+    if (zoomLevel >= 1.75 && zoomLevel < 2.5 && !isQuester) {
       responsiveWidth -= 18
     }
-    if (zoomLevel >= 2.5) {
+    if (zoomLevel >= 2.5 && !isQuester) {
       responsiveWidth -= 12
     }
 
@@ -448,17 +467,30 @@ class AssessmentPlayerDefault extends React.Component {
       headerStyleWidthZoom.padding = 0
     }
 
+    const qType = get(items, `[${currentItem}].data.questions[0].type`, null)
+    const cameraImageName = `${firstName}_${lastName}_${
+      currentItem + 1
+    }_${cameraImageIndex}.png`
     return (
       /**
        * zoom only in student side, otherwise not
        * we need to pass zoomLevel as a theme variable because we should use it in questions
        */
-      <ThemeProvider theme={{ ...themeToPass, shouldZoom: true, zoomLevel }}>
+      <ThemeProvider
+        theme={{
+          ...themeToPass,
+          shouldZoom: true,
+          zoomLevel,
+          headerHeight,
+          playerSkinType,
+        }}
+      >
         <Container
           scratchPadMode={scratchPadMode}
           data-cy="assessment-player-default-wrapper"
         >
           <AssessmentPlayerSkinWrapper
+            hidePause={hidePause}
             title={title}
             LCBPreviewModal={LCBPreviewModal}
             headerHeight={headerHeight}
@@ -472,7 +504,7 @@ class AssessmentPlayerDefault extends React.Component {
             dropdownStyle={navZoomStyle}
             zoomLevel={headerZoom}
             overlayStyle={navZoomStyle}
-            disabled={isFirst()}
+            disabled={isFirst() || blockNavigationToAnsweredQuestions}
             isLast={isLast()}
             moveToPrev={moveToPrev}
             moveToNext={moveToNext}
@@ -492,8 +524,8 @@ class AssessmentPlayerDefault extends React.Component {
             tool={currentToolMode}
             changeCaculateMode={this.handleModeCaculate}
             changeTool={this.changeTool}
-            qType={get(items, `[${currentItem}].data.questions[0].type`, null)}
-            qId={get(items, `[${currentItem}].data.questions[0].id`, null)}
+            hasDrawingResponse={hasDrawingResponse}
+            qType={qType}
             previewPlayer={previewPlayer}
             headerStyleWidthZoom={headerStyleWidthZoom}
             playerSkinType={playerSkinType}
@@ -510,6 +542,10 @@ class AssessmentPlayerDefault extends React.Component {
             timedAssignment={timedAssignment}
             utaId={utaId}
             groupId={groupId}
+            blockNavigationToAnsweredQuestions={
+              blockNavigationToAnsweredQuestions
+            }
+            gotoSummary={gotoSummary}
           >
             <FeaturesSwitch
               inputFeatures="studentSettings"
@@ -531,6 +567,11 @@ class AssessmentPlayerDefault extends React.Component {
                 isBookmarked={isBookmarked}
                 handletoggleHints={showHints}
                 changeTool={this.changeTool}
+                handleMagnifier={handleMagnifier}
+                qType={qType}
+                blockNavigationToAnsweredQuestions={
+                  blockNavigationToAnsweredQuestions
+                }
               />
             </FeaturesSwitch>
             {!previewPlayer && (
@@ -553,92 +594,96 @@ class AssessmentPlayerDefault extends React.Component {
               zoomed={isZoomApplied}
               zoomLevel={zoomLevel}
               headerHeight={headerHeight}
-              padding="0px 30px"
+              padding="20px 30px"
             >
               <SettingsModal />
-              <ScrollContext.Provider
-                value={{ getScrollElement: () => this.scrollContainer.current }}
+              <MainWrapper
+                responsiveWidth={responsiveWidth}
+                zoomLevel={zoomLevel}
+                ref={this.scrollContainer}
+                hasCollapseButtons={hasCollapseButtons}
+                className="scrollable-main-wrapper"
+                id="assessment-player-default-scroll"
               >
-                <MainWrapper
-                  responsiveWidth={responsiveWidth}
-                  zoomLevel={zoomLevel}
-                  ref={this.scrollContainer}
-                  hasCollapseButtons={hasCollapseButtons}
-                  className="scrollable-main-wrapper"
-                  id="assessment-player-default-scroll"
-                >
-                  {testItemState === '' && (
-                    <TestItemPreview
-                      LCBPreviewModal={LCBPreviewModal}
-                      cols={itemRows}
-                      previousQuestionActivity={previousQuestionActivity}
-                      questions={
-                        passage
-                          ? { ...questions, ...keyBy(passage.data, 'id') }
-                          : questions
-                      }
-                      showCollapseBtn
-                      highlights={highlights}
-                      crossAction={crossAction || {}}
-                      viewComponent="studentPlayer"
-                      setHighlights={this.saveHistory('resourceId')}
-                      setCrossAction={
-                        enableCrossAction
-                          ? this.saveHistory('crossAction')
-                          : false
-                      } // this needs only for MCQ and MSQ
-                      scratchPadMode={scratchPadMode}
-                      saveHistory={this.saveHistory('scratchpad')}
-                      saveAttachments={this.saveHistory('attachments')}
-                      attachments={attachments}
-                      history={
-                        LCBPreviewModal ? scratchpadActivity.data : scratchPad
-                      }
-                      scratchpadDimensions={
-                        LCBPreviewModal ? scratchpadActivity.dimensions : null
-                      }
-                      preview={preview}
-                      evaluation={evaluation}
-                      changePreviewTab={changePreview}
-                      saveHintUsage={this.saveHintUsage}
-                      enableMagnifier={enableMagnifier}
-                      updateScratchpadtoStore
-                      isPassageWithQuestions={item?.isPassageWithQuestions}
-                    />
-                  )}
-                  {testItemState === 'check' && (
-                    <TestItemPreview
-                      cols={itemRows}
-                      previewTab="check"
-                      preview={preview}
-                      previousQuestionActivity={previousQuestionActivity}
-                      evaluation={evaluation}
-                      verticalDivider={item.verticalDivider}
-                      scrolling={item.scrolling}
-                      questions={questions}
-                      LCBPreviewModal={LCBPreviewModal}
-                      highlights={highlights}
-                      crossAction={crossAction || {}}
-                      showCollapseBtn
-                      viewComponent="studentPlayer"
-                      setHighlights={this.saveHistory('resourceId')} // this needs only for passage type
-                      setCrossAction={
-                        enableCrossAction
-                          ? this.saveHistory('crossAction')
-                          : false
-                      } // this needs only for MCQ and MSQ
-                      scratchPadMode={scratchPadMode}
-                      saveHistory={this.saveHistory('scratchpad')}
-                      saveAttachments={this.saveHistory('attachments')}
-                      attachments={attachments}
-                      history={scratchPad}
-                      saveHintUsage={this.saveHintUsage}
-                      changePreviewTab={this.handleChangePreview}
-                      enableMagnifier={enableMagnifier}
-                    />
-                  )}
-                </MainWrapper>
-              </ScrollContext.Provider>
+                {testItemState === '' && (
+                  <TestItemPreview
+                    LCBPreviewModal={LCBPreviewModal}
+                    cols={itemRows}
+                    previousQuestionActivity={previousQuestionActivity}
+                    questions={questions}
+                    showCollapseBtn
+                    highlights={highlights}
+                    crossAction={crossAction || {}}
+                    viewComponent="studentPlayer"
+                    setHighlights={this.saveUserWork('resourceId')}
+                    setCrossAction={
+                      enableCrossAction
+                        ? this.saveUserWork('crossAction')
+                        : false
+                    } // this needs only for MCQ and MSQ
+                    scratchPadMode={scratchPadMode}
+                    saveUserWork={this.saveUserWork('scratchpad')}
+                    saveAttachments={this.saveUserWork('attachments')}
+                    attachments={attachments}
+                    userWork={
+                      LCBPreviewModal ? scratchpadActivity.data : scratchPad
+                    }
+                    scratchpadDimensions={
+                      LCBPreviewModal ? scratchpadActivity.dimensions : null
+                    }
+                    preview={preview}
+                    evaluation={evaluation}
+                    changePreviewTab={changePreview}
+                    saveHintUsage={this.saveHintUsage}
+                    enableMagnifier={enableMagnifier}
+                    updateScratchpadtoStore
+                    isPassageWithQuestions={item?.isPassageWithQuestions}
+                    isStudentReport={isStudentReport}
+                    itemId={item._id}
+                    itemLevelScoring={item.itemLevelScoring}
+                    studentReportModal={studentReportModal}
+                    tool={currentToolMode}
+                    isShowStudentWork={isShowStudentWork}
+                  />
+                )}
+                {testItemState === 'check' && (
+                  <TestItemPreview
+                    cols={itemRows}
+                    previewTab="check"
+                    preview={preview}
+                    previousQuestionActivity={previousQuestionActivity}
+                    evaluation={evaluation}
+                    verticalDivider={item.verticalDivider}
+                    scrolling={item.scrolling}
+                    questions={questions}
+                    LCBPreviewModal={LCBPreviewModal}
+                    highlights={highlights}
+                    crossAction={crossAction || {}}
+                    showCollapseBtn
+                    viewComponent="studentPlayer"
+                    setHighlights={this.saveUserWork('resourceId')} // this needs only for passage type
+                    setCrossAction={
+                      enableCrossAction
+                        ? this.saveUserWork('crossAction')
+                        : false
+                    } // this needs only for MCQ and MSQ
+                    scratchPadMode={scratchPadMode}
+                    saveUserWork={this.saveUserWork('scratchpad')}
+                    saveAttachments={this.saveUserWork('attachments')}
+                    attachments={attachments}
+                    userWork={scratchPad}
+                    saveHintUsage={this.saveHintUsage}
+                    changePreviewTab={this.handleChangePreview}
+                    isStudentReport={isStudentReport}
+                    enableMagnifier={enableMagnifier}
+                    itemId={item._id}
+                    itemLevelScoring={item.itemLevelScoring}
+                    studentReportModal={studentReportModal}
+                    tool={currentToolMode}
+                    isShowStudentWork={isShowStudentWork}
+                  />
+                )}
+              </MainWrapper>
             </Main>
 
             <ReportIssuePopover item={item} />
@@ -655,6 +700,7 @@ class AssessmentPlayerDefault extends React.Component {
               onCancel={this.closeUserWorkUploadModal}
               uploadFile={uploadToS3}
               onUploadFinished={this.saveUserWorkAttachments}
+              cameraImageName={cameraImageName}
             />
           </AssessmentPlayerSkinWrapper>
         </Container>
@@ -663,11 +709,70 @@ class AssessmentPlayerDefault extends React.Component {
   }
 
   componentWillUnmount() {
-    const { previewPlayer, clearUserWork, showScratchPad } = this.props
-    if (previewPlayer && !showScratchPad) {
+    const { previewPlayer, clearUserWork, isStudentReport } = this.props
+    if (previewPlayer && !isStudentReport) {
       clearUserWork()
     }
   }
+}
+
+AssessmentPlayerDefault.propTypes = {
+  theme: PropTypes.object,
+  scratchPad: PropTypes.any.isRequired,
+  highlights: PropTypes.any.isRequired,
+  isFirst: PropTypes.func.isRequired,
+  moveToNext: PropTypes.func.isRequired,
+  moveToPrev: PropTypes.func.isRequired,
+  currentItem: PropTypes.any.isRequired,
+  items: PropTypes.any.isRequired,
+  gotoQuestion: PropTypes.any.isRequired,
+  itemRows: PropTypes.array.isRequired,
+  evaluation: PropTypes.any.isRequired,
+  showHints: PropTypes.func.isRequired,
+  checkAnswer: PropTypes.func.isRequired,
+  history: PropTypes.func.isRequired,
+  windowWidth: PropTypes.number.isRequired,
+  questions: PropTypes.object.isRequired,
+  userWork: PropTypes.object.isRequired,
+  settings: PropTypes.object.isRequired,
+  answerChecksUsedForItem: PropTypes.number.isRequired,
+  previewPlayer: PropTypes.bool.isRequired,
+  saveUserWork: PropTypes.func.isRequired,
+  LCBPreviewModal: PropTypes.any.isRequired,
+}
+
+AssessmentPlayerDefault.defaultProps = {
+  theme: themes,
+}
+
+function getScratchpadWork(questions = [], userWorkData = {}, target) {
+  return questions.reduce(
+    (acc, curr) => {
+      const { activity: { qActId, _id } = {} } = curr
+      const key = target === 'qActId' ? qActId : _id
+      if (key && userWorkData?.[key]) {
+        acc.data[key] = userWorkData?.[key]
+      }
+      return acc
+    },
+    { data: {} }
+  )
+}
+
+function getScratchpadWorkForStudentReport({ userWork, uqas }) {
+  const data = (uqas?.[0] || []).reduce(
+    (acc, curr) => {
+      if (userWork[curr._id]) {
+        acc.data[curr._id] = userWork[curr._id]
+      }
+      return acc
+    },
+    { data: {} }
+  )
+  if (Array.isArray(uqas) && uqas.length > 0) {
+    data.dimensions = { ...uqas[0].scratchPad?.dimensions }
+  }
+  return data
 }
 
 function getScratchPadfromActivity(state, props) {
@@ -676,7 +781,11 @@ function getScratchPadfromActivity(state, props) {
     studentReportModal = false,
     questionActivities = [],
     testActivityId = '',
+    hasDrawingResponse,
+    isStudentView,
   } = props
+
+  let acts = questionActivities
   if (LCBPreviewModal || studentReportModal) {
     const { userWork, studentTestItems } = state
     let items
@@ -684,23 +793,85 @@ function getScratchPadfromActivity(state, props) {
     if (studentReportModal) {
       items = studentTestItems.items
       currentItem = studentTestItems.current
+      acts = acts[0]
     } else {
       items = props.items
       currentItem = props.currentItem
     }
     const itemId = items[currentItem]._id
     const questionActivity =
-      questionActivities.find(
+      acts.find(
         (act) =>
           act.testItemId === itemId && act.testActivityId === testActivityId
       ) || {}
     const { scratchPad: { dimensions } = {} } = questionActivity
+    if (hasDrawingResponse) {
+      if (studentReportModal) {
+        return getScratchpadWorkForStudentReport({
+          userWork: get(state, ['userWork', 'present']),
+          uqas: questionActivities,
+          item: items?.[currentItem] || {},
+          hasDrawingResponse,
+        })
+      }
+      const target = isStudentView ? 'qActId' : '_id'
+      const data = getScratchpadWork(
+        get(items, [currentItem, 'data', 'questions'], []),
+        get(state, ['userWork', 'present']),
+        target
+      )
+      data.dimensions = dimensions
+      return data
+    }
+    let uqaIdList = []
+    if (items?.[currentItem]?.itemLevelScoring) {
+      uqaIdList = (items[currentItem]?.data?.questions || []).map((q) => {
+        const { activity } = q
+        const { qActId, _id } = activity || {}
+        return qActId || _id
+      })
+    }
     questionActivity.qActId = questionActivity.qActId || questionActivity._id
-    const userWorkData = userWork.present[questionActivity.qActId] || {}
+    let userWorkData = {}
+    if (uqaIdList.length) {
+      const currentIdInStore = uqaIdList.find((id) => userWork.present[id])
+      if (currentIdInStore) {
+        userWorkData = userWork.present[currentIdInStore] || {}
+      }
+    } else {
+      userWorkData = userWork.present[questionActivity.qActId] || {}
+    }
     const scratchPadData = { data: userWorkData, dimensions }
+
     return scratchPadData
   }
-  return null
+  return {}
+}
+
+function getHighlightsFromUserwork(state, props) {
+  const {
+    LCBPreviewModal = false,
+    testActivityId = '',
+    items,
+    currentItem,
+  } = props
+  const passageId = get(items, `[${currentItem}].passageId`)
+  const {
+    userWork: { present },
+  } = state
+
+  // student attempt
+  let highlights = get(present, `[${passageId}].resourceId`, null)
+
+  // LCB at show userWork
+  if (LCBPreviewModal && testActivityId) {
+    highlights = get(
+      present,
+      `[${passageId}][${testActivityId}].resourceId`,
+      null
+    )
+  }
+  return highlights
 }
 
 const enhance = compose(
@@ -708,9 +879,9 @@ const enhance = compose(
   withWindowSizes,
   connect(
     (state, ownProps) => ({
+      user: get(state, 'user.user'),
       evaluation: state.evaluation,
       preview: state.view.preview,
-      questions: state.assessmentplayerQuestions.byId,
       scratchPad: get(
         state,
         `userWork.present[${
@@ -725,11 +896,7 @@ const enhance = compose(
         }].attachments`,
         null
       ),
-      highlights: get(
-        state,
-        `userWork.present[${ownProps?.passage?._id}].resourceId`,
-        null
-      ),
+      highlights: getHighlightsFromUserwork(state, ownProps),
       crossAction: get(
         state,
         `userWork.present[${
@@ -761,7 +928,7 @@ const enhance = compose(
       timedAssignment: state.test?.settings?.timedAssignment,
       currentAssignmentTime: state.test?.currentAssignmentTime,
       stopTimerFlag: state.test?.stopTimerFlag,
-      isCliUser: get(state, 'user.isCliUser', false),
+      assignmentSettings: assignmentLevelSettingsSelector(state),
     }),
     {
       changePreview: changePreviewAction,

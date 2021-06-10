@@ -1,19 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import { Input } from 'antd'
 import styled from 'styled-components'
+import {
+  TextAreaInputStyled,
+  FieldLabel,
+  FlexContainer,
+} from '@edulastic/common'
+import { IconQuestionCircle } from '@edulastic/icons'
 import { withMathFormula } from '../../HOC/withMathFormula'
 import { getMathHtml } from '../../utils/mathUtils'
-
-const Div = styled.div`
-  .katex-display {
-    text-align: left !important;
-  }
-
-  .katex-display .katex {
-    text-align: left !important;
-  }
-`
 
 const KatexInput = ({ value, onInput }) => {
   const [katexHtml, setKatexHtml] = useState('')
@@ -21,6 +16,7 @@ const KatexInput = ({ value, onInput }) => {
 
   useEffect(() => {
     setLatex(value)
+    setKatexHtml(getMathHtml(value))
   }, [])
 
   useEffect(() => {
@@ -36,10 +32,27 @@ const KatexInput = ({ value, onInput }) => {
   }
 
   return (
-    <>
-      <Input value={latex} onChange={(e) => onChange(e.target.value)} />
-      <Div dangerouslySetInnerHTML={{ __html: katexHtml }} />
-    </>
+    <KatexInputWrapper>
+      <TextAreaInputStyled
+        value={latex}
+        margin="0px 15px"
+        width="calc(100% - 30px)"
+        autoSize={{ minRows: 1, maxRows: 5 }}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder="Enter math expressions in latex. See the examples for additional help."
+      />
+      <LatextPreviewTitle justifyContent="space-between">
+        <FieldLabel>Preview</FieldLabel>
+        <HelpLabel>
+          <IconQuestionCircle />
+          Latex help
+        </HelpLabel>
+      </LatextPreviewTitle>
+      <LatexPreview dangerouslySetInnerHTML={{ __html: katexHtml }} />
+      {!value && (
+        <PreviewPlaceHolder>Math preview will be shown here</PreviewPlaceHolder>
+      )}
+    </KatexInputWrapper>
   )
 }
 
@@ -51,3 +64,47 @@ KatexInput.propTypes = {
 KatexInput.defaultProps = {}
 
 export default withMathFormula(KatexInput)
+
+const KatexInputWrapper = styled.div`
+  min-width: 520px;
+  min-height: 350px;
+  position: relative;
+`
+
+const LatextPreviewTitle = styled(FlexContainer)`
+  margin-top: 15px;
+  border-top: 1px solid #e8e8e8;
+  padding: 12px 15px 0px;
+`
+
+const HelpLabel = styled(FieldLabel)`
+  color: #1ab395;
+  display: flex;
+  align-items: center;
+  & svg {
+    fill: #1ab395;
+    margin-right: 8px;
+    &:hover {
+      fill: #1ab395;
+    }
+  }
+`
+
+const LatexPreview = styled.div`
+  padding: 15px;
+  .katex-display {
+    text-align: left !important;
+  }
+
+  .katex-display .katex {
+    text-align: left !important;
+  }
+`
+
+const PreviewPlaceHolder = styled(FieldLabel)`
+  color: #8b939e;
+  position: absolute;
+  left: 50%;
+  top: 60%;
+  transform: translate(-50%, -60%);
+`

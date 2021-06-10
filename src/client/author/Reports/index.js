@@ -2,28 +2,57 @@ import { pullAllBy } from 'lodash'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import { Route } from 'react-router-dom'
+import qs from 'qs'
+
+import { Spin } from 'antd'
 import { MainContentWrapper } from '@edulastic/common'
-import { Header, SubHeader } from './common/components/Header'
+import { roleuser } from '@edulastic/constants'
+
+import { Header } from './common/components/Header'
 import StandardReport from './components/StandardReport'
 import navigation from './common/static/json/navigation.json'
 import { PrintableScreen } from './common/styled'
 import CustomReports from './components/customReport'
 import CustomReportIframe from './components/customReport/customReportIframe'
+import SharedReports from './components/sharedReports'
 import {
   getCsvDownloadingState,
   getPrintingState,
+  setSharingStateAction,
   setCsvDownloadingStateAction,
   setPrintingStateAction,
+  getCsvDocs,
+  setCsvModalVisibleAction,
 } from './ducks'
+import {
+  getCollaborativeGroupsAction,
+  getSharedReportList,
+  getSharedReportsLoader,
+  getSharedReportsAction,
+} from './components/sharedReports/ducks'
 import { MultipleAssessmentReportContainer } from './subPages/multipleAssessmentReport'
 import { SingleAssessmentReportContainer } from './subPages/singleAssessmentReport'
 import { StandardsMasteryReportContainer } from './subPages/standardsMasteryReport'
 import { StudentProfileReportContainer } from './subPages/studentProfileReport'
+import { EngagementReportContainer } from './subPages/engagementReport'
 import ClassCreate from '../ManageClass/components/ClassCreate'
+import { getUserRole } from '../src/selectors/user'
 
 const Container = (props) => {
-  const { isCsvDownloading, isPrinting, match, isCliUser } = props
+  const {
+    role,
+    isCsvDownloading,
+    isPrinting,
+    match,
+    isCliUser,
+    showCustomReport,
+    loadingSharedReports,
+    sharedReportList,
+    reportCsvDocs,
+    setCsvModalVisible,
+  } = props
   const [showHeader, setShowHeader] = useState(true)
+  const [hideHeader, setHideHeader] = useState(false)
   const [showFilter, setShowFilter] = useState(false)
   const [showApply, setShowApply] = useState(false)
   const reportType = props?.match?.params?.reportType || 'standard-reports'
@@ -32,6 +61,9 @@ const Container = (props) => {
     navigation.navigation[groupName]
   )
   const [dynamicBreadcrumb, setDynamicBreadcrumb] = useState('')
+
+  const isAdmin =
+    role === roleuser.DISTRICT_ADMIN || role === roleuser.SCHOOL_ADMIN
 
   useEffect(() => {
     window.onbeforeprint = () => {
@@ -43,6 +75,9 @@ const Container = (props) => {
       props.setPrintingStateAction(false)
     }
 
+    props.fetchCollaborationGroups()
+    props.fetchSharedReports()
+
     return () => {
       window.onbeforeprint = () => {}
       window.onafterprint = () => {}
@@ -50,7 +85,11 @@ const Container = (props) => {
   }, [])
 
   useEffect(() => {
-    if (reportType === 'standard-reports' || reportType === 'custom-reports') {
+    if (
+      reportType === 'standard-reports' ||
+      reportType === 'custom-reports' ||
+      reportType === 'shared-reports'
+    ) {
       setNavigationItems(navigation.navigation[groupName])
     }
   }, [reportType])
@@ -58,7 +97,7 @@ const Container = (props) => {
   // -----|-----|-----|-----|-----| HEADER BUTTON EVENTS BEGIN |-----|-----|-----|-----|----- //
 
   const onShareClickCB = () => {
-    console.log('not implemented yet')
+    props.setSharingStateAction(true)
   }
 
   const onPrintClickCB = () => {
@@ -98,7 +137,10 @@ const Container = (props) => {
     let loc = props?.match?.params?.reportType
     if (
       !loc ||
-      (loc && (loc === 'standard-reports' || loc === 'custom-reports'))
+      (loc &&
+        (loc === 'standard-reports' ||
+          loc === 'custom-reports' ||
+          loc === 'shared-reports'))
     ) {
       loc = !loc ? reportType : loc
       const breadcrumbInfo = navigation.locToData[loc].breadcrumb
@@ -126,6 +168,14 @@ const Container = (props) => {
         navigationItems,
       }
     }
+    const breadcrumbInfo = [...navigation.locToData[loc].breadcrumb]
+    const reportId = qs.parse(props.location.search, {
+      ignoreQueryPrefix: true,
+    }).reportId
+    const isSharedReport = !!(reportId && reportId.toLowerCase() !== 'all')
+    if (isSharedReport) {
+      breadcrumbInfo[0] = navigation.locToData['shared-reports'].breadcrumb[0]
+    }
     return {
       loc,
       group: navigation.locToData[loc].group,
@@ -134,12 +184,15 @@ const Container = (props) => {
       onPrintClickCB,
       onDownloadCSVClickCB,
       onRefineResultsCB,
-      breadcrumbData: navigation.locToData[loc].breadcrumb,
+      breadcrumbData: breadcrumbInfo,
       navigationItems,
+      isSharedReport,
     }
   })
 
-  const expandFilter = showFilter
+  if (loadingSharedReports) {
+    return <Spin size="small" />
+  }
 
   return (
     <PrintableScreen>
@@ -160,17 +213,15 @@ const Container = (props) => {
           activeNavigationKey={reportType}
           hideSideMenu={isCliUser}
           isCliUser={isCliUser}
+          showCustomReport={showCustomReport}
+          showSharedReport={sharedReportList.length}
+          title={headerSettings.title}
+          isSharedReport={headerSettings.isSharedReport}
+          reportCsvDocs={reportCsvDocs}
+          setCsvModalVisible={setCsvModalVisible}
         />
       )}
       <MainContentWrapper>
-        {!isCliUser && (
-          <SubHeader
-            breadcrumbsData={headerSettings.breadcrumbData}
-            onRefineResultsCB={headerSettings.onRefineResultsCB}
-            showFilter={expandFilter}
-            title={headerSettings.title}
-          />
-        )}
         {reportType === 'custom-reports' ? (
           <Route
             exact
@@ -180,6 +231,8 @@ const Container = (props) => {
               return (
                 <CustomReports
                   {..._props}
+                  isCliUser={isCliUser}
+                  breadcrumbData={headerSettings.breadcrumbData}
                   setDynamicBreadcrumb={setDynamicBreadcrumb}
                 />
               )
@@ -191,7 +244,13 @@ const Container = (props) => {
             path={match.path}
             component={() => {
               setShowHeader(true)
-              return <StandardReport premium={props.premium} />
+              return (
+                <StandardReport
+                  premium={props.premium}
+                  isAdmin={isAdmin}
+                  loc={reportType}
+                />
+              )
             }}
           />
         ) : null}
@@ -205,15 +264,22 @@ const Container = (props) => {
             `/author/reports/performance-by-students/test/`,
           ]}
           render={(_props) => {
-            setShowHeader(true)
+            if (!hideHeader) {
+              setShowHeader(true)
+            }
             return (
               <SingleAssessmentReportContainer
                 {..._props}
-                showFilter={expandFilter}
+                isCliUser={isCliUser}
+                isPrinting={isPrinting}
+                breadcrumbData={headerSettings.breadcrumbData}
+                showFilter={showFilter}
                 showApply={showApply}
                 onRefineResultsCB={onRefineResultsCB}
                 loc={reportType}
                 updateNavigation={setNavigationItems}
+                setShowHeader={setShowHeader}
+                preventHeaderRender={setHideHeader}
               />
             )
           }}
@@ -227,6 +293,9 @@ const Container = (props) => {
           render={(_props) => (
             <MultipleAssessmentReportContainer
               {..._props}
+              isCliUser={isCliUser}
+              isPrinting={isPrinting}
+              breadcrumbData={headerSettings.breadcrumbData}
               showFilter={showFilter}
               showApply={showApply}
               onRefineResultsCB={onRefineResultsCB}
@@ -238,17 +307,22 @@ const Container = (props) => {
         />
         <Route
           path={[
-            `/author/reports/standards-gradebook`,
             `/author/reports/standards-performance-summary`,
+            `/author/reports/standards-gradebook`,
+            `/author/reports/standards-progress`,
           ]}
           render={(_props) => (
             <StandardsMasteryReportContainer
               {..._props}
+              isCliUser={isCliUser}
+              isPrinting={isPrinting}
+              breadcrumbData={headerSettings.breadcrumbData}
               premium={props.premium}
-              showFilter={expandFilter}
+              showFilter={showFilter}
               showApply={showApply}
               onRefineResultsCB={onRefineResultsCB}
               loc={reportType}
+              navigationItems={navigationItems}
               updateNavigation={setNavigationItems}
               setShowHeader={setShowHeader}
             />
@@ -259,13 +333,41 @@ const Container = (props) => {
             `/author/reports/student-mastery-profile/student/`,
             `/author/reports/student-assessment-profile/student/`,
             `/author/reports/student-profile-summary/student/`,
+            `/author/reports/student-progress-profile/student/`,
           ]}
           render={(_props) => {
             setShowHeader(true)
             return (
               <StudentProfileReportContainer
                 {..._props}
+                isCliUser={isCliUser}
+                isPrinting={isPrinting}
+                breadcrumbData={headerSettings.breadcrumbData}
+                showApply={showApply}
                 showFilter={showFilter}
+                onRefineResultsCB={onRefineResultsCB}
+                loc={reportType}
+                updateNavigation={setNavigationItems}
+              />
+            )
+          }}
+        />
+        <Route
+          path={[
+            `/author/reports/engagement-summary`,
+            `/author/reports/activity-by-school`,
+            `/author/reports/activity-by-teacher`,
+          ]}
+          render={(_props) => {
+            setShowHeader(true)
+            return (
+              <EngagementReportContainer
+                {..._props}
+                isCliUser={isCliUser}
+                isPrinting={isPrinting}
+                breadcrumbData={headerSettings.breadcrumbData}
+                showFilter={showFilter}
+                showApply={showApply}
                 onRefineResultsCB={onRefineResultsCB}
                 loc={reportType}
                 updateNavigation={setNavigationItems}
@@ -280,7 +382,22 @@ const Container = (props) => {
             return (
               <CustomReportIframe
                 {..._props}
+                isCliUser={isCliUser}
+                breadcrumbData={headerSettings.breadcrumbData}
                 setDynamicBreadcrumb={setDynamicBreadcrumb}
+              />
+            )
+          }}
+        />
+        <Route
+          path="/author/reports/shared-reports/"
+          render={(_props) => {
+            setShowHeader(true)
+            return (
+              <SharedReports
+                {..._props}
+                isCliUser={isCliUser}
+                breadcrumbData={headerSettings.breadcrumbData}
               />
             )
           }}
@@ -292,14 +409,23 @@ const Container = (props) => {
 
 const enhance = connect(
   (state) => ({
+    role: getUserRole(state),
     isPrinting: getPrintingState(state),
     isCsvDownloading: getCsvDownloadingState(state),
     premium: state?.user?.user?.features?.premium,
+    showCustomReport: state?.user?.user?.features?.customReport,
     isCliUser: state?.user?.isCliUser,
+    sharedReportList: getSharedReportList(state),
+    loadingSharedReports: getSharedReportsLoader(state),
+    reportCsvDocs: getCsvDocs(state),
   }),
   {
+    setSharingStateAction,
     setPrintingStateAction,
     setCsvDownloadingStateAction,
+    fetchSharedReports: getSharedReportsAction,
+    fetchCollaborationGroups: getCollaborativeGroupsAction,
+    setCsvModalVisible: setCsvModalVisibleAction,
   }
 )
 

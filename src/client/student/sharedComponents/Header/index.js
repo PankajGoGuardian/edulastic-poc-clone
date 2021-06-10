@@ -5,6 +5,7 @@ import PropTypes from 'prop-types'
 import React, { memo } from 'react'
 import { compose } from 'redux'
 import styled from 'styled-components'
+import { Row } from 'antd'
 import ClassSelect, { StudentSlectCommon } from '../ClassSelector'
 import ShowActiveClass from '../ShowActiveClasses'
 import AttemptSelect from './AttemptSelect'
@@ -25,6 +26,7 @@ const Header = ({
   showReviewResponses,
   reviewResponses,
   onExit,
+  previewModal,
   ...rest
 }) => (
   <MainHeader
@@ -33,39 +35,43 @@ const Header = ({
     headingSubContent={titleSubContent}
     {...rest}
   >
-    <StudentSlectCommon />
-    {classSelect && (
-      <ClassSelect
-        t={t}
-        classList={classList}
-        showAllClassesOption={showAllClassesOption}
-      />
-    )}
-    {showActiveClass && (
-      <ShowActiveClass
-        t={t}
-        classList={classList}
-        setClassList={setClassList}
-        setShowClass={setShowClass}
-      />
-    )}
-    {(attempts.length > 1 || showReviewResponses) && (
-      <FlexContainer>
-        {attempts.length > 1 && <AttemptSelect attempts={attempts} />}
-        {showReviewResponses && (
-          <EduButton
-            data-cy="view-response-in-header"
-            onClick={reviewResponses}
-            isBlue
-          >
-            Review Responses
-          </EduButton>
-        )}
-      </FlexContainer>
-    )}
-    {showExit && !showReviewResponses && (
-      <EduButton onClick={onExit}>EXIT</EduButton>
-    )}
+    <Row type="flex" align="middle">
+      {!showReviewResponses && <StudentSlectCommon />}
+      {classSelect && (
+        <ClassSelect
+          t={t}
+          classList={classList}
+          showAllClassesOption={showAllClassesOption}
+        />
+      )}
+      {showActiveClass && (
+        <ShowActiveClass
+          t={t}
+          classList={classList}
+          setClassList={setClassList}
+          setShowClass={setShowClass}
+        />
+      )}
+      {(attempts.length > 1 || showReviewResponses || previewModal) && (
+        <FlexContainer>
+          {attempts.length > 1 && <AttemptSelect attempts={attempts} />}
+          {showReviewResponses && (
+            <EduButton
+              data-cy="view-response-in-header"
+              onClick={reviewResponses}
+              isBlue
+            >
+              Review Responses
+            </EduButton>
+          )}
+          {showExit && !showReviewResponses && (
+            <EduButton data-cy="finishTest" onClick={onExit}>
+              EXIT
+            </EduButton>
+          )}
+        </FlexContainer>
+      )}
+    </Row>
   </MainHeader>
 )
 

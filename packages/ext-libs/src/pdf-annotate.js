@@ -1,6 +1,8 @@
+// eslint-disable-next-line
 var pdfjsViewer = require('pdfjs-dist/web/pdf_viewer.js') // pdfjs-dist - v2.1.266
 var { aws } = require('@edulastic/constants')
 var { uploadToS3 } = require('@edulastic/common')
+const { themeColor } = require('@edulastic/colors')
 ;(function webpackUniversalModuleDefinition(root, factory) {
   if (typeof exports === 'object' && typeof module === 'object')
     module.exports = factory()
@@ -1867,7 +1869,7 @@ var { uploadToS3 } = require('@edulastic/common')
          *    - fulfilled: SVGElement
          *    - rejected: Error
          */
-        function render(svg, viewport, data) {
+        function render(svg, viewport, data, authoringMode) {
           return new Promise(function (resolve, reject) {
             // Reset the content of the SVG
             svg.innerHTML = ''
@@ -1897,7 +1899,7 @@ var { uploadToS3 } = require('@edulastic/common')
 
             // Append annotation to svg
             data.annotations.forEach(function (a) {
-              ;(0, _appendChild2.default)(svg, a, viewport)
+              ;(0, _appendChild2.default)(svg, a, viewport, authoringMode)
             })
 
             resolve(svg)
@@ -2025,10 +2027,11 @@ var { uploadToS3 } = require('@edulastic/common')
             var width = parseInt(node.getAttribute('width'), 10)
             var height = parseInt(node.getAttribute('height'), 10)
             var path = node.querySelector('path')
+            var rect = node.querySelector('rect')
             var svg = path.parentNode
 
             // Scale width/height
-            ;[node, svg, path].forEach(function (n) {
+            ;[node, path, rect].forEach(function (n) {
               n.setAttribute(
                 'width',
                 parseInt(n.getAttribute('width'), 10) * viewport.scale
@@ -2039,11 +2042,7 @@ var { uploadToS3 } = require('@edulastic/common')
               )
             })
 
-            // Transform path but keep scale at 100% since it will be handled natively
-            transform(
-              path,
-              (0, _objectAssign2.default)({}, viewport, { scale: 1 })
-            )
+            transform(path, viewport)
 
             switch (viewport.rotation % 360) {
               case 90:
@@ -2077,7 +2076,7 @@ var { uploadToS3 } = require('@edulastic/common')
          * @param {Object} viewport The page's viewport data
          * @return {SVGElement} A node that was created and appended by this function
          */
-        function appendChild(svg, annotation, viewport) {
+        function appendChild(svg, annotation, viewport, authoringMode) {
           if (!viewport) {
             viewport = JSON.parse(
               svg.getAttribute('data-pdf-annotate-viewport')
@@ -2117,6 +2116,9 @@ var { uploadToS3 } = require('@edulastic/common')
             // Set attributes
             child.setAttribute('data-pdf-annotate-id', annotation.uuid)
             child.setAttribute('data-pdf-annotate-type', annotation.type)
+            if (authoringMode) {
+              child.setAttribute('data-view-mode', 'edit')
+            }
             child.setAttribute('aria-hidden', true)
 
             svg.appendChild(transform(child, viewport))
@@ -2373,24 +2375,42 @@ var { uploadToS3 } = require('@edulastic/common')
         }
 
         var SIZE = 25
-        var commentSvg = `<svg class="svg-icon" id="comment" viewBox="0 0 20 20" width="25" height="25">
-            <path d="M17.211,3.39H2.788c-0.22,0-0.4,0.18-0.4,0.4v9.614c0,0.221,0.181,0.402,0.4,0.402h3.206v2.402c0,0.363,0.429,0.533,0.683,0.285l2.72-2.688h7.814c0.221,0,0.401-0.182,0.401-0.402V3.79C17.612,3.569,17.432,3.39,17.211,3.39M16.811,13.004H9.232c-0.106,0-0.206,0.043-0.282,0.117L6.795,15.25v-1.846c0-0.219-0.18-0.4-0.401-0.4H3.189V4.19h13.622V13.004z"></path>
-            </svg>`
+        var D =
+          'm5.96968,15.58726a7.20087,7.20087 0 0 1 -0.30932,-0.76781l-0.01549,0a7.2261,7.2261 0 0 1 6.53852,-9.5306l0,0a7.21843,7.21843 0 1 1 0.34661,14.42916a7.14054,7.14054 0 0 1 -3.07121,-0.69102c-3.76223,0.74368 -3.46937,0.69102 -3.55492,0.69102a0.61863,0.61863 0 0 1 -0.60656,-0.74037l0.67237,-3.39039z'
 
         function renderPoint(a) {
-          var div = document.createElement('div')
-          div.innerHTML = commentSvg.trim()
+          var commentSvg = document.createElementNS(
+            'http://www.w3.org/2000/svg',
+            'svg'
+          )
+          commentSvg.setAttribute('width', SIZE)
+          commentSvg.setAttribute('height', SIZE)
+          commentSvg.setAttribute('x', a.x)
+          commentSvg.setAttribute('y', a.y)
+          commentSvg.setAttribute('data-annotate-type', 'comment')
 
-          div.firstChild.setAttribute('x', a.x)
-          div.firstChild.setAttribute('y', a.y)
-          div.firstChild.setAttribute('stroke-width', 1)
-          div.firstChild.setAttribute('stroke', '#4e95f3')
+          var rect = document.createElementNS(
+            'http://www.w3.org/2000/svg',
+            'rect'
+          )
+          rect.setAttribute('width', SIZE)
+          rect.setAttribute('height', SIZE)
+          rect.setAttribute('stroke', '#EFA12C')
+          rect.setAttribute('fill', '#EFA12C')
+          rect.setAttribute('stroke-width', 0)
 
-          div.setAttribute('width', 100)
-          div.setAttribute('height', 100)
-          div.style.background = '#ff0'
+          var path = document.createElementNS(
+            'http://www.w3.org/2000/svg',
+            'path'
+          )
+          path.setAttribute('d', D)
+          path.setAttribute('stroke-width', 0.5)
+          path.setAttribute('stroke', '#ffffff')
+          path.setAttribute('fill', '#ffffff')
 
-          return div.firstChild
+          commentSvg.appendChild(rect)
+          commentSvg.appendChild(path)
+          return commentSvg
         }
         module.exports = exports['default']
 
@@ -2535,6 +2555,7 @@ var { uploadToS3 } = require('@edulastic/common')
             'text'
           )
 
+          text.setAttribute('data-annotate-type', 'textBox')
           ;(0, _setAttributes2.default)(text, {
             x: a.x,
             y: a.y + (parseInt(a.size, 10) || 0),
@@ -2688,6 +2709,7 @@ var { uploadToS3 } = require('@edulastic/common')
             arguments.length <= 1 || arguments[1] === undefined
               ? 0
               : arguments[1]
+
           switch (annotation.type) {
             case 'highlight':
             case 'strikeout':
@@ -2863,7 +2885,6 @@ var { uploadToS3 } = require('@edulastic/common')
           var svg = document.querySelector(
             'svg[data-pdf-annotate-page="' + pageNumber + '"]'
           )
-          if (!svg) return false
           var rect = svg.getBoundingClientRect()
           var nodes = [].concat(
             _toConsumableArray(
@@ -2961,7 +2982,6 @@ var { uploadToS3 } = require('@edulastic/common')
           var svg = document.querySelector(
             'svg[data-pdf-annotate-page="' + pageNumber + '"]'
           )
-          if (!svg) return false
           var left =
             (0, _utils.scaleDown)(svg, {
               left: node.getBoundingClientRect().left,
@@ -3017,7 +3037,10 @@ var { uploadToS3 } = require('@edulastic/common')
           var svg = document.querySelector(
             'svg[data-pdf-annotate-page="' + pageNumber + '"]'
           )
-          if (!svg) return false
+          if (!svg) {
+            return
+          }
+
           var rect = svg.getBoundingClientRect()
           y = (0, _utils.scaleUp)(svg, { y: y }).y + rect.top
           x = (0, _utils.scaleUp)(svg, { x: x }).x + rect.left
@@ -3810,7 +3833,11 @@ var { uploadToS3 } = require('@edulastic/common')
                           viewY += annotation.size
                         }
 
-                        if (type === 'point') {
+                        if (
+                          type === 'point' ||
+                          type === 'video' ||
+                          type === 'image'
+                        ) {
                           viewY = (0, _utils.scaleUp)(svg, { viewY: viewY })
                             .viewY
                         }
@@ -3826,7 +3853,11 @@ var { uploadToS3 } = require('@edulastic/common')
                         var modelX = parseInt(t.getAttribute('x'), 10) + deltaX
                         var viewX = modelX
 
-                        if (type === 'point') {
+                        if (
+                          type === 'point' ||
+                          type === 'video' ||
+                          type === 'image'
+                        ) {
                           viewX = (0, _utils.scaleUp)(svg, { viewX: viewX })
                             .viewX
                         }
@@ -4714,6 +4745,7 @@ var { uploadToS3 } = require('@edulastic/common')
           input.style.top = e.clientY + 'px'
           input.style.left = e.clientX + 'px'
           input.style.fontSize = _textSize + 'px'
+          input.style.zIndex = 1
 
           input.addEventListener('blur', handleInputBlur)
           input.addEventListener('keyup', handleInputKeyup)
@@ -4960,6 +4992,7 @@ var { uploadToS3 } = require('@edulastic/common')
           var pdfDocument = renderOptions.pdfDocument
           var scale = renderOptions.scale
           var rotate = renderOptions.rotate
+          var authoringMode = renderOptions.authoringMode
 
           // Load the page and annotations
 
@@ -4986,7 +5019,12 @@ var { uploadToS3 } = require('@edulastic/common')
                 viewport: viewport,
                 transform: transform,
               }),
-              _PDFJSAnnotate2.default.render(svg, viewport, annotations),
+              _PDFJSAnnotate2.default.render(
+                svg,
+                viewport,
+                annotations,
+                authoringMode
+              ),
             ])
               .then(function () {
                 // Text content is needed for a11y, but is also necessary for creating
@@ -5163,9 +5201,17 @@ var { uploadToS3 } = require('@edulastic/common')
           return obj && obj.__esModule ? obj : { default: obj }
         }
         var SIZE = 25
-        var videoSvg = `<svg class="svg-icon" id="video" viewBox="0 0 20 20" width="25" height="25">
-            <path d="M17.919,4.633l-3.833,2.48V6.371c0-1-0.815-1.815-1.816-1.815H3.191c-1.001,0-1.816,0.814-1.816,1.815v7.261c0,1.001,0.815,1.815,1.816,1.815h9.079c1.001,0,1.816-0.814,1.816-1.815v-0.739l3.833,2.478c0.428,0.226,0.706-0.157,0.706-0.377V5.01C18.625,4.787,18.374,4.378,17.919,4.633 M13.178,13.632c0,0.501-0.406,0.907-0.908,0.907H3.191c-0.501,0-0.908-0.406-0.908-0.907V6.371c0-0.501,0.407-0.907,0.908-0.907h9.079c0.502,0,0.908,0.406,0.908,0.907V13.632zM17.717,14.158l-3.631-2.348V8.193l3.631-2.348V14.158z"></path>
-            </svg>`
+        var videoSvg = `<svg class="svg-icon" data-annotate-type="video" width="25" height="25">
+          <rect id="svg_7" height="25.34268" width="25.18643" y="-0.21763" x="-0.10918" stroke-opacity="0" stroke-width="null" stroke="#1AB395" fill="#1AB395"/>          
+          <g stroke="null" id="svg_6">
+            <g stroke="null" id="svg_1">
+            <path stroke="#ffffff" d="m5.50557,7.04802l10.04806,0a1.00547,1.00547 0 0 1 0.9133,1.08089l0,8.64959a1.00547,1.00547 0 0 1 -0.9133,1.08089l-10.04806,0a1.00547,1.00547 0 0 1 -0.9133,-1.08089l0,-8.64959a1.00547,1.00547 0 0 1 0.9133,-1.08089z" fill="#ffffff" id="svg_2"/>
+            </g>
+            <g stroke="null" id="svg_3">
+            <path stroke="#ffffff" d="m15.38739,9.69493l4.20289,-2.43409a0.47342,0.47342 0 0 1 0.53039,0.03351a0.68708,0.68708 0 0 1 0.25807,0.55301l0,9.21685a0.68708,0.68708 0 0 1 -0.26058,0.55553a0.48515,0.48515 0 0 1 -0.2874,0.09636a0.4776,0.4776 0 0 1 -0.24718,-0.06954l-4.20289,-2.52375l0.0067,-5.42789z" fill="#ffffff" id="svg_4"/>
+            </g>
+          </g>          
+      </svg>`
 
         function renderPoint(a) {
           var div = document.createElement('div')
@@ -5174,7 +5220,7 @@ var { uploadToS3 } = require('@edulastic/common')
           div.firstChild.setAttribute('x', a.x)
           div.firstChild.setAttribute('y', a.y)
           div.firstChild.setAttribute('stroke-width', 1)
-          div.firstChild.setAttribute('stroke', '#4e95f3')
+          div.firstChild.setAttribute('stroke', 'green')
 
           return div.firstChild
         }
@@ -5377,9 +5423,17 @@ var { uploadToS3 } = require('@edulastic/common')
           return obj && obj.__esModule ? obj : { default: obj }
         }
         var SIZE = 25
-        var imageSvg = `<svg class="svg-icon" id="image" viewBox="0 0 20 20" width="25" height="25">
-            <path d="M18.555,15.354V4.592c0-0.248-0.202-0.451-0.45-0.451H1.888c-0.248,0-0.451,0.203-0.451,0.451v10.808c0,0.559,0.751,0.451,0.451,0.451h16.217h0.005C18.793,15.851,18.478,14.814,18.555,15.354 M2.8,14.949l4.944-6.464l4.144,5.419c0.003,0.003,0.003,0.003,0.003,0.005l0.797,1.04H2.8z M13.822,14.949l-1.006-1.317l1.689-2.218l2.688,3.535H13.822z M17.654,14.064l-2.791-3.666c-0.181-0.237-0.535-0.237-0.716,0l-1.899,2.493l-4.146-5.42c-0.18-0.237-0.536-0.237-0.716,0l-5.047,6.598V5.042h15.316V14.064z M12.474,6.393c-0.869,0-1.577,0.707-1.577,1.576s0.708,1.576,1.577,1.576s1.577-0.707,1.577-1.576S13.343,6.393,12.474,6.393 M12.474,8.645c-0.371,0-0.676-0.304-0.676-0.676s0.305-0.676,0.676-0.676c0.372,0,0.676,0.304,0.676,0.676S12.846,8.645,12.474,8.645"></path>
-            </svg>`
+        var imageSvg = `<svg class="svg-icon" data-annotate-type="image" width="25" height="25">
+          <rect id="svg_6" height="25.20663" width="25.24921" y="-0.05995" x="-0.12507" stroke-opacity="0" stroke-width="null" stroke="#E53F61" fill="#E53F61"/>
+          <g stroke="null" id="svg_7">
+          <g stroke="null" id="svg_2">
+            <path stroke="#ffffff" stroke-width="0.5" id="svg_3" fill="#ffffff" d="m18.80868,6.76499l-12.61736,0a1.72059,1.72059 0 0 0 -1.72059,1.72059l0,8.02884a1.72059,1.72059 0 0 0 1.72059,1.72059l12.61736,0a1.72059,1.72059 0 0 0 1.72059,-1.72059l0,-8.02884a1.72059,1.72059 0 0 0 -1.72059,-1.72059zm0.57324,6.645l-3.60912,-3.60912a0.57324,0.57324 0 0 0 -0.8106,0l-4.75647,4.75561l-1.88511,-1.88511a0.57324,0.57324 0 0 0 -0.8106,0l-1.88511,1.88511l0,-6.0709a0.57324,0.57324 0 0 1 0.57324,-0.57324l12.61051,0a0.57324,0.57324 0 0 1 0.57324,0.57324l0,4.92441z"/>
+          </g>
+          <g stroke="null" id="svg_4">
+            <circle stroke="#ffffff" stroke-width="0.5" id="svg_5" fill="#ffffff" r="1.72059" cy="10.77941" cx="9.6325"/>
+          </g>
+          </g>
+        </svg>`
 
         function renderPoint(a) {
           var div = document.createElement('div')
@@ -5388,7 +5442,7 @@ var { uploadToS3 } = require('@edulastic/common')
           div.firstChild.setAttribute('x', a.x)
           div.firstChild.setAttribute('y', a.y)
           div.firstChild.setAttribute('stroke-width', 1)
-          div.firstChild.setAttribute('stroke', '#4e95f3')
+          div.firstChild.setAttribute('stroke', 'red')
 
           return div.firstChild
         }
@@ -5681,6 +5735,7 @@ var { uploadToS3 } = require('@edulastic/common')
           dragStartX = void 0,
           dragStartY = void 0
         var OVERLAY_BORDER_SIZE = 3
+        var editMode = false
 
         /**
          * Create an overlay for editing an annotation.
@@ -5688,6 +5743,7 @@ var { uploadToS3 } = require('@edulastic/common')
          * @param {Element} target The annotation element to apply overlay for
          */
 
+        // ------------------------ Video edit start ------------------------------------------ //
         function createVideoUpdateOverlay(target) {
           destroyVideoUpdateOverlay()
 
@@ -5698,6 +5754,7 @@ var { uploadToS3 } = require('@edulastic/common')
 
           var documentId = _getMetadata2.documentId
           var annotationId = target.getAttribute('data-pdf-annotate-id')
+          var isEditable = target.getAttribute('data-view-mode') === 'edit'
 
           var videoContent = void 0
 
@@ -5727,12 +5784,21 @@ var { uploadToS3 } = require('@edulastic/common')
 
               overlay.style.background = '#fff'
 
+              var editVideoInput = `
+              <div id="edu-edit-annotate-video" style="padding-top: 12px;">
+                <span>Copy and paste the video embed code<a href="https://support.google.com/youtube/answer/171780?hl=en" target="_blank">Help</a>:</span>
+                <br/>
+                <input id="video-edit-input" type="url" placeholder="Paste video embed code here" type="text" class="ant-input" value='${videoContent}' style="width: calc(100% - 70px);margin-top: 12px;">
+                <button id="edu-annotate-edit-video" class="ant-btn ant-btn-primary">Save</button>
+                <br/>
+              </div>`
+
               overlay.innerHTML = `
               <div class="ant-modal-content" style="border-radius: 10px; overflow: hidden">
               <button id="edu-annotate-close" onclick="" type="button" aria-label="Close" class="ant-modal-close">
-                <span class="ant-modal-close-x" style="height: 30px;", width: 30x; line-height: 30px;>
+                <span class="ant-modal-close-x">
                   <span role="img" aria-label="close" class="anticon anticon-close ant-modal-close-icon">
-                    <svg viewBox="64 64 896 896" focusable="false" class="" data-icon="close" width="1em" height="1em" fill="currentColor" aria-hidden="true">
+                    <svg viewBox="64 64 896 896" focusable="false" class="" data-icon="close" width="1em" height="1em" fill="currentColor" aria-hidden="true" fill="#434B5D">
                       <path d="M563.8 512l262.5-312.9c4.4-5.2.7-13.1-6.1-13.1h-79.8c-4.7 0-9.2 2.1-12.3 5.7L511.6 449.8 295.1 191.7c-3-3.6-7.5-5.7-12.3-5.7H203c-6.8 0-10.5 7.9-6.1 13.1L459.4 512 196.9 824.9A7.95 7.95 0 00203 838h79.8c4.7 0 9.2-2.1 12.3-5.7l216.5-258.1 216.5 258.1c3 3.6 7.5 5.7 12.3 5.7h79.8c6.8 0 10.5-7.9 6.1-13.1L563.8 512z"></path>
                     </svg>
                   </span>
@@ -5742,9 +5808,10 @@ var { uploadToS3 } = require('@edulastic/common')
               <div class="ant-modal-header" style="height: 30px; border: none;">
                 <br/>
               </div>
-                <div class="ant-modal-body">
-                ${videoContent}
-                </div>
+              <div class="ant-modal-body">
+                <div id="edu-annoate-video-view">${videoContent}</div>
+                ${isEditable ? editVideoInput : ''}
+              </div>
               </div>
               `
 
@@ -5753,10 +5820,43 @@ var { uploadToS3 } = require('@edulastic/common')
               var closeBtn = document.getElementById('edu-annotate-close')
               closeBtn.addEventListener('click', destroyVideoUpdateOverlay)
 
+              if (isEditable) {
+                var videoInput = document.getElementById('video-edit-input')
+                var saveBtn = document.getElementById('edu-annotate-edit-video')
+                videoInput.addEventListener('keyup', handleChangeVideoInput)
+                videoInput.addEventListener('change', handleChangeVideoInput)
+                saveBtn.addEventListener('click', () =>
+                  handleUpdateVideo(annotation[0], documentId)
+                )
+              }
+
               document.addEventListener('click', handleDocumentClick)
               document.addEventListener('keyup', handleDocumentKeyup)
               document.addEventListener('mousedown', handleDocumentMousedown)
             })
+        }
+
+        function handleChangeVideoInput() {
+          var videoInput = document.getElementById('video-edit-input')
+          var videoView = document.getElementById('edu-annoate-video-view')
+
+          var updatedContent = videoInput.value
+          videoView.innerHTML = updatedContent
+        }
+
+        function handleUpdateVideo(annotation, documentId) {
+          var videoInput = document.getElementById('video-edit-input')
+          var updatedContent = videoInput.value
+
+          if (updatedContent && annotation) {
+            var updatedAnnotation = {
+              ...annotation,
+              content: updatedContent,
+            }
+            _PDFJSAnnotate2.default
+              .getStoreAdapter()
+              .editAnnotation(documentId, annotation.uuid, updatedAnnotation)
+          }
         }
 
         function destroyVideoUpdateOverlay() {
@@ -5773,6 +5873,7 @@ var { uploadToS3 } = require('@edulastic/common')
           ;(0, _utils.enableUserSelect)()
         }
 
+        // ------------------------ Image edit start ------------------------------------------ //
         function createImageUpdateOverlay(target) {
           destroyImageUpdateOverlay()
 
@@ -5783,6 +5884,7 @@ var { uploadToS3 } = require('@edulastic/common')
 
           var documentId = _getMetadata2.documentId
           var annotationId = target.getAttribute('data-pdf-annotate-id')
+          var isEditable = target.getAttribute('data-view-mode') === 'edit'
 
           var imageContent = void 0
 
@@ -5810,6 +5912,15 @@ var { uploadToS3 } = require('@edulastic/common')
 
               overlay.style.background = '#fff'
 
+              var footerControls = `
+              <div class="ant-modal-footer" style="border: none; padding: 0 10px 10px 0">
+                <input type="file" accept="image/*"  id="BtnReplaceImageHidden" name="files" style="display: none;" />
+                <label class="ant-btn ant-btn-primary ant-btn-sm" for="BtnReplaceImageHidden" id="edu-replace-image">
+                  Replace Image
+                </label>
+              </div>
+            `
+
               overlay.innerHTML = `
               <div class="ant-modal-content" style="border-radius: 10px; overflow: hidden">
               <button id="edu-annotate-close" onclick="" type="button" aria-label="Close" class="ant-modal-close">
@@ -5821,13 +5932,13 @@ var { uploadToS3 } = require('@edulastic/common')
                   </span>
                 </span>
               </button>
-              
               <div class="ant-modal-header" style="height: 30px; border: none;">
                 <br/>
               </div>
                 <div class="ant-modal-body">
-                <img style="max-width: 400px; max-height: 300px; width: 100%;" src="${imageContent}"/>
+                  <img id="edu-pdf-image-view" style="max-width: 400px; max-height: 300px; width: 100%;" src="${imageContent}"/>
                 </div>
+                ${isEditable ? footerControls : ''}
               </div>
               `
 
@@ -5836,10 +5947,47 @@ var { uploadToS3 } = require('@edulastic/common')
               var closeBtn = document.getElementById('edu-annotate-close')
               closeBtn.addEventListener('click', destroyImageUpdateOverlay)
 
+              if (isEditable) {
+                var upload = document.getElementById('BtnReplaceImageHidden')
+                upload.addEventListener('change', () =>
+                  handleImageChange(annotation[0], documentId)
+                )
+              }
+
               document.addEventListener('click', handleDocumentClick)
               document.addEventListener('keyup', handleDocumentKeyup)
               document.addEventListener('mousedown', handleDocumentMousedown)
             })
+        }
+
+        function handleImageChange(annotation, documentId) {
+          var upload = document.getElementById('BtnReplaceImageHidden')
+          var image = document.getElementById('edu-pdf-image-view')
+
+          if (upload?.files?.[0]) {
+            uploadToS3(upload.files[0], aws.s3Folders.DEFAULT)
+              .then((fileUri) => {
+                if (image) {
+                  image.setAttribute('src', fileUri)
+                  if (annotation) {
+                    var updatedAnnotation = {
+                      ...annotation,
+                      content: fileUri,
+                    }
+                    _PDFJSAnnotate2.default
+                      .getStoreAdapter()
+                      .editAnnotation(
+                        documentId,
+                        annotation.uuid,
+                        updatedAnnotation
+                      )
+                  }
+                }
+              })
+              .catch(() => {
+                console.log('Some Error Occured while uploading the file ')
+              })
+          }
         }
 
         function destroyImageUpdateOverlay() {
@@ -5855,19 +6003,19 @@ var { uploadToS3 } = require('@edulastic/common')
           document.removeEventListener('mouseup', handleDocumentMouseup)
           ;(0, _utils.enableUserSelect)()
         }
+        // ------------------------ Image EDIT END ------------------------------------------ //
 
-        var editMode = false
-
+        // ------------------------ Comment edit start ------------------------------------------ //
         function createCommentUpdateOverlay(target) {
           destroyCommentUpdateOverlay()
 
           var svg = target.parentElement
-          var annotationId = target.getAttribute('data-target-id')
-
           var _getMetadata2 = (0, _utils.getMetadata)(svg)
 
           var documentId = _getMetadata2.documentId
           var annotationId = target.getAttribute('data-pdf-annotate-id')
+
+          var isEditable = target.getAttribute('data-view-mode') === 'edit'
 
           var commentContent = void 0
 
@@ -5911,16 +6059,20 @@ var { uploadToS3 } = require('@edulastic/common')
                 <br/>
               </div>
                 <div class="ant-modal-body">
-                <textarea style="color: #000;" rows="5" class="ant-input" ${
-                  !editMode && 'disabled'
-                }>${commentContent}</textarea>
+                ${
+                  isEditable
+                    ? `<textarea id="edu-annotate-commen-edit-box" style="color: #000;" rows="5" class="ant-input">${commentContent}</textarea>`
+                    : `<textarea style="color: #000;" rows="5" class="ant-input" disabled>${commentContent}</textarea>`
+                }
                 </div>
-
-                 
                 <div class="ant-modal-footer" style="border: none; padding: 0 10px 10px 0">
-                  <span><button id="edu-annotate-edit" class="ant-btn ant-btn-primary">${
-                    editMode ? 'Save' : 'Edit'
-                  }</button></span>
+                  <span>
+                  ${
+                    isEditable
+                      ? `<button id="edu-annotate-edit" class="ant-btn ant-btn-primary">Save</button>`
+                      : ''
+                  }
+                  </span>
                 </div>
               </div>
               `
@@ -5930,8 +6082,12 @@ var { uploadToS3 } = require('@edulastic/common')
               var closeBtn = document.getElementById('edu-annotate-close')
               closeBtn.addEventListener('click', destroyCommentUpdateOverlay)
 
-              var editBtn = document.getElementById('edu-annotate-edit')
-              editBtn.addEventListener('click', () => handleClick(target))
+              if (isEditable) {
+                var editBtn = document.getElementById('edu-annotate-edit')
+                editBtn.addEventListener('click', () =>
+                  updateComment(annotation, documentId)
+                )
+              }
 
               document.addEventListener('click', handleDocumentClick)
               document.addEventListener('keyup', handleDocumentKeyup)
@@ -5939,21 +6095,22 @@ var { uploadToS3 } = require('@edulastic/common')
             })
         }
 
-        function handleClick(target) {
-          if (editMode) {
-            disableEdit()
-          } else {
-            enableEdit()
+        function updateComment(annotations = [], documentId) {
+          var commentBox = document.getElementById(
+            'edu-annotate-commen-edit-box'
+          )
+          var comment = commentBox.value
+          var annotation = annotations[0]
+          if (annotation) {
+            var updatedAnnotation = {
+              ...annotation,
+              content: comment,
+            }
+            _PDFJSAnnotate2.default
+              .getStoreAdapter()
+              .editAnnotation(documentId, annotation.uuid, updatedAnnotation)
           }
-          createCommentUpdateOverlay(target)
-        }
-
-        function enableEdit() {
-          editMode = true
-        }
-
-        function disableEdit() {
-          editMode = false
+          destroyCommentUpdateOverlay()
         }
 
         function destroyCommentUpdateOverlay() {
@@ -5969,6 +6126,116 @@ var { uploadToS3 } = require('@edulastic/common')
           document.removeEventListener('mousemove', handleDocumentMousemove)
           document.removeEventListener('mouseup', handleDocumentMouseup)
           ;(0, _utils.enableUserSelect)()
+        }
+        // ------------------------ Comment edit end ------------------------------------------ //
+
+        // ------------------------ textBox edit start ------------------------------------------ //
+        function createTextBoxUpdateOverlay(target) {
+          destroyTextBoxUpdateOverlay()
+
+          var isEditable = target.getAttribute('data-view-mode') === 'edit'
+          // show edit modal only authoring mode
+          if (!isEditable) {
+            return
+          }
+
+          var svg = target.parentElement
+          var _getMetadata2 = (0, _utils.getMetadata)(svg)
+          var documentId = _getMetadata2.documentId
+          var annotationId = target.getAttribute('data-pdf-annotate-id')
+
+          _PDFJSAnnotate2.default
+            .getStoreAdapter()
+            .getAnnotation(documentId, annotationId)
+            .then(function (annotation) {
+              overlay = document.createElement('div')
+              var parentNode = (0, _utils.findSVGContainer)(target).parentNode
+              var rect = (0, _utils.getAnnotationRect)(target)
+              var styleLeft = rect.left - OVERLAY_BORDER_SIZE
+              var styleTop = rect.top + OVERLAY_BORDER_SIZE + 24
+              var conent = annotation.content
+
+              overlay.setAttribute('id', 'pdf-annotate-update-overlay')
+              overlay.setAttribute('data-target-id', annotationId)
+              overlay.style.boxSizing = 'content-box'
+              overlay.style.position = 'absolute'
+              overlay.style.top = styleTop + 'px'
+              overlay.style.left = styleLeft + 'px'
+              overlay.style.width = '300px'
+              overlay.style.background = '#fff'
+
+              overlay.innerHTML = `
+              <div class="ant-modal-content" style="border-radius: 10px; overflow: hidden">
+              <button id="edu-annotate-close" onclick="" type="button" aria-label="Close" class="ant-modal-close">
+                <span class="ant-modal-close-x" style="height: 30px;", width: 30x; line-height: 30px;>
+                  <span role="img" aria-label="close" class="anticon anticon-close ant-modal-close-icon">
+                    <svg viewBox="64 64 896 896" focusable="false" class="" data-icon="close" width="1em" height="1em" fill="currentColor" aria-hidden="true">
+                      <path d="M563.8 512l262.5-312.9c4.4-5.2.7-13.1-6.1-13.1h-79.8c-4.7 0-9.2 2.1-12.3 5.7L511.6 449.8 295.1 191.7c-3-3.6-7.5-5.7-12.3-5.7H203c-6.8 0-10.5 7.9-6.1 13.1L459.4 512 196.9 824.9A7.95 7.95 0 00203 838h79.8c4.7 0 9.2-2.1 12.3-5.7l216.5-258.1 216.5 258.1c3 3.6 7.5 5.7 12.3 5.7h79.8c6.8 0 10.5-7.9 6.1-13.1L563.8 512z"></path>
+                    </svg>
+                  </span>
+                </span>
+              </button>
+              <div class="ant-modal-header" style="height: 30px; border: none;"><br/></div>
+                <div class="ant-modal-body">
+                ${`<textarea id="edu-annotate-text-edit-box" style="color: #000;" rows="5" class="ant-input">${conent}</textarea>`}
+                </div>
+                <div class="ant-modal-footer" style="border: none; padding: 0 10px 10px 0">
+                  <button id="edu-annotate-edit" class="ant-btn ant-btn-primary">Save</button>
+                </div>
+              </div>
+              `
+              parentNode.appendChild(overlay)
+
+              var closeBtn = document.getElementById('edu-annotate-close')
+              closeBtn.addEventListener('click', destroyTextBoxUpdateOverlay)
+              var editBtn = document.getElementById('edu-annotate-edit')
+              editBtn.addEventListener('click', () =>
+                updatedTextBox(annotation, documentId)
+              )
+              document.addEventListener('click', handleDocumentClick)
+              document.addEventListener('keyup', handleDocumentKeyup)
+              document.addEventListener('mousedown', handleDocumentMousedown)
+            })
+        }
+
+        function destroyTextBoxUpdateOverlay() {
+          disableEdit()
+          if (overlay) {
+            overlay.parentNode.removeChild(overlay)
+            overlay = null
+          }
+
+          document.removeEventListener('click', handleDocumentClick)
+          document.removeEventListener('keyup', handleDocumentKeyup)
+          document.removeEventListener('mousedown', handleDocumentMousedown)
+          document.removeEventListener('mousemove', handleDocumentMousemove)
+          document.removeEventListener('mouseup', handleDocumentMouseup)
+          ;(0, _utils.enableUserSelect)()
+        }
+
+        function updatedTextBox(annotation, documentId) {
+          var textBox = document.getElementById('edu-annotate-text-edit-box')
+          var updatedCconent = textBox.value
+
+          if (annotation) {
+            var updatedAnnotation = {
+              ...annotation,
+              content: updatedCconent,
+            }
+            _PDFJSAnnotate2.default
+              .getStoreAdapter()
+              .editAnnotation(documentId, annotation.uuid, updatedAnnotation)
+          }
+          destroyTextBoxUpdateOverlay()
+        }
+        // ------------------------ textBox edit end ------------------------------------------ //
+
+        function enableEdit() {
+          editMode = true
+        }
+
+        function disableEdit() {
+          editMode = false
         }
 
         /**
@@ -6265,10 +6532,11 @@ var { uploadToS3 } = require('@edulastic/common')
           destroyVideoUpdateOverlay()
           destroyImageUpdateOverlay()
           destroyCommentUpdateOverlay()
+          destroyTextBoxUpdateOverlay()
         }
 
         function handleAnnotationUpdateClick(target) {
-          switch (target.getAttribute('id')) {
+          switch (target.getAttribute('data-annotate-type')) {
             case 'comment':
               createCommentUpdateOverlay(target)
               break
@@ -6277,6 +6545,9 @@ var { uploadToS3 } = require('@edulastic/common')
               break
             case 'video':
               createVideoUpdateOverlay(target)
+              break
+            case 'textBox':
+              createTextBoxUpdateOverlay(target)
               break
             default:
               destroyAllOverlay()

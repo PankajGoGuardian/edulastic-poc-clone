@@ -13,11 +13,16 @@ const GET_REPORTS_RESPONSE_FREQUENCY_REQUEST_SUCCESS =
   '[reports] get reports response frequency request success'
 const GET_REPORTS_RESPONSE_FREQUENCY_REQUEST_ERROR =
   '[reports] get reports response frequency request error'
+const RESET_REPORTS_RESPONSE_FREQUENCY =
+  '[reports] reset reports response frequency'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
 export const getResponseFrequencyRequestAction = createAction(
   GET_REPORTS_RESPONSE_FREQUENCY_REQUEST
+)
+export const resetResponseFrequencyAction = createAction(
+  RESET_REPORTS_RESPONSE_FREQUENCY
 )
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
@@ -39,6 +44,11 @@ export const getReportsResponseFrequencyLoader = createSelector(
   (state) => state.loading
 )
 
+export const getReportsResponseFrequencyError = createSelector(
+  stateSelector,
+  (state) => state.error
+)
+
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -50,17 +60,20 @@ export const defaultReport = {
 }
 
 const initialState = {
-  responseFrequency: defaultReport,
+  responseFrequency: {},
   loading: false,
 }
 
 export const reportResponseFrequencyReducer = createReducer(initialState, {
   [RESET_ALL_REPORTS]: (state, { payload }) => (state = initialState),
+  [RESET_REPORTS_RESPONSE_FREQUENCY]: (state, { payload }) =>
+    (state = initialState),
   [GET_REPORTS_RESPONSE_FREQUENCY_REQUEST]: (state, { payload }) => {
     state.loading = true
   },
   [GET_REPORTS_RESPONSE_FREQUENCY_REQUEST_SUCCESS]: (state, { payload }) => {
     state.loading = false
+    state.error = false
     state.responseFrequency = payload.responseFrequency
   },
   [GET_REPORTS_RESPONSE_FREQUENCY_REQUEST_ERROR]: (state, { payload }) => {
@@ -77,17 +90,17 @@ export const reportResponseFrequencyReducer = createReducer(initialState, {
 
 function* getReportsResponseFrequencyRequest({ payload }) {
   try {
-    payload.requestFilters.classIds =
-      payload.requestFilters?.classIds?.join(',') ||
-      payload.requestFilters?.classId ||
-      ''
-    payload.requestFilters.groupIds =
-      payload.requestFilters?.groupIds?.join(',') ||
-      payload.requestFilters?.groupId ||
-      ''
-    const {
-      data: { result },
-    } = yield call(reportsApi.fetchResponseFrequency, payload)
+    const { data } = yield call(reportsApi.fetchResponseFrequency, payload)
+
+    if (data && data?.dataSizeExceeded) {
+      yield put({
+        type: GET_REPORTS_RESPONSE_FREQUENCY_REQUEST_ERROR,
+        payload: { error: { ...data } },
+      })
+      return
+    }
+    const { result } = data
+
     const responseFrequency = isEmpty(result) ? defaultReport : result
 
     yield put({

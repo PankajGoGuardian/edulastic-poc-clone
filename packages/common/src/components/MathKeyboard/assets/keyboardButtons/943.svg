@@ -1,1 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 23.703 27.641"><defs><style>.a{fill:#707070;}.b,.d{fill:none;}.b{stroke:#707070;stroke-dasharray:2 1;}.c{stroke:none;}</style></defs><g transform="translate(15576.703 -225.359)"><path class="a" d="M-.211-3.023-2.594,0H-4.7L-.992-4.445l-1.8-4.2H-.883L.242-5.727,2.484-8.641H4.625l-3.6,4.289L2.961,0H1.039Z" transform="translate(-15572 234)"/><g class="b" transform="translate(-15567 231)"><rect class="c" width="14" height="22"/><rect class="d" x="0.5" y="0.5" width="13" height="21"/></g></g></svg>
+<svg width="30px" height="28px" viewBox="0 0 30 28" version="1.1"
+	xmlns="http://www.w3.org/2000/svg">
+	<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+		<g id="4">
+			<g id="Group" transform="translate(16.000000, 15.000000)">
+				<polygon id="Path" points="0 0 14 0 14 13 0 13"></polygon>
+				<path d="M0,0 L2,0 L2,1 L1,1 L1,3 L0,3 L0,0 Z M3,0 L5,0 L5,1 L3,1 L3,0 Z M6,0 L8,0 L8,1 L6,1 L6,0 Z M9,0 L11,0 L11,1 L9,1 L9,0 Z M12,0 L14,0 L14,1 L14,1 C14,1 14,3 14,3 L13,3 L13,1 L12,1 L12,0 Z M13,4 L14,4 C14,4 14,6 14,6 L13,6 L13,4 Z M13,7 L14,7 C14,7 14,9 14,9 L13,9 L13,7 Z M13,10 L14,10 C14,10 14,12 14,12 L14,12 L14,13 C14,13 12,13 12,13 L12,12 L13,12 L13,10 Z M9,12 L11,12 L11,13 C11,13 9,13 9,13 L9,12 Z M6,12 L8,12 L8,13 C8,13 6,13 6,13 L6,12 Z M3,12 L5,12 L5,13 C5,13 3,13 3,13 L3,12 Z M0,12 L2,12 L2,13 C2,13 0,13 0,13 L0,12 Z M0,10 L1,10 L1,12 L0,12 L0,10 Z M0,7 L1,7 L1,9 L0,9 L0,7 Z M0,4 L1,4 L1,6 L0,6 L0,4 Z" id="Shape" fill="#1AB395" fill-rule="nonzero"></path>
+			</g>
+			<g id="Group">
+				<polygon id="Path" points="0 0 14 0 14 22 0 22"></polygon>
+				<path d="M0,0 L2,0 L2,1 L1,1 L1,3 L0,3 L0,0 Z M3,0 L5,0 L5,1 L3,1 L3,0 Z M6,0 L8,0 L8,1 L6,1 L6,0 Z M9,0 L11,0 L11,1 L9,1 L9,0 Z M12,0 L14,0 L14,1 L14,1 C14,1 14,3 14,3 L13,3 L13,1 L12,1 L12,0 Z M13,4 L14,4 C14,4 14,6 14,6 L13,6 L13,4 Z M13,7 L14,7 C14,7 14,9 14,9 L13,9 L13,7 Z M13,10 L14,10 C14,10 14,12 14,12 L13,12 L13,10 Z M13,13 L14,13 C14,13 14,15 14,15 L13,15 L13,13 Z M13,16 L14,16 C14,16 14,18 14,18 L13,18 L13,16 Z M13,19 L14,19 C14,19 14,21 14,21 L14,21 L14,22 C14,22 12,22 12,22 L12,21 L13,21 L13,19 Z M9,21 L11,21 L11,22 C11,22 9,22 9,22 L9,21 Z M6,21 L8,21 L8,22 C8,22 6,22 6,22 L6,21 Z M3,21 L5,21 L5,22 C5,22 3,22 3,22 L3,21 Z M0,21 L2,21 L2,22 C2,22 0,22 0,22 L0,21 Z M0,19 L1,19 L1,21 L0,21 L0,19 Z M0,16 L1,16 L1,18 L0,18 L0,16 Z M0,13 L1,13 L1,15 L0,15 L0,13 Z M0,10 L1,10 L1,12 L0,12 L0,10 Z M0,7 L1,7 L1,9 L0,9 L0,7 Z M0,4 L1,4 L1,6 L0,6 L0,4 Z" id="Shape" fill="#1AB395" fill-rule="nonzero"></path>
+			</g>
+		</g>
+	</g>
+</svg>

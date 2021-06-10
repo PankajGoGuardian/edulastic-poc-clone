@@ -212,7 +212,7 @@ class DistrictProfileForm extends React.Component {
                         updateEditing={this.setEditing}
                         type="text"
                         ref={this.childRefArr[1].component}
-                        isSpaceEnable={false}
+                        isSpaceEnable
                         form={this.props.form}
                         isInputEnabled={isInputEnabled}
                       />

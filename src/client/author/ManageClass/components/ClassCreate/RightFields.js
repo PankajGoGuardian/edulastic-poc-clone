@@ -77,7 +77,6 @@ const RightFields = ({
             <TextInputStyled
               placeholder={`Enter the name of your ${type}`}
               maxLength="256"
-              autoComplete="off"
             />
           </FieldLabel>
         </Col>
@@ -130,7 +129,6 @@ const RightFields = ({
               <TextInputStyled
                 placeholder={`Enter ${type} description`}
                 maxLength="512"
-                autoComplete="off"
               />
             </FieldLabel>
           </Col>
@@ -263,10 +261,9 @@ const RightFields = ({
                 loading={isSearching}
               >
                 {courseList.map((el) => (
-                  <Select.Option
-                    key={el._id}
-                    value={el._id}
-                  >{`${el.name} - ${el.number}`}</Select.Option>
+                  <Select.Option key={el._id} value={el._id}>
+                    {`${el.name} - ${el.number}`}
+                  </Select.Option>
                 ))}
               </SelectInputStyled>
             </FieldLabel>

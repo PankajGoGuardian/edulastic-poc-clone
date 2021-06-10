@@ -21,6 +21,9 @@ import {
   UPDATE_PASSWORD_DETAILS,
   RECEIVE_STUDENT_RESPONSE_SUCCESS,
   RESPONSE_ENTRY_SCORE_SUCCESS,
+  UPDATE_PAUSE_STATUS_ACTION,
+  SET_UPDATED_ACTIVITY_IN_ENTITY,
+  RELOAD_LCB_DATA_IN_STUDENT_VIEW,
 } from '../constants/actions'
 import {
   transformGradeBookResponse,
@@ -46,6 +49,9 @@ export const REALTIME_GRADEBOOK_CLOSE_ASSIGNMENT =
 export const REALTIME_GRADEBOOK_UPDATE_ASSIGNMENT =
   '[gradebook] realtime gradebook update assignment'
 export const SET_PROGRESS_STATUS = '[gradebook] set progress status'
+export const LCB_ACTION_PROGRESS = '[gradebook] action progress tatus'
+export const SET_ADDED_STUDENTS = '[gradebook] action added students'
+export const UPDATE_SERVER_TIME = '[gradebook] update server time'
 /**
  * force rerendering the components that depends on
  * additional data thus checking
@@ -58,6 +64,10 @@ export const RECALCULATE_ADDITIONAL_DATA =
  */
 export const SET_STUDENT_VIEW_FILTER = '[gradebook] set studentview filter'
 export const SET_SHOW_ALL_STUDENTS = '[gradebook]] set show all students filter'
+export const SET_PAGE_NUMBER = '[lcb] set page number action'
+export const SET_LCB_QUESTION_LOADER_STATE =
+  '[lcb] set lcb question loader state'
+export const SET_QUESTION_ID_TO_SCROLL = '[lcb] set question id to scroll'
 
 export const realtimeGradebookActivityAddAction = createAction(
   REALTIME_GRADEBOOK_TEST_ACTIVITY_ADD
@@ -85,14 +95,25 @@ export const realtimeUpdateAssignmentAction = createAction(
 export const recalculateAdditionalDataAction = createAction(
   RECALCULATE_ADDITIONAL_DATA
 )
+export const setPageNumberAction = createAction(SET_PAGE_NUMBER)
+export const setLcbQuestionLoaderStateAcion = createAction(
+  SET_LCB_QUESTION_LOADER_STATE
+)
+export const setQuestionIdToScrollAction = createAction(
+  SET_QUESTION_ID_TO_SCROLL
+)
 
 export const setStudentViewFilterAction = createAction(SET_STUDENT_VIEW_FILTER)
 export const setProgressStatusAction = createAction(SET_PROGRESS_STATUS)
+export const setLcbActionProgress = createAction(LCB_ACTION_PROGRESS)
 export const setShowAllStudentsAction = createAction(SET_SHOW_ALL_STUDENTS)
+export const setAddedStudentsAction = createAction(SET_ADDED_STUDENTS)
+export const updateServerTimeAction = createAction(UPDATE_SERVER_TIME)
 
 const initialState = {
   entities: [],
   removedStudents: [],
+  addedStudents: [],
   classStudents: [],
   currentTestActivityId: '',
   allTestActivitiesForStudent: [],
@@ -102,11 +123,16 @@ const initialState = {
   viewPassword: false,
   studentViewFilter: null,
   isShowAllStudents: false,
+  actionInProgress: false,
+  pageNumber: 1,
+  isQuestionsLoading: false,
+  questionId: '',
 }
 
 const reducer = (state = initialState, { type, payload }) => {
   let nextState
   switch (type) {
+    case RELOAD_LCB_DATA_IN_STUDENT_VIEW:
     case RECEIVE_TESTACTIVITY_REQUEST:
       return {
         ...state,
@@ -122,6 +148,7 @@ const reducer = (state = initialState, { type, payload }) => {
         entities: payload.entities,
         additionalData: payload.additionalData,
         removedStudents: payload.gradebookData.exStudents,
+        addedStudents: [],
       }
 
     case RECALCULATE_ADDITIONAL_DATA:
@@ -158,6 +185,25 @@ const reducer = (state = initialState, { type, payload }) => {
         ...state,
         allTestActivitiesForStudent: payload,
       }
+    case UPDATE_PAUSE_STATUS_ACTION: {
+      const { result, isPaused } = payload
+      const updatedUtas = keyBy(result)
+      return {
+        ...state,
+        entities: state.entities.map((item) => {
+          if (updatedUtas[item.testActivityId]) {
+            return {
+              ...item,
+              isPaused,
+              ...(isPaused
+                ? {}
+                : { pauseReason: undefined, tabNavigationCounter: null }),
+            }
+          }
+          return item
+        }),
+      }
+    }
     case RESPONSE_ENTRY_SCORE_SUCCESS:
       return produce(state, (_st) => {
         const userId = payload?.testActivity?.userId
@@ -317,24 +363,30 @@ const reducer = (state = initialState, { type, payload }) => {
         /**
          * @type string[]
          */
-        const questionIds = payload
+        const removedQuestions = payload
         const questionIdsMaxScore = {}
-        for (const qid of questionIds) {
-          questionIdsMaxScore[qid] = getMaxScoreOfQid(
+        for (const { qid, testItemId } of removedQuestions) {
+          questionIdsMaxScore[`${testItemId}_${qid}`] = getMaxScoreOfQid(
             qid,
             _st.data.testItemsData
-          )
+          )(testItemId)
         }
         for (const _entity of _st.entities) {
           const matchingQids = _entity.questionActivities.filter((x) =>
-            questionIds.includes(x._id)
+            removedQuestions.some(
+              (r) => r.qid === x._id && r.testItemId === x.testItemId
+            )
           )
           _entity.maxScore -= matchingQids.reduce(
-            (prev, qid) => prev + (questionIdsMaxScore[qid] || 0),
+            (prev, qid, testItemId) =>
+              prev + (questionIdsMaxScore[`${testItemId}_${qid}`] || 0),
             0
           )
           _entity.questionActivities = _entity.questionActivities.filter(
-            (x) => !questionIds.includes(x._id)
+            (x) =>
+              !removedQuestions.some(
+                (r) => r.qid === x._id && r.testItemId === x.testItemId
+              )
           )
         }
       })
@@ -466,6 +518,7 @@ const reducer = (state = initialState, { type, payload }) => {
         assignmentPassword = state?.additionalData?.assignmentPassword,
         passwordExpireTime = state?.additionalData?.passwordExpireTime,
         passwordExpireIn = state?.additionalData?.passwordExpireIn,
+        ts = state?.additionalData?.ts,
       } = payload
       return {
         ...state,
@@ -474,6 +527,16 @@ const reducer = (state = initialState, { type, payload }) => {
           assignmentPassword,
           passwordExpireTime,
           passwordExpireIn,
+          ts,
+        },
+      }
+    }
+    case UPDATE_SERVER_TIME: {
+      return {
+        ...state,
+        additionalData: {
+          ...state.additionalData,
+          ts: payload,
         },
       }
     }
@@ -530,6 +593,7 @@ const reducer = (state = initialState, { type, payload }) => {
           return {
             ...item,
             status: 'absent',
+            isPaused: false,
             UTASTATUS: testActivityStatus.ABSENT,
           }
         }
@@ -552,6 +616,7 @@ const reducer = (state = initialState, { type, payload }) => {
             graded: updatedActivity.gradedAll ? 'GRADED' : 'IN GRADING',
             score: updatedActivity.score,
             testActivityId: updatedActivity._id,
+            isPaused: false,
             questionActivities: item.questionActivities.map((qAct) => ({
               ...qAct,
               ...(qAct.notStarted
@@ -608,15 +673,54 @@ const reducer = (state = initialState, { type, payload }) => {
           return entity
         }),
       }
+    case SET_ADDED_STUDENTS:
+      return {
+        ...state,
+        addedStudents: [...state.addedStudents, ...payload],
+      }
     case SET_PROGRESS_STATUS:
       return {
         ...state,
         loading: payload,
       }
+    case LCB_ACTION_PROGRESS:
+      return {
+        ...state,
+        actionInProgress: payload,
+      }
     case SET_SHOW_ALL_STUDENTS:
       return {
         ...state,
         isShowAllStudents: payload,
+      }
+    case SET_UPDATED_ACTIVITY_IN_ENTITY:
+      return {
+        ...state,
+        entities: state.entities.map((item) => {
+          const { oldActivityId, newActivityId } = payload
+          if (item.testActivityId === oldActivityId) {
+            return {
+              ...item,
+              testActivityId: newActivityId,
+            }
+          }
+          return item
+        }),
+      }
+    case SET_PAGE_NUMBER:
+      return {
+        ...state,
+        pageNumber: payload || state.pageNumber + 1,
+      }
+    case SET_LCB_QUESTION_LOADER_STATE:
+      return {
+        ...state,
+        isQuestionsLoading: payload,
+      }
+    case SET_QUESTION_ID_TO_SCROLL:
+      return {
+        ...state,
+        questionId: payload,
       }
     default:
       return state

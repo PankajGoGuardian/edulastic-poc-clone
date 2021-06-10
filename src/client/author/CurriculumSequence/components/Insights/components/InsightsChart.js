@@ -50,7 +50,6 @@ const ScatterLabel = (props) => {
     color,
     count,
     hasTrend,
-    isActive,
     isGrouped,
   } = item
   const { nameX, arrowY } = calcLabelPosition({ cx, cy, angle: trendAngle })
@@ -69,24 +68,22 @@ const ScatterLabel = (props) => {
       </text>
     </g>
   ) : (
-    <g onClick={(e) => handleArrowClick(e, studentId)}>
-      {isActive && (
-        <text
-          x={nameX}
-          y={cy}
-          fontSize="12"
-          fontWeight="bold"
-          textAnchor="end"
-          fill={color}
-        >
-          {name}
-        </text>
-      )}
-      {hasTrend ? (
+    <g onClick={(e) => handleArrowClick(e, studentId, color)}>
+      <text
+        x={nameX}
+        y={cy}
+        fontSize="12"
+        fontWeight="bold"
+        textAnchor="end"
+        fill={color}
+      >
+        {name}
+      </text>
+      {/* {hasTrend ? (
         <TrendArrow cx={cx} cy={arrowY} color={color} trendAngle={trendAngle} />
-      ) : (
-        <circle cx={cx + 5} cy={cy - 6} r={3} fill={color} />
-      )}
+      ) : ( */}
+      <circle cx={cx + 5} cy={cy - 6} r={3} fill={color} />
+      {/* )} */}
     </g>
   )
 }
@@ -126,7 +123,7 @@ const InsightsChart = ({ data, highlighted, setHighlighted }) => {
         xl={3}
         style={{ textAlign: 'right' }}
       >
-        TIME SPENT (LOW)
+        TIME SPENT (HIGH)
       </StyledCol>
       <StyledCol xs={20} sm={18} md={18} lg={18} xl={18}>
         <Row type="flex" justify="center" style={{ width: '100%' }}>
@@ -160,9 +157,13 @@ const InsightsChart = ({ data, highlighted, setHighlighted }) => {
                 data={activeData}
                 shape={
                   <ScatterLabel
-                    handleArrowClick={(e, studentId) => {
+                    handleArrowClick={(e, studentId, color) => {
                       e.stopPropagation()
-                      toggleActiveData({ studentId, activeData, setActiveData })
+                      setHighlighted(
+                        highlighted.ids?.includes(studentId)
+                          ? {}
+                          : { ids: [studentId], color }
+                      )
                     }}
                     handleCircleClick={(e, studentIds, color) => {
                       e.stopPropagation()
@@ -183,7 +184,7 @@ const InsightsChart = ({ data, highlighted, setHighlighted }) => {
         </Row>
       </StyledCol>
       <StyledCol xs={2} sm={3} md={3} lg={3} xl={3}>
-        TIME SPENT (HIGH)
+        TIME SPENT (LOW)
       </StyledCol>
     </Row>
   )

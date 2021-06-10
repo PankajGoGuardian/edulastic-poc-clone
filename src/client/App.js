@@ -1,23 +1,17 @@
-import React, { Component, Suspense, lazy, useEffect } from 'react'
-import { capitalize, get, isUndefined, isEmpty } from 'lodash'
+import React, { Component, lazy, Suspense, useEffect } from 'react'
+import { capitalize, get, isEmpty, isUndefined } from 'lodash'
 import qs from 'qs'
 import queryString from 'query-string'
+import loadable from '@loadable/component'
 import PropTypes from 'prop-types'
-import { Switch, Route, Redirect, withRouter } from 'react-router-dom'
+import { Redirect, Route, Switch, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { DndProvider } from 'react-dnd'
-import TouchBackend from 'react-dnd-touch-backend'
-import HTML5Backend from 'react-dnd-html5-backend'
 import { compose } from 'redux'
 import { Spin } from 'antd'
 import Joyride from 'react-joyride'
 import * as firebase from 'firebase/app'
-import { test, signUpState, roleuser } from '@edulastic/constants'
-import {
-  isMobileDevice,
-  OfflineNotifier,
-  notification,
-} from '@edulastic/common'
+import { roleuser, signUpState, test } from '@edulastic/constants'
+import { DragDrop, notification, OfflineNotifier } from '@edulastic/common'
 import { TokenStorage } from '@edulastic/api'
 import { Banner } from './common/components/Banner'
 import { TestAttemptReview } from './student/TestAttemptReview'
@@ -29,6 +23,7 @@ import {
 import {
   fetchUserAction,
   isProxyUser as isProxyUserSelector,
+  isDemoPlaygroundUser,
 } from './student/Login/ducks'
 import TestDemoPlayer from './author/TestDemoPlayer'
 import TestItemDemoPlayer from './author/TestItemDemoPlayer'
@@ -40,14 +35,27 @@ import Kid from './kid/app'
 import NotificationListener from './HangoutVideoCallNotification'
 import BulkActionNotificationListener from './author/AssignmentAdvanced/components/BulkAssignmentActionNotification'
 import ClassSyncNotification from './author/Classes/components/ClassSyncNotification'
+import ReportsNotificationListener from './author/Reports/components/ReportsNotificationListener'
 import AppUpdate from './common/components/AppUpdate'
 import { logoutAction } from './author/src/actions/auth'
 import RealTimeCollectionWatch from './RealTimeCollectionWatch'
+import SsoAuth from '../ssoAuth'
+import FreeAdminAlertModal from './common/components/FreeAdminAlertModal'
+import StudentSessionExpiredModal from './common/components/StudentSessionExpiredModal'
+import CalendlyScheduleModal from './author/Subscription/components/SubscriptionMain/CalendlyScheduleModal'
+import {
+  getRequestOrSubmitSuccessVisibility,
+  getRequestQuoteVisibility,
+  slice as subscriptionSlice,
+} from './author/Subscription/ducks'
 
 const { ASSESSMENT, PRACTICE, TESTLET } = test.type
 // route wise splitting
 const AssessmentPlayer = lazy(() =>
-  import(/* webpackChunkName: "assessmentPlayer" */ './assessment/index')
+  import(
+    /* webpackChunkName: "assessmentPlayer" */
+    './assessment/index'
+  )
 )
 const TeacherSignup = lazy(() =>
   import(
@@ -93,6 +101,20 @@ const CLIAccessBanner = lazy(() =>
   import('./author/Dashboard/components/CLIAccessBanner')
 )
 const PublicTest = lazy(() => import('./publicTest/container'))
+
+const AssignmentEmbedLink = lazy(() =>
+  import('./assignmentEmbedLink/container')
+)
+const AudioTagPlayer = lazy(() => import('./AudioTagPlayer'))
+
+const RequestQuoteModal = loadable(() =>
+  import('./author/Subscription/components/RequestQuoteModal')
+)
+
+const InvoiceSuccessModal = loadable(() =>
+  import('./author/Subscription/components/InvoiceSuccessModal')
+)
+
 const Loading = () => (
   <div>
     <Spin />
@@ -112,6 +134,15 @@ if (query.token && query.userId && query.role) {
 
 if (query?.itemBank?.toUpperCase() === 'CANVAS') {
   sessionStorage.setItem('signupFlow', 'canvas')
+}
+
+// Capture forwarded referrer from edulastic.com
+if (
+  query &&
+  query.referrer &&
+  !window.localStorage.getItem('originalreferrer')
+) {
+  window.localStorage.setItem('originalreferrer', query.referrer)
 }
 
 /**
@@ -149,15 +180,9 @@ const testRedirectRoutes = [
   '/demo/assessmentPreview',
   '/d/ap',
   '/d/cp',
-  '//#renderResource/close/',
+  '#renderResource/close/',
   '/#assessmentQuestions/close/',
 ]
-const getCurrentPath = () => {
-  const location = window.location
-  return `${location.pathname}${location.search}${location.hash}`
-}
-
-const dndBackend = isMobileDevice() ? TouchBackend : HTML5Backend
 
 function isLocationInTestRedirectRoutes(loc) {
   return testRedirectRoutes.find(
@@ -205,6 +230,7 @@ class App extends Component {
   state = {
     showAppUpdate: false,
     canShowCliBanner: true,
+    showSelectStates: false,
   }
 
   componentDidMount() {
@@ -233,6 +259,20 @@ class App extends Component {
     })
   }
 
+  setShowSelectStates = (value) => {
+    this.setState({ showSelectStates: value })
+  }
+
+  closeRequestQuoteModal = () => {
+    const { setRequestQuoteModal } = this.props
+    setRequestQuoteModal(false)
+  }
+
+  closeRequestOrSubmitSuccessModal = () => {
+    const { toggleRequestOrSubmitSuccessModal } = this.props
+    toggleRequestOrSubmitSuccessModal(false)
+  }
+
   render() {
     const cliBannerVisible = sessionStorage.cliBannerVisible || false
     /**
@@ -247,6 +287,10 @@ class App extends Component {
       logout,
       isProxyUser,
       shouldWatch,
+      isDemoAccountProxy = false,
+      isRequestQuoteModalVisible,
+      setRequestQuoteModal,
+      isRequestOrSubmitSuccessModalVisible,
     } = this.props
     if (
       location.hash.includes('#renderResource/close/') ||
@@ -276,12 +320,80 @@ class App extends Component {
     const features = user?.user?.features || {}
     let defaultRoute = ''
     let redirectRoute = ''
+    const isPremium = get(user, ['user', 'features', 'premium'])
     if (!publicPath) {
       const path = getWordsInURLPathName(location.pathname)
+      const urlSearch = new URLSearchParams(location.search)
       if (user && user.isAuthenticated) {
+        // copy old assignments filter if user is not demo playground user
+        if (!isDemoAccountProxy) {
+          const oldAssignmentFilter = sessionStorage.getItem(
+            'filters[Assignments]'
+          )
+          if (!isEmpty(oldAssignmentFilter)) {
+            sessionStorage.setItem(
+              `assignments_filter_${user.user._id}`,
+              oldAssignmentFilter
+            )
+            // remove old filter key from session storage
+            sessionStorage.removeItem('filters[Assignments]')
+          }
+        }
+        // Clear referrer once userId available
+        if (
+          user &&
+          (user.userId || user.user?._id) &&
+          window.localStorage.getItem('originalreferrer')
+        ) {
+          window.localStorage.removeItem('originalreferrer')
+        }
         const role = get(user, ['user', 'role'])
+        const thirdPartyOAuth = localStorage.getItem('thirdPartyOAuth')
+        const thirdPartyOAuthRedirectUrl = localStorage.getItem(
+          'thirdPartyOAuthRedirectUrl'
+        )
+        if (thirdPartyOAuth === 'wordpress' && thirdPartyOAuthRedirectUrl) {
+          const contentId = localStorage.getItem('wpCId')
+          const action = localStorage.getItem('wpAction')
+          // redirect user to redirect url with first name and last name and role
+          return (
+            <SsoAuth
+              user={user}
+              location={location}
+              redirectUrl={thirdPartyOAuthRedirectUrl}
+              contentId={contentId}
+              action={action}
+            />
+          )
+        }
+        if (location.pathname.toLocaleLowerCase().includes('/sso-auth')) {
+          const { redirectUrl = '', cId = '', action = '' } = qs.parse(
+            location.search,
+            {
+              ignoreQueryPrefix: true,
+            }
+          )
+          if (redirectUrl) {
+            return (
+              <SsoAuth
+                user={user}
+                location={location}
+                redirectUrl={redirectUrl}
+                contentId={cId}
+                action={action}
+              />
+            )
+          }
+        }
+        localStorage.removeItem('thirdPartyOAuth')
+        localStorage.removeItem('thirdPartyOAuthRedirectUrl')
+        localStorage.removeItem('wpCId')
+        localStorage.removeItem('wpAction')
         if (role === 'teacher') {
-          if (
+          if (user?.user?.isPlayground) {
+            defaultRoute = '/author/assignments'
+          } else if (
+            user.signupStatus === signUpState.ACCESS_WITHOUT_SCHOOL ||
             user.signupStatus === signUpState.DONE ||
             isUndefined(user.signupStatus)
           ) {
@@ -306,9 +418,11 @@ class App extends Component {
         } else if (role === 'district-admin' || role === 'school-admin') {
           if (features.isCurator) {
             defaultRoute = '/publisher/dashboard'
-          } else {
+          } else if (isPremium) {
             // redirecting da & sa to assignments after login as their dashboard page is not implemented
             defaultRoute = '/author/assignments'
+          } else {
+            defaultRoute = '/author/reports'
           }
         } else if (role === 'edulastic-curator') {
           defaultRoute = '/author/tests'
@@ -319,6 +433,17 @@ class App extends Component {
           defaultRoute = '/auth'
         }
         // TODO: handle the rest of the role routes (district-admin,school-admin)
+      } else if (location.pathname.toLocaleLowerCase().includes('/sso-auth')) {
+        const { redirectUrl = '', cId = '', action = '' } = qs.parse(
+          location.search,
+          {
+            ignoreQueryPrefix: true,
+          }
+        )
+        localStorage.setItem('thirdPartyOAuth', 'wordpress')
+        localStorage.setItem('thirdPartyOAuthRedirectUrl', redirectUrl)
+        localStorage.setItem('wpCId', cId)
+        localStorage.setItem('wpAction', action)
       } else if (
         !(
           location.pathname.toLocaleLowerCase().includes('/getstarted') ||
@@ -337,16 +462,22 @@ class App extends Component {
           location.pathname.toLocaleLowerCase().includes('/auth/mso') ||
           location.pathname.toLocaleLowerCase().includes('/auth/clever') ||
           location.pathname.toLocaleLowerCase().includes('/auth/google') ||
-          location.pathname.toLocaleLowerCase().includes('/auth/atlas')
+          location.pathname.toLocaleLowerCase().includes('/auth/atlas') ||
+          location.pathname.toLocaleLowerCase().includes('/auth/newsela')
         )
       ) {
-        if (location.pathname.toLocaleLowerCase().includes('/home')) {
+        if (
+          location.pathname.toLocaleLowerCase().includes('/home') &&
+          !location.pathname.toLocaleLowerCase().includes('/home/group')
+        ) {
           localStorage.setItem('thirdPartySignOnRole', roleuser.STUDENT)
         }
-        if (!getCurrentPath().includes('/login')) {
-          localStorage.setItem('loginRedirectUrl', getCurrentPath())
+
+        if (urlSearch.has('districtRedirect') && urlSearch.has('shortName')) {
+          redirectRoute = `/district/${urlSearch.get('shortName')}`
+        } else if (!user.authenticating) {
+          redirectRoute = '/login'
         }
-        redirectRoute = '/login'
       }
     }
 
@@ -382,10 +513,39 @@ class App extends Component {
       _userRole = 'Content Author'
     }
     // signup routes hidden till org reference is not done
-
-    const { showAppUpdate, canShowCliBanner } = this.state
+    const { showAppUpdate, canShowCliBanner, showSelectStates } = this.state
+    // changing banner if demo playgoud account
+    const bannerText = isDemoAccountProxy
+      ? 'This is a demo account. Feel free to explore all the features. Any data modification will be reset at the end of day.'
+      : `You are currently acting as ${fullName} (${_userRole})`
+    const bannerButtonText = isDemoAccountProxy
+      ? 'Close demo account'
+      : 'Stop Acting as User'
     return (
       <div>
+        {!isPremium && roleuser.DA_SA_ROLE_ARRAY.includes(userRole) && (
+          <FreeAdminAlertModal
+            history={history}
+            setRequestQuoteModal={setRequestQuoteModal}
+            setShowSelectStates={this.setShowSelectStates}
+          />
+        )}
+        {isRequestQuoteModalVisible && (
+          <RequestQuoteModal
+            visible={isRequestQuoteModalVisible}
+            onCancel={this.closeRequestQuoteModal}
+          />
+        )}
+        {isRequestOrSubmitSuccessModalVisible && (
+          <InvoiceSuccessModal
+            visible={isRequestOrSubmitSuccessModalVisible}
+            onCancel={this.closeRequestOrSubmitSuccessModal}
+          />
+        )}
+        <CalendlyScheduleModal
+          visible={showSelectStates}
+          setShowSelectStates={this.setShowSelectStates}
+        />
         {shouldWatch && <RealTimeCollectionWatch />}
         {userRole && (
           <CheckRoutePatternsEffectContainer
@@ -394,24 +554,19 @@ class App extends Component {
             history={history}
           />
         )}
+        <StudentSessionExpiredModal />
         <AppUpdate visible={showAppUpdate} />
         <OfflineNotifier />
         {tutorial && (
           <Joyride continuous showProgress showSkipButton steps={tutorial} />
         )}
         <Suspense fallback={<Loading />}>
-          <DndProvider
-            backend={dndBackend}
-            options={{
-              enableTouchEvents: true,
-              enableMouseEvents: true,
-            }}
-          >
-            {isProxyUser && (
+          <DragDrop.Provider>
+            {(isProxyUser || isDemoAccountProxy) && (
               <Banner
-                text={`You are currently acting as ${fullName} (${_userRole})`}
+                text={bannerText}
                 showButton
-                buttonText="Stop Acting as User"
+                buttonText={bannerButtonText}
                 onButtonClick={logout}
               />
             )}
@@ -426,9 +581,12 @@ class App extends Component {
                 redirectPath={redirectRoute}
                 notifications={
                   roleuser.DA_SA_ROLE_ARRAY.includes(userRole)
-                    ? [BulkActionNotificationListener]
+                    ? [
+                        BulkActionNotificationListener,
+                        ReportsNotificationListener,
+                      ]
                     : roleuser.TEACHER === userRole
-                    ? [ClassSyncNotification]
+                    ? [ClassSyncNotification, ReportsNotificationListener]
                     : null
                 }
               />
@@ -459,7 +617,6 @@ class App extends Component {
                 exact
                 path="/public/parentInvitation/:code"
                 render={() => <SetParentPassword parentInvitation />}
-                redirectPath={defaultRoute}
               />
               <LoggedOutRoute
                 path="/district/:orgShortName"
@@ -534,7 +691,6 @@ class App extends Component {
                 component={StudentSignup}
                 redirectPath={defaultRoute}
               />
-
               <PrivateRoute
                 path="/student/:assessmentType/:id/class/:groupId/uta/:utaId/test-summary"
                 component={TestAttemptReview}
@@ -578,16 +734,27 @@ class App extends Component {
               <Route exact path="/fwd" render={() => <V1Redirect />} />
               <Route path="/inviteTeacher" render={() => <Invite />} />
               <Route path="/auth" render={() => <Auth />} />
-              {testRedirectRoutes.map((route) => (
-                <Route path={route} component={RedirectToTest} key={route} />
-              ))}
+              {testRedirectRoutes.map((route) => {
+                return (
+                  <Route path={route} component={RedirectToTest} key={route} />
+                )
+              })}
               <Route
                 path="/public/view-test/:testId"
                 render={(props) => <PublicTest {...props} />}
               />
+              <PrivateRoute
+                path="/assignments/embed/:testId"
+                redirectPath={redirectRoute}
+                component={AssignmentEmbedLink}
+              />
+              <Route
+                path="/audio-test"
+                render={() => <AudioTagPlayer user={user?.user} />}
+              />
               <Redirect exact to={defaultRoute} />
             </Switch>
-          </DndProvider>
+          </DragDrop.Provider>
           {cliBannerVisible &&
             canShowCliBanner &&
             !sessionStorage.cliBannerShown && (
@@ -609,16 +776,24 @@ class App extends Component {
 const enhance = compose(
   withRouter,
   connect(
-    ({ user, tutorial }) => ({
+    ({ user, tutorial, subscription }) => ({
       user,
       tutorial: tutorial.currentTutorial,
       fullName: getUserNameSelector({ user }),
       isProxyUser: isProxyUserSelector({ user }),
       shouldWatch: shouldWatchCollectionUpdates({ user }),
+      isDemoAccountProxy: isDemoPlaygroundUser({ user }),
+      isRequestQuoteModalVisible: getRequestQuoteVisibility({ subscription }),
+      isRequestOrSubmitSuccessModalVisible: getRequestOrSubmitSuccessVisibility(
+        { subscription }
+      ),
     }),
     {
       fetchUser: fetchUserAction,
       logout: logoutAction,
+      setRequestQuoteModal: subscriptionSlice.actions.setRequestQuoteModal,
+      toggleRequestOrSubmitSuccessModal:
+        subscriptionSlice.actions.toggleRequestOrSubmitSuccessModal,
     }
   )
 )

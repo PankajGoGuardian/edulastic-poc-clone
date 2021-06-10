@@ -228,7 +228,7 @@ class ItemListPage {
     )
 
   verifyNoOfQuestionsInUI = (count) =>
-    this.getTotalNoOfItemsInUI().should('have.text', `${count} Items Found`)
+    this.getTotalNoOfItemsInUI().should('have.text', `${count}Items Found`)
 
   verifyNoOfItemsInContainer = (count) =>
     this.getAllItemsInListContainer().should('have.length', count)

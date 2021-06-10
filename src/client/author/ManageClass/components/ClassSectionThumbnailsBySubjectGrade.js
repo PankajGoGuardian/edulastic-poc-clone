@@ -1,6 +1,6 @@
 import { thumbnailData } from '../constants'
 
-const cdnURL = process.env.POI_APP_THUMBNAIL_CDN_MANAGE_CLASS
+const cdnURL = process.env.REACT_APP_THUMBNAIL_CDN_MANAGE_CLASS
 export const getThumbnail = () => {
   if (!cdnURL) return 'https://fakeimg.pl/1000x500/'
   let thumbnailDataArr

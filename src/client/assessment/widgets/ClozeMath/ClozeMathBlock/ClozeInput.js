@@ -19,6 +19,8 @@ const ClozeInput = ({ id, resprops = {} }) => {
     showIndex,
     disableResponse,
     isPrintPreview,
+    answerScore,
+    allCorrects,
   } = resprops
   const { inputs: _inputsAnwers = [] } = answers
   const {
@@ -62,6 +64,8 @@ const ClozeInput = ({ id, resprops = {} }) => {
       type="inputs"
       onInnerClick={onInnerClick}
       isPrintPreview={isPrintPreview}
+      answerScore={answerScore}
+      allCorrects={allCorrects}
     />
   ) : (
     <InputDiv>
@@ -92,5 +96,6 @@ const InputBox = styled(TextInputStyled)`
   min-width: ${({ minWidth }) => minWidth};
   &.ant-input {
     border: 1px solid ${lightGrey12};
+    font-weight: normal;
   }
 `

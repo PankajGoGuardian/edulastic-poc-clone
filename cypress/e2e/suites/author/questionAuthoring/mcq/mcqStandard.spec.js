@@ -1,6 +1,6 @@
-import ItemListPage from '../../../../framework/author/itemList/itemListPage.js'
-import EditItemPage from '../../../../framework/author/itemList/itemDetail/editPage.js'
-import MCQStandardPage from '../../../../framework/author/itemList/questionType/mcq/mcqStandardPage.js'
+// import ItemListPage from '../../../../framework/author/itemList/itemListPage'
+import EditItemPage from '../../../../framework/author/itemList/itemDetail/editPage'
+import MCQStandardPage from '../../../../framework/author/itemList/questionType/mcq/mcqStandardPage'
 import FileHelper from '../../../../framework/util/fileHelper'
 import {
   SCORING_TYPE,
@@ -9,8 +9,8 @@ import {
   FONT_SIZE,
   ORIENTATION,
 } from '../../../../framework/constants/questionAuthoring'
-import validateSolutionBlockTests from '../../../../framework/author/itemList/questionType/common/validateSolutionBlockTests.js'
-import { questionType } from '../../../../framework/constants/questionTypes.js'
+import validateSolutionBlockTests from '../../../../framework/author/itemList/questionType/common/validateSolutionBlockTests'
+import { questionType } from '../../../../framework/constants/questionTypes'
 
 describe(`${FileHelper.getSpecName(
   Cypress.spec.name
@@ -28,11 +28,11 @@ describe(`${FileHelper.getSpecName(
   }
   const question = new MCQStandardPage()
   const editItem = new EditItemPage()
-  const itemList = new ItemListPage()
+  //  const itemList = new ItemListPage()
   const text = 'testtext'
-  let testItemId
+  //  let testItemId
 
-  const { formates } = question
+  //  const { formates } = question
 
   before(() => {
     cy.login()
@@ -210,7 +210,9 @@ describe(`${FileHelper.getSpecName(
       // question.getCheckAnsAttempt().verifyNumInput(1);
 
       // question.getMinScore().verifyNumInput(1);
-
+      /* 
+      unscore feature hidden temporarily
+      
       question
         .getUnscore()
         .click()
@@ -224,6 +226,7 @@ describe(`${FileHelper.getSpecName(
         .getUnscore()
         .click()
         .should('not.have.class', 'ant-checkbox-checked')
+        */
       // });
 
       /* question
@@ -294,7 +297,7 @@ describe(`${FileHelper.getSpecName(
   })
 
   context(' > User edit the question.', () => {
-    const queData = {
+    /*  const queData = {
       group: 'Multiple Choice',
       queType: 'Multiple choice - standard',
       queText: 'Indian state known as garden spice is:',
@@ -305,7 +308,7 @@ describe(`${FileHelper.getSpecName(
       formattext: 'editformattedtext',
       formula: 's=ar^2',
     }
-
+*/
     before('delete old question and create dummy que to edit', () => {
       question.createQuestion()
       question.header.save()
@@ -488,6 +491,9 @@ describe(`${FileHelper.getSpecName(
 
       // question.getMinScore().verifyNumInput(1);
 
+      /* 
+      unscore feature hidden temporarily
+
       question
         .getUnscore()
         .click()
@@ -501,6 +507,7 @@ describe(`${FileHelper.getSpecName(
         .getUnscore()
         .click()
         .should('not.have.class', 'ant-checkbox-checked')
+        */
       // });
 
       /* question
@@ -1001,7 +1008,7 @@ describe(`${FileHelper.getSpecName(
     })
     it(' > [mcq_std_scoring]:test => Testing of partial match with rounding and penality', () => {
       const preview = question.header.preview()
-      const view = editItem.header.preview()
+      //  const view = editItem.header.preview()
 
       question.header.edit()
       question.getPoints().type('{selectall}3.6')

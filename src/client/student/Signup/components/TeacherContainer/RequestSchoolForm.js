@@ -1,13 +1,13 @@
 import { countryApi } from '@edulastic/api'
 import { SelectInputStyled, TextInputStyled } from '@edulastic/common'
-import { Col, Form, Row, Select } from 'antd'
-import { debounce, get } from 'lodash'
+import { Col, Form, Row, Select, Spin } from 'antd'
+import { debounce, get, isEmpty, map } from 'lodash'
 import React from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { RemoteAutocompleteDropDown } from '../../../../common/components/widgets/remoteAutoCompleteDropDown'
 import { searchDistrictsRequestAction } from '../../duck'
-import { states } from './constants'
+import { statesWithCodes } from './constants'
 
 const { Option } = Select
 class RequestSchoolForm extends React.Component {
@@ -27,7 +27,7 @@ class RequestSchoolForm extends React.Component {
     const countryList = await countryApi.getCountries()
     this.setState({
       countryList,
-      stateList: states,
+      stateList: statesWithCodes,
     })
   }
 
@@ -41,12 +41,11 @@ class RequestSchoolForm extends React.Component {
       this.setState({
         stateList: [],
       })
-      form.setFieldsValue({ state: '' })
+      form.setFieldsValue({ other_state: '' })
     } else {
       this.setState({
-        stateList: states,
+        stateList: statesWithCodes,
       })
-      form.setFieldsValue({ state: states[0] })
     }
   }
 
@@ -69,7 +68,7 @@ class RequestSchoolForm extends React.Component {
     } = this.props
     const { getFieldDecorator } = form
     const { keyword, countryList, stateList } = this.state
-    const country = form.getFieldValue('country')
+    const country = form.getFieldValue('country') || 'US'
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
@@ -79,15 +78,19 @@ class RequestSchoolForm extends React.Component {
       },
     }
 
+    if (isEmpty(countryList)) {
+      return <Spin />
+    }
+
     const countryOptions = Object.entries(countryList).map(([key, value]) => (
       <Option value={key} key={key}>
         {value}
       </Option>
     ))
 
-    const stateOptions = stateList.map((state) => (
-      <Option value={state} key={state}>
-        {state}
+    const stateOptions = map(stateList, (value, key) => (
+      <Option value={key} key={key}>
+        {value}
       </Option>
     ))
 
@@ -239,34 +242,31 @@ class RequestSchoolForm extends React.Component {
         <Row gutter={24}>
           <Col xs={24} sm={12}>
             <Form.Item label="State" style={{ width: '100%' }}>
-              {getFieldDecorator('state', {
-                rules: [
-                  { required: false, message: 'Please provide a valid state.' },
-                ],
-                initialValue: states[0],
-              })(
-                country === 'US' || country === 'United States' ? (
-                  <>
-                    {console.log('countrySelect: ', country)}
-                    <SelectInputStyled
-                      data-cy="state"
-                      showSearch
-                      placeholder="Select your state"
-                      getPopupContainer={(triggerNode) =>
-                        triggerNode.parentNode
-                      }
-                    >
-                      {stateOptions}
-                    </SelectInputStyled>
-                  </>
+              {getFieldDecorator(
+                country === 'US' ? 'us_state' : 'other_state',
+                {
+                  rules: [
+                    {
+                      required: false,
+                      message: 'Please provide a valid state.',
+                    },
+                  ],
+                }
+              )(
+                country === 'US' ? (
+                  <SelectInputStyled
+                    data-cy="state"
+                    showSearch
+                    placeholder="Select your state"
+                    getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                  >
+                    {stateOptions}
+                  </SelectInputStyled>
                 ) : (
-                  <>
-                    {console.log('country: ', country)}
-                    <TextInputStyled
-                      data-cy="state"
-                      placeholder="Enter your state"
-                    />
-                  </>
+                  <TextInputStyled
+                    data-cy="state"
+                    placeholder="Enter your state"
+                  />
                 )
               )}
             </Form.Item>
@@ -280,7 +280,7 @@ class RequestSchoolForm extends React.Component {
                     message: 'Please provide a valid country.',
                   },
                 ],
-                initialValue: 'United States',
+                initialValue: 'US',
               })(
                 <SelectInputStyled
                   data-cy="country"

@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import {
   Stimulus,
@@ -8,7 +8,7 @@ import {
   QuestionSubLabel,
   QuestionContentWrapper,
 } from '@edulastic/common'
-
+import { isEmpty, max, isPlainObject } from 'lodash'
 import { PREVIEW } from '../../constants/constantsForQuestions'
 import { PreviewContainer } from './styled/PreviewContainer'
 import DEFAULT_IMAGE from '../../assets/highlightImageBackground.svg'
@@ -28,17 +28,46 @@ const HighlightImagePreview = ({
   showQuestionNumber,
   viewComponent,
   clearClicked,
-  hideInternalOverflow,
+  isStudentReport,
+  isLCBView,
+  isExpressGrader,
+  saveUserWork,
+  LCBPreviewModal,
+  userWork,
+  disableResponse,
+  scratchpadDimensions,
+  colWidth,
+  scratchPadMode,
+  isStudentAttempt,
 }) => {
   const containerRef = useRef()
   const { image = {} } = item
-
   const { width = 0, height = 0 } = image
 
   const imageContainerDimensions = {
-    width: Math.max(image.x + width + 10, 700),
-    height: Math.max(image.y + height + 10, 600),
+    width: max([+image.x + +width + 10, 700]),
+    height: max([+image.y + +height + 10, 600]),
   }
+
+  const scratchpadData = useMemo(() => {
+    if (isPlainObject(userWork)) {
+      if (
+        (isLCBView || LCBPreviewModal || isExpressGrader || isStudentReport) &&
+        item?.activity
+      ) {
+        const {
+          activity: { qActId, qid, _id },
+        } = item
+        const key = qActId || _id
+        if (isPlainObject(userWork?.[key])) {
+          return userWork[key]?.[qid] || {}
+        }
+        return userWork?.[key] || {}
+      }
+      return userWork[item?.id] || {}
+    }
+    return userWork
+  }, [userWork, item])
 
   const altText = image ? image.altText : ''
   const file = image ? image.source : ''
@@ -57,20 +86,72 @@ const HighlightImagePreview = ({
     />
   )
 
-  const showDrawing = viewComponent === 'editQuestion'
+  const readyOnlyScratchpad = isStudentReport || isLCBView || LCBPreviewModal
+  const isAuthorPreview = viewComponent === 'editQuestion'
+  let showDrawing =
+    isLCBView ||
+    isStudentReport ||
+    isExpressGrader ||
+    isAuthorPreview ||
+    scratchPadMode
+
+  if (showDrawing && !isStudentAttempt) {
+    if ((isExpressGrader && !disableResponse) || isAuthorPreview) {
+      showDrawing = true
+    } else {
+      // show scratchpad only if there is data
+      //  in teacher view (LCB, ExpressGrader, etc)
+      showDrawing = !isEmpty(scratchpadData)
+    }
+  }
+
+  const showToolBar =
+    (showDrawing && !readyOnlyScratchpad && !disableResponse) ||
+    (!disableResponse && isExpressGrader)
+
+  const { height: actHeight = 0, width: actWidth = 0 } =
+    item?.activity?.scratchPad?.dimensions || {}
+
+  const maxScratchpadWidth = max([
+    containerRef.current?.clientWidth,
+    imageContainerDimensions.width + 51, // 51 is current question label width,
+    scratchpadDimensions?.width,
+    actWidth,
+  ])
+
+  const maxScratchapadHeight = max([actHeight, scratchpadDimensions?.height])
+
+  const handleSaveData = (data) => {
+    if (typeof saveUserWork === 'function') {
+      saveUserWork({ userWorkData: data, questionId: item.id })
+    }
+  }
+
+  const finalDimensions = {
+    width: maxScratchpadWidth,
+    height: maxScratchapadHeight,
+  }
 
   return (
     <>
-      {showDrawing && <ScratchpadTool />}
+      {showToolBar && <ScratchpadTool />}
       <PreviewContainer
-        hideInternalOverflow={
-          hideInternalOverflow || viewComponent === 'authorPreviewPopup'
-        }
         padding={smallSize}
         ref={containerRef}
+        data-cy="drawing-response-preview"
         boxShadow={smallSize ? 'none' : ''}
       >
-        {showDrawing && <Scratchpad clearClicked={clearClicked} hideTools />}
+        {showDrawing && (
+          <Scratchpad
+            hideTools
+            clearClicked={clearClicked}
+            readOnly={readyOnlyScratchpad}
+            dimensions={finalDimensions}
+            saveData={handleSaveData}
+            conatinerWidth={colWidth}
+            data={scratchpadData}
+          />
+        )}
         <FlexContainer justifyContent="flex-start" alignItems="baseline">
           <QuestionLabelWrapper>
             {showQuestionNumber && (
@@ -80,7 +161,7 @@ const HighlightImagePreview = ({
               <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>
             )}
           </QuestionLabelWrapper>
-          <QuestionContentWrapper>
+          <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
             {view === PREVIEW && !smallSize && (
               <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
             )}

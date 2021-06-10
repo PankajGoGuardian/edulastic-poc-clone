@@ -23,6 +23,7 @@ const getNumberStyles = (x, y, scale) => ({
   position: 'absolute',
   top: `${y * scale}px`,
   left: `${x * scale}px`,
+  zIndex: 1000,
 })
 
 const { DragPreview } = DragDrop
@@ -53,8 +54,9 @@ const PDFPreview = ({
   currentAnnotationTool,
   setCurrentAnnotationTool,
   annotationToolsProperties,
-  annotationsStack,
   isEditable,
+  toggleIntercomDisplay,
+  itemId,
 }) => {
   const previewContainer = useRef()
   const annotationContainer = useRef()
@@ -77,6 +79,7 @@ const PDFPreview = ({
      * need to scroll to a particular question in assessment player
      * and to the particular page if the question dropped
      */
+    review && toggleIntercomDisplay()
     if (qid) {
       const questionAnnotation = annotations.find((x) => x.questionId === qid)
       if (questionAnnotation?.page) {
@@ -99,6 +102,9 @@ const PDFPreview = ({
   useEffect(() => {
     // don't remove answers if student attempts -> saves and/or revisits the answers
     if (!testMode) removeAnswers()
+    if (viewMode !== 'edit') {
+      setCurrentAnnotationTool('cursor')
+    }
   }, [viewMode, testMode])
 
   const handleHighlight = (questionId) => () => {
@@ -115,16 +121,20 @@ const PDFPreview = ({
     scalePDF(round((containerWidth - 40) / viewport.width, 1))
     if (forwardedRef.current) {
       setTimeout(() => {
-        forwardedRef.current.updateScroll()
+        if (forwardedRef.current) {
+          forwardedRef.current.updateScroll()
+        }
       }, 10)
     }
   }
 
-  const handleDropQuestion = ({ data, itemOffset }) => {
+  const handleDropQuestion = ({ data, itemRect }) => {
     if (annotationContainer.current) {
+      const { x: clientX, y: clientY } = itemRect
+
       const containerRect = annotationContainer.current.getBoundingClientRect()
-      let x = itemOffset.x - containerRect.x
-      let y = itemOffset.y - containerRect.y
+      let x = clientX - containerRect.x - 10
+      let y = clientY - containerRect.y - 10
       x = round(x / pdfScale, 2)
       y = round(y / pdfScale, 2)
 
@@ -149,7 +159,10 @@ const PDFPreview = ({
       ref={previewContainer}
     >
       <PerfectScrollbar ref={forwardedRef} option={{ wheelSpeed: 0.6 }}>
-        <Droppable drop={handleDropQuestion}>
+        <Droppable
+          drop={handleDropQuestion}
+          className={`${currentAnnotationTool}-tool-selected`}
+        >
           {page.URL === 'blank' && <Preview onClick={handleRemoveHighlight} />}
 
           {page.URL !== 'blank' && (
@@ -161,7 +174,7 @@ const PDFPreview = ({
               setOriginalDimensions={calculateInitScale}
               currentAnnotationTool={currentAnnotationTool}
               annotationToolsProperties={annotationToolsProperties}
-              annotationsStack={annotationsStack}
+              annotations={annotations}
               currentPage={currentPage}
               authoringMode={viewMode === 'edit'}
             />
@@ -176,7 +189,7 @@ const PDFPreview = ({
               {annotations
                 .filter(
                   (item) =>
-                    item.toolbarMode === 'question' && item.page === page.pageNo
+                    item.toolbarMode === 'question' && item.page === currentPage
                 )
                 .map(({ uuid, qIndex, x, y, questionId }) => (
                   <div
@@ -191,7 +204,7 @@ const PDFPreview = ({
                       questionIndex={qIndex}
                       review={review}
                       data={questionsById[questionId]}
-                      answer={answersById[questionId]}
+                      answer={answersById[`${itemId}_${questionId}`]}
                       previewMode={viewMode === 'edit' ? 'clear' : previewMode}
                       onDragStart={() => {
                         setCurrentAnnotationTool('cursor')
@@ -203,6 +216,7 @@ const PDFPreview = ({
                       annotations
                       pdfPreview
                       zoom={pdfScale}
+                      itemId={itemId}
                     />
                   </div>
                 ))}
@@ -213,17 +227,15 @@ const PDFPreview = ({
         {!studentWork ? (
           <ZoomControlCotainer>
             {viewMode !== 'edit' && (
-              <PDFZoomControl onClick={toggleMinimized}>
+              <PDFZoomControl onClick={toggleMinimized} data-cy="pdfList">
                 {minimized ? <IconGraphRightArrow /> : <IconChevronLeft />}
               </PDFZoomControl>
             )}
             <PDFZoomControl onClick={() => PDFScaleUp(0.1)}>
-              {' '}
-              &#43;{' '}
+              &#43;
             </PDFZoomControl>
             <PDFZoomControl onClick={() => PDFScaleDown(0.1)}>
-              {' '}
-              &minus;{' '}
+              &minus;
             </PDFZoomControl>
           </ZoomControlCotainer>
         ) : null}
@@ -248,7 +260,6 @@ PDFPreview.defaultProps = {
 export default connect(
   (state) => ({
     previewMode: getPreviewSelector(state),
-    annotationsStack: state.tests.annotationsStack,
   }),
   {
     removeAnswers: removeUserAnswerAction,

@@ -1,15 +1,17 @@
 import styled, { css } from 'styled-components'
 import { FlexContainer } from '@edulastic/common'
-import { Button, Select } from 'antd'
+import { Select } from 'antd'
 import { white, secondaryTextColor, smallDesktopWidth } from '@edulastic/colors'
 import icons from './assets/images/icons.png'
 
-export const ToolBoxContainer = styled(FlexContainer)`
+export const ToolBoxContainer = styled.div`
   position: relative;
+  z-index: 999;
 `
 
 export const MainToolBoxContainer = styled(FlexContainer)`
   height: 45px;
+  min-width: 710px;
   padding: 2px;
   padding-right: 12.5px;
   background: #6e7380;
@@ -20,6 +22,7 @@ export const MainToolBoxContainer = styled(FlexContainer)`
 export const SubToolBoxContainer = styled(FlexContainer)`
   height: 45px;
   padding: 0px 8px;
+  min-width: 710px;
   user-select: none;
   background-color: #ededed;
   border-bottom: 1px solid #b3b3b3;
@@ -42,13 +45,14 @@ const editingButtonStyle = css`
   );
 `
 
-export const StyledButton = styled(Button)`
+export const StyledButton = styled.div`
   height: 38px;
   width: 36px;
   flex-shrink: 0;
   border: 0px;
   padding: 0px;
   margin: 0px 2px;
+  border-radius: 4px;
   background-size: 38px auto;
   background-repeat: no-repeat;
   background-color: transparent;
@@ -56,10 +60,13 @@ export const StyledButton = styled(Button)`
 
   ${({ selected }) => selected && selectedButtonStyle}
 
-  &:active,
-  &:focus,
-  &:hover {
-    ${({ isEditBtn }) => (isEditBtn ? editingButtonStyle : selectedButtonStyle)}
+  @media (hover: hover) {
+    &:active,
+    &:focus,
+    &:hover {
+      ${({ isEditBtn }) =>
+        isEditBtn ? editingButtonStyle : selectedButtonStyle}
+    }
   }
 
   &[disabled],
@@ -88,7 +95,8 @@ export const Sprite = styled.div`
 
 export const StyledSelect = styled(Select).attrs({
   showArrow: false,
-  getPopupContainer: (triggerNode) => triggerNode.parentNode,
+  dropdownStyle: { zIndex: 1100 },
+  // getPopupContainer: (triggerNode) => triggerNode.parentNode
 })`
   margin-left: 6px;
   height: 24px;

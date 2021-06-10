@@ -1,5 +1,7 @@
 import JXG from 'jsxgraph'
 import striptags from 'striptags'
+import { round } from 'lodash'
+import { getMathHtml } from '@edulastic/common'
 import { replaceLatexesWithMathHtml } from '@edulastic/common/src/utils/mathUtils'
 import { convertNumberToFraction } from '../../../utils/helpers'
 import { CONSTANT, Colors } from './config'
@@ -234,10 +236,7 @@ export const handleSnap = (line, points, board) => {
       board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE)
     }
   })
-  line.on('drag', (e) => {
-    if (e.movementX === 0 && e.movementY === 0) {
-      return
-    }
+  line.on('drag', () => {
     line.dragged = true
     board.dragged = true
   })
@@ -249,10 +248,7 @@ export const handleSnap = (line, points, board) => {
         board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE)
       }
     })
-    point.on('drag', (e) => {
-      if (e.movementX === 0 && e.movementY === 0) {
-        return
-      }
+    point.on('drag', () => {
       point.dragged = true
       board.dragged = true
       EditButton.cleanButton(board, point)
@@ -288,6 +284,37 @@ export function getPropsByLineType(type) {
       return vectorConfig
     default:
       throw new Error('Unknown line type:', type)
+  }
+}
+
+export function radianTickLabel(axe, drawZero = true, distance = 1) {
+  return (coords) => {
+    const label = axe === 'x' ? coords.usrCoords[1] : coords.usrCoords[2]
+    if (label === 0) {
+      if (axe === 'x') {
+        // offset fix for zero label
+        return drawZero ? '0&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;' : ''
+      }
+      if (axe === 'y') {
+        return drawZero ? '0' : ''
+      }
+    }
+    let tick = label * (distance / round(Math.PI, 2))
+    tick = Math.abs(round(tick))
+
+    let quotient = tick / distance
+    const remainder = tick % distance
+    const sign = label < 0 ? '-' : ''
+
+    if (remainder === 0) {
+      quotient = quotient === 1 ? '' : round(quotient)
+      return getMathHtml(`${sign}${quotient}\\pi`)
+    }
+
+    if (tick === 1) {
+      return getMathHtml(`${sign}\\frac{\\pi}{${distance}}`)
+    }
+    return getMathHtml(`${sign}\\frac{${tick}}{${distance}}\\pi`)
   }
 }
 
@@ -337,7 +364,11 @@ export function updatePointParameters(elements, attr, isSwitchToGrid) {
 export function updateAxe(line, parameters, axe) {
   line.ticks[0].setAttribute({ drawZero: true })
   if ('ticksDistance' in parameters) {
-    line.ticks[0].setAttribute({ ticksDistance: parameters.ticksDistance })
+    let axisTickDistance = parameters.ticksDistance
+    if (parameters.useRadians) {
+      axisTickDistance = round(Math.PI / axisTickDistance, 2)
+    }
+    line.ticks[0].setAttribute({ ticksDistance: axisTickDistance })
   }
   if ('showTicks' in parameters) {
     line.ticks[0].setAttribute({ majorHeight: parameters.showTicks ? 25 : 0 })
@@ -360,15 +391,25 @@ export function updateAxe(line, parameters, axe) {
       parameters.maxArrow === true ? { size: parameters.arrowSize || 8 } : false
     )
   }
-  line.ticks[0].generateLabelText = tickLabel(
-    axe,
-    parameters.commaInLabel,
-    parameters.drawZero
-  )
+
+  if (parameters.useRadians) {
+    line.ticks[0].generateLabelText = radianTickLabel(
+      axe,
+      parameters.drawZero,
+      parameters.ticksDistance
+    )
+  } else {
+    line.ticks[0].generateLabelText = tickLabel(
+      axe,
+      parameters.commaInLabel,
+      parameters.drawZero
+    )
+  }
+
   if ('showAxis' in parameters) {
     line.setAttribute({ visible: parameters.showAxis })
-    line.ticks[0].setAttribute({ visible: parameters.showAxis })
   }
+
   if ('strokeColor' in parameters) {
     line.setAttribute({ strokeColor: parameters.strokeColor })
   }
@@ -395,7 +436,7 @@ export function updateGrid(grids, parameters) {
  */
 export function getImageCoordsByPercent(boardParameters, bgImageParameters) {
   const { graphParameters } = boardParameters
-  const { size, coords } = bgImageParameters
+  const { size = [], coords = [] } = bgImageParameters
   const xSize = Math.abs(graphParameters.xMin) + Math.abs(graphParameters.xMax)
   const ySize = Math.abs(graphParameters.yMin) + Math.abs(graphParameters.yMax)
   const imageSize = [(xSize / 100) * size[0], (ySize / 100) * size[1]]
@@ -504,6 +545,9 @@ export function flat2nestedConfig(config) {
                 acc[id].dimensions = dimensions
               }
             } else {
+              if (type === CONSTANT.TOOLS.POLYGON && !element.subElementsIds) {
+                element.subElementsIds = {}
+              }
               acc[id].points = getPointsFromFlatConfig(
                 type,
                 element.subElementsIds,

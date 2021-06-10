@@ -28,6 +28,7 @@ import {
 import { getSelectedItems } from '../../../src/selectors/folder'
 import { canEditTest } from '../../utils'
 import ActionMenu from '../ActionMenu/ActionMenu'
+import Spinner from '../../../../common/components/Spinner'
 import {
   ActionDiv,
   AssignmentTD,
@@ -37,8 +38,10 @@ import {
   TypeIcon,
   TypeWrapper,
 } from './styled'
+import { isDemoPlaygroundUser } from '../../../../student/Login/ducks'
 
 class AdvancedTable extends Component {
+  // eslint-disable-next-line react/state-in-constructor
   state = {
     enableRowClick: true,
     perPage: 20,
@@ -115,7 +118,18 @@ class AdvancedTable extends Component {
         sortOrder: false,
         onHeaderCell: (col) => ({ onClick: () => this.handleSort(col, 3) }),
         width: '8%',
-        render: (text) => <div> {text} </div>,
+        render: (text, data) => {
+          if (data.bulkAssignedCountProcessed < data.bulkAssignedCount) {
+            return (
+              <Tooltip placement="top" title="Assigning In Progress">
+                <div style={{ position: 'relative' }}>
+                  <Spinner size="18px" />
+                </div>
+              </Tooltip>
+            )
+          }
+          return <div> {text} </div>
+        },
       },
       {
         title: 'Not Started & Absent',
@@ -139,7 +153,7 @@ class AdvancedTable extends Component {
       },
       {
         title: 'Submitted',
-        dataIndex: 'inGradingStudents',
+        dataIndex: 'submittedStudents',
         sortDirections: ['descend', 'ascend'],
         sorter: true,
         sortOrder: false,
@@ -179,7 +193,6 @@ class AdvancedTable extends Component {
                   overlay={menu}
                   trigger={['click']}
                   placement="bottomRight"
-                  getPopupContainer={(triggerNode) => triggerNode.parentNode}
                 >
                   <EduButton
                     height="28px"
@@ -209,16 +222,26 @@ class AdvancedTable extends Component {
             togglePrintModal,
             userClassList,
             assignmentsSummary,
+            showEmbedLinkModal,
+            toggleTagsEditModal,
+            isDemoPlayground = false,
           } = this.props
-          const canEdit = canEditTest(row, userId)
+          const isAssignProgress =
+            row.bulkAssignedCountProcessed < row.bulkAssignedCount
+          const canEdit = canEditTest(row, userId) && !isAssignProgress
           const assignmentTest = assignmentsSummary.find(
             (at) => at.testId === row.testId
           )
+          const currentAssignment = {
+            _id: row.assignmentIds[0],
+            testId: row.testId,
+          }
           return (
             <ActionDiv data-cy="testActions">
               <Dropdown
                 data-cy="actionDropDown"
                 overlay={ActionMenu({
+                  currentAssignment,
                   onOpenReleaseScoreSettings,
                   row,
                   history,
@@ -234,10 +257,12 @@ class AdvancedTable extends Component {
                   addItemToFolder: this.handleSelectRow(row),
                   removeItemsFromFolder: () =>
                     this.handleRemoveItemsFromFolder(row),
+                  showEmbedLinkModal,
+                  toggleTagsEditModal,
+                  isDemoPlaygroundUser: isDemoPlayground,
                 })}
                 placement="bottomRight"
                 trigger={['click']}
-                getPopupContainer={(triggerNode) => triggerNode.parentNode}
               >
                 <EduButton
                   height="28px"
@@ -292,16 +317,14 @@ class AdvancedTable extends Component {
     return {}
   }
 
-  componentDidMount() {
-    this.fetchSummary(1, {})
-  }
-
   fetchSummary = (pageNo, sort) => {
     const { loadAssignmentsSummary, districtId, filters } = this.props
+    const { folderId } = filters
     loadAssignmentsSummary({
       districtId,
       filters: { ...filters, pageNo },
       sort,
+      folderId,
     })
   }
 
@@ -505,6 +528,7 @@ const enhance = compose(
       selectedRows: getSelectedItems(state),
       assignmentTests: getAssignmentTestsSelector(state),
       userClassList: getGroupList(state),
+      isDemoPlayground: isDemoPlaygroundUser(state),
     }),
     {
       loadAssignmentsSummary: receiveAssignmentsSummaryAction,

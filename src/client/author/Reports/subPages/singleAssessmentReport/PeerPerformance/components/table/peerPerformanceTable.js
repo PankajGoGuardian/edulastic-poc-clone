@@ -6,7 +6,7 @@ import styled from 'styled-components'
 import { CustomTableTooltip } from '../../../../../common/components/customTableTooltip'
 import CsvTable from '../../../../../common/components/tables/CsvTable'
 import { StyledH3, ColoredCell } from '../../../../../common/styled'
-import { downloadCSV } from '../../../../../common/util'
+import { downloadCSV, getHSLFromRange1 } from '../../../../../common/util'
 import { idToName } from '../../util/transformers'
 import { StyledTable } from '../styled'
 
@@ -56,31 +56,33 @@ export const PeerPerformanceTable = ({
   const colorCell = (colorkey, columnKey, columnTitle) => (data, record) => {
     const tooltipText = (rec) => () => (
       <div>
-        <Row type="flex" justify="start">
+        <Row className="tooltip-row" type="flex" justify="start">
           <Col className="custom-table-tooltip-key">Assessment Name: </Col>
           <Col className="custom-table-tooltip-value">{assessmentName}</Col>
         </Row>
-        <Row type="flex" justify="start">
-          <Col className="custom-table-tooltip-key">{`${idToName[compareBy]}: `}</Col>
+        <Row className="tooltip-row" type="flex" justify="start">
+          <Col className="custom-table-tooltip-key">{`${idToName(
+            compareBy
+          )}: `}</Col>
           <Col className="custom-table-tooltip-value">{rec.compareBylabel}</Col>
         </Row>
         {analyseBy === 'score(%)' || analyseBy === 'rawScore' ? (
           <>
-            <Row type="flex" justify="start">
+            <Row className="tooltip-row" type="flex" justify="start">
               <Col className="custom-table-tooltip-key">Assigned: </Col>
               <Col className="custom-table-tooltip-value">
                 {rec.graded + rec.absent}
               </Col>
             </Row>
-            <Row type="flex" justify="start">
+            <Row className="tooltip-row" type="flex" justify="start">
               <Col className="custom-table-tooltip-key">Submitted: </Col>
               <Col className="custom-table-tooltip-value">{rec.graded}</Col>
             </Row>
-            <Row type="flex" justify="start">
+            <Row className="tooltip-row" type="flex" justify="start">
               <Col className="custom-table-tooltip-key">Absent: </Col>
               <Col className="custom-table-tooltip-value">{rec.absent}</Col>
             </Row>
-            <Row type="flex" justify="start">
+            <Row className="tooltip-row" type="flex" justify="start">
               <Col className="custom-table-tooltip-key">District Avg: </Col>
               <Col className="custom-table-tooltip-value">
                 {getDisplayValue(
@@ -91,7 +93,7 @@ export const PeerPerformanceTable = ({
                 )}
               </Col>
             </Row>
-            <Row type="flex" justify="start">
+            <Row className="tooltip-row" type="flex" justify="start">
               <Col className="custom-table-tooltip-key">
                 Student Avg Score:{' '}
               </Col>
@@ -114,17 +116,17 @@ export const PeerPerformanceTable = ({
           </>
         ) : (
           <>
-            <Row type="flex" justify="start">
+            <Row className="tooltip-row" type="flex" justify="start">
               <Col className="custom-table-tooltip-key">Performance Band: </Col>
               <Col className="custom-table-tooltip-value">{columnTitle}</Col>
             </Row>
-            <Row type="flex" justify="start">
+            <Row className="tooltip-row" type="flex" justify="start">
               <Col className="custom-table-tooltip-key">Student#: </Col>
               <Col className="custom-table-tooltip-value">
                 {rec[columnKey] === 0 ? 'N/A' : rec[columnKey]}
               </Col>
             </Row>
-            <Row type="flex" justify="start">
+            <Row className="tooltip-row" type="flex" justify="start">
               <Col className="custom-table-tooltip-key">Student(%): </Col>
               <Col className="custom-table-tooltip-value">
                 {rec[columnKey] === 0
@@ -188,6 +190,11 @@ export const PeerPerformanceTable = ({
       colouredCellsNo = 2
     } else {
       bandInfo.sort((a, b) => a.threshold - b.threshold)
+      for (let i = 0; i < bandInfo.length; i++) {
+        dataSource.forEach((d) => {
+          d[`fill_${i}`] = bandInfo[i].color
+        })
+      }
 
       const allBandCols = {}
       for (const band of bandInfo) {
@@ -228,7 +235,7 @@ export const PeerPerformanceTable = ({
     <div>
       <StyledDiv>
         <StyledH3>
-          Assessment Statistics By {idToName[compareBy]} | {assessmentName}
+          Assessment Statistics By {idToName(compareBy)} | {assessmentName}
         </StyledH3>
       </StyledDiv>
       <CsvTable

@@ -98,6 +98,7 @@ class MultipleChoiceOptions extends Component {
 
   render() {
     const { t, item, fillSections, cleanSections, fontSize } = this.props
+    const _options = item.options || []
 
     return (
       <Question
@@ -116,7 +117,7 @@ class MultipleChoiceOptions extends Component {
           {t('component.multiplechoice.multiplechoiceoptions')}
         </Subtitle>
         <QuillSortableList
-          items={item.options.map((o) => o.label)}
+          items={_options.map((o) => o.label)}
           onSortEnd={this.onSortEnd}
           useDragHandle
           firstFocus={item.firstMount}
@@ -127,7 +128,7 @@ class MultipleChoiceOptions extends Component {
         {/** Checking question should not be of type true false
          * Or show add new choice if the number of option is less than 2 (to undo delete option) */}
         {(item.title !== questionTitle.MCQ_TRUE_OR_FALSE ||
-          item.options.length < 2) && (
+          _options.length < 2) && (
           <div>
             <CustomStyleBtn data-cy="add-new-ch" onClick={this.addNewChoiceBtn}>
               {t('component.multiplechoice.addnewchoice')}

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { Popover } from 'antd'
 import styled from 'styled-components'
@@ -94,34 +94,22 @@ const TemplateBox = ({ resprops, id }) => {
     scrollHeight: contentHeight,
   } = measureText(label, style)
 
-  const getContent = (inPopover = false, maxHeight = '') => {
-    const overflowProps = {}
-    /**
-     * if in popover and,
-     * if content width is greater than the max width of the popover (400px)
-     * show the scrollbar inside the popover
-     *
-     * related to https://snapwiz.atlassian.net/browse/EV-13512
-     */
-    const maxWidthInPopover = Dimensions.popoverMaxWidth
-    if (inPopover && contentWidth > maxWidthInPopover) {
-      overflowProps.maxWidth = maxWidthInPopover
-      overflowProps.overflowX = 'auto'
-    }
-    return (
-      <div style={{ ...overflowProps, maxHeight }}>
-        <MathSpan dangerouslySetInnerHTML={{ __html: label }} />
-      </div>
-    )
-  }
+  const content = useMemo(() => {
+    return <MathSpan dangerouslySetInnerHTML={{ __html: label }} />
+  }, [label])
+
   const widthOverflow = contentWidth > style.maxWidth
   const heightOverflow =
     imageDimensions.height > boxHeight || contentHeight > boxHeight
   const showPopover = label && (widthOverflow || heightOverflow)
 
+  const itemValue = !hasGroupResponses
+    ? getData('value')
+    : getDataForGroup('value')
+
   const itemData = !hasGroupResponses
-    ? `${getData('value')}_${dropTargetIndex}_fromResp`
-    : `${getDataForGroup('value')}_${
+    ? `${itemValue}_${dropTargetIndex}_fromResp`
+    : `${itemValue}_${
         userAnswers[dropTargetIndex] && userAnswers[dropTargetIndex].group
       }_${dropTargetIndex}_fromResp`
 
@@ -130,21 +118,24 @@ const TemplateBox = ({ resprops, id }) => {
       drop={onDrop}
       showHoverBorder
       borderColor={greyThemeLight}
-      height={boxHeight}
+      minHeight={boxHeight}
+      maxHeight={Dimensions.maxHeight}
       minWidth={style.minWidth}
       maxWidth={style.maxWidth}
       index={dropTargetIndex}
     >
-      <StyledDragItem data={itemData}>
-        <ResponseContainer>
-          {showPopover && (
-            <Popover placement="bottomLeft" content={getContent(true)}>
-              {getContent(true, style.maxHeight)}
-            </Popover>
-          )}
-          {!showPopover && getContent()}
-        </ResponseContainer>
-      </StyledDragItem>
+      {itemValue && (
+        <StyledDragItem data={itemData}>
+          <ResponseContainer>
+            {showPopover && (
+              <Popover placement="bottomLeft" content={content}>
+                {content}
+              </Popover>
+            )}
+            {!showPopover && content}
+          </ResponseContainer>
+        </StyledDragItem>
+      )}
     </StyledDropContainer>
   )
 }
@@ -158,15 +149,14 @@ export default TemplateBox
 
 const StyledDropContainer = styled(DropContainer)`
   display: inline-flex;
-  padding: 5px;
   vertical-align: middle;
   white-space: nowrap;
-  min-height: ${({ height }) => height}px;
-  max-height: ${({ height }) => height}px;
+  min-height: ${({ minHeight }) => minHeight}px;
+  max-height: ${({ maxHeight }) => maxHeight}px;
   min-width: ${({ minWidth }) => minWidth}px;
   max-width: ${({ maxWidth }) => maxWidth}px;
 `
 
 const StyledDragItem = styled(DragItem)`
-  overflow: hidden;
+  overflow-y: hidden;
 `

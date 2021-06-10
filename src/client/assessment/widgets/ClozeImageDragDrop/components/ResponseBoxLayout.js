@@ -46,19 +46,14 @@ const ResponseBoxLayout = ({
         data-cy="responses-box"
         style={containerStyle}
       >
-        <FlexContainer
-          flexDirection="column"
-          style={isPrintMode ? { width: '100%' } : {}}
-        >
+        <FlexContainer flexDirection="column">
           <DropContainerTitle>
             {getHeading('component.cloze.dragDrop.optionContainerHeading')}
           </DropContainerTitle>
           <DragDropInnerContainer>
             <FlexContainer
               justifyContent="flex-start"
-              flexDirection={
-                isPrintMode ? 'column' : horizontallyAligned ? 'column' : 'row'
-              }
+              flexDirection={horizontallyAligned ? 'column' : 'row'}
               flexWrap="wrap"
             >
               <Responses
@@ -103,6 +98,8 @@ ResponseBoxLayout.defaultProps = {
 }
 
 export default React.memo(ResponseBoxLayout, (prevProps, nextProps) => {
-  const responsesAreEqual = isEqual(prevProps.responses, nextProps.responses)
+  const responsesAreEqual =
+    isEqual(prevProps.responses, nextProps.responses) &&
+    isEqual(prevProps.transparentResponses, nextProps.transparentResponses)
   return responsesAreEqual
 })

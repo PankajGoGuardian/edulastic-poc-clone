@@ -31,7 +31,7 @@ const IconEduLogo = (props) => (
               <g id="round-logo">
                 <circle
                   id="Oval-Copy-6"
-                  fill="#00A37C"
+                  fill={props.circleFill ? props.circleFill : '#00A37C'}
                   cx="25"
                   cy="25"
                   r="25"

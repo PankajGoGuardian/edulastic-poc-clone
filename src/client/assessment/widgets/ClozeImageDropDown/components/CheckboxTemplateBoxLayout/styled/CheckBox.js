@@ -2,44 +2,23 @@ import styled, { css } from 'styled-components'
 import { white } from '@edulastic/colors'
 
 const boxBgColor = css`
-  background: ${({ theme, checked, correct, isPrintPreview }) => {
+  background: ${({ fillColor, isPrintPreview }) => {
     if (isPrintPreview) return white
-    if (checked === undefined && correct === undefined) {
-      return theme.checkbox.boxBgColor
-    }
-    if (checked === false) {
-      return theme.checkbox.noAnswerBgColor
-    }
-    if (checked && !correct) {
-      return theme.checkbox.wrongBgColor
-    }
-    if (checked && correct) {
-      return theme.checkbox.rightBgColor
-    }
+    return fillColor
   }};
 `
 
 const indexBoxBgColor = css`
-  background: ${({ theme, checked, correct, isPrintPreview }) => {
+  background: ${({ indexBgColor, isPrintPreview }) => {
     if (isPrintPreview) return white
-    if (checked === undefined && correct === undefined) {
-      return theme.checkbox.boxBgColor
-    }
-    if (checked === false) {
-      return theme.checkbox.noAnswerIconColor
-    }
-    if (checked && !correct) {
-      return theme.checkbox.wrongIconColor
-    }
-    if (checked && correct) {
-      return theme.checkbox.rightIconColor
-    }
+    return indexBgColor
   }};
 `
 
 export const CheckBox = styled.div`
   display: flex;
   border-radius: 4px;
+  position: relative;
   ${boxBgColor};
 
   .index {
@@ -59,8 +38,10 @@ export const CheckBox = styled.div`
 
   .text {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
-    padding-left: 16px;
+    padding-left: 8px;
+    padding-right: 18px;
+    overflow: hidden;
   }
 `

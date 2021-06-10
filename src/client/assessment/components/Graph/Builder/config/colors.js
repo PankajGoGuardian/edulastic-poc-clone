@@ -5,11 +5,11 @@ import {
   fadedGrey1,
   graphTickColor,
 } from '@edulastic/colors'
-import { TOOLS } from './constants'
+import CONSTANT from './constants'
 
 export default {
   special: {
-    [TOOLS.POINT]: {
+    [CONSTANT.TOOLS.POINT]: {
       fillColor: white,
       strokeColor: lightBlue9,
       highlightStrokeColor: lightBlue9,
@@ -18,135 +18,135 @@ export default {
     },
   },
   default: {
-    [TOOLS.POINT]: {
+    [CONSTANT.TOOLS.POINT]: {
       fillColor: lightBlue9,
       strokeColor: lightBlue9,
       highlightStrokeColor: lightBlue9,
       highlightFillColor: lightBlue9,
     },
-    [TOOLS.SEGMENTS_POINT]: {
+    [CONSTANT.TOOLS.SEGMENTS_POINT]: {
       fillColor: white,
       strokeColor: lightBlue9,
       highlightStrokeColor: lightBlue9,
       highlightFillColor: white,
     },
-    [TOOLS.LINE]: {
+    [CONSTANT.TOOLS.LINE]: {
       fillColor: lightBlue9,
       strokeColor: lightBlue9,
       highlightStrokeColor: lightBlue9,
       highlightFillColor: lightBlue9,
     },
-    [TOOLS.RAY]: {
+    [CONSTANT.TOOLS.RAY]: {
       fillColor: lightBlue9,
       strokeColor: lightBlue9,
       highlightStrokeColor: lightBlue9,
       highlightFillColor: lightBlue9,
     },
-    [TOOLS.SEGMENT]: {
+    [CONSTANT.TOOLS.SEGMENT]: {
       fillColor: lightBlue9,
       strokeColor: lightBlue9,
       highlightStrokeColor: lightBlue9,
       highlightFillColor: lightBlue9,
     },
-    [TOOLS.VECTOR]: {
+    [CONSTANT.TOOLS.VECTOR]: {
       fillColor: lightBlue9,
       strokeColor: lightBlue9,
       highlightStrokeColor: lightBlue9,
       highlightFillColor: lightBlue9,
     },
-    [TOOLS.AREA]: {
+    [CONSTANT.TOOLS.AREA]: {
       fillColor: lightBlue9,
       highlightFillColor: lightBlue9,
     },
   },
 
   red: {
-    [TOOLS.POINT]: {
+    [CONSTANT.TOOLS.POINT]: {
       fillColor: '#ee1658',
       strokeColor: '#ee1658',
       highlightStrokeColor: '#ee1658',
       highlightFillColor: '#ee1658',
     },
-    [TOOLS.SEGMENTS_POINT]: {
+    [CONSTANT.TOOLS.SEGMENTS_POINT]: {
       fillColor: white,
       strokeColor: '#ee1658',
       highlightStrokeColor: '#ee1658',
       highlightFillColor: white,
     },
-    [TOOLS.LINE]: {
+    [CONSTANT.TOOLS.LINE]: {
       fillColor: '#ee1658',
       strokeColor: '#ee1658',
       highlightStrokeColor: '#ee1658',
       highlightFillColor: '#ee1658',
     },
-    [TOOLS.RAY]: {
+    [CONSTANT.TOOLS.RAY]: {
       fillColor: '#ee1658',
       strokeColor: '#ee1658',
       highlightStrokeColor: '#ee1658',
       highlightFillColor: '#ee1658',
     },
-    [TOOLS.SEGMENT]: {
+    [CONSTANT.TOOLS.SEGMENT]: {
       fillColor: '#ee1658',
       strokeColor: '#ee1658',
       highlightStrokeColor: '#ee1658',
       highlightFillColor: '#ee1658',
     },
-    [TOOLS.VECTOR]: {
+    [CONSTANT.TOOLS.VECTOR]: {
       fillColor: '#ee1658',
       strokeColor: '#ee1658',
       highlightStrokeColor: '#ee1658',
       highlightFillColor: '#ee1658',
     },
-    [TOOLS.AREA]: {
+    [CONSTANT.TOOLS.AREA]: {
       fillColor: '#ee1658',
       highlightFillColor: '#ee1658',
     },
   },
   green: {
-    [TOOLS.POINT]: {
+    [CONSTANT.TOOLS.POINT]: {
       fillColor: '#1fe3a1',
       strokeColor: '#1fe3a1',
       highlightStrokeColor: '#1fe3a1',
       highlightFillColor: '#1fe3a1',
     },
-    [TOOLS.SEGMENTS_POINT]: {
+    [CONSTANT.TOOLS.SEGMENTS_POINT]: {
       fillColor: white,
       strokeColor: '#1fe3a1',
       highlightStrokeColor: '#1fe3a1',
       highlightFillColor: white,
     },
-    [TOOLS.LINE]: {
+    [CONSTANT.TOOLS.LINE]: {
       fillColor: '#1fe3a1',
       strokeColor: '#1fe3a1',
       highlightStrokeColor: '#1fe3a1',
       highlightFillColor: '#1fe3a1',
     },
-    [TOOLS.RAY]: {
+    [CONSTANT.TOOLS.RAY]: {
       fillColor: '#1fe3a1',
       strokeColor: '#1fe3a1',
       highlightStrokeColor: '#1fe3a1',
       highlightFillColor: '#1fe3a1',
     },
-    [TOOLS.SEGMENT]: {
+    [CONSTANT.TOOLS.SEGMENT]: {
       fillColor: '#1fe3a1',
       strokeColor: '#1fe3a1',
       highlightStrokeColor: '#1fe3a1',
       highlightFillColor: '#1fe3a1',
     },
-    [TOOLS.VECTOR]: {
+    [CONSTANT.TOOLS.VECTOR]: {
       fillColor: '#1fe3a1',
       strokeColor: '#1fe3a1',
       highlightStrokeColor: '#1fe3a1',
       highlightFillColor: '#1fe3a1',
     },
-    [TOOLS.AREA]: {
+    [CONSTANT.TOOLS.AREA]: {
       fillColor: '#1fe3a1',
       highlightFillColor: '#1fe3a1',
     },
   },
 
   gray: {
-    [TOOLS.POINT]: {
+    [CONSTANT.TOOLS.POINT]: {
       fillColor: greyThemeDark4,
       strokeColor: greyThemeDark4,
       highlightStrokeColor: greyThemeDark4,
@@ -174,5 +174,9 @@ export default {
     color: graphTickColor,
     'font-size': '12px',
     'font-weight': 'bold',
+  },
+  connectline: {
+    strokeColor: graphTickColor,
+    highlightStrokeColor: graphTickColor,
   },
 }

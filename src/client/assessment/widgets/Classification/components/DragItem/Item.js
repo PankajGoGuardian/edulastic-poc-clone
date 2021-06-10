@@ -19,7 +19,7 @@ const Item = ({
   valid,
   preview,
   dragHandle,
-  item,
+  label,
   width,
   maxWidth,
   minWidth,
@@ -31,8 +31,8 @@ const Item = ({
 
   const showIcon = preview && valid !== undefined
   let showPopover = false
-  if (templateHasMath(item)) {
-    const { scrollWidth } = measureText(item)
+  if (templateHasMath(label)) {
+    const { scrollWidth } = measureText(label)
     const widthOverflow = scrollWidth > maxWidth - 16
     showPopover = widthOverflow
   }
@@ -61,7 +61,7 @@ const Item = ({
         <AnswerBox
           style={answerBoxStyle}
           checked={preview && valid !== undefined}
-          dangerouslySetInnerHTML={{ __html: item }}
+          dangerouslySetInnerHTML={{ __html: label }}
         />
         <TriggerStyle
           questionId={`classification-cols-container-${questionId}`}
@@ -92,7 +92,7 @@ Item.propTypes = {
   valid: PropTypes.bool.isRequired,
   preview: PropTypes.bool.isRequired,
   dragHandle: PropTypes.bool.isRequired,
-  item: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
   isTransparent: PropTypes.bool.isRequired,
   maxWidth: PropTypes.number.isRequired,
   minWidth: PropTypes.number.isRequired,

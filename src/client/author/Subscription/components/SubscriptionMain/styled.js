@@ -1,27 +1,293 @@
 import styled from 'styled-components'
 import {
   themeColor,
-  secondaryTextColor,
   white,
-  linkColor1,
   largeDesktopWidth,
-  smallDesktopWidth,
-  desktopWidth,
+  tabletWidth,
   extraDesktopWidthMax,
+  title,
+  lightGrey9,
+  borderGrey2,
+  lightGrey,
+  boxShadowColor4,
+  darkTitle,
+  lightGreen9,
+  lightGrey13,
+  lightGrey14,
+  filterIconColor,
+  darkGrey2,
+  lightGrey15,
+  lightBlue10,
+  lightGreen10,
+  deleteRed2,
+  themeColorBlue,
 } from '@edulastic/colors'
+import { CustomModalStyled, EduButton, FlexContainer } from '@edulastic/common'
+import { Spin } from 'antd'
 
-export const CurrentPlanContainer = styled.div`
-  width: 100%;
+export const Img = styled.img`
+  height: 35px;
+`
+export const AddonSection = styled.section`
+  padding: 50px 25px;
+  background: ${white};
+  text-align: center;
+  border-radius: 10px;
+  box-shadow: 0px 2px 10px ${boxShadowColor4};
+  h2 {
+    justify-content: center;
+  }
+`
+export const SectionTitle = styled.h2`
   display: flex;
   align-items: center;
+  font-size: 18px;
+  color: ${darkTitle};
+  font-weight: bold;
+  margin: 0px;
+`
+export const SectionDescription = styled.p`
+  font-size: 14px;
+  color: rgba(55, 58, 62, 0.8);
+  padding-right: 30px;
+`
+export const SectionContainer = styled.div`
+  width: 100%;
+  margin: 0px auto;
+`
+export const CardContainer = styled.div`
+  margin-top: 30px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+`
+export const AddonCard = styled.div`
+  width: 100%;
+  padding: 30px;
+  h3 {
+    font-size: 13px;
+    color: ${title};
+    font-weight: bold;
+    margin-bottom: 5px;
+    margin-top: 15px;
+  }
+  @media (min-width: ${tabletWidth}) {
+    width: 50%;
+  }
+  @media (min-width: ${largeDesktopWidth}) {
+    width: calc(100% / 3);
+    padding: 30px 50px;
+  }
+  @media (min-width: ${extraDesktopWidthMax}) {
+    width: calc(100% / 4);
+    padding: 40px;
+  }
+`
+export const AddonImg = styled.div`
+  height: 40px;
+`
+export const AddonDescription = styled.div`
+  font-size: 13px;
+  color: ${lightGrey9};
+`
+export const TopSection = styled.section`
+  padding: 10px 30px 30px;
+  h1 {
+    margin: 0px;
+    font-size: 35px;
+    color: ${darkTitle};
+    font-weight: bold;
+    letter-spacing: -1.75px;
+  }
+  p {
+    margin: 0px;
+    font-size: 16px;
+    color: ${title};
+  }
+`
+export const EnterpriseSection = styled.div`
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  padding: 40px 30px;
+  background: ${white};
+  border-radius: 10px;
+  margin: 0px auto 20px;
+  box-shadow: 0px 2px 10px ${boxShadowColor4};
+`
+export const CardsSection = styled.div`
+  display: flex;
+  align-items: flex-start;
   justify-content: space-between;
-  margin-bottom: 40px;
+  width: 100%;
+  padding: 25px 30px;
+  background: ${white};
+  border-radius: 10px;
+  margin: 0px auto 20px;
+  box-shadow: 0px 2px 10px ${boxShadowColor4};
 `
 
-export const PlanStatus = styled.h3`
-  color: ${linkColor1};
-  font-weight: 700;
-  margin: 0;
+export const PremiumRequiredMsg = styled.span`
+  display: flex;
+  align-items: center;
+  text-transform: uppercase;
+  margin-left: 15px;
+  span {
+    margin-left: 5px;
+    font-size: 10px;
+    color: #e5923f;
+  }
+`
+export const ExpiryMsg = styled(PremiumRequiredMsg)`
+  span {
+    color: #0b9ad2;
+  }
+`
+
+export const IconWrapper = styled.div`
+  min-width: 52px;
+  margin-right: 30px;
+  margin-top: 5px;
+`
+export const CardDetails = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 5px 0px;
+`
+export const GradeWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  font-size: 8px;
+  background: ${lightGreen9};
+  height: 21px;
+  padding: 0px 15px;
+  border-radius: 2px;
+  text-transform: uppercase;
+  font-weight: bold;
+  color: ${white};
+  white-space: nowrap;
+`
+export const OtherFilters = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 0px 10px;
+  font-size: 12px;
+  color: ${lightGrey13};
+  text-transform: uppercase;
+  font-weight: 600;
+`
+export const CardRightWrapper = styled(FlexContainer)`
+  .ant-btn {
+    margin-top: 5px;
+    &.disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+      &:focus,
+      &:hover {
+        background: transparent;
+        color: ${themeColorBlue};
+        border-color: ${themeColorBlue};
+      }
+    }
+    &.add {
+      &:focus,
+      &:active {
+        background: ${themeColor};
+        border-color: ${themeColor};
+      }
+    }
+    &.remove {
+      background: ${deleteRed2};
+      border-color: ${deleteRed2};
+      &:focus,
+      &:active {
+        background: ${deleteRed2};
+        border-color: ${deleteRed2};
+      }
+    }
+  }
+`
+export const Price = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: ${lightGrey14};
+  span {
+    font-size: 20px;
+    color: ${filterIconColor};
+    font-weight: bold;
+    margin-right: 10px;
+  }
+`
+export const FilterSection = styled.div`
+  padding: 30px 0px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-transform: uppercase;
+  .line {
+    width: 100%;
+    background: ${lightGrey15};
+    height: 1px;
+  }
+  ul {
+    list-style: none;
+    margin: 0px;
+    padding: 0px;
+    display: flex;
+    align-items: center;
+    li {
+      background: ${white};
+      padding: 5px 15px;
+      border: 1px solid ${themeColor};
+      color: ${themeColor};
+      min-width: 115px;
+      font-size: 9px;
+      font-weight: 600;
+      text-align: center;
+      cursor: pointer;
+      &:first-child {
+        border-radius: 4px 0px 0px 4px;
+      }
+      &:last-child {
+        border-radius: 0px 4px 4px 0px;
+      }
+      &.active {
+        background: ${themeColor};
+        color: ${white};
+      }
+      &:hover {
+        background: ${themeColor};
+        color: ${white};
+      }
+    }
+  }
+`
+export const Wrap = styled.div`
+  background: ${lightGrey};
+  margin-top: -12px;
+  padding: 0px 20px;
+  display: flex;
+  align-items: center;
+  span {
+    font-size: 10px;
+    color: ${lightGrey13};
+    margin-right: 15px;
+    font-weight: 600;
+  }
+`
+
+export const HaveLicenseKey = styled.div`
+  text-align: center;
+  font-size: 9px;
+  font-weight: 600;
+  margin-top: 25px;
+  text-transform: uppercase;
+  cursor: pointer;
+  width: 100%;
+  color: ${white};
 `
 
 export const AvailablePlansContainer = styled.div`
@@ -32,14 +298,6 @@ export const AvailablePlansContainer = styled.div`
   flex-direction: column;
   border-radius: 4px;
   margin-bottom: 10px;
-`
-
-export const PlanContainerWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  background: ${white};
-  border-radius: 10px;
 `
 
 export const PlansContainer = styled.div`
@@ -86,67 +344,101 @@ export const PlanDetails = styled.div`
   }
 `
 
-export const GridContainer = styled.div`
-  display: grid;
-  min-height: 250px;
-  height: 100%;
-  grid-template-columns: 30% 30% 30%;
-  grid-column-gap: 35px;
-  grid-row-gap: 25px;
-  width: 100%;
-
-  @media (max-width: ${largeDesktopWidth}) {
-    grid-template-columns: 45% 45%;
-  }
-
-  @media (max-width: ${smallDesktopWidth}) {
-    grid-template-columns: 45% 45%;
-  }
-
-  @media (max-width: ${desktopWidth}) {
-    grid-template-columns: 85%;
-  }
-`
-
-export const FlexCard = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  padding: 10px;
-  margin: 10px;
-`
-
-export const InnerWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  width: 100%;
-  margin-bottom: 8px;
-`
-
-export const FeatureDescription = styled.p`
-  font-size: 16px;
-  color: ${linkColor1};
-  letter-spacing: 0.28px;
-  font-size: 15px;
-  text-align: left;
-  width: 100%;
-`
-
-export const Img = styled.img`
-  width: 33px;
-  height: 29px;
-`
-
-export const StyledParagraph = styled.p`
-  text-transform: uppercase;
-  font-weight: 600;
-  color: ${secondaryTextColor};
-  margin-top: ${({ isSubscribed }) => isSubscribed && '50px'};
-  letter-spacing: 0.22px;
-`
-
 export const StyledLink = styled.span`
   color: ${themeColor};
+`
+export const ModalBody = styled.div`
+  font-size: 14px;
+  color: ${darkGrey2};
+`
+export const FlexRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+`
+export const CalendlyModal = styled(CustomModalStyled)`
+  width: 350px !important;
+  min-width: 350px;
+  &.schedule {
+    min-width: 100%;
+
+    .ant-modal-content,
+    .ant-modal-body {
+      padding: 0px !important;
+      background: none;
+      border: none;
+      box-shadow: none;
+    }
+    .ant-modal-footer {
+      display: none;
+    }
+    .ant-modal-close-x {
+      svg {
+        width: 30px;
+        height: 30px;
+        fill: white;
+      }
+    }
+
+    & div[data-container='booking-container'] {
+      border: none !important;
+      box-shadow: none !important;
+      max-width: 100% !important;
+    }
+  }
+`
+export const CustomButton = styled(EduButton)`
+  background: ${({ noBg }) => (noBg ? 'transparent !important' : null)};
+  border-color: ${white} !important;
+`
+export const AddonFooter = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 9px;
+  color: ${lightBlue10};
+  padding-top: 12px;
+  text-transform: uppercase;
+  font-weight: 600;
+  cursor: pointer;
+  span {
+    height: 18px;
+    border-right: 1px solid ${borderGrey2};
+    padding: 0px 20px;
+    display: flex;
+    align-items: center;
+    &:last-child {
+      border: none;
+    }
+  }
+`
+export const PurchaseLink = styled.span`
+  color: ${lightGreen10};
+`
+export const LearnMoreLink = styled.a`
+  height: 18px;
+  border-right: 1px solid ${borderGrey2};
+  padding: 0px 20px;
+  display: flex;
+  align-items: center;
+  color: ${lightBlue10};
+  &:last-child {
+    border: none;
+  }
+`
+export const SpinContainer = styled.div`
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  z-index: 999;
+  background-color: rgb(0, 0, 0, 0.3);
+`
+
+export const StyledSpin = styled(Spin)`
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 `

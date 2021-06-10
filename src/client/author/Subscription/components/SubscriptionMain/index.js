@@ -40,6 +40,7 @@ import {
   SectionTitle,
   SpinContainer,
   StyledSpin,
+  TopSection,
 } from './styled'
 import TabHeaderContent from './TabHeaderContent'
 
@@ -428,12 +429,11 @@ const SubscriptionMain = ({
                 isTeacher &&
                 subType.toLowerCase() === 'premium'
               ) {
-                teacherPremiumCount = teacherPremiumCount + 1
+                teacherPremiumCount += 1
               }
             }
             if (cartQuantities[teacherPremium.id]) {
-              teacherPremiumCount =
-                teacherPremiumCount + cartQuantities[teacherPremium.id]
+              teacherPremiumCount += cartQuantities[teacherPremium.id]
             }
             let existingAddonsCount = 1
             if (subsLicensesKeyed[productId]) {
@@ -443,12 +443,11 @@ const SubscriptionMain = ({
                 isTeacher &&
                 subType.toLowerCase() === 'premium'
               ) {
-                existingAddonsCount = existingAddonsCount + 1
+                existingAddonsCount += 1
               }
             }
             if (cartQuantities[productId]) {
-              existingAddonsCount =
-                existingAddonsCount + cartQuantities[productId]
+              existingAddonsCount += cartQuantities[productId]
             }
             const diff = teacherPremiumCount - existingAddonsCount
 
@@ -484,7 +483,6 @@ const SubscriptionMain = ({
                 setShowEnterpriseTab={setShowEnterpriseTab}
                 showMultipleSubscriptions={showMultipleSubscriptions}
                 history={history}
-                subType={subType}
               />
 
               {!(
@@ -614,6 +612,17 @@ const SubscriptionMain = ({
                 </CardsSection>
               )}
             </>
+          )}
+
+          {subType === 'enterprise' && (
+            <TopSection>
+              <h1>Add ons for your Enterprise Version.</h1>
+              <p>
+                Add on modules make it easier to deliver differentiated
+                instruction and pull all of your data into one place for a
+                holistic view of student understanding and growth.
+              </p>
+            </TopSection>
           )}
 
           <FiltersSection

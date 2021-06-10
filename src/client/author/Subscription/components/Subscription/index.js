@@ -252,7 +252,7 @@ const Subscription = (props) => {
     fetchMultipleSubscriptions({})
   }, [])
 
-  const isPremiumUser = user?.features?.premium
+  const isPremiumUser = user?.features?.premium && subscription?._id
   /**
    *  a user is paid premium user if
    *  - subType exists and
@@ -361,7 +361,6 @@ const Subscription = (props) => {
     roleuser.TEACHER === user.role &&
     defaultGrades.length > 0 &&
     defaultSubjects.length > 0
-
   return (
     <Wrapper>
       <SubscriptionHeader

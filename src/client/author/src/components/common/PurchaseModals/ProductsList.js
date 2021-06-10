@@ -127,7 +127,7 @@ const ProductsList = ({
               {
                 productId,
                 linkedProductId: addOnSub?.itemBankId,
-                totalCount: 1,
+                totalCount: 0,
                 usedCount: 1,
               },
             ]

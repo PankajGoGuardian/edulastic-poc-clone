@@ -6,6 +6,7 @@ import loadable from '@loadable/component'
 import { compose } from 'redux'
 import { uniq, compact } from 'lodash'
 import moment from 'moment'
+import { roleuser } from '@edulastic/constants'
 import {
   getItemBankSubscriptions,
   getProducts,
@@ -329,7 +330,8 @@ const PurchaseFlowModals = (props) => {
                 !permission.isTrial
               )
             })
-        )
+        ) ||
+        user?.role !== roleuser.TEACHER
       ) {
         const productQuantities = products.map((product) => ({
           ...product,

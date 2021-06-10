@@ -409,7 +409,7 @@ const SubscriptionMain = ({
 
         if (quantities[teacherPremium.id] === undefined && source === 'addon') {
           // if additions of addons and user is not premium
-          if (!isUserPremium && !isFreeAdmin) {
+          if (!isUserPremium) {
             Object.assign(changes, { [teacherPremium.id]: 1 })
             notification({
               type: 'info',

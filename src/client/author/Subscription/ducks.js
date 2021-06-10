@@ -199,7 +199,7 @@ const slice = createSlice({
     },
     setCartQuantities: (state, { payload }) => {
       if (!Object.keys(payload).find((x) => payload[x])) {
-        //empty qantities - so closing cart
+        // empty qantities - so closing cart
         state.cartVisible = false
       }
       state.cartQuantities = payload
@@ -349,6 +349,15 @@ function* fetchUserSubscription() {
       subscriptionApi.subscriptionStatus
     )
     const { result } = apiUserSubscriptionStatus || {}
+    if (result?.subscription?.status === 0) {
+      result.subscription = null
+      if (result?.itemBankSubscriptions?.length) {
+        result.itemBankSubscriptions = result.itemBankSubscriptions.filter(
+          (x) => x.isTrial
+        )
+      }
+    }
+
     const premiumProductId = result?.products.find(
       (product) => product.type === 'PREMIUM'
     )?.id

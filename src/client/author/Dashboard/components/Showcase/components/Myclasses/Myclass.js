@@ -354,7 +354,6 @@ const MyClasses = ({
           feature.description?.includes('Engage NY') &&
           feature.description?.includes('Math')
         ) &&
-        !feature.description?.toLowerCase?.includes('sparkmath') &&
         !(
           feature?.config?.excludedPublishers?.includes('SingaporeMath') ||
           feature?.config?.excludedPublishers?.includes('Singapore Math')
@@ -362,11 +361,7 @@ const MyClasses = ({
     )
     bannerSlides = bannerSlides.filter(
       (banner) =>
-        !banner.description?.toLowerCase?.()?.includes('sparkmath') &&
-        !(
-          banner.description?.includes('Engage NY') &&
-          banner.description?.includes('Math')
-        ) &&
+        !banner.description?.toLowerCase?.()?.includes('spark') &&
         !(
           banner?.config?.excludedPublishers?.includes('SingaporeMath') ||
           banner?.config?.excludedPublishers?.includes('Singapore Math')

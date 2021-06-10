@@ -354,7 +354,7 @@ const MyClasses = ({
           feature?.description?.toLowerCase()?.includes('Engage NY') &&
           feature?.description?.toLowerCase()?.includes('Math')
         ) &&
-        !feature?.description?.toLowerCase?.includes('sparkmath') &&
+        !feature?.description?.toLowerCase()?.includes('sparkmath') &&
         !(
           feature?.config?.excludedPublishers?.includes('SingaporeMath') ||
           feature?.config?.excludedPublishers?.includes('Singapore Math')

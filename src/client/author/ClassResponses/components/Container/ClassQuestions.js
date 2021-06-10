@@ -520,6 +520,7 @@ class ClassQuestions extends Component {
       setPageNumber,
       isQuestionsLoading,
       setLcbQuestionLoaderState,
+      variableSetIds,
     } = this.props
     const { expressGrader: isExpressGrader = false } = this.context
     const testItems = getTestItems({
@@ -535,6 +536,7 @@ class ClassQuestions extends Component {
       expressGrader: isExpressGrader,
       testItemsOrder,
       isPresentationMode,
+      variableSetIds,
     })
 
     const evaluationStatus = questionActivities.reduce((acc, curr) => {

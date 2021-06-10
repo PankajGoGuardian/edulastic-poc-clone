@@ -215,18 +215,30 @@ const SubscriptionHeader = ({
               <CustomLink data-cy="comparePlans" onClick={openComparePlanModal}>
                 Compare Plan
               </CustomLink>
-              <CustomLink onClick={uploadPO} data-cy="uploadPO">
-                Upload PO
-              </CustomLink>
-              <CartInfo cartHasProducts={cartHasProducts}>
-                <CartButton data-cy="cartButton" onClick={handleCartClick}>
-                  <IconWrapper>
-                    <IconCart />
-                    <span>{cartCount}</span>
-                  </IconWrapper>
-                  Cart
-                </CartButton>
-              </CartInfo>
+
+              <AuthorCompleteSignupButton
+                renderButton={(handleClick) => (
+                  <CustomLink onClick={handleClick} data-cy="uploadPO">
+                    Upload PO
+                  </CustomLink>
+                )}
+                onClick={uploadPO}
+              />
+
+              <AuthorCompleteSignupButton
+                renderButton={(handleClick) => (
+                  <CartInfo cartHasProducts={cartHasProducts}>
+                    <CartButton data-cy="cartButton" onClick={handleClick}>
+                      <IconWrapper>
+                        <IconCart />
+                        <span>{cartCount}</span>
+                      </IconWrapper>
+                      Cart
+                    </CartButton>
+                  </CartInfo>
+                )}
+                onClick={handleCartClick}
+              />
             </>
           )}
           {isManageSubscriptionView &&

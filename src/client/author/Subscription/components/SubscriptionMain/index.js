@@ -129,6 +129,7 @@ const SubscriptionMain = ({
   subsLicenses = [],
   user,
   isGradeSubjectSelected,
+  hasPreferences,
 }) => {
   const [isTrialModalVisible, setIsTrialModalVisible] = useState(false)
   const [hasAllTrialProducts, setHasAllTrialProducts] = useState(false)
@@ -502,11 +503,7 @@ const SubscriptionMain = ({
                 showMultipleSubscriptions={showMultipleSubscriptions}
                 history={history}
               />
-
-              {(!(
-                ['partial_premium', 'enterprise'].includes(subType) ||
-                isFreeAdmin
-              ) ||
+              {(!isFreeAdmin ||
                 (subType === 'partial_premium' && !isPremiumUser)) && (
                 <CardsSection data-cy={`${teacherPremium.type}Card`}>
                   <FlexContainer
@@ -587,7 +584,7 @@ const SubscriptionMain = ({
                         Learn more
                       </LearnMoreLink>
                     </EduButton>
-                    {!isPremiumUser && (
+                    {!['premium', 'TRIAL_PREMIUM'].includes(subType) && (
                       <Tooltip
                         title={
                           isPremiumTrialUsed && !subscription.length

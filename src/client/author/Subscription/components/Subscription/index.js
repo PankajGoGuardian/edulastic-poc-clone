@@ -261,7 +261,7 @@ const Subscription = (props) => {
   const { defaultGrades = [], defaultSubjects = [] } = user.orgData
   const hasPreferences = defaultGrades.length > 0 && defaultSubjects.length > 0
   const isGradeSubjectSelected =
-    ['enterprise'].includes(subType) &&
+    ['partial_premium', 'enterprise'].includes(subType) &&
     roleuser.TEACHER === user.role &&
     hasPreferences
 
@@ -408,6 +408,7 @@ const Subscription = (props) => {
             subType={subType}
             requestQuote={openRequestQuoteModal}
             subEndDate={subEndDate}
+            hasPreferences={hasPreferences}
           />
         ) : (
           <SubscriptionMain

@@ -10,7 +10,7 @@ import { Dropdown, Menu, Tooltip } from 'antd'
 import { capitalize } from 'lodash'
 import moment from 'moment'
 import PropTypes from 'prop-types'
-import React, { memo, useEffect } from 'react'
+import React, { memo } from 'react'
 import { withNamespaces } from 'react-i18next'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import {
@@ -96,16 +96,6 @@ const SubscriptionHeader = ({
     ['partial_premium'].includes(subType) && isPremiumUser
   const { defaultGrades = [], defaultSubjects = [] } = orgData
   const isGradeSubjectSelected = defaultGrades.length && defaultSubjects.length
-
-  useEffect(() => {
-    if (
-      isPartialPremiumUgradedUser ||
-      subType === 'enterprise' ||
-      isFreeAdmin
-    ) {
-      setShowEnterpriseTab(true)
-    }
-  }, [])
 
   // hide upgrade if no options will be displayed in dropdown
   const showUpgradeBtn =

@@ -253,6 +253,28 @@ const Subscription = (props) => {
   }, [])
 
   const isPremiumUser = user?.features?.premium && subscription?._id
+
+  const isFreeAdmin = [roleuser.DISTRICT_ADMIN, roleuser.SCHOOL_ADMIN].includes(
+    user.role
+  )
+
+  const { defaultGrades = [], defaultSubjects = [] } = user.orgData
+  const hasPreferences = defaultGrades.length > 0 && defaultSubjects.length > 0
+  const isGradeSubjectSelected =
+    ['enterprise'].includes(subType) &&
+    roleuser.TEACHER === user.role &&
+    hasPreferences
+
+  useEffect(() => {
+    if (
+      (['partial_premium'].includes(subType) && isPremiumUser) ||
+      subType === 'enterprise' ||
+      (isFreeAdmin && hasPreferences)
+    ) {
+      setShowEnterpriseTab(true)
+    }
+  }, [hasPreferences])
+
   /**
    *  a user is paid premium user if
    *  - subType exists and
@@ -347,20 +369,10 @@ const Subscription = (props) => {
 
   const isPremium = subType && subType !== 'FREE' // here user can be premium, trial premium, or partial premium
 
-  const isFreeAdmin = [roleuser.DISTRICT_ADMIN, roleuser.SCHOOL_ADMIN].includes(
-    user.role
-  )
-
   const isCliUser = user.openIdProvider === 'CLI'
   const handleCloseFeatureNotAvailableModal = () =>
     setShowFeatureNotAvailableModal(false)
 
-  const { defaultGrades = [], defaultSubjects = [] } = user.orgData
-  const isGradeSubjectSelected =
-    ['enterprise'].includes(subType) &&
-    roleuser.TEACHER === user.role &&
-    defaultGrades.length > 0 &&
-    defaultSubjects.length > 0
   return (
     <Wrapper>
       <SubscriptionHeader

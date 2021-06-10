@@ -300,6 +300,8 @@ const PurchaseFlowModals = (props) => {
     }
   }
 
+  const isEnterprise = ['partial_premium', 'enterprise'].includes(subType)
+
   const handleClick = ({
     emails = [],
     productsToshow = products,
@@ -331,7 +333,8 @@ const PurchaseFlowModals = (props) => {
               )
             })
         ) ||
-        user?.role !== roleuser.TEACHER
+        user?.role !== roleuser.TEACHER ||
+        isEnterprise
       ) {
         const productQuantities = products.map((product) => ({
           ...product,

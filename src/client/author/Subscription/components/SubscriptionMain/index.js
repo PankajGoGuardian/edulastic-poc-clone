@@ -6,6 +6,8 @@ import {
   IconReading,
   IconSchool,
   IconScience,
+  IconRobot,
+  IconWord,
 } from '@edulastic/icons'
 import { roleuser } from '@edulastic/constants'
 import { Tooltip } from 'antd'
@@ -72,13 +74,28 @@ const productsMetaData = {
     learnMoreLinks: 'https://edulastic.com/spark-reading',
     filters: 'ELA',
   },
+  SparkWords: {
+    icon: <IconWord />,
+    subject: 'ela',
+    grades: 'Grades K-12',
+    learnMoreLinks: 'https://edulastic.com/spark-words',
+    filters: 'ELA',
+  },
+  SparkCS: {
+    icon: <IconRobot />,
+    subject: 'math & cs',
+    grades: 'Grades K-12',
+    learnMoreLinks: 'https://edulastic.com/spark-cs',
+    filters: 'CS',
+  },
 }
 
 function getProductsWithMetaData(metaData, products) {
   return products
     .map(({ ...p }) => {
       const title = p.name
-      return { ...p, title, ...metaData[p.name] }
+      const meta = metaData[p.name] || metaData[p.name.replace(' ', '')]
+      return { ...p, title, ...meta }
     })
     .filter((x) => x.price)
 }
@@ -348,6 +365,7 @@ const SubscriptionMain = ({
     }
     return 0
   }, [subsLicenses, teacherPremium])
+  const isEnterprise = ['partial_premium', 'enterprise'].includes(subType)
 
   const toggleCart = (productId, source) => {
     const quantities = cartQuantities
@@ -418,9 +436,9 @@ const SubscriptionMain = ({
                 subType === 'TRIAL_PREMIUM' ? 'Trial Premium' : 'free'
               } plan`,
             })
-          } else if (isUserPremium && hasAddonAccess) {
+          } else if (isUserPremium && (hasAddonAccess || isEnterprise)) {
             // if user is premium and adding a bank which he has access to
-            let teacherPremiumCount = 1
+            let teacherPremiumCount = isEnterprise ? 0 : 1
             if (subsLicensesKeyed[teacherPremium.id]) {
               teacherPremiumCount =
                 subsLicensesKeyed[teacherPremium.id].totalCount
@@ -485,10 +503,11 @@ const SubscriptionMain = ({
                 history={history}
               />
 
-              {!(
+              {(!(
                 ['partial_premium', 'enterprise'].includes(subType) ||
                 isFreeAdmin
-              ) && (
+              ) ||
+                (subType === 'partial_premium' && !isPremiumUser)) && (
                 <CardsSection data-cy={`${teacherPremium.type}Card`}>
                   <FlexContainer
                     justifyContent="flex-start"

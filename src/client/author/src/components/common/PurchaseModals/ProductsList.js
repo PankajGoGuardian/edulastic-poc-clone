@@ -80,10 +80,12 @@ const ProductsList = ({
     } else {
       let _quantities = {}
       if (isCart) {
-        _quantities = produce(quantities, (draft) => {
-          delete draft[id]
-          return draft
-        })
+        if (id !== teacherPremium.id) {
+          _quantities = produce(quantities, (draft) => {
+            delete draft[id]
+            return draft
+          })
+        }
       } else {
         _quantities = {
           ...quantities,
@@ -146,16 +148,17 @@ const ProductsList = ({
 
     const totalRemainingTeacherPremiumCount =
       totalTeacherPremium - totalTeacherPremiumUsedCount
-
-    const totalRemainingItemBanksLicenseCount = _licenses.reduce((a, c) => {
+    const totalRemainingItemBanksLicenseCount = allProducts.reduce((a, cur) => {
       if (
-        c.productId === premiumProductId ||
-        !Object.keys(quant).includes(c.productId)
+        cur.productId === premiumProductId ||
+        !Object.keys(quant).includes(cur.productId)
       ) {
         return a
       }
+      const c = _licenses.find((x) => x.productId)
+
       const { totalCount = 0, usedCount = 0 } = c || {}
-      const delta = totalCount - usedCount + quant[c.productId]
+      const delta = totalCount - usedCount + quant[cur.productId]
       return delta > a ? delta : a
     }, 0)
 
@@ -285,7 +288,7 @@ const ProductsList = ({
                   selectedProductIds.includes(product.id) ||
                   premiumProductId === product.id
                 }
-                disabled={premiumProductId === product.id}
+                disabled={premiumProductId === product.id && !isCart}
                 textTransform="none"
                 fontSize={isRequestingQuote && '14px'}
               >

@@ -72,7 +72,7 @@ const getStandardIdentifiersForResource = (
   )
 
   // If authored standards don't match, pick from multi standard mapping
-  if (!interestedStandards.length && alignment.length) {
+  if (!interestedStandards?.length && alignment?.length) {
     const equivalentStandards = uniqBy(
       alignment
         .filter(({ isEquivalentStandard }) => !!isEquivalentStandard)
@@ -113,11 +113,11 @@ const getStandardIdentifiersForResource = (
   }
 
   // if equivalent standards are not available
-  if (!(interestedStandards.length || alignment.length)) {
+  if (!(interestedStandards?.length || alignment?.length)) {
     interestedStandards = authorStandards
   }
 
-  if (interestedStandards.length) {
+  if (interestedStandards?.length) {
     return uniqBy(interestedStandards.map((x) => x?.name)).filter((z) => z)
   }
 

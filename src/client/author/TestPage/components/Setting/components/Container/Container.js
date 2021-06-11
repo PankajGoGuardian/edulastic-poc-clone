@@ -594,7 +594,7 @@ class Setting extends Component {
             checked={applyEBSR}
             onChange={this.handleApplyEBSR}
           >
-            <StyledSpan>APPLY EBSR GRADING</StyledSpan>
+            <StyledSpan className="spanText">APPLY EBSR GRADING</StyledSpan>
           </CheckboxLabel>
         </CheckBoxWrapper>
       )
@@ -1965,6 +1965,8 @@ const InputNumberStyled = Styled(InputNumber)`
 `
 
 const StyledSpan = Styled.span`
-  font-weight: ${(props) => props.theme.semiBold};
-  font-size: 12px;
+  &.spanText {
+    font-weight: ${(props) => props.theme.semiBold};
+    font-size: 12px;
+  }
 `

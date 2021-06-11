@@ -11,7 +11,10 @@ import {
 } from '@edulastic/api'
 import { createSlice } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
-import { fetchUserAction } from '../../student/Login/ducks'
+import {
+  fetchUserAction,
+  getUserId as getUserIdSelector,
+} from '../../student/Login/ducks'
 import { fetchMultipleSubscriptionsAction } from '../ManageSubscription/ducks'
 import { getUserSelector } from '../src/selectors/user'
 
@@ -632,7 +635,7 @@ function* requestInvoiceSaga({ payload }) {
     yield put(slice.actions.requestOrSubmitActionFailure())
     notification({
       type: 'error',
-      msg: 'Something went wrong while requesting invoice.',
+      msg: 'Something went wrong. ',
     })
     captureSentryException(err)
   }
@@ -659,6 +662,12 @@ function* submitPOSaga({ payload }) {
   }
 }
 
+function* storeQuantitiesSaga({ payload }) {
+  const userId = yield select(getUserIdSelector)
+  const key = `cartQunatities:${userId}`
+  localStorage[key] = JSON.stringify(payload)
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(slice.actions.upgradeLicenseKeyPending, upgradeUserLicense),
@@ -682,5 +691,6 @@ export function* watcherSaga() {
     ),
     yield takeEvery(slice.actions.requestInvoiceAction, requestInvoiceSaga),
     yield takeEvery(slice.actions.submitPOAction, submitPOSaga),
+    yield takeEvery(slice.actions.setCartQuantities, storeQuantitiesSaga),
   ])
 }

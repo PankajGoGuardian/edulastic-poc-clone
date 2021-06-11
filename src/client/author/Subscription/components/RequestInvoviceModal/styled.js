@@ -42,9 +42,9 @@ const LabelRequired = css`
 `
 
 export const Label = styled.p`
-  width: ${({ width }) => width && width + ' !important'};
-  margin-bottom: ${({ mb }) => mb && mb + ' !important'};
-  font-size: ${({ fs }) => fs && fs + ' !important'};
+  width: ${({ width }) => width && `${width} !important`};
+  margin-bottom: ${({ mb }) => mb && `${mb} !important`};
+  font-size: ${({ fs }) => fs && `${fs} !important`};
   .ant-modal-content .ant-modal-body p {
     text-align: left;
     font: normal normal normal 12px Open Sans;
@@ -65,8 +65,12 @@ export const Container = styled.div`
     height: 1px;
     border: 0;
     border-top: 0.5px solid ${borderGrey4};
-    margin: 2em 0;
+    margin: 5px 0;
     padding: 0;
+  }
+
+  .invoice-total-label {
+    font-weight: 600;
   }
 
   .ant-radio-group {

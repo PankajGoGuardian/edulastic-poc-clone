@@ -33,6 +33,7 @@ const BannerSlider = ({
     const delta = isScrollLeft
       ? scrollLeft + clientWidth
       : scrollLeft - scrollLeft
+    scrollContainer.scrollLeft = delta
     scrollContainer.scrollTo({
       left: delta,
       behavior: 'smooth',

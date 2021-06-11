@@ -12,7 +12,6 @@ import { camelCase } from 'lodash'
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
-import { emailRegex } from '../../../../common/utils/helpers'
 import { getUserDetails } from '../../../../student/Login/ducks'
 import {
   FlexRow,
@@ -23,19 +22,14 @@ import {
   getUserFullNameSelector,
   getUserOrgData,
 } from '../../../src/selectors/user'
-import {
-  getProducts,
-  getRequestOrSubmitActionStatus,
-  getSubscriptionSelector,
-  slice,
-} from '../../ducks'
+import { getProducts, getRequestOrSubmitActionStatus, slice } from '../../ducks'
 import {
   ModalTitle,
-  StyledInput,
   StyledInputTextArea,
   StyledSelect,
   SubText,
 } from '../RequestInvoviceModal/styled'
+import { StyledInputNumber } from '../SubmitPOModal/styled'
 import { Container, Label, StyledSpin } from './styled'
 
 const getFooterComponent = ({
@@ -68,14 +62,12 @@ const RequestQuoteModal = ({
   userOrgData = {},
   isRequestQuoteActionPending = false,
   handleRequestQuote = () => {},
-  userSubscription,
   userFullname,
   userDetails,
   products,
 }) => {
   const [enterpriseLicenseType, setLicenseType] = useState('DISTRICT')
-  const [userEmail, setUserEmail] = useState()
-  const [bookkeeperEmails, setBookkeeperEmails] = useState()
+  const [studentLicenseCount, setStudentLicenseCount] = useState()
   const [selectedSchools, setSelectedchools] = useState([])
   const [otherInfo, setOtherInfo] = useState()
   const [quantities, setQuantities] = useState({})
@@ -108,9 +100,9 @@ const RequestQuoteModal = ({
       captureSentryException(err)
     }
   }
-  const onEmailChange = (e) => setUserEmail(e.target.value)
-  const handleBookkeepersChange = (e) => setBookkeeperEmails(e.target.value)
+
   const handleSetOtherInfo = (e) => setOtherInfo(e.target.value)
+  const handleicenseCountChange = (value) => setStudentLicenseCount(value)
   const handleScoolsSelection = (x) => setSelectedchools(x)
 
   const filterOption = (input, option) =>
@@ -125,34 +117,14 @@ const RequestQuoteModal = ({
       return false
     }
 
-    if (!userEmail) {
+    if (!studentLicenseCount) {
       notification({
         type: 'warning',
-        msg: 'Email address is required for us to send in the quote.',
-      })
-      return false
-    }
-    const flag = emailRegex.test(userEmail.trim())
-    if (!flag) {
-      notification({
-        type: 'warning',
-        msg: 'Invalid email format specified.',
+        msg: 'Please specify the # of licenses.',
       })
       return false
     }
 
-    if (bookkeeperEmails) {
-      const _flag = bookkeeperEmails
-        .split(',')
-        .every((email) => emailRegex.test(email.trim()))
-      if (!_flag) {
-        notification({
-          type: 'warning',
-          msg: 'Invalid email format specified for Bookkeeper(s).',
-        })
-        return false
-      }
-    }
     return true
   }
 
@@ -163,6 +135,7 @@ const RequestQuoteModal = ({
           ? {
               name: userOrgData.districts?.[0]?.districtName,
               id: userOrgData.districts?.[0]?.districtId,
+              state: userOrgData.districts?.[0]?.districtState,
               type: 'DISTRICT',
             }
           : {
@@ -172,24 +145,15 @@ const RequestQuoteModal = ({
               type: 'SCHOOL',
               schools: selectedSchools,
             }
-      const emails = bookkeeperEmails
-        ? bookkeeperEmails
-            .split(',')
-            .map((email) => email.trim())
-            .filter((x) => x)
-        : []
+
       const reqPayload = {
         userFullname,
-        userEmail,
+        userEmail: userDetails.email,
         documentType: 'QUOTE',
         schoolOrDistrict,
-        bookkeeperEmails: emails.length ? emails : undefined,
         cartProducts: quantities,
         otherInfo,
-        licenseType:
-          userSubscription.subType === 'enterprise'
-            ? 'Enterprise'
-            : 'Teacher Premium',
+        licenseType: 'Enterprise',
       }
       handleRequestQuote({
         reqPayload,
@@ -200,17 +164,8 @@ const RequestQuoteModal = ({
 
   const productsToShow = products.filter((x) => x.type !== 'PREMIUM') || {}
 
-  // TODO: Replace id once student license is implemented
-  const productWithStudentLicense = [
-    {
-      id: '604b8207144578097fd1f12f',
-      name: 'Student License',
-      type: 'studentLicense',
-    },
-    ...productsToShow,
-  ]
-
   const handleKeyPress = (e) => {
+    // eslint-disable-next-line no-control-regex
     const specialCharRegex = new RegExp('[0-9\b\t]+') // allow numbers, backspace and tab
     const pressedKey = String.fromCharCode(!e.charCode ? e.which : e.charCode)
     if (!specialCharRegex.test(pressedKey)) {
@@ -262,8 +217,8 @@ const RequestQuoteModal = ({
     >
       <Container width="500">
         <SubText mb="30px">
-          Let us know what type of price quote or information you're looking for
-          and we'll be in touch right away!
+          Let us know what type of price quote or information you&apos;re
+          looking for and we&apos;ll be in touch right away!
         </SubText>
 
         <Label mb="-2px">Enterprise License For</Label>
@@ -301,34 +256,21 @@ const RequestQuoteModal = ({
           </>
         )}
 
-        <Label required>Email Address</Label>
-        <SubText>We'll send your quote to this address</SubText>
-        <StyledInput
-          placeholder="Type your email address"
-          value={userEmail}
-          onChange={onEmailChange}
-          data-cy="emailAddressField"
+        <Label width="220px" required>
+          # Student Licenses{' '}
+        </Label>
+        <StyledInputNumber
+          min={1}
+          step={1}
+          type="number"
+          placeholder="Add the # of licenses"
+          value={studentLicenseCount}
+          onChange={handleicenseCountChange}
+          data-cy="studentLicenseField"
         />
 
-        <Label>Person to email documentation to, such as a bookkeeper</Label>
-        <StyledInput
-          placeholder="Type email address"
-          value={bookkeeperEmails}
-          onChange={handleBookkeepersChange}
-          data-cy="bookKeeperEmailField"
-        />
-
-        <Label>What type of information can we help you with?</Label>
-        <StyledInputTextArea
-          placeholder="Type your answer"
-          rows={4}
-          value={otherInfo}
-          onChange={handleSetOtherInfo}
-          data-cy="otherCommentsField"
-        />
-
-        {productWithStudentLicense && productWithStudentLicense.length ? (
-          productWithStudentLicense.map((product) => (
+        {productsToShow && productsToShow.length ? (
+          productsToShow.map((product) => (
             <FlexRow key={product.id}>
               <StyledCheckbox
                 data-cy={`${camelCase(product.name)}Checkbox`}
@@ -357,6 +299,17 @@ const RequestQuoteModal = ({
         ) : (
           <StyledSpin />
         )}
+
+        <br />
+
+        <Label>What type of information can we help you with?</Label>
+        <StyledInputTextArea
+          placeholder="Type your answer"
+          rows={4}
+          value={otherInfo}
+          onChange={handleSetOtherInfo}
+          data-cy="otherCommentsField"
+        />
       </Container>
     </CustomModalStyled>
   )
@@ -366,7 +319,6 @@ export default connect(
   (state) => ({
     userOrgData: getUserOrgData(state),
     isRequestQuoteActionPending: getRequestOrSubmitActionStatus(state),
-    userSubscription: getSubscriptionSelector(state),
     userFullname: getUserFullNameSelector(state),
     userDetails: getUserDetails(state),
     products: getProducts(state),

@@ -138,6 +138,7 @@ function CartModal({
       destroyOnClose
       footer={footer}
       onCancel={closeModal}
+      centered
     >
       <ModalBody>
         <p>

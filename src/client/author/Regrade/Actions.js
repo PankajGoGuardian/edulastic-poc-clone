@@ -11,11 +11,11 @@ const ACTIONS = {
   DISCARD: 'DISCARD',
 }
 
-const AddedItems = ({ onUpdateSettings, settings }) => {
+const AddedItems = ({ onUpdateSettings, settings, showLabel }) => {
   return (
     <InputsWrapper data-cy="added-items">
       <Row>
-        <OptionTitle>Added Items</OptionTitle>
+        {showLabel && <OptionTitle>Added Items</OptionTitle>}
         <Question>
           You have added new items into the test, how do you want to handle
           students who have already submitted?
@@ -41,11 +41,11 @@ const AddedItems = ({ onUpdateSettings, settings }) => {
   )
 }
 
-const EditedItems = ({ onUpdateSettings, settings }) => {
+const EditedItems = ({ onUpdateSettings, settings, showLabel }) => {
   return (
     <InputsWrapper data-cy="edited-items">
       <Row>
-        <OptionTitle>Edited Items</OptionTitle>
+        {showLabel && <OptionTitle>Edited Items</OptionTitle>}
         <Question>
           The changes made require previously submitted responses to be
           regraded. How would you like to proceed?

@@ -261,7 +261,7 @@ const Subscription = (props) => {
   const { defaultGrades = [], defaultSubjects = [] } = user.orgData
   const hasPreferences = defaultGrades.length > 0 && defaultSubjects.length > 0
   const isGradeSubjectSelected =
-    ['enterprise'].includes(subType) &&
+    ['partial_premium', 'enterprise'].includes(subType) &&
     roleuser.TEACHER === user.role &&
     hasPreferences
 
@@ -301,8 +301,14 @@ const Subscription = (props) => {
   const openPurchaseLicenseModal = () => setpurchaseLicenseModal(true)
   const closePurchaseLicenseModal = () => setpurchaseLicenseModal(false)
 
-  const openRequestInvoiceModal = () => setRequestInvoiceModal(true)
-  const closeRequestInvoiceModal = () => setRequestInvoiceModal(false)
+  const openRequestInvoiceModal = () => {
+    setRequestInvoiceModal(true)
+    setCartVisible(false)
+  }
+  const closeRequestInvoiceModal = () => {
+    setRequestInvoiceModal(false)
+    setShowMultiplePurchaseModal(false)
+  }
   const openRequestQuoteModal = () => setRequestQuoteModal(true)
   const openSubmitPOModal = () => setSubmitPOModal(true)
 
@@ -408,6 +414,7 @@ const Subscription = (props) => {
             subType={subType}
             requestQuote={openRequestQuoteModal}
             subEndDate={subEndDate}
+            hasPreferences={hasPreferences}
           />
         ) : (
           <SubscriptionMain

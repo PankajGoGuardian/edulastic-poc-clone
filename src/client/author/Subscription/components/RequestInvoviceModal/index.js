@@ -13,11 +13,7 @@ import {
   getUserFullNameSelector,
   getUserOrgData,
 } from '../../../src/selectors/user'
-import {
-  slice,
-  getRequestOrSubmitActionStatus,
-  getSubscriptionSelector,
-} from '../../ducks'
+import { slice, getRequestOrSubmitActionStatus } from '../../ducks'
 import {
   ModalTitle,
   Container,
@@ -53,7 +49,6 @@ const RequestInvoiceModal = ({
   productNamesAndPriceById = {},
   isRequestInvoiceActionPending = false,
   handleRequestInvoice = () => {},
-  userSubscription,
   userFullname,
   userDetails,
 }) => {
@@ -107,10 +102,7 @@ const RequestInvoiceModal = ({
         bookkeeperEmails: emails.length ? emails : undefined,
         cartProducts,
         otherInfo,
-        licenseType:
-          userSubscription.subType === 'enterprise'
-            ? 'Enterprise'
-            : 'Teacher Premium',
+        licenseType: 'Teacher Premium',
       }
       handleRequestInvoice({
         reqPayload,
@@ -118,6 +110,10 @@ const RequestInvoiceModal = ({
       })
     }
   }
+
+  const totalPrice = Object.entries(cartProducts)
+    .map(([id, quantity]) => productNamesAndPriceById[id].price * quantity)
+    .reduce((a, c) => a + c)
 
   return (
     <CustomModalStyled
@@ -156,6 +152,16 @@ const RequestInvoiceModal = ({
           </FlexContainer>
         ))}
         <hr />
+        <FlexContainer
+          marginBottom="15px"
+          justifyContent="space-between"
+          alignItems="center"
+        >
+          <SubText data-cy="invoiceTotalLabel" className="invoice-total-label">
+            Total
+          </SubText>
+          <SubText data-cy="invoiceTotalValue">${totalPrice}</SubText>
+        </FlexContainer>
         <Label required>Type of Documentation you need</Label>
         <Radio.Group onChange={onDocumentTypeChange} value={documentType}>
           <Radio data-cy="quoteRadio" value="QUOTE">
@@ -203,7 +209,6 @@ export default connect(
   (state) => ({
     userOrgData: getUserOrgData(state),
     isRequestInvoiceActionPending: getRequestOrSubmitActionStatus(state),
-    userSubscription: getSubscriptionSelector(state),
     userFullname: getUserFullNameSelector(state),
     userDetails: getUserDetails(state),
   }),

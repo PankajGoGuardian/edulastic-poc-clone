@@ -12,6 +12,7 @@ import {
   IconStemCross,
 } from '@edulastic/icons'
 import React, { useState } from 'react'
+import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import CalendlyScheduleModal from './CalendlyScheduleModal'
 import {
   AddonCard,
@@ -70,13 +71,19 @@ const addonsData = [
   },
   {
     icon: <IconServers />,
-    title: 'Lorem Ipsum',
+    title: 'Data Warehousing',
     description:
       'Import state test scores, data from other assessments (MAP, iReady, SAT/ACT) and more for a holistic view of student performance and growth.',
   },
 ]
 
-const EnterpriseTab = ({ isPremium, subType, requestQuote, subEndDate }) => {
+const EnterpriseTab = ({
+  isPremium,
+  subType,
+  requestQuote,
+  subEndDate,
+  hasPreferences,
+}) => {
   const [showSelectStates, setShowSelectStates] = useState(false)
 
   const handleSelectStateModal = () => setShowSelectStates(true)
@@ -117,29 +124,39 @@ const EnterpriseTab = ({ isPremium, subType, requestQuote, subEndDate }) => {
             </SectionDescription>
           </div>
         </FlexContainer>
-        {subType !== 'enterprise' && (
+        {!(subType === 'enterprise' && hasPreferences) && (
           <FlexContainer flexDirection="column" justifyContent="center">
-            <EduButton
-              data-cy="requestQuote"
-              style={{ margin: '10px 0px' }}
+            <AuthorCompleteSignupButton
+              renderButton={(handleClick) => (
+                <EduButton
+                  data-cy="requestQuote"
+                  style={{ margin: '10px 0px' }}
+                  onClick={handleClick}
+                  height="32px"
+                  width="180px"
+                  isBlue
+                >
+                  request a quote
+                </EduButton>
+              )}
               onClick={requestQuote}
-              height="32px"
-              width="180px"
-              isBlue
-            >
-              request a quote
-            </EduButton>
-            <EduButton
+            />
+            <AuthorCompleteSignupButton
+              renderButton={(handleClick) => (
+                <EduButton
+                  onClick={handleClick}
+                  height="32px"
+                  width="180px"
+                  isGhost
+                  isBlue
+                  data-cy="scheduleDemo"
+                  style={{ margin: '0px' }}
+                >
+                  schedule a demo
+                </EduButton>
+              )}
               onClick={handleSelectStateModal}
-              height="32px"
-              width="180px"
-              isGhost
-              isBlue
-              data-cy="scheduleDemo"
-              style={{ margin: '0px' }}
-            >
-              schedule a demo
-            </EduButton>
+            />
           </FlexContainer>
         )}
       </EnterpriseSection>

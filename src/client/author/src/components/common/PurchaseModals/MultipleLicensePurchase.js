@@ -25,6 +25,7 @@ const MultipleLicensePurchase = ({
   districtId,
   isBookKeepersInviteSuccess,
   setBookKeepersInviteSuccess,
+  handleOpenRequestInvoiceModal,
 }) => {
   const [emailValues, setEmailValues] = useState('')
 
@@ -50,6 +51,7 @@ const MultipleLicensePurchase = ({
 
       handleClick({
         emails,
+        shouldPayWithCC: true,
       })
     }
     return () => {
@@ -87,13 +89,22 @@ const MultipleLicensePurchase = ({
 
   const footer = [
     <EduButton
+      isGhost
+      onClick={handleOpenRequestInvoiceModal}
+      data-cy="requestInvoice"
+      width="220px"
+      height="45px"
+    >
+      REQUEST INVOICE
+    </EduButton>,
+    <EduButton
       onClick={handleProceed}
       data-cy="proceedPayment"
       width="220px"
       height="45px"
       disabled={!quantities[teacherPremium.id]}
     >
-      PROCEED WITH PAYMENT
+      Pay with Credit Card
     </EduButton>,
   ]
 

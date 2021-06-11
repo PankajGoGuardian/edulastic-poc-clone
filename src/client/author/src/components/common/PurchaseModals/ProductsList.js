@@ -80,10 +80,12 @@ const ProductsList = ({
     } else {
       let _quantities = {}
       if (isCart) {
-        _quantities = produce(quantities, (draft) => {
-          delete draft[id]
-          return draft
-        })
+        if (id !== teacherPremium.id) {
+          _quantities = produce(quantities, (draft) => {
+            delete draft[id]
+            return draft
+          })
+        }
       } else {
         _quantities = {
           ...quantities,
@@ -114,7 +116,11 @@ const ProductsList = ({
       userRole === roleuser.TEACHER &&
       totalTeacherPremiumUsedCount == 0
     ) {
-      totalTeacherPremiumUsedCount = totalTeacherPremiumUsedCount + 1
+      totalTeacherPremium += 1
+      totalTeacherPremiumUsedCount += 1
+    }
+    if (quant[teacherPremium.id]) {
+      totalTeacherPremium += quant[teacherPremium.id]
     }
 
     if (subType === 'premium' && userRole === roleuser.TEACHER) {
@@ -144,23 +150,19 @@ const ProductsList = ({
       }
     }
 
-    const totalRemainingTeacherPremiumCount =
-      totalTeacherPremium - totalTeacherPremiumUsedCount
-
-    const totalRemainingItemBanksLicenseCount = _licenses.reduce((a, c) => {
-      if (
-        c.productId === premiumProductId ||
-        !Object.keys(quant).includes(c.productId)
-      ) {
-        return a
-      }
-      const { totalCount = 0, usedCount = 0 } = c || {}
-      const delta = totalCount - usedCount + quant[c.productId]
-      return delta > a ? delta : a
-    }, 0)
+    const totalRemainingItemBanksLicenseCount = Math.max(
+      allProducts
+        .filter((x) => x.id !== premiumProductId)
+        .map((p) => {
+          const c = _licenses.find((x) => x.productId === p.id)
+          const { totalCount = 0 } = c || {}
+          return (quant[p.productId] || 0) + totalCount
+        })
+    )
 
     const availableTeacherPremiumCount =
-      totalRemainingTeacherPremiumCount - totalRemainingItemBanksLicenseCount
+      totalTeacherPremium - totalRemainingItemBanksLicenseCount
+
     return availableTeacherPremiumCount
   }
 
@@ -285,7 +287,7 @@ const ProductsList = ({
                   selectedProductIds.includes(product.id) ||
                   premiumProductId === product.id
                 }
-                disabled={premiumProductId === product.id}
+                disabled={premiumProductId === product.id && !isCart}
                 textTransform="none"
                 fontSize={isRequestingQuote && '14px'}
               >

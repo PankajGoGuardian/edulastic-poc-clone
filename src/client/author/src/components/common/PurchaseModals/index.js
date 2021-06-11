@@ -109,6 +109,7 @@ const PurchaseFlowModals = (props) => {
     openRequestInvoiceModal,
     isExternalSubmitPOModalVisible = false,
     toggleSubmitPOModal,
+    setCartQuantities,
   } = props
 
   const [payWithPoModal, setPayWithPoModal] = useState(false)
@@ -116,7 +117,10 @@ const PurchaseFlowModals = (props) => {
   const [productsCart, setProductsCart] = useState([])
   const [emailIds, setEmailIds] = useState([])
   const [totalAmount, setTotalAmount] = useState(100)
-  const [quantities, setQuantities] = useState({})
+  const userId = user?._id
+  const [quantities, setQuantities] = useState(
+    JSON.parse(localStorage[`cartQunatities:${userId}`] || '{}')
+  )
   const [isPaymentServiceModalVisible, setPaymentServiceModal] = useState(false)
   const [isSubmitPOModalVisible, setSubmitPOModal] = useState(false)
 
@@ -241,6 +245,10 @@ const PurchaseFlowModals = (props) => {
   }, [subEndDate, products, subsLicenses, shouldProrateMultiplePurchase])
 
   useEffect(() => {
+    setCartQuantities(quantities)
+  }, [quantities])
+
+  useEffect(() => {
     if (
       defaultSelectedProductIdsRef.current === undefined ||
       JSON.stringify(defaultSelectedProductIdsRef.current) !==
@@ -300,6 +308,8 @@ const PurchaseFlowModals = (props) => {
     }
   }
 
+  const isEnterprise = ['partial_premium', 'enterprise'].includes(subType)
+
   const handleClick = ({
     emails = [],
     productsToshow = products,
@@ -331,7 +341,8 @@ const PurchaseFlowModals = (props) => {
               )
             })
         ) ||
-        user?.role !== roleuser.TEACHER
+        user?.role !== roleuser.TEACHER ||
+        isEnterprise
       ) {
         const productQuantities = products.map((product) => ({
           ...product,
@@ -419,6 +430,7 @@ const PurchaseFlowModals = (props) => {
           districtId={userOrgId}
           isBookKeepersInviteSuccess={isBookKeepersInviteSuccess}
           setBookKeepersInviteSuccess={setBookKeepersInviteSuccess}
+          handleOpenRequestInvoiceModal={openRequestInvoiceModal}
         />
       )}
       {cartVisible && !fromSideMenu && (
@@ -557,6 +569,7 @@ export default compose(
       fetchPlaylists: fetchPlaylistsAction,
       useThisPlayList: useThisPlayListAction,
       setCartVisible: slice.actions.setCartVisible,
+      setCartQuantities: slice.actions.setCartQuantities,
     }
   )
 )(PurchaseFlowModals)

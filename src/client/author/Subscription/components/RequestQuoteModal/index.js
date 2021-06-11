@@ -164,17 +164,8 @@ const RequestQuoteModal = ({
 
   const productsToShow = products.filter((x) => x.type !== 'PREMIUM') || {}
 
-  // TODO: Replace id once student license is implemented
-  const productWithStudentLicense = [
-    {
-      id: '604b8207144578097fd1f12f',
-      name: 'Student License',
-      type: 'studentLicense',
-    },
-    ...productsToShow,
-  ]
-
   const handleKeyPress = (e) => {
+    // eslint-disable-next-line no-control-regex
     const specialCharRegex = new RegExp('[0-9\b\t]+') // allow numbers, backspace and tab
     const pressedKey = String.fromCharCode(!e.charCode ? e.which : e.charCode)
     if (!specialCharRegex.test(pressedKey)) {
@@ -226,8 +217,8 @@ const RequestQuoteModal = ({
     >
       <Container width="500">
         <SubText mb="30px">
-          Let us know what type of price quote or information you're looking for
-          and we'll be in touch right away!
+          Let us know what type of price quote or information you&apos;re
+          looking for and we&apos;ll be in touch right away!
         </SubText>
 
         <Label mb="-2px">Enterprise License For</Label>
@@ -278,8 +269,8 @@ const RequestQuoteModal = ({
           data-cy="studentLicenseField"
         />
 
-        {productWithStudentLicense && productWithStudentLicense.length ? (
-          productWithStudentLicense.map((product) => (
+        {productsToShow && productsToShow.length ? (
+          productsToShow.map((product) => (
             <FlexRow key={product.id}>
               <StyledCheckbox
                 data-cy={`${camelCase(product.name)}Checkbox`}

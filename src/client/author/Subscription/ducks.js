@@ -632,7 +632,7 @@ function* requestInvoiceSaga({ payload }) {
     yield put(slice.actions.requestOrSubmitActionFailure())
     notification({
       type: 'error',
-      msg: 'Something went wrong while requesting invoice.',
+      msg: 'Something went wrong. ',
     })
     captureSentryException(err)
   }

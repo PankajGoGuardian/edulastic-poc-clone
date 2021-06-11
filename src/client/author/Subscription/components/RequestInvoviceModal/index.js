@@ -13,11 +13,7 @@ import {
   getUserFullNameSelector,
   getUserOrgData,
 } from '../../../src/selectors/user'
-import {
-  slice,
-  getRequestOrSubmitActionStatus,
-  getSubscriptionSelector,
-} from '../../ducks'
+import { slice, getRequestOrSubmitActionStatus } from '../../ducks'
 import {
   ModalTitle,
   Container,
@@ -53,7 +49,6 @@ const RequestInvoiceModal = ({
   productNamesAndPriceById = {},
   isRequestInvoiceActionPending = false,
   handleRequestInvoice = () => {},
-  userSubscription,
   userFullname,
   userDetails,
 }) => {
@@ -107,10 +102,7 @@ const RequestInvoiceModal = ({
         bookkeeperEmails: emails.length ? emails : undefined,
         cartProducts,
         otherInfo,
-        licenseType:
-          userSubscription.subType === 'enterprise'
-            ? 'Enterprise'
-            : 'Teacher Premium',
+        licenseType: 'Teacher Premium',
       }
       handleRequestInvoice({
         reqPayload,
@@ -217,7 +209,6 @@ export default connect(
   (state) => ({
     userOrgData: getUserOrgData(state),
     isRequestInvoiceActionPending: getRequestOrSubmitActionStatus(state),
-    userSubscription: getSubscriptionSelector(state),
     userFullname: getUserFullNameSelector(state),
     userDetails: getUserDetails(state),
   }),

@@ -121,10 +121,12 @@ const SubmitPOModal = ({
       return false
     }
     const school = userOrgData?.schools?.[0]
-    const { districtName, districtId } = userOrgData?.districts?.[0] || {}
+    const { districtName, districtId, districtState } =
+      userOrgData?.districts?.[0] || {}
     const district = {
       _id: districtId,
       name: districtName,
+      state: districtState,
     }
     const reqPayload = {
       userFullname,

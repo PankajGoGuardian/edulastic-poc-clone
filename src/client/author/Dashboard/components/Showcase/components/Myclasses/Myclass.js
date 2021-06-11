@@ -371,8 +371,8 @@ const MyClasses = ({
     filteredBundles = filteredBundles.filter(
       (feature) =>
         !(
-          feature?.description?.toLowerCase()?.includes('Engage NY') &&
-          feature?.description?.toLowerCase()?.includes('Math')
+          feature?.description?.toLowerCase()?.includes('engage ny') &&
+          feature?.description?.toLowerCase()?.includes('math')
         ) &&
         !feature?.description?.toLowerCase()?.includes('sparkmath') &&
         !feature?.description?.toLowerCase()?.includes('spark math') &&
@@ -386,8 +386,8 @@ const MyClasses = ({
         !banner?.description?.toLowerCase()?.includes('sparkmath') &&
         !banner?.description?.toLowerCase()?.includes('spark math') &&
         !(
-          banner?.description?.toLowerCase()?.includes('Engage NY') &&
-          banner?.description?.toLowerCase()?.includes('Math')
+          banner?.description?.toLowerCase()?.includes('engage ny') &&
+          banner?.description?.toLowerCase()?.includes('math')
         ) &&
         !(
           banner?.config?.excludedPublishers?.includes('SingaporeMath') ||

@@ -628,9 +628,11 @@ function* requestInvoiceSaga({ payload }) {
     const result = yield call(subscriptionApi.requestInvoice, reqPayload)
     if (result?.result?.success) {
       closeCallback()
-      const msg = `We'll be back to you right away with your ${(
-        reqPayload.documentType || ''
-      ).toLowerCase()}!`
+      const msg = `We'll be back to you right away with your ${
+        reqPayload.documentType === 'OTHER'
+          ? reqPayload.typeDescription
+          : (reqPayload.documentType || '').toLowerCase()
+      }!`
       yield put(slice.actions.requestOrSubmitActionSuccess(msg))
     } else {
       yield put(slice.actions.requestOrSubmitActionFailure())

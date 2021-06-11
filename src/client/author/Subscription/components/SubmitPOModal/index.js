@@ -190,7 +190,10 @@ const SubmitPOModal = ({
           }
           hideLoader = message.loading('Uploading...', 0)
           const fileUrl = await uploadToS3(file, aws.s3Folders.PO_SUBMISSIONS)
-          setAttachments((x) => ({ ...x, [file.uid]: fileUrl }))
+          setAttachments((x) => ({
+            ...x,
+            [file.uid]: { name: file.name, uri: fileUrl },
+          }))
           setFilesList((x) => [...x, file])
           notification({
             type: 'success',

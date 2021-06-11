@@ -251,7 +251,15 @@ const MiscellaneousGroupContainer = ({
             />
             <StyledRow gutter={16} mb="15p">
               <Col span={10}>
-                <span style={{ fontSize: 12, fontWeight: 600 }}>Keypad</span>{' '}
+                <span
+                  style={{
+                    fontSize: 12,
+                    fontWeight: 600,
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  Keypad
+                </span>{' '}
               </Col>
               <Col span={12}>
                 <KeypadDropdown

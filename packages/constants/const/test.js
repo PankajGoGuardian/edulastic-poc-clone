@@ -146,7 +146,7 @@ module.exports = {
     // SHOW_ZOOM: "Show Zoom",
     showMagnifier: 'MAGNIFIER',
     enableScratchpad: 'SCRATCHPAD',
-    enableSkipAlert: 'SKIP ALERT',
+    enableSkipAlert: 'SHOW SKIP ALERT TO STUDENT',
   },
   collectionDefaultFilter: [
     { text: 'All Collections', value: '' },

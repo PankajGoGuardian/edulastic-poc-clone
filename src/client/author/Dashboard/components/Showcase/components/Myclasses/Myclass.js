@@ -370,12 +370,12 @@ const MyClasses = ({
   if (isSingaporeMath) {
     filteredBundles = filteredBundles.filter(
       (feature) =>
-        !feature?.config?.subscriptionData?.itemBankId &&
         !(
           feature?.description?.toLowerCase()?.includes('Engage NY') &&
           feature?.description?.toLowerCase()?.includes('Math')
         ) &&
         !feature?.description?.toLowerCase()?.includes('sparkmath') &&
+        !feature?.description?.toLowerCase()?.includes('spark math') &&
         !(
           feature?.config?.excludedPublishers?.includes('SingaporeMath') ||
           feature?.config?.excludedPublishers?.includes('Singapore Math')
@@ -384,6 +384,7 @@ const MyClasses = ({
     bannerSlides = bannerSlides.filter(
       (banner) =>
         !banner?.description?.toLowerCase()?.includes('sparkmath') &&
+        !banner?.description?.toLowerCase()?.includes('spark math') &&
         !(
           banner?.description?.toLowerCase()?.includes('Engage NY') &&
           banner?.description?.toLowerCase()?.includes('Math')

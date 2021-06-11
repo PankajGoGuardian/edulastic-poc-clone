@@ -11,7 +11,7 @@ import AppConfig from '../../../src/app-config'
 export const getRand = () => {
   const crypto = window.crypto || window.msCrypto
   var array = new Uint32Array(1)
-  return crypto.getRandomValues(array)
+  return crypto.getRandomValues(array)[0]
 }
 
 export function useLayoutEffectDebounced(func, values, time) {

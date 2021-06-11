@@ -47,7 +47,6 @@ const BannerSlider = ({
       handleSparkClick(config.subscriptionData.productId)
       return
     }
-
     bannerActionHandler(config.filters[0], description)
   }
 

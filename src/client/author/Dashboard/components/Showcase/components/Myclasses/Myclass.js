@@ -396,15 +396,38 @@ const MyClasses = ({
     )
   }
 
-  const handleInAppRedirect = (data) => {
-    const commonGrades = user?.orgData?.defaultGrades.filter((value) =>
-      data?.filters?.grades?.includes(value)
-    )
-    if (data.filters) {
-      data.filters.grades = commonGrades
+  const handleInAppRedirect = (filters) => {
+    if (user?.orgData?.defaultGrades?.length > 0) {
+      if (filters?.grades?.length > 0) {
+        const commonGrades = user?.orgData?.defaultGrades.filter((value) =>
+          filters?.grades?.includes(value)
+        )
+        if (filters) {
+          filters.grades = commonGrades
+        }
+      } else {
+        filters.grades = user?.orgData?.defaultGrades
+      }
+    } else if (filters) {
+      filters.grades = []
     }
-    const filter = qs.stringify(data.filters)
-    history.push(`/author/${data.contentType}?${filter}`)
+
+    if (user?.orgData?.defaultSubjects?.length > 0) {
+      if (filters?.subject?.length > 0) {
+        const commonSub = user?.orgData?.defaultSubjects.filter((value) =>
+          filters?.subject?.includes(value)
+        )
+        if (filters) {
+          filters.subject = commonSub
+        }
+      } else {
+        filters.subject = user?.orgData?.defaultSubjects
+      }
+    } else if (filters) {
+      filters.subject = []
+    }
+    const filter = qs.stringify(filters)
+    history.push(`/author/${filters?.data?.contentType}?${filter}`)
   }
 
   const handleExternalRedirect = (data) => {
@@ -449,7 +472,7 @@ const MyClasses = ({
         setShowBannerModal(data)
         break
       case bannerActions.BANNER_APP_REDIRECT:
-        handleInAppRedirect(data)
+        handleInAppRedirect(filter)
         break
       case bannerActions.BANNER_EXTERNAL_REDIRECT:
         handleExternalRedirect(data)

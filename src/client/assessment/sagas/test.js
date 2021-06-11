@@ -851,7 +851,7 @@ function* submitTest({ payload }) {
     if (isCliUser) {
       window.parent.postMessage(
         JSON.stringify({ type: 'SUBMIT_ASSIGNMENT' }),
-        '*'
+        process.env.PUBLIC_URL
       )
     }
 

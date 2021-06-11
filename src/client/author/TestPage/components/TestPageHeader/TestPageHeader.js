@@ -564,7 +564,7 @@ const TestPageHeader = ({
               hasCollectionAccess && (
                 <EduButton
                   isBlue
-                  title={isPlaylist ? 'Approve Playlist' : 'Approve Playlist'}
+                  title="Approve Playlist"
                   data-cy="approve"
                   onClick={onClickCuratorApprove}
                   disabled={disableButtons}
@@ -777,7 +777,7 @@ const TestPageHeader = ({
               (testStatus === 'inreview' || testStatus === 'rejected') && (
                 <EduButton
                   isBlue
-                  title={isPlaylist ? 'Approve Playlist' : 'Approve Playlist'}
+                  title="Approve Playlist"
                   data-cy="approve"
                   onClick={onClickCuratorApprove}
                   disabled={disableButtons}

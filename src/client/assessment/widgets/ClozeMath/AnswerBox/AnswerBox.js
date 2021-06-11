@@ -60,7 +60,7 @@ const AnswerBox = ({
     let { unit = '' } = ans.options || {}
     unit = unit.trim()
 
-    Object.keys(specialCharMap).map((sChar) => {
+    Object.keys(specialCharMap).forEach((sChar) => {
       const regExp = new RegExp(sChar, 'g')
       unit = unit.replace(regExp, specialCharMap[sChar])
     })

@@ -250,12 +250,7 @@ const StandardsGradebookTableComponent = ({
       )
     }
 
-    const printData = getDisplayValue(
-      standardToRender,
-      _analyseBy,
-      data,
-      record
-    )
+    const printData = getDisplayValue(standardToRender, _analyseBy)
 
     return (
       <CustomTableTooltip

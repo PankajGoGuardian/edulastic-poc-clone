@@ -62,7 +62,7 @@ const ApiForm = () => {
   const handleOnSave = (data, sectionId) => {
     const isSlowApi = option.slowApi || false
     if (id === API_OPTIONS.manageClass) {
-      return handleClassSearch(data, sectionId)
+      return handleClassSearch(data)
     }
     if (option.id === ARCHIVE_UNARCHIVE_CLASSES) {
       groupApi

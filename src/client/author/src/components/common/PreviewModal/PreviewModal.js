@@ -93,25 +93,25 @@ class PreviewModal extends React.Component {
     }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const { item } = this.props
     if (item.passageId) {
-      this.loadPassage(item.passageId)
+      await this.loadPassage(item.passageId)
     }
   }
 
-  loadPassage(passageId) {
+  async loadPassage(passageId) {
     /**
      * FIXME: move this to redux-saga
      */
     const { addPassage, setPassageTestItems } = this.props
     this.setState({ passageLoading: true })
     try {
-      passageApi.getById(passageId).then((response) => {
+      await passageApi.getById(passageId).then((response) => {
         addPassage(response)
         this.setState({ passageLoading: false })
       })
-      testItemsApi.getPassageItems(passageId).then((passageItems) => {
+      await testItemsApi.getPassageItems(passageId).then((passageItems) => {
         setPassageTestItems(passageItems)
       })
     } catch (e) {
@@ -119,7 +119,7 @@ class PreviewModal extends React.Component {
     }
   }
 
-  componentDidUpdate(prevProps) {
+  async componentDidUpdate(prevProps) {
     const {
       item: newItem,
       archivedItems: oldArchivedItems,
@@ -129,7 +129,7 @@ class PreviewModal extends React.Component {
     } = this.props
     const { item: oldItem, archivedItems: newArchivedItems } = prevProps
     if (oldItem?.passageId !== newItem?.passageId && newItem?.passageId) {
-      this.loadPassage(newItem.passageId)
+      await this.loadPassage(newItem.passageId)
     }
     /** Watching changes in "testsAddItems.archivedItems"
      * and updating testItemPreview for passages

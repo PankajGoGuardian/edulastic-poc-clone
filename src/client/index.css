@@ -1,6 +1,6 @@
 html {
   box-sizing: border-box;
-  font-family: 'Open Sans';
+  font-family: 'Open Sans', sans-serif;
 }
 
 *,
@@ -27,7 +27,7 @@ a[disabled] {
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Open Sans';
+  font-family: 'Open Sans', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: #ffffff;
@@ -767,7 +767,6 @@ input[type='checkbox'] {
 
 .responses_box .group {
   border-right: solid 1px black;
-  text-align: center;
   padding: 0 20px;
   max-width: 280px;
   text-align: left;
@@ -1656,7 +1655,7 @@ span.token.active-word {
 .liveinspect-keydata b.frac {
   font-weight: normal;
   font-size: 300%;
-  font-family: arial narrow;
+  font-family: 'Arial Narrow', Arial, sans-serif;
   position: relative;
   top: +8px;
 }

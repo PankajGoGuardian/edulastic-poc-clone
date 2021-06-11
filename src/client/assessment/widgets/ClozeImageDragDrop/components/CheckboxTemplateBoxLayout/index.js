@@ -76,7 +76,7 @@ const CheckboxTemplateBox = ({
     borderRadius: 5,
   }
 
-  if (responseBtnStyle && responseBtnStyle) {
+  if (responseBtnStyle) {
     btnStyle.width = responseBtnStyle.widthpx
   } else {
     btnStyle.width = btnStyle.widthpx

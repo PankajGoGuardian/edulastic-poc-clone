@@ -74,7 +74,7 @@ class TemplateMarkup extends Component {
 
       const optionsKeys = Object.keys(_options)
       if (optionsKeys.length) {
-        optionsKeys.map((id) => {
+        optionsKeys.forEach((id) => {
           const isExist = find(responseIds, (response) => response.id === id)
           if (!isExist) {
             delete _options[id]

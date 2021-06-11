@@ -77,7 +77,7 @@ export const reducer = createReducer(initialState, {
       school.name = row._source.name
       if (row._source.hasOwnProperty('location')) {
         const location = row._source?.location || {}
-        Object.keys(location).map((key) => {
+        Object.keys(location).forEach((key) => {
           school[key] = location[key]
         })
       }

@@ -86,11 +86,11 @@ export default class Score extends Component {
       dataSource.push({
         key: i,
         Question: i,
-        Max: (data.maxScore && data.maxScore) || '-',
+        Max: data.maxScore || '-',
         Correct: data.correctNum,
-        Partially: (data.partialNum && data.partialNum) || '-',
+        Partially: data.partialNum || '-',
         Wrong: data.wrongNum,
-        Average: (data.avgScore && data.avgScore) || '-',
+        Average: data.avgScore || '-',
         Average_per: parseInt(avg_per),
       })
     })

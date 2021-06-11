@@ -1,16 +1,7 @@
+/* eslint-disable max-classes-per-file */
 import { themeColor, white } from '@edulastic/colors'
 import { CheckboxLabel, notification } from '@edulastic/common'
-import {
-  Col,
-  Form,
-  Icon,
-  Input,
-  InputNumber,
-  message,
-  Row,
-  Slider,
-  Table,
-} from 'antd'
+import { Col, Form, Icon, Input, InputNumber, Row, Slider, Table } from 'antd'
 import produce from 'immer'
 import { get } from 'lodash'
 import React from 'react'
@@ -202,7 +193,7 @@ class EditableCell extends React.Component {
                           },
                           { validator: this.checkPrice },
                         ],
-                        initialValue: parseInt(record[dataIndex]),
+                        initialValue: parseInt(record[dataIndex], 10),
                       })(
                         <Input
                           ref={(node) => (this.toValueInput = node)}
@@ -329,7 +320,7 @@ export class PerformanceBandTable extends React.Component {
 
   changeAbove = (e, key) => {
     const dataSource = [...this.state.dataSource]
-    dataSource.map((row) => {
+    dataSource.forEach((row) => {
       if (row.key === key) row.aboveOrAtStandard = e.target.checked
     })
     this.setState({ isChangeState: true })

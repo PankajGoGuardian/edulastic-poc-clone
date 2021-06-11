@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { InputNumber } from 'antd'
-import { cloneDeep, isEmpty } from 'lodash'
+import { cloneDeep } from 'lodash'
 import { ThemeProvider } from 'styled-components'
 
 import { math } from '@edulastic/constants'
@@ -58,8 +58,9 @@ const QuestionMath = ({ onUpdate, question }) => {
       const isNumeric = (v) => /^\d+$/.test(v)
 
       if (!isNumeric(value)) {
-        delete nextValidation?.validResponse?.value?.[0]?.options
-          ?.significantDecimalPlaces
+        const deleteFrom =
+          nextValidation?.validResponse?.value?.[0]?.options || {}
+        delete deleteFrom.significantDecimalPlaces
       }
     }
 

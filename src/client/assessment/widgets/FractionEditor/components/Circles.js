@@ -60,7 +60,7 @@ const Circles = ({
 
           if (previewTab === 'clear') {
             hoverProps.onMouseEnter = () => onHover(sector.index)
-            hoverProps.onMouseLeave = () => handleSectorBlur(sector.index)
+            hoverProps.onMouseLeave = () => handleSectorBlur()
             if (hovered === sector.index) {
               fillColor = themeColorLight1
             }
@@ -71,7 +71,7 @@ const Circles = ({
               onClick={() => {
                 sectorClick(sector.index)
                 if (_selected) {
-                  handleSectorBlur(sector.index)
+                  handleSectorBlur()
                 }
               }}
               key={`cell-${sector.index}`}

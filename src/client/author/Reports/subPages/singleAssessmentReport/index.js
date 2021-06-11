@@ -111,8 +111,7 @@ const SingleAssessmentReportContainer = (props) => {
     if (navigation.locToData[loc]) {
       const arr = Object.keys(filt)
       const obj = {}
-      // eslint-disable-next-line array-callback-return
-      arr.map((item) => {
+      arr.forEach((item) => {
         const val = filt[item] === '' ? 'All' : filt[item]
         obj[item] = val
       })
@@ -132,8 +131,7 @@ const SingleAssessmentReportContainer = (props) => {
       const arr = Object.keys(settings.requestFilters)
 
       const obj = {}
-      // eslint-disable-next-line array-callback-return
-      arr.map((item) => {
+      arr.forEach((item) => {
         const val =
           settings.requestFilters[item] === ''
             ? 'All'

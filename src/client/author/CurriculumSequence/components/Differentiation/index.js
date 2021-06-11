@@ -246,7 +246,7 @@ const Differentiation = ({
             data-cy="select-assignment"
             style={{ minWidth: 200, maxWidth: 250 }}
             placeholder="SELECT ASSIGNMENT"
-            onChange={(value, option) => handleAssignmentChange(value, option)}
+            onChange={(value) => handleAssignmentChange(value)}
             value={selectedTest}
           >
             {testData.map(({ _id, title }) => (

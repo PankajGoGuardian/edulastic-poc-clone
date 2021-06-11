@@ -15,7 +15,7 @@ import ColWithZoom from '../../../common/components/ColWithZoom'
 class SubmitConfirmation extends Component {
   constructor(props) {
     super(props)
-    this.cancelButtonRef
+    this.cancelButtonRef = null
   }
 
   componentDidUpdate(prevProps) {

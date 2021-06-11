@@ -65,14 +65,11 @@ class EditSchoolAdminModal extends Component {
       )
     }
 
-    const schoolsOptions = []
-    schooleFinalList.map((row, index) => {
-      schoolsOptions.push(
-        <Option key={index} value={row?._id}>
-          {row?.name}
-        </Option>
-      )
-    })
+    const schoolsOptions = schooleFinalList.map((row, index) => (
+      <Option key={index} value={row?._id}>
+        {row?.name}
+      </Option>
+    ))
 
     const { getFieldDecorator } = this.props.form
     return (

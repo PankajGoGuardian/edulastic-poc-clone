@@ -88,7 +88,8 @@ class ComposeQuestion extends Component {
             if (idx !== -1) {
               altResponse.value[idx] = oldIndex
             }
-            return altResponse
+            // TODO: remove if not required
+            // return altResponse
           }
         }
 

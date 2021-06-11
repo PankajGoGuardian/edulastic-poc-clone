@@ -47,7 +47,7 @@ const Standards = ({
       )
     })
     if (!domains.length) return null
-    domains.map((el) =>
+    domains.forEach((el) =>
       el.standards && el.standards.length
         ? standards.push(...el.standards)
         : null

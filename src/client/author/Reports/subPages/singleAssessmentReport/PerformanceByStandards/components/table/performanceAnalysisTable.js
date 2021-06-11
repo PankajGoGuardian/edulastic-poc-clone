@@ -292,7 +292,7 @@ const PerformanceAnalysisTable = ({
      */
     const _columns = [
       { ...compareByColumns[compareBy] },
-      makeOverallColumn(standardColumnsData, analyzeByConfig),
+      makeOverallColumn(),
       ...makeStandardColumns(),
     ]
     if (compareBy === 'students') {

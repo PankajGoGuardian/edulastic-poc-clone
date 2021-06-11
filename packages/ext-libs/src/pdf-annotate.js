@@ -3486,13 +3486,9 @@ const { themeColor } = require('@edulastic/colors')
             } catch (err) {
               _d = true
               _e = err
-            } finally {
-              try {
-                if (!_n && _i['return']) _i['return']()
-              } finally {
-                if (_d) throw _e
-              }
             }
+            if (!_n && _i && _i['return']) _i['return']()
+            if (_d) throw _e
             return _arr
           }
           return function (arr, i) {
@@ -4507,7 +4503,6 @@ const { themeColor } = require('@edulastic/colors')
           var rects = void 0
           if (
             _type !== 'area' &&
-            _type !== 'area' &&
             (rects = getSelectionRects())
           ) {
             var svg = (0, _utils.findSVGAtPoint)(rects[0].left, rects[0].top)
@@ -4913,13 +4908,9 @@ const { themeColor } = require('@edulastic/colors')
             } catch (err) {
               _d = true
               _e = err
-            } finally {
-              try {
-                if (!_n && _i['return']) _i['return']()
-              } finally {
-                if (_d) throw _e
-              }
             }
+            if (!_n && _i && _i['return']) _i['return']()
+            if (_d) throw _e
             return _arr
           }
           return function (arr, i) {
@@ -5676,13 +5667,9 @@ const { themeColor } = require('@edulastic/colors')
             } catch (err) {
               _d = true
               _e = err
-            } finally {
-              try {
-                if (!_n && _i['return']) _i['return']()
-              } finally {
-                if (_d) throw _e
-              }
             }
+            if (!_n && _i && _i['return']) _i['return']()
+            if (_d) throw _e
             return _arr
           }
           return function (arr, i) {

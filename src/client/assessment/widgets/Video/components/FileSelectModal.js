@@ -13,7 +13,6 @@ import React, { useMemo, useState } from 'react'
 import Dropzone from 'react-dropzone'
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 import StyledDropZone from '../../../components/StyledDropZone'
-import { CustomStyleBtn } from '../../../styled/ButtonStyles'
 import { TextInputStyled } from '../../../styled/InputStyles'
 import { Label } from '../../../styled/WidgetOptions/Label'
 import { ConfirmationModal } from '../../../../author/src/components/common/ConfirmationModal'
@@ -109,8 +108,9 @@ const FileSelectModal = ({
             }
           />
         )
-    default:
       break
+    default:
+    // do nothing
   }
 
   return (
@@ -190,8 +190,6 @@ FileSelectModal.propTypes = {
     type: PropTypes.string.isRequired,
     videoType: PropTypes.string.isRequired,
     sourceURL: PropTypes.string.isRequired,
-    heading: PropTypes.string.isRequired,
-    summary: PropTypes.string.isRequired,
     transcript: PropTypes.string.isRequired,
     uiStyle: PropTypes.shape({
       width: PropTypes.number.isRequired,

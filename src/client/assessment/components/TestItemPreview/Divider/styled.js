@@ -13,15 +13,11 @@ const buttonWrapperExtraStyle = css`
   left: ${({ collapseDirection }) =>
     collapseDirection === 'left'
       ? 'auto'
-      : collapseDirection === 'right'
-      ? '-22px'
-      : '-22px'};
+      : '-22px'}; // collapseDirection === 'right'
   right: ${({ collapseDirection }) =>
     collapseDirection === 'right'
       ? 'auto'
-      : collapseDirection === 'left'
-      ? '-22px'
-      : '-22px'};
+      : '-22px'}; // collapseDirection === 'left'
 `
 
 export const Divider = styled.div`

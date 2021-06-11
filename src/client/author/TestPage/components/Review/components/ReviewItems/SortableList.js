@@ -1,5 +1,5 @@
 import { Collapse } from 'antd'
-import { isArray } from 'lodash'
+import { get, isArray } from 'lodash'
 import React, { useState } from 'react'
 import { SortableContainer } from 'react-sortable-hoc'
 import { SortableGroupItem, SortableSingleItem } from './SortableItem'
@@ -49,9 +49,9 @@ export default SortableContainer(
 
     const handlePassageItemsConfirm = (value) => {
       if (value) {
-        removeMultiple(removalObj.items)
+        removeMultiple(get(removalObj, 'items'))
       } else {
-        removeSingle(removalObj.removalId)
+        removeSingle(get(removalObj, 'removalId'))
       }
       setRemovalPassageItems(null)
     }

@@ -149,8 +149,6 @@ Options.propTypes = {
     type: PropTypes.string.isRequired,
     videoType: PropTypes.string.isRequired,
     sourceURL: PropTypes.string.isRequired,
-    heading: PropTypes.string.isRequired,
-    summary: PropTypes.string.isRequired,
     transcript: PropTypes.string.isRequired,
     uiStyle: PropTypes.shape({
       width: PropTypes.number.isRequired,

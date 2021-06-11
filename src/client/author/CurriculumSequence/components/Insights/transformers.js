@@ -84,7 +84,7 @@ export const getMergedTrendMap = (studInfo = [], trendData = []) =>
   useMemo(() => {
     const studentMap = groupBy(studInfo, 'userId')
     // reduce multiple entries and club their groupIds
-    Object.keys(studentMap).map((sId) => {
+    Object.keys(studentMap).forEach((sId) => {
       studentMap[sId] = reduce(
         studentMap[sId],
         (res, ele) => {
@@ -102,7 +102,6 @@ export const getMergedTrendMap = (studInfo = [], trendData = []) =>
           hasTrend: false,
         }
       )
-      return null
     })
     // calculate and set flag for students with available trend data
     trendData.forEach((item) => {
@@ -418,7 +417,7 @@ export const calcLabelPosition = ({ cx, cy, angle = 0 }) => {
   const isPositive = angle > 0
   if (angle >= 160 || angle <= -160) {
     cx -= isPositive ? 29 : 28
-    cy -= isPositive ? 8 : 8
+    cy -= 8
   } else if (angle > 130 || angle < -130) {
     cx -= isPositive ? 25 : 18
     cy -= isPositive ? 6 : 9

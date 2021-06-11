@@ -169,7 +169,7 @@ const ImportContentModal = ({
         onClick={() => {
           if (
             importType === EXISTING_COLLECTION &&
-            (!selectedCollectionName || !selectedCollectionName.trim())
+            !(selectedCollectionName || '').trim()
           ) {
             return notification({
               type: 'warn',
@@ -179,7 +179,7 @@ const ImportContentModal = ({
 
           if (
             importType === NEW_COLLECTION &&
-            (!selectedCollectionName || !selectedCollectionName.trim())
+            !(selectedCollectionName || '').trim()
           ) {
             return notification({
               type: 'warn',

@@ -123,7 +123,7 @@ export const reducer = createReducer(initialState, {
       teacherData.key = index
       if (row.hasOwnProperty('_source')) {
         const source = row._source
-        Object.keys(source).map((key, value) => {
+        Object.keys(source).forEach((key) => {
           teacherData[key] = source[key]
         })
       }

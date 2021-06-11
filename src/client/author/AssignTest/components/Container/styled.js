@@ -122,7 +122,7 @@ export const ViewSwitch = styled(Switch)`
 
 export const Paragraph = styled.p`
   margin-bottom: 15px;
-  text-align: ${(props) => props.alignItems && props.alignItems};
+  text-align: ${(props) => props.alignItems};
 `
 export const TabContentContainer = styled.div`
   width: ${({ width }) => (width || window.innerWidth <= 780 ? '100%' : '50%')};

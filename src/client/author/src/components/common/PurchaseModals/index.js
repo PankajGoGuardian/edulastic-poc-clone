@@ -379,7 +379,7 @@ const PurchaseFlowModals = (props) => {
     handleSubscriptionAddonModalClose()
     setCartVisible(false)
     if (shouldPayWithCC) {
-      openPaymentServiceModal(true)
+      openPaymentServiceModal()
     } else {
       setShowUpgradeModal(true)
     }

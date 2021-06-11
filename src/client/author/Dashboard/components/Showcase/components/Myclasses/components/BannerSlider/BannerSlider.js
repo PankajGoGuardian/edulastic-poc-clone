@@ -30,9 +30,7 @@ const BannerSlider = ({
   const handleScroll = debounce((isScrollLeft) => {
     const scrollContainer = scrollBarRef.current._container
     const { scrollLeft, clientWidth } = scrollContainer
-    const delta = isScrollLeft
-      ? scrollLeft + clientWidth
-      : scrollLeft - scrollLeft
+    const delta = isScrollLeft ? scrollLeft + clientWidth : 0
     scrollContainer.scrollLeft = delta
     scrollContainer.scrollTo({
       left: delta,

@@ -714,9 +714,7 @@ const GroupItems = ({
                           data-cy={`collection-${itemGroup.groupName}`}
                           size="default"
                           placeholder="Select Collection"
-                          onChange={(value) =>
-                            handleCollectionChange(value, index)
-                          }
+                          onChange={(value) => handleCollectionChange(value)}
                           value={
                             currentGroupIndex === index
                               ? editGroupDetail.collectionDetails?._id

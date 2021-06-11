@@ -104,7 +104,7 @@ function onHandler() {
       // handle closing polygon
       if (isStart(points[0].coords.usrCoords, newPoint.coords.usrCoords)) {
         board.$board.removeObject(newPoint)
-        lines.map(board.$board.removeObject.bind(board.$board))
+        lines.forEach(board.$board.removeObject.bind(board.$board))
 
         const baseColor = colorGenerator(board.elements.length)
         points[0].setAttribute(

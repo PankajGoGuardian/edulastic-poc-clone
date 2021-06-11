@@ -139,32 +139,10 @@ const ContentBucketsTable = ({
       },
       className: 'column-align-left',
       width: 300,
-      render: (value, collection) => {
-        const textTooltip = (
-          <div>
-            <p style={{ paddingBottom: '5px' }}>{value}</p>
-            <p>{collection.description}</p>
-          </div>
-        )
-        return (
-          <>
-            <Tooltip placement="right" title={textTooltip}>
-              {value}
-            </Tooltip>
-          </>
-        )
-      },
     },
     {
       title: t('content.buckets.tableHeader.collectionName'),
       dataIndex: 'collection.name',
-      render: (collectionName) => (
-        <span>
-          {collectionName === 'Anonymous' || isEmpty(collectionName)
-            ? '-'
-            : collectionName}
-        </span>
-      ),
       sortDirections: ['descend', 'ascend'],
       sorter: (a, b) => {
         const prev = `${get(a, 'name', '')}${get(a, 'name', '')}`
@@ -325,11 +303,11 @@ const ContentBucketsTable = ({
       render: (status = '-') => (
         <span
           style={{
-            color: status === 0 ? theme.closeColor : theme.checkColor,
+            color: status == 0 ? theme.closeColor : theme.checkColor,
             fontSize: '9px',
           }}
         >
-          {status === 0 ? 'Disable' : 'Active'}
+          {status == 0 ? 'Disable' : 'Active'}
         </span>
       ),
       sortDirections: ['descend', 'ascend'],

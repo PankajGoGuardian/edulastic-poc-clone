@@ -144,7 +144,7 @@ class StandardsProficiencyTable extends React.Component {
       return
     }
     const newData = data.filter((item) => item.key !== key)
-    newData.map((row, nIndex) => {
+    newData.forEach((row, nIndex) => {
       row.score = newData.length - nIndex
       if (newData.length - 1 == nIndex) row.threshold = 0
     })
@@ -163,8 +163,7 @@ class StandardsProficiencyTable extends React.Component {
     const dataSource = []
     const { data, calcType } = this.state
     const { standardsProficiencyID, userOrgId } = this.props
-
-    data.map((row) => {
+    data.forEach((row) => {
       dataSource.push({
         score: row.score,
         masteryLevel: row.masteryLevel,

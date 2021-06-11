@@ -653,7 +653,7 @@ class Board {
    * @see https://jsxgraph.org/docs/symbols/JXG.Board.html#removeObject
    */
   segmentsReset() {
-    this.elements.map(this.removeObject.bind(this))
+    this.elements.forEach(this.removeObject.bind(this))
     this.elements = []
   }
 
@@ -663,15 +663,15 @@ class Board {
 
   reset() {
     this.abortTool()
-    this.elements.map(this.removeObject.bind(this))
+    this.elements.forEach(this.removeObject.bind(this))
     this.elements = []
     this.labelForEq = []
 
-    this.bgElements.map((el) => {
+    this.bgElements.forEach((el) => {
       if (el.type == 12) {
         this.labelForEq.push(el.labelHTML)
       } else {
-        el.inherits.map((ancestorsEl) => {
+        el.inherits.forEach((ancestorsEl) => {
           this.labelForEq.push(ancestorsEl.labelHTML)
         })
       }
@@ -679,12 +679,12 @@ class Board {
   }
 
   resetAnswers() {
-    this.answers.map(this.removeObject.bind(this))
+    this.answers.forEach(this.removeObject.bind(this))
     this.answers = []
   }
 
   resetBg() {
-    this.bgElements.map(this.removeObject.bind(this))
+    this.bgElements.forEach(this.removeObject.bind(this))
     this.bgElements = []
   }
 
@@ -1043,11 +1043,11 @@ class Board {
   }
 
   loadObject(object, settings = {}) {
-    this.bgElements.map((el) => {
+    this.bgElements.forEach((el) => {
       if (el.type == 12) {
         this.labelForEq.push(el.labelHTML)
       } else {
-        el.inherits.map((ancestorsEl) => {
+        el.inherits.forEach((ancestorsEl) => {
           this.labelForEq.push(ancestorsEl.labelHTML)
         })
       }

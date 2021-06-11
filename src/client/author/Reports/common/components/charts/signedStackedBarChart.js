@@ -50,7 +50,7 @@ const LabelText = (props) => {
     <g
       className="asd-asd"
       onMouseOver={onBarMouseOver(bdIndex)}
-      onMouseLeave={onBarMouseLeave(bdIndex)}
+      onMouseLeave={onBarMouseLeave()}
     >
       <text
         x={x + width / 2}
@@ -347,7 +347,7 @@ export const SignedStackedBarChart = ({
                 onClick={onBarClick}
                 barSize={45}
                 onMouseOver={onBarMouseOver(bdIndex)}
-                onMouseLeave={onBarMouseLeave(bdIndex)}
+                onMouseLeave={onBarMouseLeave()}
               >
                 <LabelList
                   dataKey={bdItem.key}
@@ -355,7 +355,7 @@ export const SignedStackedBarChart = ({
                   fill="#010101"
                   offset={5}
                   onMouseOver={onBarMouseOver(bdIndex)}
-                  onMouseLeave={onBarMouseLeave(bdIndex)}
+                  onMouseLeave={onBarMouseLeave()}
                   content={
                     <LabelText
                       onBarMouseOver={onBarMouseOver}

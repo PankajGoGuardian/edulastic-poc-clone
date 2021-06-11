@@ -16,31 +16,6 @@ const RubricTable = ({
   loading,
   user,
 }) => {
-  const columns = [
-    {
-      title: 'Rubric Name',
-      dataIndex: 'name',
-      key: 'name',
-    },
-    {
-      title: 'Author',
-      dataIndex: 'name',
-      key: 'authorName',
-      render: (_, record) => record.createdBy.name,
-    },
-    {
-      title: 'Description',
-      dataIndex: 'description',
-      key: 'description',
-    },
-    {
-      title: '',
-      key: 'actions',
-      align: 'right',
-      render: (text, record, index) => getTableActions(text, record, index),
-    },
-  ]
-
   const getTableActions = (text, record) => {
     return (
       <TableActionsContainer data-cy="actionContainer">
@@ -75,6 +50,31 @@ const RubricTable = ({
       </TableActionsContainer>
     )
   }
+
+  const columns = [
+    {
+      title: 'Rubric Name',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: 'Author',
+      dataIndex: 'name',
+      key: 'authorName',
+      render: (_, record) => record.createdBy.name,
+    },
+    {
+      title: 'Description',
+      dataIndex: 'description',
+      key: 'description',
+    },
+    {
+      title: '',
+      key: 'actions',
+      align: 'right',
+      render: (text, record) => getTableActions(text, record),
+    },
+  ]
 
   return (
     <Col md={24}>

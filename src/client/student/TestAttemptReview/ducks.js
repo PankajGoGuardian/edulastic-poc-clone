@@ -67,7 +67,8 @@ export const attemptSummarySelector = createSelector(
             blocks[q.id] = userWorkUsed || attempted ? 1 : 0
           }
         })
-        allQids.concat(questions.map((q) => q.id))
+        // TODO: remove this if not required
+        // allQids.concat(questions.map((q) => q.id))
         itemWiseQids[item._id] = questions.map((q) => q.id)
       }
     }

@@ -124,7 +124,7 @@ export function* uploadTestStaga({ payload }) {
       if (response?.jobIds?.length) {
         yield put(setJobIdsAction(response.jobIds))
       } else {
-        yield put(uploadTestError('Failed uploading'))
+        yield put(uploadTestErrorAction({ message: 'Failed uploading' }))
       }
       yield put(setSuccessMessageAction('Completed creating the items'))
     } catch (e) {

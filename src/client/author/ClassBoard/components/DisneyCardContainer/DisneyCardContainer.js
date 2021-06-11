@@ -174,7 +174,7 @@ class DisneyCardContainer extends Component {
        * 1. mutating testActivity inside map
        * 2. move this sort of tranforming code somewhere else
        */
-      testActivity.map((student, index) => {
+      testActivity.forEach((student, index) => {
         const status = getStudentCardStatus(
           student,
           endDate,
@@ -589,7 +589,6 @@ class DisneyCardContainer extends Component {
           </StyledCard>
         )
         styledCard.push(studentData)
-        return null
       })
     }
     return (

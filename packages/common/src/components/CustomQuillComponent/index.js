@@ -842,8 +842,8 @@ CustomQuillComponent.modules = (toolbarId, custom) => ({
         handler(range) {
           const previousTD = getPreviousTDIndex(
             this.quill,
-            this.quill.getContents(0, range.index),
-            range.index
+            this.quill.getContents(0, range.index)
+            /* , range.index */
           )
           this.quill.setSelection(previousTD, 'silent')
         },

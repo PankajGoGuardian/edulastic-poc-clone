@@ -72,7 +72,7 @@ const RequestInvoiceModal = ({
     }
 
     if (bookkeeperEmails) {
-      const flag = bookkeeperEmails
+      const flag = (bookkeeperEmails || '')
         .split(',')
         .every((email) => emailRegex.test(email.trim()))
       if (!flag) {

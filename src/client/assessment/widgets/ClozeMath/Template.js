@@ -103,7 +103,7 @@ class Template extends Component {
         .find('textinput, mathinput, textdropdown, mathunit')
         .each(findResponseIndexes)
 
-      Object.keys(newResponseId).map((key) => {
+      Object.keys(newResponseId).forEach((key) => {
         if (key !== 'scoringType') {
           if (isEmpty(newResponseId[key])) {
             delete newResponseId[key]
@@ -366,28 +366,28 @@ class Template extends Component {
         newAltValues.value = cloneDeep(
           get(_validation, 'validResponse.value', [])
         )
-        newAltValues.value.map((answer) => {
+        newAltValues.value.forEach((answer) => {
           answer.value = ''
           return answer
         })
         newAltValues.textinput.value = cloneDeep(
           get(_validation, 'validResponse.textinput.value', [])
         )
-        newAltValues.textinput.value.map((answer) => {
+        newAltValues.textinput.value.forEach((answer) => {
           answer.value = ''
           return answer
         })
         newAltValues.dropdown.value = cloneDeep(
           get(_validation, 'validResponse.dropdown.value', [])
         )
-        newAltValues.dropdown.value.map((answer) => {
+        newAltValues.dropdown.value.forEach((answer) => {
           answer.value = ''
           return answer
         })
         newAltValues.mathUnits.value = cloneDeep(
           get(_validation, 'validResponse.mathUnits.value', [])
         )
-        newAltValues.mathUnits.value.map((answer) => {
+        newAltValues.mathUnits.value.forEach((answer) => {
           answer.value = ''
           return answer
         })

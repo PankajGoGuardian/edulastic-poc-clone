@@ -120,6 +120,7 @@ class ComposeQuestion extends Component {
         setLoading(false)
       })
       uploadedImage.src = url
+      return url
     }
 
     const onDrop = ([files]) => {

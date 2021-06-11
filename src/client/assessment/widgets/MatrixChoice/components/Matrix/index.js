@@ -71,7 +71,7 @@ const Matrix = (props) => {
         {evaluation && checked && (
           <IconWrapper correct={correct} isPrintPreview={isPrintPreview}>
             {correct === true && <IconCheck />}
-            {correct === 'incorrect' && <IconClose />}
+            {correct == 'incorrect' && <IconClose />}
           </IconWrapper>
         )}
       </MatrixCell>

@@ -441,7 +441,7 @@ export const sanitizeForReview = (stimulus) => {
     const hasMath = elem.find('.input__math').length > 0
     const text = elem.text().trim().length > 0
     const video = elem.html().includes('fr-video')
-    if ((!text && !hasMath && !video) || text === '...') {
+    if ((!text && !hasMath && !video) || text == '...') {
       elem.remove()
     } else if (video) {
       elem.replaceWith('[video]')

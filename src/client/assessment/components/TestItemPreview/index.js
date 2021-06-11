@@ -111,7 +111,8 @@ class TestItemPreview extends Component {
         shouldTakeDimensionsFromStore = true
         break
 
-      case isDocBased || stackedView:
+      case isDocBased:
+      case stackedView:
         /**
          * stacked view
          * need to show separate feeback blocks for each question

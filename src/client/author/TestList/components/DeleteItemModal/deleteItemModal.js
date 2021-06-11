@@ -58,7 +58,7 @@ const DeleteItemModal = ({
   }, [deleteType])
 
   useEffect(() => {
-    if (deletingTest === 'DONE') {
+    if (deletingTest == 'DONE') {
       onCancel()
     }
   }, [deletingTest])
@@ -89,7 +89,7 @@ const DeleteItemModal = ({
                 deleteTestRequest({ testId, type: deleteType, view })
               }
             }}
-            loading={deletingTest === 'INPROGRESS'}
+            loading={deletingTest == 'INPROGRESS'}
           >
             {showRollback ? 'Proceed' : 'Yes, Delete'}
           </EduButton>

@@ -19,7 +19,7 @@ const FiltersSidebar = ({ filterItem, onChange, search, userFeatures }) => {
       <SelectStyled
         data-cy={filterItem.title}
         showSearch={filterItem.showSearch}
-        onSearch={filterItem.onSearch && filterItem.onSearch}
+        onSearch={filterItem.onSearch}
         mode={filterItem.mode}
         size={filterItem.size}
         placeholder={filterItem.placeholder}

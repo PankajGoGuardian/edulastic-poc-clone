@@ -98,10 +98,9 @@ const TimedTestTimer = ({
 
     if (isModified && !isAuthorPreview) {
       setUtaDoc(upstreamUta)
-      const pausedByStudent =
-        upstreamUta &&
-        upstreamUta.status === UTA_STATUS.PAUSED &&
-        !upstreamUta?.byTeacher
+      const pausedByStudent = upstreamUta
+        ? upstreamUta.status === UTA_STATUS.PAUSED && !upstreamUta?.byTeacher
+        : false
       const initialUtaUpdate =
         upstreamUta &&
         upstreamUta.status === UTA_STATUS.ACTIVE &&
@@ -112,10 +111,10 @@ const TimedTestTimer = ({
       if (pausedByStudent || initialUtaUpdate || isPasswordProtected) {
         let data = { startTime: timeStamp, status: UTA_STATUS.ACTIVE }
         if (updateUtaTimeType === TIME_UPDATE_TYPE.RESUME) {
-          const timeStampType =
-            !uta || uta?.startTime
-              ? { lastResumed: timeStamp }
-              : { startTime: timeStamp }
+          const timeStampTypeCond = uta ? !!uta?.startTime : true
+          const timeStampType = timeStampTypeCond
+            ? { lastResumed: timeStamp }
+            : { startTime: timeStamp }
           data = { ...timeStampType, status: UTA_STATUS.ACTIVE }
         }
         resetUpdateUtaType(null)

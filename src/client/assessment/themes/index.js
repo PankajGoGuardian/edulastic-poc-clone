@@ -125,7 +125,7 @@ function pauseAssignment({
         key: errorMsg,
         zIndex: 10000,
       })
-      if (history.location.pathname === '/home/assignments') {
+      if (history.location.pathname == '/home/assignments') {
         history.push('/home/assignmentss') // this hack needed to re-render route
         history.replace('/home/assignments')
       } else {

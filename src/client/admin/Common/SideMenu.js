@@ -103,7 +103,7 @@ const SideMenu = ({
   const onClickFooterDropDownMenu = ({ key }) => {
     if (key === '1') {
       toggleDropdown()
-      toggleSideBar
+      toggleSideBar()
     }
     if (key === '3') {
       toggleShowModal(!showModal)

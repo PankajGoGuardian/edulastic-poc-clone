@@ -911,7 +911,7 @@ export function reducer(state = initialState, { type, payload }) {
     case USE_TABS:
       return useTabs(state, payload)
     case ADD_TAB:
-      return addTabs(state, payload)
+      return addTabs(state)
     case REMOVE_TAB:
       return removeTab(state, payload)
     case CHANGE_TAB_TITLE:
@@ -1204,7 +1204,7 @@ export function* updateItemSaga({ payload }) {
 
     questions = reSequenceQuestionsWithWidgets(_widgets, questions)
 
-    questions = produce(questions, (draft) => {
+    questions = produce(questions, (draft) => 
       draft.map((q, index) => {
         const [
           hasImproperConfig,
@@ -1236,7 +1236,7 @@ export function* updateItemSaga({ payload }) {
         q.scoringDisabled = !!itemLevelScoring
         return q
       })
-    })
+    )
     data.data = {
       questions,
       resources,
@@ -2076,7 +2076,6 @@ function* saveAndPublishItemSaga() {
     yield put(
       removeLoadingComponentAction({ componentName: 'saveAndPublishItem' })
     )
-    return null
   }
 }
 

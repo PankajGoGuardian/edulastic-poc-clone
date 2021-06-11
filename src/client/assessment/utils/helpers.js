@@ -610,19 +610,13 @@ export const Fscreen = {
     return document[`on${vendor[key.fullscreenchange]}`.toLowerCase()]
   },
   set onfullscreenchange(handler) {
-    // eslint-disable-next-line no-return-assign
-    return (document[
-      `on${vendor[key.fullscreenchange]}`.toLowerCase()
-    ] = handler)
+    document[`on${vendor[key.fullscreenchange]}`.toLowerCase()] = handler
   },
   get onfullscreenerror() {
     return document[`on${vendor[key.fullscreenerror]}`.toLowerCase()]
   },
   set onfullscreenerror(handler) {
-    // eslint-disable-next-line no-return-assign
-    return (document[
-      `on${vendor[key.fullscreenerror]}`.toLowerCase()
-    ] = handler)
+    document[`on${vendor[key.fullscreenerror]}`.toLowerCase()] = handler
   },
 }
 

@@ -104,23 +104,25 @@ const Scratchpad = ({
   }, [dimensions, readOnly, dimensionsPercent])
 
   const toggleProtractor = () => {
-    zwibbler.begin()
-    const protractor = zwibbler.findNode('protractor')
-    if (protractor) {
-      zwibbler.deleteNode(protractor)
-    } else {
-      zwibbler.createNode('ImageNode', {
-        url: protractorImg,
-        tag: 'protractor',
-        rotateAround: [191, 191],
-        rotateHandle: [191, -10],
-        lockSize: true,
-        matrix: [1.7, 0, 0, 1.7, 15, 40],
-        zIndex: 1,
-      })
+    if (zwibbler) {
+      zwibbler.begin()
+      const protractor = zwibbler.findNode('protractor')
+      if (protractor) {
+        zwibbler.deleteNode(protractor)
+      } else {
+        zwibbler.createNode('ImageNode', {
+          url: protractorImg,
+          tag: 'protractor',
+          rotateAround: [191, 191],
+          rotateHandle: [191, -10],
+          lockSize: true,
+          matrix: [1.7, 0, 0, 1.7, 15, 40],
+          zIndex: 1,
+        })
+      }
+      zwibbler.commit(true)
+      updateScratchpad({ activeMode: '' })
     }
-    zwibbler.commit(true)
-    updateScratchpad({ activeMode: '' })
   }
 
   const toggleRuler = () => {

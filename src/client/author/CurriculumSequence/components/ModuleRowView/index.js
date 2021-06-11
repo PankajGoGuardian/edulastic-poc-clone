@@ -74,7 +74,9 @@ const ModuleRowView = (props) => {
   }
 
   const onClickAssign = () => {
-    !module.hidden && totalAssigned ? assignModule(module) : {}
+    if (!module.hidden && totalAssigned) {
+      assignModule(module)
+    }
   }
 
   const moduleManagementMenu = (

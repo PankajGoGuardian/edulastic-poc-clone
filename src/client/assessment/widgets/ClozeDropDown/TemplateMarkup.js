@@ -118,7 +118,7 @@ class TemplateMarkup extends Component {
 
     const reduceOptions = (responseIds, options) => {
       const _options = cloneDeep(options)
-      Object.keys(_options).map((id) => {
+      Object.keys(_options).forEach((id) => {
         const isExist = find(responseIds, (response) => response.id === id)
         if (!isExist) {
           delete _options[id]

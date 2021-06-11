@@ -369,7 +369,7 @@ const SimpleStackedBarChartComponent = ({
             onClick={onBarClick}
             barSize={45}
             onMouseOver={onBarMouseOver(1)}
-            onMouseLeave={onBarMouseLeave(null)}
+            onMouseLeave={onBarMouseLeave()}
             {...bottomStackBarProps}
             opacity={
               activeLegend && activeLegend !== bottomStackDataKey ? 0.2 : 1
@@ -384,7 +384,7 @@ const SimpleStackedBarChartComponent = ({
             isAnimationActive={!isPrinting}
             barSize={45}
             onMouseOver={onBarMouseOver(1)}
-            onMouseLeave={onBarMouseLeave(null)}
+            onMouseLeave={onBarMouseLeave()}
             {...topStackBarProps}
           >
             <LabelList
@@ -394,7 +394,7 @@ const SimpleStackedBarChartComponent = ({
               unit={bottomStackDataUnit}
               offset={5}
               onMouseOver={onBarMouseOver(1)}
-              onMouseLeave={onBarMouseLeave(null)}
+              onMouseLeave={onBarMouseLeave()}
               content={
                 <LabelText
                   startIndex={pagination.startIndex}

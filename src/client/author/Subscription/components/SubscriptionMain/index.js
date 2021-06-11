@@ -616,9 +616,9 @@ const SubscriptionMain = ({
                             </EduButton>
                           )}
                           onClick={() => {
-                            !(isPremiumTrialUsed && !subscription.length)
-                              ? handleStartTrialButtonClick()
-                              : {}
+                            if (!(isPremiumTrialUsed && !subscription.length)) {
+                              handleStartTrialButtonClick()
+                            }
                           }}
                         />
                       </Tooltip>
@@ -787,11 +787,13 @@ const SubscriptionMain = ({
                             </EduButton>
                           )}
                           onClick={() => {
-                            !usedTrialItemBankIds.includes(
-                              _product.linkedProductId
-                            )
-                              ? handleStartTrialButtonClick(_product.id)
-                              : {}
+                            if (
+                              !usedTrialItemBankIds.includes(
+                                _product.linkedProductId
+                              )
+                            ) {
+                              handleStartTrialButtonClick(_product.id)
+                            }
                           }}
                         />
                       </Tooltip>

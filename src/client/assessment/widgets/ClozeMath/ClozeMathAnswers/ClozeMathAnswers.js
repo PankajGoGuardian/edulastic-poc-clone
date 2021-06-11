@@ -513,7 +513,7 @@ const ClozeMathAnswers = ({
 
   let orderedAnswers = []
   if (responseIds) {
-    Object.keys(responseIds).map((key) =>
+    Object.keys(responseIds).forEach((key) =>
       responseIds[key].map((r) => {
         if (key === 'inputs') {
           const _answer = find(inputAnswers, (valid) => valid.id === r.id)

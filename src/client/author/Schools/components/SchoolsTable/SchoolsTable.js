@@ -285,13 +285,9 @@ class SchoolsTable extends React.Component {
   }
 
   deactivateSchool = () => {
-    const { selectedDeactivateSchools } = this.state
+    const { selectedDeactivateSchools = [] } = this.state
     const { userOrgId, deleteSchool } = this.props
-
-    const schoolIds = []
-    selectedDeactivateSchools.map((row) => {
-      schoolIds.push(row._id)
-    })
+    const schoolIds = selectedDeactivateSchools.map((row) => row._id)
     this.setState({ deactivateSchoolModalVisible: false })
     deleteSchool({ districtId: userOrgId, schoolIds })
   }

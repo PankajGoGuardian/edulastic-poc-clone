@@ -50,33 +50,28 @@ const RedirectToTest = ({
     }
 
     if (testId) {
-      try {
-        testsApi
-          .getByV1Id(testId)
-          .then((data) => {
-            const { _id: id } = data
-            if (!id) {
-              handleFailed('no test found')
-            }
-            if (!user?.authenticating || !TokenStorage.getAccessToken()) {
-              // not authenticated user flow
-              if (
-                window.location.pathname.includes('demo/assessmentPreview') ||
-                window.location.host.startsWith('preview')
-              ) {
-                redirectToUrl(`/public/test/${id}`)
-              } else {
-                redirectToUrl(`/public/view-test/${id}`)
-              }
+      testsApi
+        .getByV1Id(testId)
+        .then((data) => {
+          const { _id: id } = data
+          if (!id) {
+            handleFailed('no test found')
+          }
+          if (!user?.authenticating || !TokenStorage.getAccessToken()) {
+            // not authenticated user flow
+            if (
+              window.location.pathname.includes('demo/assessmentPreview') ||
+              window.location.host.startsWith('preview')
+            ) {
+              redirectToUrl(`/public/test/${id}`)
             } else {
-              redirectToUrl(`/author/tests/${id}`)
+              redirectToUrl(`/public/view-test/${id}`)
             }
-          })
-          .catch(handleFailed)
-      } catch (e) {
-        console.warn('TestId cannot be null ', e)
-        handleFailed()
-      }
+          } else {
+            redirectToUrl(`/author/tests/${id}`)
+          }
+        })
+        .catch(handleFailed)
     }
   }, [])
 

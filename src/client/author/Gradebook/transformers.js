@@ -413,7 +413,7 @@ export const curateGradebookData = (
   if (urlHasStudent) {
     // calculate overall countByStatus
     const countByStatus = {}
-    STATUS_LIST.map(({ id }) => {
+    STATUS_LIST.forEach(({ id }) => {
       countByStatus[id] = 0
       curatedData.forEach((d) => {
         countByStatus[id] += d.countByStatus[id] || 0

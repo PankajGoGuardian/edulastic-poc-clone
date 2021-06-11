@@ -42,7 +42,7 @@ const Field = ({
         [validate.validateField]:
           validate.paramsType === 'string'
             ? value
-            : value.split(',').map((v) => v.trim()),
+            : (value || '').split(',').map((v) => v.trim()),
       },
       validate.endPoint,
       validate.method
@@ -184,7 +184,9 @@ const Field = ({
                 {display.title}
               </span>
               <div>
-                {JSON.stringify(response?.[0] || 'Please enter valid input')}
+                {JSON.stringify(
+                  (response || [])?.[0] || 'Please enter valid input'
+                )}
               </div>
             </div>
           )

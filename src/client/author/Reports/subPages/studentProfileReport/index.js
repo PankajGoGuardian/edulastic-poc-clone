@@ -75,7 +75,7 @@ const StudentProfileReportContainer = (props) => {
     if (navigation.locToData[loc]) {
       const arr = Object.keys(filt)
       const obj = {}
-      arr.map((item) => {
+      arr.forEach((item) => {
         const val = filt[item] === '' ? 'All' : filt[item]
         obj[item] = val
       })

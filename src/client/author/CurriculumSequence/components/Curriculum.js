@@ -9,6 +9,8 @@ import {
   sortableHandle,
 } from 'react-sortable-hoc'
 import styled from 'styled-components'
+import { get } from 'lodash'
+
 import { IconPlusCircle } from '@edulastic/icons'
 import DropContainer from '../../../assessment/components/DropContainer'
 import { themes } from '../../../theme'
@@ -156,8 +158,11 @@ const Curriculum = (props) => {
   const onRefChange = useCallback((node) => setModulesContainerRef(node), [])
 
   useEffect(() => {
-    const { parentElement } =
-      modulesContainerRef?.container?.parentElement || {}
+    const { parentElement } = get(
+      modulesContainerRef,
+      'container.parentElement',
+      {}
+    )
     const persistObj = JSON.parse(
       sessionStorage.getItem(`playlist/${playlistId}`)
     )

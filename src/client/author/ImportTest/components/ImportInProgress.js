@@ -103,8 +103,6 @@ const ImportInprogress = ({
           ? isImporting
             ? t('qtiimport.importinprogress.description')
             : 'Please stay on the screen while we are unzipping your files'
-          : isImporting
-          ? 'Files are being processed'
           : 'Files are being processed'}
       </TextWrapper>
     </FlexContainer>

@@ -36,7 +36,8 @@ export const detectVariablesFromObj = (
       const latexes = item.match(mathRegex) || []
       latexes.forEach((latex) => {
         variables.push(...detectVariables(latex, true))
-        item.replace(latex, '')
+        // TODO: if required, assign to a variable and use, else remove
+        // item.replace(latex, '')
       })
 
       variables.push(...detectVariables(item))
@@ -186,7 +187,7 @@ export const replaceValues = (
 export const replaceVariables = (
   item,
   latexKeys = [],
-  useMathTemplate = true
+  _useMathTemplate = true // remove, if not required
 ) => {
   if (
     !has(item, 'variable.variables') ||
@@ -207,7 +208,7 @@ export const replaceVariables = (
       ) {
         keysToIgnore.push('options')
       }
-      useMathTemplate = !keysToIgnore.includes(key)
+      const useMathTemplate = !keysToIgnore.includes(key)
       draft[key] = replaceValues(
         draft[key],
         item.variable,

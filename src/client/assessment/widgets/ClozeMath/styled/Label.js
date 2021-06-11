@@ -80,10 +80,7 @@ export const Label = styled.label`
     props.styleType === 'primary' || props.uiStyle.type === 'block'
       ? '40px'
       : 'auto'};
-  box-shadow: ${(props) =>
-    props.styleType === 'primary' || props.uiStyle.type === 'block'
-      ? 'none'
-      : 'none'};
+  box-shadow: none;
   display: flex;
   align-items: center;
   /* margin: ${(props) => (props.setAnswers ? '5px 0' : '10px 0')}; */

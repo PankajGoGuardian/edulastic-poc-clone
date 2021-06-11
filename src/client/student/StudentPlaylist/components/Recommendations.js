@@ -251,13 +251,15 @@ const Recommendations = ({
                                     <AssignmentButton>
                                       <Button
                                         data-cy="practice"
-                                        onClick={handleStartPractice({
-                                          testId: recommendedResource._id,
-                                          classId: recommendation.groupId,
-                                          studentRecommendationId:
-                                            recommendation._id,
-                                          activities,
-                                        })}
+                                        onClick={() =>
+                                          handleStartPractice({
+                                            testId: recommendedResource._id,
+                                            classId: recommendation.groupId,
+                                            studentRecommendationId:
+                                              recommendation._id,
+                                            activities,
+                                          })
+                                        }
                                       >
                                         {lastActivity.status ===
                                         testActivityStatus.START

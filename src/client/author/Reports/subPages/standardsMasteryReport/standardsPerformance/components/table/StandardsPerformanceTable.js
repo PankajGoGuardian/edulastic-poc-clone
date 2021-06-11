@@ -227,6 +227,7 @@ const StandardsPerformanceTable = ({
         <Col xs={24} sm={24} md={13} lg={13} xl={12}>
           <Row className="control-dropdown-row">
             <StyledDropDownContainer
+              data-cy="compareBy"
               xs={24}
               sm={24}
               md={11}
@@ -242,6 +243,7 @@ const StandardsPerformanceTable = ({
               />
             </StyledDropDownContainer>
             <StyledDropDownContainer
+              data-cy="analyzeBy"
               xs={24}
               sm={24}
               md={13}

@@ -629,16 +629,17 @@ const SubscriptionMain = ({
             </>
           )}
 
-          {subType === 'enterprise' && (
-            <TopSection>
-              <h1>Add ons for your Enterprise Version.</h1>
-              <p>
-                Add on modules make it easier to deliver differentiated
-                instruction and pull all of your data into one place for a
-                holistic view of student understanding and growth.
-              </p>
-            </TopSection>
-          )}
+          {['partial_premium', 'enterprise'].includes(subType) &&
+            isPremiumUser && (
+              <TopSection>
+                <h1>Add ons for your Enterprise Version.</h1>
+                <p>
+                  Add on modules make it easier to deliver differentiated
+                  instruction and pull all of your data into one place for a
+                  holistic view of student understanding and growth.
+                </p>
+              </TopSection>
+            )}
 
           <FiltersSection
             selected={addonSubject}

@@ -83,6 +83,7 @@ const EnterpriseTab = ({
   requestQuote,
   subEndDate,
   hasPreferences,
+  isPremiumUser,
 }) => {
   const [showSelectStates, setShowSelectStates] = useState(false)
 
@@ -124,7 +125,11 @@ const EnterpriseTab = ({
             </SectionDescription>
           </div>
         </FlexContainer>
-        {!(subType === 'enterprise' && hasPreferences) && (
+        {!(
+          ['partial_premium', 'enterprise'].includes(subType) &&
+          isPremiumUser &&
+          hasPreferences
+        ) && (
           <FlexContainer flexDirection="column" justifyContent="center">
             <AuthorCompleteSignupButton
               renderButton={(handleClick) => (

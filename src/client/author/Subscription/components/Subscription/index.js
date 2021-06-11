@@ -262,14 +262,15 @@ const Subscription = (props) => {
   const hasPreferences = defaultGrades.length > 0 && defaultSubjects.length > 0
   const isGradeSubjectSelected =
     ['partial_premium', 'enterprise'].includes(subType) &&
+    isPremiumUser &&
     roleuser.TEACHER === user.role &&
     hasPreferences
 
   useEffect(() => {
     if (
-      (['partial_premium'].includes(subType) && isPremiumUser) ||
-      subType === 'enterprise' ||
-      (isFreeAdmin && hasPreferences)
+      ((['partial_premium', 'enterprise'].includes(subType) && isPremiumUser) ||
+        isFreeAdmin) &&
+      hasPreferences
     ) {
       setShowEnterpriseTab(true)
     }
@@ -406,6 +407,7 @@ const Subscription = (props) => {
         schoolId={schoolId}
         setCartVisible={setCartVisible}
         cartQuantities={cartQuantities}
+        hasPreferences={hasPreferences}
       />
       <SubscriptionContentWrapper>
         {showEnterpriseTab ? (
@@ -415,6 +417,7 @@ const Subscription = (props) => {
             requestQuote={openRequestQuoteModal}
             subEndDate={subEndDate}
             hasPreferences={hasPreferences}
+            isPremiumUser={isPremiumUser}
           />
         ) : (
           <SubscriptionMain

@@ -11,6 +11,7 @@ import {
   Author,
   AuthorName,
   Header,
+  HeaderThumbnail,
   Stars,
   StyledLink,
   TestInfo,
@@ -68,11 +69,13 @@ const TestItemCard = ({
 
   return (
     <Container
+      isTestCard
       src={thumbnail}
       onClick={openModal}
       isTestRecommendation={isTestRecommendation}
       title={
-        <Header src={thumbnail}>
+        <Header isTestRecommendation={isTestRecommendation} src={null}>
+          <HeaderThumbnail alt="" src={thumbnail} />
           <Stars />
           <ButtonWrapper className="showHover">
             {isOwner && status === 'draft' && (

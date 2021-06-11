@@ -13,7 +13,7 @@ import { Card, MathFormulaDisplay } from '@edulastic/common'
 import { Rate } from 'antd/lib/index'
 import styled, { css } from 'styled-components'
 
-const DEAFULT_TEST_SRC = 'https://cdn2.edulastic.com/default/default-test-1.jpg'
+const DEAFULT_TEST_SRC = 'https://i.ibb.co/fY4vpKP/back.png'
 
 export const Container = styled(Card)`
   border: ${(props) => (props.isPlaylist ? 'none' : '1px solid #dfdfdf')};
@@ -22,7 +22,7 @@ export const Container = styled(Card)`
   border-radius: ${(props) => (props.isPlaylist ? '4px' : '10px')};
   &.ant-card {
     width: ${(props) => (props.isTestRecommendation ? '240px' : null)};
-    height: ${(props) => (props.isTestRecommendation ? '210px' : null)};
+    height: ${(props) => (props.isTestRecommendation ? '190px' : null)};
     .ant-card-body {
       padding: 16px 12px;
       border: ${(props) => (props.isPlaylist ? '1px solid #dfdfdf' : 'none')};
@@ -32,6 +32,15 @@ export const Container = styled(Card)`
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
+    }
+    &:hover {
+      -webkit-box-shadow: ${(props) =>
+        props.isTestCard ? `0 0 3px 2px ${themeColor}` : null};
+      -moz-box-shadow: ${(props) =>
+        props.isTestCard ? `0 0 3px 2px ${themeColor}` : null};
+      box-shadow: ${(props) =>
+        props.isTestCard ? `0 0 3px 2px ${themeColor}` : null};
+      transform: ${(props) => (props.isTestCard ? `scale(1.03)` : null)};
     }
   }
 
@@ -353,13 +362,14 @@ export const PremiumLabel = styled.div`
 `
 
 export const Header = styled.div`
-  height: ${({ isPlaylist }) => (isPlaylist ? '99px' : '135px')};
-  padding: 10px 15px;
+  height: ${({ isPlaylist, isTestRecommendation }) =>
+    isPlaylist ? '99px' : isTestRecommendation ? '115px' : '135px'};
+  // padding: 10px 15px;
   position: relative;
   background: url(${({ src }) => src || DEAFULT_TEST_SRC});
   background-repeat: no-repeat;
-  background-size: 100% auto;
-
+  background-size: 100% 100%;
+  align-items: center;
   &:hover {
     .showHover {
       display: flex;
@@ -369,10 +379,22 @@ export const Header = styled.div`
   }
 
   @media (min-width: ${extraDesktopWidthMax}) {
-    height: ${({ isPlaylist }) => (isPlaylist ? '100px' : '135px')};
+    height: ${({ isPlaylist, isTestRecommendation }) =>
+      isPlaylist ? '100px' : isTestRecommendation ? '115px' : '135px'};
   }
 `
 Header.displayName = 'CardHeader'
+
+export const HeaderThumbnail = styled.img`
+  width: 100%;
+  max-height: 135px;
+  padding: 0px;
+  bottom: 0px;
+  position: absolute;
+  left: 0;
+  right: 0px;
+  object-fit: contain;
+`
 
 const playlistStars = css`
   bottom: 12px;

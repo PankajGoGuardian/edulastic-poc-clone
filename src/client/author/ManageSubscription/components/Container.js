@@ -105,11 +105,11 @@ const ManageSubscriptionContainer = ({
     let _sparkMathProductId = null
     let _teacherPremiumProductId = null
     let _sparkMathLinkedProductId = null
-    for (const { id, name, linkedProductId } of products) {
+    for (const { id, name, linkedProductId, type } of products) {
       if (name === PRODUCT_NAMES.TEACHER_PREMIUM) {
         _teacherPremiumProductId = id
       }
-      if (name === PRODUCT_NAMES.SPARK_MATH) {
+      if (type === 'ITEM_BANK_SPARK_MATH') {
         _sparkMathProductId = id
         _sparkMathLinkedProductId = linkedProductId
       }

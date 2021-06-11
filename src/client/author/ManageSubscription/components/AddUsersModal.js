@@ -42,6 +42,12 @@ const AddUsersModal = ({
   const [usersList, setUsersList] = useState([])
   const [isFetchingUsers, setIsFetchingUsers] = useState(false)
 
+  console.log(
+    'checkboxvalues',
+    checkboxValues,
+    'sparkMathProductId',
+    sparkMathProductId
+  )
   const handleOnChange = (value) => setFieldValue(value)
   const handleAddUsers = () => {
     if (fieldValue.length) {
@@ -91,6 +97,8 @@ const AddUsersModal = ({
     sparkMathProductId,
     checkboxValues,
   ])
+
+  console.log('sparkMathLicenseId', sparkMathLicenseId)
 
   const handleOnCheck = (value) => {
     const list = value.includes(premiumLicenseId) ? value : []

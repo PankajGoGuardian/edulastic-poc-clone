@@ -103,35 +103,33 @@ const Scratchpad = ({
     return [_height, _width]
   }, [dimensions, readOnly, dimensionsPercent])
 
-  const toggleProtractor = () => {
-    if (zwibbler) {
-      zwibbler.begin()
-      const protractor = zwibbler.findNode('protractor')
-      if (protractor) {
-        zwibbler.deleteNode(protractor)
-      } else {
-        zwibbler.createNode('ImageNode', {
-          url: protractorImg,
-          tag: 'protractor',
-          rotateAround: [191, 191],
-          rotateHandle: [191, -10],
-          lockSize: true,
-          matrix: [1.7, 0, 0, 1.7, 15, 40],
-          zIndex: 1,
-        })
-      }
-      zwibbler.commit(true)
-      updateScratchpad({ activeMode: '' })
+  const toggleProtractor = (_zwibbler) => {
+    _zwibbler.begin()
+    const protractor = _zwibbler.findNode('protractor')
+    if (protractor) {
+      _zwibbler.deleteNode(protractor)
+    } else {
+      _zwibbler.createNode('ImageNode', {
+        url: protractorImg,
+        tag: 'protractor',
+        rotateAround: [191, 191],
+        rotateHandle: [191, -10],
+        lockSize: true,
+        matrix: [1.7, 0, 0, 1.7, 15, 40],
+        zIndex: 1,
+      })
     }
+    _zwibbler.commit(true)
+    updateScratchpad({ activeMode: '' })
   }
 
-  const toggleRuler = () => {
-    zwibbler.begin()
-    const centimeter = zwibbler.findNode('centimeter')
+  const toggleRuler = (_zwibbler) => {
+    _zwibbler.begin()
+    const centimeter = _zwibbler.findNode('centimeter')
     if (centimeter) {
-      zwibbler.deleteNode(centimeter)
+      _zwibbler.deleteNode(centimeter)
     } else {
-      zwibbler.createNode('ImageNode', {
+      _zwibbler.createNode('ImageNode', {
         url: centimeterImg,
         tag: 'centimeter',
         rotateAround: [191, 191],
@@ -141,7 +139,7 @@ const Scratchpad = ({
         zIndex: 1,
       })
     }
-    zwibbler.commit(true)
+    _zwibbler.commit(true)
     updateScratchpad({ activeMode: '' })
   }
 
@@ -192,10 +190,10 @@ const Scratchpad = ({
           zwibbler.usePolygonTool(3, 0, 1.0, options)
           break
         case drawTools.DRAW_PROTRACTOR:
-          toggleProtractor()
+          toggleProtractor(zwibbler)
           break
         case drawTools.DRAW_RULER_TOOL:
-          toggleRuler()
+          toggleRuler(zwibbler)
           break
         case drawTools.DRAW_MATH: {
           mathNodeRef.current = new MathTool({ ctx: zwibbler })

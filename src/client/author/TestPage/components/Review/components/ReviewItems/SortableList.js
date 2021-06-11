@@ -102,7 +102,7 @@ export default SortableContainer(
             removing
             visible={!!removalObj}
             closeModal={handleClosePassageConfirm}
-            itemsCount={removalObj.items.length}
+            itemsCount={get(removalObj, 'items', []).length}
             handleResponse={handlePassageItemsConfirm}
           />
         )}

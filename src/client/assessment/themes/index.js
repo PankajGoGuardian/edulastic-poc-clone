@@ -138,7 +138,7 @@ function pauseAssignment({
         e?.response?.data?.result?.message ||
         'Pausing Assignment due to Anti Cheating measures'
       console.warn('error pausing', errorMsg)
-      if (!history.location.pathname === '/home/assignments') {
+      if (!history.location.pathname == '/home/assignments') {
         history.push('/home/assignments')
       }
     })

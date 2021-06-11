@@ -68,10 +68,7 @@ export const Label = styled.label`
     props.styleType === 'primary' || props.uiStyle.type === 'block'
       ? '35px'
       : 'auto'};
-  box-shadow: ${(props) =>
-    props.styleType === 'primary' || props.uiStyle.type === 'block'
-      ? 'none'
-      : 'none'};
+  box-shadow: none;
   display: flex;
   align-items: center;
   user-select: ${({ userSelect }) => (userSelect ? 'initial' : 'none')};

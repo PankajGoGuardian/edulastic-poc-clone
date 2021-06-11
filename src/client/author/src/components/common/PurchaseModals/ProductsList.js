@@ -150,15 +150,14 @@ const ProductsList = ({
       }
     }
 
-    const totalRemainingItemBanksLicenseCount = Math.max(
-      allProducts
-        .filter((x) => x.id !== premiumProductId)
-        .map((p) => {
-          const c = _licenses.find((x) => x.productId === p.id)
-          const { totalCount = 0 } = c || {}
-          return (quant[p.productId] || 0) + totalCount
-        })
-    )
+    const allProductsQuants = allProducts
+      .filter((x) => x.id !== premiumProductId)
+      .map((p) => {
+        const c = _licenses.find((x) => x.productId === p.id)
+        const { totalCount = 0 } = c || {}
+        return (quant[p.id] || 0) + totalCount
+      })
+    const totalRemainingItemBanksLicenseCount = Math.max(...allProductsQuants)
 
     const availableTeacherPremiumCount =
       totalTeacherPremium - totalRemainingItemBanksLicenseCount

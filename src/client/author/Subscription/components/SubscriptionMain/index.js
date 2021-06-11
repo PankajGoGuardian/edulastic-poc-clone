@@ -129,6 +129,7 @@ const SubscriptionMain = ({
   subsLicenses = [],
   user,
   isGradeSubjectSelected,
+  proratedProducts,
 }) => {
   const [isTrialModalVisible, setIsTrialModalVisible] = useState(false)
   const [hasAllTrialProducts, setHasAllTrialProducts] = useState(false)
@@ -137,7 +138,7 @@ const SubscriptionMain = ({
   const subsLicensesKeyed = keyBy(subsLicenses, 'productId')
   const productsDataForDisplay = getProductsWithMetaData(
     productsMetaData,
-    products
+    proratedProducts || products
   )
   const productsWithoutTeacherPremium = productsDataForDisplay?.filter(
     (p) => p.name != 'Teacher Premium'

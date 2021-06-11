@@ -217,6 +217,7 @@ const Subscription = (props) => {
     cartQuantities,
     setCartQuantities,
     setRequestQuoteModal,
+    proratedProducts,
   } = props
 
   const { subEndDate, subType, schoolId = '' } = subscription
@@ -464,6 +465,7 @@ const Subscription = (props) => {
             user={user}
             requestQuote={openRequestQuoteModal}
             isGradeSubjectSelected={isGradeSubjectSelected}
+            proratedProducts={proratedProducts}
           />
         )}
       </SubscriptionContentWrapper>
@@ -554,6 +556,7 @@ export default compose(
       dashboardTiles: state.dashboardTeacher.configurableTiles,
       subsLicenses: getSubsLicensesSelector(state),
       cartQuantities: state.subscription?.cartQuantities,
+      proratedProducts: state.subscription?.proratedProducts,
     }),
     {
       verifyAndUpgradeLicense: slice.actions.upgradeLicenseKeyPending,

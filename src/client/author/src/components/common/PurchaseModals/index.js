@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import loadable from '@loadable/component'
 import { compose } from 'redux'
-import { uniq, compact } from 'lodash'
+import { uniq, compact, keyBy } from 'lodash'
 import moment from 'moment'
 import { roleuser } from '@edulastic/constants'
 import {
@@ -110,6 +110,7 @@ const PurchaseFlowModals = (props) => {
     isExternalSubmitPOModalVisible = false,
     toggleSubmitPOModal,
     setCartQuantities,
+    setProratedProducts,
   } = props
 
   const [payWithPoModal, setPayWithPoModal] = useState(false)
@@ -173,11 +174,14 @@ const PurchaseFlowModals = (props) => {
     if (showMultiplePurchaseModal || showBuyMoreModal) {
       return false
     }
+    if (Object.keys(cartQuantities).find((x) => cartQuantities[x] > 1)) {
+      return false
+    }
     if (subEndDate) {
       return getShouldProrate(subEndDate)
     }
     return false
-  }, [subEndDate, showMultiplePurchaseModal, showBuyMoreModal])
+  }, [subEndDate, showMultiplePurchaseModal, showBuyMoreModal, cartQuantities])
 
   const { teacherPremium = {}, itemBankPremium = [] } = useMemo(() => {
     const boughtPremiumBankIds = itemBankSubscriptions
@@ -243,11 +247,21 @@ const PurchaseFlowModals = (props) => {
       itemBankPremium: result.slice(1),
     }
   }, [subEndDate, products, subsLicenses, shouldProrateMultiplePurchase])
-
+  const proratedItemBankPremiumKeyed = keyBy(itemBankPremium, 'id')
+  const proratedProducts = products.map((p) => {
+    if (proratedItemBankPremiumKeyed[p.id]) {
+      return { ...p, ...proratedItemBankPremiumKeyed[p.id] }
+    } else {
+      return p
+    }
+  })
   useEffect(() => {
     setCartQuantities(quantities)
   }, [quantities])
 
+  useEffect(() => {
+    setProratedProducts(proratedProducts)
+  }, [products?.length, itemBankPremium?.length])
   useEffect(() => {
     if (
       defaultSelectedProductIdsRef.current === undefined ||
@@ -436,7 +450,7 @@ const PurchaseFlowModals = (props) => {
       {cartVisible && !fromSideMenu && (
         <CartModal
           visible={cartVisible}
-          products={products}
+          products={proratedProducts}
           teacherPremium={teacherPremium}
           setTotalAmount={setTotalAmount}
           bulkInviteBookKeepers={bulkInviteBookKeepers}
@@ -570,6 +584,7 @@ export default compose(
       useThisPlayList: useThisPlayListAction,
       setCartVisible: slice.actions.setCartVisible,
       setCartQuantities: slice.actions.setCartQuantities,
+      setProratedProducts: slice.actions.setProratedProducts,
     }
   )
 )(PurchaseFlowModals)

@@ -94,6 +94,7 @@ const slice = createSlice({
     isRequestOrSubmitSuccessModalVisible: false,
     cartQuantities: {},
     cartVisible: false,
+    proratedProducts: null,
   },
   reducers: {
     fetchUserSubscriptionStatus: (state) => {
@@ -212,6 +213,9 @@ const slice = createSlice({
     },
     setRequestQuoteModal: (state, { payload }) => {
       state.isRequestQuoteModalVisible = payload
+    },
+    setProratedProducts: (state, { payload }) => {
+      state.proratedProducts = payload
     },
   },
 })

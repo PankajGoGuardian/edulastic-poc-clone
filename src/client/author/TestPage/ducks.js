@@ -207,6 +207,8 @@ export const UPDATE_TEST_ERROR = '[tests] update test error'
 
 export const RECEIVE_TEST_BY_ID_REQUEST = '[tests] receive test by id request'
 export const RECEIVE_TEST_BY_ID_SUCCESS = '[tests] receive test by id success'
+export const SET_FREEZE_TEST_SETTINGS =
+  '[tests] set freeze test settings from test'
 export const REMOVE_TEST_ENTITY = '[tests] remove entity'
 export const RECEIVE_TEST_BY_ID_ERROR = '[tests] receive test by id error'
 
@@ -415,6 +417,11 @@ export const receiveTestByIdAction = (
 export const receiveTestByIdSuccess = (entity) => ({
   type: RECEIVE_TEST_BY_ID_SUCCESS,
   payload: { entity },
+})
+
+export const setFreezeTestSettings = (freezeSettings) => ({
+  type: SET_FREEZE_TEST_SETTINGS,
+  payload: { freezeSettings },
 })
 
 export const receiveTestByIdError = (error) => ({
@@ -1007,6 +1014,14 @@ export const reducer = (state = initialState, { type, payload }) => {
           ...payload.entity,
         },
         updated: state.createdItems.length > 0,
+      }
+    case SET_FREEZE_TEST_SETTINGS:
+      return {
+        ...state,
+        entity: {
+          ...state.entity,
+          ...payload,
+        },
       }
     case REMOVE_TEST_ENTITY:
       return {

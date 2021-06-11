@@ -269,6 +269,13 @@ const RequestQuoteModal = ({
           data-cy="studentLicenseField"
         />
 
+        <FlexContainer
+          marginBottom="10px"
+          alignItems="flex-start"
+          justifyContent="flex-start"
+        >
+          <Label width="220px">Add Ons</Label>
+        </FlexContainer>
         {productsToShow && productsToShow.length ? (
           productsToShow.map((product) => (
             <FlexRow key={product.id}>

@@ -65,6 +65,7 @@ const TestAttachementsModal = ({
       onCancel={toggleAttachmentsModal}
       footer={<Footer {...footerProps} />}
       closeIcon={<IconClose />}
+      pb={!description ? '0px' : '5px'}
     >
       <Description>{description}</Description>
 

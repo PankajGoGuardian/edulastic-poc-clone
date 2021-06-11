@@ -261,7 +261,7 @@ const PurchaseFlowModals = (props) => {
 
   useEffect(() => {
     setProratedProducts(proratedProducts)
-  }, [products?.length, itemBankPremium?.length])
+  }, [products?.length, itemBankPremium?.length, subEndDate])
   useEffect(() => {
     if (
       defaultSelectedProductIdsRef.current === undefined ||

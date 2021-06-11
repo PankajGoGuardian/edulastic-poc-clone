@@ -117,7 +117,10 @@ const PurchaseFlowModals = (props) => {
   const [productsCart, setProductsCart] = useState([])
   const [emailIds, setEmailIds] = useState([])
   const [totalAmount, setTotalAmount] = useState(100)
-  const [quantities, setQuantities] = useState({})
+  const userId = user?._id
+  const [quantities, setQuantities] = useState(
+    JSON.parse(localStorage[`cartQunatities:${userId}`] || '{}')
+  )
   const [isPaymentServiceModalVisible, setPaymentServiceModal] = useState(false)
   const [isSubmitPOModalVisible, setSubmitPOModal] = useState(false)
 

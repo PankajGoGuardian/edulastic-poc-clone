@@ -47,7 +47,7 @@ const AddUsersModal = ({
     if (fieldValue.length) {
       addAndUpgradeUsers({
         userDetails: fieldValue.map((value) => value.trim()),
-        licenses: checkboxValues,
+        licenses: checkboxValues.filter((x) => x && x.trim()),
       })
       onCancel()
     }

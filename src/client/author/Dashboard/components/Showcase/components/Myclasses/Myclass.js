@@ -251,12 +251,33 @@ const MyClasses = ({
     }
 
     if (user?.orgData?.defaultGrades?.length > 0) {
-      const commonGrades = user?.orgData?.defaultGrades.filter((value) =>
-        filters[0]?.grades?.includes(value)
-      )
-      if (filters[0]) {
-        filters[0].grades = commonGrades
+      if (filters[0]?.grades?.length > 0) {
+        const commonGrades = user?.orgData?.defaultGrades.filter((value) =>
+          filters[0]?.grades?.includes(value)
+        )
+        if (filters[0]) {
+          filters[0].grades = commonGrades
+        }
+      } else {
+        filters[0].grades = user?.orgData?.defaultGrades
       }
+    } else if (filters[0]) {
+      filters[0].grades = []
+    }
+
+    if (user?.orgData?.defaultSubjects?.length > 0) {
+      if (filters[0]?.subject?.length > 0) {
+        const commonSub = user?.orgData?.defaultSubjects.filter((value) =>
+          filters[0]?.subject?.includes(value)
+        )
+        if (filters[0]) {
+          filters[0].subject = commonSub
+        }
+      } else {
+        filters[0].subject = user?.orgData?.defaultSubjects
+      }
+    } else if (filters[0]) {
+      filters[0].subject = []
     }
 
     let content = contentType?.toLowerCase() || 'tests_library'

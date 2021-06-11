@@ -27,6 +27,7 @@ const ConfirmRegradeModal = ({
 }) => {
   const showAdd = availableRegradeSettings.includes('ADD')
   const showEdit = availableRegradeSettings.includes('EDIT')
+  const showLabel = showAdd && showEdit
   const [settings, setSettings] = useState({
     addedQuestion: 'SKIP',
     editedQuestion: 'SCORE',
@@ -92,12 +93,17 @@ const ConfirmRegradeModal = ({
     >
       <div style={{ textAlign: 'left' }}>
         {showAdd && (
-          <AddedItems onUpdateSettings={onUpdateSettings} settings={settings} />
+          <AddedItems
+            onUpdateSettings={onUpdateSettings}
+            settings={settings}
+            showLabel={showLabel}
+          />
         )}
         {showEdit && (
           <EditedItems
             onUpdateSettings={onUpdateSettings}
             settings={settings}
+            showLabel={showLabel}
           />
         )}
       </div>

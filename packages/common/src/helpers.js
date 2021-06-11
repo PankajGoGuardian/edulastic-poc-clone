@@ -164,7 +164,7 @@ function convertBlobToFile(blob) {
     if (fileType.includes('image/')) {
       fileExtension = fileType.split('image/')[1]
     }
-    const file = new File([file], `pasted-image-${Date.now()}.${fileExtension}`)
+    const file = new File([blob], `pasted-image-${Date.now()}.${fileExtension}`)
     return file
   }
   return null

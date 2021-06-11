@@ -29,6 +29,7 @@ import { getFontSize } from '../../utils/helpers'
 import MathSpanWrapper from '../../components/MathSpanWrapper'
 import Instructions from '../../components/Instructions'
 import { EDIT } from '../../constants/constantsForQuestions'
+import { getRand } from '@edulastic/common/src/helpers'
 
 const { DragPreview } = DragDrop
 const {
@@ -194,7 +195,7 @@ class ClozeDragDropDisplay extends Component {
 
   shuffle = (arr) => {
     for (let i = arr.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1))
+      const j = Math.floor(getRand() * (i + 1))
       ;[arr[i], arr[j]] = [arr[j], arr[i]]
     }
     return arr

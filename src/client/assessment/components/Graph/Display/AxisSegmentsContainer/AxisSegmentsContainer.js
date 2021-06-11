@@ -27,6 +27,7 @@ import AnnotationRnd from '../../../Annotations/AnnotationRnd'
 import Tools from '../../common/Tools'
 import SegmentsTools from './SegmentsTools'
 import { GraphWrapper, JSXBox } from './styled'
+import { getRand } from '@edulastic/common/src/helpers'
 
 const getColoredElems = (elements, compareResult) => {
   if (
@@ -179,7 +180,7 @@ class AxisSegmentsContainer extends PureComponent {
   constructor(props) {
     super(props)
 
-    this._graphId = `jxgbox${Math.random().toString(36).replace('.', '')}`
+    this._graphId = `jxgbox${getRand().toString(36).replace('.', '')}`
     this._graph = null
 
     this.state = {

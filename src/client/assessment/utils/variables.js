@@ -2,6 +2,7 @@ import { has, omitBy } from 'lodash'
 import uuid from 'uuid'
 import produce from 'immer'
 import { questionType } from '@edulastic/constants'
+import { getRand } from '@edulastic/common/src/helpers'
 
 const mathRegex = /<span class="input__math" data-latex="([^"]+)"><\/span>/g
 
@@ -81,7 +82,7 @@ export const updateVariables = (item, latexKeys = []) => {
       min: 0,
       max: 100,
       decimal: 0,
-      exampleValue: Math.round(Math.random() * 100),
+      exampleValue: Math.round(getRand() * 100),
     }
     newExamples = newExamples.map((example) => ({
       [variableName]: '',

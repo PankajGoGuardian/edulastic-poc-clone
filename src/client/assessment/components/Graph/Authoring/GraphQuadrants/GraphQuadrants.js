@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { arrayMove } from 'react-sortable-hoc'
 import { cloneDeep } from 'lodash'
 import { withNamespaces } from '@edulastic/localization'
-import { getFormattedAttrId } from '@edulastic/common/src/helpers'
+import { getFormattedAttrId, getRand } from '@edulastic/common/src/helpers'
 import { setQuestionDataAction } from '../../../../../author/QuestionEditor/ducks'
 import QuestionTextArea from '../../../QuestionTextArea'
 import { Subtitle } from '../../../../styled/Subtitle'
@@ -93,7 +93,7 @@ class GraphQuadrants extends Component {
 
     newItem.list = newItem.list.concat({
       text: '<p>New Option</p>',
-      id: `list-item-${Math.random().toString(36).substr(2, 9)}`,
+      id: `list-item-${getRand().toString(36).substr(2, 9)}`,
     })
 
     setQuestionData({ ...graphData, list: newItem.list })

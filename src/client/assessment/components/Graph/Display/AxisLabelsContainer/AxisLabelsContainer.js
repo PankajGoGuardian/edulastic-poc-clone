@@ -37,6 +37,7 @@ import {
 } from '../../common/utils'
 import AppConfig from '../../../../../../app-config'
 import { roundPointToNearestValue } from '../Utils'
+import { getRand } from '@edulastic/common/src/helpers'
 
 const v1Dimenstions = {
   v1Height: 432,
@@ -114,7 +115,7 @@ class AxisLabelsContainer extends PureComponent {
     this.MIN_WIDTH = 500
     this.MIN_HEIGHT = 150
 
-    this._graphId = `jxgbox${Math.random().toString(36).replace('.', '')}`
+    this._graphId = `jxgbox${getRand().toString(36).replace('.', '')}`
     this._graph = null
 
     this.state = {

@@ -42,6 +42,7 @@ import {
 import Tools from '../../common/Tools'
 import DragDropValues from './DragDropValues'
 import AppConfig from '../../../../../../app-config'
+import { getRand } from '@edulastic/common/src/helpers'
 
 const valueHeightHashMap = {
   1: {
@@ -190,7 +191,7 @@ class PlacementContainer extends PureComponent {
   constructor(props) {
     super(props)
 
-    this._graphId = `jxgbox${Math.random().toString(36).replace('.', '')}`
+    this._graphId = `jxgbox${getRand().toString(36).replace('.', '')}`
     this._graph = null
 
     this.state = { resourcesLoaded: false, showPoint: false }
@@ -615,7 +616,7 @@ class PlacementContainer extends PureComponent {
     const margin = layout.margin ? layout.margin : hasAnnotation ? 20 : 0
 
     const dragDropBoundsClassName = `jsxbox-with-drag-drop-${
-      questionId || Math.random().toString().slice(2, 9)
+      questionId || getRand().toString().slice(2, 9)
     }`
 
     const valueDimensions = valueHeightHashMap[zoomLevel]

@@ -13,7 +13,7 @@ import {
   QuestionContentWrapper,
   QuestionSubLabel,
 } from '@edulastic/common'
-import { getFormattedAttrId } from '@edulastic/common/src/helpers'
+import { getFormattedAttrId, getRand } from '@edulastic/common/src/helpers'
 
 import { compose } from 'redux'
 import styled from 'styled-components'
@@ -364,7 +364,7 @@ class Graph extends Component {
     const newItem = cloneDeep(item)
 
     const response = {
-      id: `alt-${Math.random().toString(36)}`,
+      id: `alt-${getRand().toString(36)}`,
       score: newItem?.validation?.validResponse?.score,
       value: [],
     }

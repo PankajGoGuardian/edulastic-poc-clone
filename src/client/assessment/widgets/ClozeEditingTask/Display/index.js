@@ -29,6 +29,7 @@ import { ContentWrapper } from '../styled/ContentWrapper'
 import { QuestionTitleWrapper } from '../styled/QuestionTitleWrapper'
 import { EDIT } from '../../../constants/constantsForQuestions'
 import { displayStyles } from '../constants'
+import { getRand } from '@edulastic/common/src/helpers'
 
 const { DragPreview } = DragDrop
 class EditingTypeDisplay extends Component {
@@ -54,7 +55,7 @@ class EditingTypeDisplay extends Component {
 
   shuffle = (arr) => {
     for (let i = arr.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1))
+      const j = Math.floor(getRand() * (i + 1))
       ;[arr[i], arr[j]] = [arr[j], arr[i]]
     }
     return arr

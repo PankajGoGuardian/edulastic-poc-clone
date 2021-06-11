@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { withNamespaces } from '@edulastic/localization'
 import { arrayMove } from 'react-sortable-hoc'
 import { cloneDeep, clone } from 'lodash'
-import { getFormattedAttrId } from '@edulastic/common/src/helpers'
+import { getFormattedAttrId, getRand } from '@edulastic/common/src/helpers'
 import { Row } from '../../../styled/WidgetOptions/Row'
 import { Col } from '../../../styled/WidgetOptions/Col'
 import { Label } from '../../../styled/WidgetOptions/Label'
@@ -80,7 +80,7 @@ class GraphAxisLabels extends Component {
 
     newItem.list = newItem.list.concat({
       text: 'New Option',
-      id: `list-item-${Math.random().toString(36).substr(2, 9)}`,
+      id: `list-item-${getRand().toString(36).substr(2, 9)}`,
     })
 
     setQuestionData({ ...graphData, list: newItem.list })

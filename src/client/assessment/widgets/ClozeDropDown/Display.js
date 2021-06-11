@@ -36,6 +36,7 @@ import { withCheckAnswerButton } from '../../components/HOC/withCheckAnswerButto
 import MathSpanWrapper from '../../components/MathSpanWrapper'
 import Instructions from '../../components/Instructions'
 import ChoicesBox from './ChoicesBox'
+import { getRand } from '@edulastic/common/src/helpers'
 
 class ClozeDropDownDisplay extends Component {
   state = {
@@ -79,7 +80,7 @@ class ClozeDropDownDisplay extends Component {
 
   shuffle = (arr) => {
     for (let i = arr.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1))
+      const j = Math.floor(getRand() * (i + 1))
       ;[arr[i], arr[j]] = [arr[j], arr[i]]
     }
     return arr

@@ -1,3 +1,4 @@
+import { getRand } from '@edulastic/common/src/helpers'
 import { thumbnailData } from '../constants'
 
 const cdnURL = process.env.REACT_APP_THUMBNAIL_CDN_MANAGE_CLASS
@@ -9,7 +10,7 @@ export const getThumbnail = () => {
   thumbnailDataArr = thumbnailData.fileNames
   if (thumbnailDataArr.length != null) {
     randomThumbnail =
-      thumbnailDataArr[Math.floor(Math.random() * thumbnailDataArr.length)]
+      thumbnailDataArr[Math.floor(getRand() * thumbnailDataArr.length)]
     thumbnail = cdnURL + randomThumbnail
   }
   return thumbnail

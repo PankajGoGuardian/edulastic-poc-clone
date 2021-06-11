@@ -33,7 +33,7 @@ import {
   CustomModalStyled,
 } from '@edulastic/common'
 import { extraDesktopWidthMax, redDark } from '@edulastic/colors'
-import { getFormattedAttrId } from '@edulastic/common/src/helpers'
+import { getFormattedAttrId, getRand } from '@edulastic/common/src/helpers'
 import {
   getQuestionDataSelector,
   setQuestionDataAction,
@@ -323,7 +323,7 @@ const Variables = ({
         combinationsCount
       )
       if (!isEmpty(newExampleValue)) {
-        const index = Math.floor(Math.random() * newExampleValue.length)
+        const index = Math.floor(getRand() * newExampleValue.length)
         if (newExampleValue[index]) {
           keys(newExampleValue[index]).forEach((varialeKey) => {
             if (varialeKey !== 'key') {
@@ -716,7 +716,7 @@ const Variables = ({
             <Col md={24}>
               <Table
                 columns={columns}
-                key={`table-${Math.random(10)}`}
+                key={`table-${getRand()}`}
                 dataSource={examples}
                 pagination={{
                   pageSize: 10,

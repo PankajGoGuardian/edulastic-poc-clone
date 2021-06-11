@@ -8,6 +8,12 @@ import { useLayoutEffect } from 'react'
 import { replaceLatexesWithMathHtml } from './utils/mathUtils'
 import AppConfig from '../../../src/app-config'
 
+export const getRand = () => {
+  const crypto = window.crypto || window.msCrypto
+  var array = new Uint32Array(1)
+  return crypto.getRandomValues(array)
+}
+
 export function useLayoutEffectDebounced(func, values, time) {
   useLayoutEffect(() => {
     let db = setTimeout(() => {
@@ -108,7 +114,7 @@ const PATTERN = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
  */
 const uuid = () =>
   PATTERN.replace(REGEXP, (c) => {
-    let r = (Math.random() * 16) | 0
+    let r = (getRand() * 16) | 0
     let v = c == 'x' ? r : (r & 0x3) | 0x8
     return v.toString(16)
   })

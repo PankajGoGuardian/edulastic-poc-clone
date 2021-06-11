@@ -48,6 +48,7 @@ import GraphEditTools from '../../components/GraphEditTools'
 import DrawingObjects from './DrawingObjects'
 import { ElementSettingsMenu } from './ElementSettingsMenu'
 import AppConfig from '../../../../../../app-config'
+import { getRand } from '@edulastic/common/src/helpers'
 
 const trueColor = '#1fe3a1'
 const errorColor = '#ee1658'
@@ -188,7 +189,7 @@ class GraphContainer extends PureComponent {
   constructor(props) {
     super(props)
 
-    this._graphId = `jxgbox${Math.random().toString(36).replace('.', '')}`
+    this._graphId = `jxgbox${getRand().toString(36).replace('.', '')}`
     this._graph = null
 
     this.state = {

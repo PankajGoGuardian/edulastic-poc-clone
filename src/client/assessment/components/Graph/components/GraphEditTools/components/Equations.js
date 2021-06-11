@@ -18,6 +18,7 @@ import { backgrounds, greyThemeDark2 } from '@edulastic/colors'
 
 import { CONSTANT } from '../../../Builder/config/index'
 import { IconKeyboard } from '../styled/IconKeyboard'
+import { getRand } from '@edulastic/common/src/helpers'
 
 const { defaultNumberPad } = math
 
@@ -68,7 +69,7 @@ class Equations extends Component {
             produce(equations, (draft) => {
               draft.push({
                 ...emptyEquation,
-                id: `jxgEq-${Math.random().toString(36).substr(2, 9)}`,
+                id: `jxgEq-${getRand().toString(36).substr(2, 9)}`,
                 latex,
                 apiLatex: result[0],
               })

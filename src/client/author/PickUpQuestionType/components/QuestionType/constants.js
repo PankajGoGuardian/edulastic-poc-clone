@@ -98,6 +98,7 @@ import Protractor from '../../../src/assets/rulers-calculators/protractor-blue.s
 
 // Others
 import CodingImage from '../../../src/assets/others/coding.svg'
+import { getRand } from '@edulastic/common/src/helpers'
 
 export const getCards = (onSelectQuestionType, isPassage = false) => {
   const { EMBED_RESPONSE, defaultNumberPad } = math
@@ -1898,11 +1899,11 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         list: [
           {
             text: '<p>Option 1</p>',
-            id: `list-item-${Math.random().toString(36).substr(2, 9)}`,
+            id: `list-item-${getRand().toString(36).substr(2, 9)}`,
           },
           {
             text: '<p>Option 2</p>',
-            id: `list-item-${Math.random().toString(36).substr(2, 9)}`,
+            id: `list-item-${getRand().toString(36).substr(2, 9)}`,
           },
         ],
         validation: {
@@ -2091,11 +2092,11 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         list: [
           {
             text: 'Option 1',
-            id: `list-item-${Math.random().toString(36).substr(2, 9)}`,
+            id: `list-item-${getRand().toString(36).substr(2, 9)}`,
           },
           {
             text: 'Option 2',
-            id: `list-item-${Math.random().toString(36).substr(2, 9)}`,
+            id: `list-item-${getRand().toString(36).substr(2, 9)}`,
           },
         ],
         toolbar: {

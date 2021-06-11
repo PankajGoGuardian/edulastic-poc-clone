@@ -2,6 +2,7 @@
 var pdfjsViewer = require('pdfjs-dist/web/pdf_viewer.js') // pdfjs-dist - v2.1.266
 var { aws } = require('@edulastic/constants')
 var { uploadToS3 } = require('@edulastic/common')
+const { getRand } = require('@edulastic/common/src/helpers')
 const { themeColor } = require('@edulastic/colors')
 ;(function webpackUniversalModuleDefinition(root, factory) {
   if (typeof exports === 'object' && typeof module === 'object')
@@ -1814,7 +1815,7 @@ const { themeColor } = require('@edulastic/colors')
         var PATTERN = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
 
         function replacement(c) {
-          var r = (Math.random() * 16) | 0
+          var r = (getRand() * 16) | 0
           var v = c == 'x' ? r : (r & 0x3) | 0x8
           return v.toString(16)
         }

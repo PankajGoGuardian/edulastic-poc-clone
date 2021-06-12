@@ -36,7 +36,9 @@ const CanvasSyncModal = ({
   const [section, setSection] = useState(canvasCourseSectionCode)
   const [sectionError, setSectionError] = useState(false)
   const [courseError, setCourseError] = useState(false)
-  const [coTeacherFlag, setCoTeacherFlag] = useState(syncCanvasCoTeacher)
+  const [coTeacherFlag, setCoTeacherFlag] = useState(
+    canvasCode ? syncCanvasCoTeacher : true
+  )
   const [isDisabled, setIsDisabled] = useState(
     !!canvasCode && !!canvasCourseSectionCode
   )
@@ -78,7 +80,7 @@ const CanvasSyncModal = ({
     getCanvasSectionListRequest({ institutionId, allCourseIds: [value] })
     setCourse(value)
     setSection('')
-    setCoTeacherFlag(false)
+    setCoTeacherFlag(true)
     setCourseError(false)
     setSectionError(false)
   }

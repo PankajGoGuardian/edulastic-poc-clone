@@ -1,5 +1,5 @@
 import { takeEvery, put, all, select, call } from 'redux-saga/effects'
-import { isEmpty, values, keyBy, get } from 'lodash'
+import { isEmpty, values } from 'lodash'
 
 import { testItemsApi, attchmentApi as attachmentApi } from '@edulastic/api'
 import {
@@ -27,7 +27,6 @@ import { CHANGE_PREVIEW, CHANGE_VIEW } from '../../author/src/constants/actions'
 import { getTypeAndMsgBasedOnScore } from '../../common/utils/helpers'
 import { scratchpadDomRectSelector } from '../../common/components/Scratchpad/duck'
 import { getUserRole } from '../../author/src/selectors/user'
-import { evaluateItem } from '../../author/src/utils/evalution'
 
 const { playerSkinValues } = testConstants
 
@@ -63,7 +62,7 @@ function* evaluateAnswers({ payload: groupId }) {
         ...config,
       })
     }
-    const { items, currentItem } = yield select((state) => state.test)
+    const { items, currentItem, testId } = yield select((state) => state.test)
     const testItemId = items[currentItem]._id
     const shuffledOptions = yield select((state) => state.shuffledOptions)
     const questions = getQuestionIds(items[currentItem])
@@ -138,29 +137,11 @@ function* evaluateAnswers({ payload: groupId }) {
     let evaluationObj = {}
     let evaluations = {}
     if (role !== roleuser.STUDENT) {
-      const {
-        itemLevelScore,
-        itemLevelScoring = false,
-        itemGradingType,
-        assignPartialCredit,
-      } = items[currentItem]
-      const itemQuestions = keyBy(items[currentItem]?.data?.questions, 'id')
-
-      const { penalty, scoringType } = yield select((state) =>
-        get(state, 'tests.entity', {})
-      )
-      const testSettings = { scoringType, penalty }
-      evaluationObj = yield evaluateItem(
-        allAnswers,
-        itemQuestions,
-        itemLevelScoring,
-        itemLevelScore,
-        testItemId,
-        itemGradingType,
-        assignPartialCredit,
-        testSettings
-      )
-      evaluations = evaluationObj?.evaluation
+      evaluationObj = yield testItemsApi.evaluateAsStudent(testItemId, {
+        answers: allAnswers,
+        testId,
+      })
+      evaluations = evaluationObj.evaluations
     } else {
       evaluationObj = yield call(testItemsApi.evaluation, testItemId, activity)
       const { evaluations: _evaluations } = evaluationObj

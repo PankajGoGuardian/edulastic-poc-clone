@@ -128,8 +128,9 @@ const SubscriptionMain = ({
   subscription,
   subsLicenses = [],
   user,
-  isGradeSubjectSelected,
+  isPlanEnterprise,
   proratedProducts,
+  signUpFlowModalHandler = () => {},
 }) => {
   const [isTrialModalVisible, setIsTrialModalVisible] = useState(false)
   const [hasAllTrialProducts, setHasAllTrialProducts] = useState(false)
@@ -508,13 +509,14 @@ const SubscriptionMain = ({
         </SpinContainer>
       ) : (
         <SectionContainer>
-          {!isGradeSubjectSelected && (
+          {!isPlanEnterprise && (
             <>
               <TabHeaderContent
                 setShowMultiplePurchaseModal={setShowMultiplePurchaseModal}
                 setShowEnterpriseTab={setShowEnterpriseTab}
                 showMultipleSubscriptions={showMultipleSubscriptions}
                 history={history}
+                signUpFlowModalHandler={signUpFlowModalHandler}
               />
               {(!isFreeAdmin ||
                 (subType === 'partial_premium' && !isPremiumUser)) &&
@@ -609,35 +611,32 @@ const SubscriptionMain = ({
                           }
                           placement="bottom"
                         >
-                          <AuthorCompleteSignupButton
-                            renderButton={(handleClick) => (
-                              <EduButton
-                                title={
-                                  isPremiumTrialUsed && !subscription.length
-                                    ? `Free trial for ${teacherPremium.title} is already utilized. Kindly purchase to access the content.`
-                                    : undefined
-                                }
-                                onClick={handleClick}
-                                height="32px"
-                                width="180px"
-                                isGhost
-                                isBlue
-                                data-cy="subscriptionStartTrialbtn"
-                                className={
-                                  isPremiumTrialUsed &&
-                                  !subscription.length &&
-                                  'disabled'
-                                }
-                              >
-                                Try Now
-                              </EduButton>
-                            )}
+                          <EduButton
+                            title={
+                              isPremiumTrialUsed && !subscription.length
+                                ? `Free trial for ${teacherPremium.title} is already utilized. Kindly purchase to access the content.`
+                                : undefined
+                            }
                             onClick={() => {
                               !(isPremiumTrialUsed && !subscription.length)
-                                ? handleStartTrialButtonClick()
+                                ? signUpFlowModalHandler(
+                                    handleStartTrialButtonClick
+                                  )
                                 : {}
                             }}
-                          />
+                            height="32px"
+                            width="180px"
+                            isGhost
+                            isBlue
+                            data-cy="subscriptionStartTrialbtn"
+                            className={
+                              isPremiumTrialUsed &&
+                              !subscription.length &&
+                              'disabled'
+                            }
+                          >
+                            Try Now
+                          </EduButton>
                         </Tooltip>
                       )}
                     </CardRightWrapper>

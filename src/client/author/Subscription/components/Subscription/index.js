@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 // import { withNamespaces } from '@edulastic/localization' // TODO: Need i18n support
 import { connect } from 'react-redux'
-import { roleuser } from '@edulastic/constants'
+import { roleuser, signUpState } from '@edulastic/constants'
 import { slice } from '../../ducks'
 import HasLicenseKeyModal from '../HasLicenseKeyModal'
 import PurchaseLicenseModal from '../PurchaseLicenseModal'
@@ -33,6 +33,7 @@ import EnterpriseTab from '../SubscriptionMain/EnterpriseTab'
 import FREEIMG from '../../static/free-forever-bg.png'
 import PREMIUMIMG from '../../static/premium-teacher-bg.png'
 import ENTERPRISEIMG from '../../static/enterprise-bg.png'
+import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 
 const RequestInvoiceModal = loadable(() => import('../RequestInvoviceModal'))
 
@@ -246,6 +247,8 @@ const Subscription = (props) => {
   const [isRequestInvoiceModalVisible, setRequestInvoiceModal] = useState(false)
   const [showEnterpriseTab, setShowEnterpriseTab] = useState(false)
   const [isSubmitPOModalVisible, setSubmitPOModal] = useState(false)
+  const [showCompleteSignupModal, setShowCompleteSignupModal] = useState(false)
+  const [callFunctionAfterSignup, setCallFunctionAfterSignup] = useState(null)
 
   useEffect(() => {
     // getSubscription on mount
@@ -259,23 +262,19 @@ const Subscription = (props) => {
     user.role
   )
 
-  const { defaultGrades = [], defaultSubjects = [] } = user.orgData
-  const hasPreferences = defaultGrades.length > 0 && defaultSubjects.length > 0
-  const isGradeSubjectSelected =
+  const isPlanEnterprise =
     ['partial_premium', 'enterprise'].includes(subType) &&
     isPremiumUser &&
-    roleuser.TEACHER === user.role &&
-    hasPreferences
+    roleuser.TEACHER === user.role
 
   useEffect(() => {
     if (
-      ((['partial_premium', 'enterprise'].includes(subType) && isPremiumUser) ||
-        isFreeAdmin) &&
-      hasPreferences
+      (['partial_premium', 'enterprise'].includes(subType) && isPremiumUser) ||
+      isFreeAdmin
     ) {
       setShowEnterpriseTab(true)
     }
-  }, [hasPreferences])
+  }, [subType])
 
   /**
    *  a user is paid premium user if
@@ -381,6 +380,20 @@ const Subscription = (props) => {
   const handleCloseFeatureNotAvailableModal = () =>
     setShowFeatureNotAvailableModal(false)
 
+  const { currentSignUpState: signupStatus } = user
+  const isSignupCompleted = signupStatus === signUpState.DONE
+
+  const signUpFlowModalHandler = (afterSignup) => {
+    if (!isSignupCompleted) {
+      setShowCompleteSignupModal(true)
+      setCallFunctionAfterSignup(() => afterSignup)
+    } else {
+      setShowCompleteSignupModal(false)
+      setCallFunctionAfterSignup(() => null)
+      afterSignup()
+    }
+  }
+
   return (
     <Wrapper>
       <SubscriptionHeader
@@ -408,7 +421,6 @@ const Subscription = (props) => {
         schoolId={schoolId}
         setCartVisible={setCartVisible}
         cartQuantities={cartQuantities}
-        hasPreferences={hasPreferences}
       />
       <SubscriptionContentWrapper>
         {showEnterpriseTab ? (
@@ -417,8 +429,8 @@ const Subscription = (props) => {
             subType={subType}
             requestQuote={openRequestQuoteModal}
             subEndDate={subEndDate}
-            hasPreferences={hasPreferences}
             isPremiumUser={isPremiumUser}
+            signUpFlowModalHandler={signUpFlowModalHandler}
           />
         ) : (
           <SubscriptionMain
@@ -464,8 +476,9 @@ const Subscription = (props) => {
             subsLicenses={subsLicenses}
             user={user}
             requestQuote={openRequestQuoteModal}
-            isGradeSubjectSelected={isGradeSubjectSelected}
+            isPlanEnterprise={isPlanEnterprise}
             proratedProducts={proratedProducts}
+            signUpFlowModalHandler={signUpFlowModalHandler}
           />
         )}
       </SubscriptionContentWrapper>
@@ -497,6 +510,15 @@ const Subscription = (props) => {
         isExternalSubmitPOModalVisible={isSubmitPOModalVisible}
         toggleSubmitPOModal={setSubmitPOModal}
       />
+
+      {showCompleteSignupModal && (
+        <AuthorCompleteSignupButton
+          isOpenSignupModal={showCompleteSignupModal}
+          onClick={callFunctionAfterSignup}
+          setShowCompleteSignupModal={setShowCompleteSignupModal}
+          setCallFunctionAfterSignup={setCallFunctionAfterSignup}
+        />
+      )}
 
       <HasLicenseKeyModal
         visible={hasLicenseKeyModal}

@@ -68,7 +68,6 @@ const SubscriptionHeader = ({
   schoolId,
   setCartVisible,
   cartQuantities = {},
-  hasPreferences,
 }) => {
   const openMultiplePurchaseModal = () => setShowMultiplePurchaseModal(true)
   const cartCount = Object.keys(cartQuantities).filter(
@@ -77,9 +76,8 @@ const SubscriptionHeader = ({
 
   useEffect(() => {
     if (
-      ((['partial_premium', 'enterprise'].includes(subType) && isPremiumUser) ||
-        isFreeAdmin) &&
-      hasPreferences
+      (['partial_premium', 'enterprise'].includes(subType) && isPremiumUser) ||
+      isFreeAdmin
     ) {
       setShowEnterpriseTab(true)
     }

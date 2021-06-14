@@ -439,7 +439,9 @@ class Container extends Component {
   }
 
   handleDeletePassageWidget = (widgetIndex) => {
-    if (widgetIndex === 0) {
+    const { passage } = this.props
+    const numberOfPassageWidgets = get(passage, 'structure.widgets', []).length
+    if (numberOfPassageWidgets === 1) {
       notification({ messageKey: 'thereShouldBeAtleastOnePassageItem' })
 
       return null

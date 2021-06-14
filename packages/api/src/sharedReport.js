@@ -3,7 +3,6 @@ import API from './utils/API'
 const api = new API()
 const prefix = '/shared-report'
 
-/* TODO: check the API and change accordingly */
 const createSharedReport = (data) =>
   api
     .callApi({
@@ -13,7 +12,6 @@ const createSharedReport = (data) =>
     })
     .then((result) => result.data.result)
 
-/* TODO: check the API and change accordingly */
 const updateSharedReport = ({ id, ...data }) =>
   api
     .callApi({

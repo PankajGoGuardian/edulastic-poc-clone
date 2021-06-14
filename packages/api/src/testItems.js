@@ -1,4 +1,4 @@
-import { get } from 'lodash'
+import { get, omit } from 'lodash'
 import API from './utils/API'
 import AttchmentApi from './attachment'
 
@@ -38,21 +38,21 @@ const getById = (id, params = {}) =>
     .then((result) => result.data.result)
 
 const updateById = (id, item, testId) => {
-  const {
-    updatedAt,
-    createdAt,
-    authors,
-    autoGrade,
-    sharedType,
-    algoVariablesEnabled,
-    owner,
-    sharedWith,
-    previousTestItemId,
-    ...data
-  } = formatData(item)
+  const data = omit(formatData(item), [
+    'updatedAt',
+    'createdAt',
+    'authors',
+    'autoGrade',
+    'sharedType',
+    'algoVariablesEnabled',
+    'owner',
+    'sharedWith',
+    'previousTestItemId',
+  ])
+  const _testId = testId ? `?testId=${testId}` : ''
   return api
     .callApi({
-      url: `${prefix}/${id}${testId ? `?testId=${testId}` : ''}`,
+      url: `${prefix}/${id}${_testId}`,
       method: 'put',
       data,
     })
@@ -172,22 +172,20 @@ const updateCorrectItemById = ({
   editRegradeChoice,
   proceedRegrade: regrade,
 }) => {
-  const {
-    public: publicValue,
-    autoGrade,
-    passageContent,
-    alreadyLiked,
-    algoVariablesEnabled,
-    previousTestItemId,
-    sharedType,
-    sharedWith,
-    createdAt,
-    updatedAt,
-    __v,
-    passageData,
-    ...data
-  } = formatData(item)
-
+  const data = omit(formatData(item), [
+    'public',
+    'autoGrade',
+    'passageContent',
+    'alreadyLiked',
+    'algoVariablesEnabled',
+    'previousTestItemId',
+    'sharedType',
+    'sharedWith',
+    'createdAt',
+    'updatedAt',
+    '__v',
+    'passageData',
+  ])
   return api
     .callApi({
       url: `${prefix}/${id}/correct-item-and-publish`,

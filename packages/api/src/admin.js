@@ -12,7 +12,7 @@ const searchUpdateDistrict = (params) =>
       url: `districts`,
       method: 'get',
       params,
-      paramsSerializer: (params) => qs.stringify(params),
+      paramsSerializer: (_params) => qs.stringify(_params),
     })
     .then(({ data }) => data)
 
@@ -22,7 +22,7 @@ const searchClasslinkDistrict = (params) =>
       url: `${atlasPrefix}districts/classlink`,
       method: 'get',
       params,
-      paramsSerializer: (params) => qs.stringify(params),
+      paramsSerializer: (_params) => qs.stringify(_params),
     })
     .then(({ data }) => data)
 
@@ -84,7 +84,7 @@ const applyDeltaSyncApi = (data) =>
       method: 'post',
       data,
     })
-    .then(({ data }) => data)
+    .then(({ data: _data }) => _data)
 
 const applyAtlasDeltaSyncApi = ({ atlasId, ...data }) =>
   api
@@ -93,7 +93,7 @@ const applyAtlasDeltaSyncApi = ({ atlasId, ...data }) =>
       method: 'post',
       data,
     })
-    .then(({ data }) => data)
+    .then(({ data: _data }) => _data)
 
 const selectedSchoolSyncApi = ({ cleverId, schoolCleverIds }) =>
   api
@@ -141,7 +141,7 @@ const fetchCleverClassNamesSyncApi = (data) =>
       method: 'post',
       data,
     })
-    .then(({ data }) => data)
+    .then(({ data: _data }) => _data)
 
 const fetchAtlasClassNamesSyncApi = (data) =>
   api
@@ -150,7 +150,7 @@ const fetchAtlasClassNamesSyncApi = (data) =>
       method: 'post',
       data,
     })
-    .then(({ data }) => data)
+    .then(({ data: _data }) => _data)
 
 const enableDisableCleverSyncApi = ({ syncEnabled, districtId }) =>
   api
@@ -215,7 +215,7 @@ const updateCleverSubjectStandardApi = (data) =>
       method: 'post',
       data,
     })
-    .then(({ data }) => data)
+    .then(({ data: _data }) => _data)
 
 const updateAtlasSubjectStandardApi = (data) =>
   api
@@ -224,7 +224,7 @@ const updateAtlasSubjectStandardApi = (data) =>
       method: 'post',
       data,
     })
-    .then(({ data }) => data)
+    .then(({ data: _data }) => _data)
 
 const logsDataApi = (districtId) =>
   api

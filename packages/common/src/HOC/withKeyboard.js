@@ -5,11 +5,12 @@ import { keyboard as keyboardConst } from '@edulastic/constants'
 import helpers from '../helpers'
 
 export default function withKeyboard(WrappedComponent) {
+  const boxShadowOutline = `0 0 0 2px ${themeColorBlue}`
   const StyledWrappedComponent = styled(WrappedComponent)`
     &:focus {
       outline: 0;
       box-shadow: ${({ enableShadowOutline }) =>
-        enableShadowOutline ? `0 0 0 2px ${themeColorBlue}` : 'none'};
+        enableShadowOutline ? boxShadowOutline : 'none'};
     }
   `
 

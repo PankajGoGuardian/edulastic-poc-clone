@@ -3,13 +3,15 @@ import API from './utils/API'
 const api = new API()
 const prefix = '/config-tiles'
 
-const fetchTiles = (version, state) =>
-  api
+const fetchTiles = (version, state) => {
+  const _state = state ? `?state=${state}` : ''
+  return api
     .callApi({
-      url: `${prefix}/${version}${state ? `?state=${state}` : ''}`,
+      url: `${prefix}/${version}${_state}`,
       method: 'get',
     })
     .then((result) => result.data)
+}
 
 const fetchTileById = (id) =>
   api
@@ -30,12 +32,15 @@ const fetchRecommendedTest = () =>
       const data = []
       const res = result?.data?.map((x) => x?.results)
       const totalElements = result?.data?.flatMap((x) => x?.results)?.length
-      for (let currentIndex = 0; data.length < totalElements; currentIndex++) {
+      let currentIndex = 0
+      while (data.length < totalElements) {
+        // eslint-disable-next-line no-loop-func
         res.forEach((arr) => {
           if (currentIndex < arr?.length) {
             data.push(arr[currentIndex])
           }
         })
+        currentIndex += 1
       }
       return data
     })

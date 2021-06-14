@@ -2,16 +2,16 @@ import API from './utils/API'
 
 const api = new API()
 
-const classResponse = ({ testId, classId, assignmentId }) =>
-  api
+const classResponse = ({ testId, classId, assignmentId }) => {
+  const _classId = classId ? `&groupId=${classId}` : ''
+  const _assignmentId = assignmentId ? `&assignmentId=${assignmentId}` : ''
+  return api
     .callApi({
-      url: `/test/${testId}/minimal?validation=true&data=true${
-        classId ? `&groupId=${classId}` : ''
-      }${assignmentId ? `&assignmentId=${assignmentId}` : ''}`,
+      url: `/test/${testId}/minimal?validation=true&data=true${_classId}${_assignmentId}`,
       method: 'get',
     })
-
     .then((result) => result.data.result)
+}
 
 const studentResponse = ({ testActivityId, groupId }) =>
   api

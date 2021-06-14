@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { get } from 'lodash'
 import {
   storeInLocalStorage,
   getFromLocalStorage,
@@ -122,7 +123,7 @@ const isValidDate = (d) => d instanceof Date && Number.isFinite(Number(d))
 const diffInSeconds = (dt2, dt1) => (dt2.getTime() - dt1.getTime()) / 1000
 
 /** A small function to compare semver versions
- * TODO: Move this into utils, if needed at multiple places
+ * NOTE: Move this into utils, if needed at multiple places
  */
 const SemverCompare = (a, b) => {
   const pa = a.split('.')
@@ -189,13 +190,20 @@ export default class API {
         window.__CLIENT_VERSION__ = appVersion
         window.__SERVER_VERSION__ = serverAppVersion
         const updatedToken = response.headers[tokenUpdateHeader]
-        // const oldAccessToken = getAccessToken();
+        /**
+         * NOTE: if old access token is needed
+         **
+         * const oldAccessToken = getAccessToken()
+         */
         if (updatedToken) {
           updateUserToken(updatedToken, response.headers[kidUpdateHeader])
-          // TODO: if needed , implement responding to access token changes
-          /* if (oldAccessToken && oldAccessToken != updatedToken) {
-            window.dispatchEvent(new Event('access-token-updated'));
-          } */
+          /**
+           * NOTE: if needed, implement responding to access token changes
+           **
+           * if (oldAccessToken && oldAccessToken != updatedToken) {
+           *   window.dispatchEvent(new Event('access-token-updated'));
+           * }
+           */
         }
 
         // if the server version is higher than the client version, then try to resync
@@ -229,11 +237,13 @@ export default class API {
         return response
       },
       (data) => {
-        const reqUrl = data.response?.config?.url || 'NA'
+        const reqUrl = get(data, 'response.config.url', 'NA')
         const err = new Error(
-          `Sorry, you have hit an unexpected error and the product team has been notified. We will fix it as soon as possible. url: ${reqUrl}: message: ${
-            data.response?.data?.message || 'NA'
-          }`
+          `Sorry, you have hit an unexpected error and the product team has been notified. We will fix it as soon as possible. url: ${reqUrl}: message: ${get(
+            data,
+            'response.data.message',
+            'NA'
+          )}`
         )
 
         // make the response available so anyone can read it.
@@ -244,26 +254,22 @@ export default class API {
         if (err.status && String(err.status).match(ErrStatRegex)) {
           Sentry.withScope((scope) => {
             const fingerPrint = getUrlFragment(reqUrl) || reqUrl
-
+            const res = get(data, 'response.data', {})
+            const ref = get(data, 'response.headers.x-server-ref')
+            const req = get(data, 'response.config.data', {})
             scope.setLevel('error')
-            scope.setTag('ref', data.response?.headers?.['x-server-ref'])
+            scope.setTag('ref', ref)
             Sentry.captureException(err)
             scope.setTag('issueType', 'UnexpectedErrorAPI')
             scope.setFingerprint(['{{default}}', fingerPrint])
             scope.setContext('api_meta', {
-              res: data.response?.data || {},
-              ref: data.response?.headers?.['x-server-ref'],
-              req: data.response?.config?.data,
+              res,
+              ref,
+              req,
             })
-            scope.setExtra('api_res', JSON.stringify(data.response?.data || {}))
-            scope.setExtra(
-              'api_ref',
-              data.response?.headers?.['x-server-ref'] || '--'
-            )
-            scope.setExtra(
-              'api_req',
-              JSON.stringify(data.response?.config?.data || {})
-            )
+            scope.setExtra('api_res', JSON.stringify(res))
+            scope.setExtra('api_ref', ref || '--')
+            scope.setExtra('api_req', JSON.stringify(req))
           })
         }
 

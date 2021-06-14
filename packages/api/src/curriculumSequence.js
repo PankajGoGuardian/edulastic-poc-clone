@@ -107,15 +107,16 @@ const duplicatePlayList = ({
   title,
   forUseThis = false,
   forceClone = false,
-}) =>
-  api
+}) => {
+  const _forUseThis = forUseThis ? '&forUseThis=1' : ''
+  const _forceClone = forceClone ? '&forceClone=1' : ''
+  return api
     .callApi({
       method: 'post',
-      url: `${prefix}/${_id}/duplicate?title=${title}${
-        forUseThis ? `&forUseThis=1` : ''
-      }${forceClone ? '&forceClone=1' : ''}`,
+      url: `${prefix}/${_id}/duplicate?title=${title}${_forUseThis}${_forceClone}`,
     })
     .then((res) => res.data.result)
+}
 
 const publishCustomizeDraft = ({ _id, data }) =>
   api

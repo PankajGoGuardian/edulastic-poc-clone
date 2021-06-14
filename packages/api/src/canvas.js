@@ -3,15 +3,15 @@ import API from './utils/API'
 const api = new API()
 const prefix = '/canvas'
 
-const getCanvasAuthURI = (institutionId, type = '') =>
-  api
+const getCanvasAuthURI = (institutionId, type = '') => {
+  const _type = type ? `&type=${type}` : ''
+  return api
     .callApi({
-      url: `${prefix}/sso-details?institutionId=${institutionId}${
-        type ? `&type=${type}` : ''
-      }`,
+      url: `${prefix}/sso-details?institutionId=${institutionId}${_type}`,
       method: 'get',
     })
     .then((result) => result.data.result)
+}
 
 const fetchCourseList = (institutionId) =>
   api

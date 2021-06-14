@@ -29,12 +29,13 @@ const multipleEntry = require('react-app-rewire-multiple-entry')([
 
 const packageJson = require('./package.json')
 
-/** Uncomment to have a copy of files written on disk */
-// const util = require('util')
-// const fs = require('fs')
-/** Uncomment to have a copy of files written on disk */
-
-// const rootNodeModDir = path.resolve(__dirname, 'node_modules')
+/**
+ * Uncomment to have a copy of files written on disk
+ **
+ * const util = require('util')
+ * const fs = require('fs')
+ * const rootNodeModDir = path.resolve(__dirname, 'node_modules')
+ */
 const isProduction = process.env.NODE_ENV === 'production'
 module.exports = override(
   multipleEntry.addMultiEntry,
@@ -51,7 +52,7 @@ module.exports = override(
     config.module.rules[0].parser.requireEnsure = true
 
     config.plugins = config.plugins.filter((plugin) => {
-      return !(plugin.constructor.name === 'ESLintWebpackPlugin')
+      return plugin.constructor.name !== 'ESLintWebpackPlugin'
     })
 
     // config.module.noParse = /pdfjs-dist/
@@ -185,8 +186,10 @@ module.exports = override(
 
     // chunking optimization
     if (!isProduction) {
-      // config.output.filename = '[name].bundle.js'
-      // config.output.chunkFilename = '[name].chunk.js'
+      /**
+       * config.output.filename = '[name].bundle.js'
+       * config.output.chunkFilename = '[name].chunk.js'
+       */
       config.plugins.push(
         new WriteFilePlugin({
           // Write only files that have ".html" extension.

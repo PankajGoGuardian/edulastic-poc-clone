@@ -28,7 +28,6 @@ const updatePermissionStatus = ({ _id, enable, permissionIds }) =>
     })
     .then(({ data }) => data.result)
 
-/* TODO: create new api and change the url */
 const updateCustomReport = (data) =>
   api
     .callApi({
@@ -36,9 +35,8 @@ const updateCustomReport = (data) =>
       method: 'put',
       data,
     })
-    .then(({ data }) => data.result)
+    .then(({ data: { result } }) => result)
 
-/* TODO: create new api and change the url */
 const createCustomReport = (data) =>
   api
     .callApi({
@@ -46,7 +44,7 @@ const createCustomReport = (data) =>
       method: 'post',
       data,
     })
-    .then(({ data }) => data.result)
+    .then(({ data: { result } }) => result)
 
 export default {
   getCustomReports,

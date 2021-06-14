@@ -88,7 +88,7 @@ const fetchStudentsByGroupId = (data) =>
       method: 'post',
       data,
     })
-    .then(({ data }) => data)
+    .then(({ data: _data }) => _data)
 
 const dropPlaylist = (data) =>
   api
@@ -97,7 +97,7 @@ const dropPlaylist = (data) =>
       method: 'post',
       data,
     })
-    .then(({ data }) => data)
+    .then(({ data: _data }) => _data)
 
 const fetchPlaylistAccess = (playlistId) =>
   api

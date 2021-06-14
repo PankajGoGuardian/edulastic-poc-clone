@@ -386,8 +386,8 @@ export const Header = styled.div`
 Header.displayName = 'CardHeader'
 
 export const HeaderThumbnail = styled.img`
-  width: 100%;
-  max-height: 125px;
+  width: 99.72%;
+  max-height: ${(props) => (props.isTestRecommendation ? '110px' : '123px')};
   padding: 0px;
   bottom: 0px;
   position: absolute;

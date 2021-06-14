@@ -1450,7 +1450,7 @@ class TestList extends Component {
                   <Actions type="TEST" />
                 )}
               </ItemsMenu>
-              <PerfectScrollbar style={{ padding: '0 32px' }}>
+              <PerfectScrollbar style={{ padding: '7.5px 32px' }}>
                 <CardContainer type={blockstyle}>
                   {this.renderCardContent()}
                   <PaginationWrapper

@@ -387,7 +387,7 @@ Header.displayName = 'CardHeader'
 
 export const HeaderThumbnail = styled.img`
   width: 100%;
-  max-height: 135px;
+  max-height: 125px;
   padding: 0px;
   bottom: 0px;
   position: absolute;

@@ -33,6 +33,7 @@ function CartModal({
   itemBankSubscriptions,
   user,
   subType,
+  shouldbeMultipleLicenses,
 }) {
   const teacherPremiumId = teacherPremium?.id
   const [emailValues, setEmailValues] = useState('')
@@ -110,19 +111,21 @@ function CartModal({
       )}
       onClick={handleOpenRequestInvoiceModal}
     />,
-    <AuthorCompleteSignupButton
-      renderButton={(callback) => (
-        <EduButton
-          onClick={callback}
-          data-cy="proceedPayment"
-          width="220px"
-          height="45px"
-        >
-          Pay with Credit Card
-        </EduButton>
-      )}
-      onClick={handleProceed}
-    />,
+    shouldbeMultipleLicenses ? null : (
+      <AuthorCompleteSignupButton
+        renderButton={(callback) => (
+          <EduButton
+            onClick={callback}
+            data-cy="proceedPayment"
+            width="220px"
+            height="45px"
+          >
+            Pay with Credit Card
+          </EduButton>
+        )}
+        onClick={handleProceed}
+      />
+    ),
   ]
 
   const selectedProductIds = Object.keys(quantities).filter(
@@ -165,6 +168,7 @@ function CartModal({
           user={user}
           subType={subType}
           allProducts={products}
+          shouldbeMultipleLicenses={shouldbeMultipleLicenses}
         />
         {isMultipleQuantities && (
           <EmailWrapper>

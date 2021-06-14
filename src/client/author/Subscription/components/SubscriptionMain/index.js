@@ -437,7 +437,7 @@ const SubscriptionMain = ({
                 subType === 'TRIAL_PREMIUM' ? 'Trial Premium' : 'free'
               } plan`,
             })
-          } else if (isUserPremium && (hasAddonAccess || isEnterprise)) {
+          } else if (isUserPremium && hasAddonAccess) {
             // if user is premium and adding a bank which he has access to
             let teacherPremiumCount = isEnterprise ? 0 : 1
             if (subsLicensesKeyed[teacherPremium.id]) {

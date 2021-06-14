@@ -36,6 +36,7 @@ const ProductsList = ({
   itemBankSubscriptions,
   subType,
   allProducts,
+  shouldbeMultipleLicenses,
 }) => {
   const allProductsKeyed = useMemo(() => {
     if (allProducts) {
@@ -110,17 +111,19 @@ const ProductsList = ({
       totalCount: totalTeacherPremium = 0,
       usedCount: totalTeacherPremiumUsedCount = 0,
     } = _licenses?.find((x) => x.productId === premiumProductId) || {}
-
     if (
       subType === 'premium' &&
       userRole === roleuser.TEACHER &&
       totalTeacherPremiumUsedCount == 0
     ) {
-      totalTeacherPremium += 1
-      totalTeacherPremiumUsedCount += 1
+      // totalTeacherPremium += 1
+      // totalTeacherPremiumUsedCount += 1
     }
+    // if(subType === 'enterprise'||(subType === 'partial_premium' && user?.features?.premium)){
+    //   totalTeacherPremium += 1;
+    // }
     if (quant[teacherPremium.id]) {
-      totalTeacherPremium += quant[teacherPremium.id]
+      // totalTeacherPremium += quant[teacherPremium.id]
     }
 
     if (subType === 'premium' && userRole === roleuser.TEACHER) {
@@ -161,7 +164,6 @@ const ProductsList = ({
 
     const availableTeacherPremiumCount =
       totalTeacherPremium - totalRemainingItemBanksLicenseCount
-
     return availableTeacherPremiumCount
   }
 
@@ -223,19 +225,12 @@ const ProductsList = ({
         )
 
         if (teacherPremiumCountTOAdd < 0) {
-          const existingCartCount = _quantities[premiumProductId] || 0
-          if (teacherPremiumCountTOAdd == -1) {
-            Object.assign(_quantities, {
-              [premiumProductId]: existingCartCount + 1,
-            })
-          } else {
-            Object.assign(_quantities, {
-              [premiumProductId]: Math.max(
-                Math.abs(teacherPremiumCountTOAdd),
-                _quantities[premiumProductId] || 0
-              ),
-            })
-          }
+          Object.assign(_quantities, {
+            [premiumProductId]: Math.max(
+              Math.abs(teacherPremiumCountTOAdd),
+              _quantities[premiumProductId] || 0
+            ),
+          })
         }
       }
 

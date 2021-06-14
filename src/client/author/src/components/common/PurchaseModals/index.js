@@ -323,7 +323,21 @@ const PurchaseFlowModals = (props) => {
   }
 
   const isEnterprise = ['partial_premium', 'enterprise'].includes(subType)
-
+  const shouldbeMultipleLicenses = useMemo(() => {
+    return (
+      Object.keys(cartQuantities).some(
+        (x) =>
+          cartQuantities[x] > 1 ||
+          itemBankSubscriptions.some((permission) => {
+            return (
+              permission.itemBankId ===
+                products.find((p) => p.id === x)?.linkedProductId &&
+              !permission.isTrial
+            )
+          })
+      ) || user?.role !== roleuser.TEACHER
+    )
+  }, [cartQuantities, itemBankSubscriptions, user?.role])
   const handleClick = ({
     emails = [],
     productsToshow = products,
@@ -343,21 +357,7 @@ const PurchaseFlowModals = (props) => {
        * then proceed with multiple license purchase flow
        * else individual purchase
        */
-      if (
-        Object.keys(cartQuantities).some(
-          (x) =>
-            cartQuantities[x] > 1 ||
-            itemBankSubscriptions.some((permission) => {
-              return (
-                permission.itemBankId ===
-                  products.find((p) => p.id === x)?.linkedProductId &&
-                !permission.isTrial
-              )
-            })
-        ) ||
-        user?.role !== roleuser.TEACHER ||
-        isEnterprise
-      ) {
+      if (shouldbeMultipleLicenses) {
         const productQuantities = products.map((product) => ({
           ...product,
           quantity: cartQuantities[product.id],
@@ -465,6 +465,8 @@ const PurchaseFlowModals = (props) => {
           subsLicenses={subsLicenses}
           itemBankSubscriptions={itemBankSubscriptions}
           subType={subType}
+          subscription={props.subscription}
+          shouldbeMultipleLicenses={shouldbeMultipleLicenses}
         />
       )}
       {showUpgradeModal && (

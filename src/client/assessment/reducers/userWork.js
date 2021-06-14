@@ -4,6 +4,7 @@ import {
   SAVE_USER_WORK,
   LOAD_SCRATCH_PAD,
   CLEAR_USER_WORK,
+  LOAD_SCRATCH_PAD_SAVED,
 } from '../constants/actions'
 
 export const REQUEST_SCRATCH_PAD_SUCCESS = '[scratchpad] load success'
@@ -21,6 +22,11 @@ const userWork = (state = initialState, { type, payload }) => {
       return {
         ...payload,
       }
+    case LOAD_SCRATCH_PAD_SAVED:
+      return {
+        ...state,
+        ...payload,
+      }  
     case REQUEST_SCRATCH_PAD_SUCCESS:
       const { scratchPad, testItemId } = payload
       return {
@@ -44,6 +50,7 @@ export default filterActions(
   [
     CLEAR_USER_WORK,
     LOAD_SCRATCH_PAD,
+    LOAD_SCRATCH_PAD_SAVED,
     SAVE_USER_WORK,
     REQUEST_SCRATCH_PAD_SUCCESS,
     ...Object.values(ActionTypes),

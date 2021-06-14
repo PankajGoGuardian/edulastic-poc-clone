@@ -52,6 +52,7 @@ import {
   LOAD_ANSWERS,
   SET_TEST_ACTIVITY_ID,
   LOAD_SCRATCH_PAD,
+  LOAD_SCRATCH_PAD_SAVED,
   LOAD_TEST_LEVEL_USER_WORK,
   SET_TEST_LOADING_STATUS,
   GET_ASSIGNMENT_PASSWORD,
@@ -232,6 +233,7 @@ function* loadTest({ payload }) {
     isShowStudentWork = false,
     playlistId,
     currentAssignmentId,
+    savedUserWork,
   } = payload
   try {
     if (!preview && !testActivityId) {
@@ -558,10 +560,17 @@ function* loadTest({ payload }) {
         }
       })
       if (Object.keys(scratchPadData).length) {
-        yield put({
-          type: LOAD_SCRATCH_PAD,
-          payload: scratchPadData,
-        })
+        if(savedUserWork){
+          yield put({
+            type: LOAD_SCRATCH_PAD_SAVED,
+            payload: scratchPadData,
+          })
+        }else{
+          yield put({
+            type: LOAD_SCRATCH_PAD,
+            payload: scratchPadData,
+          })
+        }
       }
 
       const testUserWork = get(activity, 'userWork')

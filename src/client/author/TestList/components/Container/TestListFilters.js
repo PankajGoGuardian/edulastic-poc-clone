@@ -57,8 +57,10 @@ const TestListFilters = ({
   userRole,
   isOrgUser,
   isDistrictUser,
+  isSingaporeMath,
 }) => {
   const [showModal, setShowModal] = useState(false)
+  const [filteredCollections, setFilteredCollections] = useState(collections)
   const isPublishers = !!(
     userFeatures.isPublisherAuthor || userFeatures.isCurator
   )
@@ -68,6 +70,15 @@ const TestListFilters = ({
       getCurrentDistrictUsers(districtId)
     }
   }, [])
+  useEffect(() => {
+    const tempCollections = collections
+    collections.forEach((item, index) => {
+      if (isSingaporeMath && item?.name === 'Engage NY') {
+        tempCollections.splice(index, 1)
+        setFilteredCollections(tempCollections)
+      }
+    })
+  }, [isSingaporeMath, collections])
 
   const collectionDefaultFilter = useMemo(() => {
     if (userRole === roleuser.EDULASTIC_CURATOR) {
@@ -126,7 +137,7 @@ const TestListFilters = ({
           optionFilterProp: 'children',
           data: [
             ...collectionDefaultFilter.filter((c) => c.value),
-            ...collections.map((o) => ({ value: o._id, text: o.name })),
+            ...filteredCollections.map((o) => ({ value: o._id, text: o.name })),
           ],
           onChange: 'collections',
         },
@@ -206,7 +217,7 @@ const TestListFilters = ({
           optionFilterProp: 'children',
           data: [
             ...collectionDefaultFilter.filter((c) => c.value),
-            ...collections.map((o) => ({ value: o._id, text: o.name })),
+            ...filteredCollections.map((o) => ({ value: o._id, text: o.name })),
           ],
           onChange: 'collections',
         },

@@ -340,8 +340,8 @@ const MyClasses = ({
 
   const isSingaporeMathCollectionActive = featuredBundles.filter(
     (feature) =>
-      (feature.description?.toLowerCase?.()?.includes('singaporemath') ||
-        feature.description?.toLowerCase?.()?.includes('singapore math')) &&
+      (feature.description?.toLowerCase()?.includes('singaporemath') ||
+        feature.description?.toLowerCase()?.includes('singapore math')) &&
       feature?.active
   )
 
@@ -363,7 +363,7 @@ const MyClasses = ({
       (feature) => !feature?.config?.subscriptionData?.itemBankId
     )
     bannerSlides = bannerSlides.filter(
-      (banner) => !banner.description?.toLowerCase?.()?.includes('spark')
+      (banner) => !banner.description?.toLowerCase()?.includes('spark')
     )
   }
 

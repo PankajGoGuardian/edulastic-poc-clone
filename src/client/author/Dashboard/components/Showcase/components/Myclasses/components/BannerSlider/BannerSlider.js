@@ -70,7 +70,7 @@ const BannerSlider = ({
             <SlideContainer data-cy="sliderContainer">
               {bannerSlides.map((slide, index) => {
                 const isSparkTile = slide.description
-                  ?.toLowerCase?.()
+                  ?.toLowerCase()
                   ?.includes('spark')
 
                 return (

@@ -73,8 +73,10 @@ const getLineFromExpression = (
       }
       const _expression = expression.replace(new RegExp('x', 'g'), x)
       try {
-        // eslint-disable-next-line no-eval
-        const y = round(eval(_expression), 2)
+        // secure replacement for eval(_expression)
+        // eslint-disable-next-line no-new-func
+        const evalExp = Function(`"use strict";return (${_expression})`)()
+        const y = round(evalExp, 2)
         return getPoint(x, y, label)
       } catch (err) {
         return {}

@@ -145,7 +145,7 @@ const AssessmentDetails = ({
                 </StatusButton>
                 {safeBrowser && (
                   <SafeExamIcon
-                    src="http://cdn.edulastic.com/JS/webresources/images/as/seb.png"
+                    src="https://cdn.edulastic.com/JS/webresources/images/as/seb.png"
                     title={t('common.safeExamToolTip')}
                   />
                 )}

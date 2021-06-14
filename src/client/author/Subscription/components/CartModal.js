@@ -33,7 +33,7 @@ function CartModal({
   itemBankSubscriptions,
   user,
   subType,
-  shouldbeMultipleLicenses,
+  hideCcButton,
 }) {
   const teacherPremiumId = teacherPremium?.id
   const [emailValues, setEmailValues] = useState('')
@@ -111,7 +111,7 @@ function CartModal({
       )}
       onClick={handleOpenRequestInvoiceModal}
     />,
-    shouldbeMultipleLicenses ? null : (
+    hideCcButton ? null : (
       <AuthorCompleteSignupButton
         renderButton={(callback) => (
           <EduButton
@@ -168,7 +168,6 @@ function CartModal({
           user={user}
           subType={subType}
           allProducts={products}
-          shouldbeMultipleLicenses={shouldbeMultipleLicenses}
         />
         {isMultipleQuantities && (
           <EmailWrapper>

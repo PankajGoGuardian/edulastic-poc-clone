@@ -368,6 +368,9 @@ const SubscriptionMain = ({
   }, [subsLicenses, teacherPremium])
   const isEnterprise = ['partial_premium', 'enterprise'].includes(subType)
 
+  const secondsInAday = 1000 * 60 * 60 * 24
+  const subscriptionRemainingDays = (subEndDate - Date.now()) / secondsInAday
+
   const toggleCart = (productId, source) => {
     const quantities = cartQuantities
     if (productId) {
@@ -427,6 +430,7 @@ const SubscriptionMain = ({
             )
           })
 
+        const subscriptionEndsWithin90days = subscriptionRemainingDays < 90
         if (quantities[teacherPremium.id] === undefined && source === 'addon') {
           // if additions of addons and user is not premium
           if (!isUserPremium) {
@@ -477,9 +481,18 @@ const SubscriptionMain = ({
               })
               notification({
                 type: 'info',
-                msg: `Note: Teacher Premium is added to cart by default since Itembank Licenses cannot be more than `,
+                msg: `Note: Teacher Premium is added to cart by default since Itembank Licenses cannot be more than Teacher Premium`,
               })
             }
+          } else if (
+            !cartQuantities[teacherPremium.id] &&
+            isTeacher &&
+            subType?.toLowerCase() === 'premium' &&
+            subscriptionRemainingDays
+          ) {
+            Object.assign(changes, {
+              [teacherPremium.id]: 1,
+            })
           }
         }
         setCartQuantities({ ...quantities, ...changes })

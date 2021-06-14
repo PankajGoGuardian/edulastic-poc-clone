@@ -338,6 +338,12 @@ const PurchaseFlowModals = (props) => {
       ) || user?.role !== roleuser.TEACHER
     )
   }, [cartQuantities, itemBankSubscriptions, user?.role])
+
+  const hideCcButton =
+    (shouldbeMultipleLicenses || cartQuantities[teacherPremium.id]) &&
+    isEnterprise &&
+    user?.features?.premium
+
   const handleClick = ({
     emails = [],
     productsToshow = products,
@@ -466,7 +472,7 @@ const PurchaseFlowModals = (props) => {
           itemBankSubscriptions={itemBankSubscriptions}
           subType={subType}
           subscription={props.subscription}
-          shouldbeMultipleLicenses={shouldbeMultipleLicenses}
+          hideCcButton={hideCcButton}
         />
       )}
       {showUpgradeModal && (

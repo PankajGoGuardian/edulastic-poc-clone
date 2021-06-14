@@ -7,6 +7,7 @@ const Footer = ({
   isZipDownloading,
   handleZipDownload,
   isQuestionLevel = false,
+  hideDownloadAllButton = false,
 }) => {
   return (
     <AttachmentFooter>
@@ -14,11 +15,11 @@ const Footer = ({
         data-cy="downloadSingleAttachmentButton"
         href={downloadLink}
         target="_blank"
-        isGhost={!isQuestionLevel}
+        isGhost={!isQuestionLevel && !hideDownloadAllButton}
       >
         Download this attachment
       </SingleDownloadButton>
-      {!isQuestionLevel && (
+      {!isQuestionLevel && !hideDownloadAllButton && (
         <EduButton
           data-cy="downloadAllAttachmentsButton"
           loading={isZipDownloading}

@@ -23,6 +23,7 @@ const TestAttachementsModal = ({
   attachmentNameLabel = 'Attachment',
   attachmentIndexForPreview = 0,
   isQuestionLevel = false,
+  hideDownloadAllButton = false,
 }) => {
   const [isZipDownloading, setZipDownloading] = useState(false)
   const [currentAttachmentIndex, setCurrentAttachmentIndex] = useState(
@@ -54,6 +55,7 @@ const TestAttachementsModal = ({
     },
     downloadLink: attachmentsList[currentAttachmentIndex].source,
     isQuestionLevel,
+    hideDownloadAllButton,
   }
 
   return (

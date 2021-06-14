@@ -489,10 +489,14 @@ const SubscriptionMain = ({
             !cartQuantities[teacherPremium.id] &&
             isTeacher &&
             subType?.toLowerCase() === 'premium' &&
-            subscriptionRemainingDays
+            subscriptionEndsWithin90days
           ) {
             Object.assign(changes, {
               [teacherPremium.id]: 1,
+            })
+            notification({
+              type: 'info',
+              msg: `Note: Teacher Premium is added to cart by default since existing Teacher Premium is ending in less than 90 days`,
             })
           }
         }

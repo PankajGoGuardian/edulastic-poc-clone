@@ -135,7 +135,7 @@ const ToolBar = ({
       )}
       {multiLanguageEnabled && (
         <Tooltip placement="top" title="Select Language">
-          <StyledButton onClick={showLangSwitchPopUp}>
+          <StyledButton onClick={showLangSwitchPopUp} data-cy="SBAC_selectLang">
             <IconLanguage />
           </StyledButton>
         </Tooltip>

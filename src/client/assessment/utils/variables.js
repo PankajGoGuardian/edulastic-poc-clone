@@ -36,7 +36,7 @@ export const detectVariablesFromObj = (
       const latexes = item.match(mathRegex) || []
       latexes.forEach((latex) => {
         variables.push(...detectVariables(latex, true))
-        // TODO: if required, assign to a variable and use, else remove
+        // NOTE: if required, assign to a variable and use, else remove
         // item.replace(latex, '')
       })
 

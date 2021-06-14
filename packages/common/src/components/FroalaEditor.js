@@ -892,24 +892,23 @@ const CustomEditor = ({
           }
         },
         'image.beforeUpload': function (image, clipboardImage) {
-          if (
+          if (!(
             !canInsert(this.selection.element()) ||
             !canInsert(this.selection.endElement()) ||
             !beforeUpload(image[0])
-          )
-            return false
-          this.image.showProgressBar()
-          // TODO: pass folder as props
-          uploadToS3(image[0], aws.s3Folders.DEFAULT)
-            .then((result) => {
-              this.image.insert(result, false, null, clipboardImage)
-            })
-            .catch((e) => {
-              console.error(e)
-              this.popups.hideAll()
-              notification({ messageKey: 'imageUploadErr' })
-            })
-
+          )) {
+            this.image.showProgressBar()
+            // TODO: pass folder as props
+            uploadToS3(image[0], aws.s3Folders.DEFAULT)
+              .then((result) => {
+                this.image.insert(result, false, null, clipboardImage)
+              })
+              .catch((e) => {
+                console.error(e)
+                this.popups.hideAll()
+                notification({ messageKey: 'imageUploadErr' })
+              })
+          }
           return false
         },
         'image.inserted': async function ($img) {
@@ -929,24 +928,23 @@ const CustomEditor = ({
           }
         },
         'video.beforeUpload': function (video) {
-          if (
+          if (!(
             !canInsert(this.selection.element()) ||
             !canInsert(this.selection.endElement()) ||
             !beforeUpload(video[0], 'video')
-          ) {
-            return false
+          )) {
+            this.video.showProgressBar()
+            uploadToS3(video[0], aws.s3Folders.DEFAULT)
+              .then((url) => {
+                const embedded = `<video class="fr-draggable" src='${url}' controls>Video is not supported on this browser.</video>`
+                this.video.insert(embedded)
+              })
+              .catch((e) => {
+                console.error(e)
+                this.popups.hideAll()
+                notification({ messageKey: 'videoUploadErr' })
+              })
           }
-          this.video.showProgressBar()
-          uploadToS3(video[0], aws.s3Folders.DEFAULT)
-            .then((url) => {
-              const embedded = `<video class="fr-draggable" src='${url}' controls>Video is not supported on this browser.</video>`
-              this.video.insert(embedded)
-            })
-            .catch((e) => {
-              console.error(e)
-              this.popups.hideAll()
-              notification({ messageKey: 'videoUploadErr' })
-            })
           return false
         },
         'video.linkError': function (link) {
@@ -1013,25 +1011,22 @@ const CustomEditor = ({
           if (!file) {
             this.popups.hideAll()
             notification({ messageKey: 'fileUploadErr' })
-            return false
           }
-
           // currently supporting only pdf through file upload
-          if (file.type !== 'application/pdf') {
+          else if (file.type !== 'application/pdf') {
             this.popups.hideAll()
             notification({ messageKey: 'fileTypeErr' })
-            return false
+          } else {
+            uploadToS3(file, aws.s3Folders.DEFAULT)
+              .then((url) => {
+                this.file.insert(url, file.name)
+              })
+              .catch((e) => {
+                console.error(e)
+                this.popups.hideAll()
+                notification({ messageKey: 'fileUploadErr' })
+              })
           }
-
-          uploadToS3(file, aws.s3Folders.DEFAULT)
-            .then((url) => {
-              this.file.insert(url, file.name)
-            })
-            .catch((e) => {
-              console.error(e)
-              this.popups.hideAll()
-              notification({ messageKey: 'fileUploadErr' })
-            })
           return false
         },
         'commands.after': function (cmd) {

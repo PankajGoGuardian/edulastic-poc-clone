@@ -96,10 +96,11 @@ const SharedReportsContainer = ({
         /**
          * TODO: uncomment below code and add backend support
          * if groupAdmin is allowed to archive shared reports
+         **
+         * const isGroupAdmin = !!sharedWith.filter(
+         *   (cg) => isCGAdmin[cg._id]
+         * ).length
          */
-        // const isGroupAdmin = !!sharedWith.filter(
-        //   (cg) => isCGAdmin[cg._id]
-        // ).length
         return {
           ...sharedReport,
           sharedWith,

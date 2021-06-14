@@ -107,34 +107,20 @@ class TestItemPreview extends Component {
         shouldTakeDimensionsFromStore = false
         break
       case isStudentAttempt && !itemLevelScoring:
-        shouldShowFeedback = true
-        shouldTakeDimensionsFromStore = true
-        break
-
       case isDocBased:
       case stackedView:
-        /**
-         * stacked view
-         * need to show separate feeback blocks for each question
-         */
-        shouldShowFeedback = true
-        shouldTakeDimensionsFromStore = true
-        break
-
       case isPassageWithQuestions:
         /**
-         * for passages with item level scoring off show seperate feedback block
-         * and get dimensions from store
+         * stacked view / for passages with item level scoring off
+         * show seperate feedback block for each question and get dimensions from store
          */
         shouldShowFeedback = true
         shouldTakeDimensionsFromStore = true
         break
-
       case isStudentReport:
         shouldShowFeedback = true
         shouldTakeDimensionsFromStore = false
         break
-
       default:
         /**
          *  multipart with item level scoring on

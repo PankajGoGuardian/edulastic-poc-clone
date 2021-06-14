@@ -3,7 +3,9 @@ import { SET_SHUFFLED_OPTIONS } from '../constants/actions'
 
 const initialState = {}
 
-const setAnswers = (state, { payload }) => (state = payload)
+const setAnswers = (state, { payload }) => {
+  state = payload
+}
 
 export default createReducer(initialState, {
   [SET_SHUFFLED_OPTIONS]: setAnswers,

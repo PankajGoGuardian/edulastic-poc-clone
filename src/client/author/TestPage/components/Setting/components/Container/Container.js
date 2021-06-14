@@ -495,14 +495,14 @@ class Setting extends Component {
 
     const availableFeatures = {}
     settingsList.slice(0, -5).forEach((category) => {
-      if (isDocBased && categories.includes(category.id)) return null
       if (
-        features[settingCategoriesFeatureMap[category.id]] ||
-        isFeatureAccessible({
-          features,
-          inputFeatures: settingCategoriesFeatureMap[category.id],
-          gradeSubject: { grades, subjects },
-        })
+        !(isDocBased && categories.includes(category.id)) &&
+        (features[settingCategoriesFeatureMap[category.id]] ||
+          isFeatureAccessible({
+            features,
+            inputFeatures: settingCategoriesFeatureMap[category.id],
+            gradeSubject: { grades, subjects },
+          }))
       ) {
         availableFeatures[settingCategoriesFeatureMap[category.id]] = true
       }

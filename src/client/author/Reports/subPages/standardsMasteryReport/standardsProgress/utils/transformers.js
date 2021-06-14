@@ -82,9 +82,6 @@ const getRowName = (compareByKey, rowInfo = {}) => {
 }
 
 export const getDenormalizedData = (rawData, compareByKey) => {
-  if (isEmpty(rawData)) {
-    return []
-  }
   const rawTestInfo = get(rawData, 'data.result.testInfo', [])
   const testInfoMap = keyBy(rawTestInfo, 'reportKey')
   // store the order of tests to sort metric data
@@ -101,15 +98,12 @@ export const getDenormalizedData = (rawData, compareByKey) => {
   const studentMetricInfo = rawStudentMetricInfo
     .map((item) => {
       if (studInfoMap[item.studentId]) {
+        const { firstName = '', lastName = '' } = studInfoMap[item.studentId]
         return {
           ...item,
           ...studInfoMap[item.studentId],
           ...testInfoMap[item.reportKey],
-          studentName: getFormattedName(
-            `${studInfoMap[item.studentId].firstName || ''} ${
-              studInfoMap[item.studentId].lastName || ''
-            }`
-          ),
+          studentName: getFormattedName(`${firstName} ${lastName}`),
           groupIds: uniq(studInfoMap[item.studentId].groupIds.split(',')),
         }
       }
@@ -125,7 +119,7 @@ export const getDenormalizedData = (rawData, compareByKey) => {
     groupIds.map((groupId) => ({
       ...item,
       groupId,
-      ...(teacherInfoMap[groupId] || {}),
+      ...get(teacherInfoMap, groupId, {}),
     }))
   )
 
@@ -135,20 +129,17 @@ export const getDenormalizedData = (rawData, compareByKey) => {
     .map((item) => {
       let itemInfo = {}
       if (compareByDataKey === 'studentId' && studInfoMap[item.studentId]) {
+        const { firstName = '', lastName = '' } = studInfoMap[item.studentId]
         itemInfo = {
           ...studInfoMap[item.studentId],
           ...testInfoMap[item.reportKey],
-          studentName: getFormattedName(
-            `${studInfoMap[item.studentId].firstName || ''} ${
-              studInfoMap[item.studentId].lastName || ''
-            }`
-          ),
+          studentName: getFormattedName(`${firstName} ${lastName}`),
         }
       }
       if (compareByDataKey === 'groupId' && teacherInfoMap[item.groupId]) {
-        itemInfo = { ...(teacherInfoMap[item.groupId] || {}) }
+        itemInfo = { ...get(teacherInfoMap, item.groupId, {}) }
       }
-      if (compareByDataKey === 'schoolId' || compareByDataKey === 'teacherId') {
+      if (['schoolId', 'teacherId'].includes(compareByDataKey)) {
         const teacherInfo = rawTeacherInfo.find(
           (t) => t[compareByDataKey] === item[compareByDataKey]
         )

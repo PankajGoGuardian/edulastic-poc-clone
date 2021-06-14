@@ -81,15 +81,12 @@ class ComposeQuestion extends Component {
             if (idx !== -1) {
               altResponse.value[idx] = newIndex
             }
-
             idx = item.validation.altResponses[i].value.findIndex(
               (val) => val === newIndex
             )
             if (idx !== -1) {
               altResponse.value[idx] = oldIndex
             }
-            // TODO: remove if not required
-            // return altResponse
           }
         }
 

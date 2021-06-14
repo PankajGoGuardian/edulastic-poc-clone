@@ -1787,46 +1787,51 @@ class Setting extends Component {
                         flexDirection: 'row',
                       }}
                     >
-                      {accessibilityData.map((o) => (
-                        <StyledRow key={o.key} align="middle">
-                          <Col span={6}>
-                            <span
-                              style={{
-                                fontSize: 13,
-                                fontWeight: 600,
-                                textTransform: 'uppercase',
-                              }}
-                            >
-                              {accessibilities[o.key]}
-                            </span>
-                          </Col>
-                          <Col span={12}>
-                            <StyledRadioGroup
-                              disabled={
-                                !owner || !isEditable || !features[o.key]
-                              }
-                              onChange={(e) =>
-                                this.updateTestData(o.key)(e.target.value)
-                              }
-                              defaultValue={o.value}
-                              style={{ flexDirection: 'row', height: '18px' }}
-                            >
-                              <RadioBtn data-cy={`${o.key}-enable`} value>
-                                ENABLE
-                              </RadioBtn>
-                              <RadioBtn
-                                data-cy={`${o.key}-disable`}
-                                value={false}
+                      {accessibilityData
+                        .filter(
+                          (item) =>
+                            !(item.key === 'enableSkipAlert' && isDocBased)
+                        )
+                        .map((o) => (
+                          <StyledRow key={o.key} align="middle">
+                            <Col span={6}>
+                              <span
+                                style={{
+                                  fontSize: 13,
+                                  fontWeight: 600,
+                                  textTransform: 'uppercase',
+                                }}
                               >
-                                DISABLE
-                              </RadioBtn>
-                            </StyledRadioGroup>
-                          </Col>
-                          <Col span={24}>
-                            <Description>{o.description}</Description>
-                          </Col>
-                        </StyledRow>
-                      ))}
+                                {accessibilities[o.key]}
+                              </span>
+                            </Col>
+                            <Col span={12}>
+                              <StyledRadioGroup
+                                disabled={
+                                  !owner || !isEditable || !features[o.key]
+                                }
+                                onChange={(e) =>
+                                  this.updateTestData(o.key)(e.target.value)
+                                }
+                                defaultValue={o.value}
+                                style={{ flexDirection: 'row', height: '18px' }}
+                              >
+                                <RadioBtn data-cy={`${o.key}-enable`} value>
+                                  ENABLE
+                                </RadioBtn>
+                                <RadioBtn
+                                  data-cy={`${o.key}-disable`}
+                                  value={false}
+                                >
+                                  DISABLE
+                                </RadioBtn>
+                              </StyledRadioGroup>
+                            </Col>
+                            <Col span={24}>
+                              <Description>{o.description}</Description>
+                            </Col>
+                          </StyledRow>
+                        ))}
                     </RadioWrapper>
                     <RadioWrapper
                       disabled={!owner || !isEditable}

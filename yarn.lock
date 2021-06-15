@@ -2066,9 +2066,9 @@
     debug "4.2.0"
     find-yarn-workspace-root "^2.0.0"
 
-"@edulastic/evaluators@git+ssh://git@github.com/snapwiz/edu-eval.git#e69a29caa0e28834c3db227878e7746f9de93aea":
+"@edulastic/evaluators@git+ssh://git@github.com/snapwiz/edu-eval.git#74393de3577934d20127dc12a301ff3e605f20a5":
   version "0.1.0"
-  resolved "git+ssh://git@github.com/snapwiz/edu-eval.git#e69a29caa0e28834c3db227878e7746f9de93aea"
+  resolved "git+ssh://git@github.com/snapwiz/edu-eval.git#74393de3577934d20127dc12a301ff3e605f20a5"
   dependencies:
     axios "^0.18.0"
     fast-levenshtein "^2.0.6"

@@ -561,6 +561,8 @@ function* saveSubjectGradeSaga({ payload }) {
         : 'Sign up completed.',
       type: 'success',
     })
+    window.localStorage.setItem('author:dashboard:version', 0)
+    yield put(fetchDashboardTiles())
     if (isTestRecommendationCustomizer) {
       setShowTestCustomizerModal(false)
     }

@@ -274,7 +274,7 @@ const Subscription = (props) => {
     ) {
       setShowEnterpriseTab(true)
     }
-  }, [subType])
+  }, [subType, isPremiumUser, isFreeAdmin])
 
   /**
    *  a user is paid premium user if

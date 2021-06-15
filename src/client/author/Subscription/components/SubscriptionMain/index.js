@@ -782,39 +782,36 @@ const SubscriptionMain = ({
                         }
                         placement="bottom"
                       >
-                        <AuthorCompleteSignupButton
-                          renderButton={(handleClick) => (
-                            <EduButton
-                              onClick={handleClick}
-                              title={
-                                usedTrialItemBankIds.includes(
-                                  _product.linkedProductId
-                                )
-                                  ? `Free trial for ${_product.title} is already utilized. Kindly purchase to access the content.`
-                                  : undefined
-                              }
-                              className={
-                                usedTrialItemBankIds.includes(
-                                  _product.linkedProductId
-                                ) && 'disabled'
-                              }
-                              height="32px"
-                              width="180px"
-                              isGhost
-                              isBlue
-                              data-cy="subscriptionStartTrialbtn"
-                            >
-                              Try Now
-                            </EduButton>
-                          )}
+                        <EduButton
+                          height="32px"
+                          width="180px"
+                          isGhost
+                          isBlue
+                          data-cy="subscriptionStartTrialbtn"
                           onClick={() => {
                             !usedTrialItemBankIds.includes(
                               _product.linkedProductId
                             )
-                              ? handleStartTrialButtonClick(_product.id)
+                              ? signUpFlowModalHandler(() =>
+                                  handleStartTrialButtonClick(_product.id)
+                                )
                               : {}
                           }}
-                        />
+                          title={
+                            usedTrialItemBankIds.includes(
+                              _product.linkedProductId
+                            )
+                              ? `Free trial for ${_product.title} is already utilized. Kindly purchase to access the content.`
+                              : undefined
+                          }
+                          className={
+                            usedTrialItemBankIds.includes(
+                              _product.linkedProductId
+                            ) && 'disabled'
+                          }
+                        >
+                          Try Now
+                        </EduButton>
                       </Tooltip>
                     )}
                   </CardRightWrapper>

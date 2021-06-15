@@ -110,6 +110,14 @@ class Draggable extends React.Component {
   }
 
   onDragStop = () => {
+    const { onDragStop } = this.props
+
+    if (typeof onDragStop === 'function') {
+      const lastX = parseInt(this.containerRef.current.style.left, 10)
+      const lastY = parseInt(this.containerRef.current.style.top, 10)
+      onDragStop({ x: lastX, y: lastY })
+    }
+
     this.setState({ isDragging: false }, () => {
       this.delta.current = null
       document.removeEventListener('mousemove', this.onDrag, {

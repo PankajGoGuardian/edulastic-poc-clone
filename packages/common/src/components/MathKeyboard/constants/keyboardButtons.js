@@ -281,6 +281,19 @@ import {
   eight,
   nine,
   zero,
+  mathrm,
+  mathrm_under,
+  mathrm_both,
+  mathrm_both_l,
+  mathrm_braces,
+  mathrm_parentheses,
+  mathrm_brackets,
+  rightleftarrows,
+  n_a,
+  k_b,
+  mathrm_mol,
+  g_liter,
+  g_mol,
 } from './buttons'
 
 const { keyboardMethods } = mathConstant
@@ -500,6 +513,33 @@ const NUMBERS_ONLY = [
   zero,
 ]
 
+const CHEMISTRY = [
+  mathrm,
+  mathrm_under,
+  mathrm_both,
+  mathrm_both_l,
+  degree,
+  mathrm_braces,
+  mathrm_parentheses,
+  mathrm_brackets,
+  leftarrow,
+  rightarrow,
+  uparrow,
+  downarrow,
+  longleftrightarrow,
+  rightleftharpoons,
+  rightleftarrows,
+  triangle,
+  n_a,
+  k_b,
+  mathrm_mol,
+  g_liter,
+  g_mol,
+  minusButton,
+  equalSymbol,
+  equivalence,
+]
+
 export const KEYBOARD_BUTTONS = [
   ...OPERATORS,
   ...NUMBERS_ONLY.map((btn) => ({
@@ -528,6 +568,7 @@ export const KEYBOARD_BUTTONS = [
     types: [keyboardMethods.ADVANCED_TRIGNOMETRY],
   })),
   ...GEOMETRY.map((btn) => ({ ...btn, types: [keyboardMethods.GEOMETRY] })),
+  ...CHEMISTRY.map((btn) => ({ ...btn, types: [keyboardMethods.CHEMISTRY] })),
   ...UNITS_SI.map((btn) => ({ ...btn, types: [keyboardMethods.UNITS_SI] })),
   ...UNITS_US.map((btn) => ({ ...btn, types: [keyboardMethods.UNITS_US] })),
 ]

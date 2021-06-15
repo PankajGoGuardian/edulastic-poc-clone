@@ -7,7 +7,7 @@ const UpgradeModal = ({
   visible,
   setShowModal,
   openPaymentServiceModal,
-  openSubmitPOModal = () => {}
+  openSubmitPOModal = () => {},
 }) => {
   const closeUpgradeModal = () => {
     setShowModal(false)

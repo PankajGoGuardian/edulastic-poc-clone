@@ -10,6 +10,9 @@ const MainWrapper = styled.section`
     hasCollapseButtons ? 'hidden' : 'auto'};
   display: flex;
   flex-direction: column;
+  margin: auto;
+  height: 100%;
+  width: 100%;
 
   & * {
     -webkit-touch-callout: none;
@@ -28,15 +31,8 @@ const MainWrapper = styled.section`
     border-radius: 10px;
   }
 
-  ${({ zoomLevel, responsiveWidth, hasCollapseButtons, theme }) => {
-    const zoomed = zoomLevel > '1' && zoomLevel !== undefined
-
+  ${({ hasCollapseButtons, theme }) => {
     return `
-      width: ${zoomed ? `${responsiveWidth}px` : '100%'};
-      height: ${zoomed ? `${100 / zoomLevel}%` : '100%'};
-      transform: ${zoomed ? `scale(${zoomLevel})` : ''};
-      transform-origin: ${zoomed ? `top left` : ''};
-      margin: ${!zoomed ? 'auto' : ''};
       background-color: ${
         hasCollapseButtons
           ? 'transparent'

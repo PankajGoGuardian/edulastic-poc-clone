@@ -472,10 +472,9 @@ class StudentViewContainer extends Component {
             showAttachmentsModal={showAttachmentsModal}
             attachmentsList={attachments}
             title="All Attachments"
-            description="Import content from QTI, WebCT and several other formats."
             utaId={studentTestActivity?._id}
             studentData={currentStudent}
-            attachmentNameLabel="Attachment Name"
+            attachmentNameLabel="Attachment"
           />
         )}
       </>

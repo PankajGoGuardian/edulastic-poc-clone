@@ -253,7 +253,8 @@ export const updateItemDetailByIdAction = (
   addToTest = false,
   locationState = false,
   redirect = true,
-  redirectOnDeleteQuestion = true
+  redirectOnDeleteQuestion = true,
+  updateScoreInQuestionsAsPerItem = false
 ) => ({
   type: UPDATE_ITEM_DETAIL_REQUEST,
   payload: {
@@ -264,6 +265,7 @@ export const updateItemDetailByIdAction = (
     redirect,
     locationState,
     redirectOnDeleteQuestion,
+    updateScoreInQuestionsAsPerItem,
   },
 })
 
@@ -1152,7 +1154,7 @@ export function* deleteItemSaga({ payload }) {
 
 export function* updateItemSaga({ payload }) {
   try {
-    const { addToTest } = payload
+    const { addToTest, updateScoreInQuestionsAsPerItem } = payload
     const oldTestId = payload?.locationState?.previousTestId
     if (!payload.keepData) {
       // avoid data part being put into db
@@ -1169,7 +1171,7 @@ export function* updateItemSaga({ payload }) {
     // if (payload.testId && payload.testId !== 'undefined') {
     //   data.testId = testId
     // }
-    const { itemLevelScoring, isPassageWithQuestions } = data
+    const { itemLevelScoring, itemLevelScore, isPassageWithQuestions } = data
 
     // const questions = yield select(getQuestionsSelector);
     const resourceTypes = [
@@ -1250,6 +1252,7 @@ export function* updateItemSaga({ payload }) {
         return q
       })
     })
+
     data.data = {
       questions,
       resources,
@@ -1353,6 +1356,31 @@ export function* updateItemSaga({ payload }) {
     if (questions.length === 1) {
       yield put(changeCurrentQuestionAction(questions[0].id))
     }
+
+    const currentQuestion = yield select(getCurrentQuestionSelector)
+    const currentQuestionScore = get(currentQuestion, [
+      'validation',
+      'validResponse',
+      'score',
+    ])
+
+    if (
+      updateScoreInQuestionsAsPerItem &&
+      itemLevelScoring &&
+      itemLevelScore &&
+      currentQuestionScore === 0
+    ) {
+      // update the score in the question after some question is deleleted in multipart
+      const updatedQuestion = produce(currentQuestion, (draft) => {
+        set(draft, ['validation', 'validResponse', 'score'], itemLevelScore)
+      })
+
+      yield put({
+        type: UPDATE_QUESTION,
+        payload: updatedQuestion,
+      })
+    }
+
     const { redirect = true } = payload // added for doc based assesment, where redirection is not required.
     if (redirect && item._id !== payload.id) {
       const {
@@ -1767,8 +1795,25 @@ function* deleteWidgetSaga({ payload: { rowIndex, widgetIndex, updateData } }) {
   })
 
   yield put(deleteQuestionAction(targetId))
+
   const testItem = yield select((state) => getItemDetailSelector(state)) // Get latest data of item after deletion of widget
   const { testItemId, testId, isTestFlow, locationState } = updateData
+  const firstQuestionScore = get(testItem, [
+    'data',
+    'questions',
+    0,
+    'validation',
+    'validResponse',
+    'score',
+  ])
+
+  if (testItem.itemLevelScoring && firstQuestionScore === 0) {
+    set(
+      testItem,
+      ['data', 'questions', 0, 'validation', 'validResponse', 'score'],
+      testItem.itemLevelScore
+    )
+  }
 
   yield put(
     updateItemDetailByIdAction(
@@ -1778,7 +1823,8 @@ function* deleteWidgetSaga({ payload: { rowIndex, widgetIndex, updateData } }) {
       isTestFlow,
       locationState,
       true,
-      false
+      false,
+      true
     )
   )
 }

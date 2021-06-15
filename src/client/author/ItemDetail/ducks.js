@@ -595,7 +595,8 @@ const deleteWidget = (state, { rowIndex, widgetIndex }) =>
 
     newState.item.data.questions = reSequenceQuestionsWithWidgets(
       get(newState, `item.rows.[${rowIndex}].widgets`),
-      get(newState, 'item.data.questions')
+      get(newState, 'item.data.questions'),
+      newState.item.itemLevelScoring
     )
 
     pull(newState.qids, qid)
@@ -806,8 +807,16 @@ const moveWidget = (state, { from, to }) => {
         // change the order of item.data.questions
         newState.item.data.questions = reSequenceQuestionsWithWidgets(
           get(newState, `item.rows[${to?.rowIndex}].widgets`),
-          questions
+          questions,
+          newState.item.itemLevelScoring
         )
+        if (
+          newState.item.itemLevelScoring &&
+          newState.item.data.questions.length > 1
+        ) {
+          newState.item.data.questions[0].validation.validResponse.score =
+            newState.item.itemLevelScore
+        }
         markQuestionLabel([newState.item]) // change the question label as per new order
       }
     })
@@ -1202,7 +1211,11 @@ export function* updateItemSaga({ payload }) {
       .flatMap(({ widgets }) => widgets)
       .filter((widget) => widget.widgetType === 'question')
 
-    questions = reSequenceQuestionsWithWidgets(_widgets, questions)
+    questions = reSequenceQuestionsWithWidgets(
+      _widgets,
+      questions,
+      itemLevelScoring
+    )
 
     questions = produce(questions, (draft) => {
       draft.map((q, index) => {

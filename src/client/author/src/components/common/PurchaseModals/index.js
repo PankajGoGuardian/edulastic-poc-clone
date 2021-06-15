@@ -473,6 +473,7 @@ const PurchaseFlowModals = (props) => {
           subType={subType}
           subscription={props.subscription}
           hideCcButton={hideCcButton}
+          shouldbeMultipleLicenses={shouldbeMultipleLicenses}
         />
       )}
       {showUpgradeModal && (

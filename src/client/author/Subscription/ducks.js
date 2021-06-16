@@ -17,6 +17,7 @@ import {
 } from '../../student/Login/ducks'
 import { fetchMultipleSubscriptionsAction } from '../ManageSubscription/ducks'
 import { getUserSelector } from '../src/selectors/user'
+import { fetchDashboardTiles } from '../Dashboard/ducks'
 
 // selectors
 const subscriptionSelector = (state) => state.subscription
@@ -536,6 +537,13 @@ function* handleStripePayment({ payload }) {
       key: 'verify-license',
     })
     const { token, error } = yield stripe.createToken(data)
+    const currentSubsctiption = yield select(getSubscriptionSelector) || {}
+    const userWasOnFreePlan = ![
+      'premium',
+      'enterprise',
+      'partial_premium',
+    ].includes(currentSubsctiption?.subType)
+
     if (token) {
       const apiPaymentResponse = yield call(paymentApi.pay, {
         productIds: uniq(compact(productIds)),
@@ -547,6 +555,10 @@ function* handleStripePayment({ payload }) {
         setPaymentServiceModal(false)
         yield call(showSuccessNotifications, apiPaymentResponse)
         yield call(fetchUserSubscription)
+        if (userWasOnFreePlan) {
+          window.localStorage.setItem('author:dashboard:version', 0)
+          yield put(fetchDashboardTiles())
+        }
         yield put(fetchUserAction({ background: true }))
         yield put(fetchMultipleSubscriptionsAction({ background: true }))
         setShowTrialSubsConfirmation(true)

@@ -146,7 +146,7 @@ const TestItemCard = ({
 
       {!isTestRecommendation && (
         <MidRow>
-          <Collection isDynamic>
+          <Collection isDynamic={isDynamic}>
             <label>COLLECTIONS</label>
             <CollectionNameWrapper
               data-cy="test-collection"

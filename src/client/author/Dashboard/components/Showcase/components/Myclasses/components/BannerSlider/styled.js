@@ -75,7 +75,7 @@ export const Slides = styled.div`
   background-position: top left;
   background-repeat: no-repeat;
   border-radius: 4px;
-  margin-right: 20px;
+  margin-right: 5px;
 
   &.last,
   &:last-child {

@@ -374,7 +374,7 @@ const Subscription = (props) => {
     ? [productData.productId]
     : []
 
-  const isPremium = subType && subType !== 'FREE' // here user can be premium, trial premium, or partial premium
+  const isPremium = subType && subType !== 'FREE' && isPremiumUser // here user can be premium, trial premium, or partial premium
 
   const isCliUser = user.openIdProvider === 'CLI'
   const handleCloseFeatureNotAvailableModal = () =>
@@ -403,7 +403,6 @@ const Subscription = (props) => {
         subType={subType}
         subEndDate={subEndDate}
         isPaidPremium={isPaidPremium}
-        isPremium={isPremium}
         isPremiumUser={isPremiumUser}
         setShowSubscriptionAddonModal={setShowSubscriptionAddonModal}
         hasAllPremiumProductAccess={hasAllPremiumProductAccess}
@@ -446,7 +445,6 @@ const Subscription = (props) => {
             showRenewalOptions={showRenewalOptions}
             usedTrialItemBankIds={usedTrialItemBankIds}
             isPremiumUser={isPremiumUser}
-            isPremium={isPremium}
             setShowSubscriptionAddonModalWithId={
               setShowSubscriptionAddonModalWithId
             }

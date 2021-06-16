@@ -324,18 +324,16 @@ const PurchaseFlowModals = (props) => {
 
   const isEnterprise = ['partial_premium', 'enterprise'].includes(subType)
   const shouldbeMultipleLicenses = useMemo(() => {
-    return (
-      Object.keys(cartQuantities).some(
-        (x) =>
-          cartQuantities[x] > 1 ||
-          itemBankSubscriptions.some((permission) => {
-            return (
-              permission.itemBankId ===
-                products.find((p) => p.id === x)?.linkedProductId &&
-              !permission.isTrial
-            )
-          })
-      ) || user?.role !== roleuser.TEACHER
+    return Object.keys(cartQuantities).some(
+      (x) =>
+        cartQuantities[x] > 1 ||
+        itemBankSubscriptions.some((permission) => {
+          return (
+            permission.itemBankId ===
+              products.find((p) => p.id === x)?.linkedProductId &&
+            !permission.isTrial
+          )
+        })
     )
   }, [cartQuantities, itemBankSubscriptions, user?.role])
 

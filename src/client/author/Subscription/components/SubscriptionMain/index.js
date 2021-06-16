@@ -130,8 +130,10 @@ const SubscriptionMain = ({
   user,
   isPlanEnterprise,
   proratedProducts,
+  isPaidPremium,
   signUpFlowModalHandler = () => {},
 }) => {
+  const _isFreeAdmin = isFreeAdmin && !isPaidPremium
   const [isTrialModalVisible, setIsTrialModalVisible] = useState(false)
   const [hasAllTrialProducts, setHasAllTrialProducts] = useState(false)
   const [addonSubject, setAddonSubject] = useState('all')
@@ -606,43 +608,44 @@ const SubscriptionMain = ({
                           Learn more
                         </LearnMoreLink>
                       </EduButton>
-                      {!['premium', 'TRIAL_PREMIUM'].includes(subType) && (
-                        <Tooltip
-                          title={
-                            isPremiumTrialUsed && !subscription.length
-                              ? `Free trial for ${teacherPremium.title} is already utilized. Kindly purchase to access the content.`
-                              : ''
-                          }
-                          placement="bottom"
-                        >
-                          <EduButton
+                      {!['premium', 'TRIAL_PREMIUM'].includes(subType) &&
+                        !_isFreeAdmin && (
+                          <Tooltip
                             title={
                               isPremiumTrialUsed && !subscription.length
                                 ? `Free trial for ${teacherPremium.title} is already utilized. Kindly purchase to access the content.`
-                                : undefined
+                                : ''
                             }
-                            onClick={() => {
-                              !(isPremiumTrialUsed && !subscription.length)
-                                ? signUpFlowModalHandler(
-                                    handleStartTrialButtonClick
-                                  )
-                                : {}
-                            }}
-                            height="32px"
-                            width="180px"
-                            isGhost
-                            isBlue
-                            data-cy="subscriptionStartTrialbtn"
-                            className={
-                              isPremiumTrialUsed &&
-                              !subscription.length &&
-                              'disabled'
-                            }
+                            placement="bottom"
                           >
-                            Try Now
-                          </EduButton>
-                        </Tooltip>
-                      )}
+                            <EduButton
+                              title={
+                                isPremiumTrialUsed && !subscription.length
+                                  ? `Free trial for ${teacherPremium.title} is already utilized. Kindly purchase to access the content.`
+                                  : undefined
+                              }
+                              onClick={() => {
+                                !(isPremiumTrialUsed && !subscription.length)
+                                  ? signUpFlowModalHandler(
+                                      handleStartTrialButtonClick
+                                    )
+                                  : {}
+                              }}
+                              height="32px"
+                              width="180px"
+                              isGhost
+                              isBlue
+                              data-cy="subscriptionStartTrialbtn"
+                              className={
+                                isPremiumTrialUsed &&
+                                !subscription.length &&
+                                'disabled'
+                              }
+                            >
+                              Try Now
+                            </EduButton>
+                          </Tooltip>
+                        )}
                     </CardRightWrapper>
                   </CardsSection>
                 )}
@@ -771,7 +774,7 @@ const SubscriptionMain = ({
                         Learn more
                       </LearnMoreLink>
                     </EduButton>
-                    {!itemBankSubscription && (
+                    {!itemBankSubscription && !_isFreeAdmin && (
                       <Tooltip
                         title={
                           usedTrialItemBankIds.includes(

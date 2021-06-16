@@ -28,7 +28,7 @@ export const getEvalautionColor = (
     }
   }
 
-  if (allCorrect && score < 1 && score > 0 && isGradedExternally) {
+  if (allCorrect && score < 1 && score > 0) {
     // its all correct, but score isn't maxScore
     return {
       fillColor: partialBgColor,

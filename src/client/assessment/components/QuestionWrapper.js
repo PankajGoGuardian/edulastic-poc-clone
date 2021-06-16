@@ -511,22 +511,24 @@ class QuestionWrapper extends Component {
         }}
       >
         <>
-          {canShowPlayer && (!hideVisibility || isShowStudentWork) && (
-            <AudioControls
-              btnWithText={
-                playerSkinType.toLowerCase() ===
-                test.playerSkinValues.edulastic.toLowerCase()
-              }
-              hideVisibility={hideVisibility && !isShowStudentWork}
-              key={data.id}
-              item={data}
-              page={page}
-              qId={data.id}
-              audioSrc={data.tts.titleAudioURL}
-              isPaginated={data.paginated_content}
-              className="question-audio-controller"
-            />
-          )}
+          {canShowPlayer &&
+            (!hideVisibility || isShowStudentWork) &&
+            !isPrintPreview && (
+              <AudioControls
+                btnWithText={
+                  playerSkinType.toLowerCase() ===
+                  test.playerSkinValues.edulastic.toLowerCase()
+                }
+                hideVisibility={hideVisibility && !isShowStudentWork}
+                key={data.id}
+                item={data}
+                page={page}
+                qId={data.id}
+                audioSrc={data.tts.titleAudioURL}
+                isPaginated={data.paginated_content}
+                className="question-audio-controller"
+              />
+            )}
           <div
             className="__print-question-main-wrapper"
             style={{ height: !isStudentReport && '100%' }}

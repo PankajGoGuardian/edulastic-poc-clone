@@ -417,7 +417,12 @@ export function getResponseTobeDisplayed(
   currentQuestionActivity,
   uqasGroupedByItemId
 ) {
-  if (testItem?.itemLevelScoring) {
+  if (
+    testItem.data?.questions?.filter(
+      (x) => x.type !== questionType.SECTION_LABEL
+    )?.length > 1 &&
+    testItem?.itemLevelScoring
+  ) {
     const notSkipped = (obj) => !obj.skipped
     const hasAttempted = uqasGroupedByItemId?.[testItem._id]?.some(notSkipped)
     if (hasAttempted) {
@@ -432,15 +437,7 @@ export function getResponseTobeDisplayed(
   if (currentQuestionActivity?.skipped) {
     return '-'
   }
-  if (
-    testItem.data?.questions?.filter(
-      (x) => x.type !== questionType.SECTION_LABEL
-    )?.length > 1 &&
-    testItem.itemLevelScoring
-  ) {
-    // MULTIPART
-    return 'TEI'
-  }
+
   if (extractFunctions[qType]) {
     return extractFunctions[qType](
       question,

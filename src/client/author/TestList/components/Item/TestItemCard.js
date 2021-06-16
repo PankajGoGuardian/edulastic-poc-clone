@@ -139,6 +139,7 @@ const TestItemCard = ({
             isStandards
             margin="0px"
             isTestCard
+            testId={testId}
           />
         </TagsWrapper>
       </TestInfo>

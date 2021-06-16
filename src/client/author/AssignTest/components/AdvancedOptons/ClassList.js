@@ -20,7 +20,7 @@ import {
 import {
   getUserOrgId,
   getSchoolsByUserRoleSelector,
-  getLatestTermSelector,
+  getCurrentTerm,
 } from '../../../src/selectors/user'
 import { receiveSchoolsAction } from '../../../Schools/ducks'
 import {
@@ -76,7 +76,7 @@ class ClassList extends React.Component {
     selectedClasses: PropTypes.array.isRequired,
     selectClass: PropTypes.func.isRequired,
     test: PropTypes.object.isRequired,
-    latestTerm: PropTypes.object.isRequired,
+    currentTerm: PropTypes.string.isRequired,
   }
 
   constructor(props) {
@@ -104,7 +104,7 @@ class ClassList extends React.Component {
       loadCourseListData,
       userOrgId,
       getAllTags,
-      latestTerm,
+      currentTerm,
     } = this.props
 
     if (isEmpty(schools)) {
@@ -124,7 +124,7 @@ class ClassList extends React.Component {
           ...prevState.searchTerms,
           grades,
           subjects,
-          termIds: latestTerm?.id ? [latestTerm._id] : [],
+          termIds: currentTerm ? [currentTerm] : [],
         },
       }),
       this.loadClassList
@@ -132,11 +132,11 @@ class ClassList extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { test, testType, latestTerm } = this.props
+    const { test, testType, currentTerm } = this.props
     const { filterClassIds } = this.state
     if (
       prevProps.test._id !== test._id ||
-      prevProps.latestTerm?._id != latestTerm?._id
+      prevProps.currentTerm != currentTerm
     ) {
       const { subjects = [], grades = [] } = test
       // eslint-disable-next-line react/no-did-update-set-state
@@ -147,7 +147,7 @@ class ClassList extends React.Component {
             ...prevState.searchTerms,
             grades,
             subjects,
-            termIds: latestTerm?._id ? [latestTerm._id] : [],
+            termIds: currentTerm ? [currentTerm] : [],
           },
         }),
         this.loadClassList
@@ -578,7 +578,7 @@ const enhance = compose(
       test: getTestSelector(state),
       tagList: getAllTagsSelector(state, 'group'),
       assignedClassesById: getAssignedClassesByIdSelector(state),
-      latestTerm: getLatestTermSelector(state),
+      currentTerm: getCurrentTerm(state),
     }),
     {
       loadClassListData: receiveClassListAction,

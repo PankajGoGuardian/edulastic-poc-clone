@@ -50,18 +50,6 @@ export const getOrgDataSelector = createSelector(
   (state) => state?.user?.orgData || {}
 )
 
-export const getLatestTermSelector = createSelector(
-  getOrgDataSelector,
-  (orgData) =>
-    maxBy(
-      orgData.terms?.filter((term) => {
-        const now = Date.now()
-        return term.startDate <= now && now <= term.endDate
-      }),
-      'startDate'
-    )
-)
-
 export const getCurrentGroup = createSelector(
   stateSelector,
   (state) => state.user && state.user.orgData && state.user.orgData.defaultClass

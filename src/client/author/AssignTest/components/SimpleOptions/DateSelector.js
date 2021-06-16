@@ -5,6 +5,7 @@ import PropTypes from 'prop-types'
 import {
   test as testConst,
   assignmentStatusOptions,
+  assignmentPolicyOptions,
 } from '@edulastic/constants'
 import { Tooltip } from 'antd'
 import {
@@ -17,6 +18,12 @@ import { withNamespaces } from '@edulastic/localization'
 import { StyledRow, Label, RadioButtonWrapper, StyledCol } from './styled'
 import DetailsTooltip from '../Container/DetailsTooltip'
 import SettingContainer from '../Container/SettingsContainer'
+
+const {
+  POLICY_CLOSE_MANUALLY_BY_ADMIN,
+  POLICY_CLOSE_MANUALLY_IN_CLASS,
+  POLICY_AUTO_ON_STARTDATE,
+} = assignmentPolicyOptions
 
 const DateSelector = ({
   startDate,
@@ -33,6 +40,7 @@ const DateSelector = ({
   hasStartDate,
   tootltipWidth,
   paddingTop,
+  closePolicy = POLICY_AUTO_ON_STARTDATE,
 }) => {
   const disabledStartDate = (_startDate) => {
     if (!_startDate || !endDate) {
@@ -183,22 +191,29 @@ const DateSelector = ({
             </FieldLabel>
           </StyledCol>
           <StyledCol span={forClassLevel ? 12 : 14}>
-            <DatePickerStyled
-              allowClear={false}
-              data-cy="closeDate"
-              style={{ width: '100%' }}
-              size="large"
-              disabledDate={disabledEndDate}
-              showTime={{ use12Hours: true, format: 'hh:mm a' }}
-              format="YYYY-MM-DD hh:mm a"
-              value={endDate}
-              placeholder={t('common.assignTest.closeDatePlaceholder')}
-              showToday={false}
-              onChange={changeField('endDate')}
-              disabled={
-                forClassLevel && status === assignmentStatusOptions.DONE
-              }
-            />
+            {[
+              POLICY_CLOSE_MANUALLY_BY_ADMIN,
+              POLICY_CLOSE_MANUALLY_IN_CLASS,
+            ].includes(closePolicy) ? (
+              'Close Manually by User'
+            ) : (
+              <DatePickerStyled
+                allowClear={false}
+                data-cy="closeDate"
+                style={{ width: '100%' }}
+                size="large"
+                disabledDate={disabledEndDate}
+                showTime={{ use12Hours: true, format: 'hh:mm a' }}
+                format="YYYY-MM-DD hh:mm a"
+                value={endDate}
+                placeholder={t('common.assignTest.closeDatePlaceholder')}
+                showToday={false}
+                onChange={changeField('endDate')}
+                disabled={
+                  forClassLevel && status === assignmentStatusOptions.DONE
+                }
+              />
+            )}
           </StyledCol>
         </StyledRow>
       </SettingContainer>

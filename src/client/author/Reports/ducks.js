@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect'
 import { createAction, createReducer, combineReducers } from 'redux-starter-kit'
 import { all, call, put, takeEvery, select, take } from 'redux-saga/effects'
-import { get, isEmpty, omitBy, mapValues } from 'lodash'
+import { get, isEmpty, omitBy, mapValues, uniqBy } from 'lodash'
 
 import { assignmentStatusOptions, roleuser } from '@edulastic/constants'
 import { assignmentApi, reportsApi } from '@edulastic/api'
@@ -439,6 +439,9 @@ const selectorDict = {
   },
 }
 
+const uniqTags = (tagsData) =>
+  mapValues(tagsData, (val) => (Array.isArray(val) ? uniqBy(val, 'key') : val))
+
 function* updateTags(tags, type) {
   if (!selectorDict[type]) return
   if (Object.values(tags).every((tag) => isEmpty(tag))) return
@@ -448,9 +451,13 @@ function* updateTags(tags, type) {
   const tempTagsData = yield select(selectorDict[type].getTempTags)
   const tagsData = (yield select(selectorDict[type].getSettings)).tagsData
   yield put(
-    selectorDict[type].setTempTags({ ...tempTagsData, ...remappedTags })
+    selectorDict[type].setTempTags(
+      uniqTags({ ...tempTagsData, ...remappedTags })
+    )
   )
-  yield put(selectorDict[type].setTags({ ...tagsData, ...remappedTags }))
+  yield put(
+    selectorDict[type].setTags(uniqTags({ ...tagsData, ...remappedTags }))
+  )
 }
 
 function* getTagFilters(ids, options) {

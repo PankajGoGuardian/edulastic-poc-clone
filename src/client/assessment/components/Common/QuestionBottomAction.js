@@ -340,20 +340,18 @@ const QuestionBottomAction = ({
           {!hasDrawingResponse && hasShowStudentWork && (
             <ShowUserWork onClick={onClickHandler} loading={loading} />
           )}
-          {view === 'preview' &&
-            (isLCBView || isExpressGrader) &&
-            !isPrintPreview && (
-              <Hints
-                question={data}
-                enableMagnifier={enableMagnifier}
-                saveHintUsage={saveHintUsage}
-                isStudent={isStudent}
-                itemIndex={itemIndex}
-                isLCBView={isLCBView}
-                isExpressGrader={isExpressGrader}
-                isStudentReport={isStudentReport}
-              />
-            )}
+          {view === 'preview' && !isPrintPreview && (
+            <Hints
+              question={data}
+              enableMagnifier={enableMagnifier}
+              saveHintUsage={saveHintUsage}
+              isStudent={isStudent}
+              itemIndex={itemIndex}
+              isLCBView={isLCBView}
+              isExpressGrader={isExpressGrader}
+              isStudentReport={isStudentReport}
+            />
+          )}
           {isSolutionVisible && (
             <EduButton
               width="110px"

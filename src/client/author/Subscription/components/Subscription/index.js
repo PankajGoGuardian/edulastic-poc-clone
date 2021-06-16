@@ -263,9 +263,7 @@ const Subscription = (props) => {
   )
 
   const isPlanEnterprise =
-    ['partial_premium', 'enterprise'].includes(subType) &&
-    isPremiumUser &&
-    roleuser.TEACHER === user.role
+    ['partial_premium', 'enterprise'].includes(subType) && isPremiumUser
 
   useEffect(() => {
     if (

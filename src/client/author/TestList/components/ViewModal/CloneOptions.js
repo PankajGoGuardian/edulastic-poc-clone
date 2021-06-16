@@ -1,4 +1,5 @@
 import { EduButton, FlexContainer } from '@edulastic/common'
+import { Tooltip } from 'antd'
 import React, { useState } from 'react'
 
 import {
@@ -8,8 +9,9 @@ import {
 import { SubtitleText } from '../../../../assessment/styled/Subtitle'
 import { CloneOptionsWrapper } from './styled'
 
-function CloneOptions({ hideOptions, onDuplicate }) {
-  const [cloneOption, toggleCloneOption] = useState('no')
+function CloneOptions({ hideOptions, onDuplicate, status }) {
+  const defaultCloneOption = status === 'draft' ? 'yes' : 'no'
+  const [cloneOption, toggleCloneOption] = useState(defaultCloneOption)
 
   function handleChange(event) {
     toggleCloneOption(event.target.value)
@@ -29,10 +31,22 @@ function CloneOptions({ hideOptions, onDuplicate }) {
       <SubtitleText>How would you like to clone the test?</SubtitleText>
       <FlexContainer flexDirection="column" mt="10px">
         <RadioLabelGroup value={cloneOption} onChange={handleChange}>
-          <RadioLabel data-cy="with-original-item" value="no">
-            Keep references to the original items you can clone them
-            individually later on
-          </RadioLabel>
+          <Tooltip
+            title={
+              status === 'draft'
+                ? 'Test cloning with keeping reference to original items is allowed only for published tests'
+                : ''
+            }
+          >
+            <RadioLabel
+              data-cy="with-original-item"
+              value="no"
+              disabled={status === 'draft'}
+            >
+              Keep references to the original items you can clone them
+              individually later on
+            </RadioLabel>
+          </Tooltip>
           <RadioLabel data-cy="with-new-item" value="yes">
             Create a clone of all the items in the test upfront
           </RadioLabel>

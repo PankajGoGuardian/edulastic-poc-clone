@@ -192,44 +192,48 @@ class TestItemCol extends Component {
               isStudentAttempt={isStudentAttempt}
               isFeedbackVisible={isFeedbackVisible}
             />
-            {!isStudentAttempt &&
-              !isStudentReport &&
-              imageAttachments.length > 0 &&
-              !LCBPreviewModal && (
-                <StudentWorkCollapse
-                  isStudentWorkCollapseOpen={isStudentWorkCollapseOpen}
-                  toggleStudentWorkCollapse={toggleStudentWorkCollapse}
-                  imageAttachments={imageAttachments}
-                />
-              )}
-            {attachments && attachments.length > 0 && !LCBPreviewModal && (
-              <>
-                {isStudentAttempt && (
-                  <StyleH2Heading>Attachments</StyleH2Heading>
-                )}
-                <FilesViewContainer>
-                  <FilesView
-                    files={attachments}
-                    hideDelete={!isStudentAttempt}
-                    onDelete={saveUpdatedAttachments}
-                    openAttachmentViewModal={this.toggleAttachmentsModal}
-                    disableLink
-                  />
-                </FilesViewContainer>
-              </>
-            )}
           </FlexItem>
 
-          {!itemLevelScoring &&
-            !isShowStudentWork &&
-            (isStudentAttempt || isStudentReport) && (
-              <FlexItem padding="0px 16px 8px 0px">
-                {/*  on the student side, show feedback for each question only when item level scoring is off */}
-                {/* we don't show teacher feedback on the show student work modal */}
-                {teachCherFeedBack(widget, null, null, showStackedView)}
-              </FlexItem>
-            )}
+          {!itemLevelScoring && !isShowStudentWork && isStudentAttempt && (
+            <FlexItem padding="20px 16px 8px 0px">
+              {/*  on the student side, show feedback for each question only when item level scoring is off */}
+              {/* we don't show teacher feedback on the show student work modal */}
+              {teachCherFeedBack(widget, null, null, showStackedView)}
+            </FlexItem>
+          )}
         </FlexContainer>
+        {!isStudentAttempt &&
+          !isStudentReport &&
+          imageAttachments.length > 0 &&
+          !LCBPreviewModal && (
+            <StudentWorkCollapse
+              isStudentWorkCollapseOpen={isStudentWorkCollapseOpen}
+              toggleStudentWorkCollapse={toggleStudentWorkCollapse}
+              imageAttachments={imageAttachments}
+            />
+          )}
+        {attachments && attachments.length > 0 && !LCBPreviewModal && (
+          <>
+            {(isStudentAttempt || isStudentReport) && (
+              <StyleH2Heading>Attachments</StyleH2Heading>
+            )}
+            <FilesViewContainer>
+              <FilesView
+                files={attachments}
+                hideDelete={!isStudentAttempt}
+                onDelete={saveUpdatedAttachments}
+                openAttachmentViewModal={this.toggleAttachmentsModal}
+                disableLink
+              />
+            </FilesViewContainer>
+          </>
+        )}
+        {/*  on the student side, show feedback for each question only when item level scoring is off */}
+        {/* we don't show teacher feedback on the show student work modal */}
+        {!itemLevelScoring &&
+          !isShowStudentWork &&
+          isStudentReport &&
+          teachCherFeedBack(widget, null, null, showStackedView)}
       </TabContainer>
     )
   }

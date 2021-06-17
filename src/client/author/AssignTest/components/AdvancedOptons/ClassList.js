@@ -10,6 +10,11 @@ import { lightGrey10 } from '@edulastic/colors'
 import { test as testConst } from '@edulastic/constants'
 import { get, curry, isEmpty, find, uniq } from 'lodash'
 import {
+  DISTRICT_ADMIN,
+  SCHOOL_ADMIN,
+  TEACHER,
+} from '@edulastic/constants/const/roleType'
+import {
   clearClassListAction,
   receiveClassListAction,
 } from '../../../Classes/ducks'
@@ -21,6 +26,7 @@ import {
   getUserOrgId,
   getSchoolsByUserRoleSelector,
   getCurrentTerm,
+  getUserRole,
 } from '../../../src/selectors/user'
 import { receiveSchoolsAction } from '../../../Schools/ducks'
 import {
@@ -226,18 +232,32 @@ class ClassList extends React.Component {
     )
   }
 
-  renderTableEmpty = () => (
-    <Empty
-      description={
-        <span>
-          No Class/Group exists in current term.{' '}
-          <Link target="_blank" to="/author/manageClass">
-            Create new
-          </Link>
-        </span>
-      }
-    />
-  )
+  renderTableEmpty = () => {
+    const { currentTerm, userRole } = this.props
+    if (!currentTerm) {
+      return (
+        <Empty
+          description={
+            <span>
+              No Class/Group exists in current term.{' '}
+              {[DISTRICT_ADMIN, SCHOOL_ADMIN, TEACHER].includes(userRole) && (
+                <Link
+                  target="_blank"
+                  to={
+                    userRole === TEACHER
+                      ? '/author/manageClass'
+                      : '/author/classes'
+                  }
+                >
+                  Create new
+                </Link>
+              )}
+            </span>
+          }
+        />
+      )
+    }
+  }
 
   render() {
     const {
@@ -579,6 +599,7 @@ const enhance = compose(
       tagList: getAllTagsSelector(state, 'group'),
       assignedClassesById: getAssignedClassesByIdSelector(state),
       currentTerm: getCurrentTerm(state),
+      userRole: getUserRole(state),
     }),
     {
       loadClassListData: receiveClassListAction,

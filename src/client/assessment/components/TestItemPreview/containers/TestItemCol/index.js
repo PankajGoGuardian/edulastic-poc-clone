@@ -191,6 +191,7 @@ class TestItemCol extends Component {
               widgetIndex={widgetIndex}
               isStudentAttempt={isStudentAttempt}
               isFeedbackVisible={isFeedbackVisible}
+              questions={questions}
               itemLevelScoring={itemLevelScoring}
             />
           </FlexItem>
@@ -204,15 +205,15 @@ class TestItemCol extends Component {
           )}
         </FlexContainer>
         {!isStudentAttempt &&
-              !isStudentReport &&
-              imageAttachments.length > 0 &&
-              !LCBPreviewModal && (
-                <StudentWorkCollapse
-                  isStudentWorkCollapseOpen={isStudentWorkCollapseOpen}
-                  toggleStudentWorkCollapse={toggleStudentWorkCollapse}
-                  imageAttachments={imageAttachments}
-                />
-        )}
+          !isStudentReport &&
+          imageAttachments.length > 0 &&
+          !LCBPreviewModal && (
+            <StudentWorkCollapse
+              isStudentWorkCollapseOpen={isStudentWorkCollapseOpen}
+              toggleStudentWorkCollapse={toggleStudentWorkCollapse}
+              imageAttachments={imageAttachments}
+            />
+          )}
         {attachments && attachments.length > 0 && !LCBPreviewModal && (
           <>
             {(isStudentAttempt || isStudentReport) && (

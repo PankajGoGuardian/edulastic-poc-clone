@@ -1161,6 +1161,9 @@ const getLoggedOutUrl = () => {
   if (pathname === '/inviteteacher' || isHashAssessmentUrl()) {
     return `${window.location.pathname}${window.location.search}${window.location.hash}`
   }
+  if (pathname.includes('partnerlogin')) {
+    return pathname
+  }
   return '/login'
 }
 

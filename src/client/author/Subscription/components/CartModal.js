@@ -34,13 +34,12 @@ function CartModal({
   user,
   subType,
   hideCcButton,
+  shouldbeMultipleLicenses,
+  setIsTabShouldSwitch,
 }) {
   const teacherPremiumId = teacherPremium?.id
   const [emailValues, setEmailValues] = useState('')
 
-  const isMultipleQuantities = Object.keys(quantities).find(
-    (x) => quantities[x] > 1
-  )
   const setQuantitiesWithLocalStorage = (quantities) => {
     window.localStorage.cartQuantities = quantities
     return setQuantities(quantities)
@@ -70,6 +69,7 @@ function CartModal({
   }
 
   const handleProceed = () => {
+    setIsTabShouldSwitch(false)
     const emails = emailValues
       .split(',')
       .map((x) => x.replace(/\s/g, ''))
@@ -169,7 +169,7 @@ function CartModal({
           subType={subType}
           allProducts={products}
         />
-        {isMultipleQuantities && (
+        {shouldbeMultipleLicenses && (
           <EmailWrapper>
             <FieldLabel>Bookkeeper Email</FieldLabel>
             <TextInputStyled

@@ -252,6 +252,8 @@ class AuthorTestItemPreview extends Component {
           // widgetIndex was needed for passages if it has multiple tabs and widgets
           widgetIndex={widgetIndex}
           testItemId={item._id}
+          multipartItem={item?.multipartItem || false}
+          itemLevelScoring={item?.itemLevelScoring || true}
         />
       </Tabs.TabContainer>
     )

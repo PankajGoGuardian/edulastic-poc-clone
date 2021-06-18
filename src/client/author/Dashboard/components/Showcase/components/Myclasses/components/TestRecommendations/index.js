@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
 import { title } from '@edulastic/colors'
-import { EduButton, FlexContainer } from '@edulastic/common'
+import { FlexContainer } from '@edulastic/common'
 import { TextWrapper } from '../../../../../styledComponents'
 import {
   TestRecommendationsWrapper,
   ViewMoreButton,
   TestCardContainer,
+  CustomButton,
 } from './styled'
 import CardWrapper from '../../../../../../../TestList/components/CardWrapper/CardWrapper'
 
@@ -33,18 +34,17 @@ const TestRecommendationsContainer = ({
 
   return (
     <TestRecommendationsWrapper>
-      <FlexContainer justifyContent="left" flexWrap="wrap">
-        <TextWrapper
-          fw="bold"
-          size="16px"
-          color={title}
-          style={{ marginBottom: '1rem' }}
-        >
-          Recommended Content For You
+      <FlexContainer
+        justifyContent="flex-start"
+        alignItems="flex-start"
+        mt="35px"
+      >
+        <TextWrapper fw="bold" size="16px" color={title}>
+          Recommended For You
         </TextWrapper>
-        <EduButton
-          style={{ marginLeft: '10px', marginTop: '-6px', padding: '5px' }}
+        <CustomButton
           isGhost
+          height="28px"
           onClick={() => setShowTestCustomizerModal(true)}
           data-cy="customizeRecommendations"
           title={
@@ -55,7 +55,7 @@ const TestRecommendationsContainer = ({
           disabled={isDemoPlaygroundUser}
         >
           Customize
-        </EduButton>
+        </CustomButton>
         {recommendations?.length > gridCountInARow && (
           <ViewMoreButton
             data-cy={isExpanded ? 'viewLess' : 'viewMore'}
@@ -67,8 +67,9 @@ const TestRecommendationsContainer = ({
       </FlexContainer>
       <FlexContainer
         data-cy="testRecommendationsContainer"
-        justifyContent="left"
+        justifyContent="flex-start"
         flexWrap="wrap"
+        mt="15px"
       >
         {recommendations.map((item, index) => {
           if (index >= totalNumberOfItemsToShow) return

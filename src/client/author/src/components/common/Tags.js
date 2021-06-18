@@ -28,6 +28,7 @@ const Tags = ({
   isCustomTags,
   flexWrap,
   isTestCard,
+  testId = '',
 }) => {
   if (!tags.length) return null
 
@@ -77,6 +78,7 @@ const Tags = ({
           }
           content={popup}
           onClick={(e) => e.stopPropagation()}
+          overlayClassName={`testCard${testId}`}
         >
           <Label
             className={`${className} hidden-tags`}

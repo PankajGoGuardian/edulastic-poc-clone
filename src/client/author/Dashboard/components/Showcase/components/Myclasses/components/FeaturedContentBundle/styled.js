@@ -16,7 +16,7 @@ export const BundleContainer = styled.div`
   height: 169px;
   display: flex;
   align-items: flex-end;
-  margin: 0px 2px 10px 0px;
+  margin: 0px 4px 10px 0px;
   border-radius: 10px;
   padding: 12px 20px;
   color: ${white};

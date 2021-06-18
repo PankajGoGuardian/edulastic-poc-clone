@@ -139,13 +139,14 @@ const TestItemCard = ({
             isStandards
             margin="0px"
             isTestCard
+            testId={testId}
           />
         </TagsWrapper>
       </TestInfo>
 
       {!isTestRecommendation && (
         <MidRow>
-          <Collection isDynamic>
+          <Collection isDynamic={isDynamic}>
             <label>COLLECTIONS</label>
             <CollectionNameWrapper
               data-cy="test-collection"

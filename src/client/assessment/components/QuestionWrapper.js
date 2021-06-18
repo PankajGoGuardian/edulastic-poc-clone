@@ -365,7 +365,12 @@ class QuestionWrapper extends Component {
       isGradedExternally = testPreviewScore.isGradedExternally
     }
 
-    return { score: (score || 0) / (maxScore || 1), isGradedExternally }
+    return {
+      score: (score || 0) / (maxScore || 1),
+      isGradedExternally,
+      multipartItem,
+      itemLevelScoring,
+    }
   }
 
   render() {
@@ -663,21 +668,18 @@ class QuestionWrapper extends Component {
                       />
                     </RubricTableWrapper>
                   )}
-                  {view === 'preview' &&
-                    !isLCBView &&
-                    !isPrintPreview &&
-                    !isExpressGrader && (
-                      <Hints
-                        question={data}
-                        enableMagnifier={enableMagnifier}
-                        saveHintUsage={saveHintUsage}
-                        isStudent={userRole === 'student'}
-                        itemIndex={itemIndex}
-                        isLCBView={isLCBView}
-                        isExpressGrader={isExpressGrader}
-                        isStudentReport={isStudentReport}
-                      />
-                    )}
+                  {view === 'preview' && !isPrintPreview && !showFeedback && (
+                    <Hints
+                      question={data}
+                      enableMagnifier={enableMagnifier}
+                      saveHintUsage={saveHintUsage}
+                      isStudent={userRole === 'student'}
+                      itemIndex={itemIndex}
+                      isLCBView={isLCBView}
+                      isExpressGrader={isExpressGrader}
+                      isStudentReport={isStudentReport}
+                    />
+                  )}
                 </StyledFlexContainer>
               </PaperWrapper>
             </QuestionContainer>

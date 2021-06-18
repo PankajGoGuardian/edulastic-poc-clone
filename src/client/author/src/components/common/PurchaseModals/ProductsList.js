@@ -140,14 +140,6 @@ const ProductsList = ({
                 usedCount: 1,
               },
             ]
-          } else {
-            _licenses = produce(_licenses, (_licensesDraft) => {
-              const licensesIndex = _licensesDraft.findIndex(
-                (x) => x?.linkedProductId
-              )
-              _licensesDraft[licensesIndex].totalCount++
-              _licensesDraft[licensesIndex].usedCount++
-            })
           }
         }
       }

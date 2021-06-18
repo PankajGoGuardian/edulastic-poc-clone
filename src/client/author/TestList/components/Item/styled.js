@@ -484,13 +484,13 @@ export const MidRow = styled.div`
   }
 `
 export const Collection = styled.div`
-  width: ${({ isDynamic }) => (isDynamic ? '45%' : '55%')};
-  padding: 0px 10px;
+  width: ${({ isDynamic }) => (isDynamic ? '50%' : 'calc(100% - 70px)')};
+  padding: 0px 5px;
 `
 
 export const Qcount = styled.div`
-  flex-basis: 50%;
-  padding: 0px 10px;
+  flex-basis: 70px;
+  padding: 0px 5px;
 `
 
 export const DraftIconWrapper = styled.div`

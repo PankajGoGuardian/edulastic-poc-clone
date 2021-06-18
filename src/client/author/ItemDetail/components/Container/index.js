@@ -70,12 +70,20 @@ const ItemDetailContainer = ({
     }
   }, [itemId])
 
-  const saveItem = () => {
+  const saveItem = (shouldRedirectOnPassageRemove = true) => {
     /**
      * using same data while deleting questions
      * src/client/author/ItemDetail/components/Container/Container.js
      */
-    updateItem(itemId, item, testId, isTestFlow, location.state)
+    updateItem(
+      itemId,
+      item,
+      testId,
+      isTestFlow,
+      location.state,
+      true,
+      shouldRedirectOnPassageRemove
+    )
   }
 
   const publishItem = () => {

@@ -445,8 +445,9 @@ class GraphContainer extends PureComponent {
     }
 
     if (
-      !isEqual(elements, prevProps.elements) ||
-      showConnect !== prevProps.showConnect
+      !disableResponse &&
+      (!isEqual(elements, prevProps.elements) ||
+        showConnect !== prevProps.showConnect)
     ) {
       this._graph.removeConnectline()
     }

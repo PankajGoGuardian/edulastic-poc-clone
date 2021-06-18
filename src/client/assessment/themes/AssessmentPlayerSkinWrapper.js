@@ -35,6 +35,7 @@ const AssessmentPlayerSkinWrapper = ({
     windowWidth,
     toggleToolsOpenStatus,
     hasDrawingResponse,
+    isShowStudentWork,
   } = restProps
 
   const isPadMode = windowWidth < IPAD_LANDSCAPE_WIDTH - 1
@@ -312,6 +313,7 @@ const AssessmentPlayerSkinWrapper = ({
         {playerSkinType.toLowerCase() ===
           test.playerSkinValues.edulastic.toLowerCase() &&
           defaultAP &&
+          !isShowStudentWork &&
           navigationBtns()}
         {footer()}
       </FlexContainer>

@@ -284,27 +284,31 @@ class QuestionViewContainer extends Component {
             manuallyGraded: 0,
             unscoredItems: 0,
             score: 0,
+            testActivityData: { ...st },
+            currentUqas: [],
           }
-          st.questionActivities
-            .filter(({ notStarted, _id }) => !notStarted && _id === question.id)
-            .forEach(({ skipped, graded, score, maxScore, isPractice }) => {
-              if (isPractice) {
-                stData.unscoredItems += 1
-              } else if (skipped) {
-                stData.skipped += 1
-              } else if (graded === false) {
-                stData.manuallyGraded += 1
-              } else if (score === maxScore && score > 0) {
-                stData.correct += 1
-              } else if (score > 0 && score < maxScore) {
-                stData.pCorrect += 1
-              } else if (score === 0) {
-                stData.wrong += 1
-              }
-              stData.score = score
+          const uqas = st.questionActivities.filter(
+            ({ notStarted, _id }) => !notStarted && _id === question.id
+          )
+          stData.currentUqas = uqas
+          uqas.forEach(({ skipped, graded, score, maxScore, isPractice }) => {
+            if (isPractice) {
+              stData.unscoredItems += 1
+            } else if (skipped) {
+              stData.skipped += 1
+            } else if (graded === false) {
+              stData.manuallyGraded += 1
+            } else if (score === maxScore && score > 0) {
+              stData.correct += 1
+            } else if (score > 0 && score < maxScore) {
+              stData.pCorrect += 1
+            } else if (score === 0) {
+              stData.wrong += 1
+            }
+            stData.score = score
 
-              return null
-            })
+            return null
+          })
           return stData
         })
     }
@@ -338,7 +342,7 @@ class QuestionViewContainer extends Component {
     const questionActivitiesGroupedByUserId = groupBy(classQuestion, 'userId')
     const filteredTestActivities =
       (!loading &&
-        testActivity.filter((student) => {
+        data.filter(({ testActivityData: student, currentUqas }) => {
           if (
             !student.testActivityId ||
             student.status === 'absent' ||
@@ -348,7 +352,6 @@ class QuestionViewContainer extends Component {
           }
           const qActivities =
             questionActivitiesGroupedByUserId[student.studentId] || []
-
           /**
            * Here if question activity length is 0, which means that there is no attempt for the question
            * by the student so, for INPROGRESS student we will show unattempted questions only in ALL filter
@@ -364,7 +367,38 @@ class QuestionViewContainer extends Component {
                 filter !== 'unscoredItems'))
           )
             return false
-          return true
+
+          if (!filter) return true
+
+          const currentUQA = currentUqas[0]
+
+          if (filter === 'unscoredItems' && currentUQA.isPractice) {
+            return true
+          }
+          if (filter === 'skipped' && currentUQA.skipped) {
+            return true
+          }
+          if (filter === 'notGraded' && currentUQA.graded === false) {
+            return true
+          }
+          if (
+            filter === 'correct' &&
+            currentUQA.score === currentUQA.maxScore &&
+            currentUQA.score > 0
+          ) {
+            return true
+          }
+          if (
+            filter === 'partial' &&
+            currentUQA.score > 0 &&
+            currentUQA.score < currentUQA.maxScore
+          ) {
+            return true
+          }
+          if (filter === 'wrong' && currentUQA.score === 0) {
+            return true
+          }
+          return false
         })) ||
       []
 
@@ -552,7 +586,7 @@ class QuestionViewContainer extends Component {
             </EduButton>
           </StudentButtonWrapper>
         </StudentResponse>
-        {itemsToRender.map((student, index) => {
+        {itemsToRender.map(({ testActivityData: student }, index) => {
           const qActivities =
             questionActivitiesGroupedByUserId[student.studentId] || []
 

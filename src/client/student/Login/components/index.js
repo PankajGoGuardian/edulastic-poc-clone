@@ -67,7 +67,11 @@ const Login = ({
 export default Login
 
 const LoginWrapper = styled.div`
-  background: #067059;
+  background: ${(props) =>
+    props.image
+      ? `#999999 url(${props.image}) no-repeat fixed top center`
+      : '#067059'};
+  background-size: cover;
   margin: 0px;
   padding: 0px;
   min-height: 100vh;

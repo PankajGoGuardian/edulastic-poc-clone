@@ -386,8 +386,8 @@ export const Header = styled.div`
 Header.displayName = 'CardHeader'
 
 export const HeaderThumbnail = styled.img`
-  width: 100%;
-  max-height: 135px;
+  width: 99.72%;
+  max-height: ${(props) => (props.isTestRecommendation ? '110px' : '123px')};
   padding: 0px;
   bottom: 0px;
   position: absolute;
@@ -484,13 +484,13 @@ export const MidRow = styled.div`
   }
 `
 export const Collection = styled.div`
-  width: ${({ isDynamic }) => (isDynamic ? '45%' : '55%')};
-  padding: 0px 10px;
+  width: ${({ isDynamic }) => (isDynamic ? '50%' : 'calc(100% - 70px)')};
+  padding: 0px 5px;
 `
 
 export const Qcount = styled.div`
-  flex-basis: 50%;
-  padding: 0px 10px;
+  flex-basis: 70px;
+  padding: 0px 5px;
 `
 
 export const DraftIconWrapper = styled.div`

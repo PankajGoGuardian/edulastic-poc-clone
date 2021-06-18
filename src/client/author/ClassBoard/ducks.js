@@ -111,7 +111,10 @@ import {
   hasImproperDynamicParamsConfig,
   isOptionsRemoved,
 } from '../questionUtils'
-import { setRegradeFirestoreDocId } from '../TestPage/ducks'
+import {
+  setFreezeTestSettings,
+  setRegradeFirestoreDocId,
+} from '../TestPage/ducks'
 
 const {
   authorAssignmentConstants: {
@@ -122,7 +125,7 @@ const {
 const { testContentVisibility } = test
 
 export const LCB_LIMIT_QUESTION_PER_VIEW = 20
-export const SCROLL_SHOW_LIMIT = 10
+export const SCROLL_SHOW_LIMIT = 30
 
 function* receiveGradeBookSaga({ payload }) {
   try {
@@ -178,7 +181,7 @@ export function* receiveTestActivitySaga({ payload }) {
       type: RECEIVE_CLASS_RESPONSE_SUCCESS,
       payload: { ...classResponse, testItems, reportStandards, originalItems },
     })
-
+    yield put(setFreezeTestSettings(classResponse.freezeSettings))
     const students = get(gradebookData, 'students', [])
     // the below methods mutates the gradebookData
     gradebookData.passageData = classResponse.passages

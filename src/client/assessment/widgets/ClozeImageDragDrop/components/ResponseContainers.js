@@ -6,8 +6,7 @@ import { Pointer } from '../../../styled/Pointer'
 import { Point } from '../../../styled/Point'
 import { Triangle } from '../../../styled/Triangle'
 
-import AnswerContainer from '../AnswerContainer'
-import { Container } from './Container'
+import AnswerContainer from './AnswerContainer'
 
 const { DragItem, DropContainer } = DragDrop
 
@@ -90,33 +89,24 @@ const ResponseContainers = ({
           {container.label && (
             <span className="sr-only">Drop target {container.label}</span>
           )}
-          <Container
-            fontSize={fontSize}
-            index={index}
-            height={container.height}
-            width={container.width}
-            answers={answers.map((answer) => answer.value).join(' ')}
-          >
-            {answers.map((answer, item_index) => (
-              <DragItem
-                style={dragItemStyle}
-                key={answer.id}
-                data={{
-                  option: answer,
-                  fromContainerIndex: index,
-                  fromRespIndex: item_index,
-                }}
-              >
-                <AnswerContainer
-                  height={container.height || 'auto'}
-                  width={container.width || 'auto'}
-                  isWrapText={isWrapText}
-                  fontSize={fontSize}
-                  answer={answer.value}
-                />
-              </DragItem>
-            ))}
-          </Container>
+          {answers.map((answer, item_index) => (
+            <DragItem
+              style={dragItemStyle}
+              key={answer.id}
+              data={{
+                option: answer,
+                fromContainerIndex: index,
+                fromRespIndex: item_index,
+              }}
+            >
+              <AnswerContainer
+                fontSize={fontSize}
+                answer={answer.value}
+                height={container.height}
+                width={container.width}
+              />
+            </DragItem>
+          ))}
           <Pointer
             className={container.pointerPosition}
             width={container.width}

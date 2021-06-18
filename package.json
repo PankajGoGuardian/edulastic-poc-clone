@@ -1,6 +1,6 @@
 {
   "name": "edulastic",
-  "version": "16.1.4",
+  "version": "17.0.0",
   "sideEffects": [
     "!(**/ducks.js)",
     "!(**/duck.js)",
@@ -53,7 +53,7 @@
     "prettier:format": "yarn prettier --write \"src/**/*.js|src/**/*.ts\""
   },
   "dependencies": {
-    "@edulastic/evaluators": "git+ssh://git@github.com/snapwiz/edu-eval.git#e69a29caa0e28834c3db227878e7746f9de93aea",
+    "@edulastic/evaluators": "git+ssh://git@github.com/snapwiz/edu-eval.git#74393de3577934d20127dc12a301ff3e605f20a5",
     "@fortawesome/fontawesome-svg-core": "^1.2.26",
     "@fortawesome/free-regular-svg-icons": "^5.12.0",
     "@fortawesome/free-solid-svg-icons": "^5.12.0",
@@ -87,7 +87,7 @@
     "html-webpack-plugin": "^4.3.0",
     "jquery": "^3.5.1",
     "jslib-html5-camera-photo": "^3.1.3",
-    "jsxgraph": "^0.99.7",
+    "jsxgraph": "^1.2.3",
     "keyboardevent-key-polyfill": "^1.1.0",
     "loadjs": "^4.2.0",
     "lodash": "^4.17.11",

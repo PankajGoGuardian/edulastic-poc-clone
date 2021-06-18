@@ -39,7 +39,7 @@ const SelectCollectionModal = ({
       contentIds = selectedPlaylists
     }
     if (contentType === 'TEST') {
-      contentIds = selectedTests.map((item) => item._id)
+      contentIds = selectedTests.map((item) => item.versionId)
     }
     if (!contentIds.length) {
       notification({ messageKey: 'addAtleastOneItemToTest' })

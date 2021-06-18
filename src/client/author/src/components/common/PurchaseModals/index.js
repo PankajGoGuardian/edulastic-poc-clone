@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import loadable from '@loadable/component'
 import { compose } from 'redux'
-import { uniq, compact } from 'lodash'
+import { uniq, compact, keyBy } from 'lodash'
 import moment from 'moment'
 import { roleuser } from '@edulastic/constants'
 import {
@@ -110,6 +110,8 @@ const PurchaseFlowModals = (props) => {
     isExternalSubmitPOModalVisible = false,
     toggleSubmitPOModal,
     setCartQuantities,
+    setProratedProducts,
+    setIsTabShouldSwitch,
   } = props
 
   const [payWithPoModal, setPayWithPoModal] = useState(false)
@@ -173,11 +175,14 @@ const PurchaseFlowModals = (props) => {
     if (showMultiplePurchaseModal || showBuyMoreModal) {
       return false
     }
+    if (Object.keys(cartQuantities).find((x) => cartQuantities[x] > 1)) {
+      return false
+    }
     if (subEndDate) {
       return getShouldProrate(subEndDate)
     }
     return false
-  }, [subEndDate, showMultiplePurchaseModal, showBuyMoreModal])
+  }, [subEndDate, showMultiplePurchaseModal, showBuyMoreModal, cartQuantities])
 
   const { teacherPremium = {}, itemBankPremium = [] } = useMemo(() => {
     const boughtPremiumBankIds = itemBankSubscriptions
@@ -243,11 +248,20 @@ const PurchaseFlowModals = (props) => {
       itemBankPremium: result.slice(1),
     }
   }, [subEndDate, products, subsLicenses, shouldProrateMultiplePurchase])
-
+  const proratedItemBankPremiumKeyed = keyBy(itemBankPremium, 'id')
+  const proratedProducts = products.map((p) => {
+    if (proratedItemBankPremiumKeyed[p.id]) {
+      return { ...p, ...proratedItemBankPremiumKeyed[p.id] }
+    }
+    return p
+  })
   useEffect(() => {
     setCartQuantities(quantities)
   }, [quantities])
 
+  useEffect(() => {
+    setProratedProducts(proratedProducts)
+  }, [products?.length, itemBankPremium?.length, subEndDate])
   useEffect(() => {
     if (
       defaultSelectedProductIdsRef.current === undefined ||
@@ -309,6 +323,28 @@ const PurchaseFlowModals = (props) => {
   }
 
   const isEnterprise = ['partial_premium', 'enterprise'].includes(subType)
+  const shouldbeMultipleLicenses = useMemo(() => {
+    const hasMoreThanOne = Object.keys(cartQuantities).some(
+      (x) =>
+        cartQuantities[x] > 1 ||
+        itemBankSubscriptions.some((permission) => {
+          return (
+            permission.itemBankId ===
+              products.find((p) => p.id === x)?.linkedProductId &&
+            !permission.isTrial
+          )
+        })
+    )
+    if (isEnterprise) {
+      return hasMoreThanOne
+    }
+    return hasMoreThanOne || user?.role != roleuser.TEACHER
+  }, [cartQuantities, itemBankSubscriptions, user?.role, isEnterprise])
+
+  const hideCcButton =
+    (shouldbeMultipleLicenses || cartQuantities[teacherPremium.id]) &&
+    isEnterprise &&
+    user?.features?.premium
 
   const handleClick = ({
     emails = [],
@@ -329,21 +365,7 @@ const PurchaseFlowModals = (props) => {
        * then proceed with multiple license purchase flow
        * else individual purchase
        */
-      if (
-        Object.keys(cartQuantities).some(
-          (x) =>
-            cartQuantities[x] > 1 ||
-            itemBankSubscriptions.some((permission) => {
-              return (
-                permission.itemBankId ===
-                  products.find((p) => p.id === x)?.linkedProductId &&
-                !permission.isTrial
-              )
-            })
-        ) ||
-        user?.role !== roleuser.TEACHER ||
-        isEnterprise
-      ) {
+      if (shouldbeMultipleLicenses) {
         const productQuantities = products.map((product) => ({
           ...product,
           quantity: cartQuantities[product.id],
@@ -436,7 +458,7 @@ const PurchaseFlowModals = (props) => {
       {cartVisible && !fromSideMenu && (
         <CartModal
           visible={cartVisible}
-          products={products}
+          products={proratedProducts}
           teacherPremium={teacherPremium}
           setTotalAmount={setTotalAmount}
           bulkInviteBookKeepers={bulkInviteBookKeepers}
@@ -451,6 +473,10 @@ const PurchaseFlowModals = (props) => {
           subsLicenses={subsLicenses}
           itemBankSubscriptions={itemBankSubscriptions}
           subType={subType}
+          subscription={props.subscription}
+          hideCcButton={hideCcButton}
+          shouldbeMultipleLicenses={shouldbeMultipleLicenses}
+          setIsTabShouldSwitch={setIsTabShouldSwitch}
         />
       )}
       {showUpgradeModal && (
@@ -534,6 +560,7 @@ PurchaseFlowModals.defaultProps = {
   setClickedBundleId: () => {},
   openRequestInvoiceModal: () => {},
   toggleSubmitPOModal: () => {},
+  setIsTabShouldSwitch: () => {},
 }
 
 export default compose(
@@ -570,6 +597,7 @@ export default compose(
       useThisPlayList: useThisPlayListAction,
       setCartVisible: slice.actions.setCartVisible,
       setCartQuantities: slice.actions.setCartQuantities,
+      setProratedProducts: slice.actions.setProratedProducts,
     }
   )
 )(PurchaseFlowModals)

@@ -54,7 +54,7 @@ const ScoreChart = ({
               _____
             </tspan>
             <tspan x={x + 20} dy="15">
-              {dataWithColors[index].maxScore}
+              {dataWithColors[index].maxPossibleScore}
             </tspan>
           </>
         )

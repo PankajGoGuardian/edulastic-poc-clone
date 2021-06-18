@@ -10,6 +10,7 @@ import React from 'react'
 
 import { MathInputStyles, EmptyDiv, KeyboardIcon } from './MathInputStyles'
 import Draggable from './Draggable'
+import PeriodicTable from '../PeriodicTable'
 
 const { EMBED_RESPONSE, keyboardMethods } = math
 const MAX_CONTENT_LENGTH = 1200
@@ -17,6 +18,7 @@ const MAX_CONTENT_LENGTH = 1200
 class MathInput extends React.PureComponent {
   state = {
     mathField: null,
+    showPeriodic: false,
     mathFieldFocus: false,
   }
 
@@ -62,7 +64,7 @@ class MathInput extends React.PureComponent {
       mathFieldFocus
     ) {
       onFocus(false)
-      this.setState({ mathFieldFocus: false })
+      this.setState({ mathFieldFocus: false, showPeriodic: false })
     }
   }
 
@@ -195,7 +197,10 @@ class MathInput extends React.PureComponent {
     }
   }
 
-  sanitizeLatex = (v) => (v?.toString() || '').replace(/&amp;/g, '&')
+  sanitizeLatex = (v) =>
+    (v?.toString() || '')
+      .replace(/&amp;/g, '&')
+      .replace(/mathbb\{(.*?)\}/g, '$1')
 
   handleKeypress = (e) => {
     const {
@@ -371,6 +376,14 @@ class MathInput extends React.PureComponent {
     )
   }
 
+  togglePeriodicTable = () => {
+    this.setState((prevState) => ({ showPeriodic: !prevState.showPeriodic }))
+  }
+
+  updateLastKeypadPos = (pos) => {
+    this.setState({ keyboardPosition: pos })
+  }
+
   render() {
     const {
       alwaysShowKeyboard,
@@ -400,6 +413,7 @@ class MathInput extends React.PureComponent {
       mathFieldFocus,
       hideKeyboardByDefault,
       keyboardPosition,
+      showPeriodic,
     } = this.state
     const visibleKeypad =
       !alwaysHideKeyboard &&
@@ -415,7 +429,8 @@ class MathInput extends React.PureComponent {
         className={className}
         fontStyle={
           symbols[0] === keyboardMethods.UNITS_SI ||
-          symbols[0] === keyboardMethods.UNITS_US
+          symbols[0] === keyboardMethods.UNITS_US ||
+          symbols[0] === keyboardMethods.CHEMISTRY
             ? 'normal'
             : 'italic'
         }
@@ -454,6 +469,7 @@ class MathInput extends React.PureComponent {
           <MathKeyboardWrapper
             className="input__keyboard"
             position={keyboardPosition}
+            onDragStop={this.updateLastKeypadPos}
           >
             <MathKeyboard
               symbols={symbols}
@@ -468,8 +484,19 @@ class MathInput extends React.PureComponent {
               }
               dynamicVariableInput={dynamicVariableInput}
               showDragHandle={showDragHandle}
+              showPeriodic={showPeriodic}
+              togglePeriodicTable={this.togglePeriodicTable}
             />
           </MathKeyboardWrapper>
+        )}
+        {showPeriodic && (
+          <PeriodicTable
+            position={keyboardPosition}
+            togglePeriodicTable={this.togglePeriodicTable}
+            onInput={(key, command, numToMove) =>
+              this.onInput(key, command, numToMove)
+            }
+          />
         )}
       </MathInputStyles>
     )

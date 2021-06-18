@@ -299,7 +299,7 @@ export const StyledAttachmentModal = styled(Modal)`
     padding: 0 50px 0 50px;
   }
   .ant-modal-header {
-    padding: 24px 46px;
+    padding: 24px 46px ${({ pb }) => pb};
     border: 0;
     .ant-modal-title {
       font-size: 18px;

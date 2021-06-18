@@ -12,7 +12,7 @@ const zoomedStyle = css`
       return
     }
 
-    const { shouldZoom, zoomLevel, headerHeight = 90, playerSkinType } = theme
+    const { zoomLevel, headerHeight = 90, playerSkinType } = theme
     const zoomed = zoomLevel > '1' && zoomLevel !== undefined
     const questerFooterHeight = 66
     const practicePlayerFooterHeight = 20
@@ -46,13 +46,6 @@ const zoomedStyle = css`
       playerSkinType === playerSkinValues.edulastic
     ) {
       header += practicePlayerFooterHeight
-    }
-    if (shouldZoom && zoomed) {
-      header /= zoomLevel
-      return `
-        min-height: calc(${100 / zoomLevel}vh - ${header}px);
-        max-height: calc(${100 / zoomLevel}vh - ${header}px);
-      `
     }
     return `
       min-height: calc(100vh - ${header}px);
@@ -88,6 +81,15 @@ export const WidgetContainer = styled.div`
   flex: 1;
   position: relative;
   min-height: max-content; // to fix height issue with safari
+
+  ${({ zoomLevel, responsiveWidth }) => {
+    const zoomed = zoomLevel > 1 && zoomLevel !== undefined
+    return `
+      min-width: ${responsiveWidth}px;
+      transform: ${zoomed ? `scale(${zoomLevel})` : ''};
+      transform-origin: ${zoomed ? `top left` : ''};
+    `
+  }};
 `
 export const FilesViewContainer = styled.div`
   padding: 10px 35px;

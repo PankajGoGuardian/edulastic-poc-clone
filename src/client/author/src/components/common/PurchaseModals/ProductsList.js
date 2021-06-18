@@ -36,6 +36,7 @@ const ProductsList = ({
   itemBankSubscriptions,
   subType,
   allProducts,
+  shouldbeMultipleLicenses,
 }) => {
   const allProductsKeyed = useMemo(() => {
     if (allProducts) {
@@ -110,17 +111,19 @@ const ProductsList = ({
       totalCount: totalTeacherPremium = 0,
       usedCount: totalTeacherPremiumUsedCount = 0,
     } = _licenses?.find((x) => x.productId === premiumProductId) || {}
-
     if (
       subType === 'premium' &&
       userRole === roleuser.TEACHER &&
       totalTeacherPremiumUsedCount == 0
     ) {
-      totalTeacherPremium += 1
-      totalTeacherPremiumUsedCount += 1
+      // totalTeacherPremium += 1
+      // totalTeacherPremiumUsedCount += 1
     }
+    // if(subType === 'enterprise'||(subType === 'partial_premium' && user?.features?.premium)){
+    //   totalTeacherPremium += 1;
+    // }
     if (quant[teacherPremium.id]) {
-      totalTeacherPremium += quant[teacherPremium.id]
+      // totalTeacherPremium += quant[teacherPremium.id]
     }
 
     if (subType === 'premium' && userRole === roleuser.TEACHER) {
@@ -137,32 +140,22 @@ const ProductsList = ({
                 usedCount: 1,
               },
             ]
-          } else {
-            _licenses = produce(_licenses, (_licensesDraft) => {
-              const licensesIndex = _licensesDraft.findIndex(
-                (x) => x?.linkedProductId
-              )
-              _licensesDraft[licensesIndex].totalCount++
-              _licensesDraft[licensesIndex].usedCount++
-            })
           }
         }
       }
     }
 
-    const totalRemainingItemBanksLicenseCount = Math.max(
-      allProducts
-        .filter((x) => x.id !== premiumProductId)
-        .map((p) => {
-          const c = _licenses.find((x) => x.productId === p.id)
-          const { totalCount = 0 } = c || {}
-          return (quant[p.productId] || 0) + totalCount
-        })
-    )
+    const allProductsQuants = allProducts
+      .filter((x) => x.id !== premiumProductId)
+      .map((p) => {
+        const c = _licenses.find((x) => x.productId === p.id)
+        const { totalCount = 0 } = c || {}
+        return (quant[p.id] || 0) + totalCount
+      })
+    const totalRemainingItemBanksLicenseCount = Math.max(...allProductsQuants)
 
     const availableTeacherPremiumCount =
       totalTeacherPremium - totalRemainingItemBanksLicenseCount
-
     return availableTeacherPremiumCount
   }
 
@@ -224,19 +217,12 @@ const ProductsList = ({
         )
 
         if (teacherPremiumCountTOAdd < 0) {
-          const existingCartCount = _quantities[premiumProductId] || 0
-          if (teacherPremiumCountTOAdd == -1) {
-            Object.assign(_quantities, {
-              [premiumProductId]: existingCartCount + 1,
-            })
-          } else {
-            Object.assign(_quantities, {
-              [premiumProductId]: Math.max(
-                Math.abs(teacherPremiumCountTOAdd),
-                _quantities[premiumProductId] || 0
-              ),
-            })
-          }
+          Object.assign(_quantities, {
+            [premiumProductId]: Math.max(
+              Math.abs(teacherPremiumCountTOAdd),
+              _quantities[premiumProductId] || 0
+            ),
+          })
         }
       }
 

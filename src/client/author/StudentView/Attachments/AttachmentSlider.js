@@ -83,7 +83,7 @@ const AttachmentSlider = ({
                       data-cy="banners"
                       className={slidesLength === index + 1 ? 'last' : ''}
                       bgImage={slide.source}
-                      key={slide._id}
+                      key={slide._id || index}
                     />
                   </SlideWrapper>
                 )

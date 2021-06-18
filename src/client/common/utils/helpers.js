@@ -399,12 +399,22 @@ export const getUserConfirmation = (message, callback) =>
  */
 export const reSequenceQuestionsWithWidgets = (
   widgets = [],
-  questions = []
+  questions = [],
+  itemLevelScoring = false
 ) => {
   const _questions = keyBy(questions, 'id')
   const reSequencedQ = widgets
     .map(({ reference }) => _questions[reference])
     .filter((x) => x)
+  if (itemLevelScoring) {
+    reSequencedQ.forEach((question, index) => {
+      if (question.validation && index > 0) {
+        question.validation.validResponse.score = 0
+        question.scoringDisabled = true
+        question.validation.maxScore = 0
+      }
+    })
+  }
   return reSequencedQ.length ? reSequencedQ : questions
 }
 

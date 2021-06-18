@@ -27,6 +27,8 @@ const Tags = ({
   isGrayTags,
   isCustomTags,
   flexWrap,
+  isTestCard,
+  testId = '',
 }) => {
   if (!tags.length) return null
 
@@ -71,9 +73,12 @@ const Tags = ({
       {hiddenTags && !!hiddenTags.length && (
         <Popover
           placement="bottomLeft"
-          getPopupContainer={(triggerNode) => triggerNode.parentNode}
+          getPopupContainer={(triggerNode) =>
+            isTestCard ? document.body : triggerNode.parentNode
+          }
           content={popup}
           onClick={(e) => e.stopPropagation()}
+          overlayClassName={`testCard${testId}`}
         >
           <Label
             className={`${className} hidden-tags`}

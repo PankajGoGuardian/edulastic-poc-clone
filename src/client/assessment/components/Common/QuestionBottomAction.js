@@ -340,7 +340,7 @@ const QuestionBottomAction = ({
           {!hasDrawingResponse && hasShowStudentWork && (
             <ShowUserWork onClick={onClickHandler} loading={loading} />
           )}
-          {view === 'preview' && isLCBView && !isPrintPreview && (
+          {view === 'preview' && !isPrintPreview && (
             <Hints
               question={data}
               enableMagnifier={enableMagnifier}

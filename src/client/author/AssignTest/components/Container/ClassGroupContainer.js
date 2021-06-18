@@ -83,6 +83,7 @@ const ClassGroupContainer = ({
         selectedOption={selectedDateOption}
         showOpenDueAndCloseDate={showOpenDueAndCloseDate}
         tootltipWidth={tootltipWidth}
+        closePolicy={assignment.closePolicy}
       />
 
       <SettingContainer id="open-policy-setting">

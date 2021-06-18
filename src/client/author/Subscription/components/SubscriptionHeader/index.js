@@ -73,6 +73,7 @@ const SubscriptionHeader = ({
   const cartCount = Object.keys(cartQuantities).filter(
     (x) => x && x != 'null' && cartQuantities[x] > 0
   ).length
+
   const handlePurchaseFlow = () => {
     settingProductData()
     if (isFreeAdmin) {

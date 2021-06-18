@@ -55,6 +55,7 @@ const sanitizeLatex = (latex) => {
     .replace(/\\hbox{--}/g, '–')
     .replace(/\\rightleftharpoons/g, '\\rightleftharpoons ')
     .replace(/\\indefinite/g, '\\int')
+    .replace(/\\times/g, '\\times ')
 
   if (_latex.substr(-1) === '\\') {
     _latex = _latex.slice(0, -1)

@@ -75,7 +75,11 @@ const TestItemCard = ({
       isTestRecommendation={isTestRecommendation}
       title={
         <Header isTestRecommendation={isTestRecommendation} src={null}>
-          <HeaderThumbnail alt="" src={thumbnail} />
+          <HeaderThumbnail
+            isTestRecommendation={isTestRecommendation}
+            alt=""
+            src={thumbnail}
+          />
           <Stars />
           <ButtonWrapper className="showHover">
             {isOwner && status === 'draft' && (
@@ -134,13 +138,15 @@ const TestItemCard = ({
             key="standards"
             isStandards
             margin="0px"
+            isTestCard
+            testId={testId}
           />
         </TagsWrapper>
       </TestInfo>
 
       {!isTestRecommendation && (
         <MidRow>
-          <Collection isDynamic>
+          <Collection isDynamic={isDynamic}>
             <label>COLLECTIONS</label>
             <CollectionNameWrapper
               data-cy="test-collection"

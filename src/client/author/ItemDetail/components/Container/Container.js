@@ -173,6 +173,7 @@ class Container extends Component {
       isTestFlow,
       item,
       location: { state },
+      saveItem,
     } = this.props
     const oldId = prevProps.match.params.id
     const newId = match.params.id
@@ -235,6 +236,17 @@ class Container extends Component {
     // beside running it trough itPassage method
     if (rows.length === 1 && this.isPassage(rows)) {
       this.handleApplySettings({ type: '50-50' })
+    }
+
+    // save testItem on deleting passage
+    const { passage: prevPassage } = prevProps
+    const { passage: newPassage } = this.props
+    const prevNumberOfPassageWidgets = get(prevPassage, 'structure.widgets', [])
+      .length
+    const newNumberOfPassageWidgets = get(newPassage, 'structure.widgets', [])
+      .length
+    if (newNumberOfPassageWidgets < prevNumberOfPassageWidgets) {
+      saveItem(false)
     }
   }
 
@@ -439,7 +451,9 @@ class Container extends Component {
   }
 
   handleDeletePassageWidget = (widgetIndex) => {
-    if (widgetIndex === 0) {
+    const { passage } = this.props
+    const numberOfPassageWidgets = get(passage, 'structure.widgets', []).length
+    if (numberOfPassageWidgets === 1) {
       notification({ messageKey: 'thereShouldBeAtleastOnePassageItem' })
 
       return null
@@ -850,8 +864,10 @@ class Container extends Component {
   }
 
   get passageItems() {
-    const { passage } = this.props
-    const passageTestItems = get(passage, 'testItems', [])
+    const { passage, isTestFlow } = this.props
+    const passageTestItems = isTestFlow
+      ? get(passage, 'testItems', [])
+      : get(passage, 'activeTestItems', [])
 
     return passageTestItems
   }

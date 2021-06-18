@@ -8,6 +8,7 @@ const TabHeaderContent = ({
   showMultipleSubscriptions,
   setShowEnterpriseTab,
   setShowMultiplePurchaseModal,
+  signUpFlowModalHandler,
 }) => {
   const handleManageSubscription = () => {
     history.push('/author/manage-subscriptions')
@@ -42,7 +43,7 @@ const TabHeaderContent = ({
           content bundles that you will love.
         </p>
         <FlexContainer justifyContent="flex-start" mt="20px">
-          <AuthorCompleteSignupButton
+          {/* <AuthorCompleteSignupButton
             renderButton={(handleClick) => (
               <EduButton
                 data-cy="multipleSubscription"
@@ -57,7 +58,19 @@ const TabHeaderContent = ({
               </EduButton>
             )}
             onClick={openMultiplePurchaseModal}
-          />
+          /> */}
+          <EduButton
+            data-cy="multipleSubscription"
+            onClick={() => signUpFlowModalHandler(openMultiplePurchaseModal)}
+            ml="0px"
+            width="215px"
+            height="38px"
+            isBlue
+            isGhost
+          >
+            MULTIPLE Subscriptions
+          </EduButton>
+
           <EduButton
             data-cy="enterpriseEdition"
             width="215px"

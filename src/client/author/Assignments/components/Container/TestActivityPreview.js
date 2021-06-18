@@ -9,6 +9,7 @@ import { MainContentWrapper, FlexContainer } from '@edulastic/common'
 import ProgressGraph from '../../../../common/components/ProgressGraph'
 import TestAcivityHeader from '../../../../student/sharedComponents/Header'
 import TestItemPreview from '../../../../assessment/components/TestItemPreview'
+import { changeDataToPreferredLanguage } from '../../../../assessment/utils/question'
 import {
   previewTestActivitySelector,
   previewTestQuestionActivities,
@@ -24,6 +25,7 @@ const TestActivityPreview = ({
   onClose,
   t,
   previewModal,
+  testPreviewLanguage,
 }) => {
   const passages = test?.passages || []
   const evaluations = questionActivities.reduce((acc, curr) => {
@@ -46,8 +48,12 @@ const TestActivityPreview = ({
     }
 
     const { userWork } = questionActivity
-    const questions = get(testItem, ['data', 'questions'], [])
-    const resources = get(testItem, ['data', 'resources'], [])
+    const questions = get(testItem, ['data', 'questions'], []).map((q) =>
+      changeDataToPreferredLanguage(q, testPreviewLanguage)
+    )
+    const resources = get(testItem, ['data', 'resources'], []).map((r) =>
+      changeDataToPreferredLanguage(r, testPreviewLanguage)
+    )
     const timeSpent = (get(questionActivity, 'timeSpent', 0) / 1000).toFixed(1)
     const attachments = get(questionActivity, 'scratchPad.attachments', null)
     const { multipartItem, itemLevelScoring, isPassageWithQuestions } = testItem
@@ -132,6 +138,7 @@ const enhanced = compose(
       test: state.test,
       title: state.test.title,
       testItems: state.test.items,
+      testPreviewLanguage: state.test.languagePreference,
       testActivity: previewTestActivitySelector(state),
       questionActivities: previewTestQuestionActivities(state),
     }),

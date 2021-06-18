@@ -56,6 +56,7 @@ import {
   schoologySyncAssignmentAction,
   schoologySyncAssignmentGradesAction,
 } from '../../author/src/actions/assignments'
+import { fetchDashboardTiles } from '../../author/Dashboard/ducks'
 
 // types
 export const LOGIN = '[auth] login'
@@ -1160,6 +1161,9 @@ const getLoggedOutUrl = () => {
   if (pathname === '/inviteteacher' || isHashAssessmentUrl()) {
     return `${window.location.pathname}${window.location.search}${window.location.hash}`
   }
+  if (pathname.includes('partnerlogin')) {
+    return pathname
+  }
   return '/login'
 }
 
@@ -2125,6 +2129,8 @@ function* updateDefaultSettingsSaga({ payload }) {
       messageKey: 'defaultSettingsUpdatedSuccessfully',
     })
     yield put({ type: UPDATE_DEFAULT_SETTINGS_SUCCESS, payload })
+    window.localStorage.setItem('author:dashboard:version', 0)
+    yield put(fetchDashboardTiles())
     yield put(updateUserSignupStateAction())
   } catch (e) {
     yield put({ type: UPDATE_DEFAULT_SETTINGS_FAILED })

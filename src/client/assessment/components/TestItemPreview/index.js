@@ -130,7 +130,9 @@ class TestItemPreview extends Component {
         break
 
       case isStudentReport:
-        shouldShowFeedback = true
+        shouldShowFeedback = itemLevelScoring
+          ? widgetIndex === 0 && colIndex === 0
+          : true
         shouldTakeDimensionsFromStore = false
         break
 
@@ -182,7 +184,7 @@ class TestItemPreview extends Component {
       (qa) => qa.qid === question.id
     )
     const testActivityId = question?.activity?.testActivityId
-    return displayFeedback ? (
+    return displayFeedback && showFeedback ? (
       <FeedbackWrapper
         showFeedback={showFeedback}
         displayFeedback={displayFeedback}
@@ -461,10 +463,8 @@ class TestItemPreview extends Component {
                       preview={preview}
                       scratchPadMode={scratchPadMode}
                       colWidth={
-                        collapseDirection || cols.length == 1
-                          ? '100%'
-                          : col?.dimension || '50%'
-                      }
+                        collapseDirection || cols.length == 1 ? '100%' : '50%'
+                      } // reverting layout changes as passage/multipart layout options view is broken in student view, LCB, EG | EV-28080
                       multiple={cols.length > 1}
                       style={this.getStyle(i !== cols.length - 1)}
                       windowWidth={windowWidth}
@@ -504,7 +504,8 @@ class TestItemPreview extends Component {
             (showPreviousAttempt !== 'NONE' &&
               isStudentAttempt &&
               !isStudentReport)) &&
-          !isShowStudentWork && (
+          !isShowStudentWork &&
+          !(isStudentAttempt && !itemLevelScoring) && (
             <>
               {!isCliUser && (
                 <RenderFeedBack

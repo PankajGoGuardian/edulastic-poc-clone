@@ -33,13 +33,13 @@ function CartModal({
   itemBankSubscriptions,
   user,
   subType,
+  hideCcButton,
+  shouldbeMultipleLicenses,
+  setIsTabShouldSwitch,
 }) {
   const teacherPremiumId = teacherPremium?.id
   const [emailValues, setEmailValues] = useState('')
 
-  const isMultipleQuantities = Object.keys(quantities).find(
-    (x) => quantities[x] > 1
-  )
   const setQuantitiesWithLocalStorage = (quantities) => {
     window.localStorage.cartQuantities = quantities
     return setQuantities(quantities)
@@ -69,6 +69,7 @@ function CartModal({
   }
 
   const handleProceed = () => {
+    setIsTabShouldSwitch(false)
     const emails = emailValues
       .split(',')
       .map((x) => x.replace(/\s/g, ''))
@@ -110,19 +111,21 @@ function CartModal({
       )}
       onClick={handleOpenRequestInvoiceModal}
     />,
-    <AuthorCompleteSignupButton
-      renderButton={(callback) => (
-        <EduButton
-          onClick={callback}
-          data-cy="proceedPayment"
-          width="220px"
-          height="45px"
-        >
-          Pay with Credit Card
-        </EduButton>
-      )}
-      onClick={handleProceed}
-    />,
+    hideCcButton ? null : (
+      <AuthorCompleteSignupButton
+        renderButton={(callback) => (
+          <EduButton
+            onClick={callback}
+            data-cy="proceedPayment"
+            width="220px"
+            height="45px"
+          >
+            Pay with Credit Card
+          </EduButton>
+        )}
+        onClick={handleProceed}
+      />
+    ),
   ]
 
   const selectedProductIds = Object.keys(quantities).filter(
@@ -166,7 +169,7 @@ function CartModal({
           subType={subType}
           allProducts={products}
         />
-        {isMultipleQuantities && (
+        {shouldbeMultipleLicenses && (
           <EmailWrapper>
             <FieldLabel>Bookkeeper Email</FieldLabel>
             <TextInputStyled

@@ -8,14 +8,7 @@ import { ReportItemCards } from './ReportItemCard'
 
 const nonPremiumReports = ['standardsGradebook']
 
-export const LinkItem = ({
-  data,
-  inverse,
-  tiles,
-  premium,
-  history,
-  loc = '',
-}) => {
+export const LinkItem = ({ data, inverse, tiles, premium, loc = '' }) => {
   const showPremiumLabel = !premium && !nonPremiumReports.includes(data.key)
   const showGreenBorder = !premium && nonPremiumReports.includes(data.key)
   const ResolvedLink = showPremiumLabel ? Fragment : Link
@@ -25,12 +18,15 @@ export const LinkItem = ({
       <>
         {data.key === 'standardsGradebook' ? (
           <AuthorCompleteSignupButton
-            renderButton={(handleClick) => (
-              <ReportItemCards handleClick={handleClick} data={data} />
+            renderButton={(pathFunc) => (
+              <Link data-cy={data.key} to={pathFunc() || '#'}>
+                <ReportItemCards data={data} />
+              </Link>
             )}
-            onClick={() =>
-              history.push({ pathname: data.location, state: { source: loc } })
-            }
+            onClick={() => ({
+              pathname: data.location,
+              state: { source: loc },
+            })}
           />
         ) : (
           <ResolvedLink

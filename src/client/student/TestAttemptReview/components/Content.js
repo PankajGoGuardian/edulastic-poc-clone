@@ -44,8 +44,9 @@ class SummaryTest extends Component {
   }
 
   componentDidMount() {
-    const { loadTest, history, match, questionList } = this.props
+    const { loadTest, history, match, questionList, saveUserWork } = this.props
     const { utaId: testActivityId, id: testId, assessmentType } = match.params
+    const savedUserWork = JSON.parse(localStorage.getItem(`${testId}:userWork`))
     if (
       assessmentType === ASSESSMENT ||
       assessmentType === PRACTICE ||
@@ -53,11 +54,19 @@ class SummaryTest extends Component {
     ) {
       const { allQids } = questionList
       if (allQids.length === 0) {
-        loadTest({ testId, testActivityId, groupId: match.params.groupId })
+        loadTest({
+          testId,
+          testActivityId,
+          groupId: match.params.groupId,
+          savedUserWork,
+        })
       }
       sessionStorage.setItem('testAttemptReviewVistedId', testActivityId)
     } else {
       history.push('/home/assignments')
+    }
+    if (savedUserWork) {
+      saveUserWork({ attachments: savedUserWork })
     }
   }
 
@@ -116,6 +125,15 @@ class SummaryTest extends Component {
     }))
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.userWork !== this.props.userWork && this.props.userWork) {
+      localStorage.setItem(
+        `${this.props.test?.testId}:userWork`,
+        JSON.stringify(this.props.userWork)
+      )
+    }
+  }
+
   render() {
     const {
       questionList: questionsAndOrder,
@@ -138,6 +156,7 @@ class SummaryTest extends Component {
       showAttachmentsModal,
       attachmentIndexForPreview,
     } = this.state
+
     if (testLoading) {
       return <Spin />
     }
@@ -310,6 +329,7 @@ class SummaryTest extends Component {
             utaId={test?.testActivityId}
             studentData={studentData}
             attachmentIndexForPreview={attachmentIndexForPreview || 0}
+            hideDownloadAllButton
           />
         )}
       </ThemeProvider>

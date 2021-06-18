@@ -190,6 +190,7 @@ const updateCorrectItemById = ({
 
   return api
     .callApi({
+      useSlowApi: true,
       url: `${prefix}/${id}/correct-item-and-publish`,
       method: 'put',
       params: {

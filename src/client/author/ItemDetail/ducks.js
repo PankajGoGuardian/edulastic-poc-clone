@@ -80,6 +80,7 @@ import {
   setDictAlignmentFromQuestion,
   getIsGradingCheckboxState,
   SAVE_QUESTION_REQUEST,
+  addAuthoredItemsAction,
 } from '../QuestionEditor/ducks'
 import { getNewAlignmentState } from '../src/reducers/dictionaries'
 import {
@@ -253,7 +254,8 @@ export const updateItemDetailByIdAction = (
   addToTest = false,
   locationState = false,
   redirect = true,
-  redirectOnDeleteQuestion = true
+  redirectOnDeleteQuestion = true,
+  updateScoreInQuestionsAsPerItem = false
 ) => ({
   type: UPDATE_ITEM_DETAIL_REQUEST,
   payload: {
@@ -264,6 +266,7 @@ export const updateItemDetailByIdAction = (
     redirect,
     locationState,
     redirectOnDeleteQuestion,
+    updateScoreInQuestionsAsPerItem,
   },
 })
 
@@ -595,7 +598,8 @@ const deleteWidget = (state, { rowIndex, widgetIndex }) =>
 
     newState.item.data.questions = reSequenceQuestionsWithWidgets(
       get(newState, `item.rows.[${rowIndex}].widgets`),
-      get(newState, 'item.data.questions')
+      get(newState, 'item.data.questions'),
+      newState.item.itemLevelScoring
     )
 
     pull(newState.qids, qid)
@@ -806,8 +810,16 @@ const moveWidget = (state, { from, to }) => {
         // change the order of item.data.questions
         newState.item.data.questions = reSequenceQuestionsWithWidgets(
           get(newState, `item.rows[${to?.rowIndex}].widgets`),
-          questions
+          questions,
+          newState.item.itemLevelScoring
         )
+        if (
+          newState.item.itemLevelScoring &&
+          newState.item.data.questions.length > 1
+        ) {
+          newState.item.data.questions[0].validation.validResponse.score =
+            newState.item.itemLevelScore
+        }
         markQuestionLabel([newState.item]) // change the question label as per new order
       }
     })
@@ -971,7 +983,7 @@ export function reducer(state = initialState, { type, payload }) {
           multipartItem: true,
           isPassageWithQuestions: true,
           canAddMultipleItems: !!payload.canAddMultipleItems,
-          itemLevelScoring: false,
+          itemLevelScoring: state?.item?.itemLevelScoring || false,
         },
       }
     case ADD_PASSAGE: {
@@ -1143,7 +1155,7 @@ export function* deleteItemSaga({ payload }) {
 
 export function* updateItemSaga({ payload }) {
   try {
-    const { addToTest } = payload
+    const { addToTest, updateScoreInQuestionsAsPerItem } = payload
     const oldTestId = payload?.locationState?.previousTestId
     if (!payload.keepData) {
       // avoid data part being put into db
@@ -1160,7 +1172,7 @@ export function* updateItemSaga({ payload }) {
     // if (payload.testId && payload.testId !== 'undefined') {
     //   data.testId = testId
     // }
-    const { itemLevelScoring, isPassageWithQuestions } = data
+    const { itemLevelScoring, itemLevelScore, isPassageWithQuestions } = data
 
     // const questions = yield select(getQuestionsSelector);
     const resourceTypes = [
@@ -1202,7 +1214,11 @@ export function* updateItemSaga({ payload }) {
       .flatMap(({ widgets }) => widgets)
       .filter((widget) => widget.widgetType === 'question')
 
-    questions = reSequenceQuestionsWithWidgets(_widgets, questions)
+    questions = reSequenceQuestionsWithWidgets(
+      _widgets,
+      questions,
+      itemLevelScoring
+    )
 
     questions = produce(questions, (draft) => {
       draft.map((q, index) => {
@@ -1237,6 +1253,7 @@ export function* updateItemSaga({ payload }) {
         return q
       })
     })
+
     data.data = {
       questions,
       resources,
@@ -1328,7 +1345,17 @@ export function* updateItemSaga({ payload }) {
      * to keep the version sync with the latest in the database
      * @see https://snapwiz.atlassian.net/browse/EV-10507
      */
-    yield put(updatePassageStructureAction(updatedPassage))
+    // EV-28143 | not to show deleted items, thus store active items in store
+    let modifiedPassageData
+    if (passageData?.activeTestItems?.length > 0) {
+      modifiedPassageData = {
+        ...updatedPassage,
+        activeTestItems: passageData.activeTestItems,
+      }
+    } else {
+      modifiedPassageData = { ...updatedPassage }
+    }
+    yield put(updatePassageStructureAction(modifiedPassageData))
 
     yield put({
       type: UPDATE_ITEM_DETAIL_SUCCESS,
@@ -1340,6 +1367,31 @@ export function* updateItemSaga({ payload }) {
     if (questions.length === 1) {
       yield put(changeCurrentQuestionAction(questions[0].id))
     }
+
+    const currentQuestion = yield select(getCurrentQuestionSelector)
+    const currentQuestionScore = get(currentQuestion, [
+      'validation',
+      'validResponse',
+      'score',
+    ])
+
+    if (
+      updateScoreInQuestionsAsPerItem &&
+      itemLevelScoring &&
+      itemLevelScore &&
+      currentQuestionScore === 0
+    ) {
+      // update the score in the question after some question is deleleted in multipart
+      const updatedQuestion = produce(currentQuestion, (draft) => {
+        set(draft, ['validation', 'validResponse', 'score'], itemLevelScore)
+      })
+
+      yield put({
+        type: UPDATE_QUESTION,
+        payload: updatedQuestion,
+      })
+    }
+
     const { redirect = true } = payload // added for doc based assesment, where redirection is not required.
     if (redirect && item._id !== payload.id) {
       const {
@@ -1754,8 +1806,25 @@ function* deleteWidgetSaga({ payload: { rowIndex, widgetIndex, updateData } }) {
   })
 
   yield put(deleteQuestionAction(targetId))
+
   const testItem = yield select((state) => getItemDetailSelector(state)) // Get latest data of item after deletion of widget
   const { testItemId, testId, isTestFlow, locationState } = updateData
+  const firstQuestionScore = get(testItem, [
+    'data',
+    'questions',
+    0,
+    'validation',
+    'validResponse',
+    'score',
+  ])
+
+  if (testItem.itemLevelScoring && firstQuestionScore === 0) {
+    set(
+      testItem,
+      ['data', 'questions', 0, 'validation', 'validResponse', 'score'],
+      testItem.itemLevelScore
+    )
+  }
 
   yield put(
     updateItemDetailByIdAction(
@@ -1765,7 +1834,8 @@ function* deleteWidgetSaga({ payload: { rowIndex, widgetIndex, updateData } }) {
       isTestFlow,
       locationState,
       true,
-      false
+      false,
+      true
     )
   )
 }
@@ -1913,8 +1983,9 @@ function* savePassage({ payload }) {
     const hasValidTestId = payload.testId && payload.testId !== 'undefined'
     const testIdParam = hasValidTestId ? payload.testId : null
 
+    let item
     if (currentItem._id === 'new') {
-      const item = yield call(
+      item = yield call(
         testItemsApi.create,
         _omit(currentItem, '_id'),
         ...(testIdParam ? [{ testId: testIdParam }] : [])
@@ -1954,7 +2025,26 @@ function* savePassage({ payload }) {
      * after saving the question it redirects to item detail page
      */
     yield put(changeUpdatedFlagAction(false))
-    yield put(push(url))
+
+    /**
+     * If test flow and test is not created, creating test after passage item is created and redirecting to edit-item page
+     * If not test flow or if test is already created, redirecting to edit-item page
+     * passing addAuthoredItemsAction fromSaveMultipartItem flag for getting redirected to edit-item page instead of test review page
+     * @see https://snapwiz.atlassian.net/browse/EV-26929
+     */
+    if (backUrl.includes('tests') && payload?.testId === 'undefined' && item) {
+      yield put(
+        addAuthoredItemsAction({
+          item,
+          tId: payload.testId,
+          isEditFlow: false,
+          fromSaveMultipartItem: true,
+          url,
+        })
+      )
+    } else {
+      yield put(push(url))
+    }
   } catch (e) {
     Sentry.captureException(e)
     console.log('error: ', e)

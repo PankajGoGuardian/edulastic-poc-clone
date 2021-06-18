@@ -100,6 +100,8 @@ import Group8874 from '../assets/units/Group8874.svg'
 import Group8876 from '../assets/units/Group8876.svg'
 import Group8877 from '../assets/units/Group8877.svg'
 import Group8878 from '../assets/units/Group8878.svg'
+import Unit8879 from '../assets/units/Unit8879.svg'
+import Unit8878 from '../assets/units/Unit8878.svg'
 
 import Group8879 from '../assets/arrows/Group8879.svg'
 import Group8880 from '../assets/arrows/Group8880.svg'
@@ -257,6 +259,13 @@ import Group3521 from '../assets/calculus/3521.svg'
 import Group8823 from '../assets/calculus/8823.svg'
 import Group8824 from '../assets/calculus/8824.svg'
 import Group8825 from '../assets/calculus/8825.svg'
+
+import Chem320 from '../assets/chemistry/chem320.svg'
+import Chem420 from '../assets/chemistry/chem420.svg'
+import Chem520 from '../assets/chemistry/chem520.svg'
+import Chem620 from '../assets/chemistry/chem620.svg'
+import Chem720 from '../assets/chemistry/chem720.svg'
+import Chem820 from '../assets/chemistry/chem820.svg'
 
 export const one = {
   value: '1',
@@ -653,7 +662,7 @@ export const arccot = {
   command: 'write',
 }
 
-export const mol = {
+export const mol_inverse = {
   handler: '\\text{g}\\ \\text{mol}^{-1}',
   label: <CustomImage src={Group1054} />,
   types: ['all'],
@@ -1417,6 +1426,13 @@ export const rightleftharpoons = {
   command: 'cmd',
 }
 
+export const rightleftarrows = {
+  handler: '\\rightleftarrows',
+  label: <CustomImage src={Chem520} width={19} height={15} />,
+  types: ['all'],
+  command: 'cmd',
+}
+
 export const lceil = {
   handler: '\\lceil',
   label: <CustomImage src={Group8885} width={8} height={17} />,
@@ -2077,6 +2093,69 @@ export const mathrm_H = {
   command: 'write',
 }
 
+export const mathrm = {
+  handler: '\\mathrm{}^{}',
+  label: <CustomImage src={Group942} width={30} height={28} />,
+  types: ['all'],
+  command: 'write',
+  numToMove: 3,
+}
+
+export const mathrm_under = {
+  handler: '\\mathrm{}_{}',
+  label: <CustomImage src={Group943} width={30} height={28} />,
+  types: ['all'],
+  command: 'write',
+  numToMove: 3,
+}
+
+export const mathrm_both = {
+  handler: '\\mathrm{}_{}^{}',
+  label: <CustomImage src={Chem320} width={30} height={28} />,
+  types: ['all'],
+  command: 'write',
+  numToMove: 4,
+}
+
+export const mathrm_both_l = {
+  handler: '{}_{}^{}\\mathrm{}',
+  label: <CustomImage src={Chem420} width={30} height={28} />,
+  types: ['all'],
+  command: 'write',
+  numToMove: 4,
+}
+
+export const mathrm_braces = {
+  handler: '\\left\\{\\mathrm {}\\right\\}',
+  label: <CustomImage src={Group1023} width={34} height={22} />,
+  types: ['all'],
+  command: 'write',
+  numToMove: 2,
+}
+
+export const mathrm_parentheses = {
+  handler: '\\left(\\mathrm {}\\right)',
+  label: <CustomImage src={Group944} />,
+  types: ['all'],
+  command: 'write',
+  numToMove: 2,
+}
+
+export const mathrm_brackets = {
+  handler: '\\left[\\mathrm {}\\right]',
+  label: <CustomImage src={Group944v2} />,
+  types: ['all'],
+  command: 'write',
+  numToMove: 2,
+}
+
+export const mathrm_mol = {
+  handler: '\\mathrm{mol}',
+  label: <CustomImage src={Chem820} />,
+  types: ['all'],
+  command: 'write',
+}
+
 export const overset_H = {
   handler: '\\overset{H}{}',
   label: <CustomImage src={Group1014} width={14} height={31} />,
@@ -2193,4 +2272,34 @@ export const closed_surface = {
   label: <CustomImage src={Group8825} width={26} height={28} />,
   types: ['all'],
   command: 'cmd',
+}
+
+// TODO: implement this command
+export const n_a = {
+  handler: '\\surfintegral',
+  label: <CustomImage src={Chem720} width={24} height={25} />,
+  types: ['all'],
+  command: 'cmd',
+}
+
+// TODO: implement this command
+export const k_b = {
+  handler: '\\surfintegral',
+  label: <CustomImage src={Chem620} width={24} height={25} />,
+  types: ['all'],
+  command: 'cmd',
+}
+
+export const g_liter = {
+  handler: '\\text{g/mL}',
+  label: <CustomImage src={Unit8879} width={32} height={24} />,
+  types: ['all'],
+  command: 'write',
+}
+
+export const g_mol = {
+  handler: '\\text{g/mol}',
+  label: <CustomImage src={Unit8878} width={32} height={24} />,
+  types: ['all'],
+  command: 'write',
 }

@@ -461,10 +461,8 @@ class TestItemPreview extends Component {
                       preview={preview}
                       scratchPadMode={scratchPadMode}
                       colWidth={
-                        collapseDirection || cols.length == 1
-                          ? '100%'
-                          : col?.dimension || '50%'
-                      }
+                        collapseDirection || cols.length == 1 ? '100%' : '50%'
+                      } // reverting layout changes as passage/multipart layout options view is broken in student view, LCB, EG | EV-28080
                       multiple={cols.length > 1}
                       style={this.getStyle(i !== cols.length - 1)}
                       windowWidth={windowWidth}

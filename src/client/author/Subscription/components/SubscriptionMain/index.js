@@ -132,6 +132,7 @@ const SubscriptionMain = ({
   proratedProducts,
   isPaidPremium,
   signUpFlowModalHandler = () => {},
+  setIsTabShouldSwitch,
 }) => {
   const _isFreeAdmin = isFreeAdmin && !isPaidPremium
   const [isTrialModalVisible, setIsTrialModalVisible] = useState(false)
@@ -436,13 +437,19 @@ const SubscriptionMain = ({
         const subscriptionEndsWithin90days = subscriptionRemainingDays < 90
         if (quantities[teacherPremium.id] === undefined && source === 'addon') {
           // if additions of addons and user is not premium
-          if (!isUserPremium) {
+          if (!isUserPremium && !isFreeAdmin) {
             Object.assign(changes, { [teacherPremium.id]: 1 })
             notification({
               type: 'info',
               msg: `Note: Teacher Premium is added to cart by default since you are on ${
                 subType === 'TRIAL_PREMIUM' ? 'Trial Premium' : 'free'
               } plan`,
+            })
+          } else if (isFreeAdmin) {
+            Object.assign(changes, { [teacherPremium.id]: 1 })
+            notification({
+              type: 'info',
+              msg: `Note: Teacher Premium is added to cart by default since Itembank Licenses cannot be more than Teacher Premium`,
             })
           } else if (isUserPremium && hasAddonAccess) {
             // if user is premium and adding a bank which he has access to
@@ -836,6 +843,7 @@ const SubscriptionMain = ({
           setTrialAddOnProductIds={setTrialAddOnProductIds}
           hasAllTrialProducts={hasAllTrialProducts}
           setShowTrialSubsConfirmation={setShowTrialSubsConfirmation}
+          setIsTabShouldSwitch={setIsTabShouldSwitch}
         />
       )}
       {showFeatureNotAvailableModal && (

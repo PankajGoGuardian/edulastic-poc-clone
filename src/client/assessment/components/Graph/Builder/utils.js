@@ -196,6 +196,7 @@ function getPointsFromFlatConfig(type, pointIds, config) {
     case CONSTANT.TOOLS.HYPERBOLA:
     case CONSTANT.TOOLS.POLYNOM:
     case CONSTANT.TOOLS.PARABOLA2:
+    case CONSTANT.TOOLS.EXPONENT_DRAGGABLE:
       return Object.keys(pointIds)
         .sort()
         .map((k) => config.find((element) => element.id === pointIds[k]))
@@ -484,7 +485,8 @@ export function flatConfig(config, accArg = {}, isSub = false) {
       type !== CONSTANT.TOOLS.ELLIPSE &&
       type !== CONSTANT.TOOLS.HYPERBOLA &&
       type !== CONSTANT.TOOLS.POLYNOM &&
-      type !== CONSTANT.TOOLS.PARABOLA2
+      type !== CONSTANT.TOOLS.PARABOLA2 &&
+      type !== CONSTANT.TOOLS.EXPONENT_DRAGGABLE
     ) {
       acc[id].subElementsIds = {
         startPoint: points[0].id,

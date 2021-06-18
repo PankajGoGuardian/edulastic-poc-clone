@@ -7,6 +7,7 @@ import { getSchoolsSelector as getDistrictSchoolsSelector } from '../../Schools/
 const gridEditEnabledDistricts = {
   // DSST Public Schools district
   '5e4a3ce103b7ad09241750e4': true,
+  '5ed1fff103b7ad09240966fd': true,
 }
 
 export const stateSelector = (state) => state.user

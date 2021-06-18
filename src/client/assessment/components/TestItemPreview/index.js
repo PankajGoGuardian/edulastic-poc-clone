@@ -130,7 +130,9 @@ class TestItemPreview extends Component {
         break
 
       case isStudentReport:
-        shouldShowFeedback = true
+        shouldShowFeedback = itemLevelScoring
+          ? widgetIndex === 0 && colIndex === 0
+          : true
         shouldTakeDimensionsFromStore = false
         break
 

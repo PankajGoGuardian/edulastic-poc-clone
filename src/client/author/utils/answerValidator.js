@@ -231,7 +231,8 @@ export const hasEmptyAnswers = (item) => {
     ...(item?.validation?.altResponses || []),
   ]
   if (isPlainObject(item) && item.type === questionType.GRAPH) {
-    const { validation: { points, latex } = {} } = item
+    const { validation } = item
+    const { points, latex } = validation?.validResponse?.options || {}
     if (points && latex) {
       return false
     }

@@ -125,7 +125,7 @@ const {
 const { testContentVisibility } = test
 
 export const LCB_LIMIT_QUESTION_PER_VIEW = 20
-export const SCROLL_SHOW_LIMIT = 10
+export const SCROLL_SHOW_LIMIT = 30
 
 function* receiveGradeBookSaga({ payload }) {
   try {

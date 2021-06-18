@@ -433,7 +433,7 @@ export const allowedToSelectMultiLanguageInTest = createSelector(
   currentUserIdSelector,
   (state) => {
     const allowedUserIds = [
-      '5f5f729516eaad0008c45a44', // uat user
+      '5f5f729516eaad0008c45a44', // vinayt@v2.com uat user
       // '5d26f2f892df401ddf8c2fd7', // poc user
       '6034a9c3e6cce4000810e6d1', // cespark1@at.com - automation QA env
       '602383287e63eb0007a54233', // vvk@content.com - Conetnt Author

@@ -560,12 +560,12 @@ function* loadTest({ payload }) {
         }
       })
       if (Object.keys(scratchPadData).length) {
-        if(savedUserWork){
+        if (savedUserWork) {
           yield put({
             type: LOAD_SCRATCH_PAD_SAVED,
             payload: scratchPadData,
           })
-        }else{
+        } else {
           yield put({
             type: LOAD_SCRATCH_PAD,
             payload: scratchPadData,

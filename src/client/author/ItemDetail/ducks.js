@@ -80,6 +80,7 @@ import {
   setDictAlignmentFromQuestion,
   getIsGradingCheckboxState,
   SAVE_QUESTION_REQUEST,
+  addAuthoredItemsAction,
 } from '../QuestionEditor/ducks'
 import { getNewAlignmentState } from '../src/reducers/dictionaries'
 import {
@@ -1344,7 +1345,17 @@ export function* updateItemSaga({ payload }) {
      * to keep the version sync with the latest in the database
      * @see https://snapwiz.atlassian.net/browse/EV-10507
      */
-    yield put(updatePassageStructureAction(updatedPassage))
+    // EV-28143 | not to show deleted items, thus store active items in store
+    let modifiedPassageData
+    if (passageData?.activeTestItems?.length > 0) {
+      modifiedPassageData = {
+        ...updatedPassage,
+        activeTestItems: passageData.activeTestItems,
+      }
+    } else {
+      modifiedPassageData = { ...updatedPassage }
+    }
+    yield put(updatePassageStructureAction(modifiedPassageData))
 
     yield put({
       type: UPDATE_ITEM_DETAIL_SUCCESS,
@@ -1972,8 +1983,9 @@ function* savePassage({ payload }) {
     const hasValidTestId = payload.testId && payload.testId !== 'undefined'
     const testIdParam = hasValidTestId ? payload.testId : null
 
+    let item
     if (currentItem._id === 'new') {
-      const item = yield call(
+      item = yield call(
         testItemsApi.create,
         _omit(currentItem, '_id'),
         ...(testIdParam ? [{ testId: testIdParam }] : [])
@@ -2013,7 +2025,26 @@ function* savePassage({ payload }) {
      * after saving the question it redirects to item detail page
      */
     yield put(changeUpdatedFlagAction(false))
-    yield put(push(url))
+
+    /**
+     * If test flow and test is not created, creating test after passage item is created and redirecting to edit-item page
+     * If not test flow or if test is already created, redirecting to edit-item page
+     * passing addAuthoredItemsAction fromSaveMultipartItem flag for getting redirected to edit-item page instead of test review page
+     * @see https://snapwiz.atlassian.net/browse/EV-26929
+     */
+    if (backUrl.includes('tests') && payload?.testId === 'undefined' && item) {
+      yield put(
+        addAuthoredItemsAction({
+          item,
+          tId: payload.testId,
+          isEditFlow: false,
+          fromSaveMultipartItem: true,
+          url,
+        })
+      )
+    } else {
+      yield put(push(url))
+    }
   } catch (e) {
     Sentry.captureException(e)
     console.log('error: ', e)

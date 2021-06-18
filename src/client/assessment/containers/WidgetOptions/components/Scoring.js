@@ -15,7 +15,7 @@ import {
 } from '@edulastic/constants'
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 import { rubricsApi } from '@edulastic/api'
-import { FlexContainer } from '@edulastic/common'
+import { FlexContainer, ItemLevelContext } from '@edulastic/common'
 import UnscoredBlock from '@edulastic/common/src/components/Unscored'
 
 import {
@@ -213,33 +213,40 @@ class Scoring extends Component {
 
         {isAutomarkChecked && (
           <Row gutter={24} type="flex" wrap="wrap" mb="0">
-            {!isAutoMarkBtnVisible && (
-              <Col md={12}>
-                <FlexContainer flexDirection="column" mt="8px">
-                  <Label>{t('component.options.maxScore')}</Label>
-                  {isPractice ? (
-                    <UnscoredBlock height="50px" width="20%" />
-                  ) : (
-                    <PointsInput
-                      data-cy="maxscore"
-                      id={getFormattedAttrId(
-                        `${questionTitle}-${t('component.options.maxScore')}`
+            <ItemLevelContext.Consumer>
+              {(itemLevelScoring) =>
+                !isAutoMarkBtnVisible &&
+                !itemLevelScoring && (
+                  <Col md={12}>
+                    <FlexContainer flexDirection="column" mt="8px">
+                      <Label>{t('component.options.maxScore')}</Label>
+                      {isPractice ? (
+                        <UnscoredBlock height="50px" width="20%" />
+                      ) : (
+                        <PointsInput
+                          data-cy="maxscore"
+                          id={getFormattedAttrId(
+                            `${questionTitle}-${t(
+                              'component.options.maxScore'
+                            )}`
+                          )}
+                          value={maxScore}
+                          width="20%"
+                          onChange={onChange}
+                          min={0.5}
+                          step={0.5}
+                          disabled={
+                            (!!questionData.rubrics &&
+                              userFeatures.gradingrubrics) ||
+                            isGradingCheckboxState
+                          }
+                        />
                       )}
-                      value={maxScore}
-                      width="20%"
-                      onChange={onChange}
-                      min={0.5}
-                      step={0.5}
-                      disabled={
-                        (!!questionData.rubrics &&
-                          userFeatures.gradingrubrics) ||
-                        isGradingCheckboxState
-                      }
-                    />
-                  )}
-                </FlexContainer>
-              </Col>
-            )}
+                    </FlexContainer>
+                  </Col>
+                )
+              }
+            </ItemLevelContext.Consumer>
             {/* showScoringType(default is true), hides  scoring type dropdown for few question types (eg: Short Text) */}
             {showScoringType && scoringTypes.length > 1 && showSelect && (
               <Col md={12}>
@@ -467,6 +474,8 @@ Scoring.defaultProps = {
   extraInScoring: null,
   showScoringType: true,
 }
+
+Scoring.contextType = ItemLevelContext
 
 const enhance = compose(
   withNamespaces('assessment'),

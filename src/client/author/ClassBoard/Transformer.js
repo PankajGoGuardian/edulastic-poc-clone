@@ -97,9 +97,7 @@ export const getAllQidsAndWeight = (testItemIds, testItemsDataKeyed) => {
           .map((x, index) => ({
             id: x.id,
             maxScore:
-              index === 0
-                ? testItemsDataKeyed[testItemId].itemLevelScore
-                : undefined,
+              index === 0 ? testItemsDataKeyed[testItemId].itemLevelScore : 0,
             weight: questions.length,
             disabled: x.scoringDisabled || index > 0,
             testItemId,
@@ -662,7 +660,8 @@ export const transformGradeBookResponse = (
                   _id,
                   testItemsData,
                   currentQuestionActivity?.maxScore
-                )(testItemId))
+                )(testItemId)) ||
+              0
             if (!currentQuestionActivity) {
               return {
                 _id,

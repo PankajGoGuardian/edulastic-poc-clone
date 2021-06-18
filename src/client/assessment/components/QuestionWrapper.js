@@ -4,7 +4,7 @@ import styled, { ThemeProvider, withTheme } from 'styled-components'
 import { questionType, test, roleuser } from '@edulastic/constants'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { get, isEqual } from 'lodash'
+import { get, isEqual, isEmpty } from 'lodash'
 import { withNamespaces } from '@edulastic/localization'
 import {
   mobileWidthMax,
@@ -321,8 +321,9 @@ class QuestionWrapper extends Component {
       previewMaxScore,
       testPreviewScore,
       data,
+      questions = {},
       multipartItem = false,
-      itemLevelScoring = true,
+      itemLevelScoring = false,
     } = this.props
     let score = previewScore
     let maxScore = previewMaxScore
@@ -331,6 +332,25 @@ class QuestionWrapper extends Component {
       score = data?.activity?.score
       maxScore = data?.activity.maxScore
       isGradedExternally = data?.activity?.isGradedExternally
+      /**
+       * @see https://snapwiz.atlassian.net/browse/EV-28499
+       * If itemLevelScoring is true score for other questions score is 0
+       * Thus awarding a non-zero score to all other questions
+       * so that correct responses are not marked wrong, if graded externally
+       */
+      if (
+        isGradedExternally &&
+        !isEmpty(questions) &&
+        multipartItem &&
+        itemLevelScoring
+      ) {
+        Object.values(questions).forEach((question) => {
+          if (question?.activity?.maxScore) {
+            score = Math.max(score, question?.activity?.score || 0)
+            maxScore = Math.max(maxScore, question?.activity?.maxScore || 0)
+          }
+        })
+      }
     }
 
     // testPreviewScore is from view as student
@@ -496,22 +516,24 @@ class QuestionWrapper extends Component {
         }}
       >
         <>
-          {canShowPlayer && (!hideVisibility || isShowStudentWork) && (
-            <AudioControls
-              btnWithText={
-                playerSkinType.toLowerCase() ===
-                test.playerSkinValues.edulastic.toLowerCase()
-              }
-              hideVisibility={hideVisibility && !isShowStudentWork}
-              key={data.id}
-              item={data}
-              page={page}
-              qId={data.id}
-              audioSrc={data.tts.titleAudioURL}
-              isPaginated={data.paginated_content}
-              className="question-audio-controller"
-            />
-          )}
+          {canShowPlayer &&
+            (!hideVisibility || isShowStudentWork) &&
+            !isPrintPreview && (
+              <AudioControls
+                btnWithText={
+                  playerSkinType.toLowerCase() ===
+                  test.playerSkinValues.edulastic.toLowerCase()
+                }
+                hideVisibility={hideVisibility && !isShowStudentWork}
+                key={data.id}
+                item={data}
+                page={page}
+                qId={data.id}
+                audioSrc={data.tts.titleAudioURL}
+                isPaginated={data.paginated_content}
+                className="question-audio-controller"
+              />
+            )}
           <div
             className="__print-question-main-wrapper"
             style={{ height: !isStudentReport && '100%' }}

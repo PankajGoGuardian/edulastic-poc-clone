@@ -51,7 +51,7 @@ const AuthorCompleteSignupButton = ({
       return
     }
 
-    onClick()
+    return onClick()
   }
 
   return (

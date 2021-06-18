@@ -204,15 +204,15 @@ class TestItemCol extends Component {
           )}
         </FlexContainer>
         {!isStudentAttempt &&
-          !isStudentReport &&
-          imageAttachments.length > 0 &&
-          !LCBPreviewModal && (
-            <StudentWorkCollapse
-              isStudentWorkCollapseOpen={isStudentWorkCollapseOpen}
-              toggleStudentWorkCollapse={toggleStudentWorkCollapse}
-              imageAttachments={imageAttachments}
-            />
-          )}
+              !isStudentReport &&
+              imageAttachments.length > 0 &&
+              !LCBPreviewModal && (
+                <StudentWorkCollapse
+                  isStudentWorkCollapseOpen={isStudentWorkCollapseOpen}
+                  toggleStudentWorkCollapse={toggleStudentWorkCollapse}
+                  imageAttachments={imageAttachments}
+                />
+        )}
         {attachments && attachments.length > 0 && !LCBPreviewModal && (
           <>
             {(isStudentAttempt || isStudentReport) && (
@@ -325,6 +325,8 @@ class TestItemCol extends Component {
       testActivityId,
       studentData,
       currentStudent,
+      zoomLevel,
+      responsiveWidth,
       ...restProps
     } = this.props
     const {
@@ -426,7 +428,11 @@ class TestItemCol extends Component {
                 )}
             </>
           )}
-          <WidgetContainer data-cy="widgetContainer">
+          <WidgetContainer
+            data-cy="widgetContainer"
+            zoomLevel={zoomLevel}
+            responsiveWidth={responsiveWidth}
+          >
             {widgetsToRender.map((widget, i, arr) => (
               <React.Fragment key={i}>
                 {col.tabs &&

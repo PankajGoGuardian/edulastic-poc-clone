@@ -24,6 +24,8 @@ export const SlideContainer = styled.span`
 
 export const SliderContainer = styled.div`
   position: relative;
+  height: 210px;
+  overflow: hidden;
   .prev,
   .next {
     display: none;
@@ -35,18 +37,13 @@ export const SliderContainer = styled.div`
     }
   }
 `
-
 export const ScrollbarContainer = styled.div`
   white-space: nowrap;
-  margin-bottom: 20px;
   transition: 0.2s;
-  .scrollbar-container {
+  &.scrollbar-container {
     width: calc(100vw - 130px);
-    transition: 0.2s;
-    padding-bottom: 14px;
-  }
-  .ps__rail-x {
-    display: none;
+    height: 227px;
+    overflow-x: scroll;
   }
 `
 export const PrevButton = styled.div`
@@ -76,6 +73,7 @@ export const Slides = styled.div`
   background-repeat: no-repeat;
   border-radius: 4px;
   margin-right: 5px;
+  position: relative;
 
   &.last,
   &:last-child {

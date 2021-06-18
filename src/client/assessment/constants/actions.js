@@ -100,7 +100,8 @@ export const FILE_UPLOAD_ERROR = '[test] upload file error'
 // scratchPad
 export const SAVE_USER_WORK = '[userWork] save userWork'
 export const LOAD_SCRATCH_PAD = '[userWork] load scratchPad data'
-export const LOAD_SCRATCH_PAD_SAVED = '[userWork] load scratchPad data maintaining state'
+export const LOAD_SCRATCH_PAD_SAVED =
+  '[userWork] load scratchPad data maintaining state'
 export const CLEAR_USER_WORK = '[userWork] clear userWork'
 export const SAVE_HINT_USAGE = '[hintUsage] save hintUsage'
 export const CLEAR_HINT_USAGE = '[hintUsage] clear hintUsage'

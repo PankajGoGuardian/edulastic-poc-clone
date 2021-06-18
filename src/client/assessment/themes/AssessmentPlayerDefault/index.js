@@ -546,6 +546,7 @@ class AssessmentPlayerDefault extends React.Component {
               blockNavigationToAnsweredQuestions
             }
             gotoSummary={gotoSummary}
+            isShowStudentWork={isShowStudentWork}
           >
             <FeaturesSwitch
               inputFeatures="studentSettings"
@@ -589,21 +590,11 @@ class AssessmentPlayerDefault extends React.Component {
                 settings={settings}
               />
             )}
-            <Main
-              skin
-              zoomed={isZoomApplied}
-              zoomLevel={zoomLevel}
-              headerHeight={headerHeight}
-              padding="20px 30px"
-            >
+            <Main skin headerHeight={headerHeight} padding="20px 30px">
               <SettingsModal />
               <MainWrapper
-                responsiveWidth={responsiveWidth}
-                zoomLevel={zoomLevel}
                 ref={this.scrollContainer}
                 hasCollapseButtons={hasCollapseButtons}
-                className="scrollable-main-wrapper"
-                id="assessment-player-default-scroll"
               >
                 {testItemState === '' && (
                   <TestItemPreview
@@ -644,6 +635,8 @@ class AssessmentPlayerDefault extends React.Component {
                     studentReportModal={studentReportModal}
                     tool={currentToolMode}
                     isShowStudentWork={isShowStudentWork}
+                    zoomLevel={zoomLevel}
+                    responsiveWidth={responsiveWidth}
                   />
                 )}
                 {testItemState === 'check' && (
@@ -681,6 +674,8 @@ class AssessmentPlayerDefault extends React.Component {
                     studentReportModal={studentReportModal}
                     tool={currentToolMode}
                     isShowStudentWork={isShowStudentWork}
+                    zoomLevel={zoomLevel}
+                    responsiveWidth={responsiveWidth}
                   />
                 )}
               </MainWrapper>

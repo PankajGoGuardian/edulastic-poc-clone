@@ -982,7 +982,7 @@ export function reducer(state = initialState, { type, payload }) {
           multipartItem: true,
           isPassageWithQuestions: true,
           canAddMultipleItems: !!payload.canAddMultipleItems,
-          itemLevelScoring: false,
+          itemLevelScoring: state?.item?.itemLevelScoring || false,
         },
       }
     case ADD_PASSAGE: {

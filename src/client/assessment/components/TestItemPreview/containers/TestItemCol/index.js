@@ -191,6 +191,7 @@ class TestItemCol extends Component {
               widgetIndex={widgetIndex}
               isStudentAttempt={isStudentAttempt}
               isFeedbackVisible={isFeedbackVisible}
+              itemLevelScoring={itemLevelScoring}
             />
           </FlexItem>
 

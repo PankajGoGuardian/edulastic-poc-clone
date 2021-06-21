@@ -1,4 +1,4 @@
-import React, { memo, useState } from 'react'
+import React, { memo, useState, useMemo } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import get from 'lodash/get'
@@ -22,7 +22,10 @@ import {
 } from '../../../TestPage/ducks'
 import PreviewModal from '../../../src/components/common/PreviewModal'
 import { resetItemScoreAction } from '../../../src/ItemScore/ducks'
-import { setPrevewItemAction } from '../../../src/components/common/PreviewModal/ducks'
+import {
+  itemInPreviewModalSelector,
+  setPrevewItemAction,
+} from '../../../src/components/common/PreviewModal/ducks'
 
 const ItemListContainer = ({
   items,
@@ -39,6 +42,7 @@ const ItemListContainer = ({
   userRole,
   resetScore,
   setPrevewItem,
+  itemDetailPreview,
 }) => {
   if (!items.length) {
     return (
@@ -76,8 +80,29 @@ const ItemListContainer = ({
   const selectedItem = get(items, `[${indexForPreview}]`, null)
   const owner = get(selectedItem, 'authors', []).some((x) => x._id === userId)
 
-  const checkItemAnswer = () => checkAnswer({ ...selectedItem, isItem: true })
-  const showItemAnswer = () => showAnswer(selectedItem)
+  const itemForEvaluation = useMemo(() => {
+    let source = selectedItem
+    if (itemDetailPreview?._id) {
+      /**
+       * when items are filtered using an id, but that item is a passage item
+       * and it contains more than one item
+       * so, in the items[] we shall have only 1 item, the filtered id
+       * however, in the previewModal, we can paginate and get other items of the passage
+       * so, we need to evaluate the current item that is displayed, not the item which was opened
+       * @see https://snapwiz.atlassian.net/browse/EV-28461
+       */
+      source = itemDetailPreview
+    }
+    return source
+  }, [selectedItem, itemDetailPreview])
+
+  const checkItemAnswer = () => {
+    checkAnswer({ ...itemForEvaluation, isItem: true })
+  }
+
+  const showItemAnswer = () => {
+    showAnswer(itemForEvaluation)
+  }
 
   /**
    * Syncs the current item returned from passage API, after paginating,
@@ -154,6 +179,7 @@ export default compose(
       interestedCurriculums: getInterestedCurriculumsSelector(state),
       userId: getUserId(state),
       userRole: getUserRole(state),
+      itemDetailPreview: itemInPreviewModalSelector(state),
     }),
     {
       addItemToCart: addItemToCartAction,

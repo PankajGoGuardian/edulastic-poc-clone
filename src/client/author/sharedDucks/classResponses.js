@@ -535,7 +535,7 @@ function* updateStudentScore(payload) {
       if (qAct) {
         yield put({
           type: RECEIVE_STUDENT_QUESTION_SUCCESS,
-          payload: qAct,
+          payload: { ...qAct, noAnswerReset: true },
         })
       }
     }

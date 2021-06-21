@@ -1,4 +1,11 @@
-import { takeEvery, call, put, all, select } from 'redux-saga/effects'
+import {
+  takeEvery,
+  call,
+  put,
+  all,
+  select,
+  takeLatest,
+} from 'redux-saga/effects'
 import {
   classBoardApi,
   testActivityApi,
@@ -840,7 +847,7 @@ function* correctItemUpdateSaga({ payload }) {
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_GRADEBOOK_REQUEST, receiveGradeBookSaga),
-    yield takeEvery(RECEIVE_TESTACTIVITY_REQUEST, receiveTestActivitySaga),
+    yield takeLatest(RECEIVE_TESTACTIVITY_REQUEST, receiveTestActivitySaga),
     yield takeEvery(UPDATE_RELEASE_SCORE, releaseScoreSaga),
     yield takeEvery(SET_MARK_AS_DONE, markAsDoneSaga),
     yield takeEvery(OPEN_ASSIGNMENT, openAssignmentSaga),

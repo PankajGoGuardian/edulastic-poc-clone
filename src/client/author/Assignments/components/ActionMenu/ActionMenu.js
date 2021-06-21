@@ -5,7 +5,7 @@ import qs from 'qs'
 
 import { assignmentApi } from '@edulastic/api'
 import { captureSentryException, notification } from '@edulastic/common'
-import { IconPrint, IconBarChart, IconEdit } from '@edulastic/icons'
+import { IconPrint, IconBarChart, IconEdit, IconUpload } from '@edulastic/icons'
 import { roleuser, test } from '@edulastic/constants'
 
 import classIcon from '../../assets/manage-class.svg'
@@ -296,6 +296,22 @@ const ActionMenu = ({
             </StyledLink>
           </Menu.Item>
         )}
+        <Menu.Item
+          data-cy="upload-answer-sheets"
+          key="upload-answer-sheets"
+          disabled={
+            !(assignmentDetails.gradedCount || assignmentDetails.submittedCount)
+          }
+        >
+          <StyledLink
+            href={`${process.env.REACT_APP_ANSWER_SHEET_UPLOAD_URL}?assignmentId=${currentAssignmentId}`}
+            target="_blank"
+          >
+            <IconUpload />
+            <SpaceElement />
+            Upload Answer Sheets
+          </StyledLink>
+        </Menu.Item>
       </StyledMenu>
     </Container>
   )

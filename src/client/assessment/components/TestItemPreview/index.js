@@ -184,7 +184,7 @@ class TestItemPreview extends Component {
       (qa) => qa.qid === question.id
     )
     const testActivityId = question?.activity?.testActivityId
-    return displayFeedback && showFeedback ? (
+    return displayFeedback ? (
       <FeedbackWrapper
         showFeedback={showFeedback}
         displayFeedback={displayFeedback}

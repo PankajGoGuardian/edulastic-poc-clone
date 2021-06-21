@@ -87,6 +87,15 @@ export const getCurrentTerm = createSelector(stateSelector, (state) =>
   _get(state, 'user.orgData.defaultTermId')
 )
 
+export const getCurrentActiveTerms = createSelector(stateSelector, (state) => {
+  const terms = _get(state, 'user.orgData.terms', [])
+  const currentTime = new Date().getTime()
+  const currentTerms = terms.filter(
+    (o) => o.startDate <= currentTime && o.endDate >= currentTime
+  )
+  return currentTerms.map((x) => x._id)
+})
+
 export const getInterestedCurriculumsSelector = createSelector(
   getOrgDataSelector,
   (state) => _get(state, 'interestedCurriculums', [])

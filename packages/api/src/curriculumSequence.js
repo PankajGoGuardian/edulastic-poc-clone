@@ -3,13 +3,15 @@ import API from './utils/API'
 
 const api = new API()
 const prefix = '/playlists'
-const getPlaylist = ({ id, forUseThis = false }) =>
-  api
+const getPlaylist = ({ id, forUseThis = false, termIds = [] }) => {
+  const queryString = qs.stringify({ termIds })
+  return api
     .callApi({
       method: 'get',
-      url: `${prefix}/${id}${forUseThis ? '?forUseThis=1' : ''}`,
+      url: `${prefix}/${id}?${queryString}${forUseThis ? '&forUseThis=1' : ''}`,
     })
     .then((result) => result.data.result)
+}
 
 const delelePlaylist = (id) =>
   api

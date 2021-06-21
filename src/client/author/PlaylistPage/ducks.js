@@ -17,7 +17,7 @@ import {
   UPDATE_TEST_IMAGE,
   SET_SAFE_BROWSE_PASSWORD,
 } from '../src/constants/actions'
-import { getUserFeatures } from '../src/selectors/user'
+import { getUserFeatures, getCurrentActiveTerms } from '../src/selectors/user'
 import { toggleManageContentActiveAction } from '../CurriculumSequence/ducks'
 
 // constants
@@ -811,9 +811,12 @@ export const getTestItemsRowsSelector = createSelector(
 // saga
 function* receivePlaylistByIdSaga({ payload }) {
   try {
+    const activeTermIds = yield select(getCurrentActiveTerms)
+
     const entity = yield call(curriculumSequencesApi.getCurriculums, {
       id: payload.id,
       data: true,
+      termIds: activeTermIds,
     })
     if (entity.thumbnail === defaultImage) {
       const thumbnail = yield call(testsApi.getDefaultImage, {

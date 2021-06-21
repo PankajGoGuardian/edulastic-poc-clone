@@ -38,6 +38,7 @@ import {
   getUserRole,
   getCollectionsSelector,
   getWritableCollectionsSelector,
+  getCurrentActiveTerms,
 } from '../src/selectors/user'
 import {
   allowDuplicateCheck,
@@ -563,11 +564,13 @@ function* makeApiRequest(
   try {
     const pathname = yield select((state) => state.router.location.pathname)
     const isMyPlaylist = pathname.includes('use-this')
+    const activeTermIds = yield select(getCurrentActiveTerms)
     const unflattenedItems = yield all(
       idsForFetch.map((id) =>
         call(curriculumSequencesApi.getCurriculums, {
           id,
           forUseThis: forUseThis || isMyPlaylist,
+          termIds: activeTermIds,
         })
       )
     )

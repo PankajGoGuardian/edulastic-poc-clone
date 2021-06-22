@@ -179,7 +179,10 @@ class MathKeyboard extends React.PureComponent {
     const { type, keyboardButtons, numberButtons, selectOptions } = this.state
 
     return (
-      <MathKeyboardContainer docBasedKeypadStyles={docBasedKeypadStyles}>
+      <MathKeyboardContainer
+        docBasedKeypadStyles={docBasedKeypadStyles}
+        data-cy={type}
+      >
         {showDragHandle && (
           <StyledGripperContainer>
             <StyledGripper />

@@ -63,7 +63,7 @@ const CanvasBulkAddClass = ({
   const [classes, setClasses] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [institution, setInstitution] = useState()
-  const [coTeacherFlag, setCoTeacherFlag] = useState(false)
+  const [coTeacherFlag, setCoTeacherFlag] = useState(true)
 
   useEffect(() => {
     getDictCurriculums()

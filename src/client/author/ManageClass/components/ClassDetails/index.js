@@ -82,7 +82,8 @@ const ClassDetails = ({
     districtId,
     syncGoogleCoTeacher = false,
   } = selectedClass
-  const [coTeacherFlag, setCoTeacherFlag] = useState(syncGoogleCoTeacher)
+  const isSyncCoTeacher = selectedClass.googleCode ? syncGoogleCoTeacher : true
+  const [coTeacherFlag, setCoTeacherFlag] = useState(isSyncCoTeacher)
   const typeText = type !== 'class' ? 'group' : 'class'
 
   // sync checks for institution
@@ -321,7 +322,6 @@ const ClassDetails = ({
               unarchiveClass={unarchiveClass}
               archiveClass={archiveClass}
               entity={selectedClass}
-              unarchiveClass={unarchiveClass}
             />
           </div>
           <MainContentWrapper>

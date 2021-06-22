@@ -108,7 +108,7 @@ class TestItemPreview extends Component {
         break
       case isStudentAttempt && !itemLevelScoring:
         shouldShowFeedback = true
-        shouldTakeDimensionsFromStore = true
+        shouldTakeDimensionsFromStore = false
         break
 
       case isDocBased || stackedView:

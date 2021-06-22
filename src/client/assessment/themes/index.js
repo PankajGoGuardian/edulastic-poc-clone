@@ -868,7 +868,11 @@ const AssessmentContainer = ({
         setCurrentItem(index)
         const timeSpent = Date.now() - lastTime.current
         if (!demo) {
-          evaluateForPreview({ currentItem, timeSpent })
+          evaluateForPreview({
+            currentItem,
+            timeSpent,
+            testId,
+          })
         }
       } else {
         if (!enableSkipAlert) {
@@ -945,6 +949,7 @@ const AssessmentContainer = ({
           currentItem,
           timeSpent,
           callback: submitPreviewTest,
+          testId,
         })
       }
       if (demo) {
@@ -1017,7 +1022,11 @@ const AssessmentContainer = ({
       return submitPreviewTest()
     }
     if (!demo) {
-      const evalArgs = { currentItem, timeSpent }
+      const evalArgs = {
+        currentItem,
+        timeSpent,
+        testId,
+      }
       if (isLast()) {
         evalArgs.callback = submitPreviewTest
       }

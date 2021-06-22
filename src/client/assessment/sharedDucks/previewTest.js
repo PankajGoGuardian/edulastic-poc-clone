@@ -75,7 +75,7 @@ export default createReducer(initialState, {
 // sagas
 function* evaluateTestItemSaga({ payload }) {
   try {
-    const { currentItem, timeSpent, callback } = payload
+    const { currentItem, timeSpent, callback, testId } = payload
     const testItems = yield select((state) => state.test.items)
     const testItem = testItems[currentItem]
     const allQuestionsById = yield select(getQuestionsByIdSelector)
@@ -94,7 +94,7 @@ function* evaluateTestItemSaga({ payload }) {
 
     const res = yield testItemsApi.evaluateAsStudent(testItem._id, {
       answers: answersByQids,
-      testId: test._id,
+      testId: test._id || testId,
     })
     const { score, maxScore, evaluations } = res
     const previewUserWork = yield select(

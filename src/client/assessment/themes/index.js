@@ -868,7 +868,7 @@ const AssessmentContainer = ({
         setCurrentItem(index)
         const timeSpent = Date.now() - lastTime.current
         if (!demo) {
-          evaluateForPreview({ currentItem, timeSpent })
+          evaluateForPreview({ currentItem, timeSpent, testId })
         }
       } else {
         if (!enableSkipAlert) {

@@ -2,7 +2,7 @@
 import React, { useState, useMemo } from 'react'
 import {
   ComposedChart,
-  Bar as _Bar,
+  Bar,
   Line,
   Cell,
   XAxis,
@@ -27,9 +27,6 @@ import {
   CustomChartXTick,
   calculateXCoordinateOfXAxisToolTip,
 } from './chartUtils/customChartXTick'
-import withAnimationInfo from './chartUtils/withAnimationInfo'
-
-const Bar = withAnimationInfo(_Bar)
 
 const _yTickFormatter = (val) => `${val}%`
 

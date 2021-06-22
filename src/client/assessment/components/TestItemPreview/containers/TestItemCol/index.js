@@ -190,6 +190,7 @@ class TestItemCol extends Component {
               // widgetIndex was needed for passages if it has multiple tabs and widgets
               widgetIndex={widgetIndex}
               isStudentAttempt={isStudentAttempt}
+              isStudentReport={isStudentReport}
               isFeedbackVisible={isFeedbackVisible}
               itemLevelScoring={itemLevelScoring}
             />

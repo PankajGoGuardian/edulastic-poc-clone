@@ -1,6 +1,6 @@
 {
   "name": "edulastic",
-  "version": "16.1.5",
+  "version": "16.1.6",
   "sideEffects": [
     "!(**/ducks.js)",
     "!(**/duck.js)",

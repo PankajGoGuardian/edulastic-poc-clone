@@ -87,10 +87,10 @@ class TestItemCol extends Component {
       isStudentWorkCollapseOpen,
       toggleStudentWorkCollapse,
       colIndex,
-      isStudentReport,
       ...restProps
     } = this.props
     const {
+      isStudentReport,
       LCBPreviewModal,
       isStudentAttempt,
       isLCBView,

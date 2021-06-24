@@ -602,6 +602,7 @@ class ClassHeader extends Component {
         {showSyncGradesWithCanvasOption &&
           assignmentStatusForDisplay !== 'NOT OPEN' && (
             <MenuItems
+              data-cy="shareOnCanvas"
               key="key6"
               onClick={() =>
                 canvasSyncAssignment({ assignmentId, groupId: classId })
@@ -613,6 +614,7 @@ class ClassHeader extends Component {
         {showSyncGradesWithCanvasOption &&
           assignmentStatusForDisplay !== 'NOT OPEN' && (
             <MenuItems
+              data-cy="canvasGradeSync"
               key="key7"
               onClick={() =>
                 canvasSyncGrades({ assignmentId, groupId: classId })

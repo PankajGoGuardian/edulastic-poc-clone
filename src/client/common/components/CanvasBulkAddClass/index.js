@@ -253,6 +253,7 @@ const CanvasBulkAddClass = ({
           value={row.grades || []}
           mode="multiple"
           placeholder="Select Grades"
+          data-cy="canvasClassGrades"
           onChange={(val) => handleChange(index, 'grades', val)}
           getPopupContainer={(triggerNode) => triggerNode.parentNode}
           disabled={!!row.alreadySynced}
@@ -279,6 +280,7 @@ const CanvasBulkAddClass = ({
           onChange={(val) => {
             handleChange(ind, 'subject', val)
           }}
+          data-cy="canvasClassSubjects"
           getPopupContainer={(triggerNode) => triggerNode.parentNode}
           disabled={!!row.alreadySynced}
         >
@@ -326,6 +328,7 @@ const CanvasBulkAddClass = ({
             onChange={(val, options) => {
               handleStandardsChange(ind, 'standardSets', val, options)
             }}
+            data-cy="canvasClassStandards"
             getPopupContainer={(triggerNode) => triggerNode.parentNode}
             disabled={!!row.alreadySynced}
           >
@@ -403,6 +406,7 @@ const CanvasBulkAddClass = ({
         style={{ margin: '10px 0px 20px 0px' }}
         checked={coTeacherFlag}
         onChange={onCoTeacherChange}
+        data-cy="co-Teacher"
       >
         Enroll Co-Teacher (All teachers present in Canvas class will share the
         same class)
@@ -465,7 +469,9 @@ const CanvasBulkAddClass = ({
             >
               CANCEL
             </EduButton>,
-            <EduButton onClick={handleFinish}>SYNC</EduButton>,
+            <EduButton data-cy="syncsubmit" onClick={handleFinish}>
+              SYNC
+            </EduButton>,
           ]
         ) : (
           <>

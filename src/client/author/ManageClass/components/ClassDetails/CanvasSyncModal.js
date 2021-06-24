@@ -159,6 +159,7 @@ const CanvasSyncModal = ({
       disabled={isSyncDisabled}
       loading={syncClassLoading}
       onClick={handleSync}
+      data-cy="syncCanvasClassSubmit"
     >
       {syncClassLoading ? 'Syncing...' : 'Sync'}
     </EduButton>,
@@ -182,6 +183,7 @@ const CanvasSyncModal = ({
           getPopupContainer={(triggerNode) => triggerNode.parentNode}
           disabled={isDisabled}
           isError={courseError}
+          data-cy="selctCourseCanvasClass"
         >
           {canvasCourseList.map((c) => (
             <Select.Option key={c.id} value={+c.id}>
@@ -201,6 +203,7 @@ const CanvasSyncModal = ({
             setCourseError(false)
             setSectionError(false)
           }}
+          data-cy="selctSectionCanvasClass"
           getPopupContainer={(triggerNode) => triggerNode.parentNode}
           disabled={isDisabled}
           isError={sectionError}

@@ -29,6 +29,9 @@ export const StyledTextArea = styled(TextArea)`
   min-height: 120px !important;
   background-color: ${lightGrey3};
   border-radius: 5px;
+  &:focus::placeholder {
+    color: transparent;
+  }
 `
 
 export const PlaceHolderText = styled.p`

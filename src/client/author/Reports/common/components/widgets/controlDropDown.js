@@ -4,6 +4,7 @@ import { Button, Dropdown, Menu, Icon, Empty } from 'antd'
 import styled from 'styled-components'
 import { partial } from 'lodash'
 import {
+  white,
   fadedGrey,
   lightGreySecondary,
   themeColor,
@@ -48,6 +49,7 @@ const ControlDropDown = ({
   trigger = ['click'],
   buttonWidth,
   style,
+  isPageFilter,
 }) => {
   const [selected, setSelected] = useState(by)
   const [isActive, setActive] = useState(false)
@@ -111,6 +113,7 @@ const ControlDropDown = ({
       className={`${containerClassName} control-dropdown`}
       buttonWidth={buttonWidth}
       style={style}
+      isPageFilter={isPageFilter}
     >
       <Dropdown
         onVisibleChange={setActive}
@@ -141,18 +144,6 @@ const StyledDiv = styled.div`
     font-size: 11px;
     width: ${({ buttonWidth }) => buttonWidth || 'auto'};
     &.ant-btn.ant-dropdown-trigger {
-      background-color: ${lightGreySecondary};
-      border-color: ${fadedGrey};
-
-      &.ant-dropdown-open {
-        background-color: transparent;
-      }
-
-      &:hover,
-      &:focus {
-        border-color: ${themeColorBlue};
-        color: ${themeColor};
-      }
       i {
         color: ${themeColor};
       }
@@ -161,6 +152,42 @@ const StyledDiv = styled.div`
         font-size: 11px;
         transform: none;
       }
+      ${({ isPageFilter }) =>
+        isPageFilter
+          ? `
+            background-color: transparent;
+            border-color: ${themeColor};
+            color: ${themeColor};
+            &.ant-dropdown-open {
+              background-color: ${themeColor};
+              color: ${white};
+              i {
+                color: ${white};
+              }
+            }
+            &:hover,
+            &:focus {
+              background-color: ${themeColor};
+              border-color: ${themeColor};
+              color: ${white};
+              i {
+                color: ${white};
+              }
+            }
+        `
+          : `
+            background-color: ${lightGreySecondary};
+            border-color: ${fadedGrey};
+            &.ant-dropdown-open {
+              background-color: transparent;
+              color: ${themeColor};
+            }
+            &:hover,
+            &:focus {
+              border-color: ${themeColorBlue};
+              color: ${themeColor};
+            }
+        `}
     }
 
     span {

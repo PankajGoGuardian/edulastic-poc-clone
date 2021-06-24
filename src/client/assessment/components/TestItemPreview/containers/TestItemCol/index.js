@@ -157,7 +157,10 @@ class TestItemCol extends Component {
         showBorder={showTabBorder}
         hideCorrectAnswer={hideCorrectAnswer}
       >
-        <FlexContainer flexDirection={isStudentReport && 'column'}>
+        <FlexContainer
+          flexDirection={isStudentReport && 'column'}
+          justifyContent="flex-start" // @see EV-29020
+        >
           <FlexItem flexGrow="1">
             <QuestionWrapper
               showFeedback={showFeedback && widget?.widgetType !== 'resource'}

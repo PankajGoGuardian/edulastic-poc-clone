@@ -488,6 +488,7 @@ const StandardsMasteryReportFilters = ({
         data={standardProficiencyList}
         prefix="Standard Proficiency"
         showPrefixOnSelected={false}
+        isPageFilter
       />
     </StyledDropDownContainer>
   )
@@ -856,6 +857,7 @@ const StandardsMasteryReportFilters = ({
               data={curriculumsList}
               prefix="Standard Set"
               showPrefixOnSelected={false}
+              isPageFilter
             />
           </StyledDropDownContainer>
           <StyledDropDownContainer
@@ -873,6 +875,7 @@ const StandardsMasteryReportFilters = ({
               data={staticDropDownData.allGrades}
               prefix="Standard Grade"
               showPrefixOnSelected={false}
+              isPageFilter
             />
           </StyledDropDownContainer>
           {loc !== 'standards-progress' && standardProficiencyFilter}

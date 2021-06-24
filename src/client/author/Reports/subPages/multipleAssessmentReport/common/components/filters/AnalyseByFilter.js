@@ -1,21 +1,31 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Row } from 'antd'
+
 import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
+import { StyledDropDownContainer } from '../../../../../common/styled'
+
 import analyseByData from '../../static/json/analyseByDropDown.json'
 
 const AnalyseByFilter = ({ onFilterChange, analyseBy }) => {
   const onAnalyseByChange = (_, selectedItem) => onFilterChange(selectedItem)
 
   return (
-    <Row type="flex" justify="end" align="middle">
+    <StyledDropDownContainer
+      data-cy="analyzeBy"
+      xs={24}
+      sm={12}
+      md={12}
+      lg={10}
+      xl={8}
+    >
       <ControlDropDown
         prefix="Analyze By"
         by={analyseBy}
         selectCB={onAnalyseByChange}
         data={analyseByData}
+        isPageFilter
       />
-    </Row>
+    </StyledDropDownContainer>
   )
 }
 

@@ -25,8 +25,8 @@ const TrendStats = ({
 
   return (
     <UpperContainer>
-      <Row>
-        <Col xs={24} sm={24} md={16} lg={16} xl={16}>
+      <Row type="flex" gutter={[5, 10]} justify="start">
+        <Col xs={24} sm={24} md={12} lg={12} xl={12}>
           {showTrendStats && (
             <>
               <StyledH3 fontSize="16px" margin="0">
@@ -35,36 +35,30 @@ const TrendStats = ({
             </>
           )}
         </Col>
-        <Col
-          xs={24}
-          sm={24}
-          md={8}
-          lg={8}
-          xl={8}
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'flex-end',
-          }}
-        >
-          {!!handleAddToGroupClick && !isSharedReport && (
-            <FeaturesSwitch
-              inputFeatures="studentGroups"
-              actionOnInaccessible="hidden"
-            >
-              <EduButton
-                style={{
-                  height: '32px',
-                  padding: '0 15px 0 10px',
-                  marginRight: '5px',
-                }}
-                onClick={handleAddToGroupClick}
-              >
-                <IconPlusCircle /> Add To Student Group
-              </EduButton>
-            </FeaturesSwitch>
-          )}
-          {renderFilters()}
+        <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+          <Row type="flex" gutter={[5, 10]} justify="end">
+            {!!handleAddToGroupClick && !isSharedReport && (
+              <Col xs={24} sm={12} md={12} lg={12} xl={12}>
+                <FeaturesSwitch
+                  inputFeatures="studentGroups"
+                  actionOnInaccessible="hidden"
+                >
+                  <EduButton
+                    style={{
+                      float: 'right',
+                      height: '32px',
+                      padding: '0 15px 0 10px',
+                      borderRadius: '2px',
+                    }}
+                    onClick={handleAddToGroupClick}
+                  >
+                    <IconPlusCircle /> Add To Student Group
+                  </EduButton>
+                </FeaturesSwitch>
+              </Col>
+            )}
+            {renderFilters()}
+          </Row>
         </Col>
       </Row>
       {showTrendStats && (

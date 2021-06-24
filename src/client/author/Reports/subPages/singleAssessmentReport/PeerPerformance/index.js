@@ -25,7 +25,7 @@ import {
 } from '../common/filterDataDucks'
 import { SignedStackedBarChartContainer } from './components/charts/signedStackedBarChartContainer'
 import { SimpleStackedBarChartContainer } from './components/charts/simpleStackedBarChartContainer'
-import { TableContainer, UpperContainer } from './components/styled'
+import { UpperContainer } from './components/styled'
 import { PeerPerformanceTable } from './components/table/peerPerformanceTable'
 import {
   getPeerPerformanceRequestAction,
@@ -229,22 +229,15 @@ const PeerPerformance = ({
       <UpperContainer>
         <StyledCard>
           <StyledSignedBarContainer>
-            <Row type="flex" justify="start">
-              <Col xs={24} sm={24} md={12} lg={8} xl={12}>
+            <Row type="flex" gutter={[5, 10]} justify="start">
+              <Col xs={24} sm={24} md={12} lg={16} xl={16}>
                 <StyledH3>
                   Assessment Performance by {idToName(ddfilter.compareBy)} |{' '}
                   {assessmentName}
                 </StyledH3>
               </Col>
-              <Col
-                className="dropdown-container"
-                xs={24}
-                sm={24}
-                md={12}
-                lg={16}
-                xl={12}
-              >
-                <Row className="control-dropdown-row">
+              <Col xs={24} sm={24} md={12} lg={8} xl={8}>
+                <Row type="flex" gutter={[5, 10]} justify="end">
                   <StyledDropDownContainer
                     data-cy="analyzeBy"
                     xs={24}
@@ -258,6 +251,7 @@ const PeerPerformance = ({
                       by={ddfilter.analyseBy}
                       selectCB={updateAnalyseByCB}
                       data={dropDownFormat.analyseByDropDownData}
+                      isPageFilter
                     />
                   </StyledDropDownContainer>
                   <StyledDropDownContainer
@@ -270,10 +264,10 @@ const PeerPerformance = ({
                   >
                     <ControlDropDown
                       prefix="Compare by"
-                      style={{ marginLeft: 8 }}
                       by={ddfilter.compareBy}
                       selectCB={updateCompareByCB}
                       data={compareByDropDownData}
+                      isPageFilter
                     />
                   </StyledDropDownContainer>
                 </Row>
@@ -312,22 +306,20 @@ const PeerPerformance = ({
           </StyledSignedBarContainer>
         </StyledCard>
       </UpperContainer>
-      <TableContainer>
-        <StyledCard>
-          <PeerPerformanceTable
-            isCsvDownloading={isCsvDownloading}
-            columns={parsedData.columns}
-            dataSource={parsedData.data}
-            rowKey="compareBylabel"
-            filter={chartFilter}
-            analyseBy={ddfilter.analyseBy}
-            compareBy={ddfilter.compareBy}
-            assessmentName={assessmentName}
-            bandInfo={bandInfo}
-            role={userRole}
-          />
-        </StyledCard>
-      </TableContainer>
+      <StyledCard>
+        <PeerPerformanceTable
+          isCsvDownloading={isCsvDownloading}
+          columns={parsedData.columns}
+          dataSource={parsedData.data}
+          rowKey="compareBylabel"
+          filter={chartFilter}
+          analyseBy={ddfilter.analyseBy}
+          compareBy={ddfilter.compareBy}
+          assessmentName={assessmentName}
+          bandInfo={bandInfo}
+          role={userRole}
+        />
+      </StyledCard>
     </div>
   )
 }

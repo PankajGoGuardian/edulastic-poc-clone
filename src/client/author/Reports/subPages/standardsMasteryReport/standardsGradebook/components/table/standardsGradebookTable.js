@@ -11,8 +11,12 @@ import { IconInfo } from '@edulastic/icons'
 import { extraDesktopWidthMax } from '@edulastic/colors'
 import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
 
-import { StyledTable, StyledDropDownContainer } from '../styled'
-import { StyledH3, StyledCard, ColoredCell } from '../../../../../common/styled'
+import { StyledTable } from '../styled'
+import {
+  StyledH3,
+  ColoredCell,
+  StyledDropDownContainer,
+} from '../../../../../common/styled'
 import { CustomTableTooltip } from '../../../../../common/components/customTableTooltip'
 
 import CsvTable from '../../../../../common/components/tables/CsvTable'
@@ -438,48 +442,48 @@ const StandardsGradebookTableComponent = ({
 
   return (
     <>
-      <StyledCard>
-        <Row type="flex" justify="start">
-          <Col xs={24} sm={24} md={10} lg={10} xl={12}>
-            <StyledH3>
-              Standards Mastery By {idToName[tableDdFilters.compareBy]}
-            </StyledH3>
-          </Col>
-          <Col xs={24} sm={24} md={14} lg={14} xl={12}>
-            <Row className="control-dropdown-row">
-              <StyledDropDownContainer xs={24} sm={24} md={11} lg={11} xl={8}>
-                <ControlDropDown
-                  data={compareByDropDownData}
-                  by={tableDdFilters.compareBy}
-                  prefix="Compare By"
-                  selectCB={tableFilterDropDownCB}
-                  comData="compareBy"
-                />
-              </StyledDropDownContainer>
-              <StyledDropDownContainer xs={24} sm={24} md={12} lg={12} xl={8}>
-                <ControlDropDown
-                  data={dropDownFormat.analyseByDropDownData}
-                  by={tableDdFilters.analyseBy}
-                  prefix="Analyze By"
-                  selectCB={tableFilterDropDownCB}
-                  comData="analyseBy"
-                />
-              </StyledDropDownContainer>
-            </Row>
-          </Col>
-        </Row>
-        <Row>
-          <CsvTable
-            columns={columnsData}
-            dataSource={filteredTableData}
-            rowKey={tableDdFilters.compareBy}
-            tableToRender={GradebookTable}
-            onCsvConvert={onCsvConvert}
-            isCsvDownloading={isCsvDownloading}
-            scroll={{ x: scrollX }}
-          />
-        </Row>
-      </StyledCard>
+      <Row type="flex" justify="start">
+        <Col xs={24} sm={24} md={10} lg={10} xl={12}>
+          <StyledH3>
+            Standards Mastery By {idToName[tableDdFilters.compareBy]}
+          </StyledH3>
+        </Col>
+        <Col xs={24} sm={24} md={14} lg={14} xl={12}>
+          <Row type="flex" gutter={[5, 10]} justify="end">
+            <StyledDropDownContainer xs={24} sm={24} md={11} lg={11} xl={8}>
+              <ControlDropDown
+                data={compareByDropDownData}
+                by={tableDdFilters.compareBy}
+                prefix="Compare By"
+                selectCB={tableFilterDropDownCB}
+                comData="compareBy"
+                isPageFilter
+              />
+            </StyledDropDownContainer>
+            <StyledDropDownContainer xs={24} sm={24} md={12} lg={12} xl={8}>
+              <ControlDropDown
+                data={dropDownFormat.analyseByDropDownData}
+                by={tableDdFilters.analyseBy}
+                prefix="Analyze By"
+                selectCB={tableFilterDropDownCB}
+                comData="analyseBy"
+                isPageFilter
+              />
+            </StyledDropDownContainer>
+          </Row>
+        </Col>
+      </Row>
+      <Row>
+        <CsvTable
+          columns={columnsData}
+          dataSource={filteredTableData}
+          rowKey={tableDdFilters.compareBy}
+          tableToRender={GradebookTable}
+          onCsvConvert={onCsvConvert}
+          isCsvDownloading={isCsvDownloading}
+          scroll={{ x: scrollX }}
+        />
+      </Row>
     </>
   )
 }

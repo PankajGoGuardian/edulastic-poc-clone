@@ -1,7 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Row } from 'antd'
+
 import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
+import { StyledDropDownContainer } from '../../../../../common/styled'
+
 import dropDownData from '../../static/json/dropDownData.json'
 
 const Filters = ({
@@ -17,20 +19,40 @@ const Filters = ({
   const onAnalyseByChange = onDropDownChange('analyseBy')
 
   return (
-    <Row type="flex" justify="end" align="middle">
-      <ControlDropDown
-        prefix="Analyze By"
-        by={analyseBy}
-        selectCB={onAnalyseByChange}
-        data={dropDownData.analyseByData}
-      />
-      <ControlDropDown
-        prefix="Compare By"
-        by={compareBy}
-        selectCB={onCompareByChange}
-        data={compareByOptions}
-      />
-    </Row>
+    <>
+      <StyledDropDownContainer
+        data-cy="analyzeBy"
+        xs={24}
+        sm={12}
+        md={12}
+        lg={10}
+        xl={8}
+      >
+        <ControlDropDown
+          prefix="Analyze By"
+          by={analyseBy}
+          selectCB={onAnalyseByChange}
+          data={dropDownData.analyseByData}
+          isPageFilter
+        />
+      </StyledDropDownContainer>
+      <StyledDropDownContainer
+        data-cy="compareBy"
+        xs={24}
+        sm={12}
+        md={12}
+        lg={10}
+        xl={8}
+      >
+        <ControlDropDown
+          prefix="Compare By"
+          by={compareBy}
+          selectCB={onCompareByChange}
+          data={compareByOptions}
+          isPageFilter
+        />
+      </StyledDropDownContainer>
+    </>
   )
 }
 

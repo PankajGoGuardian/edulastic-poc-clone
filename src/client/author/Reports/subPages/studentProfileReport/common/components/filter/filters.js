@@ -623,6 +623,7 @@ const StudentProfileReportFilters = ({
                 data={performanceBandsList}
                 prefix="Performance Band"
                 showPrefixOnSelected={false}
+                isPageFilter
               />
             </StyledDropDownContainer>
           )}
@@ -646,6 +647,7 @@ const StudentProfileReportFilters = ({
                 data={standardProficiencyList}
                 prefix="Standard Proficiency"
                 showPrefixOnSelected={false}
+                isPageFilter
               />
             </StyledDropDownContainer>
           )}
@@ -665,6 +667,7 @@ const StudentProfileReportFilters = ({
                   data={domainOptions}
                   prefix="Domain(s)"
                   showPrefixOnSelected={false}
+                  isPageFilter
                 />
               </StyledDropDownContainer>
               <StyledDropDownContainer
@@ -681,6 +684,7 @@ const StudentProfileReportFilters = ({
                   data={standardOptions}
                   prefix="Standard(s)"
                   showPrefixOnSelected={false}
+                  isPageFilter
                 />
               </StyledDropDownContainer>
             </>

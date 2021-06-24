@@ -1,6 +1,4 @@
 import styled from 'styled-components'
-import { Col } from 'antd'
-import { themeColor, themeColorLight } from '@edulastic/colors'
 import { StyledTable as Table } from '../../../../common/styled'
 
 export const UpperContainer = styled.div`
@@ -9,13 +7,6 @@ export const UpperContainer = styled.div`
     display: flex;
     justify-content: flex-end;
     flex-wrap: wrap;
-  }
-`
-
-export const TableContainer = styled.div`
-  .control-dropdown-row {
-    display: flex;
-    justify-content: flex-end;
   }
 `
 
@@ -57,17 +48,6 @@ export const StyledTable = styled(Table)`
         }
       }
     }
-  }
-`
-
-export const StyledDropDownContainer = styled(Col)`
-  .ant-btn.ant-dropdown-trigger {
-    white-space: nowrap;
-    overflow: hidden;
-    max-width: 100%;
-    text-overflow: ellipsis;
-    width: 100%;
-    margin-bottom: 25px;
   }
 `
 

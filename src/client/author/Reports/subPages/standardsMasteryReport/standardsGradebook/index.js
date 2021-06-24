@@ -11,7 +11,7 @@ import StudentAssignmentModal from '../../../common/components/Popups/studentAss
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { StyledCard, StyledH3, NoDataContainer } from '../../../common/styled'
 import { SignedStackBarChartContainer } from './components/charts/signedStackBarChartContainer'
-import { TableContainer, UpperContainer } from './components/styled'
+import { UpperContainer } from './components/styled'
 import { StandardsGradebookTable } from './components/table/standardsGradebookTable'
 
 import { getCsvDownloadingState } from '../../../ducks'
@@ -228,7 +228,7 @@ const StandardsGradebook = ({
           </Row>
         </StyledCard>
       </UpperContainer>
-      <TableContainer>
+      <div>
         <StandardsGradebookTable
           filteredDenormalizedData={filteredDenormalizedData}
           masteryScale={masteryScale}
@@ -243,7 +243,7 @@ const StandardsGradebook = ({
           pageTitle={pageTitle}
           isSharedReport={isSharedReport}
         />
-      </TableContainer>
+      </div>
       {showStudentAssignmentModal && (
         <StudentAssignmentModal
           showModal={showStudentAssignmentModal}

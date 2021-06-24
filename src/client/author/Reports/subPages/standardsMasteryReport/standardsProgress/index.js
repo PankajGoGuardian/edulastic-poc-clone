@@ -7,7 +7,6 @@ import { Row } from 'antd'
 import { SpinLoader } from '@edulastic/common'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { StyledCard, StyledH3, NoDataContainer } from '../../../common/styled'
-import { TableContainer } from './components/styled'
 import SignedStackedBarChartContainer from './components/charts/SignedStackedBarChartContainer'
 import StandardsProgressTable from './components/table/StandardsProgressTable'
 
@@ -182,7 +181,7 @@ const StandardsProgress = ({
           />
         </Row>
       </StyledCard>
-      <TableContainer>
+      <div>
         <StandardsProgressTable
           data={denormalizedTableData}
           testInfo={testInfo}
@@ -209,7 +208,7 @@ const StandardsProgress = ({
           filters={settings.requestFilters}
           isSharedReport={isSharedReport}
         />
-      </TableContainer>
+      </div>
     </div>
   )
 }

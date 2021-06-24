@@ -1,5 +1,5 @@
 import { SpinLoader } from '@edulastic/common'
-import { Col, Empty } from 'antd'
+import { Empty } from 'antd'
 import PropTypes from 'prop-types'
 import React, { useEffect, useMemo } from 'react'
 import { connect } from 'react-redux'
@@ -13,11 +13,9 @@ import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { getCsvDownloadingState, getPrintingState } from '../../../ducks'
 import { SimplePieChart } from './components/charts/pieChart'
 import { Stats } from './components/stats'
-import {
-  StyledAssessmentStatisticTable,
-  TableContainer,
-  UpperContainer,
-} from './components/styled'
+import { UpperContainer } from './components/styled'
+import AssessmentStatisticTable from './components/table/assessmentStatisticTable'
+
 import {
   getAssessmentSummaryRequestAction,
   getReportsAssessmentSummary,
@@ -149,23 +147,17 @@ const AssessmentSummary = ({
           <SimplePieChart data={bandInfo.performanceBand} />
         </StyledCard>
       </UpperContainer>
-      <TableContainer>
-        <Col>
-          <StyledCard>
-            {userRole ? (
-              <StyledAssessmentStatisticTable
-                name={assessmentName}
-                data={metricInfo}
-                role={userRole}
-                isPrinting={isPrinting}
-                isCsvDownloading={isCsvDownloading}
-              />
-            ) : (
-              ''
-            )}
-          </StyledCard>
-        </Col>
-      </TableContainer>
+      {userRole && (
+        <StyledCard>
+          <AssessmentStatisticTable
+            name={assessmentName}
+            data={metricInfo}
+            role={userRole}
+            isPrinting={isPrinting}
+            isCsvDownloading={isCsvDownloading}
+          />
+        </StyledCard>
+      )}
     </>
   )
 }

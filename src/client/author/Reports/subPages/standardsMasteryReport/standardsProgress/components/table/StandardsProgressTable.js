@@ -199,7 +199,7 @@ const StandardsProgressTable = ({
           </StyledH3>
         </Col>
         <Col xs={24} sm={24} md={12} lg={12} xl={8}>
-          <Row className="control-dropdown-row">
+          <Row type="flex" gutter={[5, 10]} justify="end">
             <StyledDropDownContainer
               data-cy="compareBy"
               xs={24}
@@ -213,6 +213,7 @@ const StandardsProgressTable = ({
                 data={compareByData}
                 by={tableFilters.compareBy}
                 selectCB={bindOnChange('compareBy', compareByData)}
+                isPageFilter
               />
             </StyledDropDownContainer>
             <StyledDropDownContainer
@@ -228,6 +229,7 @@ const StandardsProgressTable = ({
                 data={analyseByData}
                 by={tableFilters.analyseBy}
                 selectCB={bindOnChange('analyseBy', analyseByData)}
+                isPageFilter
               />
             </StyledDropDownContainer>
           </Row>

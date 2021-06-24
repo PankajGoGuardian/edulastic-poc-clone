@@ -14,13 +14,13 @@ import { EduButton, SpinLoader, notification } from '@edulastic/common'
 import { IconPlusCircle } from '@edulastic/icons'
 
 import CsvTable from '../../../common/components/tables/CsvTable'
-import { StyledH3, StyledCard, NoDataContainer } from '../../../common/styled'
 import {
-  UpperContainer,
+  StyledH3,
+  StyledCard,
+  NoDataContainer,
   StyledDropDownContainer,
-  StyledTable,
-  StyledCharWrapper,
-} from './components/styled'
+} from '../../../common/styled'
+import { StyledTable, StyledCharWrapper } from './components/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { ControlDropDown } from '../../../common/components/widgets/controlDropDown'
 import SimpleBarChartContainer from './components/charts/SimpleBarChartContainer'
@@ -290,78 +290,76 @@ const PerformanceByStudents = ({
   }
   return (
     <>
-      <UpperContainer>
-        <FeaturesSwitch
-          inputFeatures="studentGroups"
-          actionOnInaccessible="hidden"
-        >
-          <AddToGroupModal
-            groupType="custom"
-            visible={showAddToGroupModal}
-            onCancel={() => setShowAddToGroupModal(false)}
-            checkedStudents={checkedStudentsForModal}
-          />
-        </FeaturesSwitch>
-        <StyledCharWrapper>
-          <StyledCard>
-            <Row type="flex" justify="start">
-              <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                <StyledH3>Students in Performance Bands(%)</StyledH3>
-              </Col>
-            </Row>
-            <Row type="flex" justify="start">
-              <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                <PerformanceBandPieChart
-                  bands={res.bandInfo}
-                  data={pieChartData}
-                  onSelect={setProficiency}
-                />
-              </Col>
-            </Row>
-          </StyledCard>
-          <StyledCard style={{ width: '100%' }}>
-            <Row type="flex" justify="start">
-              <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-                <StyledH3>
-                  Student score distribution | {assessmentName}
-                </StyledH3>
-              </Col>
-            </Row>
-            <Row type="flex" justify="start">
-              <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                <SimpleBarChartContainer
-                  data={barChartData}
-                  setRange={setRange}
-                  range={range}
-                />
-              </Col>
-            </Row>
-          </StyledCard>
-        </StyledCharWrapper>
+      <FeaturesSwitch
+        inputFeatures="studentGroups"
+        actionOnInaccessible="hidden"
+      >
+        <AddToGroupModal
+          groupType="custom"
+          visible={showAddToGroupModal}
+          onCancel={() => setShowAddToGroupModal(false)}
+          checkedStudents={checkedStudentsForModal}
+        />
+      </FeaturesSwitch>
+      <StyledCharWrapper>
         <StyledCard>
           <Row type="flex" justify="start">
-            <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-              <StyledH3>Student Performance | {assessmentName}</StyledH3>
+            <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+              <StyledH3>Students in Performance Bands(%)</StyledH3>
             </Col>
-            <Col
-              xs={24}
-              sm={24}
-              md={12}
-              lg={12}
-              xl={12}
-              className="dropdown-container"
-            >
+          </Row>
+          <Row type="flex" justify="start">
+            <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+              <PerformanceBandPieChart
+                bands={res.bandInfo}
+                data={pieChartData}
+                onSelect={setProficiency}
+              />
+            </Col>
+          </Row>
+        </StyledCard>
+        <StyledCard style={{ width: '100%' }}>
+          <Row type="flex" justify="start">
+            <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+              <StyledH3>Student score distribution | {assessmentName}</StyledH3>
+            </Col>
+          </Row>
+          <Row type="flex" justify="start">
+            <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+              <SimpleBarChartContainer
+                data={barChartData}
+                setRange={setRange}
+                range={range}
+              />
+            </Col>
+          </Row>
+        </StyledCard>
+      </StyledCharWrapper>
+      <StyledCard>
+        <Row type="flex" justify="start">
+          <Col xs={24} sm={24} md={12} lg={12} xl={16}>
+            <StyledH3>Student Performance | {assessmentName}</StyledH3>
+          </Col>
+          <Col xs={24} sm={24} md={12} lg={12} xl={8}>
+            <Row type="flex" gutter={[5, 10]} justify="end">
               {!isCliUser && !isSharedReport && (
                 <FeaturesSwitch
                   inputFeatures="studentGroups"
                   actionOnInaccessible="hidden"
                 >
-                  <StyledDropDownContainer>
+                  <StyledDropDownContainer
+                    xs={24}
+                    sm={24}
+                    md={12}
+                    lg={12}
+                    xl={12}
+                  >
                     <EduButton
                       style={{
-                        height: '31px',
+                        float: 'right',
+                        height: '32px',
                         padding: '0 15px 0 10px',
-                        marginRight: '5px',
+                        borderRadius: '2px',
                       }}
                       onClick={handleAddToGroupClick}
                     >
@@ -370,37 +368,43 @@ const PerformanceByStudents = ({
                   </StyledDropDownContainer>
                 </FeaturesSwitch>
               )}
-              <StyledDropDownContainer>
+              <StyledDropDownContainer
+                data-cy="proficiencyBand"
+                xs={24}
+                sm={24}
+                md={12}
+                lg={12}
+                xl={12}
+              >
                 <ControlDropDown
                   prefix="Performance Band - "
                   data={proficiencyBandData}
                   by={selectedProficiency}
                   selectCB={(e, selected) => setProficiency(selected)}
+                  isPageFilter
                 />
               </StyledDropDownContainer>
-            </Col>
-          </Row>
-          <Row type="flex" justify="start">
-            <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-              <CsvTable
-                isCsvDownloading={generateCSVRequired ? null : isCsvDownloading}
-                onCsvConvert={onCsvConvert}
-                columns={columns}
-                dataSource={tableData}
-                rowSelection={rowSelection}
-                colouredCellsNo={4}
-                rightAligned={6}
-                pagination={pagination}
-                onChange={setPagination}
-                tableToRender={StyledTable}
-                location={location}
-                scroll={{ x: '100%' }}
-                pageTitle={pageTitle}
-              />
-            </Col>
-          </Row>
-        </StyledCard>
-      </UpperContainer>
+            </Row>
+          </Col>
+        </Row>
+        <Row>
+          <CsvTable
+            isCsvDownloading={generateCSVRequired ? null : isCsvDownloading}
+            onCsvConvert={onCsvConvert}
+            columns={columns}
+            dataSource={tableData}
+            rowSelection={rowSelection}
+            colouredCellsNo={4}
+            rightAligned={6}
+            pagination={pagination}
+            onChange={setPagination}
+            tableToRender={StyledTable}
+            location={location}
+            scroll={{ x: '100%' }}
+            pageTitle={pageTitle}
+          />
+        </Row>
+      </StyledCard>
     </>
   )
 }

@@ -7,7 +7,10 @@ import { get, head, isEmpty } from 'lodash'
 import TrendStats from '../../multipleAssessmentReport/common/components/trend/TrendStats'
 import TrendTable from '../../multipleAssessmentReport/common/components/trend/TrendTable'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
-import { NoDataContainer } from '../../../common/styled'
+import {
+  NoDataContainer,
+  StyledDropDownContainer,
+} from '../../../common/styled'
 import { ControlDropDown } from '../../../common/components/widgets/controlDropDown'
 
 import { getCsvDownloadingState } from '../../../ducks'
@@ -166,12 +169,22 @@ const StudentProgressProfile = ({
         isSharedReport={isSharedReport}
         showTrendStats={!isEmpty(metricInfo)}
         renderFilters={() => (
-          <ControlDropDown
-            prefix="Analyze By"
-            by={analyseBy}
-            selectCB={onAnalyseBySelect}
-            data={dropDownData.analyseByData}
-          />
+          <StyledDropDownContainer
+            data-cy="analyzeBy"
+            xs={24}
+            sm={24}
+            md={16}
+            lg={10}
+            xl={7}
+          >
+            <ControlDropDown
+              prefix="Analyze By"
+              by={analyseBy}
+              selectCB={onAnalyseBySelect}
+              data={dropDownData.analyseByData}
+              isPageFilter
+            />
+          </StyledDropDownContainer>
         )}
       />
       {!isEmpty(metricInfo) ? (

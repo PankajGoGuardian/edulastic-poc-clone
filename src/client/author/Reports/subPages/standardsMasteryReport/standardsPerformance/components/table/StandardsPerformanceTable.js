@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import { sumBy, includes, filter, isEmpty } from 'lodash'
 import next from 'immer'
 import { Row, Col, Tooltip } from 'antd'
-import styled from 'styled-components'
 
 import { withNamespaces } from '@edulastic/localization'
 import { reportUtils } from '@edulastic/constants'
@@ -228,7 +227,7 @@ const StandardsPerformanceTable = ({
           </StyledH3>
         </Col>
         <Col xs={24} sm={24} md={13} lg={13} xl={12}>
-          <Row className="control-dropdown-row">
+          <Row type="flex" gutter={[5, 10]} justify="end">
             <StyledDropDownContainer
               data-cy="compareBy"
               xs={24}
@@ -243,6 +242,7 @@ const StandardsPerformanceTable = ({
                 data={compareByData}
                 by={tableFilters.compareBy}
                 selectCB={bindOnChange('compareBy', compareByData)}
+                isPageFilter
               />
             </StyledDropDownContainer>
             <StyledDropDownContainer
@@ -259,34 +259,26 @@ const StandardsPerformanceTable = ({
                 data={analyseByData}
                 by={tableFilters.analyseBy}
                 selectCB={bindOnChange('analyseBy', analyseByData)}
+                isPageFilter
               />
             </StyledDropDownContainer>
           </Row>
         </Col>
       </Row>
-      <Row type="flex" justify="start">
-        <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-          <CsvTable
-            {...tableProps}
-            colouredCellsNo={domainsData.length}
-            centerAligned={domainsData.length}
-            columns={columns}
-            onCsvConvert={onCsvConvert}
-            isCsvDownloading={isCsvDownloading}
-            tableToRender={StyledTable}
-            scroll={{ x: '100%' }}
-          />
-        </Col>
+      <Row>
+        <CsvTable
+          {...tableProps}
+          colouredCellsNo={domainsData.length}
+          centerAligned={domainsData.length}
+          columns={columns}
+          onCsvConvert={onCsvConvert}
+          isCsvDownloading={isCsvDownloading}
+          tableToRender={StyledTable}
+          scroll={{ x: '100%' }}
+        />
       </Row>
     </>
   )
 }
 
-const StyledStandardsPerformanceTable = styled(StandardsPerformanceTable)`
-  .control-dropdown-row {
-    display: flex;
-    justify-content: flex-end;
-  }
-`
-
-export default withNamespaces('student')(StyledStandardsPerformanceTable)
+export default withNamespaces('student')(StandardsPerformanceTable)

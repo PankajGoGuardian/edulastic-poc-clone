@@ -7,7 +7,7 @@ import {
 } from '@edulastic/colors'
 import { SpinLoader, FlexContainer } from '@edulastic/common'
 import { IconCollapse2 } from '@edulastic/icons'
-import { Avatar, Button } from 'antd'
+import { Row, Avatar, Button } from 'antd'
 import { filter, get, isEmpty } from 'lodash'
 import { compose } from 'redux'
 import { withNamespaces } from '@edulastic/localization'
@@ -17,7 +17,11 @@ import styled from 'styled-components'
 import StudentAssignmentModal from '../../../common/components/Popups/studentAssignmentModal'
 import BarTooltipRow from '../../../common/components/tooltip/BarTooltipRow'
 import { ControlDropDown } from '../../../common/components/widgets/controlDropDown'
-import { StyledCard, NoDataContainer } from '../../../common/styled'
+import {
+  StyledCard,
+  NoDataContainer,
+  StyledDropDownContainer,
+} from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import {
   downloadCSV,
@@ -299,41 +303,71 @@ const StudentMasteryProfile = ({
       </FlexContainer>
 
       <ReStyledCard>
-        <FilterRow justifyContent="space-between">
-          <DropdownContainer>
-            {userRole !== 'student' && (
+        <FilterRow type="flex" gutter={[5, 10]} justify="start">
+          {userRole !== 'student' && (
+            <StyledDropDownContainer
+              data-cy="standardGrade"
+              xs={24}
+              sm={12}
+              md={4}
+              lg={4}
+              xl={3}
+            >
               <ControlDropDown
                 by={selectedGrade}
                 selectCB={onGradeSelect}
                 data={allGrades}
                 prefix="Standard Grade"
                 showPrefixOnSelected={false}
+                isPageFilter
               />
-            )}
+            </StyledDropDownContainer>
+          )}
+          <StyledDropDownContainer
+            data-cy="standardSubject"
+            xs={24}
+            sm={12}
+            md={4}
+            lg={4}
+            xl={3}
+          >
             <ControlDropDown
               by={selectedSubject}
               selectCB={onSubjectSelect}
               data={allSubjects}
               prefix="Standard Subject"
               showPrefixOnSelected={false}
+              isPageFilter
             />
+          </StyledDropDownContainer>
+          <StyledDropDownContainer
+            data-cy="standardDomain"
+            xs={24}
+            sm={12}
+            md={4}
+            lg={4}
+            xl={3}
+          >
             <ControlDropDown
               showPrefixOnSelected={false}
               by={selectedDomain}
               selectCB={onDomainSelect}
               data={domainOptions}
               prefix="Domain(s)"
+              isPageFilter
             />
-          </DropdownContainer>
-          <StyledButton
-            onClick={() => setExpandRows(!expandRows)}
-            data-cy="expand-row"
-          >
-            <IconCollapse2 color={themeColor} width={12} height={12} />
-            <span className="button-label">
-              {expandRows ? 'COLLAPSE' : 'EXPAND'} ROWS
-            </span>
-          </StyledButton>
+          </StyledDropDownContainer>
+          <StyledDropDownContainer xs={24} sm={12} md={12} lg={12} xl={15}>
+            <StyledButton
+              onClick={() => setExpandRows(!expandRows)}
+              data-cy="expand-row"
+            >
+              <IconCollapse2 color={themeColor} width={12} height={12} />
+              <span className="button-label">
+                {expandRows ? 'COLLAPSE' : 'EXPAND'} ROWS
+              </span>
+            </StyledButton>
+          </StyledDropDownContainer>
         </FilterRow>
         <StudentPerformanceSummary
           data={filteredDomains}
@@ -395,7 +429,7 @@ const StyledAatar = styled(Avatar)`
   }
 `
 
-const FilterRow = styled(FlexContainer)`
+const FilterRow = styled(Row)`
   @media print {
     display: none;
   }
@@ -430,22 +464,6 @@ const StyledName = styled.span`
   text-align: left;
   letter-spacing: 0.33px;
   font: Bold 18px/24px Open Sans;
-`
-
-const DropdownContainer = styled.div`
-  display: flex;
-
-  .control-dropdown {
-    .ant-btn {
-      width: 100%;
-    }
-  }
-  .control-dropdown {
-    margin-left: 10px;
-  }
-  .control-dropown:first-child {
-    margin-left: 0px;
-  }
 `
 
 const StyledButton = styled(Button)`

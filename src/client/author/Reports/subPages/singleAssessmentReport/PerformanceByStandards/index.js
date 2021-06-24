@@ -22,10 +22,6 @@ import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 
 import { getCsvDownloadingState, generateCSVAction } from '../../../ducks'
 import { setStandardMasteryProfileAction } from '../common/filterDataDucks'
-import CardHeader, {
-  CardDropdownWrapper,
-  CardTitle,
-} from './common/CardHeader/CardHeader'
 import SignedStackedBarChartContainer from './components/charts/SignedStackedBarChartContainer'
 import SimpleStackedBarChartContainer from './components/charts/SimpleStackedBarChartContainer'
 import PerformanceAnalysisTable from './components/table/performanceAnalysisTable'
@@ -291,7 +287,7 @@ const PerformanceByStandards = ({
   return (
     <>
       <StyledCard>
-        <Row type="flex" justify="start">
+        <Row type="flex" gutter={[5, 10]} justify="start">
           <Col xs={24} sm={24} md={12} lg={8} xl={12}>
             <StyledH3>
               Performance by {capitalize(`${viewBy}s`)} | {assessmentName}
@@ -303,7 +299,7 @@ const PerformanceByStandards = ({
                 data-cy="viewBy"
                 xs={24}
                 sm={24}
-                md={8}
+                md={12}
                 lg={8}
                 xl={8}
               >
@@ -312,30 +308,32 @@ const PerformanceByStandards = ({
                   by={viewBy}
                   selectCB={handleViewByChange}
                   data={dropDownFormat.viewByDropDownData}
+                  isPageFilter
                 />
               </StyledDropDownContainer>
               <StyledDropDownContainer
                 data-cy="analyzeBy"
                 xs={24}
                 sm={24}
-                md={7}
-                lg={7}
-                xl={7}
+                md={12}
+                lg={8}
+                xl={8}
               >
                 <ControlDropDown
                   prefix="Analyze by"
                   by={analyzeBy}
                   selectCB={handleAnalyzeByChange}
                   data={dropDownFormat.analyzeByDropDownData}
+                  isPageFilter
                 />
               </StyledDropDownContainer>
               <StyledDropDownContainer
                 data-cy="standardSet"
                 xs={24}
                 sm={24}
-                md={7}
-                lg={7}
-                xl={7}
+                md={24}
+                lg={8}
+                xl={8}
               >
                 <ControlDropDown
                   prefix="Standard Set"
@@ -343,6 +341,7 @@ const PerformanceByStandards = ({
                   selectCB={handleCurriculumIdChange}
                   data={standardsDropdownData}
                   showPrefixOnSelected={false}
+                  isPageFilter
                 />
               </StyledDropDownContainer>
             </Row>
@@ -360,20 +359,30 @@ const PerformanceByStandards = ({
         </StyledSignedBarContainer>
       </StyledCard>
       <StyledCard style={{ marginTop: '20px' }}>
-        <CardHeader>
-          <CardTitle>
-            {capitalize(viewBy)} Performance Analysis by{' '}
-            {findCompareByTitle(compareBy)} | {assessmentName}
-          </CardTitle>
-          <CardDropdownWrapper data-cy="compareBy">
+        <Row type="flex" gutter={[5, 10]} justify="start">
+          <Col xs={24} sm={12} md={16} lg={18} xl={20}>
+            <StyledH3>
+              {capitalize(viewBy)} Performance Analysis by{' '}
+              {findCompareByTitle(compareBy)} | {assessmentName}
+            </StyledH3>
+          </Col>
+          <StyledDropDownContainer
+            data-cy="compareBy"
+            xs={24}
+            sm={12}
+            md={8}
+            lg={6}
+            xl={4}
+          >
             <ControlDropDown
               prefix="Compare by"
               by={compareBy}
               selectCB={handleCompareByChange}
               data={filteredDropDownData}
+              isPageFilter
             />
-          </CardDropdownWrapper>
-        </CardHeader>
+          </StyledDropDownContainer>
+        </Row>
         <PerformanceAnalysisTable
           report={reportWithFilteredSkills}
           viewBy={viewBy}

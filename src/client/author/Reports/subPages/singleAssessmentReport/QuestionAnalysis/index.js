@@ -7,7 +7,11 @@ import { SpinLoader } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
 import { isEmpty } from 'lodash'
 import { ControlDropDown } from '../../../common/components/widgets/controlDropDown'
-import { StyledH3, NoDataContainer } from '../../../common/styled'
+import {
+  StyledH3,
+  NoDataContainer,
+  StyledDropDownContainer,
+} from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { SimpleStackedBarWithLineChartContainer } from './componenets/charts/simpleStackedBarWithLineChartContainer'
 import {
@@ -162,8 +166,13 @@ const QuestionAnalysis = ({
         <StyledCard>
           <Row type="flex" justify="start" className="parent-row">
             <Col className="top-row-container">
-              <Row type="flex" justify="space-between" className="top-row">
-                <Col>
+              <Row
+                className="top-row"
+                type="flex"
+                gutter={[5, 10]}
+                justify="start"
+              >
+                <Col xs={24} sm={12} md={16} lg={18} xl={20}>
                   <StyledH3>
                     Detailed Performance Analysis{' '}
                     {userRole !== roleuser.TEACHER
@@ -172,16 +181,24 @@ const QuestionAnalysis = ({
                     | {assessmentName}
                   </StyledH3>
                 </Col>
-                <Col>
-                  {userRole !== roleuser.TEACHER ? (
+                {userRole !== roleuser.TEACHER && (
+                  <StyledDropDownContainer
+                    data-cy="compareBy"
+                    xs={24}
+                    sm={12}
+                    md={8}
+                    lg={6}
+                    xl={4}
+                  >
                     <ControlDropDown
                       prefix="Compare by"
                       by={compareByDropDownData[0]}
                       selectCB={updateCompareByCB}
                       data={compareByDropDownData}
+                      isPageFilter
                     />
-                  ) : null}
-                </Col>
+                  </StyledDropDownContainer>
+                )}
               </Row>
             </Col>
             <Col className="bottom-table-container">

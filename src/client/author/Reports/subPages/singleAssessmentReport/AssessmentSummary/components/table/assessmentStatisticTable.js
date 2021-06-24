@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from 'react'
-import styled from 'styled-components'
 import { Row, Col } from 'antd'
-import { groupBy, uniqBy } from 'lodash'
+import { groupBy, uniqBy, capitalize } from 'lodash'
 import next from 'immer'
 import qs from 'qs'
 import { withRouter } from 'react-router-dom'
@@ -14,7 +13,7 @@ import {
   downloadCSV,
   formatDate,
 } from '../../../../../common/util'
-import { StyledH3 } from '../../../../../common/styled'
+import { StyledH3, StyledDropDownContainer } from '../../../../../common/styled'
 import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
 import PrintableTable from '../../../../../common/components/tables/PrintableTable'
 import CsvTable from '../../../../../common/components/tables/CsvTable'
@@ -26,15 +25,7 @@ const AssessmentStatisticTable = (props) => {
     key: 'school',
     title: 'School',
   })
-  const {
-    data,
-    role,
-    className,
-    name,
-    isCsvDownloading,
-    isPrinting,
-    location,
-  } = props
+  const { data, role, name, isCsvDownloading, isPrinting, location } = props
 
   const query = qs.parse(location.search, { ignoreQueryPrefix: true })
   const { cliUser } = query
@@ -200,50 +191,52 @@ const AssessmentStatisticTable = (props) => {
   ]
 
   return (
-    <div className={`${className}`}>
-      <Row type="flex" justify="start" className="top-area">
-        <Col className="top-area-col table-title">
+    <>
+      <Row type="flex" gutter={[5, 10]} justify="start">
+        <Col xs={24} sm={12} md={16} lg={18} xl={20}>
           <StyledH3>
-            Assignment Statistics for {name} by{' '}
-            <span className="stats-grouped-by">{tableType.title}</span>
+            Assignment Statistics for {name} by {capitalize(tableType.title)}
           </StyledH3>
         </Col>
-        {role !== 'teacher' ? (
-          <StyledControlDropDownContainer className="top-area-col control-area">
+        {role !== 'teacher' && (
+          <StyledDropDownContainer
+            data-cy="compareBy"
+            xs={24}
+            sm={12}
+            md={8}
+            lg={6}
+            xl={4}
+          >
             <ControlDropDown
               prefix="Compare by"
               by={tableType}
               selectCB={updateTableCB}
               data={dropDownData}
+              isPageFilter
             />
-          </StyledControlDropDownContainer>
-        ) : (
-          ''
+          </StyledDropDownContainer>
         )}
       </Row>
-      <CsvTable
-        isPrinting={isPrinting}
-        component={StyledTable}
-        columns={table.columns}
-        dataSource={table.tableData}
-        onCsvConvert={onCsvConvert}
-        isCsvDownloading={isCsvDownloading}
-        tableToRender={PrintableTable}
-        scroll={{ x: '100%' }}
-        pagination={{
-          hideOnSinglePage: true,
-          pageSize: 10,
-        }}
-      />
-    </div>
+      <Row>
+        <CsvTable
+          isPrinting={isPrinting}
+          component={StyledTable}
+          columns={table.columns}
+          dataSource={table.tableData}
+          onCsvConvert={onCsvConvert}
+          isCsvDownloading={isCsvDownloading}
+          tableToRender={PrintableTable}
+          scroll={{ x: '100%' }}
+          pagination={{
+            hideOnSinglePage: true,
+            pageSize: 10,
+          }}
+        />
+      </Row>
+    </>
   )
 }
 
 const enhance = compose(withRouter)
 
 export default enhance(AssessmentStatisticTable)
-
-const StyledControlDropDownContainer = styled(Col)`
-  display: flex;
-  justify-content: flex-end;
-`

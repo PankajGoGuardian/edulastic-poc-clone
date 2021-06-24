@@ -11,21 +11,6 @@ export const NonSelectableResponsiveContainer = styled(ResponsiveContainer)`
   }
 `
 
-export const UpperContainer = styled.div`
-  .dropdown-container {
-    text-align: left;
-    display: flex;
-    justify-content: flex-end;
-    flex-wrap: wrap;
-  }
-`
-
-export const StyledDropDownContainer = styled.div`
-  padding: ${(props) => props.padding || '0px'};
-  button {
-    margin-bottom: 15px;
-  }
-`
 export const StyledTable = styled(Table)`
   .ant-table-layout-fixed {
     .ant-table-scroll {

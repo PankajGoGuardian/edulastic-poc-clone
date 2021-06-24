@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { backgrounds, labelGrey, secondaryTextColor } from '@edulastic/colors'
 import { SpinLoader, FlexContainer } from '@edulastic/common'
-import { Icon, Avatar } from 'antd'
+import { Row, Icon, Avatar } from 'antd'
 import { get, isEmpty } from 'lodash'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
@@ -9,7 +9,12 @@ import styled from 'styled-components'
 
 import { withNamespaces } from '@edulastic/localization'
 import BarTooltipRow from '../../../common/components/tooltip/BarTooltipRow'
-import { NoDataContainer, StyledCard, StyledH3 } from '../../../common/styled'
+import {
+  NoDataContainer,
+  StyledCard,
+  StyledH3,
+  StyledDropDownContainer,
+} from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { downloadCSV } from '../../../common/util'
 import { getCsvDownloadingState } from '../../../ducks'
@@ -313,30 +318,58 @@ const StudentProfileSummary = ({
             />
           </Card>
           <Card width="calc(100% - 300px)">
-            <FilterRow justifyContent="space-between">
-              <DropdownContainer>
+            <FilterRow type="flex" gutter={[5, 10]} justify="start">
+              <StyledDropDownContainer
+                data-cy="standardGrade"
+                xs={24}
+                sm={24}
+                md={8}
+                lg={6}
+                xl={4}
+              >
                 <ControlDropDown
                   by={selectedGrade}
                   selectCB={onGradeSelect}
                   data={allGrades}
                   prefix="Standard Grade"
                   showPrefixOnSelected={false}
+                  isPageFilter
                 />
+              </StyledDropDownContainer>
+              <StyledDropDownContainer
+                data-cy="standardSubject"
+                xs={24}
+                sm={24}
+                md={8}
+                lg={6}
+                xl={4}
+              >
                 <ControlDropDown
                   by={selectedSubject}
                   selectCB={onSubjectSelect}
                   data={allSubjects}
                   prefix="Standard Subject"
                   showPrefixOnSelected={false}
+                  isPageFilter
                 />
+              </StyledDropDownContainer>
+              <StyledDropDownContainer
+                data-cy="standardDomain"
+                xs={24}
+                sm={24}
+                md={8}
+                lg={6}
+                xl={4}
+              >
                 <ControlDropDown
                   showPrefixOnSelected={false}
                   by={selectedDomain}
                   selectCB={onDomainSelect}
                   data={domainOptions}
                   prefix="Domain(s)"
+                  isPageFilter
                 />
-              </DropdownContainer>
+              </StyledDropDownContainer>
             </FilterRow>
             <StandardMasteryDetailsTable
               onCsvConvert={onCsvConvert}
@@ -433,24 +466,8 @@ const StudentDetailsContainer = styled.div`
     margin-bottom: 15px;
   }
 `
-const FilterRow = styled(FlexContainer)`
+const FilterRow = styled(Row)`
   @media print {
     display: none;
-  }
-`
-const DropdownContainer = styled.div`
-  display: flex;
-  margin-bottom: 10px;
-
-  .control-dropdown {
-    .ant-btn {
-      width: 100%;
-    }
-  }
-  .control-dropdown {
-    margin-left: 10px;
-  }
-  .control-dropown:first-child {
-    margin-left: 0px;
   }
 `

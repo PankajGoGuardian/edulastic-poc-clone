@@ -196,7 +196,7 @@ const StudentAutoComplete = ({
           onFocus={() => setIsFocused(true)}
           onChange={onChange}
           allowClear={!loading && searchTerms.selectedText && isFocused}
-          clearIcon={<Icon type="close" style={{ color: '#1AB394' }} />}
+          clearIcon={<Icon type="close" />}
           notFoundContent={
             <Empty
               className="ant-empty-small"
@@ -229,9 +229,6 @@ const AutoCompleteContainer = styled.div`
   .ant-select-dropdown-menu-item-group-title {
     font-weight: bold;
     white-space: nowrap;
-  }
-  .ant-select-selection__clear {
-    background: transparent;
   }
   .ant-input-suffix .anticon-loading {
     font-size: 1.4em;

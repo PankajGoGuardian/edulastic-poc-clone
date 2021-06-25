@@ -1,14 +1,7 @@
 /* eslint-disable array-callback-return */
 import React, { useState, useRef } from 'react'
 import { AutoComplete, Input, Icon, Empty } from 'antd'
-import styled from 'styled-components'
 
-import {
-  black,
-  lightGreySecondary,
-  themeColor,
-  themeColorBlue,
-} from '@edulastic/colors'
 import { useInternalEffect } from '../../hooks/useInternalEffect'
 
 import { StyledAutocompleteDropDownContainer } from '../../styled'
@@ -16,7 +9,7 @@ import { StyledAutocompleteDropDownContainer } from '../../styled'
 const Option = AutoComplete.Option
 const OptGroup = AutoComplete.OptGroup
 
-const AutocompleteDropDown = ({
+export const AutocompleteDropDown = ({
   className,
   containerClassName = '',
   prefix = '',
@@ -187,61 +180,4 @@ const AutocompleteDropDown = ({
   )
 }
 
-const StyledAutocompleteDropDown = styled(AutocompleteDropDown)`
-  .ant-input {
-    background-color: ${lightGreySecondary};
-    border-radius: 3px;
-    padding: 16px;
-    padding-right: 24px;
-    font-size: 11px;
-    font-weight: 600;
-    &:focus {
-      outline: 0px;
-      box-shadow: none;
-      border-color: ${themeColor};
-    }
-  }
-
-  .ant-select-dropdown-menu {
-    display: flex;
-    flex-direction: column;
-    .ant-select-dropdown-menu-item-group {
-      display: flex;
-      flex-direction: column;
-      .ant-select-dropdown-menu-item-group-title {
-        font-weight: 600;
-        color: ${black};
-        cursor: default;
-      }
-      .ant-select-dropdown-menu-item-group-list {
-        flex: 1;
-        overflow: auto;
-        > .ant-select-dropdown-menu-item {
-          padding-left: 12px;
-          justify-content: left;
-        }
-      }
-    }
-  }
-  .ant-select-dropdown-menu-item-disabled {
-    font-weight: 600;
-    color: ${black};
-    cursor: default;
-  }
-
-  .anticon {
-    height: 13px;
-    font-size: 11px;
-  }
-  .ant-select-dropdown-menu-item {
-    font-size: 11px;
-  }
-  .ant-input-suffix .anticon-loading {
-    font-size: 1.4em;
-    & > svg {
-      fill: ${themeColorBlue};
-    }
-  }
-`
-
-export { StyledAutocompleteDropDown as AutocompleteDropDown }
+export default AutocompleteDropDown

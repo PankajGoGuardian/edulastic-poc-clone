@@ -587,10 +587,11 @@ const StudentProfileReportFilters = ({
           }}
         >
           <StyledDropDownContainer
+            data-cy="student"
             xs={24}
             sm={12}
             lg={topFilterColSpan}
-            data-cy="student"
+            isPageFilter
           >
             <StudentAutoComplete
               firstLoad={firstLoad}
@@ -609,6 +610,7 @@ const StudentProfileReportFilters = ({
               sm={12}
               lg={topFilterColSpan}
               data-cy="performanceBand"
+              isPageFilter
             >
               <ControlDropDown
                 by={selectedPerformanceBand}
@@ -633,6 +635,7 @@ const StudentProfileReportFilters = ({
               sm={12}
               lg={topFilterColSpan}
               data-cy="standardProficiency"
+              isPageFilter
             >
               <ControlDropDown
                 by={selectedStandardProficiency}
@@ -658,6 +661,7 @@ const StudentProfileReportFilters = ({
                 sm={12}
                 lg={topFilterColSpan}
                 data-cy="standardProficiency"
+                isPageFilter
               >
                 <ControlDropDown
                   by={filters.domainId}
@@ -675,6 +679,7 @@ const StudentProfileReportFilters = ({
                 sm={12}
                 lg={topFilterColSpan}
                 data-cy="standardProficiency"
+                isPageFilter
               >
                 <ControlDropDown
                   by={filters.standardId}

@@ -81,7 +81,12 @@ const antSelectStyles = css`
     .ant-select-dropdown-menu-item-selected,
     .ant-select-dropdown-menu-item-active {
       background-color: ${themeColorBlue};
-      color: #ffffff;
+      color: ${white};
+      i {
+        svg {
+          color: ${white};
+        }
+      }
     }
     .ant-select-dropdown-menu-item,
     .ant-select-dropdown-menu-submenu-title {
@@ -94,16 +99,31 @@ const antSelectStyles = css`
       font-size: 11px;
       font-weight: 600;
     }
+    &__clear {
+      background: transparent;
+      i {
+        svg {
+          color: ${themeColor};
+        }
+      }
+    }
+    &__placeholder {
+      font-size: 11px;
+      font-weight: normal;
+    }
   }
   .ant-select-auto-complete.ant-select .ant-input {
-    background-color: #f8f8f8;
-    border-color: #e5e5e5;
+    background-color: ${lightGreySecondary};
+    border-color: ${fadedGrey};
     border-radius: 2px;
     min-height: 34px;
     font-size: 11px;
     font-weight: 600;
   }
   .ant-input-affix-wrapper .ant-input-suffix {
+    .anticon-loading {
+      font-size: 1.4em;
+    }
     right: 8px;
     i {
       svg {
@@ -534,6 +554,43 @@ export const StyledDropDownContainer = styled(Col)`
       }
     }
   }
+  ${({ isPageFilter }) =>
+    isPageFilter
+      ? `
+        .ant-select-auto-complete.ant-select .ant-input {
+          background-color: transparent;
+          border-color: ${themeColor};
+          color: ${themeColor};
+          &:hover, &:focus {
+            background-color: ${themeColor};
+            border-color: ${themeColor};
+            color: ${white};
+          }
+        }
+        .ant-select-selection {
+          background-color: transparent !important;
+          border-color: ${themeColor} !important;
+          color: ${themeColor};
+          &__placeholder {
+            color: ${themeColor};
+          }
+          &:hover, &:focus {
+            background-color: ${themeColor} !important;
+            color: ${white} !important;
+            .ant-select-selection__clear, .ant-input-affix-wrapper .ant-input-suffix {
+              i {
+                svg {
+                  color: ${white};
+                }
+              }
+            }
+            .ant-select-selection__placeholder {
+              color: ${white};
+            }
+          }
+        }
+      `
+      : ``}
   @media print {
     display: none;
   }
@@ -548,7 +605,7 @@ export const StyledAutocompleteDropDownContainer = styled.div`
     cursor: pointer;
     &:focus,
     :active {
-      border-color: ${themeColor} !important;
+      border-color: ${themeColor};
       box-shadow: none;
     }
   }
@@ -557,8 +614,8 @@ export const StyledAutocompleteDropDownContainer = styled.div`
     color: ${themeColor};
   }
   .ant-select-selection {
-    border: 1px solid #e6e6e6;
-    background: #f8f8f8;
+    border: 1px solid ${fadedGrey};
+    background-color: ${lightGreySecondary};
   }
   .ant-select-selection--multiple {
     padding-bottom: 6px;

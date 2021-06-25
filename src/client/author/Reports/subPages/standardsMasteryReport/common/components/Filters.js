@@ -479,6 +479,7 @@ const StandardsMasteryReportFilters = ({
       lg={6}
       autoFlex
       data-cy="standardProficiency"
+      isPageFilter
     >
       <ControlDropDown
         by={filters.profileId || defaultStandardProficiency?.key || ''}
@@ -848,6 +849,7 @@ const StandardsMasteryReportFilters = ({
             lg={6}
             autoFlex
             data-cy="standardSet"
+            isPageFilter
           >
             <ControlDropDown
               by={filters.curriculumId}
@@ -866,6 +868,7 @@ const StandardsMasteryReportFilters = ({
             lg={6}
             autoFlex
             data-cy="standardGrade"
+            isPageFilter
           >
             <ControlDropDown
               by={filters.standardGrade}
@@ -885,6 +888,7 @@ const StandardsMasteryReportFilters = ({
             lg={6}
             autoFlex
             data-cy="domain"
+            isPageFilter
           >
             <MultipleSelect
               containerClassName="standards-mastery-report-domain-autocomplete"
@@ -909,6 +913,7 @@ const StandardsMasteryReportFilters = ({
               lg={6}
               autoFlex
               data-cy="standard"
+              isPageFilter
             >
               <AutocompleteDropDown
                 prefix="Standard"

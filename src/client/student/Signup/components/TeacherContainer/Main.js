@@ -60,6 +60,7 @@ const Container = ({
       school?.schoolId || institutionIds[0]
     )
     if (!result.userAuthenticated) {
+      // TODO: check and add/update lastUsedDistrictId logic
       const subscriptionTopic = `canvas:${userInfo.districtIds[0]}_${
         userInfo._id
       }_${userInfo.username || userInfo.email || ''}`

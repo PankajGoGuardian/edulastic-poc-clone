@@ -18,6 +18,7 @@ function* fetchAssignmentsByTestIdSaga({ payload }) {
   try {
     const assignments = yield call(assignmentApi.fetchByTestId, payload) || []
     const userRole = yield select(getUserRole)
+    // TODO: check and add/update lastUsedDistrictId logic
     const districtId = (yield select(getUserDetails)).districtIds[0]
     if (assignments.length > 0) {
       assignments.sort((a, b) => b.createdAt - a.createdAt)

@@ -319,6 +319,7 @@ const DropPlaylistModal = (props) => {
 
 export default connect(
   (state) => ({
+    // TODO: check and add/update lastUsedDistrictId logic
     districtId: state?.user?.user?.districtIds[0],
     dropPlaylistSource:
       state?.curriculumSequence?.dropPlaylistSource?.searchSource,

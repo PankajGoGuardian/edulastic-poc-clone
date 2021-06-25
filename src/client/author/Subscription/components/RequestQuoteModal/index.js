@@ -79,7 +79,7 @@ const RequestQuoteModal = ({
       setLicenseType(e.target.value)
       if (e.target.value === 'SCHOOL' && !schoolsInUserDistrict.length) {
         const result = await schoolApi.getSchools({
-          districtId: userDetails.districtIds[0],
+          districtId: userDetails.districtIds[0], // TODO: check and add/update lastUsedDistrictId logic
         })
         if (result?.data) {
           const schools = result.data.map((x) => {

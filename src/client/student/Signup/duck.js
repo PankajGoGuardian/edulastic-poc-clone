@@ -490,7 +490,7 @@ function* updateUserSignupStateSaga() {
     ) {
       const data = {
         email: user.email,
-        districtId: user.orgData.districtIds[0],
+        districtId: user.orgData.districtIds[0], // TODO: check and add/update lastUsedDistrictId logic
         currentSignUpState: 'DONE',
         institutionIds: user.orgData.institutionIds,
       }

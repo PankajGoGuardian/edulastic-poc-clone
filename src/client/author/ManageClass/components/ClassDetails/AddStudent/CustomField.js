@@ -173,5 +173,5 @@ CustomField.defaultProps = {
 // This component for author account so get first Id from districtIds
 export default connect((state) => ({
   students: get(state, 'manageClass.studentsList', []),
-  districtId: get(state, 'user.user.orgData.districtIds[0]', ''),
+  districtId: get(state, 'user.user.orgData.districtIds[0]', ''), // TODO: check and add/update lastUsedDistrictId logic
 }))(CustomField)

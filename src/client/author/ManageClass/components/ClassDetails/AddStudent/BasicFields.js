@@ -438,7 +438,7 @@ BasicFields.defaultProps = {
 
 export default connect((state) => ({
   students: get(state, 'manageClass.studentsList', []),
-  districtId: state.user.user.orgData.districtIds[0],
+  districtId: state.user.user.orgData.districtIds[0], // TODO: check and add/update lastUsedDistrictId logic
   classDetails: get(state, 'manageClass.entity', {}),
 }))(BasicFields)
 

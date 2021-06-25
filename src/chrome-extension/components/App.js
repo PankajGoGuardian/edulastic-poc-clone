@@ -27,6 +27,7 @@ const App = ({ authToken, updateUser, updateClassData }) => {
       ;(async () => {
         const user = await userApi.fetchUser()
         const { _id: classId } = user.orgData?.classList?.[0]
+        // TODO: check and add/update lastUsedDistrictId logic
         const districtId = user.districtIds[0]
 
         if (!classId) console.log('Could not derive classId...')

@@ -135,13 +135,16 @@ function* evaluateAnswers({ payload: groupId }) {
           }
 
     let evaluationObj = {}
-    let evaluations = {}
+    const evaluations = {}
     if (role !== roleuser.STUDENT) {
       evaluationObj = yield testItemsApi.evaluateAsStudent(testItemId, {
         answers: allAnswers,
         testId,
       })
-      evaluations = evaluationObj.evaluations
+      const { evaluations: _evaluations } = evaluationObj
+      Object.keys(_evaluations).forEach((item) => {
+        evaluations[`${testItemId}_${item}`] = _evaluations[item]
+      })
     } else {
       evaluationObj = yield call(testItemsApi.evaluation, testItemId, activity)
       const { evaluations: _evaluations } = evaluationObj

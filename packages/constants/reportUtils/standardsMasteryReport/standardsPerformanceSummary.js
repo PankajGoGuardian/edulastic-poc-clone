@@ -428,6 +428,8 @@ module.exports = {
   getMaxMasteryScore,
   getOverallMasteryScore,
   getParsedData,
+  getScore,
+  getOverallRawScore,
   // chart transformers
   getTicks,
   // table transformers

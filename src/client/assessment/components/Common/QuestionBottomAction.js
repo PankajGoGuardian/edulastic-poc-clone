@@ -558,6 +558,7 @@ const LeftWrapper = styled.div`
   width: 50%;
   display: flex;
   align-items: flex-end;
+  flex-wrap: wrap;
   & > * {
     margin-left: 20px;
   }

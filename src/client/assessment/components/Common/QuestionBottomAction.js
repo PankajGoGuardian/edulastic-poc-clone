@@ -337,7 +337,7 @@ const QuestionBottomAction = ({
       )}
       <BottomActionWrapper className={isStudentReport ? 'student-report' : ''}>
         <LeftWrapper>
-          {!hasDrawingResponse && hasShowStudentWork && (
+          {hasShowStudentWork && (
             <ShowUserWork onClick={onClickHandler} loading={loading} />
           )}
           {view === 'preview' &&

@@ -631,10 +631,10 @@ const StudentProfileReportFilters = ({
           )}
           {standardProficiencyRequired && (
             <StyledDropDownContainer
+              data-cy="standardProficiency"
               xs={24}
               sm={12}
               lg={topFilterColSpan}
-              data-cy="standardProficiency"
               isPageFilter
             >
               <ControlDropDown
@@ -657,10 +657,10 @@ const StudentProfileReportFilters = ({
           {standardFiltersRequired && (
             <>
               <StyledDropDownContainer
+                data-cy="domainId"
                 xs={24}
                 sm={12}
                 lg={topFilterColSpan}
-                data-cy="standardProficiency"
                 isPageFilter
               >
                 <ControlDropDown
@@ -675,10 +675,10 @@ const StudentProfileReportFilters = ({
                 />
               </StyledDropDownContainer>
               <StyledDropDownContainer
+                data-cy="standardId"
                 xs={24}
                 sm={12}
                 lg={topFilterColSpan}
-                data-cy="standardProficiency"
                 isPageFilter
               >
                 <ControlDropDown

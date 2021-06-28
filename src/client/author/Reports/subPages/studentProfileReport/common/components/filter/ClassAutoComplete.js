@@ -17,28 +17,26 @@ import {
   getClassListSelector,
 } from '../../../../../../Classes/ducks'
 
-const DEFAULT_SEARCH_TERMS = { text: '', selectedText: '', selectedKey: 'All' }
+const DEFAULT_SEARCH_TERMS = { text: '', selectedText: '', selectedKey: '' }
 
 const ClassAutoComplete = ({
   userDetails,
-  classList: classListRaw,
+  classList,
   loading,
   loadClassList,
-  termId,
+  courseIds,
   grades,
   subjects,
-  courseIds,
-  selectCB,
   selectedClassIds,
+  selectCB,
+  termId,
   dataCy,
   districtId,
   institutionIds,
 }) => {
-  const classFilterRef = useRef()
+  const classAutoCompleteRef = useRef()
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
-  const [searchResult, setSearchResult] = useState([])
-
-  const classList = useMemo(() => Object.values(classListRaw), [classListRaw])
+  const [defaultClassList, setDefaultClassList] = useState([])
 
   // build search query
   const query = useMemo(() => {
@@ -90,30 +88,26 @@ const ClassAutoComplete = ({
   const onBlur = () => {
     if (searchTerms.text === '' && searchTerms.selectedText !== '') {
       setSearchTerms(DEFAULT_SEARCH_TERMS)
+      selectCB({ key: '', title: '' })
     } else {
       setSearchTerms({ ...searchTerms, text: searchTerms.selectedText })
     }
   }
+
   const loadClassListDebounced = useCallback(
     debounce(loadClassList, 500, { trailing: true }),
     []
   )
   const getDefaultClassList = () => {
-    if (isEmpty(searchResult)) {
+    if (isEmpty(defaultClassList)) {
       loadClassListDebounced(query)
     }
   }
 
   // effects
   useEffect(() => {
-    if (selectedClassIds.length) {
-      const _search = { ...query.search, groupIds: selectedClassIds }
-      loadClassListDebounced({ ...query, search: _search })
-    }
-  }, [])
-  useEffect(() => {
-    if (isEmpty(searchResult) || !searchTerms.text) {
-      setSearchResult(classList)
+    if (isEmpty(defaultClassList)) {
+      setDefaultClassList(Object.values(classList))
     }
   }, [classList])
   useEffect(() => {
@@ -122,31 +116,30 @@ const ClassAutoComplete = ({
     }
   }, [searchTerms])
   useEffect(() => {
-    setSearchResult([])
-  }, [termId, grades, subjects, courseIds])
+    setSearchTerms(DEFAULT_SEARCH_TERMS)
+    setDefaultClassList([])
+  }, [courseIds, grades, subjects, termId])
 
   // build dropdown data
-  const dropdownData = (searchTerms.text ? classList : searchResult).map(
-    (item) => {
-      return {
-        key: item._id,
-        title: item._source.name,
-      }
-    }
-  )
+  const dropdownData = (searchTerms.text
+    ? Object.values(classList)
+    : defaultClassList
+  ).map((item) => ({
+    key: item._id,
+    title: item._source.name,
+  }))
 
   return (
     <MultiSelectSearch
-      label="Class"
       dataCy={dataCy}
-      placeholder="All Classes"
-      el={classFilterRef}
+      label="Class"
+      el={classAutoCompleteRef}
       onChange={onChange}
       onSearch={onSearch}
       onBlur={onBlur}
       onFocus={getDefaultClassList}
       value={selectedClassIds}
-      options={!loading ? dropdownData : []}
+      options={dropdownData}
       loading={loading}
     />
   )

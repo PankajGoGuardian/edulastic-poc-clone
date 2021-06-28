@@ -514,21 +514,12 @@ export const getItemDeletingSelector = createSelector(
 
 export const getItemDetailDimensionTypeSelector = createSelector(
   getItemDetailSelector,
-  getPassageSelector,
-  (state, passage) => {
+  (state) => {
     if (!state || !state.rows) return ''
-    let left = '',
-      right = ''
-    // For passage item left is passage and right is item | EV-28080
-    if (state.passageId) {
-      right = state.rows[0].dimension.trim().slice(0, -1)
-      left = (passage?.structure?.dimension || '').trim().slice(0, -1)
-    } else {
-      left = state.rows[0].dimension.trim().slice(0, -1)
-      right = state.rows[1]
-        ? state.rows[1].dimension.trim().slice(0, -1)
-        : '100'
-    }
+    const left = state.rows[0].dimension.trim().slice(0, -1)
+    const right = state.rows[1]
+      ? state.rows[1].dimension.trim().slice(0, -1)
+      : '100'
     return `${left}-${right}`
   }
 )
@@ -606,21 +597,17 @@ const deleteWidget = (state, { rowIndex, widgetIndex }) =>
   })
 
 const updateDimension = (state, { left, right, ...rest }) => {
-  const { item = {}, passage: { structure = {} } = {} } = state
-  const { rows = [] } = item
-  if (rows.length > 0) {
+  const {
+    item: { rows = [] },
+  } = state
+  if (rows.length > 0 && rows[0].dimension === left) {
     /**
      * fixing page crash here when same option is clicked
      * separate bug is to be logged for fixing page crash
      * will ideally prevent in from the action being called in that
      */
-    // For passage item left is passage and right is item | EV-28080
-    const _dimension = item.passageId
-      ? structure.dimension || ''
-      : rows[0].dimension
-    if (_dimension === left) {
-      return state
-    }
+
+    return state
   }
 
   /**
@@ -645,9 +632,6 @@ const updateDimension = (state, { left, right, ...rest }) => {
         ]
       }
       newState.item.rows.length = 1
-      if (newState.item.passageId && newState?.passage?.structure) {
-        newState.passage.structure.dimension = left
-      }
     } else {
       // if its a pasage type. left is passage and right is the testItem
       if (newState.item.passageId) {

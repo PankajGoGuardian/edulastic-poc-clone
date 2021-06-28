@@ -91,10 +91,9 @@ function* evaluateTestItemSaga({ payload }) {
     const answersByQids = answersByQId(answers, testItem._id)
 
     const test = yield select((state) => get(state, 'tests.entity', {}))
-
     const res = yield testItemsApi.evaluateAsStudent(testItem._id, {
       answers: answersByQids,
-      testId: test._id,
+      testId: test._id || payload.testId,
     })
     const { score, maxScore, evaluations } = res
     const previewUserWork = yield select(

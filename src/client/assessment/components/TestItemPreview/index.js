@@ -108,7 +108,7 @@ class TestItemPreview extends Component {
         break
       case isStudentAttempt && !itemLevelScoring:
         shouldShowFeedback = true
-        shouldTakeDimensionsFromStore = true
+        shouldTakeDimensionsFromStore = false
         break
 
       case isDocBased || stackedView:
@@ -184,7 +184,7 @@ class TestItemPreview extends Component {
       (qa) => qa.qid === question.id
     )
     const testActivityId = question?.activity?.testActivityId
-    return displayFeedback && showFeedback ? (
+    return displayFeedback ? (
       <FeedbackWrapper
         showFeedback={showFeedback}
         displayFeedback={displayFeedback}

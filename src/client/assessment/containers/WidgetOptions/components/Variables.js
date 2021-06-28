@@ -417,7 +417,7 @@ const Variables = ({
   }
 
   useEffect(() => {
-    if (variableEnabled) {
+    if (variableEnabled && !examples.length) {
       generate()
     }
   }, [variableEnabled])

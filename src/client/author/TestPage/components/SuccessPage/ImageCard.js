@@ -71,6 +71,7 @@ const ImageCard = ({
   return (
     <Container
       data-cy={_id}
+      className={`testCard${_id}`}
       src={thumbnail}
       onClick={() => {}}
       title={
@@ -92,6 +93,7 @@ const ImageCard = ({
             key="standards"
             isStandards
             margin="0px"
+            testId={_id}
           />
           {isPlaylist && <Tags show={2} tags={tags} key="tags" />}
         </TagsWrapper>

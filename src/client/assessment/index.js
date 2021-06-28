@@ -189,6 +189,7 @@ const AssessmentPlayer = ({
         isStudentReport={isStudentReport}
         passages={passages}
         studentReportModal={studentReportModal}
+        testId={testId}
         isShowStudentWork={isShowStudentWork}
         {...restProps}
       />

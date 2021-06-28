@@ -38,12 +38,8 @@ const columns = [
         </Row>
       )
     },
-    sorter: (a, b) => {
-      if (a.standards.length !== b.standards.length) {
-        return a.standards.length - b.standards.length
-      }
-      return a.name.localeCompare(b.name, undefined, { numeric: true })
-    },
+    sorter: (a, b) =>
+      a.name.localeCompare(b.name, undefined, { numeric: true }),
   },
   {
     title: 'Domain Description',

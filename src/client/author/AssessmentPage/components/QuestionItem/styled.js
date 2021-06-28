@@ -43,8 +43,9 @@ export const QuestionNumber = styled.span`
   font-size: ${({ zoom = 1, pdfPreview }) => (pdfPreview ? 16 : 18) * zoom}px;
   font-weight: bold;
   color: ${({ dragging }) => (dragging ? '#aaafb8' : 'white')};
-  background: ${({ dragging }) => (dragging ? 'transparent' : '#aaafb8')};
-  border: 2px ${({ dragging }) => (dragging ? 'dashed' : 'solid')} #aaafb8;
+  background: ${({ dragging }) => (dragging ? 'transparent' : greyThemeDark4)};
+  border: 2px ${({ dragging }) => (dragging ? 'dashed' : 'solid')}
+    ${greyThemeDark4};
   border-radius: 4px;
   width: ${({ zoom = 1, pdfPreview }) => (pdfPreview ? 25 : 32) * zoom}px;
   height: ${({ zoom = 1, pdfPreview }) => (pdfPreview ? 25 : 32) * zoom}px;
@@ -183,4 +184,9 @@ export const DetailAlternateContainer = styled.div`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+`
+export const TitleWrapper = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
 `

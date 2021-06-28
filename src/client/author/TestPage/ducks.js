@@ -796,6 +796,7 @@ export const getUserListSelector = createSelector(stateSelector, (state) => {
         }
         if (sharedType === 'LINK') {
           shareData.v1LinkShareEnabled = v1LinkShareEnabled
+          shareData.userName = 'Anyone with link'
         }
         flattenUsers.push(shareData)
       }

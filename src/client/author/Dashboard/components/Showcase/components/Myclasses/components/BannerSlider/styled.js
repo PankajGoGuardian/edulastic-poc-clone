@@ -37,10 +37,8 @@ export const SliderContainer = styled.div`
     }
   }
 `
-
 export const ScrollbarContainer = styled.div`
   white-space: nowrap;
-  margin-bottom: 20px;
   transition: 0.2s;
   &.scrollbar-container {
     width: calc(100vw - 130px);

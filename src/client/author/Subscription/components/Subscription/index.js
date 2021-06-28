@@ -432,6 +432,7 @@ const Subscription = (props) => {
             subEndDate={subEndDate}
             isPremiumUser={isPremiumUser}
             signUpFlowModalHandler={signUpFlowModalHandler}
+            user={user}
           />
         ) : (
           <SubscriptionMain

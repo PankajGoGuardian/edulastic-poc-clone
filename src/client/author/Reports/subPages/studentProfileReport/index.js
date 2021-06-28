@@ -121,7 +121,14 @@ const StudentProfileReportContainer = (props) => {
 
   const onGoClick = (_settings) => {
     const _requestFilters = {}
-    Object.keys(_settings.filters).forEach((filterType) => {
+    const requestParams = [
+      'termId',
+      'standardsProficiencyProfileId',
+      'reportId',
+      'performanceBandProfileId',
+      'assignedBy',
+    ]
+    requestParams.forEach((filterType) => {
       _requestFilters[filterType] =
         _settings.filters[filterType] === 'All'
           ? ''
@@ -133,8 +140,8 @@ const StudentProfileReportContainer = (props) => {
         profileId: _requestFilters.standardsProficiencyProfileId,
       },
       standardFilters: {
-        domainIds: _requestFilters.domainId,
-        standardIds: _requestFilters.standardId,
+        domainIds: _settings.filters.domainId,
+        standardIds: _settings.filters.standardId,
       },
       selectedStudent: _settings.selectedStudent,
     })

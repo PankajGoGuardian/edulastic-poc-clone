@@ -143,6 +143,7 @@ function LCBAssignmentSettings({
                 forClassLevel
                 status={status}
                 passwordPolicy={assignment?.passwordPolicy}
+                closePolicy={assignment?.closePolicy}
               />
               <StyledRow gutter={16}>
                 <Col span={12}>

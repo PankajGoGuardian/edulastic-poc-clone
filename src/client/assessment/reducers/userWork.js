@@ -26,13 +26,14 @@ const userWork = (state = initialState, { type, payload }) => {
       return {
         ...state,
         ...payload,
-      }  
-    case REQUEST_SCRATCH_PAD_SUCCESS:
+      }
+    case REQUEST_SCRATCH_PAD_SUCCESS: {
       const { scratchPad, testItemId } = payload
       return {
         ...state,
         [testItemId]: scratchPad,
       }
+    }
     case CLEAR_USER_WORK:
       return initialState
     default:

@@ -55,6 +55,7 @@ const AssessmentPlayer = ({
   title,
   testType,
   isModalVisible,
+  isShowStudentWork,
   ...restProps
 }) => {
   testId = preview ? testId : match.params.id
@@ -71,6 +72,7 @@ const AssessmentPlayer = ({
       test,
       groupId: groupId || currentAssignmentClass,
       isStudentReport,
+      isShowStudentWork,
       playlistId,
       currentAssignmentId,
     })
@@ -188,6 +190,7 @@ const AssessmentPlayer = ({
         passages={passages}
         studentReportModal={studentReportModal}
         testId={testId}
+        isShowStudentWork={isShowStudentWork}
         {...restProps}
       />
     )

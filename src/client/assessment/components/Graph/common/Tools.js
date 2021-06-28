@@ -55,6 +55,7 @@ const allTools = [
   CONSTANT.TOOLS.HYPERBOLA,
   CONSTANT.TOOLS.POLYNOM,
   CONSTANT.TOOLS.EXPONENT,
+  CONSTANT.TOOLS.EXPONENT_DRAGGABLE,
   CONSTANT.TOOLS.LOGARITHM,
   CONSTANT.TOOLS.SIN,
   CONSTANT.TOOLS.COS,
@@ -95,6 +96,9 @@ const iconsByToolName = {
   ),
   [CONSTANT.TOOLS.EXPONENT]: (
     <IconExponent width={37} height={21} data-cy="exponent" />
+  ),
+  [CONSTANT.TOOLS.EXPONENT_DRAGGABLE]: (
+    <IconExponent width={37} height={21} data-cy="exp_draggable" />
   ),
   [CONSTANT.TOOLS.LOGARITHM]: (
     <IconLogarithm width={37} height={21} data-cy="logarithm" />

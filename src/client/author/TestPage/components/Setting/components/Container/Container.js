@@ -18,9 +18,12 @@ import {
   SelectInputStyled,
   TextInputStyled,
   withWindowSizes,
+  EduButton,
 } from '@edulastic/common'
 import { roleuser, test as testContants } from '@edulastic/constants'
 import { IconInfo } from '@edulastic/icons'
+import { withNamespaces } from '@edulastic/localization'
+
 import { isFeatureAccessible } from '../../../../../../features/components/FeaturesSwitch'
 import {
   getUserFeatures,
@@ -68,6 +71,7 @@ import {
 } from '../../../../../AssignTest/components/SimpleOptions/styled'
 import KeypadDropdown from './KeypadDropdown'
 import { getAssignmentsSelector } from '../../../Assign/ducks'
+import { ConfirmationModal } from '../../../../../src/components/common/ConfirmationModal'
 
 const {
   settingCategories,
@@ -125,6 +129,8 @@ class Setting extends Component {
       isTestBehaviorGroupExpanded: true,
       isAntiCheatingGroupExpanded: true,
       isMiscellaneousGroupExpanded: true,
+      warningKeypadSelection: false,
+      selectedKeypad: null,
     }
 
     this.containerRef = React.createRef()
@@ -181,6 +187,25 @@ class Setting extends Component {
   setPassword = (e) => {
     const { setSafePassword } = this.props
     setSafePassword(e.target.value)
+  }
+
+  keypadSelection = (value) => {
+    if (!value) {
+      return
+    }
+    if (value.type === 'item-level') {
+      this.updateTestData('keypad')(value)
+    } else {
+      this.setState({ selectedKeypad: value, warningKeypadSelection: true })
+    }
+  }
+
+  confirmKeypadSelection = (confirm = false) => {
+    const { selectedKeypad } = this.state
+    if (confirm === true && selectedKeypad && selectedKeypad.type) {
+      this.updateTestData('keypad')(selectedKeypad)
+    }
+    this.setState({ warningKeypadSelection: false })
   }
 
   handleApplyEBSR = (event) => {
@@ -383,6 +408,7 @@ class Setting extends Component {
       isTestBehaviorGroupExpanded,
       isAntiCheatingGroupExpanded,
       isMiscellaneousGroupExpanded,
+      warningKeypadSelection,
     } = this.state
     const {
       current,
@@ -406,6 +432,7 @@ class Setting extends Component {
       isCurator,
       isPlaylist,
       isEtsDistrict,
+      t,
     } = this.props
     const {
       isDocBased,
@@ -1856,11 +1883,39 @@ class Setting extends Component {
                         <Col span={12}>
                           <KeypadDropdown
                             value={this.keypadDropdownValue}
-                            onChangeHandler={this.updateTestData('keypad')}
+                            onChangeHandler={this.keypadSelection}
                             disabled={!owner || !isEditable || !premium}
                           />
                         </Col>
                         <Col span={24}>
+                          <ConfirmationModal
+                            centered
+                            visible={warningKeypadSelection}
+                            footer={[
+                              <EduButton
+                                isGhost
+                                onClick={() =>
+                                  this.confirmKeypadSelection(false)
+                                }
+                              >
+                                CANCEL
+                              </EduButton>,
+                              <EduButton
+                                onClick={() =>
+                                  this.confirmKeypadSelection(true)
+                                }
+                              >
+                                PROCEED
+                              </EduButton>,
+                            ]}
+                            textAlign="center"
+                            onCancel={() => () =>
+                              this.confirmKeypadSelection(false)}
+                          >
+                            <p>
+                              <b>{t('keypadSettings.warning')}</b>
+                            </p>
+                          </ConfirmationModal>
                           <Description>
                             Select keypad to apply current selection to all
                             questions in the test
@@ -1927,6 +1982,7 @@ const enhance = compose(
   memo,
   withRouter,
   withWindowSizes,
+  withNamespaces('author'),
   connect(
     (state) => ({
       entity: getTestEntitySelector(state),

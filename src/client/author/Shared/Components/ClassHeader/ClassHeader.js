@@ -25,7 +25,7 @@ import {
 import { withNamespaces } from '@edulastic/localization'
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Dropdown } from 'antd'
+import { Dropdown, Tooltip } from 'antd'
 import { get } from 'lodash'
 import moment from 'moment'
 import PropTypes from 'prop-types'
@@ -106,7 +106,11 @@ import {
 import ViewPasswordModal from './ViewPasswordModal'
 import { allowedSettingPageToDisplay } from './utils/transformers'
 
-const { POLICY_OPEN_MANUALLY_BY_TEACHER } = assignmentPolicyOptions
+const {
+  POLICY_OPEN_MANUALLY_BY_TEACHER,
+  POLICY_CLOSE_MANUALLY_BY_ADMIN,
+  POLICY_CLOSE_MANUALLY_IN_CLASS,
+} = assignmentPolicyOptions
 const {
   gradingStatus,
   authorAssignmentConstants: { assignmentStatus: assignmentStatusConstants },
@@ -598,6 +602,7 @@ class ClassHeader extends Component {
         {showSyncGradesWithCanvasOption &&
           assignmentStatusForDisplay !== 'NOT OPEN' && (
             <MenuItems
+              data-cy="shareOnCanvas"
               key="key6"
               onClick={() =>
                 canvasSyncAssignment({ assignmentId, groupId: classId })
@@ -609,6 +614,7 @@ class ClassHeader extends Component {
         {showSyncGradesWithCanvasOption &&
           assignmentStatusForDisplay !== 'NOT OPEN' && (
             <MenuItems
+              data-cy="canvasGradeSync"
               key="key7"
               onClick={() =>
                 canvasSyncGrades({ assignmentId, groupId: classId })
@@ -715,6 +721,17 @@ class ClassHeader extends Component {
         ))}
       </ClassDropMenu>
     )
+
+    let closeDateTooltipText = `This test is set to be closed automatically on ${moment(
+      dueOnDate
+    ).format('MMM DD, YYYY')}`
+
+    if (additionalData.closePolicy === POLICY_CLOSE_MANUALLY_BY_ADMIN) {
+      closeDateTooltipText = 'This test is set to be closed manually by admin'
+    } else if (additionalData.closePolicy === POLICY_CLOSE_MANUALLY_IN_CLASS) {
+      closeDateTooltipText = 'This test is set to be closed manually by teacher'
+    }
+
     return (
       <MainHeader hideSideMenu={isCliUser}>
         <TitleWrapper titleMinWidth="unset" titleMaxWidth="22rem">
@@ -753,11 +770,15 @@ class ClassHeader extends Component {
                 {isPaused && assignmentStatusForDisplay !== 'DONE'
                   ? ' (PAUSED)'
                   : ''}
-                <div>
-                  {!!(dueDate || endDate) &&
-                    !isCliUser &&
-                    `(Due on ${moment(dueOnDate).format('MMM DD, YYYY')})`}
-                </div>
+                {!isCliUser && (
+                  <Tooltip placement="bottom" title={closeDateTooltipText}>
+                    <div>
+                      {dueDate || endDate
+                        ? `(Due on ${moment(dueOnDate).format('MMM DD, YYYY')})`
+                        : '(Close Manually)'}
+                    </div>
+                  </Tooltip>
+                )}
               </StyledParaSecond>
             </div>
           )}

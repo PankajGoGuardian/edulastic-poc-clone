@@ -10,6 +10,7 @@ import {
   numBtnColors,
   white,
 } from '@edulastic/colors'
+import { EduButton } from '@edulastic/common'
 import { ConfirmationModal } from '../../../src/components/common/ConfirmationModal'
 
 const DeleteAccountModal = ({ visible, toggleModal, form, deleteProfile }) => {
@@ -29,12 +30,12 @@ const DeleteAccountModal = ({ visible, toggleModal, form, deleteProfile }) => {
   }
 
   const Footer = [
-    <Button ghost onClick={() => toggleModal('DELETE_ACCOUNT', false)}>
+    <EduButton isBlue onClick={() => toggleModal('DELETE_ACCOUNT', false)}>
       NO, CANCEL
-    </Button>,
-    <YesButton disabled={disableButton} onClick={handleResponse}>
+    </EduButton>,
+    <EduButton disabled={disableButton} onClick={handleResponse}>
       YES, DELETE
-    </YesButton>,
+    </EduButton>,
   ]
 
   const Title = [<Heading>Delete My Account</Heading>]
@@ -53,7 +54,6 @@ const DeleteAccountModal = ({ visible, toggleModal, form, deleteProfile }) => {
     <ConfirmationModal
       title={Title}
       centered
-      textAlign="left"
       visible={visible}
       footer={Footer}
       textAlign="center"

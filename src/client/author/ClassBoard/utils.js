@@ -64,15 +64,20 @@ const items = [
  */
 export const createFakeData = (count) => {
   const students = []
+  const offenceStudentNames = ['blue ball', 'yellow snow']
   let i = 0
-  while (i < count) {
+  while (students.length < count) {
     const index = i % 10
-    students.push({
-      fakeFirstName: colors[index],
-      fakeLastName: items[index].name,
-      icon: items[index].icon,
-    })
-
+    const fakeFirstName = colors[index]
+    const fakeLastName = items[index].name
+    const icon = items[index].icon
+    if (!offenceStudentNames.includes(`${fakeFirstName} ${fakeLastName}`)) {
+      students.push({
+        fakeFirstName,
+        fakeLastName,
+        icon,
+      })
+    }
     i++
     if (i % 10 === 0) {
       colors = [...colors.slice(1), colors[0]]

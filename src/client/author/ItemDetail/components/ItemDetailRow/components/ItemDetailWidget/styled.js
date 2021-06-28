@@ -30,7 +30,7 @@ export const ButtonsContainer = styled.div`
   flex: 1;
   position: absolute;
   right: 20px;
-  top: 50%;
+  top: 55%;
   width: 32px;
   display: flex;
   flex-direction: column;
@@ -69,7 +69,7 @@ export const PointsInputWrapper = styled.div`
   align-items: center;
   position: absolute;
   right: 0px;
-  top: ${({ itemLevelScoring }) => (itemLevelScoring ? '-80px' : '-40px')};
+  top: -40px;
 
   .ant-input-number-disabled {
     background-color: ${greyLight1};
@@ -82,4 +82,12 @@ export const PointsInputWrapper = styled.div`
 export const ItemLevelScoringDesc = styled.p`
   padding: 12px;
   max-width: 350px;
+`
+export const TotalPointsWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  position: absolute;
+  right: 0px;
+  top: -20px;
+  right: 20px;
 `

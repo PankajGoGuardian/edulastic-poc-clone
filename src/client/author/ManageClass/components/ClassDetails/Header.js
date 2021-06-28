@@ -336,7 +336,12 @@ const Header = ({
                 />
               ))}
             {showCanvasSyncButton && (
-              <EduButton isBlue isGhost onClick={handleSyncWithCanvas}>
+              <EduButton
+                data-cy="syncCanvasClass"
+                isBlue
+                isGhost
+                onClick={handleSyncWithCanvas}
+              >
                 <img
                   alt="Canvas"
                   src="https://cdn.edulastic.com/JS/webresources/images/as/canvas.png"

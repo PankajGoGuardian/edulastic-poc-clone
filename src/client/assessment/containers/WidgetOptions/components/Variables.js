@@ -491,7 +491,11 @@ const Variables = ({
             const isNumberSquence = variable.type === 'NUMBER_SEQUENCE'
             const isTextSquence = variable.type === 'TEXT_SEQUENCE'
             return (
-              <Row key={`variable${index}`} gutter={4}>
+              <Row
+                key={`variable${index}`}
+                gutter={4}
+                data-cy={`variable${index}`}
+              >
                 <Col md={2}>
                   <Label style={{ textTransform: 'none' }}>
                     {variableName}
@@ -707,6 +711,7 @@ const Variables = ({
                 onClick={generate}
                 type="button"
                 style={{ float: 'right' }}
+                data-cy="generate"
               >
                 Generate
               </CustomStyleBtn>

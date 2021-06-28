@@ -50,6 +50,7 @@ import { Subtitle } from '../../../styled/Subtitle'
 import Question from '../../../components/Question'
 import { CheckboxLabel } from '../../../styled/CheckboxWithLabel'
 import { SelectInputStyled, TextInputStyled } from '../../../styled/InputStyles'
+import { StyledToggleLink, StyledResourceLink } from '../styled/StyledLink'
 
 const { defaultNumberPad } = math
 
@@ -262,6 +263,11 @@ const Variables = ({
   item = {},
 }) => {
   const [invalidSeqMsg, setInvalidSeqMsg] = useState('')
+  const [
+    showDynamicParameterDetails,
+    setShowDynamicParameterDetails,
+  ] = useState(false)
+  const [showVideoModal, setShowVideoModal] = useState(false)
   const mathFieldRef = useRef()
 
   const variableEnabled = get(questionData, 'variable.enabled', false)
@@ -440,7 +446,53 @@ const Variables = ({
       <Row gutter={24}>
         <Col md={24}>
           <DynamicText>
-            {t('component.options.dynamicParametersDescription')}
+            <StyledToggleLink
+              onClick={() =>
+                setShowDynamicParameterDetails(!showDynamicParameterDetails)
+              }
+            >
+              {t('component.options.generateRandomVariables')}
+            </StyledToggleLink>
+            {showDynamicParameterDetails && (
+              <>
+                <StyledResourceLink onClick={() => setShowVideoModal(true)}>
+                  {t('component.options.videoReference')}
+                </StyledResourceLink>
+                <span>
+                  {t('component.options.dynamicParametersDescription')}
+                </span>
+                <br />
+                <br />
+                <StyledResourceLink
+                  onClick={() =>
+                    window.open(
+                      'https://edulastic.com/help-center/questions-with-dynamic-content-602',
+                      '_blank'
+                    )
+                  }
+                >
+                  <span>{t('component.options.externalPageReference')}</span>
+                </StyledResourceLink>
+                <CustomModalStyled
+                  title="Dynamic Parameters"
+                  visible={showVideoModal}
+                  onCancel={() => setShowVideoModal(false)}
+                  footer={null}
+                  destroyOnClose
+                  width="768px"
+                  centered
+                >
+                  <iframe
+                    title="Dynamic Parameters"
+                    src="https://www.youtube.com/embed/mvVjnpWAqKM?autoplay=1"
+                    frameBorder="0"
+                    allowFullScreen
+                    width="100%"
+                    height="400"
+                  />
+                </CustomModalStyled>
+              </>
+            )}
           </DynamicText>
         </Col>
       </Row>

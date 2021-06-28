@@ -340,18 +340,20 @@ const QuestionBottomAction = ({
           {!hasDrawingResponse && hasShowStudentWork && (
             <ShowUserWork onClick={onClickHandler} loading={loading} />
           )}
-          {view === 'preview' && !isPrintPreview && (
-            <Hints
-              question={data}
-              enableMagnifier={enableMagnifier}
-              saveHintUsage={saveHintUsage}
-              isStudent={isStudent}
-              itemIndex={itemIndex}
-              isLCBView={isLCBView}
-              isExpressGrader={isExpressGrader}
-              isStudentReport={isStudentReport}
-            />
-          )}
+          {view === 'preview' &&
+            (isLCBView || isExpressGrader) &&
+            !isPrintPreview && (
+              <Hints
+                question={data}
+                enableMagnifier={enableMagnifier}
+                saveHintUsage={saveHintUsage}
+                isStudent={isStudent}
+                itemIndex={itemIndex}
+                isLCBView={isLCBView}
+                isExpressGrader={isExpressGrader}
+                isStudentReport={isStudentReport}
+              />
+            )}
           {isSolutionVisible && (
             <EduButton
               width="110px"
@@ -529,9 +531,6 @@ export const BottomActionWrapper = styled.div`
   margin: ${({ margin }) => margin || '24px 0px 0px'};
 
   &.student-report {
-    position: absolute;
-    top: 25px;
-    right: 0px;
     background: #f3f3f3;
     padding: 10px 15px;
     border-radius: 10px;

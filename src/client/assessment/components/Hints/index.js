@@ -50,10 +50,10 @@ const Hints = ({
     e.stopPropagation()
     if (isLCBView || isExpressGrader) {
       updateShowCount(hintCount)
-      setToggleHints(!toggleHints)
     } else {
       updateShowCount(1)
     }
+    setToggleHints(!toggleHints)
   }
 
   const showMoreHints = (e) => {
@@ -121,57 +121,59 @@ const Hints = ({
     <>
       {!isStudentReport && hintCount > 0 && (
         <HintsContainer toggleHints={toggleHints}>
-          <ShowHint
-            height="30px"
-            isGhost
-            onClick={showHintHandler}
-            isStudent={isStudent}
-            tabIndex="-1"
+          <HintCont
+            data-cy="hint-container"
+            className="hint-container"
+            ref={hintContRef}
           >
-            {toggleHints ? 'Show' : 'Hide'} Hint
-          </ShowHint>
-          {!!showCount && !toggleHints && (
-            <HintCont
-              data-cy="hint-container"
-              className="hint-container"
-              ref={hintContRef}
+            <ShowHint
+              height="30px"
+              isGhost
+              onClick={showHintHandler}
+              isStudent={isStudent}
+              tabIndex="-1"
             >
-              <QuestionLabel>Hint(s)</QuestionLabel>
-              {validHints.map(
-                ({ value, label }, index) =>
-                  index + 1 <= showCount && (
-                    <HintItem data-cy="hint-subcontainer" key={value}>
-                      <LabelWrapper>
-                        <HintLabel>
-                          <Label data-cy="hint-count" marginBottom="0px">
-                            {`${index + 1}/${hintCount}`}
-                          </Label>
-                        </HintLabel>
-                      </LabelWrapper>
+              {toggleHints ? 'Show' : 'Hide'} Hint
+            </ShowHint>
+            {!!showCount && !toggleHints && (
+              <>
+                <QuestionLabel>Hint(s)</QuestionLabel>
+                {validHints.map(
+                  ({ value, label }, index) =>
+                    index + 1 <= showCount && (
+                      <HintItem data-cy="hint-subcontainer" key={value}>
+                        <LabelWrapper>
+                          <HintLabel>
+                            <Label data-cy="hint-count" marginBottom="0px">
+                              {`${index + 1}/${hintCount}`}
+                            </Label>
+                          </HintLabel>
+                        </LabelWrapper>
 
-                      <div style={{ width: '100%' }}>
-                        {/* stretch to full width of the container, otherwise videos and other embeds wont have width */}
-                        {/* https://snapwiz.atlassian.net/browse/EV-13446 */}
-                        <HintContent>
-                          <MathFormulaDisplay
-                            fontSize={fontSize}
-                            dangerouslySetInnerHTML={{ __html: label }}
-                          />
-                        </HintContent>
-                        {index + 1 === showCount && showCount < hintCount && (
-                          <ShowMoreHint
-                            data-cy="more-hint"
-                            onClick={showMoreHints}
-                          >
-                            + Get Another Hint {`${index + 1}/${hintCount}`}
-                          </ShowMoreHint>
-                        )}
-                      </div>
-                    </HintItem>
-                  )
-              )}
-            </HintCont>
-          )}
+                        <div style={{ width: '100%' }}>
+                          {/* stretch to full width of the container, otherwise videos and other embeds wont have width */}
+                          {/* https://snapwiz.atlassian.net/browse/EV-13446 */}
+                          <HintContent>
+                            <MathFormulaDisplay
+                              fontSize={fontSize}
+                              dangerouslySetInnerHTML={{ __html: label }}
+                            />
+                          </HintContent>
+                          {index + 1 === showCount && showCount < hintCount && (
+                            <ShowMoreHint
+                              data-cy="more-hint"
+                              onClick={showMoreHints}
+                            >
+                              + Get Another Hint {`${index + 1}/${hintCount}`}
+                            </ShowMoreHint>
+                          )}
+                        </div>
+                      </HintItem>
+                    )
+                )}
+              </>
+            )}
+          </HintCont>
         </HintsContainer>
       )}
 
@@ -301,5 +303,4 @@ const QuestionLabel = styled.div`
 `
 const HintsContainer = styled.div`
   min-width: ${(props) => (props.toggleHints ? 'auto' : '100%')};
-  padding: ${(props) => (props.toggleHints ? '0px' : '10px 0px')};
 `

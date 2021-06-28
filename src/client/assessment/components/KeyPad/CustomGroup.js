@@ -20,14 +20,14 @@ const CustomGroup = ({ onChange, value, customKeys, buttonStyle, t }) => {
       { value: '', label: t('component.options.empty') },
     ].concat(customKeys.map((key) => ({ value: key, label: key })))
 
-    const { TAB_BUTTONS, KEYBOARD_BUTTONS } = MathKeyboard
+    const { TAB_BUTTONS, KEYBOARD_BUTTONS, NUMBER_PAD_ITEMS } = MathKeyboard
 
     const tabBtns = TAB_BUTTONS.reduce(
       (acc, curr) => [...acc, ...curr.buttons],
       []
     )
     const allKeyButtons = uniqBy(
-      KEYBOARD_BUTTONS.concat(tabBtns),
+      NUMBER_PAD_ITEMS.concat(KEYBOARD_BUTTONS).concat(tabBtns),
       (btn) => btn.handler
     )
 

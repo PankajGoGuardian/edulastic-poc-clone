@@ -90,7 +90,12 @@ const Author = lazy(() =>
 const Publisher = lazy(() =>
   import(/* webpackChunkName: "author" */ './publisher/app')
 )
-const Admin = lazy(() => import(/* webpackChunkName: "admin" */ './admin/app'))
+const Admin = lazy(() =>
+  import(/* webpackChunkName: "admloadablein" */ './admin/app')
+)
+const ScanScore = lazy(() =>
+  import(/* webpackChunkName: "scanScore" */ './scanScore/app')
+)
 const RedirectToTest = lazy(() =>
   import(/* webpackChunkName: "RedirecToTest" */ './author/RedirectToTest')
 )
@@ -604,6 +609,11 @@ class App extends Component {
               <PrivateRoute
                 path="/admin"
                 component={Admin}
+                redirectPath={redirectRoute}
+              />
+              <PrivateRoute
+                path="/scanScore"
+                component={ScanScore}
                 redirectPath={redirectRoute}
               />
               <Route exact path="/kid" component={Kid} />

@@ -13,9 +13,6 @@ import {
   white,
   smallDesktopWidth,
   mediumDesktopExactWidth,
-  lightGreen10,
-  tagsBgColor,
-  tagTextColor,
 } from '@edulastic/colors'
 import { Button, Col, DatePicker, Input, Radio, Row, Select, Table } from 'antd'
 import styled from 'styled-components'
@@ -527,74 +524,4 @@ export const StyledSpan = styled.span`
 export const AssignModuleContentSpan = styled.span`
   display: block;
   margin-top: 8px;
-`
-export const AddResourcesLink = styled.div`
-  font-size: 11px;
-  color: ${lightGreen10};
-  text-transform: uppercase;
-  font-weight: 600;
-  letter-spacing: 0.3px;
-  cursor: pointer;
-`
-export const ResourceTags = styled.ul`
-  list-style: none;
-  margin: 0px;
-  padding: 10px 0px 0px;
-  display: flex;
-  flex-wrap: wrap;
-  li {
-    background-color: ${tagsBgColor};
-    color: ${tagTextColor};
-    border: none;
-    font-weight: 600;
-    font-size: 9px;
-    padding: 4px 5px 3px 10px;
-    margin: 2px;
-    white-space: normal;
-    text-transform: uppercase;
-    border-radius: 3px;
-  }
-`
-export const CloseIconWrapper = styled.span`
-  cursor: pointer;
-  svg {
-    fill: ${tagTextColor} !important;
-    margin-left: 10px !important;
-    width: 8px;
-    height: 8px;
-  }
-`
-export const ResourceCardContainer = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-`
-
-export const CardBox = styled.div`
-  width: calc((100% - 30px) / 4);
-  margin: 0px 7px 10px 0px;
-  display: flex;
-  flex-direction: column;
-  border: 1px solid #dddddd;
-  border-radius: 4px;
-  overflow: hidden;
-`
-
-export const CardImage = styled.div`
-  background: linear-gradient(to bottom, #00b4db, #0083b0);
-  height: 80px;
-  width: 100%;
-`
-
-export const RowOne = styled.div`
-  display: flex;
-  justify-content: space-between;
-  padding: 8px 10px;
-  font-size: 12px;
-  font-weight: 600;
-  color: ${themeColor};
-`
-export const PaginationContainer = styled.div`
-  flex-basis: 100%;
-  padding: 20px 0px 10px;
-  text-align: center;
 `

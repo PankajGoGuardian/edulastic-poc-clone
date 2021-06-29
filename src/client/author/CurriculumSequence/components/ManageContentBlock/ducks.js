@@ -90,9 +90,6 @@ const slice = createSlice({
     fetchResources: (state) => {
       state.isLoading = true
     },
-    addRecommendedResourcesAction: (state) => {
-      state.isLoading = true
-    },
     fetchTestsSuccess: (state, { payload }) => {
       state.isLoading = false
       if (state.loadedPage === 0) {
@@ -305,19 +302,6 @@ function* addResourceSaga({ payload }) {
   }
 }
 
-function* getResourcesSaga(payload) {
-  try {
-    const result = yield call(resourcesApi.addRecommendedResources, payload)
-    if (!result) {
-      notification({ msg: result.error })
-    } else {
-      notification({ msg: result.success })
-    }
-  } catch (e) {
-    console.error('Error Occured: searchResourceSaga ', e)
-  }
-}
-
 function* searchResourceSaga() {
   try {
     const {
@@ -369,9 +353,5 @@ export function* watcherSaga() {
     yield takeEvery(slice.actions.resetAndSearchResources, searchResourceSaga),
     yield takeEvery(slice.actions.setResourceSearchAction, searchResourceSaga),
     yield takeEvery(slice.actions.fetchResources, searchResourceSaga),
-    yield takeEvery(
-      slice.actions.addRecommendedResourcesAction,
-      getResourcesSaga
-    ),
   ])
 }

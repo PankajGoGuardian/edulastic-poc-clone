@@ -59,7 +59,6 @@ export const mainTextColor = '#444444'
 export const secondaryTextColor = '#434b5d'
 export const greyDarken = '#979BA1'
 export const tagTextColor = '#676e74'
-export const tagsBgColor = '#b3bcc4'
 export const titleColor = darkGrey2
 export const greyScoreCardTitleColor = lightGrey11
 export const cardTitleColor = lightGrey11

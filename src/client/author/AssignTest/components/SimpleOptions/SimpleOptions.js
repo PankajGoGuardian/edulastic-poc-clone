@@ -31,7 +31,6 @@ import MiscellaneousGroupContainer from '../Container/MiscellaneousGroupContaine
 import AdvancedOptons from '../AdvancedOptons/AdvancedOptons'
 import { TabContentContainer } from '../Container/styled'
 import DollarPremiumSymbol from '../Container/DollarPremiumSymbol'
-import slice from '../../../CurriculumSequence/components/ManageContentBlock/ducks'
 
 const { TabPane } = Tabs
 
@@ -81,7 +80,6 @@ class SimpleOptions extends React.Component {
       features: { free, premium },
       testSettings = {},
       assignment,
-      addRecommendedResourcesAction,
     } = this.props
     if (free && !premium) {
       this.onChange('releaseScore', releaseGradeLabels.WITH_ANSWERS)
@@ -110,7 +108,6 @@ class SimpleOptions extends React.Component {
     ) {
       this.overRideSettings('applyEBSR', applyEBSR)
     }
-    addRecommendedResourcesAction()
   }
 
   toggleSettings = () => {
@@ -619,18 +616,13 @@ SimpleOptions.defaultProps = {
   isRecommendingStandards: false,
 }
 
-export default connect(
-  (state) => ({
-    userRole: getUserRole(state),
-    features: getUserFeatures(state),
-    isReleaseScorePremium: getReleaseScorePremiumSelector(state),
-    freezeSettings: getIsOverrideFreezeSelector(state),
-    disableAnswerOnPaper: getDisableAnswerOnPaperSelector(state),
-    totalItems: state?.tests?.entity?.isDocBased
-      ? state?.tests?.entity?.summary?.totalQuestions
-      : state?.tests?.entity?.summary?.totalItems,
-  }),
-  {
-    addRecommendedResourcesAction: slice.actions?.addRecommendedResourcesAction,
-  }
-)(SimpleOptions)
+export default connect((state) => ({
+  userRole: getUserRole(state),
+  features: getUserFeatures(state),
+  isReleaseScorePremium: getReleaseScorePremiumSelector(state),
+  freezeSettings: getIsOverrideFreezeSelector(state),
+  disableAnswerOnPaper: getDisableAnswerOnPaperSelector(state),
+  totalItems: state?.tests?.entity?.isDocBased
+    ? state?.tests?.entity?.summary?.totalQuestions
+    : state?.tests?.entity?.summary?.totalItems,
+}))(SimpleOptions)

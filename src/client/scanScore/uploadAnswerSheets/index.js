@@ -82,7 +82,6 @@ const UploadAnswerSheets = ({ location }) => {
 
           <StyledDropZone
             isDragActive={isDragActive}
-            loading={uploading}
             dropzoneSettings={{
               name: 'File',
               allowedFiles: 'PDF, JPEG, JPG, PNG',

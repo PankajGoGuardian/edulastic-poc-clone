@@ -9,6 +9,7 @@ import {
 import {
   IconAddStudents,
   IconDownload,
+  IconUpload,
   IconInfo,
   IconMarkAsAbsent,
   IconMarkAsSubmitted,
@@ -1595,6 +1596,21 @@ class ClassBoard extends Component {
                             <IconDownload />
                             <span>Download Response</span>
                           </MenuItems>
+                          <FeaturesSwitch
+                            inputFeatures="premium"
+                            actionOnInaccessible="hidden"
+                            groupId={classId}
+                          >
+                            <MenuItems
+                              data-cy="uploadAnswerSheets"
+                              onClick={() =>
+                                history.push('/scanScore/uploadAnswerSheets')
+                              }
+                            >
+                              <IconUpload />
+                              <span>Upload Answer Sheets</span>
+                            </MenuItems>
+                          </FeaturesSwitch>
                         </DropMenu>
                       }
                       placement="bottomRight"

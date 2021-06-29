@@ -144,7 +144,9 @@ const MainInfo = ({
                     {!!googleId && (
                       <FieldValue>
                         <div>G. Class-code</div>
-                        <span>{googleCode}</span>
+                        <span>
+                          {(googleCode || '').split('.deactivated')[0]}
+                        </span>
                       </FieldValue>
                     )}
                   </>

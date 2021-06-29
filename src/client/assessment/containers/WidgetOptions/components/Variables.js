@@ -736,7 +736,10 @@ const Variables = ({
         visible={!!invalidSeqMsg}
         onCancel={() => setInvalidSeqMsg('')}
         footer={
-          <CustomStyleBtn onClick={() => setInvalidSeqMsg('')}>
+          <CustomStyleBtn
+            onClick={() => setInvalidSeqMsg('')}
+            data-cy="confirm"
+          >
             Confirm
           </CustomStyleBtn>
         }

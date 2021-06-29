@@ -3,11 +3,17 @@ import { SettingContainer as SettingContainerWrapper } from './styled'
 
 const SettingContainer = ({ children, id }) => {
   const handleMouseOver = (e) => {
-    e.currentTarget.querySelector('.popover').style.display = 'flex'
+    const showPopover = e.currentTarget.querySelector('.popover')
+    if (showPopover) {
+      showPopover.style.display = 'flex'
+    }
   }
 
   const handleMouseOut = (e) => {
-    e.currentTarget.querySelector('.popover').style.display = 'none'
+    const showPopover = e.currentTarget.querySelector('.popover')
+    if (showPopover) {
+      showPopover.style.display = 'none'
+    }
   }
 
   return (

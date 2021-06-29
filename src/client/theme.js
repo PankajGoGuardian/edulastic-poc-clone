@@ -14,6 +14,7 @@ import {
   lightGrey1,
   greyishBorder,
   lightGrey12,
+  lightBlue7,
 } from '@edulastic/colors'
 
 // all theme variables
@@ -2542,6 +2543,26 @@ export const themes = {
     },
   },
   default: defaultTheme,
+  scanScore: {
+    ...defaultTheme,
+    styledDropZone: {
+      loadingIconFontSize: questionTexticonFontSize,
+      iconUploadColor: uploadIcon,
+      iconUploadDragActiveColor: actionIconColor,
+      containerColor: containerWhite,
+      containerDragActiveColor: actionIconColor,
+      zoneTitleFontSize: smallFontSize,
+      zoneTitleCommentFontSize: extraSmallFontSize,
+      zoneTitleFontWeight: bold,
+      zoneTitleColor: zoneDropFontColor,
+      zoneTitleAltColor: zoneDropFontColorAlt,
+      underlinedColor: themeColorBlue,
+      containerBorderRadius: '4px',
+      containerBorderColor: '#b9b9b9',
+      containerFocusBorderColor: lightBlue7,
+      containerBackground: containerGrey,
+    },
+  },
   zoomed: (theme) => ({
     headerTitleFontSize: `${theme.size2}px`,
     headerClassTitleFontSize: `${theme.size4}px`,

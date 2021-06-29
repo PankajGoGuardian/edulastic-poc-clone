@@ -4,11 +4,7 @@ import PropTypes from 'prop-types'
 import { withNamespaces } from '@edulastic/localization'
 import { FlexContainer } from '@edulastic/common'
 
-import { Container } from './styled/Container'
-import { ZoneTitle } from './styled/ZoneTitle'
-import { Underlined } from './styled/Underlined'
-import { Loading } from './styled/Loading'
-import { IconUpload } from './styled/IconUpload'
+import { Container, ZoneTitle, Underlined, Loading, IconUpload } from './styled'
 
 const StyledDropZone = ({
   loading,
@@ -44,7 +40,7 @@ const StyledDropZone = ({
           <ZoneTitle isComment>
             {t('component.dropZone.or')}{' '}
             <Underlined>{t('component.dropZone.browse')}</Underlined>:{' '}
-            {allowedFiles} ({maxSize}KB MAX.)
+            {allowedFiles} {maxSize ? `(${maxSize}KB MAX.)` : ''}
           </ZoneTitle>
         </FlexContainer>
         {children}

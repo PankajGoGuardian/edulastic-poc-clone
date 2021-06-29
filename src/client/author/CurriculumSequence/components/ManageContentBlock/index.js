@@ -94,6 +94,8 @@ const ManageContentBlock = (props) => {
     urlHasUseThis,
     setSearchByTab,
     addResource,
+    updateResource,
+    deleteResource,
     setEmbeddedVideoPreviewModal,
     isDifferentiationTab = false,
     setIsTestPreviewVisible,
@@ -281,7 +283,7 @@ const ManageContentBlock = (props) => {
     if (type === 'lti_resource') onChange({key: '3'})
   }
 
-  const deleteResource = (id) => {
+  const deleteResourceConfirmation = (id) => {
     setDeleteResourceId(id)
     setIsDeleteResourceModalVisible(true)
   }
@@ -313,7 +315,7 @@ const ManageContentBlock = (props) => {
           listToRender.push(
             <ResourceItem
               editResource={editResource}
-              deleteResource={deleteResource}
+              deleteResource={deleteResourceConfirmation}
               resource={resource}
               key={resource?.contentId}
               type={resource?.contentType}
@@ -482,6 +484,7 @@ const ManageContentBlock = (props) => {
           isVisible={isDeleteResourceModalVisible} 
           id={deleteResourceId}
           onCancel={()=>{setIsDeleteResourceModalVisible(false)}}
+          deleteResource={deleteResource}
         ></DeleteResourceModal>}
 
         {showContentFilterModal && (
@@ -523,6 +526,7 @@ const ManageContentBlock = (props) => {
             closeCallback={handleCloseResourcesModals}
             isVisible={isWebsiteUrlResourceModal}
             addResource={addResource}
+            updateResource={updateResource}
             alignment={alignment}
             setAlignment={setAlignment}
             selectedStandards={selectedStandards}
@@ -537,6 +541,7 @@ const ManageContentBlock = (props) => {
             closeCallback={handleCloseResourcesModals}
             isVisible={isExternalVideoResourceModal}
             addResource={addResource}
+            updateResource={updateResource}
             alignment={alignment}
             setAlignment={setAlignment}
             selectedStandards={selectedStandards}
@@ -551,6 +556,7 @@ const ManageContentBlock = (props) => {
             closeCallback={handleCloseResourcesModals}
             isVisible={isLTIResourceModal}
             addResource={addResource}
+            updateResource={updateResource}
             externalToolsProviders={externalToolsProviders}
             alignment={alignment}
             setAlignment={setAlignment}
@@ -610,6 +616,8 @@ const enhance = compose(
         slice.actions?.fetchExternalToolProvidersAction,
       setSearchByTab: slice.actions?.setSearchByTab,
       addResource: slice.actions?.addResource,
+      updateResource: slice.actions?.updateResource,
+      deleteResource: slice.actions?.deleteResource,
       setEmbeddedVideoPreviewModal: setEmbeddedVideoPreviewModalAction,
       setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
       setAlignment: slice.actions.setAlignmentAction,

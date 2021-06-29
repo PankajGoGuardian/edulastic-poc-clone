@@ -167,6 +167,12 @@ const slice = createSlice({
     addResource: (state) => {
       state.searchResourceBy = 'resources'
     },
+    updateResource: (state) => {
+      state.searchResourceBy = 'resources'
+    },
+    deleteResource: (state) => {
+      state.searchResourceBy = 'resources'
+    },
     searchResource: (state) => {
       state.isLoading = true
     },
@@ -305,6 +311,32 @@ function* addResourceSaga({ payload }) {
   }
 }
 
+function* updateResourceSaga({ payload }) {
+  try {
+    yield call(resourcesApi.updateResource, payload)
+    yield put(slice.actions.resetSelectedStandards())
+    // delay reources fetch so that the added resource gets indexed in ES
+    yield delay(500)
+    yield put(slice.actions.resetAndSearchResources())
+    notification({ type: 'success', msg: 'Resource Updated Successfully' })
+  } catch (e) {
+    console.error('Error Occured: addResourceSaga ', e)
+  }
+}
+
+function* deleteResourceSaga({ payload }) {
+  try {
+    yield call(resourcesApi.deleteResource, payload)
+    yield put(slice.actions.resetSelectedStandards())
+    // delay reources fetch so that the added resource gets indexed in ES
+    yield delay(500)
+    yield put(slice.actions.resetAndSearchResources())
+    notification({ type: 'success', msg: 'Resource Deleted Successfully' })
+  } catch (e) {
+    console.error('Error Occured: addResourceSaga ', e)
+  }
+}
+
 function* getResourcesSaga(payload) {
   try {
     const result = yield call(resourcesApi.addRecommendedResources, payload)
@@ -365,6 +397,8 @@ export function* watcherSaga() {
     ),
     yield takeEvery(slice.actions.setSearchByTab, fetchDataSaga),
     yield takeEvery(slice.actions.addResource, addResourceSaga),
+    yield takeEvery(slice.actions.updateResource, updateResourceSaga),
+    yield takeEvery(slice.actions.deleteResource, deleteResourceSaga),
     yield takeEvery(slice.actions.searchResource, searchResourceSaga),
     yield takeEvery(slice.actions.resetAndSearchResources, searchResourceSaga),
     yield takeEvery(slice.actions.setResourceSearchAction, searchResourceSaga),

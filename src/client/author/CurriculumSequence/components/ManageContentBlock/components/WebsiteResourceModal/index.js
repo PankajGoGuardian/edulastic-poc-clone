@@ -14,6 +14,7 @@ const WebsiteResourceModal = (props) => {
   const {
     closeCallback,
     addResource,
+    updateResource,
     alignment,
     setAlignment,
     selectedStandards,
@@ -62,13 +63,24 @@ const WebsiteResourceModal = (props) => {
         'recentStandards',
         JSON.stringify({ recentStandards: selectedStandards || [] })
       )
-      addResource({
-        contentTitle: title,
-        contentDescription: description,
-        contentUrl: url,
-        contentType: 'website_resource',
-        standards: selectedStandardIds,
-      })
+      if(id){
+        updateResource({
+          id,
+          contentTitle: title,
+          contentDescription: description,
+          contentUrl: url,
+          contentType: 'website_resource',
+          standards: selectedStandardIds,
+        })
+      }else{
+        addResource({
+          contentTitle: title,
+          contentDescription: description,
+          contentUrl: url,
+          contentType: 'website_resource',
+          standards: selectedStandardIds,
+        })
+      }
       closeCallback()
     } else notification({ type: 'warn', msg: validationStatus })
   }

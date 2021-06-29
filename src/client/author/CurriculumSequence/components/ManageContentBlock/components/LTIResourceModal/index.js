@@ -19,6 +19,7 @@ const LTIResourceModal = (props) => {
   const {
     closeCallback,
     addResource,
+    updateResource,
     alignment,
     setAlignment,
     externalToolsProviders = [],
@@ -85,19 +86,36 @@ const LTIResourceModal = (props) => {
         'recentStandards',
         JSON.stringify({ recentStandards: selectedStandards || [] })
       )
-      addResource({
-        contentTitle: title,
-        contentUrl: url,
-        contentType: 'lti_resource',
-        standards: selectedStandardIds,
-        data: {
-          consumerKey,
-          sharedSecret,
-          privacy,
-          configurationType,
-          matchBy,
-        },
-      })
+      if(id){
+        updateResource({
+          id,
+          contentTitle: title,
+          contentUrl: url,
+          contentType: 'lti_resource',
+          standards: selectedStandardIds,
+          data: {
+            consumerKey,
+            sharedSecret,
+            privacy,
+            configurationType,
+            matchBy,
+          },
+        })
+      }else{
+        addResource({
+          contentTitle: title,
+          contentUrl: url,
+          contentType: 'lti_resource',
+          standards: selectedStandardIds,
+          data: {
+            consumerKey,
+            sharedSecret,
+            privacy,
+            configurationType,
+            matchBy,
+          },
+        })
+      }
       closeCallback()
     } else notification({ type: 'warn', msg: validationStatus })
   }

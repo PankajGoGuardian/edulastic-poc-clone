@@ -11,6 +11,7 @@ const DeleteResourceModal = ({
   isVisible,
   onCancel,
   id,
+  deleteResource,
 }) => {
 
   return (
@@ -34,7 +35,8 @@ const DeleteResourceModal = ({
             key="delete"
             data-cy="submitConfirm"
             onClick={() => {
-              
+              deleteResource(id)
+              onCancel()
             }}
           >
             Yes, Delete

@@ -1,3 +1,4 @@
+import { curriculumSequencesApi } from '@edulastic/api'
 import {
   CheckboxLabel,
   CustomModalStyled,
@@ -6,7 +7,10 @@ import {
 } from '@edulastic/common'
 import { IconClose } from '@edulastic/icons'
 import { Pagination } from 'antd'
-import React, { useState } from 'react'
+import { pick } from 'lodash'
+import React, { useEffect, useState } from 'react'
+import { submitLTIForm } from '../../../CurriculumSequence/components/CurriculumModuleRow'
+import EmbeddedVideoPreviewModal from '../../../CurriculumSequence/components/ManageContentBlock/components/EmbeddedVideoPreviewModal'
 import {
   AddResourcesLink,
   CardBox,
@@ -16,54 +20,52 @@ import {
   ResourceTags,
   RowOne,
   PaginationContainer,
+  CardTitle,
 } from '../SimpleOptions/styled'
 
 const pageSize = 8
-const cardsData = [
-  { id: '01', title: 'Resources Name 01', value: 'Resources Name 01' },
-  { id: '02', title: 'Resources Name 02', value: 'Resources Name 02' },
-  { id: '03', title: 'Resources Name 03', value: 'Resources Name 03' },
-  { id: '04', title: 'Resources Name 04', value: 'Resources Name 04' },
-  { id: '05', title: 'Resources Name 05', value: 'Resources Name 05' },
-  { id: '06', title: 'Resources Name 06', value: 'Resources Name 06' },
-  { id: '07', title: 'Resources Name 07', value: 'Resources Name 07' },
-  { id: '08', title: 'Resources Name 08', value: 'Resources Name 08' },
-  { id: '09', title: 'Resources Name 09', value: 'Resources Name 09' },
-  { id: '10', title: 'Resources Name 10', value: 'Resources Name 10' },
-  { id: '11', title: 'Resources Name 11', value: 'Resources Name 11' },
-  { id: '12', title: 'Resources Name 12', value: 'Resources Name 12' },
-  { id: '13', title: 'Resources Name 13', value: 'Resources Name 13' },
-  { id: '14', title: 'Resources Name 14', value: 'Resources Name 14' },
-  { id: '15', title: 'Resources Name 15', value: 'Resources Name 15' },
-  { id: '16', title: 'Resources Name 16', value: 'Resources Name 16' },
-  { id: '17', title: 'Resources Name 17', value: 'Resources Name 17' },
-  { id: '18', title: 'Resources Name 18', value: 'Resources Name 18' },
-  { id: '19', title: 'Resources Name 19', value: 'Resources Name 19' },
-]
-const firstPage = cardsData.slice(0, pageSize)
 
-const AddResources = () => {
+const AddResources = ({
+  recommendedResources = [],
+  setEmbeddedVideoPreviewModal,
+  resourceIds = [],
+  isVideoResourcePreviewModal,
+}) => {
+  const firstPage = recommendedResources.slice(0, pageSize)
   const [showResourceModal, setShowResourceModal] = useState(false)
   const [pageContent, setPageContent] = useState(firstPage)
   const [selectedResources, setSelectedResources] = useState([])
-  const [showTags, setShowtags] = useState([])
+  const [showTags, setShowTags] = useState([])
+
+  useEffect(() => {
+    if (resourceIds.length) {
+      setShowTags(
+        recommendedResources.filter((x) => resourceIds.includes(x._id))
+      )
+      setSelectedResources(resourceIds)
+    }
+  }, [])
 
   const onCloseModal = () => {
     setShowResourceModal(false)
-    setPageContent(firstPage)
   }
 
   const onConfirm = () => {
-    setShowtags(cardsData.filter((x) => selectedResources.includes(x.id)))
+    setShowTags(
+      recommendedResources.filter((x) => selectedResources.includes(x._id))
+    )
     setShowResourceModal(false)
   }
 
   const openResourceModal = () => {
     setShowResourceModal(true)
+    setPageContent(firstPage)
   }
 
   const handlePagination = (value) => {
-    setPageContent(cardsData.slice((value - 1) * pageSize, value * pageSize))
+    setPageContent(
+      recommendedResources.slice((value - 1) * pageSize, value * pageSize)
+    )
   }
 
   const handleResourceCheck = (value) => {
@@ -79,11 +81,43 @@ const AddResources = () => {
   }
 
   const handleCancelresource = (resourceId) => {
-    setShowtags(showTags.filter((x) => x.id !== resourceId))
+    setShowTags(showTags.filter((x) => x._id !== resourceId))
     setSelectedResources(selectedResources.filter((x) => x !== resourceId))
   }
 
-  console.log('selectedResources', selectedResources)
+  const showResource = async (resource) => {
+    resource =
+      resource &&
+      pick(resource, [
+        'toolProvider',
+        'url',
+        'customParams',
+        'consumerKey',
+        'sharedSecret',
+      ])
+    try {
+      const signedRequest = await curriculumSequencesApi.getSignedRequest({
+        resource,
+      })
+      submitLTIForm(signedRequest)
+    } catch (e) {
+      notification({ messageKey: 'failedToLoadResource' })
+    }
+  }
+
+  const previewResource = (type, data) => {
+    if (type === 'lti_resource') showResource(data)
+    if (type === 'website_resource') window.open(data.url, '_blank')
+    if (type === 'video_resource')
+      setEmbeddedVideoPreviewModal({ title: data.contentTitle, url: data.url })
+  }
+
+  const handleResourcePreview = (resource) => {
+    previewResource(resource?.contentType, {
+      url: resource?.contentUrl,
+      contentTitle: resource?.contentTitle,
+    })
+  }
 
   const footer = [
     <EduButton
@@ -105,17 +139,19 @@ const AddResources = () => {
     </EduButton>,
   ]
 
-  return (
+  return !recommendedResources.length ? (
+    <span>Loading...</span>
+  ) : (
     <>
       <AddResourcesLink data-cy="addResourcesLink" onClick={openResourceModal}>
         Add Resources
       </AddResourcesLink>
       <ResourceTags>
         {showTags.map((tag) => (
-          <li key={tag.id}>
-            <span>{tag.title}</span>
+          <li key={tag._id}>
+            <span>{tag.contentTitle}</span>
             <CloseIconWrapper
-              onClick={() => handleCancelresource(tag.id)}
+              onClick={() => handleCancelresource(tag._id)}
               data-cy="cancelResource"
             >
               <IconClose />
@@ -133,29 +169,40 @@ const AddResources = () => {
       >
         <ResourceCardContainer>
           {pageContent.map((x) => (
-            <CardBox>
+            <CardBox key={x._id} data-cy={`${x._id}CardBox`}>
               <CardImage />
               <RowOne>
-                <span>{x.title}</span>
+                <CardTitle
+                  data-cy="resourcePreview"
+                  onClick={() => handleResourcePreview(x)}
+                >
+                  {x.contentTitle}
+                </CardTitle>
                 <CheckboxLabel
-                  onChange={() => handleResourceCheck(x.id)}
-                  checked={selectedResources.includes(x.id)}
+                  onChange={() => handleResourceCheck(x._id)}
+                  checked={selectedResources.includes(x._id)}
+                  data-cy={`${x._id}ResourceCheckbox`}
                 />
               </RowOne>
             </CardBox>
           ))}
-          {cardsData.length > pageSize && (
-            <PaginationContainer>
-              <Pagination
-                defaultCurrent={1}
-                defaultPageSize={8}
-                onChange={handlePagination}
-                total={cardsData.length}
-              />
-            </PaginationContainer>
-          )}
+          <PaginationContainer>
+            <Pagination
+              defaultCurrent={1}
+              defaultPageSize={8}
+              onChange={handlePagination}
+              total={recommendedResources.length}
+              hideOnSinglePage
+            />
+          </PaginationContainer>
         </ResourceCardContainer>
       </CustomModalStyled>
+      {isVideoResourcePreviewModal && (
+        <EmbeddedVideoPreviewModal
+          closeCallback={() => setEmbeddedVideoPreviewModal(false)}
+          isVisible={isVideoResourcePreviewModal}
+        />
+      )}
     </>
   )
 }

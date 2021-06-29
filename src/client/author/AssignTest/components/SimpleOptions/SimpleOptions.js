@@ -1,37 +1,42 @@
 import { notification } from '@edulastic/common'
 import {
   assignmentPolicyOptions,
+  assignmentSettingSections as sectionContants,
   roleuser,
   test as testConst,
-  assignmentSettingSections as sectionContants,
 } from '@edulastic/constants'
 import { Tabs } from 'antd'
 import produce from 'immer'
-import { curry, get, keyBy, isBoolean } from 'lodash'
+import { curry, get, isBoolean, keyBy } from 'lodash'
 import * as moment from 'moment'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
+import { compose } from 'redux'
 import { isFeatureAccessible } from '../../../../features/components/FeaturesSwitch'
 import { getUserFeatures } from '../../../../student/Login/ducks'
+import slice, {
+  getRecommendedResources,
+} from '../../../CurriculumSequence/components/ManageContentBlock/ducks'
+import { setEmbeddedVideoPreviewModal as setEmbeddedVideoPreviewModalAction } from '../../../CurriculumSequence/ducks'
 import { getUserRole } from '../../../src/selectors/user'
 import selectsData from '../../../TestPage/components/common/selectsData'
 import {
-  getIsOverrideFreezeSelector,
   getDisableAnswerOnPaperSelector,
+  getIsOverrideFreezeSelector,
   getReleaseScorePremiumSelector,
 } from '../../../TestPage/ducks'
 import { getListOfActiveStudents } from '../../utils'
-import { OptionConationer } from './styled'
-import ClassGroupContainer from '../Container/ClassGroupContainer'
-import TestBehaviorGroupContainer from '../Container/TestBehaviorGroupContainer'
+import AdvancedOptons from '../AdvancedOptons/AdvancedOptons'
 import AntiCheatingGroupContainer from '../Container/AntiCheatingGroupContainer'
 import AutoRedirectGroupContainer from '../Container/AutoRedirectGroupContainer'
-import MiscellaneousGroupContainer from '../Container/MiscellaneousGroupContainer'
-import AdvancedOptons from '../AdvancedOptons/AdvancedOptons'
-import { TabContentContainer } from '../Container/styled'
+import ClassGroupContainer from '../Container/ClassGroupContainer'
 import DollarPremiumSymbol from '../Container/DollarPremiumSymbol'
-import slice from '../../../CurriculumSequence/components/ManageContentBlock/ducks'
+import MiscellaneousGroupContainer from '../Container/MiscellaneousGroupContainer'
+import { TabContentContainer } from '../Container/styled'
+import TestBehaviorGroupContainer from '../Container/TestBehaviorGroupContainer'
+import { OptionConationer } from './styled'
 
 const { TabPane } = Tabs
 
@@ -82,6 +87,7 @@ class SimpleOptions extends React.Component {
       testSettings = {},
       assignment,
       addRecommendedResourcesAction,
+      history,
     } = this.props
     if (free && !premium) {
       this.onChange('releaseScore', releaseGradeLabels.WITH_ANSWERS)
@@ -91,6 +97,7 @@ class SimpleOptions extends React.Component {
       penalty: _penalty,
       safeBrowser,
       applyEBSR,
+      _id: testId,
     } = testSettings
     const { scoringType = _scoringType, penalty = _penalty } = assignment
     if (safeBrowser === true) {
@@ -110,7 +117,13 @@ class SimpleOptions extends React.Component {
     ) {
       this.overRideSettings('applyEBSR', applyEBSR)
     }
-    addRecommendedResourcesAction()
+    const resourceIds = history.location.state.resourceIds
+    if (testId && resourceIds) {
+      addRecommendedResourcesAction({
+        testId,
+        resourceIds,
+      })
+    }
   }
 
   toggleSettings = () => {
@@ -398,7 +411,14 @@ class SimpleOptions extends React.Component {
       handleTabChange,
       selectedStandardsCount,
       showAssignModuleContent,
+      recommendedResources,
+      setEmbeddedVideoPreviewModal,
+      history,
+      isVideoResourcePreviewModal,
     } = this.props
+
+    const resourceIds = history.location.state.resourceIds
+    const isFromMyPlaylist = history.location.state.from === 'myPlaylist'
 
     const totalItems = isAssignRecommendations
       ? (assignment.questionPerStandard || 1) * selectedStandardsCount
@@ -489,6 +509,11 @@ class SimpleOptions extends React.Component {
                   isRecommendingStandards={isRecommendingStandards}
                   questionPerStandardOptions={questionPerStandardOptions}
                   tootltipWidth={tootltipWidth}
+                  recommendedResources={recommendedResources}
+                  setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
+                  resourceIds={resourceIds}
+                  isVideoResourcePreviewModal={isVideoResourcePreviewModal}
+                  isFromMyPlaylist={isFromMyPlaylist}
                 />
               </TabContentContainer>
             )}
@@ -610,6 +635,8 @@ SimpleOptions.propTypes = {
   group: PropTypes.array,
   students: PropTypes.array,
   fetchStudents: PropTypes.func,
+  setEmbeddedVideoPreviewModal: PropTypes.func,
+  addRecommendedResourcesAction: PropTypes.func,
 }
 
 SimpleOptions.defaultProps = {
@@ -617,20 +644,32 @@ SimpleOptions.defaultProps = {
   students: [],
   fetchStudents: () => false,
   isRecommendingStandards: false,
+  setEmbeddedVideoPreviewModal: () => {},
+  addRecommendedResourcesAction: () => {},
 }
 
-export default connect(
-  (state) => ({
-    userRole: getUserRole(state),
-    features: getUserFeatures(state),
-    isReleaseScorePremium: getReleaseScorePremiumSelector(state),
-    freezeSettings: getIsOverrideFreezeSelector(state),
-    disableAnswerOnPaper: getDisableAnswerOnPaperSelector(state),
-    totalItems: state?.tests?.entity?.isDocBased
-      ? state?.tests?.entity?.summary?.totalQuestions
-      : state?.tests?.entity?.summary?.totalItems,
-  }),
-  {
-    addRecommendedResourcesAction: slice.actions?.addRecommendedResourcesAction,
-  }
-)(SimpleOptions)
+const enhance = compose(
+  withRouter,
+  connect(
+    (state) => ({
+      userRole: getUserRole(state),
+      features: getUserFeatures(state),
+      isReleaseScorePremium: getReleaseScorePremiumSelector(state),
+      freezeSettings: getIsOverrideFreezeSelector(state),
+      disableAnswerOnPaper: getDisableAnswerOnPaperSelector(state),
+      recommendedResources: getRecommendedResources(state),
+      isVideoResourcePreviewModal:
+        state.curriculumSequence?.isVideoResourcePreviewModal,
+      totalItems: state?.tests?.entity?.isDocBased
+        ? state?.tests?.entity?.summary?.totalQuestions
+        : state?.tests?.entity?.summary?.totalItems,
+    }),
+    {
+      addRecommendedResourcesAction:
+        slice.actions?.fetchRecommendedResourcesAction,
+      setEmbeddedVideoPreviewModal: setEmbeddedVideoPreviewModalAction,
+    }
+  )
+)
+
+export default enhance(SimpleOptions)

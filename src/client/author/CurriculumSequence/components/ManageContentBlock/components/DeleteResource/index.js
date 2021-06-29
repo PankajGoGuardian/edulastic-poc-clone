@@ -1,14 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
-import { test as testConstants } from '@edulastic/constants'
-import { EduButton, RadioBtn } from '@edulastic/common'
+import { EduButton } from '@edulastic/common'
 import {
   ModalWrapper,
-  InitOptions,
-  StyledInput,
   ModalFooter,
-  LightGreenSpan,
 } from '../../../../../../common/components/ConfirmationModal/styled'
 
 const DeleteResourceModal = ({

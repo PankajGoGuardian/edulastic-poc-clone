@@ -1,20 +1,20 @@
-import React, { useEffect, useState } from 'react'
-// import { connect } from 'react-redux'
+import React, { useState, useMemo } from 'react'
 import Dropzone from 'react-dropzone'
-import { Progress } from 'antd'
+import { Row, Col, Progress } from 'antd'
 
 import { aws } from '@edulastic/constants'
 import { uploadToS3 } from '@edulastic/common/src/helpers'
 import StyledDropZone from '../../assessment/components/StyledDropZone'
 
-const ScanScore = () => {
+const UploadAnswerSheets = ({ location }) => {
   const [uploading, setUploading] = useState(false)
-  const [progress, setProgress] = useState(0)
+  const [progress, setProgress] = useState(null)
+  const [selectedFiles, setSelectedFiles] = useState([])
   const [uploadedFiles, setUploadedFiles] = useState([])
 
-  useEffect(() => {
-    console.log('uploadedFiles =>', uploadedFiles)
-  }, [uploadedFiles])
+  const s3SubFolder = useMemo(() => location.state?.assignmentId || '', [
+    location.state,
+  ])
 
   const handleProgress = (progressInfo) => {
     const { loaded: uploaded, total } = progressInfo
@@ -26,21 +26,37 @@ const ScanScore = () => {
     console.log(obj)
   }
 
-  const handleDrop = async ([file]) => {
+  const handleDrop = (files) => {
     setUploading(true)
-    try {
-      const fileUri = await uploadToS3(
-        file,
-        aws.s3Folders.DEFAULT,
-        handleProgress,
-        handleCancelUpload
-      )
-      if (fileUri) {
-        setUploadedFiles([...uploadedFiles, { uri: fileUri, name: file.name }])
+    setSelectedFiles([...files])
+    setUploadedFiles([])
+    files.forEach(async (file) => {
+      try {
+        const fileUri = await uploadToS3(
+          file,
+          aws.s3Folders.BUBBLE_SHEET,
+          handleProgress,
+          handleCancelUpload,
+          s3SubFolder
+        )
+        if (fileUri) {
+          setUploadedFiles((_uploadedFiles) => [
+            ..._uploadedFiles,
+            { uri: fileUri, file },
+          ])
+          setSelectedFiles((_selectedFiles) =>
+            _selectedFiles.filter(
+              (_selectedFile) =>
+                _selectedFile.name !== file.name &&
+                _selectedFile.type !== file.type
+            )
+          )
+        }
+      } catch (error) {
+        console.log(error)
       }
-    } catch (error) {
-      console.log(error)
-    }
+      setProgress(null)
+    })
     setUploading(false)
   }
 
@@ -57,7 +73,7 @@ const ScanScore = () => {
       activeClassName="active-dropzone"
       multiple={false}
     >
-      {({ getRootProps, getInputProps, isDragActive, fileRejections }) => (
+      {({ getRootProps, getInputProps, isDragActive, fileRejections = [] }) => (
         <div
           {...getRootProps()}
           className={`dropzone ${isDragActive ? 'dropzone--isActive' : ''}`}
@@ -66,50 +82,78 @@ const ScanScore = () => {
 
           <StyledDropZone
             isDragActive={isDragActive}
-            thumb={null}
+            loading={uploading}
             dropzoneSettings={{
               name: 'File',
-              allowedFiles: 'PDF, PNG, JPG, GIF',
+              allowedFiles: 'PDF, JPEG, JPG, PNG',
             }}
           >
-            {/* {props.selectedFiles.length > 0
-               ?<ul>
-                  <h1>Selected Files:</h1>
-                  {props.selectedFiles.map(file => (
-                     <li key={file.path}>
-                        {handleLength(file.path)} - {file.size} bytes
-                     </li>
+            <Row
+              type="flex"
+              gutter={[0, 25]}
+              style={{ width: '100%', marginTop: '20px' }}
+            >
+              <Col span={24}>
+                <Progress
+                  strokeColor={{ from: '#108ee9', to: '#87d068' }}
+                  percent={progress}
+                  status="active"
+                />
+              </Col>
+              {selectedFiles.length ? (
+                <Col
+                  className="dropzone-list-div"
+                  xs={24}
+                  sm={24}
+                  md={12}
+                  lg={12}
+                  xl={12}
+                >
+                  <span className="dropzone-list-label">Selected Files:</span>
+                  {selectedFiles.map((file) => (
+                    <span key={file.path} className="dropzone-list-item">
+                      {handleLength(file.path)} - {file.size} bytes
+                    </span>
                   ))}
-               </ul>  
-               : null
-            } */}
-            {/* {(uploadedFiles || []).length > 0 ? (
-              <ul>
-                <h1>Uploaded Files:</h1>
-                {uploadedFiles.map((uploadedFile) => (
-                  <li key={uploadedFile.file.name}>
-                    {handleLength(uploadedFile.file.name)} -{' '}
-                    {uploadedFile.file.size} bytes
-                  </li>
-                ))}
-              </ul>
-            ) : null} */}
-            {/* {fileRejections.length > 0 ? (
-              <ul>
-                <br />
-                <h1>Rejected Files:</h1>
-                {fileRejections.map((file) => (
-                  <li key={file.path}>
-                    {handleLength(file.path)} - {file.size} bytes
-                  </li>
-                ))}
-              </ul>
-            ) : null} */}
-            <Progress
-              strokeColor={{ from: '#108ee9', to: '#87d068' }}
-              percent={progress}
-              status="active"
-            />
+                </Col>
+              ) : null}
+              {uploadedFiles.length ? (
+                <Col
+                  className="dropzone-list-div"
+                  xs={24}
+                  sm={24}
+                  md={12}
+                  lg={12}
+                  xl={12}
+                >
+                  <span className="dropzone-list-label">Uploaded Files:</span>
+                  {uploadedFiles.map((uploadedFile) => (
+                    <span key={uploadedFile.uri} className="dropzone-list-item">
+                      {handleLength(uploadedFile.file.name)} -{' '}
+                      {uploadedFile.file.size} bytes
+                    </span>
+                  ))}
+                </Col>
+              ) : null}
+              {fileRejections.length ? (
+                <Col
+                  className="dropzone-list-div"
+                  xs={24}
+                  sm={24}
+                  md={12}
+                  lg={12}
+                  xl={12}
+                >
+                  <br />
+                  <span className="dropzone-list-label">Rejected Files:</span>
+                  {fileRejections.map((file) => (
+                    <span key={file.path} className="dropzone-list-item">
+                      {handleLength(file.path)} - {file.size} bytes
+                    </span>
+                  ))}
+                </Col>
+              ) : null}
+            </Row>
           </StyledDropZone>
         </div>
       )}
@@ -117,6 +161,4 @@ const ScanScore = () => {
   )
 }
 
-export default ScanScore
-
-// export default connect((state) => {}, {})(ScanScore)
+export default UploadAnswerSheets

@@ -1604,7 +1604,10 @@ class ClassBoard extends Component {
                             <MenuItems
                               data-cy="uploadAnswerSheets"
                               onClick={() =>
-                                history.push('/scanScore/uploadAnswerSheets')
+                                history.push({
+                                  pathname: '/scanScore/uploadAnswerSheets',
+                                  state: { assignmentId },
+                                })
                               }
                             >
                               <IconUpload />

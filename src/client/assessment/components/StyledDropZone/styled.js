@@ -6,7 +6,9 @@ import { IconUpload as IconUp } from '@edulastic/icons'
 
 export const Container = styled(FlexContainer)`
   min-height: 200px;
-  width: 100%;
+  width: ${({ theme }) => theme.styledDropZone.containerWidth || '100%'};
+  margin: ${({ theme }) => theme.styledDropZone.containerMargin || '0px'};
+  padding: ${({ theme }) => theme.styledDropZone.containerPadding || '0px'};
   border-radius: ${({ theme }) =>
     theme.styledDropZone.containerBorderRadius || '2px'};
   border: ${({ theme, isDragActive }) =>
@@ -24,12 +26,25 @@ export const Container = styled(FlexContainer)`
       ${({ theme }) =>
         theme.styledDropZone.containerFocusBorderColor || lightBlue7};
   }
+  .dropzone-list-div {
+    display: flex;
+    flex-direction: column;
+  }
+  .dropzone-list-label {
+    font-size: ${({ theme }) => theme.styledDropZone.zoneTitleFontSize};
+    font-weight: ${({ theme }) => theme.styledDropZone.zoneTitleFontWeight};
+  }
+  .dropzone-list-item {
+    margin-top: '2px';
+    font-size: ${({ theme }) => theme.styledDropZone.zoneTitleCommentFontSize};
+    font-weight: ${({ theme }) => theme.styledDropZone.zoneTitleFontWeight};
+  }
 `
 
 export const IconUpload = styled(IconUp)`
   margin-bottom: 12px;
-  width: 35px;
-  height: 30px;
+  width: ${({ theme }) => theme.styledDropZone.iconUploadWidth || '35px'};
+  height: ${({ theme }) => theme.styledDropZone.iconUploadHeight || '30px'};
   fill: ${({ theme, isDragActive }) =>
     isDragActive
       ? theme.styledDropZone.iconUploadDragActiveColor

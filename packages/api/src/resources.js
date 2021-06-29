@@ -1,3 +1,4 @@
+import qs from 'qs'
 import API from './utils/API'
 
 const api = new API()
@@ -38,9 +39,21 @@ const searchResource = (data) =>
     })
     .then((result) => result.data.result?.hits?.hits)
 
+const addRecommendedResources = (data) => {
+  const queryString = qs.stringify({ resourceIdsToFetch: data.resourceIds })
+  return api
+    .callApi({
+      url: `${prefix}/recommendation/${data.testId}?${queryString}`,
+      method: 'get',
+      data,
+    })
+    .then((result) => result.data.result)
+}
+
 export default {
   addResource,
   fetchResources,
   updateStandards,
   searchResource,
+  addRecommendedResources,
 }

@@ -10,6 +10,7 @@ import { StyledRow } from '../SimpleOptions/styled'
 import DetailsTooltip from './DetailsTooltip'
 import SettingContainer from './SettingsContainer'
 import TagFilter from '../../../src/components/common/TagFilter'
+import AddResources from './AddResources'
 
 const ClassGroupContainer = ({
   changeField,
@@ -194,6 +195,17 @@ const ClassGroupContainer = ({
           />
         </StyledRow>
       )}
+
+      <SettingContainer id="add-resources">
+        <StyledRow gutter={16}>
+          <Col span={10}>
+            <FieldLabel marginBottom="0px">Resources</FieldLabel>
+          </Col>
+          <Col span={14}>
+            <AddResources />
+          </Col>
+        </StyledRow>
+      </SettingContainer>
     </>
   )
 }

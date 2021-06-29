@@ -584,14 +584,17 @@ export const CardImage = styled.div`
   height: 80px;
   width: 100%;
 `
+export const CardTitle = styled.h4`
+  font-size: 12px;
+  font-weight: 600;
+  color: ${themeColor};
+  cursor: pointer;
+`
 
 export const RowOne = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 8px 10px;
-  font-size: 12px;
-  font-weight: 600;
-  color: ${themeColor};
 `
 export const PaginationContainer = styled.div`
   flex-basis: 100%;

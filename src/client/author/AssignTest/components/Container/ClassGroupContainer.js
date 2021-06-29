@@ -33,6 +33,11 @@ const ClassGroupContainer = ({
   isRecommendingStandards,
   questionPerStandardOptions,
   tootltipWidth,
+  recommendedResources,
+  setEmbeddedVideoPreviewModal,
+  resourceIds,
+  isVideoResourcePreviewModal,
+  isFromMyPlaylist,
 }) => {
   const { tags = testSettings.tags } = assignment
   return (
@@ -196,16 +201,23 @@ const ClassGroupContainer = ({
         </StyledRow>
       )}
 
-      <SettingContainer id="add-resources">
-        <StyledRow gutter={16}>
-          <Col span={10}>
-            <FieldLabel marginBottom="0px">Resources</FieldLabel>
-          </Col>
-          <Col span={14}>
-            <AddResources />
-          </Col>
-        </StyledRow>
-      </SettingContainer>
+      {isFromMyPlaylist && (
+        <SettingContainer id="add-resources">
+          <StyledRow gutter={16}>
+            <Col span={10}>
+              <FieldLabel marginBottom="0px">Resources</FieldLabel>
+            </Col>
+            <Col span={14}>
+              <AddResources
+                recommendedResources={recommendedResources}
+                setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
+                resourceIds={resourceIds}
+                isVideoResourcePreviewModal={isVideoResourcePreviewModal}
+              />
+            </Col>
+          </StyledRow>
+        </SettingContainer>
+      )}
     </>
   )
 }

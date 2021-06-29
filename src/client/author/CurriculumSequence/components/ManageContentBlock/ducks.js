@@ -22,6 +22,11 @@ export const getPlaylistContentFilters = createSelector(
   (state) => state
 )
 
+export const getRecommendedResources = createSelector(
+  stateSelector,
+  (state) => state.recommendedResources
+)
+
 export const FILTERS = [
   {
     icon: 'book',
@@ -60,6 +65,7 @@ const slice = createSlice({
   initialState: {
     tests: [],
     resources: [],
+    recommendedResources: [],
     status: '',
     authoredBy: '',
     subject: '',
@@ -90,8 +96,12 @@ const slice = createSlice({
     fetchResources: (state) => {
       state.isLoading = true
     },
-    addRecommendedResourcesAction: (state) => {
+    fetchRecommendedResourcesAction: (state) => {
       state.isLoading = true
+    },
+    recommendedResourcesSuccessAction: (state, { payload }) => {
+      state.isLoading = false
+      state.recommendedResources = payload
     },
     fetchTestsSuccess: (state, { payload }) => {
       state.isLoading = false
@@ -305,13 +315,11 @@ function* addResourceSaga({ payload }) {
   }
 }
 
-function* getResourcesSaga(payload) {
+function* getResourcesSaga({ payload }) {
   try {
     const result = yield call(resourcesApi.addRecommendedResources, payload)
-    if (!result) {
-      notification({ msg: result.error })
-    } else {
-      notification({ msg: result.success })
+    if (result) {
+      yield put(slice.actions.recommendedResourcesSuccessAction(result))
     }
   } catch (e) {
     console.error('Error Occured: searchResourceSaga ', e)
@@ -370,7 +378,7 @@ export function* watcherSaga() {
     yield takeEvery(slice.actions.setResourceSearchAction, searchResourceSaga),
     yield takeEvery(slice.actions.fetchResources, searchResourceSaga),
     yield takeEvery(
-      slice.actions.addRecommendedResourcesAction,
+      slice.actions.fetchRecommendedResourcesAction,
       getResourcesSaga
     ),
   ])

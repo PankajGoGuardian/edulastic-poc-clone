@@ -132,6 +132,7 @@ const ManageContentBlock = (props) => {
   const [isWebsiteUrlResourceModal, setWebsiteUrlResourceModal] = useState(
     false
   )
+  const [externalVideoHeadingText, setExternalVideoHeadingText] = useState('')
 
   const [
     isExternalVideoResourceModal,
@@ -169,8 +170,13 @@ const ManageContentBlock = (props) => {
         break
       case '2':
         setExternalVideoResourceModal(true)
+        setExternalVideoHeadingText('YouTube URL')
         break
       case '3':
+        setExternalVideoResourceModal(true)
+        setExternalVideoHeadingText('Video URL (Embed Code)')
+        break
+      case '4':
         setLTIResourceModal(true)
         break
       default:
@@ -211,9 +217,12 @@ const ManageContentBlock = (props) => {
         {enhanceTextWeight('Website URL')}
       </Menu.Item>
       <Menu.Item data-cy="youtubeResource" key="2">
-        {enhanceTextWeight('Video')}
+        {enhanceTextWeight('YouTube URL')}
       </Menu.Item>
-      <Menu.Item data-cy="externalLtiResource" key="3">
+      <Menu.Item data-cy="videoResource" key="3">
+        {enhanceTextWeight('Video URL (Embed Code)')}
+      </Menu.Item>
+      <Menu.Item data-cy="externalLtiResource" key="4">
         {enhanceTextWeight('External LTI Resource')}
       </Menu.Item>
     </Menu>
@@ -503,6 +512,7 @@ const ManageContentBlock = (props) => {
 
         {isExternalVideoResourceModal && (
           <ExternalVideoLink
+            headingText={externalVideoHeadingText}
             closeCallback={handleCloseResourcesModals}
             isVisible={isExternalVideoResourceModal}
             addResource={addResource}

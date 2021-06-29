@@ -17,6 +17,7 @@ const ExternalVideoLink = (props) => {
     selectedStandards,
     setSelectedStandards,
     curriculum = '',
+    headingText,
   } = props
 
   const [title, setTitle] = useState('')
@@ -57,7 +58,7 @@ const ExternalVideoLink = (props) => {
 
   return (
     <EdulasticResourceModal
-      headerText="Video Link"
+      headerText={headingText}
       okText="ADD RESOURCE"
       submitCallback={submitCallback}
       {...props}

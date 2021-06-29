@@ -17,11 +17,24 @@ const ExternalVideoLink = (props) => {
     selectedStandards,
     setSelectedStandards,
     curriculum = '',
+    data,
   } = props
 
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [url, setUrl] = useState('')
+  const [id, setId] = useState('')
+
+  useEffect(()=>{
+    if(data){
+      setTitle(data?.contentTitle)
+      setDescription(data?.contentDescription)
+      setUrl(data?.contentUrl)
+      setId(data?.contentId)
+      setAlignment(data?.alignment)
+      setSelectedStandards(data?.standards)
+    }
+  }, [data])
 
   const clearFields = () => {
     setTitle('')
@@ -58,7 +71,7 @@ const ExternalVideoLink = (props) => {
   return (
     <EdulasticResourceModal
       headerText="Video Link"
-      okText="ADD RESOURCE"
+      okText={id ? "UPDATE RESOURCE" : "ADD RESOURCE"}
       submitCallback={submitCallback}
       {...props}
     >

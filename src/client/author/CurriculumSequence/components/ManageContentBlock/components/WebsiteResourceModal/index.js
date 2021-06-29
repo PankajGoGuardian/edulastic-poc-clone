@@ -19,11 +19,13 @@ const WebsiteResourceModal = (props) => {
     selectedStandards,
     setSelectedStandards,
     curriculum = '',
+    data,
   } = props
 
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [url, setUrl] = useState('')
+  const [id, setId] = useState('')
 
   const clearFields = () => {
     setTitle('')
@@ -31,6 +33,15 @@ const WebsiteResourceModal = (props) => {
     setUrl('')
   }
   useEffect(() => clearFields, [])
+
+  useEffect(()=>{
+    if(data){
+      setTitle(data?.contentTitle)
+      setDescription(data?.contentDescription)
+      setUrl(data?.contentUrl)
+      setId(data?.contentId)
+    }
+  }, [data])
 
   const validateFields = () => {
     if (!title) return 'Title is required!'
@@ -65,7 +76,7 @@ const WebsiteResourceModal = (props) => {
   return (
     <EdulasticResourceModal
       headerText="Website URL"
-      okText="ADD RESOURCE"
+      okText={id ? "UPDATE RESOURCE" : "ADD RESOURCE"}
       submitCallback={submitCallback}
       {...props}
     >

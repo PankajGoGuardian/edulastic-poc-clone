@@ -45,7 +45,7 @@ const AddResources = ({
       )
       setSelectedResources(resourceIds)
     }
-  }, [recommendedResources])
+  }, [recommendedResources, resourceIds])
 
   const onCloseModal = () => {
     setShowResourceModal(false)

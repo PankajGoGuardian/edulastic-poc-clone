@@ -22,7 +22,7 @@ import {
   round,
 } from 'lodash'
 
-import { Select, Table } from 'antd'
+import { Select, Table, Popconfirm } from 'antd'
 import styled from 'styled-components'
 import { withNamespaces } from '@edulastic/localization'
 import { variableTypes, math } from '@edulastic/constants'
@@ -32,6 +32,7 @@ import {
   notification,
   CustomModalStyled,
 } from '@edulastic/common'
+import { IconTrash } from '@edulastic/icons'
 import { extraDesktopWidthMax, redDark } from '@edulastic/colors'
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 import {
@@ -270,24 +271,6 @@ const Variables = ({
   const examples = get(questionData, 'variable.examples', [])
 
   const types = Object.keys(variableTypes)
-  const columns = Object.keys(variables).map((variableName) => {
-    return {
-      title: variableName,
-      dataIndex: variableName,
-      key: variables[variableName].id,
-      render: (text) => {
-        return text !== 'Recursion_Error' && text !== 'Parsing_Error' ? (
-          <MathFormulaDisplay
-            dangerouslySetInnerHTML={{
-              __html: getMathFormulaTemplate(text),
-            }}
-          />
-        ) : (
-          <ErrorText>Unable to parse expression</ErrorText>
-        )
-      },
-    }
-  })
 
   const generate = (evt) => {
     const [examplesValues, invalid] = generateExampleValues(
@@ -414,6 +397,65 @@ const Variables = ({
       e.preventDefault()
       e.stopPropagation()
     }
+  }
+
+  const clearExamples = (exam) => () => {
+    const newData = cloneDeep(questionData)
+    if (!exam) {
+      newData.variable.examples = []
+    } else {
+      const { key: rowIdx } = exam
+      const newExams = examples
+        .filter((x, i) => i !== rowIdx)
+        .map((x, i) => ({ ...x, key: i }))
+      newData.variable.examples = newExams
+    }
+    setQuestionData(newData)
+  }
+
+  const columns = keys(variables).map((variableName) => ({
+    title: variableName,
+    dataIndex: variableName,
+    key: variables[variableName].id,
+    render: (text) => {
+      return text !== 'Recursion_Error' && text !== 'Parsing_Error' ? (
+        <MathFormulaDisplay
+          dangerouslySetInnerHTML={{
+            __html: getMathFormulaTemplate(text),
+          }}
+        />
+      ) : (
+        <ErrorText>Unable to parse expression</ErrorText>
+      )
+    },
+  }))
+  if (!isEmpty(examples)) {
+    columns.push({
+      title: (
+        <Popconfirm
+          okText="Yes"
+          cancelText="No"
+          placement="left"
+          onConfirm={clearExamples()}
+          title="Are you sure to clear all examples?"
+        >
+          <TrashIcon />
+        </Popconfirm>
+      ),
+      key: 'action',
+      width: 30,
+      render: (text, record) => (
+        <Popconfirm
+          okText="Yes"
+          cancelText="No"
+          placement="left"
+          onConfirm={clearExamples(record)}
+          title="Are you sure to clear this example?"
+        >
+          <TrashIcon />
+        </Popconfirm>
+      ),
+    })
   }
 
   useEffect(() => {
@@ -721,7 +763,6 @@ const Variables = ({
             <Col md={24}>
               <Table
                 columns={columns}
-                key={`table-${Math.random(10)}`}
                 dataSource={examples}
                 pagination={{
                   pageSize: 10,
@@ -802,4 +843,10 @@ const ErrorMsgModal = styled(CustomModalStyled)`
 
 const ErrorText = styled.span`
   color: ${redDark};
+`
+
+const TrashIcon = styled(IconTrash)`
+  fill: ${redDark};
+  cursor: pointer;
+  margin-top: 2px;
 `

@@ -21,9 +21,9 @@ const addResource = (data) =>
     })
     .then((result) => result.data.result)
 
-const updateResource = (data) =>{
+const updateResource = (data) => {
   const id = data?.id
-  delete data['id']
+  delete data.id
   return api
     .callApi({
       url: `${prefix}/${id}`,
@@ -59,7 +59,7 @@ const searchResource = (data) =>
     })
     .then((result) => result.data.result?.hits?.hits)
 
-const addRecommendedResources = (data) => {
+const getRecommendedResources = (data) => {
   const queryString = qs.stringify({ resourceIdsToFetch: data.resourceIds })
   return api
     .callApi({
@@ -75,7 +75,7 @@ export default {
   fetchResources,
   updateStandards,
   searchResource,
-  addRecommendedResources,
+  getRecommendedResources,
   updateResource,
   deleteResource,
 }

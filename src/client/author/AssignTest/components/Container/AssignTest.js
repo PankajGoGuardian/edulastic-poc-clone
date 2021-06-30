@@ -78,6 +78,7 @@ import SaveSettingsModal from './SaveSettingsModal'
 import DeleteTestSettingsModal from './DeleteSettingsConfirmationModal'
 import UpdateTestSettingsModal from './UpdateTestSettingModal'
 import { fetchCustomKeypadAction } from '../../../../assessment/components/KeyPadOptions/ducks'
+import slice from '../../../CurriculumSequence/components/ManageContentBlock/ducks'
 
 const { ASSESSMENT, COMMON } = testConst.type
 const { evalTypeLabels } = testConst
@@ -197,6 +198,7 @@ class AssignTest extends React.Component {
       fetchUserCustomKeypads,
       setCurrentTestSettingsId,
       location,
+      addRecommendedResourcesAction,
     } = this.props
 
     if (isFreeAdmin) {
@@ -278,6 +280,14 @@ class AssignTest extends React.Component {
       fetchTestByID(testId, null, null, true, match.params.playlistId)
     } else if (testId) {
       fetchTestByID(testId)
+    }
+
+    const resourceIds = history.location?.state?.resourceIds || []
+    if (testId && resourceIds) {
+      addRecommendedResourcesAction({
+        testId,
+        resourceIds,
+      })
     }
   }
 
@@ -895,6 +905,8 @@ const enhance = compose(
       deleteTestSettingRequest: deleteTestSettingRequestAction,
       updateTestSettingRequest: updateTestSettingRequestAction,
       fetchUserCustomKeypads: fetchCustomKeypadAction,
+      addRecommendedResourcesAction:
+        slice.actions?.fetchRecommendedResourcesAction,
     }
   )
 )

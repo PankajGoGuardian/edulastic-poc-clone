@@ -12,6 +12,7 @@ import {
 import { testsApi, settingsApi, resourcesApi } from '@edulastic/api'
 import { notification } from '@edulastic/common'
 import * as Sentry from '@sentry/browser'
+import { getSelectedResourcesAction } from '../../../AssignTest/duck'
 
 export const sliceName = 'playlistTestBox'
 const LIMIT = 20
@@ -351,10 +352,29 @@ function* deleteResourceSaga({ payload }) {
 }
 
 function* getResourcesSaga({ payload }) {
+  const { resourceIds } = payload
   try {
-    const result = yield call(resourcesApi.addRecommendedResources, payload)
+    const result = yield call(resourcesApi.getRecommendedResources, payload)
     if (result) {
-      yield put(slice.actions.recommendedResourcesSuccessAction(result))
+      console.log('result', result)
+      const getSelectedResources = result.map((x) => ({
+        type: 'assign',
+        contentId: x._id,
+        description: x?.contentDescription,
+        contentTitle: x.contentTitle,
+        contentType: x.contentType,
+        contentSubType: 'STUDENT',
+        contentUrl: x.contentUrl,
+        standards: x?.standards || [],
+      }))
+      yield put(
+        slice.actions.recommendedResourcesSuccessAction(getSelectedResources)
+      )
+      yield put(
+        getSelectedResourcesAction(
+          getSelectedResources.filter((x) => resourceIds.includes(x.contentId))
+        )
+      )
     }
   } catch (e) {
     console.error('Error Occured: searchResourceSaga ', e)

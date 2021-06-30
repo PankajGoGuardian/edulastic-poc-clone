@@ -16,9 +16,7 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import { isFeatureAccessible } from '../../../../features/components/FeaturesSwitch'
 import { getUserFeatures } from '../../../../student/Login/ducks'
-import slice, {
-  getRecommendedResources,
-} from '../../../CurriculumSequence/components/ManageContentBlock/ducks'
+import { getRecommendedResources } from '../../../CurriculumSequence/components/ManageContentBlock/ducks'
 import { setEmbeddedVideoPreviewModal as setEmbeddedVideoPreviewModalAction } from '../../../CurriculumSequence/ducks'
 import { getUserRole } from '../../../src/selectors/user'
 import selectsData from '../../../TestPage/components/common/selectsData'
@@ -27,6 +25,7 @@ import {
   getIsOverrideFreezeSelector,
   getReleaseScorePremiumSelector,
 } from '../../../TestPage/ducks'
+import { getSelectedResourcesAction } from '../../duck'
 import { getListOfActiveStudents } from '../../utils'
 import AdvancedOptons from '../AdvancedOptons/AdvancedOptons'
 import AntiCheatingGroupContainer from '../Container/AntiCheatingGroupContainer'
@@ -86,8 +85,6 @@ class SimpleOptions extends React.Component {
       features: { free, premium },
       testSettings = {},
       assignment,
-      addRecommendedResourcesAction,
-      history,
     } = this.props
     if (free && !premium) {
       this.onChange('releaseScore', releaseGradeLabels.WITH_ANSWERS)
@@ -97,7 +94,6 @@ class SimpleOptions extends React.Component {
       penalty: _penalty,
       safeBrowser,
       applyEBSR,
-      _id: testId,
     } = testSettings
     const { scoringType = _scoringType, penalty = _penalty } = assignment
     if (safeBrowser === true) {
@@ -116,13 +112,6 @@ class SimpleOptions extends React.Component {
       isBoolean(applyEBSR)
     ) {
       this.overRideSettings('applyEBSR', applyEBSR)
-    }
-    const resourceIds = history.location?.state?.resourceIds
-    if (testId && resourceIds) {
-      addRecommendedResourcesAction({
-        testId,
-        resourceIds,
-      })
     }
   }
 
@@ -415,9 +404,10 @@ class SimpleOptions extends React.Component {
       setEmbeddedVideoPreviewModal,
       history,
       isVideoResourcePreviewModal,
+      selectedResourcesAction,
     } = this.props
 
-    const resourceIds = history.location?.state?.resourceIds
+    const resourceIds = history.location?.state?.resourceIds || []
     const isFromMyPlaylist =
       history.location?.state?.assignedFrom === 'playlistAssignTest'
 
@@ -515,6 +505,7 @@ class SimpleOptions extends React.Component {
                   resourceIds={resourceIds}
                   isVideoResourcePreviewModal={isVideoResourcePreviewModal}
                   isFromMyPlaylist={isFromMyPlaylist}
+                  selectedResourcesAction={selectedResourcesAction}
                 />
               </TabContentContainer>
             )}
@@ -637,7 +628,6 @@ SimpleOptions.propTypes = {
   students: PropTypes.array,
   fetchStudents: PropTypes.func,
   setEmbeddedVideoPreviewModal: PropTypes.func,
-  addRecommendedResourcesAction: PropTypes.func,
 }
 
 SimpleOptions.defaultProps = {
@@ -646,7 +636,6 @@ SimpleOptions.defaultProps = {
   fetchStudents: () => false,
   isRecommendingStandards: false,
   setEmbeddedVideoPreviewModal: () => {},
-  addRecommendedResourcesAction: () => {},
 }
 
 const enhance = compose(
@@ -666,9 +655,8 @@ const enhance = compose(
         : state?.tests?.entity?.summary?.totalItems,
     }),
     {
-      addRecommendedResourcesAction:
-        slice.actions?.fetchRecommendedResourcesAction,
       setEmbeddedVideoPreviewModal: setEmbeddedVideoPreviewModalAction,
+      selectedResourcesAction: getSelectedResourcesAction,
     }
   )
 )

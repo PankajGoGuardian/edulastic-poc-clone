@@ -22,7 +22,9 @@ import {
   RowOne,
   PaginationContainer,
   CardTitle,
+  RowTwo,
 } from '../SimpleOptions/styled'
+import Tags from '../../../src/components/common/Tags'
 
 const pageSize = 8
 
@@ -142,7 +144,7 @@ const AddResources = ({
       data-cy="confirmResources"
       onClick={onConfirm}
     >
-      Confirm
+      ADD RESOURCES
     </EduButton>,
   ]
 
@@ -198,6 +200,17 @@ const AddResources = ({
                   data-cy={`${x.contentId}ResourceCheckbox`}
                 />
               </RowOne>
+              <RowTwo>
+                {x.standards?.length && (
+                  <Tags
+                    margin="0px"
+                    tags={x.standards?.map((s) => s?.name)}
+                    show={1}
+                    showTitle
+                    flexWrap="nowrap"
+                  />
+                )}
+              </RowTwo>
             </CardBox>
           ))}
           <PaginationContainer>

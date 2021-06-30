@@ -499,6 +499,39 @@ export const isOptionsRemoved = (originalQuestions, newQuestions) => {
           }
           break
         }
+        case EXPRESSION_MULTIPART: {
+          const { responseIds = {} } = _question || {}
+          const oldOptions = oldQuestionsById[id]?.options || {}
+          const oldOptionsIds = keys(oldOptions) || []
+          for (const _id of oldOptionsIds) {
+            if (
+              !oldOptions[_id].every((value) =>
+                (options?.[_id] || []).includes(value)
+              )
+            ) {
+              return true
+            }
+          }
+
+          const oldQuestionResponseIds = oldQuestionsById[id]?.responseIds || {}
+          const oldQuestionResponseBoxes = keys(oldQuestionResponseIds) || []
+          for (const responseBox of oldQuestionResponseBoxes) {
+            const oldQuestionResponseBoxIds = (
+              oldQuestionResponseIds[responseBox] || []
+            ).map(({ id: _id }) => _id)
+            const newQuestionResponseBoxIds = (
+              responseIds?.[responseBox] || []
+            ).map(({ id: _id }) => _id)
+            if (
+              !oldQuestionResponseBoxIds.every((_id) =>
+                newQuestionResponseBoxIds.includes(_id)
+              )
+            ) {
+              return true
+            }
+          }
+          break
+        }
         default:
           break
       }

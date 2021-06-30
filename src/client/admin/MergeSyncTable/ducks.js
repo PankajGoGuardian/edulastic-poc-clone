@@ -5,6 +5,11 @@ import { captureSentryException, notification } from '@edulastic/common'
 import { adminApi } from '@edulastic/api'
 import _get from 'lodash.get'
 import { omit } from 'lodash'
+import schoolApi from '@edulastic/api/src/school'
+import {
+  createSchoolFailedAction,
+  createSchoolSuccessAction,
+} from '../../student/Signup/duck'
 
 // CONSTANTS
 export const SEARCH_EXISTING_DATA_API = '[admin] SEARCH_EXISTING_DATA_API'
@@ -34,6 +39,10 @@ export const LOGS_DATA_FAILED = '[admin] LOGS_DATA_FAILED'
 export const RECEIVE_MERGED_ID = '[admin] merg ids to edulastic'
 export const CLOSE_MERGE_RESPONSE_TABLE = '[admin] close merge response table'
 export const CLEAR_MERGE_DATA = '[admin] clear merge data'
+
+export const FETCH_MAPPING_DATA = '[admin] FETCH_MAPPING_DATA'
+export const FETCH_MAPPING_DATA_SUCCESS = '[admin] FETCH_MAPPING_DATA_SUCCESS'
+export const FETCH_MAPPING_DATA_FAILURE = '[admin] FETCH_MAPPING_DATA_FAILURE'
 
 // ACTION CREATORS
 export const searchExistingDataApi = createAction(SEARCH_EXISTING_DATA_API)
@@ -75,6 +84,14 @@ export const uploadCSVAction = createAction(UPLOAD_CSV)
 export const receiveMergeIdsAction = createAction(RECEIVE_MERGED_ID)
 export const closeMergeResponseAction = createAction(CLOSE_MERGE_RESPONSE_TABLE)
 
+export const getMappingDataAction = createAction(FETCH_MAPPING_DATA)
+export const getMappingDataSuccessAction = createAction(
+  FETCH_MAPPING_DATA_SUCCESS
+)
+export const getMappingDataFailureAction = createAction(
+  FETCH_MAPPING_DATA_FAILURE
+)
+
 // REDUCERS
 
 const initialState = {
@@ -89,6 +106,19 @@ const initialState = {
     data: [],
     showData: false,
   },
+  mappedData: {},
+}
+
+const putMappedDataIntoState = (state, payload) => {
+  const { type, dcId, result } = payload.payload
+  const entity = type === 'school' ? 'Schools' : 'Classes'
+  if (state.mappedData[dcId]) {
+    state.mappedData[dcId][entity] = result
+  } else {
+    state.mappedData[dcId] = {}
+    state.mappedData[dcId][entity] = result
+  }
+  state.mappingDataLoading = false
 }
 
 const fetchExistingDataReducer = createReducer(initialState, {
@@ -191,6 +221,13 @@ const fetchExistingDataReducer = createReducer(initialState, {
       showData: false,
     }
   },
+  [FETCH_MAPPING_DATA]: (state) => {
+    state.mappingDataLoading = true
+  },
+  [FETCH_MAPPING_DATA_SUCCESS]: putMappedDataIntoState,
+  [FETCH_MAPPING_DATA_FAILURE]: (state) => {
+    state.mappingDataLoading = false
+  },
 })
 
 // SELECTORS
@@ -209,6 +246,11 @@ export const getSubStandardMapping = createSelector(
 export const mergeResponseSelector = createSelector(
   adminStateSelector,
   ({ mergeData }) => mergeData.mergeResponse
+)
+
+export const getMappedData = createSelector(
+  adminStateSelector,
+  ({ mergeData }) => mergeData.mappedData
 )
 
 // SAGAS
@@ -456,6 +498,114 @@ function* fetchLogsData({ payload }) {
   }
 }
 
+const fetchedSchoolData = [
+  {
+    id: '111cleverSchool1',
+    name: 'cleverSchool1',
+    match: [
+      {
+        id: '111eduSchool1',
+        name: 'Edulastic School1',
+        score: 95,
+      },
+      {
+        id: '111eduSchool2',
+        name: 'Edulastic School2',
+        score: 90,
+      },
+      {
+        id: '111eduSchool3',
+        name: 'Edulastic School3',
+        score: 92,
+      },
+    ],
+  },
+  {
+    id: '222cleverSchool2',
+    name: 'cleverSchool2',
+    match: [
+      {
+        id: '222eduSchool1',
+        name: 'Edulastic School1',
+        score: 95,
+      },
+      {
+        id: '222eduSchool2',
+        name: 'Edulastic School2',
+        score: 90,
+      },
+      {
+        id: '222eduSchool3',
+        name: 'Edulastic School3',
+        score: 92,
+      },
+    ],
+  },
+]
+
+const fetchedClassData = [
+  {
+    id: '111cleverClass1',
+    name: 'cleverClass1',
+    match: [
+      {
+        id: '111eduClass1',
+        name: 'Edulastic Class1',
+        score: 95,
+      },
+      {
+        id: '111eduClass2',
+        name: 'Edulastic Class2',
+        score: 90,
+      },
+      {
+        id: '111eduClass3',
+        name: 'Edulastic Class3',
+        score: 92,
+      },
+    ],
+  },
+  {
+    id: '222cleverClass2',
+    name: 'cleverClass2',
+    match: [
+      {
+        id: '222eduClass1',
+        name: 'Edulastic Class1',
+        score: 95,
+      },
+      {
+        id: '111eduClass2',
+        name: 'Edulastic Class2',
+        score: 90,
+      },
+      {
+        id: '222eduClass3',
+        name: 'Edulastic Class3',
+        score: 92,
+      },
+    ],
+  },
+]
+
+function* fetchMappingData({ payload }) {
+  try {
+    // const result = yield call(getMappingData, payload)
+    debugger
+    const result =
+      payload.type === 'school' ? fetchedSchoolData : fetchedClassData
+    yield put(
+      getMappingDataSuccessAction({
+        type: payload.type,
+        dcId: payload.cleverId,
+        result,
+      })
+    )
+  } catch (err) {
+    yield put(getMappingDataFailureAction())
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(SEARCH_EXISTING_DATA_API, fetchExistingData),
@@ -467,6 +617,7 @@ export function* watcherSaga() {
     yield takeEvery(UPLOAD_CSV, uploadCSVSaga),
     yield takeEvery(UPDATE_SUBJECT_STANDARD_MAP, updateSubjectStandardSaga),
     yield takeEvery(FETCH_LOGS_DATA, fetchLogsData),
+    yield takeEvery(FETCH_MAPPING_DATA, fetchMappingData),
   ])
 }
 

@@ -333,6 +333,15 @@ const bulkUpdateSubscriptionApi = (data) =>
     })
     .then(({ data: response }) => response.result)
 
+const getMappingData = (payload) =>
+  api
+    .callApi({
+      url: `/entity-match`,
+      method: 'get',
+      params: payload,
+    })
+    .then(({ data: response }) => response.result)
+
 export default {
   getSubscription,
   searchUpdateDistrict,
@@ -369,4 +378,5 @@ export default {
   searchClasslinkDistrict,
   updateSubscriptionApi,
   bulkUpdateSubscriptionApi,
+  getMappingData,
 }

@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { CSVLink } from 'react-csv'
-import { Button, Upload, Icon, Modal, Select } from 'antd'
+import { Button, Modal, Select } from 'antd'
 import { Table } from '../Common/StyledComponents'
-import { mapCountAsType, DISABLE_SUBMIT_TITLE } from '../Data'
+import { DISABLE_SUBMIT_TITLE, mapCountAsType } from '../Data'
 
 const { Column } = Table
 const { Option } = Select
@@ -16,7 +15,7 @@ const orgTypesCount = [
   'studentCount',
 ]
 
-const MergeIdsTable = ({
+const ApproveMergeModal = ({
   eduCounts,
   countsInfo,
   uploadCSV,
@@ -28,7 +27,7 @@ const MergeIdsTable = ({
   closeMergeResponse,
   disableFields,
   getMappingData,
-  mappedData = {},
+  mappedData,
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [districtMappedData, setDistrictMappedData] = useState({})
@@ -39,7 +38,7 @@ const MergeIdsTable = ({
   useEffect(() => {
     const data = mappedData[cleverId || atlasId]
     setDistrictMappedData(data || {})
-  }, [JSON.stringify(mappedData)])
+  }, [mappedData])
 
   const {
     data: mergeResponseData,
@@ -82,7 +81,6 @@ const MergeIdsTable = ({
   }
 
   const handleGenerateMapping = (fieldName) => {
-    debugger
     let type
     const lmsId = cleverId || atlasId
     const eduId = districtId
@@ -184,41 +182,6 @@ const MergeIdsTable = ({
   return (
     <>
       <Modal
-        title={`${title} Id Merge report`}
-        visible={showMergeResponseData}
-        destroyOnClose={false}
-        maskClosable={false}
-        onCancel={closeMergeResponse}
-        footer={[
-          <Button key="back" onClick={closeMergeResponse}>
-            Cancel
-          </Button>,
-          <Button key="submit" type="primary">
-            <CSVLink
-              data={mergeResponseData}
-              filename={`${downloadMergeType}_match_result_${districtId}.csv`}
-              separator=","
-              headers={headers}
-              target="_blank"
-            >
-              Download
-            </CSVLink>
-          </Button>,
-        ]}
-        width="80%"
-      >
-        <Table
-          rowKey={(record) => record.edulasticId}
-          dataSource={mergeResponseData}
-          pagination={false}
-        >
-          {headers.map((each) => (
-            <Column title={each.label} dataIndex={each.key} key={each.key} />
-          ))}
-        </Table>
-      </Modal>
-
-      <Modal
         title="Review and Approve"
         width="50%"
         height="50%"
@@ -285,70 +248,8 @@ const MergeIdsTable = ({
           <h1>loading</h1>
         )}
       </Modal>
-
-      <Table
-        rowKey={(record) => record.key}
-        dataSource={data}
-        pagination={false}
-      >
-        <Column title="Fields" dataIndex="fieldName" key="fieldName" />
-        <Column title="Edulastic Count" dataIndex="eduCount" key="eduCount" />
-        <Column title={`${title} Count`} dataIndex="count" key="count" />
-        <Column
-          title="Actions"
-          dataIndex="isEmpty"
-          key="btnName"
-          render={(_, record) => {
-            const { type, fieldName } = record
-            return fieldName === 'Schools' || fieldName === 'Classes' ? (
-              <Button onClick={() => handleGenerateMapping(fieldName)}>
-                Generate Mapping
-              </Button>
-            ) : (
-              <Upload
-                aria-label="Upload"
-                {...props}
-                customRequest={(info) => handleUpload(info, type)}
-              >
-                <Button {...ButtonProps}>
-                  <Icon type="upload" /> Upload
-                </Button>
-                {' *.csv'}
-              </Upload>
-            )
-          }}
-        />
-        <Column
-          title="Template"
-          dataIndex="isEmpty"
-          key="tempBtn"
-          render={(_, record) => {
-            const { type, fieldName } = record
-            return fieldName === 'Schools' || fieldName === 'Classes' ? (
-              <Button
-                disabled={!districtMappedData[fieldName]}
-                onClick={() => handleReviewAndApprove(fieldName)}
-              >
-                Review and Approve
-              </Button>
-            ) : (
-              <Button {...ButtonProps}>
-                <CSVLink
-                  data={[]}
-                  filename={`${type}_match.csv`}
-                  separator=","
-                  headers={templateHeaders[type]}
-                  target="_blank"
-                >
-                  <Icon type="download" /> Download Template
-                </CSVLink>
-              </Button>
-            )
-          }}
-        />
-      </Table>
     </>
   )
 }
 
-export default MergeIdsTable
+export default ApproveMergeModal

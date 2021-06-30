@@ -31,6 +31,7 @@ const AddResources = ({
   setEmbeddedVideoPreviewModal,
   resourceIds = [],
   isVideoResourcePreviewModal,
+  selectedResourcesAction,
 }) => {
   const firstPage = recommendedResources.slice(0, pageSize)
   const [showResourceModal, setShowResourceModal] = useState(false)
@@ -39,13 +40,15 @@ const AddResources = ({
   const [showTags, setShowTags] = useState([])
 
   useEffect(() => {
-    if (recommendedResources.length && resourceIds.length) {
-      setShowTags(
-        recommendedResources?.filter((x) => resourceIds.includes(x._id))
-      )
-      setSelectedResources(resourceIds)
-    }
+    setShowTags(
+      recommendedResources?.filter((x) => resourceIds.includes(x._id))
+    )
+    setSelectedResources(resourceIds)
   }, [recommendedResources, resourceIds])
+
+  useEffect(() => {
+    selectedResourcesAction(showTags)
+  }, [showTags])
 
   const onCloseModal = () => {
     setShowResourceModal(false)
@@ -53,7 +56,9 @@ const AddResources = ({
 
   const onConfirm = () => {
     setShowTags(
-      recommendedResources.filter((x) => selectedResources.includes(x._id))
+      recommendedResources.filter((x) =>
+        selectedResources.includes(x.contentId)
+      )
     )
     setShowResourceModal(false)
   }
@@ -82,7 +87,7 @@ const AddResources = ({
   }
 
   const handleCancelresource = (resourceId) => {
-    setShowTags(showTags.filter((x) => x._id !== resourceId))
+    setShowTags(showTags.filter((x) => x.contentId !== resourceId))
     setSelectedResources(selectedResources.filter((x) => x !== resourceId))
   }
 
@@ -157,10 +162,10 @@ const AddResources = ({
       </AddResourcesLink>
       <ResourceTags>
         {showTags.map((tag) => (
-          <li key={tag._id}>
+          <li key={tag.contentId}>
             <span>{tag.contentTitle}</span>
             <CloseIconWrapper
-              onClick={() => handleCancelresource(tag._id)}
+              onClick={() => handleCancelresource(tag.contentId)}
               data-cy="cancelResource"
             >
               <IconClose />
@@ -179,7 +184,7 @@ const AddResources = ({
       >
         <ResourceCardContainer>
           {pageContent.map((x) => (
-            <CardBox key={x._id} data-cy={`${x._id}CardBox`}>
+            <CardBox key={x.contentId} data-cy={`${x.contentId}CardBox`}>
               <CardImage />
               <RowOne>
                 <CardTitle
@@ -189,9 +194,9 @@ const AddResources = ({
                   {x.contentTitle}
                 </CardTitle>
                 <CheckboxLabel
-                  onChange={() => handleResourceCheck(x._id)}
-                  checked={selectedResources.includes(x._id)}
-                  data-cy={`${x._id}ResourceCheckbox`}
+                  onChange={() => handleResourceCheck(x.contentId)}
+                  checked={selectedResources.includes(x.contentId)}
+                  data-cy={`${x.contentId}ResourceCheckbox`}
                 />
               </RowOne>
             </CardBox>

@@ -38,6 +38,7 @@ const ClassGroupContainer = ({
   resourceIds,
   isVideoResourcePreviewModal,
   isFromMyPlaylist,
+  selectedResourcesAction,
 }) => {
   const { tags = testSettings.tags } = assignment
   return (
@@ -213,6 +214,7 @@ const ClassGroupContainer = ({
                 setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
                 resourceIds={resourceIds}
                 isVideoResourcePreviewModal={isVideoResourcePreviewModal}
+                selectedResourcesAction={selectedResourcesAction}
               />
             </Col>
           </StyledRow>

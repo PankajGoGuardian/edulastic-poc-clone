@@ -117,7 +117,7 @@ class SimpleOptions extends React.Component {
     ) {
       this.overRideSettings('applyEBSR', applyEBSR)
     }
-    const resourceIds = history.location.state.resourceIds
+    const resourceIds = history.location?.state?.resourceIds
     if (testId && resourceIds) {
       addRecommendedResourcesAction({
         testId,
@@ -417,8 +417,9 @@ class SimpleOptions extends React.Component {
       isVideoResourcePreviewModal,
     } = this.props
 
-    const resourceIds = history.location.state.resourceIds
-    const isFromMyPlaylist = history.location.state.from === 'myPlaylist'
+    const resourceIds = history.location?.state?.resourceIds
+    const isFromMyPlaylist =
+      history.location?.state?.assignedFrom === 'playlistAssignTest'
 
     const totalItems = isAssignRecommendations
       ? (assignment.questionPerStandard || 1) * selectedStandardsCount

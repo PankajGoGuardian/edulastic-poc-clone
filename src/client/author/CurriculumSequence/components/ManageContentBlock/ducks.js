@@ -11,7 +11,7 @@ import {
 } from 'redux-saga/effects'
 import { testsApi, settingsApi, resourcesApi } from '@edulastic/api'
 import { notification } from '@edulastic/common'
-import * as Sentry from "@sentry/browser";
+import * as Sentry from '@sentry/browser'
 
 export const sliceName = 'playlistTestBox'
 const LIMIT = 20
@@ -336,7 +336,7 @@ function* updateResourceSaga({ payload }) {
   }
 }
 
-function* deleteResourceSaga({payload}) {
+function* deleteResourceSaga({ payload }) {
   try {
     yield call(resourcesApi.deleteResource, payload)
     yield put(slice.actions.resetSelectedStandards())
@@ -350,7 +350,7 @@ function* deleteResourceSaga({payload}) {
   }
 }
 
-function* getResourcesSaga(payload) {
+function* getResourcesSaga({ payload }) {
   try {
     const result = yield call(resourcesApi.addRecommendedResources, payload)
     if (result) {

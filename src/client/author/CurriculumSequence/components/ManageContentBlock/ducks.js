@@ -11,6 +11,7 @@ import {
 } from 'redux-saga/effects'
 import { testsApi, settingsApi, resourcesApi } from '@edulastic/api'
 import { notification } from '@edulastic/common'
+import * as Sentry from "@sentry/browser";
 
 export const sliceName = 'playlistTestBox'
 const LIMIT = 20
@@ -330,7 +331,8 @@ function* updateResourceSaga({ payload }) {
     yield put(slice.actions.resetAndSearchResources())
     notification({ type: 'success', msg: 'Resource Updated Successfully' })
   } catch (e) {
-    console.error('Error Occured: addResourceSaga ', e)
+    console.error('Error Occured: updateResourceSaga ', e)
+    Sentry.captureException(e)
   }
 }
 
@@ -343,7 +345,8 @@ function* deleteResourceSaga({payload}) {
     yield put(slice.actions.resetAndSearchResources())
     notification({ type: 'success', msg: 'Resource Deleted Successfully' })
   } catch (e) {
-    console.error('Error Occured: addResourceSaga ', e)
+    console.error('Error Occured: deleteResourceSaga ', e)
+    Sentry.captureException(e)
   }
 }
 

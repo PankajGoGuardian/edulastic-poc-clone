@@ -19,7 +19,7 @@ const DeleteResourceModal = ({
       visible={isVisible}
       width="570px"
       title="Delete Resource"
-      onCancel={() => onCancel()}
+      onCancel={onCancel}
       centered
       footer={[
         <ModalFooter>
@@ -27,7 +27,7 @@ const DeleteResourceModal = ({
             data-cy="cancel"
             isGhost
             key="cancel"
-            onClick={() => onCancel()}
+            onClick={onCancel}
           >
             No, Cancel
           </EduButton>
@@ -51,14 +51,7 @@ const DeleteResourceModal = ({
   )
 }
 
-const ConnectedDeleteItemModal = connect(
-  (state) => ({
-  }),
-  {
-  }
-)(DeleteResourceModal)
-
-export { ConnectedDeleteItemModal as DeleteResourceModal }
+export default DeleteResourceModal;
 
 const StyledModal = styled(ModalWrapper)`
   padding: 15px 45px 30px 45px;

@@ -21,7 +21,7 @@ import ResourceItem from '../ResourceItem'
 import WebsiteResourceModal from './components/WebsiteResourceModal'
 import ExternalVideoLink from './components/ExternalVideoLink'
 import LTIResourceModal from './components/LTIResourceModal'
-import { DeleteResourceModal } from './components/DeleteResource'
+import DeleteResourceModal from './components/DeleteResource'
 import slice, { getPlaylistContentFilters } from './ducks'
 import {
   ActionButton,

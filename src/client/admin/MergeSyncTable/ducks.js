@@ -5,11 +5,6 @@ import { captureSentryException, notification } from '@edulastic/common'
 import { adminApi } from '@edulastic/api'
 import _get from 'lodash.get'
 import { omit } from 'lodash'
-import schoolApi from '@edulastic/api/src/school'
-import {
-  createSchoolFailedAction,
-  createSchoolSuccessAction,
-} from '../../student/Signup/duck'
 
 // CONSTANTS
 export const SEARCH_EXISTING_DATA_API = '[admin] SEARCH_EXISTING_DATA_API'
@@ -591,7 +586,6 @@ const fetchedClassData = [
 function* fetchMappingData({ payload }) {
   try {
     // const result = yield call(getMappingData, payload)
-    debugger
     const result =
       payload.type === 'school' ? fetchedSchoolData : fetchedClassData
     yield put(

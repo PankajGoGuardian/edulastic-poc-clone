@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { CSVLink } from 'react-csv'
-import { Button, Upload, Icon, Modal, Select } from 'antd'
+import { Button, Upload, Icon, Modal } from 'antd'
 import { Table } from '../Common/StyledComponents'
 import { mapCountAsType, DISABLE_SUBMIT_TITLE } from '../Data'
+import ApproveMergeModal from './ApproveMergeModal'
 
 const { Column } = Table
-const { Option } = Select
 
 const orgTypesCount = [
   'schoolCount',
@@ -66,23 +66,7 @@ const MergeIdsTable = ({
     }
   }
 
-  const compare = (a, b) => {
-    return b.score - a.score
-  }
-
-  const setInitialMappedResult = (arr, fieldName) => {
-    const InititalMapping = {}
-    arr.forEach((_data) => {
-      InititalMapping[_data.id] = _data.match[0] || {}
-    })
-    setMappedResult((_previousMappedResult) => {
-      _previousMappedResult[fieldName] = InititalMapping
-      return { ..._previousMappedResult }
-    })
-  }
-
   const handleGenerateMapping = (fieldName) => {
-    debugger
     let type
     const lmsId = cleverId || atlasId
     const eduId = districtId
@@ -102,14 +86,6 @@ const MergeIdsTable = ({
   const handleReviewAndApprove = (fieldName) => {
     setMapperFieldName(fieldName)
     setIsModalVisible(true)
-  }
-
-  const handleMappingChange = (value, record) => {
-    const temp = { ...mappedResult }
-    temp[mapperFieldName][record.id] = record.match.find(
-      (element) => element.id === value
-    )
-    setMappedResult(temp)
   }
 
   const handleApprove = () => {
@@ -138,7 +114,6 @@ const MergeIdsTable = ({
       })
       console.log('mapDataToBeSent', mapDataToBeSent)
     }
-    alert('handleApproved Clicked')
   }
 
   const props = {
@@ -217,74 +192,17 @@ const MergeIdsTable = ({
           ))}
         </Table>
       </Modal>
-
-      <Modal
-        title="Review and Approve"
-        width="50%"
-        height="50%"
-        visible={isModalVisible}
-        onCancel={() => setIsModalVisible(false)}
-        footer={[
-          <Button key="back" onClick={() => setIsModalVisible(false)}>
-            Cancel
-          </Button>,
-          <Button key="submit" type="primary" onClick={handleApprove}>
-            Approve
-          </Button>,
-        ]}
-      >
-        <ul>
-          {mapperErrorMessage.length > 0
-            ? mapperErrorMessage.map((errorMsg) => <li>{errorMsg}</li>)
-            : null}
-        </ul>
-        {districtMappedData ? (
-          <Table
-            rowKey={(record) => record.id}
-            dataSource={districtMappedData[mapperFieldName]}
-            pagination={false}
-          >
-            <Column
-              title="S No."
-              width="20%"
-              key="id"
-              render={(_, __, idx) => idx + 1}
-            />
-            <Column
-              title={`Clever ${mapperFieldName}`}
-              dataIndex="name"
-              key="id"
-              render={(_data) => _data}
-            />
-            <Column
-              title={`Edulastic ${mapperFieldName}`}
-              dataIndex="match"
-              key="id"
-              render={(_data, record) => {
-                return (
-                  <Select
-                    defaultValue={
-                      mappedResult[mapperFieldName][record.id].name || 'NA'
-                    }
-                    dropdownStyle={{ zIndex: 2000 }}
-                    style={{ width: '90%' }}
-                    bordered={false}
-                    onChange={(value) => handleMappingChange(value, record)}
-                  >
-                    {_data.map((val) => (
-                      <Option key={val.id} value={val.id}>
-                        {val.name}
-                      </Option>
-                    ))}
-                  </Select>
-                )
-              }}
-            />
-          </Table>
-        ) : (
-          <h1>loading</h1>
-        )}
-      </Modal>
+      <ApproveMergeModal
+        mappedResult={mappedResult}
+        setMappedResult={setMappedResult}
+        setIsModalVisible={setIsModalVisible}
+        isModalVisible={isModalVisible}
+        handleApprove={handleApprove}
+        mapperFieldName={mapperFieldName}
+        mapperErrorMessage={mapperErrorMessage}
+        districtMappedData={districtMappedData}
+        setMapperErrorMessage={setMapperErrorMessage}
+      />
 
       <Table
         rowKey={(record) => record.key}

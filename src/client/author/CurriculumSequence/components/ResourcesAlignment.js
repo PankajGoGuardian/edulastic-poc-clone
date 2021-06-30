@@ -63,7 +63,7 @@ const ResourcesAlignment = ({
   setSelectedStandards = () => {},
   isVerticalView,
   curriculum: defaultCurriculum = '',
-  selectedStandards,
+  selectedStandards = [],
 }) => {
   const [showModal, setShowModal] = useState(false)
 
@@ -74,7 +74,6 @@ const ResourcesAlignment = ({
 
   const { elo: curriculumStandardsELO = [], tlo: curriculumStandardsTLO = [] } =
     curriculumStandards || {}
-
 
   const handleEditAlignment = (standardSet) => {
     const oldAlignment = alignment || defaultAlignment
@@ -152,7 +151,7 @@ const ResourcesAlignment = ({
     if (curriculums.length === 0) {
       getCurriculums()
     }
-    selectedStandards.forEach((s)=>{
+    selectedStandards.forEach((s) => {
       handleAddStandard(s)
     })
   }, [])

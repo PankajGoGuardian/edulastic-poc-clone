@@ -6,7 +6,12 @@ import ArrowPair from './components/ArrowPair'
 import ValueLabel from './components/ValueLabel'
 import Circles from './components/Circles'
 import withGrid from './HOC/withGrid'
-import { convertPxToUnit, convertUnitToPx, getGridVariables } from './helpers'
+import {
+  convertPxToUnit,
+  convertUnitToPx,
+  getGridVariables,
+  normalizeTouchEvent,
+} from './helpers'
 import { Line } from './styled'
 
 const DotPlot = ({
@@ -74,13 +79,6 @@ const DotPlot = ({
     setIsMouseDown(false)
     toggleBarDragging(false)
     saveAnswer(localData, active)
-  }
-
-  const normalizeTouchEvent = (e) => {
-    if (e?.nativeEvent?.changedTouches?.length) {
-      e.pageX = e.nativeEvent.changedTouches[0].pageX
-      e.pageY = e.nativeEvent.changedTouches[0].pageY
-    }
   }
 
   const onMouseMove = (e) => {

@@ -36,7 +36,7 @@ const updateResource = (data) =>{
 const deleteResource = (data) =>
   api
     .callApi({
-      url: `${prefix}/${data?.id}`,
+      url: `${prefix}/${data}`,
       method: 'delete',
     })
     .then((result) => result.data.result)
@@ -76,4 +76,6 @@ export default {
   updateStandards,
   searchResource,
   addRecommendedResources,
+  updateResource,
+  deleteResource,
 }

@@ -104,6 +104,7 @@ const ManageContentBlock = (props) => {
     setSelectedStandards,
     setResourceSearch,
     updateRecentStandardAction,
+    userId,
   } = props
 
   const {
@@ -316,6 +317,7 @@ const ManageContentBlock = (props) => {
             <ResourceItem
               editResource={editResource}
               deleteResource={deleteResourceConfirmation}
+              userId={userId}
               resource={resource}
               key={resource?.contentId}
               type={resource?.contentType}
@@ -480,12 +482,12 @@ const ManageContentBlock = (props) => {
           </ManageContentContainer>
         </div>
 
-        {isDeleteResourceModalVisible && <DeleteResourceModal 
-          isVisible={isDeleteResourceModalVisible} 
-          id={deleteResourceId}
-          onCancel={()=>{setIsDeleteResourceModalVisible(false)}}
-          deleteResource={deleteResource}
-        ></DeleteResourceModal>}
+        {isDeleteResourceModalVisible && (<DeleteResourceModal 
+            isVisible={isDeleteResourceModalVisible} 
+            id={deleteResourceId}
+            onCancel={()=>{setIsDeleteResourceModalVisible(false)}}
+            deleteResource={deleteResource}
+          />)}
 
         {showContentFilterModal && (
           <PlaylistContentFilterModal
@@ -595,6 +597,7 @@ const enhance = compose(
       userFeatures: state?.user?.user?.features,
       interestedCurriculums: getInterestedCurriculumsSelector(state),
       contentFilters: getPlaylistContentFilters(state),
+      userId: state.user?.user?._id,
     }),
     {
       setFilterAction: slice.actions?.setFilterAction,

@@ -334,7 +334,7 @@ function* updateResourceSaga({ payload }) {
   }
 }
 
-function* deleteResourceSaga({ payload }) {
+function* deleteResourceSaga({payload}) {
   try {
     yield call(resourcesApi.deleteResource, payload)
     yield put(slice.actions.resetSelectedStandards())

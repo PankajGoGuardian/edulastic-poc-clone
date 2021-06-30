@@ -157,6 +157,7 @@ const ResourceItem = ({
   resource,
   editResource,
   deleteResource,
+  userId,
 }) => {
   let standardIdentifiers = []
   if (type === 'test') {
@@ -241,7 +242,7 @@ const ResourceItem = ({
           onClick={previewTest}
           data-cy={type === 'test' ? 'testPreview' : 'resourcePreview'}
         />
-        {type !== 'test' && 
+        {type !== 'test' && resource?.userId === userId && 
         <Dropdown
         overlay={moreMenu}
         trigger={['click']}

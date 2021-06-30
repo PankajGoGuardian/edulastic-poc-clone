@@ -41,6 +41,18 @@ const WebsiteResourceModal = (props) => {
       setDescription(data?.contentDescription)
       setUrl(data?.contentUrl)
       setId(data?.contentId)
+      const allStandards = []
+      data?.alignment?.forEach((x) =>
+          x?.domains?.forEach((y) =>
+            y?.standards?.forEach(
+              (z) =>
+                data?.standards.includes(z?.id) &&
+                allStandards.push({ ...z, identifier: y.name, _id: y.id, curriculumId: y.curriculumId })
+            )
+          )
+        )
+      setAlignment(data?.alignment)
+      setSelectedStandards(allStandards)
     }
   }, [data])
 
@@ -121,6 +133,7 @@ const WebsiteResourceModal = (props) => {
       </FlexRow>
       <FlexRow>
         <ResourcesAlignment
+          selectedStandards={selectedStandards}
           alignment={alignment}
           setAlignment={setAlignment}
           setSelectedStandards={setSelectedStandards}

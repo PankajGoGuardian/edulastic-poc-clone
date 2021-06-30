@@ -41,7 +41,7 @@ const AddResources = ({
   useEffect(() => {
     if (recommendedResources.length && resourceIds.length) {
       setShowTags(
-        recommendedResources.filter((x) => resourceIds.includes(x._id))
+        recommendedResources?.filter((x) => resourceIds.includes(x._id))
       )
       setSelectedResources(resourceIds)
     }
@@ -141,11 +141,18 @@ const AddResources = ({
     </EduButton>,
   ]
 
-  return !recommendedResources.length ? (
-    <span>Loading...</span>
-  ) : (
+  const isAddResourceDisabled =
+    !recommendedResources?.length || selectedResources?.length > 4
+
+  return (
     <>
-      <AddResourcesLink data-cy="addResourcesLink" onClick={openResourceModal}>
+      <AddResourcesLink
+        isAddResourceDisabled={isAddResourceDisabled}
+        data-cy="addResourcesLink"
+        onClick={() => {
+          if (!isAddResourceDisabled) openResourceModal()
+        }}
+      >
         Add Resources
       </AddResourcesLink>
       <ResourceTags>

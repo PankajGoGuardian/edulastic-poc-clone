@@ -1,6 +1,7 @@
 import {
   greyThemeLight,
   greyThemeLighter,
+  greyThemeDark2,
   largeDesktopWidth,
   linkColor1,
   mobileWidth,
@@ -530,7 +531,8 @@ export const AssignModuleContentSpan = styled.span`
 `
 export const AddResourcesLink = styled.div`
   font-size: 11px;
-  color: ${lightGreen10};
+  color: ${({ isAddResourceDisabled }) =>
+    isAddResourceDisabled ? greyThemeDark2 : lightGreen10};
   text-transform: uppercase;
   font-weight: 600;
   letter-spacing: 0.3px;

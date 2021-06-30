@@ -40,7 +40,6 @@ const ClassGroupContainer = ({
   isFromMyPlaylist,
 }) => {
   const { tags = testSettings.tags } = assignment
-  console.log('resourceIds', resourceIds)
   return (
     <>
       {!isAssignRecommendations && (

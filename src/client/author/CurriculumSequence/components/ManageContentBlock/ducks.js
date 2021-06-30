@@ -12,6 +12,7 @@ import {
 import { testsApi, settingsApi, resourcesApi } from '@edulastic/api'
 import { notification } from '@edulastic/common'
 import * as Sentry from '@sentry/browser'
+import { omit } from 'lodash'
 import { getSelectedResourcesAction } from '../../../AssignTest/duck'
 
 export const sliceName = 'playlistTestBox'
@@ -356,8 +357,7 @@ function* getResourcesSaga({ payload }) {
   try {
     const result = yield call(resourcesApi.getRecommendedResources, payload)
     if (result) {
-      console.log('result', result)
-      const getSelectedResources = result.map((x) => ({
+      const getSelectedResources = result?.map((x) => ({
         type: 'assign',
         contentId: x._id,
         description: x?.contentDescription,
@@ -367,12 +367,15 @@ function* getResourcesSaga({ payload }) {
         contentUrl: x.contentUrl,
         standards: x?.standards || [],
       }))
+      const playlistSelectedResources = getSelectedResources?.filter((x) =>
+        resourceIds.includes(x.contentId)
+      )
       yield put(
         slice.actions.recommendedResourcesSuccessAction(getSelectedResources)
       )
       yield put(
         getSelectedResourcesAction(
-          getSelectedResources.filter((x) => resourceIds.includes(x.contentId))
+          playlistSelectedResources?.map((x) => omit(x, 'standards'))
         )
       )
     }

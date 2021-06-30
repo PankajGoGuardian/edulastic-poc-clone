@@ -120,7 +120,7 @@ export const performanceBandSelector = createSelector(
 const initialState = {
   openPolicy: 'Automatically on Start Date',
   closePolicy: 'Automatically on Due Date',
-  selectedResources: [],
+  resources: [],
 }
 
 export const assignmentSettings = createReducer(initialState, {
@@ -149,6 +149,6 @@ export const assignmentSettings = createReducer(initialState, {
     return initialState
   },
   [GET_SELECTED_RECOMMENDED_RESOURCES]: (state, { payload }) => {
-    state.selectedResources = payload
+    state.resources = payload
   },
 })

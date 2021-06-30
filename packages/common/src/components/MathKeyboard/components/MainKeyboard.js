@@ -58,16 +58,21 @@ const MainKeyboard = ({
       keysPerRow = 4
     }
 
+    if (type === keyboardMethods.ADVANCED_TRIGNOMETRY) {
+      limitRow = 6
+    }
+
     if (type === keyboardMethods.BASIC_WO_NUMBER && numbers) {
       limitRow = 5
     }
+
     if (type === keyboardMethods.INTERMEDIATE) {
       limitRow = 4
     }
     const rows = chunk(keybuttons, keysPerRow)
     updateBoards(chunk(rows, limitRow))
     updateCurrent(0)
-  }, [btns, numbers])
+  }, [type, btns, numbers])
 
   const handleClick = (handler, command, numToMove) => () => {
     if (handler && command) {

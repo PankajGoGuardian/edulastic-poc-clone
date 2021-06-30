@@ -1,5 +1,6 @@
 import { curriculumSequencesApi } from '@edulastic/api'
 import {
+  captureSentryException,
   CheckboxLabel,
   CustomModalStyled,
   EduButton,
@@ -38,13 +39,13 @@ const AddResources = ({
   const [showTags, setShowTags] = useState([])
 
   useEffect(() => {
-    if (resourceIds.length) {
+    if (recommendedResources.length && resourceIds.length) {
       setShowTags(
         recommendedResources.filter((x) => resourceIds.includes(x._id))
       )
       setSelectedResources(resourceIds)
     }
-  }, [])
+  }, [recommendedResources, resourceIds])
 
   const onCloseModal = () => {
     setShowResourceModal(false)
@@ -101,6 +102,7 @@ const AddResources = ({
       })
       submitLTIForm(signedRequest)
     } catch (e) {
+      captureSentryException(e)
       notification({ messageKey: 'failedToLoadResource' })
     }
   }
@@ -166,6 +168,7 @@ const AddResources = ({
         centered
         footer={footer}
         modalWidth="900px"
+        destroyOnClose
       >
         <ResourceCardContainer>
           {pageContent.map((x) => (

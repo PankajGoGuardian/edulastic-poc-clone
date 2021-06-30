@@ -246,6 +246,7 @@ class ModuleRow extends Component {
         toUrl: `/author/playlists/playlist/${playlistId}/use-this`,
         testVersionId,
         resourceIds,
+        assignedFrom: 'playlistAssignTest',
       },
     })
   }

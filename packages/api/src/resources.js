@@ -21,6 +21,26 @@ const addResource = (data) =>
     })
     .then((result) => result.data.result)
 
+const updateResource = (data) =>{
+  const id = data?.id
+  delete data['id']
+  return api
+    .callApi({
+      url: `${prefix}/${id}`,
+      method: 'post',
+      data,
+    })
+    .then((result) => result.data.result)
+}
+
+const deleteResource = (data) =>
+  api
+    .callApi({
+      url: `${prefix}/${data}`,
+      method: 'delete',
+    })
+    .then((result) => result.data.result)
+
 const updateStandards = (data) =>
   api
     .callApi({
@@ -56,4 +76,6 @@ export default {
   updateStandards,
   searchResource,
   addRecommendedResources,
+  updateResource,
+  deleteResource,
 }

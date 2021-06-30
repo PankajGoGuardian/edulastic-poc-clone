@@ -63,6 +63,7 @@ const ResourcesAlignment = ({
   setSelectedStandards = () => {},
   isVerticalView,
   curriculum: defaultCurriculum = '',
+  selectedStandards,
 }) => {
   const [showModal, setShowModal] = useState(false)
 
@@ -74,11 +75,6 @@ const ResourcesAlignment = ({
   const { elo: curriculumStandardsELO = [], tlo: curriculumStandardsTLO = [] } =
     curriculumStandards || {}
 
-  useEffect(() => {
-    if (curriculums.length === 0) {
-      getCurriculums()
-    }
-  }, [])
 
   const handleEditAlignment = (standardSet) => {
     const oldAlignment = alignment || defaultAlignment
@@ -151,6 +147,15 @@ const ResourcesAlignment = ({
       standards: newStandards,
     })
   }
+
+  useEffect(() => {
+    if (curriculums.length === 0) {
+      getCurriculums()
+    }
+    selectedStandards.forEach((s)=>{
+      handleAddStandard(s)
+    })
+  }, [])
 
   const handleStandardFocus = () => {
     getCurriculumStandards(curriculumId, grades, '')
@@ -255,6 +260,7 @@ const ResourcesAlignment = ({
           <div data-cy="searchStandardSelectItem">
             {isVerticalView && <FieldLabel>Standards</FieldLabel>}
             <SelectInputStyled
+              defaultValue={selectedStandards}
               data-cy="searchStandardSelect"
               mode="multiple"
               style={{ margin: 'auto', display: 'block' }}

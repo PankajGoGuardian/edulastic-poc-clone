@@ -19,12 +19,14 @@ const LTIResourceModal = (props) => {
   const {
     closeCallback,
     addResource,
+    updateResource,
     alignment,
     setAlignment,
     externalToolsProviders = [],
     selectedStandards,
     setSelectedStandards,
     curriculum = '',
+    data,
   } = props
 
   const [isAddNew, setAddNew] = useState(false)
@@ -35,6 +37,33 @@ const LTIResourceModal = (props) => {
   const [privacy, setPrivacy] = useState('')
   const [configurationType, setConfigType] = useState('')
   const [matchBy, setMatchBy] = useState('')
+  const [id, setId] = useState('')
+
+  useEffect(()=>{
+    if(data){
+      setAddNew(true)
+      setTitle(data?.contentTitle)
+      setUrl(data?.contentUrl)
+      setId(data?.contentId)
+      setMatchBy(data?.data?.matchBy)
+      setConfigType(data?.data?.configurationType)
+      setPrivacy(data?.data?.privacy)
+      setSharedSecret(data?.data?.sharedSecret)
+      setConsumerKey(data?.data?.consumerKey)
+      const allStandards = []
+      data?.alignment?.forEach((x) =>
+          x?.domains?.forEach((y) =>
+            y?.standards?.forEach(
+              (z) =>
+                data?.standards.includes(z?.id) &&
+                allStandards.push({ ...z, identifier: y.name, _id: y.id, curriculumId: y.curriculumId })
+            )
+          )
+        )
+      setAlignment(data?.alignment)
+      setSelectedStandards(allStandards)
+    }
+  }, [data])
 
   const clearFields = () => {
     setTitle('')
@@ -69,19 +98,36 @@ const LTIResourceModal = (props) => {
         'recentStandards',
         JSON.stringify({ recentStandards: selectedStandards || [] })
       )
-      addResource({
-        contentTitle: title,
-        contentUrl: url,
-        contentType: 'lti_resource',
-        standards: selectedStandardIds,
-        data: {
-          consumerKey,
-          sharedSecret,
-          privacy,
-          configurationType,
-          matchBy,
-        },
-      })
+      if(id){
+        updateResource({
+          id,
+          contentTitle: title,
+          contentUrl: url,
+          contentType: 'lti_resource',
+          standards: selectedStandardIds,
+          data: {
+            consumerKey,
+            sharedSecret,
+            privacy,
+            configurationType,
+            matchBy,
+          },
+        })
+      }else{
+        addResource({
+          contentTitle: title,
+          contentUrl: url,
+          contentType: 'lti_resource',
+          standards: selectedStandardIds,
+          data: {
+            consumerKey,
+            sharedSecret,
+            privacy,
+            configurationType,
+            matchBy,
+          },
+        })
+      }
       closeCallback()
     } else notification({ type: 'warn', msg: validationStatus })
   }
@@ -109,7 +155,7 @@ const LTIResourceModal = (props) => {
   return (
     <EdulasticResourceModal
       headerText="External LTI Resource"
-      okText="ADD RESOURCE"
+      okText={id ? "UPDATE RESOURCE" : "ADD RESOURCE"}
       submitCallback={submitCallback}
       {...props}
     >
@@ -120,6 +166,7 @@ const LTIResourceModal = (props) => {
           onChange={() => setAddNew(true)}
           getPopupContainer={(node) => node.parentNode}
           height="36px"
+          defaultValue={isAddNew ? "add-new" : null}
         >
           {getToolProviderOptions()}
           <Select.Option value="add-new">Add New Resource</Select.Option>
@@ -170,6 +217,7 @@ const LTIResourceModal = (props) => {
               onChange={(value) => setPrivacy(value)}
               getPopupContainer={(node) => node.parentNode}
               height="36px"
+              defaultValue={privacy !== '' ? privacy : undefined}
             >
               {getPrivacyOptions()}
             </SelectInputStyled>
@@ -181,6 +229,7 @@ const LTIResourceModal = (props) => {
               onChange={(value) => setConfigType(value)}
               getPopupContainer={(node) => node.parentNode}
               height="36px"
+              defaultValue={configurationType !== '' ? configurationType : undefined}
             >
               {getConfigTypeOptions()}
             </SelectInputStyled>
@@ -192,6 +241,7 @@ const LTIResourceModal = (props) => {
               onChange={(value) => setMatchBy(value)}
               getPopupContainer={(node) => node.parentNode}
               height="36px"
+              defaultValue={matchBy !== '' ? matchBy : undefined}
             >
               {getMatchByOptions()}
             </SelectInputStyled>
@@ -200,6 +250,7 @@ const LTIResourceModal = (props) => {
       )}
       <FlexRow>
         <ResourcesAlignment
+          selectedStandards={selectedStandards}
           alignment={alignment}
           setAlignment={setAlignment}
           setSelectedStandards={setSelectedStandards}

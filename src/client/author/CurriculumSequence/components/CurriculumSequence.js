@@ -767,6 +767,12 @@ class CurriculumSequence extends Component {
       currentUserId,
     } = this.props
 
+    const SMid = collections.filter((x)=> x?.name?.toLowerCase() === 'spark math').map(({_id}) => _id);
+    let isSMPlaylist;
+    destinationCurriculumSequence?.collections?.forEach((c)=>{
+      if(SMid?.includes(c?._id)) isSMPlaylist = true
+    })
+
     const isManageContentActive = activeRightPanel === 'manageContent'
     // check Current user's edit permission
     const hasEditAccess = this.checkWritePermission()
@@ -942,6 +948,7 @@ class CurriculumSequence extends Component {
 
         <CurriculumSequenceWrapper>
           <CurriculumHeader
+            isSMPlaylist={isSMPlaylist}
             role={role}
             mode={mode}
             features={features}

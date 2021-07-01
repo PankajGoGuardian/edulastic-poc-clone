@@ -8,13 +8,13 @@ import { AutoComplete, Input, Icon, Tooltip, Empty } from 'antd'
 import { assignmentStatusOptions, roleuser } from '@edulastic/constants'
 
 // ducks
+import { useDropdownData } from '@edulastic/common'
 import { getUser } from '../../../../src/selectors/user'
 import {
   receiveTestListAction,
   getTestListSelector,
   getTestListLoadingSelector,
 } from '../../../ducks'
-import useDropdownData from '../../hooks/useDropdownData'
 
 const { IN_PROGRESS, IN_GRADING, DONE } = assignmentStatusOptions
 

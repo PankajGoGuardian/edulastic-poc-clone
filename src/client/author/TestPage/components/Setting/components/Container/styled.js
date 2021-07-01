@@ -16,6 +16,7 @@ import {
 import { Paper } from '@edulastic/common'
 import { Anchor, Button, Col, Input, Radio, Select, Table } from 'antd'
 import styled from 'styled-components'
+import { SavedSettingsContainer } from '../../../../../AssignTest/components/Container/styled'
 
 export const Container = styled(Paper)`
   margin-top: ${(props) => (props.marginTop ? props.marginTop : '27px')};
@@ -146,7 +147,7 @@ export const Description = styled.div`
   font-size: 12px;
   line-height: 22px;
   color: #6a737f;
-  margin-top: 10px;
+  margin-top: ${({ marginTop }) => marginTop || '10px'};
 `
 
 export const StyledRadioGroup = styled(Radio.Group)`
@@ -391,4 +392,15 @@ export const SettingsCategoryBlock = styled.div`
     font-size: 20px;
     cursor: pointer;
   }
+`
+export const SavedSettingsContainerStyled = styled(SavedSettingsContainer)`
+  position: relative;
+  ${({ isSmallSize }) =>
+    isSmallSize
+      ? {
+          marginBottom: '20px',
+          display: 'flex',
+          justifyContent: 'flex-end',
+        }
+      : { right: '-45px', float: 'right', top: '-45px' }}
 `

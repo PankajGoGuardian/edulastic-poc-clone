@@ -97,8 +97,6 @@ import { getIsloadingAssignmentSelector } from './components/Assign/ducks'
 import { sortTestItemQuestions } from '../dataUtils'
 import { answersByQId } from '../../assessment/selectors/test'
 
-// constants
-
 const {
   ITEM_GROUP_TYPES,
   ITEM_GROUP_DELIVERY_TYPES,
@@ -107,6 +105,8 @@ const {
   calculatorTypes,
   evalTypeLabels,
   passwordPolicy,
+  testSettingsOptions,
+  docBasedSettingsOptions,
 } = test
 const testItemStatusConstants = {
   INREVIEW: 'inreview',
@@ -1753,6 +1753,16 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     enableScratchpad: !!entity.enableScratchpad,
     enableSkipAlert: !!entity.enableSkipAlert,
     keypad: entity.keypad,
+    testType: entity.testType,
+    maxAttempts: entity.maxAttempts,
+    markAsDone: entity.markAsDone,
+    releaseScore: entity.releaseScore,
+    safeBrowser: entity.safeBrowser,
+    shuffleAnswers: entity.shuffleAnswers,
+    shuffleQuestions: entity.shuffleQuestions,
+    calcType: entity.calcType,
+    answerOnPaper: entity.answerOnPaper,
+    maxAnswerChecks: entity.maxAnswerChecks,
   }
 
   if (isAdmin) {
@@ -1919,6 +1929,8 @@ export function* receiveTestByIdSaga({ payload }) {
       'startDate',
       'class',
       'endDate',
+      'openPolicy',
+      'closePolicy',
     ])
     yield put(setDefaultTestSettingsAction(defaultTestSettings))
   } catch (err) {
@@ -3122,6 +3134,14 @@ function* getDefaultTestSettingsSaga({ payload: testEntity }) {
       )
     }
     yield put(setDefaultSettingsLoadingAction(false))
+    if (testEntity.saveDefaultTestSettings === true) {
+      const _test = yield select(getTestEntitySelector)
+      const defaultSettings = pick(
+        _test,
+        _test.isDocBased ? docBasedSettingsOptions : testSettingsOptions
+      )
+      yield put(setDefaultTestSettingsAction(defaultSettings))
+    }
   } catch (e) {
     Sentry.captureException(e)
     notification({ messageKey: 'getDeafultSettingsFailed' })

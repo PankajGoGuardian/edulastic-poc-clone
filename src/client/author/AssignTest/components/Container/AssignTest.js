@@ -80,7 +80,12 @@ import UpdateTestSettingsModal from './UpdateTestSettingModal'
 import { fetchCustomKeypadAction } from '../../../../assessment/components/KeyPadOptions/ducks'
 
 const { ASSESSMENT, COMMON } = testConst.type
-const { evalTypeLabels } = testConst
+const {
+  evalTypeLabels,
+  TEST_SETTINGS_SAVE_LIMIT,
+  testSettingsOptions,
+  docBasedSettingsOptions,
+} = testConst
 
 const parentMenu = {
   assignments: { title: 'Assignments', to: 'assignments' },
@@ -88,76 +93,6 @@ const parentMenu = {
   myPlaylist: { title: 'My playlist', to: 'myPlaylist' },
   testLibrary: { title: 'Test Library', to: 'tests' },
 }
-
-const testSettingsOptions = [
-  'partialScore',
-  'timer',
-  'testType',
-  'hasInstruction',
-  'instruction',
-  'releaseScore',
-  'scoringType',
-  'penalty',
-  'markAsDone',
-  'calcType',
-  'timedAssignment',
-  'pauseAllowed',
-  'maxAttempts',
-  'maxAnswerChecks',
-  'safeBrowser',
-  'shuffleQuestions',
-  'shuffleAnswers',
-  'sebPassword',
-  'blockNavigationToAnsweredQuestions',
-  'restrictNavigationOut',
-  'restrictNavigationOutAttemptsThreshold',
-  'blockSaveAndContinue',
-  'passwordPolicy',
-  'assignmentPassword',
-  'passwordExpireIn',
-  'answerOnPaper',
-  'playerSkinType',
-  'standardGradingScale',
-  'performanceBand',
-  'showMagnifier',
-  'enableScratchpad',
-  'enableSkipAlert',
-  'autoRedirect',
-  'autoRedirectSettings',
-  'keypad',
-  'applyEBSR',
-]
-
-const docBasedSettingsOptions = [
-  'partialScore',
-  'timer',
-  'testType',
-  'hasInstruction',
-  'instruction',
-  'releaseScore',
-  'scoringType',
-  'penalty',
-  'markAsDone',
-  'calcType',
-  'timedAssignment',
-  'pauseAllowed',
-  'maxAttempts',
-  'safeBrowser',
-  'sebPassword',
-  'restrictNavigationOut',
-  'restrictNavigationOutAttemptsThreshold',
-  'blockSaveAndContinue',
-  'passwordPolicy',
-  'assignmentPassword',
-  'passwordExpireIn',
-  'answerOnPaper',
-  'standardGradingScale',
-  'performanceBand',
-  'autoRedirect',
-  'autoRedirectSettings',
-]
-
-const TEST_SETTINGS_SAVE_LIMIT = 20
 
 class AssignTest extends React.Component {
   constructor(props) {
@@ -430,6 +365,7 @@ class AssignTest extends React.Component {
       currentSettingsId,
       isFreezeSettingsOn,
       totalItems,
+      userRole,
     } = this.props
     if (value === 'save-settings-option') {
       if (currentSettingsId === '')
@@ -476,6 +412,19 @@ class AssignTest extends React.Component {
         newSettings.allowedTime = totalItems * 60 * 1000
       } else if (!newSettings.timedAssignment) {
         newSettings.allowedTime = 0
+      }
+      if (userRole === roleuser.TEACHER && newSettings.testContentVisibility) {
+        delete newSettings.testContentVisibility
+      }
+      /**
+       *  Test instruction are not available on assign page so avoid sending them in assignment settings from FE,
+       *  BE handles setting instructions from test settings to assignment settings
+       * */
+      if (newSettings.hasInstruction) {
+        delete newSettings.hasInstruction
+      }
+      if (newSettings.instruction) {
+        delete newSettings.instruction
       }
       setCurrentTestSettingsId(value)
       updateAssignmentSettings(newSettings)

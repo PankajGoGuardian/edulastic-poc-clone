@@ -57,6 +57,7 @@ import {
   setShowUpgradePopupAction,
   receiveTestByIdSuccess as receiveTestByIdSuccessAction,
   isRegradedByCoAuthor,
+  setCurrentTestSettingsIdAction,
 } from '../../ducks'
 import {
   clearSelectedItemsAction,
@@ -196,11 +197,13 @@ class Container extends PureComponent {
       isVersionFlow,
       getTestIdFromVersionId,
       fetchUserKeypads,
+      setCurrentTestSettingsId,
     } = this.props
 
     const { versionId, id } = match.params
 
     if (userRole !== roleuser.STUDENT) {
+      setCurrentTestSettingsId('')
       fetchUserKeypads()
       const self = this
       const { showCancelButton = false, editAssigned = false } =
@@ -262,7 +265,8 @@ class Container extends PureComponent {
         setRegradeOldId('')
       }
 
-      if (userRole !== roleuser.EDULASTIC_CURATOR) getDefaultTestSettings()
+      if (userRole !== roleuser.EDULASTIC_CURATOR)
+        getDefaultTestSettings({ saveDefaultTestSettings: true })
     } else {
       fetchAssignmentsByTest({ testId: id })
     }
@@ -1389,6 +1393,7 @@ const enhance = compose(
       fetchUserKeypads: fetchCustomKeypadAction,
       setShowUpgradePopup: setShowUpgradePopupAction,
       receiveTestByIdSuccess: receiveTestByIdSuccessAction,
+      setCurrentTestSettingsId: setCurrentTestSettingsIdAction,
     }
   )
 )

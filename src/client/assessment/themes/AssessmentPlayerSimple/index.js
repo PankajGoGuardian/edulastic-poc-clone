@@ -113,7 +113,8 @@ class AssessmentPlayerSimple extends React.Component {
             showScratchpadInfoNotification(items[currentItem])
           ) {
             const config =
-              playerSkinType === playerSkinValues.quester
+              playerSkinType === playerSkinValues.quester ||
+              playerSkinType === playerSkinValues.drc
                 ? { bottom: '64px' }
                 : {}
             notification({
@@ -144,7 +145,10 @@ class AssessmentPlayerSimple extends React.Component {
       playerSkinType,
     } = this.props
     const config =
-      playerSkinType === playerSkinValues.quester ? { bottom: '64px' } : {}
+      playerSkinType === playerSkinValues.quester ||
+      playerSkinType === playerSkinValues.drc
+        ? { bottom: '64px' }
+        : {}
     if (answerChecksUsedForItem >= settings.maxAnswerChecks)
       return notification({
         type: 'warn',

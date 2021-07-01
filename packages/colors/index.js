@@ -14,6 +14,8 @@ export const themeLightGrayColor = '#BBBFC4'
 export const themeLightGrayBgColor = '#F1F1F1'
 export const themeColorBlue = 'rgba(63, 132, 229, 1)'
 export const themeColorHoverBlue = '#1A73E8'
+export const drcThemeColor = '#3f85e5'
+export const drcWhite = '#fff'
 
 export const greyThemeDark1 = '#434B5D'
 export const greyThemeDark2 = '#878A91'

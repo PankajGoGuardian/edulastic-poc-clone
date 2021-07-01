@@ -2,7 +2,15 @@ import React from 'react'
 import { Modal } from 'antd'
 import { EduButton } from '@edulastic/common'
 import styled from 'styled-components'
-import { white, lightGreen5, greenDark1, darkGrey2 } from '@edulastic/colors'
+import {
+  white,
+  lightGreen5,
+  greenDark1,
+  darkGrey2,
+  drcWhite,
+  drcThemeColor,
+} from '@edulastic/colors'
+import { playerSkinValues } from '@edulastic/constants/const/test'
 
 const UnansweredPopup = (props) => {
   const { className, visible, title, onSkip, onClose } = props
@@ -81,6 +89,27 @@ const StyledUnansweredPopup = styled(UnansweredPopup)`
       font-weight: bold;
     }
   }
+  ${(props) =>
+    props.playerSkinType === playerSkinValues.drc
+      ? `
+    .ant-modal-footer {
+      button.ant-btn.ant-btn-primary {
+        border-color: ${drcThemeColor};
+        color: ${drcThemeColor};
+        background-color: ${drcWhite};
+        &:hover{
+          border-color: ${drcWhite};
+          color: ${drcWhite};
+          background-color: ${drcThemeColor};
+        }
+      }
+      button.ant-btn.ant-btn-primary + button {
+        background: ${drcThemeColor};
+        color: ${drcWhite};
+      }
+    }
+  `
+      : ``}
 `
 
 const StyledFooter = styled.div`

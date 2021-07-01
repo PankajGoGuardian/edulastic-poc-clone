@@ -229,6 +229,7 @@ module.exports = {
     casspp: 'CAASPP (CA)',
     testlet: 'ETS Testlet',
     quester: 'Questar',
+    drc: 'DRC',
     peaks: 'PEAKS (AK)',
     acap: 'ACAP (AL)',
     act_aspire: 'ACT Aspire (AR)',
@@ -337,6 +338,7 @@ module.exports = {
     wv_assessments: 'sbac',
     wy_topp: 'sbac',
     dc_assessments: 'parcc',
+    drc: 'drc',
   },
   languageCodes: {
     ENGLISH: 'en',

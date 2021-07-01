@@ -1034,6 +1034,21 @@ const AssessmentContainer = ({
     }
   }
 
+  // This function is for a direct submit only available in DRC player.
+  // take care of changes related to generic submit here as well.
+  const handleReviewOrSubmit = () => {
+    const timeSpent = Date.now() - lastTime.current
+    if (preview) {
+      if (demo) {
+        return submitPreviewTest()
+      } else {
+        const evalArgs = { currentItem, timeSpent, callback: submitPreviewTest }
+        return evaluateForPreview(evalArgs)
+      }
+    }
+    gotoSummary()
+  }
+
   const onSkipUnansweredPopup = async () => {
     setUnansweredPopupSetting({
       ...unansweredPopupSetting,
@@ -1174,6 +1189,7 @@ const AssessmentContainer = ({
     uploadToS3: uploadFile,
     userWork,
     gotoSummary,
+    handleReviewOrSubmit,
     ...restProps,
   }
 
@@ -1302,6 +1318,7 @@ const AssessmentContainer = ({
           onSkip={onSkipUnansweredPopup}
           onClose={onCloseUnansweedPopup}
           data={unansweredPopupSetting.qLabels}
+          playerSkinType={playerSkinType}
         />
       )}
       {!preview && !demo && (

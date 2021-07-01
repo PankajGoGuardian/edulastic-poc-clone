@@ -111,6 +111,7 @@ const PurchaseFlowModals = (props) => {
     toggleSubmitPOModal,
     setCartQuantities,
     setProratedProducts,
+    setIsTabShouldSwitch,
   } = props
 
   const [payWithPoModal, setPayWithPoModal] = useState(false)
@@ -475,6 +476,7 @@ const PurchaseFlowModals = (props) => {
           subscription={props.subscription}
           hideCcButton={hideCcButton}
           shouldbeMultipleLicenses={shouldbeMultipleLicenses}
+          setIsTabShouldSwitch={setIsTabShouldSwitch}
         />
       )}
       {showUpgradeModal && (
@@ -558,6 +560,7 @@ PurchaseFlowModals.defaultProps = {
   setClickedBundleId: () => {},
   openRequestInvoiceModal: () => {},
   toggleSubmitPOModal: () => {},
+  setIsTabShouldSwitch: () => {},
 }
 
 export default compose(

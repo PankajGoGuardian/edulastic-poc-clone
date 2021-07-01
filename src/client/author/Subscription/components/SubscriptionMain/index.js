@@ -132,6 +132,7 @@ const SubscriptionMain = ({
   proratedProducts,
   isPaidPremium,
   signUpFlowModalHandler = () => {},
+  setIsTabShouldSwitch,
 }) => {
   const _isFreeAdmin = isFreeAdmin && !isPaidPremium
   const [isTrialModalVisible, setIsTrialModalVisible] = useState(false)
@@ -836,6 +837,7 @@ const SubscriptionMain = ({
           setTrialAddOnProductIds={setTrialAddOnProductIds}
           hasAllTrialProducts={hasAllTrialProducts}
           setShowTrialSubsConfirmation={setShowTrialSubsConfirmation}
+          setIsTabShouldSwitch={setIsTabShouldSwitch}
         />
       )}
       {showFeatureNotAvailableModal && (

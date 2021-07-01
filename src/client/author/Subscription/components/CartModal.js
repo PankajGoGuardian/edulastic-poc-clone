@@ -35,6 +35,7 @@ function CartModal({
   subType,
   hideCcButton,
   shouldbeMultipleLicenses,
+  setIsTabShouldSwitch,
 }) {
   const teacherPremiumId = teacherPremium?.id
   const [emailValues, setEmailValues] = useState('')
@@ -68,6 +69,7 @@ function CartModal({
   }
 
   const handleProceed = () => {
+    setIsTabShouldSwitch(false)
     const emails = emailValues
       .split(',')
       .map((x) => x.replace(/\s/g, ''))

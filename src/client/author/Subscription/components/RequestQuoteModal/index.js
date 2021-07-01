@@ -154,6 +154,7 @@ const RequestQuoteModal = ({
         cartProducts: quantities,
         otherInfo,
         licenseType: 'Enterprise',
+        studentLicenseCount,
       }
       handleRequestQuote({
         reqPayload,

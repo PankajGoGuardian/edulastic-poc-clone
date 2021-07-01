@@ -35,7 +35,7 @@ const TestRecommendationsContainer = ({
   return (
     <TestRecommendationsWrapper>
       <FlexContainer
-        justifyContent="space-between"
+        justifyContent="flex-start"
         alignItems="flex-start"
         mt="35px"
       >

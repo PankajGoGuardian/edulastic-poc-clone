@@ -80,6 +80,7 @@ import {
   setDictAlignmentFromQuestion,
   getIsGradingCheckboxState,
   SAVE_QUESTION_REQUEST,
+  addAuthoredItemsAction,
 } from '../QuestionEditor/ducks'
 import { getNewAlignmentState } from '../src/reducers/dictionaries'
 import {
@@ -513,21 +514,12 @@ export const getItemDeletingSelector = createSelector(
 
 export const getItemDetailDimensionTypeSelector = createSelector(
   getItemDetailSelector,
-  getPassageSelector,
-  (state, passage) => {
+  (state) => {
     if (!state || !state.rows) return ''
-    let left = '',
-      right = ''
-    // For passage item left is passage and right is item | EV-28080
-    if (state.passageId) {
-      right = state.rows[0].dimension.trim().slice(0, -1)
-      left = (passage?.structure?.dimension || '').trim().slice(0, -1)
-    } else {
-      left = state.rows[0].dimension.trim().slice(0, -1)
-      right = state.rows[1]
-        ? state.rows[1].dimension.trim().slice(0, -1)
-        : '100'
-    }
+    const left = state.rows[0].dimension.trim().slice(0, -1)
+    const right = state.rows[1]
+      ? state.rows[1].dimension.trim().slice(0, -1)
+      : '100'
     return `${left}-${right}`
   }
 )
@@ -605,21 +597,17 @@ const deleteWidget = (state, { rowIndex, widgetIndex }) =>
   })
 
 const updateDimension = (state, { left, right, ...rest }) => {
-  const { item = {}, passage: { structure = {} } = {} } = state
-  const { rows = [] } = item
-  if (rows.length > 0) {
+  const {
+    item: { rows = [] },
+  } = state
+  if (rows.length > 0 && rows[0].dimension === left) {
     /**
      * fixing page crash here when same option is clicked
      * separate bug is to be logged for fixing page crash
      * will ideally prevent in from the action being called in that
      */
-    // For passage item left is passage and right is item | EV-28080
-    const _dimension = item.passageId
-      ? structure.dimension || ''
-      : rows[0].dimension
-    if (_dimension === left) {
-      return state
-    }
+
+    return state
   }
 
   /**
@@ -644,9 +632,6 @@ const updateDimension = (state, { left, right, ...rest }) => {
         ]
       }
       newState.item.rows.length = 1
-      if (newState.item.passageId && newState?.passage?.structure) {
-        newState.passage.structure.dimension = left
-      }
     } else {
       // if its a pasage type. left is passage and right is the testItem
       if (newState.item.passageId) {
@@ -982,7 +967,7 @@ export function reducer(state = initialState, { type, payload }) {
           multipartItem: true,
           isPassageWithQuestions: true,
           canAddMultipleItems: !!payload.canAddMultipleItems,
-          itemLevelScoring: false,
+          itemLevelScoring: state?.item?.itemLevelScoring || false,
         },
       }
     case ADD_PASSAGE: {
@@ -1972,8 +1957,9 @@ function* savePassage({ payload }) {
     const hasValidTestId = payload.testId && payload.testId !== 'undefined'
     const testIdParam = hasValidTestId ? payload.testId : null
 
+    let item
     if (currentItem._id === 'new') {
-      const item = yield call(
+      item = yield call(
         testItemsApi.create,
         _omit(currentItem, '_id'),
         ...(testIdParam ? [{ testId: testIdParam }] : [])
@@ -2013,7 +1999,26 @@ function* savePassage({ payload }) {
      * after saving the question it redirects to item detail page
      */
     yield put(changeUpdatedFlagAction(false))
-    yield put(push(url))
+
+    /**
+     * If test flow and test is not created, creating test after passage item is created and redirecting to edit-item page
+     * If not test flow or if test is already created, redirecting to edit-item page
+     * passing addAuthoredItemsAction fromSaveMultipartItem flag for getting redirected to edit-item page instead of test review page
+     * @see https://snapwiz.atlassian.net/browse/EV-26929
+     */
+    if (backUrl.includes('tests') && payload?.testId === 'undefined' && item) {
+      yield put(
+        addAuthoredItemsAction({
+          item,
+          tId: payload.testId,
+          isEditFlow: false,
+          fromSaveMultipartItem: true,
+          url,
+        })
+      )
+    } else {
+      yield put(push(url))
+    }
   } catch (e) {
     Sentry.captureException(e)
     console.log('error: ', e)

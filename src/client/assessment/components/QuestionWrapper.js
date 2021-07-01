@@ -323,7 +323,7 @@ class QuestionWrapper extends Component {
       data,
       questions = {},
       multipartItem = false,
-      itemLevelScoring = false,
+      itemLevelScoring = true,
     } = this.props
     let score = previewScore
     let maxScore = previewMaxScore
@@ -365,7 +365,12 @@ class QuestionWrapper extends Component {
       isGradedExternally = testPreviewScore.isGradedExternally
     }
 
-    return { score: (score || 0) / (maxScore || 1), isGradedExternally }
+    return {
+      score: (score || 0) / (maxScore || 1),
+      isGradedExternally,
+      multipartItem,
+      itemLevelScoring,
+    }
   }
 
   render() {

@@ -246,7 +246,7 @@ class Container extends Component {
     const newNumberOfPassageWidgets = get(newPassage, 'structure.widgets', [])
       .length
     if (newNumberOfPassageWidgets < prevNumberOfPassageWidgets) {
-      saveItem()
+      saveItem(false)
     }
   }
 

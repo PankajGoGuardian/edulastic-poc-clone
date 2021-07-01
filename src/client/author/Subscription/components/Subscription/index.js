@@ -249,6 +249,7 @@ const Subscription = (props) => {
   const [isSubmitPOModalVisible, setSubmitPOModal] = useState(false)
   const [showCompleteSignupModal, setShowCompleteSignupModal] = useState(false)
   const [callFunctionAfterSignup, setCallFunctionAfterSignup] = useState(null)
+  const [isTabShouldSwitch, setIsTabShouldSwitch] = useState(true)
 
   useEffect(() => {
     // getSubscription on mount
@@ -267,12 +268,13 @@ const Subscription = (props) => {
 
   useEffect(() => {
     if (
-      (['partial_premium', 'enterprise'].includes(subType) && isPremiumUser) ||
-      isFreeAdmin
+      ((['partial_premium', 'enterprise'].includes(subType) && isPremiumUser) ||
+        isFreeAdmin) &&
+      isTabShouldSwitch
     ) {
       setShowEnterpriseTab(true)
     }
-  }, [subType, isPremiumUser, isFreeAdmin])
+  }, [subType, isPremiumUser, isFreeAdmin, isTabShouldSwitch])
 
   /**
    *  a user is paid premium user if
@@ -383,6 +385,7 @@ const Subscription = (props) => {
 
   const signUpFlowModalHandler = (afterSignup) => {
     if (!isSignupCompleted) {
+      setIsTabShouldSwitch(false)
       setShowCompleteSignupModal(true)
       setCallFunctionAfterSignup(() => afterSignup)
     } else {
@@ -418,6 +421,7 @@ const Subscription = (props) => {
         schoolId={schoolId}
         setCartVisible={setCartVisible}
         cartQuantities={cartQuantities}
+        setIsTabShouldSwitch={setIsTabShouldSwitch}
       />
       <SubscriptionContentWrapper>
         {showEnterpriseTab ? (
@@ -475,6 +479,7 @@ const Subscription = (props) => {
             isPlanEnterprise={isPlanEnterprise}
             proratedProducts={proratedProducts}
             signUpFlowModalHandler={signUpFlowModalHandler}
+            setIsTabShouldSwitch={setIsTabShouldSwitch}
           />
         )}
       </SubscriptionContentWrapper>
@@ -505,6 +510,7 @@ const Subscription = (props) => {
         openRequestInvoiceModal={openRequestInvoiceModal}
         isExternalSubmitPOModalVisible={isSubmitPOModalVisible}
         toggleSubmitPOModal={setSubmitPOModal}
+        setIsTabShouldSwitch={setIsTabShouldSwitch}
       />
 
       {showCompleteSignupModal && (

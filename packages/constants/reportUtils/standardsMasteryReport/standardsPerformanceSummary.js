@@ -109,10 +109,9 @@ const groupedByDomain = (
       const score = round(
         (sumBy(domainData, 'totalScore') / sumBy(domainData, 'maxScore')) * 100
       )
-      const rawScore = `${sumBy(domainData, 'totalScore').toFixed(2)} / ${sumBy(
-        domainData,
-        'maxScore'
-      )}`
+      const rawScore = `${(sumBy(domainData, 'totalScore') || 0).toFixed(
+        2
+      )} / ${sumBy(domainData, 'maxScore')}`
       const masteryLevel = getRecordMasteryLevel(domainData, scaleInfo)
         .masteryLabel
       const domainMetaInformation = find(
@@ -428,6 +427,8 @@ module.exports = {
   getMaxMasteryScore,
   getOverallMasteryScore,
   getParsedData,
+  getScore,
+  getOverallRawScore,
   // chart transformers
   getTicks,
   // table transformers

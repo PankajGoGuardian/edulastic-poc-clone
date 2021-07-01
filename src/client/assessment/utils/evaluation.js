@@ -18,7 +18,12 @@ export const getEvalautionColor = (
   allCorrect,
   isEvaluationEmpty = false
 ) => {
-  const { score, isGradedExternally } = answerScore || {}
+  const {
+    score,
+    isGradedExternally,
+    multipartItem = false,
+    itemLevelScoring = true,
+  } = answerScore || {}
   if (!attempt || isEvaluationEmpty) {
     // skipped answer
     return {
@@ -29,6 +34,18 @@ export const getEvalautionColor = (
   }
 
   if (allCorrect && score < 1 && score > 0) {
+    /**
+     * @see https://snapwiz.atlassian.net/browse/EV-28745
+     * If all the responses are correct in a multipart item where itemLevelScoring is true,
+     * the fill color should be green as score could be partial because of some other question being wrong
+     */
+    if (!isGradedExternally && multipartItem && itemLevelScoring) {
+      return {
+        fillColor: correctBgColor,
+        mark: <RightIcon />,
+        indexBgColor: correctIconColor,
+      }
+    }
     // its all correct, but score isn't maxScore
     return {
       fillColor: partialBgColor,

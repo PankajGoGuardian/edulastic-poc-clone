@@ -87,10 +87,10 @@ class TestItemCol extends Component {
       isStudentWorkCollapseOpen,
       toggleStudentWorkCollapse,
       colIndex,
-      isStudentReport,
       ...restProps
     } = this.props
     const {
+      isStudentReport,
       LCBPreviewModal,
       isStudentAttempt,
       isLCBView,
@@ -157,7 +157,10 @@ class TestItemCol extends Component {
         showBorder={showTabBorder}
         hideCorrectAnswer={hideCorrectAnswer}
       >
-        <FlexContainer flexDirection={isStudentReport && 'column'}>
+        <FlexContainer
+          flexDirection={isStudentReport && 'column'}
+          justifyContent="flex-start" // @see EV-29020
+        >
           <FlexItem flexGrow="1">
             <QuestionWrapper
               showFeedback={showFeedback && widget?.widgetType !== 'resource'}
@@ -190,6 +193,7 @@ class TestItemCol extends Component {
               // widgetIndex was needed for passages if it has multiple tabs and widgets
               widgetIndex={widgetIndex}
               isStudentAttempt={isStudentAttempt}
+              isStudentReport={isStudentReport}
               isFeedbackVisible={isFeedbackVisible}
               questions={questions}
               itemLevelScoring={itemLevelScoring}

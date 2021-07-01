@@ -1,6 +1,6 @@
 {
   "name": "edulastic",
-  "version": "17.0.0",
+  "version": "17.0.3",
   "sideEffects": [
     "!(**/ducks.js)",
     "!(**/duck.js)",
@@ -53,7 +53,7 @@
     "prettier:format": "yarn prettier --write \"src/**/*.js|src/**/*.ts\""
   },
   "dependencies": {
-    "@edulastic/evaluators": "git+ssh://git@github.com/snapwiz/edu-eval.git#e69a29caa0e28834c3db227878e7746f9de93aea",
+    "@edulastic/evaluators": "git+ssh://git@github.com/snapwiz/edu-eval.git#964d3d7b5ba04607bc27992c7e08d943c6a8a1d2",
     "@fortawesome/fontawesome-svg-core": "^1.2.26",
     "@fortawesome/free-regular-svg-icons": "^5.12.0",
     "@fortawesome/free-solid-svg-icons": "^5.12.0",

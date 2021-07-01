@@ -2603,6 +2603,16 @@ div[class*='_pendo'] button {
   z-index: 1004;
 }
 
+.createModuleTooltip > .ant-tooltip-content >.ant-tooltip-inner{
+  background-color: white;
+  color:#2F4151
+}
+
+.createModuleTooltip > .ant-tooltip-content >.ant-tooltip-arrow::before {
+  background-color: white;
+  color:#2F4151
+}
+
 .ant-scrolling-effect .subscription-header  {
   padding-right: 40px;
 }

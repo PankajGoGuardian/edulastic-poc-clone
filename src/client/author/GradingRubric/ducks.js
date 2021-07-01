@@ -57,7 +57,9 @@ export const reducer = createReducer(initialState, {
   },
   [SEARCH_RUBRICS_SUCCESS]: (state, { payload }) => {
     state.searchingRubrics = false
-    state.searchedList = payload.rubrics
+    state.searchedList = (payload.rubrics || []).filter(
+      (rubric) => rubric.status !== 'archived'
+    )
     state.totalSearchedCount = payload.total
   },
   [SEARCH_RUBRICS_FAILED]: (state) => {
@@ -235,6 +237,13 @@ export const getTotalSearchedCountSelector = createSelector(
 
 export const getRecentlyUsedRubricsSelector = () => {
   const localStoredRubrics = localStorage.getItem('recentlyUsedRubrics')
-  if (localStoredRubrics) return JSON.parse(localStoredRubrics)
-  return []
+  try {
+    if (!localStoredRubrics) {
+      return []
+    }
+    const rubrics = JSON.parse(localStoredRubrics)
+    return rubrics.filter((rubric) => rubric.status !== 'archived')
+  } catch (error) {
+    return []
+  }
 }

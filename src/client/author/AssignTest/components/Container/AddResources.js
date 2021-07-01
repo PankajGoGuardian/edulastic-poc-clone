@@ -8,7 +8,7 @@ import {
 } from '@edulastic/common'
 import { IconClose } from '@edulastic/icons'
 import { Pagination } from 'antd'
-import { pick } from 'lodash'
+import { omit, pick } from 'lodash'
 import React, { useEffect, useState } from 'react'
 import { submitLTIForm } from '../../../CurriculumSequence/components/CurriculumModuleRow'
 import EmbeddedVideoPreviewModal from '../../../CurriculumSequence/components/ManageContentBlock/components/EmbeddedVideoPreviewModal'
@@ -22,7 +22,9 @@ import {
   RowOne,
   PaginationContainer,
   CardTitle,
+  RowTwo,
 } from '../SimpleOptions/styled'
+import Tags from '../../../src/components/common/Tags'
 
 const pageSize = 8
 
@@ -41,13 +43,13 @@ const AddResources = ({
 
   useEffect(() => {
     setShowTags(
-      recommendedResources?.filter((x) => resourceIds.includes(x._id))
+      recommendedResources?.filter((x) => resourceIds.includes(x.contentId))
     )
     setSelectedResources(resourceIds)
   }, [recommendedResources, resourceIds])
 
   useEffect(() => {
-    selectedResourcesAction(showTags)
+    selectedResourcesAction(showTags.map((x) => omit(x, 'standards')))
   }, [showTags])
 
   const onCloseModal = () => {
@@ -142,12 +144,11 @@ const AddResources = ({
       data-cy="confirmResources"
       onClick={onConfirm}
     >
-      Confirm
+      ADD RESOURCES
     </EduButton>,
   ]
 
-  const isAddResourceDisabled =
-    !recommendedResources?.length || selectedResources?.length > 4
+  const isAddResourceDisabled = !recommendedResources?.length
 
   return (
     <>
@@ -199,6 +200,17 @@ const AddResources = ({
                   data-cy={`${x.contentId}ResourceCheckbox`}
                 />
               </RowOne>
+              <RowTwo>
+                {x.standards?.length && (
+                  <Tags
+                    margin="0px"
+                    tags={x.standards?.map((s) => s?.name)}
+                    show={1}
+                    showTitle
+                    flexWrap="nowrap"
+                  />
+                )}
+              </RowTwo>
             </CardBox>
           ))}
           <PaginationContainer>

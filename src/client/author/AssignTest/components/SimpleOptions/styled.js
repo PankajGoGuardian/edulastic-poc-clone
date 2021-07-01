@@ -598,6 +598,13 @@ export const RowOne = styled.div`
   justify-content: space-between;
   padding: 8px 10px;
 `
+
+export const RowTwo = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 10px;
+`
+
 export const PaginationContainer = styled.div`
   flex-basis: 100%;
   padding: 20px 0px 10px;

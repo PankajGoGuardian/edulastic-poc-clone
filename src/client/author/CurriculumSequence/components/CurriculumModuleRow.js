@@ -800,7 +800,8 @@ class ModuleRow extends Component {
                               assignTest(
                                 _id,
                                 testId,
-                                moduleData.contentVersionId
+                                moduleData.contentVersionId,
+                                moduleData.resources
                               )
                             }}
                           >

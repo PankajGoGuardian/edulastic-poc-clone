@@ -41,7 +41,7 @@ export const filterMenuItems = [
     icon: 'folder',
     filter: SMART_FILTERS.AUTHORED_BY_ME,
     path: 'by-me',
-    text: 'Authored by me',
+    text: 'Created by me',
   },
   {
     icon: 'share-alt',

@@ -35,22 +35,27 @@ const WebsiteResourceModal = (props) => {
   }
   useEffect(() => clearFields, [])
 
-  useEffect(()=>{
-    if(data){
+  useEffect(() => {
+    if (data) {
       setTitle(data?.contentTitle)
       setDescription(data?.contentDescription)
       setUrl(data?.contentUrl)
       setId(data?.contentId)
       const allStandards = []
       data?.alignment?.forEach((x) =>
-          x?.domains?.forEach((y) =>
-            y?.standards?.forEach(
-              (z) =>
-                data?.standards.includes(z?.id) &&
-                allStandards.push({ ...z, identifier: y.name, _id: y.id, curriculumId: y.curriculumId })
-            )
+        x?.domains?.forEach((y) =>
+          y?.standards?.forEach(
+            (z) =>
+              data?.standards?.includes(z?.id) &&
+              allStandards.push({
+                ...z,
+                identifier: y.name,
+                _id: y.id,
+                curriculumId: y.curriculumId,
+              })
           )
         )
+      )
       setAlignment(data?.alignment)
       setSelectedStandards(allStandards)
     }
@@ -75,7 +80,7 @@ const WebsiteResourceModal = (props) => {
         'recentStandards',
         JSON.stringify({ recentStandards: selectedStandards || [] })
       )
-      if(id){
+      if (id) {
         updateResource({
           id,
           contentTitle: title,
@@ -84,7 +89,7 @@ const WebsiteResourceModal = (props) => {
           contentType: 'website_resource',
           standards: selectedStandardIds,
         })
-      }else{
+      } else {
         addResource({
           contentTitle: title,
           contentDescription: description,
@@ -100,7 +105,7 @@ const WebsiteResourceModal = (props) => {
   return (
     <EdulasticResourceModal
       headerText="Website URL"
-      okText={id ? "UPDATE RESOURCE" : "ADD RESOURCE"}
+      okText={id ? 'UPDATE RESOURCE' : 'ADD RESOURCE'}
       submitCallback={submitCallback}
       {...props}
     >

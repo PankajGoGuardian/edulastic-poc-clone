@@ -29,10 +29,13 @@ const MergeIdsTable = ({
   disableFields,
   getMappingData,
   mappedData = {},
+  saveApprovedMapping,
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [districtMappedData, setDistrictMappedData] = useState({})
+  const [mappedResult, setMappedResult] = useState({})
   const [mapperFieldName, setMapperFieldName] = useState('')
+  const [mapperErrorMessage, setMapperErrorMessage] = useState('')
 
   useEffect(() => {
     const data = mappedData[cleverId || atlasId]
@@ -66,7 +69,6 @@ const MergeIdsTable = ({
 
   const handleGenerateMapping = (fieldName) => {
     let type
-    const lmsId = cleverId || atlasId
     const eduId = districtId
     if (fieldName === 'Schools') {
       type = 'school'
@@ -74,16 +76,51 @@ const MergeIdsTable = ({
     if (fieldName === 'Classes') {
       type = 'class'
     }
-    getMappingData({
-      cleverId: lmsId,
+    const payload = {
       eduId,
       type,
-    })
+    }
+    if (cleverId) {
+      Object.assign(payload, {
+        cleverId,
+      })
+    }
+    if (atlasId) {
+      Object.assign(payload, {
+        atlasId,
+      })
+    }
+    getMappingData(payload)
   }
 
   const handleReviewAndApprove = (fieldName) => {
     setMapperFieldName(fieldName)
     setIsModalVisible(true)
+  }
+
+  const handleApprove = () => {
+    setMapperErrorMessage('')
+    const eduIdList = []
+    const indexes = []
+    const cleverIds = Object.keys(mappedResult)
+    for (let i = 1; i <= cleverIds.length; i++) {
+      const existingIdIndex = eduIdList.indexOf(mappedResult[cleverIds[i - 1]])
+      if (existingIdIndex > -1) {
+        indexes.push(existingIdIndex + 1)
+        indexes.push(i)
+      }
+      eduIdList.push(mappedResult[cleverIds[i - 1]])
+    }
+    if (indexes.length) {
+      setMapperErrorMessage(
+        `Same edulastic ${mapperFieldName} is mapped in rows ${indexes}`
+      )
+    } else {
+      saveApprovedMapping({
+        mapping: mappedResult,
+        type: mapperFieldName === 'Schools' ? 'school' : 'class',
+      })
+    }
   }
 
   const props = {
@@ -162,12 +199,19 @@ const MergeIdsTable = ({
           ))}
         </Table>
       </Modal>
-      <ApproveMergeModal
-        setIsModalVisible={setIsModalVisible}
-        isModalVisible={isModalVisible}
-        mapperFieldName={mapperFieldName}
-        districtMappedData={districtMappedData}
-      />
+      {isModalVisible && (
+        <ApproveMergeModal
+          mappedResult={mappedResult}
+          setMappedResult={setMappedResult}
+          setIsModalVisible={setIsModalVisible}
+          isModalVisible={isModalVisible}
+          handleApprove={handleApprove}
+          mapperFieldName={mapperFieldName}
+          mapperErrorMessage={mapperErrorMessage}
+          districtMappedData={districtMappedData}
+          setMapperErrorMessage={setMapperErrorMessage}
+        />
+      )}
 
       <Table
         rowKey={(record) => record.key}

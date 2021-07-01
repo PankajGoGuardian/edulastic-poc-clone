@@ -39,6 +39,8 @@ export const FETCH_MAPPING_DATA = '[admin] FETCH_MAPPING_DATA'
 export const FETCH_MAPPING_DATA_SUCCESS = '[admin] FETCH_MAPPING_DATA_SUCCESS'
 export const FETCH_MAPPING_DATA_FAILURE = '[admin] FETCH_MAPPING_DATA_FAILURE'
 
+export const SAVE_APPROVED_MAPPING = '[admin] SAVE_APPROVED_MAPPING'
+
 // ACTION CREATORS
 export const searchExistingDataApi = createAction(SEARCH_EXISTING_DATA_API)
 export const fetchExistingDataSuccess = createAction(
@@ -80,6 +82,7 @@ export const receiveMergeIdsAction = createAction(RECEIVE_MERGED_ID)
 export const closeMergeResponseAction = createAction(CLOSE_MERGE_RESPONSE_TABLE)
 
 export const getMappingDataAction = createAction(FETCH_MAPPING_DATA)
+export const saveEntityMappingAction = createAction(SAVE_APPROVED_MAPPING)
 export const getMappingDataSuccessAction = createAction(
   FETCH_MAPPING_DATA_SUCCESS
 )
@@ -269,6 +272,8 @@ const {
   logsAtlasDataApi,
   selectedAtlasSchoolSyncApi,
   completeAtlasDistrictSync,
+  getMappingData,
+  saveMappedData,
 } = adminApi
 
 function* fetchExistingData({ payload }) {
@@ -493,186 +498,27 @@ function* fetchLogsData({ payload }) {
   }
 }
 
-const fetchedSchoolData = [
-  {
-    id: '111cleverSchool1',
-    name: 'cleverSchool1',
-    match: null,
-    eduData: [
-      {
-        id: '111eduSchool1',
-        name: 'Edulastic School1',
-        score: 95,
-      },
-      {
-        id: '111eduSchool2',
-        name: 'Edulastic School2',
-        score: 90,
-      },
-      {
-        id: '111eduSchool3',
-        name: 'Edulastic School3',
-        score: 92,
-      },
-    ],
-  },
-  {
-    id: '222cleverSchool2',
-    name: 'cleverSchool2',
-    match: {
-      id: '222eduSchool1',
-      name: 'Edulastic School1',
-      score: 95,
-    },
-    eduData: [
-      {
-        id: '222eduSchool1',
-        name: 'Edulastic School1',
-        score: 95,
-      },
-      {
-        id: '222eduSchool2',
-        name: 'Edulastic School2',
-        score: 90,
-      },
-      {
-        id: '222eduSchool3',
-        name: 'Edulastic School3',
-        score: 92,
-      },
-    ],
-  },
-]
-
-const fetchedClassData = [
-  {
-    id: '111cleverClass1',
-    name: 'cleverClass1',
-    match: {
-      id: '111eduClass1',
-      name: 'Edulastic Class1',
-      score: 95,
-    },
-    eduData: [
-      {
-        id: '111eduClass1',
-        name: 'Edulastic Class1',
-        score: 95,
-      },
-      {
-        id: '111eduClass2',
-        name: 'Edulastic Class2',
-        score: 90,
-      },
-      {
-        id: '111eduClass3',
-        name: 'Edulastic Class3',
-        score: 92,
-      },
-      {
-        id: '111eduClass4',
-        name: 'Edulastic Class4',
-        score: 95,
-      },
-      {
-        id: '111eduClass5',
-        name: 'Edulastic Class5',
-        score: 90,
-      },
-      {
-        id: '111eduClass6',
-        name: 'Edulastic Class6',
-        score: 92,
-      },
-      {
-        id: '111eduClass7',
-        name: 'Edulastic Class7',
-        score: 95,
-      },
-      {
-        id: '111eduClass8',
-        name: 'Edulastic Class8',
-        score: 90,
-      },
-      {
-        id: '111eduClass9',
-        name: 'Edulastic Class9',
-        score: 92,
-      },
-      {
-        id: '111eduClass10',
-        name: 'Edulastic Class10',
-        score: 95,
-      },
-      {
-        id: '111eduClass11',
-        name: 'Edulastic Class11',
-        score: 90,
-      },
-      {
-        id: '111eduClass12',
-        name: 'Edulastic Class12',
-        score: 92,
-      },
-    ],
-  },
-  {
-    id: '222cleverClass2',
-    name: 'cleverClass2',
-    match: {
-      id: '222eduClass1',
-      name: 'Edulastic Class1',
-      score: 95,
-    },
-    eduData: [
-      {
-        id: '222eduClass1',
-        name: 'Edulastic Class1',
-        score: 95,
-      },
-      {
-        id: '111eduClass2',
-        name: 'Edulastic Class2',
-        score: 90,
-      },
-      {
-        id: '222eduClass3',
-        name: 'Edulastic Class3',
-        score: 92,
-      },
-      {
-        id: '222eduClass4',
-        name: 'Edulastic Class4',
-        score: 95,
-      },
-      {
-        id: '111eduClass5',
-        name: 'Edulastic Class5',
-        score: 90,
-      },
-      {
-        id: '222eduClass6',
-        name: 'Edulastic Class6',
-        score: 92,
-      },
-    ],
-  },
-]
-
 function* fetchMappingData({ payload }) {
   try {
-    // const result = yield call(getMappingData, payload)
-    const result =
-      payload.type === 'school' ? fetchedSchoolData : fetchedClassData
+    const result = yield call(getMappingData, payload)
     yield put(
       getMappingDataSuccessAction({
         type: payload.type,
-        dcId: payload.cleverId,
+        dcId: payload.cleverId || payload.atlasId,
         result,
       })
     )
   } catch (err) {
     yield put(getMappingDataFailureAction())
+  }
+}
+
+function* saveMappingData({ payload }) {
+  try {
+    yield call(saveMappedData, payload)
+    notification({ msg: 'Mapped data successfully saved', type: 'success' })
+  } catch (err) {
+    notification({ msg: 'Failed to save mapped data', type: 'error' })
   }
 }
 
@@ -688,6 +534,7 @@ export function* watcherSaga() {
     yield takeEvery(UPDATE_SUBJECT_STANDARD_MAP, updateSubjectStandardSaga),
     yield takeEvery(FETCH_LOGS_DATA, fetchLogsData),
     yield takeEvery(FETCH_MAPPING_DATA, fetchMappingData),
+    yield takeEvery(SAVE_APPROVED_MAPPING, saveMappingData),
   ])
 }
 

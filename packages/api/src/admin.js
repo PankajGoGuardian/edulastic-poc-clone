@@ -336,9 +336,20 @@ const bulkUpdateSubscriptionApi = (data) =>
 const getMappingData = (payload) =>
   api
     .callApi({
-      url: `/entity-match`,
+      url: `${payload.atlasId ? atlasPrefix : prefix}entity-match`,
       method: 'get',
       params: payload,
+    })
+    .then(({ data: response }) => response.result)
+
+const saveMappedData = (payload) =>
+  api
+    .callApi({
+      url: `${
+        Object.keys(payload?.mapping)[0].length > 24 ? atlasPrefix : prefix
+      }merge-existing-entity`,
+      method: 'post',
+      data: payload,
     })
     .then(({ data: response }) => response.result)
 
@@ -379,4 +390,5 @@ export default {
   updateSubscriptionApi,
   bulkUpdateSubscriptionApi,
   getMappingData,
+  saveMappedData,
 }

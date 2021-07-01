@@ -32,9 +32,7 @@ const MergeIdsTable = ({
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [districtMappedData, setDistrictMappedData] = useState({})
-  const [mappedResult, setMappedResult] = useState({})
   const [mapperFieldName, setMapperFieldName] = useState('')
-  const [mapperErrorMessage, setMapperErrorMessage] = useState([])
 
   useEffect(() => {
     const data = mappedData[cleverId || atlasId]
@@ -86,34 +84,6 @@ const MergeIdsTable = ({
   const handleReviewAndApprove = (fieldName) => {
     setMapperFieldName(fieldName)
     setIsModalVisible(true)
-  }
-
-  const handleApprove = () => {
-    setMapperErrorMessage([])
-    const cIds = districtMappedData[mapperFieldName].map((_c) => _c.id)
-    const map = {}
-    Object.keys(mappedResult[mapperFieldName]).forEach((key) => {
-      const value = mappedResult[mapperFieldName][key].id
-      if (!map[value]) map[value] = []
-      map[value].push(cIds.indexOf(key) + 1)
-    })
-    const errorMessages = []
-    Object.keys(map).forEach((key) => {
-      if (map[key].length > 1) {
-        const errorMsg = `Same edulastic school is mapped in row ${map[
-          key
-        ].toString()}`
-        errorMessages.push(errorMsg)
-      }
-    })
-    if (errorMessages.length > 0) setMapperErrorMessage(errorMessages)
-    else {
-      const mapDataToBeSent = {}
-      Object.keys(mappedResult[mapperFieldName]).forEach((key) => {
-        mapDataToBeSent[key] = mappedResult[mapperFieldName][key].id
-      })
-      console.log('mapDataToBeSent', mapDataToBeSent)
-    }
   }
 
   const props = {
@@ -193,15 +163,10 @@ const MergeIdsTable = ({
         </Table>
       </Modal>
       <ApproveMergeModal
-        mappedResult={mappedResult}
-        setMappedResult={setMappedResult}
         setIsModalVisible={setIsModalVisible}
         isModalVisible={isModalVisible}
-        handleApprove={handleApprove}
         mapperFieldName={mapperFieldName}
-        mapperErrorMessage={mapperErrorMessage}
         districtMappedData={districtMappedData}
-        setMapperErrorMessage={setMapperErrorMessage}
       />
 
       <Table

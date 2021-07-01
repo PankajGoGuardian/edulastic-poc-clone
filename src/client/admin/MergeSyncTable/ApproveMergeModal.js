@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Button, Modal, Select } from 'antd'
 import { notification } from '@edulastic/common'
 import { Table } from '../Common/StyledComponents'
@@ -7,21 +7,19 @@ const { Column } = Table
 const { Option } = Select
 
 const ApproveMergeModal = ({
-  mappedResult,
-  setMappedResult,
   setIsModalVisible,
   isModalVisible,
-  handleApprove,
   mapperFieldName,
-  mapperErrorMessage,
   districtMappedData,
-  setMapperErrorMessage,
 }) => {
+  const [mappedResult, setMappedResult] = useState({})
+  const [mapperErrorMessage, setMapperErrorMessage] = useState([])
+
   const handleMappingChange = (value, record) => {
     setMapperErrorMessage([])
     const temp = { ...mappedResult }
     if (!temp[mapperFieldName]) temp[mapperFieldName] = {}
-    temp[mapperFieldName][record.id] = record.match.find(
+    temp[mapperFieldName][record.id] = record.eduData.find(
       (element) => element.id === value
     )
     setMappedResult(temp)
@@ -33,21 +31,58 @@ const ApproveMergeModal = ({
       mappedResult[mapperFieldName][id] = data
   }
 
-  const compare = (a, b) => {
-    return b.score - a.score
-  }
-
   const handleCloseModal = () => {
     setMapperErrorMessage([])
     setIsModalVisible(false)
+  }
+
+  const isAllFieldsMapped = () => {
+    for (const key in mappedResult[mapperFieldName]) {
+      if (!mappedResult[mapperFieldName][key]) return false
+    }
+    console.log('entered outside')
+    return true
+  }
+
+  const handleApprove = () => {
+    setMapperErrorMessage([])
+    if (isAllFieldsMapped()) {
+      const cIds = districtMappedData[mapperFieldName].map((_c) => _c.id)
+      const map = {}
+      Object.keys(mappedResult[mapperFieldName]).forEach((key) => {
+        const value = mappedResult[mapperFieldName][key].id
+        if (!map[value]) map[value] = []
+        map[value].push(cIds.indexOf(key) + 1)
+      })
+      const errorMessages = []
+      Object.keys(map).forEach((key) => {
+        if (map[key].length > 1) {
+          const errorMsg = `Same edulastic school is mapped in row ${map[
+            key
+          ].toString()}`
+          errorMessages.push(errorMsg)
+        }
+      })
+      if (errorMessages.length > 0) setMapperErrorMessage(errorMessages)
+      else {
+        const mapDataToBeSent = {}
+        Object.keys(mappedResult[mapperFieldName]).forEach((key) => {
+          mapDataToBeSent[key] = mappedResult[mapperFieldName][key].id
+        })
+        console.log('mapDataToBeSent', mapDataToBeSent)
+      }
+    } else {
+      setMapperErrorMessage(['Please Map all the Fields '])
+    }
   }
 
   return (
     <>
       <Modal
         title="Review and Approve"
-        width="50%"
-        height="50%"
+        width="95%"
+        centered
+        bodyStyle={{ maxHeight: '75vh', overflowY: 'auto' }}
         visible={isModalVisible}
         onCancel={handleCloseModal}
         footer={[
@@ -72,7 +107,7 @@ const ApproveMergeModal = ({
           >
             <Column
               title="S No."
-              width="20%"
+              width="15%"
               render={(_, __, idx) => idx + 1}
             />
             <Column
@@ -83,13 +118,15 @@ const ApproveMergeModal = ({
             />
             <Column
               title={`Edulastic ${mapperFieldName}`}
-              dataIndex="match"
+              dataIndex="eduData"
+              key="eduData"
               render={(_data, record) => {
-                _data.sort(compare)
-                setInitialMapping(_data[0], record.id)
+                console.log('sorting.....')
+                setInitialMapping(record.match, record.id)
                 return (
                   <Select
-                    defaultValue={_data[0].name}
+                    showSearch
+                    defaultValue={record.match ? record.match.name : null}
                     dropdownStyle={{ zIndex: 2000 }}
                     style={{ width: '90%' }}
                     bordered={false}

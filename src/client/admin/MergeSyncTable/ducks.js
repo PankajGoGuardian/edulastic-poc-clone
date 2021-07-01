@@ -497,7 +497,8 @@ const fetchedSchoolData = [
   {
     id: '111cleverSchool1',
     name: 'cleverSchool1',
-    match: [
+    match: null,
+    eduData: [
       {
         id: '111eduSchool1',
         name: 'Edulastic School1',
@@ -518,7 +519,12 @@ const fetchedSchoolData = [
   {
     id: '222cleverSchool2',
     name: 'cleverSchool2',
-    match: [
+    match: {
+      id: '222eduSchool1',
+      name: 'Edulastic School1',
+      score: 95,
+    },
+    eduData: [
       {
         id: '222eduSchool1',
         name: 'Edulastic School1',
@@ -542,7 +548,12 @@ const fetchedClassData = [
   {
     id: '111cleverClass1',
     name: 'cleverClass1',
-    match: [
+    match: {
+      id: '111eduClass1',
+      name: 'Edulastic Class1',
+      score: 95,
+    },
+    eduData: [
       {
         id: '111eduClass1',
         name: 'Edulastic Class1',
@@ -558,12 +569,62 @@ const fetchedClassData = [
         name: 'Edulastic Class3',
         score: 92,
       },
+      {
+        id: '111eduClass4',
+        name: 'Edulastic Class4',
+        score: 95,
+      },
+      {
+        id: '111eduClass5',
+        name: 'Edulastic Class5',
+        score: 90,
+      },
+      {
+        id: '111eduClass6',
+        name: 'Edulastic Class6',
+        score: 92,
+      },
+      {
+        id: '111eduClass7',
+        name: 'Edulastic Class7',
+        score: 95,
+      },
+      {
+        id: '111eduClass8',
+        name: 'Edulastic Class8',
+        score: 90,
+      },
+      {
+        id: '111eduClass9',
+        name: 'Edulastic Class9',
+        score: 92,
+      },
+      {
+        id: '111eduClass10',
+        name: 'Edulastic Class10',
+        score: 95,
+      },
+      {
+        id: '111eduClass11',
+        name: 'Edulastic Class11',
+        score: 90,
+      },
+      {
+        id: '111eduClass12',
+        name: 'Edulastic Class12',
+        score: 92,
+      },
     ],
   },
   {
     id: '222cleverClass2',
     name: 'cleverClass2',
-    match: [
+    match: {
+      id: '222eduClass1',
+      name: 'Edulastic Class1',
+      score: 95,
+    },
+    eduData: [
       {
         id: '222eduClass1',
         name: 'Edulastic Class1',
@@ -577,6 +638,21 @@ const fetchedClassData = [
       {
         id: '222eduClass3',
         name: 'Edulastic Class3',
+        score: 92,
+      },
+      {
+        id: '222eduClass4',
+        name: 'Edulastic Class4',
+        score: 95,
+      },
+      {
+        id: '111eduClass5',
+        name: 'Edulastic Class5',
+        score: 90,
+      },
+      {
+        id: '222eduClass6',
+        name: 'Edulastic Class6',
         score: 92,
       },
     ],

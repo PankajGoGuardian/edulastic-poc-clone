@@ -776,7 +776,7 @@ function* loadTest({ payload }) {
           notification({
             msg: errorMessage || 'Something went wrong!',
           })
-          Fscreen.exitFullscreen()
+          Fscreen.safeExitfullScreen()
           return yield put(push('/home/assignments'))
         }
         notification({
@@ -786,7 +786,7 @@ function* loadTest({ payload }) {
     }
     if (userRole === roleuser.STUDENT) {
       notification({ messageKey })
-      Fscreen.exitFullscreen()
+      Fscreen.safeExitfullScreen()
       return yield put(push('/home/assignments'))
     }
   }

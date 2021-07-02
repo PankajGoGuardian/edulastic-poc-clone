@@ -207,7 +207,7 @@ const MainFooter = styled.div`
   right: 0;
   display: flex;
   padding: 0 15px 0 50px;
-  z-index: 9999;
+  z-index: 50;
   background: ${footer.background};
   border-top: 1px solid ${footer.border};
   color: ${footer.textColor};

@@ -65,7 +65,7 @@ export default ReportIssuePopover
 
 const StyledButton = styled(Button)`
   position: fixed;
-  bottom: ${(props) => (props.isDrc ? '80px' : '20px')};
+  bottom: ${(props) => (props.isDrc ? '150px' : '20px')};
   right: 35px;
   border: none;
   font-size: 20px;

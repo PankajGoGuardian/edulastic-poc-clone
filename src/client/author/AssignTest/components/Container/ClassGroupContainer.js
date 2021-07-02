@@ -203,6 +203,15 @@ const ClassGroupContainer = ({
       )}
       {showRecommendedResources && (
         <SettingContainer id="add-resources">
+          {recommendedResources.length === 0 && (
+            <DetailsTooltip
+              width={tootltipWidth}
+              title="Resources"
+              content="Recommended resources are not available"
+              premium
+              placement="rightTop"
+            />
+          )}
           <StyledRow gutter={16}>
             <Col span={10}>
               <FieldLabel marginBottom="0px">Resources</FieldLabel>

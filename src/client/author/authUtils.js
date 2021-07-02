@@ -1,5 +1,7 @@
 import { userApi, TokenStorage } from '@edulastic/api'
 import { notification } from '@edulastic/common'
+import { history } from '../configureStore'
+import { switchDistrictAction } from '../student/Login/ducks'
 
 export async function proxyUser({ userId, email, groupId, currentUser = {} }) {
   const result = await userApi.getProxyUser({ userId, email, groupId })
@@ -37,7 +39,23 @@ export async function switchRole(role) {
   }
 }
 
-export async function switchUser(switchToId, personId) {
+export async function switchUser(newUser, oldUser) {
+  const newDistrict = newUser.district?._id || ''
+  if (newUser._id && newUser._id === oldUser._id) {
+    if (newDistrict !== oldUser.orgId) {
+      const curPath = window.location.pathname
+      history.replace('/')
+      // run in next phase of event loop
+      setTimeout(() => {
+        history.replace(curPath)
+        // TODO find better way
+        window.onload = () => switchDistrictAction(newDistrict)
+      }, 0)
+    }
+    return
+  }
+  const switchToId = newUser._id || newUser
+  const personId = oldUser.personId || oldUser
   const result = await userApi.getSwitchUser(switchToId, personId)
   if (result.result) {
     TokenStorage.storeAccessToken(
@@ -45,8 +63,9 @@ export async function switchUser(switchToId, personId) {
       result.result._id,
       result.result.role
     )
+    // TODO handle district switching
     window.open(
-      `${window.location.protocol}//${window.location.host}/?userId=${result.result._id}&role=${result.result.role}`,
+      `${window.location.protocol}//${window.location.host}/?userId=${result.result._id}&role=${result.result.role}&district=${newDistrict}`,
       '_blank'
     )
   } else {

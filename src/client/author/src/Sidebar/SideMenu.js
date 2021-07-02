@@ -64,6 +64,7 @@ import {
   isOrganizationDistrictSelector,
   getAccountSwitchDetails,
   isFreeAdminSelector,
+  getUserOrgId,
 } from '../selectors/user'
 import SwitchUserModal from '../../../common/components/SwtichUserModal/SwitchUserModal'
 import { switchUser, proxyDemoPlaygroundUser } from '../../authUtils'
@@ -430,6 +431,7 @@ class SideMenu extends Component {
       showUseThisNotification,
       isProxyUser,
       isDemoPlaygroundUserProxy,
+      orgId,
     } = this.props
     if (userRole === roleuser.STUDENT) {
       return null
@@ -572,6 +574,7 @@ class SideMenu extends Component {
           <SwitchUserModal
             userId={userId}
             switchUser={switchUser}
+            orgId={orgId}
             showModal={showModal}
             closeModal={() => this.setState({ showModal: false })}
             otherAccounts={get(switchDetails, 'otherAccounts', [])}
@@ -899,6 +902,7 @@ const enhance = compose(
       userId: get(state.user, 'user._id', ''),
       isOrganizationDistrict: isOrganizationDistrictSelector(state),
       lastPlayList: getLastPlayListSelector(state),
+      orgId: getUserOrgId(state),
       features: getUserFeatures(state),
       profileThumbnail: get(state.user, 'user.thumbnail'),
       switchDetails: getAccountSwitchDetails(state),

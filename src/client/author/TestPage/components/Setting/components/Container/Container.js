@@ -91,6 +91,7 @@ import {
 import KeypadDropdown from './KeypadDropdown'
 import { getAssignmentsSelector } from '../../../Assign/ducks'
 import { ConfirmationModal } from '../../../../../src/components/common/ConfirmationModal'
+import { skinTypesOrder } from '../../../../utils'
 import SaveSettingsModal from '../../../../../AssignTest/components/Container/SaveSettingsModal'
 import DeleteTestSettingsModal from '../../../../../AssignTest/components/Container/DeleteSettingsConfirmationModal'
 import UpdateTestSettingsModal from '../../../../../AssignTest/components/Container/UpdateTestSettingModal'
@@ -2065,18 +2066,23 @@ class Setting extends Component {
                                 trigger.parentNode
                               }
                             >
-                              {Object.keys(skinTypes)
-                                .sort()
-                                .map((key) => {
-                                  if (key === 'testlet' && !isEtsDistrict) {
-                                    return null
-                                  }
+                              {skinTypesOrder(skinTypes).map((key) => {
+                                if (key === 'testlet' && !isEtsDistrict) {
+                                  return null
+                                }
+                                if (key === 'devider') {
                                   return (
-                                    <Option key={key} value={key}>
-                                      {skinTypes[key]}
+                                    <Option key={key} value={key} disabled>
+                                      {'-'.repeat(15)}
                                     </Option>
                                   )
-                                })}
+                                }
+                                return (
+                                  <Option key={key} value={key}>
+                                    {skinTypes[key]}
+                                  </Option>
+                                )
+                              })}
                             </SelectInputStyled>
                           </Col>
                           <Col span={24}>

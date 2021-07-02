@@ -58,6 +58,7 @@ const CurriculumRightPanel = ({
           subjectsFromCurriculumSequence={subjects?.[0]}
           gradesFromCurriculumSequence={grades}
           collectionFromCurriculumSequence={collections?.[0]?._id}
+          playlistId={destinationCurriculumSequence?._id}
         />
       )}
       {showSummaryBlock && (

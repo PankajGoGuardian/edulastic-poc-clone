@@ -105,6 +105,7 @@ const ManageContentBlock = (props) => {
     setResourceSearch,
     updateRecentStandardAction,
     userId,
+    playlistId,
   } = props
 
   const {
@@ -145,7 +146,10 @@ const ManageContentBlock = (props) => {
   const [searchExpand, setSearchExpand] = useState(false)
   const [resourceData, setResourceData] = useState()
   const [deleteResourceId, setDeleteResourceId] = useState('')
-  const [isDeleteResourceModalVisible, setIsDeleteResourceModalVisible] = useState(false)
+  const [
+    isDeleteResourceModalVisible,
+    setIsDeleteResourceModalVisible,
+  ] = useState(false)
 
   useEffect(() => {
     setDefaults({
@@ -279,9 +283,9 @@ const ManageContentBlock = (props) => {
 
   const editResource = (type, data) => {
     setResourceData(data)
-    if (type === 'website_resource') onChange({key: '1'})
-    if (type === 'video_resource') onChange({key: '2'})
-    if (type === 'lti_resource') onChange({key: '3'})
+    if (type === 'website_resource') onChange({ key: '1' })
+    if (type === 'video_resource') onChange({ key: '2' })
+    if (type === 'lti_resource') onChange({ key: '3' })
   }
 
   const deleteResourceConfirmation = (id) => {
@@ -301,6 +305,16 @@ const ManageContentBlock = (props) => {
   }
   const handleOnBlur = () => {
     setSearchExpand(false)
+  }
+
+  const handleUpdateResource = (payload) => {
+    payload.playlistId = playlistId
+    updateResource(payload)
+  }
+
+  const handleDeleteResource = (id) => {
+    const payload = { id, playlistId }
+    deleteResource(payload)
   }
 
   const renderList = () => {
@@ -482,12 +496,16 @@ const ManageContentBlock = (props) => {
           </ManageContentContainer>
         </div>
 
-        {isDeleteResourceModalVisible && (<DeleteResourceModal 
-            isVisible={isDeleteResourceModalVisible} 
+        {isDeleteResourceModalVisible && (
+          <DeleteResourceModal
+            isVisible={isDeleteResourceModalVisible}
             id={deleteResourceId}
-            onCancel={()=>{setIsDeleteResourceModalVisible(false)}}
-            deleteResource={deleteResource}
-          />)}
+            onCancel={() => {
+              setIsDeleteResourceModalVisible(false)
+            }}
+            deleteResource={handleDeleteResource}
+          />
+        )}
 
         {showContentFilterModal && (
           <PlaylistContentFilterModal
@@ -528,7 +546,7 @@ const ManageContentBlock = (props) => {
             closeCallback={handleCloseResourcesModals}
             isVisible={isWebsiteUrlResourceModal}
             addResource={addResource}
-            updateResource={updateResource}
+            updateResource={handleUpdateResource}
             alignment={alignment}
             setAlignment={setAlignment}
             selectedStandards={selectedStandards}
@@ -543,7 +561,7 @@ const ManageContentBlock = (props) => {
             closeCallback={handleCloseResourcesModals}
             isVisible={isExternalVideoResourceModal}
             addResource={addResource}
-            updateResource={updateResource}
+            updateResource={handleUpdateResource}
             alignment={alignment}
             setAlignment={setAlignment}
             selectedStandards={selectedStandards}
@@ -558,7 +576,7 @@ const ManageContentBlock = (props) => {
             closeCallback={handleCloseResourcesModals}
             isVisible={isLTIResourceModal}
             addResource={addResource}
-            updateResource={updateResource}
+            updateResource={handleUpdateResource}
             externalToolsProviders={externalToolsProviders}
             alignment={alignment}
             setAlignment={setAlignment}

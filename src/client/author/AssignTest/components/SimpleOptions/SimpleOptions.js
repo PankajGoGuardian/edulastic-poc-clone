@@ -408,8 +408,9 @@ class SimpleOptions extends React.Component {
     } = this.props
 
     const resourceIds = history.location?.state?.resourceIds || []
-    const isFromMyPlaylist =
-      history.location?.state?.assignedFrom === 'playlistAssignTest'
+    const showRecommendedResources =
+      history.location?.state?.assignedFrom === 'playlistAssignTest' ||
+      history.location?.state?.isSparkMathCollection
 
     const totalItems = isAssignRecommendations
       ? (assignment.questionPerStandard || 1) * selectedStandardsCount
@@ -504,7 +505,7 @@ class SimpleOptions extends React.Component {
                   setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
                   resourceIds={resourceIds}
                   isVideoResourcePreviewModal={isVideoResourcePreviewModal}
-                  isFromMyPlaylist={isFromMyPlaylist}
+                  showRecommendedResources={showRecommendedResources}
                   selectedResourcesAction={selectedResourcesAction}
                 />
               </TabContentContainer>

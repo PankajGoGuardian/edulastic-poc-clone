@@ -42,14 +42,18 @@ const AddResources = ({
   const [showTags, setShowTags] = useState([])
 
   useEffect(() => {
-    setShowTags(
-      recommendedResources?.filter((x) => resourceIds.includes(x.contentId))
-    )
-    setSelectedResources(resourceIds)
+    if (resourceIds.length > 0) {
+      setShowTags(
+        recommendedResources?.filter((x) => resourceIds.includes(x.contentId))
+      )
+      setSelectedResources(resourceIds)
+    }
   }, [recommendedResources, resourceIds])
 
   useEffect(() => {
-    selectedResourcesAction(showTags.map((x) => omit(x, 'standards')))
+    if (showTags.length > 0) {
+      selectedResourcesAction(showTags.map((x) => omit(x, 'standards')))
+    }
   }, [showTags])
 
   const onCloseModal = () => {

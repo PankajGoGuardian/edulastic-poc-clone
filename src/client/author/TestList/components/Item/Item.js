@@ -132,8 +132,9 @@ class Item extends Component {
       orgCollections,
     } = this.props
     const { collections = [] } = item
-    const sparkMathId = orgCollections?.find((x) => x.name === 'Spark Math')
-      ?._id
+    const sparkMathId = orgCollections?.find(
+      (x) => x.name.toLowerCase() === 'spark math'
+    )?._id
     const selectedCollections = collections.map((x) => x._id)
     if (isFreeAdmin) toggleFreeAdminSubscriptionModal()
     else

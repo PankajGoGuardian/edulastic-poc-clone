@@ -149,9 +149,9 @@ export const receiveQuestionByIdAction = (id) => ({
   },
 })
 
-export const saveQuestionAction = (testId, isTestFlow, isEditFlow = false) => ({
+export const saveQuestionAction = (data) => ({
   type: SAVE_QUESTION_REQUEST,
-  payload: { testId, isTestFlow, isEditFlow },
+  payload: data,
 })
 
 export const setQuestionDataAction = (question) => ({
@@ -422,7 +422,15 @@ export const redirectTestIdSelector = (state) =>
   get(state, 'itemDetail.redirectTestId', false)
 
 function* saveQuestionSaga({
-  payload: { testId: tId, isTestFlow, isEditFlow, saveAndPublishFlow = false },
+  payload: {
+    testId: tId,
+    isTestFlow,
+    isEditFlow,
+    saveAndPublishFlow = false,
+    rowIndex: passageQuestionRowIndex,
+    tabIndex: passageQuestionTabIndex,
+    callback,
+  },
 }) {
   try {
     if (isTestFlow) {
@@ -502,9 +510,13 @@ function* saveQuestionSaga({
     const locationState = yield select((state) => state.router.location.state)
     updateItemWithAlignmentDetails(itemDetail, alignments)
     let currentQuestionIds = getQuestionIds(itemDetail)
-    const { rowIndex, tabIndex } = locationState || {
+    let { rowIndex, tabIndex } = locationState || {
       rowIndex: 0,
       tabIndex: 1,
+    }
+    if (callback) {
+      tabIndex = passageQuestionTabIndex
+      rowIndex = passageQuestionRowIndex
     }
     const { id } = question
     const entity = {
@@ -658,6 +670,16 @@ function* saveQuestionSaga({
       draftData.grades = uniq(itemGrades)
       draftData.subjects = uniq(itemSubjects)
     })
+
+    if (typeof callback === 'function') {
+      yield put({
+        type: UPDATE_ITEM_DETAIL_SUCCESS,
+        payload: { item: data },
+      })
+      callback()
+      yield put(changeCurrentQuestionAction(''))
+      return
+    }
 
     const redirectTestId = yield select(redirectTestIdSelector)
     // In test flow, if test not created, testId is 'undefined' | EV-27944

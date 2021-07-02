@@ -37,6 +37,7 @@ import NotificationListener from './HangoutVideoCallNotification'
 import BulkActionNotificationListener from './author/AssignmentAdvanced/components/BulkAssignmentActionNotification'
 import ClassSyncNotification from './author/Classes/components/ClassSyncNotification'
 import ReportsNotificationListener from './author/Reports/components/ReportsNotificationListener'
+import BubbleScanNotificationsListener from './scanScore/BubbleScanNotificationsListener'
 import AppUpdate from './common/components/AppUpdate'
 import { logoutAction } from './author/src/actions/auth'
 import RealTimeCollectionWatch from './RealTimeCollectionWatch'
@@ -593,9 +594,14 @@ class App extends Component {
                     ? [
                         BulkActionNotificationListener,
                         ReportsNotificationListener,
+                        BubbleScanNotificationsListener,
                       ]
                     : roleuser.TEACHER === userRole
-                    ? [ClassSyncNotification, ReportsNotificationListener]
+                    ? [
+                        ClassSyncNotification,
+                        ReportsNotificationListener,
+                        BubbleScanNotificationsListener,
+                      ]
                     : null
                 }
               />

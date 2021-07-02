@@ -129,7 +129,12 @@ class Item extends Component {
       item,
       isFreeAdmin,
       toggleFreeAdminSubscriptionModal,
+      orgCollections,
     } = this.props
+    const { collections = [] } = item
+    const sparkMathId = orgCollections?.find((x) => x.name === 'Spark Math')
+      ?._id
+    const selectedCollections = collections.map((x) => x._id)
     if (isFreeAdmin) toggleFreeAdminSubscriptionModal()
     else
       history.push({
@@ -138,6 +143,7 @@ class Item extends Component {
           from: 'testLibrary',
           fromText: 'Test Library',
           toUrl: '/author/tests',
+          isSparkMathCollection: selectedCollections.includes(sparkMathId),
         },
       })
   }

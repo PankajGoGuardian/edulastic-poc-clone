@@ -342,12 +342,10 @@ const getMappingData = (payload) =>
     })
     .then(({ data: response }) => response.result)
 
-const saveMappedData = (payload) =>
+const saveMappedData = ({ payload, lmsType }) =>
   api
     .callApi({
-      url: `${
-        Object.keys(payload?.mapping)[0].length > 24 ? atlasPrefix : prefix
-      }merge-existing-entity`,
+      url: `${lmsType === 'atlas' ? atlasPrefix : prefix}merge-existing-entity`,
       method: 'post',
       data: payload,
     })

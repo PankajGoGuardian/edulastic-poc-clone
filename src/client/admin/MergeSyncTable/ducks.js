@@ -508,14 +508,18 @@ function* fetchMappingData({ payload }) {
         result,
       })
     )
+    notification({ msg: 'Mapped data generated successfully', type: 'success' })
   } catch (err) {
     yield put(getMappingDataFailureAction())
+    notification({ msg: 'Failed to generate mapping data', type: 'error' })
   }
 }
 
 function* saveMappingData({ payload }) {
+  const { lmsType } = payload
+  const newPayload = omit(payload, ['lmsType'])
   try {
-    yield call(saveMappedData, payload)
+    yield call(saveMappedData, { payload: newPayload, lmsType })
     notification({ msg: 'Mapped data successfully saved', type: 'success' })
   } catch (err) {
     notification({ msg: 'Failed to save mapped data', type: 'error' })

@@ -19,6 +19,32 @@ const ApproveMergeModal = ({
   setMapperErrorMessage,
 }) => {
   const [formattedData, setFormattedData] = useState([])
+
+  const getCustomName = (obj) => {
+    const isZipMatched = obj.zipMatch === 100
+    const nameMatched = obj.nameMatch ? obj.nameMatch : ''
+    let customStr = `${obj.name}`
+    if (isZipMatched && nameMatched) {
+      customStr = `${obj.name} (Zip: ${
+        obj.zipMatch === 100 ? 'matched' : 'not matched'
+      } | Name: ${parseInt(obj.nameMatch, 10)}%)`
+    } else if (isZipMatched) {
+      customStr = `${obj.name} (Zip: ${
+        obj.zipMatch === 100 ? 'matched' : 'not matched'
+      })`
+    } else if (nameMatched) {
+      customStr = `${obj.name} (Name: ${parseInt(obj.nameMatch, 10)}%)`
+    }
+    return customStr
+  }
+
+  const compare = (a, b) => {
+    return (
+      (b.zipMatch || 0) - (a.zipMatch || 0) ||
+      (b.nameMatch || 0) - (a.nameMatch || 0)
+    )
+  }
+
   const formatData = (dataSet, masterDataSet) => {
     const resultDataSet = []
     if (!isEmpty(dataSet)) {
@@ -39,7 +65,7 @@ const ApproveMergeModal = ({
               const eduData = eduSchoolsMap[o._id]
               return {
                 eId: o._id,
-                eName: o.name,
+                eName: getCustomName({ name: o.name, ...eduData }),
                 zipMatch: eduData?.zipMatch,
                 nameMatch: eduData?.nameMatch,
               }
@@ -62,6 +88,7 @@ const ApproveMergeModal = ({
         }
       }
     }
+    resultDataSet.forEach((_obj) => _obj.data.sort(compare))
     return resultDataSet
   }
   useEffect(() => {
@@ -92,13 +119,6 @@ const ApproveMergeModal = ({
 
   const setInitialMapping = (cleverId, edulasticId) => {
     mappedResult[cleverId] = edulasticId
-  }
-
-  const compare = (a, b) => {
-    return (
-      (b.zipMatch || 0) - (a.zipMatch || 0) ||
-      (b.nameMatch || 0) - (a.nameMatch || 0)
-    )
   }
 
   const handleCloseModal = () => {
@@ -148,7 +168,6 @@ const ApproveMergeModal = ({
               dataIndex="data"
               key="data"
               render={(_data, record) => {
-                _data.sort(compare)
                 setInitialMapping(record.cId, _data[0].eId)
                 return (
                   <Select
@@ -161,7 +180,6 @@ const ApproveMergeModal = ({
                       handleMappingChange(record.cId, value)
                     }}
                     filterOption={(input, option) => {
-                      console.log('input', input, 'option', option)
                       return (
                         option.props.children
                           .toLowerCase()
@@ -170,26 +188,9 @@ const ApproveMergeModal = ({
                     }}
                   >
                     {_data.map((o) => {
-                      const isZipMatched = o.zipMatch === 100
-                      const nameMatched = o.nameMatch ? o.nameMatch : ''
-                      let customStr = `${o.eName}`
-                      if (isZipMatched && nameMatched) {
-                        customStr = `${o.eName} (Zip: ${
-                          o.zipMatch === 100 ? 'matched' : 'not matched'
-                        } | Name: ${parseInt(o.nameMatch, 10)}%)`
-                      } else if (isZipMatched) {
-                        customStr = `${o.eName} (Zip: ${
-                          o.zipMatch === 100 ? 'matched' : 'not matched'
-                        })`
-                      } else if (nameMatched) {
-                        customStr = `${o.eName} (Name: ${parseInt(
-                          o.nameMatch,
-                          10
-                        )}%)`
-                      }
                       return (
                         <Option key={o.eId} value={o.eId}>
-                          {customStr}
+                          {o.eName}
                         </Option>
                       )
                     })}

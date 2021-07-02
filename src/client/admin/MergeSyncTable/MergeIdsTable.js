@@ -40,7 +40,7 @@ const MergeIdsTable = ({
   useEffect(() => {
     const data = mappedData[cleverId || atlasId]
     setDistrictMappedData(data || {})
-  }, [JSON.stringify(mappedData)])
+  }, [mappedData])
 
   const {
     data: mergeResponseData,
@@ -119,6 +119,7 @@ const MergeIdsTable = ({
       saveApprovedMapping({
         mapping: mappedResult,
         type: mapperFieldName === 'Schools' ? 'school' : 'class',
+        lmsType: atlasId ? 'atlas' : 'clever',
       })
       setIsModalVisible(false)
     }

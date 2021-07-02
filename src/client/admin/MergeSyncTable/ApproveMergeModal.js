@@ -111,8 +111,8 @@ const ApproveMergeModal = ({
       <Modal
         title="Review and Approve"
         width="90%"
-        height="50%"
         visible={isModalVisible}
+        centered
         onCancel={handleCloseModal}
         footer={[
           <Button key="back" onClick={handleCloseModal}>
@@ -125,14 +125,16 @@ const ApproveMergeModal = ({
       >
         {formattedData ? (
           <Table
-            rowKey={(record) => record.id}
+            rowKey={(record) => record.cId}
             dataSource={formattedData}
             pagination={false}
-            scroll={{ y: 600 }}
+            scroll={{ y: '60vh' }}
           >
             <Column
               title="S No."
               width="20%"
+              dataIndex="cId"
+              key="cId"
               render={(_, __, idx) => idx + 1}
             />
             <Column
@@ -144,6 +146,7 @@ const ApproveMergeModal = ({
             <Column
               title={`Edulastic ${mapperFieldName}`}
               dataIndex="data"
+              key="data"
               render={(_data, record) => {
                 _data.sort(compare)
                 setInitialMapping(record.cId, _data[0].eId)
@@ -158,6 +161,7 @@ const ApproveMergeModal = ({
                       handleMappingChange(record.cId, value)
                     }}
                     filterOption={(input, option) => {
+                      console.log('input', input, 'option', option)
                       return (
                         option.props.children
                           .toLowerCase()

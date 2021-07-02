@@ -120,6 +120,7 @@ const MergeIdsTable = ({
         mapping: mappedResult,
         type: mapperFieldName === 'Schools' ? 'school' : 'class',
       })
+      setIsModalVisible(false)
     }
   }
 

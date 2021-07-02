@@ -81,24 +81,26 @@ const PlayerFooter = ({
             </ButtonWrapper>
           </Tooltip>
         )}
-        <Tooltip
-          placement="top"
-          getPopupContainer={(triggerNode) => triggerNode.parentNode}
-          title="Bookmark"
-        >
-          <ButtonWrapper
-            isPrimary
-            active={isBookmarked}
-            onClick={
-              defaultAP
-                ? toggleBookmark
-                : () => toggleBookmark(items[currentItem]?._id)
-            }
-            data-cy="bookmark"
+        {!blockNavigationToAnsweredQuestions && (
+          <Tooltip
+            placement="top"
+            getPopupContainer={(triggerNode) => triggerNode.parentNode}
+            title="Bookmark"
           >
-            {t('common.test.flag')}
-          </ButtonWrapper>
-        </Tooltip>
+            <ButtonWrapper
+              isPrimary
+              active={isBookmarked}
+              onClick={
+                defaultAP
+                  ? toggleBookmark
+                  : () => toggleBookmark(items[currentItem]?._id)
+              }
+              data-cy="bookmark"
+            >
+              {t('common.test.flag')}
+            </ButtonWrapper>
+          </Tooltip>
+        )}
 
         {!LCBPreviewModal && (
           <Tooltip

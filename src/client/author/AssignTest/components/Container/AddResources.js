@@ -201,7 +201,7 @@ const AddResources = ({
                 />
               </RowOne>
               <RowTwo>
-                {x.standards?.length && (
+                {x.standards?.length > 0 && (
                   <Tags
                     margin="0px"
                     tags={x.standards?.map((s) => s?.name)}

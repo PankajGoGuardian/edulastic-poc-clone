@@ -39,8 +39,8 @@ const LTIResourceModal = (props) => {
   const [matchBy, setMatchBy] = useState('')
   const [id, setId] = useState('')
 
-  useEffect(()=>{
-    if(data){
+  useEffect(() => {
+    if (data) {
       setAddNew(true)
       setTitle(data?.contentTitle)
       setUrl(data?.contentUrl)
@@ -52,14 +52,19 @@ const LTIResourceModal = (props) => {
       setConsumerKey(data?.data?.consumerKey)
       const allStandards = []
       data?.alignment?.forEach((x) =>
-          x?.domains?.forEach((y) =>
-            y?.standards?.forEach(
-              (z) =>
-                data?.standards.includes(z?.id) &&
-                allStandards.push({ ...z, identifier: y.name, _id: y.id, curriculumId: y.curriculumId })
-            )
+        x?.domains?.forEach((y) =>
+          y?.standards?.forEach(
+            (z) =>
+              data?.standards?.includes(z?.id) &&
+              allStandards.push({
+                ...z,
+                identifier: y.name,
+                _id: y.id,
+                curriculumId: y.curriculumId,
+              })
           )
         )
+      )
       setAlignment(data?.alignment)
       setSelectedStandards(allStandards)
     }
@@ -98,7 +103,7 @@ const LTIResourceModal = (props) => {
         'recentStandards',
         JSON.stringify({ recentStandards: selectedStandards || [] })
       )
-      if(id){
+      if (id) {
         updateResource({
           id,
           contentTitle: title,
@@ -113,7 +118,7 @@ const LTIResourceModal = (props) => {
             matchBy,
           },
         })
-      }else{
+      } else {
         addResource({
           contentTitle: title,
           contentUrl: url,
@@ -155,7 +160,7 @@ const LTIResourceModal = (props) => {
   return (
     <EdulasticResourceModal
       headerText="External LTI Resource"
-      okText={id ? "UPDATE RESOURCE" : "ADD RESOURCE"}
+      okText={id ? 'UPDATE RESOURCE' : 'ADD RESOURCE'}
       submitCallback={submitCallback}
       {...props}
     >
@@ -166,7 +171,7 @@ const LTIResourceModal = (props) => {
           onChange={() => setAddNew(true)}
           getPopupContainer={(node) => node.parentNode}
           height="36px"
-          defaultValue={isAddNew ? "add-new" : null}
+          defaultValue={isAddNew ? 'add-new' : null}
         >
           {getToolProviderOptions()}
           <Select.Option value="add-new">Add New Resource</Select.Option>
@@ -229,7 +234,9 @@ const LTIResourceModal = (props) => {
               onChange={(value) => setConfigType(value)}
               getPopupContainer={(node) => node.parentNode}
               height="36px"
-              defaultValue={configurationType !== '' ? configurationType : undefined}
+              defaultValue={
+                configurationType !== '' ? configurationType : undefined
+              }
             >
               {getConfigTypeOptions()}
             </SelectInputStyled>

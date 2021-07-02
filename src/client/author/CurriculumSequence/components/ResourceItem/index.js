@@ -1,6 +1,6 @@
 import React from 'react'
 import { useDrag } from 'react-dnd'
-import { IconEye, IconWriting } from '@edulastic/icons'
+import { IconEye, IconMoreVertical, IconWriting } from '@edulastic/icons'
 import { themeColor } from '@edulastic/colors'
 import { uniqBy } from 'lodash'
 import {
@@ -15,6 +15,8 @@ import VideoIcon from './static/VideoIcon'
 import LTIResourceIcon from './static/LTIResourceIcon'
 import { Tooltip } from '../../../../common/utils/helpers'
 import { getInterestedStandards } from '../../../dataUtils'
+import { IconActionButton, MenuStyled } from '../styled'
+import { Dropdown, Menu } from 'antd'
 
 export const ICONS_BY_TYPE = {
   test: <IconWriting />,
@@ -152,6 +154,10 @@ const ResourceItem = ({
   status,
   testType,
   interestedCurriculums,
+  resource,
+  editResource,
+  deleteResource,
+  userId,
 }) => {
   let standardIdentifiers = []
   if (type === 'test') {
@@ -190,6 +196,25 @@ const ResourceItem = ({
     }),
   })
 
+  const moreMenu = (
+    <MenuStyled data-cy="assessmentItemMoreMenu">
+      <Menu.Item
+            onClick={() => {
+              editResource(type, resource)
+            }}
+          >
+            Edit
+          </Menu.Item>
+      <Menu.Item
+            onClick={() => {
+              deleteResource(id)
+            }}
+          >
+            Delete
+      </Menu.Item>
+    </MenuStyled>
+  )
+
   return (
     <Tooltip title={contentTitle} placement="left">
       <ResourceItemWrapper data-cy={`${id}`} ref={drag}>
@@ -217,6 +242,20 @@ const ResourceItem = ({
           onClick={previewTest}
           data-cy={type === 'test' ? 'testPreview' : 'resourcePreview'}
         />
+        {type !== 'test' && resource?.userId === userId && 
+        <Dropdown
+        overlay={moreMenu}
+        trigger={['click']}
+        arrow
+        >
+          <IconActionButton
+          >
+            <IconMoreVertical
+              className="more-action-btn" 
+              color={themeColor}
+            />
+          </IconActionButton>
+        </Dropdown>}
       </ResourceItemWrapper>
     </Tooltip>
   )

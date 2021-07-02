@@ -163,7 +163,7 @@ const AddResources = ({
           if (!isAddResourceDisabled) openResourceModal()
         }}
       >
-        Add Resources
+        Click to Add Resources
       </AddResourcesLink>
       <ResourceTags>
         {showTags.map((tag) => (

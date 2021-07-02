@@ -532,7 +532,7 @@ export const AssignModuleContentSpan = styled.span`
 export const AddResourcesLink = styled.div`
   font-size: 11px;
   color: ${({ isAddResourceDisabled }) =>
-    isAddResourceDisabled ? greyThemeDark2 : lightGreen10};
+    isAddResourceDisabled ? greyThemeDark2 : themeColorBlue};
   text-transform: uppercase;
   font-weight: 600;
   letter-spacing: 0.3px;

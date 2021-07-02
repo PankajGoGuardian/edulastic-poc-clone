@@ -8,6 +8,12 @@ import { uploadToS3 } from '@edulastic/common/src/helpers'
 import { assignmentApi } from '@edulastic/api'
 import StyledDropZone from '../../assessment/components/StyledDropZone'
 
+// TODO: subscribe to a common store (redux)
+// store should have the grouped docs from bubble scan notifications
+// use this to update status for sheetUri thumbnails
+
+// TODO: create thumnails with status backdrop for sheet uris
+
 const UploadAnswerSheets = ({ location }) => {
   const [uploading, setUploading] = useState(false)
   const [progress, setProgress] = useState(null)

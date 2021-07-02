@@ -272,6 +272,15 @@ const getBubbleSheet = ({ assignmentId, groupId }) =>
     url: `${prefix}/${assignmentId}/group/${groupId}/bubble-sheet`,
   })
 
+const splitScanBubbleSheets = (params) =>
+  api
+    .callApi({
+      url: `${prefix}/split-scan-bubble-sheets`,
+      params,
+      method: 'get',
+    })
+    .then((result) => result.data)
+
 export default {
   create,
   update,
@@ -297,4 +306,5 @@ export default {
   fetchRegradeSettings,
   editTagsRequest,
   getBubbleSheet,
+  splitScanBubbleSheets,
 }

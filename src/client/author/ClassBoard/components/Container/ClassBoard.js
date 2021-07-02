@@ -1606,7 +1606,7 @@ class ClassBoard extends Component {
                               onClick={() =>
                                 history.push({
                                   pathname: '/scanScore/uploadAnswerSheets',
-                                  state: { assignmentId },
+                                  state: { assignmentId, groupId: classId },
                                 })
                               }
                             >

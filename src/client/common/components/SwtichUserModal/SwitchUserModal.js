@@ -46,6 +46,15 @@ const StyledDiv = styled.div`
   }
 `
 
+const StyledNoWrapPara = styled.p`
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+`
+const NoWrapPara = ({ titlePrefix, ...props }) => (
+  <StyledNoWrapPara title={`${titlePrefix}: ${props.children}`} {...props} />
+)
+
 const SwitchUserModal = ({
   showModal,
   closeModal,
@@ -54,6 +63,7 @@ const SwitchUserModal = ({
   userId,
   switchUser,
   userRole,
+  orgId,
 }) => (
   <Modal
     title="Switch User"
@@ -65,22 +75,64 @@ const SwitchUserModal = ({
       <p>Select the role you want to switch</p>
       <div style={{ 'margin-top': '16px' }}>
         {Object.keys(roles).map((role) => {
-          const users = otherAccounts.filter(
-            (acc) => acc.role === role && acc._id !== userId
-          )
+          const users = otherAccounts
+            .flatMap((acc) =>
+              acc.districts.length
+                ? acc.districts.map((district) => ({
+                    ...acc,
+                    district,
+                  }))
+                : {
+                    ...acc,
+                    district: {},
+                  }
+            )
+            .filter(
+              (acc) =>
+                acc.role === role &&
+                !(acc._id === userId && acc.district._id === orgId)
+            )
           return (
             !!users.length &&
             users.map((user) => (
               <StyledDiv
                 key={`${user._id}_${user.role}`}
                 role={role}
-                onClick={() => switchUser(user._id, personId)}
+                onClick={() =>
+                  switchUser(user, { _id: userId, personId, orgId })
+                }
               >
                 <div style={{ 'font-size': '16px', 'font-weight': '600' }}>
                   <p>{roles[user.role]}</p>
                 </div>
-                <div>
-                  <p>{user.username}</p>
+                <div style={{ marginLeft: '15px', minWidth: '50%' }}>
+                  <div>
+                    <p>{user.username}</p>{' '}
+                  </div>
+                  <div style={{ display: 'flex', maxWidth: '100%' }}>
+                    <div
+                      style={{
+                        overflow: 'hidden',
+                        flex: '1 1',
+                        margin: '0 2px',
+                      }}
+                    >
+                      <NoWrapPara titlePrefix="Districts">
+                        {user.district.name}
+                      </NoWrapPara>
+                    </div>
+                    <div
+                      style={{
+                        overflow: 'hidden',
+                        flex: '1 1',
+                        margin: '0 2px',
+                      }}
+                    >
+                      <NoWrapPara titlePrefix="Schools">
+                        {user.institutions.map((i) => i.name).join(' , ')}
+                      </NoWrapPara>
+                    </div>
+                  </div>
                 </div>
               </StyledDiv>
             ))

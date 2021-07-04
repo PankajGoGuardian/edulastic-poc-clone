@@ -26,14 +26,17 @@ const ApproveMergeModal = ({
     let customStr = `${obj.name}`
     if (isZipMatched && nameMatched) {
       customStr = `${obj.name} (Zip: ${
-        obj.zipMatch === 100 ? 'matched' : 'not matched'
+        obj.zipMatch === 100 ? 'Matched' : 'Not Matched'
       } | Name: ${parseInt(obj.nameMatch, 10)}%)`
     } else if (isZipMatched) {
       customStr = `${obj.name} (Zip: ${
-        obj.zipMatch === 100 ? 'matched' : 'not matched'
+        obj.zipMatch === 100 ? 'Matched' : 'Not Matched'
       })`
     } else if (nameMatched) {
-      customStr = `${obj.name} (Name: ${parseInt(obj.nameMatch, 10)}%)`
+      customStr = `${obj.name} (Zip: Not Matched | Name: ${parseInt(
+        obj.nameMatch,
+        10
+      )}%)`
     }
     return customStr
   }
@@ -168,11 +171,20 @@ const ApproveMergeModal = ({
               dataIndex="data"
               key="data"
               render={(_data, record) => {
-                setInitialMapping(record.cId, _data[0].eId)
+                setInitialMapping(
+                  record.cId,
+                  _data?.[0]?.zipMatch === 100 || _data?.[0]?.nameMatch > 75
+                    ? _data[0].eId
+                    : undefined
+                )
                 return (
                   <Select
                     showSearch
-                    defaultValue={_data[0].eId}
+                    defaultValue={
+                      _data?.[0]?.zipMatch === 100 || _data?.[0]?.nameMatch > 75
+                        ? _data[0].eId
+                        : undefined
+                    }
                     dropdownStyle={{ zIndex: 2000 }}
                     style={{ width: '90%' }}
                     bordered={false}

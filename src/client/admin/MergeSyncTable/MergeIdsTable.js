@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { CSVLink } from 'react-csv'
 import { Button, Upload, Icon, Modal } from 'antd'
+import { compact } from 'lodash'
 import { Table } from '../Common/StyledComponents'
 import { mapCountAsType, DISABLE_SUBMIT_TITLE } from '../Data'
 import ApproveMergeModal from './ApproveMergeModal'
@@ -104,16 +105,22 @@ const MergeIdsTable = ({
     const indexes = []
     const cleverIds = Object.keys(mappedResult)
     for (let i = 1; i <= cleverIds.length; i++) {
-      const existingIdIndex = eduIdList.indexOf(mappedResult[cleverIds[i - 1]])
-      if (existingIdIndex > -1) {
-        indexes.push(existingIdIndex + 1)
-        indexes.push(i)
+      if (mappedResult[cleverIds[i - 1]]) {
+        const existingIdIndex = eduIdList.indexOf(
+          mappedResult[cleverIds[i - 1]]
+        )
+        if (existingIdIndex > -1) {
+          indexes.push(existingIdIndex + 1)
+          indexes.push(i)
+        }
+        eduIdList.push(mappedResult[cleverIds[i - 1]])
       }
-      eduIdList.push(mappedResult[cleverIds[i - 1]])
     }
     if (indexes.length) {
       setMapperErrorMessage(
-        `Same edulastic ${mapperFieldName} is mapped in rows ${indexes}`
+        `Same edulastic ${mapperFieldName} is mapped in rows ${compact(
+          indexes
+        )}`
       )
     } else {
       saveApprovedMapping({

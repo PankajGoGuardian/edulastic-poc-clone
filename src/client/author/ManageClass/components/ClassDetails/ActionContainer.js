@@ -347,10 +347,8 @@ const ActionContainer = ({
     if (
       (atlasId && atlasId.includes('.deactivated')) ||
       (cleverId && cleverId.includes('.deactivated')) ||
-      (canvasCode &&
-        classStatus === 1 &&
-        canvasCode.includes('.deactivated')) ||
-      (googleId && classStatus === 1 && googleId.includes('.deactivated'))
+      (canvasCode && canvasCode.includes('.deactivated')) ||
+      (googleId && googleId.includes('.deactivated'))
     ) {
       setIsAutoArchivedClass(true)
     } else {
@@ -442,12 +440,18 @@ const ActionContainer = ({
         )}
         {googleId && isAutoArchivedClass && (
           <CleverInfoBox alert={isAutoArchivedClass}>
-            <IconInfo /> Sync with Google is paused. Please resync to enable
+            <IconInfo />{' '}
+            {classStatus === 1
+              ? `Sync with Google is paused. Please resync to enable`
+              : `This is NOT a Google synced class anymore.`}
           </CleverInfoBox>
         )}
         {canvasCode && isAutoArchivedClass && (
           <CleverInfoBox alert={isAutoArchivedClass}>
-            <IconInfo /> Sync with Canvas is paused. Please resync to enable
+            <IconInfo />{' '}
+            {classStatus === 1
+              ? `Sync with Canvas is paused. Please resync to enable`
+              : `This is NOT a Canvas synced class anymore.`}
           </CleverInfoBox>
         )}
 

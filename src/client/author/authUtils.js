@@ -1,7 +1,6 @@
 import { userApi, TokenStorage } from '@edulastic/api'
 import { notification } from '@edulastic/common'
 import { history } from '../configureStore'
-import { switchDistrictAction } from '../student/Login/ducks'
 
 export async function proxyUser({ userId, email, groupId, currentUser = {} }) {
   const result = await userApi.getProxyUser({ userId, email, groupId })
@@ -9,11 +8,12 @@ export async function proxyUser({ userId, email, groupId, currentUser = {} }) {
     TokenStorage.storeAccessToken(
       result.result.token,
       result.result._id,
-      result.result.role
+      result.result.role,
+      result.result.districtId
     )
     TokenStorage.storeInLocalStorage('proxyParent', JSON.stringify(currentUser))
     window.open(
-      `${window.location.protocol}//${window.location.host}/?userId=${result.result._id}&role=${result.result.role}`,
+      `${window.location.protocol}//${window.location.host}/?userId=${result.result._id}&role=${result.result.role}&districtId=${result.result.districtId}`,
       '_blank'
     )
   } else {
@@ -28,10 +28,11 @@ export async function switchRole(role) {
     TokenStorage.storeAccessToken(
       result.result.token,
       result.result.userId,
-      result.result.role
+      result.result.role,
+      result.result.districtId
     )
     window.open(
-      `${window.location.protocol}//${window.location.host}/?userId=${result.result.userId}&role=${result.result.role}`,
+      `${window.location.protocol}//${window.location.host}/?userId=${result.result.userId}&role=${result.result.role}&districtId=${result.result.districtId}`,
       '_blank'
     )
   } else {
@@ -40,34 +41,33 @@ export async function switchRole(role) {
 }
 
 export async function switchUser(newUser, oldUser) {
-  const newDistrict = newUser.district?._id || ''
-  if (newUser._id && newUser._id === oldUser._id) {
-    if (newDistrict !== oldUser.orgId) {
-      const curPath = window.location.pathname
-      history.replace('/')
-      // run in next phase of event loop
-      setTimeout(() => {
-        history.replace(curPath)
-        // TODO find better way
-        window.onload = () => switchDistrictAction(newDistrict)
-      }, 0)
-    }
+  const districtId = newUser.district?._id || ''
+  if (newUser._id === oldUser._id && districtId === oldUser.orgId) {
     return
   }
   const switchToId = newUser._id || newUser
   const personId = oldUser.personId || oldUser
-  const result = await userApi.getSwitchUser(switchToId, personId)
+  const result = await userApi.getSwitchUser(switchToId, personId, districtId)
   if (result.result) {
     TokenStorage.storeAccessToken(
       result.result.token,
       result.result._id,
-      result.result.role
+      result.result.role,
+      result.result.districtId
     )
-    // TODO handle district switching
-    window.open(
-      `${window.location.protocol}//${window.location.host}/?userId=${result.result._id}&role=${result.result.role}&district=${newDistrict}`,
-      '_blank'
-    )
+    const searchQuery = `?userId=${result.result._id}&role=${result.result.role}&districtId=${districtId}`
+    const newUrl = `${window.location.protocol}//${window.location.host}/${searchQuery}`
+    if (newUser._id && newUser._id === oldUser._id) {
+      if (districtId !== oldUser.orgId) {
+        const curPath = window.location.pathname
+        history.replace('/')
+        // run in next phase of event loop
+        setTimeout(() => {
+          // TODO find better way
+          history.replace(`${curPath}/${searchQuery}`)
+        }, 0)
+      }
+    } else window.open(newUrl, '_blank')
   } else {
     notification({ messageKey: 'ErrorOccuredSwicthingRole' })
   }
@@ -79,7 +79,8 @@ export async function proxyDemoPlaygroundUser(isAutomation = false) {
     TokenStorage.storeAccessToken(
       result.result.token,
       result.result._id,
-      result.result.role
+      result.result.role,
+      result.result.districtId
     )
     // check if qa environment then open proxy account in same tab
     let option = '_blank'
@@ -87,7 +88,7 @@ export async function proxyDemoPlaygroundUser(isAutomation = false) {
       option = '_self'
     }
     window.open(
-      `${window.location.protocol}//${window.location.host}/?userId=${result.result._id}&role=${result.result.role}`,
+      `${window.location.protocol}//${window.location.host}/?userId=${result.result._id}&role=${result.result.role}&districtId=${result.result.districtId}`,
       option
     )
   } else {

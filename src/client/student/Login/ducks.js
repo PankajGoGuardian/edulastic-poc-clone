@@ -72,8 +72,6 @@ export const ATLAS_SSO_LOGIN = '[auth] atlas sso login'
 export const NEWSELA_SSO_LOGIN = '[auth] newsela sso login'
 export const GET_USER_DATA = '[auth] get user data from sso response'
 export const SET_USER = '[auth] set user'
-// workaround on frontend side.
-export const SWITCH_DISTRICT = '[auth] switch district'
 export const SIGNUP = '[auth] signup'
 export const SINGUP_SUCCESS = '[auth] signup success'
 export const FETCH_USER = '[auth] fetch user'
@@ -198,7 +196,6 @@ export const newselaSSOLoginAction = createAction(NEWSELA_SSO_LOGIN)
 export const getUserDataAction = createAction(GET_USER_DATA)
 export const msoSSOLoginAction = createAction(MSO_SSO_LOGIN)
 export const setUserAction = createAction(SET_USER)
-export const switchDistrictAction = createAction(SWITCH_DISTRICT)
 export const signupAction = createAction(SIGNUP)
 export const signupSuccessAction = createAction(SINGUP_SUCCESS)
 export const fetchUserAction = createAction(FETCH_USER)
@@ -456,17 +453,6 @@ const getCurrentPath = () => {
 
 export default createReducer(initialState, {
   [SET_USER]: setUser,
-  [SWITCH_DISTRICT]: (state, { payload }) => {
-    if (state.user.districtIds.includes(payload)) {
-      const districtIds = state.user.districtIds.filter((id) => id!==payload)
-      districtIds.unshift(payload)
-      window.sessionStorage.setItem('districtId', payload)
-      state.user = {
-        ...state.user,
-        districtIds,
-      }
-    }
-  },
   [SET_SETTINGS_SA_SCHOOL]: (state, { payload }) => {
     state.saSettingsSchool = payload
   },
@@ -870,9 +856,21 @@ function* login({ payload }) {
       const user = pick(result, userPickFields)
       yield firebase.auth().signInWithCustomToken(result.firebaseAuthToken)
       if (addAccount === true) {
-        TokenStorage.storeAccessToken(result.token, user._id, user.role, false)
+        TokenStorage.storeAccessToken(
+          result.token,
+          user._id,
+          user.role,
+          result.districtId,
+          false
+        )
       } else {
-        TokenStorage.storeAccessToken(result.token, user._id, user.role, true)
+        TokenStorage.storeAccessToken(
+          result.token,
+          user._id,
+          user.role,
+          result.districtId,
+          true
+        )
       }
       TokenStorage.selectAccessToken(user._id, user.role)
       TokenStorage.updateKID(user)
@@ -1080,7 +1078,13 @@ function* signup({ payload }) {
       }
       const user = pick(result, userPickFields)
 
-      TokenStorage.storeAccessToken(result.token, user._id, user.role, true)
+      TokenStorage.storeAccessToken(
+        result.token,
+        user._id,
+        user.role,
+        result.lastUsedDistrictId,
+        true
+      )
       TokenStorage.selectAccessToken(user._id, user.role)
       const firebaseUser = yield call(getCurrentFirebaseUser)
       if (
@@ -1229,6 +1233,7 @@ export function* fetchUser({ payload }) {
 
     if (key.includes('role:undefined') && user.role) {
       TokenStorage.removeAccessToken(user._id, 'undefined')
+      // add last used or current districtId
       TokenStorage.storeAccessToken(user.token, user._id, user.role, true)
       TokenStorage.selectAccessToken(user._id, user.role)
     }
@@ -1778,6 +1783,7 @@ function* getUserData({ payload: res }) {
       yield firebase.auth().signInWithCustomToken(firebaseAuthToken)
     }
     const user = pick(res, userPickFields)
+    // add last used district
     TokenStorage.storeAccessToken(res.token, user._id, user.role, true)
     TokenStorage.selectAccessToken(user._id, user.role)
     TokenStorage.updateKID(user)
@@ -1847,6 +1853,7 @@ function* updateUserRoleSaga({ payload }) {
 
     TokenStorage.removeAccessToken(_user._id, 'undefined')
 
+    // add last used district
     TokenStorage.storeAccessToken(res.token, _user._id, _user.role, true)
     TokenStorage.selectAccessToken(_user._id, _user.role)
     yield put(signupSuccessAction(_user))
@@ -1906,7 +1913,14 @@ function* resetPasswordRequestSaga({ payload }) {
     const result = yield call(userApi.resetUserPassword, payload)
     yield put({ type: RESET_PASSWORD_SUCCESS })
     const user = pick(result, userPickFields)
-    TokenStorage.storeAccessToken(result.token, user._id, user.role, true)
+    // add last used district
+    TokenStorage.storeAccessToken(
+      result.token,
+      user._id,
+      user.role,
+      user.lastUsedDistrictId,
+      true
+    )
     TokenStorage.selectAccessToken(user._id, user.role)
     yield put(signupSuccessAction(result))
     yield call(fetchUser, {}) // needed to update org and other user data to local store
@@ -2115,7 +2129,13 @@ function* setInviteDetailsSaga({ payload }) {
     const result = yield call(authApi.updateInvitedUserDetails, payload)
 
     const user = pick(result, userPickFields)
-    TokenStorage.storeAccessToken(result.token, user._id, user.role, true)
+    TokenStorage.storeAccessToken(
+      result.token,
+      user._id,
+      user.role,
+      user.lastUsedDistrictId,
+      true
+    )
     TokenStorage.selectAccessToken(user._id, user.role)
     yield call(fetchUser, {}) // needed to update org and other user data to local store
     yield put({ type: SET_INVITE_DETAILS_SUCCESS, payload: result })

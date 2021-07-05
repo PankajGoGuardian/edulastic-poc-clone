@@ -44,16 +44,19 @@ const StyledDiv = styled.div`
     background: ${(props) => color[props.role]};
     color: #fff;
   }
+  & > div:first-child {
+    text-align: left;
+  }
 `
 
-const StyledNoWrapPara = styled.p`
+const NoWrapPara = styled.p.attrs((props) => ({
+  title: props.children.join(''),
+  ...props,
+}))`
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
 `
-const NoWrapPara = ({ titlePrefix, ...props }) => (
-  <StyledNoWrapPara title={`${titlePrefix}: ${props.children}`} {...props} />
-)
 
 const SwitchUserModal = ({
   showModal,
@@ -77,7 +80,7 @@ const SwitchUserModal = ({
         {Object.keys(roles).map((role) => {
           const users = otherAccounts
             .flatMap((acc) =>
-              acc.districts.length
+              acc.districts.length && acc._id === userId
                 ? acc.districts.map((district) => ({
                     ...acc,
                     district,
@@ -109,29 +112,22 @@ const SwitchUserModal = ({
                   <div>
                     <p>{user.username}</p>{' '}
                   </div>
-                  <div style={{ display: 'flex', maxWidth: '100%' }}>
-                    <div
-                      style={{
-                        overflow: 'hidden',
-                        flex: '1 1',
-                        margin: '0 2px',
-                      }}
-                    >
-                      <NoWrapPara titlePrefix="Districts">
-                        {user.district.name}
-                      </NoWrapPara>
-                    </div>
-                    <div
-                      style={{
-                        overflow: 'hidden',
-                        flex: '1 1',
-                        margin: '0 2px',
-                      }}
-                    >
-                      <NoWrapPara titlePrefix="Schools">
-                        {user.institutions.map((i) => i.name).join(' , ')}
-                      </NoWrapPara>
-                    </div>
+                  <div
+                    style={{
+                      maxWidth: '100%',
+                      overflow: 'hidden',
+                      margin: '0 2px',
+                    }}
+                  >
+                    <NoWrapPara titlePrefix="Districts">
+                      {(user.district.name ? [user.district] : user.districts)
+                        .map((i) => i.name)
+                        .join(', ')}
+                      {user.districts.length && user.institutions.length
+                        ? ', '
+                        : ''}
+                      {user.institutions.map((i) => i.name).join(', ')}
+                    </NoWrapPara>
                   </div>
                 </div>
               </StyledDiv>

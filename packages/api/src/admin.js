@@ -333,6 +333,23 @@ const bulkUpdateSubscriptionApi = (data) =>
     })
     .then(({ data: response }) => response.result)
 
+const getMappingData = (payload) =>
+  api
+    .callApi({
+      url: `${payload.atlasId ? atlasPrefix : prefix}entity-match`,
+      method: 'get',
+      params: payload,
+    })
+    .then(({ data: response }) => response.result)
+
+const saveMappedData = ({ payload, lmsType }) =>
+  api
+    .callApi({
+      url: `${lmsType === 'atlas' ? atlasPrefix : prefix}merge-existing-entity`,
+      method: 'post',
+      data: payload,
+    })
+    .then(({ data: response }) => response.result)
 const syncCleverOrphanUsersApi = (data) =>
   api
     .callApi({
@@ -400,6 +417,8 @@ export default {
   searchClasslinkDistrict,
   updateSubscriptionApi,
   bulkUpdateSubscriptionApi,
+  getMappingData,
+  saveMappedData,
   syncCleverOrphanUsersApi,
   syncEdlinkOrphanUsersApi,
   atlasStopSyncApi,

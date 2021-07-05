@@ -1,8 +1,10 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { CSVLink } from 'react-csv'
 import { Button, Upload, Icon, Modal } from 'antd'
+import { compact } from 'lodash'
 import { Table } from '../Common/StyledComponents'
 import { mapCountAsType, DISABLE_SUBMIT_TITLE } from '../Data'
+import ApproveMergeModal from './ApproveMergeModal'
 
 const { Column } = Table
 
@@ -26,7 +28,20 @@ const MergeIdsTable = ({
   mergeResponse,
   closeMergeResponse,
   disableFields,
+  getMappingData,
+  mappedData = {},
+  saveApprovedMapping,
 }) => {
+  const [isModalVisible, setIsModalVisible] = useState(false)
+  const [districtMappedData, setDistrictMappedData] = useState({})
+  const [mapperFieldName, setMapperFieldName] = useState('')
+  const [mapperErrorMessage, setMapperErrorMessage] = useState('')
+
+  useEffect(() => {
+    const data = mappedData[cleverId || atlasId]
+    setDistrictMappedData(data || {})
+  }, [mappedData, districtId])
+
   const {
     data: mergeResponseData,
     showData: showMergeResponseData,
@@ -49,6 +64,75 @@ const MergeIdsTable = ({
       })
     } catch (err) {
       console.error(err)
+    }
+  }
+
+  const handleGenerateMapping = (fieldName) => {
+    let type
+    const eduId = districtId
+    if (fieldName === 'Schools') {
+      type = 'school'
+    }
+    if (fieldName === 'Classes') {
+      type = 'class'
+    }
+    const payload = {
+      eduId,
+      type,
+    }
+    if (cleverId) {
+      Object.assign(payload, {
+        cleverId,
+      })
+    }
+    if (atlasId) {
+      Object.assign(payload, {
+        atlasId,
+      })
+    }
+    getMappingData(payload)
+  }
+
+  const handleReviewAndApprove = (fieldName) => {
+    setMapperFieldName(fieldName)
+    setIsModalVisible(true)
+  }
+
+  const handleApprove = (mappedResult) => {
+    setMapperErrorMessage('')
+    const eduIdMap = {}
+    const indexes = []
+    const cleverIds = Object.keys(mappedResult)
+    for (let i = 1; i <= cleverIds.length; i++) {
+      const eduId = mappedResult[cleverIds[i - 1]]
+      if (eduId) {
+        const existingId = eduIdMap[eduId]
+        if (existingId) {
+          eduIdMap[eduId].push(i)
+        } else {
+          eduIdMap[eduId] = []
+          eduIdMap[eduId].push(i)
+        }
+      }
+    }
+    for (const key of Object.keys(eduIdMap)) {
+      if (eduIdMap[key].length > 1) {
+        indexes.push(...eduIdMap[key])
+      }
+    }
+    if (indexes.length) {
+      setMapperErrorMessage(
+        `Same edulastic ${mapperFieldName} is mapped in rows ${compact(
+          indexes
+        )}`
+      )
+    } else {
+      saveApprovedMapping({
+        mapping: mappedResult,
+        type: mapperFieldName === 'Schools' ? 'school' : 'class',
+        lmsType: atlasId ? 'atlas' : 'clever',
+      })
+      setIsModalVisible(false)
     }
   }
 
@@ -128,6 +212,18 @@ const MergeIdsTable = ({
           ))}
         </Table>
       </Modal>
+      {isModalVisible && (
+        <ApproveMergeModal
+          setIsModalVisible={setIsModalVisible}
+          isModalVisible={isModalVisible}
+          handleApprove={handleApprove}
+          mapperFieldName={mapperFieldName}
+          mapperErrorMessage={mapperErrorMessage}
+          districtMappedData={districtMappedData}
+          setMapperErrorMessage={setMapperErrorMessage}
+        />
+      )}
+
       <Table
         rowKey={(record) => record.key}
         dataSource={data}
@@ -140,36 +236,53 @@ const MergeIdsTable = ({
           title="Actions"
           dataIndex="isEmpty"
           key="btnName"
-          render={(_, { type }) => (
-            <Upload
-              aria-label="Upload"
-              {...props}
-              customRequest={(info) => handleUpload(info, type)}
-            >
-              <Button {...ButtonProps}>
-                <Icon type="upload" /> Upload
+          render={(_, record) => {
+            const { type, fieldName } = record
+            return fieldName === 'Schools' || fieldName === 'Classes' ? (
+              <Button onClick={() => handleGenerateMapping(fieldName)}>
+                Generate Mapping
               </Button>
-              {' *.csv'}
-            </Upload>
-          )}
+            ) : (
+              <Upload
+                aria-label="Upload"
+                {...props}
+                customRequest={(info) => handleUpload(info, type)}
+              >
+                <Button {...ButtonProps}>
+                  <Icon type="upload" /> Upload
+                </Button>
+                {' *.csv'}
+              </Upload>
+            )
+          }}
         />
         <Column
           title="Template"
           dataIndex="isEmpty"
           key="tempBtn"
-          render={(_, { type }) => (
-            <Button {...ButtonProps}>
-              <CSVLink
-                data={[]}
-                filename={`${type}_match.csv`}
-                separator=","
-                headers={templateHeaders[type]}
-                target="_blank"
+          render={(_, record) => {
+            const { type, fieldName } = record
+            return fieldName === 'Schools' || fieldName === 'Classes' ? (
+              <Button
+                disabled={!districtMappedData[fieldName]}
+                onClick={() => handleReviewAndApprove(fieldName)}
               >
-                <Icon type="download" /> Download Template
-              </CSVLink>
-            </Button>
-          )}
+                Review and Approve
+              </Button>
+            ) : (
+              <Button {...ButtonProps}>
+                <CSVLink
+                  data={[]}
+                  filename={`${type}_match.csv`}
+                  separator=","
+                  headers={templateHeaders[type]}
+                  target="_blank"
+                >
+                  <Icon type="download" /> Download Template
+                </CSVLink>
+              </Button>
+            )
+          }}
         />
       </Table>
     </>

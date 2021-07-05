@@ -111,6 +111,7 @@ const initialState = {
     data: [],
     showData: false,
   },
+  stopSyncSaving: null,
   mappedData: {},
 }
 
@@ -124,7 +125,6 @@ const putMappedDataIntoState = (state, payload) => {
     state.mappedData[dcId][entity] = result
   }
   state.mappingDataLoading = false
-  stopSyncSaving: null,
 }
 
 const fetchExistingDataReducer = createReducer(initialState, {

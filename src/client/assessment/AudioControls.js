@@ -186,7 +186,7 @@ const AudioControls = ({
           )
         } else {
           const pageAudio = questionData.tts.pages
-            .filter((p) => p?.contentAudioUrl)
+            .filter((p) => p?.contentAudioURL)
             .map((p) => audioLoadResolve(p?.contentAudioURL))
 
           if (pageAudio.length) {

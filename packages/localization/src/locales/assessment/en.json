@@ -266,7 +266,8 @@
         "mixedFraction": "Mixed Fraction"
       },
       "graphControls": "Graph Controls",
-      "standardKeypadLabel": "Standard Keypads"
+      "standardKeypadLabel": "Standard Keypads",
+      "keepAspectRatio": "Keep Aspect Ratio"
     },
     "dropZone": {
       "dragDrop": "Drag & Drop",

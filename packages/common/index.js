@@ -86,6 +86,7 @@ export { default as notification } from './src/components/Notification'
 export { default as DragDropInnerContainer } from './src/components/DragDrop/DragDropInnerContainer'
 export { default as PremiumLabel } from './src/components/PremiumLabel'
 export { default as HelperIcon } from './src/components/HelperIconWithPopover'
+export { default as SelectSearch } from './src/components/SelectSearch'
 
 // HOC
 export { default as withWindowSizes } from './src/HOC/withWindowSizes'
@@ -146,6 +147,7 @@ export {
 export { default as useRealtimeV2 } from './src/customHooks/useRealtimeV2'
 export { default as useDisableDragScroll } from './src/customHooks/useDisableDragScroll'
 export { default as measureTextWithImage } from './src/customHooks/measureTextWithImage'
+export { default as useDropdownData } from './src/customHooks/useDropDownData'
 
 // Mobile
 export { MenuIcon } from './src/components/MenuIcon'

@@ -172,31 +172,23 @@ class Container extends Component {
   handleSaveQuestion = () => {
     const {
       saveQuestion,
-      savePassage,
       removeAnswers,
       setAuthoredByMeFilter,
       match,
-      history,
       isEditFlow,
       isTestFlow,
+      isPassageWithQuestions,
+      onAddWidgetToPassage,
     } = this.props
     const { testId } = match.params
 
-    const isPassageWithQuestions = get(
-      history,
-      'location.state.isPassageWithQuestions',
-      false
-    )
+    removeAnswers()
     if (isPassageWithQuestions) {
-      return savePassage({
-        isTestFlow,
-        isEditFlow,
-        testId: testId || history?.location?.state?.testId,
-      })
+      onAddWidgetToPassage()
+      return
     }
 
-    saveQuestion(testId, isTestFlow, isEditFlow)
-    removeAnswers()
+    saveQuestion({ testId, isTestFlow, isEditFlow })
     if (setAuthoredByMeFilter) setAuthoredByMeFilter()
   }
 
@@ -460,6 +452,7 @@ class Container extends Component {
       saveItem,
       preview,
       question,
+      onCloseEditModal,
     } = this.props
 
     const commonProps = {
@@ -488,6 +481,7 @@ class Container extends Component {
           view === 'edit' ? this.renderRightSideButtons : () => {}
         }
         onShowSettings={() => setShowSettings(true)}
+        onCloseEditModal={onCloseEditModal}
         showAuditTrail={!!item}
       />
     ) : (
@@ -502,6 +496,7 @@ class Container extends Component {
         onSaveScrollTop={onSaveScrollTop}
         savedWindowScrollTop={savedWindowScrollTop}
         showAuditTrail={!!item}
+        onCloseEditModal={onCloseEditModal}
         renderExtra={() =>
           modalItemId && (
             <ButtonClose onClick={onModalClose}>
@@ -526,6 +521,7 @@ class Container extends Component {
       showCalculatingSpinner,
       allowedToSelectMultiLanguage,
       t,
+      isPassageWithQuestions,
     } = this.props
 
     if (!question) {
@@ -571,15 +567,25 @@ class Container extends Component {
           </SourceModal>
         )}
         <HeaderContainer>
-          <ItemHeader title={question.title} reference={itemId}>
+          <ItemHeader
+            title={question.title}
+            reference={itemId}
+            hideSideMenu={isPassageWithQuestions}
+          >
             {this.header()}
           </ItemHeader>
 
-          <BreadCrumbBar className="sticky-header">
-            {windowWidth > desktopWidth.replace('px', '') ? (
+          <BreadCrumbBar
+            className="sticky-header"
+            isPassageWithQuestions={isPassageWithQuestions}
+          >
+            {windowWidth > desktopWidth.replace('px', '') &&
+            !isPassageWithQuestions ? (
               <SecondHeadBar breadcrumb={this.breadcrumb} />
             ) : (
-              <BackLink onClick={history.goBack}>Back to Item List</BackLink>
+              !isPassageWithQuestions && (
+                <BackLink onClick={history.goBack}>Back to Item List</BackLink>
+              )
             )}
             <RightActionButtons xs={{ span: 16 }} lg={{ span: 12 }}>
               {allowedToSelectMultiLanguage &&
@@ -701,7 +707,8 @@ export default enhance(Container)
 const BreadCrumbBar = styled.div`
   padding: 10px 30px;
   display: flex;
-  justify-content: space-between;
+  justify-content: ${({ isPassageWithQuestions }) =>
+    isPassageWithQuestions ? 'flex-end' : 'space-between'};
   align-items: center;
 
   &.sticky-header {

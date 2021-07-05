@@ -267,6 +267,11 @@ const editTagsRequest = (payload) =>
     data: payload,
   })
 
+const getBubbleSheet = ({ assignmentId, groupId }) =>
+  api.callApi({
+    url: `${prefix}/${assignmentId}/group/${groupId}/bubble-sheet`,
+  })
+
 export default {
   create,
   update,
@@ -291,4 +296,5 @@ export default {
   syncWithSchoologyClassroom,
   fetchRegradeSettings,
   editTagsRequest,
+  getBubbleSheet,
 }

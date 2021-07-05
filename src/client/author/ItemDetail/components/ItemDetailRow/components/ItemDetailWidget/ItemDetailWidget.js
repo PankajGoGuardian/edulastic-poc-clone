@@ -5,6 +5,7 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { get, every } from 'lodash'
 import { DragSource } from 'react-dnd'
+import { FlexContainer } from '@edulastic/common'
 import QuestionWrapper from '../../../../../../assessment/components/QuestionWrapper'
 import { Types } from '../../../../constants'
 import {
@@ -89,23 +90,6 @@ const ItemDetailWidget = ({
         data-cy={dataCy}
       >
         <Container isDragging={isDragging} flowLayout={flowLayout}>
-          <WidgetContainer>
-            {(widget.widgetType === 'question' ||
-              widget.widgetType === 'resource') && (
-              <QuestionWrapper
-                testItem
-                qIndex={widgetIndex}
-                type={widget.type}
-                view="preview"
-                questionId={widget.reference}
-                previewTab={previewTab}
-                data={{ ...question, smallSize: true }}
-                flowLayout={flowLayout}
-                disableResponse
-              />
-            )}
-          </WidgetContainer>
-
           {!hidePointsBlock && itemLevelScoring ? (
             !(unscored && showPoints) ? (
               <Ctrls.TotalPoints
@@ -126,53 +110,72 @@ const ItemDetailWidget = ({
             )
           ) : null}
 
-          {(!flowLayout || showButtons) && (
-            <ButtonsContainer>
-              {!(question.rubrics && !itemLevelScoring) &&
-                (!(unscored && showPoints) ? (
-                  <Ctrls.Point
-                    value={score}
-                    onChange={scoreChangeHandler}
-                    data-cy="pointUpdate"
-                    visible={isPointsBlockVisible}
-                    disabled={isEditDisabled}
-                    isRubricQuestion={!!question.rubrics && !itemLevelScoring}
-                    itemLevelScoring={itemLevelScoring}
-                  />
-                ) : (
-                  <UnScored
-                    width="50px"
-                    height="50px"
-                    top={`${itemLevelScoring ? -80 : -50}px`}
-                  />
-                ))}
-
-              {isEditDisabled ? (
-                <div>
-                  <Ctrls.Move
-                    disabled={isEditDisabled}
-                    disabledReason={disabledReason}
-                  />
-                </div>
-              ) : (
-                connectDragSource(
-                  <div>
-                    <Ctrls.Move />
-                  </div>
-                )
+          <FlexContainer width="100%" justifyContent="space-between">
+            <WidgetContainer>
+              {(widget.widgetType === 'question' ||
+                widget.widgetType === 'resource') && (
+                <QuestionWrapper
+                  testItem
+                  qIndex={widgetIndex}
+                  type={widget.type}
+                  view="preview"
+                  questionId={widget.reference}
+                  previewTab={previewTab}
+                  data={{ ...question, smallSize: true }}
+                  flowLayout={flowLayout}
+                  disableResponse
+                />
               )}
-              <Ctrls.Edit
-                onEdit={onEdit}
-                disabled={isEditDisabled}
-                disabledReason={disabledReason}
-              />
-              <Ctrls.Delete
-                onDelete={onDelete}
-                disabled={isEditDisabled}
-                disabledReason={disabledReason}
-              />
-            </ButtonsContainer>
-          )}
+            </WidgetContainer>
+
+            {(!flowLayout || showButtons) && (
+              <ButtonsContainer>
+                {!(question.rubrics && !itemLevelScoring) &&
+                  (!(unscored && showPoints) ? (
+                    <Ctrls.Point
+                      value={score}
+                      onChange={scoreChangeHandler}
+                      data-cy="pointUpdate"
+                      visible={isPointsBlockVisible}
+                      disabled={isEditDisabled}
+                      isRubricQuestion={!!question.rubrics && !itemLevelScoring}
+                      itemLevelScoring={itemLevelScoring}
+                    />
+                  ) : (
+                    <UnScored
+                      width="50px"
+                      height="50px"
+                      top={`${itemLevelScoring ? -80 : -50}px`}
+                    />
+                  ))}
+
+                {isEditDisabled ? (
+                  <div>
+                    <Ctrls.Move
+                      disabled={isEditDisabled}
+                      disabledReason={disabledReason}
+                    />
+                  </div>
+                ) : (
+                  connectDragSource(
+                    <div>
+                      <Ctrls.Move />
+                    </div>
+                  )
+                )}
+                <Ctrls.Edit
+                  onEdit={onEdit}
+                  disabled={isEditDisabled}
+                  disabledReason={disabledReason}
+                />
+                <Ctrls.Delete
+                  onDelete={onDelete}
+                  disabled={isEditDisabled}
+                  disabledReason={disabledReason}
+                />
+              </ButtonsContainer>
+            )}
+          </FlexContainer>
         </Container>
       </div>
     )

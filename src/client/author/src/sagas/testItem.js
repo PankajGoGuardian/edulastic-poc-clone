@@ -170,6 +170,11 @@ function* evaluateAnswers({ payload }) {
             messageKey: 'attemptTheQuestonToCheckAnswer',
           })
         }
+        // set loading to false
+        yield put({
+          type: CLEAR_ITEM_EVALUATION,
+          payload: false,
+        })
         return
       }
       const { evaluation, score, maxScore } = yield evaluateItem(
@@ -222,6 +227,11 @@ function* evaluateAnswers({ payload }) {
             messageKey: 'attemptTheQuestonToCheckAnswer',
           })
         }
+        // set loading to false
+        yield put({
+          type: CLEAR_ITEM_EVALUATION,
+          payload: false,
+        })
         return
       }
       const { evaluation, score, maxScore } = yield evaluateItem(

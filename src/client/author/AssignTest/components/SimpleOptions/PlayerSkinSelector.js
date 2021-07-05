@@ -3,6 +3,7 @@ import { Col, Select } from 'antd'
 import React from 'react'
 import { SelectInputStyled } from '@edulastic/common'
 import { ColLabel, Label, StyledRow } from './styled'
+import { skinTypesOrder } from '../../../TestPage/utils'
 
 const { playerSkinTypes, playerSkinValues } = test
 
@@ -39,21 +40,26 @@ const PlayerSkinSelector = ({
       disabled={disabled || playerSkinType === playerSkinValues.testlet}
       isBackgroundWhite={selectBackgroundWhite}
     >
-      {Object.keys(types)
-        .sort()
-        .map((key) => {
-          if (
-            key === playerSkinValues.testlet &&
-            !(playerSkinType === playerSkinValues.testlet)
-          ) {
-            return null
-          }
+      {skinTypesOrder(types).map((key) => {
+        if (
+          key === playerSkinValues.testlet &&
+          !(playerSkinType === playerSkinValues.testlet)
+        ) {
+          return null
+        }
+        if (key === 'devider') {
           return (
-            <Select.Option key={key} value={key}>
-              {types[key]}
+            <Select.Option key={key} value={key} disabled>
+              {'-'.repeat(15)}
             </Select.Option>
           )
-        })}
+        }
+        return (
+          <Select.Option key={key} value={key}>
+            {types[key]}
+          </Select.Option>
+        )
+      })}
     </SelectInputStyled>
   )
 

@@ -43,6 +43,7 @@ import {
   isPublisherUserSelector,
   getUserRole,
   isOrganizationDistrictUserSelector,
+  getCollectionsSelector,
 } from '../../../src/selectors/user'
 import SourceModal from '../../../QuestionEditor/components/SourceModal/SourceModal'
 import ShareModal from '../../../src/components/common/ShareModal'
@@ -367,13 +368,22 @@ class Container extends PureComponent {
   }
 
   handleSave = (_, hideNotification) => {
-    const { playlist, updatePlaylist, createPlayList } = this.props
+    const { playlist, updatePlaylist, createPlayList, collections } = this.props
     if (!playlist?.modules?.length) {
       /**
        * need to save only when at-least a module present
        */
       return
     }
+    const SMid = collections
+      .filter((x) => x?.name?.toLowerCase() === 'spark math')
+      .map(({ _id }) => _id)
+    let isSMPlaylist
+    playlist?.collections?.forEach((c) => {
+      if (SMid?.includes(c?._id)) isSMPlaylist = true
+    })
+
+    playlist.isSMPlaylist = isSMPlaylist
 
     if (playlist._id) {
       updatePlaylist(playlist._id, playlist, hideNotification)
@@ -570,6 +580,7 @@ const enhance = compose(
       itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state),
       collectionsToShow: getCollectionsToAddContent(state),
       isPublisherUser: isPublisherUserSelector(state),
+      collections: getCollectionsSelector(state),
       useRole: getUserRole(state),
       isOrganizationDistrictUser: isOrganizationDistrictUserSelector(state),
     }),

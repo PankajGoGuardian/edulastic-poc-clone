@@ -369,6 +369,7 @@ const CanvasBulkAddClass = ({
           }}
           style={{ width: '100%' }}
           value={row.courseId || undefined}
+          data-cy="canvasClassCourse"
           placeholder="Select Course"
           onChange={(val) => handleChange(ind, 'courseId', val)}
           getPopupContainer={(triggerNode) => triggerNode.parentNode}
@@ -377,7 +378,7 @@ const CanvasBulkAddClass = ({
           {activeCourseList &&
             activeCourseList.map((course) => (
               <Select.Option value={course._id} key={course._id}>
-                {course.name}institution
+                {course.name} institution
               </Select.Option>
             ))}
         </Select>

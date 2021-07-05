@@ -19,6 +19,7 @@ const SaveTestSettingsModal = ({ visible, toggleModal, handleSave }) => {
           })
         handleSave(settingName)
       }}
+      centered
     >
       <label>SETTINGS NAME</label>
       <Input

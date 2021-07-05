@@ -10,6 +10,8 @@ import { omit } from 'lodash'
 export const SEARCH_EXISTING_DATA_API = '[admin] SEARCH_EXISTING_DATA_API'
 export const APPLY_DELTA_SYNC_CHANGES = '[admin] APPLY_DELTA_SYNC_CHANGES'
 export const SYNC_SCHOOLS = '[admin] SYNC_SCHOOLS'
+export const SYNC_CLEVER_ORPHAN_USERS = '[admin] SYNC_CLEVER_ORPHAN_USERS'
+export const SYNC_EDLINK_ORPHAN_USERS = '[admin] SYNC_EDLINK_ORPHAN_USERS'
 export const APPLY_CLASSNAMES_SYNC = '[admin] APPLY_CLASSNAMES_SYNC'
 export const ENABLE_DISABLE_SYNC_ACTION = '[admin] ENABLE_DISABLE_SYNC_ACTION'
 export const FETCH_CURRICULUM_DATA_ACTION =
@@ -34,6 +36,8 @@ export const LOGS_DATA_FAILED = '[admin] LOGS_DATA_FAILED'
 export const RECEIVE_MERGED_ID = '[admin] merg ids to edulastic'
 export const CLOSE_MERGE_RESPONSE_TABLE = '[admin] close merge response table'
 export const CLEAR_MERGE_DATA = '[admin] clear merge data'
+export const SET_STOP_SYNC = '[admin] set stop sync'
+export const SET_STOP_SYNC_SAVING_STATUS = '[admin] set stop sync saving status'
 
 export const FETCH_MAPPING_DATA = '[admin] FETCH_MAPPING_DATA'
 export const FETCH_MAPPING_DATA_SUCCESS = '[admin] FETCH_MAPPING_DATA_SUCCESS'
@@ -48,6 +52,8 @@ export const fetchExistingDataSuccess = createAction(
 )
 export const applyDeltaSyncChanges = createAction(APPLY_DELTA_SYNC_CHANGES)
 export const syncSchools = createAction(SYNC_SCHOOLS)
+export const syncCleverOrphanUsers = createAction(SYNC_CLEVER_ORPHAN_USERS)
+export const syncEdlinkOrphanUsers = createAction(SYNC_EDLINK_ORPHAN_USERS)
 export const applyClassNamesSync = createAction(APPLY_CLASSNAMES_SYNC)
 export const enableDisableSyncAction = createAction(ENABLE_DISABLE_SYNC_ACTION)
 export const fetchCurriculumDataAction = createAction(
@@ -80,6 +86,7 @@ export const clearMergeDataAction = createAction(CLEAR_MERGE_DATA)
 export const uploadCSVAction = createAction(UPLOAD_CSV)
 export const receiveMergeIdsAction = createAction(RECEIVE_MERGED_ID)
 export const closeMergeResponseAction = createAction(CLOSE_MERGE_RESPONSE_TABLE)
+export const setStopSyncAction = createAction(SET_STOP_SYNC)
 
 export const getMappingDataAction = createAction(FETCH_MAPPING_DATA)
 export const saveEntityMappingAction = createAction(SAVE_APPROVED_MAPPING)
@@ -117,6 +124,7 @@ const putMappedDataIntoState = (state, payload) => {
     state.mappedData[dcId][entity] = result
   }
   state.mappingDataLoading = false
+  stopSyncSaving: null,
 }
 
 const fetchExistingDataReducer = createReducer(initialState, {
@@ -226,6 +234,12 @@ const fetchExistingDataReducer = createReducer(initialState, {
   [FETCH_MAPPING_DATA_FAILURE]: (state) => {
     state.mappingDataLoading = false
   },
+  [SET_STOP_SYNC]: (state) => {
+    state.stopSyncSaving = true
+  },
+  [SET_STOP_SYNC_SAVING_STATUS]: (state, { payload }) => {
+    state.stopSyncSaving = payload
+  },
 })
 
 // SELECTORS
@@ -251,6 +265,11 @@ export const getMappedData = createSelector(
   ({ mergeData }) => mergeData.mappedData
 )
 
+export const stopSyncSavingSelector = createSelector(
+  adminStateSelector,
+  (state) => state.mergeData.stopSyncSaving
+)
+
 // SAGAS
 const {
   fetchExistingDataMergeClever,
@@ -274,6 +293,10 @@ const {
   completeAtlasDistrictSync,
   getMappingData,
   saveMappedData,
+  syncCleverOrphanUsersApi,
+  syncEdlinkOrphanUsersApi,
+  cleverStopSyncApi,
+  atlasStopSyncApi,
 } = adminApi
 
 function* fetchExistingData({ payload }) {
@@ -526,11 +549,79 @@ function* saveMappingData({ payload }) {
   }
 }
 
+function* fetchSyncCleverOrphanUsers({ payload }) {
+  let result
+  try {
+    result = yield call(syncCleverOrphanUsersApi, payload)
+    notification({ type: 'success', msg: result })
+  } catch (err) {
+    console.error(err)
+    notification({ msg: err?.data?.message || err.message })
+  }
+}
+
+function* fetchSyncEdlinkOrphanUsers({ payload }) {
+  let result
+  try {
+    result = yield call(syncEdlinkOrphanUsersApi, payload)
+    notification({ type: 'success', msg: result })
+  } catch (err) {
+    console.error(err)
+    notification({ msg: err?.data?.message || err.message })
+  }
+}
+
+function* setStopSyncSaga({
+  payload: { isClasslink, stopSyncData, districtId },
+}) {
+  try {
+    const api = isClasslink ? atlasStopSyncApi : cleverStopSyncApi
+    const schoolsToEnable = []
+    const schoolsToDisable = []
+    Object.entries(stopSyncData).forEach(([id, value]) => {
+      id = id.replaceAll('-', '')
+      if (value) schoolsToEnable.push(id)
+      else schoolsToDisable.push(id)
+    })
+    const calls = []
+    if (schoolsToEnable.length)
+      calls.push(
+        call(api, {
+          stopSync: true,
+          districtId,
+          schoolIds: schoolsToEnable,
+        })
+      )
+    if (schoolsToDisable.length)
+      calls.push(
+        call(api, {
+          stopSync: false,
+          districtId,
+          schoolIds: schoolsToDisable,
+        })
+      )
+    const result = yield all(calls)
+    const failedResult = result.find((res) => res.success === false)
+    if (failedResult)
+      throw new Error(failedResult.message || 'Stop Sync Failed')
+  } catch (err) {
+    captureSentryException(err)
+    notification({ msg: err, type: 'error' })
+  } finally {
+    yield put({
+      type: SET_STOP_SYNC_SAVING_STATUS,
+      payload: false,
+    })
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(SEARCH_EXISTING_DATA_API, fetchExistingData),
     yield takeEvery(APPLY_DELTA_SYNC_CHANGES, fetchApplyDeltaSync),
     yield takeEvery(SYNC_SCHOOLS, fetchSchoolsSync),
+    yield takeEvery(SYNC_CLEVER_ORPHAN_USERS, fetchSyncCleverOrphanUsers),
+    yield takeEvery(SYNC_EDLINK_ORPHAN_USERS, fetchSyncEdlinkOrphanUsers),
     yield takeEvery(APPLY_CLASSNAMES_SYNC, fetchClassNamesSync),
     yield takeEvery(ENABLE_DISABLE_SYNC_ACTION, fetchEnableDisableSync),
     yield takeEvery(FETCH_CURRICULUM_DATA_ACTION, fetchCurriculumData),
@@ -539,6 +630,7 @@ export function* watcherSaga() {
     yield takeEvery(FETCH_LOGS_DATA, fetchLogsData),
     yield takeEvery(FETCH_MAPPING_DATA, fetchMappingData),
     yield takeEvery(SAVE_APPROVED_MAPPING, saveMappingData),
+    takeEvery(SET_STOP_SYNC, setStopSyncSaga),
   ])
 }
 

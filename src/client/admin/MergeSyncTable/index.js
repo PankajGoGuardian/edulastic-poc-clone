@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback, useState } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import styled from 'styled-components'
@@ -18,6 +18,8 @@ import {
   mergeResponseSelector,
   applyDeltaSyncChanges,
   syncSchools,
+  syncCleverOrphanUsers,
+  syncEdlinkOrphanUsers,
   applyClassNamesSync,
   enableDisableSyncAction,
   getSubStandardMapping,
@@ -183,6 +185,8 @@ function MergeSyncTable({
   searchData,
   applyDeltaSyncChanges,
   syncSchools,
+  syncCleverOrphanUsers,
+  syncEdlinkOrphanUsers,
   applyClassNamesSync,
   enableDisableSyncAction,
   subStandardMapping,
@@ -239,12 +243,25 @@ function MergeSyncTable({
     }
   }
 
+  const [searchQuery, setSearchQuery] = useState(null)
+  const searchExistingDataCB = useCallback(
+    (query) => {
+      setSearchQuery(query)
+      searchExistingDataApi(query)
+    },
+    [setSearchQuery, searchExistingDataApi]
+  )
+  const refreshExistingDataCB = useCallback(() => {
+    if (!searchQuery) return
+    searchExistingDataApi(searchQuery)
+  }, [searchExistingDataApi, searchQuery])
+
   return (
     <OuterDiv>
       <H2>Merge and Initialize Sync</H2>
       <FirstDiv>
         <MergeInitializeSyncForm
-          searchExistingDataApi={searchExistingDataApi}
+          searchExistingDataApi={searchExistingDataCB}
           isClasslink={isClasslink}
         />
       </FirstDiv>
@@ -326,6 +343,10 @@ function MergeSyncTable({
                 isClasslink={isClasslink}
                 atlasId={atlasId}
                 syncSchools={syncSchools}
+                syncCleverOrphanUsers={syncCleverOrphanUsers}
+                syncEdlinkOrphanUsers={syncEdlinkOrphanUsers}
+                district={searchData.data.district}
+                refreshExistingData={refreshExistingDataCB}
               />
             </TabPane>
             <TabPane tab="Logs" key="logs">
@@ -355,6 +376,8 @@ const withConnect = connect(mapStateToProps, {
   searchExistingDataApi,
   applyDeltaSyncChanges,
   syncSchools,
+  syncCleverOrphanUsers,
+  syncEdlinkOrphanUsers,
   applyClassNamesSync,
   enableDisableSyncAction,
   fetchCurriculumDataAction,

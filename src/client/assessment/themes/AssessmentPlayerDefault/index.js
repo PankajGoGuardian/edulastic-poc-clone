@@ -105,7 +105,8 @@ class AssessmentPlayerDefault extends React.Component {
             showScratchpadInfoNotification(items[currentItem])
           ) {
             const config =
-              playerSkinType === playerSkinValues.quester
+              playerSkinType === playerSkinValues.quester ||
+              playerSkinType === playerSkinValues.drc
                 ? { bottom: '64px' }
                 : {}
             notification({
@@ -136,7 +137,10 @@ class AssessmentPlayerDefault extends React.Component {
       playerSkinType,
     } = this.props
     const config =
-      playerSkinType === playerSkinValues.quester ? { bottom: '64px' } : {}
+      playerSkinType === playerSkinValues.quester ||
+      playerSkinType === playerSkinValues.drc
+        ? { bottom: '64px' }
+        : {}
     if (answerChecksUsedForItem >= settings.maxAnswerChecks)
       return notification({
         type: 'warn',
@@ -352,6 +356,7 @@ class AssessmentPlayerDefault extends React.Component {
       user = {},
       gotoSummary,
       isShowStudentWork,
+      handleReviewOrSubmit,
     } = this.props
     const { firstName = '', lastName = '' } = user
     const { settings } = this.props
@@ -392,7 +397,9 @@ class AssessmentPlayerDefault extends React.Component {
     const scratchPadMode = currentToolMode.indexOf(5) !== -1 || isStudentReport
 
     // calculate width of question area
-    const isQuester = playerSkinType === playerSkinValues.quester
+    const isQuester =
+      playerSkinType === playerSkinValues.quester ||
+      playerSkinType === playerSkinValues.drc
     const reduceOriginalMarginWidth = isQuester ? 0 : 70
     const availableWidth = windowWidth - reduceOriginalMarginWidth
     let responsiveWidth = availableWidth
@@ -547,6 +554,7 @@ class AssessmentPlayerDefault extends React.Component {
             }
             gotoSummary={gotoSummary}
             isShowStudentWork={isShowStudentWork}
+            handleReviewOrSubmit={handleReviewOrSubmit}
           >
             <FeaturesSwitch
               inputFeatures="studentSettings"
@@ -681,7 +689,7 @@ class AssessmentPlayerDefault extends React.Component {
               </MainWrapper>
             </Main>
 
-            <ReportIssuePopover item={item} />
+            <ReportIssuePopover item={item} playerSkinType={playerSkinType} />
 
             {currentToolMode.indexOf(2) !== -1 && (
               <CalculatorContainer

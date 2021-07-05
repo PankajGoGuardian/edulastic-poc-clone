@@ -44,6 +44,7 @@ export const ScrollbarContainer = styled.div`
     width: calc(100vw - 130px);
     height: 227px;
     overflow-x: scroll;
+    overflow-y: hidden;
   }
 `
 export const PrevButton = styled.div`

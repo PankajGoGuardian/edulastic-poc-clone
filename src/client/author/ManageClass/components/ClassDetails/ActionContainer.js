@@ -87,6 +87,7 @@ const ActionContainer = ({
 
   const [infoModelVisible, setinfoModelVisible] = useState(false)
   const [infoModalData, setInfoModalData] = useState([])
+  const [isAutoArchivedClass, setIsAutoArchivedClass] = useState(false)
 
   const { textToSpeech } = features
   const { _id: classId, active } = selectedClass
@@ -334,8 +335,26 @@ const ActionContainer = ({
       '_blank'
     )
   }
+  const {
+    atlasId,
+    atlasProviderName,
+    googleId,
+    canvasCode,
+    active: classStatus,
+  } = selectedClass || {}
 
-  const { atlasId, atlasProviderName } = selectedClass || {}
+  useEffect(() => {
+    if (
+      (atlasId && atlasId.includes('.deactivated')) ||
+      (cleverId && cleverId.includes('.deactivated')) ||
+      (canvasCode && canvasCode.includes('.deactivated')) ||
+      (googleId && googleId.includes('.deactivated'))
+    ) {
+      setIsAutoArchivedClass(true)
+    } else {
+      setIsAutoArchivedClass(false)
+    }
+  }, [atlasId, cleverId, canvasCode, googleId, classStatus])
 
   return (
     <>
@@ -404,13 +423,35 @@ const ActionContainer = ({
 
       <AddStudentDivider>
         {cleverId && (
-          <CleverInfoBox>
-            <IconInfo /> This is a Clever Synced class.
+          <CleverInfoBox alert={isAutoArchivedClass}>
+            <IconInfo />{' '}
+            {isAutoArchivedClass
+              ? `This is NOT a Clever synced class anymore.`
+              : 'This is a Clever Synced class.'}
           </CleverInfoBox>
         )}
         {atlasId && (
-          <CleverInfoBox>
-            <IconInfo /> {`This is a ${atlasProviderName} Synced class.`}
+          <CleverInfoBox alert={isAutoArchivedClass}>
+            <IconInfo />{' '}
+            {isAutoArchivedClass
+              ? `This is NOT a ${atlasProviderName} synced class anymore.`
+              : `This is a ${atlasProviderName} Synced class.`}
+          </CleverInfoBox>
+        )}
+        {googleId && isAutoArchivedClass && (
+          <CleverInfoBox alert={isAutoArchivedClass}>
+            <IconInfo />{' '}
+            {classStatus === 1
+              ? `Sync with Google is paused. Please resync to enable`
+              : `This is NOT a Google synced class anymore.`}
+          </CleverInfoBox>
+        )}
+        {canvasCode && isAutoArchivedClass && (
+          <CleverInfoBox alert={isAutoArchivedClass}>
+            <IconInfo />{' '}
+            {classStatus === 1
+              ? `Sync with Canvas is paused. Please resync to enable`
+              : `This is NOT a Canvas synced class anymore.`}
           </CleverInfoBox>
         )}
 

@@ -11,6 +11,7 @@ import {
   IconNoVolume,
   IconDynamic,
   IconClose,
+  IconPassage,
 } from '@edulastic/icons'
 import { get } from 'lodash'
 import { Row, Icon } from 'antd'
@@ -25,6 +26,7 @@ import {
   EduButton,
   notification,
   LikeIconStyled,
+  FlexContainer,
 } from '@edulastic/common'
 import { testItemsApi } from '@edulastic/api'
 
@@ -62,6 +64,10 @@ import {
   AddRemoveBtn,
   AddRemoveButton,
   AddRemoveBtnPublisher,
+  PassageTitle,
+  StyledRow,
+  PassageInfo,
+  PassageIconContainer,
 } from './styled'
 import {
   setAndSavePassageItemsAction,
@@ -400,6 +406,32 @@ class Item extends Component {
     openPreviewModal()
   }
 
+  get getPassageInfo() {
+    const { item } = this.props
+    return (
+      <FlexContainer flexDirection="column">
+        <StyledRow>
+          <PassageIconContainer md={1}>
+            <IconPassage width={15.96} height={19.338} />
+          </PassageIconContainer>
+          <PassageTitle md={23}>{item.passageTitle}</PassageTitle>
+        </StyledRow>
+        <StyledRow>
+          {item?.passageItemsCount && (
+            <PassageInfo md={7}>
+              TOTAL PASSAGE QUESTIONS: {item.passageItemsCount}
+            </PassageInfo>
+          )}
+          {item?.passageLexileValue && (
+            <PassageInfo md={7}>
+              LEXILE LEVEL: {item.passageLexileValue}
+            </PassageInfo>
+          )}
+        </StyledRow>
+      </FlexContainer>
+    )
+  }
+
   render() {
     const {
       item,
@@ -464,6 +496,9 @@ class Item extends Component {
           )}
           <Question>
             <QuestionContent>
+              {item?.isPassageWithQuestions &&
+                item?.passageTitle &&
+                this.getPassageInfo}
               <Stimulus
                 onClickHandler={this.handleStimulusClick}
                 stimulus={get(

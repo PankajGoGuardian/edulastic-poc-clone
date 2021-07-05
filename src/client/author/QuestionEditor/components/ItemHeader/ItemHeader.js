@@ -5,8 +5,13 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import { Back, LeftSide, RightSide } from './styled'
 
-const ItemHeader = ({ title, children, link }) => (
-  <MainHeader mobileHeaderHeight={100} type="standard" headingText={title}>
+const ItemHeader = ({ title, children, link, hideSideMenu }) => (
+  <MainHeader
+    mobileHeaderHeight={100}
+    type="standard"
+    headingText={title}
+    hideSideMenu={hideSideMenu}
+  >
     <RightSide>{children}</RightSide>
     <LeftSide>
       {link && (

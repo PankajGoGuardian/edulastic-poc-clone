@@ -302,7 +302,7 @@ class Container extends Component {
           <AddButtonContainer justifyContent="center">
             <PassageButtonContainer>
               <PassageAddNewButton
-                onClick={() => handleAddToPassage('video', tabIndex)}
+                onClick={() => handleAddToPassage('video', tabIndex, rowIndex)}
                 data-cy="addVideoButton"
               >
                 <IconPlusCircle />
@@ -311,7 +311,9 @@ class Container extends Component {
             </PassageButtonContainer>
             <PassageButtonContainer>
               <PassageAddNewButton
-                onClick={() => handleAddToPassage('passage', tabIndex)}
+                onClick={() =>
+                  handleAddToPassage('passage', tabIndex, rowIndex)
+                }
                 data-cy="addPassageButton"
               >
                 <IconPlusCircle />

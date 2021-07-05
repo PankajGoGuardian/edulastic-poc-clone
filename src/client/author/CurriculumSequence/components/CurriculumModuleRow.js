@@ -233,8 +233,11 @@ class ModuleRow extends Component {
     })
   }
 
-  assignTest = (moduleId, testId, testVersionId) => {
+  assignTest = (moduleId, testId, testVersionId, resources = []) => {
     const { history, playlistId } = this.props
+    const resourceIds = resources
+      .filter((x) => x.contentSubType === 'STUDENT')
+      .map((x) => x.contentId)
     history.push({
       pathname: `/author/playlists/assignments/${playlistId}/${moduleId}/${testId}`,
       state: {
@@ -242,6 +245,8 @@ class ModuleRow extends Component {
         fromText: 'My Playlist',
         toUrl: `/author/playlists/playlist/${playlistId}/use-this`,
         testVersionId,
+        resourceIds,
+        assignedFrom: 'playlistAssignTest',
       },
     })
   }
@@ -795,7 +800,8 @@ class ModuleRow extends Component {
                               assignTest(
                                 _id,
                                 testId,
-                                moduleData.contentVersionId
+                                moduleData.contentVersionId,
+                                moduleData.resources
                               )
                             }}
                           >
@@ -963,7 +969,8 @@ class ModuleRow extends Component {
                                       assignTest(
                                         _id,
                                         moduleData.contentId,
-                                        moduleData.contentVersionId
+                                        moduleData.contentVersionId,
+                                        moduleData.resources
                                       )
                                     }
                                   >

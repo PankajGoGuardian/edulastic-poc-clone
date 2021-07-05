@@ -22,21 +22,17 @@ export const Container = styled.div`
 `
 
 export const WidgetContainer = styled.div`
-  flex: 10;
-  max-width: 100%;
+  width: 100%;
 `
 
 export const ButtonsContainer = styled.div`
-  flex: 1;
-  position: absolute;
-  right: 20px;
-  top: 55%;
-  width: 32px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  transform: translateY(-50%);
-  oveflow-x: visible;
+  justify-content: flex-start;
+  align-items: flex-end;
+  overflow-x: visible;
+  padding: 40px 20px 0px 10px;
+  min-width: 180px;
 
   .ant-btn {
     background: ${white};
@@ -67,9 +63,7 @@ export const ButtonsContainer = styled.div`
 export const PointsInputWrapper = styled.div`
   display: flex;
   align-items: center;
-  position: absolute;
-  right: 0px;
-  top: -40px;
+  margin-bottom: 10px;
 
   .ant-input-number-disabled {
     background-color: ${greyLight1};

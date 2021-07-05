@@ -9,8 +9,18 @@ import {
   all,
   select,
 } from 'redux-saga/effects'
-import { testsApi, settingsApi, resourcesApi } from '@edulastic/api'
+import {
+  testsApi,
+  settingsApi,
+  resourcesApi,
+  curriculumSequencesApi,
+} from '@edulastic/api'
 import { notification } from '@edulastic/common'
+import * as Sentry from '@sentry/browser'
+import { omit } from 'lodash'
+import { getSelectedResourcesAction } from '../../../AssignTest/duck'
+import { getCurrentActiveTerms } from '../../../src/selectors/user'
+import { updateCurriculumSequenceAction } from '../../ducks'
 
 export const sliceName = 'playlistTestBox'
 const LIMIT = 20
@@ -20,6 +30,11 @@ const stateSelector = (state) => state?.[sliceName]
 export const getPlaylistContentFilters = createSelector(
   stateSelector,
   (state) => state
+)
+
+export const getRecommendedResources = createSelector(
+  stateSelector,
+  (state) => state.recommendedResources
 )
 
 export const FILTERS = [
@@ -60,6 +75,7 @@ const slice = createSlice({
   initialState: {
     tests: [],
     resources: [],
+    recommendedResources: [],
     status: '',
     authoredBy: '',
     subject: '',
@@ -89,6 +105,13 @@ const slice = createSlice({
     },
     fetchResources: (state) => {
       state.isLoading = true
+    },
+    fetchRecommendedResourcesAction: (state) => {
+      state.isLoading = true
+    },
+    recommendedResourcesSuccessAction: (state, { payload }) => {
+      state.isLoading = false
+      state.recommendedResources = payload
     },
     fetchTestsSuccess: (state, { payload }) => {
       state.isLoading = false
@@ -164,6 +187,12 @@ const slice = createSlice({
     addResource: (state) => {
       state.searchResourceBy = 'resources'
     },
+    updateResource: (state) => {
+      state.searchResourceBy = 'resources'
+    },
+    deleteResource: (state) => {
+      state.searchResourceBy = 'resources'
+    },
     searchResource: (state) => {
       state.isLoading = true
     },
@@ -175,6 +204,9 @@ const slice = createSlice({
         state.resources.push(...payload)
       }
       state.loadedPage += 1
+    },
+    setUpdatedCurriculum: (state, { payload }) => {
+      state.destinationCurriculumSequence = payload
     },
     resetAndSearchResources: (state) => {
       state.isLoading = true
@@ -302,6 +334,83 @@ function* addResourceSaga({ payload }) {
   }
 }
 
+function* updateResourceSaga({ payload }) {
+  try {
+    const id = payload?.playlistId
+    delete payload.playlistId
+    yield call(resourcesApi.updateResource, payload)
+    yield put(slice.actions.resetSelectedStandards())
+    const activeTermIds = yield select(getCurrentActiveTerms)
+    // delay reources fetch so that the added resource gets indexed in ES
+    yield delay(500)
+    const curriculum = yield call(curriculumSequencesApi.getCurriculums, {
+      id,
+      forUseThis: true,
+      termIds: activeTermIds,
+    })
+    yield put(updateCurriculumSequenceAction(curriculum))
+    yield put(slice.actions.resetAndSearchResources())
+    notification({ type: 'success', msg: 'Resource Updated Successfully' })
+  } catch (e) {
+    console.error('Error Occured: updateResourceSaga ', e)
+    Sentry.captureException(e)
+  }
+}
+
+function* deleteResourceSaga({ payload }) {
+  const { id, playlistId } = payload
+  try {
+    yield call(resourcesApi.deleteResource, id)
+    yield put(slice.actions.resetSelectedStandards())
+    const activeTermIds = yield select(getCurrentActiveTerms)
+    // delay reources fetch so that the added resource gets indexed in ES
+    yield delay(500)
+    const curriculum = yield call(curriculumSequencesApi.getCurriculums, {
+      id: playlistId,
+      forUseThis: true,
+      termIds: activeTermIds,
+    })
+    yield put(updateCurriculumSequenceAction(curriculum))
+    yield put(slice.actions.resetAndSearchResources())
+    notification({ type: 'success', msg: 'Resource Deleted Successfully' })
+  } catch (e) {
+    console.error('Error Occured: deleteResourceSaga ', e)
+    Sentry.captureException(e)
+  }
+}
+
+function* getResourcesSaga({ payload }) {
+  const { resourceIds } = payload
+  try {
+    const result = yield call(resourcesApi.getRecommendedResources, payload)
+    if (result) {
+      const getSelectedResources = result?.map((x) => ({
+        type: 'assign',
+        contentId: x._id,
+        description: x?.contentDescription,
+        contentTitle: x.contentTitle,
+        contentType: x.contentType,
+        contentSubType: 'STUDENT',
+        contentUrl: x.contentUrl,
+        standards: x?.standards || [],
+      }))
+      const playlistSelectedResources = getSelectedResources?.filter((x) =>
+        resourceIds.includes(x.contentId)
+      )
+      yield put(
+        slice.actions.recommendedResourcesSuccessAction(getSelectedResources)
+      )
+      yield put(
+        getSelectedResourcesAction(
+          playlistSelectedResources?.map((x) => omit(x, 'standards'))
+        )
+      )
+    }
+  } catch (e) {
+    console.error('Error Occured: searchResourceSaga ', e)
+  }
+}
+
 function* searchResourceSaga() {
   try {
     const {
@@ -349,9 +458,15 @@ export function* watcherSaga() {
     ),
     yield takeEvery(slice.actions.setSearchByTab, fetchDataSaga),
     yield takeEvery(slice.actions.addResource, addResourceSaga),
+    yield takeEvery(slice.actions.updateResource, updateResourceSaga),
+    yield takeEvery(slice.actions.deleteResource, deleteResourceSaga),
     yield takeEvery(slice.actions.searchResource, searchResourceSaga),
     yield takeEvery(slice.actions.resetAndSearchResources, searchResourceSaga),
     yield takeEvery(slice.actions.setResourceSearchAction, searchResourceSaga),
     yield takeEvery(slice.actions.fetchResources, searchResourceSaga),
+    yield takeEvery(
+      slice.actions.fetchRecommendedResourcesAction,
+      getResourcesSaga
+    ),
   ])
 }

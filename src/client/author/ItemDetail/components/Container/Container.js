@@ -67,6 +67,7 @@ import {
   addWidgetToPassageAction,
   deleteItemAction,
 } from '../../ducks'
+import { changeCurrentQuestionAction } from '../../../sharedDucks/questions'
 import { toggleSideBarAction } from '../../../src/actions/toggleMenu'
 
 import {
@@ -107,6 +108,7 @@ import {
   allowedToSelectMultiLanguageInTest,
   isPremiumUserSelector,
 } from '../../../src/selectors/user'
+import QuestionToPassage from '../QuestionToPassage'
 
 const testItemStatusConstants = {
   DRAFT: 'draft',
@@ -136,6 +138,8 @@ class Container extends Component {
       showSettings: false,
       collapseDirection: '',
       showHints: false,
+      showQuestionManageModal: false,
+      isEditPassageQuestion: false,
     }
   }
 
@@ -328,6 +332,12 @@ class Container extends Component {
       navigateToPickupQuestionType()
       return
     }
+
+    if (item.passageId) {
+      this.setState({ showQuestionManageModal: true, rowIndex, tabIndex })
+      return
+    }
+
     const { widgets = [] } = rows[rowIndex]
     const columnHasResource =
       widgets.length > 0 &&
@@ -372,11 +382,10 @@ class Container extends Component {
     })
   }
 
-  handleAddToPassage = (type, tabIndex) => {
-    const { isTestFlow, match, addWidgetToPassage, item } = this.props
-
+  handleAddToPassage = (type, tabIndex, rowIndex) => {
+    const { isTestFlow, match, addWidgetToPassage } = this.props // , item
     // Checking if current item allows multiple items
-    const { canAddMultipleItems } = item
+    // const { canAddMultipleItems } = item
     /**
      * there are two possibilites for getting item id during test flow
      * route 1: "/author/tests/:testId/createItem/:itemId"
@@ -392,14 +401,22 @@ class Container extends Component {
           : match.params.id,
       testId: match.params.testId,
       type,
-      tabIndex,
-      canAddMultipleItems: !!canAddMultipleItems,
+      // tabIndex,
+      // canAddMultipleItems: !!canAddMultipleItems,
     })
+    this.setState({ showQuestionManageModal: true, tabIndex, rowIndex })
   }
 
   handleCancelSettings = () => {
     this.setState({
       showSettings: false,
+    })
+  }
+
+  handleCancelQuestionToPassage = () => {
+    this.setState({
+      showQuestionManageModal: false,
+      isEditPassageQuestion: false,
     })
   }
 
@@ -421,13 +438,40 @@ class Container extends Component {
   }
 
   handleEditWidget = (widget) => {
-    const { loadQuestion, changeView } = this.props
+    const {
+      loadQuestion,
+      changeView,
+      setCurrentQuestion,
+      item: { isPassageWithQuestions },
+    } = this.props
+    if (isPassageWithQuestions) {
+      setCurrentQuestion(widget.reference)
+      this.setState({
+        showQuestionManageModal: true,
+        isEditPassageQuestion: true,
+      })
+      return
+    }
     changeView('edit')
     loadQuestion(widget, 0)
   }
 
   handleEditPassageWidget = (widget, rowIndex) => {
-    const { loadQuestion, changeView } = this.props
+    const {
+      loadQuestion,
+      changeView,
+      setCurrentQuestion,
+      item: { isPassageWithQuestions },
+    } = this.props
+    if (isPassageWithQuestions) {
+      setCurrentQuestion(widget.reference)
+      this.setState({
+        rowIndex,
+        showQuestionManageModal: true,
+        isEditPassageQuestion: true,
+      })
+      return
+    }
     changeView('edit')
     loadQuestion(widget, rowIndex, true)
   }
@@ -864,11 +908,11 @@ class Container extends Component {
   }
 
   get passageItems() {
-    const { passage, isTestFlow } = this.props
-    const passageTestItems = isTestFlow
-      ? get(passage, 'testItems', [])
-      : get(passage, 'activeTestItems', [])
-
+    const { passage } = this.props // , isTestFlow
+    const passageTestItems = get(passage, 'testItems', [])
+    //  isTestFlow
+    //   ? get(passage, 'testItems', [])
+    //   : get(passage, 'activeTestItems', [])
     return passageTestItems
   }
 
@@ -932,7 +976,14 @@ class Container extends Component {
   }
 
   render() {
-    const { showSettings, showRemovePassageItemPopup } = this.state
+    const {
+      showSettings,
+      tabIndex,
+      rowIndex,
+      showRemovePassageItemPopup,
+      showQuestionManageModal,
+      isEditPassageQuestion,
+    } = this.state
     const {
       match,
       rows,
@@ -958,6 +1009,7 @@ class Container extends Component {
       t,
       allowedToSelectMultiLanguage,
       isPremiumUser,
+      isEditFlow,
     } = this.props
 
     let breadCrumbQType = ''
@@ -1121,6 +1173,16 @@ class Container extends Component {
             {view === 'auditTrail' && this.renderAuditTrailLogs()}
           </ContentWrapper>
         </Layout>
+        {showQuestionManageModal && (
+          <QuestionToPassage
+            isTestFlow={isTestFlow}
+            isEditFlow={isEditFlow}
+            tabIndex={tabIndex}
+            rowIndex={rowIndex}
+            isEditPassageQuestion={isEditPassageQuestion}
+            onCancel={this.handleCancelQuestionToPassage}
+          />
+        )}
       </ItemDetailContext.Provider>
     )
   }
@@ -1237,6 +1299,7 @@ const enhance = compose(
       deleteItem: deleteItemAction,
       deleteWidgetFromPassage: deleteWidgetFromPassageAction,
       setCreatedItemToTest: setCreatedItemToTestAction,
+      setCurrentQuestion: changeCurrentQuestionAction,
     }
   )
 )

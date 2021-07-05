@@ -1108,6 +1108,7 @@ function* createAssignmentNow({ payload }) {
 export function* updateDestinationCurriculumSequencesaga({ payload }) {
   try {
     const curriculumSequence = yield select(getDestinationCurriculumSequence)
+    curriculumSequence['isSMPlaylist'] = payload?.isSMPlaylist
 
     yield put(
       putCurriculumSequenceAction({

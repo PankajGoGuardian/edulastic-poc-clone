@@ -228,12 +228,18 @@ function* saveCanvasKeysRequestSaga({ payload }) {
       msg: 'Canvas Integration keys saved successfully',
     })
   } catch (err) {
-    notification({
+    const notificationData = {
       type: 'error',
       msg:
         err?.response?.data?.message ||
         'Unable to save Canvas Integration keys',
-    })
+    }
+    if (err?.response?.data?.statusCode === 403) {
+      Object.assign(notificationData, {
+        exact: true,
+      })
+    }
+    notification(notificationData)
   }
 }
 

@@ -350,6 +350,36 @@ const saveMappedData = ({ payload, lmsType }) =>
       data: payload,
     })
     .then(({ data: response }) => response.result)
+const syncCleverOrphanUsersApi = (data) =>
+  api
+    .callApi({
+      url: `/clever/sync-orphan-user`,
+      method: 'post',
+      data,
+    })
+    .then(({ data: response }) => response)
+
+const syncEdlinkOrphanUsersApi = (data) =>
+  api
+    .callApi({
+      url: `/atlas/sync-orphan-user`,
+      method: 'post',
+      data,
+    })
+    .then(({ data: response }) => response)
+const stopSyncApi = ({ _prefix, districtId, stopSync, schoolIds }) =>
+  api.callApi({
+    url: `${_prefix}district/${districtId}/schools-stop-sync`,
+    method: 'put',
+    data: {
+      stopSync,
+      schoolIds,
+    },
+  })
+
+const cleverStopSyncApi = (data) => stopSyncApi({ _prefix: prefix, ...data })
+const atlasStopSyncApi = (data) =>
+  stopSyncApi({ _prefix: atlasPrefix, ...data })
 
 export default {
   getSubscription,
@@ -389,4 +419,9 @@ export default {
   bulkUpdateSubscriptionApi,
   getMappingData,
   saveMappedData,
+  syncCleverOrphanUsersApi,
+  syncEdlinkOrphanUsersApi,
+  atlasStopSyncApi,
+  cleverStopSyncApi,
+  stopSyncApi,
 }

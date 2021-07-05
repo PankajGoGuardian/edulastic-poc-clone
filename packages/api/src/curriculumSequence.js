@@ -4,7 +4,7 @@ import API from './utils/API'
 const api = new API()
 const prefix = '/playlists'
 const getPlaylist = ({ id, forUseThis = false, termIds = [] }) => {
-  const queryString = qs.stringify({ termIds })
+  const queryString = qs.stringify({ termIds }, { commaSuffix: 'bracket' })
   return api
     .callApi({
       method: 'get',

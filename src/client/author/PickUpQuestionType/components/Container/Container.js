@@ -5,7 +5,12 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { Menu } from 'antd'
 import { questionType } from '@edulastic/constants'
-import { PaddingDiv, withWindowSizes, notification } from '@edulastic/common'
+import {
+  PaddingDiv,
+  withWindowSizes,
+  notification,
+  EduButton,
+} from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { withRouter } from 'react-router'
 import PerfectScrollbar from 'react-perfect-scrollbar'
@@ -15,7 +20,6 @@ import {
   IconLayout,
   IconLineChart,
   IconMath,
-  IconMore,
   IconNewList,
   IconSelection,
   IconTarget,
@@ -29,7 +33,6 @@ import CustomPrompt from '@edulastic/common/src/components/CustomPrompt'
 import QuestionTypes from '../QuestionType/QuestionTypes'
 import { getItemSelector } from '../../../src/selectors/items'
 import Header from '../Header/Header'
-import { ButtonClose } from '../../../ItemDetail/components/Container/styled'
 import {
   convertItemToMultipartAction,
   convertItemToPassageWithQuestionsAction,
@@ -79,6 +82,7 @@ class Container extends Component {
       isTestFlow,
       convertToPassageWithQuestions,
       selectedCategory,
+      addQuestionToPassage,
     } = this.props
 
     const { testId, itemId, id } = match.params
@@ -133,6 +137,10 @@ class Container extends Component {
     // add question to the questions store.
     // selecting a question (having default values) type should not update the author question
     addQuestion({ ...question, updated: false })
+
+    if (addQuestionToPassage) {
+      return
+    }
 
     if (modalItemId) {
       navigateToQuestionEdit()
@@ -268,6 +276,7 @@ class Container extends Component {
       location: { pathname = '' },
       history: { push },
       itemDetails = {},
+      addQuestionToPassage,
     } = this.props
     const { mobileViewShow, isShowCategories } = this.state
     const { multipartItem } = itemDetails
@@ -282,7 +291,6 @@ class Container extends Component {
         return <div />
       }
     }
-
     return (
       <div showMobileView={mobileViewShow}>
         <CustomPrompt onUnload />
@@ -290,12 +298,18 @@ class Container extends Component {
           title={t('header:common.selectQuestionWidget')}
           link={this.link}
           noEllipsis
+          addQuestionToPassage={addQuestionToPassage}
           toggleSideBar={toggleSideBar}
           renderExtra={() =>
-            modalItemId && (
-              <ButtonClose onClick={onModalClose}>
+            (modalItemId || addQuestionToPassage) && (
+              <EduButton
+                isBlue
+                IconBtn
+                data-cy="closeModal"
+                onClick={onModalClose}
+              >
                 <IconClose />
-              </ButtonClose>
+              </EduButton>
             )
           }
         />

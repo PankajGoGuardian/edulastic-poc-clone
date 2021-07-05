@@ -35,9 +35,13 @@ const zoomedStyle = css`
     const hasFooter =
       viewComponent === 'practicePlayer' &&
       (playerSkinType === playerSkinValues.quester ||
-        playerSkinType === playerSkinValues.edulastic)
+        playerSkinType === playerSkinValues.edulastic ||
+        playerSkinType === playerSkinValues.drc)
     let header = hasFooter ? 180 : headerHeight + paddingTopBottom + 8
-    if (playerSkinType === 'quester') {
+    if (
+      playerSkinType === playerSkinValues.quester ||
+      playerSkinType === playerSkinValues.drc
+    ) {
       // This adjustment was required to fix the practice player with questar skin.
       header += viewComponent === 'practicePlayer' ? -20 : questerFooterHeight
     }

@@ -70,7 +70,7 @@ const TestListFilters = ({
   useEffect(() => {
     const tempCollections = collections
     collections.forEach((item, index) => {
-      if (isSingaporeMath && item?.name === 'Engage NY') {
+      if (isSingaporeMath && item?.name?.toLowerCase()?.includes('engage ny')) {
         tempCollections.splice(index, 1)
         setFilteredCollections(tempCollections)
       }
@@ -105,7 +105,7 @@ const TestListFilters = ({
         onChange: 'authoredByIds',
       },
     ]
-  }, [userFeatures.isCurator, searchFilterOption, currentDistrictUsers, ])
+  }, [userFeatures.isCurator, searchFilterOption, currentDistrictUsers])
 
   const { filter } = search
   const getFilters = useCallback(() => {

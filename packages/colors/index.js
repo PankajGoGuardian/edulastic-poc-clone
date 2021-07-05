@@ -2,6 +2,7 @@ export const white = '#fff'
 export const black = '#000'
 export const fadedBlack = 'rgba(0, 0, 0, 0.65)'
 export const lightFadedBlack = 'rgba(0, 0, 0, 0.15)'
+export const textBlackColor = '#212E3A'
 
 export const themeColor = '#1AB394' // green
 export const themeColorLight = '#42d184' // light green

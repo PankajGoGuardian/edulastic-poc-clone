@@ -16,7 +16,7 @@ import {
   title,
   white,
   themeColorBlue,
-  lightGreen10,
+  textBlackColor,
   lightGrey11,
 } from '@edulastic/colors'
 import { EduButton } from '@edulastic/common'
@@ -592,7 +592,7 @@ export const PassageIconContainer = styled(Col)`
   height: 22px;
 `
 export const PassageTitle = styled(Col)`
-  color: ${lightGreen10};
+  color: ${textBlackColor};
   height: 18px;
   text-align: left;
   font: normal normal bold 14px/19px Open Sans;

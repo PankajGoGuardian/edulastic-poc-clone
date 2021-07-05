@@ -50,6 +50,12 @@ const ApproveMergeModal = ({
 
   const formatData = (dataSet, masterDataSet) => {
     const resultDataSet = []
+    const cleverIdMasterDataMap = masterDataSet.reduce((acc, data) => {
+      if (data.cId) {
+        acc[data.cId] = data
+      }
+      return acc
+    }, {})
     if (!isEmpty(dataSet)) {
       for (const key of Object.keys(dataSet)) {
         const data = dataSet[key]
@@ -57,36 +63,55 @@ const ApproveMergeModal = ({
         const cName = data.name
         const listOfMatchedSchools = data.eduSchools
         if (!isEmpty(listOfMatchedSchools)) {
-          const eduSchoolsMap = listOfMatchedSchools.reduce((acc, o) => {
-            acc[o.eduId] = o
-            return acc
-          }, {})
-          resultDataSet.push({
-            cId,
-            cName,
-            data: masterDataSet.map((o) => {
-              const eduData = eduSchoolsMap[o._id]
-              return {
-                eId: o._id,
-                eName: getCustomName({ name: o.name, ...eduData }),
-                zipMatch: eduData?.zipMatch,
-                nameMatch: eduData?.nameMatch,
-              }
-            }),
-          })
+          if (listOfMatchedSchools?.[0]?.cIdMatch === 100) {
+            const eduSchoolInfo = cleverIdMasterDataMap[cId]
+            resultDataSet.push({
+              cId,
+              cName,
+              data: [
+                {
+                  eId: eduSchoolInfo._id,
+                  eName: eduSchoolInfo.name,
+                  cIdMatch: 100,
+                },
+              ],
+            })
+          } else {
+            const eduSchoolsMap = listOfMatchedSchools.reduce((acc, o) => {
+              acc[o.eduId] = o
+              return acc
+            }, {})
+            resultDataSet.push({
+              cId,
+              cName,
+              data: masterDataSet
+                .filter((o) => !o.cId)
+                .map((o) => {
+                  const eduData = eduSchoolsMap[o._id]
+                  return {
+                    eId: o._id,
+                    eName: getCustomName({ name: o.name, ...eduData }),
+                    zipMatch: eduData?.zipMatch,
+                    nameMatch: eduData?.nameMatch,
+                  }
+                }),
+            })
+          }
         } else {
           // loop the master data and populate result set
           resultDataSet.push({
             cId,
             cName,
-            data: masterDataSet.map((o) => {
-              return {
-                cId,
-                cName,
-                eId: o._id,
-                eName: o.name,
-              }
-            }),
+            data: masterDataSet
+              .filter((o) => !o.cId)
+              .map((o) => {
+                return {
+                  cId,
+                  cName,
+                  eId: o._id,
+                  eName: o.name,
+                }
+              }),
           })
         }
       }
@@ -193,7 +218,9 @@ const ApproveMergeModal = ({
                   <Select
                     showSearch
                     defaultValue={
-                      _data?.[0]?.zipMatch === 100 || _data?.[0]?.nameMatch > 75
+                      _data?.[0]?.zipMatch === 100 ||
+                      _data?.[0]?.nameMatch > 75 ||
+                      _data?.[0]?.cIdMatch === 100
                         ? _data[0].eId
                         : undefined
                     }
@@ -203,6 +230,7 @@ const ApproveMergeModal = ({
                     onChange={(value) => {
                       handleMappingChange(record.cId, value)
                     }}
+                    disabled={_data?.[0]?.cIdMatch === 100}
                     filterOption={(input, option) => {
                       return (
                         option.props.children

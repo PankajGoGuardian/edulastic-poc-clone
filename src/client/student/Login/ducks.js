@@ -872,7 +872,7 @@ function* login({ payload }) {
           true
         )
       }
-      TokenStorage.selectAccessToken(user._id, user.role)
+      TokenStorage.selectAccessToken(user._id, user.role, result.districtId)
       TokenStorage.updateKID(user)
       yield put(setUserAction(user))
       yield put(
@@ -1085,7 +1085,11 @@ function* signup({ payload }) {
         result.lastUsedDistrictId,
         true
       )
-      TokenStorage.selectAccessToken(user._id, user.role)
+      TokenStorage.selectAccessToken(
+        user._id,
+        user.role,
+        result.lastUsedDistrictId
+      )
       const firebaseUser = yield call(getCurrentFirebaseUser)
       if (
         (!firebaseUser && result.firebaseAuthToken) ||
@@ -1234,8 +1238,14 @@ export function* fetchUser({ payload }) {
     if (key.includes('role:undefined') && user.role) {
       TokenStorage.removeAccessToken(user._id, 'undefined')
       // add last used or current districtId
-      TokenStorage.storeAccessToken(user.token, user._id, user.role, true)
-      TokenStorage.selectAccessToken(user._id, user.role)
+      TokenStorage.storeAccessToken(
+        user.token,
+        user._id,
+        user.role,
+        user.districtId,
+        true
+      )
+      TokenStorage.selectAccessToken(user._id, user.role, user.districtId)
     }
     TokenStorage.updateKID(user || {})
     const searchParam = yield select((state) => state.router.location.search)
@@ -1296,6 +1306,7 @@ export function* fetchV1Redirect({ payload: id }) {
     // TODO: handle the case of invalid token
     const { authToken, _id, role } = yield call(authApi.V1Redirect, id)
     if (authToken) {
+      // TODO use districtId in token
       TokenStorage.storeAccessToken(authToken, _id, role)
       TokenStorage.selectAccessToken(_id, role)
     } else {
@@ -1784,8 +1795,14 @@ function* getUserData({ payload: res }) {
     }
     const user = pick(res, userPickFields)
     // add last used district
-    TokenStorage.storeAccessToken(res.token, user._id, user.role, true)
-    TokenStorage.selectAccessToken(user._id, user.role)
+    TokenStorage.storeAccessToken(
+      res.token,
+      user._id,
+      user.role,
+      user.districtId,
+      true
+    )
+    TokenStorage.selectAccessToken(user._id, user.role, user.districtId)
     TokenStorage.updateKID(user)
     yield put(setUserAction(user))
     yield put(receiveLastPlayListAction())
@@ -1854,8 +1871,14 @@ function* updateUserRoleSaga({ payload }) {
     TokenStorage.removeAccessToken(_user._id, 'undefined')
 
     // add last used district
-    TokenStorage.storeAccessToken(res.token, _user._id, _user.role, true)
-    TokenStorage.selectAccessToken(_user._id, _user.role)
+    TokenStorage.storeAccessToken(
+      res.token,
+      _user._id,
+      _user.role,
+      _user.districtId,
+      true
+    )
+    TokenStorage.selectAccessToken(_user._id, _user.role, _user.districtId)
     yield put(signupSuccessAction(_user))
     yield call(fetchUser, {}) // needed to update org and other user data to local store
   } catch (e) {
@@ -1921,7 +1944,7 @@ function* resetPasswordRequestSaga({ payload }) {
       user.lastUsedDistrictId,
       true
     )
-    TokenStorage.selectAccessToken(user._id, user.role)
+    TokenStorage.selectAccessToken(user._id, user.role, user.lastUsedDistrictId)
     yield put(signupSuccessAction(result))
     yield call(fetchUser, {}) // needed to update org and other user data to local store
     localStorage.removeItem('loginRedirectUrl')
@@ -2136,7 +2159,7 @@ function* setInviteDetailsSaga({ payload }) {
       user.lastUsedDistrictId,
       true
     )
-    TokenStorage.selectAccessToken(user._id, user.role)
+    TokenStorage.selectAccessToken(user._id, user.role, user.lastUsedDistrictId)
     yield call(fetchUser, {}) // needed to update org and other user data to local store
     yield put({ type: SET_INVITE_DETAILS_SUCCESS, payload: result })
   } catch (e) {

@@ -441,7 +441,11 @@ function* createAndJoinSchoolSaga({ payload = {} }) {
           _result.lastUsedDistrictId,
           true
         )
-        TokenStorage.selectAccessToken(_result._id, _result.role)
+        TokenStorage.selectAccessToken(
+          _result._id,
+          _result.role,
+          _result.lastUsedDistrictId
+        )
       }
       const user = pick(_result, userPickFields)
       yield put(signupSuccessAction(user))
@@ -470,7 +474,11 @@ function* joinSchoolSaga({ payload = {} }) {
         result.lastUsedDistrictId,
         true
       )
-      TokenStorage.selectAccessToken(result._id, result.role)
+      TokenStorage.selectAccessToken(
+        result._id,
+        result.role,
+        result.lastUsedDistrictId
+      )
     }
     const user = pick(result, userPickFields)
     yield put(signupSuccessAction(user))

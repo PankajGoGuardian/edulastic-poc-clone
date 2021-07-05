@@ -122,8 +122,7 @@ export const getInterestedSubjectsSelector = createSelector(
  */
 export const getUserOrgId = createSelector(
   stateSelector,
-  (state) =>
-    window.sessionStorage.getItem('districtId') || state?.user?.districtIds?.[0]
+  (state) => state?.user?.districtIds?.[0]
 )
 /**
  * this selector shouldn't be used for students

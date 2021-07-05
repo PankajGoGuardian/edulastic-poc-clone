@@ -438,6 +438,7 @@ function* createAndJoinSchoolSaga({ payload = {} }) {
           _result.token,
           _result._id,
           _result.role,
+          _result.lastUsedDistrictId,
           true
         )
         TokenStorage.selectAccessToken(_result._id, _result.role)
@@ -462,7 +463,13 @@ function* joinSchoolSaga({ payload = {} }) {
   try {
     const result = yield call(userApi.updateUser, payload)
     if (result && result.token) {
-      TokenStorage.storeAccessToken(result.token, result._id, result.role, true)
+      TokenStorage.storeAccessToken(
+        result.token,
+        result._id,
+        result.role,
+        result.lastUsedDistrictId,
+        true
+      )
       TokenStorage.selectAccessToken(result._id, result.role)
     }
     const user = pick(result, userPickFields)

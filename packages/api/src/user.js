@@ -35,7 +35,7 @@ const getSwitchedToken = (role) =>
     })
     .then((result) => result.data)
 
-const getSwitchUser = (switchToId, personId) =>
+const getSwitchUser = (switchToId, personId, districtId) =>
   api
     .callApi({
       url: `${prefix}/switch`,
@@ -43,6 +43,7 @@ const getSwitchUser = (switchToId, personId) =>
       params: {
         switchToId,
         personId,
+        districtId,
       },
     })
     .then((result) => result.data)

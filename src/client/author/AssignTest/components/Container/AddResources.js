@@ -10,6 +10,8 @@ import { IconClose } from '@edulastic/icons'
 import { Pagination } from 'antd'
 import { omit, pick } from 'lodash'
 import React, { useEffect, useState } from 'react'
+import ReactPlayer from 'react-player/lazy'
+import styled from 'styled-components'
 import { submitLTIForm } from '../../../CurriculumSequence/components/CurriculumModuleRow'
 import EmbeddedVideoPreviewModal from '../../../CurriculumSequence/components/ManageContentBlock/components/EmbeddedVideoPreviewModal'
 import {
@@ -25,6 +27,7 @@ import {
   RowTwo,
 } from '../SimpleOptions/styled'
 import Tags from '../../../src/components/common/Tags'
+import { ICONS_BY_TYPE } from '../../../CurriculumSequence/components/ResourceItem'
 
 const pageSize = 8
 
@@ -40,6 +43,7 @@ const AddResources = ({
   const [pageContent, setPageContent] = useState(firstPage)
   const [selectedResources, setSelectedResources] = useState([])
   const [showTags, setShowTags] = useState([])
+  const [previewStatus, setPreviewStatus] = useState({})
 
   useEffect(() => {
     if (resourceIds.length > 0) {
@@ -154,6 +158,12 @@ const AddResources = ({
 
   const isAddResourceDisabled = !recommendedResources?.length
 
+  const ResouceIcon = ({ type, isAdded, ...rest }) => (
+    <IconWrapper isAdded={isAdded} {...rest}>
+      {ICONS_BY_TYPE[type]}
+    </IconWrapper>
+  )
+
   return (
     <>
       <AddResourcesLink
@@ -189,8 +199,29 @@ const AddResources = ({
       >
         <ResourceCardContainer>
           {pageContent.map((x) => (
-            <CardBox key={x.contentId} data-cy={`${x.contentId}CardBox`}>
-              <CardImage />
+            <CardBox
+              onMouseEnter={() => {
+                setPreviewStatus({ [x?.contentId]: true })
+              }}
+              onMouseLeave={() => {
+                setPreviewStatus({ [x?.contentId]: false })
+              }}
+              key={x.contentId}
+              data-cy={`${x.contentId}CardBox`}
+            >
+              {x?.contentType === 'video_resource' ? (
+                <ReactPlayer
+                  loop
+                  playing={previewStatus[x?.contentId] === true}
+                  width="100%"
+                  height="80px"
+                  url={x?.contentUrl}
+                />
+              ) : (
+                <CardImage>
+                  <ResouceIcon type={x?.contentType} />
+                </CardImage>
+              )}
               <RowOne>
                 <CardTitle
                   data-cy="resourcePreview"
@@ -239,3 +270,17 @@ const AddResources = ({
 }
 
 export default AddResources
+
+const IconWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  padding-right: 8px;
+  svg {
+    fill: white;
+    height: 40px;
+    width: 40px;
+  }
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`

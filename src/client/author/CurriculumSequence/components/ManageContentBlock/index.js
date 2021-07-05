@@ -21,6 +21,7 @@ import ResourceItem from '../ResourceItem'
 import WebsiteResourceModal from './components/WebsiteResourceModal'
 import ExternalVideoLink from './components/ExternalVideoLink'
 import LTIResourceModal from './components/LTIResourceModal'
+import DeleteResourceModal from './components/DeleteResource'
 import slice, { getPlaylistContentFilters } from './ducks'
 import {
   ActionButton,
@@ -93,6 +94,8 @@ const ManageContentBlock = (props) => {
     urlHasUseThis,
     setSearchByTab,
     addResource,
+    updateResource,
+    deleteResource,
     setEmbeddedVideoPreviewModal,
     isDifferentiationTab = false,
     setIsTestPreviewVisible,
@@ -101,6 +104,8 @@ const ManageContentBlock = (props) => {
     setSelectedStandards,
     setResourceSearch,
     updateRecentStandardAction,
+    userId,
+    playlistId,
   } = props
 
   const {
@@ -140,6 +145,12 @@ const ManageContentBlock = (props) => {
   ] = useState(false)
   const [isLTIResourceModal, setLTIResourceModal] = useState(false)
   const [searchExpand, setSearchExpand] = useState(false)
+  const [resourceData, setResourceData] = useState()
+  const [deleteResourceId, setDeleteResourceId] = useState('')
+  const [
+    isDeleteResourceModalVisible,
+    setIsDeleteResourceModalVisible,
+  ] = useState(false)
 
   useEffect(() => {
     setDefaults({
@@ -184,6 +195,11 @@ const ManageContentBlock = (props) => {
     }
   }
 
+  const onMenuClick = ({ key }) => {
+    setResourceData(undefined)
+    onChange({ key })
+  }
+
   const openContentFilterModal = () => setShowContentFilterModal(true)
   const closeContentFilterModal = () => {
     setShowContentFilterModal(false)
@@ -212,7 +228,7 @@ const ManageContentBlock = (props) => {
   )
 
   const menu = (
-    <Menu onClick={onChange}>
+    <Menu onClick={onMenuClick}>
       <Menu.Item data-cy="websiteUrlResource" key="1">
         {enhanceTextWeight('Website URL')}
       </Menu.Item>
@@ -274,6 +290,18 @@ const ManageContentBlock = (props) => {
       setEmbeddedVideoPreviewModal({ title: data.contentTitle, url: data.url })
   }
 
+  const editResource = (type, data) => {
+    setResourceData(data)
+    if (type === 'website_resource') onChange({ key: '1' })
+    if (type === 'video_resource') onChange({ key: '2' })
+    if (type === 'lti_resource') onChange({ key: '3' })
+  }
+
+  const deleteResourceConfirmation = (id) => {
+    setDeleteResourceId(id)
+    setIsDeleteResourceModalVisible(true)
+  }
+
   const handleCloseResourcesModals = () => {
     setWebsiteUrlResourceModal(false)
     setExternalVideoResourceModal(false)
@@ -288,6 +316,16 @@ const ManageContentBlock = (props) => {
     setSearchExpand(false)
   }
 
+  const handleUpdateResource = (payload) => {
+    payload.playlistId = playlistId
+    updateResource(payload)
+  }
+
+  const handleDeleteResource = (id) => {
+    const payload = { id, playlistId }
+    deleteResource(payload)
+  }
+
   const renderList = () => {
     const listToRender = []
     if (searchResourceBy === 'resources') {
@@ -300,6 +338,10 @@ const ManageContentBlock = (props) => {
           }
           listToRender.push(
             <ResourceItem
+              editResource={editResource}
+              deleteResource={deleteResourceConfirmation}
+              userId={userId}
+              resource={resource}
               key={resource?.contentId}
               type={resource?.contentType}
               id={resource?.contentId}
@@ -463,6 +505,17 @@ const ManageContentBlock = (props) => {
           </ManageContentContainer>
         </div>
 
+        {isDeleteResourceModalVisible && (
+          <DeleteResourceModal
+            isVisible={isDeleteResourceModalVisible}
+            id={deleteResourceId}
+            onCancel={() => {
+              setIsDeleteResourceModalVisible(false)
+            }}
+            deleteResource={handleDeleteResource}
+          />
+        )}
+
         {showContentFilterModal && (
           <PlaylistContentFilterModal
             isVisible={showContentFilterModal}
@@ -502,11 +555,13 @@ const ManageContentBlock = (props) => {
             closeCallback={handleCloseResourcesModals}
             isVisible={isWebsiteUrlResourceModal}
             addResource={addResource}
+            updateResource={handleUpdateResource}
             alignment={alignment}
             setAlignment={setAlignment}
             selectedStandards={selectedStandards}
             setSelectedStandards={setSelectedStandards}
             curriculum={collectionFromCurriculumSequence}
+            data={resourceData}
           />
         )}
 
@@ -516,11 +571,13 @@ const ManageContentBlock = (props) => {
             closeCallback={handleCloseResourcesModals}
             isVisible={isExternalVideoResourceModal}
             addResource={addResource}
+            updateResource={handleUpdateResource}
             alignment={alignment}
             setAlignment={setAlignment}
             selectedStandards={selectedStandards}
             setSelectedStandards={setSelectedStandards}
             curriculum={collectionFromCurriculumSequence}
+            data={resourceData}
           />
         )}
 
@@ -529,12 +586,14 @@ const ManageContentBlock = (props) => {
             closeCallback={handleCloseResourcesModals}
             isVisible={isLTIResourceModal}
             addResource={addResource}
+            updateResource={handleUpdateResource}
             externalToolsProviders={externalToolsProviders}
             alignment={alignment}
             setAlignment={setAlignment}
             selectedStandards={selectedStandards}
             setSelectedStandards={setSelectedStandards}
             curriculum={collectionFromCurriculumSequence}
+            data={resourceData}
           />
         )}
       </ManageContentOuterWrapper>
@@ -566,6 +625,7 @@ const enhance = compose(
       userFeatures: state?.user?.user?.features,
       interestedCurriculums: getInterestedCurriculumsSelector(state),
       contentFilters: getPlaylistContentFilters(state),
+      userId: state.user?.user?._id,
     }),
     {
       setFilterAction: slice.actions?.setFilterAction,
@@ -587,6 +647,8 @@ const enhance = compose(
         slice.actions?.fetchExternalToolProvidersAction,
       setSearchByTab: slice.actions?.setSearchByTab,
       addResource: slice.actions?.addResource,
+      updateResource: slice.actions?.updateResource,
+      deleteResource: slice.actions?.deleteResource,
       setEmbeddedVideoPreviewModal: setEmbeddedVideoPreviewModalAction,
       setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
       setAlignment: slice.actions.setAlignmentAction,

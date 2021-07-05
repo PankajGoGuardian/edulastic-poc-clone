@@ -41,7 +41,7 @@ const MergeIdsTable = ({
   useEffect(() => {
     const data = mappedData[cleverId || atlasId]
     setDistrictMappedData(data || {})
-  }, [mappedData])
+  }, [mappedData, districtId])
 
   const {
     data: mergeResponseData,

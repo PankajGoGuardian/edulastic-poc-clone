@@ -333,6 +333,24 @@ const bulkUpdateSubscriptionApi = (data) =>
     })
     .then(({ data: response }) => response.result)
 
+const syncCleverOrphanUsersApi = (data) =>
+  api
+    .callApi({
+      url: `/clever/sync-orphan-user`,
+      method: 'post',
+      data,
+    })
+    .then(({ data: response }) => response)
+
+const syncEdlinkOrphanUsersApi = (data) =>
+  api
+    .callApi({
+      url: `/atlas/sync-orphan-user`,
+      method: 'post',
+      data,
+    })
+    .then(({ data: response }) => response)
+
 export default {
   getSubscription,
   searchUpdateDistrict,
@@ -369,4 +387,6 @@ export default {
   searchClasslinkDistrict,
   updateSubscriptionApi,
   bulkUpdateSubscriptionApi,
+  syncCleverOrphanUsersApi,
+  syncEdlinkOrphanUsersApi,
 }

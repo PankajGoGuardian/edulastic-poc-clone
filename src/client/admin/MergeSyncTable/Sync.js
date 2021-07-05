@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Radio, Button } from 'antd'
+import { SimpleConfirmModal } from '@edulastic/common'
 import { Table } from '../Common/StyledComponents'
 
 const { Group: RadioGroup } = Radio
@@ -11,9 +12,13 @@ export default function Sync({
   syncSchools,
   atlasId,
   isClasslink,
+  syncCleverOrphanUsers,
+  syncEdlinkOrphanUsers,
+  districtName,
 }) {
   const [radioInput, setRadioInput] = useState('syncSelectedSchools')
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
+  const [showSyncOrphanModal, setShowSyncOrphanModal] = useState(false)
   const reSyncSchools = () => {
     syncSchools({
       isClasslink,
@@ -22,6 +27,21 @@ export default function Sync({
       atlasId,
       schoolIds: selectedRowKeys,
     })
+  }
+
+  const openSyncOrphanModal = () => {
+    setShowSyncOrphanModal(true)
+  }
+
+  const proceedOrphanUsersSync = () => {
+    isClasslink
+      ? syncEdlinkOrphanUsers({
+          districtAtlasIds: [atlasId],
+        })
+      : syncCleverOrphanUsers({
+          districtCleverIds: [cleverId],
+        })
+    setShowSyncOrphanModal(false)
   }
 
   useEffect(() => {
@@ -61,6 +81,25 @@ export default function Sync({
       <Button type="primary" onClick={reSyncSchools}>
         Resync
       </Button>
+      <Button style={{ marginLeft: '10px' }} onClick={openSyncOrphanModal}>
+        Sync Orphaned Users
+      </Button>
+      {showSyncOrphanModal && (
+        <SimpleConfirmModal
+          title="Sync Orphaned Users"
+          description={
+            <p>
+              Are you sure you want to sync? It will get all the orphan users
+              (admins, teachers, staff and students) shared by &nbsp;
+              {districtName}.
+            </p>
+          }
+          visible={showSyncOrphanModal}
+          onProceed={proceedOrphanUsersSync}
+          buttonText="Yes, Sync"
+          onCancel={() => setShowSyncOrphanModal(false)}
+        />
+      )}
       <div>
         <Table
           style={{ marginTop: '15px' }}

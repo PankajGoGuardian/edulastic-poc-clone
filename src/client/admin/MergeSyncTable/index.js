@@ -18,6 +18,8 @@ import {
   mergeResponseSelector,
   applyDeltaSyncChanges,
   syncSchools,
+  syncCleverOrphanUsers,
+  syncEdlinkOrphanUsers,
   applyClassNamesSync,
   enableDisableSyncAction,
   getSubStandardMapping,
@@ -180,6 +182,8 @@ function MergeSyncTable({
   searchData,
   applyDeltaSyncChanges,
   syncSchools,
+  syncCleverOrphanUsers,
+  syncEdlinkOrphanUsers,
   applyClassNamesSync,
   enableDisableSyncAction,
   subStandardMapping,
@@ -317,6 +321,9 @@ function MergeSyncTable({
                 isClasslink={isClasslink}
                 atlasId={atlasId}
                 syncSchools={syncSchools}
+                districtName={districtName}
+                syncCleverOrphanUsers={syncCleverOrphanUsers}
+                syncEdlinkOrphanUsers={syncEdlinkOrphanUsers}
               />
             </TabPane>
             <TabPane tab="Logs" key="logs">
@@ -345,6 +352,8 @@ const withConnect = connect(mapStateToProps, {
   searchExistingDataApi,
   applyDeltaSyncChanges,
   syncSchools,
+  syncCleverOrphanUsers,
+  syncEdlinkOrphanUsers,
   applyClassNamesSync,
   enableDisableSyncAction,
   fetchCurriculumDataAction,

@@ -10,6 +10,8 @@ import { omit } from 'lodash'
 export const SEARCH_EXISTING_DATA_API = '[admin] SEARCH_EXISTING_DATA_API'
 export const APPLY_DELTA_SYNC_CHANGES = '[admin] APPLY_DELTA_SYNC_CHANGES'
 export const SYNC_SCHOOLS = '[admin] SYNC_SCHOOLS'
+export const SYNC_CLEVER_ORPHAN_USERS = '[admin] SYNC_CLEVER_ORPHAN_USERS'
+export const SYNC_EDLINK_ORPHAN_USERS = '[admin] SYNC_EDLINK_ORPHAN_USERS'
 export const APPLY_CLASSNAMES_SYNC = '[admin] APPLY_CLASSNAMES_SYNC'
 export const ENABLE_DISABLE_SYNC_ACTION = '[admin] ENABLE_DISABLE_SYNC_ACTION'
 export const FETCH_CURRICULUM_DATA_ACTION =
@@ -42,6 +44,8 @@ export const fetchExistingDataSuccess = createAction(
 )
 export const applyDeltaSyncChanges = createAction(APPLY_DELTA_SYNC_CHANGES)
 export const syncSchools = createAction(SYNC_SCHOOLS)
+export const syncCleverOrphanUsers = createAction(SYNC_CLEVER_ORPHAN_USERS)
+export const syncEdlinkOrphanUsers = createAction(SYNC_EDLINK_ORPHAN_USERS)
 export const applyClassNamesSync = createAction(APPLY_CLASSNAMES_SYNC)
 export const enableDisableSyncAction = createAction(ENABLE_DISABLE_SYNC_ACTION)
 export const fetchCurriculumDataAction = createAction(
@@ -232,6 +236,8 @@ const {
   logsAtlasDataApi,
   selectedAtlasSchoolSyncApi,
   completeAtlasDistrictSync,
+  syncCleverOrphanUsersApi,
+  syncEdlinkOrphanUsersApi,
 } = adminApi
 
 function* fetchExistingData({ payload }) {
@@ -456,11 +462,35 @@ function* fetchLogsData({ payload }) {
   }
 }
 
+function* fetchSyncCleverOrphanUsers({ payload }) {
+  let result
+  try {
+    result = yield call(syncCleverOrphanUsersApi, payload)
+    notification({ type: 'success', msg: result })
+  } catch (err) {
+    console.error(err)
+    notification({ msg: err?.data?.message || err.message })
+  }
+}
+
+function* fetchSyncEdlinkOrphanUsers({ payload }) {
+  let result
+  try {
+    result = yield call(syncEdlinkOrphanUsersApi, payload)
+    notification({ type: 'success', msg: result })
+  } catch (err) {
+    console.error(err)
+    notification({ msg: err?.data?.message || err.message })
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(SEARCH_EXISTING_DATA_API, fetchExistingData),
     yield takeEvery(APPLY_DELTA_SYNC_CHANGES, fetchApplyDeltaSync),
     yield takeEvery(SYNC_SCHOOLS, fetchSchoolsSync),
+    yield takeEvery(SYNC_CLEVER_ORPHAN_USERS, fetchSyncCleverOrphanUsers),
+    yield takeEvery(SYNC_EDLINK_ORPHAN_USERS, fetchSyncEdlinkOrphanUsers),
     yield takeEvery(APPLY_CLASSNAMES_SYNC, fetchClassNamesSync),
     yield takeEvery(ENABLE_DISABLE_SYNC_ACTION, fetchEnableDisableSync),
     yield takeEvery(FETCH_CURRICULUM_DATA_ACTION, fetchCurriculumData),

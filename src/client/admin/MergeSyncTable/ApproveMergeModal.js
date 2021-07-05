@@ -48,6 +48,10 @@ const ApproveMergeModal = ({
     )
   }
 
+  const setInitialMapping = (cleverId, edulasticId) => {
+    mappedResult[cleverId] = edulasticId
+  }
+
   const formatData = (dataSet, masterDataSet) => {
     const resultDataSet = []
     const cleverIdMasterDataMap = masterDataSet.reduce((acc, data) => {
@@ -116,9 +120,20 @@ const ApproveMergeModal = ({
         }
       }
     }
-    resultDataSet.forEach((_obj) => _obj.data.sort(compare))
+    resultDataSet.forEach((_obj) => {
+      _obj.data.sort(compare)
+      setInitialMapping(
+        _obj.cId,
+        _obj.data?.[0]?.zipMatch === 100 ||
+          _obj.data?.[0]?.nameMatch > 75 ||
+          _obj.data?.[0]?.cIdMatch === 100
+          ? _obj.data[0].eId
+          : undefined
+      )
+    })
     return resultDataSet
   }
+
   useEffect(() => {
     if (!isEmpty(mapperErrorMessage)) {
       notification({ msg: mapperErrorMessage })
@@ -143,10 +158,6 @@ const ApproveMergeModal = ({
   const handleMappingChange = (cleverId, edulasticId) => {
     mappedResult[cleverId] = edulasticId
     setMappedResult(mappedResult)
-  }
-
-  const setInitialMapping = (cleverId, edulasticId) => {
-    mappedResult[cleverId] = edulasticId
   }
 
   const handleCloseModal = () => {
@@ -208,22 +219,10 @@ const ApproveMergeModal = ({
               dataIndex="data"
               key="data"
               render={(_data, record) => {
-                setInitialMapping(
-                  record.cId,
-                  _data?.[0]?.zipMatch === 100 || _data?.[0]?.nameMatch > 75
-                    ? _data[0].eId
-                    : undefined
-                )
                 return (
                   <Select
                     showSearch
-                    defaultValue={
-                      _data?.[0]?.zipMatch === 100 ||
-                      _data?.[0]?.nameMatch > 75 ||
-                      _data?.[0]?.cIdMatch === 100
-                        ? _data[0].eId
-                        : undefined
-                    }
+                    defaultValue={mappedResult[record.cId]}
                     dropdownStyle={{ zIndex: 2000 }}
                     style={{ width: '90%' }}
                     bordered={false}

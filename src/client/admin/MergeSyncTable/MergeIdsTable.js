@@ -118,10 +118,8 @@ const MergeIdsTable = ({
     for (const key of Object.keys(eduIdMap)) {
       if (eduIdMap[key].length > 1) {
         indexes.push(...eduIdMap[key])
-        console.log(eduIdMap[key])
       }
     }
-    console.log(indexes)
     if (indexes.length) {
       setMapperErrorMessage(
         `Same edulastic ${mapperFieldName} is mapped in rows ${compact(

@@ -36,6 +36,8 @@ export const LOGS_DATA_FAILED = '[admin] LOGS_DATA_FAILED'
 export const RECEIVE_MERGED_ID = '[admin] merg ids to edulastic'
 export const CLOSE_MERGE_RESPONSE_TABLE = '[admin] close merge response table'
 export const CLEAR_MERGE_DATA = '[admin] clear merge data'
+export const SET_STOP_SYNC = '[admin] set stop sync'
+export const SET_STOP_SYNC_SAVING_STATUS = '[admin] set stop sync saving status'
 
 // ACTION CREATORS
 export const searchExistingDataApi = createAction(SEARCH_EXISTING_DATA_API)
@@ -78,6 +80,7 @@ export const clearMergeDataAction = createAction(CLEAR_MERGE_DATA)
 export const uploadCSVAction = createAction(UPLOAD_CSV)
 export const receiveMergeIdsAction = createAction(RECEIVE_MERGED_ID)
 export const closeMergeResponseAction = createAction(CLOSE_MERGE_RESPONSE_TABLE)
+export const setStopSyncAction = createAction(SET_STOP_SYNC)
 
 // REDUCERS
 
@@ -93,6 +96,7 @@ const initialState = {
     data: [],
     showData: false,
   },
+  stopSyncSaving: null,
 }
 
 const fetchExistingDataReducer = createReducer(initialState, {
@@ -195,6 +199,12 @@ const fetchExistingDataReducer = createReducer(initialState, {
       showData: false,
     }
   },
+  [SET_STOP_SYNC]: (state) => {
+    state.stopSyncSaving = true
+  },
+  [SET_STOP_SYNC_SAVING_STATUS]: (state, { payload }) => {
+    state.stopSyncSaving = payload
+  },
 })
 
 // SELECTORS
@@ -213,6 +223,11 @@ export const getSubStandardMapping = createSelector(
 export const mergeResponseSelector = createSelector(
   adminStateSelector,
   ({ mergeData }) => mergeData.mergeResponse
+)
+
+export const stopSyncSavingSelector = createSelector(
+  adminStateSelector,
+  (state) => state.mergeData.stopSyncSaving
 )
 
 // SAGAS
@@ -238,6 +253,8 @@ const {
   completeAtlasDistrictSync,
   syncCleverOrphanUsersApi,
   syncEdlinkOrphanUsersApi,
+  cleverStopSyncApi,
+  atlasStopSyncApi,
 } = adminApi
 
 function* fetchExistingData({ payload }) {
@@ -484,6 +501,50 @@ function* fetchSyncEdlinkOrphanUsers({ payload }) {
   }
 }
 
+function* setStopSyncSaga({
+  payload: { isClasslink, stopSyncData, districtId },
+}) {
+  try {
+    const api = isClasslink ? atlasStopSyncApi : cleverStopSyncApi
+    const schoolsToEnable = []
+    const schoolsToDisable = []
+    Object.entries(stopSyncData).forEach(([id, value]) => {
+      id = id.replaceAll('-', '')
+      if (value) schoolsToEnable.push(id)
+      else schoolsToDisable.push(id)
+    })
+    const calls = []
+    if (schoolsToEnable.length)
+      calls.push(
+        call(api, {
+          stopSync: true,
+          districtId,
+          schoolIds: schoolsToEnable,
+        })
+      )
+    if (schoolsToDisable.length)
+      calls.push(
+        call(api, {
+          stopSync: false,
+          districtId,
+          schoolIds: schoolsToDisable,
+        })
+      )
+    const result = yield all(calls)
+    const failedResult = result.find((res) => res.success === false)
+    if (failedResult)
+      throw new Error(failedResult.message || 'Stop Sync Failed')
+  } catch (err) {
+    captureSentryException(err)
+    notification({ msg: err, type: 'error' })
+  } finally {
+    yield put({
+      type: SET_STOP_SYNC_SAVING_STATUS,
+      payload: false,
+    })
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(SEARCH_EXISTING_DATA_API, fetchExistingData),
@@ -497,6 +558,7 @@ export function* watcherSaga() {
     yield takeEvery(UPLOAD_CSV, uploadCSVSaga),
     yield takeEvery(UPDATE_SUBJECT_STANDARD_MAP, updateSubjectStandardSaga),
     yield takeEvery(FETCH_LOGS_DATA, fetchLogsData),
+    takeEvery(SET_STOP_SYNC, setStopSyncSaga),
   ])
 }
 

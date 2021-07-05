@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Modal, Select } from 'antd'
+import { Button, Modal, Select, Typography } from 'antd'
 import { notification } from '@edulastic/common'
 import { isEmpty } from 'lodash'
 import { Table } from '../Common/StyledComponents'
 
 const { Column } = Table
 const { Option } = Select
+const { Text } = Typography
 
 const ApproveMergeModal = ({
-  mappedResult = {},
-  setMappedResult,
   setIsModalVisible,
   isModalVisible,
   handleApprove,
@@ -19,6 +18,7 @@ const ApproveMergeModal = ({
   setMapperErrorMessage,
 }) => {
   const [formattedData, setFormattedData] = useState([])
+  const [mappedResult, setMappedResult] = useState({})
 
   const getCustomName = (obj) => {
     const isZipMatched = obj.zipMatch === 100
@@ -132,8 +132,15 @@ const ApproveMergeModal = ({
   return (
     <>
       <Modal
-        title="Review and Approve"
-        width="90%"
+        title={[
+          <div key="0">
+            <Text>Review and Approve </Text>
+            <Text type="danger" strong>
+              (Once mapping is done, it cannot be changed again)
+            </Text>
+          </div>,
+        ]}
+        width="95%"
         visible={isModalVisible}
         centered
         onCancel={handleCloseModal}
@@ -141,7 +148,11 @@ const ApproveMergeModal = ({
           <Button key="back" onClick={handleCloseModal}>
             Cancel
           </Button>,
-          <Button key="submit" type="primary" onClick={handleApprove}>
+          <Button
+            key="submit"
+            type="primary"
+            onClick={() => handleApprove(mappedResult)}
+          >
             Approve
           </Button>,
         ]}
@@ -155,13 +166,14 @@ const ApproveMergeModal = ({
           >
             <Column
               title="S No."
-              width="20%"
+              width="15%"
               dataIndex="cId"
               key="cId"
               render={(_, __, idx) => idx + 1}
             />
             <Column
               title={`Clever ${mapperFieldName}`}
+              width="30%"
               dataIndex="cName"
               key="cName"
               render={(_data) => _data}

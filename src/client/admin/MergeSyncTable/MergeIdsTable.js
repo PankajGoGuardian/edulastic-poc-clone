@@ -34,7 +34,6 @@ const MergeIdsTable = ({
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [districtMappedData, setDistrictMappedData] = useState({})
-  const [mappedResult, setMappedResult] = useState({})
   const [mapperFieldName, setMapperFieldName] = useState('')
   const [mapperErrorMessage, setMapperErrorMessage] = useState('')
 
@@ -99,23 +98,30 @@ const MergeIdsTable = ({
     setIsModalVisible(true)
   }
 
-  const handleApprove = () => {
+  const handleApprove = (mappedResult) => {
     setMapperErrorMessage('')
-    const eduIdList = []
+    const eduIdMap = {}
     const indexes = []
     const cleverIds = Object.keys(mappedResult)
     for (let i = 1; i <= cleverIds.length; i++) {
-      if (mappedResult[cleverIds[i - 1]]) {
-        const existingIdIndex = eduIdList.indexOf(
-          mappedResult[cleverIds[i - 1]]
-        )
-        if (existingIdIndex > -1) {
-          indexes.push(existingIdIndex + 1)
-          indexes.push(i)
+      const eduId = mappedResult[cleverIds[i - 1]]
+      if (eduId) {
+        const existingId = eduIdMap[eduId]
+        if (existingId) {
+          eduIdMap[eduId].push(i)
+        } else {
+          eduIdMap[eduId] = []
+          eduIdMap[eduId].push(i)
         }
-        eduIdList.push(mappedResult[cleverIds[i - 1]])
       }
     }
+    for (const key of Object.keys(eduIdMap)) {
+      if (eduIdMap[key].length > 1) {
+        indexes.push(...eduIdMap[key])
+        console.log(eduIdMap[key])
+      }
+    }
+    console.log(indexes)
     if (indexes.length) {
       setMapperErrorMessage(
         `Same edulastic ${mapperFieldName} is mapped in rows ${compact(
@@ -210,8 +216,6 @@ const MergeIdsTable = ({
       </Modal>
       {isModalVisible && (
         <ApproveMergeModal
-          mappedResult={mappedResult}
-          setMappedResult={setMappedResult}
           setIsModalVisible={setIsModalVisible}
           isModalVisible={isModalVisible}
           handleApprove={handleApprove}

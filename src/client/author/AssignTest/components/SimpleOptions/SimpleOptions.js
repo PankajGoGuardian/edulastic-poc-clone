@@ -16,8 +16,13 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import { isFeatureAccessible } from '../../../../features/components/FeaturesSwitch'
 import { getUserFeatures } from '../../../../student/Login/ducks'
-import { getRecommendedResources } from '../../../CurriculumSequence/components/ManageContentBlock/ducks'
-import { setEmbeddedVideoPreviewModal as setEmbeddedVideoPreviewModalAction } from '../../../CurriculumSequence/ducks'
+import slice, {
+  getRecommendedResources,
+} from '../../../CurriculumSequence/components/ManageContentBlock/ducks'
+import {
+  getRecommendationsToAssignSelector,
+  setEmbeddedVideoPreviewModal as setEmbeddedVideoPreviewModalAction,
+} from '../../../CurriculumSequence/ducks'
 import { getUserRole } from '../../../src/selectors/user'
 import selectsData from '../../../TestPage/components/common/selectsData'
 import {
@@ -85,6 +90,11 @@ class SimpleOptions extends React.Component {
       features: { free, premium },
       testSettings = {},
       assignment,
+      recommendationsToAssign: {
+        isRecommendationAssignView,
+        recommendations = [],
+      },
+      addRecommendedResourcesAction,
     } = this.props
     if (free && !premium) {
       this.onChange('releaseScore', releaseGradeLabels.WITH_ANSWERS)
@@ -112,6 +122,21 @@ class SimpleOptions extends React.Component {
       isBoolean(applyEBSR)
     ) {
       this.overRideSettings('applyEBSR', applyEBSR)
+    }
+    const recommendedTestIds =
+      recommendations.find((x) => x.testIds)?.testIds || []
+    if (isRecommendationAssignView && recommendedTestIds.length > 0) {
+      const { resources } = recommendations[0]
+      console.log('call', {
+        recommendations,
+        resources,
+        recommendedTestIds,
+      })
+
+      addRecommendedResourcesAction({
+        testId: recommendedTestIds,
+        resourceIds: resources,
+      })
     }
   }
 
@@ -405,12 +430,20 @@ class SimpleOptions extends React.Component {
       history,
       isVideoResourcePreviewModal,
       selectedResourcesAction,
+      recommendationsToAssign,
     } = this.props
 
+    const {
+      isRecommendationAssignView,
+      recommendations = [],
+    } = recommendationsToAssign
+    const recommendedTestIds =
+      recommendations?.find((x) => x.testIds)?.testIds || []
     const resourceIds = history.location?.state?.resourceIds || []
     const showRecommendedResources =
       history.location?.state?.assignedFrom === 'playlistAssignTest' ||
-      history.location?.state?.isSparkMathCollection
+      history.location?.state?.isSparkMathCollection ||
+      (isRecommendationAssignView && recommendedTestIds.length > 0)
 
     const totalItems = isAssignRecommendations
       ? (assignment.questionPerStandard || 1) * selectedStandardsCount
@@ -629,6 +662,7 @@ SimpleOptions.propTypes = {
   students: PropTypes.array,
   fetchStudents: PropTypes.func,
   setEmbeddedVideoPreviewModal: PropTypes.func,
+  addRecommendedResourcesAction: PropTypes.func,
 }
 
 SimpleOptions.defaultProps = {
@@ -637,6 +671,7 @@ SimpleOptions.defaultProps = {
   fetchStudents: () => false,
   isRecommendingStandards: false,
   setEmbeddedVideoPreviewModal: () => {},
+  addRecommendedResourcesAction: () => {},
 }
 
 const enhance = compose(
@@ -651,6 +686,7 @@ const enhance = compose(
       recommendedResources: getRecommendedResources(state),
       isVideoResourcePreviewModal:
         state.curriculumSequence?.isVideoResourcePreviewModal,
+      recommendationsToAssign: getRecommendationsToAssignSelector(state),
       totalItems: state?.tests?.entity?.isDocBased
         ? state?.tests?.entity?.summary?.totalQuestions
         : state?.tests?.entity?.summary?.totalItems,
@@ -658,6 +694,8 @@ const enhance = compose(
     {
       setEmbeddedVideoPreviewModal: setEmbeddedVideoPreviewModalAction,
       selectedResourcesAction: getSelectedResourcesAction,
+      addRecommendedResourcesAction:
+        slice.actions?.fetchRecommendedResourcesAction,
     }
   )
 )

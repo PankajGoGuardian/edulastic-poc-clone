@@ -112,6 +112,13 @@ const initialState = {
   },
   stopSyncSaving: null,
   mappedData: {},
+  mappingDataLoading: false,
+  loadingData: {
+    dId: {
+      schoolLoading: true,
+      classLoading: false,
+    },
+  },
 }
 
 const putMappedDataIntoState = (state, payload) => {
@@ -285,6 +292,11 @@ export const mergeResponseSelector = createSelector(
 export const getMappedData = createSelector(
   adminStateSelector,
   ({ mergeData }) => mergeData.mappedData
+)
+
+export const getMappedDataLoading = createSelector(
+  adminStateSelector,
+  ({ mergeData }) => mergeData.mappingDataLoading
 )
 
 export const stopSyncSavingSelector = createSelector(
@@ -551,9 +563,15 @@ function* fetchMappingData({ payload }) {
         type: payload.type,
         dcId: payload.cleverId || payload.atlasId,
         result,
+        page: payload.page,
       })
     )
-    notification({ msg: 'Mapped data generated successfully', type: 'success' })
+    if (payload.page === 1) {
+      notification({
+        msg: 'Mapped data generated successfully',
+        type: 'success',
+      })
+    }
   } catch (err) {
     yield put(getMappingDataFailureAction())
     notification({ msg: 'Failed to generate mapping data', type: 'error' })

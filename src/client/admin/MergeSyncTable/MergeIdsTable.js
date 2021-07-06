@@ -31,11 +31,13 @@ const MergeIdsTable = ({
   getMappingData,
   mappedData = {},
   saveApprovedMapping,
+  mappedDataLoading,
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [districtMappedData, setDistrictMappedData] = useState({})
   const [mapperFieldName, setMapperFieldName] = useState('')
   const [mapperErrorMessage, setMapperErrorMessage] = useState('')
+  const [currentPage, setCurrentPage] = useState(1)
 
   useEffect(() => {
     const data = mappedData[cleverId || atlasId]
@@ -92,11 +94,13 @@ const MergeIdsTable = ({
       })
     }
     getMappingData(payload)
+    setCurrentPage(pageNumber)
   }
 
   const handleReviewAndApprove = (fieldName) => {
     setMapperFieldName(fieldName)
     setIsModalVisible(true)
+    setCurrentPage(1)
   }
 
   const handleApprove = (mappedResult) => {
@@ -223,6 +227,9 @@ const MergeIdsTable = ({
           districtMappedData={districtMappedData}
           setMapperErrorMessage={setMapperErrorMessage}
           handleGenerateMapping={handleGenerateMapping}
+          mappedDataLoading={mappedDataLoading}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
         />
       )}
 

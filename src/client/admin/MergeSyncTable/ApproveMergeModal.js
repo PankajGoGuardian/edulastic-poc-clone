@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Modal, Pagination, Select, Typography } from 'antd'
+import { Button, Modal, Pagination, Select, Spin, Typography } from 'antd'
 import { notification } from '@edulastic/common'
 import { isEmpty } from 'lodash'
+import { lightFadedBlack } from '@edulastic/colors'
+import styled from 'styled-components'
 import { Table } from '../Common/StyledComponents'
 
 const { Column } = Table
@@ -19,10 +21,12 @@ const ApproveMergeModal = ({
   districtMappedData,
   setMapperErrorMessage,
   handleGenerateMapping,
+  mappedDataLoading,
+  currentPage = 1,
+  setCurrentPage,
 }) => {
   const [formattedData, setFormattedData] = useState([])
   const [mappedResult, setMappedResult] = useState({})
-  const [page, setPage] = useState(1)
   const [totalRecordsCount, setTotalRecordsCount] = useState(0)
   const setInitialMapping = (cleverId, edulasticId) => {
     mappedResult[cleverId] = edulasticId
@@ -78,52 +82,54 @@ const ApproveMergeModal = ({
   }
   const formatClassData = (dataSet) => {
     const resultDataSet = []
-    for (const key of Object.keys(dataSet)) {
-      const data = dataSet[key]
-      const matchedClasses = data.matchedClass
-      const cId = key
-      const cName = data.name
-      if (
-        matchedClasses?.length === 1 &&
-        matchedClasses?.[0]?.cIdMatch === 100
-      ) {
-        const { score, customName } = getCustomClassNameAndScore(
-          matchedClasses?.[0]
-        )
-        resultDataSet.push({
-          cId,
-          cName,
-          data: [
-            {
-              eId: matchedClasses?.[0]?._id,
-              eName: customName,
-              cIdMatch: 100,
-              score,
-            },
-          ],
-        })
-      } else {
-        const mappedEduClassDetails = {}
-        if (matchedClasses?.length > 0) {
-          for (const matchedClass of matchedClasses) {
-            mappedEduClassDetails[matchedClass._id] = matchedClass
-          }
-        }
-        resultDataSet.push({
-          cId,
-          cName,
-          data: data.eduClasses.map((_class) => {
-            const { score, customName } = getCustomClassNameAndScore({
-              ..._class,
-              ...(mappedEduClassDetails[_class._id] || {}),
-            })
-            return {
-              eId: _class._id,
-              eName: customName,
-              score,
+    if (!isEmpty(dataSet)) {
+      for (const key of Object.keys(dataSet)) {
+        const data = dataSet[key]
+        const matchedClasses = data.matchedClass
+        const cId = key
+        const cName = data.name
+        if (
+          matchedClasses?.length === 1 &&
+          matchedClasses?.[0]?.cIdMatch === 100
+        ) {
+          const { score, customName } = getCustomClassNameAndScore(
+            matchedClasses?.[0]
+          )
+          resultDataSet.push({
+            cId,
+            cName,
+            data: [
+              {
+                eId: matchedClasses?.[0]?._id,
+                eName: customName,
+                cIdMatch: 100,
+                score,
+              },
+            ],
+          })
+        } else {
+          const mappedEduClassDetails = {}
+          if (matchedClasses?.length > 0) {
+            for (const matchedClass of matchedClasses) {
+              mappedEduClassDetails[matchedClass._id] = matchedClass
             }
-          }),
-        })
+          }
+          resultDataSet.push({
+            cId,
+            cName,
+            data: data.eduClasses.map((_class) => {
+              const { score, customName } = getCustomClassNameAndScore({
+                ..._class,
+                ...(mappedEduClassDetails[_class._id] || {}),
+              })
+              return {
+                eId: _class._id,
+                eName: customName,
+                score,
+              }
+            }),
+          })
+        }
       }
     }
     resultDataSet.forEach((_class) => {
@@ -260,23 +266,21 @@ const ApproveMergeModal = ({
     const { mappedClasses, totalCount: totalClassCount = 0 } = Classes || {}
     // loop through all mappedSchools
     if (mapperFieldName === 'Schools') {
-      const data = formatData(mappedSchools[page], edulasticSchools)
+      const data = formatData(mappedSchools[currentPage], edulasticSchools)
       setFormattedData(data)
       setTotalRecordsCount(totalSchoolCount)
     }
     if (mapperFieldName === 'Classes') {
-      setFormattedData(formatClassData(mappedClasses[page]))
+      setFormattedData(formatClassData(mappedClasses[currentPage]))
       setTotalRecordsCount(totalClassCount)
     }
   }
 
   useEffect(() => {
-    renderReviewContent()
-  }, [page])
-
-  useEffect(() => {
-    renderReviewContent()
-  }, [])
+    if (!mappedDataLoading) {
+      renderReviewContent()
+    }
+  }, [districtMappedData, currentPage])
 
   const handleMappingChange = (cleverId, edulasticId) => {
     mappedResult[cleverId] = edulasticId
@@ -292,15 +296,15 @@ const ApproveMergeModal = ({
     const { Schools, Classes } = districtMappedData
     const { mappedSchools } = Schools || {}
     const { mappedClasses } = Classes || {}
-    if (mapperFieldName === 'Schools' && !mappedSchools[pageNumber]) {
+    if (
+      (mapperFieldName === 'Schools' && !mappedSchools[pageNumber]) ||
+      (mapperFieldName === 'Classes' && !mappedClasses[pageNumber])
+    ) {
       // call api with this page number and get new data
       handleGenerateMapping(mapperFieldName, pageNumber)
+    } else {
+      setCurrentPage(pageNumber)
     }
-    if (mapperFieldName === 'Classes' && !mappedClasses[pageNumber]) {
-      // call api with this page number and get new data
-      handleGenerateMapping(mapperFieldName, pageNumber)
-    }
-    setPage(pageNumber)
   }
 
   return (
@@ -335,68 +339,74 @@ const ApproveMergeModal = ({
           <>
             <Pagination
               showQuickJumper
-              defaultCurrent={1}
+              defaultCurrent={currentPage}
               total={totalRecordsCount}
               pageSize={PAGE_SIZE}
               onChange={handlePageChange}
             />
-            <Table
-              rowKey={(record) => record.cId}
-              dataSource={formattedData}
-              pagination={false}
-              scroll={{ y: '60vh' }}
-            >
-              <Column
-                title="S No."
-                width="15%"
-                dataIndex="cId"
-                key="cId"
-                render={(_, __, idx) => idx + 1}
-              />
-              <Column
-                title={`Clever ${mapperFieldName}`}
-                width="30%"
-                dataIndex="cName"
-                key="cName"
-                render={(_data) => _data}
-              />
-              <Column
-                title={`Edulastic ${mapperFieldName}`}
-                dataIndex="data"
-                key="data"
-                render={(_data, record) => {
-                  return (
-                    <Select
-                      showSearch
-                      allowClear
-                      defaultValue={mappedResult[record.cId]}
-                      dropdownStyle={{ zIndex: 2000 }}
-                      style={{ width: '90%' }}
-                      bordered={false}
-                      onChange={(value) => {
-                        handleMappingChange(record.cId, value)
-                      }}
-                      disabled={_data?.[0]?.cIdMatch === 100}
-                      filterOption={(input, option) => {
-                        return (
-                          option.props.children
-                            .toLowerCase()
-                            .indexOf(input.toLowerCase()) >= 0
-                        )
-                      }}
-                    >
-                      {_data.map((o) => {
-                        return (
-                          <Option key={o.eId} value={o.eId}>
-                            {o.eName}
-                          </Option>
-                        )
-                      })}
-                    </Select>
-                  )
-                }}
-              />
-            </Table>
+            {mappedDataLoading ? (
+              <StyledSpinner>
+                <Spin />
+              </StyledSpinner>
+            ) : (
+              <Table
+                rowKey={(record) => record.cId}
+                dataSource={formattedData}
+                pagination={false}
+                scroll={{ y: '60vh' }}
+              >
+                <Column
+                  title="S No."
+                  width="15%"
+                  dataIndex="cId"
+                  key="cId"
+                  render={(_, __, idx) => idx + 1 + 25 * (currentPage - 1)}
+                />
+                <Column
+                  title={`Clever ${mapperFieldName}`}
+                  width="30%"
+                  dataIndex="cName"
+                  key="cName"
+                  render={(_data) => _data}
+                />
+                <Column
+                  title={`Edulastic ${mapperFieldName}`}
+                  dataIndex="data"
+                  key="data"
+                  render={(_data, record) => {
+                    return (
+                      <Select
+                        showSearch
+                        allowClear
+                        defaultValue={mappedResult[record.cId]}
+                        dropdownStyle={{ zIndex: 2000 }}
+                        style={{ width: '90%' }}
+                        bordered={false}
+                        onChange={(value) => {
+                          handleMappingChange(record.cId, value)
+                        }}
+                        disabled={_data?.[0]?.cIdMatch === 100}
+                        filterOption={(input, option) => {
+                          return (
+                            option.props.children
+                              .toLowerCase()
+                              .indexOf(input.toLowerCase()) >= 0
+                          )
+                        }}
+                      >
+                        {_data.map((o) => {
+                          return (
+                            <Option key={o.eId} value={o.eId}>
+                              {o.eName}
+                            </Option>
+                          )
+                        })}
+                      </Select>
+                    )
+                  }}
+                />
+              </Table>
+            )}
           </>
         ) : (
           <h1>loading...</h1>
@@ -407,3 +417,13 @@ const ApproveMergeModal = ({
 }
 
 export default ApproveMergeModal
+
+const StyledSpinner = styled.div`
+  position: fixed;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  z-index: 9999;
+  background: ${lightFadedBlack};
+`

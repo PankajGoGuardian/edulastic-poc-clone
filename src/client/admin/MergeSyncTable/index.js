@@ -36,6 +36,7 @@ import {
   getMappingDataAction,
   getMappedData,
   saveEntityMappingAction,
+  getMappedDataLoading,
 } from './ducks'
 
 import MergeIdsTable from './MergeIdsTable'
@@ -205,6 +206,7 @@ function MergeSyncTable({
   getMappingData,
   mappedData,
   saveApprovedMapping,
+  mappedDataLoading,
 }) {
   const { data = {} } = searchData
 
@@ -295,6 +297,7 @@ function MergeSyncTable({
                 getMappingData={getMappingData}
                 mappedData={mappedData}
                 saveApprovedMapping={saveApprovedMapping}
+                mappedDataLoading={mappedDataLoading}
               />
             </TabPane>
             <TabPane tab="Delta Sync Parameter" key="deltaSyncParameter">
@@ -370,6 +373,7 @@ const mapStateToProps = (state) => ({
   subStandardMapping: getSubStandardMapping(state),
   mergeResponse: mergeResponseSelector(state),
   mappedData: getMappedData(state),
+  mappedDataLoading: getMappedDataLoading(state),
 })
 
 const withConnect = connect(mapStateToProps, {

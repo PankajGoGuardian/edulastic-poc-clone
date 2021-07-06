@@ -55,21 +55,26 @@ const ApproveMergeModal = ({
     if (cIdMatch === 100) {
       score = 0
     } else if (gm === 100 && sm === 100 && scm === 100) {
-      customName = `${customName} Grade(Matched) | Subject(Matched) | Student count(${scm}%)`
+      customName = `${customName} (Grade - Matched | Subject - Matched | Student count - ${scm}%)`
       score = 1
     } else if (gm === 100 && sm === 100 && scm >= 60) {
-      customName = `${customName} Grade(Matched) | Subject(Matched) | Student count(${scm}%)`
+      customName = `${customName} (Grade - Matched | Subject - Matched | Student count - ${scm}%)`
       score = 2
     } else if (gm === 100 && scm >= 80) {
-      customName = `${customName} Grade(Matched) | Subject(Not Matched) | Student count(${scm}%)`
+      customName = `${customName} (Grade - Matched | Subject - Not Matched | Student count - ${scm}%)`
       score = 3
     } else if (sm === 100 && scm >= 80) {
-      customName = `${customName} Grade(Not Matched) | Subject(Matched) | Student count(${scm}%)`
+      customName = `${customName} (Grade - Not Matched | Subject - Matched | Student count - ${scm}%)`
       score = 4
     } else if (scm >= 80) {
-      customName = `${customName} Student count(${scm}%)`
+      customName = `${customName} (Student count - ${scm}%)`
       score = 4
     } else {
+      customName = `${customName} (Grade - ${
+        gm ? 'Matched' : 'Not Matched'
+      } | Subject - ${sm ? 'Matched' : 'Not Matched'} | Student count - ${
+        scm || 0
+      }%)`
       score = 5
     }
     return {
@@ -134,7 +139,9 @@ const ApproveMergeModal = ({
     }
     resultDataSet.forEach((_class) => {
       _class.data.sort(compareClass)
-      setInitialMapping(_class.cId, _class.data?.[0]?.eId)
+      if (_class.data?.[0]?.score < 5) {
+        setInitialMapping(_class.cId, _class.data?.[0]?.eId)
+      }
     })
     return resultDataSet
   }
@@ -301,7 +308,7 @@ const ApproveMergeModal = ({
       (mapperFieldName === 'Classes' && !mappedClasses[pageNumber])
     ) {
       // call api with this page number and get new data
-      handleGenerateMapping(mapperFieldName, pageNumber)
+      handleGenerateMapping(mapperFieldName, pageNumber, false)
     } else {
       setCurrentPage(pageNumber)
     }

@@ -43,6 +43,7 @@ export const FETCH_MAPPING_DATA_SUCCESS = '[admin] FETCH_MAPPING_DATA_SUCCESS'
 export const FETCH_MAPPING_DATA_FAILURE = '[admin] FETCH_MAPPING_DATA_FAILURE'
 
 export const SAVE_APPROVED_MAPPING = '[admin] SAVE_APPROVED_MAPPING'
+export const UNSET_MAPPING_DATA = '[admin UNSET_MAPPING_DATA'
 
 // ACTION CREATORS
 export const searchExistingDataApi = createAction(SEARCH_EXISTING_DATA_API)
@@ -95,6 +96,7 @@ export const getMappingDataSuccessAction = createAction(
 export const getMappingDataFailureAction = createAction(
   FETCH_MAPPING_DATA_FAILURE
 )
+export const unSetMappingDataAction = createAction(UNSET_MAPPING_DATA)
 
 // REDUCERS
 
@@ -154,6 +156,13 @@ const putMappedDataIntoState = (state, payload) => {
   }
   state.mappedData[dcId][entity] = data
   state.mappingDataLoading = false
+}
+
+const unSetMappingData = (state, payload) => {
+  const { type, dcId } = payload.payload
+  const entity = type === 'school' ? 'Schools' : 'Classes'
+  state.mappedData[dcId] = state.mappedData[dcId] || {}
+  state.mappedData[dcId][entity] = {}
 }
 
 const fetchExistingDataReducer = createReducer(initialState, {
@@ -269,6 +278,7 @@ const fetchExistingDataReducer = createReducer(initialState, {
   [SET_STOP_SYNC_SAVING_STATUS]: (state, { payload }) => {
     state.stopSyncSaving = payload
   },
+  [UNSET_MAPPING_DATA]: unSetMappingData,
 })
 
 // SELECTORS
@@ -582,8 +592,12 @@ function* saveMappingData({ payload }) {
   const { lmsType } = payload
   const newPayload = omit(payload, ['lmsType'])
   try {
-    yield call(saveMappedData, { payload: newPayload, lmsType })
-    notification({ msg: 'Mapped data successfully saved', type: 'success' })
+    const result = yield call(saveMappedData, { payload: newPayload, lmsType })
+    if (result.statusCode === 409) {
+      notification({ msg: result.message, type: 'error', exact: true })
+    } else {
+      notification({ msg: 'Mapped data successfully saved', type: 'success' })
+    }
   } catch (err) {
     notification({ msg: 'Failed to save mapped data', type: 'error' })
   }

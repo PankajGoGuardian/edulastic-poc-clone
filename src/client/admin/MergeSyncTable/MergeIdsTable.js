@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { CSVLink } from 'react-csv'
 import { Button, Upload, Icon, Modal } from 'antd'
-import { compact } from 'lodash'
+import { compact, isEmpty } from 'lodash'
 import { Table } from '../Common/StyledComponents'
 import { mapCountAsType, DISABLE_SUBMIT_TITLE } from '../Data'
 import ApproveMergeModal from './ApproveMergeModal'
@@ -32,6 +32,7 @@ const MergeIdsTable = ({
   mappedData = {},
   saveApprovedMapping,
   mappedDataLoading,
+  unSetMappedData,
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [districtMappedData, setDistrictMappedData] = useState({})
@@ -69,7 +70,11 @@ const MergeIdsTable = ({
     }
   }
 
-  const handleGenerateMapping = (fieldName, pageNumber = 1) => {
+  const handleGenerateMapping = (
+    fieldName,
+    pageNumber = 1,
+    isNewGenerateDataCall
+  ) => {
     let type
     const eduId = districtId
     if (fieldName === 'Schools') {
@@ -95,6 +100,12 @@ const MergeIdsTable = ({
     }
     getMappingData(payload)
     setCurrentPage(pageNumber)
+    if (isNewGenerateDataCall) {
+      unSetMappedData({
+        type,
+        dcId: cleverId || atlasId,
+      })
+    }
   }
 
   const handleReviewAndApprove = (fieldName) => {
@@ -133,6 +144,7 @@ const MergeIdsTable = ({
       )
     } else {
       saveApprovedMapping({
+        districtId,
         mapping: mappedResult,
         type: mapperFieldName === 'Schools' ? 'school' : 'class',
         lmsType: atlasId ? 'atlas' : 'clever',
@@ -248,7 +260,7 @@ const MergeIdsTable = ({
           render={(_, record) => {
             const { type, fieldName } = record
             return fieldName === 'Schools' || fieldName === 'Classes' ? (
-              <Button onClick={() => handleGenerateMapping(fieldName)}>
+              <Button onClick={() => handleGenerateMapping(fieldName, 1, true)}>
                 Generate Mapping
               </Button>
             ) : (
@@ -273,7 +285,7 @@ const MergeIdsTable = ({
             const { type, fieldName } = record
             return fieldName === 'Schools' || fieldName === 'Classes' ? (
               <Button
-                disabled={!districtMappedData[fieldName]}
+                disabled={isEmpty(districtMappedData[fieldName])}
                 onClick={() => handleReviewAndApprove(fieldName)}
               >
                 Review and Approve

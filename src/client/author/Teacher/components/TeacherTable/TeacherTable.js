@@ -883,6 +883,7 @@ class TeacherTable extends Component {
           <AddTeacherModal
             modalVisible={addTeacherModalVisible}
             addTeacher={this.createUser}
+            editTeacher={updateAdminUser}
             closeModal={this.closeAddUserModal}
             userOrgId={userOrgId}
             t={t}

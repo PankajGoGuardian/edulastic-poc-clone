@@ -67,7 +67,7 @@ const MergeIdsTable = ({
     }
   }
 
-  const handleGenerateMapping = (fieldName) => {
+  const handleGenerateMapping = (fieldName, pageNumber = 1) => {
     let type
     const eduId = districtId
     if (fieldName === 'Schools') {
@@ -79,6 +79,7 @@ const MergeIdsTable = ({
     const payload = {
       eduId,
       type,
+      page: pageNumber,
     }
     if (cleverId) {
       Object.assign(payload, {
@@ -221,6 +222,7 @@ const MergeIdsTable = ({
           mapperErrorMessage={mapperErrorMessage}
           districtMappedData={districtMappedData}
           setMapperErrorMessage={setMapperErrorMessage}
+          handleGenerateMapping={handleGenerateMapping}
         />
       )}
 

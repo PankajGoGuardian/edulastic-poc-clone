@@ -3,8 +3,7 @@ import { createSelector } from 'reselect'
 import { put, takeEvery, call, all } from 'redux-saga/effects'
 import { captureSentryException, notification } from '@edulastic/common'
 import { adminApi } from '@edulastic/api'
-import _get from 'lodash.get'
-import { omit } from 'lodash'
+import { get as _get, isEmpty, omit } from 'lodash'
 
 // CONSTANTS
 export const SEARCH_EXISTING_DATA_API = '[admin] SEARCH_EXISTING_DATA_API'
@@ -116,14 +115,37 @@ const initialState = {
 }
 
 const putMappedDataIntoState = (state, payload) => {
-  const { type, dcId, result } = payload.payload
+  const { type, dcId, result, page = 1 } = payload.payload
   const entity = type === 'school' ? 'Schools' : 'Classes'
-  if (state.mappedData[dcId]) {
-    state.mappedData[dcId][entity] = result
-  } else {
-    state.mappedData[dcId] = {}
-    state.mappedData[dcId][entity] = result
+  state.mappedData[dcId] = state.mappedData[dcId] || {}
+  state.mappedData[dcId][entity] = state.mappedData[dcId][entity] || {}
+  const {
+    totalCount = 0,
+    mappedClasses = [],
+    mappedSchools = [],
+    edulasticSchools = [],
+  } = result
+  const data = {
+    totalCount,
   }
+  if (type === 'school') {
+    Object.assign(data, {
+      edulasticSchools,
+    })
+    if (isEmpty(state.mappedData?.[dcId]?.[entity]?.mappedSchools)) {
+      state.mappedData[dcId][entity].mappedSchools = {}
+    }
+    data.mappedSchools = state.mappedData[dcId][entity].mappedSchools
+    data.mappedSchools[page] = mappedSchools
+  }
+  if (type === 'class') {
+    if (isEmpty(state.mappedData?.[dcId]?.[entity]?.mappedClasses)) {
+      state.mappedData[dcId][entity].mappedClasses = {}
+    }
+    data.mappedClasses = state.mappedData[dcId][entity].mappedClasses
+    data.mappedClasses[page] = mappedClasses
+  }
+  state.mappedData[dcId][entity] = data
   state.mappingDataLoading = false
 }
 

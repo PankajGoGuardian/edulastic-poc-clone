@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Modal, Select, Typography } from 'antd'
+import { Button, Modal, Pagination, Select, Typography } from 'antd'
 import { notification } from '@edulastic/common'
 import { isEmpty } from 'lodash'
 import { Table } from '../Common/StyledComponents'
@@ -7,6 +7,8 @@ import { Table } from '../Common/StyledComponents'
 const { Column } = Table
 const { Option } = Select
 const { Text } = Typography
+
+const PAGE_SIZE = 25
 
 const ApproveMergeModal = ({
   setIsModalVisible,
@@ -16,10 +18,12 @@ const ApproveMergeModal = ({
   mapperErrorMessage = '',
   districtMappedData,
   setMapperErrorMessage,
+  handleGenerateMapping,
 }) => {
   const [formattedData, setFormattedData] = useState([])
   const [mappedResult, setMappedResult] = useState({})
-
+  const [page, setPage] = useState(1)
+  const [totalRecordsCount, setTotalRecordsCount] = useState(0)
   const setInitialMapping = (cleverId, edulasticId) => {
     mappedResult[cleverId] = edulasticId
   }
@@ -47,19 +51,19 @@ const ApproveMergeModal = ({
     if (cIdMatch === 100) {
       score = 0
     } else if (gm === 100 && sm === 100 && scm === 100) {
-      customName += `Grade(Matched) | Subject(Matched) | Student count(${scm}%)`
+      customName = `${customName} Grade(Matched) | Subject(Matched) | Student count(${scm}%)`
       score = 1
     } else if (gm === 100 && sm === 100 && scm >= 60) {
-      customName += `Grade(Matched) | Subject(Matched) | Student count(${scm}%)`
+      customName = `${customName} Grade(Matched) | Subject(Matched) | Student count(${scm}%)`
       score = 2
     } else if (gm === 100 && scm >= 80) {
-      customName += `Grade(Matched) | Subject(Not Matched) | Student count(${scm}%)`
+      customName = `${customName} Grade(Matched) | Subject(Not Matched) | Student count(${scm}%)`
       score = 3
     } else if (sm === 100 && scm >= 80) {
-      customName += `Grade(Not Matched) | Subject(Matched) | Student count(${scm}%)`
+      customName = `${customName} Grade(Not Matched) | Subject(Matched) | Student count(${scm}%)`
       score = 4
     } else if (scm >= 80) {
-      customName += `Student count(${scm}%)`
+      customName = `${customName} Student count(${scm}%)`
       score = 4
     } else {
       score = 5
@@ -244,19 +248,34 @@ const ApproveMergeModal = ({
     }
   }, [mapperErrorMessage])
 
-  useEffect(() => {
+  const renderReviewContent = () => {
     // format data to display in review table
     const { Schools, Classes } = districtMappedData
-    const { mappedSchools, edulasticSchools } = Schools || {}
-    const { mappedClasses, edulasticClasses } = Classes || {}
+    const {
+      mappedSchools,
+      edulasticSchools,
+      totalCount: totalSchoolCount = 0,
+    } = Schools || {}
+
+    const { mappedClasses, totalCount: totalClassCount = 0 } = Classes || {}
     // loop through all mappedSchools
     if (mapperFieldName === 'Schools') {
-      const data = formatData(mappedSchools, edulasticSchools)
+      const data = formatData(mappedSchools[page], edulasticSchools)
       setFormattedData(data)
+      setTotalRecordsCount(totalSchoolCount)
     }
     if (mapperFieldName === 'Classes') {
-      setFormattedData(formatClassData(mappedClasses))
+      setFormattedData(formatClassData(mappedClasses[page]))
+      setTotalRecordsCount(totalClassCount)
     }
+  }
+
+  useEffect(() => {
+    renderReviewContent()
+  }, [page])
+
+  useEffect(() => {
+    renderReviewContent()
   }, [])
 
   const handleMappingChange = (cleverId, edulasticId) => {
@@ -267,6 +286,21 @@ const ApproveMergeModal = ({
   const handleCloseModal = () => {
     setMapperErrorMessage([])
     setIsModalVisible(false)
+  }
+
+  const handlePageChange = (pageNumber) => {
+    const { Schools, Classes } = districtMappedData
+    const { mappedSchools } = Schools || {}
+    const { mappedClasses } = Classes || {}
+    if (mapperFieldName === 'Schools' && !mappedSchools[pageNumber]) {
+      // call api with this page number and get new data
+      handleGenerateMapping(mapperFieldName, pageNumber)
+    }
+    if (mapperFieldName === 'Classes' && !mappedClasses[pageNumber]) {
+      // call api with this page number and get new data
+      handleGenerateMapping(mapperFieldName, pageNumber)
+    }
+    setPage(pageNumber)
   }
 
   return (
@@ -298,63 +332,72 @@ const ApproveMergeModal = ({
         ]}
       >
         {formattedData ? (
-          <Table
-            rowKey={(record) => record.cId}
-            dataSource={formattedData}
-            pagination={false}
-            scroll={{ y: '60vh' }}
-          >
-            <Column
-              title="S No."
-              width="15%"
-              dataIndex="cId"
-              key="cId"
-              render={(_, __, idx) => idx + 1}
+          <>
+            <Pagination
+              showQuickJumper
+              defaultCurrent={1}
+              total={totalRecordsCount}
+              pageSize={PAGE_SIZE}
+              onChange={handlePageChange}
             />
-            <Column
-              title={`Clever ${mapperFieldName}`}
-              width="30%"
-              dataIndex="cName"
-              key="cName"
-              render={(_data) => _data}
-            />
-            <Column
-              title={`Edulastic ${mapperFieldName}`}
-              dataIndex="data"
-              key="data"
-              render={(_data, record) => {
-                return (
-                  <Select
-                    showSearch
-                    allowClear
-                    defaultValue={mappedResult[record.cId]}
-                    dropdownStyle={{ zIndex: 2000 }}
-                    style={{ width: '90%' }}
-                    bordered={false}
-                    onChange={(value) => {
-                      handleMappingChange(record.cId, value)
-                    }}
-                    disabled={_data?.[0]?.cIdMatch === 100}
-                    filterOption={(input, option) => {
-                      return (
-                        option.props.children
-                          .toLowerCase()
-                          .indexOf(input.toLowerCase()) >= 0
-                      )
-                    }}
-                  >
-                    {_data.map((o) => {
-                      return (
-                        <Option key={o.eId} value={o.eId}>
-                          {o.eName}
-                        </Option>
-                      )
-                    })}
-                  </Select>
-                )
-              }}
-            />
-          </Table>
+            <Table
+              rowKey={(record) => record.cId}
+              dataSource={formattedData}
+              pagination={false}
+              scroll={{ y: '60vh' }}
+            >
+              <Column
+                title="S No."
+                width="15%"
+                dataIndex="cId"
+                key="cId"
+                render={(_, __, idx) => idx + 1}
+              />
+              <Column
+                title={`Clever ${mapperFieldName}`}
+                width="30%"
+                dataIndex="cName"
+                key="cName"
+                render={(_data) => _data}
+              />
+              <Column
+                title={`Edulastic ${mapperFieldName}`}
+                dataIndex="data"
+                key="data"
+                render={(_data, record) => {
+                  return (
+                    <Select
+                      showSearch
+                      allowClear
+                      defaultValue={mappedResult[record.cId]}
+                      dropdownStyle={{ zIndex: 2000 }}
+                      style={{ width: '90%' }}
+                      bordered={false}
+                      onChange={(value) => {
+                        handleMappingChange(record.cId, value)
+                      }}
+                      disabled={_data?.[0]?.cIdMatch === 100}
+                      filterOption={(input, option) => {
+                        return (
+                          option.props.children
+                            .toLowerCase()
+                            .indexOf(input.toLowerCase()) >= 0
+                        )
+                      }}
+                    >
+                      {_data.map((o) => {
+                        return (
+                          <Option key={o.eId} value={o.eId}>
+                            {o.eName}
+                          </Option>
+                        )
+                      })}
+                    </Select>
+                  )
+                }}
+              />
+            </Table>
+          </>
         ) : (
           <h1>loading...</h1>
         )}

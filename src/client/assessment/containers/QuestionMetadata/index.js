@@ -75,7 +75,7 @@ const QuestionMetadata = ({
   userFeatures,
   highlightCollection,
   recentCollectionsList,
-  authorQuestionSatus = false,
+  authorQuestionStatus = false,
   collectionsToShow,
 }) => {
   const [searchProps, setSearchProps] = useState({
@@ -221,7 +221,7 @@ const QuestionMetadata = ({
                 editAlignment={editAlignment}
                 interestedCurriculums={interestedCurriculums}
                 createUniqGradeAndSubjects={createUniqGradeAndSubjects}
-                authorQuestionSatus={authorQuestionSatus}
+                authorQuestionStatus={authorQuestionStatus}
               />
             ))}
           </ShowAlignmentRowsContainer>
@@ -315,7 +315,7 @@ const enhance = compose(
       highlightCollection: getHighlightCollectionSelector(state),
       recentCollectionsList: getRecentCollectionsListSelector(state),
       collectionsToShow: getCollectionsToAddContent(state),
-      authorQuestionSatus: getAuthorQuestionStatus(state),
+      authorQuestionStatus: getAuthorQuestionStatus(state),
     }),
     {
       getCurriculums: getDictCurriculumsAction,

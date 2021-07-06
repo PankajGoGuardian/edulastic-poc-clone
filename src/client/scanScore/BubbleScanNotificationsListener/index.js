@@ -6,10 +6,11 @@ import { FireBaseService as Fbs } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
 
 import { getUser } from '../../author/src/selectors/user'
+import { setGroupedDocsAction } from '../ducks'
 
 const bubbleSheetsCollectionName = 'BubbleAnswerSheets'
 
-const BubbleScanNotificationsListener = ({ user }) => {
+const BubbleScanNotificationsListener = ({ user, setGroupedDocs }) => {
   const userNotifications = Fbs.useFirestoreRealtimeDocuments(
     (db) =>
       db
@@ -30,8 +31,7 @@ const BubbleScanNotificationsListener = ({ user }) => {
       Object.keys(groupedDocs).forEach((aId) => {
         groupedDocs[aId] = groupBy(groupedDocs[aId], 'sessionId')
       })
-      // TODO: sync groupedDocs to common store (create redux)
-      console.log('groupedDocs', groupedDocs)
+      setGroupedDocs(groupedDocs)
     }
   }, [userNotifications])
 
@@ -42,5 +42,7 @@ export default connect(
   (state) => ({
     user: getUser(state),
   }),
-  {}
+  {
+    setGroupedDocs: setGroupedDocsAction,
+  }
 )(BubbleScanNotificationsListener)

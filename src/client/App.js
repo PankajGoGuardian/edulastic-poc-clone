@@ -590,14 +590,9 @@ class App extends Component {
                     ? [
                         BulkActionNotificationListener,
                         ReportsNotificationListener,
-                        BubbleScanNotificationsListener,
                       ]
                     : roleuser.TEACHER === userRole
-                    ? [
-                        ClassSyncNotification,
-                        ReportsNotificationListener,
-                        BubbleScanNotificationsListener,
-                      ]
+                    ? [ClassSyncNotification, ReportsNotificationListener]
                     : null
                 }
               />
@@ -621,6 +616,7 @@ class App extends Component {
                 path="/scanScore"
                 component={ScanScore}
                 redirectPath={redirectRoute}
+                notifications={[BubbleScanNotificationsListener]}
               />
               <Route exact path="/kid" component={Kid} />
               <LoggedOutRoute

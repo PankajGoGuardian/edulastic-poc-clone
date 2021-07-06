@@ -1,6 +1,6 @@
 import { white } from '@edulastic/colors'
 import { MainHeader } from '@edulastic/common'
-import { IconChevronLeft } from '@edulastic/icons'
+import { IconChevronLeft, IconPassage } from '@edulastic/icons'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { Back, LeftSide, RightSide } from './styled'
@@ -17,7 +17,7 @@ const ItemHeader = ({ title, children, link, style }) => {
   }
 
   return (
-    <MainHeader type="standard" headingText={title}>
+    <MainHeader type="standard" headingText={title} Icon={IconPassage}>
       <RightSide style={style}>{children}</RightSide>
       <LeftSide>{renderIcon()}</LeftSide>
     </MainHeader>

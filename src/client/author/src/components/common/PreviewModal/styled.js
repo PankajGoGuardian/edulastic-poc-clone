@@ -5,6 +5,7 @@ import {
   white,
   themeColor,
   linkColor,
+  borderGrey4,
   red,
   smallDesktopWidth,
   mediumDesktopExactWidth,
@@ -192,16 +193,35 @@ const buttonWrapperExtraStyle = css`
 
 export const Divider = styled.div`
   width: 0px;
-  border: 1px solid #dadae4;
   position: relative;
   background-color: ${(props) =>
     props.isCollapsed ? '#e5e5e5' : 'transparent'};
   border-radius: 10px;
   z-index: 1;
   height: 65vh;
+  cursor: pointer;
+
+  &::after,
+  &::before {
+    content: '';
+    display: block;
+    border: 1px solid ${borderGrey4};
+    position: absolute;
+    height: 100%;
+  }
+
+  &::after {
+    right: -3px;
+  }
+
+  &::before {
+    left: -3px;
+  }
+
   .button-wrapper {
     background: #a7b5c1;
     display: flex;
+    z-index: 10;
     justify-content: space-between;
     position: absolute;
     top: 20px;

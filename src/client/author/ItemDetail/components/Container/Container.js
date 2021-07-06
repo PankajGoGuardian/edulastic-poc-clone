@@ -18,11 +18,7 @@ import {
   FlexContainer,
   EduButton,
 } from '@edulastic/common'
-import {
-  IconClose,
-  IconGraphRightArrow,
-  IconChevronLeft,
-} from '@edulastic/icons'
+import { IconClose } from '@edulastic/icons'
 import { cloneDeep, get, uniq, intersection, keyBy } from 'lodash'
 import { Layout, Button, Pagination } from 'antd'
 import ItemDetailContext, {
@@ -97,10 +93,6 @@ import { clearAnswersAction } from '../../../src/actions/answers'
 import { changePreviewTabAction } from '../../../ItemAdd/ducks'
 import { ConfirmationModal } from '../../../src/components/common/ConfirmationModal'
 import AuthorTestItemPreview from '../../../src/components/common/PreviewModal/AuthorTestItemPreview'
-import {
-  CollapseBtn,
-  Divider,
-} from '../../../src/components/common/PreviewModal/styled'
 import { setCreatedItemToTestAction } from '../../../TestPage/ducks'
 import QuestionAuditTrailLogs from '../../../../assessment/containers/QuestionAuditTrailLogs'
 import LanguageSelector from '../../../../common/components/LanguageSelector'
@@ -109,6 +101,7 @@ import {
   isPremiumUserSelector,
 } from '../../../src/selectors/user'
 import QuestionToPassage from '../QuestionToPassage'
+import PassageDivider from '../Divider'
 
 const testItemStatusConstants = {
   DRAFT: 'draft',
@@ -740,32 +733,10 @@ class Container extends Component {
   renderCollapseButtons = () => {
     const { collapseDirection } = this.state
     return (
-      <Divider
-        isCollapsed={!!collapseDirection}
+      <PassageDivider
         collapseDirection={collapseDirection}
-      >
-        <div className="button-wrapper">
-          <CollapseBtn
-            collapseDirection={collapseDirection}
-            onClick={() => this.handleCollapse('left')}
-            left
-          >
-            <IconChevronLeft />
-          </CollapseBtn>
-          <CollapseBtn collapseDirection={collapseDirection} mid>
-            <div className="vertical-line first" />
-            <div className="vertical-line second" />
-            <div className="vertical-line third" />
-          </CollapseBtn>
-          <CollapseBtn
-            collapseDirection={collapseDirection}
-            onClick={() => this.handleCollapse('right')}
-            right
-          >
-            <IconGraphRightArrow />
-          </CollapseBtn>
-        </div>
-      </Divider>
+        onChange={this.handleCollapse}
+      />
     )
   }
 

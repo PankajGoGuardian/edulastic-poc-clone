@@ -1,33 +1,25 @@
 import React, { useState } from 'react'
 import { IconGraphRightArrow, IconChevronLeft } from '@edulastic/icons'
-import { CollapseBtn, Divider } from './styled'
+import {
+  CollapseBtn,
+  Divider,
+} from '../../../src/components/common/PreviewModal/styled'
 
-const DividerContainer = ({
-  collapseDirection,
-  setCollapseView,
-  hideMiddle,
-  stackedView,
-}) => {
+const PassageDivider = ({ collapseDirection, onChange }) => {
   const [showCollapse, setShowCollapse] = useState(false)
 
   return (
     <Divider
       isCollapsed={!!collapseDirection}
       collapseDirection={collapseDirection}
-      hideMiddle={hideMiddle}
-      stackedView={stackedView}
       onMouseEnter={() => setShowCollapse(true)}
       onMouseLeave={() => setShowCollapse(false)}
     >
       {showCollapse && (
-        <div
-          data-cy="dividerButton"
-          data-test={collapseDirection}
-          className="button-wrapper"
-        >
+        <div className="button-wrapper">
           <CollapseBtn
             collapseDirection={collapseDirection}
-            onClick={() => setCollapseView('left')}
+            onClick={() => onChange('left')}
             left
           >
             <IconChevronLeft />
@@ -39,7 +31,7 @@ const DividerContainer = ({
           </CollapseBtn>
           <CollapseBtn
             collapseDirection={collapseDirection}
-            onClick={() => setCollapseView('right')}
+            onClick={() => onChange('right')}
             right
           >
             <IconGraphRightArrow />
@@ -50,4 +42,4 @@ const DividerContainer = ({
   )
 }
 
-export default DividerContainer
+export default PassageDivider

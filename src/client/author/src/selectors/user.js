@@ -120,9 +120,8 @@ export const getInterestedSubjectsSelector = createSelector(
  * student can be part of multiple district
  * @type {OutputSelector<unknown, number, (res: *) => number>}
  */
-export const getUserOrgId = createSelector(
-  stateSelector,
-  (state) => state?.user?.districtIds?.[0]
+export const getUserOrgId = createSelector(stateSelector, (state) =>
+  _get(state, 'user.lastUsedDistrictId', _get(state, 'user.districtIds[0]'))
 )
 /**
  * this selector shouldn't be used for students

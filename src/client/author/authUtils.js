@@ -39,9 +39,16 @@ export async function switchRole(role) {
 }
 
 export async function switchUser(newUser, oldUser) {
-  const districtId = newUser.district?._id || ''
+  const districtId = newUser.district?._id || newUser.districts[0]?._id || ''
   const switchToId = newUser._id || newUser
   const personId = oldUser.personId || oldUser
+  if (
+    newUser._id &&
+    newUser._id === oldUser._id &&
+    districtId === oldUser.orgId
+  ) {
+    return
+  }
   const result = await userApi.getSwitchUser(switchToId, personId, districtId)
   if (result.result) {
     TokenStorage.storeAccessToken(

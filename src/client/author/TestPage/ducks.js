@@ -3134,7 +3134,7 @@ function* getDefaultTestSettingsSaga({ payload: testEntity }) {
       )
     }
     yield put(setDefaultSettingsLoadingAction(false))
-    if (testEntity.saveDefaultTestSettings === true) {
+    if (testEntity?.saveDefaultTestSettings === true) {
       const _test = yield select(getTestEntitySelector)
       const defaultSettings = pick(
         _test,

@@ -427,6 +427,11 @@ class Item extends Component {
               LEXILE LEVEL: {item.passageLexileValue}
             </PassageInfo>
           )}
+          {item?.passageFleschKincaid && (
+            <PassageInfo md={7}>
+              FLESCH-KINCAID: {item.passageFleschKincaid}
+            </PassageInfo>
+          )}
         </StyledRow>
       </FlexContainer>
     )

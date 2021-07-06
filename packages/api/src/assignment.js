@@ -272,12 +272,12 @@ const getBubbleSheet = ({ assignmentId, groupId }) =>
     url: `${prefix}/${assignmentId}/group/${groupId}/bubble-sheet`,
   })
 
-const splitScanBubbleSheets = (params) =>
+const splitScanBubbleSheets = (payload) =>
   api
     .callApi({
       url: `${prefix}/split-scan-bubble-sheets`,
-      params,
-      method: 'get',
+      data: payload,
+      method: 'post',
     })
     .then((result) => result.data)
 

@@ -16,6 +16,7 @@ import { CurriculumSequenceSaga } from './author/CurriculumSequence'
 import { default as adminSagas } from './admin/sagas'
 import { saga as customReportSaga } from './admin/Components/CustomReportContainer/ducks'
 import publisherSagas from './publisher/sagas'
+import scanScoreSagas from './scanScore/ducks'
 import { watcherSaga as resetPasswordSaga } from './SetParentPassword/ducks'
 import { publicTestSaga } from './publicTest'
 import dictionariesSaga from './author/src/sagas/dictionaries'
@@ -42,6 +43,7 @@ export default function* () {
     publicTestSaga(),
     assignmentEmbedLinkSaga(),
     ManageSubscriptionSaga(),
+    scanScoreSagas(),
   ])
 }
 

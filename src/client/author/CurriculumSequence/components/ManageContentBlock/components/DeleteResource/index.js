@@ -1,5 +1,4 @@
 import React from 'react'
-import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { EduButton } from '@edulastic/common'
 import {
@@ -7,13 +6,7 @@ import {
   ModalFooter,
 } from '../../../../../../common/components/ConfirmationModal/styled'
 
-const DeleteResourceModal = ({
-  isVisible,
-  onCancel,
-  id,
-  deleteResource,
-}) => {
-
+const DeleteResourceModal = ({ isVisible, onCancel, id, deleteResource }) => {
   return (
     <StyledModal
       visible={isVisible}
@@ -23,12 +16,7 @@ const DeleteResourceModal = ({
       centered
       footer={[
         <ModalFooter>
-          <EduButton
-            data-cy="cancel"
-            isGhost
-            key="cancel"
-            onClick={onCancel}
-          >
+          <EduButton data-cy="cancel" isGhost key="cancel" onClick={onCancel}>
             No, Cancel
           </EduButton>
           <EduButton
@@ -45,13 +33,13 @@ const DeleteResourceModal = ({
       ]}
     >
       <div className="delete-message">
-      <p>Are you sure you want to delete this resource?</p>
-            </div>
+        <p>Are you sure you want to delete this resource?</p>
+      </div>
     </StyledModal>
   )
 }
 
-export default DeleteResourceModal;
+export default DeleteResourceModal
 
 const StyledModal = styled(ModalWrapper)`
   padding: 15px 45px 30px 45px;

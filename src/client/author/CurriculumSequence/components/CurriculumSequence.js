@@ -767,10 +767,12 @@ class CurriculumSequence extends Component {
       currentUserId,
     } = this.props
 
-    const SMid = collections.filter((x)=> x?.name?.toLowerCase() === 'spark math').map(({_id}) => _id);
-    let isSMPlaylist;
-    destinationCurriculumSequence?.collections?.forEach((c)=>{
-      if(SMid?.includes(c?._id)) isSMPlaylist = true
+    const SMid = collections
+      .filter((x) => x?.name?.toLowerCase() === 'spark math')
+      .map(({ _id }) => _id)
+    let isSMPlaylist
+    destinationCurriculumSequence?.collections?.forEach((c) => {
+      if (SMid?.includes(c?._id)) isSMPlaylist = true
     })
 
     const isManageContentActive = activeRightPanel === 'manageContent'

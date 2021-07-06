@@ -31,7 +31,9 @@ const StudentFeedback = ({
     if (itemLevelScoring && multipartItem) {
       const qActs = groupBy(question, 'testItemId')
       const skippedQuestion = (obj) => obj.skipped
-      const skippedWholeItem = ((qActs || {})[itemId] || []).every(skippedQuestion)
+      const skippedWholeItem = ((qActs || {})[itemId] || []).every(
+        skippedQuestion
+      )
       return skippedWholeItem
     }
 

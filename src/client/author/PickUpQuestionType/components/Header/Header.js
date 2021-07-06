@@ -2,10 +2,17 @@ import { MainHeader } from '@edulastic/common'
 import PropTypes from 'prop-types'
 import React from 'react'
 
-const Header = ({ title, renderExtra, noEllipsis, addQuestionToPassage }) => (
+const Header = ({
+  title,
+  renderExtra,
+  noEllipsis,
+  addQuestionToPassage,
+  isInModal,
+}) => (
   <MainHeader
     headingText={title}
     noEllipsis={noEllipsis}
+    isInModal={isInModal}
     hideSideMenu={addQuestionToPassage}
   >
     {renderExtra()}

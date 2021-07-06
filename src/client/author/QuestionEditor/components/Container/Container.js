@@ -453,6 +453,8 @@ class Container extends Component {
       preview,
       question,
       onCloseEditModal,
+      onToggleFullModal,
+      isInModal,
     } = this.props
 
     const commonProps = {
@@ -462,6 +464,7 @@ class Container extends Component {
       view,
       preview,
       isTestFlow,
+      isInModal,
       showMetaData: question.type !== 'passage',
       withLabels: true,
     }
@@ -480,6 +483,7 @@ class Container extends Component {
         renderRightSide={
           view === 'edit' ? this.renderRightSideButtons : () => {}
         }
+        onToggleFullModal={onToggleFullModal}
         onShowSettings={() => setShowSettings(true)}
         onCloseEditModal={onCloseEditModal}
         showAuditTrail={!!item}
@@ -496,6 +500,7 @@ class Container extends Component {
         onSaveScrollTop={onSaveScrollTop}
         savedWindowScrollTop={savedWindowScrollTop}
         showAuditTrail={!!item}
+        onToggleFullModal={onToggleFullModal}
         onCloseEditModal={onCloseEditModal}
         renderExtra={() =>
           modalItemId && (
@@ -522,6 +527,7 @@ class Container extends Component {
       allowedToSelectMultiLanguage,
       t,
       isPassageWithQuestions,
+      isInModal,
     } = this.props
 
     if (!question) {
@@ -548,7 +554,7 @@ class Container extends Component {
     const questionType = question && question.type
 
     return (
-      <EditorContainer ref={this.innerDiv}>
+      <EditorContainer ref={this.innerDiv} isInModal={isInModal}>
         {/* TODO: message can be seen only when react-router-dom detects changes */}
         <CustomPrompt
           when={!!hasUnsavedChanges}
@@ -566,17 +572,18 @@ class Container extends Component {
             {JSON.stringify(question, null, 4)}
           </SourceModal>
         )}
-        <HeaderContainer>
+        <HeaderContainer isInModal={isInModal}>
           <ItemHeader
             title={question.title}
             reference={itemId}
+            isInModal={isInModal}
             hideSideMenu={isPassageWithQuestions}
           >
             {this.header()}
           </ItemHeader>
 
           <BreadCrumbBar
-            className="sticky-header"
+            className={isInModal ? '' : 'sticky-header'}
             isPassageWithQuestions={isPassageWithQuestions}
           >
             {windowWidth > desktopWidth.replace('px', '') &&
@@ -610,6 +617,7 @@ class Container extends Component {
           data-cy="question-editor-container"
           ref={this.scrollContainer}
           zIndex="1"
+          isInModal={isInModal}
         >
           <LanguageContext.Provider value={{ currentLanguage }}>
             {this.renderQuestion()}
@@ -726,10 +734,11 @@ const RightActionButtons = styled.div`
 `
 
 const EditorContainer = styled.div`
-  min-height: 100vh;
+  min-height: ${({ isInModal }) =>
+    isInModal ? 'calc(100vh - 110px)' : '100vh'};
   overflow: hidden;
 `
 
 const HeaderContainer = styled.div`
-  padding-bottom: 50px;
+  padding-bottom: ${({ isInModal }) => (isInModal ? '' : '50px')};
 `

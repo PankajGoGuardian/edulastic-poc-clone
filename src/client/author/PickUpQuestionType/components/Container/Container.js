@@ -10,6 +10,7 @@ import {
   withWindowSizes,
   notification,
   EduButton,
+  FlexContainer,
 } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { withRouter } from 'react-router'
@@ -28,6 +29,8 @@ import {
   IconRead,
   IconWrite,
   IconPlay,
+  IconExpand,
+  IconCollapse,
 } from '@edulastic/icons'
 import CustomPrompt from '@edulastic/common/src/components/CustomPrompt'
 import QuestionTypes from '../QuestionType/QuestionTypes'
@@ -277,6 +280,8 @@ class Container extends Component {
       history: { push },
       itemDetails = {},
       addQuestionToPassage,
+      isInModal,
+      onToggleFullModal,
     } = this.props
     const { mobileViewShow, isShowCategories } = this.state
     const { multipartItem } = itemDetails
@@ -300,20 +305,31 @@ class Container extends Component {
           noEllipsis
           addQuestionToPassage={addQuestionToPassage}
           toggleSideBar={toggleSideBar}
+          isInModal={isInModal}
           renderExtra={() =>
             (modalItemId || addQuestionToPassage) && (
-              <EduButton
-                isBlue
-                IconBtn
-                data-cy="closeModal"
-                onClick={onModalClose}
-              >
-                <IconClose />
-              </EduButton>
+              <FlexContainer>
+                <EduButton
+                  isBlue
+                  IconBtn
+                  data-cy="closeModal"
+                  onClick={onModalClose}
+                >
+                  <IconClose />
+                </EduButton>
+                <EduButton
+                  isBlue
+                  IconBtn
+                  data-cy="closeModal"
+                  onClick={onToggleFullModal}
+                >
+                  {isInModal ? <IconExpand /> : <IconCollapse />}
+                </EduButton>
+              </FlexContainer>
             )
           }
         />
-        <PickQuestionWrapper>
+        <PickQuestionWrapper isInModal={isInModal}>
           <LeftSide>
             <Menu
               mode="horizontal"
@@ -402,15 +418,17 @@ class Container extends Component {
             </AffixWrapper>
           </LeftSide>
           <RightSide>
-            <Breadcrumb
-              data={this.breadcrumb}
-              style={{
-                position: 'relative',
-                top: 0,
-                padding: '0px 0px 15px',
-                display: windowWidth > SMALL_DESKTOP_WIDTH ? 'block' : 'none',
-              }}
-            />
+            {!addQuestionToPassage && (
+              <Breadcrumb
+                data={this.breadcrumb}
+                style={{
+                  position: 'relative',
+                  top: 0,
+                  padding: '0px 0px 15px',
+                  display: windowWidth > SMALL_DESKTOP_WIDTH ? 'block' : 'none',
+                }}
+              />
+            )}
             <MobileButtons>
               <BackLink
                 to={`/author/items/${

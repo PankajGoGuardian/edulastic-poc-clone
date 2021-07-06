@@ -27,6 +27,7 @@ const MainHeader = ({
   containerClassName,
   headerLeftClassName,
   hasTestId,
+  isInModal,
   ...restProps
 }) => {
   const title = titleText || headingText
@@ -35,9 +36,13 @@ const MainHeader = ({
     <HeaderWrapper hasTestId={hasTestId} {...restProps}>
       <Affix
         className="fixed-header"
-        style={{ position: 'fixed', top: 0, right: 0 }}
+        style={{ position: isInModal ? 'absolute' : 'fixed', top: 0, right: 0 }}
       >
-        <Container className={containerClassName} {...restProps}>
+        <Container
+          className={containerClassName}
+          isInModal={isInModal}
+          {...restProps}
+        >
           <MenuIcon className="hamburger" onClick={() => toggleSideBar()} />
           {headingText && (
             <HeaderLeftContainer
@@ -132,6 +137,7 @@ const Container = styled.div`
   align-items: ${(props) => props.align || 'center'};
   border-bottom: 1px solid #2f4151;
   height: ${(props) => props.height || props.theme.HeaderHeight.md}px;
+  border-radius: ${({ isInModal }) => (isInModal ? '10px 10px 0px 0px' : '')};
 
   @media (min-width: ${extraDesktopWidthMax}) {
     height: ${(props) => props.height || props.theme.HeaderHeight.xl}px;

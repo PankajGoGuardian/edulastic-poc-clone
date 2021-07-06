@@ -13,6 +13,8 @@ import {
   IconPencilEdit,
   IconPreview,
   IconSaveNew,
+  IconExpand,
+  IconCollapse,
 } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
 import { roleuser } from '@edulastic/constants'
@@ -107,6 +109,8 @@ class ButtonBar extends Component {
       onSaveAndPublish,
       loadingComponents,
       onCloseEditModal,
+      onToggleFullModal,
+      isInModal,
     } = this.props
     return (
       <>
@@ -258,6 +262,16 @@ class ButtonBar extends Component {
                   </EduButton>
                 )}
                 {renderExtra()}
+                {!!onToggleFullModal && (
+                  <EduButton
+                    isBlue
+                    IconBtn
+                    data-cy="expandbutton"
+                    onClick={onToggleFullModal}
+                  >
+                    {isInModal ? <IconExpand /> : <IconCollapse />}
+                  </EduButton>
+                )}
               </RightSide>
             )}
             {!hasAuthorPermission && <RightSide>{renderExtra()}</RightSide>}

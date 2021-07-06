@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
@@ -33,6 +33,12 @@ const QuestionToPassage = ({
   tabIndex,
 }) => {
   const [prevQuestion, setPrevQuestion] = useState()
+  const [isFullModal, setIsFullModal] = useState(false)
+
+  const handleToggleFullModal = () => {
+    setIsFullModal(!isFullModal)
+  }
+
   const handleCancel = () => {
     onCancel()
     if (question?.id) {
@@ -65,19 +71,42 @@ const QuestionToPassage = ({
     }
   }, [question?.id, isEditPassageQuestion])
 
+  const [modalWidth, modalHeight, modalStyle] = useMemo(() => {
+    if (isFullModal) {
+      return ['100vw', '100vh', { top: 0 }]
+    }
+    return ['90%', 'calc(100vh - 110px)', { top: 60 }]
+  }, [isFullModal])
+
   return (
-    <StyledModal visible footer={null} title={null} onCancel={handleCancel}>
+    <StyledModal
+      visible
+      footer={null}
+      title={null}
+      onCancel={handleCancel}
+      width={modalWidth}
+      height={modalHeight}
+      style={modalStyle}
+      isFullModal={isFullModal}
+    >
       {question?.id && (
         <QuestionEditor
           isTestFlow={isTestFlow}
           isEditFlow={isEditFlow}
           isPassageWithQuestions
+          isInModal={!isFullModal}
+          onToggleFullModal={handleToggleFullModal}
           onAddWidgetToPassage={handleAddWideget}
           onCloseEditModal={handleCancel}
         />
       )}
       {!question?.id && (
-        <PickUpQuestionType addQuestionToPassage onModalClose={onCancel} />
+        <PickUpQuestionType
+          addQuestionToPassage
+          onModalClose={onCancel}
+          isInModal={!isFullModal}
+          onToggleFullModal={handleToggleFullModal}
+        />
       )}
     </StyledModal>
   )
@@ -99,13 +128,12 @@ const enhance = compose(
 )
 export default enhance(QuestionToPassage)
 
-const StyledModal = styled(Modal).attrs({
-  style: { top: 0 },
-  width: '100%',
-  height: '100%',
-})`
+const StyledModal = styled(Modal)`
   .ant-modal-header {
     display: none;
+  }
+  .ant-modal-content {
+    border-radius: ${({ isFullModal }) => (isFullModal ? '' : '10px')};
   }
   .ant-modal-body {
     padding: 0px;

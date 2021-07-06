@@ -57,14 +57,18 @@ const ItemDetailWidget = ({
     setItemLevelScore(+score)
   }
 
-  const { itemLevelScoring, itemLevelScore } = itemData
+  const { itemLevelScoring, itemLevelScore, data } = itemData
 
   const showPoints = !(rowIndex === 0 && itemData.rows.length > 1)
   const isPointsBlockVisible =
     (itemLevelScoring && widgetIndex === 0 && showPoints) ||
     widget.widgetType === 'question'
 
+  const itemLevelPartScore = itemLevelScore / data?.questions?.length
   const score = get(question, 'validation.validResponse.score', 0)
+  const partScore = itemLevelScoring
+    ? Math.round(itemLevelPartScore * 100) / 100
+    : score
   const unscored = itemLevelScoring
     ? every(
         get(itemData, 'data.questions', []),
@@ -133,7 +137,7 @@ const ItemDetailWidget = ({
                 {!(question.rubrics && !itemLevelScoring) &&
                   (!(unscored && showPoints) ? (
                     <Ctrls.Point
-                      value={score}
+                      value={partScore}
                       onChange={scoreChangeHandler}
                       data-cy="pointUpdate"
                       visible={isPointsBlockVisible}

@@ -1969,19 +1969,19 @@ function* savePassage({ payload }) {
     const hasValidTestId = payload.testId && payload.testId !== 'undefined'
     const testIdParam = hasValidTestId ? payload.testId : null
 
-    // let item
-    // if (currentItem._id === 'new') {
-    //   item = yield call(
-    //     testItemsApi.create,
-    //     _omit(currentItem, '_id'),
-    //     ...(testIdParam ? [{ testId: testIdParam }] : [])
-    //   )
-    //   yield put({
-    //     type: RECEIVE_ITEM_DETAIL_SUCCESS,
-    //     payload: { item },
-    //   })
-    //   currentItemId = item._id
-    // }
+    let item
+    if (currentItem._id === 'new') {
+      item = yield call(
+        testItemsApi.create,
+        _omit(currentItem, '_id'),
+        ...(testIdParam ? [{ testId: testIdParam }] : [])
+      )
+      yield put({
+        type: RECEIVE_ITEM_DETAIL_SUCCESS,
+        payload: { item },
+      })
+      currentItemId = item._id
+    }
 
     const modifiedPassage = produce(passage, (draft) => {
       if (!isEdit) draft.structure.widgets.push(widget)
@@ -2018,6 +2018,13 @@ function* savePassage({ payload }) {
       yield put(changeCurrentQuestionAction(''))
     }
 
+    yield put(
+      push(
+        payload.testId
+          ? `/author/tests/${payload.testId}/editItem/${currentItemId}`
+          : `/author/items/${currentItemId}/item-detail`
+      )
+    )
     /**
      * If test flow and test is not created, creating test after passage item is created and redirecting to edit-item page
      * If not test flow or if test is already created, redirecting to edit-item page

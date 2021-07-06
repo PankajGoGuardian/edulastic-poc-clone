@@ -671,16 +671,6 @@ function* saveQuestionSaga({
       draftData.subjects = uniq(itemSubjects)
     })
 
-    if (typeof callback === 'function') {
-      yield put({
-        type: UPDATE_ITEM_DETAIL_SUCCESS,
-        payload: { item: data },
-      })
-      callback()
-      yield put(changeCurrentQuestionAction(''))
-      return
-    }
-
     const redirectTestId = yield select(redirectTestIdSelector)
     // In test flow, if test not created, testId is 'undefined' | EV-27944
     const _testId = redirectTestId || (tId === 'undefined' ? undefined : tId)
@@ -698,12 +688,32 @@ function* saveQuestionSaga({
       item = yield call(testItemsApi.updateById, itemDetail._id, data, _testId)
     }
     yield put(changeUpdatedFlagAction(false))
+
     if (item.testId) {
       yield put(setRedirectTestAction(item.testId))
     }
 
     if (!saveAndPublishFlow) {
       notification({ type: 'success', messageKey: 'itemSavedSuccess' })
+    }
+
+    if (typeof callback === 'function') {
+      yield put({
+        type: UPDATE_ITEM_DETAIL_SUCCESS,
+        payload: { item },
+      })
+      callback()
+      yield put(changeCurrentQuestionAction(''))
+
+      yield put(
+        push({
+          pathname:
+            isTestFlow && tId
+              ? `/author/tests/${tId}/editItem/${item?._id}`
+              : `/author/items/${item._id}/item-detail`,
+        })
+      )
+      return
     }
 
     const { standards = [] } = alignments[0]

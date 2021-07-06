@@ -266,7 +266,7 @@ const SideMenu = ({
         orgId={orgId}
         showModal={showModal}
         closeModal={() => toggleShowModal(!showModal)}
-        otherAccounts={get(switchDetails, 'otherAccounts', [])}
+        otherAccounts={get(switchDetails, 'switchAccounts', [])}
         personId={personId}
         userRole={userRole}
       />

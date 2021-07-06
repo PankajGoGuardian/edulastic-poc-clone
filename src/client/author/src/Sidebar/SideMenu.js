@@ -482,8 +482,7 @@ class SideMenu extends Component {
       _userRole = 'Author'
     }
 
-    const otherAccounts = get(switchDetails, 'otherAccounts', [])
-    const users = otherAccounts.filter((acc) => acc._id !== userId)
+    const users = get(switchDetails, 'switchAccounts', [])
 
     const footerDropdownMenu = (isDemoAccount = false) => (
       <FooterDropDown
@@ -520,7 +519,7 @@ class SideMenu extends Component {
               </Link>
             </Menu.Item>
           )}
-          {users.length ? (
+          {users.length > 1 ? ( // since current user is also in this list
             <Menu.Item key="3" className="removeSelectedBorder">
               <a>
                 <IconSwitchUser />
@@ -577,7 +576,7 @@ class SideMenu extends Component {
             orgId={orgId}
             showModal={showModal}
             closeModal={() => this.setState({ showModal: false })}
-            otherAccounts={get(switchDetails, 'otherAccounts', [])}
+            otherAccounts={users}
             personId={get(switchDetails, 'personId')}
             userRole={userRole}
           />

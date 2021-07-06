@@ -52,18 +52,13 @@ const Loading = () => (
 
 const query = queryString.parse(window.location.search)
 if (query.token && query.userId && query.role) {
-  TokenStorage.storeAccessToken(
-    query.token,
-    query.userId,
-    query.role,
-    query.districtId
-  )
-  TokenStorage.selectAccessToken(query.userId, query.role, query.districtId)
+  TokenStorage.storeAccessToken(query.token, query.userId, query.role)
+  TokenStorage.selectAccessToken(query.userId, query.role)
   if (query.firebaseToken) {
     firebase.auth().signInWithCustomToken(query.firebaseToken)
   }
 } else if (query.userId && query.role) {
-  TokenStorage.selectAccessToken(query.userId, query.role, query.districtId)
+  TokenStorage.selectAccessToken(query.userId, query.role)
 }
 
 if (query?.itemBank?.toUpperCase() === 'CANVAS') {

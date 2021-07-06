@@ -379,9 +379,22 @@ export const getCleverSyncEnabledInstitutionPoliciesSelector = createSelector(
       : []
 )
 
-export const getAccountSwitchDetails = createSelector(getUser, (state) =>
-  pick(state, ['personId', 'otherAccounts'])
-)
+export const getAccountSwitchDetails = createSelector(getUser, (state) => {
+  const details = pick(state, ['personId', 'otherAccounts'])
+  const userId = state._id
+  details.switchAccounts = details.otherAccounts.flatMap((acc) =>
+    acc.districts.length && acc._id === userId
+      ? acc.districts.map((district) => ({
+          ...acc,
+          district,
+        }))
+      : {
+          ...acc,
+          district: {},
+        }
+  )
+  return details
+})
 
 export const getIsPowerPremiumAccount = createSelector(
   getUser,

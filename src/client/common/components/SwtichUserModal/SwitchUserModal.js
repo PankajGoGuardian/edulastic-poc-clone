@@ -78,28 +78,12 @@ const SwitchUserModal = ({
       <p>Select the role you want to switch</p>
       <div style={{ 'margin-top': '16px' }}>
         {Object.keys(roles).map((role) => {
-          const users = otherAccounts
-            .flatMap((acc) =>
-              acc.districts.length && acc._id === userId
-                ? acc.districts.map((district) => ({
-                    ...acc,
-                    district,
-                  }))
-                : {
-                    ...acc,
-                    district: {},
-                  }
-            )
-            .filter(
-              (acc) =>
-                acc.role === role &&
-                !(acc._id === userId && acc.district._id === orgId)
-            )
+          const users = otherAccounts.filter((acc) => acc.role === role)
           return (
             !!users.length &&
             users.map((user) => (
               <StyledDiv
-                key={`${user._id}_${user.role}`}
+                key={`${user._id}_${user.role}_${user.district?._id}`}
                 role={role}
                 onClick={() =>
                   switchUser(user, { _id: userId, personId, orgId })

@@ -3,20 +3,7 @@ import { configureScope, captureException } from '@sentry/browser'
 import { uniq } from 'lodash'
 import AppConfig from '../../../../src/app-config'
 
-const tokenKeyWithDistrict = (userId, role, districtId) =>
-  `user:${userId}:role:${role}:districtId:${districtId}`
-
-const tokenKey = (userId, role, districtId) =>
-  districtId
-    ? tokenKeyWithDistrict(userId, role, districtId)
-    : `user:${userId}:role:${role}`
-
-const parseTokenKey = (key) =>
-  Object.fromEntries(
-    key
-      .split(':')
-      .flatMap((v, i, arr) => (i % 2 === 0 ? [arr[i], arr[i + 1]] : []))
-  )
+const tokenKey = (userId, role) => `user:${userId}:role:${role}`
 
 function parseJwt(token) {
   const base64Url = token.split('.')[1]
@@ -62,18 +49,8 @@ export const updateSentryScope = (user) => {
   }
 }
 
-export function storeAccessToken(
-  token,
-  userId,
-  role,
-  districtId,
-  _default = false
-) {
-  // support previous syntax
-  _default = typeof districtId === 'boolean' ? districtId : _default
-  // get districtId from token, if not explicitly provided
-  districtId = districtId || parseJwt(token).districtId
-  const key = tokenKey(userId, role, districtId)
+export function storeAccessToken(token, userId, role, _default = false) {
+  const key = tokenKey(userId, role)
   window.localStorage.setItem(key, token)
   const tokens = JSON.parse(window.localStorage.getItem('tokens') || '[]')
 
@@ -86,8 +63,8 @@ export function storeAccessToken(
 export function updateUserToken(token, kid) {
   try {
     const { _id: userId, role, districtId } = parseJwt(token)
-    storeAccessToken(token, userId, role, districtId, true)
-    selectAccessToken(userId, role, districtId) // in case role changed
+    storeAccessToken(token, userId, role, true)
+    selectAccessToken(userId, role) // in case role changed
     if (kid) {
       updateKID({ _id: userId, role, kid, districtId })
     }
@@ -96,25 +73,22 @@ export function updateUserToken(token, kid) {
   }
 }
 
-export function selectAccessToken(userId, role, districtId) {
-  window.sessionStorage.tokenKey = tokenKey(userId, role, districtId)
+export function selectAccessToken(userId, role) {
+  window.sessionStorage.tokenKey = tokenKey(userId, role)
 }
 
-export function removeAccessToken(userId, role, districtId) {
-  const newKey = tokenKey(userId, role, districtId)
-  // Clean old tokenKey type as well
+export function removeAccessToken(userId, role) {
   const key = tokenKey(userId, role)
   const oldTokens = JSON.parse(window.localStorage.getItem('tokens') || '[]')
   window.localStorage.setItem(
     'tokens',
-    JSON.stringify(oldTokens.filter((x) => x != key && x != newKey))
+    JSON.stringify(oldTokens.filter((x) => x != key))
   )
-  window.localStorage.removeItem(newKey)
   window.localStorage.removeItem(key)
 }
 
-export function getAccessTokenForUser(userId, role, districtId) {
-  const key = tokenKey(userId, role, districtId)
+export function getAccessTokenForUser(userId, role) {
+  const key = tokenKey(userId, role)
   const oldTokens = JSON.parse(window.localStorage.getItem('tokens') || '[]')
   return oldTokens.find((x) => x === key)
 }

@@ -19,7 +19,10 @@ import { notification } from '@edulastic/common'
 import * as Sentry from '@sentry/browser'
 import { omit } from 'lodash'
 import { getSelectedResourcesAction } from '../../../AssignTest/duck'
-import { getCurrentActiveTerms } from '../../../src/selectors/user'
+import {
+  getCurrentActiveTerms,
+  getOrgItemBanksSelector,
+} from '../../../src/selectors/user'
 import { updateCurriculumSequenceAction } from '../../ducks'
 
 export const sliceName = 'playlistTestBox'
@@ -380,9 +383,15 @@ function* deleteResourceSaga({ payload }) {
 }
 
 function* getResourcesSaga({ payload }) {
-  const { resourceIds } = payload
   try {
-    const result = yield call(resourcesApi.getRecommendedResources, payload)
+    const { resourceIds, testId } = payload
+    const itemBanks = yield select(getOrgItemBanksSelector)
+    const collectionIds = (itemBanks || []).map((x) => x._id)
+    const result = yield call(resourcesApi.getRecommendedResources, {
+      testId,
+      resourceIds,
+      collectionIds,
+    })
     if (result) {
       const getSelectedResources = result?.map((x) => ({
         type: 'assign',

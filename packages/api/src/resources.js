@@ -1,4 +1,3 @@
-import qs from 'qs'
 import API from './utils/API'
 
 const api = new API()
@@ -59,16 +58,14 @@ const searchResource = (data) =>
     })
     .then((result) => result.data.result?.hits?.hits)
 
-const getRecommendedResources = (data) => {
-  const queryString = qs.stringify({ resourceIdsToFetch: data.resourceIds })
-  return api
+const getRecommendedResources = (data) =>
+  api
     .callApi({
-      url: `${prefix}/recommendation/${data.testId}?${queryString}`,
-      method: 'get',
+      url: `${prefix}/recommendations`,
+      method: 'post',
       data,
     })
-    .then((result) => result.data.result)
-}
+    .then((response) => response?.data?.result)
 
 export default {
   addResource,

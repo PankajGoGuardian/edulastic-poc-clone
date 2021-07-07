@@ -317,6 +317,7 @@ class Container extends Component {
       rows,
       item,
       location: { state },
+      setCurrentQuestion,
     } = this.props
 
     changeView('edit')
@@ -327,6 +328,7 @@ class Container extends Component {
     }
 
     if (item.passageId) {
+      setCurrentQuestion('')
       this.setState({ showQuestionManageModal: true, rowIndex, tabIndex })
       return
     }

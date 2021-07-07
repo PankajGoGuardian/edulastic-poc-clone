@@ -1605,7 +1605,7 @@ class ClassBoard extends Component {
                               data-cy="uploadAnswerSheets"
                               onClick={() =>
                                 history.push({
-                                  pathname: '/scanScore/uploadAnswerSheets',
+                                  pathname: '/uploadAnswerSheets',
                                   state: { assignmentId, groupId: classId },
                                 })
                               }

@@ -613,7 +613,7 @@ class App extends Component {
                 redirectPath={redirectRoute}
               />
               <PrivateRoute
-                path="/scanScore"
+                path={['/uploadAnswerSheets']}
                 component={ScanScore}
                 redirectPath={redirectRoute}
                 notifications={[BubbleScanNotificationsListener]}

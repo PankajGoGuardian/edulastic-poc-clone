@@ -50,7 +50,11 @@ export async function switchUser(newUser, oldUser) {
     ) {
       return
     }
-    const result = await userApi.getSwitchUser(switchToId, personId, districtId)
+    const result = await userApi.getSwitchUser(
+      switchToId,
+      personId,
+      newUser._id === oldUser._id ? districtId : undefined
+    )
     if (result.result) {
       TokenStorage.storeAccessToken(
         result.result.token,

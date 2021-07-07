@@ -43,7 +43,7 @@ const getSwitchUser = (switchToId, personId, districtId) =>
       params: {
         switchToId,
         personId,
-        districtId,
+        ...(districtId ? { districtId } : {}),
       },
     })
     .then((result) => result.data)

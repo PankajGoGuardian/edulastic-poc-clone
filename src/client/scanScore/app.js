@@ -6,13 +6,10 @@ import { themes } from '../theme'
 
 import UploadAnswerSheets from './uploadAnswerSheets'
 
-const App = ({ match }) => (
+const App = () => (
   <ThemeProvider theme={themes.scanScore}>
     <Switch>
-      <Route
-        path={`${match.path}/uploadAnswerSheets`}
-        component={UploadAnswerSheets}
-      />
+      <Route path="/uploadAnswerSheets" component={UploadAnswerSheets} />
     </Switch>
   </ThemeProvider>
 )

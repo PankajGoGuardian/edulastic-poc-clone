@@ -199,6 +199,7 @@ const ResourceItem = ({
   const moreMenu = (
     <MenuStyled data-cy="assessmentItemMoreMenu">
       <Menu.Item
+        data-cy="editResource"
         onClick={() => {
           editResource(type, resource)
         }}
@@ -206,6 +207,7 @@ const ResourceItem = ({
         Edit
       </Menu.Item>
       <Menu.Item
+        data-cy="deleteResource"
         onClick={() => {
           deleteResource(id)
         }}
@@ -244,7 +246,7 @@ const ResourceItem = ({
         />
         {type !== 'test' && resource?.userId === userId && (
           <Dropdown overlay={moreMenu} trigger={['click']} arrow>
-            <IconActionButton>
+            <IconActionButton data-cy="moreActions">
               <IconMoreVertical
                 className="more-action-btn"
                 color={themeColor}

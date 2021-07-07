@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { Link } from 'react-router-dom'
-import { Modal } from 'antd'
+import { Modal, Spin } from 'antd'
 import styled from 'styled-components'
 import { EduButton } from '@edulastic/common'
-import { IconPlusCircle, IconCircleCheck, IconCheck } from '@edulastic/icons'
+import { IconPlusCircle, IconCircleCheck } from '@edulastic/icons'
 
 const Button = styled(EduButton)`
   border: none;
@@ -21,7 +21,9 @@ const roles = {
   student: 'Student',
   parent: 'Parent',
 }
-const roleOrder = Object.fromEntries(Object.entries(roles).map(([key, v], i) => [key, i]))
+const roleOrder = Object.fromEntries(
+  Object.entries(roles).map(([key], i) => [key, i])
+)
 
 const color = {
   student: '#D0A20D',
@@ -45,7 +47,7 @@ const StyledDiv = styled.div.attrs((props) => ({
   justify-content: space-between;
   align-items: center;
   cursor: ${({ selected }) => (selected ? 'not-allowed' : 'pointer')};
-  &: hover {
+  &: hover ${(p) => (p.isActive ? ', &' : '')} {
     background: ${(props) => color[props.role]};
     color: #fff;
   }
@@ -78,73 +80,99 @@ const SwitchUserModal = ({
   switchUser,
   userRole,
   orgId,
-}) => (
-  <Modal
-    title="Switch User"
-    visible={showModal}
-    onCancel={closeModal}
-    footer={null}
-  >
-    <div>
-      <p>Select the role you want to switch</p>
-      <div style={{ 'margin-top': '16px' }}>
-        {otherAccounts
-          .filter((acc) => Object.keys(roles).includes(acc.role))
-          .sort((a, b) => {
-            if (a._id === userId && b._id !== userId) return -1
-            if (a._id !== userId && b._id === userId) return 1
-            return roleOrder[a.role] - roleOrder[b.role]
-          })
-          .map((user) => (
-            <StyledDiv
-              key={`${user._id}_${user.role}_${user.district?._id}`}
-              role={user.role}
-              selected={user._id === userId && user.district._id === orgId}
-              onClick={() => switchUser(user, { _id: userId, personId, orgId })}
-            >
-              <div style={{ 'font-size': '16px', 'font-weight': '600' }}>
-                <p>{roles[user.role]}</p>
-              </div>
-              <div style={{ marginLeft: '15px', minWidth: '50%' }}>
-                <div>
-                  <p>{user.username}</p>{' '}
-                </div>
-                <div
-                  style={{
-                    maxWidth: '100%',
-                    overflow: 'hidden',
-                    margin: '0 2px',
-                  }}
+}) => {
+  const [activeKey, setActiveKey] = useState('')
+  const getKey = useCallback(
+    (user) => `${user._id}_${user.role}_${user.district?._id}`,
+    []
+  )
+  useEffect(() => {
+    if (!showModal) {
+      setActiveKey('')
+    }
+  }, [showModal])
+  const switchUserCB = useCallback(
+    (user, ...args) => {
+      setActiveKey(getKey(user))
+      return switchUser(user, ...args).finally(() => {
+        setActiveKey('')
+      })
+    },
+    [setActiveKey, getKey, switchUser]
+  )
+  return (
+    <Modal
+      title="Switch User"
+      visible={showModal}
+      onCancel={closeModal}
+      footer={null}
+    >
+      <Spin spinning={!!activeKey}>
+        <div>
+          <p>Select the role you want to switch</p>
+          <div style={{ 'margin-top': '16px' }}>
+            {otherAccounts
+              .filter((acc) => Object.keys(roles).includes(acc.role))
+              .sort((a, b) => {
+                if (a._id === userId && b._id !== userId) return -1
+                if (a._id !== userId && b._id === userId) return 1
+                return roleOrder[a.role] - roleOrder[b.role]
+              })
+              .map((user) => (
+                <StyledDiv
+                  key={getKey(user)}
+                  role={user.role}
+                  selected={user._id === userId && user.district._id === orgId}
+                  isActive={getKey(user) === activeKey}
+                  onClick={() =>
+                    switchUserCB(user, { _id: userId, personId, orgId })
+                  }
                 >
-                  <NoWrapPara titlePrefix="Districts">
-                    {(user.district.name ? [user.district] : user.districts)
-                      .map((i) => i.name)
-                      .join(', ')}
-                    {user.districts.length && user.institutions.length
-                      ? ', '
-                      : ''}
-                    {user.institutions.map((i) => i.name).join(', ')}
-                  </NoWrapPara>
-                </div>
-              </div>
-              <div>
-                <IconCircleCheck />
-              </div>
-            </StyledDiv>
-          ))}
-      </div>
-    </div>
-    {userRole === 'edulastic-admin' ||
-    userRole === 'edulastic-curator' ? null : (
-      <ButtonsContainer>
-        <Link to={`/?addAccount=true&userId=${userId}`} target="_blank">
-          <Button isGhost>
-            <IconPlusCircle /> Add another account
-          </Button>
-        </Link>
-      </ButtonsContainer>
-    )}
-  </Modal>
-)
+                  <div style={{ 'font-size': '16px', 'font-weight': '600' }}>
+                    <p>{roles[user.role]}</p>
+                  </div>
+                  <div style={{ marginLeft: '15px', minWidth: '50%' }}>
+                    <div>
+                      <p>{user.username}</p>{' '}
+                    </div>
+                    <div
+                      style={{
+                        maxWidth: '100%',
+                        overflow: 'hidden',
+                        margin: '0 2px',
+                      }}
+                    >
+                      <NoWrapPara titlePrefix="Districts">
+                        {(user.district.name ? [user.district] : user.districts)
+                          .map((i) => i.name)
+                          .join(', ')}
+                        {user.districts.length && user.institutions.length
+                          ? ', '
+                          : ''}
+                        {user.institutions.map((i) => i.name).join(', ')}
+                      </NoWrapPara>
+                    </div>
+                  </div>
+                  <div>
+                    <IconCircleCheck />
+                  </div>
+                </StyledDiv>
+              ))}
+          </div>
+        </div>
+        {userRole === 'edulastic-admin' ||
+        userRole === 'edulastic-curator' ? null : (
+          <ButtonsContainer>
+            <Link to={`/?addAccount=true&userId=${userId}`} target="_blank">
+              <Button isGhost>
+                <IconPlusCircle /> Add another account
+              </Button>
+            </Link>
+          </ButtonsContainer>
+        )}
+      </Spin>
+    </Modal>
+  )
+}
 
 export default SwitchUserModal

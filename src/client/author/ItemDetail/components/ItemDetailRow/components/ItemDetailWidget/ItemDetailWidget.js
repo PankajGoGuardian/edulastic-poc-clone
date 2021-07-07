@@ -69,11 +69,10 @@ const ItemDetailWidget = ({
   const partScore = itemLevelScoring
     ? Math.round(itemLevelPartScore * 100) / 100
     : score
+  const questions = get(itemData, 'data.questions', [])
   const unscored = itemLevelScoring
-    ? every(
-        get(itemData, 'data.questions', []),
-        ({ validation }) => validation && validation.unscored
-      )
+    ? questions.length &&
+      every(questions, ({ validation }) => validation && validation.unscored)
     : get(question, 'validation.unscored', false)
   const scoreChangeHandler = itemLevelScoring
     ? onChangeItemLevelPoint
@@ -84,6 +83,7 @@ const ItemDetailWidget = ({
     (widgetIndex > 0 && itemLevelScoring) ||
     (question.rubrics && !itemLevelScoring) ||
     isEditDisabled
+
   return (
     connectDragPreview &&
     connectDragSource &&

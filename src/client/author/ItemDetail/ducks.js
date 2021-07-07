@@ -866,6 +866,7 @@ export function reducer(state = initialState, { type, payload }) {
       const newQuestionTobeAdded = !get(state, 'item.data.questions', []).find(
         (x) => x.id === payload.id
       )
+      const isPassageWidget = payload.type === 'passage'
       let canUpdateItemLevelScore = false
       const questionsLength = get(state, 'item.data.questions.length', 0)
       if (questionsLength === 0) {
@@ -873,6 +874,10 @@ export function reducer(state = initialState, { type, payload }) {
       } else if (questionsLength === 1 && !newQuestionTobeAdded) {
         canUpdateItemLevelScore = true
       }
+      if (isPassageWidget) {
+        canUpdateItemLevelScore = false
+      }
+
       if (itemLevelScoring && canUpdateItemLevelScore) {
         return {
           ...state,

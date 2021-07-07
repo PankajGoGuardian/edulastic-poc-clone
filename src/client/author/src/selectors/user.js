@@ -118,7 +118,7 @@ export const getInterestedSubjectsSelector = createSelector(
 /**
  * this selector shouldn't be used for students
  * student can be part of multiple district
- * @type {OutputSelector<unknown, number, (res: *) => number>}
+ * @type {OutputSelector<unknown, string, (Object) => string>}
  */
 export const getUserOrgId = createSelector(stateSelector, (state) =>
   _get(state, 'user.lastUsedDistrictId', _get(state, 'user.districtIds[0]'))
@@ -126,11 +126,22 @@ export const getUserOrgId = createSelector(stateSelector, (state) =>
 /**
  * this selector shouldn't be used for students
  * student can be part of multiple district
- * @type {OutputSelector<unknown, number, (res: *) => number>}
+ */
+export const getUserOrg = createSelector(
+  stateSelector,
+  getUserOrgId,
+  (state, orgId) =>
+    (state.user.orgData?.districts || []).find((d) => d.districtId === orgId)
+)
+
+/**
+ * this selector shouldn't be used for students
+ * student can be part of multiple district
+ * @type {OutputSelector<unknown, string, (Object) => string>}
  */
 export const getUserOrgName = createSelector(
-  stateSelector,
-  (state) => state.user.orgData?.districts?.[0].districtName
+  getUserOrg,
+  (userOrg) => userOrg?.districtName
 )
 
 export const getUserFeatures = createSelector(stateSelector, (state) =>
@@ -139,6 +150,26 @@ export const getUserFeatures = createSelector(stateSelector, (state) =>
 
 export const getUserOrgData = createSelector(stateSelector, (state) =>
   _get(state, 'user.orgData', {})
+)
+
+/**
+ * this selector shouldn't be used for students
+ * student can be part of multiple district
+ */
+export const getOrgSchools = createSelector(
+  getUserOrgData,
+  getUserOrgId,
+  (orgData, orgId) =>
+    (orgData.schools || []).filter((s) => s.districtId === orgId)
+)
+
+export const getOrgGroupList = createSelector(
+  getUserOrgData,
+  getOrgSchools,
+  (orgData, schools) =>
+    (orgData.classList || []).filter(
+      (c) => !!schools.find((s) => s._id === c.institutionId)
+    )
 )
 
 export const getOrgItemBanksSelector = createSelector(stateSelector, (state) =>

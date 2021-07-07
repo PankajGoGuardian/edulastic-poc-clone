@@ -1,6 +1,5 @@
 import { userApi, TokenStorage } from '@edulastic/api'
 import { notification } from '@edulastic/common'
-import { history } from '../configureStore'
 
 export async function proxyUser({ userId, email, groupId, currentUser = {} }) {
   const result = await userApi.getProxyUser({ userId, email, groupId })

@@ -724,6 +724,35 @@ class Container extends Component {
     })
   }
 
+  handleCancelEditItem = () => {
+    const {
+      history,
+      match,
+      isTestFlow,
+      location: { state },
+      item,
+    } = this.props
+    const { testId } = match.params
+    const { previousTestId, fadeSidebar, regradeFlow } = state || {}
+
+    const url = isTestFlow
+      ? `/author/tests/tab/review/id/${testId}`
+      : `/author/items/${item._id}/item-detail`
+
+    const newState = {
+      isTestFlow,
+      previousTestId,
+      fadeSidebar,
+      resetView: false,
+      regradeFlow,
+    }
+
+    history.push({
+      pathname: url,
+      state: newState,
+    })
+  }
+
   handleCollapse = (dir) => {
     this.setState((state) => ({
       collapseDirection: state.collapseDirection ? '' : dir,
@@ -1088,6 +1117,7 @@ class Container extends Component {
             style={{ marginTop: '10px' }}
           >
             <ButtonBar
+              onCancel={this.handleCancelEditItem}
               onShowSource={this.handleShowSource}
               onShowSettings={this.handleShowSettings}
               onChangeView={this.handleChangeView}

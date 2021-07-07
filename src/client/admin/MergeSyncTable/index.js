@@ -2,42 +2,43 @@ import React, { useCallback, useState } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import styled from 'styled-components'
-import { Button, Tabs as AntdTabs, Form, Input } from 'antd'
+import { Button, Form, Input, Tabs as AntdTabs } from 'antd'
 import { FirstDiv, FlexDiv, H2, OuterDiv } from '../Common/StyledComponents'
 import {
-  DeltaSync,
   ClassNamePattern,
-  Sync,
-  SubjectStandard,
+  DeltaSync,
   Logs,
+  SubjectStandard,
+  Sync,
 } from './Tabs'
 import { CLEVER_DISTRICT_ID_REGEX } from '../Data'
 import {
-  searchExistingDataApi,
-  getSearchData,
-  mergeResponseSelector,
-  applyDeltaSyncChanges,
-  syncSchools,
-  syncCleverOrphanUsers,
-  syncEdlinkOrphanUsers,
-  applyClassNamesSync,
-  enableDisableSyncAction,
-  getSubStandardMapping,
-  fetchCurriculumDataAction,
-  updateSubjectAction,
-  updateEdulasticSubjectAction,
-  updateEdulasticStandardAction,
   addSubjectStandardRowAction,
-  uploadCSVAction,
-  updateSubjectStdMapAction,
-  fetchLogsDataAction,
+  applyClassNamesSync,
+  applyDeltaSyncChanges,
   closeMergeResponseAction,
   deleteSubjectStdMapAction,
-  getMappingDataAction,
-  getMappedData,
-  saveEntityMappingAction,
+  enableDisableSyncAction,
+  fetchCurriculumDataAction,
+  fetchLogsDataAction,
+  generateMappedDataAction,
   getMappedDataLoading,
+  getMappedDataSelector,
+  getMappingDataAction,
+  getSearchData,
+  getSubStandardMapping,
+  mergeResponseSelector,
+  saveEntityMappingAction,
+  searchExistingDataApi,
+  syncCleverOrphanUsers,
+  syncEdlinkOrphanUsers,
+  syncSchools,
   unSetMappingDataAction,
+  updateEdulasticStandardAction,
+  updateEdulasticSubjectAction,
+  updateSubjectAction,
+  updateSubjectStdMapAction,
+  uploadCSVAction,
 } from './ducks'
 
 import MergeIdsTable from './MergeIdsTable'
@@ -209,6 +210,7 @@ function MergeSyncTable({
   saveApprovedMapping,
   mappedDataLoading,
   unSetMappedData,
+  generateMappedData,
 }) {
   const { data = {} } = searchData
 
@@ -296,11 +298,13 @@ function MergeSyncTable({
                 mergeResponse={mergeResponse}
                 closeMergeResponse={closeMergeResponse}
                 disableFields={syncEnabled}
+                generateMappedData={generateMappedData}
                 getMappingData={getMappingData}
                 mappedData={mappedData}
                 saveApprovedMapping={saveApprovedMapping}
                 mappedDataLoading={mappedDataLoading}
                 unSetMappedData={unSetMappedData}
+                mappedDataInfo={searchData.data.mappedDataInfo}
               />
             </TabPane>
             <TabPane tab="Delta Sync Parameter" key="deltaSyncParameter">
@@ -375,7 +379,7 @@ const mapStateToProps = (state) => ({
   searchData: getSearchData(state),
   subStandardMapping: getSubStandardMapping(state),
   mergeResponse: mergeResponseSelector(state),
-  mappedData: getMappedData(state),
+  mappedData: getMappedDataSelector(state),
   mappedDataLoading: getMappedDataLoading(state),
 })
 
@@ -398,6 +402,7 @@ const withConnect = connect(mapStateToProps, {
   closeMergeResponse: closeMergeResponseAction,
   deleteSubjectStdMapAction,
   getMappingData: getMappingDataAction,
+  generateMappedData: generateMappedDataAction,
   saveApprovedMapping: saveEntityMappingAction,
   unSetMappedData: unSetMappingDataAction,
 })

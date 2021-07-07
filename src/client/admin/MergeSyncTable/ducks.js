@@ -38,12 +38,13 @@ export const CLEAR_MERGE_DATA = '[admin] clear merge data'
 export const SET_STOP_SYNC = '[admin] set stop sync'
 export const SET_STOP_SYNC_SAVING_STATUS = '[admin] set stop sync saving status'
 
-export const FETCH_MAPPING_DATA = '[admin] FETCH_MAPPING_DATA'
-export const FETCH_MAPPING_DATA_SUCCESS = '[admin] FETCH_MAPPING_DATA_SUCCESS'
-export const FETCH_MAPPING_DATA_FAILURE = '[admin] FETCH_MAPPING_DATA_FAILURE'
+export const FETCH_MAPPED_DATA = '[admin] FETCH_MAPPED_DATA'
+export const FETCH_MAPPED_DATA_SUCCESS = '[admin] FETCH_MAPPED_DATA_SUCCESS'
+export const FETCH_MAPPED_DATA_FAILURE = '[admin] FETCH_MAPPED_DATA_FAILURE'
 
 export const SAVE_APPROVED_MAPPING = '[admin] SAVE_APPROVED_MAPPING'
 export const UNSET_MAPPING_DATA = '[admin UNSET_MAPPING_DATA'
+export const GENERATE_MAPPED_DATA = '[admin] GENERATE_MAPPED_DATA'
 
 // ACTION CREATORS
 export const searchExistingDataApi = createAction(SEARCH_EXISTING_DATA_API)
@@ -88,15 +89,16 @@ export const receiveMergeIdsAction = createAction(RECEIVE_MERGED_ID)
 export const closeMergeResponseAction = createAction(CLOSE_MERGE_RESPONSE_TABLE)
 export const setStopSyncAction = createAction(SET_STOP_SYNC)
 
-export const getMappingDataAction = createAction(FETCH_MAPPING_DATA)
+export const getMappingDataAction = createAction(FETCH_MAPPED_DATA)
 export const saveEntityMappingAction = createAction(SAVE_APPROVED_MAPPING)
 export const getMappingDataSuccessAction = createAction(
-  FETCH_MAPPING_DATA_SUCCESS
+  FETCH_MAPPED_DATA_SUCCESS
 )
 export const getMappingDataFailureAction = createAction(
-  FETCH_MAPPING_DATA_FAILURE
+  FETCH_MAPPED_DATA_FAILURE
 )
 export const unSetMappingDataAction = createAction(UNSET_MAPPING_DATA)
+export const generateMappedDataAction = createAction(GENERATE_MAPPED_DATA)
 
 // REDUCERS
 
@@ -265,11 +267,11 @@ const fetchExistingDataReducer = createReducer(initialState, {
       showData: false,
     }
   },
-  [FETCH_MAPPING_DATA]: (state) => {
+  [FETCH_MAPPED_DATA]: (state) => {
     state.mappingDataLoading = true
   },
-  [FETCH_MAPPING_DATA_SUCCESS]: putMappedDataIntoState,
-  [FETCH_MAPPING_DATA_FAILURE]: (state) => {
+  [FETCH_MAPPED_DATA_SUCCESS]: putMappedDataIntoState,
+  [FETCH_MAPPED_DATA_FAILURE]: (state) => {
     state.mappingDataLoading = false
   },
   [SET_STOP_SYNC]: (state) => {
@@ -299,7 +301,7 @@ export const mergeResponseSelector = createSelector(
   ({ mergeData }) => mergeData.mergeResponse
 )
 
-export const getMappedData = createSelector(
+export const getMappedDataSelector = createSelector(
   adminStateSelector,
   ({ mergeData }) => mergeData.mappedData
 )
@@ -335,6 +337,7 @@ const {
   logsAtlasDataApi,
   selectedAtlasSchoolSyncApi,
   completeAtlasDistrictSync,
+  generateMappedData,
   getMappingData,
   saveMappedData,
   syncCleverOrphanUsersApi,
@@ -565,7 +568,20 @@ function* fetchLogsData({ payload }) {
   }
 }
 
-function* fetchMappingData({ payload }) {
+function* generateMappingData({ payload }) {
+  try {
+    const result = yield call(generateMappedData, payload)
+    notification({
+      msg: result,
+      type: 'success',
+    })
+  } catch (err) {
+    yield put(getMappingDataFailureAction())
+    notification({ msg: 'Failed to generate mapping data', type: 'error' })
+  }
+}
+
+function* getMappedData({ payload }) {
   try {
     const result = yield call(getMappingData, payload)
     yield put(
@@ -576,15 +592,9 @@ function* fetchMappingData({ payload }) {
         page: payload.page,
       })
     )
-    if (payload.page === 1) {
-      notification({
-        msg: 'Mapped data generated successfully',
-        type: 'success',
-      })
-    }
   } catch (err) {
     yield put(getMappingDataFailureAction())
-    notification({ msg: 'Failed to generate mapping data', type: 'error' })
+    notification({ msg: 'Failed to get mapped data', type: 'error' })
   }
 }
 
@@ -682,9 +692,10 @@ export function* watcherSaga() {
     yield takeEvery(UPLOAD_CSV, uploadCSVSaga),
     yield takeEvery(UPDATE_SUBJECT_STANDARD_MAP, updateSubjectStandardSaga),
     yield takeEvery(FETCH_LOGS_DATA, fetchLogsData),
-    yield takeEvery(FETCH_MAPPING_DATA, fetchMappingData),
+    yield takeEvery(FETCH_MAPPED_DATA, getMappedData),
     yield takeEvery(SAVE_APPROVED_MAPPING, saveMappingData),
     takeEvery(SET_STOP_SYNC, setStopSyncSaga),
+    yield takeEvery(GENERATE_MAPPED_DATA, generateMappingData),
   ])
 }
 

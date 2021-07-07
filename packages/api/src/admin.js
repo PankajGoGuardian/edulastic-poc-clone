@@ -336,6 +336,15 @@ const bulkUpdateSubscriptionApi = (data) =>
 const getMappingData = (payload) =>
   api
     .callApi({
+      url: `${payload.atlasId ? atlasPrefix : prefix}entity-match-data`,
+      method: 'get',
+      params: payload,
+    })
+    .then(({ data: response }) => response.result)
+
+const generateMappedData = (payload) =>
+  api
+    .callApi({
       url: `${payload.atlasId ? atlasPrefix : prefix}entity-match`,
       method: 'get',
       params: payload,
@@ -418,6 +427,7 @@ export default {
   updateSubscriptionApi,
   bulkUpdateSubscriptionApi,
   getMappingData,
+  generateMappedData,
   saveMappedData,
   syncCleverOrphanUsersApi,
   syncEdlinkOrphanUsersApi,

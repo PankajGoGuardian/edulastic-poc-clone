@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { CSVLink } from 'react-csv'
-import { Button, Upload, Icon, Modal } from 'antd'
+import { Button, Icon, Modal, Upload } from 'antd'
 import { compact, isEmpty } from 'lodash'
 import { Table } from '../Common/StyledComponents'
-import { mapCountAsType, DISABLE_SUBMIT_TITLE } from '../Data'
+import { DISABLE_SUBMIT_TITLE, mapCountAsType } from '../Data'
 import ApproveMergeModal from './ApproveMergeModal'
+import moment from 'moment'
 
 const { Column } = Table
 
@@ -33,13 +34,26 @@ const MergeIdsTable = ({
   saveApprovedMapping,
   mappedDataLoading,
   unSetMappedData,
+  generateMappedData,
+  mappedDataInfo,
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [districtMappedData, setDistrictMappedData] = useState({})
   const [mapperFieldName, setMapperFieldName] = useState('')
   const [mapperErrorMessage, setMapperErrorMessage] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
-
+  let lastClassMapDataGeneratedDate = ''
+  let lastSchoolMapDataGeneratedDate = ''
+  if (!isEmpty(mappedDataInfo)) {
+    mappedDataInfo.forEach((o) => {
+      if (o._id === 'school') {
+        lastSchoolMapDataGeneratedDate = o.createdAt
+      }
+      if (o._id === 'class') {
+        lastClassMapDataGeneratedDate = o.createdAt
+      }
+    })
+  }
   useEffect(() => {
     const data = mappedData[cleverId || atlasId]
     setDistrictMappedData(data || {})
@@ -70,11 +84,7 @@ const MergeIdsTable = ({
     }
   }
 
-  const handleGenerateMapping = (
-    fieldName,
-    pageNumber = 1,
-    isNewGenerateDataCall
-  ) => {
+  const getPayload = (fieldName) => {
     let type
     const eduId = districtId
     if (fieldName === 'Schools') {
@@ -86,7 +96,6 @@ const MergeIdsTable = ({
     const payload = {
       eduId,
       type,
-      page: pageNumber,
     }
     if (cleverId) {
       Object.assign(payload, {
@@ -98,7 +107,16 @@ const MergeIdsTable = ({
         atlasId,
       })
     }
-    getMappingData(payload)
+    return { type, payload }
+  }
+
+  const handleGenerateMapping = (
+    fieldName,
+    pageNumber = 1,
+    isNewGenerateDataCall
+  ) => {
+    const { type, payload } = getPayload(fieldName)
+    generateMappedData(payload)
     setCurrentPage(pageNumber)
     if (isNewGenerateDataCall) {
       unSetMappedData({
@@ -109,6 +127,8 @@ const MergeIdsTable = ({
   }
 
   const handleReviewAndApprove = (fieldName) => {
+    const { payload } = getPayload(fieldName)
+    getMappingData(payload)
     setMapperFieldName(fieldName)
     setIsModalVisible(true)
     setCurrentPage(1)
@@ -193,6 +213,30 @@ const MergeIdsTable = ({
     da: ['user_id', 'id'],
   }
 
+  const isDisableReviewButton = (fieldName) => {
+    let isDisabled = true
+    if (fieldName === 'Schools' && lastSchoolMapDataGeneratedDate) {
+      isDisabled = false
+    }
+    if (fieldName === 'Classes' && lastClassMapDataGeneratedDate) {
+      isDisabled = false
+    }
+    return isDisabled
+  }
+
+  const getLastGeneratedMappingTime = (fieldName) => {
+    if (fieldName === 'Schools' && lastSchoolMapDataGeneratedDate) {
+      return moment(lastSchoolMapDataGeneratedDate)
+        .format('MMM DD YY HH:mm')
+        .toString()
+    }
+    if (fieldName === 'Classes' && lastClassMapDataGeneratedDate) {
+      return moment(lastClassMapDataGeneratedDate)
+        .format('MMM DD YY HH:mm')
+        .toString()
+    }
+  }
+
   return (
     <>
       <Modal
@@ -250,19 +294,43 @@ const MergeIdsTable = ({
         dataSource={data}
         pagination={false}
       >
-        <Column title="Fields" dataIndex="fieldName" key="fieldName" />
-        <Column title="Edulastic Count" dataIndex="eduCount" key="eduCount" />
-        <Column title={`${title} Count`} dataIndex="count" key="count" />
+        <Column
+          title="Fields"
+          dataIndex="fieldName"
+          key="fieldName"
+          width="15%"
+        />
+        <Column
+          title="Edulastic Count"
+          dataIndex="eduCount"
+          key="eduCount"
+          width="15%"
+        />
+        <Column
+          title={`${title} Count`}
+          dataIndex="count"
+          key="count"
+          width="15%"
+        />
         <Column
           title="Actions"
           dataIndex="isEmpty"
           key="btnName"
+          width="35%"
           render={(_, record) => {
             const { type, fieldName } = record
             return fieldName === 'Schools' || fieldName === 'Classes' ? (
-              <Button onClick={() => handleGenerateMapping(fieldName, 1, true)}>
-                Generate Mapping
-              </Button>
+              <>
+                <Button
+                  onClick={() => handleGenerateMapping(fieldName, 1, true)}
+                >
+                  Generate Mapping
+                </Button>
+                <span style={{ display: 'inline-flex' }}>
+                  Last Generated on:{' '}
+                  {getLastGeneratedMappingTime(fieldName) || '...'}
+                </span>
+              </>
             ) : (
               <Upload
                 aria-label="Upload"
@@ -281,11 +349,12 @@ const MergeIdsTable = ({
           title="Template"
           dataIndex="isEmpty"
           key="tempBtn"
+          width="20%"
           render={(_, record) => {
             const { type, fieldName } = record
             return fieldName === 'Schools' || fieldName === 'Classes' ? (
               <Button
-                disabled={isEmpty(districtMappedData[fieldName])}
+                disabled={isDisableReviewButton(fieldName)}
                 onClick={() => handleReviewAndApprove(fieldName)}
               >
                 Review and Approve

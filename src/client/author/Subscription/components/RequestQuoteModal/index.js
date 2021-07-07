@@ -21,6 +21,7 @@ import {
 import {
   getUserFullNameSelector,
   getUserOrgData,
+  getUserOrgId,
 } from '../../../src/selectors/user'
 import { getProducts, getRequestOrSubmitActionStatus, slice } from '../../ducks'
 import {
@@ -65,6 +66,7 @@ const RequestQuoteModal = ({
   userFullname,
   userDetails,
   products,
+  userOrgId,
 }) => {
   const [enterpriseLicenseType, setLicenseType] = useState('DISTRICT')
   const [studentLicenseCount, setStudentLicenseCount] = useState()
@@ -79,7 +81,7 @@ const RequestQuoteModal = ({
       setLicenseType(e.target.value)
       if (e.target.value === 'SCHOOL' && !schoolsInUserDistrict.length) {
         const result = await schoolApi.getSchools({
-          districtId: userDetails.districtIds[0],
+          districtId: userOrgId,
         })
         if (result?.data) {
           const schools = result.data.map((x) => {
@@ -130,21 +132,30 @@ const RequestQuoteModal = ({
 
   const handleSubmit = () => {
     if (validateFields()) {
-      const schoolOrDistrict =
-        enterpriseLicenseType === 'DISTRICT'
-          ? {
-              name: userOrgData.districts?.[0]?.districtName,
-              id: userOrgData.districts?.[0]?.districtId,
-              state: userOrgData.districts?.[0]?.districtState,
-              type: 'DISTRICT',
-            }
-          : {
-              districtId: userOrgData.schools?.[0]?.districtId,
-              name: userOrgData.schools?.[0]?.name,
-              id: userOrgData.schools?.[0]?.districtId,
-              type: 'SCHOOL',
-              schools: selectedSchools,
-            }
+      let schoolOrDistrict
+
+      if (enterpriseLicenseType === 'DISTRICT') {
+        const district = userOrgData.districts?.find(
+          (d) => d.districtId === userOrgId
+        )
+        schoolOrDistrict = {
+          name: district?.districtName,
+          id: district?.districtId,
+          state: district?.districtState,
+          type: 'DISTRICT',
+        }
+      } else {
+        const school = userOrgData.schools?.find(
+          (s) => s.districtId === userOrgId
+        )
+        schoolOrDistrict = {
+          districtId: school?.districtId,
+          name: school?.name,
+          id: school?.districtId,
+          type: 'SCHOOL',
+          schools: selectedSchools,
+        }
+      }
 
       const reqPayload = {
         userFullname,
@@ -326,6 +337,7 @@ const RequestQuoteModal = ({
 export default connect(
   (state) => ({
     userOrgData: getUserOrgData(state),
+    userOrgId: getUserOrgId(state),
     isRequestQuoteActionPending: getRequestOrSubmitActionStatus(state),
     userFullname: getUserFullNameSelector(state),
     userDetails: getUserDetails(state),

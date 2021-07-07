@@ -65,6 +65,7 @@ import {
   AddRemoveButton,
   AddRemoveBtnPublisher,
   PassageTitle,
+  PassageTitleContainer,
   StyledRow,
   PassageInfo,
   PassageIconContainer,
@@ -408,13 +409,21 @@ class Item extends Component {
 
   get getPassageInfo() {
     const { item } = this.props
+    const Title = item?.passageSource ? (
+      <>
+        <PassageTitle>{item.passageTitle}</PassageTitle> by{' '}
+        <PassageTitle>{item.passageSource}</PassageTitle>
+      </>
+    ) : (
+      <PassageTitle>{item.passageTitle}</PassageTitle>
+    )
     return (
       <FlexContainer flexDirection="column">
         <StyledRow>
           <PassageIconContainer md={1}>
             <IconPassage width={15.96} height={19.338} />
           </PassageIconContainer>
-          <PassageTitle md={23}>{item.passageTitle}</PassageTitle>
+          <PassageTitleContainer md={23}>{Title}</PassageTitleContainer>
         </StyledRow>
         <StyledRow>
           {item?.passageItemsCount && (

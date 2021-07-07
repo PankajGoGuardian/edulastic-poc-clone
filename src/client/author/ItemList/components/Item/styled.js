@@ -591,14 +591,18 @@ export const PassageIconContainer = styled(Col)`
   width: 25px;
   height: 22px;
 `
-export const PassageTitle = styled(Col)`
+export const PassageTitleContainer = styled(Col)`
+  height: 18px;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`
+export const PassageTitle = styled.span`
   color: ${textBlackColor};
   height: 18px;
   text-align: left;
   font: normal normal bold 14px/19px Open Sans;
   opacity: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
 `
 export const StyledRow = styled(Row)`
   margin-bottom: 10px;

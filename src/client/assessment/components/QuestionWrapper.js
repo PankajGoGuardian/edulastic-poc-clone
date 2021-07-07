@@ -82,6 +82,7 @@ import {
   getCurrentLanguage,
 } from '../../common/components/LanguageSelector/duck'
 import { StyledPaperWrapper } from '../styled/Widget'
+import Pictograph from '../widgets/Pictorgraph'
 
 const DummyQuestion = () => <></>
 
@@ -160,6 +161,8 @@ const getQuestion = (type) => {
     //   return Coding
     case questionType.UPLOAD_FILE:
       return UploadFile
+    case questionType.PICTOGRAPH:
+      return Pictograph
     default:
       return () => null
   }

@@ -54,6 +54,7 @@ const MULTIPLE_SELECTION = 'multipleSelection'
 const GRAPH_PLACEMENT = 'graphPlacement'
 const RANGE_PLOTTER = 'rangePlotter'
 const MULTIPART = 'multipart'
+const PICTOGRAPH = 'pictograph'
 
 const selectsData = [
   { value: '', text: 'All Types' },
@@ -176,4 +177,5 @@ module.exports = {
   EDITING_TASK,
   CODING,
   useLanguageFeatureQn,
+  PICTOGRAPH,
 }

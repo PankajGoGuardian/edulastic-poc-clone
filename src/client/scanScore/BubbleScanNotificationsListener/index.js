@@ -19,6 +19,15 @@ const BubbleScanNotificationsListener = ({ user, setGroupedDocs }) => {
     [user?._id]
   )
 
+  // uncomment to perform deletion (dev only)
+  // const deleteNotificationDocument = (docId) => {
+  //   Fbs.db
+  //     .collection(bubbleSheetsCollectionName)
+  //     .doc(docId)
+  //     .delete()
+  //     .catch((err) => console.error(err))
+  // }
+
   useEffect(() => {
     if (
       user &&

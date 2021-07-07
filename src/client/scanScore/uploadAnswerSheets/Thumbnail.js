@@ -12,7 +12,7 @@ const Thumbnail = ({ doc, ...props }) => {
   return (
     <ThumbnailDiv title={name} uri={doc.sourceUri} {...props}>
       <Spin spinning={doc.processStatus === 'in_progress'}>
-        <img alt={name} src={doc.sheetUri} />
+        <img alt={name} src={doc.sourceUri} />
       </Spin>
       {doc.processStatus === 'failed' && (
         <>

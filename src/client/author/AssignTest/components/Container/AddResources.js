@@ -87,7 +87,7 @@ const AddResources = ({
   const handleResourceCheck = (value) => {
     if (!selectedResources.includes(value)) {
       if (selectedResources.length >= 5) {
-        notification({ type: 'info', msg: 'Max limit reached' })
+        notification({ type: 'info', msg: 'Max resources allowed are 5' })
         return
       }
       setSelectedResources([...selectedResources, value])

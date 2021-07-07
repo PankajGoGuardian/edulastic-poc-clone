@@ -234,7 +234,7 @@ class ModuleRow extends Component {
   }
 
   assignTest = (moduleId, testId, testVersionId, resources = []) => {
-    const { history, playlistId } = this.props
+    const { history, playlistId, isSparkMathPlaylist } = this.props
     const resourceIds = resources
       .filter((x) => x.contentSubType === 'STUDENT')
       .map((x) => x.contentId)
@@ -246,7 +246,7 @@ class ModuleRow extends Component {
         toUrl: `/author/playlists/playlist/${playlistId}/use-this`,
         testVersionId,
         resourceIds,
-        assignedFrom: 'playlistAssignTest',
+        isSparkMathCollection: isSparkMathPlaylist,
       },
     })
   }

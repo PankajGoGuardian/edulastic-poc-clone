@@ -409,7 +409,6 @@ class SimpleOptions extends React.Component {
 
     const resourceIds = history.location?.state?.resourceIds || []
     const showRecommendedResources =
-      history.location?.state?.assignedFrom === 'playlistAssignTest' ||
       history.location?.state?.isSparkMathCollection
 
     const totalItems = isAssignRecommendations

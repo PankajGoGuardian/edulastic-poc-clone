@@ -65,6 +65,7 @@ const SortableItem = sortableElement((props) => {
     fromPlaylist,
     droppedItemId,
     isPlaylistDetailsPage,
+    isSparkMathPlaylist,
     ...rest
   } = props
 
@@ -117,6 +118,7 @@ const SortableItem = sortableElement((props) => {
           fromPlaylist={fromPlaylist}
           droppedItemId={droppedItemId}
           isPlaylistDetailsPage={isPlaylistDetailsPage}
+          isSparkMathPlaylist={isSparkMathPlaylist}
         />
       </DropContainer>
     </AssignmentItemContainer>

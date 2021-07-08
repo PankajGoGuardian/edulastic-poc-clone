@@ -362,13 +362,13 @@ class Container extends PureComponent {
        */
       return
     }
-    const SMid = collections
+    const smId = collections
       .filter((x) => x?.name?.toLowerCase() === 'spark math')
       .map(({ _id }) => _id)
-    let isSMPlaylist
-    playlist?.collections?.forEach((c) => {
-      if (SMid?.includes(c?._id)) isSMPlaylist = true
-    })
+    const isSMPlaylist = [
+      ...(playlist?.collections || []),
+      ...(playlist?.clonedCollections || []),
+    ]?.some((c) => smId?.includes(c?._id))
 
     playlist.isSMPlaylist = isSMPlaylist
 

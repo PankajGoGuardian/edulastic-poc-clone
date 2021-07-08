@@ -228,7 +228,7 @@ class ModuleRow extends Component {
       state: {
         from: 'myPlaylist',
         fromText: 'My Playlist',
-        toUrl: `/author/playlists/playlist/${playlistId}/use-this`,
+        toUrl: `playlists/playlist/${playlistId}/use-this`,
       },
     })
   }
@@ -243,7 +243,7 @@ class ModuleRow extends Component {
       state: {
         from: 'myPlaylist',
         fromText: 'My Playlist',
-        toUrl: `/author/playlists/playlist/${playlistId}/use-this`,
+        toUrl: `playlists/playlist/${playlistId}/use-this`,
         testVersionId,
         resourceIds,
         isSparkMathCollection: isSparkMathPlaylist,

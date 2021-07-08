@@ -275,7 +275,7 @@ const getBubbleSheet = ({ assignmentId, groupId }) =>
 const splitScanBubbleSheets = (payload) =>
   api
     .callApi({
-      url: `${prefix}/split-scan-bubble-sheets`,
+      url: `${prefix}/scan-omr-sheets`,
       data: payload,
       method: 'post',
     })

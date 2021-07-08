@@ -452,8 +452,23 @@ class Container extends PureComponent {
   }
 
   handleAssign = () => {
-    const { test, history, match, updated } = this.props
-    const { status } = test
+    const {
+      test,
+      history,
+      match,
+      updated,
+      collections: orgCollections,
+    } = this.props
+    const { status, collections } = test
+
+    const sparkMathId = orgCollections?.find(
+      (x) => x.name.toLowerCase() === 'spark math'
+    )?._id
+
+    const isSparkMathCollection = collections?.some(
+      (x) => x._id === sparkMathId
+    )
+
     if (this.validateTest(test)) {
       if (status !== statusConstants.PUBLISHED || updated) {
         this.handlePublishTest(true)
@@ -462,7 +477,11 @@ class Container extends PureComponent {
         if (id) {
           history.push({
             pathname: `/author/assignments/${id}`,
-            state: { fromText: 'TEST LIBRARY', toUrl: '/author/tests' },
+            state: {
+              fromText: 'TEST LIBRARY',
+              toUrl: '/author/tests',
+              isSparkMathCollection,
+            },
           })
         }
       }

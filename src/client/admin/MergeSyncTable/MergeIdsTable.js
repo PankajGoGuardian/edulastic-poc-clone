@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react'
 import { CSVLink } from 'react-csv'
 import { Button, Icon, Modal, Upload } from 'antd'
 import { compact, isEmpty } from 'lodash'
+import moment from 'moment'
 import { Table } from '../Common/StyledComponents'
 import { DISABLE_SUBMIT_TITLE, mapCountAsType } from '../Data'
 import ApproveMergeModal from './ApproveMergeModal'
-import moment from 'moment'
 
 const { Column } = Table
 
@@ -128,7 +128,7 @@ const MergeIdsTable = ({
 
   const handleReviewAndApprove = (fieldName) => {
     const { payload } = getPayload(fieldName)
-    getMappingData(payload)
+    getMappingData({ ...payload, page: 1 })
     setMapperFieldName(fieldName)
     setIsModalVisible(true)
     setCurrentPage(1)
@@ -282,7 +282,8 @@ const MergeIdsTable = ({
           mapperErrorMessage={mapperErrorMessage}
           districtMappedData={districtMappedData}
           setMapperErrorMessage={setMapperErrorMessage}
-          handleGenerateMapping={handleGenerateMapping}
+          getPayload={getPayload}
+          getMappingData={getMappingData}
           mappedDataLoading={mappedDataLoading}
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}

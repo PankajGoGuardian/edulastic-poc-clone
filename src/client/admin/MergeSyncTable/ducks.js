@@ -130,32 +130,15 @@ const putMappedDataIntoState = (state, payload) => {
   const entity = type === 'school' ? 'Schools' : 'Classes'
   state.mappedData[dcId] = state.mappedData[dcId] || {}
   state.mappedData[dcId][entity] = state.mappedData[dcId][entity] || {}
-  const {
-    totalCount = 0,
-    mappedClasses = [],
-    mappedSchools = [],
-    edulasticSchools = [],
-  } = result
+  const { totalCount = 0, mappedData = {} } = result
   const data = {
     totalCount,
   }
-  if (type === 'school') {
-    Object.assign(data, {
-      edulasticSchools,
-    })
-    if (isEmpty(state.mappedData?.[dcId]?.[entity]?.mappedSchools)) {
-      state.mappedData[dcId][entity].mappedSchools = {}
-    }
-    data.mappedSchools = state.mappedData[dcId][entity].mappedSchools
-    data.mappedSchools[page] = mappedSchools
+  if (isEmpty(state.mappedData?.[dcId]?.[entity]?.mappedData)) {
+    state.mappedData[dcId][entity].mappedData = {}
   }
-  if (type === 'class') {
-    if (isEmpty(state.mappedData?.[dcId]?.[entity]?.mappedClasses)) {
-      state.mappedData[dcId][entity].mappedClasses = {}
-    }
-    data.mappedClasses = state.mappedData[dcId][entity].mappedClasses
-    data.mappedClasses[page] = mappedClasses
-  }
+  Object.assign(data, state.mappedData[dcId][entity])
+  data.mappedData[page] = mappedData
   state.mappedData[dcId][entity] = data
   state.mappingDataLoading = false
 }

@@ -418,6 +418,9 @@ export const getAccountSwitchDetails = createSelector(getUser, (state) => {
       ? acc.districts.map((district) => ({
           ...acc,
           district,
+          institutions: acc.institutions.filter(
+            (inst) => inst.districtId === district._id
+          ),
         }))
       : {
           ...acc,

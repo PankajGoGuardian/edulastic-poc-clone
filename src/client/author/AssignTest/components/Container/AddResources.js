@@ -7,7 +7,7 @@ import {
   notification,
 } from '@edulastic/common'
 import { IconClose } from '@edulastic/icons'
-import { Pagination } from 'antd'
+import { Pagination, Tooltip } from 'antd'
 import { omit, pick } from 'lodash'
 import React, { useEffect, useState } from 'react'
 import ReactPlayer from 'react-player/lazy'
@@ -37,6 +37,7 @@ const AddResources = ({
   resourceIds = [],
   isVideoResourcePreviewModal,
   selectedResourcesAction,
+  isDA,
 }) => {
   const firstPage = recommendedResources.slice(0, pageSize)
   const [showResourceModal, setShowResourceModal] = useState(false)
@@ -164,20 +165,27 @@ const AddResources = ({
     </IconWrapper>
   )
 
+  const tooltipMsg =
+    isDA && recommendedResources?.length === 0
+      ? `Recommended resources are not available`
+      : ''
+
   return (
     <>
-      <AddResourcesLink
-        isAddResourceDisabled={isAddResourceDisabled}
-        data-cy="addResourcesLink"
-        onClick={() => {
-          if (!isAddResourceDisabled) openResourceModal()
-        }}
-      >
-        Click to Add Resources
-      </AddResourcesLink>
+      <Tooltip title={tooltipMsg} placement="bottomLeft">
+        <AddResourcesLink
+          isAddResourceDisabled={isAddResourceDisabled}
+          data-cy="addResourcesLink"
+          onClick={() => {
+            if (!isAddResourceDisabled) openResourceModal()
+          }}
+        >
+          Click to Add Resources
+        </AddResourcesLink>
+      </Tooltip>
       <ResourceTags>
         {showTags.map((tag) => (
-          <li key={tag.contentId}>
+          <li key={tag.contentId} data-cy={tag.contentId}>
             <span>{tag.contentTitle}</span>
             <CloseIconWrapper
               onClick={() => handleCancelresource(tag.contentId)}
@@ -232,7 +240,7 @@ const AddResources = ({
                 <CheckboxLabel
                   onChange={() => handleResourceCheck(x.contentId)}
                   checked={selectedResources.includes(x.contentId)}
-                  data-cy={`${x.contentId}ResourceCheckbox`}
+                  data-cy="resourceCheckbox"
                 />
               </RowOne>
               <RowTwo>

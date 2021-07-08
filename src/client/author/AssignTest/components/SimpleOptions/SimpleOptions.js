@@ -473,6 +473,12 @@ class SimpleOptions extends React.Component {
                   onClassFieldChange={onClassFieldChange}
                   defaultTestProfiles={defaultTestProfiles}
                   isAssignRecommendations={false}
+                  recommendedResources={recommendedResources}
+                  setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
+                  resourceIds={resourceIds}
+                  isVideoResourcePreviewModal={isVideoResourcePreviewModal}
+                  showRecommendedResources={showRecommendedResources}
+                  selectedResourcesAction={selectedResourcesAction}
                 />
               </TabContentContainer>
             ) : (
@@ -628,6 +634,7 @@ SimpleOptions.propTypes = {
   students: PropTypes.array,
   fetchStudents: PropTypes.func,
   setEmbeddedVideoPreviewModal: PropTypes.func,
+  selectedResourcesAction: PropTypes.func,
 }
 
 SimpleOptions.defaultProps = {
@@ -636,6 +643,7 @@ SimpleOptions.defaultProps = {
   fetchStudents: () => false,
   isRecommendingStandards: false,
   setEmbeddedVideoPreviewModal: () => {},
+  selectedResourcesAction: () => {},
 }
 
 const enhance = compose(

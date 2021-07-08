@@ -9,7 +9,7 @@ import { uploadToS3 } from '@edulastic/common/src/helpers'
 import { assignmentApi } from '@edulastic/api'
 
 import StyledDropZone from '../../assessment/components/StyledDropZone'
-import Thumbnail from './Thumbnail'
+import Thumbnail, { getFileNameFromUri } from './Thumbnail'
 
 import { getGroupedDocs } from '../ducks'
 
@@ -61,7 +61,10 @@ const UploadAnswerSheets = ({ location, groupedDocs }) => {
       } = await assignmentApi.splitScanBubbleSheets({
         assignmentId,
         sessionId,
-        sourceUri,
+        source: {
+          uri: sourceUri,
+          name: file?.name || getFileNameFromUri(sourceUri),
+        }
       })
       if (error) {
         notification({ type: 'error', msg: error.message })

@@ -2,13 +2,13 @@ import React from 'react'
 import styled from 'styled-components'
 import { Spin } from 'antd'
 
-const getSheetNameFromUri = (uri) =>
+export const getFileNameFromUri = (uri) =>
   uri
     .split('/')
     .lastItem.replace(/_([0-9a-fA-F]+|-)+[0-9a-fA-F]+(\.[a-zA-Z]+)/, '$2')
 
 const Thumbnail = ({ doc, ...props }) => {
-  const name = getSheetNameFromUri(doc.sourceUri)
+  const name = getFileNameFromUri(doc.sourceUri)
   return (
     <ThumbnailDiv title={name} uri={doc.sourceUri} {...props}>
       <Spin spinning={doc.processStatus === 'in_progress'}>

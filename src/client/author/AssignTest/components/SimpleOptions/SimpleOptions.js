@@ -18,7 +18,10 @@ import { isFeatureAccessible } from '../../../../features/components/FeaturesSwi
 import { getUserFeatures } from '../../../../student/Login/ducks'
 import { getRecommendedResources } from '../../../CurriculumSequence/components/ManageContentBlock/ducks'
 import { setEmbeddedVideoPreviewModal as setEmbeddedVideoPreviewModalAction } from '../../../CurriculumSequence/ducks'
-import { getUserRole } from '../../../src/selectors/user'
+import {
+  getCollectionsSelector,
+  getUserRole,
+} from '../../../src/selectors/user'
 import selectsData from '../../../TestPage/components/common/selectsData'
 import {
   getDisableAnswerOnPaperSelector,
@@ -405,11 +408,22 @@ class SimpleOptions extends React.Component {
       history,
       isVideoResourcePreviewModal,
       selectedResourcesAction,
+      orgCollections,
     } = this.props
 
+    const { collections } = testSettings
+
+    const sparkMathId = orgCollections?.find(
+      (x) => x.name.toLowerCase() === 'spark math'
+    )?._id
+
+    const isTestHasSparkMathCollection = collections?.some(
+      (x) => x._id === sparkMathId
+    )
     const resourceIds = history.location?.state?.resourceIds || []
     const showRecommendedResources =
-      history.location?.state?.isSparkMathCollection
+      history.location?.state?.isSparkMathCollection ||
+      isTestHasSparkMathCollection
 
     const totalItems = isAssignRecommendations
       ? (assignment.questionPerStandard || 1) * selectedStandardsCount
@@ -656,6 +670,7 @@ const enhance = compose(
       freezeSettings: getIsOverrideFreezeSelector(state),
       disableAnswerOnPaper: getDisableAnswerOnPaperSelector(state),
       recommendedResources: getRecommendedResources(state),
+      orgCollections: getCollectionsSelector(state),
       isVideoResourcePreviewModal:
         state.curriculumSequence?.isVideoResourcePreviewModal,
       totalItems: state?.tests?.entity?.isDocBased

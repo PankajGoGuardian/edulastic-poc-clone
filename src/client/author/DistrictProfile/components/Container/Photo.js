@@ -15,6 +15,7 @@ import { beforeUpload, notification } from '@edulastic/common'
 import { uploadToS3 } from '../../../src/utils/upload'
 import { updateProfileImageAction } from '../../../../student/Login/ducks'
 import { signupStateBykey } from '@edulastic/constants/const/signUpState'
+import { getUserOrgId } from '../../../../author/src/selectors/user'
 
 class Photo extends React.Component {
   state = {
@@ -22,7 +23,7 @@ class Photo extends React.Component {
   }
 
   handleChange = async (info) => {
-    const { user, updateProfileImagePath } = this.props
+    const { user, updateProfileImagePath, orgId } = this.props
     try {
       this.setState({ loading: true })
       const { file } = info
@@ -44,7 +45,7 @@ class Photo extends React.Component {
         data: {
           thumbnail: imageUrl,
           email: user.email,
-          districtId: user?.districtIds?.[0],
+          districtId: orgId,
           currentSignUpState: signupStateBykey[user.currentSignUpState],
         },
         userId: user._id,
@@ -135,6 +136,7 @@ Photo.defaultProps = {
 export default connect(
   (state) => ({
     imageUrl: state.user.user.thumbnail,
+    orgId: getUserOrgId(state),
   }),
   { updateProfileImagePath: updateProfileImageAction }
 )(Photo)

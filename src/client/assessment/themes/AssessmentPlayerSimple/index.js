@@ -8,6 +8,7 @@ import { get, isUndefined, last } from 'lodash'
 import { ThemeProvider } from 'styled-components'
 import { withNamespaces } from '@edulastic/localization'
 import { withWindowSizes, notification } from '@edulastic/common'
+import { collections as collectionConst } from '@edulastic/constants'
 
 // actions
 import { playerSkinValues } from '@edulastic/constants/const/test'
@@ -309,6 +310,13 @@ class AssessmentPlayerSimple extends React.Component {
     const cameraImageName = `${firstName}_${lastName}_${
       currentItem + 1
     }_${cameraImageIndex}.png`
+
+    const premiumCollectionWithoutAccess =
+      item?.premiumContentRestriction &&
+      item?.collections
+        ?.filter(({ type = '' }) => type === collectionConst.types.PREMIUM)
+        .map(({ name }) => name)
+
     return (
       <ThemeProvider theme={themeToPass}>
         <Container scratchPadMode={scratchPadMode} ref={this.containerRef}>
@@ -338,6 +346,7 @@ class AssessmentPlayerSimple extends React.Component {
             timedAssignment={timedAssignment}
             utaId={utaId}
             groupId={groupId}
+            isPremiumContentWithoutAccess={!!premiumCollectionWithoutAccess}
           >
             {toolsOpenStatus.indexOf(2) !== -1 && settings?.calcType ? (
               <CalculatorContainer
@@ -375,6 +384,8 @@ class AssessmentPlayerSimple extends React.Component {
               history={scratchPad}
               changePreview={this.handleChangePreview}
               tool={toolsOpenStatus}
+              isPremiumContentWithoutAccess={!!premiumCollectionWithoutAccess}
+              premiumCollectionWithoutAccess={premiumCollectionWithoutAccess}
             />
             {!previewPlayer && (
               <SubmitConfirmation

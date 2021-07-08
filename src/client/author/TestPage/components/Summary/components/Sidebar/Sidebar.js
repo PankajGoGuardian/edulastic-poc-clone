@@ -211,7 +211,13 @@ const Sidebar = ({
               }
             >
               {collectionsToShow.map((o) => (
-                <Select.Option key={o.bucketId} value={o.bucketId} _id={o._id}>
+                <Select.Option
+                  key={o.bucketId}
+                  value={o.bucketId}
+                  _id={o._id}
+                  type={o.type}
+                  collectionName={o.collectionName}
+                >
                   {`${o.collectionName} - ${o.name}`}
                 </Select.Option>
               ))}

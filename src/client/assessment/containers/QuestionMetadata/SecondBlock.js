@@ -237,6 +237,8 @@ const SecondBlock = ({
                       key={o.bucketId}
                       value={o.bucketId}
                       _id={o._id}
+                      type={o.type}
+                      collectionName={o.collectionName}
                     >
                       {`${o.collectionName} - ${o.name}`}
                     </Select.Option>

@@ -867,7 +867,8 @@ const AssessmentContainer = ({
         hideHints()
         setCurrentItem(index)
         const timeSpent = Date.now() - lastTime.current
-        if (!demo) {
+        const _item = items[currentItem]
+        if (!demo && !_item.isDummyItem) {
           evaluateForPreview({
             currentItem,
             timeSpent,
@@ -944,7 +945,8 @@ const AssessmentContainer = ({
           context: value,
         })
       }
-      if (!demo) {
+      const _item = items[currentItem]
+      if (!demo && !_item.isDummyItem) {
         evaluateForPreview({
           currentItem,
           timeSpent,
@@ -952,7 +954,7 @@ const AssessmentContainer = ({
           testId,
         })
       }
-      if (demo) {
+      if (demo || _item.isDummyItem) {
         submitPreviewTest()
       }
     }
@@ -1018,10 +1020,11 @@ const AssessmentContainer = ({
     hideHints()
     setCurrentItem(index)
     const timeSpent = Date.now() - lastTime.current
-    if (demo && isLast()) {
+    const _item = items[currentItem]
+    if ((demo || _item.isDummyItem) && isLast()) {
       return submitPreviewTest()
     }
-    if (!demo) {
+    if (!demo && !_item.isDummyItem) {
       const evalArgs = {
         currentItem,
         timeSpent,
@@ -1039,12 +1042,12 @@ const AssessmentContainer = ({
   const handleReviewOrSubmit = () => {
     const timeSpent = Date.now() - lastTime.current
     if (preview) {
-      if (demo) {
+      const _item = items[currentItem]
+      if (demo || _item.isDummyItem) {
         return submitPreviewTest()
-      } else {
-        const evalArgs = { currentItem, timeSpent, callback: submitPreviewTest }
-        return evaluateForPreview(evalArgs)
       }
+      const evalArgs = { currentItem, timeSpent, callback: submitPreviewTest }
+      return evaluateForPreview(evalArgs)
     }
     gotoSummary()
   }
@@ -1245,9 +1248,9 @@ const AssessmentContainer = ({
      * highlight image default pen should be disabled
      */
     playerComponent = defaultAP ? (
-      <AssessmentPlayerDefault {...props} hidePause={hidePause} />
+      <AssessmentPlayerDefault {...props} test={test} hidePause={hidePause} />
     ) : (
-      <AssessmentPlayerSimple {...props} hidePause={hidePause} />
+      <AssessmentPlayerSimple {...props} test={test} hidePause={hidePause} />
     )
   }
 

@@ -566,3 +566,14 @@ export const ScratchpadAndWidgetWrapper = styled.div`
   position: relative;
   width: 100%;
 `
+
+export const PremiumItemBannerWrapper = styled.div`
+  display: flex;
+  margin: 70px 0px;
+  position: relative;
+  margin-left: 10px;
+  section {
+    position: absolute;
+    top: -40px;
+  }
+`

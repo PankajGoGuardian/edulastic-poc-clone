@@ -52,6 +52,7 @@ const SettingsModal = ({
   setPreviewLanguage,
   clearUserWork,
   startAssessment,
+  isPremiumContentWithoutAccess = false,
 }) => {
   const bodyStyle = {
     padding: '20px',
@@ -148,6 +149,7 @@ const SettingsModal = ({
                     suffixIcon={<IconSelectCaretDown color={themeColor} />}
                     style={{ marginBottom: '10px' }}
                     getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                    disabled={isPremiumContentWithoutAccess}
                   >
                     <Select.Option value="default">Default</Select.Option>
                     {Object.keys(themeColorsMap).map((key) => {
@@ -166,6 +168,7 @@ const SettingsModal = ({
                     onChange={setZoomLevel}
                     style={{ marginBottom: '10px' }}
                     suffixIcon={<IconSelectCaretDown color={themeColor} />}
+                    disabled={isPremiumContentWithoutAccess}
                   >
                     <Select.Option value="1">None</Select.Option>
                     <Select.Option value="1.5">1.5X standard</Select.Option>
@@ -185,6 +188,7 @@ const SettingsModal = ({
                   onChange={setChangedLang}
                   value={selectedLang}
                   suffixIcon={<IconSelectCaretDown color={themeColor} />}
+                  disabled={isPremiumContentWithoutAccess}
                 >
                   <Select.Option value="" disabled>
                     Select Language

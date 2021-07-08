@@ -207,6 +207,7 @@ export const convertCollectionsToBucketList = (collections) => {
       collectionDescription: collection.description,
       accessLevel: collection.accessLevel || '',
       districtId: collection.districtId,
+      type: collection.type,
     }))
   )
   return flatttenBuckets || []

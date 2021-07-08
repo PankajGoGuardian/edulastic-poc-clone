@@ -6,7 +6,10 @@ import { withRouter } from 'react-router-dom'
 import { ThemeProvider } from 'styled-components'
 import { get, isUndefined, last } from 'lodash'
 import { withWindowSizes, notification } from '@edulastic/common'
-import { nonAutoGradableTypes } from '@edulastic/constants'
+import {
+  nonAutoGradableTypes,
+  collections as collectionConst,
+} from '@edulastic/constants'
 
 import { playerSkinValues } from '@edulastic/constants/const/test'
 import { themes } from '../../../theme'
@@ -478,6 +481,13 @@ class AssessmentPlayerDefault extends React.Component {
     const cameraImageName = `${firstName}_${lastName}_${
       currentItem + 1
     }_${cameraImageIndex}.png`
+
+    const premiumCollectionWithoutAccess =
+      item?.premiumContentRestriction &&
+      item?.collections
+        ?.filter(({ type = '' }) => type === collectionConst.types.PREMIUM)
+        .map(({ name }) => name)
+
     return (
       /**
        * zoom only in student side, otherwise not
@@ -555,6 +565,7 @@ class AssessmentPlayerDefault extends React.Component {
             gotoSummary={gotoSummary}
             isShowStudentWork={isShowStudentWork}
             handleReviewOrSubmit={handleReviewOrSubmit}
+            isPremiumContentWithoutAccess={!!premiumCollectionWithoutAccess}
           >
             <FeaturesSwitch
               inputFeatures="studentSettings"
@@ -581,6 +592,7 @@ class AssessmentPlayerDefault extends React.Component {
                 blockNavigationToAnsweredQuestions={
                   blockNavigationToAnsweredQuestions
                 }
+                isPremiumContentWithoutAccess={!!premiumCollectionWithoutAccess}
               />
             </FeaturesSwitch>
             {!previewPlayer && (
@@ -599,7 +611,9 @@ class AssessmentPlayerDefault extends React.Component {
               />
             )}
             <Main skin headerHeight={headerHeight} padding="20px 30px">
-              <SettingsModal />
+              <SettingsModal
+                isPremiumContentWithoutAccess={!!premiumCollectionWithoutAccess}
+              />
               <MainWrapper
                 ref={this.scrollContainer}
                 hasCollapseButtons={hasCollapseButtons}
@@ -645,6 +659,13 @@ class AssessmentPlayerDefault extends React.Component {
                     isShowStudentWork={isShowStudentWork}
                     zoomLevel={zoomLevel}
                     responsiveWidth={responsiveWidth}
+                    isPremiumContentWithoutAccess={
+                      !!premiumCollectionWithoutAccess
+                    }
+                    premiumCollectionWithoutAccess={
+                      premiumCollectionWithoutAccess
+                    }
+                    isExpandedView
                   />
                 )}
                 {testItemState === 'check' && (
@@ -684,6 +705,13 @@ class AssessmentPlayerDefault extends React.Component {
                     isShowStudentWork={isShowStudentWork}
                     zoomLevel={zoomLevel}
                     responsiveWidth={responsiveWidth}
+                    isPremiumContentWithoutAccess={
+                      !!premiumCollectionWithoutAccess
+                    }
+                    premiumCollectionWithoutAccess={
+                      premiumCollectionWithoutAccess
+                    }
+                    isExpandedView
                   />
                 )}
               </MainWrapper>

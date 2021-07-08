@@ -52,6 +52,7 @@ import Summary from '../../../TestPage/components/Summary'
 import Setting from '../Settings'
 import { CollectionsSelectModal } from '../CollectionsSelectModal/collectionsSelectModal'
 import { setDefaultInterests } from '../../../dataUtils'
+import { convertCollectionOptionsToArray } from '../../../src/utils/util'
 
 // TODO: replace with playlistApi once api is updated
 const { getDefaultImage } = testsApi
@@ -162,22 +163,8 @@ class Container extends PureComponent {
 
   handleChangeCollection = (value, options) => {
     const { setData, playlist, collectionsToShow } = this.props
-    const data = {}
-    options.forEach((o) => {
-      if (data[o.props._id]) {
-        data[o.props._id].push(o.props.value)
-      } else {
-        data[o.props._id] = [o.props.value]
-      }
-    })
 
-    const collectionArray = []
-    for (const [key, _value] of Object.entries(data)) {
-      collectionArray.push({
-        _id: key,
-        bucketIds: _value,
-      })
-    }
+    const collectionArray = convertCollectionOptionsToArray(options)
 
     const orgCollectionIds = collectionsToShow.map((o) => o._id)
     const extraCollections = (playlist.collections || []).filter(

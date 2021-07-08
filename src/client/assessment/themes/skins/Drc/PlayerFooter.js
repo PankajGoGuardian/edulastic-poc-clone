@@ -36,6 +36,7 @@ const PlayerFooter = ({
   moveToNext,
   setSettingsModalVisibility,
   handleReviewOrSubmit,
+  isPremiumContentWithoutAccess = false,
 }) => {
   const isFirst = () => (isDocbased ? true : currentItem === 0)
   const isLast = () => currentItem === items.length - 1
@@ -81,6 +82,7 @@ const PlayerFooter = ({
             </ButtonWrapper>
           </Tooltip>
         )}
+
         {!blockNavigationToAnsweredQuestions && (
           <Tooltip
             placement="top"
@@ -88,12 +90,14 @@ const PlayerFooter = ({
             title="Bookmark"
           >
             <ButtonWrapper
+              disabled={isPremiumContentWithoutAccess}
               isPrimary
               active={isBookmarked}
               onClick={
-                defaultAP
+                !isPremiumContentWithoutAccess &&
+                (defaultAP
                   ? toggleBookmark
-                  : () => toggleBookmark(items[currentItem]?._id)
+                  : () => toggleBookmark(items[currentItem]?._id))
               }
               data-cy="bookmark"
             >

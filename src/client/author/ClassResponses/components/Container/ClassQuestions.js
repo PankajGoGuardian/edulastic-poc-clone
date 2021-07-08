@@ -8,7 +8,10 @@ import { keyBy as _keyBy, isEmpty, get, isEqual, groupBy } from 'lodash'
 // components
 import { AnswerContext } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
-import { questionType } from '@edulastic/constants'
+import {
+  questionType,
+  collections as collectionConst,
+} from '@edulastic/constants'
 import produce from 'immer'
 import { Modal, Row, Col, Spin, Pagination } from 'antd'
 import TestItemPreview from '../../../../assessment/components/TestItemPreview'
@@ -300,6 +303,7 @@ const Preview = ({
   hideCorrectAnswer,
   testActivityId: utaId,
   currentStudent,
+  isExpandedView = false,
 }) => {
   const rows = getRows(item, false)
   const questions = get(item, ['data', 'questions'], [])
@@ -336,6 +340,12 @@ const Preview = ({
     `[${passageId}][${testActivityId}].resourceId`,
     {}
   )
+
+  const premiumCollectionWithoutAccess =
+    item?.premiumContentRestriction &&
+    item?.collections
+      ?.filter(({ type = '' }) => type === collectionConst.types.PREMIUM)
+      .map(({ name }) => name)
 
   return (
     <StyledFlexContainer
@@ -379,6 +389,9 @@ const Preview = ({
         testActivityId={utaId}
         hideCorrectAnswer={hideCorrectAnswer}
         currentStudent={currentStudent}
+        isPremiumContentWithoutAccess={!!premiumCollectionWithoutAccess}
+        premiumCollectionWithoutAccess={premiumCollectionWithoutAccess}
+        isExpandedView={isExpandedView}
       />
     </StyledFlexContainer>
   )
@@ -521,6 +534,7 @@ class ClassQuestions extends Component {
       isQuestionsLoading,
       setLcbQuestionLoaderState,
       variableSetIds,
+      isExpandedView = false,
     } = this.props
     const { expressGrader: isExpressGrader = false } = this.context
     const testItems = getTestItems({
@@ -719,6 +733,7 @@ class ClassQuestions extends Component {
               isStudentView={isStudentView}
               testActivityId={testActivityId || currentStudent.testActivityId}
               currentStudent={currentStudent}
+              isExpandedView={isExpandedView}
             />
           )
         })}

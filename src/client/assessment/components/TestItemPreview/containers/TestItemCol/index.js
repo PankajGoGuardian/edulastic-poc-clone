@@ -437,6 +437,7 @@ class TestItemCol extends Component {
             data-cy="widgetContainer"
             zoomLevel={zoomLevel}
             responsiveWidth={responsiveWidth}
+            isPassageWithQuestions={isPassageWithQuestions}
           >
             {widgetsToRender.map((widget, i, arr) => (
               <React.Fragment key={i}>

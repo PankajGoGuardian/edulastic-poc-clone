@@ -52,6 +52,7 @@ import {
   addNewTagAction,
 } from '../../../author/TestPage/ducks'
 import { getAuthorQuestionStatus } from '../../../author/sharedDucks/questions'
+import { convertCollectionOptionsToArray } from '../../../author/src/utils/util'
 
 const QuestionMetadata = ({
   t,
@@ -119,22 +120,7 @@ const QuestionMetadata = ({
   }
 
   const handleCollectionsSelect = (val, options) => {
-    const data = {}
-    options.forEach((o) => {
-      if (data[o.props._id]) {
-        data[o.props._id].push(o.props.value)
-      } else {
-        data[o.props._id] = [o.props.value]
-      }
-    })
-
-    const collectionArray = []
-    for (const [key, value] of Object.entries(data)) {
-      collectionArray.push({
-        _id: key,
-        bucketIds: value,
-      })
-    }
+    const collectionArray = convertCollectionOptionsToArray(options)
 
     const orgCollectionIds = collectionsToShow.map((o) => o._id)
 

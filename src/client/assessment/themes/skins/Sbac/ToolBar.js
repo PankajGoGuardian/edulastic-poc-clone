@@ -39,6 +39,7 @@ const ToolBar = ({
   multiLanguageEnabled,
   setSettingsModalVisibility,
   toggleUserWorkUploadModal,
+  isPremiumContentWithoutAccess = false,
 }) => {
   const [zoom, setZoom] = useState(0)
   const toolbarHandler = (value) => changeTool(value)
@@ -70,6 +71,7 @@ const ToolBar = ({
           <StyledButton
             active={tool.indexOf(2) !== -1}
             onClick={() => toolbarHandler(2)}
+            disabled={isPremiumContentWithoutAccess}
           >
             <CaculatorIcon />
           </StyledButton>
@@ -87,7 +89,7 @@ const ToolBar = ({
         >
           <StyledButton
             active={tool.indexOf(3) !== -1}
-            disabled={isDisableCrossBtn}
+            disabled={isDisableCrossBtn || isPremiumContentWithoutAccess}
             onClick={() => toolbarHandler(3)}
           >
             <CloseIcon />
@@ -100,6 +102,7 @@ const ToolBar = ({
           <StyledButton
             active={tool.indexOf(5) !== -1}
             onClick={() => toolbarHandler(5)}
+            disabled={isPremiumContentWithoutAccess}
           >
             <ScratchPadIcon />
           </StyledButton>
@@ -107,35 +110,52 @@ const ToolBar = ({
       )}
       {!isDocbased && (
         <Tooltip placement="top" title="Zoom in">
-          <StyledButton onClick={handleZoomIn}>
+          <StyledButton
+            onClick={handleZoomIn}
+            disabled={isPremiumContentWithoutAccess}
+          >
             <StyledIcon type="zoom-in" />
           </StyledButton>
         </Tooltip>
       )}
       {!isDocbased && (
         <Tooltip placement="top" title="Zoom out">
-          <StyledButton onClick={handleZoomOut}>
+          <StyledButton
+            onClick={handleZoomOut}
+            disabled={isPremiumContentWithoutAccess}
+          >
             <StyledIcon type="zoom-out" />
           </StyledButton>
         </Tooltip>
       )}
       {showMagnifier && (
         <Tooltip placement="top" title="Magnify">
-          <StyledButton onClick={handleMagnifier} active={enableMagnifier}>
+          <StyledButton
+            onClick={handleMagnifier}
+            active={enableMagnifier}
+            disabled={isPremiumContentWithoutAccess}
+          >
             <IconMagnify />
           </StyledButton>
         </Tooltip>
       )}
       {!isDocbased && isTeacherPremium && (
         <Tooltip placement="top" title="Upload work">
-          <StyledButton onClick={toggleUserWorkUploadModal}>
+          <StyledButton
+            onClick={toggleUserWorkUploadModal}
+            disabled={isPremiumContentWithoutAccess}
+          >
             <IconCloudUpload />
           </StyledButton>
         </Tooltip>
       )}
       {multiLanguageEnabled && (
         <Tooltip placement="top" title="Select Language">
-          <StyledButton onClick={showLangSwitchPopUp} data-cy="SBAC_selectLang">
+          <StyledButton
+            onClick={showLangSwitchPopUp}
+            data-cy="SBAC_selectLang"
+            disabled={isPremiumContentWithoutAccess}
+          >
             <IconLanguage />
           </StyledButton>
         </Tooltip>

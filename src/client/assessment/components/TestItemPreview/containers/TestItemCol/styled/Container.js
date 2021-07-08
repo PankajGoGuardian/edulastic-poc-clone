@@ -86,10 +86,10 @@ export const WidgetContainer = styled.div`
   position: relative;
   min-height: max-content; // to fix height issue with safari
 
-  ${({ zoomLevel, responsiveWidth }) => {
+  ${({ zoomLevel, responsiveWidth, isPassageWithQuestions = false }) => {
     const zoomed = zoomLevel > 1 && zoomLevel !== undefined
     return `
-      min-width: ${responsiveWidth}px;
+      ${!isPassageWithQuestions && `min-width: ${responsiveWidth}px;`}
       transform: ${zoomed ? `scale(${zoomLevel})` : ''};
       transform-origin: ${zoomed ? `top left` : ''};
     `

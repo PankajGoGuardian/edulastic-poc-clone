@@ -642,6 +642,7 @@ const enhance = compose(
       filter: state?.author_classboard_testActivity?.studentViewFilter,
       isDocBased: state?.author_classboard_testActivity?.data?.test?.isDocBased,
       pageNumber: getPageNumberSelector(state),
+      test: state?.author_classboard_testActivity?.data?.test,
     }),
     {
       loadClassQuestionResponses: receiveAnswersAction,

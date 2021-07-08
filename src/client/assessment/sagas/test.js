@@ -91,7 +91,10 @@ import {
   CLEAR_ITEM_EVALUATION,
   CHANGE_VIEW,
 } from '../../author/src/constants/actions'
-import { addAutoselectGroupItems } from '../../author/TestPage/ducks'
+import {
+  addAutoselectGroupItems,
+  fillAutoselectGoupsWithDummyItems,
+} from '../../author/TestPage/ducks'
 import { PREVIEW } from '../constants/constantsForQuestions'
 import { getUserRole } from '../../author/src/selectors/user'
 import {
@@ -393,6 +396,7 @@ function* loadTest({ payload }) {
       )
     ) {
       test = yield addAutoselectGroupItems({ payload: test, preview })
+      fillAutoselectGoupsWithDummyItems(test)
     }
     if (
       preview &&

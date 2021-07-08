@@ -6,6 +6,7 @@ import { get, keyBy } from 'lodash'
 import { IconReport } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
 import { MainContentWrapper, FlexContainer } from '@edulastic/common'
+import { collections as collectionConst } from '@edulastic/constants'
 import ProgressGraph from '../../../../common/components/ProgressGraph'
 import TestAcivityHeader from '../../../../student/sharedComponents/Header'
 import TestItemPreview from '../../../../assessment/components/TestItemPreview'
@@ -35,9 +36,10 @@ const TestActivityPreview = ({
 
   const activities = keyBy(questionActivities, 'testItemId')
   const testItemsPreview = testItems.map((testItem, index) => {
-    const questionActivity = activities[testItem._id]
+    const questionActivity =
+      activities[testItem._id] || testItem.isDummyItem ? {} : false
 
-    if (!questionActivity) {
+    if (!questionActivity && !testItem.isDummyItem) {
       return null
     }
 
@@ -74,6 +76,12 @@ const TestActivityPreview = ({
       itemRows = [passage?.structure, ...itemRows]
     }
 
+    const premiumCollectionWithoutAccess =
+      testItem?.premiumContentRestriction &&
+      testItem?.collections
+        ?.filter(({ type = '' }) => type === collectionConst.types.PREMIUM)
+        .map(({ name }) => name)
+
     return (
       <TestItemPreviewContainer
         key={testItem._id}
@@ -100,6 +108,8 @@ const TestActivityPreview = ({
           studentName={t('common.anonymous')}
           itemId={testItem._id}
           testPreviewScore={previewScore}
+          isPremiumContentWithoutAccess={!!premiumCollectionWithoutAccess}
+          premiumCollectionWithoutAccess={premiumCollectionWithoutAccess}
         />
       </TestItemPreviewContainer>
     )

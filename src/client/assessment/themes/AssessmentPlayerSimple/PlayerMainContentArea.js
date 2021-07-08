@@ -41,6 +41,8 @@ const PlayerContentArea = ({
   changePreview,
   blockNavigationToAnsweredQuestions = false,
   tool,
+  premiumCollectionWithoutAccess,
+  isPremiumContentWithoutAccess,
 }) => {
   const item = items[currentItem]
   const previousQuestionActivity = previousQuestionActivities[item._id]
@@ -76,6 +78,9 @@ const PlayerContentArea = ({
             tool={tool}
             zoomLevel={zoomLevel}
             responsiveWidth={responsiveWidth}
+            isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
+            premiumCollectionWithoutAccess={premiumCollectionWithoutAccess}
+            isExpandedView
           />
         )}
         {testItemState === 'check' && (
@@ -100,6 +105,9 @@ const PlayerContentArea = ({
             tool={tool}
             zoomLevel={zoomLevel}
             responsiveWidth={responsiveWidth}
+            isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
+            premiumCollectionWithoutAccess={premiumCollectionWithoutAccess}
+            isExpandedView
           />
         )}
       </MainContent>

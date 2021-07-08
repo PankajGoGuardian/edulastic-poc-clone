@@ -51,6 +51,8 @@ const Expanded = ({
   groupPoints,
   groupMinimized,
   isUnScoredItem,
+  isPremiumContentWithoutAccess,
+  premiumCollectionWithoutAccess,
 }) => {
   /**
    * @type {{item:Object,question:Object}[]}
@@ -172,6 +174,8 @@ const Expanded = ({
             windowWidth="100%"
             isReviewTab
             testItem
+            isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
+            premiumCollectionWithoutAccess={premiumCollectionWithoutAccess}
           />
         </AnswerContext.Provider>
       </FlexContainer>
@@ -221,6 +225,12 @@ const Expanded = ({
                     windowWidth="100%"
                     isReviewTab
                     testItem
+                    isPremiumContentWithoutAccess={
+                      isPremiumContentWithoutAccess
+                    }
+                    premiumCollectionWithoutAccess={
+                      premiumCollectionWithoutAccess
+                    }
                   />
                 </div>
               </AnswerContext.Provider>

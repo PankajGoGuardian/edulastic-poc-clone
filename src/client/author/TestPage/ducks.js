@@ -1825,6 +1825,95 @@ function validateRestrictNavigationOut(data) {
   return true
 }
 
+const createDummyItems = (itemCount, group = {}) => {
+  const items = []
+  for (let i = 0; i < itemCount; i++) {
+    const item = {
+      _id: `dummyItemId-${i}-${group._id}`,
+      isDummyItem: true,
+      autoselectedItem: true,
+      active: 1,
+      algoVariablesEnabled: false,
+      autoGrade: true,
+      canAddMultipleItems: false,
+      collections: [
+        {
+          name: group?.collectionDetails?.name,
+          type: group?.collectionDetails?.type,
+          _id: group?.collectionDetails?._id,
+        },
+      ],
+      columns: [],
+      curriculums: [],
+      premiumContentRestriction: true,
+      data: {
+        questions: [
+          {
+            alignment: [],
+            grades: [],
+            id: `dummyQuestionId-${i}-${group._id}`,
+            subjects: [],
+            title: '',
+            type: 'multipleChoice',
+            validation: {
+              scoringType: 'exactMatch',
+              validResponse: { score: 1, value: [], altResponses: [] },
+            },
+          },
+        ],
+        resources: [],
+      },
+      itemLevelScore: 1,
+      itemLevelScoring: true,
+      language: 'english',
+      maxScore: 1,
+      rows: [
+        {
+          content: '',
+          dimension: '100%',
+          flowLayout: false,
+          tabs: [],
+          widgets: [
+            {
+              reference: `dummyQuestionId-${i}-${group._id}`,
+              tabIndex: 0,
+              title: '',
+              type: '',
+              widgetType: 'question',
+            },
+          ],
+        },
+      ],
+      sharedWith: [],
+      standards: [],
+      status: 'published',
+      subjects: [],
+    }
+    items.push(item)
+  }
+  return items
+}
+
+/**
+ *  Adding dummy items to autoselect groups if a group content is restricted due to subscription expiry
+ */
+export const fillAutoselectGoupsWithDummyItems = (testEntity) => {
+  testEntity.itemGroups.forEach((group) => {
+    if (
+      group.premiumContentRestriction &&
+      group.items.length < group.deliverItemsCount
+    ) {
+      group.items = [
+        ...group.items,
+        ...createDummyItems(
+          group.deliverItemsCount - group.items.length,
+          group
+        ),
+      ]
+    }
+  })
+}
+
 // saga
 export function* receiveTestByIdSaga({ payload }) {
   try {
@@ -1855,6 +1944,7 @@ export function* receiveTestByIdSaga({ payload }) {
       ...entity.passages,
       ...differenceBy(tests.entity.passages, entity.passages, '_id'),
     ]
+    fillAutoselectGoupsWithDummyItems(entity)
     const currentGroupIndex = yield select(getCurrentGroupIndexSelector)
     if (entity._id !== payload.id && !payload?.isPlaylist) {
       yield put(
@@ -1983,6 +2073,7 @@ function* createTest(data) {
   // we are getting testItem ids only in payload from cart, but whole testItem Object from test library.
   dataToSend.itemGroups = transformItemGroupsUIToMongo(data.itemGroups)
   const entity = yield call(testsApi.create, dataToSend)
+  fillAutoselectGoupsWithDummyItems(data)
   yield put({
     type: UPDATE_ENTITY_DATA,
     payload: {
@@ -2021,6 +2112,15 @@ function* createTestSaga({ payload }) {
 
 function hasInvalidItem(testData) {
   return testData.itemGroups.find((x) => x.items.find((_item) => !_item.itemId))
+}
+
+const cleanTestItemGroups = (_test) => {
+  _test.itemGroups.forEach((group) => {
+    if (group.premiumContentRestriction) {
+      group.items = []
+    }
+    delete group.premiumContentRestriction
+  })
 }
 
 export function* updateTestSaga({ payload }) {
@@ -2113,6 +2213,7 @@ export function* updateTestSaga({ payload }) {
     }
 
     const testData = omit(payload.data, testFieldsToOmit)
+    cleanTestItemGroups(testData)
     if (hasInvalidItem(testData)) {
       console.warn('test data has invalid item', testData)
       Sentry.configureScope((scope) => {
@@ -2125,6 +2226,7 @@ export function* updateTestSaga({ payload }) {
     if (isEmpty(entity)) {
       return
     }
+    fillAutoselectGoupsWithDummyItems(entity)
     yield put(updateTestSuccessAction(entity))
     const hasAutoSelectItems = entity.itemGroups.some(
       (g) => g.type === testConst.ITEM_GROUP_TYPES.AUTOSELECT
@@ -3353,7 +3455,9 @@ function tranformItemGroupToData(itemGroup, index, allStaticGroupItemIds) {
               ...optionalFields,
             },
           },
-    isFetchItems: itemGroup.type === ITEM_GROUP_TYPES.AUTOSELECT,
+    isFetchItems:
+      itemGroup.type === ITEM_GROUP_TYPES.AUTOSELECT &&
+      !itemGroup.premiumContentRestriction,
     groupName: itemGroup.groupName,
     index,
   }

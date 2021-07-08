@@ -73,6 +73,7 @@ const PlayerHeader = ({
   enableMagnifier,
   handleMagnifier,
   tool,
+  isPremiumContentWithoutAccess = false,
 }) => {
   const {
     calcType,
@@ -87,7 +88,11 @@ const PlayerHeader = ({
   const hideCheckAnswer = !TokenStorage.getAccessToken()
 
   const handleCheckAnswer = () => {
-    if (checkAnswerInProgress || typeof checkAnswer !== 'function') {
+    if (
+      isPremiumContentWithoutAccess ||
+      checkAnswerInProgress ||
+      typeof checkAnswer !== 'function'
+    ) {
       return null
     }
     checkAnswer()
@@ -95,7 +100,11 @@ const PlayerHeader = ({
 
   return (
     <FlexContainer>
-      {testType === testConstants.type.PRACTICE && <SettingsModal />}
+      {testType === testConstants.type.PRACTICE && (
+        <SettingsModal
+          isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
+        />
+      )}
       <Header
         ref={headerRef}
         style={{
@@ -144,6 +153,7 @@ const PlayerHeader = ({
                         : 'Check Answer'
                     }
                     data-cy="checkAnswer"
+                    disabled={isPremiumContentWithoutAccess}
                   >
                     <IconDrc.Cursor color={header2.background} />
                   </ButtonWrapper>
@@ -153,7 +163,7 @@ const PlayerHeader = ({
                   onClick={() =>
                     isDisableCrossBtn ? null : changeTool(CROSS_BUTTON)
                   }
-                  disabled={isDisableCrossBtn}
+                  disabled={isDisableCrossBtn || isPremiumContentWithoutAccess}
                   title={
                     isDisableCrossBtn
                       ? 'This option is available only for multiple choice'
@@ -168,6 +178,7 @@ const PlayerHeader = ({
                     active={tool?.includes(CALC)}
                     onClick={() => changeTool(CALC)}
                     title={t('common.test.calculator')}
+                    disabled={isPremiumContentWithoutAccess}
                   >
                     <IconCalculator color={header2.background} />
                   </ButtonWrapper>
@@ -178,6 +189,7 @@ const PlayerHeader = ({
                     onClick={() => changeTool(SCRATCHPAD)}
                     title={t('common.test.scratchPad')}
                     data-cy="scratchPad"
+                    disabled={isPremiumContentWithoutAccess}
                   >
                     <IconScratchPad color={header2.background} />
                   </ButtonWrapper>
@@ -188,6 +200,7 @@ const PlayerHeader = ({
                     onClick={handleMagnifier}
                     title={t('common.test.magnify')}
                     data-cy="magnify"
+                    disabled={isPremiumContentWithoutAccess}
                   >
                     <IconDrc.Zoom color={header2.background} />
                   </ButtonWrapper>
@@ -198,6 +211,7 @@ const PlayerHeader = ({
                     onClick={toggleUserWorkUploadModal}
                     title={t('common.test.uploadWork')}
                     data-cy="uploadWork"
+                    disabled={isPremiumContentWithoutAccess}
                   >
                     <IconCloudUpload color={header2.background} />
                   </ButtonWrapper>

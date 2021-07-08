@@ -3097,11 +3097,19 @@ export default createReducer(initialState, {
     const resources =
       state.destinationCurriculumSequence.modules[moduleIndex].data[itemIndex]
         .resources
-    if (
-      !resources.find(
-        (x) => x.contentId === contentId && x.contentSubType === contentSubType
-      )
-    ) {
+    let totalStudentResources = 0
+    resources.forEach((r) => {
+      if(r.contentSubType === "STUDENT") totalStudentResources += 1
+    })
+    if(totalStudentResources >= 5 && contentSubType === "STUDENT"){
+      notification({ type: 'info', messageKey: 'maximumAllowedStudentResources' })
+      return
+    }
+        if (
+          !resources.find(
+            (x) => x.contentId === contentId && x.contentSubType === contentSubType
+            )
+            ) {
       const updateStandards = !hasStandardsOnCreation && standards.length < 15
       resources.push({
         contentId,

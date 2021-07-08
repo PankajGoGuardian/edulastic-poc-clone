@@ -138,7 +138,11 @@ const putMappedDataIntoState = (state, payload) => {
     state.mappedData[dcId][entity].mappedData = {}
   }
   Object.assign(data, state.mappedData[dcId][entity])
-  data.mappedData[page] = mappedData
+  if (type === 'school') {
+    data.mappedData = mappedData
+  } else {
+    data.mappedData[page] = mappedData
+  }
   state.mappedData[dcId][entity] = data
   state.mappingDataLoading = false
 }

@@ -10,7 +10,7 @@ const { Column } = Table
 const { Option } = Select
 const { Text } = Typography
 
-const PAGE_SIZE = 100
+const PAGE_SIZE = 25
 
 const ApproveMergeModal = ({
   setIsModalVisible,
@@ -29,9 +29,7 @@ const ApproveMergeModal = ({
   const [formattedData, setFormattedData] = useState([])
   const [mappedResult, setMappedResult] = useState({})
   const [totalRecordsCount, setTotalRecordsCount] = useState(0)
-  const setInitialMapping = (cleverId, edulasticId) => {
-    mappedResult[cleverId] = edulasticId
-  }
+  const isSchool = mapperFieldName === 'Schools'
 
   const getCustomClassNameAndScore = (classData) => {
     let customName = classData.name
@@ -83,73 +81,18 @@ const ApproveMergeModal = ({
       score,
     }
   }
-  const compareClass = (a, b) => {
-    return a.score - b.score
-  }
-  const formatClassData = (dataSet) => {
-    const resultDataSet = []
-    if (!isEmpty(dataSet)) {
-      for (const data of dataSet) {
-        const cId = data.lmsClassId
-        const cName = data.lmsClassName
-        const listOfMatchedClasses = data.matchedClasses
-        if (
-          listOfMatchedClasses?.length === 1 &&
-          listOfMatchedClasses?.[0]?.idMatch
-        ) {
-          const { score, customName } = getCustomClassNameAndScore(
-            listOfMatchedClasses?.[0]
-          )
-          resultDataSet.push({
-            cId,
-            cName,
-            data: [
-              {
-                eId: listOfMatchedClasses?.[0]?.id,
-                eName: customName,
-                cIdMatch: 100,
-                score,
-              },
-            ],
-          })
-        } else {
-          resultDataSet.push({
-            cId,
-            cName,
-            data: listOfMatchedClasses.map((_class) => {
-              const { score, customName } = getCustomClassNameAndScore({
-                _class,
-              })
-              return {
-                eId: _class.id,
-                eName: customName,
-                score,
-              }
-            }),
-          })
-        }
-      }
-    }
-    resultDataSet.forEach((_class) => {
-      _class.data.sort(compareClass)
-      if (_class.data?.[0]?.score < 5) {
-        setInitialMapping(_class.cId, _class.data?.[0]?.eId)
-      }
-    })
-    return resultDataSet
-  }
 
   const getCustomName = (obj) => {
-    const isZipMatched = obj.zipMatch === 100
-    const nameMatched = obj.nameMatch ? obj.nameMatch : ''
+    const isZipMatched = obj.zipMatch
+    const nameMatched = obj.nameMatch ? obj.nameMatch : 0
     let customStr = `${obj.name}`
     if (isZipMatched && nameMatched) {
       customStr = `${obj.name} (Zip: ${
-        obj.zipMatch === 100 ? 'Matched' : 'Not Matched'
+        obj.zipMatch ? 'Matched' : 'Not Matched'
       } | Name: ${parseInt(obj.nameMatch, 10)}%)`
     } else if (isZipMatched) {
       customStr = `${obj.name} (Zip: ${
-        obj.zipMatch === 100 ? 'Matched' : 'Not Matched'
+        obj.zipMatch ? 'Matched' : 'Not Matched'
       })`
     } else if (nameMatched) {
       customStr = `${obj.name} (Zip: Not Matched | Name: ${parseInt(
@@ -160,65 +103,6 @@ const ApproveMergeModal = ({
     return customStr
   }
 
-  const compare = (a, b) => {
-    return (
-      (b.zipMatch || 0) - (a.zipMatch || 0) ||
-      (b.nameMatch || 0) - (a.nameMatch || 0)
-    )
-  }
-  const formatData = (dataSet) => {
-    const resultDataSet = []
-    if (!isEmpty(dataSet)) {
-      for (const data of dataSet) {
-        const cId = data.lmsSchoolId
-        const cName = data.lmsSchoolName
-        const listOfMatchedSchools = data.mappedSchools
-        if (!isEmpty(listOfMatchedSchools)) {
-          if (listOfMatchedSchools?.[0]?.idMatch) {
-            const eduSchoolInfo = listOfMatchedSchools[0]
-            resultDataSet.push({
-              cId,
-              cName,
-              data: [
-                {
-                  eId: eduSchoolInfo.id,
-                  eName: eduSchoolInfo.name,
-                  cIdMatch: 100,
-                },
-              ],
-            })
-          } else {
-            resultDataSet.push({
-              cId,
-              cName,
-              data: listOfMatchedSchools.map((eduData) => {
-                return {
-                  eId: eduData.id,
-                  eName: getCustomName(eduData),
-                  zipMatch: eduData?.zipMatch,
-                  nameMatch: eduData?.nameMatch,
-                }
-              }),
-            })
-          }
-        }
-      }
-    }
-    resultDataSet.forEach((_obj) => {
-      _obj.data.sort(compare)
-      setInitialMapping(
-        _obj.cId,
-        _obj.data?.[0]?.zipMatch === 100 ||
-          _obj.data?.[0]?.nameMatch > 75 ||
-          _obj.data?.[0]?.cIdMatch === 100
-          ? _obj.data[0].eId
-          : undefined
-      )
-    })
-    console.log(resultDataSet)
-    return resultDataSet
-  }
-
   useEffect(() => {
     if (!isEmpty(mapperErrorMessage)) {
       notification({ msg: mapperErrorMessage })
@@ -226,16 +110,15 @@ const ApproveMergeModal = ({
   }, [mapperErrorMessage])
 
   const renderReviewContent = () => {
-    // format data to display in review table
     const { mappedData, totalCount } = districtMappedData[mapperFieldName] || {}
-    // loop through all mappedSchools
+    let data = []
     if (mapperFieldName === 'Schools') {
-      const data = formatData(mappedData[currentPage])
-      setFormattedData(data)
+      data = mappedData
     }
     if (mapperFieldName === 'Classes') {
-      setFormattedData(formatClassData(mappedData[currentPage]))
+      data = mappedData[currentPage]
     }
+    setFormattedData(data)
     setTotalRecordsCount(totalCount)
   }
 
@@ -289,19 +172,21 @@ const ApproveMergeModal = ({
             type="primary"
             onClick={() => handleApprove(mappedResult)}
           >
-            Approve
+            Approve all pages
           </Button>,
         ]}
       >
         {formattedData ? (
           <>
-            <Pagination
-              showQuickJumper
-              defaultCurrent={currentPage}
-              total={totalRecordsCount}
-              pageSize={PAGE_SIZE}
-              onChange={handlePageChange}
-            />
+            {!isSchool && (
+              <Pagination
+                showQuickJumper
+                defaultCurrent={currentPage}
+                total={totalRecordsCount}
+                pageSize={PAGE_SIZE}
+                onChange={handlePageChange}
+              />
+            )}
             {mappedDataLoading ? (
               <StyledSpinner>
                 <Spin />
@@ -310,40 +195,56 @@ const ApproveMergeModal = ({
               <Table
                 rowKey={(record) => record.cId}
                 dataSource={formattedData}
-                pagination={false}
+                pagination={
+                  isSchool
+                    ? {
+                        defaultCurrent: 1,
+                        total: formattedData?.length,
+                        pageSize: 25,
+                        position: 'top',
+                      }
+                    : null
+                }
                 scroll={{ y: '60vh' }}
               >
                 <Column
                   title="S No."
                   width="15%"
-                  dataIndex="cId"
+                  dataIndex={isSchool ? 'lmsSchoolId' : 'lmsClassId'}
                   key="cId"
                   render={(_, __, idx) => idx + 1 + 25 * (currentPage - 1)}
                 />
                 <Column
                   title={`Clever ${mapperFieldName}`}
                   width="30%"
-                  dataIndex="cName"
+                  dataIndex={isSchool ? 'lmsSchoolName' : 'lmsClassName'}
                   key="cName"
                   render={(_data) => _data}
                 />
                 <Column
                   title={`Edulastic ${mapperFieldName}`}
-                  dataIndex="data"
+                  dataIndex={isSchool ? 'mappedSchools' : 'mappedClasses'}
                   key="data"
                   render={(_data, record) => {
                     return (
                       <Select
                         showSearch
                         allowClear
-                        defaultValue={mappedResult[record.cId]}
+                        defaultValue={
+                          _data?.length === 1 || _data?.[0]?.nameMatch >= 75
+                            ? _data?.[0]?.id
+                            : undefined
+                        }
                         dropdownStyle={{ zIndex: 2000 }}
                         style={{ width: '90%' }}
                         bordered={false}
                         onChange={(value) => {
-                          handleMappingChange(record.cId, value)
+                          handleMappingChange(
+                            record.lmsSchoolId || record.lmsClassId,
+                            value
+                          )
                         }}
-                        disabled={_data?.[0]?.cIdMatch === 100}
+                        disabled={_data.idMatch}
                         filterOption={(input, option) => {
                           return (
                             option.props.children
@@ -354,8 +255,10 @@ const ApproveMergeModal = ({
                       >
                         {_data.map((o) => {
                           return (
-                            <Option key={o.eId} value={o.eId}>
-                              {o.eName}
+                            <Option key={o.id} value={o.id}>
+                              {isSchool
+                                ? getCustomName(o)
+                                : getCustomClassNameAndScore(o)}
                             </Option>
                           )
                         })}

@@ -24,6 +24,7 @@ import {
   getOrgItemBanksSelector,
 } from '../../../src/selectors/user'
 import { updateCurriculumSequenceAction } from '../../ducks'
+import { updatePlaylistAction } from '../../../PlaylistPage/ducks'
 
 export const sliceName = 'playlistTestBox'
 const LIMIT = 20
@@ -352,6 +353,7 @@ function* updateResourceSaga({ payload }) {
       termIds: activeTermIds,
     })
     yield put(updateCurriculumSequenceAction(curriculum))
+    yield put(updatePlaylistAction(id, curriculum, true))
     yield put(slice.actions.resetAndSearchResources())
     notification({ type: 'success', msg: 'Resource Updated Successfully' })
   } catch (e) {
@@ -374,6 +376,7 @@ function* deleteResourceSaga({ payload }) {
       termIds: activeTermIds,
     })
     yield put(updateCurriculumSequenceAction(curriculum))
+    yield put(updatePlaylistAction(playlistId, curriculum, true))
     yield put(slice.actions.resetAndSearchResources())
     notification({ type: 'success', msg: 'Resource Deleted Successfully' })
   } catch (e) {

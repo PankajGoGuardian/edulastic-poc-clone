@@ -44,7 +44,6 @@ const AddResources = ({
   const [pageContent, setPageContent] = useState(firstPage)
   const [selectedResources, setSelectedResources] = useState([])
   const [showTags, setShowTags] = useState([])
-  const [previewStatus, setPreviewStatus] = useState({})
 
   useEffect(() => {
     if (resourceIds.length > 0) {
@@ -207,20 +206,10 @@ const AddResources = ({
       >
         <ResourceCardContainer>
           {pageContent.map((x) => (
-            <CardBox
-              onMouseEnter={() => {
-                setPreviewStatus({ [x?.contentId]: true })
-              }}
-              onMouseLeave={() => {
-                setPreviewStatus({ [x?.contentId]: false })
-              }}
-              key={x.contentId}
-              data-cy={`${x.contentId}CardBox`}
-            >
+            <CardBox key={x.contentId} data-cy={`${x.contentId}CardBox`}>
               {x?.contentType === 'video_resource' ? (
                 <ReactPlayer
                   loop
-                  playing={previewStatus[x?.contentId] === true}
                   width="100%"
                   height="80px"
                   url={x?.contentUrl}

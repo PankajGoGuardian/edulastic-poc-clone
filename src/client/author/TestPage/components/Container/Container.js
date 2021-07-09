@@ -149,7 +149,8 @@ class Container extends PureComponent {
 
   gotoTab = (tab) => {
     const { history, match, location } = this.props
-    const { regradeFlow = false, previousTestId = '' } = location?.state || {}
+    const { regradeFlow = false, previousTestId = '', isAdaptiveTest = false } =
+      location?.state || {}
     const { showCancelButton } = this.state
     const id =
       match.params.id && match.params.id != 'undefined' && match.params.id
@@ -171,7 +172,7 @@ class Container extends PureComponent {
     // }
     history.push({
       pathname: url,
-      state: { ...history.location.state, showCancelButton },
+      state: { ...history.location.state, showCancelButton, isAdaptiveTest },
     })
   }
 
@@ -1111,10 +1112,13 @@ class Container extends PureComponent {
       editEnable,
       writableCollections,
       t,
+      location,
     } = this.props
+
     if (userRole === roleuser.STUDENT) {
       return null
     }
+
     const { showShareModal, isShowFilter, showCloneModal } = this.state
     const current = currentTab
     const {
@@ -1241,6 +1245,7 @@ class Container extends PureComponent {
           validateTest={this.validateTest}
           setDisableAlert={this.setDisableAlert}
           hasCollectionAccess={hasCollectionAccess}
+          isAdaptiveTest={location?.state?.isAdaptiveTest}
         />
         {/* This will work like an overlay during the test save for prevent content edit */}
         {isTestLoading && test._id && <ContentBackDrop />}

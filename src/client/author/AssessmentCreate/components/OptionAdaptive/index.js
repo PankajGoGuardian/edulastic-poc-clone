@@ -21,7 +21,9 @@ const OptionAdaptiveTest = () => (
     <TitleWrapper>Adaptive test</TitleWrapper>
 
     <TextWrapper>{descriptionBottom}</TextWrapper>
-    <Link to="/author/tests/create">
+    <Link
+      to={{ pathname: '/author/tests/create', state: { isAdaptiveTest: true } }}
+    >
       <EduButton data-cy="uploadPdf" isGhost width="234px">
         Create Test
       </EduButton>

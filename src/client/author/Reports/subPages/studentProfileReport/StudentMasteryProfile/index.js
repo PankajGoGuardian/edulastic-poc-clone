@@ -327,7 +327,7 @@ const StudentMasteryProfile = ({
             onClick={() => setExpandRows(!expandRows)}
             data-cy="expand-rows"
           >
-            <IconCollapse2 color={themeColor} width={12} height={14} />
+            <IconCollapse2 color={themeColor} width={12} height={16} />
             <span className="button-label">
               {expandRows ? 'COLLAPSE' : 'EXPAND'} ROWS
             </span>

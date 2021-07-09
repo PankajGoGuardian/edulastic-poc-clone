@@ -4,6 +4,9 @@ import {
   title,
   cardTitleColor,
   themeColorLighter,
+  themeColor,
+  greyThemeDark2,
+  lightGrey1,
 } from '@edulastic/colors'
 import { Row, Col, Icon } from 'antd'
 
@@ -119,4 +122,44 @@ export const AssignmentCount = styled.p`
   font-size: 13px;
   font-weight: 600;
   color: #30404f;
+`
+export const StyledPopoverContainer = styled.div`
+  > div {
+    .ant-popover-content {
+      .ant-popover-arrow {
+        display: block;
+      }
+      .ant-popover-inner {
+        border-radius: 5px;
+        .ant-popover-inner-content {
+          padding: 12px 10px;
+          > a {
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+            padding: 2px 4px;
+            border-radius: 4px;
+            transition: transform 0.2s ease;
+            :hover {
+              background: ${lightGrey1};
+              cursor: pointer;
+              transform: scale(1.05);
+            }
+            >span: first-child {
+              display: block;
+              width: 64%;
+              color: ${greyThemeDark2};
+              font-weight: 600;
+            }
+            >span: last-child {
+              width: 34%;
+              text-align: center;
+              color: ${themeColor};
+              font-weight: 600;
+            }
+          }
+        }
+      }
+    }
+  }
 `

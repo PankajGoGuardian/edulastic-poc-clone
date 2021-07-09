@@ -242,7 +242,7 @@ class Container extends PureComponent {
         this.gotoTab('description')
         clearTestAssignments([])
         clearSelectedItems()
-        setDefaultData()
+        setDefaultData({ isAdaptiveTest: _location?.state?.isAdaptiveTest })
         if (
           userRole === roleuser.DISTRICT_ADMIN ||
           userRole === roleuser.SCHOOL_ADMIN

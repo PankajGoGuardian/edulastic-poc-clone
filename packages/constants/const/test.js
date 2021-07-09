@@ -214,6 +214,7 @@ module.exports = {
   ITEM_GROUP_TYPES: {
     AUTOSELECT: 'AUTOSELECT',
     STATIC: 'STATIC',
+    ADAPTIVE: 'ADAPTIVE',
   },
   ITEM_GROUP_DELIVERY_TYPES: {
     ALL: 'ALL',

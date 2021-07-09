@@ -108,6 +108,7 @@ const {
   testSettingsOptions,
   docBasedSettingsOptions,
 } = test
+
 const testItemStatusConstants = {
   INREVIEW: 'inreview',
   DRAFT: 'draft',
@@ -122,6 +123,15 @@ export const NewGroup = {
   deliveryType: ITEM_GROUP_DELIVERY_TYPES.ALL,
   index: 0,
 }
+
+export const ADAPTIVE_ITEM_GROUP = {
+  type: ITEM_GROUP_TYPES.ADAPTIVE /* Default : static */,
+  groupName: 'Group 1',
+  items: [],
+  deliveryType: ITEM_GROUP_DELIVERY_TYPES.ALL,
+  index: 0,
+}
+
 export const createWidget = ({ id, type, title }) => ({
   widgetType: type === 'sectionLabel' ? 'resource' : 'question',
   type,
@@ -494,8 +504,9 @@ export const clearTestDataAction = () => ({
   type: CLEAR_TEST_DATA,
 })
 
-export const setDefaultTestDataAction = () => ({
+export const setDefaultTestDataAction = (payload) => ({
   type: SET_DEFAULT_TEST_DATA,
+  payload,
 })
 
 export const setCreateSuccessAction = () => ({
@@ -857,65 +868,72 @@ export const getTestItemsRowsSelector = createSelector(
 )
 
 // reducer
-export const createBlankTest = () => ({
-  title: undefined,
-  description: '',
-  releaseScore: test.releaseGradeLabels.DONT_RELEASE,
-  maxAttempts: 1,
-  testType: test.type.ASSESSMENT,
-  markAsDone: test.completionTypes.AUTOMATICALLY,
-  generateReport: true,
-  safeBrowser: false,
-  sebPassword: '',
-  blockNavigationToAnsweredQuestions: false,
-  shuffleQuestions: false,
-  shuffleAnswers: false,
-  calcType: test.calculatorKeys[0],
-  answerOnPaper: false,
-  assignmentPassword: '',
-  passwordExpireIn: 15 * 60,
-  passwordPolicy: test.passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF,
-  maxAnswerChecks: 0,
-  scoringType: test.evalTypeLabels.PARTIAL_CREDIT,
-  penalty: false,
-  isDocBased: false,
-  status: 'draft',
-  thumbnail: defaultImage,
-  itemGroups: [
-    {
-      ...NewGroup,
-      _id: nanoid(),
+export const createBlankTest = (payload = {}) => {
+  console.log('what is payload', payload)
+  const { isAdaptiveTest } = payload || {}
+
+  return {
+    title: undefined,
+    description: '',
+    releaseScore: test.releaseGradeLabels.DONT_RELEASE,
+    maxAttempts: 1,
+    testType: test.type.ASSESSMENT,
+    markAsDone: test.completionTypes.AUTOMATICALLY,
+    generateReport: true,
+    safeBrowser: false,
+    sebPassword: '',
+    blockNavigationToAnsweredQuestions: false,
+    shuffleQuestions: false,
+    shuffleAnswers: false,
+    calcType: test.calculatorKeys[0],
+    answerOnPaper: false,
+    assignmentPassword: '',
+    passwordExpireIn: 15 * 60,
+    passwordPolicy: test.passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF,
+    maxAnswerChecks: 0,
+    scoringType: isAdaptiveTest
+      ? test.evalTypeLabels.ALL_OR_NOTHING
+      : test.evalTypeLabels.PARTIAL_CREDIT,
+    penalty: false,
+    isDocBased: false,
+    status: 'draft',
+    thumbnail: defaultImage,
+    itemGroups: [
+      {
+        ...(isAdaptiveTest ? ADAPTIVE_ITEM_GROUP : NewGroup),
+        _id: nanoid(),
+      },
+    ],
+    createdBy: {
+      _id: '',
+      name: '',
     },
-  ],
-  createdBy: {
-    _id: '',
-    name: '',
-  },
-  tags: [],
-  scoring: {
-    total: 0,
-    testItems: [],
-  },
-  standardsTag: {
-    curriculum: '',
-    standards: [],
-  },
-  grades: [],
-  subjects: [],
-  courses: [],
-  collections: [],
-  analytics: [
-    {
-      usage: 0,
-      likes: 0,
+    tags: [],
+    scoring: {
+      total: 0,
+      testItems: [],
     },
-  ],
-  passages: [],
-  freezeSettings: false,
-  multiLanguageEnabled: false,
-  playerSkinType: 'edulastic',
-  keypad: { type: 'item-level', value: 'item-level-keypad', updated: false },
-})
+    standardsTag: {
+      curriculum: '',
+      standards: [],
+    },
+    grades: [],
+    subjects: [],
+    courses: [],
+    collections: [],
+    analytics: [
+      {
+        usage: 0,
+        likes: 0,
+      },
+    ],
+    passages: [],
+    freezeSettings: false,
+    multiLanguageEnabled: false,
+    playerSkinType: 'edulastic',
+    keypad: { type: 'item-level', value: 'item-level-keypad', updated: false },
+  }
+}
 
 const initialState = {
   entity: createBlankTest(),
@@ -1008,7 +1026,7 @@ const getDefaultScales = (state, payload) => {
 export const reducer = (state = initialState, { type, payload }) => {
   switch (type) {
     case SET_DEFAULT_TEST_DATA:
-      return { ...state, entity: createBlankTest(), updated: false }
+      return { ...state, entity: createBlankTest(payload), updated: false }
     case UPDATE_TEST_DEFAULT_IMAGE:
       return { ...state, thumbnail: payload }
     case UPDATE_LAST_USED_COLLECTION_LIST:

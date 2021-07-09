@@ -22,6 +22,7 @@ const TestButton = ({
   blockNavigationToAnsweredQuestions = false,
   LCBPreviewModal,
   isPremiumContentWithoutAccess = false,
+  isAdaptive,
 }) => {
   const handleCheckAnswer = () => {
     if (
@@ -37,7 +38,7 @@ const TestButton = ({
   const hideCheckAnswer = !TokenStorage.getAccessToken()
   return (
     <Container>
-      {!blockNavigationToAnsweredQuestions && !LCBPreviewModal && (
+      {!blockNavigationToAnsweredQuestions && !LCBPreviewModal && !isAdaptive && (
         <Tooltip placement="top" title="Bookmark">
           <StyledButton
             onClick={(e) => !isPremiumContentWithoutAccess && toggleBookmark(e)}

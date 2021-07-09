@@ -81,6 +81,7 @@ const test = (state = initialState, { payload, type }) => {
         languagePreference: payload.languagePreference,
         grades: payload.grades,
         subjects: payload.subjects,
+        isAdaptive: payload.isAdaptive,
         settings: {
           ...state.settings,
           ...payload.settings,

@@ -360,6 +360,7 @@ class AssessmentPlayerDefault extends React.Component {
       gotoSummary,
       isShowStudentWork,
       handleReviewOrSubmit,
+      isAdaptive,
     } = this.props
     const { firstName = '', lastName = '' } = user
     const { settings } = this.props
@@ -566,6 +567,7 @@ class AssessmentPlayerDefault extends React.Component {
             isShowStudentWork={isShowStudentWork}
             handleReviewOrSubmit={handleReviewOrSubmit}
             isPremiumContentWithoutAccess={!!premiumCollectionWithoutAccess}
+            isAdaptive={isAdaptive}
           >
             <FeaturesSwitch
               inputFeatures="studentSettings"
@@ -960,6 +962,7 @@ const enhance = compose(
       currentAssignmentTime: state.test?.currentAssignmentTime,
       stopTimerFlag: state.test?.stopTimerFlag,
       assignmentSettings: assignmentLevelSettingsSelector(state),
+      isAdaptive: state.test.isAdaptive,
     }),
     {
       changePreview: changePreviewAction,

@@ -204,6 +204,15 @@ const updateCorrectItemById = ({
     .then((result) => result.data.result)
 }
 
+const getAdaptiveItem = (data) =>
+  api
+    .callApi({
+      url: `${prefix}/get-adaptive-item`,
+      method: 'post',
+      data,
+    })
+    .then((result) => result.data.result)
+
 export default {
   getAll,
   getById,
@@ -220,4 +229,5 @@ export default {
   getAutoSelectedItems,
   updateCorrectItemById,
   evaluateAsStudent,
+  getAdaptiveItem,
 }

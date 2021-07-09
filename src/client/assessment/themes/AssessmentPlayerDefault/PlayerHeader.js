@@ -67,6 +67,7 @@ const PlayerHeader = ({
   hidePause,
   blockNavigationToAnsweredQuestions = false,
   isPremiumContentWithoutAccess = false,
+  isAdaptive,
 }) => {
   const query = qs.parse(location.search, { ignoreQueryPrefix: true })
   const { cliUser } = query
@@ -85,6 +86,7 @@ const PlayerHeader = ({
       LCBPreviewModal={LCBPreviewModal}
       zoomLevel={zoomLevel}
       isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
+      isAdaptive={isAdaptive}
     />
   )
 
@@ -98,21 +100,23 @@ const PlayerHeader = ({
                 <LogoCompact isMobile={isMobile} buttons={rightButtons} />
                 {!LCBPreviewModal && (
                   <>
-                    <QuestionSelectDropdown
-                      key={currentItem}
-                      currentItem={currentItem}
-                      gotoQuestion={gotoQuestion}
-                      options={options}
-                      bookmarks={bookmarks}
-                      skipped={skipped}
-                      dropdownStyle={dropdownStyle}
-                      zoomLevel={zoomLevel}
-                      moveToNext={moveToNext}
-                      utaId={utaId}
-                      blockNavigationToAnsweredQuestions={
-                        blockNavigationToAnsweredQuestions
-                      }
-                    />
+                    {!isAdaptive && (
+                      <QuestionSelectDropdown
+                        key={currentItem}
+                        currentItem={currentItem}
+                        gotoQuestion={gotoQuestion}
+                        options={options}
+                        bookmarks={bookmarks}
+                        skipped={skipped}
+                        dropdownStyle={dropdownStyle}
+                        zoomLevel={zoomLevel}
+                        moveToNext={moveToNext}
+                        utaId={utaId}
+                        blockNavigationToAnsweredQuestions={
+                          blockNavigationToAnsweredQuestions
+                        }
+                      />
+                    )}
                     <Tooltip
                       placement="top"
                       title={
@@ -128,7 +132,7 @@ const PlayerHeader = ({
                         data-cy="prev"
                         type="primary"
                         icon="left"
-                        disabled={disabled}
+                        disabled={disabled || isAdaptive}
                         onClick={(e) => {
                           moveToPrev(null, true)
                           e.target.blur()
@@ -153,7 +157,7 @@ const PlayerHeader = ({
                         skin
                         type="primary"
                         data-cy="next"
-                        icon={isLast ? null : 'right'}
+                        icon={isLast && !isAdaptive ? null : 'right'}
                         onClick={(e) => {
                           moveToNext()
                           e.target.blur()
@@ -171,8 +175,8 @@ const PlayerHeader = ({
                             moveToNext()
                         }}
                       >
-                        {isLast && <IconSend />}
-                        {isLast ? 'SUBMIT' : 'NEXT'}
+                        {isLast && !isAdaptive && <IconSend />}
+                        {isLast && !isAdaptive ? 'SUBMIT' : 'NEXT'}
                       </ControlBtn.Next>
                     )}
                   </>
@@ -195,6 +199,7 @@ const PlayerHeader = ({
                     isPremiumContentWithoutAccess={
                       isPremiumContentWithoutAccess
                     }
+                    isAdaptive={isAdaptive}
                   />
                 )}
                 {!LCBPreviewModal && (

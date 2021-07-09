@@ -920,7 +920,7 @@ const AssessmentContainer = ({
   }
 
   const moveToNext = async (e, needsToProceed = false, value) => {
-    if (!isLast() && value !== 'SUBMIT') {
+    if (!isLast() && value !== 'SUBMIT' && !restProps.isAdaptive) {
       gotoQuestion(Number(currentItem) + 1, needsToProceed, 'next')
     }
 
@@ -1071,6 +1071,11 @@ const AssessmentContainer = ({
   }
 
   const silentSkip = async ({ index, context }) => {
+    if (restProps.isAdaptive) {
+      return notification({
+        msg: 'Please answer the question to proceed',
+      })
+    }
     if (preview) {
       return skipOnPreview(index)
     }

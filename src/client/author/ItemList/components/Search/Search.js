@@ -77,7 +77,7 @@ const Search = ({
     if (value && !curriculumStandards.elo.length) {
       return
     }
-    setShowModalValue(value)
+    if (userRole != roleuser.STUDENT) setShowModalValue(value)
   }
   const handleApply = (_standardIds) =>
     onSearchFieldChange('standardIds')(_standardIds)
@@ -271,7 +271,7 @@ const Search = ({
               </SelectInputStyled>
             </ItemBody>
           </Item>
-          {filter !== SMART_FILTERS.FAVORITES && (
+          {filter !== SMART_FILTERS.FAVORITES && userRole != roleuser.STUDENT && (
             <>
               <Item>
                 <FieldLabel>Standard set</FieldLabel>

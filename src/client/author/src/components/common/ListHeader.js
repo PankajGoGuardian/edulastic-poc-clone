@@ -88,7 +88,9 @@ const ListHeader = ({
           <Title>{midTitle}</Title>
         </MidTitleWrapper>
       )}
-
+      {userRole === roleuser.STUDENT && (
+        <Title>As per analysis you need to imporove in _ subject</Title>
+      )}
       <RightButtonWrapper>
         <MobileHeaderFilterIcon>{renderFilterIcon()}</MobileHeaderFilterIcon>
         {renderFilter(isAdvancedView)}
@@ -125,14 +127,18 @@ const ListHeader = ({
                   UNLOCK COLLECTION
                 </EduButton>
               )} */}
-              {btnTitle && btnTitle.length ? null : (
-                <CartButton onClick={newTest} buttonText="New Test" />
-              )}
+              {btnTitle && btnTitle.length
+                ? null
+                : userRole != roleuser.STUDENT && (
+                    <CartButton onClick={newTest} buttonText="New Test" />
+                  )}
               {renderExtra()}
-              <EduButton data-cy="createNew" onClick={onCreate} isBlue>
-                <IconPlusStyled />
-                {btnTitle && btnTitle.length ? btnTitle : 'NEW ITEM'}
-              </EduButton>
+              {userRole != roleuser.STUDENT && (
+                <EduButton data-cy="createNew" onClick={onCreate} isBlue>
+                  <IconPlusStyled />
+                  {btnTitle && btnTitle.length ? btnTitle : 'NEW ITEM'}
+                </EduButton>
+              )}
             </div>
           ))}
 

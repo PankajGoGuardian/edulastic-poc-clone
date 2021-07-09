@@ -519,7 +519,8 @@ class Contaier extends Component {
             getCurriculumStandards={getCurriculumStandards}
             curriculumStandards={curriculumStandards}
             items={
-              userRole === roleuser.EDULASTIC_CURATOR
+              userRole === roleuser.EDULASTIC_CURATOR ||
+              userRole === roleuser.STUDENT
                 ? [filterMenuItems[0]]
                 : filterMenuItems
             }

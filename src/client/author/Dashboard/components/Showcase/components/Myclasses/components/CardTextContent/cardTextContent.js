@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link, withRouter } from 'react-router-dom'
-import { Row, Col, Tooltip } from 'antd'
+import { Row, Col, Tooltip, Popover } from 'antd'
 import { IconPlusCircle } from '@edulastic/icons'
 import { themeColorLight, cardTitleColor } from '@edulastic/colors'
 import { FlexContainer } from '@edulastic/common'
@@ -18,8 +18,10 @@ import {
   AssignmentTitle,
   AssignmentCount,
   Label,
+  StyledPopoverContainer,
 } from './styled'
 import { TextWrapper } from '../../../../../styledComponents'
+import infoLogo from './info.png'
 
 export const CardTextContent = ({ data, history, userId }) => {
   const {
@@ -29,23 +31,61 @@ export const CardTextContent = ({ data, history, userId }) => {
     asgnId,
     _id,
     asgnThumbnail,
+    notOpenAssignments = 0,
+    inProgressAssignments = 0,
+    inGradingAssignments = 0,
+    doneAssignments = 0,
   } = data
 
   const gotoAssignedAssessment = () => {
     if (asgnId) history.push(`/author/classboard/${asgnId}/${_id}`)
   }
 
-  const applyClassFilter = () => {
+  const applyClassFilter = (_filter = {}) => {
     const filter = {
       classId: _id,
       testType: '',
       termId: '',
+      ..._filter,
     }
     sessionStorage.setItem(
       `assignments_filter_${userId}`,
       JSON.stringify(filter)
     )
   }
+
+  const content = (
+    <>
+      <Link
+        to="/author/assignments"
+        onClick={() => applyClassFilter({ status: 'NOT OPEN' })}
+      >
+        <span>NOT OPEN</span>
+        <span>{notOpenAssignments}</span>
+      </Link>
+      <Link
+        to="/author/assignments"
+        onClick={() => applyClassFilter({ status: 'IN PROGRESS' })}
+      >
+        <span>IN PROGRESS</span>
+        <span>{inProgressAssignments}</span>
+      </Link>
+      <Link
+        to="/author/assignments"
+        onClick={() => applyClassFilter({ status: 'IN GRADING' })}
+      >
+        <span>IN GRADING</span>
+        <span>{inGradingAssignments}</span>
+      </Link>
+      <Link
+        to="/author/assignments"
+        onClick={() => applyClassFilter({ status: 'DONE' })}
+      >
+        <span>DONE</span>
+        <span>{doneAssignments}</span>
+      </Link>
+    </>
+  )
 
   return (
     <CardText>
@@ -68,8 +108,8 @@ export const CardTextContent = ({ data, history, userId }) => {
           </Link>
         </CenterCol>
 
-        {(!totalAssignment || totalAssignment === 0) && (
-          <RightCol>
+        <RightCol>
+          {!totalAssignment || totalAssignment === 0 ? (
             <Tooltip title="Create New Assignment" placement="topLeft">
               <Link to="/author/assignments/select">
                 <IconPlusCircle
@@ -79,8 +119,18 @@ export const CardTextContent = ({ data, history, userId }) => {
                 />
               </Link>
             </Tooltip>
-          </RightCol>
-        )}
+          ) : (
+            <StyledPopoverContainer>
+              <Popover
+                content={content}
+                title="Assignment Counts"
+                getPopupContainer={(triggerNode) => triggerNode.parentNode}
+              >
+                <img src={infoLogo} alt="Info" height="22px" width="22px" />
+              </Popover>
+            </StyledPopoverContainer>
+          )}
+        </RightCol>
       </RowWrapper>
       <RowWrapper1 onClick={() => gotoAssignedAssessment()}>
         <Label>RECENT</Label>

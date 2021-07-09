@@ -281,6 +281,13 @@ const Author = ({
     'groupItems',
   ]
 
+  const flashAssesmenttabs = [
+    'description',
+    'addCards',
+    'flashReview',
+    'settings',
+  ]
+
   return (
     <ThemeProvider theme={themeToPass}>
       <StyledLayout isBannerShown={isProxyUser || isDemoAccount}>
@@ -577,6 +584,14 @@ const Author = ({
 
                 <Route
                   exact
+                  path="/author/flashquiz/create"
+                  render={(props) => (
+                    <TestPage {...props} currentTab="description" isFlashQuiz />
+                  )}
+                />
+
+                <Route
+                  exact
                   path="/author/tests/:id"
                   render={(props) => (
                     <TestPage {...props} currentTab="description" />
@@ -591,6 +606,19 @@ const Author = ({
                     exact
                     path={`/author/tests/create/${x}`}
                     render={(props) => <TestPage {...props} currentTab={x} />}
+                  />
+                ))}
+
+                {/**
+                 * before saving the test
+                 *  */}
+                {flashAssesmenttabs.map((x) => (
+                  <Route
+                    exact
+                    path={`/author/flashquiz/create/${x}`}
+                    render={(props) => (
+                      <TestPage {...props} currentTab={x} isFlashQuiz />
+                    )}
                   />
                 ))}
 

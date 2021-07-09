@@ -146,7 +146,8 @@ class Container extends PureComponent {
   sebPasswordRef = React.createRef()
 
   gotoTab = (tab) => {
-    const { history, match, location } = this.props
+    console.log(tab)
+    const { history, match, location, isFlashQuiz } = this.props
     const { regradeFlow = false, previousTestId = '' } = location?.state || {}
     const { showCancelButton } = this.state
     const id =
@@ -155,7 +156,7 @@ class Container extends PureComponent {
       match.params.oldId &&
       match.params.oldId != 'undefined' &&
       match.params.oldId
-    let url = `/author/tests/create/${tab}`
+    let url = `/author/${isFlashQuiz ? 'flashquiz' : 'tests'}/create/${tab}`
     if ((id && oldId) || regradeFlow) {
       const newTab = previousTestId ? 'review' : tab
       url = `/author/tests/tab/${newTab}/id/${id}/old/${
@@ -649,6 +650,24 @@ class Container extends PureComponent {
             />
           </Content>
         )
+      case 'addCards':
+        return (
+          <Content>
+            <AddItems
+              current={current}
+              isEditable={isEditable}
+              onSaveTestId={this.handleSaveTestId}
+              test={test}
+              gotoSummary={this.handleNavChange('description')}
+              gotoGroupItems={this.handleNavChange('groupItems')}
+              toggleFilter={this.toggleFilter}
+              isShowFilter={isShowFilter}
+              handleSaveTest={this.handleSave}
+              updated={updated}
+              userRole={userRole}
+            />
+          </Content>
+        )
       case 'description':
         return (
           <Content>
@@ -672,6 +691,22 @@ class Container extends PureComponent {
             <MainWorksheet key="review" review {...props} viewMode="review" />
           </Content>
         ) : (
+          <Review
+            test={test}
+            rows={rows}
+            onSaveTestId={this.handleSaveTestId}
+            onChangeGrade={this.handleChangeGrade}
+            onChangeSubjects={this.handleChangeSubject}
+            onChangeSkillIdentifiers={this.onChangeSkillIdentifiers}
+            onChangeCollection={this.handleChangeCollection}
+            owner={isOwner}
+            isEditable={isEditable}
+            current={current}
+            showCancelButton={showCancelButton}
+          />
+        )
+      case 'flashReview':
+        return (
           <Review
             test={test}
             rows={rows}

@@ -5,6 +5,7 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import OptionPDF from '../OptionPDF/OptionPDF'
 import OptionScratch from '../OptionScratch/OptionScratch'
+import OptionFlash from '../OptionFlash'
 import BodyWrapper from '../../../AssignmentCreate/common/BodyWrapper'
 import FlexWrapper from '../../../AssignmentCreate/common/FlexWrapper'
 import OptionQti from '../OptionQTI/OptionQTI'
@@ -15,6 +16,7 @@ const CreationOptions = ({ onUploadPDF, isShowQTI }) => (
     <FlexWrapper marginBottom="0px">
       <OptionScratch />
       <OptionPDF onClick={onUploadPDF} />
+      <OptionFlash />
       {isShowQTI && <OptionQti />}
     </FlexWrapper>
   </BodyWrapper>

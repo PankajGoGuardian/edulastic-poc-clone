@@ -507,7 +507,8 @@ const TestPageHeader = ({
                 <IconTrashAlt />
               </EduButton>
             )}
-            {hasTestId && owner && showPublishButton && !showPublishForEC && (
+            {((hasTestId && owner && showPublishButton && !showPublishForEC) ||
+              isAdaptiveTest) && (
               <EduButton
                 isBlue
                 isGhost

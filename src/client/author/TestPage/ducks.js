@@ -869,10 +869,8 @@ export const getTestItemsRowsSelector = createSelector(
 
 // reducer
 export const createBlankTest = (payload = {}) => {
-  console.log('what is payload', payload)
   const { isAdaptiveTest } = payload || {}
-
-  return {
+  const initialTestData = {
     title: undefined,
     description: '',
     releaseScore: test.releaseGradeLabels.DONT_RELEASE,
@@ -933,6 +931,12 @@ export const createBlankTest = (payload = {}) => {
     playerSkinType: 'edulastic',
     keypad: { type: 'item-level', value: 'item-level-keypad', updated: false },
   }
+
+  if (isAdaptiveTest) {
+    initialTestData.isAdaptiveTest = true
+  }
+
+  return initialTestData
 }
 
 const initialState = {
@@ -2115,7 +2119,10 @@ function* createTestSaga({ payload }) {
     if (hasAutoSelectItems) {
       yield put(addItemsToAutoselectGroupsRequestAction(entity))
     }
-    const currentTab = payload.isCartTest ? 'description' : 'addItems'
+    const currentTab =
+      payload.isCartTest || payload?.data?.isAdaptiveTest
+        ? 'description'
+        : 'addItems'
     yield put(replace(`/author/tests/tab/${currentTab}/id/${entity._id}`))
     notification({ type: 'success', messageKey: 'testCreated' })
   } catch (err) {

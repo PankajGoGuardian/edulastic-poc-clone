@@ -1245,7 +1245,9 @@ class Container extends PureComponent {
           validateTest={this.validateTest}
           setDisableAlert={this.setDisableAlert}
           hasCollectionAccess={hasCollectionAccess}
-          isAdaptiveTest={location?.state?.isAdaptiveTest}
+          isAdaptiveTest={
+            test?.isAdaptiveTest || location?.state?.isAdaptiveTest
+          }
         />
         {/* This will work like an overlay during the test save for prevent content edit */}
         {isTestLoading && test._id && <ContentBackDrop />}

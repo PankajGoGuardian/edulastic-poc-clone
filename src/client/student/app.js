@@ -15,6 +15,7 @@ import { StudentPlaylist } from './StudentPlaylist'
 // TODOSidebar
 import { ReportList } from './TestAcitivityReport'
 import { Profile } from './Profile'
+import ItemList from '../author/ItemList'
 
 import { ManageClass } from './ManageClass'
 import SkillReportContainer from './SkillReport'
@@ -82,6 +83,7 @@ const StudentApp = ({
                   path={`${match.url}/class/:classId/test/:testId/testActivityReport/:id`}
                   component={ReportList}
                 />
+                <Route exact path={`${match.url}/items`} component={ItemList} />
                 <Route
                   path={`${match.url}/group/:groupId/assignment/:assignmentId`}
                   component={StartAssignment}

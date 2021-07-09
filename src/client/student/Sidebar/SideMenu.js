@@ -17,6 +17,7 @@ import {
   IconProfileHighlight,
   IconSignoutHighlight,
   IconBarChart,
+  IconItemLibrary,
 } from '@edulastic/icons'
 import { helpCenterUrl } from '@edulastic/constants/const/common'
 import { withWindowSizes, OnDarkBgLogo } from '@edulastic/common'
@@ -62,6 +63,11 @@ const menuItems = [
     label: 'My Classes',
     icon: IconManage,
     path: 'home/manage',
+  },
+  {
+    label: 'Mock Library',
+    icon: IconItemLibrary,
+    path: 'home/items',
   },
 ]
 

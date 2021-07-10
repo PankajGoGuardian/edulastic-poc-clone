@@ -712,6 +712,7 @@ const AssessmentContainer = ({
   }
   const saveCurrentAnswer = (payload) => {
     const timeSpent = Date.now() - lastTime.current
+    payload.url = url
     saveUserAnswer(currentItem, timeSpent, false, groupId, payload)
   }
 
@@ -964,6 +965,7 @@ const AssessmentContainer = ({
       if ((unansweredQs.length && needsToProceed) || !unansweredQs.length) {
         await saveUserAnswer(currentItem, timeSpent, false, groupId, {
           urlToGo: `${url}/${'test-summary'}`,
+          url,
           locState: { ...history?.location?.state, fromSummary: true },
         })
       } else {
@@ -1000,6 +1002,7 @@ const AssessmentContainer = ({
         const timeSpent = Date.now() - lastTime.current
         saveUserAnswer(currentItem, timeSpent, false, groupId, {
           urlToGo: `${url}/${'test-summary'}`,
+          url,
           locState: { ...history?.location?.state, fromSummary: true },
         })
       }
@@ -1413,6 +1416,7 @@ const enhance = compose(
       restrictNavigationOutAttemptsThreshold:
         state.test?.settings?.restrictNavigationOutAttemptsThreshold,
       savedBlurTime: state.test?.savedBlurTime,
+      isAdaptive: state.test.isAdaptive,
     }),
     {
       saveUserResponse,

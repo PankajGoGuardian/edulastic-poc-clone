@@ -26,6 +26,7 @@ import {
   SET_IS_TEST_PREVIEW_VISIBLE,
   SAVE_BLUR_TIME,
   SET_SAVED_BLUR_TIME,
+  UPDATE_ITEMS,
 } from '../constants/actions'
 
 const initialState = {
@@ -86,6 +87,11 @@ const test = (state = initialState, { payload, type }) => {
           ...state.settings,
           ...payload.settings,
         },
+      }
+    case UPDATE_ITEMS:
+      return {
+        ...state,
+        items: payload,
       }
 
     case GOTO_ITEM:

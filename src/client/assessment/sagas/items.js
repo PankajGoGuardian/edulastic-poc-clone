@@ -6,12 +6,13 @@ import {
   Effects,
   captureSentryException,
 } from '@edulastic/common'
-import { maxBy, isEmpty, isPlainObject } from 'lodash'
+import { maxBy, isEmpty, isPlainObject, keyBy } from 'lodash'
 import {
   itemsApi,
   testItemActivityApi,
   attchmentApi as attachmentApi,
   testActivityApi,
+  testItemsApi,
 } from '@edulastic/api'
 import { assignmentPolicyOptions, aws } from '@edulastic/constants'
 
@@ -28,6 +29,7 @@ import {
   CLEAR_USER_WORK,
   CLEAR_HINT_USAGE,
   SET_SAVE_USER_RESPONSE,
+  UPDATE_ITEMS,
 } from '../constants/actions'
 import { getPreviousAnswersListSelector } from '../selectors/answers'
 import { redirectPolicySelector } from '../selectors/test'
@@ -35,6 +37,8 @@ import { getServerTs } from '../../student/utils'
 import { Fscreen } from '../utils/helpers'
 import { utaStartTimeUpdateRequired } from '../../student/sharedDucks/AssignmentModule/ducks'
 import { scratchpadDomRectSelector } from '../../common/components/Scratchpad/duck'
+import { markQuestionLabel } from '../Transformer'
+import { loadQuestionsAction } from '../actions/questions'
 
 const {
   POLICY_CLOSE_MANUALLY_BY_ADMIN,
@@ -115,6 +119,19 @@ function getFilterAndUpdateForAttachments({
 async function getFileNameAndQidMap(qId, data, folder) {
   const fileName = await uploadToS3(data, folder)
   return { qId, fileName }
+}
+
+const getQuestions = (testItems = []) => {
+  const allQuestions = []
+
+  testItems.forEach((item) => {
+    if (item.data) {
+      const { questions = [], resources = [] } = item.data
+      allQuestions.push(...questions, ...resources)
+    }
+  })
+
+  return allQuestions
 }
 
 export function* saveUserResponse({ payload }) {
@@ -212,6 +229,7 @@ export function* saveUserResponse({ payload }) {
       testActivityId: userTestActivityId,
       passages,
       isDocBased,
+      isAdaptive,
     } = yield select((state) => state.test)
     const shuffledOptions = yield select((state) => state.shuffledOptions)
     // passages: state.test.passages
@@ -369,8 +387,30 @@ export function* saveUserResponse({ payload }) {
     yield put({
       type: CLEAR_HINT_USAGE,
     })
-    if (payload?.urlToGo) {
-      yield put(push({ pathname: payload.urlToGo, state: payload?.locState }))
+    if (isAdaptive) {
+      const adaptiveItem = yield call(testItemsApi.getAdaptiveItem, {
+        testActivityId: userTestActivityId,
+        authorDifficulty: 'medium',
+      })
+      let testItems = [...items, adaptiveItem]
+      testItems = markQuestionLabel(testItems)
+      yield put({
+        type: UPDATE_ITEMS,
+        payload: testItems,
+      })
+      let _questions = getQuestions(testItems)
+      yield put(loadQuestionsAction(keyBy(_questions, 'id')))
+      console.log(payload)
+      const pathname = adaptiveItem._id
+        ? `${payload.url}/itemId/${adaptiveItem._id}`
+        : payload.urlToGo
+      if (payload?.urlToGo) {
+        yield put(push({ pathname, state: payload?.locState }))
+      }
+    } else {
+      if (payload?.urlToGo) {
+        yield put(push({ pathname: payload.urlToGo, state: payload.locState }))
+      }
     }
     if (shouldClearUserWork) {
       /**

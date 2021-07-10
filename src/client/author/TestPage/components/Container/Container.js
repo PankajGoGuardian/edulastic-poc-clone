@@ -539,6 +539,11 @@ class Container extends PureComponent {
     setDefaultInterests({ subject: subjects[0] || '' })
   }
 
+  handleChangeCurriculum = (curriculum) => {
+    const { test, setData } = this.props
+    setData({ ...test, curriculum })
+  }
+
   onChangeSkillIdentifiers = (identifiers) => {
     const { setData, test } = this.props
     if (!isEmpty(identifiers)) {
@@ -674,6 +679,7 @@ class Container extends PureComponent {
               onChangeCollection={this.handleChangeCollection}
               onChangeSubjects={this.handleChangeSubject}
               showCancelButton={showCancelButton}
+              handleChangeCurriculum={this.handleChangeCurriculum}
             />
           </Content>
         )
@@ -922,7 +928,7 @@ class Container extends PureComponent {
       }
     }
 
-    if (!itemGroupWithQuestionsCount) {
+    if (!test.isAdaptiveTest && !itemGroupWithQuestionsCount) {
       notification({ messageKey: `noQuestions` })
       return false
     }

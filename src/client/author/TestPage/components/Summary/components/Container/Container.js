@@ -61,6 +61,7 @@ const Summary = ({
   isEditable = true,
   showCancelButton,
   toggleTestLikeRequest,
+  handleChangeCurriculum,
 }) => {
   const handleChangeField = (field, value) => {
     if (field === 'thumbnail') {
@@ -160,6 +161,7 @@ const Summary = ({
         isEditable={isEditable}
         test={test}
         toggleTestLikeRequest={toggleTestLikeRequest}
+        handleChangeCurriculum={handleChangeCurriculum}
       />
     </MainContentWrapper>
   )

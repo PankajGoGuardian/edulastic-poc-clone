@@ -46,6 +46,7 @@ import { bucketSaga } from '../../ContentBuckets'
 import { collectionsSaga } from '../../ContentCollections'
 import { watcherSaga as subscriptionSaga } from '../../Subscription/ducks'
 import { importTestWatcher as importTestSaga } from '../../ImportTest/ducks'
+import { watcherSaga as pinBoardWatcherSaga } from '../../PinBoard/ducks'
 import itemScoreSaga from './itemScore'
 import { watcherSaga as playlistTestBoxSaga } from '../../CurriculumSequence/components/ManageContentBlock/ducks'
 import { externalToolsSaga } from '../../ExternalTools'
@@ -114,6 +115,7 @@ const authorSagas = [
   advancedAssignmentsSaga(),
   collaborationGroupSaga(),
   languageSaga(),
+  pinBoardWatcherSaga(),
 ]
 
 export default authorSagas

@@ -83,6 +83,24 @@ const deleteCustomKeypad = (documentId, filter) =>
     data: filter,
   })
 
+const setPinData = (value) =>
+  api.callApi({
+    method: 'POST',
+    url: `${prefix}`,
+    data: {
+      name: 'PIN_DATA',
+      value,
+    },
+  })
+
+const getPinData = () =>
+  api
+    .callApi({
+      method: 'GET',
+      url: `${prefix}?name=PIN_DATA`,
+    })
+    .then((result) => result.data.result)
+
 export default {
   setLastUsedPlayList,
   setRecentUsedPlayLists,
@@ -92,4 +110,6 @@ export default {
   getCustomKeypad,
   updateCustomKeypad,
   deleteCustomKeypad,
+  getPinData,
+  setPinData,
 }

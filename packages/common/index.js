@@ -24,6 +24,7 @@ export {
 } from './src/components/CheckboxLabel'
 export { default as Legends, LegendContainer } from './src/components/Legends'
 export { default as CustomModalStyled } from './src/components/CustomModalStyled'
+export { default as ItemsHistoryCard } from './src/components/ItemsHistoryCard/itemsHistoryCard'
 export {
   TextInputStyled,
   SearchInputStyled,

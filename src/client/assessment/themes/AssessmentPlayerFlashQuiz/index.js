@@ -15,11 +15,7 @@ import { checkAnswerEvaluation } from '../../actions/checkanswer'
 import { currentItemAnswerChecksSelector } from '../../selectors/test'
 // components
 
-import {
-  Container,
-  CalculatorContainer,
-  getDefaultCalculatorProvider,
-} from '../common'
+import { Container } from '../common'
 import PlayerMainContentArea from './PlayerMainContentArea'
 
 import PlayerHeader from './PlayerHeader'
@@ -35,12 +31,10 @@ import { saveUserWorkAction } from '../../actions/userWork'
 import { changePreviewAction } from '../../../author/src/actions/view'
 
 import { setUserAnswerAction } from '../../actions/answers'
-import AssessmentPlayerSkinWrapper from '../AssessmentPlayerSkinWrapper'
 import { updateTestPlayerAction } from '../../../author/sharedDucks/testPlayer'
 import { showHintsAction } from '../../actions/userInteractions'
 import { CLEAR } from '../../constants/constantsForQuestions'
 import { showScratchpadInfoNotification } from '../../utils/helpers'
-import UserWorkUploadModal from '../../components/UserWorkUploadModal'
 
 class AssessmentPlayerFlashQuiz extends React.Component {
   constructor(props) {
@@ -59,7 +53,7 @@ class AssessmentPlayerFlashQuiz extends React.Component {
       currentItem: 0,
       enableCrossAction: false,
       isUserWorkUploadModalVisible: false,
-      phase: 3,
+      phase: 1,
       cameraImageIndex,
     }
   }

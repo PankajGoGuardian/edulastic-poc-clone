@@ -9,7 +9,12 @@ import {
   StatValue,
 } from './styled'
 
-const FlashQuizReport = ({ user }) => {
+import { PDFDownloadLink } from '@react-pdf/renderer'
+import { PdfDocument } from './FlashQuizPDFView'
+import { themeColorBlue } from '@edulastic/colors'
+import { IconDownload } from '@edulastic/icons'
+
+const FlashQuizReport = ({ user, data }) => {
   return (
     <FlashQuizReportContainer>
       <FlexContainer
@@ -18,7 +23,7 @@ const FlashQuizReport = ({ user }) => {
         justifyContent="flex-start"
         marginBottom="10px"
       >
-        <Avatar size={100} style={{ fontSize: 30, fontWeight: 600 }}>
+        <Avatar size={100} style={{ fontSize: 36, fontWeight: 600 }}>
           {user?.username?.slice(0, 2)?.toUpperCase()}
         </Avatar>
         <StyledTag color="geekblue">{user.username}</StyledTag>
@@ -56,7 +61,7 @@ const FlashQuizReport = ({ user }) => {
               className="time"
               type="circle"
               percent={100}
-              format={() => `${8} Mins`}
+              format={() => `${5} Mins`}
             />
             <h3>TIME</h3>
           </FlexContainer>
@@ -73,24 +78,49 @@ const FlashQuizReport = ({ user }) => {
               <StatValue>10</StatValue>
             </Descriptions.Item>
             <Descriptions.Item label="Total Card Flips">
-              <StatValue>10</StatValue>
+              <StatValue>63</StatValue>
             </Descriptions.Item>
             <Descriptions.Item label="Total Wrong Flips">
-              <StatValue>10</StatValue>
+              <StatValue>32</StatValue>
             </Descriptions.Item>
             <Descriptions.Item label="Learning Time">
-              <StatValue>10</StatValue>
+              <StatValue>6 mins</StatValue>
             </Descriptions.Item>
             <Descriptions.Item label="Assessement Time">
-              <StatValue>10</StatValue>
+              <StatValue>5 mins</StatValue>
             </Descriptions.Item>
             <Descriptions.Item label="Total Time" span={2}>
-              <StatValue>10</StatValue>
+              <StatValue>11 mins</StatValue>
             </Descriptions.Item>
           </Descriptions>
         </PerformanceMetrics>
       </PerformanceContainer>
-      <EduButton isBlue>Download Flash Cards</EduButton>
+      <PDFDownloadLink
+        document={<PdfDocument data={data} />}
+        fileName="FlashQuiz.pdf"
+        style={{
+          width: '200px',
+          height: '36px',
+          lineHeight: '36px',
+          textDecoration: 'none',
+          padding: '0 10px',
+          color: '#fff',
+          backgroundColor: themeColorBlue,
+          fontSize: '14px',
+          borderRadius: '4px',
+          textAlign: 'center',
+        }}
+      >
+        {({ loading }) =>
+          loading ? (
+            'Loading document...'
+          ) : (
+            <span>
+              Download Flash Cards &nbsp; <IconDownload />
+            </span>
+          )
+        }
+      </PDFDownloadLink>
     </FlashQuizReportContainer>
   )
 }

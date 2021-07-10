@@ -27,6 +27,59 @@ const config = {
   colors: ['#a864fd', '#29cdff', '#78ff44', '#ff718d', '#fdff6a'],
 }
 
+const list = [
+  {
+    id: '1',
+    frontStimulus: 'Facebook',
+    backStimulus: 'A Social Networking Company',
+  },
+  {
+    id: '2',
+    frontStimulus: 'Google',
+    backStimulus: 'A Search Engine Company',
+  },
+  {
+    id: '3',
+    frontStimulus: 'Amazon',
+    backStimulus: 'An Ecommerce Company',
+  },
+  {
+    id: '4',
+    frontStimulus: 'Netflix',
+    backStimulus: 'A Media Streaming Company',
+  },
+  {
+    id: '5',
+    frontStimulus: 'Apple',
+    backStimulus: 'A Smart Phone Company',
+  },
+  {
+    id: '6',
+    frontStimulus: 'Flipkart',
+    backStimulus: 'An Ecommerce Company',
+  },
+  {
+    id: '7',
+    frontStimulus: 'Hotstar',
+    backStimulus: 'A Media Streaming Company',
+  },
+  {
+    id: '8',
+    frontStimulus: 'OnePlus',
+    backStimulus: 'A Smart Phone Company',
+  },
+  {
+    id: '9',
+    frontStimulus: 'Goldman',
+    backStimulus: 'A FinTech Company',
+  },
+  {
+    id: '10',
+    frontStimulus: 'Snapwiz',
+    backStimulus: 'An EdTech Company',
+  },
+]
+
 const PlayerContentArea = ({
   itemRows,
   previewTab,
@@ -81,11 +134,15 @@ const PlayerContentArea = ({
         responsiveWidth={responsiveWidth}
         className="scrollable-main-wrapper"
       >
-        {flashQuizPhase === 1 && <FlashCards setPhase={setPhase} />}
+        {flashQuizPhase === 1 && <FlashCards setPhase={setPhase} list={list} />}
         {flashQuizPhase === 2 && (
-          <FlipCards setIsExploding={setIsExploding} setPhase={setPhase} />
+          <FlipCards
+            setIsExploding={setIsExploding}
+            setPhase={setPhase}
+            list={list}
+          />
         )}
-        {flashQuizPhase === 3 && <FlashQuizReport user={user} />}
+        {flashQuizPhase === 3 && <FlashQuizReport user={user} data={list} />}
         <ConfettiContainer>
           <Confetti active={isExploding} config={config} />
         </ConfettiContainer>

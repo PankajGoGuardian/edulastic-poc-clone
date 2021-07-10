@@ -1,7 +1,14 @@
+import { themeColor } from '@edulastic/colors'
 import { EduButton, FlexContainer } from '@edulastic/common'
 import ConfirmationModal from '@edulastic/common/src/components/SimpleConfirmModal'
-import { IconBookmark, IconCheckSmall, IconTestBank } from '@edulastic/icons'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, {  useMemo, useState } from 'react'
+import {
+  IconBookmark,
+  IconCheckSmall,
+  IconCorrect,
+  IconTestBank,
+} from '@edulastic/icons'
+import { Modal } from 'antd'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import CardControls from './CardControls'
 import {
@@ -15,59 +22,6 @@ import {
   StyledIconBookmark,
   StyledIconChecked,
 } from './styled'
-
-const list = [
-  {
-    id: '1',
-    frontStimulus: 'Facebook',
-    backStimulus: 'A Social Networking Company',
-  },
-  {
-    id: '2',
-    frontStimulus: 'Google',
-    backStimulus: 'A Search Engine Company',
-  },
-  {
-    id: '3',
-    frontStimulus: 'Amazon',
-    backStimulus: 'An Ecommerce Company',
-  },
-  {
-    id: '4',
-    frontStimulus: 'Netflix',
-    backStimulus: 'A Media Streaming Company',
-  },
-  {
-    id: '5',
-    frontStimulus: 'Apple',
-    backStimulus: 'A Smart Phone Company',
-  },
-  {
-    id: '6',
-    frontStimulus: 'Flipkart',
-    backStimulus: 'An Ecommerce Company',
-  },
-  {
-    id: '7',
-    frontStimulus: 'Hotstar',
-    backStimulus: 'A Media Streaming Company',
-  },
-  {
-    id: '8',
-    frontStimulus: 'OnePlus',
-    backStimulus: 'A Smart Phone Company',
-  },
-  {
-    id: '9',
-    frontStimulus: 'Goldman',
-    backStimulus: 'A FinTech Company',
-  },
-  {
-    id: '10',
-    frontStimulus: 'Snapwiz',
-    backStimulus: 'An EdTech Company',
-  },
-]
 
 const CardItem = ({
   card = {},
@@ -145,6 +99,26 @@ const FlashCards = ({ setPhase, questions, viewMode }) => {
 
   const handlePhase1Proceed = (...x) => setPhase(2)
 
+  const handleAllMarked = () => {
+    Modal.confirm({
+      title: 'Are You Sure To Mark All As Read ?',
+      content:
+        'Once the questions as marked as done, you cannot reverse the change. Are you sure you want to proceed with this change ?',
+      onOk: () => {
+        setMarked(list.map((x) => x.id))
+        Modal.destroyAll()
+      },
+      onCancel: () => {},
+      okText: 'Yes, Proceed',
+      cancelText: 'No, Cancel',
+      centered: true,
+      width: 500,
+      okButtonProps: {
+        style: { background: themeColor },
+      },
+    })
+  }
+
   return (
     <FlexContainer height="calc(100vh - 100px)">
       <FlexContainer flexDirection="column">
@@ -175,7 +149,10 @@ const FlashCards = ({ setPhase, questions, viewMode }) => {
         </FlexContainer>
 
         <FlexContainer alignItems="center" mt="60px">
-          <EduButton onClick={handleMarked}>
+          <EduButton
+            onClick={handleMarked}
+            disabled={marked.includes(list[currentActiveIndex]?.id)}
+          >
             <IconCheckSmall />
             Mark As Read
           </EduButton>
@@ -193,6 +170,13 @@ const FlashCards = ({ setPhase, questions, viewMode }) => {
             !marked.includes(list[currentActiveIndex]?.id)
               ? 'UnBookmark'
               : 'Bookmark'}
+          </EduButton>
+          <EduButton
+            onClick={handleAllMarked}
+            disabled={marked.length === list.length}
+          >
+            <IconCorrect />
+            Mark All As Read
           </EduButton>
           {!viewMode && (
             <EduButton

@@ -267,6 +267,7 @@ export const StyledTag = styled(Tag)`
   font-size: 20px;
   line-height: 26px;
   margin-top: 16px;
+  margin-bottom: 15px;
 `
 
 export const StatsContainer = styled.div`
@@ -367,6 +368,7 @@ export const PerformanceContainer = styled.div`
   h3 {
     margin-top: 10px;
     color: #333;
+    font-size: 14px;
   }
 `
 
@@ -393,5 +395,11 @@ export const FlashQuizReportContainer = styled.div`
 
   th {
     text-align: center;
+  }
+
+  svg,
+  path,
+  g {
+    fill: #f3f3f3;
   }
 `

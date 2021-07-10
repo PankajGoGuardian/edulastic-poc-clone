@@ -45,6 +45,13 @@ const AssessmentCreate = loadable(() => import('../AssessmentCreate'), {
 const AssignmentCreate = loadable(() => import('../AssignmentCreate'), {
   fallback: <Progress />,
 })
+const FlashAssessmentCreate = loadable(
+  () => import('../FlashAssessmentCreate'),
+  {
+    fallback: <Progress />,
+  }
+)
+
 const AssessmentPage = loadable(() => import('../AssessmentPage'), {
   fallback: <Progress />,
 })
@@ -281,13 +288,6 @@ const Author = ({
     'groupItems',
   ]
 
-  const flashAssesmenttabs = [
-    'description',
-    'addCards',
-    'flashReview',
-    'settings',
-  ]
-
   return (
     <ThemeProvider theme={themeToPass}>
       <StyledLayout isBannerShown={isProxyUser || isDemoAccount}>
@@ -318,6 +318,19 @@ const Author = ({
                   path={`${match.url}/tests/snapquiz`}
                   component={AssessmentCreate}
                 />
+
+                <Route
+                  exact
+                  path={`${match.url}/flashquiz/create`}
+                  component={FlashAssessmentCreate}
+                />
+
+                <Route
+                  exact
+                  path={`${match.url}/flashquiz/:assessmentId`}
+                  component={FlashAssessmentCreate}
+                />
+
                 <Route
                   exact
                   path={`${match.url}/tests/snapquiz/add`}
@@ -584,14 +597,6 @@ const Author = ({
 
                 <Route
                   exact
-                  path="/author/flashquiz/create"
-                  render={(props) => (
-                    <TestPage {...props} currentTab="description" isFlashQuiz />
-                  )}
-                />
-
-                <Route
-                  exact
                   path="/author/tests/:id"
                   render={(props) => (
                     <TestPage {...props} currentTab="description" />
@@ -606,19 +611,6 @@ const Author = ({
                     exact
                     path={`/author/tests/create/${x}`}
                     render={(props) => <TestPage {...props} currentTab={x} />}
-                  />
-                ))}
-
-                {/**
-                 * before saving the test
-                 *  */}
-                {flashAssesmenttabs.map((x) => (
-                  <Route
-                    exact
-                    path={`/author/flashquiz/create/${x}`}
-                    render={(props) => (
-                      <TestPage {...props} currentTab={x} isFlashQuiz />
-                    )}
                   />
                 ))}
 

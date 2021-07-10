@@ -1,7 +1,7 @@
 import { EduButton, FlexContainer } from '@edulastic/common'
 import ConfirmationModal from '@edulastic/common/src/components/SimpleConfirmModal'
 import { IconBookmark, IconCheckSmall, IconTestBank } from '@edulastic/icons'
-import React, { useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import CardControls from './CardControls'
 import {
@@ -90,12 +90,26 @@ const CardItem = ({
   </CardListItem>
 )
 
-const FlashCards = ({ setPhase }) => {
+const FlashCards = ({ setPhase, questions, viewMode }) => {
   const [backView, setBackView] = useState()
   const [currentActiveIndex, setCurrentActive] = useState(0)
   const [bookmarks, setBookmarks] = useState([])
   const [marked, setMarked] = useState([])
   const [isConfirmationModal, setConfirmationModal] = useState(false)
+
+  const list = useMemo(() => {
+    const { list = [], possibleResponses = [] } = questions[0] || {}
+    const genlist = []
+    list.forEach((item) => {
+      genlist.push({
+        id: item.value,
+        frontStimulus: item.label,
+        backStimulus: possibleResponses.find((el) => el.value === item.value)
+          ?.label,
+      })
+    })
+    return genlist
+  }, [questions])
 
   const handleCardFlip = () => setBackView((x) => !x)
   const handleNext = () => {
@@ -180,13 +194,15 @@ const FlashCards = ({ setPhase }) => {
               ? 'UnBookmark'
               : 'Bookmark'}
           </EduButton>
-          <EduButton
-            onClick={handleTakeTest}
-            disabled={list.length !== marked.length}
-          >
-            <IconTestBank />
-            Take Test
-          </EduButton>
+          {!viewMode && (
+            <EduButton
+              onClick={handleTakeTest}
+              disabled={list.length !== marked.length}
+            >
+              <IconTestBank />
+              Take Test
+            </EduButton>
+          )}
         </FlexContainer>
       </FlexContainer>
 

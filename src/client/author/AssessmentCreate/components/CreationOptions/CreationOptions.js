@@ -10,17 +10,23 @@ import BodyWrapper from '../../../AssignmentCreate/common/BodyWrapper'
 import FlexWrapper from '../../../AssignmentCreate/common/FlexWrapper'
 import OptionQti from '../OptionQTI/OptionQTI'
 import { QTI_DISTRICTS } from '../../../../config'
+import {
+  createAssessmentRequestAction,
+  createFlashAssessmentRequestAction,
+} from '../../../AssessmentCreate/ducks'
 
-const CreationOptions = ({ onUploadPDF, isShowQTI }) => (
-  <BodyWrapper>
-    <FlexWrapper marginBottom="0px">
-      <OptionScratch />
-      <OptionPDF onClick={onUploadPDF} />
-      <OptionFlash />
-      {isShowQTI && <OptionQti />}
-    </FlexWrapper>
-  </BodyWrapper>
-)
+const CreationOptions = ({ onUploadPDF, isShowQTI, createAssessment }) => {
+  return (
+    <BodyWrapper>
+      <FlexWrapper marginBottom="0px">
+        <OptionScratch />
+        <OptionPDF onClick={onUploadPDF} />
+        <OptionFlash createAssessment={createAssessment} />
+        {isShowQTI && <OptionQti />}
+      </FlexWrapper>
+    </BodyWrapper>
+  )
+}
 
 CreationOptions.propTypes = {
   onUploadPDF: PropTypes.func.isRequired,
@@ -28,11 +34,16 @@ CreationOptions.propTypes = {
 
 const enhance = compose(
   withRouter,
-  connect((state) => ({
-    isShowQTI: QTI_DISTRICTS.some((qtiDistrict) =>
-      (state?.user?.user?.districtIds || []).includes(qtiDistrict)
-    ),
-  }))
+  connect(
+    (state) => ({
+      isShowQTI: QTI_DISTRICTS.some((qtiDistrict) =>
+        (state?.user?.user?.districtIds || []).includes(qtiDistrict)
+      ),
+    }),
+    {
+      createAssessment: createFlashAssessmentRequestAction,
+    }
+  )
 )
 
 export default enhance(CreationOptions)

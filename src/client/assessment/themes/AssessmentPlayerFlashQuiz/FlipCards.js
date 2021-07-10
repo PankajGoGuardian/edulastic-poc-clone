@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { EduButton, FlexContainer } from '@edulastic/common'
 import FlashIcon from './FlashIcon'
 import { clamp } from 'lodash'
@@ -101,12 +101,36 @@ const FlipItem = ({
   </FlipCardsWrapper>
 )
 
-const FlipCards = ({ setIsExploding, setPhase }) => {
+const FlipCards = ({ setIsExploding, setPhase, questions, viewMode }) => {
   const [matchedPairs, setMatchedPairs] = useState([])
   const [filppedPair, setFlipped] = useState([])
   const [flipsCount, setFlipsCount] = useState(0)
   const [visitedCards, setVisitedCards] = useState({})
   const [wrongFlipsCount, setWrongFlipsCount] = useState(0)
+
+  const list = useMemo(() => {
+    const { list = [], possibleResponses = [] } = questions[0] || {}
+    const _genlist = []
+    list.forEach((item) => {
+      _genlist.push({
+        id: item.value,
+        frontStimulus: item.label,
+        backStimulus: possibleResponses.find((el) => el.value === item.value)
+          ?.label,
+      })
+    })
+    const genlist = _genlist.reduce(
+      (a, c) =>
+        a.concat(
+          ...[
+            { key: `${c.id}-a`, id: `${c.id}`, stimulus: c.frontStimulus },
+            { key: `${c.id}-b`, id: `${c.id}`, stimulus: c.backStimulus },
+          ]
+        ),
+      []
+    )
+    return genlist
+  }, [questions])
 
   const evaluatePair = (cardAIndex, cardBIndex) => {
     const cardA = list[cardAIndex]
@@ -115,7 +139,7 @@ const FlipCards = ({ setIsExploding, setPhase }) => {
     const matched = cardA.id === cardB.id
     if (matched) {
       setMatchedPairs((x) => x.concat(cardA.id))
-      if (matchedPairs.length === list.length / 2 - 1) {
+      if (setIsExploding && matchedPairs.length === list.length / 2 - 1) {
         setIsExploding(true)
       }
       setFlipped([])
@@ -147,7 +171,7 @@ const FlipCards = ({ setIsExploding, setPhase }) => {
     }
   }
 
-  const handlePhase2Proceed = () => setPhase(3)
+  const handlePhase2Proceed = () => setPhase && setPhase(3)
 
   return (
     <>
@@ -196,7 +220,9 @@ const FlipCards = ({ setIsExploding, setPhase }) => {
               />
             </Divider>
           </StatsContainer>
-          <EduButton onClick={handlePhase2Proceed}>Submit Test</EduButton>
+          {!viewMode && (
+            <EduButton onClick={handlePhase2Proceed}>Submit Test</EduButton>
+          )}
         </FlexContainer>
       </FlexContainer>
     </>

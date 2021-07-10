@@ -5,6 +5,7 @@ import nanoid from 'nanoid'
 import { push } from 'react-router-redux'
 import produce from 'immer'
 import { get, without, omit } from 'lodash'
+import uuid from 'uuid/v4'
 
 import { testsApi, testItemsApi, fileApi } from '@edulastic/api'
 import { aws, roleuser, test as testConstant } from '@edulastic/constants'
@@ -19,6 +20,8 @@ import {
   receiveTestByIdAction,
 } from '../TestPage/ducks'
 import { getUserSelector, getUserRole } from '../src/selectors/user'
+import { updateRubricInRecentlyUsedAction } from '../GradingRubric/ducks'
+import { idToLabel } from '../Reports/subPages/standardsMasteryReport/standardsGradebook/utils/transformers'
 
 const pdfjs = require('pdfjs-dist')
 
@@ -27,6 +30,8 @@ pdfjs.GlobalWorkerOptions.workerSrc =
 
 export const CREATE_ASSESSMENT_REQUEST =
   '[assessmentPage] create assessment request'
+export const CREATE_FLASH_ASSESSMENT =
+  '[assessmentPage] create flash assessment request'
 export const CREATE_ASSESSMENT_SUCCESS =
   '[assessmentPage] create assessment success'
 export const CREATE_ASSESSMENT_ERROR =
@@ -36,6 +41,9 @@ export const UPLOAD_TO_DRIVE_REQUEST = '[assesmentPage] upload to drive request'
 
 export const createAssessmentRequestAction = createAction(
   CREATE_ASSESSMENT_REQUEST
+)
+export const createFlashAssessmentRequestAction = createAction(
+  CREATE_FLASH_ASSESSMENT
 )
 export const createAssessmentSuccessAction = createAction(
   CREATE_ASSESSMENT_SUCCESS
@@ -104,6 +112,63 @@ const defaultTestItem = {
     },
   ],
 }
+const getFlashItem = () => {
+  const id = uuid()
+  const responseId = uuid()
+  const flashItem = {
+    widget: {
+      widgetType: 'question',
+      type: 'matchList',
+      title: 'Flash Item',
+      reference: id,
+      tabIndex: 0,
+    },
+    question: {
+      id,
+      title: 'Flash Item',
+      firstMount: true,
+      groupPossibleResponses: false,
+      possibleResponseGroups: [
+        {
+          title: '',
+          responses: [
+            {
+              value: responseId,
+              label: 'back',
+            },
+          ],
+        },
+      ],
+      possibleResponses: [
+        {
+          value: responseId,
+          label: 'back',
+        },
+      ],
+      type: 'matchList',
+      stimulus: '<p>test</p>',
+      list: [
+        {
+          value: responseId,
+          label: 'front',
+        },
+      ],
+      validation: {
+        scoringType: 'exactMatch',
+        validResponse: {
+          score: 1,
+          value: {
+            [responseId]: responseId,
+          },
+        },
+        altResponses: [],
+      },
+      hints: [],
+      scoringDisabled: false,
+    },
+  }
+  return flashItem
+}
 
 const defaultPageStructure = [
   {
@@ -114,6 +179,141 @@ const defaultPageStructure = [
     rotate: 0,
   },
 ]
+function* createFlashAssessmentSaga({ payload }) {
+  let testItem
+
+  try {
+    if (!payload.assessmentId) {
+      const { widget, question } = getFlashItem()
+      defaultTestItem.rows[0].widgets.push(widget)
+      defaultTestItem.data.questions.push(question)
+      testItem = yield call(testItemsApi.create, defaultTestItem)
+    }
+  } catch (error) {
+    const errorMessage = 'Unable to create test item.'
+    notification({ type: 'error', msg: errorMessage })
+    yield put(createAssessmentErrorAction({ error: errorMessage }))
+    return
+  }
+
+  try {
+    if (payload.assessmentId) {
+      const assessment = yield select(getTestEntitySelector)
+      const { scoring } = assessment
+      const newPageStructure = assessmentPageStructure.length
+        ? assessmentPageStructure
+        : defaultPageStructure
+      const updatedAssessment = {
+        ...assessment,
+        itemGroups: [],
+        isFlashAssessment: true,
+        updatedDate: undefined,
+        createdDate: undefined,
+        assignments: undefined,
+        authors: undefined,
+        createdBy: undefined,
+        passages: undefined,
+        isUsed: undefined,
+        scoring: undefined,
+        sharedType: undefined,
+      }
+
+      updatedAssessment.itemGroups = produce(
+        assessment.itemGroups,
+        (itemGroups) => {
+          itemGroups[0].items = itemGroups[0].items.map((o) => ({
+            itemId: o._id,
+            maxScore: scoring[o._id] || helpers.getPoints(o),
+            questions: o.data
+              ? helpers.getQuestionLevelScore(
+                  o,
+                  o.data.questions,
+                  helpers.getPoints(o),
+                  scoring[o._id]
+                )
+              : {},
+          }))
+        }
+      )
+      if (updatedAssessment.testType !== testConstant.type.COMMON) {
+        delete updatedAssessment.freezeSettings
+      }
+
+      const updatePayload = {
+        id: assessment._id,
+        data: updatedAssessment,
+      }
+
+      const newTest = yield call(testsApi.update, updatePayload)
+      yield put(createAssessmentSuccessAction())
+      yield put(push(`/author/flashquiz/${assessment._id}`))
+    } else {
+      const userRole = yield select(getUserRole)
+      const isReleaseScorePremium = yield select(getReleaseScorePremiumSelector)
+      const isAdmin =
+        userRole === roleuser.DISTRICT_ADMIN ||
+        userRole === roleuser.SCHOOL_ADMIN
+      const releaseScore =
+        userRole === roleuser.TEACHER && isReleaseScorePremium
+          ? testConstant.releaseGradeLabels.WITH_RESPONSE
+          : testConstant.releaseGradeLabels.DONT_RELEASE
+      const { user } = yield select(getUserSelector)
+      const name = without(
+        [user.firstName, user.lastName],
+        undefined,
+        null,
+        ''
+      ).join(' ')
+      const item = {
+        itemId: testItem._id,
+        maxScore: testItem.maxScore,
+        questions: {},
+      }
+      const newAssessment = {
+        ...initialTestState,
+        title: undefined,
+        createdBy: {
+          id: user._id,
+          name,
+        },
+        isFlashAssessment: true,
+        itemGroups: [{ ...NewGroup, _id: nanoid(), items: [item] }],
+        releaseScore,
+        assignments: undefined,
+        ...(isAdmin ? { testType: testConstant.type.COMMON } : {}),
+      }
+      if (
+        newAssessment.passwordPolicy !==
+        testConstant.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC
+      ) {
+        delete newAssessment.assignmentPassword
+      }
+      if (
+        newAssessment.passwordPolicy !==
+        testConstant.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC
+      ) {
+        delete newAssessment.passwordExpireIn
+      }
+      // Omit passages in doc basedtest creation flow as backend is not expecting it
+      const omitedItems = ['passages']
+      if (newAssessment.testType !== testConstant.type.COMMON) {
+        omitedItems.push('freezeSettings')
+      }
+      const assesmentPayload = omit(newAssessment, omitedItems)
+
+      const assessment = yield call(testsApi.create, assesmentPayload)
+      yield put(createAssessmentSuccessAction())
+      yield put(receiveTestByIdAction(assessment._id, true, false))
+      yield put(push(`/author/flashquiz/${assessment._id}`))
+    }
+  } catch (error) {
+    console.log(error, 'error')
+    let errorMessage
+    errorMessage = 'Unable to create essment.'
+    notification({ type: 'error', msg: errorMessage })
+    yield put(createAssessmentErrorAction({ error: errorMessage }))
+  }
+}
 
 function* createAssessmentSaga({ payload }) {
   let { fileURI = '' } = payload
@@ -363,6 +563,7 @@ function* uploadToDriveSaga({ payload = {} }) {
 export function* watcherSaga() {
   yield all([
     yield takeLatest(CREATE_ASSESSMENT_REQUEST, createAssessmentSaga),
+    yield takeLatest(CREATE_FLASH_ASSESSMENT, createFlashAssessmentSaga),
     yield takeLatest(UPLOAD_TO_DRIVE_REQUEST, uploadToDriveSaga),
   ])
 }

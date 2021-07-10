@@ -1,0 +1,17 @@
+{
+  "logoColor": "#fff",
+  "progressStrokeColor": "#00AD50",
+  "progressTrailColor": "#63e5ab",
+  "headerBg": "#00AD50",
+  "headerIconBgColor": "#fff",
+  "headerIconHoverColor": "#fff",
+  "headerIconColor": "#00AD50",
+  "progressFill": "#fff",
+  "btnDisabled": "#dfdfdf",
+  "mainContentTextColor": "#444444",
+  "mainContentBgColor": "white",
+  "sidebarBgColor": "#f3f3f3",
+  "sidebarFontSize": "14px",
+  "sidebarActiveTextColor": "#1fe3a1",
+  "sidebarTextColor": "#878282"
+}

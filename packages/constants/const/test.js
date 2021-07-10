@@ -337,6 +337,7 @@ module.exports = {
     wv_assessments: 'sbac',
     wy_topp: 'sbac',
     dc_assessments: 'parcc',
+    flashQuiz: 'flashQuiz',
   },
   languageCodes: {
     ENGLISH: 'en',

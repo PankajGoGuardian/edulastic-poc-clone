@@ -58,6 +58,8 @@ import AssessmentPlayerDefault from './AssessmentPlayerDefault'
 import AssessmentPlayerSimple from './AssessmentPlayerSimple'
 import AssessmentPlayerDocBased from './AssessmentPlayerDocBased'
 import AssessmentPlayerTestlet from './AssessmentPlayerTestlet'
+import AssessmentPlayerFlashQuiz from './AssessmentPlayerFlashQuiz'
+
 import { CHECK, CLEAR } from '../constants/constantsForQuestions'
 import { updateTestPlayerAction } from '../../author/sharedDucks/testPlayer'
 import { hideHintsAction } from '../actions/userInteractions'
@@ -1210,6 +1212,17 @@ const AssessmentContainer = ({
         answersById={answersById}
         saveProgress={saveProgress}
         {...props}
+      />
+    )
+  } else if (playerSkinType !== playerSkinValues.flashQuiz) {
+    playerComponent = (
+      <AssessmentPlayerFlashQuiz
+        {...props}
+        hidePause={hidePause}
+        testletConfig={testletConfig}
+        testletState={testletState}
+        saveUserAnswer={saveUserAnswer}
+        {...test}
       />
     )
   } else if (playerSkinType === playerSkinValues.testlet) {

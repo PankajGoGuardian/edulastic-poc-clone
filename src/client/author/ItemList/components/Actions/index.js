@@ -28,6 +28,7 @@ import { createTestFromCartAction } from '../../ducks'
 import { getSelectedTestsSelector } from '../../../TestList/ducks'
 import { setAddCollectionModalVisibleAction } from '../../../ContentBuckets/ducks'
 import { getSelectedPlaylistSelector } from '../../../Playlist/ducks'
+import { roleuser } from '@edulastic/constants'
 
 const Actions = ({
   selectedItems,
@@ -40,6 +41,7 @@ const Actions = ({
   type,
   t,
   collectionsToWrite,
+  userRole,
 }) => {
   let numberOfSelectedItems = selectedItems?.length
   if (type === 'TEST') {
@@ -130,20 +132,24 @@ const Actions = ({
 
   return (
     <FlexContainer>
-      <Label style={{ whiteSpace: 'nowrap', marginRight: '10px' }}>
-        <span>{numberOfSelectedItems || 0} </span>
-        {t('component.item.itemCount')}
-      </Label>
-      <Dropdown overlay={menu} placement="bottomCenter">
-        <EduButton
-          data-cy="assignmentActions"
-          height="30px"
-          width="145px"
-          isGhost
-        >
-          {t('component.item.actions')}
-        </EduButton>
-      </Dropdown>
+      {userRole != roleuser.STUDENT && (
+        <Label style={{ whiteSpace: 'nowrap', marginRight: '10px' }}>
+          <span>{numberOfSelectedItems || 0} </span>
+          {t('component.item.itemCount')}
+        </Label>
+      )}
+      {userRole != roleuser.STUDENT && (
+        <Dropdown overlay={menu} placement="bottomCenter">
+          <EduButton
+            data-cy="assignmentActions"
+            height="30px"
+            width="145px"
+            isGhost
+          >
+            {t('component.item.actions')}
+          </EduButton>
+        </Dropdown>
+      )}
     </FlexContainer>
   )
 }

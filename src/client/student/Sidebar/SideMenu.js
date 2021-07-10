@@ -8,6 +8,7 @@ import PropTypes from 'prop-types'
 import { get } from 'lodash'
 import styled, { withTheme } from 'styled-components'
 import { Layout, Menu as AntMenu, Row, Icon as AntIcon, Dropdown } from 'antd'
+import { updateImproveSubjectAction } from '../../author/TestPage/components/AddItems/ducks'
 import {
   IconLogoCompact,
   IconClockDashboard,
@@ -114,14 +115,21 @@ class SideMenu extends Component {
   `
 
   handleMenu = (e) => {
-    const { history, windowWidth } = this.props
-
+    const { history, windowWidth, improveSubjectAction, user } = this.props
     if (windowWidth <= parseFloat(tabletWidth)) {
       this.toggleMenu()
     }
 
     if (menuItems[e.key].path !== undefined) {
       history.push(`/${menuItems[e.key].path}`)
+    }
+    if (menuItems[e.key].label === 'Mock Library') {
+      const groupIds = user.orgData.classList.map((g) => g._id)
+      improveSubjectAction({
+        userId: user._id,
+        districtIds: user.districtIds,
+        groupIds: groupIds,
+      })
     }
   }
 
@@ -435,10 +443,12 @@ const enhance = compose(
       role: user?.user?.role,
       features: user?.user?.features,
       isProxyUser: isProxyUserSelector({ user }),
+      user: user?.user,
     }),
     {
       logout: logoutAction,
       toggleSideBar: toggleSideBarAction,
+      improveSubjectAction: updateImproveSubjectAction,
     }
   )
 )

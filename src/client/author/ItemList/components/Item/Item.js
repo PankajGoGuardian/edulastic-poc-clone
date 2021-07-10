@@ -537,41 +537,47 @@ class Item extends Component {
                     <IconEye />
                     <span>{t('component.item.view').toUpperCase()}</span>
                   </EduButton>
-                  {!hideAddRemove && !hasQuestions ? (
-                    <WithToolTip>
-                      <AddRemoveButton
-                        isGhost
-                        IconBtn
-                        selectedToCart={selectedToCart}
-                        width="60px"
-                        height="36px"
-                        className="disabled"
-                      >
-                        {selectedToCart ? <IconClose /> : <IconPlus />}
-                      </AddRemoveButton>
-                    </WithToolTip>
-                  ) : (
-                    <AddRemoveButton
-                      isGhost
-                      IconBtn
-                      selectedToCart={selectedToCart}
-                      width="60px"
-                      height="36px"
-                      onClick={this.handleToggleItemToCart(item)}
-                    >
-                      {selectedToCart ? <IconClose /> : <IconPlus />}
-                    </AddRemoveButton>
-                  )}
+                  {!hideAddRemove && !hasQuestions
+                    ? userRole !== roleuser.STUDENT && (
+                        <WithToolTip>
+                          <AddRemoveButton
+                            isGhost
+                            IconBtn
+                            selectedToCart={selectedToCart}
+                            width="60px"
+                            height="36px"
+                            className="disabled"
+                          >
+                            {selectedToCart ? <IconClose /> : <IconPlus />}
+                          </AddRemoveButton>
+                        </WithToolTip>
+                      )
+                    : userRole !== roleuser.STUDENT && (
+                        <AddRemoveButton
+                          isGhost
+                          IconBtn
+                          selectedToCart={selectedToCart}
+                          width="60px"
+                          height="36px"
+                          onClick={this.handleToggleItemToCart(item)}
+                        >
+                          {selectedToCart ? <IconClose /> : <IconPlus />}
+                        </AddRemoveButton>
+                      )}
                 </ViewButton>
               ) : isPublisher ? (
-                <AddRemoveBtnPublisher
-                  loading={selectedId === item._id}
-                  onClick={() => this.handleAddRemove(item, this.isAddOrRemove)}
-                  isAddOrRemove={this.isAddOrRemove}
-                >
-                  {this.isAddOrRemove ? 'ADD' : `${groupName}`}
-                  {this.isAddOrRemove ? '' : <Icon type="close" />}
-                </AddRemoveBtnPublisher>
+                userRole !== roleuser.STUDENT && (
+                  <AddRemoveBtnPublisher
+                    loading={selectedId === item._id}
+                    onClick={() =>
+                      this.handleAddRemove(item, this.isAddOrRemove)
+                    }
+                    isAddOrRemove={this.isAddOrRemove}
+                  >
+                    {this.isAddOrRemove ? 'ADD' : `${groupName}`}
+                    {this.isAddOrRemove ? '' : <Icon type="close" />}
+                  </AddRemoveBtnPublisher>
+                )
               ) : (
                 <>
                   <EduButton
@@ -585,7 +591,7 @@ class Item extends Component {
                     {/* found 17,3 values by trial & error */}
                     <IconEye />
                   </EduButton>
-                  {!hasQuestions && (
+                  {!hasQuestions && userRole !== roleuser.STUDENT && (
                     <WithToolTip>
                       <AddRemoveBtn
                         style={{ width: '70px', height: '35px' }}

@@ -271,99 +271,111 @@ const Search = ({
               </SelectInputStyled>
             </ItemBody>
           </Item>
-          {filter !== SMART_FILTERS.FAVORITES && userRole != roleuser.STUDENT && (
+          {filter !== SMART_FILTERS.FAVORITES && (
             <>
-              <Item>
-                <FieldLabel>Standard set</FieldLabel>
-                <ItemBody>
-                  <SelectInputStyled
-                    data-cy="selectSdtSet"
-                    showSearch
-                    size="large"
-                    optionFilterProp="children"
-                    onSelect={onSearchFieldChange('curriculumId')}
-                    filterOption={(input, option) =>
-                      option.props.children
-                        .toLowerCase()
-                        .indexOf(input.toLowerCase()) >= 0
-                    }
-                    value={curriculumId}
-                    defaultValue=""
-                    getPopupContainer={(triggerNode) => triggerNode.parentNode}
-                  >
-                    <Select.Option key="" value="">
-                      All Standard set
-                    </Select.Option>
-                    {subject?.length &&
-                      formattedCuriculums.map((el) => (
-                        <Select.Option
-                          key={el.value}
-                          value={el.value}
-                          disabled={el.disabled}
-                        >
+              {userRole != roleuser.STUDENT && (
+                <Item>
+                  <FieldLabel>Standard set</FieldLabel>
+                  <ItemBody>
+                    <SelectInputStyled
+                      data-cy="selectSdtSet"
+                      showSearch
+                      size="large"
+                      optionFilterProp="children"
+                      onSelect={onSearchFieldChange('curriculumId')}
+                      filterOption={(input, option) =>
+                        option.props.children
+                          .toLowerCase()
+                          .indexOf(input.toLowerCase()) >= 0
+                      }
+                      value={curriculumId}
+                      defaultValue=""
+                      getPopupContainer={(triggerNode) =>
+                        triggerNode.parentNode
+                      }
+                    >
+                      <Select.Option key="" value="">
+                        All Standard set
+                      </Select.Option>
+                      {subject?.length &&
+                        formattedCuriculums.map((el) => (
+                          <Select.Option
+                            key={el.value}
+                            value={el.value}
+                            disabled={el.disabled}
+                          >
+                            {el.text}
+                          </Select.Option>
+                        ))}
+                    </SelectInputStyled>
+                  </ItemBody>
+                </Item>
+              )}
+              {userRole != roleuser.STUDENT && (
+                <ItemRelative title={handleStandardsAlert()}>
+                  <IconWrapper className={isStandardsDisabled && 'disabled'}>
+                    <IconExpandBox onClick={() => setShowModal(true)} />
+                  </IconWrapper>
+                  <FieldLabel>Standards</FieldLabel>
+                  <ItemBody>
+                    <StandardSelectStyled
+                      data-cy="selectStd"
+                      mode="multiple"
+                      size="large"
+                      optionFilterProp="children"
+                      filterOption={(input, option) =>
+                        option.props.children
+                          .toLowerCase()
+                          .indexOf(input.toLowerCase()) >= 0
+                      }
+                      placeholder="All Standards"
+                      onChange={onSearchFieldChange('standardIds')}
+                      value={standardIds}
+                      disabled={isStandardsDisabled}
+                      getPopupContainer={(triggerNode) =>
+                        triggerNode.parentNode
+                      }
+                      ref={standardsRef}
+                      onSelect={() => standardsRef?.current?.blur()}
+                      onDeselect={() => standardsRef?.current?.blur()}
+                    >
+                      {curriculumStandards.elo.map((el) => (
+                        <Select.Option key={el._id} value={el._id}>
+                          {`${el.identifier}`}
+                        </Select.Option>
+                      ))}
+                    </StandardSelectStyled>
+                  </ItemBody>
+                </ItemRelative>
+              )}
+              {userRole != roleuser.STUDENT && (
+                <Item>
+                  <FieldLabel>Collections</FieldLabel>
+                  <ItemBody>
+                    <SelectInputStyled
+                      mode="multiple"
+                      data-cy="Collections"
+                      size="large"
+                      placeholder="All Collections"
+                      onChange={onSearchFieldChange('collections')}
+                      value={_collections}
+                      optionFilterProp="children"
+                      getPopupContainer={(triggerNode) =>
+                        triggerNode.parentNode
+                      }
+                      ref={collectionRef}
+                      onSelect={() => collectionRef?.current?.blur()}
+                      onDeselect={() => collectionRef?.current?.blur()}
+                    >
+                      {collectionData.map((el) => (
+                        <Select.Option key={el.value} value={el.value}>
                           {el.text}
                         </Select.Option>
                       ))}
-                  </SelectInputStyled>
-                </ItemBody>
-              </Item>
-              <ItemRelative title={handleStandardsAlert()}>
-                <IconWrapper className={isStandardsDisabled && 'disabled'}>
-                  <IconExpandBox onClick={() => setShowModal(true)} />
-                </IconWrapper>
-                <FieldLabel>Standards</FieldLabel>
-                <ItemBody>
-                  <StandardSelectStyled
-                    data-cy="selectStd"
-                    mode="multiple"
-                    size="large"
-                    optionFilterProp="children"
-                    filterOption={(input, option) =>
-                      option.props.children
-                        .toLowerCase()
-                        .indexOf(input.toLowerCase()) >= 0
-                    }
-                    placeholder="All Standards"
-                    onChange={onSearchFieldChange('standardIds')}
-                    value={standardIds}
-                    disabled={isStandardsDisabled}
-                    getPopupContainer={(triggerNode) => triggerNode.parentNode}
-                    ref={standardsRef}
-                    onSelect={() => standardsRef?.current?.blur()}
-                    onDeselect={() => standardsRef?.current?.blur()}
-                  >
-                    {curriculumStandards.elo.map((el) => (
-                      <Select.Option key={el._id} value={el._id}>
-                        {`${el.identifier}`}
-                      </Select.Option>
-                    ))}
-                  </StandardSelectStyled>
-                </ItemBody>
-              </ItemRelative>
-              <Item>
-                <FieldLabel>Collections</FieldLabel>
-                <ItemBody>
-                  <SelectInputStyled
-                    mode="multiple"
-                    data-cy="Collections"
-                    size="large"
-                    placeholder="All Collections"
-                    onChange={onSearchFieldChange('collections')}
-                    value={_collections}
-                    optionFilterProp="children"
-                    getPopupContainer={(triggerNode) => triggerNode.parentNode}
-                    ref={collectionRef}
-                    onSelect={() => collectionRef?.current?.blur()}
-                    onDeselect={() => collectionRef?.current?.blur()}
-                  >
-                    {collectionData.map((el) => (
-                      <Select.Option key={el.value} value={el.value}>
-                        {el.text}
-                      </Select.Option>
-                    ))}
-                  </SelectInputStyled>
-                </ItemBody>
-              </Item>
+                    </SelectInputStyled>
+                  </ItemBody>
+                </Item>
+              )}
               <Item>
                 <FieldLabel>Question Type</FieldLabel>
                 <ItemBody>
@@ -393,24 +405,28 @@ const Search = ({
                   </SelectInputStyled>
                 </ItemBody>
               </Item>
-              <Item>
-                <FieldLabel>Depth of Knowledge</FieldLabel>
-                <ItemBody>
-                  <SelectInputStyled
-                    data-cy="selectDOK"
-                    size="large"
-                    onSelect={onSearchFieldChange('depthOfKnowledge')}
-                    value={depthOfKnowledge}
-                    getPopupContainer={(triggerNode) => triggerNode.parentNode}
-                  >
-                    {selectsData.allDepthOfKnowledge.map((el, index) => (
-                      <Select.Option key={el.value} value={el.value}>
-                        {`${index > 0 ? index : ''} ${el.text}`}
-                      </Select.Option>
-                    ))}
-                  </SelectInputStyled>
-                </ItemBody>
-              </Item>
+              {userRole != roleuser.STUDENT && (
+                <Item>
+                  <FieldLabel>Depth of Knowledge</FieldLabel>
+                  <ItemBody>
+                    <SelectInputStyled
+                      data-cy="selectDOK"
+                      size="large"
+                      onSelect={onSearchFieldChange('depthOfKnowledge')}
+                      value={depthOfKnowledge}
+                      getPopupContainer={(triggerNode) =>
+                        triggerNode.parentNode
+                      }
+                    >
+                      {selectsData.allDepthOfKnowledge.map((el, index) => (
+                        <Select.Option key={el.value} value={el.value}>
+                          {`${index > 0 ? index : ''} ${el.text}`}
+                        </Select.Option>
+                      ))}
+                    </SelectInputStyled>
+                  </ItemBody>
+                </Item>
+              )}
               <Item>
                 <FieldLabel>Difficulty</FieldLabel>
                 <ItemBody>
@@ -432,17 +448,19 @@ const Search = ({
 
               {showStatus && !isPublishers && getStatusFilter()}
 
-              <Item>
-                <FieldLabel>Tags</FieldLabel>
-                <ItemBody>
-                  <TagField
-                    onChange={onSearchFieldChange('tags')}
-                    value={tags}
-                    tagTypes={['testitem']}
-                    valueKey="key"
-                  />
-                </ItemBody>
-              </Item>
+              {userRole != roleuser.STUDENT && (
+                <Item>
+                  <FieldLabel>Tags</FieldLabel>
+                  <ItemBody>
+                    <TagField
+                      onChange={onSearchFieldChange('tags')}
+                      value={tags}
+                      tagTypes={['testitem']}
+                      valueKey="key"
+                    />
+                  </ItemBody>
+                </Item>
+              )}
             </>
           )}
         </Container>

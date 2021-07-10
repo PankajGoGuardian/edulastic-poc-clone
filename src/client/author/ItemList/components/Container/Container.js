@@ -58,6 +58,7 @@ import {
   setApproveConfirmationOpenAction,
   getSortFilterStateSelector,
   initialSortState,
+  updateImproveSubjectAction,
 } from '../../../TestPage/components/AddItems/ducks'
 import {
   getAllTagsAction,
@@ -487,6 +488,8 @@ class Contaier extends Component {
     } = this.props
 
     const { isShowFilter, openSidebar } = this.state
+    const studentMenueItem = filterMenuItems[0]
+    if (userRole === roleuser.STUDENT) studentMenueItem.text = 'Practice Items'
     return (
       <div>
         <SideContent
@@ -519,9 +522,10 @@ class Contaier extends Component {
             getCurriculumStandards={getCurriculumStandards}
             curriculumStandards={curriculumStandards}
             items={
-              userRole === roleuser.EDULASTIC_CURATOR ||
-              userRole === roleuser.STUDENT
+              userRole === roleuser.EDULASTIC_CURATOR
                 ? [filterMenuItems[0]]
+                : userRole === roleuser.STUDENT
+                ? [studentMenueItem]
                 : filterMenuItems
             }
             toggleFilter={this.toggleFilter}
@@ -557,7 +561,7 @@ class Contaier extends Component {
                       sortDir={sort.sortDir}
                       sortBy={sort.sortBy}
                     />
-                    <Actions type="TESTITEM" />
+                    <Actions type="TESTITEM" userRole={userRole} />
                   </ItemsMenu>
 
                   {!loading && (
@@ -652,6 +656,7 @@ const enhance = compose(
       clearFilterState: clearFilterStateAction,
       approveOrRejectMultipleItem: approveOrRejectMultipleItemAction,
       setApproveConfirmationOpen: setApproveConfirmationOpenAction,
+      getImproveSubject: updateImproveSubjectAction,
     }
   )
 )

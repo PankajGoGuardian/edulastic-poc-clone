@@ -272,6 +272,13 @@ const getBubbleSheet = ({ assignmentId, groupId }) =>
     url: `${prefix}/${assignmentId}/group/${groupId}/bubble-sheet`,
   })
 
+const getImproveSubject = (payload) =>
+  api.callApi({
+    url: `/user/student-improve-subject`,
+    method: 'post',
+    data: payload,
+  })
+
 export default {
   create,
   update,
@@ -297,4 +304,5 @@ export default {
   fetchRegradeSettings,
   editTagsRequest,
   getBubbleSheet,
+  getImproveSubject,
 }

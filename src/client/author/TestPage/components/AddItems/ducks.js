@@ -13,7 +13,11 @@ import {
   race,
 } from 'redux-saga/effects'
 import { push } from 'connected-react-router'
-import { testItemsApi, contentErrorApi } from '@edulastic/api'
+import {
+  testItemsApi,
+  contentErrorApi,
+  studentImproveSubjectApi,
+} from '@edulastic/api'
 import { keyBy } from 'lodash'
 import {
   getAllTagsSelector,
@@ -87,6 +91,7 @@ export const SHOW_ADD_PASSAGE_ITEM_MODAL =
   '[addItems] toggle show add passage item modal'
 export const SET_APPROVE_CONFIRMATION_OPEN =
   '[addItems] set approve confirmation modal open'
+export const UPDATE_IMPROVE_SUBJECT = '[tests list] get improve subject'
 // actions
 
 export const receiveTestItemsSuccess = (items, count, page, limit) => ({
@@ -164,6 +169,10 @@ export const resetPageStateAction = createAction(RESET_PAGE_STATE_ADD_ITEMS)
 export const setApproveConfirmationOpenAction = createAction(
   SET_APPROVE_CONFIRMATION_OPEN
 )
+export const updateImproveSubjectAction = (data) => ({
+  type: UPDATE_IMPROVE_SUBJECT,
+  payload: data,
+})
 
 // reducer
 
@@ -349,6 +358,24 @@ export const reducer = (state = initialState, { type, payload }) => {
 
 // saga
 
+function* fetchImproveSubjectSaga({ payload }) {
+  try {
+    const result = yield call(
+      studentImproveSubjectApi.getImproveSubject,
+      payload
+    )
+    const subject = result.data.result.message
+    if (subject) {
+      notification({
+        type: 'success',
+        msg: `As per analysis you need to improve in ${subject} subject`,
+      })
+    }
+  } catch (e) {
+    console.error(e)
+  }
+}
+
 function* receiveTestItemsSaga({
   payload: { search = {}, sort = {}, page = 1, limit = 10 },
 }) {
@@ -406,18 +433,23 @@ export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_TEST_ITEMS_REQUEST, receiveTestItemsSaga),
     yield takeLatest(REPORT_CONTENT_ERROR_REQUEST, reportContentErrorSaga),
+    yield takeEvery(UPDATE_IMPROVE_SUBJECT, fetchImproveSubjectSaga),
   ])
 }
 
 // selectors
 
-export const stateTestItemsSelector = (state) => state.testsAddItems
+export const stateTestItemsSelector = (state) => state?.testsAddItems
 
 export const getArchivedItemsSelector = createSelector(
   stateTestItemsSelector,
   (state) => state.archivedItems
 )
 
+export const getImproveSubjectSelector = createSelector(
+  stateTestItemsSelector,
+  (state) => state?.improveSubject
+)
 export const getTestItemsSelector = createSelector(
   stateTestItemsSelector,
   (state) =>

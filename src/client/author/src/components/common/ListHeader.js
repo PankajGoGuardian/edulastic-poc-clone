@@ -88,9 +88,6 @@ const ListHeader = ({
           <Title>{midTitle}</Title>
         </MidTitleWrapper>
       )}
-      {userRole === roleuser.STUDENT && (
-        <Title>As per analysis you need to imporove in _ subject</Title>
-      )}
       <RightButtonWrapper>
         <MobileHeaderFilterIcon>{renderFilterIcon()}</MobileHeaderFilterIcon>
         {renderFilter(isAdvancedView)}

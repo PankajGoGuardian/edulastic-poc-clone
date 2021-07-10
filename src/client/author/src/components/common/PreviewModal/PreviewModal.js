@@ -696,15 +696,19 @@ class PreviewModal extends React.Component {
                   )}
                 </>
               ) : (
-                <EduButton
-                  isBlue
-                  height="28px"
-                  justifyContent="center"
-                  onClick={this.handleSelection}
-                  data-cy={this.isAddOrRemove ? 'addToTest' : 'removefromTest'}
-                >
-                  {this.isAddOrRemove ? 'Add To Test' : 'Remove from Test'}
-                </EduButton>
+                userRole !== roleuser.STUDENT && (
+                  <EduButton
+                    isBlue
+                    height="28px"
+                    justifyContent="center"
+                    onClick={this.handleSelection}
+                    data-cy={
+                      this.isAddOrRemove ? 'addToTest' : 'removefromTest'
+                    }
+                  >
+                    {this.isAddOrRemove ? 'Add To Test' : 'Remove from Test'}
+                  </EduButton>
+                )
               ))}
             <ButtonsWrapper
               justifyContent="flex-end"
@@ -767,43 +771,47 @@ class PreviewModal extends React.Component {
                   </DisabledButton>
                 </Popover>
               ) : (
+                userRole !== roleuser.STUDENT && (
+                  <EduButton
+                    IconBtn
+                    isGhost
+                    height="28px"
+                    width="28px"
+                    title={
+                      isDisableEdit
+                        ? !allowDuplicate
+                          ? 'Edit of Item is restricted by Publisher'
+                          : 'Edit permission is restricted by the author'
+                        : 'Edit item'
+                    }
+                    noHover={isDisableEdit}
+                    disabled={isDisableEdit || !!premiumCollectionWithoutAccess}
+                    onClick={this.editTestItem}
+                  >
+                    <IconPencilEdit color={themeColor} title="Edit item" />
+                  </EduButton>
+                )
+              )}
+              {userRole !== roleuser.STUDENT && (
                 <EduButton
                   IconBtn
                   isGhost
-                  height="28px"
                   width="28px"
+                  height="28px"
                   title={
-                    isDisableEdit
-                      ? !allowDuplicate
-                        ? 'Edit of Item is restricted by Publisher'
-                        : 'Edit permission is restricted by the author'
-                      : 'Edit item'
+                    isDisableDuplicate
+                      ? 'Clone permission is restricted by the author'
+                      : 'Clone'
                   }
-                  noHover={isDisableEdit}
-                  disabled={isDisableEdit || !!premiumCollectionWithoutAccess}
-                  onClick={this.editTestItem}
+                  noHover={isDisableDuplicate}
+                  disabled={
+                    isDisableDuplicate || !!premiumCollectionWithoutAccess
+                  }
+                  onClick={this.handleDuplicateTestItem}
                 >
-                  <IconPencilEdit color={themeColor} title="Edit item" />
+                  <IconCopy color={themeColor} />
                 </EduButton>
               )}
-              <EduButton
-                IconBtn
-                isGhost
-                width="28px"
-                height="28px"
-                title={
-                  isDisableDuplicate
-                    ? 'Clone permission is restricted by the author'
-                    : 'Clone'
-                }
-                noHover={isDisableDuplicate}
-                disabled={
-                  isDisableDuplicate || !!premiumCollectionWithoutAccess
-                }
-                onClick={this.handleDuplicateTestItem}
-              >
-                <IconCopy color={themeColor} />
-              </EduButton>
               {isOwner &&
                 !(
                   userFeatures?.isPublisherAuthor && item.status === 'published'

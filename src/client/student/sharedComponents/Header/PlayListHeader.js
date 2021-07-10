@@ -4,7 +4,7 @@ import { withNamespaces } from 'react-i18next'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
 import { compose } from 'redux'
-import { MainHeader } from '@edulastic/common'
+import { MainHeader, ItemsHistoryCard } from '@edulastic/common'
 import HeaderTabs, {
   StyledTabs,
 } from '@edulastic/common/src/components/HeaderTabs'
@@ -59,6 +59,7 @@ const PlayListHeader = ({
       justify="space-between"
       headingSubContent={headingSubContent}
     >
+      <ItemsHistoryCard />
       <HeaderMidContainer>
         <StyledTabs>
           {match?.params?.playlistId &&

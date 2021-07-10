@@ -13,6 +13,7 @@ export const LeftSide = styled.div`
 `
 
 export const RightSide = styled.div`
+  display: flex;
   text-align: right;
   position: relative;
   flex: 1;

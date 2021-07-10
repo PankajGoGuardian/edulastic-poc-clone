@@ -7,7 +7,12 @@ import {
   themeColor,
   white,
 } from '@edulastic/colors'
-import { EduButton, MainHeader, withWindowSizes } from '@edulastic/common'
+import {
+  EduButton,
+  MainHeader,
+  withWindowSizes,
+  ItemsHistoryCard,
+} from '@edulastic/common'
 // constants
 import { roleuser } from '@edulastic/constants'
 import { IconMoreVertical, IconPlusCircle } from '@edulastic/icons'
@@ -90,6 +95,7 @@ const ListHeader = ({
       )}
 
       <RightButtonWrapper>
+        <ItemsHistoryCard />
         <MobileHeaderFilterIcon>{renderFilterIcon()}</MobileHeaderFilterIcon>
         {renderFilter(isAdvancedView)}
         {hasButton &&

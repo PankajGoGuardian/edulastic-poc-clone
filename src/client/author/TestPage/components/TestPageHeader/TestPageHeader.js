@@ -1,5 +1,10 @@
 import { tabletWidth, white, themeColor } from '@edulastic/colors'
-import { MainHeader, EduButton, notification } from '@edulastic/common'
+import {
+  MainHeader,
+  EduButton,
+  notification,
+  ItemsHistoryCard,
+} from '@edulastic/common'
 import { roleuser, test as testConstants } from '@edulastic/constants'
 import {
   IconAddItems,
@@ -452,6 +457,7 @@ const TestPageHeader = ({
             justifyContent="flex-end"
             mt="12px"
           >
+            <ItemsHistoryCard />
             {hasTestId && !isPlaylist && !isDocBased && !test?.isDocBased && (
               <EduButton
                 title="Print"

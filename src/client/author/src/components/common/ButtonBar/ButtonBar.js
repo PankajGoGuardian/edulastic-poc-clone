@@ -1,6 +1,11 @@
 import { debounce, get } from 'lodash'
 import { white } from '@edulastic/colors'
-import { HeaderTabs, withWindowSizes, EduButton } from '@edulastic/common'
+import {
+  HeaderTabs,
+  withWindowSizes,
+  EduButton,
+  ItemsHistoryCard,
+} from '@edulastic/common'
 import { StyledTabs } from '@edulastic/common/src/components/HeaderTabs'
 import { HeaderMidContainer } from '@edulastic/common/src/components/MainHeader'
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
@@ -162,6 +167,7 @@ class ButtonBar extends Component {
 
             {hasAuthorPermission && (
               <RightSide>
+                <ItemsHistoryCard />
                 {renderRightSide()}
                 {(showPublishButton || showPublishButton === undefined) &&
                   (itemStatus === 'draft' ? (

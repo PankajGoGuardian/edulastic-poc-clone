@@ -5,7 +5,12 @@ import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { roleuser } from '@edulastic/constants'
 import { Tooltip, Modal, Dropdown, Menu } from 'antd'
-import { FlexContainer, EduButton, MainHeader } from '@edulastic/common'
+import {
+  FlexContainer,
+  EduButton,
+  MainHeader,
+  ItemsHistoryCard,
+} from '@edulastic/common'
 import {
   smallDesktopWidth,
   extraDesktopWidthMax,
@@ -260,6 +265,7 @@ const CurriculumHeader = ({
         )}
 
         <CurriculumHeaderButtons marginLeft={urlHasUseThis ? 'unset' : 'auto'}>
+          <ItemsHistoryCard />
           {(shouldShowEdit ||
             isAuthor ||
             role === roleuser.EDULASTIC_CURATOR) &&

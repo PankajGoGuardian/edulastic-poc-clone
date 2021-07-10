@@ -4,7 +4,12 @@ import { Link } from 'react-router-dom'
 import { withNamespaces } from 'react-i18next'
 import styled from 'styled-components'
 import { themeColor, smallDesktopWidth, tabletWidth } from '@edulastic/colors'
-import { EduButton, MainHeader, withWindowSizes } from '@edulastic/common'
+import {
+  EduButton,
+  MainHeader,
+  withWindowSizes,
+  ItemsHistoryCard,
+} from '@edulastic/common'
 import { IconBarChart, IconMoreVertical } from '@edulastic/icons'
 import FeaturesSwitch from '../../../../../features/components/FeaturesSwitch'
 import HeaderNavigation from './HeaderNavigation'
@@ -172,6 +177,7 @@ const CustomizedHeaderWrapper = ({
         />
       ) : null}
       <StyledCol>
+        <ItemsHistoryCard />
         {!isSmallDesktop && actionRightButtons}
         {isSmallDesktop && (
           <Dropdown overlay={actionRightButtons} trigger={['click']}>

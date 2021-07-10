@@ -4,6 +4,7 @@ import {
   EduButton,
   notification,
   withWindowSizes,
+  ItemsHistoryCard,
 } from '@edulastic/common'
 import { StyledTabs } from '@edulastic/common/src/components/HeaderTabs'
 import {
@@ -822,6 +823,7 @@ class ClassHeader extends Component {
               </StyledTabs>
             </HeaderMidContainer>
             <RightSideButtonWrapper>
+              <ItemsHistoryCard />
               {!isSmallDesktop && renderOpenClose}
               <Dropdown
                 getPopupContainer={(triggerNode) => triggerNode.parentNode}

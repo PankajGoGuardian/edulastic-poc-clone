@@ -69,7 +69,11 @@ const ItemsHistoryCard = () => {
   )
 }
 
-const StyledDiv = styled.div``
+const StyledDiv = styled.div`
+  align-self: center;
+  position: relative;
+  left: -5px;
+`
 
 const StyledDropdown = styled(Dropdown)``
 

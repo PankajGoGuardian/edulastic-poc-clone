@@ -5,6 +5,7 @@ import {
   notification,
   SimpleConfirmModal,
   captureSentryException,
+  ItemsHistoryCard,
 } from '@edulastic/common'
 import { LightGreenSpan } from '@edulastic/common/src/components/TypeToConfirmModal/styled'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -227,6 +228,7 @@ const Header = ({
       headingText={classDetails}
     >
       <div style={{ display: 'flex', alignItems: 'right' }}>
+        <ItemsHistoryCard />
         {showDropDown && !isDemoPlaygroundUser ? (
           <SelectStyled
             data-cy="sync-options-dropdown"

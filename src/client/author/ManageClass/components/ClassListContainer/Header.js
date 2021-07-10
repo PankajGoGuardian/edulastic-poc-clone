@@ -12,6 +12,7 @@ import {
   HeaderTabs,
   notification,
   captureSentryException,
+  ItemsHistoryCard,
 } from '@edulastic/common'
 import { canvasApi } from '@edulastic/api'
 import {
@@ -132,6 +133,7 @@ const Header = ({
       </FeaturesSwitch>
       <ButtonsWrapper>
         <>
+          <ItemsHistoryCard />
           {!isPlayground && enableCleverSync && (
             <EduButton
               isBlue

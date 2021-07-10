@@ -12,6 +12,7 @@ import {
   EduButton,
   withWindowSizes,
   notification,
+  ItemsHistoryCard,
 } from '@edulastic/common'
 import {
   IconInterface,
@@ -215,6 +216,7 @@ const Gradebook = ({
         }
       >
         <Row type="flex">
+          <ItemsHistoryCard />
           <Link to="/author/assignments">
             <EduButton isBlue isGhost>
               VIEW ASSIGNMENTS

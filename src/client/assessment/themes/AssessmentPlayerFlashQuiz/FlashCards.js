@@ -44,7 +44,7 @@ const CardItem = ({
   </CardListItem>
 )
 
-const FlashCards = ({ setPhase, questions, viewMode }) => {
+const FlashCards = ({ setPhase = () => {}, questions = [], viewMode }) => {
   const [backView, setBackView] = useState()
   const [currentActiveIndex, setCurrentActive] = useState(0)
   const [bookmarks, setBookmarks] = useState([])
@@ -131,11 +131,11 @@ const FlashCards = ({ setPhase, questions, viewMode }) => {
           <FlashCardsWrapper>
             <FlashCardFront front={!backView} onClick={handleCardFlip}>
               <CardContent>
-                {list[currentActiveIndex].frontStimulus}
+                {list[currentActiveIndex]?.frontStimulus}
               </CardContent>
             </FlashCardFront>
             <FlashCardBack back={backView} onClick={handleCardFlip}>
-              <CardContent>{list[currentActiveIndex].backStimulus}</CardContent>
+              <CardContent>{list[currentActiveIndex]?.backStimulus}</CardContent>
             </FlashCardBack>
           </FlashCardsWrapper>
           <CardControls

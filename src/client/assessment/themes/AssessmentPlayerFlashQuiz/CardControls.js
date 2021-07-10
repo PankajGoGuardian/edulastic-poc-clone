@@ -22,7 +22,7 @@ const CardControls = ({
       <IconArrowLeft />
     </Button>
     <PaginationText>
-      {cardNo} / {totalCards}
+      {totalCards ? cardNo : totalCards} / {totalCards}
     </PaginationText>
     <Button hide={disableNext} onClick={handleNext}>
       <IconArrowRight />

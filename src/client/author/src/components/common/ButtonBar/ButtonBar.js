@@ -160,7 +160,6 @@ class ButtonBar extends Component {
                   )}
               </StyledTabs>
             </HeaderMidContainer>
-            <ItemsHistoryCard showPinIcon />
             {hasAuthorPermission && (
               <RightSide>
                 {renderRightSide()}

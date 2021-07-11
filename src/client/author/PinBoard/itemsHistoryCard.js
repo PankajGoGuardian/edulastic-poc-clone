@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import { Dropdown, Menu, Icon, Tag } from 'antd'
+import { IconLogoCompact } from '@edulastic/icons'
 import {
   IconHistoryPin,
   IconBoard,
@@ -16,7 +17,7 @@ const typesMapping = {
   link: { icon: <Icon type="link" /> },
   test: { icon: <IconTestBank /> },
   playlist: { icon: <IconPlaylist2 /> },
-  testItem: { icon: <Icon type="file-text" />, text: 'test item' },
+  testItem: { icon: <Icon type="file-text" />, text: 'Question' },
 }
 
 function ItemRow(x) {
@@ -28,14 +29,21 @@ function ItemRow(x) {
       }}
     >
       <StyledMenuItemText>
-        <div>{typesMapping[x.contentType]?.icon}</div>
+        <div style={{ marginRight: '10px' }}>
+          {typesMapping[x.contentType]?.icon}
+        </div>
         <div>
           <StyledParagraph>
             {x.contentType === 'link' ? x?.url?.replace('/', '') : x.title}
           </StyledParagraph>
           <SubInfoText>
             {' '}
-            <p style={{ whiteSpace: 'nowrap' }}>
+            <p
+              style={{
+                whiteSpace: 'nowrap',
+                fontWeight: '580',
+              }}
+            >
               {moment(new Date(x.pinnedTime)).fromNow()}
             </p>
             <StyledParagraphType>
@@ -111,25 +119,31 @@ const ItemsHistoryCard = ({
 
   const announcements = (
     <>
-      <span>Announcements :</span>
-      <a
+      <StyledAnchor
+        style={{ marginLeft: '10px', color: '#2F4151', fontWeight: '500' }}
         href="https://edulastic.com/blog/april-2021-updates/"
         rel="noreferrer"
         target="_blank"
       >
         {' '}
-        April 2021 New Edulastic Features
-      </a>
+        <IconLogoCompact
+          width="28px"
+          style={{ position:'relative',top:'2px' ,left:'-4px'}}
+        />
+        <span styled={{marginTop: '-4px' }}> April 2021 New Edulastic Features</span>
+      </StyledAnchor>
     </>
   )
   const showHistory = autoPinnedItems.length > 0 || pinnedItems.length > 0
 
   const text = (
     <StyledMenu isPinShown={isPinShown}>
+      <StyledMenuItemText style={{ marginTop: '10px' }}>
+        <HeaderText style={{ paddingLeft: '25px' }}>Announcements </HeaderText>
+      </StyledMenuItemText>
+      {announcements}
       {autoPinnedItems.length > 0 ? (
-        <HeaderText>
-          Five recent tests ,questions, playlists and announcements{' '}
-        </HeaderText>
+        <HeaderText>Five Recent Tests, Questions & Playlists</HeaderText>
       ) : null}
       {autoPinnedItems.map((x) => (
         <ItemRow
@@ -142,12 +156,9 @@ const ItemsHistoryCard = ({
           {...x}
         />
       ))}
-      <StyledAnnouncment style={{ fontSize: '12px', paddingTop: '10px' }}>
-        {announcements}
-      </StyledAnnouncment>
       {console.log(pinnedItems, autoPinnedItems, 'yesh')}
       {pinnedItems.length > 0 ? (
-        <HeaderText>Pages pinned to board</HeaderText>
+        <HeaderText>Pages Pinned To Board</HeaderText>
       ) : null}
       {pinnedItems.map((x) => (
         <ItemRow
@@ -164,10 +175,9 @@ const ItemsHistoryCard = ({
 
   const boardText = (
     <StyledMenu isPinShown={isPinShown}>
+      <HeaderText style={{ paddingTop: '10px' }}>Announcements :</HeaderText>
+      {announcements}
       <Menu.Item>
-        <StyledAnnouncment style={{ fontSize: '12px' }}>
-          {announcements}
-        </StyledAnnouncment>
         <TextUpgrade onClick={() => history.push('/author/subscription')}>
           Upgrade to access more of pin to board feature{' '}
         </TextUpgrade>
@@ -282,7 +292,7 @@ const StyledMenu = styled(Menu)`
 
 const HeaderText = styled.h4`
   font-weight: bold;
-  color: #1ab394;
+  color: #2f4151;
   padding-left: 25px;
   margin-top: 10px;
 `
@@ -320,6 +330,9 @@ const StyledParagraph = styled.p`
   width: 350px;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: #2f4151;
+  font-size: 16px;
+  font-weight: 580;
 `
 
 const StyledParagraphPin = styled.p`
@@ -332,14 +345,13 @@ const StyledParagraphPin = styled.p`
 const StyledParagraphType = styled.p`
   padding-left: 50px !important;
   text-transform: uppercase !important;
+  color: #2f4151;
+  font-size: 16px;
+  font-weight: 580;
 `
 
-const StyledAnnouncment = styled.p`
-  padding-left: 25px;
-  color: #2f4151;
-  & > span {
-    font-weight: bold;
-  }
+const StyledAnchor = styled.a`
+  color: #1ab394 !important;
 `
 const SubInfoText = styled.div`
   display: flex;

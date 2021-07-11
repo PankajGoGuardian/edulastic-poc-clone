@@ -204,7 +204,7 @@ const HeaderSection = ({
   return (
     <MainHeader Icon={IconClockDashboard} headingText={t('common.dashboard')}>
       <FlexContainer alignItems="center">
-        <ItemsHistoryCard style={{ paddingRight: '5px' }} showPinIcon />
+        <ItemsHistoryCard style={{ paddingRight: '5px' }}/>
         {currentSignUpState === signUpState.ACCESS_WITHOUT_SCHOOL && (
           <AuthorCompleteSignupButton
             renderButton={(handleClick) => (

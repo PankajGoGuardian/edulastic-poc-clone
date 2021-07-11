@@ -1226,6 +1226,9 @@ const AssessmentContainer = ({
         testletState={testletState}
         saveUserAnswer={saveUserAnswer}
         testPhase={testPhase || 'learning'}
+        answers={answers}
+        answersById={answersById}
+        finishTest={finishTest}
         {...test}
       />
     )

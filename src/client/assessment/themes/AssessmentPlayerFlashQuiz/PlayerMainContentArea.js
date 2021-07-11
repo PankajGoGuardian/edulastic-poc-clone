@@ -48,6 +48,8 @@ const PlayerContentArea = ({
   itemId,
   saveUserResponse,
   title,
+  finishTest,
+  answers,
 }) => {
   const [isExploding, setIsExploding] = React.useState(false)
 
@@ -89,6 +91,8 @@ const PlayerContentArea = ({
             setUserAnswer={setUserAnswer}
             saveUserResponse={saveUserResponse}
             itemId={itemId}
+            finishTest={finishTest}
+            answers={answers}
           />
         )}
         {flashQuizPhase === 3 && (
@@ -98,6 +102,7 @@ const PlayerContentArea = ({
             testActivityId={testActivityId}
             groupId={groupId}
             title={title}
+            answers={answers}
           />
         )}
         <ConfettiContainer>

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { EduButton, FlexContainer } from '@edulastic/common'
 import FlashIcon from './FlashIcon'
 import { clamp } from 'lodash'
@@ -48,6 +48,8 @@ const FlipCards = ({
   itemId,
   groupId,
   testActivityId,
+  finishTest,
+  answers,
 }) => {
   const [matchedPairs, setMatchedPairs] = useState([])
   const [filppedPair, setFlipped] = useState([])
@@ -80,6 +82,12 @@ const FlipCards = ({
     return genlist
   }, [questions])
 
+  useEffect(() => {
+    if (answers && Object.keys(answers?.[0] || {}).length) {
+      setMatchedPairs(Object.keys(answers[0]))
+    }
+  }, [answers])
+
   const evaluatePair = (cardAIndex, cardBIndex) => {
     const cardA = list[cardAIndex]
     const cardB = list[cardBIndex]
@@ -88,7 +96,11 @@ const FlipCards = ({
     if (matched) {
       setMatchedPairs((x) => x.concat(cardA.id))
       const questionId = questions[0]?.id
-      setUserAnswer(itemId, questionId, { [cardA.id]: cardB.id })
+      setUserAnswer(itemId, questionId, {
+        ...matchedPairs.reduce((a, c) => ({ ...a, [c]: c }), {
+          [cardA.id]: cardB.id,
+        }),
+      })
 
       const lastTimeStamp =
         localStorage.getItem('lastTimeStampFlipQuiz') || Date.now()
@@ -143,11 +155,10 @@ const FlipCards = ({
       })
 
       if (result) {
+        finishTest({ groupId, preventRouteChange: true })
         setProceeding(false)
         setPhase(3)
       }
-
-      // TODO: SUBMIT TEST AND PROCEED
     } catch (e) {
       console.log('Error on phase update', e)
     }

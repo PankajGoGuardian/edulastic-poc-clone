@@ -78,7 +78,7 @@ class AssessmentPlayerFlashQuiz extends React.Component {
     const {
       theme,
       items,
-      LCBPreviewModal,
+      finishTest,
       currentItem,
       view: previewTab,
       settings,
@@ -93,6 +93,7 @@ class AssessmentPlayerFlashQuiz extends React.Component {
       saveUserAnswer,
       setUserAnswer,
       title,
+      answers,
     } = this.props
 
     const { phase } = this.state
@@ -126,6 +127,8 @@ class AssessmentPlayerFlashQuiz extends React.Component {
             itemId={item?._id}
             saveUserResponse={saveUserAnswer}
             title={title}
+            finishTest={finishTest}
+            answers={answers}
           />
         </Container>
       </ThemeProvider>

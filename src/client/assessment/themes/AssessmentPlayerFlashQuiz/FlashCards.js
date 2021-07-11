@@ -1,7 +1,7 @@
 import { themeColor } from '@edulastic/colors'
-import { EduButton, FlexContainer } from '@edulastic/common'
+import { EduButton, FlexContainer, Stimulus } from '@edulastic/common'
 import ConfirmationModal from '@edulastic/common/src/components/SimpleConfirmModal'
-import React, {  useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import {
   IconBookmark,
   IconCheckSmall,
@@ -21,6 +21,7 @@ import {
   CardNo,
   StyledIconBookmark,
   StyledIconChecked,
+  CardStimulus,
 } from './styled'
 
 const CardItem = ({
@@ -39,7 +40,10 @@ const CardItem = ({
     )}
     <FlexContainer width="100%" alignItems="center" justifyContent="flex-start">
       <CardNo active={currentActiveIndex === idx - 1}>{idx}</CardNo>
-      {card.frontStimulus}
+      <CardStimulus
+        style={{ maxWidth: '100%' }}
+        dangerouslySetInnerHTML={{ __html: card.frontStimulus }}
+      />
     </FlexContainer>
   </CardListItem>
 )
@@ -131,11 +135,23 @@ const FlashCards = ({ setPhase = () => {}, questions = [], viewMode }) => {
           <FlashCardsWrapper>
             <FlashCardFront front={!backView} onClick={handleCardFlip}>
               <CardContent>
-                {list[currentActiveIndex]?.frontStimulus}
+                <CardStimulus
+                  style={{ maxWidth: '100%' }}
+                  dangerouslySetInnerHTML={{
+                    __html: list[currentActiveIndex]?.frontStimulus,
+                  }}
+                />
               </CardContent>
             </FlashCardFront>
             <FlashCardBack back={backView} onClick={handleCardFlip}>
-              <CardContent>{list[currentActiveIndex]?.backStimulus}</CardContent>
+              <CardContent>
+                <CardStimulus
+                  style={{ maxWidth: '100%' }}
+                  dangerouslySetInnerHTML={{
+                    __html: list[currentActiveIndex]?.backStimulus,
+                  }}
+                />
+              </CardContent>
             </FlashCardBack>
           </FlashCardsWrapper>
           <CardControls

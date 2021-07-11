@@ -630,7 +630,9 @@ class Container extends PureComponent {
     if (isTestLoading && !test._id) {
       return <Spin />
     }
-
+    if (test.isFlashAssessment) {
+      history.push(`/author/flashquiz/${test._id}`)
+    }
     switch (current) {
       case 'addItems':
         return (

@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react'
-import { EduButton, FlexContainer } from '@edulastic/common'
+import { EduButton, FlexContainer, Stimulus } from '@edulastic/common'
 import FlashIcon from './FlashIcon'
 import { clamp } from 'lodash'
 import {
@@ -10,6 +10,7 @@ import {
   StatsContainer,
   StyledIconChecked,
   GridContainer,
+  CardStimulus,
 } from './styled'
 import { Divider, Statistic } from 'antd'
 
@@ -96,7 +97,12 @@ const FlipItem = ({
       onClick={() => handleCardFlip(idx, true)}
     >
       {isMatched && <StyledIconChecked top="15px" right="15px" />}
-      <CardContent>{card.stimulus}</CardContent>
+      <CardContent>
+        <CardStimulus
+          style={{ maxWidth: '125%' }}
+          dangerouslySetInnerHTML={{ __html: card.stimulus }}
+        />
+      </CardContent>
     </FlipCardBack>
   </FlipCardsWrapper>
 )

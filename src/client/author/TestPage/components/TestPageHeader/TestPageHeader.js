@@ -452,36 +452,43 @@ const TestPageHeader = ({
             justifyContent="flex-end"
             mt="12px"
           >
-            {hasTestId && !isPlaylist && !isDocBased && !test?.isDocBased && (
-              <EduButton
-                title="Print"
-                isBlue
-                isGhost
-                IconBtn
-                data-cy="printTest"
-                disabled={isTestLoading}
-                onClick={handlePrintTest}
-              >
-                <IconPrint />
-              </EduButton>
-            )}
-            {hasTestId && (owner || features.isCurator) && !isEdulasticCurator && (
-              <EduButton
-                isBlue
-                isGhost
-                IconBtn
-                title={
-                  isDemoPlayground
-                    ? 'This feature is not available in demo account.'
-                    : 'Share'
-                }
-                data-cy="share"
-                onClick={onShare}
-                disabled={disableButtons || isDemoPlayground}
-              >
-                <IconShare />
-              </EduButton>
-            )}
+            {hasTestId &&
+              !isPlaylist &&
+              !isDocBased &&
+              !test?.isDocBased &&
+              !test.isFlashAssessment && (
+                <EduButton
+                  title="Print"
+                  isBlue
+                  isGhost
+                  IconBtn
+                  data-cy="printTest"
+                  disabled={isTestLoading}
+                  onClick={handlePrintTest}
+                >
+                  <IconPrint />
+                </EduButton>
+              )}
+            {!test.isFlashAssessment &&
+              hasTestId &&
+              (owner || features.isCurator) &&
+              !isEdulasticCurator && (
+                <EduButton
+                  isBlue
+                  isGhost
+                  IconBtn
+                  title={
+                    isDemoPlayground
+                      ? 'This feature is not available in demo account.'
+                      : 'Share'
+                  }
+                  data-cy="share"
+                  onClick={onShare}
+                  disabled={disableButtons || isDemoPlayground}
+                >
+                  <IconShare />
+                </EduButton>
+              )}
             {hasTestId && owner && test.status === 'draft' && (
               <EduButton
                 isBlue

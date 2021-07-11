@@ -1,8 +1,16 @@
 import { lightGrey3, lightGrey4, themeColorBlue } from '@edulastic/colors'
+import { Stimulus } from '@edulastic/common'
 import { IconBookmark, IconCheck } from '@edulastic/icons'
 import { Tag } from 'antd'
 
 import styled from 'styled-components'
+
+export const CardStimulus = styled(Stimulus)`
+  img {
+    width: 100% !important;
+    height: 100%;
+  }
+`
 
 export const HeaderTitle = styled.h3`
   width: 100%;

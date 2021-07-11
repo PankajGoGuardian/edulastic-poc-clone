@@ -12,70 +12,7 @@ import {
   GridContainer,
 } from './styled'
 import { Divider, Statistic } from 'antd'
-
-const _list = [
-  {
-    id: '1',
-    frontStimulus: 'Facebook',
-    backStimulus: 'A Social Networking Company',
-  },
-  {
-    id: '2',
-    frontStimulus: 'Google',
-    backStimulus: 'A Search Engine Company',
-  },
-  {
-    id: '3',
-    frontStimulus: 'Amazon',
-    backStimulus: 'An Ecommerce Company',
-  },
-  {
-    id: '4',
-    frontStimulus: 'Netflix',
-    backStimulus: 'A Media Streaming Company',
-  },
-  {
-    id: '5',
-    frontStimulus: 'Apple',
-    backStimulus: 'A Smart Phone Company',
-  },
-  {
-    id: '6',
-    frontStimulus: 'Flipkart',
-    backStimulus: 'An Ecommerce Company',
-  },
-  {
-    id: '7',
-    frontStimulus: 'Hotstar',
-    backStimulus: 'A Media Streaming Company',
-  },
-  {
-    id: '8',
-    frontStimulus: 'OnePlus',
-    backStimulus: 'A Smart Phone Company',
-  },
-  {
-    id: '9',
-    frontStimulus: 'Goldman',
-    backStimulus: 'A FinTech Company',
-  },
-  {
-    id: '10',
-    frontStimulus: 'Snapwiz',
-    backStimulus: 'An EdTech Company',
-  },
-]
-
-const list = _list.reduce(
-  (a, c) =>
-    a.concat(
-      ...[
-        { key: `${c.id}-a`, id: `${c.id}`, stimulus: c.frontStimulus },
-        { key: `${c.id}-b`, id: `${c.id}`, stimulus: c.backStimulus },
-      ]
-    ),
-  []
-)
+import { testActivityApi } from '@edulastic/api'
 
 const FlipItem = ({
   card = {},
@@ -101,12 +38,23 @@ const FlipItem = ({
   </FlipCardsWrapper>
 )
 
-const FlipCards = ({ setIsExploding, setPhase, questions, viewMode }) => {
+const FlipCards = ({
+  setIsExploding,
+  setPhase,
+  questions,
+  viewMode,
+  saveUserResponse,
+  setUserAnswer,
+  itemId,
+  groupId,
+  testActivityId,
+}) => {
   const [matchedPairs, setMatchedPairs] = useState([])
   const [filppedPair, setFlipped] = useState([])
   const [flipsCount, setFlipsCount] = useState(0)
   const [visitedCards, setVisitedCards] = useState({})
   const [wrongFlipsCount, setWrongFlipsCount] = useState(0)
+  const [isProceeding, setProceeding] = useState(false)
 
   const list = useMemo(() => {
     const { list = [], possibleResponses = [] } = questions[0] || {}
@@ -123,7 +71,7 @@ const FlipCards = ({ setIsExploding, setPhase, questions, viewMode }) => {
       (a, c) =>
         a.concat(
           ...[
-            { key: `${c.id}-a`, id: `${c.id}`, stimulus: c.frontStimulus },
+            { key: `${c.id}-f`, id: `${c.id}`, stimulus: c.frontStimulus },
             { key: `${c.id}-b`, id: `${c.id}`, stimulus: c.backStimulus },
           ]
         ),
@@ -139,6 +87,14 @@ const FlipCards = ({ setIsExploding, setPhase, questions, viewMode }) => {
     const matched = cardA.id === cardB.id
     if (matched) {
       setMatchedPairs((x) => x.concat(cardA.id))
+      const questionId = questions[0]?.id
+      setUserAnswer(itemId, questionId, { [cardA.id]: cardB.id })
+
+      const lastTimeStamp =
+        localStorage.getItem('lastTimeStampFlipQuiz') || Date.now()
+      saveUserResponse(0, Date.now() - lastTimeStamp, true, groupId, {})
+      localStorage.setItem('lastTimeStampFlipQuiz', Date.now())
+
       if (setIsExploding && matchedPairs.length === list.length / 2 - 1) {
         setIsExploding(true)
       }
@@ -171,7 +127,31 @@ const FlipCards = ({ setIsExploding, setPhase, questions, viewMode }) => {
     }
   }
 
-  const handlePhase2Proceed = () => setPhase && setPhase(3)
+  const handlePhase2Proceed = async () => {
+    if (isProceeding) return
+    setProceeding(true)
+    if (viewMode) {
+      setPhase(3)
+      return
+    }
+
+    try {
+      const result = await testActivityApi.updatePhase({
+        testActivityId,
+        groupId,
+        phase: 'report',
+      })
+
+      if (result) {
+        setProceeding(false)
+        setPhase(3)
+      }
+
+      // TODO: SUBMIT TEST AND PROCEED
+    } catch (e) {
+      console.log('Error on phase update', e)
+    }
+  }
 
   return (
     <>
@@ -221,7 +201,13 @@ const FlipCards = ({ setIsExploding, setPhase, questions, viewMode }) => {
             </Divider>
           </StatsContainer>
           {!viewMode && (
-            <EduButton onClick={handlePhase2Proceed}>Submit Test</EduButton>
+            <EduButton
+              onClick={handlePhase2Proceed}
+              loading={isProceeding}
+              disabled={isProceeding}
+            >
+              Submit Test
+            </EduButton>
           )}
         </FlexContainer>
       </FlexContainer>

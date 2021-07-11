@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
 
-import { test } from '@edulastic/constants'
 import FlashCards from './FlashCards'
 import FlipCards from './FlipCards'
 
@@ -12,6 +11,7 @@ import getZoomedResponsiveWidth from '../../utils/zoomedResponsiveWidth'
 import Confetti from 'react-dom-confetti'
 import { ConfettiContainer } from './styled'
 import FlashQuizReport from './FlashQuizReport'
+import { SpinLoader } from '@edulastic/common'
 
 const config = {
   angle: 90,
@@ -27,94 +27,27 @@ const config = {
   colors: ['#a864fd', '#29cdff', '#78ff44', '#ff718d', '#fdff6a'],
 }
 
-const list = [
-  {
-    id: '1',
-    frontStimulus: 'Facebook',
-    backStimulus: 'A Social Networking Company',
-  },
-  {
-    id: '2',
-    frontStimulus: 'Google',
-    backStimulus: 'A Search Engine Company',
-  },
-  {
-    id: '3',
-    frontStimulus: 'Amazon',
-    backStimulus: 'An Ecommerce Company',
-  },
-  {
-    id: '4',
-    frontStimulus: 'Netflix',
-    backStimulus: 'A Media Streaming Company',
-  },
-  {
-    id: '5',
-    frontStimulus: 'Apple',
-    backStimulus: 'A Smart Phone Company',
-  },
-  {
-    id: '6',
-    frontStimulus: 'Flipkart',
-    backStimulus: 'An Ecommerce Company',
-  },
-  {
-    id: '7',
-    frontStimulus: 'Hotstar',
-    backStimulus: 'A Media Streaming Company',
-  },
-  {
-    id: '8',
-    frontStimulus: 'OnePlus',
-    backStimulus: 'A Smart Phone Company',
-  },
-  {
-    id: '9',
-    frontStimulus: 'Goldman',
-    backStimulus: 'A FinTech Company',
-  },
-  {
-    id: '10',
-    frontStimulus: 'Snapwiz',
-    backStimulus: 'An EdTech Company',
-  },
-]
-
 const PlayerContentArea = ({
-  itemRows,
   previewTab,
   currentItem,
-  isFirst,
-  isLast,
-  moveToPrev,
-  moveToNext,
   questions,
   t,
-  unansweredQuestionCount,
-  items,
   testItemState,
-  setHighlights,
-  setCrossAction,
-  crossAction,
   previousQuestionActivities,
-  playerSkinType = test.playerSkinValues.edulastic,
-  isSidebarVisible = true,
   zoomLevel,
   windowWidth,
-  scratchPadMode,
-  saveUserWork,
-  saveAttachments,
-  attachments,
   history,
   evaluation,
-  highlights,
-  enableMagnifier,
   changePreview,
-  blockNavigationToAnsweredQuestions = false,
-  tool,
+  setUserAnswer,
   flashQuizPhase,
   setPhase,
   user,
+  testActivityId,
+  groupId,
+  itemId,
+  saveUserResponse,
+  title,
 }) => {
   const [isExploding, setIsExploding] = React.useState(false)
 
@@ -126,6 +59,10 @@ const PlayerContentArea = ({
     zoomLevel,
   })
 
+  if (flashQuizPhase === -1) {
+    return <SpinLoader />
+  }
+
   return (
     <Main ref={scrollContainerRef} zoomed={isZoomApplied} zoomLevel={zoomLevel}>
       <MainContent
@@ -134,15 +71,35 @@ const PlayerContentArea = ({
         responsiveWidth={responsiveWidth}
         className="scrollable-main-wrapper"
       >
-        {flashQuizPhase === 1 && <FlashCards setPhase={setPhase} list={list} />}
+        {flashQuizPhase === 1 && (
+          <FlashCards
+            setPhase={setPhase}
+            questions={questions}
+            testActivityId={testActivityId}
+            groupId={groupId}
+          />
+        )}
         {flashQuizPhase === 2 && (
           <FlipCards
             setIsExploding={setIsExploding}
             setPhase={setPhase}
-            list={list}
+            questions={questions}
+            testActivityId={testActivityId}
+            groupId={groupId}
+            setUserAnswer={setUserAnswer}
+            saveUserResponse={saveUserResponse}
+            itemId={itemId}
           />
         )}
-        {flashQuizPhase === 3 && <FlashQuizReport user={user} data={list} />}
+        {flashQuizPhase === 3 && (
+          <FlashQuizReport
+            user={user}
+            questions={questions}
+            testActivityId={testActivityId}
+            groupId={groupId}
+            title={title}
+          />
+        )}
         <ConfettiContainer>
           <Confetti active={isExploding} config={config} />
         </ConfettiContainer>

@@ -1,7 +1,7 @@
 import { themeColor } from '@edulastic/colors'
 import { EduButton, FlexContainer } from '@edulastic/common'
 import ConfirmationModal from '@edulastic/common/src/components/SimpleConfirmModal'
-import React, {  useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import {
   IconBookmark,
   IconCheckSmall,
@@ -22,6 +22,7 @@ import {
   StyledIconBookmark,
   StyledIconChecked,
 } from './styled'
+import { testActivityApi } from '@edulastic/api'
 
 const CardItem = ({
   card = {},
@@ -44,12 +45,19 @@ const CardItem = ({
   </CardListItem>
 )
 
-const FlashCards = ({ setPhase = () => {}, questions = [], viewMode }) => {
+const FlashCards = ({
+  setPhase = () => {},
+  questions = [],
+  viewMode,
+  testActivityId,
+  groupId,
+}) => {
   const [backView, setBackView] = useState()
   const [currentActiveIndex, setCurrentActive] = useState(0)
   const [bookmarks, setBookmarks] = useState([])
   const [marked, setMarked] = useState([])
   const [isConfirmationModal, setConfirmationModal] = useState(false)
+  const [isProceeding, setProceeding] = useState(false)
 
   const list = useMemo(() => {
     const { list = [], possibleResponses = [] } = questions[0] || {}
@@ -97,7 +105,30 @@ const FlashCards = ({ setPhase = () => {}, questions = [], viewMode }) => {
   const handleTakeTest = () => setConfirmationModal(true)
   const handleTakeTestCancel = () => setConfirmationModal(false)
 
-  const handlePhase1Proceed = (...x) => setPhase(2)
+  const handlePhase1Proceed = async () => {
+    if (isProceeding) return
+    setProceeding(true)
+    if (viewMode) {
+      setPhase(2)
+      return
+    }
+
+    try {
+      const result = await testActivityApi.updatePhase({
+        testActivityId,
+        groupId,
+        phase: 'assignment',
+      })
+
+      if (result) {
+        setConfirmationModal(false)
+        setProceeding(false)
+        setPhase(2)
+      }
+    } catch (e) {
+      console.log('Error on phase update', e)
+    }
+  }
 
   const handleAllMarked = () => {
     Modal.confirm({
@@ -135,7 +166,9 @@ const FlashCards = ({ setPhase = () => {}, questions = [], viewMode }) => {
               </CardContent>
             </FlashCardFront>
             <FlashCardBack back={backView} onClick={handleCardFlip}>
-              <CardContent>{list[currentActiveIndex]?.backStimulus}</CardContent>
+              <CardContent>
+                {list[currentActiveIndex]?.backStimulus}
+              </CardContent>
             </FlashCardBack>
           </FlashCardsWrapper>
           <CardControls

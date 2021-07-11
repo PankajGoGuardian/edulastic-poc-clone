@@ -1,6 +1,6 @@
-import { EduButton, FlexContainer } from '@edulastic/common'
+import { FlexContainer } from '@edulastic/common'
 import { Avatar, Descriptions, Divider, Progress } from 'antd'
-import React from 'react'
+import React, { useMemo } from 'react'
 import {
   StyledTag,
   FlashQuizReportContainer,
@@ -14,7 +14,17 @@ import { PdfDocument } from './FlashQuizPDFView'
 import { themeColorBlue } from '@edulastic/colors'
 import { IconDownload } from '@edulastic/icons'
 
-const FlashQuizReport = ({ user, data }) => {
+const FlashQuizReport = ({ user, questions = [], title }) => {
+  const data = useMemo(() => {
+    const { list = [], possibleResponses = [] } = questions[0] || {}
+    return list.map((item) => ({
+      id: item.value,
+      frontStimulus: item.label,
+      backStimulus: possibleResponses.find((el) => el.value === item.value)
+        ?.label,
+    }))
+  }, [questions])
+
   return (
     <FlashQuizReportContainer>
       <FlexContainer
@@ -28,7 +38,7 @@ const FlashQuizReport = ({ user, data }) => {
         </Avatar>
         <StyledTag color="geekblue">{user.username}</StyledTag>
       </FlexContainer>
-      <h3 style={{ fontWeight: 600 }}>Flash Quiz Test 5 For Kindergarten</h3>
+      <h3 style={{ fontWeight: 600 }}>{title}</h3>
 
       <PerformanceContainer>
         <FlexContainer
@@ -41,7 +51,11 @@ const FlashQuizReport = ({ user, data }) => {
             alignItems="center"
             justifyContent="center"
           >
-            <Progress type="circle" percent={75} format={() => `${8}/10`} />
+            <Progress
+              type="circle"
+              percent={75}
+              format={() => `${2}/${data?.length || 0}`}
+            />
             <h3>SCORE</h3>
           </FlexContainer>
           <FlexContainer
@@ -49,7 +63,11 @@ const FlashQuizReport = ({ user, data }) => {
             alignItems="center"
             justifyContent="center"
           >
-            <Progress className="percent" type="circle" percent={75} />
+            <Progress
+              className="percent"
+              type="circle"
+              percent={Math.round((2 / (data?.length || 1)) * 100)}
+            />
             <h3>PERCENT</h3>
           </FlexContainer>
           <FlexContainer
@@ -75,7 +93,7 @@ const FlashQuizReport = ({ user, data }) => {
             bordered
           >
             <Descriptions.Item label="Total FlashCards">
-              <StatValue>10</StatValue>
+              <StatValue>{data?.length || 0}</StatValue>
             </Descriptions.Item>
             <Descriptions.Item label="Total Card Flips">
               <StatValue>63</StatValue>

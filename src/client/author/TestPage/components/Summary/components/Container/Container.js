@@ -62,6 +62,7 @@ const Summary = ({
   showCancelButton,
   toggleTestLikeRequest,
   handleChangeCurriculum,
+  handleChangeTotalTestItems,
 }) => {
   const handleChangeField = (field, value) => {
     if (field === 'thumbnail') {
@@ -162,6 +163,7 @@ const Summary = ({
         test={test}
         toggleTestLikeRequest={toggleTestLikeRequest}
         handleChangeCurriculum={handleChangeCurriculum}
+        handleChangeTotalTestItems={handleChangeTotalTestItems}
       />
     </MainContentWrapper>
   )

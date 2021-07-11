@@ -544,6 +544,11 @@ class Container extends PureComponent {
     setData({ ...test, curriculum })
   }
 
+  handleChangeTotalTestItems = (count) => {
+    const { test, setData } = this.props
+    setData({ ...test, totalTestItems: count })
+  }
+
   onChangeSkillIdentifiers = (identifiers) => {
     const { setData, test } = this.props
     if (!isEmpty(identifiers)) {
@@ -680,6 +685,7 @@ class Container extends PureComponent {
               onChangeSubjects={this.handleChangeSubject}
               showCancelButton={showCancelButton}
               handleChangeCurriculum={this.handleChangeCurriculum}
+              handleChangeTotalTestItems={this.handleChangeTotalTestItems}
             />
           </Content>
         )

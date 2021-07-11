@@ -934,6 +934,7 @@ export const createBlankTest = (payload = {}) => {
 
   if (isAdaptiveTest) {
     initialTestData.isAdaptiveTest = true
+    initialTestData.totalTestItems = 1
   }
 
   return initialTestData

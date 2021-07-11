@@ -56,6 +56,7 @@ export const SET_STUDENT_ITEMS = '[studentItems] set Student items'
 export const SET_FEEDBACK = '[studentItems] set feedback'
 export const SET_TEST_ACTIVITIES =
   '[studentReports] set test all testActivities report'
+export const ASK_QUESTION = '[studentReports] ask question'
 
 // actions
 export const loadTestActivityReportAction = createAction(
@@ -63,6 +64,7 @@ export const loadTestActivityReportAction = createAction(
 )
 export const setFeedbackReportAction = createAction(SET_FEEDBACK)
 export const setTestActivitiesAction = createAction(SET_TEST_ACTIVITIES)
+export const askQuestionAction = createAction(ASK_QUESTION)
 
 function* loadAttachmentsFromServer({
   referrerId,
@@ -420,10 +422,28 @@ function* loadTestActivityReport({ payload }) {
   }
 }
 
+function* askQuestion({ payload }) {
+  try {
+    const { assignmentId, ...restPaylod } = payload
+    yield call(assignmentApi.askQuestionApi, {
+      assignmentId,
+      payload: restPaylod,
+    })
+    notification({ msg: 'Doubt submitted successfully.' })
+  } catch (error) {
+    console.log('Error occured', error)
+    notification({
+      type: 'error',
+      msg: 'Error occured while submitting doubt.',
+    })
+  }
+}
+
 // set actions watcherss
 export function* watcherSaga() {
   yield all([
     yield takeEvery(LOAD_TEST_ACTIVITY_REPORT, loadTestActivityReport),
+    yield takeEvery(ASK_QUESTION, askQuestion),
   ])
 }
 

@@ -272,6 +272,31 @@ const getBubbleSheet = ({ assignmentId, groupId }) =>
     url: `${prefix}/${assignmentId}/group/${groupId}/bubble-sheet`,
   })
 
+const askQuestionApi = ({ assignmentId, payload }) => {
+  return api.callApi({
+    url: `${prefix}/askQuestion/${assignmentId}`,
+    method: 'POST',
+    data: payload,
+  })
+}
+
+const answerQuestionApi = ({ assignmentId, questionId, payload }) => {
+  return api.callApi({
+    url: `${prefix}/answer/${assignmentId}/${questionId}`,
+    method: 'POST',
+    data: payload,
+  })
+}
+
+const getAssignmentDoubtsApi = ({ assignmentId }) => {
+  return api
+    .callApi({
+      url: `${prefix}/questions/${assignmentId}`,
+      method: 'GET',
+    })
+    .then((result) => result.data.result)
+}
+
 export default {
   create,
   update,
@@ -297,4 +322,7 @@ export default {
   fetchRegradeSettings,
   editTagsRequest,
   getBubbleSheet,
+  askQuestionApi,
+  getAssignmentDoubtsApi,
+  answerQuestionApi,
 }

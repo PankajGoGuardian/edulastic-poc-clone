@@ -27,6 +27,8 @@ const Header = ({
   reviewResponses,
   onExit,
   previewModal,
+  showAskDoubtButton = false,
+  onAskDoubt,
   ...rest
 }) => (
   <MainHeader
@@ -55,6 +57,11 @@ const Header = ({
       {(attempts.length > 1 || showReviewResponses || previewModal) && (
         <FlexContainer>
           {attempts.length > 1 && <AttemptSelect attempts={attempts} />}
+          {showAskDoubtButton && (
+            <EduButton onClick={onAskDoubt} isBlue>
+              Ask a doubt
+            </EduButton>
+          )}
           {showReviewResponses && (
             <EduButton
               data-cy="view-response-in-header"

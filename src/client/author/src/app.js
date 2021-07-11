@@ -66,6 +66,9 @@ const PrintAssessment = loadable(() => import('../PrintAssessment'), {
 const ExpressGrader = loadable(() => import('../ExpressGrader'), {
   fallback: <Progress />,
 })
+const Doubts = loadable(() => import('../Doubts'), {
+  fallback: <Progress />,
+})
 const LCBSettings = loadable(() => import('../LCBAssignmentSettings'), {
   fallback: <Progress />,
 })
@@ -404,6 +407,11 @@ const Author = ({
                   exact
                   path={`${match.url}/expressgrader/:assignmentId/:classId`}
                   component={ExpressGrader}
+                />
+                <Route
+                  exact
+                  path={`${match.url}/doubts/:assignmentId`}
+                  component={Doubts}
                 />
                 <Route
                   exact

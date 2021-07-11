@@ -870,6 +870,11 @@ class ClassHeader extends Component {
                     linkLabel={t('common.settings')}
                   />
                 )}
+                <HeaderTabs
+                  linkLabel="Doubts"
+                  to={`/author/doubts/${assignmentId}`}
+                  isActive={active === 'doubts'}
+                />
               </StyledTabs>
             </HeaderMidContainer>
             <RightSideButtonWrapper>

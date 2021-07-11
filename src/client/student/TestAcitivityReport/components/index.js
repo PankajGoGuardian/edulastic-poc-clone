@@ -31,8 +31,10 @@ import {
   getFeedbackTransformedSelector,
 } from '../../sharedDucks/TestItem'
 import MainContainer from '../../styled/mainContainer'
+import DoubtsModal from './DoubtsModal'
+
 // actions
-import { loadTestActivityReportAction } from '../ducks'
+import { loadTestActivityReportAction, askQuestionAction } from '../ducks'
 import ReportListContent from './Container'
 import TestActivitySubHeader from './SubHeader'
 import ProgressGraph from '../../../common/components/ProgressGraph'
@@ -71,6 +73,7 @@ const ReportListContainer = ({
   questionActivities,
   userId,
   studentData,
+  askQuestion,
 }) => {
   const [assignmentItemTitle, setAssignmentItemTitle] = useState(null)
   const [showGraph, setShowGraph] = useState(true)
@@ -78,6 +81,7 @@ const ReportListContainer = ({
   const { releaseScore, userWork, _id: testActivityId } = testActivity
   const [showAttachmentsModal, taggleAttachmentModal] = useState(false)
   const [attachmentIndexForPreview, setAttachmentIndex] = useState(null)
+  const [showDoubtModal, setShowDoubtModal] = useState(false)
 
   const attachments = userWork?.attachments
 
@@ -114,6 +118,10 @@ const ReportListContainer = ({
 
   const handleExit = () => {
     history.push('/home/grades')
+  }
+
+  const openDoubtModal = () => {
+    setShowDoubtModal(true)
   }
 
   useEffect(() => {
@@ -157,6 +165,13 @@ const ReportListContainer = ({
 
   const dontRelease = releaseScore === releaseGradeLabels.DONT_RELEASE
 
+  const createQuestion = (question) => {
+    askQuestion({
+      question,
+      assignmentId: testActivity._id,
+    })
+  }
+
   return (
     <MainContainer flag={flag}>
       <TestAcivityHeader
@@ -169,7 +184,16 @@ const ReportListContainer = ({
         reviewResponses={reviewResponses}
         hideSideMenu={isCliUser}
         attempts={attempts}
+        showAskDoubtButton
+        onAskDoubt={openDoubtModal}
       />
+      {showDoubtModal && (
+        <DoubtsModal
+          isVisible={showDoubtModal}
+          onCancel={() => setShowDoubtModal(false)}
+          onCreate={createQuestion}
+        />
+      )}
       <MainContentWrapper padding={isDocBased ? '0px' : '20px 30px'}>
         <TestActivitySubHeader
           title={assignmentItemTitle}
@@ -256,6 +280,7 @@ const enhance = compose(
     {
       setCurrentItem: setCurrentItemAction,
       loadTestActivityReport: loadTestActivityReportAction,
+      askQuestion: askQuestionAction,
       clearUserWork: clearUserWorkAction,
     }
   )

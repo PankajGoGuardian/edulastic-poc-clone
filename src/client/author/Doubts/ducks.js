@@ -40,10 +40,9 @@ export const reducer = createReducer(initialState, {
 })
 
 function* getDoubts({ payload }) {
+  console.log(payload)
   try {
-    const response = yield call(assignmentApi.getAssignmentDoubtsApi, {
-      assignmentId: '60e2b1d5c1720200093b83b2',
-    })
+    const response = yield call(assignmentApi.getAssignmentDoubtsApi, payload)
     yield put(getDoubtsSuccess(response))
   } catch (err) {
     console.error(err)

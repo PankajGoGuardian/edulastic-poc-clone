@@ -288,13 +288,19 @@ const answerQuestionApi = ({ assignmentId, questionId, payload }) => {
   })
 }
 
-const getAssignmentDoubtsApi = ({ assignmentId }) => {
+const getAssignmentDoubtsApi = (assignmentId) => {
   return api
     .callApi({
       url: `${prefix}/questions/${assignmentId}`,
       method: 'GET',
     })
     .then((result) => result.data.result)
+}
+
+const getStudentDoubtsApi = (assignmentId, studentId) => {
+  return api.callApi({
+    url: `${prefix}/questions/${assignmentId}/${studentId}`,
+  })
 }
 
 export default {
@@ -325,4 +331,5 @@ export default {
   askQuestionApi,
   getAssignmentDoubtsApi,
   answerQuestionApi,
+  getStudentDoubtsApi,
 }

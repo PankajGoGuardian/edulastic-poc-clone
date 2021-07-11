@@ -35,7 +35,7 @@ const Doubts = ({
   const [selectedDoubt, setSelectedDoubt] = useState({})
 
   useEffect(() => {
-    getDoubts()
+    getDoubts(additionalData.testId)
   }, [])
 
   const openAnswerModal = (doubt) => {

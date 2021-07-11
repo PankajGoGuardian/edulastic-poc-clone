@@ -106,17 +106,23 @@ const FlipCards = ({
     if (matched) {
       setMatchedPairs((x) => x.concat(cardA.id))
       const questionId = questions[0]?.id
-      setUserAnswer(itemId, questionId, {
+
+      const payload = {
         ...matchedPairs.reduce((a, c) => ({ ...a, [c]: c }), {
           [cardA.id]: cardB.id,
           wrongFlips: wrongFlipsCount,
           totalFlips: flipsCount,
         }),
-      })
+      }
+
+      setUserAnswer(itemId, questionId, payload)
 
       const lastTimeStamp =
         localStorage.getItem('lastTimeStampFlipQuiz') || Date.now()
-      saveUserResponse(0, Date.now() - lastTimeStamp, true, groupId, {})
+
+      const itemResponse = [0, Date.now() - lastTimeStamp, false, groupId, {}]
+
+      saveUserResponse(...itemResponse)
       localStorage.setItem('lastTimeStampFlipQuiz', Date.now())
 
       if (setIsExploding && matchedPairs.length === list.length / 2 - 1) {
@@ -166,8 +172,15 @@ const FlipCards = ({
         phase: 'report',
       })
 
+      const lastTimeStamp =
+        localStorage.getItem('lastTimeStampFlipQuiz') || Date.now()
+
+      const itemResponse = [0, Date.now() - lastTimeStamp, false, groupId, {}]
+
+      localStorage.removeItem('lastTimeStampFlipQuiz')
+
       if (result) {
-        finishTest({ groupId, preventRouteChange: true })
+        finishTest({ groupId, preventRouteChange: true, itemResponse })
         setProceeding(false)
         setPhase(3)
       }

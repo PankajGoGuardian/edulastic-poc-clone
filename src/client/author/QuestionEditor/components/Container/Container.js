@@ -65,6 +65,8 @@ import { clearAnswersAction } from '../../../src/actions/answers'
 import LanguageSelector from '../../../../common/components/LanguageSelector'
 import { getCurrentLanguage } from '../../../../common/components/LanguageSelector/duck'
 import { allowedToSelectMultiLanguageInTest } from '../../../src/selectors/user'
+import ItemsHistoryCard from '../../../PinBoard/itemsHistoryCard';
+
 
 const { useLanguageFeatureQn } = constantsQuestionType
 
@@ -401,16 +403,18 @@ class Container extends Component {
     } = this.props
 
     let showPublishButton = false
-
+    let dataForPin = null;
     if (item) {
       const { _id: testItemId } = item
       showPublishButton =
         isTestFlow &&
         ((testItemId && testItemStatus && testItemStatus !== 'published') ||
           isEditable)
+      dataForPin = {contentId: testItemId,contentType:'testItem',title: item?.data?.questions?.[0]?.title,status: testItemStatus,url: window.location.href};
     }
 
     return (
+      <>
       <ButtonAction
         onShowSource={this.handleShowSource}
         onShowSettings={() => setShowSettings(true)}
@@ -424,6 +428,8 @@ class Container extends Component {
         showPublishButton={showPublishButton}
         showSettingsButton={false}
       />
+      {dataForPin &&  <ItemsHistoryCard autoPinItem data={dataForPin} /> }
+      </>
     )
   }
 

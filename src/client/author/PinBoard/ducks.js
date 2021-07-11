@@ -31,7 +31,9 @@ const slice = createSlice({
       if (payload in state.pinsKeyed) {
         delete state.pinsKeyed[payload]
       }
-      state.pins = state.pins.filter((x) => x != payload)
+      const pins = state.pins.filter((x) => x != payload)
+      console.log('pins',{pins,payload});
+      Object.assign(state,{pins});
     },
     _setItems: (state, { payload }) => {
       state.pins = payload.map((x) => x.contentId)
@@ -49,28 +51,29 @@ const slice = createSlice({
         state.autoPins.pop()
       }
       state.autoPins.unshift(payload)
+      sessionStorage.autoPins = JSON.stringify(state.autoPins);
     },
   },
 })
 
 export { slice }
 
-const getCurrentItemsSelector = createSelector((state) =>
-  state.pinned.pins.map((x) => state.pinned.pinsKeyed[x])
-)
+export const getCurrentItemsSelector = (state) => state.pinned.pins.map((x) => ({...state.pinned.pinsKeyed[x],_id: state.pinned.pinsKeyed[x]?.contentId})).filter(x => x)
 
 function* saveCurrentSaga() {
   const currentItems = yield select(getCurrentItemsSelector)
   window.sessionStorage.pinnedItems = JSON.stringify(currentItems)
-  yield call(userContextApi.setPinData, currentItems)
+//   return yield call(userContextApi.setPinData, currentItems)
 }
 
 function* addPinSaga({ payload }) {
   const oldData = yield select(getCurrentItemsSelector)
+
   try {
     yield put(slice.actions._addPin(payload))
-    yield call(saveCurrentSaga)
+    const res =  yield call(saveCurrentSaga);
   } catch (e) {
+    console.log('err',e);
     yield put(slice.actions._setItems(oldData))
   }
 }
@@ -102,9 +105,14 @@ function* loadItemsSaga() {
     yield put(slice.actions._setItems(JSON.parse(sessionStorage.pinnedItems)))
   }
   try {
-    const items = yield call(userContextApi.getPinData)
-    sessionStorage.pinnedItems = JSON.stringify(items)
-    yield put(slice.actions._setItems(items))
+    // const res = (yield call(userContextApi.getPinData));
+    // let items = [];
+    // if(res?.value){
+    //     items = res?.value;
+    // }
+    // console.log('items',items);
+    // sessionStorage.pinnedItems = JSON.stringify(items)
+    // yield put(slice.actions._setItems(items))
   } catch (e) {
     console.warn('loading pinnedItems error', e)
   }
@@ -112,7 +120,7 @@ function* loadItemsSaga() {
 
 export function* watcherSaga() {
   yield all([
-    yield takeEvery(slice.actions.addPin, addPinSaga),
+    yield takeEvery(`${slice.actions.addPin}`, addPinSaga),
     yield takeEvery(slice.actions.removePin, removePinSaga),
     yield takeEvery(slice.actions.setItems, setItemsSaga),
     yield takeEvery(slice.actions.loadItems, loadItemsSaga),

@@ -41,7 +41,7 @@ import GradebookStudentTable from './GradebookStudent/GradebookStudentTable'
 // ducks
 import { actions, selectors } from '../ducks'
 import { getCurrentTerm } from '../../src/selectors/user'
-
+import itemsHistoryCard from '../../PinBoard/itemsHistoryCard';
 // transformers & constants
 import {
   curateFiltersData,
@@ -215,6 +215,7 @@ const Gradebook = ({
         }
       >
         <Row type="flex">
+          <itemsHistoryCard />
           <Link to="/author/assignments">
             <EduButton isBlue isGhost>
               VIEW ASSIGNMENTS

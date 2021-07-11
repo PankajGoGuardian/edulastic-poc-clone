@@ -13,6 +13,8 @@ import withRouter from 'react-router-dom/withRouter'
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
+import styled from 'styled-components'
+import ItemsHistoryCard from '../../../PinBoard/itemsHistoryCard';
 
 // components
 import { Dropdown, Select } from 'antd'
@@ -227,6 +229,7 @@ const Header = ({
       headingText={classDetails}
     >
       <div style={{ display: 'flex', alignItems: 'right' }}>
+        <ItemsHistoryCard />
         {showDropDown && !isDemoPlaygroundUser ? (
           <SelectStyled
             data-cy="sync-options-dropdown"

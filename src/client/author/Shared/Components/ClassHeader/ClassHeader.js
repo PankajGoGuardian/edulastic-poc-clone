@@ -107,6 +107,7 @@ import ViewPasswordModal from './ViewPasswordModal'
 import { allowedSettingPageToDisplay } from './utils/transformers'
 
 const { POLICY_OPEN_MANUALLY_BY_TEACHER } = assignmentPolicyOptions
+import ItemsHistoryCard from '../../../PinBoard/itemsHistoryCard';
 const {
   gradingStatus,
   authorAssignmentConstants: { assignmentStatus: assignmentStatusConstants },
@@ -822,6 +823,7 @@ class ClassHeader extends Component {
               </StyledTabs>
             </HeaderMidContainer>
             <RightSideButtonWrapper>
+              <ItemsHistoryCard />
               {!isSmallDesktop && renderOpenClose}
               <Dropdown
                 getPopupContainer={(triggerNode) => triggerNode.parentNode}

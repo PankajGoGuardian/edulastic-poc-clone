@@ -90,7 +90,11 @@ const FlipCards = ({
 
   useEffect(() => {
     if (answers && Object.keys(answers?.[0] || {}).length) {
-      setMatchedPairs(Object.keys(answers[0]))
+      setMatchedPairs(
+        Object.keys(answers[0]).filter(
+          (x) => !['wrongFlips', 'totalFlips'].includes(x)
+        )
+      )
     }
   }, [answers])
 
@@ -105,6 +109,8 @@ const FlipCards = ({
       setUserAnswer(itemId, questionId, {
         ...matchedPairs.reduce((a, c) => ({ ...a, [c]: c }), {
           [cardA.id]: cardB.id,
+          wrongFlips: wrongFlipsCount,
+          totalFlips: flipsCount,
         }),
       })
 
@@ -212,7 +218,7 @@ const FlipCards = ({
             </Divider>
             <Divider>
               <Statistic
-                title="Remaining Pairs"
+                title="# Remaining Pairs"
                 value={list.length / 2 - matchedPairs.length}
               />
             </Divider>

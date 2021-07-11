@@ -23,7 +23,7 @@ const PlayerHeader = ({
   phase = 1,
   history,
 }) => {
-  const handleSaveNExit = () => history.push('/student/assignments')
+  const handleSaveNExit = () => history.push('/home/assignments')
 
   const rightButtons = (
     <SaveAndExit
@@ -74,7 +74,7 @@ const enhance = compose(
   withRouter,
   withWindowSizes,
   connect(
-    (state, { timedAssignment }) => ({
+    (state) => ({
       settings: state.test.settings,
     }),
     null

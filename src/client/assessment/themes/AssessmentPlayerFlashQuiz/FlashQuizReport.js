@@ -13,8 +13,9 @@ import { PDFDownloadLink } from '@react-pdf/renderer'
 import { PdfDocument } from './FlashQuizPDFView'
 import { themeColorBlue } from '@edulastic/colors'
 import { IconDownload } from '@edulastic/icons'
+import { clamp } from 'lodash'
 
-const FlashQuizReport = ({ user, questions = [], title }) => {
+const FlashQuizReport = ({ user, questions = [], title, answers }) => {
   const data = useMemo(() => {
     const { list = [], possibleResponses = [] } = questions[0] || {}
     return list.map((item) => ({
@@ -24,6 +25,26 @@ const FlashQuizReport = ({ user, questions = [], title }) => {
         ?.label,
     }))
   }, [questions])
+
+  const [actualScore, totalScore] = useMemo(() => {
+    const matchedPairs = Object.keys(answers?.[0] || {}).filter(
+      (x) => !['wrongFlips', 'totalFlips'].includes(x)
+    )
+    const _actualScore = clamp(
+      matchedPairs.length - answers?.[0]?.wrongFlips * 0.1,
+      0,
+      matchedPairs.length
+    )
+
+    const _totalScore = data.length
+
+    return [_actualScore || 0, _totalScore || 0]
+  }, [data, answers])
+
+  const percent = useMemo(
+    () => Math.round((actualScore / (totalScore || 1)) * 100),
+    [actualScore, totalScore]
+  )
 
   return (
     <FlashQuizReportContainer>
@@ -53,8 +74,8 @@ const FlashQuizReport = ({ user, questions = [], title }) => {
           >
             <Progress
               type="circle"
-              percent={75}
-              format={() => `${2}/${data?.length || 0}`}
+              percent={percent}
+              format={() => `${actualScore} / ${totalScore}`}
             />
             <h3>SCORE</h3>
           </FlexContainer>
@@ -66,7 +87,8 @@ const FlashQuizReport = ({ user, questions = [], title }) => {
             <Progress
               className="percent"
               type="circle"
-              percent={Math.round((2 / (data?.length || 1)) * 100)}
+              percent={percent}
+              format={(x) => `${x}%`}
             />
             <h3>PERCENT</h3>
           </FlexContainer>
@@ -96,19 +118,19 @@ const FlashQuizReport = ({ user, questions = [], title }) => {
               <StatValue>{data?.length || 0}</StatValue>
             </Descriptions.Item>
             <Descriptions.Item label="Total Card Flips">
-              <StatValue>63</StatValue>
+              <StatValue>{answers?.[0]?.totalFlips || '-'}</StatValue>
             </Descriptions.Item>
             <Descriptions.Item label="Total Wrong Flips">
-              <StatValue>32</StatValue>
+              <StatValue>{answers?.[0]?.wrongFlips || '-'}</StatValue>
             </Descriptions.Item>
             <Descriptions.Item label="Learning Time">
-              <StatValue>6 mins</StatValue>
+              <StatValue>2 mins</StatValue>
             </Descriptions.Item>
             <Descriptions.Item label="Assessement Time">
-              <StatValue>5 mins</StatValue>
+              <StatValue>3 mins</StatValue>
             </Descriptions.Item>
             <Descriptions.Item label="Total Time" span={2}>
-              <StatValue>11 mins</StatValue>
+              <StatValue>5 mins</StatValue>
             </Descriptions.Item>
           </Descriptions>
         </PerformanceMetrics>

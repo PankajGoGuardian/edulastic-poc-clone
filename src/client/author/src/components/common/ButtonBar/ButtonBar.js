@@ -160,10 +160,9 @@ class ButtonBar extends Component {
                   )}
               </StyledTabs>
             </HeaderMidContainer>
-
+            <ItemsHistoryCard showPinIcon />
             {hasAuthorPermission && (
               <RightSide>
-                <ItemsHistoryCard />
                 {renderRightSide()}
                 {(showPublishButton || showPublishButton === undefined) &&
                   (itemStatus === 'draft' ? (

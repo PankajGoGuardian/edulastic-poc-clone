@@ -30,24 +30,20 @@ function ItemRow(x) {
       <StyledMenuItemText>
         <div>{typesMapping[x.contentType]?.icon}</div>
         <div>
-          <span>
-            {typesMapping[x.contentType]?.text || x.contentType?.toUpperCase()}
-          </span>
           <StyledParagraph>
             {x.contentType === 'link' ? x?.url?.replace('/', '') : x.title}
           </StyledParagraph>
           <SubInfoText>
             {' '}
-            <p>{moment(new Date(x.pinnedTime)).fromNow()}</p>
-            {x.status && (
-              <p>
-                {' '}
-                <Tag>{x.status}</Tag>
-              </p>
-            )}
-            {x.showRowPin? (
-              <p style={{ alignSelf: 'flex-end' }}>
-                {' '}
+            <p style={{ whiteSpace: 'nowrap' }}>
+              {moment(new Date(x.pinnedTime)).fromNow()}
+            </p>
+            <StyledParagraphType>
+              {typesMapping[x.contentType]?.text ||
+                x.contentType?.toUpperCase()}
+            </StyledParagraphType>
+            <StyledParagraphPin style={{ alignSelf: 'flex-end' }}>
+              {x.showRowPin ? (
                 <IconHistoryPin
                   style={{ fontSize: '15px', cursor: 'pointer' }}
                   onClick={(e) => {
@@ -55,10 +51,7 @@ function ItemRow(x) {
                     x.onPinClick()
                   }}
                 />
-              </p>
-            ):(
-              <p style={{ alignSelf: 'flex-end' }}>
-                {' '}
+              ) : (
                 <Icon
                   style={{ fontSize: '15px', cursor: 'pointer' }}
                   type="close-circle"
@@ -67,8 +60,8 @@ function ItemRow(x) {
                     x.onDelete()
                   }}
                 />
-              </p>
-            )}
+              )}
+            </StyledParagraphPin>
           </SubInfoText>
         </div>
       </StyledMenuItemText>
@@ -88,6 +81,7 @@ const ItemsHistoryCard = ({
   removePin,
   history,
   subscription = {},
+  isPremiumTrialUsed,
   user,
   showPinIcon,
   style,
@@ -102,7 +96,8 @@ const ItemsHistoryCard = ({
     }
   }, [autoPinItem, data?.title, data?.contentId])
 
-  const isPremiumUser = user?.features?.premium && subscription?._id
+  const isPinShown =
+    (user?.features?.premium && subscription?._id) || isPremiumTrialUsed
 
   if (!data) {
     data = {
@@ -113,9 +108,28 @@ const ItemsHistoryCard = ({
     }
   }
   const alreadyPresent = data?.contentId && data?.contentId in pinsKeyed
+
+  const announcements = (
+    <>
+      <span>Announcements :</span>
+      <a
+        href="https://edulastic.com/blog/april-2021-updates/"
+        rel="noreferrer"
+        target="_blank"
+      >
+        {' '}
+        April 2021 New Edulastic Features
+      </a>
+    </>
+  )
+
   const text = (
-    <StyledMenu isPremiumUser={isPremiumUser}>
-      <HeaderText>Recent Items</HeaderText>
+    <StyledMenu isPinShown={isPinShown}>
+      {autoPinnedItems.length > 0 ? (
+        <HeaderText>
+          Five recent tests ,questions, playlists and announcements{' '}
+        </HeaderText>
+      ) : null}
       {autoPinnedItems.map((x) => (
         <ItemRow
           onPinClick={() => {
@@ -127,21 +141,35 @@ const ItemsHistoryCard = ({
           {...x}
         />
       ))}
-      <HeaderText>Pinned</HeaderText>
+      <StyledAnnouncment style={{ fontSize: '12px', paddingTop: '10px' }}>
+        {announcements}
+      </StyledAnnouncment>
+      {console.log(pinnedItems, autoPinnedItems, 'yesh')}
+      {pinnedItems.length > 0 ? (
+        <HeaderText>Pages pinned to board</HeaderText>
+      ) : null}
       {pinnedItems.map((x) => (
-        <ItemRow key={x.contentId} history={history} onDelete={()=>{
-          removePin(x.contentId);
-        }} {...x} />
+        <ItemRow
+          key={x.contentId}
+          history={history}
+          onDelete={() => {
+            removePin(x.contentId)
+          }}
+          {...x}
+        />
       ))}
     </StyledMenu>
   )
 
   const boardText = (
-    <StyledMenu isPremiumUser={isPremiumUser}>
+    <StyledMenu isPinShown={isPinShown}>
       <Menu.Item>
-        <HeaderText onClick={() => history.push('/author/subscription')}>
-          Please upgrade to premium user{' '}
-        </HeaderText>
+        <StyledAnnouncment style={{ fontSize: '12px' }}>
+          {announcements}
+        </StyledAnnouncment>
+        <TextUpgrade onClick={() => history.push('/author/subscription')}>
+          Upgrade to access more of pin to board feature{' '}
+        </TextUpgrade>
       </Menu.Item>
     </StyledMenu>
   )
@@ -149,7 +177,7 @@ const ItemsHistoryCard = ({
     <StyledDiv style={style}>
       <StyledDropdown
         overlayStyle={{ zIndex: 2000 }}
-        overlay={isPremiumUser ? text : boardText}
+        overlay={isPinShown ? text : boardText}
         placement="bottomCenter"
         trigger={['click']}
         onVisibleChange={(visible) => {
@@ -166,7 +194,7 @@ const ItemsHistoryCard = ({
           }}
         />
       </StyledDropdown>
-      {isPremiumUser && showPinIcon ? (
+      {isPinShown && showPinIcon ? (
         <IconHistoryPin
           theme={alreadyPresent ? 'filled' : ''}
           onClick={() => {
@@ -205,7 +233,7 @@ const StyledSpan = styled.span`
 const StyledDropdown = styled(Dropdown)``
 
 const StyledMenu = styled(Menu)`
-  width: ${(props) => (props.isPremiumUser ? '400px' : '330px')};
+  width: ${(props) => (props.isPinShown ? '400px' : '350px')};
   max-height: 450px;
   border-radius: 10px;
   box-shadow: 0px 0px 20px #a0a0a0;
@@ -213,28 +241,26 @@ const StyledMenu = styled(Menu)`
   overflow-x: hidden;
   position: relative;
   top: 20px;
-  padding-top: ${(props) => (props.isPremiumUser ? ' ' : '10px')};
+  padding-top: ${(props) => (props.isPinShown ? ' ' : '10px')};
   &::-webkit-scrollbar {
     width: 6px;
   }
   ::-webkit-scrollbar-track {
     background: #fff;
   }
-
   ::-webkit-scrollbar-thumb {
     background: #f1f1f1;
     border-radius: 5px;
   }
   & > li {
     margin: auto;
-    width: ${(props) => (props.isPremiumUser ? '95%' : '100%')};
+    width: ${(props) => (props.isPinShown ? '95%' : '100%')};
     border-radius: 5px;
-    margin-top: 5px;
+    margin-top: 10px;
     &:hover {
       background-color: #fff;
     }
   }
-
   .anticon.anticon-pushpin {
     transition: all 0.3s;
     transform-origin: center center;
@@ -244,21 +270,28 @@ const StyledMenu = styled(Menu)`
   }
 `
 
-const HeaderText = styled.h3`
+const HeaderText = styled.h4`
   font-weight: bold;
   color: #1ab394;
   padding-left: 25px;
+  margin-top: 10px;
 `
 
+const TextUpgrade = styled.h4`
+  font-weight: bold;
+  color: #1ab394;
+  padding-top: 10px;
+`
 const StyledMenuItemText = styled.div`
   transition: all 0.6s;
   cursor: pointer;
   display: flex;
-
   &:hover {
     background-color: rgba(0, 0, 0, 0.2);
   }
-
+  & > div:nth-child(1) {
+    padding-top: 4px;
+  }
   & > div:nth-child(2) {
     margin-left: 5px;
     span {
@@ -278,11 +311,33 @@ const StyledParagraph = styled.p`
   overflow: hidden;
   text-overflow: ellipsis;
 `
+
+const StyledParagraphPin = styled.p`
+  align-self: flex-end;
+  text-align: end;
+  position: relative;
+  top: -3px;
+`
+
+const StyledParagraphType = styled.p`
+  padding-left: 50px !important;
+  text-transform: uppercase !important;
+`
+
+const StyledAnnouncment = styled.p`
+  padding-left: 25px;
+  color: #2f4151;
+  & > span {
+    font-weight: bold;
+  }
+`
 const SubInfoText = styled.div`
   display: flex;
   justify-content: space-between;
+  p {
+    flex: 1;
+  }
 `
-
 export default connect(
   (state) => ({
     pinnedItems: getCurrentItemsSelector(state),
@@ -290,6 +345,8 @@ export default connect(
     autoPinnedItems: state.pinned?.autoPins,
     user: state.user.user,
     subscription: state?.subscription?.subscriptionData?.subscription,
+    isPremiumTrialUsed:
+      state?.subscription?.subscriptionData?.isPremiumTrialUsed,
   }),
   {
     addPin: slice.actions.addPin,

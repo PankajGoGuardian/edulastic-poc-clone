@@ -60,7 +60,7 @@ const PlayListHeader = ({
       justify="space-between"
       headingSubContent={headingSubContent}
     >
-      <ItemsHistoryCard />
+      <ItemsHistoryCard showPinIcon />
       <HeaderMidContainer>
         <StyledTabs>
           {match?.params?.playlistId &&

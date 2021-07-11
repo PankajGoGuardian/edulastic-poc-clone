@@ -13,6 +13,7 @@ import PropTypes from 'prop-types'
 import React, { memo } from 'react'
 import { withNamespaces } from 'react-i18next'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
+import ItemsHistoryCard from '../../../../author/PinBoard/itemsHistoryCard'
 import {
   ActionButtons,
   CartButton,
@@ -207,6 +208,7 @@ const SubscriptionHeader = ({
           </HeaderMidContainer>
         )}
         <ActionButtons>
+          <ItemsHistoryCard style={{ paddingRight: '5px' }} showPinIcon />
           {!isManageSubscriptionView && (
             <>
               <CustomLink data-cy="comparePlans" onClick={openComparePlanModal}>

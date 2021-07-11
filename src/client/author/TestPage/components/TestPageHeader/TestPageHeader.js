@@ -460,11 +460,7 @@ const TestPageHeader = ({
             justifyContent="flex-end"
             mt="12px"
           >
-            <ItemsHistoryCard
-              showPinIcon={hasTestId}
-              autoPinItem
-              data={dataForPin}
-            />
+            <ItemsHistoryCard showPinIcon autoPinItem data={dataForPin} />
 
             {hasTestId && !isPlaylist && !isDocBased && !test?.isDocBased && (
               <EduButton

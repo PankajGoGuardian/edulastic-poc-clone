@@ -173,7 +173,7 @@ const CustomizedHeaderWrapper = ({
         />
       ) : null}
       <StyledCol>
-        <ItemsHistoryCard />
+        <ItemsHistoryCard showPinIcon />
         {!isSmallDesktop && actionRightButtons}
         {isSmallDesktop && (
           <Dropdown overlay={actionRightButtons} trigger={['click']}>

@@ -30,11 +30,11 @@ class Container extends React.Component {
     const { questions, updateQuestion } = this.props
     const newItem = {
       item: {
-        label: 'Front',
+        label: '',
         value: rId,
       },
       response: {
-        label: 'Back',
+        label: '',
         value: rId,
       },
     }
@@ -76,7 +76,7 @@ class Container extends React.Component {
         {list.length < 10 && (
           <AddCardButton onClick={this.handleAddCard}>
             {' '}
-            + Add Item
+            + Add Card
           </AddCardButton>
         )}
       </Wrapper>
@@ -85,11 +85,12 @@ class Container extends React.Component {
 }
 
 const Wrapper = styled(Paper)`
-  margin: 5%;
+  margin: 50px auto;
   width: 800px;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
+  align-items: center;
 `
 
 export const AddCardButton = styled(Button)`

@@ -134,7 +134,7 @@ const getFlashItem = () => {
           responses: [
             {
               value: responseId,
-              label: 'back',
+              label: '',
             },
           ],
         },
@@ -142,7 +142,7 @@ const getFlashItem = () => {
       possibleResponses: [
         {
           value: responseId,
-          label: 'back',
+          label: '',
         },
       ],
       type: 'matchList',
@@ -150,7 +150,7 @@ const getFlashItem = () => {
       list: [
         {
           value: responseId,
-          label: 'front',
+          label: '',
         },
       ],
       validation: {

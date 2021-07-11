@@ -1188,41 +1188,45 @@ class Setting extends Component {
                               >
                                 {evalTypes.ALL_OR_NOTHING}
                               </RadioBtn>
-                              <RadioBtn
-                                value={PARTIAL_CREDIT}
-                                data-cy={PARTIAL_CREDIT}
-                                key={PARTIAL_CREDIT}
-                              >
-                                {evalTypes.PARTIAL_CREDIT}
-                                {scoringType === PARTIAL_CREDIT &&
-                                multipartItems &&
-                                premium
-                                  ? applyEBSRComponent()
-                                  : null}
-                              </RadioBtn>
-                              <RadioBtn
-                                value={PARTIAL_CREDIT_IGNORE_INCORRECT}
-                                data-cy={PARTIAL_CREDIT_IGNORE_INCORRECT}
-                                key={PARTIAL_CREDIT_IGNORE_INCORRECT}
-                              >
-                                {evalTypes.PARTIAL_CREDIT_IGNORE_INCORRECT}
-                                {scoringType ===
-                                  PARTIAL_CREDIT_IGNORE_INCORRECT &&
-                                multipartItems &&
-                                premium
-                                  ? applyEBSRComponent()
-                                  : null}
-                              </RadioBtn>
-                              {/* ant-radio-wrapper already has bottom-margin: 18px by default. */}
-                              {/* not setting mb (margin bottom) as it is common component */}
-                              <RadioBtn
-                                value={ITEM_LEVEL_EVALUATION}
-                                data-cy={ITEM_LEVEL_EVALUATION}
-                                key={ITEM_LEVEL_EVALUATION}
-                                style={{ marginBottom: '0px' }}
-                              >
-                                {evalTypes.ITEM_LEVEL_EVALUATION}
-                              </RadioBtn>
+                              {!isAdaptiveTest && (
+                                <>
+                                  <RadioBtn
+                                    value={PARTIAL_CREDIT}
+                                    data-cy={PARTIAL_CREDIT}
+                                    key={PARTIAL_CREDIT}
+                                  >
+                                    {evalTypes.PARTIAL_CREDIT}
+                                    {scoringType === PARTIAL_CREDIT &&
+                                    multipartItems &&
+                                    premium
+                                      ? applyEBSRComponent()
+                                      : null}
+                                  </RadioBtn>
+                                  <RadioBtn
+                                    value={PARTIAL_CREDIT_IGNORE_INCORRECT}
+                                    data-cy={PARTIAL_CREDIT_IGNORE_INCORRECT}
+                                    key={PARTIAL_CREDIT_IGNORE_INCORRECT}
+                                  >
+                                    {evalTypes.PARTIAL_CREDIT_IGNORE_INCORRECT}
+                                    {scoringType ===
+                                      PARTIAL_CREDIT_IGNORE_INCORRECT &&
+                                    multipartItems &&
+                                    premium
+                                      ? applyEBSRComponent()
+                                      : null}
+                                  </RadioBtn>
+                                  {/* ant-radio-wrapper already has bottom-margin: 18px by default. */}
+                                  {/* not setting mb (margin bottom) as it is common component */}
+                                  <RadioBtn
+                                    value={ITEM_LEVEL_EVALUATION}
+                                    data-cy={ITEM_LEVEL_EVALUATION}
+                                    key={ITEM_LEVEL_EVALUATION}
+                                    style={{ marginBottom: '0px' }}
+                                  >
+                                    {evalTypes.ITEM_LEVEL_EVALUATION}
+                                  </RadioBtn>
+                                </>
+                              )}
                             </StyledRadioGroup>
                           </Col>
                           <Col span={16}>
@@ -1454,7 +1458,7 @@ class Setting extends Component {
                       </Block>
                     </>
                   )}
-                  {!isDocBased && (
+                  {!isDocBased && !isAdaptiveTest && (
                     <Block
                       id="check-answer-tries-per-question"
                       smallSize={isSmallSize}
@@ -1522,22 +1526,26 @@ class Setting extends Component {
                 </>
               )}
 
-              <SettingsCategoryBlock id="anti-cheating">
-                <span>
-                  Anti-Cheating <DollarPremiumSymbol premium={premium} />
-                </span>
-                <span
-                  onClick={() =>
-                    this.togglePanel(
-                      'isAntiCheatingGroupExpanded',
-                      !isAntiCheatingGroupExpanded
-                    )
-                  }
-                >
-                  <Icon type={isAntiCheatingGroupExpanded ? 'minus' : 'plus'} />
-                </span>
-              </SettingsCategoryBlock>
-              {isAntiCheatingGroupExpanded && (
+              {!isAdaptiveTest && (
+                <SettingsCategoryBlock id="anti-cheating">
+                  <span>
+                    Anti-Cheating <DollarPremiumSymbol premium={premium} />
+                  </span>
+                  <span
+                    onClick={() =>
+                      this.togglePanel(
+                        'isAntiCheatingGroupExpanded',
+                        !isAntiCheatingGroupExpanded
+                      )
+                    }
+                  >
+                    <Icon
+                      type={isAntiCheatingGroupExpanded ? 'minus' : 'plus'}
+                    />
+                  </span>
+                </SettingsCategoryBlock>
+              )}
+              {isAntiCheatingGroupExpanded && !isAdaptiveTest && (
                 <>
                   {!isDocBased && !isAdaptiveTest && (
                     <Block id="suffle-question" smallSize={isSmallSize}>

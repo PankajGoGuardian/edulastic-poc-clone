@@ -229,7 +229,7 @@ export function* saveUserResponse({ payload }) {
       passages,
       isDocBased,
       isAdaptiveTest,
-      maxVisitedItemsCount = 10,
+      totalTestItems = 5,
     } = yield select((state) => state.test)
     const shuffledOptions = yield select((state) => state.shuffledOptions)
     // passages: state.test.passages
@@ -388,6 +388,10 @@ export function* saveUserResponse({ payload }) {
       type: CLEAR_HINT_USAGE,
     })
     if (isAdaptiveTest) {
+      if (totalTestItems === items.length) {
+        yield put(push({ pathname: payload.urlToGo, state: payload.locState }))
+        return
+      }
       const adaptiveItem = yield call(testItemsApi.getAdaptiveItem, {
         testActivityId: userTestActivityId,
         authorDifficulty: 'medium',
@@ -400,11 +404,6 @@ export function* saveUserResponse({ payload }) {
       })
       const _questions = getQuestions(testItems)
       yield put(loadQuestionsAction(keyBy(_questions, 'id')))
-      console.log(payload)
-      if (maxVisitedItemsCount === testItems.length) {
-        yield put(push({ pathname: payload.urlToGo, state: payload.locState }))
-        return
-      }
       const pathname = adaptiveItem._id
         ? `${payload.url}/itemId/${adaptiveItem._id}`
         : payload.urlToGo

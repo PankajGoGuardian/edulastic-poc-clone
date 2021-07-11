@@ -557,54 +557,58 @@ class SimpleOptions extends React.Component {
               />
             </TabContentContainer>
           </TabPane>
-          <TabPane
-            tab={
-              <span>
-                ANTI-CHEATING
-                <DollarPremiumSymbol premium={features?.premium} />
-              </span>
-            }
-            key={sectionContants.ANTI_CHEATING_SECTION}
-          >
-            <TabContentContainer>
-              <AntiCheatingGroupContainer
-                assignmentSettings={assignment}
-                changeField={changeField}
-                testSettings={testSettings}
-                gradeSubject={gradeSubject}
-                isDocBased={testSettings.isDocBased}
-                freezeSettings={freezeSettings}
-                overRideSettings={this.overRideSettings}
-                actionOnFeatureInaccessible={actionOnFeatureInaccessible}
-                featuresAvailable={featuresAvailable}
-                tootltipWidth={tootltipWidth}
-              />
-            </TabContentContainer>
-          </TabPane>
-          <TabPane
-            tab={
-              <span>
-                AUTO REDIRECT SETTINGS
-                <DollarPremiumSymbol premium={features?.premium} />
-              </span>
-            }
-            key={sectionContants.AUTO_REDIRECT_SECTION}
-          >
-            <TabContentContainer>
-              <AutoRedirectGroupContainer
-                assignmentSettings={assignment}
-                gradeSubject={gradeSubject}
-                freezeSettings={freezeSettings}
-                updateAssignmentSettings={updateOptions}
-                actionOnFeatureInaccessible={actionOnFeatureInaccessible}
-                featuresAvailable={featuresAvailable}
-                tootltipWidth={tootltipWidth}
-                testSettings={testSettings}
-                overRideSettings={this.overRideSettings}
-                isDocBased={testSettings.isDocBased}
-              />
-            </TabContentContainer>
-          </TabPane>
+          {!isAdaptiveTest && (
+            <TabPane
+              tab={
+                <span>
+                  ANTI-CHEATING
+                  <DollarPremiumSymbol premium={features?.premium} />
+                </span>
+              }
+              key={sectionContants.ANTI_CHEATING_SECTION}
+            >
+              <TabContentContainer>
+                <AntiCheatingGroupContainer
+                  assignmentSettings={assignment}
+                  changeField={changeField}
+                  testSettings={testSettings}
+                  gradeSubject={gradeSubject}
+                  isDocBased={testSettings.isDocBased}
+                  freezeSettings={freezeSettings}
+                  overRideSettings={this.overRideSettings}
+                  actionOnFeatureInaccessible={actionOnFeatureInaccessible}
+                  featuresAvailable={featuresAvailable}
+                  tootltipWidth={tootltipWidth}
+                />
+              </TabContentContainer>
+            </TabPane>
+          )}
+          {!isAdaptiveTest && (
+            <TabPane
+              tab={
+                <span>
+                  AUTO REDIRECT SETTINGS
+                  <DollarPremiumSymbol premium={features?.premium} />
+                </span>
+              }
+              key={sectionContants.AUTO_REDIRECT_SECTION}
+            >
+              <TabContentContainer>
+                <AutoRedirectGroupContainer
+                  assignmentSettings={assignment}
+                  gradeSubject={gradeSubject}
+                  freezeSettings={freezeSettings}
+                  updateAssignmentSettings={updateOptions}
+                  actionOnFeatureInaccessible={actionOnFeatureInaccessible}
+                  featuresAvailable={featuresAvailable}
+                  tootltipWidth={tootltipWidth}
+                  testSettings={testSettings}
+                  overRideSettings={this.overRideSettings}
+                  isDocBased={testSettings.isDocBased}
+                />
+              </TabContentContainer>
+            </TabPane>
+          )}
           {!isAdaptiveTest && (
             <TabPane
               tab={

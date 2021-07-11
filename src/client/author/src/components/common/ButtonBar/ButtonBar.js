@@ -39,6 +39,7 @@ import {
   RightSide,
 } from './styled_components'
 import { getUserRole } from '../../../selectors/user'
+import ItemsHistoryCard from '../../../../PinBoard/itemsHistoryCard'
 
 class ButtonBar extends Component {
   handleMenuClick = (view) => () => {
@@ -162,6 +163,7 @@ class ButtonBar extends Component {
 
             {hasAuthorPermission && (
               <RightSide>
+                <ItemsHistoryCard />
                 {renderRightSide()}
                 {(showPublishButton || showPublishButton === undefined) &&
                   (itemStatus === 'draft' ? (

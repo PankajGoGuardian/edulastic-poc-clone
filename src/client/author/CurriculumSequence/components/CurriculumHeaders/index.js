@@ -263,7 +263,7 @@ const CurriculumHeader = ({
         )}
 
         <CurriculumHeaderButtons marginLeft={urlHasUseThis ? 'unset' : 'auto'}>
-          <ItemsHistoryCard autoPinItem data={dataForPin} />
+          <ItemsHistoryCard showPinIcon autoPinItem data={dataForPin} />
           {(shouldShowEdit ||
             isAuthor ||
             role === roleuser.EDULASTIC_CURATOR) &&

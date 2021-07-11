@@ -88,7 +88,7 @@ export const StyledTabs = styled.div`
   justify-content: center;
 
   @media (min-width: ${largeDesktopWidth}) {
-    min-width: 480px;
+    min-width: 420px;
     padding-left: 0px;
   }
 

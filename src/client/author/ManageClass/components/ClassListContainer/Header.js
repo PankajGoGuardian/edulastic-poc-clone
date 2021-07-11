@@ -133,7 +133,7 @@ const Header = ({
       </FeaturesSwitch>
       <ButtonsWrapper>
         <>
-          <ItemsHistoryCard />
+          <ItemsHistoryCard showPinIcon />
           {!isPlayground && enableCleverSync && (
             <EduButton
               isBlue

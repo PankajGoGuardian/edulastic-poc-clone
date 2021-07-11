@@ -12,6 +12,7 @@ import { HeaderMidContainer } from '@edulastic/common/src/components/MainHeader'
 import { IconPlaylist } from '@edulastic/icons'
 import { getFilteredClassesSelector } from '../../ManageClass/ducks'
 import ClassSelect from '../ClassSelector'
+import ItemsHistoryCard from '../../../author/PinBoard/itemsHistoryCard'
 
 export const playlistPageNavButtons = [
   {
@@ -59,6 +60,7 @@ const PlayListHeader = ({
       justify="space-between"
       headingSubContent={headingSubContent}
     >
+      <ItemsHistoryCard />
       <HeaderMidContainer>
         <StyledTabs>
           {match?.params?.playlistId &&

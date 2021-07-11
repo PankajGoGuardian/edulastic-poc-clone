@@ -411,7 +411,7 @@ class SimpleOptions extends React.Component {
       orgCollections,
     } = this.props
 
-    const { collections } = testSettings
+    const { collections, isAdaptiveTest } = testSettings
 
     const sparkMathId = orgCollections?.find(
       (x) => x.name.toLowerCase() === 'spark math'
@@ -605,33 +605,35 @@ class SimpleOptions extends React.Component {
               />
             </TabContentContainer>
           </TabPane>
-          <TabPane
-            tab={
-              <span>
-                MISCELLANEOUS
-                <DollarPremiumSymbol premium={features?.premium} />
-              </span>
-            }
-            key={sectionContants.MISCELLANEOUS_SECTION}
-          >
-            <TabContentContainer>
-              <MiscellaneousGroupContainer
-                assignmentSettings={assignment}
-                changeField={changeField}
-                testSettings={testSettings}
-                gradeSubject={gradeSubject}
-                isDocBased={testSettings.isDocBased}
-                freezeSettings={freezeSettings}
-                premium={features?.premium}
-                overRideSettings={this.overRideSettings}
-                userRole={userRole}
-                disableAnswerOnPaper={disableAnswerOnPaper}
-                actionOnFeatureInaccessible={actionOnFeatureInaccessible}
-                featuresAvailable={featuresAvailable}
-                tootltipWidth={tootltipWidth}
-              />
-            </TabContentContainer>
-          </TabPane>
+          {!isAdaptiveTest && (
+            <TabPane
+              tab={
+                <span>
+                  MISCELLANEOUS
+                  <DollarPremiumSymbol premium={features?.premium} />
+                </span>
+              }
+              key={sectionContants.MISCELLANEOUS_SECTION}
+            >
+              <TabContentContainer>
+                <MiscellaneousGroupContainer
+                  assignmentSettings={assignment}
+                  changeField={changeField}
+                  testSettings={testSettings}
+                  gradeSubject={gradeSubject}
+                  isDocBased={testSettings.isDocBased}
+                  freezeSettings={freezeSettings}
+                  premium={features?.premium}
+                  overRideSettings={this.overRideSettings}
+                  userRole={userRole}
+                  disableAnswerOnPaper={disableAnswerOnPaper}
+                  actionOnFeatureInaccessible={actionOnFeatureInaccessible}
+                  featuresAvailable={featuresAvailable}
+                  tootltipWidth={tootltipWidth}
+                />
+              </TabContentContainer>
+            </TabPane>
+          )}
         </Tabs>
       </OptionConationer>
     )

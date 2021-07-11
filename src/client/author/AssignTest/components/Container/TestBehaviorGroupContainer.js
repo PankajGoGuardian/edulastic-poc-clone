@@ -67,6 +67,7 @@ const TestBehaviorGroupContainer = ({
     testType = testSettings.testType,
     applyEBSR = false,
   } = assignmentSettings
+  const { isAdaptiveTest = false } = testSettings
   const multipartItems = testSettings.itemGroups
     .map((o) => o.items)
     .flat()
@@ -219,11 +220,14 @@ const TestBehaviorGroupContainer = ({
               value={scoringType}
               height="30px"
             >
-              {Object.keys(evalTypes).map((evalKey, index) => (
-                <Select.Option value={evalKey} data-cy={evalKey} key={evalKey}>
-                  {Object.values(evalTypes)[index]}
-                </Select.Option>
-              ))}
+              {/* {Object.keys(evalTypes).map((evalKey, index) => ( */}
+              <Select.Option
+                value={evalTypes.ALL_OR_NOTHING}
+                data-cy={evalTypes.ALL_OR_NOTHING}
+              >
+                {evalTypes.ALL_OR_NOTHING}
+              </Select.Option>
+              {/* ))} */}
             </SelectInputStyled>
             {(scoringType === evalTypeLabels.PARTIAL_CREDIT ||
               scoringType === evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT) &&
@@ -318,84 +322,96 @@ const TestBehaviorGroupContainer = ({
       {/* Show Calculator */}
 
       {/* Timed TEST */}
-      <SettingContainer id="timed-test-setting">
-        <DetailsTooltip
-          width={tootltipWidth}
-          title="TIMED TEST"
-          content="Timed test allows you to control how long students have to take the test. When the time limit is reached, students will be locked out of the assessment. Choose the time and whether students can pause and continue later or if the test should be taken in a single sitting."
-          premium={assessmentSuperPowersTimedTest}
-          placement="rightTop"
-        />
-        <StyledRow
-          data-cy="timed-test-container"
-          gutter={16}
-          mb="15px"
-          height="40"
-        >
-          <Col span={10}>
-            <Label>
-              <span>
-                TIMED TEST
-                <DollarPremiumSymbol premium={assessmentSuperPowersTimedTest} />
-              </span>
-            </Label>
-          </Col>
-          <Col span={10} style={{ display: 'flex', flexDirection: 'column' }}>
-            <Row style={{ display: 'flex', alignItems: 'center' }}>
-              <AlignSwitchRight
-                data-cy="assignment-time-switch"
-                size="small"
-                defaultChecked={false}
-                disabled={freezeSettings || !assessmentSuperPowersTimedTest}
-                checked={timedAssignment}
-                onChange={(value) =>
-                  updateTimedTestAttrs('timedAssignment', value)
-                }
-              />
-              {timedAssignment && (
-                <>
-                  {/* eslint-disable no-restricted-globals */}
-                  <TimeSpentInput
-                    onChange={(e) => {
-                      if (e.target.value.length <= 3 && e.target.value <= 300) {
-                        updateTimedTestAttrs(
-                          'allowedTime',
-                          e.target.value * 60 * 1000
-                        )
-                      }
-                    }}
-                    size="large"
-                    data-cy="assignment-time"
-                    value={!isNaN(allowedTime) ? allowedTime / (60 * 1000) : 1}
-                    type="number"
-                    min={1}
-                    max={300}
-                    step={1}
+      {!isAdaptiveTest && (
+        <SettingContainer id="timed-test-setting">
+          <DetailsTooltip
+            width={tootltipWidth}
+            title="TIMED TEST"
+            content="Timed test allows you to control how long students have to take the test. When the time limit is reached, students will be locked out of the assessment. Choose the time and whether students can pause and continue later or if the test should be taken in a single sitting."
+            premium={assessmentSuperPowersTimedTest}
+            placement="rightTop"
+          />
+          <StyledRow
+            data-cy="timed-test-container"
+            gutter={16}
+            mb="15px"
+            height="40"
+          >
+            <Col span={10}>
+              <Label>
+                <span>
+                  TIMED TEST
+                  <DollarPremiumSymbol
+                    premium={assessmentSuperPowersTimedTest}
                   />
-                  <Label>MINUTES</Label>
-                  {/* eslint-enable no-restricted-globals */}
-                </>
-              )}
-            </Row>
-            <Row>
-              {timedAssignment && (
-                <CheckBoxWrapper>
-                  <CheckboxLabel
-                    disabled={freezeSettings || !assessmentSuperPowersTimedTest}
-                    data-cy="exit-allowed"
-                    checked={pauseAllowed}
-                    onChange={(e) =>
-                      updateTimedTestAttrs('pauseAllowed', e.target.checked)
-                    }
-                  >
-                    <span>Allow student to save and continue later</span>
-                  </CheckboxLabel>
-                </CheckBoxWrapper>
-              )}
-            </Row>
-          </Col>
-        </StyledRow>
-      </SettingContainer>
+                </span>
+              </Label>
+            </Col>
+            <Col span={10} style={{ display: 'flex', flexDirection: 'column' }}>
+              <Row style={{ display: 'flex', alignItems: 'center' }}>
+                <AlignSwitchRight
+                  data-cy="assignment-time-switch"
+                  size="small"
+                  defaultChecked={false}
+                  disabled={freezeSettings || !assessmentSuperPowersTimedTest}
+                  checked={timedAssignment}
+                  onChange={(value) =>
+                    updateTimedTestAttrs('timedAssignment', value)
+                  }
+                />
+                {timedAssignment && (
+                  <>
+                    {/* eslint-disable no-restricted-globals */}
+                    <TimeSpentInput
+                      onChange={(e) => {
+                        if (
+                          e.target.value.length <= 3 &&
+                          e.target.value <= 300
+                        ) {
+                          updateTimedTestAttrs(
+                            'allowedTime',
+                            e.target.value * 60 * 1000
+                          )
+                        }
+                      }}
+                      size="large"
+                      data-cy="assignment-time"
+                      value={
+                        !isNaN(allowedTime) ? allowedTime / (60 * 1000) : 1
+                      }
+                      type="number"
+                      min={1}
+                      max={300}
+                      step={1}
+                    />
+                    <Label>MINUTES</Label>
+                    {/* eslint-enable no-restricted-globals */}
+                  </>
+                )}
+              </Row>
+              <Row>
+                {timedAssignment && (
+                  <CheckBoxWrapper>
+                    <CheckboxLabel
+                      disabled={
+                        freezeSettings || !assessmentSuperPowersTimedTest
+                      }
+                      data-cy="exit-allowed"
+                      checked={pauseAllowed}
+                      onChange={(e) =>
+                        updateTimedTestAttrs('pauseAllowed', e.target.checked)
+                      }
+                    >
+                      <span>Allow student to save and continue later</span>
+                    </CheckboxLabel>
+                  </CheckBoxWrapper>
+                )}
+              </Row>
+            </Col>
+          </StyledRow>
+        </SettingContainer>
+      )}
+
       {/* Timed TEST */}
 
       {/* Test Content visibility */}

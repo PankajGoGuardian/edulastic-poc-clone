@@ -149,7 +149,8 @@ class Container extends PureComponent {
 
   gotoTab = (tab) => {
     const { history, match, location } = this.props
-    const { regradeFlow = false, previousTestId = '' } = location?.state || {}
+    const { regradeFlow = false, previousTestId = '', isAdaptiveTest = false } =
+      location?.state || {}
     const { showCancelButton } = this.state
     const id =
       match.params.id && match.params.id != 'undefined' && match.params.id
@@ -171,7 +172,7 @@ class Container extends PureComponent {
     // }
     history.push({
       pathname: url,
-      state: { ...history.location.state, showCancelButton },
+      state: { ...history.location.state, showCancelButton, isAdaptiveTest },
     })
   }
 
@@ -241,7 +242,7 @@ class Container extends PureComponent {
         this.gotoTab('description')
         clearTestAssignments([])
         clearSelectedItems()
-        setDefaultData()
+        setDefaultData({ isAdaptiveTest: _location?.state?.isAdaptiveTest })
         if (
           userRole === roleuser.DISTRICT_ADMIN ||
           userRole === roleuser.SCHOOL_ADMIN
@@ -538,6 +539,11 @@ class Container extends PureComponent {
     setDefaultInterests({ subject: subjects[0] || '' })
   }
 
+  handleChangeCurriculum = (curriculum) => {
+    const { test, setData } = this.props
+    setData({ ...test, curriculum })
+  }
+
   onChangeSkillIdentifiers = (identifiers) => {
     const { setData, test } = this.props
     if (!isEmpty(identifiers)) {
@@ -673,6 +679,7 @@ class Container extends PureComponent {
               onChangeCollection={this.handleChangeCollection}
               onChangeSubjects={this.handleChangeSubject}
               showCancelButton={showCancelButton}
+              handleChangeCurriculum={this.handleChangeCurriculum}
             />
           </Content>
         )
@@ -921,7 +928,7 @@ class Container extends PureComponent {
       }
     }
 
-    if (!itemGroupWithQuestionsCount) {
+    if (!test.isAdaptiveTest && !itemGroupWithQuestionsCount) {
       notification({ messageKey: `noQuestions` })
       return false
     }
@@ -1111,10 +1118,13 @@ class Container extends PureComponent {
       editEnable,
       writableCollections,
       t,
+      location,
     } = this.props
+
     if (userRole === roleuser.STUDENT) {
       return null
     }
+
     const { showShareModal, isShowFilter, showCloneModal } = this.state
     const current = currentTab
     const {
@@ -1241,6 +1251,9 @@ class Container extends PureComponent {
           validateTest={this.validateTest}
           setDisableAlert={this.setDisableAlert}
           hasCollectionAccess={hasCollectionAccess}
+          isAdaptiveTest={
+            test?.isAdaptiveTest || location?.state?.isAdaptiveTest
+          }
         />
         {/* This will work like an overlay during the test save for prevent content edit */}
         {isTestLoading && test._id && <ContentBackDrop />}

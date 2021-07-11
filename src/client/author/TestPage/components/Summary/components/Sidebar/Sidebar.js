@@ -9,12 +9,19 @@ import {
 import { red } from '@edulastic/colors'
 import { Select } from 'antd'
 import { TextAreaInputStyled } from '@edulastic/common/src/components/InputStyles'
-import { uniqBy } from 'lodash'
+
+import { uniqBy, isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { createRef, useEffect, useMemo, useState } from 'react'
+import { withRouter } from 'react-router-dom'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
+
 import { selectsData } from '../../../common'
 import SummaryHeader from '../SummaryHeader/SummaryHeader'
 import { AnalyticsItem, Block, ErrorWrapper, MetaTitle } from './styled'
+import { getCurriculumsListSelector } from '../../../../../src/selectors/dictionaries'
+import { getDictCurriculumsAction } from '../../../../../src/actions/dictionaries'
 
 export const renderAnalytics = (title, Icon, isLiked = false, cyAttrIndex) => (
   <AnalyticsItem>
@@ -45,6 +52,9 @@ const Sidebar = ({
   isEditable,
   test,
   toggleTestLikeRequest,
+  curriculums,
+  getCurriculums,
+  handleChangeCurriculum,
 }) => {
   const newAllTagsData = uniqBy([...allTagsData, ...tags], '_id')
   const subjectsList = selectsData.allSubjects
@@ -54,6 +64,9 @@ const Sidebar = ({
   useEffect(() => {
     if (testTitleInput.current) {
       testTitleInput.current.input.focus()
+    }
+    if (isEmpty(curriculums)) {
+      getCurriculums()
     }
   }, [])
 
@@ -190,6 +203,30 @@ const Sidebar = ({
           ))}
         </SelectInputStyled>
 
+        <FieldLabel>Standard Sets</FieldLabel>
+        <SelectInputStyled
+          showArrow
+          data-cy="standardSets"
+          mode="multiple"
+          size="large"
+          margin="0px 0px 15px"
+          placeholder="Please select"
+          // defaultValue={subjects}
+          onChange={handleChangeCurriculum}
+          optionFilterProp="children"
+          getPopupContainer={(trigger) => trigger.parentNode}
+          filterOption={(input, option) =>
+            option.props.children.toLowerCase().indexOf(input.toLowerCase()) >=
+            0
+          }
+        >
+          {curriculums.map(({ _id, curriculum }) => (
+            <Select.Option key={_id} value={_id}>
+              {curriculum}
+            </Select.Option>
+          ))}
+        </SelectInputStyled>
+
         {collectionsToShow.length > 0 && (
           <>
             <FieldLabel>Collections</FieldLabel>
@@ -289,4 +326,16 @@ Sidebar.defaultProps = {
   thumbnail: '',
 }
 
-export default Sidebar
+const enhance = compose(
+  withRouter,
+  connect(
+    (state) => ({
+      curriculums: getCurriculumsListSelector(state),
+    }),
+    {
+      getCurriculums: getDictCurriculumsAction,
+    }
+  )
+)
+
+export default enhance(Sidebar)

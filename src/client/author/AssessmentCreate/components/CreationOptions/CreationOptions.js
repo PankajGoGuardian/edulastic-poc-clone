@@ -9,11 +9,13 @@ import BodyWrapper from '../../../AssignmentCreate/common/BodyWrapper'
 import FlexWrapper from '../../../AssignmentCreate/common/FlexWrapper'
 import OptionQti from '../OptionQTI/OptionQTI'
 import { QTI_DISTRICTS } from '../../../../config'
+import OptionAdaptiveTest from '../OptionAdaptive'
 
 const CreationOptions = ({ onUploadPDF, isShowQTI }) => (
   <BodyWrapper>
     <FlexWrapper marginBottom="0px">
       <OptionScratch />
+      <OptionAdaptiveTest />
       <OptionPDF onClick={onUploadPDF} />
       {isShowQTI && <OptionQti />}
     </FlexWrapper>

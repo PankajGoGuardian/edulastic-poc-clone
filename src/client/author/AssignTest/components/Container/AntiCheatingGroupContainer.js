@@ -45,6 +45,8 @@ const AntiCheatingGroupContainer = ({
     restrictNavigationOutAttemptsThreshold = testSettings.restrictNavigationOutAttemptsThreshold,
   } = assignmentSettings
 
+  const { isAdaptiveTest = false } = testSettings
+
   const navigationThresholdMoreThan1 =
     restrictNavigationOut === 'warn-and-report-after-n-alerts' &&
     restrictNavigationOutAttemptsThreshold > 1
@@ -101,7 +103,7 @@ const AntiCheatingGroupContainer = ({
     <>
       {
         /* Shuffle Question */
-        !isDocBased && (
+        !isDocBased && !isAdaptiveTest && (
           <SettingContainer id="shuffle-items-setting">
             <DetailsTooltip
               width={tootltipWidth}
@@ -461,55 +463,60 @@ const AntiCheatingGroupContainer = ({
       }
 
       {/* Safe Exam Browser/Kiosk Mode */}
-      <SettingContainer id="safe-exam-browser-setting">
-        <DetailsTooltip
-          width={tootltipWidth}
-          title="Require Safe Exam Browser"
-          content="Ensure secure testing environment by using Safe Exam Browser to lockdown the student's device. To use this feature Safe Exam Browser (on Windows/Mac only) must be installed on the student devices."
-          placement="rightTop"
-          premium={assessmentSuperPowersRequireSafeExamBrowser}
-        />
-        <StyledRow gutter={16} mb="15px">
-          <Col span={10}>
-            <Label style={{ display: 'flex' }}>Require Safe Exam Browser</Label>
-          </Col>
-          <Col span={14}>
-            <AlignSwitchRight
-              disabled={
-                freezeSettings || !assessmentSuperPowersRequireSafeExamBrowser
-              }
-              checked={safeBrowser}
-              size="small"
-              onChange={(value) => overRideSettings('safeBrowser', value)}
-              data-cy="seb"
-            />
-            {safeBrowser && (
-              <Password
+      {!isAdaptiveTest && (
+        <SettingContainer id="safe-exam-browser-setting">
+          <DetailsTooltip
+            width={tootltipWidth}
+            title="Require Safe Exam Browser"
+            content="Ensure secure testing environment by using Safe Exam Browser to lockdown the student's device. To use this feature Safe Exam Browser (on Windows/Mac only) must be installed on the student devices."
+            placement="rightTop"
+            premium={assessmentSuperPowersRequireSafeExamBrowser}
+          />
+          <StyledRow gutter={16} mb="15px">
+            <Col span={10}>
+              <Label style={{ display: 'flex' }}>
+                Require Safe Exam Browser
+              </Label>
+            </Col>
+            <Col span={14}>
+              <AlignSwitchRight
                 disabled={
                   freezeSettings || !assessmentSuperPowersRequireSafeExamBrowser
                 }
-                suffix={
-                  <Icon
-                    type={showPassword ? 'eye-invisible' : 'eye'}
-                    theme="filled"
-                    onClick={() =>
-                      setShowSebPassword((prevState) => !prevState)
-                    }
-                  />
-                }
-                onChange={(e) =>
-                  overRideSettings('sebPassword', e.target.value)
-                }
-                size="large"
-                value={sebPassword}
-                type={showPassword ? 'text' : 'password'}
-                placeholder="Quit Password"
-                data-cy="seb-password"
+                checked={safeBrowser}
+                size="small"
+                onChange={(value) => overRideSettings('safeBrowser', value)}
+                data-cy="seb"
               />
-            )}
-          </Col>
-        </StyledRow>
-      </SettingContainer>
+              {safeBrowser && (
+                <Password
+                  disabled={
+                    freezeSettings ||
+                    !assessmentSuperPowersRequireSafeExamBrowser
+                  }
+                  suffix={
+                    <Icon
+                      type={showPassword ? 'eye-invisible' : 'eye'}
+                      theme="filled"
+                      onClick={() =>
+                        setShowSebPassword((prevState) => !prevState)
+                      }
+                    />
+                  }
+                  onChange={(e) =>
+                    overRideSettings('sebPassword', e.target.value)
+                  }
+                  size="large"
+                  value={sebPassword}
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="Quit Password"
+                  data-cy="seb-password"
+                />
+              )}
+            </Col>
+          </StyledRow>
+        </SettingContainer>
+      )}
       {/* Safe Exam Browser/Kiosk Mode */}
     </>
   )

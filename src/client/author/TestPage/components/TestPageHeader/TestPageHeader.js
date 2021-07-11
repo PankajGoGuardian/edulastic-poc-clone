@@ -182,14 +182,19 @@ const TestPageHeader = ({
   regradeFirebaseDocId,
   showUpgradePopup,
   isDemoPlayground = false,
+  isAdaptiveTest,
 }) => {
+  const testNavButtons = isAdaptiveTest
+    ? [navButtonsTest[0], navButtonsTest[3]]
+    : navButtonsTest
   let navButtons =
     buttons ||
     (isPlaylist
       ? [...playlistNavButtons]
       : isDocBased
       ? [...docBasedButtons]
-      : [...navButtonsTest])
+      : [...testNavButtons])
+
   const [showCancelPopup, setShowCancelPopup] = useState(false)
   const [showPrintOptionPopup, setShowPrintOptionPopup] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
@@ -502,7 +507,8 @@ const TestPageHeader = ({
                 <IconTrashAlt />
               </EduButton>
             )}
-            {hasTestId && owner && showPublishButton && !showPublishForEC && (
+            {((hasTestId && owner && showPublishButton && !showPublishForEC) ||
+              isAdaptiveTest) && (
               <EduButton
                 isBlue
                 isGhost

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useMemo, useState, useEffect } from 'react'
 import { EduButton, FlexContainer } from '@edulastic/common'
 import FlashIcon from './FlashIcon'
 import { clamp } from 'lodash'
@@ -45,16 +45,16 @@ const FlipItem = ({
 )
 
 const FlipCards = ({
-  setIsExploding,
-  setPhase,
+  setIsExploding = () => {},
+  setPhase = () => {},
   questions,
   viewMode,
-  saveUserResponse,
-  setUserAnswer,
+  saveUserResponse = () => {},
+  setUserAnswer = () => {},
   itemId,
   groupId,
   testActivityId,
-  finishTest,
+  finishTest = () => {},
   answers,
 }) => {
   const [matchedPairs, setMatchedPairs] = useState([])

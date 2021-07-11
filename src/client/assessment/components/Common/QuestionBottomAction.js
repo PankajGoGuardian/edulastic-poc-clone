@@ -15,7 +15,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { greyThemeDark2, greyThemeDark4 } from '@edulastic/colors'
 import { round, get, omit } from 'lodash'
-import { Modal, Popover } from 'antd'
+import { Modal, Popover, Tag } from 'antd'
 import { roleuser } from '@edulastic/constants'
 import { IconTestBank, IconClockCircularOutline } from '@edulastic/icons'
 import { testItemsApi, testsApi } from '@edulastic/api'
@@ -363,6 +363,16 @@ const QuestionBottomAction = ({
             >
               {showExplanation ? 'Hide solution' : 'Show solution'}
             </EduButton>
+          )}
+          {data?.activity?.userResponse?.totalFlips && (
+            <Tag>
+              Total flip Count : {data?.activity?.userResponse?.totalFlips}
+            </Tag>
+          )}
+          {data?.activity?.userResponse?.wrongFlips && (
+            <Tag color="red">
+              Wrong flip Count : {data?.activity?.userResponse?.wrongFlips}
+            </Tag>
           )}
         </LeftWrapper>
         <RightWrapper>

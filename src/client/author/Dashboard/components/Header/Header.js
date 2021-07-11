@@ -7,11 +7,7 @@ import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import { Popover, Tooltip } from 'antd'
 import { white, themeColor, darkOrange1 } from '@edulastic/colors'
-import {
-  EduButton,
-  FlexContainer,
-  MainHeader
-} from '@edulastic/common'
+import { EduButton, FlexContainer, MainHeader } from '@edulastic/common'
 import ItemsHistoryCard from '../../../PinBoard/itemsHistoryCard'
 import {
   IconClockDashboard,
@@ -208,7 +204,7 @@ const HeaderSection = ({
   return (
     <MainHeader Icon={IconClockDashboard} headingText={t('common.dashboard')}>
       <FlexContainer alignItems="center">
-        <ItemsHistoryCard showPinIcon />
+        <ItemsHistoryCard style={{ paddingRight: '5px' }} showPinIcon />
         {currentSignUpState === signUpState.ACCESS_WITHOUT_SCHOOL && (
           <AuthorCompleteSignupButton
             renderButton={(handleClick) => (
@@ -243,7 +239,7 @@ const HeaderSection = ({
                 </EduButton>
               </Link>
             </Tooltip>
-             
+
             {isSignupComplete && isHangoutEnabled && (
               <Tooltip title="Launch Google Meet">
                 <StyledEduButton

@@ -425,9 +425,7 @@ class Container extends Component {
           showPublishButton={showPublishButton}
           showSettingsButton={false}
         />
-        {dataForPin && (
-          <ItemsHistoryCard showPinIcon autoPinItem data={dataForPin} />
-        )}
+        
       </>
     )
   }

@@ -91,7 +91,7 @@ const ListHeader = ({
       )}
 
       <RightButtonWrapper>
-        <ItemsHistoryCard style={{ paddingRight: '10px' }} />
+        <ItemsHistoryCard style={{ paddingRight: '5px' }} />
         <MobileHeaderFilterIcon>{renderFilterIcon()}</MobileHeaderFilterIcon>
         {renderFilter(isAdvancedView)}
         {hasButton &&

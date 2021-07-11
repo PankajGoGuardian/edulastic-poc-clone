@@ -2,6 +2,7 @@ import styled from 'styled-components'
 
 import { FlexContainer } from '@edulastic/common'
 import { secondaryTextColor } from '@edulastic/colors'
+import { StyledInputNumber } from '../../../../../Subscription/components/SubmitPOModal/styled'
 
 export const Block = styled.div`
   display: flex;
@@ -57,4 +58,13 @@ export const ErrorWrapper = styled.div`
   color: red;
   margin-top: -6px;
   margin-bottom: 15px;
+`
+export const StyledInput = styled(StyledInputNumber)`
+  width: 100%;
+  height: 35px;
+  margin-bottom: 15px;
+
+  .ant-input-number-input-wrap {
+    line-height: 35px;
+  }
 `

@@ -19,7 +19,13 @@ import { connect } from 'react-redux'
 
 import { selectsData } from '../../../common'
 import SummaryHeader from '../SummaryHeader/SummaryHeader'
-import { AnalyticsItem, Block, ErrorWrapper, MetaTitle } from './styled'
+import {
+  AnalyticsItem,
+  Block,
+  ErrorWrapper,
+  MetaTitle,
+  StyledInput,
+} from './styled'
 import { getCurriculumsListSelector } from '../../../../../src/selectors/dictionaries'
 import { getDictCurriculumsAction } from '../../../../../src/actions/dictionaries'
 
@@ -55,6 +61,7 @@ const Sidebar = ({
   curriculums,
   getCurriculums,
   handleChangeCurriculum,
+  handleChangeTotalTestItems,
 }) => {
   const newAllTagsData = uniqBy([...allTagsData, ...tags], '_id')
   const subjectsList = selectsData.allSubjects
@@ -203,42 +210,17 @@ const Sidebar = ({
           ))}
         </SelectInputStyled>
 
-        <FieldLabel>Standard Sets</FieldLabel>
-        <SelectInputStyled
-          showArrow
-          data-cy="standardSets"
-          mode="multiple"
-          size="large"
-          margin="0px 0px 15px"
-          placeholder="Please select"
-          // defaultValue={subjects}
-          onChange={handleChangeCurriculum}
-          optionFilterProp="children"
-          getPopupContainer={(trigger) => trigger.parentNode}
-          filterOption={(input, option) =>
-            option.props.children.toLowerCase().indexOf(input.toLowerCase()) >=
-            0
-          }
-        >
-          {curriculums.map(({ _id, curriculum }) => (
-            <Select.Option key={_id} value={_id}>
-              {curriculum}
-            </Select.Option>
-          ))}
-        </SelectInputStyled>
-
-        {collectionsToShow.length > 0 && (
+        {test.isAdaptiveTest && (
           <>
-            <FieldLabel>Collections</FieldLabel>
+            <FieldLabel>Standard Sets</FieldLabel>
             <SelectInputStyled
               showArrow
-              data-cy="collectionsSelect"
+              data-cy="standardSets"
               mode="multiple"
               size="large"
               margin="0px 0px 15px"
-              placeholder="Please enter"
-              value={filteredCollections.flatMap((c) => c.bucketIds)}
-              onChange={(value, options) => onChangeCollection(value, options)}
+              placeholder="Please select"
+              onChange={handleChangeCurriculum}
               optionFilterProp="children"
               getPopupContainer={(trigger) => trigger.parentNode}
               filterOption={(input, option) =>
@@ -247,18 +229,56 @@ const Sidebar = ({
                   .indexOf(input.toLowerCase()) >= 0
               }
             >
-              {collectionsToShow.map((o) => (
-                <Select.Option
-                  key={o.bucketId}
-                  value={o.bucketId}
-                  _id={o._id}
-                  type={o.type}
-                  collectionName={o.collectionName}
-                >
-                  {`${o.collectionName} - ${o.name}`}
+              {curriculums.map(({ _id, curriculum }) => (
+                <Select.Option key={_id} value={_id}>
+                  {curriculum}
                 </Select.Option>
               ))}
             </SelectInputStyled>
+
+            {collectionsToShow.length > 0 && (
+              <>
+                <FieldLabel>Collections</FieldLabel>
+                <SelectInputStyled
+                  showArrow
+                  data-cy="collectionsSelect"
+                  mode="multiple"
+                  size="large"
+                  margin="0px 0px 15px"
+                  placeholder="Please enter"
+                  value={filteredCollections.flatMap((c) => c.bucketIds)}
+                  onChange={(value, options) =>
+                    onChangeCollection(value, options)
+                  }
+                  optionFilterProp="children"
+                  getPopupContainer={(trigger) => trigger.parentNode}
+                  filterOption={(input, option) =>
+                    option.props.children
+                      .toLowerCase()
+                      .indexOf(input.toLowerCase()) >= 0
+                  }
+                >
+                  {collectionsToShow.map((o) => (
+                    <Select.Option
+                      key={o.bucketId}
+                      value={o.bucketId}
+                      _id={o._id}
+                      type={o.type}
+                      collectionName={o.collectionName}
+                    >
+                      {`${o.collectionName} - ${o.name}`}
+                    </Select.Option>
+                  ))}
+                </SelectInputStyled>
+              </>
+            )}
+
+            <FieldLabel>Maximum Number of Questions</FieldLabel>
+            <StyledInput
+              onChange={handleChangeTotalTestItems}
+              defaultValue={test.totalTestItems || 1}
+              min={1}
+            />
           </>
         )}
 

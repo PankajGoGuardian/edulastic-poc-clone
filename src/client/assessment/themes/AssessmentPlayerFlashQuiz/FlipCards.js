@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useEffect } from 'react'
 import { EduButton, FlexContainer } from '@edulastic/common'
 import FlashIcon from './FlashIcon'
-import { clamp } from 'lodash'
+import { clamp, shuffle } from 'lodash'
 import {
   FlipCardsWrapper,
   FlipCardFrontDummy,
@@ -85,7 +85,7 @@ const FlipCards = ({
         ),
       []
     )
-    return genlist
+    return shuffle(genlist)
   }, [questions])
 
   useEffect(() => {

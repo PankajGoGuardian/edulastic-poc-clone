@@ -50,6 +50,8 @@ const PlayerContentArea = ({
   title,
   finishTest,
   answers,
+  learningTime = 3,
+  assessementTime = 5,
 }) => {
   const [isExploding, setIsExploding] = React.useState(false)
 
@@ -103,6 +105,8 @@ const PlayerContentArea = ({
             groupId={groupId}
             title={title}
             answers={answers}
+            learningTime={learningTime}
+            assessementTime={assessementTime}
           />
         )}
         <ConfettiContainer>

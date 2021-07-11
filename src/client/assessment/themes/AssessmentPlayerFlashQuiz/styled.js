@@ -271,9 +271,9 @@ export const ConfettiContainer = styled.div`
 `
 
 export const StyledTag = styled(Tag)`
-  padding: 10px 20px;
-  font-size: 20px;
-  line-height: 26px;
+  padding: 6px 12px;
+  font-size: 16px;
+  line-height: 22px;
   margin-top: 16px;
   margin-bottom: 15px;
 `
@@ -403,11 +403,28 @@ export const FlashQuizReportContainer = styled.div`
 
   th {
     text-align: center;
+    font-weight: 600;
+  }
+
+  td {
+    font-size: 16px;
   }
 
   svg,
   path,
   g {
     fill: #f3f3f3;
+  }
+`
+
+export const AvatarContainer = styled.div`
+  position: relative;
+
+  .badge {
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    bottom: 0;
+    right: 0px;
   }
 `

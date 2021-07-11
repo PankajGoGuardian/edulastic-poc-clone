@@ -7,6 +7,7 @@ import {
   PerformanceContainer,
   PerformanceMetrics,
   StatValue,
+  AvatarContainer,
 } from './styled'
 
 import { PDFDownloadLink } from '@react-pdf/renderer'
@@ -14,8 +15,16 @@ import { PdfDocument } from './FlashQuizPDFView'
 import { themeColorBlue } from '@edulastic/colors'
 import { IconDownload } from '@edulastic/icons'
 import { clamp } from 'lodash'
+import TrophyBadge from './trophy-badge.png'
 
-const FlashQuizReport = ({ user, questions = [], title, answers }) => {
+const FlashQuizReport = ({
+  user,
+  questions = [],
+  title,
+  answers,
+  learningTime = 0,
+  assessementTime = 0,
+}) => {
   const data = useMemo(() => {
     const { list = [], possibleResponses = [] } = questions[0] || {}
     return list.map((item) => ({
@@ -54,10 +63,17 @@ const FlashQuizReport = ({ user, questions = [], title, answers }) => {
         justifyContent="flex-start"
         marginBottom="10px"
       >
-        <Avatar size={100} style={{ fontSize: 36, fontWeight: 600 }}>
-          {user?.username?.slice(0, 2)?.toUpperCase()}
-        </Avatar>
-        <StyledTag color="geekblue">{user.username}</StyledTag>
+        {user?.thumbnail ? (
+          <AvatarContainer>
+            <Avatar size={120} src={user.thumbnail} />
+            <img className="badge" src={TrophyBadge} />
+          </AvatarContainer>
+        ) : (
+          <Avatar size={100} style={{ fontSize: 36, fontWeight: 600 }}>
+            {user?.username?.slice(0, 2)?.toUpperCase()}
+          </Avatar>
+        )}
+        <StyledTag color="magenta">{user.username}</StyledTag>
       </FlexContainer>
       <h3 style={{ fontWeight: 600 }}>{title}</h3>
 
@@ -101,7 +117,7 @@ const FlashQuizReport = ({ user, questions = [], title, answers }) => {
               className="time"
               type="circle"
               percent={100}
-              format={() => `${5} Mins`}
+              format={() => `${assessementTime + learningTime} Mins`}
             />
             <h3>TIME</h3>
           </FlexContainer>
@@ -124,13 +140,13 @@ const FlashQuizReport = ({ user, questions = [], title, answers }) => {
               <StatValue>{answers?.[0]?.wrongFlips || '-'}</StatValue>
             </Descriptions.Item>
             <Descriptions.Item label="Learning Time">
-              <StatValue>2 mins</StatValue>
+              <StatValue>{`${learningTime} mins`}</StatValue>
             </Descriptions.Item>
             <Descriptions.Item label="Assessement Time">
-              <StatValue>3 mins</StatValue>
+              <StatValue>{`${assessementTime} mins`}</StatValue>
             </Descriptions.Item>
             <Descriptions.Item label="Total Time" span={2}>
-              <StatValue>5 mins</StatValue>
+              <StatValue>{`${learningTime + assessementTime} mins`}</StatValue>
             </Descriptions.Item>
           </Descriptions>
         </PerformanceMetrics>

@@ -122,6 +122,7 @@ const ItemsHistoryCard = ({
       </a>
     </>
   )
+  const showHistory = autoPinnedItems.length > 0 || pinnedItems.length > 0
 
   const text = (
     <StyledMenu isPinShown={isPinShown}>
@@ -173,11 +174,20 @@ const ItemsHistoryCard = ({
       </Menu.Item>
     </StyledMenu>
   )
+  const emptyBoard = (
+    <StyledMenu>
+      <Menu.Item>
+        <TextUpgrade style={{ textAlign: 'center' }}>
+          Board is Empty
+        </TextUpgrade>
+      </Menu.Item>
+    </StyledMenu>
+  )
   return (
     <StyledDiv style={style}>
       <StyledDropdown
         overlayStyle={{ zIndex: 2000 }}
-        overlay={isPinShown ? text : boardText}
+        overlay={showHistory ? (isPinShown ? text : boardText) : emptyBoard}
         placement="bottomCenter"
         trigger={['click']}
         onVisibleChange={(visible) => {

@@ -55,6 +55,7 @@ import { bucketReducer } from '../../ContentBuckets'
 import { collectionsReducer } from '../../ContentCollections'
 import { slice as LCBAssignmentSlice } from '../../LCBAssignmentSettings/ducks'
 import { slice as subscriptionSlice } from '../../Subscription/ducks'
+import { slice as PinBoardSlice } from '../../PinBoard/ducks'
 import { testItemPreviewAttachment } from '../components/common/PreviewModal/previewAttachment.ducks'
 import { assignmentSettings } from '../../AssignTest/duck'
 import playlistTestBoxSlice from '../../CurriculumSequence/components/ManageContentBlock/ducks'
@@ -126,6 +127,7 @@ const authorReducers = {
   testItemPreviewAttachment,
   assignmentSettings,
   playlistTestBox: playlistTestBoxSlice.reducer,
+  pinned: PinBoardSlice.reducer,
   externalToolsReducer,
   testPlayer,
   feedback,

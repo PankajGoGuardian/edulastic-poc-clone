@@ -106,7 +106,7 @@ import {
 } from './styled'
 import ViewPasswordModal from './ViewPasswordModal'
 import { allowedSettingPageToDisplay } from './utils/transformers'
-
+import ItemsHistoryCard from '../../../PinBoard/itemsHistoryCard';
 const {
   POLICY_OPEN_MANUALLY_BY_TEACHER,
   POLICY_CLOSE_MANUALLY_BY_ADMIN,
@@ -873,6 +873,7 @@ class ClassHeader extends Component {
               </StyledTabs>
             </HeaderMidContainer>
             <RightSideButtonWrapper>
+              <ItemsHistoryCard />
               {!isSmallDesktop && renderOpenClose}
               <Dropdown
                 getPopupContainer={(triggerNode) => triggerNode.parentNode}

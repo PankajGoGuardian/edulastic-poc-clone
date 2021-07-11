@@ -34,6 +34,7 @@ import PlaylistPageNav from '../PlaylistPageNav'
 import SwitchPlaylist from './SwitchPlaylist'
 import { getCollectionsSelector } from '../../../src/selectors/user'
 import { allowContentEditCheck } from '../../../src/utils/permissionCheck'
+import ItemsHistoryCard from '../../../PinBoard/itemsHistoryCard'
 
 const CurriculumHeaderButtons = styled(FlexContainer)`
   margin-left: ${({ marginLeft }) => marginLeft};
@@ -237,6 +238,8 @@ const CurriculumHeader = ({
       </PlaylistStatus>
     )
 
+  const dataForPin = {contentId:_id,title,status,contentType:"playlist"};
+
   if (mode !== 'embedded') {
     return (
       <MainHeader
@@ -261,6 +264,7 @@ const CurriculumHeader = ({
         )}
 
         <CurriculumHeaderButtons marginLeft={urlHasUseThis ? 'unset' : 'auto'}>
+          <ItemsHistoryCard autoPinItem data={dataForPin} />
           {(shouldShowEdit ||
             isAuthor ||
             role === roleuser.EDULASTIC_CURATOR) &&

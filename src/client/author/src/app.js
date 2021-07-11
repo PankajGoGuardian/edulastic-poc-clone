@@ -579,7 +579,7 @@ const Author = ({
                   exact
                   path="/author/tests/:id"
                   render={(props) => (
-                    <TestPage {...props} currentTab="description" />
+                    <TestPage key={props?.match?.params?.id} {...props} currentTab="description" />
                   )}
                 />
 
@@ -590,7 +590,7 @@ const Author = ({
                   <Route
                     exact
                     path={`/author/tests/create/${x}`}
-                    render={(props) => <TestPage {...props} currentTab={x} />}
+                    render={(props) => <TestPage key={props?.match?.params?.id} {...props} currentTab={x} />}
                   />
                 ))}
 
@@ -601,7 +601,7 @@ const Author = ({
                   <Route
                     exact
                     path={`/author/tests/tab/${x}/id/:id`}
-                    render={(props) => <TestPage {...props} currentTab={x} />}
+                    render={(props) => <TestPage key={props?.match?.params?.id} {...props} currentTab={x} />}
                   />
                 ))}
 
@@ -612,14 +612,14 @@ const Author = ({
                   <Route
                     exact
                     path={`/author/tests/tab/${x}/id/:id/old/:oldId`}
-                    render={(props) => <TestPage {...props} currentTab={x} />}
+                    render={(props) => <TestPage key={props?.match?.params?.id} {...props} currentTab={x} />}
                   />
                 ))}
 
                 <Route
                   exact
                   path="/author/tests/verid/:versionId"
-                  render={(props) => <TestPage isVersionFlow {...props} />}
+                  render={(props) => <TestPage key={props?.match?.params?.versionId} isVersionFlow {...props} />}
                 />
 
                 <Route
@@ -638,7 +638,7 @@ const Author = ({
                   exact
                   path="/author/tests/:id/editAssigned"
                   render={(props) => (
-                    <TestPage {...props} currentTab="review" editAssigned />
+                    <TestPage key={props?.match?.params?.id} {...props}  currentTab="review" editAssigned />
                   )}
                 />
 
@@ -657,7 +657,7 @@ const Author = ({
                   exact
                   path="/author/tests/:id/versioned/old/:oldId"
                   render={(props) => (
-                    <TestPage {...props} currentTab="review" versioned />
+                    <TestPage key={props?.match?.params?.id} {...props} currentTab="review" versioned />
                   )}
                 />
 

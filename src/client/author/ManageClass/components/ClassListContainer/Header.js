@@ -28,6 +28,7 @@ import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import authorizeCanvas from '../../../../common/utils/CanavsAuthorizationModule'
 import { scopes } from './ClassCreatePage'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
+import ItemsHistoryCard from '../../../PinBoard/itemsHistoryCard';
 
 const Header = ({
   fetchGoogleClassList,
@@ -132,6 +133,7 @@ const Header = ({
       </FeaturesSwitch>
       <ButtonsWrapper>
         <>
+          <ItemsHistoryCard />
           {!isPlayground && enableCleverSync && (
             <EduButton
               isBlue

@@ -229,7 +229,7 @@ export function* saveUserResponse({ payload }) {
       testActivityId: userTestActivityId,
       passages,
       isDocBased,
-      isAdaptive,
+      isAdaptiveTest,
     } = yield select((state) => state.test)
     const shuffledOptions = yield select((state) => state.shuffledOptions)
     // passages: state.test.passages
@@ -387,7 +387,7 @@ export function* saveUserResponse({ payload }) {
     yield put({
       type: CLEAR_HINT_USAGE,
     })
-    if (isAdaptive) {
+    if (isAdaptiveTest) {
       const adaptiveItem = yield call(testItemsApi.getAdaptiveItem, {
         testActivityId: userTestActivityId,
         authorDifficulty: 'medium',

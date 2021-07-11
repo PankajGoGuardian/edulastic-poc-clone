@@ -921,7 +921,7 @@ const AssessmentContainer = ({
   }
 
   const moveToNext = async (e, needsToProceed = false, value) => {
-    if (!isLast() && value !== 'SUBMIT' && !restProps.isAdaptive) {
+    if (!isLast() && value !== 'SUBMIT' && !restProps.isAdaptiveTest) {
       gotoQuestion(Number(currentItem) + 1, needsToProceed, 'next')
     }
 
@@ -1074,7 +1074,7 @@ const AssessmentContainer = ({
   }
 
   const silentSkip = async ({ index, context }) => {
-    if (restProps.isAdaptive) {
+    if (restProps.isAdaptiveTest) {
       return notification({
         msg: 'Please answer the question to proceed',
       })
@@ -1416,7 +1416,7 @@ const enhance = compose(
       restrictNavigationOutAttemptsThreshold:
         state.test?.settings?.restrictNavigationOutAttemptsThreshold,
       savedBlurTime: state.test?.savedBlurTime,
-      isAdaptive: state.test.isAdaptive,
+      isAdaptiveTest: state.test.isAdaptiveTest,
     }),
     {
       saveUserResponse,

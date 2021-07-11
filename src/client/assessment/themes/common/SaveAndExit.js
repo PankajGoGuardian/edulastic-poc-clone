@@ -63,7 +63,7 @@ const SaveAndExit = ({
   savingResponse,
   adjustScratchpad,
   isPremiumContentWithoutAccess = false,
-  isAdaptive,
+  isAdaptiveTest,
 }) => {
   const _pauseAllowed = useUtaPauseAllowed(utaId)
   const showPause = _pauseAllowed === undefined ? pauseAllowed : _pauseAllowed
@@ -103,7 +103,7 @@ const SaveAndExit = ({
           </StyledButton>
         </Tooltip>
       )}
-      {!isAdaptive &&
+      {!isAdaptiveTest &&
         showPause &&
         !inSEB &&
         (previewPlayer ? (
@@ -150,7 +150,7 @@ const SaveAndExit = ({
             )}
           </>
         ))}
-      {onSubmit && !isAdaptive && (
+      {onSubmit && !isAdaptiveTest && (
         <div id="submitTestButton" tabIndex="-1">
           <EduButton isGhost onClick={onSubmit} loading={savingResponse}>
             <IconSend />

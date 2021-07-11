@@ -22,7 +22,7 @@ const TestButton = ({
   blockNavigationToAnsweredQuestions = false,
   LCBPreviewModal,
   isPremiumContentWithoutAccess = false,
-  isAdaptive,
+  isAdaptiveTest,
 }) => {
   const handleCheckAnswer = () => {
     if (
@@ -38,18 +38,22 @@ const TestButton = ({
   const hideCheckAnswer = !TokenStorage.getAccessToken()
   return (
     <Container>
-      {!blockNavigationToAnsweredQuestions && !LCBPreviewModal && !isAdaptive && (
-        <Tooltip placement="top" title="Bookmark">
-          <StyledButton
-            onClick={(e) => !isPremiumContentWithoutAccess && toggleBookmark(e)}
-            active={isBookmarked}
-            disabled={isPremiumContentWithoutAccess}
-          >
-            <StyledIconBookmark />
-            <span>{t('common.test.bookmark')}</span>
-          </StyledButton>
-        </Tooltip>
-      )}
+      {!blockNavigationToAnsweredQuestions &&
+        !LCBPreviewModal &&
+        !isAdaptiveTest && (
+          <Tooltip placement="top" title="Bookmark">
+            <StyledButton
+              onClick={(e) =>
+                !isPremiumContentWithoutAccess && toggleBookmark(e)
+              }
+              active={isBookmarked}
+              disabled={isPremiumContentWithoutAccess}
+            >
+              <StyledIconBookmark />
+              <span>{t('common.test.bookmark')}</span>
+            </StyledButton>
+          </Tooltip>
+        )}
       {settings.maxAnswerChecks > 0 && !hideCheckAnswer && (
         <Tooltip
           placement="top"

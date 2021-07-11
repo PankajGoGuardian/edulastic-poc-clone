@@ -67,7 +67,7 @@ const PlayerHeader = ({
   hidePause,
   blockNavigationToAnsweredQuestions = false,
   isPremiumContentWithoutAccess = false,
-  isAdaptive,
+  isAdaptiveTest,
 }) => {
   const query = qs.parse(location.search, { ignoreQueryPrefix: true })
   const { cliUser } = query
@@ -86,7 +86,7 @@ const PlayerHeader = ({
       LCBPreviewModal={LCBPreviewModal}
       zoomLevel={zoomLevel}
       isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
-      isAdaptive={isAdaptive}
+      isAdaptiveTest={isAdaptiveTest}
     />
   )
 
@@ -100,7 +100,7 @@ const PlayerHeader = ({
                 <LogoCompact isMobile={isMobile} buttons={rightButtons} />
                 {!LCBPreviewModal && (
                   <>
-                    {!isAdaptive && (
+                    {!isAdaptiveTest && (
                       <QuestionSelectDropdown
                         key={currentItem}
                         currentItem={currentItem}
@@ -132,7 +132,7 @@ const PlayerHeader = ({
                         data-cy="prev"
                         type="primary"
                         icon="left"
-                        disabled={disabled || isAdaptive}
+                        disabled={disabled || isAdaptiveTest}
                         onClick={(e) => {
                           moveToPrev(null, true)
                           e.target.blur()
@@ -157,7 +157,7 @@ const PlayerHeader = ({
                         skin
                         type="primary"
                         data-cy="next"
-                        icon={isLast && !isAdaptive ? null : 'right'}
+                        icon={isLast && !isAdaptiveTest ? null : 'right'}
                         onClick={(e) => {
                           moveToNext()
                           e.target.blur()
@@ -175,8 +175,8 @@ const PlayerHeader = ({
                             moveToNext()
                         }}
                       >
-                        {isLast && !isAdaptive && <IconSend />}
-                        {isLast && !isAdaptive ? 'SUBMIT' : 'NEXT'}
+                        {isLast && !isAdaptiveTest && <IconSend />}
+                        {isLast && !isAdaptiveTest ? 'SUBMIT' : 'NEXT'}
                       </ControlBtn.Next>
                     )}
                   </>
@@ -199,7 +199,7 @@ const PlayerHeader = ({
                     isPremiumContentWithoutAccess={
                       isPremiumContentWithoutAccess
                     }
-                    isAdaptive={isAdaptive}
+                    isAdaptiveTest={isAdaptiveTest}
                   />
                 )}
                 {!LCBPreviewModal && (

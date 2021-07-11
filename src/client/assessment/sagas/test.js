@@ -877,6 +877,10 @@ function* submitTest({ payload }) {
     yield put({
       type: CLEAR_USER_WORK,
     })
+    const test = yield select((state) => state.test)
+    if (test.isAdaptiveTest) {
+      return yield put(push(`/home/grades`))
+    }
     sessionStorage.removeItem('testAttemptReviewVistedId')
     if (navigator.userAgent.includes('SEB')) {
       return yield put(push('/student/seb-quit-confirm'))
@@ -902,7 +906,6 @@ function* submitTest({ payload }) {
     }
 
     if (preventRouteChange) return
-    const test = yield select((state) => state.test)
 
     if (isCliUser) {
       yield put(

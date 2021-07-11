@@ -25,6 +25,8 @@ const slice = createSlice({
         }
         state.pinsKeyed[payload.contentId] = payload
         state.pins.unshift(payload.contentId)
+      } else {
+          state.pinsKeyed[payload.contentId] = payload;
       }
     },
     _removePin: (state, { payload }) => {
@@ -44,8 +46,9 @@ const slice = createSlice({
     setItems: () => {},
     loadItems: () => {},
     addAutoPins: (state, { payload }) => {
-      if (state.autoPins.find((x) => x.contentId === payload.contentId)) {
-        return state
+      const index = state.autoPins.findIndex((x) => x.contentId === payload.contentId);
+      if (index != -1) {
+        state.autoPins[index] = payload;
       }
       if (state.autoPins.length + 1 > maxAutoPins) {
         state.autoPins.pop()

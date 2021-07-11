@@ -45,7 +45,7 @@ function ItemRow(x) {
                 <Tag>{x.status}</Tag>
               </p>
             )}
-            {x.showRowPin && (
+            {x.showRowPin? (
               <p style={{ alignSelf: 'flex-end' }}>
                 {' '}
                 <IconHistoryPin
@@ -53,6 +53,18 @@ function ItemRow(x) {
                   onClick={(e) => {
                     e.stopPropagation()
                     x.onPinClick()
+                  }}
+                />
+              </p>
+            ):(
+              <p style={{ alignSelf: 'flex-end' }}>
+                {' '}
+                <Icon
+                  style={{ fontSize: '15px', cursor: 'pointer' }}
+                  type="close-circle"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    x.onDelete()
                   }}
                 />
               </p>
@@ -80,13 +92,11 @@ const ItemsHistoryCard = ({
   showPinIcon,
   style,
 }) => {
-  console.log('pinnedItems', pinnedItems)
   useEffect(() => {
     loadPins()
   }, [])
   const currentUrl = window.location.href.replace(window.location.origin, '')
   useEffect(() => {
-    console.log('autoPinProps', { autoPinItem, data })
     if (autoPinItem && data?.title && data?.contentId) {
       addAutoPin({ ...data, pinnedTime: +new Date(), url: currentUrl })
     }
@@ -103,7 +113,6 @@ const ItemsHistoryCard = ({
     }
   }
   const alreadyPresent = data?.contentId && data?.contentId in pinsKeyed
-  console.log('alreadyPresent', alreadyPresent, { data, pinsKeyed })
   const text = (
     <StyledMenu isPremiumUser={isPremiumUser}>
       <HeaderText>Recent Items</HeaderText>
@@ -120,7 +129,9 @@ const ItemsHistoryCard = ({
       ))}
       <HeaderText>Pinned</HeaderText>
       {pinnedItems.map((x) => (
-        <ItemRow key={x.contentId} history={history} {...x} />
+        <ItemRow key={x.contentId} history={history} onDelete={()=>{
+          removePin(x.contentId);
+        }} {...x} />
       ))}
     </StyledMenu>
   )

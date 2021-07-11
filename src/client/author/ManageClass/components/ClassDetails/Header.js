@@ -16,7 +16,7 @@ import * as moment from 'moment'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import styled from 'styled-components'
-import ItemsHistoryCard from '../../../PinBoard/itemsHistoryCard';
+import ItemsHistoryCard from '../../../PinBoard/itemsHistoryCard'
 
 // components
 import { Dropdown, Select, Col } from 'antd'
@@ -273,7 +273,7 @@ const Header = ({
       headingText={classDetails}
     >
       <div style={{ display: 'flex', alignItems: 'right' }}>
-        <ItemsHistoryCard />
+        <ItemsHistoryCard showPinIcon />
         {showDropDown && !isDemoPlaygroundUser ? (
           <SelectStyled
             data-cy="sync-options-dropdown"

@@ -8,6 +8,7 @@ import { EduButton, MainHeader, withWindowSizes } from '@edulastic/common'
 import { IconBarChart, IconMoreVertical } from '@edulastic/icons'
 import FeaturesSwitch from '../../../../../features/components/FeaturesSwitch'
 import HeaderNavigation from './HeaderNavigation'
+import ItemsHistoryCard from '../../../../PinBoard/itemsHistoryCard'
 
 const CustomizedHeaderWrapper = ({
   windowWidth,
@@ -172,6 +173,7 @@ const CustomizedHeaderWrapper = ({
         />
       ) : null}
       <StyledCol>
+        <ItemsHistoryCard />
         {!isSmallDesktop && actionRightButtons}
         {isSmallDesktop && (
           <Dropdown overlay={actionRightButtons} trigger={['click']}>

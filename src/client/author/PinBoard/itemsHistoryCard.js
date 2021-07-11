@@ -1,119 +1,200 @@
-import React, {useEffect} from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
-import { Dropdown, Menu, Icon,Tag } from 'antd'
-import { IconHistoryPin, IconBoard, IconPlaylist2 } from '@edulastic/icons'
-import { connect } from 'react-redux';
-import { getCurrentItemsSelector, slice } from './ducks';
-import moment from 'moment';
-import { withRouter } from 'react-router-dom';
+import { Dropdown, Menu, Icon, Tag } from 'antd'
+import {
+  IconHistoryPin,
+  IconBoard,
+  IconPlaylist2,
+  IconTestBank,
+} from '@edulastic/icons'
+import { connect } from 'react-redux'
+import { getCurrentItemsSelector, slice } from './ducks'
+import moment from 'moment'
+import { withRouter } from 'react-router-dom'
 
-
-const typesMapping = {link: {icon:<Icon type="link" />}, test: {icon:<IconPlaylist2 />}, playlist: {icon:<IconBoard />}, testItem: {icon:<Icon type="file-text" />, text:"test item"} }
-
-function ItemRow(x){
-  return (<Menu.Item onItemHover={()=>{}} onClick={()=>{
-    x.history.push(x.url)
-  }}>
-    <StyledMenuItemText>
-      <div>
-        {typesMapping[x.contentType]?.icon}
-      </div>
-      <div>
-        <span>{typesMapping[x.contentType]?.text||x.contentType?.toUpperCase()}</span>
-        <StyledParagraph>
-          {x.contentType === 'link'?x?.url?.replace('/',''):x.title}
-        </StyledParagraph>
-        <SubInfoText>
-          {' '}
-          <p>{ moment(new Date(x.pinnedTime)).fromNow()}</p>
-          { x.status &&  <p> <Tag>{x.status}</Tag></p>}
-          
-          { x.showRowPin && <p style={{ alignSelf: 'flex-end' }}>
-            {' '}
-            <IconHistoryPin style={{ fontSize: '15px' , cursor:'pointer'}} onClick={(e)=>{
-              e.stopPropagation();
-              x.onPinClick();
-            }} />
-          </p>}
-        </SubInfoText>
-      </div>
-    </StyledMenuItemText>
-  </Menu.Item>)
+const typesMapping = {
+  link: { icon: <Icon type="link" /> },
+  test: { icon: <IconTestBank /> },
+  playlist: { icon: <IconPlaylist2 /> },
+  testItem: { icon: <Icon type="file-text" />, text: 'test item' },
 }
 
-const ItemsHistoryCard = ({addAutoPin,addPin,loadPins,pinnedItems,autoPinnedItems,data, autoPinItem,pinsKeyed, removePin,history}) => {
-console.log('pinnedItems',pinnedItems);
-  useEffect(()=>{
-    loadPins();
-  },[]);
-  const currentUrl = window.location.href.replace(window.location.origin, "");
-  useEffect(()=>{
-    console.log('autoPinProps',{autoPinItem,data});
-    if(autoPinItem && data?.title && data?.contentId){
-      addAutoPin({...data,pinnedTime: +new Date(), url: currentUrl});
-    }
-  },[autoPinItem,data?.title,data?.contentId]);
-  
+function ItemRow(x) {
+  return (
+    <Menu.Item
+      onItemHover={() => {}}
+      onClick={() => {
+        x.history.push(x.url)
+      }}
+    >
+      <StyledMenuItemText>
+        <div>{typesMapping[x.contentType]?.icon}</div>
+        <div>
+          <span>
+            {typesMapping[x.contentType]?.text || x.contentType?.toUpperCase()}
+          </span>
+          <StyledParagraph>
+            {x.contentType === 'link' ? x?.url?.replace('/', '') : x.title}
+          </StyledParagraph>
+          <SubInfoText>
+            {' '}
+            <p>{moment(new Date(x.pinnedTime)).fromNow()}</p>
+            {x.status && (
+              <p>
+                {' '}
+                <Tag>{x.status}</Tag>
+              </p>
+            )}
+            {x.showRowPin && (
+              <p style={{ alignSelf: 'flex-end' }}>
+                {' '}
+                <IconHistoryPin
+                  style={{ fontSize: '15px', cursor: 'pointer' }}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    x.onPinClick()
+                  }}
+                />
+              </p>
+            )}
+          </SubInfoText>
+        </div>
+      </StyledMenuItemText>
+    </Menu.Item>
+  )
+}
 
-  if(!data){
-    data = {contentType:'link',contentId:currentUrl,url:currentUrl,pinnedTime: +new Date()};
+const ItemsHistoryCard = ({
+  addAutoPin,
+  addPin,
+  loadPins,
+  pinnedItems,
+  autoPinnedItems,
+  data,
+  autoPinItem,
+  pinsKeyed,
+  removePin,
+  history,
+  subscription = {},
+  user,
+  showPinIcon,
+  style,
+}) => {
+  console.log('pinnedItems', pinnedItems)
+  useEffect(() => {
+    loadPins()
+  }, [])
+  const currentUrl = window.location.href.replace(window.location.origin, '')
+  useEffect(() => {
+    console.log('autoPinProps', { autoPinItem, data })
+    if (autoPinItem && data?.title && data?.contentId) {
+      addAutoPin({ ...data, pinnedTime: +new Date(), url: currentUrl })
+    }
+  }, [autoPinItem, data?.title, data?.contentId])
+
+  const isPremiumUser = user?.features?.premium && subscription?._id
+
+  if (!data) {
+    data = {
+      contentType: 'link',
+      contentId: currentUrl,
+      url: currentUrl,
+      pinnedTime: +new Date(),
+    }
   }
-  const alreadyPresent = data?.contentId && data?.contentId in  pinsKeyed;
-  console.log('alreadyPresent',alreadyPresent,{data,pinsKeyed});
+  const alreadyPresent = data?.contentId && data?.contentId in pinsKeyed
+  console.log('alreadyPresent', alreadyPresent, { data, pinsKeyed })
   const text = (
-    <StyledMenu>
+    <StyledMenu isPremiumUser={isPremiumUser}>
       <HeaderText>Recent Items</HeaderText>
-      {autoPinnedItems.map( x => (<ItemRow onPinClick={()=>{
-        addPin(x);
-      }} showRowPin key={x.contentId} history={history} {...x} />))}
-      <HeaderText>Pinned</HeaderText> 
-      {
-        pinnedItems.map(x => (<ItemRow key={x.contentId} history={history} {...x} />))
-      }
+      {autoPinnedItems.map((x) => (
+        <ItemRow
+          onPinClick={() => {
+            addPin(x)
+          }}
+          showRowPin
+          key={x.contentId}
+          history={history}
+          {...x}
+        />
+      ))}
+      <HeaderText>Pinned</HeaderText>
+      {pinnedItems.map((x) => (
+        <ItemRow key={x.contentId} history={history} {...x} />
+      ))}
+    </StyledMenu>
+  )
+
+  const boardText = (
+    <StyledMenu isPremiumUser={isPremiumUser}>
+      <Menu.Item>
+        <HeaderText onClick={() => history.push('/author/subscription')}>
+          Please upgrade to premium user{' '}
+        </HeaderText>
+      </Menu.Item>
     </StyledMenu>
   )
   return (
-    <StyledDiv>
+    <StyledDiv style={style}>
       <StyledDropdown
         overlayStyle={{ zIndex: 2000 }}
-        overlay={text}
+        overlay={isPremiumUser ? text : boardText}
         placement="bottomCenter"
         trigger={['click']}
-        onVisibleChange={(visible)=>{
-          if(visible){
-
+        onVisibleChange={(visible) => {
+          if (visible) {
           }
         }}
       >
-        <IconHistoryPin theme="filled" style={{ fontSize: '24px' }} />
+        <IconBoard
+          style={{
+            fontSize: '20px',
+            paddingRight: '5px',
+            paddingTop: '3px',
+            fill: '#2f4151',
+          }}
+        />
       </StyledDropdown>
+      {isPremiumUser && showPinIcon ? (
+        <IconHistoryPin
+          theme={alreadyPresent ? 'filled' : ''}
+          onClick={() => {
+            if (alreadyPresent) {
+              console.log('removin pins')
+              removePin(data?.contentId)
+            } else {
+              addPin({
+                ...data,
+                url: window.location.href.replace(window.location.origin, ''),
+                pinnedTime: +new Date(),
+              })
+            }
+          }}
+          style={{
+            fontSize: '24px',
+            cursor: 'pointer',
+          }}
+        />
+      ) : null}
 
-      <IconHistoryPin onClick={()=> {
-        if(alreadyPresent){
-          console.log('removin pins')
-          removePin(data?.contentId);
-        } else {
-          addPin({...data,url:window.location.href.replace(window.location.origin, ""), pinnedTime:+new Date()});
-        }
-      }} style={{ fontSize: '24px', cursor:'pointer', color: alreadyPresent?'red':'green'}} />
       {/* <Icon style={{fontSize:'24px'}} type="folder-open" /> */}
     </StyledDiv>
   )
 }
 
 const StyledDiv = styled.div`
-width: 50px;
+  display: flex;
+  align-self: center;
 `
 const StyledSpan = styled.span`
-  display:inline-block;
+  display: inline-block;
   font-size: 13px;
-
-`;
+`
 
 const StyledDropdown = styled(Dropdown)``
 
 const StyledMenu = styled(Menu)`
-  width: 400px;
+  width: ${(props) => (props.isPremiumUser ? '400px' : '330px')};
   max-height: 450px;
   border-radius: 10px;
   box-shadow: 0px 0px 20px #a0a0a0;
@@ -121,6 +202,7 @@ const StyledMenu = styled(Menu)`
   overflow-x: hidden;
   position: relative;
   top: 20px;
+  padding-top: ${(props) => (props.isPremiumUser ? ' ' : '10px')};
   &::-webkit-scrollbar {
     width: 6px;
   }
@@ -134,7 +216,7 @@ const StyledMenu = styled(Menu)`
   }
   & > li {
     margin: auto;
-    width: 95%;
+    width: ${(props) => (props.isPremiumUser ? '95%' : '100%')};
     border-radius: 5px;
     margin-top: 5px;
     &:hover {
@@ -142,10 +224,10 @@ const StyledMenu = styled(Menu)`
     }
   }
 
-  .anticon.anticon-pushpin{
-    transition:all 0.3s;
-    transform-origin:center center;
-    &:active{
+  .anticon.anticon-pushpin {
+    transition: all 0.3s;
+    transform-origin: center center;
+    &:active {
       transform: scale(3);
     }
   }
@@ -154,7 +236,7 @@ const StyledMenu = styled(Menu)`
 const HeaderText = styled.h3`
   font-weight: bold;
   color: #1ab394;
-  padding-left:25px;
+  padding-left: 25px;
 `
 
 const StyledMenuItemText = styled.div`
@@ -162,8 +244,8 @@ const StyledMenuItemText = styled.div`
   cursor: pointer;
   display: flex;
 
-  &:hover{
-    background-color:rgba(0,0,0,0.2);
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.2);
   }
 
   & > div:nth-child(2) {
@@ -190,13 +272,18 @@ const SubInfoText = styled.div`
   justify-content: space-between;
 `
 
-export default connect((state)=>({
-  pinnedItems: getCurrentItemsSelector(state),
-  pinsKeyed: state?.pinned?.pinsKeyed,
-  autoPinnedItems: state.pinned?.autoPins,
-}),{
-  addPin: slice.actions.addPin,
-  addAutoPin: slice.actions.addAutoPins,
-  loadPins: slice.actions.loadItems,
-  removePin: slice.actions.removePin,
-})(withRouter(ItemsHistoryCard))
+export default connect(
+  (state) => ({
+    pinnedItems: getCurrentItemsSelector(state),
+    pinsKeyed: state?.pinned?.pinsKeyed,
+    autoPinnedItems: state.pinned?.autoPins,
+    user: state.user.user,
+    subscription: state?.subscription?.subscriptionData?.subscription,
+  }),
+  {
+    addPin: slice.actions.addPin,
+    addAutoPin: slice.actions.addAutoPins,
+    loadPins: slice.actions.loadItems,
+    removePin: slice.actions.removePin,
+  }
+)(withRouter(ItemsHistoryCard))

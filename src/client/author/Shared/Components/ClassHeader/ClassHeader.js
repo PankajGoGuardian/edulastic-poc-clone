@@ -873,7 +873,7 @@ class ClassHeader extends Component {
               </StyledTabs>
             </HeaderMidContainer>
             <RightSideButtonWrapper>
-              <ItemsHistoryCard />
+              <ItemsHistoryCard showPinIcon />
               {!isSmallDesktop && renderOpenClose}
               <Dropdown
                 getPopupContainer={(triggerNode) => triggerNode.parentNode}

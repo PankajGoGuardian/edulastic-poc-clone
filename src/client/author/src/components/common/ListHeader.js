@@ -37,6 +37,7 @@ import {
   getUserRole,
 } from '../../selectors/user'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
+import ItemsHistoryCard from '../../../PinBoard/itemsHistoryCard'
 
 const ListHeader = ({
   onCreate,
@@ -90,6 +91,7 @@ const ListHeader = ({
       )}
 
       <RightButtonWrapper>
+        <ItemsHistoryCard style={{ paddingRight: '10px' }} />
         <MobileHeaderFilterIcon>{renderFilterIcon()}</MobileHeaderFilterIcon>
         {renderFilter(isAdvancedView)}
         {hasButton &&

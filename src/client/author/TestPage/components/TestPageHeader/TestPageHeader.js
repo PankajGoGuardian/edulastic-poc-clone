@@ -59,7 +59,7 @@ import RegradeNotificationListener from '../../../Regrade/RegradeNotificationLis
 import ConfirmRegradeModal from '../../../Regrade/ConfirmRegradeModal'
 import Upgrade from '../../../Regrade/Upgrade'
 import { DeleteItemModal } from '../../../TestList/components/DeleteItemModal/deleteItemModal'
-import ItemsHistoryCard from '../../../PinBoard/itemsHistoryCard';
+import ItemsHistoryCard from '../../../PinBoard/itemsHistoryCard'
 
 const {
   statusConstants,
@@ -400,7 +400,12 @@ const TestPageHeader = ({
     (isEdulasticCurator || isCurator) &&
     !isPlaylist
 
-  const dataForPin = {contentType:'test',contentId: test._id, title: test.title,status:test.status};
+  const dataForPin = {
+    contentType: 'test',
+    contentId: test._id,
+    title: test.title,
+    status: test.status,
+  }
   return (
     <>
       <Upgrade />
@@ -458,7 +463,12 @@ const TestPageHeader = ({
             justifyContent="flex-end"
             mt="12px"
           >
-            {hasTestId && <ItemsHistoryCard autoPinItem data={dataForPin} />}
+            <ItemsHistoryCard
+              showPinIcon={hasTestId}
+              autoPinItem
+              data={dataForPin}
+            />
+
             {hasTestId && !isPlaylist && !isDocBased && !test?.isDocBased && (
               <EduButton
                 title="Print"
@@ -472,6 +482,7 @@ const TestPageHeader = ({
                 <IconPrint />
               </EduButton>
             )}
+
             {hasTestId && (owner || features.isCurator) && !isEdulasticCurator && (
               <EduButton
                 isBlue

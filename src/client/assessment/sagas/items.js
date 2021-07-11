@@ -3,7 +3,6 @@ import { push } from 'connected-react-router'
 import {
   uploadToS3,
   notification,
-  Effects,
   captureSentryException,
 } from '@edulastic/common'
 import { maxBy, isEmpty, isPlainObject, keyBy } from 'lodash'
@@ -230,6 +229,7 @@ export function* saveUserResponse({ payload }) {
       passages,
       isDocBased,
       isAdaptiveTest,
+      maxVisitedItemsCount = 10,
     } = yield select((state) => state.test)
     const shuffledOptions = yield select((state) => state.shuffledOptions)
     // passages: state.test.passages
@@ -398,19 +398,21 @@ export function* saveUserResponse({ payload }) {
         type: UPDATE_ITEMS,
         payload: testItems,
       })
-      let _questions = getQuestions(testItems)
+      const _questions = getQuestions(testItems)
       yield put(loadQuestionsAction(keyBy(_questions, 'id')))
       console.log(payload)
+      if (maxVisitedItemsCount === testItems.length) {
+        yield put(push({ pathname: payload.urlToGo, state: payload.locState }))
+        return
+      }
       const pathname = adaptiveItem._id
         ? `${payload.url}/itemId/${adaptiveItem._id}`
         : payload.urlToGo
       if (payload?.urlToGo) {
         yield put(push({ pathname, state: payload?.locState }))
       }
-    } else {
-      if (payload?.urlToGo) {
-        yield put(push({ pathname: payload.urlToGo, state: payload.locState }))
-      }
+    } else if (payload?.urlToGo) {
+      yield put(push({ pathname: payload.urlToGo, state: payload.locState }))
     }
     if (shouldClearUserWork) {
       /**
@@ -466,13 +468,6 @@ function* loadUserResponse({ payload }) {
   }
 }
 
-const timeOut =
-  process.env.NODE_ENV === 'development'
-    ? 12000
-    : process.env.REACT_APP_QA_ENV
-    ? 60000
-    : 8000
-
 /*
   The race condition in Effects.throttleAction times out on slow connections/dev envs
   TODO: to detect slow connections and increase the timeout maybe
@@ -480,7 +475,7 @@ const timeOut =
 export default function* watcherSaga() {
   yield all([
     yield takeLatest(RECEIVE_ITEM_REQUEST, receiveItemSaga),
-    yield Effects.throttleAction(timeOut, SAVE_USER_RESPONSE, saveUserResponse),
+    yield takeLatest(SAVE_USER_RESPONSE, saveUserResponse),
     yield takeLatest(LOAD_USER_RESPONSE, loadUserResponse),
   ])
 }

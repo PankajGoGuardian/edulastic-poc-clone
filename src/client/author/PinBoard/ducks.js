@@ -1,8 +1,13 @@
 import { createSlice } from 'redux-starter-kit'
-import { createSelector } from 'reselect'
 import { takeEvery, call, put, all, select } from 'redux-saga/effects'
-import { userContextApi } from '@edulastic/api'
-import { keyBy } from 'lodash'
+import firebase from 'firebase/app';
+import 'firebase/auth';
+import { FireBaseService } from '@edulastic/common';
+import { keyBy, omitBy, isUndefined } from 'lodash'
+
+function getCurrentUserId(state){
+    return state.user?.user?._id;
+};
 
 const maxPins = 50
 const maxAutoPins = 5
@@ -34,7 +39,6 @@ const slice = createSlice({
         delete state.pinsKeyed[payload]
       }
       const pins = state.pins.filter((x) => x != payload)
-      console.log('pins',{pins,payload});
       Object.assign(state,{pins});
     },
     _setItems: (state, { payload }) => {
@@ -45,7 +49,7 @@ const slice = createSlice({
     removePin: () => {},
     setItems: () => {},
     loadItems: () => {},
-    addAutoPins: (state, { payload }) => {
+    _addAutoPins: (state, { payload }) => {
       const index = state.autoPins.findIndex((x) => x.contentId === payload.contentId);
       if (index != -1) {
         state.autoPins[index] = payload;
@@ -56,16 +60,27 @@ const slice = createSlice({
       state.autoPins.unshift(payload)
       sessionStorage.autoPins = JSON.stringify(state.autoPins);
     },
+    _setAutoPins: (state,{payload}) =>{
+        state.autoPins = payload;
+    },
+    addAutoPins: () =>{
+
+    }
   },
 })
 
 export { slice }
+
+const collectionName = "PinBoard";
 
 export const getCurrentItemsSelector = (state) => state.pinned.pins.map((x) => ({...state.pinned.pinsKeyed[x],_id: state.pinned.pinsKeyed[x]?.contentId})).filter(x => x)
 
 function* saveCurrentSaga() {
   const currentItems = yield select(getCurrentItemsSelector)
   window.sessionStorage.pinnedItems = JSON.stringify(currentItems)
+  const currentUserId = yield select(getCurrentUserId);
+  const itemsWithoutUndefined = currentItems.map(x => omitBy(x,isUndefined));
+  return FireBaseService.db.collection(collectionName).doc(currentUserId).set({v:itemsWithoutUndefined});
 //   return yield call(userContextApi.setPinData, currentItems)
 }
 
@@ -108,17 +123,33 @@ function* loadItemsSaga() {
     yield put(slice.actions._setItems(JSON.parse(sessionStorage.pinnedItems)))
   }
   try {
-    // const res = (yield call(userContextApi.getPinData));
-    // let items = [];
-    // if(res?.value){
-    //     items = res?.value;
-    // }
-    // console.log('items',items);
-    // sessionStorage.pinnedItems = JSON.stringify(items)
-    // yield put(slice.actions._setItems(items))
+    const userId = yield select(getCurrentUserId);
+    const [data,autoPinData] = yield all([FireBaseService.db.collection(collectionName).doc(userId).get(),FireBaseService.db.collection(collectionName).doc(`auto_${userId}`).get()]);
+    if(data.data()){
+        sessionStorage.pinnedItems = JSON.stringify(data.data()?.v)
+        yield put(slice.actions._setItems(data.data().v))
+    }
+    if(autoPinData.data()){
+        sessionStorage.autoPins = JSON.stringify(autoPinData.data()?.v);
+        yield put(slice.actions._setAutoPins(autoPinData.data()?.v));
+    }
   } catch (e) {
     console.warn('loading pinnedItems error', e)
   }
+}
+
+
+function* addAutoPinsSaga({payload}){
+    try{
+        yield put(slice.actions._addAutoPins(payload));
+        const currentItems = yield select(state => state.pinned?.autoPins);
+        const itemsWithoutUndefined = (currentItems||[]).map(x => omitBy(x,isUndefined));
+        const currentUserId = yield select(getCurrentUserId);
+        console.log('v utopins',itemsWithoutUndefined);
+        return FireBaseService.db.collection(collectionName).doc(`auto_${currentUserId}`).set({v:itemsWithoutUndefined});
+    } catch(e){
+        console.warn('autoPinadd error',e);
+    }
 }
 
 export function* watcherSaga() {
@@ -127,5 +158,6 @@ export function* watcherSaga() {
     yield takeEvery(slice.actions.removePin, removePinSaga),
     yield takeEvery(slice.actions.setItems, setItemsSaga),
     yield takeEvery(slice.actions.loadItems, loadItemsSaga),
+    yield takeEvery(`${slice.actions.addAutoPins}`,addAutoPinsSaga),
   ])
 }

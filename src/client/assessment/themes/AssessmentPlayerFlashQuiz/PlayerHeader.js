@@ -1,68 +1,30 @@
 /* eslint-disable react/prop-types */
-import React, { Fragment, useState } from 'react'
+import React from 'react'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { get } from 'lodash'
-import styled from 'styled-components'
-import { nonAutoGradableTypes } from '@edulastic/constants'
 import { FlexContainer, withWindowSizes } from '@edulastic/common'
-import {
-  extraDesktopWidthMax,
-  mediumDesktopExactWidth,
-} from '@edulastic/colors'
-import { Tooltip, isZoomGreator } from '../../../common/utils/helpers'
 
-import {
-  Header,
-  HeaderWrapper,
-  HeaderMainMenu,
-  TestButton,
-  ToolButton,
-  SaveAndExit,
-  LogoCompact,
-  ToolBar,
-  ToolTipContainer,
-  MainActionWrapper,
-} from '../common'
+import { Header, HeaderMainMenu, SaveAndExit, LogoCompact } from '../common'
 
-import { MAX_MOBILE_WIDTH, IPAD_LANDSCAPE_WIDTH } from '../../constants/others'
+import { MAX_MOBILE_WIDTH } from '../../constants/others'
 
 import { HeaderTitle } from './styled'
-import QuestionSelectDropdown from '../common/QuestionSelectDropdown'
-
-import ToolbarModal from '../common/ToolbarModal'
 
 const PlayerHeader = ({
   title,
-  dropdownOptions,
-  currentItem,
-  onOpenExitPopup,
-  theme,
-  gotoQuestion,
-  settings,
   windowWidth,
-  items,
-  answerChecksUsedForItem,
-  checkAnswer,
-  toggleBookmark,
-  isBookmarked,
-  onshowHideHints,
-  toggleToolsOpenStatus,
-  toolsOpenStatus,
   headerRef,
   previewPlayer,
-  handleMagnifier,
-  enableMagnifier,
-  toggleUserWorkUploadModal,
   timedAssignment,
   utaId,
   groupId,
   hidePause,
-  blockNavigationToAnsweredQuestions,
-  LCBPreviewModal = false,
   phase = 1,
+  history,
 }) => {
+  const handleSaveNExit = () => history.push('/student/assignments')
+
   const rightButtons = (
     <SaveAndExit
       utaId={utaId}
@@ -70,7 +32,7 @@ const PlayerHeader = ({
       previewPlayer={previewPlayer}
       showZoomBtn
       hidePause={hidePause}
-      finishTest={onOpenExitPopup}
+      finishTest={handleSaveNExit}
       timedAssignment={timedAssignment}
     />
   )
@@ -114,25 +76,9 @@ const enhance = compose(
   connect(
     (state, { timedAssignment }) => ({
       settings: state.test.settings,
-      timedAssignment: timedAssignment || state.test?.settings?.timedAssignment,
     }),
     null
   )
 )
 
 export default enhance(PlayerHeader)
-
-const HeaderPracticePlayer = styled(FlexContainer)`
-  padding: 12px 0px;
-  justify-content: space-between;
-
-  @media (min-width: ${mediumDesktopExactWidth}) {
-    padding: 11px 0px;
-  }
-  @media (min-width: ${extraDesktopWidthMax}) {
-    padding: 8.5px 0px;
-  }
-  @media (max-width: ${MAX_MOBILE_WIDTH}px) {
-    padding: 0px;
-  }
-`

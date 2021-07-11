@@ -76,6 +76,8 @@ const test = (state = initialState, { payload, type }) => {
         answerCheckByItemId: payload.answerCheckByItemId,
         pageStructure: payload.pageStructure,
         isDocBased: payload.isDocBased,
+        isFlashAssessment: payload.isFlashAssessment,
+        testPhase: payload.testPhase,
         freeFormNotes: payload.freeFormNotes,
         showMagnifier: payload.showMagnifier,
         languagePreference: payload.languagePreference,

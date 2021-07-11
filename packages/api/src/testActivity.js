@@ -123,6 +123,15 @@ const saveUserWork = ({ testActivityId, groupId, userWork }) =>
     })
     .then((result) => result.data.result)
 
+const updatePhase = ({ testActivityId, groupId, phase }) =>
+  api
+    .callApi({
+      url: `${prefix}/${testActivityId}/phase`,
+      method: 'put',
+      data: { groupId, phase },
+    })
+    .then((result) => result.data.result)
+
 export default {
   create,
   submit,
@@ -137,4 +146,5 @@ export default {
   incrementTabNavigationCounter,
   switchLanguage,
   saveUserWork,
+  updatePhase,
 }

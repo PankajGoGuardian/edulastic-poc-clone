@@ -520,6 +520,8 @@ const AssessmentContainer = ({
   url,
   gotoItem,
   docUrl,
+  isFlashAssessment,
+  testPhase,
   annotations,
   questionsById,
   answers,
@@ -1176,6 +1178,7 @@ const AssessmentContainer = ({
     uploadToS3: uploadFile,
     userWork,
     gotoSummary,
+    testPhase,
     ...restProps,
   }
 
@@ -1214,7 +1217,7 @@ const AssessmentContainer = ({
         {...props}
       />
     )
-  } else if (playerSkinType !== playerSkinValues.flashQuiz) {
+  } else if (!isUndefined(isFlashAssessment)) {
     playerComponent = (
       <AssessmentPlayerFlashQuiz
         {...props}
@@ -1222,6 +1225,10 @@ const AssessmentContainer = ({
         testletConfig={testletConfig}
         testletState={testletState}
         saveUserAnswer={saveUserAnswer}
+        testPhase={testPhase || 'learning'}
+        answers={answers}
+        answersById={answersById}
+        finishTest={finishTest}
         {...test}
       />
     )
@@ -1366,6 +1373,8 @@ const enhance = compose(
       passages: state.test.passages || ownProps.passages,
       title: state.test.title,
       docUrl: state.test.docUrl,
+      isFlashAssessment: state.test.isFlashAssessment,
+      testPhase: state.test.testPhase,
       testType: state.test.testType,
       playerSkinType: playerSkinTypeSelector(state),
       testletConfig: state.test?.testletConfig,

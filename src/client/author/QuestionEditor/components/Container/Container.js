@@ -614,10 +614,11 @@ class Container extends Component {
           </BreadCrumbBar>
         </HeaderContainer>
         <QuestionContentWrapper
-          data-cy="question-editor-container"
-          ref={this.scrollContainer}
           zIndex="1"
           isInModal={isInModal}
+          ref={this.scrollContainer}
+          className="question-editor-container"
+          data-cy="question-editor-container"
         >
           <LanguageContext.Provider value={{ currentLanguage }}>
             {this.renderQuestion()}

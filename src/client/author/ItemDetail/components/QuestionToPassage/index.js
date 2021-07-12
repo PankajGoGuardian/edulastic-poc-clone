@@ -4,6 +4,7 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { Modal } from 'antd'
 import { values } from 'lodash'
+import { ScrollContext } from '@edulastic/common'
 import QuestionEditor from '../../../QuestionEditor'
 import PickUpQuestionType from '../../../PickUpQuestionType'
 import {
@@ -89,25 +90,32 @@ const QuestionToPassage = ({
       style={modalStyle}
       isFullModal={isFullModal}
     >
-      {question?.id && (
-        <QuestionEditor
-          isTestFlow={isTestFlow}
-          isEditFlow={isEditFlow}
-          isPassageWithQuestions
-          isInModal={!isFullModal}
-          onToggleFullModal={handleToggleFullModal}
-          onAddWidgetToPassage={handleAddWideget}
-          onCloseEditModal={handleCancel}
-        />
-      )}
-      {!question?.id && (
-        <PickUpQuestionType
-          addQuestionToPassage
-          onModalClose={onCancel}
-          isInModal={!isFullModal}
-          onToggleFullModal={handleToggleFullModal}
-        />
-      )}
+      <ScrollContext.Provider
+        value={{
+          getScrollElement: () =>
+            document.getElementsByClassName('question-editor-container')[0],
+        }}
+      >
+        {question?.id && (
+          <QuestionEditor
+            isTestFlow={isTestFlow}
+            isEditFlow={isEditFlow}
+            isPassageWithQuestions
+            isInModal={!isFullModal}
+            onToggleFullModal={handleToggleFullModal}
+            onAddWidgetToPassage={handleAddWideget}
+            onCloseEditModal={handleCancel}
+          />
+        )}
+        {!question?.id && (
+          <PickUpQuestionType
+            addQuestionToPassage
+            onModalClose={onCancel}
+            isInModal={!isFullModal}
+            onToggleFullModal={handleToggleFullModal}
+          />
+        )}
+      </ScrollContext.Provider>
     </StyledModal>
   )
 }

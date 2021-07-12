@@ -5,6 +5,7 @@ import { get, includes } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
+import { getUserOrgId } from '../../../../src/selectors/user'
 import { Field } from './styled'
 
 function validateEmail(email) {
@@ -173,5 +174,5 @@ CustomField.defaultProps = {
 // This component for author account so get first Id from districtIds
 export default connect((state) => ({
   students: get(state, 'manageClass.studentsList', []),
-  districtId: get(state, 'user.user.orgData.districtIds[0]', ''),
+  districtId: getUserOrgId(state),
 }))(CustomField)

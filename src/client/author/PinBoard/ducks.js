@@ -53,6 +53,7 @@ const slice = createSlice({
       const index = state.autoPins.findIndex((x) => x.contentId === payload.contentId);
       if (index != -1) {
         state.autoPins[index] = payload;
+        return state;
       }
       if (state.autoPins.length + 1 > maxAutoPins) {
         state.autoPins.pop()

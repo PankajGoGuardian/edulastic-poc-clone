@@ -116,7 +116,6 @@ const ItemsHistoryCard = ({
     }
   }
   const alreadyPresent = data?.contentId && data?.contentId in pinsKeyed
-
   const announcements = (
     <>
       <StyledAnchor
@@ -156,7 +155,6 @@ const ItemsHistoryCard = ({
           {...x}
         />
       ))}
-      {console.log(pinnedItems, autoPinnedItems, 'yesh')}
       {pinnedItems.length > 0 ? (
         <HeaderText>Pages Pinned To Board</HeaderText>
       ) : null}

@@ -151,7 +151,7 @@ const FlashQuizReport = ({
           </Descriptions>
         </PerformanceMetrics>
       </PerformanceContainer>
-      <PDFDownloadLink
+      {/* <PDFDownloadLink
         document={<PdfDocument data={data} />}
         fileName="FlashQuiz.pdf"
         style={{
@@ -176,7 +176,7 @@ const FlashQuizReport = ({
             </span>
           )
         }
-      </PDFDownloadLink>
+      </PDFDownloadLink> */}
     </FlashQuizReportContainer>
   )
 }

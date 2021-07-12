@@ -28,6 +28,7 @@ import {
   formatStudentPastDueTag,
 } from '../utils'
 import { submitLTIForm } from '../../author/CurriculumSequence/components/CurriculumModuleRow'
+import FlashIcon from '../../assessment/themes/AssessmentPlayerFlashQuiz/FlashIcon'
 
 const { pastDueTagBackground, pastDueTagColor } = themes.default.default
 
@@ -58,6 +59,7 @@ const AssessmentDetails = ({
   allowedTime,
   setEmbeddedVideoPreviewModal,
   studentResources = [],
+  isFlashAssessment,
 }) => {
   const status =
     started || resume
@@ -131,6 +133,16 @@ const AssessmentDetails = ({
                 : t('common.common')}
             </TestType>
           </Tooltip>
+
+          {isFlashAssessment && (
+            <FlashIcon
+              style={{
+                width: '20px',
+                height: '20px',
+                color: '#ffd23f',
+              }}
+            />
+          )}
         </CardTitle>
         <FlexContainer alignItems="center" justifyContent="flex-start">
           <StatusWrapper>

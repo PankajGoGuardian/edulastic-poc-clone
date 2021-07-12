@@ -1,6 +1,6 @@
 import React from 'react'
 
-function Icon() {
+function Icon({ style }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -9,17 +9,21 @@ function Icon() {
       data-icon="bolt"
       data-prefix="fas"
       viewBox="0 0 320 512"
-      style={{
-        position: 'absolute',
-        width: '60px',
-        height: '60px',
-        color: '#c9e4de',
-        top: 'calc(50% - 30px)',
-        left: 'calc(50% - 30px)',
-        border: '2px dashed #669bbc',
-        padding: '10px',
-        borderRadius: '100px',
-      }}
+      style={
+        style
+          ? style
+          : {
+              position: 'absolute',
+              width: '60px',
+              height: '60px',
+              color: '#c9e4de',
+              top: 'calc(50% - 30px)',
+              left: 'calc(50% - 30px)',
+              border: '2px dashed #669bbc',
+              padding: '10px',
+              borderRadius: '100px',
+            }
+      }
     >
       <path
         fill="currentColor"

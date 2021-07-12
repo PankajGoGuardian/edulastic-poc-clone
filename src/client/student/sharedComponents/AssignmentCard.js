@@ -128,6 +128,7 @@ const AssignmentCard = memo(
       instruction = '',
       multiLanguageEnabled = false,
       studentResources = [],
+      isFlashAssessment = false,
     } = data
 
     const serverTimeStamp = getServerTs(data)
@@ -420,6 +421,7 @@ const AssignmentCard = memo(
             timedTestIconType={theme.assignment.cardTimeIconType}
             setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
             studentResources={studentResources}
+            isFlashAssessment={isFlashAssessment}
           />
 
           <ButtonAndDetail>

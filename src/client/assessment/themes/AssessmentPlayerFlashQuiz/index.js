@@ -23,6 +23,13 @@ import assessmentPlayerTheme from './themeStyle.json'
 import { saveUserWorkAction } from '../../actions/userWork'
 
 import { setUserAnswerAction } from '../../actions/answers'
+import moment from 'moment'
+
+const getTime = (millis) => {
+  if (!millis) return 0
+  var tempTime = moment.duration(millis)
+  return tempTime.minutes()
+}
 
 class AssessmentPlayerFlashQuiz extends React.Component {
   constructor(props) {
@@ -36,6 +43,8 @@ class AssessmentPlayerFlashQuiz extends React.Component {
       enableCrossAction: false,
       isUserWorkUploadModalVisible: false,
       phase: -1,
+      learningTime: 0,
+      assessementTime: 0,
     }
   }
 
@@ -94,6 +103,8 @@ class AssessmentPlayerFlashQuiz extends React.Component {
       setUserAnswer,
       title,
       answers,
+      learningTime,
+      assessementTime,
     } = this.props
 
     const { phase } = this.state
@@ -129,6 +140,12 @@ class AssessmentPlayerFlashQuiz extends React.Component {
             title={title}
             finishTest={finishTest}
             answers={answers}
+            learningTime={getTime(learningTime || this.state.learningTime)}
+            setLearningTime={(x) => this.setState({ learningTime: x })}
+            assessementTime={getTime(
+              assessementTime || this.state.assessementTime
+            )}
+            setAssessementTime={(x) => this.setState({ assessementTime: x })}
           />
         </Container>
       </ThemeProvider>

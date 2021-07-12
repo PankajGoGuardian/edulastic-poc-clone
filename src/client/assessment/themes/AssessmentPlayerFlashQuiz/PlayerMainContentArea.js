@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
@@ -50,10 +50,16 @@ const PlayerContentArea = ({
   title,
   finishTest,
   answers,
-  learningTime = 3,
-  assessementTime = 5,
+  learningTime,
+  assessementTime,
+  setLearningTime,
+  setAssessementTime,
 }) => {
   const [isExploding, setIsExploding] = React.useState(false)
+
+  useEffect(() => {
+    localStorage.setItem('lastTimeStampFlipQuiz', Date.now())
+  }, [])
 
   const scrollContainerRef = useRef()
   const isZoomApplied = zoomLevel > 1
@@ -81,6 +87,7 @@ const PlayerContentArea = ({
             questions={questions}
             testActivityId={testActivityId}
             groupId={groupId}
+            setLearningTime={setLearningTime}
           />
         )}
         {flashQuizPhase === 2 && (
@@ -95,6 +102,7 @@ const PlayerContentArea = ({
             itemId={itemId}
             finishTest={finishTest}
             answers={answers}
+            setAssessementTime={setAssessementTime}
           />
         )}
         {flashQuizPhase === 3 && (

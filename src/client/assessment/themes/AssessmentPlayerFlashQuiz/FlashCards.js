@@ -55,6 +55,7 @@ const FlashCards = ({
   viewMode,
   testActivityId,
   groupId,
+  setLearningTime,
 }) => {
   const [backView, setBackView] = useState()
   const [currentActiveIndex, setCurrentActive] = useState(0)
@@ -118,13 +119,19 @@ const FlashCards = ({
     }
 
     try {
+      const timeStamp =
+        localStorage.getItem('lastTimeStampFlipQuiz') || Date.now()
+      const learningTime = Date.now() - timeStamp || 0
+      setLearningTime(learningTime)
       const result = await testActivityApi.updatePhase({
         testActivityId,
         groupId,
         phase: 'assignment',
+        learningTime,
       })
 
       if (result) {
+        localStorage.setItem('lastTimeStampFlipQuiz', Date.now())
         setConfirmationModal(false)
         setProceeding(false)
         setPhase(2)

@@ -568,6 +568,9 @@ const AssessmentContainer = ({
   saveBlurTime,
   savedBlurTime: blurTimeAlreadySaved,
   loadTest,
+  learningTime,
+  endDate,
+  startDate,
   ...restProps
 }) => {
   const itemId = preview || testletType ? 'new' : match.params.itemId || 'new'
@@ -1229,6 +1232,8 @@ const AssessmentContainer = ({
         answers={answers}
         answersById={answersById}
         finishTest={finishTest}
+        learningTime={learningTime}
+        assessementTime={endDate - startDate}
         {...test}
       />
     )
@@ -1374,6 +1379,9 @@ const enhance = compose(
       title: state.test.title,
       docUrl: state.test.docUrl,
       isFlashAssessment: state.test.isFlashAssessment,
+      learningTime: state.test.learningTime,
+      startDate: state.test.startDate,
+      endDate: state.test.endDate,
       testPhase: state.test.testPhase,
       testType: state.test.testType,
       playerSkinType: playerSkinTypeSelector(state),

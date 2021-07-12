@@ -123,12 +123,12 @@ const saveUserWork = ({ testActivityId, groupId, userWork }) =>
     })
     .then((result) => result.data.result)
 
-const updatePhase = ({ testActivityId, groupId, phase }) =>
+const updatePhase = ({ testActivityId, groupId, phase, learningTime }) =>
   api
     .callApi({
       url: `${prefix}/${testActivityId}/phase`,
       method: 'put',
-      data: { groupId, phase },
+      data: { groupId, phase, learningTime },
     })
     .then((result) => result.data.result)
 

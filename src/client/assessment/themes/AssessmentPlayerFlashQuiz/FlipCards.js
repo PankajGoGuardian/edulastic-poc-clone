@@ -56,6 +56,7 @@ const FlipCards = ({
   testActivityId,
   finishTest = () => {},
   answers,
+  setAssessementTime,
 }) => {
   const [matchedPairs, setMatchedPairs] = useState([])
   const [filppedPair, setFlipped] = useState([])
@@ -174,6 +175,8 @@ const FlipCards = ({
 
       const lastTimeStamp =
         localStorage.getItem('lastTimeStampFlipQuiz') || Date.now()
+
+      setAssessementTime(Date.now() - lastTimeStamp)
 
       const itemResponse = [0, Date.now() - lastTimeStamp, false, groupId, {}]
 

@@ -45,11 +45,15 @@ export const FETCH_MAPPED_DATA_FAILURE = '[admin] FETCH_MAPPED_DATA_FAILURE'
 export const SAVE_APPROVED_MAPPING = '[admin] SAVE_APPROVED_MAPPING'
 export const UNSET_MAPPING_DATA = '[admin UNSET_MAPPING_DATA'
 export const GENERATE_MAPPED_DATA = '[admin] GENERATE_MAPPED_DATA'
+export const SAVE_GENERATE_MAPPING_DATE = '[admin] SAVE_GENERATE_MAPPING_DATE'
 
 // ACTION CREATORS
 export const searchExistingDataApi = createAction(SEARCH_EXISTING_DATA_API)
 export const fetchExistingDataSuccess = createAction(
   FETCH_EXISTING_DATA_SUCCESS
+)
+export const saveGenerateMappingDateAction = createAction(
+  SAVE_GENERATE_MAPPING_DATE
 )
 export const applyDeltaSyncChanges = createAction(APPLY_DELTA_SYNC_CHANGES)
 export const syncSchools = createAction(SYNC_SCHOOLS)
@@ -156,6 +160,21 @@ const unSetMappingData = (state, payload) => {
 
 const fetchExistingDataReducer = createReducer(initialState, {
   [CLEAR_MERGE_DATA]: () => initialState,
+  [SAVE_GENERATE_MAPPING_DATE]: (state, { payload }) => {
+    const mappedDataInfo = state?.searchData?.data?.mappedDataInfo
+    const { type, modifiedAt } = payload
+    if (mappedDataInfo) {
+      state.searchData.data.mappedDataInfo = mappedDataInfo.map((o) => {
+        if (type === o._id) {
+          return {
+            _id: o._id,
+            createdAt: modifiedAt.seconds * 1000,
+          }
+        }
+        return o
+      })
+    }
+  },
   [FETCH_EXISTING_DATA_SUCCESS]: (state, { payload }) => {
     const { isClasslink, ...dataPayload } = payload
     const subjectStandardMap = _get(

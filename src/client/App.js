@@ -48,6 +48,7 @@ import {
   getRequestQuoteVisibility,
   slice as subscriptionSlice,
 } from './author/Subscription/ducks'
+import AdminNotificationListener from './admin/Components/AdminNotification'
 
 const { ASSESSMENT, PRACTICE, TESTLET } = test.type
 // route wise splitting
@@ -605,6 +606,9 @@ class App extends Component {
                 path="/admin"
                 component={Admin}
                 redirectPath={redirectRoute}
+                notifications={
+                  roleuser.EDULASTIC_ADMIN ? [AdminNotificationListener] : null
+                }
               />
               <Route exact path="/kid" component={Kid} />
               <LoggedOutRoute

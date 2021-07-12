@@ -22,7 +22,10 @@ import {
   bulkSyncCanvasClassAction,
   joinSchoolFailedAction,
 } from '../../../student/Signup/duck'
-import { getCanvasAllowedInstitutionPoliciesSelector } from '../../../author/src/selectors/user'
+import {
+  getCanvasAllowedInstitutionPoliciesSelector,
+  getUserOrgId,
+} from '../../../author/src/selectors/user'
 import {
   ModalClassListTable,
   StyledSelect,
@@ -57,6 +60,7 @@ const CanvasBulkAddClass = ({
   fromManageClass,
   canvasAllowedInstitutions,
   onCancel = () => {},
+  districtId,
 }) => {
   const [selectedRows, setSelectedRows] = useState([])
   const [showModal, setShowModal] = useState(false)
@@ -67,7 +71,7 @@ const CanvasBulkAddClass = ({
 
   useEffect(() => {
     getDictCurriculums()
-    receiveSearchCourse({ districtId: user?.districtIds?.[0], active: 1 })
+    receiveSearchCourse({ districtId, active: 1 })
     if (!fromManageClass) {
       setInstitution(institutionId)
     } else {
@@ -105,7 +109,7 @@ const CanvasBulkAddClass = ({
           const sectionClasses = sectionList.map((s) => {
             const thumbnail = getThumbnail()
             return {
-              districtId: user?.districtIds?.[0],
+              districtId,
               grades: s.grades || [],
               institutionId: institution,
               name: s.name,
@@ -515,6 +519,7 @@ export default connect(
     canvasAllowedInstitutions: getCanvasAllowedInstitutionPoliciesSelector(
       state
     ),
+    districtId: getUserOrgId(state),
   }),
   {
     getDictCurriculums: getDictCurriculumsAction,

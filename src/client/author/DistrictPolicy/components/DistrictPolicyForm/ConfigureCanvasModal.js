@@ -10,9 +10,11 @@ import {
 } from '@edulastic/common'
 import { green, themeColor } from '@edulastic/colors'
 import { canvasApi } from '@edulastic/api'
+import { connect } from 'react-redux'
 import authorizeCanvas from '../../../../common/utils/CanavsAuthorizationModule'
 import { SpinContainer } from '../Container/styled'
 import { StyledSpin } from '../../../../admin/Common/StyledComponents'
+import { getUserOrgId } from '../../../src/selectors/user'
 
 const ConfigureCanvasModal = ({
   visible,
@@ -26,6 +28,7 @@ const ConfigureCanvasModal = ({
   canvasSharedSecret = '',
   user,
   lti,
+  districtId,
 }) => {
   const [canvasConfigureData, setCanvasConfigureData] = useState({
     canvasInstanceUrl,
@@ -94,9 +97,9 @@ const ConfigureCanvasModal = ({
             'Failed to connect with canvas. Please enter the valid configuration',
         })
       } else {
-        const subscriptionTopic = `canvas:${user?.districtIds?.[0]}_${
-          user._id
-        }_${user.username || user.email || ''}`
+        const subscriptionTopic = `canvas:${districtId}_${user._id}_${
+          user.username || user.email || ''
+        }`
         authorizeCanvas(result.canvasAuthURL, subscriptionTopic)
           .then(() => {})
           .catch(() => {})
@@ -212,7 +215,7 @@ const ConfigureCanvasModal = ({
               <TextInputStyled
                 placeholder="Enter Consumer Key"
                 value={lti.consumerKey}
-                disabled={true}
+                disabled
                 height="40px"
               />
             </InputRow>
@@ -221,7 +224,7 @@ const ConfigureCanvasModal = ({
               <TextInputStyled
                 placeholder="Enter Secret Key"
                 value={lti.consumerSecret}
-                disabled={true}
+                disabled
                 height="40px"
               />
             </InputRow>
@@ -252,7 +255,9 @@ const ConfigureCanvasModal = ({
   )
 }
 
-export default ConfigureCanvasModal
+export default connect((state) => ({
+  districtId: getUserOrgId(state),
+}))(ConfigureCanvasModal)
 
 const ButtonWrapper = styled.div`
   width: 100%;

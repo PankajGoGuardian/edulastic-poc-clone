@@ -10,6 +10,7 @@ import {
   notification,
 } from '@edulastic/common'
 import { createCollaborationGroupAction } from '../ducks'
+import { getUserOrgId } from '../../src/selectors/user'
 
 const Footer = ({ handleCancel, handleAction, isEditMode }) => (
   <FlexContainer justifyContent="flex-end">
@@ -75,7 +76,7 @@ const CreateCollabGroupModel = ({
 
 export default connect(
   (state) => ({
-    districtId: state.user?.user?.districtIds?.[0] || '',
+    districtId: getUserOrgId(state),
   }),
   {
     createGroup: createCollaborationGroupAction,

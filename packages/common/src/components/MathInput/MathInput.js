@@ -34,7 +34,7 @@ class MathInput extends React.PureComponent {
   }
 
   handleClick = (e) => {
-    const { onFocus } = this.props
+    const { onFocus, dynamicVariableInput, onDynamicVariableBlur } = this.props
     const { mathFieldFocus } = this.state
     let shouldHideKeyboard = true
     const jQueryTargetElem = jQuery(e.target)
@@ -65,6 +65,9 @@ class MathInput extends React.PureComponent {
     ) {
       onFocus(false)
       this.setState({ mathFieldFocus: false, showPeriodic: false })
+      if (dynamicVariableInput && typeof onDynamicVariableBlur === 'function') {
+        onDynamicVariableBlur()
+      }
     }
   }
 

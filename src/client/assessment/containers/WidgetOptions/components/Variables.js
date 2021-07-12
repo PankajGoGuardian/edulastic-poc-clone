@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
@@ -263,7 +263,6 @@ const Variables = ({
   item = {},
 }) => {
   const [invalidSeqMsg, setInvalidSeqMsg] = useState('')
-  const mathFieldRef = useRef()
 
   const variableEnabled = get(questionData, 'variable.enabled', false)
   const variables = get(questionData, 'variable.variables', {})
@@ -564,7 +563,6 @@ const Variables = ({
                 {isFormula && (
                   <Col md={12}>
                     <MathInput
-                      ref={mathFieldRef}
                       dynamicVariableInput
                       fullWidth
                       showDropdown
@@ -575,7 +573,7 @@ const Variables = ({
                         handleChangeVariableList(variableName, 'formula', latex)
                       }
                       onKeyPress={handleKeypressMathInput}
-                      onBlur={generate}
+                      onDynamicVariableBlur={generate}
                     />
                   </Col>
                 )}

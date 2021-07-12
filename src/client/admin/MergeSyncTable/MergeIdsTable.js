@@ -134,11 +134,13 @@ const MergeIdsTable = ({
     setCurrentPage(1)
   }
 
-  const handleApprove = (mappedResult) => {
+  const handleApprove = (mappedResult, formattedData) => {
     setMapperErrorMessage('')
     const eduIdMap = {}
     const indexes = []
-    const cleverIds = Object.keys(mappedResult)
+    const cleverIds = formattedData.map((data) =>
+      mapperFieldName === 'Schools' ? data.lmsSchoolId : data.lmsClassId
+    )
     for (let i = 1; i <= cleverIds.length; i++) {
       const eduId = mappedResult[cleverIds[i - 1]]
       if (eduId) {

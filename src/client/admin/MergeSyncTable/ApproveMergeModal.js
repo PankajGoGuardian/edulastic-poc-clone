@@ -86,8 +86,15 @@ const ApproveMergeModal = ({
 
   const handleMappingChange = (cleverId, edulasticId) => {
     const map = mappedResult
+    if (!map[cleverId]) map[cleverId] = null
     map[cleverId] = edulasticId
     setMappedResult(map)
+  }
+
+  const containsZipNotMatch = (schools) => {
+    const keys = Object.keys(schools).sort((a, b) => b - a)
+    if (keys.length > 0 && !schools[keys[0]][0].zipMatch) return true
+    return false
   }
 
   const formatFilterData = (filterValue) => {
@@ -128,16 +135,22 @@ const ApproveMergeModal = ({
       // let containsZipNotMatch = false
       data = data.filter((_data) => {
         const map = {}
+        const zipNotMatchFields = {}
         _data.mappedSchools.forEach((o) => {
-          // if (!o.zipMatch && o.nameMatch >= 75) containsZipNotMatch = true
+          if (!o.zipMatch && o.nameMatch >= 75) {
+            if (!zipNotMatchFields[o.nameMatch])
+              zipNotMatchFields[o.nameMatch] = []
+            zipNotMatchFields[o.nameMatch].push(o)
+          }
           if (!map[o.nameMatch]) map[o.nameMatch] = []
           map[o.nameMatch].push(o)
         })
         return (
-          !isEmpty(map) &&
-          (map[Object.keys(map).sort((a, b) => b - a)[0]].length > 2 ||
-            // eslint-disable-next-line radix
-            parseInt(Object.keys(map).sort((a, b) => b - a)[0]) < 75)
+          (!isEmpty(map) &&
+            (map[Object.keys(map).sort((a, b) => b - a)[0]].length > 2 ||
+              // eslint-disable-next-line radix
+              parseInt(Object.keys(map).sort((a, b) => b - a)[0]) < 75)) ||
+          containsZipNotMatch(zipNotMatchFields)
         )
       })
       data.forEach((_data) =>
@@ -262,7 +275,7 @@ const ApproveMergeModal = ({
           <Button
             key="submit"
             type="primary"
-            onClick={() => handleApprove(mappedResult)}
+            onClick={() => handleApprove(mappedResult, formattedData)}
           >
             Approve all pages
           </Button>,

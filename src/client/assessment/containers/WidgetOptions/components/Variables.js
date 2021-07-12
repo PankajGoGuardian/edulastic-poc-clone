@@ -83,7 +83,11 @@ const cartesian = (args, combinationsCount) => {
 
 const generateExample = (variable) => {
   const { type, set = '', sequence = '' } = variable
-  let { min, max, step = 1 } = variable
+  let { min, max, step } = variable
+  if (!step) {
+    step = 1
+  }
+
   if (type === 'NUMBER_RANGE') {
     if (Number.isInteger(parseFloat(step))) {
       min = parseInt(min, 10)
@@ -97,11 +101,11 @@ const generateExample = (variable) => {
       //  need to include endpoint
       max = parseFloat(max) + step
     }
-    if (step === 0) {
-      step = 1
-    }
+
     const decimalPart = step.toString().split('.')[1]?.length || 1
-    return range(min, max, step).map((x) => round(x, decimalPart))
+    return range(min, max, step)
+      .map((x) => round(x, decimalPart))
+      .filter((x) => x >= variable.min && x <= variable.max)
   }
   if (SEQUENCE_TYPES.includes(type)) {
     if (isArray(sequence)) {

@@ -1,1 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="25.823" height="20.568" viewBox="0 0 25.823 20.568"><g transform="translate(1627.01 -1946)"><g transform="translate(-1627.01 1945.774)"><path d="M5.226,5.226,10.453,0H0Z" transform="translate(5.226 0.226) rotate(90)" fill="#22242b"/><rect width="18" height="2" transform="translate(5 4.226)" fill="#22242b"/></g><g transform="translate(-1624.187 1956.115)"><g transform="translate(0 0)"><path d="M5.226,0l5.226,5.226H0Z" transform="translate(23 0) rotate(90)" fill="#22242b"/><rect width="18" height="2" transform="translate(0 4)" fill="#22242b"/></g></g></g></svg>
+<svg width="24px" height="21px" viewBox="0 0 24 21" version="1.1"
+	xmlns="http://www.w3.org/2000/svg">
+	<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+		<g transform="translate(0.823000, -0.000000)" fill="#22242B" fill-rule="nonzero">
+			<path d="M5.403,-7.47669874e-14 L5.402,4 L23.177,4 L23.177,6 L5.402,6 L5.403,10.453 L0.177,5.226 L5.403,-7.47669874e-14 Z" transform="translate(11.677000, 5.226500) scale(-1, 1) translate(-11.677000, -5.226500) "></path>
+			<path d="M17.774,10.115 L23,15.341 L17.774,20.567 L17.774,16.115 L0,16.115 L0,14.115 L17.774,14.115 L17.774,10.115 Z" transform="translate(11.500000, 15.341000) scale(-1, 1) translate(-11.500000, -15.341000) "></path>
+		</g>
+	</g>
+</svg>

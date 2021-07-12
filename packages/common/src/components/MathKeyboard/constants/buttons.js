@@ -2530,20 +2530,18 @@ export const prod_bottom = {
   command: 'write',
 }
 
-// TODO: implement this command
 export const n_a = {
-  handler: '\\surfintegral',
+  handler: 'N_A',
   label: <CustomImage src={Chem720} width={24} height={25} />,
   types: ['all'],
-  command: 'cmd',
+  command: 'write',
 }
 
-// TODO: implement this command
 export const k_b = {
-  handler: '\\surfintegral',
+  handler: 'K_B',
   label: <CustomImage src={Chem620} width={24} height={25} />,
   types: ['all'],
-  command: 'cmd',
+  command: 'write',
 }
 
 export const bytes = {

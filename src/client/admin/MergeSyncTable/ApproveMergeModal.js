@@ -29,6 +29,8 @@ const ApproveMergeModal = ({
   const [formattedData, setFormattedData] = useState([])
   const [mappedResult, setMappedResult] = useState({})
   const [totalRecordsCount, setTotalRecordsCount] = useState(0)
+  const [filterName, setFilterName] = useState('')
+
   const isSchool = mapperFieldName === 'Schools'
 
   const getCustomClassNameAndScore = (classData) => {
@@ -82,6 +84,55 @@ const ApproveMergeModal = ({
     }
   }
 
+  const formatFilterData = (filterValue) => {
+    if (filterValue === 'equal') {
+      const data = districtMappedData[mapperFieldName].mappedData.filter(
+        (_data) => {
+          const fullMatchData = _data.mappedSchools.filter(
+            (o) => o.zipMatch && o.nameMatch === 100
+          )
+          return fullMatchData.length === 1
+        }
+      )
+      data.forEach((_data) =>
+        _data.mappedSchools.sort((a, b) => b.nameMatch - a.nameMatch)
+      )
+      setFormattedData(data)
+    } else if (filterValue === 'less') {
+      const data = districtMappedData[mapperFieldName].mappedData.filter(
+        (_data) => {
+          const map = {}
+          _data.mappedSchools.forEach((o) => {
+            if (o.zipMatch && o.nameMatch < 100) {
+              if (!map[o.nameMatch]) map[o.nameMatch] = []
+              map[o.nameMatch].push(o)
+            }
+          })
+          return !isEmpty(map) && map[Object.keys().sort()[0]].length === 1
+        }
+      )
+      data.forEach((_data) =>
+        _data.mappedSchools.sort((a, b) => b.nameMatch - a.nameMatch)
+      )
+      setFormattedData(data)
+    } else if (filterValue === 'blank') {
+      const data = districtMappedData[mapperFieldName].mappedData.filter(
+        (_data) => {
+          const map = {}
+          _data.mappedSchools.forEach((o) => {
+            if (!map[o.nameMatch]) map[o.nameMatch] = []
+            map[o.nameMatch].push(o)
+          })
+          return !isEmpty(map) && map[Object.keys().sort()[0]].length > 2
+        }
+      )
+      data.forEach((_data) =>
+        _data.mappedSchools.sort((a, b) => b.nameMatch - a.nameMatch)
+      )
+      setFormattedData(data)
+    }
+  }
+
   const getCustomName = (obj) => {
     const isZipMatched = obj.zipMatch
     const nameMatched = obj.nameMatch ? obj.nameMatch : 0
@@ -123,10 +174,14 @@ const ApproveMergeModal = ({
   }
 
   useEffect(() => {
-    if (!mappedDataLoading) {
+    if (
+      !mappedDataLoading &&
+      ((mapperFieldName === 'Schools' && currentPage === 1) ||
+        mapperFieldName === 'Classes')
+    ) {
       renderReviewContent()
     }
-  }, [districtMappedData, currentPage])
+  }, [districtMappedData, currentPage, formattedData])
 
   const handleMappingChange = (cleverId, edulasticId) => {
     mappedResult[cleverId] = edulasticId
@@ -187,6 +242,19 @@ const ApproveMergeModal = ({
                 onChange={handlePageChange}
               />
             )}
+            {isSchool && (
+              <>
+                <Button key="equal" onClick={() => formatFilterData('equal')}>
+                  (Select 100%)
+                </Button>
+                <Button key="less" onClick={() => formatFilterData('less')}>
+                  {'Select < 100%'}
+                </Button>
+                <Button key="blank" onClick={() => formatFilterData('blank')}>
+                  (Select blank)
+                </Button>
+              </>
+            )}
             {mappedDataLoading ? (
               <StyledSpinner>
                 <Spin />
@@ -202,6 +270,7 @@ const ApproveMergeModal = ({
                         total: formattedData?.length,
                         pageSize: 25,
                         position: 'top',
+                        onChange: (page) => setCurrentPage(page),
                       }
                     : null
                 }

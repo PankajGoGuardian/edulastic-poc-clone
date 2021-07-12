@@ -65,7 +65,7 @@ const TotalPointsInput = ({
 
   const PopoverComponent = itemLevelScoring ? Popover : React.Fragment
   return (
-    <TotalPointsWrapper>
+    <TotalPointsWrapper className="total-points-wrapper">
       <FieldLabel marginBottom="0px" mr="10px">
         Total Points (All Parts)
       </FieldLabel>
@@ -110,7 +110,10 @@ const PointInput = ({
   )
 
   return (
-    <PointsInputWrapper itemLevelScoring={itemLevelScoring}>
+    <PointsInputWrapper
+      className="points-input-wrapper"
+      itemLevelScoring={itemLevelScoring}
+    >
       <FieldLabel marginBottom="0px" mr="10px">
         Points
       </FieldLabel>

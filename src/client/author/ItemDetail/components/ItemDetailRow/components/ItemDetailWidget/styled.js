@@ -33,7 +33,22 @@ export const ButtonsContainer = styled.div`
   overflow-x: visible;
   padding: 40px 20px 0px 10px;
   min-width: 180px;
+  position: absolute;
+  // 180 width of button container, 70 width of main menu on left
+  left: calc(100vw - 50vw - 180px - 70px);
+  opacity: 0.3;
 
+  &:hover {
+    opacity: 1;
+  }
+
+  &:hover {
+    .points-input-wrapper,
+    .total-points-wrapper {
+      background: white;
+      padding: 0px 0px 0px 10px;
+    }
+  }
   .ant-btn {
     background: ${white};
     display: flex;

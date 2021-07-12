@@ -95,23 +95,25 @@ const ItemDetailWidget = ({
       >
         <Container isDragging={isDragging} flowLayout={flowLayout}>
           {!hidePointsBlock && itemLevelScoring ? (
-            !(unscored && showPoints) ? (
-              <Ctrls.TotalPoints
-                value={itemLevelScore}
-                onChange={scoreChangeHandler}
-                data-cy="totalPointUpdate"
-                visible={isPointsBlockVisible}
-                disabled={isEditDisabled}
-                isRubricQuestion={!!question.rubrics && !itemLevelScoring}
-                itemLevelScoring={itemLevelScoring}
-              />
-            ) : (
-              <UnScored
-                width="50px"
-                height="50px"
-                top={`${itemLevelScoring ? -80 : -50}px`}
-              />
-            )
+            <ButtonsContainer>
+              {!(unscored && showPoints) ? (
+                <Ctrls.TotalPoints
+                  value={itemLevelScore}
+                  onChange={scoreChangeHandler}
+                  data-cy="totalPointUpdate"
+                  visible={isPointsBlockVisible}
+                  disabled={isEditDisabled}
+                  isRubricQuestion={!!question.rubrics && !itemLevelScoring}
+                  itemLevelScoring={itemLevelScoring}
+                />
+              ) : (
+                <UnScored
+                  width="50px"
+                  height="50px"
+                  top={`${itemLevelScoring ? -80 : -50}px`}
+                />
+              )}
+            </ButtonsContainer>
           ) : null}
 
           <FlexContainer width="100%" justifyContent="space-between">

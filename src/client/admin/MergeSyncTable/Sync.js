@@ -176,6 +176,7 @@ function Sync({
             visible={showSyncOrphanModal}
             onProceed={proceedOrphanUsersSync}
             buttonText="Yes, Sync"
+            cancelText="No, Cancel"
             onCancel={() => setShowSyncOrphanModal(false)}
           />
         )}

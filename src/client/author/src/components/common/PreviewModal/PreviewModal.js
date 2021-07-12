@@ -662,54 +662,56 @@ class PreviewModal extends React.Component {
 
           <ModalTopAction hidden={isLoading}>
             {showAddItemToTestButton &&
-              (isPassage && showAddPassageItemToTestButton ? (
-                <>
-                  <EduButton
-                    isBlue
-                    height="28px"
-                    justifyContent="center"
-                    onClick={this.handleSelection}
-                    dataCy={
-                      this.isAddOrRemove
-                        ? 'addCurrentItem'
-                        : 'removeCurrentItem'
-                    }
-                  >
-                    {this.isAddOrRemove
-                      ? 'ADD CURRENT ITEM'
-                      : 'REMOVE CURRENT ITEM'}
-                  </EduButton>
-                  {isPassage > 1 && (
+              (isPassage && showAddPassageItemToTestButton
+                ? userRole !== roleuser.STUDENT && (
+                    <>
+                      <EduButton
+                        isBlue
+                        height="28px"
+                        justifyContent="center"
+                        onClick={this.handleSelection}
+                        dataCy={
+                          this.isAddOrRemove
+                            ? 'addCurrentItem'
+                            : 'removeCurrentItem'
+                        }
+                      >
+                        {this.isAddOrRemove
+                          ? 'ADD CURRENT ITEM'
+                          : 'REMOVE CURRENT ITEM'}
+                      </EduButton>
+                      {isPassage > 1 && (
+                        <EduButton
+                          isGhost
+                          height="28px"
+                          justifyContent="center"
+                          onClick={this.handleAddAllPassageItems}
+                          dataCy={
+                            hasPassageItemToAdd
+                              ? `addAllItems`
+                              : `removeAllItems`
+                          }
+                        >
+                          {hasPassageItemToAdd
+                            ? `Add all(${isPassage}) items`
+                            : `Remove all(${isPassage}) items`}
+                        </EduButton>
+                      )}
+                    </>
+                  )
+                : userRole !== roleuser.STUDENT && (
                     <EduButton
-                      isGhost
+                      isBlue
                       height="28px"
                       justifyContent="center"
-                      onClick={this.handleAddAllPassageItems}
-                      dataCy={
-                        hasPassageItemToAdd ? `addAllItems` : `removeAllItems`
+                      onClick={this.handleSelection}
+                      data-cy={
+                        this.isAddOrRemove ? 'addToTest' : 'removefromTest'
                       }
                     >
-                      {hasPassageItemToAdd
-                        ? `Add all(${isPassage}) items`
-                        : `Remove all(${isPassage}) items`}
+                      {this.isAddOrRemove ? 'Add To Test' : 'Remove from Test'}
                     </EduButton>
-                  )}
-                </>
-              ) : (
-                userRole !== roleuser.STUDENT && (
-                  <EduButton
-                    isBlue
-                    height="28px"
-                    justifyContent="center"
-                    onClick={this.handleSelection}
-                    data-cy={
-                      this.isAddOrRemove ? 'addToTest' : 'removefromTest'
-                    }
-                  >
-                    {this.isAddOrRemove ? 'Add To Test' : 'Remove from Test'}
-                  </EduButton>
-                )
-              ))}
+                  ))}
             <ButtonsWrapper
               justifyContent="flex-end"
               wrap="nowrap"

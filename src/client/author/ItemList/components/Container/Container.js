@@ -89,6 +89,8 @@ import HeaderFilter from '../HeaderFilter'
 import SideContent from '../../../Dashboard/components/SideContent/Sidecontent'
 import ApproveConfirmModal from '../ApproveConfirmModal'
 import SortMenu from '../SortMenu'
+import selectsData from '../../../TestPage/components/common/selectsData'
+const { allGrades, allSubjects } = selectsData
 
 // container the main entry point to the component
 class Contaier extends Component {
@@ -96,7 +98,6 @@ class Contaier extends Component {
     isShowFilter: true,
     openSidebar: false,
   }
-
   componentDidMount() {
     const {
       receiveItems,
@@ -114,8 +115,10 @@ class Contaier extends Component {
       interestedGrades,
       interestedCurriculums: [firstCurriculum],
       sort: initSort = {},
+      user,
+      userRole,
     } = this.props
-    const {
+    let {
       subject = interestedSubjects,
       grades = interestedGrades || [],
       curriculumId = firstCurriculum &&
@@ -123,6 +126,18 @@ class Contaier extends Component {
         ? firstCurriculum._id
         : '',
     } = getDefaultInterests()
+    if (userRole === roleuser.STUDENT) {
+      grades =
+        allGrades
+          .filter((item) =>
+            user.orgData.classList
+              .map((e) => e.grades)
+              .toString()
+              .includes(item.value)
+          )
+          .map((item) => ` ${item.text}`) || grades
+      subject = user.orgData.classList.map((e) => e.subject)
+    }
     const isAuthoredNow = history?.location?.state?.isAuthoredNow
     const applyAuthoredFilter = isAuthoredNow
       ? { filter: 'AUTHORED_BY_ME' }
@@ -637,6 +652,7 @@ const enhance = compose(
       userFeatures: getUserFeatures(state),
       userRole: getUserRole(state),
       selectedItems: getSelectedItemSelector(state),
+      user: state?.user?.user,
     }),
     {
       receiveItems: receiveTestItemsAction,

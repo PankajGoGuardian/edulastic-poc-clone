@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react'
 import { largeDesktopWidth } from '@edulastic/colors'
 import { useRealtimeV2 } from '@edulastic/common'
 import useInterval from '@use-it/interval'
 import { Layout, Spin } from 'antd'
 import { get, values } from 'lodash'
 import PropTypes from 'prop-types'
+import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
+import EmbeddedVideoPreviewModal from '../../../author/CurriculumSequence/components/ManageContentBlock/components/EmbeddedVideoPreviewModal'
 import NoDataNotification from '../../../common/components/NoDataNotification'
 import { getClasses, getCurrentGroup } from '../../Login/ducks'
 // components
@@ -25,16 +26,26 @@ import {
 import { Wrapper } from '../../styled'
 // actions
 import {
+  assignmentIdsByTestIdSelector,
+  assignmentIdsGroupIdsByTestIdSelector,
   assignmentsSelector,
   fetchAssignmentsAction,
   getAssignmentsSelector,
-  transformAssignmentForRedirect,
-  assignmentIdsByTestIdSelector,
-  assignmentIdsGroupIdsByTestIdSelector,
-  notStartedReportsByAssignmentId,
   getSelectedLanguageSelector,
+  notStartedReportsByAssignmentId,
+  transformAssignmentForRedirect,
 } from '../ducks'
-import EmbeddedVideoPreviewModal from '../../../author/CurriculumSequence/components/ManageContentBlock/components/EmbeddedVideoPreviewModal'
+import {
+  ButtonWrapper,
+  GamingBox,
+  NoDataWrapper,
+  PlayButton,
+  PlaySection,
+} from '../../FunGames/style'
+import rocketPng from '../../FunGames/assets/rocket-icon.png'
+import NPuzzle from '../../FunGames/N-puzzle/NPuzzle'
+import DinoGame from '../../FunGames/DinoGame/DinoGame'
+import SudokuGame from '../../FunGames/Sudoku/SudokuGame'
 
 const withinThreshold = (targetDate, threshold) => {
   const diff = new Date(targetDate) - Date.now()
@@ -69,7 +80,7 @@ const needRealtimeDateTracking = (assignments) => {
 
 const Content = ({
   flag,
-  assignments,
+  assignments = [],
   fetchAssignments,
   currentGroup,
   allClasses,
@@ -89,6 +100,8 @@ const Content = ({
   languagePreference,
   assignmentsGrousByTestId,
 }) => {
+  const [showPlayButton, setShowPlayButton] = useState(false)
+  const [openGamesModal, setOpenGamesModal] = useState(null)
   const [
     showVideoResourcePreviewModal,
     seShowVideoResourcePreviewModal,
@@ -97,6 +110,16 @@ const Content = ({
   useEffect(() => {
     fetchAssignments(currentGroup)
   }, [currentChild, currentGroup])
+
+  useEffect(() => {
+    setTimeout(() => {
+      setShowPlayButton(true)
+    }, 10000)
+    if (assignments.length > 0) {
+      setShowPlayButton(false)
+      setOpenGamesModal(null)
+    }
+  }, [showPlayButton, assignments])
 
   const topics = [
     `student_assignment:user:${userId}`,
@@ -160,13 +183,75 @@ const Content = ({
     }
   }, 60 * 1000)
 
+  const handleOpenGames = (value) => {
+    setOpenGamesModal(value)
+    if (openGamesModal && openGamesModal.includes(value)) {
+      setOpenGamesModal(null)
+    }
+  }
+
+  const getRadius = (value) => {
+    switch (value) {
+      case 'puzzle':
+        return <NPuzzle />
+      case 'dino':
+        return <DinoGame />
+      case 'sudoku':
+        return <SudokuGame />
+      default:
+    }
+  }
+
   const noDataNotification = () => (
-    <NoDataNotification
-      heading="No Assignments "
-      description={
-        "You don't have any currently assigned or completed assignments."
-      }
-    />
+    <NoDataWrapper className={openGamesModal ? 'playing' : 'default'}>
+      <NoDataNotification
+        heading={openGamesModal ? 'No Active Assignments' : 'No Assignments'}
+        description={
+          "You don't have any currently assigned or completed assignments."
+        }
+        showPlayButton={showPlayButton}
+      />
+      {openGamesModal && (
+        <GamingBox>
+          <h1>{openGamesModal}</h1>
+          {getRadius(openGamesModal)}
+        </GamingBox>
+      )}
+      {showPlayButton && (
+        <PlaySection>
+          <img src={rocketPng} alt="" />
+          <div>
+            <h2>Great you are all done! Want to play a game?</h2>
+            <ButtonWrapper>
+              <PlayButton
+                isBlue
+                isGhost
+                onClick={() => handleOpenGames('puzzle')}
+                className={openGamesModal === 'puzzle' && 'closeGame'}
+              >
+                {openGamesModal === 'puzzle' ? 'End Game' : 'Play Puzzle'}
+              </PlayButton>
+              <PlayButton
+                isBlue
+                isGhost
+                onClick={() => handleOpenGames('dino')}
+                className={openGamesModal === 'dino' && 'closeGame'}
+              >
+                {openGamesModal === 'dino' ? 'End Game' : 'Play Dino'}
+              </PlayButton>
+              <PlayButton
+                isBlue
+                isGhost
+                onClick={() => handleOpenGames('sudoku')}
+                className={openGamesModal === 'sudoku' && 'closeGame'}
+              >
+                {openGamesModal === 'sudoku' ? 'End Game' : 'Play Sudoku'}
+              </PlayButton>
+            </ButtonWrapper>
+          </div>
+        </PlaySection>
+      )}
+    </NoDataWrapper>
   )
 
   const setEmbeddedVideoPreviewModal = (x) => seShowVideoResourcePreviewModal(x)

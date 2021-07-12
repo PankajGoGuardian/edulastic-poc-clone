@@ -215,7 +215,7 @@ const ConfigureCanvasModal = ({
               <TextInputStyled
                 placeholder="Enter Consumer Key"
                 value={lti.consumerKey}
-                disabled
+                disabled={true}
                 height="40px"
               />
             </InputRow>
@@ -224,7 +224,7 @@ const ConfigureCanvasModal = ({
               <TextInputStyled
                 placeholder="Enter Secret Key"
                 value={lti.consumerSecret}
-                disabled
+                disabled={true}
                 height="40px"
               />
             </InputRow>

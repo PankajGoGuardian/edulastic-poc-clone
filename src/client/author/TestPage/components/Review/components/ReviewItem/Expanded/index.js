@@ -182,8 +182,13 @@ const Expanded = ({
     </FlexContainer>
   ) : (
     items &&
-      items.map(({ item: _item }, index) => {
-        const qId = get(_item, `[0].widgets[0].reference`, null)
+      items.map(({ item: _item = [] }, index) => {
+        const questionWidgets = _item.filter(({ widgets = [] }) =>
+          widgets.find(({ widgetType = '' }) => widgetType === 'question')
+        )
+
+        const qId = get(questionWidgets, `[0].widgets[0].reference`, null)
+
         return (
           <FlexContainer
             className="expanded-rows"

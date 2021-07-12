@@ -330,7 +330,7 @@ class Container extends Component {
           }
         />
         <PickQuestionWrapper isInModal={isInModal}>
-          <LeftSide>
+          <LeftSide addQuestionToPassage={addQuestionToPassage}>
             <Menu
               mode="horizontal"
               selectedKeys={[selectedTab]}
@@ -349,7 +349,7 @@ class Container extends Component {
               </Menu.Item>
             </Menu>
             <MenuTitle>{t('component.pickupcomponent.selectAType')}</MenuTitle>
-            <AffixWrapper>
+            <AffixWrapper addQuestionToPassage={addQuestionToPassage}>
               <PerfectScrollbar>
                 <LeftMenuWrapper
                   mode="inline"

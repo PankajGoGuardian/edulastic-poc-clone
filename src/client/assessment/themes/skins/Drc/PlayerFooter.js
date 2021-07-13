@@ -50,7 +50,7 @@ const PlayerFooter = ({
           <Tooltip
             placement="top"
             getPopupContainer={(triggerNode) => triggerNode.parentNode}
-            title="Submit"
+            title={t('common.test.reviewOrEnd')}
           >
             <ButtonWrapper
               isPrimary={false}
@@ -65,7 +65,11 @@ const PlayerFooter = ({
           <Tooltip
             placement="top"
             getPopupContainer={(triggerNode) => triggerNode.parentNode}
-            title={hidePause ? `Save & Exit disabled` : `Save & Exit`}
+            title={
+              hidePause
+                ? `${t('common.test.pause')} disabled`
+                : t('common.test.pause')
+            }
           >
             <ButtonWrapper
               data-cy="finishTest"
@@ -87,7 +91,7 @@ const PlayerFooter = ({
           <Tooltip
             placement="top"
             getPopupContainer={(triggerNode) => triggerNode.parentNode}
-            title="Bookmark"
+            title={t('common.test.flag')}
           >
             <ButtonWrapper
               disabled={isPremiumContentWithoutAccess}
@@ -110,7 +114,7 @@ const PlayerFooter = ({
           <Tooltip
             getPopupContainer={(triggerNode) => triggerNode.parentNode}
             placement="bottom"
-            title="Test Options"
+            title="Options"
           >
             <ButtonWrapper
               isPrimary

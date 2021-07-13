@@ -2609,9 +2609,7 @@ function* publishForRegrade({ payload }) {
     if (isRegradeNeeded) {
       yield put(setShowRegradeConfirmPopupAction(true))
     } else {
-      const districtId = yield select((state) =>
-        get(state, ['user', 'user', 'orgData', 'districtIds', 0])
-      )
+      const districtId = yield select(getUserOrgId)
       yield put(setTestsLoadingAction(true))
       yield call(updateRegradeDataSaga, {
         payload: {

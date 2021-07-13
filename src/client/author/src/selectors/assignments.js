@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect'
-import { groupBy } from 'lodash'
+import { groupBy, get as _get } from 'lodash'
 import { getUserRole } from './user'
 
 export const stateSelector = (state) => state.author_assignments

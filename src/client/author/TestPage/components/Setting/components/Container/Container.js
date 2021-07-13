@@ -75,6 +75,7 @@ import {
   StyledRadioGroup,
   Title,
   SavedSettingsContainerStyled,
+  SubHeaderContainer,
 } from './styled'
 import PeformanceBand from './PeformanceBand'
 import StandardProficiencyTable from './StandardProficiencyTable'
@@ -886,7 +887,7 @@ class Setting extends Component {
       testSettingsList.length >= TEST_SETTINGS_SAVE_LIMIT
 
     return (
-      <MainContentWrapper ref={this.containerRef}>
+      <MainContentWrapper ref={this.containerRef} padding="10px 20px">
         {showSaveSettingsModal && (
           <SaveSettingsModal
             visible={showSaveSettingsModal}
@@ -908,30 +909,15 @@ class Setting extends Component {
             this.setState({ showUpdateSettingModal: false })
           }}
         />
-        <Container padding="30px" marginTop="0px">
-          <Row>
-            <Col span={isSmallSize ? 0 : 4}>
-              <Breadcrumb data={breadcrumbData} />
-              <NavigationMenu>
-                <StyledAnchor
-                  affix={false}
-                  offsetTop={125}
-                  getContainer={() => this.containerRef.current || window}
-                >
-                  {settingCategories.map((category) => {
-                    return (
-                      <Anchor.Link
-                        key={category.id}
-                        href={`${history.location.pathname}#${category.id}`}
-                        title={category.title.toLowerCase()}
-                      />
-                    )
-                  })}
-                </StyledAnchor>
-              </NavigationMenu>
+        <Container padding="10px 20px" marginTop="0px">
+          <SubHeaderContainer>
+            <Col span={12}>
+              <Breadcrumb
+                data={breadcrumbData}
+                style={{ position: 'relative', top: '0px' }}
+              />
             </Col>
-
-            <Col span={isSmallSize ? 24 : 20}>
+            <Col span={12}>
               {premium && (
                 <SavedSettingsContainerStyled isSmallSize={isSmallSize}>
                   <div>SAVED SETTINGS</div>
@@ -1005,6 +991,30 @@ class Setting extends Component {
                   </Select>
                 </SavedSettingsContainerStyled>
               )}
+            </Col>
+          </SubHeaderContainer>
+          <Row>
+            <Col span={isSmallSize ? 0 : 4}>
+              <NavigationMenu>
+                <StyledAnchor
+                  affix={false}
+                  offsetTop={125}
+                  getContainer={() => this.containerRef.current || window}
+                >
+                  {settingCategories.map((category) => {
+                    return (
+                      <Anchor.Link
+                        key={category.id}
+                        href={`${history.location.pathname}#${category.id}`}
+                        title={category.title.toLowerCase()}
+                      />
+                    )
+                  })}
+                </StyledAnchor>
+              </NavigationMenu>
+            </Col>
+
+            <Col span={isSmallSize ? 24 : 20}>
               <SettingsCategoryBlock id="test-behavior">
                 <span>Test Behavior</span>
                 <span

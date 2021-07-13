@@ -395,12 +395,10 @@ export const SettingsCategoryBlock = styled.div`
 `
 export const SavedSettingsContainerStyled = styled(SavedSettingsContainer)`
   position: relative;
-  ${({ isSmallSize }) =>
-    isSmallSize
-      ? {
-          marginBottom: '20px',
-          display: 'flex',
-          justifyContent: 'flex-end',
-        }
-      : { right: '-45px', float: 'right', top: '-45px' }}
+  float: right;
+`
+export const SubHeaderContainer = styled.div`
+  padding-bottom: 15px;
+  display: flex;
+  align-items: center;
 `

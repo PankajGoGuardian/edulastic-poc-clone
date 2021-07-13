@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-import { ItemLevelContext } from '@edulastic/common'
 import Display from './Display'
 
 class CorrectAnswer extends Component {
@@ -23,8 +22,6 @@ class CorrectAnswer extends Component {
     imageHeight: PropTypes.number,
     imageOptions: PropTypes.object,
   }
-
-  static contextType = ItemLevelContext
 
   static defaultProps = {
     imagescale: false,

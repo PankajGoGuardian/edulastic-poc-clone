@@ -9,7 +9,7 @@ import {
   withWindowSizes,
   EduButton,
   getFormattedAttrId,
-  ItemLevelContext as HideScoringBlackContext,
+  PointBlockContext,
   CustomPrompt,
   LanguageContext,
 } from '@edulastic/common'
@@ -249,7 +249,7 @@ class Container extends Component {
         question.id
       )
       return (
-        <HideScoringBlackContext.Provider value={hidingScoringBlock}>
+        <PointBlockContext.Provider value={hidingScoringBlock}>
           <QuestionWrapper
             type={questionType}
             view={view}
@@ -267,7 +267,7 @@ class Container extends Component {
           />
           {/* we may need to bring hint button back */}
           {/* {showHints && <Hints questions={[question]} />} */}
-        </HideScoringBlackContext.Provider>
+        </PointBlockContext.Provider>
       )
     }
   }

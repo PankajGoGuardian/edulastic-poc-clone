@@ -136,7 +136,7 @@ export { default as ScrollContext } from './src/contexts/ScrollContext'
 export { default as LCBScrollContext } from './src/contexts/LCBScrollContext'
 export { default as HorizontalScrollContext } from './src/contexts/HorizontalScrollContext'
 export { default as RefContext } from './src/contexts/RefContext'
-export { default as ItemLevelContext } from './src/contexts/ItemLevelContext'
+export { default as PointBlockContext } from './src/contexts/PointBlockContext'
 export { default as AssessmentPlayerContext } from './src/contexts/AssessmentPlayerContext'
 export {
   default as QuestionContext,

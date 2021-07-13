@@ -7,7 +7,7 @@ import {
   EduButton,
   AnswerContext,
   ScrollContext,
-  ItemLevelContext as HideScoringBlockContext,
+  PointBlockContext,
   notification,
 } from '@edulastic/common'
 import { TitleWrapper } from '@edulastic/common/src/components/MainHeader'
@@ -130,7 +130,7 @@ const QuestionBottomAction = ({
 }) => {
   // const [openQuestionModal, setOpenQuestionModal] = useState(false)
   const [itemloading, setItemLoading] = useState(false)
-  const [hideScoring, setHideScoring] = useState(false)
+  const [hidingScoringBlock, setHideScoring] = useState(false)
   const [notifyRegradeProgress, setNotifyRegradeProgress] = useState(false)
   const [isPublishedChanges, setIsPublishedChanges] = useState(false)
 
@@ -416,7 +416,7 @@ const QuestionBottomAction = ({
               }}
             >
               <AnswerContext.Provider value={{ isAnswerModifiable: true }}>
-                <HideScoringBlockContext.Provider value={hideScoring}>
+                <PointBlockContext.Provider value={hidingScoringBlock}>
                   <QuestionComp
                     {...questionProps}
                     t={t}
@@ -424,7 +424,7 @@ const QuestionBottomAction = ({
                     view={EDIT}
                     disableResponse={false}
                   />
-                </HideScoringBlockContext.Provider>
+                </PointBlockContext.Provider>
               </AnswerContext.Provider>
             </ScrollContext.Provider>
           </QuestionPreviewModal>

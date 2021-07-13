@@ -28,7 +28,7 @@ const ConfigureCanvasModal = ({
   canvasSharedSecret = '',
   user,
   lti,
-  userDistrictId,
+  districtId,
 }) => {
   const [canvasConfigureData, setCanvasConfigureData] = useState({
     canvasInstanceUrl,
@@ -97,7 +97,7 @@ const ConfigureCanvasModal = ({
             'Failed to connect with canvas. Please enter the valid configuration',
         })
       } else {
-        const subscriptionTopic = `canvas:${userDistrictId}_${user._id}_${
+        const subscriptionTopic = `canvas:${districtId}_${user._id}_${
           user.username || user.email || ''
         }`
         authorizeCanvas(result.canvasAuthURL, subscriptionTopic)
@@ -256,7 +256,7 @@ const ConfigureCanvasModal = ({
 }
 
 export default connect((state) => ({
-  userDistrictId: getUserOrgId(state),
+  districtId: getUserOrgId(state),
 }))(ConfigureCanvasModal)
 
 const ButtonWrapper = styled.div`

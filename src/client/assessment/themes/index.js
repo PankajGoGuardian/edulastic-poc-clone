@@ -1046,7 +1046,12 @@ const AssessmentContainer = ({
       if (demo || _item.isDummyItem) {
         return submitPreviewTest()
       }
-      const evalArgs = { currentItem, timeSpent, callback: submitPreviewTest }
+      const evalArgs = {
+        currentItem,
+        timeSpent,
+        testId,
+        callback: submitPreviewTest,
+      }
       return evaluateForPreview(evalArgs)
     }
     gotoSummary()

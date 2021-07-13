@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import styled, { withTheme } from 'styled-components'
-import { throttle } from 'lodash'
+import { throttle, isUndefined } from 'lodash'
 import {
   themeColor,
   extraDesktopWidthMax,
   mediumDesktopExactWidth,
 } from '@edulastic/colors'
 import PerfectScrollbar from 'react-perfect-scrollbar'
-import { withWindowSizes } from '@edulastic/common'
+import { withWindowSizes, ScrollContext } from '@edulastic/common'
 import VideoThumbnail from '@edulastic/common/src/components/VideoThumbnail'
 import IframeVideoModal from '@edulastic/common/src/components/IframeVideoModal'
 
@@ -20,69 +20,115 @@ class QuestionMenu extends Component {
     isVideoModalVisible: false,
   }
 
-  handleScroll = (option) => {
-    window.removeEventListener('scroll', this.throttledFindActiveTab)
-    const { main, advanced, extras, theme } = this.props
-    const options = [...main, ...advanced, ...extras]
-    const activeTab = options.findIndex((opt) => opt.label === option.label)
-    this.setState({ activeTab }, () => {
-      const node = option.el
-      window.scroll({
-        left: 0,
-        top: node.offsetTop - theme.HeaderHeight.xl, // 50 is the height of how to author button area
-        behavior: 'smooth',
-      })
-      setTimeout(
-        () => window.addEventListener('scroll', this.throttledFindActiveTab),
-        1000
-      )
-    })
+  static contextType = ScrollContext
+
+  get scrollRef() {
+    const { getScrollElement } = this.context
+    if (typeof getScrollElement !== 'function') {
+      return window
+    }
+    return getScrollElement()
+  }
+
+  get scrollTop() {
+    // assume scroll container is window
+    if (isUndefined(this.scrollRef?.scrollTop)) {
+      return window.scrollY
+    }
+    return this.scrollRef.scrollTop
+  }
+
+  get scrollHeight() {
+    if (isUndefined(this.scrollRef?.scrollHeight)) {
+      return document.body.scrollHeight
+    }
+    return this.scrollRef.scrollHeight
+  }
+
+  get clientHeight() {
+    if (isUndefined(this.scrollRef?.clientHeight)) {
+      return window.innerHeight
+    }
+    return this.scrollRef.clientHeight
+  }
+
+  get menuOptions() {
+    const {
+      main,
+      advanced,
+      extras,
+      isPremiumUser,
+      isPowerTeacher,
+      advancedAreOpen,
+    } = this.props
+
+    if (!isPremiumUser || !isPowerTeacher) {
+      return (main || []).concat(extras) || []
+    }
+    if (!advancedAreOpen) {
+      return (main || []).concat(extras)
+    }
+    return ((main || []).concat(advanced) || []).concat(extras) || []
   }
 
   componentDidMount() {
-    const { scrollContainer } = this.props
-    this.contentWrapper = scrollContainer?.current
-    window.addEventListener('scroll', this.throttledFindActiveTab)
+    this.scrollRef.addEventListener('scroll', this.onScroll)
   }
 
   componentWillUnmount() {
-    window.removeEventListener('scroll', this.throttledFindActiveTab)
+    if (this.scrollRef) {
+      this.scrollRef.removeEventListener('scroll', this.onScroll)
+    }
   }
 
   findActiveTab = () => {
-    const { main, advanced, extras, advancedAreOpen, theme } = this.props
+    const { theme } = this.props
     const { activeTab } = this.state
-    let allOptions = main
-    if (advancedAreOpen) {
-      allOptions = allOptions.concat(advanced)
-    }
-    allOptions = allOptions.concat(extras)
-    for (let i = 0; i < allOptions.length; i++) {
-      const elm = allOptions[i].el
+    for (let i = 0; i < this.menuOptions.length; i++) {
+      const elm = this.menuOptions[i].el
       if (
-        allOptions.length > activeTab &&
-        window.scrollY >= elm.offsetTop &&
-        window.scrollY <
+        this.menuOptions.length > activeTab &&
+        this.scrollTop >= elm.offsetTop &&
+        this.scrollTop <
           elm.offsetTop + elm.scrollHeight / 2 + theme.HeaderHeight.xl
       ) {
         this.setState({ activeTab: i + 1 })
       }
       if (
-        allOptions[0] &&
-        window.scrollY + theme.HeaderHeight.xl <
-          allOptions[0].el.scrollHeight / 2
+        this.menuOptions[0] &&
+        this.scrollTop + theme.HeaderHeight.xl <
+          this.menuOptions[0].el.scrollHeight / 2
       ) {
         this.setState({ activeTab: 0 })
       } else if (
-        allOptions.length > activeTab &&
-        window.scrollHeight <= window.scrollY + this.contentWrapper.clientHeight
+        this.menuOptions.length > activeTab &&
+        this.scrollHeight <= this.scrollTop + this.clientHeight
       ) {
-        this.setState({ activeTab: allOptions.length - 1 })
+        this.setState({ activeTab: this.menuOptions.length - 1 })
       }
     }
   }
 
-  throttledFindActiveTab = throttle(this.findActiveTab, 200)
+  onScroll = throttle(this.findActiveTab, 200)
+
+  goToSection = (option) => {
+    this.scrollRef.removeEventListener('scroll', this.onScroll)
+    const { theme } = this.props
+    const activeTab = this.menuOptions.findIndex(
+      (opt) => opt.label === option.label
+    )
+    this.setState({ activeTab }, () => {
+      const node = option.el
+      this.scrollRef.scroll({
+        left: 0,
+        top: node.offsetTop - theme.HeaderHeight.xl, // 50 is the height of how to author button area
+        behavior: 'smooth',
+      })
+      setTimeout(() => {
+        this.scrollRef.addEventListener('scroll', this.onScroll)
+      }, 1000)
+    })
+  }
 
   closeModal = () => {
     this.setState({ isVideoModalVisible: false })
@@ -90,14 +136,6 @@ class QuestionMenu extends Component {
 
   openModal = () => {
     this.setState({ isVideoModalVisible: true })
-  }
-
-  get menuOptions() {
-    const { main, advanced, extras, isPremiumUser, isPowerTeacher } = this.props
-    if (!isPremiumUser || !isPowerTeacher) {
-      return (main || []).concat(extras) || []
-    }
-    return ((main || []).concat(advanced) || []).concat(extras) || []
   }
 
   render() {
@@ -117,7 +155,7 @@ class QuestionMenu extends Component {
             {this.menuOptions.map((option, index) => (
               <Option
                 key={index}
-                onClick={(e) => this.handleScroll(option, e)}
+                onClick={(e) => this.goToSection(option, e)}
                 className={`option ${index === activeTab && 'active'}`}
               >
                 {option.label}
@@ -157,7 +195,6 @@ QuestionMenu.propTypes = {
   advancedAreOpen: PropTypes.bool.isRequired,
   handleAdvancedOpen: PropTypes.func.isRequired,
   windowWidth: PropTypes.number.isRequired,
-  scrollContainer: PropTypes.object,
   questionTitle: PropTypes.string,
 }
 
@@ -165,7 +202,6 @@ QuestionMenu.defaultProps = {
   main: [],
   advanced: [],
   extras: [],
-  scrollContainer: null,
   questionTitle: '',
 }
 

@@ -397,7 +397,6 @@ class QuestionWrapper extends Component {
       selectedTheme = 'default',
       isPrintPreview = false,
       evaluation,
-      scrollContainer,
       loadScratchPad,
       saveHintUsage,
       theme,
@@ -577,7 +576,6 @@ class QuestionWrapper extends Component {
                     advanced={advanced}
                     extras={extras}
                     advancedAreOpen={this.advancedAreOpen}
-                    scrollContainer={scrollContainer}
                     questionTitle={data?.title || ''}
                     isPremiumUser={isPremiumUser}
                     isPowerTeacher={_isPowerTeacher}

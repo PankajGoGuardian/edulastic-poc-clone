@@ -12,6 +12,7 @@ import {
   PointBlockContext,
   CustomPrompt,
   LanguageContext,
+  ScrollContext,
 } from '@edulastic/common'
 import styled from 'styled-components'
 import { IconClose } from '@edulastic/icons'
@@ -261,7 +262,6 @@ class Container extends Component {
             questionId={question.id}
             saveClicked={saveClicked}
             clearClicked={clearClicked}
-            scrollContainer={this.scrollContainer}
             showCalculatingSpinner={showCalculatingSpinner}
             testItemId={testItemId}
           />
@@ -613,17 +613,23 @@ class Container extends Component {
             </RightActionButtons>
           </BreadCrumbBar>
         </HeaderContainer>
-        <QuestionContentWrapper
-          zIndex="1"
-          isInModal={isInModal}
-          ref={this.scrollContainer}
-          className="question-editor-container"
-          data-cy="question-editor-container"
+        <ScrollContext.Provider
+          value={{
+            getScrollElement: () => this.scrollContainer.current,
+          }}
         >
-          <LanguageContext.Provider value={{ currentLanguage }}>
-            {this.renderQuestion()}
-          </LanguageContext.Provider>
-        </QuestionContentWrapper>
+          <QuestionContentWrapper
+            zIndex="1"
+            isInModal={isInModal}
+            ref={this.scrollContainer}
+            className="question-editor-container"
+            data-cy="question-editor-container"
+          >
+            <LanguageContext.Provider value={{ currentLanguage }}>
+              {this.renderQuestion()}
+            </LanguageContext.Provider>
+          </QuestionContentWrapper>
+        </ScrollContext.Provider>
         <WarningModal visible={showWarningModal} proceedPublish={proceedSave} />
         {showCalculatingSpinner && <Spinner />}
       </EditorContainer>

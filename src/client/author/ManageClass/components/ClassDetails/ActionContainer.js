@@ -439,7 +439,10 @@ const ActionContainer = ({
           </CleverInfoBox>
         )}
         {googleId && isAutoArchivedClass && (
-          <CleverInfoBox alert={isAutoArchivedClass}>
+          <CleverInfoBox
+            data-cy="google-auto-archived-info"
+            alert={isAutoArchivedClass}
+          >
             <IconInfo />{' '}
             {classStatus === 1
               ? `Sync with Google is paused. Please resync to enable`

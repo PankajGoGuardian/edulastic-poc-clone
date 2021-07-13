@@ -1996,7 +1996,19 @@ function* savePassage({ payload }) {
     yield put(updatePassageStructureAction(modifiedPassage))
 
     // only update the item if its not new, since new item already has the passageId added while creating.
-    yield call(passageApi.update, _omit(modifiedPassage, ['__v']))
+    const updatedPassage = yield call(
+      passageApi.update,
+      _omit(modifiedPassage, ['__v'])
+    )
+    /**
+     * @see https://snapwiz.atlassian.net/browse/EV-29547
+     * update passage version in redux-store and keep passage data in sync with DB
+     * use "modifiedPassage" as a fallback if update api fails
+     */
+    if (!isEmpty(updatedPassage)) {
+      yield put(updatePassageStructureAction(updatedPassage))
+    }
+
     // yield all([
     //   call(passageApi.update, _omit(modifiedPassage, ['__v'])),
     //   currentItem._id !== 'new'

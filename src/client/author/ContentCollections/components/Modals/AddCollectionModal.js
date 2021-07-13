@@ -51,6 +51,7 @@ const AddCollectionModal = ({
         buckets,
         hasTrial,
         isPurchaseAllowed,
+        type,
         ...rest
       } = editCollectionData
       const collectionData = {

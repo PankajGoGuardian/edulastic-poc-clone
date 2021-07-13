@@ -9,7 +9,7 @@ import UploadAnswerSheets from './uploadAnswerSheets'
 const App = () => (
   <ThemeProvider theme={themes.scanScore}>
     <Switch>
-      <Route path="/uploadAnswerSheets" component={UploadAnswerSheets} />
+      <Route exact path="/uploadAnswerSheets" component={UploadAnswerSheets} />
     </Switch>
   </ThemeProvider>
 )

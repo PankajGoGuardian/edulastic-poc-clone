@@ -138,19 +138,26 @@ const MergeIdsTable = ({
     setMapperErrorMessage('')
     const eduIdMap = {}
     const indexes = []
-    const cleverIds = formattedData.map((data) =>
-      mapperFieldName === 'Schools' ? data.lmsSchoolId : data.lmsClassId
-    )
+    let cleverIds
+    if (mapperFieldName === 'Schools') {
+      cleverIds = formattedData.map((data) =>
+        mapperFieldName === 'Schools' ? data.lmsSchoolId : data.lmsClassId
+      )
+    } else {
+      cleverIds = Object.keys(mappedResult)
+    }
+
     for (let i = 1; i <= cleverIds.length; i++) {
-      const eduId = mappedResult[cleverIds[i - 1]]
+      const eduId =
+        mapperFieldName === 'Schools'
+          ? mappedResult[cleverIds[i - 1]]
+          : mappedResult[cleverIds[i - 1]]?.id || null
       if (eduId) {
         const existingId = eduIdMap[eduId]
-        if (existingId) {
-          eduIdMap[eduId].push(i)
-        } else {
-          eduIdMap[eduId] = []
-          eduIdMap[eduId].push(i)
-        }
+        if (!existingId) eduIdMap[eduId] = []
+        eduIdMap[eduId].push(
+          mapperFieldName === 'Schools' ? i : mappedResult[cleverIds[i - 1]].row
+        )
       }
     }
     for (const key of Object.keys(eduIdMap)) {
@@ -165,9 +172,16 @@ const MergeIdsTable = ({
         )}`
       )
     } else {
+      const mappedDataResult = {}
+      cleverIds.forEach((_cleverId, i) => {
+        mappedDataResult[_cleverId] =
+          mapperFieldName === 'Schools'
+            ? mappedResult[cleverIds[i]]
+            : mappedResult[cleverIds[i]]?.id || null
+      })
       saveApprovedMapping({
         districtId,
-        mapping: mappedResult,
+        mapping: mappedDataResult,
         type: mapperFieldName === 'Schools' ? 'school' : 'class',
         lmsType: atlasId ? 'atlas' : 'clever',
       })

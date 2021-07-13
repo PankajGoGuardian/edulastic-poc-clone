@@ -145,7 +145,9 @@ const putMappedDataIntoState = (state, payload) => {
   if (type === 'school') {
     data.mappedData = mappedData
   } else {
+    if (page === 1) data.mappedData = {}
     data.mappedData[page] = mappedData
+    data.totalCount = 290
   }
   state.mappedData[dcId][entity] = data
   state.mappingDataLoading = false

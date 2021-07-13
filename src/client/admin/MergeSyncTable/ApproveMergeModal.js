@@ -10,7 +10,7 @@ const { Column } = Table
 const { Option } = Select
 const { Text } = Typography
 
-const PAGE_SIZE = 25
+const PAGE_SIZE = 100
 
 const ApproveMergeModal = ({
   setIsModalVisible,
@@ -36,9 +36,9 @@ const ApproveMergeModal = ({
   const getCustomClassNameAndScore = (classData) => {
     let customName = classData.name
     let score = 0
-    const gm = classData?.gm || 0
-    const sm = classData?.sm || 0
-    const scm = classData?.scm || 0
+    const gm = (classData?.gm && 100) || 0
+    const sm = (classData?.sm && 100) || 0
+    const scm = (classData?.scm && 100) || 0
     const cIdMatch = classData.idMatch || 0
     // if cleverId matched, disable the dropdown with existing clever class
     // G: match | S: match | Count: match
@@ -86,7 +86,6 @@ const ApproveMergeModal = ({
 
   const handleMappingChange = (cleverId, edulasticId) => {
     const map = mappedResult
-    if (!map[cleverId]) map[cleverId] = null
     map[cleverId] = edulasticId
     setMappedResult(map)
   }
@@ -100,6 +99,11 @@ const ApproveMergeModal = ({
   const formatFilterData = (filterValue) => {
     setFilterField(filterValue)
     setCurrentPage(1)
+    if (mapperFieldName === 'Classes') {
+      const { payload } = getPayload(mapperFieldName)
+      getMappingData({ ...payload, page: 1, filter: filterField })
+      return
+    }
     let data = districtMappedData[mapperFieldName].mappedData
     if (filterValue === 'equal') {
       data = data.filter((_data) => {
@@ -131,7 +135,7 @@ const ApproveMergeModal = ({
       data.forEach((_data) =>
         _data.mappedSchools.sort((a, b) => b.nameMatch - a.nameMatch)
       )
-    } else if (filterValue === 'blank') {
+    } else if (filterValue === 'no') {
       // let containsZipNotMatch = false
       data = data.filter((_data) => {
         const map = {}
@@ -157,7 +161,6 @@ const ApproveMergeModal = ({
         _data.mappedSchools.sort((a, b) => b.nameMatch - a.nameMatch)
       )
     }
-    setMappedResult({})
     data.forEach((_data) => {
       const o = _data?.mappedSchools?.[0] ? _data?.mappedSchools?.[0] : null
       handleMappingChange(
@@ -196,11 +199,16 @@ const ApproveMergeModal = ({
     }
   }, [mapperErrorMessage])
 
-  const compare = (a, b) => {
+  const schoolCompare = (a, b) => {
     if (a.zipMatch && b.zipMatch) return b.nameMatch - a.nameMatch
     if (a.zipMatch) return -1
     if (b.zipMatch) return 1
     return 0
+  }
+  const classCompare = (a, b) => {
+    const x = getCustomClassNameAndScore(a).score
+    const y = getCustomClassNameAndScore(b).score
+    return x - y
   }
 
   const renderReviewContent = () => {
@@ -212,14 +220,28 @@ const ApproveMergeModal = ({
     if (mapperFieldName === 'Classes') {
       data = mappedData[currentPage]
     }
-    setMappedResult({})
     mapperFieldName === 'Schools' &&
       data.forEach((_data) => {
-        _data?.mappedSchools?.sort(compare)
+        _data?.mappedSchools?.sort(schoolCompare)
         const o = _data?.mappedSchools?.[0] ? _data?.mappedSchools?.[0] : null
         handleMappingChange(
           _data.lmsSchoolId,
           o && o.zipMatch && o.nameMatch >= 75 ? o.id : null
+        )
+      })
+    mapperFieldName === 'Classes' &&
+      data.forEach((_data, idx) => {
+        _data?.mappedClasses?.sort(classCompare)
+        const o =
+          _data?.mappedClasses?.[0] &&
+          _data?.mappedClasses?.[0]?.subjectMatch &&
+          _data?.mappedClasses?.[0]?.gradeMatch &&
+          _data?.mappedClasses?.[0]?.studentCountMatch >= 80
+            ? _data.mappedClasses[0]
+            : null
+        handleMappingChange(
+          _data.lmsClassId,
+          o && { id: o.id, row: idx + 1 + 100 * (currentPage - 1) }
         )
       })
     setFormattedData(data)
@@ -244,10 +266,10 @@ const ApproveMergeModal = ({
   }
 
   const handlePageChange = (pageNumber) => {
-    const mappedData = districtMappedData[mapperFieldName]
+    const mappedData = districtMappedData[mapperFieldName].mappedData
     if (!mappedData[pageNumber]) {
       // call api with this page number and get new data
-      const { payload } = getPayload(mapperFieldName, pageNumber)
+      const { payload } = getPayload(mapperFieldName)
       getMappingData({ ...payload, page: pageNumber })
     }
     setCurrentPage(pageNumber)
@@ -283,31 +305,33 @@ const ApproveMergeModal = ({
       >
         {formattedData ? (
           <>
-            {!isSchool && (
-              <Pagination
-                showQuickJumper
-                defaultCurrent={currentPage}
-                total={totalRecordsCount}
-                pageSize={PAGE_SIZE}
-                onChange={handlePageChange}
-              />
-            )}
-            {isSchool && (
-              <>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <div>
                 <Button key="equal" onClick={() => formatFilterData('equal')}>
                   (Select 100%)
                 </Button>
                 <Button key="less" onClick={() => formatFilterData('less')}>
-                  {'Select < 100%'}
+                  {'(Select < 100%)'}
                 </Button>
-                <Button key="blank" onClick={() => formatFilterData('blank')}>
+                <Button key="blank" onClick={() => formatFilterData('no')}>
                   (Select Blank)
                 </Button>
                 <Button key="all" onClick={() => formatFilterData('')}>
                   (Select All)
                 </Button>
-              </>
-            )}
+              </div>
+              <div>
+                {!isSchool && (
+                  <Pagination
+                    showQuickJumper
+                    defaultCurrent={currentPage}
+                    total={totalRecordsCount}
+                    pageSize={PAGE_SIZE}
+                    onChange={handlePageChange}
+                  />
+                )}
+              </div>
+            </div>
             {mappedDataLoading ? (
               <StyledSpinner>
                 <Spin />
@@ -323,12 +347,12 @@ const ApproveMergeModal = ({
                     ? {
                         defaultCurrent: 1,
                         total: formattedData?.length,
-                        pageSize: 25,
+                        pageSize: PAGE_SIZE,
                         position: 'top',
                         onChange: (page) => setCurrentPage(page),
                         current: currentPage,
                       }
-                    : null
+                    : false
                 }
                 scroll={{ y: '60vh' }}
               >
@@ -337,7 +361,7 @@ const ApproveMergeModal = ({
                   width="15%"
                   dataIndex={isSchool ? 'lmsSchoolId' : 'lmsClassId'}
                   key={isSchool ? 'lmsSchoolId' : 'lmsClassId'}
-                  render={(_, __, idx) => idx + 1 + 25 * (currentPage - 1)}
+                  render={(_, __, idx) => idx + 1 + 100 * (currentPage - 1)}
                 />
                 <Column
                   title={`Clever ${mapperFieldName}`}
@@ -350,19 +374,30 @@ const ApproveMergeModal = ({
                   title={`Edulastic ${mapperFieldName}`}
                   dataIndex={isSchool ? 'mappedSchools' : 'mappedClasses'}
                   key={isSchool ? 'mappedSchools' : 'mappedClasses'}
-                  render={(_data, record) => {
+                  render={(_data, record, idx) => {
                     return (
                       <Select
                         showSearch
                         allowClear
-                        defaultValue={mappedResult[record.lmsSchoolId]}
+                        defaultValue={
+                          mapperFieldName === 'Schools'
+                            ? mappedResult[record.lmsSchoolId]
+                            : (mappedResult[record.lmsClassId] &&
+                                mappedResult[record.lmsClassId].id) ||
+                              null
+                        }
                         dropdownStyle={{ zIndex: 2000 }}
                         style={{ width: '90%' }}
                         bordered={false}
                         onChange={(value) => {
                           handleMappingChange(
                             record.lmsSchoolId || record.lmsClassId,
-                            value
+                            mapperFieldName === 'Schools'
+                              ? value
+                              : {
+                                  id: value,
+                                  row: idx + 1 + 100 * (currentPage - 1),
+                                }
                           )
                         }}
                         disabled={_data.idMatch}
@@ -379,7 +414,7 @@ const ApproveMergeModal = ({
                             <Option key={o.id} value={o.id}>
                               {isSchool
                                 ? getCustomName(o)
-                                : getCustomClassNameAndScore(o)}
+                                : getCustomClassNameAndScore(o).customName}
                             </Option>
                           )
                         })}

@@ -9,7 +9,7 @@ import { AutoComplete, Input, Icon, Tooltip, Empty } from 'antd'
 // ducks
 import { useDropdownData } from '@edulastic/common'
 import {
-  getOrgDataSelector,
+  getOrgSchools,
   getUserOrgId,
 } from '../../../../../../src/selectors/user'
 import {
@@ -21,7 +21,6 @@ import {
 const DEFAULT_SEARCH_TERMS = { text: '', selectedText: '', selectedKey: '' }
 
 const StudentAutoComplete = ({
-  userOrgData,
   studentList,
   loading,
   loadStudentList,
@@ -34,6 +33,7 @@ const StudentAutoComplete = ({
   selectedStudentId,
   selectCB,
   districtId,
+  institutionIds,
 }) => {
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
   const [fieldValue, setFieldValue] = useState('')
@@ -44,7 +44,6 @@ const StudentAutoComplete = ({
 
   // build search query
   const query = useMemo(() => {
-    const { institutionIds } = userOrgData
     const q = {
       limit: 35,
       page: 0,
@@ -79,7 +78,15 @@ const StudentAutoComplete = ({
       q.search.groupIds = classIds.split(',')
     }
     return q
-  }, [searchTerms.text, termId, grades, subjects, courseIds, classIds])
+  }, [
+    searchTerms.text,
+    termId,
+    grades,
+    subjects,
+    courseIds,
+    classIds,
+    institutionIds,
+  ])
 
   // handle autocomplete actions
   const onSearch = (value) => {
@@ -207,10 +214,10 @@ const StudentAutoComplete = ({
 
 export default connect(
   (state) => ({
-    userOrgData: getOrgDataSelector(state),
+    districtId: getUserOrgId(state),
+    institutionIds: getOrgSchools(state).map((s) => s._id),
     studentList: getStudentsListSelector(state),
     loading: getStudentsLoading(state),
-    districtId: getUserOrgId(state),
   }),
   {
     loadStudentList: getSPRStudentDataRequestAction,

@@ -7,7 +7,11 @@ import { roleuser } from '@edulastic/constants'
 import MultiSelectSearch from '../../../../../common/components/widgets/MultiSelectSearch'
 
 // ducks
-import { getUser, getUserOrgId } from '../../../../../../src/selectors/user'
+import {
+  getOrgSchools,
+  getUser,
+  getUserOrgId,
+} from '../../../../../../src/selectors/user'
 import {
   receiveClassListAction,
   getClassListSelector,
@@ -28,6 +32,7 @@ const ClassAutoComplete = ({
   termId,
   dataCy,
   districtId,
+  institutionIds,
 }) => {
   const classAutoCompleteRef = useRef()
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
@@ -35,7 +40,7 @@ const ClassAutoComplete = ({
 
   // build search query
   const query = useMemo(() => {
-    const { institutionIds, role: userRole, _id: userId } = userDetails
+    const { role: userRole, _id: userId } = userDetails
     const q = {
       limit: 25,
       page: 1,
@@ -67,7 +72,7 @@ const ClassAutoComplete = ({
         : subjects.split(',')
     }
     return q
-  }, [searchTerms.text, termId, grades, subjects, courseIds])
+  }, [searchTerms.text, termId, grades, subjects, courseIds, institutionIds])
 
   // handle autocomplete actions
   const onSearch = (value) => {
@@ -143,9 +148,10 @@ const ClassAutoComplete = ({
 export default connect(
   (state) => ({
     userDetails: getUser(state),
+    districtId: getUserOrgId(state),
+    institutionIds: getOrgSchools(state).map((s) => s._id),
     classList: getClassListSelector(state),
     loading: get(state, ['classesReducer', 'loading'], false),
-    districtId: getUserOrgId(state),
   }),
   {
     loadClassList: receiveClassListAction,

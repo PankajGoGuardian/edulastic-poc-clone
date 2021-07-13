@@ -36,6 +36,7 @@ import { processSchoolYear } from '../../../multipleAssessmentReport/common/util
 import {
   getUser,
   getInterestedCurriculumsSelector,
+  getOrgSchools,
 } from '../../../../../src/selectors/user'
 
 import {
@@ -83,6 +84,7 @@ const StandardsMasteryReportFilters = ({
   showFilter,
   toggleFilter,
   firstLoad,
+  institutionIds,
   setFirstLoad,
   reportId,
   standardsPerformanceSummary,
@@ -368,7 +370,7 @@ const StandardsMasteryReportFilters = ({
     }
     if (role === roleuser.SCHOOL_ADMIN) {
       settings.filters.schoolIds =
-        settings.filters.schoolIds || get(user, 'institutionIds', []).join(',')
+        settings.filters.schoolIds || institutionIds.join(',')
     }
     setFilters({ ...filters, showApply: false })
     setShowApply(false)
@@ -943,6 +945,7 @@ const enhance = compose(
       standardsFilters: getReportsStandardsFilters(state),
       filters: getFiltersSelector(state),
       user: getUser(state),
+      institutionIds: getOrgSchools(state).map((s) => s._id),
       interestedCurriculums: getInterestedCurriculumsSelector(state),
       prevStandardsFilters: getPrevStandardsFiltersSelector(state),
       standardsPerformanceSummary: getReportsStandardsPerformanceSummary(state),

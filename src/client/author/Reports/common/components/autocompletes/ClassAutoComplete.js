@@ -166,9 +166,9 @@ const ClassAutoComplete = ({
 export default connect(
   (state) => ({
     userDetails: getUser(state),
+    districtId: getUserOrgId(state),
     classList: getClassListSelector(state),
     loading: get(state, ['classesReducer', 'loading'], false),
-    districtId: getUserOrgId(state),
   }),
   {
     loadClassList: receiveClassListAction,

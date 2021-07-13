@@ -166,9 +166,9 @@ const GroupsAutoComplete = ({
 export default connect(
   (state) => ({
     userDetails: getUser(state),
+    districtId: getUserOrgId(state),
     groupList: getGroupListSelector(state),
     loading: get(state, ['groupsReducer', 'loading'], false),
-    districtId: getUserOrgId(state),
   }),
   {
     loadGroupList: receiveGroupListAction,

@@ -6,7 +6,11 @@ import { debounce } from 'lodash'
 import { roleuser, assignmentStatusOptions } from '@edulastic/constants'
 import MultiSelectSearch from '../widgets/MultiSelectSearch'
 // ducks
-import { getUser, getUserOrgId } from '../../../../src/selectors/user'
+import {
+  getOrgSchools,
+  getUser,
+  getUserOrgId,
+} from '../../../../src/selectors/user'
 import {
   receiveTestListAction,
   getTestListSelector,
@@ -35,6 +39,7 @@ const AssessmentAutoComplete = ({
   dataCy,
   tagIds,
   districtId,
+  institutionIds,
 }) => {
   const assessmentFilterRef = useRef()
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
@@ -49,8 +54,7 @@ const AssessmentAutoComplete = ({
 
   // build search query
   const query = useMemo(() => {
-    const { role, orgData = {} } = userDetails
-    const { institutionIds } = orgData
+    const { role } = userDetails
     const q = {
       limit: 35,
       page: 1,
@@ -83,7 +87,15 @@ const AssessmentAutoComplete = ({
       q.search.tagIds = tagIds.split(',')
     }
     return q
-  }, [searchTerms.text, termId, grades, subjects, testTypes, tagIds])
+  }, [
+    searchTerms.text,
+    termId,
+    grades,
+    subjects,
+    testTypes,
+    tagIds,
+    institutionIds,
+  ])
 
   // handle autocomplete actions
   const onSearch = (value) => {
@@ -148,9 +160,10 @@ const AssessmentAutoComplete = ({
 export default connect(
   (state) => ({
     userDetails: getUser(state),
+    districtId: getUserOrgId(state),
+    institutionIds: getOrgSchools(state).map((s) => s._id),
     testList: getTestListSelector(state),
     loading: getTestListLoadingSelector(state),
-    districtId: getUserOrgId(state),
   }),
   {
     loadTestList: receiveTestListAction,

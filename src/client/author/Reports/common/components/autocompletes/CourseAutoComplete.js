@@ -158,9 +158,9 @@ const CourseAutoComplete = ({
 
 export default connect(
   (state) => ({
+    districtId: getUserOrgId(state),
     courseList: getCourseListSelector(state),
     loading: get(state, ['coursesReducer', 'loading'], false),
-    districtId: getUserOrgId(state),
   }),
   {
     loadCourseList: receiveCourseListAction,

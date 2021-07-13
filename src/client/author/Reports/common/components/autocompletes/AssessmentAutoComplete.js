@@ -9,7 +9,11 @@ import { assignmentStatusOptions, roleuser } from '@edulastic/constants'
 
 // ducks
 import { useDropdownData } from '@edulastic/common'
-import { getUser, getUserOrgId } from '../../../../src/selectors/user'
+import {
+  getOrgSchools,
+  getUser,
+  getUserOrgId,
+} from '../../../../src/selectors/user'
 import {
   receiveTestListAction,
   getTestListSelector,
@@ -22,6 +26,7 @@ const DEFAULT_SEARCH_TERMS = { text: '', selectedText: '', selectedKey: '' }
 
 const AssessmentAutoComplete = ({
   user,
+  districtId,
   testList,
   loading,
   loadTestList,
@@ -34,7 +39,7 @@ const AssessmentAutoComplete = ({
   selectCB,
   tagIds,
   showApply,
-  districtId,
+  institutionIds,
 }) => {
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
   const [fieldValue, setFieldValue] = useState('')
@@ -43,8 +48,7 @@ const AssessmentAutoComplete = ({
 
   // build search query
   const query = useMemo(() => {
-    const { role, orgData = {} } = user
-    const { institutionIds } = orgData
+    const { role } = user
     const q = {
       limit: 35,
       page: 1,
@@ -89,6 +93,7 @@ const AssessmentAutoComplete = ({
     subjects,
     testTypes,
     tagIds,
+    institutionIds,
   ])
 
   // handle autocomplete actions
@@ -202,9 +207,10 @@ const AssessmentAutoComplete = ({
 export default connect(
   (state) => ({
     user: getUser(state),
+    districtId: getUserOrgId(state),
+    institutionIds: getOrgSchools(state).map((s) => s._id),
     testList: getTestListSelector(state),
     loading: getTestListLoadingSelector(state),
-    districtId: getUserOrgId(state),
   }),
   {
     loadTestList: receiveTestListAction,

@@ -1049,6 +1049,10 @@ const AssessmentContainer = ({
       const evalArgs = { currentItem, timeSpent, callback: submitPreviewTest }
       return evaluateForPreview(evalArgs)
     }
+    if (navigator.userAgent.includes('SEB')) {
+      history.push('/student/seb-quit-confirm')
+      return
+    }
     gotoSummary()
   }
 

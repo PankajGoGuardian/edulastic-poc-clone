@@ -1,4 +1,4 @@
-import { set, round, min, cloneDeep, isEmpty } from 'lodash'
+import { set, round, min, cloneDeep, isEmpty, get } from 'lodash'
 import {
   multipartEvaluationTypes,
   PARTIAL_MATCH,
@@ -8,10 +8,34 @@ import {
   PASSAGE,
 } from '@edulastic/constants/const/questionType'
 
+import { MathKeyboard } from '@edulastic/common'
+
 import evaluator from './evaluators'
 import { replaceVariables } from '../../../assessment/utils/variables'
 
 const { FIRST_CORRECT_MUST, ALL_CORRECT_MUST } = multipartEvaluationTypes
+
+const getMathUnits = (item) => {
+  if (!item.isMath || !item.isUnits) {
+    return ''
+  }
+
+  if (item?.keypadMode === 'custom') {
+    return item?.customUnits || ''
+  }
+
+  const customKeys = get(item, 'customKeys', [])
+  const symbol = item.showDropdown
+    ? item.keypadMode // dropdown mode
+    : get(item, 'symbols', [])[0] // keypad mode
+
+  return MathKeyboard.KEYBOARD_BUTTONS.filter((btn) =>
+    btn.types.includes(symbol)
+  )
+    .map((btn) => btn.handler)
+    .concat(customKeys)
+    .filter((x) => x)
+}
 
 export const evaluateItem = async (
   answers,
@@ -66,15 +90,22 @@ export const evaluateItem = async (
         if (assignPartialCredit) {
           validationData.scoringType = PARTIAL_MATCH
         }
+
+        const payload = {
+          userResponse: answer,
+          hasGroupResponses: validation.hasGroupResponses,
+          validation: validationData,
+          template: validation.template,
+          questionId: id,
+          testSettings,
+        }
+
+        if (validation.isUnits && validation.isMath) {
+          payload.isUnitAllowedUnits = getMathUnits(validation)
+        }
+
         const { evaluation, score = 0, maxScore } = await evaluator(
-          {
-            userResponse: answer,
-            hasGroupResponses: validation.hasGroupResponses,
-            validation: validationData,
-            template: validation.template,
-            questionId: id,
-            testSettings,
-          },
+          payload,
           type
         )
 

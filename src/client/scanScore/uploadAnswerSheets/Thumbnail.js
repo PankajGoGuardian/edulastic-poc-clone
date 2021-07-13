@@ -4,15 +4,17 @@ import { Spin } from 'antd'
 
 export const getFileNameFromUri = (uri) =>
   uri
-    .split('/')
-    .lastItem.replace(/_([0-9a-fA-F]+|-)+[0-9a-fA-F]+(\.[a-zA-Z]+)/, '$2')
+    ? uri
+        .split('/')
+        .lastItem.replace(/_([0-9a-fA-F]+|-)+[0-9a-fA-F]+(\.[a-zA-Z]+)/, '$2')
+    : ''
 
 const Thumbnail = ({ doc, ...props }) => {
-  const name = getFileNameFromUri(doc.sourceUri)
+  const name = getFileNameFromUri(doc.uri)
   return (
-    <ThumbnailDiv title={name} uri={doc.sourceUri} {...props}>
+    <ThumbnailDiv title={name} uri={doc.uri} {...props}>
       <Spin spinning={doc.processStatus === 'in_progress'}>
-        <img alt={name} src={doc.sourceUri} />
+        <img alt={name} src={doc.uri} />
       </Spin>
       {doc.processStatus === 'failed' && (
         <>

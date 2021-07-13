@@ -2,6 +2,8 @@ import React, { useState, useMemo } from 'react'
 import Dropzone from 'react-dropzone'
 import { connect } from 'react-redux'
 import { Row, Col, Progress } from 'antd'
+import { createHash } from 'crypto-browserify'
+import qs from 'qs'
 
 import { aws } from '@edulastic/constants'
 import { notification } from '@edulastic/common'
@@ -13,17 +15,24 @@ import Thumbnail, { getFileNameFromUri } from './Thumbnail'
 
 import { getGroupedDocs } from '../ducks'
 
+const createSessionId = (str) => {
+  const hash = createHash('sha1').update(str, 'utf8').digest('hex')
+  return hash.substring(0, 24)
+}
+
 const UploadAnswerSheets = ({ location, groupedDocs }) => {
   const [uploading, setUploading] = useState(false)
   const [progress, setProgress] = useState(null)
   const [uploadedFiles, setUploadedFiles] = useState([])
 
-  const [assignmentId, sessionId] = useMemo(() => {
-    const _assignmentId = location.state?.assignmentId || ''
-    // TODO: generate by timestamp, use 'groupId' for now
-    const _sessionId = location.state?.groupId || ''
-    return [_assignmentId, _sessionId]
-  }, [location.state])
+  const { assignmentId, sessionId } = useMemo(() => {
+    const search = qs.parse(location.search || '', { ignoreQueryPrefix: true })
+    const _sessionId = createSessionId(`${search.assignmentId}-${Date.now()}`)
+    return {
+      assignmentId: search.assignmentId,
+      sessionId: search.sessionId || _sessionId,
+    }
+  }, [location])
 
   const handleProgress = (progressInfo) => {
     const { loaded: uploaded, total } = progressInfo
@@ -31,9 +40,7 @@ const UploadAnswerSheets = ({ location, groupedDocs }) => {
     setProgress(_progress)
   }
 
-  const handleCancelUpload = (obj) => {
-    console.log(obj)
-  }
+  const handleCancelUpload = () => {}
 
   const handleDrop = async ([file]) => {
     setUploading(true)
@@ -64,7 +71,7 @@ const UploadAnswerSheets = ({ location, groupedDocs }) => {
         source: {
           uri: sourceUri,
           name: file?.name || getFileNameFromUri(sourceUri),
-        }
+        },
       })
       if (error) {
         notification({ type: 'error', msg: error.message })

@@ -23,6 +23,7 @@ import {
   getUserOrgData,
   getUserRole,
   getUserFeatures,
+  getUserOrgId,
 } from '../../../src/selectors/user'
 import {
   receiveSearchCourseAction,
@@ -96,10 +97,8 @@ class ClassCreate extends React.Component {
       allTagsData,
       location,
       userFeatures,
+      districtId,
     } = this.props
-    const {
-      districtIds: [districtId],
-    } = userOrgData
 
     const { premium, premiumGradeSubject } = userFeatures
 
@@ -173,10 +172,7 @@ class ClassCreate extends React.Component {
   }
 
   searchCourse = (keyword) => {
-    const { searchCourseList, userOrgData } = this.props
-    const {
-      districtIds: [districtId],
-    } = userOrgData
+    const { searchCourseList, districtId } = this.props
     let searchTerms
     const key = keyword.trim()
     if (keyword == '') {
@@ -362,6 +358,7 @@ const enhance = compose(
         selectedSubject,
         userRole: getUserRole(state),
         userFeatures: getUserFeatures(state),
+        districtId: getUserOrgId(state),
       }
     },
     {

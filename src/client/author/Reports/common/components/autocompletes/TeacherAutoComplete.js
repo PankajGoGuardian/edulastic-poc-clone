@@ -7,7 +7,7 @@ import { roleuser } from '@edulastic/constants'
 import MultiSelectSearch from '../widgets/MultiSelectSearch'
 
 // ducks
-import { getOrgDataSelector } from '../../../../src/selectors/user'
+import { getUserOrgId } from '../../../../src/selectors/user'
 import {
   getTeachersListSelector,
   receiveTeachersListAction,
@@ -18,7 +18,6 @@ const DEFAULT_SEARCH_TERMS = { text: '', selectedText: '', selectedKey: '' }
 
 const TeacherAutoComplete = ({
   dataCy,
-  userOrgData,
   teacherList: teacherListRaw,
   loading,
   loadTeacherList,
@@ -27,6 +26,7 @@ const TeacherAutoComplete = ({
   selectCB,
   testId,
   termId,
+  districtId,
 }) => {
   const teacherFilterRef = useRef()
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
@@ -48,8 +48,6 @@ const TeacherAutoComplete = ({
 
   // build search query
   const query = useMemo(() => {
-    const { districtIds } = userOrgData
-    const districtId = districtIds?.[0]
     const q = {
       limit: 25,
       page: 1,
@@ -136,9 +134,9 @@ const TeacherAutoComplete = ({
 
 export default connect(
   (state) => ({
-    userOrgData: getOrgDataSelector(state),
     teacherList: getTeachersListSelector(state),
     loading: get(state, ['teacherReducer', 'loading'], false),
+    districtId: getUserOrgId(state),
   }),
   {
     loadTeacherList: receiveTeachersListAction,

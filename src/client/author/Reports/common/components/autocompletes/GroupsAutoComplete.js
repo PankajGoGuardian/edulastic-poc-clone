@@ -7,7 +7,7 @@ import { roleuser } from '@edulastic/constants'
 import MultiSelectSearch from '../widgets/MultiSelectSearch'
 
 // ducks
-import { getUser } from '../../../../src/selectors/user'
+import { getUser, getUserOrgId } from '../../../../src/selectors/user'
 import {
   receiveGroupListAction,
   getGroupListSelector,
@@ -29,6 +29,7 @@ const GroupsAutoComplete = ({
   selectCB,
   selectedGroupIds,
   dataCy,
+  districtId,
 }) => {
   const groupFilterRef = useRef()
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
@@ -38,9 +39,7 @@ const GroupsAutoComplete = ({
 
   // build search query
   const query = useMemo(() => {
-    const { role: userRole, orgData } = userDetails
-    const { districtIds } = orgData
-    const districtId = districtIds?.[0]
+    const { role: userRole } = userDetails
     const q = {
       limit: 25,
       page: 1,
@@ -169,6 +168,7 @@ export default connect(
     userDetails: getUser(state),
     groupList: getGroupListSelector(state),
     loading: get(state, ['groupsReducer', 'loading'], false),
+    districtId: getUserOrgId(state),
   }),
   {
     loadGroupList: receiveGroupListAction,

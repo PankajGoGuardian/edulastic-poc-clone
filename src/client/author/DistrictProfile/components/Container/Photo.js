@@ -12,10 +12,10 @@ import {
   largeDesktopWidth,
 } from '@edulastic/colors'
 import { beforeUpload, notification } from '@edulastic/common'
+import { signupStateBykey } from '@edulastic/constants/const/signUpState'
 import { uploadToS3 } from '../../../src/utils/upload'
 import { updateProfileImageAction } from '../../../../student/Login/ducks'
-import { signupStateBykey } from '@edulastic/constants/const/signUpState'
-import { getUserOrgId } from '../../../../author/src/selectors/user'
+import { getUserOrgId } from '../../../src/selectors/user'
 
 class Photo extends React.Component {
   state = {
@@ -121,8 +121,10 @@ class Photo extends React.Component {
 }
 
 Photo.propTypes = {
+  // eslint-disable-next-line
   owner: PropTypes.bool,
   height: PropTypes.number,
+  // eslint-disable-next-line
   isEditable: PropTypes.bool,
   windowWidth: PropTypes.number.isRequired,
   onChangeField: PropTypes.func,

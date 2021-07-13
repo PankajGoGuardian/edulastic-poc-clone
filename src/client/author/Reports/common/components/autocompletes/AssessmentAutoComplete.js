@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useEffect, useCallback } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
-import { debounce, isEmpty } from 'lodash'
+import { debounce } from 'lodash'
 
 // components & constants
 import { AutoComplete, Input, Icon, Tooltip, Empty } from 'antd'
@@ -9,7 +9,7 @@ import { assignmentStatusOptions, roleuser } from '@edulastic/constants'
 
 // ducks
 import { useDropdownData } from '@edulastic/common'
-import { getUser } from '../../../../src/selectors/user'
+import { getUser, getUserOrgId } from '../../../../src/selectors/user'
 import {
   receiveTestListAction,
   getTestListSelector,
@@ -34,6 +34,7 @@ const AssessmentAutoComplete = ({
   selectCB,
   tagIds,
   showApply,
+  districtId,
 }) => {
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
   const [fieldValue, setFieldValue] = useState('')
@@ -43,8 +44,7 @@ const AssessmentAutoComplete = ({
   // build search query
   const query = useMemo(() => {
     const { role, orgData = {} } = user
-    const { districtIds, institutionIds } = orgData
-    const districtId = districtIds?.[0]
+    const { institutionIds } = orgData
     const q = {
       limit: 35,
       page: 1,
@@ -204,6 +204,7 @@ export default connect(
     user: getUser(state),
     testList: getTestListSelector(state),
     loading: getTestListLoadingSelector(state),
+    districtId: getUserOrgId(state),
   }),
   {
     loadTestList: receiveTestListAction,

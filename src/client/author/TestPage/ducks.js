@@ -79,6 +79,7 @@ import {
   getUserId,
   getIsCurator,
   getUserSignupStatusSelector,
+  getUserOrgId,
 } from '../src/selectors/user'
 import { receivePerformanceBandSuccessAction } from '../PerformanceBand/ducks'
 import { receiveStandardsProficiencySuccessAction } from '../StandardsProficiency/ducks'
@@ -3139,14 +3140,15 @@ function* getDefaultTestSettingsSaga({ payload: testEntity }) {
     yield put(setDefaultSettingsLoadingAction(true))
     const role = yield select(getUserRole)
     const orgData = yield select(getUserOrgData)
+    const districtId = yield select(getUserOrgId)
     let payload = {
-      orgId: orgData?.districtIds?.[0],
+      orgId: districtId,
       params: { orgType: 'district' },
     }
 
     if (role !== roleuser.DISTRICT_ADMIN && orgData.institutionIds.length) {
       payload = {
-        orgId: orgData.institutionIds[0] || orgData?.districtIds?.[0],
+        orgId: orgData.institutionIds[0] || districtId,
         params: {
           orgType: 'institution',
         },

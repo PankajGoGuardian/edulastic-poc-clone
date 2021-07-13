@@ -6,7 +6,7 @@ import { debounce } from 'lodash'
 import { roleuser, assignmentStatusOptions } from '@edulastic/constants'
 import MultiSelectSearch from '../widgets/MultiSelectSearch'
 // ducks
-import { getUser } from '../../../../src/selectors/user'
+import { getUser, getUserOrgId } from '../../../../src/selectors/user'
 import {
   receiveTestListAction,
   getTestListSelector,
@@ -34,6 +34,7 @@ const AssessmentAutoComplete = ({
   selectCB,
   dataCy,
   tagIds,
+  districtId,
 }) => {
   const assessmentFilterRef = useRef()
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
@@ -49,8 +50,7 @@ const AssessmentAutoComplete = ({
   // build search query
   const query = useMemo(() => {
     const { role, orgData = {} } = userDetails
-    const { districtIds, institutionIds } = orgData
-    const districtId = districtIds?.[0]
+    const { institutionIds } = orgData
     const q = {
       limit: 35,
       page: 1,
@@ -150,6 +150,7 @@ export default connect(
     userDetails: getUser(state),
     testList: getTestListSelector(state),
     loading: getTestListLoadingSelector(state),
+    districtId: getUserOrgId(state),
   }),
   {
     loadTestList: receiveTestListAction,

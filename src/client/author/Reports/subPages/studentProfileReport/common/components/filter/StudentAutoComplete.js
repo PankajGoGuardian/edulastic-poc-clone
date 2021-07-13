@@ -8,7 +8,10 @@ import { AutoComplete, Input, Icon, Tooltip, Empty } from 'antd'
 
 // ducks
 import { useDropdownData } from '@edulastic/common'
-import { getOrgDataSelector } from '../../../../../../src/selectors/user'
+import {
+  getOrgDataSelector,
+  getUserOrgId,
+} from '../../../../../../src/selectors/user'
 import {
   getSPRStudentDataRequestAction,
   getStudentsListSelector,
@@ -30,6 +33,7 @@ const StudentAutoComplete = ({
   classIds,
   selectedStudentId,
   selectCB,
+  districtId,
 }) => {
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
   const [fieldValue, setFieldValue] = useState('')
@@ -40,8 +44,7 @@ const StudentAutoComplete = ({
 
   // build search query
   const query = useMemo(() => {
-    const { districtIds, institutionIds } = userOrgData
-    const districtId = districtIds?.[0]
+    const { institutionIds } = userOrgData
     const q = {
       limit: 35,
       page: 0,
@@ -207,6 +210,7 @@ export default connect(
     userOrgData: getOrgDataSelector(state),
     studentList: getStudentsListSelector(state),
     loading: getStudentsLoading(state),
+    districtId: getUserOrgId(state),
   }),
   {
     loadStudentList: getSPRStudentDataRequestAction,

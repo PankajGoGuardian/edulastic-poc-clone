@@ -4,14 +4,19 @@ import { connect } from 'react-redux'
 import { CollectionItem } from './CollectionItem'
 import { StyledH3, StyledPrimaryGreenButton } from './styled'
 import { getCollectionsDataAction, getCollectionsDataSelector } from '../ducks'
-import { getUser } from '../../../../author/src/selectors/user'
+import { getUserOrgId } from '../../../../author/src/selectors/user'
 import { getCollectionsList } from '../utils'
 
 const Collections = (props) => {
-  const { className, getCollectionsData, user, collectionsData = {} } = props
+  const {
+    className,
+    getCollectionsData,
+    collectionsData = {},
+    districtId,
+  } = props
 
   useEffect(() => {
-    getCollectionsData(user?.districtIds?.[0])
+    getCollectionsData(districtId)
   }, [])
 
   const { collections = [] } = collectionsData
@@ -42,7 +47,7 @@ const StyledCollections = styled(Collections)`
 
 const CollectionComponent = connect(
   (state) => ({
-    user: getUser(state),
+    districtId: getUserOrgId(state),
     collectionsData: getCollectionsDataSelector(state),
   }),
   { getCollectionsData: getCollectionsDataAction }

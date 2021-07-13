@@ -30,11 +30,16 @@ import {
   getTestsSelector,
   getCurrentAssignmentSelector,
   getToggleReleaseGradeStateSelector,
-  getDistrictIdSelector,
   getAssignmentViewSelector,
   getAssignmentFilterSelector,
   getTagsUpdatingStateSelector,
 } from '../../../src/selectors/assignments'
+import {
+  getUserOrgId,
+  getUserRole,
+  isFreeAdminSelector,
+  getUserId,
+} from '../../../src/selectors/user'
 
 import FilterBar from '../FilterBar/FilterBar'
 import TableList from '../TableList/TableList'
@@ -55,11 +60,7 @@ import {
   LeftWrapper,
   FixedWrapper,
 } from './styled'
-import {
-  getUserRole,
-  isFreeAdminSelector,
-  getUserId,
-} from '../../../src/selectors/user'
+
 import PrintTestModal from '../../../src/components/common/PrintTestModal'
 import TestLinkModal from '../TestLinkModal/TestLinkModal'
 
@@ -523,7 +524,7 @@ const enhance = compose(
       tests: getTestsSelector(state),
       currentAssignment: getCurrentAssignmentSelector(state),
       isShowReleaseSettingsPopup: getToggleReleaseGradeStateSelector(state),
-      districtId: getDistrictIdSelector(state),
+      districtId: getUserOrgId(state),
       isAdvancedView: getAssignmentViewSelector(state),
       userRole: getUserRole(state),
       error: get(state, 'test.error', false),

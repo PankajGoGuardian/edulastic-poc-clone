@@ -36,6 +36,7 @@ import {
   getTestEntitySelector,
   receiveTestByIdSaga,
   setEditEnableAction,
+  setCurrentTestSettingsIdAction,
 } from '../TestPage/ducks'
 
 const { SMART_FILTERS } = libraryFilters
@@ -265,6 +266,7 @@ function* deleteTestSaga({ payload }) {
         yield put(setDeleteTestStateAction('DONE'))
       }
     } else yield put(push('/author/tests'))
+    yield put(setCurrentTestSettingsIdAction(''))
     notification({
       type: 'success',
       msg: response || 'Test deleted successfully',

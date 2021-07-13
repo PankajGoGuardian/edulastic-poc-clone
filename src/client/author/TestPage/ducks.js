@@ -915,6 +915,16 @@ export const createBlankTest = () => ({
   multiLanguageEnabled: false,
   playerSkinType: 'edulastic',
   keypad: { type: 'item-level', value: 'item-level-keypad', updated: false },
+  timedAssignment: false,
+  allowedTime: 0,
+  hasInstruction: false,
+  instruction: '',
+  blockSaveAndContinue: false,
+  restrictNavigationOut: null,
+  restrictNavigationOutAttemptsThreshold: 0,
+  showMagnifier: true,
+  enableScratchpad: true,
+  enableSkipAlert: false,
 })
 
 const initialState = {
@@ -1798,9 +1808,9 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     settings.timedAssignment = false
     settings.blockNavigationToAnsweredQuestions = false
     settings.enableSkipAlert = false
-    delete settings.blockSaveAndContinue
-    delete settings.restrictNavigationOut
-    delete settings.restrictNavigationOutAttemptsThreshold
+    settings.blockSaveAndContinue = false
+    settings.restrictNavigationOut = null
+    settings.restrictNavigationOutAttemptsThreshold = 0
     delete settings.keypad
   }
 

@@ -362,3 +362,7 @@ export const DesktopViewCopyright = styled(Row)`
     font-size: 11px;
   }
 `
+export const TermsPrivacy = styled.p`
+  font-size: 11px;
+  text-align: center;
+`

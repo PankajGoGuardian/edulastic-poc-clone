@@ -83,20 +83,23 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   width: 100%;
-  span: first-child {
-    display: flex;
-    align-items: center;
-    flex-direction: ${({ showStacked }) => (showStacked ? 'column' : 'row')};
-    font-weight: 700;
-    svg {
-      margin-right: 5px;
-      height: 18px;
-      width: 18px;
-      fill: ${themeColor};
+  span {
+    text-align: center;
+    &:first-child {
+      display: flex;
+      align-items: center;
+      flex-direction: ${({ showStacked }) => (showStacked ? 'column' : 'row')};
+      font-weight: 700;
+      svg {
+        margin-right: 5px;
+        height: 18px;
+        width: 18px;
+        fill: ${themeColor};
+      }
     }
-  }
-  span: last-child {
-    color: ${greyThemeDark3};
+    &:last-child {
+      color: ${greyThemeDark3};
+    }
   }
 `
 const Timer = styled.div`

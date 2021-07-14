@@ -12,7 +12,11 @@ import {
   PrintActionWrapper,
   FlexContainer,
 } from '@edulastic/common'
-import { roleuser, test as testConstants } from '@edulastic/constants'
+import {
+  roleuser,
+  test as testConstants,
+  collections as collectionConst,
+} from '@edulastic/constants'
 import { getOrderedQuestionsAndAnswers, formatQuestionLists } from './utils'
 import QuestionWrapper from '../../assessment/components/QuestionWrapper'
 import {
@@ -20,6 +24,7 @@ import {
   getUserRole,
   getUserFeatures,
 } from '../src/selectors/user'
+import { fillAutoselectGoupsWithDummyItems } from '../TestPage/ducks'
 
 const { testContentVisibility: testContentVisibilityOptions } = testConstants
 
@@ -39,6 +44,7 @@ function useTestFetch(testId, type, filterQuestions, assignmentId, groupId) {
         groupId,
       })
       .then((test) => {
+        fillAutoselectGoupsWithDummyItems(test)
         const {
           passages,
           itemGroups = [],
@@ -123,6 +129,14 @@ const PrintAssessment = ({ match, userRole, features, location }) => {
                 question.type == 'clozeImageDropDown'
                   ? { minHeight: '500px' }
                   : {}
+              const premiumCollectionWithoutAccess =
+                question?.premiumContentRestriction &&
+                question?.itemCollections
+                  ?.filter(
+                    ({ type: collectionType = '' }) =>
+                      collectionType === collectionConst.types.PREMIUM
+                  )
+                  .map(({ name }) => name)
               return (
                 <div style={questionHeight}>
                   <QuestionWrapper
@@ -133,6 +147,12 @@ const PrintAssessment = ({ match, userRole, features, location }) => {
                     data={{ ...question, smallSize: true }}
                     isPrint
                     isPrintPreview
+                    isPremiumContentWithoutAccess={
+                      !!premiumCollectionWithoutAccess
+                    }
+                    premiumCollectionWithoutAccess={
+                      premiumCollectionWithoutAccess
+                    }
                   />
                   <hr />
                 </div>

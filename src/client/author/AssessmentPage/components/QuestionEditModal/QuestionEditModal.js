@@ -18,7 +18,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { selectsData } from '../../../TestPage/components/common'
 import { ModalFooter, ModalTitle } from '../../common/Modal'
-import { QuestionNumber } from '../QuestionItem/styled'
+import { QuestionNumber, TitleWrapper } from '../QuestionItem/styled'
 import StandardSet from './common/StandardSet/StandardSet'
 import { StandardSelectWrapper } from './common/StandardSet/styled'
 import QuestionChoice from './components/QuestionChoice/QuestionChoice'
@@ -105,12 +105,12 @@ export default class QuestionEditModal extends React.Component {
     const index = qIndex - 1
 
     const QuestionTitle = (
-      <>
+      <TitleWrapper>
         <QuestionNumber>{qNumber}</QuestionNumber>
         <ModalTitle>
           {title === 'True or false' ? title : questionTypeTitles[type]}
         </ModalTitle>
-      </>
+      </TitleWrapper>
     )
 
     return (
@@ -203,17 +203,9 @@ export default class QuestionEditModal extends React.Component {
 }
 
 const StyledBodyContainer = styled.div`
-  max-height: 50vh;
-  padding-bottom: 10px;
-  overflow-x: hidden;
-  overflow-y: auto;
-
-  /**
-  * For devices with inner height <= 680px will get a scrollbar inside modal body
-  *  & pop-ups will oerflow inside the scrollPane area
-  */
-  @media screen and (max-height: 680px) {
-    overflow: hidden auto;
+  max-height: 350px;
+  padding: 0px 0px 10px;
+  overflow: auto;
 
   &::-webkit-scrollbar {
     width: 5px;

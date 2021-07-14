@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { debounce } from 'lodash'
 
 // components
@@ -24,7 +24,17 @@ const BannerSlider = ({
   handleSparkClick,
   accessibleItembankProductIds = [],
 }) => {
+  const [showArrow, setShowArrow] = useState(false)
   const scrollBarRef = useRef(null)
+
+  useEffect(() => {
+    const { clientWidth, scrollWidth } = scrollBarRef.current
+    if (scrollWidth > clientWidth) {
+      setShowArrow(true)
+    } else {
+      setShowArrow(false)
+    }
+  }, [])
 
   const handleScroll = debounce((isScrollLeft) => {
     const scrollContainer = scrollBarRef.current
@@ -51,12 +61,16 @@ const BannerSlider = ({
   return (
     <>
       <SliderContainer>
-        <PrevButton className="prev" onClick={() => handleScroll(false)}>
-          <IconChevronLeft color={white} width="32px" height="32px" />
-        </PrevButton>
-        <NextButton className="next" onClick={() => handleScroll(true)}>
-          <IconChevronLeft color={white} width="32px" height="32px" />
-        </NextButton>
+        {showArrow && (
+          <>
+            <PrevButton className="prev" onClick={() => handleScroll(false)}>
+              <IconChevronLeft color={white} width="32px" height="32px" />
+            </PrevButton>
+            <NextButton className="next" onClick={() => handleScroll(true)}>
+              <IconChevronLeft color={white} width="32px" height="32px" />
+            </NextButton>
+          </>
+        )}
         <ScrollbarContainer className="scrollbar-container" ref={scrollBarRef}>
           <SlideContainer data-cy="sliderContainer">
             {bannerSlides.map((slide, index) => {

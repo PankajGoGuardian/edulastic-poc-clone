@@ -23,6 +23,8 @@ export const BY_COUNT_METHOD = 'byCount'
 
 export const WIDTH = 'width'
 export const HEIGHT = 'height'
+export const IMAGE_ORIGINAL_HEIGHT = 'imageOriginalHeight'
+export const IMAGE_ORIGINAL_WIDTH = 'imageOriginalWidth'
 export const ALT_TEXT = 'altText'
 export const SOURCE = 'source'
 

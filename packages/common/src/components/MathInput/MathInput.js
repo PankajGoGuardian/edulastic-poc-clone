@@ -34,7 +34,7 @@ class MathInput extends React.PureComponent {
   }
 
   handleClick = (e) => {
-    const { onFocus } = this.props
+    const { onFocus, dynamicVariableInput, onDynamicVariableBlur } = this.props
     const { mathFieldFocus } = this.state
     let shouldHideKeyboard = true
     const jQueryTargetElem = jQuery(e.target)
@@ -65,6 +65,9 @@ class MathInput extends React.PureComponent {
     ) {
       onFocus(false)
       this.setState({ mathFieldFocus: false, showPeriodic: false })
+      if (dynamicVariableInput && typeof onDynamicVariableBlur === 'function') {
+        onDynamicVariableBlur()
+      }
     }
   }
 
@@ -211,6 +214,10 @@ class MathInput extends React.PureComponent {
     } = this.props
     const isNonNumericKey = e.key && !e.key.match(/[0-9+-.%^@/]/g)
 
+    if (e.key === 'Enter') {
+      this.addNewline()
+    }
+
     if (!isEmpty(restrictKeys)) {
       const isSpecialChar = !!(e.key.length > 1 || e.key.match(/[^a-zA-Z]/g))
       const isArrowOrShift =
@@ -339,6 +346,13 @@ class MathInput extends React.PureComponent {
     if (!hideKeyboardByDefault && !disabled) {
       const keyboardPosition = this.getKeyboardPosition()
       this.setState({ mathFieldFocus: true, keyboardPosition }, this.focus)
+    }
+  }
+
+  addNewline = () => {
+    const { mathField } = this.state
+    if (mathField && mathField.latex()) {
+      mathField.cmd('\\newline')
     }
   }
 

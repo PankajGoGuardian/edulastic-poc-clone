@@ -40,6 +40,7 @@ const Tags = ({
     <PopupContainer className="tag-wrapper">
       {hiddenTags.map((tag, i) => (
         <Label
+          data-cy="standards"
           className={className}
           popupContainer
           style={labelStyle}
@@ -61,6 +62,7 @@ const Tags = ({
     >
       {visibleTags.map((tag, i) => (
         <Label
+          data-cy="standards"
           className={className}
           style={labelStyle}
           key={i}

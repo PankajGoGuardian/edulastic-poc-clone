@@ -2066,6 +2066,7 @@
     debug "4.2.0"
     find-yarn-workspace-root "^2.0.0"
 
+  
 "@cypress/listr-verbose-renderer@^0.4.1":
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/@cypress/listr-verbose-renderer/-/listr-verbose-renderer-0.4.1.tgz#a77492f4b11dcc7c446a34b3e28721afd33c642a"
@@ -2110,9 +2111,9 @@
     debug "^3.1.0"
     lodash.once "^4.1.1"
 
-"@edulastic/evaluators@git+ssh://git@github.com/snapwiz/edu-eval.git#74393de3577934d20127dc12a301ff3e605f20a5":
+"@edulastic/evaluators@git+ssh://git@github.com/snapwiz/edu-eval.git#626380ee07b5a4d8e431e1fcba2ecfe54491725a":
   version "0.1.0"
-  resolved "git+ssh://git@github.com/snapwiz/edu-eval.git#74393de3577934d20127dc12a301ff3e605f20a5"
+  resolved "git+ssh://git@github.com/snapwiz/edu-eval.git#626380ee07b5a4d8e431e1fcba2ecfe54491725a"
   dependencies:
     axios "^0.18.0"
     fast-levenshtein "^2.0.6"

@@ -2690,5 +2690,34 @@ export const themes = {
         textColor: '#1AB394',
       },
     },
+    drc: {
+      header1: {
+        background: '#2f4151',
+        border: '#2f4151',
+      },
+      header2: {
+        background: '#3f85e5',
+        textColor: '#ffffff',
+      },
+      button: {
+        background: '#ffffff',
+        textColor: '#3f85e5',
+      },
+      footer: {
+        background: '#3F85E5',
+        border: '#3F85E5',
+        textColor: '#fff',
+        textHoverColor: '#ffffff',
+        hover: {
+          color: '#ffffff',
+          background: '#445666',
+        },
+      },
+      review: {
+        filterHoverBg: '#1A73E8',
+        textHoverColor: '#ffffff',
+        textColor: '#1AB394',
+      },
+    },
   },
 }

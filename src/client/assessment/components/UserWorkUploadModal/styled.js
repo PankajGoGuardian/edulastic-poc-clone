@@ -1,10 +1,35 @@
 import { Upload } from 'antd'
 import styled from 'styled-components'
-import { themeColor } from '@edulastic/colors'
+import { drcThemeColor, drcWhite, themeColor } from '@edulastic/colors'
+import { test } from '@edulastic/constants'
+
+const { playerSkinValues } = test
 
 export const Footer = styled.div.attrs(() => ({
   className: 'ant-modal-footer',
-}))``
+}))`
+  ${(props) =>
+    props.playerSkinType === playerSkinValues.drc
+      ? `
+  &.ant-modal-footer {
+    button.ant-btn.ant-btn-primary {
+      border-color: ${drcThemeColor};
+      color: ${drcThemeColor};
+      background-color: ${drcWhite};
+      &:hover{
+        border-color: ${drcWhite};
+        color: ${drcWhite};
+        background-color: ${drcThemeColor};
+      }
+    }
+    button.ant-btn.ant-btn-primary + button {
+      background: ${drcThemeColor};
+      color: ${drcWhite};
+    }
+  }
+`
+      : ``}
+`
 
 export const Overlay = styled.div`
   border-radius: 4px;

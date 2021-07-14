@@ -25,7 +25,7 @@ import {
 import { withNamespaces } from '@edulastic/localization'
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Dropdown, Tooltip } from 'antd'
+import { Dropdown, Tooltip, message } from 'antd'
 import { get } from 'lodash'
 import moment from 'moment'
 import PropTypes from 'prop-types'
@@ -35,6 +35,7 @@ import { Link, withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import { smallDesktopWidth } from '@edulastic/colors'
 import * as TokenStorage from '@edulastic/api/src/utils/Storage'
+import { assignmentApi } from '@edulastic/api'
 import ConfirmationModal from '../../../../common/components/ConfirmationModal'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import { DeleteAssignmentModal } from '../../../Assignments/components/DeleteAssignmentModal/deleteAssignmentModal'
@@ -347,6 +348,7 @@ class ClassHeader extends Component {
     }
     cleverSyncAssignmentGrades(data)
   }
+
   componentDidMount() {
     // if redirect is happening for LCB and user did action schoology sync
     const atlasShareOriginUrl =
@@ -378,6 +380,28 @@ class ClassHeader extends Component {
       localStorage.removeItem('atlasShareOriginUrl')
       localStorage.removeItem('schoologyShare')
     }
+  }
+
+  generateBubbleSheet = (assignmentId, groupId) => {
+    const hideLoading = message.loading('Generating...', 0)
+
+    assignmentApi
+      .getBubbleSheet({ assignmentId, groupId })
+      .then((r) => {
+        hideLoading()
+        if (r.data?.result?.Location) {
+          window.open(r.data?.result?.Location, '_blank').focus()
+        }
+      })
+      .catch((err) => {
+        hideLoading()
+        const errorReason = err?.response?.data?.message || ''
+        notification({
+          type: 'error',
+          msg: `Generating Bubble sheet failed. ${errorReason}`,
+          exact: true,
+        })
+      })
   }
 
   render() {
@@ -459,7 +483,6 @@ class ClassHeader extends Component {
       googleId: groupGoogleId,
       atlasId: groupAtlasId,
       atlasProviderName = '',
-      cleverId: groupCleverId,
     } = orgClasses.find(({ _id }) => _id === classId) || {}
     const showSyncGradesWithCanvasOption =
       !isDemoPlaygroundUser &&
@@ -577,6 +600,13 @@ class ClassHeader extends Component {
         >
           Release Score
         </MenuItems>
+        <MenuItems
+          data-cy="download-bubble-sheet"
+          key="download-bubble-sheet"
+          onClick={() => this.generateBubbleSheet(assignmentId, classId)}
+        >
+          Generate Bubble Sheet
+        </MenuItems>
         {isShowUnAssign && (
           <MenuItems
             data-cy="unAssign"
@@ -602,6 +632,7 @@ class ClassHeader extends Component {
         {showSyncGradesWithCanvasOption &&
           assignmentStatusForDisplay !== 'NOT OPEN' && (
             <MenuItems
+              data-cy="shareOnCanvas"
               key="key6"
               onClick={() =>
                 canvasSyncAssignment({ assignmentId, groupId: classId })
@@ -613,6 +644,7 @@ class ClassHeader extends Component {
         {showSyncGradesWithCanvasOption &&
           assignmentStatusForDisplay !== 'NOT OPEN' && (
             <MenuItems
+              data-cy="canvasGradeSync"
               key="key7"
               onClick={() =>
                 canvasSyncGrades({ assignmentId, groupId: classId })

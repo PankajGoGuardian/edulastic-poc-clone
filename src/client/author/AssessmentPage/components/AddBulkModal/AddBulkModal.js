@@ -33,7 +33,6 @@ export default class AddBulkModal extends React.Component {
   state = {
     number: 2,
     type: MULTIPLE_CHOICE,
-    startingIndex: this.props.minAvailableQuestionIndex || 1,
     authorDifficulty: '',
     depthOfKnowledge: '',
     alignment: [
@@ -57,22 +56,16 @@ export default class AddBulkModal extends React.Component {
     const {
       number,
       type,
-      startingIndex,
       alignment,
       authorDifficulty,
       depthOfKnowledge,
     } = this.state
     const { onApply, minAvailableQuestionIndex } = this.props
 
-    const firstQuestionIndex = Math.max(
-      startingIndex,
-      minAvailableQuestionIndex
-    )
-
     onApply({
       number,
       type,
-      startingIndex: firstQuestionIndex,
+      startingIndex: minAvailableQuestionIndex,
       alignment,
       authorDifficulty,
       depthOfKnowledge,

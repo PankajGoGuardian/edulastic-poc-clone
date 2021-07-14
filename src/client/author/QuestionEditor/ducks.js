@@ -149,9 +149,9 @@ export const receiveQuestionByIdAction = (id) => ({
   },
 })
 
-export const saveQuestionAction = (testId, isTestFlow, isEditFlow = false) => ({
+export const saveQuestionAction = (data) => ({
   type: SAVE_QUESTION_REQUEST,
-  payload: { testId, isTestFlow, isEditFlow },
+  payload: data,
 })
 
 export const setQuestionDataAction = (question) => ({
@@ -422,7 +422,15 @@ export const redirectTestIdSelector = (state) =>
   get(state, 'itemDetail.redirectTestId', false)
 
 function* saveQuestionSaga({
-  payload: { testId: tId, isTestFlow, isEditFlow, saveAndPublishFlow = false },
+  payload: {
+    testId: tId,
+    isTestFlow,
+    isEditFlow,
+    saveAndPublishFlow = false,
+    rowIndex: passageQuestionRowIndex,
+    tabIndex: passageQuestionTabIndex,
+    callback,
+  },
 }) {
   try {
     if (isTestFlow) {
@@ -502,9 +510,13 @@ function* saveQuestionSaga({
     const locationState = yield select((state) => state.router.location.state)
     updateItemWithAlignmentDetails(itemDetail, alignments)
     let currentQuestionIds = getQuestionIds(itemDetail)
-    const { rowIndex, tabIndex } = locationState || {
+    let { rowIndex, tabIndex } = locationState || {
       rowIndex: 0,
       tabIndex: 1,
+    }
+    if (callback) {
+      tabIndex = passageQuestionTabIndex
+      rowIndex = passageQuestionRowIndex
     }
     const { id } = question
     const entity = {
@@ -676,12 +688,32 @@ function* saveQuestionSaga({
       item = yield call(testItemsApi.updateById, itemDetail._id, data, _testId)
     }
     yield put(changeUpdatedFlagAction(false))
+
     if (item.testId) {
       yield put(setRedirectTestAction(item.testId))
     }
 
     if (!saveAndPublishFlow) {
       notification({ type: 'success', messageKey: 'itemSavedSuccess' })
+    }
+
+    if (typeof callback === 'function') {
+      yield put({
+        type: UPDATE_ITEM_DETAIL_SUCCESS,
+        payload: { item },
+      })
+      callback()
+      yield put(changeCurrentQuestionAction(''))
+
+      yield put(
+        push({
+          pathname:
+            isTestFlow && tId
+              ? `/author/tests/${tId}/editItem/${item?._id}`
+              : `/author/items/${item._id}/item-detail`,
+        })
+      )
+      return
     }
 
     const { standards = [] } = alignments[0]

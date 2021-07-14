@@ -27,7 +27,7 @@ export const filterMenuItems = [
     icon: 'folder',
     filter: SMART_FILTERS.AUTHORED_BY_ME,
     path: 'by-me',
-    text: 'Authored by me',
+    text: 'Created by me',
   },
   {
     icon: 'share-alt',
@@ -39,7 +39,7 @@ export const filterMenuItems = [
     icon: 'copy',
     filter: SMART_FILTERS.CO_AUTHOR,
     path: 'co-author',
-    text: 'I am a Co-Author',
+    text: 'I am an author',
   },
   {
     icon: 'reload',

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
@@ -22,7 +22,7 @@ import {
   round,
 } from 'lodash'
 
-import { Select, Table } from 'antd'
+import { Select, Table, Popconfirm } from 'antd'
 import styled from 'styled-components'
 import { withNamespaces } from '@edulastic/localization'
 import { variableTypes, math } from '@edulastic/constants'
@@ -32,6 +32,7 @@ import {
   notification,
   CustomModalStyled,
 } from '@edulastic/common'
+import { IconTrash } from '@edulastic/icons'
 import { extraDesktopWidthMax, redDark } from '@edulastic/colors'
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 import {
@@ -82,7 +83,11 @@ const cartesian = (args, combinationsCount) => {
 
 const generateExample = (variable) => {
   const { type, set = '', sequence = '' } = variable
-  let { min, max, step = 1 } = variable
+  let { min, max, step } = variable
+  if (!step) {
+    step = 1
+  }
+
   if (type === 'NUMBER_RANGE') {
     if (Number.isInteger(parseFloat(step))) {
       min = parseInt(min, 10)
@@ -96,11 +101,11 @@ const generateExample = (variable) => {
       //  need to include endpoint
       max = parseFloat(max) + step
     }
-    if (step === 0) {
-      step = 1
-    }
+
     const decimalPart = step.toString().split('.')[1]?.length || 1
-    return range(min, max, step).map((x) => round(x, decimalPart))
+    return range(min, max, step)
+      .map((x) => round(x, decimalPart))
+      .filter((x) => x >= variable.min && x <= variable.max)
   }
   if (SEQUENCE_TYPES.includes(type)) {
     if (isArray(sequence)) {
@@ -262,7 +267,6 @@ const Variables = ({
   item = {},
 }) => {
   const [invalidSeqMsg, setInvalidSeqMsg] = useState('')
-  const mathFieldRef = useRef()
 
   const variableEnabled = get(questionData, 'variable.enabled', false)
   const variables = get(questionData, 'variable.variables', {})
@@ -270,24 +274,6 @@ const Variables = ({
   const examples = get(questionData, 'variable.examples', [])
 
   const types = Object.keys(variableTypes)
-  const columns = Object.keys(variables).map((variableName) => {
-    return {
-      title: variableName,
-      dataIndex: variableName,
-      key: variables[variableName].id,
-      render: (text) => {
-        return text !== 'Recursion_Error' && text !== 'Parsing_Error' ? (
-          <MathFormulaDisplay
-            dangerouslySetInnerHTML={{
-              __html: getMathFormulaTemplate(text),
-            }}
-          />
-        ) : (
-          <ErrorText>Unable to parse expression</ErrorText>
-        )
-      },
-    }
-  })
 
   const generate = (evt) => {
     const [examplesValues, invalid] = generateExampleValues(
@@ -416,8 +402,67 @@ const Variables = ({
     }
   }
 
+  const clearExamples = (exam) => () => {
+    const newData = cloneDeep(questionData)
+    if (!exam) {
+      newData.variable.examples = []
+    } else {
+      const { key: rowIdx } = exam
+      const newExams = examples
+        .filter((x, i) => i !== rowIdx)
+        .map((x, i) => ({ ...x, key: i }))
+      newData.variable.examples = newExams
+    }
+    setQuestionData(newData)
+  }
+
+  const columns = keys(variables).map((variableName) => ({
+    title: variableName,
+    dataIndex: variableName,
+    key: variables[variableName].id,
+    render: (text) => {
+      return text !== 'Recursion_Error' && text !== 'Parsing_Error' ? (
+        <MathFormulaDisplay
+          dangerouslySetInnerHTML={{
+            __html: getMathFormulaTemplate(text),
+          }}
+        />
+      ) : (
+        <ErrorText>Unable to parse expression</ErrorText>
+      )
+    },
+  }))
+  if (!isEmpty(examples)) {
+    columns.push({
+      title: (
+        <Popconfirm
+          okText="Yes"
+          cancelText="No"
+          placement="left"
+          onConfirm={clearExamples()}
+          title="Are you sure to clear all examples?"
+        >
+          <TrashIcon />
+        </Popconfirm>
+      ),
+      key: 'action',
+      width: 30,
+      render: (text, record) => (
+        <Popconfirm
+          okText="Yes"
+          cancelText="No"
+          placement="left"
+          onConfirm={clearExamples(record)}
+          title="Are you sure to clear this example?"
+        >
+          <TrashIcon />
+        </Popconfirm>
+      ),
+    })
+  }
+
   useEffect(() => {
-    if (variableEnabled) {
+    if (variableEnabled && !examples.length) {
       generate()
     }
   }, [variableEnabled])
@@ -522,7 +567,6 @@ const Variables = ({
                 {isFormula && (
                   <Col md={12}>
                     <MathInput
-                      ref={mathFieldRef}
                       dynamicVariableInput
                       fullWidth
                       showDropdown
@@ -533,7 +577,7 @@ const Variables = ({
                         handleChangeVariableList(variableName, 'formula', latex)
                       }
                       onKeyPress={handleKeypressMathInput}
-                      onBlur={generate}
+                      onDynamicVariableBlur={generate}
                     />
                   </Col>
                 )}
@@ -721,7 +765,6 @@ const Variables = ({
             <Col md={24}>
               <Table
                 columns={columns}
-                key={`table-${Math.random(10)}`}
                 dataSource={examples}
                 pagination={{
                   pageSize: 10,
@@ -736,7 +779,10 @@ const Variables = ({
         visible={!!invalidSeqMsg}
         onCancel={() => setInvalidSeqMsg('')}
         footer={
-          <CustomStyleBtn onClick={() => setInvalidSeqMsg('')}>
+          <CustomStyleBtn
+            onClick={() => setInvalidSeqMsg('')}
+            data-cy="confirm"
+          >
             Confirm
           </CustomStyleBtn>
         }
@@ -799,4 +845,10 @@ const ErrorMsgModal = styled(CustomModalStyled)`
 
 const ErrorText = styled.span`
   color: ${redDark};
+`
+
+const TrashIcon = styled(IconTrash)`
+  fill: ${redDark};
+  cursor: pointer;
+  margin-top: 2px;
 `

@@ -719,6 +719,10 @@
     "message": "Please add resources on the left and all the associated questions on the right.",
     "description": ""
   },
+  "maximumAllowedStudentResources": {
+    "message": "Maximum 5 Student resources allowed",
+    "description": ""
+  },
   "pleaseEnterLisence": {
     "message": "Please enter your license key",
     "description": ""

@@ -79,20 +79,20 @@ const MainInfo = ({
           <FlexDiv direction="column" style={{ marginTop: '10px' }}>
             <MidWrapper>
               <Col lg={6} md={12}>
-                <FieldValue>
+                <FieldValue data-cy="classGrades">
                   <div>Grade</div>
                   <span>{`${_grade}`}</span>
                 </FieldValue>
               </Col>
               <Col lg={6} md={12}>
-                <FieldValue>
+                <FieldValue data-cy="classSubject">
                   <div>Subject</div>
                   <span>{_subject.text}</span>
                 </FieldValue>
               </Col>
               <Col lg={6} md={12}>
                 {type === 'class' && (
-                  <FieldValue>
+                  <FieldValue data-cy="classStandard">
                     <div>Standard</div>
                     {standardSets && standardSets.length ? (
                       <span>
@@ -111,7 +111,7 @@ const MainInfo = ({
                     actionOnInaccessible="hidden"
                     key="selectCourse"
                   >
-                    <FieldValue>
+                    <FieldValue data-cy="classCourse">
                       <div>Course</div>
                       <span>{course && course.name}</span>
                     </FieldValue>
@@ -123,13 +123,13 @@ const MainInfo = ({
               {type === 'class' && (
                 <>
                   <Col lg={6} md={12}>
-                    <FieldValue>
+                    <FieldValue data-cy="classStartDate">
                       <div>Start Date</div>
                       <span>{moment(startDate).format('MMM DD, YYYY')}</span>
                     </FieldValue>
                   </Col>
                   <Col lg={6} md={12}>
-                    <FieldValue>
+                    <FieldValue data-cy="classEndDate">
                       <div>End Date</div>
                       <span>{moment(endDate).format('MMM DD, YYYY')}</span>
                     </FieldValue>
@@ -144,7 +144,9 @@ const MainInfo = ({
                     {!!googleId && (
                       <FieldValue>
                         <div>G. Class-code</div>
-                        <span>{googleCode}</span>
+                        <span>
+                          {(googleCode || '').split('.deactivated')[0]}
+                        </span>
                       </FieldValue>
                     )}
                   </>
@@ -152,7 +154,7 @@ const MainInfo = ({
               </Col>
               <Col lg={12}>
                 {!!lastSyncDate && (
-                  <FieldValue>
+                  <FieldValue data-cy="lastSync">
                     <div>Last Sync</div>
                     <span>{moment(lastSyncDate).format('MMM DD, YYYY')}</span>
                   </FieldValue>
@@ -162,7 +164,7 @@ const MainInfo = ({
             <MidWrapper>
               <Col lg={12}>
                 {!!canvasCourseSectionName && (
-                  <FieldValue>
+                  <FieldValue data-cy="canvasSection">
                     <div>Canvas Section</div>
                     <span>{canvasCourseSectionName}</span>
                   </FieldValue>
@@ -170,7 +172,7 @@ const MainInfo = ({
               </Col>
               <Col lg={12}>
                 {type === 'class' && (
-                  <FieldValue>
+                  <FieldValue data-cy="canvasCourse">
                     {!!canvasCourseName && (
                       <>
                         <div>Canvas Course</div>

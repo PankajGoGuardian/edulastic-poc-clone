@@ -90,6 +90,7 @@ const PlayerHeader = ({
   blockNavigationToAnsweredQuestions,
   testType,
   isTestPreviewModalVisible,
+  isPremiumContentWithoutAccess = false,
 }) => {
   useEffect(() => {
     return () => setZoomLevel(1)
@@ -122,7 +123,11 @@ const PlayerHeader = ({
 
   return (
     <StyledFlexContainer>
-      {testType === testConstants.type.PRACTICE && <SettingsModal />}
+      {testType === testConstants.type.PRACTICE && (
+        <SettingsModal
+          isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
+        />
+      )}
       <Header ref={headerRef} style={headerStyle}>
         <HeaderTopMenu
           style={{
@@ -243,6 +248,9 @@ const PlayerHeader = ({
                       qId={data.id}
                       audioSrc={data?.tts?.titleAudioURL}
                       className="sbac-question-audio-controller"
+                      isPremiumContentWithoutAccess={
+                        isPremiumContentWithoutAccess
+                      }
                     />
                   )}
                 </FlexContainer>
@@ -265,6 +273,7 @@ const PlayerHeader = ({
                 utaId={utaId}
                 groupId={groupId}
                 header={header}
+                isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
               />
             </HeaderWrapper>
           </HeaderSbacPlayer>

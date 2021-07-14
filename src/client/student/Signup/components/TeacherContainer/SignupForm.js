@@ -58,6 +58,7 @@ import {
   ThirdPartyLoginBtn,
 } from '../../styled'
 import PasswordPopup from '../PasswordPopup'
+import TermsAndPrivacy from '../TermsAndPrivacy/TermsAndPrivacy'
 
 const FormItem = Form.Item
 
@@ -506,6 +507,7 @@ class Signup extends React.Component {
                                 {t('component.signup.teacher.signupteacher')}
                               </RegisterButton>
                             </FormItem>
+                            <TermsAndPrivacy />
                           </Form>
                         </Col>
                       </FormBody>

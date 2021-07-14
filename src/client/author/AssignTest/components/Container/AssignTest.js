@@ -78,9 +78,15 @@ import SaveSettingsModal from './SaveSettingsModal'
 import DeleteTestSettingsModal from './DeleteSettingsConfirmationModal'
 import UpdateTestSettingsModal from './UpdateTestSettingModal'
 import { fetchCustomKeypadAction } from '../../../../assessment/components/KeyPadOptions/ducks'
+import slice from '../../../CurriculumSequence/components/ManageContentBlock/ducks'
 
 const { ASSESSMENT, COMMON } = testConst.type
-const { evalTypeLabels } = testConst
+const {
+  evalTypeLabels,
+  TEST_SETTINGS_SAVE_LIMIT,
+  testSettingsOptions,
+  docBasedSettingsOptions,
+} = testConst
 
 const parentMenu = {
   assignments: { title: 'Assignments', to: 'assignments' },
@@ -88,76 +94,6 @@ const parentMenu = {
   myPlaylist: { title: 'My playlist', to: 'myPlaylist' },
   testLibrary: { title: 'Test Library', to: 'tests' },
 }
-
-const testSettingsOptions = [
-  'partialScore',
-  'timer',
-  'testType',
-  'hasInstruction',
-  'instruction',
-  'releaseScore',
-  'scoringType',
-  'penalty',
-  'markAsDone',
-  'calcType',
-  'timedAssignment',
-  'pauseAllowed',
-  'maxAttempts',
-  'maxAnswerChecks',
-  'safeBrowser',
-  'shuffleQuestions',
-  'shuffleAnswers',
-  'sebPassword',
-  'blockNavigationToAnsweredQuestions',
-  'restrictNavigationOut',
-  'restrictNavigationOutAttemptsThreshold',
-  'blockSaveAndContinue',
-  'passwordPolicy',
-  'assignmentPassword',
-  'passwordExpireIn',
-  'answerOnPaper',
-  'playerSkinType',
-  'standardGradingScale',
-  'performanceBand',
-  'showMagnifier',
-  'enableScratchpad',
-  'enableSkipAlert',
-  'autoRedirect',
-  'autoRedirectSettings',
-  'keypad',
-  'applyEBSR',
-]
-
-const docBasedSettingsOptions = [
-  'partialScore',
-  'timer',
-  'testType',
-  'hasInstruction',
-  'instruction',
-  'releaseScore',
-  'scoringType',
-  'penalty',
-  'markAsDone',
-  'calcType',
-  'timedAssignment',
-  'pauseAllowed',
-  'maxAttempts',
-  'safeBrowser',
-  'sebPassword',
-  'restrictNavigationOut',
-  'restrictNavigationOutAttemptsThreshold',
-  'blockSaveAndContinue',
-  'passwordPolicy',
-  'assignmentPassword',
-  'passwordExpireIn',
-  'answerOnPaper',
-  'standardGradingScale',
-  'performanceBand',
-  'autoRedirect',
-  'autoRedirectSettings',
-]
-
-const TEST_SETTINGS_SAVE_LIMIT = 20
 
 class AssignTest extends React.Component {
   constructor(props) {
@@ -197,6 +133,7 @@ class AssignTest extends React.Component {
       fetchUserCustomKeypads,
       setCurrentTestSettingsId,
       location,
+      addRecommendedResourcesAction,
     } = this.props
 
     if (isFreeAdmin) {
@@ -278,6 +215,14 @@ class AssignTest extends React.Component {
       fetchTestByID(testId, null, null, true, match.params.playlistId)
     } else if (testId) {
       fetchTestByID(testId)
+    }
+
+    const resourceIds = history.location?.state?.resourceIds || []
+    if (testId && resourceIds) {
+      addRecommendedResourcesAction({
+        testId,
+        resourceIds,
+      })
     }
   }
 
@@ -430,6 +375,7 @@ class AssignTest extends React.Component {
       currentSettingsId,
       isFreezeSettingsOn,
       totalItems,
+      userRole,
     } = this.props
     if (value === 'save-settings-option') {
       if (currentSettingsId === '')
@@ -476,6 +422,19 @@ class AssignTest extends React.Component {
         newSettings.allowedTime = totalItems * 60 * 1000
       } else if (!newSettings.timedAssignment) {
         newSettings.allowedTime = 0
+      }
+      if (userRole === roleuser.TEACHER && newSettings.testContentVisibility) {
+        delete newSettings.testContentVisibility
+      }
+      /**
+       *  Test instruction are not available on assign page so avoid sending them in assignment settings from FE,
+       *  BE handles setting instructions from test settings to assignment settings
+       * */
+      if (newSettings.hasInstruction) {
+        delete newSettings.hasInstruction
+      }
+      if (newSettings.instruction) {
+        delete newSettings.instruction
       }
       setCurrentTestSettingsId(value)
       updateAssignmentSettings(newSettings)
@@ -683,7 +642,9 @@ class AssignTest extends React.Component {
     const { title, _id } = isPlaylist ? playlist : testItem
     const exactMenu = parentMenu[location?.state?.from || from]
     if (exactMenu?.to === 'myPlaylist') {
-      exactMenu.to = `playlists/playlist/${_id}/use-this`
+      exactMenu.to = _id
+        ? `playlists/playlist/${_id}/use-this`
+        : location?.state?.toUrl
     }
 
     const moduleId = match.params.moduleId
@@ -895,6 +856,8 @@ const enhance = compose(
       deleteTestSettingRequest: deleteTestSettingRequestAction,
       updateTestSettingRequest: updateTestSettingRequestAction,
       fetchUserCustomKeypads: fetchCustomKeypadAction,
+      addRecommendedResourcesAction:
+        slice.actions?.fetchRecommendedResourcesAction,
     }
   )
 )

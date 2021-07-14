@@ -12,6 +12,7 @@ const ConfirmationModal = ({
   visible,
   onProceed,
   onCancel,
+  cancelText = 'Cancel',
 }) => {
   return (
     <StyledModal
@@ -38,7 +39,7 @@ const ConfirmationModal = ({
             onClick={() => onCancel()}
             style={{ 'margin-left': '0px' }}
           >
-            Cancel
+            {cancelText}
           </EduButton>
           <EduButton
             height="40px"

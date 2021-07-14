@@ -7,7 +7,12 @@ import { hasEmptyAnswers } from './utils/answerValidator'
 
 const {
   EXPRESSION_MULTIPART,
+  CLOZE_DRAG_DROP,
   CLOZE_DROP_DOWN,
+  CLOZE_TEXT,
+  CLOZE_IMAGE_DRAG_DROP,
+  CLOZE_IMAGE_DROP_DOWN,
+  CLOZE_IMAGE_TEXT,
   MULTIPLE_CHOICE,
   VIDEO,
   TEXT,
@@ -484,6 +489,35 @@ export const hasImproperDynamicParamsConfig = (item) => {
   return [false]
 }
 
+const compareResponseIds = (oldQuestionResponses, newQuestionResponses) => {
+  const oldQuestionResponseIds = oldQuestionResponses.map(
+    (responseBox) => responseBox?.id
+  )
+  const newQuestionResponseIds = newQuestionResponses.map(
+    (responseBox) => responseBox?.id
+  )
+  if (
+    !oldQuestionResponseIds.every((id) => newQuestionResponseIds.includes(id))
+  ) {
+    return true
+  }
+  return false
+}
+
+const compareOptionsByIds = (oldQuestionOptions, newQuestionOptions) => {
+  const oldQuestionOptionIds = keys(oldQuestionOptions) || []
+  for (const id of oldQuestionOptionIds) {
+    if (
+      !oldQuestionOptions[id].every((option) =>
+        (newQuestionOptions?.[id] || []).includes(option)
+      )
+    ) {
+      return true
+    }
+  }
+  return false
+}
+
 export const isOptionsRemoved = (originalQuestions, newQuestions) => {
   const oldQuestionsById = keyBy(originalQuestions, 'id')
   for (const _question of newQuestions) {
@@ -497,6 +531,174 @@ export const isOptionsRemoved = (originalQuestions, newQuestions) => {
           if (!oldOptionValues.every((value) => newOptionsByValue[value])) {
             return true
           }
+          break
+        }
+        case EXPRESSION_MULTIPART: {
+          const { responseIds = {} } = _question || {}
+          const oldOptions = oldQuestionsById[id]?.options || {}
+          const oldOptionsIds = keys(oldOptions) || []
+          for (const _id of oldOptionsIds) {
+            if (
+              !oldOptions[_id].every((value) =>
+                (options?.[_id] || []).includes(value)
+              )
+            ) {
+              return true
+            }
+          }
+
+          const oldQuestionResponseIds = oldQuestionsById[id]?.responseIds || {}
+          const oldQuestionResponseBoxes = keys(oldQuestionResponseIds) || []
+          for (const responseBox of oldQuestionResponseBoxes) {
+            const oldQuestionResponseBoxIds = (
+              oldQuestionResponseIds[responseBox] || []
+            ).map(({ id: _id }) => _id)
+            const newQuestionResponseBoxIds = (
+              responseIds?.[responseBox] || []
+            ).map(({ id: _id }) => _id)
+            if (
+              !oldQuestionResponseBoxIds.every((_id) =>
+                newQuestionResponseBoxIds.includes(_id)
+              )
+            ) {
+              return true
+            }
+          }
+          break
+        }
+        case CLOZE_DRAG_DROP: {
+          const { responseIds = [] } = _question || {}
+          const { hasGroupResponses = false, groupResponses = [] } =
+            _question || {}
+          let oldOptions = []
+          let newOptions = []
+
+          if (oldQuestionsById[id]?.hasGroupResponses) {
+            ;(oldQuestionsById[id]?.groupResponses || []).forEach(
+              (response) => {
+                oldOptions = oldOptions.concat(response?.options || [])
+              }
+            )
+          } else {
+            oldOptions = oldOptions.concat(oldQuestionsById[id]?.options || [])
+          }
+          const oldQuestionOptionIds = oldOptions.map((option) => option?.value)
+
+          if (hasGroupResponses) {
+            groupResponses.forEach((response) => {
+              newOptions = newOptions.concat(response?.options || [])
+            })
+          } else {
+            newOptions = newOptions.concat(options || [])
+          }
+          const newQuestionOptionIds = newOptions.map((option) => option?.value)
+
+          if (
+            !oldQuestionOptionIds.every((_id) =>
+              newQuestionOptionIds.includes(_id)
+            )
+          ) {
+            return true
+          }
+
+          if (
+            compareResponseIds(
+              oldQuestionsById[id]?.responseIds || [],
+              responseIds
+            )
+          ) {
+            return true
+          }
+
+          break
+        }
+        case EDITING_TASK:
+        case CLOZE_DROP_DOWN: {
+          const { responseIds = [] } = _question || {}
+          if (
+            compareResponseIds(
+              oldQuestionsById[id]?.responseIds || [],
+              responseIds
+            )
+          ) {
+            return true
+          }
+
+          if (
+            compareOptionsByIds(
+              oldQuestionsById[id]?.options || {},
+              options || {}
+            )
+          ) {
+            return true
+          }
+
+          break
+        }
+        case CLOZE_TEXT: {
+          const { responseIds = [] } = _question || {}
+          if (
+            compareResponseIds(
+              oldQuestionsById[id]?.responseIds || [],
+              responseIds
+            )
+          ) {
+            return true
+          }
+
+          break
+        }
+        case CLOZE_IMAGE_DRAG_DROP: {
+          const { responses = [] } = _question || {}
+          if (
+            compareResponseIds(oldQuestionsById[id]?.responses || [], responses)
+          ) {
+            return true
+          }
+
+          const oldQuestionOptionIds = (
+            oldQuestionsById[id]?.options || []
+          ).map((option) => option?.id)
+          const newQuestionOptionIds = (options || []).map(
+            (option) => option?.id
+          )
+          if (
+            !oldQuestionOptionIds.every((_id) =>
+              newQuestionOptionIds.includes(_id)
+            )
+          ) {
+            return true
+          }
+
+          break
+        }
+        case CLOZE_IMAGE_DROP_DOWN: {
+          const { responses = [] } = _question || {}
+          if (
+            compareResponseIds(oldQuestionsById[id]?.responses || [], responses)
+          ) {
+            return true
+          }
+
+          const oldQuestionOptions = oldQuestionsById[id]?.options || []
+          for (const [index, oldOptions] of oldQuestionOptions.entries()) {
+            if (
+              !oldOptions.every((opt) => (options[index] || []).includes(opt))
+            ) {
+              return true
+            }
+          }
+
+          break
+        }
+        case CLOZE_IMAGE_TEXT: {
+          const { responses = [] } = _question || {}
+          if (
+            compareResponseIds(oldQuestionsById[id]?.responses || [], responses)
+          ) {
+            return true
+          }
+
           break
         }
         default:

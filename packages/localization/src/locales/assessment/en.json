@@ -266,7 +266,8 @@
         "mixedFraction": "Mixed Fraction"
       },
       "graphControls": "Graph Controls",
-      "standardKeypadLabel": "Standard Keypads"
+      "standardKeypadLabel": "Standard Keypads",
+      "keepAspectRatio": "Keep Aspect Ratio"
     },
     "dropZone": {
       "dragDrop": "Drag & Drop",
@@ -1091,9 +1092,11 @@
       "mathQuill": "MathQuill",
       "heading": "Heading",
       "contentsTitle": "Title",
+      "source": "Author/Source",
       "contents": "Content",
       "enterPassageContentHere": "Enter passage content here",
       "enterPassageTitleHere": "Enter passage title here",
+      "enterPassageSourceHere": "Enter passage author/source here",
       "contentPages": "Content pages",
       "add": "Add",
       "fleschKincaid": "Flesch-Kincaid",

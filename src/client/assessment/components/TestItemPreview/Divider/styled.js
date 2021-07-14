@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components'
-import { white } from '@edulastic/colors'
+import { white, borderGrey4 } from '@edulastic/colors'
 
 const buttonWrapperExtraStyle = css`
   border-top-left-radius: ${({ collapseDirection }) =>
@@ -24,21 +24,43 @@ const buttonWrapperExtraStyle = css`
       : '-22px'};
 `
 
+const midStyles = css`
+  cursor: pointer;
+  &::after,
+  &::before {
+    content: '';
+    display: block;
+    border: 1px solid ${borderGrey4};
+    position: absolute;
+    height: 100%;
+  }
+
+  &::after {
+    right: -3px;
+  }
+
+  &::before {
+    left: -3px;
+  }
+`
+
 export const Divider = styled.div`
   width: 0px;
-  border: ${({ hideMiddle }) => !hideMiddle && '1px solid #dadae4'};
   position: relative;
   background-color: ${(props) =>
     props.isCollapsed ? '#e5e5e5' : 'transparent'};
   border-radius: 10px;
   z-index: 1000;
   height: ${({ stackedView }) => (stackedView ? 'auto' : '80%')};
+  ${({ hideMiddle }) => !hideMiddle && midStyles}
+
   .button-wrapper {
     background: #a7b5c1;
     display: flex;
     justify-content: space-between;
     position: absolute;
     top: 20px;
+    z-index: 10;
     ${buttonWrapperExtraStyle}
   }
 `

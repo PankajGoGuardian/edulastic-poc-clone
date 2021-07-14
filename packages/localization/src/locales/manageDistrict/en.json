@@ -268,7 +268,7 @@
         "status": "Status",
         "usercreated": "New User Created",
         "userexists": "User Already Exists",
-        "emailnotallowed": "This email Id is not allowed in your district."
+        "emailnotallowed": "User not created as this email Id is not allowed in your district."
       }
     },
     "contentAuthor": {
@@ -330,7 +330,7 @@
     "status": "Status",
     "usercreated": "New User Created",
     "userexists": "User Already Exists",
-    "emailnotallowed": "This email Id is not allowed in your district.",
+    "emailnotallowed": "User not created as this email Id is not allowed in your district.",
     "teacherPremium": "Premium Upgrade",
     "sparkMath": "Spark Math Access",
     "ALREADY_PREMIUM": "Already Has Premium",

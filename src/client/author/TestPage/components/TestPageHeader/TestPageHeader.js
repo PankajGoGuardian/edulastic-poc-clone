@@ -438,6 +438,9 @@ const TestPageHeader = ({
           flexDirection="row"
           alignItems="center"
           titleMaxWidth="250px"
+          headerLeftClassName="headerLeftWrapper"
+          containerClassName="tabAlignment"
+          hasTestId={hasTestId}
         >
           <TestPageNav
             onChange={onChangeNav}

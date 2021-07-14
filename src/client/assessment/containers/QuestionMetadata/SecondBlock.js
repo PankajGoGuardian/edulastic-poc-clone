@@ -219,7 +219,7 @@ const SecondBlock = ({
                   className="tagsSelect"
                   data-cy="collectionsSelect"
                   bg="white"
-                  placeholder="Please select"
+                  placeholder="Please enter"
                   value={filteredCollections.flatMap((c) => c.bucketIds)}
                   onChange={(value, options) =>
                     handleCollectionsSelect(value, options, collectionsToShow)
@@ -237,6 +237,8 @@ const SecondBlock = ({
                       key={o.bucketId}
                       value={o.bucketId}
                       _id={o._id}
+                      type={o.type}
+                      collectionName={o.collectionName}
                     >
                       {`${o.collectionName} - ${o.name}`}
                     </Select.Option>
@@ -262,7 +264,7 @@ const SecondBlock = ({
                 bg="white"
                 optionLabelProp="title"
                 className="tagsSelect"
-                placeholder="Please select"
+                placeholder="Please enter"
                 filterOption={(input, option) =>
                   option.props.title
                     .toLowerCase()
@@ -281,7 +283,7 @@ const SecondBlock = ({
                 className="tagsSelect"
                 bg="white"
                 optionLabelProp="title"
-                placeholder="Please select"
+                placeholder="Please enter"
                 value={tags.map((x) => x._id)}
                 onSearch={searchTags}
                 onSelect={selectTags}

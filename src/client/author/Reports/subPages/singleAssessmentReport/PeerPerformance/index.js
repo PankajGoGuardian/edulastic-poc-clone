@@ -164,7 +164,10 @@ const PeerPerformance = ({
     }
   }, [peerPerformance])
 
-  const res = { ...peerPerformance, bandInfo }
+  const res = useMemo(() => ({ ...peerPerformance, bandInfo }), [
+    peerPerformance,
+    bandInfo,
+  ])
   const parsedData = useMemo(() => {
     return {
       data: parseData(res, ddfilter),

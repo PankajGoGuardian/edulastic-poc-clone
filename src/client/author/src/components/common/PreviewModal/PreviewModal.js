@@ -7,7 +7,11 @@ import {
   notification,
   withWindowSizes,
 } from '@edulastic/common'
-import { questionType, roleuser } from '@edulastic/constants'
+import {
+  questionType,
+  roleuser,
+  collections as collectionConst,
+} from '@edulastic/constants'
 import {
   IconClose,
   IconCollapse,
@@ -557,6 +561,12 @@ class PreviewModal extends React.Component {
       selectedRows,
     } = this.props
 
+    const premiumCollectionWithoutAccess =
+      item?.premiumContentRestriction &&
+      item?.collections
+        ?.filter(({ type = '' }) => type === collectionConst.types.PREMIUM)
+        .map(({ name }) => name)
+
     const { testItems = [] } = passage || {}
     const hasMultipleTestItems = testItems.length > 1
 
@@ -712,6 +722,7 @@ class PreviewModal extends React.Component {
                     height="28px"
                     data-cy="check-answer-btn"
                     onClick={checkAnswer}
+                    disabled={!!premiumCollectionWithoutAccess}
                   >
                     CHECK ANSWER
                   </EduButton>
@@ -720,6 +731,7 @@ class PreviewModal extends React.Component {
                     height="28px"
                     data-cy="show-answers-btn"
                     onClick={showAnswer}
+                    disabled={!!premiumCollectionWithoutAccess}
                   >
                     SHOW ANSWER
                   </EduButton>
@@ -734,6 +746,7 @@ class PreviewModal extends React.Component {
                   height="28px"
                   data-cy="clear-btn"
                   onClick={this.clearView}
+                  disabled={!!premiumCollectionWithoutAccess}
                 >
                   <IconClear width="15" height="15" color={themeColor} />
                 </EduButton>
@@ -767,7 +780,7 @@ class PreviewModal extends React.Component {
                       : 'Edit item'
                   }
                   noHover={isDisableEdit}
-                  disabled={isDisableEdit}
+                  disabled={isDisableEdit || !!premiumCollectionWithoutAccess}
                   onClick={this.editTestItem}
                 >
                   <IconPencilEdit color={themeColor} title="Edit item" />
@@ -784,7 +797,9 @@ class PreviewModal extends React.Component {
                     : 'Clone'
                 }
                 noHover={isDisableDuplicate}
-                disabled={isDisableDuplicate}
+                disabled={
+                  isDisableDuplicate || !!premiumCollectionWithoutAccess
+                }
                 onClick={this.handleDuplicateTestItem}
               >
                 <IconCopy color={themeColor} />
@@ -802,7 +817,9 @@ class PreviewModal extends React.Component {
                     width="28px"
                     onClick={this.handleDeleteItem}
                     disabled={
-                      isPassage ? !hasMultipleTestItems || deleting : deleting
+                      (isPassage
+                        ? !hasMultipleTestItems || deleting
+                        : deleting) || !!premiumCollectionWithoutAccess
                     }
                     data-cy="deleteItem"
                   >
@@ -915,6 +932,8 @@ class PreviewModal extends React.Component {
               onlySratchpad={onlySratchpad}
               isTestInRegrade={isTestInRegrade}
               closeModal={this.closeModal}
+              isPremiumContentWithoutAccess={!!premiumCollectionWithoutAccess}
+              premiumCollectionWithoutAccess={premiumCollectionWithoutAccess}
             />
             {/* we may need to bring hint button back */}
             {/* {showHints && <Hints questions={get(item, [`data`, `questions`], [])} />} */}

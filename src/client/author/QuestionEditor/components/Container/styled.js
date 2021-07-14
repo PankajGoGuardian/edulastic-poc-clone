@@ -50,20 +50,22 @@ export const QuestionContentWrapper = styled.div`
   z-index: ${({ zIndex }) => zIndex};
   @media (min-width: ${mediumDesktopExactWidth}) {
     /** 50px is height of BreadCrumbBar and 5px is height of scrollbar(horizontal) */
-    min-height: ${({ theme }) =>
-      `calc(100vh - ${theme.HeaderHeight.md + 55}px)`};
+    height: ${({ theme, isInModal }) =>
+      `calc(100vh - ${theme.HeaderHeight.md + 55 + (isInModal ? 110 : 0)}px)`};
   }
   @media (min-width: ${extraDesktopWidthMax}) {
     /** 50px is height of BreadCrumbBar and 5px is height of scrollbar(horizontal) */
-    min-height: ${({ theme }) =>
-      `calc(100vh - ${theme.HeaderHeight.xl + 55}px)`};
+    height: ${({ theme, isInModal }) =>
+      `calc(100vh - ${theme.HeaderHeight.xl + 55 + (isInModal ? 110 : 0)}px)`};
   }
   @media (max-width: ${desktopWidth}) {
     /** 155px is height of BreadCrumbBar and Header and 5px is height of scrollbar(horizontal) */
-    min-height: calc(100vh - 185px);
+    height: ${({ isInModal }) =>
+      `calc(100vh - ${185 + (isInModal ? 110 : 0)}}px)`};
   }
 
-  min-height: calc(100vh - 115px);
+  height: ${({ isInModal }) =>
+    `calc(100vh - ${115 + (isInModal ? 110 : 0)}px)`};
 
   @media (max-width: ${mobileWidth}) {
     padding: 0px 25px;

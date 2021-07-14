@@ -24,7 +24,17 @@ const create = (data) =>
     })
     .then((result) => result.data.result)
 
+const searchTags = (data) =>
+  api
+    .callApi({
+      url: `search/tags`,
+      method: 'post',
+      data,
+    })
+    .then((result) => result.data.result)
+
 export default {
   getAll,
   create,
+  searchTags,
 }

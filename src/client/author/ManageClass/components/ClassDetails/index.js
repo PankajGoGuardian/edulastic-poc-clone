@@ -81,8 +81,13 @@ const ClassDetails = ({
     institutionId,
     districtId,
     syncGoogleCoTeacher = false,
+    googleId,
+    canvasCode,
   } = selectedClass
-  const [coTeacherFlag, setCoTeacherFlag] = useState(syncGoogleCoTeacher)
+  const [isAutoArchivedClass, setIsAutoArchivedClass] = useState(false)
+  const isCoTeacherFlagSet =
+    googleId && !isAutoArchivedClass ? syncGoogleCoTeacher : true
+  const [coTeacherFlag, setCoTeacherFlag] = useState(isCoTeacherFlagSet)
   const typeText = type !== 'class' ? 'group' : 'class'
 
   // sync checks for institution
@@ -207,6 +212,16 @@ const ClassDetails = ({
     setCanvasSyncModalVisibility(true)
   }
 
+  useEffect(() => {
+    if (
+      (googleId && googleId.includes('.deactivated')) ||
+      (canvasCode && canvasCode.includes('.deactivated'))
+    ) {
+      setIsAutoArchivedClass(true)
+      setCoTeacherFlag(true)
+    }
+  }, [googleId, canvasCode])
+
   return (
     <>
       {!classLoaded ? (
@@ -252,9 +267,14 @@ const ClassDetails = ({
             }
           >
             <Input
-              defaultValue={selectedClass.googleCode}
+              defaultValue={isAutoArchivedClass ? '' : selectedClass.googleCode}
               ref={googleCode}
-              disabled={selectedClass && selectedClass.googleCode && disabled}
+              disabled={
+                selectedClass &&
+                selectedClass.googleCode &&
+                disabled &&
+                !isAutoArchivedClass
+              }
             />
             {classCodeError && (
               <div style={{ 'margin-top': '10px', color: red }}>
@@ -265,7 +285,12 @@ const ClassDetails = ({
               style={{ margin: '10px 0px 20px 0px' }}
               checked={coTeacherFlag}
               onChange={onCoTeacherChange}
-              disabled={selectedClass && selectedClass.googleCode && disabled}
+              disabled={
+                selectedClass &&
+                selectedClass.googleCode &&
+                disabled &&
+                !isAutoArchivedClass
+              }
             >
               Enroll Co-Teacher (All teachers present in Google classroom will
               share the same class)
@@ -290,6 +315,7 @@ const ClassDetails = ({
               institutionId={institutionId}
               isFetchingCanvasData={isFetchingCanvasData}
               syncCanvasCoTeacher={selectedClass.syncCanvasCoTeacher || false}
+              isAutoArchivedClass={isAutoArchivedClass}
             />
           )}
           {isGoogleAuthRequired && (
@@ -321,7 +347,6 @@ const ClassDetails = ({
               unarchiveClass={unarchiveClass}
               archiveClass={archiveClass}
               entity={selectedClass}
-              unarchiveClass={unarchiveClass}
             />
           </div>
           <MainContentWrapper>

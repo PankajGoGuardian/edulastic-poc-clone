@@ -867,8 +867,13 @@ const AssessmentContainer = ({
         hideHints()
         setCurrentItem(index)
         const timeSpent = Date.now() - lastTime.current
-        if (!demo) {
-          evaluateForPreview({ currentItem, timeSpent })
+        const _item = items[currentItem]
+        if (!demo && !_item.isDummyItem) {
+          evaluateForPreview({
+            currentItem,
+            timeSpent,
+            testId,
+          })
         }
       } else {
         if (!enableSkipAlert) {
@@ -940,14 +945,16 @@ const AssessmentContainer = ({
           context: value,
         })
       }
-      if (!demo) {
+      const _item = items[currentItem]
+      if (!demo && !_item.isDummyItem) {
         evaluateForPreview({
           currentItem,
           timeSpent,
           callback: submitPreviewTest,
+          testId,
         })
       }
-      if (demo) {
+      if (demo || _item.isDummyItem) {
         submitPreviewTest()
       }
     }
@@ -1013,16 +1020,41 @@ const AssessmentContainer = ({
     hideHints()
     setCurrentItem(index)
     const timeSpent = Date.now() - lastTime.current
-    if (demo && isLast()) {
+    const _item = items[currentItem]
+    if ((demo || _item.isDummyItem) && isLast()) {
       return submitPreviewTest()
     }
-    if (!demo) {
-      const evalArgs = { currentItem, timeSpent }
+    if (!demo && !_item.isDummyItem) {
+      const evalArgs = {
+        currentItem,
+        timeSpent,
+        testId,
+      }
       if (isLast()) {
         evalArgs.callback = submitPreviewTest
       }
       evaluateForPreview(evalArgs)
     }
+  }
+
+  // This function is for a direct submit only available in DRC player.
+  // take care of changes related to generic submit here as well.
+  const handleReviewOrSubmit = () => {
+    const timeSpent = Date.now() - lastTime.current
+    if (preview) {
+      const _item = items[currentItem]
+      if (demo || _item.isDummyItem) {
+        return submitPreviewTest()
+      }
+      const evalArgs = {
+        currentItem,
+        timeSpent,
+        testId,
+        callback: submitPreviewTest,
+      }
+      return evaluateForPreview(evalArgs)
+    }
+    gotoSummary()
   }
 
   const onSkipUnansweredPopup = async () => {
@@ -1165,6 +1197,7 @@ const AssessmentContainer = ({
     uploadToS3: uploadFile,
     userWork,
     gotoSummary,
+    handleReviewOrSubmit,
     ...restProps,
   }
 
@@ -1220,9 +1253,9 @@ const AssessmentContainer = ({
      * highlight image default pen should be disabled
      */
     playerComponent = defaultAP ? (
-      <AssessmentPlayerDefault {...props} hidePause={hidePause} />
+      <AssessmentPlayerDefault {...props} test={test} hidePause={hidePause} />
     ) : (
-      <AssessmentPlayerSimple {...props} hidePause={hidePause} />
+      <AssessmentPlayerSimple {...props} test={test} hidePause={hidePause} />
     )
   }
 
@@ -1293,6 +1326,7 @@ const AssessmentContainer = ({
           onSkip={onSkipUnansweredPopup}
           onClose={onCloseUnansweedPopup}
           data={unansweredPopupSetting.qLabels}
+          playerSkinType={playerSkinType}
         />
       )}
       {!preview && !demo && (

@@ -71,6 +71,7 @@ const ModuleForm = ({ module, isEdit, onCancel, onSave }) => {
           <Title>
             Module Or Chapter Name{' '}
             <Tooltip
+              overlayClassName="createModuleTooltip"
               placement="bottom"
               color="#2db7f5"
               title="Module or Chapter Name is a general category within the playlist (e.g. an Earth Science playlist may have Space and Rock modules)."
@@ -91,6 +92,7 @@ const ModuleForm = ({ module, isEdit, onCancel, onSave }) => {
             <Title>
               Unit Number{' '}
               <Tooltip
+                overlayClassName="createModuleTooltip"
                 placement="bottom"
                 title="Unit Number represents the placement of the module in the playlist."
               >
@@ -109,6 +111,7 @@ const ModuleForm = ({ module, isEdit, onCancel, onSave }) => {
             <Title>
               Unit Name{' '}
               <Tooltip
+                overlayClassName="createModuleTooltip"
                 placement="bottom"
                 title="Unit Name is the title of the module."
               >
@@ -128,6 +131,7 @@ const ModuleForm = ({ module, isEdit, onCancel, onSave }) => {
           <Title>
             Description{' '}
             <Tooltip
+              overlayClassName="createModuleTooltip"
               placement="bottom"
               title="The description is a short summary of the tests contained in the module."
             >

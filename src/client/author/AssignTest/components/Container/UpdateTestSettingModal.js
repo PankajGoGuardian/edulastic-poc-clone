@@ -26,6 +26,7 @@ const UpdateTestSettingsModal = ({
       okText="YES, UPDATE"
       onOk={() => handleResponse(true)}
       destroyOnClose
+      centered
     >
       <div>
         Update existing <span>{settingDetails?.title}</span> saved settings?

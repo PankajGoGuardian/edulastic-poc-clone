@@ -17,6 +17,7 @@ import {
   COMPACT,
   FieldLabel,
   FlexContainer,
+  PremiumItemBanner,
 } from '@edulastic/common'
 import { themes } from '../../theme'
 import QuestionMenu, { AdvancedOptionsLink } from './QuestionMenu'
@@ -396,7 +397,6 @@ class QuestionWrapper extends Component {
       selectedTheme = 'default',
       isPrintPreview = false,
       evaluation,
-      scrollContainer,
       loadScratchPad,
       saveHintUsage,
       theme,
@@ -408,6 +408,11 @@ class QuestionWrapper extends Component {
       features,
       isItemsVisible,
       permissions,
+      questionNumber,
+      isPremiumContentWithoutAccess,
+      premiumCollectionWithoutAccess,
+      showStacked,
+      isExpandedView,
       ...restProps
     } = this.props
 
@@ -505,6 +510,18 @@ class QuestionWrapper extends Component {
     const { rubrics: rubricDetails } = data
     const rubricFeedback = data?.activity?.rubricFeedback
 
+    if (isPremiumContentWithoutAccess) {
+      return (
+        <PremiumItemBanner
+          itemBankName={premiumCollectionWithoutAccess}
+          showStacked={showStacked}
+          data={data}
+          isExpandedView={isExpandedView}
+          isPrintPreview={isPrintPreview}
+        />
+      )
+    }
+
     return (
       <ThemeProvider
         theme={{
@@ -559,7 +576,6 @@ class QuestionWrapper extends Component {
                     advanced={advanced}
                     extras={extras}
                     advancedAreOpen={this.advancedAreOpen}
-                    scrollContainer={scrollContainer}
                     questionTitle={data?.title || ''}
                     isPremiumUser={isPremiumUser}
                     isPowerTeacher={_isPowerTeacher}

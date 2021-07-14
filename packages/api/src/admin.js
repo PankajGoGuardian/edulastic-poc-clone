@@ -333,6 +333,54 @@ const bulkUpdateSubscriptionApi = (data) =>
     })
     .then(({ data: response }) => response.result)
 
+const getMappingData = (payload) =>
+  api
+    .callApi({
+      url: `${payload.atlasId ? atlasPrefix : prefix}entity-match`,
+      method: 'get',
+      params: payload,
+    })
+    .then(({ data: response }) => response.result)
+
+const saveMappedData = ({ payload, lmsType }) =>
+  api
+    .callApi({
+      url: `${lmsType === 'atlas' ? atlasPrefix : prefix}merge-existing-entity`,
+      method: 'post',
+      data: payload,
+    })
+    .then(({ data: response }) => response.result)
+const syncCleverOrphanUsersApi = (data) =>
+  api
+    .callApi({
+      url: `/clever/sync-orphan-user`,
+      method: 'post',
+      data,
+    })
+    .then(({ data: response }) => response)
+
+const syncEdlinkOrphanUsersApi = (data) =>
+  api
+    .callApi({
+      url: `/atlas/sync-orphan-user`,
+      method: 'post',
+      data,
+    })
+    .then(({ data: response }) => response)
+const stopSyncApi = ({ _prefix, districtId, stopSync, schoolIds }) =>
+  api.callApi({
+    url: `${_prefix}district/${districtId}/schools-stop-sync`,
+    method: 'put',
+    data: {
+      stopSync,
+      schoolIds,
+    },
+  })
+
+const cleverStopSyncApi = (data) => stopSyncApi({ _prefix: prefix, ...data })
+const atlasStopSyncApi = (data) =>
+  stopSyncApi({ _prefix: atlasPrefix, ...data })
+
 export default {
   getSubscription,
   searchUpdateDistrict,
@@ -369,4 +417,11 @@ export default {
   searchClasslinkDistrict,
   updateSubscriptionApi,
   bulkUpdateSubscriptionApi,
+  getMappingData,
+  saveMappedData,
+  syncCleverOrphanUsersApi,
+  syncEdlinkOrphanUsersApi,
+  atlasStopSyncApi,
+  cleverStopSyncApi,
+  stopSyncApi,
 }

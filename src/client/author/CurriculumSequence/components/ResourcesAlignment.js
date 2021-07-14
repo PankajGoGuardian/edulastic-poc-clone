@@ -34,6 +34,7 @@ import {
 } from '../../src/selectors/dictionaries'
 import { selectsData } from '../../TestPage/components/common'
 import Alignments from './PlaylistContentFilterModal/Alignments'
+import { FlexRow } from './PlaylistContentFilterModal/styled'
 
 const defaultAlignmentValues = {
   standards: [],
@@ -64,6 +65,8 @@ const ResourcesAlignment = ({
   isVerticalView,
   curriculum: defaultCurriculum = '',
   selectedStandards = [],
+  sourceFilters = [],
+  defaultSource,
 }) => {
   const [showModal, setShowModal] = useState(false)
 
@@ -71,6 +74,11 @@ const ResourcesAlignment = ({
     ...defaultAlignmentValues,
     curriculum: defaultCurriculum,
   }
+
+  const excludeFilters = ['FAVORITES', 'SHARED_WITH_ME']
+  const filteredSources = sourceFilters.filter(
+    (x) => !excludeFilters.includes(x.filter)
+  )
 
   const { elo: curriculumStandardsELO = [], tlo: curriculumStandardsTLO = [] } =
     curriculumStandards || {}
@@ -90,7 +98,12 @@ const ResourcesAlignment = ({
     curriculum = defaultCurriculum,
     grades = [],
     standards = [],
+    source = defaultSource,
   } = alignment || defaultAlignment
+
+  const setSource = (val) => {
+    handleEditAlignment({ source: val })
+  }
 
   const setSubject = (val) => {
     updateDefaultSubject(val)
@@ -151,6 +164,13 @@ const ResourcesAlignment = ({
     if (curriculums.length === 0) {
       getCurriculums()
     }
+<<<<<<< HEAD
+=======
+    selectedStandards.forEach((s) => {
+      handleAddStandard(s)
+    })
+    handleEditAlignment({ source: defaultSource })
+>>>>>>> 27b30fe078 (feat(ui): added source filter for resources [EV-29569])
   }, [])
 
   const handleStandardFocus = () => {
@@ -214,6 +234,25 @@ const ResourcesAlignment = ({
 
   return (
     <Row style={{ width: '100%' }}>
+      {isVerticalView && (
+        <FlexRow mb="0px">
+          <FieldLabel>Source</FieldLabel>
+          <SelectInputStyled
+            dropdownClassName="playlist-content-box"
+            data-cy="test-type"
+            placeholder="Select Filter Type"
+            value={source}
+            onChange={setSource}
+            height="36px"
+          >
+            {filteredSources.map(({ text, filter: _filter }) => (
+              <SelectInputStyled.Option key={_filter} value={_filter}>
+                {text}
+              </SelectInputStyled.Option>
+            ))}
+          </SelectInputStyled>
+        </FlexRow>
+      )}
       {!isVerticalView && <FieldLabel>Standards (optional)</FieldLabel>}
       <Row gutter={24}>
         {isVerticalView ? (

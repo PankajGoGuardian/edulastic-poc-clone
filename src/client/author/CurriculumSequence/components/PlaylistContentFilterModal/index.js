@@ -76,6 +76,10 @@ const PlaylistTestBoxFilter = (props) => {
           setAlignment={setAlignment}
           setSelectedStandards={setSelectedStandards}
           isVerticalView
+          sourceFilters={FILTERS}
+          defaultSource={filter}
+          defaultGrade={grades}
+          defaultSubject={subject}
         />
       ) : (
         <>

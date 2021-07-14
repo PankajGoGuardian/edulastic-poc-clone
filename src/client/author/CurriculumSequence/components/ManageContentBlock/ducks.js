@@ -441,6 +441,7 @@ function* searchResourceSaga() {
         curriculumId: alignment?.curriculumId,
         standardIds: selectedStandardIds,
         subject: alignment?.subject,
+        filter: alignment?.source,
       },
     }
     const result = yield call(resourcesApi.searchResource, data)

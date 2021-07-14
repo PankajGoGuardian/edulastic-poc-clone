@@ -29,7 +29,7 @@ export const CustomModal = styled(CustomModalStyled)`
 
 export const FlexRow = styled.div`
   width: 100%;
-  margin-bottom: 15px;
+  margin-bottom: ${({ mb }) => mb || '15px'};
 `
 
 export const StyledCheckbox = styled(Checkbox)`

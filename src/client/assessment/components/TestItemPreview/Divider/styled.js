@@ -14,14 +14,14 @@ const buttonWrapperExtraStyle = css`
     collapseDirection === 'left'
       ? 'auto'
       : collapseDirection === 'right'
-      ? '-22px'
-      : '-22px'};
+      ? '-20px'
+      : '-20px'};
   right: ${({ collapseDirection }) =>
     collapseDirection === 'right'
       ? 'auto'
       : collapseDirection === 'left'
-      ? '-22px'
-      : '-22px'};
+      ? '-20px'
+      : '-20px'};
 `
 
 const midStyles = css`
@@ -45,7 +45,7 @@ const midStyles = css`
 `
 
 export const Divider = styled.div`
-  width: 0px;
+  width: ${({ isCollapsed }) => (isCollapsed ? '6px' : '0px')};
   position: relative;
   background-color: ${(props) =>
     props.isCollapsed ? '#e5e5e5' : 'transparent'};

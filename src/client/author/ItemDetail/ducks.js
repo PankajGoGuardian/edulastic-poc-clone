@@ -1925,7 +1925,7 @@ function* convertToPassageWithQuestions({ payload }) {
 
 function* savePassage({ payload }) {
   try {
-    const { rowIndex, tabIndex, isEdit, callback } = payload
+    const { rowIndex, tabIndex, isEdit, callback, isTestFlow } = payload
     const passage = yield select(getPassageSelector)
     const entity = yield select(getCurrentQuestionSelector)
     const currentItem = yield select(getItemDetailSelector)
@@ -2020,7 +2020,6 @@ function* savePassage({ payload }) {
     //       )
     //     : null,
     // ])
-
     // if there is new, replace it with current Item's id.
     // const url = backUrl.replace('new', currentItemId)
 
@@ -2035,12 +2034,28 @@ function* savePassage({ payload }) {
       yield put(changeCurrentQuestionAction(''))
     }
 
+    let testId = payload.testId
+    const currentRouterState = yield select(
+      (state) => state.router.location.state
+    )
+    if (isTestFlow) {
+      testId = yield select((state) => state.tests?.entity?._id)
+
+      if (currentRouterState) {
+        const routerTestId = currentRouterState.previousTestId
+        if (routerTestId) {
+          testId = routerTestId
+        }
+      }
+    }
+
     yield put(
-      push(
-        payload.testId
-          ? `/author/tests/${payload.testId}/editItem/${currentItemId}`
-          : `/author/items/${currentItemId}/item-detail`
-      )
+      push({
+        pathname: isTestFlow
+          ? `/author/tests/${testId}/editItem/${currentItemId}`
+          : `/author/items/${currentItemId}/item-detail`,
+        state: currentRouterState,
+      })
     )
     /**
      * If test flow and test is not created, creating test after passage item is created and redirecting to edit-item page

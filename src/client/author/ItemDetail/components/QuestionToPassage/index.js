@@ -60,9 +60,15 @@ const QuestionToPassage = ({
         tabIndex,
         isEdit: isEditPassageQuestion,
         callback: onCancel,
+        isTestFlow,
       })
     } else {
-      saveQuestionToPassage({ rowIndex, tabIndex, callback: onCancel })
+      saveQuestionToPassage({
+        rowIndex,
+        tabIndex,
+        callback: onCancel,
+        isTestFlow,
+      })
     }
   }
 

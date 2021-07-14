@@ -193,6 +193,7 @@ const LTIResourceModal = (props) => {
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           height="36px"
+          limit={200}
         />
       </FlexRow>
       {isAddNew && (

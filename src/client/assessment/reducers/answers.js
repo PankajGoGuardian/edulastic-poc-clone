@@ -18,7 +18,7 @@ export default function reducer(state = initialState, { type, payload }) {
     case REMOVE_ANSWERS:
       return {}
     case RECEIVE_STUDENT_QUESTION_SUCCESS:
-      return {}
+      return payload?.noAnswerReset ? state : {}
     default:
       return state
   }

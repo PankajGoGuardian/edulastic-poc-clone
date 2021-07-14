@@ -39,6 +39,7 @@ import {
   getGoogleAllowedInstitionPoliciesSelector,
   getInterestedGradesSelector,
   getInterestedSubjectsSelector,
+  currentDistrictInstitutionIds,
 } from '../../../src/selectors/user'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import HeaderSyncAction from '../Showcase/components/Myclasses/components/HeaderSyncAction/HeaderSyncAction'
@@ -384,7 +385,7 @@ const enhance = compose(
       showCleverSyncModal: get(state, 'manageClass.showCleverSyncModal', false),
       teacherData: get(state, 'dashboardTeacher.data', []),
       classData: state.dashboardTeacher.data,
-      institutionIds: get(state, 'user.user.institutionIds', []),
+      institutionIds: currentDistrictInstitutionIds(state),
       getStandardsListBySubject: (subject) =>
         getFormattedCurriculumsSelector(state, { subject }),
       defaultGrades: getInterestedGradesSelector(state),

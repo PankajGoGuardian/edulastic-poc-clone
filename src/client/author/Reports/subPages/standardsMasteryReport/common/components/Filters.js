@@ -36,7 +36,7 @@ import { processSchoolYear } from '../../../multipleAssessmentReport/common/util
 import {
   getUser,
   getInterestedCurriculumsSelector,
-  getOrgSchools,
+  currentDistrictInstitutionIds,
 } from '../../../../../src/selectors/user'
 
 import {
@@ -83,8 +83,6 @@ const StandardsMasteryReportFilters = ({
   setShowApply,
   showFilter,
   toggleFilter,
-  firstLoad,
-  institutionIds,
   setFirstLoad,
   reportId,
   standardsPerformanceSummary,
@@ -92,6 +90,7 @@ const StandardsMasteryReportFilters = ({
   standardsProgress,
   loc,
   fetchUpdateTagsData,
+  institutionIds,
 }) => {
   const [activeTabKey, setActiveTabKey] = useState(
     staticDropDownData.filterSections.CLASS_FILTERS.key
@@ -945,12 +944,12 @@ const enhance = compose(
       standardsFilters: getReportsStandardsFilters(state),
       filters: getFiltersSelector(state),
       user: getUser(state),
-      institutionIds: getOrgSchools(state).map((s) => s._id),
       interestedCurriculums: getInterestedCurriculumsSelector(state),
       prevStandardsFilters: getPrevStandardsFiltersSelector(state),
       standardsPerformanceSummary: getReportsStandardsPerformanceSummary(state),
       standardsGradebook: getReportsStandardsGradebook(state),
       standardsProgress: getReportsStandardsProgress(state),
+      institutionIds: currentDistrictInstitutionIds(state),
     }),
     {
       getStandardsFiltersRequest: getStandardsFiltersRequestAction,

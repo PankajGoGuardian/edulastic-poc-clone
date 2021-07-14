@@ -41,7 +41,7 @@ import {
 import {
   getUserRole,
   getUser,
-  getOrgSchools,
+  currentDistrictInstitutionIds,
 } from '../../../../../../src/selectors/user'
 import { resetStudentFilters } from '../../../../../common/util'
 
@@ -692,8 +692,8 @@ const enhance = compose(
       filters: getFiltersSelector(state),
       role: getUserRole(state),
       user: getUser(state),
-      institutionIds: getOrgSchools(state).map((s) => s._id),
       prevMARFilterData: getReportsPrevMARFilterData(state),
+      institutionIds: currentDistrictInstitutionIds(state),
     }),
     {
       getMARFilterDataRequest: getMARFilterDataRequestAction,

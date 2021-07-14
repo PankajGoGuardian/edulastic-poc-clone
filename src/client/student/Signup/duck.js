@@ -25,7 +25,11 @@ import {
   signupSuccessAction,
   hideJoinSchoolAction,
 } from '../Login/ducks'
-import { getUser, getUserOrgId } from '../../author/src/selectors/user'
+import {
+  currentDistrictInstitutionIds,
+  getUser,
+  getUserOrgId,
+} from '../../author/src/selectors/user'
 
 import { userPickFields } from '../../common/utils/static/user'
 import { updateInitSearchStateAction } from '../../author/TestPage/components/AddItems/ducks'
@@ -484,7 +488,7 @@ function* updateUserSignupStateSaga() {
   try {
     const user = yield select(getUser)
     const districtId = yield select(getUserOrgId)
-
+    const institutionIds = yield select(currentDistrictInstitutionIds)
     if (
       !isEmpty(user.orgData.districtIds) &&
       !isEmpty(user.orgData.defaultGrades) &&
@@ -494,7 +498,7 @@ function* updateUserSignupStateSaga() {
         email: user.email,
         districtId,
         currentSignUpState: 'DONE',
-        institutionIds: user.orgData.institutionIds,
+        institutionIds,
       }
       const _result = yield call(userApi.updateUser, {
         data,

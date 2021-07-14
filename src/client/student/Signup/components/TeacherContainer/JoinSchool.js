@@ -36,6 +36,7 @@ import {
   setPreviousAutoSuggestSchools,
 } from '../../duck'
 import {
+  currentDistrictInstitutionIds,
   getUserIPZipCode,
   getUserOrgId,
 } from '../../../../author/src/selectors/user'
@@ -93,6 +94,7 @@ const JoinSchool = ({
   addSchool,
   addingSchool,
   isModal,
+  institutionIds,
 }) => {
   const {
     email,
@@ -188,7 +190,6 @@ const JoinSchool = ({
   const handleSubmit = () => {
     const schoolId = selected.schoolId || selected._id
     if (fromUserProfile) {
-      const { institutionIds } = userInfo
       const newInstitutionIds = schoolId
         ? [...institutionIds, schoolId]
         : institutionIds
@@ -521,6 +522,7 @@ const enhance = compose(
       districtId: getUserOrgId(state),
       schoolTeachers: get(state, 'signup.schoolTeachers', []),
       addingSchool: get(state, 'user.addingSchool'),
+      institutionIds: currentDistrictInstitutionIds(state),
     }),
     {
       searchSchool: searchSchoolRequestAction,

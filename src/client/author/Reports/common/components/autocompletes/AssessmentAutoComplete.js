@@ -10,7 +10,7 @@ import { assignmentStatusOptions, roleuser } from '@edulastic/constants'
 // ducks
 import { useDropdownData } from '@edulastic/common'
 import {
-  getOrgSchools,
+  currentDistrictInstitutionIds,
   getUser,
   getUserOrgId,
 } from '../../../../src/selectors/user'
@@ -207,10 +207,10 @@ const AssessmentAutoComplete = ({
 export default connect(
   (state) => ({
     user: getUser(state),
-    districtId: getUserOrgId(state),
-    institutionIds: getOrgSchools(state).map((s) => s._id),
     testList: getTestListSelector(state),
     loading: getTestListLoadingSelector(state),
+    districtId: getUserOrgId(state),
+    institutionIds: currentDistrictInstitutionIds(state),
   }),
   {
     loadTestList: receiveTestListAction,

@@ -24,7 +24,10 @@ import {
   getCanvasCourseListRequestAction,
   getCanvasSectionListRequestAction,
 } from '../../../../author/ManageClass/ducks'
-import { getUserOrgId } from '../../../../author/src/selectors/user'
+import {
+  currentDistrictInstitutionIds,
+  getUserOrgId,
+} from '../../../../author/src/selectors/user'
 import { themes } from '../../../../theme'
 
 const Container = ({
@@ -189,7 +192,7 @@ const enhance = compose(
       user: state.user,
       canvasCourseList: get(state, 'manageClass.canvasCourseList', []),
       canvasSectionList: get(state, 'manageClass.canvasSectionList', []),
-      institutionIds: get(state, 'user.user.institutionIds', []),
+      institutionIds: currentDistrictInstitutionIds(state),
       districtId: getUserOrgId(state),
     }),
     {

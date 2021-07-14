@@ -8,7 +8,7 @@ import MultiSelectSearch from '../../../../../common/components/widgets/MultiSel
 
 // ducks
 import {
-  getOrgSchools,
+  currentDistrictInstitutionIds,
   getUser,
   getUserOrgId,
 } from '../../../../../../src/selectors/user'
@@ -148,10 +148,10 @@ const ClassAutoComplete = ({
 export default connect(
   (state) => ({
     userDetails: getUser(state),
-    districtId: getUserOrgId(state),
-    institutionIds: getOrgSchools(state).map((s) => s._id),
     classList: getClassListSelector(state),
     loading: get(state, ['classesReducer', 'loading'], false),
+    districtId: getUserOrgId(state),
+    institutionIds: currentDistrictInstitutionIds(state),
   }),
   {
     loadClassList: receiveClassListAction,

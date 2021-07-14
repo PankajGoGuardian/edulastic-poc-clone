@@ -9,7 +9,7 @@ import { AutoComplete, Input, Icon, Tooltip, Empty } from 'antd'
 // ducks
 import { useDropdownData } from '@edulastic/common'
 import {
-  getOrgSchools,
+  currentDistrictInstitutionIds,
   getUserOrgId,
 } from '../../../../../../src/selectors/user'
 import {
@@ -215,7 +215,7 @@ const StudentAutoComplete = ({
 export default connect(
   (state) => ({
     districtId: getUserOrgId(state),
-    institutionIds: getOrgSchools(state).map((s) => s._id),
+    institutionIds: currentDistrictInstitutionIds(state),
     studentList: getStudentsListSelector(state),
     loading: getStudentsLoading(state),
   }),

@@ -7,7 +7,7 @@ import { roleuser, assignmentStatusOptions } from '@edulastic/constants'
 import MultiSelectSearch from '../widgets/MultiSelectSearch'
 // ducks
 import {
-  getOrgSchools,
+  currentDistrictInstitutionIds,
   getUser,
   getUserOrgId,
 } from '../../../../src/selectors/user'
@@ -160,10 +160,10 @@ const AssessmentAutoComplete = ({
 export default connect(
   (state) => ({
     userDetails: getUser(state),
-    districtId: getUserOrgId(state),
-    institutionIds: getOrgSchools(state).map((s) => s._id),
     testList: getTestListSelector(state),
     loading: getTestListLoadingSelector(state),
+    districtId: getUserOrgId(state),
+    institutionIds: currentDistrictInstitutionIds(state),
   }),
   {
     loadTestList: receiveTestListAction,

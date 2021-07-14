@@ -158,18 +158,17 @@ export const getUserOrgData = createSelector(stateSelector, (state) =>
  */
 export const getOrgSchools = createSelector(
   getUserOrgData,
-  getUserOrgId,
-  (orgData, orgId) =>
-    (orgData.schools || []).filter((s) => s.districtId === orgId)
+  (orgData) => orgData.schools || []
 )
 
 export const getOrgGroupList = createSelector(
   getUserOrgData,
+  (orgData) => orgData.classList || []
+)
+
+export const currentDistrictInstitutionIds = createSelector(
   getOrgSchools,
-  (orgData, schools) =>
-    (orgData.classList || []).filter(
-      (c) => !!schools.find((s) => s._id === c.institutionId)
-    )
+  (schools) => schools.map((item) => item._id)
 )
 
 export const getOrgItemBanksSelector = createSelector(stateSelector, (state) =>

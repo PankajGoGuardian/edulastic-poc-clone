@@ -24,7 +24,6 @@ export const Container = styled.div`
 
 export const StyledMenu = styled(Menu)`
   border: 0px;
-
   .ant-menu-item {
     margin: 0 !important;
     padding: 0 13px;

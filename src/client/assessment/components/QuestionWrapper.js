@@ -518,6 +518,7 @@ class QuestionWrapper extends Component {
           data={data}
           isExpandedView={isExpandedView}
           isPrintPreview={isPrintPreview}
+          timeSpent={timeSpent}
         />
       )
     }

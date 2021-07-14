@@ -1,8 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Icon } from 'antd'
-import { greyThemeDark3, themeColor } from '@edulastic/colors'
+import { greyThemeDark3, themeColor, greyThemeDark2 } from '@edulastic/colors'
 import { QuestionNumberLabel, QuestionSubLabel } from '@edulastic/common'
+import { IconClockCircularOutline } from '@edulastic/icons'
+import { round } from 'lodash'
 
 const PremiumItemBanner = ({
   itemBankName = [],
@@ -12,6 +14,7 @@ const PremiumItemBanner = ({
   hideQuestionLabels = false,
   height = false,
   isPrintPreview = false,
+  timeSpent = false,
 }) => (
   <PremiumItemBannerWrapper
     isExpandedView={isExpandedView}
@@ -44,6 +47,12 @@ const PremiumItemBanner = ({
         )}`}
       </span>
     </Container>
+    {!!timeSpent && (
+      <Timer>
+        <IconClockCircularOutline />
+        {round(timeSpent / 1000, 1)}s
+      </Timer>
+    )}
   </PremiumItemBannerWrapper>
 )
 
@@ -88,5 +97,18 @@ const Container = styled.div`
   }
   span: last-child {
     color: ${greyThemeDark3};
+  }
+`
+const Timer = styled.div`
+  display: flex;
+  align-items: center;
+  font-size: 19px;
+  position: absolute;
+  right: 25px;
+  bottom: 10px;
+  color: ${greyThemeDark2};
+  svg {
+    margin-right: 10px;
+    fill: ${greyThemeDark2};
   }
 `

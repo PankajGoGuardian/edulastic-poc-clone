@@ -1,7 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Col, Radio } from 'antd'
 import { test } from '@edulastic/constants'
 
+import { EduButton } from '@edulastic/common'
+import { withNamespaces } from '@edulastic/localization'
 import {
   AlignSwitchRight,
   StyledRow,
@@ -18,6 +20,7 @@ import PlayerSkinSelector from '../SimpleOptions/PlayerSkinSelector'
 import DetailsTooltip from './DetailsTooltip'
 import SettingContainer from './SettingsContainer'
 import KeypadDropdown from './KeypadDropdown'
+import { ConfirmationModal } from '../../../src/components/common/ConfirmationModal'
 
 const { accessibilities } = test
 
@@ -33,6 +36,7 @@ const MiscellaneousGroupContainer = ({
   featuresAvailable,
   tootltipWidth,
   premium,
+  t,
 }) => {
   const {
     answerOnPaper = testSettings.answerOnPaper,
@@ -44,6 +48,28 @@ const MiscellaneousGroupContainer = ({
     keypad: keyPadData = testSettings.keypad || {},
     enableSkipAlert = testSettings.enableSkipAlert,
   } = assignmentSettings
+
+  const [selectedKeypad, setKeypad] = useState(null)
+  const [warningKeypadSelection, setKeypadWarning] = useState(false)
+
+  const handleKeypadSelection = (value) => {
+    if (!value) {
+      return
+    }
+    if (value.type === 'item-level') {
+      overRideSettings('keypad', value)
+    } else {
+      setKeypad(value)
+      setKeypadWarning(true)
+    }
+  }
+
+  const confirmKeypadSelection = (confirm = false) => {
+    if (confirm === true && selectedKeypad && selectedKeypad.type) {
+      overRideSettings('keypad', selectedKeypad)
+    }
+    setKeypadWarning(false)
+  }
 
   const playerSkinType =
     assignmentSettings.playerSkinType || testSettings.playerSkinType
@@ -264,11 +290,32 @@ const MiscellaneousGroupContainer = ({
               <Col span={12}>
                 <KeypadDropdown
                   keypadData={keyPadData}
-                  overrideSettings={overRideSettings}
+                  handleKeypadSelection={handleKeypadSelection}
                   testKeypadData={testSettings.keypad}
                   disabled={freezeSettings || !premium}
                 />
               </Col>
+              <ConfirmationModal
+                centered
+                visible={warningKeypadSelection}
+                footer={[
+                  <EduButton
+                    isGhost
+                    onClick={() => confirmKeypadSelection(false)}
+                  >
+                    CANCEL
+                  </EduButton>,
+                  <EduButton onClick={() => confirmKeypadSelection(true)}>
+                    PROCEED
+                  </EduButton>,
+                ]}
+                textAlign="center"
+                onCancel={() => () => confirmKeypadSelection(false)}
+              >
+                <p>
+                  <b>{t('keypadSettings.warning')}</b>
+                </p>
+              </ConfirmationModal>
             </StyledRow>
           </SettingContainer>
           {/* Keypad settings ends */}
@@ -303,4 +350,4 @@ const MiscellaneousGroupContainer = ({
   )
 }
 
-export default MiscellaneousGroupContainer
+export default withNamespaces('author')(MiscellaneousGroupContainer)

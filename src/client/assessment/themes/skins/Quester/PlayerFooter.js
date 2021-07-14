@@ -75,6 +75,7 @@ const PlayerFooter = ({
   answerChecksUsedForItem,
   checkAnswerInProgress,
   checkAnswer,
+  isPremiumContentWithoutAccess = false,
 }) => {
   const [zoom, setZoom] = useState(0)
   const {
@@ -119,14 +120,22 @@ const PlayerFooter = ({
 
   return (
     <MainFooter isSidebarVisible className="quester-player-footer">
-      <ActionContainer data-cy="zoomIn" onClick={handleZoomOut}>
+      <ActionContainer
+        data-cy="zoomIn"
+        onClick={handleZoomOut}
+        disabled={isPremiumContentWithoutAccess}
+      >
         <IconWrap className="hover-effect">
           <IconMinusRounded color={footer.textColor} />
         </IconWrap>
         <span>ZOOM OUT</span>
       </ActionContainer>
 
-      <ActionContainer data-cy="zoomOut" onClick={handleZoomIn}>
+      <ActionContainer
+        data-cy="zoomOut"
+        onClick={handleZoomIn}
+        disabled={isPremiumContentWithoutAccess}
+      >
         <IconWrap className="hover-effect">
           <IconPlus color={footer.textColor} />
         </IconWrap>
@@ -143,6 +152,7 @@ const PlayerFooter = ({
           }
           title={t('common.test.bookmark')}
           data-cy="bookmark"
+          disabled={isPremiumContentWithoutAccess}
         >
           <IconWrapper>
             <IconBookMark
@@ -167,6 +177,7 @@ const PlayerFooter = ({
               : 'Check Answer'
           }
           data-cy="checkAnswer"
+          disabled={isPremiumContentWithoutAccess}
         >
           <IconCheck color={footer.textColor} hoverColor={button.background} />
           <span> {t('common.test.checkanswer')}</span>
@@ -176,7 +187,7 @@ const PlayerFooter = ({
         hoverEffect
         active={tool?.includes(CROSS_BUTTON)}
         onClick={() => (isDisableCrossBtn ? null : changeTool(CROSS_BUTTON))}
-        disabled={isDisableCrossBtn}
+        disabled={isDisableCrossBtn || isPremiumContentWithoutAccess}
         title={
           isDisableCrossBtn
             ? 'This option is available only for multiple choice'
@@ -200,6 +211,7 @@ const PlayerFooter = ({
           onClick={() => changeTool(CALC)}
           title={t('common.test.calculator')}
           data-cy="calculator"
+          disabled={isPremiumContentWithoutAccess}
         >
           <IconWrapper>
             <IconCalculator
@@ -218,6 +230,7 @@ const PlayerFooter = ({
           onClick={() => changeTool(SCRATCHPAD)}
           title={t('common.test.scratchPad')}
           data-cy="scratchPad"
+          disabled={isPremiumContentWithoutAccess}
         >
           <IconWrapper>
             <IconScratchPad
@@ -237,6 +250,7 @@ const PlayerFooter = ({
           onClick={handleMagnifier}
           title={t('common.test.magnify')}
           data-cy="magnify"
+          disabled={isPremiumContentWithoutAccess}
         >
           <IconWrapper>
             <IconMagnify
@@ -255,6 +269,7 @@ const PlayerFooter = ({
           onClick={toggleUserWorkUploadModal}
           title={t('common.test.uploadWork')}
           data-cy="uploadWork"
+          disabled={isPremiumContentWithoutAccess}
         >
           <IconWrapper>
             <IconCloudUpload
@@ -285,6 +300,7 @@ const PlayerFooter = ({
             qId={data.id}
             audioSrc={data?.tts?.titleAudioURL}
             className="quester-question-audio-controller"
+            isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
           />
           <IconMoreVertical
             color={footer.textColor}
@@ -390,7 +406,7 @@ const ActionContainer = withKeyboard(styled.div`
     props.disabled &&
     `
     cursor:default;
-
+    pointer-events:none; 
   `}
   ${(props) =>
     props.active &&

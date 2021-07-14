@@ -2,7 +2,7 @@
 import React, { useState, useMemo } from 'react'
 import {
   ComposedChart,
-  Bar,
+  Bar as _Bar,
   Line,
   Cell,
   XAxis,
@@ -27,6 +27,9 @@ import {
   CustomChartXTick,
   calculateXCoordinateOfXAxisToolTip,
 } from './chartUtils/customChartXTick'
+import withAnimationInfo from './chartUtils/withAnimationInfo'
+
+const Bar = withAnimationInfo(_Bar)
 
 const _yTickFormatter = (val) => `${val}%`
 
@@ -158,8 +161,7 @@ const SimpleStackedBarChartComponent = ({
       ]
     : []
 
-  const chartData = useMemo(() => [...data], [pagination])
-
+  const chartData = useMemo(() => [...data], [data])
   const scrollLeft = () => {
     let diff
     if (pagination.startIndex > 0) {

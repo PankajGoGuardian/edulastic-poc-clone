@@ -81,6 +81,7 @@ import {
   getIsGradingCheckboxState,
   SAVE_QUESTION_REQUEST,
   addAuthoredItemsAction,
+  resourceTypeQuestions,
 } from '../QuestionEditor/ducks'
 import { getNewAlignmentState } from '../src/reducers/dictionaries'
 import {
@@ -865,6 +866,7 @@ export function reducer(state = initialState, { type, payload }) {
       const newQuestionTobeAdded = !get(state, 'item.data.questions', []).find(
         (x) => x.id === payload.id
       )
+      const isPassageWidget = payload.type === 'passage'
       let canUpdateItemLevelScore = false
       const questionsLength = get(state, 'item.data.questions.length', 0)
       if (questionsLength === 0) {
@@ -872,6 +874,10 @@ export function reducer(state = initialState, { type, payload }) {
       } else if (questionsLength === 1 && !newQuestionTobeAdded) {
         canUpdateItemLevelScore = true
       }
+      if (isPassageWidget) {
+        canUpdateItemLevelScore = false
+      }
+
       if (itemLevelScoring && canUpdateItemLevelScore) {
         return {
           ...state,
@@ -1046,7 +1052,7 @@ function* receiveItemSaga({ payload }) {
 
     // if there is only one question, set it as currentQuestionId, since
     // questionView will be loaded instead.
-    if (questions.length === 1) {
+    if (questions.length === 1 && !data.isPassageWithQuestions) {
       yield put(changeCurrentQuestionAction(questions[0].id))
     }
 
@@ -1295,14 +1301,14 @@ export function* updateItemSaga({ payload }) {
       }
     }
     const { __v, ...passageData } = (yield select(getPassageSelector)) || {}
-    const { structure } = passageData
-    if (structure) {
-      const { widgets = [] } = structure
-      if (isPassageWithQuestions && !widgets.length) {
-        notification({ messageKey: 'CannotSaveWithoutPasses' })
-        return null
-      }
-    }
+    // const { structure } = passageData
+    // if (structure) {
+    //   const { widgets = [] } = structure
+    //   if (isPassageWithQuestions && !widgets.length) {
+    //     notification({ messageKey: 'CannotSaveWithoutPasses' })
+    //     return null
+    //   }
+    // }
 
     /*
      * in test flow, until test is not created, testId comes as "undefined" in string
@@ -1317,19 +1323,35 @@ export function* updateItemSaga({ payload }) {
     }
 
     const [{ testId, ...item }, updatedPassage] = yield all([
-      call(testItemsApi.updateById, payload.id, data, testIdParam),
+      data._id === 'new'
+        ? yield call(testItemsApi.create, _omit(data, '_id'))
+        : call(testItemsApi.updateById, payload.id, data, testIdParam),
       !isEmpty(passageData) ? call(passageApi.update, passageData) : null,
     ])
-    if (isPassageWithQuestions && !isEmpty(passageData) && !updatedPassage) {
-      throw new Error('Error while updating passage')
-    }
+
+    // if (isPassageWithQuestions && !isEmpty(passageData) && !updatedPassage) {
+    //   throw new Error('Error while updating passage')
+    // }
     /**
      * need to update the version and data of passage returned from API into the redux store
      * for subsequent updates,
      * to keep the version sync with the latest in the database
      * @see https://snapwiz.atlassian.net/browse/EV-10507
      */
-    yield put(updatePassageStructureAction(updatedPassage))
+    // EV-28143 | not to show deleted items, thus store active items in store
+
+    if (updatedPassage) {
+      let modifiedPassageData
+      if (passageData?.activeTestItems?.length > 0) {
+        modifiedPassageData = {
+          ...updatedPassage,
+          activeTestItems: passageData.activeTestItems,
+        }
+      } else {
+        modifiedPassageData = { ...updatedPassage }
+      }
+      yield put(updatePassageStructureAction(modifiedPassageData))
+    }
 
     yield put({
       type: UPDATE_ITEM_DETAIL_SUCCESS,
@@ -1338,7 +1360,7 @@ export function* updateItemSaga({ payload }) {
 
     // on update, if there is only question.. set it as the questionId, since we are changing the view
     // to singleQuestionView!
-    if (questions.length === 1) {
+    if (questions.length === 1 && !isPassageWithQuestions) {
       yield put(changeCurrentQuestionAction(questions[0].id))
     }
 
@@ -1680,6 +1702,14 @@ function* publishTestItemSaga({ payload }) {
     const standardPresent = questions.some(hasStandards)
     const { saveAndPublishFlow = false } = payload
 
+    if (testItem.isPassageWithQuestions) {
+      const { __v, structure } = (yield select(getPassageSelector)) || {}
+      const { widgets = [] } = structure
+      if (!widgets.length) {
+        return notification({ messageKey: 'CannotPublishWithoutPassages' })
+      }
+    }
+
     // if alignment data is not present, set the flag to open the modal, and wait for
     // an action from the modal.
     if (!isMultipartOrPassageType && !standardPresent && !saveAndPublishFlow) {
@@ -1855,35 +1885,45 @@ function* convertToPassageWithQuestions({ payload }) {
     yield put(addPassageAction(passage))
     yield put(setTestPassageAction(passage))
 
-    yield put(
-      addQuestionAction({
-        id: uuid(),
-        title,
-        type: questionType.PASSAGE,
-        heading: 'Section 3',
-        math_renderer: '',
-        content:
-          'Enabling a <b>highlightable</b> text passage that can be used across multiple items.',
-        hints: [{ value: uuid(), label: 'Hint A' }],
-      })
-    )
-    const backUrl = isTestFlow
+    // yield put(
+    //   addQuestionAction({
+    //     id: uuid(),
+    //     title,
+    //     type: questionType.PASSAGE,
+    //     heading: 'Section 3',
+    //     math_renderer: '',
+    //     content:
+    //       'Enabling a <b>highlightable</b> text passage that can be used across multiple items.',
+    //     hints: [{ value: uuid(), label: 'Hint A' }],
+    //   })
+    // )
+
+    yield put({
+      type: UPDATE_ITEM_TO_PASSAGE_TYPE,
+      payload: {
+        canAddMultipleItems: canAddMultipleItems,
+      },
+    })
+
+    // const currentItem = yield select(getItemDetailSelector)
+    // const hasValidTestId = testId !== 'undefined'
+    // const testIdParam = hasValidTestId ? testId : null
+    // const item = yield call(
+    //   testItemsApi.create,
+    //   _omit(currentItem, '_id'),
+    //   ...(testIdParam ? [{ testId: testIdParam }] : [])
+    // )
+    // yield put({
+    //   type: RECEIVE_ITEM_DETAIL_SUCCESS,
+    //   payload: { item },
+    // })
+
+    const url = isTestFlow
       ? `/author/tests/${testId}/createItem/${itemId}`
       : `/author/items/${itemId}/item-detail`
+
     yield put(setQuestionCategory('multiple-choice'))
-    yield put(
-      push({
-        pathname: `/author/questions/create/${questionType.PASSAGE}`,
-        state: {
-          isPassageWithQuestions: true,
-          canAddMultipleItems: !!canAddMultipleItems,
-          backUrl,
-          testItemId: itemId,
-          tabIndex: 0,
-          testId,
-        },
-      })
-    )
+    yield put(push(url))
   } catch (e) {
     Sentry.captureException(e)
     console.log('error', e)
@@ -1893,24 +1933,7 @@ function* convertToPassageWithQuestions({ payload }) {
 
 function* savePassage({ payload }) {
   try {
-    const {
-      backUrl,
-      tabIndex,
-      canAddMultipleItems,
-      isPassageWithQuestions,
-    } = yield select((state) => get(state, 'router.location.state'), {})
-    const pathname = yield select(
-      (state) => get(state, 'router.location.pathname'),
-      {}
-    )
-    yield put({
-      type: UPDATE_ITEM_TO_PASSAGE_TYPE,
-      payload: {
-        canAddMultipleItems: canAddMultipleItems || isPassageWithQuestions,
-      },
-    })
-
-    const isEdit = pathname.includes('edit')
+    const { rowIndex, tabIndex, isEdit, callback, isTestFlow } = payload
     const passage = yield select(getPassageSelector)
     const entity = yield select(getCurrentQuestionSelector)
     const currentItem = yield select(getItemDetailSelector)
@@ -1930,7 +1953,9 @@ function* savePassage({ payload }) {
       (widget) => widget.reference
     )
 
-    if (!isEdit) widgetIds.push(widget.reference)
+    if (!isEdit) {
+      widgetIds.push(widget.reference)
+    }
 
     const passageData = Object.values(allWidgets).filter((i) =>
       widgetIds.includes(i.id)
@@ -1974,25 +1999,37 @@ function* savePassage({ payload }) {
     const modifiedPassage = produce(passage, (draft) => {
       if (!isEdit) draft.structure.widgets.push(widget)
       draft.data = passageData
-      draft.testItems = uniq([...draft.testItems, currentItemId])
+      draft.testItems = uniq([...draft.testItems]) // , currentItemId
     })
     yield put(updatePassageStructureAction(modifiedPassage))
 
     // only update the item if its not new, since new item already has the passageId added while creating.
-    yield all([
-      call(passageApi.update, _omit(modifiedPassage, ['__v'])),
-      currentItem._id !== 'new'
-        ? call(
-            testItemsApi.updateById,
-            currentItem._id,
-            currentItem,
-            testIdParam
-          )
-        : null,
-    ])
+    const updatedPassage = yield call(
+      passageApi.update,
+      _omit(modifiedPassage, ['__v'])
+    )
+    /**
+     * @see https://snapwiz.atlassian.net/browse/EV-29547
+     * update passage version in redux-store and keep passage data in sync with DB
+     * use "modifiedPassage" as a fallback if update api fails
+     */
+    if (!isEmpty(updatedPassage)) {
+      yield put(updatePassageStructureAction(updatedPassage))
+    }
 
+    // yield all([
+    //   call(passageApi.update, _omit(modifiedPassage, ['__v'])),
+    //   currentItem._id !== 'new'
+    //     ? call(
+    //         testItemsApi.updateById,
+    //         currentItem._id,
+    //         currentItem,
+    //         testIdParam
+    //       )
+    //     : null,
+    // ])
     // if there is new, replace it with current Item's id.
-    const url = backUrl.replace('new', currentItemId)
+    // const url = backUrl.replace('new', currentItemId)
 
     /**
      * after saving the passage type question we can say there is no user input to be saved
@@ -2000,25 +2037,53 @@ function* savePassage({ payload }) {
      */
     yield put(changeUpdatedFlagAction(false))
 
+    if (typeof callback === 'function') {
+      callback()
+      yield put(changeCurrentQuestionAction(''))
+    }
+
+    let testId = payload.testId
+    const currentRouterState = yield select(
+      (state) => state.router.location.state
+    )
+    if (isTestFlow) {
+      testId = yield select((state) => state.tests?.entity?._id)
+
+      if (currentRouterState) {
+        const routerTestId = currentRouterState.previousTestId
+        if (routerTestId) {
+          testId = routerTestId
+        }
+      }
+    }
+
+    yield put(
+      push({
+        pathname: isTestFlow
+          ? `/author/tests/${testId}/editItem/${currentItemId}`
+          : `/author/items/${currentItemId}/item-detail`,
+        state: currentRouterState,
+      })
+    )
     /**
      * If test flow and test is not created, creating test after passage item is created and redirecting to edit-item page
      * If not test flow or if test is already created, redirecting to edit-item page
      * passing addAuthoredItemsAction fromSaveMultipartItem flag for getting redirected to edit-item page instead of test review page
      * @see https://snapwiz.atlassian.net/browse/EV-26929
      */
-    if (backUrl.includes('tests') && payload?.testId === 'undefined' && item) {
-      yield put(
-        addAuthoredItemsAction({
-          item,
-          tId: payload.testId,
-          isEditFlow: false,
-          fromSaveMultipartItem: true,
-          url,
-        })
-      )
-    } else {
-      yield put(push(url))
-    }
+    // if (backUrl.includes('tests') && payload?.testId === 'undefined' && item) {
+    //   yield put(
+    //     addAuthoredItemsAction({
+    //       item,
+    //       tId: payload.testId,
+    //       isEditFlow: false,
+    //       fromSaveMultipartItem: true,
+    //       url,
+    //     })
+    //   )
+    // } else {
+    //   yield put(push(url))
+    // }
   } catch (e) {
     Sentry.captureException(e)
     console.log('error: ', e)
@@ -2067,23 +2132,23 @@ function* addWidgetToPassage({ payload }) {
             hints: [{ value: uuid(), label: 'Hint A' }],
           }
     yield put(addQuestionAction(widget))
-    const backUrl = isTestFlow
-      ? `/author/tests/${testId}/createItem/${itemId}`
-      : `/author/items/${itemId}/item-detail`
+    // const backUrl = isTestFlow
+    //   ? `/author/tests/${testId}/createItem/${itemId}`
+    //   : `/author/items/${itemId}/item-detail`
 
-    yield put(
-      push({
-        pathname: `/author/questions/create/${questionType.PASSAGE}`,
-        state: {
-          isPassageWithQuestions: true,
-          backUrl,
-          testItemId: itemId,
-          tabIndex,
-          testId,
-          canAddMultipleItems: !!canAddMultipleItems, // location state prop getting used by savePassage saga
-        },
-      })
-    )
+    // yield put(
+    //   push({
+    //     pathname: `/author/questions/create/${questionType.PASSAGE}`,
+    //     state: {
+    //       isPassageWithQuestions: true,
+    //       backUrl,
+    //       testItemId: itemId,
+    //       tabIndex,
+    //       testId,
+    //       canAddMultipleItems: !!canAddMultipleItems, // location state prop getting used by savePassage saga
+    //     },
+    //   })
+    // )
   } catch (e) {
     Sentry.captureException(e)
     console.log('error:', e)

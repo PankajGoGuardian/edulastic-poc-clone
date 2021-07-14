@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { white, darkGrey, themeColor } from '@edulastic/colors'
+import { white, darkGrey, themeColor, lightGreen10 } from '@edulastic/colors'
 import { math } from '@edulastic/constants'
 
 const {
@@ -113,4 +113,13 @@ export const Label = styled.span`
   line-height: 1;
   font-weight: ${({ fontWeight }) => fontWeight || 'normal'};
   font-size: ${({ fontSize }) => fontSize};
+`
+
+export const ButtonLink = styled.div`
+  text-transform: uppercase;
+  cursor: pointer;
+  font-size: 11px;
+  margin-bottom: 16px;
+  font-weight: 600;
+  color: ${lightGreen10};
 `

@@ -16,10 +16,12 @@ import {
   title,
   white,
   themeColorBlue,
+  textBlackColor,
+  lightGrey11,
 } from '@edulastic/colors'
 import { EduButton } from '@edulastic/common'
 import { IconHeart, IconId, IconUser, IconUsers } from '@edulastic/icons'
-import { Tag, Button } from 'antd'
+import { Tag, Button, Col, Row } from 'antd'
 import styled, { css } from 'styled-components'
 
 const Style = css`
@@ -584,4 +586,31 @@ export const HeartWrapper = styled.span`
       fill: ${({ isEnabled }) => (isEnabled ? red : themeLightGrayColor)};
     }
   }
+`
+export const PassageIconContainer = styled(Col)`
+  width: 25px;
+  height: 22px;
+`
+export const PassageTitleContainer = styled(Col)`
+  height: 18px;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`
+export const PassageTitle = styled.span`
+  color: ${textBlackColor};
+  height: 18px;
+  text-align: left;
+  font: normal normal bold 14px/19px Open Sans;
+  opacity: 1;
+`
+export const StyledRow = styled(Row)`
+  margin-bottom: 10px;
+`
+export const PassageInfo = styled(Col)`
+  height: 14px;
+  text-align: left;
+  font: normal normal bold 10px/14px Open Sans;
+  color: ${lightGrey11};
+  opacity: 1;
 `

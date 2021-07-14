@@ -777,7 +777,7 @@ const AssessmentContainer = ({
         case questionType.HISTOGRAM:
         case questionType.DOT_PLOT:
         case questionType.LINE_PLOT: {
-          const initialData = q.chart_data.data
+          const initialData = q?.chart_data?.data || []
           return initialData.every((d, i) => d?.y === qAnswers?.[i]?.y)
         }
         case questionType.MATCH_LIST:
@@ -787,13 +787,13 @@ const AssessmentContainer = ({
         case questionType.HOTSPOT:
           return !qAnswers?.some((ans) => ans?.toString())
         case questionType.ORDER_LIST: {
-          const prevOrder = [...Array(q.list.length).keys()]
+          const prevOrder = [...Array(q?.list?.length || 0).keys()]
           return qAnswers ? isEqual(prevOrder, qAnswers) : true
         }
         case questionType.MATH:
           if (q.title === 'Complete the Equation') {
             if (isArray(qAnswers)) {
-              return !qAnswers.some((ans) => ans?.toString())
+              return !qAnswers?.some((ans) => ans?.toString())
             }
             const ans = (qAnswers || '').replace(/\\ /g, '')
             return isEmpty(ans) || ans === '+='
@@ -830,7 +830,7 @@ const AssessmentContainer = ({
           if (!isObject(qAnswers)) {
             return true
           }
-          const keys = Object.keys(qAnswers)
+          const keys = Object.keys(qAnswers || {})
           return (
             keys.length === 0 || keys.every((key) => isEmpty(qAnswers[key]))
           )
@@ -840,7 +840,7 @@ const AssessmentContainer = ({
           if (!isObject(qAnswers)) {
             return true
           }
-          const keys = Object.keys(qAnswers)
+          const keys = Object.keys(qAnswers || {})
           return keys.some((key) => !qAnswers[key])
         }
         default:
@@ -867,7 +867,8 @@ const AssessmentContainer = ({
         hideHints()
         setCurrentItem(index)
         const timeSpent = Date.now() - lastTime.current
-        if (!demo) {
+        const _item = items[currentItem]
+        if (!demo && !_item.isDummyItem) {
           evaluateForPreview({
             currentItem,
             timeSpent,
@@ -944,7 +945,8 @@ const AssessmentContainer = ({
           context: value,
         })
       }
-      if (!demo) {
+      const _item = items[currentItem]
+      if (!demo && !_item.isDummyItem) {
         evaluateForPreview({
           currentItem,
           timeSpent,
@@ -952,7 +954,7 @@ const AssessmentContainer = ({
           testId,
         })
       }
-      if (demo) {
+      if (demo || _item.isDummyItem) {
         submitPreviewTest()
       }
     }
@@ -1018,10 +1020,11 @@ const AssessmentContainer = ({
     hideHints()
     setCurrentItem(index)
     const timeSpent = Date.now() - lastTime.current
-    if (demo && isLast()) {
+    const _item = items[currentItem]
+    if ((demo || _item.isDummyItem) && isLast()) {
       return submitPreviewTest()
     }
-    if (!demo) {
+    if (!demo && !_item.isDummyItem) {
       const evalArgs = {
         currentItem,
         timeSpent,
@@ -1032,6 +1035,26 @@ const AssessmentContainer = ({
       }
       evaluateForPreview(evalArgs)
     }
+  }
+
+  // This function is for a direct submit only available in DRC player.
+  // take care of changes related to generic submit here as well.
+  const handleReviewOrSubmit = () => {
+    const timeSpent = Date.now() - lastTime.current
+    if (preview) {
+      const _item = items[currentItem]
+      if (demo || _item.isDummyItem) {
+        return submitPreviewTest()
+      }
+      const evalArgs = {
+        currentItem,
+        timeSpent,
+        testId,
+        callback: submitPreviewTest,
+      }
+      return evaluateForPreview(evalArgs)
+    }
+    gotoSummary()
   }
 
   const onSkipUnansweredPopup = async () => {
@@ -1174,6 +1197,7 @@ const AssessmentContainer = ({
     uploadToS3: uploadFile,
     userWork,
     gotoSummary,
+    handleReviewOrSubmit,
     ...restProps,
   }
 
@@ -1229,9 +1253,9 @@ const AssessmentContainer = ({
      * highlight image default pen should be disabled
      */
     playerComponent = defaultAP ? (
-      <AssessmentPlayerDefault {...props} hidePause={hidePause} />
+      <AssessmentPlayerDefault {...props} test={test} hidePause={hidePause} />
     ) : (
-      <AssessmentPlayerSimple {...props} hidePause={hidePause} />
+      <AssessmentPlayerSimple {...props} test={test} hidePause={hidePause} />
     )
   }
 
@@ -1302,6 +1326,7 @@ const AssessmentContainer = ({
           onSkip={onSkipUnansweredPopup}
           onClose={onCloseUnansweedPopup}
           data={unansweredPopupSetting.qLabels}
+          playerSkinType={playerSkinType}
         />
       )}
       {!preview && !demo && (

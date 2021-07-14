@@ -142,6 +142,7 @@ const GroupItems = ({
   const collectionData = collections.map((o) => ({
     text: o.name,
     value: o._id,
+    type: o.type,
   }))
 
   const searchCurriculumStandards = (searchObject) => {
@@ -371,7 +372,7 @@ const GroupItems = ({
   }
 
   const handleCollectionChange = (collectionId) => {
-    const { value: _id, text: name } = collectionData.find(
+    const { value: _id, text: name, type } = collectionData.find(
       (d) => d.value === collectionId
     )
     const { standardDetails } = editGroupDetail
@@ -382,7 +383,7 @@ const GroupItems = ({
       )
       if (isDuplicate) return
     }
-    handleChange('collectionDetails', { _id, name })
+    handleChange('collectionDetails', { _id, name, type })
   }
 
   const validateGroups = () => {

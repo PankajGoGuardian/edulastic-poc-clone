@@ -10,6 +10,7 @@ import { StyledRow } from '../SimpleOptions/styled'
 import DetailsTooltip from './DetailsTooltip'
 import SettingContainer from './SettingsContainer'
 import TagFilter from '../../../src/components/common/TagFilter'
+import AddResources from './AddResources'
 
 const ClassGroupContainer = ({
   changeField,
@@ -32,6 +33,12 @@ const ClassGroupContainer = ({
   isRecommendingStandards,
   questionPerStandardOptions,
   tootltipWidth,
+  recommendedResources,
+  setEmbeddedVideoPreviewModal,
+  resourceIds,
+  isVideoResourcePreviewModal,
+  showRecommendedResources,
+  selectedResourcesAction,
 }) => {
   const { tags = testSettings.tags } = assignment
   return (
@@ -83,6 +90,7 @@ const ClassGroupContainer = ({
         selectedOption={selectedDateOption}
         showOpenDueAndCloseDate={showOpenDueAndCloseDate}
         tootltipWidth={tootltipWidth}
+        closePolicy={assignment.closePolicy}
       />
 
       <SettingContainer id="open-policy-setting">
@@ -192,6 +200,33 @@ const ClassGroupContainer = ({
             options={questionPerStandardOptions}
           />
         </StyledRow>
+      )}
+      {showRecommendedResources && (
+        <SettingContainer id="add-resources">
+          {recommendedResources.length === 0 && (
+            <DetailsTooltip
+              width={tootltipWidth}
+              title="Resources"
+              content="Recommended resources are not available"
+              premium
+              placement="rightTop"
+            />
+          )}
+          <StyledRow gutter={16}>
+            <Col span={10}>
+              <FieldLabel marginBottom="0px">Resources</FieldLabel>
+            </Col>
+            <Col span={14}>
+              <AddResources
+                recommendedResources={recommendedResources}
+                setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
+                resourceIds={resourceIds}
+                isVideoResourcePreviewModal={isVideoResourcePreviewModal}
+                selectedResourcesAction={selectedResourcesAction}
+              />
+            </Col>
+          </StyledRow>
+        </SettingContainer>
       )}
     </>
   )

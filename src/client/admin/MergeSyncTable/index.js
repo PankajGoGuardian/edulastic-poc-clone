@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback, useState } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import styled from 'styled-components'
@@ -18,6 +18,8 @@ import {
   mergeResponseSelector,
   applyDeltaSyncChanges,
   syncSchools,
+  syncCleverOrphanUsers,
+  syncEdlinkOrphanUsers,
   applyClassNamesSync,
   enableDisableSyncAction,
   getSubStandardMapping,
@@ -31,6 +33,9 @@ import {
   fetchLogsDataAction,
   closeMergeResponseAction,
   deleteSubjectStdMapAction,
+  getMappingDataAction,
+  getMappedData,
+  saveEntityMappingAction,
 } from './ducks'
 
 import MergeIdsTable from './MergeIdsTable'
@@ -180,6 +185,8 @@ function MergeSyncTable({
   searchData,
   applyDeltaSyncChanges,
   syncSchools,
+  syncCleverOrphanUsers,
+  syncEdlinkOrphanUsers,
   applyClassNamesSync,
   enableDisableSyncAction,
   subStandardMapping,
@@ -195,6 +202,9 @@ function MergeSyncTable({
   closeMergeResponse,
   deleteSubjectStdMapAction,
   isClasslink,
+  getMappingData,
+  mappedData,
+  saveApprovedMapping,
 }) {
   const { data = {} } = searchData
 
@@ -233,12 +243,25 @@ function MergeSyncTable({
     }
   }
 
+  const [searchQuery, setSearchQuery] = useState(null)
+  const searchExistingDataCB = useCallback(
+    (query) => {
+      setSearchQuery(query)
+      searchExistingDataApi(query)
+    },
+    [setSearchQuery, searchExistingDataApi]
+  )
+  const refreshExistingDataCB = useCallback(() => {
+    if (!searchQuery) return
+    searchExistingDataApi(searchQuery)
+  }, [searchExistingDataApi, searchQuery])
+
   return (
     <OuterDiv>
       <H2>Merge and Initialize Sync</H2>
       <FirstDiv>
         <MergeInitializeSyncForm
-          searchExistingDataApi={searchExistingDataApi}
+          searchExistingDataApi={searchExistingDataCB}
           isClasslink={isClasslink}
         />
       </FirstDiv>
@@ -269,6 +292,9 @@ function MergeSyncTable({
                 mergeResponse={mergeResponse}
                 closeMergeResponse={closeMergeResponse}
                 disableFields={syncEnabled}
+                getMappingData={getMappingData}
+                mappedData={mappedData}
+                saveApprovedMapping={saveApprovedMapping}
               />
             </TabPane>
             <TabPane tab="Delta Sync Parameter" key="deltaSyncParameter">
@@ -317,6 +343,10 @@ function MergeSyncTable({
                 isClasslink={isClasslink}
                 atlasId={atlasId}
                 syncSchools={syncSchools}
+                syncCleverOrphanUsers={syncCleverOrphanUsers}
+                syncEdlinkOrphanUsers={syncEdlinkOrphanUsers}
+                district={searchData.data.district}
+                refreshExistingData={refreshExistingDataCB}
               />
             </TabPane>
             <TabPane tab="Logs" key="logs">
@@ -339,12 +369,15 @@ const mapStateToProps = (state) => ({
   searchData: getSearchData(state),
   subStandardMapping: getSubStandardMapping(state),
   mergeResponse: mergeResponseSelector(state),
+  mappedData: getMappedData(state),
 })
 
 const withConnect = connect(mapStateToProps, {
   searchExistingDataApi,
   applyDeltaSyncChanges,
   syncSchools,
+  syncCleverOrphanUsers,
+  syncEdlinkOrphanUsers,
   applyClassNamesSync,
   enableDisableSyncAction,
   fetchCurriculumDataAction,
@@ -357,6 +390,8 @@ const withConnect = connect(mapStateToProps, {
   fetchLogsDataAction,
   closeMergeResponse: closeMergeResponseAction,
   deleteSubjectStdMapAction,
+  getMappingData: getMappingDataAction,
+  saveApprovedMapping: saveEntityMappingAction,
 })
 
 export default compose(withConnect)(MergeSyncTable)

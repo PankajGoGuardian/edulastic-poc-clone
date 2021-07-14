@@ -1,28 +1,19 @@
-import React, { useState } from 'react'
-import PropTypes from 'prop-types'
+import React from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { Row } from 'antd'
 import { updateRubricDataAction, getCurrentRubricDataSelector } from '../ducks'
-import CreateNew from './CreateNew'
 import UseExisting from './UseExisting'
 
-const Container = ({
-  actionType,
-  updateRubricData,
-  currentRubricData,
-  closeRubricModal,
-}) => {
-  const getContent = () => {
-    return (
+const Container = ({ actionType, closeRubricModal }) => {
+  return (
+    <Row style={{ width: '100%' }}>
       <UseExisting
         closeRubricModal={closeRubricModal}
         actionType={actionType}
       />
-    )
-  }
-
-  return <Row style={{ width: '100%' }}>{getContent()}</Row>
+    </Row>
+  )
 }
 
 const enhance = compose(

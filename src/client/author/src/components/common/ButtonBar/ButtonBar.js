@@ -13,6 +13,8 @@ import {
   IconPencilEdit,
   IconPreview,
   IconSaveNew,
+  IconExpand,
+  IconCollapse,
 } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
 import { roleuser } from '@edulastic/constants'
@@ -106,6 +108,9 @@ class ButtonBar extends Component {
       showSaveAndPublishButton,
       onSaveAndPublish,
       loadingComponents,
+      onCloseEditModal,
+      onToggleFullModal,
+      isInModal,
     } = this.props
     return (
       <>
@@ -163,10 +168,21 @@ class ButtonBar extends Component {
             {hasAuthorPermission && (
               <RightSide>
                 {renderRightSide()}
+                {onCloseEditModal && (
+                  <EduButton
+                    isBlue
+                    data-cy="closeEditModal"
+                    onClick={onCloseEditModal}
+                    width="120px"
+                  >
+                    <IconClose />
+                    Cancel
+                  </EduButton>
+                )}
                 {(showPublishButton || showPublishButton === undefined) &&
                   (itemStatus === 'draft' ? (
                     <>
-                      {isTestFlow && (
+                      {isTestFlow && !onCloseEditModal && (
                         <EduButton
                           isBlue
                           data-cy="saveCancel"
@@ -191,7 +207,7 @@ class ButtonBar extends Component {
                     </>
                   ) : (
                     <>
-                      {isTestFlow && (
+                      {isTestFlow && !onCloseEditModal && (
                         <EduButton isBlue onClick={onCancel}>
                           <IconClose />
                           CANCEL
@@ -240,12 +256,22 @@ class ButtonBar extends Component {
                     isBlue
                     data-cy="editItem"
                     onClick={onEnableEdit}
-                    width="120px"
+                    width="98px"
                   >
                     EDIT
                   </EduButton>
                 )}
                 {renderExtra()}
+                {!!onToggleFullModal && (
+                  <EduButton
+                    isBlue
+                    IconBtn
+                    data-cy="expandbutton"
+                    onClick={onToggleFullModal}
+                  >
+                    {isInModal ? <IconExpand /> : <IconCollapse />}
+                  </EduButton>
+                )}
               </RightSide>
             )}
             {!hasAuthorPermission && <RightSide>{renderExtra()}</RightSide>}
@@ -352,11 +378,8 @@ ButtonBar.propTypes = {
   onSaveScrollTop: PropTypes.func.isRequired,
   disableSave: PropTypes.func,
   onCancel: PropTypes.func.isRequired,
-  onPublishTestItem: PropTypes.func,
-  showPublishButton: PropTypes.bool,
   view: PropTypes.string.isRequired,
   hasAuthorPermission: PropTypes.bool,
-  itemStatus: PropTypes.any,
   showMetaData: PropTypes.bool,
   showAuditTrail: PropTypes.bool,
   permissions: PropTypes.object.isRequired,

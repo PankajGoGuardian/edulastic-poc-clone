@@ -91,7 +91,10 @@ import {
   CLEAR_ITEM_EVALUATION,
   CHANGE_VIEW,
 } from '../../author/src/constants/actions'
-import { addAutoselectGroupItems } from '../../author/TestPage/ducks'
+import {
+  addAutoselectGroupItems,
+  fillAutoselectGoupsWithDummyItems,
+} from '../../author/TestPage/ducks'
 import { PREVIEW } from '../constants/constantsForQuestions'
 import { getUserRole } from '../../author/src/selectors/user'
 import {
@@ -393,6 +396,7 @@ function* loadTest({ payload }) {
       )
     ) {
       test = yield addAutoselectGroupItems({ payload: test, preview })
+      fillAutoselectGoupsWithDummyItems(test)
     }
     if (
       preview &&
@@ -776,7 +780,7 @@ function* loadTest({ payload }) {
           notification({
             msg: errorMessage || 'Something went wrong!',
           })
-          Fscreen.exitFullscreen()
+          Fscreen.safeExitfullScreen()
           return yield put(push('/home/assignments'))
         }
         notification({
@@ -786,7 +790,7 @@ function* loadTest({ payload }) {
     }
     if (userRole === roleuser.STUDENT) {
       notification({ messageKey })
-      Fscreen.exitFullscreen()
+      Fscreen.safeExitfullScreen()
       return yield put(push('/home/assignments'))
     }
   }

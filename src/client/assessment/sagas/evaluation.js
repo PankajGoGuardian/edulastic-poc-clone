@@ -53,7 +53,10 @@ function* evaluateAnswers({ payload: groupId }) {
     const playerSkinType = yield select(playerSkinTypeSelector)
     // if user response is empty show toaster msg.
     const config =
-      playerSkinType === playerSkinValues.quester ? { bottom: '64px' } : {}
+      playerSkinType === playerSkinValues.quester ||
+      playerSkinType === playerSkinValues.drc
+        ? { bottom: '64px' }
+        : {}
     if (isEmpty(validResponses)) {
       yield put({ type: SET_CHECK_ANSWER_PROGRESS_STATUS, payload: false })
       return notification({
@@ -184,7 +187,10 @@ function* evaluateAnswers({ payload: groupId }) {
   } catch (err) {
     const playerSkinType = yield select(playerSkinTypeSelector)
     const config =
-      playerSkinType === playerSkinValues.quester ? { bottom: '64px' } : {}
+      playerSkinType === playerSkinValues.quester ||
+      playerSkinType === playerSkinValues.drc
+        ? { bottom: '64px' }
+        : {}
     if (err.status === 403)
       notification({
         type: 'warn',

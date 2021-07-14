@@ -97,7 +97,10 @@ import {
   changeDataToPreferredLanguage,
   changeDataInPreferredLanguage,
 } from '../../assessment/utils/question'
-import { getOptionsForMath } from '../../assessment/utils/variables'
+import {
+  getOptionsForMath,
+  getOptionsForClozeMath,
+} from '../../assessment/utils/variables'
 
 // constants
 export const resourceTypeQuestions = {
@@ -146,9 +149,9 @@ export const receiveQuestionByIdAction = (id) => ({
   },
 })
 
-export const saveQuestionAction = (testId, isTestFlow, isEditFlow = false) => ({
+export const saveQuestionAction = (data) => ({
   type: SAVE_QUESTION_REQUEST,
-  payload: { testId, isTestFlow, isEditFlow },
+  payload: data,
 })
 
 export const setQuestionDataAction = (question) => ({
@@ -419,7 +422,15 @@ export const redirectTestIdSelector = (state) =>
   get(state, 'itemDetail.redirectTestId', false)
 
 function* saveQuestionSaga({
-  payload: { testId: tId, isTestFlow, isEditFlow, saveAndPublishFlow = false },
+  payload: {
+    testId: tId,
+    isTestFlow,
+    isEditFlow,
+    saveAndPublishFlow = false,
+    rowIndex: passageQuestionRowIndex,
+    tabIndex: passageQuestionTabIndex,
+    callback,
+  },
 }) {
   try {
     if (isTestFlow) {
@@ -499,9 +510,13 @@ function* saveQuestionSaga({
     const locationState = yield select((state) => state.router.location.state)
     updateItemWithAlignmentDetails(itemDetail, alignments)
     let currentQuestionIds = getQuestionIds(itemDetail)
-    const { rowIndex, tabIndex } = locationState || {
+    let { rowIndex, tabIndex } = locationState || {
       rowIndex: 0,
       tabIndex: 1,
+    }
+    if (callback) {
+      tabIndex = passageQuestionTabIndex
+      rowIndex = passageQuestionRowIndex
     }
     const { id } = question
     const entity = {
@@ -673,12 +688,40 @@ function* saveQuestionSaga({
       item = yield call(testItemsApi.updateById, itemDetail._id, data, _testId)
     }
     yield put(changeUpdatedFlagAction(false))
+
     if (item.testId) {
       yield put(setRedirectTestAction(item.testId))
     }
 
     if (!saveAndPublishFlow) {
       notification({ type: 'success', messageKey: 'itemSavedSuccess' })
+    }
+
+    if (typeof callback === 'function') {
+      yield put({
+        type: UPDATE_ITEM_DETAIL_SUCCESS,
+        payload: { item },
+      })
+      callback()
+      yield put(changeCurrentQuestionAction(''))
+      const currentRouterState = yield select(
+        (state) => state.router.location.state
+      )
+      if (currentRouterState) {
+        const routerTestId = currentRouterState.previousTestId
+        if (routerTestId) {
+          tId = routerTestId
+        }
+      }
+      yield put(
+        push({
+          pathname: isTestFlow
+            ? `/author/tests/${tId}/editItem/${item?._id}`
+            : `/author/items/${item._id}/item-detail`,
+          state: currentRouterState,
+        })
+      )
+      return
     }
 
     const { standards = [] } = alignments[0]
@@ -977,7 +1020,13 @@ function* addAuthoredItemsToTestSaga({ payload }) {
 
 function* calculateFormulaSaga({ payload }) {
   try {
-    const getLatexValuePairs = ({ id, variables, example, options }) => ({
+    const getLatexValuePairs = ({
+      id,
+      variables,
+      example,
+      options,
+      isClozeMath,
+    }) => ({
       id,
       latexes: Object.keys(variables)
         .map((variableName) => variables[variableName])
@@ -988,6 +1037,7 @@ function* calculateFormulaSaga({ payload }) {
             {
               id: variable.name,
               formula: variable.formula,
+              options: isClozeMath ? options[variable.name] || {} : options,
             },
           ],
           []
@@ -1001,7 +1051,6 @@ function* calculateFormulaSaga({ payload }) {
             ? example[variableName]
             : variables[variableName].exampleValue,
       })),
-      ...options,
     })
 
     const question = yield select(getCurrentQuestionSelector)
@@ -1027,11 +1076,21 @@ function* calculateFormulaSaga({ payload }) {
 
     let results = []
     if (hasMathFormula(variables)) {
+      const isClozeMath = question.type === questionType.EXPRESSION_MULTIPART
       const options = question?.isMath
-        ? getOptionsForMath(get(question, 'validation.validResponse.value', []))
+        ? isClozeMath
+          ? getOptionsForClozeMath(variables, get(question, 'validation', {}))
+          : getOptionsForMath(
+              get(question, 'validation.validResponse.value', [])
+            )
         : {}
       const latexValuePairs = [
-        getLatexValuePairs({ id: 'definition', variables, options }),
+        getLatexValuePairs({
+          id: 'definition',
+          variables,
+          options,
+          isClozeMath,
+        }),
       ]
       if (examples) {
         for (const example of examples) {
@@ -1040,6 +1099,7 @@ function* calculateFormulaSaga({ payload }) {
             variables,
             example,
             options,
+            isClozeMath,
           })
           if (pair.latexes.length > 0) {
             latexValuePairs.push(pair)

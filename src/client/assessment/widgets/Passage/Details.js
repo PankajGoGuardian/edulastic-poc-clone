@@ -136,6 +136,29 @@ const Details = ({ item, setQuestionData, fillSections, cleanSections, t }) => {
       </Question>
       <Question
         section="main"
+        label={t('component.passage.source')}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
+        <Subtitle
+          id={getFormattedAttrId(
+            `${item?.title}-${t('component.passage.source')}`
+          )}
+        >
+          {t('component.passage.source')}
+        </Subtitle>
+        <WidgetFRInput data-cy="source">
+          <QuestionTextArea
+            placeholder={t('component.passage.enterPassageSourceHere')}
+            onChange={(value) => handleChange('source', value)}
+            value={item.source || ''}
+            border="border"
+            toolbarId="source"
+          />
+        </WidgetFRInput>
+      </Question>
+      <Question
+        section="main"
         label={t('component.passage.contents')}
         fillSections={fillSections}
         cleanSections={cleanSections}

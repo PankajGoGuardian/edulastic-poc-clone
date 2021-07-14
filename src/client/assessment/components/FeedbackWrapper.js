@@ -155,7 +155,7 @@ const FeedbackWrapper = ({
           <PrintPreviewScore disabled={disabled} data={data} />
         ))}
 
-      {isPrintPreview && timeSpent && showFeedback && !disabled && (
+      {isPrintPreview && !!timeSpent && showFeedback && !disabled && (
         <div className="__prevent-page-break __print-time-spent">
           <TimeSpentWrapper style={{ justifyContent: 'center' }}>
             <FontAwesomeIcon icon={faClock} aria-hidden="true" />

@@ -7,12 +7,12 @@ import { get, isEmpty, debounce } from 'lodash'
 import { AutoComplete, Input, Icon, Empty } from 'antd'
 
 // ducks
+import { useDropdownData } from '@edulastic/common'
 import { getUser } from '../../../../src/selectors/user'
 import {
   receiveCourseListAction,
   getCourseListSelector,
 } from '../../../../Courses/ducks'
-import useDropdownData from '../../hooks/useDropdownData'
 
 const DEFAULT_SEARCH_TERMS = { text: '', selectedText: '', selectedKey: 'All' }
 

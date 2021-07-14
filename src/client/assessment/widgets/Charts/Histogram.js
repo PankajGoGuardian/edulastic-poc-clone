@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo, useRef } from 'react'
 import PropTypes from 'prop-types'
 import { isEqual } from 'lodash'
 import produce from 'immer'
@@ -6,7 +6,6 @@ import produce from 'immer'
 import { useDisableDragScroll } from '@edulastic/common'
 
 import HorizontalLines from './components/HorizontalLines'
-import ArrowPair from './components/ArrowPair'
 import ValueLabel from './components/ValueLabel'
 import withGrid from './HOC/withGrid'
 import {
@@ -15,10 +14,12 @@ import {
   getGridVariables,
   displayHorizontalLines,
   displayVerticalLines,
+  normalizeTouchEvent,
 } from './helpers'
+import { EDIT } from '../../constants/constantsForQuestions'
 import Hists from './components/Hists'
-
 import BarsAxises from './components/BarsAxises'
+import { ActiveBar } from './styled'
 
 const Histogram = ({
   item,
@@ -38,12 +39,14 @@ const Histogram = ({
   const { padding, step } = getGridVariables(data, gridParams, true)
 
   const [active, setActive] = useState(null)
-  const [activeIndex, setActiveIndex] = useState(null)
   const [isMouseDown, setIsMouseDown] = useState(false)
   const [cursorY, setCursorY] = useState(null)
   const [initY, setInitY] = useState(null)
-
   const [localData, setLocalData] = useState(data)
+
+  const targetRef = useDisableDragScroll()
+  const activeBarRef = useRef()
+  const arrowGropRef = useRef()
 
   useEffect(() => {
     if (!isEqual(data, localData)) {
@@ -62,6 +65,19 @@ const Histogram = ({
       })),
     [localData]
   )
+
+  const showArrow = useMemo(() => {
+    if (active === null) {
+      return false
+    }
+    if (view !== EDIT && data[active] && !data[active].notInteractive) {
+      return true
+    }
+    if (view === EDIT) {
+      return true
+    }
+    return false
+  }, [active, data, view])
 
   const getPolylinePoints = () =>
     bars
@@ -89,41 +105,61 @@ const Histogram = ({
       return
     }
     setCursorY(null)
-    setActiveIndex(null)
     setInitY(null)
-    setActive(null)
     setIsMouseDown(false)
     toggleBarDragging(false)
     saveAnswer(localData, active)
   }
 
-  const normalizeTouchEvent = (e) => {
-    if (e?.nativeEvent?.changedTouches?.length) {
-      e.pageX = e.nativeEvent.changedTouches[0].pageX
-      e.pageY = e.nativeEvent.changedTouches[0].pageY
-    }
-  }
-
   const onMouseMove = (e) => {
     if (window.isIOS || window.isMobileDevice) normalizeTouchEvent(e)
-    if (isMouseDown && cursorY && !deleteMode) {
-      const newPxY = convertUnitToPx(initY, gridParams) + e.pageY - cursorY
+    if (isMouseDown && cursorY && !deleteMode && active !== null) {
+      const newPxY = convertUnitToPx(initY, gridParams) + e.clientY - cursorY
       setLocalData(
         produce(localData, (newLocalData) => {
-          setLocalData(newLocalData)
-          newLocalData[activeIndex].y = convertPxToUnit(newPxY, gridParams)
+          newLocalData[active].y = convertPxToUnit(newPxY, gridParams)
         })
       )
     }
+
+    if (activeBarRef.current && active !== null && targetRef.current) {
+      const svgTop = targetRef.current?.getBoundingClientRect()?.top || 0
+      const cBar = bars[active]
+      const cBarY = e.clientY - svgTop
+      if (cBarY - gridMargin > 0 && cBarY <= height - 20 && svgTop > 0) {
+        activeBarRef.current.setAttributeNS(null, 'y', cBarY)
+        activeBarRef.current.setAttributeNS(null, 'x', cBar.posX)
+        activeBarRef.current.setAttributeNS(null, 'width', cBar.width)
+        if (arrowGropRef.current) {
+          const px = cBar.posX + cBar.width / 2
+          const py = cBarY + 2.5
+          arrowGropRef.current?.children?.[0]?.setAttributeNS(
+            null,
+            'd',
+            `M ${px},${py + 20} ${px + 8},${py + 10} ${px - 8},${py + 10} Z`
+          )
+          arrowGropRef.current?.children?.[1]?.setAttributeNS(
+            null,
+            'd',
+            `M ${px},${py - 20} ${px + 8},${py - 10} ${px - 8},${py - 10} Z`
+          )
+        }
+      }
+    }
   }
 
-  const onMouseDown = (index) => (e) => {
+  const onMouseDownActiveBar = (e) => {
     if (window.isIOS || window.isMobileDevice) normalizeTouchEvent(e)
-    setCursorY(e.pageY)
-    setActiveIndex(index)
-    setInitY(localData[index].y)
+    const svgTop = targetRef.current?.getBoundingClientRect()?.top || 0
+    const cBarY = convertPxToUnit(e.clientY - svgTop - gridMargin, gridParams)
+    setLocalData(
+      produce(localData, (newLocalData) => {
+        newLocalData[active].y = cBarY
+      })
+    )
+    setCursorY(e.clientY)
     setIsMouseDown(true)
-    toggleBarDragging(true)
+    setInitY(cBarY)
   }
 
   const onMouseUp = () => {
@@ -132,9 +168,12 @@ const Histogram = ({
 
   const onMouseLeave = () => {
     save()
+    setActive(null)
   }
 
-  const targetRef = useDisableDragScroll()
+  const onMouseEnterBar = (barIndex) => {
+    setActive(barIndex)
+  }
 
   return (
     <svg
@@ -167,17 +206,31 @@ const Histogram = ({
           item={item}
           saveAnswer={(i) => saveAnswer(localData, i)}
           deleteMode={deleteMode}
-          activeIndex={activeIndex}
-          onPointOver={setActive}
           previewTab={previewTab}
           bars={bars}
           evaluation={evaluation}
-          view={view}
-          onMouseDown={!disableResponse ? onMouseDown : () => {}}
           gridParams={gridParams}
+          activeIndex={active}
+          onMouseEnterBar={onMouseEnterBar}
         />
 
-        <ArrowPair getActivePoint={getActivePoint} />
+        {showArrow && (
+          <ActiveBar
+            hoverState
+            height={5}
+            deleteMode={deleteMode}
+            color="#bd1f7c"
+            onMouseDown={!disableResponse ? onMouseDownActiveBar : () => {}}
+            ref={activeBarRef}
+          />
+        )}
+
+        {showArrow && (
+          <g ref={arrowGropRef}>
+            <path d="" />
+            <path d="" />
+          </g>
+        )}
 
         {gridParams.displayPositionOnHover && (
           <ValueLabel

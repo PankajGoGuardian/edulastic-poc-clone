@@ -60,6 +60,7 @@ const keyboardMethods = {
   ADVANCED_MATRICES: 'advanced_matrices',
   ADVANCED_TRIGNOMETRY: 'advanced_trignometry',
   GEOMETRY: 'geometry',
+  CHEMISTRY: 'chemistry',
   UNITS_SI: 'units_si',
   UNITS_US: 'units_us',
   ALL_BUTTONS: 'all',
@@ -107,6 +108,12 @@ const symbols = [
     value: keyboardMethods.GEOMETRY,
     label: 'Geometry',
     width: 400,
+    height: 250,
+  },
+  {
+    value: keyboardMethods.CHEMISTRY,
+    label: 'Chemistry',
+    width: 520,
     height: 250,
   },
   {

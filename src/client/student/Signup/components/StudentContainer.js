@@ -58,6 +58,7 @@ import {
   LARGE_DESKTOP_WIDTH,
 } from '../../../author/src/constants/others'
 import PasswordPopup from './PasswordPopup'
+import TermsAndPrivacy from './TermsAndPrivacy/TermsAndPrivacy'
 
 const FormItem = Form.Item
 const GOOGLE = 'google'
@@ -595,6 +596,7 @@ class StudentSignup extends React.Component {
                               </RegisterButton>
                             )}
                           </FormItem>
+                          <TermsAndPrivacy />
                         </Form>
                       </Col>
                     </FormBody>

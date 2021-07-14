@@ -177,6 +177,8 @@ class MathKeyboard extends React.PureComponent {
       docBasedKeypadStyles,
       customKeypads,
       showDragHandle,
+      showPeriodic,
+      togglePeriodicTable,
     } = this.props
     const { type, keyboardButtons, numberButtons, selectOptions } = this.state
 
@@ -210,6 +212,8 @@ class MathKeyboard extends React.PureComponent {
             type={type}
             btns={keyboardButtons}
             numbers={numberButtons}
+            showPeriodic={showPeriodic}
+            openPeriodic={togglePeriodicTable}
           />
         )}
         {type !== 'qwerty' && type === 'all' && (

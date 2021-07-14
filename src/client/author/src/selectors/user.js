@@ -87,6 +87,15 @@ export const getCurrentTerm = createSelector(stateSelector, (state) =>
   _get(state, 'user.orgData.defaultTermId')
 )
 
+export const getCurrentActiveTerms = createSelector(stateSelector, (state) => {
+  const terms = _get(state, 'user.orgData.terms', [])
+  const currentTime = new Date().getTime()
+  const currentTerms = terms.filter(
+    (o) => o.startDate <= currentTime && o.endDate >= currentTime
+  )
+  return currentTerms.map((x) => x._id)
+})
+
 export const getInterestedCurriculumsSelector = createSelector(
   getOrgDataSelector,
   (state) => _get(state, 'interestedCurriculums', [])
@@ -198,6 +207,7 @@ export const convertCollectionsToBucketList = (collections) => {
       collectionDescription: collection.description,
       accessLevel: collection.accessLevel || '',
       districtId: collection.districtId,
+      type: collection.type,
     }))
   )
   return flatttenBuckets || []
@@ -433,7 +443,7 @@ export const allowedToSelectMultiLanguageInTest = createSelector(
   currentUserIdSelector,
   (state) => {
     const allowedUserIds = [
-      '5f5f729516eaad0008c45a44', // uat user
+      '5f5f729516eaad0008c45a44', // vinayt@v2.com uat user
       // '5d26f2f892df401ddf8c2fd7', // poc user
       '6034a9c3e6cce4000810e6d1', // cespark1@at.com - automation QA env
       '602383287e63eb0007a54233', // vvk@content.com - Conetnt Author

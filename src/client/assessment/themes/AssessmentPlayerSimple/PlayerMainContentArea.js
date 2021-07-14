@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
@@ -41,10 +41,10 @@ const PlayerContentArea = ({
   changePreview,
   blockNavigationToAnsweredQuestions = false,
   tool,
+  premiumCollectionWithoutAccess,
+  isPremiumContentWithoutAccess,
 }) => {
-  const scrollContainerRef = useRef()
   const item = items[currentItem]
-  const isZoomApplied = zoomLevel > 1
   const previousQuestionActivity = previousQuestionActivities[item._id]
   const responsiveWidth = getZoomedResponsiveWidth({
     windowWidth,
@@ -53,13 +53,8 @@ const PlayerContentArea = ({
   })
 
   return (
-    <Main ref={scrollContainerRef} zoomed={isZoomApplied} zoomLevel={zoomLevel}>
-      <MainContent
-        skin
-        zoomLevel={zoomLevel}
-        responsiveWidth={responsiveWidth}
-        className="scrollable-main-wrapper"
-      >
+    <Main>
+      <MainContent>
         {testItemState === '' && (
           <TestItemPreview
             crossAction={crossAction}
@@ -81,6 +76,11 @@ const PlayerContentArea = ({
             updateScratchpadtoStore
             testItemId={item._id}
             tool={tool}
+            zoomLevel={zoomLevel}
+            responsiveWidth={responsiveWidth}
+            isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
+            premiumCollectionWithoutAccess={premiumCollectionWithoutAccess}
+            isExpandedView
           />
         )}
         {testItemState === 'check' && (
@@ -103,6 +103,11 @@ const PlayerContentArea = ({
             changePreviewTab={changePreview}
             testItemId={item._id}
             tool={tool}
+            zoomLevel={zoomLevel}
+            responsiveWidth={responsiveWidth}
+            isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
+            premiumCollectionWithoutAccess={premiumCollectionWithoutAccess}
+            isExpandedView
           />
         )}
       </MainContent>
@@ -155,20 +160,7 @@ const Main = styled.main`
   overflow: hidden;
 
   margin-top: 64px;
-  padding: ${({ zoomed, zoomLevel }) => {
-    if (zoomed) {
-      if (zoomLevel >= 1.5 && zoomLevel < 1.75) {
-        return '20px'
-      }
-      if (zoomLevel >= 1.75 && zoomLevel < 2.5) {
-        return '15px'
-      }
-      if (zoomLevel >= 2.5) {
-        return '10px'
-      }
-    }
-    return '20px'
-  }};
+  padding: 20px;
 `
 
 const MainContent = styled.div`
@@ -185,15 +177,6 @@ const MainContent = styled.div`
   width: 100%;
   flex-direction: column;
 
-  ${({ zoomLevel, responsiveWidth }) => {
-    const zoomed = zoomLevel > 1 && zoomLevel !== undefined
-    return `
-      min-width: ${responsiveWidth}px;
-      height: ${zoomed ? `${100 / zoomLevel}%` : '100%'};
-      transform: ${zoomed ? `scale(${zoomLevel})` : ''};
-      transform-origin: ${zoomed ? `top left` : ''};
-    `
-  }};
   & * {
     -webkit-touch-callout: none;
     user-select: none;

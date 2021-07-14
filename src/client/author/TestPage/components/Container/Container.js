@@ -57,6 +57,7 @@ import {
   setShowUpgradePopupAction,
   receiveTestByIdSuccess as receiveTestByIdSuccessAction,
   isRegradedByCoAuthor,
+  setCurrentTestSettingsIdAction,
 } from '../../ducks'
 import {
   clearSelectedItemsAction,
@@ -116,6 +117,7 @@ import {
 } from '../../../../student/Assignments/ducks'
 import { setSelectedLanguageAction } from '../../../../student/sharedDucks/AssignmentModule/ducks'
 import { fetchCustomKeypadAction } from '../../../../assessment/components/KeyPadOptions/ducks'
+import { convertCollectionOptionsToArray } from '../../../src/utils/util'
 
 const ItemCloneModal = loadable(() => import('../ItemCloneConfirmationModal'))
 
@@ -196,11 +198,13 @@ class Container extends PureComponent {
       isVersionFlow,
       getTestIdFromVersionId,
       fetchUserKeypads,
+      setCurrentTestSettingsId,
     } = this.props
 
     const { versionId, id } = match.params
 
     if (userRole !== roleuser.STUDENT) {
+      setCurrentTestSettingsId('')
       fetchUserKeypads()
       const self = this
       const { showCancelButton = false, editAssigned = false } =
@@ -262,7 +266,8 @@ class Container extends PureComponent {
         setRegradeOldId('')
       }
 
-      if (userRole !== roleuser.EDULASTIC_CURATOR) getDefaultTestSettings()
+      if (userRole !== roleuser.EDULASTIC_CURATOR)
+        getDefaultTestSettings({ saveDefaultTestSettings: true })
     } else {
       fetchAssignmentsByTest({ testId: id })
     }
@@ -448,8 +453,23 @@ class Container extends PureComponent {
   }
 
   handleAssign = () => {
-    const { test, history, match, updated } = this.props
-    const { status } = test
+    const {
+      test,
+      history,
+      match,
+      updated,
+      collections: orgCollections,
+    } = this.props
+    const { status, collections } = test
+
+    const sparkMathId = orgCollections?.find(
+      (x) => x.name.toLowerCase() === 'spark math'
+    )?._id
+
+    const isSparkMathCollection = collections?.some(
+      (x) => x._id === sparkMathId
+    )
+
     if (this.validateTest(test)) {
       if (status !== statusConstants.PUBLISHED || updated) {
         this.handlePublishTest(true)
@@ -458,7 +478,11 @@ class Container extends PureComponent {
         if (id) {
           history.push({
             pathname: `/author/assignments/${id}`,
-            state: { fromText: 'TEST LIBRARY', toUrl: '/author/tests' },
+            state: {
+              fromText: 'TEST LIBRARY',
+              toUrl: '/author/tests',
+              isSparkMathCollection,
+            },
           })
         }
       }
@@ -482,22 +506,8 @@ class Container extends PureComponent {
 
   handleChangeCollection = (_, options) => {
     const { setData, test, collectionsToShow } = this.props
-    const data = {}
-    options.forEach((o) => {
-      if (data[o.props._id]) {
-        data[o.props._id].push(o.props.value)
-      } else {
-        data[o.props._id] = [o.props.value]
-      }
-    })
 
-    const collectionArray = []
-    for (const [key, value] of Object.entries(data)) {
-      collectionArray.push({
-        _id: key,
-        bucketIds: value,
-      })
-    }
+    const collectionArray = convertCollectionOptionsToArray(options)
 
     const orgCollectionIds = collectionsToShow.map((o) => o._id)
     const extraCollections = (test.collections || []).filter(
@@ -1389,6 +1399,7 @@ const enhance = compose(
       fetchUserKeypads: fetchCustomKeypadAction,
       setShowUpgradePopup: setShowUpgradePopupAction,
       receiveTestByIdSuccess: receiveTestByIdSuccessAction,
+      setCurrentTestSettingsId: setCurrentTestSettingsIdAction,
     }
   )
 )

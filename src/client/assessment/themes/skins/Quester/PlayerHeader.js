@@ -65,6 +65,7 @@ const PlayerHeader = ({
   items,
   grades,
   subjects,
+  isPremiumContentWithoutAccess = false,
 }) => {
   const totalQuestions = options.length
   const totalBookmarks = bookmarks.filter((b) => b).length
@@ -95,7 +96,11 @@ const PlayerHeader = ({
 
   return (
     <FlexContainer>
-      {testType === testConstants.type.PRACTICE && <SettingsModal />}
+      {testType === testConstants.type.PRACTICE && (
+        <SettingsModal
+          isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
+        />
+      )}
       <ReviewQuestionsModal
         options={options}
         filterData={filterData}

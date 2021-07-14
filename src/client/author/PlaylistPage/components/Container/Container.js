@@ -43,6 +43,7 @@ import {
   isPublisherUserSelector,
   getUserRole,
   isOrganizationDistrictUserSelector,
+  getCollectionsSelector,
 } from '../../../src/selectors/user'
 import SourceModal from '../../../QuestionEditor/components/SourceModal/SourceModal'
 import ShareModal from '../../../src/components/common/ShareModal'
@@ -51,6 +52,7 @@ import Summary from '../../../TestPage/components/Summary'
 import Setting from '../Settings'
 import { CollectionsSelectModal } from '../CollectionsSelectModal/collectionsSelectModal'
 import { setDefaultInterests } from '../../../dataUtils'
+import { convertCollectionOptionsToArray } from '../../../src/utils/util'
 
 // TODO: replace with playlistApi once api is updated
 const { getDefaultImage } = testsApi
@@ -161,22 +163,8 @@ class Container extends PureComponent {
 
   handleChangeCollection = (value, options) => {
     const { setData, playlist, collectionsToShow } = this.props
-    const data = {}
-    options.forEach((o) => {
-      if (data[o.props._id]) {
-        data[o.props._id].push(o.props.value)
-      } else {
-        data[o.props._id] = [o.props.value]
-      }
-    })
 
-    const collectionArray = []
-    for (const [key, _value] of Object.entries(data)) {
-      collectionArray.push({
-        _id: key,
-        bucketIds: _value,
-      })
-    }
+    const collectionArray = convertCollectionOptionsToArray(options)
 
     const orgCollectionIds = collectionsToShow.map((o) => o._id)
     const extraCollections = (playlist.collections || []).filter(
@@ -367,13 +355,22 @@ class Container extends PureComponent {
   }
 
   handleSave = (_, hideNotification) => {
-    const { playlist, updatePlaylist, createPlayList } = this.props
+    const { playlist, updatePlaylist, createPlayList, collections } = this.props
     if (!playlist?.modules?.length) {
       /**
        * need to save only when at-least a module present
        */
       return
     }
+    const smId = collections
+      .filter((x) => x?.name?.toLowerCase() === 'spark math')
+      .map(({ _id }) => _id)
+    const isSMPlaylist = [
+      ...(playlist?.collections || []),
+      ...(playlist?.clonedCollections || []),
+    ]?.some((c) => smId?.includes(c?._id))
+
+    playlist.isSMPlaylist = isSMPlaylist
 
     if (playlist._id) {
       updatePlaylist(playlist._id, playlist, hideNotification)
@@ -570,6 +567,7 @@ const enhance = compose(
       itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state),
       collectionsToShow: getCollectionsToAddContent(state),
       isPublisherUser: isPublisherUserSelector(state),
+      collections: getCollectionsSelector(state),
       useRole: getUserRole(state),
       isOrganizationDistrictUser: isOrganizationDistrictUserSelector(state),
     }),

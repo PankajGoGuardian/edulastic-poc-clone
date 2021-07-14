@@ -32,7 +32,7 @@ const Display = ({
   fromSetAnswers,
   ...restProps
 }) => (
-  <FlexContainer alignItems="baseline" justifyContent="flex-start">
+  <FlexContainer alignItems="flex-start" justifyContent="flex-start">
     {!flowLayout && (
       <>
         <FlexContainer

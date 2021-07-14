@@ -12,7 +12,7 @@ const evaluator = async (data, type) => {
     const allAnswers = [correctAnswers, ...alternateAnswers].filter(
       (i) => i.length
     )
-    const { points, latex } = validationObj
+    const { points, latex } = validationObj?.validResponse?.options || {}
 
     if (allAnswers.length === 0 && !points && !latex) {
       const error = new Error()

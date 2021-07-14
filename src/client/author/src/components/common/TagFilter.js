@@ -2,14 +2,17 @@ import React, { useMemo, useState, useEffect, useCallback } from 'react'
 import { connect } from 'react-redux'
 import { uniqBy } from 'lodash'
 import { Empty, Select } from 'antd'
-import { SelectInputStyled, notification } from '@edulastic/common'
+import {
+  SelectInputStyled,
+  notification,
+  useDropdownData,
+} from '@edulastic/common'
 import { tagsApi } from '@edulastic/api'
 import {
   getAllTagsAction,
   getAllTagsSelector,
   addNewTagAction,
 } from '../../../TestPage/ducks'
-import useDropdownData from '../../../Reports/common/hooks/useDropdownData'
 
 const TagFilter = ({
   selectedTags = [],

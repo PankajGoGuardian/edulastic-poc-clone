@@ -2,6 +2,7 @@ export const white = '#fff'
 export const black = '#000'
 export const fadedBlack = 'rgba(0, 0, 0, 0.65)'
 export const lightFadedBlack = 'rgba(0, 0, 0, 0.15)'
+export const textBlackColor = '#212E3A'
 
 export const themeColor = '#1AB394' // green
 export const themeColorLight = '#42d184' // light green
@@ -14,6 +15,8 @@ export const themeLightGrayColor = '#BBBFC4'
 export const themeLightGrayBgColor = '#F1F1F1'
 export const themeColorBlue = 'rgba(63, 132, 229, 1)'
 export const themeColorHoverBlue = '#1A73E8'
+export const drcThemeColor = '#3f85e5'
+export const drcWhite = '#fff'
 
 export const greyThemeDark1 = '#434B5D'
 export const greyThemeDark2 = '#878A91'
@@ -59,6 +62,7 @@ export const mainTextColor = '#444444'
 export const secondaryTextColor = '#434b5d'
 export const greyDarken = '#979BA1'
 export const tagTextColor = '#676e74'
+export const tagsBgColor = '#b3bcc4'
 export const titleColor = darkGrey2
 export const greyScoreCardTitleColor = lightGrey11
 export const cardTitleColor = lightGrey11

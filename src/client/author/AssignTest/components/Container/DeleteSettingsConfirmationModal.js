@@ -15,6 +15,7 @@ const DeleteTestSettingsModal = ({
       okText="YES, DELETE"
       onOk={() => handleResponse(true)}
       destroyOnClose
+      centered
     >
       <div>
         <span>{settingDetails?.title}</span> will be deleted from the list. Are

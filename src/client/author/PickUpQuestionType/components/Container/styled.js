@@ -28,16 +28,19 @@ export const Content = styled.div`
 export const AffixWrapper = styled(Affix)`
   position: fixed;
   width: 280px;
-  top: ${(props) =>
-    props.theme.HeaderHeight.xs +
-    41}px; // 41 is value of extra offset e.g. padding, heading
+  top: ${({ theme, addQuestionToPassage }) =>
+    !addQuestionToPassage &&
+    theme.HeaderHeight.xs +
+      41}px; // 41 is value of extra offset e.g. padding, heading
   padding: 30px 0px 10px;
 
   @media (min-width: ${mediumDesktopExactWidth}) {
-    top: ${(props) => props.theme.HeaderHeight.md + 41}px;
+    top: ${({ theme, addQuestionToPassage }) =>
+      !addQuestionToPassage && theme.HeaderHeight.md + 41}px;
   }
   @media (min-width: ${extraDesktopWidthMax}) {
-    top: ${(props) => props.theme.HeaderHeight.xl + 41}px;
+    top: ${({ theme, addQuestionToPassage }) =>
+      !addQuestionToPassage && theme.HeaderHeight.xl + 41}px;
   }
 `
 
@@ -53,7 +56,8 @@ export const LeftSide = styled.div`
   position: relative;
 
   .scrollbar-container {
-    height: calc(100vh - 150px);
+    height: ${({ addQuestionToPassage }) =>
+      addQuestionToPassage ? 'calc(100vh - 250px)' : 'calc(100vh - 150px)'};
     padding-right: 30px;
 
     ::-webkit-scrollbar {

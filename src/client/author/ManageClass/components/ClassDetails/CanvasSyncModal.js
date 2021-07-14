@@ -31,12 +31,15 @@ const CanvasSyncModal = ({
   institutionId,
   isFetchingCanvasData,
   syncCanvasCoTeacher,
+  isAutoArchivedClass,
 }) => {
   const [course, setCourse] = useState(canvasCode)
   const [section, setSection] = useState(canvasCourseSectionCode)
   const [sectionError, setSectionError] = useState(false)
   const [courseError, setCourseError] = useState(false)
-  const [coTeacherFlag, setCoTeacherFlag] = useState(syncCanvasCoTeacher)
+  const isCoTeacherFlagSet =
+    canvasCode && !isAutoArchivedClass ? syncCanvasCoTeacher : true
+  const [coTeacherFlag, setCoTeacherFlag] = useState(isCoTeacherFlagSet)
   const [isDisabled, setIsDisabled] = useState(
     !!canvasCode && !!canvasCourseSectionCode
   )
@@ -78,7 +81,7 @@ const CanvasSyncModal = ({
     getCanvasSectionListRequest({ institutionId, allCourseIds: [value] })
     setCourse(value)
     setSection('')
-    setCoTeacherFlag(false)
+    setCoTeacherFlag(true)
     setCourseError(false)
     setSectionError(false)
   }
@@ -157,6 +160,7 @@ const CanvasSyncModal = ({
       disabled={isSyncDisabled}
       loading={syncClassLoading}
       onClick={handleSync}
+      data-cy="syncCanvasClassSubmit"
     >
       {syncClassLoading ? 'Syncing...' : 'Sync'}
     </EduButton>,
@@ -178,8 +182,9 @@ const CanvasSyncModal = ({
           value={+course || undefined}
           onChange={handleCourseChange}
           getPopupContainer={(triggerNode) => triggerNode.parentNode}
-          disabled={isDisabled}
+          disabled={isDisabled && !isAutoArchivedClass}
           isError={courseError}
+          data-cy="selctCourseCanvasClass"
         >
           {canvasCourseList.map((c) => (
             <Select.Option key={c.id} value={+c.id}>
@@ -199,8 +204,9 @@ const CanvasSyncModal = ({
             setCourseError(false)
             setSectionError(false)
           }}
+          data-cy="selctSectionCanvasClass"
           getPopupContainer={(triggerNode) => triggerNode.parentNode}
-          disabled={isDisabled}
+          disabled={isDisabled && !isAutoArchivedClass}
           isError={sectionError}
           notFoundContent={
             activeCanvasClassSectionCode?.length ? (

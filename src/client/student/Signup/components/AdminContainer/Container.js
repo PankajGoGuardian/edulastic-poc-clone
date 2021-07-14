@@ -53,6 +53,7 @@ import {
   MAX_TAB_WIDTH,
   LARGE_DESKTOP_WIDTH,
 } from '../../../../author/src/constants/others'
+import TermsAndPrivacy from '../TermsAndPrivacy/TermsAndPrivacy'
 
 const FormItem = Form.Item
 
@@ -326,6 +327,7 @@ class AdminSignup extends React.Component {
                               {t('component.signup.admin.signupadminbtn')}
                             </RegisterButton>
                           </FormItem>
+                          <TermsAndPrivacy />
                         </Form>
                       </Col>
                     </FormBody>

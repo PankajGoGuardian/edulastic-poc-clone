@@ -228,20 +228,25 @@ class ModuleRow extends Component {
       state: {
         from: 'myPlaylist',
         fromText: 'My Playlist',
-        toUrl: `/author/playlists/playlist/${playlistId}/use-this`,
+        toUrl: `playlists/playlist/${playlistId}/use-this`,
       },
     })
   }
 
-  assignTest = (moduleId, testId, testVersionId) => {
-    const { history, playlistId } = this.props
+  assignTest = (moduleId, testId, testVersionId, resources = []) => {
+    const { history, playlistId, isSMPlaylist } = this.props
+    const resourceIds = resources
+      .filter((x) => x.contentSubType === 'STUDENT')
+      .map((x) => x.contentId)
     history.push({
       pathname: `/author/playlists/assignments/${playlistId}/${moduleId}/${testId}`,
       state: {
         from: 'myPlaylist',
         fromText: 'My Playlist',
-        toUrl: `/author/playlists/playlist/${playlistId}/use-this`,
+        toUrl: `playlists/playlist/${playlistId}/use-this`,
         testVersionId,
+        resourceIds,
+        isSparkMathCollection: isSMPlaylist,
       },
     })
   }
@@ -795,7 +800,8 @@ class ModuleRow extends Component {
                               assignTest(
                                 _id,
                                 testId,
-                                moduleData.contentVersionId
+                                moduleData.contentVersionId,
+                                moduleData.resources
                               )
                             }}
                           >
@@ -963,7 +969,8 @@ class ModuleRow extends Component {
                                       assignTest(
                                         _id,
                                         moduleData.contentId,
-                                        moduleData.contentVersionId
+                                        moduleData.contentVersionId,
+                                        moduleData.resources
                                       )
                                     }
                                   >

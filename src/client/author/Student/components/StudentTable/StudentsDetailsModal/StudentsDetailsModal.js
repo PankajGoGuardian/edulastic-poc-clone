@@ -17,7 +17,10 @@ class StudentsDetailsModal extends React.Component {
       {
         title: t('users.student.studentdetail.name'),
         dataIndex: 'fullName',
-        render: (fullName, { provider, role }) => {
+        render: (fullName, { provider, role, status }) => {
+          if (status === 'FAILED_DOMAIN_RESTRICTED') {
+            return <div>-</div>
+          }
           if (role === 'student') {
             if (provider === 'google' || provider === 'mso') {
               return (

@@ -250,6 +250,7 @@ const ResourceItem = ({
               <IconMoreVertical
                 className="more-action-btn"
                 color={themeColor}
+                viewBox="0 0 3.8 14"
               />
             </IconActionButton>
           </Dropdown>

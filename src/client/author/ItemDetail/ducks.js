@@ -1301,14 +1301,14 @@ export function* updateItemSaga({ payload }) {
       }
     }
     const { __v, ...passageData } = (yield select(getPassageSelector)) || {}
-    const { structure } = passageData
-    if (structure) {
-      const { widgets = [] } = structure
-      if (isPassageWithQuestions && !widgets.length) {
-        notification({ messageKey: 'CannotSaveWithoutPasses' })
-        return null
-      }
-    }
+    // const { structure } = passageData
+    // if (structure) {
+    //   const { widgets = [] } = structure
+    //   if (isPassageWithQuestions && !widgets.length) {
+    //     notification({ messageKey: 'CannotSaveWithoutPasses' })
+    //     return null
+    //   }
+    // }
 
     /*
      * in test flow, until test is not created, testId comes as "undefined" in string
@@ -1701,6 +1701,14 @@ function* publishTestItemSaga({ payload }) {
       testItem && (testItem.multipartItem || testItem.isPassageWithQuestions)
     const standardPresent = questions.some(hasStandards)
     const { saveAndPublishFlow = false } = payload
+
+    if (testItem.isPassageWithQuestions) {
+      const { __v, structure } = (yield select(getPassageSelector)) || {}
+      const { widgets = [] } = structure
+      if (!widgets.length) {
+        return notification({ messageKey: 'CannotPublishWithoutPassages' })
+      }
+    }
 
     // if alignment data is not present, set the flag to open the modal, and wait for
     // an action from the modal.

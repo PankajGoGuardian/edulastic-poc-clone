@@ -1467,6 +1467,10 @@
     "message": "Cannot save without passages",
     "description": ""
   },
+  "CannotPublishWithoutPassages": {
+    "message": "Cannot publish without passages",
+    "description": ""
+  },
   "itemIsNotAssociated": {
     "message": " Item is not associated with any collection.",
     "description": ""

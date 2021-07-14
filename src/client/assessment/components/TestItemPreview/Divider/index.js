@@ -26,6 +26,7 @@ const DividerContainer = ({
       stackedView={isStudentReport || stackedView}
       onMouseEnter={handleToggleCollapse(true)}
       onMouseLeave={handleToggleCollapse(false)}
+      data-cy="collapsable-divider"
     >
       {(showCollapse || isCollapsed) && (
         <div

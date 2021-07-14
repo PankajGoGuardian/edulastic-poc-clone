@@ -2031,6 +2031,7 @@ export function* receiveTestByIdSaga({ payload }) {
       'endDate',
       'openPolicy',
       'closePolicy',
+      'resources',
     ])
     yield put(setDefaultTestSettingsAction(defaultTestSettings))
   } catch (err) {

@@ -77,8 +77,8 @@ export const WidgetContainer = styled.div`
   display: ${({ flowLayout }) => (flowLayout ? 'flex' : 'block')};
   flex-wrap: wrap;
   align-items: center;
-  min-width: max-content;
-  min-width: -webkit-max-content;
+  width: 100%;
+  min-width: fit-content;
 `
 
 export const CollapseBtn = styled.i`

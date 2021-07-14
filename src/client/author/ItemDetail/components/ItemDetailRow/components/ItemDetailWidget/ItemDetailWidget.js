@@ -3,7 +3,7 @@ import UnScored from '@edulastic/common/src/components/Unscored'
 import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { get, every } from 'lodash'
+import { get } from 'lodash'
 import { DragSource } from 'react-dnd'
 import { FlexContainer } from '@edulastic/common'
 import QuestionWrapper from '../../../../../../assessment/components/QuestionWrapper'
@@ -19,7 +19,12 @@ import {
   setQuestionScoreAction,
 } from '../../../../../sharedDucks/questions'
 import Ctrls from './Controls'
-import { Container, WidgetContainer, ButtonsContainer } from './styled'
+import {
+  Container,
+  WidgetContainer,
+  ButtonsContainer,
+  TotalPointsWrapper,
+} from './styled'
 
 const ItemDetailWidget = ({
   widget,
@@ -57,23 +62,31 @@ const ItemDetailWidget = ({
     setItemLevelScore(+score)
   }
 
-  const { itemLevelScoring, itemLevelScore, data } = itemData
+  const { itemLevelScoring, itemLevelScore } = itemData
 
   const showPoints = !(rowIndex === 0 && itemData.rows.length > 1)
   const isPointsBlockVisible =
     (itemLevelScoring && widgetIndex === 0 && showPoints) ||
     widget.widgetType === 'question'
 
-  const itemLevelPartScore = itemLevelScore / data?.questions?.length
+  const questions = get(itemData, 'data.questions', [])
+
+  const filterUnscoredQuestions = questions.filter(
+    (x) => x.validation?.unscored !== true
+  )
+
+  const itemLevelPartScore = itemLevelScore / filterUnscoredQuestions?.length
   const score = get(question, 'validation.validResponse.score', 0)
   const partScore = itemLevelScoring
     ? Math.round(itemLevelPartScore * 100) / 100
     : score
-  const questions = get(itemData, 'data.questions', [])
+
   const unscored = itemLevelScoring
-    ? questions.length &&
-      every(questions, ({ validation }) => validation && validation.unscored)
+    ? questions.length && question?.validation?.unscored
     : get(question, 'validation.unscored', false)
+
+  const hasNoUnscored = questions.some((x) => x.validation?.unscored !== true)
+
   const scoreChangeHandler = itemLevelScoring
     ? onChangeItemLevelPoint
     : onChangeQuestionLevelPoint
@@ -95,25 +108,25 @@ const ItemDetailWidget = ({
       >
         <Container isDragging={isDragging} flowLayout={flowLayout}>
           {!hidePointsBlock && itemLevelScoring ? (
-            <ButtonsContainer>
-              {!(unscored && showPoints) ? (
-                <Ctrls.TotalPoints
-                  value={itemLevelScore}
-                  onChange={scoreChangeHandler}
-                  data-cy="totalPointUpdate"
-                  visible={isPointsBlockVisible}
-                  disabled={isEditDisabled}
-                  isRubricQuestion={!!question.rubrics && !itemLevelScoring}
-                  itemLevelScoring={itemLevelScoring}
-                />
-              ) : (
+            hasNoUnscored ? (
+              <Ctrls.TotalPoints
+                value={itemLevelScore}
+                onChange={scoreChangeHandler}
+                data-cy="totalPointUpdate"
+                visible={isPointsBlockVisible}
+                disabled={isEditDisabled}
+                isRubricQuestion={!!question.rubrics && !itemLevelScoring}
+                itemLevelScoring={itemLevelScoring}
+              />
+            ) : (
+              <TotalPointsWrapper>
                 <UnScored
                   width="50px"
                   height="50px"
                   top={`${itemLevelScoring ? -80 : -50}px`}
                 />
-              )}
-            </ButtonsContainer>
+              </TotalPointsWrapper>
+            )
           ) : null}
 
           <FlexContainer width="100%" justifyContent="space-between">
@@ -135,7 +148,7 @@ const ItemDetailWidget = ({
             </WidgetContainer>
 
             {(!flowLayout || showButtons) && (
-              <ButtonsContainer>
+              <ButtonsContainer unscored={unscored}>
                 {!(question.rubrics && !itemLevelScoring) &&
                   (!(unscored && showPoints) ? (
                     <Ctrls.Point

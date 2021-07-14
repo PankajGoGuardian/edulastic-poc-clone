@@ -31,11 +31,9 @@ export const ButtonsContainer = styled.div`
   justify-content: flex-start;
   align-items: flex-end;
   overflow-x: visible;
-  padding: 40px 20px 0px 10px;
+  padding: ${({ unscored }) =>
+    unscored ? '80px 20px 0px 10px' : '40px 20px 0px 10px'};
   min-width: 180px;
-  position: absolute;
-  // 180 width of button container, 70 width of main menu on left
-  left: calc(100vw - 50vw - 180px - 70px);
   opacity: 0.3;
 
   &:hover {

@@ -24,6 +24,7 @@ const QuestionToPassage = ({
   isTestFlow,
   isEditFlow,
   question,
+  testId,
   updateQuestion,
   removeQuestion,
   setCurrentQuestion,
@@ -61,6 +62,7 @@ const QuestionToPassage = ({
         isEdit: isEditPassageQuestion,
         callback: onCancel,
         isTestFlow,
+        testId,
       })
     } else {
       saveQuestionToPassage({
@@ -68,6 +70,7 @@ const QuestionToPassage = ({
         tabIndex,
         callback: onCancel,
         isTestFlow,
+        testId,
       })
     }
   }

@@ -2047,7 +2047,7 @@ function* savePassage({ payload }) {
       (state) => state.router.location.state
     )
     if (isTestFlow) {
-      testId = yield select((state) => state.tests?.entity?._id)
+      // testId = yield select((state) => state.tests?.entity?._id)
 
       if (currentRouterState) {
         const routerTestId = currentRouterState.previousTestId

@@ -2877,12 +2877,13 @@ function* setTestDataAndUpdateSaga({ payload }) {
         }
         return
       }
-
       // TODO: is this logic still relevant?
       if (payload.current) {
         yield put(
           replace(`/author/tests/tab/${payload.current}/id/${entity._id}`)
         )
+      } else if (item.isPassageWithQuestions) {
+        yield put(replace(`/author/tests/tab/review/id/${entity._id}`))
       } else {
         yield put(
           replace({

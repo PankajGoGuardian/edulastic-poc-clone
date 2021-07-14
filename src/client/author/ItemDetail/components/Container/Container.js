@@ -1013,7 +1013,7 @@ class Container extends Component {
       isPremiumUser,
       isEditFlow,
     } = this.props
-
+    const { testId } = match.params
     let breadCrumbQType = ''
     if (item.passageId && item.canAddMultipleItems) {
       breadCrumbQType = 'Passage with Multiple Questions'
@@ -1182,6 +1182,7 @@ class Container extends Component {
             isEditFlow={isEditFlow}
             tabIndex={tabIndex}
             rowIndex={rowIndex}
+            testId={testId}
             isEditPassageQuestion={isEditPassageQuestion}
             onCancel={this.handleCancelQuestionToPassage}
           />

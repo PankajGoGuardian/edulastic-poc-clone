@@ -1,7 +1,5 @@
 import React, { useState, useMemo } from 'react'
-import Dropzone from 'react-dropzone'
 import { connect } from 'react-redux'
-import { Row, Col, Progress } from 'antd'
 import { createHash } from 'crypto-browserify'
 import qs from 'qs'
 
@@ -10,8 +8,8 @@ import { notification } from '@edulastic/common'
 import { uploadToS3 } from '@edulastic/common/src/helpers'
 import { assignmentApi } from '@edulastic/api'
 
-import StyledDropZone from '../../assessment/components/StyledDropZone'
-import Thumbnail, { getFileNameFromUri } from './Thumbnail'
+import { OmrDropzone } from './OmrDropzone'
+import { OmrThumbnail, getFileNameFromUri } from './OmrThumbnail'
 
 import { getGroupedDocs } from '../ducks'
 
@@ -87,11 +85,6 @@ const UploadAnswerSheets = ({ location, groupedDocs }) => {
     setUploading(false)
   }
 
-  const handleLength = (str) => {
-    if (str.length > 60) return `${str.substring(0, 58)}...`
-    return str
-  }
-
   const docsList = useMemo(
     () => groupedDocs?.[assignmentId]?.[sessionId] || [],
     [groupedDocs, assignmentId, sessionId]
@@ -99,95 +92,10 @@ const UploadAnswerSheets = ({ location, groupedDocs }) => {
 
   return (
     <>
-      <Dropzone
-        onDrop={handleDrop}
-        accept="image/*, application/pdf"
-        className="dropzone"
-        activeClassName="active-dropzone"
-        multiple={false}
-      >
-        {({
-          getRootProps,
-          getInputProps,
-          isDragActive,
-          fileRejections = [],
-        }) => {
-          return (
-            <div
-              {...getRootProps()}
-              className={`dropzone ${isDragActive ? 'dropzone--isActive' : ''}`}
-            >
-              <input {...getInputProps()} />
-
-              <StyledDropZone
-                isDragActive={isDragActive}
-                dropzoneSettings={{
-                  name: 'File',
-                  allowedFiles: 'PDF, JPEG, JPG, PNG',
-                }}
-              >
-                <Row
-                  type="flex"
-                  gutter={[0, 25]}
-                  style={{ width: '100%', marginTop: '20px' }}
-                >
-                  <Col span={24}>
-                    <Progress
-                      strokeColor={{ from: '#108ee9', to: '#87d068' }}
-                      percent={progress}
-                      status="active"
-                    />
-                  </Col>
-                  {uploadedFiles.length ? (
-                    <Col
-                      className="dropzone-list-div"
-                      xs={24}
-                      sm={24}
-                      md={12}
-                      lg={12}
-                      xl={12}
-                    >
-                      <span className="dropzone-list-label">
-                        Uploaded Files:
-                      </span>
-                      {uploadedFiles
-                        .filter((f) => f.type === 'sourceUri')
-                        .map((f) => (
-                          <span key={f.uri} className="dropzone-list-item">
-                            {handleLength(f?.file.name)} - {f.file.size} bytes
-                          </span>
-                        ))}
-                    </Col>
-                  ) : null}
-                  {fileRejections.length ? (
-                    <Col
-                      className="dropzone-list-div"
-                      xs={24}
-                      sm={24}
-                      md={12}
-                      lg={12}
-                      xl={12}
-                    >
-                      <br />
-                      <span className="dropzone-list-label">
-                        Rejected Files:
-                      </span>
-                      {fileRejections.map((f) => (
-                        <span key={f.path} className="dropzone-list-item">
-                          {handleLength(f.path)} - {f.size} bytes
-                        </span>
-                      ))}
-                    </Col>
-                  ) : null}
-                </Row>
-              </StyledDropZone>
-            </div>
-          )
-        }}
-      </Dropzone>
+      <OmrDropzone handleDrop={handleDrop} uploadProgress={progress} />
       <div style={{ display: 'flex', margin: '10px 40px', flexWrap: 'wrap' }}>
         {docsList.map((doc) => (
-          <Thumbnail key={doc.__id} doc={doc} />
+          <OmrThumbnail key={doc.__id} doc={doc} />
         ))}
       </div>
     </>

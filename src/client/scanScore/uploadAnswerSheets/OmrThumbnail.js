@@ -2,15 +2,10 @@ import React from 'react'
 import styled from 'styled-components'
 import { Spin } from 'antd'
 
-export const getFileNameFromUri = (uri) =>
-  uri
-    ? uri
-        .split('/')
-        .lastItem.replace(/_([0-9a-fA-F]+|-)+[0-9a-fA-F]+(\.[a-zA-Z]+)/, '$2')
-    : ''
+export const getFileNameFromUri = (uri = '') => uri.split('/').lastItem
 
-const Thumbnail = ({ doc, ...props }) => {
-  const name = getFileNameFromUri(doc.uri)
+export const OmrThumbnail = ({ doc, ...props }) => {
+  const name = doc.studentName || getFileNameFromUri(doc.uri)
   return (
     <ThumbnailDiv title={name} uri={doc.uri} {...props}>
       <Spin spinning={doc.processStatus === 'in_progress'}>
@@ -33,7 +28,7 @@ const Thumbnail = ({ doc, ...props }) => {
   )
 }
 
-export default Thumbnail
+export default OmrThumbnail
 
 const ThumbnailDiv = styled.div`
   margin: 5px 15px;

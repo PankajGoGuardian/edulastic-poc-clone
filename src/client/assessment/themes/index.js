@@ -777,7 +777,7 @@ const AssessmentContainer = ({
         case questionType.HISTOGRAM:
         case questionType.DOT_PLOT:
         case questionType.LINE_PLOT: {
-          const initialData = q.chart_data.data
+          const initialData = q?.chart_data?.data || []
           return initialData.every((d, i) => d?.y === qAnswers?.[i]?.y)
         }
         case questionType.MATCH_LIST:
@@ -787,13 +787,13 @@ const AssessmentContainer = ({
         case questionType.HOTSPOT:
           return !qAnswers?.some((ans) => ans?.toString())
         case questionType.ORDER_LIST: {
-          const prevOrder = [...Array(q.list.length).keys()]
+          const prevOrder = [...Array(q?.list?.length || 0).keys()]
           return qAnswers ? isEqual(prevOrder, qAnswers) : true
         }
         case questionType.MATH:
           if (q.title === 'Complete the Equation') {
             if (isArray(qAnswers)) {
-              return !qAnswers.some((ans) => ans?.toString())
+              return !qAnswers?.some((ans) => ans?.toString())
             }
             const ans = (qAnswers || '').replace(/\\ /g, '')
             return isEmpty(ans) || ans === '+='
@@ -830,7 +830,7 @@ const AssessmentContainer = ({
           if (!isObject(qAnswers)) {
             return true
           }
-          const keys = Object.keys(qAnswers)
+          const keys = Object.keys(qAnswers || {})
           return (
             keys.length === 0 || keys.every((key) => isEmpty(qAnswers[key]))
           )
@@ -840,7 +840,7 @@ const AssessmentContainer = ({
           if (!isObject(qAnswers)) {
             return true
           }
-          const keys = Object.keys(qAnswers)
+          const keys = Object.keys(qAnswers || {})
           return keys.some((key) => !qAnswers[key])
         }
         default:

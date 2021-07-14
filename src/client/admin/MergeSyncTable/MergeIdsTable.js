@@ -134,7 +134,7 @@ const MergeIdsTable = ({
     setCurrentPage(1)
   }
 
-  const handleApprove = (mappedResult, formattedData) => {
+  const handleApprove = (mappedResult, formattedData, filterValue) => {
     setMapperErrorMessage('')
     const eduIdMap = {}
     const indexes = []
@@ -146,7 +146,6 @@ const MergeIdsTable = ({
     } else {
       cleverIds = Object.keys(mappedResult)
     }
-
     for (let i = 1; i <= cleverIds.length; i++) {
       const eduId =
         mapperFieldName === 'Schools'
@@ -179,12 +178,16 @@ const MergeIdsTable = ({
             ? mappedResult[cleverIds[i]]
             : mappedResult[cleverIds[i]]?.id || null
       })
-      saveApprovedMapping({
+      const savingMappingData = {
         districtId,
         mapping: mappedDataResult,
         type: mapperFieldName === 'Schools' ? 'school' : 'class',
         lmsType: atlasId ? 'atlas' : 'clever',
-      })
+      }
+      if (mapperFieldName === 'Classes') {
+        savingMappingData.filter = filterValue
+      }
+      saveApprovedMapping(savingMappingData)
       setIsModalVisible(false)
     }
   }

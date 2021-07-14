@@ -147,7 +147,7 @@ const putMappedDataIntoState = (state, payload) => {
   } else {
     if (page === 1) data.mappedData = {}
     data.mappedData[page] = mappedData
-    data.totalCount = 290
+    if (totalCount) Object.assign(data, { totalCount })
   }
   state.mappedData[dcId][entity] = data
   state.mappingDataLoading = false

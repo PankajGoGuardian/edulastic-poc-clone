@@ -29,17 +29,17 @@ const ApproveMergeModal = ({
   const [formattedData, setFormattedData] = useState([])
   const [mappedResult, setMappedResult] = useState({})
   const [totalRecordsCount, setTotalRecordsCount] = useState(0)
-  const [filterField, setFilterField] = useState('')
+  const [filterField, setFilterField] = useState('all')
 
   const isSchool = mapperFieldName === 'Schools'
 
   const getCustomClassNameAndScore = (classData) => {
     let customName = classData.name
     let score = 0
-    const gm = (classData?.gm && 100) || 0
-    const sm = (classData?.sm && 100) || 0
-    const scm = (classData?.scm && 100) || 0
-    const cIdMatch = classData.idMatch || 0
+    const gm = (classData?.gradeMatch && 100) || 0
+    const sm = (classData?.subjectMatch && 100) || 0
+    const scm = classData?.countMatch || 0
+    const cIdMatch = classData?.idMatch || 0
     // if cleverId matched, disable the dropdown with existing clever class
     // G: match | S: match | Count: match
     // It will be an exact match which is explained above.
@@ -58,7 +58,7 @@ const ApproveMergeModal = ({
     } else if (gm === 100 && sm === 100 && scm === 100) {
       customName = `${customName} (Grade - Matched | Subject - Matched | Student count - ${scm}%)`
       score = 1
-    } else if (gm === 100 && sm === 100 && scm >= 60) {
+    } else if (gm === 100 && sm === 100 && scm >= 80) {
       customName = `${customName} (Grade - Matched | Subject - Matched | Student count - ${scm}%)`
       score = 2
     } else if (gm === 100 && scm >= 80) {
@@ -100,8 +100,9 @@ const ApproveMergeModal = ({
     setFilterField(filterValue)
     setCurrentPage(1)
     if (mapperFieldName === 'Classes') {
+      setMappedResult({})
       const { payload } = getPayload(mapperFieldName)
-      getMappingData({ ...payload, page: 1, filter: filterField })
+      getMappingData({ ...payload, page: 1, filter: filterValue })
       return
     }
     let data = districtMappedData[mapperFieldName].mappedData
@@ -229,21 +230,30 @@ const ApproveMergeModal = ({
           o && o.zipMatch && o.nameMatch >= 75 ? o.id : null
         )
       })
-    mapperFieldName === 'Classes' &&
+    if (mapperFieldName === 'Classes') {
+      const map = mappedResult
       data.forEach((_data, idx) => {
         _data?.mappedClasses?.sort(classCompare)
         const o =
           _data?.mappedClasses?.[0] &&
           _data?.mappedClasses?.[0]?.subjectMatch &&
           _data?.mappedClasses?.[0]?.gradeMatch &&
-          _data?.mappedClasses?.[0]?.studentCountMatch >= 80
+          _data?.mappedClasses?.[0]?.countMatch >= 80
             ? _data.mappedClasses[0]
             : null
-        handleMappingChange(
-          _data.lmsClassId,
-          o && { id: o.id, row: idx + 1 + 100 * (currentPage - 1) }
-        )
+        // handleMappingChange(
+        //   _data.lmsClassId,
+        //   o && { id: o.id, row: idx + 1 + 100 * (currentPage - 1) }
+        // )
+        map[_data.lmsClassId] =
+          (o && {
+            id: o.id,
+            row: idx + 1 + 100 * (currentPage - 1),
+          }) ||
+          null
       })
+      setMappedResult(map)
+    }
     setFormattedData(data)
     setTotalRecordsCount(totalCount)
   }
@@ -270,7 +280,7 @@ const ApproveMergeModal = ({
     if (!mappedData[pageNumber]) {
       // call api with this page number and get new data
       const { payload } = getPayload(mapperFieldName)
-      getMappingData({ ...payload, page: pageNumber })
+      getMappingData({ ...payload, page: pageNumber, filter: filterField })
     }
     setCurrentPage(pageNumber)
   }
@@ -297,7 +307,9 @@ const ApproveMergeModal = ({
           <Button
             key="submit"
             type="primary"
-            onClick={() => handleApprove(mappedResult, formattedData)}
+            onClick={() =>
+              handleApprove(mappedResult, formattedData, filterField)
+            }
           >
             Approve all pages
           </Button>,
@@ -316,7 +328,7 @@ const ApproveMergeModal = ({
                 <Button key="blank" onClick={() => formatFilterData('no')}>
                   (Select Blank)
                 </Button>
-                <Button key="all" onClick={() => formatFilterData('')}>
+                <Button key="all" onClick={() => formatFilterData('all')}>
                   (Select All)
                 </Button>
               </div>
@@ -327,6 +339,7 @@ const ApproveMergeModal = ({
                     defaultCurrent={currentPage}
                     total={totalRecordsCount}
                     pageSize={PAGE_SIZE}
+                    current={currentPage}
                     onChange={handlePageChange}
                   />
                 )}
@@ -384,6 +397,10 @@ const ApproveMergeModal = ({
                             ? mappedResult[record.lmsSchoolId]
                             : (mappedResult[record.lmsClassId] &&
                                 mappedResult[record.lmsClassId].id) ||
+                              (_data?.[0]?.subjectMatch &&
+                                _data?.[0]?.gradeMatch &&
+                                _data?.[0]?.countMatch === 100 &&
+                                _data?.[0]?.id) ||
                               null
                         }
                         dropdownStyle={{ zIndex: 2000 }}

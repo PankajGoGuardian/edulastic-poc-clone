@@ -301,7 +301,7 @@ MathFormulaAnswerMethod.defaultProps = {
   showDefaultMode: false,
   customUnits: '',
   containerHeight: 'auto',
-  keypadMode: 'units_us',
+  keypadMode: '',
   renderExtra: null,
   unitsDropdown: () => {},
   template: '',

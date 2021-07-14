@@ -21,7 +21,7 @@ const getMathUnits = (item) => {
   }
 
   if (item?.keypadMode === 'custom') {
-    return item?.customUnits || ''
+    return (item?.customUnits || '').split(',')
   }
 
   const customKeys = get(item, 'customKeys', [])

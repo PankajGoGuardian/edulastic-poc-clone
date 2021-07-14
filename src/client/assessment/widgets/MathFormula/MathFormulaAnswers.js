@@ -238,9 +238,10 @@ class MathFormulaAnswers extends React.Component {
             value.options = value.options || {}
             if (!v) {
               delete value.options.unit
-            } else {
-              value.options.unit = 'm'
             }
+            // else {
+            //   value.options.unit = 'm'
+            // }
             value.method = value.method || methods.EQUIV_SYMBOLIC
           })
         } else {
@@ -249,9 +250,10 @@ class MathFormulaAnswers extends React.Component {
               value.options = value.options || {}
               if (!v) {
                 delete value.options.unit
-              } else {
-                value.options.unit = 'm'
               }
+              // else {
+              //   value.options.unit = 'm'
+              // }
               value.method = value.method || methods.EQUIV_SYMBOLIC
             }
           )

@@ -399,7 +399,7 @@ const ApproveMergeModal = ({
                                 mappedResult[record.lmsClassId].id) ||
                               (_data?.[0]?.subjectMatch &&
                                 _data?.[0]?.gradeMatch &&
-                                _data?.[0]?.countMatch === 100 &&
+                                _data?.[0]?.countMatch >= 80 &&
                                 _data?.[0]?.id) ||
                               null
                         }

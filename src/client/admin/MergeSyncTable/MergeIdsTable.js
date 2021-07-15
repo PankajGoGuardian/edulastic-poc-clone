@@ -306,6 +306,7 @@ const MergeIdsTable = ({
           mappedDataLoading={mappedDataLoading}
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
+          cleverId={cleverId}
         />
       )}
 

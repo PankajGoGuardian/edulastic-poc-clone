@@ -25,6 +25,7 @@ const ApproveMergeModal = ({
   mappedDataLoading,
   currentPage = 1,
   setCurrentPage,
+  cleverId,
 }) => {
   const [formattedData, setFormattedData] = useState([])
   const [mappedResult, setMappedResult] = useState({})
@@ -84,9 +85,9 @@ const ApproveMergeModal = ({
     }
   }
 
-  const handleMappingChange = (cleverId, edulasticId) => {
+  const handleMappingChange = (_cleverId, _edulastic) => {
     const map = mappedResult
-    map[cleverId] = edulasticId
+    map[_cleverId] = _edulastic
     setMappedResult(map)
   }
 
@@ -263,7 +264,7 @@ const ApproveMergeModal = ({
       !mappedDataLoading &&
       ((mapperFieldName === 'Schools' &&
         currentPage === 1 &&
-        filterField === '') ||
+        filterField === 'all') ||
         mapperFieldName === 'Classes')
     ) {
       renderReviewContent()
@@ -377,7 +378,7 @@ const ApproveMergeModal = ({
                   render={(_, __, idx) => idx + 1 + 100 * (currentPage - 1)}
                 />
                 <Column
-                  title={`Clever ${mapperFieldName}`}
+                  title={`${cleverId ? 'Clever' : 'Atlas'} ${mapperFieldName}`}
                   width="30%"
                   dataIndex={isSchool ? 'lmsSchoolName' : 'lmsClassName'}
                   key={isSchool ? 'lmsSchoolName' : 'lmsClassName'}

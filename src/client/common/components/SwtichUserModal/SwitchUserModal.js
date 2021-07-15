@@ -43,21 +43,44 @@ const StyledDiv = styled.div.attrs((props) => ({
   text-align: center;
   margin-top: 10px;
   padding: 34px;
+  padding-left: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
   cursor: ${({ selected }) => (selected ? 'not-allowed' : 'pointer')};
+  & > div.check {
+    flex: 0 0 38px;
+    margin: 0 16px;
+    & svg {
+      display: ${({ selected }) => (selected ? 'inline' : 'none')};
+      color: white;
+      fill: #1a73e8;
+    }
+  }
+  & > div.role {
+    text-align: left;
+    flex: 0 0 auto;
+    font-size: 16px;
+    font-weight: 600;
+  }
+  & > div.description {
+    text-align: right;
+    flex: 1 1 auto;
+    margin-left: 15px;
+    min-width: 50%;
+    & div.organizations {
+      max-width: 250px;
+      overflow: hidden;
+      margin: 0 2px;
+      float: right;
+      color: #ec635c;
+    }
+  }
   &: hover ${(p) => (p.isActive ? ', &' : '')} {
     background: ${(props) => color[props.role]};
     color: #fff;
-  }
-  & > div:first-child {
-    text-align: left;
-  }
-  & > div:last-child {
-    flex: 0 0 38px;
-    & svg {
-      display: ${({ selected }) => (selected ? 'inline' : 'none')};
+    & > div.description > div.organizations {
+      color: #fff;
     }
   }
 `
@@ -118,6 +141,16 @@ const SwitchUserModal = ({
                 if (a._id !== userId && b._id === userId) return 1
                 return roleOrder[a.role] - roleOrder[b.role]
               })
+              .map((user) => ({
+                ...user,
+                districtString: (user.district.name
+                  ? [user.district]
+                  : user.districts
+                )
+                  .map((i) => i.name)
+                  .join(', '),
+                schoolString: user.institutions.map((i) => i.name).join(', '),
+              }))
               .map((user) => (
                 <StyledDiv
                   key={getKey(user)}
@@ -128,33 +161,25 @@ const SwitchUserModal = ({
                     switchUserCB(user, { _id: userId, personId, orgId })
                   }
                 >
-                  <div style={{ 'font-size': '16px', 'font-weight': '600' }}>
+                  <div className="check">
+                    <IconCircleCheck />
+                  </div>
+                  <div className="role">
                     <p>{roles[user.role]}</p>
                   </div>
-                  <div style={{ marginLeft: '15px', minWidth: '50%' }}>
+                  <div className="description">
                     <div>
                       <p>{user.username}</p>{' '}
                     </div>
-                    <div
-                      style={{
-                        maxWidth: '100%',
-                        overflow: 'hidden',
-                        margin: '0 2px',
-                      }}
-                    >
-                      <NoWrapPara titlePrefix="Districts">
-                        {(user.district.name ? [user.district] : user.districts)
-                          .map((i) => i.name)
-                          .join(', ')}
-                        {user.districts.length && user.institutions.length
-                          ? ', '
-                          : ''}
-                        {user.institutions.map((i) => i.name).join(', ')}
+                    <div className="organizations">
+                      <NoWrapPara>
+                        {user.districtString || user.schoolString ? '( ' : ''}
+                        {user.districtString}
+                        {user.districtString && user.schoolString ? ', ' : ''}
+                        {user.schoolString}
+                        {user.districtString || user.schoolString ? ' )' : ''}
                       </NoWrapPara>
                     </div>
-                  </div>
-                  <div>
-                    <IconCircleCheck />
                   </div>
                 </StyledDiv>
               ))}

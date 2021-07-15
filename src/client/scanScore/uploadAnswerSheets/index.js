@@ -1,110 +1,143 @@
-import React, { useState, useMemo } from 'react'
+import React, { useMemo, useEffect, useCallback } from 'react'
 import { connect } from 'react-redux'
-import { createHash } from 'crypto-browserify'
+import { Spin, Row, Col, Card } from 'antd'
 import qs from 'qs'
 
-import { aws } from '@edulastic/constants'
-import { notification } from '@edulastic/common'
-import { uploadToS3 } from '@edulastic/common/src/helpers'
-import { assignmentApi } from '@edulastic/api'
-
 import { OmrDropzone } from './OmrDropzone'
-import { OmrThumbnail, getFileNameFromUri } from './OmrThumbnail'
+import { OmrThumbnail } from './OmrThumbnail'
 
-import { getGroupedDocs } from '../ducks'
+import {
+  processStatusMap,
+  omrUploadSessionStatus,
+  getFileNameFromUri,
+} from './utils'
+import { actions, selector } from './ducks'
 
-const createSessionId = (str) => {
-  const hash = createHash('sha1').update(str, 'utf8').digest('hex')
-  return hash.substring(0, 24)
-}
-
-const UploadAnswerSheets = ({ location, groupedDocs }) => {
-  const [uploading, setUploading] = useState(false)
-  const [progress, setProgress] = useState(null)
-  const [uploadedFiles, setUploadedFiles] = useState([])
-
-  const { assignmentId, sessionId } = useMemo(() => {
-    const search = qs.parse(location.search || '', { ignoreQueryPrefix: true })
-    const _sessionId = createSessionId(`${search.assignmentId}-${Date.now()}`)
-    return {
-      assignmentId: search.assignmentId,
-      sessionId: search.sessionId || _sessionId,
-    }
-  }, [location])
-
-  const handleProgress = (progressInfo) => {
-    const { loaded: uploaded, total } = progressInfo
-    const _progress = Math.floor((uploaded / total) * 100)
-    setProgress(_progress)
-  }
-
-  const handleCancelUpload = () => {}
-
-  const handleDrop = async ([file]) => {
-    setUploading(true)
-    const _uploadedFiles = []
-    let sourceUri = ''
-    try {
-      sourceUri = await uploadToS3(
-        file,
-        aws.s3Folders.BUBBLE_SHEETS,
-        handleProgress,
-        handleCancelUpload,
-        `${assignmentId}/${sessionId}`
-      )
-      if (sourceUri) {
-        _uploadedFiles.push({ type: 'sourceUri', uri: sourceUri, file })
-      }
-    } catch (err) {
-      notification({ type: 'error', msg: 'Failed to upload file' })
-      console.log(err)
-    }
-    try {
-      const {
-        sheetUris = [],
-        error,
-      } = await assignmentApi.splitScanBubbleSheets({
-        assignmentId,
-        sessionId,
-        source: {
-          uri: sourceUri,
-          name: file?.name || getFileNameFromUri(sourceUri),
-        },
-      })
-      if (error) {
-        notification({ type: 'error', msg: error.message })
-      }
-      _uploadedFiles.push(
-        ...sheetUris.map((sheetUri) => ({ type: 'sheetUri', uri: sheetUri }))
-      )
-    } catch (e) {
-      notification({ type: 'error', msg: 'Failed to scan uploaded file' })
-    }
-    setUploadedFiles(_uploadedFiles)
-    setProgress(null)
-    setUploading(false)
-  }
-
-  const docsList = useMemo(
-    () => groupedDocs?.[assignmentId]?.[sessionId] || [],
-    [groupedDocs, assignmentId, sessionId]
+const UploadAnswerSheets = ({
+  history,
+  location,
+  uploading,
+  uploadProgress,
+  loading,
+  omrUploadSessions,
+  currentSession,
+  omrSheetDocs,
+  setUploadProgress,
+  getOmrUploadSessions,
+  setOmrUploadSession,
+  createOmrUploadSession,
+}) => {
+  const { assignmentId = '', groupId = '', sessionId = '' } = useMemo(
+    () =>
+      console.log('this executed') ||
+      qs.parse(location?.search || '', { ignoreQueryPrefix: true }),
+    [location?.search]
   )
+
+  const pageDocs = useMemo(() => {
+    const _pageDocs = omrSheetDocs?.[assignmentId]?.[sessionId] || []
+    return _pageDocs.map((d) => ({
+      _id: d.sessionId,
+      uri: d.uri,
+      scannedUri: d.scannedUri,
+      studentName: d.studentName,
+      status: processStatusMap[d.processStatus],
+      message: d.message,
+    }))
+  }, [omrSheetDocs, assignmentId, groupId, sessionId])
+
+  const handleCardClick = useCallback((_sessionId) => {
+    const session = omrUploadSessions.find((s) => s._id === _sessionId)
+    setOmrUploadSession({ session })
+    history.push({
+      pathname: '/uploadAnswerSheets',
+      search: `?assignmentId=${assignmentId}&groupId=${groupId}&sessionId=${_sessionId}`,
+    })
+  }, [])
+
+  const handleProgress = useCallback((progressInfo) => {
+    const { loaded: uploaded, total } = progressInfo
+    const progress = Math.floor((100 * uploaded) / total)
+    setUploadProgress(progress)
+  }, [])
+
+  const handleCancel = useCallback(() => {}, [])
+
+  const handleDrop = useCallback(
+    ([file]) =>
+      createOmrUploadSession({
+        file,
+        assignmentId,
+        groupId,
+        handleProgress,
+        handleCancel,
+      }),
+    [assignmentId, groupId]
+  )
+
+  useEffect(() => {
+    getOmrUploadSessions({ assignmentId, groupId, sessionId })
+  }, [])
+
+  if (loading && !uploading) {
+    return <Spin />
+  }
+
+  if (!sessionId) {
+    return (
+      <Row gutter={[5, 10]}>
+        <Col span={24}>
+          <OmrDropzone
+            handleDrop={handleDrop}
+            uploadProgress={uploadProgress}
+          />
+        </Col>
+        {omrUploadSessions.map((session) => (
+          <Col span={8} onClick={() => handleCardClick(session._id)}>
+            <Card title={session.source.name} bordered="false">
+              {`${omrUploadSessionStatus[session.status]}`}
+            </Card>
+          </Col>
+        ))}
+      </Row>
+    )
+  }
+
+  if (currentSession.status > 2 && currentSession.pages?.length) {
+    return (
+      <div style={{ display: 'flex', margin: '10px 40px', flexWrap: 'wrap' }}>
+        {currentSession.pages.map((page) => {
+          const name = page.studentName || getFileNameFromUri(page.uri)
+          return (
+            <OmrThumbnail
+              name={name}
+              uri={page.uri}
+              status={page.status}
+              message={page.message}
+            />
+          )
+        })}
+      </div>
+    )
+  }
 
   return (
-    <>
-      <OmrDropzone handleDrop={handleDrop} uploadProgress={progress} />
-      <div style={{ display: 'flex', margin: '10px 40px', flexWrap: 'wrap' }}>
-        {docsList.map((doc) => (
-          <OmrThumbnail key={doc.__id} doc={doc} />
-        ))}
-      </div>
-    </>
+    <div style={{ display: 'flex', margin: '10px 40px', flexWrap: 'wrap' }}>
+      {pageDocs.map((page) => {
+        const name = page.studentName || getFileNameFromUri(page.uri)
+        return (
+          <OmrThumbnail
+            name={name}
+            uri={page.uri}
+            status={page.status}
+            message={page.message}
+          />
+        )
+      })}
+    </div>
   )
 }
 
-export default connect(
-  (state) => ({
-    groupedDocs: getGroupedDocs(state),
-  }),
-  {}
-)(UploadAnswerSheets)
+const compose = connect((state) => ({ ...selector(state) }), { ...actions })
+
+export default compose(UploadAnswerSheets)

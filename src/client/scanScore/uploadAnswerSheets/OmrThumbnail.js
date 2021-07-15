@@ -2,31 +2,28 @@ import React from 'react'
 import styled from 'styled-components'
 import { Spin } from 'antd'
 
-export const getFileNameFromUri = (uri = '') => uri.split('/').lastItem
+const FailedOverlay = ({ message }) => (
+  <>
+    <div className="show-on-hover">
+      <span>
+        {'\u26A0'}
+        <br />
+        {message || ''}
+      </span>
+    </div>
+    <div className="icon">{'\u26A0'}</div>
+  </>
+)
 
-export const OmrThumbnail = ({ doc, ...props }) => {
-  const name = doc.studentName || getFileNameFromUri(doc.uri)
-  return (
-    <ThumbnailDiv title={name} uri={doc.uri} {...props}>
-      <Spin spinning={doc.processStatus === 'in_progress'}>
-        <img alt={name} src={doc.uri} />
-      </Spin>
-      {doc.processStatus === 'failed' && (
-        <>
-          <div className="show-on-hover">
-            <span>
-              {'\u26A0'}
-              <br />
-              {doc.message}
-            </span>
-          </div>
-          <div className="icon">{'\u26A0'}</div>
-        </>
-      )}
-      <div className="title">{name}</div>
-    </ThumbnailDiv>
-  )
-}
+export const OmrThumbnail = ({ name, uri, status, message }) => (
+  <ThumbnailDiv>
+    <Spin spinning={status === 2}>
+      <img alt={name} src={uri} />
+    </Spin>
+    {status === 4 && <FailedOverlay message={message} />}
+    <div className="title">{name}</div>
+  </ThumbnailDiv>
+)
 
 export default OmrThumbnail
 

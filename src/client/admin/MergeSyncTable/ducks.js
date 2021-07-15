@@ -130,18 +130,19 @@ const initialState = {
 }
 
 const putMappedDataIntoState = (state, payload) => {
-  const { type, dcId, result, page = 1 } = payload.payload
+  const { type, districtId, result, page = 1 } = payload.payload
   const entity = type === 'school' ? 'Schools' : 'Classes'
-  state.mappedData[dcId] = state.mappedData[dcId] || {}
-  state.mappedData[dcId][entity] = state.mappedData[dcId][entity] || {}
+  state.mappedData[districtId] = state.mappedData[districtId] || {}
+  state.mappedData[districtId][entity] =
+    state.mappedData[districtId][entity] || {}
   const { totalCount = 0, mappedData = {} } = result
   const data = {
     totalCount,
   }
-  if (isEmpty(state.mappedData?.[dcId]?.[entity]?.mappedData)) {
-    state.mappedData[dcId][entity].mappedData = {}
+  if (isEmpty(state.mappedData?.[districtId]?.[entity]?.mappedData)) {
+    state.mappedData[districtId][entity].mappedData = {}
   }
-  Object.assign(data, state.mappedData[dcId][entity])
+  Object.assign(data, state.mappedData[districtId][entity])
   if (type === 'school') {
     data.mappedData = mappedData
   } else {
@@ -149,15 +150,15 @@ const putMappedDataIntoState = (state, payload) => {
     data.mappedData[page] = mappedData
     if (totalCount) Object.assign(data, { totalCount })
   }
-  state.mappedData[dcId][entity] = data
+  state.mappedData[districtId][entity] = data
   state.mappingDataLoading = false
 }
 
 const unSetMappingData = (state, payload) => {
-  const { type, dcId } = payload.payload
+  const { type, districtId } = payload.payload
   const entity = type === 'school' ? 'Schools' : 'Classes'
-  state.mappedData[dcId] = state.mappedData[dcId] || {}
-  state.mappedData[dcId][entity] = {}
+  state.mappedData[districtId] = state.mappedData[districtId] || {}
+  state.mappedData[districtId][entity] = {}
 }
 
 const fetchExistingDataReducer = createReducer(initialState, {
@@ -595,7 +596,7 @@ function* getMappedData({ payload }) {
     yield put(
       getMappingDataSuccessAction({
         type: payload.type,
-        dcId: payload.cleverId || payload.atlasId,
+        districtId: payload.cleverId || payload.atlasId,
         result,
         page: payload.page,
       })

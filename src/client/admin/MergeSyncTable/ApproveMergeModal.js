@@ -37,46 +37,54 @@ const ApproveMergeModal = ({
   const getCustomClassNameAndScore = (classData) => {
     let customName = classData.name
     let score = 0
-    const gm = (classData?.gradeMatch && 100) || 0
-    const sm = (classData?.subjectMatch && 100) || 0
-    const scm = classData?.countMatch || 0
-    const cIdMatch = classData?.idMatch || 0
+    const gradeMatch = (classData?.gradeMatch && 100) || 0
+    const subjectMatch = (classData?.subjectMatch && 100) || 0
+    const studentCountMatch = classData?.countMatch || 0
+    const cleverIdMatch = classData?.idMatch || 0
     // if cleverId matched, disable the dropdown with existing clever class
-    // G: match | S: match | Count: match
+    // Grade: match | Subject: match | StudentCount: match
     // It will be an exact match which is explained above.
-    // G: match | S: match | Count: no match
+    // Grade: match | Subject: match | StudentCount: no match
     // We need to look for students present and if it matches 60% or more then merge
-    // G: match | S: no match | Count: match
+    // Grade: match | Subject: no match | StudentCount: match
     // We need to look for students present and if it matches 80% or more then merge
-    // G: no match | S: match | Count: match
+    // Grade: no match | Subject: match | StudentCount: match
     // We need to look for students present and if it matches 80% or more then merge
-    // G: no match | S: no match | Count: match
+    // Grade: no match | Subject: no match | StudentCount: match
     // We need to look for students present and if it matches 80% or more then merge
-    // G: no match | S: no match | Count: no match
+    // Grade: no match | Subject: no match | StudentCount: no match
     // ignore and let it be blank which will result in the creation of a new class during sync
-    if (cIdMatch === 100) {
+    if (cleverIdMatch === 100) {
       score = 0
-    } else if (gm === 100 && sm === 100 && scm === 100) {
-      customName = `${customName} (Grade - Matched | Subject - Matched | Student count - ${scm}%)`
+    } else if (
+      gradeMatch === 100 &&
+      subjectMatch === 100 &&
+      studentCountMatch === 100
+    ) {
+      customName = `${customName} (Grade - Matched | Subject - Matched | Student count - ${studentCountMatch}%)`
       score = 1
-    } else if (gm === 100 && sm === 100 && scm >= 80) {
-      customName = `${customName} (Grade - Matched | Subject - Matched | Student count - ${scm}%)`
+    } else if (
+      gradeMatch === 100 &&
+      subjectMatch === 100 &&
+      studentCountMatch >= 80
+    ) {
+      customName = `${customName} (Grade - Matched | Subject - Matched | Student count - ${studentCountMatch}%)`
       score = 2
-    } else if (gm === 100 && scm >= 80) {
-      customName = `${customName} (Grade - Matched | Subject - Not Matched | Student count - ${scm}%)`
+    } else if (gradeMatch === 100 && studentCountMatch >= 80) {
+      customName = `${customName} (Grade - Matched | Subject - Not Matched | Student count - ${studentCountMatch}%)`
       score = 3
-    } else if (sm === 100 && scm >= 80) {
-      customName = `${customName} (Grade - Not Matched | Subject - Matched | Student count - ${scm}%)`
+    } else if (subjectMatch === 100 && studentCountMatch >= 80) {
+      customName = `${customName} (Grade - Not Matched | Subject - Matched | Student count - ${studentCountMatch}%)`
       score = 4
-    } else if (scm >= 80) {
-      customName = `${customName} (Student count - ${scm}%)`
+    } else if (studentCountMatch >= 80) {
+      customName = `${customName} (Student count - ${studentCountMatch}%)`
       score = 4
     } else {
       customName = `${customName} (Grade - ${
-        gm ? 'Matched' : 'Not Matched'
-      } | Subject - ${sm ? 'Matched' : 'Not Matched'} | Student count - ${
-        scm || 0
-      }%)`
+        gradeMatch ? 'Matched' : 'Not Matched'
+      } | Subject - ${
+        subjectMatch ? 'Matched' : 'Not Matched'
+      } | Student count - ${studentCountMatch || 0}%)`
       score = 5
     }
     return {
@@ -85,9 +93,9 @@ const ApproveMergeModal = ({
     }
   }
 
-  const handleMappingChange = (_cleverId, _edulastic) => {
+  const handleMappingChange = (_cleverId, _edulasticData) => {
     const map = mappedResult
-    map[_cleverId] = _edulastic
+    map[_cleverId] = _edulasticData
     setMappedResult(map)
   }
 
@@ -167,7 +175,7 @@ const ApproveMergeModal = ({
       const o = _data?.mappedSchools?.[0] ? _data?.mappedSchools?.[0] : null
       handleMappingChange(
         _data.lmsSchoolId,
-        o && o.zipMatch && o.nameMatch >= 75 ? o.id : null
+        o && o.zipMatch && o.nameMatch >= 75 ? o._id : null
       )
     })
     setFormattedData(data)
@@ -228,7 +236,7 @@ const ApproveMergeModal = ({
         const o = _data?.mappedSchools?.[0] ? _data?.mappedSchools?.[0] : null
         handleMappingChange(
           _data.lmsSchoolId,
-          o && o.zipMatch && o.nameMatch >= 75 ? o.id : null
+          o && o.zipMatch && o.nameMatch >= 75 ? o._id : null
         )
       })
     if (mapperFieldName === 'Classes') {
@@ -242,13 +250,9 @@ const ApproveMergeModal = ({
           _data?.mappedClasses?.[0]?.countMatch >= 80
             ? _data.mappedClasses[0]
             : null
-        // handleMappingChange(
-        //   _data.lmsClassId,
-        //   o && { id: o.id, row: idx + 1 + 100 * (currentPage - 1) }
-        // )
         map[_data.lmsClassId] =
           (o && {
-            id: o.id,
+            id: o._id,
             row: idx + 1 + 100 * (currentPage - 1),
           }) ||
           null
@@ -401,7 +405,7 @@ const ApproveMergeModal = ({
                               (_data?.[0]?.subjectMatch &&
                                 _data?.[0]?.gradeMatch &&
                                 _data?.[0]?.countMatch >= 80 &&
-                                _data?.[0]?.id) ||
+                                _data?.[0]?._id) ||
                               null
                         }
                         dropdownStyle={{ zIndex: 2000 }}
@@ -429,7 +433,7 @@ const ApproveMergeModal = ({
                       >
                         {_data.map((o) => {
                           return (
-                            <Option key={o.id} value={o.id}>
+                            <Option key={o._id} value={o._id}>
                               {isSchool
                                 ? getCustomName(o)
                                 : getCustomClassNameAndScore(o).customName}

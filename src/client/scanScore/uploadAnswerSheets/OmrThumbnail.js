@@ -1,13 +1,16 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Spin } from 'antd'
+import { omit } from 'lodash'
 
 export const getFileNameFromUri = (uri = '') => uri.split('/').lastItem
 
 export const OmrThumbnail = ({ doc, ...props }) => {
   const name = doc.studentName || getFileNameFromUri(doc.uri)
+  const propsOmitted =
+    doc.processStatus === 'done' ? props : omit(props, 'onClick')
   return (
-    <ThumbnailDiv title={name} uri={doc.uri} {...props}>
+    <ThumbnailDiv title={name} uri={doc.uri} {...propsOmitted}>
       <Spin spinning={doc.processStatus === 'in_progress'}>
         <img alt={name} src={doc.uri} />
       </Spin>
@@ -79,4 +82,5 @@ const ThumbnailDiv = styled.div`
     font-weight: 600;
     margin-top: 5px;
   }
+  ${(props) => (props.onClick ? `cursor:pointer` : ``)}
 `

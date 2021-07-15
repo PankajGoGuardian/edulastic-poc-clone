@@ -11,7 +11,7 @@ import { customReportReducer } from './admin/Components/CustomReportContainer/du
 import commonReducers from './common/ducks'
 import { slice as resetPasswordSlice } from './SetParentPassword/ducks'
 import { publicTestReducer } from './publicTest/ducks'
-import { scanStoreReducer as scanStore } from './scanScore/ducks'
+import { slice as scanStoreSlice } from './scanScore/ducks'
 import user from './student/Login/ducks'
 import signup from './student/Signup/duck'
 import authorUi from './author/src/reducers/authorUi'
@@ -29,7 +29,7 @@ const rootReducer = combineReducers({
   ...commonReducers,
   resetPassword: resetPasswordSlice.reducer,
   publicTest: publicTestReducer,
-  scanStore,
+  scanStore: scanStoreSlice.reducer,
 })
 
 export const loginReducer = combineReducers({

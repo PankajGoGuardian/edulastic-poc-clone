@@ -121,7 +121,7 @@ export const getInterestedSubjectsSelector = createSelector(
  * @type {OutputSelector<unknown, string, (Object) => string>}
  */
 export const getUserOrgId = createSelector(stateSelector, (state) =>
-  _get(state, 'user.lastUsedDistrictId', _get(state, 'user.districtIds[0]'))
+  _get(state, 'user.currentDistrictId', _get(state, 'user.districtIds[0]'))
 )
 /**
  * this selector shouldn't be used for students

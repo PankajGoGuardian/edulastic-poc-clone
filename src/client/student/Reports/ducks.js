@@ -56,8 +56,8 @@ export const getCurrentStudentDistrictId = createSelectorator(
   ['user.user.children', 'user.currentChild'],
   (r, currentChild) => {
     const child = (r || []).filter((o) => o._id === currentChild)?.[0]
-    if (child?.lastUsedDistrictId) {
-      return child?.lastUsedDistrictId
+    if (child?.currentDistrictId) {
+      return child?.currentDistrictId
     }
     return child?.districtIds?.[0] || ''
   }

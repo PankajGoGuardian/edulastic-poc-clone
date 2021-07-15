@@ -15,8 +15,8 @@ const FailedOverlay = ({ message }) => (
   </>
 )
 
-export const OmrThumbnail = ({ name, uri, status, message }) => (
-  <ThumbnailDiv>
+export const Thumbnail = ({ name, uri, status, message, onClick }) => (
+  <ThumbnailDiv onClick={onClick}>
     <Spin spinning={status === 2}>
       <img alt={name} src={uri} />
     </Spin>
@@ -25,9 +25,10 @@ export const OmrThumbnail = ({ name, uri, status, message }) => (
   </ThumbnailDiv>
 )
 
-export default OmrThumbnail
+export default Thumbnail
 
 const ThumbnailDiv = styled.div`
+  ${(props) => (props.onClick ? `cursor: pointer;` : ``)}
   margin: 5px 15px;
   display: flex;
   flex-direction: column;

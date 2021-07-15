@@ -2,14 +2,9 @@ import React from 'react'
 import Dropzone from 'react-dropzone'
 import { Row, Col, Progress } from 'antd'
 
-import StyledDropZone from '../../assessment/components/StyledDropZone'
+import StyledDropZone from '../../../assessment/components/StyledDropZone'
 
-const handleLength = (str) => {
-  if (str.length > 60) return `${str.substring(0, 58)}...`
-  return str
-}
-
-export const OmrDropzone = ({ handleDrop, uploadProgress }) => (
+export const DropzoneContainer = ({ handleDrop, uploadProgress }) => (
   <Dropzone
     onDrop={handleDrop}
     accept="application/pdf"
@@ -43,29 +38,9 @@ export const OmrDropzone = ({ handleDrop, uploadProgress }) => (
                   strokeColor={{ from: '#0072ff', to: '#00d4ff' }}
                   percent={uploadProgress}
                   status="active"
+                  showInfo={false}
                 />
               </Col>
-              {/* {uploadedFiles.length ? (
-                    <Col
-                      className="dropzone-list-div"
-                      xs={24}
-                      sm={24}
-                      md={12}
-                      lg={12}
-                      xl={12}
-                    >
-                      <span className="dropzone-list-label">
-                        Uploaded Files:
-                      </span>
-                      {uploadedFiles
-                        .filter((f) => f.type === 'sourceUri')
-                        .map((f) => (
-                          <span key={f.uri} className="dropzone-list-item">
-                            {handleLength(f?.file.name)} - {f.file.size} bytes
-                          </span>
-                        ))}
-                    </Col>
-                  ) : null} */}
               {/* {fileRejections.length ? (
                     <Col
                       className="dropzone-list-div"
@@ -80,8 +55,8 @@ export const OmrDropzone = ({ handleDrop, uploadProgress }) => (
                         Rejected Files:
                       </span>
                       {fileRejections.map((f) => (
-                        <span key={f.path} className="dropzone-list-item">
-                          {handleLength(f.path)} - {f.size} bytes
+                        <span key={f.name} className="dropzone-list-item">
+                          {f.name} - {f.size} bytes
                         </span>
                       ))}
                     </Col>
@@ -94,4 +69,4 @@ export const OmrDropzone = ({ handleDrop, uploadProgress }) => (
   </Dropzone>
 )
 
-export default OmrDropzone
+export default DropzoneContainer

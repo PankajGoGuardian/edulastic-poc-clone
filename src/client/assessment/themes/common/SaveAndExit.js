@@ -150,7 +150,12 @@ const SaveAndExit = ({
         ))}
       {onSubmit && (
         <div id="submitTestButton" tabIndex="-1">
-          <EduButton isGhost onClick={onSubmit} loading={savingResponse}>
+          <EduButton
+            height="40px"
+            isGhost
+            onClick={onSubmit}
+            loading={savingResponse}
+          >
             <IconSend />
             SUBMIT
           </EduButton>

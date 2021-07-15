@@ -1,29 +1,14 @@
 import { all } from 'redux-saga/effects'
-import { createAction, createReducer } from 'redux-starter-kit'
-import { createSelector } from 'reselect'
+import { combineReducers } from 'redux-starter-kit'
 
-export const SET_GROUPED_DOCS = '[scanStore] set group docs'
+import uploadAnswerSheetsSaga, {
+  reducer as uploadAnswerSheetsReducer,
+} from './uploadAnswerSheets/ducks'
 
-export const setGroupedDocsAction = createAction(SET_GROUPED_DOCS)
-
-const stateSelector = (state) => state.scanStore
-
-export const getGroupedDocs = createSelector(
-  stateSelector,
-  (state) => state.groupedDocs
-)
-
-const initialStore = {
-  groupedDocs: {},
-}
-
-export const scanStoreReducer = createReducer(initialStore, {
-  [SET_GROUPED_DOCS]: (state, { payload }) => {
-    state.groupedDocs = payload
-  },
+export const scanStoreReducer = combineReducers({
+  uploadAnswerSheets: uploadAnswerSheetsReducer,
 })
 
-// just a placeholder for now
-export default function* watcher() {
-  yield all([])
+export default function* watcherSaga() {
+  yield all([uploadAnswerSheetsSaga()])
 }

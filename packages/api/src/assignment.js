@@ -272,6 +272,23 @@ const getBubbleSheet = ({ assignmentId, groupId }) =>
     url: `${prefix}/${assignmentId}/group/${groupId}/bubble-sheet`,
   })
 
+const createOmrUploadSession = (payload) =>
+  api
+    .callApi({
+      url: `${prefix}/create-omr-upload-session`,
+      data: payload,
+      method: 'post',
+    })
+    .then((result) => result.data.result)
+
+const getOmrUploadSessions = ({ assignmentId, groupId }) =>
+  api
+    .callApi({
+      url: `${prefix}/${assignmentId}/group/${groupId}/omr-sessions`,
+      method: 'get',
+    })
+    .then((result) => result.data.result)
+
 const splitScanBubbleSheets = (payload) =>
   api
     .callApi({
@@ -306,5 +323,7 @@ export default {
   fetchRegradeSettings,
   editTagsRequest,
   getBubbleSheet,
+  createOmrUploadSession,
+  getOmrUploadSessions,
   splitScanBubbleSheets,
 }

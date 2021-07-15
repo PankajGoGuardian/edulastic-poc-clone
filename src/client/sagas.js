@@ -13,7 +13,7 @@ import {
 import authorSagas from './author/src/sagas'
 import assessmentSagas from './assessment/sagas'
 import { CurriculumSequenceSaga } from './author/CurriculumSequence'
-import { default as adminSagas } from './admin/sagas'
+import adminSagas from './admin/sagas'
 import { saga as customReportSaga } from './admin/Components/CustomReportContainer/ducks'
 import publisherSagas from './publisher/sagas'
 import scanScoreSagas from './scanScore/ducks'

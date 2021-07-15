@@ -6,11 +6,11 @@ import { FireBaseService as Fbs } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
 
 import { getUser } from '../../author/src/selectors/user'
-import { setGroupedDocsAction } from '../ducks'
+import { actions } from '../uploadAnswerSheets/ducks'
 
 const bubbleSheetsCollectionName = 'BubbleAnswerSheets'
 
-const BubbleScanNotificationsListener = ({ user, setGroupedDocs }) => {
+const BubbleScanNotificationsListener = ({ user, setOmrSheetDocs }) => {
   const userNotifications = Fbs.useFirestoreRealtimeDocuments(
     (db) =>
       db
@@ -40,7 +40,7 @@ const BubbleScanNotificationsListener = ({ user, setGroupedDocs }) => {
       Object.keys(groupedDocs).forEach((aId) => {
         groupedDocs[aId] = groupBy(groupedDocs[aId], 'sessionId')
       })
-      setGroupedDocs(groupedDocs)
+      setOmrSheetDocs(groupedDocs)
     }
   }, [userNotifications])
 
@@ -52,6 +52,6 @@ export default connect(
     user: getUser(state),
   }),
   {
-    setGroupedDocs: setGroupedDocsAction,
+    setOmrSheetDocs: actions.setOmrSheetDocsAction,
   }
 )(BubbleScanNotificationsListener)

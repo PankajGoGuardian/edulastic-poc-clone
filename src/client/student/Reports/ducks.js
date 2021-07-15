@@ -54,8 +54,13 @@ export const getSelectedCassSectionDistrictId = createSelectorator(
 // selecting only first district fro student while getting assignment
 export const getCurrentStudentDistrictId = createSelectorator(
   ['user.user.children', 'user.currentChild'],
-  (r, currentChild) =>
-    (r || []).filter((o) => o._id === currentChild)?.[0]?.districtIds?.[0] || ''
+  (r, currentChild) => {
+    const child = (r || []).filter((o) => o._id === currentChild)?.[0]
+    if (child?.currentDistrictId) {
+      return child?.currentDistrictId
+    }
+    return child?.districtIds?.[0] || ''
+  }
 )
 
 export const FILTERS = {

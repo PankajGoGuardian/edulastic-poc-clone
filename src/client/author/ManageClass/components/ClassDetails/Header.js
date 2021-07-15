@@ -51,6 +51,7 @@ import {
   showUpdateCoTeacherModalAction,
 } from '../../ducks'
 import SyncModal from './SyncModal'
+import { getUserOrgId } from '../../../src/selectors/user'
 
 const Option = Select.Option
 
@@ -80,6 +81,7 @@ const Header = ({
   entity,
   showCoteacherModal,
   setUpdateCoTeacherModal,
+  orgId,
 }) => {
   const handleLoginSuccess = (data) => {
     fetchClassList({ data, showModal: false })
@@ -146,9 +148,9 @@ const Header = ({
     try {
       const result = await canvasApi.getCanvasAuthURI(institutionId)
       if (!result.userAuthenticated) {
-        const subscriptionTopic = `canvas:${user?.districtIds?.[0]}_${
-          user._id
-        }_${user.username || user.email || ''}`
+        const subscriptionTopic = `canvas:${orgId}_${user._id}_${
+          user.username || user.email || ''
+        }`
         authorizeCanvas(result.canvasAuthURL, subscriptionTopic)
           .then((res) => {
             syncCanvasModal(res)
@@ -555,6 +557,7 @@ const enhance = compose(
     (state) => ({
       user: state?.user?.user,
       showCoteacherModal: getManageCoTeacherModalVisibleStateSelector(state),
+      orgId: getUserOrgId(state),
     }),
     {
       setUpdateCoTeacherModal: showUpdateCoTeacherModalAction,

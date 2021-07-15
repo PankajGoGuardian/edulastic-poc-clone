@@ -14,7 +14,6 @@ import {
   receiveAssignmentsSummaryAction,
 } from '../../../src/actions/assignments'
 import {
-  getDistrictIdSelector,
   getAssignmentTeacherList,
   getAssignmentTestList,
   getAssignmentTestsSelector,
@@ -23,6 +22,7 @@ import {
   getGroupList,
   getUserRole,
   getCurrentTerm,
+  getUserOrgId,
 } from '../../../src/selectors/user'
 import selectsData from '../../../TestPage/components/common/selectsData'
 import { FilterContainer } from './styled'
@@ -410,7 +410,7 @@ LeftFilter.defaultProps = {
 
 export default connect(
   (state) => ({
-    districtId: getDistrictIdSelector(state),
+    districtId: getUserOrgId(state),
     termsData: get(state, 'user.user.orgData.terms', []),
     userRole: getUserRole(state),
     classList: getGroupList(state),

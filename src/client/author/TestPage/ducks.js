@@ -74,11 +74,12 @@ import {
 } from './components/AddItems/ducks'
 import {
   getUserRole,
-  getUserOrgData,
   getUserIdSelector,
   getUserId,
   getIsCurator,
   getUserSignupStatusSelector,
+  getUserOrgId,
+  currentDistrictInstitutionIds,
 } from '../src/selectors/user'
 import { receivePerformanceBandSuccessAction } from '../PerformanceBand/ducks'
 import { receiveStandardsProficiencySuccessAction } from '../StandardsProficiency/ducks'
@@ -2619,9 +2620,7 @@ function* publishForRegrade({ payload }) {
     if (isRegradeNeeded) {
       yield put(setShowRegradeConfirmPopupAction(true))
     } else {
-      const districtId = yield select((state) =>
-        get(state, ['user', 'user', 'orgData', 'districtIds', 0])
-      )
+      const districtId = yield select(getUserOrgId)
       yield put(setTestsLoadingAction(true))
       yield call(updateRegradeDataSaga, {
         payload: {
@@ -3150,15 +3149,16 @@ function* getDefaultTestSettingsSaga({ payload: testEntity }) {
   try {
     yield put(setDefaultSettingsLoadingAction(true))
     const role = yield select(getUserRole)
-    const orgData = yield select(getUserOrgData)
+    const districtId = yield select(getUserOrgId)
+    const institutionIds = yield select(currentDistrictInstitutionIds)
     let payload = {
-      orgId: orgData?.districtIds?.[0],
+      orgId: districtId,
       params: { orgType: 'district' },
     }
 
-    if (role !== roleuser.DISTRICT_ADMIN && orgData.institutionIds.length) {
+    if (role !== roleuser.DISTRICT_ADMIN && institutionIds.length) {
       payload = {
-        orgId: orgData.institutionIds[0] || orgData?.districtIds?.[0],
+        orgId: institutionIds[0] || districtId,
         params: {
           orgType: 'institution',
         },

@@ -118,20 +118,30 @@ export const getInterestedSubjectsSelector = createSelector(
 /**
  * this selector shouldn't be used for students
  * student can be part of multiple district
- * @type {OutputSelector<unknown, number, (res: *) => number>}
+ * @type {OutputSelector<unknown, string, (Object) => string>}
  */
-export const getUserOrgId = createSelector(
-  stateSelector,
-  (state) => state?.user?.districtIds?.[0]
+export const getUserOrgId = createSelector(stateSelector, (state) =>
+  _get(state, 'user.currentDistrictId', _get(state, 'user.districtIds[0]'))
 )
 /**
  * this selector shouldn't be used for students
  * student can be part of multiple district
- * @type {OutputSelector<unknown, number, (res: *) => number>}
+ */
+export const getUserOrg = createSelector(
+  stateSelector,
+  getUserOrgId,
+  (state, orgId) =>
+    (state.user.orgData?.districts || []).find((d) => d.districtId === orgId)
+)
+
+/**
+ * this selector shouldn't be used for students
+ * student can be part of multiple district
+ * @type {OutputSelector<unknown, string, (Object) => string>}
  */
 export const getUserOrgName = createSelector(
-  stateSelector,
-  (state) => state.user.orgData?.districts?.[0].districtName
+  getUserOrg,
+  (userOrg) => userOrg?.districtName
 )
 
 export const getUserFeatures = createSelector(stateSelector, (state) =>
@@ -140,6 +150,25 @@ export const getUserFeatures = createSelector(stateSelector, (state) =>
 
 export const getUserOrgData = createSelector(stateSelector, (state) =>
   _get(state, 'user.orgData', {})
+)
+
+/**
+ * this selector shouldn't be used for students
+ * student can be part of multiple district
+ */
+export const getOrgSchools = createSelector(
+  getUserOrgData,
+  (orgData) => orgData.schools || []
+)
+
+export const getOrgGroupList = createSelector(
+  getUserOrgData,
+  (orgData) => orgData.classList || []
+)
+
+export const currentDistrictInstitutionIds = createSelector(
+  getOrgSchools,
+  (schools) => schools.map((item) => item._id)
 )
 
 export const getOrgItemBanksSelector = createSelector(stateSelector, (state) =>
@@ -380,9 +409,26 @@ export const getCleverSyncEnabledInstitutionPoliciesSelector = createSelector(
       : []
 )
 
-export const getAccountSwitchDetails = createSelector(getUser, (state) =>
-  pick(state, ['personId', 'otherAccounts'])
-)
+export const getAccountSwitchDetails = createSelector(getUser, (state) => {
+  const details = pick(state, ['personId', 'otherAccounts'])
+  const userId = state._id
+  details.otherAccounts = details.otherAccounts || []
+  details.switchAccounts = details.otherAccounts.flatMap((acc) =>
+    acc.districts.length && acc._id === userId
+      ? acc.districts.map((district) => ({
+          ...acc,
+          district,
+          institutions: acc.institutions.filter(
+            (inst) => inst.districtId === district._id
+          ),
+        }))
+      : {
+          ...acc,
+          district: {},
+        }
+  )
+  return details
+})
 
 export const getIsPowerPremiumAccount = createSelector(
   getUser,

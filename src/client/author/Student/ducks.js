@@ -56,6 +56,7 @@ export const receiveStudentsListSuccessAction = createAction(
 export const receiveStudentsListErrorAction = createAction(
   RECEIVE_STUDENTLIST_ERROR
 )
+// never used
 export const updateStudentAction = createAction(UPDATE_STUDENT_REQUEST)
 export const updateStudentSuccessAction = createAction(UPDATE_STUDENT_SUCCESS)
 export const updateStudentErrorAction = createAction(UPDATE_STUDENT_ERROR)

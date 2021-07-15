@@ -13,7 +13,9 @@ import {
   green,
   themeColorTagsBg,
 } from '@edulastic/colors'
+import { connect } from 'react-redux'
 import { ConfirmationModal } from '../../../src/components/common/ConfirmationModal'
+import { getUserOrgId } from '../../../src/selectors/user'
 
 const CanvasSyncModal = ({
   visible,
@@ -32,6 +34,7 @@ const CanvasSyncModal = ({
   isFetchingCanvasData,
   syncCanvasCoTeacher,
   isAutoArchivedClass,
+  districtId,
 }) => {
   const [course, setCourse] = useState(canvasCode)
   const [section, setSection] = useState(canvasCourseSectionCode)
@@ -133,7 +136,7 @@ const CanvasSyncModal = ({
       sectionId,
       sectionName,
       institutionId,
-      districtId: user?.districtIds?.[0],
+      districtId,
       syncCanvasCoTeacher: coTeacherFlag,
     }
     syncClassWithCanvas(data)
@@ -236,8 +239,13 @@ const CanvasSyncModal = ({
     </StyledModal>
   )
 }
+const mapStateToProps = (state) => ({
+  districtId: getUserOrgId(state),
+})
 
-export default CanvasSyncModal
+const mapDispatchToProps = {}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CanvasSyncModal)
 
 const StyledModal = styled(ConfirmationModal)`
   .ant-modal-content {

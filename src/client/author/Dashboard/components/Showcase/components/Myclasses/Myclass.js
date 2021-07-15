@@ -38,7 +38,10 @@ import {
 } from '../../../../../../student/Login/ducks'
 import { resetTestFiltersAction } from '../../../../../TestList/ducks'
 import { clearPlaylistFiltersAction } from '../../../../../Playlist/ducks'
-import { getCollectionsSelector } from '../../../../../src/selectors/user'
+import {
+  getCollectionsSelector,
+  getUserOrgId,
+} from '../../../../../src/selectors/user'
 import TestRecommendations from './components/TestRecommendations'
 
 const ItemPurchaseModal = loadable(() =>
@@ -694,7 +697,7 @@ export default compose(
   connect(
     (state) => ({
       classData: state.dashboardTeacher.data,
-      districtId: state.user.user?.orgData?.districtIds?.[0],
+      districtId: getUserOrgId(state),
       loading: state.dashboardTeacher.loading,
       user: getUserDetails(state),
       showCleverSyncModal: get(state, 'manageClass.showCleverSyncModal', false),

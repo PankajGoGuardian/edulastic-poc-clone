@@ -9,6 +9,7 @@ import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { nameValidator } from '../../../../../common/utils/helpers'
+import { getUserOrgId } from '../../../../src/selectors/user'
 import { Field } from './styled'
 
 const BasicFields = ({
@@ -438,7 +439,7 @@ BasicFields.defaultProps = {
 
 export default connect((state) => ({
   students: get(state, 'manageClass.studentsList', []),
-  districtId: state.user.user.orgData.districtIds[0],
+  districtId: getUserOrgId(state),
   classDetails: get(state, 'manageClass.entity', {}),
 }))(BasicFields)
 

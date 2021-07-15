@@ -45,7 +45,7 @@ class AddTeacherModal extends React.Component {
   onAddTeacher = async () => {
     const { emailValidate, isPowerTeacher } = this.state
     let checkUserResponse = { userExists: true }
-
+    const { userOrgId, editTeacher, addTeacher, form } = this.props
     if (
       emailValidate.validateStatus === 'success' &&
       emailValidate.value.length > 0
@@ -55,7 +55,9 @@ class AddTeacherModal extends React.Component {
       })
       if (
         checkUserResponse.userExists &&
-        checkUserResponse.role === 'teacher'
+        checkUserResponse.role === 'teacher' &&
+        checkUserResponse.districtIds &&
+        checkUserResponse.districtIds.includes(userOrgId)
       ) {
         this.setState({
           emailValidate: {
@@ -91,13 +93,8 @@ class AddTeacherModal extends React.Component {
       })
     }
 
-    this.props.form.validateFields((err, row) => {
+    form.validateFields((err, row) => {
       if (!err) {
-        if (
-          checkUserResponse.userExists &&
-          checkUserResponse.role === 'teacher'
-        )
-          return
         const institutionIds = []
         for (let i = 0; i < row.institutionIds.length; i++) {
           institutionIds.push(row.institutionIds[i].key)
@@ -110,14 +107,37 @@ class AddTeacherModal extends React.Component {
           lastName = row.name.substr(lastNameIndex, row.name.length)
         }
 
-        this.props.addTeacher({
+        const dataToUpdate = {
           firstName: firstName[0],
           lastName,
           email: this.state.emailValidate.value,
           password: row.password,
           institutionIds,
           isPowerTeacher,
-        })
+        }
+
+        if (
+          checkUserResponse.userExists &&
+          checkUserResponse.role === 'teacher'
+        ) {
+          if (
+            checkUserResponse.districtIds &&
+            !checkUserResponse.districtIds.includes(userOrgId)
+          ) {
+            Object.assign(dataToUpdate, {
+              districtId: userOrgId,
+            })
+            editTeacher({
+              userId: checkUserResponse.userId,
+              data: dataToUpdate,
+            })
+            this.props.closeModal()
+            return
+          }
+          return
+        }
+
+        addTeacher(dataToUpdate)
       }
     })
   }

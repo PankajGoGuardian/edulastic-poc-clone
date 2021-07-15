@@ -1212,9 +1212,10 @@ export function* fetchUser({ payload }) {
     }
     yield call(segmentApi.analyticsIdentify, { user })
     const key = `${localStorage.getItem('defaultTokenKey')}`
-
+  
     if (key.includes('role:undefined') && user.role) {
       TokenStorage.removeAccessToken(user._id, 'undefined')
+      // add last used or current districtId
       TokenStorage.storeAccessToken(user.token, user._id, user.role, true)
       TokenStorage.selectAccessToken(user._id, user.role)
     }

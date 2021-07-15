@@ -41,7 +41,10 @@ import {
   setGoogleAuthenticationRequiredAction,
   saveGoogleTokensAndRetrySyncAction,
 } from '../../ducks'
-import { getCleverLibraryUserSelector } from '../../../src/selectors/user'
+import {
+  getCleverLibraryUserSelector,
+  getUserOrgId,
+} from '../../../src/selectors/user'
 import ReauthenticateModal from './ReauthenticateModal'
 
 const ClassDetails = ({
@@ -72,6 +75,7 @@ const ClassDetails = ({
   isGoogleAuthRequired,
   setGoogleAuthenticationRequired,
   saveGoogleTokensAndRetrySync,
+  userDistrictId,
 }) => {
   const { editPath, exitPath } = location?.state || {}
   const {
@@ -316,6 +320,7 @@ const ClassDetails = ({
               isFetchingCanvasData={isFetchingCanvasData}
               syncCanvasCoTeacher={selectedClass.syncCanvasCoTeacher || false}
               isAutoArchivedClass={isAutoArchivedClass}
+              districtId={userDistrictId}
             />
           )}
           {isGoogleAuthRequired && (
@@ -411,6 +416,7 @@ const enhance = compose(
       classCodeError: getClassNotFoundError(state),
       isFetchingCanvasData: getCanvasFetchingStateSelector(state),
       isGoogleAuthRequired: getGoogleAuthRequiredSelector(state),
+      userDistrictId: getUserOrgId(state),
     }),
     {
       syncClassUsingCode: syncClassUsingCodeAction,

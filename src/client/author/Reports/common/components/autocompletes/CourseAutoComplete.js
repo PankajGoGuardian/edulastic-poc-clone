@@ -8,7 +8,7 @@ import { AutoComplete, Input, Icon, Empty } from 'antd'
 
 // ducks
 import { useDropdownData } from '@edulastic/common'
-import { getUser } from '../../../../src/selectors/user'
+import { getUserOrgId } from '../../../../src/selectors/user'
 import {
   receiveCourseListAction,
   getCourseListSelector,
@@ -17,12 +17,12 @@ import {
 const DEFAULT_SEARCH_TERMS = { text: '', selectedText: '', selectedKey: 'All' }
 
 const CourseAutoComplete = ({
-  userDetails,
   courseList,
   loading,
   loadCourseList,
   selectCB,
   selectedCourseId,
+  districtId,
 }) => {
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
   const [fieldValue, setFieldValue] = useState('')
@@ -31,9 +31,6 @@ const CourseAutoComplete = ({
 
   // build search query
   const query = useMemo(() => {
-    const { orgData } = userDetails
-    const { districtIds } = orgData
-    const districtId = districtIds?.[0]
     const q = {
       limit: 25,
       page: 1,
@@ -161,7 +158,7 @@ const CourseAutoComplete = ({
 
 export default connect(
   (state) => ({
-    userDetails: getUser(state),
+    districtId: getUserOrgId(state),
     courseList: getCourseListSelector(state),
     loading: get(state, ['coursesReducer', 'loading'], false),
   }),

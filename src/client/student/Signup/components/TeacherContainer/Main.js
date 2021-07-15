@@ -8,6 +8,7 @@ import { get } from 'lodash'
 import { Col } from 'antd'
 import { notification } from '@edulastic/common'
 import { canvasApi } from '@edulastic/api'
+import queryString from 'query-string'
 import Header from './Header'
 import JoinSchool from './JoinSchool'
 import SignupForm from './SignupForm'
@@ -23,8 +24,11 @@ import {
   getCanvasCourseListRequestAction,
   getCanvasSectionListRequestAction,
 } from '../../../../author/ManageClass/ducks'
+import {
+  currentDistrictInstitutionIds,
+  getUserOrgId,
+} from '../../../../author/src/selectors/user'
 import { themes } from '../../../../theme'
-import queryString from 'query-string'
 
 const Container = ({
   user,
@@ -44,6 +48,7 @@ const Container = ({
   isModalView,
   isModalVisible,
   toggleModal,
+  districtId,
 }) => {
   const { isAuthenticated, signupStatus } = user
   const allowCanvas = sessionStorage.getItem('signupFlow') === 'canvas'
@@ -60,9 +65,9 @@ const Container = ({
       school?.schoolId || institutionIds[0]
     )
     if (!result.userAuthenticated) {
-      const subscriptionTopic = `canvas:${userInfo.districtIds[0]}_${
-        userInfo._id
-      }_${userInfo.username || userInfo.email || ''}`
+      const subscriptionTopic = `canvas:${districtId}_${userInfo._id}_${
+        userInfo.username || userInfo.email || ''
+      }`
       authorizeCanvas(result.canvasAuthURL, subscriptionTopic)
         .then(() => {
           setIsAuthorized(true)
@@ -187,7 +192,8 @@ const enhance = compose(
       user: state.user,
       canvasCourseList: get(state, 'manageClass.canvasCourseList', []),
       canvasSectionList: get(state, 'manageClass.canvasSectionList', []),
-      institutionIds: get(state, 'user.user.institutionIds', []),
+      institutionIds: currentDistrictInstitutionIds(state),
+      districtId: getUserOrgId(state),
     }),
     {
       logout: logoutAction,

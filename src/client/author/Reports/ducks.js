@@ -181,7 +181,11 @@ import {
   RECEIVE_SCHOOLS_ERROR,
   RECEIVE_SCHOOLS_SUCCESS,
 } from '../Schools/ducks'
-import { getOrgDataSelector, getUser } from '../src/selectors/user'
+import {
+  getOrgDataSelector,
+  getUser,
+  getUserOrgId,
+} from '../src/selectors/user'
 import {
   getAllTagsAction,
   getAllTagsSelector,
@@ -485,7 +489,7 @@ function* getGroupTags(ids, options) {
     const q = {
       limit: ids.length || 25,
       page: 1,
-      districtId: options?.districtIds?.[0],
+      districtId: options.districtId,
       search: {
         name: '',
         type: ['custom'],
@@ -513,7 +517,7 @@ function* getTestTags(ids, options) {
       search: {
         searchString: '',
         statuses: [IN_PROGRESS, IN_GRADING, DONE],
-        districtId: options?.districtIds?.[0],
+        districtId: options.districtId,
         testIds: ids,
       },
       aggregate: true,
@@ -534,7 +538,7 @@ function* getClassTags(ids, options) {
     const q = {
       limit: ids.length || 25,
       page: 1,
-      districtId: options.districtIds?.[0],
+      districtId: options.districtId,
       search: {
         name: '',
         type: ['class'],
@@ -555,7 +559,7 @@ function* getCourseTags(ids, options) {
     const q = {
       limit: ids.length || 25,
       page: 1,
-      districtId: options.districtIds?.[0],
+      districtId: options.districtId,
       search: {
         name: [{ type: 'cont', value: '' }],
         courseIds: ids,
@@ -574,7 +578,7 @@ function* getTeacherTags(ids, options) {
     const q = {
       limit: ids.length || 25,
       page: 1,
-      districtId: options?.districtIds?.[0],
+      districtId: options.districtId,
       search: {},
       role: roleuser.TEACHER,
       teacherIds: ids,
@@ -601,7 +605,7 @@ function* getSchoolTags(ids, options) {
     const q = {
       limit: ids.length || 25,
       page: 1,
-      districtId: options?.districtIds?.[0],
+      districtId: options.districtId,
       search: {
         name: [{ type: 'cont', value: '' }],
       },
@@ -629,10 +633,12 @@ function* fetchUpdateTagsData({ payload }) {
   const { options = {}, type, ...keys } = payload
   try {
     const orgData = yield select(getOrgDataSelector)
+    const districtId = yield select(getUserOrgId)
     const userDetails = yield select(getUser)
     const params = {
       ...orgData,
       ...options,
+      districtId,
       userDetails,
     }
     const result = yield all(

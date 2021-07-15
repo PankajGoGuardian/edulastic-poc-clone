@@ -488,7 +488,6 @@ function* updateUserSignupStateSaga() {
   try {
     const user = yield select(getUser)
     const districtId = yield select(getUserOrgId)
-    const institutionIds = yield select(currentDistrictInstitutionIds)
     if (
       !isEmpty(user.orgData.districtIds) &&
       !isEmpty(user.orgData.defaultGrades) &&
@@ -498,7 +497,7 @@ function* updateUserSignupStateSaga() {
         email: user.email,
         districtId,
         currentSignUpState: 'DONE',
-        institutionIds,
+        institutionIds: user.orgData.institutionIds,
       }
       const _result = yield call(userApi.updateUser, {
         data,

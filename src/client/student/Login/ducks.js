@@ -1212,7 +1212,7 @@ export function* fetchUser({ payload }) {
     }
     yield call(segmentApi.analyticsIdentify, { user })
     const key = `${localStorage.getItem('defaultTokenKey')}`
-
+  
     if (key.includes('role:undefined') && user.role) {
       TokenStorage.removeAccessToken(user._id, 'undefined')
       // add last used or current districtId
@@ -1765,7 +1765,6 @@ function* getUserData({ payload: res }) {
       yield firebase.auth().signInWithCustomToken(firebaseAuthToken)
     }
     const user = pick(res, userPickFields)
-    // add last used district
     TokenStorage.storeAccessToken(res.token, user._id, user.role, true)
     TokenStorage.selectAccessToken(user._id, user.role)
     TokenStorage.updateKID(user)
@@ -1835,7 +1834,6 @@ function* updateUserRoleSaga({ payload }) {
 
     TokenStorage.removeAccessToken(_user._id, 'undefined')
 
-    // add last used district
     TokenStorage.storeAccessToken(res.token, _user._id, _user.role, true)
     TokenStorage.selectAccessToken(_user._id, _user.role)
     yield put(signupSuccessAction(_user))
@@ -1895,7 +1893,6 @@ function* resetPasswordRequestSaga({ payload }) {
     const result = yield call(userApi.resetUserPassword, payload)
     yield put({ type: RESET_PASSWORD_SUCCESS })
     const user = pick(result, userPickFields)
-    // add last used district
     TokenStorage.storeAccessToken(result.token, user._id, user.role, true)
     TokenStorage.selectAccessToken(user._id, user.role)
     yield put(signupSuccessAction(result))

@@ -181,7 +181,11 @@ import {
   RECEIVE_SCHOOLS_ERROR,
   RECEIVE_SCHOOLS_SUCCESS,
 } from '../Schools/ducks'
-import { getOrgDataSelector, getUser, getUserOrgId } from '../src/selectors/user'
+import {
+  getOrgDataSelector,
+  getUser,
+  getUserOrgId,
+} from '../src/selectors/user'
 import {
   getAllTagsAction,
   getAllTagsSelector,

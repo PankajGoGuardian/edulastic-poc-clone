@@ -1,10 +1,12 @@
-import React, { useMemo, useEffect, useCallback } from 'react'
+import React, { useState, useMemo, useEffect, useCallback } from 'react'
 import { connect } from 'react-redux'
 import { Spin, Row, Col, Card } from 'antd'
 import qs from 'qs'
 
-import { OmrDropzone } from './OmrDropzone'
-import { OmrThumbnail } from './OmrThumbnail'
+import { PageLayout } from './components/PageLayout'
+import { DropzoneContainer } from './components/DropzoneContainer'
+import { Thumbnail } from './components/Thumbnail'
+import { ScannedResponses } from './components/ScannedResponses'
 
 import {
   processStatusMap,
@@ -27,10 +29,11 @@ const UploadAnswerSheets = ({
   setOmrUploadSession,
   createOmrUploadSession,
 }) => {
+  const [showResponses, setShowResponses] = useState(false)
+  const [pageNumber, setPageNumber] = useState(1)
+
   const { assignmentId = '', groupId = '', sessionId = '' } = useMemo(
-    () =>
-      console.log('this executed') ||
-      qs.parse(location?.search || '', { ignoreQueryPrefix: true }),
+    () => qs.parse(location?.search || '', { ignoreQueryPrefix: true }),
     [location?.search]
   )
 
@@ -79,62 +82,88 @@ const UploadAnswerSheets = ({
     getOmrUploadSessions({ assignmentId, groupId, sessionId })
   }, [])
 
-  if (loading && !uploading) {
-    return <Spin />
-  }
-
-  if (!sessionId) {
-    return (
-      <Row gutter={[5, 10]}>
-        <Col span={24}>
-          <OmrDropzone
-            handleDrop={handleDrop}
-            uploadProgress={uploadProgress}
-          />
-        </Col>
-        {omrUploadSessions.map((session) => (
-          <Col span={8} onClick={() => handleCardClick(session._id)}>
-            <Card title={session.source.name} bordered="false">
-              {`${omrUploadSessionStatus[session.status]}`}
-            </Card>
-          </Col>
-        ))}
-      </Row>
-    )
-  }
-
-  if (currentSession.status > 2 && currentSession.pages?.length) {
-    return (
-      <div style={{ display: 'flex', margin: '10px 40px', flexWrap: 'wrap' }}>
-        {currentSession.pages.map((page) => {
-          const name = page.studentName || getFileNameFromUri(page.uri)
-          return (
-            <OmrThumbnail
-              name={name}
-              uri={page.uri}
-              status={page.status}
-              message={page.message}
-            />
-          )
-        })}
-      </div>
-    )
-  }
-
   return (
-    <div style={{ display: 'flex', margin: '10px 40px', flexWrap: 'wrap' }}>
-      {pageDocs.map((page) => {
-        const name = page.studentName || getFileNameFromUri(page.uri)
-        return (
-          <OmrThumbnail
-            name={name}
-            uri={page.uri}
-            status={page.status}
-            message={page.message}
-          />
-        )
-      })}
-    </div>
+    <PageLayout title="Scan Student Responses">
+      {loading ? (
+        <Spin />
+      ) : !sessionId || uploading ? (
+        <Row gutter={[5, 10]}>
+          <Col span={24}>
+            <DropzoneContainer
+              handleDrop={handleDrop}
+              uploadProgress={uploadProgress}
+            />
+          </Col>
+          {omrUploadSessions.map((session) => (
+            <Col span={8} onClick={() => handleCardClick(session._id)}>
+              <Card title={session.source.name} bordered="false">
+                {`${omrUploadSessionStatus[session.status]}`}
+              </Card>
+            </Col>
+          ))}
+        </Row>
+      ) : currentSession.status > 2 &&
+        currentSession.pages?.length &&
+        showResponses ? (
+        <ScannedResponses
+          docs={currentSession.pages}
+          pageNumber={pageNumber}
+          setPageNumber={setPageNumber}
+          closePage={() => {
+            setShowResponses(false)
+            setPageNumber(1)
+          }}
+        />
+      ) : currentSession.status > 2 && currentSession.pages?.length ? (
+        <div style={{ display: 'flex', margin: '10px 40px', flexWrap: 'wrap' }}>
+          {currentSession.pages.map((page, index) => {
+            const name = page.studentName || getFileNameFromUri(page.uri)
+            const onClick = () => {
+              setPageNumber(index + 1)
+              setShowResponses(true)
+            }
+            return (
+              <Thumbnail
+                name={name}
+                uri={page.uri}
+                status={page.status}
+                message={page.message}
+                onClick={page.status === 3 ? onClick : null}
+              />
+            )
+          })}
+        </div>
+      ) : showResponses ? (
+        <ScannedResponses
+          docs={pageDocs}
+          pageNumber={pageNumber}
+          setPageNumber={setPageNumber}
+          closePage={() => {
+            setShowResponses(false)
+            setPageNumber(1)
+          }}
+        />
+      ) : (
+        <div style={{ display: 'flex', margin: '10px 40px', flexWrap: 'wrap' }}>
+          {pageDocs.map((page, index) => {
+            const name = page.studentName || getFileNameFromUri(page.uri)
+            const onClick = () => {
+              setPageNumber(index + 1)
+              setShowResponses(true)
+            }
+            return (
+              <Thumbnail
+                name={name}
+                uri={page.uri}
+                status={page.status}
+                message={page.message}
+                onClick={page.status === 3 ? onClick : null}
+              />
+            )
+          })}
+        </div>
+      )}
+    </PageLayout>
   )
 }
 

@@ -15,4 +15,11 @@ export const omrUploadSessionStatus = {
 
 export const omrSheetScanStatus = { ...omrUploadSessionStatus }
 
+export const thumbnailFilterOptions = [
+  { key: '', label: 'All' },
+  { key: '2', label: omrUploadSessionStatus[2] },
+  { key: '3', label: omrUploadSessionStatus[3] },
+  { key: '4', label: omrUploadSessionStatus[4] },
+]
+
 export const getFileNameFromUri = (uri = '') => uri.split('/').lastItem

@@ -1,6 +1,14 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Spin } from 'antd'
+import { Spin, Select } from 'antd'
+
+export const ThumbnailDropdown = ({ value, options, handleChange }) => (
+  <Select labelInValue value={value} onChange={handleChange}>
+    {options.map(({ key, label }) => (
+      <Select.Option key={key}>{label}</Select.Option>
+    ))}
+  </Select>
+)
 
 const FailedOverlay = ({ message }) => (
   <>

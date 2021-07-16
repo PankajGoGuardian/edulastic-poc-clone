@@ -26,6 +26,7 @@ import ItemDetailContext, {
   DEFAULT,
 } from '@edulastic/common/src/contexts/ItemDetailContext'
 import questionTitle from '@edulastic/constants/const/questionTitle'
+import UnScored from '@edulastic/common/src/components/Unscored'
 import { MAX_MOBILE_WIDTH } from '../../../src/constants/others'
 import {
   changeViewAction,
@@ -63,7 +64,10 @@ import {
   addWidgetToPassageAction,
   deleteItemAction,
 } from '../../ducks'
-import { changeCurrentQuestionAction } from '../../../sharedDucks/questions'
+import {
+  changeCurrentQuestionAction,
+  getIsEditDisbledSelector,
+} from '../../../sharedDucks/questions'
 import { toggleSideBarAction } from '../../../src/actions/toggleMenu'
 
 import {
@@ -102,6 +106,7 @@ import {
 } from '../../../src/selectors/user'
 import QuestionToPassage from '../QuestionToPassage'
 import PassageDivider from '../Divider'
+import Ctrls from '../ItemDetailRow/components/ItemDetailWidget/Controls'
 
 const testItemStatusConstants = {
   DRAFT: 'draft',
@@ -821,6 +826,7 @@ class Container extends Component {
                 hideColumn={collapseLeft}
                 isCollapsed={!!collapseDirection}
                 useTabsLeft={useTabsLeft}
+                onShowSettings={this.handleShowSettings}
               />
             )}
             {rows.map((row, i) => (
@@ -852,6 +858,7 @@ class Container extends Component {
                   addItemToPassage={this.addItemToPassage}
                   showAddItemButton={showAddItemButton}
                   isPassageWithQuestions={passageWithQuestions}
+                  onShowSettings={this.handleShowSettings}
                 />
               </>
             ))}
@@ -1012,7 +1019,18 @@ class Container extends Component {
       allowedToSelectMultiLanguage,
       isPremiumUser,
       isEditFlow,
+      itemEditDisabled,
+      setItemLevelScore,
     } = this.props
+    const {
+      itemLevelScoring,
+      itemLevelScore,
+      data = [],
+      isPassageWithQuestions,
+      multipartItem,
+    } = item
+    const { widgets = [] } = rows[0]
+    const [isEditDisabled] = itemEditDisabled
     const { testId } = match.params
     let breadCrumbQType = ''
     if (item.passageId && item.canAddMultipleItems) {
@@ -1051,6 +1069,18 @@ class Container extends Component {
     const showLanguageSelector =
       isPassageQuestion ||
       item?.data?.questions?.some((q) => useLanguageFeatureQn.includes(q.type))
+
+    const handleTotalPartScoreChange = (score) => {
+      setItemLevelScore(+score)
+    }
+
+    const isTotalPointsBlockVisible = itemLevelScoring && widgets?.length > 0
+    const showMultipartAllPartsScore =
+      isTotalPointsBlockVisible && (multipartItem || isPassageWithQuestions)
+    const hasNoUnscored =
+      data?.questions?.length > 0
+        ? data.questions.some((x) => x.validation?.unscored !== true)
+        : true
 
     return (
       <ItemDetailContext.Provider value={{ layoutType }}>
@@ -1159,11 +1189,39 @@ class Container extends Component {
                 {allowedToSelectMultiLanguage && showLanguageSelector && (
                   <LanguageSelector />
                 )}
-                {view !== 'preview' && view !== 'auditTrail' && (
-                  <EduButton ml="8px" isGhost height="30px" id="how-to-author">
-                    How to author
-                  </EduButton>
-                )}
+                {view !== 'preview' &&
+                  view !== 'auditTrail' &&
+                  (showMultipartAllPartsScore ? (
+                    <AllPartsPointsWrapper>
+                      {hasNoUnscored ? (
+                        <Ctrls.TotalPoints
+                          value={itemLevelScore}
+                          onChange={handleTotalPartScoreChange}
+                          data-cy="totalPointUpdate"
+                          visible={isTotalPointsBlockVisible}
+                          disabled={isEditDisabled}
+                          itemLevelScoring={itemLevelScoring}
+                          isPassage={isPassageWithQuestions}
+                          onShowSettings={this.handleShowSettings}
+                        />
+                      ) : (
+                        <UnScored
+                          width="50px"
+                          height="32px"
+                          top={`${itemLevelScoring ? -80 : -50}px`}
+                        />
+                      )}
+                    </AllPartsPointsWrapper>
+                  ) : (
+                    <EduButton
+                      ml="8px"
+                      isGhost
+                      height="30px"
+                      id="how-to-author"
+                    >
+                      How to author
+                    </EduButton>
+                  ))}
                 {view === 'preview' && (
                   <RightActionButtons>
                     {this.renderButtons()}
@@ -1274,6 +1332,7 @@ const enhance = compose(
       view: getViewSelector(state),
       allowedToSelectMultiLanguage: allowedToSelectMultiLanguageInTest(state),
       isPremiumUser: isPremiumUserSelector(state),
+      itemEditDisabled: getIsEditDisbledSelector(state),
     }),
     {
       changeView: changeViewAction,
@@ -1315,3 +1374,13 @@ const BreadCrumbBar = styled(FlexContainer)`
 `
 
 const RightActionButtons = styled(FlexContainer)``
+
+const AllPartsPointsWrapper = styled.div`
+  position: relative;
+  padding-left: 15px;
+  .total-points-wrapper {
+    position: static;
+    top: unset;
+    right: unset;
+  }
+`

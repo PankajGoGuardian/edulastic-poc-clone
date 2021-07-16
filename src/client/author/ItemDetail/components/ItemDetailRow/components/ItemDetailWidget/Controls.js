@@ -47,9 +47,10 @@ const TotalPointsInput = ({
   value,
   onChange,
   disabled,
-  isRubricQuestion,
+  isPassage,
   visible,
   itemLevelScoring,
+  onShowSettings = () => {},
 }) => {
   if (!visible) {
     return null
@@ -57,20 +58,24 @@ const TotalPointsInput = ({
 
   const desc = (
     <ItemLevelScoringDesc>
-      {isRubricQuestion
-        ? 'This Question has Grading Rubric attached to it, so points cannot be changed for this question, and it will be equal to the max score of the rubric.'
-        : 'Total points will be divided equally among the below parts. If you want custom points for different parts, please switch to “Part Level Scores”  from Layout and Grading.'}
+      Total points will be divided equally among the below parts. If you want
+      custom points for different parts, please switch to “Part Level Scores”
+      from <a onClick={onShowSettings}>Layout and Grading.</a>
     </ItemLevelScoringDesc>
   )
 
   const PopoverComponent = itemLevelScoring ? Popover : React.Fragment
   return (
     <TotalPointsWrapper className="total-points-wrapper">
-      <FieldLabel marginBottom="0px" mr="10px">
-        Total Points (All Parts)
+      <FieldLabel fs={isPassage ? '10px' : '11px'} marginBottom="0px" mr="10px">
+        Total Points {isPassage && <br />} (All Parts)
       </FieldLabel>
       {itemLevelScoring && (
-        <PopoverComponent content={desc} placement="bottomRight">
+        <PopoverComponent
+          content={desc}
+          placement="bottomRight"
+          getPopupContainer={(e) => e.parentNode}
+        >
           <IconInfo />
         </PopoverComponent>
       )}
@@ -81,7 +86,7 @@ const TotalPointsInput = ({
         padding="0px 2px"
         margin="0px 0px 0px 10px"
         disabled={disabled}
-        value={disabled && !isRubricQuestion ? '' : value}
+        value={disabled ? '' : value}
         onChange={onChange}
         data-cy="point-update"
       />
@@ -96,16 +101,25 @@ const PointInput = ({
   isRubricQuestion,
   itemLevelScoring,
   visible,
+  onShowSettings = () => {},
 }) => {
   if (!visible) {
     return null
   }
 
+  const msgWithLink = (
+    <>
+      This item is evaluated as a whole, to evaluate parts separately and have
+      custom points for different parts please switch to “Part Level Scores”
+      from <a onClick={onShowSettings}>Layout and Grading.</a>
+    </>
+  )
+
   const desc = (
     <ItemLevelScoringDesc>
       {isRubricQuestion
         ? 'This Question has Grading Rubric attached to it, so points cannot be changed for this question, and it will be equal to the max score of the rubric.'
-        : 'This item is evaluated as a whole, to evaluate parts separately and have custom points for different parts please switch to “Part Level Scores” from Layout and Grading.'}
+        : msgWithLink}
     </ItemLevelScoringDesc>
   )
 

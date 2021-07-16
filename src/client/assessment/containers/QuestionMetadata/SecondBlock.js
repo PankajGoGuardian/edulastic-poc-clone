@@ -92,6 +92,18 @@ const SecondBlock = ({
     [collections, collectionsToShow]
   )
 
+  const allowedCollectionIds = useMemo(
+    () => collectionsToShow.map(({ _id }) => _id),
+    [collectionsToShow]
+  )
+
+  const recentCollectionsListAccessible = useMemo(() =>
+    recentCollectionsList.filter((r) => allowedCollectionIds.includes(r._id), [
+      recentCollectionsList,
+      allowedCollectionIds,
+    ])
+  )
+
   return (
     <Container padding="20px">
       <Row gutter={24}>
@@ -246,9 +258,9 @@ const SecondBlock = ({
                 </SelectInputStyled>
               </ItemBody>
             )}
-            {recentCollectionsList?.length > 0 && (
+            {recentCollectionsListAccessible?.length > 0 && (
               <RecentCollectionsList
-                recentCollectionsList={recentCollectionsList}
+                recentCollectionsList={recentCollectionsListAccessible}
                 collections={collections || []}
                 handleCollectionsSelect={handleRecentCollectionsSelect}
               />

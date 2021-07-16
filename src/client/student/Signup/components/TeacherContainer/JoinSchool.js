@@ -95,7 +95,9 @@ const JoinSchool = ({
   addingSchool,
   isModal,
   institutionIds,
+  isSchoolSignupOnly = false,
 }) => {
+  fromUserProfile = fromUserProfile || isSchoolSignupOnly
   const {
     email,
     firstName,
@@ -201,7 +203,11 @@ const JoinSchool = ({
         middleName,
         lastName,
       }
-      addSchool({ data, userId: userInfo._id })
+      addSchool({
+        data,
+        userId: userInfo._id,
+        goToCreateClass: isSchoolSignupOnly,
+      })
     } else {
       const data = {
         institutionIds: [selected.schoolId || selected._id || ''],

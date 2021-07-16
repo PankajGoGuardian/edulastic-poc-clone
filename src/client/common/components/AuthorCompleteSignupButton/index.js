@@ -5,7 +5,7 @@ import { Spin } from 'antd'
 import loadable from '@loadable/component'
 import PropTypes from 'prop-types'
 import { signUpState } from '@edulastic/constants'
-import { getUser } from '../../../author/src/selectors/user'
+import { getOrgSchools, getUser } from '../../../author/src/selectors/user'
 
 const TeacherSignup = loadable(
   () => import('../../../student/Signup/components/TeacherContainer/Container'),
@@ -22,6 +22,7 @@ const AuthorCompleteSignupButton = ({
   isOpenSignupModal = false,
   setShowCompleteSignupModal,
   setCallFunctionAfterSignup,
+  orgSchools = [],
 }) => {
   const { currentSignUpState: signupStatus } = user
   const [isSchoolModalVisible, setIsSchoolModalVisible] = useState(false)
@@ -45,7 +46,10 @@ const AuthorCompleteSignupButton = ({
   }, [isOpenSignupModal])
 
   const handleClick = () => {
-    if (signupStatus === signUpState.ACCESS_WITHOUT_SCHOOL) {
+    if (
+      signupStatus === signUpState.ACCESS_WITHOUT_SCHOOL ||
+      orgSchools.length === 0
+    ) {
       trackClick()
       toggleSchoolModal(true)
       return
@@ -62,6 +66,7 @@ const AuthorCompleteSignupButton = ({
           isModal
           handleCancel={() => handleCanel(false)}
           isVisible={isSchoolModalVisible}
+          isSchoolSignupOnly={orgSchools.length === 0}
         />
       )}
     </>
@@ -88,6 +93,7 @@ AuthorCompleteSignupButton.defaultProps = {
 const enhance = compose(
   connect((state) => ({
     user: getUser(state),
+    orgSchools: getOrgSchools(state),
   }))
 )
 

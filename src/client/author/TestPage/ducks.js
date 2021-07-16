@@ -2084,6 +2084,9 @@ function* createTest(data) {
   const dataToSend = omit(data, omitedItems)
   // we are getting testItem ids only in payload from cart, but whole testItem Object from test library.
   dataToSend.itemGroups = transformItemGroupsUIToMongo(data.itemGroups)
+  if (dataToSend.settingId === '') {
+    dataToSend.settingId = null
+  }
   const entity = yield call(testsApi.create, dataToSend)
   fillAutoselectGoupsWithDummyItems(data)
   yield put({
@@ -2233,6 +2236,9 @@ export function* updateTestSaga({ payload }) {
         Sentry.captureException(new Error('testDataHasInvalidException'))
       })
       return
+    }
+    if (testData.settingId === '') {
+      testData.settingId = null
     }
     const entity = yield call(testsApi.update, { ...payload, data: testData })
     if (isEmpty(entity)) {
@@ -3622,6 +3628,8 @@ function* saveTestSettingsSaga({ payload }) {
     const result = yield call(settingsApi.createTestSetting, payload.data)
     if (payload.switchSetting)
       yield put(setCurrentTestSettingsIdAction(result._id))
+    if (payload.switchSettingInTest)
+      yield put(setTestDataAction({ settingId: result._id }))
     yield put(addTestSettingInList(result))
     notification({ type: 'success', msg: 'Test settings saved successfully' })
   } catch (err) {

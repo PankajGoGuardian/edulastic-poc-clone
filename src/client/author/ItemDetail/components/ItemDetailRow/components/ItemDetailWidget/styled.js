@@ -32,7 +32,6 @@ export const ButtonsContainer = styled.div`
   align-items: flex-end;
   overflow-x: visible;
   padding: 10px 15px 0px 10px;
-  min-width: 180px;
   opacity: 0.3;
 
   &:hover {

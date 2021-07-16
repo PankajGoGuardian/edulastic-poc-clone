@@ -47,7 +47,7 @@ const PremiumItemBanner = ({
         )}`}
       </span>
     </Container>
-    {!!timeSpent && (
+    {!isPrintPreview && !!timeSpent && (
       <Timer>
         <IconClockCircularOutline />
         {round(timeSpent / 1000, 1)}s

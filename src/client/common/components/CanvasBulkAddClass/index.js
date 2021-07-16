@@ -6,7 +6,7 @@ import {
 } from '@edulastic/common'
 import { IconCanvasBook } from '@edulastic/icons'
 import { Select } from 'antd'
-import { get, groupBy } from 'lodash'
+import { get, groupBy, isEmpty } from 'lodash'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import { receiveSearchCourseAction } from '../../../author/Courses/ducks'
@@ -146,6 +146,7 @@ const CanvasBulkAddClass = ({
         .filter((o) => o.alreadySynced)
         .map((o) => !!o.syncCanvasCoTeacher)
       if (
+        !isEmpty(syncedClassCoTeacherFlag) &&
         !(
           syncedClassCoTeacherFlag.includes(true) &&
           syncedClassCoTeacherFlag.includes(false)

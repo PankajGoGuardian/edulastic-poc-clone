@@ -228,7 +228,6 @@ class AuthorTestItemPreview extends Component {
     const widgets = cols[colIndex]?.widgets || []
     const borderRadius =
       widgetIndex === 0 || widgetIndex === widgets.length - 1 ? '10px' : '0px'
-
     return (
       <Tabs.TabContainer>
         <QuestionWrapper
@@ -252,6 +251,9 @@ class AuthorTestItemPreview extends Component {
           // widgetIndex was needed for passages if it has multiple tabs and widgets
           widgetIndex={widgetIndex}
           testItemId={item._id}
+          multipartItem={item?.multipartItem || false}
+          itemLevelScoring={item?.itemLevelScoring || true}
+          showStacked
         />
       </Tabs.TabContainer>
     )

@@ -58,6 +58,7 @@ class CardWrapper extends Component {
       return (
         <CardBox
           data-cy={item._id}
+          className={`testCard${item._id}`}
           key={item._id}
           style={{ marginBottom: 20 }}
           isPlaylist={isPlaylist}
@@ -82,7 +83,12 @@ class CardWrapper extends Component {
     }
 
     return (
-      <Col data-cy={item._id} key={item._id} span={24}>
+      <Col
+        data-cy={item._id}
+        className={`testCard${item._id}`}
+        key={item._id}
+        span={24}
+      >
         <ListItem
           owner={owner}
           item={item}

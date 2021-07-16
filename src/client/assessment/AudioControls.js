@@ -47,6 +47,7 @@ const AudioControls = ({
   className,
   page,
   hideVisibility,
+  isPremiumContentWithoutAccess = false,
 }) => {
   const [loading, setLoading] = useState(true)
   const [stimulusHowl, setStimulusHowl] = useState({})
@@ -186,7 +187,7 @@ const AudioControls = ({
           )
         } else {
           const pageAudio = questionData.tts.pages
-            .filter((p) => p?.contentAudioUrl)
+            .filter((p) => p?.contentAudioURL)
             .map((p) => audioLoadResolve(p?.contentAudioURL))
 
           if (pageAudio.length) {
@@ -296,6 +297,7 @@ const AudioControls = ({
             height="40px"
             IconBtn={!btnWithText}
             onClick={handlePlayPauseAudio}
+            disabled={isPremiumContentWithoutAccess}
           >
             {currentPlayingDetails.qId === qId ? (
               <>
@@ -325,7 +327,9 @@ const AudioControls = ({
             height="40px"
             IconBtn={!btnWithText}
             onClick={handleStopAudio}
-            disabled={currentPlayingDetails.qId !== qId}
+            disabled={
+              currentPlayingDetails.qId !== qId || isPremiumContentWithoutAccess
+            }
           >
             <>
               {btnWithText ? (

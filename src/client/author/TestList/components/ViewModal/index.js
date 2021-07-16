@@ -38,7 +38,6 @@ import {
   isPublisherUserSelector,
   getWritableCollectionsSelector,
   getInterestedCurriculumsSelector,
-  getUserSignupStatusSelector,
   getIsCurator,
 } from '../../../src/selectors/user'
 import TestStatusWrapper from '../TestStatusWrapper/testStatusWrapper'
@@ -206,7 +205,6 @@ class ViewModal extends React.Component {
       collectionName,
       interestedCurriculums,
       writableCollections,
-      userSignupStatus,
       isDemoPlaygroundUser,
       isCurator,
     } = this.props
@@ -308,28 +306,28 @@ class ViewModal extends React.Component {
                 </TestStatus>
               )}
             </TestStatusWrapper>
+            {(owner || isCurator) && !isEdulasticCurator && (
+              <EduButton
+                ml="5px"
+                isGhost
+                height="32px"
+                width="32px"
+                disabled={isDemoPlaygroundUser}
+                title={
+                  isDemoPlaygroundUser
+                    ? 'This feature is not available in demo account.'
+                    : ''
+                }
+                onClick={this.onShareModalChange}
+                data-cy="share"
+              >
+                <IconShare />
+              </EduButton>
+            )}
           </ModalTitle>
           {modalView && (
             <>
               <RightButtonContainer>
-                {(owner || isCurator) && !isEdulasticCurator && (
-                  <EduButton
-                    isGhost
-                    height="32px"
-                    width="32px"
-                    disabled={isDemoPlaygroundUser}
-                    title={
-                      isDemoPlaygroundUser
-                        ? 'This feature is not available in demo account.'
-                        : ''
-                    }
-                    onClick={this.onShareModalChange}
-                    data-cy="share"
-                  >
-                    <IconShare />
-                  </EduButton>
-                )}
-
                 <CloseButton onClick={this.handleModalClose}>
                   <IconClose
                     data-cy="closeTestPopUp"
@@ -352,6 +350,7 @@ class ViewModal extends React.Component {
                 fallback={<Progress />}
                 hideOptions={this.hideCloneOptions}
                 onDuplicate={onDuplicate}
+                status={status}
               />
             ) : (
               <>
@@ -749,7 +748,6 @@ class ViewModal extends React.Component {
 
 export default connect(
   (state) => ({
-    userSignupStatus: getUserSignupStatusSelector(state),
     userId: getUserIdSelector(state),
     collections: getCollectionsSelector(state),
     userRole: getUserRole(state),

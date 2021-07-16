@@ -198,6 +198,7 @@ class TestList extends Component {
     markedTests: [],
     moduleModalAdd: null,
     openSidebar: false,
+    isSingaporeMath: false,
   }
 
   static getDerivedStateFromProps = (props, prevState) => {
@@ -242,7 +243,24 @@ class TestList extends Component {
       interestedGrades,
       interestedCurriculums: [firstCurriculum],
       sort: initSort = {},
+      tests,
+      user,
     } = this.props
+
+    const isSingaporeMathCollectionActive = tests.filter(
+      (test) =>
+        (test.description?.toLowerCase()?.includes('singaporemath') ||
+          test.description?.toLowerCase()?.includes('singapore math')) &&
+        test?.active
+    )
+
+    const isSingaporeMath =
+      user?.referrer?.includes('singapore') ||
+      user?.utm_source?.toLowerCase()?.includes('singapore') ||
+      isSingaporeMathCollectionActive?.length > 0
+
+    this.setState({ isSingaporeMath })
+
     const {
       subject = interestedSubjects,
       grades = interestedGrades || [],
@@ -274,6 +292,8 @@ class TestList extends Component {
         curriculumId: parseInt(curriculumId, 10) || '',
       }
     }
+
+    searchFilters.isSingaporeMath = isSingaporeMath
 
     const sort = {
       ...initSort,
@@ -352,10 +372,11 @@ class TestList extends Component {
   updateFilterState = (searchState, sortState, all) => {
     const { updateAllTestFilters, updateTestFilters, testFilters } = this.props
     const search = all
-      ? { ...searchState }
+      ? { ...searchState, isSingaporeMath: this.state.isSingaporeMath }
       : {
           ...testFilters,
           [searchState.key]: searchState.value,
+          isSingaporeMath: this.state.isSingaporeMath,
         }
     sessionStorage.setItem('filters[testList]', JSON.stringify(search))
     sessionStorage.setItem('sortBy[testList]', JSON.stringify(sortState))
@@ -544,6 +565,7 @@ class TestList extends Component {
     if (isEqual(testFilters, emptyFilters) && isEqual(sort, initialSortState))
       return null
 
+    emptyFilters.isSingaporeMath = this.state.isSingaporeMath
     this.updateFilterState(emptyFilters, initialSortState, true)
     setDefaultInterests({ subject: [], grades: [], curriculumId: '' })
     if (mode !== 'embedded')
@@ -1278,6 +1300,7 @@ class TestList extends Component {
                 clearFilter={this.handleClearFilter}
                 searchFilterOption={this.searchFilterOption}
                 filterMenuItems={filterMenuItems}
+                isSingaporeMath={this.state.isSingaporeMath}
               />
             </SearchModalContainer>
           </MobileFilterModal>
@@ -1358,6 +1381,7 @@ class TestList extends Component {
                         clearFilter={this.handleClearFilter}
                         searchFilterOption={this.searchFilterOption}
                         filterMenuItems={filterMenuItems}
+                        isSingaporeMath={this.state.isSingaporeMath}
                       />
                     </ScrollBox>
                   </PerfectScrollbar>
@@ -1426,7 +1450,7 @@ class TestList extends Component {
                   <Actions type="TEST" />
                 )}
               </ItemsMenu>
-              <PerfectScrollbar style={{ padding: '0 32px' }}>
+              <PerfectScrollbar style={{ padding: '7.5px 32px' }}>
                 <CardContainer type={blockstyle}>
                   {this.renderCardContent()}
                   <PaginationWrapper
@@ -1467,6 +1491,7 @@ const enhance = compose(
       interestedGrades: getInterestedGradesSelector(state),
       interestedSubjects: getInterestedSubjectsSelector(state),
       userId: get(state, 'user.user._id', false),
+      user: get(state, 'user.user', false),
       testFilters: getTestsFilterSelector(state),
       features: getUserFeatures(state),
       isProxyUser: isProxyUserSelector(state),

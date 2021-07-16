@@ -22,7 +22,12 @@ export const getOrderedQuestionsAndAnswers = (
   const questions = testItems?.reduce((acc, item, index) => {
     // if it's a passage type question, insert passage before the questions
     // also, if the current testItem has same passageId as previous one, dont insert the passage again!
-    const ques = get(item, 'data.questions', [])
+    let ques = get(item, 'data.questions', [])
+    ques = ques.map((que) => ({
+      ...que,
+      itemCollections: item.collections,
+      premiumContentRestriction: !!item.premiumContentRestriction,
+    }))
     const resources = get(item, 'data.resources', [])
 
     let qs = [...resources, ...ques]
@@ -73,17 +78,18 @@ export const getOrderedQuestionsAndAnswers = (
   }, [])
 
   let answers = questions.map((q) => {
-    const { options, validResponse, altResponse } = formatOptions(q)
+    const { itemCollections, premiumContentRestriction, ...ques } = q
+    const { options, validResponse, altResponse } = formatOptions(ques)
     const answer = formatAnswers(
       validResponse,
       options,
-      q,
+      ques,
       null,
       '',
       'printAssessment'
     )
     const formatedAltResponse = altResponse.map((res) =>
-      formatAnswers(res, options, q, null, '', 'printAssessment')
+      formatAnswers(res, options, ques, null, '', 'printAssessment')
     )
     return {
       qLabel: `${q.qLabel || q.barLabel?.substr(1) || ''}${q.qSubLabel || ''}`,

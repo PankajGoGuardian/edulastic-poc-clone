@@ -70,16 +70,33 @@ const addonsData = [
   },
   {
     icon: <IconServers />,
-    title: 'Lorem Ipsum',
+    title: 'Data Warehousing',
     description:
       'Import state test scores, data from other assessments (MAP, iReady, SAT/ACT) and more for a holistic view of student performance and growth.',
   },
 ]
 
-const EnterpriseTab = ({ isPremium, subType, requestQuote, subEndDate }) => {
+const EnterpriseTab = ({
+  isPremium,
+  subType,
+  requestQuote,
+  subEndDate,
+  isPremiumUser,
+  signUpFlowModalHandler,
+  user,
+}) => {
   const [showSelectStates, setShowSelectStates] = useState(false)
 
   const handleSelectStateModal = () => setShowSelectStates(true)
+
+  const { utm_source, openIdProvider } = user
+
+  const isExternalPublisher =
+    utm_source === 'singapore' || openIdProvider === 'CLI'
+
+  const filteredAddonsData = isExternalPublisher
+    ? addonsData.filter((x) => x.title !== 'SparkMath')
+    : addonsData
 
   return (
     <SectionContainer>
@@ -91,7 +108,7 @@ const EnterpriseTab = ({ isPremium, subType, requestQuote, subEndDate }) => {
           content bundles that you will love.
         </p>
       </TopSection>
-      <EnterpriseSection>
+      <EnterpriseSection data-cy="enterpriseCard">
         <FlexContainer justifyContent="flex-start" alignItems="flex-start">
           <IconWrapper>
             <IconSchool />
@@ -100,7 +117,7 @@ const EnterpriseTab = ({ isPremium, subType, requestQuote, subEndDate }) => {
             <SectionTitle>
               Enterprise for Districts or Schools
               {subType === 'enterprise' && (
-                <ExpiryMsg>
+                <ExpiryMsg data-cy="enterpriseAlertMsg">
                   <IconPurchasedAlert />
                   <span>
                     purchased - EXPIRES {new Date(subEndDate).toDateString()}
@@ -117,12 +134,14 @@ const EnterpriseTab = ({ isPremium, subType, requestQuote, subEndDate }) => {
             </SectionDescription>
           </div>
         </FlexContainer>
-        {subType !== 'enterprise' && (
+        {!(
+          ['partial_premium', 'enterprise'].includes(subType) && isPremiumUser
+        ) && (
           <FlexContainer flexDirection="column" justifyContent="center">
             <EduButton
               data-cy="requestQuote"
               style={{ margin: '10px 0px' }}
-              onClick={requestQuote}
+              onClick={() => signUpFlowModalHandler(requestQuote)}
               height="32px"
               width="180px"
               isBlue
@@ -130,7 +149,7 @@ const EnterpriseTab = ({ isPremium, subType, requestQuote, subEndDate }) => {
               request a quote
             </EduButton>
             <EduButton
-              onClick={handleSelectStateModal}
+              onClick={() => signUpFlowModalHandler(handleSelectStateModal)}
               height="32px"
               width="180px"
               isGhost
@@ -155,13 +174,11 @@ const EnterpriseTab = ({ isPremium, subType, requestQuote, subEndDate }) => {
           student understanding and growth.
         </SectionDescription>
         <CardContainer>
-          {addonsData.map((_, index) => (
+          {filteredAddonsData.map((x, index) => (
             <AddonCard key={index}>
-              <AddonImg>{addonsData[index].icon}</AddonImg>
-              <h3>{addonsData[index].title}</h3>
-              <AddonDescription>
-                {addonsData[index].description}
-              </AddonDescription>
+              <AddonImg>{x.icon}</AddonImg>
+              <h3>{x.title}</h3>
+              <AddonDescription>{x.description}</AddonDescription>
             </AddonCard>
           ))}
         </CardContainer>

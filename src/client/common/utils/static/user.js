@@ -39,4 +39,5 @@ export const userPickFields = [
   'sparkPlaylistCollectionsVisited',
   'teachingStandards',
   'referrer',
+  'currentDistrictId',
 ]

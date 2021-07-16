@@ -47,7 +47,7 @@ const SummaryContainer = (props) => {
 
   const assignmentObj = currentAssignment && assignmentById[currentAssignment]
   const [showConfirmationModal, setShowConfirmationModal] = useState(false)
-  const [cameraImageIndex, setCameraImageIndex] = useState(0)
+  const [cameraImageIndex, setCameraImageIndex] = useState(1)
   const [
     isUserWorkUploadModalVisible,
     setUserWorkUploadModalVisible,
@@ -85,8 +85,11 @@ const SummaryContainer = (props) => {
 
   const openUserWorkUploadModal = () => setUserWorkUploadModalVisible(true)
   const closeUserWorkUploadModal = () => setUserWorkUploadModalVisible(false)
-
-  const cameraImageName = `${firstName}_${lastName}_${utaId}_${cameraImageIndex}.png`
+  const cameraImageName = `${firstName}_${lastName}_${(
+    assignmentObj?.title || ''
+  )
+    .split(' ')
+    .join('_')}_${cameraImageIndex}.png`
 
   const saveUserWorkAttachments = (files) => {
     const newAttachments = files.map(({ name, type, size, source }) => ({

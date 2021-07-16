@@ -38,7 +38,10 @@ import {
 } from '../../../../../../student/Login/ducks'
 import { resetTestFiltersAction } from '../../../../../TestList/ducks'
 import { clearPlaylistFiltersAction } from '../../../../../Playlist/ducks'
-import { getCollectionsSelector } from '../../../../../src/selectors/user'
+import {
+  getCollectionsSelector,
+  getUserOrgId,
+} from '../../../../../src/selectors/user'
 import TestRecommendations from './components/TestRecommendations'
 
 const ItemPurchaseModal = loadable(() =>
@@ -250,6 +253,36 @@ const MyClasses = ({
       return
     }
 
+    if (user?.orgData?.defaultGrades?.length > 0) {
+      if (filters[0]?.grades?.length > 0) {
+        const commonGrades = user?.orgData?.defaultGrades.filter((value) =>
+          filters[0]?.grades?.includes(value)
+        )
+        if (filters[0]) {
+          filters[0].grades = commonGrades
+        }
+      } else {
+        filters[0].grades = user?.orgData?.defaultGrades
+      }
+    } else if (filters[0]) {
+      filters[0].grades = []
+    }
+
+    if (user?.orgData?.defaultSubjects?.length > 0) {
+      if (filters[0]?.subject?.length > 0) {
+        const commonSub = user?.orgData?.defaultSubjects.filter((value) =>
+          filters[0]?.subject?.includes(value)
+        )
+        if (filters[0]) {
+          filters[0].subject = commonSub
+        }
+      } else {
+        filters[0].subject = user?.orgData?.defaultSubjects
+      }
+    } else if (filters[0]) {
+      filters[0].subject = []
+    }
+
     let content = contentType?.toLowerCase() || 'tests_library'
     if (content === 'tests_library') {
       content = 'tests'
@@ -310,8 +343,8 @@ const MyClasses = ({
 
   const isSingaporeMathCollectionActive = featuredBundles.filter(
     (feature) =>
-      (feature.description?.toLowerCase?.()?.includes('singaporemath') ||
-        feature.description?.toLowerCase?.()?.includes('singapore math')) &&
+      (feature.description?.toLowerCase()?.includes('singaporemath') ||
+        feature.description?.toLowerCase()?.includes('singapore math')) &&
       feature?.active
   )
 
@@ -333,18 +366,19 @@ const MyClasses = ({
       (feature) => !feature?.config?.subscriptionData?.itemBankId
     )
     bannerSlides = bannerSlides.filter(
-      (banner) => !banner.description?.toLowerCase?.()?.includes('spark')
+      (banner) => !banner.description?.toLowerCase()?.includes('spark')
     )
   }
 
   if (isSingaporeMath) {
     filteredBundles = filteredBundles.filter(
       (feature) =>
-        !feature?.config?.subscriptionData?.itemBankId &&
         !(
-          feature.description?.includes('Engage NY') &&
-          feature.description?.includes('Math')
+          feature?.description?.toLowerCase()?.includes('engage ny') &&
+          feature?.description?.toLowerCase()?.includes('math')
         ) &&
+        !feature?.description?.toLowerCase()?.includes('sparkmath') &&
+        !feature?.description?.toLowerCase()?.includes('spark math') &&
         !(
           feature?.config?.excludedPublishers?.includes('SingaporeMath') ||
           feature?.config?.excludedPublishers?.includes('Singapore Math')
@@ -352,7 +386,12 @@ const MyClasses = ({
     )
     bannerSlides = bannerSlides.filter(
       (banner) =>
-        !banner.description?.toLowerCase?.()?.includes('spark') &&
+        !banner?.description?.toLowerCase()?.includes('sparkmath') &&
+        !banner?.description?.toLowerCase()?.includes('spark math') &&
+        !(
+          banner?.description?.toLowerCase()?.includes('engage ny') &&
+          banner?.description?.toLowerCase()?.includes('math')
+        ) &&
         !(
           banner?.config?.excludedPublishers?.includes('SingaporeMath') ||
           banner?.config?.excludedPublishers?.includes('Singapore Math')
@@ -360,9 +399,38 @@ const MyClasses = ({
     )
   }
 
-  const handleInAppRedirect = (data) => {
-    const filter = qs.stringify(data.filters)
-    history.push(`/author/${data.contentType}?${filter}`)
+  const handleInAppRedirect = (filters) => {
+    if (user?.orgData?.defaultGrades?.length > 0) {
+      if (filters?.grades?.length > 0) {
+        const commonGrades = user?.orgData?.defaultGrades.filter((value) =>
+          filters?.grades?.includes(value)
+        )
+        if (filters) {
+          filters.grades = commonGrades
+        }
+      } else {
+        filters.grades = user?.orgData?.defaultGrades
+      }
+    } else if (filters) {
+      filters.grades = []
+    }
+
+    if (user?.orgData?.defaultSubjects?.length > 0) {
+      if (filters?.subject?.length > 0) {
+        const commonSub = user?.orgData?.defaultSubjects.filter((value) =>
+          filters?.subject?.includes(value)
+        )
+        if (filters) {
+          filters.subject = commonSub
+        }
+      } else {
+        filters.subject = user?.orgData?.defaultSubjects
+      }
+    } else if (filters) {
+      filters.subject = []
+    }
+    const filter = qs.stringify(filters)
+    history.push(`/author/${filters?.data?.contentType}?${filter}`)
   }
 
   const handleExternalRedirect = (data) => {
@@ -384,13 +452,13 @@ const MyClasses = ({
 
   const handleSparkClick = (id) => {
     const tile = getTileByProductId(id)
-    if (!isEmpty(tile.config)) {
+    if (!isEmpty(tile?.config)) {
       handleFeatureClick(tile)
     }
   }
 
   const bannerActionHandler = (filter = {}, description) => {
-    const { action, data } = filter
+    const { action, data = {} } = filter
     segmentApi.trackUserClick({
       user,
       data: { event: `dashboard:banner-${description}:click` },
@@ -407,7 +475,7 @@ const MyClasses = ({
         setShowBannerModal(data)
         break
       case bannerActions.BANNER_APP_REDIRECT:
-        handleInAppRedirect(data)
+        handleInAppRedirect(filter)
         break
       case bannerActions.BANNER_EXTERNAL_REDIRECT:
         handleExternalRedirect(data)
@@ -629,7 +697,7 @@ export default compose(
   connect(
     (state) => ({
       classData: state.dashboardTeacher.data,
-      districtId: state.user.user?.orgData?.districtIds?.[0],
+      districtId: getUserOrgId(state),
       loading: state.dashboardTeacher.loading,
       user: getUserDetails(state),
       showCleverSyncModal: get(state, 'manageClass.showCleverSyncModal', false),

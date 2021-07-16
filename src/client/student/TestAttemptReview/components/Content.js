@@ -29,6 +29,8 @@ import { testLoadingSelector } from '../../../assessment/selectors/test'
 import FilesView from '../../../assessment/widgets/UploadFile/components/FilesView'
 import { saveUserWorkAction } from '../../../assessment/actions/userWork'
 import { getTestLevelUserWorkSelector } from '../../sharedDucks/TestItem'
+import TestAttachementsModal from '../../../author/StudentView/Modals/TestAttachementsModal'
+import { getUser } from '../../../author/src/selectors/user'
 
 const { ASSESSMENT, PRACTICE, TESTLET } = testTypes.type
 class SummaryTest extends Component {
@@ -36,12 +38,15 @@ class SummaryTest extends Component {
     super(props)
     this.state = {
       buttonIdx: null,
+      showAttachmentsModal: false,
+      attachmentIndexForPreview: null,
     }
   }
 
   componentDidMount() {
-    const { loadTest, history, match, questionList } = this.props
+    const { loadTest, history, match, questionList, saveUserWork } = this.props
     const { utaId: testActivityId, id: testId, assessmentType } = match.params
+    const savedUserWork = JSON.parse(localStorage.getItem(`${testId}:userWork`))
     if (
       assessmentType === ASSESSMENT ||
       assessmentType === PRACTICE ||
@@ -49,11 +54,19 @@ class SummaryTest extends Component {
     ) {
       const { allQids } = questionList
       if (allQids.length === 0) {
-        loadTest({ testId, testActivityId, groupId: match.params.groupId })
+        loadTest({
+          testId,
+          testActivityId,
+          groupId: match.params.groupId,
+          savedUserWork,
+        })
       }
       sessionStorage.setItem('testAttemptReviewVistedId', testActivityId)
     } else {
       history.push('/home/assignments')
+    }
+    if (savedUserWork) {
+      saveUserWork({ attachments: savedUserWork })
     }
   }
 
@@ -105,6 +118,22 @@ class SummaryTest extends Component {
     saveUserWork({ attachments })
   }
 
+  toggleAttachmentsModal = (index) => {
+    this.setState((prevState) => ({
+      showAttachmentsModal: !prevState.showAttachmentsModal,
+      attachmentIndexForPreview: index,
+    }))
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.userWork !== this.props.userWork && this.props.userWork) {
+      localStorage.setItem(
+        `${this.props.test?.testId}:userWork`,
+        JSON.stringify(this.props.userWork)
+      )
+    }
+  }
+
   render() {
     const {
       questionList: questionsAndOrder,
@@ -116,12 +145,18 @@ class SummaryTest extends Component {
       blockNavigationToAnsweredQuestions,
       openUserWorkUploadModal,
       userWork,
+      studentData,
     } = this.props
     const { isDocBased, items } = test
     const isDocBasedFlag = (!isDocBased && items.length === 0) || isDocBased
     const { blocks: questionList, itemWiseQids = [] } = questionsAndOrder
     const itemIds = Object.keys(itemWiseQids)
-    const { buttonIdx } = this.state
+    const {
+      buttonIdx,
+      showAttachmentsModal,
+      attachmentIndexForPreview,
+    } = this.state
+
     if (testLoading) {
       return <Spin />
     }
@@ -258,6 +293,8 @@ class SummaryTest extends Component {
                       mt="12px"
                       onDelete={this.deleteAttachment}
                       files={userWork}
+                      openAttachmentViewModal={this.toggleAttachmentsModal}
+                      disableLink
                     />
                   </PerfectScrollbar>
                 </FlexContainer>
@@ -283,6 +320,18 @@ class SummaryTest extends Component {
             </Footer>
           </Container>
         </AssignmentContentWrapperSummary>
+        {showAttachmentsModal && (
+          <TestAttachementsModal
+            toggleAttachmentsModal={this.toggleAttachmentsModal}
+            showAttachmentsModal={showAttachmentsModal}
+            attachmentsList={userWork}
+            title="All Attachments"
+            utaId={test?.testActivityId}
+            studentData={studentData}
+            attachmentIndexForPreview={attachmentIndexForPreview || 0}
+            hideDownloadAllButton
+          />
+        )}
       </ThemeProvider>
     )
   }
@@ -322,6 +371,7 @@ const enhance = compose(
       testLoading: testLoadingSelector(state),
       blockNavigationToAnsweredQuestions:
         state.test?.settings?.blockNavigationToAnsweredQuestions,
+      studentData: getUser(state),
     }),
     {
       loadTest: loadTestAction,

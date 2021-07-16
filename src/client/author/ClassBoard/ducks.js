@@ -1,4 +1,11 @@
-import { takeEvery, call, put, all, select } from 'redux-saga/effects'
+import {
+  takeEvery,
+  call,
+  put,
+  all,
+  select,
+  takeLatest,
+} from 'redux-saga/effects'
 import {
   classBoardApi,
   testActivityApi,
@@ -109,8 +116,12 @@ import { setShowCanvasShareAction } from '../src/reducers/gradeBook'
 import {
   isIncompleteQuestion,
   hasImproperDynamicParamsConfig,
+  isOptionsRemoved,
 } from '../questionUtils'
-import { setRegradeFirestoreDocId } from '../TestPage/ducks'
+import {
+  setFreezeTestSettings,
+  setRegradeFirestoreDocId,
+} from '../TestPage/ducks'
 
 const {
   authorAssignmentConstants: {
@@ -121,7 +132,7 @@ const {
 const { testContentVisibility } = test
 
 export const LCB_LIMIT_QUESTION_PER_VIEW = 20
-export const SCROLL_SHOW_LIMIT = 10
+export const SCROLL_SHOW_LIMIT = 30
 
 function* receiveGradeBookSaga({ payload }) {
   try {
@@ -177,7 +188,7 @@ export function* receiveTestActivitySaga({ payload }) {
       type: RECEIVE_CLASS_RESPONSE_SUCCESS,
       payload: { ...classResponse, testItems, reportStandards, originalItems },
     })
-
+    yield put(setFreezeTestSettings(classResponse.freezeSettings))
     const students = get(gradebookData, 'students', [])
     // the below methods mutates the gradebookData
     gradebookData.passageData = classResponse.passages
@@ -751,6 +762,12 @@ function* correctItemUpdateSaga({ payload }) {
     if (hasImproperConfig) {
       notification({ type: 'warn', msg: warningMsg })
     }
+    if (isOptionsRemoved(testItem?.data?.questions, [question])) {
+      return notification({
+        type: 'warn',
+        messageKey: 'optionRemove',
+      })
+    }
 
     const cloneItem = cloneDeep(testItem)
     cloneItem.data.questions = testItem.data.questions.map((q) =>
@@ -830,7 +847,7 @@ function* correctItemUpdateSaga({ payload }) {
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_GRADEBOOK_REQUEST, receiveGradeBookSaga),
-    yield takeEvery(RECEIVE_TESTACTIVITY_REQUEST, receiveTestActivitySaga),
+    yield takeLatest(RECEIVE_TESTACTIVITY_REQUEST, receiveTestActivitySaga),
     yield takeEvery(UPDATE_RELEASE_SCORE, releaseScoreSaga),
     yield takeEvery(SET_MARK_AS_DONE, markAsDoneSaga),
     yield takeEvery(OPEN_ASSIGNMENT, openAssignmentSaga),

@@ -19,10 +19,19 @@ const AuthorCompleteSignupButton = ({
   renderButton,
   onClick,
   trackClick,
+  isOpenSignupModal = false,
+  setShowCompleteSignupModal,
+  setCallFunctionAfterSignup,
 }) => {
   const { currentSignUpState: signupStatus } = user
   const [isSchoolModalVisible, setIsSchoolModalVisible] = useState(false)
   const toggleSchoolModal = (value) => setIsSchoolModalVisible(value)
+
+  const handleCanel = (value) => {
+    setShowCompleteSignupModal(false)
+    setCallFunctionAfterSignup(() => null)
+    toggleSchoolModal(value)
+  }
 
   useEffect(() => {
     if (isSchoolModalVisible && signupStatus === signUpState.DONE) {
@@ -31,6 +40,10 @@ const AuthorCompleteSignupButton = ({
     }
   }, [signupStatus])
 
+  useEffect(() => {
+    setIsSchoolModalVisible(isOpenSignupModal)
+  }, [isOpenSignupModal])
+
   const handleClick = () => {
     if (signupStatus === signUpState.ACCESS_WITHOUT_SCHOOL) {
       trackClick()
@@ -38,7 +51,7 @@ const AuthorCompleteSignupButton = ({
       return
     }
 
-    onClick()
+    return onClick()
   }
 
   return (
@@ -47,7 +60,7 @@ const AuthorCompleteSignupButton = ({
       {isSchoolModalVisible && (
         <TeacherSignup
           isModal
-          handleCancel={() => toggleSchoolModal(false)}
+          handleCancel={() => handleCanel(false)}
           isVisible={isSchoolModalVisible}
         />
       )}
@@ -57,14 +70,19 @@ const AuthorCompleteSignupButton = ({
 
 AuthorCompleteSignupButton.propTypes = {
   user: PropTypes.object.isRequired,
-  renderButton: PropTypes.func.isRequired,
+  renderButton: PropTypes.func,
   onClick: PropTypes.func,
   trackClick: PropTypes.func,
+  setShowCompleteSignupModal: PropTypes.func,
+  setCallFunctionAfterSignup: PropTypes.func,
 }
 
 AuthorCompleteSignupButton.defaultProps = {
   onClick: () => null,
   trackClick: () => null,
+  renderButton: () => null,
+  setShowCompleteSignupModal: () => null,
+  setCallFunctionAfterSignup: () => null,
 }
 
 const enhance = compose(

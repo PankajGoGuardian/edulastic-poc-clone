@@ -238,11 +238,7 @@ const TestBehaviorGroupContainer = ({
                     overRideSettings('applyEBSR', e.target.checked)
                   }
                 >
-                  <StyledSpan>
-                    APPLY EBSR GREADING (
-                    <StyledItalic>first part has to be correct</StyledItalic>){' '}
-                    FOR ALL MULTIPART ITEMS
-                  </StyledSpan>
+                  <StyledSpan>APPLY EBSR GRADING</StyledSpan>
                 </CheckboxLabel>
               </CheckBoxWrapper>
             ) : null}
@@ -439,8 +435,5 @@ export default TestBehaviorGroupContainer
 
 const StyledSpan = Styled.span`
   font-weight: ${(props) => props.theme.semiBold};
-`
-
-const StyledItalic = Styled.i`
-  font-weight: ${(props) => props.theme.regular};
+  font-size: 11px;
 `

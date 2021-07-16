@@ -22,7 +22,10 @@ import {
   bulkSyncCanvasClassAction,
   joinSchoolFailedAction,
 } from '../../../student/Signup/duck'
-import { getCanvasAllowedInstitutionPoliciesSelector } from '../../../author/src/selectors/user'
+import {
+  getCanvasAllowedInstitutionPoliciesSelector,
+  getUserOrgId,
+} from '../../../author/src/selectors/user'
 import {
   ModalClassListTable,
   StyledSelect,
@@ -57,17 +60,21 @@ const CanvasBulkAddClass = ({
   fromManageClass,
   canvasAllowedInstitutions,
   onCancel = () => {},
+  districtId,
 }) => {
   const [selectedRows, setSelectedRows] = useState([])
   const [showModal, setShowModal] = useState(false)
   const [classes, setClasses] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [institution, setInstitution] = useState()
-  const [coTeacherFlag, setCoTeacherFlag] = useState(false)
+  const [coTeacherFlag, setCoTeacherFlag] = useState(true)
 
   useEffect(() => {
     getDictCurriculums()
-    receiveSearchCourse({ districtId: user?.districtIds?.[0], active: 1 })
+    receiveSearchCourse({
+      districtId,
+      active: 1,
+    })
     if (!fromManageClass) {
       setInstitution(institutionId)
     } else {
@@ -105,7 +112,7 @@ const CanvasBulkAddClass = ({
           const sectionClasses = sectionList.map((s) => {
             const thumbnail = getThumbnail()
             return {
-              districtId: user?.districtIds?.[0],
+              districtId,
               grades: s.grades || [],
               institutionId: institution,
               name: s.name,
@@ -253,6 +260,7 @@ const CanvasBulkAddClass = ({
           value={row.grades || []}
           mode="multiple"
           placeholder="Select Grades"
+          data-cy="canvasClassGrades"
           onChange={(val) => handleChange(index, 'grades', val)}
           getPopupContainer={(triggerNode) => triggerNode.parentNode}
           disabled={!!row.alreadySynced}
@@ -279,6 +287,7 @@ const CanvasBulkAddClass = ({
           onChange={(val) => {
             handleChange(ind, 'subject', val)
           }}
+          data-cy="canvasClassSubjects"
           getPopupContainer={(triggerNode) => triggerNode.parentNode}
           disabled={!!row.alreadySynced}
         >
@@ -326,6 +335,7 @@ const CanvasBulkAddClass = ({
             onChange={(val, options) => {
               handleStandardsChange(ind, 'standardSets', val, options)
             }}
+            data-cy="canvasClassStandards"
             getPopupContainer={(triggerNode) => triggerNode.parentNode}
             disabled={!!row.alreadySynced}
           >
@@ -366,6 +376,7 @@ const CanvasBulkAddClass = ({
           }}
           style={{ width: '100%' }}
           value={row.courseId || undefined}
+          data-cy="canvasClassCourse"
           placeholder="Select Course"
           onChange={(val) => handleChange(ind, 'courseId', val)}
           getPopupContainer={(triggerNode) => triggerNode.parentNode}
@@ -374,7 +385,7 @@ const CanvasBulkAddClass = ({
           {activeCourseList &&
             activeCourseList.map((course) => (
               <Select.Option value={course._id} key={course._id}>
-                {course.name}institution
+                {course.name} institution
               </Select.Option>
             ))}
         </Select>
@@ -403,6 +414,7 @@ const CanvasBulkAddClass = ({
         style={{ margin: '10px 0px 20px 0px' }}
         checked={coTeacherFlag}
         onChange={onCoTeacherChange}
+        data-cy="co-Teacher"
       >
         Enroll Co-Teacher (All teachers present in Canvas class will share the
         same class)
@@ -465,7 +477,9 @@ const CanvasBulkAddClass = ({
             >
               CANCEL
             </EduButton>,
-            <EduButton onClick={handleFinish}>SYNC</EduButton>,
+            <EduButton data-cy="syncsubmit" onClick={handleFinish}>
+              SYNC
+            </EduButton>,
           ]
         ) : (
           <>
@@ -508,6 +522,7 @@ export default connect(
     canvasAllowedInstitutions: getCanvasAllowedInstitutionPoliciesSelector(
       state
     ),
+    districtId: getUserOrgId(state),
   }),
   {
     getDictCurriculums: getDictCurriculumsAction,

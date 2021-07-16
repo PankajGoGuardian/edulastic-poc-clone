@@ -56,7 +56,7 @@ const GetStarted = ({
         src={
           generalSettings && isSignupUsingDaURL
             ? generalSettings.pageBackground
-            : ''
+            : partner.background
         }
         alt="bg"
       />

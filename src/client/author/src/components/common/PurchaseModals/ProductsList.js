@@ -1,7 +1,8 @@
 import { NumberInputStyled, notification } from '@edulastic/common'
 import { Tooltip } from 'antd'
 import produce from 'immer'
-import { camelCase, isNumber, keyBy, max } from 'lodash'
+import { camelCase, isNumber, keyBy } from 'lodash'
+import { roleuser } from '@edulastic/constants'
 import React, { useEffect, useMemo } from 'react'
 import {
   AddonList,
@@ -31,7 +32,18 @@ const ProductsList = ({
   subsLicenses = [],
   isRequestingQuote,
   isCart,
+  user,
+  itemBankSubscriptions,
+  subType,
+  allProducts,
+  shouldbeMultipleLicenses,
 }) => {
+  const allProductsKeyed = useMemo(() => {
+    if (allProducts) {
+      return keyBy(allProducts, 'linkedProductId')
+    }
+    return {}
+  }, [allProducts])
   const licenseMapKeyByProductId = useMemo(() => {
     if (subsLicenses) {
       return keyBy(subsLicenses, 'productId')
@@ -69,10 +81,12 @@ const ProductsList = ({
     } else {
       let _quantities = {}
       if (isCart) {
-        _quantities = produce(quantities, (draft) => {
-          delete draft[id]
-          return draft
-        })
+        if (id !== teacherPremium.id) {
+          _quantities = produce(quantities, (draft) => {
+            delete draft[id]
+            return draft
+          })
+        }
       } else {
         _quantities = {
           ...quantities,
@@ -84,31 +98,64 @@ const ProductsList = ({
     }
   }
 
-  const getTeacherPremiumCountToAdd = (_licenses, _quant) => {
+  const getTeacherPremiumCountToAdd = (
+    _licenses,
+    _quant,
+    itemBankSubscriptions,
+    userRole,
+    subType
+  ) => {
+    const _licensesKeyed = keyBy(_licenses, 'linkedProductId')
     const quant = { ..._quant }
-    const {
-      totalCount: totalTeacherPremium,
-      usedCount: totalTeacherPremiumUsedCount,
+    let {
+      totalCount: totalTeacherPremium = 0,
+      usedCount: totalTeacherPremiumUsedCount = 0,
     } = _licenses?.find((x) => x.productId === premiumProductId) || {}
+    if (
+      subType === 'premium' &&
+      userRole === roleuser.TEACHER &&
+      totalTeacherPremiumUsedCount == 0
+    ) {
+      // totalTeacherPremium += 1
+      // totalTeacherPremiumUsedCount += 1
+    }
+    // if(subType === 'enterprise'||(subType === 'partial_premium' && user?.features?.premium)){
+    //   totalTeacherPremium += 1;
+    // }
+    if (quant[teacherPremium.id]) {
+      // totalTeacherPremium += quant[teacherPremium.id]
+    }
 
-    const totalRemainingTeacherPremiumCount =
-      totalTeacherPremium - totalTeacherPremiumUsedCount
-
-    const totalRemainingItemBanksLicenseCount = _licenses.reduce((a, c) => {
-      if (
-        c.productId === premiumProductId ||
-        !Object.keys(quant).includes(c.productId)
-      ) {
-        return a
+    if (subType === 'premium' && userRole === roleuser.TEACHER) {
+      for (const addOnSub of itemBankSubscriptions.filter((x) => !x.isTria)) {
+        if (addOnSub.itemBankId) {
+          if (!_licensesKeyed[addOnSub?.itemBankId]) {
+            const productId = allProductsKeyed[addOnSub?.itemBankId].id
+            _licenses = [
+              ..._licenses,
+              {
+                productId,
+                linkedProductId: addOnSub?.itemBankId,
+                totalCount: 0,
+                usedCount: 1,
+              },
+            ]
+          }
+        }
       }
-      const { totalCount = 0, usedCount = 0 } = c || {}
-      const delta = totalCount - usedCount + quant[c.productId]
-      return delta > a ? delta : a
-    }, 0)
+    }
+
+    const allProductsQuants = allProducts
+      .filter((x) => x.id !== premiumProductId)
+      .map((p) => {
+        const c = _licenses.find((x) => x.productId === p.id)
+        const { totalCount = 0 } = c || {}
+        return (quant[p.id] || 0) + totalCount
+      })
+    const totalRemainingItemBanksLicenseCount = Math.max(...allProductsQuants)
 
     const availableTeacherPremiumCount =
-      totalRemainingTeacherPremiumCount - totalRemainingItemBanksLicenseCount
-
+      totalTeacherPremium - totalRemainingItemBanksLicenseCount
     return availableTeacherPremiumCount
   }
 
@@ -116,8 +163,21 @@ const ProductsList = ({
     if (!isCart) {
       return 1
     }
-    return getTeacherPremiumCountToAdd(subsLicenses, quantities)
-  }, [subsLicenses, quantities, isCart])
+    return getTeacherPremiumCountToAdd(
+      subsLicenses,
+      quantities,
+      itemBankSubscriptions,
+      user?.role,
+      subType
+    )
+  }, [
+    subsLicenses,
+    quantities,
+    isCart,
+    itemBankSubscriptions,
+    user?.role,
+    subType,
+  ])
 
   const handleQuantityChange = (itemId) => (value) => {
     if (isBuyMore && !isCart) {
@@ -142,7 +202,7 @@ const ProductsList = ({
     }
 
     if (isCart) {
-      const _quantities = {
+      let _quantities = {
         ...quantities,
         [itemId]: Math.floor(value),
       }
@@ -150,7 +210,10 @@ const ProductsList = ({
       if (itemId !== premiumProductId) {
         const teacherPremiumCountTOAdd = getTeacherPremiumCountToAdd(
           subsLicenses,
-          _quantities
+          _quantities,
+          itemBankSubscriptions,
+          user?.role,
+          subType
         )
 
         if (teacherPremiumCountTOAdd < 0) {
@@ -210,7 +273,7 @@ const ProductsList = ({
                   selectedProductIds.includes(product.id) ||
                   premiumProductId === product.id
                 }
-                disabled={premiumProductId === product.id}
+                disabled={premiumProductId === product.id && !isCart}
                 textTransform="none"
                 fontSize={isRequestingQuote && '14px'}
               >

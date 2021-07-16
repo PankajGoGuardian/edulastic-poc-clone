@@ -15,7 +15,6 @@ import React from 'react'
 import keyIcon from '../../../student/assets/key-icon.svg'
 import mailIcon from '../../../student/assets/mail-icon.svg'
 import userIcon from '../../../student/assets/user-icon.svg'
-import { isEmailValid } from '../../utils/helpers'
 import { Field, FooterDiv, Form, PanelHeader, Title } from './styled'
 
 const { Panel } = Collapse
@@ -66,10 +65,6 @@ class UserForm extends React.Component {
   }
 
   validateEmailValue = async (rule, value, callback) => {
-    if (
-      !isEmailValid(rule, value, callback, 'email', 'Please enter valid email')
-    )
-      return
     const {
       userOrgId: districtId,
       modalData: { _source },

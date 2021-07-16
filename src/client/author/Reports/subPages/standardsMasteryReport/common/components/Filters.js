@@ -36,6 +36,7 @@ import { processSchoolYear } from '../../../multipleAssessmentReport/common/util
 import {
   getUser,
   getInterestedCurriculumsSelector,
+  currentDistrictInstitutionIds,
 } from '../../../../../src/selectors/user'
 
 import {
@@ -82,7 +83,6 @@ const StandardsMasteryReportFilters = ({
   setShowApply,
   showFilter,
   toggleFilter,
-  firstLoad,
   setFirstLoad,
   reportId,
   standardsPerformanceSummary,
@@ -90,6 +90,7 @@ const StandardsMasteryReportFilters = ({
   standardsProgress,
   loc,
   fetchUpdateTagsData,
+  institutionIds,
 }) => {
   const [activeTabKey, setActiveTabKey] = useState(
     staticDropDownData.filterSections.CLASS_FILTERS.key
@@ -368,7 +369,7 @@ const StandardsMasteryReportFilters = ({
     }
     if (role === roleuser.SCHOOL_ADMIN) {
       settings.filters.schoolIds =
-        settings.filters.schoolIds || get(user, 'institutionIds', []).join(',')
+        settings.filters.schoolIds || institutionIds.join(',')
     }
     setFilters({ ...filters, showApply: false })
     setShowApply(false)
@@ -948,6 +949,7 @@ const enhance = compose(
       standardsPerformanceSummary: getReportsStandardsPerformanceSummary(state),
       standardsGradebook: getReportsStandardsGradebook(state),
       standardsProgress: getReportsStandardsProgress(state),
+      institutionIds: currentDistrictInstitutionIds(state),
     }),
     {
       getStandardsFiltersRequest: getStandardsFiltersRequestAction,

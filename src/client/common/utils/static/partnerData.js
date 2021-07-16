@@ -8,7 +8,7 @@ export const Partners = {
     headerLogo:
       '//cdn.edulastic.com/JS/webresources/images/as/as-dashboard-logo.png',
     boxTitle: 'Login',
-    background: loginBg,
+    background: false, // loginBg, background image has been removed from login page
     position: 'start',
     opacity: 0.5,
   },

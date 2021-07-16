@@ -11,6 +11,7 @@ import {
   Author,
   AuthorName,
   Header,
+  HeaderThumbnail,
   Stars,
   StyledLink,
   TestInfo,
@@ -68,11 +69,17 @@ const TestItemCard = ({
 
   return (
     <Container
+      isTestCard
       src={thumbnail}
       onClick={openModal}
       isTestRecommendation={isTestRecommendation}
       title={
-        <Header src={thumbnail}>
+        <Header isTestRecommendation={isTestRecommendation} src={null}>
+          <HeaderThumbnail
+            isTestRecommendation={isTestRecommendation}
+            alt=""
+            src={thumbnail}
+          />
           <Stars />
           <ButtonWrapper className="showHover">
             {isOwner && status === 'draft' && (
@@ -131,13 +138,15 @@ const TestItemCard = ({
             key="standards"
             isStandards
             margin="0px"
+            isTestCard
+            testId={testId}
           />
         </TagsWrapper>
       </TestInfo>
 
       {!isTestRecommendation && (
         <MidRow>
-          <Collection isDynamic>
+          <Collection isDynamic={isDynamic}>
             <label>COLLECTIONS</label>
             <CollectionNameWrapper
               data-cy="test-collection"

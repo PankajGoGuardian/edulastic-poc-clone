@@ -2,7 +2,7 @@
 import React, { useState, useMemo } from 'react'
 import {
   BarChart,
-  Bar,
+  Bar as _Bar,
   Cell,
   XAxis,
   YAxis,
@@ -26,6 +26,9 @@ import {
   calculateXCoordinateOfXAxisToolTip,
 } from './chartUtils/customChartXTick'
 import { YAxisLabel } from './chartUtils/yAxisLabel'
+import withAnimationInfo from './chartUtils/withAnimationInfo'
+
+const Bar = withAnimationInfo(_Bar)
 
 const _barsLabelFormatter = (val) => {
   if (val !== 0) {

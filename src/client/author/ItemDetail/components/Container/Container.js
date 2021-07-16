@@ -18,11 +18,7 @@ import {
   FlexContainer,
   EduButton,
 } from '@edulastic/common'
-import {
-  IconClose,
-  IconGraphRightArrow,
-  IconChevronLeft,
-} from '@edulastic/icons'
+import { IconClose } from '@edulastic/icons'
 import { cloneDeep, get, uniq, intersection, keyBy } from 'lodash'
 import { Layout, Button, Pagination } from 'antd'
 import ItemDetailContext, {
@@ -67,6 +63,7 @@ import {
   addWidgetToPassageAction,
   deleteItemAction,
 } from '../../ducks'
+import { changeCurrentQuestionAction } from '../../../sharedDucks/questions'
 import { toggleSideBarAction } from '../../../src/actions/toggleMenu'
 
 import {
@@ -96,10 +93,6 @@ import { clearAnswersAction } from '../../../src/actions/answers'
 import { changePreviewTabAction } from '../../../ItemAdd/ducks'
 import { ConfirmationModal } from '../../../src/components/common/ConfirmationModal'
 import AuthorTestItemPreview from '../../../src/components/common/PreviewModal/AuthorTestItemPreview'
-import {
-  CollapseBtn,
-  Divider,
-} from '../../../src/components/common/PreviewModal/styled'
 import { setCreatedItemToTestAction } from '../../../TestPage/ducks'
 import QuestionAuditTrailLogs from '../../../../assessment/containers/QuestionAuditTrailLogs'
 import LanguageSelector from '../../../../common/components/LanguageSelector'
@@ -107,6 +100,8 @@ import {
   allowedToSelectMultiLanguageInTest,
   isPremiumUserSelector,
 } from '../../../src/selectors/user'
+import QuestionToPassage from '../QuestionToPassage'
+import PassageDivider from '../Divider'
 
 const testItemStatusConstants = {
   DRAFT: 'draft',
@@ -136,6 +131,8 @@ class Container extends Component {
       showSettings: false,
       collapseDirection: '',
       showHints: false,
+      showQuestionManageModal: false,
+      isEditPassageQuestion: false,
     }
   }
 
@@ -173,6 +170,7 @@ class Container extends Component {
       isTestFlow,
       item,
       location: { state },
+      saveItem,
     } = this.props
     const oldId = prevProps.match.params.id
     const newId = match.params.id
@@ -235,6 +233,17 @@ class Container extends Component {
     // beside running it trough itPassage method
     if (rows.length === 1 && this.isPassage(rows)) {
       this.handleApplySettings({ type: '50-50' })
+    }
+
+    // save testItem on deleting passage
+    const { passage: prevPassage } = prevProps
+    const { passage: newPassage } = this.props
+    const prevNumberOfPassageWidgets = get(prevPassage, 'structure.widgets', [])
+      .length
+    const newNumberOfPassageWidgets = get(newPassage, 'structure.widgets', [])
+      .length
+    if (newNumberOfPassageWidgets < prevNumberOfPassageWidgets) {
+      saveItem(false)
     }
   }
 
@@ -308,6 +317,7 @@ class Container extends Component {
       rows,
       item,
       location: { state },
+      setCurrentQuestion,
     } = this.props
 
     changeView('edit')
@@ -316,6 +326,13 @@ class Container extends Component {
       navigateToPickupQuestionType()
       return
     }
+
+    if (item.passageId) {
+      setCurrentQuestion('')
+      this.setState({ showQuestionManageModal: true, rowIndex, tabIndex })
+      return
+    }
+
     const { widgets = [] } = rows[rowIndex]
     const columnHasResource =
       widgets.length > 0 &&
@@ -360,11 +377,10 @@ class Container extends Component {
     })
   }
 
-  handleAddToPassage = (type, tabIndex) => {
-    const { isTestFlow, match, addWidgetToPassage, item } = this.props
-
+  handleAddToPassage = (type, tabIndex, rowIndex) => {
+    const { isTestFlow, match, addWidgetToPassage } = this.props // , item
     // Checking if current item allows multiple items
-    const { canAddMultipleItems } = item
+    // const { canAddMultipleItems } = item
     /**
      * there are two possibilites for getting item id during test flow
      * route 1: "/author/tests/:testId/createItem/:itemId"
@@ -380,14 +396,22 @@ class Container extends Component {
           : match.params.id,
       testId: match.params.testId,
       type,
-      tabIndex,
-      canAddMultipleItems: !!canAddMultipleItems,
+      // tabIndex,
+      // canAddMultipleItems: !!canAddMultipleItems,
     })
+    this.setState({ showQuestionManageModal: true, tabIndex, rowIndex })
   }
 
   handleCancelSettings = () => {
     this.setState({
       showSettings: false,
+    })
+  }
+
+  handleCancelQuestionToPassage = () => {
+    this.setState({
+      showQuestionManageModal: false,
+      isEditPassageQuestion: false,
     })
   }
 
@@ -409,13 +433,40 @@ class Container extends Component {
   }
 
   handleEditWidget = (widget) => {
-    const { loadQuestion, changeView } = this.props
+    const {
+      loadQuestion,
+      changeView,
+      setCurrentQuestion,
+      item: { isPassageWithQuestions },
+    } = this.props
+    if (isPassageWithQuestions) {
+      setCurrentQuestion(widget.reference)
+      this.setState({
+        showQuestionManageModal: true,
+        isEditPassageQuestion: true,
+      })
+      return
+    }
     changeView('edit')
     loadQuestion(widget, 0)
   }
 
   handleEditPassageWidget = (widget, rowIndex) => {
-    const { loadQuestion, changeView } = this.props
+    const {
+      loadQuestion,
+      changeView,
+      setCurrentQuestion,
+      item: { isPassageWithQuestions },
+    } = this.props
+    if (isPassageWithQuestions) {
+      setCurrentQuestion(widget.reference)
+      this.setState({
+        rowIndex,
+        showQuestionManageModal: true,
+        isEditPassageQuestion: true,
+      })
+      return
+    }
     changeView('edit')
     loadQuestion(widget, rowIndex, true)
   }
@@ -439,7 +490,9 @@ class Container extends Component {
   }
 
   handleDeletePassageWidget = (widgetIndex) => {
-    if (widgetIndex === 0) {
+    const { passage } = this.props
+    const numberOfPassageWidgets = get(passage, 'structure.widgets', []).length
+    if (numberOfPassageWidgets === 1) {
       notification({ messageKey: 'thereShouldBeAtleastOnePassageItem' })
 
       return null
@@ -673,6 +726,35 @@ class Container extends Component {
     })
   }
 
+  handleCancelEditItem = () => {
+    const {
+      history,
+      match,
+      isTestFlow,
+      location: { state },
+      item,
+    } = this.props
+    const { testId } = match.params
+    const { previousTestId, fadeSidebar, regradeFlow } = state || {}
+
+    const url = isTestFlow
+      ? `/author/tests/tab/review/id/${testId}`
+      : `/author/items/${item._id}/item-detail`
+
+    const newState = {
+      isTestFlow,
+      previousTestId,
+      fadeSidebar,
+      resetView: false,
+      regradeFlow,
+    }
+
+    history.push({
+      pathname: url,
+      state: newState,
+    })
+  }
+
   handleCollapse = (dir) => {
     this.setState((state) => ({
       collapseDirection: state.collapseDirection ? '' : dir,
@@ -682,32 +764,10 @@ class Container extends Component {
   renderCollapseButtons = () => {
     const { collapseDirection } = this.state
     return (
-      <Divider
-        isCollapsed={!!collapseDirection}
+      <PassageDivider
         collapseDirection={collapseDirection}
-      >
-        <div className="button-wrapper">
-          <CollapseBtn
-            collapseDirection={collapseDirection}
-            onClick={() => this.handleCollapse('left')}
-            left
-          >
-            <IconChevronLeft />
-          </CollapseBtn>
-          <CollapseBtn collapseDirection={collapseDirection} mid>
-            <div className="vertical-line first" />
-            <div className="vertical-line second" />
-            <div className="vertical-line third" />
-          </CollapseBtn>
-          <CollapseBtn
-            collapseDirection={collapseDirection}
-            onClick={() => this.handleCollapse('right')}
-            right
-          >
-            <IconGraphRightArrow />
-          </CollapseBtn>
-        </div>
-      </Divider>
+        onChange={this.handleCollapse}
+      />
     )
   }
 
@@ -850,9 +910,11 @@ class Container extends Component {
   }
 
   get passageItems() {
-    const { passage } = this.props
+    const { passage } = this.props // , isTestFlow
     const passageTestItems = get(passage, 'testItems', [])
-
+    //  isTestFlow
+    //   ? get(passage, 'testItems', [])
+    //   : get(passage, 'activeTestItems', [])
     return passageTestItems
   }
 
@@ -916,7 +978,14 @@ class Container extends Component {
   }
 
   render() {
-    const { showSettings, showRemovePassageItemPopup } = this.state
+    const {
+      showSettings,
+      tabIndex,
+      rowIndex,
+      showRemovePassageItemPopup,
+      showQuestionManageModal,
+      isEditPassageQuestion,
+    } = this.state
     const {
       match,
       rows,
@@ -942,8 +1011,9 @@ class Container extends Component {
       t,
       allowedToSelectMultiLanguage,
       isPremiumUser,
+      isEditFlow,
     } = this.props
-
+    const { testId } = match.params
     let breadCrumbQType = ''
     if (item.passageId && item.canAddMultipleItems) {
       breadCrumbQType = 'Passage with Multiple Questions'
@@ -1049,6 +1119,7 @@ class Container extends Component {
             style={{ marginTop: '10px' }}
           >
             <ButtonBar
+              onCancel={this.handleCancelEditItem}
               onShowSource={this.handleShowSource}
               onShowSettings={this.handleShowSettings}
               onChangeView={this.handleChangeView}
@@ -1105,6 +1176,17 @@ class Container extends Component {
             {view === 'auditTrail' && this.renderAuditTrailLogs()}
           </ContentWrapper>
         </Layout>
+        {showQuestionManageModal && (
+          <QuestionToPassage
+            isTestFlow={isTestFlow}
+            isEditFlow={isEditFlow}
+            tabIndex={tabIndex}
+            rowIndex={rowIndex}
+            testId={testId}
+            isEditPassageQuestion={isEditPassageQuestion}
+            onCancel={this.handleCancelQuestionToPassage}
+          />
+        )}
       </ItemDetailContext.Provider>
     )
   }
@@ -1221,6 +1303,7 @@ const enhance = compose(
       deleteItem: deleteItemAction,
       deleteWidgetFromPassage: deleteWidgetFromPassageAction,
       setCreatedItemToTest: setCreatedItemToTestAction,
+      setCurrentQuestion: changeCurrentQuestionAction,
     }
   )
 )

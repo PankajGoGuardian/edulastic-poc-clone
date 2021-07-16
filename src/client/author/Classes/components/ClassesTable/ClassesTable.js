@@ -44,6 +44,7 @@ import {
 } from '../../../Schools/ducks'
 import Breadcrumb from '../../../src/components/Breadcrumb'
 import {
+  currentDistrictInstitutionIds,
   getUser,
   getUserFeatures,
   getUserOrgId,
@@ -343,7 +344,7 @@ class ClassesTable extends Component {
 
   archiveClass = () => {
     const { selectedArchiveClasses } = this.state
-    const { userOrgId: districtId, deleteClass, userDetails } = this.props
+    const { userOrgId: districtId, deleteClass, institutionIds } = this.props
 
     this.setState({
       /* here selectedRowKeys is set back to [],
@@ -357,7 +358,7 @@ class ClassesTable extends Component {
       data: {
         groupIds: selectedArchiveClasses,
         districtId,
-        institutionIds: userDetails.institutionIds,
+        institutionIds,
       },
       searchQuery: this.getSearchQuery(),
     }
@@ -527,8 +528,8 @@ class ClassesTable extends Component {
   }
 
   getSearchQuery = () => {
-    const { userOrgId, userDetails } = this.props
-    const { role, institutionIds } = userDetails
+    const { userOrgId, userDetails, institutionIds } = this.props
+    const { role } = userDetails
     const { filtersData, searchByName, currentPage, showActive } = this.state
     const search = { type: ['class'] }
 
@@ -1049,6 +1050,7 @@ const enhance = compose(
     (state) => ({
       userOrgId: getUserOrgId(state),
       userDetails: getUser(state),
+      institutionIds: currentDistrictInstitutionIds(state),
       classList: getClassListSelector(state),
       coursesForDistrictList: getCoursesForDistrictSelector(state),
       totalClassCount: get(state, ['classesReducer', 'totalClassCount'], 0),

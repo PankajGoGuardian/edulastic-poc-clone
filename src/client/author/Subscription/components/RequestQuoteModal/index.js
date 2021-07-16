@@ -12,7 +12,6 @@ import { camelCase } from 'lodash'
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
-import { emailRegex } from '../../../../common/utils/helpers'
 import { getUserDetails } from '../../../../student/Login/ducks'
 import {
   FlexRow,
@@ -22,20 +21,16 @@ import {
 import {
   getUserFullNameSelector,
   getUserOrgData,
+  getUserOrgId,
 } from '../../../src/selectors/user'
-import {
-  getProducts,
-  getRequestOrSubmitActionStatus,
-  getSubscriptionSelector,
-  slice,
-} from '../../ducks'
+import { getProducts, getRequestOrSubmitActionStatus, slice } from '../../ducks'
 import {
   ModalTitle,
-  StyledInput,
   StyledInputTextArea,
   StyledSelect,
   SubText,
 } from '../RequestInvoviceModal/styled'
+import { StyledInputNumber } from '../SubmitPOModal/styled'
 import { Container, Label, StyledSpin } from './styled'
 
 const getFooterComponent = ({
@@ -53,6 +48,7 @@ const getFooterComponent = ({
         onClick={handleClick}
         inverse
         disabled={disabled}
+        data-cy="requestQuoteBtn"
       >
         SUBMIT
       </EduButton>
@@ -67,14 +63,13 @@ const RequestQuoteModal = ({
   userOrgData = {},
   isRequestQuoteActionPending = false,
   handleRequestQuote = () => {},
-  userSubscription,
   userFullname,
   userDetails,
   products,
+  userOrgId,
 }) => {
   const [enterpriseLicenseType, setLicenseType] = useState('DISTRICT')
-  const [userEmail, setUserEmail] = useState()
-  const [bookkeeperEmails, setBookkeeperEmails] = useState()
+  const [studentLicenseCount, setStudentLicenseCount] = useState()
   const [selectedSchools, setSelectedchools] = useState([])
   const [otherInfo, setOtherInfo] = useState()
   const [quantities, setQuantities] = useState({})
@@ -86,7 +81,7 @@ const RequestQuoteModal = ({
       setLicenseType(e.target.value)
       if (e.target.value === 'SCHOOL' && !schoolsInUserDistrict.length) {
         const result = await schoolApi.getSchools({
-          districtId: userDetails.districtIds[0],
+          districtId: userOrgId,
         })
         if (result?.data) {
           const schools = result.data.map((x) => {
@@ -107,9 +102,9 @@ const RequestQuoteModal = ({
       captureSentryException(err)
     }
   }
-  const onEmailChange = (e) => setUserEmail(e.target.value)
-  const handleBookkeepersChange = (e) => setBookkeeperEmails(e.target.value)
+
   const handleSetOtherInfo = (e) => setOtherInfo(e.target.value)
+  const handleicenseCountChange = (value) => setStudentLicenseCount(value)
   const handleScoolsSelection = (x) => setSelectedchools(x)
 
   const filterOption = (input, option) =>
@@ -124,71 +119,53 @@ const RequestQuoteModal = ({
       return false
     }
 
-    if (!userEmail) {
+    if (!studentLicenseCount) {
       notification({
         type: 'warning',
-        msg: 'Email address is required for us to send in the quote.',
-      })
-      return false
-    }
-    const flag = emailRegex.test(userEmail.trim())
-    if (!flag) {
-      notification({
-        type: 'warning',
-        msg: 'Invalid email format specified.',
+        msg: 'Please specify the # of licenses.',
       })
       return false
     }
 
-    if (bookkeeperEmails) {
-      const _flag = bookkeeperEmails
-        .split(',')
-        .every((email) => emailRegex.test(email.trim()))
-      if (!_flag) {
-        notification({
-          type: 'warning',
-          msg: 'Invalid email format specified for Bookkeeper(s).',
-        })
-        return false
-      }
-    }
     return true
   }
 
   const handleSubmit = () => {
     if (validateFields()) {
-      const schoolOrDistrict =
-        enterpriseLicenseType === 'DISTRICT'
-          ? {
-              name: userOrgData.districts?.[0]?.districtName,
-              id: userOrgData.districts?.[0]?.districtId,
-              type: 'DISTRICT',
-            }
-          : {
-              districtId: userOrgData.schools?.[0]?.districtId,
-              name: userOrgData.schools?.[0]?.name,
-              id: userOrgData.schools?.[0]?.districtId,
-              type: 'SCHOOL',
-              schools: selectedSchools,
-            }
-      const emails = bookkeeperEmails
-        ? bookkeeperEmails
-            .split(',')
-            .map((email) => email.trim())
-            .filter((x) => x)
-        : []
+      let schoolOrDistrict
+
+      if (enterpriseLicenseType === 'DISTRICT') {
+        const district = userOrgData.districts?.find(
+          (d) => d.districtId === userOrgId
+        )
+        schoolOrDistrict = {
+          name: district?.districtName,
+          id: district?.districtId,
+          state: district?.districtState,
+          type: 'DISTRICT',
+        }
+      } else {
+        const school = userOrgData.schools?.find(
+          (s) => s.districtId === userOrgId
+        )
+        schoolOrDistrict = {
+          districtId: school?.districtId,
+          name: school?.name,
+          id: school?.districtId,
+          type: 'SCHOOL',
+          schools: selectedSchools,
+        }
+      }
+
       const reqPayload = {
         userFullname,
-        userEmail,
+        userEmail: userDetails.email,
         documentType: 'QUOTE',
         schoolOrDistrict,
-        bookkeeperEmails: emails.length ? emails : undefined,
         cartProducts: quantities,
         otherInfo,
-        licenseType:
-          userSubscription.subType === 'enterprise'
-            ? 'Enterprise'
-            : 'Teacher Premium',
+        licenseType: 'Enterprise',
+        studentLicenseCount,
       }
       handleRequestQuote({
         reqPayload,
@@ -199,17 +176,8 @@ const RequestQuoteModal = ({
 
   const productsToShow = products.filter((x) => x.type !== 'PREMIUM') || {}
 
-  // TODO: Replace id once student license is implemented
-  const productWithStudentLicense = [
-    {
-      id: '604b8207144578097fd1f12f',
-      name: 'Student License',
-      type: 'studentLicense',
-    },
-    ...productsToShow,
-  ]
-
   const handleKeyPress = (e) => {
+    // eslint-disable-next-line no-control-regex
     const specialCharRegex = new RegExp('[0-9\b\t]+') // allow numbers, backspace and tab
     const pressedKey = String.fromCharCode(!e.charCode ? e.which : e.charCode)
     if (!specialCharRegex.test(pressedKey)) {
@@ -261,8 +229,8 @@ const RequestQuoteModal = ({
     >
       <Container width="500">
         <SubText mb="30px">
-          Let us know what type of price quote or information you're looking for
-          and we'll be in touch right away!
+          Let us know what type of price quote or information you&apos;re
+          looking for and we&apos;ll be in touch right away!
         </SubText>
 
         <Label mb="-2px">Enterprise License For</Label>
@@ -271,8 +239,12 @@ const RequestQuoteModal = ({
             onChange={onLicenseTypeChange}
             value={enterpriseLicenseType}
           >
-            <Radio value="DISTRICT">District</Radio>
-            <Radio value="SCHOOL">School</Radio>
+            <Radio data-cy="districtRadio" value="DISTRICT">
+              District
+            </Radio>
+            <Radio data-cy="schoolRadio" value="SCHOOL">
+              School
+            </Radio>
           </Radio.Group>
         </FlexContainer>
 
@@ -287,6 +259,7 @@ const RequestQuoteModal = ({
               onChange={handleScoolsSelection}
               optionFilterProp="children"
               filterOption={filterOption}
+              data-cy="selectSchool"
             >
               {schoolsInUserDistrict.map(({ id, name }) => (
                 <StyledSelect.Option value={id}>{name}</StyledSelect.Option>
@@ -295,31 +268,28 @@ const RequestQuoteModal = ({
           </>
         )}
 
-        <Label required>Email Address</Label>
-        <SubText>We'll send your quote to this address</SubText>
-        <StyledInput
-          placeholder="Type your email address"
-          value={userEmail}
-          onChange={onEmailChange}
+        <Label width="220px" required>
+          # Student Licenses{' '}
+        </Label>
+        <StyledInputNumber
+          min={1}
+          step={1}
+          type="number"
+          placeholder="Add the # of licenses"
+          value={studentLicenseCount}
+          onChange={handleicenseCountChange}
+          data-cy="studentLicenseField"
         />
 
-        <Label>Person to email documentation to, such as a bookkeeper</Label>
-        <StyledInput
-          placeholder="Type email address"
-          value={bookkeeperEmails}
-          onChange={handleBookkeepersChange}
-        />
-
-        <Label>What type of information can we help you with?</Label>
-        <StyledInputTextArea
-          placeholder="Type your answer"
-          rows={4}
-          value={otherInfo}
-          onChange={handleSetOtherInfo}
-        />
-
-        {productWithStudentLicense && productWithStudentLicense.length ? (
-          productWithStudentLicense.map((product) => (
+        <FlexContainer
+          marginBottom="10px"
+          alignItems="flex-start"
+          justifyContent="flex-start"
+        >
+          <Label width="220px">Add Ons</Label>
+        </FlexContainer>
+        {productsToShow && productsToShow.length ? (
+          productsToShow.map((product) => (
             <FlexRow key={product.id}>
               <StyledCheckbox
                 data-cy={`${camelCase(product.name)}Checkbox`}
@@ -332,6 +302,7 @@ const RequestQuoteModal = ({
               </StyledCheckbox>
               <NumberInputWrapper style={{ paddingRight: '20px' }}>
                 <NumberInputStyled
+                  min={1}
                   type="number"
                   value={quantities[product.id]}
                   onChange={handleQuantityChange(product.id)}
@@ -347,6 +318,17 @@ const RequestQuoteModal = ({
         ) : (
           <StyledSpin />
         )}
+
+        <br />
+
+        <Label>What type of information can we help you with?</Label>
+        <StyledInputTextArea
+          placeholder="Type your answer"
+          rows={4}
+          value={otherInfo}
+          onChange={handleSetOtherInfo}
+          data-cy="otherCommentsField"
+        />
       </Container>
     </CustomModalStyled>
   )
@@ -355,8 +337,8 @@ const RequestQuoteModal = ({
 export default connect(
   (state) => ({
     userOrgData: getUserOrgData(state),
+    userOrgId: getUserOrgId(state),
     isRequestQuoteActionPending: getRequestOrSubmitActionStatus(state),
-    userSubscription: getSubscriptionSelector(state),
     userFullname: getUserFullNameSelector(state),
     userDetails: getUserDetails(state),
     products: getProducts(state),

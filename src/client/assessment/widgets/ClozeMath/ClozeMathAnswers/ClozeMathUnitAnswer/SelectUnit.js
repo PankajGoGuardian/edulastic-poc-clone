@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Select } from 'antd'
@@ -48,6 +48,13 @@ const SelectUnit = ({
       containerWidth = `${maxWidth + 33}px`
     }
   }
+
+  useEffect(() => {
+    if (allBtns.length > 0) {
+      // set unit option when changing dropdown mode
+      onChange('unit', allBtns[0]?.handler)
+    }
+  }, [keypadMode])
 
   const onChangeUnit = (v) => {
     onChange('unit', v)

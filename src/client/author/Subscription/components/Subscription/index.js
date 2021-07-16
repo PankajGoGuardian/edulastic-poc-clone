@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 // import { withNamespaces } from '@edulastic/localization' // TODO: Need i18n support
 import { connect } from 'react-redux'
-import { roleuser } from '@edulastic/constants'
+import { roleuser, signUpState } from '@edulastic/constants'
 import { slice } from '../../ducks'
 import HasLicenseKeyModal from '../HasLicenseKeyModal'
 import PurchaseLicenseModal from '../PurchaseLicenseModal'
@@ -33,10 +33,9 @@ import EnterpriseTab from '../SubscriptionMain/EnterpriseTab'
 import FREEIMG from '../../static/free-forever-bg.png'
 import PREMIUMIMG from '../../static/premium-teacher-bg.png'
 import ENTERPRISEIMG from '../../static/enterprise-bg.png'
+import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 
 const RequestInvoiceModal = loadable(() => import('../RequestInvoviceModal'))
-
-const SubmitPOModal = loadable(() => import('../SubmitPOModal'))
 
 const comparePlansData = [
   {
@@ -219,6 +218,7 @@ const Subscription = (props) => {
     cartQuantities,
     setCartQuantities,
     setRequestQuoteModal,
+    proratedProducts,
   } = props
 
   const { subEndDate, subType, schoolId = '' } = subscription
@@ -247,6 +247,9 @@ const Subscription = (props) => {
   const [isRequestInvoiceModalVisible, setRequestInvoiceModal] = useState(false)
   const [showEnterpriseTab, setShowEnterpriseTab] = useState(false)
   const [isSubmitPOModalVisible, setSubmitPOModal] = useState(false)
+  const [showCompleteSignupModal, setShowCompleteSignupModal] = useState(false)
+  const [callFunctionAfterSignup, setCallFunctionAfterSignup] = useState(null)
+  const [isTabShouldSwitch, setIsTabShouldSwitch] = useState(true)
 
   useEffect(() => {
     // getSubscription on mount
@@ -254,7 +257,25 @@ const Subscription = (props) => {
     fetchMultipleSubscriptions({})
   }, [])
 
-  const isPremiumUser = user?.features?.premium
+  const isPremiumUser = user?.features?.premium && subscription?._id
+
+  const isFreeAdmin = [roleuser.DISTRICT_ADMIN, roleuser.SCHOOL_ADMIN].includes(
+    user.role
+  )
+
+  const isPlanEnterprise =
+    ['partial_premium', 'enterprise'].includes(subType) && isPremiumUser
+
+  useEffect(() => {
+    if (
+      ((['partial_premium', 'enterprise'].includes(subType) && isPremiumUser) ||
+        isFreeAdmin) &&
+      isTabShouldSwitch
+    ) {
+      setShowEnterpriseTab(true)
+    }
+  }, [subType, isPremiumUser, isFreeAdmin, isTabShouldSwitch])
+
   /**
    *  a user is paid premium user if
    *  - subType exists and
@@ -281,11 +302,16 @@ const Subscription = (props) => {
   const openPurchaseLicenseModal = () => setpurchaseLicenseModal(true)
   const closePurchaseLicenseModal = () => setpurchaseLicenseModal(false)
 
-  const openRequestInvoiceModal = () => setRequestInvoiceModal(true)
-  const closeRequestInvoiceModal = () => setRequestInvoiceModal(false)
+  const openRequestInvoiceModal = () => {
+    setRequestInvoiceModal(true)
+    setCartVisible(false)
+  }
+  const closeRequestInvoiceModal = () => {
+    setRequestInvoiceModal(false)
+    setShowMultiplePurchaseModal(false)
+  }
   const openRequestQuoteModal = () => setRequestQuoteModal(true)
   const openSubmitPOModal = () => setSubmitPOModal(true)
-  const closeSubmitPOModal = () => setSubmitPOModal(false)
 
   const productNamesAndPriceById = useMemo(
     () =>
@@ -348,15 +374,26 @@ const Subscription = (props) => {
     ? [productData.productId]
     : []
 
-  const isPremium = subType && subType !== 'FREE' // here user can be premium, trial premium, or partial premium
-
-  const isFreeAdmin = [roleuser.DISTRICT_ADMIN, roleuser.SCHOOL_ADMIN].includes(
-    user.role
-  )
+  const isPremium = subType && subType !== 'FREE' && isPremiumUser // here user can be premium, trial premium, or partial premium
 
   const isCliUser = user.openIdProvider === 'CLI'
   const handleCloseFeatureNotAvailableModal = () =>
     setShowFeatureNotAvailableModal(false)
+
+  const { currentSignUpState: signupStatus } = user
+  const isSignupCompleted = signupStatus === signUpState.DONE
+
+  const signUpFlowModalHandler = (afterSignup) => {
+    if (!isSignupCompleted) {
+      setIsTabShouldSwitch(false)
+      setShowCompleteSignupModal(true)
+      setCallFunctionAfterSignup(() => afterSignup)
+    } else {
+      setShowCompleteSignupModal(false)
+      setCallFunctionAfterSignup(() => null)
+      afterSignup()
+    }
+  }
 
   return (
     <Wrapper>
@@ -367,7 +404,6 @@ const Subscription = (props) => {
         subType={subType}
         subEndDate={subEndDate}
         isPaidPremium={isPaidPremium}
-        isPremium={isPremium}
         isPremiumUser={isPremiumUser}
         setShowSubscriptionAddonModal={setShowSubscriptionAddonModal}
         hasAllPremiumProductAccess={hasAllPremiumProductAccess}
@@ -385,6 +421,7 @@ const Subscription = (props) => {
         schoolId={schoolId}
         setCartVisible={setCartVisible}
         cartQuantities={cartQuantities}
+        setIsTabShouldSwitch={setIsTabShouldSwitch}
       />
       <SubscriptionContentWrapper>
         {showEnterpriseTab ? (
@@ -393,6 +430,9 @@ const Subscription = (props) => {
             subType={subType}
             requestQuote={openRequestQuoteModal}
             subEndDate={subEndDate}
+            isPremiumUser={isPremiumUser}
+            signUpFlowModalHandler={signUpFlowModalHandler}
+            user={user}
           />
         ) : (
           <SubscriptionMain
@@ -408,7 +448,6 @@ const Subscription = (props) => {
             showRenewalOptions={showRenewalOptions}
             usedTrialItemBankIds={usedTrialItemBankIds}
             isPremiumUser={isPremiumUser}
-            isPremium={isPremium}
             setShowSubscriptionAddonModalWithId={
               setShowSubscriptionAddonModalWithId
             }
@@ -436,7 +475,12 @@ const Subscription = (props) => {
             setCartQuantities={setCartQuantities}
             subscription={subscription}
             subsLicenses={subsLicenses}
+            user={user}
             requestQuote={openRequestQuoteModal}
+            isPlanEnterprise={isPlanEnterprise}
+            proratedProducts={proratedProducts}
+            signUpFlowModalHandler={signUpFlowModalHandler}
+            setIsTabShouldSwitch={setIsTabShouldSwitch}
           />
         )}
       </SubscriptionContentWrapper>
@@ -465,7 +509,19 @@ const Subscription = (props) => {
         setProductData={setProductData}
         trialAddOnProductIds={trialAddOnProductIds}
         openRequestInvoiceModal={openRequestInvoiceModal}
+        isExternalSubmitPOModalVisible={isSubmitPOModalVisible}
+        toggleSubmitPOModal={setSubmitPOModal}
+        setIsTabShouldSwitch={setIsTabShouldSwitch}
       />
+
+      {showCompleteSignupModal && (
+        <AuthorCompleteSignupButton
+          isOpenSignupModal={showCompleteSignupModal}
+          onClick={callFunctionAfterSignup}
+          setShowCompleteSignupModal={setShowCompleteSignupModal}
+          setCallFunctionAfterSignup={setCallFunctionAfterSignup}
+        />
+      )}
 
       <HasLicenseKeyModal
         visible={hasLicenseKeyModal}
@@ -502,13 +558,6 @@ const Subscription = (props) => {
           onCancel={closeRequestInvoiceModal}
         />
       )}
-
-      {isSubmitPOModalVisible && (
-        <SubmitPOModal
-          visible={isSubmitPOModalVisible}
-          onCancel={closeSubmitPOModal}
-        />
-      )}
     </Wrapper>
   )
 }
@@ -530,9 +579,9 @@ export default compose(
       usedTrialItemBankIds:
         state?.subscription?.subscriptionData?.usedTrialItemBankIds,
       dashboardTiles: state.dashboardTeacher.configurableTiles,
-
       subsLicenses: getSubsLicensesSelector(state),
       cartQuantities: state.subscription?.cartQuantities,
+      proratedProducts: state.subscription?.proratedProducts,
     }),
     {
       verifyAndUpgradeLicense: slice.actions.upgradeLicenseKeyPending,

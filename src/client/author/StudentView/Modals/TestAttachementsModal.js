@@ -20,9 +20,15 @@ const TestAttachementsModal = ({
   description,
   utaId,
   studentData,
+  attachmentNameLabel = 'Attachment',
+  attachmentIndexForPreview = 0,
+  isQuestionLevel = false,
+  hideDownloadAllButton = false,
 }) => {
   const [isZipDownloading, setZipDownloading] = useState(false)
-  const [currentAttachmentIndex, setCurrentAttachmentIndex] = useState(0)
+  const [currentAttachmentIndex, setCurrentAttachmentIndex] = useState(
+    attachmentIndexForPreview || 0
+  )
 
   const footerProps = {
     isZipDownloading,
@@ -30,13 +36,12 @@ const TestAttachementsModal = ({
       setZipDownloading(true)
       attachmentApi
         .downloadAllAttachments(utaId)
-        .then((res) => new Blob([res.data], { type: 'application/zip' }))
-        .then((blob) => {
-          const dynamicDownloadUrl = window.URL.createObjectURL(blob)
+        .then((res) => {
+          const url = res.data
           const shadowAnchor = document.createElement('a')
           const fileName = `${studentData.userName}-test-attachments.zip`
           const properties = {
-            href: dynamicDownloadUrl,
+            href: url,
             target: '_blank',
             download: fileName,
           }
@@ -49,6 +54,8 @@ const TestAttachementsModal = ({
         .finally(() => setZipDownloading(false))
     },
     downloadLink: attachmentsList[currentAttachmentIndex].source,
+    isQuestionLevel,
+    hideDownloadAllButton,
   }
 
   return (
@@ -60,10 +67,16 @@ const TestAttachementsModal = ({
       onCancel={toggleAttachmentsModal}
       footer={<Footer {...footerProps} />}
       closeIcon={<IconClose />}
+      pb={!description ? '0px' : '5px'}
     >
       <Description>{description}</Description>
 
-      <InputTitle>Attachment Name</InputTitle>
+      <InputTitle>
+        {attachmentNameLabel}
+        {attachmentNameLabel === 'Attachment'
+          ? ` (${currentAttachmentIndex + 1}/${attachmentsList.length})`
+          : null}
+      </InputTitle>
       <FilesViewContainer>
         <FilesView
           files={[attachmentsList[currentAttachmentIndex]]}

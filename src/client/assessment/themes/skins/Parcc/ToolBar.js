@@ -32,6 +32,7 @@ const ToolBar = ({
   utaId,
   groupId,
   toggleUserWorkUploadModal,
+  isPremiumContentWithoutAccess = false,
 }) => {
   const toolbarHandler = (value) => changeTool(value)
 
@@ -50,6 +51,7 @@ const ToolBar = ({
           <StyledButton
             active={tool.indexOf(2) !== -1}
             onClick={() => toolbarHandler(2)}
+            disabled={isPremiumContentWithoutAccess}
           >
             <CaculatorIcon />
           </StyledButton>
@@ -67,7 +69,7 @@ const ToolBar = ({
         >
           <StyledButton
             active={tool.indexOf(3) !== -1}
-            disabled={isDisableCrossBtn}
+            disabled={isDisableCrossBtn || isPremiumContentWithoutAccess}
             onClick={() => toolbarHandler(3)}
           >
             <CloseIcon />
@@ -80,6 +82,7 @@ const ToolBar = ({
           <StyledButton
             active={tool.indexOf(5) !== -1}
             onClick={() => toolbarHandler(5)}
+            disabled={isPremiumContentWithoutAccess}
           >
             <ScratchPadIcon />
           </StyledButton>
@@ -87,7 +90,10 @@ const ToolBar = ({
       )}
       {!isDocbased && isTeacherPremium && (
         <Tooltip placement="top" title="Upload work">
-          <StyledButton onClick={toggleUserWorkUploadModal}>
+          <StyledButton
+            onClick={toggleUserWorkUploadModal}
+            disabled={isPremiumContentWithoutAccess}
+          >
             <IconCloudUpload />
           </StyledButton>
         </Tooltip>

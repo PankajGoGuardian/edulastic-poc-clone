@@ -7,16 +7,13 @@ import {
   FlexContainer,
   notification,
 } from '@edulastic/common'
+import { camelCase } from 'lodash'
 import { emailRegex } from '../../../../common/utils/helpers'
 import {
   getUserFullNameSelector,
   getUserOrgData,
 } from '../../../src/selectors/user'
-import {
-  slice,
-  getRequestOrSubmitActionStatus,
-  getSubscriptionSelector,
-} from '../../ducks'
+import { slice, getRequestOrSubmitActionStatus } from '../../ducks'
 import {
   ModalTitle,
   Container,
@@ -39,6 +36,7 @@ const getFooterComponent = ({
     height="48px"
     onClick={handleSubmit}
     inverse
+    data-cy="requestInvoiceSubmitBtn"
   >
     SUBMIT
   </EduButton>
@@ -51,7 +49,6 @@ const RequestInvoiceModal = ({
   productNamesAndPriceById = {},
   isRequestInvoiceActionPending = false,
   handleRequestInvoice = () => {},
-  userSubscription,
   userFullname,
   userDetails,
 }) => {
@@ -105,10 +102,7 @@ const RequestInvoiceModal = ({
         bookkeeperEmails: emails.length ? emails : undefined,
         cartProducts,
         otherInfo,
-        licenseType:
-          userSubscription.subType === 'enterprise'
-            ? 'Enterprise'
-            : 'Teacher Premium',
+        licenseType: 'Teacher Premium',
       }
       handleRequestInvoice({
         reqPayload,
@@ -116,6 +110,11 @@ const RequestInvoiceModal = ({
       })
     }
   }
+
+  const totalPrice = Object.entries(cartProducts)
+    .filter(([, quantity]) => quantity)
+    .map(([id, quantity]) => productNamesAndPriceById[id].price * quantity)
+    .reduce((a, c) => a + c)
 
   return (
     <CustomModalStyled
@@ -133,26 +132,50 @@ const RequestInvoiceModal = ({
     >
       <Container width="500">
         <Text>Shopping Cart</Text>
-        {Object.entries(cartProducts).map(([id, quantity]) => (
-          <FlexContainer
-            key={id}
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <SubText key="productName">
-              {productNamesAndPriceById[id].name}
-            </SubText>
-            <SubText key="productPrice">
-              ${quantity * productNamesAndPriceById[id].price}
-            </SubText>
-          </FlexContainer>
-        ))}
+        {Object.entries(cartProducts)
+          .filter(([, quantity]) => quantity)
+          .map(([id, quantity]) => (
+            <FlexContainer
+              key={id}
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <SubText
+                key="productName"
+                data-cy={camelCase(productNamesAndPriceById[id].name)}
+              >
+                {productNamesAndPriceById[id].name}
+              </SubText>
+              <SubText
+                key="productPrice"
+                data-cy={`${camelCase(productNamesAndPriceById[id].name)}Price`}
+              >
+                ${quantity * productNamesAndPriceById[id].price}
+              </SubText>
+            </FlexContainer>
+          ))}
         <hr />
+        <FlexContainer
+          marginBottom="15px"
+          justifyContent="space-between"
+          alignItems="center"
+        >
+          <SubText data-cy="invoiceTotalLabel" className="invoice-total-label">
+            Total
+          </SubText>
+          <SubText data-cy="invoiceTotalValue">${totalPrice}</SubText>
+        </FlexContainer>
         <Label required>Type of Documentation you need</Label>
         <Radio.Group onChange={onDocumentTypeChange} value={documentType}>
-          <Radio value="QUOTE">QUOTE</Radio>
-          <Radio value="INVOICE">INVOICE</Radio>
-          <Radio value="OTHER">OTHER (PLEASE SPECIFY)</Radio>
+          <Radio data-cy="quoteRadio" value="QUOTE">
+            QUOTE
+          </Radio>
+          <Radio data-cy="invoiceRadio" value="INVOICE">
+            INVOICE
+          </Radio>
+          <Radio data-cy="othersRadio" value="OTHER">
+            OTHER (PLEASE SPECIFY)
+          </Radio>
         </Radio.Group>
 
         {documentType === 'OTHER' && (
@@ -160,6 +183,7 @@ const RequestInvoiceModal = ({
             placeholder="Specify the type of documentation"
             value={customDocumentType}
             onChange={onCustomTypeChange}
+            data-cy="typeOfDocument"
           />
         )}
       </Container>
@@ -169,6 +193,7 @@ const RequestInvoiceModal = ({
         placeholder="Type email address"
         value={bookkeeperEmails}
         onChange={handleBookkeepersChange}
+        data-cy="bookKeeperEmailField"
       />
 
       <Label>Any other information we need to know about your order?</Label>
@@ -177,6 +202,7 @@ const RequestInvoiceModal = ({
         rows={4}
         value={otherInfo}
         onChange={handleSetOtherInfo}
+        data-cy="otherComments"
       />
     </CustomModalStyled>
   )
@@ -186,7 +212,6 @@ export default connect(
   (state) => ({
     userOrgData: getUserOrgData(state),
     isRequestInvoiceActionPending: getRequestOrSubmitActionStatus(state),
-    userSubscription: getSubscriptionSelector(state),
     userFullname: getUserFullNameSelector(state),
     userDetails: getUserDetails(state),
   }),

@@ -62,6 +62,7 @@ const SaveAndExit = ({
   hidePause,
   savingResponse,
   adjustScratchpad,
+  isPremiumContentWithoutAccess = false,
 }) => {
   const _pauseAllowed = useUtaPauseAllowed(utaId)
   const showPause = _pauseAllowed === undefined ? pauseAllowed : _pauseAllowed
@@ -71,13 +72,22 @@ const SaveAndExit = ({
       {timedAssignment && <TimedTestTimer utaId={utaId} groupId={groupId} />}
       {LCBPreviewModal && (
         <>
-          <AdjustScratchpad onClick={() => adjustScratchpad(5)}>
+          <AdjustScratchpad
+            onClick={() => adjustScratchpad(5)}
+            disabled={isPremiumContentWithoutAccess}
+          >
             <IconPlusRounded />
           </AdjustScratchpad>
-          <AdjustScratchpad onClick={() => adjustScratchpad(-5)}>
+          <AdjustScratchpad
+            onClick={() => adjustScratchpad(-5)}
+            disabled={isPremiumContentWithoutAccess}
+          >
             <IconMinusRounded />
           </AdjustScratchpad>
-          <ScratchpadVisibilityToggler onClick={toggleScratchpadVisibility}>
+          <ScratchpadVisibilityToggler
+            onClick={toggleScratchpadVisibility}
+            disabled={isPremiumContentWithoutAccess}
+          >
             {currentVisibilityState} student work
           </ScratchpadVisibilityToggler>
         </>
@@ -140,7 +150,12 @@ const SaveAndExit = ({
         ))}
       {onSubmit && (
         <div id="submitTestButton" tabIndex="-1">
-          <EduButton isGhost onClick={onSubmit} loading={savingResponse}>
+          <EduButton
+            height="40px"
+            isGhost
+            onClick={onSubmit}
+            loading={savingResponse}
+          >
             <IconSend />
             SUBMIT
           </EduButton>

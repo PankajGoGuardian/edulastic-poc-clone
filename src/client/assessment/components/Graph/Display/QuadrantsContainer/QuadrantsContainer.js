@@ -445,8 +445,9 @@ class GraphContainer extends PureComponent {
     }
 
     if (
-      !isEqual(elements, prevProps.elements) ||
-      showConnect !== prevProps.showConnect
+      !disableResponse &&
+      (!isEqual(elements, prevProps.elements) ||
+        showConnect !== prevProps.showConnect)
     ) {
       this._graph.removeConnectline()
     }
@@ -628,6 +629,9 @@ class GraphContainer extends PureComponent {
       this._graph.reset()
       this._graph.resetAnswers()
       this._graph.loadFromConfig(coloredElements)
+      if (showConnect) {
+        this._graph.connectPoints(coloredElements)
+      }
       return
     }
 
@@ -715,9 +719,17 @@ class GraphContainer extends PureComponent {
   }
 
   get isShowConnectPoints() {
-    const { showConnect, elements, view, disableResponse } = this.props
+    const {
+      showConnect,
+      elements,
+      view,
+      disableResponse,
+      isPrintPreview,
+    } = this.props
+
     return (
       showConnect &&
+      !isPrintPreview &&
       view === PREVIEW &&
       !disableResponse &&
       elements.filter((e) => e.type === CONSTANT.TOOLS.POINT && !e.subElement)

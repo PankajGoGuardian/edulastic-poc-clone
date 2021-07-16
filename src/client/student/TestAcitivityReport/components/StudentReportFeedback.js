@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import { Tooltip } from 'antd'
-import { get } from 'lodash'
+import { get, groupBy } from 'lodash'
 import { IconCheck } from '@edulastic/icons'
 import { white } from '@edulastic/colors'
 import { FlexContainer } from '@edulastic/common'
@@ -11,6 +11,7 @@ import UnScored from '@edulastic/common/src/components/Unscored'
 import {
   FeedbackByQIdSelector,
   getMaxScoreFromCurrentItem,
+  getItemSelector,
 } from '../../sharedDucks/TestItem'
 import { getClasses } from '../../Login/ducks'
 
@@ -23,17 +24,31 @@ const StudentFeedback = ({
   isStudentReport,
   isPracticeQuestion,
   classList = [],
+  currentItem,
 }) => {
+  const isSkipped = useMemo(() => {
+    const { itemLevelScoring, multipartItem, _id: itemId } = currentItem || {}
+    if (itemLevelScoring && multipartItem) {
+      const qActs = groupBy(question, 'testItemId')
+      const skippedQuestion = (obj) => obj.skipped
+      const skippedWholeItem = ((qActs || {})[itemId] || []).every(
+        skippedQuestion
+      )
+      return skippedWholeItem
+    }
+
+    return (question?.[qId] || { skipped: true }).skipped
+  }, [currentItem, question, qId])
+
   const {
     score = 0,
     maxScore = itemMaxScore,
     feedback,
     graded,
-    skipped,
     groupId,
   } = question[qId] || { skipped: true }
 
-  let _score = skipped ? 0 : parseFloat((score || 0).toFixed(2))
+  let _score = isSkipped ? 0 : parseFloat((score || 0).toFixed(2))
   if (!graded) {
     _score = ''
   }
@@ -140,6 +155,7 @@ export default connect(
     question: FeedbackByQIdSelector(state),
     itemMaxScore: getMaxScoreFromCurrentItem(state),
     classList: getClasses(state),
+    currentItem: getItemSelector(state),
   }),
   null
 )(StudentFeedback)

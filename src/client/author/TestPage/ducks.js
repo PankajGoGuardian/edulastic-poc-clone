@@ -74,11 +74,12 @@ import {
 } from './components/AddItems/ducks'
 import {
   getUserRole,
-  getUserOrgData,
   getUserIdSelector,
   getUserId,
   getIsCurator,
   getUserSignupStatusSelector,
+  getUserOrgId,
+  currentDistrictInstitutionIds,
 } from '../src/selectors/user'
 import { receivePerformanceBandSuccessAction } from '../PerformanceBand/ducks'
 import { receiveStandardsProficiencySuccessAction } from '../StandardsProficiency/ducks'
@@ -97,8 +98,6 @@ import { getIsloadingAssignmentSelector } from './components/Assign/ducks'
 import { sortTestItemQuestions } from '../dataUtils'
 import { answersByQId } from '../../assessment/selectors/test'
 
-// constants
-
 const {
   ITEM_GROUP_TYPES,
   ITEM_GROUP_DELIVERY_TYPES,
@@ -107,6 +106,8 @@ const {
   calculatorTypes,
   evalTypeLabels,
   passwordPolicy,
+  testSettingsOptions,
+  docBasedSettingsOptions,
 } = test
 const testItemStatusConstants = {
   INREVIEW: 'inreview',
@@ -207,6 +208,8 @@ export const UPDATE_TEST_ERROR = '[tests] update test error'
 
 export const RECEIVE_TEST_BY_ID_REQUEST = '[tests] receive test by id request'
 export const RECEIVE_TEST_BY_ID_SUCCESS = '[tests] receive test by id success'
+export const SET_FREEZE_TEST_SETTINGS =
+  '[tests] set freeze test settings from test'
 export const REMOVE_TEST_ENTITY = '[tests] remove entity'
 export const RECEIVE_TEST_BY_ID_ERROR = '[tests] receive test by id error'
 
@@ -235,6 +238,11 @@ export const UPDATE_TEST_DEFAULT_IMAGE = '[test] update default thumbnail image'
 export const SET_PASSAGE_ITEMS = '[tests] set passage items'
 export const SET_AND_SAVE_PASSAGE_ITEMS = '[tests] set and save passage items'
 export const GET_ALL_TAGS_IN_DISTRICT = '[test] get all tags in district'
+export const SEARCH_TAG_LIST_REQUEST = '[test] search tags request'
+export const SEARCH_TAG_LIST_SUCCESS = '[test] search tags success'
+export const SEARCH_TAG_LIST_ERROR = '[test] search tags error'
+export const SEARCH_TAGS_BY_IDS_REQUEST = '[test] search tags by id request'
+export const APPEND_KNOWN_TAGS = '[test] append known tags'
 export const SET_ALL_TAGS = '[test] set all tags'
 export const SET_ALL_TAGS_FAILED = '[test] set all tags failure'
 export const ADD_NEW_TAG = '[test] add new tag'
@@ -324,6 +332,8 @@ export const setAndSavePassageItemsAction = createAction(
   SET_AND_SAVE_PASSAGE_ITEMS
 )
 export const getAllTagsAction = createAction(GET_ALL_TAGS_IN_DISTRICT)
+export const searchTagsAction = createAction(SEARCH_TAG_LIST_REQUEST)
+export const searchTagsByIdsAction = createAction(SEARCH_TAGS_BY_IDS_REQUEST)
 export const setAllTagsAction = createAction(SET_ALL_TAGS)
 export const getDefaultTestSettingsAction = createAction(
   RECEIVE_DEFAULT_TEST_SETTINGS
@@ -415,6 +425,11 @@ export const receiveTestByIdAction = (
 export const receiveTestByIdSuccess = (entity) => ({
   type: RECEIVE_TEST_BY_ID_SUCCESS,
   payload: { entity },
+})
+
+export const setFreezeTestSettings = (freezeSettings) => ({
+  type: SET_FREEZE_TEST_SETTINGS,
+  payload: { freezeSettings },
 })
 
 export const receiveTestByIdError = (error) => ({
@@ -789,6 +804,7 @@ export const getUserListSelector = createSelector(stateSelector, (state) => {
         }
         if (sharedType === 'LINK') {
           shareData.v1LinkShareEnabled = v1LinkShareEnabled
+          shareData.userName = 'Anyone with link'
         }
         flattenUsers.push(shareData)
       }
@@ -900,6 +916,16 @@ export const createBlankTest = () => ({
   multiLanguageEnabled: false,
   playerSkinType: 'edulastic',
   keypad: { type: 'item-level', value: 'item-level-keypad', updated: false },
+  timedAssignment: false,
+  allowedTime: 0,
+  hasInstruction: false,
+  instruction: '',
+  blockSaveAndContinue: false,
+  restrictNavigationOut: null,
+  restrictNavigationOutAttemptsThreshold: 0,
+  showMagnifier: true,
+  enableScratchpad: true,
+  enableSkipAlert: false,
 })
 
 const initialState = {
@@ -943,6 +969,11 @@ const initialState = {
   showRegradeConfirmPopup: false,
   upgrade: false,
   loadingSharedUsers: false,
+  allKnownTags: [],
+  tagSearchData: {
+    result: {},
+    isLoading: true,
+  },
 }
 
 export const testTypeAsProfileNameType = {
@@ -1007,6 +1038,14 @@ export const reducer = (state = initialState, { type, payload }) => {
           ...payload.entity,
         },
         updated: state.createdItems.length > 0,
+      }
+    case SET_FREEZE_TEST_SETTINGS:
+      return {
+        ...state,
+        entity: {
+          ...state.entity,
+          ...payload,
+        },
       }
     case REMOVE_TEST_ENTITY:
       return {
@@ -1105,6 +1144,35 @@ export const reducer = (state = initialState, { type, payload }) => {
           ...state.tagsList,
           [payload.tagType]: [],
         },
+      }
+    case SEARCH_TAG_LIST_REQUEST:
+      return {
+        ...state,
+        tagSearchData: {
+          result: {},
+          isLoading: true,
+        },
+      }
+    case SEARCH_TAG_LIST_SUCCESS:
+      return {
+        ...state,
+        tagSearchData: {
+          result: payload,
+          isLoading: false,
+        },
+      }
+    case SEARCH_TAG_LIST_ERROR:
+      return {
+        ...state,
+        tagSearchData: {
+          result: {},
+          isLoading: false,
+        },
+      }
+    case APPEND_KNOWN_TAGS:
+      return {
+        ...state,
+        allKnownTags: uniqBy([...state.allKnownTags, ...payload], '_id'),
       }
     case ADD_NEW_TAG:
       return {
@@ -1623,6 +1691,27 @@ export const getAllTagsSelector = (state, tagType) => {
   return get(_state, ['tagsList', tagType], [])
 }
 
+export const getTagSearchSelector = createSelector(stateSelector, (state) =>
+  get(state, 'tagSearchData', {})
+)
+
+export const getTagSearchListSelector = createSelector(
+  getTagSearchSelector,
+  (state) => {
+    const hits = get(state, 'result.hits.hits', [])
+    return hits.map(({ _id, _source }) => ({
+      _id,
+      ..._source,
+    }))
+  }
+)
+
+// tags which were searched for previously are cached as allKnownTags
+// and used to display filter tags
+export const getKnownTagsSelector = createSelector(stateSelector, (state) =>
+  get(state, 'allKnownTags', [])
+)
+
 export const getCurrentGroupIndexSelector = createSelector(
   stateSelector,
   (state) => state.currentGroupIndex
@@ -1673,7 +1762,18 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
       entity.blockNavigationToAnsweredQuestions || false,
     showMagnifier: !!entity.showMagnifier,
     enableScratchpad: !!entity.enableScratchpad,
+    enableSkipAlert: !!entity.enableSkipAlert,
     keypad: entity.keypad,
+    testType: entity.testType,
+    maxAttempts: entity.maxAttempts,
+    markAsDone: entity.markAsDone,
+    releaseScore: entity.releaseScore,
+    safeBrowser: entity.safeBrowser,
+    shuffleAnswers: entity.shuffleAnswers,
+    shuffleQuestions: entity.shuffleQuestions,
+    calcType: entity.calcType,
+    answerOnPaper: entity.answerOnPaper,
+    maxAnswerChecks: entity.maxAnswerChecks,
   }
 
   if (isAdmin) {
@@ -1708,9 +1808,10 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     settings.passwordPolicy = passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF
     settings.timedAssignment = false
     settings.blockNavigationToAnsweredQuestions = false
-    delete settings.blockSaveAndContinue
-    delete settings.restrictNavigationOut
-    delete settings.restrictNavigationOutAttemptsThreshold
+    settings.enableSkipAlert = false
+    settings.blockSaveAndContinue = false
+    settings.restrictNavigationOut = null
+    settings.restrictNavigationOutAttemptsThreshold = 0
     delete settings.keypad
   }
 
@@ -1733,6 +1834,95 @@ function validateRestrictNavigationOut(data) {
     return false
   }
   return true
+}
+
+const createDummyItems = (itemCount, group = {}) => {
+  const items = []
+  for (let i = 0; i < itemCount; i++) {
+    const item = {
+      _id: `dummyItemId-${i}-${group._id}`,
+      isDummyItem: true,
+      autoselectedItem: true,
+      active: 1,
+      algoVariablesEnabled: false,
+      autoGrade: true,
+      canAddMultipleItems: false,
+      collections: [
+        {
+          name: group?.collectionDetails?.name,
+          type: group?.collectionDetails?.type,
+          _id: group?.collectionDetails?._id,
+        },
+      ],
+      columns: [],
+      curriculums: [],
+      premiumContentRestriction: true,
+      data: {
+        questions: [
+          {
+            alignment: [],
+            grades: [],
+            id: `dummyQuestionId-${i}-${group._id}`,
+            subjects: [],
+            title: '',
+            type: 'multipleChoice',
+            validation: {
+              scoringType: 'exactMatch',
+              validResponse: { score: 1, value: [], altResponses: [] },
+            },
+          },
+        ],
+        resources: [],
+      },
+      itemLevelScore: 1,
+      itemLevelScoring: true,
+      language: 'english',
+      maxScore: 1,
+      rows: [
+        {
+          content: '',
+          dimension: '100%',
+          flowLayout: false,
+          tabs: [],
+          widgets: [
+            {
+              reference: `dummyQuestionId-${i}-${group._id}`,
+              tabIndex: 0,
+              title: '',
+              type: '',
+              widgetType: 'question',
+            },
+          ],
+        },
+      ],
+      sharedWith: [],
+      standards: [],
+      status: 'published',
+      subjects: [],
+    }
+    items.push(item)
+  }
+  return items
+}
+
+/**
+ *  Adding dummy items to autoselect groups if a group content is restricted due to subscription expiry
+ */
+export const fillAutoselectGoupsWithDummyItems = (testEntity) => {
+  testEntity.itemGroups.forEach((group) => {
+    if (
+      group.premiumContentRestriction &&
+      group.items.length < group.deliverItemsCount
+    ) {
+      group.items = [
+        ...group.items,
+        ...createDummyItems(
+          group.deliverItemsCount - group.items.length,
+          group
+        ),
+      ]
+    }
+  })
 }
 
 // saga
@@ -1765,6 +1955,7 @@ export function* receiveTestByIdSaga({ payload }) {
       ...entity.passages,
       ...differenceBy(tests.entity.passages, entity.passages, '_id'),
     ]
+    fillAutoselectGoupsWithDummyItems(entity)
     const currentGroupIndex = yield select(getCurrentGroupIndexSelector)
     if (entity._id !== payload.id && !payload?.isPlaylist) {
       yield put(
@@ -1839,6 +2030,9 @@ export function* receiveTestByIdSaga({ payload }) {
       'startDate',
       'class',
       'endDate',
+      'openPolicy',
+      'closePolicy',
+      'resources',
     ])
     yield put(setDefaultTestSettingsAction(defaultTestSettings))
   } catch (err) {
@@ -1891,6 +2085,7 @@ function* createTest(data) {
   // we are getting testItem ids only in payload from cart, but whole testItem Object from test library.
   dataToSend.itemGroups = transformItemGroupsUIToMongo(data.itemGroups)
   const entity = yield call(testsApi.create, dataToSend)
+  fillAutoselectGoupsWithDummyItems(data)
   yield put({
     type: UPDATE_ENTITY_DATA,
     payload: {
@@ -1929,6 +2124,15 @@ function* createTestSaga({ payload }) {
 
 function hasInvalidItem(testData) {
   return testData.itemGroups.find((x) => x.items.find((_item) => !_item.itemId))
+}
+
+const cleanTestItemGroups = (_test) => {
+  _test.itemGroups.forEach((group) => {
+    if (group.premiumContentRestriction) {
+      group.items = []
+    }
+    delete group.premiumContentRestriction
+  })
 }
 
 export function* updateTestSaga({ payload }) {
@@ -2021,6 +2225,7 @@ export function* updateTestSaga({ payload }) {
     }
 
     const testData = omit(payload.data, testFieldsToOmit)
+    cleanTestItemGroups(testData)
     if (hasInvalidItem(testData)) {
       console.warn('test data has invalid item', testData)
       Sentry.configureScope((scope) => {
@@ -2033,6 +2238,7 @@ export function* updateTestSaga({ payload }) {
     if (isEmpty(entity)) {
       return
     }
+    fillAutoselectGoupsWithDummyItems(entity)
     yield put(updateTestSuccessAction(entity))
     const hasAutoSelectItems = entity.itemGroups.some(
       (g) => g.type === testConst.ITEM_GROUP_TYPES.AUTOSELECT
@@ -2414,9 +2620,7 @@ function* publishForRegrade({ payload }) {
     if (isRegradeNeeded) {
       yield put(setShowRegradeConfirmPopupAction(true))
     } else {
-      const districtId = yield select((state) =>
-        get(state, ['user', 'user', 'orgData', 'districtIds', 0])
-      )
+      const districtId = yield select(getUserOrgId)
       yield put(setTestsLoadingAction(true))
       yield call(updateRegradeDataSaga, {
         payload: {
@@ -2647,11 +2851,38 @@ function* setTestDataAndUpdateSaga({ payload }) {
         },
       })
       yield put(setIsCreatingAction(false))
+
+      // redirecting to edit-item page instead of test review page if after creating a passage item
+      if (payload.fromSaveMultipartItem) {
+        if (!isEmpty(payload.routerState)) {
+          yield put(
+            push({
+              pathname: payload.url.replace(
+                'tests/undefined',
+                `tests/${entity?._id || 'undefined'}`
+              ),
+              state: payload.routerState,
+            })
+          )
+        } else {
+          yield put(
+            push(
+              payload.url.replace(
+                'tests/undefined',
+                `tests/${entity?._id || 'undefined'}`
+              )
+            )
+          )
+        }
+        return
+      }
       // TODO: is this logic still relevant?
       if (payload.current) {
         yield put(
           replace(`/author/tests/tab/${payload.current}/id/${entity._id}`)
         )
+      } else if (item.isPassageWithQuestions) {
+        yield put(replace(`/author/tests/tab/review/id/${entity._id}`))
       } else {
         yield put(
           replace({
@@ -2868,19 +3099,66 @@ function* getAllTagsSaga({ payload }) {
   }
 }
 
+function* searchTagsSaga({ payload }) {
+  try {
+    const result = yield call(tagsApi.searchTags, payload)
+    yield put({
+      type: SEARCH_TAG_LIST_SUCCESS,
+      payload: result,
+    })
+  } catch (e) {
+    Sentry.captureException(e)
+    yield put({
+      type: SEARCH_TAG_LIST_ERROR,
+    })
+  }
+}
+
+function* searchTagsByIdSaga({ payload: ids }) {
+  try {
+    const payload = {
+      page: 1,
+      limit: Math.max(1, ids.length),
+      search: {
+        ids,
+      },
+    }
+    yield* searchTagsSaga({ payload })
+  } catch (err) {
+    Sentry.captureException(err)
+  }
+}
+
+function* appendKnownTagsSaga({ payload }) {
+  try {
+    const hits = get(payload, 'hits.hits', [])
+    const tags = hits.map(({ _id, _source }) => ({
+      _id,
+      ..._source,
+    }))
+    yield put({
+      type: APPEND_KNOWN_TAGS,
+      payload: tags,
+    })
+  } catch (err) {
+    Sentry.captureException(err)
+  }
+}
+
 function* getDefaultTestSettingsSaga({ payload: testEntity }) {
   try {
     yield put(setDefaultSettingsLoadingAction(true))
     const role = yield select(getUserRole)
-    const orgData = yield select(getUserOrgData)
+    const districtId = yield select(getUserOrgId)
+    const institutionIds = yield select(currentDistrictInstitutionIds)
     let payload = {
-      orgId: orgData?.districtIds?.[0],
+      orgId: districtId,
       params: { orgType: 'district' },
     }
 
-    if (role !== roleuser.DISTRICT_ADMIN && orgData.institutionIds.length) {
+    if (role !== roleuser.DISTRICT_ADMIN && institutionIds.length) {
       payload = {
-        orgId: orgData.institutionIds[0] || orgData?.districtIds?.[0],
+        orgId: institutionIds[0] || districtId,
         params: {
           orgType: 'institution',
         },
@@ -2970,6 +3248,14 @@ function* getDefaultTestSettingsSaga({ payload: testEntity }) {
       )
     }
     yield put(setDefaultSettingsLoadingAction(false))
+    if (testEntity?.saveDefaultTestSettings === true) {
+      const _test = yield select(getTestEntitySelector)
+      const defaultSettings = pick(
+        _test,
+        _test.isDocBased ? docBasedSettingsOptions : testSettingsOptions
+      )
+      yield put(setDefaultTestSettingsAction(defaultSettings))
+    }
   } catch (e) {
     Sentry.captureException(e)
     notification({ messageKey: 'getDeafultSettingsFailed' })
@@ -3181,7 +3467,9 @@ function tranformItemGroupToData(itemGroup, index, allStaticGroupItemIds) {
               ...optionalFields,
             },
           },
-    isFetchItems: itemGroup.type === ITEM_GROUP_TYPES.AUTOSELECT,
+    isFetchItems:
+      itemGroup.type === ITEM_GROUP_TYPES.AUTOSELECT &&
+      !itemGroup.premiumContentRestriction,
     groupName: itemGroup.groupName,
     index,
   }
@@ -3372,42 +3660,45 @@ function* updateTestSettingRequestSaga({ payload }) {
 
 export function* watcherSaga() {
   yield all([
-    yield takeEvery(RECEIVE_TEST_BY_ID_REQUEST, receiveTestByIdSaga),
-    yield takeEvery(CREATE_TEST_REQUEST, createTestSaga),
-    yield takeEvery(UPDATE_TEST_REQUEST, updateTestSaga),
-    yield Effects.throttleAction(
+    takeEvery(RECEIVE_TEST_BY_ID_REQUEST, receiveTestByIdSaga),
+    takeEvery(CREATE_TEST_REQUEST, createTestSaga),
+    takeEvery(UPDATE_TEST_REQUEST, updateTestSaga),
+    Effects.throttleAction(
       process.env.REACT_APP_QA_ENV ? 60000 : 10000,
       UPDATE_TEST_DOC_BASED_REQUEST,
       updateTestDocBasedSaga
     ),
-    yield takeEvery(REGRADE_TEST, updateRegradeDataSaga),
-    yield takeEvery(TEST_SHARE, shareTestSaga),
-    yield takeEvery(TEST_PUBLISH, publishTestSaga),
-    yield takeEvery(RECEIVE_SHARED_USERS_LIST, receiveSharedWithListSaga),
-    yield takeEvery(DELETE_SHARED_USER, deleteSharedUserSaga),
-    yield takeEvery(PREVIEW_CHECK_ANSWER, checkAnswerSaga),
-    yield takeEvery(GET_ALL_TAGS_IN_DISTRICT, getAllTagsSaga),
-    yield takeEvery(PREVIEW_SHOW_ANSWER, showAnswerSaga),
-    yield takeEvery(RECEIVE_DEFAULT_TEST_SETTINGS, getDefaultTestSettingsSaga),
-    yield takeEvery(PUBLISH_FOR_REGRADE, publishForRegrade),
-    yield takeEvery(DUPLICATE_TEST_REQUEST, duplicateTestSaga),
-    yield takeEvery(SET_AND_SAVE_PASSAGE_ITEMS, setAndSavePassageItems),
-    yield takeLatest(UPDATE_TEST_AND_NAVIGATE, updateTestAndNavigate),
-    yield takeEvery(
+    takeEvery(REGRADE_TEST, updateRegradeDataSaga),
+    takeEvery(TEST_SHARE, shareTestSaga),
+    takeEvery(TEST_PUBLISH, publishTestSaga),
+    takeEvery(RECEIVE_SHARED_USERS_LIST, receiveSharedWithListSaga),
+    takeEvery(DELETE_SHARED_USER, deleteSharedUserSaga),
+    takeEvery(PREVIEW_CHECK_ANSWER, checkAnswerSaga),
+    takeEvery(GET_ALL_TAGS_IN_DISTRICT, getAllTagsSaga),
+    takeEvery(SEARCH_TAG_LIST_REQUEST, searchTagsSaga),
+    takeEvery(SEARCH_TAGS_BY_IDS_REQUEST, searchTagsByIdSaga),
+    takeEvery(SEARCH_TAG_LIST_SUCCESS, appendKnownTagsSaga),
+    takeEvery(PREVIEW_SHOW_ANSWER, showAnswerSaga),
+    takeEvery(RECEIVE_DEFAULT_TEST_SETTINGS, getDefaultTestSettingsSaga),
+    takeEvery(PUBLISH_FOR_REGRADE, publishForRegrade),
+    takeEvery(DUPLICATE_TEST_REQUEST, duplicateTestSaga),
+    takeEvery(SET_AND_SAVE_PASSAGE_ITEMS, setAndSavePassageItems),
+    takeLatest(UPDATE_TEST_AND_NAVIGATE, updateTestAndNavigate),
+    takeEvery(
       APPROVE_OR_REJECT_SINGLE_TEST_REQUEST,
       approveOrRejectSingleTestSaga
     ),
-    yield takeLatest(
+    takeLatest(
       ADD_ITEMS_TO_AUTOSELECT_GROUPS_REQUEST,
       addItemsToAutoselectGroupsSaga
     ),
-    yield takeEvery(SET_TEST_DATA_AND_SAVE, setTestDataAndUpdateSaga),
-    yield takeLatest(TOGGLE_TEST_LIKE, toggleTestLikeSaga),
-    yield takeLatest(GET_TESTID_FROM_VERSIONID, getTestIdFromVersionIdSaga),
-    yield takeLatest(GET_REGRADE_ACTIONS, getRegradeSettingsSaga),
-    yield takeLatest(FETCH_TEST_SETTINGS_LIST, fetchSavedTestSettingsListSaga),
-    yield takeLatest(SAVE_TEST_SETTINGS, saveTestSettingsSaga),
-    yield takeLatest(DELETE_TEST_SETTING_REQUEST, deleteTestSettingRequestSaga),
-    yield takeLatest(UPDATE_TEST_SETTING_REQUEST, updateTestSettingRequestSaga),
+    takeEvery(SET_TEST_DATA_AND_SAVE, setTestDataAndUpdateSaga),
+    takeLatest(TOGGLE_TEST_LIKE, toggleTestLikeSaga),
+    takeLatest(GET_TESTID_FROM_VERSIONID, getTestIdFromVersionIdSaga),
+    takeLatest(GET_REGRADE_ACTIONS, getRegradeSettingsSaga),
+    takeLatest(FETCH_TEST_SETTINGS_LIST, fetchSavedTestSettingsListSaga),
+    takeLatest(SAVE_TEST_SETTINGS, saveTestSettingsSaga),
+    takeLatest(DELETE_TEST_SETTING_REQUEST, deleteTestSettingRequestSaga),
+    takeLatest(UPDATE_TEST_SETTING_REQUEST, updateTestSettingRequestSaga),
   ])
 }

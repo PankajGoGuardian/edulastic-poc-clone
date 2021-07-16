@@ -91,3 +91,12 @@ export const getFilteredAnswerData = (answer) => {
   }
   return answer.map(({ x, y }) => ({ x, y }))
 }
+
+export const normalizeTouchEvent = (e) => {
+  if (e?.nativeEvent?.changedTouches?.length) {
+    e.pageX = e.nativeEvent.changedTouches[0].pageX
+    e.pageY = e.nativeEvent.changedTouches[0].pageY
+    e.clientX = e.nativeEvent.changedTouches[0].clientX
+    e.clientY = e.nativeEvent.changedTouches[0].clientY
+  }
+}

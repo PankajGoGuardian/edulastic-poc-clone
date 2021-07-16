@@ -24,20 +24,29 @@ const MainHeader = ({
   Icon,
   toggleSideBar,
   titleMarginTop,
+  containerClassName,
+  headerLeftClassName,
+  hasTestId,
+  isInModal,
   ...restProps
 }) => {
   const title = titleText || headingText
 
   return (
-    <HeaderWrapper {...restProps}>
+    <HeaderWrapper hasTestId={hasTestId} {...restProps}>
       <Affix
         className="fixed-header"
-        style={{ position: 'fixed', top: 0, right: 0 }}
+        style={{ position: isInModal ? 'absolute' : 'fixed', top: 0, right: 0 }}
       >
-        <Container {...restProps}>
+        <Container
+          className={containerClassName}
+          isInModal={isInModal}
+          {...restProps}
+        >
           <MenuIcon className="hamburger" onClick={() => toggleSideBar()} />
           {headingText && (
             <HeaderLeftContainer
+              className={headerLeftClassName}
               headingText={headingText}
               {...restProps}
               mt={titleMarginTop}
@@ -91,6 +100,11 @@ const HeaderWrapper = styled.div`
     left: ${({ hideSideMenu }) => (hideSideMenu ? '0' : '70px')};
     z-index: 999;
   }
+  .tabAlignment {
+    & > div {
+      flex: ${(props) => (props.hasTestId ? '' : 1)};
+    }
+  }
   @media (max-width: ${mobileWidthLarge}) {
     .fixed-header {
       left: 0;
@@ -123,6 +137,7 @@ const Container = styled.div`
   align-items: ${(props) => props.align || 'center'};
   border-bottom: 1px solid #2f4151;
   height: ${(props) => props.height || props.theme.HeaderHeight.md}px;
+  border-radius: ${({ isInModal }) => (isInModal ? '10px 10px 0px 0px' : '')};
 
   @media (min-width: ${extraDesktopWidthMax}) {
     height: ${(props) => props.height || props.theme.HeaderHeight.xl}px;
@@ -143,7 +158,9 @@ const Container = styled.div`
 export const HeaderLeftContainer = styled.div`
   display: ${(props) => props.display || 'flex'};
   align-items: ${(props) => props.alignItems || 'center'};
-  justify-content: ${(props) => props.justifyContent || 'space-evenly'};
+  &:not(.headerLeftWrapper) {
+    justify-content: ${(props) => props.justifyContent || 'space-evenly'};
+  }
   flex-direction: ${(props) => props.flexDirection || 'row'};
   flex-wrap: ${(props) => props.flexWrap || ''};
   width: ${(props) => props.width || 'auto'};

@@ -6,7 +6,10 @@ import { withRouter } from 'react-router-dom'
 import { ThemeProvider } from 'styled-components'
 import { get, isUndefined, last } from 'lodash'
 import { withWindowSizes, notification } from '@edulastic/common'
-import { nonAutoGradableTypes } from '@edulastic/constants'
+import {
+  nonAutoGradableTypes,
+  collections as collectionConst,
+} from '@edulastic/constants'
 
 import { playerSkinValues } from '@edulastic/constants/const/test'
 import { themes } from '../../../theme'
@@ -105,7 +108,8 @@ class AssessmentPlayerDefault extends React.Component {
             showScratchpadInfoNotification(items[currentItem])
           ) {
             const config =
-              playerSkinType === playerSkinValues.quester
+              playerSkinType === playerSkinValues.quester ||
+              playerSkinType === playerSkinValues.drc
                 ? { bottom: '64px' }
                 : {}
             notification({
@@ -136,7 +140,10 @@ class AssessmentPlayerDefault extends React.Component {
       playerSkinType,
     } = this.props
     const config =
-      playerSkinType === playerSkinValues.quester ? { bottom: '64px' } : {}
+      playerSkinType === playerSkinValues.quester ||
+      playerSkinType === playerSkinValues.drc
+        ? { bottom: '64px' }
+        : {}
     if (answerChecksUsedForItem >= settings.maxAnswerChecks)
       return notification({
         type: 'warn',
@@ -352,6 +359,7 @@ class AssessmentPlayerDefault extends React.Component {
       user = {},
       gotoSummary,
       isShowStudentWork,
+      handleReviewOrSubmit,
     } = this.props
     const { firstName = '', lastName = '' } = user
     const { settings } = this.props
@@ -392,7 +400,9 @@ class AssessmentPlayerDefault extends React.Component {
     const scratchPadMode = currentToolMode.indexOf(5) !== -1 || isStudentReport
 
     // calculate width of question area
-    const isQuester = playerSkinType === playerSkinValues.quester
+    const isQuester =
+      playerSkinType === playerSkinValues.quester ||
+      playerSkinType === playerSkinValues.drc
     const reduceOriginalMarginWidth = isQuester ? 0 : 70
     const availableWidth = windowWidth - reduceOriginalMarginWidth
     let responsiveWidth = availableWidth
@@ -471,6 +481,13 @@ class AssessmentPlayerDefault extends React.Component {
     const cameraImageName = `${firstName}_${lastName}_${
       currentItem + 1
     }_${cameraImageIndex}.png`
+
+    const premiumCollectionWithoutAccess =
+      item?.premiumContentRestriction &&
+      item?.collections
+        ?.filter(({ type = '' }) => type === collectionConst.types.PREMIUM)
+        .map(({ name }) => name)
+
     return (
       /**
        * zoom only in student side, otherwise not
@@ -546,6 +563,9 @@ class AssessmentPlayerDefault extends React.Component {
               blockNavigationToAnsweredQuestions
             }
             gotoSummary={gotoSummary}
+            isShowStudentWork={isShowStudentWork}
+            handleReviewOrSubmit={handleReviewOrSubmit}
+            isPremiumContentWithoutAccess={!!premiumCollectionWithoutAccess}
           >
             <FeaturesSwitch
               inputFeatures="studentSettings"
@@ -572,6 +592,7 @@ class AssessmentPlayerDefault extends React.Component {
                 blockNavigationToAnsweredQuestions={
                   blockNavigationToAnsweredQuestions
                 }
+                isPremiumContentWithoutAccess={!!premiumCollectionWithoutAccess}
               />
             </FeaturesSwitch>
             {!previewPlayer && (
@@ -589,21 +610,13 @@ class AssessmentPlayerDefault extends React.Component {
                 settings={settings}
               />
             )}
-            <Main
-              skin
-              zoomed={isZoomApplied}
-              zoomLevel={zoomLevel}
-              headerHeight={headerHeight}
-              padding="20px 30px"
-            >
-              <SettingsModal />
+            <Main skin headerHeight={headerHeight} padding="20px 30px">
+              <SettingsModal
+                isPremiumContentWithoutAccess={!!premiumCollectionWithoutAccess}
+              />
               <MainWrapper
-                responsiveWidth={responsiveWidth}
-                zoomLevel={zoomLevel}
                 ref={this.scrollContainer}
                 hasCollapseButtons={hasCollapseButtons}
-                className="scrollable-main-wrapper"
-                id="assessment-player-default-scroll"
               >
                 {testItemState === '' && (
                   <TestItemPreview
@@ -644,6 +657,15 @@ class AssessmentPlayerDefault extends React.Component {
                     studentReportModal={studentReportModal}
                     tool={currentToolMode}
                     isShowStudentWork={isShowStudentWork}
+                    zoomLevel={zoomLevel}
+                    responsiveWidth={responsiveWidth}
+                    isPremiumContentWithoutAccess={
+                      !!premiumCollectionWithoutAccess
+                    }
+                    premiumCollectionWithoutAccess={
+                      premiumCollectionWithoutAccess
+                    }
+                    isExpandedView
                   />
                 )}
                 {testItemState === 'check' && (
@@ -681,12 +703,21 @@ class AssessmentPlayerDefault extends React.Component {
                     studentReportModal={studentReportModal}
                     tool={currentToolMode}
                     isShowStudentWork={isShowStudentWork}
+                    zoomLevel={zoomLevel}
+                    responsiveWidth={responsiveWidth}
+                    isPremiumContentWithoutAccess={
+                      !!premiumCollectionWithoutAccess
+                    }
+                    premiumCollectionWithoutAccess={
+                      premiumCollectionWithoutAccess
+                    }
+                    isExpandedView
                   />
                 )}
               </MainWrapper>
             </Main>
 
-            <ReportIssuePopover item={item} />
+            <ReportIssuePopover item={item} playerSkinType={playerSkinType} />
 
             {currentToolMode.indexOf(2) !== -1 && (
               <CalculatorContainer

@@ -4,8 +4,9 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import loadable from '@loadable/component'
 import { compose } from 'redux'
-import { uniq, compact } from 'lodash'
+import { uniq, compact, keyBy } from 'lodash'
 import moment from 'moment'
+import { roleuser } from '@edulastic/constants'
 import {
   getItemBankSubscriptions,
   getProducts,
@@ -40,6 +41,9 @@ const UpgradeModal = loadable(() => import('./UpgradeModal'))
 const PaymentServiceModal = loadable(() => import('./PaymentServiceModal'))
 const PayWithPoModal = loadable(() => import('./PayWithPoModal'))
 const BuyMoreLicensesModal = loadable(() => import('./BuyMoreLicensesModal'))
+const SubmitPOModal = loadable(() =>
+  import('../../../../Subscription/components/SubmitPOModal')
+)
 
 const getInitialSelectedProductIds = ({
   defaultSelectedProductIds,
@@ -103,6 +107,11 @@ const PurchaseFlowModals = (props) => {
     cartQuantities,
     fromSideMenu,
     openRequestInvoiceModal,
+    isExternalSubmitPOModalVisible = false,
+    toggleSubmitPOModal,
+    setCartQuantities,
+    setProratedProducts,
+    setIsTabShouldSwitch,
   } = props
 
   const [payWithPoModal, setPayWithPoModal] = useState(false)
@@ -110,8 +119,12 @@ const PurchaseFlowModals = (props) => {
   const [productsCart, setProductsCart] = useState([])
   const [emailIds, setEmailIds] = useState([])
   const [totalAmount, setTotalAmount] = useState(100)
-  const [quantities, setQuantities] = useState({})
+  const userId = user?._id
+  const [quantities, setQuantities] = useState(
+    JSON.parse(localStorage[`cartQunatities:${userId}`] || '{}')
+  )
   const [isPaymentServiceModalVisible, setPaymentServiceModal] = useState(false)
+  const [isSubmitPOModalVisible, setSubmitPOModal] = useState(false)
 
   const trialConfirmationMessage = showTrialConfirmationMessage.subEndDate
     ? showTrialConfirmationMessage
@@ -162,11 +175,14 @@ const PurchaseFlowModals = (props) => {
     if (showMultiplePurchaseModal || showBuyMoreModal) {
       return false
     }
+    if (Object.keys(cartQuantities).find((x) => cartQuantities[x] > 1)) {
+      return false
+    }
     if (subEndDate) {
       return getShouldProrate(subEndDate)
     }
     return false
-  }, [subEndDate, showMultiplePurchaseModal, showBuyMoreModal])
+  }, [subEndDate, showMultiplePurchaseModal, showBuyMoreModal, cartQuantities])
 
   const { teacherPremium = {}, itemBankPremium = [] } = useMemo(() => {
     const boughtPremiumBankIds = itemBankSubscriptions
@@ -232,7 +248,20 @@ const PurchaseFlowModals = (props) => {
       itemBankPremium: result.slice(1),
     }
   }, [subEndDate, products, subsLicenses, shouldProrateMultiplePurchase])
+  const proratedItemBankPremiumKeyed = keyBy(itemBankPremium, 'id')
+  const proratedProducts = products.map((p) => {
+    if (proratedItemBankPremiumKeyed[p.id]) {
+      return { ...p, ...proratedItemBankPremiumKeyed[p.id] }
+    }
+    return p
+  })
+  useEffect(() => {
+    setCartQuantities(quantities)
+  }, [quantities])
 
+  useEffect(() => {
+    setProratedProducts(proratedProducts)
+  }, [products?.length, itemBankPremium?.length, subEndDate])
   useEffect(() => {
     if (
       defaultSelectedProductIdsRef.current === undefined ||
@@ -293,7 +322,35 @@ const PurchaseFlowModals = (props) => {
     }
   }
 
-  const handleClick = ({ emails = [], productsToshow = products }) => {
+  const isEnterprise = ['partial_premium', 'enterprise'].includes(subType)
+  const shouldbeMultipleLicenses = useMemo(() => {
+    const hasMoreThanOne = Object.keys(cartQuantities).some(
+      (x) =>
+        cartQuantities[x] > 1 ||
+        itemBankSubscriptions.some((permission) => {
+          return (
+            permission.itemBankId ===
+              products.find((p) => p.id === x)?.linkedProductId &&
+            !permission.isTrial
+          )
+        })
+    )
+    if (isEnterprise) {
+      return hasMoreThanOne
+    }
+    return hasMoreThanOne || user?.role != roleuser.TEACHER
+  }, [cartQuantities, itemBankSubscriptions, user?.role, isEnterprise])
+
+  const hideCcButton =
+    (shouldbeMultipleLicenses || cartQuantities[teacherPremium.id]) &&
+    isEnterprise &&
+    user?.features?.premium
+
+  const handleClick = ({
+    emails = [],
+    productsToshow = products,
+    shouldPayWithCC = false,
+  }) => {
     if (showMultiplePurchaseModal) {
       const productQuantities = products.map((product) => ({
         ...product,
@@ -308,19 +365,7 @@ const PurchaseFlowModals = (props) => {
        * then proceed with multiple license purchase flow
        * else individual purchase
        */
-      if (
-        Object.keys(cartQuantities).some(
-          (x) =>
-            cartQuantities[x] > 1 ||
-            itemBankSubscriptions.some((permission) => {
-              return (
-                permission.itemBankId ===
-                  products.find((p) => p.id === x)?.linkedProductId &&
-                !permission.isTrial
-              )
-            })
-        )
-      ) {
+      if (shouldbeMultipleLicenses) {
         const productQuantities = products.map((product) => ({
           ...product,
           quantity: cartQuantities[product.id],
@@ -355,7 +400,17 @@ const PurchaseFlowModals = (props) => {
     setTotalAmount(totalAmount)
     handleSubscriptionAddonModalClose()
     setCartVisible(false)
-    setShowUpgradeModal(true)
+    if (shouldPayWithCC) {
+      openPaymentServiceModal(true)
+    } else {
+      setShowUpgradeModal(true)
+    }
+  }
+
+  const handleOpenSubmitPOModal = () => setSubmitPOModal(true)
+  const handleCloseSubmitPOModal = () => {
+    toggleSubmitPOModal(false)
+    setSubmitPOModal(false)
   }
 
   return (
@@ -397,13 +452,13 @@ const PurchaseFlowModals = (props) => {
           districtId={userOrgId}
           isBookKeepersInviteSuccess={isBookKeepersInviteSuccess}
           setBookKeepersInviteSuccess={setBookKeepersInviteSuccess}
+          handleOpenRequestInvoiceModal={openRequestInvoiceModal}
         />
       )}
-
       {cartVisible && !fromSideMenu && (
         <CartModal
           visible={cartVisible}
-          products={products}
+          products={proratedProducts}
           teacherPremium={teacherPremium}
           setTotalAmount={setTotalAmount}
           bulkInviteBookKeepers={bulkInviteBookKeepers}
@@ -413,8 +468,15 @@ const PurchaseFlowModals = (props) => {
           handleClick={handleClick}
           closeModal={() => setCartVisible(false)}
           userId={user?._id}
+          user={user}
           handleOpenRequestInvoiceModal={openRequestInvoiceModal}
           subsLicenses={subsLicenses}
+          itemBankSubscriptions={itemBankSubscriptions}
+          subType={subType}
+          subscription={props.subscription}
+          hideCcButton={hideCcButton}
+          shouldbeMultipleLicenses={shouldbeMultipleLicenses}
+          setIsTabShouldSwitch={setIsTabShouldSwitch}
         />
       )}
       {showUpgradeModal && (
@@ -423,6 +485,7 @@ const PurchaseFlowModals = (props) => {
           setShowModal={setShowUpgradeModal}
           openPaymentServiceModal={openPaymentServiceModal}
           openPoServiceModal={openPoServiceModal}
+          openSubmitPOModal={handleOpenSubmitPOModal}
         />
       )}
       {isPaymentServiceModalVisible && (
@@ -478,6 +541,13 @@ const PurchaseFlowModals = (props) => {
           setClickedBundleId={setClickedBundleId}
         />
       )}
+
+      {(isSubmitPOModalVisible || isExternalSubmitPOModalVisible) && (
+        <SubmitPOModal
+          visible={isSubmitPOModalVisible || isExternalSubmitPOModalVisible}
+          onCancel={handleCloseSubmitPOModal}
+        />
+      )}
     </>
   )
 }
@@ -489,6 +559,8 @@ PurchaseFlowModals.defaultProps = {
   setSelectedLicenseId: () => {},
   setClickedBundleId: () => {},
   openRequestInvoiceModal: () => {},
+  toggleSubmitPOModal: () => {},
+  setIsTabShouldSwitch: () => {},
 }
 
 export default compose(
@@ -524,6 +596,8 @@ export default compose(
       fetchPlaylists: fetchPlaylistsAction,
       useThisPlayList: useThisPlayListAction,
       setCartVisible: slice.actions.setCartVisible,
+      setCartQuantities: slice.actions.setCartQuantities,
+      setProratedProducts: slice.actions.setProratedProducts,
     }
   )
 )(PurchaseFlowModals)

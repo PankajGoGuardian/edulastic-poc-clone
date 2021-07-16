@@ -52,6 +52,7 @@ import {
   LOAD_ANSWERS,
   SET_TEST_ACTIVITY_ID,
   LOAD_SCRATCH_PAD,
+  LOAD_SCRATCH_PAD_SAVED,
   LOAD_TEST_LEVEL_USER_WORK,
   SET_TEST_LOADING_STATUS,
   GET_ASSIGNMENT_PASSWORD,
@@ -90,7 +91,10 @@ import {
   CLEAR_ITEM_EVALUATION,
   CHANGE_VIEW,
 } from '../../author/src/constants/actions'
-import { addAutoselectGroupItems } from '../../author/TestPage/ducks'
+import {
+  addAutoselectGroupItems,
+  fillAutoselectGoupsWithDummyItems,
+} from '../../author/TestPage/ducks'
 import { PREVIEW } from '../constants/constantsForQuestions'
 import { getUserRole } from '../../author/src/selectors/user'
 import {
@@ -172,6 +176,10 @@ const getSettings = (test, testActivity, preview) => {
     ? test.releaseScore
     : testActivity?.testActivity?.releaseScore
 
+  const enableSkipAlert = preview
+    ? test.enableSkipAlert
+    : assignmentSettings.enableSkipAlert
+
   return {
     testType,
     calcProvider,
@@ -181,6 +189,7 @@ const getSettings = (test, testActivity, preview) => {
     allowedTime,
     pauseAllowed,
     enableScratchpad,
+    enableSkipAlert,
     calcType: calcType || testContants.calculatorTypes.NONE,
     maxAnswerChecks: maxAnswerChecks || 0,
     passwordPolicy:
@@ -227,6 +236,7 @@ function* loadTest({ payload }) {
     isShowStudentWork = false,
     playlistId,
     currentAssignmentId,
+    savedUserWork,
   } = payload
   try {
     if (!preview && !testActivityId) {
@@ -386,6 +396,7 @@ function* loadTest({ payload }) {
       )
     ) {
       test = yield addAutoselectGroupItems({ payload: test, preview })
+      fillAutoselectGoupsWithDummyItems(test)
     }
     if (
       preview &&
@@ -553,10 +564,17 @@ function* loadTest({ payload }) {
         }
       })
       if (Object.keys(scratchPadData).length) {
-        yield put({
-          type: LOAD_SCRATCH_PAD,
-          payload: scratchPadData,
-        })
+        if (savedUserWork) {
+          yield put({
+            type: LOAD_SCRATCH_PAD_SAVED,
+            payload: scratchPadData,
+          })
+        } else {
+          yield put({
+            type: LOAD_SCRATCH_PAD,
+            payload: scratchPadData,
+          })
+        }
       }
 
       const testUserWork = get(activity, 'userWork')
@@ -762,7 +780,7 @@ function* loadTest({ payload }) {
           notification({
             msg: errorMessage || 'Something went wrong!',
           })
-          Fscreen.exitFullscreen()
+          Fscreen.safeExitfullScreen()
           return yield put(push('/home/assignments'))
         }
         notification({
@@ -772,7 +790,7 @@ function* loadTest({ payload }) {
     }
     if (userRole === roleuser.STUDENT) {
       notification({ messageKey })
-      Fscreen.exitFullscreen()
+      Fscreen.safeExitfullScreen()
       return yield put(push('/home/assignments'))
     }
   }

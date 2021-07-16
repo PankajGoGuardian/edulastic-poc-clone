@@ -1,38 +1,39 @@
-import React from 'react'
-import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
+import {
+  assignmentPolicyOptions,
+  roleuser,
+  test as testConst,
+} from '@edulastic/constants'
+import { Col } from 'antd'
 import produce from 'immer'
 import { curry } from 'lodash'
 import * as moment from 'moment'
-import { Col } from 'antd'
+import PropTypes from 'prop-types'
+import React from 'react'
+import { connect } from 'react-redux'
+import { getDefaultSettings } from '../../../../common/utils/helpers'
+import { isFeatureAccessible } from '../../../../features/components/FeaturesSwitch'
+import { getUserFeatures } from '../../../../student/Login/ducks'
+import TagFilter from '../../../src/components/common/TagFilter'
 import {
-  test as testConst,
-  assignmentPolicyOptions,
-  roleuser,
-} from '@edulastic/constants'
+  defaultTestTypeProfilesSelector,
+  getIsOverrideFreezeSelector,
+  getReleaseScorePremiumSelector,
+} from '../../../TestPage/ducks'
+import { getAssignedClassesByIdSelector } from '../../duck'
+import AddResources from '../Container/AddResources'
+import {
+  nonPremiumReleaseGradeKeys,
+  releaseGradeKeys,
+} from '../SimpleOptions/SimpleOptions'
 import ClassList from './ClassList'
 import DatePolicySelector from './DatePolicySelector'
 import {
-  OptionConationer,
-  InitOptions,
   ClassSelectorLabel,
-  StyledRow,
+  InitOptions,
   Label,
+  OptionConationer,
+  StyledRow,
 } from './styled'
-import { isFeatureAccessible } from '../../../../features/components/FeaturesSwitch'
-import { getUserFeatures } from '../../../../student/Login/ducks'
-import {
-  releaseGradeKeys,
-  nonPremiumReleaseGradeKeys,
-} from '../SimpleOptions/SimpleOptions'
-import {
-  getReleaseScorePremiumSelector,
-  defaultTestTypeProfilesSelector,
-  getIsOverrideFreezeSelector,
-} from '../../../TestPage/ducks'
-import { getDefaultSettings } from '../../../../common/utils/helpers'
-import { getAssignedClassesByIdSelector } from '../../duck'
-import TagFilter from '../../../src/components/common/TagFilter'
 
 const { releaseGradeLabels } = testConst
 class AdvancedOptons extends React.Component {
@@ -162,6 +163,12 @@ class AdvancedOptons extends React.Component {
       testSettings = {},
       assignment,
       isAssignRecommendations,
+      recommendedResources = [],
+      setEmbeddedVideoPreviewModal,
+      resourceIds = [],
+      isVideoResourcePreviewModal,
+      showRecommendedResources,
+      selectedResourcesAction,
     } = this.props
     const classIds = assignment?.class?.map((item) => item._id) || []
     const changeField = curry(this.onChange)
@@ -196,6 +203,21 @@ class AdvancedOptons extends React.Component {
               />
             </Col>
           </StyledRow>
+          {showRecommendedResources && (
+            <StyledRow gutter={24}>
+              <Col xs={24} md={12}>
+                <Label>Resources</Label>
+                <AddResources
+                  recommendedResources={recommendedResources}
+                  setEmbeddedVideoPreviewModal={setEmbeddedVideoPreviewModal}
+                  resourceIds={resourceIds}
+                  isVideoResourcePreviewModal={isVideoResourcePreviewModal}
+                  selectedResourcesAction={selectedResourcesAction}
+                  isDA
+                />
+              </Col>
+            </StyledRow>
+          )}
 
           {!isAssignRecommendations && (
             <>

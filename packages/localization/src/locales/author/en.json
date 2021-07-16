@@ -166,5 +166,8 @@
       "viewSolution": "VIEW SOLUTION",
       "save": "SAVE"
     }
+  },
+  "keypadSettings": {
+    "warning": "You are setting this keypad to all items on the test. This action will override any keypad setting that was assigned at an item-level"
   }
 }

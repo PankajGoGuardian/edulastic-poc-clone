@@ -719,6 +719,10 @@
     "message": "Please add resources on the left and all the associated questions on the right.",
     "description": ""
   },
+  "maximumAllowedStudentResources": {
+    "message": "Maximum 5 Student resources allowed",
+    "description": ""
+  },
   "pleaseEnterLisence": {
     "message": "Please enter your license key",
     "description": ""
@@ -1463,6 +1467,10 @@
     "message": "Cannot save without passages",
     "description": ""
   },
+  "CannotPublishWithoutPassages": {
+    "message": "Cannot publish without passages",
+    "description": ""
+  },
   "itemIsNotAssociated": {
     "message": " Item is not associated with any collection.",
     "description": ""
@@ -2013,6 +2021,10 @@
   },
   "classAlreadyExist": {
     "message": "Class already exists in Manage Class",
+    "description": ""
+  },
+  "optionRemove": {
+    "message": "Answer choice can not be removed during regrade",
     "description": ""
   }
 }

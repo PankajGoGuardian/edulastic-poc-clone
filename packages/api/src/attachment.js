@@ -90,7 +90,6 @@ const downloadAllAttachments = (utaId) =>
   api.callApi({
     url: `${prefix}/zip/${utaId}`,
     method: 'get',
-    responseType: 'arraybuffer',
   })
 
 export default {

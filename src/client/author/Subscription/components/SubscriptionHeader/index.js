@@ -10,7 +10,7 @@ import { Dropdown, Menu, Tooltip } from 'antd'
 import { capitalize } from 'lodash'
 import moment from 'moment'
 import PropTypes from 'prop-types'
-import React, { memo, useEffect } from 'react'
+import React, { memo } from 'react'
 import { withNamespaces } from 'react-i18next'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import {
@@ -37,11 +37,7 @@ const tabsCustomStyle = {
 
 const CartInfo = ({ cartHasProducts, children }) =>
   !cartHasProducts ? (
-    <Tooltip
-      placement="bottom"
-      title="Add products to cart to view them here"
-      trigger="hover"
-    >
+    <Tooltip placement="bottom" title="Your cart is empty!" trigger="hover">
       {children}
     </Tooltip>
   ) : (
@@ -77,6 +73,7 @@ const SubscriptionHeader = ({
   const cartCount = Object.keys(cartQuantities).filter(
     (x) => x && x != 'null' && cartQuantities[x] > 0
   ).length
+
   const handlePurchaseFlow = () => {
     settingProductData()
     if (isFreeAdmin) {
@@ -96,16 +93,6 @@ const SubscriptionHeader = ({
     ['partial_premium'].includes(subType) && isPremiumUser
   const { defaultGrades = [], defaultSubjects = [] } = orgData
   const isGradeSubjectSelected = defaultGrades.length && defaultSubjects.length
-
-  useEffect(() => {
-    if (
-      isPartialPremiumUgradedUser ||
-      subType === 'enterprise' ||
-      isFreeAdmin
-    ) {
-      setShowEnterpriseTab(true)
-    }
-  }, [])
 
   // hide upgrade if no options will be displayed in dropdown
   const showUpgradeBtn =
@@ -167,7 +154,7 @@ const SubscriptionHeader = ({
 
   return (
     <TopBanner>
-      <HeaderSubscription>
+      <HeaderSubscription className="subscription-header">
         <Title>
           <h2>
             <IconSubscriptionHighlight width={19} height={19} />
@@ -225,18 +212,30 @@ const SubscriptionHeader = ({
               <CustomLink data-cy="comparePlans" onClick={openComparePlanModal}>
                 Compare Plan
               </CustomLink>
-              <CustomLink onClick={uploadPO} data-cy="uploadPO">
-                Upload PO
-              </CustomLink>
-              <CartInfo cartHasProducts={cartHasProducts}>
-                <CartButton data-cy="cartButton" onClick={handleCartClick}>
-                  <IconWrapper>
-                    <IconCart />
-                    <span>{cartCount}</span>
-                  </IconWrapper>
-                  Cart
-                </CartButton>
-              </CartInfo>
+
+              <AuthorCompleteSignupButton
+                renderButton={(handleClick) => (
+                  <CustomLink onClick={handleClick} data-cy="uploadPO">
+                    Upload PO
+                  </CustomLink>
+                )}
+                onClick={uploadPO}
+              />
+
+              <AuthorCompleteSignupButton
+                renderButton={(handleClick) => (
+                  <CartInfo cartHasProducts={cartHasProducts}>
+                    <CartButton data-cy="cartButton" onClick={handleClick}>
+                      <IconWrapper>
+                        <IconCart />
+                        <span>{cartCount}</span>
+                      </IconWrapper>
+                      Cart
+                    </CartButton>
+                  </CartInfo>
+                )}
+                onClick={handleCartClick}
+              />
             </>
           )}
           {isManageSubscriptionView &&

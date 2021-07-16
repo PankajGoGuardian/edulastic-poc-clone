@@ -192,10 +192,11 @@ export const reducer = createReducer(initialState, {
   [UPDATE_SCHOOLADMIN_SUCCESS]: (state, { payload }) => {
     state.update = payload
     state.updating = false
-
-    state.data.result[payload._id]._source = {
-      ...state.data.result[payload._id]._source,
-      ...payload,
+    if (state.data.result[payload._id]) {
+      state.data.result[payload._id]._source = {
+        ...state.data.result[payload._id]._source,
+        ...payload,
+      }
     }
   },
   [UPDATE_SCHOOLADMIN_ERROR]: (state, { payload }) => {

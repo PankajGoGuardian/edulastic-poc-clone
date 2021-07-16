@@ -56,6 +56,7 @@ import {
   schoologySyncAssignmentAction,
   schoologySyncAssignmentGradesAction,
 } from '../../author/src/actions/assignments'
+import { fetchDashboardTiles } from '../../author/Dashboard/ducks'
 
 // types
 export const LOGIN = '[auth] login'
@@ -311,8 +312,7 @@ function getValidRedirectRouteByRole(_url, user) {
       return url.match(/^\/home\//) ||
         url.includes('/author/tests/tab/review/id/') ||
         url.match(/\/embed\//) ||
-        url.includes('author/tests/verid') ||
-        url.includes('home/tests/verid')
+        url.includes('author/tests/verid')
         ? url
         : '/home/assignments'
     case roleuser.EDULASTIC_ADMIN:
@@ -1160,6 +1160,9 @@ const getLoggedOutUrl = () => {
   if (pathname === '/inviteteacher' || isHashAssessmentUrl()) {
     return `${window.location.pathname}${window.location.search}${window.location.hash}`
   }
+  if (pathname.includes('partnerlogin')) {
+    return pathname
+  }
   return '/login'
 }
 
@@ -1209,9 +1212,10 @@ export function* fetchUser({ payload }) {
     }
     yield call(segmentApi.analyticsIdentify, { user })
     const key = `${localStorage.getItem('defaultTokenKey')}`
-
+  
     if (key.includes('role:undefined') && user.role) {
       TokenStorage.removeAccessToken(user._id, 'undefined')
+      // add last used or current districtId
       TokenStorage.storeAccessToken(user.token, user._id, user.role, true)
       TokenStorage.selectAccessToken(user._id, user.role)
     }
@@ -2125,6 +2129,8 @@ function* updateDefaultSettingsSaga({ payload }) {
       messageKey: 'defaultSettingsUpdatedSuccessfully',
     })
     yield put({ type: UPDATE_DEFAULT_SETTINGS_SUCCESS, payload })
+    window.localStorage.setItem('author:dashboard:version', 0)
+    yield put(fetchDashboardTiles())
     yield put(updateUserSignupStateAction())
   } catch (e) {
     yield put({ type: UPDATE_DEFAULT_SETTINGS_FAILED })

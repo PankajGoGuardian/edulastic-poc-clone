@@ -192,10 +192,12 @@ export const SavedSettingsContainer = styled.div`
 
 export const StyledModal = styled(Modal)`
   .ant-modal-header {
+    padding: 24px;
     border-bottom: none;
     h2 {
       margin-bottom: 0px;
       font-weight: 600;
+      font-size: 21px;
     }
   }
   .ant-modal-body {
@@ -219,6 +221,7 @@ export const StyledModal = styled(Modal)`
     }
   }
   .ant-modal-footer {
+    padding: 24px 24px 18px 24px;
     border-top: none;
     > div {
       display: flex;
@@ -228,6 +231,16 @@ export const StyledModal = styled(Modal)`
         font-size: 12px;
         height: 35px;
         padding: 0px 30px;
+        font-weight: 600;
+      }
+      .ant-btn {
+        border-color: ${themeColor};
+        color: ${themeColor};
+      }
+      .ant-btn-primary {
+        border-color: ${themeColor};
+        background-color: ${themeColor};
+        color: ${white};
       }
     }
   }

@@ -41,7 +41,7 @@ export const filterMenuItems = [
     icon: 'folder',
     filter: SMART_FILTERS.AUTHORED_BY_ME,
     path: 'by-me',
-    text: 'Authored by me',
+    text: 'Created by me',
   },
   {
     icon: 'share-alt',
@@ -358,20 +358,25 @@ function* receiveTestItemsSaga({
     )
     yield put(push(`${currentLocation}?page=${page}`))
 
-    // if the tags are still being fetched, wait for it to fetch and complete
-    if (TAGS_SAGA_FETCH_STATUS.isLoading) {
-      yield race({
-        success: take(SET_ALL_TAGS),
-        fail: take(SET_ALL_TAGS_FAILED),
-      })
+    const { tags = [] } = search
+    let searchTags = []
+    if (tags.some((tag) => typeof tag?.title === 'string')) {
+      searchTags = tags.map((tag) => tag.title).filter((tag) => !!tag)
+    } else {
+      // if the tags are still being fetched, wait for it to fetch and complete
+      if (TAGS_SAGA_FETCH_STATUS.isLoading) {
+        yield race({
+          success: take(SET_ALL_TAGS),
+          fail: take(SET_ALL_TAGS_FAILED),
+        })
+      }
+      const allTagsData = yield select((state) =>
+        getAllTagsSelector(state, 'testitem')
+      )
+      const allTagsKeyById = keyBy(allTagsData, '_id')
+      searchTags = tags.map((tag) => allTagsKeyById[tag]?.tagName || '')
     }
 
-    const allTagsData = yield select((state) =>
-      getAllTagsSelector(state, 'testitem')
-    )
-    const allTagsKeyById = keyBy(allTagsData, '_id')
-    const { tags = [] } = search
-    const searchTags = tags.map((tag) => allTagsKeyById[tag]?.tagName || '')
     const { items, count } = yield call(testItemsApi.getAll, {
       search: { ...search, tags: searchTags },
       sort,

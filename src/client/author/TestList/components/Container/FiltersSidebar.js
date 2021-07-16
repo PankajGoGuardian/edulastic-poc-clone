@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
+import TagField from '../../../ItemList/components/Fields/TagField'
 import { getUserFeatures } from '../../../src/selectors/user'
 
 const FiltersSidebar = ({ filterItem, onChange, search, userFeatures }) => {
@@ -12,6 +13,29 @@ const FiltersSidebar = ({ filterItem, onChange, search, userFeatures }) => {
   )
 
   const selectRef = React.useRef()
+
+  if (filterItem.title === 'Tags' && filterItem.useElasticSearch) {
+    return (
+      <>
+        <FieldLabel>{filterItem.title}</FieldLabel>
+        <TagField
+          data-cy={filterItem.title}
+          mode={filterItem.mode}
+          onChange={(tags) =>
+            onChange(
+              filterItem.onChange,
+              tags.map((tag) => tag.key)
+            )
+          }
+          placeholder={filterItem.placeholder}
+          ref={selectRef}
+          size={filterItem.size}
+          tagTypes={filterItem.tagTypes || []}
+          value={search[filterItem.onChange]}
+        />
+      </>
+    )
+  }
 
   return (
     <>

@@ -37,6 +37,10 @@ import ReportListContent from './Container'
 import TestActivitySubHeader from './SubHeader'
 import ProgressGraph from '../../../common/components/ProgressGraph'
 import OverallFeedback from './OverallFeedback'
+import { FilesViewContainer } from '../../../author/StudentView/styled'
+import FilesView from '../../../assessment/widgets/UploadFile/components/FilesView'
+import TestAttachementsModal from '../../../author/StudentView/Modals/TestAttachementsModal'
+import { getUser } from '../../../author/src/selectors/user'
 
 const { ABSENT, NOT_STARTED } = testActivityStatus
 const { releaseGradeLabels } = testConstants
@@ -66,11 +70,16 @@ const ReportListContainer = ({
   testActivity,
   questionActivities,
   userId,
+  studentData,
 }) => {
   const [assignmentItemTitle, setAssignmentItemTitle] = useState(null)
   const [showGraph, setShowGraph] = useState(true)
   const { isDocBased } = test
-  const { releaseScore } = testActivity
+  const { releaseScore, userWork, _id: testActivityId } = testActivity
+  const [showAttachmentsModal, taggleAttachmentModal] = useState(false)
+  const [attachmentIndexForPreview, setAttachmentIndex] = useState(null)
+
+  const attachments = userWork?.attachments
 
   const topics = [`student_assignment:class:${match.params.classId}`]
   useRealtimeV2(topics, {
@@ -135,6 +144,11 @@ const ReportListContainer = ({
     }
   }, [testFeedback, showGraph])
 
+  const handleToggleAttachmentsModal = (index) => {
+    taggleAttachmentModal((prevValue) => !prevValue)
+    setAttachmentIndex(index)
+  }
+
   if (!testFeedback) {
     return <Spin />
   }
@@ -178,6 +192,17 @@ const ReportListContainer = ({
             {!isCliUser && <OverallFeedback />}
           </>
         )}
+        {attachments && (
+          <FilesViewContainer style={{ margin: '22px' }}>
+            <AttachmentsTitle>Attachements</AttachmentsTitle>
+            <FilesView
+              files={attachments}
+              openAttachmentViewModal={handleToggleAttachmentsModal}
+              disableLink
+              hideDelete
+            />
+          </FilesViewContainer>
+        )}
         {showReviewResponses && !dontRelease && !isCliUser && (
           <FlexContainer mt="16px">
             <EduButton onClick={reviewResponses} isBlue isGhost>
@@ -189,6 +214,17 @@ const ReportListContainer = ({
           <ReportListContent
             title={assignmentItemTitle}
             reportId={match.params.id}
+          />
+        )}
+        {showAttachmentsModal && (
+          <TestAttachementsModal
+            toggleAttachmentsModal={handleToggleAttachmentsModal}
+            showAttachmentsModal={showAttachmentsModal}
+            attachmentsList={attachments}
+            title="All Attachments"
+            utaId={testActivityId}
+            studentData={studentData}
+            attachmentIndexForPreview={attachmentIndexForPreview || 0}
           />
         )}
       </MainContentWrapper>
@@ -215,6 +251,7 @@ const enhance = compose(
         ({ status }) => status !== ABSENT && status !== NOT_STARTED
       ),
       userId: get(state, 'user.user._id'),
+      studentData: getUser(state),
     }),
     {
       setCurrentItem: setCurrentItemAction,
@@ -234,4 +271,10 @@ ReportListContainer.propTypes = {
 
 const AssignmentItemTitleView = styled.span`
   cursor: pointer;
+`
+const AttachmentsTitle = styled.p`
+  font-size: 16px;
+  font-weight: 700;
+  margin-left: 10px;
+  margin-bottom: 17px;
 `

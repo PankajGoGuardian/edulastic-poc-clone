@@ -277,6 +277,7 @@ class MathFormulaPreview extends Component {
       hideCorrectAnswer,
       answerScore,
       answerContextConfig: { expressGrader },
+      clearClicked,
     } = this.props
     const { innerValues } = this.state
     const isCheckAnswer = previewType === SHOW || previewType === CHECK
@@ -392,6 +393,7 @@ class MathFormulaPreview extends Component {
                     )}
                     {!this.isStatic && (
                       <MathInput
+                        resetMath={clearClicked}
                         symbols={item.symbols}
                         restrictKeys={this.restrictKeys}
                         allowNumericOnly={allowNumericOnly}

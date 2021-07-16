@@ -11,9 +11,13 @@ import {
 } from '@edulastic/api'
 import { createSlice } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
-import { fetchUserAction } from '../../student/Login/ducks'
+import {
+  fetchUserAction,
+  getUserId as getUserIdSelector,
+} from '../../student/Login/ducks'
 import { fetchMultipleSubscriptionsAction } from '../ManageSubscription/ducks'
 import { getUserSelector } from '../src/selectors/user'
+import { fetchDashboardTiles } from '../Dashboard/ducks'
 
 // selectors
 const subscriptionSelector = (state) => state.subscription
@@ -91,6 +95,7 @@ const slice = createSlice({
     isRequestOrSubmitSuccessModalVisible: false,
     cartQuantities: {},
     cartVisible: false,
+    proratedProducts: null,
   },
   reducers: {
     fetchUserSubscriptionStatus: (state) => {
@@ -199,7 +204,7 @@ const slice = createSlice({
     },
     setCartQuantities: (state, { payload }) => {
       if (!Object.keys(payload).find((x) => payload[x])) {
-        //empty qantities - so closing cart
+        // empty qantities - so closing cart
         state.cartVisible = false
       }
       state.cartQuantities = payload
@@ -209,6 +214,9 @@ const slice = createSlice({
     },
     setRequestQuoteModal: (state, { payload }) => {
       state.isRequestQuoteModalVisible = payload
+    },
+    setProratedProducts: (state, { payload }) => {
+      state.proratedProducts = payload
     },
   },
 })
@@ -349,6 +357,15 @@ function* fetchUserSubscription() {
       subscriptionApi.subscriptionStatus
     )
     const { result } = apiUserSubscriptionStatus || {}
+    if (result?.subscription?.status === 0) {
+      result.subscription = null
+      if (result?.itemBankSubscriptions?.length) {
+        result.itemBankSubscriptions = result.itemBankSubscriptions.filter(
+          (x) => x.isTrial
+        )
+      }
+    }
+
     const premiumProductId = result?.products.find(
       (product) => product.type === 'PREMIUM'
     )?.id
@@ -520,6 +537,13 @@ function* handleStripePayment({ payload }) {
       key: 'verify-license',
     })
     const { token, error } = yield stripe.createToken(data)
+    const currentSubsctiption = yield select(getSubscriptionSelector) || {}
+    const userWasOnFreePlan = ![
+      'premium',
+      'enterprise',
+      'partial_premium',
+    ].includes(currentSubsctiption?.subType)
+
     if (token) {
       const apiPaymentResponse = yield call(paymentApi.pay, {
         productIds: uniq(compact(productIds)),
@@ -531,6 +555,10 @@ function* handleStripePayment({ payload }) {
         setPaymentServiceModal(false)
         yield call(showSuccessNotifications, apiPaymentResponse)
         yield call(fetchUserSubscription)
+        if (userWasOnFreePlan) {
+          window.localStorage.setItem('author:dashboard:version', 0)
+          yield put(fetchDashboardTiles())
+        }
         yield put(fetchUserAction({ background: true }))
         yield put(fetchMultipleSubscriptionsAction({ background: true }))
         setShowTrialSubsConfirmation(true)
@@ -612,9 +640,11 @@ function* requestInvoiceSaga({ payload }) {
     const result = yield call(subscriptionApi.requestInvoice, reqPayload)
     if (result?.result?.success) {
       closeCallback()
-      const msg = `We'll be back to you right away with your ${(
-        reqPayload.documentType || ''
-      ).toLowerCase()}!`
+      const msg = `We'll be back to you right away with your ${
+        reqPayload.documentType === 'OTHER'
+          ? reqPayload.typeDescription
+          : (reqPayload.documentType || '').toLowerCase()
+      }!`
       yield put(slice.actions.requestOrSubmitActionSuccess(msg))
     } else {
       yield put(slice.actions.requestOrSubmitActionFailure())
@@ -623,7 +653,7 @@ function* requestInvoiceSaga({ payload }) {
     yield put(slice.actions.requestOrSubmitActionFailure())
     notification({
       type: 'error',
-      msg: 'Something went wrong while requesting invoice.',
+      msg: 'Something went wrong. ',
     })
     captureSentryException(err)
   }
@@ -650,6 +680,12 @@ function* submitPOSaga({ payload }) {
   }
 }
 
+function* storeQuantitiesSaga({ payload }) {
+  const userId = yield select(getUserIdSelector)
+  const key = `cartQunatities:${userId}`
+  localStorage[key] = JSON.stringify(payload)
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(slice.actions.upgradeLicenseKeyPending, upgradeUserLicense),
@@ -673,5 +709,6 @@ export function* watcherSaga() {
     ),
     yield takeEvery(slice.actions.requestInvoiceAction, requestInvoiceSaga),
     yield takeEvery(slice.actions.submitPOAction, submitPOSaga),
+    yield takeEvery(slice.actions.setCartQuantities, storeQuantitiesSaga),
   ])
 }

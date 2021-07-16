@@ -151,6 +151,7 @@ const CurriculumHeader = ({
   duplicatePlayList,
   writableCollections,
   isDemoPlaygroundUser,
+  isSMPlaylist,
 }) => {
   const [loadingDelete, setLoadingDelete] = useState(false)
   const {
@@ -207,7 +208,7 @@ const CurriculumHeader = ({
       publishPlaylistInDraft()
       return
     }
-    updateDestinationPlaylist({ showNotification: true })
+    updateDestinationPlaylist({ showNotification: true, isSMPlaylist })
   }
   const isMobile = windowWidth < parseInt(tabletWidth, 10)
 

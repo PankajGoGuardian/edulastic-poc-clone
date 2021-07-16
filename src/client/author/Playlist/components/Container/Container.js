@@ -133,6 +133,7 @@ class TestList extends Component {
     openSidebar: false,
     isPlaylistAvailableModalVisible: false,
     filteredSparkInfo: {},
+    isSingaporeMath: false,
   }
 
   getUrlToPush(page = undefined) {
@@ -175,7 +176,22 @@ class TestList extends Component {
       userId,
       sparkPlaylistCollectionsVisited,
       setUser,
+      playlists,
     } = this.props
+
+    const isSingaporeMathCollectionActive = playlists.filter(
+      (playlist) =>
+        (playlist.description?.toLowerCase()?.includes('singaporemath') ||
+          playlist.description?.toLowerCase()?.includes('singapore math')) &&
+        playlist?.active
+    )
+
+    const isSingaporeMath =
+      user?.referrer?.includes('singapore') ||
+      user?.utm_source?.toLowerCase()?.includes('singapore') ||
+      isSingaporeMathCollectionActive?.length > 0
+
+    this.setState({ isSingaporeMath })
 
     const {
       subject = interestedSubjects || [],
@@ -198,6 +214,8 @@ class TestList extends Component {
         grades,
       }
     }
+
+    searchFilters.isSingaporeMath = isSingaporeMath
 
     const sort = {
       ...initSort,
@@ -264,7 +282,10 @@ class TestList extends Component {
     const { updateAllPlaylistSearchFilter } = this.props
     sessionStorage.setItem('filters[playList]', JSON.stringify(searchState))
     sessionStorage.setItem('sort[playList]', JSON.stringify(sort))
-    updateAllPlaylistSearchFilter({ search: searchState, sort })
+    updateAllPlaylistSearchFilter({
+      search: { ...searchState, isSingaporeMath: this.state.isSingaporeMath },
+      sort,
+    })
   }
 
   searchTest = debounce((searchState) => {
@@ -378,6 +399,7 @@ class TestList extends Component {
     )
       return null
 
+    emptyFilters.isSingaporeMath = this.state.isSingaporeMath
     this.updateFilterState(emptyFilters, initialSortState)
     receivePlaylists({
       page: 1,
@@ -556,6 +578,7 @@ class TestList extends Component {
       openSidebar,
       isPlaylistAvailableModalVisible,
       filteredSparkInfo,
+      isSingaporeMath,
     } = this.state
     const { searchString } = playListFilters
     const renderFilterIcon = () => (
@@ -640,6 +663,7 @@ class TestList extends Component {
                 searchFilterOption={this.searchFilterOption}
                 handleStandardSearch={this.handleStandardSearch}
                 filterMenuItems={filterMenuItems}
+                isSingaporeMath={isSingaporeMath}
               />
             </SearchModalContainer>
           </MobileFilterModal>
@@ -668,6 +692,7 @@ class TestList extends Component {
                           searchFilterOption={this.searchFilterOption}
                           handleStandardSearch={this.handleStandardSearch}
                           filterMenuItems={filterMenuItems}
+                          isSingaporeMath={isSingaporeMath}
                         />
                       </ScrollBox>
                     </PerfectScrollbar>

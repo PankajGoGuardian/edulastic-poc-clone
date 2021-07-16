@@ -70,7 +70,7 @@ export const SearchInputStyled = styled(Input.Search)`
 `
 
 export const TextInputStyled = styled((props) => (
-  <Input maxLength={128} {...props} ref={props.inputRef} />
+  <Input maxLength={props.limit || 128} {...props} ref={props.inputRef} />
 ))`
   &.ant-input {
     text-align: ${(props) => props.align || 'left'};

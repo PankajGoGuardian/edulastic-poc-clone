@@ -37,19 +37,42 @@ export async function switchRole(role) {
   }
 }
 
-export async function switchUser(switchToId, personId) {
-  const result = await userApi.getSwitchUser(switchToId, personId)
-  if (result.result) {
-    TokenStorage.storeAccessToken(
-      result.result.token,
-      result.result._id,
-      result.result.role
+export async function switchUser(newUser, oldUser) {
+  try {
+    const districtId = newUser.district?._id || newUser.districts[0]?._id || ''
+    const switchToId = newUser._id || newUser
+    const personId = oldUser.personId || oldUser
+    if (
+      newUser._id &&
+      newUser._id === oldUser._id &&
+      districtId === oldUser.orgId
+    ) {
+      return
+    }
+    const result = await userApi.getSwitchUser(
+      switchToId,
+      personId,
+      newUser._id === oldUser._id ? districtId : undefined
     )
-    window.open(
-      `${window.location.protocol}//${window.location.host}/?userId=${result.result._id}&role=${result.result.role}`,
-      '_blank'
-    )
-  } else {
+    if (result.result) {
+      TokenStorage.storeAccessToken(
+        result.result.token,
+        result.result._id,
+        result.result.role
+      )
+      if (newUser._id && newUser._id === oldUser._id) {
+        if (districtId !== oldUser.orgId) {
+          window.location.href = `/`
+        }
+      } else
+        window.open(
+          `${window.location.protocol}//${window.location.host}/?userId=${result.result._id}&role=${result.result.role}`,
+          '_blank'
+        )
+    } else {
+      throw new Error('')
+    }
+  } catch (err) {
     notification({ messageKey: 'ErrorOccuredSwicthingRole' })
   }
 }

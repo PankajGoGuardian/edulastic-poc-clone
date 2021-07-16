@@ -97,7 +97,10 @@ import {
   changeDataToPreferredLanguage,
   changeDataInPreferredLanguage,
 } from '../../assessment/utils/question'
-import { getOptionsForMath } from '../../assessment/utils/variables'
+import {
+  getOptionsForMath,
+  getOptionsForClozeMath,
+} from '../../assessment/utils/variables'
 
 // constants
 export const resourceTypeQuestions = {
@@ -146,9 +149,9 @@ export const receiveQuestionByIdAction = (id) => ({
   },
 })
 
-export const saveQuestionAction = (testId, isTestFlow, isEditFlow = false) => ({
+export const saveQuestionAction = (data) => ({
   type: SAVE_QUESTION_REQUEST,
-  payload: { testId, isTestFlow, isEditFlow },
+  payload: data,
 })
 
 export const setQuestionDataAction = (question) => ({
@@ -419,7 +422,15 @@ export const redirectTestIdSelector = (state) =>
   get(state, 'itemDetail.redirectTestId', false)
 
 function* saveQuestionSaga({
-  payload: { testId: tId, isTestFlow, isEditFlow, saveAndPublishFlow = false },
+  payload: {
+    testId: tId,
+    isTestFlow,
+    isEditFlow,
+    saveAndPublishFlow = false,
+    rowIndex: passageQuestionRowIndex,
+    tabIndex: passageQuestionTabIndex,
+    callback,
+  },
 }) {
   try {
     if (isTestFlow) {
@@ -499,9 +510,13 @@ function* saveQuestionSaga({
     const locationState = yield select((state) => state.router.location.state)
     updateItemWithAlignmentDetails(itemDetail, alignments)
     let currentQuestionIds = getQuestionIds(itemDetail)
-    const { rowIndex, tabIndex } = locationState || {
+    let { rowIndex, tabIndex } = locationState || {
       rowIndex: 0,
       tabIndex: 1,
+    }
+    if (callback) {
+      tabIndex = passageQuestionTabIndex
+      rowIndex = passageQuestionRowIndex
     }
     const { id } = question
     const entity = {
@@ -664,17 +679,49 @@ function* saveQuestionSaga({
     // TODO: do we need redirect testId here?!
     if (itemDetail._id === 'new') {
       const reqData = omit(data, '_id')
-      item = yield call(testItemsApi.create, reqData)
+      item = yield call(
+        testItemsApi.create,
+        reqData,
+        ...(itemDetail.multipartItem && _testId ? [{ testId: _testId }] : [])
+      )
     } else {
       item = yield call(testItemsApi.updateById, itemDetail._id, data, _testId)
     }
     yield put(changeUpdatedFlagAction(false))
+
     if (item.testId) {
       yield put(setRedirectTestAction(item.testId))
     }
 
     if (!saveAndPublishFlow) {
       notification({ type: 'success', messageKey: 'itemSavedSuccess' })
+    }
+
+    if (typeof callback === 'function') {
+      yield put({
+        type: UPDATE_ITEM_DETAIL_SUCCESS,
+        payload: { item },
+      })
+      callback()
+      yield put(changeCurrentQuestionAction(''))
+      const currentRouterState = yield select(
+        (state) => state.router.location.state
+      )
+      if (currentRouterState) {
+        const routerTestId = currentRouterState.previousTestId
+        if (routerTestId) {
+          tId = routerTestId
+        }
+      }
+      yield put(
+        push({
+          pathname: isTestFlow
+            ? `/author/tests/${tId}/editItem/${item?._id}`
+            : `/author/items/${item._id}/item-detail`,
+          state: currentRouterState,
+        })
+      )
+      return
     }
 
     const { standards = [] } = alignments[0]
@@ -725,23 +772,46 @@ function* saveQuestionSaga({
           previousTestId,
           regradeFlow,
         } = yield select((state) => state.router?.location?.state || {})
-        yield put(
-          push({
-            pathname:
-              (_isTestFlow || isTestFlow) && tId
-                ? `/author/tests/${tId}/editItem/${item?._id}`
-                : `/author/items/${item._id}/item-detail/test/${tId}`,
-            state: {
-              backText: 'Back to item bank',
-              backUrl: '/author/items',
-              itemDetail: false,
-              isFinalSave: true,
-              isTestFlow: isTestFlow || _isTestFlow,
-              previousTestId,
-              regradeFlow,
-            },
-          })
-        )
+
+        const routerState = {
+          backText: 'Back to item bank',
+          backUrl: '/author/items',
+          itemDetail: false,
+          isFinalSave: true,
+          isTestFlow: isTestFlow || _isTestFlow,
+          previousTestId,
+          regradeFlow,
+        }
+        const multipartItemQuestionCount = item?.data?.questions?.length || 0
+        if (
+          item &&
+          item.multipartItem &&
+          !item.isPassageWithQuestions &&
+          (_isTestFlow || isTestFlow) &&
+          tId === 'undefined' &&
+          multipartItemQuestionCount === 1
+        ) {
+          yield put(
+            addAuthoredItemsAction({
+              item,
+              tId,
+              isEditFlow: false,
+              fromSaveMultipartItem: true,
+              url: `/author/tests/${tId}/editItem/${item?._id}`,
+              routerState,
+            })
+          )
+        } else {
+          yield put(
+            push({
+              pathname:
+                (_isTestFlow || isTestFlow) && tId
+                  ? `/author/tests/${tId}/editItem/${item?._id}`
+                  : `/author/items/${item._id}/item-detail/test/${tId}`,
+              state: routerState,
+            })
+          )
+        }
         yield put({
           type: UPDATE_ITEM_DETAIL_SUCCESS,
           payload: { item },
@@ -887,7 +957,14 @@ const hasMathFormula = (variables) =>
  */
 function* addAuthoredItemsToTestSaga({ payload }) {
   try {
-    const { item, tId: testId, isEditFlow } = payload
+    const {
+      item,
+      tId: testId,
+      isEditFlow,
+      fromSaveMultipartItem = false,
+      url = '',
+      routerState = {},
+    } = payload
     const testItems = yield select(getSelectedItemSelector)
     const currentGroupIndex = yield select(getCurrentGroupIndexSelector)
     // updated testItems should have the current authored item
@@ -907,7 +984,15 @@ function* addAuthoredItemsToTestSaga({ payload }) {
     // if the item is getting created from test before saving
     // then save and continue else change the route to test
     if (!testId || testId === 'undefined') {
-      yield put(setTestDataAndUpdateAction({ addToTest: true, item }))
+      yield put(
+        setTestDataAndUpdateAction({
+          addToTest: true,
+          item,
+          fromSaveMultipartItem,
+          url,
+          routerState,
+        })
+      )
     } else {
       const test = yield select(getTestSelector)
       // update the test store with new test ITem
@@ -935,7 +1020,13 @@ function* addAuthoredItemsToTestSaga({ payload }) {
 
 function* calculateFormulaSaga({ payload }) {
   try {
-    const getLatexValuePairs = ({ id, variables, example, options }) => ({
+    const getLatexValuePairs = ({
+      id,
+      variables,
+      example,
+      options,
+      isClozeMath,
+    }) => ({
       id,
       latexes: Object.keys(variables)
         .map((variableName) => variables[variableName])
@@ -946,6 +1037,7 @@ function* calculateFormulaSaga({ payload }) {
             {
               id: variable.name,
               formula: variable.formula,
+              options: isClozeMath ? options[variable.name] || {} : options,
             },
           ],
           []
@@ -959,7 +1051,6 @@ function* calculateFormulaSaga({ payload }) {
             ? example[variableName]
             : variables[variableName].exampleValue,
       })),
-      ...options,
     })
 
     const question = yield select(getCurrentQuestionSelector)
@@ -985,11 +1076,21 @@ function* calculateFormulaSaga({ payload }) {
 
     let results = []
     if (hasMathFormula(variables)) {
+      const isClozeMath = question.type === questionType.EXPRESSION_MULTIPART
       const options = question?.isMath
-        ? getOptionsForMath(get(question, 'validation.validResponse.value', []))
+        ? isClozeMath
+          ? getOptionsForClozeMath(variables, get(question, 'validation', {}))
+          : getOptionsForMath(
+              get(question, 'validation.validResponse.value', [])
+            )
         : {}
       const latexValuePairs = [
-        getLatexValuePairs({ id: 'definition', variables, options }),
+        getLatexValuePairs({
+          id: 'definition',
+          variables,
+          options,
+          isClozeMath,
+        }),
       ]
       if (examples) {
         for (const example of examples) {
@@ -998,6 +1099,7 @@ function* calculateFormulaSaga({ payload }) {
             variables,
             example,
             options,
+            isClozeMath,
           })
           if (pair.latexes.length > 0) {
             latexValuePairs.push(pair)

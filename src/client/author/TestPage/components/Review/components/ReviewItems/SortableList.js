@@ -95,6 +95,13 @@ export default SortableContainer(
       )
     }
 
+    const groupIndexWithoutRestrictedContent = []
+    for (const [groupIndex, group] of Object.entries(itemGroups)) {
+      if (!group.premiumContentRestriction) {
+        groupIndexWithoutRestrictedContent.push(groupIndex)
+        break
+      }
+    }
     return (
       <>
         {!!removalObj && (
@@ -107,7 +114,10 @@ export default SortableContainer(
           />
         )}
         {showGroupsPanel ? (
-          <GroupCollapse defaultActiveKey={['0']} expandIconPosition="right">
+          <GroupCollapse
+            defaultActiveKey={groupIndexWithoutRestrictedContent}
+            expandIconPosition="right"
+          >
             {itemGroups.map((group, count) => (
               <Panel
                 header={group.groupName}

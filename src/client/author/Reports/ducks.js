@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect'
 import { createAction, createReducer, combineReducers } from 'redux-starter-kit'
 import { all, call, put, takeEvery, select, take } from 'redux-saga/effects'
-import { get, isEmpty, omitBy, mapValues } from 'lodash'
+import { get, isEmpty, omitBy, mapValues, uniqBy } from 'lodash'
 
 import { assignmentStatusOptions, roleuser } from '@edulastic/constants'
 import { assignmentApi, reportsApi } from '@edulastic/api'
@@ -181,7 +181,11 @@ import {
   RECEIVE_SCHOOLS_ERROR,
   RECEIVE_SCHOOLS_SUCCESS,
 } from '../Schools/ducks'
-import { getOrgDataSelector, getUser } from '../src/selectors/user'
+import {
+  getOrgDataSelector,
+  getUser,
+  getUserOrgId,
+} from '../src/selectors/user'
 import {
   getAllTagsAction,
   getAllTagsSelector,
@@ -439,6 +443,9 @@ const selectorDict = {
   },
 }
 
+const uniqTags = (tagsData) =>
+  mapValues(tagsData, (val) => (Array.isArray(val) ? uniqBy(val, 'key') : val))
+
 function* updateTags(tags, type) {
   if (!selectorDict[type]) return
   if (Object.values(tags).every((tag) => isEmpty(tag))) return
@@ -448,9 +455,13 @@ function* updateTags(tags, type) {
   const tempTagsData = yield select(selectorDict[type].getTempTags)
   const tagsData = (yield select(selectorDict[type].getSettings)).tagsData
   yield put(
-    selectorDict[type].setTempTags({ ...tempTagsData, ...remappedTags })
+    selectorDict[type].setTempTags(
+      uniqTags({ ...tempTagsData, ...remappedTags })
+    )
   )
-  yield put(selectorDict[type].setTags({ ...tagsData, ...remappedTags }))
+  yield put(
+    selectorDict[type].setTags(uniqTags({ ...tagsData, ...remappedTags }))
+  )
 }
 
 function* getTagFilters(ids, options) {
@@ -478,7 +489,7 @@ function* getGroupTags(ids, options) {
     const q = {
       limit: ids.length || 25,
       page: 1,
-      districtId: options?.districtIds?.[0],
+      districtId: options.districtId,
       search: {
         name: '',
         type: ['custom'],
@@ -506,7 +517,7 @@ function* getTestTags(ids, options) {
       search: {
         searchString: '',
         statuses: [IN_PROGRESS, IN_GRADING, DONE],
-        districtId: options?.districtIds?.[0],
+        districtId: options.districtId,
         testIds: ids,
       },
       aggregate: true,
@@ -527,7 +538,7 @@ function* getClassTags(ids, options) {
     const q = {
       limit: ids.length || 25,
       page: 1,
-      districtId: options.districtIds?.[0],
+      districtId: options.districtId,
       search: {
         name: '',
         type: ['class'],
@@ -548,7 +559,7 @@ function* getCourseTags(ids, options) {
     const q = {
       limit: ids.length || 25,
       page: 1,
-      districtId: options.districtIds?.[0],
+      districtId: options.districtId,
       search: {
         name: [{ type: 'cont', value: '' }],
         courseIds: ids,
@@ -567,7 +578,7 @@ function* getTeacherTags(ids, options) {
     const q = {
       limit: ids.length || 25,
       page: 1,
-      districtId: options?.districtIds?.[0],
+      districtId: options.districtId,
       search: {},
       role: roleuser.TEACHER,
       teacherIds: ids,
@@ -594,7 +605,7 @@ function* getSchoolTags(ids, options) {
     const q = {
       limit: ids.length || 25,
       page: 1,
-      districtId: options?.districtIds?.[0],
+      districtId: options.districtId,
       search: {
         name: [{ type: 'cont', value: '' }],
       },
@@ -622,10 +633,12 @@ function* fetchUpdateTagsData({ payload }) {
   const { options = {}, type, ...keys } = payload
   try {
     const orgData = yield select(getOrgDataSelector)
+    const districtId = yield select(getUserOrgId)
     const userDetails = yield select(getUser)
     const params = {
       ...orgData,
       ...options,
+      districtId,
       userDetails,
     }
     const result = yield all(

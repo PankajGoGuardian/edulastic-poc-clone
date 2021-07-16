@@ -1,8 +1,17 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import { Button, Popover, Tooltip } from 'antd'
 import { NumberInputStyled, FieldLabel } from '@edulastic/common'
-import { IconMoveArrows, IconPencilEdit, IconTrash } from '@edulastic/icons'
-import { PointsInputWrapper, ItemLevelScoringDesc } from './styled'
+import {
+  IconInfo,
+  IconMoveArrows,
+  IconPencilEdit,
+  IconTrash,
+} from '@edulastic/icons'
+import {
+  PointsInputWrapper,
+  ItemLevelScoringDesc,
+  TotalPointsWrapper,
+} from './styled'
 
 const EditButton = ({ onEdit, disabled, disabledReason }) => {
   return (
@@ -34,12 +43,12 @@ const MoveButton = ({ disabled, disabledReason }) => {
   )
 }
 
-const PointInput = ({
+const TotalPointsInput = ({
   value,
   onChange,
-  visible,
   disabled,
   isRubricQuestion,
+  visible,
   itemLevelScoring,
 }) => {
   if (!visible) {
@@ -50,32 +59,80 @@ const PointInput = ({
     <ItemLevelScoringDesc>
       {isRubricQuestion
         ? 'This Question has Grading Rubric attached to it, so points cannot be changed for this question, and it will be equal to the max score of the rubric.'
-        : 'Total points will be divided equally among the below parts. If you want custom points for different parts, please click on Layout and Grading and switch to part level scoring.'}
+        : 'Total points will be divided equally among the below parts. If you want custom points for different parts, please switch to “Part Level Scores”  from Layout and Grading.'}
     </ItemLevelScoringDesc>
   )
 
   const PopoverComponent = itemLevelScoring ? Popover : React.Fragment
-  const popoverProps = useMemo(() => {
-    return itemLevelScoring ? { content: desc, placement: 'bottomRight' } : {}
-  }, [itemLevelScoring])
+  return (
+    <TotalPointsWrapper className="total-points-wrapper">
+      <FieldLabel marginBottom="0px" mr="10px">
+        Total Points (All Parts)
+      </FieldLabel>
+      {itemLevelScoring && (
+        <PopoverComponent content={desc} placement="bottomRight">
+          <IconInfo />
+        </PopoverComponent>
+      )}
+      <NumberInputStyled
+        min={0.5}
+        step={0.5}
+        width="64px"
+        padding="0px 2px"
+        margin="0px 0px 0px 10px"
+        disabled={disabled}
+        value={disabled && !isRubricQuestion ? '' : value}
+        onChange={onChange}
+        data-cy="point-update"
+      />
+    </TotalPointsWrapper>
+  )
+}
+
+const PointInput = ({
+  value,
+  onChange,
+  disabled,
+  isRubricQuestion,
+  itemLevelScoring,
+  visible,
+}) => {
+  if (!visible) {
+    return null
+  }
+
+  const desc = (
+    <ItemLevelScoringDesc>
+      {isRubricQuestion
+        ? 'This Question has Grading Rubric attached to it, so points cannot be changed for this question, and it will be equal to the max score of the rubric.'
+        : 'This item is evaluated as a whole, to evaluate parts separately and have custom points for different parts please switch to “Part Level Scores” from Layout and Grading.'}
+    </ItemLevelScoringDesc>
+  )
 
   return (
-    <PointsInputWrapper itemLevelScoring={itemLevelScoring}>
+    <PointsInputWrapper
+      className="points-input-wrapper"
+      itemLevelScoring={itemLevelScoring}
+    >
       <FieldLabel marginBottom="0px" mr="10px">
-        {itemLevelScoring && 'Total'} Points
+        Points
       </FieldLabel>
-      <PopoverComponent {...popoverProps}>
-        <NumberInputStyled
-          min={0.5}
-          step={0.5}
-          width="64px"
-          padding="0px 2px"
-          disabled={disabled}
-          value={disabled && !isRubricQuestion ? '' : value}
-          onChange={onChange}
-          data-cy="point-update"
-        />
-      </PopoverComponent>
+      {itemLevelScoring && (
+        <Popover content={desc} placement="bottomRight">
+          <IconInfo />
+        </Popover>
+      )}
+      <NumberInputStyled
+        min={0.5}
+        step={0.5}
+        width="64px"
+        padding="0px 2px"
+        margin="0px 0px 0px 10px"
+        disabled={itemLevelScoring}
+        value={disabled && !isRubricQuestion ? '' : value}
+        onChange={onChange}
+        data-cy="point-update"
+      />
     </PointsInputWrapper>
   )
 }
@@ -85,4 +142,5 @@ export default {
   Delete: DeleteButton,
   Move: MoveButton,
   Point: PointInput,
+  TotalPoints: TotalPointsInput,
 }

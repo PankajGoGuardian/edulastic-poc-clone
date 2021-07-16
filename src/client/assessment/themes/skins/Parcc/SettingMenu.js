@@ -29,6 +29,7 @@ const SettingMenu = ({
   utaId,
   hidePause,
   multiLanguageEnabled,
+  isPremiumContentWithoutAccess = false,
 }) => {
   const _pauseAllowed = useUtaPauseAllowed(utaId)
   const showPause = _pauseAllowed === undefined ? true : _pauseAllowed
@@ -41,7 +42,10 @@ const SettingMenu = ({
         .map((key) => (
           <MenuItem
             key={key}
-            disabled={key === 'enableMagnifier' && !showMagnifier}
+            disabled={
+              (key === 'enableMagnifier' && !showMagnifier) ||
+              isPremiumContentWithoutAccess
+            }
             onClick={() => {
               handleSettingsChange({ key })
             }}

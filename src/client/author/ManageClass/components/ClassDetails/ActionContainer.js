@@ -45,7 +45,11 @@ import {
   selectStudentAction,
   updateStudentRequestAction,
 } from '../../ducks'
-import { getUserOrgData, getUserOrgId } from '../../../src/selectors/user'
+import {
+  currentDistrictInstitutionIds,
+  getUserOrgData,
+  getUserOrgId,
+} from '../../../src/selectors/user'
 import { getUserFeatures } from '../../../../student/Login/ducks'
 import {
   getSchoolPolicy,
@@ -62,6 +66,7 @@ const ActionContainer = ({
   selectedClass,
   userOrgId,
   orgData,
+  institutionIds,
   studentsList,
   submitted,
   added,
@@ -87,6 +92,7 @@ const ActionContainer = ({
 
   const [infoModelVisible, setinfoModelVisible] = useState(false)
   const [infoModalData, setInfoModalData] = useState([])
+  const [isAutoArchivedClass, setIsAutoArchivedClass] = useState(false)
 
   const { textToSpeech } = features
   const { _id: classId, active } = selectedClass
@@ -178,7 +184,7 @@ const ActionContainer = ({
             values.classCode = selectedClass.code
             values.role = 'student'
             values.districtId = districtId
-            values.institutionIds = orgData.institutionIds
+            values.institutionIds = institutionIds
             values.firstName = firstName
             values.lastName = lastName
             values.middleName = middleName
@@ -334,8 +340,26 @@ const ActionContainer = ({
       '_blank'
     )
   }
+  const {
+    atlasId,
+    atlasProviderName,
+    googleId,
+    canvasCode,
+    active: classStatus,
+  } = selectedClass || {}
 
-  const { atlasId, atlasProviderName } = selectedClass || {}
+  useEffect(() => {
+    if (
+      (atlasId && atlasId.includes('.deactivated')) ||
+      (cleverId && cleverId.includes('.deactivated')) ||
+      (canvasCode && canvasCode.includes('.deactivated')) ||
+      (googleId && googleId.includes('.deactivated'))
+    ) {
+      setIsAutoArchivedClass(true)
+    } else {
+      setIsAutoArchivedClass(false)
+    }
+  }, [atlasId, cleverId, canvasCode, googleId, classStatus])
 
   return (
     <>
@@ -404,13 +428,38 @@ const ActionContainer = ({
 
       <AddStudentDivider>
         {cleverId && (
-          <CleverInfoBox>
-            <IconInfo /> This is a Clever Synced class.
+          <CleverInfoBox alert={isAutoArchivedClass}>
+            <IconInfo />{' '}
+            {isAutoArchivedClass
+              ? `This is NOT a Clever synced class anymore.`
+              : 'This is a Clever Synced class.'}
           </CleverInfoBox>
         )}
         {atlasId && (
-          <CleverInfoBox>
-            <IconInfo /> {`This is a ${atlasProviderName} Synced class.`}
+          <CleverInfoBox alert={isAutoArchivedClass}>
+            <IconInfo />{' '}
+            {isAutoArchivedClass
+              ? `This is NOT a ${atlasProviderName} synced class anymore.`
+              : `This is a ${atlasProviderName} Synced class.`}
+          </CleverInfoBox>
+        )}
+        {googleId && isAutoArchivedClass && (
+          <CleverInfoBox
+            data-cy="google-auto-archived-info"
+            alert={isAutoArchivedClass}
+          >
+            <IconInfo />{' '}
+            {classStatus === 1
+              ? `Sync with Google is paused. Please resync to enable`
+              : `This is NOT a Google synced class anymore.`}
+          </CleverInfoBox>
+        )}
+        {canvasCode && isAutoArchivedClass && (
+          <CleverInfoBox alert={isAutoArchivedClass}>
+            <IconInfo />{' '}
+            {classStatus === 1
+              ? `Sync with Canvas is paused. Please resync to enable`
+              : `This is NOT a Canvas synced class anymore.`}
           </CleverInfoBox>
         )}
 
@@ -540,6 +589,7 @@ export default connect(
   (state) => ({
     userOrgId: getUserOrgId(state),
     orgData: getUserOrgData(state),
+    institutionIds: currentDistrictInstitutionIds(state),
     selectedClass: get(state, 'manageClass.entity'),
     submitted: get(state, 'manageClass.submitted'),
     added: get(state, 'manageClass.added'),

@@ -12,16 +12,45 @@ const ExternalVideoLink = (props) => {
   const {
     closeCallback,
     addResource,
+    updateResource,
     alignment,
     setAlignment,
     selectedStandards,
     setSelectedStandards,
     curriculum = '',
+    data,
   } = props
 
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [url, setUrl] = useState('')
+  const [id, setId] = useState('')
+
+  useEffect(() => {
+    if (data) {
+      setTitle(data?.contentTitle)
+      setDescription(data?.contentDescription)
+      setUrl(data?.contentUrl)
+      setId(data?.contentId)
+      const allStandards = []
+      data?.alignment?.forEach((x) =>
+        x?.domains?.forEach((y) =>
+          y?.standards?.forEach(
+            (z) =>
+              data?.standards?.includes(z?.id) &&
+              allStandards.push({
+                ...z,
+                identifier: y.name,
+                _id: y.id,
+                curriculumId: y.curriculumId,
+              })
+          )
+        )
+      )
+      setAlignment(data?.alignment)
+      setSelectedStandards(allStandards)
+    }
+  }, [data])
 
   const clearFields = () => {
     setTitle('')
@@ -44,13 +73,24 @@ const ExternalVideoLink = (props) => {
         'recentStandards',
         JSON.stringify({ recentStandards: selectedStandards || [] })
       )
-      addResource({
-        contentTitle: title,
-        contentDescription: description,
-        contentUrl: url,
-        contentType: 'video_resource',
-        standards: selectedStandardIds,
-      })
+      if (id) {
+        updateResource({
+          id,
+          contentTitle: title,
+          contentDescription: description,
+          contentUrl: url,
+          contentType: 'video_resource',
+          standards: selectedStandardIds,
+        })
+      } else {
+        addResource({
+          contentTitle: title,
+          contentDescription: description,
+          contentUrl: url,
+          contentType: 'video_resource',
+          standards: selectedStandardIds,
+        })
+      }
       closeCallback()
     } else notification({ type: 'warn', msg: validationStatus })
   }
@@ -58,7 +98,7 @@ const ExternalVideoLink = (props) => {
   return (
     <EdulasticResourceModal
       headerText="Video Link"
-      okText="ADD RESOURCE"
+      okText={id ? 'UPDATE RESOURCE' : 'ADD RESOURCE'}
       submitCallback={submitCallback}
       {...props}
     >
@@ -87,10 +127,12 @@ const ExternalVideoLink = (props) => {
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           height="36px"
+          limit={200}
         />
       </FlexRow>
       <FlexRow>
         <ResourcesAlignment
+          selectedStandards={selectedStandards}
           alignment={alignment}
           setAlignment={setAlignment}
           setSelectedStandards={setSelectedStandards}

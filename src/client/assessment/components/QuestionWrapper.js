@@ -4,7 +4,7 @@ import styled, { ThemeProvider, withTheme } from 'styled-components'
 import { questionType, test, roleuser } from '@edulastic/constants'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { get, isEqual } from 'lodash'
+import { get, isEqual, isEmpty } from 'lodash'
 import { withNamespaces } from '@edulastic/localization'
 import {
   mobileWidthMax,
@@ -17,6 +17,7 @@ import {
   COMPACT,
   FieldLabel,
   FlexContainer,
+  PremiumItemBanner,
 } from '@edulastic/common'
 import { themes } from '../../theme'
 import QuestionMenu, { AdvancedOptionsLink } from './QuestionMenu'
@@ -316,7 +317,15 @@ class QuestionWrapper extends Component {
   }
 
   get answerScore() {
-    const { previewScore, previewMaxScore, testPreviewScore, data } = this.props
+    const {
+      previewScore,
+      previewMaxScore,
+      testPreviewScore,
+      data,
+      questions = {},
+      multipartItem = false,
+      itemLevelScoring = false,
+    } = this.props
     let score = previewScore
     let maxScore = previewMaxScore
     let isGradedExternally = false
@@ -324,6 +333,25 @@ class QuestionWrapper extends Component {
       score = data?.activity?.score
       maxScore = data?.activity.maxScore
       isGradedExternally = data?.activity?.isGradedExternally
+      /**
+       * @see https://snapwiz.atlassian.net/browse/EV-28499
+       * If itemLevelScoring is true score for other questions score is 0
+       * Thus awarding a non-zero score to all other questions
+       * so that correct responses are not marked wrong, if graded externally
+       */
+      if (
+        isGradedExternally &&
+        !isEmpty(questions) &&
+        multipartItem &&
+        itemLevelScoring
+      ) {
+        Object.values(questions).forEach((question) => {
+          if (question?.activity?.maxScore) {
+            score = Math.max(score, question?.activity?.score || 0)
+            maxScore = Math.max(maxScore, question?.activity?.maxScore || 0)
+          }
+        })
+      }
     }
 
     // testPreviewScore is from view as student
@@ -338,7 +366,12 @@ class QuestionWrapper extends Component {
       isGradedExternally = testPreviewScore.isGradedExternally
     }
 
-    return { score: (score || 0) / (maxScore || 1), isGradedExternally }
+    return {
+      score: (score || 0) / (maxScore || 1),
+      isGradedExternally,
+      multipartItem,
+      itemLevelScoring,
+    }
   }
 
   render() {
@@ -364,7 +397,6 @@ class QuestionWrapper extends Component {
       selectedTheme = 'default',
       isPrintPreview = false,
       evaluation,
-      scrollContainer,
       loadScratchPad,
       saveHintUsage,
       theme,
@@ -376,6 +408,11 @@ class QuestionWrapper extends Component {
       features,
       isItemsVisible,
       permissions,
+      questionNumber,
+      isPremiumContentWithoutAccess,
+      premiumCollectionWithoutAccess,
+      showStacked,
+      isExpandedView,
       ...restProps
     } = this.props
 
@@ -473,6 +510,19 @@ class QuestionWrapper extends Component {
     const { rubrics: rubricDetails } = data
     const rubricFeedback = data?.activity?.rubricFeedback
 
+    if (isPremiumContentWithoutAccess) {
+      return (
+        <PremiumItemBanner
+          itemBankName={premiumCollectionWithoutAccess}
+          showStacked={showStacked}
+          data={data}
+          isExpandedView={isExpandedView}
+          isPrintPreview={isPrintPreview}
+          timeSpent={timeSpent}
+        />
+      )
+    }
+
     return (
       <ThemeProvider
         theme={{
@@ -484,22 +534,24 @@ class QuestionWrapper extends Component {
         }}
       >
         <>
-          {canShowPlayer && (!hideVisibility || isShowStudentWork) && (
-            <AudioControls
-              btnWithText={
-                playerSkinType.toLowerCase() ===
-                test.playerSkinValues.edulastic.toLowerCase()
-              }
-              hideVisibility={hideVisibility && !isShowStudentWork}
-              key={data.id}
-              item={data}
-              page={page}
-              qId={data.id}
-              audioSrc={data.tts.titleAudioURL}
-              isPaginated={data.paginated_content}
-              className="question-audio-controller"
-            />
-          )}
+          {canShowPlayer &&
+            (!hideVisibility || isShowStudentWork) &&
+            !isPrintPreview && (
+              <AudioControls
+                btnWithText={
+                  playerSkinType.toLowerCase() ===
+                  test.playerSkinValues.edulastic.toLowerCase()
+                }
+                hideVisibility={hideVisibility && !isShowStudentWork}
+                key={data.id}
+                item={data}
+                page={page}
+                qId={data.id}
+                audioSrc={data.tts.titleAudioURL}
+                isPaginated={data.paginated_content}
+                className="question-audio-controller"
+              />
+            )}
           <div
             className="__print-question-main-wrapper"
             style={{ height: !isStudentReport && '100%' }}
@@ -525,7 +577,6 @@ class QuestionWrapper extends Component {
                     advanced={advanced}
                     extras={extras}
                     advancedAreOpen={this.advancedAreOpen}
-                    scrollContainer={scrollContainer}
                     questionTitle={data?.title || ''}
                     isPremiumUser={isPremiumUser}
                     isPowerTeacher={_isPowerTeacher}
@@ -634,7 +685,7 @@ class QuestionWrapper extends Component {
                       />
                     </RubricTableWrapper>
                   )}
-                  {view === 'preview' && !isLCBView && !isPrintPreview && (
+                  {view === 'preview' && !isPrintPreview && !showFeedback && (
                     <Hints
                       question={data}
                       enableMagnifier={enableMagnifier}

@@ -30,13 +30,16 @@ function CartModal({
   closeModal,
   handleOpenRequestInvoiceModal,
   subsLicenses,
+  itemBankSubscriptions,
+  user,
+  subType,
+  hideCcButton,
+  shouldbeMultipleLicenses,
+  setIsTabShouldSwitch,
 }) {
   const teacherPremiumId = teacherPremium?.id
   const [emailValues, setEmailValues] = useState('')
 
-  const isMultipleQuantities = Object.keys(quantities).find(
-    (x) => quantities[x] > 0
-  )
   const setQuantitiesWithLocalStorage = (quantities) => {
     window.localStorage.cartQuantities = quantities
     return setQuantities(quantities)
@@ -50,6 +53,7 @@ function CartModal({
 
       handleClick({
         emails,
+        shouldPayWithCC: true,
       })
     }
     return () => {
@@ -65,6 +69,7 @@ function CartModal({
   }
 
   const handleProceed = () => {
+    setIsTabShouldSwitch(false)
     const emails = emailValues
       .split(',')
       .map((x) => x.replace(/\s/g, ''))
@@ -93,10 +98,10 @@ function CartModal({
 
   const footer = [
     <AuthorCompleteSignupButton
-      renderButton={(handleClick) => (
+      renderButton={(callback) => (
         <EduButton
           isGhost
-          onClick={handleClick}
+          onClick={callback}
           data-cy="requestInvoice"
           width="220px"
           height="45px"
@@ -106,19 +111,21 @@ function CartModal({
       )}
       onClick={handleOpenRequestInvoiceModal}
     />,
-    <AuthorCompleteSignupButton
-      renderButton={(handleClick) => (
-        <EduButton
-          onClick={handleClick}
-          data-cy="proceedPayment"
-          width="220px"
-          height="45px"
-        >
-          PROCEED WITH PAYMENT
-        </EduButton>
-      )}
-      onClick={handleProceed}
-    />,
+    hideCcButton ? null : (
+      <AuthorCompleteSignupButton
+        renderButton={(callback) => (
+          <EduButton
+            onClick={callback}
+            data-cy="proceedPayment"
+            width="220px"
+            height="45px"
+          >
+            Pay with Credit Card
+          </EduButton>
+        )}
+        onClick={handleProceed}
+      />
+    ),
   ]
 
   const selectedProductIds = Object.keys(quantities).filter(
@@ -134,6 +141,7 @@ function CartModal({
       destroyOnClose
       footer={footer}
       onCancel={closeModal}
+      centered
     >
       <ModalBody>
         <p>
@@ -156,8 +164,12 @@ function CartModal({
           currentItemId={teacherPremiumId}
           subsLicenses={subsLicenses}
           teacherPremium={teacherPremium}
+          itemBankSubscriptions={itemBankSubscriptions}
+          user={user}
+          subType={subType}
+          allProducts={products}
         />
-        {isMultipleQuantities && (
+        {shouldbeMultipleLicenses && (
           <EmailWrapper>
             <FieldLabel>Bookkeeper Email</FieldLabel>
             <TextInputStyled
@@ -165,6 +177,7 @@ function CartModal({
               onChange={handleInputEmailAddress}
               placeholder="Type the emails"
               height="40px"
+              data-cy="bookKeeperEmailField"
             />
           </EmailWrapper>
         )}

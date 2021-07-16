@@ -22,7 +22,7 @@ const QuestionPreviewDetails = ({
       </DetailRow>
       <DetailRow>
         <label>Owner: </label>
-        <span data-cy="teacher-name-on-preview">{createdBy.name || '--'}</span>
+        <span data-cy="teacher-name-on-preview">{createdBy?.name || '--'}</span>
       </DetailRow>
       <DetailRow font={11}>
         <label>Points: </label>
@@ -57,7 +57,7 @@ const QuestionPreviewDetails = ({
         <div data-cy="tags-on-preview">
           {(tags &&
             tags.length &&
-            tags.map((tag) => <span>{tag.tagName}</span>)) ||
+            tags.map((tag) => <span>{tag?.tagName}</span>)) ||
             '--'}
         </div>
       </DetailRow>

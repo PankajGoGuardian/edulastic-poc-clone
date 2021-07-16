@@ -90,6 +90,13 @@ export const getItemDetailSelectorForPreview = (state, id, page) => {
   return item || undefined
 }
 
+const itemPreviewSelector = (state) => get(state, 'testItemPreview.item', {})
+
+export const itemInPreviewModalSelector = createSelector(
+  itemPreviewSelector,
+  (item) => item
+)
+
 // reducer
 
 const initialState = {

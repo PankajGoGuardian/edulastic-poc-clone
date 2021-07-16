@@ -3,10 +3,16 @@ import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { get, isObject } from 'lodash'
+import { get, isObject, pick, omit } from 'lodash'
 import Styled from 'styled-components'
 import { Anchor, Col, Icon, InputNumber, Row, Select, Tooltip } from 'antd'
-import { blueBorder, green, lightGrey9, red } from '@edulastic/colors'
+import {
+  blueBorder,
+  green,
+  lightGrey9,
+  red,
+  themeColor,
+} from '@edulastic/colors'
 
 import {
   CheckboxLabel,
@@ -18,13 +24,17 @@ import {
   SelectInputStyled,
   TextInputStyled,
   withWindowSizes,
+  EduButton,
 } from '@edulastic/common'
 import { roleuser, test as testContants } from '@edulastic/constants'
-import { IconInfo } from '@edulastic/icons'
+import { IconInfo, IconTrash } from '@edulastic/icons'
+import { withNamespaces } from '@edulastic/localization'
+
 import { isFeatureAccessible } from '../../../../../../features/components/FeaturesSwitch'
 import {
   getUserFeatures,
   getUserRole,
+  getUserId,
 } from '../../../../../../student/Login/ducks'
 import Breadcrumb from '../../../../../src/components/Breadcrumb'
 import {
@@ -35,6 +45,14 @@ import {
   resetUpdatedStateAction,
   setTestDataAction,
   testTypeAsProfileNameType,
+  getCurrentSettingsIdSelector,
+  fetchTestSettingsListAction,
+  saveTestSettingsAction,
+  getTestSettingsListSelector,
+  setCurrentTestSettingsIdAction,
+  getTestDefaultSettingsSelector,
+  deleteTestSettingRequestAction,
+  updateTestSettingRequestAction,
 } from '../../../../ducks'
 import { setMaxAttemptsAction, setSafeBroswePassword } from '../../ducks'
 import {
@@ -56,18 +74,28 @@ import {
   StyledAnchor,
   StyledRadioGroup,
   Title,
+  SavedSettingsContainerStyled,
+  SubHeaderContainer,
 } from './styled'
 import PeformanceBand from './PeformanceBand'
 import StandardProficiencyTable from './StandardProficiencyTable'
 import Instruction from './InstructionBlock/InstructionBlock'
 import DollarPremiumSymbol from '../../../../../AssignTest/components/Container/DollarPremiumSymbol'
-import { SettingContainer } from '../../../../../AssignTest/components/Container/styled'
+import {
+  SettingContainer,
+  DeleteIconContainer,
+} from '../../../../../AssignTest/components/Container/styled'
 import {
   CheckBoxWrapper,
   StyledRow,
 } from '../../../../../AssignTest/components/SimpleOptions/styled'
 import KeypadDropdown from './KeypadDropdown'
 import { getAssignmentsSelector } from '../../../Assign/ducks'
+import { ConfirmationModal } from '../../../../../src/components/common/ConfirmationModal'
+import { skinTypesOrder } from '../../../../utils'
+import SaveSettingsModal from '../../../../../AssignTest/components/Container/SaveSettingsModal'
+import DeleteTestSettingsModal from '../../../../../AssignTest/components/Container/DeleteSettingsConfirmationModal'
+import UpdateTestSettingsModal from '../../../../../AssignTest/components/Container/UpdateTestSettingModal'
 
 const {
   settingCategories,
@@ -91,6 +119,9 @@ const {
   playerSkinTypes,
   playerSkinValues,
   settingsList,
+  TEST_SETTINGS_SAVE_LIMIT,
+  testSettingsOptions,
+  docBasedSettingsOptions,
 } = testContants
 
 const { Option } = Select
@@ -125,6 +156,12 @@ class Setting extends Component {
       isTestBehaviorGroupExpanded: true,
       isAntiCheatingGroupExpanded: true,
       isMiscellaneousGroupExpanded: true,
+      warningKeypadSelection: false,
+      selectedKeypad: null,
+      showSaveSettingsModal: false,
+      showDeleteSettingModal: false,
+      showUpdateSettingModal: false,
+      settingDetails: null,
     }
 
     this.containerRef = React.createRef()
@@ -153,7 +190,20 @@ class Setting extends Component {
   }
 
   componentDidMount = () => {
-    const { entity, isAuthorPublisher, resetUpdatedState } = this.props
+    const {
+      entity,
+      isAuthorPublisher,
+      resetUpdatedState,
+      premium,
+      fetchTestSettingsList,
+      userId,
+    } = this.props
+    if (premium) {
+      fetchTestSettingsList({
+        orgId: userId,
+        orgType: roleuser.ORG_TYPE.USER,
+      })
+    }
     if (entity?.scoringType === PARTIAL_CREDIT && !entity?.penalty) {
       this.updateTestData('scoringType')(PARTIAL_CREDIT_IGNORE_INCORRECT)
     }
@@ -181,6 +231,25 @@ class Setting extends Component {
   setPassword = (e) => {
     const { setSafePassword } = this.props
     setSafePassword(e.target.value)
+  }
+
+  keypadSelection = (value) => {
+    if (!value) {
+      return
+    }
+    if (value.type === 'item-level') {
+      this.updateTestData('keypad')(value)
+    } else {
+      this.setState({ selectedKeypad: value, warningKeypadSelection: true })
+    }
+  }
+
+  confirmKeypadSelection = (confirm = false) => {
+    const { selectedKeypad } = this.state
+    if (confirm === true && selectedKeypad && selectedKeypad.type) {
+      this.updateTestData('keypad')(selectedKeypad)
+    }
+    this.setState({ warningKeypadSelection: false })
   }
 
   handleApplyEBSR = (event) => {
@@ -376,6 +445,212 @@ class Setting extends Component {
     return testKeypad.value
   }
 
+  handleMouseOver = (e) => {
+    e.currentTarget.querySelector('.delete-setting-button').style.display =
+      'flex'
+  }
+
+  handleMouseOut = (e) => {
+    e.currentTarget.querySelector('.delete-setting-button').style.display =
+      'none'
+  }
+
+  sanitizeSettingsForTest = (initialSettings) => {
+    const {
+      entity: { itemGroups },
+      userRole,
+    } = this.props
+    const newSettings = omit(initialSettings, [
+      'autoRedirect',
+      'autoRedirectSettings',
+    ])
+    const multipartItems = itemGroups
+      .map((o) => o.items)
+      .flat()
+      .filter((o) => o.multipartItem).length
+    if (
+      newSettings.applyEBSR &&
+      (![
+        evalTypeLabels.PARTIAL_CREDIT,
+        evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT,
+      ].includes(newSettings.scoringType) ||
+        !multipartItems)
+    ) {
+      newSettings.applyEBSR = false
+    }
+    if (userRole === roleuser.TEACHER && newSettings.testContentVisibility) {
+      delete newSettings.testContentVisibility
+    }
+    if (
+      newSettings.scoringType === evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT
+    ) {
+      newSettings.scoringType = evalTypeLabels.PARTIAL_CREDIT
+      newSettings.penalty = false
+    }
+    if (
+      newSettings.passwordPolicy !==
+      testContants.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC
+    ) {
+      delete newSettings.passwordExpireIn
+    }
+    if (
+      newSettings.passwordPolicy &&
+      newSettings.passwordPolicy !==
+        testContants.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC
+    ) {
+      delete newSettings.assignmentPassword
+    }
+    return newSettings
+  }
+
+  handleSettingsSelection = (value) => {
+    const {
+      setCurrentTestSettingsId,
+      setTestData,
+      testSettingsList,
+      testDefaultSettings,
+      entity,
+      currentSettingsId,
+      totalItems,
+    } = this.props
+    if (value === 'save-settings-option') {
+      if (currentSettingsId === '')
+        this.setState({ showSaveSettingsModal: true })
+      else {
+        const { _id, title } =
+          testSettingsList.find((t) => t._id === currentSettingsId) || {}
+        this.setState({
+          showUpdateSettingModal: true,
+          settingDetails: {
+            _id,
+            title,
+          },
+        })
+      }
+    } else {
+      let newSettings = {}
+      if (value === '') {
+        newSettings = {
+          ...testDefaultSettings,
+        }
+      } else {
+        const selectedSetting = testSettingsList.find((t) => t._id === value)
+        newSettings = {
+          ...pick(
+            selectedSetting,
+            entity.isDocBased ? docBasedSettingsOptions : testSettingsOptions
+          ),
+        }
+      }
+      newSettings = this.sanitizeSettingsForTest(newSettings)
+      if (newSettings.timedAssignment && !newSettings.allowedTime) {
+        newSettings.allowedTime = totalItems * 60 * 1000
+      } else if (!newSettings.timedAssignment) {
+        newSettings.allowedTime = 0
+      }
+      setCurrentTestSettingsId(value)
+      setTestData(newSettings)
+    }
+  }
+
+  toggleSaveSettingsModal = (value) => {
+    this.setState({ showSaveSettingsModal: value })
+  }
+
+  validateSettings = (entity) => {
+    let isValid = true
+    if (
+      entity.passwordPolicy ===
+        testContants.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC &&
+      !entity.passwordExpireIn
+    ) {
+      notification({ msg: 'Please enter password expiry time' })
+      isValid = false
+    }
+    if (
+      entity.passwordPolicy ===
+        testContants.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC &&
+      (!entity.assignmentPassword ||
+        (entity.assignmentPassword &&
+          (entity?.assignmentPassword?.length < 6 ||
+            entity?.assignmentPassword?.length > 25)))
+    ) {
+      notification({ messageKey: 'enterValidPassword' })
+      isValid = false
+    }
+    return isValid
+  }
+
+  getCurrentSettings = (title, currentSelectedSettings = {}) => {
+    const { entity, userId } = this.props
+    const obj = pick(
+      { ...currentSelectedSettings, ...entity },
+      entity.isDocBased ? docBasedSettingsOptions : testSettingsOptions
+    )
+    const settings = {
+      ...obj,
+      orgId: userId,
+      orgType: roleuser.ORG_TYPE.USER,
+      title,
+    }
+    const sanitizedSettings = this.sanitizeSettingsForTest(settings)
+    const isValid = this.validateSettings(sanitizedSettings)
+    if (isValid) return sanitizedSettings
+    return false
+  }
+
+  handleSaveTestSetting = (settingName) => {
+    const { saveTestSettings } = this.props
+    const data = this.getCurrentSettings(settingName)
+    if (data) saveTestSettings({ data, switchSetting: true })
+    this.toggleSaveSettingsModal(false)
+  }
+
+  handleDeleteSettings = (value) => {
+    if (value) {
+      const { deleteTestSettingRequest, currentSettingsId } = this.props
+      const { settingDetails } = this.state
+      deleteTestSettingRequest(settingDetails._id)
+      if (settingDetails._id === currentSettingsId)
+        this.handleSettingsSelection('')
+    }
+    this.setState({ showDeleteSettingModal: false })
+  }
+
+  handleUpdateSettings = (value) => {
+    if (!value) {
+      const { testSettingsList } = this.props
+      this.setState({
+        showUpdateSettingModal: false,
+        showSaveSettingsModal:
+          testSettingsList.length < TEST_SETTINGS_SAVE_LIMIT,
+      })
+    } else {
+      const {
+        updateTestSettingRequest,
+        testSettingsList,
+        currentSettingsId,
+      } = this.props
+      const currentSelectedSetting =
+        testSettingsList.find((t) => t._id === currentSettingsId) || {}
+      const data = this.getCurrentSettings(
+        currentSelectedSetting.title,
+        currentSelectedSetting
+      )
+      if (data) {
+        const settings = {
+          ...data,
+          testSettingId: currentSettingsId,
+        }
+        updateTestSettingRequest(settings)
+      }
+
+      this.setState({
+        showUpdateSettingModal: false,
+      })
+    }
+  }
+
   render() {
     const {
       showPassword,
@@ -383,6 +658,11 @@ class Setting extends Component {
       isTestBehaviorGroupExpanded,
       isAntiCheatingGroupExpanded,
       isMiscellaneousGroupExpanded,
+      warningKeypadSelection,
+      showSaveSettingsModal,
+      showDeleteSettingModal,
+      settingDetails,
+      showUpdateSettingModal,
     } = this.state
     const {
       current,
@@ -406,6 +686,9 @@ class Setting extends Component {
       isCurator,
       isPlaylist,
       isEtsDistrict,
+      t,
+      testSettingsList = [],
+      currentSettingsId,
     } = this.props
     const {
       isDocBased,
@@ -445,6 +728,7 @@ class Setting extends Component {
       pauseAllowed,
       itemGroups = [],
       applyEBSR = false,
+      enableSkipAlert = false,
     } = entity
     const scoringType =
       entity.scoringType === evalTypeLabels.PARTIAL_CREDIT &&
@@ -531,7 +815,13 @@ class Setting extends Component {
           'When enabled, a student can open ScratchPad to show their work. The tool contains options for text, drawing, shapes, rulers, and more.',
         id: 'scratchpad-setting',
       },
-      // { key: 'enableSkipAlert', value: enableSkipAlert },
+      {
+        key: 'enableSkipAlert',
+        value: enableSkipAlert,
+        description:
+          'When enabled, a student can not skip a question without confirmation.',
+        id: 'skip-alert',
+      },
     ]
 
     const checkForCalculator = premium && calculatorProvider !== 'DESMOS'
@@ -587,22 +877,124 @@ class Setting extends Component {
             checked={applyEBSR}
             onChange={this.handleApplyEBSR}
           >
-            <StyledSpan>
-              APPLY EBSR GREADING (
-              <StyledItalic>first part has to be correct</StyledItalic>) FOR ALL
-              MULTIPART ITEMS
-            </StyledSpan>
+            <StyledSpan className="spanText">APPLY EBSR GRADING</StyledSpan>
           </CheckboxLabel>
         </CheckBoxWrapper>
       )
     }
 
+    const isTestSettingSaveLimitReached =
+      testSettingsList.length >= TEST_SETTINGS_SAVE_LIMIT
+
     return (
-      <MainContentWrapper ref={this.containerRef}>
-        <Breadcrumb data={breadcrumbData} />
-        <Container padding="30px" marginTop="0px">
+      <MainContentWrapper ref={this.containerRef} padding="10px 20px">
+        {showSaveSettingsModal && (
+          <SaveSettingsModal
+            visible={showSaveSettingsModal}
+            toggleModal={this.toggleSaveSettingsModal}
+            handleSave={this.handleSaveTestSetting}
+          />
+        )}
+        <DeleteTestSettingsModal
+          visible={showDeleteSettingModal}
+          settingDetails={settingDetails}
+          handleResponse={this.handleDeleteSettings}
+        />
+        <UpdateTestSettingsModal
+          visible={showUpdateSettingModal}
+          settingDetails={settingDetails}
+          handleResponse={this.handleUpdateSettings}
+          disableSaveNew={isTestSettingSaveLimitReached}
+          closeModal={() => {
+            this.setState({ showUpdateSettingModal: false })
+          }}
+        />
+        <Container padding="10px 20px" marginTop="0px">
+          <SubHeaderContainer>
+            <Col span={12}>
+              <Breadcrumb
+                data={breadcrumbData}
+                style={{ position: 'relative', top: '0px' }}
+              />
+            </Col>
+            <Col span={12}>
+              {premium && (
+                <SavedSettingsContainerStyled isSmallSize={isSmallSize}>
+                  <div>SAVED SETTINGS</div>
+                  <Select
+                    value={currentSettingsId}
+                    getPopupContainer={(node) => node.parentNode}
+                    onChange={this.handleSettingsSelection}
+                    optionLabelProp="label"
+                    data-cy="select-save-test-settings"
+                    disabled={!owner || !isEditable}
+                  >
+                    <Select.Option
+                      key="1"
+                      value=""
+                      label="DEFAULT TEST SETTINGS"
+                    >
+                      DEFAULT TEST SETTINGS
+                    </Select.Option>
+                    {testSettingsList.map((ts) => (
+                      <Select.Option
+                        key={ts._id}
+                        value={ts._id}
+                        label={ts.title}
+                      >
+                        <span
+                          onMouseOver={this.handleMouseOver}
+                          onMouseOut={this.handleMouseOut}
+                          onFocus={() => {}}
+                          onBlur={() => {}}
+                        >
+                          {ts.title}{' '}
+                          <DeleteIconContainer
+                            className="delete-setting-button"
+                            onClick={(e) => {
+                              e.preventDefault()
+                              e.stopPropagation()
+                              this.setState({
+                                showDeleteSettingModal: true,
+                                settingDetails: {
+                                  _id: ts._id,
+                                  title: ts.title,
+                                },
+                              })
+                            }}
+                            title="Remove Setting"
+                          >
+                            <IconTrash color={themeColor} />
+                          </DeleteIconContainer>
+                        </span>
+                      </Select.Option>
+                    ))}
+                    <Select.Option
+                      key="2"
+                      value="save-settings-option"
+                      label="SAVE CURRENT SETTING"
+                      disabled={
+                        isTestSettingSaveLimitReached && !currentSettingsId
+                      }
+                      title={
+                        isTestSettingSaveLimitReached && !currentSettingsId
+                          ? 'Maximum limit reached. Please delete existing one to add new.'
+                          : ''
+                      }
+                      className="save-settings-option"
+                    >
+                      <span>
+                        <Icon type="save" theme="filled" />
+                        SAVE CURRENT SETTING
+                      </span>
+                    </Select.Option>
+                  </Select>
+                </SavedSettingsContainerStyled>
+              )}
+            </Col>
+          </SubHeaderContainer>
           <Row>
-            <Col span={isSmallSize ? 0 : 6}>
+            <Col span={isSmallSize ? 0 : 4}>
               <NavigationMenu>
                 <StyledAnchor
                   affix={false}
@@ -622,7 +1014,7 @@ class Setting extends Component {
               </NavigationMenu>
             </Col>
 
-            <Col span={isSmallSize ? 24 : 18}>
+            <Col span={isSmallSize ? 24 : 20}>
               <SettingsCategoryBlock id="test-behavior">
                 <span>Test Behavior</span>
                 <span
@@ -729,7 +1121,7 @@ class Setting extends Component {
                         <EduSwitchStyled
                           disabled={!owner || !isEditable}
                           data-cy="add-test-instruction"
-                          defaultChecked={hasInstruction}
+                          checked={hasInstruction}
                           onChange={() =>
                             this.updateTestData('hasInstruction')(
                               !hasInstruction
@@ -966,7 +1358,6 @@ class Setting extends Component {
                             !isEditable ||
                             !assessmentSuperPowersTimedTest
                           }
-                          defaultChecked={false}
                           checked={timedAssignment}
                           data-cy="assignment-time-switch"
                           onChange={this.updateTimedTest('timedAssignment')}
@@ -1063,71 +1454,73 @@ class Setting extends Component {
                       </Body>
                     </SettingContainer>
                   </Block>
-                </>
-              )}
 
-              {!isDocBased && (
-                <Block
-                  id="check-answer-tries-per-question"
-                  smallSize={isSmallSize}
-                >
-                  <SettingContainer>
-                    <Title>
-                      Check Answer Tries Per Question{' '}
-                      <DollarPremiumSymbol
-                        premium={assessmentSuperPowersCheckAnswerTries}
-                      />
-                    </Title>
-                    <Body smallSize={isSmallSize}>
-                      <Row gutter={24}>
-                        <Col span={12}>
-                          <TextInputStyled
-                            disabled={
-                              !owner ||
-                              !isEditable ||
-                              !assessmentSuperPowersCheckAnswerTries
-                            }
-                            onChange={(e) =>
-                              this.updateTestData('maxAnswerChecks')(
-                                e.target.value
-                              )
-                            }
-                            size="large"
-                            value={maxAnswerChecks}
-                            type="number"
-                            min={0}
-                            placeholder="Number of tries"
-                          />
-                        </Col>
-                      </Row>
-                      <Description>
-                        Allow students to check their answer before moving on to
-                        the next question. Enter the number of attempts allowed
-                        per question.
-                      </Description>
-                    </Body>
-                  </SettingContainer>
-                </Block>
-              )}
-
-              {(userRole === roleuser.DISTRICT_ADMIN ||
-                userRole === roleuser.SCHOOL_ADMIN) && (
-                <Block id="test-content-visibility" smallSize={isSmallSize}>
-                  <Title>Item content visibility to Teachers</Title>
-                  <Body smallSize={isSmallSize}>
-                    <StyledRadioGroup
-                      disabled={!owner || !isEditable}
-                      onChange={this.updateFeatures('testContentVisibility')}
-                      value={testContentVisibility}
+                  {!isDocBased && (
+                    <Block
+                      id="check-answer-tries-per-question"
+                      smallSize={isSmallSize}
                     >
-                      {testContentVisibilityTypes.map((item) => (
-                        <RadioBtn value={item.key} key={item.key}>
-                          {item.value}
-                        </RadioBtn>
-                      ))}
-                    </StyledRadioGroup>
-                  </Body>
-                </Block>
+                      <SettingContainer>
+                        <Title>
+                          Check Answer Tries Per Question{' '}
+                          <DollarPremiumSymbol
+                            premium={assessmentSuperPowersCheckAnswerTries}
+                          />
+                        </Title>
+                        <Body smallSize={isSmallSize}>
+                          <Row gutter={24}>
+                            <Col span={12}>
+                              <TextInputStyled
+                                disabled={
+                                  !owner ||
+                                  !isEditable ||
+                                  !assessmentSuperPowersCheckAnswerTries
+                                }
+                                onChange={(e) =>
+                                  this.updateTestData('maxAnswerChecks')(
+                                    e.target.value
+                                  )
+                                }
+                                size="large"
+                                value={maxAnswerChecks}
+                                type="number"
+                                min={0}
+                                placeholder="Number of tries"
+                              />
+                            </Col>
+                          </Row>
+                          <Description>
+                            Allow students to check their answer before moving
+                            on to the next question. Enter the number of
+                            attempts allowed per question.
+                          </Description>
+                        </Body>
+                      </SettingContainer>
+                    </Block>
+                  )}
+
+                  {(userRole === roleuser.DISTRICT_ADMIN ||
+                    userRole === roleuser.SCHOOL_ADMIN) && (
+                    <Block id="test-content-visibility" smallSize={isSmallSize}>
+                      <Title>Item content visibility to Teachers</Title>
+                      <Body smallSize={isSmallSize}>
+                        <StyledRadioGroup
+                          disabled={!owner || !isEditable}
+                          onChange={this.updateFeatures(
+                            'testContentVisibility'
+                          )}
+                          value={testContentVisibility}
+                        >
+                          {testContentVisibilityTypes.map((item) => (
+                            <RadioBtn value={item.key} key={item.key}>
+                              {item.value}
+                            </RadioBtn>
+                          ))}
+                        </StyledRadioGroup>
+                      </Body>
+                    </Block>
+                  )}
+                </>
               )}
 
               <SettingsCategoryBlock id="anti-cheating">
@@ -1163,7 +1556,7 @@ class Setting extends Component {
                               !isEditable ||
                               !assessmentSuperPowersShuffleQuestions
                             }
-                            defaultChecked={shuffleQuestions}
+                            checked={shuffleQuestions}
                             data-cy="shuffleQuestions"
                             onChange={this.updateTestData('shuffleQuestions')}
                           />
@@ -1195,7 +1588,7 @@ class Setting extends Component {
                               !isEditable ||
                               !assessmentSuperPowersShuffleAnswerChoice
                             }
-                            defaultChecked={shuffleAnswers}
+                            checked={shuffleAnswers}
                             data-cy="shuffleChoices"
                             onChange={this.updateTestData('shuffleAnswers')}
                           />
@@ -1253,7 +1646,7 @@ class Setting extends Component {
                             <Col span={12}>
                               {passwordPolicy ===
                               passwordPolicyValues.REQUIRED_PASSWORD_POLICY_STATIC ? (
-                                <Description>
+                                <Description marginTop="0px">
                                   <TextInputStyled
                                     required
                                     color={isPasswordValid()}
@@ -1283,7 +1676,7 @@ class Setting extends Component {
                                 </Description>
                               ) : passwordPolicy ===
                                 passwordPolicyValues.REQUIRED_PASSWORD_POLICY_DYNAMIC ? (
-                                <Description>
+                                <Description marginTop="0px">
                                   <TextInputStyled
                                     required
                                     type="number"
@@ -1406,7 +1799,7 @@ class Setting extends Component {
                               key="warn-and-report-after-n-alerts"
                               data-cy="restrict-nav-out-warn-report-alerts"
                             >
-                              WARN AND BLOCK TEST AFTER
+                              WARN AND BLOCK TEST AFTER{' '}
                               <InputNumberStyled
                                 size="small"
                                 value={
@@ -1492,7 +1885,7 @@ class Setting extends Component {
                             !assessmentSuperPowersRestrictQuestionBackNav ||
                             isDocBased
                           }
-                          defaultChecked={blockNavigationToAnsweredQuestions}
+                          checked={blockNavigationToAnsweredQuestions}
                           data-cy="restrict-back-nav-switch-test"
                           onChange={this.updateTestData(
                             'blockNavigationToAnsweredQuestions'
@@ -1546,7 +1939,7 @@ class Setting extends Component {
                             !isEditable ||
                             !assessmentSuperPowersRequireSafeExamBrowser
                           }
-                          defaultChecked={safeBrowser}
+                          checked={safeBrowser}
                           onChange={this.updateTestData('safeBrowser')}
                         />
                       </Title>
@@ -1576,7 +1969,7 @@ class Setting extends Component {
                                 }
                                 onChange={this.setPassword}
                                 size="large"
-                                value={sebPassword}
+                                value={sebPassword || ''}
                                 type={showPassword ? 'text' : 'password'}
                                 placeholder="Quit Password"
                               />
@@ -1636,7 +2029,7 @@ class Setting extends Component {
                             disableAnswerOnPaper ||
                             !assessmentSuperPowersAnswerOnPaper
                           }
-                          defaultChecked={answerOnPaper}
+                          checked={answerOnPaper}
                           onChange={this.updateTestData('answerOnPaper')}
                           data-cy="answer-on-paper"
                         />
@@ -1683,18 +2076,23 @@ class Setting extends Component {
                                 trigger.parentNode
                               }
                             >
-                              {Object.keys(skinTypes)
-                                .sort()
-                                .map((key) => {
-                                  if (key === 'testlet' && !isEtsDistrict) {
-                                    return null
-                                  }
+                              {skinTypesOrder(skinTypes).map((key) => {
+                                if (key === 'testlet' && !isEtsDistrict) {
+                                  return null
+                                }
+                                if (key === 'devider') {
                                   return (
-                                    <Option key={key} value={key}>
-                                      {skinTypes[key]}
+                                    <Option key={key} value={key} disabled>
+                                      {'-'.repeat(15)}
                                     </Option>
                                   )
-                                })}
+                                }
+                                return (
+                                  <Option key={key} value={key}>
+                                    {skinTypes[key]}
+                                  </Option>
+                                )
+                              })}
                             </SelectInputStyled>
                           </Col>
                           <Col span={24}>
@@ -1720,7 +2118,7 @@ class Setting extends Component {
                           <EduSwitchStyled
                             disabled={!owner || !isEditable}
                             data-cy="multi-language-enabled"
-                            defaultChecked={multiLanguageEnabled}
+                            checked={multiLanguageEnabled}
                             onChange={() =>
                               this.updateTestData('multiLanguageEnabled')(
                                 !multiLanguageEnabled
@@ -1784,46 +2182,51 @@ class Setting extends Component {
                         flexDirection: 'row',
                       }}
                     >
-                      {accessibilityData.map((o) => (
-                        <StyledRow key={o.key} align="middle">
-                          <Col span={6}>
-                            <span
-                              style={{
-                                fontSize: 13,
-                                fontWeight: 600,
-                                textTransform: 'uppercase',
-                              }}
-                            >
-                              {accessibilities[o.key]}
-                            </span>
-                          </Col>
-                          <Col span={12}>
-                            <StyledRadioGroup
-                              disabled={
-                                !owner || !isEditable || !features[o.key]
-                              }
-                              onChange={(e) =>
-                                this.updateTestData(o.key)(e.target.value)
-                              }
-                              defaultValue={o.value}
-                              style={{ flexDirection: 'row', height: '18px' }}
-                            >
-                              <RadioBtn data-cy={`${o.key}-enable`} value>
-                                ENABLE
-                              </RadioBtn>
-                              <RadioBtn
-                                data-cy={`${o.key}-disable`}
-                                value={false}
+                      {accessibilityData
+                        .filter(
+                          (item) =>
+                            !(item.key === 'enableSkipAlert' && isDocBased)
+                        )
+                        .map((o) => (
+                          <StyledRow key={o.key} align="middle">
+                            <Col span={6}>
+                              <span
+                                style={{
+                                  fontSize: 13,
+                                  fontWeight: 600,
+                                  textTransform: 'uppercase',
+                                }}
                               >
-                                DISABLE
-                              </RadioBtn>
-                            </StyledRadioGroup>
-                          </Col>
-                          <Col span={24}>
-                            <Description>{o.description}</Description>
-                          </Col>
-                        </StyledRow>
-                      ))}
+                                {accessibilities[o.key]}
+                              </span>
+                            </Col>
+                            <Col span={12}>
+                              <StyledRadioGroup
+                                disabled={
+                                  !owner || !isEditable || !features[o.key]
+                                }
+                                onChange={(e) =>
+                                  this.updateTestData(o.key)(e.target.value)
+                                }
+                                value={o.value}
+                                style={{ flexDirection: 'row', height: '18px' }}
+                              >
+                                <RadioBtn data-cy={`${o.key}-enable`} value>
+                                  ENABLE
+                                </RadioBtn>
+                                <RadioBtn
+                                  data-cy={`${o.key}-disable`}
+                                  value={false}
+                                >
+                                  DISABLE
+                                </RadioBtn>
+                              </StyledRadioGroup>
+                            </Col>
+                            <Col span={24}>
+                              <Description>{o.description}</Description>
+                            </Col>
+                          </StyledRow>
+                        ))}
                     </RadioWrapper>
                     <RadioWrapper
                       disabled={!owner || !isEditable}
@@ -1848,11 +2251,39 @@ class Setting extends Component {
                         <Col span={12}>
                           <KeypadDropdown
                             value={this.keypadDropdownValue}
-                            onChangeHandler={this.updateTestData('keypad')}
+                            onChangeHandler={this.keypadSelection}
                             disabled={!owner || !isEditable || !premium}
                           />
                         </Col>
                         <Col span={24}>
+                          <ConfirmationModal
+                            centered
+                            visible={warningKeypadSelection}
+                            footer={[
+                              <EduButton
+                                isGhost
+                                onClick={() =>
+                                  this.confirmKeypadSelection(false)
+                                }
+                              >
+                                CANCEL
+                              </EduButton>,
+                              <EduButton
+                                onClick={() =>
+                                  this.confirmKeypadSelection(true)
+                                }
+                              >
+                                PROCEED
+                              </EduButton>,
+                            ]}
+                            textAlign="center"
+                            onCancel={() => () =>
+                              this.confirmKeypadSelection(false)}
+                          >
+                            <p>
+                              <b>{t('keypadSettings.warning')}</b>
+                            </p>
+                          </ConfirmationModal>
                           <Description>
                             Select keypad to apply current selection to all
                             questions in the test
@@ -1919,6 +2350,7 @@ const enhance = compose(
   memo,
   withRouter,
   withWindowSizes,
+  withNamespaces('author'),
   connect(
     (state) => ({
       entity: getTestEntitySelector(state),
@@ -1945,12 +2377,21 @@ const enhance = compose(
       allowedToSelectMultiLanguage: allowedToSelectMultiLanguageInTest(state),
       testAssignments: getAssignmentsSelector(state),
       isEtsDistrict: isEtsDistrictSelector(state),
+      currentSettingsId: getCurrentSettingsIdSelector(state),
+      testSettingsList: getTestSettingsListSelector(state),
+      testDefaultSettings: getTestDefaultSettingsSelector(state),
+      userId: getUserId(state),
     }),
     {
       setMaxAttempts: setMaxAttemptsAction,
       setSafePassword: setSafeBroswePassword,
       setTestData: setTestDataAction,
       resetUpdatedState: resetUpdatedStateAction,
+      fetchTestSettingsList: fetchTestSettingsListAction,
+      saveTestSettings: saveTestSettingsAction,
+      setCurrentTestSettingsId: setCurrentTestSettingsIdAction,
+      deleteTestSettingRequest: deleteTestSettingRequestAction,
+      updateTestSettingRequest: updateTestSettingRequestAction,
     }
   )
 )
@@ -1962,9 +2403,8 @@ const InputNumberStyled = Styled(InputNumber)`
 `
 
 const StyledSpan = Styled.span`
-  font-weight: ${(props) => props.theme.semiBold};
-`
-
-const StyledItalic = Styled.i`
-  font-weight: ${(props) => props.theme.regular};
+  &.spanText {
+    font-weight: ${(props) => props.theme.semiBold};
+    font-size: 12px;
+  }
 `

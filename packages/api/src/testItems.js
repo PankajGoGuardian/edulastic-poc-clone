@@ -154,6 +154,16 @@ const getAutoSelectedItems = (data) =>
     .callApi({ url: `${prefix}/auto-select/search`, method: 'post', data })
     .then((result) => result.data.result)
 
+const evaluateAsStudent = (id, data) => {
+  return api
+    .callApi({
+      url: `${prefix}/evaluate-as-student/${id}`,
+      method: 'post',
+      data,
+    })
+    .then((result) => result.data.result)
+}
+
 const updateCorrectItemById = ({
   testItemId: id,
   testItem: item,
@@ -180,6 +190,7 @@ const updateCorrectItemById = ({
 
   return api
     .callApi({
+      useSlowApi: true,
       url: `${prefix}/${id}/correct-item-and-publish`,
       method: 'put',
       params: {
@@ -208,4 +219,5 @@ export default {
   getPassageItems,
   getAutoSelectedItems,
   updateCorrectItemById,
+  evaluateAsStudent,
 }

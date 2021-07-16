@@ -1,6 +1,11 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Tabs, AnswerContext, ScrollContext } from '@edulastic/common'
+import {
+  Tabs,
+  AnswerContext,
+  ScrollContext,
+  FlexContainer,
+} from '@edulastic/common'
 import { questionType } from '@edulastic/constants'
 import { isEmpty, sortBy } from 'lodash'
 
@@ -29,12 +34,16 @@ import {
   LCB_LIMIT_QUESTION_PER_VIEW,
   SCROLL_SHOW_LIMIT,
 } from '../../../../../author/ClassBoard/ducks'
+import TestAttachementsModal from '../../../../../author/StudentView/Modals/TestAttachementsModal'
+import { FlexItem } from './styled/FlexContainer'
 
 class TestItemCol extends Component {
   constructor() {
     super()
     this.state = {
       currentTab: 0,
+      showAttachmentsModal: false,
+      attachmentIndexForPreview: null,
     }
     this.scrollContainer = React.createRef()
   }
@@ -47,6 +56,13 @@ class TestItemCol extends Component {
       },
       () => changedPlayerContent()
     )
+  }
+
+  toggleAttachmentsModal = (index) => {
+    this.setState((prevState) => ({
+      showAttachmentsModal: !prevState.showAttachmentsModal,
+      attachmentIndexForPreview: index,
+    }))
   }
 
   renderTabContent = (widget, flowLayout, widgetIndex, showStackedView) => {
@@ -70,12 +86,13 @@ class TestItemCol extends Component {
       saveAttachments,
       isStudentWorkCollapseOpen,
       toggleStudentWorkCollapse,
+      colIndex,
       ...restProps
     } = this.props
     const {
+      isStudentReport,
       LCBPreviewModal,
       isStudentAttempt,
-      isStudentReport,
       isLCBView,
       isExpressGrader,
       isFeedbackVisible,
@@ -140,39 +157,57 @@ class TestItemCol extends Component {
         showBorder={showTabBorder}
         hideCorrectAnswer={hideCorrectAnswer}
       >
-        <QuestionWrapper
-          showFeedback={showFeedback && widget?.widgetType !== 'resource'}
-          evaluation={evaluation}
-          multiple={multiple}
-          type={widget.type}
-          view="preview"
-          qIndex={qIndex}
-          itemIndex={widgetIndex}
-          previewTab={hideEvaluation ? 'check' : previewTab || preview}
-          timespent={timespent}
-          questionId={widget.reference}
-          data={{ ...question, smallSize: true }}
-          noPadding
-          noBoxShadow
-          isFlex
-          flowLayout={flowLayout}
-          prevQActivityForQuestion={prevQActivityForQuestion}
-          LCBPreviewModal={LCBPreviewModal}
-          displayFeedback={displayFeedback}
-          calculatedHeight={showStackedView || fullHeight ? '100%' : 'auto'}
-          fullMode
-          saveAttachments={saveAttachments}
-          attachments={attachments}
-          isStudentWorkCollapseOpen={isStudentWorkCollapseOpen}
-          toggleStudentWorkCollapse={toggleStudentWorkCollapse}
-          {...restProps}
-          hasDrawingResponse={hasDrawingResponse}
-          style={{ ...testReviewStyle, width: 'calc(100% - 256px)' }}
-          // widgetIndex was needed for passages if it has multiple tabs and widgets
-          widgetIndex={widgetIndex}
-          isStudentAttempt={isStudentAttempt}
-          isFeedbackVisible={isFeedbackVisible}
-        />
+        <FlexContainer
+          flexDirection={isStudentReport && 'column'}
+          justifyContent="flex-start" // @see EV-29020
+        >
+          <FlexItem flexGrow="1">
+            <QuestionWrapper
+              showFeedback={showFeedback && widget?.widgetType !== 'resource'}
+              evaluation={evaluation}
+              multiple={multiple}
+              type={widget.type}
+              view="preview"
+              qIndex={qIndex}
+              itemIndex={widgetIndex}
+              previewTab={hideEvaluation ? 'check' : previewTab || preview}
+              timespent={timespent}
+              questionId={widget.reference}
+              data={{ ...question, smallSize: true }}
+              noPadding
+              noBoxShadow
+              isFlex
+              flowLayout={flowLayout}
+              prevQActivityForQuestion={prevQActivityForQuestion}
+              LCBPreviewModal={LCBPreviewModal}
+              displayFeedback={displayFeedback}
+              calculatedHeight={showStackedView || fullHeight ? '100%' : 'auto'}
+              fullMode
+              saveAttachments={saveAttachments}
+              attachments={attachments}
+              isStudentWorkCollapseOpen={isStudentWorkCollapseOpen}
+              toggleStudentWorkCollapse={toggleStudentWorkCollapse}
+              {...restProps}
+              hasDrawingResponse={hasDrawingResponse}
+              style={{ ...testReviewStyle, width: 'calc(100% - 256px)' }}
+              // widgetIndex was needed for passages if it has multiple tabs and widgets
+              widgetIndex={widgetIndex}
+              isStudentAttempt={isStudentAttempt}
+              isStudentReport={isStudentReport}
+              isFeedbackVisible={isFeedbackVisible}
+              questions={questions}
+              itemLevelScoring={itemLevelScoring}
+            />
+          </FlexItem>
+
+          {!itemLevelScoring && !isShowStudentWork && isStudentAttempt && (
+            <FlexItem padding="20px 16px 8px 0px">
+              {/*  on the student side, show feedback for each question only when item level scoring is off */}
+              {/* we don't show teacher feedback on the show student work modal */}
+              {teachCherFeedBack(widget, null, null, showStackedView)}
+            </FlexItem>
+          )}
+        </FlexContainer>
         {!isStudentAttempt &&
           !isStudentReport &&
           imageAttachments.length > 0 &&
@@ -185,22 +220,25 @@ class TestItemCol extends Component {
           )}
         {attachments && attachments.length > 0 && !LCBPreviewModal && (
           <>
-            <StyleH2Heading>Attachments</StyleH2Heading>
+            {(isStudentAttempt || isStudentReport) && (
+              <StyleH2Heading>Attachments</StyleH2Heading>
+            )}
             <FilesViewContainer>
               <FilesView
                 files={attachments}
                 hideDelete={!isStudentAttempt}
                 onDelete={saveUpdatedAttachments}
+                openAttachmentViewModal={this.toggleAttachmentsModal}
+                disableLink
               />
             </FilesViewContainer>
           </>
         )}
-
         {/*  on the student side, show feedback for each question only when item level scoring is off */}
         {/* we don't show teacher feedback on the show student work modal */}
-        {isStudentReport &&
-          !itemLevelScoring &&
+        {!itemLevelScoring &&
           !isShowStudentWork &&
+          isStudentReport &&
           teachCherFeedBack(widget, null, null, showStackedView)}
       </TabContainer>
     )
@@ -289,9 +327,18 @@ class TestItemCol extends Component {
       pageNumber,
       setPageNumber,
       isDocBased,
+      testActivityId,
+      studentData,
+      currentStudent,
+      zoomLevel,
+      responsiveWidth,
       ...restProps
     } = this.props
-    const { currentTab } = this.state
+    const {
+      currentTab,
+      showAttachmentsModal,
+      attachmentIndexForPreview,
+    } = this.state
     const {
       showStackedView,
       viewComponent,
@@ -301,6 +348,8 @@ class TestItemCol extends Component {
       isExpressGrader,
       isStudentReport,
       isQuestionView,
+      questions,
+      attachments,
     } = restProps
 
     const widgets =
@@ -323,6 +372,8 @@ class TestItemCol extends Component {
         )
       : filteredWidgets
 
+    const question = Object.values(questions)?.[0]
+    const utaId = testActivityId || question?.activity?.testActivityId || ''
     return (
       <ScrollContext.Provider
         value={{
@@ -382,7 +433,12 @@ class TestItemCol extends Component {
                 )}
             </>
           )}
-          <WidgetContainer data-cy="widgetContainer">
+          <WidgetContainer
+            data-cy="widgetContainer"
+            zoomLevel={zoomLevel}
+            responsiveWidth={responsiveWidth}
+            isPassageWithQuestions={isPassageWithQuestions}
+          >
             {widgetsToRender.map((widget, i, arr) => (
               <React.Fragment key={i}>
                 {col.tabs &&
@@ -425,6 +481,18 @@ class TestItemCol extends Component {
                 readOnly={this.readyOnlyScratchpad}
                 conatinerWidth={colWidth}
                 dimensions={scratchpadDimensions}
+              />
+            )}
+            {showAttachmentsModal && (
+              <TestAttachementsModal
+                toggleAttachmentsModal={this.toggleAttachmentsModal}
+                showAttachmentsModal={showAttachmentsModal}
+                attachmentsList={attachments}
+                title="All Attachments"
+                utaId={utaId}
+                studentData={currentStudent || studentData}
+                attachmentIndexForPreview={attachmentIndexForPreview || 0}
+                isQuestionLevel
               />
             )}
           </WidgetContainer>

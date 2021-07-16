@@ -25,7 +25,7 @@ import {
 import { withNamespaces } from '@edulastic/localization'
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Dropdown } from 'antd'
+import { Dropdown, Tooltip, message } from 'antd'
 import { get } from 'lodash'
 import moment from 'moment'
 import PropTypes from 'prop-types'
@@ -35,6 +35,7 @@ import { Link, withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import { smallDesktopWidth } from '@edulastic/colors'
 import * as TokenStorage from '@edulastic/api/src/utils/Storage'
+import { assignmentApi } from '@edulastic/api'
 import ConfirmationModal from '../../../../common/components/ConfirmationModal'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import { DeleteAssignmentModal } from '../../../Assignments/components/DeleteAssignmentModal/deleteAssignmentModal'
@@ -106,7 +107,11 @@ import {
 import ViewPasswordModal from './ViewPasswordModal'
 import { allowedSettingPageToDisplay } from './utils/transformers'
 
-const { POLICY_OPEN_MANUALLY_BY_TEACHER } = assignmentPolicyOptions
+const {
+  POLICY_OPEN_MANUALLY_BY_TEACHER,
+  POLICY_CLOSE_MANUALLY_BY_ADMIN,
+  POLICY_CLOSE_MANUALLY_IN_CLASS,
+} = assignmentPolicyOptions
 const {
   gradingStatus,
   authorAssignmentConstants: { assignmentStatus: assignmentStatusConstants },
@@ -343,6 +348,7 @@ class ClassHeader extends Component {
     }
     cleverSyncAssignmentGrades(data)
   }
+
   componentDidMount() {
     // if redirect is happening for LCB and user did action schoology sync
     const atlasShareOriginUrl =
@@ -374,6 +380,28 @@ class ClassHeader extends Component {
       localStorage.removeItem('atlasShareOriginUrl')
       localStorage.removeItem('schoologyShare')
     }
+  }
+
+  generateBubbleSheet = (assignmentId, groupId) => {
+    const hideLoading = message.loading('Generating...', 0)
+
+    assignmentApi
+      .getBubbleSheet({ assignmentId, groupId })
+      .then((r) => {
+        hideLoading()
+        if (r.data?.result?.Location) {
+          window.open(r.data?.result?.Location, '_blank').focus()
+        }
+      })
+      .catch((err) => {
+        hideLoading()
+        const errorReason = err?.response?.data?.message || ''
+        notification({
+          type: 'error',
+          msg: `Generating Bubble sheet failed. ${errorReason}`,
+          exact: true,
+        })
+      })
   }
 
   render() {
@@ -455,7 +483,6 @@ class ClassHeader extends Component {
       googleId: groupGoogleId,
       atlasId: groupAtlasId,
       atlasProviderName = '',
-      cleverId: groupCleverId,
     } = orgClasses.find(({ _id }) => _id === classId) || {}
     const showSyncGradesWithCanvasOption =
       !isDemoPlaygroundUser &&
@@ -573,6 +600,13 @@ class ClassHeader extends Component {
         >
           Release Score
         </MenuItems>
+        <MenuItems
+          data-cy="download-bubble-sheet"
+          key="download-bubble-sheet"
+          onClick={() => this.generateBubbleSheet(assignmentId, classId)}
+        >
+          Generate Bubble Sheet
+        </MenuItems>
         {isShowUnAssign && (
           <MenuItems
             data-cy="unAssign"
@@ -598,6 +632,7 @@ class ClassHeader extends Component {
         {showSyncGradesWithCanvasOption &&
           assignmentStatusForDisplay !== 'NOT OPEN' && (
             <MenuItems
+              data-cy="shareOnCanvas"
               key="key6"
               onClick={() =>
                 canvasSyncAssignment({ assignmentId, groupId: classId })
@@ -609,6 +644,7 @@ class ClassHeader extends Component {
         {showSyncGradesWithCanvasOption &&
           assignmentStatusForDisplay !== 'NOT OPEN' && (
             <MenuItems
+              data-cy="canvasGradeSync"
               key="key7"
               onClick={() =>
                 canvasSyncGrades({ assignmentId, groupId: classId })
@@ -715,6 +751,17 @@ class ClassHeader extends Component {
         ))}
       </ClassDropMenu>
     )
+
+    let closeDateTooltipText = `This test is set to be closed automatically on ${moment(
+      dueOnDate
+    ).format('MMM DD, YYYY')}`
+
+    if (additionalData.closePolicy === POLICY_CLOSE_MANUALLY_BY_ADMIN) {
+      closeDateTooltipText = 'This test is set to be closed manually by admin'
+    } else if (additionalData.closePolicy === POLICY_CLOSE_MANUALLY_IN_CLASS) {
+      closeDateTooltipText = 'This test is set to be closed manually by teacher'
+    }
+
     return (
       <MainHeader hideSideMenu={isCliUser}>
         <TitleWrapper titleMinWidth="unset" titleMaxWidth="22rem">
@@ -753,11 +800,15 @@ class ClassHeader extends Component {
                 {isPaused && assignmentStatusForDisplay !== 'DONE'
                   ? ' (PAUSED)'
                   : ''}
-                <div>
-                  {!!(dueDate || endDate) &&
-                    !isCliUser &&
-                    `(Due on ${moment(dueOnDate).format('MMM DD, YYYY')})`}
-                </div>
+                {!isCliUser && (
+                  <Tooltip placement="bottom" title={closeDateTooltipText}>
+                    <div>
+                      {dueDate || endDate
+                        ? `(Due on ${moment(dueOnDate).format('MMM DD, YYYY')})`
+                        : '(Close Manually)'}
+                    </div>
+                  </Tooltip>
+                )}
               </StyledParaSecond>
             </div>
           )}

@@ -47,7 +47,7 @@ export default FullKeybord
 const Tabs = styled(AntTabs)`
   & .ant-tabs-nav .ant-tabs-tab {
     margin: 0px;
-    padding: 8px 12px;
+    padding: 8px 10px;
   }
 
   & .ant-tabs-bar {

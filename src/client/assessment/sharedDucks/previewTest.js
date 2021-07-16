@@ -1,11 +1,13 @@
 import { createAction, createReducer } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
 import { get, isEmpty, keyBy, keys, values } from 'lodash'
-import { questionType } from '@edulastic/constants'
 import { takeEvery, put, all, select } from 'redux-saga/effects'
+
+import { testItemsApi } from '@edulastic/api'
+import { questionType } from '@edulastic/constants'
+
 import { getQuestionsByIdSelector } from '../selectors/questions'
 import { getAnswersListSelector } from '../selectors/answers'
-import { evaluateItem } from '../../author/src/utils/evalution'
 import { answersByQId } from '../selectors/test'
 
 const defaultManualGradedType = questionType.manuallyGradableQn
@@ -80,35 +82,28 @@ function* evaluateTestItemSaga({ payload }) {
     const answers = yield select(getAnswersListSelector)
 
     const testItemId = get(testItem, '_id', '')
-    const itemLevelScore = get(testItem, 'itemLevelScore', 0)
-    const itemLevelScoring = get(testItem, 'itemLevelScoring', false)
     const questions = get(testItem, 'rows', [])
       .flatMap((x) => x?.widgets)
       .filter((x) => !isEmpty(x) && x.widgetType === 'question')
       .reduce((acc, curr) => [...acc, curr.reference], [])
       .map((qid) => allQuestionsById[qid])
-    const qById = keyBy(questions, 'id')
+    // const qById = keyBy(questions, 'id')
     const answersByQids = answersByQId(answers, testItem._id)
 
-    const { penalty, scoringType } = yield select((state) =>
-      get(state, 'tests.entity', {})
-    )
-    const testSettings = { penalty, scoringType }
-    const { evaluation, score, maxScore } = yield evaluateItem(
-      answersByQids,
-      qById,
-      itemLevelScoring,
-      itemLevelScore,
-      testItem._id,
-      undefined,
-      undefined,
-      testSettings
-    )
+    const test = yield select((state) => get(state, 'tests.entity', {}))
+    const res = yield testItemsApi.evaluateAsStudent(testItem._id, {
+      answers: answersByQids,
+      testId: test._id || payload.testId,
+    })
+    const { score, maxScore, evaluations } = res
     const previewUserWork = yield select(
       ({ userWork }) => userWork.present[testItemId]
     )
 
     const activities = questions.map((q) => {
+      const isManuallyGradable = defaultManualGradedType.includes(q.type)
+      const isSkipped =
+        isEmpty(answers[`${testItemId}_${q.id}`]) && !isManuallyGradable
       const activity = {
         qid: q.id,
         maxScore,
@@ -117,15 +112,13 @@ function* evaluateTestItemSaga({ payload }) {
         graded: true,
         notStarted: false,
         score: answers[`${testItemId}_${q.id}`] ? score : 0,
-        skipped:
-          isEmpty(answers[`${testItemId}_${q.id}`]) &&
-          !defaultManualGradedType.includes(q.type),
+        skipped: isSkipped,
         pendingEvaluation:
-          isEmpty(evaluation) || defaultManualGradedType.includes(q.type),
+          !isSkipped && (isEmpty(evaluations?.[q.id]) || isManuallyGradable),
         qLabel: isEmpty(q.qSubLabel)
           ? q.barLabel
           : `${q.barLabel}.${q.qSubLabel}`,
-        evaluation: evaluation[`${testItemId}_${q.id}`],
+        evaluation: evaluations[q.id],
       }
       if (previewUserWork) {
         activity.userWork = previewUserWork

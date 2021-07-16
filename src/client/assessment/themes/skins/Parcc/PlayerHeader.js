@@ -84,6 +84,7 @@ const PlayerHeader = ({
   blockNavigationToAnsweredQuestions = false,
   setSettingsModalVisibility,
   testType,
+  isPremiumContentWithoutAccess = false,
 }) => {
   const totalQuestions = options.length
   const totalBookmarks = bookmarks.filter((b) => b).length
@@ -119,7 +120,11 @@ const PlayerHeader = ({
 
   return (
     <FlexContainer>
-      {testType === testConstants.type.PRACTICE && <SettingsModal />}
+      {testType === testConstants.type.PRACTICE && (
+        <SettingsModal
+          isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
+        />
+      )}
       <Header
         ref={headerRef}
         style={{
@@ -215,6 +220,7 @@ const PlayerHeader = ({
                               : () => toggleBookmark(items[currentItem]?._id)
                           }
                           active={isBookmarked}
+                          disabled={isPremiumContentWithoutAccess}
                         >
                           <StyledIconBookmark />
                           <span>{t('common.test.bookmark')}</span>
@@ -235,6 +241,7 @@ const PlayerHeader = ({
                   toggleUserWorkUploadModal={toggleUserWorkUploadModal}
                   timedAssignment={timedAssignment}
                   groupId={groupId}
+                  isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
                 />
               </FlexContainer>
               <FlexContainer>
@@ -244,6 +251,7 @@ const PlayerHeader = ({
                   showMagnifier={isDocbased ? false : showMagnifier}
                   enableMagnifier={enableMagnifier}
                   hidePause={hidePause}
+                  isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
                 />
               </FlexContainer>
             </HeaderWrapper>

@@ -2602,3 +2602,28 @@ div[class*='_pendo'] button {
 .playlist-content-box {
   z-index: 1004;
 }
+
+.createModuleTooltip > .ant-tooltip-content > .ant-tooltip-inner {
+  background-color: white;
+  color: #2f4151;
+}
+
+.createModuleTooltip > .ant-tooltip-content > .ant-tooltip-arrow::before {
+  background-color: white;
+  color: #2f4151;
+}
+
+.ant-scrolling-effect .subscription-header {
+  padding-right: 40px;
+}
+
+.ant-pagination .ant-pagination-item.ant-pagination-item-active,
+.ant-pagination .ant-pagination-item:hover {
+  background: rgba(63, 132, 229, 1);
+  border-color: rgba(63, 132, 229, 1);
+}
+
+.ant-pagination .ant-pagination-item.ant-pagination-item-active a,
+.ant-pagination .ant-pagination-item:hover a {
+  color: white;
+}

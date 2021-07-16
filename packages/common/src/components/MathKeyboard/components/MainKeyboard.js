@@ -13,11 +13,20 @@ import {
   Row,
   Button,
   Label,
+  ButtonLink,
 } from './styled'
 
-const { symbols } = mathConstant
+const { keyboardMethods } = mathConstant
 
-const MainKeyboard = ({ type, btns, onInput, fullKeybord, numbers }) => {
+const MainKeyboard = ({
+  type,
+  btns,
+  onInput,
+  fullKeybord,
+  numbers,
+  showPeriodic,
+  openPeriodic,
+}) => {
   const [boards, updateBoards] = useState({})
   const [current, updateCurrent] = useState(0)
   const numOfKeys = btns.length
@@ -35,7 +44,7 @@ const MainKeyboard = ({ type, btns, onInput, fullKeybord, numbers }) => {
       keysPerRow = 6
     }
 
-    if (fullKeybord) {
+    if (fullKeybord || type === keyboardMethods.CHEMISTRY) {
       keysPerRow = 8
       limitRow = 4
     }
@@ -49,16 +58,21 @@ const MainKeyboard = ({ type, btns, onInput, fullKeybord, numbers }) => {
       keysPerRow = 4
     }
 
-    if (type === symbols[2].value && numbers) {
+    if (type === keyboardMethods.ADVANCED_TRIGNOMETRY) {
+      limitRow = 6
+    }
+
+    if (type === keyboardMethods.BASIC_WO_NUMBER && numbers) {
       limitRow = 5
     }
-    if (type === symbols[3].value) {
+
+    if (type === keyboardMethods.INTERMEDIATE) {
       limitRow = 4
     }
     const rows = chunk(keybuttons, keysPerRow)
     updateBoards(chunk(rows, limitRow))
     updateCurrent(0)
-  }, [btns, numbers])
+  }, [type, btns, numbers])
 
   const handleClick = (handler, command, numToMove) => () => {
     if (handler && command) {
@@ -87,6 +101,11 @@ const MainKeyboard = ({ type, btns, onInput, fullKeybord, numbers }) => {
 
   return (
     <Container>
+      {type === keyboardMethods.CHEMISTRY && (
+        <ButtonLink onClick={openPeriodic}>
+          {showPeriodic ? 'Hide periodic table' : 'Show periodic table'}
+        </ButtonLink>
+      )}
       <PrevButton
         onClick={onClickPrev}
         onTouchEnd={onClickPrev}

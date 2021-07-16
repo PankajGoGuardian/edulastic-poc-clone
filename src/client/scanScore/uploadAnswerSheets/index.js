@@ -1,16 +1,17 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react'
 import { connect } from 'react-redux'
-import { Spin, Row, Col, Card } from 'antd'
+import { Spin, Row, Col } from 'antd'
 import qs from 'qs'
 
 import { PageLayout } from './components/PageLayout'
 import { DropzoneContainer } from './components/DropzoneContainer'
-import { Thumbnail } from './components/Thumbnail'
+import { UploadedSessions } from './components/UploadedSessions'
+import { Thumbnail, ThumbnailDropdown } from './components/Thumbnail'
 import { ScannedResponses } from './components/ScannedResponses'
 
 import {
   processStatusMap,
-  omrUploadSessionStatus,
+  thumbnailFilterOptions,
   getFileNameFromUri,
 } from './utils'
 import { actions, selector } from './ducks'
@@ -31,6 +32,9 @@ const UploadAnswerSheets = ({
 }) => {
   const [showResponses, setShowResponses] = useState(false)
   const [pageNumber, setPageNumber] = useState(1)
+  const [thumbnailFilter, setThumbnailFilter] = useState(
+    thumbnailFilterOptions[0]
+  )
 
   const { assignmentId = '', groupId = '', sessionId = '' } = useMemo(
     () => qs.parse(location?.search || '', { ignoreQueryPrefix: true }),
@@ -94,13 +98,14 @@ const UploadAnswerSheets = ({
               uploadProgress={uploadProgress}
             />
           </Col>
-          {omrUploadSessions.map((session) => (
-            <Col span={8} onClick={() => handleCardClick(session._id)}>
-              <Card title={session.source.name} bordered="false">
-                {`${omrUploadSessionStatus[session.status]}`}
-              </Card>
-            </Col>
-          ))}
+          {/* NOTE: Uncomment handleCardClick & below code to show uploaded sessions */}
+          {/* <UploadedSessions
+            uploadSessions={omrUploadSessions}
+            handleCardClick={handleCardClick}
+            getUploadSessions={() =>
+              getOmrUploadSessions({ assignmentId, groupId })
+            }
+          /> */}
         </Row>
       ) : currentSession.status > 2 &&
         currentSession.pages?.length &&
@@ -115,24 +120,35 @@ const UploadAnswerSheets = ({
           }}
         />
       ) : currentSession.status > 2 && currentSession.pages?.length ? (
-        <div style={{ display: 'flex', margin: '10px 40px', flexWrap: 'wrap' }}>
-          {currentSession.pages.map((page, index) => {
-            const name = page.studentName || getFileNameFromUri(page.uri)
-            const onClick = () => {
-              setPageNumber(index + 1)
-              setShowResponses(true)
-            }
-            return (
-              <Thumbnail
-                name={name}
-                uri={page.uri}
-                status={page.status}
-                message={page.message}
-                onClick={page.status === 3 ? onClick : null}
-              />
-            )
-          })}
-        </div>
+        <>
+          <div style={{ margin: '20px 40px' }}>
+            {/* <ThumbnailDropdown
+            value={thumbnailFilter}
+            options={thumbnailFilterOptions}
+            handleChange={(value) => console.log(value)}
+          /> */}
+          </div>
+          <div
+            style={{ display: 'flex', margin: '10px 40px', flexWrap: 'wrap' }}
+          >
+            {currentSession.pages.map((page, index) => {
+              const name = page.studentName || getFileNameFromUri(page.uri)
+              const onClick = () => {
+                setPageNumber(index + 1)
+                setShowResponses(true)
+              }
+              return (
+                <Thumbnail
+                  name={name}
+                  uri={page.uri}
+                  status={page.status}
+                  message={page.message}
+                  onClick={page.status === 3 ? onClick : null}
+                />
+              )
+            })}
+          </div>
+        </>
       ) : showResponses ? (
         <ScannedResponses
           docs={pageDocs}
@@ -144,24 +160,35 @@ const UploadAnswerSheets = ({
           }}
         />
       ) : (
-        <div style={{ display: 'flex', margin: '10px 40px', flexWrap: 'wrap' }}>
-          {pageDocs.map((page, index) => {
-            const name = page.studentName || getFileNameFromUri(page.uri)
-            const onClick = () => {
-              setPageNumber(index + 1)
-              setShowResponses(true)
-            }
-            return (
-              <Thumbnail
-                name={name}
-                uri={page.uri}
-                status={page.status}
-                message={page.message}
-                onClick={page.status === 3 ? onClick : null}
-              />
-            )
-          })}
-        </div>
+        <>
+          <div style={{ margin: '20px 40px' }}>
+            {/* <ThumbnailDropdown
+            value={thumbnailFilter}
+            options={thumbnailFilterOptions}
+            handleChange={(value) => console.log(value)}
+          /> */}
+          </div>
+          <div
+            style={{ display: 'flex', margin: '10px 40px', flexWrap: 'wrap' }}
+          >
+            {pageDocs.map((page, index) => {
+              const name = page.studentName || getFileNameFromUri(page.uri)
+              const onClick = () => {
+                setPageNumber(index + 1)
+                setShowResponses(true)
+              }
+              return (
+                <Thumbnail
+                  name={name}
+                  uri={page.uri}
+                  status={page.status}
+                  message={page.message}
+                  onClick={page.status === 3 ? onClick : null}
+                />
+              )
+            })}
+          </div>
+        </>
       )}
     </PageLayout>
   )

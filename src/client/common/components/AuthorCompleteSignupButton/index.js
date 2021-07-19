@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { Spin } from 'antd'
@@ -23,6 +23,7 @@ const AuthorCompleteSignupButton = ({
   setShowCompleteSignupModal,
   setCallFunctionAfterSignup,
   orgSchools = [],
+  privateParams,
 }) => {
   const { currentSignUpState: signupStatus } = user
   const [isSchoolModalVisible, setIsSchoolModalVisible] = useState(false)
@@ -57,10 +58,13 @@ const AuthorCompleteSignupButton = ({
 
     return onClick()
   }
+  const _privateParams = useMemo(() =>
+    signupStatus !== signUpState.ACCESS_WITHOUT_SCHOOL ? privateParams : {}
+  )
 
   return (
     <>
-      {renderButton(handleClick)}
+      {renderButton(handleClick, _privateParams)}
       {isSchoolModalVisible && (
         <TeacherSignup
           isModal
@@ -80,6 +84,7 @@ AuthorCompleteSignupButton.propTypes = {
   trackClick: PropTypes.func,
   setShowCompleteSignupModal: PropTypes.func,
   setCallFunctionAfterSignup: PropTypes.func,
+  privateParams: PropTypes.object,
 }
 
 AuthorCompleteSignupButton.defaultProps = {
@@ -88,6 +93,7 @@ AuthorCompleteSignupButton.defaultProps = {
   renderButton: () => null,
   setShowCompleteSignupModal: () => null,
   setCallFunctionAfterSignup: () => null,
+  privateParams: {},
 }
 
 const enhance = compose(

@@ -353,6 +353,8 @@ const MyClasses = ({
     user?.utm_source?.toLowerCase()?.includes('singapore') ||
     isSingaporeMathCollectionActive?.length > 0
 
+  const isCpm = user?.utm_source?.toLowerCase()?.includes('cpm')
+
   let filteredBundles = featuredBundles
 
   if (isEurekaMathActive) {
@@ -396,6 +398,21 @@ const MyClasses = ({
           banner?.config?.excludedPublishers?.includes('SingaporeMath') ||
           banner?.config?.excludedPublishers?.includes('Singapore Math')
         )
+    )
+  }
+
+  if (isCpm) {
+    filteredBundles = filteredBundles.filter(
+      (feature) =>
+        !feature?.description?.toLowerCase()?.includes('sparkmath') &&
+        !feature?.description?.toLowerCase()?.includes('spark math') &&
+        !feature?.config?.excludedPublishers?.includes('CPM')
+    )
+    bannerSlides = bannerSlides.filter(
+      (banner) =>
+        !banner?.description?.toLowerCase()?.includes('sparkmath') &&
+        !banner?.description?.toLowerCase()?.includes('spark math') &&
+        !banner?.config?.excludedPublishers?.includes('CPM')
     )
   }
 

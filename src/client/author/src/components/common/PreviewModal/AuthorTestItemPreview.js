@@ -340,6 +340,7 @@ class AuthorTestItemPreview extends Component {
                 }
                 onChange={goToItem}
                 data-cy="questionPagination"
+                showLessItems
               />
             </PassageNavigation>
           )}

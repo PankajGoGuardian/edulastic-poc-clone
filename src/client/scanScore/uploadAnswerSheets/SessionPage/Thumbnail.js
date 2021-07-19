@@ -2,9 +2,15 @@ import React from 'react'
 import styled from 'styled-components'
 import { Spin, Select } from 'antd'
 
-export const ThumbnailDropdown = ({ value, options, handleChange }) => (
+export const ThumbnailDropdown = ({
+  defaultValue,
+  value,
+  options,
+  handleChange,
+}) => (
   <Select
     onChange={handleChange}
+    defaultValue={defaultValue}
     value={value}
     style={{ width: '100%' }}
     labelInValue
@@ -30,8 +36,8 @@ const FailedOverlay = ({ message }) => (
   </>
 )
 
-export const Thumbnail = ({ name, uri, status, message, onClick }) => (
-  <ThumbnailDiv onClick={onClick}>
+export const Thumbnail = ({ size, name, uri, status, message, onClick }) => (
+  <ThumbnailDiv width={size} onClick={onClick}>
     <Spin spinning={status === 2}>
       <img alt={name} src={uri} />
     </Spin>
@@ -47,13 +53,12 @@ const ThumbnailDiv = styled.div`
   margin: 5px 15px;
   display: flex;
   flex-direction: column;
-  max-width: 150px;
-  height: 180px;
-  max-height: 180px;
+  max-width: ${(props) => props.width || 150}px;
+  height: auto;
   position: relative;
   & img {
     max-width: 100%;
-    max-height: 150px;
+    height: auto;
     box-shadow: 0 0 4px black;
   }
   & .ant-spin-container {

@@ -330,7 +330,7 @@ class Container extends Component {
           }
         />
         <PickQuestionWrapper isInModal={isInModal}>
-          <LeftSide addQuestionToPassage={addQuestionToPassage}>
+          <LeftSide isInModal={isInModal}>
             <Menu
               mode="horizontal"
               selectedKeys={[selectedTab]}
@@ -350,7 +350,7 @@ class Container extends Component {
             </Menu>
             <MenuTitle>{t('component.pickupcomponent.selectAType')}</MenuTitle>
             <AffixWrapper addQuestionToPassage={addQuestionToPassage}>
-              <PerfectScrollbar>
+              <PerfectScrollbar options={{ suppressScrollX: true }}>
                 <LeftMenuWrapper
                   mode="inline"
                   selectedKeys={[selectedCategory]}

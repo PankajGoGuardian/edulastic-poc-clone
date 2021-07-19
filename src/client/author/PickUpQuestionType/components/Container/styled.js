@@ -56,8 +56,8 @@ export const LeftSide = styled.div`
   position: relative;
 
   .scrollbar-container {
-    height: ${({ addQuestionToPassage }) =>
-      addQuestionToPassage ? 'calc(100vh - 250px)' : 'calc(100vh - 150px)'};
+    height: ${({ isInModal }) =>
+      isInModal ? 'calc(100vh - 250px)' : 'calc(100vh - 150px)'};
     padding-right: 30px;
 
     ::-webkit-scrollbar {

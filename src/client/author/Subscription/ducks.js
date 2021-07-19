@@ -351,10 +351,11 @@ function* upgradeUserLicense({ payload }) {
   }
 }
 
-function* fetchUserSubscription() {
+function* fetchUserSubscription({ payload }) {
   try {
     const apiUserSubscriptionStatus = yield call(
-      subscriptionApi.subscriptionStatus
+      subscriptionApi.subscriptionStatus,
+      payload
     )
     const { result } = apiUserSubscriptionStatus || {}
     if (result?.subscription?.status === 0) {

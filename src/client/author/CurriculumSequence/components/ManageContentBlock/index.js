@@ -206,7 +206,6 @@ const ManageContentBlock = (props) => {
   const openContentFilterModal = () => setShowContentFilterModal(true)
   const closeContentFilterModal = () => {
     setShowContentFilterModal(false)
-    setAlignment({})
   }
 
   const handleApplyFilters = () => {

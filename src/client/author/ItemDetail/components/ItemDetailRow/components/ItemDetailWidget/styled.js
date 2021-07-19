@@ -42,7 +42,6 @@ export const ButtonsContainer = styled.div`
     .points-input-wrapper,
     .total-points-wrapper {
       background: white;
-      padding: 0px 0px 0px 10px;
     }
   }
   .ant-btn {

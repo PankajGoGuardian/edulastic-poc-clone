@@ -917,11 +917,8 @@ class Container extends Component {
   }
 
   get passageItems() {
-    const { passage } = this.props // , isTestFlow
+    const { passage } = this.props
     const passageTestItems = get(passage, 'testItems', [])
-    //  isTestFlow
-    //   ? get(passage, 'testItems', [])
-    //   : get(passage, 'activeTestItems', [])
     return passageTestItems
   }
 

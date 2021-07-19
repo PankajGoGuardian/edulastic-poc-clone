@@ -1,19 +1,15 @@
-import React, { useState, useMemo, useEffect, useCallback } from 'react'
+import React, { useMemo, useEffect, useCallback } from 'react'
 import { connect } from 'react-redux'
-import { Spin, Row, Col } from 'antd'
+import { Spin } from 'antd'
 import qs from 'qs'
 
-import { PageLayout } from './components/PageLayout'
-import { DropzoneContainer } from './components/DropzoneContainer'
-import { UploadedSessions } from './components/UploadedSessions'
-import { Thumbnail, ThumbnailDropdown } from './components/Thumbnail'
-import { ScannedResponses } from './components/ScannedResponses'
+import { PageLayout } from './PageLayout'
+import { DropzoneContainer } from './UploadPage/DropzoneContainer'
+import SessionsPage from './SessionsPage'
+import SessionPage from './SessionPage'
+// import UploadPage from './UploadPage'
 
-import {
-  processStatusMap,
-  thumbnailFilterOptions,
-  getFileNameFromUri,
-} from './utils'
+import { processStatusMap } from './utils'
 import { actions, selector } from './ducks'
 
 const UploadAnswerSheets = ({
@@ -30,12 +26,6 @@ const UploadAnswerSheets = ({
   setOmrUploadSession,
   createOmrUploadSession,
 }) => {
-  const [showResponses, setShowResponses] = useState(false)
-  const [pageNumber, setPageNumber] = useState(1)
-  const [thumbnailFilter, setThumbnailFilter] = useState(
-    thumbnailFilterOptions[0]
-  )
-
   const { assignmentId = '', groupId = '', sessionId = '' } = useMemo(
     () => qs.parse(location?.search || '', { ignoreQueryPrefix: true }),
     [location?.search]
@@ -51,9 +41,9 @@ const UploadAnswerSheets = ({
       status: processStatusMap[d.processStatus],
       message: d.message,
     }))
-  }, [omrSheetDocs, assignmentId, groupId, sessionId])
+  }, [omrSheetDocs, assignmentId, sessionId])
 
-  const handleCardClick = useCallback((_sessionId) => {
+  const handleSessionClick = useCallback((_sessionId) => {
     const session = omrUploadSessions.find((s) => s._id === _sessionId)
     setOmrUploadSession({ session })
     history.push({
@@ -82,13 +72,7 @@ const UploadAnswerSheets = ({
     [assignmentId, groupId]
   )
 
-  const handleDropdownChange = useCallback(
-    (value) => {
-      if (value) setThumbnailFilter(value)
-      else setThumbnailFilter(thumbnailFilterOptions[0])
-    },
-    [thumbnailFilterOptions]
-  )
+  const handleAbortClick = useCallback(() => {}, [])
 
   useEffect(() => {
     getOmrUploadSessions({ assignmentId, groupId, sessionId })
@@ -99,114 +83,20 @@ const UploadAnswerSheets = ({
       {loading ? (
         <Spin />
       ) : !sessionId || uploading ? (
-        <Row gutter={[5, 10]}>
-          <Col span={24}>
-            <DropzoneContainer
-              handleDrop={handleDrop}
-              uploadProgress={uploadProgress}
-            />
-          </Col>
-          {/* NOTE: Uncomment handleCardClick & below code to show uploaded sessions */}
-          {/* <UploadedSessions
-            uploadSessions={omrUploadSessions}
-            handleCardClick={handleCardClick}
-            getUploadSessions={() =>
-              getOmrUploadSessions({ assignmentId, groupId })
-            }
-          /> */}
-        </Row>
-      ) : currentSession.status > 2 &&
-        currentSession.pages?.length &&
-        showResponses ? (
-        <ScannedResponses
-          docs={currentSession.pages}
-          pageNumber={pageNumber}
-          setPageNumber={setPageNumber}
-          closePage={() => {
-            setShowResponses(false)
-            setPageNumber(1)
-          }}
-        />
+        <>
+          <DropzoneContainer
+            handleDrop={handleDrop}
+            uploadProgress={uploadProgress}
+          />
+          <SessionsPage
+            sessions={omrUploadSessions}
+            onSessionClick={handleSessionClick}
+          />
+        </>
       ) : currentSession.status > 2 && currentSession.pages?.length ? (
-        <>
-          <div style={{ margin: '20px 40px' }}>
-            <ThumbnailDropdown
-              value={thumbnailFilter}
-              options={thumbnailFilterOptions}
-              handleChange={handleDropdownChange}
-            />
-          </div>
-          <div
-            style={{ display: 'flex', margin: '10px 40px', flexWrap: 'wrap' }}
-          >
-            {currentSession.pages
-              .filter(
-                (page) =>
-                  !thumbnailFilter.key || thumbnailFilter.key == page.status
-              )
-              .map((page, index) => {
-                const name = page.studentName || getFileNameFromUri(page.uri)
-                const onClick = () => {
-                  setPageNumber(index + 1)
-                  setShowResponses(true)
-                }
-                return (
-                  <Thumbnail
-                    name={name}
-                    uri={page.uri}
-                    status={page.status}
-                    message={page.message}
-                    onClick={page.status === 3 ? onClick : null}
-                  />
-                )
-              })}
-          </div>
-        </>
-      ) : showResponses ? (
-        <ScannedResponses
-          docs={pageDocs}
-          pageNumber={pageNumber}
-          setPageNumber={setPageNumber}
-          closePage={() => {
-            setShowResponses(false)
-            setPageNumber(1)
-          }}
-        />
+        <SessionPage pages={currentSession.pages} />
       ) : (
-        <>
-          <div style={{ margin: '20px 40px' }}>
-            <ThumbnailDropdown
-              value={thumbnailFilter}
-              options={thumbnailFilterOptions}
-              handleChange={handleDropdownChange}
-            />
-          </div>
-          <div
-            style={{ display: 'flex', margin: '10px 40px', flexWrap: 'wrap' }}
-          >
-            {pageDocs
-              .filter(
-                (page) =>
-                  !thumbnailFilter.key || thumbnailFilter.key == page.status
-              )
-              .map((page, index) => {
-                const name = page.studentName || getFileNameFromUri(page.uri)
-                const onClick = () => {
-                  setPageNumber(index + 1)
-                  setShowResponses(true)
-                }
-                return (
-                  <Thumbnail
-                    name={name}
-                    uri={page.uri}
-                    status={page.status}
-                    message={page.message}
-                    onClick={page.status === 3 ? onClick : null}
-                  />
-                )
-              })}
-          </div>
-        </>
+        <SessionPage pages={pageDocs} handleAbortClick={handleAbortClick} />
       )}
     </PageLayout>
   )

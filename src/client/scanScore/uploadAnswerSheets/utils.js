@@ -15,7 +15,7 @@ export const omrUploadSessionStatus = {
 
 export const omrSheetScanStatus = { ...omrUploadSessionStatus }
 
-export const thumbnailFilterOptions = [
+export const statusFilterOptions = [
   { key: '', label: 'All' },
   { key: '2', label: omrUploadSessionStatus[2] },
   { key: '3', label: omrUploadSessionStatus[3] },

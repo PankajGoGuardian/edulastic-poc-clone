@@ -82,6 +82,14 @@ const UploadAnswerSheets = ({
     [assignmentId, groupId]
   )
 
+  const handleDropdownChange = useCallback(
+    (value) => {
+      if (value) setThumbnailFilter(value)
+      else setThumbnailFilter(thumbnailFilterOptions[0])
+    },
+    [thumbnailFilterOptions]
+  )
+
   useEffect(() => {
     getOmrUploadSessions({ assignmentId, groupId, sessionId })
   }, [])
@@ -122,31 +130,36 @@ const UploadAnswerSheets = ({
       ) : currentSession.status > 2 && currentSession.pages?.length ? (
         <>
           <div style={{ margin: '20px 40px' }}>
-            {/* <ThumbnailDropdown
-            value={thumbnailFilter}
-            options={thumbnailFilterOptions}
-            handleChange={(value) => console.log(value)}
-          /> */}
+            <ThumbnailDropdown
+              value={thumbnailFilter}
+              options={thumbnailFilterOptions}
+              handleChange={handleDropdownChange}
+            />
           </div>
           <div
             style={{ display: 'flex', margin: '10px 40px', flexWrap: 'wrap' }}
           >
-            {currentSession.pages.map((page, index) => {
-              const name = page.studentName || getFileNameFromUri(page.uri)
-              const onClick = () => {
-                setPageNumber(index + 1)
-                setShowResponses(true)
-              }
-              return (
-                <Thumbnail
-                  name={name}
-                  uri={page.uri}
-                  status={page.status}
-                  message={page.message}
-                  onClick={page.status === 3 ? onClick : null}
-                />
+            {currentSession.pages
+              .filter(
+                (page) =>
+                  !thumbnailFilter.key || thumbnailFilter.key == page.status
               )
-            })}
+              .map((page, index) => {
+                const name = page.studentName || getFileNameFromUri(page.uri)
+                const onClick = () => {
+                  setPageNumber(index + 1)
+                  setShowResponses(true)
+                }
+                return (
+                  <Thumbnail
+                    name={name}
+                    uri={page.uri}
+                    status={page.status}
+                    message={page.message}
+                    onClick={page.status === 3 ? onClick : null}
+                  />
+                )
+              })}
           </div>
         </>
       ) : showResponses ? (
@@ -162,31 +175,36 @@ const UploadAnswerSheets = ({
       ) : (
         <>
           <div style={{ margin: '20px 40px' }}>
-            {/* <ThumbnailDropdown
-            value={thumbnailFilter}
-            options={thumbnailFilterOptions}
-            handleChange={(value) => console.log(value)}
-          /> */}
+            <ThumbnailDropdown
+              value={thumbnailFilter}
+              options={thumbnailFilterOptions}
+              handleChange={handleDropdownChange}
+            />
           </div>
           <div
             style={{ display: 'flex', margin: '10px 40px', flexWrap: 'wrap' }}
           >
-            {pageDocs.map((page, index) => {
-              const name = page.studentName || getFileNameFromUri(page.uri)
-              const onClick = () => {
-                setPageNumber(index + 1)
-                setShowResponses(true)
-              }
-              return (
-                <Thumbnail
-                  name={name}
-                  uri={page.uri}
-                  status={page.status}
-                  message={page.message}
-                  onClick={page.status === 3 ? onClick : null}
-                />
+            {pageDocs
+              .filter(
+                (page) =>
+                  !thumbnailFilter.key || thumbnailFilter.key == page.status
               )
-            })}
+              .map((page, index) => {
+                const name = page.studentName || getFileNameFromUri(page.uri)
+                const onClick = () => {
+                  setPageNumber(index + 1)
+                  setShowResponses(true)
+                }
+                return (
+                  <Thumbnail
+                    name={name}
+                    uri={page.uri}
+                    status={page.status}
+                    message={page.message}
+                    onClick={page.status === 3 ? onClick : null}
+                  />
+                )
+              })}
           </div>
         </>
       )}

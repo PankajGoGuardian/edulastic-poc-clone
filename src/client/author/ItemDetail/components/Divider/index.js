@@ -7,15 +7,16 @@ import {
 
 const PassageDivider = ({ collapseDirection, onChange }) => {
   const [showCollapse, setShowCollapse] = useState(false)
+  const isCollapsed = !!collapseDirection
 
   return (
     <Divider
-      isCollapsed={!!collapseDirection}
+      isCollapsed={isCollapsed}
       collapseDirection={collapseDirection}
       onMouseEnter={() => setShowCollapse(true)}
       onMouseLeave={() => setShowCollapse(false)}
     >
-      {showCollapse && (
+      {(isCollapsed || showCollapse) && (
         <div className="button-wrapper">
           <CollapseBtn
             collapseDirection={collapseDirection}

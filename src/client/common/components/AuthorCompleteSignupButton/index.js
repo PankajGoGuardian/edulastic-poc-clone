@@ -4,8 +4,12 @@ import { connect } from 'react-redux'
 import { Spin } from 'antd'
 import loadable from '@loadable/component'
 import PropTypes from 'prop-types'
-import { signUpState } from '@edulastic/constants'
-import { getOrgSchools, getUser } from '../../../author/src/selectors/user'
+import { roleuser, signUpState } from '@edulastic/constants'
+import {
+  getOrgSchools,
+  getUser,
+  getUserOrgId,
+} from '../../../author/src/selectors/user'
 
 const TeacherSignup = loadable(
   () => import('../../../student/Signup/components/TeacherContainer/Container'),
@@ -23,11 +27,18 @@ const AuthorCompleteSignupButton = ({
   setShowCompleteSignupModal,
   setCallFunctionAfterSignup,
   orgSchools = [],
+  userOrgId,
   privateParams,
 }) => {
   const { currentSignUpState: signupStatus } = user
   const [isSchoolModalVisible, setIsSchoolModalVisible] = useState(false)
   const toggleSchoolModal = (value) => setIsSchoolModalVisible(value)
+
+  const isSchoolSignupOnly = !!(
+    orgSchools.length === 0 &&
+    !!userOrgId &&
+    roleuser.TEACHER === user.role
+  )
 
   const handleCanel = (value) => {
     setShowCompleteSignupModal(false)
@@ -36,11 +47,15 @@ const AuthorCompleteSignupButton = ({
   }
 
   useEffect(() => {
-    if (isSchoolModalVisible && signupStatus === signUpState.DONE) {
+    if (
+      isSchoolModalVisible &&
+      signupStatus === signUpState.DONE &&
+      orgSchools.length > 0
+    ) {
       toggleSchoolModal(false)
       onClick()
     }
-  }, [signupStatus])
+  }, [signupStatus, orgSchools])
 
   useEffect(() => {
     setIsSchoolModalVisible(isOpenSignupModal)
@@ -49,7 +64,7 @@ const AuthorCompleteSignupButton = ({
   const handleClick = () => {
     if (
       signupStatus === signUpState.ACCESS_WITHOUT_SCHOOL ||
-      orgSchools.length === 0
+      isSchoolSignupOnly
     ) {
       trackClick()
       toggleSchoolModal(true)
@@ -70,7 +85,7 @@ const AuthorCompleteSignupButton = ({
           isModal
           handleCancel={() => handleCanel(false)}
           isVisible={isSchoolModalVisible}
-          isSchoolSignupOnly={orgSchools.length === 0}
+          isSchoolSignupOnly={isSchoolSignupOnly}
         />
       )}
     </>
@@ -100,6 +115,7 @@ const enhance = compose(
   connect((state) => ({
     user: getUser(state),
     orgSchools: getOrgSchools(state),
+    userOrgId: getUserOrgId(state),
   }))
 )
 

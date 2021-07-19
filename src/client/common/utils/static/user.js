@@ -18,6 +18,7 @@ export const userPickFields = [
   'middleName',
   'msoId',
   'orgData',
+  'otherAccounts',
   'lastSigninSSO',
   'role',
   'permissions',

@@ -133,7 +133,7 @@ const SwitchUserModal = ({
       <Spin spinning={!!activeKey}>
         <div>
           <p>Select the role you want to switch</p>
-          <div style={{ 'margin-top': '16px' }}>
+          <div style={{ marginTop: '16px' }}>
             {otherAccounts
               .filter((acc) => Object.keys(roles).includes(acc.role))
               .sort((a, b) => {

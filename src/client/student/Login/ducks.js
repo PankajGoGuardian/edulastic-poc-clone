@@ -580,6 +580,21 @@ export default createReducer(initialState, {
     state.user.institutionIds = updatedSchoolIds
     state.user.orgData.institutionIds = updatedSchoolIds
     state.user.orgData.schools = updatedSchools
+    const accountIdx = (state.user.otherAccounts || []).findIndex(
+      (u) => u._id === state.user._id
+    )
+    if (accountIdx !== -1) {
+      state.user.otherAccounts[
+        accountIdx
+      ].institutionIds = state.user.otherAccounts[
+        accountIdx
+      ].institutionIds.filter((id) => id !== payload)
+      state.user.otherAccounts[
+        accountIdx
+      ].institutions = state.user.otherAccounts[accountIdx].institutions.filter(
+        (school) => school._id !== payload
+      )
+    }
   },
   [REMOVE_SCHOOL_FAILED]: (state) => {
     state.removingSchool = undefined
@@ -592,6 +607,7 @@ export default createReducer(initialState, {
     state.user.institutionIds = payload.institutionIds
     state.user.orgData.institutionIds = payload.orgData.institutionIds
     state.user.orgData.schools = payload.orgData.schools
+    state.user.otherAccounts = payload.otherAccounts || state.user.otherAccounts
   },
   [ADD_SCHOOL_FAILED]: (state) => {
     state.addingSchool = undefined
@@ -604,6 +620,7 @@ export default createReducer(initialState, {
     state.user.institutionIds = payload.institutionIds
     state.user.orgData.institutionIds = payload.orgData.institutionIds
     state.user.orgData.schools = payload.orgData.schools
+    state.user.otherAccounts = payload.otherAccounts || state.user.otherAccounts
   },
   [CREATE_AND_ADD_SCHOOL_FAILED]: (state) => {
     state.creatingAddingSchool = undefined

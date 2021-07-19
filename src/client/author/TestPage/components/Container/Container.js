@@ -948,6 +948,7 @@ class Container extends PureComponent {
       assignmentPassword = '',
       safeBrowser,
       sebPassword,
+      passages,
     } = test
     const { userFeatures, isOrganizationDistrictUser } = this.props
     if (!title) {
@@ -1026,6 +1027,27 @@ class Container extends PureComponent {
           (item) =>
             item.data.questions.length <= 0 && item.data.resources.length <= 0
         )
+      ) {
+        testHasInvalidItem = true
+      }
+      if (
+        itemGroup.items.some((item) => {
+          if (!item.isPassageWithQuestions || !item.passageId) {
+            return false
+          }
+          const _passage = passages?.find((p) => p._id === item.passageId)
+          if (!_passage) {
+            return false
+          }
+          const { structure } = _passage
+          const { widgets = [] } = structure
+          if (!widgets.length) {
+            // cannot publish the test if it has invalid passage item
+            // @see: https://snapwiz.atlassian.net/browse/EV-29485
+            return true
+          }
+          return false
+        })
       ) {
         testHasInvalidItem = true
       }

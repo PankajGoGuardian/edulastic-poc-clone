@@ -22,18 +22,10 @@ import {
 } from '../../duck'
 import { createAndAddSchoolAction } from '../../../Login/ducks'
 import RequestSchoolForm from './RequestSchoolForm'
-import { currentDistrictInstitutionIds } from '../../../../author/src/selectors/user'
 
 const RequestSchool = (props) => {
   const [requestButtonDisabled, setRequestButtonDisabled] = useState(true)
-  const {
-    form,
-    userInfo,
-    createAndAddSchool,
-    t,
-    creatingAddingSchool,
-    institutionIds,
-  } = props
+  const { form, userInfo, createAndAddSchool, t, creatingAddingSchool } = props
   const { orgData, currentSignUpState } = userInfo
   const { districtId, districtName } = orgData.districts?.[0] || {}
 
@@ -87,7 +79,7 @@ const RequestSchool = (props) => {
           requestNewSchool: true,
         }
 
-        const { firstName, middleName, lastName } = userInfo
+        const { firstName, middleName, lastName, institutionIds } = userInfo
         createAndAddSchool({
           createSchool: body,
           joinSchool: {
@@ -145,7 +137,6 @@ const enhance = compose(
   connect(
     (state) => ({
       creatingAddingSchool: get(state, 'user.creatingAddingSchool'),
-      institutionIds: currentDistrictInstitutionIds(state),
     }),
     {
       searchDistrict: searchDistrictsRequestAction,

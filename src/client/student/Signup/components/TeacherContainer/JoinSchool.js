@@ -200,7 +200,6 @@ const JoinSchool = ({
       addSchool({
         data,
         userId: userInfo._id,
-        goToCreateClass: isSchoolSignupOnly,
       })
     } else {
       const data = {

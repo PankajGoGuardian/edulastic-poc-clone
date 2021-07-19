@@ -2048,9 +2048,6 @@ function* addSchoolSaga({ payload = {} }) {
   try {
     const result = yield call(userApi.updateUser, payload)
     const user = pick(result, userPickFields)
-    if (payload.goToCreateClass) {
-      yield put(push('/author/manageClass/createClass'))
-    }
     yield put({ type: ADD_SCHOOL_SUCCESS, payload: user })
     yield put({ type: HIDE_JOIN_SCHOOL })
   } catch (err) {

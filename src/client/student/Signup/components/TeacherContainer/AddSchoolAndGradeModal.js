@@ -6,7 +6,6 @@ import { get } from 'lodash'
 import { CustomModalStyled } from '@edulastic/common'
 import JoinSchool from './JoinSchool'
 import SubjectGradeForm from './SubjectGrade'
-import { getOrgSchools } from '../../../../author/src/selectors/user'
 
 const AddSchoolAndGradeModal = ({
   user,
@@ -17,7 +16,6 @@ const AddSchoolAndGradeModal = ({
   orgType,
   isVisible,
   handleCancel,
-  orgSchools = [],
   isSchoolSignupOnly = false,
 }) => {
   const userInfo = get(user, 'user', {})
@@ -37,7 +35,7 @@ const AddSchoolAndGradeModal = ({
       centered
     >
       {(userInfo.districtIds && userInfo.districtIds.length === 0) ||
-      orgSchools.length === 0 ? (
+      isSchoolSignupOnly ? (
         <JoinSchool
           userInfo={userInfo}
           districtId={isSignupUsingDaURL ? generalSettings.orgId : false}
@@ -70,7 +68,6 @@ AddSchoolAndGradeModal.propTypes = {
 const enhance = compose(
   connect((state) => ({
     user: state.user,
-    orgSchools: getOrgSchools(state),
   }))
 )
 

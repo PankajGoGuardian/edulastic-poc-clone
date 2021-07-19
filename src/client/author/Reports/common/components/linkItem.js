@@ -18,15 +18,28 @@ export const LinkItem = ({ data, inverse, tiles, premium, loc = '' }) => {
       <>
         {data.key === 'standardsGradebook' ? (
           <AuthorCompleteSignupButton
-            renderButton={(pathFunc) => (
-              <Link data-cy={data.key} to={pathFunc() || '#'}>
+            renderButton={(handleClick, { to }) => (
+              <Link
+                data-cy={data.key}
+                to={to || '#'}
+                onClick={
+                  to
+                    ? undefined
+                    : (e) => {
+                        e.preventDefault()
+                        handleClick()
+                      }
+                }
+              >
                 <ReportItemCards data={data} />
               </Link>
             )}
-            onClick={() => ({
-              pathname: data.location,
-              state: { source: loc },
-            })}
+            privateParams={{
+              to: {
+                pathname: data.location,
+                state: { source: loc },
+              },
+            }}
           />
         ) : (
           <ResolvedLink

@@ -1,6 +1,7 @@
 import React, { useContext, useMemo } from 'react'
 import PropTypes from 'prop-types'
-import { uniqBy } from 'lodash'
+import { uniqBy, isString } from 'lodash'
+import { CustomKeyLabel } from '@edulastic/common'
 import { NumberPadContext } from '..'
 import { ButtonWrapper } from '../styled/ButtonWrapper'
 import NumberPadButton from './NumberPadButton'
@@ -25,6 +26,8 @@ const CharacterMap = ({ onClick, buttonStyle }) => {
         >
           {isEmpty(item.label) ? (
             <EmptyWrapper>{item.label}</EmptyWrapper>
+          ) : isString(item.label) ? (
+            <CustomKeyLabel value={item.label} />
           ) : (
             item.label
           )}

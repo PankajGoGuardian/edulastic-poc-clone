@@ -3,8 +3,11 @@ import PropTypes from 'prop-types'
 import chunk from 'lodash/chunk'
 import cloneDeep from 'lodash/cloneDeep'
 import flattenDeep from 'lodash/flattenDeep'
+import isString from 'lodash/isString'
 import { math as mathConstant } from '@edulastic/constants'
 import NumberKeyboard from './NumberKeyboard'
+import CustomKeyLabel from '../../CustomKeyLabel'
+
 import {
   Container,
   SymbolsWrapper,
@@ -137,7 +140,11 @@ const MainKeyboard = ({
                   onTouchEnd={handleClick(handler, command, numToMove)}
                   data-cy={`virtual-keyboard-${handler}`}
                 >
-                  <Label>{label}</Label>
+                  {isString(label) ? (
+                    <CustomKeyLabel value={label} />
+                  ) : (
+                    <Label>{label}</Label>
+                  )}
                 </Button>
               )
             })}

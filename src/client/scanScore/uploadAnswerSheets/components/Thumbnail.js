@@ -3,9 +3,16 @@ import styled from 'styled-components'
 import { Spin, Select } from 'antd'
 
 export const ThumbnailDropdown = ({ value, options, handleChange }) => (
-  <Select labelInValue value={value} onChange={handleChange}>
+  <Select
+    onChange={handleChange}
+    value={value}
+    style={{ width: '100%' }}
+    labelInValue
+  >
     {options.map(({ key, label }) => (
-      <Select.Option key={key}>{label}</Select.Option>
+      <Select.Option key={key} value={key}>
+        {label}
+      </Select.Option>
     ))}
   </Select>
 )

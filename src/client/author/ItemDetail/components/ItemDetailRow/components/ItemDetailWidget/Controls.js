@@ -88,7 +88,7 @@ const TotalPointsInput = ({
         disabled={disabled}
         value={disabled ? '' : value}
         onChange={onChange}
-        data-cy="point-update"
+        data-cy="total-point-update"
       />
     </TotalPointsWrapper>
   )

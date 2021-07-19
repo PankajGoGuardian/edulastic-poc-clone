@@ -323,7 +323,11 @@ class AuthorTestItemPreview extends Component {
     const { isPassage, item, goToItem, passageTestItems, page } = this.props
     const { collapseDirection } = this.state
     const showButtons = collapseDirection !== 'right'
-    if (passageTestItems.length >= 0 || !showButtons || !isPassage) {
+    if (
+      !isPassage ||
+      (isPassage && passageTestItems && passageTestItems.length >= 0) ||
+      !showButtons
+    ) {
       return null
     }
     return (

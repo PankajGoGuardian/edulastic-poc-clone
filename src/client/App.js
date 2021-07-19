@@ -18,6 +18,7 @@ import { TestAttemptReview } from './student/TestAttemptReview'
 import SebQuitConfirm from './student/SebQuitConfirm'
 import {
   getUserNameSelector,
+  getUserOrgId,
   shouldWatchCollectionUpdates,
 } from './author/src/selectors/user'
 import {
@@ -292,6 +293,7 @@ class App extends Component {
       isRequestQuoteModalVisible,
       setRequestQuoteModal,
       isRequestOrSubmitSuccessModalVisible,
+      districtId,
     } = this.props
     if (
       location.hash.includes('#renderResource/close/') ||
@@ -328,16 +330,17 @@ class App extends Component {
       if (user && user.isAuthenticated) {
         // copy old assignments filter if user is not demo playground user
         if (!isDemoAccountProxy) {
-          const oldAssignmentFilter = sessionStorage.getItem(
-            'filters[Assignments]'
-          )
+          const oldAssignmentFilter =
+            sessionStorage.getItem('filters[Assignments]') ||
+            sessionStorage.getItem(`assignments_filter_${user.user._id}`)
           if (!isEmpty(oldAssignmentFilter)) {
             sessionStorage.setItem(
-              `assignments_filter_${user.user._id}`,
+              `assignments_filter_${user.user._id}_${districtId}`,
               oldAssignmentFilter
             )
             // remove old filter key from session storage
             sessionStorage.removeItem('filters[Assignments]')
+            sessionStorage.removeItem(`assignments_filter_${user.user._id}`)
           }
         }
         // Clear referrer once userId available
@@ -791,6 +794,7 @@ const enhance = compose(
       isRequestOrSubmitSuccessModalVisible: getRequestOrSubmitSuccessVisibility(
         { subscription }
       ),
+      districtId: getUserOrgId({ user }),
     }),
     {
       fetchUser: fetchUserAction,

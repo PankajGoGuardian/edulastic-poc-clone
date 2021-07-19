@@ -43,7 +43,7 @@ import {
   signupGeneralSettingsSelector,
   updateUserSignupStateAction,
 } from '../Signup/duck'
-import { getUser } from '../../author/src/selectors/user'
+import { getUser, getUserOrgId } from '../../author/src/selectors/user'
 import { updateInitSearchStateAction } from '../../author/TestPage/components/AddItems/ducks'
 import { JOIN_CLASS_REQUEST_SUCCESS } from '../ManageClass/ducks'
 import 'firebase/auth'
@@ -1325,10 +1325,11 @@ function* logout() {
           localStorage.removeItem(objKey)
         }
       })
+      const districtId = yield select(getUserOrgId)
       sessionStorage.removeItem('cliBannerShown')
       sessionStorage.removeItem('cliBannerVisible')
       sessionStorage.removeItem('addAccountDetails')
-      sessionStorage.removeItem(`assignments_filter_${user._id}`)
+      sessionStorage.removeItem(`assignments_filter_${user._id}_${districtId}`)
       sessionStorage.removeItem('temporaryClass')
       TokenStorage.removeKID()
       TokenStorage.initKID()

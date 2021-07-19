@@ -7,7 +7,7 @@ import * as Fbs from '@edulastic/common/src/Firebase'
 import { roleuser } from '@edulastic/constants'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { getUser } from '../../../src/selectors/user'
+import { getUser, getUserOrgId } from '../../../src/selectors/user'
 import {
   receiveAssignmentClassList,
   receiveAssignmentsSummaryAction,
@@ -29,12 +29,13 @@ const NotificationListener = ({
   fetchAssignmentsSummaryAction,
   setBulkActionStatus,
   history,
+  orgId,
 }) => {
   const [notificationIds, setNotificationIds] = useState([])
   let districtId = ''
   let testId = ''
   const { termId = '', grades = [], assignedBy = '' } = JSON.parse(
-    sessionStorage.getItem(`assignments_filter_${user._id}`) || '{}'
+    sessionStorage.getItem(`assignments_filter_${user._id}_${orgId}`) || '{}'
   )
   const { testType = '' } = qs.parse(location.search, {
     ignoreQueryPrefix: true,
@@ -170,6 +171,7 @@ export default compose(
   connect(
     (state) => ({
       user: getUser(state),
+      orgId: getUserOrgId(state),
     }),
     {
       fetchAssignmentClassList: receiveAssignmentClassList,

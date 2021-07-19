@@ -112,7 +112,9 @@ class Assignments extends Component {
 
     const { defaultTermId, terms } = orgData
     const storedFilters =
-      JSON.parse(sessionStorage.getItem(`assignments_filter_${userId}`)) || {}
+      JSON.parse(
+        sessionStorage.getItem(`assignments_filter_${userId}_${districtId}`)
+      ) || {}
     const { showFilter = userRole !== roleuser.TEACHER } = storedFilters
     const filters = {
       ...initialFilterState,
@@ -150,9 +152,9 @@ class Assignments extends Component {
   }
 
   setFilterState = (filterState) => {
-    const { userId } = this.props
+    const { userId, districtId } = this.props
     sessionStorage.setItem(
-      `assignments_filter_${userId}`,
+      `assignments_filter_${userId}_${districtId}`,
       JSON.stringify(filterState)
     )
     this.setState({ filterState })
@@ -261,7 +263,7 @@ class Assignments extends Component {
   )
 
   toggleFilter = () => {
-    const { userId } = this.props
+    const { userId, districtId } = this.props
     this.setState(
       (prev) => ({
         filterState: {
@@ -272,7 +274,7 @@ class Assignments extends Component {
       () => {
         const { filterState } = this.state
         sessionStorage.setItem(
-          `assignments_filter_${userId}`,
+          `assignments_filter_${userId}_${districtId}`,
           JSON.stringify(filterState)
         )
       }

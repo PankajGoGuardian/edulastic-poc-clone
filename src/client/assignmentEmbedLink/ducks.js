@@ -24,11 +24,13 @@ function* fetchAssignmentsByTestIdSaga({ payload }) {
       if (roleuser.DA_SA_ROLE_ARRAY.includes(userRole)) {
         const userId = yield select(getUserIdSelector)
         const assignmentFilters = JSON.parse(
-          sessionStorage.getItem(`assignments_filter_${userId}`) || '{}'
+          sessionStorage.getItem(
+            `assignments_filter_${userId}_${districtId}`
+          ) || '{}'
         )
         assignmentFilters.termId = assignments[0].termId
         sessionStorage.setItem(
-          `assignments_filter_${userId}`,
+          `assignments_filter_${userId}_${districtId}`,
           JSON.stringify(assignmentFilters)
         )
         yield put(

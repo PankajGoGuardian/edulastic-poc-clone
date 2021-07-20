@@ -1796,6 +1796,10 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     maxAnswerChecks: entity.maxAnswerChecks,
   }
 
+  if (entity.safeBrowser) {
+    settings.sebPassword = entity.sebPassword
+  }
+
   if (isAdmin) {
     settings.testType = testType === PRACTICE ? PRACTICE : COMMON
     settings.openPolicy =

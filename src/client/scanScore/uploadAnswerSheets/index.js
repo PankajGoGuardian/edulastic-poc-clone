@@ -17,6 +17,7 @@ const UploadAnswerSheets = ({
   location,
   uploading,
   uploadProgress,
+  cancelUpload,
   loading,
   omrUploadSessions,
   currentSession,
@@ -87,7 +88,7 @@ const UploadAnswerSheets = ({
             handleDrop={handleDrop}
             uploadProgress={uploadProgress}
             handleCancelUpload={
-              sessionId && uploading ? handleAbortClick : null
+              uploading && sessionId && cancelUpload ? handleAbortClick : null
             }
           />
           {/* NOTE: Uncomment to list uploaded sessions */}

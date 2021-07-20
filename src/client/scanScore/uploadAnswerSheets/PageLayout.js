@@ -1,6 +1,6 @@
 import React from 'react'
 import { Layout } from 'antd'
-import { themeColorBlue } from '@edulastic/colors'
+import { themeColor } from '@edulastic/colors'
 import styled from 'styled-components'
 
 const { Content } = Layout
@@ -17,7 +17,7 @@ export const PageLayout = ({ children, title }) => (
 export default PageLayout
 
 const StyledHeader = styled.div`
-  background: ${themeColorBlue};
+  background: ${themeColor};
   height: 53px;
   width: 100%;
   .title {

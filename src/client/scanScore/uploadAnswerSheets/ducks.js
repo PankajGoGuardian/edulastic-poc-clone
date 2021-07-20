@@ -11,6 +11,7 @@ const slice = createSlice({
   initialState: {
     uploading: false,
     uploadProgress: 0,
+    cancelUpload: null,
     loading: false,
     omrUploadSessions: [],
     currentSession: {},
@@ -18,8 +19,13 @@ const slice = createSlice({
     error: '',
   },
   reducers: {
-    setUploadProgress: (state, { payload }) => {
-      state.uploadProgress = payload || 0
+    setCancelUpload: (state, { payload }) => {
+      state.cancelUpload = payload
+    },
+    handleUploadProgress: (state, { payload }) => {
+      const { loaded: uploaded, total } = payload
+      const uploadProgress = Math.floor((100 * uploaded) / total)
+      state.uploadProgress = uploadProgress || 0
     },
     getOmrUploadSessions: (state) => {
       state.loading = true
@@ -47,6 +53,7 @@ const slice = createSlice({
     createOmrUploadSessionDone: (state, { payload }) => {
       state.uploading = false
       state.uploadProgress = 0
+      state.cancelUpload = null
       if (payload.error) {
         state.error = payload.error
       }
@@ -56,6 +63,23 @@ const slice = createSlice({
         )
         state.currentSession = payload.session
         state.omrUploadSessions = [...filteredSessions, payload.session]
+      }
+    },
+    abortOmrUploadSession: (state) => {
+      if (state.cancelUpload) {
+        state.cancelUpload()
+      }
+    },
+    abortOmrUploadSessionDone: (state, { payload }) => {
+      if (payload.error) {
+        state.error = payload.error
+      } else {
+        const session = { ...state.currentSession, status: 6 } // aborted
+        const filteredSessions = state.omrUploadSessions.filter(
+          (s) => s._id !== payload.session._id
+        )
+        state.omrUploadSessions = [...filteredSessions, session]
+        state.currentSession = {}
       }
     },
     setOmrSheetDocsAction: (state, { payload }) => {
@@ -85,7 +109,13 @@ function* getOmrUploadSessionsSaga({ payload }) {
 }
 
 function* createOmrUploadSessionSaga({
-  payload: { file, assignmentId, groupId, handleProgress, handleCancel },
+  payload: {
+    file,
+    assignmentId,
+    groupId,
+    handleUploadProgress,
+    setCancelUpload,
+  },
 }) {
   try {
     const source = { name: file.name }
@@ -95,14 +125,6 @@ function* createOmrUploadSessionSaga({
       source,
     })
     const { _id: sessionId } = session
-    source.uri = yield call(
-      uploadToS3,
-      file,
-      aws.s3Folders.BUBBLE_SHEETS,
-      handleProgress,
-      handleCancel,
-      `${assignmentId}/${sessionId}`
-    )
     yield put(slice.actions.setOmrUploadSession({ session, update: true }))
     yield put(
       push({
@@ -110,8 +132,16 @@ function* createOmrUploadSessionSaga({
         search: `?assignmentId=${assignmentId}&groupId=${groupId}&sessionId=${sessionId}`,
       })
     )
+    source.uri = yield call(
+      uploadToS3,
+      file,
+      aws.s3Folders.BUBBLE_SHEETS,
+      handleUploadProgress,
+      setCancelUpload,
+      `${assignmentId}/${sessionId}`
+    )
     const { result: sessionUpdated, error } = yield call(
-      assignmentApi.splitScanBubbleSheets,
+      assignmentApi.splitScanOmrSheets,
       {
         assignmentId,
         sessionId,
@@ -128,10 +158,42 @@ function* createOmrUploadSessionSaga({
       })
     )
   } catch (e) {
-    const msg = e.message || 'Failed to fetch upload sessions'
+    const msg = e.message || 'Failed to upload file'
     notification({ msg })
     yield put(slice.actions.createOmrUploadSessionDone({ error: e.message }))
+    yield put(
+      push({
+        pathname: '/uploadAnswerSheets',
+        search: `?assignmentId=${assignmentId}&groupId=${groupId}`,
+      })
+    )
   }
+}
+
+function* abortOmrUploadSessionSaga({
+  payload: { assignmentId, groupId, sessionId },
+}) {
+  try {
+    if (sessionId) {
+      yield call(assignmentApi.abortOmrUploadSession, {
+        assignmentId,
+        groupId,
+        sessionId,
+      })
+      yield put(slice.actions.abortOmrUploadSessionDone())
+      notification({ type: 'success', msg: 'Aborted upload session' })
+    }
+  } catch (e) {
+    const msg = e.message || 'Failed to abort upload session'
+    notification({ msg })
+    yield put(slice.actions.abortOmrUploadSessionDone({ error: e.message }))
+  }
+  yield put(
+    push({
+      pathname: '/uploadAnswerSheets',
+      search: `?assignmentId=${assignmentId}&groupId=${groupId}`,
+    })
+  )
 }
 
 // export saga as default
@@ -144,6 +206,10 @@ export default function* watcherSaga() {
     yield takeLatest(
       slice.actions.createOmrUploadSession,
       createOmrUploadSessionSaga
+    ),
+    yield takeLatest(
+      slice.actions.abortOmrUploadSession,
+      abortOmrUploadSessionSaga
     ),
   ])
 }

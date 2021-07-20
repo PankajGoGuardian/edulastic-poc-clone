@@ -665,6 +665,7 @@ export const TAB_BUTTONS = [
       buttons.prod_symbol,
       buttons.prod,
       buttons.prod_bottom,
+      buttons.prod_upper,
       buttons.fog,
     ],
   },

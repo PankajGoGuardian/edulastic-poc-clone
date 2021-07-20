@@ -133,7 +133,13 @@ function getFunctions(shapes) {
         }
         case Logarithm.jxgType: {
           const points = Object.values(item.ancestors)
-          return (x, y) => y > Logarithm.makeCallback(...points)(x)
+          const [p1, p2] = points
+          return (x, y) => {
+            if (p2.Y() > p1.Y()) {
+              return y < Logarithm.makeCallback(...points)(x)
+            }
+            return y > Logarithm.makeCallback(...points)(x)
+          }
         }
         case Parabola.jxgType: {
           const points = Object.values(item.ancestors)

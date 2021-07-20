@@ -289,10 +289,19 @@ const getOmrUploadSessions = ({ assignmentId, groupId }) =>
     })
     .then((result) => result.data.result)
 
-const splitScanBubbleSheets = (payload) =>
+const splitScanOmrSheets = (payload) =>
   api
     .callApi({
       url: `${prefix}/scan-omr-sheets`,
+      data: payload,
+      method: 'post',
+    })
+    .then((result) => result.data)
+
+const abortOmrUploadSession = (payload) =>
+  api
+    .callApi({
+      url: `${prefix}/abort-omr-upload`,
       data: payload,
       method: 'post',
     })
@@ -325,5 +334,6 @@ export default {
   getBubbleSheet,
   createOmrUploadSession,
   getOmrUploadSessions,
-  splitScanBubbleSheets,
+  splitScanOmrSheets,
+  abortOmrUploadSession,
 }

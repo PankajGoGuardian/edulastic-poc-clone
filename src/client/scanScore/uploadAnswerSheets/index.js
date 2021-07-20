@@ -21,10 +21,12 @@ const UploadAnswerSheets = ({
   omrUploadSessions,
   currentSession,
   omrSheetDocs,
-  setUploadProgress,
+  setCancelUpload,
+  handleUploadProgress,
   getOmrUploadSessions,
   setOmrUploadSession,
   createOmrUploadSession,
+  abortOmrUploadSession,
 }) => {
   const { assignmentId = '', groupId = '', sessionId = '' } = useMemo(
     () => qs.parse(location?.search || '', { ignoreQueryPrefix: true }),
@@ -52,30 +54,26 @@ const UploadAnswerSheets = ({
     })
   }, [])
 
-  const handleProgress = useCallback((progressInfo) => {
-    const { loaded: uploaded, total } = progressInfo
-    const progress = Math.floor((100 * uploaded) / total)
-    setUploadProgress(progress)
-  }, [])
-
-  const handleCancel = useCallback(() => {}, [])
-
   const handleDrop = useCallback(
     ([file]) =>
       createOmrUploadSession({
         file,
         assignmentId,
         groupId,
-        handleProgress,
-        handleCancel,
+        handleUploadProgress,
+        setCancelUpload,
       }),
     [assignmentId, groupId]
   )
 
-  const handleAbortClick = useCallback(() => {}, [])
+  const handleAbortClick = useCallback(
+    () => abortOmrUploadSession({ assignmentId, groupId, sessionId }),
+    [assignmentId, groupId, sessionId]
+  )
 
   useEffect(() => {
-    getOmrUploadSessions({ assignmentId, groupId, sessionId })
+    // NOTE: Uncomment to list uploaded sessions
+    // getOmrUploadSessions({ assignmentId, groupId, sessionId })
   }, [])
 
   return (
@@ -85,13 +83,18 @@ const UploadAnswerSheets = ({
       ) : !sessionId || uploading ? (
         <>
           <DropzoneContainer
+            uploading={uploading}
             handleDrop={handleDrop}
             uploadProgress={uploadProgress}
+            handleCancelUpload={
+              sessionId && uploading ? handleAbortClick : null
+            }
           />
-          <SessionsPage
+          {/* NOTE: Uncomment to list uploaded sessions */}
+          {/* <SessionsPage
             sessions={omrUploadSessions}
             onSessionClick={handleSessionClick}
-          />
+          /> */}
         </>
       ) : currentSession.status > 2 && currentSession.pages?.length ? (
         <SessionPage pages={currentSession.pages} />

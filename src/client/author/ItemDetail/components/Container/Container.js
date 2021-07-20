@@ -827,6 +827,7 @@ class Container extends Component {
                 isCollapsed={!!collapseDirection}
                 useTabsLeft={useTabsLeft}
                 onShowSettings={this.handleShowSettings}
+                containerType="passage"
               />
             )}
             {rows.map((row, i) => (
@@ -859,6 +860,7 @@ class Container extends Component {
                   showAddItemButton={showAddItemButton}
                   isPassageWithQuestions={passageWithQuestions}
                   onShowSettings={this.handleShowSettings}
+                  containerType="question"
                 />
               </>
             ))}

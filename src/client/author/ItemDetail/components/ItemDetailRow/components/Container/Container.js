@@ -188,6 +188,7 @@ class Container extends Component {
       removeTab,
       showAddItemButton,
       isPassageWithQuestions,
+      containerType,
     } = this.props
     const { tabIndex } = this.state
     const enableAnotherPart = this.canRowHaveAnotherPart(row, rowIndex)
@@ -233,7 +234,7 @@ class Container extends Component {
                         }
                   }
                   onChange={(e) =>
-                    changeTabTitle(tabIndex, e.target.value, row.widgets)
+                    changeTabTitle(tabIndex, e.target.value, containerType)
                   }
                   editable
                   close

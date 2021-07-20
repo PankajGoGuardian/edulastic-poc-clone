@@ -1,6 +1,6 @@
 import React from 'react'
 import Dropzone from 'react-dropzone'
-import { Row, Col, Progress, Button } from 'antd'
+import { Progress, Button } from 'antd'
 
 import StyledDropZone from '../../../assessment/components/StyledDropZone'
 
@@ -34,25 +34,28 @@ export const DropzoneContainer = ({
               allowedFiles: 'PDF, JPEG, JPG, PNG',
             }}
           >
-            <Row
-              type="flex"
-              gutter={[0, 25]}
-              style={{ width: '100%', marginTop: '20px' }}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                width: '100%',
+                marginTop: '20px',
+              }}
             >
-              <Col span={22}>
-                <Progress
-                  strokeColor={{ from: '#0072ff', to: '#00d4ff' }}
-                  percent={uploadProgress}
-                  status="active"
-                  showInfo={false}
-                />
-              </Col>
+              <Progress
+                strokeColor={{ from: '#0072ff', to: '#00d4ff' }}
+                percent={uploadProgress}
+                status="active"
+                showInfo={false}
+              />
               {handleCancelUpload && (
-                <Col span={2}>
-                  <Button type="primary" onClick={handleCancelUpload}>
-                    Cancel
-                  </Button>
-                </Col>
+                <Button
+                  type="primary"
+                  onClick={handleCancelUpload}
+                  style={{ marginLeft: '25px' }}
+                >
+                  Cancel
+                </Button>
               )}
               {/* {fileRejections.length ? (
                     <Col className="dropzone-list-div" span={24}>
@@ -67,7 +70,7 @@ export const DropzoneContainer = ({
                       ))}
                     </Col>
                   ) : null} */}
-            </Row>
+            </div>
           </StyledDropZone>
         </div>
       )

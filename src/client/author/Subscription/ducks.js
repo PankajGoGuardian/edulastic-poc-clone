@@ -351,8 +351,9 @@ function* upgradeUserLicense({ payload }) {
   }
 }
 
-function* fetchUserSubscription({ payload }) {
+function* fetchUserSubscription(...args) {
   try {
+    const { payload } = args[0] || {}
     const apiUserSubscriptionStatus = yield call(
       subscriptionApi.subscriptionStatus,
       payload

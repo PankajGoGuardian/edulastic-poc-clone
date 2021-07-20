@@ -46,6 +46,12 @@ export const SAVE_APPROVED_MAPPING = '[admin] SAVE_APPROVED_MAPPING'
 export const UNSET_MAPPING_DATA = '[admin UNSET_MAPPING_DATA'
 export const GENERATE_MAPPED_DATA = '[admin] GENERATE_MAPPED_DATA'
 export const SAVE_GENERATE_MAPPING_DATE = '[admin] SAVE_GENERATE_MAPPING_DATE'
+export const SAVE_DUPLICATE_MAPPED_DATA = '[admin] SAVE_DUPLICATE_MAPPED_DATA'
+export const UNSET_DUPLICATE_MAPPING_DATA =
+  '[admin UNSET_DUPLICATE_MAPPING_DATA'
+
+export const TOGGLE_APPROVE_MODAL_VISIBLE =
+  '[admin] TOGGLE_APPROVE_MODAL_VISIBLE'
 
 // ACTION CREATORS
 export const searchExistingDataApi = createAction(SEARCH_EXISTING_DATA_API)
@@ -103,6 +109,13 @@ export const getMappingDataFailureAction = createAction(
 )
 export const unSetMappingDataAction = createAction(UNSET_MAPPING_DATA)
 export const generateMappedDataAction = createAction(GENERATE_MAPPED_DATA)
+export const saveDuplicateMappedDataAction = createAction(
+  SAVE_DUPLICATE_MAPPED_DATA
+)
+export const unSetDuplicateMappingDataAction = createAction(
+  UNSET_DUPLICATE_MAPPING_DATA
+)
+export const toggleApproveModal = createAction(TOGGLE_APPROVE_MODAL_VISIBLE)
 
 // REDUCERS
 
@@ -127,6 +140,7 @@ const initialState = {
       classLoading: false,
     },
   },
+  approveModalVisible: false,
 }
 
 const putMappedDataIntoState = (state, payload) => {
@@ -159,6 +173,19 @@ const unSetMappingData = (state, payload) => {
   const entity = type === 'school' ? 'Schools' : 'Classes'
   state.mappedData[districtId] = state.mappedData[districtId] || {}
   state.mappedData[districtId][entity] = {}
+}
+
+const putDuplicateMappedDataIntoState = (state, payload) => {
+  const { type, result } = payload.payload
+  const entity = type === 'school' ? 'Schools' : 'Classes'
+  if (!state.duplicateData) state.duplicateData = {}
+  state.duplicateData[entity] = result || []
+}
+
+const unSetDuplicateMappedData = (state, payload) => {
+  const { entity } = payload.payload
+  if (state.duplicateData && state.duplicateData[entity])
+    state.duplicateData[entity] = []
 }
 
 const fetchExistingDataReducer = createReducer(initialState, {
@@ -290,6 +317,11 @@ const fetchExistingDataReducer = createReducer(initialState, {
     state.stopSyncSaving = payload
   },
   [UNSET_MAPPING_DATA]: unSetMappingData,
+  [SAVE_DUPLICATE_MAPPED_DATA]: putDuplicateMappedDataIntoState,
+  [UNSET_DUPLICATE_MAPPING_DATA]: unSetDuplicateMappedData,
+  [TOGGLE_APPROVE_MODAL_VISIBLE]: (state, { payload }) => {
+    state.approveModalVisible = payload
+  },
 })
 
 // SELECTORS
@@ -323,6 +355,16 @@ export const getMappedDataLoading = createSelector(
 export const stopSyncSavingSelector = createSelector(
   adminStateSelector,
   (state) => state.mergeData.stopSyncSaving
+)
+
+export const getDuplicateMappedData = createSelector(
+  adminStateSelector,
+  ({ mergeData }) => mergeData.duplicateData
+)
+
+export const getIsApproveModalVisible = createSelector(
+  adminStateSelector,
+  ({ mergeData }) => mergeData.approveModalVisible
 )
 
 // SAGAS
@@ -613,9 +655,23 @@ function* saveMappingData({ payload }) {
   try {
     const result = yield call(saveMappedData, { payload: newPayload, lmsType })
     if (result.statusCode === 409) {
-      notification({ msg: result.message, type: 'error', exact: true })
+      notification({
+        msg: result.message,
+        type: 'error',
+        exact: true,
+        duration: 0,
+      })
+      if (result.data) {
+        yield put(
+          saveDuplicateMappedDataAction({
+            result: result.data,
+            type: payload.type,
+          })
+        )
+      }
     } else {
       notification({ msg: 'Mapped data successfully saved', type: 'success' })
+      yield put(toggleApproveModal(false))
     }
   } catch (err) {
     notification({ msg: 'Failed to save mapped data', type: 'error' })

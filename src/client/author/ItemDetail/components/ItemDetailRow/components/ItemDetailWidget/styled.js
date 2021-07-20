@@ -32,7 +32,6 @@ export const ButtonsContainer = styled.div`
   align-items: flex-end;
   overflow-x: visible;
   padding: 10px 15px 0px 10px;
-  min-width: 180px;
   opacity: 0.3;
 
   &:hover {
@@ -43,7 +42,6 @@ export const ButtonsContainer = styled.div`
     .points-input-wrapper,
     .total-points-wrapper {
       background: white;
-      padding: 0px 0px 0px 10px;
     }
   }
   .ant-btn {

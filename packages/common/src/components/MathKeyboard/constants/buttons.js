@@ -58,6 +58,7 @@ import Group3181 from '../assets/keyboardButtons/3181.svg'
 import Group1030 from '../assets/keyboardButtons/1030.svg'
 import Group1031 from '../assets/keyboardButtons/1031.svg'
 import Group1032 from '../assets/keyboardButtons/1032.svg'
+import Group1033 from '../assets/keyboardButtons/1033.svg'
 import Group1043 from '../assets/keyboardButtons/1043.svg'
 import Group943 from '../assets/keyboardButtons/943.svg'
 
@@ -2271,17 +2272,24 @@ export const sum = {
 }
 
 export const sum_symbol = {
-  handler: '\\sum',
+  handler: '\\summationSymbol',
   label: <CustomImage src={Group1031} width={11} height={38} />,
   types: ['all'],
-  command: 'write',
+  command: 'cmd',
 }
 
 export const sum_bottom = {
-  handler: '\\sum_{}',
+  handler: '\\summationLower',
   label: <CustomImage src={Group1032} width={11} height={38} />,
   types: ['all'],
-  command: 'write',
+  command: 'cmd',
+}
+
+export const sum_upper = {
+  handler: '\\sumUpper',
+  label: <CustomImage src={Group1033} width={11} height={38} />,
+  types: ['all'],
+  command: 'cmd',
 }
 
 export const no_subset = {

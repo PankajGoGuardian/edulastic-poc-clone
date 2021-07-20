@@ -772,46 +772,66 @@ export const showGroupsPanelSelector = createSelector(
   }
 )
 
-export const getUserListSelector = createSelector(stateSelector, (state) => {
-  const usersList = state.sharedUsersList
-  const flattenUsers = []
-  usersList.forEach(
-    ({
-      permission,
-      sharedType,
-      sharedWith,
-      sharedId,
-      v1LinkShareEnabled = 0,
-    }) => {
-      if (sharedType === 'INDIVIDUAL' || sharedType === 'SCHOOL') {
-        sharedWith.forEach((user) => {
-          flattenUsers.push({
-            userName: user.name,
-            email: user.email || '',
-            _userId: user._id,
+export const getUserListSelector = createSelector(
+  stateSelector,
+  getUserOrgId,
+  currentDistrictInstitutionIds,
+  (state, districtId, institutionIds) => {
+    const usersList = state.sharedUsersList || []
+    const flattenUsers = []
+
+    usersList.forEach(
+      ({
+        permission,
+        sharedType,
+        sharedWith,
+        sharedId,
+        v1LinkShareEnabled = 0,
+      }) => {
+        if (sharedType === 'INDIVIDUAL' || sharedType === 'SCHOOL') {
+          sharedWith.forEach((user) => {
+            if (
+              sharedType === 'SCHOOL' &&
+              !institutionIds?.includes(user._id)
+            ) {
+              return
+            }
+            flattenUsers.push({
+              userName: user.name,
+              email: user.email || '',
+              _userId: user._id,
+              sharedType,
+              permission,
+              sharedId,
+            })
+          })
+        } else {
+          const shareData = {
+            userName: sharedType,
             sharedType,
             permission,
             sharedId,
-          })
-        })
-      } else {
-        const shareData = {
-          userName: sharedType,
-          sharedType,
-          permission,
-          sharedId,
-          v1LinkShareEnabled,
+            v1LinkShareEnabled,
+          }
+          if (sharedType === 'DISTRICT') {
+            if (districtId !== sharedWith?.[0]?._id) {
+              return
+            }
+            Object.assign(shareData, {
+              shareWithName: sharedWith?.[0]?.name,
+            })
+          }
+          if (sharedType === 'LINK') {
+            shareData.v1LinkShareEnabled = v1LinkShareEnabled
+            shareData.userName = 'Anyone with link'
+          }
+          flattenUsers.push(shareData)
         }
-        if (sharedType === 'LINK') {
-          shareData.v1LinkShareEnabled = v1LinkShareEnabled
-          shareData.userName = 'Anyone with link'
-        }
-        flattenUsers.push(shareData)
       }
-    }
-  )
-  return flattenUsers
-})
+    )
+    return flattenUsers
+  }
+)
 
 export const getTestItemsRowsSelector = createSelector(
   getTestSelector,

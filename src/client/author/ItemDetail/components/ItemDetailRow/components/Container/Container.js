@@ -193,6 +193,9 @@ class Container extends Component {
     const enableAnotherPart = this.canRowHaveAnotherPart(row, rowIndex)
     // adding first part?
     const isAddFirstPart = row.widgets && row.widgets.length === 0
+    const showAddPassageTab =
+      isPassageQuestion && row.tabs?.length === 0 && row?.widgets?.length > 0
+
     return (
       <Content
         value={tabIndex}
@@ -200,7 +203,7 @@ class Container extends Component {
         hide={hideColumn}
         data-cy="itemdetail-content"
       >
-        {isPassageQuestion && row.tabs?.length === 0 && (
+        {showAddPassageTab && (
           <AddTabButton tabsBtn onClick={() => addTabs()} data-cy="addTab">
             <GreenPlusIcon>+</GreenPlusIcon>
             ADD TABS

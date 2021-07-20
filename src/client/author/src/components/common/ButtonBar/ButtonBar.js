@@ -168,17 +168,6 @@ class ButtonBar extends Component {
             {hasAuthorPermission && (
               <RightSide>
                 {renderRightSide()}
-                {onCloseEditModal && (
-                  <EduButton
-                    isBlue
-                    data-cy="closeEditModal"
-                    onClick={onCloseEditModal}
-                    width="120px"
-                  >
-                    <IconClose />
-                    Cancel
-                  </EduButton>
-                )}
                 {(showPublishButton || showPublishButton === undefined) &&
                   (itemStatus === 'draft' ? (
                     <>
@@ -270,6 +259,16 @@ class ButtonBar extends Component {
                     onClick={onToggleFullModal}
                   >
                     {isInModal ? <IconExpand /> : <IconCollapse />}
+                  </EduButton>
+                )}
+                {onCloseEditModal && (
+                  <EduButton
+                    isBlue
+                    IconBtn
+                    data-cy="closeEditModal"
+                    onClick={onCloseEditModal}
+                  >
+                    <IconClose />
                   </EduButton>
                 )}
               </RightSide>

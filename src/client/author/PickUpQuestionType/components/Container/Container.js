@@ -313,17 +313,17 @@ class Container extends Component {
                   isBlue
                   IconBtn
                   data-cy="closeModal"
-                  onClick={onModalClose}
+                  onClick={onToggleFullModal}
                 >
-                  <IconClose />
+                  {isInModal ? <IconExpand /> : <IconCollapse />}
                 </EduButton>
                 <EduButton
                   isBlue
                   IconBtn
                   data-cy="closeModal"
-                  onClick={onToggleFullModal}
+                  onClick={onModalClose}
                 >
-                  {isInModal ? <IconExpand /> : <IconCollapse />}
+                  <IconClose />
                 </EduButton>
               </FlexContainer>
             )

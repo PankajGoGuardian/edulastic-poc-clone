@@ -562,7 +562,6 @@ const ManageContentBlock = (props) => {
             setAlignment={setAlignment}
             selectedStandards={selectedStandards}
             setSelectedStandards={setSelectedStandards}
-            curriculum={collectionFromCurriculumSequence}
             data={resourceData}
           />
         )}
@@ -578,7 +577,6 @@ const ManageContentBlock = (props) => {
             setAlignment={setAlignment}
             selectedStandards={selectedStandards}
             setSelectedStandards={setSelectedStandards}
-            curriculum={collectionFromCurriculumSequence}
             data={resourceData}
           />
         )}
@@ -594,7 +592,6 @@ const ManageContentBlock = (props) => {
             setAlignment={setAlignment}
             selectedStandards={selectedStandards}
             setSelectedStandards={setSelectedStandards}
-            curriculum={collectionFromCurriculumSequence}
             data={resourceData}
           />
         )}

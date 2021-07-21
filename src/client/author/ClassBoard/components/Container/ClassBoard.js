@@ -26,7 +26,6 @@ import { Dropdown, Select, notification as antNotification } from 'antd'
 import { get, isEmpty, keyBy, last, round, sortBy, uniqBy } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import ConfirmationModal from '../../../../common/components/ConfirmationModal'
@@ -1597,24 +1596,6 @@ class ClassBoard extends Component {
                             <IconDownload />
                             <span>Download Response</span>
                           </MenuItems>
-                          <FeaturesSwitch
-                            inputFeatures="premium"
-                            actionOnInaccessible="hidden"
-                            groupId={classId}
-                          >
-                            <MenuItems data-cy="uploadAnswerSheets">
-                              <Link
-                                to={{
-                                  pathname: '/uploadAnswerSheets',
-                                  search: `?assignmentId=${assignmentId}&groupId=${classId}`,
-                                }}
-                                target="_blank"
-                              >
-                                <IconUpload />
-                                <span>Upload Answer Sheets</span>
-                              </Link>
-                            </MenuItems>
-                          </FeaturesSwitch>
                         </DropMenu>
                       }
                       placement="bottomRight"

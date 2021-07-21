@@ -404,6 +404,8 @@ class ClassHeader extends Component {
       })
   }
 
+  uploadAnswerSheets
+
   render() {
     const {
       t,
@@ -607,6 +609,17 @@ class ClassHeader extends Component {
         >
           Generate Bubble Sheet
         </MenuItems>
+        <MenuItems data-cy="download-bubble-sheet" key="download-bubble-sheet">
+          <Link
+            to={{
+              pathname: '/uploadAnswerSheets',
+              search: `?assignmentId=${assignmentId}&groupId=${classId}`,
+            }}
+            target="_blank"
+          >
+            Upload Answer Sheets
+          </Link>
+        </MenuItems>
         {isShowUnAssign && (
           <MenuItems
             data-cy="unAssign"
@@ -616,10 +629,6 @@ class ClassHeader extends Component {
             Unassign ALL Students
           </MenuItems>
         )}
-        {/* TODO temp hiding for UAT */}
-        {/* <MenuItems key="key3" onClick={this.onStudentReportCardsClick}>
-          Generate Bubble Sheet
-        </MenuItems> */}
         {showPasswordButton && (
           <MenuItems
             data-cy="viewPassword"

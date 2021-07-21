@@ -178,7 +178,6 @@ class SideMenu extends Component {
       showTrialUsedModal: false,
       showPurchaseModal: false,
       showTrialSubsConfirmation: false,
-      isExpandedOnHover: false,
     }
 
     this.sideMenuRef = React.createRef()
@@ -408,7 +407,7 @@ class SideMenu extends Component {
   }
 
   render() {
-    const { broken, isVisible, showModal, isExpandedOnHover } = this.state
+    const { broken, isVisible, showModal } = this.state
     let { isSwitchAccountNotification } = this.state
     // For Now we are hiding the switch account notification (Ref: EV-25373)
     // TODO: Remove hiding notification when implementation of "showing notification only once"
@@ -616,22 +615,16 @@ class SideMenu extends Component {
             </LogoWrapper>
             <MenuWrapper
               onMouseEnter={
-                isCollapsed && !isMobile && !isExpandedOnHover
+                isCollapsed && !isMobile
                   ? () => {
                       this.toggleMenu()
-                      this.setState({
-                        isExpandedOnHover: true,
-                      })
                     }
                   : null
               }
               onMouseLeave={
-                !isCollapsed && !isMobile && isExpandedOnHover
+                !isCollapsed && !isMobile
                   ? () => {
                       this.toggleMenu()
-                      this.setState({
-                        isExpandedOnHover: false,
-                      })
                     }
                   : null
               }

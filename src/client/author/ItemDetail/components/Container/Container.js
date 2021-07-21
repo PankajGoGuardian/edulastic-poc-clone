@@ -20,7 +20,7 @@ import {
 } from '@edulastic/common'
 import { IconClose } from '@edulastic/icons'
 import { cloneDeep, get, uniq, intersection, keyBy } from 'lodash'
-import { Layout, Button, Pagination } from 'antd'
+import { Layout, Button, Pagination, Dropdown, Menu } from 'antd'
 import ItemDetailContext, {
   COMPACT,
   DEFAULT,
@@ -382,6 +382,12 @@ class Container extends Component {
     })
   }
 
+  handleAddQuestionToPassage = () => {
+    const { rows } = this.props
+    const rowIndex = (rows?.length || 1) - 1
+    this.handleAdd({ rowIndex, tabIndex: 0 })
+  }
+
   handleAddToPassage = (type, tabIndex, rowIndex) => {
     const { isTestFlow, match, addWidgetToPassage } = this.props // , item
     // Checking if current item allows multiple items
@@ -660,7 +666,6 @@ class Container extends Component {
     const item = produce(defaultEmptyItem, (draft) => {
       draft.rows[0].dimension = '50%'
       draft.canAddMultipleItems = true
-      draft.canAddMultipleItems = true
       draft.isPassageWithQuestions = true
       draft.multipartItem = true
       draft.passageId = passage._id
@@ -796,11 +801,6 @@ class Container extends Component {
     const collapseLeft = collapseDirection === 'left'
     const collapseRight = collapseDirection === 'right'
 
-    const passageTestItems = get(passage, 'testItems', [])
-    const widgetLength = get(rows, [0, 'widgets'], []).length
-    const showAddItemButton =
-      (!!widgetLength || passageTestItems.length > 1) && view === EDIT
-
     return (
       <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
         <ScrollContext.Provider
@@ -860,7 +860,6 @@ class Container extends Component {
                   isCollapsed={!!collapseDirection}
                   useTabsLeft={useTabsLeft}
                   addItemToPassage={this.addItemToPassage}
-                  showAddItemButton={showAddItemButton}
                   isPassageWithQuestions={passageWithQuestions}
                   onShowSettings={this.handleShowSettings}
                   containerType="question"
@@ -928,9 +927,11 @@ class Container extends Component {
   }
 
   get passageNavigator() {
-    const { item, passage, rows, view, itemDeleting } = this.props
+    const { t, item, passage, rows, view, itemDeleting } = this.props
     const widgetLength = get(rows, [0, 'widgets'], []).length
     const passageTestItems = this.passageItems
+    const isAddFirstPart = widgetLength === 0
+
     return (
       // isPassageWithQuestions fallback condition to show/hide pagination
       (item.canAddMultipleItems || item.isPassageWithQuestions) &&
@@ -952,35 +953,44 @@ class Container extends Component {
               onChange={this.goToItem}
             />
           )}
-          <AddRemoveButtonWrapper>
-            {(!!widgetLength || passageTestItems.length > 1) && view === EDIT && (
-              <>
-                {passageTestItems.length > 1 && (
-                  <EduButton
-                    isGhost
-                    ml="0px"
-                    height="30px"
-                    disabled={itemDeleting}
-                    onClick={this.handleRemoveItemRequest}
-                    data-cy="removeItem"
-                  >
-                    <i className="fa fa-minus-circle" />
-                    &nbsp;ITEM
-                  </EduButton>
-                )}
-                <EduButton
-                  isGhost
-                  height="30px"
-                  disabled={itemDeleting}
-                  onClick={this.addItemToPassage}
-                  data-cy="addItem"
-                >
-                  <i className="fa fa-plus-circle" />
-                  &nbsp;ITEM
+          {widgetLength >= 1 && view === EDIT && (
+            <AddRemoveButtonWrapper>
+              <Dropdown
+                disabled={itemDeleting}
+                overlay={
+                  <Menu>
+                    <Menu.Item
+                      key="addQuestionToPassage"
+                      onClick={this.handleAddQuestionToPassage}
+                    >
+                      {isAddFirstPart
+                        ? t('component.itemDetail.addFirstPart')
+                        : t('component.itemDetail.addNew')}
+                    </Menu.Item>
+                    <Menu.Item
+                      key="addItemToPassage"
+                      onClick={this.addItemToPassage}
+                    >
+                      {t('component.itemDetail.addNewItemToPassage')}
+                    </Menu.Item>
+                    {passageTestItems.length > 1 && (
+                      <Menu.Item
+                        key="removeCurrenItem"
+                        onClick={this.handleRemoveItemRequest}
+                      >
+                        {t('component.itemDetail.removeCurrentItem')}
+                      </Menu.Item>
+                    )}
+                  </Menu>
+                }
+                trigger="click"
+              >
+                <EduButton isGhost height="30px">
+                  {t('component.itemDetail.addRemove')}
                 </EduButton>
-              </>
-            )}
-          </AddRemoveButtonWrapper>
+              </Dropdown>
+            </AddRemoveButtonWrapper>
+          )}
         </PassageNavigation>
       )
     )

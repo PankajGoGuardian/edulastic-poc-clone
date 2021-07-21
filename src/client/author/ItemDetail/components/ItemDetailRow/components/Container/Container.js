@@ -23,7 +23,6 @@ import {
   removeTabAction,
   setItemLevelScoreAction,
 } from '../../../../ducks'
-import AddNewItem from '../AddNew/AddNewItem'
 import { PassageAddNewButton, PassageButtonContainer } from '../AddNew/styled'
 import PassageAddPart from '../AddNew/PassageAddPart'
 
@@ -186,7 +185,6 @@ class Container extends Component {
       hideColumn,
       addTabs,
       removeTab,
-      showAddItemButton,
       isPassageWithQuestions,
       containerType,
     } = this.props
@@ -295,11 +293,6 @@ class Container extends Component {
                 isAddFirstPart={isAddFirstPart}
                 onClick={this.onAddBtnClick({ rowIndex, tabIndex })}
               />
-            )}
-
-            {/* New testItem */}
-            {showAddItemButton && isPassageWithQuestions && (
-              <AddNewItem onClick={this.addNewItemToPassage} />
             )}
           </AddButtonContainer>
         )}

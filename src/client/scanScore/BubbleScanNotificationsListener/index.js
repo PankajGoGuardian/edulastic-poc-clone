@@ -10,6 +10,15 @@ import { actions } from '../uploadAnswerSheets/ducks'
 
 const bubbleSheetsCollectionName = 'BubbleAnswerSheets'
 
+export const deleteNotificationDocuments = (docIds = []) => {
+  const batch = Fbs.db.batch()
+  docIds.forEach((d) => {
+    const ref = Fbs.db.collection(bubbleSheetsCollectionName).doc(d.__id)
+    batch.delete(ref)
+  })
+  batch.commit().catch((err) => console.error(err))
+}
+
 const BubbleScanNotificationsListener = ({ user, setOmrSheetDocs }) => {
   const userNotifications = Fbs.useFirestoreRealtimeDocuments(
     (db) =>
@@ -18,15 +27,6 @@ const BubbleScanNotificationsListener = ({ user, setOmrSheetDocs }) => {
         .where('uploadedBy._id', '==', `${user?._id}`),
     [user?._id]
   )
-
-  // uncomment to perform deletion (dev only)
-  // const deleteNotificationDocument = (docId) => {
-  //   Fbs.db
-  //     .collection(bubbleSheetsCollectionName)
-  //     .doc(docId)
-  //     .delete()
-  //     .catch((err) => console.error(err))
-  // }
 
   useEffect(() => {
     if (

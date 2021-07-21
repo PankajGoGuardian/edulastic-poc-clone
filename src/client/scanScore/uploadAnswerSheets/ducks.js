@@ -6,6 +6,8 @@ import { aws } from '@edulastic/constants'
 import { assignmentApi } from '@edulastic/api'
 import { notification, uploadToS3 } from '@edulastic/common'
 
+import { deleteNotificationDocuments } from '../BubbleScanNotificationsListener'
+
 const slice = createSlice({
   name: 'uploadAnswerSheets',
   initialState: {
@@ -23,9 +25,23 @@ const slice = createSlice({
       state.cancelUpload = payload
     },
     handleUploadProgress: (state, { payload }) => {
-      const { loaded: uploaded, total } = payload
-      const uploadProgress = Math.floor((100 * uploaded) / total)
+      const { loaded: uploaded, total } = payload.progressData
+      const mulFactor = payload.mulFactor || 100
+      const uploadProgress = Number(((mulFactor * uploaded) / total).toFixed(2))
       state.uploadProgress = uploadProgress || 0
+    },
+    setUploadInterval: (state) => {
+      let progress = state.uploadProgress
+      let step = 6
+      const interval = setInterval(() => {
+        progress = Number((progress + step).toFixed(2))
+        state.uploadProgress = progress
+        step /= 2
+      }, 3000)
+      return interval
+    },
+    clearUploadInterval: (state, { payload }) => {
+      clearInterval(payload)
     },
     getOmrUploadSessions: (state) => {
       state.loading = true
@@ -65,6 +81,7 @@ const slice = createSlice({
         state.omrUploadSessions = [...filteredSessions, payload.session]
       }
     },
+    updateOmrUploadSession: () => {},
     abortOmrUploadSession: (state) => {
       if (state.cancelUpload) {
         state.cancelUpload()
@@ -117,6 +134,7 @@ function* createOmrUploadSessionSaga({
     setCancelUpload,
   },
 }) {
+  let uploadInterval = null
   try {
     const source = { name: file.name }
     const session = yield call(assignmentApi.createOmrUploadSession, {
@@ -136,10 +154,11 @@ function* createOmrUploadSessionSaga({
       uploadToS3,
       file,
       aws.s3Folders.BUBBLE_SHEETS,
-      handleUploadProgress,
+      (progressData) => handleUploadProgress({ progressData, mulFactor: 80 }),
       setCancelUpload,
       `${assignmentId}/${sessionId}`
     )
+    uploadInterval = yield put(slice.actions.setUploadInterval())
     const { result: sessionUpdated, error } = yield call(
       assignmentApi.splitScanOmrSheets,
       {
@@ -148,6 +167,10 @@ function* createOmrUploadSessionSaga({
         groupId,
         source,
       }
+    )
+    yield put(slice.actions.clearUploadInterval(uploadInterval))
+    yield put(
+      handleUploadProgress({ progressData: { loaded: 100, total: 100 } })
     )
     if (error) {
       throw new Error(error)
@@ -160,6 +183,7 @@ function* createOmrUploadSessionSaga({
   } catch (e) {
     const msg = e.message || 'Failed to upload file'
     notification({ msg })
+    yield put(slice.actions.clearUploadInterval(uploadInterval))
     yield put(slice.actions.createOmrUploadSessionDone({ error: e.message }))
     yield put(
       push({
@@ -167,6 +191,28 @@ function* createOmrUploadSessionSaga({
         search: `?assignmentId=${assignmentId}&groupId=${groupId}`,
       })
     )
+  }
+}
+
+function* updateOmrUploadSessionSaga({
+  payload: { assignmentId, groupId, sessionId, pageDocs, currentSession },
+}) {
+  try {
+    const session = { ...currentSession, status: 3, pages: pageDocs }
+    yield put(slice.actions.setOmrUploadSession({ session, update: true }))
+    yield call(assignmentApi.updateOmrUploadSession, {
+      assignmentId,
+      groupId,
+      sessionId,
+      status: 3,
+    })
+    notification({ type: 'success', msg: 'Scoring completed!' })
+    // TODO: delete firbase docs here
+    const docIds = pageDocs.map(({ docId }) => docId)
+    deleteNotificationDocuments(docIds)
+  } catch (e) {
+    const msg = e.message || 'Scoring completed. Failed to update session!'
+    notification(msg)
   }
 }
 
@@ -206,6 +252,10 @@ export default function* watcherSaga() {
     yield takeLatest(
       slice.actions.createOmrUploadSession,
       createOmrUploadSessionSaga
+    ),
+    yield takeLatest(
+      slice.actions.updateOmrUploadSession,
+      updateOmrUploadSessionSaga
     ),
     yield takeLatest(
       slice.actions.abortOmrUploadSession,

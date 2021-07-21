@@ -1,6 +1,6 @@
 import React, { useMemo, useEffect, useCallback } from 'react'
 import { connect } from 'react-redux'
-import { Spin } from 'antd'
+import { Spin, Breadcrumb } from 'antd'
 import qs from 'qs'
 
 import { PageLayout } from './PageLayout'
@@ -27,6 +27,7 @@ const UploadAnswerSheets = ({
   getOmrUploadSessions,
   setOmrUploadSession,
   createOmrUploadSession,
+  updateOmrUploadSession,
   abortOmrUploadSession,
 }) => {
   const { assignmentId = '', groupId = '', sessionId = '' } = useMemo(
@@ -37,9 +38,13 @@ const UploadAnswerSheets = ({
   const pageDocs = useMemo(() => {
     const _pageDocs = omrSheetDocs?.[assignmentId]?.[sessionId] || []
     return _pageDocs.map((d) => ({
+      docId: d.__id,
       _id: d.sessionId,
       uri: d.uri,
+      sessionId: d.sessionId,
+      assignmentId: d.assignmentId,
       scannedUri: d.scannedUri,
+      studentId: d.studentId,
       studentName: d.studentName,
       status: processStatusMap[d.processStatus],
       message: d.message,
@@ -76,6 +81,25 @@ const UploadAnswerSheets = ({
     // NOTE: Uncomment to list uploaded sessions
     // getOmrUploadSessions({ assignmentId, groupId, sessionId })
   }, [])
+
+  useEffect(() => {
+    const allDone = pageDocs.every((p) => p.status > 2 && p.status !== 6)
+    const checkForUpdate =
+      sessionId &&
+      !uploading &&
+      currentSession.status == 2 &&
+      pageDocs.length &&
+      allDone
+    if (checkForUpdate) {
+      updateOmrUploadSession({
+        assignmentId,
+        groupId,
+        sessionId,
+        pageDocs,
+        currentSession,
+      })
+    }
+  }, [sessionId, pageDocs])
 
   return (
     <PageLayout title="Scan Student Responses">

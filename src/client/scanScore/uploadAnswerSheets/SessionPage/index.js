@@ -23,7 +23,12 @@ const SessionPage = ({ pages, handleAbortClick }) => {
       }}
     />
   ) : (
-    <Row type="flex" style={{ padding: '40px' }} gutter={[10, 30]}>
+    <Row
+      type="flex"
+      justify="space-between"
+      style={{ padding: '40px' }}
+      gutter={[10, 30]}
+    >
       <Col span={6}>
         <ThumbnailDropdown
           defaultValue={statusFilterOptions[0]}
@@ -33,9 +38,11 @@ const SessionPage = ({ pages, handleAbortClick }) => {
         />
       </Col>
       <Col span={12}>
-        <Button type="primary" onClick={handleAbortClick}>
-          ABORT
-        </Button>
+        {handleAbortClick && (
+          <Button type="primary" onClick={handleAbortClick}>
+            Abort
+          </Button>
+        )}
       </Col>
       <Col span={6}>
         <Slider

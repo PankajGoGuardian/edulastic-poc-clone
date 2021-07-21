@@ -298,6 +298,15 @@ const splitScanOmrSheets = (payload) =>
     })
     .then((result) => result.data)
 
+const updateOmrUploadSession = (payload) =>
+  api
+    .callApi({
+      url: `${prefix}/update-omr-upload-session`,
+      data: payload,
+      method: 'post',
+    })
+    .then((result) => result.data)
+
 const abortOmrUploadSession = (payload) =>
   api
     .callApi({
@@ -335,5 +344,6 @@ export default {
   createOmrUploadSession,
   getOmrUploadSessions,
   splitScanOmrSheets,
+  updateOmrUploadSession,
   abortOmrUploadSession,
 }

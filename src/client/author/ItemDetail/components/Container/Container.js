@@ -414,6 +414,9 @@ class Container extends Component {
   }
 
   handleCancelQuestionToPassage = () => {
+    const { changeView } = this.props
+    changeView('edit')
+
     this.setState({
       showQuestionManageModal: false,
       isEditPassageQuestion: false,

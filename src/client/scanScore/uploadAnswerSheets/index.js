@@ -35,20 +35,25 @@ const UploadAnswerSheets = ({
     [location?.search]
   )
 
-  const pageDocs = useMemo(() => {
-    const _pageDocs = omrSheetDocs?.[assignmentId]?.[sessionId] || []
-    return _pageDocs.map((d) => ({
-      docId: d.__id,
-      _id: d.sessionId,
-      uri: d.uri,
-      sessionId: d.sessionId,
-      assignmentId: d.assignmentId,
-      scannedUri: d.scannedUri,
-      studentId: d.studentId,
-      studentName: d.studentName,
-      status: processStatusMap[d.processStatus],
-      message: d.message,
-    }))
+  const { pageDocs, scanInProgress } = useMemo(() => {
+    const _pageDocs = (omrSheetDocs?.[assignmentId]?.[sessionId] || []).map(
+      (d) => ({
+        docId: d.__id,
+        _id: d.sessionId,
+        uri: d.uri,
+        sessionId: d.sessionId,
+        assignmentId: d.assignmentId,
+        scannedUri: d.scannedUri,
+        studentId: d.studentId,
+        studentName: d.studentName,
+        status: processStatusMap[d.processStatus],
+        message: d.message,
+      })
+    )
+    const _scanInProgress = !_pageDocs.every(
+      (p) => p?.status > 2 && p?.status !== 6
+    )
+    return { pageDocs: _pageDocs, scanInProgress: _scanInProgress }
   }, [omrSheetDocs, assignmentId, sessionId])
 
   const handleSessionClick = useCallback((_sessionId) => {
@@ -83,13 +88,12 @@ const UploadAnswerSheets = ({
   }, [])
 
   useEffect(() => {
-    const allDone = pageDocs.every((p) => p.status > 2 && p.status !== 6)
     const checkForUpdate =
       sessionId &&
       !uploading &&
-      currentSession.status == 2 &&
+      currentSession?.status == 2 &&
       pageDocs.length &&
-      allDone
+      !scanInProgress
     if (checkForUpdate) {
       updateOmrUploadSession({
         assignmentId,
@@ -99,7 +103,7 @@ const UploadAnswerSheets = ({
         currentSession,
       })
     }
-  }, [sessionId, pageDocs])
+  }, [sessionId, scanInProgress])
 
   return (
     <PageLayout title="Scan Student Responses">
@@ -121,10 +125,13 @@ const UploadAnswerSheets = ({
             onSessionClick={handleSessionClick}
           /> */}
         </>
-      ) : currentSession.status > 2 && currentSession.pages?.length ? (
+      ) : currentSession?.status > 2 && currentSession.pages?.length ? (
         <SessionPage pages={currentSession.pages} />
       ) : (
-        <SessionPage pages={pageDocs} handleAbortClick={handleAbortClick} />
+        <SessionPage
+          pages={pageDocs}
+          handleAbortClick={scanInProgress ? handleAbortClick : null}
+        />
       )}
     </PageLayout>
   )

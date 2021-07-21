@@ -6,13 +6,14 @@ import { aws } from '@edulastic/constants'
 import { assignmentApi } from '@edulastic/api'
 import { notification, uploadToS3 } from '@edulastic/common'
 
-import { deleteNotificationDocuments } from '../BubbleScanNotificationsListener'
+import { deleteNotificationDocuments } from './utils'
 
 const slice = createSlice({
   name: 'uploadAnswerSheets',
   initialState: {
     uploading: false,
     uploadProgress: 0,
+    uploadProgressInterval: null,
     cancelUpload: null,
     loading: false,
     omrUploadSessions: [],
@@ -32,16 +33,18 @@ const slice = createSlice({
     },
     setUploadInterval: (state) => {
       let progress = state.uploadProgress
-      let step = 6
-      const interval = setInterval(() => {
+      let step = 8
+      state.uploadProgressInterval = setInterval(() => {
         progress = Number((progress + step).toFixed(2))
         state.uploadProgress = progress
         step /= 2
-      }, 3000)
-      return interval
+      }, 100)
     },
-    clearUploadInterval: (state, { payload }) => {
-      clearInterval(payload)
+    clearUploadInterval: (state) => {
+      if (state.uploadProgressInterval) {
+        clearInterval(state.uploadProgressInterval)
+        state.uploadProgressInterval = null
+      }
     },
     getOmrUploadSessions: (state) => {
       state.loading = true
@@ -60,7 +63,10 @@ const slice = createSlice({
         const filteredSessions = state.omrUploadSessions.filter(
           (s) => s._id !== payload.session._id
         )
-        state.omrUploadSessions = [...filteredSessions, payload.session]
+        state.omrUploadSessions = [
+          ...filteredSessions,
+          payload.currentSession || {},
+        ]
       }
     },
     createOmrUploadSession: (state) => {
@@ -120,6 +126,7 @@ function* getOmrUploadSessionsSaga({ payload }) {
       yield put(slice.actions.setOmrUploadSession({ session: currentSession }))
     }
   } catch (e) {
+    console.log(e.message)
     notification({ msg: 'Failed to fetch upload sessions' })
     yield put(slice.actions.getOmrUploadSessionsDone({ error: e.message }))
   }
@@ -134,7 +141,6 @@ function* createOmrUploadSessionSaga({
     setCancelUpload,
   },
 }) {
-  let uploadInterval = null
   try {
     const source = { name: file.name }
     const session = yield call(assignmentApi.createOmrUploadSession, {
@@ -154,11 +160,11 @@ function* createOmrUploadSessionSaga({
       uploadToS3,
       file,
       aws.s3Folders.BUBBLE_SHEETS,
-      (progressData) => handleUploadProgress({ progressData, mulFactor: 80 }),
+      (progressData) => handleUploadProgress({ progressData, mulFactor: 90 }),
       setCancelUpload,
       `${assignmentId}/${sessionId}`
     )
-    uploadInterval = yield put(slice.actions.setUploadInterval())
+    // yield put(slice.actions.setUploadInterval())
     const { result: sessionUpdated, error } = yield call(
       assignmentApi.splitScanOmrSheets,
       {
@@ -168,7 +174,7 @@ function* createOmrUploadSessionSaga({
         source,
       }
     )
-    yield put(slice.actions.clearUploadInterval(uploadInterval))
+    // yield put(slice.actions.clearUploadInterval())
     yield put(
       handleUploadProgress({ progressData: { loaded: 100, total: 100 } })
     )
@@ -181,9 +187,10 @@ function* createOmrUploadSessionSaga({
       })
     )
   } catch (e) {
+    console.log(e.message)
     const msg = e.message || 'Failed to upload file'
     notification({ msg })
-    yield put(slice.actions.clearUploadInterval(uploadInterval))
+    yield put(slice.actions.clearUploadInterval())
     yield put(slice.actions.createOmrUploadSessionDone({ error: e.message }))
     yield put(
       push({
@@ -211,6 +218,7 @@ function* updateOmrUploadSessionSaga({
     const docIds = pageDocs.map(({ docId }) => docId)
     deleteNotificationDocuments(docIds)
   } catch (e) {
+    console.log(e.message)
     const msg = e.message || 'Scoring completed. Failed to update session!'
     notification(msg)
   }
@@ -230,6 +238,7 @@ function* abortOmrUploadSessionSaga({
       notification({ type: 'success', msg: 'Aborted upload session' })
     }
   } catch (e) {
+    console.log(e.message)
     const msg = e.message || 'Failed to abort upload session'
     notification({ msg })
     yield put(slice.actions.abortOmrUploadSessionDone({ error: e.message }))

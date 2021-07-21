@@ -1,3 +1,7 @@
+import { FireBaseService as Fbs } from '@edulastic/common'
+
+export const bubbleSheetsCollectionName = 'BubbleAnswerSheets'
+
 export const processStatusMap = {
   in_progress: 2,
   done: 3,
@@ -25,3 +29,12 @@ export const statusFilterOptions = [
 ]
 
 export const getFileNameFromUri = (uri = '') => uri.split('/').lastItem
+
+export const deleteNotificationDocuments = (docIds = []) => {
+  const batch = Fbs.db.batch()
+  docIds.forEach((d) => {
+    const ref = Fbs.db.collection(bubbleSheetsCollectionName).doc(d.__id)
+    batch.delete(ref)
+  })
+  batch.commit().catch((err) => console.error(err))
+}

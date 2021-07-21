@@ -325,7 +325,7 @@ class AuthorTestItemPreview extends Component {
     const showButtons = collapseDirection !== 'right'
     if (
       !isPassage ||
-      (isPassage && passageTestItems && passageTestItems.length >= 0) ||
+      (isPassage && passageTestItems && passageTestItems.length <= 1) ||
       !showButtons
     ) {
       return null
@@ -342,6 +342,7 @@ class AuthorTestItemPreview extends Component {
             }
             onChange={goToItem}
             data-cy="questionPagination"
+            showLessItems
           />
         </PassageNavigation>
       )

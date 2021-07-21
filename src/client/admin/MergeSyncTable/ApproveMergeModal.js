@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Modal, Pagination, Select, Spin, Typography } from 'antd'
 import { isEmpty } from 'lodash'
-import { lightFadedBlack } from '@edulastic/colors'
-import styled from 'styled-components'
-import { MappingTable } from './style'
+import { MappingTable, StyledSpinner } from './style'
 
 const { Column } = MappingTable
 const { Option } = Select
@@ -463,13 +461,3 @@ const ApproveMergeModal = ({
 }
 
 export default ApproveMergeModal
-
-const StyledSpinner = styled.div`
-  position: fixed;
-  top: 0px;
-  bottom: 0px;
-  left: 0px;
-  right: 0px;
-  z-index: 9999;
-  background: ${lightFadedBlack};
-`

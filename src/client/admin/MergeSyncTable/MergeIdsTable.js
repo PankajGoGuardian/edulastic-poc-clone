@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { CSVLink } from 'react-csv'
 import { Button, Icon, Modal, Upload } from 'antd'
-import { compact, isEmpty } from 'lodash'
+import { isEmpty } from 'lodash'
 import moment from 'moment'
 import { notification } from '@edulastic/common'
 import { Table } from '../Common/StyledComponents'
@@ -379,10 +379,13 @@ const MergeIdsTable = ({
                 >
                   Generate Mapping
                 </Button>
-                <span style={{ display: 'inline-flex' }}>
-                  Last Generated on:{' '}
-                  {getLastGeneratedMappingTime(fieldName) || '...'}
-                </span>
+                {getLastGeneratedMappingTime(fieldName) && (
+                  <span style={{ display: 'inline-flex' }}>
+                    {`Last Generated on: ${getLastGeneratedMappingTime(
+                      fieldName
+                    )}`}
+                  </span>
+                )}
               </>
             ) : (
               <Upload

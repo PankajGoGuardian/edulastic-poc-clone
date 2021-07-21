@@ -16,7 +16,8 @@ export const omrUploadSessionStatus = {
   2: 'Scanning',
   3: 'Scored',
   4: 'Failed',
-  5: 'Archived', // NOTE: use this for 'scan again' action
+  5: 'Archived',
+  6: 'Aborted',
 }
 
 export const omrSheetScanStatus = { ...omrUploadSessionStatus }

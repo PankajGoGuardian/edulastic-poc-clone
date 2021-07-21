@@ -32,8 +32,8 @@ export const getFileNameFromUri = (uri = '') => uri.split('/').lastItem
 
 export const deleteNotificationDocuments = (docIds = []) => {
   const batch = Fbs.db.batch()
-  docIds.forEach((d) => {
-    const ref = Fbs.db.collection(bubbleSheetsCollectionName).doc(d.__id)
+  docIds.forEach((docId) => {
+    const ref = Fbs.db.collection(bubbleSheetsCollectionName).doc(docId)
     batch.delete(ref)
   })
   batch.commit().catch((err) => console.error(err))

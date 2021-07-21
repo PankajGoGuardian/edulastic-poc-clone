@@ -57,7 +57,7 @@ export const LeftSide = styled.div`
 
   .scrollbar-container {
     height: ${({ isInModal }) =>
-      isInModal ? 'calc(100vh - 250px)' : 'calc(100vh - 150px)'};
+      isInModal ? 'calc(100vh - 200px)' : 'calc(100vh - 150px)'};
     padding-right: 30px;
 
     ::-webkit-scrollbar {

@@ -100,7 +100,7 @@ class ClassCreate extends React.Component {
       districtId,
     } = this.props
 
-    const { premium, premiumGradeSubject } = userFeatures
+    const { premiumGradeSubject } = userFeatures
 
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
@@ -156,7 +156,7 @@ class ClassCreate extends React.Component {
         this.setState({ submitted: true })
         let callUserMeApi = false
         // if user has premium grade subject then call /users/me api to refresh premium flag value
-        if (premium === false && !isEmpty(premiumGradeSubject)) {
+        if (!isEmpty(premiumGradeSubject)) {
           callUserMeApi = true
         }
         createClass({ ...pickBy(values, identity), callUserMeApi })

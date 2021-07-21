@@ -2,6 +2,8 @@ export const processStatusMap = {
   in_progress: 2,
   done: 3,
   failed: 4,
+  archived: 5,
+  aborted: 6,
 }
 
 export const omrUploadSessionStatus = {

@@ -317,6 +317,8 @@ class Setting extends Component {
           ].includes(value)
         ) {
           Object.assign(dataToSet, { applyEBSR: false })
+        } else {
+          value = evalTypeLabels.PARTIAL_CREDIT
         }
         setTestData(dataToSet)
         break

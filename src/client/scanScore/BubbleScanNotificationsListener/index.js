@@ -7,17 +7,7 @@ import { roleuser } from '@edulastic/constants'
 
 import { getUser } from '../../author/src/selectors/user'
 import { actions } from '../uploadAnswerSheets/ducks'
-
-const bubbleSheetsCollectionName = 'BubbleAnswerSheets'
-
-export const deleteNotificationDocuments = (docIds = []) => {
-  const batch = Fbs.db.batch()
-  docIds.forEach((d) => {
-    const ref = Fbs.db.collection(bubbleSheetsCollectionName).doc(d.__id)
-    batch.delete(ref)
-  })
-  batch.commit().catch((err) => console.error(err))
-}
+import { bubbleSheetsCollectionName } from '../uploadAnswerSheets/utils'
 
 const BubbleScanNotificationsListener = ({ user, setOmrSheetDocs }) => {
   const userNotifications = Fbs.useFirestoreRealtimeDocuments(

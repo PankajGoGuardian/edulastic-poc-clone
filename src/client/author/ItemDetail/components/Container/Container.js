@@ -985,7 +985,7 @@ class Container extends Component {
                 }
                 trigger="click"
               >
-                <EduButton isGhost height="30px">
+                <EduButton isGhost height="30px" data-cy="addOrRemoveButton">
                   {t('component.itemDetail.addRemove')}
                 </EduButton>
               </Dropdown>

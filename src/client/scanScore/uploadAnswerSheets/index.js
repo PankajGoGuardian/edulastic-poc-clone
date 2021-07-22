@@ -17,6 +17,7 @@ const UploadAnswerSheets = ({
   location,
   uploading,
   uploadProgress,
+  uploadRunner,
   cancelUpload,
   loading,
   omrUploadSessions,
@@ -92,7 +93,8 @@ const UploadAnswerSheets = ({
   )
 
   const handleAbortClick = useCallback(
-    () => abortOmrUploadSession({ assignmentId, groupId, sessionId }),
+    () =>
+      abortOmrUploadSession({ assignmentId, groupId, sessionId, uploadRunner }),
     [assignmentId, groupId, sessionId]
   )
 

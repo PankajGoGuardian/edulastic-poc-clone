@@ -15,7 +15,8 @@ import {
   collections,
   question as questionConstants,
 } from '@edulastic/constants'
-import { playerSkinValues } from '@edulastic/constants/const/test'
+
+const { TOP_ORDER_SKINS } = testConstants
 
 const roundOff = (number) =>
   number ? Number(Number(number).toFixed(2)) : number
@@ -239,22 +240,14 @@ export const isPremiumContent = (_collections = []) => {
   return result.length > 0
 }
 
-const pullSkinTypesToTop = [
-  playerSkinValues.edulastic,
-  playerSkinValues.cmas,
-  playerSkinValues.drc,
-  playerSkinValues.quester,
-  playerSkinValues.parcc,
-  playerSkinValues.sbac,
-]
 export const skinTypesOrder = (skinTypes = {}) => {
   const _skinTypes = Object.keys(skinTypes) || []
   if (!_skinTypes.length) {
     return []
   }
   _skinTypes.sort()
-  const excludePulledSkins = difference(_skinTypes, pullSkinTypesToTop)
-  return [...pullSkinTypesToTop, 'devider', ...excludePulledSkins]
+  const excludePulledSkins = difference(_skinTypes, TOP_ORDER_SKINS)
+  return [...TOP_ORDER_SKINS, 'devider', ...excludePulledSkins]
 }
 
 export default {

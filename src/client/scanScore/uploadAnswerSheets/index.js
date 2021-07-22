@@ -1,6 +1,6 @@
 import React, { useMemo, useEffect, useCallback } from 'react'
 import { connect } from 'react-redux'
-import { Spin, Breadcrumb } from 'antd'
+import { Spin } from 'antd'
 import qs from 'qs'
 
 import { PageLayout } from './PageLayout'
@@ -71,6 +71,7 @@ const UploadAnswerSheets = ({
     return breadcrumbs
   }, [assignmentId, groupId, sessionId])
 
+  // NOTE: handles click on listed sessions
   const handleSessionClick = useCallback((_sessionId) => {
     const session = omrUploadSessions.find((s) => s._id === _sessionId)
     setOmrUploadSession({ session })
@@ -93,14 +94,19 @@ const UploadAnswerSheets = ({
   )
 
   const handleAbortClick = useCallback(
-    () =>
-      abortOmrUploadSession({ assignmentId, groupId, sessionId, uploadRunner }),
-    [assignmentId, groupId, sessionId]
+    (source) =>
+      abortOmrUploadSession({
+        assignmentId,
+        groupId,
+        sessionId,
+        uploadRunner,
+        source,
+      }),
+    [assignmentId, groupId, sessionId, uploadRunner]
   )
 
   useEffect(() => {
-    // NOTE: Uncomment to list uploaded sessions
-    // getOmrUploadSessions({ assignmentId, groupId, sessionId })
+    getOmrUploadSessions({ assignmentId, groupId, sessionId })
   }, [])
 
   useEffect(() => {
@@ -146,7 +152,9 @@ const UploadAnswerSheets = ({
       ) : (
         <SessionPage
           pages={pageDocs}
-          handleAbortClick={scanInProgress ? handleAbortClick : null}
+          handleAbortClick={
+            scanInProgress ? () => handleAbortClick('session') : null
+          }
         />
       )}
     </PageLayout>

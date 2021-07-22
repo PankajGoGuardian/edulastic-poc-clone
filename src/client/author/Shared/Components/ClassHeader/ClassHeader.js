@@ -602,24 +602,39 @@ class ClassHeader extends Component {
         >
           Release Score
         </MenuItems>
-        <MenuItems
-          data-cy="download-bubble-sheet"
-          key="download-bubble-sheet"
-          onClick={() => this.generateBubbleSheet(assignmentId, classId)}
+        <FeaturesSwitch
+          inputFeatures="enableOmrSheets"
+          actionOnInaccessible="hidden"
+          groupId={classId}
         >
-          Generate Bubble Sheet
-        </MenuItems>
-        <MenuItems data-cy="download-bubble-sheet" key="download-bubble-sheet">
-          <Link
-            to={{
-              pathname: '/uploadAnswerSheets',
-              search: `?assignmentId=${assignmentId}&groupId=${classId}`,
-            }}
-            target="_blank"
+          <MenuItems
+            data-cy="download-bubble-sheet"
+            key="download-bubble-sheet"
+            onClick={() => this.generateBubbleSheet(assignmentId, classId)}
           >
-            Upload Answer Sheets
-          </Link>
-        </MenuItems>
+            Generate Bubble Sheet
+          </MenuItems>
+        </FeaturesSwitch>
+        <FeaturesSwitch
+          inputFeatures="enableOmrSheets"
+          actionOnInaccessible="hidden"
+          groupId={classId}
+        >
+          <MenuItems
+            data-cy="download-bubble-sheet"
+            key="download-bubble-sheet"
+          >
+            <Link
+              to={{
+                pathname: '/uploadAnswerSheets',
+                search: `?assignmentId=${assignmentId}&groupId=${classId}`,
+              }}
+              target="_blank"
+            >
+              Upload Answer Sheets
+            </Link>
+          </MenuItems>
+        </FeaturesSwitch>
         {isShowUnAssign && (
           <MenuItems
             data-cy="unAssign"

@@ -53,6 +53,7 @@ export const AddNewButton = styled(Button)`
 
 export const PassageAddNewButton = styled(AddNewButton)`
   background-color: ${themeColor};
+  text-transform: uppercase;
   color: ${white};
   margin: 4px 5px;
   &:hover {

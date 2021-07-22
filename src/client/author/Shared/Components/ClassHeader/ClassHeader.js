@@ -404,8 +404,6 @@ class ClassHeader extends Component {
       })
   }
 
-  uploadAnswerSheets
-
   render() {
     const {
       t,
@@ -612,7 +610,7 @@ class ClassHeader extends Component {
             key="download-bubble-sheet"
             onClick={() => this.generateBubbleSheet(assignmentId, classId)}
           >
-            Generate Bubble Sheet
+            Generate OMR Sheet
           </MenuItems>
         </FeaturesSwitch>
         <FeaturesSwitch
@@ -631,7 +629,7 @@ class ClassHeader extends Component {
               }}
               target="_blank"
             >
-              Upload Answer Sheets
+              Upload OMR Sheet
             </Link>
           </MenuItems>
         </FeaturesSwitch>

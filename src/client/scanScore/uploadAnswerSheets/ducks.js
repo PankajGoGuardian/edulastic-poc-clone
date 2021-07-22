@@ -118,16 +118,25 @@ function* getOmrUploadSessionsSaga({ payload }) {
       assignmentApi.getOmrUploadSessions,
       _payload
     )
-    const currentSession = omrUploadSessions.find(
-      (session) => session._id === sessionId
-    )
-    yield put(slice.actions.getOmrUploadSessionsDone({ omrUploadSessions }))
+    const currentSession =
+      omrUploadSessions.find((session) => session._id === sessionId) ||
+      omrUploadSessions.filter(({ status }) => status === 2 || status === 3)
+        .lastItem
     if (currentSession) {
       yield put(slice.actions.setOmrUploadSession({ session: currentSession }))
+      if (!sessionId) {
+        yield put(
+          push({
+            pathname: '/uploadAnswerSheets',
+            search: `?assignmentId=${payload.assignmentId}&groupId=${payload.groupId}&sessionId=${currentSession._id}`,
+          })
+        )
+      }
     }
+    yield put(slice.actions.getOmrUploadSessionsDone({ omrUploadSessions }))
   } catch (e) {
     console.log(e.message)
-    notification({ msg: 'Failed to fetch upload sessions' })
+    notification({ msg: 'Failed to fetch uploads' })
     yield put(slice.actions.getOmrUploadSessionsDone({ error: e.message }))
   }
 }
@@ -193,7 +202,7 @@ function* createOmrUploadSessionSaga({
     )
   } catch (e) {
     console.log(e.message)
-    const msg = e.message || 'Failed to upload file'
+    const msg = e.message || 'Upload failed'
     notification({ msg })
     yield put(slice.actions.createOmrUploadSessionDone({ error: e.message }))
     yield put(
@@ -223,13 +232,13 @@ function* updateOmrUploadSessionSaga({
     deleteNotificationDocuments(docIds)
   } catch (e) {
     console.log(e.message)
-    const msg = e.message || 'Scoring completed. Failed to update session!'
+    const msg = e.message || 'Scoring completed! Failed to update session'
     notification(msg)
   }
 }
 
 function* abortOmrUploadSessionSaga({
-  payload: { assignmentId, groupId, sessionId, uploadRunner },
+  payload: { assignmentId, groupId, sessionId, uploadRunner, source },
 }) {
   try {
     if (uploadRunner) {
@@ -242,7 +251,8 @@ function* abortOmrUploadSessionSaga({
         sessionId,
       })
       yield put(slice.actions.abortOmrUploadSessionDone())
-      notification({ type: 'success', msg: 'Aborted upload session' })
+      const msg = source === 'session' ? 'Scan aborted' : 'Upload aborted'
+      notification({ type: 'success', msg })
     }
     yield put(
       push({
@@ -252,7 +262,7 @@ function* abortOmrUploadSessionSaga({
     )
   } catch (e) {
     console.log(e.message)
-    const msg = e.message || 'Failed to abort upload session'
+    const msg = e.message || 'Failed to abort'
     notification({ msg })
     yield put(slice.actions.abortOmrUploadSessionDone({ error: e.message }))
   }

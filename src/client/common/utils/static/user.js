@@ -41,4 +41,5 @@ export const userPickFields = [
   'teachingStandards',
   'referrer',
   'currentDistrictId',
+  'utm_source',
 ]

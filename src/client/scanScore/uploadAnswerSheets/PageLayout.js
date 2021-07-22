@@ -3,14 +3,21 @@ import { Layout } from 'antd'
 import { themeColor } from '@edulastic/colors'
 import styled from 'styled-components'
 
+import Breadcrumb from '../../author/src/components/Breadcrumb'
+
 const { Content } = Layout
 
-export const PageLayout = ({ children, title }) => (
+export const PageLayout = ({ children, title, breadcrumbData = [] }) => (
   <Layout>
     <StyledHeader>
       <h2 className="title">{title}</h2>
     </StyledHeader>
-    <Content>{children}</Content>
+    <Content>
+      <div style={{ width: '100%', padding: '5px 30px' }}>
+        <Breadcrumb data={breadcrumbData} style={{ position: 'unset' }} />
+      </div>
+      {children}
+    </Content>
   </Layout>
 )
 

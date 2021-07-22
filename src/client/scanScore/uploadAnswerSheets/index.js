@@ -56,6 +56,20 @@ const UploadAnswerSheets = ({
     return { pageDocs: _pageDocs, scanInProgress: _scanInProgress }
   }, [omrSheetDocs, assignmentId, sessionId])
 
+  const breadcrumbData = useMemo(() => {
+    const breadcrumbs = [{ title: 'Upload' }]
+    if (assignmentId && groupId) {
+      breadcrumbs[0].to = `uploadAnswerSheets?assignmentId=${assignmentId}&groupId=${groupId}`
+    }
+    if (assignmentId && groupId && sessionId) {
+      breadcrumbs.push({
+        title: 'Session',
+        to: `uploadAnswerSheets?assignmentId=${assignmentId}&groupId=${groupId}&sessionId=${sessionId}`,
+      })
+    }
+    return breadcrumbs
+  }, [assignmentId, groupId, sessionId])
+
   const handleSessionClick = useCallback((_sessionId) => {
     const session = omrUploadSessions.find((s) => s._id === _sessionId)
     setOmrUploadSession({ session })
@@ -106,7 +120,7 @@ const UploadAnswerSheets = ({
   }, [sessionId, scanInProgress])
 
   return (
-    <PageLayout title="Scan Student Responses">
+    <PageLayout title="Scan Student Responses" breadcrumbData={breadcrumbData}>
       {loading ? (
         <Spin />
       ) : !sessionId || uploading ? (

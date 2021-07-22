@@ -9,7 +9,6 @@ import {
 import {
   IconAddStudents,
   IconDownload,
-  IconUpload,
   IconInfo,
   IconMarkAsAbsent,
   IconMarkAsSubmitted,

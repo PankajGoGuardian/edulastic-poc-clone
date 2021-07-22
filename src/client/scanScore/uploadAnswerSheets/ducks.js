@@ -13,7 +13,8 @@ const slice = createSlice({
   initialState: {
     uploading: false,
     uploadProgress: 0,
-    uploadProgressInterval: null,
+    uploadStep: 0,
+    uploadRunner: null,
     cancelUpload: null,
     loading: false,
     omrUploadSessions: [],
@@ -26,25 +27,22 @@ const slice = createSlice({
       state.cancelUpload = payload
     },
     handleUploadProgress: (state, { payload }) => {
-      const { loaded: uploaded, total } = payload.progressData
-      const mulFactor = payload.mulFactor || 100
-      const uploadProgress = Number(((mulFactor * uploaded) / total).toFixed(2))
-      state.uploadProgress = uploadProgress || 0
-    },
-    setUploadInterval: (state) => {
-      let progress = state.uploadProgress
-      let step = 8
-      state.uploadProgressInterval = setInterval(() => {
-        progress = Number((progress + step).toFixed(2))
-        state.uploadProgress = progress
-        step /= 2
-      }, 100)
-    },
-    clearUploadInterval: (state) => {
-      if (state.uploadProgressInterval) {
-        clearInterval(state.uploadProgressInterval)
-        state.uploadProgressInterval = null
+      if (payload.step) {
+        const uploadStep = state.uploadStep || payload.step
+        const uploadProgress = state.uploadProgress + uploadStep
+        state.uploadStep = Number((uploadStep / 2).toFixed(2))
+        state.uploadProgress = uploadProgress >= 100 ? 99 : uploadProgress
+      } else {
+        const { loaded: uploaded, total } = payload.progressData
+        const mulFactor = payload.mulFactor || 100
+        const uploadProgress = Number(
+          ((mulFactor * uploaded) / total).toFixed(2)
+        )
+        state.uploadProgress = uploadProgress || 0
       }
+    },
+    setUploadRunner: (state, { payload }) => {
+      state.uploadRunner = payload
     },
     getOmrUploadSessions: (state) => {
       state.loading = true
@@ -75,6 +73,8 @@ const slice = createSlice({
     createOmrUploadSessionDone: (state, { payload }) => {
       state.uploading = false
       state.uploadProgress = 0
+      state.uploadStep = 0
+      state.uploadRunner = null
       state.cancelUpload = null
       if (payload.error) {
         state.error = payload.error
@@ -160,12 +160,16 @@ function* createOmrUploadSessionSaga({
       uploadToS3,
       file,
       aws.s3Folders.BUBBLE_SHEETS,
-      (progressData) => handleUploadProgress({ progressData, mulFactor: 90 }),
+      (progressData) => handleUploadProgress({ progressData, mulFactor: 80 }),
       setCancelUpload,
       `${assignmentId}/${sessionId}`
     )
-    // TODO: find a better way to do this
-    // yield put(slice.actions.setUploadInterval())
+    const uploadRunner = yield call(
+      setInterval,
+      () => handleUploadProgress({ step: 8 }),
+      1000
+    )
+    yield put(slice.actions.setUploadRunner(uploadRunner))
     const { result: sessionUpdated, error } = yield call(
       assignmentApi.splitScanOmrSheets,
       {
@@ -175,7 +179,7 @@ function* createOmrUploadSessionSaga({
         source,
       }
     )
-    // yield put(slice.actions.clearUploadInterval())
+    yield call(clearInterval, uploadRunner)
     yield put(
       handleUploadProgress({ progressData: { loaded: 100, total: 100 } })
     )
@@ -191,7 +195,6 @@ function* createOmrUploadSessionSaga({
     console.log(e.message)
     const msg = e.message || 'Failed to upload file'
     notification({ msg })
-    yield put(slice.actions.clearUploadInterval())
     yield put(slice.actions.createOmrUploadSessionDone({ error: e.message }))
     yield put(
       push({
@@ -226,9 +229,12 @@ function* updateOmrUploadSessionSaga({
 }
 
 function* abortOmrUploadSessionSaga({
-  payload: { assignmentId, groupId, sessionId },
+  payload: { assignmentId, groupId, sessionId, uploadRunner },
 }) {
   try {
+    if (uploadRunner) {
+      yield call(clearInterval, uploadRunner)
+    }
     if (sessionId) {
       yield call(assignmentApi.abortOmrUploadSession, {
         assignmentId,
@@ -238,18 +244,18 @@ function* abortOmrUploadSessionSaga({
       yield put(slice.actions.abortOmrUploadSessionDone())
       notification({ type: 'success', msg: 'Aborted upload session' })
     }
+    yield put(
+      push({
+        pathname: '/uploadAnswerSheets',
+        search: `?assignmentId=${assignmentId}&groupId=${groupId}`,
+      })
+    )
   } catch (e) {
     console.log(e.message)
     const msg = e.message || 'Failed to abort upload session'
     notification({ msg })
     yield put(slice.actions.abortOmrUploadSessionDone({ error: e.message }))
   }
-  yield put(
-    push({
-      pathname: '/uploadAnswerSheets',
-      search: `?assignmentId=${assignmentId}&groupId=${groupId}`,
-    })
-  )
 }
 
 // export saga as default

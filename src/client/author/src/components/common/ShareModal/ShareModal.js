@@ -557,7 +557,7 @@ class ShareModal extends React.Component {
               {isPublished && sharedUsersList.length !== 0 && (
                 <>
                   <ShareListTitle>WHO HAS ACCESS</ShareListTitle>
-                  <ShareList>
+                  <ShareList data-cy="shareList">
                     {sharedUsersList.map((data, index) => (
                       <SharedRow
                         data={data}
@@ -668,7 +668,9 @@ class ShareModal extends React.Component {
                   </p>
                 </>
               ) : (
-                <ShareMessageWrapper>{sharedTypeMessage}</ShareMessageWrapper>
+                <ShareMessageWrapper data-cy="shareMessageWrapper">
+                  {sharedTypeMessage}
+                </ShareMessageWrapper>
               )}
               <IndividualSelectInputStyled
                 style={

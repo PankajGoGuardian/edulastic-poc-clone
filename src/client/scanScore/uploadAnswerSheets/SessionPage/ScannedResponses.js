@@ -27,12 +27,7 @@ const DocImage = ({ uri, scannedUri }) => {
   return <Spin />
 }
 
-export const ScannedResponses = ({
-  docs,
-  pageNumber,
-  setPageNumber,
-  closePage,
-}) => {
+const ScannedResponses = ({ docs, pageNumber, setPageNumber, closePage }) => {
   useEffect(() => () => closePage(), [])
   return (
     <>

@@ -20,6 +20,8 @@ const slice = createSlice({
     omrUploadSessions: [],
     currentSession: {},
     omrSheetDocs: {},
+    showSessions: false,
+    showResponses: false,
     error: '',
   },
   reducers: {
@@ -110,6 +112,9 @@ const slice = createSlice({
     },
     setOmrSheetDocsAction: (state, { payload }) => {
       state.omrSheetDocs = payload
+    },
+    toggleShowResponses: (state, { payload }) => {
+      state.showResponses = payload || !state.showResponses
     },
   },
 })

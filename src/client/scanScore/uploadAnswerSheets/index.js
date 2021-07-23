@@ -33,7 +33,9 @@ const UploadAnswerSheets = ({
   createOmrUploadSession,
   updateOmrUploadSession,
   abortOmrUploadSession,
-  showSessions = false,
+  showSessions,
+  showResponses,
+  toggleShowResponses,
 }) => {
   const { assignmentId = '', groupId = '', sessionId = '' } = useMemo(
     () => qs.parse(location?.search || '', { ignoreQueryPrefix: true }),
@@ -154,13 +156,23 @@ const UploadAnswerSheets = ({
         />
       ) : currentSession?.status > omrUploadSessionStatus.SCANNING &&
         currentSession.pages?.length ? (
-        <SessionPage pages={currentSession.pages} />
+        <SessionPage
+          assignmentId={assignmentId}
+          groupId={groupId}
+          pages={currentSession.pages}
+          showResponses={showResponses}
+          toggleShowResponses={toggleShowResponses}
+        />
       ) : (
         <SessionPage
+          assignmentId={assignmentId}
+          groupId={groupId}
           pages={pageDocs}
           handleAbortClick={
             scanInProgress ? () => handleAbortClick('session') : null
           }
+          showResponses={showResponses}
+          toggleShowResponses={toggleShowResponses}
         />
       )}
     </PageLayout>

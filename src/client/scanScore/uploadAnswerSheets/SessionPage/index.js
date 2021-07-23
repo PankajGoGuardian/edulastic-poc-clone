@@ -4,7 +4,11 @@ import { Row, Col, Button, Slider } from 'antd'
 import { ScannedResponses } from './ScannedResponses'
 import { Thumbnail, ThumbnailDropdown } from './Thumbnail'
 
-import { statusFilterOptions, getFileNameFromUri } from '../utils'
+import {
+  statusFilterOptions,
+  getFileNameFromUri,
+  omrSheetScanStatus,
+} from '../utils'
 
 const SessionPage = ({ pages, handleAbortClick }) => {
   const [showResponses, setShowResponses] = useState(false)
@@ -71,7 +75,9 @@ const SessionPage = ({ pages, handleAbortClick }) => {
                 uri={page.uri}
                 status={page.status}
                 message={page.message}
-                onClick={page.status === 3 ? onClick : null}
+                onClick={
+                  page.status === omrSheetScanStatus.DONE ? onClick : null
+                }
               />
             )
           })}

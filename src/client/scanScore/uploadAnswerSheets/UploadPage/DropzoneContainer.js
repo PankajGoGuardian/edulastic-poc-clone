@@ -31,7 +31,7 @@ export const DropzoneContainer = ({
             isDragActive={isDragActive}
             dropzoneSettings={{
               name: 'File',
-              allowedFiles: 'PDF, JPEG, JPG, PNG',
+              allowedFiles: 'PDF',
             }}
           >
             <div

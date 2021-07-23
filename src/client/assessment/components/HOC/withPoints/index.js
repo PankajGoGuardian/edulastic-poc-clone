@@ -36,9 +36,7 @@ export default (WrappedComponent) => {
               data-cy="points"
               value={points}
               onChange={(score) => {
-                if (score > 0) {
-                  onChangePoints(+score)
-                }
+                onChangePoints(+score)
               }}
               width={width}
               step={0.5}

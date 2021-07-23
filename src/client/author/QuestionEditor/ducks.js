@@ -1185,16 +1185,47 @@ function* loadQuestionSaga({ payload }) {
   }
 }
 
+const changeValidationWhenUnscored = (payload) => {
+  let hasZeroInAltScore = false
+  const altResponses = get(payload, 'validation.altResponses', [])
+  const score = get(payload, 'validation.validResponse.score', 0)
+  if (altResponses.length) {
+    hasZeroInAltScore = altResponses.some((altResp) => {
+      return altResp.score == 0
+    })
+  }
+  const isUnscored = score === 0 || hasZeroInAltScore
+
+  if (isUnscored) {
+    return produce(payload, (draft) => {
+      draft.validation.validResponse.score = 0
+      draft.validation.altResponses?.forEach((altResp) => {
+        altResp.score = 0
+      })
+      if (draft.validation?.maxScore) {
+        draft.validation.maxScore = 0
+      }
+
+      draft.validation.unscored = isUnscored
+    })
+  }
+  return produce(payload, (draft) => {
+    draft.validation.unscored = isUnscored
+  })
+}
+
 function* updateQuestionSaga({ payload }) {
   const prevQuestion = yield select(getCurrentQuestionSelector)
   const currentLanguage = yield select(getCurrentLanguage)
+
+  const _payload = changeValidationWhenUnscored(payload)
 
   yield put({
     type: UPDATE_QUESTION,
     payload: changeDataInPreferredLanguage(
       currentLanguage,
       prevQuestion,
-      payload
+      _payload
     ),
   })
 }

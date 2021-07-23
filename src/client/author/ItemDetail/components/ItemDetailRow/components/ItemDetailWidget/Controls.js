@@ -137,7 +137,7 @@ const PointInput = ({
         </Popover>
       )}
       <NumberInputStyled
-        min={0.5}
+        min={0}
         step={0.5}
         width="64px"
         padding="0px 2px"

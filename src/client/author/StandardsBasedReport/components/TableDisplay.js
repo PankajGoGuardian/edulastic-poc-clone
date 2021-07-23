@@ -218,7 +218,7 @@ class TableDisplay extends Component {
       const _perfomancePercentage = this.getPerfomancePercentage(std)
       return {
         key: index + 1,
-        stdId: std._id,
+        stdId: std._id || std.id,
         standard: <p className="first-data">{std.identifier}</p>,
         question: [
           ...new Set(

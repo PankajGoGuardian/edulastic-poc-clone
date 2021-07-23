@@ -223,6 +223,7 @@ const ResourceItem = ({
         <ResouceIcon type={type} isAdded={isAdded} />
         <ResourceTitle isAdded={isAdded}>
           <TitleText
+            data-cy="resourceItemTitle"
             noStandards={standardIdentifiers.length === 0}
             title={contentTitle}
           >

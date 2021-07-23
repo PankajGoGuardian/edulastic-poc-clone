@@ -15,6 +15,7 @@ import {
   greyishBorder,
   themeColor,
 } from '@edulastic/colors'
+import { getUserOrgId } from '../../../src/selectors/user'
 import {
   fetchClassListAction,
   fetchStudentListAction,
@@ -319,7 +320,7 @@ const DropPlaylistModal = (props) => {
 
 export default connect(
   (state) => ({
-    districtId: state?.user?.user?.districtIds[0],
+    districtId: getUserOrgId(state),
     dropPlaylistSource:
       state?.curriculumSequence?.dropPlaylistSource?.searchSource,
     droppedAccessData:

@@ -148,7 +148,7 @@ const Sidebar = ({
           data-cy="gradeSelect"
           mode="multiple"
           size="large"
-          placeholder="Please select"
+          placeholder="Please enter"
           defaultValue={grades}
           onChange={onChangeGrade}
           optionFilterProp="children"
@@ -173,7 +173,7 @@ const Sidebar = ({
           mode="multiple"
           size="large"
           margin="0px 0px 15px"
-          placeholder="Please select"
+          placeholder="Please enter"
           defaultValue={subjects}
           onChange={onChangeSubjects}
           optionFilterProp="children"
@@ -199,7 +199,7 @@ const Sidebar = ({
               mode="multiple"
               size="large"
               margin="0px 0px 15px"
-              placeholder="Please select"
+              placeholder="Please enter"
               value={filteredCollections.flatMap((c) => c.bucketIds)}
               onChange={(value, options) => onChangeCollection(value, options)}
               optionFilterProp="children"
@@ -211,7 +211,13 @@ const Sidebar = ({
               }
             >
               {collectionsToShow.map((o) => (
-                <Select.Option key={o.bucketId} value={o.bucketId} _id={o._id}>
+                <Select.Option
+                  key={o.bucketId}
+                  value={o.bucketId}
+                  _id={o._id}
+                  type={o.type}
+                  collectionName={o.collectionName}
+                >
                   {`${o.collectionName} - ${o.name}`}
                 </Select.Option>
               ))}
@@ -228,7 +234,7 @@ const Sidebar = ({
           size="large"
           margin="0px 0px 15px"
           optionLabelProp="title"
-          placeholder="Please select"
+          placeholder="Please enter"
           value={selectedTags}
           onSearch={searchTags}
           onSelect={selectTags}

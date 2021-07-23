@@ -3,8 +3,11 @@ import PropTypes from 'prop-types'
 import chunk from 'lodash/chunk'
 import cloneDeep from 'lodash/cloneDeep'
 import flattenDeep from 'lodash/flattenDeep'
+import isString from 'lodash/isString'
 import { math as mathConstant } from '@edulastic/constants'
 import NumberKeyboard from './NumberKeyboard'
+import CustomKeyLabel from '../../CustomKeyLabel'
+
 import {
   Container,
   SymbolsWrapper,
@@ -58,16 +61,21 @@ const MainKeyboard = ({
       keysPerRow = 4
     }
 
+    if (type === keyboardMethods.ADVANCED_TRIGNOMETRY) {
+      limitRow = 6
+    }
+
     if (type === keyboardMethods.BASIC_WO_NUMBER && numbers) {
       limitRow = 5
     }
+
     if (type === keyboardMethods.INTERMEDIATE) {
       limitRow = 4
     }
     const rows = chunk(keybuttons, keysPerRow)
     updateBoards(chunk(rows, limitRow))
     updateCurrent(0)
-  }, [btns, numbers])
+  }, [type, btns, numbers])
 
   const handleClick = (handler, command, numToMove) => () => {
     if (handler && command) {
@@ -132,7 +140,11 @@ const MainKeyboard = ({
                   onTouchEnd={handleClick(handler, command, numToMove)}
                   data-cy={`virtual-keyboard-${handler}`}
                 >
-                  <Label>{label}</Label>
+                  {isString(label) ? (
+                    <CustomKeyLabel value={label} />
+                  ) : (
+                    <Label>{label}</Label>
+                  )}
                 </Button>
               )
             })}

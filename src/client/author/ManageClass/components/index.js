@@ -27,6 +27,7 @@ import {
   getGoogleAllowedInstitionPoliciesSelector,
   getInterestedGradesSelector,
   getInterestedSubjectsSelector,
+  getUserOrgId,
 } from '../../src/selectors/user'
 
 const ManageClass = ({
@@ -111,7 +112,7 @@ const enhance = compose(
       isLoading: groupsLoadingSelector(state),
       fetchClassListLoading: state.manageClass.fetchClassListLoading,
       courseList: get(state, 'coursesReducer.searchResult'),
-      districtId: state?.user?.user?.orgData?.districtIds?.[0],
+      districtId: getUserOrgId(state),
       googleAllowedInstitutions: getGoogleAllowedInstitionPoliciesSelector(
         state
       ),

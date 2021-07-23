@@ -21,9 +21,14 @@ const TestButton = ({
   checkAnswerInProgress,
   blockNavigationToAnsweredQuestions = false,
   LCBPreviewModal,
+  isPremiumContentWithoutAccess = false,
 }) => {
   const handleCheckAnswer = () => {
-    if (checkAnswerInProgress || typeof checkAnswer !== 'function') {
+    if (
+      isPremiumContentWithoutAccess ||
+      checkAnswerInProgress ||
+      typeof checkAnswer !== 'function'
+    ) {
       return null
     }
     checkAnswer()
@@ -34,7 +39,11 @@ const TestButton = ({
     <Container>
       {!blockNavigationToAnsweredQuestions && !LCBPreviewModal && (
         <Tooltip placement="top" title="Bookmark">
-          <StyledButton onClick={toggleBookmark} active={isBookmarked}>
+          <StyledButton
+            onClick={(e) => !isPremiumContentWithoutAccess && toggleBookmark(e)}
+            active={isBookmarked}
+            disabled={isPremiumContentWithoutAccess}
+          >
             <StyledIconBookmark />
             <span>{t('common.test.bookmark')}</span>
           </StyledButton>
@@ -51,7 +60,11 @@ const TestButton = ({
               : 'Check Answer'
           }
         >
-          <StyledButton onClick={handleCheckAnswer} data-cy="checkAnswer">
+          <StyledButton
+            onClick={handleCheckAnswer}
+            data-cy="checkAnswer"
+            disabled={isPremiumContentWithoutAccess}
+          >
             <StyledIconCheck />
             <span> {t('common.test.checkanswer')}</span>
           </StyledButton>
@@ -103,6 +116,7 @@ const StyledButton = withKeyboard(styled.div`
   border: 1px solid;
   cursor: pointer;
   font-weight: 600;
+  ${({ disabled }) => disabled && `cursor: not-allowed;`}
   ${({ theme, active }) => `
     height: ${theme.default.headerLeftButtonHeight};
     font-size: ${theme.default.headerButtonFontSize};

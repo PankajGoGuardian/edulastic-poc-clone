@@ -1,5 +1,3 @@
-import { removeTokenFromHtml } from '@edulastic/common'
-
 function customPastePlugin(FroalaEditor) {
   FroalaEditor.DEFAULTS = Object.assign(FroalaEditor.DEFAULTS, {
     sanitizeClipboardHtml: false,
@@ -9,7 +7,7 @@ function customPastePlugin(FroalaEditor) {
     function cleanup(clipboard_html) {
       let sanitizedString = clipboard_html
       if (editor.opts.tokenHighlightTemplate) {
-        sanitizedString = removeTokenFromHtml(sanitizedString)
+        sanitizedString = sanitizedString.replace(/(<([^>]+)>)/gi, '')
       }
 
       if (editor.opts.sanitizeClipboardHtml) {

@@ -719,6 +719,10 @@
     "message": "Please add resources on the left and all the associated questions on the right.",
     "description": ""
   },
+  "maximumAllowedStudentResources": {
+    "message": "Maximum 5 Student resources allowed",
+    "description": ""
+  },
   "pleaseEnterLisence": {
     "message": "Please enter your license key",
     "description": ""
@@ -1463,6 +1467,10 @@
     "message": "Cannot save without passages",
     "description": ""
   },
+  "CannotPublishWithoutPassages": {
+    "message": "Cannot publish without passages",
+    "description": ""
+  },
   "itemIsNotAssociated": {
     "message": " Item is not associated with any collection.",
     "description": ""
@@ -2017,6 +2025,14 @@
   },
   "optionRemove": {
     "message": "Answer choice can not be removed during regrade",
+    "description": ""
+  },
+  "clozMathDuplicatedParam": {
+    "message": "Same dynamic variable can not be used in two or more input boxes.",
+    "description": ""
+  },
+  "invalidSeqVariableMsg": {
+    "message": "Please note that all dynamic parameters that are of \"sequence\" type need to have the same number of items. Otherwise, it may not be so obvious how the sequences should be aligned.",
     "description": ""
   }
 }

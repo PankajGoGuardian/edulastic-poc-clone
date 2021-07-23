@@ -19,6 +19,10 @@ export const ResourceItemWrapper = styled.div`
     display: none;
     cursor: pointer;
   }
+  .more-action-btn {
+    display: none;
+    cursor: pointer;
+  }
 
   &:hover {
     background: ${backgrounds.default};
@@ -27,6 +31,9 @@ export const ResourceItemWrapper = styled.div`
     transition: background 300ms ease;
 
     .preview-btn {
+      display: block;
+    }
+    .more-action-btn {
       display: block;
     }
   }

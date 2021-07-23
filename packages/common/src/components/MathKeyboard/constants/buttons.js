@@ -18,6 +18,8 @@ import Path3525 from '../assets/keyboardButtons/Path3525.svg'
 import Path3501 from '../assets/keyboardButtons/Path3501.svg'
 import Path3502 from '../assets/keyboardButtons/Path3502.svg'
 import Path3503 from '../assets/keyboardButtons/Path3503.svg'
+import Path3504 from '../assets/keyboardButtons/Path3504.svg'
+import Path3505 from '../assets/keyboardButtons/Path3505.svg'
 import Group993 from '../assets/keyboardButtons/993.svg'
 import Group999 from '../assets/keyboardButtons/999.svg'
 import Group2735 from '../assets/operators/2735.svg'
@@ -27,16 +29,15 @@ import Group2788 from '../assets/operators/2788.svg'
 import Group2736 from '../assets/operators/2736.svg'
 import Group3341 from '../assets/operators/3341.svg'
 import Group3527 from '../assets/operators/3527.svg'
+import Group3528 from '../assets/operators/3528.svg'
 import Group2475 from '../assets/keyboardButtons/2475.svg'
 import Group6199 from '../assets/keyboardButtons/6199.svg'
 import Group4065 from '../assets/keyboardButtons/4065.svg'
 import Group2740 from '../assets/keyboardButtons/2740.svg'
 import Group2715 from '../assets/keyboardButtons/2715.svg'
-import Group2479 from '../assets/keyboardButtons/2479.svg'
+
 import Group2480 from '../assets/keyboardButtons/2480.svg'
 import Group2751 from '../assets/keyboardButtons/2751.svg'
-import Group2243 from '../assets/keyboardButtons/2243.svg'
-import Group2248 from '../assets/keyboardButtons/2248.svg'
 import Group1054 from '../assets/keyboardButtons/1054.svg'
 import Group3167 from '../assets/keyboardButtons/3167.svg'
 import Group2745 from '../assets/keyboardButtons/2745.svg'
@@ -55,6 +56,9 @@ import Group3163 from '../assets/keyboardButtons/3163.svg'
 import Group6101 from '../assets/keyboardButtons/6101.svg'
 import Group3181 from '../assets/keyboardButtons/3181.svg'
 import Group1030 from '../assets/keyboardButtons/1030.svg'
+import Group1031 from '../assets/keyboardButtons/1031.svg'
+import Group1032 from '../assets/keyboardButtons/1032.svg'
+import Group1033 from '../assets/keyboardButtons/1033.svg'
 import Group1043 from '../assets/keyboardButtons/1043.svg'
 import Group943 from '../assets/keyboardButtons/943.svg'
 
@@ -100,8 +104,13 @@ import Group8874 from '../assets/units/Group8874.svg'
 import Group8876 from '../assets/units/Group8876.svg'
 import Group8877 from '../assets/units/Group8877.svg'
 import Group8878 from '../assets/units/Group8878.svg'
-import Unit8879 from '../assets/units/Unit8879.svg'
-import Unit8878 from '../assets/units/Unit8878.svg'
+import GroupAcre from '../assets/units/acre.svg'
+import GroupBytes from '../assets/units/bytes.svg'
+import GroupMegabyte from '../assets/units/mb.svg'
+import GroupGigabit from '../assets/units/gb.svg'
+import GroupMol from '../assets/units/mol.svg'
+import GroupGramMol from '../assets/units/g-mol.svg'
+import GroupGramLiter from '../assets/units/g-ml.svg'
 
 import Group8879 from '../assets/arrows/Group8879.svg'
 import Group8880 from '../assets/arrows/Group8880.svg'
@@ -118,6 +127,9 @@ import Group8890 from '../assets/arrows/Group8890.svg'
 import Group8891 from '../assets/arrows/Group8891.svg'
 import Group8892 from '../assets/arrows/Group8892.svg'
 import Group8893 from '../assets/arrows/Group8893.svg'
+import Group8894 from '../assets/arrows/Group8894.svg'
+import Group8895 from '../assets/arrows/Group8895.svg'
+import Group8896 from '../assets/arrows/Group8896.svg'
 
 import GreaterThan from '../assets/keyboardButtons/gt.svg'
 import LessThan from '../assets/keyboardButtons/lt.svg'
@@ -129,6 +141,10 @@ import Group941 from '../assets/keyboardButtons/941.svg'
 import Group944v2 from '../assets/keyboardButtons/944-2.svg'
 import Group942 from '../assets/keyboardButtons/942.svg'
 import log from '../assets/keyboardButtons/log.svg'
+import Group9295 from '../assets/keyboardButtons/9295.svg'
+import Group9296 from '../assets/keyboardButtons/9296.svg'
+import Group9297 from '../assets/keyboardButtons/9297.svg'
+import Group9298 from '../assets/keyboardButtons/9298.svg'
 
 import decimal from '../assets/numberpad/decimal.svg'
 import equal from '../assets/numberpad/equal.svg'
@@ -196,6 +212,8 @@ import Path3459 from '../assets/greek/Path3459.svg'
 import Path3460 from '../assets/greek/Path3460.svg'
 import Path3461 from '../assets/greek/Path3461.svg'
 
+import Group1002 from '../assets/matrix/1002.svg'
+import Group1003 from '../assets/matrix/1003.svg'
 import Group1004 from '../assets/matrix/1004.svg'
 import Group1008 from '../assets/matrix/1008.svg'
 import Group1009 from '../assets/matrix/1009.svg'
@@ -207,6 +225,8 @@ import Group1016 from '../assets/matrix/1016.svg'
 import Group1017 from '../assets/matrix/1017.svg'
 import Group1018 from '../assets/matrix/1018.svg'
 import Group1019 from '../assets/matrix/1019.svg'
+import Group1020 from '../assets/matrix/1020.svg'
+import Group1021 from '../assets/matrix/1021.svg'
 
 import Group1022 from '../assets/decorations/1022.svg'
 import Group6104 from '../assets/decorations/6104.svg'
@@ -233,11 +253,6 @@ import Path2252 from '../assets/sets/Path2252.svg'
 import Path2254 from '../assets/sets/Path2254.svg'
 import Path2792 from '../assets/sets/Path2792.svg'
 
-import Group2481 from '../assets/calculus/2481.svg'
-import Group2482 from '../assets/calculus/2482.svg'
-import Group2483 from '../assets/calculus/2483.svg'
-import Group2251 from '../assets/calculus/2251.svg'
-import Group2247 from '../assets/calculus/2247.svg'
 import Group6105 from '../assets/calculus/6105.svg'
 import Group6106 from '../assets/calculus/6106.svg'
 import Group1029 from '../assets/calculus/1029.svg'
@@ -245,12 +260,8 @@ import Group1058 from '../assets/calculus/1058.svg'
 import Group1012 from '../assets/calculus/1012.svg'
 import Group1013 from '../assets/calculus/1013.svg'
 import Group1014 from '../assets/calculus/1014.svg'
-import Group2249 from '../assets/calculus/2249.svg'
-import Group2245 from '../assets/calculus/2245.svg'
 import Group8507 from '../assets/calculus/8507.svg'
 import Group3497 from '../assets/calculus/3497.svg'
-import Group3484 from '../assets/calculus/3484.svg'
-import Group3485 from '../assets/calculus/3485.svg'
 import Group8819 from '../assets/calculus/8819.svg'
 import Group8820 from '../assets/calculus/8820.svg'
 import Group8821 from '../assets/calculus/8821.svg'
@@ -259,6 +270,10 @@ import Group3521 from '../assets/calculus/3521.svg'
 import Group8823 from '../assets/calculus/8823.svg'
 import Group8824 from '../assets/calculus/8824.svg'
 import Group8825 from '../assets/calculus/8825.svg'
+import Group8826 from '../assets/calculus/8826.svg'
+import Group8827 from '../assets/calculus/8827.svg'
+import Group8828 from '../assets/calculus/8828.svg'
+import Group8829 from '../assets/calculus/8829.svg'
 
 import Chem320 from '../assets/chemistry/chem320.svg'
 import Chem420 from '../assets/chemistry/chem420.svg'
@@ -266,6 +281,32 @@ import Chem520 from '../assets/chemistry/chem520.svg'
 import Chem620 from '../assets/chemistry/chem620.svg'
 import Chem720 from '../assets/chemistry/chem720.svg'
 import Chem820 from '../assets/chemistry/chem820.svg'
+
+// Trigonometry
+import Trig2479 from '../assets/trigonometry/2479.svg' // sine
+import Trig2481 from '../assets/trigonometry/2481.svg' // cos
+import Trig3484 from '../assets/trigonometry/3484.svg' // sec
+import Trig3485 from '../assets/trigonometry/3485.svg' // csc
+import Trig2482 from '../assets/trigonometry/2482.svg' // tan
+import Trig2483 from '../assets/trigonometry/2483.svg' // cot
+import Trig2251 from '../assets/trigonometry/2251.svg' // arcsin
+import Trig2247 from '../assets/trigonometry/2247.svg' // arccos
+import Trig2249 from '../assets/trigonometry/2249.svg' // arcsec
+import Trig2245 from '../assets/trigonometry/2245.svg' // arccosec
+import Trig2243 from '../assets/trigonometry/2243.svg' // arctan
+import Trig2248 from '../assets/trigonometry/2248.svg' // arccot
+import Trig8924 from '../assets/trigonometry/8924.svg' // sinh
+import Trig8925 from '../assets/trigonometry/8925.svg' // cosh
+import Trig8923 from '../assets/trigonometry/8923.svg' // sech
+import Trig8922 from '../assets/trigonometry/8922.svg' // csch
+import Trig8921 from '../assets/trigonometry/8921.svg' // tanh
+import Trig8920 from '../assets/trigonometry/8920.svg' // coth
+import Trig8939 from '../assets/trigonometry/8939.svg' // inverse_sinh
+import Trig8940 from '../assets/trigonometry/8940.svg' // inverse_cosh
+import Trig8941 from '../assets/trigonometry/8941.svg' // inverse_sech
+import Trig8942 from '../assets/trigonometry/8942.svg' // inverse_csch
+import Trig8943 from '../assets/trigonometry/8943.svg' // inverse_tanh
+import Trig8944 from '../assets/trigonometry/8944.svg' // inverse_coth
 
 export const one = {
   value: '1',
@@ -577,41 +618,9 @@ export const imaginaryUnit = {
   command: 'cmd',
 }
 
-export const sine = {
-  handler: '\\sin\\left({}\\right)',
-  label: <CustomImage src={Group2479} width={22} height={13} />,
-  types: ['all'],
-  command: 'write',
-  numToMove: 1,
-}
-
-export const arcsine = {
-  handler: '\\sin^{-1}\\left({}\\right)',
-  label: <CustomImage src={Group2251} width={37} height={14} />,
-  types: ['all'],
-  command: 'write',
-  numToMove: 1,
-}
-
 export const eulerNumber = {
   handler: 'e^{}',
   label: <CustomImage src={Group2480} width={25} height={19.4} />,
-  types: ['all'],
-  command: 'write',
-  numToMove: 1,
-}
-
-export const cosine = {
-  handler: '\\cos\\left({}\\right)',
-  label: <CustomImage src={Group2481} width={24} height={9} />,
-  types: ['all'],
-  command: 'write',
-  numToMove: 1,
-}
-
-export const arccosine = {
-  handler: '\\cos^{-1}\\left({}\\right)',
-  label: <CustomImage src={Group2247} width={41} height={13} />,
   types: ['all'],
   command: 'write',
   numToMove: 1,
@@ -624,22 +633,6 @@ export const infinity = {
   command: 'cmd',
 }
 
-export const tangent = {
-  handler: '\\tan\\left({}\\right)',
-  label: <CustomImage src={Group2482} width={25} height={12} />,
-  types: ['all'],
-  command: 'write',
-  numToMove: 1,
-}
-
-export const arctangent = {
-  handler: '\\tan^{-1}\\left({}\\right)',
-  label: <CustomImage src={Group2243} width={39} height={12} />,
-  types: ['all'],
-  command: 'write',
-  numToMove: 1,
-}
-
 export const logSymbol = {
   handler: '\\log', // handler: "\\iota"
   label: <CustomImage src={log} width={24} height={24} />,
@@ -647,9 +640,57 @@ export const logSymbol = {
   command: 'cmd',
 }
 
+export const sine = {
+  handler: '\\sin\\left({}\\right)',
+  label: <CustomImage src={Trig2479} width={22} height={13} />,
+  types: ['all'],
+  command: 'write',
+  numToMove: 1,
+}
+
+export const arcsine = {
+  handler: '\\sin^{-1}\\left({}\\right)',
+  label: <CustomImage src={Trig2251} width={32} height={18} />,
+  types: ['all'],
+  command: 'write',
+  numToMove: 1,
+}
+
+export const cosine = {
+  handler: '\\cos\\left({}\\right)',
+  label: <CustomImage src={Trig2481} width={25} height={10} />,
+  types: ['all'],
+  command: 'write',
+  numToMove: 1,
+}
+
+export const arccosine = {
+  handler: '\\cos^{-1}\\left({}\\right)',
+  label: <CustomImage src={Trig2247} width={33} height={18} />,
+  types: ['all'],
+  command: 'write',
+  numToMove: 1,
+}
+
+export const tangent = {
+  handler: '\\tan\\left({}\\right)',
+  label: <CustomImage src={Trig2482} width={25} height={12} />,
+  types: ['all'],
+  command: 'write',
+  numToMove: 1,
+}
+
+export const arctangent = {
+  handler: '\\tan^{-1}\\left({}\\right)',
+  label: <CustomImage src={Trig2243} width={34} height={18} />,
+  types: ['all'],
+  command: 'write',
+  numToMove: 1,
+}
+
 export const cotangent = {
   handler: '\\cot\\left({}\\right)',
-  label: <CustomImage src={Group2483} width={24} height={12} />,
+  label: <CustomImage src={Trig2483} width={24} height={12} />,
   types: ['all'],
   command: 'write',
   numToMove: 1,
@@ -657,12 +698,140 @@ export const cotangent = {
 
 export const arccot = {
   handler: '\\cot^{-1}',
-  label: <CustomImage src={Group2248} />,
+  label: <CustomImage src={Trig2248} width={33} height={18} />,
   types: ['all'],
   command: 'write',
 }
 
-export const mol_inverse = {
+export const arcsecant = {
+  handler: '\\sec^{-1}\\left({}\\right)',
+  label: <CustomImage src={Trig2249} width={34} height={18} />,
+  types: ['all'],
+  command: 'write',
+  numToMove: 1,
+}
+
+export const arccosecant = {
+  handler: '\\csc^{-1}\\left({}\\right)',
+  label: <CustomImage src={Trig2245} width={32} height={18} />,
+  types: ['all'],
+  command: 'write',
+  numToMove: 1,
+}
+
+export const secant = {
+  handler: '\\sec\\left({}\\right)',
+  label: <CustomImage src={Trig3484} width={25} height={10} />,
+  types: ['all'],
+  command: 'write',
+  numToMove: 1,
+}
+
+export const cosecant = {
+  handler: '\\csc\\left({}\\right)',
+  label: <CustomImage src={Trig3485} width={25} height={10} />,
+  types: ['all'],
+  command: 'write',
+  numToMove: 1,
+}
+
+export const sinh = {
+  handler: '\\sinh\\left({}\\right)',
+  label: <CustomImage src={Trig8924} width={33} height={13.4} />,
+  types: ['all'],
+  command: 'write',
+  numToMove: 1,
+}
+
+export const inverse_sinh = {
+  handler: '\\sinh^{-1}\\left({}\\right)',
+  label: <CustomImage src={Trig8939} width={40} height={18} />,
+  types: ['all'],
+  command: 'write',
+  numToMove: 1,
+}
+
+export const cosh = {
+  handler: '\\cosh\\left({}\\right)',
+  label: <CustomImage src={Trig8925} width={34} height={13} />,
+  types: ['all'],
+  command: 'write',
+  numToMove: 1,
+}
+
+export const inverse_cosh = {
+  handler: '\\cosh^{-1}\\left({}\\right)',
+  label: <CustomImage src={Trig8940} width={42} height={18} />,
+  types: ['all'],
+  command: 'write',
+  numToMove: 1,
+}
+
+export const sech = {
+  handler: '\\operatorname{sech}\\left({}\\right)',
+  label: <CustomImage src={Trig8923} width={34} height={13} />,
+  types: ['all'],
+  command: 'write',
+  numToMove: 1,
+}
+
+export const inverse_sech = {
+  handler: '\\operatorname{sech}^{-1}\\left({}\\right)',
+  label: <CustomImage src={Trig8941} width={43} height={18} />,
+  types: ['all'],
+  command: 'write',
+  numToMove: 1,
+}
+
+export const csch = {
+  handler: '\\operatorname{csch}\\left({}\\right)',
+  label: <CustomImage src={Trig8922} width={32.7} height={13.4} />,
+  types: ['all'],
+  command: 'write',
+  numToMove: 1,
+}
+
+export const inverse_csch = {
+  handler: '\\operatorname{csch}^{-1}\\left({}\\right)',
+  label: <CustomImage src={Trig8942} width={40} height={18} />,
+  types: ['all'],
+  command: 'write',
+  numToMove: 1,
+}
+
+export const tanh = {
+  handler: '\\tanh\\left({}\\right)',
+  label: <CustomImage src={Trig8921} width={35.48} height={13.4} />,
+  types: ['all'],
+  command: 'write',
+  numToMove: 1,
+}
+
+export const inverse_tanh = {
+  handler: '\\tanh^{-1}\\left({}\\right)',
+  label: <CustomImage src={Trig8943} width={41} height={18} />,
+  types: ['all'],
+  command: 'write',
+  numToMove: 1,
+}
+
+export const coth = {
+  handler: '\\coth\\left({}\\right)',
+  label: <CustomImage src={Trig8920} width={33} height={13.4} />,
+  types: ['all'],
+  command: 'write',
+  numToMove: 1,
+}
+
+export const inverse_coth = {
+  handler: '\\coth^{-1}\\left({}\\right)',
+  label: <CustomImage src={Trig8944} width={40} height={18} />,
+  types: ['all'],
+  command: 'write',
+  numToMove: 1,
+}
+
+export const gmol_inverse = {
   handler: '\\text{g}\\ \\text{mol}^{-1}',
   label: <CustomImage src={Group1054} />,
   types: ['all'],
@@ -929,7 +1098,7 @@ export const us_yard = {
 
 export const us_acre = {
   handler: '\\text{acre}',
-  label: 'acre',
+  label: <CustomImage src={GroupAcre} width={38} height={24} />,
   types: ['all'],
   command: 'write',
 }
@@ -1153,6 +1322,13 @@ export const subset = {
   command: 'cmd',
 }
 
+export const nesubset = {
+  handler: '\\subseteq',
+  label: <CustomImage src={Path2263} width={12} height={14} />,
+  types: ['all'],
+  command: 'cmd',
+}
+
 export const superset = {
   handler: '\\supseteq',
   label: <CustomImage src={Path2261} width={12} height={14} />,
@@ -1258,6 +1434,20 @@ export const mathbb_r = {
   command: 'cmd',
 }
 
+export const mathbb_n = {
+  handler: '\\N', // in katex \mathbb{N}
+  label: <CustomImage src={Path3504} width={13} height={17} />,
+  types: ['all'],
+  command: 'cmd',
+}
+
+export const mathbb_u = {
+  handler: '\\U', // in katex \mathbb{U}
+  label: <CustomImage src={Path3505} width={14} height={18} />,
+  types: ['all'],
+  command: 'cmd',
+}
+
 export const mathbb_w = {
   handler: '\\W', // in katex \mathbb{W}, in mathQuill need to add command
   label: <CustomImage src={Path3360} width={22} height={15} />,
@@ -1301,7 +1491,7 @@ export const ni_symbole = {
 }
 
 export const not_ni_symbole = {
-  handler: '\\not\\ni',
+  handler: '\\notni',
   label: <CustomImage src={Path2743} width={12} height={16} />,
   types: ['all'],
   command: 'cmd',
@@ -1449,7 +1639,7 @@ export const rceil = {
 
 export const big_rightarrow = {
   handler: '\\Rightarrow',
-  label: <CustomImage src={Group8887} width={16} height={10} />,
+  label: <CustomImage src={Group8887} width={20} height={16} />,
   types: ['all'],
   command: 'cmd',
 }
@@ -1495,6 +1685,34 @@ export const because = {
 export const v_two_dots = {
   handler: ':',
   label: <CustomImage src={Group8893} width={6} height={22} />,
+  types: ['all'],
+  command: 'cmd',
+}
+
+export const neg = {
+  handler: '\\neg',
+  label: (
+    <CustomImage
+      src={Group8894}
+      width={7}
+      height={17}
+      style={{ transform: 'rotate(90deg)' }}
+    />
+  ),
+  types: ['all'],
+  command: 'cmd',
+}
+
+export const nrightarrow = {
+  handler: '\\nrightarrow',
+  label: <CustomImage src={Group8896} width={25} height={11} />,
+  types: ['all'],
+  command: 'cmd',
+}
+
+export const nleftrightarrow = {
+  handler: '\\nleftrightarrow',
+  label: <CustomImage src={Group8895} width={25} height={11} />,
   types: ['all'],
   command: 'cmd',
 }
@@ -1907,7 +2125,7 @@ export const vmatrix = {
 
 export const shift_matrix = {
   handler: 'Shift-Spacebar',
-  label: <CustomImage src={Group1006} width={38} height={34} />,
+  label: <CustomImage src={Group1006} width={26} height={35} />,
   types: ['all'],
   command: 'keystroke',
   name: 'shiftSpacebar',
@@ -1915,7 +2133,7 @@ export const shift_matrix = {
 
 export const shift_enter_matrix = {
   handler: 'Shift-Enter',
-  label: <CustomImage src={Group1007} width={38} height={22} />,
+  label: <CustomImage src={Group1007} width={30} height={25} />,
   types: ['all'],
   command: 'keystroke',
   name: 'shiftEnter',
@@ -1926,7 +2144,14 @@ export const left_matrix = {
   label: <CustomImage src={Group1016} width={26} height={28} />,
   types: ['all'],
   command: 'cmd',
-  name: 'bmatrix',
+}
+
+export const left_matrix_two = {
+  handler: '\\begin{almatrix}&\\\\&\\end{almatrix}',
+  label: <CustomImage src={Group1020} width={35.7} height={22} />,
+  types: ['all'],
+  command: 'write',
+  numToMove: 4,
 }
 
 export const right_matrix = {
@@ -1934,7 +2159,6 @@ export const right_matrix = {
   label: <CustomImage src={Group1017} width={26} height={28} />,
   types: ['all'],
   command: 'cmd',
-  name: 'bmatrix',
 }
 
 // TODO: implement this command
@@ -1949,6 +2173,30 @@ export const sq_matrix = {
 export const plus_matrix = {
   handler: '\\armatrix',
   label: <CustomImage src={Group1019} width={30} height={39.5} />,
+  types: ['all'],
+  command: 'write',
+}
+
+// TODO: implement this command
+export const line_matrix = {
+  handler: '\\begin{array}{r}{}\\{}\\\\\\hline{}\\end{array}',
+  label: <CustomImage src={Group1021} width={30} height={39.5} />,
+  types: ['all'],
+  command: 'write',
+}
+
+// TODO: implement this command
+export const minus_matrix = {
+  handler: '\\begin{array}{r}{}\\{}\\\\\\hline{}\\end{array}',
+  label: <CustomImage src={Group1003} width={30} height={39.5} />,
+  types: ['all'],
+  command: 'write',
+}
+
+// TODO: implement this command
+export const time_matrix = {
+  handler: '\\begin{array}{r}{}\\{}\\\\\\hline{}\\end{array}',
+  label: <CustomImage src={Group1002} width={30} height={39.5} />,
   types: ['all'],
   command: 'write',
 }
@@ -2016,15 +2264,43 @@ export const right_bracket = {
   command: 'write',
 }
 
-export const sum_symbol = {
+export const sum = {
   handler: '\\sum',
   label: <CustomImage src={Group1030} width={11} height={38} />,
   types: ['all'],
   command: 'cmd',
 }
 
+export const sum_symbol = {
+  handler: '\\summationSymbol',
+  label: <CustomImage src={Group1031} width={11} height={38} />,
+  types: ['all'],
+  command: 'cmd',
+}
+
+export const sum_bottom = {
+  handler: '\\summationLower',
+  label: <CustomImage src={Group1032} width={11} height={38} />,
+  types: ['all'],
+  command: 'cmd',
+}
+
+export const sum_upper = {
+  handler: '\\sumUpper',
+  label: <CustomImage src={Group1033} width={11} height={38} />,
+  types: ['all'],
+  command: 'cmd',
+}
+
 export const no_subset = {
   handler: '\\nsubset',
+  label: <CustomImage src={Path3478} width={14} height={20} />,
+  types: ['all'],
+  command: 'cmd',
+}
+
+export const no_subset_eq = {
+  handler: '\\nsubseteq',
   label: <CustomImage src={Path3478} width={14} height={20} />,
   types: ['all'],
   command: 'cmd',
@@ -2177,38 +2453,6 @@ export const ln_left = {
   command: 'write',
 }
 
-export const arcsecant = {
-  handler: '\\sec^{-1}\\left({}\\right)',
-  label: <CustomImage src={Group2249} width={40} height={13} />,
-  types: ['all'],
-  command: 'write',
-  numToMove: 1,
-}
-
-export const arccosecant = {
-  handler: '\\csc^{-1}\\left({}\\right)',
-  label: <CustomImage src={Group2245} width={38} height={12} />,
-  types: ['all'],
-  command: 'write',
-  numToMove: 1,
-}
-
-export const secant = {
-  handler: '\\sec\\left({}\\right)',
-  label: <CustomImage src={Group3484} width={26} height={10} />,
-  types: ['all'],
-  command: 'write',
-  numToMove: 1,
-}
-
-export const cosecant = {
-  handler: '\\csc\\left({}\\right)',
-  label: <CustomImage src={Group3485} width={25} height={10} />,
-  types: ['all'],
-  command: 'write',
-  numToMove: 1,
-}
-
 export const e_number = {
   handler: 'e',
   label: 'e',
@@ -2239,7 +2483,7 @@ export const delta_value = {
 
 export const delta_multiple = {
   handler: '\\triangle\\cdot{}',
-  label: <CustomImage src={Group8822} width={27} height={13} />,
+  label: <CustomImage src={Group8822} width={34} height={24} />,
   types: ['all'],
   command: 'write',
 }
@@ -2274,32 +2518,191 @@ export const closed_surface = {
   command: 'cmd',
 }
 
-// TODO: implement this command
+export const prod_symbol = {
+  handler: '\\prodSymbol',
+  label: <CustomImage src={Group8826} width={12.5} height={20.8} />,
+  types: ['all'],
+  command: 'cmd',
+}
+
+export const prod = {
+  handler: '\\prod',
+  label: <CustomImage src={Group8827} width={10.8} height={42} />,
+  types: ['all'],
+  command: 'cmd',
+}
+
+export const prod_bottom = {
+  handler: '\\prodLower',
+  label: <CustomImage src={Group8828} width={11} height={31} />,
+  types: ['all'],
+  command: 'cmd',
+}
+
+export const prod_upper = {
+  handler: '\\prodUpper',
+  label: <CustomImage src={Group8829} width={11} height={31} />,
+  types: ['all'],
+  command: 'cmd',
+}
+
 export const n_a = {
-  handler: '\\surfintegral',
+  handler: 'N_A',
   label: <CustomImage src={Chem720} width={24} height={25} />,
-  types: ['all'],
-  command: 'cmd',
-}
-
-// TODO: implement this command
-export const k_b = {
-  handler: '\\surfintegral',
-  label: <CustomImage src={Chem620} width={24} height={25} />,
-  types: ['all'],
-  command: 'cmd',
-}
-
-export const g_liter = {
-  handler: '\\text{g/mL}',
-  label: <CustomImage src={Unit8879} width={32} height={24} />,
   types: ['all'],
   command: 'write',
 }
 
-export const g_mol = {
+export const k_b = {
+  handler: 'K_B',
+  label: <CustomImage src={Chem620} width={24} height={25} />,
+  types: ['all'],
+  command: 'write',
+}
+
+export const bytes = {
+  handler: '\\text{bytes}',
+  label: (
+    <CustomImage
+      src={GroupBytes}
+      width={42}
+      height={24}
+      style={{ marginLeft: 5 }}
+    />
+  ),
+  types: ['all'],
+  command: 'write',
+}
+
+export const megabyte = {
+  handler: '\\text{MB}',
+  label: <CustomImage src={GroupMegabyte} width={26} height={22} />,
+  types: ['all'],
+  command: 'write',
+}
+
+export const gigabit = {
+  handler: '\\text{GB}',
+  label: <CustomImage src={GroupGigabit} width={26} height={22} />,
+  types: ['all'],
+  command: 'write',
+}
+
+export const mol = {
+  handler: '\\text{mol}',
+  label: <CustomImage src={GroupMol} width={34} height={24} />,
+  types: ['all'],
+  command: 'write',
+}
+
+export const gmol = {
   handler: '\\text{g/mol}',
-  label: <CustomImage src={Unit8878} width={32} height={24} />,
+  label: (
+    <CustomImage
+      src={GroupGramMol}
+      width={42}
+      height={21}
+      style={{ marginLeft: 5 }}
+    />
+  ),
+  types: ['all'],
+  command: 'write',
+}
+
+export const gmliter = {
+  handler: '\\text{g/mL}',
+  label: (
+    <CustomImage
+      src={GroupGramLiter}
+      width={42}
+      height={21}
+      style={{ marginLeft: 5 }}
+    />
+  ),
+  types: ['all'],
+  command: 'write',
+}
+
+export const fog = {
+  handler: '\\left(f\\circ g\\right)\\left(x\\right)',
+  label: <CustomImage src={Group9295} width={32} height={18} />,
+  types: ['all'],
+  command: 'write',
+}
+
+export const percent = {
+  handler: '\\%',
+  label: <CustomImage src={Group3528} width={15} height={14} />,
+  types: ['all'],
+  command: 'write',
+}
+
+export const vdash = {
+  handler: '\\vdash',
+  label: (
+    <CustomImage
+      src={Group3171}
+      width={16}
+      height={16}
+      style={{ transform: 'rotate(90deg)' }}
+    />
+  ),
+  types: ['all'],
+  command: 'cmd',
+}
+
+export const circ = {
+  handler: '^\\circ',
+  label: (
+    <CustomImage
+      src={Group9296}
+      width={8}
+      height={8}
+      style={{ marginBottom: 8 }}
+    />
+  ),
+  types: ['all'],
+  command: 'write',
+}
+
+export const vee = {
+  handler: '\\vee',
+  label: (
+    <CustomImage
+      src={GreaterThan}
+      width={11}
+      height={11}
+      style={{ transform: 'rotate(90deg)' }}
+    />
+  ),
+  types: ['all'],
+  command: 'write',
+}
+
+export const barvee = {
+  handler: '\\barvee',
+  label: <CustomImage src={Group9298} width={11} height={14} />,
+  types: ['all'],
+  command: 'write',
+}
+
+export const wedge = {
+  handler: '\\wedge',
+  label: (
+    <CustomImage
+      src={GreaterThan}
+      width={11}
+      height={11}
+      style={{ transform: 'rotate(270deg)' }}
+    />
+  ),
+  types: ['all'],
+  command: 'write',
+}
+
+export const barwedge = {
+  handler: '\\barwedge',
+  label: <CustomImage src={Group9297} width={11} height={14} />,
   types: ['all'],
   command: 'write',
 }

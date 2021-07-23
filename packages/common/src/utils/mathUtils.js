@@ -55,6 +55,13 @@ const sanitizeLatex = (latex) => {
     .replace(/\\hbox{--}/g, '–')
     .replace(/\\rightleftharpoons/g, '\\rightleftharpoons ')
     .replace(/\\indefinite/g, '\\int')
+    .replace(/\\times/g, '\\times ')
+    .replace(/\\prodSymbol/g, '\\prod ')
+    .replace(/\\prodLower/g, '\\prod ')
+    .replace(/\\prodUpper/g, '\\prod ')
+    .replace(/\\summationSymbol/g, '\\sum')
+    .replace(/\\summationLower/g, '\\sum')
+    .replace(/\\summationUpper/g, '\\sum')
 
   if (_latex.substr(-1) === '\\') {
     _latex = _latex.slice(0, -1)
@@ -83,6 +90,14 @@ export const getMathHtml = (latex) => {
    * | \end{almatrix}  | \end{array}\right.      |
    * | \begin{armatrix}| \left.\begin{array}{r}  |
    * | \end{armatrix}  | \end{array}\right\}     |
+   * |-------------------------------------------|
+   * @see https://snapwiz.atlassian.net/browse/EV-29149
+   * added custom commands in mathquill
+   * these are also not working in katex
+   * |--- mathQuill ---|--------- Katex ---------|
+   * | summationSymbol | sum                     |
+   * | indefinite      | int                     |
+   * | parallelogram   | text{▱}                 |
    * |-------------------------------------------|
    * Also, some of the migrated/authored questions have wrong latex.
    * @see https://snapwiz.atlassian.net/browse/EV-11865

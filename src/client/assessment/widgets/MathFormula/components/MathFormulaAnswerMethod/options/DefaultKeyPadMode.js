@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import styled, { withTheme } from 'styled-components'
 import { Select } from 'antd'
@@ -23,6 +23,14 @@ const DefaultKeyPadModePure = ({
   const onSelectKeypad = (val) => {
     onChange('keypadMode', val)
   }
+
+  useEffect(() => {
+    if (!keypadMode) {
+      // set units_us keys for dropdown initially
+      onChange('keypadMode', symbolsData[1].value)
+    }
+  }, [keypadMode])
+
   return (
     <StyledSelect
       onChange={onSelectKeypad}

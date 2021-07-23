@@ -14,12 +14,13 @@ const reducer = (state = initialState, { type, payload }) => {
   switch (type) {
     case RECEIVE_STUDENT_QUESTION_REQUEST:
       return { ...state, loading: true }
-    case RECEIVE_STUDENT_QUESTION_SUCCESS:
+    case RECEIVE_STUDENT_QUESTION_SUCCESS: {
       return {
         ...state,
         loading: false,
-        data: payload,
+        data: payload.qActivities,
       }
+    }
     case RECEIVE_STUDENT_QUESTION_ERROR:
       return { ...state, loading: false, error: payload.error }
     default:

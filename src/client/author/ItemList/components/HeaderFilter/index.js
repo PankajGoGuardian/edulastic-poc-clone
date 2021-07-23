@@ -12,7 +12,7 @@ import {
   standardsSelector,
 } from '../../../src/selectors/dictionaries'
 import { getCollectionsSelector } from '../../../src/selectors/user'
-import { getAllTagsSelector } from '../../../TestPage/ducks'
+import { getKnownTagsSelector } from '../../../TestPage/ducks'
 import selectsData from '../../../TestPage/components/common/selectsData'
 
 // TK instead of PK for PreKindergarten is intentional
@@ -46,7 +46,7 @@ const HeaderFilter = ({
   curriculumById,
   standardsList,
   collectionsList,
-  allTagsData,
+  allKnownTags,
 }) => {
   const containerRef = useRef(null)
   const {
@@ -75,8 +75,11 @@ const HeaderFilter = ({
     [collections, collectionsList]
   )
   const selectedTags = useMemo(
-    () => allTagsData.filter((t) => tags.includes(t._id)),
-    [allTagsData, tags]
+    () =>
+      allKnownTags.filter(
+        (t) => !!tags.find((tag) => tag === t._id || tag.key === t._id)
+      ),
+    [allKnownTags, tags]
   )
 
   const handleCloseTag = (e, type, value) => {
@@ -236,11 +239,11 @@ const HeaderFilter = ({
   )
 }
 
-export default connect((state, ownProps) => ({
+export default connect((state) => ({
   curriculumById: curriculumsByIdSelector(state),
   standardsList: standardsSelector(state),
   collectionsList: getCollectionsSelector(state),
-  allTagsData: getAllTagsSelector(state, ownProps.type),
+  allKnownTags: getKnownTagsSelector(state),
 }))(HeaderFilter)
 
 const TagsStyle = css`

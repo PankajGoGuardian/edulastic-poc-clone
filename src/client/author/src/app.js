@@ -263,7 +263,10 @@ const Author = ({
     }
   }, [isCliUser])
 
-  const themeToPass = themes.default
+  const themeToPass = {
+    isProxyUser: isProxyUser || isDemoAccount || false,
+    ...themes.default,
+  }
 
   const isPrintPreview =
     history.location.pathname.includes('printpreview') ||
@@ -928,6 +931,6 @@ const StyledLayout = styled(Layout)`
     top: ${(props) =>
       props.isBannerShown ? props.theme.BannerHeight : 0}px !important;
   }
-  margin-top: ${(props) =>
+  padding-top: ${(props) =>
     props.isBannerShown ? props.theme.BannerHeight : 0}px;
 `

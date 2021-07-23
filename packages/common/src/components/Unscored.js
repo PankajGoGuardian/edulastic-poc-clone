@@ -60,7 +60,7 @@ const UnScoredBlock = styled(FlexContainer)`
   border-radius: 2px;
   width: ${({ width }) => width || 'auto'};
   height: ${({ height }) => height || 'auto'};
-  margin: ${({ margin }) => margin || ''};
+  margin: ${({ margin }) => margin || '0px 0px 5px'};
   cursor: default;
   padding: 5px;
   span {

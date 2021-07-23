@@ -12,7 +12,6 @@ import {
   AuthorName,
   Header,
   HeaderThumbnail,
-  Stars,
   StyledLink,
   TestInfo,
   ShareIcon,
@@ -80,7 +79,6 @@ const TestItemCard = ({
             alt=""
             src={thumbnail}
           />
-          <Stars />
           <ButtonWrapper className="showHover">
             {isOwner && status === 'draft' && (
               <EduButton style={btnStyle} height="32px" onClick={moveToItem}>
@@ -139,13 +137,14 @@ const TestItemCard = ({
             isStandards
             margin="0px"
             isTestCard
+            testId={testId}
           />
         </TagsWrapper>
       </TestInfo>
 
       {!isTestRecommendation && (
         <MidRow>
-          <Collection isDynamic>
+          <Collection isDynamic={isDynamic}>
             <label>COLLECTIONS</label>
             <CollectionNameWrapper
               data-cy="test-collection"

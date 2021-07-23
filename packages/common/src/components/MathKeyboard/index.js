@@ -99,9 +99,11 @@ class MathKeyboard extends React.PureComponent {
       .concat(KEYBOARD_BUTTONS)
 
     if (isCustomMode) {
-      allBtns = allBtns.concat(
-        TAB_BUTTONS.reduce((acc, curr) => [...acc, ...curr.buttons], [])
-      )
+      allBtns = allBtns
+        .concat(
+          TAB_BUTTONS.reduce((acc, curr) => [...acc, ...curr.buttons], [])
+        )
+        .concat(NUMBER_PAD_ITEMS)
     }
 
     let availables = isCustomMode
@@ -181,7 +183,10 @@ class MathKeyboard extends React.PureComponent {
     const { type, keyboardButtons, numberButtons, selectOptions } = this.state
 
     return (
-      <MathKeyboardContainer docBasedKeypadStyles={docBasedKeypadStyles}>
+      <MathKeyboardContainer
+        docBasedKeypadStyles={docBasedKeypadStyles}
+        data-cy={type}
+      >
         {showDragHandle && (
           <StyledGripperContainer>
             <StyledGripper />

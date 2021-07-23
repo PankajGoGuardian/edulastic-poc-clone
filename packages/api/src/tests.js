@@ -22,7 +22,7 @@ const getAll = (data) =>
       return { items, count }
     })
 
-const formatData = (data) => omit(data, ['_id', 'autoGrade'])
+const formatData = (data) => omit(data, ['_id', 'autoGrade', 'active'])
 
 const getById = (id, params = {}) =>
   api

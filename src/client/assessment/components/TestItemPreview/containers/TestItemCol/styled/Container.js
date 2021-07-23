@@ -35,9 +35,13 @@ const zoomedStyle = css`
     const hasFooter =
       viewComponent === 'practicePlayer' &&
       (playerSkinType === playerSkinValues.quester ||
-        playerSkinType === playerSkinValues.edulastic)
+        playerSkinType === playerSkinValues.edulastic ||
+        playerSkinType === playerSkinValues.drc)
     let header = hasFooter ? 180 : headerHeight + paddingTopBottom + 8
-    if (playerSkinType === 'quester') {
+    if (
+      playerSkinType === playerSkinValues.quester ||
+      playerSkinType === playerSkinValues.drc
+    ) {
       // This adjustment was required to fix the practice player with questar skin.
       header += viewComponent === 'practicePlayer' ? -20 : questerFooterHeight
     }
@@ -82,10 +86,10 @@ export const WidgetContainer = styled.div`
   position: relative;
   min-height: max-content; // to fix height issue with safari
 
-  ${({ zoomLevel, responsiveWidth }) => {
+  ${({ zoomLevel, responsiveWidth, isPassageWithQuestions = false }) => {
     const zoomed = zoomLevel > 1 && zoomLevel !== undefined
     return `
-      min-width: ${responsiveWidth}px;
+      ${!isPassageWithQuestions && `min-width: ${responsiveWidth}px;`}
       transform: ${zoomed ? `scale(${zoomLevel})` : ''};
       transform-origin: ${zoomed ? `top left` : ''};
     `

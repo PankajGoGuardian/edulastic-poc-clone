@@ -400,7 +400,7 @@ function* receiveStudentQuestionSaga({ payload }) {
 
     yield put({
       type: RECEIVE_STUDENT_QUESTION_SUCCESS,
-      payload: feedbackResponse,
+      payload: { qActivities: feedbackResponse },
     })
   } catch (err) {
     console.error(err)
@@ -535,7 +535,7 @@ function* updateStudentScore(payload) {
       if (qAct) {
         yield put({
           type: RECEIVE_STUDENT_QUESTION_SUCCESS,
-          payload: qAct,
+          payload: { qActivities: qAct, noAnswerReset: true },
         })
       }
     }

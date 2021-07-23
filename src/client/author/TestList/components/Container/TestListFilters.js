@@ -8,7 +8,7 @@ import {
 } from '@edulastic/constants'
 import { IconExpandBox } from '@edulastic/icons'
 import PropTypes from 'prop-types'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState, useCallback } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import {
@@ -30,7 +30,6 @@ import {
   isDistrictUserSelector,
   isOrganizationDistrictSelector,
 } from '../../../src/selectors/user'
-import { getAllTagsSelector } from '../../../TestPage/ducks'
 import { removeTestFromCartAction } from '../../ducks'
 import filterData from './FilterData'
 import FiltersSidebar from './FiltersSidebar'
@@ -45,8 +44,6 @@ const TestListFilters = ({
   formattedCuriculums,
   curriculumStandards,
   collections,
-  allTagsData = [],
-  allPlaylistsTagsData = [],
   searchFilterOption,
   filterMenuItems,
   userFeatures,
@@ -73,7 +70,7 @@ const TestListFilters = ({
   useEffect(() => {
     const tempCollections = collections
     collections.forEach((item, index) => {
-      if (isSingaporeMath && item?.name === 'Engage NY') {
+      if (isSingaporeMath && item?.name?.toLowerCase()?.includes('engage ny')) {
         tempCollections.splice(index, 1)
         setFilteredCollections(tempCollections)
       }
@@ -89,7 +86,7 @@ const TestListFilters = ({
     return testsConstants.collectionDefaultFilter
   }, [testsConstants.collectionDefaultFilter, userRole])
 
-  const getAuthoredByFilterData = () => {
+  const getAuthoredByFilterData = useCallback(() => {
     if (!userFeatures.isCurator) return []
 
     return [
@@ -108,10 +105,10 @@ const TestListFilters = ({
         onChange: 'authoredByIds',
       },
     ]
-  }
+  }, [userFeatures.isCurator, searchFilterOption, currentDistrictUsers])
 
   const { filter } = search
-  const getFilters = () => {
+  const getFilters = useCallback(() => {
     let filterData1 = []
     if (isPlaylist) {
       const filterTitles = ['Grades', 'Subject']
@@ -147,11 +144,8 @@ const TestListFilters = ({
           title: 'Tags',
           placeholder: 'Please select',
           onChange: 'tags',
-          filterOption: searchFilterOption,
-          data: allPlaylistsTagsData.map((o) => ({
-            value: o._id,
-            text: o.tagName,
-          })),
+          tagTypes: ['playlist'],
+          useElasticSearch: true,
         },
         ...getAuthoredByFilterData(),
       ]
@@ -232,12 +226,27 @@ const TestListFilters = ({
         title: 'Tags',
         placeholder: 'Please select',
         onChange: 'tags',
-        filterOption: searchFilterOption,
-        data: allTagsData.map((o) => ({ value: o._id, text: o.tagName })),
+        tagTypes: ['test'],
+        useElasticSearch: true,
       },
     ]
     return filterData1
-  }
+  }, [
+    collectionDefaultFilter,
+    filter,
+    filterData,
+    filteredCollections,
+    filterMenuItems,
+    getAuthoredByFilterData,
+    isDistrictUser,
+    isOrgUser,
+    isPlaylist,
+    libraryFilters,
+    searchFilterOption,
+    userFeatures.isCurator,
+    userFeatures.isPublisherAuthor,
+  ])
+
   const handleApply = (standardIds) => {
     onChange('standardIds', standardIds)
   }
@@ -247,18 +256,22 @@ const TestListFilters = ({
     setShowModal(true)
   }
 
-  let mappedfilterData = getFilters()
-  if (isPublishers) {
-    const filtersToBeMoved = mappedfilterData.filter((f) =>
-      ['Status', 'Authored By'].includes(f.title)
-    )
-    mappedfilterData = [
-      ...filtersToBeMoved,
-      ...mappedfilterData.filter(
-        (f) => !['Status', 'Authored By'].includes(f.title)
-      ),
-    ]
-  }
+  const mappedfilterData = useMemo(() => {
+    let _mappedfilterData = getFilters()
+    if (isPublishers) {
+      const filtersToBeMoved = _mappedfilterData.filter((f) =>
+        ['Status', 'Authored By'].includes(f.title)
+      )
+      _mappedfilterData = [
+        ...filtersToBeMoved,
+        ..._mappedfilterData.filter(
+          (f) => !['Status', 'Authored By'].includes(f.title)
+        ),
+      ]
+    }
+    return _mappedfilterData
+  }, [isPublishers, getFilters])
+
   const selectedCurriculam = formattedCuriculums?.find(
     ({ value }) => value === search?.curriculumId
   )
@@ -355,8 +368,6 @@ export default connect(
   (state, { search = {} }) => ({
     curriculumStandards: getStandardsListSelector(state),
     collections: getCollectionsSelector(state),
-    allTagsData: getAllTagsSelector(state, 'test'),
-    allPlaylistsTagsData: getAllTagsSelector(state, 'playlist'),
     formattedCuriculums: getFormattedCurriculumsSelector(state, search),
     userFeatures: getUserFeatures(state),
     districtId: getUserOrgId(state),

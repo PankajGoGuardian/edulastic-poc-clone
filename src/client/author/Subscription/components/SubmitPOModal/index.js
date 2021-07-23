@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { Radio, message } from 'antd'
+import { pick } from 'lodash'
 import produce from 'immer'
 import { aws } from '@edulastic/constants'
 import { IconUpload } from '@edulastic/icons'
@@ -120,7 +121,11 @@ const SubmitPOModal = ({
     if (!validateFields()) {
       return false
     }
-    const school = userOrgData?.schools?.[0]
+    const school = pick(userOrgData?.schools?.[0], [
+      '_id',
+      'name',
+      'districtId',
+    ])
     const { districtName, districtId, districtState } =
       userOrgData?.districts?.[0] || {}
     const district = {

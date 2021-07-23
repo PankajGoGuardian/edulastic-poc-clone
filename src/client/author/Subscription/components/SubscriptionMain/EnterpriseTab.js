@@ -83,10 +83,20 @@ const EnterpriseTab = ({
   subEndDate,
   isPremiumUser,
   signUpFlowModalHandler,
+  user,
 }) => {
   const [showSelectStates, setShowSelectStates] = useState(false)
 
   const handleSelectStateModal = () => setShowSelectStates(true)
+
+  const { utm_source, openIdProvider } = user
+
+  const isExternalPublisher =
+    utm_source === 'singapore' || openIdProvider === 'CLI'
+
+  const filteredAddonsData = isExternalPublisher
+    ? addonsData.filter((x) => x.title !== 'SparkMath')
+    : addonsData
 
   return (
     <SectionContainer>
@@ -164,13 +174,11 @@ const EnterpriseTab = ({
           student understanding and growth.
         </SectionDescription>
         <CardContainer>
-          {addonsData.map((_, index) => (
+          {filteredAddonsData.map((x, index) => (
             <AddonCard key={index}>
-              <AddonImg>{addonsData[index].icon}</AddonImg>
-              <h3>{addonsData[index].title}</h3>
-              <AddonDescription>
-                {addonsData[index].description}
-              </AddonDescription>
+              <AddonImg>{x.icon}</AddonImg>
+              <h3>{x.title}</h3>
+              <AddonDescription>{x.description}</AddonDescription>
             </AddonCard>
           ))}
         </CardContainer>

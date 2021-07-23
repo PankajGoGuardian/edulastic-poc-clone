@@ -111,6 +111,7 @@ const PurchaseFlowModals = (props) => {
     toggleSubmitPOModal,
     setCartQuantities,
     setProratedProducts,
+    setIsTabShouldSwitch,
   } = props
 
   const [payWithPoModal, setPayWithPoModal] = useState(false)
@@ -251,9 +252,8 @@ const PurchaseFlowModals = (props) => {
   const proratedProducts = products.map((p) => {
     if (proratedItemBankPremiumKeyed[p.id]) {
       return { ...p, ...proratedItemBankPremiumKeyed[p.id] }
-    } else {
-      return p
     }
+    return p
   })
   useEffect(() => {
     setCartQuantities(quantities)
@@ -324,20 +324,22 @@ const PurchaseFlowModals = (props) => {
 
   const isEnterprise = ['partial_premium', 'enterprise'].includes(subType)
   const shouldbeMultipleLicenses = useMemo(() => {
-    return (
-      Object.keys(cartQuantities).some(
-        (x) =>
-          cartQuantities[x] > 1 ||
-          itemBankSubscriptions.some((permission) => {
-            return (
-              permission.itemBankId ===
-                products.find((p) => p.id === x)?.linkedProductId &&
-              !permission.isTrial
-            )
-          })
-      ) || user?.role !== roleuser.TEACHER
+    const hasMoreThanOne = Object.keys(cartQuantities).some(
+      (x) =>
+        cartQuantities[x] > 1 ||
+        itemBankSubscriptions.some((permission) => {
+          return (
+            permission.itemBankId ===
+              products.find((p) => p.id === x)?.linkedProductId &&
+            !permission.isTrial
+          )
+        })
     )
-  }, [cartQuantities, itemBankSubscriptions, user?.role])
+    if (isEnterprise) {
+      return hasMoreThanOne
+    }
+    return hasMoreThanOne || user?.role != roleuser.TEACHER
+  }, [cartQuantities, itemBankSubscriptions, user?.role, isEnterprise])
 
   const hideCcButton =
     (shouldbeMultipleLicenses || cartQuantities[teacherPremium.id]) &&
@@ -473,6 +475,8 @@ const PurchaseFlowModals = (props) => {
           subType={subType}
           subscription={props.subscription}
           hideCcButton={hideCcButton}
+          shouldbeMultipleLicenses={shouldbeMultipleLicenses}
+          setIsTabShouldSwitch={setIsTabShouldSwitch}
         />
       )}
       {showUpgradeModal && (
@@ -556,6 +560,7 @@ PurchaseFlowModals.defaultProps = {
   setClickedBundleId: () => {},
   openRequestInvoiceModal: () => {},
   toggleSubmitPOModal: () => {},
+  setIsTabShouldSwitch: () => {},
 }
 
 export default compose(

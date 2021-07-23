@@ -18,6 +18,7 @@ export const userPickFields = [
   'middleName',
   'msoId',
   'orgData',
+  'otherAccounts',
   'lastSigninSSO',
   'role',
   'permissions',
@@ -39,4 +40,6 @@ export const userPickFields = [
   'sparkPlaylistCollectionsVisited',
   'teachingStandards',
   'referrer',
+  'currentDistrictId',
+  'utm_source',
 ]

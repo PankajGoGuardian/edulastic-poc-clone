@@ -65,6 +65,8 @@ const SortableItem = sortableElement((props) => {
     fromPlaylist,
     droppedItemId,
     isPlaylistDetailsPage,
+    isSparkMathPlaylist,
+    isSMPlaylist,
     ...rest
   } = props
 
@@ -75,7 +77,7 @@ const SortableItem = sortableElement((props) => {
       {hasModuleSort && <SortableTestsHandle />}
       <DropContainer
         theme={themes.default}
-        width={isReview ? 'calc(100% - 40px)' : '100%'}
+        width={hasModuleSort ? 'calc(100% - 40px)' : '100%'}
         key={`drop-${id}-${moduleItem._id}`}
         drop={(arg1, item) => {
           onDrop(id, item)
@@ -117,6 +119,8 @@ const SortableItem = sortableElement((props) => {
           fromPlaylist={fromPlaylist}
           droppedItemId={droppedItemId}
           isPlaylistDetailsPage={isPlaylistDetailsPage}
+          isSparkMathPlaylist={isSparkMathPlaylist}
+          isSMPlaylist={isSMPlaylist}
         />
       </DropContainer>
     </AssignmentItemContainer>

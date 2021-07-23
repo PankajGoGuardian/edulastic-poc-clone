@@ -18,18 +18,15 @@ import {
   FlexContainer,
   EduButton,
 } from '@edulastic/common'
-import {
-  IconClose,
-  IconGraphRightArrow,
-  IconChevronLeft,
-} from '@edulastic/icons'
+import { IconClose } from '@edulastic/icons'
 import { cloneDeep, get, uniq, intersection, keyBy } from 'lodash'
-import { Layout, Button, Pagination } from 'antd'
+import { Layout, Button, Pagination, Dropdown, Menu } from 'antd'
 import ItemDetailContext, {
   COMPACT,
   DEFAULT,
 } from '@edulastic/common/src/contexts/ItemDetailContext'
 import questionTitle from '@edulastic/constants/const/questionTitle'
+import UnScored from '@edulastic/common/src/components/Unscored'
 import { MAX_MOBILE_WIDTH } from '../../../src/constants/others'
 import {
   changeViewAction,
@@ -67,6 +64,10 @@ import {
   addWidgetToPassageAction,
   deleteItemAction,
 } from '../../ducks'
+import {
+  changeCurrentQuestionAction,
+  getIsEditDisbledSelector,
+} from '../../../sharedDucks/questions'
 import { toggleSideBarAction } from '../../../src/actions/toggleMenu'
 
 import {
@@ -96,10 +97,6 @@ import { clearAnswersAction } from '../../../src/actions/answers'
 import { changePreviewTabAction } from '../../../ItemAdd/ducks'
 import { ConfirmationModal } from '../../../src/components/common/ConfirmationModal'
 import AuthorTestItemPreview from '../../../src/components/common/PreviewModal/AuthorTestItemPreview'
-import {
-  CollapseBtn,
-  Divider,
-} from '../../../src/components/common/PreviewModal/styled'
 import { setCreatedItemToTestAction } from '../../../TestPage/ducks'
 import QuestionAuditTrailLogs from '../../../../assessment/containers/QuestionAuditTrailLogs'
 import LanguageSelector from '../../../../common/components/LanguageSelector'
@@ -107,6 +104,9 @@ import {
   allowedToSelectMultiLanguageInTest,
   isPremiumUserSelector,
 } from '../../../src/selectors/user'
+import QuestionToPassage from '../QuestionToPassage'
+import PassageDivider from '../Divider'
+import Ctrls from '../ItemDetailRow/components/ItemDetailWidget/Controls'
 
 const testItemStatusConstants = {
   DRAFT: 'draft',
@@ -136,6 +136,8 @@ class Container extends Component {
       showSettings: false,
       collapseDirection: '',
       showHints: false,
+      showQuestionManageModal: false,
+      isEditPassageQuestion: false,
     }
   }
 
@@ -246,7 +248,7 @@ class Container extends Component {
     const newNumberOfPassageWidgets = get(newPassage, 'structure.widgets', [])
       .length
     if (newNumberOfPassageWidgets < prevNumberOfPassageWidgets) {
-      saveItem()
+      saveItem(false)
     }
   }
 
@@ -320,6 +322,7 @@ class Container extends Component {
       rows,
       item,
       location: { state },
+      setCurrentQuestion,
     } = this.props
 
     changeView('edit')
@@ -328,6 +331,13 @@ class Container extends Component {
       navigateToPickupQuestionType()
       return
     }
+
+    if (item.passageId) {
+      setCurrentQuestion('')
+      this.setState({ showQuestionManageModal: true, rowIndex, tabIndex })
+      return
+    }
+
     const { widgets = [] } = rows[rowIndex]
     const columnHasResource =
       widgets.length > 0 &&
@@ -372,11 +382,16 @@ class Container extends Component {
     })
   }
 
-  handleAddToPassage = (type, tabIndex) => {
-    const { isTestFlow, match, addWidgetToPassage, item } = this.props
+  handleAddQuestionToPassage = () => {
+    const { rows } = this.props
+    const rowIndex = (rows?.length || 1) - 1
+    this.handleAdd({ rowIndex, tabIndex: 0 })
+  }
 
+  handleAddToPassage = (type, tabIndex, rowIndex) => {
+    const { isTestFlow, match, addWidgetToPassage } = this.props // , item
     // Checking if current item allows multiple items
-    const { canAddMultipleItems } = item
+    // const { canAddMultipleItems } = item
     /**
      * there are two possibilites for getting item id during test flow
      * route 1: "/author/tests/:testId/createItem/:itemId"
@@ -392,14 +407,25 @@ class Container extends Component {
           : match.params.id,
       testId: match.params.testId,
       type,
-      tabIndex,
-      canAddMultipleItems: !!canAddMultipleItems,
+      // tabIndex,
+      // canAddMultipleItems: !!canAddMultipleItems,
     })
+    this.setState({ showQuestionManageModal: true, tabIndex, rowIndex })
   }
 
   handleCancelSettings = () => {
     this.setState({
       showSettings: false,
+    })
+  }
+
+  handleCancelQuestionToPassage = () => {
+    const { changeView } = this.props
+    changeView('edit')
+
+    this.setState({
+      showQuestionManageModal: false,
+      isEditPassageQuestion: false,
     })
   }
 
@@ -421,13 +447,40 @@ class Container extends Component {
   }
 
   handleEditWidget = (widget) => {
-    const { loadQuestion, changeView } = this.props
+    const {
+      loadQuestion,
+      changeView,
+      setCurrentQuestion,
+      item: { isPassageWithQuestions },
+    } = this.props
+    if (isPassageWithQuestions) {
+      setCurrentQuestion(widget.reference)
+      this.setState({
+        showQuestionManageModal: true,
+        isEditPassageQuestion: true,
+      })
+      return
+    }
     changeView('edit')
     loadQuestion(widget, 0)
   }
 
   handleEditPassageWidget = (widget, rowIndex) => {
-    const { loadQuestion, changeView } = this.props
+    const {
+      loadQuestion,
+      changeView,
+      setCurrentQuestion,
+      item: { isPassageWithQuestions },
+    } = this.props
+    if (isPassageWithQuestions) {
+      setCurrentQuestion(widget.reference)
+      this.setState({
+        rowIndex,
+        showQuestionManageModal: true,
+        isEditPassageQuestion: true,
+      })
+      return
+    }
     changeView('edit')
     loadQuestion(widget, rowIndex, true)
   }
@@ -613,7 +666,6 @@ class Container extends Component {
     const item = produce(defaultEmptyItem, (draft) => {
       draft.rows[0].dimension = '50%'
       draft.canAddMultipleItems = true
-      draft.canAddMultipleItems = true
       draft.isPassageWithQuestions = true
       draft.multipartItem = true
       draft.passageId = passage._id
@@ -687,6 +739,35 @@ class Container extends Component {
     })
   }
 
+  handleCancelEditItem = () => {
+    const {
+      history,
+      match,
+      isTestFlow,
+      location: { state },
+      item,
+    } = this.props
+    const { testId } = match.params
+    const { previousTestId, fadeSidebar, regradeFlow } = state || {}
+
+    const url = isTestFlow
+      ? `/author/tests/tab/review/id/${testId}`
+      : `/author/items/${item._id}/item-detail`
+
+    const newState = {
+      isTestFlow,
+      previousTestId,
+      fadeSidebar,
+      resetView: false,
+      regradeFlow,
+    }
+
+    history.push({
+      pathname: url,
+      state: newState,
+    })
+  }
+
   handleCollapse = (dir) => {
     this.setState((state) => ({
       collapseDirection: state.collapseDirection ? '' : dir,
@@ -696,32 +777,10 @@ class Container extends Component {
   renderCollapseButtons = () => {
     const { collapseDirection } = this.state
     return (
-      <Divider
-        isCollapsed={!!collapseDirection}
+      <PassageDivider
         collapseDirection={collapseDirection}
-      >
-        <div className="button-wrapper">
-          <CollapseBtn
-            collapseDirection={collapseDirection}
-            onClick={() => this.handleCollapse('left')}
-            left
-          >
-            <IconChevronLeft />
-          </CollapseBtn>
-          <CollapseBtn collapseDirection={collapseDirection} mid>
-            <div className="vertical-line first" />
-            <div className="vertical-line second" />
-            <div className="vertical-line third" />
-          </CollapseBtn>
-          <CollapseBtn
-            collapseDirection={collapseDirection}
-            onClick={() => this.handleCollapse('right')}
-            right
-          >
-            <IconGraphRightArrow />
-          </CollapseBtn>
-        </div>
-      </Divider>
+        onChange={this.handleCollapse}
+      />
     )
   }
 
@@ -741,11 +800,6 @@ class Container extends Component {
       : !!get(rows, [0, 'tabs', 'length'], 0)
     const collapseLeft = collapseDirection === 'left'
     const collapseRight = collapseDirection === 'right'
-
-    const passageTestItems = get(passage, 'testItems', [])
-    const widgetLength = get(rows, [0, 'widgets'], []).length
-    const showAddItemButton =
-      (!!widgetLength || passageTestItems.length > 1) && view === EDIT
 
     return (
       <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
@@ -775,6 +829,8 @@ class Container extends Component {
                 hideColumn={collapseLeft}
                 isCollapsed={!!collapseDirection}
                 useTabsLeft={useTabsLeft}
+                onShowSettings={this.handleShowSettings}
+                containerType="passage"
               />
             )}
             {rows.map((row, i) => (
@@ -804,8 +860,9 @@ class Container extends Component {
                   isCollapsed={!!collapseDirection}
                   useTabsLeft={useTabsLeft}
                   addItemToPassage={this.addItemToPassage}
-                  showAddItemButton={showAddItemButton}
                   isPassageWithQuestions={passageWithQuestions}
+                  onShowSettings={this.handleShowSettings}
+                  containerType="question"
                 />
               </>
             ))}
@@ -864,18 +921,17 @@ class Container extends Component {
   }
 
   get passageItems() {
-    const { passage, isTestFlow } = this.props
-    const passageTestItems = isTestFlow
-      ? get(passage, 'testItems', [])
-      : get(passage, 'activeTestItems', [])
-
+    const { passage } = this.props
+    const passageTestItems = get(passage, 'testItems', [])
     return passageTestItems
   }
 
   get passageNavigator() {
-    const { item, passage, rows, view, itemDeleting } = this.props
+    const { t, item, passage, rows, view, itemDeleting } = this.props
     const widgetLength = get(rows, [0, 'widgets'], []).length
     const passageTestItems = this.passageItems
+    const isAddFirstPart = widgetLength === 0
+
     return (
       // isPassageWithQuestions fallback condition to show/hide pagination
       (item.canAddMultipleItems || item.isPassageWithQuestions) &&
@@ -897,42 +953,58 @@ class Container extends Component {
               onChange={this.goToItem}
             />
           )}
-          <AddRemoveButtonWrapper>
-            {(!!widgetLength || passageTestItems.length > 1) && view === EDIT && (
-              <>
-                {passageTestItems.length > 1 && (
-                  <EduButton
-                    isGhost
-                    ml="0px"
-                    height="30px"
-                    disabled={itemDeleting}
-                    onClick={this.handleRemoveItemRequest}
-                    data-cy="removeItem"
-                  >
-                    <i className="fa fa-minus-circle" />
-                    &nbsp;ITEM
-                  </EduButton>
-                )}
-                <EduButton
-                  isGhost
-                  height="30px"
-                  disabled={itemDeleting}
-                  onClick={this.addItemToPassage}
-                  data-cy="addItem"
-                >
-                  <i className="fa fa-plus-circle" />
-                  &nbsp;ITEM
+          {widgetLength >= 1 && view === EDIT && (
+            <AddRemoveButtonWrapper>
+              <Dropdown
+                disabled={itemDeleting}
+                overlay={
+                  <Menu>
+                    <Menu.Item
+                      key="addQuestionToPassage"
+                      onClick={this.handleAddQuestionToPassage}
+                    >
+                      {isAddFirstPart
+                        ? t('component.itemDetail.addFirstPart')
+                        : t('component.itemDetail.addNew')}
+                    </Menu.Item>
+                    <Menu.Item
+                      key="addItemToPassage"
+                      onClick={this.addItemToPassage}
+                    >
+                      {t('component.itemDetail.addNewItemToPassage')}
+                    </Menu.Item>
+                    {passageTestItems.length > 1 && (
+                      <Menu.Item
+                        key="removeCurrenItem"
+                        onClick={this.handleRemoveItemRequest}
+                      >
+                        {t('component.itemDetail.removeCurrentItem')}
+                      </Menu.Item>
+                    )}
+                  </Menu>
+                }
+                trigger="click"
+              >
+                <EduButton isGhost height="30px" data-cy="addOrRemoveButton">
+                  {t('component.itemDetail.addRemove')}
                 </EduButton>
-              </>
-            )}
-          </AddRemoveButtonWrapper>
+              </Dropdown>
+            </AddRemoveButtonWrapper>
+          )}
         </PassageNavigation>
       )
     )
   }
 
   render() {
-    const { showSettings, showRemovePassageItemPopup } = this.state
+    const {
+      showSettings,
+      tabIndex,
+      rowIndex,
+      showRemovePassageItemPopup,
+      showQuestionManageModal,
+      isEditPassageQuestion,
+    } = this.state
     const {
       match,
       rows,
@@ -958,8 +1030,20 @@ class Container extends Component {
       t,
       allowedToSelectMultiLanguage,
       isPremiumUser,
+      isEditFlow,
+      itemEditDisabled,
+      setItemLevelScore,
     } = this.props
-
+    const {
+      itemLevelScoring,
+      itemLevelScore,
+      data = [],
+      isPassageWithQuestions,
+      multipartItem,
+    } = item
+    const { widgets = [] } = rows[0]
+    const [isEditDisabled] = itemEditDisabled
+    const { testId } = match.params
     let breadCrumbQType = ''
     if (item.passageId && item.canAddMultipleItems) {
       breadCrumbQType = 'Passage with Multiple Questions'
@@ -997,6 +1081,18 @@ class Container extends Component {
     const showLanguageSelector =
       isPassageQuestion ||
       item?.data?.questions?.some((q) => useLanguageFeatureQn.includes(q.type))
+
+    const handleTotalPartScoreChange = (score) => {
+      setItemLevelScore(+score)
+    }
+
+    const isTotalPointsBlockVisible = itemLevelScoring && widgets?.length > 0
+    const showMultipartAllPartsScore =
+      isTotalPointsBlockVisible && (multipartItem || isPassageWithQuestions)
+    const hasNoUnscored =
+      data?.questions?.length > 0
+        ? data.questions.some((x) => x.validation?.unscored !== true)
+        : true
 
     return (
       <ItemDetailContext.Provider value={{ layoutType }}>
@@ -1065,6 +1161,7 @@ class Container extends Component {
             style={{ marginTop: '10px' }}
           >
             <ButtonBar
+              onCancel={this.handleCancelEditItem}
               onShowSource={this.handleShowSource}
               onShowSettings={this.handleShowSettings}
               onChangeView={this.handleChangeView}
@@ -1104,11 +1201,39 @@ class Container extends Component {
                 {allowedToSelectMultiLanguage && showLanguageSelector && (
                   <LanguageSelector />
                 )}
-                {view !== 'preview' && view !== 'auditTrail' && (
-                  <EduButton ml="8px" isGhost height="30px" id="how-to-author">
-                    How to author
-                  </EduButton>
-                )}
+                {view !== 'preview' &&
+                  view !== 'auditTrail' &&
+                  (showMultipartAllPartsScore ? (
+                    <AllPartsPointsWrapper>
+                      {hasNoUnscored ? (
+                        <Ctrls.TotalPoints
+                          value={itemLevelScore}
+                          onChange={handleTotalPartScoreChange}
+                          data-cy="totalPointUpdate"
+                          visible={isTotalPointsBlockVisible}
+                          disabled={isEditDisabled}
+                          itemLevelScoring={itemLevelScoring}
+                          isPassage={isPassageWithQuestions}
+                          onShowSettings={this.handleShowSettings}
+                        />
+                      ) : (
+                        <UnScored
+                          width="50px"
+                          height="32px"
+                          top={`${itemLevelScoring ? -80 : -50}px`}
+                        />
+                      )}
+                    </AllPartsPointsWrapper>
+                  ) : (
+                    <EduButton
+                      ml="8px"
+                      isGhost
+                      height="30px"
+                      id="how-to-author"
+                    >
+                      How to author
+                    </EduButton>
+                  ))}
                 {view === 'preview' && (
                   <RightActionButtons>
                     {this.renderButtons()}
@@ -1121,6 +1246,17 @@ class Container extends Component {
             {view === 'auditTrail' && this.renderAuditTrailLogs()}
           </ContentWrapper>
         </Layout>
+        {showQuestionManageModal && (
+          <QuestionToPassage
+            isTestFlow={isTestFlow}
+            isEditFlow={isEditFlow}
+            tabIndex={tabIndex}
+            rowIndex={rowIndex}
+            testId={testId}
+            isEditPassageQuestion={isEditPassageQuestion}
+            onCancel={this.handleCancelQuestionToPassage}
+          />
+        )}
       </ItemDetailContext.Provider>
     )
   }
@@ -1208,6 +1344,7 @@ const enhance = compose(
       view: getViewSelector(state),
       allowedToSelectMultiLanguage: allowedToSelectMultiLanguageInTest(state),
       isPremiumUser: isPremiumUserSelector(state),
+      itemEditDisabled: getIsEditDisbledSelector(state),
     }),
     {
       changeView: changeViewAction,
@@ -1237,6 +1374,7 @@ const enhance = compose(
       deleteItem: deleteItemAction,
       deleteWidgetFromPassage: deleteWidgetFromPassageAction,
       setCreatedItemToTest: setCreatedItemToTestAction,
+      setCurrentQuestion: changeCurrentQuestionAction,
     }
   )
 )
@@ -1248,3 +1386,13 @@ const BreadCrumbBar = styled(FlexContainer)`
 `
 
 const RightActionButtons = styled(FlexContainer)``
+
+const AllPartsPointsWrapper = styled.div`
+  position: relative;
+  padding-left: 15px;
+  .total-points-wrapper {
+    position: static;
+    top: unset;
+    right: unset;
+  }
+`

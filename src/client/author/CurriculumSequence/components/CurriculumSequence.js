@@ -767,6 +767,14 @@ class CurriculumSequence extends Component {
       currentUserId,
     } = this.props
 
+    const smId = collections
+      .filter((x) => x?.name?.toLowerCase() === 'spark math')
+      .map(({ _id }) => _id)
+    const isSMPlaylist = [
+      ...(destinationCurriculumSequence?.collections || []),
+      ...(destinationCurriculumSequence?.clonedCollections || []),
+    ]?.some((c) => smId?.includes(c?._id))
+
     const isManageContentActive = activeRightPanel === 'manageContent'
     // check Current user's edit permission
     const hasEditAccess = this.checkWritePermission()
@@ -942,6 +950,7 @@ class CurriculumSequence extends Component {
 
         <CurriculumSequenceWrapper>
           <CurriculumHeader
+            isSMPlaylist={isSMPlaylist}
             role={role}
             mode={mode}
             features={features}
@@ -1056,6 +1065,7 @@ class CurriculumSequence extends Component {
                         isPlaylistDetailsPage={isPlaylistDetailsPage}
                         customizeInDraft={customizeInDraft}
                         isSparkMathPlaylist={isSparkMathPlaylist}
+                        isSMPlaylist={isSMPlaylist}
                         toggleUnassignModal={this.toggleUnassignModal}
                       />
                     )}

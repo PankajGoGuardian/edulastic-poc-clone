@@ -86,6 +86,8 @@ export { default as notification } from './src/components/Notification'
 export { default as DragDropInnerContainer } from './src/components/DragDrop/DragDropInnerContainer'
 export { default as PremiumLabel } from './src/components/PremiumLabel'
 export { default as HelperIcon } from './src/components/HelperIconWithPopover'
+export { default as SelectSearch } from './src/components/SelectSearch'
+export { default as CustomKeyLabel } from './src/components/CustomKeyLabel'
 
 // HOC
 export { default as withWindowSizes } from './src/HOC/withWindowSizes'
@@ -135,7 +137,7 @@ export { default as ScrollContext } from './src/contexts/ScrollContext'
 export { default as LCBScrollContext } from './src/contexts/LCBScrollContext'
 export { default as HorizontalScrollContext } from './src/contexts/HorizontalScrollContext'
 export { default as RefContext } from './src/contexts/RefContext'
-export { default as ItemLevelContext } from './src/contexts/ItemLevelContext'
+export { default as PointBlockContext } from './src/contexts/PointBlockContext'
 export { default as AssessmentPlayerContext } from './src/contexts/AssessmentPlayerContext'
 export {
   default as QuestionContext,
@@ -146,6 +148,7 @@ export {
 export { default as useRealtimeV2 } from './src/customHooks/useRealtimeV2'
 export { default as useDisableDragScroll } from './src/customHooks/useDisableDragScroll'
 export { default as measureTextWithImage } from './src/customHooks/measureTextWithImage'
+export { default as useDropdownData } from './src/customHooks/useDropDownData'
 
 // Mobile
 export { MenuIcon } from './src/components/MenuIcon'
@@ -168,3 +171,4 @@ export { default as questionTheme } from './src/themes/questionTheme'
 export { default as DragDrop } from './src/components/DragDrop'
 export { default as SimpleConfirmModal } from './src/components/SimpleConfirmModal'
 export { default as PrintActionWrapper } from './src/components/PrintActionWrapper'
+export { default as PremiumItemBanner } from './src/components/Banner/PremiumItemBanner'

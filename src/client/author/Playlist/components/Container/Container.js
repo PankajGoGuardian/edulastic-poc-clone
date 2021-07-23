@@ -578,6 +578,7 @@ class TestList extends Component {
       openSidebar,
       isPlaylistAvailableModalVisible,
       filteredSparkInfo,
+      isSingaporeMath,
     } = this.state
     const { searchString } = playListFilters
     const renderFilterIcon = () => (
@@ -662,6 +663,7 @@ class TestList extends Component {
                 searchFilterOption={this.searchFilterOption}
                 handleStandardSearch={this.handleStandardSearch}
                 filterMenuItems={filterMenuItems}
+                isSingaporeMath={isSingaporeMath}
               />
             </SearchModalContainer>
           </MobileFilterModal>
@@ -690,6 +692,7 @@ class TestList extends Component {
                           searchFilterOption={this.searchFilterOption}
                           handleStandardSearch={this.handleStandardSearch}
                           filterMenuItems={filterMenuItems}
+                          isSingaporeMath={isSingaporeMath}
                         />
                       </ScrollBox>
                     </PerfectScrollbar>

@@ -412,23 +412,30 @@ export function getResponseTobeDisplayed(
   testItem = {},
   userResponse,
   questionId,
-  currentQuestionActivity
+  currentQuestionActivity,
+  uqasGroupedByItemId
 ) {
-  const question =
-    (testItem.data?.questions || [])?.find((q) => q.id === questionId) || {}
-  const qType = question.type
-  if (currentQuestionActivity?.skipped) {
-    return '-'
-  }
   if (
     testItem.data?.questions?.filter(
       (x) => x.type !== questionType.SECTION_LABEL
     )?.length > 1 &&
-    testItem.itemLevelScoring
+    testItem?.itemLevelScoring
   ) {
-    // MULTIPART
-    return 'TEI'
+    const notSkipped = (obj) => !obj.skipped
+    const hasAttempted = uqasGroupedByItemId?.[testItem._id]?.some(notSkipped)
+    if (hasAttempted) {
+      return 'TEI'
+    }
   }
+
+  const question =
+    (testItem.data?.questions || [])?.find((q) => q.id === questionId) || {}
+
+  const qType = question.type
+  if (currentQuestionActivity?.skipped) {
+    return '-'
+  }
+
   if (extractFunctions[qType]) {
     return extractFunctions[qType](
       question,
@@ -626,7 +633,7 @@ export const transformGradeBookResponse = (
           (questionActivitiesRaw &&
             keyBy(questionActivitiesRaw, (x) => `${x.testItemId}_${x.qid}`)) ||
           {}
-
+        const uqasGroupedByItemId = groupBy(questionActivitiesRaw, 'testItemId')
         const questionActivities = qids.map(
           (
             {
@@ -749,7 +756,8 @@ export const transformGradeBookResponse = (
                 testItemsDataKeyed[testItemId],
                 userResponse,
                 _id,
-                currentQuestionActivity
+                currentQuestionActivity,
+                uqasGroupedByItemId
               ),
               userResponse,
               isPractice,

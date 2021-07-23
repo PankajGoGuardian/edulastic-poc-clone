@@ -10,7 +10,7 @@ import { Dropdown, Menu, Tooltip } from 'antd'
 import { capitalize } from 'lodash'
 import moment from 'moment'
 import PropTypes from 'prop-types'
-import React, { memo, useEffect } from 'react'
+import React, { memo } from 'react'
 import { withNamespaces } from 'react-i18next'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import {
@@ -73,15 +73,6 @@ const SubscriptionHeader = ({
   const cartCount = Object.keys(cartQuantities).filter(
     (x) => x && x != 'null' && cartQuantities[x] > 0
   ).length
-
-  useEffect(() => {
-    if (
-      (['partial_premium', 'enterprise'].includes(subType) && isPremiumUser) ||
-      isFreeAdmin
-    ) {
-      setShowEnterpriseTab(true)
-    }
-  }, [])
 
   const handlePurchaseFlow = () => {
     settingProductData()

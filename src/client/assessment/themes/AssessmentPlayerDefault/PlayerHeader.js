@@ -66,6 +66,7 @@ const PlayerHeader = ({
   location,
   hidePause,
   blockNavigationToAnsweredQuestions = false,
+  isPremiumContentWithoutAccess = false,
 }) => {
   const query = qs.parse(location.search, { ignoreQueryPrefix: true })
   const { cliUser } = query
@@ -83,6 +84,7 @@ const PlayerHeader = ({
       isCliUserPreview={cliUser}
       LCBPreviewModal={LCBPreviewModal}
       zoomLevel={zoomLevel}
+      isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
     />
   )
 
@@ -190,6 +192,9 @@ const PlayerHeader = ({
                       blockNavigationToAnsweredQuestions
                     }
                     LCBPreviewModal={LCBPreviewModal}
+                    isPremiumContentWithoutAccess={
+                      isPremiumContentWithoutAccess
+                    }
                   />
                 )}
                 {!LCBPreviewModal && (
@@ -226,6 +231,9 @@ const PlayerHeader = ({
                         utaId={utaId}
                         hasDrawingResponse={hasDrawingResponse}
                         groupId={groupId}
+                        isPremiumContentWithoutAccess={
+                          isPremiumContentWithoutAccess
+                        }
                       />
                     )}
                   </ToolTipContainer>

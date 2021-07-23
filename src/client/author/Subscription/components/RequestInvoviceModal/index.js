@@ -112,6 +112,7 @@ const RequestInvoiceModal = ({
   }
 
   const totalPrice = Object.entries(cartProducts)
+    .filter(([, quantity]) => quantity)
     .map(([id, quantity]) => productNamesAndPriceById[id].price * quantity)
     .reduce((a, c) => a + c)
 
@@ -131,26 +132,28 @@ const RequestInvoiceModal = ({
     >
       <Container width="500">
         <Text>Shopping Cart</Text>
-        {Object.entries(cartProducts).map(([id, quantity]) => (
-          <FlexContainer
-            key={id}
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <SubText
-              key="productName"
-              data-cy={camelCase(productNamesAndPriceById[id].name)}
+        {Object.entries(cartProducts)
+          .filter(([, quantity]) => quantity)
+          .map(([id, quantity]) => (
+            <FlexContainer
+              key={id}
+              justifyContent="space-between"
+              alignItems="center"
             >
-              {productNamesAndPriceById[id].name}
-            </SubText>
-            <SubText
-              key="productPrice"
-              data-cy={`${camelCase(productNamesAndPriceById[id].name)}Price`}
-            >
-              ${quantity * productNamesAndPriceById[id].price}
-            </SubText>
-          </FlexContainer>
-        ))}
+              <SubText
+                key="productName"
+                data-cy={camelCase(productNamesAndPriceById[id].name)}
+              >
+                {productNamesAndPriceById[id].name}
+              </SubText>
+              <SubText
+                key="productPrice"
+                data-cy={`${camelCase(productNamesAndPriceById[id].name)}Price`}
+              >
+                ${quantity * productNamesAndPriceById[id].price}
+              </SubText>
+            </FlexContainer>
+          ))}
         <hr />
         <FlexContainer
           marginBottom="15px"

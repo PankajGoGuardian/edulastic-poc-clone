@@ -61,12 +61,16 @@
       "bookmark": "bookmark",
       "review": "review",
       "reviewAndSubmit": "Review/Submit",
+      "reviewOrEnd": "Review/End Test",
       "answerEliminator": "answer eliminator",
       "ruler": "ruler",
       "calculator": "calculator",
       "scratchPad": "scratch pad",
       "uploadWork": "Upload work",
-      "magnify": "Magnify"
+      "magnify": "Magnify",
+      "pause": "Pause",
+      "flag": "Flag",
+      "options": "Options"
     }
   },
   "component": {

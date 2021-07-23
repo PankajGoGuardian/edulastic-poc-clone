@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { test } from '@edulastic/constants'
 import { FlexContainer } from '@edulastic/common'
+import { drcThemeColor } from '@edulastic/colors'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleRight, faAngleLeft } from '@fortawesome/free-solid-svg-icons'
 import PracticePlayerHeader from './AssessmentPlayerSimple/PlayerHeader'
@@ -14,6 +15,8 @@ import { Nav } from './common'
 import PlayerFooter from './skins/Quester/PlayerFooter'
 import QuesterHeader from './skins/Quester/PlayerHeader'
 import SbacHeader from './skins/Sbac/PlayerHeader'
+import PlayerFooterDrc from './skins/Drc/PlayerFooter'
+import DrcHeader from './skins/Drc/PlayerHeader'
 import Magnifier from '../../common/components/Magnifier'
 import { Tooltip } from '../../common/utils/helpers'
 
@@ -118,6 +121,22 @@ const AssessmentPlayerSkinWrapper = ({
         />
       )
     }
+    if (playerSkinType === 'drc') {
+      const toolToggleFunc = toggleToolsOpenStatus || changeTool
+      const tool = restProps.toolsOpenStatus || restProps.tool
+      return (
+        <DrcHeader
+          {...restProps}
+          options={restProps.options || restProps.dropdownOptions}
+          defaultAP={defaultAP}
+          isDocbased={isDocBased}
+          handleMagnifier={handleMagnifier}
+          enableMagnifier={enableMagnifier}
+          changeTool={toolToggleFunc}
+          tool={tool}
+        />
+      )
+    }
     if (docUrl || docUrl === '') {
       return (
         <DocBasedPlayerHeader
@@ -157,6 +176,9 @@ const AssessmentPlayerSkinWrapper = ({
           tool={tool}
         />
       )
+    }
+    if (playerSkinType === 'drc') {
+      return <PlayerFooterDrc {...restProps} />
     }
     return null
   }
@@ -219,6 +241,14 @@ const AssessmentPlayerSkinWrapper = ({
         marginTop: '48px',
       }
     }
+    if (
+      playerSkinType.toLowerCase() === test.playerSkinValues.drc.toLowerCase()
+    ) {
+      return {
+        paddingLeft: 0,
+        paddingRight: 0,
+      }
+    }
     return { width: '100%' }
   }
 
@@ -242,7 +272,8 @@ const AssessmentPlayerSkinWrapper = ({
       playerSkinType.toLowerCase() ===
         test.playerSkinValues.sbac.toLowerCase() ||
       playerSkinType.toLowerCase() ===
-        test.playerSkinValues.quester.toLowerCase()
+        test.playerSkinValues.quester.toLowerCase() ||
+      playerSkinType.toLowerCase() === test.playerSkinValues.drc.toLowerCase()
     ) {
       return {
         width: '100%',
@@ -382,6 +413,17 @@ const StyledMainContainer = styled.div`
       }
     }
   `
+      : playerSkin.toLowerCase() === test.playerSkinValues.drc.toLowerCase()
+      ? `
+      .question-audio-controller {
+        display: flex;
+        padding: 5px 10px;
+        button.ant-btn.ant-btn-primary{
+          background-color: ${drcThemeColor};
+          border-color: ${drcThemeColor};
+        }
+      }
+      `
       : ``}
 `
 export default AssessmentPlayerSkinWrapper

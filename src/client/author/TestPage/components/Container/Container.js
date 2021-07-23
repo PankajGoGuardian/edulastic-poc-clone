@@ -5,7 +5,16 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Spin } from 'antd'
 import { withRouter } from 'react-router-dom'
-import { cloneDeep, uniq as _uniq, isEmpty, get, without } from 'lodash'
+import {
+  cloneDeep,
+  uniq as _uniq,
+  isEmpty,
+  get,
+  without,
+  pick,
+  isEqual,
+  difference,
+} from 'lodash'
 import uuidv4 from 'uuid/v4'
 import {
   withWindowSizes,
@@ -57,6 +66,9 @@ import {
   setShowUpgradePopupAction,
   receiveTestByIdSuccess as receiveTestByIdSuccessAction,
   isRegradedByCoAuthor,
+  setCurrentTestSettingsIdAction,
+  fetchTestSettingsListAction,
+  getTestSettingsListSelector,
 } from '../../ducks'
 import {
   clearSelectedItemsAction,
@@ -116,6 +128,7 @@ import {
 } from '../../../../student/Assignments/ducks'
 import { setSelectedLanguageAction } from '../../../../student/sharedDucks/AssignmentModule/ducks'
 import { fetchCustomKeypadAction } from '../../../../assessment/components/KeyPadOptions/ducks'
+import { convertCollectionOptionsToArray } from '../../../src/utils/util'
 
 const ItemCloneModal = loadable(() => import('../ItemCloneConfirmationModal'))
 
@@ -126,6 +139,8 @@ const {
   passwordPolicy: passwordPolicyValues,
   ITEM_GROUP_TYPES,
   ITEM_GROUP_DELIVERY_TYPES,
+  testSettingsOptions,
+  docBasedSettingsOptions,
 } = testContants
 const { nonPremiumCollectionsToShareContent } = collectionsConstant
 
@@ -196,11 +211,22 @@ class Container extends PureComponent {
       isVersionFlow,
       getTestIdFromVersionId,
       fetchUserKeypads,
+      setCurrentTestSettingsId,
+      isPremiumUser,
+      fetchTestSettingsList,
+      userId,
     } = this.props
 
     const { versionId, id } = match.params
 
     if (userRole !== roleuser.STUDENT) {
+      setCurrentTestSettingsId('')
+      if (isPremiumUser) {
+        fetchTestSettingsList({
+          orgId: userId,
+          orgType: roleuser.ORG_TYPE.USER,
+        })
+      }
       fetchUserKeypads()
       const self = this
       const { showCancelButton = false, editAssigned = false } =
@@ -262,7 +288,8 @@ class Container extends PureComponent {
         setRegradeOldId('')
       }
 
-      if (userRole !== roleuser.EDULASTIC_CURATOR) getDefaultTestSettings()
+      if (userRole !== roleuser.EDULASTIC_CURATOR)
+        getDefaultTestSettings({ saveDefaultTestSettings: true })
     } else {
       fetchAssignmentsByTest({ testId: id })
     }
@@ -300,6 +327,10 @@ class Container extends PureComponent {
       languagePreference,
       setSelectedLanguage,
       isUpgradePopupVisible,
+      match,
+      testStatus,
+      testSettingsList,
+      setData,
     } = this.props
 
     const { testLoaded, studentRedirected } = this.state
@@ -346,6 +377,25 @@ class Container extends PureComponent {
         // eslint-disable-next-line react/no-did-update-set-state
         this.setState({ testLoaded: true })
       }
+      const isOwner =
+        test?.authors?.some((x) => x._id === userId) || !match?.params?.id
+      const isEditable =
+        isOwner && (editEnable || testStatus === statusConstants.DRAFT)
+      if (
+        test._id &&
+        isEditable &&
+        !isTestLoading &&
+        testLoaded &&
+        testSettingsList.length &&
+        testSettingsList.some((t) => t._id === test.settingId) &&
+        prevProps.testSettingsList.length !== testSettingsList.length &&
+        !!test.settingId
+      ) {
+        const isSettingsEqual = this.isTestSettingsEqual(test.settingId)
+        if (!isSettingsEqual) {
+          setData({ settingId: '' })
+        }
+      }
       if (
         userRole === roleuser.EDULASTIC_CURATOR &&
         prevProps?.test?._id !== test?._id
@@ -374,6 +424,59 @@ class Container extends PureComponent {
         }
       }
     }
+  }
+
+  cleanSettings = (settings) => {
+    const { userRole } = this.props
+    if (
+      settings.passwordPolicy !==
+      passwordPolicyValues.REQUIRED_PASSWORD_POLICY_STATIC
+    ) {
+      delete settings.assignmentPassword
+    }
+    if (
+      settings.passwordPolicy !==
+      passwordPolicyValues.REQUIRED_PASSWORD_POLICY_DYNAMIC
+    ) {
+      delete settings.passwordExpireIn
+    }
+    if (!settings.safeBrowser) {
+      delete settings.sebPassword
+    }
+    if (userRole === roleuser.TEACHER && settings.testContentVisibility) {
+      delete settings.testContentVisibility
+    }
+    if (!settings.hasInstruction) {
+      delete settings.instruction
+    }
+    if (!settings.timedAssignment) {
+      delete settings.allowedTime
+    }
+    if (settings.restrictNavigationOut !== 'warn-and-report-after-n-alerts') {
+      delete settings.restrictNavigationOutAttemptsThreshold
+    }
+    if (!settings.restrictNavigationOut) {
+      delete settings.restrictNavigationOut
+    }
+  }
+
+  isTestSettingsEqual = (settingId) => {
+    const { test, testSettingsList } = this.props
+
+    // should not check assignment level settings in test settings
+    const settingsToPick = difference(
+      test.isDocBased ? docBasedSettingsOptions : testSettingsOptions,
+      ['autoRedirect', 'autoRedirectSettings']
+    )
+
+    const settingsSaved = pick(
+      testSettingsList.find((t) => t._id === settingId) || {},
+      settingsToPick
+    )
+    this.cleanSettings(settingsSaved)
+    const settingsInTest = pick(test, settingsToPick)
+    this.cleanSettings(settingsInTest)
+    return isEqual(settingsSaved, settingsInTest)
   }
 
   // Make use of the router Prompt Component. No custom beforeunload method is required.
@@ -448,8 +551,23 @@ class Container extends PureComponent {
   }
 
   handleAssign = () => {
-    const { test, history, match, updated } = this.props
-    const { status } = test
+    const {
+      test,
+      history,
+      match,
+      updated,
+      collections: orgCollections,
+    } = this.props
+    const { status, collections } = test
+
+    const sparkMathId = orgCollections?.find(
+      (x) => x.name.toLowerCase() === 'spark math'
+    )?._id
+
+    const isSparkMathCollection = collections?.some(
+      (x) => x._id === sparkMathId
+    )
+
     if (this.validateTest(test)) {
       if (status !== statusConstants.PUBLISHED || updated) {
         this.handlePublishTest(true)
@@ -458,7 +576,11 @@ class Container extends PureComponent {
         if (id) {
           history.push({
             pathname: `/author/assignments/${id}`,
-            state: { fromText: 'TEST LIBRARY', toUrl: '/author/tests' },
+            state: {
+              fromText: 'TEST LIBRARY',
+              toUrl: '/author/tests',
+              isSparkMathCollection,
+            },
           })
         }
       }
@@ -482,22 +604,8 @@ class Container extends PureComponent {
 
   handleChangeCollection = (_, options) => {
     const { setData, test, collectionsToShow } = this.props
-    const data = {}
-    options.forEach((o) => {
-      if (data[o.props._id]) {
-        data[o.props._id].push(o.props.value)
-      } else {
-        data[o.props._id] = [o.props.value]
-      }
-    })
 
-    const collectionArray = []
-    for (const [key, value] of Object.entries(data)) {
-      collectionArray.push({
-        _id: key,
-        bucketIds: value,
-      })
-    }
+    const collectionArray = convertCollectionOptionsToArray(options)
 
     const orgCollectionIds = collectionsToShow.map((o) => o._id)
     const extraCollections = (test.collections || []).filter(
@@ -771,6 +879,7 @@ class Container extends PureComponent {
       testAssignments,
       userRole,
       userFeatures,
+      testSettingsList,
     } = this.props
     if (!test?.title?.trim()?.length) {
       notification({ messageKey: 'nameFieldRequired' })
@@ -783,6 +892,17 @@ class Container extends PureComponent {
       }
       notification({ messageKey: 'enterValidPassword' })
       return
+    }
+
+    if (
+      !!newTest.settingId &&
+      testSettingsList.length &&
+      testSettingsList.some((t) => t._id === newTest.settingId)
+    ) {
+      const isSettingsEqual = this.isTestSettingsEqual(newTest.settingId)
+      if (!isSettingsEqual) {
+        newTest.settingId = ''
+      }
     }
 
     updateLastUsedCollectionList(test.collections)
@@ -828,6 +948,7 @@ class Container extends PureComponent {
       assignmentPassword = '',
       safeBrowser,
       sebPassword,
+      passages,
     } = test
     const { userFeatures, isOrganizationDistrictUser } = this.props
     if (!title) {
@@ -906,6 +1027,27 @@ class Container extends PureComponent {
           (item) =>
             item.data.questions.length <= 0 && item.data.resources.length <= 0
         )
+      ) {
+        testHasInvalidItem = true
+      }
+      if (
+        itemGroup.items.some((item) => {
+          if (!item.isPassageWithQuestions || !item.passageId) {
+            return false
+          }
+          const _passage = passages?.find((p) => p._id === item.passageId)
+          if (!_passage) {
+            return false
+          }
+          const { structure } = _passage
+          const { widgets = [] } = structure
+          if (!widgets.length) {
+            // cannot publish the test if it has invalid passage item
+            // @see: https://snapwiz.atlassian.net/browse/EV-29485
+            return true
+          }
+          return false
+        })
       ) {
         testHasInvalidItem = true
       }
@@ -1356,6 +1498,7 @@ const enhance = compose(
       languagePreference: getSelectedLanguageSelector(state),
       isPremiumUser: isPremiumUserSelector(state),
       isUpgradePopupVisible: getShowUpgradePopupSelector(state),
+      testSettingsList: getTestSettingsListSelector(state),
     }),
     {
       createTest: createTestAction,
@@ -1389,6 +1532,8 @@ const enhance = compose(
       fetchUserKeypads: fetchCustomKeypadAction,
       setShowUpgradePopup: setShowUpgradePopupAction,
       receiveTestByIdSuccess: receiveTestByIdSuccessAction,
+      setCurrentTestSettingsId: setCurrentTestSettingsIdAction,
+      fetchTestSettingsList: fetchTestSettingsListAction,
     }
   )
 )

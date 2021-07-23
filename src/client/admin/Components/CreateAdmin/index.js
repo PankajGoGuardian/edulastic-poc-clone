@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Col, Radio } from 'antd'
 
 import { withNamespaces } from '@edulastic/localization'
+import moment from 'moment'
 
 import {
   HeadingSpan,
@@ -46,13 +47,13 @@ const CreateAdmin = (props) => {
           <Col span={5}>
             <HeadingSpan>Start Date:</HeadingSpan>
             <ValueSpan>
-              {subStartDate ? new Date(subStartDate).toLocaleDateString() : '-'}
+              {subStartDate ? moment(subStartDate).format('YYYY-MM-DD') : '-'}
             </ValueSpan>
           </Col>
           <Col span={5}>
             <HeadingSpan>End Date:</HeadingSpan>
             <ValueSpan>
-              {subEndDate ? new Date(subEndDate).toLocaleDateString() : '-'}
+              {subEndDate ? moment(subEndDate).format('YYYY-MM-DD') : '-'}
             </ValueSpan>
           </Col>
         </Row>

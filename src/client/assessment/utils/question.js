@@ -203,6 +203,25 @@ export const changeDataInPreferredLanguage = (
           if (removedOpIndex !== -1) {
             draft.languageFeatures[langKey]?.options?.splice(removedOpIndex, 1)
           }
+        } else if (newQuestion.type === questionType.CLOZE_DROP_DOWN) {
+          // assume responseIds are same here
+          const { responseIds, options: newOptions } = newQuestion
+          const { options: prevOptions } = prevQuestion
+          responseIds.forEach((response) => {
+            const { id } = response
+            if (newOptions[id]?.length !== prevOptions[id]?.length) {
+              const removedIndex = findRemovedIndex(
+                newOptions[id],
+                prevOptions[id]
+              )
+              if (removedIndex !== -1) {
+                draft.languageFeatures?.[langKey]?.options?.[id]?.splice(
+                  removedIndex,
+                  1
+                )
+              }
+            }
+          })
         }
 
         const cleanLangData = {}

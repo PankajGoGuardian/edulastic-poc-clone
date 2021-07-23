@@ -7,6 +7,7 @@ import {
   sumBy,
   uniqBy,
   get,
+  difference,
 } from 'lodash'
 import { helpers } from '@edulastic/common'
 import {
@@ -14,6 +15,8 @@ import {
   collections,
   question as questionConstants,
 } from '@edulastic/constants'
+
+const { TOP_ORDER_SKINS } = testConstants
 
 const roundOff = (number) =>
   number ? Number(Number(number).toFixed(2)) : number
@@ -235,6 +238,16 @@ export const isPremiumContent = (_collections = []) => {
   const isPremium = (collection) => !nonPremiumIds.includes(collection._id)
   const result = _collections.filter(isPremium)
   return result.length > 0
+}
+
+export const skinTypesOrder = (skinTypes = {}) => {
+  const _skinTypes = Object.keys(skinTypes) || []
+  if (!_skinTypes.length) {
+    return []
+  }
+  _skinTypes.sort()
+  const excludePulledSkins = difference(_skinTypes, TOP_ORDER_SKINS)
+  return [...TOP_ORDER_SKINS, 'devider', ...excludePulledSkins]
 }
 
 export default {

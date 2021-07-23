@@ -1,0 +1,100 @@
+import React, { useCallback, useState } from 'react'
+import { Empty, Select } from 'antd'
+import { SelectInputStyled, useDropdownData } from '@edulastic/common'
+import PropTypes from 'prop-types'
+
+const SelectSearch = React.forwardRef(
+  (
+    {
+      loading,
+      onBlur,
+      onChange,
+      onFocus,
+      onSearch,
+      options,
+      placeholder,
+      value,
+      ...props
+    },
+    ref
+  ) => {
+    const [searchText, setSearchText] = useState('')
+    const handleSearch = useCallback(
+      (s) => {
+        setSearchText(s)
+        onSearch(s)
+      },
+      [onSearch]
+    )
+    const handleBlur = useCallback(
+      (...e) => {
+        setSearchText('')
+        onBlur(...e)
+      },
+      [onBlur]
+    )
+    const dropDownData = useDropdownData(options, {
+      id_key: 'key',
+      OptionComponent: Select.Option,
+      searchText,
+      title_key: 'title',
+      value_key: 'key',
+    })
+    return (
+      <SelectInputStyled
+        filterOption={false}
+        getPopupContainer={(triggerNode) => triggerNode.parentNode}
+        loading={loading}
+        maxTagCount={4}
+        maxTagTextLength={10}
+        onBlur={handleBlur}
+        onChange={onChange}
+        onFocus={onFocus}
+        onSearch={handleSearch}
+        placeholder={placeholder}
+        ref={ref}
+        showSearch
+        value={value}
+        notFoundContent={
+          <Empty
+            className="ant-empty-small"
+            image={Empty.PRESENTED_IMAGE_SIMPLE}
+            style={{ textAlign: 'left', margin: '10px 0' }}
+            description="No matching results"
+          />
+        }
+        {...props}
+      >
+        {dropDownData}
+      </SelectInputStyled>
+    )
+  }
+)
+
+SelectSearch.propTypes = {
+  loading: PropTypes.bool,
+  onBlur: PropTypes.func,
+  onChange: PropTypes.func,
+  onFocus: PropTypes.func,
+  onSearch: PropTypes.func,
+  options: PropTypes.array,
+  placeholder: PropTypes.string,
+  value: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.arrayOf(PropTypes.string),
+    PropTypes.object,
+  ]),
+}
+
+SelectSearch.defaultProps = {
+  loading: false,
+  onBlur: () => {},
+  onChange: () => {},
+  onFocus: () => {},
+  onSearch: () => {},
+  options: [],
+  placeholder: null,
+  value: [],
+}
+
+export default SelectSearch

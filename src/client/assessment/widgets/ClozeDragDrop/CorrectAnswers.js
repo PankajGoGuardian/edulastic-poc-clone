@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import produce from 'immer'
-import { ItemLevelContext } from '@edulastic/common'
 import _ from 'lodash'
 import CorrectAnswers from '../../components/CorrectAnswers'
 import CorrectAnswer from './CorrectAnswer'
@@ -13,9 +12,6 @@ class SetCorrectAnswers extends Component {
       currentTab: 0,
     }
   }
-
-  // eslint-disable-next-line react/static-property-placement
-  static contextType = ItemLevelContext
 
   componentDidUpdate(prevProps) {
     const { options } = this.props

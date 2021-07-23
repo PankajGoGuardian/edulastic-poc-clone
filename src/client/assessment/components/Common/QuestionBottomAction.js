@@ -7,7 +7,7 @@ import {
   EduButton,
   AnswerContext,
   ScrollContext,
-  ItemLevelContext as HideScoringBlockContext,
+  PointBlockContext,
   notification,
 } from '@edulastic/common'
 import { TitleWrapper } from '@edulastic/common/src/components/MainHeader'
@@ -74,10 +74,10 @@ export const ShowUserWork = ({ onClick, loading }) => (
 
 export const TimeSpent = ({ time }) => {
   return (
-    <div>
+    <TimeSpentText>
       <IconClockCircularOutline />
       {round(time / 1000, 1)}s
-    </div>
+    </TimeSpentText>
   )
 }
 
@@ -130,7 +130,7 @@ const QuestionBottomAction = ({
 }) => {
   // const [openQuestionModal, setOpenQuestionModal] = useState(false)
   const [itemloading, setItemLoading] = useState(false)
-  const [hideScoring, setHideScoring] = useState(false)
+  const [hidingScoringBlock, setHideScoring] = useState(false)
   const [notifyRegradeProgress, setNotifyRegradeProgress] = useState(false)
   const [isPublishedChanges, setIsPublishedChanges] = useState(false)
 
@@ -337,7 +337,7 @@ const QuestionBottomAction = ({
       )}
       <BottomActionWrapper className={isStudentReport ? 'student-report' : ''}>
         <LeftWrapper>
-          {!hasDrawingResponse && hasShowStudentWork && (
+          {hasShowStudentWork && (
             <ShowUserWork onClick={onClickHandler} loading={loading} />
           )}
           {view === 'preview' &&
@@ -416,7 +416,7 @@ const QuestionBottomAction = ({
               }}
             >
               <AnswerContext.Provider value={{ isAnswerModifiable: true }}>
-                <HideScoringBlockContext.Provider value={hideScoring}>
+                <PointBlockContext.Provider value={hidingScoringBlock}>
                   <QuestionComp
                     {...questionProps}
                     t={t}
@@ -424,7 +424,7 @@ const QuestionBottomAction = ({
                     view={EDIT}
                     disableResponse={false}
                   />
-                </HideScoringBlockContext.Provider>
+                </PointBlockContext.Provider>
               </AnswerContext.Provider>
             </ScrollContext.Provider>
           </QuestionPreviewModal>
@@ -531,9 +531,6 @@ export const BottomActionWrapper = styled.div`
   margin: ${({ margin }) => margin || '24px 0px 0px'};
 
   &.student-report {
-    position: absolute;
-    top: 25px;
-    right: 0px;
     background: #f3f3f3;
     padding: 10px 15px;
     border-radius: 10px;
@@ -560,6 +557,7 @@ const LeftWrapper = styled.div`
   width: 50%;
   display: flex;
   align-items: flex-end;
+  flex-wrap: wrap;
   & > * {
     margin-left: 20px;
   }
@@ -597,4 +595,7 @@ const CorrectButton = styled(EduButton)`
     left: 22px;
     top: 4px;
   }
+`
+const TimeSpentText = styled.div`
+  margin-bottom: 3px;
 `

@@ -8,6 +8,7 @@ import {
   FlexContainer,
   CheckboxLabel,
   NumberInputStyled,
+  PremiumItemBanner,
 } from '@edulastic/common'
 import { Stimulus } from './styled'
 import Actions from '../Actions'
@@ -29,20 +30,30 @@ class MainInfo extends React.Component {
       groupPoints,
       groupMinimized,
       isUnScoredItem,
+      isPremiumContentWithoutAccess,
+      premiumCollectionWithoutAccess,
     } = this.props
     const newHtml = helpers.sanitizeForReview(data.stimulus) || ''
     const points = groupMinimized ? groupPoints : data.points
-
     return (
       <FlexContainer
         data-cy-item-index={index}
         style={{ justifyContent: 'space-between' }}
       >
-        <Stimulus
-          dangerouslySetInnerHTML={{ __html: newHtml }}
-          onClick={() => handlePreview(data.id)}
-          style={{ position: 'relative' }}
-        />
+        {isPremiumContentWithoutAccess ? (
+          <PremiumItemBanner
+            itemBankName={premiumCollectionWithoutAccess}
+            hideQuestionLabels
+            height="auto"
+            showAsTooltip
+          />
+        ) : (
+          <Stimulus
+            dangerouslySetInnerHTML={{ __html: newHtml }}
+            onClick={() => handlePreview(data.id)}
+            style={{ position: 'relative' }}
+          />
+        )}
         <FlexContainer
           flexDirection="column"
           alignItems="flex-end"

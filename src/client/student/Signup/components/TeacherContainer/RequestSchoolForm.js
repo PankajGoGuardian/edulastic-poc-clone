@@ -8,6 +8,7 @@ import styled from 'styled-components'
 import { RemoteAutocompleteDropDown } from '../../../../common/components/widgets/remoteAutoCompleteDropDown'
 import { searchDistrictsRequestAction } from '../../duck'
 import { statesWithCodes } from './constants'
+import { getUserOrg } from '../../../../author/src/selectors/user'
 
 const { Option } = Select
 class RequestSchoolForm extends React.Component {
@@ -65,6 +66,7 @@ class RequestSchoolForm extends React.Component {
       userInfo,
       handleSubmit,
       fromUserProfile,
+      userOrg = {},
     } = this.props
     const { getFieldDecorator } = form
     const { keyword, countryList, stateList } = this.state
@@ -116,7 +118,7 @@ class RequestSchoolForm extends React.Component {
         {fromUserProfile ? (
           <Form.Item label="District">
             {getFieldDecorator('districtId', {
-              initialValue: userInfo.orgData.districts?.[0].districtName,
+              initialValue: userOrg?.districtName,
             })(<TextInputStyled data-cy="district" disabled />)}
           </Form.Item>
         ) : (
@@ -310,6 +312,7 @@ export default connect(
   (state) => ({
     isSearching: get(state, 'signup.isSearching', false),
     autocompleteDistricts: get(state, 'signup.autocompleteDistricts', []),
+    userOrg: getUserOrg(state),
   }),
   {
     searchDistrict: searchDistrictsRequestAction,

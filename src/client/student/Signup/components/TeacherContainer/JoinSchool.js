@@ -93,7 +93,9 @@ const JoinSchool = ({
   addSchool,
   addingSchool,
   isModal,
+  isSchoolSignupOnly = false,
 }) => {
+  fromUserProfile = fromUserProfile || isSchoolSignupOnly
   const {
     email,
     firstName,
@@ -104,9 +106,6 @@ const JoinSchool = ({
   const [selected, setSchool] = useState(null)
   const [tempSelected, setTempSchool] = useState(null)
   const [showModal, setShowModal] = useState(false)
-  const [prevCheckDistrictPolicy, setPrevCheckDistrictPolicy] = useState(
-    checkDistrictPolicy
-  )
   const [homeSchool, setHomeSchool] = useState(false)
   const [requestSchoolFormVisible, setRequestSchoolFormVisible] = useState(
     false
@@ -155,9 +154,7 @@ const JoinSchool = ({
       setTempSchool(_school)
     }
   }
-
-  if (prevCheckDistrictPolicy !== checkDistrictPolicy) {
-    setPrevCheckDistrictPolicy(checkDistrictPolicy)
+  useEffect(() => {
     if (
       !Object.keys(checkDistrictPolicy).length &&
       !!userInfo.email &&
@@ -167,7 +164,7 @@ const JoinSchool = ({
         autoCompleteRef.current.wipeSelected()
       }
       setSchool(null)
-    } else {
+    } else if (tempSelected) {
       setSchool(tempSelected)
 
       const teacherSearch = {
@@ -183,7 +180,7 @@ const JoinSchool = ({
       fetchSchoolTeachers(teacherSearch)
     }
     setTempSchool(null)
-  }
+  }, [checkDistrictPolicy])
 
   const handleSubmit = () => {
     const schoolId = selected.schoolId || selected._id
@@ -200,7 +197,10 @@ const JoinSchool = ({
         middleName,
         lastName,
       }
-      addSchool({ data, userId: userInfo._id })
+      addSchool({
+        data,
+        userId: userInfo._id,
+      })
     } else {
       const data = {
         institutionIds: [selected.schoolId || selected._id || ''],

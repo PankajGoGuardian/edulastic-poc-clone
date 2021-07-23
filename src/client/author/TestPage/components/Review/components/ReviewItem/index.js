@@ -1,6 +1,7 @@
 import React, { Fragment, useMemo } from 'react'
 import { get } from 'lodash'
 import { helpers } from '@edulastic/common'
+import { collections as collectionConst } from '@edulastic/constants'
 import MainInfo from './MainInfo'
 import MetaInfo from './MetaInfo'
 import Expanded from './Expanded'
@@ -28,6 +29,15 @@ const ReviewItem = ({
   groupMinimized,
   groupPoints,
 }) => {
+  const premiumCollectionWithoutAccess = useMemo(
+    () =>
+      item?.premiumContentRestriction &&
+      item?.collections
+        ?.filter(({ type = '' }) => type === collectionConst.types.PREMIUM)
+        .map(({ name }) => name),
+    [item]
+  )
+
   const audioStatus = (_item) => {
     const _questions = get(_item, 'data.questions', [])
     const getAllTTS = _questions.filter((ite) => ite.tts).map((ite) => ite.tts)
@@ -131,6 +141,9 @@ const ReviewItem = ({
           groupMinimized={groupMinimized}
           groupPoints={groupPoints}
           isUnScoredItem={getUnScoredItem(_questions, itemLevelScoring)}
+          itemNumber={item.indx}
+          isPremiumContentWithoutAccess={!!premiumCollectionWithoutAccess}
+          premiumCollectionWithoutAccess={premiumCollectionWithoutAccess}
         />
       )}
       {!expand && (
@@ -149,6 +162,8 @@ const ReviewItem = ({
           groupMinimized={groupMinimized}
           groupPoints={groupPoints}
           isUnScoredItem={getUnScoredItem(_questions, itemLevelScoring)}
+          isPremiumContentWithoutAccess={!!premiumCollectionWithoutAccess}
+          premiumCollectionWithoutAccess={premiumCollectionWithoutAccess}
         />
       )}
       <MetaInfo data={data.meta} />

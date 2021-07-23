@@ -16,6 +16,7 @@ const AddSchoolAndGradeModal = ({
   orgType,
   isVisible,
   handleCancel,
+  isSchoolSignupOnly = false,
 }) => {
   const userInfo = get(user, 'user', {})
 
@@ -33,7 +34,8 @@ const AddSchoolAndGradeModal = ({
       onCancel={handleCancel}
       centered
     >
-      {userInfo.districtIds && userInfo.districtIds.length === 0 ? (
+      {(userInfo.districtIds && userInfo.districtIds.length === 0) ||
+      isSchoolSignupOnly ? (
         <JoinSchool
           userInfo={userInfo}
           districtId={isSignupUsingDaURL ? generalSettings.orgId : false}
@@ -44,6 +46,7 @@ const AddSchoolAndGradeModal = ({
           orgType={orgType}
           allowCanvas={false}
           isModal
+          isSchoolSignupOnly={isSchoolSignupOnly}
         />
       ) : (
         <SubjectGradeForm

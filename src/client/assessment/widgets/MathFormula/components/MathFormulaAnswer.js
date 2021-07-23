@@ -39,7 +39,7 @@ class MathFormulaAnswer extends Component {
     const { options: { unit = '' } = {} } = answer[0] || {}
 
     // Adding new fields to testItem to store custom value for keypadMode & customUnits
-    const { keypadMode = 'units_us', customUnits = '' } = item
+    const { keypadMode, customUnits = '' } = item
 
     const dropdownUnit = (changeOptions) => (
       <SelectUnit

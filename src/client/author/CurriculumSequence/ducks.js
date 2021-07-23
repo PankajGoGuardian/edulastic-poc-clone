@@ -38,6 +38,7 @@ import {
   getUserRole,
   getCollectionsSelector,
   getWritableCollectionsSelector,
+  getCurrentActiveTerms,
 } from '../src/selectors/user'
 import {
   allowDuplicateCheck,
@@ -563,11 +564,13 @@ function* makeApiRequest(
   try {
     const pathname = yield select((state) => state.router.location.pathname)
     const isMyPlaylist = pathname.includes('use-this')
+    const activeTermIds = yield select(getCurrentActiveTerms)
     const unflattenedItems = yield all(
       idsForFetch.map((id) =>
         call(curriculumSequencesApi.getCurriculums, {
           id,
           forUseThis: forUseThis || isMyPlaylist,
+          termIds: activeTermIds,
         })
       )
     )
@@ -1105,6 +1108,7 @@ function* createAssignmentNow({ payload }) {
 export function* updateDestinationCurriculumSequencesaga({ payload }) {
   try {
     const curriculumSequence = yield select(getDestinationCurriculumSequence)
+    curriculumSequence['isSMPlaylist'] = payload?.isSMPlaylist
 
     yield put(
       putCurriculumSequenceAction({
@@ -3093,11 +3097,19 @@ export default createReducer(initialState, {
     const resources =
       state.destinationCurriculumSequence.modules[moduleIndex].data[itemIndex]
         .resources
-    if (
-      !resources.find(
-        (x) => x.contentId === contentId && x.contentSubType === contentSubType
-      )
-    ) {
+    let totalStudentResources = 0
+    resources.forEach((r) => {
+      if(r.contentSubType === "STUDENT") totalStudentResources += 1
+    })
+    if(totalStudentResources >= 5 && contentSubType === "STUDENT"){
+      notification({ type: 'info', messageKey: 'maximumAllowedStudentResources' })
+      return
+    }
+        if (
+          !resources.find(
+            (x) => x.contentId === contentId && x.contentSubType === contentSubType
+            )
+            ) {
       const updateStandards = !hasStandardsOnCreation && standards.length < 15
       resources.push({
         contentId,

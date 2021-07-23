@@ -43,7 +43,7 @@ import {
   signupGeneralSettingsSelector,
   updateUserSignupStateAction,
 } from '../Signup/duck'
-import { getUser } from '../../author/src/selectors/user'
+import { getUser, getUserOrgId } from '../../author/src/selectors/user'
 import { updateInitSearchStateAction } from '../../author/TestPage/components/AddItems/ducks'
 import { JOIN_CLASS_REQUEST_SUCCESS } from '../ManageClass/ducks'
 import 'firebase/auth'
@@ -312,8 +312,7 @@ function getValidRedirectRouteByRole(_url, user) {
       return url.match(/^\/home\//) ||
         url.includes('/author/tests/tab/review/id/') ||
         url.match(/\/embed\//) ||
-        url.includes('author/tests/verid') ||
-        url.includes('home/tests/verid')
+        url.includes('author/tests/verid')
         ? url
         : '/home/assignments'
     case roleuser.EDULASTIC_ADMIN:
@@ -581,6 +580,21 @@ export default createReducer(initialState, {
     state.user.institutionIds = updatedSchoolIds
     state.user.orgData.institutionIds = updatedSchoolIds
     state.user.orgData.schools = updatedSchools
+    const accountIdx = (state.user.otherAccounts || []).findIndex(
+      (u) => u._id === state.user._id
+    )
+    if (accountIdx !== -1) {
+      state.user.otherAccounts[
+        accountIdx
+      ].institutionIds = state.user.otherAccounts[
+        accountIdx
+      ].institutionIds.filter((id) => id !== payload)
+      state.user.otherAccounts[
+        accountIdx
+      ].institutions = state.user.otherAccounts[accountIdx].institutions.filter(
+        (school) => school._id !== payload
+      )
+    }
   },
   [REMOVE_SCHOOL_FAILED]: (state) => {
     state.removingSchool = undefined
@@ -593,6 +607,7 @@ export default createReducer(initialState, {
     state.user.institutionIds = payload.institutionIds
     state.user.orgData.institutionIds = payload.orgData.institutionIds
     state.user.orgData.schools = payload.orgData.schools
+    state.user.otherAccounts = payload.otherAccounts || state.user.otherAccounts
   },
   [ADD_SCHOOL_FAILED]: (state) => {
     state.addingSchool = undefined
@@ -605,6 +620,7 @@ export default createReducer(initialState, {
     state.user.institutionIds = payload.institutionIds
     state.user.orgData.institutionIds = payload.orgData.institutionIds
     state.user.orgData.schools = payload.orgData.schools
+    state.user.otherAccounts = payload.otherAccounts || state.user.otherAccounts
   },
   [CREATE_AND_ADD_SCHOOL_FAILED]: (state) => {
     state.creatingAddingSchool = undefined
@@ -1161,6 +1177,9 @@ const getLoggedOutUrl = () => {
   if (pathname === '/inviteteacher' || isHashAssessmentUrl()) {
     return `${window.location.pathname}${window.location.search}${window.location.hash}`
   }
+  if (pathname.includes('partnerlogin')) {
+    return pathname
+  }
   return '/login'
 }
 
@@ -1213,6 +1232,7 @@ export function* fetchUser({ payload }) {
 
     if (key.includes('role:undefined') && user.role) {
       TokenStorage.removeAccessToken(user._id, 'undefined')
+      // add last used or current districtId
       TokenStorage.storeAccessToken(user.token, user._id, user.role, true)
       TokenStorage.selectAccessToken(user._id, user.role)
     }
@@ -1322,10 +1342,11 @@ function* logout() {
           localStorage.removeItem(objKey)
         }
       })
+      const districtId = yield select(getUserOrgId)
       sessionStorage.removeItem('cliBannerShown')
       sessionStorage.removeItem('cliBannerVisible')
       sessionStorage.removeItem('addAccountDetails')
-      sessionStorage.removeItem(`assignments_filter_${user._id}`)
+      sessionStorage.removeItem(`assignments_filter_${user._id}_${districtId}`)
       sessionStorage.removeItem('temporaryClass')
       TokenStorage.removeKID()
       TokenStorage.initKID()

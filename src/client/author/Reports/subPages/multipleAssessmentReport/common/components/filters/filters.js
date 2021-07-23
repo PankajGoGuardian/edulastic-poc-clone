@@ -38,7 +38,11 @@ import {
   getReportsPrevMARFilterData,
   setPrevMARFilterDataAction,
 } from '../../filterDataDucks'
-import { getUserRole, getUser } from '../../../../../../src/selectors/user'
+import {
+  getUserRole,
+  getUser,
+  currentDistrictInstitutionIds,
+} from '../../../../../../src/selectors/user'
 import { resetStudentFilters } from '../../../../../common/util'
 
 import staticDropDownData from '../../static/staticDropDownData.json'
@@ -77,6 +81,7 @@ const MultipleAssessmentReportFilters = ({
   showFilter,
   toggleFilter,
   fetchUpdateTagsData,
+  institutionIds,
 }) => {
   const [activeTabKey, setActiveTabKey] = useState(
     staticDropDownData.filterSections.TEST_FILTERS.key
@@ -120,7 +125,7 @@ const MultipleAssessmentReportFilters = ({
         q.firstLoad = true
       }
       if (role === roleuser.SCHOOL_ADMIN) {
-        q.schoolIds = get(user, 'institutionIds', []).join(',')
+        q.schoolIds = institutionIds.join(',')
       }
       getMARFilterDataRequest(q)
     }
@@ -688,6 +693,7 @@ const enhance = compose(
       role: getUserRole(state),
       user: getUser(state),
       prevMARFilterData: getReportsPrevMARFilterData(state),
+      institutionIds: currentDistrictInstitutionIds(state),
     }),
     {
       getMARFilterDataRequest: getMARFilterDataRequestAction,

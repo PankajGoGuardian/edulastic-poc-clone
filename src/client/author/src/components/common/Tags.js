@@ -28,6 +28,7 @@ const Tags = ({
   isCustomTags,
   flexWrap,
   isTestCard,
+  testId = '',
 }) => {
   if (!tags.length) return null
 
@@ -39,6 +40,7 @@ const Tags = ({
     <PopupContainer className="tag-wrapper">
       {hiddenTags.map((tag, i) => (
         <Label
+          data-cy="standards"
           className={className}
           popupContainer
           style={labelStyle}
@@ -60,6 +62,7 @@ const Tags = ({
     >
       {visibleTags.map((tag, i) => (
         <Label
+          data-cy="standards"
           className={className}
           style={labelStyle}
           key={i}
@@ -77,6 +80,7 @@ const Tags = ({
           }
           content={popup}
           onClick={(e) => e.stopPropagation()}
+          overlayClassName={`testCard${testId}`}
         >
           <Label
             className={`${className} hidden-tags`}

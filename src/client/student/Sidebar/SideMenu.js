@@ -87,7 +87,6 @@ class SideMenu extends Component {
 
     this.state = {
       isVisible: false,
-      isExpandedOnHover: false,
     }
 
     this.sideMenuRef = React.createRef()
@@ -162,7 +161,7 @@ class SideMenu extends Component {
   }
 
   render() {
-    const { broken, isVisible, isExpandedOnHover } = this.state
+    const { broken, isVisible } = this.state
     const {
       windowWidth,
       currentPath,
@@ -258,22 +257,16 @@ class SideMenu extends Component {
             <MenuWrapper
               isSidebarCollapsed={isSidebarCollapsed}
               onMouseEnter={
-                isSidebarCollapsed && !isMobile && !isExpandedOnHover
+                isSidebarCollapsed && !isMobile
                   ? () => {
                       this.toggleMenu()
-                      this.setState({
-                        isExpandedOnHover: true,
-                      })
                     }
                   : null
               }
               onMouseLeave={
-                !isSidebarCollapsed && !isMobile && isExpandedOnHover
+                !isSidebarCollapsed && !isMobile
                   ? () => {
                       this.toggleMenu()
-                      this.setState({
-                        isExpandedOnHover: false,
-                      })
                     }
                   : null
               }

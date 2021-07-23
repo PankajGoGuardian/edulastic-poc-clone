@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import { get, isEqual, every } from 'lodash'
 import { compose } from 'redux'
 import PropTypes from 'prop-types'
-import styled, { ThemeProvider, withTheme } from 'styled-components'
+import { ThemeProvider, withTheme } from 'styled-components'
 
 import { white } from '@edulastic/colors'
 import { withNamespaces } from '@edulastic/localization'
@@ -15,7 +15,6 @@ import { themes } from '../../../theme'
 import TestItemCol from './containers/TestItemCol'
 import { Container, RenderFeedBack } from './styled/Container'
 import FeedbackWrapper from '../FeedbackWrapper'
-import { ShowUserWork } from '../Common/QuestionBottomAction'
 import { IPAD_LANDSCAPE_WIDTH } from '../../constants/others'
 import Divider from './Divider'
 import { changedPlayerContentAction } from '../../../author/sharedDucks/testPlayer'
@@ -79,13 +78,14 @@ class TestItemPreview extends Component {
   }
 
   renderCollapseButtons = () => {
-    const { isLCBView } = this.props
+    const { isLCBView, isStudentReport } = this.props
     const { collapseDirection } = this.state
     return (
       <Divider
         collapseDirection={collapseDirection}
         setCollapseView={this.setCollapseView}
         hideMiddle={isLCBView}
+        isStudentReport={isStudentReport}
         stackedView={this.showStackedView}
       />
     )
@@ -108,7 +108,7 @@ class TestItemPreview extends Component {
         break
       case isStudentAttempt && !itemLevelScoring:
         shouldShowFeedback = true
-        shouldTakeDimensionsFromStore = true
+        shouldTakeDimensionsFromStore = false
         break
 
       case isDocBased || stackedView:
@@ -130,7 +130,9 @@ class TestItemPreview extends Component {
         break
 
       case isStudentReport:
-        shouldShowFeedback = true
+        shouldShowFeedback = itemLevelScoring
+          ? widgetIndex === 0 && colIndex === 0
+          : true
         shouldTakeDimensionsFromStore = false
         break
 
@@ -359,8 +361,6 @@ class TestItemPreview extends Component {
       isReviewTab,
       isExpressGrader,
       isQuestionView,
-      showStudentWork,
-      userWork,
       itemLevelScoring,
       isPrintPreview,
       isShowStudentWork,
@@ -461,10 +461,8 @@ class TestItemPreview extends Component {
                       preview={preview}
                       scratchPadMode={scratchPadMode}
                       colWidth={
-                        collapseDirection || cols.length == 1
-                          ? '100%'
-                          : col?.dimension || '50%'
-                      }
+                        collapseDirection || cols.length == 1 ? '100%' : '50%'
+                      } // reverting layout changes as passage/multipart layout options view is broken in student view, LCB, EG | EV-28080
                       multiple={cols.length > 1}
                       style={this.getStyle(i !== cols.length - 1)}
                       windowWidth={windowWidth}
@@ -491,11 +489,6 @@ class TestItemPreview extends Component {
               })}
             </div>
           </Container>
-          {hasDrawingResponse && (isLCBView || isExpressGrader) && userWork && (
-            <ShowUserWorkWrapper>
-              <ShowUserWork onClick={showStudentWork} />
-            </ShowUserWorkWrapper>
-          )}
         </div>
         {/* on the student side, show single feedback only when item level scoring is on */}
         {((itemLevelScoring && isStudentReport) ||
@@ -571,13 +564,3 @@ const enhance = compose(
 )
 
 export default enhance(TestItemPreview)
-
-const ShowUserWorkWrapper = styled.div`
-  position: relative;
-
-  button {
-    position: absolute;
-    top: -50px;
-    left: 28px;
-  }
-`

@@ -53,12 +53,12 @@ export const formatAnswers = (
       // then considering it as standard multipleChoice type
       if (
         title === 'True or false' &&
-        Object.keys(options).length === 2 &&
-        ['true', 'false'].includes(options[item]?.label?.toLowerCase())
+        Object.keys(options || {}).length === 2 &&
+        ['true', 'false'].includes(options?.[item]?.label?.toLowerCase())
       ) {
-        return options[item].label || '-'
+        return options?.[item].label || '-'
       }
-      return String.fromCharCode(65 + Object.keys(options).indexOf(item))
+      return String.fromCharCode(65 + Object.keys(options || {}).indexOf(item))
     }
     if (type == questionType.MATH && title === 'Units') {
       if (context === 'userResponse') {
@@ -68,10 +68,10 @@ export const formatAnswers = (
         return `${item.expression || '-'}${item.unit || ''}`
       }
       const value = item?.value
-      if (item.options) {
-        const unit = Array.isArray(item.options)
-          ? item.options.map((o) => o.unit).join(',')
-          : item.options?.unit
+      if (item?.options) {
+        const unit = Array.isArray(item?.options)
+          ? item?.options?.map((o) => o.unit)?.join(',')
+          : item?.options?.unit
         return `${value}${unit || ''}`
       }
       return value
@@ -80,10 +80,10 @@ export const formatAnswers = (
       return item?.value
     }
     if (options && item?.id && !isUndefined(item?.index)) {
-      return options[item?.id][item?.index]
+      return options?.[item?.id]?.[item?.index]
     }
-    if (options && options[item]) {
-      return options[item].label
+    if (options && options?.[item]) {
+      return options?.[item]?.label
     }
     if (typeof item === 'string') {
       return item

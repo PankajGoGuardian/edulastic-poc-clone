@@ -22,22 +22,28 @@ export const Container = styled.div`
 `
 
 export const WidgetContainer = styled.div`
-  flex: 10;
-  max-width: 100%;
+  width: 100%;
 `
 
 export const ButtonsContainer = styled.div`
-  flex: 1;
-  position: absolute;
-  right: 20px;
-  top: 50%;
-  width: 32px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  transform: translateY(-50%);
-  oveflow-x: visible;
+  justify-content: flex-start;
+  align-items: flex-end;
+  overflow-x: visible;
+  padding: 10px 15px 0px 10px;
+  opacity: 0.3;
 
+  &:hover {
+    opacity: 1;
+  }
+
+  &:hover {
+    .points-input-wrapper,
+    .total-points-wrapper {
+      background: white;
+    }
+  }
   .ant-btn {
     background: ${white};
     display: flex;
@@ -67,9 +73,7 @@ export const ButtonsContainer = styled.div`
 export const PointsInputWrapper = styled.div`
   display: flex;
   align-items: center;
-  position: absolute;
-  right: 0px;
-  top: ${({ itemLevelScoring }) => (itemLevelScoring ? '-80px' : '-40px')};
+  margin-bottom: 10px;
 
   .ant-input-number-disabled {
     background-color: ${greyLight1};
@@ -82,4 +86,15 @@ export const PointsInputWrapper = styled.div`
 export const ItemLevelScoringDesc = styled.p`
   padding: 12px;
   max-width: 350px;
+`
+export const TotalPointsWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  position: absolute;
+  right: 0px;
+  top: -20px;
+  right: 20px;
+  & > label {
+    text-align: center;
+  }
 `

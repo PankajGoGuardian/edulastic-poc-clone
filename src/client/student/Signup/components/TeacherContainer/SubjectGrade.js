@@ -515,7 +515,7 @@ const enhance = compose(
 export default enhance(SubjectGradeForm)
 
 const SubjectGradeBody = styled(Row)`
-  padding: 30px 0px;
+  padding: 10px 0px;
   background: ${white};
   ${({ hasMinHeight = true }) =>
     hasMinHeight && `min-height: calc(100vh - 93px);`}
@@ -564,7 +564,7 @@ const BannerText = styled(Col)`
 const SelectForm = styled(Form)`
   max-width: 640px;
   margin: 0px auto;
-  padding: 25px;
+  padding: 5px 25px;
   text-align: center;
 
   .ant-form-item {

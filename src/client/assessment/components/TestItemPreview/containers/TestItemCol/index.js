@@ -87,10 +87,10 @@ class TestItemCol extends Component {
       isStudentWorkCollapseOpen,
       toggleStudentWorkCollapse,
       colIndex,
-      isStudentReport,
       ...restProps
     } = this.props
     const {
+      isStudentReport,
       LCBPreviewModal,
       isStudentAttempt,
       isLCBView,
@@ -157,7 +157,10 @@ class TestItemCol extends Component {
         showBorder={showTabBorder}
         hideCorrectAnswer={hideCorrectAnswer}
       >
-        <FlexContainer flexDirection={isStudentReport && 'column'}>
+        <FlexContainer
+          flexDirection={isStudentReport && 'column'}
+          justifyContent="flex-start" // @see EV-29020
+        >
           <FlexItem flexGrow="1">
             <QuestionWrapper
               showFeedback={showFeedback && widget?.widgetType !== 'resource'}
@@ -190,44 +193,53 @@ class TestItemCol extends Component {
               // widgetIndex was needed for passages if it has multiple tabs and widgets
               widgetIndex={widgetIndex}
               isStudentAttempt={isStudentAttempt}
+              isStudentReport={isStudentReport}
               isFeedbackVisible={isFeedbackVisible}
               questions={questions}
               itemLevelScoring={itemLevelScoring}
             />
-            {!isStudentAttempt &&
-              !isStudentReport &&
-              imageAttachments.length > 0 &&
-              !LCBPreviewModal && (
-                <StudentWorkCollapse
-                  isStudentWorkCollapseOpen={isStudentWorkCollapseOpen}
-                  toggleStudentWorkCollapse={toggleStudentWorkCollapse}
-                  imageAttachments={imageAttachments}
-                />
-              )}
-            {attachments && attachments.length > 0 && !LCBPreviewModal && (
-              <>
-                <StyleH2Heading>Attachments</StyleH2Heading>
-                <FilesViewContainer>
-                  <FilesView
-                    files={attachments}
-                    hideDelete={!isStudentAttempt}
-                    onDelete={saveUpdatedAttachments}
-                  />
-                </FilesViewContainer>
-              </>
-            )}
           </FlexItem>
 
-          {!itemLevelScoring &&
-            !isShowStudentWork &&
-            (isStudentAttempt || isStudentReport) && (
-              <FlexItem padding="0px 16px 8px 0px">
-                {/*  on the student side, show feedback for each question only when item level scoring is off */}
-                {/* we don't show teacher feedback on the show student work modal */}
-                {teachCherFeedBack(widget, null, null, showStackedView)}
-              </FlexItem>
-            )}
+          {!itemLevelScoring && !isShowStudentWork && isStudentAttempt && (
+            <FlexItem padding="20px 16px 8px 0px">
+              {/*  on the student side, show feedback for each question only when item level scoring is off */}
+              {/* we don't show teacher feedback on the show student work modal */}
+              {teachCherFeedBack(widget, null, null, showStackedView)}
+            </FlexItem>
+          )}
         </FlexContainer>
+        {!isStudentAttempt &&
+          !isStudentReport &&
+          imageAttachments.length > 0 &&
+          !LCBPreviewModal && (
+            <StudentWorkCollapse
+              isStudentWorkCollapseOpen={isStudentWorkCollapseOpen}
+              toggleStudentWorkCollapse={toggleStudentWorkCollapse}
+              imageAttachments={imageAttachments}
+            />
+          )}
+        {attachments && attachments.length > 0 && !LCBPreviewModal && (
+          <>
+            {(isStudentAttempt || isStudentReport) && (
+              <StyleH2Heading>Attachments</StyleH2Heading>
+            )}
+            <FilesViewContainer>
+              <FilesView
+                files={attachments}
+                hideDelete={!isStudentAttempt}
+                onDelete={saveUpdatedAttachments}
+                openAttachmentViewModal={this.toggleAttachmentsModal}
+                disableLink
+              />
+            </FilesViewContainer>
+          </>
+        )}
+        {/*  on the student side, show feedback for each question only when item level scoring is off */}
+        {/* we don't show teacher feedback on the show student work modal */}
+        {!itemLevelScoring &&
+          !isShowStudentWork &&
+          isStudentReport &&
+          teachCherFeedBack(widget, null, null, showStackedView)}
       </TabContainer>
     )
   }
@@ -425,6 +437,7 @@ class TestItemCol extends Component {
             data-cy="widgetContainer"
             zoomLevel={zoomLevel}
             responsiveWidth={responsiveWidth}
+            isPassageWithQuestions={isPassageWithQuestions}
           >
             {widgetsToRender.map((widget, i, arr) => (
               <React.Fragment key={i}>

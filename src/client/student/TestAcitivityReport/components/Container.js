@@ -148,6 +148,7 @@ const ReportListContent = ({
               attachments={attachments}
               scratchpadDimensions={dimensions}
               itemLevelScoring={item?.itemLevelScoring}
+              multipartItem={item?.multipartItem || false}
             />
             {/* we may need to bring hint button back */}
             {/* <PaddingDiv>

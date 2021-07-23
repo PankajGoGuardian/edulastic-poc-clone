@@ -62,6 +62,7 @@ const PlayerHeader = ({
   hidePause,
   blockNavigationToAnsweredQuestions,
   LCBPreviewModal = false,
+  isPremiumContentWithoutAccess = false,
 }) => {
   const [isToolbarModalVisible, setToolbarModalVisible] = useState(false)
 
@@ -88,6 +89,7 @@ const PlayerHeader = ({
       hidePause={hidePause}
       finishTest={onOpenExitPopup}
       timedAssignment={timedAssignment}
+      isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
     />
   )
 
@@ -108,8 +110,11 @@ const PlayerHeader = ({
         handletoggleHints={onshowHideHints}
         changeTool={toggleToolsOpenStatus}
         blockNavigationToAnsweredQuestions={blockNavigationToAnsweredQuestions}
+        isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
       />
-      <SettingsModal />
+      <SettingsModal
+        isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
+      />
       <Header ref={headerRef}>
         <HeaderMainMenu skinb="true">
           <HeaderPracticePlayer>
@@ -162,6 +167,9 @@ const PlayerHeader = ({
                       blockNavigationToAnsweredQuestions
                     }
                     LCBPreviewModal={LCBPreviewModal}
+                    isPremiumContentWithoutAccess={
+                      isPremiumContentWithoutAccess
+                    }
                   />
                 )}
                 {!showSettingIcon && (
@@ -182,6 +190,9 @@ const PlayerHeader = ({
                     timedAssignment={timedAssignment}
                     utaId={utaId}
                     groupId={groupId}
+                    isPremiumContentWithoutAccess={
+                      isPremiumContentWithoutAccess
+                    }
                   />
                 )}
               </MainActionWrapper>

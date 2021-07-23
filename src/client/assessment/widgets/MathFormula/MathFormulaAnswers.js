@@ -238,9 +238,10 @@ class MathFormulaAnswers extends React.Component {
             value.options = value.options || {}
             if (!v) {
               delete value.options.unit
-            } else {
-              value.options.unit = 'm'
             }
+            // else {
+            //   value.options.unit = 'm'
+            // }
             value.method = value.method || methods.EQUIV_SYMBOLIC
           })
         } else {
@@ -249,18 +250,21 @@ class MathFormulaAnswers extends React.Component {
               value.options = value.options || {}
               if (!v) {
                 delete value.options.unit
-              } else {
-                value.options.unit = 'm'
               }
+              // else {
+              //   value.options.unit = 'm'
+              // }
               value.method = value.method || methods.EQUIV_SYMBOLIC
             }
           )
         }
         // change keypad mode and custom keys
+        if (!draft.symbols) {
+          draft.symbols = []
+        }
         if (v) {
-          if (!draft.symbols) {
-            draft.symbols = []
-          }
+          draft.symbols[0] = 'basic'
+        } else {
           draft.symbols[0] = 'units_us'
         }
         updateVariables(draft, latexKeys)

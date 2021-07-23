@@ -30,11 +30,16 @@ import {
   getTestsSelector,
   getCurrentAssignmentSelector,
   getToggleReleaseGradeStateSelector,
-  getDistrictIdSelector,
   getAssignmentViewSelector,
   getAssignmentFilterSelector,
   getTagsUpdatingStateSelector,
 } from '../../../src/selectors/assignments'
+import {
+  getUserOrgId,
+  getUserRole,
+  isFreeAdminSelector,
+  getUserId,
+} from '../../../src/selectors/user'
 
 import FilterBar from '../FilterBar/FilterBar'
 import TableList from '../TableList/TableList'
@@ -55,11 +60,7 @@ import {
   LeftWrapper,
   FixedWrapper,
 } from './styled'
-import {
-  getUserRole,
-  isFreeAdminSelector,
-  getUserId,
-} from '../../../src/selectors/user'
+
 import PrintTestModal from '../../../src/components/common/PrintTestModal'
 import TestLinkModal from '../TestLinkModal/TestLinkModal'
 
@@ -111,7 +112,9 @@ class Assignments extends Component {
 
     const { defaultTermId, terms } = orgData
     const storedFilters =
-      JSON.parse(sessionStorage.getItem(`assignments_filter_${userId}`)) || {}
+      JSON.parse(
+        sessionStorage.getItem(`assignments_filter_${userId}_${districtId}`)
+      ) || {}
     const { showFilter = userRole !== roleuser.TEACHER } = storedFilters
     const filters = {
       ...initialFilterState,
@@ -149,9 +152,9 @@ class Assignments extends Component {
   }
 
   setFilterState = (filterState) => {
-    const { userId } = this.props
+    const { userId, districtId } = this.props
     sessionStorage.setItem(
-      `assignments_filter_${userId}`,
+      `assignments_filter_${userId}_${districtId}`,
       JSON.stringify(filterState)
     )
     this.setState({ filterState })
@@ -260,7 +263,7 @@ class Assignments extends Component {
   )
 
   toggleFilter = () => {
-    const { userId } = this.props
+    const { userId, districtId } = this.props
     this.setState(
       (prev) => ({
         filterState: {
@@ -271,7 +274,7 @@ class Assignments extends Component {
       () => {
         const { filterState } = this.state
         sessionStorage.setItem(
-          `assignments_filter_${userId}`,
+          `assignments_filter_${userId}_${districtId}`,
           JSON.stringify(filterState)
         )
       }
@@ -523,7 +526,7 @@ const enhance = compose(
       tests: getTestsSelector(state),
       currentAssignment: getCurrentAssignmentSelector(state),
       isShowReleaseSettingsPopup: getToggleReleaseGradeStateSelector(state),
-      districtId: getDistrictIdSelector(state),
+      districtId: getUserOrgId(state),
       isAdvancedView: getAssignmentViewSelector(state),
       userRole: getUserRole(state),
       error: get(state, 'test.error', false),

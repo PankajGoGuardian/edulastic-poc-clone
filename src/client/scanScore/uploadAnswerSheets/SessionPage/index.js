@@ -1,19 +1,22 @@
 import React, { useState } from 'react'
-import { Row, Col, Button, Slider } from 'antd'
+import { Slider } from 'antd'
 
-import { ScannedResponses } from './ScannedResponses'
-import { Thumbnail, ThumbnailDropdown } from './Thumbnail'
+import ScannedResponses from './ScannedResponses'
+import SessionStatus from './SessionStatus'
+import Thumbnail from './Thumbnail'
 
-import {
-  statusFilterOptions,
-  getFileNameFromUri,
-  omrSheetScanStatus,
-} from '../utils'
+import { getFileNameFromUri, omrSheetScanStatus } from '../utils'
 
-const SessionPage = ({ pages, handleAbortClick }) => {
-  const [showResponses, setShowResponses] = useState(false)
+const SessionPage = ({
+  assignmentId,
+  groupId,
+  pages,
+  handleAbortClick,
+  showResponses,
+  toggleShowResponses,
+}) => {
   const [pageNumber, setPageNumber] = useState(1)
-  const [statusFilter, setStatusFilter] = useState(statusFilterOptions[0])
+  const [showThumbnails, setShowThumbnails] = useState(false)
   const [thumbnailSize, setThumbnailSize] = useState(150)
 
   return showResponses ? (
@@ -22,67 +25,59 @@ const SessionPage = ({ pages, handleAbortClick }) => {
       pageNumber={pageNumber}
       setPageNumber={setPageNumber}
       closePage={() => {
-        setShowResponses(false)
+        toggleShowResponses(false)
         setPageNumber(1)
       }}
     />
   ) : (
-    <Row
-      type="flex"
-      justify="space-between"
-      style={{ padding: '40px' }}
-      gutter={[10, 30]}
-    >
-      <Col span={6}>
-        <ThumbnailDropdown
-          defaultValue={statusFilterOptions[0]}
-          value={statusFilter}
-          options={statusFilterOptions}
-          handleChange={setStatusFilter}
-        />
-      </Col>
-      <Col span={12}>
-        {handleAbortClick && (
-          <Button type="primary" onClick={handleAbortClick}>
-            Abort
-          </Button>
-        )}
-      </Col>
-      <Col span={6}>
-        <Slider
-          min={50}
-          max={250}
-          value={thumbnailSize}
-          onChange={setThumbnailSize}
-          tooltipVisible={false}
-        />
-      </Col>
-      <Col span={24} style={{ display: 'flex', flexWrap: 'wrap' }}>
-        {pages
-          .filter(
-            (page) => !statusFilter.key || statusFilter.key == page.status
-          )
-          .map((page, index) => {
-            const name = page.studentName || getFileNameFromUri(page.uri)
-            const onClick = () => {
-              setPageNumber(index + 1)
-              setShowResponses(true)
-            }
-            return (
-              <Thumbnail
-                name={name}
-                size={thumbnailSize}
-                uri={page.uri}
-                status={page.status}
-                message={page.message}
-                onClick={
-                  page.status === omrSheetScanStatus.DONE ? onClick : null
+    <>
+      <SessionStatus
+        assignmentId={assignmentId}
+        groupId={groupId}
+        pages={pages}
+        handleAbortClick={handleAbortClick}
+        toggleShowThumbnails={() => setShowThumbnails(!showThumbnails)}
+      />
+      {showThumbnails && (
+        <>
+          <div
+            style={{ textAlign: 'center', fontSize: '18px', fontWeight: '700' }}
+          >
+            Successfully Scanned Responses
+          </div>
+          <div style={{ margin: '0 40px 80px 40px' }}>
+            <Slider
+              min={50}
+              max={250}
+              value={thumbnailSize}
+              onChange={setThumbnailSize}
+              tooltipVisible={false}
+            />
+            <div style={{ display: 'flex', margin: '20px 0 20px 0' }}>
+              {pages.map((page, index) => {
+                const name = page.studentName || getFileNameFromUri(page.uri)
+                const onClick = () => {
+                  setPageNumber(index + 1)
+                  toggleShowResponses(true)
                 }
-              />
-            )
-          })}
-      </Col>
-    </Row>
+                return (
+                  <Thumbnail
+                    name={name}
+                    size={thumbnailSize}
+                    uri={page.uri}
+                    status={page.status}
+                    message={page.message}
+                    onClick={
+                      page.status === omrSheetScanStatus.DONE ? onClick : null
+                    }
+                  />
+                )
+              })}
+            </div>
+          </div>
+        </>
+      )}
+    </>
   )
 }
 

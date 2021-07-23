@@ -13,7 +13,7 @@ import { Button } from 'antd'
 
 const UploadProgress = ({ uploadProgress, handleCancelUpload }) => {
   return (
-    <StyledRow uploadProgress={uploadProgress}>
+    <UploadProgressContainer uploadProgress={uploadProgress}>
       <div className="inner-container">
         <div className="uploading-text">Uploading...</div>
         <div className="upload-progress" uploadProgress={uploadProgress}>
@@ -28,13 +28,13 @@ const UploadProgress = ({ uploadProgress, handleCancelUpload }) => {
           </div>
         )}
       </div>
-    </StyledRow>
+    </UploadProgressContainer>
   )
 }
 
 export default UploadProgress
 
-const StyledRow = styled.div`
+const UploadProgressContainer = styled.div`
   margin: 40px;
   display: flex;
   justify-content: center;

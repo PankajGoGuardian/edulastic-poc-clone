@@ -1,28 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Spin, Select } from 'antd'
+import { Spin } from 'antd'
 import { omrSheetScanStatus } from '../utils'
-
-export const ThumbnailDropdown = ({
-  defaultValue,
-  value,
-  options,
-  handleChange,
-}) => (
-  <Select
-    onChange={handleChange}
-    defaultValue={defaultValue}
-    value={value}
-    style={{ width: '100%' }}
-    labelInValue
-  >
-    {options.map(({ key, label }) => (
-      <Select.Option key={key} value={key}>
-        {label}
-      </Select.Option>
-    ))}
-  </Select>
-)
 
 const FailedOverlay = ({ message }) => (
   <>
@@ -37,14 +16,12 @@ const FailedOverlay = ({ message }) => (
   </>
 )
 
-export const Thumbnail = ({ size, name, uri, status, message, onClick }) => (
+const Thumbnail = ({ size, name, uri, status, message, onClick }) => (
   <ThumbnailDiv width={size} onClick={onClick}>
     <Spin spinning={status === 2}>
       <img alt={name} src={uri} />
     </Spin>
-    {status === omrSheetScanStatus.FAILED && (
-      <FailedOverlay message={message} />
-    )}
+    {status > omrSheetScanStatus.DONE && <FailedOverlay message={message} />}
     <div className="title">{name}</div>
   </ThumbnailDiv>
 )

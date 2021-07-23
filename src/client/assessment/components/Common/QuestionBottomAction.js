@@ -74,10 +74,10 @@ export const ShowUserWork = ({ onClick, loading }) => (
 
 export const TimeSpent = ({ time }) => {
   return (
-    <div>
+    <TimeSpentText>
       <IconClockCircularOutline />
       {round(time / 1000, 1)}s
-    </div>
+    </TimeSpentText>
   )
 }
 
@@ -595,4 +595,7 @@ const CorrectButton = styled(EduButton)`
     left: 22px;
     top: 4px;
   }
+`
+const TimeSpentText = styled.div`
+  margin-bottom: 3px;
 `

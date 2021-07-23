@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Spin, Select } from 'antd'
+import { omrSheetScanStatus } from '../utils'
 
 export const ThumbnailDropdown = ({
   defaultValue,
@@ -41,7 +42,9 @@ export const Thumbnail = ({ size, name, uri, status, message, onClick }) => (
     <Spin spinning={status === 2}>
       <img alt={name} src={uri} />
     </Spin>
-    {status === 4 && <FailedOverlay message={message} />}
+    {status === omrSheetScanStatus.FAILED && (
+      <FailedOverlay message={message} />
+    )}
     <div className="title">{name}</div>
   </ThumbnailDiv>
 )

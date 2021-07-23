@@ -9,7 +9,11 @@ import SessionsPage from './SessionsPage'
 import SessionPage from './SessionPage'
 // import UploadPage from './UploadPage'
 
-import { processStatusMap } from './utils'
+import {
+  omrSheetScanStatus,
+  omrUploadSessionStatus,
+  processStatusMapping,
+} from './utils'
 import { actions, selector } from './ducks'
 
 const UploadAnswerSheets = ({
@@ -47,12 +51,14 @@ const UploadAnswerSheets = ({
         scannedUri: d.scannedUri,
         studentId: d.studentId,
         studentName: d.studentName,
-        status: processStatusMap[d.processStatus],
+        status: processStatusMapping[d.processStatus],
         message: d.message,
       })
     )
     const _scanInProgress = !_pageDocs.every(
-      (p) => p?.status > 2 && p?.status !== 6
+      (p) =>
+        p?.status > omrSheetScanStatus.SCANNING &&
+        p?.status !== omrSheetScanStatus.ABORTED
     )
     return { pageDocs: _pageDocs, scanInProgress: _scanInProgress }
   }, [omrSheetDocs, assignmentId, sessionId])
@@ -113,7 +119,7 @@ const UploadAnswerSheets = ({
     const checkForUpdate =
       sessionId &&
       !uploading &&
-      currentSession?.status == 2 &&
+      currentSession?.status == omrUploadSessionStatus.SCANNING &&
       pageDocs.length &&
       !scanInProgress
     if (checkForUpdate) {
@@ -123,6 +129,7 @@ const UploadAnswerSheets = ({
         sessionId,
         pageDocs,
         currentSession,
+        status: omrUploadSessionStatus.DONE,
       })
     }
   }, [sessionId, scanInProgress])
@@ -147,7 +154,8 @@ const UploadAnswerSheets = ({
             onSessionClick={handleSessionClick}
           /> */}
         </>
-      ) : currentSession?.status > 2 && currentSession.pages?.length ? (
+      ) : currentSession?.status > omrUploadSessionStatus.SCANNING &&
+        currentSession.pages?.length ? (
         <SessionPage pages={currentSession.pages} />
       ) : (
         <SessionPage

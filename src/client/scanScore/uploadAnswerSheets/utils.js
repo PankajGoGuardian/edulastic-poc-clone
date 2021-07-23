@@ -2,15 +2,19 @@ import { FireBaseService as Fbs } from '@edulastic/common'
 
 export const bubbleSheetsCollectionName = 'BubbleAnswerSheets'
 
-export const processStatusMap = {
-  in_progress: 2,
-  done: 3,
-  failed: 4,
-  archived: 5,
-  aborted: 6,
+export const omrUploadSessionStatus = {
+  NOT_STARTED: 0,
+  UPLOADED: 1,
+  SCANNING: 2,
+  DONE: 3,
+  FAILED: 4,
+  ARCHIVED: 5,
+  ABORTED: 6,
 }
 
-export const omrUploadSessionStatus = {
+export const omrSheetScanStatus = { ...omrUploadSessionStatus }
+
+export const omrUploadSessionStatusMapping = {
   0: 'Not Started',
   1: 'Uploaded',
   2: 'Scanning',
@@ -20,13 +24,30 @@ export const omrUploadSessionStatus = {
   6: 'Aborted',
 }
 
-export const omrSheetScanStatus = { ...omrUploadSessionStatus }
+export const omrSheetScanStatusMapping = { ...omrUploadSessionStatusMapping }
+
+export const processStatusMapping = {
+  in_progress: omrUploadSessionStatus.SCANNING,
+  done: omrUploadSessionStatus.DONE,
+  failed: omrUploadSessionStatus.FAILED,
+  archived: omrUploadSessionStatus.ARCHIVED,
+  aborted: omrUploadSessionStatus.ABORTED,
+}
 
 export const statusFilterOptions = [
   { key: '', label: 'All' },
-  { key: '2', label: omrUploadSessionStatus[2] },
-  { key: '3', label: omrUploadSessionStatus[3] },
-  { key: '4', label: omrUploadSessionStatus[4] },
+  {
+    key: String(omrUploadSessionStatus.SCANNING),
+    label: omrUploadSessionStatus[omrUploadSessionStatus.SCANNING],
+  },
+  {
+    key: String(omrUploadSessionStatus.DONE),
+    label: omrUploadSessionStatus[omrUploadSessionStatus.DONE],
+  },
+  {
+    key: String(omrUploadSessionStatus.FAILED),
+    label: omrUploadSessionStatus[omrUploadSessionStatus.FAILED],
+  },
 ]
 
 export const getFileNameFromUri = (uri = '') => uri.split('/').lastItem

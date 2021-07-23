@@ -3,10 +3,10 @@ import { createSlice } from 'redux-starter-kit'
 import { takeLatest, call, put, all } from 'redux-saga/effects'
 
 import { aws } from '@edulastic/constants'
-import { assignmentApi } from '@edulastic/api'
+import { scannerApi } from '@edulastic/api'
 import { notification, uploadToS3 } from '@edulastic/common'
 
-import { deleteNotificationDocuments } from './utils'
+import { deleteNotificationDocuments, omrUploadSessionStatus } from './utils'
 
 const slice = createSlice({
   name: 'uploadAnswerSheets',
@@ -97,7 +97,10 @@ const slice = createSlice({
       if (payload.error) {
         state.error = payload.error
       } else {
-        const session = { ...state.currentSession, status: 6 } // aborted
+        const session = {
+          ...state.currentSession,
+          status: omrUploadSessionStatus.ABORTED,
+        }
         const filteredSessions = state.omrUploadSessions.filter(
           (s) => s._id !== payload.session._id
         )
@@ -115,13 +118,16 @@ function* getOmrUploadSessionsSaga({ payload }) {
   try {
     const { sessionId, ..._payload } = payload
     const omrUploadSessions = yield call(
-      assignmentApi.getOmrUploadSessions,
+      scannerApi.getOmrUploadSessions,
       _payload
     )
     const currentSession =
       omrUploadSessions.find((session) => session._id === sessionId) ||
-      omrUploadSessions.filter(({ status }) => status === 2 || status === 3)
-        .lastItem
+      omrUploadSessions.filter(
+        ({ status }) =>
+          status === omrUploadSessionStatus.SCANNING ||
+          status === omrUploadSessionStatus.DONE
+      ).lastItem
     if (currentSession) {
       yield put(slice.actions.setOmrUploadSession({ session: currentSession }))
       if (!sessionId) {
@@ -152,7 +158,7 @@ function* createOmrUploadSessionSaga({
 }) {
   try {
     const source = { name: file.name }
-    const session = yield call(assignmentApi.createOmrUploadSession, {
+    const session = yield call(scannerApi.createOmrUploadSession, {
       assignmentId,
       groupId,
       source,
@@ -180,7 +186,7 @@ function* createOmrUploadSessionSaga({
     )
     yield put(slice.actions.setUploadRunner(uploadRunner))
     const { result: sessionUpdated, error } = yield call(
-      assignmentApi.splitScanOmrSheets,
+      scannerApi.splitScanOmrSheets,
       {
         assignmentId,
         sessionId,
@@ -218,21 +224,25 @@ function* updateOmrUploadSessionSaga({
   payload: { assignmentId, groupId, sessionId, pageDocs, currentSession },
 }) {
   try {
-    const session = { ...currentSession, status: 3, pages: pageDocs }
+    const session = {
+      ...currentSession,
+      pages: pageDocs,
+      status: omrUploadSessionStatus.DONE,
+    }
     yield put(slice.actions.setOmrUploadSession({ session, update: true }))
-    yield call(assignmentApi.updateOmrUploadSession, {
+    yield call(scannerApi.updateOmrUploadSession, {
       assignmentId,
       groupId,
       sessionId,
-      status: 3,
+      status: omrUploadSessionStatus.DONE,
     })
-    notification({ type: 'success', msg: 'Scoring completed!' })
-    // TODO: delete firbase docs here
+    notification({ type: 'success', msg: 'Scoring completed' })
+    // delete firebase docs here
     const docIds = pageDocs.map(({ docId }) => docId)
     deleteNotificationDocuments(docIds)
   } catch (e) {
     console.log(e.message)
-    const msg = e.message || 'Scoring completed! Failed to update session'
+    const msg = e.message || 'Scoring completed. Failed to update session'
     notification(msg)
   }
 }
@@ -245,10 +255,12 @@ function* abortOmrUploadSessionSaga({
       yield call(clearInterval, uploadRunner)
     }
     if (sessionId) {
-      yield call(assignmentApi.abortOmrUploadSession, {
+      yield call(scannerApi.updateOmrUploadSession, {
         assignmentId,
         groupId,
         sessionId,
+        status: omrUploadSessionStatus.ABORTED,
+        message: 'Aborted by user',
       })
       yield put(slice.actions.abortOmrUploadSessionDone())
       const msg = source === 'session' ? 'Scan aborted' : 'Upload aborted'

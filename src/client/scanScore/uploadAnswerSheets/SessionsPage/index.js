@@ -1,7 +1,7 @@
 import React from 'react'
 import { Row, Card, Col } from 'antd'
 
-import { omrUploadSessionStatus } from '../utils'
+import { omrUploadSessionStatusMapping } from '../utils'
 
 const SessionsPage = ({ sessions, onSessionClick }) => {
   return (
@@ -9,7 +9,7 @@ const SessionsPage = ({ sessions, onSessionClick }) => {
       {sessions.map((session) => (
         <Col span={8} onClick={() => onSessionClick(session._id)}>
           <Card title={session.source.name} bordered="false">
-            {`${omrUploadSessionStatus[session.status]}`}
+            {`${omrUploadSessionStatusMapping[session.status]}`}
           </Card>
         </Col>
       ))}

@@ -79,12 +79,30 @@ class SetCorrectAnswers extends Component {
   updateAnswers = (answers) => {
     const { item, setQuestionData } = this.props
     const { currentTab } = this.state
+    const emptyAnswersArr = new Array(item.responses.length).fill(null)
+
+    /**
+     * To fix evaluator answer length should be equal to responses length
+     * https://snapwiz.atlassian.net/browse/EV-26993
+     */
+    const filledAnswersArray = emptyAnswersArr.map(
+      (emptyAnswer, answerIndex) => {
+        const answer = answers[answerIndex]
+        if (answer?.optionIds?.length) {
+          return answer
+        }
+        return emptyAnswer
+      }
+    )
+
     setQuestionData(
       produce(item, (draft) => {
         if (currentTab === 0) {
-          draft.validation.validResponse.value = answers
+          draft.validation.validResponse.value = filledAnswersArray
         } else if (currentTab > 0) {
-          draft.validation.altResponses[currentTab - 1].value = answers
+          draft.validation.altResponses[
+            currentTab - 1
+          ].value = filledAnswersArray
         }
       })
     )

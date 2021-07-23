@@ -3,11 +3,10 @@ import { connect } from 'react-redux'
 import { Spin } from 'antd'
 import qs from 'qs'
 
-import { PageLayout } from './PageLayout'
-import { DropzoneContainer } from './UploadPage/DropzoneContainer'
+import PageLayout from './PageLayout'
 import SessionsPage from './SessionsPage'
 import SessionPage from './SessionPage'
-// import UploadPage from './UploadPage'
+import UploadPage from './UploadPage'
 
 import {
   omrSheetScanStatus,
@@ -34,6 +33,7 @@ const UploadAnswerSheets = ({
   createOmrUploadSession,
   updateOmrUploadSession,
   abortOmrUploadSession,
+  showSessions = false,
 }) => {
   const { assignmentId = '', groupId = '', sessionId = '' } = useMemo(
     () => qs.parse(location?.search || '', { ignoreQueryPrefix: true }),
@@ -64,13 +64,13 @@ const UploadAnswerSheets = ({
   }, [omrSheetDocs, assignmentId, sessionId])
 
   const breadcrumbData = useMemo(() => {
-    const breadcrumbs = [{ title: 'Upload' }]
+    const breadcrumbs = [{ title: 'Upload Responses' }]
     if (assignmentId && groupId) {
       breadcrumbs[0].to = `uploadAnswerSheets?assignmentId=${assignmentId}&groupId=${groupId}`
     }
     if (assignmentId && groupId && sessionId) {
       breadcrumbs.push({
-        title: 'Session',
+        title: 'Scan Summary',
         to: `uploadAnswerSheets?assignmentId=${assignmentId}&groupId=${groupId}&sessionId=${sessionId}`,
       })
     }
@@ -138,22 +138,20 @@ const UploadAnswerSheets = ({
     <PageLayout title="Scan Student Responses" breadcrumbData={breadcrumbData}>
       {loading ? (
         <Spin />
+      ) : showSessions ? (
+        <SessionsPage
+          sessions={omrUploadSessions}
+          onSessionClick={handleSessionClick}
+        />
       ) : !sessionId || uploading ? (
-        <>
-          <DropzoneContainer
-            uploading={uploading}
-            handleDrop={handleDrop}
-            uploadProgress={uploadProgress}
-            handleCancelUpload={
-              uploading && sessionId && cancelUpload ? handleAbortClick : null
-            }
-          />
-          {/* NOTE: Uncomment to list uploaded sessions */}
-          {/* <SessionsPage
-            sessions={omrUploadSessions}
-            onSessionClick={handleSessionClick}
-          /> */}
-        </>
+        <UploadPage
+          uploading={uploading}
+          handleDrop={handleDrop}
+          uploadProgress={uploadProgress}
+          handleCancelUpload={
+            uploading && sessionId && cancelUpload ? handleAbortClick : null
+          }
+        />
       ) : currentSession?.status > omrUploadSessionStatus.SCANNING &&
         currentSession.pages?.length ? (
         <SessionPage pages={currentSession.pages} />

@@ -7,13 +7,13 @@ import Breadcrumb from '../../author/src/components/Breadcrumb'
 
 const { Content } = Layout
 
-export const PageLayout = ({ children, title, breadcrumbData = [] }) => (
+const PageLayout = ({ children, title, breadcrumbData = [] }) => (
   <Layout>
     <StyledHeader>
       <h2 className="title">{title}</h2>
     </StyledHeader>
-    <Content>
-      <div style={{ width: '100%', padding: '5px 30px' }}>
+    <Content style={{ padding: '0 50px'}}>
+      <div style={{ padding: '20px 0' }}>
         <Breadcrumb data={breadcrumbData} style={{ position: 'unset' }} />
       </div>
       {children}

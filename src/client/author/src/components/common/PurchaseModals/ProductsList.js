@@ -130,7 +130,7 @@ const ProductsList = ({
       for (const addOnSub of itemBankSubscriptions.filter((x) => !x.isTria)) {
         if (addOnSub.itemBankId) {
           if (!_licensesKeyed[addOnSub?.itemBankId]) {
-            const productId = allProductsKeyed[addOnSub?.itemBankId].id
+            const productId = allProductsKeyed[addOnSub?.itemBankId]?.id
             _licenses = [
               ..._licenses,
               {

@@ -94,6 +94,7 @@ const ClassSelectModal = ({
       )
       setSelectedRows(classListToSync.map((c, i) => i))
       if (
+        !isEmpty(syncedClassCoTeacherFlag) &&
         !(
           syncedClassCoTeacherFlag.includes(true) &&
           syncedClassCoTeacherFlag.includes(false)

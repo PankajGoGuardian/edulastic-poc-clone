@@ -353,6 +353,8 @@ const MyClasses = ({
     user?.utm_source?.toLowerCase()?.includes('singapore') ||
     isSingaporeMathCollectionActive?.length > 0
 
+  const isCpm = user?.utm_source?.toLowerCase()?.includes('cpm')
+
   let filteredBundles = featuredBundles
 
   if (isEurekaMathActive) {
@@ -371,31 +373,58 @@ const MyClasses = ({
   }
 
   if (isSingaporeMath) {
+    if (
+      user?.orgData?.defaultGrades?.length > 0 &&
+      user?.orgData?.defaultSubjects?.length > 0
+    ) {
+      filteredBundles = filteredBundles.filter(
+        (feature) =>
+          !(
+            feature?.description?.toLowerCase()?.includes('engage ny') &&
+            feature?.description?.toLowerCase()?.includes('math')
+          ) &&
+          !feature?.description?.toLowerCase()?.includes('sparkmath') &&
+          !feature?.description?.toLowerCase()?.includes('spark math') &&
+          !(
+            feature?.config?.excludedPublishers?.includes('SingaporeMath') ||
+            feature?.config?.excludedPublishers?.includes('Singapore Math')
+          )
+      )
+      bannerSlides = bannerSlides.filter(
+        (banner) =>
+          !banner?.description?.toLowerCase()?.includes('sparkmath') &&
+          !banner?.description?.toLowerCase()?.includes('spark math') &&
+          !(
+            banner?.description?.toLowerCase()?.includes('engage ny') &&
+            banner?.description?.toLowerCase()?.includes('math')
+          ) &&
+          !(
+            banner?.config?.excludedPublishers?.includes('SingaporeMath') ||
+            banner?.config?.excludedPublishers?.includes('Singapore Math')
+          )
+      )
+    } else {
+      filteredBundles = filteredBundles.filter(
+        (feature) => feature?.config?.isSingaporeMath
+      )
+      bannerSlides = bannerSlides.filter(
+        (banner) => banner?.config?.isSingaporeMath
+      )
+    }
+  }
+
+  if (isCpm) {
     filteredBundles = filteredBundles.filter(
       (feature) =>
-        !(
-          feature?.description?.toLowerCase()?.includes('engage ny') &&
-          feature?.description?.toLowerCase()?.includes('math')
-        ) &&
         !feature?.description?.toLowerCase()?.includes('sparkmath') &&
         !feature?.description?.toLowerCase()?.includes('spark math') &&
-        !(
-          feature?.config?.excludedPublishers?.includes('SingaporeMath') ||
-          feature?.config?.excludedPublishers?.includes('Singapore Math')
-        )
+        !feature?.config?.excludedPublishers?.includes('CPM')
     )
     bannerSlides = bannerSlides.filter(
       (banner) =>
         !banner?.description?.toLowerCase()?.includes('sparkmath') &&
         !banner?.description?.toLowerCase()?.includes('spark math') &&
-        !(
-          banner?.description?.toLowerCase()?.includes('engage ny') &&
-          banner?.description?.toLowerCase()?.includes('math')
-        ) &&
-        !(
-          banner?.config?.excludedPublishers?.includes('SingaporeMath') ||
-          banner?.config?.excludedPublishers?.includes('Singapore Math')
-        )
+        !banner?.config?.excludedPublishers?.includes('CPM')
     )
   }
 

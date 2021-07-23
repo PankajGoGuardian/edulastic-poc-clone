@@ -2026,5 +2026,13 @@
   "optionRemove": {
     "message": "Answer choice can not be removed during regrade",
     "description": ""
+  },
+  "clozMathDuplicatedParam": {
+    "message": "Same dynamic variable can not be used in two or more input boxes.",
+    "description": ""
+  },
+  "invalidSeqVariableMsg": {
+    "message": "Please note that all dynamic parameters that are of \"sequence\" type need to have the same number of items. Otherwise, it may not be so obvious how the sequences should be aligned.",
+    "description": ""
   }
 }

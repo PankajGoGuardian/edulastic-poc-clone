@@ -313,24 +313,24 @@ class Container extends Component {
                   isBlue
                   IconBtn
                   data-cy="closeModal"
-                  onClick={onModalClose}
+                  onClick={onToggleFullModal}
                 >
-                  <IconClose />
+                  {isInModal ? <IconExpand /> : <IconCollapse />}
                 </EduButton>
                 <EduButton
                   isBlue
                   IconBtn
                   data-cy="closeModal"
-                  onClick={onToggleFullModal}
+                  onClick={onModalClose}
                 >
-                  {isInModal ? <IconExpand /> : <IconCollapse />}
+                  <IconClose />
                 </EduButton>
               </FlexContainer>
             )
           }
         />
         <PickQuestionWrapper isInModal={isInModal}>
-          <LeftSide addQuestionToPassage={addQuestionToPassage}>
+          <LeftSide isInModal={isInModal}>
             <Menu
               mode="horizontal"
               selectedKeys={[selectedTab]}
@@ -350,7 +350,7 @@ class Container extends Component {
             </Menu>
             <MenuTitle>{t('component.pickupcomponent.selectAType')}</MenuTitle>
             <AffixWrapper addQuestionToPassage={addQuestionToPassage}>
-              <PerfectScrollbar>
+              <PerfectScrollbar options={{ suppressScrollX: true }}>
                 <LeftMenuWrapper
                   mode="inline"
                   selectedKeys={[selectedCategory]}

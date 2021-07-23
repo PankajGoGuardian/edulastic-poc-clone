@@ -316,12 +316,12 @@ export const removeTabAction = (payload) => ({
   payload,
 })
 
-export const changeTabTitleAction = (index, value, widgets) => ({
+export const changeTabTitleAction = (index, value, containerType) => ({
   type: CHANGE_TAB_TITLE,
   payload: {
     index,
     value,
-    widgets,
+    containerType,
   },
 })
 
@@ -730,16 +730,16 @@ const removeTab = (state, payload) =>
   })
 
 const changeTabTitle = (state, payload) => {
-  const { index, value, widgets } = payload
+  const { index, value, containerType } = payload
   return produce(state, (newState) => {
     const {
       passage,
       item: { rows },
     } = newState
-    const isPassageTab = widgets.some(({ type }) => type === 'passage')
-    const tabs = isPassageTab
-      ? get(passage, 'structure.tabs', [])
-      : get(rows, [0, 'tabs'], [])
+    const tabs =
+      containerType === 'passage'
+        ? get(passage, 'structure.tabs', [])
+        : get(rows, [0, 'tabs'], [])
 
     tabs[index] = value
 
@@ -1159,12 +1159,8 @@ export function* updateItemSaga({ payload }) {
      * in test item data
      */
 
-    // if (payload.testId && payload.testId !== 'undefined') {
-    //   data.testId = testId
-    // }
     const { itemLevelScoring, itemLevelScore, isPassageWithQuestions } = data
 
-    // const questions = yield select(getQuestionsSelector);
     const resourceTypes = [
       questionType.VIDEO,
       questionType.PASSAGE,
@@ -1301,14 +1297,6 @@ export function* updateItemSaga({ payload }) {
       }
     }
     const { __v, ...passageData } = (yield select(getPassageSelector)) || {}
-    // const { structure } = passageData
-    // if (structure) {
-    //   const { widgets = [] } = structure
-    //   if (isPassageWithQuestions && !widgets.length) {
-    //     notification({ messageKey: 'CannotSaveWithoutPasses' })
-    //     return null
-    //   }
-    // }
 
     /*
      * in test flow, until test is not created, testId comes as "undefined" in string
@@ -1329,9 +1317,6 @@ export function* updateItemSaga({ payload }) {
       !isEmpty(passageData) ? call(passageApi.update, passageData) : null,
     ])
 
-    // if (isPassageWithQuestions && !isEmpty(passageData) && !updatedPassage) {
-    //   throw new Error('Error while updating passage')
-    // }
     /**
      * need to update the version and data of passage returned from API into the redux store
      * for subsequent updates,
@@ -2002,12 +1987,15 @@ function* savePassage({ payload }) {
       draft.testItems = uniq([...draft.testItems]) // , currentItemId
     })
     yield put(updatePassageStructureAction(modifiedPassage))
-
+    if (isTestFlow) {
+      modifiedPassage.testId = payload.testId
+    }
     // only update the item if its not new, since new item already has the passageId added while creating.
     const updatedPassage = yield call(
       passageApi.update,
       _omit(modifiedPassage, ['__v'])
     )
+
     /**
      * @see https://snapwiz.atlassian.net/browse/EV-29547
      * update passage version in redux-store and keep passage data in sync with DB
@@ -2015,21 +2003,10 @@ function* savePassage({ payload }) {
      */
     if (!isEmpty(updatedPassage)) {
       yield put(updatePassageStructureAction(updatedPassage))
+      if (modifiedPassage._id !== updatedPassage._id) {
+        currentItemId = updatedPassage.testItems[0] || currentItemId
+      }
     }
-
-    // yield all([
-    //   call(passageApi.update, _omit(modifiedPassage, ['__v'])),
-    //   currentItem._id !== 'new'
-    //     ? call(
-    //         testItemsApi.updateById,
-    //         currentItem._id,
-    //         currentItem,
-    //         testIdParam
-    //       )
-    //     : null,
-    // ])
-    // if there is new, replace it with current Item's id.
-    // const url = backUrl.replace('new', currentItemId)
 
     /**
      * after saving the passage type question we can say there is no user input to be saved
@@ -2065,25 +2042,6 @@ function* savePassage({ payload }) {
         state: currentRouterState,
       })
     )
-    /**
-     * If test flow and test is not created, creating test after passage item is created and redirecting to edit-item page
-     * If not test flow or if test is already created, redirecting to edit-item page
-     * passing addAuthoredItemsAction fromSaveMultipartItem flag for getting redirected to edit-item page instead of test review page
-     * @see https://snapwiz.atlassian.net/browse/EV-26929
-     */
-    // if (backUrl.includes('tests') && payload?.testId === 'undefined' && item) {
-    //   yield put(
-    //     addAuthoredItemsAction({
-    //       item,
-    //       tId: payload.testId,
-    //       isEditFlow: false,
-    //       fromSaveMultipartItem: true,
-    //       url,
-    //     })
-    //   )
-    // } else {
-    //   yield put(push(url))
-    // }
   } catch (e) {
     Sentry.captureException(e)
     console.log('error: ', e)

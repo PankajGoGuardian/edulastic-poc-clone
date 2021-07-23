@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { CSVLink } from 'react-csv'
 import { Button, Icon, Modal, Upload } from 'antd'
-import { compact, isEmpty } from 'lodash'
+import { isEmpty } from 'lodash'
 import moment from 'moment'
+import { notification } from '@edulastic/common'
 import { Table } from '../Common/StyledComponents'
 import { DISABLE_SUBMIT_TITLE, mapCountAsType } from '../Data'
 import ApproveMergeModal from './ApproveMergeModal'
@@ -36,12 +37,17 @@ const MergeIdsTable = ({
   unSetMappedData,
   generateMappedData,
   mappedDataInfo,
+  unSetDuplicateMappedData,
+  duplicateMappedData,
+  isApproveModalVisible,
+  toggleApproveModal,
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [districtMappedData, setDistrictMappedData] = useState({})
   const [mapperFieldName, setMapperFieldName] = useState('')
-  const [mapperErrorMessage, setMapperErrorMessage] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
+  const [duplicateRows, setDuplicateRows] = useState([])
+
   let lastClassMapDataGeneratedDate = ''
   let lastSchoolMapDataGeneratedDate = ''
   if (!isEmpty(mappedDataInfo)) {
@@ -58,6 +64,16 @@ const MergeIdsTable = ({
     const data = mappedData[cleverId || atlasId]
     setDistrictMappedData(data || {})
   }, [mappedData, districtId])
+
+  useEffect(() => {
+    duplicateMappedData?.[mapperFieldName]?.length > 0 &&
+      setDuplicateRows(duplicateMappedData[mapperFieldName])
+  }, [duplicateMappedData, mapperFieldName])
+
+  useEffect(() => {
+    isApproveModalVisible && setIsModalVisible(true)
+    !isApproveModalVisible && setIsModalVisible(false)
+  }, [isApproveModalVisible, toggleApproveModal])
 
   const {
     data: mergeResponseData,
@@ -127,15 +143,16 @@ const MergeIdsTable = ({
   }
 
   const handleReviewAndApprove = (fieldName) => {
+    setDuplicateRows([])
     const { payload } = getPayload(fieldName)
     getMappingData({ ...payload, page: 1 })
     setMapperFieldName(fieldName)
-    setIsModalVisible(true)
     setCurrentPage(1)
+    toggleApproveModal(true)
   }
 
   const handleApprove = (mappedResult, formattedData, filterValue) => {
-    setMapperErrorMessage('')
+    setDuplicateRows([])
     const eduIdMap = {}
     const indexes = []
     let cleverIds
@@ -155,21 +172,35 @@ const MergeIdsTable = ({
         const existingId = eduIdMap[eduId]
         if (!existingId) eduIdMap[eduId] = []
         eduIdMap[eduId].push(
-          mapperFieldName === 'Schools' ? i : mappedResult[cleverIds[i - 1]].row
+          mapperFieldName === 'Schools'
+            ? {
+                cleverId: cleverIds[i - 1],
+                row: i,
+              }
+            : {
+                cleverId: cleverIds[i - 1],
+                row: mappedResult[cleverIds[i - 1]].row,
+              }
         )
       }
     }
+    const duplicateRowData = []
     for (const key of Object.keys(eduIdMap)) {
       if (eduIdMap[key].length > 1) {
-        indexes.push(...eduIdMap[key])
+        eduIdMap[key].forEach((_data) => {
+          indexes.push(_data.row)
+          duplicateRowData.push(_data.cleverId)
+        })
       }
     }
     if (indexes.length) {
-      setMapperErrorMessage(
-        `Same edulastic ${mapperFieldName} is mapped in rows ${compact(
-          indexes
-        )}`
-      )
+      setDuplicateRows(duplicateRowData)
+      notification({
+        msg: `Same edulastic ${mapperFieldName} is mapped in rows ${indexes
+          .join(', ')
+          .trim()}`,
+        duration: 0,
+      })
     } else {
       const mappedDataResult = {}
       cleverIds.forEach((_cleverId, i) => {
@@ -188,7 +219,6 @@ const MergeIdsTable = ({
         savingMappingData.filter = filterValue
       }
       saveApprovedMapping(savingMappingData)
-      setIsModalVisible(false)
     }
   }
 
@@ -298,15 +328,17 @@ const MergeIdsTable = ({
           isModalVisible={isModalVisible}
           handleApprove={handleApprove}
           mapperFieldName={mapperFieldName}
-          mapperErrorMessage={mapperErrorMessage}
           districtMappedData={districtMappedData}
-          setMapperErrorMessage={setMapperErrorMessage}
           getPayload={getPayload}
           getMappingData={getMappingData}
           mappedDataLoading={mappedDataLoading}
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
           cleverId={cleverId}
+          duplicateRows={duplicateRows}
+          unSetDuplicateMappedData={unSetDuplicateMappedData}
+          duplicateMappedData={duplicateMappedData}
+          toggleApproveModal={toggleApproveModal}
         />
       )}
 
@@ -347,10 +379,13 @@ const MergeIdsTable = ({
                 >
                   Generate Mapping
                 </Button>
-                <span style={{ display: 'inline-flex' }}>
-                  Last Generated on:{' '}
-                  {getLastGeneratedMappingTime(fieldName) || '...'}
-                </span>
+                {getLastGeneratedMappingTime(fieldName) && (
+                  <span style={{ display: 'inline-flex' }}>
+                    {`Last Generated on: ${getLastGeneratedMappingTime(
+                      fieldName
+                    )}`}
+                  </span>
+                )}
               </>
             ) : (
               <Upload

@@ -45,11 +45,7 @@ import {
   selectStudentAction,
   updateStudentRequestAction,
 } from '../../ducks'
-import {
-  currentDistrictInstitutionIds,
-  getUserOrgData,
-  getUserOrgId,
-} from '../../../src/selectors/user'
+import { getUserOrgData, getUserOrgId } from '../../../src/selectors/user'
 import { getUserFeatures } from '../../../../student/Login/ducks'
 import {
   getSchoolPolicy,
@@ -66,7 +62,6 @@ const ActionContainer = ({
   selectedClass,
   userOrgId,
   orgData,
-  institutionIds,
   studentsList,
   submitted,
   added,
@@ -184,7 +179,7 @@ const ActionContainer = ({
             values.classCode = selectedClass.code
             values.role = 'student'
             values.districtId = districtId
-            values.institutionIds = institutionIds
+            values.institutionIds = orgData.institutionIds
             values.firstName = firstName
             values.lastName = lastName
             values.middleName = middleName
@@ -589,7 +584,6 @@ export default connect(
   (state) => ({
     userOrgId: getUserOrgId(state),
     orgData: getUserOrgData(state),
-    institutionIds: currentDistrictInstitutionIds(state),
     selectedClass: get(state, 'manageClass.entity'),
     submitted: get(state, 'manageClass.submitted'),
     added: get(state, 'manageClass.added'),

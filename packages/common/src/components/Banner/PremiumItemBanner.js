@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Icon } from 'antd'
+import { Icon, Tooltip } from 'antd'
 import { greyThemeDark3, themeColor, greyThemeDark2 } from '@edulastic/colors'
 import { QuestionNumberLabel, QuestionSubLabel } from '@edulastic/common'
 import { IconClockCircularOutline } from '@edulastic/icons'
@@ -15,46 +15,50 @@ const PremiumItemBanner = ({
   height = false,
   isPrintPreview = false,
   timeSpent = false,
-}) => (
-  <PremiumItemBannerWrapper
-    isExpandedView={isExpandedView}
-    height={height}
-    isPrintPreview={isPrintPreview}
-  >
-    {!hideQuestionLabels && data.qLabel && (
-      <QuestionNumberLabel
-        className="__print-space-reduce-qlabel"
-        width={36}
-        height={36}
-        fontSize="11px"
-      >
-        {data.qLabel}
-      </QuestionNumberLabel>
-    )}
-    {!hideQuestionLabels && data.qSubLabel && (
-      <QuestionSubLabel className="sub-label">
-        ({data.qSubLabel})
-      </QuestionSubLabel>
-    )}
-    <Container showStacked={showStacked}>
-      <span>
-        <Icon type="warning" theme="filled" />
-        Question is not accessible
-      </span>
-      <span>
-        {`Because you are no longer subscribed to items from ${itemBankName.join(
-          ','
-        )}`}
-      </span>
-    </Container>
-    {!!timeSpent && (
-      <Timer>
-        <IconClockCircularOutline />
-        {round(timeSpent / 1000, 1)}s
-      </Timer>
-    )}
-  </PremiumItemBannerWrapper>
-)
+  showAsTooltip = false,
+}) => {
+  const bannerBody = `Because you are no longer subscribed to items from ${itemBankName.join(
+    ','
+  )}`
+  return (
+    <PremiumItemBannerWrapper
+      isExpandedView={isExpandedView}
+      height={height}
+      isPrintPreview={isPrintPreview}
+    >
+      {!hideQuestionLabels && data.qLabel && (
+        <QuestionNumberLabel
+          className="__print-space-reduce-qlabel"
+          width={36}
+          height={36}
+          fontSize="11px"
+        >
+          {data.qLabel}
+        </QuestionNumberLabel>
+      )}
+      {!hideQuestionLabels && data.qSubLabel && (
+        <QuestionSubLabel className="sub-label">
+          ({data.qSubLabel})
+        </QuestionSubLabel>
+      )}
+      <Container showStacked={showStacked}>
+        <Tooltip title={showAsTooltip ? bannerBody : null}>
+          <span>
+            <Icon type="warning" theme="filled" />
+            Question is not accessible
+          </span>
+        </Tooltip>
+        {!showAsTooltip && <span>{bannerBody}</span>}
+      </Container>
+      {!isPrintPreview && !!timeSpent && (
+        <Timer>
+          <IconClockCircularOutline />
+          {round(timeSpent / 1000, 1)}s
+        </Timer>
+      )}
+    </PremiumItemBannerWrapper>
+  )
+}
 
 export default PremiumItemBanner
 

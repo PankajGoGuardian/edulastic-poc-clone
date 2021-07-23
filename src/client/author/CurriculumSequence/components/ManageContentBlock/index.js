@@ -206,7 +206,6 @@ const ManageContentBlock = (props) => {
   const openContentFilterModal = () => setShowContentFilterModal(true)
   const closeContentFilterModal = () => {
     setShowContentFilterModal(false)
-    setAlignment({})
   }
 
   const handleApplyFilters = () => {
@@ -563,7 +562,6 @@ const ManageContentBlock = (props) => {
             setAlignment={setAlignment}
             selectedStandards={selectedStandards}
             setSelectedStandards={setSelectedStandards}
-            curriculum={collectionFromCurriculumSequence}
             data={resourceData}
           />
         )}
@@ -579,7 +577,6 @@ const ManageContentBlock = (props) => {
             setAlignment={setAlignment}
             selectedStandards={selectedStandards}
             setSelectedStandards={setSelectedStandards}
-            curriculum={collectionFromCurriculumSequence}
             data={resourceData}
           />
         )}
@@ -595,7 +592,6 @@ const ManageContentBlock = (props) => {
             setAlignment={setAlignment}
             selectedStandards={selectedStandards}
             setSelectedStandards={setSelectedStandards}
-            curriculum={collectionFromCurriculumSequence}
             data={resourceData}
           />
         )}

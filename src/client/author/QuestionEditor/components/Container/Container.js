@@ -742,7 +742,7 @@ const RightActionButtons = styled.div`
 
 const EditorContainer = styled.div`
   min-height: ${({ isInModal }) =>
-    isInModal ? 'calc(100vh - 110px)' : '100vh'};
+    isInModal ? 'calc(100vh - 50px)' : '100vh'};
   overflow: hidden;
 `
 

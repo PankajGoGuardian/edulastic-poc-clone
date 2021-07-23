@@ -1,3 +1,4 @@
+import qs from 'qs'
 import API from './utils/API'
 
 const api = new API()
@@ -12,13 +13,15 @@ const upgradeUsingLicenseKey = (licenseKey) =>
     })
     .then((result) => result.data.result)
 
-const subscriptionStatus = () =>
-  api
+const subscriptionStatus = (params) => {
+  const query = params ? `?${qs.stringify(params)}` : ''
+  return api
     .callApi({
-      url: `${prefix}/me`,
+      url: `${prefix}/me${query}`,
       method: 'get',
     })
     .then((result) => result.data)
+}
 
 const extendTrialLicense = (data) =>
   api

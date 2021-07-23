@@ -17,8 +17,8 @@ const MainContentWrapper = styled.div`
       props.theme.isProxyUser
         ? props.theme.HeaderHeight.xs +
           props.theme.BannerHeight +
-          (props.isInModal ? 100 : 0)
-        : props.theme.HeaderHeight.xs + (props.isInModal ? 110 : 0)
+          (props.isInModal ? 50 : 0)
+        : props.theme.HeaderHeight.xs + (props.isInModal ? 50 : 0)
     }px)`};
 
   @media (min-width: ${mediumDesktopExactWidth}) {
@@ -27,8 +27,8 @@ const MainContentWrapper = styled.div`
         props.theme.isProxyUser
           ? props.theme.HeaderHeight.md +
             props.theme.BannerHeight +
-            (props.isInModal ? 100 : 0)
-          : props.theme.HeaderHeight.md + (props.isInModal ? 110 : 0)
+            (props.isInModal ? 50 : 0)
+          : props.theme.HeaderHeight.md + (props.isInModal ? 50 : 0)
       }px)`};
   }
   @media (min-width: ${extraDesktopWidthMax}) {
@@ -37,8 +37,8 @@ const MainContentWrapper = styled.div`
         props.theme.isProxyUser
           ? props.theme.HeaderHeight.xl +
             props.theme.BannerHeight +
-            (props.isInModal ? 100 : 0)
-          : props.theme.HeaderHeight.xl + (props.isInModal ? 110 : 0)
+            (props.isInModal ? 50 : 0)
+          : props.theme.HeaderHeight.xl + (props.isInModal ? 50 : 0)
       }px)`};
   }
   @media (max-width: ${smallDesktopWidth}) {
@@ -47,15 +47,15 @@ const MainContentWrapper = styled.div`
         props.theme.isProxyUser
           ? props.theme.HeaderHeight.sd +
             props.theme.BannerHeight +
-            (props.isInModal ? 100 : 0)
-          : props.theme.HeaderHeight.sd + (props.isInModal ? 110 : 0)
+            (props.isInModal ? 50 : 0)
+          : props.theme.HeaderHeight.sd + (props.isInModal ? 50 : 0)
       }px)`};
   }
   @media (max-width: ${mobileWidthLarge}) {
     padding: 20px;
     height: ${(props) =>
       `calc(100vh - ${
-        props.theme.HeaderHeight.xs + (props.isInModal ? 110 : 0)
+        props.theme.HeaderHeight.xs + (props.isInModal ? 50 : 0)
       }px)`};
   }
 `

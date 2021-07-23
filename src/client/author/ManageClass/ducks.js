@@ -33,7 +33,7 @@ import {
   addLoadingComponentAction,
   removeLoadingComponentAction,
 } from '../src/actions/authorUi'
-
+import { slice } from '../Subscription/ducks'
 // selectors
 const manageClassSelector = (state) => state.manageClass
 export const getSelectedSubject = createSelector(
@@ -679,6 +679,7 @@ function* receiveCreateClassRequest({ payload }) {
     }
     if (callUserMeApi) {
       yield put(fetchUserAction({ background: true }))
+      yield put(slice.actions.fetchUserSubscriptionStatus({ background: true }))
     }
     yield put(createClassSuccessAction(result))
     yield put(addGroupAction(result))

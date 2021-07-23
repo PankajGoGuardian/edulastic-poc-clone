@@ -10,7 +10,7 @@ import React from 'react'
 import styled from 'styled-components'
 
 export const FieldLabel = styled.label`
-  font-size: 11px;
+  font-size: ${(props) => props.fs || '11px'};
   font-weight: ${(props) => props.theme.widgetOptions.labelFontWeight};
   font-style: ${(props) => props.theme.widgetOptions.labelFontStyle};
   font-stretch: ${(props) => props.theme.widgetOptions.labelFontStretch};

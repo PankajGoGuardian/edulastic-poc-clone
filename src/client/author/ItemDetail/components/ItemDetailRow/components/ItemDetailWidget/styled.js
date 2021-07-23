@@ -31,9 +31,7 @@ export const ButtonsContainer = styled.div`
   justify-content: flex-start;
   align-items: flex-end;
   overflow-x: visible;
-  padding: ${({ unscored }) =>
-    unscored ? '80px 20px 0px 10px' : '40px 20px 0px 10px'};
-  min-width: 180px;
+  padding: 10px 15px 0px 10px;
   opacity: 0.3;
 
   &:hover {
@@ -44,7 +42,6 @@ export const ButtonsContainer = styled.div`
     .points-input-wrapper,
     .total-points-wrapper {
       background: white;
-      padding: 0px 0px 0px 10px;
     }
   }
   .ant-btn {
@@ -97,4 +94,7 @@ export const TotalPointsWrapper = styled.div`
   right: 0px;
   top: -20px;
   right: 20px;
+  & > label {
+    text-align: center;
+  }
 `

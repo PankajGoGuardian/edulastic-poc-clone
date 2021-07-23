@@ -45,11 +45,9 @@ import {
   resetUpdatedStateAction,
   setTestDataAction,
   testTypeAsProfileNameType,
-  getCurrentSettingsIdSelector,
   fetchTestSettingsListAction,
   saveTestSettingsAction,
   getTestSettingsListSelector,
-  setCurrentTestSettingsIdAction,
   getTestDefaultSettingsSelector,
   deleteTestSettingRequestAction,
   updateTestSettingRequestAction,
@@ -190,20 +188,7 @@ class Setting extends Component {
   }
 
   componentDidMount = () => {
-    const {
-      entity,
-      isAuthorPublisher,
-      resetUpdatedState,
-      premium,
-      fetchTestSettingsList,
-      userId,
-    } = this.props
-    if (premium) {
-      fetchTestSettingsList({
-        orgId: userId,
-        orgType: roleuser.ORG_TYPE.USER,
-      })
-    }
+    const { entity, isAuthorPublisher, resetUpdatedState } = this.props
     if (entity?.scoringType === PARTIAL_CREDIT && !entity?.penalty) {
       this.updateTestData('scoringType')(PARTIAL_CREDIT_IGNORE_INCORRECT)
     }
@@ -332,6 +317,8 @@ class Setting extends Component {
           ].includes(value)
         ) {
           Object.assign(dataToSet, { applyEBSR: false })
+        } else {
+          value = evalTypeLabels.PARTIAL_CREDIT
         }
         setTestData(dataToSet)
         break
@@ -348,6 +335,7 @@ class Setting extends Component {
         }
         break
       case 'maxAnswerChecks':
+        value = parseInt(value, 10)
         if (value < 0) value = 0
         break
       case 'passwordPolicy': {
@@ -494,25 +482,26 @@ class Setting extends Component {
       delete newSettings.passwordExpireIn
     }
     if (
-      newSettings.passwordPolicy &&
       newSettings.passwordPolicy !==
-        testContants.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC
+      testContants.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC
     ) {
       delete newSettings.assignmentPassword
+    }
+    if (!newSettings.safeBrowser) {
+      delete newSettings.sebPassword
     }
     return newSettings
   }
 
   handleSettingsSelection = (value) => {
     const {
-      setCurrentTestSettingsId,
       setTestData,
       testSettingsList,
       testDefaultSettings,
       entity,
-      currentSettingsId,
       totalItems,
     } = this.props
+    const { settingId: currentSettingsId = '' } = entity
     if (value === 'save-settings-option') {
       if (currentSettingsId === '')
         this.setState({ showSaveSettingsModal: true })
@@ -548,7 +537,7 @@ class Setting extends Component {
       } else if (!newSettings.timedAssignment) {
         newSettings.allowedTime = 0
       }
-      setCurrentTestSettingsId(value)
+      newSettings.settingId = value
       setTestData(newSettings)
     }
   }
@@ -566,8 +555,7 @@ class Setting extends Component {
     ) {
       notification({ msg: 'Please enter password expiry time' })
       isValid = false
-    }
-    if (
+    } else if (
       entity.passwordPolicy ===
         testContants.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC &&
       (!entity.assignmentPassword ||
@@ -576,6 +564,9 @@ class Setting extends Component {
             entity?.assignmentPassword?.length > 25)))
     ) {
       notification({ messageKey: 'enterValidPassword' })
+      isValid = false
+    } else if (entity.safeBrowser && !entity.sebPassword) {
+      notification({ msg: 'Please enter safe exam browser password' })
       isValid = false
     }
     return isValid
@@ -602,16 +593,16 @@ class Setting extends Component {
   handleSaveTestSetting = (settingName) => {
     const { saveTestSettings } = this.props
     const data = this.getCurrentSettings(settingName)
-    if (data) saveTestSettings({ data, switchSetting: true })
+    if (data) saveTestSettings({ data, switchSettingInTest: true })
     this.toggleSaveSettingsModal(false)
   }
 
   handleDeleteSettings = (value) => {
     if (value) {
-      const { deleteTestSettingRequest, currentSettingsId } = this.props
+      const { deleteTestSettingRequest, entity } = this.props
       const { settingDetails } = this.state
       deleteTestSettingRequest(settingDetails._id)
-      if (settingDetails._id === currentSettingsId)
+      if (settingDetails._id === entity.settingId)
         this.handleSettingsSelection('')
     }
     this.setState({ showDeleteSettingModal: false })
@@ -626,11 +617,8 @@ class Setting extends Component {
           testSettingsList.length < TEST_SETTINGS_SAVE_LIMIT,
       })
     } else {
-      const {
-        updateTestSettingRequest,
-        testSettingsList,
-        currentSettingsId,
-      } = this.props
+      const { updateTestSettingRequest, testSettingsList, entity } = this.props
+      const { settingId: currentSettingsId = '' } = entity
       const currentSelectedSetting =
         testSettingsList.find((t) => t._id === currentSettingsId) || {}
       const data = this.getCurrentSettings(
@@ -688,7 +676,6 @@ class Setting extends Component {
       isEtsDistrict,
       t,
       testSettingsList = [],
-      currentSettingsId,
     } = this.props
     const {
       isDocBased,
@@ -729,7 +716,16 @@ class Setting extends Component {
       itemGroups = [],
       applyEBSR = false,
       enableSkipAlert = false,
+      settingId: currentSettingsId = '',
     } = entity
+
+    let isSettingPresent = false
+    if (
+      currentSettingsId &&
+      testSettingsList.some((s) => s._id === currentSettingsId)
+    ) {
+      isSettingPresent = true
+    }
     const scoringType =
       entity.scoringType === evalTypeLabels.PARTIAL_CREDIT &&
       entity.penalty === false
@@ -922,7 +918,7 @@ class Setting extends Component {
                 <SavedSettingsContainerStyled isSmallSize={isSmallSize}>
                   <div>SAVED SETTINGS</div>
                   <Select
-                    value={currentSettingsId}
+                    value={isSettingPresent ? currentSettingsId : ''}
                     getPopupContainer={(node) => node.parentNode}
                     onChange={this.handleSettingsSelection}
                     optionLabelProp="label"
@@ -2377,7 +2373,6 @@ const enhance = compose(
       allowedToSelectMultiLanguage: allowedToSelectMultiLanguageInTest(state),
       testAssignments: getAssignmentsSelector(state),
       isEtsDistrict: isEtsDistrictSelector(state),
-      currentSettingsId: getCurrentSettingsIdSelector(state),
       testSettingsList: getTestSettingsListSelector(state),
       testDefaultSettings: getTestDefaultSettingsSelector(state),
       userId: getUserId(state),
@@ -2389,7 +2384,6 @@ const enhance = compose(
       resetUpdatedState: resetUpdatedStateAction,
       fetchTestSettingsList: fetchTestSettingsListAction,
       saveTestSettings: saveTestSettingsAction,
-      setCurrentTestSettingsId: setCurrentTestSettingsIdAction,
       deleteTestSettingRequest: deleteTestSettingRequestAction,
       updateTestSettingRequest: updateTestSettingRequestAction,
     }

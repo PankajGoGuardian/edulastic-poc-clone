@@ -1,31 +1,29 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Modal, Pagination, Select, Spin, Typography } from 'antd'
-import { notification } from '@edulastic/common'
 import { isEmpty } from 'lodash'
-import { lightFadedBlack } from '@edulastic/colors'
-import styled from 'styled-components'
-import { Table } from '../Common/StyledComponents'
+import { MappingTable, StyledSpinner } from './style'
 
-const { Column } = Table
+const { Column } = MappingTable
 const { Option } = Select
 const { Text } = Typography
 
 const PAGE_SIZE = 100
 
 const ApproveMergeModal = ({
-  setIsModalVisible,
   isModalVisible,
   handleApprove,
   mapperFieldName,
-  mapperErrorMessage = '',
   districtMappedData,
-  setMapperErrorMessage,
   getPayload,
   getMappingData,
   mappedDataLoading,
   currentPage = 1,
   setCurrentPage,
   cleverId,
+  duplicateRows,
+  unSetDuplicateMappedData,
+  duplicateMappedData,
+  toggleApproveModal,
 }) => {
   const [formattedData, setFormattedData] = useState([])
   const [mappedResult, setMappedResult] = useState({})
@@ -203,12 +201,6 @@ const ApproveMergeModal = ({
     return customStr
   }
 
-  useEffect(() => {
-    if (!isEmpty(mapperErrorMessage)) {
-      notification({ msg: mapperErrorMessage })
-    }
-  }, [mapperErrorMessage])
-
   const schoolCompare = (a, b) => {
     if (a.zipMatch && b.zipMatch) return b.nameMatch - a.nameMatch
     if (a.zipMatch) return -1
@@ -276,8 +268,11 @@ const ApproveMergeModal = ({
   }, [districtMappedData, currentPage, formattedData])
 
   const handleCloseModal = () => {
-    setMapperErrorMessage([])
-    setIsModalVisible(false)
+    duplicateMappedData?.[mapperFieldName]?.length > 0 &&
+      unSetDuplicateMappedData({
+        entity: mapperFieldName,
+      })
+    toggleApproveModal(false)
   }
 
   const handlePageChange = (pageNumber) => {
@@ -355,11 +350,21 @@ const ApproveMergeModal = ({
                 <Spin />
               </StyledSpinner>
             ) : (
-              <Table
+              <MappingTable
                 rowKey={(record) =>
                   isSchool ? record.lmsSchoolId : record.lmsClassId
                 }
                 dataSource={formattedData}
+                rowClassName={(record) => {
+                  if (
+                    duplicateRows.includes(
+                      mapperFieldName === 'Schools'
+                        ? record.lmsSchoolId
+                        : record.lmsClassId
+                    )
+                  )
+                    return 'duplicate-rows'
+                }}
                 pagination={
                   isSchool
                     ? {
@@ -444,7 +449,7 @@ const ApproveMergeModal = ({
                     )
                   }}
                 />
-              </Table>
+              </MappingTable>
             )}
           </>
         ) : (
@@ -456,13 +461,3 @@ const ApproveMergeModal = ({
 }
 
 export default ApproveMergeModal
-
-const StyledSpinner = styled.div`
-  position: fixed;
-  top: 0px;
-  bottom: 0px;
-  left: 0px;
-  right: 0px;
-  z-index: 9999;
-  background: ${lightFadedBlack};
-`

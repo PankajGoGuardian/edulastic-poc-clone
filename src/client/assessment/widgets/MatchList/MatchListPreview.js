@@ -125,7 +125,7 @@ const MatchListPreview = ({
     return groupArrays
   }
 
-  const [ans, setAns] = useState(getInitialAnswer(list))
+  const [ans, setAns] = useState([])
 
   function getInitialDragItems() {
     if (optionsFromStore) {
@@ -200,6 +200,8 @@ const MatchListPreview = ({
   useEffect(() => {
     if (!isEmpty(userAnswer)) {
       setAns(userAnswer)
+    } else {
+      setAns(getInitialAnswer(list))
     }
     let newDragItems = duplicatedResponses
       ? getPossibleResponses()
@@ -224,7 +226,13 @@ const MatchListPreview = ({
     if (!isEqual(dragItems, newDragItems)) {
       setDragItems(newDragItems)
     }
-  }, [userAnswer, posResponses, possibleResponseGroups, duplicatedResponses])
+  }, [
+    list,
+    userAnswer,
+    posResponses,
+    possibleResponseGroups,
+    duplicatedResponses,
+  ])
 
   const preview = previewTab === CHECK || previewTab === SHOW
 

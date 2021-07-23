@@ -19,12 +19,7 @@ import {
   setQuestionScoreAction,
 } from '../../../../../sharedDucks/questions'
 import Ctrls from './Controls'
-import {
-  Container,
-  WidgetContainer,
-  ButtonsContainer,
-  TotalPointsWrapper,
-} from './styled'
+import { Container, WidgetContainer, ButtonsContainer } from './styled'
 
 const ItemDetailWidget = ({
   widget,
@@ -43,6 +38,7 @@ const ItemDetailWidget = ({
   previewTab,
   itemEditDisabled,
   dataCy,
+  onShowSettings,
 }) => {
   const [showButtons, setShowButtons] = useState(!flowLayout)
 
@@ -62,7 +58,7 @@ const ItemDetailWidget = ({
     setItemLevelScore(+score)
   }
 
-  const { itemLevelScoring, itemLevelScore } = itemData
+  const { itemLevelScoring, itemLevelScore, rows = [] } = itemData
 
   const showPoints = !(rowIndex === 0 && itemData.rows.length > 1)
   const isPointsBlockVisible =
@@ -75,27 +71,25 @@ const ItemDetailWidget = ({
     (x) => x.validation?.unscored !== true
   )
 
-  const itemLevelPartScore = itemLevelScore / filterUnscoredQuestions?.length
+  const itemLevelPartScore =
+    itemLevelScore /
+    (filterUnscoredQuestions?.length > 0
+      ? filterUnscoredQuestions?.length
+      : rows[0]?.widgets?.length) // added for passage
   const score = get(question, 'validation.validResponse.score', 0)
   const partScore = itemLevelScoring
     ? Math.round(itemLevelPartScore * 100) / 100
     : score
 
   const unscored = itemLevelScoring
-    ? questions.length && question?.validation?.unscored
+    ? question?.validation?.unscored
     : get(question, 'validation.unscored', false)
-
-  const hasNoUnscored = questions.some((x) => x.validation?.unscored !== true)
 
   const scoreChangeHandler = itemLevelScoring
     ? onChangeItemLevelPoint
     : onChangeQuestionLevelPoint
 
   const [isEditDisabled, disabledReason] = itemEditDisabled
-  const hidePointsBlock =
-    (widgetIndex > 0 && itemLevelScoring) ||
-    (question.rubrics && !itemLevelScoring) ||
-    isEditDisabled
 
   return (
     connectDragPreview &&
@@ -107,28 +101,6 @@ const ItemDetailWidget = ({
         data-cy={dataCy}
       >
         <Container isDragging={isDragging} flowLayout={flowLayout}>
-          {!hidePointsBlock && itemLevelScoring ? (
-            hasNoUnscored ? (
-              <Ctrls.TotalPoints
-                value={itemLevelScore}
-                onChange={scoreChangeHandler}
-                data-cy="totalPointUpdate"
-                visible={isPointsBlockVisible}
-                disabled={isEditDisabled}
-                isRubricQuestion={!!question.rubrics && !itemLevelScoring}
-                itemLevelScoring={itemLevelScoring}
-              />
-            ) : (
-              <TotalPointsWrapper>
-                <UnScored
-                  width="50px"
-                  height="50px"
-                  top={`${itemLevelScoring ? -80 : -50}px`}
-                />
-              </TotalPointsWrapper>
-            )
-          ) : null}
-
           <FlexContainer width="100%" justifyContent="space-between">
             <WidgetContainer>
               {(widget.widgetType === 'question' ||
@@ -159,6 +131,7 @@ const ItemDetailWidget = ({
                       disabled={isEditDisabled}
                       isRubricQuestion={!!question.rubrics && !itemLevelScoring}
                       itemLevelScoring={itemLevelScoring}
+                      onShowSettings={onShowSettings}
                     />
                   ) : (
                     <UnScored

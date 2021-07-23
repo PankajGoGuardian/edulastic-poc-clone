@@ -85,7 +85,7 @@ const QuestionToPassage = ({
     if (isFullModal) {
       return ['100vw', '100vh', { top: 0 }]
     }
-    return ['90%', 'calc(100vh - 110px)', { top: 60 }]
+    return ['95%', 'calc(100vh - 50px)', { top: 25 }]
   }, [isFullModal])
 
   return (

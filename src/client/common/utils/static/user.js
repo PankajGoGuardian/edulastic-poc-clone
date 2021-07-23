@@ -18,6 +18,7 @@ export const userPickFields = [
   'middleName',
   'msoId',
   'orgData',
+  'otherAccounts',
   'lastSigninSSO',
   'role',
   'permissions',
@@ -40,4 +41,5 @@ export const userPickFields = [
   'teachingStandards',
   'referrer',
   'currentDistrictId',
+  'utm_source',
 ]

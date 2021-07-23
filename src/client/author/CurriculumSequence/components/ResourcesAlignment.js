@@ -151,9 +151,6 @@ const ResourcesAlignment = ({
     if (curriculums.length === 0) {
       getCurriculums()
     }
-    selectedStandards.forEach((s) => {
-      handleAddStandard(s)
-    })
   }, [])
 
   const handleStandardFocus = () => {

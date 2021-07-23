@@ -87,6 +87,7 @@ export { default as DragDropInnerContainer } from './src/components/DragDrop/Dra
 export { default as PremiumLabel } from './src/components/PremiumLabel'
 export { default as HelperIcon } from './src/components/HelperIconWithPopover'
 export { default as SelectSearch } from './src/components/SelectSearch'
+export { default as CustomKeyLabel } from './src/components/CustomKeyLabel'
 
 // HOC
 export { default as withWindowSizes } from './src/HOC/withWindowSizes'

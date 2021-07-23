@@ -39,6 +39,10 @@ import {
   updateSubjectAction,
   updateSubjectStdMapAction,
   uploadCSVAction,
+  unSetDuplicateMappingDataAction,
+  getDuplicateMappedData,
+  getIsApproveModalVisible,
+  toggleApproveModal,
 } from './ducks'
 
 import MergeIdsTable from './MergeIdsTable'
@@ -211,6 +215,10 @@ function MergeSyncTable({
   mappedDataLoading,
   unSetMappedData,
   generateMappedData,
+  unSetDuplicateData,
+  duplicateMappedData,
+  isApproveModalVisible,
+  toggleApproveModal,
 }) {
   const { data = {} } = searchData
 
@@ -305,6 +313,10 @@ function MergeSyncTable({
                 mappedDataLoading={mappedDataLoading}
                 unSetMappedData={unSetMappedData}
                 mappedDataInfo={searchData.data.mappedDataInfo}
+                unSetDuplicateMappedData={unSetDuplicateData}
+                duplicateMappedData={duplicateMappedData}
+                isApproveModalVisible={isApproveModalVisible}
+                toggleApproveModal={toggleApproveModal}
               />
             </TabPane>
             <TabPane tab="Delta Sync Parameter" key="deltaSyncParameter">
@@ -381,6 +393,8 @@ const mapStateToProps = (state) => ({
   mergeResponse: mergeResponseSelector(state),
   mappedData: getMappedDataSelector(state),
   mappedDataLoading: getMappedDataLoading(state),
+  duplicateMappedData: getDuplicateMappedData(state),
+  isApproveModalVisible: getIsApproveModalVisible(state),
 })
 
 const withConnect = connect(mapStateToProps, {
@@ -405,6 +419,8 @@ const withConnect = connect(mapStateToProps, {
   generateMappedData: generateMappedDataAction,
   saveApprovedMapping: saveEntityMappingAction,
   unSetMappedData: unSetMappingDataAction,
+  unSetDuplicateData: unSetDuplicateMappingDataAction,
+  toggleApproveModal,
 })
 
 export default compose(withConnect)(MergeSyncTable)

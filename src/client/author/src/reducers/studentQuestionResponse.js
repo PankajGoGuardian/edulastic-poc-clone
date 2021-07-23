@@ -1,4 +1,3 @@
-import { omit } from 'lodash'
 import {
   RECEIVE_STUDENT_QUESTION_REQUEST,
   RECEIVE_STUDENT_QUESTION_SUCCESS,
@@ -16,11 +15,10 @@ const reducer = (state = initialState, { type, payload }) => {
     case RECEIVE_STUDENT_QUESTION_REQUEST:
       return { ...state, loading: true }
     case RECEIVE_STUDENT_QUESTION_SUCCESS: {
-      const _payload = omit(payload || {}, 'noAnswerReset')
       return {
         ...state,
         loading: false,
-        data: _payload,
+        data: payload.qActivities,
       }
     }
     case RECEIVE_STUDENT_QUESTION_ERROR:

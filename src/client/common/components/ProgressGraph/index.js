@@ -52,6 +52,7 @@ const ProgressGraph = ({
         <ProgressBarContainer style={{ textAlign: isCliUser ? 'center' : '' }}>
           <GraphTitle>Performance Summary</GraphTitle>
           <Progress
+            data-cy="attemptPerformance"
             className="getProgress"
             strokeLinecap="square"
             type="circle"

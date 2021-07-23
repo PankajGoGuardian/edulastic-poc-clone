@@ -156,6 +156,7 @@ function* createOmrUploadSessionSaga({
     setCancelUpload,
   },
 }) {
+  let uploadRunner
   try {
     const source = { name: file.name }
     const session = yield call(scannerApi.createOmrUploadSession, {
@@ -179,7 +180,7 @@ function* createOmrUploadSessionSaga({
       setCancelUpload,
       `${assignmentId}/${sessionId}`
     )
-    const uploadRunner = yield call(
+    uploadRunner = yield call(
       setInterval,
       () => handleUploadProgress({ step: 8 }),
       1000
@@ -210,6 +211,7 @@ function* createOmrUploadSessionSaga({
     console.log(e.message)
     const msg = e.message || 'Upload failed'
     notification({ msg })
+    yield call(clearInterval, uploadRunner)
     yield put(slice.actions.createOmrUploadSessionDone({ error: e.message }))
     yield put(
       push({

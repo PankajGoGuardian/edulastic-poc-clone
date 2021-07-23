@@ -267,48 +267,6 @@ const editTagsRequest = (payload) =>
     data: payload,
   })
 
-const getBubbleSheet = ({ assignmentId, groupId }) =>
-  api.callApi({
-    url: `${prefix}/${assignmentId}/group/${groupId}/bubble-sheet`,
-  })
-
-const createOmrUploadSession = (payload) =>
-  api
-    .callApi({
-      url: `${prefix}/omr-upload`,
-      data: payload,
-      method: 'post',
-    })
-    .then((result) => result.data.result)
-
-const getOmrUploadSessions = ({ assignmentId, groupId }) =>
-  api
-    .callApi({
-      url: `${prefix}/omr-uploads?assignmentId=${assignmentId || ''}&groupId=${
-        groupId || ''
-      }`,
-      method: 'get',
-    })
-    .then((result) => result.data.result)
-
-const splitScanOmrSheets = (payload) =>
-  api
-    .callApi({
-      url: `${prefix}/scan-omr`,
-      data: payload,
-      method: 'post',
-    })
-    .then((result) => result.data)
-
-const updateOmrUploadSession = (payload) =>
-  api
-    .callApi({
-      url: `${prefix}/omr-upload`,
-      data: payload,
-      method: 'put',
-    })
-    .then((result) => result.data)
-
 export default {
   create,
   update,
@@ -333,10 +291,4 @@ export default {
   syncWithSchoologyClassroom,
   fetchRegradeSettings,
   editTagsRequest,
-  getBubbleSheet,
-  createOmrUploadSession,
-  getOmrUploadSessions,
-  splitScanOmrSheets,
-  updateOmrUploadSession,
-  abortOmrUploadSession,
 }

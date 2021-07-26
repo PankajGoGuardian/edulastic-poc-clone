@@ -23,6 +23,7 @@ import configureStore, { history } from './client/configureStore'
 import AppConfig from './app-config'
 import { isMobileDevice, isIOS } from './client/platform'
 import * as serviceWorker from './service-worker-registration'
+import StorageObserver from './StorageObserver'
 
 document.addEventListener('DOMContentLoaded', function () {
   const codeInUrl =
@@ -135,7 +136,10 @@ const RootComp = () => (
   <I18nextProvider i18n={i18n}>
     <Provider store={store}>
       <ConnectedRouter history={history}>
-        <App />
+        <>
+          <StorageObserver />
+          <App />
+        </>
       </ConnectedRouter>
     </Provider>
   </I18nextProvider>

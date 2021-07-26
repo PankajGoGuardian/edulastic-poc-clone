@@ -19,6 +19,7 @@ import { studentReducers } from './client/studentReducers'
 import { studentsSagas } from './client/studentSagas'
 import { fetchUserAction } from './client/student/Login/ducks'
 import { isMobileDevice, isIOS } from './client/platform'
+import StorageObserver from './StorageObserver'
 
 if (AppConfig.sentryURI) {
   SentryInit({
@@ -47,9 +48,12 @@ const RootComp = () => (
   <I18nextProvider i18n={i18n}>
     <Provider store={store}>
       <ConnectedRouter history={history}>
-        <Suspense fallback={<Spin />}>
-          <AppStudent />
-        </Suspense>
+        <>
+          <StorageObserver />
+          <Suspense fallback={<Spin />}>
+            <AppStudent />
+          </Suspense>
+        </>
       </ConnectedRouter>
     </Provider>
   </I18nextProvider>

@@ -18,6 +18,7 @@ import AppConfig from './app-config'
 import { loginReducer } from './client/loginReducers'
 import { loginSaga } from './client/loginSagas'
 import { fetchUserAction } from './client/student/Login/ducks'
+import StorageObserver from './StorageObserver'
 
 if (AppConfig.sentryURI) {
   SentryInit({
@@ -44,9 +45,12 @@ const RootComp = () => (
   <I18nextProvider i18n={i18n}>
     <Provider store={store}>
       <ConnectedRouter history={history}>
-        <Suspense fallback={<Spin />}>
-          <AppLogin />
-        </Suspense>
+        <>
+          <StorageObserver />
+          <Suspense fallback={<Spin />}>
+            <AppLogin />
+          </Suspense>
+        </>
       </ConnectedRouter>
     </Provider>
   </I18nextProvider>

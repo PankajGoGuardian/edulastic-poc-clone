@@ -3,9 +3,9 @@ import { configureScope, captureException } from '@sentry/browser'
 import { uniq } from 'lodash'
 import AppConfig from '../../../../src/app-config'
 
-const tokenKey = (userId, role) => `user:${userId}:role:${role}`
+export const tokenKey = (userId, role) => `user:${userId}:role:${role}`
 
-function parseJwt(token) {
+export function parseJwt(token) {
   const base64Url = token.split('.')[1]
   const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
   const jsonPayload = decodeURIComponent(

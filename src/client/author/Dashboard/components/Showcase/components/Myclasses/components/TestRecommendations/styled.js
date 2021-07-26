@@ -20,6 +20,6 @@ export const TestCardContainer = styled.div`
 `
 export const CustomButton = styled(EduButton)`
   margin-left: 5px;
-  margin-top: -15px;
+  margin-top: -4px;
   padding: 5px;
 `

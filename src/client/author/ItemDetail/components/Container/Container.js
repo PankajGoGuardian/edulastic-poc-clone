@@ -154,7 +154,9 @@ class Container extends Component {
     } = this.props
     if (
       item.itemLevelScoring &&
-      get(item, ['data', 'questions'], []).some((q) => q.rubrics)
+      get(item, ['data', 'questions'], []).some(
+        (q) => q.rubrics || q?.validation?.unscored
+      )
     ) {
       setItemLevelScoring(false)
     }
@@ -1078,7 +1080,7 @@ class Container extends Component {
 
     const layoutType = isPassage ? COMPACT : DEFAULT
     const disableScoringLevel = get(item, ['data', 'questions'], []).some(
-      (q) => q.rubrics
+      (q) => q.rubrics || q?.validation?.unscored
     )
 
     const showLanguageSelector =
@@ -1089,7 +1091,9 @@ class Container extends Component {
       setItemLevelScore(+score)
     }
 
-    const isTotalPointsBlockVisible = itemLevelScoring && widgets?.length > 0
+    const isTotalPointsBlockVisible =
+      itemLevelScoring &&
+      (widgets?.length > 0 || item?.data?.questions?.length > 0)
     const showMultipartAllPartsScore =
       isTotalPointsBlockVisible && (multipartItem || isPassageWithQuestions)
     const hasNoUnscored =

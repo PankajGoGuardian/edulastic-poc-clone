@@ -81,7 +81,11 @@ const SessionStatus = ({
           Successfully scanned responses have been recorded on Edulastic.
         </div>
         <div className="live-classboard-link">
-          <Button type="primary" onClick={() => {}}>
+          <Button
+            type="primary"
+            target="_blank"
+            href={`${window.location.protocol}//${window.location.host}/author/classboard/${assignmentId}/${groupId}`}
+          >
             View Live Class Board
           </Button>
         </div>
@@ -151,8 +155,9 @@ const SessionStatusContainer = styled.div`
   .live-classboard-link {
     display: flex;
     justify-content: center;
-    button {
+    a {
       background-color: ${themeColorBlue};
+      border-color: ${themeColorBlue};
       font-weight: 600;
       font-size: 12px;
       width: 180px;

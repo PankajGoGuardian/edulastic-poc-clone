@@ -176,6 +176,7 @@ const CollectionsTable = ({
         ) : (
           <>
             <PermissionsButton
+              data-cy="permission-button"
               onClick={() =>
                 handlePermissionClick({
                   itemBankName: record.name,

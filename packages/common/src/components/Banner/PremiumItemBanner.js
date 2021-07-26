@@ -25,6 +25,7 @@ const PremiumItemBanner = ({
       isExpandedView={isExpandedView}
       height={height}
       isPrintPreview={isPrintPreview}
+      data-cy="premium-banner"
     >
       {!hideQuestionLabels && data.qLabel && (
         <QuestionNumberLabel

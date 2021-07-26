@@ -34,6 +34,11 @@ export const ButtonsContainer = styled.div`
   padding: 10px 15px 0px 10px;
   opacity: 0.3;
 
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+
   &:hover {
     opacity: 1;
   }

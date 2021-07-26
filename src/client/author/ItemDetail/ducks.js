@@ -1987,7 +1987,7 @@ function* savePassage({ payload }) {
       draft.testItems = uniq([...draft.testItems]) // , currentItemId
     })
     yield put(updatePassageStructureAction(modifiedPassage))
-    if (isTestFlow) {
+    if (isTestFlow && hasValidTestId) {
       modifiedPassage.testId = payload.testId
     }
     // only update the item if its not new, since new item already has the passageId added while creating.

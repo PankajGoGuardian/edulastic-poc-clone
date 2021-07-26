@@ -953,44 +953,47 @@ class Container extends Component {
               onChange={this.goToItem}
             />
           )}
-          {widgetLength >= 1 && view === EDIT && (
-            <AddRemoveButtonWrapper>
-              <Dropdown
-                disabled={itemDeleting}
-                overlay={
-                  <Menu>
-                    <Menu.Item
-                      key="addQuestionToPassage"
-                      onClick={this.handleAddQuestionToPassage}
-                    >
-                      {isAddFirstPart
-                        ? t('component.itemDetail.addFirstPart')
-                        : t('component.itemDetail.addNew')}
-                    </Menu.Item>
-                    <Menu.Item
-                      key="addItemToPassage"
-                      onClick={this.addItemToPassage}
-                    >
-                      {t('component.itemDetail.addNewItemToPassage')}
-                    </Menu.Item>
-                    {passageTestItems.length > 1 && (
+          {(widgetLength >= 1 || passageTestItems?.length > 1) &&
+            view === EDIT && (
+              <AddRemoveButtonWrapper>
+                <Dropdown
+                  disabled={itemDeleting}
+                  overlay={
+                    <Menu>
+                      {widgetLength >= 1 && (
+                        <Menu.Item
+                          key="addQuestionToPassage"
+                          onClick={this.handleAddQuestionToPassage}
+                        >
+                          {isAddFirstPart
+                            ? t('component.itemDetail.addFirstPart')
+                            : t('component.itemDetail.addNew')}
+                        </Menu.Item>
+                      )}
                       <Menu.Item
-                        key="removeCurrenItem"
-                        onClick={this.handleRemoveItemRequest}
+                        key="addItemToPassage"
+                        onClick={this.addItemToPassage}
                       >
-                        {t('component.itemDetail.removeCurrentItem')}
+                        {t('component.itemDetail.addNewItemToPassage')}
                       </Menu.Item>
-                    )}
-                  </Menu>
-                }
-                trigger="click"
-              >
-                <EduButton isGhost height="30px" data-cy="addOrRemoveButton">
-                  {t('component.itemDetail.addRemove')}
-                </EduButton>
-              </Dropdown>
-            </AddRemoveButtonWrapper>
-          )}
+                      {passageTestItems.length > 1 && (
+                        <Menu.Item
+                          key="removeCurrenItem"
+                          onClick={this.handleRemoveItemRequest}
+                        >
+                          {t('component.itemDetail.removeCurrentItem')}
+                        </Menu.Item>
+                      )}
+                    </Menu>
+                  }
+                  trigger="click"
+                >
+                  <EduButton isGhost height="30px" data-cy="addOrRemoveButton">
+                    {t('component.itemDetail.addRemove')}
+                  </EduButton>
+                </Dropdown>
+              </AddRemoveButtonWrapper>
+            )}
         </PassageNavigation>
       )
     )

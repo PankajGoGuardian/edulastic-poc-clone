@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { white } from '@edulastic/colors'
+import { white, themeColor } from '@edulastic/colors'
 
 export const FeatureContentWrapper = styled.div`
   margin-top: 20px;
@@ -25,6 +25,12 @@ export const BundleContainer = styled.div`
   background-size: 100% 100%;
   background-position: top left;
   background-repeat: no-repeat;
+  transition: all 0.3s;
+  &:hover {
+    -webkit-box-shadow: 0 0 3px 2px ${themeColor};
+    -moz-box-shadow: 0 0 3px 2px ${themeColor};
+    box-shadow: 0 0 3px 2px ${themeColor};
+    transform: scale(1.03);
 `
 
 export const Bottom = styled.div`

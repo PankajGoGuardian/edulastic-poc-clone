@@ -661,7 +661,9 @@ class AssignTest extends React.Component {
     } = this.props
     const { title, _id } = isPlaylist ? playlist : testItem
     const exactMenu = parentMenu[location?.state?.from || from]
-    if (exactMenu?.to === 'myPlaylist') {
+      ? { ...parentMenu[location?.state?.from || from] }
+      : {}
+    if (parentMenu[location?.state?.from || from]?.to === 'myPlaylist') {
       exactMenu.to = _id
         ? `playlists/playlist/${_id}/use-this`
         : location?.state?.toUrl
@@ -672,7 +674,6 @@ class AssignTest extends React.Component {
     const moduleTitle = _module?.title || ''
     const isTestSettingSaveLimitReached =
       testSettingsList.length >= TEST_SETTINGS_SAVE_LIMIT
-
     return (
       <div>
         <CommonStudentConfirmation assignment={assignment} />

@@ -121,7 +121,9 @@ class Item extends Component {
   handleToggleItemToCart = (item) => async () => {
     const { onToggleToCart, setPassageItems } = this.props
     if (item.passageId) {
-      const passageItems = await testItemsApi.getPassageItems(item.passageId)
+      let passageItems = await testItemsApi.getPassageItems(item.passageId)
+      // filtering inactive items from passage | EV-29823
+      passageItems = passageItems.filter((testItem) => testItem?.active)
       setPassageItems(passageItems)
 
       if (passageItems.length > 1) {

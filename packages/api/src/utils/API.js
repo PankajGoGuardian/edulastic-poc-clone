@@ -3,7 +3,9 @@ import {
   storeInLocalStorage,
   getFromLocalStorage,
   updateUserToken,
+  parseJwt,
 } from '@edulastic/api/src/utils/Storage'
+import notification from '@edulastic/common/src/components/Notification'
 import * as Sentry from '@sentry/browser'
 import config from '../config'
 import { getAccessToken, getTraceId, initKID, initTID } from './Storage'
@@ -81,6 +83,10 @@ const getLoggedOutUrl = () => {
   return '/login'
 }
 
+function getUserFromRedux() {
+  return window?.getStore()?.getState()?.user || {}
+}
+
 function getParentsStudentToken(_config) {
   try {
     if (_config.method !== 'get') {
@@ -98,7 +104,7 @@ function getParentsStudentToken(_config) {
     ) {
       return false
     }
-    const currentUserFromRedux = window?.getStore()?.getState()?.user || {}
+    const currentUserFromRedux = getUserFromRedux()
     const { currentChild } = currentUserFromRedux
     const { role: userRole, children } = currentUserFromRedux?.user || {}
     if (userRole === 'parent' && currentChild && children?.length > 0) {
@@ -141,6 +147,33 @@ const SemverCompare = (a, b) => {
 const tokenUpdateHeader = 'x-token-refresh'
 const kidUpdateHeader = 'x-kid-refresh'
 
+function addReloadedEntryToSession() {
+  const reloads = JSON.parse(
+    window.sessionStorage.districtMismatchReloads || '[]'
+  )
+  reloads.push({ time: Date.now() })
+  window.sessionStorage.districtMismatchReloads = JSON.stringify(reloads)
+}
+
+function getReloadsHappenedRecently() {
+  const reloads = JSON.parse(
+    window.sessionStorage.districtMismatchReloads || '[]'
+  )
+  const now = Date.now()
+  return reloads.filter((x) => now - x.time < 15 * 1000) // assuming 5 seconds for each reload
+}
+
+function forceLogout() {
+  const loginRedirectUrl = localStorage.getItem('loginRedirectUrl')
+  localStorage.clear()
+  localStorage.setItem('loginRedirectUrl', loginRedirectUrl)
+  if (
+    !window.location.pathname.toLocaleLowerCase().includes(getLoggedOutUrl())
+  ) {
+    localStorage.setItem('loginRedirectUrl', getCurrentPath())
+  }
+}
+
 export default class API {
   constructor(baseURL = config.api, defaultToken = false) {
     this.baseURL = baseURL
@@ -152,31 +185,65 @@ export default class API {
       },
     })
     this.instance.interceptors.request.use((_config) => {
-      // there are some APIs which take more time than the others,
-      // such APIs are routed to another url which will use a aws lambda with much higher timeout
-      // some of the example APIs are in packages/api/src/reports.js
-      if (_config.useSlowApi) {
-        _config.baseURL = config.apis || _config.baseURL
-      }
-      _config['client-epoch'] = Date.now().toString()
-      _config.headers['X-Client-Time'] = new Date().toISOString()
-      _config.headers['X-Client-Tz-Offset'] = new Date().getTimezoneOffset()
-      if (window.localStorage.getItem('originalreferrer')) {
-        _config.headers['X-Orig-Referrer'] = window.localStorage.getItem(
-          'originalreferrer'
-        )
-      }
-      const token =
-        getParentsStudentToken(_config) || defaultToken || getAccessToken()
-      if (token) {
-        _config.headers.Authorization = token
-      }
-      // Initialise browser tab id
-      initTID()
-      // Initialise kid for unauthenticated user
-      initKID()
-      if (window.sessionStorage) {
-        _config.headers['X-Amzn-Trace-Id'] = getTraceId()
+      try {
+        // there are some APIs which take more time than the others,
+        // such APIs are routed to another url which will use a aws lambda with much higher timeout
+        // some of the example APIs are in packages/api/src/reports.js
+        if (_config.useSlowApi) {
+          _config.baseURL = config.apis || _config.baseURL
+        }
+        _config['client-epoch'] = Date.now().toString()
+        _config.headers['X-Client-Time'] = new Date().toISOString()
+        _config.headers['X-Client-Tz-Offset'] = new Date().getTimezoneOffset()
+        if (window.localStorage.getItem('originalreferrer')) {
+          _config.headers['X-Orig-Referrer'] = window.localStorage.getItem(
+            'originalreferrer'
+          )
+        }
+        const token =
+          getParentsStudentToken(_config) || defaultToken || getAccessToken()
+        const currentUserFromRedux = getUserFromRedux()
+        const userDistrictId = currentUserFromRedux?.user?.currentDistrictId
+        const districtIdFromToken = token ? parseJwt(token)?.districtId : null
+        if (
+          token &&
+          userDistrictId &&
+          districtIdFromToken &&
+          userDistrictId !== districtIdFromToken
+        ) {
+          console.warn('DISTRICTID switched: so reloading')
+          const recentReloads = getReloadsHappenedRecently()
+          if (recentReloads.length > 2) {
+            const mismatchErr = new Error(
+              `multiple districts mismatch infinite reload`
+            )
+            Sentry.captureException(mismatchErr)
+            forceLogout()
+            notification({
+              type: 'error',
+              msg: 'There is a problem authenticating your account',
+            })
+            setTimeout(() => {
+              window.location.href = '/login'
+            }, 5000)
+            return
+          }
+          addReloadedEntryToSession()
+          window.location.href = '/'
+        }
+        if (token) {
+          _config.headers.Authorization = token
+        }
+        // Initialise browser tab id
+        initTID()
+        // Initialise kid for unauthenticated user
+        initKID()
+        if (window.sessionStorage) {
+          _config.headers['X-Amzn-Trace-Id'] = getTraceId()
+        }
+      } catch (e) {
+        console.warn('error', e)
+        Sentry.captureException(e)
       }
       return _config
     })
@@ -273,16 +340,7 @@ export default class API {
               scope.setTag('issueType', 'ForcedRedirection')
             })
             // Needs proper fixing, patching it to fix infinite reload
-            const loginRedirectUrl = localStorage.getItem('loginRedirectUrl')
-            localStorage.clear()
-            localStorage.setItem('loginRedirectUrl', loginRedirectUrl)
-            if (
-              !window.location.pathname
-                .toLocaleLowerCase()
-                .includes(getLoggedOutUrl())
-            ) {
-              localStorage.setItem('loginRedirectUrl', getCurrentPath())
-            }
+            forceLogout()
             window.location.href = '/login'
           } else if (
             data.response.status === 409 &&

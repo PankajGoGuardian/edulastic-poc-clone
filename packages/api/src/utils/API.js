@@ -7,6 +7,7 @@ import {
 } from '@edulastic/api/src/utils/Storage'
 import notification from '@edulastic/common/src/components/Notification'
 import * as Sentry from '@sentry/browser'
+import { debounce } from 'lodash'
 import config from '../config'
 import { getAccessToken, getTraceId, initKID, initTID } from './Storage'
 
@@ -228,7 +229,8 @@ export default class API {
             }, 5000)
             return
           }
-          addReloadedEntryToSession()
+          // debouncing to prevent concurrent apis to be interpreted as repeated reloads
+          debounce(addReloadedEntryToSession, 700)()
           window.location.href = '/'
         }
         if (token) {

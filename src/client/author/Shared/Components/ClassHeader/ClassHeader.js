@@ -106,6 +106,7 @@ import {
 } from './styled'
 import ViewPasswordModal from './ViewPasswordModal'
 import { allowedSettingPageToDisplay } from './utils/transformers'
+import { BUBBLE_ENABLED_DISTRICTS } from '../../../../config'
 
 const {
   POLICY_OPEN_MANUALLY_BY_TEACHER,
@@ -441,6 +442,7 @@ class ClassHeader extends Component {
       studentsUTAData,
       schoologySyncAssignment,
       syncWithSchoologyClassroomInProgress,
+      bubbleSheetsEnabled,
     } = this.props
     const {
       visible,
@@ -600,13 +602,43 @@ class ClassHeader extends Component {
         >
           Release Score
         </MenuItems>
-        <MenuItems
-          data-cy="download-bubble-sheet"
-          key="download-bubble-sheet"
-          onClick={() => this.generateBubbleSheet(assignmentId, classId)}
-        >
-          Generate Bubble Sheet
-        </MenuItems>
+        {bubbleSheetsEnabled && (
+          <FeaturesSwitch
+            inputFeatures="enableOmrSheets"
+            actionOnInaccessible="hidden"
+            groupId={classId}
+          >
+            <MenuItems
+              data-cy="download-bubble-sheet"
+              key="download-bubble-sheet"
+              onClick={() => this.generateBubbleSheet(assignmentId, classId)}
+            >
+              Generate OMR Sheet
+            </MenuItems>
+          </FeaturesSwitch>
+        )}
+        {bubbleSheetsEnabled && (
+          <FeaturesSwitch
+            inputFeatures="enableOmrSheets"
+            actionOnInaccessible="hidden"
+            groupId={classId}
+          >
+            <MenuItems
+              data-cy="download-bubble-sheet"
+              key="download-bubble-sheet"
+            >
+              <Link
+                to={{
+                  pathname: '/uploadAnswerSheets',
+                  search: `?assignmentId=${assignmentId}&groupId=${classId}`,
+                }}
+                target="_blank"
+              >
+                Upload OMR Sheet
+              </Link>
+            </MenuItems>
+          </FeaturesSwitch>
+        )}
         {isShowUnAssign && (
           <MenuItems
             data-cy="unAssign"
@@ -616,10 +648,6 @@ class ClassHeader extends Component {
             Unassign ALL Students
           </MenuItems>
         )}
-        {/* TODO temp hiding for UAT */}
-        {/* <MenuItems key="key3" onClick={this.onStudentReportCardsClick}>
-          Generate Bubble Sheet
-        </MenuItems> */}
         {showPasswordButton && (
           <MenuItems
             data-cy="viewPassword"
@@ -1042,6 +1070,12 @@ const enhance = compose(
       syncWithSchoologyClassroomInProgress: getSchoologyAssignmentSyncInProgress(
         state
       ),
+      // NOTE: temporarily enable bubble sheets generation & scanning for specific districts
+      bubbleSheetsEnabled:
+        !BUBBLE_ENABLED_DISTRICTS.length ||
+        BUBBLE_ENABLED_DISTRICTS.some((district) =>
+          (state?.user?.user?.districtIds || []).includes(district)
+        ),
     }),
     {
       loadTestActivity: receiveTestActivitydAction,

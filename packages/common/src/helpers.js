@@ -185,7 +185,8 @@ export const uploadToS3 = async (
   file,
   folder,
   progressCallback,
-  cancelUpload
+  cancelUpload,
+  subFolder = ''
 ) => {
   if (!file) {
     throw new Error('file is missing')
@@ -205,7 +206,7 @@ export const uploadToS3 = async (
   }
 
   const { name: fileName } = fileToUpload
-  const result = await fileApi.getSignedUrl(fileName, folder)
+  const result = await fileApi.getSignedUrl(fileName, folder, subFolder)
   const formData = new FormData()
   const { fields = {}, url } = result
 

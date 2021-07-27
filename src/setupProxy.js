@@ -3,6 +3,16 @@ const express = require('express')
 
 const rootPath = path.join(__dirname, '..', 'dist', 'login', 'index.html')
 const studentPath = path.join(__dirname, '..', 'dist', 'students', 'index.html')
+
+// NOTE: uncomment to re-route uploadAnswerSheets via scanScorePath
+// const scanScorePath = path.join(
+//   __dirname,
+//   '..',
+//   'dist',
+//   'scanScore',
+//   'index.html'
+// )
+
 const router = express.Router()
 
 router.get('/', (req, res, next) => {
@@ -79,6 +89,12 @@ router.get('/home*', (req, res, next) => {
     res.sendFile(studentPath)
   }
 })
+
+// NOTE: uncomment to re-route uploadAnswerSheets via scanScorePath
+// router.get('/uploadAnswerSheets', (_, res) => {
+//   res.set('cache-control', 'no-store')
+//   res.sendFile(scanScorePath)
+// })
 
 module.exports = (app) => {
   app.use('/', router)

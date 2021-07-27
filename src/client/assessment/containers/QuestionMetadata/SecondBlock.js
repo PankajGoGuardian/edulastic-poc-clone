@@ -234,7 +234,7 @@ const SecondBlock = ({
                   className="tagsSelect"
                   data-cy="collectionsSelect"
                   bg="white"
-                  placeholder="Please enter"
+                  placeholder="Please select"
                   value={filteredCollections.flatMap((c) => c.bucketIds)}
                   onChange={(value, options) =>
                     handleCollectionsSelect(value, options, collectionsToShow)

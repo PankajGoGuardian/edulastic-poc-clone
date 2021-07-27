@@ -2003,6 +2003,9 @@ function* savePassage({ payload }) {
      */
     if (!isEmpty(updatedPassage)) {
       yield put(updatePassageStructureAction(updatedPassage))
+      if (modifiedPassage._id !== updatedPassage._id) {
+        currentItemId = updatedPassage.testItems[0] || currentItemId
+      }
     }
 
     /**

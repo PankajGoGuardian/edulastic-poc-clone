@@ -9,7 +9,7 @@ export const RightResponseContainer = styled.div.attrs({
   display: ${({ isReviewTab }) => (isReviewTab ? 'none' : 'flex')};
   justify-content: center;
   ${({ smallSize, theme, width }) => `
-      width: ${smallSize ? '120px' : width ? `${width}px` : '20%'};
+      width: ${smallSize ? '120px' : width || '20%'};
       margin: ${smallSize ? '0px' : '10px'};
       border-radius: ${smallSize ? 0 : 10}px;
       background: ${theme.widgets.clozeImageDragDrop.responseBoxBgColor}
@@ -55,7 +55,7 @@ export const LeftResponseContainer = styled.div.attrs({
     theme.widgets.clozeImageDragDrop.responseBoxBgColor};
   display: ${({ isReviewTab }) => (isReviewTab ? 'none' : 'flex')};
   justify-content: center;
-  width: ${({ width }) => (width ? `${width}px` : '20%')};
+  width: ${({ width }) => width || '20%'};
 `
 
 export const StyledContainer = styled.div`

@@ -38,6 +38,12 @@ const ReleaseScoreSettingsModal = ({
   if (!features.assessmentSuperPowersReleaseScorePremium) {
     _releaseGradeKeys = [releaseGradeKeys[0], releaseGradeKeys[3]]
   }
+
+  const onCancel = () => {
+    onCloseReleaseScoreSettings()
+    setReleaseGradeValue('')
+  }
+
   return (
     <ReleaseModal
       centered
@@ -50,11 +56,11 @@ const ReleaseScoreSettingsModal = ({
             : '[ON]'
           : ''
       }`}
-      onOk={onCloseReleaseScoreSettings}
-      onCancel={onCloseReleaseScoreSettings}
+      onOk={onCancel}
+      onCancel={onCancel}
       destroyOnClose
       footer={[
-        <EduButton isGhost key="back" onClick={onCloseReleaseScoreSettings}>
+        <EduButton isGhost key="back" onClick={onCancel}>
           CANCEL
         </EduButton>,
         <EduButton
@@ -62,6 +68,7 @@ const ReleaseScoreSettingsModal = ({
           key="submit"
           onClick={() => {
             updateReleaseScoreSettings(releaseGradeValue)
+            setReleaseGradeValue('')
           }}
         >
           APPLY

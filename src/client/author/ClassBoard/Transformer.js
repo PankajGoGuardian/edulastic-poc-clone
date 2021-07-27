@@ -490,7 +490,7 @@ export function getStandardsForStandardBasedReport(
           desc: standardsDescriptionsKeyed[`${std._id}`]?.desc,
           qIds: [q.id],
           ...(std.name ? { identifier: std.name } : {}),
-          ...(std._id ? {} : { _id: std.id, x: true }), // use .id prop as fallback for _id
+          ...(std._id ? {} : { _id: std.id }), // use .id prop as fallback for _id
         }
       }
     }

@@ -247,7 +247,12 @@ function MergeSyncTable({
     teacherFullMergeEnabled: true,
   }
 
-  const rosterSyncConfig = data.rosterSyncConfig || defaultRosterSyncConfig
+  const rosterSyncConfig = data?.rosterSyncConfig?.orgId
+    ? data.rosterSyncConfig
+    : {
+        ...defaultRosterSyncConfig,
+        ...(data?.rosterSyncConfig ? data?.rosterSyncConfig : {}),
+      }
 
   const applyDeltaSync = (values) => {
     if (isClasslink) {

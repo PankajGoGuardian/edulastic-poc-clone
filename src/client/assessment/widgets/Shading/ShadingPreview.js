@@ -91,16 +91,16 @@ const ShadingPreview = ({
   }, [previewTab])
 
   useEffect(() => {
+    setIsCheck(false)
+  }, [userAnswer])
+
+  useEffect(() => {
     if (previewTab === CHECK || previewTab === SHOW) {
       setIsCheck(true)
     } else {
       setIsCheck(false)
     }
   }, [evaluation])
-
-  useEffect(() => {
-    setIsCheck(false)
-  }, [userAnswer])
 
   const handleCellClick = (rowNumber, colNumber) => () => {
     const newUserAnswer = cloneDeep(userAnswer)

@@ -376,6 +376,7 @@ const MergeIdsTable = ({
               <>
                 <Button
                   onClick={() => handleGenerateMapping(fieldName, 1, true)}
+                  disabled={disableFields}
                 >
                   Generate Mapping
                 </Button>
@@ -410,7 +411,7 @@ const MergeIdsTable = ({
             const { type, fieldName } = record
             return fieldName === 'Schools' || fieldName === 'Classes' ? (
               <Button
-                disabled={isDisableReviewButton(fieldName)}
+                disabled={isDisableReviewButton(fieldName) || disableFields}
                 onClick={() => handleReviewAndApprove(fieldName)}
               >
                 Review and Approve

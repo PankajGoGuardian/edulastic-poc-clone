@@ -753,12 +753,13 @@ class Container extends Component {
     const { previousTestId, fadeSidebar, regradeFlow } = state || {}
 
     const url = isTestFlow
-      ? `/author/tests/tab/review/id/${testId}`
+      ? previousTestId
+        ? `/author/tests/tab/review/id/${testId}/old/${previousTestId}`
+        : `/author/tests/tab/review/id/${testId}`
       : `/author/items/${item._id}/item-detail`
 
     const newState = {
       isTestFlow,
-      previousTestId,
       fadeSidebar,
       resetView: false,
       regradeFlow,

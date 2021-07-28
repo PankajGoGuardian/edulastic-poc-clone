@@ -492,9 +492,10 @@ class ClassBoard extends Component {
       setPageNumber,
     } = this.props
     const { assignmentId, classId } = match.params
+    const { selectedStudentId: studentId } = this.state
     this.setState({
       selectedTab: name,
-      selectedStudentId,
+      selectedStudentId: selectedStudentId || studentId,
       hasStickyHeader: false,
     })
     setPageNumber(1)
@@ -1328,7 +1329,7 @@ class ClassBoard extends Component {
                       onClick={(e) => {
                         const _testActivityId = this.getActivityId(
                           null,
-                          firstStudentId
+                          selectedStudentId || firstStudentId
                         )
                         setCurrentTestActivityId(_testActivityId)
                         if (!isItemsVisible) {
@@ -1342,7 +1343,7 @@ class ClassBoard extends Component {
                         this.onTabChange(
                           e,
                           'Student',
-                          firstStudentId,
+                          selectedStudentId || firstStudentId,
                           _testActivityId
                         )
                       }}

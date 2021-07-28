@@ -39,6 +39,7 @@ import {
   getCollectionsSelector,
   getWritableCollectionsSelector,
   getCurrentActiveTerms,
+  getCurrentTerm,
 } from '../src/selectors/user'
 import {
   allowDuplicateCheck,
@@ -1669,6 +1670,7 @@ function* cloneThisPlayListSaga({ payload }) {
     yield put(setIsUsedModalVisibleAction(false))
     const location = yield select((state) => state.router.location.pathname)
     const urlHasUseThis = location.match(/use-this/g)
+    const termId = yield select(getCurrentTerm)
     if (isStudent && onChange) {
       yield put(
         push({
@@ -1676,7 +1678,7 @@ function* cloneThisPlayListSaga({ payload }) {
           state: { currentGroupId: groupId, fromUseThis },
         })
       )
-      yield put(receiveCurrentPlaylistMetrics({ groupId, playlistId: _id }))
+      yield put(receiveCurrentPlaylistMetrics({ groupId, playlistId: _id, termId }))
     } else if (onChange && !urlHasUseThis) {
       yield put(
         push({
@@ -1694,7 +1696,7 @@ function* cloneThisPlayListSaga({ payload }) {
           state: { from: 'myPlaylist', fromUseThis },
         })
       )
-      yield put(receiveCurrentPlaylistMetrics({ playlistId: _id }))
+      yield put(receiveCurrentPlaylistMetrics({ playlistId: _id, termId }))
     }
   } catch (error) {
     console.error(error)

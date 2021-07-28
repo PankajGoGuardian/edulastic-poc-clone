@@ -1378,9 +1378,9 @@ class ClassBoard extends Component {
                           return
                         }
                         this.setState({
-                          selectedQuestion: 0,
-                          selectedQid: firstQuestion._id,
-                          itemId: firstQuestion.testItemId,
+                          selectedQuestion: selectedQuestion || 0,
+                          selectedQid: selectedQid || firstQuestion._id,
+                          itemId: itemId || firstQuestion.testItemId,
                           selectedTab: 'questionView',
                         })
                         setPageNumber(1)

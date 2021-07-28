@@ -640,7 +640,7 @@ const ScoreInput = styled(Input)`
   border: 0px;
   background-color: #f8f8f8;
   border-radius: 2px;
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 600;
   text-align: center;
   display: inline-block;
@@ -649,10 +649,10 @@ const ScoreInput = styled(Input)`
 const TextPara = styled.p`
   padding-left: 10px;
   padding-right: 15px;
-  font-size: 25px;
+  font-size: 28px;
+  font-weight: 600;
   line-height: 47px;
   background-color: #ececec;
-  font-weight: 600;
   height: 47px;
   width: 30%;
   border-radius: 0px 2px 2px 0px;

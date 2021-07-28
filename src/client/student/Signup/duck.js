@@ -24,6 +24,7 @@ import {
   persistAuthStateAndRedirectToAction,
   signupSuccessAction,
   hideJoinSchoolAction,
+  fetchUserAction,
 } from '../Login/ducks'
 import {
   currentDistrictInstitutionIds,
@@ -509,6 +510,9 @@ function* updateUserSignupStateSaga() {
       }
       // setting user in store to put updated currentSignupState in store
       yield put(signupSuccessAction(finalUser))
+    } else {
+      // call user/me to update user in store
+      yield put(fetchUserAction({ background: true }))
     }
   } catch (err) {
     console.log('_err', err)

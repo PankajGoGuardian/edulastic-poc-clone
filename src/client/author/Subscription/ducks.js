@@ -358,6 +358,17 @@ function* fetchUserSubscription(...args) {
       subscriptionApi.subscriptionStatus,
       payload
     )
+
+    const isCliUser = yield select(
+      (state) => state.user?.user?.openIdProvider === 'CLI'
+    )
+
+    if (isCliUser && apiUserSubscriptionStatus?.result?.products) {
+      apiUserSubscriptionStatus.result.products = apiUserSubscriptionStatus?.result?.products?.filter(
+        (x) => !x?.type?.includes('ITEM_BANK_SPARK_')
+      )
+    }
+
     const { result } = apiUserSubscriptionStatus || {}
     if (result?.subscription?.status === 0) {
       result.subscription = null

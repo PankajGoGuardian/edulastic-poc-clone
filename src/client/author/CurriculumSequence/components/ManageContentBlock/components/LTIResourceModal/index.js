@@ -50,33 +50,35 @@ const LTIResourceModal = (props) => {
       setPrivacy(data?.data?.privacy)
       setSharedSecret(data?.data?.sharedSecret)
       setConsumerKey(data?.data?.consumerKey)
-      const allStandards = []
-      const selectedGrades = []
-      const filteredAlignments = data?.alignment.filter(
-        (a) => !a?.isEquivalentStandard
-      )
-      filteredAlignments?.forEach((alignData) =>
-        alignData?.domains?.forEach((domain) =>
-          domain?.standards?.forEach((standard) => {
-            allStandards.push({
-              identifier: standard.name,
-              _id: standard.id,
-              curriculumId: domain.curriculumId,
-            })
-            standard?.grades?.forEach((grade) => {
-              if (!selectedGrades.includes(grade)) {
-                selectedGrades.push(grade)
-              }
-            })
-          })
+      if (data?.alignment) {
+        const allStandards = []
+        const selectedGrades = []
+        const filteredAlignments = data?.alignment?.filter(
+          (a) => !a?.isEquivalentStandard
         )
-      )
-      setAlignment({
-        ...filteredAlignments[0],
-        standards: allStandards,
-        grades: selectedGrades,
-      })
-      setSelectedStandards(allStandards)
+        filteredAlignments?.forEach((alignData) =>
+          alignData?.domains?.forEach((domain) =>
+            domain?.standards?.forEach((standard) => {
+              allStandards.push({
+                identifier: standard.name,
+                _id: standard.id,
+                curriculumId: domain.curriculumId,
+              })
+              standard?.grades?.forEach((grade) => {
+                if (!selectedGrades.includes(grade)) {
+                  selectedGrades.push(grade)
+                }
+              })
+            })
+          )
+        )
+        setAlignment({
+          ...filteredAlignments[0],
+          standards: allStandards,
+          grades: selectedGrades,
+        })
+        setSelectedStandards(allStandards)
+      }
     }
   }, [data])
 

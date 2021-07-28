@@ -156,6 +156,8 @@ const PermissionsTable = ({
               </Tooltip>
               <Tooltip placement="topRight" title="Remove Permission">
                 <DeletePermissionButton
+                  data-cy={`delete_${record.orgName}`}
+                  className="delete-button"
                   onClick={() => handleDeactivatePermission(record._id)}
                 >
                   <i className="fa fa-trash-o" aria-hidden="true" />

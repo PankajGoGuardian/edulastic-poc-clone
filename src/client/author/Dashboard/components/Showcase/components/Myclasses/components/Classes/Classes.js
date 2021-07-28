@@ -3,7 +3,7 @@ import { FlexContainer } from '@edulastic/common'
 import React from 'react'
 import { TextWrapper } from '../../../../../styledComponents'
 import Card from '../Card'
-import { CardContainer } from './styled'
+import { CardContainer, EmptyBoxes } from './styled'
 
 const Classes = ({ activeClasses, emptyBoxCount, userId }) => {
   if (activeClasses.length === 0) {
@@ -27,7 +27,7 @@ const Classes = ({ activeClasses, emptyBoxCount, userId }) => {
           </CardContainer>
         ))}
         {emptyBoxCount.map((index) => (
-          <CardContainer emptyBox key={index} />
+          <EmptyBoxes key={index} />
         ))}
       </FlexContainer>
     </>

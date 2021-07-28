@@ -60,7 +60,8 @@ const BasicFields = ({
     {
       // validation so that no white spaces are allowed
       message: 'Please provide valid Username or Email id',
-      pattern: /^\S*$/,
+      // eslint-disable-next-line no-useless-escape
+      pattern: /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/,
     },
     { max: 256, message: 'Must less than 256 characters!' },
   ]

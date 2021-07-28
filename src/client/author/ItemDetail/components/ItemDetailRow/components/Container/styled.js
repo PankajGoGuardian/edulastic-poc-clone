@@ -78,7 +78,6 @@ export const WidgetContainer = styled.div`
   flex-wrap: wrap;
   align-items: center;
   width: 100%;
-  min-width: fit-content;
 `
 
 export const CollapseBtn = styled.i`

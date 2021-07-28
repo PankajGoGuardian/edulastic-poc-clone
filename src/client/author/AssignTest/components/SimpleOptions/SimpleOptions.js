@@ -422,8 +422,9 @@ class SimpleOptions extends React.Component {
     )
     const resourceIds = history.location?.state?.resourceIds || []
     const showRecommendedResources =
-      history.location?.state?.isSparkMathCollection ||
-      isTestHasSparkMathCollection
+      (history.location?.state?.isSparkMathCollection ||
+        isTestHasSparkMathCollection) &&
+      !isAssignRecommendations
 
     const totalItems = isAssignRecommendations
       ? (assignment.questionPerStandard || 1) * selectedStandardsCount

@@ -209,7 +209,7 @@ export function ForceFullScreenModal({ visible, takeItLaterCb, fullscreenCb }) {
       visible={visible}
     >
       <div className="content">
-        While taking this test, you can not open other web pages. This test can
+        While taking this test, you cannot open other web pages. This test can
         only be taken in fullscreen mode
       </div>
     </StyledModal>

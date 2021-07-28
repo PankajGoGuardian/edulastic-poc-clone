@@ -95,7 +95,7 @@ const MetaInfo = ({
         </TestStatusWrapper>
       </FlexContainer>
       <FlexContainer justifyContent="flex-end" alignItems="flex-end">
-        {dok && <DokStyled data-cy="detail_index-0">{`DOK:${dok}`}</DokStyled>}
+        {dok && <DokStyled data-cy="itemDok">{`DOK:${dok}`}</DokStyled>}
         {renderAnalytics(by, IconUser, false, 1)}
         {renderAnalytics(id && id.substring(18), IconHash, false, 2)}
         <AnalyticsItem>

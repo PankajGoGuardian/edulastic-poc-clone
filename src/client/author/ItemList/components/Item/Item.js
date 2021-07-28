@@ -182,15 +182,18 @@ class Item extends Component {
         name: 'DOK:',
         text: (questions.find((_item) => _item.depthOfKnowledge) || {})
           .depthOfKnowledge,
+        dataCy: 'itemDok',
       },
       {
         name: getTestItemAuthorIcon(item, collections),
         text: getTestItemAuthorName(item, collections),
+        dataCy: 'authorName',
       },
       {
         name: <IdIcon />,
         text: item._id,
         type: 'id',
+        dataCy: 'itemId',
       },
       {
         name: windowWidth > 1024 ? <ShareIcon /> : '',
@@ -210,6 +213,7 @@ class Item extends Component {
         ),
         text: item?.analytics?.[0]?.likes || '0',
         type: 'like',
+        dataCy: 'likeButton',
       },
     ]
     if (getAllTTS.length) {
@@ -236,7 +240,7 @@ class Item extends Component {
         detail.text && (
           <DetailCategory
             isLiked={isItemLiked}
-            data-cy={`detail_index-${index}`}
+            data-cy={`${detail.dataCy}`}
             key={`DetailCategory_${index}`}
           >
             <CategoryName>{detail.name}</CategoryName>

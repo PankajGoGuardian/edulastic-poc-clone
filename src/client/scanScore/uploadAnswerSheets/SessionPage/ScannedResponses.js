@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { Pagination, Spin, Icon } from 'antd'
+import { Link } from 'react-router-dom'
 import styled from 'styled-components'
+import { Pagination, Spin } from 'antd'
+
+import { themeColor, white, themeColorBlue } from '@edulastic/colors'
 
 const DocImage = ({ uri, scannedUri }) => {
   const [loaded, setLoaded] = useState(false)
@@ -27,29 +30,96 @@ const DocImage = ({ uri, scannedUri }) => {
   return <Spin />
 }
 
-const ScannedResponses = ({ docs, pageNumber, setPageNumber, closePage }) => {
-  useEffect(() => () => closePage(), [])
+const ScannedResponses = ({
+  docs,
+  pageNumber,
+  setPageNumber,
+  closePage,
+  assignmentId,
+  groupId,
+}) => {
   return (
-    <>
+    <ScannedResponsesContainer>
       <CenterDiv>
-        <CloseIconStyled onClick={closePage} type="close" />
         {docs[pageNumber - 1] && <DocImage {...docs[pageNumber - 1]} />}
+        <div className="static-navigation-links">
+          <Link
+            className="fix-grade-link"
+            to={{
+              pathname: `/author/expressgrader/${assignmentId}/${groupId}`,
+            }}
+            target="_blank"
+          >
+            Fix Grade
+          </Link>
+          <Link
+            className="review-answers-link"
+            to={{
+              pathname: `/author/classboard/${assignmentId}/${groupId}`,
+            }}
+            target="_blank"
+          >
+            Review Answers
+          </Link>
+        </div>
       </CenterDiv>
-      <StyledFooter>
-        <StyledPagination
-          current={pageNumber}
-          total={docs.length}
-          onChange={(page) => {
-            setPageNumber(page)
-          }}
-          pageSize={1}
-        />
-      </StyledFooter>
-    </>
+      <div className="back-link" onClick={closePage}>
+        {'< Back'}
+      </div>
+      <StyledPagination
+        current={pageNumber}
+        total={docs.length}
+        onChange={(page) => {
+          setPageNumber(page)
+        }}
+        pageSize={1}
+      />
+    </ScannedResponsesContainer>
   )
 }
 
 export default ScannedResponses
+
+const ScannedResponsesContainer = styled.div`
+  .back-link {
+    cursor: pointer;
+    position: absolute;
+    margin-left: 40px;
+    align-self: flex-start;
+    left: 15px;
+    bottom: 15px;
+    font-size: 12px;
+    font-weight: 600;
+    color: ${themeColor};
+  }
+  .static-navigation-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    a {
+      color: ${themeColor};
+      background-color: transparent;
+      border: 2px solid ${themeColor};
+      border-radius: 4px;
+      margin: 2.5px;
+      padding: 6px;
+      font-weight: 600;
+      font-size: 12px;
+      width: 180px;
+      text-align: center;
+      transition: 0.1s ease-in;
+      &.review-answers-link {
+        color: ${white};
+        background-color: ${themeColor};
+      }
+      &:hover {
+        color: ${white};
+        background-color: ${themeColorBlue};
+        border: 1.5px solid ${themeColorBlue};
+      }
+    }
+  }
+`
 
 const CenterDiv = styled.div`
   display: block;
@@ -60,26 +130,10 @@ const CenterDiv = styled.div`
   min-height: 200px;
 `
 
-const StyledFooter = styled.div`
-  bottom: 10px;
-  box-size: border-box;
-  margin-left: 28px;
-  margin-right: 28px;
-  width: 100%;
-  position: absolute;
-`
-
-const CloseIconStyled = styled(Icon)`
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  cursor: pointer;
-`
-
 const StyledPagination = styled(Pagination)`
   align-self: flex-end;
   margin-top: 15px;
-  margin-right: 30px;
+  margin-right: 35px;
   position: absolute;
   right: 15px;
   bottom: 15px;

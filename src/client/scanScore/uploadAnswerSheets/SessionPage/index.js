@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import { Slider } from 'antd'
 
 import ScannedResponses from './ScannedResponses'
@@ -16,12 +16,20 @@ const SessionPage = ({
   toggleShowResponses,
 }) => {
   const [pageNumber, setPageNumber] = useState(1)
-  const [showThumbnails, setShowThumbnails] = useState(false)
+  const [statusFilters, setStatusFilters] = useState([])
   const [thumbnailSize, setThumbnailSize] = useState(150)
+
+  const filteredPages = useMemo(() => {
+    return pages.filter(
+      (p) => !statusFilters.length || statusFilters.includes(p.status)
+    )
+  }, [pages, statusFilters])
 
   return showResponses ? (
     <ScannedResponses
-      docs={pages}
+      assignmentId={assignmentId}
+      groupId={groupId}
+      docs={filteredPages}
       pageNumber={pageNumber}
       setPageNumber={setPageNumber}
       closePage={() => {
@@ -36,14 +44,20 @@ const SessionPage = ({
         groupId={groupId}
         pages={pages}
         handleAbortClick={handleAbortClick}
-        toggleShowThumbnails={() => setShowThumbnails(!showThumbnails)}
+        toggleStatusFilter={(...statusList) =>
+          setStatusFilters((prevStatusFilters) =>
+            statusList.filter((s) => !prevStatusFilters.includes(s))
+          )
+        }
       />
-      {showThumbnails && (
+      {statusFilters.length ? (
         <>
           <div
             style={{ textAlign: 'center', fontSize: '18px', fontWeight: '700' }}
           >
-            Successfully Scanned Responses
+            {statusFilters.includes(omrSheetScanStatus.DONE)
+              ? 'Successfully Scanned Responses'
+              : 'Responses with Scan Errors'}
           </div>
           <div style={{ margin: '0 40px 80px 40px' }}>
             <Slider
@@ -54,7 +68,7 @@ const SessionPage = ({
               tooltipVisible={false}
             />
             <div style={{ display: 'flex', margin: '20px 0 20px 0' }}>
-              {pages.map((page, index) => {
+              {filteredPages.map((page, index) => {
                 const name = page.studentName || getFileNameFromUri(page.uri)
                 const onClick = () => {
                   setPageNumber(index + 1)
@@ -64,7 +78,7 @@ const SessionPage = ({
                   <Thumbnail
                     name={name}
                     size={thumbnailSize}
-                    uri={page.uri}
+                    uri={page.scannedUri || page.uri}
                     status={page.status}
                     message={page.message}
                     onClick={
@@ -76,7 +90,7 @@ const SessionPage = ({
             </div>
           </div>
         </>
-      )}
+      ) : null}
     </>
   )
 }

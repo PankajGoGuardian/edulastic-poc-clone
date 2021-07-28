@@ -623,10 +623,7 @@ class ClassHeader extends Component {
             actionOnInaccessible="hidden"
             groupId={classId}
           >
-            <MenuItems
-              data-cy="download-bubble-sheet"
-              key="download-bubble-sheet"
-            >
+            <MenuItems data-cy="upload-bubble-sheet" key="upload-bubble-sheet">
               <Link
                 to={{
                   pathname: '/uploadAnswerSheets',
@@ -634,7 +631,7 @@ class ClassHeader extends Component {
                 }}
                 target="_blank"
               >
-                Upload OMR Sheet
+                Scan OMR Sheet
               </Link>
             </MenuItems>
           </FeaturesSwitch>

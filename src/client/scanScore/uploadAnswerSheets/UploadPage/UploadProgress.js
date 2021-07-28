@@ -3,15 +3,25 @@ import styled from 'styled-components'
 
 import {
   white,
+  themeColor,
   themeColorBlue,
   greyThemeDark1,
+  greyThemeDark2,
   backgroundGrey,
   borderGrey,
 } from '@edulastic/colors'
 
-import { Button } from 'antd'
+// TODO: ask the designer to provide an SVG asset instead of the PNG sourced from the web
+import IconPDF from './IconPDF.png'
 
-const UploadProgress = ({ uploadProgress, handleCancelUpload }) => {
+import { formatBytes } from '../utils'
+
+const UploadProgress = ({
+  uploadProgress: _uploadProgress,
+  currentSession,
+  handleCancelUpload,
+}) => {
+  const uploadProgress = (_uploadProgress || 0).toFixed(2)
   return (
     <UploadProgressContainer uploadProgress={uploadProgress}>
       <div className="inner-container">
@@ -20,11 +30,22 @@ const UploadProgress = ({ uploadProgress, handleCancelUpload }) => {
           <div className="upload-progress-front">{uploadProgress} %</div>
           <div className="upload-progress-back">{uploadProgress} %</div>
         </div>
+        <div className="file-details-container">
+          <img src={IconPDF} alt="PDF icon" />
+          <div className="file-details">
+            <span className="file-name">
+              {currentSession?.source?.name || ''}
+            </span>
+            <span className="file-size">
+              {formatBytes(currentSession?.source?.size)}
+            </span>
+          </div>
+        </div>
         {handleCancelUpload && (
-          <div className="stop-upload">
-            <Button type="primary" onClick={handleCancelUpload}>
+          <div className="stop-upload-container">
+            <div className="stop-upload" onClick={handleCancelUpload}>
               STOP
-            </Button>
+            </div>
           </div>
         )}
       </div>
@@ -40,7 +61,7 @@ const UploadProgressContainer = styled.div`
   justify-content: center;
   .inner-container {
     background-color: ${backgroundGrey};
-    border-radius: 5px;
+    border-radius: 4px;
     padding: 50px 30px;
     height: auto;
     width: 500px;
@@ -55,7 +76,7 @@ const UploadProgressContainer = styled.div`
     position: relative;
     display: flex;
     height: 30px;
-    border-radius: 5px;
+    border-radius: 4px;
     font-size: 14px;
     font-weight: bold;
     overflow: hidden;
@@ -65,7 +86,7 @@ const UploadProgressContainer = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: 6px;
+    border-radius: 5px;
     width: 100%;
     background: ${themeColorBlue};
     color: ${white};
@@ -88,15 +109,54 @@ const UploadProgressContainer = styled.div`
     );
     transition: clip-path 1s linear;
   }
-  .stop-upload {
-    margin-top: 80px;
+  .file-details-container {
+    display: flex;
+    margin-top: 15px;
+    align-items: center;
+    img {
+      height: 25px;
+    }
+    .file-details {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      .file-name {
+        font-size: 12px;
+        font-weight: 600;
+        margin-left: 20px;
+        color: ${greyThemeDark1};
+        text-transform: uppercase;
+      }
+      .file-size {
+        font-size: 12px;
+        font-weight: 600;
+        float: right;
+        color: ${greyThemeDark2};
+      }
+    }
+  }
+  .stop-upload-container {
+    margin-top: 50px;
     display: flex;
     justify-content: center;
-    button {
-      background-color: ${themeColorBlue};
+    .stop-upload {
+      color: ${themeColor};
+      background-color: transparent;
+      border: 2px solid ${themeColor};
+      border-radius: 4px;
+      margin: 2.5px;
+      padding: 6px;
       font-weight: 600;
       font-size: 12px;
       width: 180px;
+      text-align: center;
+      transition: 0.1s ease-in;
+      &:hover {
+        color: ${white};
+        background-color: ${themeColorBlue};
+        border: 1.5px solid ${themeColorBlue};
+      }
     }
   }
 `

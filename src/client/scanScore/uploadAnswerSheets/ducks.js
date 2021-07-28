@@ -6,7 +6,11 @@ import { aws } from '@edulastic/constants'
 import { scannerApi } from '@edulastic/api'
 import { notification, uploadToS3 } from '@edulastic/common'
 
-import { deleteNotificationDocuments, omrUploadSessionStatus } from './utils'
+import {
+  deleteNotificationDocuments,
+  omrSheetScanStatus,
+  omrUploadSessionStatus,
+} from './utils'
 
 const slice = createSlice({
   name: 'uploadAnswerSheets',
@@ -163,7 +167,7 @@ function* createOmrUploadSessionSaga({
 }) {
   let uploadRunner
   try {
-    const source = { name: file.name }
+    const source = { name: file.name, size: file.size }
     const session = yield call(scannerApi.createOmrUploadSession, {
       assignmentId,
       groupId,
@@ -234,19 +238,19 @@ function* updateOmrUploadSessionSaga({
     const session = {
       ...currentSession,
       pages: pageDocs,
-      status: omrUploadSessionStatus.DONE,
+      status: omrSheetScanStatus.DONE,
     }
     yield put(slice.actions.setOmrUploadSession({ session, update: true }))
     yield call(scannerApi.updateOmrUploadSession, {
       assignmentId,
       groupId,
       sessionId,
-      status: omrUploadSessionStatus.DONE,
+      status: omrSheetScanStatus.DONE,
     })
     notification({ type: 'success', msg: 'Scoring completed' })
     // delete firebase docs here
     const docIds = pageDocs.map(({ docId }) => docId)
-    deleteNotificationDocuments(docIds)
+    yield call(deleteNotificationDocuments, docIds)
   } catch (e) {
     console.log(e.message)
     const msg = e.message || 'Scoring completed. Failed to update session'

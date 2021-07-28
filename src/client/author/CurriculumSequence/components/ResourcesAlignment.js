@@ -75,7 +75,7 @@ const ResourcesAlignment = ({
     curriculum: defaultCurriculum,
   }
 
-  const excludeFilters = ['FAVORITES', 'SHARED_WITH_ME']
+  const excludeFilters = ['FAVORITES', 'SHARED_WITH_ME', 'PREVIOUS']
   const filteredSources = sourceFilters.filter(
     (x) => !excludeFilters.includes(x.filter)
   )
@@ -164,13 +164,10 @@ const ResourcesAlignment = ({
     if (curriculums.length === 0) {
       getCurriculums()
     }
-<<<<<<< HEAD
-=======
     selectedStandards.forEach((s) => {
       handleAddStandard(s)
     })
     handleEditAlignment({ source: defaultSource })
->>>>>>> 27b30fe078 (feat(ui): added source filter for resources [EV-29569])
   }, [])
 
   const handleStandardFocus = () => {

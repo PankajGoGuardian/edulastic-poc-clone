@@ -73,7 +73,8 @@ const StyledDiv = styled.div.attrs((props) => ({
       overflow: hidden;
       margin: 0 2px;
       float: right;
-      color: #ec635c;
+      color: gray;
+      font-weight: 550;
     }
   }
   &: hover ${(p) => (p.isActive ? ', &' : '')} {

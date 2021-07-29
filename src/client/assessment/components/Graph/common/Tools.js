@@ -40,6 +40,7 @@ import {
 } from './styled_components'
 import utils from './utils'
 import { CONSTANT } from '../Builder/config'
+import HelpTooltip from './HelpTooltip'
 
 const allTools = [
   CONSTANT.TOOLS.POINT,
@@ -216,17 +217,22 @@ export default function Tools(props) {
                           width={buttonSize.width}
                           height={buttonSize.height}
                           className={isSelectedPopupTool(item) ? 'active' : ''}
-                          onClick={() => onSelectPopupTool(item)}
                           key={`popup-tool-btn-${item}`}
                         >
-                          <ToolbarItem>
-                            {iconsByToolName[item]}
-                            <ToolbarItemLabel className={`icon-${item}-label`}>
-                              {utils.capitalizeFirstLetter(
-                                item === 'parabola2' ? 'parabola' : item
-                              )}
-                            </ToolbarItemLabel>
-                          </ToolbarItem>
+                          <HelpTooltip toolName={item}>
+                            <ToolbarItem
+                              onClick={() => onSelectPopupTool(item)}
+                            >
+                              {iconsByToolName[item]}
+                              <ToolbarItemLabel
+                                className={`icon-${item}-label`}
+                              >
+                                {utils.capitalizeFirstLetter(
+                                  item === 'parabola2' ? 'parabola' : item
+                                )}
+                              </ToolbarItemLabel>
+                            </ToolbarItem>
+                          </HelpTooltip>
                         </ToolBtn>
                       ))}
                     </PopupToolsContainer>

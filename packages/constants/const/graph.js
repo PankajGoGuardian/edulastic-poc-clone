@@ -12,7 +12,6 @@ const GRAPH_TOOLS = {
   TANGENT: 'tangent',
   SECANT: 'secant',
   EXPONENT: 'exp',
-  EXPONENT_DRAGGABLE: 'exp_draggable',
   LOGARITHM: 'logarithm',
   POLYNOM: 'polynom',
   POLYGON: 'polygon',

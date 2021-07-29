@@ -1984,7 +1984,7 @@ function* savePassage({ payload }) {
     const modifiedPassage = produce(passage, (draft) => {
       if (!isEdit) draft.structure.widgets.push(widget)
       draft.data = passageData
-      draft.testItems = uniq([...draft.testItems]) // , currentItemId
+      draft.testItems = uniq([...draft.testItems, currentItemId]) // , currentItemId
     })
     yield put(updatePassageStructureAction(modifiedPassage))
     if (isTestFlow && hasValidTestId) {

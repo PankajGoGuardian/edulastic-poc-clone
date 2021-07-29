@@ -20,7 +20,11 @@ const Classes = ({ activeClasses, emptyBoxCount, userId }) => {
       >
         My Classes
       </TextWrapper>
-      <FlexContainer justifyContent="flex-start" flexWrap="wrap">
+      <FlexContainer
+        data-cy="myclasses-list"
+        justifyContent="flex-start"
+        flexWrap="wrap"
+      >
         {activeClasses.map((item) => (
           <CardContainer key={item._id}>
             <Card data={item} userId={userId} />

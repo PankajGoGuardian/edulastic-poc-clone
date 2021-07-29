@@ -36,6 +36,7 @@ const color = {
 const StyledDiv = styled.div.attrs((props) => ({
   ...props,
   onClick: props.selected ? () => {} : props.onClick,
+  'aria-selected': `${!!props.selected}`,
 }))`
   height: 70px;
   border: 1px solid ${(props) => color[props.role]};
@@ -129,11 +130,14 @@ const SwitchUserModal = ({
       visible={showModal}
       onCancel={closeModal}
       footer={null}
+      wrapProps={{
+        'data-cy': 'switch-user-modal',
+      }}
     >
       <Spin spinning={!!activeKey}>
         <div>
           <p>Select the role you want to switch</p>
-          <div style={{ marginTop: '16px' }}>
+          <div style={{ marginTop: '16px' }} data-cy="switch-user-list">
             {otherAccounts
               .filter((acc) => Object.keys(roles).includes(acc.role))
               .sort((a, b) => {
@@ -145,11 +149,13 @@ const SwitchUserModal = ({
                 ...user,
                 districtString: (user.district.name
                   ? [user.district]
-                  : user.districts
+                  : user.districts || []
                 )
                   .map((i) => i.name)
                   .join(', '),
-                schoolString: user.institutions.map((i) => i.name).join(', '),
+                schoolString: (user.institutions || [])
+                  .map((i) => i.name)
+                  .join(', '),
               }))
               .map((user) => (
                 <StyledDiv

@@ -600,13 +600,13 @@ class ClassHeader extends Component {
         >
           Release Score
         </MenuItems>
-        <MenuItems
+        {/* <MenuItems
           data-cy="download-bubble-sheet"
           key="download-bubble-sheet"
           onClick={() => this.generateBubbleSheet(assignmentId, classId)}
         >
           Generate Bubble Sheet
-        </MenuItems>
+        </MenuItems> */}
         {isShowUnAssign && (
           <MenuItems
             data-cy="unAssign"

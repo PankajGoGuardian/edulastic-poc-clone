@@ -148,13 +148,14 @@ const SemverCompare = (a, b) => {
 const tokenUpdateHeader = 'x-token-refresh'
 const kidUpdateHeader = 'x-kid-refresh'
 
-function addReloadedEntryToSession() {
+// debouncing to prevent concurrent apis to be interpreted as repeated reloads
+const addReloadedEntryToSession = debounce(() => {
   const reloads = JSON.parse(
     window.sessionStorage.districtMismatchReloads || '[]'
   )
   reloads.push({ time: Date.now() })
   window.sessionStorage.districtMismatchReloads = JSON.stringify(reloads)
-}
+}, 700)
 
 function getReloadsHappenedRecently() {
   const reloads = JSON.parse(
@@ -229,8 +230,7 @@ export default class API {
             }, 5000)
             return
           }
-          // debouncing to prevent concurrent apis to be interpreted as repeated reloads
-          debounce(addReloadedEntryToSession, 700)()
+          addReloadedEntryToSession()
           window.location.href = '/'
         }
         if (token) {

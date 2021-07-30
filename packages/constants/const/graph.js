@@ -12,7 +12,7 @@ const GRAPH_TOOLS = {
   TANGENT: 'tangent',
   SECANT: 'secant',
   EXPONENT: 'exp',
-  EXPONENT_DRAGGABLE: 'exp_draggable',
+  EXPONENTIAL2: 'exponential2',
   LOGARITHM: 'logarithm',
   POLYNOM: 'polynom',
   POLYGON: 'polygon',

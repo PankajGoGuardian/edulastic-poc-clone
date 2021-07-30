@@ -79,7 +79,7 @@ function onHandler() {
 function getConfig(obj) {
   return {
     _type: obj.type,
-    type: CONSTANT.TOOLS.EXPONENT_DRAGGABLE,
+    type: CONSTANT.TOOLS.EXPONENTIAL2,
     id: obj.id,
     label: obj.labelHTML || false,
     labelIsVisible: obj.labelIsVisible,

@@ -11,7 +11,7 @@ import {
   Sin,
   Cos,
   Tangent,
-  ExponentDraggable,
+  Exponent2,
 } from '.'
 import { CONSTANT } from '../config'
 import { getAllObjectsUnderMouse } from '../utils'
@@ -22,7 +22,7 @@ const availableTypes = [
   JXG.OBJECT_TYPE_LINE,
   JXG.OBJECT_TYPE_POLYGON,
   Exponent.jxgType,
-  ExponentDraggable.jxgType,
+  Exponent2.jxgType,
   Hyperbola.jxgType,
   Logarithm.jxgType,
   Parabola.jxgType,

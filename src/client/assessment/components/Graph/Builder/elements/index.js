@@ -1,7 +1,7 @@
 export { default as Circle } from './Circle'
 export { default as Ellipse } from './Ellipse'
 export { default as Exponent } from './Exponent'
-export { default as ExponentDraggable } from './ExponentDraggable'
+export { default as Exponent2 } from './Exponent2'
 export { default as Hyperbola } from './Hyperbola'
 export { default as Line } from './Line'
 export { default as Logarithm } from './Logarithm'

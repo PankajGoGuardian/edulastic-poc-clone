@@ -522,7 +522,9 @@ class SideMenu extends Component {
             <Menu.Item key="3" className="removeSelectedBorder">
               <a>
                 <IconSwitchUser />
-                <span>{isCollapsed ? '' : 'Switch Account'} </span>
+                <span data-cy="switch-user">
+                  {isCollapsed ? '' : 'Switch Account'}{' '}
+                </span>
               </a>
             </Menu.Item>
           ) : userRole !== roleuser.EDULASTIC_CURATOR ? (

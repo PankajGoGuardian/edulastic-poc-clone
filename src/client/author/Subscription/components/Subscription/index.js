@@ -391,7 +391,7 @@ const Subscription = (props) => {
     } else {
       setShowCompleteSignupModal(false)
       setCallFunctionAfterSignup(() => null)
-      afterSignup(user)
+      afterSignup(subType)
     }
   }
 

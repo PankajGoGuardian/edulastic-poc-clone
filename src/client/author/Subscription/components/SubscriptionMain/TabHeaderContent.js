@@ -14,8 +14,8 @@ const TabHeaderContent = ({
     history.push('/author/manage-subscriptions')
   }
 
-  const openMultiplePurchaseModal = (user) => {
-    if (!['partial_premium', 'enterprise'].includes(user?.subType)) {
+  const openMultiplePurchaseModal = (subType) => {
+    if (!['partial_premium', 'enterprise'].includes(subType)) {
       setShowMultiplePurchaseModal(true)
     }
   }

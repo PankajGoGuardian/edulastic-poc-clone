@@ -1,76 +1,118 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import styled from 'styled-components'
-import { Spin } from 'antd'
+
+import { Icon, Spin } from 'antd'
+import {
+  themeColor,
+  greyThemeDark1,
+  white,
+  red,
+  borderGrey,
+} from '@edulastic/colors'
+
 import { omrSheetScanStatus } from '../utils'
 
-// TODO: update UI for thumbnails
-const FailedOverlay = ({ message }) => (
-  <>
-    <div className="show-on-hover">
-      <span>{message || ''}</span>
-    </div>
-    <div className="icon">{'\u26A0'}</div>
-  </>
-)
+const Thumbnail = ({ size, name, uri, status, message, onClick }) => {
+  const isFailed = useMemo(() => status > omrSheetScanStatus.DONE, [status])
 
-const Thumbnail = ({ size, name, uri, status, message, onClick }) => (
-  <div style={{ maxWidth: `${size || 150}px`, margin: '5px 15px' }}>
-    <ThumbnailDiv width={size} onClick={onClick}>
-      <Spin spinning={status === 2}>
-        <img alt={name} src={uri} />
-      </Spin>
-      {status > omrSheetScanStatus.DONE && <FailedOverlay message={message} />}
-    </ThumbnailDiv>
-    <StyledTitle>{name}</StyledTitle>
-  </div>
-)
-
+  return (
+    <ThumbnailContainer width={size} onClick={onClick} isFailed={isFailed}>
+      <div className="thumbnail-inner-container">
+        <Spin spinning={status === omrSheetScanStatus.SCANNING}>
+          <img alt={name} src={uri} />
+        </Spin>
+        {isFailed ? (
+          <div className="thumbnail-overlay">
+            <Icon className="failed-icon" type="close" />
+            <div className="failed-text">{message || 'Error'}</div>
+          </div>
+        ) : (
+          <div className="thumbnail-overlay">
+            <Icon className="show-icon" type="eye" />
+          </div>
+        )}
+      </div>
+      <div className="thumbnail-label">{name}</div>
+    </ThumbnailContainer>
+  )
+}
 export default Thumbnail
 
-const ThumbnailDiv = styled.div`
-  ${(props) => (props.onClick ? `cursor: pointer;` : ``)}
-  margin: 2px;
-  display: flex;
-  flex-direction: column;
+const ThumbnailContainer = styled.div`
+  margin: 5px 15px;
   max-width: ${(props) => props.width || 150}px;
-  height: auto;
-  position: relative;
-  & img {
-    max-width: 100%;
+  ${(props) => (props.onClick && !props.isFailed ? `cursor: pointer;` : ``)}
+  color: ${greyThemeDark1};
+  .thumbnail-inner-container {
+    margin: 2px;
+    display: flex;
+    flex-direction: column;
+    max-width: ${(props) => props.width || 150}px;
     height: auto;
-    box-shadow: 0 0 4px black;
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+    border: solid 2px ${borderGrey};
+    & img {
+      max-width: 100%;
+      height: auto;
+    }
+    & .ant-spin-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .thumbnail-overlay {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      border-radius: 3px;
+      background-color: ${(props) =>
+        props.isFailed ? 'rgba(0, 0, 0, 0.5)' : 'transparent'};
+      font-size: ${(props) => props.width / 15 || 10}px;
+      font-weight: 600;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: ${white};
+      .show-icon {
+        display: none;
+        font-size: 20px;
+      }
+      .failed-icon {
+        position: absolute;
+        top: 3px;
+        right: 4px;
+        background: ${red};
+        border-radius: 50%;
+        padding: 3px;
+        svg {
+          font-size: 10px;
+          background: transparent;
+        }
+      }
+    }
   }
-  & .ant-spin-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  .thumbnail-label {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    font-weight: 600;
+    margin-top: 5px;
   }
-  & .show-on-hover {
-    display: flex;
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    font-size: ${(props) => props.width / 15 || 10}px;
-    top: 0;
-    left: 0;
-    background-color: rgba(255, 255, 255, 0.5);
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    backdrop-filter: blur(3px);
+  &:hover {
+    zoom: 102%;
+    .thumbnail-inner-container {
+      border: solid 2px ${themeColor};
+      .thumbnail-overlay {
+        background-color: rgba(0, 0, 0, 0.5);
+        .show-icon {
+          display: block;
+        }
+      }
+    }
   }
-  & .icon {
-    position: absolute;
-    top: 0;
-    right: 0;
-    color: red;
-  }
-`
-
-const StyledTitle = styled.div`
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  font-weight: 600;
-  margin-top: 5px;
 `

@@ -26,12 +26,14 @@ const SessionStatus = ({
     const _failed = pages.filter((p) => p.status > omrSheetScanStatus.DONE)
       .length
     const _scanned = _success + _failed
-    const _scanProgress = Number(((100 * _scanned) / pages.length).toFixed(2))
+    const _scanProgress = pages.length
+      ? Number(((100 * _scanned) / pages.length).toFixed(2))
+      : 0
     return {
       success: _success,
       failed: _failed,
       scanned: _success + _failed,
-      scanProgress: _scanProgress,
+      scanProgress: _scanProgress > 1 ? _scanProgress : 1,
     }
   }, [pages])
 
@@ -92,15 +94,6 @@ const SessionStatus = ({
             </div>
             <div className="static-navigation-links">
               <Link
-                className="live-classboard-link"
-                to={{
-                  pathname: `/author/classboard/${assignmentId}/${groupId}`,
-                }}
-                target="_blank"
-              >
-                View Live Class Board
-              </Link>
-              <Link
                 className="upload-again-link"
                 to={{
                   pathname: '/uploadAnswerSheets',
@@ -108,6 +101,15 @@ const SessionStatus = ({
                 }}
               >
                 Upload Again
+              </Link>
+              <Link
+                className="live-classboard-link"
+                to={{
+                  pathname: `/author/classboard/${assignmentId}/${groupId}`,
+                }}
+                target="_blank"
+              >
+                View Live Class Board
               </Link>
             </div>
           </>
@@ -193,7 +195,7 @@ const SessionStatusContainer = styled.div`
       width: 180px;
       text-align: center;
       transition: 0.1s ease-in;
-      &.upload-again-link {
+      &.live-classboard-link {
         color: ${white};
         background-color: ${themeColor};
       }

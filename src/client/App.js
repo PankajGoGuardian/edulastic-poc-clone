@@ -37,6 +37,7 @@ import NotificationListener from './HangoutVideoCallNotification'
 import BulkActionNotificationListener from './author/AssignmentAdvanced/components/BulkAssignmentActionNotification'
 import ClassSyncNotification from './author/Classes/components/ClassSyncNotification'
 import ReportsNotificationListener from './author/Reports/components/ReportsNotificationListener'
+import BubbleScanNotificationsListener from './scanScore/BubbleScanNotificationsListener'
 import AppUpdate from './common/components/AppUpdate'
 import { logoutAction } from './author/src/actions/auth'
 import RealTimeCollectionWatch from './RealTimeCollectionWatch'
@@ -92,7 +93,12 @@ const Author = lazy(() =>
 const Publisher = lazy(() =>
   import(/* webpackChunkName: "author" */ './publisher/app')
 )
-const Admin = lazy(() => import(/* webpackChunkName: "admin" */ './admin/app'))
+const Admin = lazy(() =>
+  import(/* webpackChunkName: "admloadablein" */ './admin/app')
+)
+const ScanScore = lazy(() =>
+  import(/* webpackChunkName: "scanScore" */ './scanScore/app')
+)
 const RedirectToTest = lazy(() =>
   import(/* webpackChunkName: "RedirecToTest" */ './author/RedirectToTest')
 )
@@ -612,6 +618,12 @@ class App extends Component {
                 notifications={
                   roleuser.EDULASTIC_ADMIN ? [AdminNotificationListener] : null
                 }
+              />
+              <PrivateRoute
+                path={['/uploadAnswerSheets']}
+                component={ScanScore}
+                redirectPath={redirectRoute}
+                notifications={[BubbleScanNotificationsListener]}
               />
               <Route exact path="/kid" component={Kid} />
               <LoggedOutRoute

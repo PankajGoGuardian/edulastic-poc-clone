@@ -294,6 +294,8 @@ const TestListFilters = ({
 
   const isFolderSearch = filter === libraryFilters.SMART_FILTERS.FOLDERS
 
+  const isDA = userRole === roleuser.DISTRICT_ADMIN
+
   return (
     <Container>
       {showModal && (
@@ -344,6 +346,7 @@ const TestListFilters = ({
                   filterItem={filterItem}
                   onChange={onChange}
                   search={search}
+                  isDA={isDA}
                 />
               </FilterItemWrapper>
             </>

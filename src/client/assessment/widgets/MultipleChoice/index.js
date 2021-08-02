@@ -4,10 +4,11 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
 import { get, cloneDeep } from 'lodash'
+import uuid from 'uuid/v4'
 import styled from 'styled-components'
 import produce from 'immer'
 import { questionTitle } from '@edulastic/constants'
-import { PaddingDiv } from '@edulastic/common'
+import { FlexContainer, PaddingDiv } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'
 import {
@@ -31,6 +32,7 @@ import Question from '../../components/Question'
 import { StyledPaperWrapper } from '../../styled/Widget'
 import { getFontSize } from '../../utils/helpers'
 import { CheckboxLabel } from '../../styled/CheckboxWithLabel'
+import { CustomStyleBtn } from '../../styled/ButtonStyles'
 
 const EmptyWrapper = styled.div``
 
@@ -146,6 +148,18 @@ class MultipleChoice extends Component {
     )
   }
 
+  addNewChoiceBtn = () => {
+    const { item, setQuestionData } = this.props
+    setQuestionData(
+      produce(item, (draft) => {
+        draft.options.push({
+          value: uuid(),
+          label: '',
+        })
+      })
+    )
+  }
+
   render() {
     const {
       col,
@@ -215,21 +229,33 @@ class MultipleChoice extends Component {
                   {...restProps}
                 />
                 <Divider />
-                {/* checkbox should be hideden for True or False */}
-                {item.title !== questionTitle.MCQ_TRUE_OR_FALSE && (
-                  <CheckboxLabel
-                    data-cy="multi"
-                    onChange={() =>
-                      this.handleOptionsChange(
-                        'multipleResponses',
-                        !multipleResponses
-                      )
-                    }
-                    checked={multipleResponses}
-                  >
-                    {t('component.multiplechoice.multipleResponses')}
-                  </CheckboxLabel>
-                )}
+                <FlexContainer justifyContent="flex-start" alignItems="center">
+                  {(item?.title !== questionTitle.MCQ_TRUE_OR_FALSE ||
+                    item?.options?.length < 2) && (
+                    <CustomStyleBtn
+                      margin="0px 8px 0px 0px"
+                      data-cy="add-new-ch"
+                      onClick={this.addNewChoiceBtn}
+                    >
+                      {t('component.multiplechoice.addnewchoice')}
+                    </CustomStyleBtn>
+                  )}
+                  {/* checkbox should be hideden for True or False */}
+                  {item.title !== questionTitle.MCQ_TRUE_OR_FALSE && (
+                    <CheckboxLabel
+                      data-cy="multi"
+                      onChange={() =>
+                        this.handleOptionsChange(
+                          'multipleResponses',
+                          !multipleResponses
+                        )
+                      }
+                      checked={multipleResponses}
+                    >
+                      {t('component.multiplechoice.multipleResponses')}
+                    </CheckboxLabel>
+                  )}
+                </FlexContainer>
               </Question>
 
               {advancedLink}

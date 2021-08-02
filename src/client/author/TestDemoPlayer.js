@@ -71,6 +71,13 @@ const DemoPlayer = ({
   }
 
   const handleCloseModal = () => {
+    // if preview is on edulastic.com then close parent preview modal
+    if (window?.location?.host === 'preview.edulastic.com') {
+      window.parent.postMessage(
+        JSON.stringify({ type: 'EXIT_DEMO_ASSIGNMENT' }),
+        '*'
+      )
+    }
     closeTestPreviewModal()
     finishedPreviewTest()
     setShowStudentPerformancePreview(false)

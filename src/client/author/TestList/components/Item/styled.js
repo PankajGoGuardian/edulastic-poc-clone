@@ -22,6 +22,8 @@ export const Container = styled(Card)`
   &.ant-card {
     width: ${(props) => (props.isTestRecommendation ? '240px' : null)};
     height: ${(props) => (props.isTestRecommendation ? '190px' : null)};
+    transform: ${(props) => (props.isTestCard ? `scale(1)` : null)};
+    transition: 0.2s;
     .ant-card-body {
       padding: 16px 12px;
       border: ${(props) => (props.isPlaylist ? '1px solid #dfdfdf' : 'none')};
@@ -33,13 +35,11 @@ export const Container = styled(Card)`
       justify-content: flex-start;
     }
     &:hover {
-      -webkit-box-shadow: ${(props) =>
-        props.isTestCard ? `0 0 3px 2px ${themeColor}` : null};
-      -moz-box-shadow: ${(props) =>
-        props.isTestCard ? `0 0 3px 2px ${themeColor}` : null};
       box-shadow: ${(props) =>
         props.isTestCard ? `0 0 3px 2px ${themeColor}` : null};
       transform: ${(props) => (props.isTestCard ? `scale(1.03)` : null)};
+      border: none;
+      overflow: hidden;
     }
   }
 

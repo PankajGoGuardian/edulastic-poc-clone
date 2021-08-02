@@ -28,7 +28,7 @@ import {
   Tangent,
   Circle,
   Ellipse,
-  ExponentDraggable,
+  Exponent2,
 } from '.'
 
 const jxgType = 100
@@ -47,7 +47,7 @@ const AVAILABLE_TYPES = [
   Sin.jxgType,
   Cos.jxgType,
   Equation.jxgType,
-  ExponentDraggable.jxgType,
+  Exponent2.jxgType,
 ]
 
 function rnd(num) {
@@ -118,9 +118,9 @@ function getFunctions(shapes) {
           const points = Object.values(item.ancestors)
           return (x, y) => y > Exponent.makeCallback(...points)(x)
         }
-        case ExponentDraggable.jxgType: {
+        case Exponent2.jxgType: {
           const points = Object.values(item.ancestors)
-          return (x, y) => y > ExponentDraggable.makeCallback(points[0])(x)
+          return (x, y) => y > Exponent2.makeCallback(points[0])(x)
         }
         case Hyperbola.jxgType: {
           const { points } = Hyperbola.getConfig(item)

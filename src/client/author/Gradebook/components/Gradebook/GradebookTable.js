@@ -10,6 +10,7 @@ import { StyledTable, StyledTableCell } from '../styled'
 
 // constants
 import { STATUS_LIST } from '../../transformers'
+import NoDataNotification from '../../../../common/components/NoDataNotification'
 
 const GradebookTable = ({
   dataSource,
@@ -85,6 +86,26 @@ const GradebookTable = ({
         ),
     })),
   ]
+
+  const NoDataMessage = (
+    <>
+      <p>There are no assignments found for the filter options selected.</p>
+      <p>
+        Something Wrong? Check the filters including the school year selected.
+      </p>
+    </>
+  )
+
+  if (dataSource.length < 1) {
+    return (
+      <NoDataNotification
+        style={{ width: 'auto' }}
+        heading="Assignments not available"
+        description={NoDataMessage}
+      />
+    )
+  }
+
   return (
     <StyledTable
       rowKey={(row) => `${row._id}_${row.classId}`}

@@ -7,7 +7,13 @@ import styled from 'styled-components'
 import TagField from '../../../ItemList/components/Fields/TagField'
 import { getUserFeatures } from '../../../src/selectors/user'
 
-const FiltersSidebar = ({ filterItem, onChange, search, userFeatures }) => {
+const FiltersSidebar = ({
+  filterItem,
+  onChange,
+  search,
+  userFeatures,
+  isDA,
+}) => {
   const isPublishers = !!(
     userFeatures.isPublisherAuthor || userFeatures.isCurator
   )
@@ -65,11 +71,17 @@ const FiltersSidebar = ({ filterItem, onChange, search, userFeatures }) => {
         getPopupContainer={(triggerNode) => triggerNode.parentNode}
         margin="0px 0px 15px"
       >
-        {filterItem.data.map(({ value, text, disabled }, index1) => (
-          <Select.Option value={value} key={index1} disabled={disabled}>
-            {text}
-          </Select.Option>
-        ))}
+        {filterItem?.data
+          ?.filter((cd) =>
+            isDA && filterItem.title === 'Collections'
+              ? !['School Library'].includes(cd.text)
+              : 1
+          )
+          ?.map(({ value, text, disabled }, index1) => (
+            <Select.Option value={value} key={index1} disabled={disabled}>
+              {text}
+            </Select.Option>
+          ))}
         {isPublishers &&
           filterItem.title === 'Status' &&
           filterItem.publisherOptions.map(({ value, text }) => (

@@ -1984,18 +1984,18 @@ function* savePassage({ payload }) {
     const modifiedPassage = produce(passage, (draft) => {
       if (!isEdit) draft.structure.widgets.push(widget)
       draft.data = passageData
-      draft.testItems = uniq([...draft.testItems]) // , currentItemId
+      draft.testItems = uniq([...draft.testItems, currentItemId]) // , currentItemId
     })
     yield put(updatePassageStructureAction(modifiedPassage))
-    if (isTestFlow) {
+    if (isTestFlow && hasValidTestId) {
       modifiedPassage.testId = payload.testId
     }
+
     // only update the item if its not new, since new item already has the passageId added while creating.
     const updatedPassage = yield call(
       passageApi.update,
       _omit(modifiedPassage, ['__v'])
     )
-
     /**
      * @see https://snapwiz.atlassian.net/browse/EV-29547
      * update passage version in redux-store and keep passage data in sync with DB
@@ -2003,9 +2003,6 @@ function* savePassage({ payload }) {
      */
     if (!isEmpty(updatedPassage)) {
       yield put(updatePassageStructureAction(updatedPassage))
-      if (modifiedPassage._id !== updatedPassage._id) {
-        currentItemId = updatedPassage.testItems[0] || currentItemId
-      }
     }
 
     /**

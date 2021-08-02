@@ -8,7 +8,7 @@ import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 import {
   FlexContainer,
   notification,
-  PointBlockContext,
+  ItemLevelContext,
 } from '@edulastic/common'
 import Question from '../../../components/Question/index'
 import { Subtitle } from '../../../styled/Subtitle'
@@ -84,7 +84,7 @@ const CorrectAnswers = ({
     )
   }
 
-  const hidingScoringBlock = useContext(PointBlockContext)
+  const itemLevelScoring = useContext(ItemLevelContext)
 
   return (
     <Question
@@ -100,7 +100,7 @@ const CorrectAnswers = ({
       >
         {t('common.correctAnswers.setCorrectAnswers')}
       </Subtitle>
-      {!hidingScoringBlock && (
+      {!itemLevelScoring && (
         <FlexContainer flexDirection="column" mt="8px" marginBottom="16px">
           <Label>{t('component.correctanswers.points')}</Label>
           <PointsInput

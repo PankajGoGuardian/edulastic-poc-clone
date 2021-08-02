@@ -95,9 +95,9 @@ const MetaInfo = ({
         </TestStatusWrapper>
       </FlexContainer>
       <FlexContainer justifyContent="flex-end" alignItems="flex-end">
-        {dok && <DokStyled data-cy="detail_index-0">{`DOK:${dok}`}</DokStyled>}
-        {renderAnalytics(by, IconUser, false, 1)}
-        {renderAnalytics(id && id.substring(18), IconHash, false, 2)}
+        {dok && <DokStyled data-cy="itemDok">{`DOK:${dok}`}</DokStyled>}
+        {renderAnalytics(by, IconUser, false, 'authorName')}
+        {renderAnalytics(id && id.substring(18), IconHash, false, 'itemId')}
         <AnalyticsItem>
           <IconShare color={darkGrey} width={15} height={15} />
           <MetaTitle>{analytics?.[0]?.usage || 0}</MetaTitle>

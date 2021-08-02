@@ -184,13 +184,15 @@ class StudentQuestions extends Component {
       return acc
     }, {})
 
-    const testItemsRender = testItems.map((item, i) => (
-      <div className={i !== 0 && '__print-question-main-wrapper'}>
-        <Preview
-          item={item}
-          passages={passages}
-          evaluation={evaluationStatus}
-        />
+    const testItemsRender = testItems.map((item) => (
+      <div>
+        <div className="__print-question-main-wrapper">
+          <Preview
+            item={item}
+            passages={passages}
+            evaluation={evaluationStatus}
+          />
+        </div>
       </div>
     ))
     return <QuestionDiv>{testItemsRender}</QuestionDiv>

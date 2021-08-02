@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import ComposeQuestion from './ComposeQuestion'
-import MultipleChoiceOptions from './MultipleChoiceOptions'
+// import MultipleChoiceOptions from './MultipleChoiceOptions'
 
 class Authoring extends Component {
   static propTypes = {
@@ -34,13 +34,13 @@ class Authoring extends Component {
           cleanSections={cleanSections}
           fontSize={fontSize}
         />
-        <MultipleChoiceOptions
+        {/* <MultipleChoiceOptions
           item={item}
           fillSections={fillSections}
           setQuestionData={setQuestionData}
           cleanSections={cleanSections}
           fontSize={fontSize}
-        />
+        /> */}
       </>
     )
   }

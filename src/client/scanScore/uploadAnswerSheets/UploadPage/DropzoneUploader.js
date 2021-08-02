@@ -1,9 +1,10 @@
 import React from 'react'
 import Dropzone from 'react-dropzone'
+import styled from 'styled-components'
 
 import StyledDropZone from '../../../assessment/components/StyledDropZone'
 
-export const DropzoneContainer = ({ handleDrop, uploading }) => (
+const DropzoneUploader = ({ handleDrop, uploading }) => (
   <Dropzone
     onDrop={handleDrop}
     accept="application/pdf"
@@ -14,7 +15,7 @@ export const DropzoneContainer = ({ handleDrop, uploading }) => (
   >
     {({ getRootProps, getInputProps, isDragActive, fileRejections = [] }) => {
       return (
-        <div
+        <DropzoneContentContainer
           {...getRootProps()}
           className={`omr-dropzone ${
             isDragActive ? 'omr-dropzone--active' : ''
@@ -24,7 +25,7 @@ export const DropzoneContainer = ({ handleDrop, uploading }) => (
           <StyledDropZone
             isDragActive={isDragActive}
             dropzoneSettings={{
-              name: 'File',
+              name: false,
               allowedFiles: 'PDF',
             }}
           >
@@ -40,10 +41,12 @@ export const DropzoneContainer = ({ handleDrop, uploading }) => (
               </Col>
             ) : null} */}
           </StyledDropZone>
-        </div>
+        </DropzoneContentContainer>
       )
     }}
   </Dropzone>
 )
 
-export default DropzoneContainer
+export default DropzoneUploader
+
+const DropzoneContentContainer = styled.div``

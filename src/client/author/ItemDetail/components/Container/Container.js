@@ -154,7 +154,9 @@ class Container extends Component {
     } = this.props
     if (
       item.itemLevelScoring &&
-      get(item, ['data', 'questions'], []).some((q) => q.rubrics)
+      get(item, ['data', 'questions'], []).some(
+        (q) => q.rubrics || q?.validation?.unscored
+      )
     ) {
       setItemLevelScoring(false)
     }
@@ -751,12 +753,13 @@ class Container extends Component {
     const { previousTestId, fadeSidebar, regradeFlow } = state || {}
 
     const url = isTestFlow
-      ? `/author/tests/tab/review/id/${testId}`
+      ? previousTestId
+        ? `/author/tests/tab/review/id/${testId}/old/${previousTestId}`
+        : `/author/tests/tab/review/id/${testId}`
       : `/author/items/${item._id}/item-detail`
 
     const newState = {
       isTestFlow,
-      previousTestId,
       fadeSidebar,
       resetView: false,
       regradeFlow,
@@ -1080,7 +1083,7 @@ class Container extends Component {
 
     const layoutType = isPassage ? COMPACT : DEFAULT
     const disableScoringLevel = get(item, ['data', 'questions'], []).some(
-      (q) => q.rubrics
+      (q) => q.rubrics || q?.validation?.unscored
     )
 
     const showLanguageSelector =
@@ -1091,7 +1094,9 @@ class Container extends Component {
       setItemLevelScore(+score)
     }
 
-    const isTotalPointsBlockVisible = itemLevelScoring && widgets?.length > 0
+    const isTotalPointsBlockVisible =
+      itemLevelScoring &&
+      (widgets?.length > 0 || item?.data?.questions?.length > 0)
     const showMultipartAllPartsScore =
       isTotalPointsBlockVisible && (multipartItem || isPassageWithQuestions)
     const hasNoUnscored =

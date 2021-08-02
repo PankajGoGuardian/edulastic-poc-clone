@@ -584,14 +584,13 @@ export default createReducer(initialState, {
       (u) => u._id === state.user._id
     )
     if (accountIdx !== -1) {
+      const oldData = state.user.otherAccounts[accountIdx]
       state.user.otherAccounts[
         accountIdx
-      ].institutionIds = state.user.otherAccounts[
-        accountIdx
-      ].institutionIds.filter((id) => id !== payload)
+      ].institutionIds = oldData?.institutionIds?.filter((id) => id !== payload)
       state.user.otherAccounts[
         accountIdx
-      ].institutions = state.user.otherAccounts[accountIdx].institutions.filter(
+      ].institutions = oldData?.institutions?.filter(
         (school) => school._id !== payload
       )
     }

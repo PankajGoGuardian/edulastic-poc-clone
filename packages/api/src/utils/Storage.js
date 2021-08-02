@@ -5,7 +5,7 @@ import AppConfig from '../../../../src/app-config'
 
 const tokenKey = (userId, role) => `user:${userId}:role:${role}`
 
-function parseJwt(token) {
+export function parseJwt(token) {
   const base64Url = token.split('.')[1]
   const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
   const jsonPayload = decodeURIComponent(

@@ -40,6 +40,7 @@ import {
 } from './styled_components'
 import utils from './utils'
 import { CONSTANT } from '../Builder/config'
+import HelpTooltip from './HelpTooltip'
 
 const allTools = [
   CONSTANT.TOOLS.POINT,
@@ -55,7 +56,7 @@ const allTools = [
   CONSTANT.TOOLS.HYPERBOLA,
   CONSTANT.TOOLS.POLYNOM,
   CONSTANT.TOOLS.EXPONENT,
-  CONSTANT.TOOLS.EXPONENT_DRAGGABLE,
+  CONSTANT.TOOLS.EXPONENTIAL2,
   CONSTANT.TOOLS.LOGARITHM,
   CONSTANT.TOOLS.SIN,
   CONSTANT.TOOLS.COS,
@@ -97,8 +98,8 @@ const iconsByToolName = {
   [CONSTANT.TOOLS.EXPONENT]: (
     <IconExponent width={37} height={21} data-cy="exponent" />
   ),
-  [CONSTANT.TOOLS.EXPONENT_DRAGGABLE]: (
-    <IconExponent width={37} height={21} data-cy="exp_draggable" />
+  [CONSTANT.TOOLS.EXPONENTIAL2]: (
+    <IconExponent width={37} height={21} data-cy="exponential2" />
   ),
   [CONSTANT.TOOLS.LOGARITHM]: (
     <IconLogarithm width={37} height={21} data-cy="logarithm" />
@@ -216,17 +217,22 @@ export default function Tools(props) {
                           width={buttonSize.width}
                           height={buttonSize.height}
                           className={isSelectedPopupTool(item) ? 'active' : ''}
-                          onClick={() => onSelectPopupTool(item)}
                           key={`popup-tool-btn-${item}`}
                         >
-                          <ToolbarItem>
-                            {iconsByToolName[item]}
-                            <ToolbarItemLabel className={`icon-${item}-label`}>
-                              {utils.capitalizeFirstLetter(
-                                item === 'parabola2' ? 'parabola' : item
-                              )}
-                            </ToolbarItemLabel>
-                          </ToolbarItem>
+                          <HelpTooltip toolName={item}>
+                            <ToolbarItem
+                              onClick={() => onSelectPopupTool(item)}
+                            >
+                              {iconsByToolName[item]}
+                              <ToolbarItemLabel
+                                className={`icon-${item}-label`}
+                              >
+                                {utils.capitalizeFirstLetter(
+                                  item === 'parabola2' ? 'parabola' : item
+                                )}
+                              </ToolbarItemLabel>
+                            </ToolbarItem>
+                          </HelpTooltip>
                         </ToolBtn>
                       ))}
                     </PopupToolsContainer>

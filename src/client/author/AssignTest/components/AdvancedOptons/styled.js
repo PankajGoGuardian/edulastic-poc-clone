@@ -188,6 +188,7 @@ export const ClassListFilter = styled.div`
   flex-direction: column;
   justify-content: space-around;
   flex: 1;
+  max-width: 300px;
   height: 100%;
 
   .ant-select-selection {

@@ -6,11 +6,8 @@ export const PrintPreviewBack = styled.div`
   display: block;
 
   .__print-question-main-wrapper {
+    display: inline-table;
     width: 100%;
-  }
-
-  .__print-question-main-wrapper p {
-    width: auto;
   }
 
   .__print-feedback-wrapper,
@@ -23,9 +20,6 @@ export const PrintPreviewBack = styled.div`
   .__print-item-fix-width {
     width: 210mm !important;
     overflow: auto !important;
-  }
-  .__print-item-fix-width::-webkit-scrollbar {
-    width: 1px !important;
   }
 `
 

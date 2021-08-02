@@ -182,6 +182,8 @@ export const RECEIVE_QUESTION_PREVIEW_ATTACHMENT_FAILURE =
 export const SAVE_AND_PUBLISH_ITEM =
   '[question, itemDetail] save question and publish item'
 export const PROCEED_TO_PUBLISH_ITEM = '[itemDetail] proceed to publish item'
+
+const EDIT_PASSAGE_WIDGET = '[itemDetail] edit passage widget'
 // actions
 
 //
@@ -364,6 +366,8 @@ export const saveCurrentEditingTestIdAction = (id) => ({
   type: SAVE_CURRENT_EDITING_TEST_ID,
   payload: id,
 })
+
+export const editPassageWidgetAction = createAction(EDIT_PASSAGE_WIDGET)
 
 // selectors
 
@@ -2167,6 +2171,16 @@ function* saveAndPublishItemSaga() {
   }
 }
 
+function* editPassageWidgetSaga({ payload }) {
+  // payload is the question id
+  yield put(changeCurrentQuestionAction(payload))
+  let alignments = yield select(getAlignmentFromQuestionSelector)
+  if (!alignments.length) {
+    alignments = [getNewAlignmentState()]
+  }
+  yield put(setDictAlignmentFromQuestion(alignments))
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_ITEM_DETAIL_REQUEST, receiveItemSaga),
@@ -2188,5 +2202,6 @@ export function* watcherSaga() {
       loadQuestionPreviewAttachmentsSaga
     ),
     yield takeLatest(SAVE_AND_PUBLISH_ITEM, saveAndPublishItemSaga),
+    yield takeLatest(EDIT_PASSAGE_WIDGET, editPassageWidgetSaga),
   ])
 }

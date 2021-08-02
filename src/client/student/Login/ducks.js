@@ -870,7 +870,15 @@ function* login({ payload }) {
     } else {
       yield put(toggleClassCodeModalAction(false))
       const user = pick(result, userPickFields)
-      yield firebase.auth().signInWithCustomToken(result.firebaseAuthToken)
+      yield firebase
+        .auth()
+        .signInWithCustomToken(result.firebaseAuthToken)
+        .catch((err) => {
+          Sentry.withScope((scope) => {
+            scope.setExtra('userId', user._id)
+            Sentry.captureException(err)
+          })
+        })
       if (addAccount === true) {
         TokenStorage.storeAccessToken(result.token, user._id, user.role, false)
       } else {
@@ -1089,7 +1097,15 @@ function* signup({ payload }) {
         (!firebaseUser && result.firebaseAuthToken) ||
         (firebaseUser && firebaseUser !== user._id && result.firebaseAuthToken)
       ) {
-        yield firebase.auth().signInWithCustomToken(result.firebaseAuthToken)
+        yield firebase
+          .auth()
+          .signInWithCustomToken(result.firebaseAuthToken)
+          .catch((err) => {
+            Sentry.withScope((scope) => {
+              scope.setExtra('userId', user._id)
+              Sentry.captureException(err)
+            })
+          })
       }
       yield call(segmentApi.trackTeacherSignUp, { user: result })
 
@@ -1224,7 +1240,15 @@ export function* fetchUser({ payload }) {
       (!firebaseUser && user?.firebaseAuthToken) ||
       (firebaseUser && firebaseUser !== user._id)
     ) {
-      yield firebase.auth().signInWithCustomToken(user.firebaseAuthToken)
+      yield firebase
+        .auth()
+        .signInWithCustomToken(user.firebaseAuthToken)
+        .catch((err) => {
+          Sentry.withScope((scope) => {
+            scope.setExtra('userId', user._id)
+            Sentry.captureException(err)
+          })
+        })
     }
     yield call(segmentApi.analyticsIdentify, { user })
     const key = `${localStorage.getItem('defaultTokenKey')}`
@@ -1779,7 +1803,15 @@ function* getUserData({ payload: res }) {
       (!firebaseUser && firebaseAuthToken) ||
       (firebaseUser && firebaseUser !== res._id)
     ) {
-      yield firebase.auth().signInWithCustomToken(firebaseAuthToken)
+      yield firebase
+        .auth()
+        .signInWithCustomToken(firebaseAuthToken)
+        .catch((err) => {
+          Sentry.withScope((scope) => {
+            scope.setExtra('userId', res._id)
+            Sentry.captureException(err)
+          })
+        })
     }
     const user = pick(res, userPickFields)
     TokenStorage.storeAccessToken(res.token, user._id, user.role, true)

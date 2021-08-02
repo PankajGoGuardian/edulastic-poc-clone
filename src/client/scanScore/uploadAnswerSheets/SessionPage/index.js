@@ -1,11 +1,8 @@
 import React, { useState, useMemo } from 'react'
-import { Slider } from 'antd'
 
-import ScannedResponses from './ScannedResponses'
+import ScanResult from './ScanResult'
 import SessionStatus from './SessionStatus'
-import Thumbnail from './Thumbnail'
-
-import { getFileNameFromUri, omrSheetScanStatus } from '../utils'
+import ScannedResponses from './ScannedResponses'
 
 const SessionPage = ({
   assignmentId,
@@ -13,9 +10,9 @@ const SessionPage = ({
   pages,
   handleAbortClick,
   showResponses,
-  toggleShowResponses,
+  responsePageNumber,
+  setResponsePageNumber,
 }) => {
-  const [pageNumber, setPageNumber] = useState(1)
   const [statusFilters, setStatusFilters] = useState([])
   const [thumbnailSize, setThumbnailSize] = useState(150)
 
@@ -26,16 +23,13 @@ const SessionPage = ({
   }, [pages, statusFilters])
 
   return showResponses ? (
-    <ScannedResponses
+    <ScanResult
       assignmentId={assignmentId}
       groupId={groupId}
-      docs={filteredPages}
-      pageNumber={pageNumber}
-      setPageNumber={setPageNumber}
-      closePage={() => {
-        toggleShowResponses(false)
-        setPageNumber(1)
-      }}
+      pages={filteredPages}
+      pageNumber={responsePageNumber}
+      setPageNumber={setResponsePageNumber}
+      closePage={() => setResponsePageNumber(0)}
     />
   ) : (
     <>
@@ -50,47 +44,13 @@ const SessionPage = ({
           )
         }
       />
-      {statusFilters.length ? (
-        <>
-          <div
-            style={{ textAlign: 'center', fontSize: '18px', fontWeight: '700' }}
-          >
-            {statusFilters.includes(omrSheetScanStatus.DONE)
-              ? 'Successfully Scanned Responses'
-              : 'Responses with Scan Errors'}
-          </div>
-          <div style={{ margin: '0 40px 80px 40px' }}>
-            <Slider
-              min={50}
-              max={250}
-              value={thumbnailSize}
-              onChange={setThumbnailSize}
-              tooltipVisible={false}
-            />
-            <div style={{ display: 'flex', margin: '20px 0 20px 0' }}>
-              {filteredPages.map((page, index) => {
-                const name = page.studentName || getFileNameFromUri(page.uri)
-                const onClick = () => {
-                  setPageNumber(index + 1)
-                  toggleShowResponses(true)
-                }
-                return (
-                  <Thumbnail
-                    name={name}
-                    size={thumbnailSize}
-                    uri={page.scannedUri || page.uri}
-                    status={page.status}
-                    message={page.message}
-                    onClick={
-                      page.status === omrSheetScanStatus.DONE ? onClick : null
-                    }
-                  />
-                )
-              })}
-            </div>
-          </div>
-        </>
-      ) : null}
+      <ScannedResponses
+        thumbnailSize={thumbnailSize}
+        setThumbnailSize={setThumbnailSize}
+        setResponsePageNumber={setResponsePageNumber}
+        statusFilters={statusFilters}
+        pages={filteredPages}
+      />
     </>
   )
 }

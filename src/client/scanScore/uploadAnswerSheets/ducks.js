@@ -1,6 +1,7 @@
 import { push } from 'react-router-redux'
 import { createSlice } from 'redux-starter-kit'
 import { takeLatest, call, put, all } from 'redux-saga/effects'
+import axios from 'axios'
 
 import { aws } from '@edulastic/constants'
 import { scannerApi } from '@edulastic/api'
@@ -25,7 +26,7 @@ const slice = createSlice({
     currentSession: {},
     omrSheetDocs: {},
     showSessions: false,
-    showResponses: false,
+    responsePageNumber: 0,
     error: '',
   },
   reducers: {
@@ -117,8 +118,8 @@ const slice = createSlice({
     setOmrSheetDocsAction: (state, { payload }) => {
       state.omrSheetDocs = payload
     },
-    toggleShowResponses: (state, { payload }) => {
-      state.showResponses = payload || !state.showResponses
+    setResponsePageNumber: (state, { payload }) => {
+      state.responsePageNumber = payload || 0
     },
   },
 })
@@ -151,7 +152,10 @@ function* getOmrUploadSessionsSaga({ payload }) {
     yield put(slice.actions.getOmrUploadSessionsDone({ omrUploadSessions }))
   } catch (e) {
     console.log(e.message)
-    notification({ msg: 'Failed to fetch uploads' })
+    notification({
+      msg:
+        'Error getting last uploaded data. Please try again later or reach us at support@edulastic.com',
+    })
     yield put(slice.actions.getOmrUploadSessionsDone({ error: e.message }))
   }
 }
@@ -217,9 +221,10 @@ function* createOmrUploadSessionSaga({
       })
     )
   } catch (e) {
-    console.log(e.message)
-    const msg = e.message || 'Upload failed'
-    notification({ msg })
+    if (!axios.isCancel(e)) {
+      const msg = e.message || 'Upload failed. Please try again.'
+      notification({ msg })
+    }
     yield call(clearInterval, uploadRunner)
     yield put(slice.actions.createOmrUploadSessionDone({ error: e.message }))
     yield put(
@@ -235,25 +240,34 @@ function* updateOmrUploadSessionSaga({
   payload: { assignmentId, groupId, sessionId, pageDocs, currentSession },
 }) {
   try {
+    const status = pageDocs.some((p) => p.status === omrSheetScanStatus.DONE)
+      ? omrUploadSessionStatus.DONE
+      : omrUploadSessionStatus.FAILED
     const session = {
       ...currentSession,
       pages: pageDocs,
-      status: omrSheetScanStatus.DONE,
+      status,
+    }
+    if (status !== omrUploadSessionStatus.DONE) {
+      session.message = 'No scan completed successfully. Session failed.'
     }
     yield put(slice.actions.setOmrUploadSession({ session, update: true }))
     yield call(scannerApi.updateOmrUploadSession, {
       assignmentId,
       groupId,
       sessionId,
-      status: omrSheetScanStatus.DONE,
+      status,
+      message: session.message,
     })
-    notification({ type: 'success', msg: 'Scoring completed' })
+    notification({ type: 'success', msg: 'Scores added to Edulastic' })
     // delete firebase docs here
     const docIds = pageDocs.map(({ docId }) => docId)
     yield call(deleteNotificationDocuments, docIds)
   } catch (e) {
     console.log(e.message)
-    const msg = e.message || 'Scoring completed. Failed to update session'
+    const msg =
+      e.message ||
+      'Error in adding scores to Edulastic. Please try uploading again or reach us at support@edulastic.com'
     notification(msg)
   }
 }
@@ -285,7 +299,11 @@ function* abortOmrUploadSessionSaga({
     )
   } catch (e) {
     console.log(e.message)
-    const msg = e.message || 'Failed to abort'
+    const msg =
+      e.message ||
+      `Error in aborting ${
+        source === 'session' ? 'scan' : 'upload'
+      }. Please try again or reach us at support@edulastic.com`
     notification({ msg })
     yield put(slice.actions.abortOmrUploadSessionDone({ error: e.message }))
   }

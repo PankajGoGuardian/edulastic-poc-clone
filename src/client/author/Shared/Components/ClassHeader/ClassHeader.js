@@ -613,7 +613,7 @@ class ClassHeader extends Component {
               key="download-bubble-sheet"
               onClick={() => this.generateBubbleSheet(assignmentId, classId)}
             >
-              Generate OMR Sheet
+              Generate Bubble Sheet
             </MenuItems>
           </FeaturesSwitch>
         )}
@@ -631,7 +631,7 @@ class ClassHeader extends Component {
                 }}
                 target="_blank"
               >
-                Scan OMR Sheet
+                Scan Bubble Sheet
               </Link>
             </MenuItems>
           </FeaturesSwitch>

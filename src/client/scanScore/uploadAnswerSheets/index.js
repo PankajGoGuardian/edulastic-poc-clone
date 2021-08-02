@@ -34,13 +34,17 @@ const UploadAnswerSheets = ({
   updateOmrUploadSession,
   abortOmrUploadSession,
   showSessions,
-  showResponses,
-  toggleShowResponses,
+  responsePageNumber,
+  setResponsePageNumber,
 }) => {
   const { assignmentId = '', groupId = '', sessionId = '' } = useMemo(
     () => qs.parse(location?.search || '', { ignoreQueryPrefix: true }),
     [location?.search]
   )
+
+  const showResponses = useMemo(() => !!responsePageNumber, [
+    responsePageNumber,
+  ])
 
   const { pageDocs, scanInProgress } = useMemo(() => {
     const _pageDocs = (omrSheetDocs?.[assignmentId]?.[sessionId] || []).map(
@@ -72,10 +76,14 @@ const UploadAnswerSheets = ({
       breadcrumbs.push({
         title: 'Scan Summary',
         to: `uploadAnswerSheets?assignmentId=${assignmentId}&groupId=${groupId}&sessionId=${sessionId}`,
+        onClick: () => setResponsePageNumber(0),
       })
     }
+    if (showResponses) {
+      breadcrumbs.push({ title: 'Scan Result' })
+    }
     return breadcrumbs
-  }, [assignmentId, groupId, sessionId])
+  }, [assignmentId, groupId, sessionId, showResponses])
 
   // NOTE: handles click on listed sessions
   const handleSessionClick = useCallback((_sessionId) => {
@@ -160,7 +168,8 @@ const UploadAnswerSheets = ({
           groupId={groupId}
           pages={currentSession.pages}
           showResponses={showResponses}
-          toggleShowResponses={toggleShowResponses}
+          responsePageNumber={responsePageNumber}
+          setResponsePageNumber={setResponsePageNumber}
         />
       ) : (
         <SessionPage
@@ -171,7 +180,8 @@ const UploadAnswerSheets = ({
             scanInProgress ? () => handleAbortClick('session') : null
           }
           showResponses={showResponses}
-          toggleShowResponses={toggleShowResponses}
+          responsePageNumber={responsePageNumber}
+          setResponsePageNumber={setResponsePageNumber}
         />
       )}
     </PageLayout>

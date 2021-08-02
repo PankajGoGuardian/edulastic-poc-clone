@@ -164,6 +164,7 @@ function* createOmrUploadSessionSaga({
       setCancelUpload,
       `${assignmentId}/${sessionId}`
     )
+    // TODO: find a better way to do this
     // yield put(slice.actions.setUploadInterval())
     const { result: sessionUpdated, error } = yield call(
       assignmentApi.splitScanOmrSheets,

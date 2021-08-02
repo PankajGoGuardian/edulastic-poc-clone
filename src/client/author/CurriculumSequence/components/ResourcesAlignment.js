@@ -127,11 +127,6 @@ const ResourcesAlignment = ({
     setDefaultInterests({ curriculumId: _curriculumId })
   }
 
-  const clearFilters = () => {
-    setAlignment({})
-    setSelectedStandards([])
-  }
-
   const standardsArr = standards.map((el) => el.identifier)
 
   const handleAddStandard = (newStandard) => {
@@ -233,7 +228,6 @@ const ResourcesAlignment = ({
               setGrades={setGrades}
               setSubject={setSubject}
               handleChangeStandard={handleChangeStandard}
-              clearFilters={clearFilters}
             />
           </Col>
         ) : (

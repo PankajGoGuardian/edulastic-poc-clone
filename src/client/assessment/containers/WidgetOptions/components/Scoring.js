@@ -15,7 +15,7 @@ import {
 } from '@edulastic/constants'
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 import { rubricsApi } from '@edulastic/api'
-import { FlexContainer, PointBlockContext } from '@edulastic/common'
+import { FlexContainer, ItemLevelContext } from '@edulastic/common'
 import UnscoredBlock from '@edulastic/common/src/components/Unscored'
 
 import {
@@ -216,10 +216,10 @@ class Scoring extends Component {
 
         {isAutomarkChecked && (
           <Row gutter={24} type="flex" wrap="wrap" mb="0">
-            <PointBlockContext.Consumer>
-              {(hidingScoringBlock) =>
+            <ItemLevelContext.Consumer>
+              {(itemLevelScoring) =>
                 !isAutoMarkBtnVisible &&
-                !hidingScoringBlock && (
+                !itemLevelScoring && (
                   <Col md={12}>
                     <FlexContainer flexDirection="column" mt="8px">
                       <Label>{t('component.options.maxScore')}</Label>
@@ -249,7 +249,7 @@ class Scoring extends Component {
                   </Col>
                 )
               }
-            </PointBlockContext.Consumer>
+            </ItemLevelContext.Consumer>
             {/* showScoringType(default is true), hides  scoring type dropdown for few question types (eg: Short Text) */}
             {showScoringType && scoringTypes.length > 1 && showSelect && (
               <Col md={12}>
@@ -478,7 +478,7 @@ Scoring.defaultProps = {
   showScoringType: true,
 }
 
-Scoring.contextType = PointBlockContext
+Scoring.contextType = ItemLevelContext
 
 const enhance = compose(
   withNamespaces('assessment'),

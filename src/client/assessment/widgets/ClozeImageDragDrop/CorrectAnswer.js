@@ -1,6 +1,7 @@
 import { withNamespaces } from '@edulastic/localization'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
+import { ItemLevelContext } from '@edulastic/common'
 import Display from './Display'
 import { EDIT } from '../../constants/constantsForQuestions'
 
@@ -31,6 +32,8 @@ class CorrectAnswer extends Component {
     item: {},
     imageHeight: 490,
   }
+
+  static contextType = ItemLevelContext
 
   handleMultiSelect = (answers) => {
     const { onUpdateValidationValue } = this.props

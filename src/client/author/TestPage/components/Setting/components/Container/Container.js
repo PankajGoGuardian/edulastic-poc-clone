@@ -2247,7 +2247,10 @@ class Setting extends Component {
                         <Col span={12}>
                           <KeypadDropdown
                             value={this.keypadDropdownValue}
-                            onChangeHandler={this.keypadSelection}
+                            // This anonymous function should be wrapping the keypad selection function to make the Dropdown method work. Issue: EV-29904
+                            onChangeHandler={(value) => {
+                              this.keypadSelection(value)
+                            }}
                             disabled={!owner || !isEditable || !premium}
                           />
                         </Col>

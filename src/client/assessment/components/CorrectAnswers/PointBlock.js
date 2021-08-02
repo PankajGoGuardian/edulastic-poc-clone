@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import UnScored from '@edulastic/common/src/components/Unscored'
 import {
   FlexContainer,
-  PointBlockContext,
+  ItemLevelContext,
   getFormattedAttrId,
 } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
@@ -19,10 +19,9 @@ const PointBlock = ({
   questionType,
   unscored,
 }) => {
-  const hidingScoringBlock = useContext(PointBlockContext)
-
+  const itemLevelScoring = useContext(ItemLevelContext)
   return (
-    !hidingScoringBlock && (
+    itemLevelScoring || (
       <FlexContainer flexDirection="column" mt="8px">
         <Label>{t('component.correctanswers.points')}</Label>
         {!unscored ? (

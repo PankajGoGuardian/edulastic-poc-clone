@@ -9,7 +9,7 @@ import {
   withWindowSizes,
   EduButton,
   getFormattedAttrId,
-  PointBlockContext,
+  ItemLevelContext as HideScoringBlackContext,
   CustomPrompt,
   LanguageContext,
   ScrollContext,
@@ -250,7 +250,7 @@ class Container extends Component {
         question.id
       )
       return (
-        <PointBlockContext.Provider value={hidingScoringBlock}>
+        <HideScoringBlackContext.Provider value={hidingScoringBlock}>
           <QuestionWrapper
             type={questionType}
             view={view}
@@ -267,7 +267,7 @@ class Container extends Component {
           />
           {/* we may need to bring hint button back */}
           {/* {showHints && <Hints questions={[question]} />} */}
-        </PointBlockContext.Provider>
+        </HideScoringBlackContext.Provider>
       )
     }
   }

@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { white } from '@edulastic/colors'
+import { themeColor, white } from '@edulastic/colors'
 
 export const FeatureContentWrapper = styled.div`
   margin-top: 20px;
@@ -16,7 +16,7 @@ export const BundleContainer = styled.div`
   height: 169px;
   display: flex;
   align-items: flex-end;
-  margin: 0px 4px 10px 0px;
+  margin: 0px 8px 10px 0px;
   border-radius: 10px;
   padding: 12px 20px;
   color: ${white};
@@ -25,6 +25,14 @@ export const BundleContainer = styled.div`
   background-size: 100% 100%;
   background-position: top left;
   background-repeat: no-repeat;
+  transform: scale(1);
+  transition: 0.2s;
+  &:hover {
+    box-shadow: 0 0 3px 2px ${themeColor};
+    transform: scale(1.03);
+    border: none;
+    overflow: hidden;
+  }
 `
 
 export const Bottom = styled.div`

@@ -12,7 +12,7 @@ import {
   Ellipse,
   Equation,
   Exponent,
-  ExponentDraggable,
+  Exponent2,
   Hyperbola,
   Line,
   Logarithm,
@@ -265,8 +265,8 @@ class Board {
       case CONSTANT.TOOLS.EXPONENT:
         this.creatingHandler = Exponent.onHandler()
         break
-      case CONSTANT.TOOLS.EXPONENT_DRAGGABLE:
-        this.creatingHandler = ExponentDraggable.onHandler()
+      case CONSTANT.TOOLS.EXPONENTIAL2:
+        this.creatingHandler = Exponent2.onHandler()
         break
       case CONSTANT.TOOLS.LOGARITHM:
         this.creatingHandler = Logarithm.onHandler()
@@ -781,8 +781,8 @@ class Board {
             return Secant.getConfig(e)
           case Exponent.jxgType:
             return Exponent.getConfig(e)
-          case ExponentDraggable.jxgType:
-            return ExponentDraggable.getConfig(e)
+          case Exponent2.jxgType:
+            return Exponent2.getConfig(e)
           case Logarithm.jxgType:
             return Logarithm.getConfig(e)
           case Polynom.jxgType:
@@ -1248,7 +1248,7 @@ class Board {
           }
         )
 
-      case ExponentDraggable.jxgType: {
+      case Exponent2.jxgType: {
         this.labelForEq.push(object.points[0].label)
         const point = Point.create(this, object.points[0], {
           pointIsVisible:
@@ -1257,7 +1257,7 @@ class Board {
             !checkLabelVisibility || (showPoints && point.labelIsVisible),
           fixed,
         })
-        return ExponentDraggable.create(this, object, point, {
+        return Exponent2.create(this, object, point, {
           labelIsVisible: !checkLabelVisibility || object.labelIsVisible,
           fixed,
         })

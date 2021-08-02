@@ -86,6 +86,8 @@ const Search = ({
     userFeatures.isPublisherAuthor || userFeatures.isCurator
   )
 
+  const isDA = userRole === roleuser.DISTRICT_ADMIN
+
   const collectionDefaultFilter = useMemo(() => {
     if (userRole === roleuser.EDULASTIC_CURATOR) {
       return testsConstants.collectionDefaultFilter.filter(
@@ -103,6 +105,8 @@ const Search = ({
     // engage ny (name same as Edulastic Certified) for publishers
     isPublishers
       ? !['Public Library', 'Edulastic Certified'].includes(cd.text)
+      : isDA
+      ? !['School Library'].includes(cd.text)
       : 1
   )
   const isStandardsDisabled =

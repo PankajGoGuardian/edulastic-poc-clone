@@ -36,7 +36,9 @@ const StyledDropZone = ({
         >
           <IconUpload isDragActive={isDragActive} />
           <ZoneTitle>{t('component.dropZone.dragDrop')}</ZoneTitle>
-          <ZoneTitle>{t(`component.dropZone.yourOwn${name}`)}</ZoneTitle>
+          {name && (
+            <ZoneTitle>{t(`component.dropZone.yourOwn${name}`)}</ZoneTitle>
+          )}
           <ZoneTitle isComment>
             {t('component.dropZone.or')}{' '}
             <Underlined>{t('component.dropZone.browse')}</Underlined>:{' '}

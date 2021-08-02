@@ -272,7 +272,8 @@ export const SelectInputStyled = styled(Select)`
           }
           .ant-select-selection__choice__content {
             font-size: 10px;
-            display: flex;
+            display: ${(props) =>
+              props.tagsEllipsis ? 'inline-block' : 'flex'};
             align-items: center;
             font-weight: bold;
             letter-spacing: 0.2px;

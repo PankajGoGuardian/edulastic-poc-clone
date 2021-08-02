@@ -411,6 +411,14 @@ const JoinSchool = ({
                       disabled={!!tempSelected}
                     />
                   )}
+                  {selected && selected.districtName ? (
+                    <DistrictName data-cy="districtName">
+                      <span>{t('common.district')}: </span>
+                      {selected.districtName}
+                    </DistrictName>
+                  ) : (
+                    ''
+                  )}
                   <Actions>
                     {(!isSignupUsingDaURL && !districtId) || fromUserProfile ? (
                       <AnchorBtn
@@ -434,14 +442,6 @@ const JoinSchool = ({
                         I WANT TO HOMESCHOOL »
                       </AnchorBtn>
                     ) : null}
-                    {selected && selected.districtName ? (
-                      <DistrictName data-cy="districtName">
-                        <span>{t('common.district')}: </span>
-                        {selected.districtName}
-                      </DistrictName>
-                    ) : (
-                      ''
-                    )}
                   </Actions>
 
                   {selected && (
@@ -650,6 +650,7 @@ const SelectForm = styled.div`
 const DistrictName = styled.div`
   font-size: 12px;
   margin-right: auto;
+  padding: 15px 0px 0px;
   span {
     font-weight: 600;
   }
@@ -658,7 +659,7 @@ const DistrictName = styled.div`
 const Actions = styled.div`
   display: flex;
   justify-content: flex-start;
-  padding: 25px 0px 15px;
+  padding: 15px 0px;
 `
 
 const AnchorBtn = styled(Buttons)`
@@ -695,7 +696,7 @@ const SelectedTag = styled.div`
   border-radius: 20px;
   display: flex;
   padding: 2px 15px;
-  height: 30px;
+  min-height: 30px;
   color: ${themeColor};
   align-items: center;
   span {

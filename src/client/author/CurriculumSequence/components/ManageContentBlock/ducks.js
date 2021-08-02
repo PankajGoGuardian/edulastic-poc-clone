@@ -60,12 +60,13 @@ export const FILTERS = [
     path: 'shared',
     text: 'Shared with me',
   },
-  {
-    icon: 'reload',
-    filter: 'PREVIOUS',
-    path: 'previous',
-    text: 'Previously Used',
-  },
+  // hiding the previous option for tests becasue its not imlemented yet
+  // {
+  //   icon: 'reload',
+  //   filter: 'PREVIOUS',
+  //   path: 'previous',
+  //   text: 'Previously Used',
+  // },
   {
     icon: 'heart',
     filter: 'FAVORITES',

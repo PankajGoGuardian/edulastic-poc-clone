@@ -41,6 +41,7 @@ import { SelectInputStyled, TextInputStyled } from '../../../styled/InputStyles'
 import QuestionTextArea from '../../../components/QuestionTextArea'
 import { WidgetFRInput } from '../../../styled/Widget'
 import { PointsInput } from '../../../styled/CorrectAnswerHeader'
+import { setItemLevelScoreFromRubricAction } from '../../../../author/ItemDetail/ducks'
 
 const roundingTypes = [rounding.roundDown, rounding.none]
 
@@ -96,6 +97,7 @@ class Scoring extends Component {
       extraInScoring = null,
       isCorrectAnsTab = true,
       item = {},
+      setItemLevelScoring,
     } = this.props
     const { showGradingRubricModal, rubricActionType } = this.state
     const handleChangeValidation = (param, value) => {
@@ -128,6 +130,7 @@ class Scoring extends Component {
           }
         }
         newData.validation[param] = value
+        setItemLevelScoring(false)
       }
 
       setQuestionData(newData)
@@ -491,6 +494,7 @@ const enhance = compose(
       updateRubricData: updateRubricDataAction,
       setIsGradingRubric: setIsGradingRubricAction,
       dissociateRubricFromQuestion: removeRubricIdAction,
+      setItemLevelScoring: setItemLevelScoreFromRubricAction,
     }
   )
 )

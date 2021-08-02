@@ -58,9 +58,7 @@ const UploadAnswerSheets = ({
       })
     )
     const _scanInProgress = !_pageDocs.every(
-      (p) =>
-        p?.status > omrSheetScanStatus.SCANNING &&
-        p?.status !== omrSheetScanStatus.ABORTED
+      (p) => p?.status > omrSheetScanStatus.SCANNING
     )
     return { pageDocs: _pageDocs, scanInProgress: _scanInProgress }
   }, [omrSheetDocs, assignmentId, sessionId])
@@ -148,8 +146,9 @@ const UploadAnswerSheets = ({
       ) : !sessionId || uploading ? (
         <UploadPage
           uploading={uploading}
-          handleDrop={handleDrop}
           uploadProgress={uploadProgress}
+          currentSession={currentSession}
+          handleDrop={handleDrop}
           handleCancelUpload={
             uploading && sessionId && cancelUpload ? handleAbortClick : null
           }

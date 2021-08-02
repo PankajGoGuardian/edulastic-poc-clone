@@ -1,22 +1,24 @@
 import React from 'react'
 
 import UploadProgress from './UploadProgress'
-import DropzoneContainer from './DropzoneContainer'
+import DropzoneUploader from './DropzoneUploader'
 
 const UploadPage = ({
   uploading,
-  handleDrop,
   uploadProgress,
+  currentSession,
+  handleDrop,
   handleCancelUpload,
 }) => {
   return uploading ? (
     <UploadProgress
       uploading={uploading}
       uploadProgress={uploadProgress}
+      currentSession={currentSession}
       handleCancelUpload={handleCancelUpload}
     />
   ) : (
-    <DropzoneContainer uploading={uploading} handleDrop={handleDrop} />
+    <DropzoneUploader uploading={uploading} handleDrop={handleDrop} />
   )
 }
 

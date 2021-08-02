@@ -349,6 +349,7 @@ class ClassList extends React.Component {
               }
               onChange={changeField('institutionIds')}
               value={searchTerms.institutionIds}
+              tagsEllipsis
             >
               {schools.map(({ _id, name }) => (
                 <Select.Option key={_id} value={_id}>
@@ -420,6 +421,7 @@ class ClassList extends React.Component {
                   .toLowerCase()
                   .indexOf(input.toLowerCase()) >= 0
               }
+              tagsEllipsis
             >
               {courseList.map(({ _id, name }) => (
                 <Select.Option key={_id} value={_id}>
@@ -470,6 +472,7 @@ class ClassList extends React.Component {
               }
               value={filterClassIds}
               data-cy="selectClass"
+              tagsEllipsis
             >
               {classList.map(({ name, _id }) => (
                 <Select.Option

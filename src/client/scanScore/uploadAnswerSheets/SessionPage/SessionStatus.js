@@ -1,12 +1,15 @@
 import React, { useMemo } from 'react'
+import { Link } from 'react-router-dom'
 import styled from 'styled-components'
-import { Progress, Button } from 'antd'
+import { Progress } from 'antd'
 
 import {
+  themeColor,
   themeColorBlue,
   greyThemeDark1,
   themeColorLight,
   red,
+  white,
 } from '@edulastic/colors'
 import { omrSheetScanStatus } from '../utils'
 
@@ -15,7 +18,7 @@ const SessionStatus = ({
   groupId,
   pages = [],
   handleAbortClick,
-  toggleShowThumbnails,
+  toggleStatusFilter,
 }) => {
   const { success, failed, scanned, scanProgress } = useMemo(() => {
     const _success = pages.filter((p) => p.status === omrSheetScanStatus.DONE)
@@ -58,7 +61,7 @@ const SessionStatus = ({
             Success
             <span
               className="scan-result-text-action"
-              onClick={toggleShowThumbnails}
+              onClick={() => toggleStatusFilter(omrSheetScanStatus.DONE)}
             >
               View
             </span>
@@ -70,25 +73,45 @@ const SessionStatus = ({
             Failed
             <span
               className="scan-result-text-action"
-              onClick={toggleShowThumbnails}
+              onClick={() =>
+                toggleStatusFilter(
+                  omrSheetScanStatus.FAILED,
+                  omrSheetScanStatus.ABORTED
+                )
+              }
             >
               View
             </span>
           </div>
           <div className="scan-result-text-value failed">{failed}</div>
         </div>
-        <div className="static-text">
-          Successfully scanned responses have been recorded on Edulastic.
-        </div>
-        <div className="live-classboard-link">
-          <Button
-            type="primary"
-            target="_blank"
-            href={`${window.location.protocol}//${window.location.host}/author/classboard/${assignmentId}/${groupId}`}
-          >
-            View Live Class Board
-          </Button>
-        </div>
+        {scanned === pages.length && (
+          <>
+            <div className="static-text">
+              Successfully scanned responses have been recorded on Edulastic.
+            </div>
+            <div className="static-navigation-links">
+              <Link
+                className="live-classboard-link"
+                to={{
+                  pathname: `/author/classboard/${assignmentId}/${groupId}`,
+                }}
+                target="_blank"
+              >
+                View Live Class Board
+              </Link>
+              <Link
+                className="upload-again-link"
+                to={{
+                  pathname: '/uploadAnswerSheets',
+                  search: `?assignmentId=${assignmentId}&groupId=${groupId}`,
+                }}
+              >
+                Upload Again
+              </Link>
+            </div>
+          </>
+        )}
       </div>
     </SessionStatusContainer>
   )
@@ -97,13 +120,13 @@ const SessionStatus = ({
 export default SessionStatus
 
 const SessionStatusContainer = styled.div`
-  margin: 40px 40px 20px 40px;
+  margin: 0 40px;
   display: flex;
   justify-content: center;
   color: ${greyThemeDark1};
   .inner-container {
     border-radius: 5px;
-    padding: 50px 30px;
+    padding: 30px;
     height: auto;
     width: 500px;
   }
@@ -117,6 +140,7 @@ const SessionStatusContainer = styled.div`
     align-items: baseline;
     margin: 20px 40px 50px 40px;
     .stop-scan {
+      cursor: pointer;
       width: 50px;
       text-align: center;
       padding-left: 20px;
@@ -136,6 +160,7 @@ const SessionStatusContainer = styled.div`
     .scan-result-text-label {
     }
     .scan-result-text-action {
+      cursor: pointer;
       padding-left: 5px;
       font-size: 10px;
       color: ${themeColorLight};
@@ -150,17 +175,33 @@ const SessionStatusContainer = styled.div`
     }
   }
   .static-text {
-    margin: 50px 0;
+    margin: 50px 0 20px;
   }
-  .live-classboard-link {
+  .static-navigation-links {
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     a {
-      background-color: ${themeColorBlue};
-      border-color: ${themeColorBlue};
+      color: ${themeColor};
+      background-color: transparent;
+      border: 2px solid ${themeColor};
+      border-radius: 4px;
+      margin: 2.5px;
+      padding: 6px;
       font-weight: 600;
       font-size: 12px;
       width: 180px;
+      text-align: center;
+      transition: 0.1s ease-in;
+      &.upload-again-link {
+        color: ${white};
+        background-color: ${themeColor};
+      }
+      &:hover {
+        color: ${white};
+        background-color: ${themeColorBlue};
+        border: 1.5px solid ${themeColorBlue};
+      }
     }
   }
 `

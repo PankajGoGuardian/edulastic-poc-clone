@@ -29,6 +29,7 @@ const AuthorCompleteSignupButton = ({
   orgSchools = [],
   userOrgId,
   privateParams,
+  subType,
 }) => {
   const { currentSignUpState: signupStatus } = user
   const [isSchoolModalVisible, setIsSchoolModalVisible] = useState(false)
@@ -53,7 +54,7 @@ const AuthorCompleteSignupButton = ({
       orgSchools.length > 0
     ) {
       toggleSchoolModal(false)
-      onClick()
+      onClick(subType)
     }
   }, [signupStatus, orgSchools])
 
@@ -71,7 +72,7 @@ const AuthorCompleteSignupButton = ({
       return
     }
 
-    return onClick()
+    return onClick(subType)
   }
   const _privateParams = useMemo(() =>
     signupStatus !== signUpState.ACCESS_WITHOUT_SCHOOL ? privateParams : {}

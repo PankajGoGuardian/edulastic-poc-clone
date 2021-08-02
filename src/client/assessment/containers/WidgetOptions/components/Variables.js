@@ -481,6 +481,21 @@ const Variables = ({
     }
   }, [variableEnabled])
 
+  const handleKeyPress = (e) => {
+    const allowedNumbersRegex = new RegExp('[0-9]+') // allow numbers only
+    const pressedKey = String.fromCharCode(!e.charCode ? e.which : e.charCode)
+    const allowedKeys = [8, 9, 37, 38, 39, 40] // to allow arrow keys, backspace and tab
+    if (
+      !(
+        allowedKeys.includes(e?.which || e?.charCode) ||
+        allowedNumbersRegex?.test(pressedKey)
+      )
+    ) {
+      return e.preventDefault()
+    }
+    return pressedKey
+  }
+
   return (
     <Question
       section="advanced"
@@ -718,6 +733,8 @@ const Variables = ({
                       }
                       onBlur={generate}
                       size="large"
+                      min={0}
+                      onKeyDown={handleKeyPress}
                     />
                   </Col>
                 )}

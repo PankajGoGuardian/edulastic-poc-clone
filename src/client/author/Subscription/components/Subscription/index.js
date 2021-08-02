@@ -520,6 +520,7 @@ const Subscription = (props) => {
           onClick={callFunctionAfterSignup}
           setShowCompleteSignupModal={setShowCompleteSignupModal}
           setCallFunctionAfterSignup={setCallFunctionAfterSignup}
+          subType={subType}
         />
       )}
 

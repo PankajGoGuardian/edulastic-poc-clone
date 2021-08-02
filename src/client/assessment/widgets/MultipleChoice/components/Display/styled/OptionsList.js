@@ -6,7 +6,6 @@ export const OptionsList = styled.div`
   justify-content: space-between;
   margin-left: ${(props) => (props.styleType === 'primary' ? '0px' : '-25px')};
   width: ${({ width }) => width || 'auto'};
-  flex-direction: column;
   @media (max-width: ${mobileWidth}) {
     margin-left: 0px;
   }

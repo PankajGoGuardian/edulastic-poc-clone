@@ -54,6 +54,7 @@ export default function withKeyboard(WrappedComponent) {
         onClickEvent,
         onlySpaceKey = false,
         tool = [],
+        fromSetAnswers,
       } = this.props
       // #5 is for ScratchPad
       const isSratchPadEnabled = tool.includes(5)
@@ -69,7 +70,7 @@ export default function withKeyboard(WrappedComponent) {
             if (isSratchPadEnabled) return
             const code = e.which || e.keyCode
             // preventing default behavior if any key is pressed other than tab key
-            if (code !== keyboardConst.TAB_KEY) {
+            if (code !== keyboardConst.TAB_KEY && !fromSetAnswers) {
               e.preventDefault()
             }
             if (supportedKeys.includes(code)) {

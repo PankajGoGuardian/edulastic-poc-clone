@@ -8,7 +8,7 @@ import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 import {
   FlexContainer,
   notification,
-  ItemLevelContext,
+  PointBlockContext,
 } from '@edulastic/common'
 import Question from '../../../components/Question/index'
 import { Subtitle } from '../../../styled/Subtitle'
@@ -84,7 +84,7 @@ const CorrectAnswers = ({
     )
   }
 
-  const itemLevelScoring = useContext(ItemLevelContext)
+  const itemLevelScoring = useContext(PointBlockContext)
 
   return (
     <Question

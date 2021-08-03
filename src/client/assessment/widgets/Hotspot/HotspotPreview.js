@@ -1,6 +1,6 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useMemo } from 'react'
 import PropTypes from 'prop-types'
-import { cloneDeep, get } from 'lodash'
+import { cloneDeep, get, isEmpty } from 'lodash'
 
 import {
   Stimulus,
@@ -57,6 +57,8 @@ const HotspotPreview = ({
   const width = image ? image.width : 900
   const height = image ? image.height : 470
   const source = image ? image.source : ''
+
+  const isEvaluationEmpty = useMemo(() => isEmpty(evaluation), [evaluation])
 
   const handleClick = (i) => () => {
     const newAnswer = cloneDeep(userAnswer)
@@ -135,6 +137,7 @@ const HotspotPreview = ({
                 areas.map((area, i) => (
                   <Polygon
                     key={i}
+                    isEvaluationEmpty={isEvaluationEmpty}
                     showAnswer={previewTab !== CLEAR && userAnswer.includes(i)}
                     onClick={!disableResponse ? handleClick(i) : () => {}}
                     points={area

@@ -210,7 +210,7 @@ class Setting extends Component {
     const { setMaxAttempts } = this.props
     let { value = 0 } = e.target
     if (value < 0) value = 0
-    setMaxAttempts(value)
+    setMaxAttempts(parseInt(value, 10))
   }
 
   setPassword = (e) => {

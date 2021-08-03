@@ -186,7 +186,6 @@ export function removeAllTokens() {
   window.sessionStorage.removeItem('defaultTokenKey')
   window.localStorage.removeItem('defaultTokenKey')
   window.localStorage.removeItem('tokens')
-  window.localStorage.removeItem('authState')
 }
 
 export function storeInLocalStorage(key, value) {

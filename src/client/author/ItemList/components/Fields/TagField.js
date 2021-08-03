@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { SelectSearch } from '@edulastic/common'
-import { debounce, uniq } from 'lodash'
+import { debounce, uniq, compact } from 'lodash'
 import {
   getKnownTagsSelector,
   getTagSearchListSelector,
@@ -44,10 +44,12 @@ export const TagField = React.forwardRef(
         search: {
           searchString: [searchTerm],
           tagTypes,
-          districtIds: uniq([
-            userDistrictId,
-            ...collections.map((col) => col.districtId),
-          ]),
+          districtIds: uniq(
+            compact([
+              userDistrictId,
+              ...collections.map((col) => col.districtId),
+            ])
+          ),
         },
       }),
       [searchTerm, tagTypes.join(','), collections]

@@ -26,13 +26,15 @@ const Response = ({
   isPrintPreview,
   answerScore,
   allCorrect,
+  isEvaluationEmpty,
 }) => {
   const { width: contentWidth } = measureText(userAnswer, btnStyle) // returns number
   const { fillColor, mark, indexBgColor } = getEvalautionColor(
     answerScore,
     status === 'right',
     hasAnswered,
-    allCorrect
+    allCorrect,
+    isEvaluationEmpty
   )
 
   const padding = lessMinWidth ? 4 : 30
@@ -115,6 +117,7 @@ Response.propTypes = {
   indexStr: PropTypes.string,
   lessMinWidth: PropTypes.bool,
   isExpressGrader: PropTypes.bool.isRequired,
+  isEvaluationEmpty: PropTypes.bool,
 }
 
 Response.defaultProps = {
@@ -122,6 +125,7 @@ Response.defaultProps = {
   status: '',
   indexStr: '',
   lessMinWidth: false,
+  isEvaluationEmpty: true,
 }
 
 export default Response

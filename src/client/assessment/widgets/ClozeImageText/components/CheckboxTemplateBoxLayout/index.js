@@ -1,8 +1,11 @@
-import React, { useContext } from 'react'
+import React, { useContext, useMemo } from 'react'
 import PropTypes from 'prop-types'
+import { ThemeContext } from 'styled-components'
+import isEmpty from 'lodash/isEmpty'
+
 import { helpers } from '@edulastic/common'
 import { response } from '@edulastic/constants'
-import { ThemeContext } from 'styled-components'
+
 import { StyledPreviewImage } from '../../styled/StyledPreviewImage'
 import { StyledPreviewTemplateBox } from '../../styled/StyledPreviewTemplateBox'
 import { StyledPreviewContainer } from '../../styled/StyledPreviewContainer'
@@ -36,6 +39,10 @@ const CheckboxTemplateBoxLayout = ({
   const allCorrect =
     responseContainers?.length === Object.keys(evaluation)?.length &&
     Object.keys(evaluation)?.every((id) => evaluation[id])
+
+  const isEvaluationEmpty = useMemo(() => {
+    return isEmpty(evaluation)
+  }, [evaluation])
 
   return (
     <StyledPreviewTemplateBox fontSize={fontSize} height={canvasHeight}>
@@ -100,6 +107,7 @@ const CheckboxTemplateBoxLayout = ({
               isPrintPreview={isPrintPreview}
               answerScore={answerScore}
               allCorrect={allCorrect}
+              isEvaluationEmpty={isEvaluationEmpty}
             />
           )
         })}

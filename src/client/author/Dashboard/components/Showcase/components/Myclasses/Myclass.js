@@ -355,11 +355,27 @@ const MyClasses = ({
 
   const isCpm = user?.utm_source?.toLowerCase()?.includes('cpm')
 
+  const isEureka =
+    user?.referrer?.toLowerCase()?.includes('eureka') ||
+    user?.utm_source?.toLowerCase()?.includes('eureka')
+
   let filteredBundles = featuredBundles
 
-  if (isEurekaMathActive) {
+  if (isEurekaMathActive || isEureka) {
     filteredBundles = filteredBundles.filter(
-      (feature) => feature.description !== 'Engage NY'
+      (feature) =>
+        feature.description !== 'Engage NY' &&
+        !(
+          feature?.config?.excludedPublishers?.includes('Eureka') ||
+          feature?.config?.excludedPublishers?.includes('eureka')
+        )
+    )
+    bannerSlides = bannerSlides.filter(
+      (banner) =>
+        !(
+          banner?.config?.excludedPublishers?.includes('Eureka') ||
+          banner?.config?.excludedPublishers?.includes('eureka')
+        )
     )
   }
 

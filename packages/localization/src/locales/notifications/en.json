@@ -2034,5 +2034,9 @@
   "invalidSeqVariableMsg": {
     "message": "Please note that all dynamic parameters that are of \"sequence\" type need to have the same number of items. Otherwise, it may not be so obvious how the sequences should be aligned.",
     "description": ""
+  },
+  "pointsOnEquWithObjects": {
+    "message": "Please note that the grading for this question will only consider if the points given by the student meet the equation you specified, and not the specific objects that you entered",
+    "description": "You may want to consider using background objects instead to avoid confusion"
   }
 }

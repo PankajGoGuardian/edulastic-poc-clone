@@ -1,4 +1,6 @@
-import React from 'react'
+import React, { useMemo } from 'react'
+import isEmpty from 'lodash/isEmpty'
+
 import { darkRed1, cardBorder, themeColor } from '@edulastic/colors/index'
 import RectangleWrapper from '../styled/RectangleWrapper'
 import Rectangle from '../styled/Rectangle'
@@ -16,6 +18,9 @@ const Rectangles = ({
 }) => {
   const total = rows * columns
   const offset = fractionNumber * total
+
+  const isEvaluationEmpty = useMemo(() => isEmpty(evaluation), [evaluation])
+
   return (
     <RectangleWrapper rows={rows} columns={columns}>
       {Array(total)
@@ -28,11 +33,10 @@ const Rectangles = ({
             fillColor = _selected ? themeColor : cardBorder
           } else if (_selected) {
             // show answers with highlighting (correct: green, wrong: darkRed)
-            fillColor = evaluation
-              ? evaluation[index + 1 + offset] === true
+            fillColor =
+              isEvaluationEmpty || evaluation[index + 1 + offset] === true
                 ? themeColor
                 : darkRed1
-              : themeColor
           }
           if (isExpressGrader && isAnswerModifiable && _selected) {
             // in expressGrader and edit response is on

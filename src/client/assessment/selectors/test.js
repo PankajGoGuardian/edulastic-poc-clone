@@ -97,6 +97,10 @@ export const curentPlayerDetailsSelector = createSelector(
   (state) => state.currentPlayingDetails
 )
 
+export const originalPlayerSkinName = createSelector(stateSelector, (state) => {
+  return state.playerSkinType
+})
+
 export const playerSkinTypeSelector = createSelector(stateSelector, (state) => {
   const { playerSkinType } = state
   return playerSkinValues[playerSkinType] || playerSkinValues.edulastic

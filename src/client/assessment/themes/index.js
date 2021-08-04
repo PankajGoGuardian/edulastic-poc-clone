@@ -49,7 +49,11 @@ import {
 import { evaluateAnswer } from '../actions/evaluation'
 import { changePreview as changePreviewAction } from '../actions/view'
 import { getQuestionsByIdSelector } from '../selectors/questions'
-import { testLoadingSelector, playerSkinTypeSelector } from '../selectors/test'
+import {
+  testLoadingSelector,
+  playerSkinTypeSelector,
+  originalPlayerSkinName,
+} from '../selectors/test'
 import {
   getAnswersArraySelector,
   getAnswersListSelector,
@@ -540,6 +544,7 @@ const AssessmentContainer = ({
   isStudentReport,
   savingResponse,
   playerSkinType,
+  originalSkinName,
   userPrevAnswer,
   testSettings,
   showMagnifier,
@@ -1188,6 +1193,7 @@ const AssessmentContainer = ({
     passage,
     defaultAP,
     playerSkinType,
+    originalSkinName,
     showMagnifier,
     handleMagnifier,
     enableMagnifier,
@@ -1380,6 +1386,7 @@ const enhance = compose(
       docUrl: state.test.docUrl,
       testType: state.test.testType,
       playerSkinType: playerSkinTypeSelector(state),
+      originalSkinName: originalPlayerSkinName(state),
       testletConfig: state.test?.testletConfig,
       freeFormNotes: state?.test?.freeFormNotes,
       testletState: get(

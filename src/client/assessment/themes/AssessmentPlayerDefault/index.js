@@ -341,6 +341,7 @@ class AssessmentPlayerDefault extends React.Component {
       isStudentReport,
       defaultAP,
       playerSkinType,
+      originalSkinName,
       title,
       changePreview,
       showMagnifier,
@@ -546,6 +547,7 @@ class AssessmentPlayerDefault extends React.Component {
             previewPlayer={previewPlayer}
             headerStyleWidthZoom={headerStyleWidthZoom}
             playerSkinType={playerSkinType}
+            originalSkinName={originalSkinName}
             defaultAP={defaultAP}
             finishTest={
               previewPlayer

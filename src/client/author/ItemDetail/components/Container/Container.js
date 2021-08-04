@@ -63,6 +63,7 @@ import {
   getPassageSelector,
   addWidgetToPassageAction,
   deleteItemAction,
+  editPassageWidgetAction,
 } from '../../ducks'
 import {
   changeCurrentQuestionAction,
@@ -452,11 +453,11 @@ class Container extends Component {
     const {
       loadQuestion,
       changeView,
-      setCurrentQuestion,
+      editPassageWidget,
       item: { isPassageWithQuestions },
     } = this.props
     if (isPassageWithQuestions) {
-      setCurrentQuestion(widget.reference)
+      editPassageWidget(widget.reference)
       this.setState({
         showQuestionManageModal: true,
         isEditPassageQuestion: true,
@@ -1385,6 +1386,7 @@ const enhance = compose(
       deleteWidgetFromPassage: deleteWidgetFromPassageAction,
       setCreatedItemToTest: setCreatedItemToTestAction,
       setCurrentQuestion: changeCurrentQuestionAction,
+      editPassageWidget: editPassageWidgetAction,
     }
   )
 )

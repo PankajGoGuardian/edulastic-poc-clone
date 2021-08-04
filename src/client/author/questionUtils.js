@@ -399,6 +399,9 @@ const emptyCorrectAnswerErrMsg = {
  */
 export const isIncompleteQuestion = (item, itemLevelScoring = false) => {
   // if its a resource type question just return.
+  if (isEmpty(item)) {
+    return [true, 'Question content should not be empty']
+  }
   if (question.resourceTypeQuestions.includes(item.type)) {
     const _hasEmptyFields = hasEmptyFields(item)
     if (_hasEmptyFields) return [true, _hasEmptyFields]

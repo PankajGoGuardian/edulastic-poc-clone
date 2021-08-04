@@ -244,7 +244,7 @@ const Header = ({
     setShowAutomaticUnarchiveModal(false)
   }
 
-  const handleCanvasAndGoogleSyncButtonClick = () => {
+  const handleCanvasAndGoogleSyncButtonClick = (syncType = '') => {
     if (
       (selectedClass?.canvasCode &&
         selectedClass.canvasCode.includes('deactivated')) ||
@@ -252,9 +252,9 @@ const Header = ({
         selectedClass.googleId.includes('deactivated'))
     ) {
       setShowAutomaticUnarchiveModal(true)
-    } else if (selectedClass?.googleId) {
+    } else if (syncType === 'google') {
       syncGCModal()
-    } else if (selectedClass?.canvasCode) {
+    } else if (syncType === 'canvas') {
       handleSyncWithCanvas()
     }
   }
@@ -300,7 +300,9 @@ const Header = ({
                     <Option
                       key={index}
                       data-cy={`sync-option-${index}`}
-                      onClick={handleCanvasAndGoogleSyncButtonClick}
+                      onClick={() =>
+                        handleCanvasAndGoogleSyncButtonClick('google')
+                      }
                     >
                       <span className="menu-label">
                         Sync with Google Classroom
@@ -336,7 +338,9 @@ const Header = ({
                   <Option
                     key={index}
                     data-cy={`sync-option-${index}`}
-                    onClick={handleCanvasAndGoogleSyncButtonClick}
+                    onClick={() =>
+                      handleCanvasAndGoogleSyncButtonClick('canvas')
+                    }
                   >
                     <span className="menu-label">Sync with Canvas</span>
                     <img
@@ -364,7 +368,7 @@ const Header = ({
                 <EduButton
                   isBlue
                   isGhost
-                  onClick={handleCanvasAndGoogleSyncButtonClick}
+                  onClick={() => handleCanvasAndGoogleSyncButtonClick('google')}
                 >
                   <IconGoogleClassroom />
                   <span>SYNC WITH GOOGLE CLASSROOM</span>
@@ -391,7 +395,7 @@ const Header = ({
                 data-cy="syncCanvasClass"
                 isBlue
                 isGhost
-                onClick={handleCanvasAndGoogleSyncButtonClick}
+                onClick={() => handleCanvasAndGoogleSyncButtonClick('canvas')}
               >
                 <img
                   alt="Canvas"

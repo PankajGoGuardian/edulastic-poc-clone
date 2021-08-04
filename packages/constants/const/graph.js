@@ -34,7 +34,10 @@ const GRAPH_TOOLS = {
   DELETE: 'delete',
   EQUATION: 'equation',
   AREA: 'area',
+  AREA2: 'area2',
   DASHED: 'dashed',
+  PIECEWISE: 'piecewise',
+  NO_SOLUTION: 'no_solution',
 
   // Default
   RESET: 'reset',

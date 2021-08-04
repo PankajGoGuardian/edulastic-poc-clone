@@ -4,6 +4,8 @@ import styled from 'styled-components'
 import { withNamespaces } from '@edulastic/localization'
 import HelperToolTip from './HelperToolTip'
 
+const hideToolTip = ['enablePartialCredit', 'applyPenaltyForWrong']
+
 const LabelWithHelper = ({
   t,
   label,
@@ -24,7 +26,9 @@ const LabelWithHelper = ({
       display={vertical ? '' : 'inline-block'}
     >
       <OptionLabel text={optionLabel} />
-      <HelperToolTip optionKey={optionKey} large={large} isGraph={isGraph} />
+      {!hideToolTip.includes(optionKey) && (
+        <HelperToolTip optionKey={optionKey} large={large} isGraph={isGraph} />
+      )}
     </FieldLabel>
   )
 }

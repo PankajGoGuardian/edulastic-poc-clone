@@ -2629,3 +2629,12 @@ div[class*='_pendo'] button {
 .ant-pagination .ant-pagination-item:hover a {
   color: white;
 }
+
+.graph-tool-helper-popover {
+  max-width: 390px;
+  min-width: 280px;
+}
+
+.graph-tool-helper-popover .mb-8 {
+  margin-bottom: 8px;
+}

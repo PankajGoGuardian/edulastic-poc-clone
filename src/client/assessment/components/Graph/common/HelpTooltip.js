@@ -9,10 +9,16 @@ const HelperToolTip = ({ toolName, children, t }) => {
     const text = replaceLatexTemplate(
       t(`component.graphing.helperText.${toolName}`)
     )
-    return <HelperText text={replaceLatexTemplate(text)} />
+    return <HelperText text={text} />
   }, [toolName])
+
   return (
-    <Popover content={content} zIndex={1500} placement="top">
+    <Popover
+      overlayClassName="graph-tool-helper-popover"
+      content={content}
+      zIndex={1500}
+      placement="topRight"
+    >
       {children}
     </Popover>
   )

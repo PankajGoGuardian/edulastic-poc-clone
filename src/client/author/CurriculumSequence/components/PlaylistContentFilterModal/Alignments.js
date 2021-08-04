@@ -84,6 +84,7 @@ export default Alignments
 
 const ClearFiltersLabel = styled.div`
   line-height: 1.38;
+  width: 80px;
   font-size: 11px;
   font-weight: ${(props) => props.theme.widgetOptions.labelFontWeight};
   color: ${themeColor};

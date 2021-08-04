@@ -142,7 +142,7 @@ class ProfileBody extends React.Component {
       user,
       updateUserDetails,
       userInfo: { currentSignUpState },
-      userOrg: { districtId },
+      userOrg: { districtId } = {},
     } = this.props
     const { showChangePassword, isEditProfile } = this.state
     const isnotNormalLogin =
@@ -420,11 +420,7 @@ class ProfileBody extends React.Component {
   }
 
   checkUser = async (rule, value, callback) => {
-    const {
-      user,
-      t,
-      userOrg: { districtId },
-    } = this.props
+    const { user, t, userOrg: { districtId } = {} } = this.props
 
     if (value !== user.email) {
       const result = await userApi.checkUser({
@@ -433,8 +429,11 @@ class ProfileBody extends React.Component {
         role: user.role,
       })
 
-      if (result.length > 0)
+      if (result.length > 0) {
         callback(t('common.title.emailAlreadyExistsMessage'))
+      } else {
+        callback()
+      }
     }
     callback()
   }

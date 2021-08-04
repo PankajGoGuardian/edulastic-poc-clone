@@ -13,5 +13,3 @@ export const QTI_DISTRICTS = [
   '5ebbbb3b03b7ad0924d19c46',
   '5e4a3ce103b7ad09241750e4',
 ]
-
-export const BUBBLE_ENABLED_DISTRICTS = []

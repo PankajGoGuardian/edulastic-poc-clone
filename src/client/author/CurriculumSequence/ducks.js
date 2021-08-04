@@ -41,6 +41,7 @@ import {
   getWritableCollectionsSelector,
   getCurrentActiveTerms,
   getCurrentTerm,
+  getUserOrgId,
 } from '../src/selectors/user'
 import {
   allowDuplicateCheck,
@@ -1678,7 +1679,9 @@ function* cloneThisPlayListSaga({ payload }) {
           state: { currentGroupId: groupId, fromUseThis },
         })
       )
-      yield put(receiveCurrentPlaylistMetrics({ groupId, playlistId: _id, termId }))
+      yield put(
+        receiveCurrentPlaylistMetrics({ groupId, playlistId: _id, termId })
+      )
     } else if (onChange && !urlHasUseThis) {
       yield put(
         push({
@@ -1812,6 +1815,11 @@ function* fetchPlaylistAccessList({ payload }) {
 
 function* fetchPlaylistMetricsSaga({ payload }) {
   try {
+    // For curator without districtId
+    const districtId = yield select(getUserOrgId)
+    if (!districtId) {
+      return
+    }
     const { playlistId } = payload || {}
     if (!playlistId) {
       throw new Error(

@@ -442,7 +442,6 @@ class ClassHeader extends Component {
       studentsUTAData,
       schoologySyncAssignment,
       syncWithSchoologyClassroomInProgress,
-      bubbleSheetsEnabled,
     } = this.props
     const {
       visible,
@@ -602,40 +601,36 @@ class ClassHeader extends Component {
         >
           Release Score
         </MenuItems>
-        {bubbleSheetsEnabled && (
-          <FeaturesSwitch
-            inputFeatures="enableOmrSheets"
-            actionOnInaccessible="hidden"
-            groupId={classId}
+        <FeaturesSwitch
+          inputFeatures="enableOmrSheets"
+          actionOnInaccessible="hidden"
+          groupId={classId}
+        >
+          <MenuItems
+            data-cy="download-bubble-sheet"
+            key="download-bubble-sheet"
+            onClick={() => this.generateBubbleSheet(assignmentId, classId)}
           >
-            <MenuItems
-              data-cy="download-bubble-sheet"
-              key="download-bubble-sheet"
-              onClick={() => this.generateBubbleSheet(assignmentId, classId)}
+            Generate Bubble Sheet
+          </MenuItems>
+        </FeaturesSwitch>
+        <FeaturesSwitch
+          inputFeatures="enableOmrSheets"
+          actionOnInaccessible="hidden"
+          groupId={classId}
+        >
+          <MenuItems data-cy="upload-bubble-sheet" key="upload-bubble-sheet">
+            <Link
+              to={{
+                pathname: '/uploadAnswerSheets',
+                search: `?assignmentId=${assignmentId}&groupId=${classId}`,
+              }}
+              target="_blank"
             >
-              Generate Bubble Sheet
-            </MenuItems>
-          </FeaturesSwitch>
-        )}
-        {bubbleSheetsEnabled && (
-          <FeaturesSwitch
-            inputFeatures="enableOmrSheets"
-            actionOnInaccessible="hidden"
-            groupId={classId}
-          >
-            <MenuItems data-cy="upload-bubble-sheet" key="upload-bubble-sheet">
-              <Link
-                to={{
-                  pathname: '/uploadAnswerSheets',
-                  search: `?assignmentId=${assignmentId}&groupId=${classId}`,
-                }}
-                target="_blank"
-              >
-                Scan Bubble Sheet
-              </Link>
-            </MenuItems>
-          </FeaturesSwitch>
-        )}
+              Scan Bubble Sheet
+            </Link>
+          </MenuItems>
+        </FeaturesSwitch>
         {isShowUnAssign && (
           <MenuItems
             data-cy="unAssign"
@@ -1067,12 +1062,6 @@ const enhance = compose(
       syncWithSchoologyClassroomInProgress: getSchoologyAssignmentSyncInProgress(
         state
       ),
-      // NOTE: temporarily enable bubble sheets generation & scanning for specific districts
-      bubbleSheetsEnabled:
-        !BUBBLE_ENABLED_DISTRICTS.length ||
-        BUBBLE_ENABLED_DISTRICTS.some((district) =>
-          (state?.user?.user?.districtIds || []).includes(district)
-        ),
     }),
     {
       loadTestActivity: receiveTestActivitydAction,

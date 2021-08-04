@@ -45,9 +45,7 @@ const initialItemsState = {
     ? JSON.parse(getFromLocalStorage('recentStandards'))
     : [],
   alignments: [getNewAlignmentState()],
-  recentCollectionsList: getFromLocalStorage('recentCollections')
-    ? JSON.parse(getFromLocalStorage('recentCollections'))
-    : [],
+  recentCollectionsList: [],
 }
 
 const dictionariesReducer = (state = initialItemsState, { type, payload }) => {

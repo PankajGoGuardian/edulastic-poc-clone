@@ -73,6 +73,7 @@ import {
   getUserRole,
   isOrganizationDistrictUserSelector,
   getIsCurator,
+  getUserOrgId,
 } from '../src/selectors/user'
 
 import {
@@ -538,11 +539,12 @@ export const getItemDetailValidationSelector = createSelector(
   }
 )
 
-export const generateRecentlyUsedCollectionsList = (
+export function* generateRecentlyUsedCollectionsList(
   collections,
   itemBanks,
   recentCollectionsList
-) => {
+) {
+  const userDistrictId = yield select(getUserOrgId)
   recentCollectionsList = [...recentCollectionsList, ...collections]
   recentCollectionsList = recentCollectionsList.map((collection) => {
     if (typeof collection === 'object') return collection
@@ -550,7 +552,7 @@ export const generateRecentlyUsedCollectionsList = (
   })
   recentCollectionsList = uniqBy(recentCollectionsList, '_id')
   storeInLocalStorage(
-    'recentCollections',
+    `recentCollections_${userDistrictId}`,
     JSON.stringify(recentCollectionsList)
   )
   return recentCollectionsList
@@ -1409,7 +1411,7 @@ export function* updateItemSaga({ payload }) {
     if (collections) {
       const { itemBanks } = yield select(getOrgDataSelector)
       let recentCollectionsList = yield select(getRecentCollectionsListSelector)
-      recentCollectionsList = generateRecentlyUsedCollectionsList(
+      recentCollectionsList = yield generateRecentlyUsedCollectionsList(
         collections,
         itemBanks,
         recentCollectionsList
@@ -1559,7 +1561,7 @@ export function* updateItemDocBasedSaga({ payload }) {
     if (collections) {
       const { itemBanks } = yield select(getOrgDataSelector)
       let recentCollectionsList = yield select(getRecentCollectionsListSelector)
-      recentCollectionsList = generateRecentlyUsedCollectionsList(
+      recentCollectionsList = yield generateRecentlyUsedCollectionsList(
         collections,
         itemBanks,
         recentCollectionsList

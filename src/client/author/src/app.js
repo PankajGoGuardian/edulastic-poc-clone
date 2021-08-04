@@ -9,6 +9,7 @@ import { connect } from 'react-redux'
 import { Progress, ErrorHandler } from '@edulastic/common'
 import { tabletWidth, mainBgColor } from '@edulastic/colors'
 import { roleuser } from '@edulastic/constants'
+import { getFromLocalStorage } from '@edulastic/api/src/utils/Storage'
 import { get } from 'lodash'
 import { themes } from '../../theme'
 import Sidebar, { isDisablePageInMobile } from './Sidebar/SideMenu'
@@ -25,6 +26,7 @@ import {
 } from '../DistrictPolicy/ducks'
 import ImportTest from '../ImportTest'
 import NotFound from '../../NotFound'
+import { updateRecentCollectionsAction } from './actions/dictionaries'
 
 /* lazy load routes */
 const Dashboard = loadable(() => import('../Dashboard'), {
@@ -246,7 +248,21 @@ const Author = ({
   isProxyUser,
   isCliUser,
   isDemoAccount,
+  updateRecentCollections,
 }) => {
+  useEffect(() => {
+    if (orgId) {
+      const recentCollections = getFromLocalStorage(
+        `recentCollections_${orgId}`
+      )
+        ? JSON.parse(getFromLocalStorage(`recentCollections_${orgId}`))
+        : []
+      updateRecentCollections({
+        recentCollections,
+      })
+    }
+  }, [orgId])
+
   useEffect(() => {
     if (role === roleuser.SCHOOL_ADMIN && schoolId) {
       loadSchoolPolicy(schoolId)
@@ -907,6 +923,7 @@ export default connect(
   {
     loadDistrictPolicy: receiveDistrictPolicyAction,
     loadSchoolPolicy: receiveSchoolPolicyAction,
+    updateRecentCollections: updateRecentCollectionsAction,
   }
 )(Author)
 

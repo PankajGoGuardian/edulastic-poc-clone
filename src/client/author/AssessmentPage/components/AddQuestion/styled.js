@@ -41,8 +41,8 @@ export const AddQuestionIcon = styled.span`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 40px;
-  height: 40px;
+  width: 35px;
+  height: 35px;
   border-radius: 5px;
   background: ${themeColor};
   cursor: pointer;
@@ -59,8 +59,8 @@ export const AddQuestionIcon = styled.span`
   }
 
   @media (max-width: ${smallDesktopWidth}) {
-    width: 35px;
-    height: 35px;
+    width: 30px;
+    height: 30px;
   }
 `
 

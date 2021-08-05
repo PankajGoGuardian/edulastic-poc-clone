@@ -20,6 +20,7 @@ import {
   MATH,
   TRUE_OR_FALSE,
   ESSAY_PLAIN_TEXT,
+  ESSAY_RICH_TEXT,
 } from '@edulastic/constants/const/questionType'
 import { math } from '@edulastic/constants'
 
@@ -191,6 +192,13 @@ const essayData = {
   showWordCount: true,
 }
 
+const essayRichTextData = {
+  uiStyle: {
+    height: 200,
+  },
+  showWordCount: true,
+}
+
 const trueOrFalseData = {
   type: 'multipleChoice',
   subType: 'trueOrFalse',
@@ -213,6 +221,7 @@ const typeTitleHash = {
   [MATH]: 'Math - standard',
   [TRUE_OR_FALSE]: 'True or false',
   [ESSAY_PLAIN_TEXT]: 'Essay with plain text',
+  [ESSAY_RICH_TEXT]: 'Essay with rich text',
 }
 
 const createQuestion = (
@@ -245,6 +254,7 @@ const createQuestion = (
   ...(type === MULTIPLE_CHOICE ? multipleChoiceData : {}),
   ...(type === MATH ? mathData : {}),
   ...(type === ESSAY_PLAIN_TEXT ? essayData : {}),
+  ...(type === ESSAY_RICH_TEXT ? essayRichTextData : {}),
 })
 
 const createSection = (qIndex = 0, title = '') => ({

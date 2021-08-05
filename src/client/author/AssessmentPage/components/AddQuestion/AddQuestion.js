@@ -7,6 +7,7 @@ import {
   MATH,
   TRUE_OR_FALSE,
   ESSAY_PLAIN_TEXT,
+  ESSAY_RICH_TEXT,
 } from '@edulastic/constants/const/questionType'
 import {
   IconNewList,
@@ -113,6 +114,14 @@ class AddQuestion extends React.Component {
               <AddQuestionIcon
                 onClick={onAddQuestion(ESSAY_PLAIN_TEXT)}
                 data-cy={ESSAY_PLAIN_TEXT}
+              >
+                <IconPencilHollow />
+              </AddQuestionIcon>
+            </Tooltip>
+            <Tooltip placement="top" title="Essay Rich Text">
+              <AddQuestionIcon
+                onClick={onAddQuestion(ESSAY_RICH_TEXT)}
+                data-cy={ESSAY_RICH_TEXT}
               >
                 <IconPencilHollow />
               </AddQuestionIcon>

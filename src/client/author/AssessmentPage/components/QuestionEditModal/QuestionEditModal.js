@@ -11,6 +11,7 @@ import {
   MULTIPLE_CHOICE,
   SHORT_TEXT,
   TRUE_OR_FALSE,
+  ESSAY_RICH_TEXT,
 } from '@edulastic/constants/const/questionType'
 import { Col, Row, Select } from 'antd'
 import PropTypes from 'prop-types'
@@ -26,6 +27,7 @@ import QuestionDropdown from './components/QuestionDropdown/QuestionDropdown'
 import QuestionEssay from './components/QuestionEssay/QuestionEssay'
 import QuestionMath from './components/QuestionMath/QuestionMath'
 import QuestionText from './components/QuestionText/QuestionText'
+import QuestionRichEssay from './components/QuestionRichEssay/QuestionRichEssay'
 
 const questionTypeTitles = {
   [MULTIPLE_CHOICE]: 'Multiple Choice',
@@ -33,6 +35,7 @@ const questionTypeTitles = {
   [CLOZE_DROP_DOWN]: 'Question Dropdown',
   [ESSAY_PLAIN_TEXT]: 'Question Essay',
   [SHORT_TEXT]: 'Text Entry',
+  [ESSAY_RICH_TEXT]: 'Question Rich Essay',
 }
 
 export default class QuestionEditModal extends React.Component {
@@ -74,6 +77,8 @@ export default class QuestionEditModal extends React.Component {
         return <QuestionMath {...props} />
       case ESSAY_PLAIN_TEXT:
         return <QuestionEssay {...props} />
+      case ESSAY_RICH_TEXT:
+        return <QuestionRichEssay {...props} />
       default:
         return null
     }

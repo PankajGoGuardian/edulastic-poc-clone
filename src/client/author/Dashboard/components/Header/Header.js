@@ -16,7 +16,7 @@ import {
 } from '@edulastic/icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
-import { get } from 'lodash'
+import { get, isEmpty } from 'lodash'
 import { segmentApi } from '@edulastic/api'
 
 import { signUpState } from '@edulastic/constants'
@@ -204,7 +204,8 @@ const HeaderSection = ({
   return (
     <MainHeader Icon={IconClockDashboard} headingText={t('common.dashboard')}>
       <FlexContainer alignItems="center">
-        {currentSignUpState === signUpState.ACCESS_WITHOUT_SCHOOL && (
+        {(currentSignUpState === signUpState.ACCESS_WITHOUT_SCHOOL ||
+          (isSignupComplete && isEmpty(institutionIds))) && (
           <AuthorCompleteSignupButton
             renderButton={(handleClick) => (
               <StyledLink data-cy="completeSignup" onClick={handleClick}>

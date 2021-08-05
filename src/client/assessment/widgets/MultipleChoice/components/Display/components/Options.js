@@ -75,6 +75,7 @@ const Options = ({
           justifyContent="left"
           flexDirection="column"
           className="__prevent-page-break __print-space-reduce-options"
+          data-cy="sortable-list-container"
         >
           {col.map((row) => (
             <OptComponent

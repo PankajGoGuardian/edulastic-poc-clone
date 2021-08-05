@@ -18,6 +18,7 @@ import {
   notificationMessage,
 } from '../../../../common/components/Notification'
 import { setAssignmentBulkActionStatus } from '../../ducks'
+import { getFilterFromSession } from '../../../../common/utils/helpers'
 
 const collectionName = 'AssignmentBulkActionEvents'
 const DOWNLOAD_GRADES_AND_RESPONSE = 'DOWNLOAD_GRADES_AND_RESPONSE'
@@ -34,9 +35,11 @@ const NotificationListener = ({
   const [notificationIds, setNotificationIds] = useState([])
   let districtId = ''
   let testId = ''
-  const { termId = '', grades = [], assignedBy = '' } = JSON.parse(
-    sessionStorage.getItem(`assignments_filter_${user._id}_${orgId}`) || '{}'
-  )
+  const { termId = '', grades = [], assignedBy = '' } = getFilterFromSession({
+    key: 'assignments_filter',
+    userId: user._id,
+    districtId: orgId,
+  })
   const { testType = '' } = qs.parse(location.search, {
     ignoreQueryPrefix: true,
   })

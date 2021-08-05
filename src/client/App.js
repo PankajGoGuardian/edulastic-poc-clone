@@ -13,6 +13,7 @@ import * as firebase from 'firebase/app'
 import { roleuser, signUpState, test } from '@edulastic/constants'
 import { DragDrop, notification, OfflineNotifier } from '@edulastic/common'
 import { TokenStorage } from '@edulastic/api'
+import { sessionFilters } from '@edulastic/constants/const/common'
 import { Banner } from './common/components/Banner'
 import { TestAttemptReview } from './student/TestAttemptReview'
 import SebQuitConfirm from './student/SebQuitConfirm'
@@ -28,7 +29,13 @@ import {
 } from './student/Login/ducks'
 import TestDemoPlayer from './author/TestDemoPlayer'
 import TestItemDemoPlayer from './author/TestItemDemoPlayer'
-import { getWordsInURLPathName } from './common/utils/helpers'
+import {
+  copyOldFiltersWithNewKey,
+  getFilterFromSession,
+  getWordsInURLPathName,
+  removeSessionValue,
+  setFilterInSession,
+} from './common/utils/helpers'
 import LoggedOutRoute from './common/components/loggedOutRoute'
 import PrivateRoute from './common/components/privateRoute'
 import V1Redirect from './author/V1Redirect'
@@ -336,17 +343,37 @@ class App extends Component {
       if (user && user.isAuthenticated) {
         // copy old assignments filter if user is not demo playground user
         if (!isDemoAccountProxy) {
+          copyOldFiltersWithNewKey({
+            keys: [
+              sessionFilters.PLAYLIST_FILTER,
+              sessionFilters.TEST_FILTER,
+              sessionFilters.TEST_ITEM_FILTER,
+              sessionFilters.PLAYLIST_SORT,
+              sessionFilters.TEST_SORT,
+              sessionFilters.TEST_ITEM_SORT,
+            ],
+            districtId,
+            userId: user.user._id,
+          })
           const oldAssignmentFilter =
-            sessionStorage.getItem('filters[Assignments]') ||
-            sessionStorage.getItem(`assignments_filter_${user.user._id}`)
+            getFilterFromSession({ key: 'filters[Assignments]' }) ||
+            getFilterFromSession({
+              key: 'assignments_filter',
+              userId: user.user._id,
+            })
           if (!isEmpty(oldAssignmentFilter)) {
-            sessionStorage.setItem(
-              `assignments_filter_${user.user._id}_${districtId}`,
-              oldAssignmentFilter
-            )
+            setFilterInSession({
+              key: 'assignments_filter',
+              userId: user.user._id,
+              districtId,
+              filter: oldAssignmentFilter,
+            })
             // remove old filter key from session storage
-            sessionStorage.removeItem('filters[Assignments]')
-            sessionStorage.removeItem(`assignments_filter_${user.user._id}`)
+            removeSessionValue({ key: 'filters[Assignments]' })
+            removeSessionValue({
+              key: 'assignments_filter',
+              userId: user.user._id,
+            })
           }
         }
         // Clear referrer once userId available

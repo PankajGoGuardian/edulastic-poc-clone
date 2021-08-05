@@ -26,6 +26,7 @@ import {
 } from '@edulastic/api/src/utils/Storage'
 import { libraryFilters, sortOptions } from '@edulastic/constants'
 import { withNamespaces } from 'react-i18next'
+import { sessionFilters as sessionFilterKeys } from '@edulastic/constants/const/common'
 import {
   ScrollBox,
   Container,
@@ -113,6 +114,7 @@ import {
   getDefaultGradesSelector,
   getDefaultSubjectSelector,
   getUserFeatures,
+  getUserOrgId,
 } from '../../../src/selectors/user'
 import {
   getInterestedStandards,
@@ -137,6 +139,10 @@ import SideContent from '../../../Dashboard/components/SideContent/Sidecontent'
 import SortMenu from '../../../ItemList/components/SortMenu'
 import FilterToggleBtn from '../../../src/components/common/FilterToggleBtn'
 import ApproveConfirmModal from '../../../ItemList/components/ApproveConfirmModal'
+import {
+  getFilterFromSession,
+  setFilterInSession,
+} from '../../../../common/utils/helpers'
 
 // TODO: split into mulitple components, for performance sake.
 // and only connect what is required.
@@ -245,6 +251,8 @@ class TestList extends Component {
       sort: initSort = {},
       tests,
       user,
+      districtId,
+      userId,
     } = this.props
 
     const isSingaporeMathCollectionActive = tests.filter(
@@ -269,10 +277,16 @@ class TestList extends Component {
         ? firstCurriculum._id
         : '',
     } = getDefaultInterests()
-    const sessionFilters =
-      JSON.parse(sessionStorage.getItem('filters[testList]')) || {}
-    const sessionSort =
-      JSON.parse(sessionStorage.getItem('sortBy[testList]')) || {}
+    const sessionFilters = getFilterFromSession({
+      key: sessionFilterKeys.TEST_FILTER,
+      districtId,
+      userId,
+    })
+    const sessionSort = getFilterFromSession({
+      key: sessionFilterKeys.TEST_SORT,
+      districtId,
+      userId,
+    })
 
     // propagate filter from query params to the store (test.filters)
     let searchParams = qs.parse(location.search, { ignoreQueryPrefix: true })
@@ -370,7 +384,13 @@ class TestList extends Component {
   }
 
   updateFilterState = (searchState, sortState, all) => {
-    const { updateAllTestFilters, updateTestFilters, testFilters } = this.props
+    const {
+      updateAllTestFilters,
+      updateTestFilters,
+      testFilters,
+      districtId,
+      userId,
+    } = this.props
     const search = all
       ? { ...searchState, isSingaporeMath: this.state.isSingaporeMath }
       : {
@@ -378,8 +398,18 @@ class TestList extends Component {
           [searchState.key]: searchState.value,
           isSingaporeMath: this.state.isSingaporeMath,
         }
-    sessionStorage.setItem('filters[testList]', JSON.stringify(search))
-    sessionStorage.setItem('sortBy[testList]', JSON.stringify(sortState))
+    setFilterInSession({
+      key: sessionFilterKeys.TEST_FILTER,
+      filter: search,
+      districtId,
+      userId,
+    })
+    setFilterInSession({
+      key: sessionFilterKeys.TEST_SORT,
+      filter: sortState,
+      districtId,
+      userId,
+    })
     if (all) {
       return updateAllTestFilters({ search, sort: sortState })
     }
@@ -1491,6 +1521,7 @@ const enhance = compose(
       interestedGrades: getInterestedGradesSelector(state),
       interestedSubjects: getInterestedSubjectsSelector(state),
       userId: get(state, 'user.user._id', false),
+      districtId: getUserOrgId(state),
       user: get(state, 'user.user', false),
       testFilters: getTestsFilterSelector(state),
       features: getUserFeatures(state),

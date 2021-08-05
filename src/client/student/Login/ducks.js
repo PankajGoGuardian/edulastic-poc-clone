@@ -36,6 +36,7 @@ import {
   removeSignOutUrl,
   getStartedUrl,
   isHashAssessmentUrl,
+  removeSessionValue,
 } from '../../common/utils/helpers'
 import { userPickFields } from '../../common/utils/static/user'
 import {
@@ -1339,7 +1340,11 @@ function* logout() {
       sessionStorage.removeItem('cliBannerShown')
       sessionStorage.removeItem('cliBannerVisible')
       sessionStorage.removeItem('addAccountDetails')
-      sessionStorage.removeItem(`assignments_filter_${user._id}_${districtId}`)
+      removeSessionValue({
+        key: 'assignments_filter',
+        userId: user._id,
+        districtId,
+      })
       sessionStorage.removeItem('temporaryClass')
       TokenStorage.removeKID()
       TokenStorage.initKID()

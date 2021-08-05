@@ -52,6 +52,7 @@ import {
 } from '../../ducks'
 import SyncModal from './SyncModal'
 import { getUserOrgId } from '../../../src/selectors/user'
+import { setFilterInSession } from '../../../../common/utils/helpers'
 
 const Option = Select.Option
 
@@ -199,10 +200,12 @@ const Header = ({
       testType: '',
       termId: '',
     }
-    sessionStorage.setItem(
-      `assignments_filter_${user._id}_${orgId}`,
-      JSON.stringify(filter)
-    )
+    setFilterInSession({
+      key: 'assignments_filter',
+      userId: user._id,
+      districtId: orgId,
+      filter,
+    })
     history.push('/author/assignments')
   }
 

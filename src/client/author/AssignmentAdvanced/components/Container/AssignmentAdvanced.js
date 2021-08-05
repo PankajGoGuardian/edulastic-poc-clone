@@ -74,6 +74,7 @@ import {
 } from '../../../../student/Login/ducks'
 import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/test'
 import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
+import { getFilterFromSession } from '../../../../common/utils/helpers'
 
 const { assignmentStatusBg } = authorAssignment
 
@@ -109,10 +110,16 @@ class AssignmentAdvanced extends Component {
     const { testType = '' } = qs.parse(location.search, {
       ignoreQueryPrefix: true,
     })
-    const { termId = '', grades = [], assignedBy = '', tags = [] } = JSON.parse(
-      sessionStorage.getItem(`assignments_filter_${userId}_${_districtId}`) ||
-        '{}'
-    )
+    const {
+      termId = '',
+      grades = [],
+      assignedBy = '',
+      tags = [],
+    } = getFilterFromSession({
+      key: 'assignments_filter',
+      userId,
+      districtId: _districtId,
+    })
     if (isEmpty(assignmentsSummary)) {
       loadAssignmentsSummary({ districtId })
     }
@@ -163,10 +170,11 @@ class AssignmentAdvanced extends Component {
     const { testType = '' } = qs.parse(location.search, {
       ignoreQueryPrefix: true,
     })
-    const { termId = '', tags = [] } = JSON.parse(
-      sessionStorage.getItem(`assignments_filter_${userId}_${_districtId}`) ||
-        '{}'
-    )
+    const { termId = '', tags = [] } = getFilterFromSession({
+      key: 'assignments_filter',
+      userId,
+      districtId: _districtId,
+    })
     loadAssignmentsClassList({
       districtId,
       testId,

@@ -73,6 +73,10 @@ import { toggleFreeAdminSubscriptionModalAction } from '../../../../student/Logi
 import EditTagsModal from '../EditTagsModal'
 import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
 import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/test'
+import {
+  getFilterFromSession,
+  setFilterInSession,
+} from '../../../../common/utils/helpers'
 
 const initialFilterState = {
   grades: [],
@@ -111,10 +115,11 @@ class Assignments extends Component {
     }
 
     const { defaultTermId, terms } = orgData
-    const storedFilters =
-      JSON.parse(
-        sessionStorage.getItem(`assignments_filter_${userId}_${districtId}`)
-      ) || {}
+    const storedFilters = getFilterFromSession({
+      key: 'assignments_filter',
+      userId,
+      districtId,
+    })
     const { showFilter = userRole !== roleuser.TEACHER } = storedFilters
     const filters = {
       ...initialFilterState,
@@ -153,10 +158,12 @@ class Assignments extends Component {
 
   setFilterState = (filterState) => {
     const { userId, districtId } = this.props
-    sessionStorage.setItem(
-      `assignments_filter_${userId}_${districtId}`,
-      JSON.stringify(filterState)
-    )
+    setFilterInSession({
+      key: 'assignments_filter',
+      userId,
+      districtId,
+      filter: filterState,
+    })
     this.setState({ filterState })
   }
 
@@ -273,10 +280,12 @@ class Assignments extends Component {
       }),
       () => {
         const { filterState } = this.state
-        sessionStorage.setItem(
-          `assignments_filter_${userId}_${districtId}`,
-          JSON.stringify(filterState)
-        )
+        setFilterInSession({
+          key: 'assignments_filter',
+          userId,
+          districtId,
+          filter: filterState,
+        })
       }
     )
   }

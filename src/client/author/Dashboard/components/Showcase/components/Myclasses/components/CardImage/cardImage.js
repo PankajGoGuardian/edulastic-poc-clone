@@ -20,6 +20,7 @@ import {
 } from './styled'
 import cardImg from '../../../../../../assets/images/cardImg.png'
 import { getUserOrgId } from '../../../../../../../src/selectors/user'
+import { setFilterInSession } from '../../../../../../../../common/utils/helpers'
 
 const CardImage = ({ data, history, userId, districtId }) => {
   const { name, grades = [], studentCount, subject, thumbnail, _id } = data
@@ -34,10 +35,12 @@ const CardImage = ({ data, history, userId, districtId }) => {
       testType: '',
       termId: '',
     }
-    sessionStorage.setItem(
-      `assignments_filter_${userId}_${districtId}`,
-      JSON.stringify(filter)
-    )
+    setFilterInSession({
+      key: 'assignments_filter',
+      userId,
+      districtId,
+      filter,
+    })
   }
 
   const metaInfo = (

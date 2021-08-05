@@ -10,6 +10,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { storeInLocalStorage } from '@edulastic/api/src/utils/Storage'
+import { sessionFilters as sessionFilterKeys } from '@edulastic/constants/const/common'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import {
   updateDefaultGradesAction,
@@ -36,6 +37,8 @@ import {
   getInterestedGradesSelector,
   getInterestedSubjectsSelector,
   getUserFeatures,
+  getUserId,
+  getUserOrgId,
   getUserRole,
 } from '../../../src/selectors/user'
 import {
@@ -88,6 +91,10 @@ import HeaderFilter from '../HeaderFilter'
 import SideContent from '../../../Dashboard/components/SideContent/Sidecontent'
 import ApproveConfirmModal from '../ApproveConfirmModal'
 import SortMenu from '../SortMenu'
+import {
+  getFilterFromSession,
+  setFilterInSession,
+} from '../../../../common/utils/helpers'
 
 // container the main entry point to the component
 class Contaier extends Component {
@@ -113,6 +120,8 @@ class Contaier extends Component {
       interestedGrades,
       interestedCurriculums: [firstCurriculum],
       sort: initSort = {},
+      userId,
+      districtId,
     } = this.props
     const {
       subject = interestedSubjects,
@@ -127,10 +136,16 @@ class Contaier extends Component {
       ? { filter: 'AUTHORED_BY_ME' }
       : {}
     const { params = {} } = match
-    const sessionFilters =
-      JSON.parse(sessionStorage.getItem('filters[itemList]')) || {}
-    const sessionSort =
-      JSON.parse(sessionStorage.getItem('sortBy[itemList]')) || {}
+    const sessionFilters = getFilterFromSession({
+      key: sessionFilterKeys.TEST_ITEM_FILTER,
+      userId,
+      districtId,
+    })
+    const sessionSort = getFilterFromSession({
+      key: sessionFilterKeys.TEST_ITEM_SORT,
+      userId,
+      districtId,
+    })
     const sort = {
       ...initSort,
       sortBy: 'popularity',
@@ -178,10 +193,20 @@ class Contaier extends Component {
   }
 
   updateFilterState = (newSearch, sort = {}) => {
-    const { updateSearchFilterState } = this.props
+    const { updateSearchFilterState, userId, districtId } = this.props
     updateSearchFilterState({ search: newSearch, sort })
-    sessionStorage.setItem('filters[itemList]', JSON.stringify(newSearch))
-    sessionStorage.setItem('sortBy[itemList]', JSON.stringify(sort))
+    setFilterInSession({
+      key: sessionFilterKeys.TEST_ITEM_FILTER,
+      filter: newSearch,
+      userId,
+      districtId,
+    })
+    setFilterInSession({
+      key: sessionFilterKeys.TEST_ITEM_SORT,
+      filter: sort,
+      userId,
+      districtId,
+    })
   }
 
   handleSearch = (searchState) => {
@@ -632,6 +657,8 @@ const enhance = compose(
       userFeatures: getUserFeatures(state),
       userRole: getUserRole(state),
       selectedItems: getSelectedItemSelector(state),
+      userId: getUserId(state),
+      districtId: getUserOrgId(state),
     }),
     {
       receiveItems: receiveTestItemsAction,

@@ -16,6 +16,7 @@ import { withNamespaces } from '@edulastic/localization'
 import { IconPlusCircle, IconItemGroup } from '@edulastic/icons'
 import { themeColor } from '@edulastic/colors'
 import qs from 'qs'
+import { sessionFilters as sessionFilterKeys } from '@edulastic/constants/const/common'
 import { ItemsPagination, Selected } from './styled'
 import {
   getCurriculumsListSelector,
@@ -71,6 +72,7 @@ import {
   getUserFeatures,
   getInterestedGradesSelector,
   getInterestedSubjectsSelector,
+  getUserOrgId,
 } from '../../../src/selectors/user'
 import NoDataNotification from '../../../../common/components/NoDataNotification'
 import Item from '../../../ItemList/components/Item/Item'
@@ -82,6 +84,10 @@ import { getDefaultInterests, setDefaultInterests } from '../../../dataUtils'
 import HeaderFilter from '../../../ItemList/components/HeaderFilter'
 import PreviewModal from '../../../src/components/common/PreviewModal'
 import SortMenu from '../../../ItemList/components/SortMenu'
+import {
+  getFilterFromSession,
+  setFilterInSession,
+} from '../../../../common/utils/helpers'
 
 class AddItems extends PureComponent {
   static propTypes = {
@@ -136,11 +142,16 @@ class AddItems extends PureComponent {
       pageNumber,
       needToSetFilter,
       sort: initSort,
+      userId,
+      districtId,
     } = this.props
     const query = qs.parse(window.location.search, { ignoreQueryPrefix: true })
     let search = {}
-    const sessionSort =
-      JSON.parse(sessionStorage.getItem('sortBy[itemList]')) || {}
+    const sessionSort = getFilterFromSession({
+      key: sessionFilterKeys.TEST_ITEM_SORT,
+      userId,
+      districtId,
+    })
     const sort = {
       ...initSort,
       sortBy: 'popularity',
@@ -160,8 +171,11 @@ class AddItems extends PureComponent {
       const applyAuthoredFilter = isAuthoredNow
         ? { filter: 'AUTHORED_BY_ME' }
         : {}
-      const sessionFilters =
-        JSON.parse(sessionStorage.getItem('filters[itemList]')) || {}
+      const sessionFilters = getFilterFromSession({
+        key: sessionFilterKeys.TEST_ITEM_FILTER,
+        userId,
+        districtId,
+      })
       const selectedSubjects = (test?.subjects || []).filter((item) => !!item)
       const selectedGrades = (test?.grades || []).filter((item) => !!item)
       search = {
@@ -189,10 +203,20 @@ class AddItems extends PureComponent {
   }
 
   updateFilterState = (newSearch, sort) => {
-    const { updateSearchFilterState } = this.props
+    const { updateSearchFilterState, userId, districtId } = this.props
     updateSearchFilterState({ search: newSearch, sort })
-    sessionStorage.setItem('filters[itemList]', JSON.stringify(newSearch))
-    sessionStorage.setItem('sortBy[itemList]', JSON.stringify(sort))
+    setFilterInSession({
+      key: sessionFilterKeys.TEST_ITEM_FILTER,
+      filter: newSearch,
+      userId,
+      districtId,
+    })
+    setFilterInSession({
+      key: sessionFilterKeys.TEST_ITEM_SORT,
+      filter: sort,
+      userId,
+      districtId,
+    })
   }
 
   handleSearch = (searchState) => {
@@ -645,6 +669,7 @@ const enhance = compose(
       curriculumStandards: getStandardsListSelector(state),
       interestedCurriculums: getInterestedCurriculumsSelector(state),
       userId: getUserId(state),
+      districtId: getUserOrgId(state),
       testItemsList: getTestItemsSelector(state),
       selectedRows: getSelectedItemSelector(state),
       search: getSearchFilterStateSelector(state),

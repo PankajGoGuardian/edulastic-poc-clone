@@ -23,6 +23,7 @@ import {
 } from './styled'
 import { TextWrapper } from '../../../../../styledComponents'
 import { getUserOrgId } from '../../../../../../../src/selectors/user'
+import { setFilterInSession } from '../../../../../../../../common/utils/helpers'
 
 export const CardTextContent = ({ data, history, userId, districtId }) => {
   const {
@@ -44,10 +45,12 @@ export const CardTextContent = ({ data, history, userId, districtId }) => {
       testType: '',
       termId: '',
     }
-    sessionStorage.setItem(
-      `assignments_filter_${userId}_${districtId}`,
-      JSON.stringify(filter)
-    )
+    setFilterInSession({
+      key: 'assignments_filter',
+      userId,
+      districtId,
+      filter,
+    })
   }
 
   return (

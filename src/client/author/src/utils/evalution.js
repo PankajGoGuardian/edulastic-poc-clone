@@ -8,7 +8,7 @@ import {
   PASSAGE,
 } from '@edulastic/constants/const/questionType'
 
-import { MathKeyboard } from '@edulastic/common'
+import { MathKeyboard, notification } from '@edulastic/common'
 
 import evaluator from './evaluators'
 import { replaceVariables } from '../../../assessment/utils/variables'
@@ -49,6 +49,7 @@ export const evaluateItem = async (
 ) => {
   const questionIds = Object.keys(validations)
   const results = {}
+  const errors = new Set()
   let totalScore = 0
   let totalMaxScore = itemLevelScoring ? itemLevelScore : 0
   const numberOfQuestions = Object.keys(validations).filter(
@@ -104,10 +105,17 @@ export const evaluateItem = async (
           payload.isUnitAllowedUnits = getMathUnits(validation)
         }
 
-        const { evaluation, score = 0, maxScore } = await evaluator(
-          payload,
-          type
-        )
+        const {
+          evaluation,
+          score = 0,
+          maxScore,
+          errors: _errors,
+        } = await evaluator(payload, type)
+
+        if (Array.isArray(_errors)) {
+          const addError = (e) => errors.add(e)
+          _errors.forEach(addError)
+        }
 
         const isCorrect = score === maxScore
         // manually gradeable should not account for all correct
@@ -157,6 +165,17 @@ export const evaluateItem = async (
     if (Object.keys(answers).length === 0 || !allCorrect) {
       totalScore = 0
     }
+  }
+
+  if (errors.size) {
+    const showNotificationForError = (err) =>
+      notification({
+        type: 'error',
+        duration: 0,
+        msg: err,
+        exact: true,
+      })
+    Array.from(errors).forEach(showNotificationForError)
   }
 
   return { evaluation: results, maxScore: totalMaxScore, score: totalScore }

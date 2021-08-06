@@ -907,7 +907,6 @@ class CurriculumSequence extends Component {
     // should show useThis Notification only two times
     const showUseThisNotification =
       location.state?.fromUseThis && !loading && playlistsToSwitch?.length <= 3
-
     return (
       <>
         <CurriculumSequenceModals
@@ -996,11 +995,7 @@ class CurriculumSequence extends Component {
               >
                 <ContentContainer
                   urlHasUseThis={urlHasUseThis}
-                  showRightPanel={
-                    showRightPanel &&
-                    !shouldHidCustomizeButton &&
-                    !!activeRightPanel
-                  }
+                  showRightPanel={showRightPanel && !!activeRightPanel}
                   showBreadCrumb={showBreadCrumb}
                 >
                   <CurriculumSubHeader
@@ -1261,9 +1256,9 @@ export const ContentContainer = styled.div`
     return 'calc(100vh - 124px)'
   }};
 
-  @media (max-width: ${extraDesktopWidthMax}) {
+  @media (min-width: ${extraDesktopWidthMax}) {
     width: ${({ showRightPanel }) =>
-      showRightPanel ? 'calc(100% - 340px)' : '100%'};
+      showRightPanel ? 'calc(100% - 400px)' : '100%'};
   }
 
   @media (max-width: ${smallDesktopWidth}) {

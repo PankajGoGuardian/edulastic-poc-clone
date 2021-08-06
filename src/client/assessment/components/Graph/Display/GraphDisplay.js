@@ -106,6 +106,16 @@ class GraphDisplay extends Component {
       fontSize = theme?.fontSize || fontSize
     }
 
+    // jsxGraph requires number for fontSize
+    if (fontSize?.toString()?.includes('rem')) {
+      const bodyFontSize = window.getComputedStyle(document.body).fontSize
+      fontSize = parseFloat(bodyFontSize) * parseFloat(fontSize)
+    }
+
+    if (fontSize?.toString()?.includes('px')) {
+      fontSize = parseFloat(fontSize)
+    }
+
     return {
       width: defaultStyle.layoutWidth,
       height: defaultStyle.layoutHeight,

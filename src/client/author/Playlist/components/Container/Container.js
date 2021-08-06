@@ -4,7 +4,7 @@ import { FlexContainer, withWindowSizes } from '@edulastic/common'
 import { IconList, IconPlaylist2, IconTile } from '@edulastic/icons'
 import { Button, Input, Row, Spin } from 'antd'
 import qs from 'qs'
-import { debounce, get, pick, isEqual } from 'lodash'
+import { debounce, get, pick, isEqual, isEmpty } from 'lodash'
 import moment from 'moment'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
@@ -223,8 +223,12 @@ class TestList extends Component {
       searchFilters = {
         ...playListFilters,
         ...sessionFilters,
-        subject,
-        grades,
+      }
+      if (isEmpty(sessionFilters)) {
+        Object.assign(searchFilters, {
+          subject,
+          grades,
+        })
       }
     }
 

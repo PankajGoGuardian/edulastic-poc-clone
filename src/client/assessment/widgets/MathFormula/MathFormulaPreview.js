@@ -392,7 +392,7 @@ class MathFormulaPreview extends Component {
                     )}
                     {!this.isStatic && (
                       <MathInput
-                        resetMath={clearClicked}
+                        resetMath={clearClicked || expressGrader}
                         symbols={item.symbols}
                         restrictKeys={this.restrictKeys}
                         allowNumericOnly={allowNumericOnly}

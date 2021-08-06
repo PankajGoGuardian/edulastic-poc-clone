@@ -169,40 +169,42 @@ const StaticMath = ({
     }
   }
 
-  const setInnerFields = () => {
+  const setInnerFields = (changeLatex = true) => {
     if (!mQuill.current) {
       return
     }
-    mQuill.current.latex(sanitizeLatex(latex))
+    if (changeLatex) mQuill.current.latex(sanitizeLatex(latex))
     const { innerFields = [] } = mQuill.current
 
     innerFields.forEach((field, indx) => {
       // TODO: use uuid instead of index ?
-      field.el().id = `inner-${indx}`
-      field.el().addEventListener('click', () => {
-        handleFocusInner(field)
-      })
-      field.el().addEventListener('keyup', handleSave)
+      if (changeLatex) {
+        field.el().id = `inner-${indx}`
+        field.el().addEventListener('click', () => {
+          handleFocusInner(field)
+        })
+        field.el().addEventListener('keyup', handleSave)
 
-      field.config({
-        handlers: {
-          upOutOf(pInnerField) {
-            goTo(getIndex(pInnerField.el()) - 1)
-          },
-          downOutOf(pInnerField) {
-            goTo(getIndex(pInnerField.el()) + 1)
-          },
-          moveOutOf: (dir, pInnerField) => {
-            if (dir === MQ.L) {
+        field.config({
+          handlers: {
+            upOutOf(pInnerField) {
               goTo(getIndex(pInnerField.el()) - 1)
-            } else if (dir === MQ.R) {
+            },
+            downOutOf(pInnerField) {
               goTo(getIndex(pInnerField.el()) + 1)
-            }
+            },
+            moveOutOf: (dir, pInnerField) => {
+              if (dir === MQ.L) {
+                goTo(getIndex(pInnerField.el()) - 1)
+              } else if (dir === MQ.R) {
+                goTo(getIndex(pInnerField.el()) + 1)
+              }
+            },
           },
-        },
-      })
+        })
+      }
 
-      field.write('')
+      field.latex('')
 
       if (innerValues && innerValues[indx]) {
         field.write(innerValues[indx])
@@ -224,9 +226,7 @@ const StaticMath = ({
   }, [latex])
 
   useEffect(() => {
-    if (isEmpty(innerValues)) {
-      setInnerFields()
-    }
+    setInnerFields(isEmpty(innerValues))
   }, [innerValues])
 
   return (

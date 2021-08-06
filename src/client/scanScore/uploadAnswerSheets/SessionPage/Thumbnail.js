@@ -36,6 +36,7 @@ const Thumbnail = ({ size, name, uri, status, message, onClick }) => {
     </ThumbnailContainer>
   )
 }
+
 export default Thumbnail
 
 const ThumbnailContainer = styled.div`
@@ -69,7 +70,7 @@ const ThumbnailContainer = styled.div`
       position: absolute;
       top: 0;
       left: 0;
-      border-radius: 3px;
+      border-radius: 2px;
       background-color: ${(props) =>
         props.isFailed ? 'rgba(0, 0, 0, 0.5)' : 'transparent'};
       font-size: ${(props) => props.width / 15 || 10}px;
@@ -99,6 +100,7 @@ const ThumbnailContainer = styled.div`
   .thumbnail-label {
     white-space: nowrap;
     text-overflow: ellipsis;
+    text-align: center;
     overflow: hidden;
     font-weight: 600;
     margin-top: 5px;

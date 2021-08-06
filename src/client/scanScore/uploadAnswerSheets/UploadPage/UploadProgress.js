@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import { Tooltip } from 'antd'
 
 import {
   white,
@@ -33,9 +34,11 @@ const UploadProgress = ({
         <div className="file-details-container">
           <img src={IconPDF} alt="PDF icon" />
           <div className="file-details">
-            <span className="file-name">
-              {currentSession?.source?.name || ''}
-            </span>
+            <Tooltip title={currentSession?.source?.name}>
+              <span className="file-name">
+                {currentSession?.source?.name || ''}
+              </span>
+            </Tooltip>
             <span className="file-size">
               {formatBytes(currentSession?.source?.size)}
             </span>
@@ -121,12 +124,16 @@ const UploadProgressContainer = styled.div`
       display: flex;
       align-items: center;
       justify-content: space-between;
+      overflow: hidden;
       .file-name {
+        width: 70%;
         font-size: 12px;
         font-weight: 600;
         margin-left: 20px;
         color: ${greyThemeDark1};
         text-transform: uppercase;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
       .file-size {
         font-size: 12px;

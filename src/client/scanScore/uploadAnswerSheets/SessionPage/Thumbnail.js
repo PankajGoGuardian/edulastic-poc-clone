@@ -1,12 +1,13 @@
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
+import { Spin, Icon } from 'antd'
 
-import { Icon, Spin } from 'antd'
+import { IconCloseCircle } from '@edulastic/icons'
+
 import {
   themeColor,
   greyThemeDark1,
   white,
-  red,
   borderGrey,
 } from '@edulastic/colors'
 
@@ -23,7 +24,7 @@ const Thumbnail = ({ size, name, uri, status, message, onClick }) => {
         </Spin>
         {isFailed ? (
           <div className="thumbnail-overlay">
-            <Icon className="failed-icon" type="close" />
+            <IconCloseCircle className="failed-icon" />
             <div className="failed-text">{message || 'Error'}</div>
           </div>
         ) : (
@@ -81,19 +82,14 @@ const ThumbnailContainer = styled.div`
       color: ${white};
       .show-icon {
         display: none;
-        font-size: 20px;
+        font-size: ${(props) => props.width / 5 || 30}px;
       }
       .failed-icon {
         position: absolute;
         top: 3px;
         right: 4px;
-        background: ${red};
-        border-radius: 50%;
-        padding: 3px;
-        svg {
-          font-size: 10px;
-          background: transparent;
-        }
+        width: ${(props) => props.width / 10 || 20}px;
+        height: ${(props) => props.width / 10 || 20}px;
       }
     }
   }

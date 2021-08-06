@@ -2,6 +2,8 @@ import React from 'react'
 import styled from 'styled-components'
 import { Tooltip } from 'antd'
 
+import { IconPDFFile } from '@edulastic/icons'
+
 import {
   white,
   themeColor,
@@ -11,9 +13,6 @@ import {
   backgroundGrey,
   borderGrey,
 } from '@edulastic/colors'
-
-// TODO: ask the designer to provide an SVG asset instead of the PNG sourced from the web
-import IconPDF from './IconPDF.png'
 
 import { formatBytes } from '../utils'
 
@@ -32,7 +31,7 @@ const UploadProgress = ({
           <div className="upload-progress-back">{uploadProgress} %</div>
         </div>
         <div className="file-details-container">
-          <img src={IconPDF} alt="PDF icon" />
+          <IconPDFFile width={25} height={25} />
           <div className="file-details">
             <Tooltip title={currentSession?.source?.name}>
               <span className="file-name">
@@ -116,9 +115,6 @@ const UploadProgressContainer = styled.div`
     display: flex;
     margin-top: 15px;
     align-items: center;
-    img {
-      height: 25px;
-    }
     .file-details {
       width: 100%;
       display: flex;

@@ -32,7 +32,7 @@ import {
   getIsOverrideFreezeSelector,
 } from '../../../TestPage/ducks'
 import DetailsTooltip from '../Container/DetailsTooltip'
-import { SettingContainer } from '../Container/styled'
+import SettingContainer from '../Container/SettingsContainer'
 import { getmultiLanguageEnabled } from '../../../ClassBoard/ducks'
 
 const {
@@ -281,32 +281,39 @@ const Settings = ({
     <SettingsWrapper isAdvanced={isAdvanced}>
       <StyledDiv>
         {/* Release score */}
-        <StyledRow gutter={16}>
-          <Col span={12}>
-            <Label>
-              RELEASE SCORES{' '}
-              {releaseScore === releaseGradeLabels.DONT_RELEASE
-                ? '[OFF]'
-                : '[ON]'}
-            </Label>
-          </Col>
-          <Col span={12}>
-            <SelectInputStyled
-              data-cy="selectRelaseScore"
-              placeholder="Please select"
-              cache="false"
-              value={releaseScore}
-              onChange={changeField('releaseScore')}
-              height="30px"
-            >
-              {_releaseGradeKeys.map((item, index) => (
-                <Select.Option data-cy="class" key={index} value={item}>
-                  {releaseGradeTypes[item]}
-                </Select.Option>
-              ))}
-            </SelectInputStyled>
-          </Col>
-        </StyledRow>
+        <SettingContainer id="release-score-setting">
+          <DetailsTooltip
+            title="RELEASE SCORES"
+            content="Decide what students immediately get to see upon submitting an assessment."
+            premium
+          />
+          <StyledRow gutter={16}>
+            <Col span={12}>
+              <Label>
+                RELEASE SCORES{' '}
+                {releaseScore === releaseGradeLabels.DONT_RELEASE
+                  ? '[OFF]'
+                  : '[ON]'}
+              </Label>
+            </Col>
+            <Col span={12}>
+              <SelectInputStyled
+                data-cy="selectRelaseScore"
+                placeholder="Please select"
+                cache="false"
+                value={releaseScore}
+                onChange={changeField('releaseScore')}
+                height="30px"
+              >
+                {_releaseGradeKeys.map((item, index) => (
+                  <Select.Option data-cy="class" key={index} value={item}>
+                    {releaseGradeTypes[item]}
+                  </Select.Option>
+                ))}
+              </SelectInputStyled>
+            </Col>
+          </StyledRow>
+        </SettingContainer>
         {/* Release score */}
 
         {/* Show Calculator */}
@@ -441,7 +448,7 @@ const Settings = ({
         <SettingContainer>
           <DetailsTooltip
             title="Enable Auto Redirect"
-            content="Allow students to take the assignment multiple times to practice and improve their learning."
+            content="When selected, allows students to automatically retake a test when they scored below a set threshold. Enables students to practice and improve learning through multiple self-directed attempts."
             premium={assessmentSuperPowersAutoRedirect}
           />
           <StyledRow gutter={16}>
@@ -459,8 +466,15 @@ const Settings = ({
               />
             </StyledCol>
           </StyledRow>
-          {autoRedirect && (
-            <>
+        </SettingContainer>
+        {autoRedirect && (
+          <>
+            <SettingContainer>
+              <DetailsTooltip
+                title="SCORE THRESHOLD"
+                content="If student scores below the selected percentage score, the student will automatically be given the option to retake the test."
+                premium={assessmentSuperPowersAutoRedirect}
+              />
               <StyledRow gutter={16}>
                 <StyledCol span={12}>
                   <Label>SCORE THRESHOLD</Label>
@@ -479,24 +493,31 @@ const Settings = ({
                   %
                 </StyledCol>
               </StyledRow>
+            </SettingContainer>
 
-              <StyledRow gutter={16}>
-                <StyledCol span={12}>
-                  <Label>EXTRA ATTEMPTS ALLOWED</Label>
-                </StyledCol>
-                <StyledCol span={12}>
-                  <InputNumber
-                    data-cy="auto-redirect-max-attempts"
-                    min={1}
-                    max={3}
-                    value={autoRedirectSettings.maxRedirects || ''}
-                    onChange={(value) =>
-                      handleAutoRedirectSettingsChange('maxRedirects', value)
-                    }
-                  />
-                </StyledCol>
-              </StyledRow>
+            <StyledRow gutter={16}>
+              <StyledCol span={12}>
+                <Label>EXTRA ATTEMPTS ALLOWED</Label>
+              </StyledCol>
+              <StyledCol span={12}>
+                <InputNumber
+                  data-cy="auto-redirect-max-attempts"
+                  min={1}
+                  max={3}
+                  value={autoRedirectSettings.maxRedirects || ''}
+                  onChange={(value) =>
+                    handleAutoRedirectSettingsChange('maxRedirects', value)
+                  }
+                />
+              </StyledCol>
+            </StyledRow>
 
+            <SettingContainer>
+              <DetailsTooltip
+                title="QUESTIONS DELIVERY"
+                content="Choose which questions students should see on redirected tests."
+                premium={assessmentSuperPowersAutoRedirect}
+              />
               <StyledRow gutter={16}>
                 <StyledCol span={12}>
                   <Label>QUESTIONS DELIVERY</Label>
@@ -522,7 +543,15 @@ const Settings = ({
                   </SelectInputStyled>
                 </StyledCol>
               </StyledRow>
+            </SettingContainer>
 
+            <SettingContainer>
+              <DetailsTooltip
+                title="SHOW PREVIOUS ATTEMPT"
+                content="Choose how much information students will see on redirected tests."
+                premium={assessmentSuperPowersAutoRedirect}
+                placement="rightTop"
+              />
               <StyledRow gutter={16}>
                 <StyledCol span={12}>
                   <Label>SHOW PREVIOUS ATTEMPT</Label>
@@ -548,9 +577,9 @@ const Settings = ({
                   </SelectInputStyled>
                 </StyledCol>
               </StyledRow>
-            </>
-          )}
-        </SettingContainer>
+            </SettingContainer>
+          </>
+        )}
         {/* Auto Redirect */}
 
         {

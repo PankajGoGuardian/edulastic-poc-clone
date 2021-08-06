@@ -31,6 +31,8 @@ import {
 import DateSelector from '../AssignTest/components/SimpleOptions/DateSelector'
 import Settings from '../AssignTest/components/SimpleOptions/Settings'
 import selectsData from '../TestPage/components/common/selectsData'
+import DetailsTooltip from '../AssignTest/components/Container/DetailsTooltip'
+import SettingContainer from '../AssignTest/components/Container/SettingsContainer'
 
 /**
  * Imports related to testSettings
@@ -145,60 +147,79 @@ function LCBAssignmentSettings({
                 passwordPolicy={assignment?.passwordPolicy}
                 closePolicy={assignment?.closePolicy}
               />
-              <StyledRow gutter={16}>
-                <Col span={12}>
-                  <InputLabelContainer>
-                    <InputLabel>open policy</InputLabel>
-                  </InputLabelContainer>
-                </Col>
-                <Col span={12}>
-                  <SelectInputStyled
-                    data-cy="selectOpenPolicy"
-                    placeholder="Please select"
-                    cache="false"
-                    value={assignment?.openPolicy}
-                    onChange={changeField('openPolicy')}
-                    disabled={
-                      assignment?.passwordPolicy ===
-                        testConst.passwordPolicy
-                          .REQUIRED_PASSWORD_POLICY_DYNAMIC ||
-                      status !== assignmentStatusOptions.NOT_OPEN
-                    }
-                    height="30px"
-                  >
-                    {openPolicy.map(({ value, text }, index) => (
-                      <Select.Option key={index} value={value} data-cy="open">
-                        {text}
-                      </Select.Option>
-                    ))}
-                  </SelectInputStyled>
-                </Col>
-              </StyledRow>
-              <StyledRow gutter={16}>
-                <Col span={12}>
-                  <InputLabelContainer>
-                    <InputLabel>close policy</InputLabel>
-                  </InputLabelContainer>
-                </Col>
-                <Col span={12}>
-                  <SelectInputStyled
-                    data-cy="selectClosePolicy"
-                    placeholder="Please select"
-                    cache="false"
-                    value={assignment?.closePolicy}
-                    onChange={changeField('closePolicy')}
-                    disabled={status === assignmentStatusOptions.DONE}
-                    height="30px"
-                  >
-                    {closePolicy.map(({ value, text }, index) => (
-                      <Select.Option data-cy="class" key={index} value={value}>
-                        {text}
-                      </Select.Option>
-                    ))}
-                  </SelectInputStyled>
-                </Col>
-              </StyledRow>
-
+              <SettingContainer id="open-policy-setting">
+                <DetailsTooltip
+                  title="OPEN POLICY"
+                  content="Choose Automatically on Open Date to allow students immediate access to the test on the open date/time. This is good for practice or other low stakes assignments. Choose Manually in Class when it is required for the teacher to control the open times, (e.g. a final exam that is assigned to multiple classes throughout the day)."
+                  premium
+                  placement="rightTop"
+                />
+                <StyledRow gutter={16}>
+                  <Col span={12}>
+                    <InputLabelContainer>
+                      <InputLabel>open policy</InputLabel>
+                    </InputLabelContainer>
+                  </Col>
+                  <Col span={12}>
+                    <SelectInputStyled
+                      data-cy="selectOpenPolicy"
+                      placeholder="Please select"
+                      cache="false"
+                      value={assignment?.openPolicy}
+                      onChange={changeField('openPolicy')}
+                      disabled={
+                        assignment?.passwordPolicy ===
+                          testConst.passwordPolicy
+                            .REQUIRED_PASSWORD_POLICY_DYNAMIC ||
+                        status !== assignmentStatusOptions.NOT_OPEN
+                      }
+                      height="30px"
+                    >
+                      {openPolicy.map(({ value, text }, index) => (
+                        <Select.Option key={index} value={value} data-cy="open">
+                          {text}
+                        </Select.Option>
+                      ))}
+                    </SelectInputStyled>
+                  </Col>
+                </StyledRow>
+              </SettingContainer>
+              <SettingContainer id="close-policy-setting">
+                <DetailsTooltip
+                  title="CLOSE POLICY"
+                  content="Choose the Automatic option to automatically lock down access on the close date. This eliminates the need for teachers to remember to close and also useful for sending data to Insight reports as soon as all students have submitted. Choose Manually in Class when it is required for the teacher to control the close times, (e.g. a final exam that is assigned to multiple classes throughout the day)."
+                  premium
+                  placement="rightTop"
+                />
+                <StyledRow gutter={16}>
+                  <Col span={12}>
+                    <InputLabelContainer>
+                      <InputLabel>close policy</InputLabel>
+                    </InputLabelContainer>
+                  </Col>
+                  <Col span={12}>
+                    <SelectInputStyled
+                      data-cy="selectClosePolicy"
+                      placeholder="Please select"
+                      cache="false"
+                      value={assignment?.closePolicy}
+                      onChange={changeField('closePolicy')}
+                      disabled={status === assignmentStatusOptions.DONE}
+                      height="30px"
+                    >
+                      {closePolicy.map(({ value, text }, index) => (
+                        <Select.Option
+                          data-cy="class"
+                          key={index}
+                          value={value}
+                        >
+                          {text}
+                        </Select.Option>
+                      ))}
+                    </SelectInputStyled>
+                  </Col>
+                </StyledRow>
+              </SettingContainer>
               <Settings
                 assignmentSettings={assignment || {}}
                 updateAssignmentSettings={() => {}}

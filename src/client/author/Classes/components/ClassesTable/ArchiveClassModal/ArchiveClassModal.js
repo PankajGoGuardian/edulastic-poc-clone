@@ -58,7 +58,7 @@ class ArchiveClassModal extends Component {
             <LightGreenspan>
               {t('class.components.archiveclass.archivetext')}
             </LightGreenspan>{' '}
-            {t('common.modalConfirmationText2')}
+            {t('common.modalConfirmationText3')}
           </span>
           <FormItem>
             <TextInputStyled

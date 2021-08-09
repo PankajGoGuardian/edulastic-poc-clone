@@ -3,18 +3,18 @@ import { useDrag } from 'react-dnd'
 import { IconEye, IconMoreVertical, IconWriting } from '@edulastic/icons'
 import { themeColor } from '@edulastic/colors'
 import { uniqBy } from 'lodash'
-import { Dropdown, Menu } from 'antd'
+import { Dropdown, Menu, Popover } from 'antd'
 import {
   ResourceItemWrapper,
   IconWrapper,
   ResourceTitle,
   TitleText,
+  PopupContainer,
 } from './styled'
-import Tags from '../../../src/components/common/Tags'
+import Tags, { Label } from '../../../src/components/common/Tags'
 import WebsiteIcon from './static/WebsiteIcon'
 import VideoIcon from './static/VideoIcon'
 import LTIResourceIcon from './static/LTIResourceIcon'
-import { Tooltip } from '../../../../common/utils/helpers'
 import { getInterestedStandards } from '../../../dataUtils'
 import { IconActionButton, MenuStyled } from '../styled'
 
@@ -217,22 +217,40 @@ const ResourceItem = ({
     </MenuStyled>
   )
 
+  const popup = (
+    <PopupContainer>
+      <ResourceTitle isPopup>
+        <TitleText isPopup>{contentTitle}</TitleText>
+      </ResourceTitle>
+      <div>
+        {standardIdentifiers.map((tag, i) => (
+          <Label type="primary" key={i}>
+            {tag}
+          </Label>
+        ))}
+      </div>
+    </PopupContainer>
+  )
+
   return (
-    <Tooltip title={contentTitle} placement="left">
+    <Popover
+      placement="bottomLeft"
+      content={popup}
+      onClick={(e) => e.stopPropagation()}
+    >
       <ResourceItemWrapper data-cy={`${id}`} ref={drag}>
         <ResouceIcon type={type} isAdded={isAdded} />
         <ResourceTitle isAdded={isAdded}>
           <TitleText
             data-cy="resourceItemTitle"
             noStandards={standardIdentifiers.length === 0}
-            title={contentTitle}
           >
             {contentTitle}
           </TitleText>
           <Tags
             margin="0px"
             tags={standardIdentifiers}
-            show={1}
+            show={0}
             showTitle
             flexWrap="nowrap"
           />
@@ -257,7 +275,7 @@ const ResourceItem = ({
           </Dropdown>
         )}
       </ResourceItemWrapper>
-    </Tooltip>
+    </Popover>
   )
 }
 

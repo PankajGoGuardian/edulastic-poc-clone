@@ -159,7 +159,7 @@ const PopupContainer = styled.div`
   }
 `
 
-const Label = styled(Tag)`
+export const Label = styled(Tag)`
   position: relative;
   text-transform: uppercase;
   border-radius: 5px;

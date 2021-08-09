@@ -1249,7 +1249,7 @@ const StyledFlexContainer = styled(FlexContainer)`
 
 export const ContentContainer = styled.div`
   width: ${({ showRightPanel }) =>
-    showRightPanel ? 'calc(100% - 360px)' : '100%'};
+    showRightPanel ? 'calc(100% - 390px)' : '100%'};
   padding-right: 5px;
   margin: 0px;
   margin-right: 10px;
@@ -1268,12 +1268,12 @@ export const ContentContainer = styled.div`
 
   @media (min-width: ${extraDesktopWidthMax}) {
     width: ${({ showRightPanel }) =>
-      showRightPanel ? 'calc(100% - 400px)' : '100%'};
+      showRightPanel ? 'calc(100% - 490px)' : '100%'};
   }
 
   @media (max-width: ${smallDesktopWidth}) {
     width: ${({ showRightPanel }) =>
-      showRightPanel ? 'calc(100% - 240px)' : '100%'};
+      showRightPanel ? 'calc(100% - 290px)' : '100%'};
     height: ${({ showBreadCrumb, isDifferentiationTab }) => {
       if (isDifferentiationTab) {
         return 'calc(100vh - 175px)'

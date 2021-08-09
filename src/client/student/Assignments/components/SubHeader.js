@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import React from 'react'
 import { withNamespaces } from '@edulastic/localization'
-import { largeDesktopWidth } from '@edulastic/colors'
+import { largeDesktopWidth, white, themeColorBlue } from '@edulastic/colors'
 
 // actions
 import { setFilterAction } from '../../sharedDucks/AssignmentModule/ducks'
@@ -15,14 +15,9 @@ import {
   assignmentsCountByFilerNameSelector,
 } from '../ducks'
 
-// components
-import Breadcrumb from '../../sharedComponents/Breadcrumb'
-
 // styled components
 import { BreadcrumbWrapper } from '../../styled'
 import { setStatusBgColor } from '../../utils'
-
-const breadcrumbData = [{ title: 'ASSIGNMENTS', to: '' }]
 
 const AssignmentSubHeader = ({
   t,
@@ -113,11 +108,9 @@ const FilterBtn = styled(Button)`
     background: ${(props) => setStatusBgColor(props)};
   }
   &:hover {
-    color: ${(props) => props.theme.headerFilters.headerFilterTextHoverColor};
-    background: ${(props) =>
-      props.theme.headerFilters.headerFilterBgBorderHoverColor};
-    border-color: ${(props) =>
-      props.theme.headerFilters.headerFilterBgBorderHoverColor};
+    color: ${white};
+    background: ${themeColorBlue};
+    border-color: ${themeColorBlue}
   }
   span {
     font-size: ${(props) => props.theme.headerFilters.headerFilterTextSize};

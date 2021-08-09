@@ -40,7 +40,7 @@ const TestRecommendationsContainer = ({
         mt="35px"
       >
         <TextWrapper fw="bold" size="16px" color={title}>
-          Recommended For You
+          Recommended Tests For You
         </TextWrapper>
         <CustomButton
           isGhost

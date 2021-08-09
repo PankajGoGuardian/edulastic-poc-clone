@@ -6,6 +6,7 @@ import { debounce } from 'lodash'
 // components & constants
 import { AutoComplete, Input, Icon, Tooltip, Empty } from 'antd'
 import { assignmentStatusOptions, roleuser } from '@edulastic/constants'
+import { themeColorBlue } from '@edulastic/colors'
 
 // ducks
 import { useDropdownData } from '@edulastic/common'
@@ -228,5 +229,8 @@ const AutoCompleteContainer = styled.div`
   }
   .ant-input-suffix .anticon-loading {
     font-size: 1.4em;
+    & > svg {
+      fill: ${themeColorBlue};
+    }
   }
 `

@@ -3,7 +3,12 @@ import React, { useState, useCallback } from 'react'
 import { Button, Dropdown, Menu, Icon, Empty } from 'antd'
 import styled from 'styled-components'
 import { partial } from 'lodash'
-import { fadedGrey, lightGreySecondary, themeColor } from '@edulastic/colors'
+import {
+  fadedGrey,
+  lightGreySecondary,
+  themeColor,
+  themeColorBlue,
+} from '@edulastic/colors'
 
 import { useInternalEffect } from '../../hooks/useInternalEffect'
 
@@ -145,7 +150,7 @@ const StyledDiv = styled.div`
 
       &:hover,
       &:focus {
-        border-color: ${themeColor};
+        border-color: ${themeColorBlue};
         color: ${themeColor};
       }
       i {
@@ -171,11 +176,14 @@ const StyledControlDropDown = styled(ControlDropDown)`
   overflow: auto;
   .ant-dropdown-menu-item {
     padding: 4px 12px;
+    &:hover {
+      background-color: ${themeColorBlue};
+    }
   }
 
   .ant-dropdown-menu-item-selected,
   .ant-dropdown-menu-item-active {
-    background-color: ${themeColor};
+    background-color: ${themeColorBlue};
     color: #ffffff;
   }
 

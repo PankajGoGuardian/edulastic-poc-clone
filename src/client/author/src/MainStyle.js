@@ -72,7 +72,7 @@ export const MainContainer = styled.div`
   }
 
   .ant-input-affix-wrapper:hover .ant-input:not(.ant-input-disabled) {
-    border-color: ${(props) => props.theme.themeColor};
+    border-color: ${(props) => props.theme.themeColorBlue};
   }
 
   .ant-input {

@@ -80,7 +80,7 @@ const antSelectStyles = css`
     }
     .ant-select-dropdown-menu-item-selected,
     .ant-select-dropdown-menu-item-active {
-      background-color: ${themeColor};
+      background-color: ${themeColorBlue};
       color: #ffffff;
     }
     .ant-select-dropdown-menu-item,
@@ -525,7 +525,7 @@ export const StyledDropDownContainer = styled(Col)`
       }
       .ant-select-dropdown-menu-item-selected,
       .ant-select-dropdown-menu-item-active {
-        background-color: ${themeColor};
+        background-color: ${themeColorBlue};
         color: #ffffff;
       }
       .ant-select-dropdown-menu-item,

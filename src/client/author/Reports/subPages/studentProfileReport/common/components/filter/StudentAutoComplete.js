@@ -2,6 +2,7 @@ import React, { useMemo, useState, useEffect, useCallback } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { isEmpty, debounce } from 'lodash'
+import { themeColorBlue } from '@edulastic/colors'
 
 // components
 import { AutoComplete, Input, Icon, Tooltip, Empty } from 'antd'
@@ -234,5 +235,8 @@ const AutoCompleteContainer = styled.div`
   }
   .ant-input-suffix .anticon-loading {
     font-size: 1.4em;
+    & > svg {
+      fill: ${themeColorBlue};
+    }
   }
 `

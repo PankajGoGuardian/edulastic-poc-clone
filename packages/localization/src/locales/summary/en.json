@@ -5,6 +5,7 @@
     "markedQuestionLineOne": "You have answered these questions.",
     "skippedQues": "Please review your skipped questions before submitting the test",
     "markedForReview": "You have bookmarked these questions. Review them before submitting the test.",
+    "partiallyAttemptedQues": "Please review your partially answered questions before submitting the test",
     "nextStep": "Next Step: When you are done reviewing your answers, select Submit test. You cannot change your answers after you submit the test",
     "questionsLabel": "Questions"
   },

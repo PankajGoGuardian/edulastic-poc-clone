@@ -2416,7 +2416,7 @@ const initialState = {
   },
   isVideoResourcePreviewModal: false,
   showSumary: true,
-  showRightPanel: true,
+  showRightPanel: false,
   customizeInDraft: false,
   currentAssignmentIds: [],
 

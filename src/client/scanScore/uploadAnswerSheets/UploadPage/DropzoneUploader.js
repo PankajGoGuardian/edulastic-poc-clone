@@ -4,14 +4,14 @@ import styled from 'styled-components'
 
 import StyledDropZone from '../../../assessment/components/StyledDropZone'
 
-const DropzoneUploader = ({ handleDrop, uploading }) => (
+const DropzoneUploader = ({ handleDrop, disabled = false }) => (
   <Dropzone
     onDrop={handleDrop}
     accept="application/pdf"
     className="dropzone"
     activeClassName="active-dropzone"
     multiple={false}
-    disabled={uploading}
+    disabled={disabled}
   >
     {({ getRootProps, getInputProps, isDragActive, fileRejections = [] }) => {
       return (

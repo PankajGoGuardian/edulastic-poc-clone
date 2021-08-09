@@ -67,6 +67,34 @@ export const LIST_CLEVER_SUBJECTS = [
   'other',
 ]
 
+export const ATLAS_SUBJECTS = [
+  'CEDS.01', // Language arts.
+  'CEDS.02', // Mathematics.
+  'CEDS.03', // Life and physical sciences.
+  'CEDS.04', // Social sciences and history.
+  'CEDS.05', // Visual and performing arts.
+  'CEDS.07', // Religious education and theol
+  'CEDS.08', // Physical, health, and safety
+  'CEDS.09', // Military science.
+  'CEDS.10', // Information technology.
+  'CEDS.11', // Communication and audio/visua
+  'CEDS.12', // Business and marketing.
+  'CEDS.13', // Manufacturing.
+  'CEDS.14', // Health care sciences.
+  'CEDS.15', // Public, protective, and gover
+  'CEDS.16', // Hospitality and tourism.
+  'CEDS.17', // Architecture and construction
+  'CEDS.18', // Agriculture, food, and natura
+  'CEDS.19', // Human services.
+  'CEDS.20', // Transportation, distribution,
+  'CEDS.21', // Engineering and technology.
+  'CEDS.22', // Miscellaneous.
+  'CEDS.23', // Non-subject-specific.
+  'CEDS.24', // World languages.
+  'EL.01', //	Special education.
+  'EL.02', //	Professional development.
+]
+
 export const mapCountAsType = {
   schoolCount: {
     name: 'Schools',

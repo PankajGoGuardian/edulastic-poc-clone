@@ -341,17 +341,9 @@ const MyClasses = ({
     [collections]
   )
 
-  const isSingaporeMathCollectionActive = featuredBundles.filter(
-    (feature) =>
-      (feature.description?.toLowerCase()?.includes('singaporemath') ||
-        feature.description?.toLowerCase()?.includes('singapore math')) &&
-      feature?.active
-  )
-
   const isSingaporeMath =
     user?.referrer?.includes('singapore') ||
-    user?.utm_source?.toLowerCase()?.includes('singapore') ||
-    isSingaporeMathCollectionActive?.length > 0
+    user?.utm_source?.toLowerCase()?.includes('singapore')
 
   const isCpm = user?.utm_source?.toLowerCase()?.includes('cpm')
 

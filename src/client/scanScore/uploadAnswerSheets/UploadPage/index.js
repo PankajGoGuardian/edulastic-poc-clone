@@ -12,13 +12,12 @@ const UploadPage = ({
 }) => {
   return uploading ? (
     <UploadProgress
-      uploading={uploading}
       uploadProgress={uploadProgress}
       currentSession={currentSession}
       handleCancelUpload={handleCancelUpload}
     />
   ) : (
-    <DropzoneUploader uploading={uploading} handleDrop={handleDrop} />
+    <DropzoneUploader handleDrop={handleDrop} />
   )
 }
 

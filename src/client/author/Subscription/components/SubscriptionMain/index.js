@@ -231,11 +231,11 @@ const SubscriptionMain = ({
     if (isEmpty(currentItemBank)) {
       const product = products.find((x) => x.id === productId)
       subscriptionData = {
-        productId: product.id,
-        productName: product.name,
-        description: product.description,
-        hasTrial: !!product.trialPeriod,
-        itemBankId: product.linkedProductId,
+        productId: product?.id,
+        productName: product?.name,
+        description: product?.description,
+        hasTrial: !!product?.trialPeriod,
+        itemBankId: product?.linkedProductId,
       }
     } else {
       const { config = {} } = currentItemBank
@@ -250,8 +250,8 @@ const SubscriptionMain = ({
     })
   }
 
-  const handleStartTrialButtonClick = (productId) => {
-    settingProductData(productId)
+  const handleStartTrialButtonClick = (productIdOrSubType) => {
+    settingProductData(productIdOrSubType)
     // NOTE: Don't set a boolean default value for 'isPremiumTrialUsed'!
     if (!isBoolean(isPremiumTrialUsed)) {
       return notification({
@@ -264,7 +264,11 @@ const SubscriptionMain = ({
       setShowItemBankTrialUsedModal(true)
       return
     }
-    setIsTrialModalVisible(true)
+    if(!(['enterprise', 'partial_premium'].includes(
+      productIdOrSubType?.toLowerCase()
+    ))){
+      setIsTrialModalVisible(true)
+    }
   }
 
   // Show item bank trial button when item bank trial is not used yet and user is either premium

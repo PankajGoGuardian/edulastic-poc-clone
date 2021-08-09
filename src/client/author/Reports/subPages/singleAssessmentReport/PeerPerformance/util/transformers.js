@@ -349,15 +349,7 @@ const analyseByProficiencyBand = (rawData, groupedData, compareBy) => {
 
 export const parseData = (rawData, filter) => {
   let compareBy = filter.compareBy
-  let data = (rawData.metricInfo || []).map((d) => {
-    const gender =
-      d.gender.toLowerCase() === 'm'
-        ? 'Male'
-        : d.gender.toLowerCase() === 'f'
-        ? 'Female'
-        : d.gender
-    return { ...d, gender }
-  })
+  let data = rawData.metricInfo || []
   if (DemographicCompareByOptions.includes(compareBy)) {
     data = orderBy(data, compareBy, ['asc'])
   }

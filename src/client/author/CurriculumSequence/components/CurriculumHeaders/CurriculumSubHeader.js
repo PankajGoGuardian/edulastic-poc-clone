@@ -122,6 +122,7 @@ const CurriculumSubHeader = ({
             <ButtonWrapper>
               {(!isManageContentActive || !showRightPanel) &&
                 enableCustomize &&
+                destinationCurriculumSequence?.modules?.length > 0 &&
                 !shouldHidCustomizeButton && (
                   <CustomizeButton
                     isGhost

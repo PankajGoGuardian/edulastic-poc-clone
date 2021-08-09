@@ -995,7 +995,11 @@ class CurriculumSequence extends Component {
               >
                 <ContentContainer
                   urlHasUseThis={urlHasUseThis}
-                  showRightPanel={showRightPanel && !!activeRightPanel}
+                  showRightPanel={
+                    showRightPanel &&
+                    !!activeRightPanel &&
+                    destinationCurriculumSequence?.modules?.length > 0
+                  }
                   showBreadCrumb={showBreadCrumb}
                 >
                   <CurriculumSubHeader
@@ -1068,8 +1072,14 @@ class CurriculumSequence extends Component {
                 </ContentContainer>
 
                 <CurriculumRightPanel
-                  showRightPanel={showRightPanel}
-                  activeRightPanel={activeRightPanel}
+                  showRightPanel={
+                    showRightPanel &&
+                    destinationCurriculumSequence?.modules?.length > 0
+                  }
+                  activeRightPanel={
+                    activeRightPanel &&
+                    destinationCurriculumSequence?.modules?.length > 0
+                  }
                   isStudent={isStudent}
                   urlHasUseThis={urlHasUseThis}
                   hideRightpanel={this.hideRightpanel}

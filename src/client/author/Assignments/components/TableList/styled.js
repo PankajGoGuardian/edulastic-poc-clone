@@ -10,6 +10,7 @@ import {
   themeColor,
   title,
   white,
+  themeColorBlue,
 } from '@edulastic/colors'
 import { testActivity } from '@edulastic/constants'
 import { IconDownEmptyArrow } from '@edulastic/icons'

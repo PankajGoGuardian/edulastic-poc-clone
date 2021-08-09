@@ -8,6 +8,7 @@ import {
   mainTextColor,
   smallDesktopWidth,
   themeColor,
+  themeColorBlue,
 } from '@edulastic/colors'
 
 const TestFiltersNav = ({ items, onSelect, search = {} }) => {
@@ -90,7 +91,9 @@ const Item = styled(Menu.Item)`
     color: ${themeColor};
     box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
     border-radius: 0px 10px 10px 0px;
-
+    &:hover {
+      color: ${themeColorBlue};
+    }
     svg {
       fill: ${themeColor};
     }

@@ -7,10 +7,12 @@ import { Link, withRouter } from 'react-router-dom'
 import { withNamespaces } from '@edulastic/localization'
 import { test, roleuser } from '@edulastic/constants'
 import { EduButton, notification } from '@edulastic/common'
-import { IconMoreHorizontal } from '@edulastic/icons'
-import presentationIcon from '../../assets/presentation.svg'
-import additemsIcon from '../../assets/add-items.svg'
-import piechartIcon from '../../assets/pie-chart.svg'
+import {
+  IconMoreHorizontal,
+  IconPresentation,
+  IconAddItem,
+  IconPieChartIcon,
+} from '@edulastic/icons'
 import ReleaseScoreSettingsModal from '../../../Assignments/components/ReleaseScoreSettingsModal/ReleaseScoreSettingsModal'
 import { DeleteAssignmentModal } from '../../../Assignments/components/DeleteAssignmentModal/deleteAssignmentModal'
 import {
@@ -129,19 +131,19 @@ const columns = [
       >
         <Tooltip placement="bottom" title="Live Class Board">
           <Link to={`/author/classboard/${row.assignmentId}/${row.classId}`}>
-            <Icon data-cy="lcb" src={presentationIcon} alt="Images" />
+            <IconPresentation data-cy="lcb" alt="Images" />
           </Link>
         </Tooltip>
         <Tooltip placement="bottom" title="Express Grader">
           <Link to={`/author/expressgrader/${row.assignmentId}/${row.classId}`}>
-            <Icon data-cy="expressGrader" src={additemsIcon} alt="Images" />
+            <IconAddItem data-cy="expressGrader" alt="Images" />
           </Link>
         </Tooltip>
         <Tooltip placement="bottom" title="Reports">
           <Link
             to={`/author/standardsBasedReport/${row.assignmentId}/${row.classId}`}
           >
-            <Icon data-cy="reports" src={piechartIcon} alt="Images" />
+            <IconPieChartIcon data-cy="reports" alt="Images" />
           </Link>
         </Tooltip>
       </ActionsWrapper>

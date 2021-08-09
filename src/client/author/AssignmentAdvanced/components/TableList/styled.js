@@ -70,17 +70,6 @@ export const Container = styled.div`
   width: 100%;
 `
 
-export const Icon = styled.img`
-  @media (max-width: 1300px) {
-    width: 18px;
-    height: 18px;
-  }
-  @media (max-width: 920px) {
-    width: 15px;
-    height: 15px;
-  }
-`
-
 export const TableData = styled(Table)`
   color: ${secondaryTextColor};
   width: auto;

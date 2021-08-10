@@ -167,7 +167,7 @@ function getStudentFilterCategory(x) {
   if (x.status?.toLowerCase() === 'submitted' && x.graded !== 'GRADED') {
     return 'SUBMITTED'
   }
-  if (x.redirected) {
+  if (x.redirected && x.UTASTATUS === testActivityStatus.NOT_STARTED) {
     return 'REDIRECTED'
   }
   if (x.UTASTATUS === testActivityStatus.NOT_STARTED) {
@@ -492,9 +492,10 @@ class ClassBoard extends Component {
       setPageNumber,
     } = this.props
     const { assignmentId, classId } = match.params
+    const { selectedStudentId: studentId } = this.state
     this.setState({
       selectedTab: name,
-      selectedStudentId,
+      selectedStudentId: selectedStudentId || studentId,
       hasStickyHeader: false,
     })
     setPageNumber(1)
@@ -1328,7 +1329,7 @@ class ClassBoard extends Component {
                       onClick={(e) => {
                         const _testActivityId = this.getActivityId(
                           null,
-                          firstStudentId
+                          selectedStudentId || firstStudentId
                         )
                         setCurrentTestActivityId(_testActivityId)
                         if (!isItemsVisible) {
@@ -1342,7 +1343,7 @@ class ClassBoard extends Component {
                         this.onTabChange(
                           e,
                           'Student',
-                          firstStudentId,
+                          selectedStudentId || firstStudentId,
                           _testActivityId
                         )
                       }}
@@ -1378,9 +1379,9 @@ class ClassBoard extends Component {
                           return
                         }
                         this.setState({
-                          selectedQuestion: 0,
-                          selectedQid: firstQuestion._id,
-                          itemId: firstQuestion.testItemId,
+                          selectedQuestion: selectedQuestion || 0,
+                          selectedQid: selectedQid || firstQuestion._id,
+                          itemId: itemId || firstQuestion.testItemId,
                           selectedTab: 'questionView',
                         })
                         setPageNumber(1)

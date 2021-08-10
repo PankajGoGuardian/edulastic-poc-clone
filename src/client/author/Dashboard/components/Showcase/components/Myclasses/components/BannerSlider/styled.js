@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { white } from '@edulastic/colors'
+import { themeColor, white } from '@edulastic/colors'
 
 export const LearnMore = styled.span`
   height: auto;
@@ -26,6 +26,7 @@ export const SliderContainer = styled.div`
   position: relative;
   height: 210px;
   overflow: hidden;
+  margin: 0px -8px;
   .prev,
   .next {
     display: none;
@@ -73,12 +74,20 @@ export const Slides = styled.div`
   background-position: top left;
   background-repeat: no-repeat;
   border-radius: 4px;
-  margin-right: 5px;
+  margin: 5px 0px 5px 8px;
   position: relative;
+  transform: scale(1);
+  transition: 0.2s;
+  &:hover {
+    box-shadow: 0 0 3px 2px ${themeColor};
+    transform: scale(1.015);
+    border: none;
+    overflow: hidden;
+  }
 
   &.last,
   &:last-child {
-    margin-right: 0px !important;
+    margin-right: 8px !important;
   }
 `
 

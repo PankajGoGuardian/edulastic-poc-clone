@@ -162,7 +162,7 @@ class AssignTest extends React.Component {
         orgId: userId,
         orgType: roleuser.ORG_TYPE.USER,
       })
-      setCurrentTestSettingsId('')
+      setCurrentTestSettingsId(testSettings.settingId || '')
     }
 
     const isAdmin =
@@ -234,16 +234,30 @@ class AssignTest extends React.Component {
 
   componentDidUpdate(prevProps) {
     const {
-      testSettings: { playerSkinType },
+      testSettings: { playerSkinType, settingId },
+      testSettingsList = [],
+      userFeatures: { premium },
+      setCurrentTestSettingsId,
     } = this.props
     const {
-      testSettings: { playerSkinType: prevPlayerSkinType },
+      testSettings: {
+        playerSkinType: prevPlayerSkinType,
+        settingId: prevSettingId,
+      },
     } = prevProps
     // the initial playerSkinType in reducer is edulastic,
     // but after fetching the test it can be other type like testlet
     // So need to update the assignmentSettings here
     if (playerSkinType !== prevPlayerSkinType) {
       this.updateAssignmentNew({ playerSkinType })
+    }
+    if (
+      premium &&
+      settingId &&
+      settingId != prevSettingId &&
+      testSettingsList?.some((t) => t._id === settingId)
+    ) {
+      setCurrentTestSettingsId(settingId)
     }
   }
 
@@ -475,7 +489,13 @@ class AssignTest extends React.Component {
     if (!entity.autoRedirect) {
       delete entity.autoRedirectSettings
     }
-    if (
+    if (!entity.safeBrowser) {
+      delete entity.sebPassword
+    }
+    if (entity.safeBrowser && !entity.sebPassword) {
+      notification({ msg: 'Please enter safe exam browser password' })
+      isValid = false
+    } else if (
       entity.passwordPolicy ===
         testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC &&
       (!entity.assignmentPassword ||
@@ -641,7 +661,9 @@ class AssignTest extends React.Component {
     } = this.props
     const { title, _id } = isPlaylist ? playlist : testItem
     const exactMenu = parentMenu[location?.state?.from || from]
-    if (exactMenu?.to === 'myPlaylist') {
+      ? { ...parentMenu[location?.state?.from || from] }
+      : {}
+    if (parentMenu[location?.state?.from || from]?.to === 'myPlaylist') {
       exactMenu.to = _id
         ? `playlists/playlist/${_id}/use-this`
         : location?.state?.toUrl
@@ -652,7 +674,6 @@ class AssignTest extends React.Component {
     const moduleTitle = _module?.title || ''
     const isTestSettingSaveLimitReached =
       testSettingsList.length >= TEST_SETTINGS_SAVE_LIMIT
-
     return (
       <div>
         <CommonStudentConfirmation assignment={assignment} />

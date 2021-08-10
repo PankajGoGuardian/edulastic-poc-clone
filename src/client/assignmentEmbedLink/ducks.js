@@ -4,8 +4,12 @@ import { push } from 'connected-react-router'
 import { assignmentApi, testsApi } from '@edulastic/api'
 import notification from '@edulastic/common/src/components/Notification'
 import { roleuser } from '@edulastic/constants'
-import { getClasses, getUserRole, getUserDetails } from '../student/Login/ducks'
-import { getUserIdSelector } from '../author/src/selectors/user'
+import { getClasses, getUserRole } from '../student/Login/ducks'
+import { getUserIdSelector, getUserOrgId } from '../author/src/selectors/user'
+import {
+  getFilterFromSession,
+  setFilterInSession,
+} from '../common/utils/helpers'
 
 export const FETCH_ASSIGNMENTS_BY_TEST_ID =
   '[assignmentEmbedLink] fetch assignments by testId'
@@ -18,19 +22,23 @@ function* fetchAssignmentsByTestIdSaga({ payload }) {
   try {
     const assignments = yield call(assignmentApi.fetchByTestId, payload) || []
     const userRole = yield select(getUserRole)
-    const districtId = (yield select(getUserDetails)).districtIds[0]
+    const districtId = yield select(getUserOrgId)
     if (assignments.length > 0) {
       assignments.sort((a, b) => b.createdAt - a.createdAt)
       if (roleuser.DA_SA_ROLE_ARRAY.includes(userRole)) {
         const userId = yield select(getUserIdSelector)
-        const assignmentFilters = JSON.parse(
-          sessionStorage.getItem(`assignments_filter_${userId}`) || '{}'
-        )
+        const assignmentFilters = getFilterFromSession({
+          key: 'assignments_filter',
+          userId,
+          districtId,
+        })
         assignmentFilters.termId = assignments[0].termId
-        sessionStorage.setItem(
-          `assignments_filter_${userId}`,
-          JSON.stringify(assignmentFilters)
-        )
+        setFilterInSession({
+          key: 'assignments_filter',
+          userId,
+          districtId,
+          filter: assignmentFilters,
+        })
         yield put(
           push(
             `/author/assignments/${districtId}/${payload}?testType=${assignments[0].testType}`

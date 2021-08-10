@@ -39,7 +39,10 @@ import {
 import TestPreviewModal from '../../../Assignments/components/Container/TestPreviewModal'
 import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/test'
 import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
-import { getInterestedCurriculumsSelector } from '../../../src/selectors/user'
+import {
+  getInterestedCurriculumsSelector,
+  getUserOrgId,
+} from '../../../src/selectors/user'
 import { updateRecentStandardsAction } from '../../../src/actions/dictionaries'
 
 const resourceTabs = ['tests', 'resources']
@@ -203,7 +206,6 @@ const ManageContentBlock = (props) => {
   const openContentFilterModal = () => setShowContentFilterModal(true)
   const closeContentFilterModal = () => {
     setShowContentFilterModal(false)
-    setAlignment({})
   }
 
   const handleApplyFilters = () => {
@@ -560,7 +562,6 @@ const ManageContentBlock = (props) => {
             setAlignment={setAlignment}
             selectedStandards={selectedStandards}
             setSelectedStandards={setSelectedStandards}
-            curriculum={collectionFromCurriculumSequence}
             data={resourceData}
           />
         )}
@@ -576,7 +577,6 @@ const ManageContentBlock = (props) => {
             setAlignment={setAlignment}
             selectedStandards={selectedStandards}
             setSelectedStandards={setSelectedStandards}
-            curriculum={collectionFromCurriculumSequence}
             data={resourceData}
           />
         )}
@@ -592,7 +592,6 @@ const ManageContentBlock = (props) => {
             setAlignment={setAlignment}
             selectedStandards={selectedStandards}
             setSelectedStandards={setSelectedStandards}
-            curriculum={collectionFromCurriculumSequence}
             data={resourceData}
           />
         )}
@@ -621,7 +620,7 @@ const enhance = compose(
       testPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
       collections: state.user?.user?.orgData?.itemBanks,
       currentDistrictUsers: getCurrentDistrictUsersSelector(state),
-      districtId: state?.user?.user?.orgData?.districtIds?.[0],
+      districtId: getUserOrgId(state),
       userFeatures: state?.user?.user?.features,
       interestedCurriculums: getInterestedCurriculumsSelector(state),
       contentFilters: getPlaylistContentFilters(state),

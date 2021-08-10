@@ -51,6 +51,8 @@ import {
   showUpdateCoTeacherModalAction,
 } from '../../ducks'
 import SyncModal from './SyncModal'
+import { getUserOrgId } from '../../../src/selectors/user'
+import { setFilterInSession } from '../../../../common/utils/helpers'
 
 const Option = Select.Option
 
@@ -80,6 +82,7 @@ const Header = ({
   entity,
   showCoteacherModal,
   setUpdateCoTeacherModal,
+  orgId,
 }) => {
   const handleLoginSuccess = (data) => {
     fetchClassList({ data, showModal: false })
@@ -146,9 +149,9 @@ const Header = ({
     try {
       const result = await canvasApi.getCanvasAuthURI(institutionId)
       if (!result.userAuthenticated) {
-        const subscriptionTopic = `canvas:${user?.districtIds?.[0]}_${
-          user._id
-        }_${user.username || user.email || ''}`
+        const subscriptionTopic = `canvas:${orgId}_${user._id}_${
+          user.username || user.email || ''
+        }`
         authorizeCanvas(result.canvasAuthURL, subscriptionTopic)
           .then((res) => {
             syncCanvasModal(res)
@@ -197,10 +200,12 @@ const Header = ({
       testType: '',
       termId: '',
     }
-    sessionStorage.setItem(
-      `assignments_filter_${user._id}`,
-      JSON.stringify(filter)
-    )
+    setFilterInSession({
+      key: 'assignments_filter',
+      userId: user._id,
+      districtId: orgId,
+      filter,
+    })
     history.push('/author/assignments')
   }
 
@@ -242,7 +247,7 @@ const Header = ({
     setShowAutomaticUnarchiveModal(false)
   }
 
-  const handleCanvasAndGoogleSyncButtonClick = () => {
+  const handleCanvasAndGoogleSyncButtonClick = (syncType = '') => {
     if (
       (selectedClass?.canvasCode &&
         selectedClass.canvasCode.includes('deactivated')) ||
@@ -250,9 +255,9 @@ const Header = ({
         selectedClass.googleId.includes('deactivated'))
     ) {
       setShowAutomaticUnarchiveModal(true)
-    } else if (selectedClass?.googleId) {
+    } else if (syncType === 'google') {
       syncGCModal()
-    } else if (selectedClass?.canvasCode) {
+    } else if (syncType === 'canvas') {
       handleSyncWithCanvas()
     }
   }
@@ -298,7 +303,9 @@ const Header = ({
                     <Option
                       key={index}
                       data-cy={`sync-option-${index}`}
-                      onClick={handleCanvasAndGoogleSyncButtonClick}
+                      onClick={() =>
+                        handleCanvasAndGoogleSyncButtonClick('google')
+                      }
                     >
                       <span className="menu-label">
                         Sync with Google Classroom
@@ -334,7 +341,9 @@ const Header = ({
                   <Option
                     key={index}
                     data-cy={`sync-option-${index}`}
-                    onClick={handleCanvasAndGoogleSyncButtonClick}
+                    onClick={() =>
+                      handleCanvasAndGoogleSyncButtonClick('canvas')
+                    }
                   >
                     <span className="menu-label">Sync with Canvas</span>
                     <img
@@ -362,7 +371,7 @@ const Header = ({
                 <EduButton
                   isBlue
                   isGhost
-                  onClick={handleCanvasAndGoogleSyncButtonClick}
+                  onClick={() => handleCanvasAndGoogleSyncButtonClick('google')}
                 >
                   <IconGoogleClassroom />
                   <span>SYNC WITH GOOGLE CLASSROOM</span>
@@ -389,7 +398,7 @@ const Header = ({
                 data-cy="syncCanvasClass"
                 isBlue
                 isGhost
-                onClick={handleCanvasAndGoogleSyncButtonClick}
+                onClick={() => handleCanvasAndGoogleSyncButtonClick('canvas')}
               >
                 <img
                   alt="Canvas"
@@ -555,6 +564,7 @@ const enhance = compose(
     (state) => ({
       user: state?.user?.user,
       showCoteacherModal: getManageCoTeacherModalVisibleStateSelector(state),
+      orgId: getUserOrgId(state),
     }),
     {
       setUpdateCoTeacherModal: showUpdateCoTeacherModalAction,

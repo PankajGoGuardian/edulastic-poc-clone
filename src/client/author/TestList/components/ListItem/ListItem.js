@@ -449,7 +449,7 @@ class ListItem extends Component {
                   </ViewButtonWrapper>
                 )}
 
-                {isPlaylist && collectionToWrite?.length > 0 && (
+                {isPlaylist && (
                   <ViewButtonContainer
                     onClick={(e) => {
                       e.stopPropagation()

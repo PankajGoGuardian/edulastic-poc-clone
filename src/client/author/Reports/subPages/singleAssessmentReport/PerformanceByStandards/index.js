@@ -37,6 +37,7 @@ import {
   resetPerformanceByStandardsAction,
 } from './ducks'
 import dropDownFormat from './static/json/dropDownFormat.json'
+import { getAssessmentName } from '../../../common/util'
 
 const {
   viewByMode,
@@ -92,11 +93,9 @@ const PerformanceByStandards = ({
 
   const isViewByStandards = viewBy === viewByMode.STANDARDS
 
-  const assessmentName = `${
-    settings.selectedTest.title
-  } (ID:${settings.selectedTest.key.substring(
-    settings.selectedTest.key.length - 5
-  )})`
+  const assessmentName = getAssessmentName(
+    report?.meta?.test || settings.selectedTest
+  )
 
   const reportWithFilteredSkills = useMemo(
     () => getReportWithFilteredSkills(report, curriculumId),
@@ -137,7 +136,7 @@ const PerformanceByStandards = ({
      * hence, removed demographic filters dependency from useEffect
      * to prevent duplicate API from being fired
      */
-  }, [settings.selectedTest, settings.requestFilters])
+  }, [settings.selectedTest?.key, settings.requestFilters])
 
   useEffect(() => {
     setPageFilters({ ...pageFilters, page: 1 })

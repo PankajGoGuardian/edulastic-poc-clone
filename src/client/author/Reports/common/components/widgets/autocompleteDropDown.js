@@ -3,7 +3,12 @@ import React, { useState, useRef } from 'react'
 import { AutoComplete, Input, Icon, Empty } from 'antd'
 import styled from 'styled-components'
 
-import { black, lightGreySecondary, themeColor } from '@edulastic/colors'
+import {
+  black,
+  lightGreySecondary,
+  themeColor,
+  themeColorBlue,
+} from '@edulastic/colors'
 import { useInternalEffect } from '../../hooks/useInternalEffect'
 
 import { StyledAutocompleteDropDownContainer } from '../../styled'
@@ -233,6 +238,9 @@ const StyledAutocompleteDropDown = styled(AutocompleteDropDown)`
   }
   .ant-input-suffix .anticon-loading {
     font-size: 1.4em;
+    & > svg {
+      fill: ${themeColorBlue};
+    }
   }
 `
 

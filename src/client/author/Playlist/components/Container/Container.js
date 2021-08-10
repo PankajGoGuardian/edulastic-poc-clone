@@ -4,7 +4,7 @@ import { FlexContainer, withWindowSizes } from '@edulastic/common'
 import { IconList, IconPlaylist2, IconTile } from '@edulastic/icons'
 import { Button, Input, Row, Spin } from 'antd'
 import qs from 'qs'
-import { debounce, get, pick, isEqual } from 'lodash'
+import { debounce, get, pick, isEqual, isEmpty } from 'lodash'
 import moment from 'moment'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
@@ -14,6 +14,7 @@ import { compose } from 'redux'
 import { libraryFilters, sortOptions, roleuser } from '@edulastic/constants'
 import { withNamespaces } from 'react-i18next'
 import { userApi } from '@edulastic/api'
+import { sessionFilters as sessionFilterKeys } from '@edulastic/constants/const/common'
 import NoDataNotification from '../../../../common/components/NoDataNotification'
 import {
   updateDefaultGradesAction,
@@ -31,6 +32,7 @@ import {
   getInterestedGradesSelector,
   getInterestedSubjectsSelector,
   getUserFeatures,
+  getUserOrgId,
   getUserRole,
 } from '../../../src/selectors/user'
 import CardWrapper from '../../../TestList/components/CardWrapper/CardWrapper'
@@ -86,6 +88,10 @@ import SideContent from '../../../Dashboard/components/SideContent/Sidecontent'
 import SortMenu from '../../../ItemList/components/SortMenu'
 import FilterToggleBtn from '../../../src/components/common/FilterToggleBtn'
 import PlaylistAvailableModal from '../../playListAvailable/playListAvailableModal'
+import {
+  setFilterInSession,
+  getFilterFromSession,
+} from '../../../../common/utils/helpers'
 
 function getUrlFilter(filter) {
   if (filter === 'AUTHORED_BY_ME') {
@@ -174,6 +180,7 @@ class TestList extends Component {
       userRole,
       user,
       userId,
+      districtId,
       sparkPlaylistCollectionsVisited,
       setUser,
       playlists,
@@ -197,10 +204,16 @@ class TestList extends Component {
       subject = interestedSubjects || [],
       grades = interestedGrades || [],
     } = getDefaultInterests()
-    const sessionFilters =
-      JSON.parse(sessionStorage.getItem('filters[playList]')) || {}
-    const sessionSortFilters =
-      JSON.parse(sessionStorage.getItem('sort[playList]')) || {}
+    const sessionFilters = getFilterFromSession({
+      key: sessionFilterKeys.PLAYLIST_FILTER,
+      districtId,
+      userId,
+    })
+    const sessionSortFilters = getFilterFromSession({
+      key: sessionFilterKeys.PLAYLIST_SORT,
+      districtId,
+      userId,
+    })
     let searchParams = qs.parse(location.search, { ignoreQueryPrefix: true })
     let searchFilters = {}
 
@@ -210,8 +223,12 @@ class TestList extends Component {
       searchFilters = {
         ...playListFilters,
         ...sessionFilters,
-        subject,
-        grades,
+      }
+      if (isEmpty(sessionFilters)) {
+        Object.assign(searchFilters, {
+          subject,
+          grades,
+        })
       }
     }
 
@@ -279,9 +296,17 @@ class TestList extends Component {
   }
 
   updateFilterState = (searchState, sort) => {
-    const { updateAllPlaylistSearchFilter } = this.props
-    sessionStorage.setItem('filters[playList]', JSON.stringify(searchState))
-    sessionStorage.setItem('sort[playList]', JSON.stringify(sort))
+    const { updateAllPlaylistSearchFilter, districtId, userId } = this.props
+    setFilterInSession({
+      key: sessionFilterKeys.PLAYLIST_FILTER,
+      filter: searchState,
+      districtId,
+      userId,
+    })
+    setFilterInSession({
+      key: sessionFilterKeys.PLAYLIST_SORT,
+      filter: sort,
+    })
     updateAllPlaylistSearchFilter({
       search: { ...searchState, isSingaporeMath: this.state.isSingaporeMath },
       sort,
@@ -578,6 +603,7 @@ class TestList extends Component {
       openSidebar,
       isPlaylistAvailableModalVisible,
       filteredSparkInfo,
+      isSingaporeMath,
     } = this.state
     const { searchString } = playListFilters
     const renderFilterIcon = () => (
@@ -662,6 +688,7 @@ class TestList extends Component {
                 searchFilterOption={this.searchFilterOption}
                 handleStandardSearch={this.handleStandardSearch}
                 filterMenuItems={filterMenuItems}
+                isSingaporeMath={isSingaporeMath}
               />
             </SearchModalContainer>
           </MobileFilterModal>
@@ -690,6 +717,7 @@ class TestList extends Component {
                           searchFilterOption={this.searchFilterOption}
                           handleStandardSearch={this.handleStandardSearch}
                           filterMenuItems={filterMenuItems}
+                          isSingaporeMath={isSingaporeMath}
                         />
                       </ScrollBox>
                     </PerfectScrollbar>
@@ -778,6 +806,7 @@ const enhance = compose(
       isDemoAccount: isDemoPlaygroundUser(state),
       features: getUserFeatures(state),
       userRole: getUserRole(state),
+      districtId: getUserOrgId(state),
     }),
     {
       receivePlaylists: receivePlaylistsAction,

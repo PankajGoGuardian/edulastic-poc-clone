@@ -92,6 +92,18 @@ const SecondBlock = ({
     [collections, collectionsToShow]
   )
 
+  const allowedCollectionIds = useMemo(
+    () => collectionsToShow.map(({ _id }) => _id),
+    [collectionsToShow]
+  )
+
+  const recentCollectionsListAccessible = useMemo(() =>
+    recentCollectionsList.filter((r) => allowedCollectionIds.includes(r._id), [
+      recentCollectionsList,
+      allowedCollectionIds,
+    ])
+  )
+
   return (
     <Container padding="20px">
       <Row gutter={24}>
@@ -101,6 +113,7 @@ const SecondBlock = ({
             <SelectInputStyled
               bg="white"
               data-cy="dokSelect"
+              getPopupContainer={(triggerNode) => triggerNode.parentNode}
               placeholder={t('component.options.selectDOK')}
               onSelect={onQuestionDataSelect('depthOfKnowledge')}
               value={depthOfKnowledge}
@@ -141,6 +154,7 @@ const SecondBlock = ({
               placeholder={t('component.options.selectDifficulty')}
               onSelect={onQuestionDataSelect('authorDifficulty')}
               value={authorDifficulty}
+              getPopupContainer={(triggerNode) => triggerNode.parentNode}
               suffixIcon={<SelectSuffixIcon type="caret-down" />}
             >
               <Select.Option key="Select Difficulty Level" value="">
@@ -181,6 +195,7 @@ const SecondBlock = ({
               placeholder={t('component.options.blooomTaxonomy')}
               onSelect={onQuestionDataSelect('bloomsTaxonomy')}
               value={bloomsTaxonomy}
+              getPopupContainer={(triggerNode) => triggerNode.parentNode}
               suffixIcon={<SelectSuffixIcon type="caret-down" />}
             >
               <Select.Option key={"Select Bloom's Taxonomy"} value="">
@@ -219,7 +234,7 @@ const SecondBlock = ({
                   className="tagsSelect"
                   data-cy="collectionsSelect"
                   bg="white"
-                  placeholder="Please enter"
+                  placeholder="Please select"
                   value={filteredCollections.flatMap((c) => c.bucketIds)}
                   onChange={(value, options) =>
                     handleCollectionsSelect(value, options, collectionsToShow)
@@ -229,6 +244,7 @@ const SecondBlock = ({
                       .toLowerCase()
                       .indexOf(input.toLowerCase()) >= 0
                   }
+                  getPopupContainer={(triggerNode) => triggerNode.parentNode}
                   suffixIcon={<SelectSuffixIcon type="caret-down" />}
                   autoFocus={highlightCollection}
                 >
@@ -246,9 +262,9 @@ const SecondBlock = ({
                 </SelectInputStyled>
               </ItemBody>
             )}
-            {recentCollectionsList?.length > 0 && (
+            {recentCollectionsListAccessible?.length > 0 && (
               <RecentCollectionsList
-                recentCollectionsList={recentCollectionsList}
+                recentCollectionsList={recentCollectionsListAccessible}
                 collections={collections || []}
                 handleCollectionsSelect={handleRecentCollectionsSelect}
               />
@@ -270,6 +286,7 @@ const SecondBlock = ({
                     .toLowerCase()
                     .includes(input.trim().toLowerCase())
                 }
+                getPopupContainer={(triggerNode) => triggerNode.parentNode}
                 onSearch={searchTags}
               >
                 <Select.Option key={0} value="invalid" title="invalid" disabled>
@@ -291,6 +308,7 @@ const SecondBlock = ({
                 filterOption={(input, option) =>
                   option.props.title.toLowerCase().includes(input.toLowerCase())
                 }
+                getPopupContainer={(triggerNode) => triggerNode.parentNode}
               >
                 {searchValue.trim() ? (
                   <Select.Option

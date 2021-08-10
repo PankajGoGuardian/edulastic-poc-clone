@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { Popover } from 'antd'
-
+import { isString } from 'lodash'
 import { withNamespaces } from '@edulastic/localization'
 
+import { CustomKeyLabel } from '@edulastic/common'
 import CharacterMap from './CharacterMap'
 import NumberPadButton from './NumberPadButton'
 import { EmptyWrapper } from '../styled/EmptyWrapper'
@@ -34,6 +35,8 @@ const NumberPadItem = ({ item, onSelect, t, buttonStyle, index }) => {
       >
         {isEmpty(item.label) ? (
           <EmptyWrapper>{item.label}</EmptyWrapper>
+        ) : isString(item.label) ? (
+          <CustomKeyLabel value={item.label} />
         ) : (
           item.label
         )}

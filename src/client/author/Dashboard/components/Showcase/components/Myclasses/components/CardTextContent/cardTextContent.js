@@ -4,6 +4,8 @@ import { Row, Col, Tooltip } from 'antd'
 import { IconPlusCircle } from '@edulastic/icons'
 import { themeColorLight, cardTitleColor } from '@edulastic/colors'
 import { FlexContainer } from '@edulastic/common'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
 import {
   CardText,
   Image,
@@ -20,8 +22,10 @@ import {
   Label,
 } from './styled'
 import { TextWrapper } from '../../../../../styledComponents'
+import { getUserOrgId } from '../../../../../../../src/selectors/user'
+import { setFilterInSession } from '../../../../../../../../common/utils/helpers'
 
-export const CardTextContent = ({ data, history, userId }) => {
+export const CardTextContent = ({ data, history, userId, districtId }) => {
   const {
     totalAssignment,
     asgnStatus,
@@ -41,10 +45,12 @@ export const CardTextContent = ({ data, history, userId }) => {
       testType: '',
       termId: '',
     }
-    sessionStorage.setItem(
-      `assignments_filter_${userId}`,
-      JSON.stringify(filter)
-    )
+    setFilterInSession({
+      key: 'assignments_filter',
+      userId,
+      districtId,
+      filter,
+    })
   }
 
   return (
@@ -124,4 +130,10 @@ export const CardTextContent = ({ data, history, userId }) => {
   )
 }
 
-export default withRouter(CardTextContent)
+const enhance = compose(
+  withRouter,
+  connect((state) => ({
+    districtId: getUserOrgId(state),
+  }))
+)
+export default enhance(CardTextContent)

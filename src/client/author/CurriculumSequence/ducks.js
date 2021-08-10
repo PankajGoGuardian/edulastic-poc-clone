@@ -31,6 +31,7 @@ import {
   resourcesApi,
 } from '@edulastic/api'
 import produce from 'immer'
+import { themeColor } from '@edulastic/colors'
 import { setCurrentAssignmentAction } from '../TestPage/components/Assign/ducks'
 import {
   getUserSelector,
@@ -39,6 +40,8 @@ import {
   getCollectionsSelector,
   getWritableCollectionsSelector,
   getCurrentActiveTerms,
+  getCurrentTerm,
+  getUserOrgId,
 } from '../src/selectors/user'
 import {
   allowDuplicateCheck,
@@ -62,7 +65,6 @@ import {
   receiveRecentPlayListsAction,
   receiveLastPlayListSaga,
 } from '../Playlist/ducks'
-import { themeColor } from '@edulastic/colors'
 
 // Constants
 export const CURRICULUM_TYPE_GUIDE = 'guide'
@@ -1108,7 +1110,7 @@ function* createAssignmentNow({ payload }) {
 export function* updateDestinationCurriculumSequencesaga({ payload }) {
   try {
     const curriculumSequence = yield select(getDestinationCurriculumSequence)
-    curriculumSequence['isSMPlaylist'] = payload?.isSMPlaylist
+    curriculumSequence.isSMPlaylist = payload?.isSMPlaylist
 
     yield put(
       putCurriculumSequenceAction({
@@ -1669,6 +1671,7 @@ function* cloneThisPlayListSaga({ payload }) {
     yield put(setIsUsedModalVisibleAction(false))
     const location = yield select((state) => state.router.location.pathname)
     const urlHasUseThis = location.match(/use-this/g)
+    const termId = yield select(getCurrentTerm)
     if (isStudent && onChange) {
       yield put(
         push({
@@ -1676,7 +1679,9 @@ function* cloneThisPlayListSaga({ payload }) {
           state: { currentGroupId: groupId, fromUseThis },
         })
       )
-      yield put(receiveCurrentPlaylistMetrics({ groupId, playlistId: _id }))
+      yield put(
+        receiveCurrentPlaylistMetrics({ groupId, playlistId: _id, termId })
+      )
     } else if (onChange && !urlHasUseThis) {
       yield put(
         push({
@@ -1694,7 +1699,7 @@ function* cloneThisPlayListSaga({ payload }) {
           state: { from: 'myPlaylist', fromUseThis },
         })
       )
-      yield put(receiveCurrentPlaylistMetrics({ playlistId: _id }))
+      yield put(receiveCurrentPlaylistMetrics({ playlistId: _id, termId }))
     }
   } catch (error) {
     console.error(error)
@@ -1810,6 +1815,11 @@ function* fetchPlaylistAccessList({ payload }) {
 
 function* fetchPlaylistMetricsSaga({ payload }) {
   try {
+    // For curator without districtId
+    const districtId = yield select(getUserOrgId)
+    if (!districtId) {
+      return
+    }
     const { playlistId } = payload || {}
     if (!playlistId) {
       throw new Error(
@@ -1958,7 +1968,8 @@ function* fetchDifferentiationWorkSaga({ payload }) {
 }
 
 function* addRecommendationsSaga({ payload: _payload }) {
-  let { toggleAssignModal, recommendations: payload } = _payload
+  let { recommendations: payload } = _payload
+  const { toggleAssignModal } = _payload
   try {
     yield put(setRecommendationsToAssignAction({ isAssigning: true }))
     let response = null
@@ -3099,17 +3110,20 @@ export default createReducer(initialState, {
         .resources
     let totalStudentResources = 0
     resources.forEach((r) => {
-      if(r.contentSubType === "STUDENT") totalStudentResources += 1
+      if (r.contentSubType === 'STUDENT') totalStudentResources += 1
     })
-    if(totalStudentResources >= 5 && contentSubType === "STUDENT"){
-      notification({ type: 'info', messageKey: 'maximumAllowedStudentResources' })
+    if (totalStudentResources >= 5 && contentSubType === 'STUDENT') {
+      notification({
+        type: 'info',
+        messageKey: 'maximumAllowedStudentResources',
+      })
       return
     }
-        if (
-          !resources.find(
-            (x) => x.contentId === contentId && x.contentSubType === contentSubType
-            )
-            ) {
+    if (
+      !resources.find(
+        (x) => x.contentId === contentId && x.contentSubType === contentSubType
+      )
+    ) {
       const updateStandards = !hasStandardsOnCreation && standards.length < 15
       resources.push({
         contentId,

@@ -1,8 +1,10 @@
 import React from 'react'
 import Proptypes from 'prop-types'
 import { Popover } from 'antd'
+
 import { measureText, MathSpan } from '@edulastic/common'
 import { convertToMathTemplate } from '@edulastic/common/src/utils/mathUtils'
+
 import { Pointer } from '../../../../../styled/Pointer'
 import { Point } from '../../../../../styled/Point'
 import { Triangle } from '../../../../../styled/Triangle'
@@ -27,6 +29,7 @@ const Response = ({
   imageWidth,
   allCorrect,
   answerScore,
+  isEvaluationEmpty,
 }) => {
   const userAnswer = convertToMathTemplate(answered)
   const { width: contentWidth } = measureText(answered, btnStyle)
@@ -45,7 +48,8 @@ const Response = ({
     answerScore,
     status === 'right',
     userAnswer,
-    allCorrect
+    allCorrect,
+    isEvaluationEmpty
   )
 
   const popoverContent = (

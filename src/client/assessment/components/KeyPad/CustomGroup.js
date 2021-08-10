@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { cloneDeep, uniqBy, isEmpty } from 'lodash'
 
@@ -8,6 +8,8 @@ import { MathKeyboard } from '@edulastic/common'
 
 import NumberPad from '../NumberPad'
 
+const { TAB_BUTTONS, KEYBOARD_BUTTONS, NUMBER_PAD_ITEMS } = MathKeyboard
+
 const CustomGroup = ({ onChange, value, customKeys, buttonStyle, t }) => {
   const handleChangeValue = (field, val) => {
     const newValue = cloneDeep(value)
@@ -15,12 +17,10 @@ const CustomGroup = ({ onChange, value, customKeys, buttonStyle, t }) => {
     onChange(newValue)
   }
 
-  const makeCharacterMap = () => {
+  const characterMapButtons = useMemo(() => {
     const customBtns = [
       { value: '', label: t('component.options.empty') },
     ].concat(customKeys.map((key) => ({ value: key, label: key })))
-
-    const { TAB_BUTTONS, KEYBOARD_BUTTONS, NUMBER_PAD_ITEMS } = MathKeyboard
 
     const tabBtns = TAB_BUTTONS.reduce(
       (acc, curr) => [...acc, ...curr.buttons],
@@ -37,58 +37,38 @@ const CustomGroup = ({ onChange, value, customKeys, buttonStyle, t }) => {
         label: button.label,
       }))
     )
-  }
+  }, [customKeys])
 
-  const getNumberPad = () =>
-    value.value.map((num) => {
-      let res = MathKeyboard.KEYBOARD_BUTTONS.find(
-        ({ handler }) => num === handler
-      )
-      const isCustom = customKeys.find((key) => key === num)
+  const numberPadButtons = useMemo(() => {
+    return value.value.map((latex) => {
+      if (!latex) {
+        return { value: '', label: t('component.options.empty') }
+      }
+      let res = characterMapButtons.find(({ value: _val }) => latex === _val)
       /**
        * @see https://snapwiz.atlassian.net/browse/EV-28041
        * To render custom keys defined in some other item
        */
-      const _num = num && typeof num === 'string' ? num.trim() : undefined
+      const _latex =
+        latex && typeof latex === 'string' ? latex.trim() : undefined
 
       if (res) {
         res = {
           value: res.handler,
           label: res.label,
         }
-      } else if (isCustom) {
+      } else if (!isEmpty(_latex)) {
         res = {
-          value: num,
-          label: num,
-        }
-      } else if (!isEmpty(_num)) {
-        res = {
-          value: _num,
-          label: _num,
+          value: _latex,
+          label: _latex,
         }
       }
-
-      if (!res) {
-        const tabButtonKey = MathKeyboard.TAB_BUTTONS_FLATTENED.find(
-          (button) => {
-            const { handler } = button || {}
-            return handler === num
-          }
-        )
-        if (tabButtonKey) {
-          res = {
-            value: tabButtonKey.handler,
-            label: tabButtonKey.label,
-          }
-        }
-      }
-
       return res || { value: '', label: t('component.options.empty') }
     })
+  }, [value.value, characterMapButtons])
 
   const handleChangeNumberPad = (index, val) => {
     const numberPad = value.value ? [...value.value] : []
-
     numberPad[index] = val
     handleChangeValue('value', numberPad)
   }
@@ -96,8 +76,8 @@ const CustomGroup = ({ onChange, value, customKeys, buttonStyle, t }) => {
   return (
     <NumberPad
       onChange={handleChangeNumberPad}
-      items={getNumberPad()}
-      characterMapButtons={makeCharacterMap()}
+      items={numberPadButtons}
+      characterMapButtons={characterMapButtons}
       buttonStyle={buttonStyle}
     />
   )

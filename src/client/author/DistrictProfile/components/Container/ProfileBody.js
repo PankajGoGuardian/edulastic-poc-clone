@@ -53,7 +53,12 @@ import EmailConfirmModal from '../EmailConfirmModal/EmailConfirmModal'
 import Photo from './Photo'
 import { selectsData } from '../../../TestPage/components/common'
 import JoinSchool from '../../../../student/Signup/components/TeacherContainer/JoinSchool'
-import { getInterestedCurriculumsByOrgType } from '../../../src/selectors/user'
+import {
+  getInterestedCurriculumsByOrgType,
+  getUserOrg,
+  getOrgSchools,
+  getOrgGroupList,
+} from '../../../src/selectors/user'
 
 const { ORG_TYPE } = roleuser
 
@@ -137,6 +142,7 @@ class ProfileBody extends React.Component {
       user,
       updateUserDetails,
       userInfo: { currentSignUpState },
+      userOrg: { districtId } = {},
     } = this.props
     const { showChangePassword, isEditProfile } = this.state
     const isnotNormalLogin =
@@ -147,7 +153,7 @@ class ProfileBody extends React.Component {
       !!user.msoId
     // in case of author only one districtId will exist
     const data = {
-      districtId: user?.districtIds?.[0],
+      districtId,
       email:
         isEditProfile && !isnotNormalLogin
           ? getFieldValue('email')
@@ -343,14 +349,14 @@ class ProfileBody extends React.Component {
   }
 
   getSchoolList = () => {
-    const { user } = this.props
-    const schools = user.orgData.schools.map((school) => (
+    const { orgSchools } = this.props
+    const schools = orgSchools.map((school) => (
       <StyledTag id={school._id}>
         {school.name}
         <Icon
           type="close"
           onClick={() => {
-            if (user.orgData.schools.length > 1)
+            if (orgSchools.length > 1)
               this.setState({
                 selectedSchool: school,
                 showDeleteSchoolModal: true,
@@ -414,17 +420,20 @@ class ProfileBody extends React.Component {
   }
 
   checkUser = async (rule, value, callback) => {
-    const { user, t } = this.props
+    const { user, t, userOrg: { districtId } = {} } = this.props
 
     if (value !== user.email) {
       const result = await userApi.checkUser({
         username: value,
-        districtId: user?.districtIds?.[0],
+        districtId,
         role: user.role,
       })
 
-      if (result.length > 0)
+      if (result.length > 0) {
         callback(t('common.title.emailAlreadyExistsMessage'))
+      } else {
+        callback()
+      }
     }
     callback()
   }
@@ -559,6 +568,8 @@ class ProfileBody extends React.Component {
       userInfo,
       joinSchoolVisible,
       hideJoinSchool,
+      userOrg,
+      orgGroupList,
     } = this.props
     const {
       showChangePassword,
@@ -581,8 +592,8 @@ class ProfileBody extends React.Component {
       (institutionPolicies.length
         ? !!institutionPolicies.filter((p) => p.allowGoogleClassroom).length
         : get(user, 'orgData.policies.district.allowGoogleClassroom', false)) ||
-      (user.orgData?.districts?.[0]?.districtStatus === 2 &&
-        !!user.orgData.classList.filter((c) => !!c.googleId).length)
+      (userOrg?.districtStatus === 2 &&
+        !!orgGroupList.filter((c) => !!c.googleId).length)
     const interestedStaData = {
       curriculums: interestedCurriculums,
     }
@@ -974,6 +985,9 @@ const enhance = compose(
       userInfo: get(state.user, 'user', {}),
       curriculums: getCurriculumsListSelector(state),
       interestedCurriculums: getInterestedCurriculumsByOrgType(state),
+      orgSchools: getOrgSchools(state),
+      userOrg: getUserOrg(state),
+      orgGroupList: getOrgGroupList(state),
     }),
     {
       resetMyPassword: resetMyPasswordAction,

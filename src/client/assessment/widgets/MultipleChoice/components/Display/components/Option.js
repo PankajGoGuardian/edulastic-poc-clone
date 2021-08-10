@@ -1,23 +1,34 @@
 import { themeColorBlue, white, themeColorHoverBlue } from '@edulastic/colors'
-import { MathFormulaDisplay, withKeyboard } from '@edulastic/common'
+import {
+  MathFormulaDisplay,
+  withKeyboard,
+  LanguageContext,
+} from '@edulastic/common'
+import { SortableElement } from 'react-sortable-hoc'
+import { withNamespaces } from '@edulastic/localization'
+import { appLanguages } from '@edulastic/constants'
 import produce from 'immer'
 import { flatten, isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import styled from 'styled-components'
+import { IconTrash as Icon } from '@edulastic/icons'
+import QuestionTextArea from '../../../../../components/QuestionTextArea'
 import { isTouchDevice } from '../../../../../utils/helpers'
 import { ALPHABET } from '../../../constants/alphabet'
 import { CheckboxContainer } from '../styled/CheckboxContainer'
 import { IconCheck } from '../styled/IconCheck'
 import { IconClose } from '../styled/IconClose'
 import { IconWrapper } from '../styled/IconWrapper'
-import { Label } from '../styled/Label'
+import { Label, OptionLabelDiv } from '../styled/Label'
 import { MultiChoiceContent } from '../styled/MultiChoiceContent'
 import Cross from './Cross'
+import DragHandle from './DragHandle'
 
 const Option = (props) => {
   const {
-    index,
+    t,
+    indx,
     item,
     showAnswer,
     userSelections,
@@ -40,6 +51,8 @@ const Option = (props) => {
     isPrintPreview,
     fromSetAnswers,
     tool = [],
+    onChangeOption,
+    onRemoveOption,
   } = props
   let className = ''
   let correctAnswers = []
@@ -52,6 +65,8 @@ const Option = (props) => {
   }
 
   const [hovered, toggleHover] = useState(false)
+  const { currentLanguage: authLanguage } = useContext(LanguageContext)
+  const hideDelete = appLanguages.LANGUAGE_EN !== authLanguage
 
   const isSelected = isReviewTab
     ? false
@@ -151,7 +166,7 @@ const Option = (props) => {
     }
   }
 
-  const label = getLabel(index)
+  const label = getLabel(indx)
 
   const container = (
     <>
@@ -169,11 +184,27 @@ const Option = (props) => {
           onChange={onChangeHandler}
         />
       </CheckboxContainer>
-      <span className="labelOnly" style={{ display: !label && 'none' }}>
+      <span
+        className="labelOnly"
+        style={{ display: !label && 'none' }}
+        onClick={fromSetAnswers && onChangeHandler}
+      >
         {label}
       </span>
     </>
   )
+
+  const handleChangeLabel = (e) => {
+    if (onChangeOption) {
+      onChangeOption(indx, e, item?.id)
+    }
+  }
+
+  const handleRemoveOp = () => {
+    if (onRemoveOption) {
+      onRemoveOption(indx, item?.id)
+    }
+  }
 
   const renderCheckbox = () => (
     <StyledOptionsContainer
@@ -183,8 +214,10 @@ const Option = (props) => {
       className="__print-space-reduce-option"
       onClickEvent={onChangeHandler}
       tool={tool}
+      fromSetAnswers={fromSetAnswers}
       onlySpaceKey
     >
+      {fromSetAnswers && <DragHandle />}
       {uiStyle.type !== 'radioBelow' && container}
       <MultiChoiceContent
         fontSize={fontSize}
@@ -192,10 +225,24 @@ const Option = (props) => {
         uiStyleType={uiStyle.type}
         label={label}
       >
-        <MathFormulaDisplay
-          fontSize={fontSize}
-          dangerouslySetInnerHTML={{ __html: item.label }}
-        />
+        {!fromSetAnswers && (
+          <MathFormulaDisplay
+            fontSize={fontSize}
+            dangerouslySetInnerHTML={{ __html: item.label }}
+          />
+        )}
+        {fromSetAnswers && (
+          <QuestionTextArea
+            value={item.label}
+            fontSize={fontSize}
+            placeholder={`${t('component.multiplechoice.optionPlaceholder')} #${
+              indx + 1
+            }`}
+            toolbarId={`mcq-option-${indx}`}
+            onChange={handleChangeLabel}
+            backgroundColor
+          />
+        )}
         {(isCrossAction || hovered) && (
           <Cross hovered={hovered} isCrossAction={isCrossAction} />
         )}
@@ -206,44 +253,66 @@ const Option = (props) => {
 
   const showBorder = fromSetAnswers || uiStyle.type === 'block'
 
+  const LableComp = fromSetAnswers ? OptionLabelDiv : Label
+
   return (
     // TODO setup label background color for each option
-    <Label
-      data-cy="anwer-labels"
-      maxWidth={maxWidth}
-      smallSize={smallSize}
-      className={className}
-      showAnswer={showAnswer}
-      uiStyle={uiStyle}
-      showIcon={showIcon}
-      styleType={styleType}
-      selected={isSelected}
-      checkAnswer={checkAnswer}
-      userSelect={!!setCrossAction}
-      isPrintPreview={isPrintPreview}
-      showBorder={showBorder}
-      label={label}
-      onMouseEnter={() => {
-        if (setCrossAction && !isTouchDevice()) {
-          toggleHover(true)
-        }
-      }}
-      onMouseLeave={() => {
-        if (setCrossAction && !isTouchDevice()) {
-          toggleHover(false)
-        }
-      }}
-    >
-      {renderCheckbox()}
-      {showIcon && (
-        <IconWrapper>
-          {className === 'right' && <IconCheck />}
-          {className === 'wrong' && <IconClose />}
-        </IconWrapper>
-      )}
-    </Label>
+    <span data-cy="quillSortableItem">
+      <LableComp
+        data-cy="anwer-labels"
+        maxWidth={maxWidth}
+        smallSize={smallSize}
+        className={className}
+        showAnswer={showAnswer}
+        uiStyle={uiStyle}
+        showIcon={showIcon}
+        styleType={styleType}
+        selected={isSelected}
+        checkAnswer={checkAnswer}
+        userSelect={!!setCrossAction}
+        isPrintPreview={isPrintPreview}
+        showBorder={showBorder}
+        label={label}
+        onMouseEnter={() => {
+          if (setCrossAction && !isTouchDevice()) {
+            toggleHover(true)
+          }
+        }}
+        onMouseLeave={() => {
+          if (setCrossAction && !isTouchDevice()) {
+            toggleHover(false)
+          }
+        }}
+      >
+        {renderCheckbox()}
+        {showIcon && (
+          <IconWrapper>
+            {className === 'right' && <IconCheck />}
+            {className === 'wrong' && <IconClose />}
+          </IconWrapper>
+        )}
+        {fromSetAnswers && !hideDelete && (
+          <IconTrash
+            data-cypress="deleteButton"
+            data-cy={`deleteprefix${indx}`}
+            onClick={handleRemoveOp}
+          />
+        )}
+      </LableComp>
+    </span>
   )
 }
+
+const IconTrash = styled(Icon)`
+  fill: ${(props) => props.theme.sortableList.iconTrashColor};
+  :hover {
+    fill: ${(props) => props.theme.sortableList.iconTrashHoverColor};
+  }
+  width: 10px;
+  height: 14px;
+  cursor: pointer;
+  margin: 0px -30px 0px 16px;
+`
 
 const StyledOptionsContainer = withKeyboard(styled.div`
   flex: 1;
@@ -307,7 +376,7 @@ const StyledOptionsContainer = withKeyboard(styled.div`
 `)
 
 Option.propTypes = {
-  index: PropTypes.number.isRequired,
+  indx: PropTypes.number.isRequired,
   showAnswer: PropTypes.bool,
   item: PropTypes.any.isRequired,
   userSelections: PropTypes.array,
@@ -339,5 +408,8 @@ Option.defaultProps = {
   setCrossAction: false,
   crossAction: {},
 }
+const OptionComponent = withNamespaces('assessment')(Option)
 
-export default React.memo(Option)
+export const SortableOption = SortableElement(OptionComponent)
+
+export default React.memo(OptionComponent)

@@ -39,16 +39,25 @@ class ScoreTable extends Component {
             dataIndex: 'students',
             className: 'th-border-bottom student-names',
             width: 220,
-            render: (record) => (
-              <StyledDivMid
-                style={{ color: '#000', textAlign: 'left' }}
-                className="name-col"
-              >
-                {isPresentationMode
-                  ? record.fakeName
-                  : record.studentName || t('common.anonymous')}
-              </StyledDivMid>
-            ),
+            render: (record) => {
+              const studentName = isPresentationMode
+                ? record.fakeName
+                : record.studentName || t('common.anonymous')
+              return (
+                <StyledDivMid
+                  style={{
+                    color: '#000',
+                    textAlign: 'left',
+                    display: 'table-cell',
+                    textOverflow: 'ellipsis',
+                  }}
+                  className="name-col"
+                  title={studentName}
+                >
+                  {studentName}
+                </StyledDivMid>
+              )
+            },
             sorter: (a, b) =>
               a.students.studentName.toUpperCase() >
               b.students.studentName.toUpperCase()

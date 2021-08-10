@@ -6,9 +6,11 @@ import {
 } from '@edulastic/common'
 import { IconCanvasBook } from '@edulastic/icons'
 import { Select } from 'antd'
-import { get, groupBy } from 'lodash'
+import { get, groupBy, isEmpty } from 'lodash'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { withRouter } from 'react-router-dom'
 import { receiveSearchCourseAction } from '../../../author/Courses/ducks'
 import { getThumbnail } from '../../../author/ManageClass/components/ClassSectionThumbnailsBySubjectGrade'
 import { getDictCurriculumsAction } from '../../../author/src/actions/dictionaries'
@@ -21,8 +23,12 @@ import {
 import {
   bulkSyncCanvasClassAction,
   joinSchoolFailedAction,
+  updateUserSignupStateAction,
 } from '../../../student/Signup/duck'
-import { getCanvasAllowedInstitutionPoliciesSelector } from '../../../author/src/selectors/user'
+import {
+  getCanvasAllowedInstitutionPoliciesSelector,
+  getUserOrgId,
+} from '../../../author/src/selectors/user'
 import {
   ModalClassListTable,
   StyledSelect,
@@ -57,6 +63,9 @@ const CanvasBulkAddClass = ({
   fromManageClass,
   canvasAllowedInstitutions,
   onCancel = () => {},
+  districtId,
+  setUserSignupState,
+  history,
 }) => {
   const [selectedRows, setSelectedRows] = useState([])
   const [showModal, setShowModal] = useState(false)
@@ -67,7 +76,10 @@ const CanvasBulkAddClass = ({
 
   useEffect(() => {
     getDictCurriculums()
-    receiveSearchCourse({ districtId: user?.districtIds?.[0], active: 1 })
+    receiveSearchCourse({
+      districtId,
+      active: 1,
+    })
     if (!fromManageClass) {
       setInstitution(institutionId)
     } else {
@@ -105,7 +117,7 @@ const CanvasBulkAddClass = ({
           const sectionClasses = sectionList.map((s) => {
             const thumbnail = getThumbnail()
             return {
-              districtId: user?.districtIds?.[0],
+              districtId,
               grades: s.grades || [],
               institutionId: institution,
               name: s.name,
@@ -139,6 +151,7 @@ const CanvasBulkAddClass = ({
         .filter((o) => o.alreadySynced)
         .map((o) => !!o.syncCanvasCoTeacher)
       if (
+        !isEmpty(syncedClassCoTeacherFlag) &&
         !(
           syncedClassCoTeacherFlag.includes(true) &&
           syncedClassCoTeacherFlag.includes(false)
@@ -225,6 +238,11 @@ const CanvasBulkAddClass = ({
     joinSchoolFailed({})
   }
 
+  const handleSkip = () => {
+    setSignUpStatus(3)
+    setUserSignupState()
+    history.push({ pathname: `/author/dashboard` })
+  }
   const activeCourseList = useMemo(
     () => courseList.filter((c) => +c.active === 1),
     [courseList]
@@ -479,6 +497,7 @@ const CanvasBulkAddClass = ({
             <Button onClick={handleGoBack} back>
               BACK
             </Button>
+            <Button onClick={handleSkip}>Skip and Sync Later</Button>
             <Button onClick={handleFinish}>FINISH</Button>
           </>
         )}
@@ -506,22 +525,32 @@ const CanvasBulkAddClass = ({
   )
 }
 
-export default connect(
-  (state) => ({
-    state,
-    courseList: get(state, 'coursesReducer.searchResult'),
-    bulkSyncCanvasStatus: get(state, 'signup.bulkSyncCanvasStatus', false),
-    isFetchingCanvasData: get(state, 'manageClass.isFetchingCanvasData', false),
-    canvasAllowedInstitutions: getCanvasAllowedInstitutionPoliciesSelector(
-      state
-    ),
-  }),
-  {
-    getDictCurriculums: getDictCurriculumsAction,
-    receiveSearchCourse: receiveSearchCourseAction,
-    bulkSyncCanvasClass: bulkSyncCanvasClassAction,
-    signupSuccess: signupSuccessAction,
-    setSignUpStatus: setSignUpStatusAction,
-    joinSchoolFailed: joinSchoolFailedAction,
-  }
-)(CanvasBulkAddClass)
+const enhance = compose(
+  withRouter,
+  connect(
+    (state) => ({
+      state,
+      courseList: get(state, 'coursesReducer.searchResult'),
+      bulkSyncCanvasStatus: get(state, 'signup.bulkSyncCanvasStatus', false),
+      isFetchingCanvasData: get(
+        state,
+        'manageClass.isFetchingCanvasData',
+        false
+      ),
+      canvasAllowedInstitutions: getCanvasAllowedInstitutionPoliciesSelector(
+        state
+      ),
+      districtId: getUserOrgId(state),
+    }),
+    {
+      getDictCurriculums: getDictCurriculumsAction,
+      receiveSearchCourse: receiveSearchCourseAction,
+      bulkSyncCanvasClass: bulkSyncCanvasClassAction,
+      signupSuccess: signupSuccessAction,
+      setSignUpStatus: setSignUpStatusAction,
+      joinSchoolFailed: joinSchoolFailedAction,
+      setUserSignupState: updateUserSignupStateAction,
+    }
+  )
+)
+export default enhance(CanvasBulkAddClass)

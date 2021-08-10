@@ -25,6 +25,7 @@ const AssessmentPlayerSkinWrapper = ({
   defaultAP,
   docUrl,
   playerSkinType = test.playerSkinValues.edulastic,
+  originalSkinName,
   handleMagnifier,
   enableMagnifier = false,
   ...restProps
@@ -335,7 +336,7 @@ const AssessmentPlayerSkinWrapper = ({
           style={getStyle()}
           playerSkin={playerSkinType}
           isSidebarVisible={isSidebarVisible}
-          data-cy={test.playerSkinTypes[playerSkinType]}
+          data-cy={test.playerSkinTypes[originalSkinName]}
         >
           {children}
         </StyledMainContainer>

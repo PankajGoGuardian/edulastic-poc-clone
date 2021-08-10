@@ -12,6 +12,7 @@ import { defaultSymbols, math as mathConstants } from '@edulastic/constants'
 import CorrectAnswers from '../CorrectAnswers'
 import GraphDisplay from './Display/GraphDisplay'
 import EvaluationSettings from '../EvaluationSettings'
+import GraphMessage from './Authoring/GraphMessage'
 
 import {
   setQuestionDataAction,
@@ -271,6 +272,11 @@ class GraphAnswers extends Component {
         ? validation.validResponse.score
         : validation.altResponses[tab - 1].score
 
+    const elements =
+      tab === 0
+        ? validation.validResponse.value
+        : validation.altResponses[tab - 1].value
+
     return (
       <CorrectAnswers
         {...rest}
@@ -336,6 +342,8 @@ class GraphAnswers extends Component {
           hidePointOnEquation={hidePointOnEquation.includes(graphType)}
           changeOptions={this.handleChangeEvaluationOption}
         />
+
+        <GraphMessage options={this.optionsForEvaluation} elements={elements} />
       </CorrectAnswers>
     )
   }

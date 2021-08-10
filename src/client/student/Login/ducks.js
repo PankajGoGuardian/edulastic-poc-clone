@@ -36,6 +36,7 @@ import {
   removeSignOutUrl,
   getStartedUrl,
   isHashAssessmentUrl,
+  removeSessionValue,
 } from '../../common/utils/helpers'
 import { userPickFields } from '../../common/utils/static/user'
 import {
@@ -43,7 +44,7 @@ import {
   signupGeneralSettingsSelector,
   updateUserSignupStateAction,
 } from '../Signup/duck'
-import { getUser } from '../../author/src/selectors/user'
+import { getUser, getUserOrgId } from '../../author/src/selectors/user'
 import { updateInitSearchStateAction } from '../../author/TestPage/components/AddItems/ducks'
 import { JOIN_CLASS_REQUEST_SUCCESS } from '../ManageClass/ducks'
 import 'firebase/auth'
@@ -368,8 +369,7 @@ const isPartOfLoginRoutes = (pathname) =>
 
 function* persistAuthStateAndRedirectToSaga({ payload }) {
   const { _redirectRoute, toUrl } = payload || {}
-  const { authorUi, signup: signUp, user } = yield select((_state) => _state) ||
-    {}
+  const { user } = yield select((_state) => _state) || {}
 
   if (!user.user) return
 
@@ -388,11 +388,6 @@ function* persistAuthStateAndRedirectToSaga({ payload }) {
   } else if (!window.location.pathname.includes('home/group')) {
     redirectRoute = getRouteByGeneralRoute(user)
   }
-
-  localStorage.setItem(
-    'authState',
-    JSON.stringify({ authorUi, signup: signUp, user })
-  )
 
   if (redirectRoute) {
     window.location.replace(redirectRoute)
@@ -580,6 +575,20 @@ export default createReducer(initialState, {
     state.user.institutionIds = updatedSchoolIds
     state.user.orgData.institutionIds = updatedSchoolIds
     state.user.orgData.schools = updatedSchools
+    const accountIdx = (state.user.otherAccounts || []).findIndex(
+      (u) => u._id === state.user._id
+    )
+    if (accountIdx !== -1) {
+      const oldData = state.user.otherAccounts[accountIdx]
+      state.user.otherAccounts[
+        accountIdx
+      ].institutionIds = oldData?.institutionIds?.filter((id) => id !== payload)
+      state.user.otherAccounts[
+        accountIdx
+      ].institutions = oldData?.institutions?.filter(
+        (school) => school._id !== payload
+      )
+    }
   },
   [REMOVE_SCHOOL_FAILED]: (state) => {
     state.removingSchool = undefined
@@ -592,6 +601,7 @@ export default createReducer(initialState, {
     state.user.institutionIds = payload.institutionIds
     state.user.orgData.institutionIds = payload.orgData.institutionIds
     state.user.orgData.schools = payload.orgData.schools
+    state.user.otherAccounts = payload.otherAccounts || state.user.otherAccounts
   },
   [ADD_SCHOOL_FAILED]: (state) => {
     state.addingSchool = undefined
@@ -604,6 +614,7 @@ export default createReducer(initialState, {
     state.user.institutionIds = payload.institutionIds
     state.user.orgData.institutionIds = payload.orgData.institutionIds
     state.user.orgData.schools = payload.orgData.schools
+    state.user.otherAccounts = payload.otherAccounts || state.user.otherAccounts
   },
   [CREATE_AND_ADD_SCHOOL_FAILED]: (state) => {
     state.creatingAddingSchool = undefined
@@ -1215,6 +1226,7 @@ export function* fetchUser({ payload }) {
 
     if (key.includes('role:undefined') && user.role) {
       TokenStorage.removeAccessToken(user._id, 'undefined')
+      // add last used or current districtId
       TokenStorage.storeAccessToken(user.token, user._id, user.role, true)
       TokenStorage.selectAccessToken(user._id, user.role)
     }
@@ -1324,10 +1336,15 @@ function* logout() {
           localStorage.removeItem(objKey)
         }
       })
+      const districtId = yield select(getUserOrgId)
       sessionStorage.removeItem('cliBannerShown')
       sessionStorage.removeItem('cliBannerVisible')
       sessionStorage.removeItem('addAccountDetails')
-      sessionStorage.removeItem(`assignments_filter_${user._id}`)
+      removeSessionValue({
+        key: 'assignments_filter',
+        userId: user._id,
+        districtId,
+      })
       sessionStorage.removeItem('temporaryClass')
       TokenStorage.removeKID()
       TokenStorage.initKID()

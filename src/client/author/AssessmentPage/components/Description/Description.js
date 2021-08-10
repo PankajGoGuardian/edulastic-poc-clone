@@ -9,6 +9,7 @@ import {
 } from '../../../TestPage/components/AddItems/ducks'
 import SourceModal from '../../../QuestionEditor/components/SourceModal/SourceModal'
 import { getItemBucketsSelector } from '../../../src/selectors/user'
+import { convertCollectionOptionsToArray } from '../../../src/utils/util'
 
 const Description = ({
   setData,
@@ -37,23 +38,7 @@ const Description = ({
   }
 
   const handleChangeCollection = (_, options) => {
-    const data = {}
-    options.forEach((o) => {
-      if (data[o.props._id]) {
-        data[o.props._id].push(o.props.value)
-      } else {
-        data[o.props._id] = [o.props.value]
-      }
-    })
-
-    const collectionArray = []
-    for (const [key, value] of Object.entries(data)) {
-      collectionArray.push({
-        _id: key,
-        bucketIds: value,
-      })
-    }
-
+    const collectionArray = convertCollectionOptionsToArray(options)
     const orgCollectionIds = orgCollections.map((o) => o._id)
     const extraCollections = (assessment.collections || []).filter(
       (c) => !orgCollectionIds.includes(c._id)

@@ -10,6 +10,7 @@ import {
   extraDesktopWidth,
   inputBorder1,
   greyThemeDark1,
+  themeColorBlue,
 } from '@edulastic/colors'
 
 // left 70 as the side menu space need to be considered.
@@ -45,7 +46,13 @@ export const StudentButtonWrapper = styled(FlexContainer)`
   }
 `
 
-export const StyledStudentTabButton = styled.div``
+export const StyledStudentTabButton = styled.div`
+  padding-left: 10px;
+  cursor: pointer;
+  color: ${themeColorBlue};
+  font-size: 12px;
+  font-weight: 600;
+`
 
 export const StudentButtonDiv = styled.div`
   display: flex;

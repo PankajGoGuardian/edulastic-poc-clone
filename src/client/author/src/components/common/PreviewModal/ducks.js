@@ -15,7 +15,6 @@ import { notification } from '@edulastic/common'
 import * as Sentry from '@sentry/browser'
 import {
   updateTestAndNavigateAction,
-  receiveTestByIdAction,
   updateTestSaga,
   getTestSelector,
   setTestsLoadingAction,
@@ -173,12 +172,10 @@ function* duplicateItemRequestSaga({ payload }) {
         passageDuplicateParams
       )
       if (duplicateWholePassage && testId && isTestEditing) {
-        yield put(receiveTestByIdAction(testId, true))
         notification({
           msg: `${testItemsToDuplicate.length} items added to test`,
           type: 'success',
         })
-        return
       }
 
       // using first item to show when redirected to itemDetails page

@@ -23,6 +23,7 @@ import {
   getUserOrgData,
   getUserRole,
   getUserFeatures,
+  getUserOrgId,
 } from '../../../src/selectors/user'
 import {
   receiveSearchCourseAction,
@@ -96,12 +97,10 @@ class ClassCreate extends React.Component {
       allTagsData,
       location,
       userFeatures,
+      districtId,
     } = this.props
-    const {
-      districtIds: [districtId],
-    } = userOrgData
 
-    const { premium, premiumGradeSubject } = userFeatures
+    const { premiumGradeSubject } = userFeatures
 
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
@@ -157,7 +156,7 @@ class ClassCreate extends React.Component {
         this.setState({ submitted: true })
         let callUserMeApi = false
         // if user has premium grade subject then call /users/me api to refresh premium flag value
-        if (premium === false && !isEmpty(premiumGradeSubject)) {
+        if (!isEmpty(premiumGradeSubject)) {
           callUserMeApi = true
         }
         createClass({ ...pickBy(values, identity), callUserMeApi })
@@ -173,10 +172,7 @@ class ClassCreate extends React.Component {
   }
 
   searchCourse = (keyword) => {
-    const { searchCourseList, userOrgData } = this.props
-    const {
-      districtIds: [districtId],
-    } = userOrgData
+    const { searchCourseList, districtId } = this.props
     let searchTerms
     const key = keyword.trim()
     if (keyword == '') {
@@ -362,6 +358,7 @@ const enhance = compose(
         selectedSubject,
         userRole: getUserRole(state),
         userFeatures: getUserFeatures(state),
+        districtId: getUserOrgId(state),
       }
     },
     {

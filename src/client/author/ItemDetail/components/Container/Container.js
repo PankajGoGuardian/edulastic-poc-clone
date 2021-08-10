@@ -20,12 +20,13 @@ import {
 } from '@edulastic/common'
 import { IconClose } from '@edulastic/icons'
 import { cloneDeep, get, uniq, intersection, keyBy } from 'lodash'
-import { Layout, Button, Pagination } from 'antd'
+import { Layout, Button, Pagination, Dropdown, Menu } from 'antd'
 import ItemDetailContext, {
   COMPACT,
   DEFAULT,
 } from '@edulastic/common/src/contexts/ItemDetailContext'
 import questionTitle from '@edulastic/constants/const/questionTitle'
+import UnScored from '@edulastic/common/src/components/Unscored'
 import { MAX_MOBILE_WIDTH } from '../../../src/constants/others'
 import {
   changeViewAction,
@@ -62,8 +63,12 @@ import {
   getPassageSelector,
   addWidgetToPassageAction,
   deleteItemAction,
+  editPassageWidgetAction,
 } from '../../ducks'
-import { changeCurrentQuestionAction } from '../../../sharedDucks/questions'
+import {
+  changeCurrentQuestionAction,
+  getIsEditDisbledSelector,
+} from '../../../sharedDucks/questions'
 import { toggleSideBarAction } from '../../../src/actions/toggleMenu'
 
 import {
@@ -102,6 +107,7 @@ import {
 } from '../../../src/selectors/user'
 import QuestionToPassage from '../QuestionToPassage'
 import PassageDivider from '../Divider'
+import Ctrls from '../ItemDetailRow/components/ItemDetailWidget/Controls'
 
 const testItemStatusConstants = {
   DRAFT: 'draft',
@@ -149,7 +155,9 @@ class Container extends Component {
     } = this.props
     if (
       item.itemLevelScoring &&
-      get(item, ['data', 'questions'], []).some((q) => q.rubrics)
+      get(item, ['data', 'questions'], []).some(
+        (q) => q.rubrics || q?.validation?.unscored
+      )
     ) {
       setItemLevelScoring(false)
     }
@@ -377,6 +385,12 @@ class Container extends Component {
     })
   }
 
+  handleAddQuestionToPassage = () => {
+    const { rows } = this.props
+    const rowIndex = (rows?.length || 1) - 1
+    this.handleAdd({ rowIndex, tabIndex: 0 })
+  }
+
   handleAddToPassage = (type, tabIndex, rowIndex) => {
     const { isTestFlow, match, addWidgetToPassage } = this.props // , item
     // Checking if current item allows multiple items
@@ -409,6 +423,9 @@ class Container extends Component {
   }
 
   handleCancelQuestionToPassage = () => {
+    const { changeView } = this.props
+    changeView('edit')
+
     this.setState({
       showQuestionManageModal: false,
       isEditPassageQuestion: false,
@@ -436,11 +453,11 @@ class Container extends Component {
     const {
       loadQuestion,
       changeView,
-      setCurrentQuestion,
+      editPassageWidget,
       item: { isPassageWithQuestions },
     } = this.props
     if (isPassageWithQuestions) {
-      setCurrentQuestion(widget.reference)
+      editPassageWidget(widget.reference)
       this.setState({
         showQuestionManageModal: true,
         isEditPassageQuestion: true,
@@ -652,7 +669,6 @@ class Container extends Component {
     const item = produce(defaultEmptyItem, (draft) => {
       draft.rows[0].dimension = '50%'
       draft.canAddMultipleItems = true
-      draft.canAddMultipleItems = true
       draft.isPassageWithQuestions = true
       draft.multipartItem = true
       draft.passageId = passage._id
@@ -738,12 +754,13 @@ class Container extends Component {
     const { previousTestId, fadeSidebar, regradeFlow } = state || {}
 
     const url = isTestFlow
-      ? `/author/tests/tab/review/id/${testId}`
+      ? previousTestId
+        ? `/author/tests/tab/review/id/${testId}/old/${previousTestId}`
+        : `/author/tests/tab/review/id/${testId}`
       : `/author/items/${item._id}/item-detail`
 
     const newState = {
       isTestFlow,
-      previousTestId,
       fadeSidebar,
       resetView: false,
       regradeFlow,
@@ -788,11 +805,6 @@ class Container extends Component {
     const collapseLeft = collapseDirection === 'left'
     const collapseRight = collapseDirection === 'right'
 
-    const passageTestItems = get(passage, 'testItems', [])
-    const widgetLength = get(rows, [0, 'widgets'], []).length
-    const showAddItemButton =
-      (!!widgetLength || passageTestItems.length > 1) && view === EDIT
-
     return (
       <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
         <ScrollContext.Provider
@@ -821,6 +833,8 @@ class Container extends Component {
                 hideColumn={collapseLeft}
                 isCollapsed={!!collapseDirection}
                 useTabsLeft={useTabsLeft}
+                onShowSettings={this.handleShowSettings}
+                containerType="passage"
               />
             )}
             {rows.map((row, i) => (
@@ -850,8 +864,9 @@ class Container extends Component {
                   isCollapsed={!!collapseDirection}
                   useTabsLeft={useTabsLeft}
                   addItemToPassage={this.addItemToPassage}
-                  showAddItemButton={showAddItemButton}
                   isPassageWithQuestions={passageWithQuestions}
+                  onShowSettings={this.handleShowSettings}
+                  containerType="question"
                 />
               </>
             ))}
@@ -910,18 +925,19 @@ class Container extends Component {
   }
 
   get passageItems() {
-    const { passage } = this.props // , isTestFlow
-    const passageTestItems = get(passage, 'testItems', [])
-    //  isTestFlow
-    //   ? get(passage, 'testItems', [])
-    //   : get(passage, 'activeTestItems', [])
+    const { passage, isTestFlow } = this.props
+    const passageTestItems = isTestFlow
+      ? get(passage, 'testItems', [])
+      : get(passage, 'activeTestItems', [])
     return passageTestItems
   }
 
   get passageNavigator() {
-    const { item, passage, rows, view, itemDeleting } = this.props
+    const { t, item, passage, rows, view, itemDeleting } = this.props
     const widgetLength = get(rows, [0, 'widgets'], []).length
     const passageTestItems = this.passageItems
+    const isAddFirstPart = widgetLength === 0
+
     return (
       // isPassageWithQuestions fallback condition to show/hide pagination
       (item.canAddMultipleItems || item.isPassageWithQuestions) &&
@@ -943,35 +959,47 @@ class Container extends Component {
               onChange={this.goToItem}
             />
           )}
-          <AddRemoveButtonWrapper>
-            {(!!widgetLength || passageTestItems.length > 1) && view === EDIT && (
-              <>
-                {passageTestItems.length > 1 && (
-                  <EduButton
-                    isGhost
-                    ml="0px"
-                    height="30px"
-                    disabled={itemDeleting}
-                    onClick={this.handleRemoveItemRequest}
-                    data-cy="removeItem"
-                  >
-                    <i className="fa fa-minus-circle" />
-                    &nbsp;ITEM
-                  </EduButton>
-                )}
-                <EduButton
-                  isGhost
-                  height="30px"
+          {(widgetLength >= 1 || passageTestItems?.length > 1) &&
+            view === EDIT && (
+              <AddRemoveButtonWrapper>
+                <Dropdown
                   disabled={itemDeleting}
-                  onClick={this.addItemToPassage}
-                  data-cy="addItem"
+                  overlay={
+                    <Menu>
+                      {widgetLength >= 1 && (
+                        <Menu.Item
+                          key="addQuestionToPassage"
+                          onClick={this.handleAddQuestionToPassage}
+                        >
+                          {isAddFirstPart
+                            ? t('component.itemDetail.addFirstPart')
+                            : t('component.itemDetail.addNew')}
+                        </Menu.Item>
+                      )}
+                      <Menu.Item
+                        key="addItemToPassage"
+                        onClick={this.addItemToPassage}
+                      >
+                        {t('component.itemDetail.addNewItemToPassage')}
+                      </Menu.Item>
+                      {passageTestItems.length > 1 && (
+                        <Menu.Item
+                          key="removeCurrenItem"
+                          onClick={this.handleRemoveItemRequest}
+                        >
+                          {t('component.itemDetail.removeCurrentItem')}
+                        </Menu.Item>
+                      )}
+                    </Menu>
+                  }
+                  trigger="click"
                 >
-                  <i className="fa fa-plus-circle" />
-                  &nbsp;ITEM
-                </EduButton>
-              </>
+                  <EduButton isGhost height="30px" data-cy="addOrRemoveButton">
+                    {t('component.itemDetail.addRemove')}
+                  </EduButton>
+                </Dropdown>
+              </AddRemoveButtonWrapper>
             )}
-          </AddRemoveButtonWrapper>
         </PassageNavigation>
       )
     )
@@ -1012,8 +1040,19 @@ class Container extends Component {
       allowedToSelectMultiLanguage,
       isPremiumUser,
       isEditFlow,
+      itemEditDisabled,
+      setItemLevelScore,
     } = this.props
-
+    const {
+      itemLevelScoring,
+      itemLevelScore,
+      data = [],
+      isPassageWithQuestions,
+      multipartItem,
+    } = item
+    const { widgets = [] } = rows[0]
+    const [isEditDisabled] = itemEditDisabled
+    const { testId } = match.params
     let breadCrumbQType = ''
     if (item.passageId && item.canAddMultipleItems) {
       breadCrumbQType = 'Passage with Multiple Questions'
@@ -1045,12 +1084,26 @@ class Container extends Component {
 
     const layoutType = isPassage ? COMPACT : DEFAULT
     const disableScoringLevel = get(item, ['data', 'questions'], []).some(
-      (q) => q.rubrics
+      (q) => q.rubrics || q?.validation?.unscored
     )
 
     const showLanguageSelector =
       isPassageQuestion ||
       item?.data?.questions?.some((q) => useLanguageFeatureQn.includes(q.type))
+
+    const handleTotalPartScoreChange = (score) => {
+      setItemLevelScore(+score)
+    }
+
+    const isTotalPointsBlockVisible =
+      itemLevelScoring &&
+      (widgets?.length > 0 || item?.data?.questions?.length > 0)
+    const showMultipartAllPartsScore =
+      isTotalPointsBlockVisible && (multipartItem || isPassageWithQuestions)
+    const hasNoUnscored =
+      data?.questions?.length > 0
+        ? data.questions.some((x) => x.validation?.unscored !== true)
+        : true
 
     return (
       <ItemDetailContext.Provider value={{ layoutType }}>
@@ -1159,11 +1212,39 @@ class Container extends Component {
                 {allowedToSelectMultiLanguage && showLanguageSelector && (
                   <LanguageSelector />
                 )}
-                {view !== 'preview' && view !== 'auditTrail' && (
-                  <EduButton ml="8px" isGhost height="30px" id="how-to-author">
-                    How to author
-                  </EduButton>
-                )}
+                {view !== 'preview' &&
+                  view !== 'auditTrail' &&
+                  (showMultipartAllPartsScore ? (
+                    <AllPartsPointsWrapper>
+                      {hasNoUnscored ? (
+                        <Ctrls.TotalPoints
+                          value={itemLevelScore}
+                          onChange={handleTotalPartScoreChange}
+                          data-cy="totalPointUpdate"
+                          visible={isTotalPointsBlockVisible}
+                          disabled={isEditDisabled}
+                          itemLevelScoring={itemLevelScoring}
+                          isPassage={isPassageWithQuestions}
+                          onShowSettings={this.handleShowSettings}
+                        />
+                      ) : (
+                        <UnScored
+                          width="50px"
+                          height="32px"
+                          top={`${itemLevelScoring ? -80 : -50}px`}
+                        />
+                      )}
+                    </AllPartsPointsWrapper>
+                  ) : (
+                    <EduButton
+                      ml="8px"
+                      isGhost
+                      height="30px"
+                      id="how-to-author"
+                    >
+                      How to author
+                    </EduButton>
+                  ))}
                 {view === 'preview' && (
                   <RightActionButtons>
                     {this.renderButtons()}
@@ -1182,6 +1263,7 @@ class Container extends Component {
             isEditFlow={isEditFlow}
             tabIndex={tabIndex}
             rowIndex={rowIndex}
+            testId={testId}
             isEditPassageQuestion={isEditPassageQuestion}
             onCancel={this.handleCancelQuestionToPassage}
           />
@@ -1273,6 +1355,7 @@ const enhance = compose(
       view: getViewSelector(state),
       allowedToSelectMultiLanguage: allowedToSelectMultiLanguageInTest(state),
       isPremiumUser: isPremiumUserSelector(state),
+      itemEditDisabled: getIsEditDisbledSelector(state),
     }),
     {
       changeView: changeViewAction,
@@ -1303,6 +1386,7 @@ const enhance = compose(
       deleteWidgetFromPassage: deleteWidgetFromPassageAction,
       setCreatedItemToTest: setCreatedItemToTestAction,
       setCurrentQuestion: changeCurrentQuestionAction,
+      editPassageWidget: editPassageWidgetAction,
     }
   )
 )
@@ -1314,3 +1398,13 @@ const BreadCrumbBar = styled(FlexContainer)`
 `
 
 const RightActionButtons = styled(FlexContainer)``
+
+const AllPartsPointsWrapper = styled.div`
+  position: relative;
+  padding-left: 15px;
+  .total-points-wrapper {
+    position: static;
+    top: unset;
+    right: unset;
+  }
+`

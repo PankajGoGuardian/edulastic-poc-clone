@@ -48,7 +48,7 @@ export const withMathFormula = (WrappedComponent) => {
       if (typeof onFinish === 'function') {
         onFinish(true)
       }
-    }, [dangerouslySetInnerHTML, loaded])
+    }, [dangerouslySetInnerHTML?.__html, loaded])
 
     return (
       <WithResources

@@ -60,6 +60,7 @@ import { toggleDeleteAssignmentModalAction } from '../../../sharedDucks/assignme
 import {
   getGroupList,
   getUserId,
+  getUserOrgId,
   getUserRole,
   getUserSchoolsListSelector,
   isFreeAdminSelector,
@@ -73,6 +74,7 @@ import {
 } from '../../../../student/Login/ducks'
 import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/test'
 import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
+import { getFilterFromSession } from '../../../../common/utils/helpers'
 
 const { assignmentStatusBg } = authorAssignment
 
@@ -92,6 +94,7 @@ class AssignmentAdvanced extends Component {
       isFreeAdmin,
       toggleFreeAdminSubscriptionModal,
       userId,
+      districtId: _districtId,
     } = this.props
     if (isFreeAdmin) {
       history.push('/author/reports')
@@ -107,9 +110,16 @@ class AssignmentAdvanced extends Component {
     const { testType = '' } = qs.parse(location.search, {
       ignoreQueryPrefix: true,
     })
-    const { termId = '', grades = [], assignedBy = '', tags = [] } = JSON.parse(
-      sessionStorage.getItem(`assignments_filter_${userId}`) || '{}'
-    )
+    const {
+      termId = '',
+      grades = [],
+      assignedBy = '',
+      tags = [],
+    } = getFilterFromSession({
+      key: 'assignments_filter',
+      userId,
+      districtId: _districtId,
+    })
     if (isEmpty(assignmentsSummary)) {
       loadAssignmentsSummary({ districtId })
     }
@@ -148,15 +158,23 @@ class AssignmentAdvanced extends Component {
   }
 
   handleListSearch = () => {
-    const { match, location, loadAssignmentsClassList, userId } = this.props
+    const {
+      match,
+      location,
+      loadAssignmentsClassList,
+      userId,
+      districtId: _districtId,
+    } = this.props
     const { districtId, testId } = match.params
     const { pageNo, filterStatus } = this.state
     const { testType = '' } = qs.parse(location.search, {
       ignoreQueryPrefix: true,
     })
-    const { termId = '', tags = [] } = JSON.parse(
-      sessionStorage.getItem(`assignments_filter_${userId}`) || '{}'
-    )
+    const { termId = '', tags = [] } = getFilterFromSession({
+      key: 'assignments_filter',
+      userId,
+      districtId: _districtId,
+    })
     loadAssignmentsClassList({
       districtId,
       testId,
@@ -511,6 +529,7 @@ const enhance = compose(
       isFreeAdmin: isFreeAdminSelector(state),
       isPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
       isDemoPlayground: isDemoPlaygroundUser(state),
+      districtId: getUserOrgId(state),
     }),
     {
       setReleaseScore: releaseScoreAction,

@@ -6,7 +6,7 @@ import { get, isEmpty, debounce } from 'lodash'
 import MultiSelectSearch from '../widgets/MultiSelectSearch'
 
 // ducks
-import { getOrgDataSelector } from '../../../../src/selectors/user'
+import { getUserOrgId } from '../../../../src/selectors/user'
 import {
   getSchoolsSelector,
   receiveSchoolsAction,
@@ -16,12 +16,12 @@ const DEFAULT_SEARCH_TERMS = { text: '', selectedText: '', selectedKey: '' }
 
 const SchoolAutoComplete = ({
   dataCy,
-  userOrgData,
   schoolList,
   loading,
   loadSchoolList,
   selectCB,
   selectedSchoolIds,
+  districtId,
 }) => {
   const schoolFilterRef = useRef()
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
@@ -39,8 +39,6 @@ const SchoolAutoComplete = ({
 
   // build search query
   const query = useMemo(() => {
-    const { districtIds } = userOrgData
-    const districtId = districtIds?.[0]
     const q = {
       limit: 25,
       page: 1,
@@ -116,9 +114,9 @@ const SchoolAutoComplete = ({
 
 export default connect(
   (state) => ({
-    userOrgData: getOrgDataSelector(state),
     schoolList: getSchoolsSelector(state),
     loading: get(state, ['schoolsReducer', 'loading'], false),
+    districtId: getUserOrgId(state),
   }),
   {
     loadSchoolList: receiveSchoolsAction,

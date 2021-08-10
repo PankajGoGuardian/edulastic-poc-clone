@@ -2,13 +2,17 @@ import React, { useMemo, useState, useEffect, useCallback } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { isEmpty, debounce } from 'lodash'
+import { themeColorBlue } from '@edulastic/colors'
 
 // components
 import { AutoComplete, Input, Icon, Tooltip, Empty } from 'antd'
 
 // ducks
 import { useDropdownData } from '@edulastic/common'
-import { getOrgDataSelector } from '../../../../../../src/selectors/user'
+import {
+  currentDistrictInstitutionIds,
+  getUserOrgId,
+} from '../../../../../../src/selectors/user'
 import {
   getSPRStudentDataRequestAction,
   getStudentsListSelector,
@@ -18,7 +22,6 @@ import {
 const DEFAULT_SEARCH_TERMS = { text: '', selectedText: '', selectedKey: '' }
 
 const StudentAutoComplete = ({
-  userOrgData,
   studentList,
   loading,
   loadStudentList,
@@ -30,6 +33,8 @@ const StudentAutoComplete = ({
   classIds,
   selectedStudentId,
   selectCB,
+  districtId,
+  institutionIds,
 }) => {
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
   const [fieldValue, setFieldValue] = useState('')
@@ -40,8 +45,6 @@ const StudentAutoComplete = ({
 
   // build search query
   const query = useMemo(() => {
-    const { districtIds, institutionIds } = userOrgData
-    const districtId = districtIds?.[0]
     const q = {
       limit: 35,
       page: 0,
@@ -76,7 +79,15 @@ const StudentAutoComplete = ({
       q.search.groupIds = classIds.split(',')
     }
     return q
-  }, [searchTerms.text, termId, grades, subjects, courseIds, classIds])
+  }, [
+    searchTerms.text,
+    termId,
+    grades,
+    subjects,
+    courseIds,
+    classIds,
+    institutionIds,
+  ])
 
   // handle autocomplete actions
   const onSearch = (value) => {
@@ -204,7 +215,8 @@ const StudentAutoComplete = ({
 
 export default connect(
   (state) => ({
-    userOrgData: getOrgDataSelector(state),
+    districtId: getUserOrgId(state),
+    institutionIds: currentDistrictInstitutionIds(state),
     studentList: getStudentsListSelector(state),
     loading: getStudentsLoading(state),
   }),
@@ -223,5 +235,8 @@ const AutoCompleteContainer = styled.div`
   }
   .ant-input-suffix .anticon-loading {
     font-size: 1.4em;
+    & > svg {
+      fill: ${themeColorBlue};
+    }
   }
 `

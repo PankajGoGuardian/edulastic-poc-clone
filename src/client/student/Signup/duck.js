@@ -24,8 +24,13 @@ import {
   persistAuthStateAndRedirectToAction,
   signupSuccessAction,
   hideJoinSchoolAction,
+  fetchUserAction,
 } from '../Login/ducks'
-import { getUser } from '../../author/src/selectors/user'
+import {
+  currentDistrictInstitutionIds,
+  getUser,
+  getUserOrgId,
+} from '../../author/src/selectors/user'
 
 import { userPickFields } from '../../common/utils/static/user'
 import { updateInitSearchStateAction } from '../../author/TestPage/components/AddItems/ducks'
@@ -483,6 +488,7 @@ function* joinSchoolSaga({ payload = {} }) {
 function* updateUserSignupStateSaga() {
   try {
     const user = yield select(getUser)
+    const districtId = yield select(getUserOrgId)
     if (
       !isEmpty(user.orgData.districtIds) &&
       !isEmpty(user.orgData.defaultGrades) &&
@@ -490,7 +496,7 @@ function* updateUserSignupStateSaga() {
     ) {
       const data = {
         email: user.email,
-        districtId: user.orgData.districtIds[0],
+        districtId,
         currentSignUpState: 'DONE',
         institutionIds: user.orgData.institutionIds,
       }
@@ -504,6 +510,9 @@ function* updateUserSignupStateSaga() {
       }
       // setting user in store to put updated currentSignupState in store
       yield put(signupSuccessAction(finalUser))
+    } else {
+      // call user/me to update user in store
+      yield put(fetchUserAction({ background: true }))
     }
   } catch (err) {
     console.log('_err', err)

@@ -44,7 +44,12 @@ import {
   removeUserEnrollmentsAction,
 } from '../../../SchoolAdmin/ducks'
 import Breadcrumb from '../../../src/components/Breadcrumb'
-import { getUser, getUserOrgId, getUserRole } from '../../../src/selectors/user'
+import {
+  currentDistrictInstitutionIds,
+  getUser,
+  getUserOrgId,
+  getUserRole,
+} from '../../../src/selectors/user'
 import {
   AddStudentsToOtherClassModal,
   AddStudentsToOtherClassModal as MoveUsersToOtherClassModal,
@@ -123,6 +128,7 @@ class ClassEnrollmentTable extends React.Component {
         (r) => r.code === code && r.id === userId
       )
       if (recordMatch) return true
+      return false
     })
     this.setState({ selectedRowKeys, selectedUserIds, selectedUsersInfo })
   }
@@ -337,7 +343,8 @@ class ClassEnrollmentTable extends React.Component {
 
   // -----|-----|-----|-----| FILTER RELATED BEGIN |-----|-----|-----|----- //
   changeFilterColumn = (value, key) => {
-    const _filtersData = this.state.filtersData.map((item, index) => {
+    const { filtersData } = this.state
+    const _filtersData = filtersData.map((item, index) => {
       if (key === index) {
         const _item = {
           ...item,
@@ -352,7 +359,8 @@ class ClassEnrollmentTable extends React.Component {
   }
 
   changeFilterValue = (value, key) => {
-    const _filtersData = this.state.filtersData.map((item, index) => {
+    const { filtersData } = this.state
+    const _filtersData = filtersData.map((item, index) => {
       if (index === key) {
         return {
           ...item,
@@ -366,7 +374,8 @@ class ClassEnrollmentTable extends React.Component {
   }
 
   changeRoleValue = (value, key) => {
-    const _filtersData = this.state.filtersData.map((item, index) => {
+    const { filtersData } = this.state
+    const _filtersData = filtersData.map((item, index) => {
       if (index === key) {
         return {
           ...item,
@@ -381,7 +390,8 @@ class ClassEnrollmentTable extends React.Component {
   }
 
   changeFilterText = (e, key) => {
-    const _filtersData = this.state.filtersData.map((item, index) => {
+    const { filtersData } = this.state
+    const _filtersData = filtersData.map((item, index) => {
       if (index === key) {
         return {
           ...item,
@@ -434,7 +444,7 @@ class ClassEnrollmentTable extends React.Component {
   }
 
   getSearchQuery = () => {
-    const { userOrgId: districtId, userDetails } = this.props
+    const { userOrgId: districtId, userDetails, institutionIds } = this.props
     const {
       filtersData = [],
       searchByName,
@@ -445,7 +455,7 @@ class ClassEnrollmentTable extends React.Component {
     const { role = '' } = filtersData?.[0] || {}
 
     const search = {}
-    for (const [index, item] of filtersData.entries()) {
+    for (const [, item] of filtersData.entries()) {
       const { filtersColumn, filtersValue, filterStr } = item
       if (filtersColumn !== '' && filtersValue !== '' && filterStr !== '') {
         if (!search[filtersColumn]) {
@@ -484,7 +494,7 @@ class ClassEnrollmentTable extends React.Component {
     }
     if (showActive) Object.assign(data, { status: 1 })
     if (userDetails) {
-      Object.assign(data, { institutionIds: userDetails.institutionIds })
+      Object.assign(data, { institutionIds })
     }
     return data
   }
@@ -514,7 +524,9 @@ class ClassEnrollmentTable extends React.Component {
   }
 
   _onRefineResultsCB = () => {
-    this.setState({ refineButtonActive: !this.state.refineButtonActive })
+    this.setState((prevState) => {
+      !prevState.refineButtonActive
+    })
   }
 
   onChangeShowActive = (e) => {
@@ -926,6 +938,7 @@ const enhance = compose(
     (state) => ({
       userOrgId: getUserOrgId(state),
       userDetails: getUser(state),
+      institutionIds: currentDistrictInstitutionIds(state),
       classEnrollmentData: getClassEnrollmentUsersSelector(state),
       addStudentsToOtherClassData: getAddStudentsToOtherClassSelector(state),
       totalUsers: getClassEnrollmentUsersCountSelector(state),

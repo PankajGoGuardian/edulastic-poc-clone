@@ -1,6 +1,6 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState, useMemo } from 'react'
 import PropTypes from 'prop-types'
-import { cloneDeep, get } from 'lodash'
+import { cloneDeep, get, isEmpty } from 'lodash'
 import { Select } from 'antd'
 import { compose } from 'redux'
 import styled, { withTheme } from 'styled-components'
@@ -62,6 +62,8 @@ const ShadingPreview = ({
   const shaded = canvas ? canvas.shaded : []
   const read_only_author_cells = canvas ? canvas.read_only_author_cells : false
 
+  const isEvaluationEmpty = useMemo(() => isEmpty(evaluation), [evaluation])
+
   useEffect(() => {
     if (view === PREVIEW && userAnswer.length === 0) {
       if (!read_only_author_cells) {
@@ -91,16 +93,16 @@ const ShadingPreview = ({
   }, [previewTab])
 
   useEffect(() => {
+    setIsCheck(false)
+  }, [userAnswer])
+
+  useEffect(() => {
     if (previewTab === CHECK || previewTab === SHOW) {
       setIsCheck(true)
     } else {
       setIsCheck(false)
     }
   }, [evaluation])
-
-  useEffect(() => {
-    setIsCheck(false)
-  }, [userAnswer])
 
   const handleCellClick = (rowNumber, colNumber) => () => {
     const newUserAnswer = cloneDeep(userAnswer)
@@ -235,6 +237,7 @@ const ShadingPreview = ({
                 onCellClick={disableResponse ? () => {} : handleCellClick}
                 shaded={Array.isArray(userAnswer) ? userAnswer : []}
                 lockedCells={read_only_author_cells ? shaded : undefined}
+                isEvaluationEmpty={isEvaluationEmpty}
               />
             )}
           </FlexContainer>

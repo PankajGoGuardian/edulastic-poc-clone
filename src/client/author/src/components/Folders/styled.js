@@ -8,6 +8,7 @@ import {
   white,
   greyThemeDark1,
   mediumDesktopExactWidth,
+  themeColorBlue,
 } from '@edulastic/colors'
 import { Button, CustomModalStyled } from '@edulastic/common'
 import { Menu } from 'antd'
@@ -70,7 +71,7 @@ export const MenuItems = styled(Menu.Item)`
   }
   &:not(.ant-dropdown-menu-item-disabled):hover {
     color: ${white};
-    background-color: ${themeColor};
+    background-color: ${themeColorBlue};
     svg,
     i {
       fill: ${white};
@@ -118,6 +119,11 @@ export const FolderListItem = styled.li`
       fill: ${themeColor};
     }
   }
+  span {
+    &:hover {
+      color: ${themeColorBlue};
+    }
+  }
   svg {
     width: 20px;
     height: 20px;
@@ -131,6 +137,9 @@ export const FolderListItemTitle = styled.div`
   width: calc(100% - 22px);
   display: flex;
   align-items: center;
+  &:hover {
+    color: ${themeColorBlue};
+  }
   svg {
     margin: 0px 15px;
   }

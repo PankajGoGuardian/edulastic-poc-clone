@@ -27,6 +27,7 @@ import { clearPlaylistFiltersAction } from '../../../Playlist/ducks'
 import ItemBankTrialUsedModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/FeaturedContentBundle/ItemBankTrialUsedModal'
 import {
   fetchMultipleSubscriptionsAction,
+  getLoadingStateSelector,
   getSubsLicensesSelector,
 } from '../../../ManageSubscription/ducks'
 import EnterpriseTab from '../SubscriptionMain/EnterpriseTab'
@@ -219,6 +220,7 @@ const Subscription = (props) => {
     setCartQuantities,
     setRequestQuoteModal,
     proratedProducts,
+    isLoading,
   } = props
 
   const { subEndDate, subType, schoolId = '' } = subscription
@@ -436,6 +438,7 @@ const Subscription = (props) => {
           />
         ) : (
           <SubscriptionMain
+            isLoading={isLoading}
             isSubscribed={isSubscribed}
             openPaymentServiceModal={openPaymentServiceModal}
             openHasLicenseKeyModal={openHasLicenseKeyModal}
@@ -520,6 +523,7 @@ const Subscription = (props) => {
           onClick={callFunctionAfterSignup}
           setShowCompleteSignupModal={setShowCompleteSignupModal}
           setCallFunctionAfterSignup={setCallFunctionAfterSignup}
+          subType={subType}
         />
       )}
 
@@ -582,6 +586,7 @@ export default compose(
       subsLicenses: getSubsLicensesSelector(state),
       cartQuantities: state.subscription?.cartQuantities,
       proratedProducts: state.subscription?.proratedProducts,
+      isLoading: getLoadingStateSelector(state),
     }),
     {
       verifyAndUpgradeLicense: slice.actions.upgradeLicenseKeyPending,

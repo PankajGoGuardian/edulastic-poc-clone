@@ -11,7 +11,7 @@ const { Column } = Table
 const initialStopSyncValues = {}
 
 function Sync({
-  schools,
+  schools: _schools,
   cleverId,
   syncSchools,
   atlasId,
@@ -26,6 +26,11 @@ function Sync({
   const [radioInput, setRadioInput] = useState('syncSelectedSchools')
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
   const [showSyncOrphanModal, setShowSyncOrphanModal] = useState(false)
+  const schools = useMemo(
+    () => _schools.map((s) => ({ ...s, syncKey: `${s._id}:${s.id}` })),
+    [_schools]
+  )
+
   const reSyncSchools = () => {
     syncSchools({
       isClasslink,
@@ -70,7 +75,7 @@ function Sync({
     () =>
       Object.entries(stopSyncValues).every(
         ([key, value]) =>
-          !!value === !!schools.find((s) => s._id === key)?.stopSync
+          !!value === !!schools.find((s) => s.syncKey === key)?.stopSync
       ),
     [stopSyncValues, schools]
   )
@@ -88,13 +93,13 @@ function Sync({
     (_id, doc, rowNo) => {
       return (
         <div
-          onClick={() => handleStopSyncChange(doc._id)}
+          onClick={() => handleStopSyncChange(doc.syncKey)}
           style={{ width: '100%', height: '100%' }}
         >
           <Checkbox
-            value={doc._id}
+            value={doc.syncKey}
             onChange={handleStopSyncChange}
-            checked={!!stopSyncValues[doc._id]}
+            checked={!!stopSyncValues[doc.syncKey]}
           />
         </div>
       )
@@ -103,21 +108,22 @@ function Sync({
   )
   const handleStopSyncCancel = useCallback(() => {
     setStopSyncValues(
-      Object.fromEntries(schools.map((s) => [s._id, s.stopSync]))
+      Object.fromEntries(schools.map((s) => [s.syncKey, s.stopSync]))
     )
   }, [setStopSyncValues, schools])
   const handleStopSyncSave = useCallback(() => {
     const stopSyncData = {}
-    Object.entries(stopSyncValues).forEach(([_id, value]) => {
-      if (schools.find((s) => s._id === _id)?.stopSync !== value)
-        stopSyncData[_id] = value
+    Object.entries(stopSyncValues).forEach(([syncKey, value]) => {
+      if (schools.find((s) => s.syncKey === syncKey)?.stopSync !== value)
+        stopSyncData[syncKey] = value
     })
     setStopSync({
       isClasslink,
       stopSyncData,
       districtId,
+      schools,
     })
-  }, [stopSyncValues, isClasslink])
+  }, [stopSyncValues, isClasslink, schools])
   useEffect(() => {
     handleStopSyncCancel()
     setIsRefreshing(false)
@@ -218,7 +224,7 @@ function Sync({
             title="Stop Sync"
             align="center"
             key="stopSync"
-            dataIndex="_id"
+            dataIndex="syncKey"
             render={stopSyncRenderer}
           />
         </Table>

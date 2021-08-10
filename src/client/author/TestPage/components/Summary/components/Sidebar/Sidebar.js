@@ -19,7 +19,7 @@ import { AnalyticsItem, Block, ErrorWrapper, MetaTitle } from './styled'
 export const renderAnalytics = (title, Icon, isLiked = false, cyAttrIndex) => (
   <AnalyticsItem>
     <Icon color={isLiked ? red : '#bbbfc4'} width={15} height={15} />
-    <MetaTitle data-cy={`detail_index-${cyAttrIndex}`}>{title}</MetaTitle>
+    <MetaTitle data-cy={`${cyAttrIndex}`}>{title}</MetaTitle>
   </AnalyticsItem>
 )
 
@@ -148,7 +148,7 @@ const Sidebar = ({
           data-cy="gradeSelect"
           mode="multiple"
           size="large"
-          placeholder="Please enter"
+          placeholder="Please select"
           defaultValue={grades}
           onChange={onChangeGrade}
           optionFilterProp="children"
@@ -173,7 +173,7 @@ const Sidebar = ({
           mode="multiple"
           size="large"
           margin="0px 0px 15px"
-          placeholder="Please enter"
+          placeholder="Please select"
           defaultValue={subjects}
           onChange={onChangeSubjects}
           optionFilterProp="children"
@@ -199,7 +199,7 @@ const Sidebar = ({
               mode="multiple"
               size="large"
               margin="0px 0px 15px"
-              placeholder="Please enter"
+              placeholder="Please select"
               value={filteredCollections.flatMap((c) => c.bucketIds)}
               onChange={(value, options) => onChangeCollection(value, options)}
               optionFilterProp="children"

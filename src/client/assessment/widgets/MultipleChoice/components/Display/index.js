@@ -10,7 +10,7 @@ import {
 import Instructions from '../../../../components/Instructions'
 import { EDIT } from '../../../../constants/constantsForQuestions'
 
-import Options from './components/Options'
+import Options, { SortableOptions } from './components/Options'
 // import { QuestionTitleWrapper } from "./styled/Label";
 
 const Display = ({
@@ -30,58 +30,64 @@ const Display = ({
   item = {},
   qSubLabel,
   fromSetAnswers,
+  onSortOptions,
   ...restProps
-}) => (
-  <FlexContainer alignItems="flex-start" justifyContent="flex-start">
-    {!flowLayout && (
-      <>
-        <FlexContainer
-          justifyContent="flex-start"
-          flexDirection="column"
-          alignItems="flex-start"
-        >
-          {showQuestionNumber && (
-            <QuestionNumberLabel
-              fontSize={fontSize}
-              className="__print-space-reduce-qlabel"
-            >
-              {qLabel}
-            </QuestionNumberLabel>
-          )}
-          {qSubLabel && <QuestionSubLabel>({qSubLabel})</QuestionSubLabel>}
-        </FlexContainer>
+}) => {
+  const OptListComp = fromSetAnswers ? SortableOptions : Options
+  return (
+    <FlexContainer alignItems="flex-start" justifyContent="flex-start">
+      {!flowLayout && (
+        <>
+          <FlexContainer
+            justifyContent="flex-start"
+            flexDirection="column"
+            alignItems="flex-start"
+          >
+            {showQuestionNumber && (
+              <QuestionNumberLabel
+                fontSize={fontSize}
+                className="__print-space-reduce-qlabel"
+              >
+                {qLabel}
+              </QuestionNumberLabel>
+            )}
+            {qSubLabel && <QuestionSubLabel>({qSubLabel})</QuestionSubLabel>}
+          </FlexContainer>
 
-        <FlexContainer
-          width="100%"
-          className="__print_question-content-wrapper"
-          flexDirection="column"
-          alignItems="flex-start"
-        >
-          {!fromSetAnswers && (
-            <StyledStimulus
+          <FlexContainer
+            width="100%"
+            className="__print_question-content-wrapper"
+            flexDirection="column"
+            alignItems="flex-start"
+          >
+            {!fromSetAnswers && (
+              <StyledStimulus
+                fontSize={fontSize}
+                dangerouslySetInnerHTML={{ __html: question }}
+                className="_print-space-reduce-stimulus"
+              />
+            )}
+            <OptListComp
+              view={view}
+              smallSize={smallSize}
+              question={question}
+              uiStyle={uiStyle}
+              styleType={styleType}
+              multipleResponses={multipleResponses}
               fontSize={fontSize}
-              dangerouslySetInnerHTML={{ __html: question }}
-              className="_print-space-reduce-stimulus"
+              fromSetAnswers={fromSetAnswers}
+              item={item}
+              distance={10}
+              onSortEnd={onSortOptions}
+              {...restProps}
             />
-          )}
-          <Options
-            view={view}
-            smallSize={smallSize}
-            question={question}
-            uiStyle={uiStyle}
-            styleType={styleType}
-            multipleResponses={multipleResponses}
-            fontSize={fontSize}
-            fromSetAnswers={fromSetAnswers}
-            item={item}
-            {...restProps}
-          />
-          {view !== EDIT && <Instructions item={item} />}
-        </FlexContainer>
-      </>
-    )}
-  </FlexContainer>
-)
+            {view !== EDIT && <Instructions item={item} />}
+          </FlexContainer>
+        </>
+      )}
+    </FlexContainer>
+  )
+}
 
 Display.propTypes = {
   options: PropTypes.array,

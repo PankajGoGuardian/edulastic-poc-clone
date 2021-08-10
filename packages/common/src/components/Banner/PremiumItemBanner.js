@@ -1,8 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Icon } from 'antd'
-import { greyThemeDark3, themeColor } from '@edulastic/colors'
+import { Icon, Tooltip } from 'antd'
+import { greyThemeDark3, themeColor, greyThemeDark2 } from '@edulastic/colors'
 import { QuestionNumberLabel, QuestionSubLabel } from '@edulastic/common'
+import { IconClockCircularOutline } from '@edulastic/icons'
+import { round } from 'lodash'
 
 const PremiumItemBanner = ({
   itemBankName = [],
@@ -12,40 +14,52 @@ const PremiumItemBanner = ({
   hideQuestionLabels = false,
   height = false,
   isPrintPreview = false,
-}) => (
-  <PremiumItemBannerWrapper
-    isExpandedView={isExpandedView}
-    height={height}
-    isPrintPreview={isPrintPreview}
-  >
-    {!hideQuestionLabels && data.qLabel && (
-      <QuestionNumberLabel
-        className="__print-space-reduce-qlabel"
-        width={36}
-        height={36}
-        fontSize="11px"
-      >
-        {data.qLabel}
-      </QuestionNumberLabel>
-    )}
-    {!hideQuestionLabels && data.qSubLabel && (
-      <QuestionSubLabel className="sub-label">
-        ({data.qSubLabel})
-      </QuestionSubLabel>
-    )}
-    <Container showStacked={showStacked}>
-      <span>
-        <Icon type="warning" theme="filled" />
-        Question is not accessible
-      </span>
-      <span>
-        {`Because you are no longer subscribed to items from ${itemBankName.join(
-          ','
-        )}`}
-      </span>
-    </Container>
-  </PremiumItemBannerWrapper>
-)
+  timeSpent = false,
+  showAsTooltip = false,
+}) => {
+  const bannerBody = `Because you are no longer subscribed to items from ${itemBankName.join(
+    ','
+  )}`
+  return (
+    <PremiumItemBannerWrapper
+      isExpandedView={isExpandedView}
+      height={height}
+      isPrintPreview={isPrintPreview}
+      data-cy="premium-banner"
+    >
+      {!hideQuestionLabels && data.qLabel && (
+        <QuestionNumberLabel
+          className="__print-space-reduce-qlabel"
+          width={36}
+          height={36}
+          fontSize="11px"
+        >
+          {data.qLabel}
+        </QuestionNumberLabel>
+      )}
+      {!hideQuestionLabels && data.qSubLabel && (
+        <QuestionSubLabel className="sub-label">
+          ({data.qSubLabel})
+        </QuestionSubLabel>
+      )}
+      <Container showStacked={showStacked}>
+        <Tooltip title={showAsTooltip ? bannerBody : null}>
+          <span>
+            <Icon type="warning" theme="filled" />
+            Question is not accessible
+          </span>
+        </Tooltip>
+        {!showAsTooltip && <span>{bannerBody}</span>}
+      </Container>
+      {!isPrintPreview && !!timeSpent && (
+        <Timer>
+          <IconClockCircularOutline />
+          {round(timeSpent / 1000, 1)}s
+        </Timer>
+      )}
+    </PremiumItemBannerWrapper>
+  )
+}
 
 export default PremiumItemBanner
 
@@ -74,19 +88,35 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   width: 100%;
-  span: first-child {
-    display: flex;
-    align-items: center;
-    flex-direction: ${({ showStacked }) => (showStacked ? 'column' : 'row')};
-    font-weight: 700;
-    svg {
-      margin-right: 5px;
-      height: 18px;
-      width: 18px;
-      fill: ${themeColor};
+  span {
+    text-align: center;
+    &:first-child {
+      display: flex;
+      align-items: center;
+      flex-direction: ${({ showStacked }) => (showStacked ? 'column' : 'row')};
+      font-weight: 700;
+      svg {
+        margin-right: 5px;
+        height: 18px;
+        width: 18px;
+        fill: ${themeColor};
+      }
+    }
+    &:last-child {
+      color: ${greyThemeDark3};
     }
   }
-  span: last-child {
-    color: ${greyThemeDark3};
+`
+const Timer = styled.div`
+  display: flex;
+  align-items: center;
+  font-size: 19px;
+  position: absolute;
+  right: 25px;
+  bottom: 10px;
+  color: ${greyThemeDark2};
+  svg {
+    margin-right: 10px;
+    fill: ${greyThemeDark2};
   }
 `

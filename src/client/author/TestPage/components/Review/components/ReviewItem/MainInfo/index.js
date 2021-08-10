@@ -45,6 +45,7 @@ class MainInfo extends React.Component {
             itemBankName={premiumCollectionWithoutAccess}
             hideQuestionLabels
             height="auto"
+            showAsTooltip
           />
         ) : (
           <Stimulus

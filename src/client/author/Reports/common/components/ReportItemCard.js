@@ -10,17 +10,22 @@ export const ReportItemCards = ({
   showGreenBorder,
 }) => {
   return (
-    <ItemCard onClick={handleClick}>
+    <ItemCard data-cy="report-card" onClick={handleClick}>
       {showPremiumLabel && (
-        <PremiumLabel style={{ top: 8, right: 8 }}> PREMIUM</PremiumLabel>
+        <PremiumLabel data-cy="premium-label" style={{ top: 8, right: 8 }}>
+          {' '}
+          PREMIUM
+        </PremiumLabel>
       )}
       <StyledPreviewImage
         src={data.thumbnail}
         alt={data.title}
         showGreenBorder={showGreenBorder}
       />
-      <CardTitle>{data.title}</CardTitle>
-      <CardDescription>{data.description}</CardDescription>
+      <CardTitle data-cy="title">{data.title}</CardTitle>
+      <CardDescription data-cy="description">
+        {data.description}
+      </CardDescription>
     </ItemCard>
   )
 }

@@ -36,7 +36,11 @@ class CorrectAnswer extends Component {
       styleType,
       multipleResponses,
       fontSize,
+      onChangeOption,
+      onRemoveOption,
+      onSortOptions,
     } = this.props
+
     return (
       <Display
         preview
@@ -47,6 +51,9 @@ class CorrectAnswer extends Component {
         question={stimulus}
         userSelections={response.value}
         onChange={this.handleMultiSelect}
+        onChangeOption={onChangeOption}
+        onRemoveOption={onRemoveOption}
+        onSortOptions={onSortOptions}
         styleType={styleType}
         multipleResponses={multipleResponses}
         fontSize={fontSize}

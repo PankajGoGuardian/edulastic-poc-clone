@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
@@ -26,12 +26,7 @@ import { Select, Table, Popconfirm } from 'antd'
 import styled from 'styled-components'
 import { withNamespaces } from '@edulastic/localization'
 import { variableTypes, math } from '@edulastic/constants'
-import {
-  MathInput,
-  MathFormulaDisplay,
-  notification,
-  CustomModalStyled,
-} from '@edulastic/common'
+import { MathInput, MathFormulaDisplay, notification } from '@edulastic/common'
 import { IconTrash } from '@edulastic/icons'
 import { extraDesktopWidthMax, redDark } from '@edulastic/colors'
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
@@ -253,6 +248,20 @@ const generateExampleValues = (
   return [filtered, invalid]
 }
 
+const hasDuplicatedParams = (variables, validation) => {
+  const mathInputs = flatMapDeep(
+    validation?.validResponse?.value || [],
+    (c) => c
+  )
+  const mathUnits = validation?.validResponse?.mathUnits?.value
+  const maths = mathUnits ? mathInputs.concat(mathUnits) : mathInputs
+
+  return keys(variables).some(
+    (variable) =>
+      maths.filter((x) => x.value.includes(`@${variable}`)).length > 1
+  )
+}
+
 const getMathFormulaTemplate = (latex) =>
   `<span class="input__math" data-latex="${latex}"></span>`
 
@@ -266,8 +275,6 @@ const Variables = ({
   advancedAreOpen,
   item = {},
 }) => {
-  const [invalidSeqMsg, setInvalidSeqMsg] = useState('')
-
   const variableEnabled = get(questionData, 'variable.enabled', false)
   const variables = get(questionData, 'variable.variables', {})
   const combinationsCount = get(questionData, 'variable.combinationsCount', 25)
@@ -284,8 +291,15 @@ const Variables = ({
 
     if (invalid) {
       // @see https://snapwiz.atlassian.net/browse/EV-27028
-      setInvalidSeqMsg(t('component.options.invalidSeqVariableMsg'))
-      return
+      return notification({ messageKey: 'invalidSeqVariableMsg' })
+    }
+
+    if (
+      item.type === 'expressionMultipart' &&
+      hasDuplicatedParams(variables, item?.validation)
+    ) {
+      // @see https://snapwiz.atlassian.net/browse/EV-29283
+      return notification({ messageKey: 'clozMathDuplicatedParam' })
     }
     calculateFormula({ examples: examplesValues, variables })
   }
@@ -466,6 +480,21 @@ const Variables = ({
       generate()
     }
   }, [variableEnabled])
+
+  const handleKeyPress = (e) => {
+    const allowedNumbersRegex = new RegExp('[0-9]+') // allow numbers only
+    const pressedKey = String.fromCharCode(!e.charCode ? e.which : e.charCode)
+    const allowedKeys = [8, 9, 37, 38, 39, 40] // to allow arrow keys, backspace and tab
+    if (
+      !(
+        allowedKeys.includes(e?.which || e?.charCode) ||
+        allowedNumbersRegex?.test(pressedKey)
+      )
+    ) {
+      return e.preventDefault()
+    }
+    return pressedKey
+  }
 
   return (
     <Question
@@ -704,6 +733,8 @@ const Variables = ({
                       }
                       onBlur={generate}
                       size="large"
+                      min={0}
+                      onKeyDown={handleKeyPress}
                     />
                   </Col>
                 )}
@@ -774,21 +805,6 @@ const Variables = ({
           </Row>
         </Block>
       )}
-      <ErrorMsgModal
-        centered
-        visible={!!invalidSeqMsg}
-        onCancel={() => setInvalidSeqMsg('')}
-        footer={
-          <CustomStyleBtn
-            onClick={() => setInvalidSeqMsg('')}
-            data-cy="confirm"
-          >
-            Confirm
-          </CustomStyleBtn>
-        }
-      >
-        {invalidSeqMsg}
-      </ErrorMsgModal>
     </Question>
   )
 }
@@ -834,12 +850,6 @@ const DynamicText = styled.div`
 
   @media (min-width: ${extraDesktopWidthMax}) {
     font-size: ${(props) => props.theme.widgetOptions.labelFontSize};
-  }
-`
-
-const ErrorMsgModal = styled(CustomModalStyled)`
-  .ant-modal-close {
-    display: none;
   }
 `
 

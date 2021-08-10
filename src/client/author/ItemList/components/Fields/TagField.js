@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { SelectSearch } from '@edulastic/common'
-import { debounce, uniq } from 'lodash'
+import { debounce, uniq, compact } from 'lodash'
 import {
   getKnownTagsSelector,
   getTagSearchListSelector,
@@ -13,6 +13,7 @@ import {
 import {
   getCollectionsSelector,
   getUserOrgId,
+  isPublisherUserSelector,
 } from '../../../src/selectors/user'
 
 export const TagField = React.forwardRef(
@@ -30,6 +31,7 @@ export const TagField = React.forwardRef(
       userDistrictId,
       value: _value,
       valueKey,
+      isPublisherUser,
       ...props
     },
     tagsRef
@@ -44,10 +46,14 @@ export const TagField = React.forwardRef(
         search: {
           searchString: [searchTerm],
           tagTypes,
-          districtIds: uniq([
-            userDistrictId,
-            ...collections.map((col) => col.districtId),
-          ]),
+          districtIds: isPublisherUser
+            ? uniq(
+                compact([
+                  userDistrictId,
+                  ...collections.map((col) => col.districtId),
+                ])
+              )
+            : [],
         },
       }),
       [searchTerm, tagTypes.join(','), collections]
@@ -132,6 +138,7 @@ const mapStateToProps = (state) => ({
   collections: getCollectionsSelector(state),
   userDistrictId: getUserOrgId(state),
   allKnownTags: getKnownTagsSelector(state),
+  isPublisherUser: isPublisherUserSelector(state),
 })
 
 const mapDispatchToProps = {

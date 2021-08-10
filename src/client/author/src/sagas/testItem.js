@@ -1,5 +1,5 @@
 import { takeEvery, call, put, all, select } from 'redux-saga/effects'
-import { get as _get, round, isEmpty } from 'lodash'
+import { get as _get, round, isEmpty, cloneDeep } from 'lodash'
 import { testItemsApi } from '@edulastic/api'
 import { LOCATION_CHANGE, push } from 'connected-react-router'
 import { questionType } from '@edulastic/constants'
@@ -211,7 +211,8 @@ function* evaluateAnswers({ payload }) {
       const answers = yield select((state) => _get(state, 'answers', {}))
       const _item = yield select((state) => state.itemDetail.item)
       const { itemLevelScore = 0, itemLevelScoring = false } = _item || {}
-      const questions = yield select(getQuestionsSelector)
+      const _questions = yield select(getQuestionsSelector)
+      const questions = cloneDeep(_questions)
       // filter out passages and resources before evaluating
       Object.values(questions).forEach((q) => {
         const { id, type } = q

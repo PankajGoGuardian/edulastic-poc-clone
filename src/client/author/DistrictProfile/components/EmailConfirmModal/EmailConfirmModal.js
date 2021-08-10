@@ -1,16 +1,17 @@
 import React from 'react'
 import { compose } from 'redux'
 import { Button, Form } from 'antd'
+import { EduButton } from '@edulastic/common'
 import styled from 'styled-components'
 import { themeColor, whiteSmoke, numBtnColors, white } from '@edulastic/colors'
 import { ConfirmationModal } from '../../../src/components/common/ConfirmationModal'
 
 const EmailConfirmModal = ({ visible, toggleModal, changeEmail }) => {
   const Footer = [
-    <NoButton ghost onClick={() => toggleModal('EMAIL_CONFIRM', false)}>
+    <EduButton isBlue onClick={() => toggleModal('EMAIL_CONFIRM', false)}>
       NO, CANCEL
-    </NoButton>,
-    <YesButton onClick={changeEmail}>SAVE</YesButton>,
+    </EduButton>,
+    <EduButton onClick={changeEmail}>SAVE</EduButton>,
   ]
 
   const Title = [<Heading>Save Confirm</Heading>]
@@ -19,7 +20,6 @@ const EmailConfirmModal = ({ visible, toggleModal, changeEmail }) => {
     <ConfirmationModal
       title={Title}
       centered
-      textAlign="left"
       visible={visible}
       footer={Footer}
       textAlign="center"
@@ -49,20 +49,4 @@ const ModalBody = styled.div`
 
 const Heading = styled.h4`
   font-weight: 600;
-`
-
-const YesButton = styled(Button)`
-  color: ${(props) =>
-    props.disabled ? 'rgba(0, 0, 0, 0.25)' : white} !important;
-  background-color: ${(props) =>
-    props.disabled ? whiteSmoke : themeColor} !important;
-  border-color: ${(props) =>
-    props.disabled ? numBtnColors.borderColor : themeColor} !important;
-  width: 130px;
-`
-
-const NoButton = styled(Button)`
-  padding: 5px 30px;
-  width: 130px;
-  margin-right: 30px;
 `

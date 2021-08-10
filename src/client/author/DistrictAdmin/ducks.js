@@ -30,6 +30,7 @@ export const receiveDistrictAdminSuccessAction = createAction(
 export const receiveDistrictAdminErrorAction = createAction(
   RECEIVE_DISTRICTADMIN_ERROR
 )
+// never used
 export const updateDistrictAdminAction = createAction(
   UPDATE_DISTRICTADMIN_REQUEST
 )

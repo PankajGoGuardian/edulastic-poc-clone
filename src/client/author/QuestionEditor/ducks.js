@@ -704,13 +704,21 @@ function* saveQuestionSaga({
       })
       callback()
       yield put(changeCurrentQuestionAction(''))
-
+      const currentRouterState = yield select(
+        (state) => state.router.location.state
+      )
+      if (currentRouterState) {
+        const routerTestId = currentRouterState.previousTestId
+        if (routerTestId) {
+          tId = routerTestId
+        }
+      }
       yield put(
         push({
-          pathname:
-            isTestFlow && tId
-              ? `/author/tests/${tId}/editItem/${item?._id}`
-              : `/author/items/${item._id}/item-detail`,
+          pathname: isTestFlow
+            ? `/author/tests/${tId}/editItem/${item?._id}`
+            : `/author/items/${item._id}/item-detail`,
+          state: currentRouterState,
         })
       )
       return
@@ -732,7 +740,7 @@ function* saveQuestionSaga({
     if (collections) {
       const { itemBanks } = yield select(getOrgDataSelector)
       let recentCollectionsList = yield select(getRecentCollectionsListSelector)
-      recentCollectionsList = generateRecentlyUsedCollectionsList(
+      recentCollectionsList = yield generateRecentlyUsedCollectionsList(
         collections,
         itemBanks,
         recentCollectionsList

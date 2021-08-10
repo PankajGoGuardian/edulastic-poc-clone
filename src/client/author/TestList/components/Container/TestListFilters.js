@@ -233,15 +233,20 @@ const TestListFilters = ({
     return filterData1
   }, [
     collectionDefaultFilter,
+    curriculumStandards.elo,
     filter,
     filterData,
     filteredCollections,
-    filterMenuItems,
+    filterMenuItems[0].filter,
+    filtersTitle,
+    formattedCuriculums,
     getAuthoredByFilterData,
     isDistrictUser,
     isOrgUser,
     isPlaylist,
-    libraryFilters,
+    libraryFilters.SMART_FILTERS.FAVORITES,
+    search.curriculumId,
+    search.subject,
     searchFilterOption,
     userFeatures.isCurator,
     userFeatures.isPublisherAuthor,
@@ -288,6 +293,8 @@ const TestListFilters = ({
   }
 
   const isFolderSearch = filter === libraryFilters.SMART_FILTERS.FOLDERS
+
+  const isDA = userRole === roleuser.DISTRICT_ADMIN
 
   return (
     <Container>
@@ -339,6 +346,7 @@ const TestListFilters = ({
                   filterItem={filterItem}
                   onChange={onChange}
                   search={search}
+                  isDA={isDA}
                 />
               </FilterItemWrapper>
             </>

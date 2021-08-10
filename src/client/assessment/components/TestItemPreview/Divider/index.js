@@ -7,19 +7,28 @@ const DividerContainer = ({
   setCollapseView,
   hideMiddle,
   stackedView,
+  isStudentReport,
 }) => {
-  const [showCollapse, setShowCollapse] = useState(false)
+  const [showCollapse, setShowCollapse] = useState(hideMiddle)
+  const isCollapsed = !!collapseDirection
+
+  const handleToggleCollapse = (val) => () => {
+    if (!hideMiddle) {
+      setShowCollapse(val)
+    }
+  }
 
   return (
     <Divider
-      isCollapsed={!!collapseDirection}
+      isCollapsed={isCollapsed && !hideMiddle}
       collapseDirection={collapseDirection}
-      hideMiddle={hideMiddle}
-      stackedView={stackedView}
-      onMouseEnter={() => setShowCollapse(true)}
-      onMouseLeave={() => setShowCollapse(false)}
+      hideMiddle={hideMiddle || isCollapsed}
+      stackedView={isStudentReport || stackedView}
+      onMouseEnter={handleToggleCollapse(true)}
+      onMouseLeave={handleToggleCollapse(false)}
+      data-cy="collapsable-divider"
     >
-      {showCollapse && (
+      {(showCollapse || isCollapsed) && (
         <div
           data-cy="dividerButton"
           data-test={collapseDirection}

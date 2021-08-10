@@ -1,10 +1,11 @@
-import { takeEvery, call, put, all } from 'redux-saga/effects'
+import { takeEvery, call, put, all, select } from 'redux-saga/effects'
 import { createSelector } from 'reselect'
 import { createAction, createReducer } from 'redux-starter-kit'
 import { rubricsApi } from '@edulastic/api'
 import { notification } from '@edulastic/common'
 import { setRubricIdAction } from '../sharedDucks/questions'
 import { setItemLevelScoreFromRubricAction } from '../ItemDetail/ducks'
+import { getUserOrgId } from '../src/selectors/user'
 
 // constants
 export const UPDATE_RUBRIC_DATA = '[rubric] update rubric data'
@@ -167,8 +168,11 @@ function* getRubricByIdSaga({ payload }) {
   }
 }
 
-function addRubricToRecentlyUsedSaga({ payload }) {
-  let localStoredRubrics = localStorage.getItem('recentlyUsedRubrics')
+function* addRubricToRecentlyUsedSaga({ payload }) {
+  const userDistrictId = yield select(getUserOrgId)
+  let localStoredRubrics = localStorage.getItem(
+    `recentlyUsedRubrics_${userDistrictId}`
+  )
   if (localStoredRubrics) {
     localStoredRubrics = JSON.parse(localStoredRubrics)
     const isAlreadyPresent = localStoredRubrics.find(
@@ -179,19 +183,26 @@ function addRubricToRecentlyUsedSaga({ payload }) {
     localStoredRubrics = [payload]
   }
   localStorage.setItem(
-    'recentlyUsedRubrics',
+    `recentlyUsedRubrics_${userDistrictId}`,
     JSON.stringify(localStoredRubrics)
   )
+  yield put(setRecentlyUsedList(localStoredRubrics))
 }
 
 function* updateRubricInRecentlyUsedSaga({ payload }) {
-  let localStoredRubrics = localStorage.getItem('recentlyUsedRubrics')
+  const userDistrictId = yield select(getUserOrgId)
+  let localStoredRubrics = localStorage.getItem(
+    `recentlyUsedRubrics_${userDistrictId}`
+  )
   if (localStoredRubrics) {
     localStoredRubrics = JSON.parse(localStoredRubrics)
     let updatedList = localStoredRubrics.filter((r) => r._id !== payload._id)
     if (updatedList.length < localStoredRubrics.length) {
       updatedList = [...updatedList, payload]
-      localStorage.setItem('recentlyUsedRubrics', JSON.stringify(updatedList))
+      localStorage.setItem(
+        `recentlyUsedRubrics_${userDistrictId}`,
+        JSON.stringify(updatedList)
+      )
       yield put(setRecentlyUsedList(updatedList))
     }
   }
@@ -235,15 +246,21 @@ export const getTotalSearchedCountSelector = createSelector(
   (state) => state.totalSearchedCount
 )
 
-export const getRecentlyUsedRubricsSelector = () => {
-  const localStoredRubrics = localStorage.getItem('recentlyUsedRubrics')
-  try {
-    if (!localStoredRubrics) {
+export const getRecentlyUsedRubricsSelector = createSelector(
+  getStateSelector,
+  getUserOrgId,
+  (state, userDistrictId) => {
+    const localStoredRubrics = localStorage.getItem(
+      `recentlyUsedRubrics_${userDistrictId}`
+    )
+    try {
+      if (!localStoredRubrics) {
+        return []
+      }
+      const rubrics = JSON.parse(localStoredRubrics)
+      return rubrics.filter((rubric) => rubric.status !== 'archived')
+    } catch (error) {
       return []
     }
-    const rubrics = JSON.parse(localStoredRubrics)
-    return rubrics.filter((rubric) => rubric.status !== 'archived')
-  } catch (error) {
-    return []
   }
-}
+)

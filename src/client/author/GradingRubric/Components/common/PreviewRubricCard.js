@@ -37,11 +37,6 @@ const PreviewRubricCard = ({ rubricData, rubricFeedback, onChange }) => {
       selectedData[criteriaId] = ratingId
     }
     setSelectedRatings(selectedData)
-
-    onChange({
-      score: calculateScore(rubricData, selectedData),
-      rubricFeedback: selectedData,
-    })
   }
 
   useEffect(() => {
@@ -52,8 +47,22 @@ const PreviewRubricCard = ({ rubricData, rubricFeedback, onChange }) => {
     }
   }, [rubricFeedback])
 
+  /**
+   * @see https://snapwiz.atlassian.net/browse/EV-26319
+   * call update score api only after user moves out of rubric scoring block
+   */
+  const handleBlur = () => {
+    const selectedRatingsLength = Object.keys(selectedRatings || {}).length
+    if (selectedRatingsLength > 0) {
+      onChange({
+        score: calculateScore(rubricData, selectedRatings),
+        rubricFeedback: selectedRatings,
+      })
+    }
+  }
+
   return (
-    <div data-cy="rubric-ratings">
+    <div data-cy="rubric-ratings" onBlur={handleBlur} tabIndex={-1}>
       <RubrickName data-cy="rubricName">{name}</RubrickName>
       {(criteria || []).map((c) => (
         <CriteriaRow data-cy="criteriaRow" key={c.id}>

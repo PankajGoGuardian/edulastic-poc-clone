@@ -2,7 +2,7 @@ import { EduButton, SearchInputStyled } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
 import { withNamespaces } from '@edulastic/localization'
 import { Tooltip } from 'antd'
-import { debounce, get, isEmpty } from 'lodash'
+import { debounce, get } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
@@ -35,6 +35,7 @@ import {
   Owner,
   StyledIconPencilEdit,
 } from './styled'
+import { getUserOrgId } from '../../../src/selectors/user'
 
 const menuActive = { mainMenu: 'Content', subMenu: 'Buckets' }
 const breadcrumbData = [
@@ -59,6 +60,7 @@ const ContentBucketsTable = ({
   fetchCollectionListRequest,
   user,
   t,
+  orgId,
 }) => {
   const [upsertModalVisibility, setUpsertModalVisibility] = useState(false)
   const [editableBucketId, setEditableBucketId] = useState('')
@@ -128,9 +130,6 @@ const ContentBucketsTable = ({
     {
       title: t('content.buckets.tableHeader.name'),
       dataIndex: 'name',
-      render: (name) => (
-        <span>{name === 'Anonymous' || isEmpty(name) ? '-' : name}</span>
-      ),
       sortDirections: ['descend', 'ascend'],
       sorter: (a, b) => {
         const prev = get(a, 'name', '')
@@ -158,13 +157,6 @@ const ContentBucketsTable = ({
     {
       title: t('content.buckets.tableHeader.collectionName'),
       dataIndex: 'collection.name',
-      render: (collectionName) => (
-        <span>
-          {collectionName === 'Anonymous' || isEmpty(collectionName)
-            ? '-'
-            : collectionName}
-        </span>
-      ),
       sortDirections: ['descend', 'ascend'],
       sorter: (a, b) => {
         const prev = `${get(a, 'name', '')}${get(a, 'name', '')}`
@@ -344,7 +336,7 @@ const ContentBucketsTable = ({
       dataIndex: '_id',
       render: (id, record) => {
         if (
-          record.collection.districtId === user?.districtIds?.[0] &&
+          record.collection.districtId === orgId &&
           user.role !== roleuser.EDULASTIC_ADMIN
         )
           return (
@@ -429,6 +421,7 @@ const enhance = compose(
       buckets: get(state, ['bucketReducer', 'data'], []),
       collections: getCollectionListSelector(state),
       user: get(state, ['user', 'user'], {}),
+      orgId: getUserOrgId(state),
     }),
     {
       loadBuckets: receiveBucketsAction,

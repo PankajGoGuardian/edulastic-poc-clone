@@ -3,7 +3,11 @@ import { Select } from 'antd'
 import { IconAddItems, IconTrash } from '@edulastic/icons'
 
 import { Table, Button } from '../Common/StyledComponents'
-import { LIST_CLEVER_SUBJECTS, DISABLE_SUBMIT_TITLE } from '../Data'
+import {
+  LIST_CLEVER_SUBJECTS,
+  DISABLE_SUBMIT_TITLE,
+  ATLAS_SUBJECTS,
+} from '../Data'
 import CancelApplyActions from './CancelApplyActions'
 
 const { Column } = Table
@@ -94,16 +98,18 @@ export default function SubjectStandard({
           updateSubjectAction({ index, value, prevValue: item.subject })
         }
       >
-        {LIST_CLEVER_SUBJECTS.map((subject) => (
-          <Option
-            title={subject}
-            key={subject}
-            value={subject}
-            disabled={!!subjectStandardMap[subject]}
-          >
-            {subject}
-          </Option>
-        ))}
+        {(isClasslink ? ATLAS_SUBJECTS : LIST_CLEVER_SUBJECTS).map(
+          (subject) => (
+            <Option
+              title={subject}
+              key={subject}
+              value={subject}
+              disabled={!!subjectStandardMap[subject]}
+            >
+              {subject}
+            </Option>
+          )
+        )}
       </Select>
     )
   }

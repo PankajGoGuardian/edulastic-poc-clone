@@ -70,11 +70,17 @@ import { allowedToSelectMultiLanguageInTest } from '../../../src/selectors/user'
 const { useLanguageFeatureQn } = constantsQuestionType
 
 const shouldHideScoringBlock = (item, currentQuestionId) => {
+  const multipartItem = get(item, 'multipartItem')
+  const itemLevelScoring = get(item, 'itemLevelScoring', true)
+
+  if (multipartItem && itemLevelScoring) {
+    return true
+  }
+
   const questions = get(item, 'data.questions', [])
   const newQuestionTobeAdded = !questions.find(
     (x) => x.id === currentQuestionId
   )
-  const itemLevelScoring = get(item, 'itemLevelScoring', true)
   let canHideScoringBlock = true
   if (questions.length === 0) {
     canHideScoringBlock = false
@@ -742,7 +748,7 @@ const RightActionButtons = styled.div`
 
 const EditorContainer = styled.div`
   min-height: ${({ isInModal }) =>
-    isInModal ? 'calc(100vh - 110px)' : '100vh'};
+    isInModal ? 'calc(100vh - 50px)' : '100vh'};
   overflow: hidden;
 `
 

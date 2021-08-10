@@ -362,15 +362,19 @@ const graphSegmentChecks = [
 ]
 const graphLineChecks = ['isParallel', 'isPerpendicular']
 const graphPolygonChecks = [
+  'compareStartPoint',
   'compareArea',
   'isSquare',
   'isCongruent',
   'isSimilar',
   'hasRightAngle',
+  'comparePoints',
   'comparePerimeter',
 ]
+const partialCreditScoring = ['enablePartialCredit', 'applyPenaltyForWrong']
 const graphMiscellaneous = ['tolerance', 'ignoreLabels']
 const graphPointsOnAnEquation = ['latex', 'points']
+const graphPointsOnAnEquation2 = ['latex', 'points']
 
 const evaluationSettings = {
   [methods.EQUIV_SYMBOLIC]: {
@@ -414,13 +418,17 @@ const evaluationSettings = {
     'ignoreCase',
     'ignoreVariableNames',
   ],
-  [GRAPH_EVALUATION_SETTING]: [
-    'graphSegmentChecks',
-    'graphLineChecks',
-    'graphPolygonChecks',
-    'graphMiscellaneous',
-    'graphPointsOnAnEquation',
-  ],
+  [GRAPH_EVALUATION_SETTING]: {
+    'LINES AND POLYGONS': [
+      'graphSegmentChecks',
+      'graphLineChecks',
+      'graphPolygonChecks',
+      'graphPointsOnAnEquation',
+      'partialCreditScoring',
+    ],
+    'GENERAL GRAPHING': ['graphPointsOnAnEquation2'],
+    MISCELLNEOUS: ['graphMiscellaneous'],
+  },
 }
 
 const subEvaluationSettingsGrouped = {
@@ -435,7 +443,9 @@ const subEvaluationSettingsGrouped = {
   graphLineChecks,
   graphPolygonChecks,
   graphMiscellaneous,
+  partialCreditScoring,
   graphPointsOnAnEquation,
+  graphPointsOnAnEquation2,
 }
 
 const characterMapButtons = [

@@ -27,6 +27,7 @@ import {
   resetReportsAssessmentSummaryAction,
 } from './ducks'
 import { setPerformanceBandProfileAction } from '../common/filterDataDucks'
+import { getAssessmentName } from '../../../common/util'
 
 const CustomCliEmptyComponent = () => (
   <Empty
@@ -57,11 +58,9 @@ const AssessmentSummary = ({
   const userRole = useMemo(() => sharedReport?.sharedBy?.role || role, [
     sharedReport,
   ])
-  const assessmentName = `${
-    settings.selectedTest.title
-  } (ID:${settings.selectedTest.key.substring(
-    settings.selectedTest.key.length - 5
-  )})`
+  const assessmentName = getAssessmentName(
+    assessmentSummary?.meta?.test || settings.selectedTest
+  )
 
   useEffect(() => () => resetAssessmentSummary(), [])
 
@@ -93,7 +92,7 @@ const AssessmentSummary = ({
     if (settings.requestFilters.termId || settings.requestFilters.reportId) {
       return () => toggleFilter(null, false)
     }
-  }, [settings.selectedTest, settings.requestFilters, settings.cliUser])
+  }, [settings.selectedTest?.key, settings.requestFilters, settings.cliUser])
 
   useEffect(() => {
     setPerformanceBandProfile(assessmentSummary?.bandInfo || {})

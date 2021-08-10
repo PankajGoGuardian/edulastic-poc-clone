@@ -116,7 +116,7 @@ const MathFormulaAnswerMethod = ({
 
   const mathInputProps = {
     hideKeypad: item.showDropdown,
-    symbols: isShowDropdown ? ['basic'] : item.symbols,
+    symbols: item.symbols,
     restrictKeys: isShowDropdown ? [] : restrictKeys,
     allowNumericOnly,
     customKeys: isShowDropdown ? [] : customKeys,
@@ -301,7 +301,7 @@ MathFormulaAnswerMethod.defaultProps = {
   showDefaultMode: false,
   customUnits: '',
   containerHeight: 'auto',
-  keypadMode: 'units_us',
+  keypadMode: '',
   renderExtra: null,
   unitsDropdown: () => {},
   template: '',

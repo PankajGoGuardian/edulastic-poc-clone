@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
 import { EduButton } from '@edulastic/common'
-import { get } from 'lodash'
 import { ConfirmationModal } from '../src/components/common/ConfirmationModal'
 import {
   getAvaialbleRegradeSettingsSelector,
@@ -17,6 +16,7 @@ import {
 } from '../TestPage/ducks'
 import { getTestsLoadingSelector } from '../TestList/ducks'
 import Actions from './Actions'
+import { getUserOrgId } from '../src/selectors/user'
 
 const { AddedItems, EditedItems } = Actions
 
@@ -194,7 +194,7 @@ const enhance = compose(
       visible: getShowUpgradePopupSelector(state),
       loadRegradeActions: getIsLoadRegradeSettingsSelector(state),
       test: getTestEntitySelector(state),
-      districtId: get(state, ['user', 'user', 'orgData', 'districtIds', 0]),
+      districtId: getUserOrgId(state),
       testLoading: getTestsLoadingSelector(state),
     }),
     {

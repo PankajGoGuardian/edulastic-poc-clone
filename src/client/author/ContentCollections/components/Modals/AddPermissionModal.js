@@ -166,7 +166,11 @@ const AddPermissionModal = ({
     <EduButton isGhost onClick={() => handleResponse()} disabled={isCreating}>
       CANCEL
     </EduButton>,
-    <EduButton onClick={validateFields} loading={isCreating}>
+    <EduButton
+      onClick={validateFields}
+      loading={isCreating}
+      data-cy={isEditPermission ? 'save' : 'apply'}
+    >
       {isEditPermission ? 'SAVE' : 'APPLY'}
     </EduButton>,
   ]
@@ -297,6 +301,7 @@ const AddPermissionModal = ({
               }
               onChange={handleSelectDistrict}
               filterOption={false}
+              data-cy="select-organization"
             >
               {(isFetchingOrganization ? [] : districtList)
                 .sort((a, b) => {
@@ -305,7 +310,12 @@ const AddPermissionModal = ({
                   return _aName.localeCompare(_bName)
                 })
                 .map(({ _id, name }) => (
-                  <Select.Option key={_id} value={_id} name={name}>
+                  <Select.Option
+                    key={_id}
+                    value={_id}
+                    name={name}
+                    data-cy={_id}
+                  >
                     {name}
                   </Select.Option>
                 ))}
@@ -321,6 +331,7 @@ const AddPermissionModal = ({
             getPopupContainer={(triggerNode) => triggerNode.parentNode}
             value={fieldData.orgType}
             onChange={(value) => handleFieldChange('orgType', value)}
+            data-cy="select-permission-level"
           >
             {permissionLevelOptions.map((option) => (
               <Select.Option value={option.value}>{option.label}</Select.Option>
@@ -353,6 +364,7 @@ const AddPermissionModal = ({
               }
               onChange={handleSchoolUserSelect}
               filterOption={false}
+              data-cy={`select-${fieldData.orgType}`}
             >
               {fieldData.orgType === 'SCHOOL' &&
                 (isFetchingOrganization ? [] : schoolList)
@@ -387,6 +399,7 @@ const AddPermissionModal = ({
                       key={_user._id}
                       orgName={`${_user.firstName} ${_user.lastName}`}
                       role={_user.role}
+                      data-cy={_user.email}
                     >
                       {`${_user.firstName} ${_user.lastName} (${_user.email})`}
                     </Select.Option>

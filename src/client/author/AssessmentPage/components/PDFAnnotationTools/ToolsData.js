@@ -26,11 +26,6 @@ export const ANNOTATION_TOOLS = [
     icon: <LayoutIcon data-cy="thumbnails" />,
   },
   {
-    key: 'list',
-    title: 'List',
-    icon: <ListIcon data-cy="list" />,
-  },
-  {
     key: 'cursor',
     title: 'Cursor',
     icon: <CursorIcon data-cy="cursor" />,

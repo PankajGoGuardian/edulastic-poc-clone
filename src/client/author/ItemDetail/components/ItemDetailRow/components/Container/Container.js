@@ -23,7 +23,6 @@ import {
   removeTabAction,
   setItemLevelScoreAction,
 } from '../../../../ducks'
-import AddNewItem from '../AddNew/AddNewItem'
 import { PassageAddNewButton, PassageButtonContainer } from '../AddNew/styled'
 import PassageAddPart from '../AddNew/PassageAddPart'
 
@@ -72,7 +71,7 @@ class Container extends Component {
     flowLayout,
     previewTab,
   }) => {
-    const { itemData, isPassageQuestion } = this.props
+    const { itemData, isPassageQuestion, onShowSettings } = this.props
     const { multipartItem } = itemData
 
     return (
@@ -87,6 +86,7 @@ class Container extends Component {
         previewTab={previewTab}
         isPassageQuestion={isPassageQuestion}
         dataCy={multipartItem ? 'item-detail-widget' : 'passage-widget'}
+        onShowSettings={onShowSettings}
       />
     )
   }
@@ -185,13 +185,16 @@ class Container extends Component {
       hideColumn,
       addTabs,
       removeTab,
-      showAddItemButton,
       isPassageWithQuestions,
+      containerType,
     } = this.props
     const { tabIndex } = this.state
     const enableAnotherPart = this.canRowHaveAnotherPart(row, rowIndex)
     // adding first part?
     const isAddFirstPart = row.widgets && row.widgets.length === 0
+    const showAddPassageTab =
+      isPassageQuestion && row.tabs?.length === 0 && row?.widgets?.length > 0
+
     return (
       <Content
         value={tabIndex}
@@ -199,7 +202,7 @@ class Container extends Component {
         hide={hideColumn}
         data-cy="itemdetail-content"
       >
-        {isPassageQuestion && row.tabs?.length === 0 && (
+        {showAddPassageTab && (
           <AddTabButton tabsBtn onClick={() => addTabs()} data-cy="addTab">
             <GreenPlusIcon>+</GreenPlusIcon>
             ADD TABS
@@ -229,7 +232,7 @@ class Container extends Component {
                         }
                   }
                   onChange={(e) =>
-                    changeTabTitle(tabIndex, e.target.value, row.widgets)
+                    changeTabTitle(tabIndex, e.target.value, containerType)
                   }
                   editable
                   close
@@ -290,11 +293,6 @@ class Container extends Component {
                 isAddFirstPart={isAddFirstPart}
                 onClick={this.onAddBtnClick({ rowIndex, tabIndex })}
               />
-            )}
-
-            {/* New testItem */}
-            {showAddItemButton && isPassageWithQuestions && (
-              <AddNewItem onClick={this.addNewItemToPassage} />
             )}
           </AddButtonContainer>
         )}

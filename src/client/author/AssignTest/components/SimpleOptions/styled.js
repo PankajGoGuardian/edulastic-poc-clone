@@ -14,11 +14,20 @@ import {
   white,
   smallDesktopWidth,
   mediumDesktopExactWidth,
-  lightGreen10,
   tagsBgColor,
   tagTextColor,
 } from '@edulastic/colors'
-import { Button, Col, DatePicker, Input, Radio, Row, Select, Table } from 'antd'
+import {
+  Button,
+  Col,
+  DatePicker,
+  Input,
+  Radio,
+  Row,
+  Select,
+  Table,
+  InputNumber,
+} from 'antd'
 import styled from 'styled-components'
 import { EduSwitchStyled } from '@edulastic/common'
 import { IconInfo } from '@edulastic/icons'
@@ -609,4 +618,17 @@ export const PaginationContainer = styled.div`
   flex-basis: 100%;
   padding: 20px 0px 10px;
   text-align: center;
+`
+export const StyledRadioGroupWrapper = styled(Radio.Group)`
+  padding-top: 15px;
+  .ant-radio-wrapper span:nth-child(2) {
+    font-size: 12px;
+  }
+`
+export const InputNumberStyled = styled(InputNumber)`
+  width: 60px;
+`
+
+export const Styled2ndLine = styled.div`
+  padding-left: 24px;
 `

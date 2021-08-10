@@ -17,7 +17,7 @@ import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { ButtonsContainer } from '../../../../../common/styled'
-import { getUser } from '../../../../src/selectors/user'
+import { currentDistrictInstitutionIds } from '../../../../src/selectors/user'
 import { addNewTagAction, getAllTagsAction } from '../../../../TestPage/ducks'
 
 const { Button } = StyledComponents
@@ -40,7 +40,7 @@ function BulkEditModal({
   bulkUpdateClasses,
   searchCourseList,
   coursesForDistrictList,
-  userDetails,
+  institutionIds,
   form,
   allTagsData,
   addNewTag,
@@ -74,16 +74,16 @@ function BulkEditModal({
       groupIds: selectedIds,
       districtId,
       [updateMode]: updatedData,
-      institutionIds: userDetails.institutionIds,
+      institutionIds,
     })
   }
 
-  const fetchCoursesForDistrict = debounce((searchValue) => {
-    const searchParams = searchValue
+  const fetchCoursesForDistrict = debounce((_searchValue) => {
+    const searchParams = _searchValue
       ? {
           search: {
-            name: [{ type: 'cont', value: searchValue }],
-            number: [{ type: 'cont', value: searchValue }],
+            name: [{ type: 'cont', value: _searchValue }],
+            number: [{ type: 'cont', value: _searchValue }],
             operator: 'or',
           },
         }
@@ -330,10 +330,15 @@ function BulkEditModal({
 }
 
 const enhance = compose(
-  connect((state) => ({ userDetails: getUser(state) }), {
-    getAllTags: getAllTagsAction,
-    addNewTag: addNewTagAction,
-  }),
+  connect(
+    (state) => ({
+      institutionIds: currentDistrictInstitutionIds(state),
+    }),
+    {
+      getAllTags: getAllTagsAction,
+      addNewTag: addNewTagAction,
+    }
+  ),
   Form.create()
 )
 

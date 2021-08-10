@@ -62,6 +62,7 @@ import {
   getUserRole,
   getUserSignupStatusSelector,
   getUserNameSelector,
+  getUserOrgId,
 } from '../../../selectors/user'
 import { RadioInputWrapper } from '../RadioInput'
 
@@ -386,14 +387,17 @@ class ShareModal extends React.Component {
   getUserName(data) {
     const {
       userOrgData: { districts = [{}] },
+      districtId,
     } = this.props
     // share modal is not for student so we can get
-    const [{ districtName = '' }] = districts
+    const { districtName = '' } = districts.find(
+      (d) => d.districtId === districtId
+    )
     if (data.sharedType === 'PUBLIC') {
       return 'EVERYONE'
     }
     if (data.sharedType === 'DISTRICT') {
-      return districtName
+      return data.shareWithName ? data.shareWithName : districtName
     }
     return `${data.userName && data.userName !== 'null' ? data.userName : ''}`
   }
@@ -461,6 +465,7 @@ class ShareModal extends React.Component {
       hasPremiumQuestion,
       isPlaylist,
       userOrgData,
+      districtId,
       features,
       userRole,
       hasPlaylistEditAccess = true,
@@ -491,7 +496,9 @@ class ShareModal extends React.Component {
 
     const { districts = [{}], schools } = userOrgData
     // share modal is not for student so we can get
-    const [{ districtName = '' }] = districts
+    const { districtName = '' } = districts.find(
+      (d) => d.districtId === districtId
+    )
     const isDA = userRole === roleuser.DISTRICT_ADMIN
     let sharedTypeMessage = 'The entire Edulastic Community'
     if (sharedType === 'DISTRICT')
@@ -550,7 +557,7 @@ class ShareModal extends React.Component {
               {isPublished && sharedUsersList.length !== 0 && (
                 <>
                   <ShareListTitle>WHO HAS ACCESS</ShareListTitle>
-                  <ShareList>
+                  <ShareList data-cy="shareList">
                     {sharedUsersList.map((data, index) => (
                       <SharedRow
                         data={data}
@@ -661,7 +668,9 @@ class ShareModal extends React.Component {
                   </p>
                 </>
               ) : (
-                <ShareMessageWrapper>{sharedTypeMessage}</ShareMessageWrapper>
+                <ShareMessageWrapper data-cy="shareMessageWrapper">
+                  {sharedTypeMessage}
+                </ShareMessageWrapper>
               )}
               <IndividualSelectInputStyled
                 style={
@@ -760,6 +769,7 @@ const enhance = compose(
       currentUserId: _get(state, 'user.user._id', ''),
       features: getUserFeatures(state),
       userOrgData: getOrgDataSelector(state),
+      districtId: getUserOrgId(state),
       userRole: getUserRole(state),
       userSignupStatus: getUserSignupStatusSelector(state),
       sharingState: getContentSharingStateSelector(state),

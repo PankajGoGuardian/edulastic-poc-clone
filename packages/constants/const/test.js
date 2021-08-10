@@ -340,6 +340,7 @@ module.exports = {
     dc_assessments: 'parcc',
     drc: 'drc',
   },
+  TOP_ORDER_SKINS: ['edulastic', 'cmas', 'drc', 'quester', 'parcc', 'sbac'],
   languageCodes: {
     ENGLISH: 'en',
     SPANISH: 'es',

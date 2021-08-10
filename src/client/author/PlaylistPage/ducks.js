@@ -501,6 +501,18 @@ function addSubresource(entity, payload) {
     }
     const resources = draft.modules[moduleIndex].data[itemIndex].resources
 
+    let totalStudentResources = 0
+    resources.forEach((r) => {
+      if (r.contentSubType === 'STUDENT') totalStudentResources += 1
+    })
+    if (totalStudentResources >= 5 && contentSubType === 'STUDENT') {
+      notification({
+        type: 'info',
+        messageKey: 'maximumAllowedStudentResources',
+      })
+      return
+    }
+
     if (
       !resources.find(
         (x) => x.contentId === contentId && x.contentSubType === contentSubType

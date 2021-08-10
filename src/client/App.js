@@ -13,11 +13,13 @@ import * as firebase from 'firebase/app'
 import { roleuser, signUpState, test } from '@edulastic/constants'
 import { DragDrop, notification, OfflineNotifier } from '@edulastic/common'
 import { TokenStorage } from '@edulastic/api'
+import { sessionFilters } from '@edulastic/constants/const/common'
 import { Banner } from './common/components/Banner'
 import { TestAttemptReview } from './student/TestAttemptReview'
 import SebQuitConfirm from './student/SebQuitConfirm'
 import {
   getUserNameSelector,
+  getUserOrgId,
   shouldWatchCollectionUpdates,
 } from './author/src/selectors/user'
 import {
@@ -27,7 +29,13 @@ import {
 } from './student/Login/ducks'
 import TestDemoPlayer from './author/TestDemoPlayer'
 import TestItemDemoPlayer from './author/TestItemDemoPlayer'
-import { getWordsInURLPathName } from './common/utils/helpers'
+import {
+  copyOldFiltersWithNewKey,
+  getFilterFromSession,
+  getWordsInURLPathName,
+  removeSessionValue,
+  setFilterInSession,
+} from './common/utils/helpers'
 import LoggedOutRoute from './common/components/loggedOutRoute'
 import PrivateRoute from './common/components/privateRoute'
 import V1Redirect from './author/V1Redirect'
@@ -36,6 +44,7 @@ import NotificationListener from './HangoutVideoCallNotification'
 import BulkActionNotificationListener from './author/AssignmentAdvanced/components/BulkAssignmentActionNotification'
 import ClassSyncNotification from './author/Classes/components/ClassSyncNotification'
 import ReportsNotificationListener from './author/Reports/components/ReportsNotificationListener'
+import BubbleScanNotificationsListener from './scanScore/BubbleScanNotificationsListener'
 import AppUpdate from './common/components/AppUpdate'
 import { logoutAction } from './author/src/actions/auth'
 import RealTimeCollectionWatch from './RealTimeCollectionWatch'
@@ -48,6 +57,7 @@ import {
   getRequestQuoteVisibility,
   slice as subscriptionSlice,
 } from './author/Subscription/ducks'
+import AdminNotificationListener from './admin/Components/AdminNotification'
 
 const { ASSESSMENT, PRACTICE, TESTLET } = test.type
 // route wise splitting
@@ -90,7 +100,12 @@ const Author = lazy(() =>
 const Publisher = lazy(() =>
   import(/* webpackChunkName: "author" */ './publisher/app')
 )
-const Admin = lazy(() => import(/* webpackChunkName: "admin" */ './admin/app'))
+const Admin = lazy(() =>
+  import(/* webpackChunkName: "admloadablein" */ './admin/app')
+)
+const ScanScore = lazy(() =>
+  import(/* webpackChunkName: "scanScore" */ './scanScore/app')
+)
 const RedirectToTest = lazy(() =>
   import(/* webpackChunkName: "RedirecToTest" */ './author/RedirectToTest')
 )
@@ -291,6 +306,7 @@ class App extends Component {
       isRequestQuoteModalVisible,
       setRequestQuoteModal,
       isRequestOrSubmitSuccessModalVisible,
+      districtId,
     } = this.props
     if (
       location.hash.includes('#renderResource/close/') ||
@@ -327,16 +343,37 @@ class App extends Component {
       if (user && user.isAuthenticated) {
         // copy old assignments filter if user is not demo playground user
         if (!isDemoAccountProxy) {
-          const oldAssignmentFilter = sessionStorage.getItem(
-            'filters[Assignments]'
-          )
+          copyOldFiltersWithNewKey({
+            keys: [
+              sessionFilters.PLAYLIST_FILTER,
+              sessionFilters.TEST_FILTER,
+              sessionFilters.TEST_ITEM_FILTER,
+              sessionFilters.PLAYLIST_SORT,
+              sessionFilters.TEST_SORT,
+              sessionFilters.TEST_ITEM_SORT,
+            ],
+            districtId,
+            userId: user.user._id,
+          })
+          const oldAssignmentFilter =
+            getFilterFromSession({ key: 'filters[Assignments]' }) ||
+            getFilterFromSession({
+              key: 'assignments_filter',
+              userId: user.user._id,
+            })
           if (!isEmpty(oldAssignmentFilter)) {
-            sessionStorage.setItem(
-              `assignments_filter_${user.user._id}`,
-              oldAssignmentFilter
-            )
+            setFilterInSession({
+              key: 'assignments_filter',
+              userId: user.user._id,
+              districtId,
+              filter: oldAssignmentFilter,
+            })
             // remove old filter key from session storage
-            sessionStorage.removeItem('filters[Assignments]')
+            removeSessionValue({ key: 'filters[Assignments]' })
+            removeSessionValue({
+              key: 'assignments_filter',
+              userId: user.user._id,
+            })
           }
         }
         // Clear referrer once userId available
@@ -605,6 +642,15 @@ class App extends Component {
                 path="/admin"
                 component={Admin}
                 redirectPath={redirectRoute}
+                notifications={
+                  roleuser.EDULASTIC_ADMIN ? [AdminNotificationListener] : null
+                }
+              />
+              <PrivateRoute
+                path={['/uploadAnswerSheets']}
+                component={ScanScore}
+                redirectPath={redirectRoute}
+                notifications={[BubbleScanNotificationsListener]}
               />
               <Route exact path="/kid" component={Kid} />
               <LoggedOutRoute
@@ -787,6 +833,7 @@ const enhance = compose(
       isRequestOrSubmitSuccessModalVisible: getRequestOrSubmitSuccessVisibility(
         { subscription }
       ),
+      districtId: getUserOrgId({ user }),
     }),
     {
       fetchUser: fetchUserAction,

@@ -10,7 +10,7 @@ import React from 'react'
 import styled from 'styled-components'
 
 export const FieldLabel = styled.label`
-  font-size: 11px;
+  font-size: ${(props) => props.fs || '11px'};
   font-weight: ${(props) => props.theme.widgetOptions.labelFontWeight};
   font-style: ${(props) => props.theme.widgetOptions.labelFontStyle};
   font-stretch: ${(props) => props.theme.widgetOptions.labelFontStretch};
@@ -70,7 +70,7 @@ export const SearchInputStyled = styled(Input.Search)`
 `
 
 export const TextInputStyled = styled((props) => (
-  <Input maxLength={128} {...props} ref={props.inputRef} />
+  <Input maxLength={props.limit || 128} {...props} ref={props.inputRef} />
 ))`
   &.ant-input {
     text-align: ${(props) => props.align || 'left'};
@@ -272,7 +272,8 @@ export const SelectInputStyled = styled(Select)`
           }
           .ant-select-selection__choice__content {
             font-size: 10px;
-            display: flex;
+            display: ${(props) =>
+              props.tagsEllipsis ? 'inline-block' : 'flex'};
             align-items: center;
             font-weight: bold;
             letter-spacing: 0.2px;

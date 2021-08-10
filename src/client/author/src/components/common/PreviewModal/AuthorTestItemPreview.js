@@ -323,27 +323,29 @@ class AuthorTestItemPreview extends Component {
     const { isPassage, item, goToItem, passageTestItems, page } = this.props
     const { collapseDirection } = this.state
     const showButtons = collapseDirection !== 'right'
-
+    if (
+      !isPassage ||
+      (isPassage && passageTestItems && passageTestItems.length <= 1) ||
+      !showButtons
+    ) {
+      return null
+    }
     return (
-      <>
-        {isPassage &&
-          showButtons &&
-          passageTestItems.length > 1 &&
-          (page === 'addItems' || page === 'itemList') && (
-            <PassageNavigation>
-              <span>PASSAGE ITEMS </span>
-              <Pagination
-                total={passageTestItems.length}
-                pageSize={1}
-                current={
-                  passageTestItems.findIndex((i) => i === item.versionId) + 1
-                }
-                onChange={goToItem}
-                data-cy="questionPagination"
-              />
-            </PassageNavigation>
-          )}
-      </>
+      (page === 'addItems' || page === 'itemList') && (
+        <PassageNavigation>
+          <span>PASSAGE ITEMS </span>
+          <Pagination
+            total={passageTestItems.length}
+            pageSize={1}
+            current={
+              passageTestItems.findIndex((i) => i === item.versionId) + 1
+            }
+            onChange={goToItem}
+            data-cy="questionPagination"
+            showLessItems
+          />
+        </PassageNavigation>
+      )
     )
   }
 
@@ -354,7 +356,7 @@ class AuthorTestItemPreview extends Component {
         overflow: 'auto',
       },
       ref: this.scrollContainer,
-      'data-cy': 'scroll-conteianer',
+      'data-cy': 'scroll-container',
     }
 
     // item preview popup

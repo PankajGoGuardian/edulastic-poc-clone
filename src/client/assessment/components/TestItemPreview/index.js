@@ -78,13 +78,14 @@ class TestItemPreview extends Component {
   }
 
   renderCollapseButtons = () => {
-    const { isLCBView } = this.props
+    const { isLCBView, isStudentReport } = this.props
     const { collapseDirection } = this.state
     return (
       <Divider
         collapseDirection={collapseDirection}
         setCollapseView={this.setCollapseView}
         hideMiddle={isLCBView}
+        isStudentReport={isStudentReport}
         stackedView={this.showStackedView}
       />
     )

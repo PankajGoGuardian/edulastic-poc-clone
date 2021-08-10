@@ -49,7 +49,11 @@ import {
 import { evaluateAnswer } from '../actions/evaluation'
 import { changePreview as changePreviewAction } from '../actions/view'
 import { getQuestionsByIdSelector } from '../selectors/questions'
-import { testLoadingSelector, playerSkinTypeSelector } from '../selectors/test'
+import {
+  testLoadingSelector,
+  playerSkinTypeSelector,
+  originalPlayerSkinName,
+} from '../selectors/test'
 import {
   getAnswersArraySelector,
   getAnswersListSelector,
@@ -209,7 +213,7 @@ export function ForceFullScreenModal({ visible, takeItLaterCb, fullscreenCb }) {
       visible={visible}
     >
       <div className="content">
-        While taking this test, you can not open other web pages. This test can
+        While taking this test, you cannot open other web pages. This test can
         only be taken in fullscreen mode
       </div>
     </StyledModal>
@@ -540,6 +544,7 @@ const AssessmentContainer = ({
   isStudentReport,
   savingResponse,
   playerSkinType,
+  originalSkinName,
   userPrevAnswer,
   testSettings,
   showMagnifier,
@@ -777,7 +782,7 @@ const AssessmentContainer = ({
         case questionType.HISTOGRAM:
         case questionType.DOT_PLOT:
         case questionType.LINE_PLOT: {
-          const initialData = q.chart_data.data
+          const initialData = q?.chart_data?.data || []
           return initialData.every((d, i) => d?.y === qAnswers?.[i]?.y)
         }
         case questionType.MATCH_LIST:
@@ -787,13 +792,13 @@ const AssessmentContainer = ({
         case questionType.HOTSPOT:
           return !qAnswers?.some((ans) => ans?.toString())
         case questionType.ORDER_LIST: {
-          const prevOrder = [...Array(q.list.length).keys()]
+          const prevOrder = [...Array(q?.list?.length || 0).keys()]
           return qAnswers ? isEqual(prevOrder, qAnswers) : true
         }
         case questionType.MATH:
           if (q.title === 'Complete the Equation') {
             if (isArray(qAnswers)) {
-              return !qAnswers.some((ans) => ans?.toString())
+              return !qAnswers?.some((ans) => ans?.toString())
             }
             const ans = (qAnswers || '').replace(/\\ /g, '')
             return isEmpty(ans) || ans === '+='
@@ -830,7 +835,7 @@ const AssessmentContainer = ({
           if (!isObject(qAnswers)) {
             return true
           }
-          const keys = Object.keys(qAnswers)
+          const keys = Object.keys(qAnswers || {})
           return (
             keys.length === 0 || keys.every((key) => isEmpty(qAnswers[key]))
           )
@@ -840,7 +845,7 @@ const AssessmentContainer = ({
           if (!isObject(qAnswers)) {
             return true
           }
-          const keys = Object.keys(qAnswers)
+          const keys = Object.keys(qAnswers || {})
           return keys.some((key) => !qAnswers[key])
         }
         default:
@@ -1188,6 +1193,7 @@ const AssessmentContainer = ({
     passage,
     defaultAP,
     playerSkinType,
+    originalSkinName,
     showMagnifier,
     handleMagnifier,
     enableMagnifier,
@@ -1380,6 +1386,7 @@ const enhance = compose(
       docUrl: state.test.docUrl,
       testType: state.test.testType,
       playerSkinType: playerSkinTypeSelector(state),
+      originalSkinName: originalPlayerSkinName(state),
       testletConfig: state.test?.testletConfig,
       freeFormNotes: state?.test?.freeFormNotes,
       testletState: get(

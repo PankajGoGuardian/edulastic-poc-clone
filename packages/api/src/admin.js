@@ -336,6 +336,15 @@ const bulkUpdateSubscriptionApi = (data) =>
 const getMappingData = (payload) =>
   api
     .callApi({
+      url: `${payload.atlasId ? atlasPrefix : prefix}entity-match-data`,
+      method: 'get',
+      params: payload,
+    })
+    .then(({ data: response }) => response.result)
+
+const generateMappedData = (payload) =>
+  api
+    .callApi({
       url: `${payload.atlasId ? atlasPrefix : prefix}entity-match`,
       method: 'get',
       params: payload,
@@ -367,15 +376,16 @@ const syncEdlinkOrphanUsersApi = (data) =>
       data,
     })
     .then(({ data: response }) => response)
-const stopSyncApi = ({ _prefix, districtId, stopSync, schoolIds }) =>
-  api.callApi({
-    url: `${_prefix}district/${districtId}/schools-stop-sync`,
-    method: 'put',
-    data: {
-      stopSync,
-      schoolIds,
-    },
-  })
+const stopSyncApi = ({ _prefix, districtId, schools }) =>
+  api
+    .callApi({
+      url: `${_prefix}district/${districtId}/schools`,
+      method: 'put',
+      data: {
+        schools,
+      },
+    })
+    .then((res) => res.data)
 
 const cleverStopSyncApi = (data) => stopSyncApi({ _prefix: prefix, ...data })
 const atlasStopSyncApi = (data) =>
@@ -418,6 +428,7 @@ export default {
   updateSubscriptionApi,
   bulkUpdateSubscriptionApi,
   getMappingData,
+  generateMappedData,
   saveMappedData,
   syncCleverOrphanUsersApi,
   syncEdlinkOrphanUsersApi,

@@ -120,7 +120,6 @@ export const performanceBandSelector = createSelector(
 const initialState = {
   openPolicy: 'Automatically on Start Date',
   closePolicy: 'Automatically on Due Date',
-  resources: [],
 }
 
 export const assignmentSettings = createReducer(initialState, {

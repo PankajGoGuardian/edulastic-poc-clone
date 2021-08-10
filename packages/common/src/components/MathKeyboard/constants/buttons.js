@@ -58,6 +58,7 @@ import Group3181 from '../assets/keyboardButtons/3181.svg'
 import Group1030 from '../assets/keyboardButtons/1030.svg'
 import Group1031 from '../assets/keyboardButtons/1031.svg'
 import Group1032 from '../assets/keyboardButtons/1032.svg'
+import Group1033 from '../assets/keyboardButtons/1033.svg'
 import Group1043 from '../assets/keyboardButtons/1043.svg'
 import Group943 from '../assets/keyboardButtons/943.svg'
 
@@ -272,6 +273,7 @@ import Group8825 from '../assets/calculus/8825.svg'
 import Group8826 from '../assets/calculus/8826.svg'
 import Group8827 from '../assets/calculus/8827.svg'
 import Group8828 from '../assets/calculus/8828.svg'
+import Group8829 from '../assets/calculus/8829.svg'
 
 import Chem320 from '../assets/chemistry/chem320.svg'
 import Chem420 from '../assets/chemistry/chem420.svg'
@@ -2270,17 +2272,24 @@ export const sum = {
 }
 
 export const sum_symbol = {
-  handler: '\\sum',
+  handler: '\\summationSymbol',
   label: <CustomImage src={Group1031} width={11} height={38} />,
   types: ['all'],
-  command: 'write',
+  command: 'cmd',
 }
 
 export const sum_bottom = {
-  handler: '\\sum_{}',
+  handler: '\\summationLower',
   label: <CustomImage src={Group1032} width={11} height={38} />,
   types: ['all'],
-  command: 'write',
+  command: 'cmd',
+}
+
+export const sum_upper = {
+  handler: '\\sumUpper',
+  label: <CustomImage src={Group1033} width={11} height={38} />,
+  types: ['all'],
+  command: 'cmd',
 }
 
 export const no_subset = {
@@ -2510,10 +2519,10 @@ export const closed_surface = {
 }
 
 export const prod_symbol = {
-  handler: '\\prod',
+  handler: '\\prodSymbol',
   label: <CustomImage src={Group8826} width={12.5} height={20.8} />,
   types: ['all'],
-  command: 'write',
+  command: 'cmd',
 }
 
 export const prod = {
@@ -2524,10 +2533,17 @@ export const prod = {
 }
 
 export const prod_bottom = {
-  handler: '\\prod_{}',
+  handler: '\\prodLower',
   label: <CustomImage src={Group8828} width={11} height={31} />,
   types: ['all'],
-  command: 'write',
+  command: 'cmd',
+}
+
+export const prod_upper = {
+  handler: '\\prodUpper',
+  label: <CustomImage src={Group8829} width={11} height={31} />,
+  types: ['all'],
+  command: 'cmd',
 }
 
 export const n_a = {

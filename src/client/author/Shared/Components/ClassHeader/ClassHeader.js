@@ -573,6 +573,43 @@ class ClassHeader extends Component {
       </OpenCloseWrapper>
     )
 
+    const scanBubbleSheetMenuItem = (() => {
+      const tooltipTitle = canOpen
+        ? 'OPEN Assignment to Scan Responses'
+        : isPaused
+        ? 'RESUME Assignment to Scan Responses'
+        : ''
+      const isMenuItemActive = !canOpen && !isPaused && canClose
+      const menuItemContent = isMenuItemActive ? (
+        <Link
+          to={{
+            pathname: '/uploadAnswerSheets',
+            search: `?assignmentId=${assignmentId}&groupId=${classId}`,
+          }}
+          target="_blank"
+        >
+          Scan Bubble Sheet
+        </Link>
+      ) : (
+        'Scan Bubble Sheet'
+      )
+      return (
+        <MenuItems
+          data-cy="upload-bubble-sheet"
+          key="upload-bubble-sheet"
+          disabled={!isMenuItemActive}
+        >
+          {!isMenuItemActive && tooltipTitle ? (
+            <Tooltip title={tooltipTitle} placement="left">
+              {menuItemContent}
+            </Tooltip>
+          ) : (
+            menuItemContent
+          )}
+        </MenuItems>
+      )
+    })()
+
     const actionsMenu = (
       <DropMenu>
         <CaretUp className="fa fa-caret-up" />
@@ -600,13 +637,26 @@ class ClassHeader extends Component {
         >
           Release Score
         </MenuItems>
-        <MenuItems
-          data-cy="download-bubble-sheet"
-          key="download-bubble-sheet"
-          onClick={() => this.generateBubbleSheet(assignmentId, classId)}
+        <FeaturesSwitch
+          inputFeatures="enableOmrSheets"
+          actionOnInaccessible="hidden"
+          groupId={classId}
         >
-          Generate Bubble Sheet
-        </MenuItems>
+          <MenuItems
+            data-cy="download-bubble-sheet"
+            key="download-bubble-sheet"
+            onClick={() => this.generateBubbleSheet(assignmentId, classId)}
+          >
+            Generate Bubble Sheet
+          </MenuItems>
+        </FeaturesSwitch>
+        <FeaturesSwitch
+          inputFeatures="enableOmrSheets"
+          actionOnInaccessible="hidden"
+          groupId={classId}
+        >
+          {scanBubbleSheetMenuItem}
+        </FeaturesSwitch>
         {isShowUnAssign && (
           <MenuItems
             data-cy="unAssign"
@@ -616,10 +666,6 @@ class ClassHeader extends Component {
             Unassign ALL Students
           </MenuItems>
         )}
-        {/* TODO temp hiding for UAT */}
-        {/* <MenuItems key="key3" onClick={this.onStudentReportCardsClick}>
-          Generate Bubble Sheet
-        </MenuItems> */}
         {showPasswordButton && (
           <MenuItems
             data-cy="viewPassword"

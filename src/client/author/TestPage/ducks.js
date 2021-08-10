@@ -74,11 +74,12 @@ import {
 } from './components/AddItems/ducks'
 import {
   getUserRole,
-  getUserOrgData,
   getUserIdSelector,
   getUserId,
   getIsCurator,
   getUserSignupStatusSelector,
+  getUserOrgId,
+  currentDistrictInstitutionIds,
 } from '../src/selectors/user'
 import { receivePerformanceBandSuccessAction } from '../PerformanceBand/ducks'
 import { receiveStandardsProficiencySuccessAction } from '../StandardsProficiency/ducks'
@@ -771,46 +772,66 @@ export const showGroupsPanelSelector = createSelector(
   }
 )
 
-export const getUserListSelector = createSelector(stateSelector, (state) => {
-  const usersList = state.sharedUsersList
-  const flattenUsers = []
-  usersList.forEach(
-    ({
-      permission,
-      sharedType,
-      sharedWith,
-      sharedId,
-      v1LinkShareEnabled = 0,
-    }) => {
-      if (sharedType === 'INDIVIDUAL' || sharedType === 'SCHOOL') {
-        sharedWith.forEach((user) => {
-          flattenUsers.push({
-            userName: user.name,
-            email: user.email || '',
-            _userId: user._id,
+export const getUserListSelector = createSelector(
+  stateSelector,
+  getUserOrgId,
+  currentDistrictInstitutionIds,
+  (state, districtId, institutionIds) => {
+    const usersList = state.sharedUsersList || []
+    const flattenUsers = []
+
+    usersList.forEach(
+      ({
+        permission,
+        sharedType,
+        sharedWith,
+        sharedId,
+        v1LinkShareEnabled = 0,
+      }) => {
+        if (sharedType === 'INDIVIDUAL' || sharedType === 'SCHOOL') {
+          sharedWith.forEach((user) => {
+            if (
+              sharedType === 'SCHOOL' &&
+              !institutionIds?.includes(user._id)
+            ) {
+              return
+            }
+            flattenUsers.push({
+              userName: user.name,
+              email: user.email || '',
+              _userId: user._id,
+              sharedType,
+              permission,
+              sharedId,
+            })
+          })
+        } else {
+          const shareData = {
+            userName: sharedType,
             sharedType,
             permission,
             sharedId,
-          })
-        })
-      } else {
-        const shareData = {
-          userName: sharedType,
-          sharedType,
-          permission,
-          sharedId,
-          v1LinkShareEnabled,
+            v1LinkShareEnabled,
+          }
+          if (sharedType === 'DISTRICT') {
+            if (districtId !== sharedWith?.[0]?._id) {
+              return
+            }
+            Object.assign(shareData, {
+              shareWithName: sharedWith?.[0]?.name,
+            })
+          }
+          if (sharedType === 'LINK') {
+            shareData.v1LinkShareEnabled = v1LinkShareEnabled
+            shareData.userName = 'Anyone with link'
+          }
+          flattenUsers.push(shareData)
         }
-        if (sharedType === 'LINK') {
-          shareData.v1LinkShareEnabled = v1LinkShareEnabled
-          shareData.userName = 'Anyone with link'
-        }
-        flattenUsers.push(shareData)
       }
-    }
-  )
-  return flattenUsers
-})
+    )
+    return flattenUsers
+  }
+)
 
 export const getTestItemsRowsSelector = createSelector(
   getTestSelector,
@@ -1775,6 +1796,10 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     maxAnswerChecks: entity.maxAnswerChecks,
   }
 
+  if (entity.safeBrowser) {
+    settings.sebPassword = entity.sebPassword
+  }
+
   if (isAdmin) {
     settings.testType = testType === PRACTICE ? PRACTICE : COMMON
     settings.openPolicy =
@@ -2031,6 +2056,7 @@ export function* receiveTestByIdSaga({ payload }) {
       'endDate',
       'openPolicy',
       'closePolicy',
+      'resources',
     ])
     yield put(setDefaultTestSettingsAction(defaultTestSettings))
   } catch (err) {
@@ -2082,6 +2108,9 @@ function* createTest(data) {
   const dataToSend = omit(data, omitedItems)
   // we are getting testItem ids only in payload from cart, but whole testItem Object from test library.
   dataToSend.itemGroups = transformItemGroupsUIToMongo(data.itemGroups)
+  if (dataToSend.settingId === '') {
+    dataToSend.settingId = null
+  }
   const entity = yield call(testsApi.create, dataToSend)
   fillAutoselectGoupsWithDummyItems(data)
   yield put({
@@ -2231,6 +2260,9 @@ export function* updateTestSaga({ payload }) {
         Sentry.captureException(new Error('testDataHasInvalidException'))
       })
       return
+    }
+    if (testData.settingId === '') {
+      testData.settingId = null
     }
     const entity = yield call(testsApi.update, { ...payload, data: testData })
     if (isEmpty(entity)) {
@@ -2618,9 +2650,7 @@ function* publishForRegrade({ payload }) {
     if (isRegradeNeeded) {
       yield put(setShowRegradeConfirmPopupAction(true))
     } else {
-      const districtId = yield select((state) =>
-        get(state, ['user', 'user', 'orgData', 'districtIds', 0])
-      )
+      const districtId = yield select(getUserOrgId)
       yield put(setTestsLoadingAction(true))
       yield call(updateRegradeDataSaga, {
         payload: {
@@ -2876,12 +2906,13 @@ function* setTestDataAndUpdateSaga({ payload }) {
         }
         return
       }
-
       // TODO: is this logic still relevant?
       if (payload.current) {
         yield put(
           replace(`/author/tests/tab/${payload.current}/id/${entity._id}`)
         )
+      } else if (item.isPassageWithQuestions) {
+        yield put(replace(`/author/tests/tab/review/id/${entity._id}`))
       } else {
         yield put(
           replace({
@@ -3148,15 +3179,16 @@ function* getDefaultTestSettingsSaga({ payload: testEntity }) {
   try {
     yield put(setDefaultSettingsLoadingAction(true))
     const role = yield select(getUserRole)
-    const orgData = yield select(getUserOrgData)
+    const districtId = yield select(getUserOrgId)
+    const institutionIds = yield select(currentDistrictInstitutionIds)
     let payload = {
-      orgId: orgData?.districtIds?.[0],
+      orgId: districtId,
       params: { orgType: 'district' },
     }
 
-    if (role !== roleuser.DISTRICT_ADMIN && orgData.institutionIds.length) {
+    if (role !== roleuser.DISTRICT_ADMIN && institutionIds.length) {
       payload = {
-        orgId: orgData.institutionIds[0] || orgData?.districtIds?.[0],
+        orgId: institutionIds[0] || districtId,
         params: {
           orgType: 'institution',
         },
@@ -3620,6 +3652,8 @@ function* saveTestSettingsSaga({ payload }) {
     const result = yield call(settingsApi.createTestSetting, payload.data)
     if (payload.switchSetting)
       yield put(setCurrentTestSettingsIdAction(result._id))
+    if (payload.switchSettingInTest)
+      yield put(setTestDataAction({ settingId: result._id }))
     yield put(addTestSettingInList(result))
     notification({ type: 'success', msg: 'Test settings saved successfully' })
   } catch (err) {

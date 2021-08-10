@@ -64,6 +64,7 @@ import {
   isOrganizationDistrictSelector,
   getAccountSwitchDetails,
   isFreeAdminSelector,
+  getUserOrgId,
 } from '../selectors/user'
 import SwitchUserModal from '../../../common/components/SwtichUserModal/SwitchUserModal'
 import { switchUser, proxyDemoPlaygroundUser } from '../../authUtils'
@@ -177,7 +178,6 @@ class SideMenu extends Component {
       showTrialUsedModal: false,
       showPurchaseModal: false,
       showTrialSubsConfirmation: false,
-      isExpandedOnHover: false,
     }
 
     this.sideMenuRef = React.createRef()
@@ -407,7 +407,7 @@ class SideMenu extends Component {
   }
 
   render() {
-    const { broken, isVisible, showModal, isExpandedOnHover } = this.state
+    const { broken, isVisible, showModal } = this.state
     let { isSwitchAccountNotification } = this.state
     // For Now we are hiding the switch account notification (Ref: EV-25373)
     // TODO: Remove hiding notification when implementation of "showing notification only once"
@@ -430,6 +430,7 @@ class SideMenu extends Component {
       showUseThisNotification,
       isProxyUser,
       isDemoPlaygroundUserProxy,
+      orgId,
     } = this.props
     if (userRole === roleuser.STUDENT) {
       return null
@@ -480,8 +481,7 @@ class SideMenu extends Component {
       _userRole = 'Author'
     }
 
-    const otherAccounts = get(switchDetails, 'otherAccounts', [])
-    const users = otherAccounts.filter((acc) => acc._id !== userId)
+    const users = get(switchDetails, 'switchAccounts', [])
 
     const footerDropdownMenu = (isDemoAccount = false) => (
       <FooterDropDown
@@ -518,11 +518,13 @@ class SideMenu extends Component {
               </Link>
             </Menu.Item>
           )}
-          {users.length ? (
+          {users.length > 1 ? ( // since current user is also in this list
             <Menu.Item key="3" className="removeSelectedBorder">
               <a>
                 <IconSwitchUser />
-                <span>{isCollapsed ? '' : 'Switch Account'} </span>
+                <span data-cy="switch-user">
+                  {isCollapsed ? '' : 'Switch Account'}{' '}
+                </span>
               </a>
             </Menu.Item>
           ) : userRole !== roleuser.EDULASTIC_CURATOR ? (
@@ -572,9 +574,10 @@ class SideMenu extends Component {
           <SwitchUserModal
             userId={userId}
             switchUser={switchUser}
+            orgId={orgId}
             showModal={showModal}
             closeModal={() => this.setState({ showModal: false })}
-            otherAccounts={get(switchDetails, 'otherAccounts', [])}
+            otherAccounts={users}
             personId={get(switchDetails, 'personId')}
             userRole={userRole}
           />
@@ -614,22 +617,16 @@ class SideMenu extends Component {
             </LogoWrapper>
             <MenuWrapper
               onMouseEnter={
-                isCollapsed && !isMobile && !isExpandedOnHover
+                isCollapsed && !isMobile
                   ? () => {
                       this.toggleMenu()
-                      this.setState({
-                        isExpandedOnHover: true,
-                      })
                     }
                   : null
               }
               onMouseLeave={
-                !isCollapsed && !isMobile && isExpandedOnHover
+                !isCollapsed && !isMobile
                   ? () => {
                       this.toggleMenu()
-                      this.setState({
-                        isExpandedOnHover: false,
-                      })
                     }
                   : null
               }
@@ -899,6 +896,7 @@ const enhance = compose(
       userId: get(state.user, 'user._id', ''),
       isOrganizationDistrict: isOrganizationDistrictSelector(state),
       lastPlayList: getLastPlayListSelector(state),
+      orgId: getUserOrgId(state),
       features: getUserFeatures(state),
       profileThumbnail: get(state.user, 'user.thumbnail'),
       switchDetails: getAccountSwitchDetails(state),

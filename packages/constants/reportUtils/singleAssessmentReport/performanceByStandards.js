@@ -23,8 +23,6 @@ const {
   getCsvDataFromTableBE,
 } = require('../common')
 
-const { transformMetricForStudentGroups } = require('./common')
-
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
 
 // -----|-----|-----|-----| COMMON TRANSFORMERS |-----|-----|-----|----- //
@@ -232,25 +230,6 @@ const augmentMetricInfoWithStudentInfo = (
   }))
 }
 
-const chartFilterMetricInfo = (
-  studInfo,
-  metricInfo,
-  teacherInfo,
-  skillInfo = []
-) => {
-  const filteredMetrics = filter(metricInfo, (metric) =>
-    find(skillInfo, (skill) => skill.standardId === metric.standardId)
-  )
-
-  const metricsWithStudent = augmentMetricInfoWithStudentInfo(
-    studInfo,
-    teacherInfo,
-    filteredMetrics
-  )
-
-  return metricsWithStudent
-}
-
 const augmentMetricInfoWithMasteryScore = (metricInfo = [], scaleInfo = []) =>
   map(metricInfo, (metric) => {
     const masteryPercentage = percentage(metric.totalScore, metric.maxScore)
@@ -262,6 +241,24 @@ const augmentMetricInfoWithMasteryScore = (metricInfo = [], scaleInfo = []) =>
       masteryLabel: masteryLevel.masteryLabel,
     }
   })
+
+const getAugmentedMetricInfo = (
+  studInfo,
+  metricInfo,
+  teacherInfo,
+  scaleInfo = []
+) => {
+  const metricsWithStudent = augmentMetricInfoWithStudentInfo(
+    studInfo,
+    teacherInfo,
+    metricInfo
+  )
+  const metricsWithScale = augmentMetricInfoWithMasteryScore(
+    metricsWithStudent,
+    scaleInfo
+  )
+  return metricsWithScale
+}
 
 const getReportWithFilteredSkills = (report, curriculumId) =>
   next(report, (draftReport) => {
@@ -520,38 +517,25 @@ const getAnalyzedTableData = (report, viewBy, compareBy) => {
     metricInfo = [],
   } = report
 
-  let filteredMetrics
-  if (compareBy === 'group') {
-    const metricByStudentGroup = transformMetricForStudentGroups(
-      teacherInfo,
-      metricInfo
-    )
-    filteredMetrics = chartFilterMetricInfo(
-      studInfo,
-      metricByStudentGroup,
-      teacherInfo,
-      skillInfo
-    )
-  } else {
-    filteredMetrics = chartFilterMetricInfo(
-      studInfo,
-      metricInfo,
-      teacherInfo,
-      skillInfo
-    )
-  }
-  filteredMetrics = augmentMetricInfoWithMasteryScore(
+  const filteredMetrics = filter(metricInfo, (metric) =>
+    find(skillInfo, (skill) => skill.standardId === metric.standardId)
+  )
+
+  let augmentedMetrics = getAugmentedMetricInfo(
+    studInfo,
     filteredMetrics,
+    teacherInfo,
     scaleInfo
   )
+
   if (DemographicCompareByOptions.includes(compareBy)) {
-    filteredMetrics = orderBy(filteredMetrics, compareBy, ['asc'])
+    augmentedMetrics = orderBy(augmentedMetrics, compareBy, ['asc'])
   }
 
   const _analyzedTableData =
     viewBy === viewByMode.STANDARDS
-      ? analysisStandardsData(compareBy, skillInfo, filteredMetrics, scaleInfo)
-      : analysisDomainsData(compareBy, skillInfo, filteredMetrics, scaleInfo)
+      ? analysisStandardsData(compareBy, skillInfo, augmentedMetrics, scaleInfo)
+      : analysisDomainsData(compareBy, skillInfo, augmentedMetrics, scaleInfo)
 
   // format student names in the data & sort in ascending order
   const analyzedTableData = _analyzedTableData

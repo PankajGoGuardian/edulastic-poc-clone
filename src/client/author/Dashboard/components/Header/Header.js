@@ -16,7 +16,7 @@ import {
 } from '@edulastic/icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
-import { get } from 'lodash'
+import { get, isEmpty } from 'lodash'
 import { segmentApi } from '@edulastic/api'
 
 import { signUpState } from '@edulastic/constants'
@@ -39,6 +39,7 @@ import {
   getGoogleAllowedInstitionPoliciesSelector,
   getInterestedGradesSelector,
   getInterestedSubjectsSelector,
+  currentDistrictInstitutionIds,
 } from '../../../src/selectors/user'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import HeaderSyncAction from '../Showcase/components/Myclasses/components/HeaderSyncAction/HeaderSyncAction'
@@ -203,7 +204,8 @@ const HeaderSection = ({
   return (
     <MainHeader Icon={IconClockDashboard} headingText={t('common.dashboard')}>
       <FlexContainer alignItems="center">
-        {currentSignUpState === signUpState.ACCESS_WITHOUT_SCHOOL && (
+        {(currentSignUpState === signUpState.ACCESS_WITHOUT_SCHOOL ||
+          (isSignupComplete && isEmpty(institutionIds))) && (
           <AuthorCompleteSignupButton
             renderButton={(handleClick) => (
               <StyledLink data-cy="completeSignup" onClick={handleClick}>
@@ -384,7 +386,7 @@ const enhance = compose(
       showCleverSyncModal: get(state, 'manageClass.showCleverSyncModal', false),
       teacherData: get(state, 'dashboardTeacher.data', []),
       classData: state.dashboardTeacher.data,
-      institutionIds: get(state, 'user.user.institutionIds', []),
+      institutionIds: currentDistrictInstitutionIds(state),
       getStandardsListBySubject: (subject) =>
         getFormattedCurriculumsSelector(state, { subject }),
       defaultGrades: getInterestedGradesSelector(state),

@@ -836,7 +836,7 @@ class Display extends Component {
                 {responseposition === 'left' && (
                   <LeftContainer style={containerStyle}>
                     <LeftResponseContainer
-                      width={responseBoxWidth || null}
+                      width="auto"
                       isReviewTab={isReviewTab}
                     >
                       <RelativeContainer>{responseBoxLayout}</RelativeContainer>
@@ -860,8 +860,8 @@ class Display extends Component {
                     </RightTemplateContainer>
 
                     <RightResponseContainer
+                      width="auto"
                       isReviewTab={isReviewTab}
-                      width={responseBoxWidth || null}
                       smallSize={smallSize}
                     >
                       <RelativeContainer>{responseBoxLayout}</RelativeContainer>

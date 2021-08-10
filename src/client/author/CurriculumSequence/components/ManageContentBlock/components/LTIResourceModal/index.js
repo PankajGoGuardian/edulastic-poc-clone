@@ -50,23 +50,35 @@ const LTIResourceModal = (props) => {
       setPrivacy(data?.data?.privacy)
       setSharedSecret(data?.data?.sharedSecret)
       setConsumerKey(data?.data?.consumerKey)
-      const allStandards = []
-      data?.alignment?.forEach((x) =>
-        x?.domains?.forEach((y) =>
-          y?.standards?.forEach(
-            (z) =>
-              data?.standards?.includes(z?.id) &&
+      if (data?.alignment) {
+        const allStandards = []
+        const selectedGrades = []
+        const filteredAlignments = data?.alignment?.filter(
+          (a) => !a?.isEquivalentStandard
+        )
+        filteredAlignments?.forEach((alignData) =>
+          alignData?.domains?.forEach((domain) =>
+            domain?.standards?.forEach((standard) => {
               allStandards.push({
-                ...z,
-                identifier: y.name,
-                _id: y.id,
-                curriculumId: y.curriculumId,
+                identifier: standard.name,
+                _id: standard.id,
+                curriculumId: domain.curriculumId,
               })
+              standard?.grades?.forEach((grade) => {
+                if (!selectedGrades.includes(grade)) {
+                  selectedGrades.push(grade)
+                }
+              })
+            })
           )
         )
-      )
-      setAlignment(data?.alignment)
-      setSelectedStandards(allStandards)
+        setAlignment({
+          ...filteredAlignments[0],
+          standards: allStandards,
+          grades: selectedGrades,
+        })
+        setSelectedStandards(allStandards)
+      }
     }
   }, [data])
 
@@ -193,6 +205,7 @@ const LTIResourceModal = (props) => {
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           height="36px"
+          limit={200}
         />
       </FlexRow>
       {isAddNew && (

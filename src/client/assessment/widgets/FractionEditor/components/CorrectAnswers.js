@@ -84,7 +84,7 @@ const CorrectAnswers = ({
     )
   }
 
-  const hidingScoringBlock = useContext(PointBlockContext)
+  const itemLevelScoring = useContext(PointBlockContext)
 
   return (
     <Question
@@ -100,7 +100,7 @@ const CorrectAnswers = ({
       >
         {t('common.correctAnswers.setCorrectAnswers')}
       </Subtitle>
-      {!hidingScoringBlock && (
+      {!itemLevelScoring && (
         <FlexContainer flexDirection="column" mt="8px" marginBottom="16px">
           <Label>{t('component.correctanswers.points')}</Label>
           <PointsInput

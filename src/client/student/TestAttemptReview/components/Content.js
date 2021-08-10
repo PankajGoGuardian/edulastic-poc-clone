@@ -149,7 +149,11 @@ class SummaryTest extends Component {
     } = this.props
     const { isDocBased, items } = test
     const isDocBasedFlag = (!isDocBased && items.length === 0) || isDocBased
-    const { blocks: questionList, itemWiseQids = [] } = questionsAndOrder
+    const {
+      blocks: questionList,
+      itemWiseQids = [],
+      partiallyAttemptedItems = [],
+    } = questionsAndOrder
     const itemIds = Object.keys(itemWiseQids)
     const {
       buttonIdx,
@@ -171,7 +175,7 @@ class SummaryTest extends Component {
             <MainContent>
               <ColorDescription>
                 <ColorDescriptionRow gutter={32}>
-                  <FlexCol lg={8} md={24}>
+                  <FlexCol lg={6} md={24}>
                     <MarkedAnswered />
                     <SpaceLeft>
                       <Description>
@@ -179,16 +183,24 @@ class SummaryTest extends Component {
                       </Description>
                     </SpaceLeft>
                   </FlexCol>
-                  <FlexCol lg={8} md={24}>
+                  <FlexCol lg={6} md={24}>
                     <MarkedSkipped />
                     <SpaceLeft>
                       <Description>{t('common.skippedQues')}</Description>
                     </SpaceLeft>
                   </FlexCol>
-                  <FlexCol lg={8} md={24}>
+                  <FlexCol lg={6} md={24}>
                     <MarkedForReview />
                     <SpaceLeft>
                       <Description>{t('common.markedForReview')}</Description>
+                    </SpaceLeft>
+                  </FlexCol>
+                  <FlexCol lg={6} md={24}>
+                    <MarkedPartiallyAttempted />
+                    <SpaceLeft>
+                      <Description>
+                        {t('common.partiallyAttemptedQues')}
+                      </Description>
                     </SpaceLeft>
                   </FlexCol>
                 </ColorDescriptionRow>
@@ -230,6 +242,8 @@ class SummaryTest extends Component {
                   {/* loop through TestItems */}
                   {itemIds.map((item, index) => {
                     const questionBlock = []
+                    const isPartiallyAttempted =
+                      partiallyAttemptedItems.indexOf(item) !== -1
                     // loop through questions associated with TestItems
                     itemWiseQids[item]?.forEach((q, qIndex) => {
                       const qInd = isDocBased ? qIndex + 1 : index + 1
@@ -271,6 +285,9 @@ class SummaryTest extends Component {
                               blockNavigationToAnsweredQuestions
                                 ? 'not-allowed'
                                 : 'pointer'
+                            }
+                            partiallyAttempted={
+                              type === 1 && isPartiallyAttempted
                             }
                           >
                             <span> {qInd} </span>
@@ -482,7 +499,13 @@ const MarkedForReview = styled(Markers)`
   background-color: ${(props) =>
     props.theme.attemptReview.markedForReviewBoxColor};
 `
-
+const MarkedPartiallyAttempted = styled(Markers)`
+  background: ${(props) => `linear-gradient(
+    ${props.theme.attemptReview.markedSkippedBoxColor} 50%,
+    ${props.theme.attemptReview.markedAnswerBoxColor} 50%
+  )
+  no-repeat;`};
+`
 const Description = styled.div`
   font-size: ${(props) => props.theme.attemptReview.descriptionTextSize};
   color: ${(props) => props.theme.attemptReview.descriptionTextColor};
@@ -629,6 +652,14 @@ const QuestionColorBlock = withKeyboard(styled.div`
   @media (max-width: ${tabletWidth}) {
     margin-right: 20px;
   }
+
+  ${(props) => {
+    if (props?.partiallyAttempted) {
+      return `
+        background: linear-gradient(${props.theme.attemptReview.markedSkippedBoxColor} 50%, ${props.theme.attemptReview.markedAnswerBoxColor} 50%) no-repeat;
+      `
+    }
+  }}
 `)
 
 const Footer = styled(Container)`

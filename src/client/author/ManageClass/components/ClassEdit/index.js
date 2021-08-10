@@ -20,7 +20,7 @@ import {
   getCurriculumsListSelector,
   getFormattedCurriculumsSelector,
 } from '../../../src/selectors/dictionaries'
-import { getUserOrgData } from '../../../src/selectors/user'
+import { getUserOrgData, getUserOrgId } from '../../../src/selectors/user'
 import { receiveSearchCourseAction } from '../../../Courses/ducks'
 
 // componentes
@@ -92,10 +92,7 @@ class ClassEdit extends React.Component {
 
   handleSubmit = (e) => {
     e.preventDefault()
-    const { form, userOrgData, allTagsData } = this.props
-    const {
-      districtIds: [districtId],
-    } = userOrgData
+    const { form, allTagsData, districtId } = this.props
     form.validateFields((err, values) => {
       if (!err) {
         const { updateClass, curriculums, selctedClass } = this.props
@@ -143,10 +140,7 @@ class ClassEdit extends React.Component {
   }
 
   searchCourse = (keyword) => {
-    const { searchCourseList, userOrgData } = this.props
-    const {
-      districtIds: [districtId],
-    } = userOrgData
+    const { searchCourseList, districtId } = this.props
     const key = keyword.trim()
     const searchTerms = {
       districtId,
@@ -354,6 +348,7 @@ const enhance = compose(
           subject: selectedSubject,
         }),
         selectedSubject,
+        districtId: getUserOrgId(state),
       }
     },
     {

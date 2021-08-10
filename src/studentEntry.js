@@ -34,8 +34,6 @@ if (AppConfig.sentryURI) {
   updateSentryScope()
 }
 
-localStorage.removeItem('authState')
-
 window.isMobileDevice = isMobileDevice()
 window.isIOS = isIOS()
 

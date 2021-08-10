@@ -30,11 +30,16 @@ import {
   getTestsSelector,
   getCurrentAssignmentSelector,
   getToggleReleaseGradeStateSelector,
-  getDistrictIdSelector,
   getAssignmentViewSelector,
   getAssignmentFilterSelector,
   getTagsUpdatingStateSelector,
 } from '../../../src/selectors/assignments'
+import {
+  getUserOrgId,
+  getUserRole,
+  isFreeAdminSelector,
+  getUserId,
+} from '../../../src/selectors/user'
 
 import FilterBar from '../FilterBar/FilterBar'
 import TableList from '../TableList/TableList'
@@ -55,11 +60,7 @@ import {
   LeftWrapper,
   FixedWrapper,
 } from './styled'
-import {
-  getUserRole,
-  isFreeAdminSelector,
-  getUserId,
-} from '../../../src/selectors/user'
+
 import PrintTestModal from '../../../src/components/common/PrintTestModal'
 import TestLinkModal from '../TestLinkModal/TestLinkModal'
 
@@ -72,6 +73,10 @@ import { toggleFreeAdminSubscriptionModalAction } from '../../../../student/Logi
 import EditTagsModal from '../EditTagsModal'
 import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
 import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/test'
+import {
+  getFilterFromSession,
+  setFilterInSession,
+} from '../../../../common/utils/helpers'
 
 const initialFilterState = {
   grades: [],
@@ -110,8 +115,11 @@ class Assignments extends Component {
     }
 
     const { defaultTermId, terms } = orgData
-    const storedFilters =
-      JSON.parse(sessionStorage.getItem(`assignments_filter_${userId}`)) || {}
+    const storedFilters = getFilterFromSession({
+      key: 'assignments_filter',
+      userId,
+      districtId,
+    })
     const { showFilter = userRole !== roleuser.TEACHER } = storedFilters
     const filters = {
       ...initialFilterState,
@@ -149,11 +157,13 @@ class Assignments extends Component {
   }
 
   setFilterState = (filterState) => {
-    const { userId } = this.props
-    sessionStorage.setItem(
-      `assignments_filter_${userId}`,
-      JSON.stringify(filterState)
-    )
+    const { userId, districtId } = this.props
+    setFilterInSession({
+      key: 'assignments_filter',
+      userId,
+      districtId,
+      filter: filterState,
+    })
     this.setState({ filterState })
   }
 
@@ -260,7 +270,7 @@ class Assignments extends Component {
   )
 
   toggleFilter = () => {
-    const { userId } = this.props
+    const { userId, districtId } = this.props
     this.setState(
       (prev) => ({
         filterState: {
@@ -270,10 +280,12 @@ class Assignments extends Component {
       }),
       () => {
         const { filterState } = this.state
-        sessionStorage.setItem(
-          `assignments_filter_${userId}`,
-          JSON.stringify(filterState)
-        )
+        setFilterInSession({
+          key: 'assignments_filter',
+          userId,
+          districtId,
+          filter: filterState,
+        })
       }
     )
   }
@@ -523,7 +535,7 @@ const enhance = compose(
       tests: getTestsSelector(state),
       currentAssignment: getCurrentAssignmentSelector(state),
       isShowReleaseSettingsPopup: getToggleReleaseGradeStateSelector(state),
-      districtId: getDistrictIdSelector(state),
+      districtId: getUserOrgId(state),
       isAdvancedView: getAssignmentViewSelector(state),
       userRole: getUserRole(state),
       error: get(state, 'test.error', false),

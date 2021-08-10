@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
 import { Row, Col, Select, Input, InputNumber, Modal } from 'antd'
 import { green, red, blueBorder, themeColor } from '@edulastic/colors'
@@ -22,6 +22,9 @@ import {
   StyledRow,
   CheckBoxWrapper,
   TimeSpentInput,
+  StyledRadioGroupWrapper,
+  InputNumberStyled,
+  Styled2ndLine,
 } from './styled'
 import {
   getUserRole,
@@ -85,6 +88,8 @@ const Settings = ({
     message: '',
   })
   const [timedTestConfirmed, setTimedtestConfirmed] = useState(false)
+
+  const numInputRef = useRef()
 
   const passwordValidationStatus = (assignmentPassword) => {
     if (assignmentPassword.split(' ').length > 1) {
@@ -264,6 +269,10 @@ const Settings = ({
     allowedTime = tempTestSettings.allowedTime,
     pauseAllowed = tempTestSettings.pauseAllowed,
     multiLanguageEnabled = !!testSettings.multiLanguageEnabled,
+    blockSaveAndContinue = tempTestSettings.blockSaveAndContinue,
+    restrictNavigationOut = tempTestSettings.restrictNavigationOut,
+    safeBrowser = tempTestSettings.safeBrowser,
+    restrictNavigationOutAttemptsThreshold = tempTestSettings.restrictNavigationOutAttemptsThreshold,
   } = assignmentSettings
 
   const checkForCalculator = premium && calculatorProvider !== 'DESMOS'
@@ -276,6 +285,10 @@ const Settings = ({
 
   const showMultiLangSelection =
     allowedToSelectMultiLanguage && lcbBultiLanguageEnabled
+
+  const navigationThresholdMoreThan1 =
+    restrictNavigationOut === 'warn-and-report-after-n-alerts' &&
+    restrictNavigationOutAttemptsThreshold > 1
 
   return (
     <SettingsWrapper isAdvanced={isAdvanced}>
@@ -581,6 +594,162 @@ const Settings = ({
           </>
         )}
         {/* Auto Redirect */}
+
+        {
+          /* BLOCK SAVE AND CONTINUE starts */
+          <SettingContainer id="block-saveandcontinue-setting">
+            <DetailsTooltip
+              title="Complete test in one sitting"
+              content="If ON, then students will not be allowed to exit the test without submitting. In case they close the app they will be paused and the instructor will need to manually resume."
+              placement="rightTop"
+              premium
+            />
+            <StyledRow gutter={16} mb="15px">
+              <Col span={12}>
+                <Label>Complete test in one sitting</Label>
+              </Col>
+              <Col span={12}>
+                <AlignSwitchRight
+                  disabled={freezeSettings || !premium}
+                  size="small"
+                  checked={blockSaveAndContinue}
+                  data-cy="bockSaveAndContinueSwitch"
+                  onChange={(value) =>
+                    overRideSettings('blockSaveAndContinue', value)
+                  }
+                />
+              </Col>
+            </StyledRow>
+          </SettingContainer>
+          /* BLOCK SAVE AND CONTINUE ends */
+        }
+
+        {
+          /* Restrict navigation out starts */
+          <SettingContainer id="restrict-nav-out-setting">
+            <DetailsTooltip
+              title="Restrict Navigation Out Of Test"
+              content={
+                <>
+                  <p>
+                    If ON, students must take the test in full screen mode to
+                    prevent opening another browser window. Alert will appear if
+                    student has navigated away for more than 5 seconds. If the
+                    designated number of alerts are exceeded, the student’s
+                    assignment will be paused and the instructor will need to
+                    manually reset.
+                  </p>
+                  {navigationThresholdMoreThan1 ? (
+                    <>
+                      <br />
+                      <p>
+                        Alert will appear if student has navigated away for more
+                        than 5 seconds and student will be blocked after{' '}
+                        {restrictNavigationOutAttemptsThreshold * 5} seconds
+                      </p>
+                    </>
+                  ) : (
+                    ''
+                  )}
+                </>
+              }
+              premium={premium}
+            />
+            <StyledRow gutter={16} mb="15px">
+              <Col span={12}>
+                <Label>Restrict Navigation Out Of Test</Label>
+              </Col>
+              <Col span={12}>
+                <StyledRadioGroupWrapper
+                  value={!premium ? false : restrictNavigationOut || false}
+                  disabled={freezeSettings || !premium || safeBrowser}
+                  onChange={(e) => {
+                    overRideSettings('restrictNavigationOut', e.target.value)
+                  }}
+                >
+                  <RadioBtn
+                    value={false}
+                    data-cy="restrict-nav-out-disabled"
+                    title={
+                      safeBrowser && 'Disabled since Safe Exam Browser Enabled'
+                    }
+                  >
+                    DISABLED
+                  </RadioBtn>
+                  <br />
+                  <RadioBtn
+                    title={
+                      safeBrowser && 'Disabled since Safe Exam Browser Enabled'
+                    }
+                    value="warn-and-report"
+                    data-cy="restrict-nav-out-warn-report"
+                  >
+                    WARN AND REPORT ONLY
+                  </RadioBtn>
+                  <br />
+                  <RadioBtn
+                    value="warn-and-report-after-n-alerts"
+                    data-cy="restrict-nav-out-warn-report-alerts"
+                    title={
+                      safeBrowser
+                        ? 'Disabled since Safe Exam Browser Enabled'
+                        : 'Alert will appear if student has navigated away for more than 5 seconds'
+                    }
+                  >
+                    WARN AND BLOCK TEST AFTER{' '}
+                    <InputNumberStyled
+                      size="small"
+                      ref={numInputRef}
+                      min={1}
+                      value={
+                        !premium
+                          ? undefined
+                          : restrictNavigationOut
+                          ? restrictNavigationOutAttemptsThreshold
+                          : undefined
+                      }
+                      onChange={(v) => {
+                        if (v) {
+                          overRideSettings(
+                            'restrictNavigationOutAttemptsThreshold',
+                            v
+                          )
+                        } else {
+                          numInputRef.current?.blur()
+                          overRideSettings(
+                            'restrictNavigationOut',
+                            'warn-and-report'
+                          )
+                        }
+                      }}
+                      disabled={
+                        !(
+                          restrictNavigationOut ===
+                          'warn-and-report-after-n-alerts'
+                        ) ||
+                        freezeSettings ||
+                        safeBrowser ||
+                        !premium
+                      }
+                    />{' '}
+                    ALERTS
+                    {navigationThresholdMoreThan1 ? (
+                      <Styled2ndLine>
+                        {' '}
+                        {`or maximum of ${
+                          restrictNavigationOutAttemptsThreshold * 5
+                        } sec.`}{' '}
+                      </Styled2ndLine>
+                    ) : (
+                      ''
+                    )}
+                  </RadioBtn>
+                </StyledRadioGroupWrapper>
+              </Col>
+            </StyledRow>
+          </SettingContainer>
+          /* Restrict navigation ends */
+        }
 
         {
           /* Restrict Question Navigation */

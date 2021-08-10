@@ -53,6 +53,11 @@ const PlaylistTestDetailsModal = ({
     onClose(false)
   }
 
+  const { authors = [] } = test
+
+  const showEditButton =
+    !isTestLoading && authors.some(({ _id }) => _id === userId)
+
   return (
     <ModalWrapper
       key={`playlist-review-${currentTestId}`}
@@ -70,10 +75,12 @@ const PlaylistTestDetailsModal = ({
           </i>{' '}
           back to playlist
         </BreadCrumb>
-        <ActionsWrapper>
-          <ActionBtn data-cy="editTest" onClick={handleEditTest}>
-            Edit test
-          </ActionBtn>
+        <ActionsWrapper showEditButton={showEditButton}>
+          {showEditButton && (
+            <ActionBtn data-cy="editTest" onClick={handleEditTest}>
+              Edit test
+            </ActionBtn>
+          )}
           <ActionBtn
             data-cy="viewAsStudent"
             onClick={() => viewAsStudent(currentTestId)}

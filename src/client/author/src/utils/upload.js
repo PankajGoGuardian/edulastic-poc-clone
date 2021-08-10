@@ -21,7 +21,14 @@ export const uploadToS3 = async (
     throw new Error('folder is invalid')
   }
 
-  const result = await fileApi.getSignedUrl(file.name, folder, subFolder)
+  /**
+   * @see EV-30181 | EV-29279
+   * remove special characters from file name before uploading
+   */
+  let { name: fileName = '' } = file
+  fileName = fileName.replace(/[^a-zA-Z0-9-_. ]/g, '')
+
+  const result = await fileApi.getSignedUrl(fileName, folder, subFolder)
   const formData = new FormData()
   const { fields, url } = result
 

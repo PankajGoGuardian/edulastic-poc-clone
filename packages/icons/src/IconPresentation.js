@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from 'react'
 import { themeColorBlue } from '@edulastic/colors'
 import styled from 'styled-components'

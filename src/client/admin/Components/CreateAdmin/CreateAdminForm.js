@@ -199,6 +199,7 @@ const CreateAdminForm = ({
               placeholder={t('users.districtadmin.createda.enterusername')}
               autocomplete="new-password"
               onChange={changeEmail}
+              value={email}
             />
           </FormItem>
         </Col>

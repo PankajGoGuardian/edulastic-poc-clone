@@ -167,7 +167,7 @@ function getStudentFilterCategory(x) {
   if (x.status?.toLowerCase() === 'submitted' && x.graded !== 'GRADED') {
     return 'SUBMITTED'
   }
-  if (x.redirected) {
+  if (x.redirected && x.UTASTATUS === testActivityStatus.NOT_STARTED) {
     return 'REDIRECTED'
   }
   if (x.UTASTATUS === testActivityStatus.NOT_STARTED) {

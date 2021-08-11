@@ -117,21 +117,37 @@ const MyClasses = ({
       return { ...x._source, _id: x._id }
     })
     if (user?.recommendedContentUpdated) {
-      if (data?.length > 0) {
-        notification({
-          msg: 'Recommended content is updated.',
-          type: 'success',
-        })
-      } else {
-        notification({
-          msg:
-            'No recommended content found currently. We will show them when available.',
-          type: 'info',
-        })
+      const isContentUpdatedAutomatically = JSON.parse(
+        localStorage.getItem(
+          `recommendedTest:${user?._id}:isContentUpdatedAutomatically`
+        )
+      )
+      if (!isContentUpdatedAutomatically) {
+        if (data?.length > 0) {
+          notification({
+            msg: 'Recommended content is updated.',
+            type: 'success',
+          })
+        } else {
+          notification({
+            msg:
+              'No recommended content found currently. We will show them when available.',
+            type: 'info',
+          })
+        }
       }
+      localStorage.setItem(
+        `recommendedTest:${user?._id}:isContentUpdatedAutomatically`,
+        false
+      )
       const temp = user
       temp.recommendedContentUpdated = false
       setUser(temp)
+    } else {
+      localStorage.setItem(
+        `recommendedTest:${user?._id}:isContentUpdatedAutomatically`,
+        false
+      )
     }
     if (!_data || !_data.length) {
       return

@@ -89,6 +89,7 @@ class SuccessPage extends React.Component {
       fetchAssignmentsByTestId,
       autoShareGCAssignment,
       history,
+      userId,
     } = this.props
     const { id: testId, assignmentId } = match.params
     if (isPlaylist) {
@@ -114,6 +115,10 @@ class SuccessPage extends React.Component {
         }, timeLeft) // this will enable button after 60 seconds from assignment created.
       }
     }
+    localStorage.setItem(
+      `recommendedTest:${userId}:isContentUpdatedAutomatically`,
+      true
+    )
   }
 
   componentWillUnmount() {

@@ -3,13 +3,15 @@ import { useDrag } from 'react-dnd'
 import { IconEye, IconMoreVertical, IconWriting } from '@edulastic/icons'
 import { themeColor } from '@edulastic/colors'
 import { uniqBy } from 'lodash'
-import { Dropdown, Menu, Popover } from 'antd'
+import { Dropdown, Menu } from 'antd'
 import {
   ResourceItemWrapper,
   IconWrapper,
   ResourceTitle,
   TitleText,
   PopupContainer,
+  StyledPopOver,
+  TtitleWrapper,
 } from './styled'
 import Tags, { Label } from '../../../src/components/common/Tags'
 import WebsiteIcon from './static/WebsiteIcon'
@@ -219,7 +221,7 @@ const ResourceItem = ({
 
   const popup = (
     <PopupContainer>
-      <ResourceTitle isPopup>
+      <ResourceTitle>
         <TitleText isPopup>{contentTitle}</TitleText>
       </ResourceTitle>
       <div>
@@ -233,49 +235,51 @@ const ResourceItem = ({
   )
 
   return (
-    <Popover
-      placement="bottomLeft"
-      content={popup}
-      onClick={(e) => e.stopPropagation()}
-    >
-      <ResourceItemWrapper data-cy={`${id}`} ref={drag}>
-        <ResouceIcon type={type} isAdded={isAdded} />
-        <ResourceTitle isAdded={isAdded}>
-          <TitleText
-            data-cy="resourceItemTitle"
-            noStandards={standardIdentifiers.length === 0}
-          >
-            {contentTitle}
-          </TitleText>
-          <Tags
-            margin="0px"
-            tags={standardIdentifiers}
-            show={0}
-            showTitle
-            flexWrap="nowrap"
-          />
-        </ResourceTitle>
-        <IconEye
-          className="preview-btn"
-          color={themeColor}
-          width={18}
-          height={16}
-          onClick={previewTest}
-          data-cy={type === 'test' ? 'testPreview' : 'resourcePreview'}
+    <ResourceItemWrapper data-cy={`${id}`} ref={drag}>
+      <TtitleWrapper>
+        <StyledPopOver
+          placement="bottomLeft"
+          content={popup}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <ResouceIcon type={type} isAdded={isAdded} />
+          <ResourceTitle isAdded={isAdded}>
+            <TitleText
+              data-cy="resourceItemTitle"
+              noStandards={standardIdentifiers.length === 0}
+            >
+              {contentTitle}
+            </TitleText>
+          </ResourceTitle>
+        </StyledPopOver>
+        <Tags
+          margin="0px"
+          tags={standardIdentifiers}
+          show={0}
+          showTitle
+          flexWrap="nowrap"
         />
-        {type !== 'test' && resource?.userId === userId && (
-          <Dropdown overlay={moreMenu} trigger={['click']} arrow>
-            <IconActionButton data-cy="moreActions">
-              <IconMoreVertical
-                className="more-action-btn"
-                color={themeColor}
-                viewBox="0 0 3.8 14"
-              />
-            </IconActionButton>
-          </Dropdown>
-        )}
-      </ResourceItemWrapper>
-    </Popover>
+      </TtitleWrapper>
+      <IconEye
+        className="preview-btn"
+        color={themeColor}
+        width={18}
+        height={16}
+        onClick={previewTest}
+        data-cy={type === 'test' ? 'testPreview' : 'resourcePreview'}
+      />
+      {type !== 'test' && resource?.userId === userId && (
+        <Dropdown overlay={moreMenu} trigger={['click']} arrow>
+          <IconActionButton data-cy="moreActions">
+            <IconMoreVertical
+              className="more-action-btn"
+              color={themeColor}
+              viewBox="0 0 3.8 14"
+            />
+          </IconActionButton>
+        </Dropdown>
+      )}
+    </ResourceItemWrapper>
   )
 }
 

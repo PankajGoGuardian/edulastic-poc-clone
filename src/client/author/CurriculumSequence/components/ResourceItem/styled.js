@@ -6,6 +6,7 @@ import {
   themeColor,
   extraDesktopWidthMax,
 } from '@edulastic/colors'
+import { Popover } from 'antd'
 
 export const ResourceItemWrapper = styled.div`
   width: 100%;
@@ -63,7 +64,6 @@ export const ResourceTitle = styled.div`
   letter-spacing: 0.19px;
   color: ${({ isAdded }) => (isAdded ? themeColor : playlistTabLink)};
   text-transform: uppercase;
-  width: ${({ isPopup }) => (isPopup ? '100%' : '90%')};
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -106,4 +106,14 @@ export const PopupContainer = styled.div`
   @media (min-width: ${extraDesktopWidthMax}) {
     width: 400px;
   }
+`
+export const StyledPopOver = styled(Popover)`
+  display: flex;
+  max-width: 80%;
+  padding-right: 5px;
+`
+
+export const TtitleWrapper = styled.div`
+  display: flex;
+  width: 96%;
 `

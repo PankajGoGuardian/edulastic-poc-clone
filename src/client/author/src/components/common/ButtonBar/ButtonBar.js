@@ -1,3 +1,9 @@
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
+import { compose } from 'redux'
+import { Modal } from 'antd'
 import { debounce, get } from 'lodash'
 import { white } from '@edulastic/colors'
 import { HeaderTabs, withWindowSizes, EduButton } from '@edulastic/common'
@@ -18,11 +24,6 @@ import {
 } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
 import { roleuser } from '@edulastic/constants'
-import PropTypes from 'prop-types'
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
-import { compose } from 'redux'
 import { clearEvaluationAction } from '../../../../../assessment/actions/evaluation'
 import { Tooltip } from '../../../../../common/utils/helpers'
 import { getCurrentQuestionSelector } from '../../../../sharedDucks/questions'
@@ -41,20 +42,44 @@ import {
   RightSide,
 } from './styled_components'
 import { getUserRole } from '../../../selectors/user'
+import { checkDynamicParameters } from '../../../../../assessment/utils/variables'
+import { generateVariableAction } from '../../../../QuestionEditor/ducks'
 
 class ButtonBar extends Component {
-  handleMenuClick = (view) => () => {
+  handleDynamicParameter = (nextAction) => {
+    const { cQuestion, generateDynamicVariables } = this.props
+    const variableEnabled = get(cQuestion, 'variable.enabled', false)
+    if (variableEnabled) {
+      const variables = get(cQuestion, 'variable.variables', {})
+      const { invalid, errMessage } = checkDynamicParameters(
+        variables,
+        cQuestion?.validation,
+        cQuestion?.type
+      )
+      if (invalid) {
+        Modal.confirm({
+          centered: true,
+          maskClosable: true,
+          title: 'Confirm',
+          content: errMessage,
+          okText: 'Confirm',
+          okCancel: false,
+        })
+      } else {
+        generateDynamicVariables({ nextAction })
+      }
+    } else if (typeof nextAction === 'function') {
+      nextAction()
+    }
+  }
+
+  handleTabClick = (view) => () => {
     const {
       onChangeView,
       clearEvaluation,
       onSaveScrollTop,
-      view: currentView,
       changePreviewTab,
     } = this.props
-
-    if (currentView === view) {
-      return
-    }
 
     onChangeView(view)
 
@@ -71,23 +96,49 @@ class ButtonBar extends Component {
     }
   }
 
+  handleMenuClick = (view) => () => {
+    const { view: currentView, showMetaData } = this.props
+
+    if (currentView === view) {
+      return
+    }
+
+    if (showMetaData && currentView === 'edit' && view !== 'edit') {
+      this.handleDynamicParameter(this.handleTabClick(view))
+    } else {
+      this.handleTabClick(view)()
+    }
+  }
+
   setClearPreviewTab = () => {
     const { changePreviewTab, clearAnswers } = this.props
     clearAnswers()
     changePreviewTab('clear')
   }
 
-  handleSave = debounce(() => {
+  handleSavePublishItem = () => {
+    const { onSaveAndPublish } = this.props
+    this.handleDynamicParameter(onSaveAndPublish)
+  }
+
+  handlePublishItem = () => {
+    const { onPublishTestItem } = this.props
+    this.handleDynamicParameter(onPublishTestItem)
+  }
+
+  debounceSave = debounce(() => {
     const { onSave } = this.props
     onSave()
   }, 1000)
 
+  handleSave = () => {
+    this.handleDynamicParameter(this.debounceSave)
+  }
+
   render() {
     const {
       t,
-      onSave,
       onCancel,
-      onPublishTestItem,
       windowWidth,
       changePreviewTab,
       onEnableEdit,
@@ -106,7 +157,6 @@ class ButtonBar extends Component {
       qTitle,
       userRole,
       showSaveAndPublishButton,
-      onSaveAndPublish,
       loadingComponents,
       onCloseEditModal,
       onToggleFullModal,
@@ -206,7 +256,7 @@ class ButtonBar extends Component {
                         isBlue
                         disabled={disableSave}
                         data-cy="saveButton"
-                        onClick={onSave}
+                        onClick={this.handleSave}
                         id={getFormattedAttrId(`${qTitle}-save`)}
                       >
                         <IconSaveNew />
@@ -220,7 +270,7 @@ class ButtonBar extends Component {
                           isBlue
                           disabled={disableSave}
                           data-cy="saveAndPublishItem"
-                          onClick={onSaveAndPublish}
+                          onClick={this.handleSavePublishItem}
                         >
                           PUBLISH
                         </EduButton>
@@ -235,7 +285,7 @@ class ButtonBar extends Component {
                       isBlue
                       disabled={disableSave}
                       data-cy="publishItem"
-                      onClick={onPublishTestItem}
+                      onClick={this.handlePublishItem}
                     >
                       PUBLISH
                     </EduButton>
@@ -282,7 +332,7 @@ class ButtonBar extends Component {
                 id={getFormattedAttrId(`${qTitle}-save`)}
                 disabled={disableSave}
                 data-cy="saveButton"
-                onClick={onSave}
+                onClick={this.handleSave}
                 className="btn-save"
               >
                 <IconSaveNew color={white} width={18} height={16} />
@@ -418,13 +468,16 @@ const enhance = compose(
         qTitle: isMultipart
           ? 'compination-multipart'
           : getCurrentQuestionSelector(state)?.title,
+        cQuestion: getCurrentQuestionSelector(state),
         userRole: getUserRole(state),
+        multipartItem,
         loadingComponents: get(state, ['authorUi', 'currentlyLoading'], []),
       }
     },
     {
       clearAnswers: clearAnswersAction,
       clearEvaluation: clearEvaluationAction,
+      generateDynamicVariables: generateVariableAction,
     }
   )
 )

@@ -27,6 +27,7 @@ const Response = ({
   answerScore,
   allCorrect,
   isEvaluationEmpty,
+  singleResponseBox,
 }) => {
   const { width: contentWidth } = measureText(userAnswer, btnStyle) // returns number
   const { fillColor, mark, indexBgColor } = getEvalautionColor(
@@ -59,6 +60,7 @@ const Response = ({
       indexBgColor={indexBgColor}
       mark={mark}
       isExpressGrader={isExpressGrader}
+      singleResponseBox={singleResponseBox}
     />
   )
 
@@ -71,12 +73,14 @@ const Response = ({
       style={{ ...btnStyle, minHeight: `${response.minHeight}px` }}
       onClick={onClickHandler}
     >
-      <span
-        className="index"
-        style={{ display: checkAnswer || lessMinWidth ? 'none' : 'flex' }}
-      >
-        {indexStr}
-      </span>
+      {!singleResponseBox && (
+        <span
+          className="index"
+          style={{ display: checkAnswer || lessMinWidth ? 'none' : 'flex' }}
+        >
+          {indexStr}
+        </span>
+      )}
       <div className="text">
         <div className="clipText">{userAnswer}</div>
       </div>
@@ -118,6 +122,7 @@ Response.propTypes = {
   lessMinWidth: PropTypes.bool,
   isExpressGrader: PropTypes.bool.isRequired,
   isEvaluationEmpty: PropTypes.bool,
+  singleResponseBox: PropTypes.bool,
 }
 
 Response.defaultProps = {
@@ -126,6 +131,7 @@ Response.defaultProps = {
   indexStr: '',
   lessMinWidth: false,
   isEvaluationEmpty: true,
+  singleResponseBox: false,
 }
 
 export default Response

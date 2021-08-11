@@ -197,6 +197,22 @@ const ClozeMathPreview = ({
     }
   }
 
+  /**
+   * @see https://snapwiz.atlassian.net/browse/EV-12369
+   * not to show response index in check/show answer view if there is only single response box
+   */
+  const singleResponseBox = useMemo(() => {
+    if (!isEmpty(responseIds)) {
+      const responseBoxCount =
+        Object.keys(responseIds).reduce(
+          (acc, key) => acc + (responseIds[key].length || 0),
+          0
+        ) || []
+      return responseBoxCount === 1
+    }
+    return false
+  }, [responseIds])
+
   return (
     <QuestionWrapper uiStyles={uiStyles}>
       <JsxParser
@@ -209,7 +225,7 @@ const ClozeMathPreview = ({
             answers: testItem ? testUserAnswer : userAnswer,
             item,
             checked: type === CHECK || type === SHOW,
-            showIndex: type === SHOW,
+            showIndex: type === SHOW && !singleResponseBox,
             onInnerClick,
             uiStyles,
             responseContainers: item.responseContainers,
@@ -245,6 +261,7 @@ const ClozeMathPreview = ({
           altMathUnitAnswers={allAnswers.altMathUnitAnswers}
           responseIds={responseIds}
           isPrintPreview={isPrintPreview}
+          singleResponseBox={singleResponseBox}
         />
       )}
     </QuestionWrapper>

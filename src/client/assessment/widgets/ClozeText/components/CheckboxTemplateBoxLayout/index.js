@@ -61,6 +61,8 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     allCorrect
   )
 
+  const singleResponseBox = responseIds && responseIds.length === 1
+
   const popoverContent = (
     <AnswerBox
       fillColor={fillColor}
@@ -74,7 +76,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
       onClick={handleClick}
       isPrintPreview={isPrintPreview}
     >
-      {!checkAnswer && (
+      {!checkAnswer && !singleResponseBox && (
         <IndexBox bgColor={indexBgColor}>{stemNumeration}</IndexBox>
       )}
       <AnswerContent showIndex={!checkAnswer} inPopover>
@@ -101,7 +103,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
         onClick={handleClick}
         isPrintPreview={isPrintPreview}
       >
-        {!checkAnswer && (
+        {!checkAnswer && !singleResponseBox && (
           <IndexBox bgColor={indexBgColor}>{stemNumeration}</IndexBox>
         )}
         <AnswerContent showIndex={!checkAnswer}>

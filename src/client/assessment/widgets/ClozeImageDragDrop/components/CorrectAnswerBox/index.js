@@ -17,6 +17,7 @@ const CorrectAnswerBoxLayout = ({
   stemNumeration,
   t,
   idValueMap,
+  singleResponseBox,
 }) => (
   <CorrectAnswersContainer
     fontSize={fontSize}
@@ -33,9 +34,11 @@ const CorrectAnswerBoxLayout = ({
           const values = answer.optionIds?.map((id) => idValueMap[id]) || []
           return (
             <AnswerBox key={answer.responseBoxID} data-cy="answerBox">
-              <IndexBox>
-                {getStemNumeration(stemNumeration, answer.containerIndex)}
-              </IndexBox>
+              {!singleResponseBox && (
+                <IndexBox>
+                  {getStemNumeration(stemNumeration, answer.containerIndex)}
+                </IndexBox>
+              )}
               <AnswerContent>
                 <MathSpan
                   dangerouslySetInnerHTML={{ __html: values.join(', ') }}
@@ -56,6 +59,7 @@ CorrectAnswerBoxLayout.propTypes = {
   t: PropTypes.func.isRequired,
   answersIndex: PropTypes.number,
   stemNumeration: PropTypes.string,
+  singleResponseBox: PropTypes.bool,
 }
 
 CorrectAnswerBoxLayout.defaultProps = {
@@ -63,6 +67,7 @@ CorrectAnswerBoxLayout.defaultProps = {
   userAnswers: [],
   answersIndex: 0,
   stemNumeration: 'numerical',
+  singleResponseBox: false,
 }
 
 export default React.memo(withNamespaces('assessment')(CorrectAnswerBoxLayout))

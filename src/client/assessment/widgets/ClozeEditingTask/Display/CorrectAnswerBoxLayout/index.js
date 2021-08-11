@@ -14,6 +14,7 @@ const CorrectAnswerBoxLayout = ({
   responseIds = [],
   t,
   stemNumeration,
+  singleResponseBox,
 }) => {
   const getLabel = (id) => {
     if (isEmpty(altResponses)) {
@@ -44,9 +45,11 @@ const CorrectAnswerBoxLayout = ({
       <AnswersWrapper>
         {responseIds.map((response) => (
           <div key={response.index} className="correct-answer-item">
-            <div className="index">
-              {getStemNumeration(stemNumeration, response.index)}
-            </div>
+            {!singleResponseBox && (
+              <div className="index">
+                {getStemNumeration(stemNumeration, response.index)}
+              </div>
+            )}
             <div className="text">
               <MathSpan
                 dangerouslySetInnerHTML={{ __html: getLabel(response.id) }}
@@ -66,12 +69,14 @@ CorrectAnswerBoxLayout.propTypes = {
   stemNumeration: PropTypes.string.isRequired,
   responseIds: PropTypes.array.isRequired,
   t: PropTypes.func.isRequired,
+  singleResponseBox: PropTypes.bool,
 }
 
 CorrectAnswerBoxLayout.defaultProps = {
   fontSize: '13px',
   altResponses: [],
   userAnswers: {},
+  singleResponseBox: false,
 }
 
 export default React.memo(withNamespaces('assessment')(CorrectAnswerBoxLayout))

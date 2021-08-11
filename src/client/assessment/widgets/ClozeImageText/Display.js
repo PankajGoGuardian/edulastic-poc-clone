@@ -277,6 +277,9 @@ class Display extends Component {
         ? checkboxTemplateBoxLayout
         : previewTemplateBoxLayout
     const altResponses = validation.altResponses || []
+    const singleResponseBox =
+      responseContainers && responseContainers.length === 1
+
     const correctAnswerBoxLayout = (
       <>
         <CorrectAnswerBoxLayout
@@ -286,6 +289,7 @@ class Display extends Component {
           }
           stemNumeration={stemNumeration}
           width="100%"
+          singleResponseBox={singleResponseBox}
         />
         {altResponses.map((altResponse, index) => (
           <CorrectAnswerBoxLayout
@@ -294,6 +298,7 @@ class Display extends Component {
             altAnsIndex={index + 1}
             stemNumeration={stemNumeration}
             width="100%"
+            singleResponseBox={singleResponseBox}
           />
         ))}
       </>

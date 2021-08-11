@@ -16,6 +16,7 @@ const CorrectAnswerBoxLayout = ({
   stemNumeration,
   t,
   width,
+  singleResponseBox,
 }) => (
   <CorrectAnswerBox width={width} fontSize={fontSize}>
     <CorrectAnswerTitle>
@@ -26,7 +27,9 @@ const CorrectAnswerBoxLayout = ({
     <div>
       {keys(userAnswers).map((id, index) => (
         <AnswerBox key={`correct-answer-${index}`}>
-          <IndexBox>{getStemNumeration(stemNumeration, index)}</IndexBox>
+          {!singleResponseBox && (
+            <IndexBox>{getStemNumeration(stemNumeration, index)}</IndexBox>
+          )}
           <AnswerContent>{userAnswers[id]}</AnswerContent>
         </AnswerBox>
       ))}
@@ -41,6 +44,7 @@ CorrectAnswerBoxLayout.propTypes = {
   altAnsIndex: PropTypes.number,
   stemNumeration: PropTypes.string,
   width: PropTypes.string,
+  singleResponseBox: PropTypes.bool,
 }
 
 CorrectAnswerBoxLayout.defaultProps = {
@@ -49,6 +53,7 @@ CorrectAnswerBoxLayout.defaultProps = {
   altAnsIndex: 0,
   stemNumeration: 'numerical',
   width: '100%',
+  singleResponseBox: false,
 }
 
 export default React.memo(withNamespaces('assessment')(CorrectAnswerBoxLayout))

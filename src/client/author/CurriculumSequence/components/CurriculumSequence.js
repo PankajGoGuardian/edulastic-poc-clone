@@ -1019,6 +1019,7 @@ class CurriculumSequence extends Component {
                     shouldHidCustomizeButton={shouldHidCustomizeButton}
                     isAuthoringFlowReview={current === 'review'}
                     customizeInDraft={customizeInDraft}
+                    blurSubHeader={expandedModules?.length > 0}
                   />
                   <Wrapper active={isContentExpanded}>
                     {destinationCurriculumSequence && (

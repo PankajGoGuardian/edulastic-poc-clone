@@ -90,6 +90,9 @@ const SortableItem = sortableElement((props) => {
           status={status}
           curriculum={curriculum}
           collapsed={expandedModules.indexOf(id) === -1}
+          blurCurrentModuleRow={
+            expandedModules?.length > 0 && expandedModules.indexOf(id) === -1
+          }
           onCollapseExpand={onCollapseExpand}
           key={moduleItem._id}
           playlistId={playlistId}

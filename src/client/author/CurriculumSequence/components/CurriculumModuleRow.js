@@ -1230,7 +1230,18 @@ class ModuleRow extends Component {
 
                   return (
                     !(isStudent && moduleData.hidden) && (
-                      <AssignmentRowContainer>
+                      <AssignmentRowContainer
+                        blurCurrentTestRow={
+                          !(
+                            currentAssignmentIds.includes(
+                              moduleData.contentId
+                            ) ||
+                            !contentData.some((item) =>
+                              currentAssignmentIds.includes(item.contentId)
+                            )
+                          )
+                        }
+                      >
                         <ModuleFocused />
                         <DragHandle>
                           <Bullet />

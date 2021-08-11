@@ -25,6 +25,7 @@ export const AssignmentRowContainer = styled.div`
   display: flex;
   width: 100%;
   justify-content: stretch;
+  opacity: ${({ blurCurrentTestRow }) => (blurCurrentTestRow ? '0.5' : '1')};
   ${({ highlightMode }) =>
     highlightMode && `div { animation: inHighlight 5s; }`};
   @keyframes inHighlight {

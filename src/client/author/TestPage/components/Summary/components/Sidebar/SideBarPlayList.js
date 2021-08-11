@@ -161,7 +161,9 @@ const Sidebar = ({
       </Col>
       <Row gutter={16}>
         <Col xl={12}>
-          <FieldLabel>Playlist Name</FieldLabel>
+          <FieldLabel>
+            Playlist Name<sup>*</sup>
+          </FieldLabel>
           <TextInputStyled
             value={title}
             data-cy="testname"
@@ -189,7 +191,9 @@ const Sidebar = ({
               description={description}
             />
           )}
-          <FieldLabel>Grade</FieldLabel>
+          <FieldLabel>
+            Grade<sup>*</sup>
+          </FieldLabel>
           <SelectInputStyled
             showArrow
             data-cy="gradeSelect"
@@ -214,7 +218,9 @@ const Sidebar = ({
             ))}
           </SelectInputStyled>
 
-          <FieldLabel>Subject</FieldLabel>
+          <FieldLabel>
+            Subject<sup>*</sup>
+          </FieldLabel>
           <SelectInputStyled
             showArrow
             data-cy="subjectSelect"

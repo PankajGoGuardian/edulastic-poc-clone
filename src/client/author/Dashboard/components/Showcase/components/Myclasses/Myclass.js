@@ -236,7 +236,7 @@ const MyClasses = ({
 
   const handleBlockedClick = ({ subscriptionData }) => {
     if (
-      usedTrialItemBankIds.includes(subscriptionData.productId) ||
+      usedTrialItemBankIds.includes(subscriptionData.itemBankId) ||
       (isPremiumTrialUsed && !isPremiumUser)
     ) {
       setShowItemBankTrialUsedModal(true)

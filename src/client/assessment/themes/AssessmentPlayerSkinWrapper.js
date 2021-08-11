@@ -220,16 +220,16 @@ const AssessmentPlayerSkinWrapper = ({
       return {
         paddingLeft: 0,
         paddingRight: 0,
-        marginTop: defaultAP ? '82px' : '68px',
+        marginTop: '82px',
       }
     }
     if (
       playerSkinType.toLowerCase() === test.playerSkinValues.sbac.toLowerCase()
     ) {
       return {
-        paddingLeft: defaultAP ? 0 : '10px',
-        paddingRight: defaultAP ? 0 : '10px',
-        marginTop: defaultAP ? '78px' : '68px',
+        paddingLeft: '10px',
+        paddingRight: '10px',
+        marginTop: '85px',
       }
     }
     if (
@@ -239,7 +239,7 @@ const AssessmentPlayerSkinWrapper = ({
       return {
         paddingLeft: 0,
         paddingRight: 0,
-        marginTop: '48px',
+        marginTop: '65px',
       }
     }
     if (

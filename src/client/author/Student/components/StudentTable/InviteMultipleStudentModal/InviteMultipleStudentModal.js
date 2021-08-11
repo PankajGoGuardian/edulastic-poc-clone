@@ -327,7 +327,8 @@ class InviteMultipleStudentModal extends Component {
 
     const defaultSchoolId = schools.length ? schools[0]._id : ''
     const placeholderText = placeHolderComponent(curSel)
-
+    const isAdmin =
+      role === roleuser.DISTRICT_ADMIN || role === roleuser.SCHOOL_ADMIN
     return (
       <CustomModalStyled
         title={t('users.student.invitestudents.tab2')}
@@ -366,17 +367,19 @@ class InviteMultipleStudentModal extends Component {
               </SearchTabButton>
             </Col>
           )}
-          <Col span={11}>
-            <AddMultipleStudentsTabButton
-              data-cy="addMultipleStudent"
-              searchViewVisible={searchViewVisible}
-              onClick={() =>
-                this.setState({ ...this.setState, searchViewVisible: false })
-              }
-            >
-              {t('users.student.invitestudents.tab2')}
-            </AddMultipleStudentsTabButton>
-          </Col>
+          {!isAdmin && (
+            <Col span={11}>
+              <AddMultipleStudentsTabButton
+                data-cy="addMultipleStudent"
+                searchViewVisible={searchViewVisible}
+                onClick={() =>
+                  this.setState({ ...this.setState, searchViewVisible: false })
+                }
+              >
+                {t('users.student.invitestudents.tab2')}
+              </AddMultipleStudentsTabButton>
+            </Col>
+          )}
         </Row>
         {searchViewVisible ? (
           <SearchViewContainer>

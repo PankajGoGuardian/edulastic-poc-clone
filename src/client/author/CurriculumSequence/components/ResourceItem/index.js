@@ -254,9 +254,12 @@ const ResourceItem = ({
         </StyledPopOver>
         <Tags
           margin="0px"
-          tags={standardIdentifiers}
-          show={0}
-          showTitle
+          tags={
+            standardIdentifiers.length
+              ? [`${standardIdentifiers.length} +`]
+              : []
+          }
+          show={1}
           flexWrap="nowrap"
         />
       </TtitleWrapper>

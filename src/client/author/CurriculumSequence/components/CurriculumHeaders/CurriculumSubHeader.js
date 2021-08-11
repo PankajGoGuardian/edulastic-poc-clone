@@ -30,6 +30,7 @@ const CurriculumSubHeader = ({
   isAuthoringFlowReview,
   customizeInDraft = false,
   urlHasUseThis = false,
+  blurSubHeader = false,
 }) => {
   const {
     description,
@@ -109,6 +110,7 @@ const CurriculumSubHeader = ({
               </SubHeaderModuleProgressContainer>
             </ModuleProgres>
             <SubHeaderDescription
+              blurSubHeader={blurSubHeader}
               dangerouslySetInnerHTML={{
                 __html: removeCommentsFromHtml(description),
               }}
@@ -311,6 +313,7 @@ const SubHeaderModuleProgressTagContainer = styled.div`
 `
 
 const SubHeaderDescription = styled(MathFormulaDisplay)`
+  opacity: ${({ blurSubHeader }) => (blurSubHeader ? '0.5' : '1')};
   color: ${lightGrey6};
   font-size: 14px;
   text-align: justify;

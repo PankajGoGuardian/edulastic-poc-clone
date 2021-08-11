@@ -621,6 +621,7 @@ class ModuleRow extends Component {
       currentAssignmentIds,
       toggleAssignments,
       isPreviewModalVisible,
+      blurCurrentModuleRow,
     } = this.props
     const { selectedTest } = this.state
     const { assignTest } = this
@@ -681,6 +682,7 @@ class ModuleRow extends Component {
               hasEditAccess={hasEditAccess}
               moduleStatus={completed}
               collapsed={collapsed}
+              blurCurrentModuleRow={blurCurrentModuleRow}
               removeUnit={removeUnit}
               toggleModule={this.toggleModule}
               assignModule={this.assignModule}

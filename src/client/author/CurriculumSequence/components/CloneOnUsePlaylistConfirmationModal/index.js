@@ -12,7 +12,7 @@ const CloneOnUsePlaylistConfirmationModal = ({
 }) => {
   return (
     <StyledModal
-      title="  "
+      title="Use Playlist"
       width="480px"
       visible={isVisible}
       onCancel={onCancel}
@@ -20,6 +20,7 @@ const CloneOnUsePlaylistConfirmationModal = ({
         <ButtonsContainer>
           <EduButton
             key="1"
+            isGhost
             data-cy="createNewPlaylistCopy"
             onClick={handleCreateNewCopy}
           >

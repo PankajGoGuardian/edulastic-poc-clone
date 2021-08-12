@@ -9,6 +9,7 @@ import {
   getQuestionDataSelector,
   setQuestionDataAction,
   generateVariableAction,
+  variableSettingsChangedAction,
 } from '../../../../../author/QuestionEditor/ducks'
 
 import { Block } from '../../../../styled/WidgetOptions/Block'
@@ -35,6 +36,7 @@ const Variables = ({
   cleanSections,
   advancedAreOpen,
   generateExam,
+  settingUpdated,
 }) => {
   const variableEnabled = get(questionData, 'variable.enabled', false)
   const variables = get(questionData, 'variable.variables', {})
@@ -95,6 +97,7 @@ const Variables = ({
     }
 
     setQuestionData(newData)
+    settingUpdated()
   }
 
   const onSelectType = (variableName, param, value) => {
@@ -173,6 +176,7 @@ const enhance = compose(
     {
       setQuestionData: setQuestionDataAction,
       generateExam: generateVariableAction,
+      settingUpdated: variableSettingsChangedAction,
     }
   )
 )

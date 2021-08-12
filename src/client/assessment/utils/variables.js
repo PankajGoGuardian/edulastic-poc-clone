@@ -100,7 +100,6 @@ export const updateVariables = (item, latexKeys = []) => {
       type: 'NUMBER_RANGE',
       min: 0,
       max: 100,
-      decimal: 0,
       exampleValue: Math.round(Math.random() * 100),
     }
     newExamples = newExamples.map((example) => ({
@@ -340,7 +339,7 @@ export const cartesian = (args, combinationsCount) => {
 }
 
 export const generateExample = (variable) => {
-  const { type, set = '', sequence = '' } = variable
+  const { type, set = '', sequence = '', decimal } = variable
   let { min, max, step } = variable
   if (!step) {
     step = 1
@@ -361,9 +360,14 @@ export const generateExample = (variable) => {
     }
 
     const decimalPart = step.toString().split('.')[1]?.length || 1
-    return range(min, max, step)
+    const arr = range(min, max, step)
       .map((x) => round(x, decimalPart))
       .filter((x) => x >= variable.min && x <= variable.max)
+    if (isUndefined(decimal)) {
+      return arr
+    }
+
+    return arr.map((x) => x.toFixed(decimal))
   }
   if (SEQUENCE_TYPES.includes(type)) {
     if (isArray(sequence)) {
@@ -505,7 +509,6 @@ export const createVariable = (type) => {
         min: 0,
         max: 10,
         step: 1,
-        decimal: 0,
       }
       break
     case 'TEXT_SET':

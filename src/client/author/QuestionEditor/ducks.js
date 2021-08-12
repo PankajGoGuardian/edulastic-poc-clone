@@ -133,8 +133,12 @@ export const SET_IS_GRADING_RUBRIC =
 // Variable
 export const GENERATE_VARIABLE_REQUEST =
   '[variable] generate dynamic examples request'
+export const GENERATE_VARIABLE_START =
+  '[variable] generate dynamic examples start'
 export const GENERATE_VARIABLE_FINISHED =
-  '[variable] dynamic examples examples finished'
+  '[variable] generate dynamic examples finished'
+export const DYNAMIC_PARAMETER_UPDATED =
+  '[variable] dynamic parameters settings chagned'
 
 export const receiveQuestionByIdAction = (id) => ({
   type: RECEIVE_QUESTION_REQUEST,
@@ -187,6 +191,10 @@ export const generateVariableAction = (data) => ({
   payload: data,
 })
 
+export const variableSettingsChangedAction = () => ({
+  type: DYNAMIC_PARAMETER_UPDATED,
+})
+
 export const setDictAlignmentFromQuestion = (payload) => ({
   type: SET_ALIGNMENT_FROM_QUESTION,
   payload,
@@ -210,6 +218,7 @@ const initialState = {
   error: null,
   saveError: null,
   calculating: false,
+  dpUpdated: false,
 }
 
 export const reducer = (state = initialState, { type, payload }) => {
@@ -220,17 +229,29 @@ export const reducer = (state = initialState, { type, payload }) => {
         calculating: !!payload,
       }
     }
-    case GENERATE_VARIABLE_REQUEST:
+    case GENERATE_VARIABLE_START:
       return {
         ...state,
         calculating: true,
       }
     case ADD_ITEM_EVALUATION:
-    case GENERATE_VARIABLE_FINISHED:
     case UPDATE_QUESTION: {
       return {
         ...state,
         calculating: false,
+      }
+    }
+    case GENERATE_VARIABLE_FINISHED: {
+      return {
+        ...state,
+        calculating: false,
+        dpUpdated: false,
+      }
+    }
+    case DYNAMIC_PARAMETER_UPDATED: {
+      return {
+        ...state,
+        dpUpdated: true,
       }
     }
     case RECEIVE_QUESTION_REQUEST:
@@ -363,6 +384,11 @@ export const getAlignmentFromQuestionSelector = createSelector(
 export const getCalculatingSelector = createSelector(
   stateSelector,
   (state) => state.calculating
+)
+
+export const getDpUpdatedSelector = createSelector(
+  stateSelector,
+  (state) => state.dpUpdated
 )
 
 export const getIsGradingCheckboxState = createSelector(
@@ -1025,17 +1051,26 @@ function* updateQuestionSaga({ payload }) {
 
 function* generateVariableSaga({ payload }) {
   try {
+    const dpUpdated = yield select(getDpUpdatedSelector)
+
+    if (!dpUpdated) {
+      if (typeof payload.nextAction === 'function') {
+        payload.nextAction()
+      }
+      return
+    }
+
     const question = payload.newQuestion
       ? payload.newQuestion
       : yield select(getCurrentQuestionSelector)
 
     if (!question.variable || !question.variable.enabled) {
-      yield put({
-        type: GENERATE_VARIABLE_FINISHED,
-      })
-
       return
     }
+
+    yield put({
+      type: GENERATE_VARIABLE_START,
+    })
 
     const variables = get(question, 'variable.variables', {})
     const count = get(question, 'variable.combinationsCount', 25)
@@ -1096,6 +1131,10 @@ function* generateVariableSaga({ payload }) {
     yield put({
       type: UPDATE_QUESTION_REQUEST,
       payload: newQuestion,
+    })
+
+    yield put({
+      type: GENERATE_VARIABLE_FINISHED,
     })
 
     if (typeof payload.nextAction === 'function') {

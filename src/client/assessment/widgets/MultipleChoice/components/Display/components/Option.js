@@ -257,49 +257,47 @@ const Option = (props) => {
 
   return (
     // TODO setup label background color for each option
-    <span data-cy="quillSortableItem">
-      <LableComp
-        data-cy="anwer-labels"
-        maxWidth={maxWidth}
-        smallSize={smallSize}
-        className={className}
-        showAnswer={showAnswer}
-        uiStyle={uiStyle}
-        showIcon={showIcon}
-        styleType={styleType}
-        selected={isSelected}
-        checkAnswer={checkAnswer}
-        userSelect={!!setCrossAction}
-        isPrintPreview={isPrintPreview}
-        showBorder={showBorder}
-        label={label}
-        onMouseEnter={() => {
-          if (setCrossAction && !isTouchDevice()) {
-            toggleHover(true)
-          }
-        }}
-        onMouseLeave={() => {
-          if (setCrossAction && !isTouchDevice()) {
-            toggleHover(false)
-          }
-        }}
-      >
-        {renderCheckbox()}
-        {showIcon && (
-          <IconWrapper>
-            {className === 'right' && <IconCheck />}
-            {className === 'wrong' && <IconClose />}
-          </IconWrapper>
-        )}
-        {fromSetAnswers && !hideDelete && (
-          <IconTrash
-            data-cypress="deleteButton"
-            data-cy={`deleteprefix${indx}`}
-            onClick={handleRemoveOp}
-          />
-        )}
-      </LableComp>
-    </span>
+    <LableComp
+      data-cy="quillSortableItem"
+      maxWidth={maxWidth}
+      smallSize={smallSize}
+      className={className}
+      showAnswer={showAnswer}
+      uiStyle={uiStyle}
+      showIcon={showIcon}
+      styleType={styleType}
+      selected={isSelected}
+      checkAnswer={checkAnswer}
+      userSelect={!!setCrossAction}
+      isPrintPreview={isPrintPreview}
+      showBorder={showBorder}
+      label={label}
+      onMouseEnter={() => {
+        if (setCrossAction && !isTouchDevice()) {
+          toggleHover(true)
+        }
+      }}
+      onMouseLeave={() => {
+        if (setCrossAction && !isTouchDevice()) {
+          toggleHover(false)
+        }
+      }}
+    >
+      {renderCheckbox()}
+      {showIcon && (
+        <IconWrapper>
+          {className === 'right' && <IconCheck />}
+          {className === 'wrong' && <IconClose />}
+        </IconWrapper>
+      )}
+      {fromSetAnswers && !hideDelete && (
+        <IconTrash
+          data-cypress="deleteButton"
+          data-cy={`deleteprefix${indx}`}
+          onClick={handleRemoveOp}
+        />
+      )}
+    </LableComp>
   )
 }
 

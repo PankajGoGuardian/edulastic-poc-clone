@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { keys } from 'lodash'
 import { withNamespaces } from '@edulastic/localization'
 import { getStemNumeration } from '../../../../utils/helpers'
 import { CorrectAnswerBox } from './styled/CorrectAnswerBox'
@@ -14,6 +13,7 @@ const CorrectAnswerBoxLayout = ({
   userAnswers,
   altAnsIndex,
   stemNumeration,
+  responseContainers,
   t,
   width,
   singleResponseBox,
@@ -25,7 +25,7 @@ const CorrectAnswerBoxLayout = ({
         : t('component.cloze.correctAnswer')}
     </CorrectAnswerTitle>
     <div>
-      {keys(userAnswers).map((id, index) => (
+      {responseContainers?.map(({ id }, index) => (
         <AnswerBox key={`correct-answer-${index}`}>
           {!singleResponseBox && (
             <IndexBox>{getStemNumeration(stemNumeration, index)}</IndexBox>

@@ -287,6 +287,7 @@ class Display extends Component {
           userAnswers={
             validation.validResponse && validation.validResponse.value
           }
+          responseContainers={responseContainers}
           stemNumeration={stemNumeration}
           width="100%"
           singleResponseBox={singleResponseBox}
@@ -294,6 +295,7 @@ class Display extends Component {
         {altResponses.map((altResponse, index) => (
           <CorrectAnswerBoxLayout
             fontSize={fontSize}
+            responseContainers={responseContainers}
             userAnswers={altResponse.value}
             altAnsIndex={index + 1}
             stemNumeration={stemNumeration}

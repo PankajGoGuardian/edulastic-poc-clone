@@ -434,6 +434,7 @@ const SubscriptionMain = ({
             return (
               x.itemBankId ===
                 products?.find((y) => y.id === productId)?.linkedProductId &&
+              x?.endDate > Date.now() &&
               !x.isTrial
             )
           })
@@ -709,21 +710,29 @@ const SubscriptionMain = ({
                         )}
                         {itemBankSubscription && (
                           <ExpiryMsg data-cy={`${_product.type}_AlertMsg`}>
-                            <IconPurchasedAlert />
                             {itemBankSubscription?.isTrial ? (
-                              <span>
-                                FREE TRIAL EXPIRES{' '}
-                                {new Date(
-                                  itemBankSubscription?.endDate
-                                ).toDateString()}
-                              </span>
+                              <>
+                                <IconPurchasedAlert />
+                                <span>
+                                  FREE TRIAL EXPIRES{' '}
+                                  {new Date(
+                                    itemBankSubscription?.endDate
+                                  ).toDateString()}
+                                </span>
+                              </>
                             ) : (
-                              <span>
-                                purchased - EXPIRES{' '}
-                                {new Date(
-                                  itemBankSubscription?.endDate
-                                ).toDateString()}
-                              </span>
+                              itemBankSubscription?.endDate > Date.now() ? 
+                                (
+                                  <>
+                                    <IconPurchasedAlert />
+                                    <span>
+                                      purchased - EXPIRES{' '}
+                                      {new Date(
+                                        itemBankSubscription?.endDate
+                                      ).toDateString()}
+                                    </span>
+                                  </>
+                                ) : null
                             )}
                           </ExpiryMsg>
                         )}

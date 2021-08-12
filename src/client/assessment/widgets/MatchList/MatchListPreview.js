@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useRef } from 'react'
+import React, { useState, useEffect, useContext, useRef, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import produce from 'immer'
 import { withTheme } from 'styled-components'
@@ -197,11 +197,13 @@ const MatchListPreview = ({
     []
   )
 
+  const initialAnswer = useMemo(() => getInitialAnswer(list), [list])
+
   useEffect(() => {
     if (!isEmpty(userAnswer)) {
       setAns(userAnswer)
     } else {
-      setAns(getInitialAnswer(list))
+      setAns(initialAnswer)
     }
     let newDragItems = duplicatedResponses
       ? getPossibleResponses()

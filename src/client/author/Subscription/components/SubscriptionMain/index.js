@@ -22,7 +22,6 @@ import {
   isEmpty,
 } from 'lodash'
 import React, { useEffect, useMemo, useState } from 'react'
-import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import FeatureNotAvailableModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/FeatureNotAvailableModal'
 import TrialModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/TrialModal/index'
 import FiltersSection from './FilterSection'
@@ -103,7 +102,6 @@ function getProductsWithMetaData(metaData, products) {
 const SubscriptionMain = ({
   isPremiumTrialUsed,
   startTrialAction,
-  setShowSubscriptionAddonModalWithId,
   usedTrialItemBankIds,
   products,
   itemBankSubscriptions,
@@ -197,17 +195,9 @@ const SubscriptionMain = ({
 
   const hasUsedAllItemBankTrials = trialUnuseditemBankProductIds.length === 0
 
-  const getIsPaidSparkProduct = (itemBankId) =>
-    paidItemBankIds.includes(itemBankId)
-
-  const gethasUsedItemBankTrial = (itemBankId) =>
-    usedTrialItemBankIds.includes(itemBankId)
-
   const toggleTrialModal = (value) => setIsTrialModalVisible(value)
 
   const handleSelectStateModal = () => {}
-
-  const handlePurchaseFlow = () => setShowSubscriptionAddonModalWithId()
 
   const { FEATURED } = groupBy(dashboardTiles, 'type')
   const featuredBundles = FEATURED || []
@@ -264,9 +254,11 @@ const SubscriptionMain = ({
       setShowItemBankTrialUsedModal(true)
       return
     }
-    if(!(['enterprise', 'partial_premium'].includes(
-      productIdOrSubType?.toLowerCase()
-    ))){
+    if (
+      !['enterprise', 'partial_premium'].includes(
+        productIdOrSubType?.toLowerCase()
+      )
+    ) {
       setIsTrialModalVisible(true)
     }
   }
@@ -359,9 +351,9 @@ const SubscriptionMain = ({
     ? [productData?.productId]
     : []
 
-  const isUserPremium = ['premium', 'enterprise', 'partial_premium'].includes(
-    subType?.toLowerCase?.()
-  )
+  const isUserPremium =
+    ['premium', 'enterprise'].includes(subType?.toLowerCase?.()) ||
+    (subType?.toLowerCase() === 'partial_premium' && isPremiumUser)
 
   const isTeacher = user?.role === roleuser.TEACHER
   const totalRemainingTeacherPremiumCount = useMemo(() => {
@@ -723,20 +715,17 @@ const SubscriptionMain = ({
                                 ).toDateString()}
                               </span>
                             </>
-                          ) : (
-                                itemBankSubscription?.endDate > Date.now() ? 
-                                (
-                                  <>
-                                    <IconPurchasedAlert />
-                                    <span>
-                                      purchased - EXPIRES{' '}
-                                      {new Date(
-                                        itemBankSubscription?.endDate
-                                      ).toDateString()}
-                                    </span>
-                                  </>
-                                ) : null
-                          )}
+                          ) : itemBankSubscription?.endDate > Date.now() ? (
+                            <>
+                              <IconPurchasedAlert />
+                              <span>
+                                purchased - EXPIRES{' '}
+                                {new Date(
+                                  itemBankSubscription?.endDate
+                                ).toDateString()}
+                              </span>
+                            </>
+                          ) : null}
                         </ExpiryMsg>
                       )}
                     </SectionTitle>

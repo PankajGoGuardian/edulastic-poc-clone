@@ -85,6 +85,8 @@ const PlayerHeader = ({
   setSettingsModalVisibility,
   testType,
   isPremiumContentWithoutAccess = false,
+  checkAnswer,
+  answerChecksUsedForItem,
 }) => {
   const totalQuestions = options.length
   const totalBookmarks = bookmarks.filter((b) => b).length
@@ -242,6 +244,8 @@ const PlayerHeader = ({
                   timedAssignment={timedAssignment}
                   groupId={groupId}
                   isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
+                  answerChecksUsedForItem={answerChecksUsedForItem}
+                  checkAnswer={checkAnswer}
                 />
               </FlexContainer>
               <FlexContainer>

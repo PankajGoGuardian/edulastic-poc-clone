@@ -2,12 +2,16 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Button } from 'antd'
+import { TokenStorage } from '@edulastic/api'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
 import { test, questionType } from '@edulastic/constants'
 import {
   IconCalculator,
   IconClose,
   IconScratchPad,
   IconCloudUpload,
+  IconCheck,
 } from '@edulastic/icons'
 import { extraDesktopWidthMax, white, themeColorBlue } from '@edulastic/colors'
 import { Tooltip } from '../../../../common/utils/helpers'
@@ -24,7 +28,6 @@ const { calculatorTypes } = test
 const ToolBar = ({
   settings = {},
   tool = [],
-  changeCaculateMode,
   changeTool,
   qType,
   isDocbased = false,
@@ -33,19 +36,45 @@ const ToolBar = ({
   groupId,
   toggleUserWorkUploadModal,
   isPremiumContentWithoutAccess = false,
+  checkAnswerInProgress,
+  answerChecksUsedForItem,
+  checkAnswer,
 }) => {
   const toolbarHandler = (value) => changeTool(value)
 
-  const handleCalculateMode = (value) => {
-    changeTool(2)
-    changeCaculateMode(value)
+  const handleCheckAnswer = () => {
+    if (checkAnswerInProgress || typeof checkAnswer !== 'function') {
+      return null
+    }
+    checkAnswer()
   }
 
-  const { calcType, enableScratchpad, isTeacherPremium } = settings
+  const {
+    calcType,
+    enableScratchpad,
+    isTeacherPremium,
+    maxAnswerChecks,
+  } = settings
   const isDisableCrossBtn = qType !== questionType.MULTIPLE_CHOICE
-
+  const hideCheckAnswer = !TokenStorage.getAccessToken()
   return (
     <Container>
+      {maxAnswerChecks > 0 && !hideCheckAnswer && (
+        <StyledButton
+          onClick={handleCheckAnswer}
+          title={
+            checkAnswerInProgress
+              ? 'In progress'
+              : answerChecksUsedForItem >= maxAnswerChecks
+              ? 'Usage limit exceeded'
+              : 'Check Answer'
+          }
+          data-cy="checkAnswer"
+          disabled={isPremiumContentWithoutAccess}
+        >
+          <IconCheck />
+        </StyledButton>
+      )}
       {calcType !== calculatorTypes.NONE && (
         <Tooltip placement="top" title="Calculator">
           <StyledButton
@@ -111,14 +140,19 @@ const ToolBar = ({
 }
 
 ToolBar.propTypes = {
-  changeCaculateMode: PropTypes.func.isRequired,
   tool: PropTypes.array.isRequired,
   changeTool: PropTypes.func.isRequired,
   settings: PropTypes.object.isRequired,
   qType: PropTypes.string.isRequired,
 }
 
-export default ToolBar
+const enhance = compose(
+  connect((state) => ({
+    checkAnswerInProgress: state?.test?.checkAnswerInProgress,
+  }))
+)
+
+export default enhance(ToolBar)
 
 export const StyledButton = styled(Button)`
   border: none;

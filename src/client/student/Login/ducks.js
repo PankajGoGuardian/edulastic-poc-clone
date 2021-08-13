@@ -598,7 +598,7 @@ export default createReducer(initialState, {
   },
   [ADD_SCHOOL_SUCCESS]: (state, { payload }) => {
     state.addingSchool = false
-    state.user.institutionIds = payload.institutionIds
+    state.user.institutionIds = payload.institutionIds || []
     state.user.orgData.institutionIds = payload.orgData.institutionIds
     state.user.orgData.schools = payload.orgData.schools
     state.user.otherAccounts = payload.otherAccounts || state.user.otherAccounts
@@ -611,7 +611,7 @@ export default createReducer(initialState, {
   },
   [CREATE_AND_ADD_SCHOOL_SUCCESS]: (state, { payload }) => {
     state.creatingAddingSchool = false
-    state.user.institutionIds = payload.institutionIds
+    state.user.institutionIds = payload.institutionIds || []
     state.user.orgData.institutionIds = payload.orgData.institutionIds
     state.user.orgData.schools = payload.orgData.schools
     state.user.otherAccounts = payload.otherAccounts || state.user.otherAccounts
@@ -2057,7 +2057,7 @@ function* addSchoolSaga({ payload = {} }) {
 function* createAndAddSchoolSaga({ payload = {} }) {
   const createSchoolPayload = payload.createSchool
   const joinSchoolPayload = payload.joinSchool
-  const institutionIds = payload.institutionIds
+  const institutionIds = payload.institutionIds || []
   let isCreateSchoolSuccessful = false
   let result
   try {

@@ -2111,6 +2111,8 @@ function* createTest(data) {
   if (dataToSend.settingId === '') {
     dataToSend.settingId = null
   }
+  dataToSend.grades = dataToSend.grades?.filter((el) => !!el) || []
+  dataToSend.subjects = dataToSend.subjects?.filter((el) => !!el) || []
   const entity = yield call(testsApi.create, dataToSend)
   fillAutoselectGoupsWithDummyItems(data)
   yield put({
@@ -2264,6 +2266,8 @@ export function* updateTestSaga({ payload }) {
     if (testData.settingId === '') {
       testData.settingId = null
     }
+    testData.grades = testData.grades?.filter((el) => !!el) || []
+    testData.subjects = testData.subjects?.filter((el) => !!el) || []
     const entity = yield call(testsApi.update, { ...payload, data: testData })
     if (isEmpty(entity)) {
       return

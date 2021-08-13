@@ -114,12 +114,8 @@ const ChoicesBox = ({ style = {}, resprops, id }) => {
     }
   }
 
-  const getPopupContainer = () => {
-    const scrollEl = getScrollElement()
-    if (!scrollEl || (scrollEl === window && 'location' in scrollEl)) {
-      return document.body
-    }
-    return scrollEl
+  const getPopupContainer = (node) => {
+    return node.parentNode
   }
 
   const dropdownMenuStyle = {

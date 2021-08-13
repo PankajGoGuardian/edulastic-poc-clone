@@ -1914,6 +1914,7 @@ function* resetPasswordRequestSaga({ payload }) {
     yield put(signupSuccessAction(result))
     yield call(fetchUser, {}) // needed to update org and other user data to local store
     localStorage.removeItem('loginRedirectUrl')
+    yield put(push(`/`)) // navigate user to dashboard once user password reset success and loaded
   } catch (e) {
     notification({
       msg: e?.response?.data?.message

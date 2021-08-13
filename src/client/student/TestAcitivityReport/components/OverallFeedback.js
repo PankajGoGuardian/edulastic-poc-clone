@@ -5,7 +5,7 @@ import { Tooltip } from 'antd'
 import { get, round } from 'lodash'
 import { FlexContainer } from '@edulastic/common'
 import { IconCheck } from '@edulastic/icons'
-import { white } from '@edulastic/colors'
+import { white, textBlackColor } from '@edulastic/colors'
 import { releaseGradeLabels } from '@edulastic/constants/const/test'
 import { getClasses } from '../../Login/ducks'
 
@@ -168,8 +168,8 @@ const FeedbackGiven = styled.div`
   overflow-y: auto;
   line-height: 2.5;
   padding: 0px 0px 0px 16px;
-  color: #878282;
-  font-size: 0.8rem;
+  color: ${textBlackColor};
+  font-size: 16px;
 `
 
 const Total = styled.div`

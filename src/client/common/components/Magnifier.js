@@ -51,7 +51,7 @@ const Magnifier = ({
 
   const handleScroll = (e) => {
     document
-      .getElementsByClassName('test-item-col')[1]
+      .getElementsByClassName('test-item-col')[0]
       ?.scrollTo(0, e.target.scrollTop)
   }
 

@@ -15,6 +15,14 @@ const minWidthMap = {
   xl: 250,
 }
 
+const fontSizeMap = {
+  small: 'xs',
+  normal: 'sm',
+  large: 'md',
+  xlarge: 'lg',
+  xxlarge: 'xl',
+}
+
 const SelectWrapper = styled.span`
   position: relative;
   vertical-align: middle;
@@ -35,7 +43,10 @@ const SelectWrapper = styled.span`
 
   .ant-select {
     font-size: ${({ theme }) => theme?.fontSize};
-    min-width: ${({ theme }) => minWidthMap[theme?.zoomLevel] || 100}px;
+    min-width: ${({ theme, uiStyle }) =>
+      minWidthMap[theme?.zoomLevel] ||
+      minWidthMap[fontSizeMap[uiStyle?.fontsize]] ||
+      100}px;
 
     .ant-select-selection {
       display: flex;
@@ -74,7 +85,7 @@ const ChoicesBox = ({ style = {}, resprops, id }) => {
   } = resprops
   const { getScrollElement } = useContext(ScrollContext)
   if (!id) return null
-  const { responseIds } = item
+  const { responseIds, uiStyle = {} } = item
   const { index } = find(responseIds, (response) => response.id === id)
   let userAnswer = find(
     userSelections,
@@ -116,7 +127,11 @@ const ChoicesBox = ({ style = {}, resprops, id }) => {
     left: `0px !important`,
   }
   return (
-    <SelectWrapper dropdownMenuStyle={dropdownMenuStyle} ref={selectWrapperRef}>
+    <SelectWrapper
+      dropdownMenuStyle={dropdownMenuStyle}
+      ref={selectWrapperRef}
+      uiStyle={uiStyle}
+    >
       <Select
         value={convertToMathTemplate(userAnswer?.value)}
         style={{

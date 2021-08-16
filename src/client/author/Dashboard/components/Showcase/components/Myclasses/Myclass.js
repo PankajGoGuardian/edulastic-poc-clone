@@ -233,6 +233,7 @@ const MyClasses = ({
       description: subscriptionData.description,
       hasTrial: subscriptionData.hasTrial,
       itemBankId: subscriptionData.itemBankId,
+      blockInAppPurchase: subscriptionData.blockInAppPurchase,
     })
   }
 
@@ -312,13 +313,16 @@ const MyClasses = ({
   const getFeatureBundles = (bundles) =>
     bundles.map((bundle) => {
       const { subscriptionData } = bundle.config
-      if (!subscriptionData?.productId) {
+      if (
+        !subscriptionData?.productId &&
+        !subscriptionData?.blockInAppPurchase
+      ) {
         return bundle
       }
 
       const { imageUrl: imgUrl, premiumImageUrl } = bundle
       const isBlocked = !hasAccessToItemBank(subscriptionData.itemBankId)
-      const imageUrl = isBlocked ? premiumImageUrl : imgUrl
+      const imageUrl = isBlocked ? premiumImageUrl || imgUrl : imgUrl
 
       return {
         ...bundle,
@@ -697,6 +701,9 @@ const MyClasses = ({
           handlePurchaseFlow={handlePurchaseFlow}
           showTrialButton={showTrialButton}
           isPremiumUser={isPremiumUser}
+          hasTrial={productData.hasTrial}
+          blockInAppPurchase={productData.blockInAppPurchase}
+          hideTitle={isSingaporeMath && productData.blockInAppPurchase}
         />
       )}
       {(isTrialModalVisible || showHeaderTrialModal) && (

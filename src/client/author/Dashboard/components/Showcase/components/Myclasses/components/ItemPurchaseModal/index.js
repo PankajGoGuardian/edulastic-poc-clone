@@ -5,34 +5,43 @@ import styled from 'styled-components'
 import { darkGrey2 } from '@edulastic/colors'
 import AuthorCompleteSignupButton from '../../../../../../../../common/components/AuthorCompleteSignupButton'
 
-const Footer = ({ handleTrial, handlePurchaseFlow }) => {
+const Footer = ({
+  handleTrial,
+  handlePurchaseFlow,
+  hasTrial = false,
+  blockInAppPurchase = false,
+}) => {
   return (
     <>
       <AuthorCompleteSignupButton
-        renderButton={(handleClick) => (
-          <EduButton
-            data-cy="trialPurchase"
-            isGhost
-            width="180px"
-            height="45px"
-            onClick={handleClick}
-          >
-            Try for free
-          </EduButton>
-        )}
+        renderButton={(handleClick) =>
+          hasTrial ? (
+            <EduButton
+              data-cy="trialPurchase"
+              isGhost
+              width="180px"
+              height="45px"
+              onClick={handleClick}
+            >
+              Try for free
+            </EduButton>
+          ) : null
+        }
         onClick={handleTrial}
       />
       <AuthorCompleteSignupButton
-        renderButton={(handleClick) => (
-          <EduButton
-            data-cy="Purchase"
-            width="180px"
-            height="45px"
-            onClick={handleClick}
-          >
-            Purchase
-          </EduButton>
-        )}
+        renderButton={(handleClick) =>
+          blockInAppPurchase ? null : (
+            <EduButton
+              data-cy="Purchase"
+              width="180px"
+              height="45px"
+              onClick={handleClick}
+            >
+              Purchase
+            </EduButton>
+          )
+        }
         onClick={handlePurchaseFlow}
       />
     </>
@@ -47,6 +56,9 @@ const ItemPurchaseModal = ({
   toggleTrialModal,
   handlePurchaseFlow,
   isPremiumUser,
+  hasTrial = false,
+  blockInAppPurchase = false,
+  hideTitle = false,
 }) => {
   const closeModal = () => toggleModal(false)
   const handleTrial = () => {
@@ -54,7 +66,9 @@ const ItemPurchaseModal = ({
     toggleTrialModal(true)
   }
 
-  const modalTitle = `${title} ${!isPremiumUser ? '+ Teacher Premium' : ''}`
+  const modalTitle = hideTitle
+    ? ''
+    : `${title} ${!isPremiumUser ? '+ Teacher Premium' : ''}`
 
   return (
     <CustomModalStyled
@@ -64,6 +78,8 @@ const ItemPurchaseModal = ({
         <Footer
           handleTrial={handleTrial}
           handlePurchaseFlow={handlePurchaseFlow}
+          hasTrial={hasTrial}
+          blockInAppPurchase={blockInAppPurchase}
         />
       }
       visible={isVisible}

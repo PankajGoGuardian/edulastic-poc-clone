@@ -178,6 +178,7 @@ const PermissionsTable = ({
         collectionName: selectedCollection.itemBankName,
         data: response,
       }
+      console.log('selectedCollection permissionDetails', data);
       if (selectedPermission) {
         editPermissionRequest({
           data: { ...data, id: selectedPermission._id },

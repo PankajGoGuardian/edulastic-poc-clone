@@ -11,7 +11,7 @@ import {
   TitleText,
   PopupContainer,
   StyledPopOver,
-  TtitleWrapper,
+  TitleWrapper,
 } from './styled'
 import Tags, { Label } from '../../../src/components/common/Tags'
 import WebsiteIcon from './static/WebsiteIcon'
@@ -236,7 +236,7 @@ const ResourceItem = ({
 
   return (
     <ResourceItemWrapper data-cy={`${id}`} ref={drag}>
-      <TtitleWrapper>
+      <TitleWrapper>
         <StyledPopOver
           placement="bottomLeft"
           content={popup}
@@ -262,7 +262,7 @@ const ResourceItem = ({
           show={1}
           flexWrap="nowrap"
         />
-      </TtitleWrapper>
+      </TitleWrapper>
       <IconEye
         className="preview-btn"
         color={themeColor}

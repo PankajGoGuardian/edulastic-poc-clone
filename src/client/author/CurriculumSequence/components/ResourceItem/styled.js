@@ -113,7 +113,7 @@ export const StyledPopOver = styled(Popover)`
   padding-right: 5px;
 `
 
-export const TtitleWrapper = styled.div`
+export const TitleWrapper = styled.div`
   display: flex;
   width: 92%;
 `

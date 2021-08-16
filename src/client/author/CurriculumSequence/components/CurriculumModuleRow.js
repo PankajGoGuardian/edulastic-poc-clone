@@ -1231,6 +1231,7 @@ class ModuleRow extends Component {
                   return (
                     !(isStudent && moduleData.hidden) && (
                       <AssignmentRowContainer
+                        // using currentAssignmentIds to get info about current test (for which show assignments is clicked)
                         blurCurrentTestRow={
                           !(
                             currentAssignmentIds.includes(

@@ -80,7 +80,7 @@ const SummaryBlock = ({
 export default SummaryBlock
 
 const SummaryBlockContainer = styled.div`
-  width: 400px;
+  width: 450px;
   height: 100%;
   background: ${white};
   padding: 30px 20px 20px;
@@ -96,11 +96,11 @@ const SummaryBlockContainer = styled.div`
   }
 
   @media (max-width: ${extraDesktopWidthMax}) {
-    width: 340px;
+    width: 390px;
   }
 
   @media (max-width: ${smallDesktopWidth}) {
-    width: 240px;
+    width: 290px;
   }
 
   @media (min-width: ${tabletWidth}) and (max-width: ${smallDesktopWidth}) {

@@ -327,7 +327,7 @@ const TrialConfirmationModal = ({
                 </div>
                 <div>
                   <FieldLabel color={titleColor}>
-                    SELECT YOUR CURRICULUM
+                    SELECT A PLAYLIST TO GET STARTED
                   </FieldLabel>
                   <ContentWrapper>
                     {playlists.map(({ _source, _id }) => (

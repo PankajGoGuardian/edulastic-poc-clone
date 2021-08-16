@@ -260,7 +260,7 @@ class RowColumn extends Component {
                   getPopupContainer={(triggerNode) => triggerNode.parentNode}
                   onChange={(value) => onUiChange('rowCount')(+value)}
                 >
-                  {Array.from({ length: 10 }).map((v, index) => (
+                  {Array.from({ length: 15 }).map((v, index) => (
                     <Option
                       data-cy={`row-dropdown-list-${index}`}
                       key={index}
@@ -314,7 +314,7 @@ class RowColumn extends Component {
                   getPopupContainer={(triggerNode) => triggerNode.parentNode}
                   onChange={(value) => onUiChange('columnCount')(+value)}
                 >
-                  {Array.from({ length: 10 }).map((v, index) => (
+                  {Array.from({ length: 15 }).map((v, index) => (
                     <Option
                       data-cy={`coloumn-dropdown-list-${index}`}
                       key={index}

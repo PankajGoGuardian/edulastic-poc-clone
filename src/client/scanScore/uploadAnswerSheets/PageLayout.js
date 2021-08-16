@@ -12,7 +12,7 @@ const PageLayout = ({ children, title, breadcrumbData = [] }) => (
     <StyledHeader>
       <h2 className="title">{title}</h2>
     </StyledHeader>
-    <Content style={{ padding: '0 50px'}}>
+    <Content style={{ padding: '0 50px' }}>
       <div style={{ padding: '20px 0' }}>
         <Breadcrumb data={breadcrumbData} style={{ position: 'unset' }} />
       </div>

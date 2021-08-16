@@ -347,7 +347,8 @@ function* updateResourceSaga({ payload }) {
     yield put(slice.actions.resetSelectedStandards())
     const activeTermIds = yield select(getCurrentActiveTerms)
     // delay reources fetch so that the added resource gets indexed in ES
-    yield delay(500)
+    notification({ type: 'info', msg: 'Updating the resource' })
+    yield delay(8000)
     const curriculum = yield call(curriculumSequencesApi.getCurriculums, {
       id,
       forUseThis: true,
@@ -370,7 +371,8 @@ function* deleteResourceSaga({ payload }) {
     yield put(slice.actions.resetSelectedStandards())
     const activeTermIds = yield select(getCurrentActiveTerms)
     // delay reources fetch so that the added resource gets indexed in ES
-    yield delay(500)
+    notification({ type: 'info', msg: 'Deleting the resource' })
+    yield delay(8000)
     const curriculum = yield call(curriculumSequencesApi.getCurriculums, {
       id: playlistId,
       forUseThis: true,

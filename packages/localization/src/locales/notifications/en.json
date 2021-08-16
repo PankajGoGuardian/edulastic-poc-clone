@@ -1423,6 +1423,14 @@
     "message": "Rating point must not be empty.",
     "description": ""
   },
+  "criteriaNameLengthValidation": {
+    "message": "Criteria name cannot be more than 256 characters",
+    "description": ""
+  },
+  "ratingsNameLengthValidation": {
+    "message": "Rating name cannot be more than 100 characters",
+    "description": ""
+  },
   "ratingPointMustBeZero": {
     "message": "Rating point must be 0 for at least one rating within a criteria.",
     "description": ""

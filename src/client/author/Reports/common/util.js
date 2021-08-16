@@ -440,3 +440,8 @@ export const combineNames = (list) =>
       .join(' ')
       .trim(),
   }))
+
+export const getAssessmentName = (test) => {
+  const [key, title] = [test._id || test.key, test.title]
+  return `${title} (ID:${key.substring(key.length - 5)})`
+}

@@ -14,6 +14,7 @@ const PopoverContent = ({
   fillColor,
   indexBgColor,
   mark,
+  singleResponseBox,
 }) => (
   <CheckBox
     isPopover
@@ -21,14 +22,16 @@ const PopoverContent = ({
     indexBgColor={indexBgColor}
     style={{ fontSize, margin: '0px 4px' }}
   >
-    <div
-      className="index"
-      style={{
-        display: checkAnswer && !isExpressGrader ? 'none' : 'flex',
-      }}
-    >
-      {indexStr}
-    </div>
+    {!singleResponseBox && (
+      <div
+        className="index"
+        style={{
+          display: checkAnswer && !isExpressGrader ? 'none' : 'flex',
+        }}
+      >
+        {indexStr}
+      </div>
+    )}
     <div className="text">
       <div style={{ whiteSpace: 'normal' }}>
         <MathSpan dangerouslySetInnerHTML={{ __html: answered }} />
@@ -51,10 +54,12 @@ PopoverContent.propTypes = {
   fontSize: PropTypes.number,
   checkAnswer: PropTypes.bool.isRequired,
   isExpressGrader: PropTypes.bool.isRequired,
+  singleResponseBox: PropTypes.bool,
 }
 
 PopoverContent.defaultProps = {
   fontSize: 14,
+  singleResponseBox: false,
 }
 
 export default PopoverContent

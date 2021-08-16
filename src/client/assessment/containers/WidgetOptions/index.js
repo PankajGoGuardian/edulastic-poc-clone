@@ -94,7 +94,6 @@ class WidgetOptions extends Component {
             fillSections={fillSections}
             cleanSections={cleanSections}
             advancedAreOpen={advancedAreOpen}
-            item={item}
           />
         )}
         {children}

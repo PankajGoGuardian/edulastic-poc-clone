@@ -166,6 +166,15 @@ function* duplicateItemRequestSaga({ payload }) {
 
       if (isTestEditing) {
         passageDuplicateParams.testId = testId
+        const hasUnsavedTestData = yield select((state) =>
+          get(state, 'tests.updated', false)
+        )
+        if (hasUnsavedTestData) {
+          const _testData = { ...(yield select(getTestSelector)) }
+          yield call(updateTestSaga, {
+            payload: { id: testId, data: _testData },
+          })
+        }
       }
       const duplicatedPassage = yield call(
         passageApi.duplicate,

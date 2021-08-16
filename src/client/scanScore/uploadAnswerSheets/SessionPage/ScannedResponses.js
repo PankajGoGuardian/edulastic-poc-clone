@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { Slider } from 'antd'
 import Thumbnail from './Thumbnail'
 
-import { getFileNameFromUri, omrSheetScanStatus } from '../utils'
+import { omrSheetScanStatus } from '../utils'
 
 const ScannedResponses = ({
   thumbnailSize,
@@ -32,7 +32,9 @@ const ScannedResponses = ({
         />
         <div className="thumbnails-inner-container">
           {pages.map((page, index) => {
-            const name = page.studentName || getFileNameFromUri(page.uri)
+            const name =
+              (page.status === omrSheetScanStatus.DONE && page.studentName) ||
+              `Page ${page.pageNumber}`
             const onClick = () => setResponsePageNumber(index + 1)
             return (
               <Thumbnail

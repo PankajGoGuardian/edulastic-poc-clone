@@ -570,6 +570,16 @@ const BackgroundStyleWrapper = styled.div.attrs({
       `
     }
   }}
+
+  ${({ unsetMaxWidth }) => {
+    if (unsetMaxWidth) {
+      return `
+        &.migrated-question {
+          max-width: unset !important;
+        }
+      `
+    }
+  }}
 `
 
 const toolbarInlineStyle = css`
@@ -715,6 +725,7 @@ const CustomEditor = ({
   customCharacters,
   editorHeight,
   allowQuickInsert = true,
+  unsetMaxWidth = false,
   ...restOptions
 }) => {
   const mathFieldRef = useRef(null)
@@ -1466,6 +1477,7 @@ const CustomEditor = ({
         fontSize={fontSize}
         className={className}
         editorHeight={editorHeight}
+        unsetMaxWidth={unsetMaxWidth}
       >
         {toolbarId && (
           <ToolbarContainer

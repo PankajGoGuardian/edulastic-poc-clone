@@ -1315,18 +1315,10 @@ class ModuleRow extends Component {
                                     >
                                       <Tooltip
                                         placement="bottomLeft"
-                                        title={
-                                          moduleData?.assignments?.length
-                                            ? moduleData?.assignments?.[0]
-                                                ?.title
-                                            : moduleData?.contentTitle
-                                        }
+                                        title={moduleData?.contentTitle}
                                       >
                                         <span data-cy="testName">
-                                          {moduleData?.assignments?.length
-                                            ? moduleData?.assignments?.[0]
-                                                ?.title
-                                            : moduleData?.contentTitle}
+                                          {moduleData?.contentTitle}
                                         </span>
                                         {testType}
                                       </Tooltip>

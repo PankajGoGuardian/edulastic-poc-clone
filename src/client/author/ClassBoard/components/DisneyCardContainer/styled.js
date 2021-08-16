@@ -192,6 +192,8 @@ export const StyledName = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  width: 70%;
+  word-break: break-word;
 `
 
 // export const StyledCheckbox = styled(Checkbox)`
@@ -246,7 +248,7 @@ export const StyledParaF = styled.p`
 
   @media (min-width: ${mediumDesktopExactWidth}) {
     font-size: 16px;
-    line-height: 16px;
+    line-height: 18px;
   }
 `
 

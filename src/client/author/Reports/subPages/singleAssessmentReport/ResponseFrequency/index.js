@@ -21,6 +21,7 @@ import {
 } from './ducks'
 
 import jsonData from './static/json/data.json'
+import { getAssessmentName } from '../../../common/util'
 
 const filterData = (data, filter) =>
   Object.keys(filter).length > 0
@@ -44,11 +45,9 @@ const ResponseFrequency = ({
   const [misunderstoodItems, setMisunderstoodItems] = useState(20)
   const [filter, setFilter] = useState({})
 
-  const assessmentName = `${
-    settings.selectedTest.title
-  } (ID:${settings.selectedTest.key.substring(
-    settings.selectedTest.key.length - 5
-  )})`
+  const assessmentName = getAssessmentName(
+    res?.meta?.test || settings.selectedTest
+  )
 
   useEffect(() => () => resetResponseFrequency(), [])
 
@@ -63,7 +62,7 @@ const ResponseFrequency = ({
     if (settings.requestFilters.termId || settings.requestFilters.reportId) {
       return () => toggleFilter(null, false)
     }
-  }, [settings.selectedTest, settings.requestFilters])
+  }, [settings.selectedTest?.key, settings.requestFilters])
 
   useEffect(() => {
     if (

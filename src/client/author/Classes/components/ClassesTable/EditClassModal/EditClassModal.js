@@ -179,7 +179,11 @@ class EditClassModal extends Component {
 
     let teacherFinalList = [...teacherList]
     if (owners.length) {
-      teacherFinalList.push({ _id: owners[0]?.id, firstName: owners[0]?.name })
+      teacherFinalList.push({
+        _id: owners[0]?.id,
+        firstName: owners[0]?.name,
+        email: owners[0]?.email,
+      })
       teacherFinalList = uniqBy(teacherFinalList, '_id')
     }
 
@@ -206,7 +210,7 @@ class EditClassModal extends Component {
       teacherFinalList.forEach((row) => {
         const teacherName = row.lastName
           ? `${row.firstName} ${row.lastName}`
-          : `${row.firstName}`
+          : `${row.firstName || row.email}`
         teacherOptions.push(<Option value={row._id}>{teacherName}</Option>)
       })
     }

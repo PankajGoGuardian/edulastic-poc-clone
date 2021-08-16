@@ -455,12 +455,16 @@ class Display extends Component {
     const altAnswers = get(validation, 'altResponses', [])
 
     const correctAnswers = get(validation, ['validResponse', 'value'], {})
+    const singleResponseBox =
+      responseContainers && responseContainers.length === 1
+
     const correctAnswerBoxLayout = (
       <>
         <CorrectAnswerBoxLayout
           fontSize={fontSize}
           stemNumeration={stemNumeration}
           userAnswers={getAnswersSortedByIndex(correctAnswers, this.idIndexMap)}
+          singleResponseBox={singleResponseBox}
         />
         {altAnswers.map((answer, index) => {
           const { value = {} } = answer
@@ -474,6 +478,7 @@ class Display extends Component {
               stemNumeration={stemNumeration}
               userAnswers={altAnswerSorted}
               altAnsIndex={index + 1}
+              singleResponseBox={singleResponseBox}
             />
           )
         })}

@@ -9,16 +9,7 @@ import {
   select,
   take,
 } from 'redux-saga/effects'
-import {
-  cloneDeep,
-  values,
-  get,
-  omit,
-  set,
-  uniqBy,
-  intersection,
-  uniq,
-} from 'lodash'
+import { cloneDeep, values, get, omit, set, uniqBy, uniq } from 'lodash'
 import produce from 'immer'
 import { questionType, questionTitle } from '@edulastic/constants'
 import {
@@ -98,6 +89,9 @@ import {
   changeDataInPreferredLanguage,
 } from '../../assessment/utils/question'
 import {
+  hasMathFormula,
+  getLatexValuePairs,
+  generateExamples,
   getOptionsForMath,
   getOptionsForClozeMath,
 } from '../../assessment/utils/variables'
@@ -137,10 +131,14 @@ export const SET_IS_GRADING_RUBRIC =
 // actions
 
 // Variable
-export const CALCULATE_FORMULA =
-  '[variable] calculate variable formulation for example value'
-export const CALCULATE_FORMULA_FAILED =
-  '[variable] calculate variable formulation for example value failed'
+export const GENERATE_VARIABLE_REQUEST =
+  '[variable] generate dynamic examples request'
+export const GENERATE_VARIABLE_START =
+  '[variable] generate dynamic examples start'
+export const GENERATE_VARIABLE_FINISHED =
+  '[variable] generate dynamic examples finished'
+export const DYNAMIC_PARAMETER_UPDATED =
+  '[variable] dynamic parameters settings chagned'
 
 export const receiveQuestionByIdAction = (id) => ({
   type: RECEIVE_QUESTION_REQUEST,
@@ -188,9 +186,13 @@ export const loadQuestionAction = (
   payload: { data, rowIndex, isPassageWidget },
 })
 
-export const calculateFormulaAction = (data) => ({
-  type: CALCULATE_FORMULA,
-  payload: { data },
+export const generateVariableAction = (data) => ({
+  type: GENERATE_VARIABLE_REQUEST,
+  payload: data,
+})
+
+export const variableSettingsChangedAction = () => ({
+  type: DYNAMIC_PARAMETER_UPDATED,
 })
 
 export const setDictAlignmentFromQuestion = (payload) => ({
@@ -216,6 +218,7 @@ const initialState = {
   error: null,
   saveError: null,
   calculating: false,
+  dpUpdated: false,
 }
 
 export const reducer = (state = initialState, { type, payload }) => {
@@ -226,17 +229,29 @@ export const reducer = (state = initialState, { type, payload }) => {
         calculating: !!payload,
       }
     }
-    case CALCULATE_FORMULA:
+    case GENERATE_VARIABLE_START:
       return {
         ...state,
         calculating: true,
       }
     case ADD_ITEM_EVALUATION:
-    case CALCULATE_FORMULA_FAILED:
     case UPDATE_QUESTION: {
       return {
         ...state,
         calculating: false,
+      }
+    }
+    case GENERATE_VARIABLE_FINISHED: {
+      return {
+        ...state,
+        calculating: false,
+        dpUpdated: false,
+      }
+    }
+    case DYNAMIC_PARAMETER_UPDATED: {
+      return {
+        ...state,
+        dpUpdated: true,
       }
     }
     case RECEIVE_QUESTION_REQUEST:
@@ -369,6 +384,11 @@ export const getAlignmentFromQuestionSelector = createSelector(
 export const getCalculatingSelector = createSelector(
   stateSelector,
   (state) => state.calculating
+)
+
+export const getDpUpdatedSelector = createSelector(
+  stateSelector,
+  (state) => state.dpUpdated
 )
 
 export const getIsGradingCheckboxState = createSelector(
@@ -903,55 +923,6 @@ function* saveQuestionSaga({
 
 /**
  *
- * @param {Object} variables
- */
-const containsEmptyField = (variables) => {
-  const _keys = Object.keys(variables)
-  for (const key of _keys) {
-    const {
-      type = '',
-      exampleValue = '',
-      formula = '',
-      set: _set = '',
-      sequence = '',
-      name,
-    } = variables[key]
-    switch (true) {
-      // variables must be set
-      case type !== 'FORMULA' && !exampleValue && exampleValue !== 0:
-        return {
-          hasEmptyField: true,
-          errMessage: 'dynamic parameters has empty fields',
-        }
-      // formula must be set
-      case type === 'FORMULA' && !formula:
-        return { hasEmptyField: true, errMessage: 'formula is required' }
-      // avoids recursion
-      case !!intersection(_keys, _set.split(',')).length:
-        return {
-          hasEmptyField: true,
-          errMessage: `Your dynamic parameter "${name}" contains a text entry that is also a parameter name. This is not supported right now. Please rename the impacted parameters or entries so that there is no naming overlap.`,
-        }
-      case !!intersection(_keys, sequence.split(',')).length:
-        return {
-          hasEmptyField: true,
-          errMessage: `Your dynamic parameter "${name}" contains a text entry that is also a parameter name. This is not supported right now. Please rename the impacted parameters or entries so that there is no naming overlap.`,
-        }
-      default:
-        break
-    }
-  }
-  return { hasEmptyField: false, errMessage: '' }
-}
-
-const hasMathFormula = (variables) =>
-  Object.keys(variables).some((key) => {
-    const { type } = variables[key] || {}
-    return type === 'FORMULA'
-  })
-
-/**
- *
  * @param {*} payload should be an object with testId and isEditFlow flags
  *
  */
@@ -1018,127 +989,6 @@ function* addAuthoredItemsToTestSaga({ payload }) {
 }
 // actions
 
-function* calculateFormulaSaga({ payload }) {
-  try {
-    const getLatexValuePairs = ({
-      id,
-      variables,
-      example,
-      options,
-      isClozeMath,
-    }) => ({
-      id,
-      latexes: Object.keys(variables)
-        .map((variableName) => variables[variableName])
-        .filter((variable) => variable.type === 'FORMULA')
-        .reduce(
-          (lx, variable) => [
-            ...lx,
-            {
-              id: variable.name,
-              formula: variable.formula,
-              options: isClozeMath ? options[variable.name] || {} : options,
-            },
-          ],
-          []
-        ),
-      variables: Object.keys(variables).map((variableName) => ({
-        id: variableName,
-        value:
-          variables[variableName].type === 'FORMULA'
-            ? variables[variableName].formula
-            : example
-            ? example[variableName]
-            : variables[variableName].exampleValue,
-      })),
-    })
-
-    const question = yield select(getCurrentQuestionSelector)
-
-    if (!question.variable || !question.variable.enabled) {
-      return []
-    }
-
-    const variables =
-      payload.data.variables || question.variable.variables || {}
-    const examples = payload.data.examples || question.variable.examples || {}
-
-    const { hasEmptyField = false, errMessage = '' } = containsEmptyField(
-      variables
-    )
-    if (hasEmptyField) {
-      yield put({
-        type: CALCULATE_FORMULA_FAILED,
-      })
-      notification({ type: 'warn', msg: errMessage })
-      return true
-    }
-
-    let results = []
-    if (hasMathFormula(variables)) {
-      const isClozeMath = question.type === questionType.EXPRESSION_MULTIPART
-      const options = question?.isMath
-        ? isClozeMath
-          ? getOptionsForClozeMath(variables, get(question, 'validation', {}))
-          : getOptionsForMath(
-              get(question, 'validation.validResponse.value', [])
-            )
-        : {}
-      const latexValuePairs = [
-        getLatexValuePairs({
-          id: 'definition',
-          variables,
-          options,
-          isClozeMath,
-        }),
-      ]
-      if (examples) {
-        for (const example of examples) {
-          const pair = getLatexValuePairs({
-            id: `example${example.key}`,
-            variables,
-            example,
-            options,
-            isClozeMath,
-          })
-          if (pair.latexes.length > 0) {
-            latexValuePairs.push(pair)
-          }
-        }
-      }
-      results = yield call(evaluateApi.calculate, latexValuePairs)
-    }
-
-    const variable = { ...question.variable, examples, variables }
-    const newQuestion = { ...cloneDeep(question), variable }
-    for (const result of results) {
-      if (result.id === 'definition') {
-        Object.keys(result.values).forEach((key) => {
-          newQuestion.variable.variables[key].exampleValue = result.values[key]
-        })
-      } else {
-        const idx = newQuestion.variable.examples.findIndex(
-          (example) => `example${example.key}` === result.id
-        )
-        Object.keys(result.values).forEach((key) => {
-          newQuestion.variable.examples[idx][key] = result.values[key]
-        })
-      }
-    }
-
-    yield put({
-      type: UPDATE_QUESTION_REQUEST,
-      payload: newQuestion,
-    })
-  } catch (err) {
-    yield put({
-      type: CALCULATE_FORMULA_FAILED,
-    })
-    notification({ messageKey: 'somethingWentPleaseTryAgain' })
-    console.log(err)
-  }
-}
-
 function* loadQuestionSaga({ payload }) {
   try {
     const { data, rowIndex, isPassageWidget = false } = payload
@@ -1199,12 +1049,112 @@ function* updateQuestionSaga({ payload }) {
   })
 }
 
+function* generateVariableSaga({ payload }) {
+  try {
+    const dpUpdated = yield select(getDpUpdatedSelector)
+
+    if (!dpUpdated) {
+      if (typeof payload.nextAction === 'function') {
+        payload.nextAction()
+      }
+      return
+    }
+
+    const question = payload.newQuestion
+      ? payload.newQuestion
+      : yield select(getCurrentQuestionSelector)
+
+    if (!question.variable || !question.variable.enabled) {
+      return
+    }
+
+    yield put({
+      type: GENERATE_VARIABLE_START,
+    })
+
+    const variables = get(question, 'variable.variables', {})
+    const count = get(question, 'variable.combinationsCount', 25)
+    const examples = generateExamples(variables, count)
+
+    let results = []
+    if (hasMathFormula(variables)) {
+      const isClozeMath = question.type === questionType.EXPRESSION_MULTIPART
+      const options = question?.isMath
+        ? isClozeMath
+          ? getOptionsForClozeMath(variables, get(question, 'validation', {}))
+          : getOptionsForMath(
+              get(question, 'validation.validResponse.value', [])
+            )
+        : {}
+      const latexValuePairs = [
+        getLatexValuePairs({
+          id: 'definition',
+          variables,
+          options,
+          isClozeMath,
+        }),
+      ]
+      if (examples) {
+        for (const example of examples) {
+          const pair = getLatexValuePairs({
+            id: `example${example.key}`,
+            variables,
+            example,
+            options,
+            isClozeMath,
+          })
+          if (pair.latexes.length > 0) {
+            latexValuePairs.push(pair)
+          }
+        }
+      }
+      results = yield call(evaluateApi.calculate, latexValuePairs)
+    }
+
+    const variable = { ...question.variable, examples, variables }
+    const newQuestion = { ...cloneDeep(question), variable }
+    for (const result of results) {
+      if (result.id === 'definition') {
+        Object.keys(result.values).forEach((key) => {
+          newQuestion.variable.variables[key].exampleValue = result.values[key]
+        })
+      } else {
+        const idx = newQuestion.variable.examples.findIndex(
+          (example) => `example${example.key}` === result.id
+        )
+        Object.keys(result.values).forEach((key) => {
+          newQuestion.variable.examples[idx][key] = result.values[key]
+        })
+      }
+    }
+
+    yield put({
+      type: UPDATE_QUESTION_REQUEST,
+      payload: newQuestion,
+    })
+
+    yield put({
+      type: GENERATE_VARIABLE_FINISHED,
+    })
+
+    if (typeof payload.nextAction === 'function') {
+      payload.nextAction()
+    }
+  } catch (error) {
+    yield put({
+      type: GENERATE_VARIABLE_FINISHED,
+    })
+    notification({ messageKey: 'somethingWentPleaseTryAgain' })
+    console.log(error)
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_QUESTION_REQUEST, receiveQuestionSaga),
     yield takeEvery(SAVE_QUESTION_REQUEST, saveQuestionSaga),
     yield takeEvery(LOAD_QUESTION, loadQuestionSaga),
-    yield takeLatest(CALCULATE_FORMULA, calculateFormulaSaga),
+    yield takeLatest(GENERATE_VARIABLE_REQUEST, generateVariableSaga),
     yield takeEvery(ADD_AUTHORED_ITEMS_TO_TEST, addAuthoredItemsToTestSaga),
     yield takeLatest(UPDATE_QUESTION_REQUEST, updateQuestionSaga),
   ])

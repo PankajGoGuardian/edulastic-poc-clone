@@ -1,8 +1,8 @@
-/* eslint-disable */
 import JXG from 'jsxgraph'
 import { isNumber, cloneDeep } from 'lodash'
-import getDefaultConfig, { CONSTANT } from './config'
+import { greyThemeDark2 } from '@edulastic/colors'
 import * as Sentry from '@sentry/browser'
+import getDefaultConfig, { CONSTANT } from './config'
 import {
   Area,
   Circle,
@@ -140,6 +140,8 @@ class Board {
 
     this.creatingHandler = () => {}
     this.setCreatingHandler()
+
+    this.inequalities = []
   }
 
   addDragDropValue(value, x, y, dimensions) {
@@ -353,6 +355,7 @@ class Board {
     }
   }
 
+  // eslint-disable-next-line
   getTempPoints() {
     return [
       ...Line.getTempPoints(),
@@ -397,6 +400,7 @@ class Board {
         if (this.removeObjectsUnderMouse(event)) {
           Area.updateShadingsForAreaPoints(this, this.elements)
           this.events.emit(CONSTANT.EVENT_NAMES.CHANGE_DELETE)
+          this.removeIneqalities()
         }
         return
       }
@@ -670,12 +674,12 @@ class Board {
     this.elements.map(this.removeObject.bind(this))
     this.elements = []
     this.labelForEq = []
-
-    this.bgElements.map((el) => {
+    this.removeIneqalities()
+    this.bgElements.forEach((el) => {
       if (el.type == 12) {
         this.labelForEq.push(el.labelHTML)
       } else {
-        el.inherits.map((ancestorsEl) => {
+        el.inherits.forEach((ancestorsEl) => {
           this.labelForEq.push(ancestorsEl.labelHTML)
         })
       }
@@ -683,6 +687,7 @@ class Board {
   }
 
   resetAnswers() {
+    this.removeIneqalities()
     this.answers.map(this.removeObject.bind(this))
     this.answers = []
   }
@@ -830,7 +835,7 @@ class Board {
         case CONSTANT.TOOLS.RAY_RIGHT_DIRECTION_LEFT_HOLLOW:
           return NumberlineVector.getConfig(element, this)
         default:
-          break
+          return null
       }
     })
   }
@@ -951,6 +956,13 @@ class Board {
     )
   }
 
+  removeIneqalities() {
+    this.inequalities.forEach((ineq) => {
+      this.$board.removeObject(ineq)
+    })
+    this.inequalities = []
+  }
+
   loadAnswersFromConfig(flatCfg) {
     const config = flat2nestedConfig(flatCfg)
     this.answers.push(
@@ -964,6 +976,7 @@ class Board {
   }
 
   loadFromConfig(flatCfg) {
+    this.removeIneqalities()
     const config = flat2nestedConfig(flatCfg)
     this.elements.push(...config.map((element) => this.loadObject(element)))
     Area.updateShadingsForAreaPoints(this, this.elements)
@@ -1049,11 +1062,11 @@ class Board {
   }
 
   loadObject(object, settings = {}) {
-    this.bgElements.map((el) => {
+    this.bgElements.forEach((el) => {
       if (el.type == 12) {
         this.labelForEq.push(el.labelHTML)
       } else {
-        el.inherits.map((ancestorsEl) => {
+        el.inherits.forEach((ancestorsEl) => {
           this.labelForEq.push(ancestorsEl.labelHTML)
         })
       }
@@ -1064,7 +1077,6 @@ class Board {
       checkLabelVisibility = false,
       checkPointVisibility = false,
       fixed = false,
-      bg = false,
     } = settings
 
     switch (object._type) {
@@ -1143,7 +1155,7 @@ class Board {
         )
 
       case JXG.OBJECT_TYPE_POLYGON:
-        object.points.map((point) => {
+        object.points.forEach((point) => {
           this.labelForEq.push(point)
         })
         return Polygon.create(
@@ -1252,9 +1264,11 @@ class Board {
         this.labelForEq.push(object.points[0].label)
         const point = Point.create(this, object.points[0], {
           pointIsVisible:
-            !checkPointVisibility || (showPoints && point.pointIsVisible),
+            !checkPointVisibility ||
+            (showPoints && object.points[0]?.pointIsVisible),
           labelIsVisible:
-            !checkLabelVisibility || (showPoints && point.labelIsVisible),
+            !checkLabelVisibility ||
+            (showPoints && object.points[0]?.labelIsVisible),
           fixed,
         })
         return Exponent2.create(this, object, point, {
@@ -1283,7 +1297,7 @@ class Board {
         )
 
       case Polynom.jxgType:
-        object.points.map((point) => {
+        object.points.forEach((point) => {
           this.labelForEq.push(point)
         })
         return Polynom.create(
@@ -1388,26 +1402,36 @@ class Board {
           }
         )
 
-      case Equation.jxgType:
-        function getPoints(type, res) {
+      case Equation.jxgType: {
+        const getPoints = (type, res) => {
           res = res.split('],')[1]
-          res = res.replace("['" + type + "',[", '').replace(']]', '')
+          res = res.replace(`['${type}',[`, '').replace(']]', '')
           res = res.substring(2, res.length - 2)
           res = res.split('),(')
-          for (var i = 0; i < res.length; i++) {
+          for (let i = 0; i < res.length; i++) {
             res[i] = res[i].split(',')
           }
           return res
         }
+        const result = object.apiLatex
+        let latex = object.latex
 
-        var obj = {
+        const isInequalities = ['>=', '>', '<=', '<'].some((x) =>
+          result.includes(x)
+        )
+        let shouldNotDashed = true
+        let isInverseIneq = false
+        if (isInequalities) {
+          shouldNotDashed = ['>=', '<='].some((x) => result.includes(x))
+          isInverseIneq = ['>=', '>'].some((x) => result.includes(x))
+        }
+
+        const obj = {
           label: false,
           labelIsVisible: false,
           baseColor: '#595e98',
+          dashed: !shouldNotDashed,
         }
-
-        var result = object.apiLatex
-        var latex = object.latex
 
         if (
           latex.substring(1, 6) == 'left(' &&
@@ -1419,9 +1443,9 @@ class Board {
           latex = latex.replace(/\\/g, '')
           latex = latex.split(',')
 
-          var labelPoint1 = getLabel(this.labelForEq)
+          const labelPoint1 = getLabel(this.labelForEq)
 
-          var point = {
+          const point = {
             x: latex[0],
             y: latex[1],
             label: object.label || getLabel(this.labelForEq),
@@ -1438,12 +1462,13 @@ class Board {
           }
 
           return Point.create(this, point, { latex: latexForEqPoint, result })
-        } else if (result.includes('line')) {
-          var coords = getPoints('line', result)
+        }
+        if (result.includes('line')) {
+          const coords = getPoints('line', result)
 
           const labelPoint1 = getLabel(this.labelForEq)
 
-          var point1 = {
+          const point1 = {
             x: coords[0][0],
             y: coords[0][1],
             label: object.pointsLabel[0] || getLabel(this.labelForEq),
@@ -1458,7 +1483,7 @@ class Board {
           )
           const labelPoint2 = getLabel(this.labelForEq)
 
-          var point2 = {
+          const point2 = {
             x: coords[1][0],
             y: coords[1][1],
             label: object.pointsLabel[1] || getLabel(this.labelForEq),
@@ -1471,25 +1496,37 @@ class Board {
           this.labelForEq.push(
             object.pointsLabel[1] || getLabel(this.labelForEq)
           )
-          var points = [Point.create(this, point1), Point.create(this, point2)]
-          var type = 'line'
+          const points = [
+            Point.create(this, point1),
+            Point.create(this, point2),
+          ]
+          const type = 'line'
 
           if (!object.pointsLabel) {
             object.pointsLabel = [labelPoint1, labelPoint2]
           }
 
-          return Line.create(this, obj, points, type, {
+          const jsxObj = Line.create(this, obj, points, type, {
             latex,
             result,
             pointsLabel: [labelPoint1, labelPoint2],
           })
-        } else if (result.includes('circle')) {
-          var coords = getPoints('circle', result)
+          if (isInequalities) {
+            const ineq = this.$board.create('inequality', [jsxObj], {
+              inverse: isInverseIneq,
+              fillColor: greyThemeDark2,
+            })
+            this.inequalities.push(ineq)
+          }
+          return jsxObj
+        }
+        if (result.includes('circle')) {
+          const coords = getPoints('circle', result)
 
           const labelPoint1 = getLabel(this.labelForEq)
 
-          //point1 - center
-          var point1 = {
+          // point1 - center
+          const point1 = {
             x: coords[1][0],
             y: coords[0][1],
             label: object.pointsLabel[0] || getLabel(this.labelForEq),
@@ -1504,8 +1541,8 @@ class Board {
           )
           const labelPoint2 = getLabel(this.labelForEq)
 
-          //highest point of circle (top Y)
-          var point2 = {
+          // highest point of circle (top Y)
+          const point2 = {
             x: coords[1][0],
             y: coords[1][1],
             label: object.pointsLabel[1] || getLabel(this.labelForEq),
@@ -1518,7 +1555,10 @@ class Board {
           this.labelForEq.push(
             object.pointsLabel[1] || getLabel(this.labelForEq)
           )
-          var points = [Point.create(this, point1), Point.create(this, point2)]
+          const points = [
+            Point.create(this, point1),
+            Point.create(this, point2),
+          ]
 
           if (!object.pointsLabel) {
             object.pointsLabel = [labelPoint1, labelPoint2]
@@ -1529,12 +1569,13 @@ class Board {
             result,
             labelHTML: [labelPoint1, labelPoint2],
           })
-        } else if (result.includes(CONSTANT.TOOLS.ELLIPSE)) {
-          var coords = getPoints(CONSTANT.TOOLS.ELLIPSE, result)
+        }
+        if (result.includes(CONSTANT.TOOLS.ELLIPSE)) {
+          const coords = getPoints(CONSTANT.TOOLS.ELLIPSE, result)
 
           const labelPoint1 = getLabel(this.labelForEq)
 
-          var point1 = {
+          const point1 = {
             x: `${coords[2][0]} - ${coords[1][0]}`,
             y: coords[0][1],
             label: object.pointsLabel[0] || getLabel(this.labelForEq),
@@ -1547,7 +1588,7 @@ class Board {
           this.labelForEq.push(object.label[0] || getLabel(this.labelForEq))
           const labelPoint2 = getLabel(this.labelForEq)
 
-          var point2 = {
+          const point2 = {
             x: coords[1][0],
             y: coords[1][1],
             label: object.pointsLabel[1] || getLabel(this.labelForEq),
@@ -1560,7 +1601,7 @@ class Board {
           this.labelForEq.push(object.label[1] || getLabel(this.labelForEq))
           const labelPoint3 = getLabel(this.labelForEq)
 
-          var point3 = {
+          const point3 = {
             x: coords[2][0],
             y: coords[2][1],
             label: object.pointsLabel[2] || getLabel(this.labelForEq),
@@ -1571,7 +1612,7 @@ class Board {
           }
 
           this.labelForEq.push(object.label[2] || getLabel(this.labelForEq))
-          var points = [
+          const points = [
             Point.create(this, point1),
             Point.create(this, point2),
             Point.create(this, point3),
@@ -1585,12 +1626,13 @@ class Board {
             result,
             labelHTML: [labelPoint1, labelPoint2, labelPoint3],
           })
-        } else if (result.includes('hyperbola')) {
-          var coords = getPoints('hyperbola', result)
+        }
+        if (result.includes('hyperbola')) {
+          const coords = getPoints('hyperbola', result)
 
           const labelPoint1 = getLabel(this.labelForEq)
 
-          var point1 = {
+          const point1 = {
             x: coords[0][0],
             y: coords[0][1],
             label: object.pointsLabel[0] || getLabel(this.labelForEq),
@@ -1603,7 +1645,7 @@ class Board {
           this.labelForEq.push(object.label[0] || getLabel(this.labelForEq))
           const labelPoint2 = getLabel(this.labelForEq)
 
-          var point2 = {
+          const point2 = {
             x: coords[1][0],
             y: coords[1][1],
             label: object.pointsLabel[1] || getLabel(this.labelForEq),
@@ -1615,7 +1657,7 @@ class Board {
           this.labelForEq.push(object.label[1] || getLabel(this.labelForEq))
           const labelPoint3 = getLabel(this.labelForEq)
 
-          var point3 = {
+          const point3 = {
             x: coords[2][0],
             y: coords[2][1],
             label: object.pointsLabel[2] || getLabel(this.labelForEq),
@@ -1626,7 +1668,7 @@ class Board {
           }
 
           this.labelForEq.push(object.label[2] || getLabel(this.labelForEq))
-          var points = [
+          const points = [
             Point.create(this, point1),
             Point.create(this, point2),
             Point.create(this, point3),
@@ -1640,12 +1682,13 @@ class Board {
             result,
             labelHTML: [labelPoint1, labelPoint2, labelPoint3],
           })
-        } else if (result.includes('parabola2')) {
-          var coords = getPoints('parabola2', result)
+        }
+        if (result.includes('parabola2')) {
+          const coords = getPoints('parabola2', result)
 
           const labelPoint1 = getLabel(this.labelForEq)
 
-          var point1 = {
+          const point1 = {
             x: coords[1][0],
             y: coords[1][1],
             label: object.pointsLabel[1] || getLabel(this.labelForEq),
@@ -1658,7 +1701,7 @@ class Board {
           this.labelForEq.push(object.label[0] || getLabel(this.labelForEq))
           const labelPoint2 = getLabel(this.labelForEq)
 
-          var point2 = {
+          const point2 = {
             x: coords[2][0],
             y: coords[2][1],
             label: object.pointsLabel[2] || getLabel(this.labelForEq),
@@ -1671,7 +1714,7 @@ class Board {
           this.labelForEq.push(object.label[1] || getLabel(this.labelForEq))
           const labelPoint3 = getLabel(this.labelForEq)
 
-          var point3 = {
+          const point3 = {
             x: coords[0][0],
             y: coords[0][1],
             label: object.pointsLabel[0] || getLabel(this.labelForEq),
@@ -1682,7 +1725,7 @@ class Board {
           }
 
           this.labelForEq.push(object.label[2] || getLabel(this.labelForEq))
-          var points = [
+          const points = [
             Point.create(this, point3),
             Point.create(this, point2),
             Point.create(this, point1),
@@ -1696,11 +1739,10 @@ class Board {
             result,
             labelHTML: [labelPoint3, labelPoint2, labelPoint1],
           })
-        } else {
-          object.apiLatex = getEquationFromApiLatex(object.apiLatex)
-          return Equation.create(this, object)
         }
-
+        object.apiLatex = getEquationFromApiLatex(object.apiLatex)
+        return Equation.create(this, object)
+      }
       case Area.jxgType:
         return Area.create(this, object, { fixed })
 

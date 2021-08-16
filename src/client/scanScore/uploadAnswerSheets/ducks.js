@@ -171,6 +171,11 @@ function* createOmrUploadSessionSaga({
 }) {
   let uploadRunner
   try {
+    if (!file) {
+      throw new Error(
+        'Multiple files and file type other than PDF are not supported.'
+      )
+    }
     const source = { name: file.name, size: file.size }
     const session = yield call(scannerApi.createOmrUploadSession, {
       assignmentId,
@@ -259,7 +264,10 @@ function* updateOmrUploadSessionSaga({
       status,
       message: session.message,
     })
-    notification({ type: 'success', msg: 'Scores added to Edulastic' })
+    notification({
+      type: 'success',
+      msg: 'Successfully scanned responses have been recorded on Edulastic.',
+    })
     // delete firebase docs here
     const docIds = pageDocs.map(({ docId }) => docId)
     yield call(deleteNotificationDocuments, docIds)

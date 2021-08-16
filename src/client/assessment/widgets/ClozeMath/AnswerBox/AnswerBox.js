@@ -16,6 +16,7 @@ const AnswerBox = ({
   altInputs,
   altMathUnitAnswers,
   responseIds,
+  singleResponseBox,
 }) => {
   const { inputs, maths, dropDowns, mathUnits } = responseIds
   let validAnswers = []
@@ -166,7 +167,7 @@ const AnswerBox = ({
       >
         {validAnswers.map((answer, index) => (
           <Answer key={index}>
-            <Label>{answer.index + 1}</Label>
+            {!singleResponseBox && <Label>{answer.index + 1}</Label>}
             <AnswerBoxText isMath={answer.isMath}>{answer.value}</AnswerBoxText>
           </Answer>
         ))}
@@ -182,7 +183,7 @@ const AnswerBox = ({
           >
             {altAnswer.map((altAns) => (
               <Answer>
-                <Label>{altAns.index + 1}</Label>
+                {!singleResponseBox && <Label>{altAns.index + 1}</Label>}
                 <AnswerBoxText isMath={altAns.isMath}>
                   {altAns.value}
                 </AnswerBoxText>

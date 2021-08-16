@@ -781,6 +781,9 @@ class Display extends Component {
         answersIndex={answersIndex}
         stemNumeration={stemNumeration}
         idValueMap={idValueMap}
+        singleResponseBox={
+          responseContainers && responseContainers.length === 1
+        }
       />
     ))
 

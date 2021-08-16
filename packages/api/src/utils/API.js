@@ -299,11 +299,16 @@ export default class API {
       },
       (data) => {
         const reqUrl = data.response?.config?.url || 'NA'
-        const err = new Error(
-          `Sorry, you have hit an unexpected error and the product team has been notified. We will fix it as soon as possible. url: ${reqUrl}: message: ${
-            data.response?.data?.message || 'NA'
-          }`
-        )
+        let err
+        if (data.response?.status === 500) {
+          err = new Error(
+            `Sorry, you have hit an unexpected error and the product team has been notified. We will fix it as soon as possible. url: ${reqUrl}: message: ${
+              data.response?.data?.message || 'NA'
+            }`
+          )
+        } else {
+          err = new Error(data.response?.data?.message || 'NA')
+        }
 
         // make the response available so anyone can read it.
         err.status = data.response?.status

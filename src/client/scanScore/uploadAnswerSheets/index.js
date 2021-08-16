@@ -68,7 +68,9 @@ const UploadAnswerSheets = ({
   }, [omrSheetDocs, assignmentId, sessionId])
 
   const breadcrumbData = useMemo(() => {
-    const breadcrumbs = [{ title: 'Upload Responses' }]
+    const breadcrumbs = [
+      { title: 'Upload Responses', onClick: () => setResponsePageNumber(0) },
+    ]
     if (assignmentId && groupId) {
       breadcrumbs[0].to = `uploadAnswerSheets?assignmentId=${assignmentId}&groupId=${groupId}`
     }

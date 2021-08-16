@@ -127,6 +127,14 @@ class SimpleOptions extends React.Component {
     this.setState({ showSettings: !showSettings })
   }
 
+  onTabChange = (value) => {
+    const { freezeSettings, handleTabChange } = this.props
+    if (freezeSettings && value !== sectionContants.CLASS_GROUP_SECTION) {
+      notification({ type: 'warn', messageKey: 'overrrideSettingsRestricted' })
+    }
+    handleTabChange(value)
+  }
+
   onChange = (field, value) => {
     const {
       onClassFieldChange,
@@ -400,7 +408,6 @@ class SimpleOptions extends React.Component {
       defaultTestProfiles,
       onClassFieldChange,
       activeTab,
-      handleTabChange,
       selectedStandardsCount,
       showAssignModuleContent,
       recommendedResources,
@@ -477,7 +484,7 @@ class SimpleOptions extends React.Component {
 
     return (
       <OptionConationer isAdvancedView={isAdvancedView} ref={this.containerRef}>
-        <Tabs activeKey={activeTab} onChange={handleTabChange}>
+        <Tabs activeKey={activeTab} onChange={this.onTabChange}>
           <TabPane tab="CLASS/GROUP" key={sectionContants.CLASS_GROUP_SECTION}>
             {isAdvancedView ? (
               <TabContentContainer width="100%">

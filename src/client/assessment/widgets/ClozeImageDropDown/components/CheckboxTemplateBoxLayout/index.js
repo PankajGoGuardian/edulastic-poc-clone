@@ -45,6 +45,9 @@ const CheckboxTemplateBoxLayout = ({
     return isEmpty(evaluation)
   }, [evaluation])
 
+  const singleResponseBox =
+    responseContainers && responseContainers.length === 1
+
   return (
     <StyledTemplateBox fontSize={fontSize}>
       <TemplateCover
@@ -133,6 +136,7 @@ const CheckboxTemplateBoxLayout = ({
               allCorrect={allCorrect}
               answerScore={answerScore}
               isEvaluationEmpty={isEvaluationEmpty}
+              singleResponseBox={singleResponseBox}
             />
           )
         })}

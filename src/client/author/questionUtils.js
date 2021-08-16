@@ -1,7 +1,7 @@
-import { questionType, question, customTags } from '@edulastic/constants'
+import { questionType, question, customTags, math } from '@edulastic/constants'
 import { get, isString, isEmpty, keys, keyBy } from 'lodash'
 import striptags from 'striptags'
-import { templateHasImage } from '@edulastic/common'
+import { templateHasImage, notification } from '@edulastic/common'
 import { displayStyles } from '../assessment/widgets/ClozeEditingTask/constants'
 import { hasEmptyAnswers } from './utils/answerValidator'
 
@@ -19,6 +19,8 @@ const {
   PASSAGE,
   EDITING_TASK,
 } = questionType
+
+const { methods } = math
 
 export const isRichTextFieldEmpty = (text) => {
   if (!text) {
@@ -389,6 +391,59 @@ const emptyCorrectAnswerErrMsg = {
     )
   },
 }
+
+const showEmptyAnswerNotification = (item = {}) => {
+  const { validResponse = {}, altResponses = [] } = item?.validation || {}
+  const answers = [validResponse, ...altResponses]
+
+  const hasEmpty = answers.some((answer = {}) => {
+    const textInputs = answer.textinput?.value || []
+    const dropdowns = answer.dropdown?.value || []
+    const mathInputs = (answer.value || []).flatMap((input) => input)
+    const mathUnitInputs = (answer.mathUnits?.value || []).filter(
+      (_answer) => !isEmpty(_answer)
+    )
+    const textInputsAndDropdowns = [...textInputs, ...dropdowns]
+
+    if (!isEmpty(answer.value)) {
+      const hasEmptyMathAnswers = isEmpty(
+        mathInputs.filter((mathInput = {}) =>
+          mathInput.method !== methods.EQUIV_SYNTAX
+            ? !isEmpty(mathInput?.value)
+            : true
+        )
+      )
+      if (hasEmptyMathAnswers) {
+        return true
+      }
+    }
+
+    if (!isEmpty(answer.mathUnits?.value || [])) {
+      const hasEmptyMathUnitInputs = isEmpty(
+        mathUnitInputs.filter((input = {}) =>
+          input.method !== methods.EQUIV_SYNTAX ? !isEmpty(input?.value) : true
+        )
+      )
+      if (hasEmptyMathUnitInputs) {
+        return true
+      }
+    }
+
+    if (!isEmpty(textInputs) || !isEmpty(dropdowns)) {
+      const hasEmptyTextOrDropDown = isEmpty(
+        textInputsAndDropdowns.filter((ans) => !isEmpty(ans.value))
+      )
+      if (hasEmptyTextOrDropDown) {
+        return true
+      }
+    }
+
+    return false
+  })
+
+  return hasEmpty
+}
+
 /**
  * does question have enough data !?
  *  This is only the begnning. This func is going to grow to handle
@@ -462,6 +517,16 @@ export const isIncompleteQuestion = (item, itemLevelScoring = false) => {
       }
       return [true, defaultErrorMessage] // [true, msg]
     }
+  }
+
+  if (
+    item?.type === EXPRESSION_MULTIPART &&
+    showEmptyAnswerNotification(item)
+  ) {
+    notification({
+      type: 'warn',
+      msg: 'Saving with an empty correct/alternate answer.',
+    })
   }
 
   return [false]

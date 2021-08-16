@@ -22,7 +22,6 @@ import {
   isEmpty,
 } from 'lodash'
 import React, { useEffect, useMemo, useState } from 'react'
-import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import FeatureNotAvailableModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/FeatureNotAvailableModal'
 import TrialModal from '../../../Dashboard/components/Showcase/components/Myclasses/components/TrialModal/index'
 import FiltersSection from './FilterSection'
@@ -103,7 +102,6 @@ function getProductsWithMetaData(metaData, products) {
 const SubscriptionMain = ({
   isPremiumTrialUsed,
   startTrialAction,
-  setShowSubscriptionAddonModalWithId,
   usedTrialItemBankIds,
   products,
   itemBankSubscriptions,
@@ -197,17 +195,9 @@ const SubscriptionMain = ({
 
   const hasUsedAllItemBankTrials = trialUnuseditemBankProductIds.length === 0
 
-  const getIsPaidSparkProduct = (itemBankId) =>
-    paidItemBankIds.includes(itemBankId)
-
-  const gethasUsedItemBankTrial = (itemBankId) =>
-    usedTrialItemBankIds.includes(itemBankId)
-
   const toggleTrialModal = (value) => setIsTrialModalVisible(value)
 
   const handleSelectStateModal = () => {}
-
-  const handlePurchaseFlow = () => setShowSubscriptionAddonModalWithId()
 
   const { FEATURED } = groupBy(dashboardTiles, 'type')
   const featuredBundles = FEATURED || []
@@ -231,11 +221,11 @@ const SubscriptionMain = ({
     if (isEmpty(currentItemBank)) {
       const product = products.find((x) => x.id === productId)
       subscriptionData = {
-        productId: product.id,
-        productName: product.name,
-        description: product.description,
-        hasTrial: !!product.trialPeriod,
-        itemBankId: product.linkedProductId,
+        productId: product?.id,
+        productName: product?.name,
+        description: product?.description,
+        hasTrial: !!product?.trialPeriod,
+        itemBankId: product?.linkedProductId,
       }
     } else {
       const { config = {} } = currentItemBank
@@ -250,8 +240,8 @@ const SubscriptionMain = ({
     })
   }
 
-  const handleStartTrialButtonClick = (productId) => {
-    settingProductData(productId)
+  const handleStartTrialButtonClick = (productIdOrSubType) => {
+    settingProductData(productIdOrSubType)
     // NOTE: Don't set a boolean default value for 'isPremiumTrialUsed'!
     if (!isBoolean(isPremiumTrialUsed)) {
       return notification({
@@ -264,7 +254,13 @@ const SubscriptionMain = ({
       setShowItemBankTrialUsedModal(true)
       return
     }
-    setIsTrialModalVisible(true)
+    if (
+      !['enterprise', 'partial_premium'].includes(
+        productIdOrSubType?.toLowerCase()
+      )
+    ) {
+      setIsTrialModalVisible(true)
+    }
   }
 
   // Show item bank trial button when item bank trial is not used yet and user is either premium
@@ -355,9 +351,9 @@ const SubscriptionMain = ({
     ? [productData?.productId]
     : []
 
-  const isUserPremium = ['premium', 'enterprise', 'partial_premium'].includes(
-    subType?.toLowerCase?.()
-  )
+  const isUserPremium =
+    ['premium', 'enterprise'].includes(subType?.toLowerCase?.()) ||
+    (subType?.toLowerCase() === 'partial_premium' && isPremiumUser)
 
   const isTeacher = user?.role === roleuser.TEACHER
   const totalRemainingTeacherPremiumCount = useMemo(() => {
@@ -431,6 +427,7 @@ const SubscriptionMain = ({
             return (
               x.itemBankId ===
                 products?.find((y) => y.id === productId)?.linkedProductId &&
+              x?.endDate > Date.now() &&
               !x.isTrial
             )
           })
@@ -708,22 +705,27 @@ const SubscriptionMain = ({
                       )}
                       {itemBankSubscription && (
                         <ExpiryMsg data-cy={`${_product.type}_AlertMsg`}>
-                          <IconPurchasedAlert />
                           {itemBankSubscription?.isTrial ? (
-                            <span>
-                              FREE TRIAL EXPIRES{' '}
-                              {new Date(
-                                itemBankSubscription?.endDate
-                              ).toDateString()}
-                            </span>
-                          ) : (
-                            <span>
-                              purchased - EXPIRES{' '}
-                              {new Date(
-                                itemBankSubscription?.endDate
-                              ).toDateString()}
-                            </span>
-                          )}
+                            <>
+                              <IconPurchasedAlert />
+                              <span>
+                                FREE TRIAL EXPIRES{' '}
+                                {new Date(
+                                  itemBankSubscription?.endDate
+                                ).toDateString()}
+                              </span>
+                            </>
+                          ) : itemBankSubscription?.endDate > Date.now() ? (
+                            <>
+                              <IconPurchasedAlert />
+                              <span>
+                                purchased - EXPIRES{' '}
+                                {new Date(
+                                  itemBankSubscription?.endDate
+                                ).toDateString()}
+                              </span>
+                            </>
+                          ) : null}
                         </ExpiryMsg>
                       )}
                     </SectionTitle>

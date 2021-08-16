@@ -1,3 +1,5 @@
+import path from 'path'
+
 import { FireBaseService as Fbs } from '@edulastic/common'
 
 export const bubbleSheetsCollectionName = 'BubbleAnswerSheets'
@@ -60,6 +62,13 @@ export const deleteNotificationDocuments = (docIds = []) => {
 }
 
 export const getFileNameFromUri = (uri = '') => uri.split('/').lastItem
+
+export const parsePageNumberFromName = (name) => {
+  const ext = path.extname(name)
+  const basename = path.basename(name, ext)
+  const pageNumber = basename.split('-').lastItem
+  return parseInt(pageNumber, 10)
+}
 
 export const formatBytes = (bytes, decimals = 2) => {
   if (!bytes) return ''

@@ -117,21 +117,37 @@ const MyClasses = ({
       return { ...x._source, _id: x._id }
     })
     if (user?.recommendedContentUpdated) {
-      if (data?.length > 0) {
-        notification({
-          msg: 'Recommended content is updated.',
-          type: 'success',
-        })
-      } else {
-        notification({
-          msg:
-            'No recommended content found currently. We will show them when available.',
-          type: 'info',
-        })
+      const isContentUpdatedAutomatically = JSON.parse(
+        localStorage.getItem(
+          `recommendedTest:${user?._id}:isContentUpdatedAutomatically`
+        )
+      )
+      if (!isContentUpdatedAutomatically) {
+        if (data?.length > 0) {
+          notification({
+            msg: 'Recommended content is updated.',
+            type: 'success',
+          })
+        } else {
+          notification({
+            msg:
+              'No recommended content found currently. We will show them when available.',
+            type: 'info',
+          })
+        }
       }
+      localStorage.setItem(
+        `recommendedTest:${user?._id}:isContentUpdatedAutomatically`,
+        false
+      )
       const temp = user
       temp.recommendedContentUpdated = false
       setUser(temp)
+    } else {
+      localStorage.setItem(
+        `recommendedTest:${user?._id}:isContentUpdatedAutomatically`,
+        false
+      )
     }
     if (!_data || !_data.length) {
       return
@@ -220,7 +236,7 @@ const MyClasses = ({
 
   const handleBlockedClick = ({ subscriptionData }) => {
     if (
-      usedTrialItemBankIds.includes(subscriptionData.productId) ||
+      usedTrialItemBankIds.includes(subscriptionData.itemBankId) ||
       (isPremiumTrialUsed && !isPremiumUser)
     ) {
       setShowItemBankTrialUsedModal(true)
@@ -233,6 +249,7 @@ const MyClasses = ({
       description: subscriptionData.description,
       hasTrial: subscriptionData.hasTrial,
       itemBankId: subscriptionData.itemBankId,
+      blockInAppPurchase: subscriptionData.blockInAppPurchase,
     })
   }
 
@@ -312,13 +329,16 @@ const MyClasses = ({
   const getFeatureBundles = (bundles) =>
     bundles.map((bundle) => {
       const { subscriptionData } = bundle.config
-      if (!subscriptionData?.productId) {
+      if (
+        !subscriptionData?.productId &&
+        !subscriptionData?.blockInAppPurchase
+      ) {
         return bundle
       }
 
       const { imageUrl: imgUrl, premiumImageUrl } = bundle
       const isBlocked = !hasAccessToItemBank(subscriptionData.itemBankId)
-      const imageUrl = isBlocked ? premiumImageUrl : imgUrl
+      const imageUrl = isBlocked ? premiumImageUrl || imgUrl : imgUrl
 
       return {
         ...bundle,
@@ -341,17 +361,9 @@ const MyClasses = ({
     [collections]
   )
 
-  const isSingaporeMathCollectionActive = featuredBundles.filter(
-    (feature) =>
-      (feature.description?.toLowerCase()?.includes('singaporemath') ||
-        feature.description?.toLowerCase()?.includes('singapore math')) &&
-      feature?.active
-  )
-
   const isSingaporeMath =
     user?.referrer?.includes('singapore') ||
-    user?.utm_source?.toLowerCase()?.includes('singapore') ||
-    isSingaporeMathCollectionActive?.length > 0
+    user?.utm_source?.toLowerCase()?.includes('singapore')
 
   const isCpm = user?.utm_source?.toLowerCase()?.includes('cpm')
 
@@ -705,6 +717,9 @@ const MyClasses = ({
           handlePurchaseFlow={handlePurchaseFlow}
           showTrialButton={showTrialButton}
           isPremiumUser={isPremiumUser}
+          hasTrial={productData.hasTrial}
+          blockInAppPurchase={productData.blockInAppPurchase}
+          hideTitle={isSingaporeMath && productData.blockInAppPurchase}
         />
       )}
       {(isTrialModalVisible || showHeaderTrialModal) && (

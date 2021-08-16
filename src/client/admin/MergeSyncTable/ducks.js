@@ -1,3 +1,4 @@
+import React from 'react'
 import { createReducer, createAction } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
 import { put, takeEvery, call, all } from 'redux-saga/effects'
@@ -701,38 +702,35 @@ function* fetchSyncEdlinkOrphanUsers({ payload }) {
 }
 
 function* setStopSyncSaga({
-  payload: { isClasslink, stopSyncData, districtId },
+  payload: { isClasslink, stopSyncData, districtId, schools },
 }) {
   try {
     const api = isClasslink ? atlasStopSyncApi : cleverStopSyncApi
-    const schoolsToEnable = []
-    const schoolsToDisable = []
-    Object.entries(stopSyncData).forEach(([id, value]) => {
-      id = id.replaceAll('-', '')
-      if (value) schoolsToEnable.push(id)
-      else schoolsToDisable.push(id)
+    const result = yield call(api, {
+      districtId,
+      schools: schools.flatMap((s) => {
+        return typeof stopSyncData[s.syncKey] === 'undefined'
+          ? []
+          : [
+              {
+                ...s,
+                stopSync: stopSyncData[s.syncKey],
+              },
+            ]
+      }),
     })
-    const calls = []
-    if (schoolsToEnable.length)
-      calls.push(
-        call(api, {
-          stopSync: true,
-          districtId,
-          schoolIds: schoolsToEnable,
-        })
-      )
-    if (schoolsToDisable.length)
-      calls.push(
-        call(api, {
-          stopSync: false,
-          districtId,
-          schoolIds: schoolsToDisable,
-        })
-      )
-    const result = yield all(calls)
-    const failedResult = result.find((res) => res.success === false)
-    if (failedResult)
-      throw new Error(failedResult.message || 'Stop Sync Failed')
+    if (result.success) {
+      notification({
+        msg: (
+          <>
+            Stop Sync Success
+            <br />
+            Updated: {result.nModified}, Created: {result.nUpserted}
+          </>
+        ),
+        type: 'success',
+      })
+    } else throw new Error(result.message || 'Stop Sync Failed')
   } catch (err) {
     captureSentryException(err)
     notification({ msg: err, type: 'error' })

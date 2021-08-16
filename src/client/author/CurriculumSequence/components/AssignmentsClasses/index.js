@@ -171,6 +171,7 @@ const AssignmentsClassesContainer = styled.div`
   background: ${white};
   width: 100%;
   display: block;
+  margin-bottom: 25px;
 `
 
 const ActionsWrapper = styled.div`

@@ -220,44 +220,6 @@ class QuadrantsMoreOptions extends Component {
     }
   }
 
-  handleRatioChange = (event) => {
-    let { value } = event.target
-    const { name } = event.target
-    const {
-      graphData: { canvas },
-      setCanvas,
-    } = this.props
-
-    value = parseFloat(value)
-    if (!isNaN(value)) {
-      value = value > 0 ? value : 1
-      if (name === 'xRatio') {
-        canvas.xMin = +(
-          parseFloat(canvas.xMin) *
-          (value / canvas.xRatio)
-        ).toFixed(4)
-        canvas.xMax = +(
-          parseFloat(canvas.xMax) *
-          (value / canvas.xRatio)
-        ).toFixed(4)
-      } else if (name === 'yRatio') {
-        canvas.yMin = +(
-          parseFloat(canvas.yMin) *
-          (value / canvas.yRatio)
-        ).toFixed(4)
-        canvas.yMax = +(
-          parseFloat(canvas.yMax) *
-          (value / canvas.yRatio)
-        ).toFixed(4)
-      }
-      canvas[name] = value
-      setCanvas(canvas)
-      this.setState({ [name]: value })
-    } else {
-      this.setState({ [name]: canvas[name] })
-    }
-  }
-
   handleSelect = (name, value) => {
     const { graphData, setOptions } = this.props
     const { uiStyle } = graphData
@@ -333,10 +295,8 @@ class QuadrantsMoreOptions extends Component {
             ...canvas,
             xMin,
             xMax,
-            xRatio: 1,
             yMin,
             yMax,
-            yRatio: 1,
           }
           const newUiStyle = {
             ...uiStyle,
@@ -439,8 +399,6 @@ class QuadrantsMoreOptions extends Component {
       xMin,
       xAxisLabel,
       yAxisLabel,
-      xRatio,
-      yRatio,
       xDistance,
       yDistance,
       xTickDistance,
@@ -640,17 +598,17 @@ class QuadrantsMoreOptions extends Component {
           <Row gutter={4} type="flex" align="middle">
             <Col md={11} marginBottom="0px">
               <Row type="flex" align="middle">
-                <Col align="center" md={3} marginBottom="6px">
+                <Col align="center" md={4} marginBottom="6px">
                   <ColumnLabel>
                     {t('component.graphing.grid_options.axes')}
                   </ColumnLabel>
                 </Col>
-                <Col align="center" md={5} marginBottom="6px">
+                <Col align="center" md={6} marginBottom="6px">
                   <ColumnLabel>
                     {t('component.graphing.grid_options.min')}
                   </ColumnLabel>
                 </Col>
-                <Col align="center" md={5} marginBottom="6px">
+                <Col align="center" md={6} marginBottom="6px">
                   <ColumnLabel>
                     {t('component.graphing.grid_options.max')}
                   </ColumnLabel>
@@ -663,11 +621,6 @@ class QuadrantsMoreOptions extends Component {
                 <Col align="center" md={4} marginBottom="6px">
                   <ColumnLabel>
                     {t('component.graphing.grid_options.tick_distance')}
-                  </ColumnLabel>
-                </Col>
-                <Col align="center" md={3} marginBottom="6px">
-                  <ColumnLabel>
-                    {t('component.graphing.grid_options.ratio')}
                   </ColumnLabel>
                 </Col>
               </Row>
@@ -719,7 +672,7 @@ class QuadrantsMoreOptions extends Component {
           </Row>
           <Row center gutter={4} mb="4">
             <Col md={11} marginBottom="0px">
-              <Col md={3} marginBottom="0px">
+              <Col md={4} marginBottom="0px">
                 <TextInputStyled
                   type="text"
                   defaultValue="X"
@@ -732,7 +685,7 @@ class QuadrantsMoreOptions extends Component {
                   disabled={false}
                 />
               </Col>
-              <Col md={5} marginBottom="0px">
+              <Col md={6} marginBottom="0px">
                 <TextInputStyled
                   type="text"
                   name="xMin"
@@ -746,7 +699,7 @@ class QuadrantsMoreOptions extends Component {
                   padding="0px 4px"
                 />
               </Col>
-              <Col md={5} marginBottom="0px">
+              <Col md={6} marginBottom="0px">
                 <TextInputStyled
                   type="text"
                   name="xMax"
@@ -807,19 +760,6 @@ class QuadrantsMoreOptions extends Component {
                     height="35px"
                   />
                 )}
-              </Col>
-              <Col md={3} marginBottom="0px">
-                <TextInputStyled
-                  type="text"
-                  name="xRatio"
-                  min={0}
-                  value={xRatio}
-                  align="center"
-                  padding="0px 4px"
-                  onChange={this.handleGridChange}
-                  onBlur={this.handleRatioChange}
-                  disabled={false}
-                />
               </Col>
             </Col>
             <Col md={13} marginBottom="0px">
@@ -895,7 +835,7 @@ class QuadrantsMoreOptions extends Component {
           </Row>
           <Row center gutter={4} mb="0">
             <Col md={11} marginBottom="0px">
-              <Col md={3} marginBottom="0px">
+              <Col md={4} marginBottom="0px">
                 <TextInputStyled
                   type="text"
                   defaultValue="X"
@@ -908,7 +848,7 @@ class QuadrantsMoreOptions extends Component {
                   padding="0px 4px"
                 />
               </Col>
-              <Col md={5} marginBottom="0px">
+              <Col md={6} marginBottom="0px">
                 <TextInputStyled
                   type="text"
                   name="yMin"
@@ -922,7 +862,7 @@ class QuadrantsMoreOptions extends Component {
                   padding="0px 4px"
                 />
               </Col>
-              <Col md={5} marginBottom="0px">
+              <Col md={6} marginBottom="0px">
                 <TextInputStyled
                   type="text"
                   name="yMax"
@@ -983,19 +923,6 @@ class QuadrantsMoreOptions extends Component {
                     height="32px"
                   />
                 )}
-              </Col>
-              <Col md={3} marginBottom="0px">
-                <TextInputStyled
-                  type="text"
-                  name="yRatio"
-                  min={0}
-                  value={yRatio}
-                  onChange={this.handleGridChange}
-                  onBlur={this.handleRatioChange}
-                  disabled={false}
-                  align="center"
-                  padding="0px 4px"
-                />
               </Col>
             </Col>
             <Col md={13} marginBottom="0px">

@@ -11,6 +11,7 @@ import {
   MathInput,
   EduButton,
   notification,
+  PortalSpinner,
 } from '@edulastic/common'
 import { IconClose } from '@edulastic/icons'
 import { math, defaultSymbols } from '@edulastic/constants'
@@ -59,6 +60,7 @@ class Equations extends Component {
   }
 
   setApiLatex = (latex, index = null) => {
+    this.setState({ isConverting: true })
     graphEvaluateApi
       .convert({ latex })
       .then(({ result }) => {
@@ -88,6 +90,9 @@ class Equations extends Component {
       })
       .catch(() => {
         notification({ messageKey: 'equationErr' })
+      })
+      .finally(() => {
+        this.setState({ isConverting: false })
       })
   }
 
@@ -172,6 +177,7 @@ class Equations extends Component {
       eqs,
       changedEqs,
       newEquation,
+      isConverting,
     } = this.state
 
     return (
@@ -247,6 +253,7 @@ class Equations extends Component {
           onClose={this.toggleMathModal(false)}
           onChangeKeypad={onChangeKeypad}
         />
+        {isConverting && <PortalSpinner />}
       </Container>
     )
   }

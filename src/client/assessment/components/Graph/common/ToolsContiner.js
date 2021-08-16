@@ -23,7 +23,7 @@ const ToolsContiner = ({ visible, onClose, children }) => {
         </FlexContainer>
       }
     >
-      <DrawerBody>{children}</DrawerBody>
+      <DrawerBody data-cy="toolsContainer">{children}</DrawerBody>
     </Drawer>
   )
 }

@@ -621,6 +621,7 @@ class ModuleRow extends Component {
       currentAssignmentIds,
       toggleAssignments,
       isPreviewModalVisible,
+      blurCurrentModuleRow,
     } = this.props
     const { selectedTest } = this.state
     const { assignTest } = this
@@ -681,6 +682,7 @@ class ModuleRow extends Component {
               hasEditAccess={hasEditAccess}
               moduleStatus={completed}
               collapsed={collapsed}
+              blurCurrentModuleRow={blurCurrentModuleRow}
               removeUnit={removeUnit}
               toggleModule={this.toggleModule}
               assignModule={this.assignModule}
@@ -1228,7 +1230,19 @@ class ModuleRow extends Component {
 
                   return (
                     !(isStudent && moduleData.hidden) && (
-                      <AssignmentRowContainer>
+                      <AssignmentRowContainer
+                        // using currentAssignmentIds to get info about current test (for which show assignments is clicked)
+                        blurCurrentTestRow={
+                          !(
+                            currentAssignmentIds.includes(
+                              moduleData.contentId
+                            ) ||
+                            !contentData.some((item) =>
+                              currentAssignmentIds.includes(item.contentId)
+                            )
+                          )
+                        }
+                      >
                         <ModuleFocused />
                         <DragHandle>
                           <Bullet />
@@ -1302,18 +1316,10 @@ class ModuleRow extends Component {
                                     >
                                       <Tooltip
                                         placement="bottomLeft"
-                                        title={
-                                          moduleData?.assignments?.length
-                                            ? moduleData?.assignments?.[0]
-                                                ?.title
-                                            : moduleData?.contentTitle
-                                        }
+                                        title={moduleData?.contentTitle}
                                       >
                                         <span data-cy="testName">
-                                          {moduleData?.assignments?.length
-                                            ? moduleData?.assignments?.[0]
-                                                ?.title
-                                            : moduleData?.contentTitle}
+                                          {moduleData?.contentTitle}
                                         </span>
                                         {testType}
                                       </Tooltip>

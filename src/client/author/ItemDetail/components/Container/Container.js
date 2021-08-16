@@ -805,6 +805,11 @@ class Container extends Component {
     const collapseLeft = collapseDirection === 'left'
     const collapseRight = collapseDirection === 'right'
 
+    const passageTestItems = get(passage, 'testItems', [])
+    const widgetLength = get(rows, [0, 'widgets'], []).length
+    const showAddItemButton =
+      (!!widgetLength || passageTestItems.length > 1) && view === EDIT
+
     return (
       <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
         <ScrollContext.Provider
@@ -867,6 +872,7 @@ class Container extends Component {
                   isPassageWithQuestions={passageWithQuestions}
                   onShowSettings={this.handleShowSettings}
                   containerType="question"
+                  showAddItemButton={showAddItemButton}
                 />
               </>
             ))}

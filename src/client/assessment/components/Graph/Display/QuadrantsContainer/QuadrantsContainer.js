@@ -6,7 +6,7 @@ import { cloneDeep, isEqual, sortBy } from 'lodash'
 import produce from 'immer'
 
 import { WithResources, notification, EduButton } from '@edulastic/common'
-import { greyThemeDark3, darkGrey2, partialIconColor } from '@edulastic/colors'
+import { greyThemeDark6, darkGrey2, partialIconColor } from '@edulastic/colors'
 
 import {
   CHECK,
@@ -52,7 +52,7 @@ import AppConfig from '../../../../../../app-config'
 const trueColor = '#1fe3a1'
 const errorColor = '#ee1658'
 const defaultColor = '#434B5D'
-const bgColor = greyThemeDark3
+const bgColor = greyThemeDark6
 
 // TODO: Add support for user-based colorMap to replace these defaults
 

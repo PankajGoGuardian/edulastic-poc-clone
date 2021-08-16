@@ -60,8 +60,7 @@ const answerValidator = {
   [questionType.CLOZE_DROP_DOWN](answers) {
     const hasEmpty = answers.some(
       (answer) =>
-        isEmpty(answer.value) ||
-        isEmpty(answer.value.filter((ans) => !isEmpty(ans.value)))
+        isEmpty(answer.value) || answer.value.some((ans) => isEmpty(ans.value))
     )
     return hasEmpty
   },

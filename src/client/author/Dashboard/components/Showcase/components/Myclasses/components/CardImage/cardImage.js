@@ -82,11 +82,7 @@ const CardImage = ({ data, history, userId, districtId }) => {
                     <IconManage color={themeColor} width={13} height={13} />
                   </CircleBtn>
                   <Link to="/author/assignments" onClick={applyClassFilter}>
-                    <CircleBtn
-                      bg={themeColor}
-                      style={{ marginLeft: '5px' }}
-                      onClick={gotoManageClass(_id)}
-                    >
+                    <CircleBtn bg={themeColor} style={{ marginLeft: '5px' }}>
                       <IconAssignment color={white} width={11} height={14} />
                     </CircleBtn>
                   </Link>

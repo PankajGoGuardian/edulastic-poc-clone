@@ -15,6 +15,7 @@ import {
   greyishBorder,
   lightGrey12,
   lightBlue7,
+  greyThemeDark6,
 } from '@edulastic/colors'
 
 // all theme variables
@@ -1320,7 +1321,7 @@ export const defaultTheme = {
       wrongBgColor,
       wrongIconColor,
       descriptionColor,
-      backgroundShapes: breadcrumbColor,
+      backgroundShapes: greyThemeDark6,
     },
     quadrants: {
       dragDropTitleFontWeight: bold,

@@ -30,7 +30,7 @@ const {
 
 const tableColumns = [
   {
-    title: 'Proficiency Band',
+    title: 'Performance Band',
     sortable: true,
     type: 'name',
     dataIndex: 'proficiencyBand',

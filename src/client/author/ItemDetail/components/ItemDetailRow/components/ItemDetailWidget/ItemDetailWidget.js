@@ -119,25 +119,24 @@ const ItemDetailWidget = ({
 
           {(!flowLayout || showButtons) && (
             <ButtonsContainer unscored={unscored}>
-              {!(question.rubrics && !itemLevelScoring) &&
-                (!(unscored && showPoints) ? (
-                  <Ctrls.Point
-                    value={partScore}
-                    onChange={scoreChangeHandler}
-                    data-cy="pointUpdate"
-                    visible={isPointsBlockVisible}
-                    disabled={isEditDisabled}
-                    isRubricQuestion={!!question.rubrics && !itemLevelScoring}
-                    itemLevelScoring={itemLevelScoring}
-                    onShowSettings={onShowSettings}
-                  />
-                ) : (
-                  <UnScored
-                    width="50px"
-                    height="50px"
-                    top={`${itemLevelScoring ? -80 : -50}px`}
-                  />
-                ))}
+              {!(unscored && showPoints) ? (
+                <Ctrls.Point
+                  value={partScore}
+                  onChange={scoreChangeHandler}
+                  data-cy="pointUpdate"
+                  visible={isPointsBlockVisible}
+                  disabled={isEditDisabled}
+                  isRubricQuestion={!!question.rubrics && !itemLevelScoring}
+                  itemLevelScoring={itemLevelScoring}
+                  onShowSettings={onShowSettings}
+                />
+              ) : (
+                <UnScored
+                  width="50px"
+                  height="50px"
+                  top={`${itemLevelScoring ? -80 : -50}px`}
+                />
+              )}
 
               {isEditDisabled ? (
                 <div>

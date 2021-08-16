@@ -183,7 +183,6 @@ const CollectionsTable = ({
                   bankId: record._id,
                   buckets: record.buckets,
                   districtId: record.districtId,
-                  owner: record?.owner,
                 })
               }
             >

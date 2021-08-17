@@ -1,5 +1,6 @@
 import next from 'immer'
 import {
+  compact,
   groupBy,
   map,
   sumBy,
@@ -37,7 +38,7 @@ const sanitizeNullNumberFields = (records, fields = []) => {
 
 export const compareByMap = {
   school: 'schoolName',
-  teacher: 'teacherName',
+  teacher: 'teacherNames',
   group: 'groupName',
   student: 'studentName',
   race: 'race',
@@ -106,7 +107,14 @@ export const augmentWithData = (
         const relatedTeacher =
           find(metaInfo, (school) => metric.id === school.teacherId) || {}
 
-        return { ...metric, ...relatedTeacher }
+        return {
+          ...metric,
+          ...relatedTeacher,
+          teacherNames: compact([
+            relatedTeacher.teacherName,
+            ...(relatedTeacher.coTeachers?.map((t) => t.name) || []),
+          ]).join(', '),
+        }
       })
     case 'student':
       return map(metricInfo, (metric) => {

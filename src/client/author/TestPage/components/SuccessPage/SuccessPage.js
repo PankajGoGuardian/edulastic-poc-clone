@@ -26,6 +26,7 @@ import {
 import BreadCrumb from '../../../src/components/Breadcrumb'
 import ListHeader from '../../../src/components/common/ListHeader'
 import ShareModal from '../../../src/components/common/ShareModal'
+import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import {
   getCurrentAssignmentSelector,
   getAssignmentSyncInProgress,
@@ -492,6 +493,15 @@ class SuccessPage extends React.Component {
                     New changes will be reflecting in all selected assignment
                     once the regrade process is completed.
                   </FlexText>
+                  <FeaturesSwitch
+                    inputFeatures="enableOmrSheets"
+                    actionOnInaccessible="hidden"
+                  >
+                    <FlexText>
+                      Please note you need to regenerate bubble sheet for taking
+                      offline assessments.
+                    </FlexText>
+                  </FeaturesSwitch>
                   <Divider />
                 </>
               )}

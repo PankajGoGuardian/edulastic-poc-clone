@@ -1036,6 +1036,7 @@ const AssessmentContainer = ({
         testId,
       }
       if (isLast()) {
+        evalArgs.isLastQuestion = true
         evalArgs.callback = submitPreviewTest
       }
       evaluateForPreview(evalArgs)

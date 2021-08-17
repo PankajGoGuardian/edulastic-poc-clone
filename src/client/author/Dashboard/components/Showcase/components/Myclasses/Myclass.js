@@ -347,7 +347,10 @@ const MyClasses = ({
 
   const isSingaporeMath =
     user?.referrer?.includes('singapore') ||
-    user?.utm_source?.toLowerCase()?.includes('singapore')
+    user?.utm_source?.toLowerCase()?.includes('singapore') ||
+    collections.some((itemBank) =>
+      itemBank?.owner?.toLowerCase().includes('singapore')
+    )
 
   const isCpm = user?.utm_source?.toLowerCase()?.includes('cpm')
 

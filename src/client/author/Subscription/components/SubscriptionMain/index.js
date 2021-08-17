@@ -254,8 +254,9 @@ const SubscriptionMain = ({
       setShowItemBankTrialUsedModal(true)
       return
     }
+
     if (
-      !['enterprise', 'partial_premium'].includes(
+      !['enterprise'].includes(
         productIdOrSubType?.toLowerCase()
       )
     ) {

@@ -205,7 +205,8 @@ export const uploadToS3 = async (
     fileToUpload = convertStringToFile(file)
   }
 
-  const { name: fileName } = fileToUpload
+  let { name: fileName } = fileToUpload
+  fileName = fileName.replace(/[^a-zA-Z0-9-_. ]/g, '')
   const result = await fileApi.getSignedUrl(fileName, folder, subFolder)
   const formData = new FormData()
   const { fields = {}, url } = result

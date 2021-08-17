@@ -212,7 +212,7 @@ class EditClassModal extends Component {
       teacherFinalList.forEach((row) => {
         const teacherName = row.lastName
           ? `${row.firstName} ${row.lastName}`
-          : `${row.firstName || row.email}`
+          : `${row.firstName || 'Anonymous'}`
         teacherOptions.push(<Option value={row._id}>{teacherName}</Option>)
       })
     }

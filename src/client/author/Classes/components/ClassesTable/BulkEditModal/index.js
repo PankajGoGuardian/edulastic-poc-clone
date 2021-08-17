@@ -131,7 +131,9 @@ function BulkEditModal({
   const searchTags = async (_value) => {
     if (
       allTagsData?.some(
-        (tag) => tag?.tagName === _value || tag?.tagName === _value?.trim()
+        (tag) =>
+          tag?.tagName.toLowerCase() === _value.toLowerCase() ||
+          tag?.tagName.toLowerCase() === _value?.trim().toLowerCase()
       )
     ) {
       setSearchValue('')

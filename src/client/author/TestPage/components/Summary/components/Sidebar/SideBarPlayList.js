@@ -126,7 +126,9 @@ const Sidebar = ({
   const searchTags = async (value) => {
     if (
       newAllTagsData.some(
-        (tag) => tag.tagName === value || tag.tagName === value.trim()
+        (tag) =>
+          tag.tagName.toLowerCase() === value.toLowerCase() ||
+          tag.tagName.toLowerCase() === value.trim().toLowerCase()
       )
     ) {
       setSearchValue('')

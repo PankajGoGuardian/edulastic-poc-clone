@@ -222,11 +222,13 @@ const ResourceItem = ({
   const popup = (
     <PopupContainer>
       <ResourceTitle>
-        <TitleText isPopup>{contentTitle}</TitleText>
+        <TitleText data-cy="titleInPopup" isPopup>
+          {contentTitle}
+        </TitleText>
       </ResourceTitle>
       <div>
         {standardIdentifiers.map((tag, i) => (
-          <Label type="primary" key={i}>
+          <Label data-cy={tag} type="primary" key={i}>
             {tag}
           </Label>
         ))}

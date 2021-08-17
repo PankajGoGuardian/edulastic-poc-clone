@@ -1064,6 +1064,10 @@ const MenuWrapper = styled.div`
   overflow: hidden;
   min-height: ${({ theme }) => `calc(100% - ${theme.HeaderHeight.xl}px)`};
 
+  @media (max-height: 720px) {
+    padding: 2px 0px 0px;
+  }
+
   @media (max-width: ${extraDesktopWidthMax}) {
     min-height: ${({ theme }) => `calc(100% - ${theme.HeaderHeight.md}px)`};
   }
@@ -1153,14 +1157,24 @@ const Menu = styled(AntMenu)`
   @media (max-height: 720px) {
     &.ant-menu-inline-collapsed > .ant-menu-item,
     &.ant-menu-inline .ant-menu-item {
-      margin: 4px 0px;
+      height: 34px;
+      margin: 0px 0px 5px;
     }
   }
-  @media (max-height: 650px) {
+  @media (max-height: 680px) {
     &.ant-menu-inline-collapsed > .ant-menu-item,
     &.ant-menu-inline .ant-menu-item {
-      height: 36px;
-      margin: 2px 0px;
+      height: 32px;
+      margin: 0px 0px 4px;
+      &:before {
+        left: 15px;
+        right: 15px;
+      }
+      &[data-cy='library'],
+      &[data-cy='user management'] {
+        height: 28px;
+        font-size: 12px;
+      }
     }
   }
   @media (min-width: ${extraDesktopWidth}) {
@@ -1228,6 +1242,10 @@ const Menu = styled(AntMenu)`
         background: #557390;
       }
     }
+  }
+  @media (max-height: 720px) {
+    height: ${({ isBannerShown }) =>
+      isBannerShown ? 'calc(100vh - 250px)' : 'calc(100vh - 215px)'};
   }
 `
 
@@ -1394,6 +1412,10 @@ const QuestionButton = styled.div`
       fill: ${(props) => props.theme.sideMenu.helpIconHoverColor};
     }
   }
+
+  @media (max-height: 720px) {
+    margin: 4px 0px 6px;
+  }
 `
 
 const UserImg = styled.div`
@@ -1430,6 +1452,9 @@ const UserInfoButton = styled.div`
     @media (max-width: ${mobileWidthLarge}) {
       bottom: 75px !important;
     }
+    @media (max-height: 720px) {
+      bottom: 70px !important;
+    }
   }
 
   .footerDropdown {
@@ -1447,6 +1472,9 @@ const UserInfoButton = styled.div`
     font-weight: 600;
     transition: 0.2s;
     -webkit-transition: 0.2s;
+    @media (max-height: 720px) {
+      height: 70px;
+    }
   }
   .ant-select-selection {
     background: transparent;
@@ -1625,6 +1653,9 @@ const DemoPlaygroundButtonContainer = styled.div`
   cursor: pointer;
   span {
     font-weight: 600;
+  }
+  @media (max-height: 720px) {
+    margin: 4px 0px 6px;
   }
 `
 

@@ -7,7 +7,10 @@ import { IconUpload as IconUp } from '@edulastic/icons'
 export const Container = styled(FlexContainer)`
   min-height: 200px;
   width: ${({ theme }) => theme.styledDropZone.containerWidth || '100%'};
-  margin: ${({ theme }) => theme.styledDropZone.containerMargin || '0px'};
+  height: ${({ theme, height }) =>
+    height || theme.styledDropZone.containerHeight || '100%'};
+  margin: ${({ theme, margin }) =>
+    margin || theme.styledDropZone.containerMargin || '0px'};
   padding: ${({ theme }) => theme.styledDropZone.containerPadding || '0px'};
   border-radius: ${({ theme }) =>
     theme.styledDropZone.containerBorderRadius || '2px'};

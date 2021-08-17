@@ -13,6 +13,7 @@ const ConfirmationModal = ({
   onProceed,
   onCancel,
   cancelText = 'Cancel',
+  hideCancelBtn = false,
 }) => {
   return (
     <StyledModal
@@ -32,15 +33,17 @@ const ConfirmationModal = ({
           <StyledDiv color={darkGrey2}>{description}</StyledDiv>
         </StyledCol>
         <StyledCol span={24}>
-          <EduButton
-            height="40px"
-            width="150px"
-            isGhost
-            onClick={() => onCancel()}
-            style={{ 'margin-left': '0px' }}
-          >
-            {cancelText}
-          </EduButton>
+          {!hideCancelBtn && (
+            <EduButton
+              height="40px"
+              width="150px"
+              isGhost
+              onClick={() => onCancel()}
+              style={{ 'margin-left': '0px' }}
+            >
+              {cancelText}
+            </EduButton>
+          )}
           <EduButton
             height="40px"
             width="150px"

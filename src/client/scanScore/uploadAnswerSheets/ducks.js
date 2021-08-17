@@ -28,6 +28,8 @@ const slice = createSlice({
     showSessions: false,
     responsePageNumber: 0,
     error: '',
+    assignmentTitle: 'Loading...',
+    classTitle: '...',
   },
   reducers: {
     setCancelUpload: (state, { payload }) => {
@@ -61,6 +63,10 @@ const slice = createSlice({
       } else {
         state.omrUploadSessions = payload.omrUploadSessions
       }
+    },
+    setAssignmentAndClassTitle: (state, { payload }) => {
+      state.assignmentTitle = payload.assignmentTitle
+      state.classTitle = payload.classTitle
     },
     setOmrUploadSession: (state, { payload }) => {
       state.currentSession = payload.session || {}
@@ -127,9 +133,10 @@ const slice = createSlice({
 function* getOmrUploadSessionsSaga({ payload }) {
   try {
     const { sessionId, ..._payload } = payload
-    const omrUploadSessions = yield call(
-      scannerApi.getOmrUploadSessions,
-      _payload
+    const result = yield call(scannerApi.getOmrUploadSessions, _payload)
+    const { omrUploadSessions, assignmentTitle, classTitle } = result || {}
+    yield put(
+      slice.actions.setAssignmentAndClassTitle({ assignmentTitle, classTitle })
     )
     const currentSession =
       omrUploadSessions.find((session) => session._id === sessionId) ||

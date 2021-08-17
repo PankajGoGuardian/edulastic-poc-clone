@@ -36,6 +36,8 @@ const UploadAnswerSheets = ({
   showSessions,
   responsePageNumber,
   setResponsePageNumber,
+  assignmentTitle,
+  classTitle,
 }) => {
   const { assignmentId = '', groupId = '', sessionId = '' } = useMemo(
     () => qs.parse(location?.search || '', { ignoreQueryPrefix: true }),
@@ -145,7 +147,11 @@ const UploadAnswerSheets = ({
   }, [sessionId, scanInProgress])
 
   return (
-    <PageLayout title="Scan Student Responses" breadcrumbData={breadcrumbData}>
+    <PageLayout
+      assignmentTitle={assignmentTitle}
+      classTitle={classTitle}
+      breadcrumbData={breadcrumbData}
+    >
       {loading ? (
         <Spin />
       ) : showSessions ? (

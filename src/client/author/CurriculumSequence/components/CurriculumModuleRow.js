@@ -621,6 +621,7 @@ class ModuleRow extends Component {
       currentAssignmentIds,
       toggleAssignments,
       isPreviewModalVisible,
+      userId = '',
     } = this.props
     const { selectedTest } = this.state
     const { assignTest } = this
@@ -836,20 +837,23 @@ class ModuleRow extends Component {
                           Preview Test
                         </Menu.Item>
                       )}
-                      {!isStudent && (
-                        <Menu.Item
-                          data-cy="edit-test"
-                          onClick={() => {
-                            const testIdFromAssignments =
-                              moduleData?.assignments?.[0]?.testId
-                            const testId =
-                              testIdFromAssignments || moduleData.contentId
-                            this.onEditTest(testId)
-                          }}
-                        >
-                          Edit test
-                        </Menu.Item>
-                      )}
+                      {!isStudent &&
+                        moduleData?.authors?.some(
+                          ({ _id: authorId }) => authorId === userId
+                        ) && (
+                          <Menu.Item
+                            data-cy="edit-test"
+                            onClick={() => {
+                              const testIdFromAssignments =
+                                moduleData?.assignments?.[0]?.testId
+                              const testId =
+                                testIdFromAssignments || moduleData.contentId
+                              this.onEditTest(testId)
+                            }}
+                          >
+                            Edit test
+                          </Menu.Item>
+                        )}
                       {!isStudent && isSparkMathPlaylist && (
                         <Menu.Item
                           data-cy="show-differentiation"
@@ -1388,6 +1392,7 @@ const enhance = compose(
       proxyUserRole: proxyRole({ user }),
       currentAssignmentIds: curriculumSequence.currentAssignmentIds,
       isPreviewModalVisible: getIsPreviewModalVisibleSelector({ test }),
+      userId: user?.user?._id,
     }),
     {
       toggleUnitItem: toggleCheckedUnitItemAction,

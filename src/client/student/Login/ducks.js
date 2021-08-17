@@ -1700,7 +1700,12 @@ function* atlasSSOLogin({ payload }) {
         })
       )
     } else {
-      notification({ msg: e?.data?.message || 'Atlas Login failed' })
+      notification({
+        msg:
+          e?.data?.message ||
+          e?.response?.data?.message ||
+          'Atlas Login failed',
+      })
       yield put(push(getSignOutUrl()))
     }
     removeSignOutUrl()

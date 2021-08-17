@@ -44,7 +44,6 @@ const VariablesCheckbox = ({
           data-cy="variableEnabled"
           checked={variableEnabled}
           onChange={onChange}
-          size="large"
         >
           {t('component.options.checkVariables')}
         </CheckboxLabel>

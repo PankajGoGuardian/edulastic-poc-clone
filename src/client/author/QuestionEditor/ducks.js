@@ -1052,17 +1052,16 @@ function* updateQuestionSaga({ payload }) {
 function* generateVariableSaga({ payload }) {
   try {
     const dpUpdated = yield select(getDpUpdatedSelector)
+    const currentQues = yield select(getCurrentQuestionSelector)
 
-    if (!dpUpdated) {
+    if (!dpUpdated && currentQues?.variable?.enabled) {
       if (typeof payload.nextAction === 'function') {
         payload.nextAction()
       }
       return
     }
 
-    const question = payload.newQuestion
-      ? payload.newQuestion
-      : yield select(getCurrentQuestionSelector)
+    const question = payload.newQuestion ? payload.newQuestion : currentQues
 
     if (!question.variable || !question.variable.enabled) {
       return

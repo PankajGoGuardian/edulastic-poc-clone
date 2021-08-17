@@ -190,7 +190,9 @@ class AddClassModal extends Component {
     const { allTagsData } = this.props
     if (
       allTagsData.some(
-        (tag) => tag.tagName === value || tag.tagName === value.trim()
+        (tag) =>
+          tag.tagName.toLowerCase() === value.toLowerCase() ||
+          tag.tagName.toLowerCase() === value.trim().toLowerCase()
       )
     ) {
       this.setState({ searchValue: '' })

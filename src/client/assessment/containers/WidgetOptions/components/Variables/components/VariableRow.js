@@ -9,6 +9,7 @@ import { Label } from '../../../../../styled/WidgetOptions/Label'
 
 import VariableTypeSelector from './VariableTypeSelector'
 import { ExampleField } from './Examples'
+import validations from './validations'
 
 const { defaultNumberPad } = math
 
@@ -28,21 +29,6 @@ const VariableRow = ({
   const isNumberSquence = variable.type === 'NUMBER_SEQUENCE'
   const isTextSquence = variable.type === 'TEXT_SEQUENCE'
 
-  const handleKeyPress = (e) => {
-    const allowedNumbersRegex = new RegExp('[0-9]+') // allow numbers only
-    const pressedKey = String.fromCharCode(!e.charCode ? e.which : e.charCode)
-    const allowedKeys = [8, 9, 37, 38, 39, 40] // to allow arrow keys, backspace and tab
-    if (
-      !(
-        allowedKeys.includes(e?.which || e?.charCode) ||
-        allowedNumbersRegex?.test(pressedKey)
-      )
-    ) {
-      return e.preventDefault()
-    }
-    return pressedKey
-  }
-
   const handleKeypressMathInput = (e) => {
     if (e.key === '@') {
       notification({
@@ -56,6 +42,12 @@ const VariableRow = ({
       })
       e.preventDefault()
       e.stopPropagation()
+    }
+  }
+
+  const onBlurHandle = (name, type, value) => {
+    if (type === 'step' && value === 0) {
+      onChange(name, type, '')
     }
   }
 
@@ -107,6 +99,7 @@ const VariableRow = ({
           <TextInputStyled
             data-cy="variableSet"
             value={variable.set}
+            onKeyDown={validations.numSequence}
             onChange={(e) => onChange(variableName, 'set', e.target.value)}
             size="large"
           />
@@ -119,6 +112,7 @@ const VariableRow = ({
             value={variable.sequence}
             onFocus={toggleActive}
             onBlur={toggleActive}
+            onKeyDown={validations.numSequence}
             onChange={(e) => onChange(variableName, 'sequence', e.target.value)}
             size="large"
           />
@@ -179,6 +173,14 @@ const VariableRow = ({
             data-cy="variableStep"
             value={variable.step}
             step={0.1}
+            onKeyDown={validations.step}
+            onBlur={(e) =>
+              onBlurHandle(
+                variableName,
+                'step',
+                e.target.value ? +e.target.value : ''
+              )
+            }
             onChange={(e) =>
               onChange(
                 variableName,
@@ -205,7 +207,7 @@ const VariableRow = ({
                 e.target.value ? parseInt(e.target.value, 10) : ''
               )
             }
-            onKeyDown={handleKeyPress}
+            onKeyDown={validations.decimal}
           />
         </StyledCol>
       )}

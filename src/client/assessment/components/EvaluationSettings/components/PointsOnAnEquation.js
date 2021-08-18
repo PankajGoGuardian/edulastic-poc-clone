@@ -10,7 +10,7 @@ import {
 import styled from 'styled-components'
 import { HeadingLabel } from './InlineCheckOptions'
 import LabelWithHelper from './LabelWithHelper'
-import { validations } from './inputsValidations'
+import { validations } from '../../../utils/inputsValidations'
 
 const PointsOnAnEquation = ({ optionKey, options, onChange }) => {
   const [isAllowed, setIsAllowed] = useState(false)

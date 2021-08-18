@@ -321,6 +321,7 @@ class GraphDisplay extends Component {
       setQuestionData,
       onChangeKeypad,
       symbols,
+      pointsOnEquEnabled,
     } = this.props
 
     const {
@@ -434,6 +435,7 @@ class GraphDisplay extends Component {
       onChangeKeypad,
       symbols,
       showConnect,
+      pointsOnEquEnabled,
     }
   }
 

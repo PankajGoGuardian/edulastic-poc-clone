@@ -848,6 +848,7 @@
       "correctAnswer": "Correct Answer",
       "alternateAnswer": "Alternate Answer",
       "shuffleAnswerChoices": "Shuffle Answer Choices",
+      "pointsOnEquConfirm": "If you choose this option, then the expected answer objects will be cleared. Do you wish to continue?",
       "helperText": {
         "point": "Select any point on the grid to draw a point.",
         "segment": "Select two points on the grid. A line segment will be drawn such that its endpoints coincide with the points selected.",

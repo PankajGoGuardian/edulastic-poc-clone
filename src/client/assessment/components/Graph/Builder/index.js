@@ -1,5 +1,6 @@
 import JXG from 'jsxgraph'
 import { isNumber, cloneDeep } from 'lodash'
+import { Modal } from 'antd'
 import { greyThemeDark2 } from '@edulastic/colors'
 import * as Sentry from '@sentry/browser'
 import getDefaultConfig, { CONSTANT } from './config'
@@ -142,6 +143,8 @@ class Board {
     this.setCreatingHandler()
 
     this.inequalities = []
+
+    this.pointOnEquEnabled = false
   }
 
   addDragDropValue(value, x, y, dimensions) {
@@ -381,6 +384,19 @@ class Board {
   setCreatingHandler() {
     this.$board.on(getEventName('up'), (event) => {
       if (this.disableResponse) {
+        return
+      }
+
+      if (this.pointOnEquEnabled) {
+        Modal.confirm({
+          title: 'Warning',
+          content:
+            'You cannot add additional objects if you select the points on the equation feature.',
+          centered: true,
+          okText: 'Confirm',
+          okCancel: false,
+          maskClosable: true,
+        })
         return
       }
 
@@ -1788,6 +1804,10 @@ class Board {
 
   removeConnectline() {
     Connectline.remove(this.$board, this.connectline)
+  }
+
+  updatePointOnEquEnabled(value) {
+    this.pointOnEquEnabled = value
   }
 }
 

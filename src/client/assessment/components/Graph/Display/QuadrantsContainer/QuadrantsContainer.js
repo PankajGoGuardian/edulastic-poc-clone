@@ -272,6 +272,7 @@ class GraphContainer extends PureComponent {
       graphData,
       disableResponse,
       view,
+      pointsOnEquEnabled,
     } = this.props
 
     const { tools } = toolbar
@@ -302,6 +303,12 @@ class GraphContainer extends PureComponent {
         this._graph.setEditButtonStatus(false)
       } else {
         this._graph.setEditButtonStatus(true)
+      }
+
+      if (view === EDIT && pointsOnEquEnabled) {
+        this._graph.updatePointOnEquEnabled(true)
+      } else {
+        this._graph.updatePointOnEquEnabled(false)
       }
 
       this._graph.resizeContainer(layout.width, layout.height)
@@ -345,6 +352,7 @@ class GraphContainer extends PureComponent {
       view,
       evaluation,
       showConnect,
+      pointsOnEquEnabled,
     } = this.props
 
     const { tools } = toolbar
@@ -364,6 +372,14 @@ class GraphContainer extends PureComponent {
         this._graph.setEditButtonStatus(false)
       } else {
         this._graph.setEditButtonStatus(true)
+      }
+
+      if (prevProps.pointsOnEquEnabled !== pointsOnEquEnabled) {
+        if (view === EDIT && pointsOnEquEnabled) {
+          this._graph.updatePointOnEquEnabled(true)
+        } else {
+          this._graph.updatePointOnEquEnabled(false)
+        }
       }
 
       if (!isEqual(canvas, prevProps.canvas)) {

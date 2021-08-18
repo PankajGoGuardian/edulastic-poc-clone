@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { Modal } from 'antd'
 import {
   FlexContainer,
   CheckboxLabel,
@@ -8,21 +9,41 @@ import {
   EduButton,
 } from '@edulastic/common'
 import styled from 'styled-components'
+import { withNamespaces } from '@edulastic/localization'
 import { HeadingLabel } from './InlineCheckOptions'
 import LabelWithHelper from './LabelWithHelper'
 import { validations } from '../../../utils/inputsValidations'
 
-const PointsOnAnEquation = ({ optionKey, options, onChange }) => {
+const PointsOnAnEquation = ({
+  t,
+  optionKey,
+  options,
+  onChange,
+  hasGraphElements,
+}) => {
   const [isAllowed, setIsAllowed] = useState(false)
   const [localLatex, setLocalLatex] = useState('')
   const [showSpecialOpts, setShowSpecialOpts] = useState(false)
 
   const onChangeCheckbox = (e) => {
-    setIsAllowed(e.target.checked)
-    if (!e.target.checked) {
-      onChange('pointsOnAnEquation', null)
-    } else {
+    if (e.target.checked && hasGraphElements) {
+      Modal.confirm({
+        title: 'Warning',
+        content: t('component.graphing.pointsOnEquConfirm'),
+        zIndex: 1500,
+        centered: true,
+        okText: 'Confirm',
+        onOk() {
+          setIsAllowed(e.target.checked)
+          onChange('showConnect', true, true)
+        },
+      })
+    } else if (e.target.checked) {
+      setIsAllowed(e.target.checked)
       onChange('showConnect', true)
+    } else {
+      setIsAllowed(e.target.checked)
+      onChange('pointsOnAnEquation', null)
     }
   }
 
@@ -155,7 +176,7 @@ const PointsOnAnEquation = ({ optionKey, options, onChange }) => {
   )
 }
 
-export default PointsOnAnEquation
+export default withNamespaces('assessment')(PointsOnAnEquation)
 
 const SpecialOptContainer = styled.div`
   margin-top: 32px;

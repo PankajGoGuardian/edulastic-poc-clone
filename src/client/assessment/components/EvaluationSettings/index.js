@@ -45,6 +45,7 @@ const EvaluationSettings = ({
   allowedVariables,
   onChangeAllowedOptions,
   hidePointOnEquation,
+  hasGraphElements,
 }) => {
   const [isVisible, setIsVisible] = useState(false)
 
@@ -56,7 +57,7 @@ const EvaluationSettings = ({
     setIsVisible(false)
   }
 
-  const handleChangeOptions = (prop, val) => {
+  const handleChangeOptions = (prop, val, ...args) => {
     const newOptions = {
       ...options,
       [prop]: val,
@@ -66,7 +67,7 @@ const EvaluationSettings = ({
       notification({ type: 'warn', msg: errorMsg })
       return false
     }
-    changeOptions(prop, val)
+    changeOptions(prop, val, ...args)
   }
 
   const OptionsComponent = useMemo(() => {
@@ -125,6 +126,7 @@ const EvaluationSettings = ({
             allowedVariables={allowedVariables}
             onChangeAllowedOptions={onChangeAllowedOptions}
             hidePointOnEquation={hidePointOnEquation}
+            hasGraphElements={hasGraphElements}
           />
         </SettingBody>
       </CustomDrawer>

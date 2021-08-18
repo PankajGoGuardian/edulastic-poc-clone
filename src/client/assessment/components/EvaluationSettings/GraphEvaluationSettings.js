@@ -22,12 +22,14 @@ const RednerOpts = ({
   hidePointOnEquation,
   onChangeOption,
   evalutionOptions,
+  hasGraphElements,
 }) =>
   evalutionOptions.map((key) => (
     <EvaluationOption
       key={key}
       optionKey={key}
       options={options}
+      hasGraphElements={hasGraphElements}
       hidePointOnEquation={hidePointOnEquation}
       onChangeOption={onChangeOption}
     />
@@ -39,6 +41,7 @@ const GraphEvaluationSettings = ({
   onChangeOption,
   options,
   hidePointOnEquation,
+  hasGraphElements,
 }) => {
   const groupedOptions = evaluationSettings[GRAPH_EVALUATION_SETTING] || []
 
@@ -50,6 +53,7 @@ const GraphEvaluationSettings = ({
             options={options}
             groupKey={label}
             onChangeOption={onChangeOption}
+            hasGraphElements={hasGraphElements}
             evalutionOptions={groupedOptions[label]}
             hidePointOnEquation={hidePointOnEquation}
           />

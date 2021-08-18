@@ -89,7 +89,7 @@ export const WidgetContainer = styled.div`
   ${({ zoomLevel, responsiveWidth, isPassageWithQuestions = false }) => {
     const zoomed = zoomLevel > 1 && zoomLevel !== undefined
     return `
-      ${!isPassageWithQuestions && `min-width: ${responsiveWidth}px;`}
+      ${!isPassageWithQuestions ? `min-width: ${responsiveWidth}px;` : ''}
       transform: ${zoomed ? `scale(${zoomLevel})` : ''};
       transform-origin: ${zoomed ? `top left` : ''};
     `

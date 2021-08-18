@@ -573,6 +573,13 @@ class AssessmentPlayerDefault extends React.Component {
             isShowStudentWork={isShowStudentWork}
             handleReviewOrSubmit={handleReviewOrSubmit}
             isPremiumContentWithoutAccess={!!premiumCollectionWithoutAccess}
+            themeForHeader={{
+              ...theme.default,
+              shouldZoom: true,
+              zoomLevel,
+              headerHeight,
+              playerSkinType,
+            }}
           >
             <FeaturesSwitch
               inputFeatures="studentSettings"

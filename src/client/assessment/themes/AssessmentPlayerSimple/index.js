@@ -347,6 +347,11 @@ class AssessmentPlayerSimple extends React.Component {
             utaId={utaId}
             groupId={groupId}
             isPremiumContentWithoutAccess={!!premiumCollectionWithoutAccess}
+            themeForHeader={{
+              ...theme.default,
+              ...assessmentPlayerTheme,
+              playerSkinType,
+            }}
           >
             {toolsOpenStatus.indexOf(2) !== -1 && settings?.calcType ? (
               <CalculatorContainer

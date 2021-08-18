@@ -105,6 +105,7 @@ import { getClassIds } from '../../student/Reports/ducks'
 import { startAssessmentAction } from '../actions/assessment'
 import { TIME_UPDATE_TYPE } from '../themes/common/TimedTestTimer'
 import { getTestLevelUserWorkSelector } from '../../student/sharedDucks/TestItem'
+import { setSelectedThemeAction } from '../../student/Sidebar/ducks'
 
 // import { checkClientTime } from "../../common/utils/helpers";
 
@@ -986,6 +987,7 @@ function* submitTest({ payload }) {
       type: SET_SAVE_USER_RESPONSE,
       payload: false,
     })
+    yield put(setSelectedThemeAction('default'))
     Fscreen.safeExitfullScreen()
   }
 }

@@ -32,13 +32,11 @@ import { AssignmentEmbedLink } from '../assignmentEmbedLink'
 
 const StudentApp = ({
   match,
-  selectedTheme,
   isProxyUser,
   location,
   updateCliUser,
   isCliUser,
 }) => {
-  const themeToPass = globalThemes[selectedTheme] || globalThemes.default
   // themeToPass = getZoomedTheme(themeToPass, zoomLevel);
   // themeToPass = { ...themeToPass, ...globalThemes.zoomed(themeToPass) };
 
@@ -50,7 +48,7 @@ const StudentApp = ({
   }, [])
 
   return (
-    <ThemeProvider theme={themeToPass}>
+    <ThemeProvider theme={globalThemes.default}>
       <StyledLayout isProxyUser={isProxyUser}>
         <MainContainer isCliUser={isCliUser}>
           {!isCliUser && <Sidebar isProxyUser={isProxyUser} />}
@@ -108,7 +106,6 @@ const StudentApp = ({
 
 export default connect(
   ({ ui, user }) => ({
-    selectedTheme: ui.selectedTheme,
     zoomLevel: ui.zoomLevel,
     isProxyUser: isProxyUserSelector({ user }),
     isCliUser: user?.isCliUser,

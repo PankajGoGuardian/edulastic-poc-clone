@@ -23,7 +23,6 @@ const AssignmentSubHeader = ({
   t,
   setFilter,
   filter,
-  selectedTheme,
   assignmentsCountByFilerName,
 }) => {
   const filterItems = Object.keys(FILTERS)
@@ -32,7 +31,7 @@ const AssignmentSubHeader = ({
       data-cy={value}
       onClick={() => setFilter(FILTERS[value])}
       enabled={FILTERS[value] === filter}
-      selectedTheme={selectedTheme}
+      selectedTheme="default"
       filter={filter}
     >
       {assignmentsCountByFilerName[value]}&nbsp;{t(FILTERS[value])}
@@ -55,7 +54,6 @@ const enhance = compose(
   connect(
     (state) => ({
       filter: filterSelector(state),
-      selectedTheme: state.ui.selectedTheme,
       assignmentsCountByFilerName: assignmentsCountByFilerNameSelector(state),
     }),
     {
@@ -110,7 +108,7 @@ const FilterBtn = styled(Button)`
   &:hover {
     color: ${white};
     background: ${themeColorBlue};
-    border-color: ${themeColorBlue}
+    border-color: ${themeColorBlue};
   }
   span {
     font-size: ${(props) => props.theme.headerFilters.headerFilterTextSize};

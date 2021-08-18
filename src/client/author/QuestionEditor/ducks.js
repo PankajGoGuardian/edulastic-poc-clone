@@ -733,14 +733,44 @@ function* saveQuestionSaga({
           tId = routerTestId
         }
       }
-      yield put(
-        push({
-          pathname: isTestFlow
-            ? `/author/tests/${tId}/editItem/${item?._id}`
-            : `/author/items/${item._id}/item-detail`,
-          state: currentRouterState,
-        })
-      )
+      if (isTestFlow) {
+        if (!tId || tId === 'undefined') {
+          const { __v, ...passageData } =
+            (yield select(getPassageSelector)) || {}
+          let passageItems = []
+          if (passageData?._id && passageData?.testItems?.length > 1) {
+            passageItems = yield call(
+              testItemsApi.getPassageItems,
+              passageData._id
+            )
+          }
+          yield put(
+            setTestDataAndUpdateAction({
+              item,
+              passageItems,
+              addToTest: true,
+              fromSaveMultipartItem: true,
+              routerState: currentRouterState,
+              url: `/author/tests/${tId}/editItem/${item?._id}`,
+            })
+          )
+        } else {
+          yield put(setCreatedItemToTestAction(item))
+          yield put(
+            push({
+              pathname: `/author/tests/${tId}/editItem/${item?._id}`,
+              state: currentRouterState,
+            })
+          )
+        }
+      } else {
+        yield put(
+          push({
+            pathname: `/author/items/${item._id}/item-detail`,
+            state: currentRouterState,
+          })
+        )
+      }
       return
     }
 

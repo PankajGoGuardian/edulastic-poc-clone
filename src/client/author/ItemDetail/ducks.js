@@ -2035,16 +2035,41 @@ function* savePassage({ payload }) {
           testId = routerTestId
         }
       }
+      if (!testId || testId === 'undefined') {
+        let passageItems = []
+        if (updatedPassage?._id && updatedPassage?.testItems?.length > 1) {
+          passageItems = yield call(
+            testItemsApi.getPassageItems,
+            updatedPassage._id
+          )
+        }
+        yield put(
+          setTestDataAndUpdateAction({
+            item,
+            passageItems,
+            addToTest: true,
+            fromSaveMultipartItem: true,
+            routerState: currentRouterState,
+            url: `/author/tests/${testId}/editItem/${currentItemId}`,
+          })
+        )
+      } else {
+        yield put(setCreatedItemToTestAction(item))
+        yield put(
+          push({
+            pathname: `/author/tests/${testId}/editItem/${currentItemId}`,
+            state: currentRouterState,
+          })
+        )
+      }
+    } else {
+      yield put(
+        push({
+          pathname: `/author/items/${currentItemId}/item-detail`,
+          state: currentRouterState,
+        })
+      )
     }
-
-    yield put(
-      push({
-        pathname: isTestFlow
-          ? `/author/tests/${testId}/editItem/${currentItemId}`
-          : `/author/items/${currentItemId}/item-detail`,
-        state: currentRouterState,
-      })
-    )
   } catch (e) {
     Sentry.captureException(e)
     console.log('error: ', e)

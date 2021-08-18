@@ -394,7 +394,7 @@ function* fetchUserSubscription(...args) {
         apiUserSubscriptionStatus?.result?.products || []
       )
     )
-    if (apiUserSubscriptionStatus?.result.subscription === -1) {
+    if (apiUserSubscriptionStatus?.result?.subscription === -1) {
       yield put(slice.actions.updateUserSubscriptionExpired(data))
       return
     }

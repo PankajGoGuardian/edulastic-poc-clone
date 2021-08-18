@@ -209,7 +209,7 @@ function* evaluateAnswers({ payload }) {
       }
     } else {
       const answers = yield select((state) => _get(state, 'answers', {}))
-      const _item = yield select((state) => state.itemDetail.item)
+      const _item = yield select((state) => state?.itemDetail?.item)
       const { itemLevelScore = 0, itemLevelScoring = false } = _item || {}
       const _questions = yield select(getQuestionsSelector)
       const questions = cloneDeep(_questions)
@@ -220,7 +220,7 @@ function* evaluateAnswers({ payload }) {
           delete questions[id]
         }
       })
-      const answersByQids = answersByQId(answers, _item._id)
+      const answersByQids = answersByQId(answers, _item?._id)
       if (isEmpty(answersByQids)) {
         if (payload?.mode !== 'show') {
           notification({

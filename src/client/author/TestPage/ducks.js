@@ -3323,9 +3323,8 @@ function* duplicateTestSaga({ payload }) {
     yield put(setTestsLoadingAction(false))
     yield put(receiveTestByIdAction(data._id, true))
   } catch (err) {
-    const {
-      data: { message: errorMessage },
-    } = err.response
+    const { data = {} } = err.response || {}
+    const { message: errorMessage } = data
     captureSentryException(err)
     yield put(setTestsLoadingAction(false))
     yield put(setEditEnableAction(false))

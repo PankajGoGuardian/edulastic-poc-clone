@@ -424,7 +424,7 @@ class ClassHeader extends Component {
       showPasswordButton,
       isViewPassword,
       hasRandomQuestions,
-      orgClasses,
+      orgClasses = [],
       districtPolicy,
       canvasSyncGrades,
       googleSyncAssignment,

@@ -23,7 +23,7 @@ const CanvasSyncModal = ({
   syncClassLoading,
   getCanvasCourseListRequest,
   getCanvasSectionListRequest,
-  canvasCourseList,
+  canvasCourseList = [],
   canvasSectionList,
   syncClassWithCanvas,
   canvasCode,
@@ -114,10 +114,8 @@ const CanvasSyncModal = ({
       return
     }
 
-    const {
-      id: canvasCourseCode,
-      name: canvasCourseName,
-    } = canvasCourseList.find(({ id }) => id === course)
+    const { id: canvasCourseCode, name: canvasCourseName } =
+      canvasCourseList.find(({ id }) => id === course) || []
 
     const selectedSectionDetails = canvasSectionList.find(
       ({ id }) => id === section

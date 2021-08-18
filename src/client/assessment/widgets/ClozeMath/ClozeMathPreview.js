@@ -173,12 +173,12 @@ const ClozeMathPreview = ({
       mathUnits: 'mathUnits',
     }
 
-    if (item.validation.validResponse) {
-      Object.keys(item.validation.validResponse).forEach((keyName) => {
+    if (item?.validation?.validResponse) {
+      Object.keys(item?.validation?.validResponse).forEach((keyName) => {
         if (keynameMap[keyName]) {
           testUserAnswer[keynameMap[keyName]] = {}
           if (keyName !== 'value') {
-            item.validation.validResponse[keyName].value.forEach(
+            item?.validation?.validResponse?.[keyName]?.value?.forEach(
               (answerItem) => {
                 testUserAnswer[keynameMap[keyName]][answerItem.id] = {
                   ...answerItem,
@@ -186,7 +186,7 @@ const ClozeMathPreview = ({
               }
             )
           } else {
-            item.validation.validResponse.value.forEach((answerItem) => {
+            item?.validation?.validResponse?.value?.forEach((answerItem) => {
               testUserAnswer[keynameMap[keyName]][answerItem[0].id] = {
                 ...answerItem[0],
               }

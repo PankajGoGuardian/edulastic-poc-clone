@@ -859,8 +859,8 @@ const CustomEditor = ({
           if (evt.which === 8) {
             const range = this.selection.ranges()[0]
             const parent = range.commonAncestorContainer
+            const cursorEl = parent.childNodes[range.startOffset - 1]
             if (parent && range.startOffset === range.endOffset) {
-              const cursorEl = parent.childNodes[range.startOffset - 1]
               if (!$(cursorEl).length || !cursorEl || !cursorEl.tagName) return
 
               if (

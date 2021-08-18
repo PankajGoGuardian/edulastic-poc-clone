@@ -214,7 +214,7 @@ const ConfigureCanvasModal = ({
               <label>Consumer Key</label>
               <TextInputStyled
                 placeholder="Enter Consumer Key"
-                value={lti.consumerKey}
+                value={lti?.consumerKey}
                 disabled
                 height="40px"
               />
@@ -223,7 +223,7 @@ const ConfigureCanvasModal = ({
               <label>Secret key</label>
               <TextInputStyled
                 placeholder="Enter Secret Key"
-                value={lti.consumerSecret}
+                value={lti?.consumerSecret}
                 disabled
                 height="40px"
               />

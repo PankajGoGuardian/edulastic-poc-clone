@@ -115,7 +115,7 @@ const EvaluationOption = ({
       <MultipleValues
         optionKey={optionKey}
         options={options}
-        onChange={onChangeOption}
+        onChange={onChangeRadio}
       />
     )
   }

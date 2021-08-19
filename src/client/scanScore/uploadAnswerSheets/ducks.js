@@ -13,6 +13,21 @@ import {
   omrUploadSessionStatus,
 } from './utils'
 
+// qrCode
+function parseQr(qrCode) {
+  // 6113b58a09d77c00090049e2_60bdf048523cc50009df2b22_60bdf91dc3987b0009459902_1_26
+  const [assignmentId, groupId, studentId, page, totalQuestions] = qrCode.split(
+    '_'
+  )
+  return {
+    assignmentId,
+    groupId,
+    studentId,
+    page,
+    totalQuestions,
+  }
+}
+
 const slice = createSlice({
   name: 'uploadAnswerSheets',
   initialState: {
@@ -30,6 +45,7 @@ const slice = createSlice({
     error: '',
     assignmentTitle: 'Loading...',
     classTitle: '...',
+    webCamScannedDocs: [],
   },
   reducers: {
     setCancelUpload: (state, { payload }) => {
@@ -127,27 +143,33 @@ const slice = createSlice({
     setResponsePageNumber: (state, { payload }) => {
       state.responsePageNumber = payload || 0
     },
+    setWebCamScannedDocs: (state, { payload }) => {
+      state.webCamScannedDocs = payload.map(({ qrCode, ...x }) => ({
+        ...x,
+        ...parseQr(qrCode),
+      }))
+    },
   },
 })
 
 function* getOmrUploadSessionsSaga({ payload }) {
   try {
-    const { sessionId, ..._payload } = payload
+    const { sessionId, fromWebcam, ..._payload } = payload
     const result = yield call(scannerApi.getOmrUploadSessions, _payload)
     const { omrUploadSessions, assignmentTitle, classTitle } = result || {}
     yield put(
       slice.actions.setAssignmentAndClassTitle({ assignmentTitle, classTitle })
     )
     const currentSession =
-      omrUploadSessions.find((session) => session._id === sessionId) ||
-      omrUploadSessions.filter(
+      omrUploadSessions?.find((session) => session._id === sessionId) ||
+      omrUploadSessions?.filter(
         ({ status }) =>
           status === omrUploadSessionStatus.SCANNING ||
           status === omrUploadSessionStatus.DONE
       ).lastItem
     if (currentSession) {
       yield put(slice.actions.setOmrUploadSession({ session: currentSession }))
-      if (!sessionId) {
+      if (!sessionId && !fromWebcam) {
         yield put(
           push({
             pathname: '/uploadAnswerSheets',
@@ -158,7 +180,7 @@ function* getOmrUploadSessionsSaga({ payload }) {
     }
     yield put(slice.actions.getOmrUploadSessionsDone({ omrUploadSessions }))
   } catch (e) {
-    console.log(e.message)
+    console.log(e)
     notification({
       msg:
         'Error getting last uploaded data. Please try again later or reach us at support@edulastic.com',

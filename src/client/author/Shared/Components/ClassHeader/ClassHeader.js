@@ -580,19 +580,20 @@ class ClassHeader extends Component {
         ? 'RESUME Assignment to Scan Responses'
         : ''
       const isMenuItemActive = !canOpen && !isPaused && canClose
-      const menuItemContent = isMenuItemActive ? (
-        <Link
-          to={{
-            pathname: '/uploadAnswerSheets',
-            search: `?assignmentId=${assignmentId}&groupId=${classId}`,
-          }}
-          target="_blank"
-        >
-          Scan Bubble Sheet
-        </Link>
-      ) : (
-        'Scan Bubble Sheet'
-      )
+      const menuItemContent =
+        isMenuItemActive || true ? (
+          <Link
+            to={{
+              pathname: '/uploadAnswerSheets',
+              search: `?assignmentId=${assignmentId}&groupId=${classId}`,
+            }}
+            target="_blank"
+          >
+            Scan Bubble Sheet
+          </Link>
+        ) : (
+          'Scan Bubble Sheet'
+        )
       return (
         <MenuItems
           data-cy="upload-bubble-sheet"
@@ -650,13 +651,13 @@ class ClassHeader extends Component {
             Generate Bubble Sheet
           </MenuItems>
         </FeaturesSwitch>
-        <FeaturesSwitch
+        {/* <FeaturesSwitch
           inputFeatures="enableOmrSheets"
           actionOnInaccessible="hidden"
           groupId={classId}
-        >
-          {scanBubbleSheetMenuItem}
-        </FeaturesSwitch>
+        > */}
+        {scanBubbleSheetMenuItem}
+        {/* </FeaturesSwitch> */}
         {isShowUnAssign && (
           <MenuItems
             data-cy="unAssign"

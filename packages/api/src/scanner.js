@@ -44,9 +44,34 @@ const splitScanOmrSheets = (payload) =>
     })
     .then((result) => result.data)
 
+const generateWebCamOmrSession = ({ assignmentId, groupId }) =>
+  api
+    .callApi({
+      url: `${prefix}/omr-session`,
+      data: { assignmentId, groupId },
+      method: 'post',
+    })
+    .then((result) => result?.data?.result)
+
+// {{value:{assignmentId:string,groupId:string,sessionId:string,responses:{answers:string[],studentId:string,imageUri:string}[]}},error?:Error}
+
+const scoreWebCamScans = ({ assignmentId, groupId, sessionId, responses }) =>
+  api.callApi({
+    url: `${prefix}/score-answers`,
+    method: 'POST',
+    data: {
+      assignmentId,
+      groupId,
+      sessionId,
+      responses,
+    },
+  })
+
 export default {
   createOmrUploadSession,
   updateOmrUploadSession,
   getOmrUploadSessions,
   splitScanOmrSheets,
+  generateWebCamOmrSession,
+  scoreWebCamScans,
 }

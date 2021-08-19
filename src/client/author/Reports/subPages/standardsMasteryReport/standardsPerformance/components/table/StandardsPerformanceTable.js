@@ -100,7 +100,8 @@ export const getColumns = (
   scaleInfo,
   selectedDomains,
   selectedTermId,
-  t
+  t,
+  isSharedReport,
 ) => {
   const filteredDomains = filter(
     domains,
@@ -136,7 +137,7 @@ export const getColumns = (
       sorter: (a, b) =>
         a.name.toLowerCase().localeCompare(b.name.toLowerCase()),
       render: (data, record) =>
-        compareBy.title === 'Student' ? (
+        compareBy.title === 'Student' && !isSharedReport ? (
           <Link
             to={`/author/reports/student-profile-summary/student/${record.id}?termId=${selectedTermId}`}
           >
@@ -192,6 +193,7 @@ const StandardsPerformanceTable = ({
   isCsvDownloading,
   selectedTermId,
   t,
+  isSharedReport,
   ...tableProps
 }) => {
   const columns = getColumns(
@@ -201,7 +203,8 @@ const StandardsPerformanceTable = ({
     scaleInfo,
     selectedDomains,
     selectedTermId,
-    t
+    t,
+    isSharedReport
   )
 
   const { analyseByData, compareByData } = tableFiltersOptions

@@ -254,6 +254,7 @@ const StandardsPerformance = ({
           selectedTermId={
             (sharedReportFilters || settings?.requestFilters)?.termId || ''
           }
+          isSharedReport={!!sharedReport?._id}
         />
       </StyledCard>
     </DropDownContainer>

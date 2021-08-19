@@ -55,7 +55,7 @@ export const ActionsWrapper = styled.div`
   align-items: center;
   justify-content: space-evenly;
   margin-left: auto;
-  width: ${({ showEditButton }) => (showEditButton ? 400 : 300)}px;
+  width: 400px;
 `
 export const ActionBtn = styled.button`
   display: flex;

@@ -254,7 +254,6 @@ class ListItem extends Component {
       orgCollections = [],
       currentUserId,
       isTestLiked,
-      collectionToWrite,
       isPreviewModalVisible,
     } = this.props
     const { analytics = [] } = isPlaylist ? _source : item
@@ -312,7 +311,7 @@ class ListItem extends Component {
     }
     const cardTitle = (
       <Header src={thumbnailData}>
-        <Stars size="small" />
+        {isPlaylist && <Stars size="small" />}
       </Header>
     )
 

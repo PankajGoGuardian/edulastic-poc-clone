@@ -406,12 +406,10 @@ const showEmptyAnswerNotification = (item = {}) => {
     const textInputsAndDropdowns = [...textInputs, ...dropdowns]
 
     if (!isEmpty(answer.value)) {
-      const hasEmptyMathAnswers = isEmpty(
-        mathInputs.filter((mathInput = {}) =>
-          mathInput.method !== methods.EQUIV_SYNTAX
-            ? !isEmpty(mathInput?.value)
-            : true
-        )
+      const hasEmptyMathAnswers = mathInputs.some((mathInput = {}) =>
+        mathInput.method !== methods.EQUIV_SYNTAX
+          ? isEmpty(mathInput?.value)
+          : false
       )
       if (hasEmptyMathAnswers) {
         return true
@@ -419,10 +417,8 @@ const showEmptyAnswerNotification = (item = {}) => {
     }
 
     if (!isEmpty(answer.mathUnits?.value || [])) {
-      const hasEmptyMathUnitInputs = isEmpty(
-        mathUnitInputs.filter((input = {}) =>
-          input.method !== methods.EQUIV_SYNTAX ? !isEmpty(input?.value) : true
-        )
+      const hasEmptyMathUnitInputs = mathUnitInputs.some((input = {}) =>
+        input.method !== methods.EQUIV_SYNTAX ? isEmpty(input?.value) : false
       )
       if (hasEmptyMathUnitInputs) {
         return true
@@ -430,8 +426,8 @@ const showEmptyAnswerNotification = (item = {}) => {
     }
 
     if (!isEmpty(textInputs) || !isEmpty(dropdowns)) {
-      const hasEmptyTextOrDropDown = isEmpty(
-        textInputsAndDropdowns.filter((ans) => !isEmpty(ans.value))
+      const hasEmptyTextOrDropDown = textInputsAndDropdowns.some((ans) =>
+        isEmpty(ans.value)
       )
       if (hasEmptyTextOrDropDown) {
         return true

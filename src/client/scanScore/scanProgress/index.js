@@ -1,16 +1,21 @@
 import { EduButton, FlexContainer } from '@edulastic/common'
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { withRouter } from 'react-router-dom'
-import PageLayout from '../uploadAnswerSheets/PageLayout'
 import styled from 'styled-components'
+import { Progress } from 'antd'
+import { round } from 'lodash'
 import {
   fieldRequiredColor,
   themeColor,
   themeColorHoverBlue,
   textBlackColor,
+  themeColorBlue,
 } from '@edulastic/colors'
-
-const dummyCallback = () => {}
+import { scannerApi } from '@edulastic/api'
+import { connect } from 'react-redux'
+import qs from 'qs'
+import useRealtimeV2 from '@edulastic/common/src/customHooks/useRealtimeV2'
+import PageLayout from '../uploadAnswerSheets/PageLayout'
 
 const Details = ({ label, value, onViewClick, isFailedDetails }) => (
   <FlexContainer marginTop="10px" alignItems="center" width="100%">
@@ -31,13 +36,66 @@ const Details = ({ label, value, onViewClick, isFailedDetails }) => (
   </FlexContainer>
 )
 
-const ScanProgress = ({
-  history,
-  assignmentId,
-  groupId,
-  successCount = 28,
-  failureCount = 2,
-}) => {
+const ScanProgress = ({ history, tempScannedDocs }) => {
+  const totalLength = tempScannedDocs.length
+  const [successCount, setSuccessCount] = useState(0)
+  const [failureCount, setFailureCount] = useState(0)
+  const processedCount = successCount + failureCount
+  const percentFinished = round((processedCount / totalLength) * 100, 2)
+  const { sessionId, groupId, assignmentId } = qs.parse(
+    window.location.search.replace('?', '') || ''
+  )
+
+  useRealtimeV2([`session:${sessionId}:classId:${groupId}`], {
+    webCamScanScore: (d) => {
+      if (d.statusCode == 200) {
+        setSuccessCount((c) => c + 1)
+      } else {
+        setFailureCount((c) => c + 1)
+      }
+    },
+  })
+
+  useEffect(() => {
+    if (totalLength == processedCount) {
+      history.push({
+        pathname: '/uploadAnswerSheets',
+        search: `assignmentId=${assignmentId}&groupId=${groupId}&sessionId=${sessionId}`,
+      })
+    }
+  }, [totalLength, processedCount])
+
+  useEffect(() => {
+    if (tempScannedDocs.length && assignmentId && groupId && sessionId) {
+      scannerApi
+        .scoreWebCamScans({
+          assignmentId,
+          groupId,
+          sessionId,
+          responses: tempScannedDocs.map(
+            ({ imageUri, studentId, answers }) => ({
+              answers,
+              studentId,
+              imageUri,
+            })
+          ),
+        })
+        .then((r) => {
+          console.log('r', r)
+        })
+        .catch((e) => {
+          console.warn('errr', e)
+        })
+    } else {
+      console.log('useFeect', {
+        assignmentId,
+        groupId,
+        sessionId,
+        tempScannedDocs,
+      })
+    }
+  }, [assignmentId, groupId, sessionId])
+
   const handleUploadAgain = () =>
     history.push({
       pathname: '/uploadAnswerSheets',
@@ -50,18 +108,6 @@ const ScanProgress = ({
       to: `/uploadAnswerSheets?assignmentId=${assignmentId}&groupId=${groupId}`,
     },
   ]
-
-  const handleSuccessViewClick = successCount
-    ? () => {
-        console.log('Success')
-      }
-    : dummyCallback
-
-  const handleFailureViewClick = failureCount
-    ? () => {
-        console.log('Success')
-      }
-    : dummyCallback
 
   return (
     <PageLayout
@@ -79,25 +125,21 @@ const ScanProgress = ({
         mr="auto"
       >
         <StyledTitle>Processing Responses...</StyledTitle>
+        <Progress
+          strokeColor={themeColorBlue}
+          percent={percentFinished}
+          status="active"
+          showInfo={false}
+        />
         <br />
         <Details
           label="Responses Processed"
           value={successCount + failureCount}
         />
-        <Details
-          label="Success"
-          value={successCount}
-          onViewClick={handleSuccessViewClick}
-        />
-        <Details
-          label="Failed"
-          value={failureCount}
-          onViewClick={handleFailureViewClick}
-          isFailedDetails
-        />
+        <Details label="Success" value={successCount} />
+        <Details label="Failed" value={failureCount} isFailedDetails />
         <br />
         <br />
-        <p>Successfully processed responses have been recorded on Edulastic.</p>
 
         <FlexContainer width="450px" mt="50px" justifyContent="space-evenly">
           <EduButton width="170px" onClick={handleUploadAgain} isGhost>
@@ -110,7 +152,13 @@ const ScanProgress = ({
   )
 }
 
-export default withRouter(ScanProgress)
+export default connect(
+  (state) => ({
+    tempScannedDocs:
+      state?.scanStore?.uploadAnswerSheets?.webCamScannedDocs || [],
+  }),
+  {}
+)(withRouter(ScanProgress))
 
 const Label = styled.label`
   display: block;

@@ -40,7 +40,7 @@ const SessionStatus = ({
   return (
     <SessionStatusContainer>
       <div className="inner-container">
-        <div className="scan-progress-text">Scan Progress</div>
+        <div className="scan-progress-text">Responses processed</div>
         <div className="scan-progress">
           <Progress
             strokeColor={themeColorBlue}

@@ -5,10 +5,16 @@ import qs from 'qs'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { Progress } from 'antd'
-import { OpenCvProvider } from 'opencv-react'
+import { OpenCvProvider, useOpenCv } from 'opencv-react'
 import { withRouter } from 'react-router-dom'
+import { round } from 'lodash'
 
-import { EduButton, FlexContainer, notification } from '@edulastic/common'
+import {
+  EduButton,
+  FlexContainer,
+  notification,
+  uploadToS3,
+} from '@edulastic/common'
 import {
   cardBg,
   greyThemeLight,
@@ -17,8 +23,10 @@ import {
   drcThemeColor,
   white,
 } from '@edulastic/colors'
+import { aws } from '@edulastic/constants'
 import ConfirmationModal from '@edulastic/common/src/components/SimpleConfirmModal'
 import beepSound from '@edulastic/common/src/utils/data/beep-sound.base64.json'
+import { scannerApi } from '@edulastic/api'
 import { actions, selector } from '../uploadAnswerSheets/ducks'
 import { getAnswersFromVideo } from './scannerUtils'
 import PageLayout from '../uploadAnswerSheets/PageLayout'
@@ -26,37 +34,75 @@ import Spinner from '../../common/components/Spinner'
 
 const audioRef = new Audio(`data:audio/mp3;base64,${beepSound.base64}`)
 
-const ScanAnswerSheets = ({
+const videoContstraints = {
+  width: { ideal: 640 },
+  height: { ideal: 480 },
+  facingMode: { ideal: 'environment' },
+}
+
+/**
+ *
+ * @param {HTMLCanvasElement} canvas
+ */
+
+function canvasToBlob(canvas) {
+  return new Promise((resolve) => {
+    canvas.toBlob(
+      (blob) => {
+        resolve(blob)
+      },
+      'image/jpeg',
+      0.97
+    )
+  })
+}
+
+/**
+ *
+ * @param {HTMLCanvasElement} canvas
+ */
+async function uploadCanvasFrame(canvas, uploadProgress) {
+  const blob = await canvasToBlob(canvas)
+  return uploadToS3(blob, aws.s3Folders.DEFAULT, uploadProgress)
+}
+
+const ScanAnswerSheetsInner = ({
   history,
-  totalStudents = 1,
   assignmentTitle,
   classTitle,
   getOmrUploadSessions,
+  setWebCamScannedDocs,
 }) => {
   let arrLengthOfAnswer = []
 
   const [confirmScanCompletion, setConfirmScanCompletion] = useState(false)
-  const [cv, setCV] = useState(null)
   const [videoSetting, setVideoSettings] = useState({ width: 640, height: 480 })
   const [isLoading, setIsLoading] = useState(true)
   const [isCameraLoaded, setIsCameraLoad] = useState(false)
-  const [isOpencvLoaded, setIsOpencvLoad] = useState(false)
   const [isError, setIsError] = useState(false)
   const [isStart, setIsStart] = useState(false)
-  const [arrAnswers, setArrAnswers] = useState([])
+  const arrAnswersRef = useRef([])
+  const { cv, loaded: isOpencvLoaded } = useOpenCv()
+  /**
+   * uncomment the following line while debugging
+   * window.arrAnswersRef = arrAnswersRef
+   */
   const [isHelpModalVisible, setHelpModal] = useState(
     !localStorage.getItem('omrUploadHelpVisibility')
   )
 
   const [answersList, setAnswers] = useState(null)
   const [scannedResponses, setScannedResponses] = useState([])
+  const [scanningPercent, setScanningPercent] = useState(0)
 
   const videoRef = useRef(null)
   const canvasRef = useRef(null)
+  const streamRef = useRef(null)
 
-  function processVideo(vc) {
+  async function processVideo(vc) {
+    const arrAnswers = arrAnswersRef.current
     if (vc) {
-      let matSrc = new cv.Mat(480, 640, cv.CV_8UC4)
+      const matSrc = new cv.Mat(480, 640, cv.CV_8UC4)
       vc.read(matSrc)
       let result = null
       if (answersList) {
@@ -70,14 +116,8 @@ const ScanAnswerSheets = ({
         return
       }
       const { answers } = result
-      if (!!answers) {
+      if (answers) {
         if (answers.length > 0) {
-          let resultCount = 0
-          answers.forEach((item) => {
-            if (item !== ' ') {
-              resultCount = resultCount + 1
-            }
-          })
           if (!answersList) {
             const count = arrLengthOfAnswer.filter(
               (item) => item === answers.length
@@ -87,16 +127,35 @@ const ScanAnswerSheets = ({
                 (item) => item.qrCode === result.qrCode
               ).length
               if (filterCount > 0) {
-                audioRef.play()
                 notification({
                   msg: `It is already parsed. Please change the bubble sheet and continue.`,
                   duration: 3,
                   type: 'warning',
+                  messageKey: 'alreadyParsedAnswerSheet',
                 })
               } else {
-                // TODO: Upload Frame to S3 on successful scan
+                setScanningPercent(0.1)
+                arrAnswersRef.current.push(result)
+                notification({
+                  type: 'success',
+                  msg: 'answers detected. Scanning in progress',
+                })
                 audioRef.play()
-                let temp = []
+                if (canvasRef.current) {
+                  const fileUrl = await uploadCanvasFrame(
+                    canvasRef.current,
+                    (uploadEvent) => {
+                      const percent =
+                        (uploadEvent.loaded / uploadEvent.total) * 100
+                      setScanningPercent(round(percent, 2))
+                    }
+                  )
+                  arrAnswersRef.current[
+                    arrAnswersRef.current.length - 1
+                  ].imageUri = fileUrl
+                  setScanningPercent(0)
+                }
+                const temp = []
                 result.answers.forEach((item, index) => {
                   temp.push(`${index + 1}: ${item}`)
                 })
@@ -111,10 +170,7 @@ const ScanAnswerSheets = ({
                 })
 
                 arrLengthOfAnswer = []
-                let arrTemp = arrAnswers
                 console.log(result)
-                arrTemp.push(result)
-                setArrAnswers(arrTemp)
               }
             } else {
               arrLengthOfAnswer.push(answers.length)
@@ -125,35 +181,31 @@ const ScanAnswerSheets = ({
     }
   }
 
-  const onLoaded = (_cv) => {
-    setIsOpencvLoad(true)
-    setCV(_cv)
-  }
-
   useEffect(() => {
     const { assignmentId, groupId, sessionId } = qs.parse(
       window.location?.search || '',
       { ignoreQueryPrefix: true }
     )
-    getOmrUploadSessions({ assignmentId, groupId, sessionId })
+    getOmrUploadSessions({ assignmentId, groupId, sessionId, fromWebcam: true })
     if (navigator.mediaDevices.getUserMedia) {
       navigator.mediaDevices
-        .getUserMedia({ video: true, audio: false })
+        .getUserMedia({ video: videoContstraints, audio: false })
         .then((stream) => {
           setIsCameraLoad(true)
           setIsError(false)
-          let { width, height } = stream.getTracks()[0].getSettings()
-          setVideoSettings({ width: width, height: height })
+          const { width, height } = stream.getTracks()[0].getSettings()
+          setVideoSettings({ width, height })
+          stream.getTracks().forEach((track) => track.stop())
         })
         .catch((err) => {
           setIsError(true)
-          console.log('Error While accessing camera: ' + err)
+          console.log(`Error While accessing camera: ${err}`)
         })
     }
     return () => {
-      navigator.mediaDevices
-        .getUserMedia({ video: true })
-        .then((stream) => stream.getTracks().forEach((track) => track.stop()))
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((track) => track.stop())
+      }
     }
   }, [])
 
@@ -171,10 +223,11 @@ const ScanAnswerSheets = ({
       !isStart
     ) {
       navigator.mediaDevices
-        .getUserMedia({ video: true, audio: false })
+        .getUserMedia({ video: videoContstraints, audio: false })
         .then((stream) => {
           setIsStart(true)
           setIsError(false)
+          streamRef.current = stream
           // start receiving stream from webcam
           videoRef.current.srcObject = stream
           videoRef.current.play()
@@ -196,7 +249,7 @@ const ScanAnswerSheets = ({
         })
         .catch((err) => {
           setIsError(true)
-          console.log('Error While accessing camera: ' + err)
+          console.log(`Error While accessing camera: ${err}`)
         })
     }
   }, [videoRef, videoRef?.current, cv])
@@ -212,12 +265,18 @@ const ScanAnswerSheets = ({
     },
   ]
 
-  const triggerCompleteConfirmation = () => setConfirmScanCompletion(true)
+  const triggerCompleteConfirmation = () => {
+    if (!arrAnswersRef.current?.length) {
+      notification({ type: 'warning', msg: 'No answer sheets scanned so far' })
+    } else {
+      setConfirmScanCompletion(true)
+    }
+  }
 
   const closeScanConfirmationModal = () => setConfirmScanCompletion(false)
 
   const stopCamera = () => {
-    let matSrc = new cv.Mat(480, 640, cv.CV_8UC4)
+    const matSrc = new cv.Mat(480, 640, cv.CV_8UC4)
     cv.rectangle(
       matSrc,
       { x: 0, y: 0 },
@@ -234,15 +293,28 @@ const ScanAnswerSheets = ({
     const ctx = canvasRef.current.getContext('2d')
     ctx.clearRect(0, 0, ctx.width, ctx.height)
     videoRef.current.srcObject = null
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => track.stop())
+    }
   }
 
-  const handleScanComplete = () => {
+  const handleScanComplete = async () => {
+    const { assignmentId, groupId } = qs.parse(window.location?.search || '', {
+      ignoreQueryPrefix: true,
+    })
+    setWebCamScannedDocs(arrAnswersRef.current)
+    setIsLoading(true)
+    const session = await scannerApi.generateWebCamOmrSession({
+      assignmentId,
+      groupId,
+    })
+    setIsLoading(false)
     setAnswers(null)
     stopCamera()
     closeScanConfirmationModal()
     history.push({
-      pathname: '/uploadAnswerSheets/scanProgress',
-      search: window.location.search,
+      pathname: `/uploadAnswerSheets/scanProgress`,
+      search: `?assignmentId=${assignmentId}&groupId=${groupId}&sessionId=${session._id}&scanning=1`,
     })
   }
 
@@ -260,116 +332,119 @@ const ScanAnswerSheets = ({
   }
 
   return (
-    <OpenCvProvider onLoad={onLoaded}>
-      <PageLayout
-        assignmentTitle={assignmentTitle}
-        classTitle={classTitle}
-        breadcrumbData={breadcrumbData}
-      >
-        {isLoading ? (
-          <Spinner />
-        ) : (
-          <CameraUploaderWrapper>
-            <Title>
-              Hold your bubble sheets in front of the camera{' '}
-              <HelpIcon onClick={openHelpModal}>?</HelpIcon>
-            </Title>
-            <SubTitle>
-              Ensure the sheets are fully visible and wait for the scan
-              successful message.
+    <PageLayout
+      assignmentTitle={assignmentTitle}
+      classTitle={classTitle}
+      breadcrumbData={breadcrumbData}
+    >
+      {isLoading ? (
+        <Spinner />
+      ) : (
+        <CameraUploaderWrapper>
+          <Title>
+            Hold your bubble sheets in front of the camera{' '}
+            <HelpIcon onClick={openHelpModal}>?</HelpIcon>
+          </Title>
+          <SubTitle>
+            Ensure the sheets are fully visible and wait for the scan successful
+            message.
+          </SubTitle>
+          <FlexContainer width={`${videoSetting.width}px`}>
+            <Progress
+              percent={scanningPercent}
+              size="small"
+              style={{ visibility: scanningPercent > 0 ? 'visible' : 'hidden' }}
+            />
+            <SubTitle width="350px">
+              SCANNED RESPONSES: {scannedResponses.length}
             </SubTitle>
-            <FlexContainer width={`${videoSetting.width}px`}>
-              <Progress
-                percent={Math.round(scannedResponses.length / totalStudents)}
-                size="small"
+          </FlexContainer>
+          <CameraModule width={videoSetting.width} height={videoSetting.height}>
+            <FlexContainer justifyContent="center">
+              <canvas
+                id="canvas"
+                ref={canvasRef}
+                style={{
+                  width: videoSetting.width,
+                  height: videoSetting.height,
+                  border: '2px solid #ececec',
+                }}
               />
-              <SubTitle width="350px">
-                SCANNED RESPONSES: {scannedResponses.length}
-              </SubTitle>
+              <canvas
+                id="cropped"
+                style={{
+                  display: 'none',
+                  width: 280,
+                  height: 487,
+                  border: '2px solid #ececec',
+                }}
+              />
+              <video
+                id="video"
+                ref={videoRef}
+                style={{
+                  display: 'none',
+                  width: videoSetting.width,
+                  height: videoSetting.height,
+                  border: '2px solid #ececec',
+                }}
+                autoPlay
+              />
             </FlexContainer>
-            <CameraModule
-              width={videoSetting.width}
-              height={videoSetting.height}
-            >
-              <FlexContainer justifyContent="center">
-                <canvas
-                  id="canvas"
-                  ref={canvasRef}
-                  style={{
-                    width: videoSetting.width,
-                    height: videoSetting.height,
-                    border: '2px solid #ececec',
-                  }}
-                />
-                <canvas
-                  id="cropped"
-                  style={{
-                    display: 'none',
-                    width: 280,
-                    height: 487,
-                    border: '2px solid #ececec',
-                  }}
-                />
-                <video
-                  id="video"
-                  ref={videoRef}
-                  style={{
-                    display: 'none',
-                    width: videoSetting.width,
-                    height: videoSetting.height,
-                    border: '2px solid #ececec',
-                  }}
-                  autoPlay
-                />
-              </FlexContainer>
-            </CameraModule>
+          </CameraModule>
 
-            <EduButton isGhost onClick={triggerCompleteConfirmation}>
-              PROCEED TO NEXT STEP
-            </EduButton>
-          </CameraUploaderWrapper>
-        )}
-        {confirmScanCompletion && (
-          <ConfirmationModal
-            visible={confirmScanCompletion}
-            title="Scan Confirmation"
-            description="Have you scanned all response sheets?"
-            buttonText="YES, PROCEED"
-            cancelText="NO, LET ME FINISH"
-            onCancel={closeScanConfirmationModal}
-            onProceed={handleScanComplete}
-          />
-        )}
-        {isHelpModalVisible && (
-          <ConfirmationModal
-            visible={isHelpModalVisible}
-            title="Broad Steps Are"
-            description={
-              <StyledList>
-                <li>Hold your bubble sheets so that they are fully visible</li>
-                <li>
-                  Ensure the bounding boxes of the response section and the QR
-                  code are fully visible and aligned vertically{' '}
-                </li>
-                <li>
-                  Wait for the scanned successful message with a beeper sound
-                </li>
-                <li>
-                  Once the message is shown, you can hold your next response
-                  sheet to scan
-                </li>
-                <li>
-                  Click Proceed to next step once all responses are scanned
-                </li>
-              </StyledList>
-            }
-            buttonText="CLOSE"
-            onCancel={closeHelpModal}
-            onProceed={closeHelpModal}
-            hideCancelBtn
-          />
-        )}
-      </PageLayout>
+          <EduButton isGhost onClick={triggerCompleteConfirmation}>
+            PROCEED TO NEXT STEP
+          </EduButton>
+        </CameraUploaderWrapper>
+      )}
+      {confirmScanCompletion && (
+        <ConfirmationModal
+          visible={confirmScanCompletion}
+          title="Scan Confirmation"
+          description="Have you scanned all response sheets?"
+          buttonText="YES, PROCEED"
+          cancelText="NO, LET ME FINISH"
+          onCancel={closeScanConfirmationModal}
+          onProceed={handleScanComplete}
+        />
+      )}
+      {isHelpModalVisible && (
+        <ConfirmationModal
+          visible={isHelpModalVisible}
+          title="Broad Steps Are"
+          description={
+            <StyledList>
+              <li>Hold your bubble sheets so that they are fully visible</li>
+              <li>
+                Ensure the bounding boxes of the response section and the QR
+                code are fully visible and aligned vertically{' '}
+              </li>
+              <li>
+                Wait for the scanned successful message with a beeper sound
+              </li>
+              <li>
+                Once the message is shown, you can hold your next response sheet
+                to scan
+              </li>
+              <li>Click Proceed to next step once all responses are scanned</li>
+            </StyledList>
+          }
+          buttonText="CLOSE"
+          onCancel={closeHelpModal}
+          onProceed={closeHelpModal}
+          hideCancelBtn
+        />
+      )}
+    </PageLayout>
+  )
+}
+
+const ScanAnswerSheets = (props) => {
+  return (
+    <OpenCvProvider openCvPath="https://cdn.edulastic.com/modified/opencv/opencv.js">
+      {' '}
+      <ScanAnswerSheetsInner {...props} />{' '}
     </OpenCvProvider>
   )
 }

@@ -16,11 +16,7 @@ const ScanProgress = lazy(() =>
 const App = () => (
   <ThemeProvider theme={themes.scanScore}>
     <Switch>
-      <Route
-        exact
-        path="/uploadAnswerSheets/scanProgress"
-        component={ScanProgress}
-      />
+      <Route path="/uploadAnswerSheets/scanProgress" component={ScanProgress} />
       <Route
         exact
         path="/uploadAnswerSheets/cameraScan"

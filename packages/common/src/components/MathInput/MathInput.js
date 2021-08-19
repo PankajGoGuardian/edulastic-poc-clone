@@ -446,6 +446,7 @@ class MathInput extends React.PureComponent {
         ref={this.containerRef}
         onKeyUp={onKeyUp}
         disabled={disabled}
+        isMobileDevice={window.isMobileDevice}
       >
         <div className="input" onClick={this.onClickMathField}>
           <div

@@ -550,6 +550,16 @@ class Container extends PureComponent {
     }
   }
 
+  validateTimedAssignment = () => {
+    const { test } = this.props
+    const { allowedTime, timedAssignment } = test
+    if (timedAssignment && allowedTime === 0) {
+      notification({ messageKey: 'timedAssigmentTimeCanNotBeZero' })
+      return false
+    }
+    return true
+  }
+
   handleAssign = () => {
     const {
       test,
@@ -559,6 +569,10 @@ class Container extends PureComponent {
       collections: orgCollections,
     } = this.props
     const { status, collections } = test
+
+    if (!this.validateTimedAssignment()) {
+      return
+    }
 
     const sparkMathId = orgCollections?.find(
       (x) => x.name.toLowerCase() === 'spark math'
@@ -883,6 +897,9 @@ class Container extends PureComponent {
     } = this.props
     if (!test?.title?.trim()?.length) {
       notification({ messageKey: 'nameFieldRequired' })
+      return
+    }
+    if (!this.validateTimedAssignment()) {
       return
     }
     const newTest = this.modifyTest()

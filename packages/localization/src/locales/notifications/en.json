@@ -1747,6 +1747,10 @@
     "message": "Name field is required",
     "description": ""
   },
+  "timedAssigmentTimeCanNotBeZero": {
+    "message": "Timed test is ON, please add some time",
+    "description": ""
+  },
   "totalItemsToBeDelivered": {
     "message": "Total items to be delivered should be lesser than the number of items selected.",
     "description": ""

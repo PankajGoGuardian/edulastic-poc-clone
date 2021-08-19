@@ -1087,24 +1087,29 @@ class Setting extends Component {
                     testType === COMMON && (
                       <Block id="freeze-settings" smallSize={isSmallSize}>
                         <Row>
-                          <CheckboxLabel
-                            disabled={!owner || !isEditable}
-                            data-cy="freeze-settings"
-                            checked={freezeSettings}
-                            onChange={(e) =>
-                              this.updateTestData('freezeSettings')(
-                                e.target.checked
-                              )
-                            }
-                          >
-                            Freeze Settings
-                          </CheckboxLabel>
-                          <Tooltip title="Instructors won’t be allowed to override the test settings while assigning it.">
-                            <IconInfo
-                              color={lightGrey9}
-                              style={{ cursor: 'pointer' }}
+                          <Title>
+                            <span>Freeze Settings</span>
+                            <EduSwitchStyled
+                              disabled={!owner || !isEditable}
+                              data-cy="freeze-settings"
+                              checked={freezeSettings}
+                              onChange={() =>
+                                this.updateTestData('freezeSettings')(
+                                  !freezeSettings
+                                )
+                              }
                             />
-                          </Tooltip>
+                            <Tooltip title="Instructors won’t be allowed to override the test settings while assigning it.">
+                              <IconInfo
+                                color={lightGrey9}
+                                style={{
+                                  cursor: 'pointer',
+                                  position: 'relative',
+                                  right: '-10px',
+                                }}
+                              />
+                            </Tooltip>
+                          </Title>
                         </Row>
                       </Block>
                     )}
@@ -1373,14 +1378,13 @@ class Setting extends Component {
                                   style={{ margin: '0px 20px 0px 0px' }}
                                   value={
                                     !isNaN(allowedTime)
-                                      ? allowedTime / (60 * 1000)
+                                      ? allowedTime === 0
+                                        ? ''
+                                        : allowedTime / (60 * 1000)
                                       : 1
                                   }
                                   onChange={(e) => {
-                                    if (
-                                      e.target.value.length <= 3 &&
-                                      e.target.value <= 300
-                                    ) {
+                                    if (e.target.value <= 300) {
                                       this.updateTestData('allowedTime')(
                                         e.target.value * 60 * 1000
                                       )
@@ -1431,7 +1435,6 @@ class Setting extends Component {
                         <DollarPremiumSymbol premium={maxAttemptAllowed} />
                       </Title>
                       <Body>
-                        <FieldLabel>Quantity</FieldLabel>
                         <TextInputStyled
                           type="number"
                           width="100px"
@@ -1478,6 +1481,7 @@ class Setting extends Component {
                                   )
                                 }
                                 size="large"
+                                width="100px"
                                 value={maxAnswerChecks}
                                 type="number"
                                 min={0}

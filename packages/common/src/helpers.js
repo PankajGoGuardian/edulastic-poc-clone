@@ -197,7 +197,6 @@ export const uploadToS3 = async (
   let fileToUpload = file
   // image was pasted
   if (isBlobData(fileToUpload)) {
-    console.log('this is blob data')
     fileToUpload = convertBlobToFile(file) // create new file with the BLOB data
   }
   if (isString(file)) {

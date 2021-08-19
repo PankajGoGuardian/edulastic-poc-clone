@@ -84,9 +84,9 @@ const ScanAnswerSheetsInner = ({
   const arrAnswersRef = useRef([])
   const { cv, loaded: isOpencvLoaded } = useOpenCv()
   /**
-   * FIXME: remove this
+   * uncomment the following line while debugging
+   * window.arrAnswersRef = arrAnswersRef
    */
-  window.arrAnswersRef = arrAnswersRef
   const [isHelpModalVisible, setHelpModal] = useState(
     !localStorage.getItem('omrUploadHelpVisibility')
   )

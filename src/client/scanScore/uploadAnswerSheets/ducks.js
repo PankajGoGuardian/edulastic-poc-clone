@@ -13,18 +13,15 @@ import {
   omrUploadSessionStatus,
 } from './utils'
 
-// qrCode
 function parseQr(qrCode) {
-  // 6113b58a09d77c00090049e2_60bdf048523cc50009df2b22_60bdf91dc3987b0009459902_1_26
-  const [assignmentId, groupId, studentId, page, totalQuestions] = qrCode.split(
-    '_'
-  )
+  // ${testId}_${assignmentId}_${classId}_${studentId}_${page}
+  const [testId, assignmentId, groupId, studentId, page] = qrCode.split('_')
   return {
+    testId,
     assignmentId,
     groupId,
     studentId,
     page,
-    totalQuestions,
   }
 }
 

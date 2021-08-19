@@ -221,7 +221,7 @@ const ReviewSummary = ({
             <TableHeaderCol span={6}>Q&apos;s</TableHeaderCol>
             <TableHeaderCol span={6}>Points</TableHeaderCol>
           </Row>
-          {summary?.standards?.length &&
+          {!!summary?.standards?.length &&
             summary.standards.map((data) => (
               <TableBodyRow data-cy={data.identifier} key={data.key}>
                 <TableBodyCol span={12}>

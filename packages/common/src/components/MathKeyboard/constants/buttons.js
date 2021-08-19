@@ -2169,33 +2169,29 @@ export const sq_matrix = {
   command: 'write',
 }
 
-// TODO: implement this command
 export const plus_matrix = {
-  handler: '\\armatrix',
+  handler: '\\begin{array}{r}&\\\\+&\\\\\\hline&\\end{array}',
   label: <CustomImage src={Group1019} width={30} height={39.5} />,
   types: ['all'],
   command: 'write',
 }
 
-// TODO: implement this command
 export const line_matrix = {
-  handler: '\\begin{array}{r}{}\\{}\\\\\\hline{}\\end{array}',
+  handler: '\\begin{array}{r}\\\\\\\\\\hline\\end{array}',
   label: <CustomImage src={Group1021} width={30} height={39.5} />,
   types: ['all'],
   command: 'write',
 }
 
-// TODO: implement this command
 export const minus_matrix = {
-  handler: '\\begin{array}{r}{}\\{}\\\\\\hline{}\\end{array}',
+  handler: '\\begin{array}{r}&\\\\-&\\\\\\hline&\\end{array}',
   label: <CustomImage src={Group1003} width={30} height={39.5} />,
   types: ['all'],
   command: 'write',
 }
 
-// TODO: implement this command
 export const time_matrix = {
-  handler: '\\begin{array}{r}{}\\{}\\\\\\hline{}\\end{array}',
+  handler: '\\begin{array}{r}&\\\\\\times&\\\\\\hline&\\end{array}',
   label: <CustomImage src={Group1002} width={30} height={39.5} />,
   types: ['all'],
   command: 'write',

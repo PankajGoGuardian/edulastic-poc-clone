@@ -1220,7 +1220,7 @@ class Container extends Component {
                 )}
                 {view !== 'preview' &&
                   view !== 'auditTrail' &&
-                  (showMultipartAllPartsScore ? (
+                  showMultipartAllPartsScore && (
                     <AllPartsPointsWrapper>
                       {hasNoUnscored ? (
                         <Ctrls.TotalPoints
@@ -1241,16 +1241,7 @@ class Container extends Component {
                         />
                       )}
                     </AllPartsPointsWrapper>
-                  ) : (
-                    <EduButton
-                      ml="8px"
-                      isGhost
-                      height="30px"
-                      id="how-to-author"
-                    >
-                      How to author
-                    </EduButton>
-                  ))}
+                  )}
                 {view === 'preview' && (
                   <RightActionButtons>
                     {this.renderButtons()}

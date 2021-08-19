@@ -73,6 +73,9 @@ const EngagementReportFilters = ({
     const urlGrades = staticDropDownData.grades.filter(
       (item) => search.grades && search.grades.includes(item.key)
     )
+    const urlAssignedBy =
+      staticDropDownData.assignedBy.find((a) => a.key === search.assignedBy) ||
+      staticDropDownData.assignedBy[0]
 
     const _filters = {
       reportId: search.reportId,
@@ -82,7 +85,7 @@ const EngagementReportFilters = ({
       grades: urlGrades.map((item) => item.key).join(',') || '',
       subjects: urlSubjects.map((item) => item.key).join(',') || '',
       assessmentTypes: search.assessmentTypes || '',
-      assignedBy: search.assignedBy || staticDropDownData.assignedBy[0].key,
+      assignedBy: urlAssignedBy.key,
     }
     const assessmentTypesArr = (search.assessmentTypes || '').split(',')
     const _tempTagsData = {
@@ -92,7 +95,7 @@ const EngagementReportFilters = ({
       assessmentTypes: staticDropDownData.assessmentType.filter((a) =>
         assessmentTypesArr.includes(a.key)
       ),
-      assignedBy: search.assignedBy || staticDropDownData.assignedBy[0],
+      assignedBy: urlAssignedBy,
     }
     setTempTagsData(_tempTagsData)
     setFilters(_filters)

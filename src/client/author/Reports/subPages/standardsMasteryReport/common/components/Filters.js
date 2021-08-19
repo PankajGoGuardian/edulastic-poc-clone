@@ -288,6 +288,10 @@ const StandardsMasteryReportFilters = ({
       const urlStandardProficiency =
         standardProficiencyList.find((item) => item.key === search.profileId) ||
         defaultStandardProficiency
+      const urlAssignedBy =
+        staticDropDownData.assignedBy.find(
+          (a) => a.key === search.assignedBy
+        ) || staticDropDownData.assignedBy[0]
       const _filters = {
         termId: urlSchoolYear.key,
         schoolIds: search.schoolIds || '',
@@ -307,7 +311,7 @@ const StandardsMasteryReportFilters = ({
         profileId: urlStandardProficiency?.key || '',
         domainIds: [],
         standardId: search.standardId || '',
-        assignedBy: search.assignedBy || staticDropDownData.assignedBy[0].key,
+        assignedBy: urlAssignedBy.key,
       }
       if (role === roleuser.TEACHER) {
         delete _filters.schoolIds
@@ -326,7 +330,7 @@ const StandardsMasteryReportFilters = ({
         curriculumId: urlCurriculum,
         standardGrade: urlStandardGrade,
         profileId: urlStandardProficiency,
-        assignedBy: search.assignedBy || staticDropDownData.assignedBy[0],
+        assignedBy: urlAssignedBy,
       }
       // set tempTagsData, filters and testId
       setTempTagsData(_tempTagsData)

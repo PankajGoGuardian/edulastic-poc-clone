@@ -59,6 +59,7 @@ import RegradeNotificationListener from '../../../Regrade/RegradeNotificationLis
 import ConfirmRegradeModal from '../../../Regrade/ConfirmRegradeModal'
 import Upgrade from '../../../Regrade/Upgrade'
 import { DeleteItemModal } from '../../../TestList/components/DeleteItemModal/deleteItemModal'
+import { LARGE_DESKTOP_WIDTH } from '../../../../assessment/constants/others'
 
 const {
   statusConstants,
@@ -437,7 +438,7 @@ const TestPageHeader = ({
           titleMarginTop="10px"
           flexDirection="row"
           alignItems="center"
-          titleMaxWidth="250px"
+          titleMaxWidth={windowWidth >= LARGE_DESKTOP_WIDTH ? '450px' : '250px'}
           headerLeftClassName="headerLeftWrapper"
           containerClassName="tabAlignment"
           hasTestId={hasTestId}

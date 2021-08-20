@@ -16,6 +16,7 @@ import { connect } from 'react-redux'
 import qs from 'qs'
 import useRealtimeV2 from '@edulastic/common/src/customHooks/useRealtimeV2'
 import PageLayout from '../uploadAnswerSheets/PageLayout'
+import { selector } from '../uploadAnswerSheets/ducks'
 
 const Details = ({ label, value, onViewClick, isFailedDetails }) => (
   <FlexContainer marginTop="10px" alignItems="center" width="100%">
@@ -36,7 +37,12 @@ const Details = ({ label, value, onViewClick, isFailedDetails }) => (
   </FlexContainer>
 )
 
-const ScanProgress = ({ history, tempScannedDocs }) => {
+const ScanProgress = ({
+  history,
+  tempScannedDocs,
+  assignmentTitle,
+  classTitle,
+}) => {
   const totalLength = tempScannedDocs.length
   const [successCount, setSuccessCount] = useState(0)
   const [failureCount, setFailureCount] = useState(0)
@@ -111,8 +117,8 @@ const ScanProgress = ({ history, tempScannedDocs }) => {
 
   return (
     <PageLayout
-      assignmentTitle="Scan Student Responses"
-      classTitle="Class Name"
+      assignmentTitle={assignmentTitle}
+      classTitle={classTitle}
       breadcrumbData={breadcrumbData}
       isScanProgressScreen
     >
@@ -154,6 +160,7 @@ const ScanProgress = ({ history, tempScannedDocs }) => {
 
 export default connect(
   (state) => ({
+    ...selector(state),
     tempScannedDocs:
       state?.scanStore?.uploadAnswerSheets?.webCamScannedDocs || [],
   }),

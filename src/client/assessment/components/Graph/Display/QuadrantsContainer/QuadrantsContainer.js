@@ -913,6 +913,7 @@ class GraphContainer extends PureComponent {
                     equations={equations}
                     setEquations={this.setEquations}
                     layout={layout}
+                    elements={elements}
                     margin={{
                       top: layout.margin
                         ? layout.margin
@@ -931,6 +932,7 @@ class GraphContainer extends PureComponent {
                     equations={equations}
                     setEquations={this.setEquations}
                     layout={layout}
+                    elements={elements}
                     margin={{
                       top: layout.margin
                         ? layout.margin

@@ -876,7 +876,8 @@
         "cosecant": "Select two points on the grid, say #{A = (x_1, y_1)#}, #{B = (x_2, y_2)#} the following graph will be drawn: <br />#{y = y_1 + (y_2-y_1)\\csc\\left({\\frac{\\pi}{2(x_2-x_1)}x-\\frac{x_1\\pi}{2(x_2-x_1)}}\\right)#} <br />The geometric meaning is that the difference between the y-coordinates of the two points selected is the \"Amplitude\" and the difference between the x-coordinates is related to the period. The x-coordinate of the first point is related to the phase shift. <p class=\"mb-8\"/>Example: If you select #{A = (0,0)#}, and #{B = }\\left(\\frac{\\pi}{2}, 1\\right)#}, #{y=\\csc x#} will be plotted.",
         "piecewise": "",
         "no_solution": "",
-        "area2": ""
+        "area2": "",
+        "fxWithArea": "You cannot use this functionality after plotting a graph. This option is used solely for the purposes of exploring curves of complicated equations."
       }
     },
     "math": {

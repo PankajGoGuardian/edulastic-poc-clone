@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { CONSTANT } from '../config'
 import { fixApiLatex } from '../utils'
 import { Area } from '.'
@@ -285,7 +286,6 @@ class Implicit {
   oppSign = (x, y) => x * y < 0.0
 
   abortList = () => {
-    console.log(this.openList)
     for (let i = 0; i < this.openList.length; i++) {
       this.segments.push(this.openList[i].start)
       this.segments = this.segments.concat(this.openList[i].points.toArray())

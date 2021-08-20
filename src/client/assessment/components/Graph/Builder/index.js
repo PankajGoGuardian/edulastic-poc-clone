@@ -3,6 +3,7 @@ import { isNumber, cloneDeep } from 'lodash'
 import { Modal } from 'antd'
 import { greyThemeDark2 } from '@edulastic/colors'
 import * as Sentry from '@sentry/browser'
+import i18n from '@edulastic/localization'
 import getDefaultConfig, { CONSTANT } from './config'
 import {
   Area,
@@ -410,6 +411,23 @@ class Board {
       }
 
       if (
+        this.currentTool === CONSTANT.TOOLS.AREA &&
+        (this.elements || []).some(
+          (element) => element.type === Equation.jxgType
+        )
+      ) {
+        Modal.confirm({
+          title: 'Warning',
+          content: i18n.t(
+            'assessment:component.graphing.helperText.fxWithArea'
+          ),
+          okText: 'Confirm',
+          okCancel: false,
+          maskClosable: true,
+        })
+        return
+      }
+      if (
         this.currentTool === CONSTANT.TOOLS.TRASH ||
         this.currentTool === CONSTANT.TOOLS.DELETE
       ) {
@@ -420,14 +438,12 @@ class Board {
         }
         return
       }
-
       if (
         this.responsesAllowed !== null &&
         this.elements.length >= this.responsesAllowed
       ) {
         return
       }
-
       const newElement = this.creatingHandler(this, event)
       if (newElement) {
         this.elements.push(newElement)

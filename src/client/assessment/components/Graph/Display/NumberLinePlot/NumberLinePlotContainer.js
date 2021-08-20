@@ -455,6 +455,7 @@ class NumberLinePlotContainer extends PureComponent {
       graphData,
       setQuestionData,
       isPrintPreview,
+      elements,
     } = this.props
     const { selectedControl } = this.state
     const {
@@ -518,6 +519,7 @@ class NumberLinePlotContainer extends PureComponent {
                   hideEquationTool
                   graphData={graphData}
                   setQuestionData={setQuestionData}
+                  elements={elements}
                   layout={_layout}
                 />
                 <GraphEditTools
@@ -525,6 +527,7 @@ class NumberLinePlotContainer extends PureComponent {
                   hideSettingTool
                   graphData={graphData}
                   setQuestionData={setQuestionData}
+                  elements={elements}
                   layout={_layout}
                 />
               </>

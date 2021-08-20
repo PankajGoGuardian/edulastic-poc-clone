@@ -155,11 +155,50 @@ function* receiveGradeBookSaga({ payload }) {
 export function* receiveTestActivitySaga({ payload }) {
   const { studentResponseParams, ...classResponseParams } = payload || {}
   try {
-    // test, testItemsData, testActivities, studentNames, testQuestionActivities
-    const { additionalData, ...gradebookData } = yield call(
-      classBoardApi.testActivity,
-      classResponseParams
-    )
+    let additionalData = {}
+    const gradebookData = {
+      enrollmentStatus: {},
+      recentTestActivitiesGrouped: {},
+      status: '',
+      students: [],
+      testActivities: [],
+      testQuestionActivities: [],
+    }
+    let isAllDataFetched = false
+    let page = 0
+    let leftOverStudents = []
+    let studentsToFetchData = []
+    while (!isAllDataFetched) {
+      const _data = yield call(classBoardApi.testActivity, {
+        ...classResponseParams,
+        page,
+        leftOverStudents: studentsToFetchData,
+      })
+      const {
+        students,
+        enrollmentStatus,
+        testActivities = [],
+        testQuestionActivities = [],
+        recentTestActivitiesGrouped = [],
+        leftOverStudents: _leftOverStudents = [],
+      } = _data
+      if (page === 0) {
+        leftOverStudents = _leftOverStudents || []
+        additionalData = _data.additionalData
+        gradebookData.status = additionalData.status
+        gradebookData.enrollmentStatus = enrollmentStatus
+        gradebookData.students = students
+      }
+      gradebookData.recentTestActivitiesGrouped = {
+        ...gradebookData.recentTestActivitiesGrouped,
+        ...recentTestActivitiesGrouped,
+      }
+      gradebookData.testActivities.push(...testActivities)
+      gradebookData.testQuestionActivities.push(...testQuestionActivities)
+      studentsToFetchData = leftOverStudents.splice(0, 40)
+      isAllDataFetched = studentsToFetchData.length === 0
+      page++
+    }
     if (!additionalData.recentTestActivitiesGrouped) {
       /**
        * resetting attempts data if not recieved from response
@@ -1420,7 +1459,7 @@ export const getCanOpenAssignmentSelector = createSelector(
   getCurrentClassIdSelector,
   getUserRole,
   (additionalData, currentClass, userRole) =>
-    additionalData?.canOpenClass.includes(currentClass) &&
+    additionalData?.canOpenClass?.includes(currentClass) &&
     !(
       additionalData?.openPolicy ===
         assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_ADMIN &&

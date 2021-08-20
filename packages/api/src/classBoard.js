@@ -16,17 +16,23 @@ const testActivity = ({
   classId,
   isQuestionsView = false,
   includeStudents = [],
+  page,
+  leftOverStudents,
 }) =>
   api
     .callApi({
       url: `${prefix}/${assignmentId}/classes/${classId}/test-activity`,
-      method: 'get',
+      method: 'POST',
       params: {
         isQuestionsView,
         includeStudents:
           includeStudents && includeStudents.length
             ? `${includeStudents}`
             : null,
+      },
+      data: {
+        page,
+        leftOverStudents,
       },
     })
     .then((result) => result.data)

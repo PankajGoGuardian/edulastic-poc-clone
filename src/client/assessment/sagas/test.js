@@ -105,7 +105,10 @@ import { getClassIds } from '../../student/Reports/ducks'
 import { startAssessmentAction } from '../actions/assessment'
 import { TIME_UPDATE_TYPE } from '../themes/common/TimedTestTimer'
 import { getTestLevelUserWorkSelector } from '../../student/sharedDucks/TestItem'
-import { setSelectedThemeAction } from '../../student/Sidebar/ducks'
+import {
+  setSelectedThemeAction,
+  setZoomLevelAction,
+} from '../../student/Sidebar/ducks'
 
 // import { checkClientTime } from "../../common/utils/helpers";
 
@@ -308,6 +311,15 @@ function* loadTest({ payload }) {
           ...(currentAssignmentId ? { assignmentId: currentAssignmentId } : {}),
         }) // when preview(author side) use normal non cached api
       : call(getPublicTest, testId)
+
+    const previousVisitedTestId = sessionStorage.getItem('currentTestId')
+    if (previousVisitedTestId !== testId) {
+      yield put(setZoomLevelAction('1'))
+      yield put(setSelectedThemeAction('default'))
+      localStorage.setItem('selectedTheme', 'default')
+      localStorage.setItem('zoomLevel', 1)
+      sessionStorage.setItem('currentTestId', testId)
+    }
     const _response = yield all([getTestActivity])
     const testActivity = _response?.[0] || {}
     const isFromSummary = yield select((state) =>

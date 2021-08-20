@@ -478,7 +478,6 @@ export const ToolBtn = styled.li`
 
   > ${ToolbarItem} {
     svg {
-      color: #878a91;
       fill: #878a91;
     }
   }
@@ -491,7 +490,6 @@ export const ToolBtn = styled.li`
 
     > ${ToolbarItem} {
       svg {
-        color: ${(props) => props.theme.containerWhite};
         fill: ${(props) => props.theme.containerWhite};
       }
     }

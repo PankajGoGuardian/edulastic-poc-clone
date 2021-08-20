@@ -6,7 +6,7 @@ import { replaceLatexesWithMathHtml } from '@edulastic/common/src/utils/mathUtil
 import { convertNumberToFraction } from '../../../utils/helpers'
 import { CONSTANT, Colors } from './config'
 import { defaultConfig as lineConfig } from './elements/Line'
-import { Area, EditButton } from './elements'
+import { Area } from './elements' // , EditButton
 import rayConfig from './elements/Ray'
 import segmentConfig from './elements/Segment'
 import vectorConfig from './elements/Vector'
@@ -252,7 +252,7 @@ export const handleSnap = (line, points, board) => {
     point.on('drag', () => {
       point.dragged = true
       board.dragged = true
-      EditButton.cleanButton(board, point)
+      // EditButton.cleanButton(board, point)
     })
   })
 }

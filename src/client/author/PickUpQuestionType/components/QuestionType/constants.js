@@ -1728,7 +1728,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           yRatio: 1,
         },
         controlbar: {
-          controls: ['undo', 'redo', 'reset', 'delete'],
+          controls: ['edit_label', 'undo', 'redo', 'reset', 'delete'],
           defaultControl: 'undo',
         },
         toolbar: {
@@ -1810,7 +1810,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           yRatio: 1,
         },
         controlbar: {
-          controls: ['undo', 'redo', 'reset', 'delete'],
+          controls: ['edit_label', 'undo', 'redo', 'reset', 'delete'],
           defaultControl: 'undo',
         },
         toolbar: {

@@ -1,6 +1,6 @@
 import JXG from 'jsxgraph'
-import { isNumber, cloneDeep } from 'lodash'
 import { Modal } from 'antd'
+import { isNumber, cloneDeep, last } from 'lodash'
 import { greyThemeDark2 } from '@edulastic/colors'
 import * as Sentry from '@sentry/browser'
 import i18n from '@edulastic/localization'
@@ -10,7 +10,6 @@ import {
   Circle,
   DragDrop,
   DrawingObject,
-  EditButton,
   Ellipse,
   Equation,
   Exponent,
@@ -304,6 +303,7 @@ class Board {
       case CONSTANT.TOOLS.RAY_RIGHT_DIRECTION_LEFT_HOLLOW:
         this.creatingHandler = NumberlineVector.onHandler
         return
+      case CONSTANT.TOOLS.EDIT_LABEL:
       case CONSTANT.TOOLS.TRASH:
       case CONSTANT.TOOLS.DELETE:
         this.creatingHandler = () => {}
@@ -438,6 +438,12 @@ class Board {
         }
         return
       }
+
+      if (this.currentTool === CONSTANT.TOOLS.EDIT_LABEL) {
+        this.editObjUnderMouse(event)
+        return
+      }
+
       if (
         this.responsesAllowed !== null &&
         this.elements.length >= this.responsesAllowed
@@ -461,83 +467,87 @@ class Board {
     this.disableResponse = value
   }
 
+  // TODO: remove commented lines after QA
+  // eslint-disable-next-line
   createEditButton(menuHandler) {
-    this.editButton = EditButton.createButton(this, menuHandler)
-    this.editButton.disabled = false
+    // this.editButton = EditButton.createButton(this, menuHandler)
+    // this.editButton.disabled = false
   }
 
+  // eslint-disable-next-line
   setEditButtonStatus(disabled) {
-    this.editButton.disabled = disabled
+    // this.editButton.disabled = disabled
   }
 
+  // eslint-disable-next-line
   checkEditButtonCall(element) {
-    return (
-      this.elements.some((elem) => elem.id === element.id) ||
-      this.elements.some(
-        (elem) =>
-          elem.ancestors &&
-          Object.values(elem.ancestors).some(
-            (ancestor) => ancestor.id === element.id
-          )
-      )
-    )
+    // return (
+    //   this.elements.some((elem) => elem.id === element.id) ||
+    //   this.elements.some(
+    //     (elem) =>
+    //       elem.ancestors &&
+    //       Object.values(elem.ancestors).some(
+    //         (ancestor) => ancestor.id === element.id
+    //       )
+    //   )
+    // )
   }
 
+  // eslint-disable-next-line
   handleElementMouseOver(element, event) {
-    if (this.editButton.disabled || isTouchDevice()) {
-      return
-    }
-    if (this.checkEditButtonCall(element)) {
-      let coords
-      if (JXG.isPoint(element)) {
-        coords = element.coords
-      } else {
-        coords = this.getCoords(event)
-      }
-      EditButton.moveButton(this, coords, element)
-    }
+    // if (this.editButton.disabled || isTouchDevice()) {
+    //   return
+    // }
+    // if (this.checkEditButtonCall(element)) {
+    //   let coords
+    //   if (JXG.isPoint(element)) {
+    //     coords = element.coords
+    //   } else {
+    //     coords = this.getCoords(event)
+    //   }
+    //   EditButton.moveButton(this, coords, element)
+    // }
   }
 
+  // eslint-disable-next-line
   handleElementMouseOut(element) {
-    if (!this.editButton.disabled) {
-      if (this.checkEditButtonCall(element)) {
-        EditButton.hideButton(this, element)
-      }
-    }
+    // if (!this.editButton.disabled) {
+    //   if (this.checkEditButtonCall(element)) {
+    //     EditButton.hideButton(this, element)
+    //   }
+    // }
   }
 
+  // eslint-disable-next-line
   handleStackedElementsMouseEvents(element) {
-    if (this.editButton) {
-      element.on('mouseover', (event) => {
-        if (this.editButton.disabled) {
-          return
-        }
-        if (this.checkEditButtonCall(element)) {
-          const pointsUnderMouse = getAllObjectsUnderMouse(this, event).filter(
-            (mouseElement) => mouseElement.elType === 'point'
-          )
-
-          if (pointsUnderMouse.length === 0) {
-            this.stacksUnderMouse = false
-            this.handleElementMouseOver(element, event)
-          } else {
-            this.stacksUnderMouse = true
-          }
-        }
-      })
-
-      element.on('mouseout', () => {
-        if (!this.stacksUnderMouse && this.checkEditButtonCall(element)) {
-          this.handleElementMouseOut(element)
-        }
-      })
-
-      element.on('drag', () => {
-        if (this.checkEditButtonCall(element)) {
-          EditButton.cleanButton(this, element)
-        }
-      })
-    }
+    // if (this.editButton) {
+    //   element.on('mouseover', (event) => {
+    //     if (this.editButton.disabled) {
+    //       return
+    //     }
+    //     if (this.checkEditButtonCall(element)) {
+    //       const pointsUnderMouse = getAllObjectsUnderMouse(this, event).filter(
+    //         (mouseElement) => mouseElement.elType === 'point'
+    //       )
+    //       if (pointsUnderMouse.length === 0) {
+    //         this.stacksUnderMouse = false
+    //         this.handleElementMouseOver(element, event)
+    //       } else {
+    //         this.stacksUnderMouse = true
+    //       }
+    //     }
+    //   })
+    //   element.on('mouseout', () => {
+    //     if (!this.stacksUnderMouse && this.checkEditButtonCall(element)) {
+    //       this.handleElementMouseOut(element)
+    //     }
+    //   })
+    //   element.on('drag', () => {
+    //     if (this.checkEditButtonCall(element)) {
+    //       EditButton.cleanButton(this, element)
+    //     }
+    //   })
+    // }
   }
 
   updateNumberlineSettings(canvas, numberlineAxis, layout) {
@@ -727,6 +737,19 @@ class Board {
   resetBg() {
     this.bgElements.map(this.removeObject.bind(this))
     this.bgElements = []
+  }
+
+  editObjUnderMouse(event) {
+    const elementsUnderMouse = getAllObjectsUnderMouse(this, event)
+    const elementsToEdit = this.elements.filter(
+      (el) => elementsUnderMouse.findIndex((eum) => eum.id === el.id) > -1
+    )
+    if (last(elementsToEdit)) {
+      this.events.emit(
+        CONSTANT.EVENT_NAMES.CHANGE_LABEL,
+        last(elementsToEdit).id
+      )
+    }
   }
 
   removeObjectsUnderMouse(event) {

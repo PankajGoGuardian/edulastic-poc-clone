@@ -30,6 +30,7 @@ import RadiansDropdown from '../../components/RadiansDropdown'
 import PiSymbol from '../../components/PiSymbol'
 import { calcDistance } from '../../common/utils'
 import { uploadToS3 } from '../../../../../author/src/utils/upload'
+import { CONSTANT } from '../../Builder/config'
 
 const types = [evaluationType.exactMatch, evaluationType.partialMatch]
 
@@ -309,7 +310,13 @@ class QuadrantsMoreOptions extends Component {
     setBgImg({ ...backgroundImage, [name]: value })
   }
 
-  allControls = ['undo', 'redo', 'reset', 'delete']
+  allControls = [
+    CONSTANT.TOOLS.EDIT_LABEL,
+    CONSTANT.TOOLS.UNDO,
+    CONSTANT.TOOLS.REDO,
+    CONSTANT.TOOLS.RESET,
+    CONSTANT.TOOLS.DELETE,
+  ]
 
   onSelectControl = (control) => {
     const { graphData, setControls } = this.props

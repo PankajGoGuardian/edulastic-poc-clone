@@ -296,14 +296,14 @@ class GraphContainer extends PureComponent {
         this._graph.setTool(tools[0])
       }
 
-      this._graph.createEditButton(this.handleElementSettingsMenuOpen)
+      // this._graph.createEditButton(this.handleElementSettingsMenuOpen)
       this._graph.setDisableResponse(disableResponse)
 
-      if (view === EDIT && !disableResponse) {
-        this._graph.setEditButtonStatus(false)
-      } else {
-        this._graph.setEditButtonStatus(true)
-      }
+      // if (view === EDIT && !disableResponse) {
+      //   this._graph.setEditButtonStatus(false)
+      // } else {
+      //   this._graph.setEditButtonStatus(true)
+      // }
 
       if (view === EDIT && pointsOnEquEnabled) {
         this._graph.updatePointOnEquEnabled(true)
@@ -349,9 +349,9 @@ class GraphContainer extends PureComponent {
       previewTab,
       changePreviewTab,
       elements,
-      view,
       evaluation,
       showConnect,
+      view,
       pointsOnEquEnabled,
     } = this.props
 
@@ -368,11 +368,11 @@ class GraphContainer extends PureComponent {
     if (this._graph) {
       this._graph.setDisableResponse(disableResponse)
 
-      if (view === EDIT && !disableResponse) {
-        this._graph.setEditButtonStatus(false)
-      } else {
-        this._graph.setEditButtonStatus(true)
-      }
+      // if (view === EDIT && !disableResponse) {
+      //   this._graph.setEditButtonStatus(false)
+      // } else {
+      //   this._graph.setEditButtonStatus(true)
+      // }
 
       if (prevProps.pointsOnEquEnabled !== pointsOnEquEnabled) {
         if (view === EDIT && pointsOnEquEnabled) {
@@ -546,8 +546,14 @@ class GraphContainer extends PureComponent {
 
   onDelete() {
     this.selectDrawingObject(null)
-    this.setState({ selectedTool: 'delete' })
+    this.setState({ selectedTool: CONSTANT.TOOLS.DELETE })
     this._graph.setTool('trash')
+  }
+
+  onEditLabel() {
+    this.selectDrawingObject(null)
+    this.setState({ selectedTool: CONSTANT.TOOLS.EDIT_LABEL })
+    this._graph.setTool(CONSTANT.TOOLS.EDIT_LABEL)
   }
 
   getStashId() {
@@ -558,14 +564,16 @@ class GraphContainer extends PureComponent {
 
   onSelectControl = (control) => {
     switch (control) {
-      case 'undo':
+      case CONSTANT.TOOLS.UNDO:
         return this.onUndo()
-      case 'redo':
+      case CONSTANT.TOOLS.REDO:
         return this.onRedo()
-      case 'reset':
+      case CONSTANT.TOOLS.RESET:
         return this.onReset()
-      case 'delete':
+      case CONSTANT.TOOLS.DELETE:
         return this.onDelete()
+      case CONSTANT.TOOLS.EDIT_LABEL:
+        return this.onEditLabel()
       default:
         return () => {}
     }
@@ -600,6 +608,10 @@ class GraphContainer extends PureComponent {
     this._graph.events.on(
       CONSTANT.EVENT_NAMES.CHANGE_DELETE,
       this.graphUpdateHandler
+    )
+    this._graph.events.on(
+      CONSTANT.EVENT_NAMES.CHANGE_LABEL,
+      this.handleElementSettingsMenuOpen
     )
   }
 
@@ -703,7 +715,13 @@ class GraphContainer extends PureComponent {
     CONSTANT.TOOLS.AREA2,
   ]
 
-  allControls = ['undo', 'redo', 'reset', 'delete']
+  allControls = [
+    CONSTANT.TOOLS.EDIT_LABEL,
+    CONSTANT.TOOLS.UNDO,
+    CONSTANT.TOOLS.REDO,
+    CONSTANT.TOOLS.RESET,
+    CONSTANT.TOOLS.DELETE,
+  ]
 
   get drawingObjectsAreVisible() {
     const { view, toolbar } = this.props

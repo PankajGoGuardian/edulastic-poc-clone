@@ -175,6 +175,9 @@ const Sidebar = ({
             ref={playListTitleInput}
             margin="0px 0px 15px"
           />
+          {title !== undefined && !title.trim().length && (
+            <ErrorWrapper>Playlist should have title</ErrorWrapper>
+          )}
           <FieldLabel>Alignment Info</FieldLabel>
           <TextInputStyled
             value={alignmentInfo}
@@ -184,9 +187,6 @@ const Sidebar = ({
             placeholder="Insert the alignment info"
             margin="0px 0px 15px"
           />
-          {title !== undefined && !title.trim().length && (
-            <ErrorWrapper>Test should have title</ErrorWrapper>
-          )}
           {windowWidth <= IPAD_LANDSCAPE_WIDTH && (
             <PlayListDescription
               onChangeField={onChangeField}

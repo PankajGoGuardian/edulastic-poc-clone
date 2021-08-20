@@ -76,6 +76,7 @@ class Equations extends Component {
               })
             })
           )
+          this.setState({ newEquation: '' })
           return
         }
         if (!equations[index]) {
@@ -97,14 +98,11 @@ class Equations extends Component {
   }
 
   handleAddEquation = (latex = null) => {
-    const { eqs, changedEqs, newEquation } = this.state
+    const { newEquation } = this.state
     if (!newEquation && !latex) {
       return
     }
-    eqs.push(newEquation || latex)
-    changedEqs.push(false)
-    this.setState({ eqs, changedEqs, newEquation: '' })
-    this.setApiLatex(eqs[eqs.length - 1])
+    this.setApiLatex(newEquation || latex)
   }
 
   handleDeleteEquation = (index) => () => {
@@ -237,7 +235,10 @@ class Equations extends Component {
             color={greyThemeDark2}
             onClick={this.toggleMathModal(true)}
           />
-          <StyledEduButton key="eq-add" onClick={this.handleAddEquation}>
+          <StyledEduButton
+            key="eq-add"
+            onClick={() => this.handleAddEquation()}
+          >
             {t('component.graphing.settingsPopup.plot')}
           </StyledEduButton>
         </Wrapper>

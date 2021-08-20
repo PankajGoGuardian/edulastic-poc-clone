@@ -138,6 +138,7 @@ const Expanded = ({
                 }
                 value={groupMinimized ? groupPoints : pointsProp}
                 onChange={(value) => onChangePoints(metaInfoData.id, value)}
+                textAlign="center"
               />
             ) : (
               <UnScored
@@ -263,6 +264,7 @@ const Expanded = ({
                       groupMinimized ? groupPoints : points?.[qId] || points
                     }
                     onChange={handleChangePoint(qId)}
+                    textAlign="center"
                   />
                 ) : (
                   <UnScored

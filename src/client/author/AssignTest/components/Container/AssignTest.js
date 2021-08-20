@@ -261,6 +261,16 @@ class AssignTest extends React.Component {
     }
   }
 
+  validateTimedAssignment = () => {
+    const { assignmentSettings } = this.props
+    const { allowedTime, timedAssignment } = assignmentSettings
+    if (timedAssignment && allowedTime === 0) {
+      notification({ messageKey: 'timedAssigmentTimeCanNotBeZero' })
+      return false
+    }
+    return true
+  }
+
   handleAssign = () => {
     const {
       saveAssignment,
@@ -269,6 +279,7 @@ class AssignTest extends React.Component {
     } = this.props
     let updatedAssignment = { ...assignment }
     const { changeDateSelection, selectedDateOption } = this.state
+    if (!this.validateTimedAssignment()) return
     if (isAssigning) return
     if (isEmpty(assignment.class)) {
       notification({ messageKey: 'selectClass' })

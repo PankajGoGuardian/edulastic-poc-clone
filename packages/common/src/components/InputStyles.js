@@ -101,6 +101,7 @@ export const TextInputStyled = styled((props) => (
   }
   &::placeholder {
     text-align: ${(props) => props.placeHolderAlign};
+    color: ${greyThemeDark2};
   }
   &:focus::placeholder {
     color: transparent;
@@ -136,6 +137,7 @@ export const NumberInputStyled = styled(InputNumber)`
     }
     .ant-input-number-input {
       height: ${(props) => props.height || '32px'};
+      text-align: ${(props) => props.textAlign || 'left'};
       padding: 0px;
     }
   }

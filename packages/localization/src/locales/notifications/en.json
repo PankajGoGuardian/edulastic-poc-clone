@@ -1748,7 +1748,7 @@
     "description": ""
   },
   "timedAssigmentTimeCanNotBeZero": {
-    "message": "Timed test is ON, please add some time",
+    "message": "Timed test is ON, please add some time limit to proceed",
     "description": ""
   },
   "totalItemsToBeDelivered": {

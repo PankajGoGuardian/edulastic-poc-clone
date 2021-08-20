@@ -1378,9 +1378,7 @@ class Setting extends Component {
                                   style={{ margin: '0px 20px 0px 0px' }}
                                   value={
                                     !isNaN(allowedTime)
-                                      ? allowedTime === 0
-                                        ? ''
-                                        : allowedTime / (60 * 1000)
+                                      ? allowedTime / (60 * 1000) || ''
                                       : 1
                                   }
                                   onChange={(e) => {
@@ -1481,7 +1479,7 @@ class Setting extends Component {
                                   )
                                 }
                                 size="large"
-                                width="100px"
+                                width="160px"
                                 value={maxAnswerChecks}
                                 type="number"
                                 min={0}

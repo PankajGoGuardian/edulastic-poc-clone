@@ -366,7 +366,9 @@ const TestBehaviorGroupContainer = ({
                     }}
                     size="large"
                     data-cy="assignment-time"
-                    value={!isNaN(allowedTime) ? allowedTime / (60 * 1000) : 1}
+                    value={
+                      !isNaN(allowedTime) ? allowedTime / (60 * 1000) || '' : 1
+                    }
                     type="number"
                     min={1}
                     max={300}

@@ -20,6 +20,8 @@ import {
   TAGS_SAGA_FETCH_STATUS,
   SET_ALL_TAGS,
   SET_ALL_TAGS_FAILED,
+  getTestEntitySelector,
+  setTestDataAction,
 } from '../../ducks'
 import { DELETE_ITEM_SUCCESS } from '../../../ItemDetail/ducks'
 import {
@@ -241,7 +243,7 @@ export const reducer = (state = initialState, { type, payload }) => {
     case CLEAR_SELECTED_ITEMS:
       return {
         ...state,
-        selectedItems: [],
+        // selectedItems: [],
         itemsSubjectAndGrade: {
           subjects: [],
           grades: [],
@@ -402,9 +404,33 @@ function* reportContentErrorSaga({ payload }) {
   }
 }
 
+function* clearSelectedItemsSaga() {
+  const test = yield select(getTestEntitySelector)
+  const itemsToRemove = yield select(
+    (state) => state?.testsAddItems?.selectedItems
+  )
+  const testItems = test?.itemGroups
+    ?.flatMap((itemGroup) => itemGroup?.items || [])
+    .filter((x) => !itemsToRemove.includes(x._id))
+
+  const updatedTest = {
+    ...test,
+    itemGroups: [
+      {
+        ...test.itemGroups[0],
+        items: testItems,
+      },
+    ],
+  }
+
+  yield put(setTestItemsAction([]))
+  yield put(setTestDataAction(updatedTest))
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_TEST_ITEMS_REQUEST, receiveTestItemsSaga),
+    yield takeEvery(CLEAR_SELECTED_ITEMS, clearSelectedItemsSaga),
     yield takeLatest(REPORT_CONTENT_ERROR_REQUEST, reportContentErrorSaga),
   ])
 }

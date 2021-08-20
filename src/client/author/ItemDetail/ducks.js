@@ -185,6 +185,8 @@ export const SAVE_AND_PUBLISH_ITEM =
 export const PROCEED_TO_PUBLISH_ITEM = '[itemDetail] proceed to publish item'
 
 const EDIT_PASSAGE_WIDGET = '[itemDetail] edit passage widget'
+const ADD_ITEM_TO_CART = '[item list] add item to cart'
+
 // actions
 
 //
@@ -369,6 +371,14 @@ export const saveCurrentEditingTestIdAction = (id) => ({
 })
 
 export const editPassageWidgetAction = createAction(EDIT_PASSAGE_WIDGET)
+
+const addItemToCartAction = (item, showNotification) => ({
+  type: ADD_ITEM_TO_CART,
+  payload: {
+    item,
+    showNotification,
+  },
+})
 
 // selectors
 
@@ -1771,6 +1781,8 @@ function* publishTestItemSaga({ payload }) {
         yield put(clearRedirectTestAction())
       } else {
         // on publishing redirect to items bank.
+        const item = yield select((state) => get(state, ['itemDetail', 'item']))
+        yield put(addItemToCartAction(item))
         yield put(
           push({ pathname: '/author/items', state: { isAuthoredNow: true } })
         )

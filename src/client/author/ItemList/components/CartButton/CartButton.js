@@ -2,7 +2,10 @@ import { EduButton } from '@edulastic/common'
 import { PropTypes } from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
-import { getSelectedItemSelector } from '../../../TestPage/components/AddItems/ducks'
+import {
+  getSelectedItemSelector,
+  clearSelectedItemsAction,
+} from '../../../TestPage/components/AddItems/ducks'
 import { getTestEntitySelector } from '../../../TestPage/ducks'
 import { Container, ItemsAmount } from './styled'
 
@@ -12,6 +15,7 @@ const CartButton = ({
   buttonText,
   numberChecker,
   tests,
+  clearSelectedItems,
 }) => {
   let numberOfSelectedItems = selectedItems && selectedItems.length
   if (numberOfSelectedItems && numberChecker) {
@@ -20,14 +24,17 @@ const CartButton = ({
     )
   }
   return (
-    <Container
-      data-cy={buttonText}
-      onClick={onClick}
-      disabled={!numberOfSelectedItems}
-    >
-      <EduButton isBlue isGhost>
+    <Container data-cy={buttonText} disabled={!numberOfSelectedItems}>
+      {numberOfSelectedItems > 0 && (
+        <EduButton isBlue isGhost onClick={clearSelectedItems}>
+          Deselect all items
+        </EduButton>
+      )}
+
+      <EduButton isBlue isGhost onClick={onClick}>
         <span>{buttonText}</span>
         <ItemsAmount>{numberOfSelectedItems}</ItemsAmount>
+        items
       </EduButton>
     </Container>
   )
@@ -43,5 +50,5 @@ export default connect(
     selectedItems: getSelectedItemSelector(state),
     tests: getTestEntitySelector(state),
   }),
-  null
+  { clearSelectedItems: clearSelectedItemsAction }
 )(CartButton)

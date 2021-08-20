@@ -60,7 +60,6 @@ const ListHeader = ({
   titleIcon,
   userFeatures,
   newTest,
-  toggleSidebar,
   titleWidth,
   history,
   isLoadingButtonState = false,
@@ -126,7 +125,7 @@ const ListHeader = ({
                 </EduButton>
               )} */}
               {btnTitle && btnTitle.length ? null : (
-                <CartButton onClick={newTest} buttonText="New Test" />
+                <CartButton onClick={newTest} buttonText="Create test with" />
               )}
               {renderExtra()}
               <EduButton data-cy="createNew" onClick={onCreate} isBlue>
@@ -196,7 +195,6 @@ ListHeader.propTypes = {
   hasButton: PropTypes.bool,
   renderButton: PropTypes.func,
   midTitle: PropTypes.string,
-  toggleSidebar: PropTypes.func,
 }
 
 ListHeader.defaultProps = {
@@ -210,7 +208,6 @@ ListHeader.defaultProps = {
   isAdvancedView: false,
   hasButton: true,
   midTitle: '',
-  toggleSidebar: () => null,
 }
 
 const enhance = compose(

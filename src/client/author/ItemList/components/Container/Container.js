@@ -112,7 +112,6 @@ class Contaier extends Component {
       match = {},
       limit,
       setDefaultTestData,
-      clearSelectedItems,
       search: initSearch,
       getAllTags,
       history,
@@ -161,7 +160,6 @@ class Contaier extends Component {
       curriculumId: parseInt(curriculumId, 10) || '',
     }
     setDefaultTestData()
-    clearSelectedItems()
     getAllTags({ type: 'testitem' })
     if (params.filterType) {
       const getMatchingObj = filterMenuItems.filter(
@@ -189,6 +187,13 @@ class Contaier extends Component {
     }
     if (search.curriculumId) {
       getCurriculumStandards(search.curriculumId, search.grades, '')
+    }
+  }
+
+  componentWillUnmount() {
+    const { clearSelectedItems, match } = this.props
+    if (!match?.path?.includes('items')) {
+      clearSelectedItems()
     }
   }
 

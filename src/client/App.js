@@ -690,6 +690,9 @@ class App extends Component {
                 path="/Signup"
                 component={TeacherSignup}
                 redirectPath={defaultRoute}
+                notifications={
+                  roleuser.TEACHER === userRole ? [ClassSyncNotification] : null
+                }
               />
               <LoggedOutRoute
                 exact

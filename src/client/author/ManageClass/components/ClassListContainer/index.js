@@ -68,7 +68,8 @@ const ClassListContainer = ({
   }, [showCleverSyncModal])
 
   useEffect(() => {
-    if (bulkSyncCanvasStatus === 'SUCCESS') fetchGroups()
+    if (bulkSyncCanvasStatus === 'SUCCESS')
+      fetchGroups({ isCanvasClassSync: true })
   }, [bulkSyncCanvasStatus])
 
   const syncedGoogleClassroomIds = groups

@@ -1,7 +1,6 @@
 import { createAction, createReducer, createSelector } from 'redux-starter-kit'
 import { get, isEmpty, pick } from 'lodash'
 import notification from '@edulastic/common/src/components/Notification'
-import mqtt from 'mqtt'
 import produce from 'immer'
 import { push } from 'connected-react-router'
 import { takeLatest, call, put, select } from 'redux-saga/effects'
@@ -17,7 +16,6 @@ import schoolApi from '@edulastic/api/src/school'
 import userApi from '@edulastic/api/src/user'
 import settingsApi from '@edulastic/api/src/settings'
 import canvasApi from '@edulastic/api/src/canvas'
-import realtimeApi from '@edulastic/api/src/realtime'
 import * as TokenStorage from '@edulastic/api/src/utils/Storage'
 import { signUpState } from '@edulastic/constants'
 import {
@@ -26,11 +24,7 @@ import {
   hideJoinSchoolAction,
   fetchUserAction,
 } from '../Login/ducks'
-import {
-  currentDistrictInstitutionIds,
-  getUser,
-  getUserOrgId,
-} from '../../author/src/selectors/user'
+import { getUser, getUserOrgId } from '../../author/src/selectors/user'
 
 import { userPickFields } from '../../common/utils/static/user'
 import { updateInitSearchStateAction } from '../../author/TestPage/components/AddItems/ducks'
@@ -173,6 +167,7 @@ export const bulkSyncCanvasClassAction = createAction(BULK_SYNC_CANVAS_CLASS)
 export const setBulkSyncCanvasStateAction = createAction(
   SET_BULK_SYNC_CANVAS_STATUS
 )
+
 export const joinSchoolFailedAction = createAction(JOIN_SCHOOL_FAILED)
 
 export const updateUserSignupStateAction = createAction(
@@ -643,56 +638,10 @@ function* fetchSchoolTeachersSaga({ payload }) {
   }
 }
 
-function getCanvasBulkSyncUpdate({ _id, districtId, signedUrl }) {
-  const subscriptionTopic = `canvas:${districtId}_${_id}`
-  const promise = new Promise((resolve, reject) => {
-    const client = mqtt.connect(signedUrl)
-    client.on('connect', () => {
-      client.subscribe(subscriptionTopic, (err) => {
-        if (err) {
-          console.log('Error subscribing to topic: ', subscriptionTopic)
-          reject(err)
-        } else {
-          console.log('Successfully subscribed to topic', subscriptionTopic)
-        }
-      })
-    })
-
-    client.on('message', (topic, _message) => {
-      let msg = _message.toString()
-      msg = JSON.parse(msg)
-      console.log(`response from mqtt client with topic ${topic}`, msg)
-      resolve(msg)
-      client.end()
-    })
-
-    client.on('error', (err) => {
-      console.error('error in mqtt client', err)
-      reject(err)
-      client.end()
-    })
-  })
-  return promise.then((res) => res).catch((err) => err)
-}
-
 function* bulkSyncCanvasClassSaga({ payload }) {
   try {
     yield put(setBulkSyncCanvasStateAction('INPROGRESS'))
     yield call(canvasApi.bulkSync, payload)
-    const { url: signedUrl } = yield call(realtimeApi.getSignedUrl)
-    const payloadData = {
-      districtId: payload.bulkSyncData[0].districtId,
-      _id: payload.bulkSyncData[0].parent.id,
-      signedUrl,
-    }
-    const { data } = yield call(getCanvasBulkSyncUpdate, payloadData)
-    if (data.failedCourseSections.length === payload.bulkSyncData.length) {
-      notification({ messageKey: 'bulkSyncFailed' })
-      yield put(setBulkSyncCanvasStateAction('FAILED'))
-    } else {
-      yield put(setBulkSyncCanvasStateAction('SUCCESS'))
-      sessionStorage.removeItem('signupFlow')
-    }
   } catch (err) {
     console.error(err)
     notification({ messageKey: 'bulkSyncFailed' })

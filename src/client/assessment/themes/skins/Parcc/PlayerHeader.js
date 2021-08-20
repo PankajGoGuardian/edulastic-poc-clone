@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React from 'react'
+import React, { useState } from 'react'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
@@ -41,6 +41,7 @@ import {
 import { themes } from '../../../../theme'
 import { setSettingsModalVisibilityAction } from '../../../../student/Sidebar/ducks'
 import SettingsModal from '../../../../student/sharedComponents/SettingsModal'
+import ChangeColor from './ChangeColor'
 
 const {
   playerSkin: { parcc },
@@ -100,6 +101,8 @@ const PlayerHeader = ({
       totalUnanswered > 0 ? `0${totalUnanswered}`.slice(-2) : totalUnanswered,
   }
   const isFirst = () => (isDocbased ? true : currentItem === 0)
+
+  const [showChangeColor, setShowChangeColor] = useState(false)
   const onSettingsChange = (e) => {
     switch (e.key) {
       case 'save':
@@ -108,6 +111,8 @@ const PlayerHeader = ({
         return handleMagnifier()
       case 'testOptions':
         return setSettingsModalVisibility(true)
+      case 'changeColor':
+        return setShowChangeColor(true)
       default:
         break
     }
@@ -125,6 +130,12 @@ const PlayerHeader = ({
       {testType === testConstants.type.PRACTICE && (
         <SettingsModal
           isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
+        />
+      )}
+      {showChangeColor && (
+        <ChangeColor
+          showChangeColor={showChangeColor}
+          closeModal={() => setShowChangeColor(false)}
         />
       )}
       <Header

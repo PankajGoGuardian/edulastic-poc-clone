@@ -142,6 +142,7 @@ const SettingsModal = ({
             {!hideColorOrZoom && (
               <>
                 <div>
+                  {/* Color contrast switch is a seperate component for parcc skin any change here should be made for 'parcc/changecolor' component as well */}
                   <CustomColumn>COLOR CONTRAST</CustomColumn>
                   <StyledSelect
                     value={selectedTheme}

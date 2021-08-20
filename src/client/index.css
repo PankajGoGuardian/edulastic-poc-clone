@@ -2631,11 +2631,13 @@ div[class*='_pendo'] button {
   color: white;
 }
 
+.help-text-popover,
 .graph-tool-helper-popover {
   max-width: 390px;
   min-width: 280px;
 }
 
+.help-text-popover,
 .graph-tool-helper-popover .mb-8 {
   margin-bottom: 8px;
 }

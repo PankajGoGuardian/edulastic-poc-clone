@@ -827,7 +827,8 @@
         "arrows": "ARROWS",
         "plot": "PLOT",
         "addText": "ADD TEXT",
-        "gridCutoff": "The minimum and maximum grid settings you have given can cause the axes numbers to be cut off the edge of the display. Please adjust them if you wish the complete axes to be displayed"
+        "gridCutoff": "The minimum and maximum grid settings you have given can cause the axes numbers to be cut off the edge of the display. Please adjust them if you wish the complete axes to be displayed",
+        "fxText": "Teacher Plotter and Explorer"
       },
       "background_options": {
         "background_image": "Background image",
@@ -877,7 +878,8 @@
         "piecewise": "",
         "no_solution": "",
         "area2": "",
-        "fxWithArea": "You cannot use this functionality after plotting a graph. This option is used solely for the purposes of exploring curves of complicated equations."
+        "fxWithArea": "You cannot use this functionality after plotting a graph. This option is used solely for the purposes of exploring curves of complicated equations.",
+        "fxHepler": "This is a teacher-only tool for exploring curves of various complex equations like #{y =\\frac{1}{tan(x)}#}. For creating questions for your students, you should only use the predefined graphing objects."
       }
     },
     "math": {

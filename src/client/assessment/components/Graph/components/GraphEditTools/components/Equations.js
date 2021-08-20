@@ -12,6 +12,7 @@ import {
   EduButton,
   notification,
   PortalSpinner,
+  HelpTooltipLabel,
 } from '@edulastic/common'
 import { IconClose } from '@edulastic/icons'
 import { math, defaultSymbols } from '@edulastic/constants'
@@ -180,6 +181,10 @@ class Equations extends Component {
 
     return (
       <Container>
+        <HelpTooltipLabel
+          helperKey="component.graphing.helperText.fxHepler"
+          contentKey="component.graphing.settingsPopup.fxText"
+        />
         {eqs.map((eq, index) => (
           <Wrapper
             key={`equation-wrapper-${index}`}

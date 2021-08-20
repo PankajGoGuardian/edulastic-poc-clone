@@ -253,17 +253,17 @@ const ResourceItem = ({
               {contentTitle}
             </TitleText>
           </ResourceTitle>
+          <Tags
+            margin="0px"
+            tags={
+              standardIdentifiers.length
+                ? [`${standardIdentifiers.length} +`]
+                : []
+            }
+            show={1}
+            flexWrap="nowrap"
+          />
         </StyledPopOver>
-        <Tags
-          margin="0px"
-          tags={
-            standardIdentifiers.length
-              ? [`${standardIdentifiers.length} +`]
-              : []
-          }
-          show={1}
-          flexWrap="nowrap"
-        />
       </TitleWrapper>
       <IconEye
         className="preview-btn"

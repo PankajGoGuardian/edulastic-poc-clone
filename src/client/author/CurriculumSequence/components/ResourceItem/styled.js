@@ -94,6 +94,7 @@ export const TitleText = styled.div`
   @media (max-width: ${extraDesktopWidthMax}) {
     font-size: 10px;
   }
+  padding-right: 5px;
 `
 
 export const PopupContainer = styled.div`
@@ -109,8 +110,7 @@ export const PopupContainer = styled.div`
 `
 export const StyledPopOver = styled(Popover)`
   display: flex;
-  max-width: 80%;
-  padding-right: 5px;
+  max-width: 100%;
 `
 
 export const TitleWrapper = styled.div`

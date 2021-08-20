@@ -86,7 +86,7 @@ const toolByGroup = [
       CONSTANT.TOOLS.DASHED,
       CONSTANT.TOOLS.PIECEWISE,
       CONSTANT.TOOLS.NO_SOLUTION,
-      CONSTANT.TOOLS.AREA2,
+      // CONSTANT.TOOLS.AREA2,
     ],
   },
 ]

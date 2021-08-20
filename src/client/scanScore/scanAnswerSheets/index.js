@@ -87,9 +87,7 @@ const ScanAnswerSheetsInner = ({
    * uncomment the following line while debugging
    * window.arrAnswersRef = arrAnswersRef
    */
-  const [isHelpModalVisible, setHelpModal] = useState(
-    !localStorage.getItem('omrUploadHelpVisibility')
-  )
+  const [isHelpModalVisible, setHelpModal] = useState(true)
 
   const [answersList, setAnswers] = useState(null)
   const [scannedResponses, setScannedResponses] = useState([])

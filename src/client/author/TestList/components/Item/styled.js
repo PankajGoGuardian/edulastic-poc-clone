@@ -391,7 +391,10 @@ export const HeaderThumbnail = styled.img`
   position: absolute;
   left: 0;
   right: 0px;
-  object-fit: contain;
+  object-fit: ${({ isTestRecommendation }) =>
+    isTestRecommendation ? 'fit' : 'contain'};
+  width: ${({ isTestRecommendation }) =>
+    isTestRecommendation ? '100%' : 'auto'};
 `
 
 const playlistStars = css`

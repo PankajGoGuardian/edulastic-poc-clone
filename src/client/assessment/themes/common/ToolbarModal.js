@@ -194,6 +194,11 @@ ToolbarModal.propTypes = {
   isVisible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   checkAnswer: PropTypes.func.isRequired,
+  handleMagnifier: PropTypes.func,
+}
+
+ToolbarModal.defaultProps = {
+  handleMagnifier: () => {},
 }
 
 export default ToolbarModal

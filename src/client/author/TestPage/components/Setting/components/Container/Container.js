@@ -169,7 +169,7 @@ class Setting extends Component {
     const { features, entity } = nextProps
     const { grades, subjects } = entity
     if (
-      features.assessmentSuperPowersReleaseScorePremium ||
+      features?.assessmentSuperPowersReleaseScorePremium ||
       (grades &&
         subjects &&
         isFeatureAccessible({

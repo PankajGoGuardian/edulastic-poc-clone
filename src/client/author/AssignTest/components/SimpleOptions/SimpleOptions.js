@@ -65,7 +65,7 @@ class SimpleOptions extends React.Component {
     const { features, testSettings } = nextProps
     const { grades, subjects } = testSettings || {}
     if (
-      features.assessmentSuperPowersReleaseScorePremium ||
+      features?.assessmentSuperPowersReleaseScorePremium ||
       (grades &&
         subjects &&
         isFeatureAccessible({

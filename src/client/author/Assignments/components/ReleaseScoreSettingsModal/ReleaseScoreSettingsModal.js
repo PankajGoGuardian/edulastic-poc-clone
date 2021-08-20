@@ -35,7 +35,7 @@ const ReleaseScoreSettingsModal = ({
     if (releaseGradeValue !== releaseScore) setReleaseGradeValue(releaseScore)
   }, [releaseScore])
   let _releaseGradeKeys = releaseGradeKeys
-  if (!features.assessmentSuperPowersReleaseScorePremium) {
+  if (!features?.assessmentSuperPowersReleaseScorePremium) {
     _releaseGradeKeys = [releaseGradeKeys[0], releaseGradeKeys[3]]
   }
 

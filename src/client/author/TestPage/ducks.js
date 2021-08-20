@@ -1680,7 +1680,7 @@ export const getReleaseScorePremiumSelector = createSelector(
   (entity, features) => {
     const { subjects, grades } = entity
     return (
-      features.assessmentSuperPowersReleaseScorePremium ||
+      features?.assessmentSuperPowersReleaseScorePremium ||
       (grades &&
         subjects &&
         isFeatureAccessible({
@@ -2456,9 +2456,7 @@ function* updateRegradeDataSaga({ payload: _payload }) {
       })
     }
   } catch (err) {
-    const {
-      data: { message: errorMessage },
-    } = err.response
+    const { data: { message: errorMessage } = {} } = err.response || {}
     captureSentryException(err)
     if (_payload.notify) {
       notification({

@@ -2,9 +2,9 @@ import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { Modal } from 'antd'
 import { cloneDeep, get, has, isEmpty, keys } from 'lodash'
 import { withNamespaces } from '@edulastic/localization'
+import { showBlockerPopup } from '@edulastic/common'
 import {
   getQuestionDataSelector,
   setQuestionDataAction,
@@ -55,14 +55,7 @@ const Variables = ({
     )
 
     if (invalid) {
-      Modal.confirm({
-        centered: true,
-        maskClosable: true,
-        title: 'Confirm',
-        content: errMessage,
-        okText: 'Confirm',
-        okCancel: false,
-      })
+      showBlockerPopup(errMessage)
     } else {
       generateExam({ newQuestion })
     }

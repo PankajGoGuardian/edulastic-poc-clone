@@ -3,10 +3,14 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
-import { Modal } from 'antd'
 import { debounce, get } from 'lodash'
 import { white } from '@edulastic/colors'
-import { HeaderTabs, withWindowSizes, EduButton } from '@edulastic/common'
+import {
+  HeaderTabs,
+  withWindowSizes,
+  EduButton,
+  showBlockerPopup,
+} from '@edulastic/common'
 import { StyledTabs } from '@edulastic/common/src/components/HeaderTabs'
 import { HeaderMidContainer } from '@edulastic/common/src/components/MainHeader'
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
@@ -57,14 +61,7 @@ class ButtonBar extends Component {
         cQuestion?.type
       )
       if (invalid) {
-        Modal.confirm({
-          centered: true,
-          maskClosable: true,
-          title: 'Confirm',
-          content: errMessage,
-          okText: 'Confirm',
-          okCancel: false,
-        })
+        showBlockerPopup(errMessage)
       } else {
         generateDynamicVariables({ nextAction })
       }

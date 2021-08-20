@@ -586,7 +586,7 @@ export const checkDynamicParameters = (variables, validation, qType) => {
       case type !== 'FORMULA' && !exampleValue && exampleValue !== 0:
         return {
           invalid: true,
-          errMessage: 'Dynamic parameters has empty fields',
+          errMessage: 'Some or more variables have empty or no values defined',
         }
       // formula must be set
       case type === 'FORMULA' && !formula:

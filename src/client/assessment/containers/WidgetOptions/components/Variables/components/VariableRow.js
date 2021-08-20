@@ -59,8 +59,7 @@ const VariableRow = ({
     if (invalidSeq && isFocused) {
       return (
         <HelpText>
-          All dynamic parameters of sequence type need to have the same number
-          of items
+          All variables of sequence type need to have the same number of items.
         </HelpText>
       )
     }
@@ -124,6 +123,8 @@ const VariableRow = ({
           <TextInputStyled
             data-cy="variableTextSequence"
             value={variable.sequence}
+            onFocus={toggleActive}
+            onBlur={toggleActive}
             onChange={(e) => onChange(variableName, 'sequence', e.target.value)}
             size="large"
           />

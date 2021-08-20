@@ -179,8 +179,6 @@ const enhance = compose(
 
 export default enhance(Examples)
 
-// export default withNamespaces('assessment')(Examples)
-
 const InlineLabel = styled(Label)`
   display: inline-block;
 `

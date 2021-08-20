@@ -8,5 +8,6 @@ module.exports = {
     QTI_IMPORT: 'qtiImports',
     WEBCT_IMPORT: 'webctImports',
     PO_SUBMISSIONS: 'poSubmissions',
+    WEBCAM_OMR_UPLOADS: 'webcam_omr_uploads',
   },
 }

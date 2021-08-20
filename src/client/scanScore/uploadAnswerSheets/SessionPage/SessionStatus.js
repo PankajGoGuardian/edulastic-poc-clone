@@ -40,7 +40,7 @@ const SessionStatus = ({
   return (
     <SessionStatusContainer>
       <div className="inner-container">
-        <div className="scan-progress-text">Scan Progress</div>
+        <div className="scan-progress-text">Responses processed</div>
         <div className="scan-progress">
           <Progress
             strokeColor={themeColorBlue}
@@ -61,29 +61,33 @@ const SessionStatus = ({
         <div className="scan-result-text">
           <div className="scan-result-text-label">
             Success
-            <span
-              className="scan-result-text-action"
-              onClick={() => toggleStatusFilter(omrSheetScanStatus.DONE)}
-            >
-              View
-            </span>
+            {success && (
+              <span
+                className="scan-result-text-action"
+                onClick={() => toggleStatusFilter(omrSheetScanStatus.DONE)}
+              >
+                View
+              </span>
+            )}
           </div>
           <div className="scan-result-text-value">{success}</div>
         </div>
         <div className="scan-result-text">
           <div className="scan-result-text-label">
             Failed
-            <span
-              className="scan-result-text-action"
-              onClick={() =>
-                toggleStatusFilter(
-                  omrSheetScanStatus.FAILED,
-                  omrSheetScanStatus.ABORTED
-                )
-              }
-            >
-              View
-            </span>
+            {failed && (
+              <span
+                className="scan-result-text-action"
+                onClick={() =>
+                  toggleStatusFilter(
+                    omrSheetScanStatus.FAILED,
+                    omrSheetScanStatus.ABORTED
+                  )
+                }
+              >
+                View
+              </span>
+            )}
           </div>
           <div className="scan-result-text-value failed">{failed}</div>
         </div>

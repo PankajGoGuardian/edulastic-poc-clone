@@ -4,3 +4,4 @@
 /src/client/public/vendors
 /packages/ext-libs
 /public/testlets
+src/client/scanScore/scanAnswerSheets/scannerUtils.js

@@ -186,7 +186,8 @@ export const uploadToS3 = async (
   folder,
   progressCallback,
   cancelUpload,
-  subFolder = ''
+  subFolder = '',
+  ignoreCDN = false
 ) => {
   if (!file) {
     throw new Error('file is missing')
@@ -227,7 +228,7 @@ export const uploadToS3 = async (
   await fileApi.uploadBySignedUrl(url, formData, progressCallback, cancelUpload)
 
   // return CDN url for assets in production
-  if (AppConfig.appEnv === 'production') {
+  if (AppConfig.appEnv === 'production' && !ignoreCDN) {
     return `${AppConfig.cdnURI}/${fields.key}`
   }
   return `${url}/${fields.key}`

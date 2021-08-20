@@ -196,7 +196,8 @@ function* createOmrUploadSessionSaga({
       aws.s3Folders.BUBBLE_SHEETS,
       (progressData) => handleUploadProgress({ progressData, mulFactor: 80 }),
       setCancelUpload,
-      `${assignmentId}/${sessionId}`
+      `${assignmentId}/${sessionId}`,
+      true
     )
     uploadRunner = yield call(
       setInterval,

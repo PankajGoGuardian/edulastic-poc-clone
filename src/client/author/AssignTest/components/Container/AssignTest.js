@@ -455,12 +455,9 @@ class AssignTest extends React.Component {
        *  Test instruction are not available on assign page so avoid sending them in assignment settings from FE,
        *  BE handles setting instructions from test settings to assignment settings
        * */
-      if (newSettings.hasInstruction) {
-        delete newSettings.hasInstruction
-      }
-      if (newSettings.instruction) {
-        delete newSettings.instruction
-      }
+      delete newSettings.hasInstruction
+      delete newSettings.instruction
+
       setCurrentTestSettingsId(value)
       updateAssignmentSettings(newSettings)
     }

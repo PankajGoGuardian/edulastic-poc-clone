@@ -350,10 +350,10 @@ class GraphDisplay extends Component {
 
     return {
       canvas: {
-        xMin: xMax - xMin <= 6 ? xMin - xDistance : xMin - 1,
-        xMax: xMax - xMin <= 6 ? xMax + xDistance : xMax + 1,
-        yMin: yMax - yMin <= 6 ? yMin - yDistance : yMin - 1,
-        yMax: yMax - yMin <= 6 ? yMax + yDistance : yMax + 1,
+        xMin: xMin - xDistance,
+        xMax: xMax + xDistance,
+        yMin: yMin - yDistance,
+        yMax: yMax + yDistance,
       },
       layout: {
         width,

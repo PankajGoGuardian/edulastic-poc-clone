@@ -826,7 +826,8 @@
         "step": "Step",
         "arrows": "ARROWS",
         "plot": "PLOT",
-        "addText": "ADD TEXT"
+        "addText": "ADD TEXT",
+        "gridCutoff": "The minimum and maximum grid settings you have given can cause the axes numbers to be cut off the edge of the display. Please adjust them if you wish the complete axes to be displayed"
       },
       "background_options": {
         "background_image": "Background image",
